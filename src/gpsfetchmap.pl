@@ -37,6 +37,7 @@
 #      - moved writing to map_koords.txt to append_koords to be able to 
 #        easy add Files already existing in the Filesystem to the File
 #      - Update Maps found in Filesystem which cannot be found in map_koords.txt
+#      - Added Map Coverage checks
 #   Added new Symbols to Progress Bar:
 #       S Simulated
 #       E Error
@@ -102,24 +103,26 @@ our $GPSTOOL_MAP_FILES={};
 my $PROXY='';
 my $check_koord_file = 0;
 my $update_koord =0;
+my $check_coverage=0;
 
-GetOptions ( 'lat=f'       => \$lat,        'lon=f'       => \$lon, 
-	     'start-lat=f' => \$slat,       'end-lat=f'   => \$endlat, 
-	     'start-lon=f' => \$slon,       'end-lon=f'   => \$endlon, 
-	     'sla=f'       => \$slat,       'ela=f'       => \$endlat, 
-	     'slo=f'       => \$slon,       'elo=f'       => \$endlon, 
-	     'scale=s'     => \$scale,      'mapserver=s' => \$mapserver, 
-	     'waypoint=s'  =>, \$waypoint,  'area=s'      => \$area, 
-	     'unit=s'      => \$unit,       'mapdir=s'    => \$mapdir, 'polite:i' => \$polite,
-	     'WAYPOINT=s'  => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
-	     'PREFIX=s'    => \$FILEPREFIX,
-	     'n'           => \$simulate_only,
-	     'c'           => \$check_koord_file,
-	     'U'           => \$update_koord,
-	     'FORCE'       => \$force,     
-	     'PROXY=s'     => \$PROXY,
-	     'debug'       => \$debug,      'MAN' => \$man, 
-	     'help|x'      => \$help,       'version' => \$version
+GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon, 
+	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
+	     'start-lon=f'    => \$slon,       'end-lon=f'   => \$endlon, 
+	     'sla=f'          => \$slat,       'ela=f'       => \$endlat, 
+	     'slo=f'          => \$slon,       'elo=f'       => \$endlon, 
+	     'scale=s'        => \$scale,      'mapserver=s' => \$mapserver, 
+	     'waypoint=s'     =>, \$waypoint,  'area=s'      => \$area, 
+	     'unit=s'         => \$unit,       'mapdir=s'    => \$mapdir, 'polite:i' => \$polite,
+	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
+	     'PREFIX=s'       => \$FILEPREFIX,
+	     'n'              => \$simulate_only,
+	     'c'              => \$check_koord_file,
+	     'check-coverage' => \$check_coverage,
+	     'U'              => \$update_koord,
+	     'FORCE'          => \$force,     
+	     'PROXY=s'        => \$PROXY,
+	     'debug'          => \$debug,      'MAN' => \$man, 
+	     'help|x'         => \$help,       'version' => \$version
 	     )
     or pod2usage(1);
 
@@ -136,6 +139,7 @@ sub read_gpstool_map_file(); # {}
 sub append_koords($$$$); # {}
 sub expedia_url($$$);    # {}
 sub wget_map($$$);       # {}
+sub check_coverage($);   # {}
 
 
 STDERR->autoflush(1);
@@ -176,6 +180,11 @@ chdir($CONFIG_DIR);
 if ( $check_koord_file ) {
     check_koord_file($KOORD_FILE); # This also memoizes the filenames
     update_gpsdrive_map_koord_file();
+    exit();
+}
+
+if ( $check_coverage ) {
+    check_coverage($KOORD_FILE); 
     exit();
 }
 
@@ -724,18 +733,23 @@ sub read_koord_file($) {
     $MAP_FILES={};
 
     my $s_time=time();
-    return unless -s $koord_file;
+    unless ( -s $koord_file ) {
+	warn "ERROR: read_koord_file sees empty file '$koord_file'\n";
+	return;
+    };
     print "reading $koord_file\n";
     open(KOORD,"<$koord_file") || die "ERROR: read_kooord_file can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
 	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
-	if (is_map_file( $filename) ) {
+	if ( is_map_file( $filename ) ) {
 	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
 	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
 	    $anz_files ++;
-	}
+	} else {
+	    warn "ERROR: read_koord_file is missing File $filename";
+	};
     }
     close KOORD;
     my $r_time = time()-$s_time;
@@ -857,6 +871,51 @@ sub update_file_in_map_koords(){
 }
 
 
+######################################################################
+# See which area the maps cover
+######################################################################
+sub check_coverage($){
+    my $koord_file = shift;
+    read_koord_file($koord_file);
+    my @scales= sort keys %{$MAP_KOORDS};
+
+    for my $scale ( @scales ) {
+	print "$scale:\n";;
+	
+	my @all_lons;
+	my %all_lons;
+	my @lats = sort keys %{$MAP_KOORDS->{$scale}};
+	for my $lat ( @lats ) {
+	    my @lons = keys %{$MAP_KOORDS->{$scale}->{$lat}};
+	    for my $lon ( @lons ) {
+		push (@all_lons, $lon)
+		    unless $all_lons{$lon}++;
+	    }
+	}
+
+	my $first_lon = $all_lons[0];
+	my $last_lon = $all_lons[-1];
+
+	print "lon: ($first_lon - $last_lon))\n";
+	for my $lat ( @lats ) {
+	    printf "   %7.4f: ", $lat;
+	    my @lons = sort keys %{$MAP_KOORDS->{$scale}->{$lat}};
+	    my %lons;
+	    map { $lons{$_}++ }  @lons;
+	    for my $lon ( @all_lons ) {
+#		printf "%7.4f ", $lon;
+		if ( $lons{$lon} ) {
+		    print "+";
+		} else {
+		    print "-";
+		}
+	    }
+	    print "\n";
+	}
+	print "\n";
+    }
+    print "\n";
+}
 
 
 #############################################################################
@@ -1016,6 +1075,11 @@ If not found it is appended into the map_koord.txt file.
 Check map_koord.txt File. This option checks, if every Map also exist
 If any Map-File is missing, a file map_koord.txt.new will be created. 
 This file can be copied to the original file if checked.
+
+=item B<--check-coverage>
+
+See which areas the maps cover.
+Output is simple ASCII Art
 
 =item B<--PROXY>
 
