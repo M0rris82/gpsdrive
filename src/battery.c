@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.6  2005/05/15 06:51:27  tweety
+  all speech strings are now represented as arrays of strings
+  author: Rob Stewart <rob@groupboard.com>
+
   Revision 1.5  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -210,10 +214,10 @@ Disclaimer: Please do not use for navigation.
 #define gdk_draw_pixbuf _gdk_draw_pixbuf
 #endif
 
+#include <speech_out.h>
+#include <speech_strings.h>
+
 extern gint debug;
-extern enum
-{ english, german, spanish }
-voicelang;
 
 extern gint havebattery, havetemperature;
 gint batlevel, batlevel_old = 125;	/* battery level, range 0..100 */
@@ -851,21 +855,10 @@ expose_display_battery ()
 			g_print ("\nBattery: %d%%\n", batlevel);
 
 		/* This is for Festival, so we cannot use gettext() for i18n */
-		switch (voicelang)
-		{
-		case english:
-			g_snprintf (bbuf, sizeof (bbuf),
-				    "Remaining battery: %d%%", batlevel);
-			break;
-		case spanish:
-			g_snprintf (bbuf, sizeof (bbuf),
-				    "Bater√a restante: %d%%", batlevel);
-			break;
-		case german:
-			g_snprintf (bbuf, sizeof (bbuf),
-				    "Batterieladung: %d%%", batlevel);
-		}
+    g_snprintf(
+      bbuf, sizeof (bbuf), speech_remaining_battery[voicelang], batlevel);
 		speech_out_speek (bbuf);
+
 		batlevel_old = batlevel;
 	}
 	return TRUE;
