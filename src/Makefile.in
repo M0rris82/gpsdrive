@@ -92,13 +92,13 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
 	gpsproto.h talogo.h import_map.c import_map.h speech_strings.c \
-	speech_strings.h garmin_data.cpp garmin_serial_unix.cpp \
-	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
-	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
-	garmin_serial_unix.h garmin_application.h garmin_packet.h \
-	garmin_types.h garmin_command.h garmin_phys.h garmin_util.h \
-	garmin_error.h garmin_serial.h garmin_legacy.h garmin_data.h \
-	gps_handler.c gps_handler.h
+	speech_strings.h gps_handler.c gps_handler.h garmin_data.cpp \
+	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
+	garmin_link.h garmin_serial_unix.h garmin_application.h \
+	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
+	garmin_util.h garmin_error.h garmin_serial.h garmin_legacy.h \
+	garmin_data.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -111,14 +111,14 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_FALSE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_strings.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	gps_handler.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gps_handler.$(OBJEXT)
+@DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
 @DISABLEGARMIN_TRUE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -130,8 +130,7 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gps_handler.$(OBJEXT)
+@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT)
 am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -186,7 +185,11 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DEFS = @DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
+DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
+	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
+	-DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
+	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
+
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@
@@ -290,8 +293,6 @@ host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-
-# DEFS=@DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} -DG_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED 
 includedir = mysql
 infodir = @infodir@
 install_sh = @install_sh@
@@ -326,14 +327,14 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEGARMIN_FALSE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_FALSE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 @DISABLEGARMIN_FALSE@	import_map.c import_map.h speech_strings.c speech_strings.h \
+@DISABLEGARMIN_FALSE@	gps_handler.c gps_handler.h	\
 @DISABLEGARMIN_FALSE@	\
 @DISABLEGARMIN_FALSE@	garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
 @DISABLEGARMIN_FALSE@	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
-@DISABLEGARMIN_FALSE@	garmin_legacy.h garmin_data.h \
-@DISABLEGARMIN_FALSE@	gps_handler.c gps_handler.h
+@DISABLEGARMIN_FALSE@	garmin_legacy.h garmin_data.h
 
 @DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 @DISABLEGARMIN_TRUE@	friends.c \
@@ -342,8 +343,7 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEGARMIN_TRUE@	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
-@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h \
-@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h	
+@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h 
 
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
@@ -351,7 +351,7 @@ gpsdrive_SOURCES = $(PRGS)
 
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec
+EXTRA_DIST = mysql/*.h gpsdrive.spec gpsdrive-nosql.spec
 all: all-am
 
 .SUFFIXES:
@@ -594,6 +594,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/mysql
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -719,6 +720,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
+@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h	
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

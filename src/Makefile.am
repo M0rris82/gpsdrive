@@ -1,6 +1,7 @@
-DEFS=@DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
-
-# DEFS=@DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} -DG_DISABLE_DEPRECATED -DGDK_PIXBUF_DISABLE_DEPRECATED -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED 
+DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
+	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
+	-DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
+	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
 
 includedir = mysql
 
@@ -37,7 +38,7 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
-	import_map.c import_map.h speech_strings.c speech_strings.h \
+	import_map.c import_map.h speech_strings.c speech_strings.h 
 	gps_handler.c gps_handler.h	
 else 
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
@@ -48,14 +49,14 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
+	gps_handler.c gps_handler.h	\
 	\
 	garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
 	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
-	garmin_legacy.h garmin_data.h \
-	gps_handler.c gps_handler.h
+	garmin_legacy.h garmin_data.h
 endif
 gpsdrive_SOURCES= $(PRGS)
 
@@ -68,4 +69,5 @@ endif
 
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = 	mysql gpsdrive.spec gpsdrive-nosql.spec
+
+EXTRA_DIST = 	mysql/*.h gpsdrive.spec gpsdrive-nosql.spec
