@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.14  2005/08/14 18:46:42  tweety
+remove unnedded xpm Files; read pixmaps with read_icons,
+separate more pixmaps from icons
+
 Revision 1.13  2005/08/09 01:08:31  tweety
 Twist and bend in the Makefiles to install the DataDirectory more apropriate
 move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
@@ -108,7 +112,6 @@ icons.c is ectracted from gpsdrive.c
 #include "battery.h"
 #include "track.h"
 #include "poi.h"
-#include "xpm_icons.h"
 #include "icons.h"
 #include <pthread.h>
 #include <semaphore.h>
@@ -304,8 +307,63 @@ drawicon (gint posxdest, gint posydest, char *ic)
 }
 
 /* -----------------------------------------------------------------------------
-	14.07.2005 - modified by D.Hiepler
-  - added icons.txt support	
+ * load icon into pixbuff from either system directory or user directory
+*/
+GdkPixbuf *
+read_icon(char *icon_name){
+  char filename[255];
+  GdkPixbuf *iconpixbuf;
+  if (debug)
+      printf ("read Icon %s\n", (char *) &icon_name);
+
+  // Try complete Path
+  iconpixbuf =
+      gdk_pixbuf_new_from_file ((char *) &icon_name, NULL);
+
+
+  if (!iconpixbuf)	// Try in Homedir/pixmaps
+      {
+	  snprintf ((char *) &filename, 255, "%s/gpsdrive/pixmaps/%s",
+		    homedir, icon_name);
+	  iconpixbuf =
+	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+      }
+
+  if (!iconpixbuf)	// Try in DATADIR/pixmaps
+      {
+	  snprintf ((char *) &filename, 255, "%s/gpsdrive/pixmaps/%s",
+		    DATADIR, icon_name);
+	  iconpixbuf =
+	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+      }
+
+  if (!iconpixbuf)	// Try in Homedir/icons
+      {
+	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
+		    homedir, icon_name);
+	  iconpixbuf =
+	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+      }
+
+  if (!iconpixbuf)	// Try in DATADIR/icons
+      {
+	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
+		    DATADIR, icon_name);
+	  iconpixbuf =
+	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+      }
+
+  if (!iconpixbuf)	// None Found
+      {
+	  printf ("** Failed to open \"%s\"\n", (char *) &icon_name);
+      }
+
+  return iconpixbuf;
+}
+
+
+/* -----------------------------------------------------------------------------
+ * load icons specified in icons.txt for non sql useers
 */
 void
 load_icons (void)
@@ -316,10 +374,9 @@ load_icons (void)
   int iconcounter;
 
   /* hardcoded kismet-stuff */
-  kismetpixbuf = gdk_pixbuf_new_from_xpm_data ((const char **) kismet_xpm);
-  openwlanpixbuf = gdk_pixbuf_new_from_xpm_data ((const char **) open_xpm);
-  closedwlanpixbuf =
-    gdk_pixbuf_new_from_xpm_data ((const char **) closed_xpm);
+  kismetpixbuf = read_icon("kismet.png");
+  openwlanpixbuf = read_icon("open.png");
+  closedwlanpixbuf =read_icon("closed.png");
 
   if (!sqlflag)
     {

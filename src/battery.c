@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.7  2005/08/14 18:46:42  tweety
+  remove unnedded xpm Files; read pixmaps with read_icons,
+  separate more pixmaps from icons
+
   Revision 1.6  2005/05/15 06:51:27  tweety
   all speech strings are now represented as arrays of strings
   author: Rob Stewart <rob@groupboard.com>
@@ -189,6 +193,7 @@ Disclaimer: Please do not use for navigation.
 #include <unistd.h>
 #include <errno.h>
 #include <gpsdrive.h>
+#include <icons.h>
 #include <config.h>
 
 /* APM is i386-specific. */
@@ -205,7 +210,6 @@ Disclaimer: Please do not use for navigation.
 
 
 #include "battery.h"
-#include "xpm_power.h"
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -791,27 +795,19 @@ expose_display_battery ()
 		if (img_powercharges == NULL)
 		{
 			img_powercharges =
-				gdk_pixbuf_new_from_xpm_data ((const char **)
-							      powercharges_xpm);
-			img_powercord =
-				gdk_pixbuf_new_from_xpm_data ((const char **)
-							      powercord_xpm);
-			img_battery =
-				gdk_pixbuf_new_from_xpm_data ((const char **)
-							      battery_xpm);
+				read_icon("powercharges.png");
+			img_powercord =read_icon("powercord.png");
+			img_battery =read_icon("battery.png");
 		}
 
 		if (batcharge)
 			batimage = img_powercharges;
-		/*    gdk_pixbuf_new_from_xpm_data ((const char **) powercharges_xpm); */
 		else
 		{
 			if (batloading)
 				batimage = img_powercord;
-			/*        gdk_pixbuf_new_from_xpm_data ((const char **) powercord_xpm); */
 			else
 				batimage = img_battery;
-			/*        gdk_pixbuf_new_from_xpm_data ((const char **) battery_xpm); */
 		}
 
 
@@ -831,9 +827,7 @@ expose_display_battery ()
 		gdk_gc_set_foreground (temkontext, &mygray);
 		gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
 		if (temimage == NULL)
-			temimage =
-				gdk_pixbuf_new_from_xpm_data ((const char **)
-							      gauge_xpm);
+		    temimage =read_icon("gauge.png");
 		gdk_gc_set_function (temkontext, GDK_AND);
 		gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0, 0, 0, 0,
 				 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
