@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.23  2005/05/24 08:35:25  tweety
+  move track splitting to its own function +sub track_add($)
+  a little bit more error handling
+  earth_distance somtimes had complex inumbers as result
+  implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+  this way i can re-read all currently displayed streets from the DB
+  fix minor array iindex counting bugs
+  add some content to the comment column
+
   Revision 1.22  2005/05/15 07:00:51  tweety
   new Keystroke p adds an instant waypoint at cursor position
   new Keystroke q querys information for thenearest waypoints and street endpoints
@@ -339,7 +348,7 @@ get_poi_type_list (void)
 
 	if (dl_mysql_query (&mysql, sql_query))
 	{
-		fprintf (stderr, "Error in query: %s\n",
+		fprintf (stderr, "get_poi_type_list: Error in query: %s\n",
 			 dl_mysql_error (&mysql));
 		return;
 	}
@@ -347,8 +356,10 @@ get_poi_type_list (void)
 
 	if (!(res = dl_mysql_store_result (&mysql)))
 	{
-		fprintf (stderr, "Error in store results: %s\n",
+		fprintf (stderr, "get_poi_type_list: Error in store results: %s\n",
 			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
 	}
 
@@ -458,13 +469,16 @@ get_poi_type_list (void)
 
 	if (!dl_mysql_eof (res))
 	{
-		fprintf (stderr, "Error in dl_mysql_eof: %s\n",
+		fprintf (stderr, "get_poi_type_list: Error in dl_mysql_eof: %s\n",
 			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
 	}
 
 
 	dl_mysql_free_result (res);
+	res=NULL;
 
 	if (mydebug)
 		fprintf (stderr,
@@ -563,8 +577,8 @@ poi_rebuild_list (void)
 
 	if (dl_mysql_query (&mysql, sql_query))
 	{
-		printf ("Error in query: \n");
-		fprintf (stderr, "Error in query: %s\n",
+		printf ("poi_rebuild_list: Error in query: \n");
+		fprintf (stderr, "poi_rebuild_list: Error in query: %s\n",
 			 dl_mysql_error (&mysql));
 		return;
 	}
@@ -573,6 +587,8 @@ poi_rebuild_list (void)
 	{
 		fprintf (stderr, "Error in store results: %s\n",
 			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
 	}
 
@@ -599,20 +615,19 @@ poi_rebuild_list (void)
 			poi_nr++;
 			if (poi_nr > poi_limit)
 			{
-				poi_limit += 10000;
+				poi_limit = poi_nr + 10000;
 				if (debug)
 					g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
 
 				poi_list =
 					g_renew (poi_struct, poi_list,
 						 poi_limit);
-				if (poi_list == NULL)
+				if (NULL == poi_list)
 				{
 					g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
 					poi_limit = -1;
 					return;
 				}
-				// TODO: check if g_renew failed
 			}
 
 			// Save retrieved poi information into structure
@@ -687,9 +702,16 @@ poi_rebuild_list (void)
 	poi_lon_ul = lon_ul;
 
 	if (!dl_mysql_eof (res))
+	{
+		fprintf (stderr, "poi_rebuild_list: Error in dl_mysql_eof: %s\n",
+			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
+	}
 
 	dl_mysql_free_result (res);
+	res=NULL;
 
 	if (mydebug)
 	{

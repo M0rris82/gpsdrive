@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.16  2005/05/24 08:35:25  tweety
+  move track splitting to its own function +sub track_add($)
+  a little bit more error handling
+  earth_distance somtimes had complex inumbers as result
+  implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+  this way i can re-read all currently displayed streets from the DB
+  fix minor array iindex counting bugs
+  add some content to the comment column
+
   Revision 1.15  2005/05/15 07:00:51  tweety
   new Keystroke p adds an instant waypoint at cursor position
   new Keystroke q querys information for thenearest waypoints and street endpoints
@@ -180,7 +189,7 @@ typedef struct
 	GdkColor *color;
 	GdkPixbuf *icon;
 } streets_type_struct;
-#define streets_type_list_max 4000
+#define streets_type_list_max 500
 streets_type_struct streets_type_list[streets_type_list_max];
 int streets_type_list_count = 0;
 
@@ -233,6 +242,13 @@ streets_init (void)
 gdouble streets_lat_lr = 0, streets_lon_lr = 0;
 gdouble streets_lat_ul = 0, streets_lon_ul = 0;
 
+void
+streets_check_if_moved_reset (void)
+{
+    streets_lat_lr = 0, streets_lon_lr = 0;
+    streets_lat_ul = 0, streets_lon_ul = 0;
+}
+
 int
 streets_check_if_moved (void)
 {
@@ -273,7 +289,7 @@ get_streets_type_list (void)
 
 	if (dl_mysql_query (&mysql, sql_query))
 	{
-		fprintf (stderr, "Error in query: %s\n",
+		fprintf (stderr, "get_streets_type_list: Error in query: %s\n",
 			 dl_mysql_error (&mysql));
 		return;
 	}
@@ -282,6 +298,8 @@ get_streets_type_list (void)
 	{
 		fprintf (stderr, "Error in store results: %s\n",
 			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
 	}
 
@@ -367,10 +385,12 @@ get_streets_type_list (void)
 	{
 		fprintf (stderr, "Error in dl_mysql_eof: %s\n",
 			 dl_mysql_error (&mysql));
-		return;
+	dl_mysql_free_result (res);
+	res=NULL;
 	}
 
 	dl_mysql_free_result (res);
+	res=NULL;
 
 }
 
@@ -412,7 +432,7 @@ streets_rebuild_list (void)
 	if (!streets_draw)
 	{
 		if (debug)
-			printf ("streets_rebuild_list: STREETS_draw is off\n");
+			printf ("streets_rebuild_list: streets_draw is off\n");
 		return;
 	}
 
@@ -465,7 +485,7 @@ streets_rebuild_list (void)
 	// Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
 	g_snprintf (sql_query, sizeof (sql_query),
 		    // "SELECT lat,lon,alt,streets_type_id,proximity "
-		    "SELECT lat1,lon1,lat2,lon2,name,streets_type_id "
+		    "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
 		    "FROM streets "
 		    "%s LIMIT 200000", sql_where);
 
@@ -475,7 +495,7 @@ streets_rebuild_list (void)
 
 	if (dl_mysql_query (&mysql, sql_query))
 	{
-		fprintf (stderr, "Error in query: %s\n",
+		fprintf (stderr, "streets_rebuild_list: Error in query: %s\n",
 			 dl_mysql_error (&mysql));
 		return;
 	}
@@ -484,6 +504,8 @@ streets_rebuild_list (void)
 	{
 		fprintf (stderr, "Error in store result: %s\n",
 			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
 		return;
 	}
 
@@ -510,26 +532,26 @@ streets_rebuild_list (void)
 		{
 			// get next free mem for streets
 			streets_list_count++;
-			if (streets_list_count > streets_list_limit)
+			if (streets_list_count >= streets_list_limit)
 			{
-				streets_list_limit += 1000;
+				streets_list_limit = streets_list_count + 1000;
 				if (debug)
 					printf ("streets_rebuild_list: renewmemory for street list: %ld\n", streets_list_limit);
 
 				streets_list =
 					g_renew (streets_struct, streets_list,
 						 streets_list_limit);
-				if (streets_list == NULL)
+				if (NULL == streets_list)
 				{
 					g_print ("Error: Cannot allocate Memory for %ld streets\n", streets_list_limit);
 					streets_list_limit = -1;
 					return;
 				}
 			}
-			if (debug)
+			if (mydebug)
 			{
-			    printf ("streets_rebuild_list: pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
-			    printf ("Anz: %ld %ld\n", streets_list_count, streets_list_limit);
+			    printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
+			    printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
 			}
 
 			// Save retrieved streets information into structure
@@ -537,21 +559,34 @@ streets_rebuild_list (void)
 			(streets_list + streets_list_count)->lon1 = lon1;
 			(streets_list + streets_list_count)->lat2 = lat2;
 			(streets_list + streets_list_count)->lon2 = lon2;
-			(streets_list + streets_list_count)->x1 =
-				streets_posx1;
-			(streets_list + streets_list_count)->y1 =
-				streets_posy1;
-			(streets_list + streets_list_count)->x2 =
-				streets_posx2;
-			(streets_list + streets_list_count)->y2 =
-				streets_posy2;
-			g_strlcpy ((streets_list + streets_list_count)->name,
-				   row[4],
-				   sizeof ((streets_list +
-					    streets_list_count)->name));
+			(streets_list + streets_list_count)->x1 = streets_posx1;
+			(streets_list + streets_list_count)->y1 = streets_posy1;
+			(streets_list + streets_list_count)->x2 = streets_posx2;
+			(streets_list + streets_list_count)->y2 = streets_posy2;
 			(streets_list + streets_list_count)->streets_type_id =
 				(gint) g_strtod (row[5], NULL);
 
+			if (mydebug)
+			    printf( "Copy ...\n");
+			if ( NULL == (streets_list + streets_list_count)->name) 
+			    (streets_list + streets_list_count)->name[0]='\0';
+			else
+			    g_strlcpy ((streets_list + streets_list_count)->name,
+				       row[4],
+				       sizeof ((streets_list +
+						streets_list_count)->name));
+
+			if (mydebug)
+			    printf( "Copy ..1\n");
+			if ( NULL == (streets_list + streets_list_count)->comment)
+			    (streets_list + streets_list_count)->comment[0]='\0';
+			else
+			    g_strlcpy ((streets_list + streets_list_count)->comment,
+				       row[6],
+				       sizeof ((streets_list +
+						streets_list_count)->comment));
+			if (mydebug)
+			    printf( "Copy Done\n");
 		}
 	}
 
@@ -572,9 +607,15 @@ streets_rebuild_list (void)
 	}
 
 	if (!dl_mysql_eof (res))
-		return;
+	{
+		fprintf (stderr, "Error in dl_mysql_eof: %s\n",
+			 dl_mysql_error (&mysql));
+	dl_mysql_free_result (res);
+	res=NULL;
+	}
 
 	dl_mysql_free_result (res);
+	res=NULL;
 
 	if (debug)
 		printf ("streets_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
@@ -654,7 +695,7 @@ streets_draw_list (void)
 
 	GdkSegment *gdks_streets;
 	gint gdks_streets_count = -1;
-	gint gdks_streets_max = 20000;
+	gint gdks_streets_max = streets_list_count+1;
 
 	gint i;
 
@@ -666,22 +707,32 @@ streets_draw_list (void)
 
 	if (!(streets_draw))
 	{
+	    streets_check_if_moved_reset();
 		if (debug)
-			printf ("STREETS_draw is off\n");
+			printf ("streets_draw is off\n");
 		return;
 	}
 
 	if (debug)
-		printf ("STREETS_draw\n");
+		printf ("streets_draw\n");
 
 	if (streets_check_if_moved ())
 		streets_rebuild_list ();
 
+	gdks_streets_max = streets_list_count+1;
+
 	if (debug)
-		printf ("STREETS_draw %ld segments\n", streets_list_count);
+		printf ("streets_draw %ld segments\n", streets_list_count);
 
 	gdks_streets = g_new0 (GdkSegment, gdks_streets_max);
+	if ( NULL == gdks_streets) {
+	    printf ("Problem reserving Memory for %ld segments\n", gdks_streets_max);
+	    gdks_streets_max =-1;
+	    return;
+	}
 
+	if (debug)
+		printf ("created gdk struct for %ld segments\n", gdks_streets_max);
 
 	/* ------------------------------------------------------------------ */
 	/*  draw gdks_streets_list streets */
@@ -721,11 +772,18 @@ streets_draw_list (void)
 
 			// Alloc Memory if we need more
 			gdks_streets_count++;
-			if (gdks_streets_count >= gdks_streets_max)
+			if (gdks_streets_count >= gdks_streets_max )
 			{
-				gdks_streets_max += 10000;
+				gdks_streets_max = gdks_streets_count + 1000;
 				g_renew (GdkSegment, gdks_streets,
 					 gdks_streets_max);
+				if (NULL == streets_list)
+				{
+					g_print ("Error: Cannot allocate Memory for %ld street-gdk segments\n", 
+						 gdks_streets_max);
+					gdks_streets_max = -1;
+					return;
+				}
 			}
 
 			(gdks_streets + gdks_streets_count)->x1 = posx1;
@@ -733,7 +791,7 @@ streets_draw_list (void)
 			(gdks_streets + gdks_streets_count)->x2 = posx2;
 			(gdks_streets + gdks_streets_count)->y2 = posy2;
 
-			if (mydebug)
+			if (mydebug && 0)
 			{
 				char beschrift[120];
 				g_snprintf (beschrift, sizeof (beschrift),
@@ -836,11 +894,16 @@ streets_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 )
 		 ( ( lat1 <= (streets_list + i)->lat2 ) && ( (streets_list + i)->lat2 <= lat2 ) &&
 		   ( lon1 <= (streets_list + i)->lon2 ) && ( (streets_list + i)->lon2 <= lon2 ) ) 
 		 ) {
-		printf ("Streets: %ld: %f,%f --> %f,%f :%s\n",
+		printf ("Streets: %ld: %f,%f --> %f,%f :%s\t",
 			i,
 			(streets_list + i)->lat1, (streets_list + i)->lon1,
 			(streets_list + i)->lat2, (streets_list + i)->lon2,
 			(streets_list + i)->name);
+		gint streets_type_id = (streets_list + i)->streets_type_id;
+		
+		printf ("Type: %s\t",streets_type_list[streets_type_id].name);
+		printf ("%s\n", (streets_list + i)->comment);
 	    }
 	}
+
 }
