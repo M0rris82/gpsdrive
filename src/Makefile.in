@@ -98,8 +98,9 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
 	talogo.h import_map.c import_map.h speech_strings.c \
-	speech_strings.h xpm_compass.h xpm_talogo.h xpm_power.h \
-	xpm_icons.h
+	speech_strings.h nmea_handler.c nmea_handler.h xpm_compass.h \
+	xpm_talogo.h xpm_power.h xpm_icons.h gps_handler.c \
+	gps_handler.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -116,7 +117,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_FALSE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	speech_strings.$(OBJEXT)
+@DISABLEGARMIN_FALSE@	speech_strings.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	nmea_handler.$(OBJEXT)
 @DISABLEGARMIN_TRUE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -127,7 +129,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT)
+@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	gps_handler.$(OBJEXT)
 am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -325,6 +328,7 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEGARMIN_FALSE@	garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_FALSE@	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
 @DISABLEGARMIN_FALSE@	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h \
+@DISABLEGARMIN_FALSE@	nmea_handler.c nmea_handler.h \
 @DISABLEGARMIN_FALSE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 
 @DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
@@ -334,6 +338,7 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
 @DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 @DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h \
+@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h \
 @DISABLEGARMIN_TRUE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 
 gpsdrive_SOURCES = $(PRGS)
@@ -463,6 +468,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_link.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_serial_unix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gps_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrivegarble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpskismet.Po@am__quote@
@@ -474,6 +480,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmea_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@
