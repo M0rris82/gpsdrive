@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.62  2005/08/19 07:12:36  tweety
+Autor:Russell MIrov <russell.mirov@sun.com>
+save tracks immedeately
+
 Revision 1.61  2005/08/18 06:59:09  tweety
 save tracks periodically 1st part
 Autor: Russell MIrov <russell.mirov@sun.com>
@@ -3751,6 +3755,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
 		(trackcoord + trackcoordnr)->longi = current_long;
 		(trackcoord + trackcoordnr)->lat = current_lat;
 		(trackcoord + trackcoordnr)->alt = altitude;
+		if (savetrack != 0) do_incremental_save();
 	}
 
 
