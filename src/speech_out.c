@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.3  2005/04/10 20:47:49  tweety
+added src/speech_out.h
+update configure and po Files
+
 Revision 1.2  2005/03/25 14:38:46  tweety
 change flite usage so no file is generated inbetween. This also fixes problem with flite having
 problems speaking a file without a trailing \n
@@ -180,6 +184,7 @@ Revision 1.3  2001/09/16 19:12:35  ganter
 #include <math.h>
 #include <sys/time.h>
 #include <gpsdrive.h>
+#include <speech_out.h>
 
 #if HAVE_LOCALE_H
 #include <locale.h>
