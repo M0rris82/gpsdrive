@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.26  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
 Revision 1.25  2005/03/14 23:29:41  tweety
 increase font Size by Wilfried Hemp <Wilfried.Hemp@t-online.de>
 
@@ -63,7 +72,7 @@ Revision 1.15  2005/01/20 00:31:24  tweety
 Added Keyboard events +/- for zooming in/out
 
 Revision 1.14  2005/01/20 00:16:00  tweety
-print aictual mouse position as lat/lon and x/y in debug mode
+print actual mouse position as lat/lon and x/y in debug mode
 print actual Mouse position when creating wp at Mouse position
 
 Revision 1.13  2005/01/20 00:13:14  tweety
@@ -1964,8 +1973,8 @@ GtkWidget *mainwindow, *status, *messagestatusbar, *pixmapwidget, *gotowindow,
 extern GtkWidget *splash_window;
 gint sock = -1, dlsock = -1, bigp = 0, bigpGSV = 0, bigpGGA = 0, bigpRME =
   0, bigpGSA = 0;
-gint lastpRME = 0, lastpGSA = 0, lastp = 0, lastpGSV = 0, lastpGGA =
-  0, debug = 0;
+gint lastpRME = 0, lastpGSA = 0, lastp = 0, lastpGSV = 0, 
+  lastpGGA = 0, debug = 0;
 FILE *nmeaout = NULL;
 gchar *buffer = NULL, *big = NULL;
 fd_set readmask;
@@ -2373,26 +2382,28 @@ convertRMC (char *f)
     }
   if ((j != 11) && (j != 12))
     {
-      g_print ("\nGPRMC: wrong number of fields (%d)", (int) j);
+      g_print("\nGPRMC: wrong number of fields (%d)", (int) j);
       return;
     }
   if (!haveRMCsentence)
     {
-      g_print (_("got RMC data, using it\n"));
+      if ( debug) 
+	g_print(_("got RMC data, using it\n"));
       haveRMCsentence = TRUE;
     }
 
-  if (debug)
+  if (mydebug)
     {
-      g_print ("\nRMC Fields:\n");
+      g_print("RMC Fields: ");
       for (i = 0; i < j; i++)
-	g_print ("\n%d:%s", (int) i, field[i]);
+	g_print("%d:%s\n", (int) i, field[i]);
+      g_print("\n");
     }
   g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0], field[1][1],
 	      field[1][2], field[1][3], field[1][4], field[1][5]);
   g_strlcpy (utctime, b, sizeof (utctime));
   if (debug)
-    g_print ("\nutctime: %s", utctime);
+    g_print("utctime: %s\n", utctime);
   if ((field[2][0] != 'A') || forcehavepos)
     {
       havepos = FALSE;
@@ -2520,15 +2531,15 @@ convertGSV (char *f)
 	  j++;
 	}
     }
-  if (debug)
+  if (mydebug)
     {
-      g_print ("\nGSV Fields:\n");
+      g_print("\nGSV Fields:\n");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	g_print("%d:%s$", i, field[i]);
     }
   if (j > 40)
     {
-      g_print ("\nGPGSV: wrong number of fields (%d)", j);
+      g_print("\nGPGSV: wrong number of fields (%d)", j);
       return FALSE;
     }
 
@@ -2544,8 +2555,8 @@ convertGSV (char *f)
   b[1] = 0;
   i2 = atof (b);
   if (mydebug)
-    g_print ("\nbits should be:%d  is: %d", i2, satbit);
-  g_snprintf (b, sizeof (b), "\nSatellites: %d ", anz);
+    g_print("bits should be:%d  is: %d\n", i2, satbit);
+  g_snprintf (b, sizeof (b), "Satellites: %d\n", anz);
   if (anz != oldsatsanz)
     newsatslevel = TRUE;
   oldsatsanz = anz;
@@ -2561,7 +2572,7 @@ convertGSV (char *f)
       db = atoi (field[i + 3]);
       el = atoi (field[i + 1]);
       az = atoi (field[i + 2]);
-      if (debug)
+      if (mydebug)
 	fprintf (stderr,
 		 "satnumber: %2d elev: %3d azimut: %3d signal %3ddb\n", n, el,
 		 az, db);
@@ -2614,16 +2625,17 @@ convertGGA (char *f)
 	  j++;
 	}
     }
-  if (debug)
+  if (mydebug)
     {
-      g_print ("\nGGA Fields:\n");
+      g_print("GGA Fields: ");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	g_print("%d:%s$", i, field[i]);
+      g_print("\n");
     }
 
   if (j != 15)
     {
-      g_print ("\nGPGGA: wrong number of fields (%d)", j);
+      g_print("GPGGA: wrong number of fields (%d)\n", j);
       return;
     }
 
@@ -2632,8 +2644,8 @@ convertGGA (char *f)
     {
       gint mysecs;
 
-/*       if (debug) */
-      g_print (_("got no RMC data, using GGA data\n"));
+      if (debug) 
+	g_print(_("got no RMC data, using GGA data\n"));
       g_snprintf (b, sizeof (b), "%c%c", field[1][4], field[1][5]);
       sscanf (b, "%d", &mysecs);
       if (mysecs != NMEAoldsecs)
@@ -2643,7 +2655,7 @@ convertGGA (char *f)
 	    NMEAsecs += 60;
 	  NMEAoldsecs = mysecs;
 	}
-/*       g_print ("\nnmeasecs: %.2f mysecs: %d, nmeaoldsecs: %d", NMEAsecs, */
+/*       g_print("nmeasecs: %.2f mysecs: %d, nmeaoldsecs: %d\n", NMEAsecs, */
 /* 	       mysecs, NMEAoldsecs); */
       g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0], field[1][1],
 		  field[1][2], field[1][3], field[1][4], field[1][5]);
@@ -2680,7 +2692,7 @@ convertGGA (char *f)
       b[5] = field[2][7];
       b[6] = 0;
       if ( debug ) 
-	fprintf(stderr,"\nposmode: %d\n",posmode);
+	fprintf(stderr,"posmode: %d\n",posmode);
       if (!posmode)
 	{
 	  gdouble cl;
@@ -2723,7 +2735,7 @@ convertGGA (char *f)
 	}
 
       if (debug)
-	g_print ("\nGGA pos: %f %f\n", current_lat, current_long);
+	g_print("GGA pos: %f %f\n", current_lat, current_long);
     }
 
   satfix = g_strtod (field[6], 0);
@@ -2733,9 +2745,7 @@ convertGGA (char *f)
       havealtitude = TRUE;
       altitude = g_strtod (field[9], 0);
       if (debug)
-	{
-	  g_print ("\nAltitude: %.1f, Fix: %d", altitude, satfix);
-	}
+	g_print("Altitude: %.1f, Fix: %d\n", altitude, satfix);
     }
   else
     {
@@ -2780,20 +2790,18 @@ convertRME (char *f)
 	  j++;
 	}
     }
-  if (debug)
+  if (mydebug)
     {
-      g_print ("\nRME Fields:\n");
+      g_print("RME Fields:\n");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	g_print("%d:%s$", i, field[i]);
     }
   if (havepos)
     {
 
       precision = g_strtod (field[1], 0);
-      if (debug)
-	{
-	  g_print ("\nRME precision: %.1f", precision);
-	}
+      if (mydebug)
+	g_print("RME precision: %.1f\n", precision);
     }
 }
 
@@ -2816,20 +2824,19 @@ convertGSA (char *f)
 	  j++;
 	}
     }
-  if (debug)
+  if (mydebug)
     {
-      g_print ("\nGSA Fields:\n");
+      g_print("GSA Fields: ");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	g_print("%d:%s$", i, field[i]);
+      g_print("\n");
     }
   if (havepos)
     {
 
       gsaprecision = g_strtod (field[15], 0);
       if (debug)
-	{
-	  g_print ("\nGSA PDOP: %.1f", gsaprecision);
-	}
+	g_print("GSA PDOP: %.1f\n", gsaprecision);
     }
 }
 
@@ -2875,7 +2882,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 
   if ((timeoutcount > 3) && (debug))
-    g_print ("*** %d. timeout getting data from GPS-Receiver!\n",
+    g_print("*** %d. timeout getting data from GPS-Receiver!\n",
 	     timeoutcount);
 
   if (haveserial)
@@ -3084,7 +3091,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    groundspeed = 0;
 
 	  if (mydebug)
-	    g_print ("\nTime: %f", secs);
+	    g_print("Time: %f\n", secs);
 	}
 /*  display status line */
       if (posmode)
@@ -3136,10 +3143,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       if ((bigp + e) < MAXBIG)
 	{
 	  if (mydebug)
-	    g_print ("\n!!bigp:%d, e: %d!!", bigp, e);
+	    g_print("!!bigp:%d, e: %d!!\n", bigp, e);
 	  g_strlcat (big, buffer, MAXBIG);
 	  if (mydebug)
-	    g_print (", strlen big:%d", strlen (big));
+	    g_print(", strlen big:%d", strlen (big));
 	  bigp += e;
 	  bigpGSA = bigpRME = bigpGSV = bigpGGA = bigp;
 
@@ -3152,8 +3159,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 5] == 'C'))
 		    {
 		      found = 0;
-		      if (debug)
-			g_print ("\n found #RMC#");
+		      if (mydebug)
+			g_print(" found #RMC#\n");
 		      for (j = i; j <= bigp; j++)
 			if (big[j] == 13)
 			  {
@@ -3198,8 +3205,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 5] == 'V'))
 		    {
 		      foundGSV = 0;
-		      if (debug)
-			g_print ("\n found #GSV#, bigpGSV: %d", bigpGSV);
+		      if (mydebug)
+			g_print(" found #GSV#, bigpGSV: %d\n", bigpGSV);
 		      for (j = i; j <= bigpGSV; j++)
 			if (big[j] == 13)
 			  {
@@ -3213,21 +3220,21 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  if ((lenstr) > 200)
 			    {
 			      g_print
-				("\nError in line %d, foundGSV=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGSV=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGSV, i, lenstr);
 			      lenstr = 200;
 			    }
 			  if (i > foundGSV)
 			    {
 			      g_print
-				("\nError in line %d, foundGSV=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGSV=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGSV, i, lenstr);
 			      lenstr = 0;
 			    }
 			  if (lenstr < 0)
 			    {
 			      g_print
-				("\nError in line %d, foundGSV=%d,i=%d, lenstr=%d\n",
+				("Error in line %d, foundGSV=%d,i=%d, lenstr=%d\n",
 				 __LINE__, foundGSV, i, lenstr);
 			      lenstr = 0;
 			    }
@@ -3259,8 +3266,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 5] == 'A'))
 		    {
 		      foundGGA = 0;
-		      if (debug)
-			g_print ("\n found #GGA#");
+		      if (mydebug)
+			g_print(" found #GGA#\n");
 		      timeoutcount = 0;
 
 		      for (j = i; j <= bigpGGA; j++)
@@ -3276,14 +3283,14 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  if ((lenstr) > 200)
 			    {
 			      g_print
-				("\nError in line %d, foundGGA=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGGA=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGGA, i, lenstr);
 			      lenstr = 200;
 			    }
 			  if (i > foundGGA)
 			    {
 			      g_print
-				("\nError in line %d, foundGGA=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGGA=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGGA, i, lenstr);
 			      lenstr = 0;
 			    }
@@ -3325,8 +3332,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 5] == 'E'))
 		    {
 		      foundRME = 0;
-		      if (debug)
-			g_print ("\n found #RME#");
+		      if (mydebug)
+			g_print(" found #RME#\n");
 		      for (j = i; j <= bigpRME; j++)
 			if (big[j] == 13)
 			  {
@@ -3340,14 +3347,14 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  if ((lenstr) > 200)
 			    {
 			      g_print
-				("\nError in line %d, foundRME=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundRME=%d,i=%d, diff=%d\n",
 				 __LINE__, foundRME, i, lenstr);
 			      lenstr = 200;
 			    }
 			  if (i > foundRME)
 			    {
 			      g_print
-				("\nError in line %d, foundRME=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundRME=%d,i=%d, diff=%d\n",
 				 __LINE__, foundRME, i, lenstr);
 			      lenstr = 0;
 			    }
@@ -3377,8 +3384,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 5] == 'A'))
 		    {
 		      foundGSA = 0;
-		      if (debug)
-			g_print ("\n found #GSA#");
+		      if (mydebug)
+			g_print(" found #GSA#\n");
 		      for (j = i; j <= bigpGSA; j++)
 			if (big[j] == 13)
 			  {
@@ -3392,14 +3399,14 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  if ((lenstr) > 200)
 			    {
 			      g_print
-				("\nError in line %d, foundGSA=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGSA=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGSA, i, lenstr);
 			      lenstr = 200;
 			    }
 			  if (i > foundGSA)
 			    {
 			      g_print
-				("\nError in line %d, foundGSA=%d,i=%d, diff=%d\n",
+				("Error in line %d, foundGSA=%d,i=%d, diff=%d\n",
 				 __LINE__, foundGSA, i, lenstr);
 			      lenstr = 0;
 			    }
@@ -3420,7 +3427,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 
 	  if (mydebug)
-	    g_print ("\nsize:%d lastp: %d \n%s", e, lastp, buffer);
+	    g_print("size:%d lastp: %d \n%s\n", e, lastp, buffer);
 
 	}
       else
@@ -3715,9 +3722,7 @@ testnewmap ()
 	{
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	  if (debug)
-	    g_print ("\nNew map: %s\n", mapfilename);
-	  if (debug)
-	    printf ("\nNew map: %s\n", mapfilename);
+	    g_print("New map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
 	  zero_long = (maps + bestmap)->lon;
 	  zero_lat = (maps + bestmap)->lat;
@@ -3846,7 +3851,7 @@ testconfig_cb (GtkWidget * widget, guint * datum)
 	  {
 	    GString *error;
 	    error = g_string_new (NULL);
-	    g_string_printf (error, "\n%s%d\n%s", _("Error in line "), i + 1,
+	    g_string_printf (error, "%s%d\n%s\n", _("Error in line "), i + 1,
 			     _
 			     ("I have found filenames in map_koord.txt which are\n"
 			      "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -4090,7 +4095,7 @@ mintodecimal (gchar * text)
   if (minus)
     dec *= -1.0;
   g_snprintf (text, 100, "%.6f", dec);
-/*   g_print ("%s\n", text); */
+/*   g_print("%s\n", text); */
 }
 
 /* ----------------------------------------------------------------------------- */
@@ -4116,7 +4121,7 @@ display_status2 ()
       h = dist / v;
       m = 60 * (dist / v - h);
       if (mydebug)
-	g_print ("\nsecs: %.0fs,v:%.0f,h:%d,m:%d", secs, v, h, m);
+	g_print("\nsecs: %.0fs,v:%.0f,h:%d,m:%d", secs, v, h, m);
       if ((m < 0) || (h > 99))
 	{
 	  h = 99;
@@ -4220,9 +4225,9 @@ display_status2 ()
   if (debug)
     {
       if (havepos)
-	g_print ("\n***Position: %f %f***\n", current_lat, current_long);
+	g_print("***Position: %f %f***\n", current_lat, current_long);
       else
-	g_print ("\n***no valid Position:\n");
+	g_print("***no valid Position:\n");
 
       { // Print out actual position of Mouse
 	gdouble lat, lon;
@@ -4231,7 +4236,7 @@ display_status2 ()
 
 	gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
 	calcxytopos (x, y, &lat, &lon, zoom);
-	printf("Actual Position: lat:%f,lon:%f (x:%d,y:%d)\n",lat,lon,x,y);
+	printf("Actual mouse position: lat:%f,lon:%f (x:%d,y:%d)\n",lat,lon,x,y);
       }
     }
 }
@@ -4279,7 +4284,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 /*  we test if we have to load a new map because we are outside 
 the currently loaded map */
   testnewmap ();
-/*   g_print("\ndrawmarker_cb %d",drawmarkercounter++); */
+/*   g_print("drawmarker_cb %d\n",drawmarkercounter++); */
   exposed = FALSE;
 /* The position calculation is made in expose_cb() */
   gtk_widget_draw (drawing_area, NULL);	/* this  calls expose handler */
@@ -4293,7 +4298,7 @@ the currently loaded map */
   globruntime = runtime / 1000;
   loadpercent = (int) (100.0 * (float) runtime / (runtime + runtime2));
 /*   if (debug) */
-/*     g_print ("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000), loadpercent); */
+/*     g_print("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000), loadpercent); */
 
   return FALSE;
 }
@@ -4323,7 +4328,7 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
     }
   period = 10 * globruntime / (10 * cpuload);
   drawmarkercounter++;
-/*   g_print ("period: %d, drawmarkercounter %d\n", period, drawmarkercounter);  */
+/*   g_print("period: %d, drawmarkercounter %d\n", period, drawmarkercounter);  */
 
   if (((drawmarkercounter > period) || (drawmarkercounter > 50))
       && (drawmarkercounter >= 3))
@@ -4376,10 +4381,10 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 	  buf2[2] = 'G';
 	  buf2[3] = num[0];
 	  buf2[4] = num[1];
-	  g_snprintf (buf, sizeof (buf), "SND: %s %s %s", buf2, messagename,
+	  g_snprintf (buf, sizeof (buf), "SND: %s %s %s\n", buf2, messagename,
 		      messagesendtext);
 	  if (debug)
-	    fprintf (stderr, "\nsending to %s:\n%s\n", friendsserverip, buf);
+	    fprintf (stderr, "sending to %s:\n%s\n", friendsserverip, buf);
 	  if (sockfd != -1)
 	    close (sockfd);
 	  sockfd = -1;
@@ -4398,7 +4403,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 		      friendsidstring, friendsname, la, lo, tii,
 		      groundspeed / milesconv, 180.0 * direction / M_PI);
 	  if (debug)
-	    fprintf (stderr, "\nsending to %s:\n%s\n", friendsserverip, buf);
+	    fprintf (stderr, "sending to %s:\n%s\n", friendsserverip, buf);
 	  if (sockfd != -1)
 	    close (sockfd);
 	  sockfd = -1;
@@ -4433,7 +4438,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
   if (buf.st_mtime != maptxtstamp)
     {
       loadmapconfig ();
-      g_print ("\n%s reloaded\n", "map_koord.txt");
+      g_print("%s reloaded\n", "map_koord.txt");
       maptxtstamp = buf.st_mtime;
 
     }
@@ -4475,13 +4480,13 @@ masteragent_cb (GtkWidget * widget, guint * datum)
       loadwaypoints ();
       iszoomed = FALSE;
       if (!sqlflag)
-	g_print ("\n%s reloaded\n", activewpfile);
+	g_print("%s reloaded\n", activewpfile);
       else
-	g_print ("\n%s reloaded\n", "way-SQLRESULT.txt");
+	g_print("%s reloaded\n", "way-SQLRESULT.txt");
     }
   if (tracknr > (tracklimit - 1000))
     {
-      g_print ("tracklimit: %ld", tracklimit);
+      g_print("tracklimit: %ld", tracklimit);
       track = g_renew (GdkSegment, track, tracklimit + 100000);
       trackshadow = g_renew (GdkSegment, trackshadow, tracklimit + 100000);
       tracklimit += 100000;
@@ -4515,7 +4520,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
   else
     i = 2;
 
-/*    g_print ("\nHavepos: %d", havepos); */
+/*    g_print("Havepos: %d\n", havepos); */
   if ((!simmode && !havepos) || posmode /*  ||((!simmode &&haveposcount<3)) */ )	/* we have no valid position */
     {
       (trackcoord + trackcoordnr)->longi = 1001.0;
@@ -4615,7 +4620,7 @@ drawfriends (void)
 #define PFSIZE 55
 
   actualfriends = 0;
-/*   g_print ("Maxfriends: %d\n",maxfriends); */
+/*   g_print("Maxfriends: %d\n",maxfriends); */
   for (i = 0; i < maxfriends; i++)
     {
 
@@ -4704,7 +4709,7 @@ drawfriends (void)
 		else
 		  g_snprintf (s1, sizeof (s1), "%s", _("km/h"));
 		g_strlcat (txt, s1, sizeof (txt));
-		g_snprintf (txt2, sizeof (txt2), "\n%s, %2d:%02d", day,
+		g_snprintf (txt2, sizeof (txt2), "%s, %2d:%02d\n", day,
 			    t->tm_hour, t->tm_min);
 		g_strlcat (txt, txt2, sizeof (txt));
 		wplabellayout =
@@ -4839,7 +4844,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 					 0 + (PSIZE) / 2, -2, wplabellayout,
 					 &grey, NULL);
 	    pango_layout_get_pixel_size (wplabellayout, &width, NULL);
-/* 	    printf ("\nw: %d", width);  */
+/* 	    printf ("w: %d\n", width);  */
 	    if (wplabellayout != NULL)
 	      g_object_unref (G_OBJECT (wplabellayout));
 	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -4858,7 +4863,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 	if (satlistdisp[i][0] != 0)
 	  {
 	    if ((satlistdisp[i][1] > 30) && (printoutsats))
-	      g_print ("%d %d\n", satlistdisp[i][3], satlistdisp[i][2]);
+	      g_print("%d %d\n", satlistdisp[i][3], satlistdisp[i][2]);
 	    if (satposmode)
 	      {
 		gint x, y;
@@ -4939,8 +4944,8 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
       gtk_entry_set_text (GTK_ENTRY (satslabel3), t);
 
       g_strlcpy (buf, "", sizeof (buf));
-      if (debug)
-	g_print ("\nSatfix: %d", satfix);
+      if (mydebug)
+	g_print("Satfix: %d\n", satfix);
       if (satfix != oldsatfix)
 	{
 	  if (satfix == 2)
@@ -5242,7 +5247,7 @@ draw_grid(GtkWidget * widget)
   lat_min= floor(lat_min/step)*step;
   lon_min= floor(lon_min/step)*step;
 
-  if (debug)
+  if (mydebug)
     printf("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f)\n",lat_min,lon_min,lat_max,lon_max);
 
   // Set Drawing Colors
@@ -5316,7 +5321,7 @@ draw_grid(GtkWidget * widget)
 	}
     }
   }
-  if (debug)
+  if (mydebug)
     printf("draw_grid loops: %d\n",count);
 }
 
@@ -5392,7 +5397,7 @@ void draw_waypoints()
 	    pango_layout_set_font_description (wplabellayout, pfd);
 	    pango_layout_get_pixel_size (wplabellayout, &width,
 					 &height);
-	    /* printf("\nj: %d",height);    */
+	    /* printf("j: %d\n",height);    */
 	    k = width + 4;
 	    k2 = height;
 	    if (shadow)
@@ -5485,7 +5490,7 @@ draw_zoom_scale(void)
   l = (SCREEN_X - 40) - pixels + (pixels - strlen (txt) * 15);
 
   /*       if (debug) */
-  /* 	g_print ("%d\n", m); */
+  /* 	g_print("%d\n", m); */
 
   gdk_gc_set_function (kontext, GDK_OR);
   gdk_gc_set_foreground (kontext, &textback);
@@ -5588,17 +5593,20 @@ drawmarker (GtkWidget * widget, guint * datum)
   gint k;
 
   gblink = !gblink;
-/*    g_print("\nsimmode: %d, nmea %d garmin %d",simmode,haveNMEA,haveGARMIN); */
+/*    g_print("simmode: %d, nmea %d garmin %d\n",simmode,haveNMEA,haveGARMIN); */
 
   if (importactive)
     return TRUE;
+
   drawtracks ();
   
   if (drawgrid)
     draw_grid( widget);
   
-  poi_draw_list ();
-  streets_draw_list ();
+  if (usesql) {
+    poi_draw_list ();
+    streets_draw_list ();
+  }
 
   if (wpflag)
     draw_waypoints();
@@ -6013,7 +6021,7 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
   if (!miniimage)
     return TRUE;
 
-/*   g_print ("\nin expose_mini_cb"); */
+/*   g_print("in expose_mini_cb\n"); */
   if (SMALLMENU == 0)
     {
       gdk_draw_pixbuf (drawing_miniimage->window,
@@ -6078,7 +6086,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 	w += 2 * M_PI;
       if (w > (2 * M_PI))
 	w -= 2 * M_PI;
-/*  	  g_print ("\nRadarbearing: %g w: %g", radarbearing, w); */
+/*  	  g_print("Radarbearing: %g w: %g\n", radarbearing, w); */
 #define KURZW 1.2
       kurz = cos (KURZW);
       poly[0].x = PSIZE / 2 + PSIZE / 2.5 * cos (w);	/* x */
@@ -6270,7 +6278,7 @@ simulated_pos (GtkWidget * widget, guint * datum)
       old_lat = current_lat;
       old_long = current_long;
       if (mydebug)
-	g_print ("\nTime: %f", secs);
+	g_print("Time: %f\n", secs);
     }
 
   return TRUE;
@@ -6403,7 +6411,7 @@ loadmap (char *filename)
     {
       GString *error;
       error = g_string_new (NULL);
-      g_string_sprintf (error, "\n%s\n%s\n",
+      g_string_sprintf (error, "%s\n%s\n",
 			_(" Mapfile could not be loaded:"), mappath);
       error_popup ((gpointer *) error->str);
       g_string_free (error, TRUE);
@@ -6943,7 +6951,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
   g_strlcpy (sctext, sc, sizeof (sctext));
   g_strlcpy (newmapsc, sctext, sizeof (newmapsc));
 
-/*   g_print ("\nnewmaplat: %s, newmaplongi: %s newmapsc: %s", newmaplat, */
+/*   g_print("newmaplat: %s, newmaplongi: %s newmapsc: %s\n", newmaplat, */
 /* 	   newmaplongi, newmapsc); */
 
   if (datum == 0)
@@ -6985,7 +6993,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 		  (int) (ns * EXPEDIAFACT));
     }
   if (debug)
-    printf ("\nsctext: %s,newmapsc: %s\n", sctext, newmapsc);
+    printf ("sctext: %s,newmapsc: %s\n", sctext, newmapsc);
 
 /*   new URL (08/28/2002) */
 /* http://www.mapblast.com/myblastd/MakeMap.d?&CT=48.0:12.2:100000&IC=&W=1280&H=1024&FAM=myblast&LB= */
@@ -7015,7 +7023,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
     }
 
   if (debug)
-    g_print ("\nDownload URL: %s\n", writebuff);
+    g_print("Download URL: %s\n", writebuff);
 
   if (!expedia)
     downloadstart_cb (widget, 0);
@@ -7031,7 +7039,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
       g_strlcpy (url, p, sizeof (url));
       if (debug)
-	printf ("\n%s\n", url);
+	printf ("%s\n", url);
       p = strstr (url, "Location: ");
       if (p == NULL)
 	{
@@ -7051,7 +7059,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
       url2[p - url2] = 0;
       if (debug)
-	printf ("\n**********\n%s\n", url2);
+	printf ("**********\n%s\n", url2);
       g_strlcpy (hn, (url2 + 7), sizeof (hn));
       p = strstr (hn, "/");
       if (p == NULL)
@@ -7066,7 +7074,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
       url[strlen (url) - 1] = 0;
       g_strlcpy (actualhostname, hn, sizeof (actualhostname));
       if (debug)
-	printf ("\nhn: %s, url: %s", hn, url);
+	printf ("hn: %s, url: %s\n", hn, url);
       
       if(haveproxy==TRUE)
 	{
@@ -7197,7 +7205,7 @@ getexpediaurl (GtkWidget * widget)
   if ((e = read (dlsock, tmpbuff, 8000)) < 0)
     perror (_("read from Webserver"));
   if (debug)
-    g_print ("\nLoaded %d Bytes\n", e);
+    g_print("Loaded %d Bytes\n", e);
   if (e > 0)
     g_strlcpy (url, tmpbuff, sizeof (url));
   else
@@ -7377,7 +7385,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
       if ((e = read (dlsock, tmpbuff, 8000)) < 0)
 	perror (_("read from Webserver"));
       if (debug)
-	g_print ("\nLoaded %d Bytes\n", e);
+	g_print("Loaded %d Bytes\n", e);
       if (e > 0)
 	{
 /*  in dlbuff we have all download data */
@@ -7399,7 +7407,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 /*  now we look for 2 cr/lf which is the end of the header */
 		  dlpstart = strstr (tmpbuff, nn);
 		  dldiff = dlpstart - tmpbuff + 4;
-/* 		  g_print ("\ncontent-length: %d", downloadfilelen); */
+/* 		  g_print("content-length: %d\n", downloadfilelen); */
 		}
 	      else if (dlcount > 1000)
 		{
@@ -7407,7 +7415,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		  dlpstart = strstr (tmpbuff, nn);
 		  dldiff = dlpstart - tmpbuff + 4;
 		  downloadfilelen = 200000;
-/* 		  g_print ("\ncontent-length: %d", downloadfilelen); */
+/* 		  g_print("\ncontent-length: %d", downloadfilelen); */
 		}
 	    }
 /*  Now we have the length and begin of the gif image data */
@@ -7561,7 +7569,7 @@ import3_cb (GtkWidget * widget, gpointer datum)
 
   if (debug)
     g_print
-      ("\nImport: scale: %g, latmitte: %g, latmin: %g, "
+      ("Import: scale: %g, latmitte: %g, latmin: %g, "
        "latmax: %g\n longmin: %g, longmax: %g, longmitte: %g\n",
        scale, latcenter, latmin, latmax, longmin, longmax, longcenter);
 
@@ -7852,7 +7860,7 @@ wpfileselect_cb (GtkWidget * widget, guint datum)
       {
 	g_strlcpy (activewpfile, (names + datum)->n, sizeof (activewpfile));
 	if (debug)
-	  g_print ("\nactivewpfile: %s", activewpfile);
+	  g_print("activewpfile: %s\n", activewpfile);
 	loadwaypoints ();
 	iszoomed = FALSE;
       }
@@ -8216,7 +8224,7 @@ dotripmeter (GtkWidget * widget, guint datum)
   if (!((d >= 0.0) && (d < (1000.0 * TRIPMETERTIMEOUT / 3600.0))))
     {
       fprintf (stderr,
-	       _("\ndistance jump is more then 1000km/h speed, ignoring\n"));
+	       _("distance jump is more then 1000km/h speed, ignoring\n"));
       return TRUE;
     }
 /* we want always have metric system stored */
@@ -8298,7 +8306,8 @@ gint
 poi_draw_cb (GtkWidget * widget, guint datum)
 {
   poi_draw = !poi_draw;
-  poi_draw_list ();
+  if ( poi_draw )
+    poi_draw_list ();
 
   needtosave = TRUE;
   return TRUE;
@@ -8391,13 +8400,13 @@ setwp_cb (GtkWidget * widget, guint datum)
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 0, &p);
   if (createroute)
     {
-/*        g_print ("\nroute: %s", p); */
+/*        g_print("route: %s\n", p); */
       thisrouteline = atol (p) - 1;
       insertroutepoints ();
       return TRUE;
     }
   thisline = atol (p);
-/*    g_print ("%d\n", thisline); */
+/*    g_print("%d\n", thisline); */
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
   g_strlcpy (targetname, p, sizeof (targetname));
 
@@ -8463,7 +8472,7 @@ accepttext (GtkWidget * widget, gpointer data)
   strncpy (messagesendtext, p, 300);
   messagesendtext[301] = 0;
   if (debug)
-    fprintf (stderr, "\nmessage:\n%s\n", messagesendtext);
+    fprintf (stderr, "message:\n%s\n", messagesendtext);
   gtk_widget_destroy (widget);
   wi = gtk_item_factory_get_item (item_factory, N_("/Misc. Menu/Messages"));
   statuslock = TRUE;
@@ -8623,12 +8632,12 @@ delwp_cb (GtkWidget * widget, guint datum)
 
   i = deleteline;
   if (debug)
-    g_print ("\nremove line %d", i);
+    g_print("remove line %d\n", i);
   gtk_clist_get_text (GTK_CLIST (mylist), i, 0, &p);
   j = atol (p) - 1;
   gtk_clist_remove (GTK_CLIST (mylist), i);
   if (debug)
-    g_print ("\nremove entry %d", j);
+    g_print("remove entry %d\n", j);
 
   deletesqldata ((wayp + j)->sqlnr);
   for (i = j; i < (maxwp - 1); i++)
@@ -8690,7 +8699,7 @@ scaler_cb (GtkAdjustment * adj, gdouble * datum)
   g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
   gtk_label_set_text (GTK_LABEL (l8), s2);
   if (debug)
-    g_print ("\nScaler: %d", scalewanted);
+    g_print("Scaler: %d\n", scalewanted);
   needtosave = TRUE;
 
   return TRUE;
@@ -8706,7 +8715,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
   GdkModifierType state;
 
   if (debug)
-    g_print ("\nevent:%x key:%c\n",event->keyval,event->keyval);
+    g_print("event:%x key:%c\n",event->keyval,event->keyval);
 
 
   // Toggle Grid Display
@@ -8834,7 +8843,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
   GdkModifierType state;
   gchar s[200];
 
-/*   printf("\n bin in mapclick\n"); */
+/*   printf("bin in mapclick\n"); */
 
   if (event->button)
     gdk_window_get_pointer (event->window, &x, &y, &state);
@@ -8873,7 +8882,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
     }
   else
     {
-/*        g_print ("\nstate: %x x:%d y:%d", state, x, y); */
+/*        g_print("\nstate: %x x:%d y:%d", state, x, y); */
       vali = (GTK_ADJUSTMENT (adj)->value);
 /*  Left mouse button + shift key */
       if ((state & (GDK_BUTTON1_MASK | GDK_SHIFT_MASK)) ==
@@ -8948,7 +8957,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	}
     }
 
-/*    g_print ("\nx: %d, y: %d", x, y); */
+/*    g_print("\nx: %d, y: %d", x, y); */
   return TRUE;
 }
 
@@ -8992,7 +9001,7 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
     px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) * cos (M_PI * lat / 180.0));
 
 
-/*        g_print ("\nstate: %x x:%d y:%d", state, x, y); */
+/*        g_print("\nstate: %x x:%d y:%d\n", state, x, y); */
 
 /*  Left mouse button */
   if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
@@ -9013,7 +9022,7 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
       rebuildtracklist ();
     }
 
-/*    g_print ("\nx: %d, y: %d", x, y); */
+/*    g_print("\nx: %d, y: %d\n", x, y); */
   return TRUE;
 }
 
@@ -9429,7 +9438,7 @@ gint
 click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
 {
 
-  g_print ("\nclist: %d, data: %d", event->button, thisline);
+  g_print("\nclist: %d, data: %d\n", event->button, thisline);
   if ((event->button == 3))
     {
 
@@ -9838,7 +9847,7 @@ usage ()
 {
 
 /*** Mod by Arms */
-  g_print ("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+  g_print("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	   "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
 	   "\n              Website: http://www.gpsdrive.de\n\n",
 	   _("-v    show version\n"),
