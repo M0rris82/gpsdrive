@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.4  2005/04/10 00:10:32  tweety
 added gpsd: to gpsd related debug output
 changed plus to a small + in streets.c
@@ -101,7 +104,7 @@ extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
 /* check NMEA checksum
    ARGS:    NMEA String
    RETURNS: TRUE if Checksumm is ok
- */
+*/
 gint
 checksum (gchar * text)
 {
@@ -131,7 +134,7 @@ checksum (gchar * text)
   else
     {
       g_print ("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
-			   orig, checksum);
+							 orig, checksum);
       return FALSE;
     }
 }
@@ -154,16 +157,16 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
       lat = zero_lat - py / (Ra[(int) (100 + current_lat)] * M_PI / 180.0);
       lat = zero_lat - py / (Ra[(int) (100 + lat)] * M_PI / 180.0);
       lon =
-	zero_long -
-	px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
-	      cos (M_PI * lat / 180.0));
+				zero_long -
+				px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
+							cos (M_PI * lat / 180.0));
 
       dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
       lat = lat - dif / 1.5;
       lon =
-	zero_long -
-	px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
-	      cos (M_PI * lat / 180.0));
+				zero_long -
+				px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
+							cos (M_PI * lat / 180.0));
     }
   else
     {
@@ -198,8 +201,8 @@ calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
     {
       *posy = (Ra[(int) (100 + lat)] * M_PI / 180.0) * (lat - zero_lat);
       dif =
-	Ra[(int) (100 + lat)] * (1 -
-				 (cos ((M_PI * (lon - zero_long)) / 180.0)));
+				Ra[(int) (100 + lat)] * (1 -
+																 (cos ((M_PI * (lon - zero_long)) / 180.0)));
       *posy = *posy + dif / 1.85;
     }
   else
@@ -211,7 +214,7 @@ calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 
 void
 calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
-	    gint zoom)
+						gint zoom)
 {
   gdouble dif;
 
@@ -229,8 +232,8 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
   if (mapistopo == FALSE)
     {
       dif =
-	Ra[(int) (100 + lat)] * (1 -
-				 (cos ((M_PI * (lon - zero_long)) / 180.0)));
+				Ra[(int) (100 + lat)] * (1 -
+																 (cos ((M_PI * (lon - zero_long)) / 180.0)));
       *posy = *posy + dif / 1.85;
     }
   *posy = 51 - *posy * zoom / (10 * pixelfact);
@@ -267,7 +270,7 @@ calcR (gdouble lat)
   r = x / y;
 
   r = r * 1000.0;
-/*      g_print("\nR=%f",r); */
+	/*      g_print("\nR=%f",r); */
   return r;
 }
 
@@ -310,12 +313,12 @@ calcdist (gdouble longi, gdouble lati)
   gdouble sa, c2a, cz, e, c, d;
   gdouble eps = 0.5e-13;
 
-/*   if (cpuload<10)
- *     {
- *       r = calcdist2 (longi, lati);
- *       return r;
- *     }
- */
+	/*   if (cpuload<10)
+	 *     {
+	 *       r = calcdist2 (longi, lati);
+	 *       return r;
+	 *     }
+	 */
   if (((lati - current_lat) == 0.0) && ((longi - current_long) == 0.0))
     return 0.0;
 
@@ -351,7 +354,7 @@ calcdist (gdouble longi, gdouble lati)
       cz = faz + faz;
 
       if (c2a > 0)
-	cz = -cz / c2a + cy;
+				cz = -cz / c2a + cy;
       e = cz * cz * 2.0 - 1.0;
       c = ((-3.0 * c2a + 4.0) * f + 4.0) * c2a * f / 16.0;
       d = x;
@@ -390,7 +393,7 @@ create_pixbuf (const gchar * filename)
 
 
   g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
-	      filename);
+							filename);
   if (!pathname)
     {
       g_warning (_("Couldn't find pixmap file: %s"), pathname);
@@ -401,7 +404,7 @@ create_pixbuf (const gchar * filename)
   if (!pixbuf)
     {
       fprintf (stderr, "Failed to load pixbuf file: %s: %s\n",
-	       pathname, error->message);
+							 pathname, error->message);
     }
   return pixbuf;
 }
@@ -412,10 +415,10 @@ GtkWidget* create_pixmap(GtkWidget *widget, const gchar     *filename)
   GtkWidget *pixmap=NULL;
  
   if (!filename || !filename[0])
-      return gtk_image_new ();
+		return gtk_image_new ();
  
-   g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
-	      filename);
+	g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
+							filename);
 
  
   pixmap = gtk_image_new_from_file (pathname);
