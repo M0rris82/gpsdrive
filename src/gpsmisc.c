@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.12  2005/11/05 18:43:45  tweety
+coordinate_string2gdouble:
+ - fixed missing format
+  - changed interface to return gdouble
+
 Revision 1.11  2005/10/25 20:37:58  tweety
 moved a few of the functions
 Autor: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
@@ -582,44 +587,49 @@ coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat, gint mo
 }
 
 /* *****************************************************************************
+ * convert a coordinate in an gchar into a gdouble decimal value
+ * Sideeffect inside text all , are replaced by .
  */
 void
-gchar2dec_coordinate_string (gchar * text)
+coordinate_string2gdouble (gchar * text, gdouble * dec)
 {
-    gint grad, minus = FALSE;
+    gint grad;
     gdouble sec;
     gint min;
-    gdouble dec;
+    //    gdouble dec = -1002.0;
     gchar s2;
     gdouble fmin;
 
+    *dec = -1002.0;
+
+    // HACK: Fix usage of , and . inside Float-strings
+    g_strdelimit (text, ",", '.'); 
+
     /*
-     * Handle either DMS or MinDec formats
+     * Handle either DegMinSec or MinDec formats
      */
-    if ( 4 == sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2) )
-	{
-	    /*   g_strdelimit (s1, ",", '.'); */
-	    /*   sscanf(s1,"%f",&sec); */
-	    dec = grad + min / 60.0 + sec / 3600.0;
-	}
+    if ( 4 == sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2) ){
+	/*   sscanf(s1,"%f",&sec); */
+	*dec = grad + min / 60.0 + sec / 3600.0;
+    }
     else if (3 == sscanf (text, "%d\xc2\xb0%lf'%c", &grad, &fmin, &s2) ){
-	dec = grad + fmin / 60.0;
+	*dec = grad + fmin / 60.0;
     } 
-    else if (1 == sscanf (text, "%lf", &dec) ){
+    else if ( 2 == sscanf (text, "%lf\xc2\xb0%c", dec, &s2) ) {
+    }
+    else if (1 == sscanf (text, "%lf", dec) ){
 	/* Is already decimal */    
     }
     else {
 	/* TODO: handle bad format gracefully */
+	fprintf(stderr,"ERROR BAD FORMAT in coordinate_string2gdouble(%s)-->%f\n",text,*dec);
     }
 
     if (s2 == 'W')
-	minus = TRUE;
+	*dec *= -1.0;
     if (s2 == 'S')
-	minus = TRUE;
-    if (minus)
-	dec *= -1.0;
-    g_snprintf (text, 100, "%.6f", dec);
-    /*   g_print("gchar2dec_coordinate_string --> %s\n", text); */
+	*dec *= -1.0;
+    if ( debug ) fprintf(stderr,"coordinate_string2gdouble(%s)-->%f\n",text,*dec);
 }
 
 /* *****************************************************************************
@@ -627,6 +637,9 @@ gchar2dec_coordinate_string (gchar * text)
 void
 checkinput (gchar * text)
 {
-	if ((strstr (text, "'")) != NULL)
-		gchar2dec_coordinate_string (text);
+    if ( debug) fprintf(stderr,"checkinput(%s)\n",text);
+    gdouble dec;
+    coordinate_string2gdouble (text,&dec);
+    g_snprintf (text, 20, "%.6f", dec);
+    if ( debug)     fprintf(stderr,"checkinput -->'%s'\n",text);
 }
