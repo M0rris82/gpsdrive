@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.25  2005/03/14 23:29:41  tweety
+increase font Size by Wilfried Hemp <Wilfried.Hemp@t-online.de>
+
 Revision 1.24  2005/02/13 14:06:54  tweety
 start street randering functions. reading from the database streets and displayi
 ng it on the screen
@@ -9603,6 +9606,18 @@ sel_target_cb (GtkWidget * widget, guint datum)
 			     GTK_SIGNAL_FUNC
 			     (sel_targetweg_cb), GTK_OBJECT (window));
 
+/* Font ändern falls PDA-Mode und Touchscreen */			     
+  if (pdamode) {
+      if (onemousebutton)  {
+
+        /* Change default font throughout the widget */
+        PangoFontDescription *font_desc;
+        font_desc = pango_font_description_from_string ("Sans 20");
+        gtk_widget_modify_font (mylist, font_desc);
+        pango_font_description_free (font_desc);
+     }
+   }
+     
   insertwaypoints (FALSE);
   gtk_clist_set_column_justification (GTK_CLIST (mylist), 4,
 				      GTK_JUSTIFY_RIGHT);
@@ -9721,6 +9736,17 @@ create_route_cb (GtkWidget * widget, guint datum)
 			     GTK_SIGNAL_FUNC
 			     (sel_routeclose_cb), GTK_OBJECT (window));
 
+/* Font ändern falls PDA-Mode und Touchscreen */			     
+  if (pdamode) {
+      if (onemousebutton)  {
+
+        /* Change default font throughout the widget */
+        PangoFontDescription *font_desc;
+        font_desc = pango_font_description_from_string ("Sans 20");
+        gtk_widget_modify_font (myroutelist, font_desc);
+        pango_font_description_free (font_desc);
+     }
+   }
 
   gtk_clist_set_column_justification (GTK_CLIST (myroutelist), 4,
 				      GTK_JUSTIFY_RIGHT);
@@ -9731,7 +9757,7 @@ create_route_cb (GtkWidget * widget, guint datum)
   gtk_clist_set_column_auto_resize (GTK_CLIST (myroutelist), 2, TRUE);
   gtk_clist_set_column_auto_resize (GTK_CLIST (myroutelist), 3, TRUE);
   gtk_clist_set_column_auto_resize (GTK_CLIST (myroutelist), 4, TRUE);
-
+  
   scrwindow = gtk_scrolled_window_new (NULL, NULL);
   gtk_container_add (GTK_CONTAINER (scrwindow), myroutelist);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW
