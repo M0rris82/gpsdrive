@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/02/07 07:53:39  tweety
+added check_if_moved inti function poi_rebuild_list
+
 Revision 1.1  2005/02/02 18:11:02  tweety
 Add Point Of Interrest Support with mySQL
 
@@ -44,6 +47,7 @@ Revision 0.0  2005/01/11 20:14:14  tweety
 #include "gettext.h"
 #include <time.h>
 #include <sys/time.h>
+#include "icons.h"
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -82,6 +86,7 @@ extern gint debug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats, *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
+extern glong mapscale;
 
 char txt[5000];
 PangoLayout *poi_label_layout;
@@ -103,6 +108,10 @@ GdkColor poi_colorv;
 PangoFontDescription *pfd;
 PangoLayout *poi_label_layout;
 
+/*
+  
+ */
+
 void poi_rebuild_list (void);
 
 /* *******************************************************
@@ -114,6 +123,32 @@ poi_init (void)
   poi_list = g_new (poi_struct, poi_limit);
   poi_rebuild_list ();
 }
+
+
+/* *********************************************************
+*/
+gdouble poi_lat_lr=0, poi_lon_lr=0;
+gdouble poi_lat_ul=0, poi_lon_ul=0;
+
+int
+check_if_moved(void)
+{
+  gdouble lat_lr, lon_lr;
+  gdouble lat_ul, lon_ul;
+
+  if ( poi_lat_lr == 0 && poi_lon_lr == 0 &&
+       poi_lat_ul == 0 && poi_lon_ul == 0    ) 
+      return 1;
+
+  calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
+  calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
+
+  if ( poi_lat_lr == lat_lr && poi_lon_lr == lon_lr &&
+       poi_lat_ul == lat_ul && poi_lon_ul == lon_ul    ) 
+      return 0;
+  return 1;
+}
+
 
 /* *******************************************************
  * if zoom, xoff, yoff or map are changed 
@@ -138,12 +173,23 @@ poi_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
+  gdouble display_level;
+
   if ( ! ( poi_draw ) ) {
     if ( debug ) 
       printf("POI_draw is off\n");
     return;
   }
   
+  // calculate which levels to display
+  display_level=20;
+  if ( mapscale <= 1000000 )  display_level=1;
+  if ( mapscale <= 500000 )   display_level=20;
+  if ( mapscale <= 100000 )   display_level=30;
+  if ( mapscale <= 50000 )    display_level=60;
+  if ( mapscale <= 4000 )     display_level=99;
+  
+
 
   // calculate the start and stop for lat/lon according to the displayed section
   calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
@@ -178,34 +224,53 @@ poi_rebuild_list (void)
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   { // gernerate mysql ORDER string
+
+    
+    {
+      char sql_order_numbers[5000];
+      g_snprintf (sql_order_numbers, sizeof (sql_order),
+		  "\(abs(%.6f - lat)+abs(%.6f - lon)\)"
+		  ,lat_mid,lon_mid);
+      g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
+
+      g_snprintf (sql_order, sizeof (sql_order),
+		  "order by level,%s ",sql_order_numbers);
+      g_snprintf (sql_order, sizeof (sql_order),
+		  "order by %s ",sql_order_numbers);
+    }
+
+    /*
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by \(abs(%.6f - lat)+abs(%.6f - lon)\)"
-		,lat_mid,lon_mid);
-    g_strdelimit (sql_order, ",", '.'); // For different LANG
+		"order by level ");
+    */
     if (debug)
       printf ("POI mysql order: %s\n", sql_order);
   }
 
   { // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
-		"WHERE %.6f < lat AND lat < %.6f AND %.6f < lon AND lon < %.6f "
-		,lat_min,lat_max,lon_min,lon_max);
+		"WHERE %.6f < lat AND lat < %.6f AND %.6f < lon AND lon < %.6f AND level_min <= %f AND %f <= level_max "
+		,lat_min,lat_max,lon_min,lon_max,display_level,display_level);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
-    if (debug)
-      printf ("POI mysql where: %s\n", sql_where);
+    if (debug) {
+      printf ("POI mysql where: %s\n", sql_where );
+      printf ("POI mapscale: %d\n", mapscale );
+      printf ("POI level %f\n", display_level );
+    }
   }
 
 
+  
 
-  // TODO: Diplay ONLY those POI which are above poi.level for actual scale
-  // TODO: reread really and only when scale/mappos changes 
+  // TODO: Diplay ONLY those POI which are poi.level_min <= level <=poi.level_max for actual scale
+  // TODO: reread really and only when scale/map-pos changes 
 
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,name "
+	      "SELECT lat,lon,name,type_id "
 	      "FROM poi "
 	      //	      "LEFT JOIN poi_ type ON poi_.type_id = type.type_id "
-	      "%s %s,name LIMIT 4000",
+	      "%s %s LIMIT 500",
 	      sql_where,sql_order);
   /*    dbwherestring,sql_order,lat,lon);  */
   if (debug)
@@ -254,9 +319,11 @@ poi_rebuild_list (void)
 	  (poi_list + poi_nr)->x          = poi_posx;
 	  (poi_list + poi_nr)->y          = poi_posy;
 	  g_strlcpy ((poi_list + poi_nr)->name, row[2], sizeof ((poi_list + poi_nr)->name));
+	  //	  (poi_list + poi_nr)->type_id       = g_strtoi(row[3], NULL);
 	  if (debug) 
 	    g_snprintf ((poi_list + poi_nr)->name, sizeof ((poi_list + poi_nr)->name),
-			"(%.3f ,%.3f) %s",
+			"(%.4f ,%.4f) %s",
+			//			(poi_list + poi_nr)->type_id,
 			lat,lon,
 			row[2]);
 			
@@ -266,7 +333,8 @@ poi_rebuild_list (void)
 	  //(poi_list + poi_nr)->type_id    = g_strtod(row[5], NULL); 
 	  //(poi_list + poi_nr)->proximity  = g_strtod(row[6], NULL);
 	  //(poi_list + poi_nr)->comment[255 ] = row[7]; 
-	  //(poi_list + poi_nr)->level[6]      = row[8];  
+	  //(poi_list + poi_nr)->level_min     = row[8];  
+	  //(poi_list + poi_nr)->level_max     = row[8];  
 	  //(poi_list + poi_nr)->last_modified = row[8] 
 	  //(poi_list + poi_nr)->url[160]      = row[10]; 
 	  //(poi_list + poi_nr)->address_id    = row[11];
@@ -289,15 +357,26 @@ poi_rebuild_list (void)
   // print time for getting Data
   gettimeofday (&t, NULL);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-  if (debug)
+  if ( debug )
     printf (_("%d(%d) rows read in %.2f seconds\n"), poi_max, rges, ti);
 
   if (!dl_mysql_eof (res))
     return;
 
   dl_mysql_free_result (res);
+
+  /* remember where the data belongs to */
+  poi_lat_lr = lat_lr;
+  poi_lon_lr = lon_lr;
+  poi_lat_ul = lat_ul; 
+  poi_lon_ul = lon_ul;
+
+
   printf ("=============================================================================\n");
 }
+
+
+
 
 
 /* *******************************************************
@@ -307,47 +386,45 @@ poi_rebuild_list (void)
 void
 poi_draw_list (void)
 {
-  gint t;
-  GdkSegment *routes;
+  //  gint t;
+  //  GdkSegment *routes;
   gint width, height;
 
   gint i;
   gint k, k2;
 
+  if (importactive)
+    return;
 
   if ( ! ( poi_draw ) ) {
     if ( debug ) 
       printf("POI_draw is off\n");
     return;
   }
-  
+
+  if ( check_if_moved() )
+    poi_rebuild_list();  
+
   /*    if (!maploaded) */
   /*      return; */
   /*
     if (!poi_flag)
     return;
   */
-  if (importactive)
-    return;
+
 
   /* ------------------------------------------------------------------ */
   /*  draw poi_list points */
   for (i = 0; i < poi_max; i++)
     {
-      gdouble posx = (poi_list + i)->x;
-      gdouble posy = (poi_list + i)->y;
-      gdouble poi_x,poi_y;
+      gdouble posx, posy;
+
+      posx = (poi_list + i)->x;
+      posy = (poi_list + i)->y;
 
       // TODO: These calculations have a slight offset
       // Probably ist the wrong funktion to calculate
-      calcxy (&poi_x, &poi_y, 
-	      (poi_list + i)->lon,(poi_list + i)->lat,
-	      zoom);
 
-      if ( poi_x != posx ) 
-	{
-	  printf( "Moved x: %.3f - %.3f = %.3f\n",poi_x,posx,poi_x-posx);
-	}
       if ( (posx >= 0) && (posx < SCREEN_X)  &&
 	   (posy >= 0) && (posy < SCREEN_Y) 
 	   )
