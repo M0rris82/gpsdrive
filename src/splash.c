@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.8  2005/04/01 21:17:08  tweety
+Fix grid config bug. The grid was alway on after start
+reformatted reading of parameters
+
 Revision 1.7  2005/02/06 17:52:44  tweety
 extract icon handling to icons.c
 
@@ -1250,24 +1254,14 @@ readconfig ()
 
       if (e == 2)
 	{
-	  if ((strcmp (par1, "showwaypoints")) == 0)
-	    wpflag = atoi (par2);
+	  if ((strcmp (par1, "showwaypoints")) == 0)	    wpflag = atoi (par2);
+	  if ((strcmp (par1, "showtrack")) == 0)	    trackflag = atoi (par2);
+	  if ((strcmp (par1, "mutespeechoutput")) == 0)	    muteflag = atoi (par2);
+	  if ((strcmp (par1, "showtopomaps")) == 0)	    displaymap_top = atoi (par2);
+	  if ((strcmp (par1, "showstreetmaps")) == 0)	    displaymap_map = atoi (par2);
 
-	  if ((strcmp (par1, "showtrack")) == 0)
-	    trackflag = atoi (par2);
-
-	  if ((strcmp (par1, "mutespeechoutput")) == 0)
-	    muteflag = atoi (par2);
-
-	  if ((strcmp (par1, "showtopomaps")) == 0)
-	    displaymap_top = atoi (par2);
-
-	  if ((strcmp (par1, "showstreetmaps")) == 0)
-	    displaymap_map = atoi (par2);
-
-/*  To set the right sensitive flags bestmap_cb is called later*/
-	  if ((strcmp (par1, "autobestmap")) == 0)
-	    scaleprefered = !(atoi (par2));
+	  /*  To set the right sensitive flags bestmap_cb is called later*/
+	  if ((strcmp (par1, "autobestmap")) == 0)	    scaleprefered = !(atoi (par2));
 
 
 	  if ((strcmp (par1, "units")) == 0)
@@ -1293,169 +1287,74 @@ readconfig ()
 		}
 	    }
 
-	  if ((strcmp (par1, "savetrack")) == 0)
-	    savetrack = atoi (par2);
-
-	  if ((strcmp (par1, "scalewanted")) == 0)
-	    scalewanted = atoi (par2);
-
-	  if ((strcmp (par1, "serialdevice")) == 0)
-	    g_strlcpy (serialdev, par2, sizeof (serialdev));
-
-	  if ((strcmp (par1, "lastlong")) == 0)
-	    current_long = g_strtod (par2, 0);
-
-	  if ((strcmp (par1, "lastlat")) == 0)
-	    current_lat = g_strtod (par2, 0);
-
-/*        if ((strcmp (par1, "setdefaultpos")) == 0) */
-/*  	setdefaultpos = atoi (par2); */
-
-	  if ((strcmp (par1, "shadow")) == 0)
-	    shadow = atoi (par2);
-
-	  if ((strcmp (par1, "defaultserver")) == 0)
-	    defaultserver = atoi (par2);
-
-	  if ((strcmp (par1, "waypointfile")) == 0)
-	    g_strlcpy (activewpfile, par2, sizeof (activewpfile));
-
-	  if ((strcmp (par1, "testgarminmode")) == 0)
-	    testgarmin = atoi (par2);
-
-	  if ((strcmp (par1, "usedgps")) == 0)
-	    usedgps = atoi (par2);
-
-	  if ((strcmp (par1, "mapdir")) == 0)
-	    g_strlcpy (mapdir, par2, sizeof (mapdir));
-
-	  if ((strcmp (par1, "simfollow")) == 0)
-	    simfollow = atoi (par2);
-
-	  if ((strcmp (par1, "satposmode")) == 0)
-	    satposmode = atoi (par2);
-
-	  if ((strcmp (par1, "printoutsats")) == 0)
-	    printoutsats = atoi (par2);
-
-	  if ((strcmp (par1, "minsecmode")) == 0)
-	    minsecmode = atoi (par2);
-
-	  if ((strcmp (par1, "nightmode")) == 0)
-	    nightmode = atoi (par2);
-
-	  if ((strcmp (par1, "cpuload")) == 0)
-	    cpuload = atoi (par2);
-
-	  if ((strcmp (par1, "flymode")) == 0)
-	    flymode = atoi (par2);
-
-	  if ((strcmp (par1, "vfr")) == 0)
-	    vfr = atoi (par2);
-
-	  if ((strcmp (par1, "disdevwarn")) == 0)
-	    disdevwarn = atoi (par2);
-
-	  if ((strcmp (par1, "sqlflag")) == 0)
-	    sqlflag = atoi (par2);
-
-	  if ((strcmp (par1, "lastnotebook")) == 0)
-	    lastnotebook = atoi (par2);
-
+	  if ((strcmp (par1, "savetrack")) == 0)	    savetrack = atoi (par2);
+	  if ((strcmp (par1, "scalewanted")) == 0)	    scalewanted = atoi (par2);
+	  if ((strcmp (par1, "serialdevice")) == 0)	    g_strlcpy (serialdev, par2, sizeof (serialdev));
+	  if ((strcmp (par1, "lastlong")) == 0)	            current_long = g_strtod (par2, 0);
+	  if ((strcmp (par1, "lastlat")) == 0)	            current_lat = g_strtod (par2, 0);
+/*        if ((strcmp (par1, "setdefaultpos")) == 0)   	    setdefaultpos = atoi (par2); */
+	  if ((strcmp (par1, "shadow")) == 0)	            shadow = atoi (par2);
+	  if ((strcmp (par1, "defaultserver")) == 0)	    defaultserver = atoi (par2);
+	  if ((strcmp (par1, "waypointfile")) == 0)	    g_strlcpy (activewpfile, par2, sizeof (activewpfile));
+	  if ((strcmp (par1, "testgarminmode")) == 0)	    testgarmin = atoi (par2);
+	  if ((strcmp (par1, "usedgps")) == 0)     	    usedgps = atoi (par2);
+	  if ((strcmp (par1, "mapdir")) == 0)      	    g_strlcpy (mapdir, par2, sizeof (mapdir));
+	  if ((strcmp (par1, "simfollow")) == 0)	    simfollow = atoi (par2);
+	  if ((strcmp (par1, "satposmode")) == 0)	    satposmode = atoi (par2);
+	  if ((strcmp (par1, "printoutsats")) == 0)	    printoutsats = atoi (par2);
+	  if ((strcmp (par1, "minsecmode")) == 0)	    minsecmode = atoi (par2);
+	  if ((strcmp (par1, "nightmode")) == 0)	    nightmode = atoi (par2);
+	  if ((strcmp (par1, "cpuload")) == 0)	            cpuload = atoi (par2);
+	  if ((strcmp (par1, "flymode")) == 0)    	    flymode = atoi (par2);
+	  if ((strcmp (par1, "vfr")) == 0)        	    vfr = atoi (par2);
+	  if ((strcmp (par1, "disdevwarn")) == 0)	    disdevwarn = atoi (par2);
+	  if ((strcmp (par1, "sqlflag")) == 0)	            sqlflag = atoi (par2);
+	  if ((strcmp (par1, "lastnotebook")) == 0)	    lastnotebook = atoi (par2);
 	  if ((strcmp (par1, "dbhostname")) == 0)
 	    {
 	      g_strlcpy (dbhost, par2, sizeof (dbhost));
 	      g_strstrip (dbhost);
 	    }
-	  if ((strcmp (par1, "dbname")) == 0)
-	    g_strlcpy (dbname, par2, sizeof (dbname));
-	  if ((strcmp (par1, "dbuser")) == 0)
-	    g_strlcpy (dbuser, par2, sizeof (dbuser));
-
-	  if ((strcmp (par1, "dbpass")) == 0)
-	    g_strlcpy (dbpass, par2, sizeof (dbpass));
-
-	  if ((strcmp (par1, "dbtable")) == 0)
-	    g_strlcpy (dbtable, par2, sizeof (dbtable));
-
-	  if ((strcmp (par1, "dbname")) == 0)
-	    g_strlcpy (dbname, par2, sizeof (dbname));
-
-	  if ((strcmp (par1, "dbdistance")) == 0)
-	    dbdistance = g_strtod (par2, 0);
-
-	  if ((strcmp (par1, "dbusedist")) == 0)
-	    dbusedist = atoi (par2);
-
-	  if ((strcmp (par1, "dbwherestring")) == 0)
-	    {
-	      if (e == 2)
-		g_strlcpy (dbwherestring, par2, sizeof (dbwherestring));
-	    }
-
-	  if ((strcmp (par1, "earthmate")) == 0)
-	    earthmate = atoi (par2);
-
-	  if ((strcmp (par1, "wplabelfont")) == 0)
-	    g_strlcpy (wplabelfont, par2, sizeof (wplabelfont));
-
-	  if ((strcmp (par1, "bigfont")) == 0)
-	    g_strlcpy (bigfont, par2, sizeof (bigfont));
-	  if ((strcmp (par1, "friendsserverip")) == 0)
-	    g_strlcpy (friendsserverip, par2, sizeof (friendsserverip));
-	  if ((strcmp (par1, "friendsserverfqn")) == 0)
-	    g_strlcpy (friendsserverfqn, par2, sizeof (friendsserverfqn));
-
-	  if ((strcmp (par1, "friendsname")) == 0)
-	    g_strlcpy (friendsname, par2, sizeof (friendsname));
-	  if ((strcmp (par1, "friendsidstring")) == 0)
-	    g_strlcpy (friendsidstring, par2, sizeof (friendsidstring));
-	  if ((strcmp (par1, "usefriendsserver")) == 0)
-	    havefriends = atoi (par2);
-	  if ((strcmp (par1, "maxfriendssecs")) == 0)
-	    maxfriendssecs = atoi (par2);
+	  if ((strcmp (par1, "dbname")) == 0)	    	    g_strlcpy (dbname, par2, sizeof (dbname));
+	  if ((strcmp (par1, "dbuser")) == 0)	    	    g_strlcpy (dbuser, par2, sizeof (dbuser));
+	  if ((strcmp (par1, "dbpass")) == 0)	    	    g_strlcpy (dbpass, par2, sizeof (dbpass));
+	  if ((strcmp (par1, "dbtable")) == 0)	            g_strlcpy (dbtable, par2, sizeof (dbtable));
+	  if ((strcmp (par1, "dbname")) == 0)	            g_strlcpy (dbname, par2, sizeof (dbname));
+	  if ((strcmp (par1, "dbdistance")) == 0)	    dbdistance = g_strtod (par2, 0);
+	  if ((strcmp (par1, "dbusedist")) == 0)	    dbusedist = atoi (par2);
+	  if ((strcmp (par1, "dbwherestring")) == 0)        g_strlcpy (dbwherestring, par2, sizeof (dbwherestring));
+	  if ((strcmp (par1, "earthmate")) == 0)	    earthmate = atoi (par2);
+	  if ((strcmp (par1, "wplabelfont")) == 0)	    g_strlcpy (wplabelfont, par2, sizeof (wplabelfont));
+	  if ((strcmp (par1, "bigfont")) == 0)	            g_strlcpy (bigfont, par2, sizeof (bigfont));
+	  if ((strcmp (par1, "friendsserverip")) == 0)	    g_strlcpy (friendsserverip, par2, sizeof (friendsserverip));
+	  if ((strcmp (par1, "friendsserverfqn")) == 0)	    g_strlcpy (friendsserverfqn, par2, sizeof (friendsserverfqn));
+	  if ((strcmp (par1, "friendsname")) == 0)	    g_strlcpy (friendsname, par2, sizeof (friendsname));
+	  if ((strcmp (par1, "friendsidstring")) == 0)	    g_strlcpy (friendsidstring, par2, sizeof (friendsidstring));
+	  if ((strcmp (par1, "usefriendsserver")) == 0)	    havefriends = atoi (par2);
+	  if ((strcmp (par1, "maxfriendssecs")) == 0)	    maxfriendssecs = atoi (par2);
 	  if ((strcmp (par1, "reminder")) == 0)
 	    if ((strcmp (par2, VERSION)) == 0)
 	      {
 		needreminder = FALSE;
 /* 		  fprintf(stderr,"needreminder false\n"); */
 	      }
-	  if ((strcmp (par1, "storetz")) == 0)
-	    storetz = atoi (par2);
+	  if ((strcmp (par1, "storetz")) == 0)	            storetz = atoi (par2);
 	  if (storetz)
-	    if ((strcmp (par1, "timezone")) == 0)
-	      zone = atoi (par2);
-	  if ((strcmp (par1, "etch")) == 0)
-	    etch = atoi (par2);
-	  if ((strcmp (par1, "drawgrid")) == 0)
-	    drawgrid = atoi (par2);
-	  if ((strcmp (par1, "drawpoi")) == 0)
-	    poi_draw = atoi (par2);
-	  if ((strcmp (par1, "bigcolor")) == 0)
-	    g_strlcpy (bluecolor, par2, sizeof (bluecolor));
-	  if ((strcmp (par1, "trackcolor")) == 0)
-	    g_strlcpy (trackcolor, par2, sizeof (trackcolor));
-	  if ((strcmp (par1, "friendscolor")) == 0)
-	    g_strlcpy (friendscolor, par2, sizeof (friendscolor));
-	  if ((strcmp (par1, "messagenumber")) == 0)
-	    messagenumber = atoi (par2);
-	  if ((strcmp (par1, "serialspeed")) == 0)
-	    serialspeed = atoi (par2);
-	  if ((strcmp (par1, "disableserial")) == 0)
-	    disableserial = atoi (par2);
-	  if ((strcmp (par1, "showssid")) == 0)
-	    showsid = atoi (par2);
-	  if ((strcmp (par1, "sound_direction")) == 0)
-	    sound_direction = atoi (par2);
-	  if ((strcmp (par1, "sound_distance")) == 0)
-	    sound_distance = atoi (par2);
-	  if ((strcmp (par1, "sound_speed")) == 0)
-	    sound_speed = atoi (par2);
-	  if ((strcmp (par1, "sound_gps")) == 0)
-	    sound_gps = atoi (par2);
-
-
-
+	    if ((strcmp (par1, "timezone")) == 0)             zone = atoi (par2);
+	  if ((strcmp (par1, "etch")) == 0)                 etch = atoi (par2);
+	  if ((strcmp (par1, "drawgrid")) == 0)	            { drawgrid = atoi (par2); printf("DrawGrid set to %d\n",drawgrid);};
+	  if ((strcmp (par1, "drawpoi")) == 0)	            poi_draw = atoi (par2);
+	  if ((strcmp (par1, "bigcolor")) == 0)	            g_strlcpy (bluecolor, par2, sizeof (bluecolor));
+	  if ((strcmp (par1, "trackcolor")) == 0)	    g_strlcpy (trackcolor, par2, sizeof (trackcolor));
+	  if ((strcmp (par1, "friendscolor")) == 0)	    g_strlcpy (friendscolor, par2, sizeof (friendscolor));
+	  if ((strcmp (par1, "messagenumber")) == 0)	    messagenumber = atoi (par2);
+	  if ((strcmp (par1, "serialspeed")) == 0)	    serialspeed = atoi (par2);
+	  if ((strcmp (par1, "disableserial")) == 0)	    disableserial = atoi (par2);
+	  if ((strcmp (par1, "showssid")) == 0)	    	    showsid = atoi (par2);
+	  if ((strcmp (par1, "sound_direction")) == 0)	    sound_direction = atoi (par2);
+	  if ((strcmp (par1, "sound_distance")) == 0)	    sound_distance = atoi (par2);
+	  if ((strcmp (par1, "sound_speed")) == 0)	    sound_speed = atoi (par2);
+	  if ((strcmp (par1, "sound_gps")) == 0)	    sound_gps = atoi (par2);
 	}			/* if e==2 */
     }
 
