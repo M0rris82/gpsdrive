@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.7  2005/03/29 01:59:01  tweety
+  another set of minor Bugfixes
+
   Revision 1.6  2005/03/27 21:25:46  tweety
   separating map_import from gpsdrive.c
 
@@ -36,14 +39,14 @@ Disclaimer: Please do not use for navigation.
   changed some debug statements from debug to mydebug
 
   Revision 1.4  2005/02/22 08:18:51  tweety
-  change leveing system to simpler scale marking for decission what to show on display
+  change leveling system to simpler scale marking for decission what to show on display
   column_names(DBFuncs.pm get data from Database
   added functions add_index drop_index
   added language to type Database
   for some Data split unpack and mirror Directories
   for some add lat/lon min/max to get faster import for testing
-  added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
-  on the street data
+  added POI::DBFuncs::segments_add; this will later be the point to do 
+  some excerptions and combinations on the street data
 
   Revision 1.3  2005/02/17 09:46:34  tweety
   minor changes
@@ -52,8 +55,8 @@ Disclaimer: Please do not use for navigation.
   WDB Support
 
   Revision 1.1  2005/02/13 14:06:54  tweety
-  start street randering functions. reading from the database streets and displayi
-  ng it on the screen
+  start street randering functions. reading from the database streets
+  and displaying it on the screen
   improve a little bit in the sql-queries
   fixed linewidth settings in draw_cross
 
@@ -235,7 +238,7 @@ void get_streets_type_list (void)
       if ( streets_type_list_count < streets_type_list_max ) {
 	streets_type_list[streets_type_list_count].streets_type_id =  streets_type_list_count;
 	if ( row[1] == NULL ) {
-	  streets_type_list[streets_type_list_count].name[0]="\0";
+	  streets_type_list[streets_type_list_count].name[0]='\0';
 	} else {
 	  g_strlcpy ( streets_type_list[streets_type_list_count].name, row[1],
 		      sizeof (streets_type_list[streets_type_list_count].name));
@@ -336,14 +339,14 @@ void streets_rebuild_list (void)
 		"   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) "
 		" ) "
 		" AND "
-		" ( %f BETWEEN scale_min AND scale_max) ",
+		" ( %ld BETWEEN scale_min AND scale_max) ",
 		lat_min,lat_max,lon_min,lon_max,
 		lat_min,lat_max,lon_min,lon_max,
 		mapscale);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
       // printf ("STREETS mysql where: %s\n", sql_where );
-      printf ("STREETS mapscale: %f\n", mapscale );
+      printf ("STREETS mapscale: %ld\n", mapscale );
     }
   }
 
@@ -400,7 +403,7 @@ void streets_rebuild_list (void)
 	  if (streets_list_count > streets_list_limit) {
 	    streets_list_limit +=  1000;
 	    if ( debug) 
-	      printf("renewmemory for street list: %d\n",streets_list_limit);
+	      printf("renewmemory for street list: %ld\n",streets_list_limit);
 	    
 	    streets_list =
 	      g_renew (streets_struct, streets_list, streets_list_limit );
@@ -410,7 +413,7 @@ void streets_rebuild_list (void)
 	    printf ( "pos: (%.4f ,%.4f) (%.4f ,%.4f)\n",
 		     lat1,lon1,
 		     lat2,lon2);
-	  printf("Anz: %d %d\n",streets_list_count , streets_list_limit);
+	  printf("Anz: %ld %ld\n",streets_list_count , streets_list_limit);
 	  
 	  // Save retrieved streets information into structure
 	  (streets_list + streets_list_count)->lat1        = lat1;
@@ -440,7 +443,7 @@ void streets_rebuild_list (void)
     { // print time for getting Data
       gettimeofday (&t, NULL);
       ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-      printf (_("%d(%d) rows read in %.2f seconds\n"), streets_list_count, rges, ti);
+      g_print (_("%ld(%d) rows read in %.2f seconds\n"), streets_list_count, rges, (gdouble)ti);
     }
   
   {  /* remember where the data belongs to */
@@ -556,7 +559,7 @@ void streets_draw_list (void)
     streets_rebuild_list();  
 
   if ( debug ) 
-    printf("STREETS_draw %d segments\n",streets_list_count);
+    printf("STREETS_draw %ld segments\n",streets_list_count);
 
   gdks_streets= g_new0 (GdkSegment, gdks_streets_max);
 
