@@ -41,23 +41,18 @@ sub write_points($$){
 
 sub import_wdb($){
     my  $full_filename = shift;
-    print "Reading $full_filename                   \n";
-    my $out_filename = basename($full_filename);
-    $out_filename =~ s/\.txt/.sav/g;
-    my ($country) = ($out_filename =~ m/(.*)-/);
 
+    print "Reading $full_filename                   \n";
+    my $base_filename = basename($full_filename);
     my $fh = IO::File->new("<$full_filename");
     my $segment=0;
     my $rank =0;
     my $points =0;
     my ($lat1,$lon1) = (0,0);
     my ($lat2,$lon2) = (0,0);
-    my $type = 0;
 
-    $type = 1 if ( $full_filename =~ m/-bdy/ );
-    $type = 2 if ( $full_filename =~ m/-cil/ );
-    $type = 3 if ( $full_filename =~ m/-riv/ );
-    my ( $sub_source ) = ( $full_filename =~ m/([^\/]+).txt/ );
+    my ( $sub_source ) = ( $base_filename =~ m/(.*).txt/ );
+    my ( $country,$type_string) = ( $base_filename =~ m/(.*)-(.*).txt/);
 
     my $source = "WDB $sub_source";
     delete_all_from_source($source);
@@ -85,58 +80,71 @@ sub import_wdb($){
     }
 
 
+
+
+    my $type_id=0;
     my @segments;
     while ( my $line = $fh->getline() ) {
 	chomp $line;
 	#print "line: $line\n";
 	if ( $line =~ m/^\s*$/)  {
 	} elsif ( $line =~ m/^segment\s+(\d+)\s+rank\s+(\d+)\s+points\s+(\d+)/ ) {
-	    # Segment: segment 27  rank 1  points 1131
-	    ($segment,$rank,$points) = ( $1,$2,$3) ;
-	    print "Segment: $segment, rank: $rank  points:$points\r";
-	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 ) = (0,0);
+	    my $scale_max = 10000;
+	    $scale_max = 100000	    if  $rank >1;
+	    $scale_max = 1000000    if  $rank >2;
+	    $scale_max = 10000000   if  $rank >3;
+	    $scale_max = 100000000  if  $rank >4;
 	    POI::DBFuncs::segments_add(
-				       { scale_min => 0, scale_max => 100000000,
-					 type_id => $type, 
+				       { scale_min => 1,
+					 scale_max => $scale_max,
+					 type_id => $type_id, 
 					 source_id => $source_id,
 					 segments => \@segments
 					 }
 				       );
-	    @segments=();
-	} elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
-	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 );
-	    ( $lat2,$lon2 ) = ($1,$2);
-	    # 31.646111 25.148056
-	    if ( $area_limit  && 
-		 ( $lat2 < $main::lat_min || $lat2 > $main::lat_max ||
-		   $lon2 < $main::lon_min || $lon2 > $main::lon_max 
-		   )
-		 ){
-		#print "Skipping $lat2,$lon2\n";
-		next;
-	    } 
+	      @segments=();
+	      # Segment: segment 27  rank 1  points 1131
+	      ($segment,$rank,$points) = ( $1,$2,$3) ;
+	      print "Segment: $segment, rank: $rank  points:$points\r";
+	      print "\n" if $verbose;
+	      ( $lat1,$lon1 ) = ( $lat2 , $lon2 ) = (0,0);
+
+	      # ---------------------- Type    
+	      my $type_name = "WDB $type_string rank $rank";
+	      $type_id = type_name2id($type_name);
+	      unless ( $type_id ) {
+		  my $type_hash= {
+		      'type.name' => $type_name
+		      };
+		  POI::DBFuncs::insert_hash("type",$type_hash);
+		  $type_id = type_name2id($type_name);
+	      }	
+	  } elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
+	      ( $lat1,$lon1 ) = ( $lat2 , $lon2 );
+	      ( $lat2,$lon2 ) = ($1,$2);
+	      # 31.646111 25.148056
+	      if ( $area_limit  && 
+		   ( $lat2 < $main::lat_min || $lat2 > $main::lat_max ||
+		     $lon2 < $main::lon_min || $lon2 > $main::lon_max 
+		     )
+		   ){
+		  #print "Skipping $lat2,$lon2\n";
+		  next;
+	      } 
 
 
-	    push(@segments,{lat=> $lat2, lon=>$lon2});
-	    if ( 0 && $lat1 && $lon1 ) { # Old
-		POI::DBFuncs::streets_add(
-					  { lat1 => $lat1, lon1 => $lon1,
-					    lat2 => $lat2, lon2 => $lon2,
-					    scale_min => 0, scale_max => 100000000,
-					    type_id => $type, 
-					    source_id => $source_id
-					    }
-					  );
-	      }
-		  
-	} else {
-	    print "Unrecognized Line '$line'\n";
-	}
+	      push(@segments,{
+		  lat=> $lat2, lon=>$lon2,
+		  name => "$rank : $segment : $points"
+		  });
+	  } else {
+	      print "Unrecognized Line '$line'\n";
+	  }
     }
     POI::DBFuncs::segments_add(
 			       { scale_min => 0, scale_max => 100000000,
-				 type_id => $type, 
-				     source_id => $source_id,
+				 type_id => $type_id, 
+				 source_id => $source_id,
 				 segments => \@segments
 				 }
 			       );
@@ -155,7 +163,7 @@ sub import_Data(){
     
     -d $unpack_dir or mkpath $unpack_dir
 	or die "Cannot create Directory $unpack_dir:$!\n";
-   
+    
     my $url = "http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz";
     my $tar_file = "$mirror_dir/WDB-text.tar.gz";
     my $mirror = mirror_file($url,$tar_file);

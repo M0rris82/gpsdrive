@@ -25,6 +25,7 @@ BEGIN {
 		      &add_poi &add_poi_multi
 		      &poi_list
 		      &column_names
+		      &source_name2id &type_name2id
 		      &delete_all_from_source);
         %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
         # your exported package globals go here,
@@ -391,31 +392,6 @@ sub segments_add($){
 	    ( $data->{"streets.$_"} || $data->{$_} || $data->{lc($_)}) 
 	} @columns;
 
-    # ---------------------- SOURCE
-    #print Dumper(\$segment4db);
-    # TODO: put this out here for performance reason
-    if ( $segment4db->{"source.name"} && ! $segment4db->{'streets.source_id'}) {
-	my $source_id = source_name2id($segment4db->{"source.name"});
-	# print "Source: $segment4db->{'source.name'} -> $source_id\n";
-	
-	$segment4db->{'source.source_id'} = $source_id;
-	$segment4db->{'streets.source_id'}    = $source_id;
-    }
-
-    # ---------------------- Type
-    my $type_name = $data->{'type.name'};
-    if ( $type_name && ! $segment4db->{'streets.type_id'}) {
-	my $type_id = type_name2id($type_name);
-	unless ( $type_id ) {
-	    my $type_hash= {
-		'type.name' => $type_name
-	    };
-	    insert_hash("type",$type_hash);
-	    $type_id = type_name2id($segment4db->{"type.name"});
-	}
-	$segment4db->{'streets.type_id'}    = $type_id;
-    }
-
     # ---------------------- ADDRESS
     $segment4db->{'streets.address_id'}    ||= 0;
 
@@ -432,9 +408,20 @@ sub segments_add($){
     for my $segment ( @{$data->{segments}} ){
 	$segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
+	$segment4db->{'streets.alt2'} = $segment4db->{'streets.alt2'};
+
 	$segment4db->{'streets.lat2'} = $segment->{lat};
 	$segment4db->{'streets.lon2'} = $segment->{lon};
-	next unless $segment4db->{'streets.lat1'};
+	$segment4db->{'streets.alt1'} = $segment->{alt1};
+
+	next unless $segment4db->{'streets.lat1'}; # skip first entry
+
+	$segment4db->{'streets.name'}      = $data->{name}      || $segment->{name};
+	$segment4db->{'streets.type_id'}   = $data->{type_id}   || $segment->{type_id};
+	$segment4db->{'streets.source_id'} = $data->{source_id} || $segment->{source_id};
+	$segment4db->{'streets.scale_min'} = $data->{scale_min} || $segment->{scale_min}||1;
+	$segment4db->{'streets.scale_max'} = $data->{scale_max} || $segment->{scale_max}||10000000000;
+
 	#print Dumper(\$segment4db);
 	insert_hash("streets",$segment4db);
     }
@@ -522,8 +509,8 @@ db_exec('CREATE TABLE IF NOT EXISTS `poi` (
   `alt`           double                default \'0\',
   `proximity`     float                 default \'0\',
   `comment`       varchar(255)          default NULL,
-  `scale_min`     smallint(6)  NOT NULL default \'0\',
-  `scale_max`     smallint(6)  NOT NULL default \'0\',
+  `scale_min`     int(12)  NOT NULL default \'0\',
+  `scale_max`     int(12)  NOT NULL default \'0\',
   `last_modified` date         NOT NULL default \'0000-00-00\',
   `url`           varchar(160)     NULL ,
   `address_id`    int(11)               default \'0\',
@@ -545,8 +532,8 @@ db_exec('CREATE TABLE IF NOT EXISTS `streets` (
   `alt2`           double                default \'0\',
   `proximity`     float                 default \'0\',
   `comment`       varchar(255)          default NULL,
-  `scale_min`     smallint(6)  NOT NULL default \'0\',
-  `scale_max`     smallint(6)  NOT NULL default \'0\',
+  `scale_min`     int(12)  NOT NULL default \'0\',
+  `scale_max`     int(12)  NOT NULL default \'0\',
   `last_modified` date         NOT NULL default \'0000-00-00\',
   `source_id`     int(11)      NOT NULL default \'0\',
   PRIMARY KEY  (`street_id`)
