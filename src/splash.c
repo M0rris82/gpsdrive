@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.16  2005/08/14 18:46:42  tweety
+  remove unnedded xpm Files; read pixmaps with read_icons,
+  separate more pixmaps from icons
+
   Revision 1.15  2005/08/09 01:08:31  tweety
   Twist and bend in the Makefiles to install the DataDirectory more apropriate
   move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
@@ -472,7 +476,6 @@ Disclaimer: Please do not use for navigation.
 #include <config.h>
 #include <gpsdrive.h>
 #include <time.h>
-#include <xpm_talogo.h>
 #include <speech_out.h>
 #include <speech_strings.h>
 
@@ -1551,8 +1554,6 @@ splash (void)
 
 	gtk_widget_realize (splash_window);
 	gdk_window_set_decorations (GTK_WIDGET (splash_window)->window, 0);
-
-	/*   gtk_widget_realize (splash_window);  */
 
 	/* get image */
 	pixmap = getPixmapFromFile (splash_window, xpmfile);
