@@ -23,6 +23,18 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.69  2005/11/06 17:24:26  tweety
+shortened map selection code
+coordinate_string2gdouble:
+ - fixed missing format
+ - changed interface to return gdouble
+change -D option to reflect debuglevels
+Added more debug Statements for Level>50
+move map handling to to seperate file
+speedup memory reservation for map-structure
+Add code for automatic loading of maps from system DATA/maps/.. Directory
+changed length of mappath from 400 to 2048 chars
+
 Revision 1.68  2005/11/01 15:06:10  cjastram
 Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
@@ -2215,7 +2227,8 @@ GdkColor orange2 = { 0, 0xff00, 0x8000, 0x0000 };
 GdkColor darkgrey = { 0, SHADOWGREY, SHADOWGREY, SHADOWGREY };
 GdkColor defaultcolor;
 
-GtkWidget *drawing_area, *drawing_bearing, *drawing_sats, *drawing_miniimage;
+GtkWidget *drawing_area, *drawing_bearing;
+GtkWidget *drawing_sats, *drawing_miniimage;
 GtkWidget *drawing_battery, *drawing_temp;
 GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
@@ -2227,31 +2240,18 @@ extern gint maxauxicons, lastauxicon;
 extern auxiconsstruct *auxicons;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
-mapsstruct *maps = NULL;
+extern mapsstruct *maps;
 
 /* action=1: radar (speedtrap) */
-
-typedef struct
-{
-	gchar name[40];
-	gdouble lat;
-	gdouble lon;
-	gdouble dist;
-	gchar typ[40];
-	gint wlan;
-	gint action;
-	gint sqlnr;
-	gint proximity;
-}
-wpstruct;
-wpstruct *wayp, *routelist;
+wpstruct *wayp;
+wpstruct *routelist;
 friendsstruct *friends, *fserver;
 char friendsserverip[20], friendsname[40], friendsidstring[40],
 	friendsserverfqn[255];
 
 
 gchar *dlpstart;
-gchar oldfilename[1024];
+gchar oldfilename[2048];
 GString *tempmapfile;
 gint nrmaps = 0, dldiff;
 gdouble earthr;
@@ -2263,17 +2263,21 @@ gdouble earthr;
 
 
 gint maploaded = FALSE;
-gint simmode, zoom, iszoomed;
+gint simmode, zoom;
+gint iszoomed;
 gchar homedir[500], mapdir[500];
 static gchar const rcsid[] =
 	"$Id$";
-gint thisline, thisrouteline = 0, routeitems = 0, routepointer = 0;
+gint thisline;
 gint maxwp, maxfriends = 0;
 GtkStyle *style = NULL;
 GtkRcStyle *mainstyle;
 gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit = 0;
-GtkWidget *mylist, *myroutelist, *destframe;
-gchar mapfilename[1024];
+GtkWidget *mylist;
+GtkWidget *destframe;
+
+extern gchar mapfilename[2048];
+
 gdouble gbreit, glang, milesconv, olddist = 99999.0;
 GTimer *timer, *disttimer;
 gint gcount, milesflag, downloadwindowactive;
@@ -2333,7 +2337,7 @@ gint posmode = 0;
 gdouble posmode_x, posmode_y;
 GtkObject *adj;
 gchar lastradar[40], lastradar2[40]; 
-gint foundradar, messageshown = FALSE;
+gint foundradar;
 gdouble radarbearing;
 gint errortextmode = TRUE;
 gchar serialdev[80];
@@ -2350,18 +2354,27 @@ gchar proxy[256], hostname[256], savetrackfn[256];
 gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
 gint SCREEN_X_2, SCREEN_Y_2;
 gint havefriends = 0;
-time_t waytxtstamp = 0, maptxtstamp = 0;
+time_t waytxtstamp = 0;
 gint showallmaps = TRUE;
 /* guint selwptimeout; */
 gint dontsetwp = FALSE;
 gint setwpactive = FALSE;
 gint onemousebutton = FALSE;
-gint shadow = TRUE, createroute = FALSE, routemode = FALSE;
+gint shadow = TRUE;
+
+GtkWidget *myroutelist;
+gint thisrouteline = 0, routeitems = 0, routepointer = 0;
+gint createroute = FALSE;
+gint routemode = FALSE;
 gdouble routenearest = 9999999999.0;
+GtkWidget *create_route_button, *create_route2_button, *select_route_button;
+gint forcenextroutepoint = FALSE;
+gint showroute = TRUE;
+
 GtkWidget *askwindow;
+extern time_t maptxtstamp;
 gint simpos_timeout = 0;
 gint setdefaultpos = TRUE;
-GtkWidget *create_route_button, *create_route2_button, *select_route_button;
 gint markwaypoint = FALSE;
 GtkWidget *addwaypointwindow, *setupfn[30];
 gint oldbat = 125, oldloading = FALSE;
@@ -2383,7 +2396,8 @@ gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint wpsize = 1000, satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt, *cover;
-gint needreloadmapconfig = FALSE, simfollow = TRUE;
+extern gint needreloadmapconfig;
+gint simfollow = TRUE;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
@@ -2411,13 +2425,13 @@ gint tripavspeedcount;
 gdouble trip_long, trip_lat;
 gint lastnotebook = 0;
 GtkWidget *settingsnotebook;
-gint useflite = FALSE, forcenextroutepoint = FALSE;
+gint useflite = FALSE;
 extern gint zone;
 gint ignorechecksum = FALSE;
 GdkColor trackcolorv;
 
 /* Give more debug informations */
-gint mydebug = FALSE;
+gint mydebug = 0;
 #define MAXDBNAME 30
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME];
@@ -2435,7 +2449,6 @@ gint earthmate = FALSE;
 extern gint wptotal, wpselected;
 gchar wplabelfont[100], bigfont[100];
 
-gint showroute = TRUE;
 extern gint zone;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
@@ -2480,7 +2493,8 @@ extern int newdata;
 extern unsigned char serialdata[4096];
 extern pthread_mutex_t mutex;
 int mapistopo = FALSE;
-int havenasa = -1, nosplash = FALSE, sortcolumn = 4, sortflag = 0;
+extern int havenasa;
+int nosplash = FALSE, sortcolumn = 4, sortflag = 0;
 int havedefaultmap = TRUE, alreadydaymode = FALSE, alreadynightmode = FALSE;
 
 int storetz = FALSE;
@@ -2490,7 +2504,6 @@ int sound_direction = 1, sound_distance = 1, sound_speed = 1, sound_gps = 1;
 int expedia_de = 0;
 
 #define DEG2RAD M_PI/180.0
-gdouble lat2radius (gdouble lat);
 
 // ---------------------- for nmea_handler.c
 extern gint haveRMCsentence;
@@ -2539,9 +2552,6 @@ static GtkItemFactoryEntry main_menu[] = {
 	 GTK_STOCK_HELP}
 };
 
-
-void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
-		  gdouble wp_lon);
 
 
 
@@ -2601,6 +2611,8 @@ error_popup (gpointer datum)
 	GtkWidget *image;
 
 
+	if ( mydebug >50 ) fprintf(stderr , "error_popup()\n");
+
 	if (errortextmode)
 	{
 		g_print ("\nError: %s\n", (char *) datum);
@@ -2652,6 +2664,8 @@ display_status (char *message)
 {
 	gchar tok[200];
 
+	if ( mydebug >50 ) fprintf(stderr , "display_status(%s)\n",message);
+
 	if (downloadactive == TRUE)
 		return;
 	if (importactive == TRUE)
@@ -2673,6 +2687,8 @@ checkalarm (void)
 	gdouble d;
 	FILE *f;
 	int pid, e;
+
+	if ( mydebug >50 ) fprintf(stderr , "checkalarm()\n");
 
 	d = calcdist (alarm_long, alarm_lat);
 	if (d < alarm_dist)
@@ -2701,332 +2717,15 @@ checkalarm (void)
 }
 
 /* *****************************************************************************
- * test if we need to load another map 
- */
-void
-testnewmap ()
-{
-	long long best = 1000000000LL;
-	gdouble posx, posy;
-	long long bestmap = 9999999999LL;
-	gdouble pixelfactloc, bestscale = 1000000000.0, fact;
-	gint i, j, skip, istopo = FALSE, ncount = 0;
-	gchar str[100], buf[200], mappath[500];
-	gdouble dif;
-	gchar nasaname[255];
-	static int nasaisvalid = FALSE;
-
-	if (importactive)
-		return;
-
-	if (posmode)
-	{
-		current_long = posmode_x;
-		current_lat = posmode_y;
-	}
-	else
-	{
-		gdouble d;
-		/*  test for new route point */
-		if (strcmp (targetname, "     "))
-		{
-			if (routemode)
-				d = calcdist ((routelist + routepointer)->lon,
-					      (routelist +
-					       routepointer)->lat);
-			else
-				d = calcdist (target_long, target_lat);
-
-			if (d < routenearest)
-			{
-				routenearest = d;
-			}
-			/*    g_print */
-			/*      ("\nroutepointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
-			/*       routepointer, d, routenearest, ROUTEREACH); */
-			if ((d <= ROUTEREACH)
-			    || (d > (ROUTEREACHFACT * routenearest))
-			    || forcenextroutepoint)
-			{
-				forcenextroutepoint = FALSE;
-				if ((routepointer != (routeitems - 1))
-				    && (routemode))
-				{
-					routenearest = 9999999999.0;
-					routepointer++;
-
-					/* let's say the waypoint description */
-					g_strlcpy (mappath, homedir,
-						   sizeof (mappath));
-					g_strlcat (mappath, activewpfile,
-						   sizeof (mappath));
-					saytargettext (mappath, targetname);
-
-					setroutetarget (NULL, -1);
-				}
-				else
-				{
-					/*  route endpoint reached */
-					if (saytarget)
-					{
-						g_snprintf (str, sizeof (str),
-							    "%s: %s", _("To"),
-							    targetname);
-						gtk_frame_set_label (GTK_FRAME
-								     (destframe),
-								     str);
-						createroute = FALSE;
-						routemode = FALSE;
-						saytarget = FALSE;
-						routepointer = routeitems = 0;
-
-            g_snprintf(
-                buf, sizeof (buf),speech_target_reached[voicelang],
-                targetname );
-						speech_out_speek (buf);
-
-						/* let's say the waypoint description */
-						g_strlcpy (mappath, homedir,
-							   sizeof (mappath));
-						g_strlcat (mappath,
-							   activewpfile,
-							   sizeof (mappath));
-						saytargettext (mappath,
-							       targetname);
-					}
-				}
-			}
-		}
-	}
-
-
-	/* search for suitable maps */
-	if (displaymap_top)
-		if ((havenasa < 0) || (!nasaisvalid))
-		{
-
-			/* delete nasamaps entries from maps list */
-			for (i = 0; i < nrmaps; i++)
-			{
-				if ((strcmp
-				     ((maps + i)->filename,
-				      "top_NASA_IMAGE.ppm")) == 0)
-				{
-					for (j = i; j < (nrmaps - 1); j++)
-						*(maps + j) = *(maps + j + 1);
-					nrmaps--;
-					continue;
-				}
-			}
-
-			/* Try creating a nasamap and add it to the map list */
-			havenasa =
-				create_nasa_mapfile (current_lat,
-						     current_long, TRUE,
-						     nasaname);
-			if (havenasa > 0)
-			{
-				skip = FALSE;
-				i = nrmaps;
-				nrmaps++;
-				maps = g_renew (mapsstruct, maps,
-						(nrmaps + 2));
-				havenasa =
-					create_nasa_mapfile (current_lat,
-							     current_long,
-							     FALSE, nasaname);
-				(maps + i)->lat = current_lat;
-				(maps + i)->lon = current_long;
-				(maps + i)->scale = havenasa;
-				g_strlcpy ((maps + i)->filename, nasaname,
-					   200);
-				if ((strcmp
-				     (oldfilename,
-				      "top_NASA_IMAGE.ppm")) == 0)
-					g_strlcpy (oldfilename,
-						   "XXXOLDMAPXXX.ppm",
-						   sizeof (oldfilename));
-			}
-		}
-
-	nasaisvalid = FALSE;
-
-	/* have a look through all the maps and decide which map 
-	 * is the best/apropriate
-	 * RESULT: bestmap [index in (maps + i) for the choosen map]
-	 */
-	for (i = 0; i < nrmaps; i++)
-	{
-		/* check if map is topo or street map 
-		 * Result: istopo = TRUE/FALSE
-		 */
-		skip = TRUE;
-		if (displaymap_map)
-		{
-			if (!(strncmp ((maps + i)->filename, "map_", 4)))
-			{
-				skip = FALSE;
-				istopo = FALSE;
-			}
-			if (strstr ((maps + i)->filename, "/map_"))
-			{
-				skip = FALSE;
-				istopo = FALSE;
-			}
-		}
-		if (displaymap_top)
-		{
-			if (!(strncmp ((maps + i)->filename, "top_", 4)))
-			{
-				skip = FALSE;
-				istopo = TRUE;
-			}
-			if (strstr ((maps + i)->filename, "/top_"))
-			{
-				skip = FALSE;
-				istopo = TRUE;
-			}
-		}
-
-		if (skip)
-			continue;
-
-
-		/*  calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
-
-		/*  Longitude */
-		if (istopo == FALSE)
-			posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
-				* cos (M_PI * (maps + i)->lat / 180.0)
-				* (current_long - (maps + i)->lon);
-		else
-			posx = (lat2radius (0) * M_PI / 180)
-				* (current_long - (maps + i)->lon);
-
-
-		/*  latitude */
-		if (istopo == FALSE)
-		{
-			posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
-				* (current_lat - (maps + i)->lat);
-			dif = lat2radius ((maps + i)->lat)
-				* (1 -
-				   (cos
-				    ((M_PI *
-				      (current_long -
-				       (maps + i)->lon)) / 180.0)));
-			posy = posy + dif / 2.0;
-		}
-		else
-			posy = (lat2radius (0) * M_PI / 180)
-				* (current_lat - (maps + i)->lat);
-
-
-		pixelfactloc = (maps + i)->scale / PIXELFACT;
-		posx = posx / pixelfactloc;
-		posy = posy / pixelfactloc;
-
-		/* */
-		if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
-		{
-			ncount++;
-		}
-
-		/* */
-		if ((posx > -(640 - borderlimit))
-		    && (posx < (640 - borderlimit)))
-		{
-			if (((posy - borderlimit) > -512)
-			    && ((posy + borderlimit) < 512))
-			{
-
-
-				if (displaymap_top)
-					if (strcmp
-					    ("top_NASA_IMAGE.ppm",
-					     (maps + i)->filename) == 0)
-					{
-						/* nasa map is in range */
-						nasaisvalid = TRUE;
-					}
-
-				if (scaleprefered)
-				{
-					if (scalewanted > (maps + i)->scale)
-						fact = (gdouble) scalewanted /
-							(maps + i)->scale;
-					else
-						fact = (maps +
-							i)->scale /
-							(gdouble) scalewanted;
-
-					if (fact < bestscale)
-					{
-						bestscale = fact;
-						bestmap = i;
-						/* bestcentereddist = centereddist; */
-					}
-				}
-				else	/* autobestmap */
-				{
-					if ((maps + i)->scale < best)
-					{
-						bestmap = i;
-						best = (maps + i)->scale;
-					}
-				}
-			}	/*  End of if posy> ... */
-		}		/*  End of if posx> ... */
-	}			/* End of for ... i < nrmaps */
-
-	// RESULT: bestmap [index in (maps + i) for the choosen map]
-
-	if (bestmap != 9999999999LL)
-	{
-		g_strlcpy (mapfilename, (maps + bestmap)->filename,
-			   sizeof (mapfilename));
-		if ((strcmp (oldfilename, mapfilename)) != 0)
-		{
-			g_strlcpy (oldfilename, mapfilename,
-				   sizeof (oldfilename));
-			if (debug)
-				g_print ("New map: %s\n", mapfilename);
-			pixelfact = (maps + bestmap)->scale / PIXELFACT;
-			zero_long = (maps + bestmap)->lon;
-			zero_lat = (maps + bestmap)->lat;
-			mapscale = (maps + bestmap)->scale;
-			xoff = yoff = 0;
-			if (nrmaps > 0)
-				loadmap (mapfilename);
-		}
-	}
-	else
-	{			// No apropriate map found take worldmap
-		if (((strcmp (oldfilename, mapfilename)) != 0)
-		    && (havedefaultmap))
-		{
-			g_strlcpy (oldfilename, mapfilename,
-				   sizeof (oldfilename));
-			g_strlcpy (mapfilename, "top_GPSWORLD.jpg",
-				   sizeof (mapfilename));
-			pixelfact = 88226037.0 / PIXELFACT;
-			zero_long = 0;
-			zero_lat = 0;
-			mapscale = 88226037;
-			xoff = yoff = 0;
-			loadmap (mapfilename);
-		}
-	}
-
-}
-
-/* *****************************************************************************
  * set the target in routemode 
  */
 void
 setroutetarget (GtkWidget * widget, gint datum)
 {
 	gchar buf[1000], buf2[1000], str[200], *tn;
+
+
+	if ( mydebug >50 ) fprintf(stderr , "setroutetarget()\n");
 
 	if (datum != -1)
 		routepointer = datum;
@@ -3049,7 +2748,7 @@ setroutetarget (GtkWidget * widget, gint datum)
 	else
 		g_strlcat (buf2, tn, sizeof (buf2));
 
-  g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
+	g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
 	speech_out_speek (buf);
 
 	speechcount = 0;
@@ -3103,44 +2802,25 @@ tripreset ()
 	return TRUE;
 }
 
-/* *****************************************************************************
- * map_koord.txt is in mappath! 
+/* ******************************************************************
  * TODO: This is a strange collection of function calls 
  * TODO: put them where they belong
  */
 gint
 testconfig_cb (GtkWidget * widget, guint * datum)
 {
+    if ( mydebug >50 ) fprintf(stderr , "testconfig_cb()\n");
+
 #ifdef MAKETHISTEST
-	gint i;
-	for (i = 0; i < nrmaps; i++)
-	{
-		if ((strncmp ((maps + i)->filename, "map_", 4)))
-			if ((strncmp ((maps + i)->filename, "top_", 4)))
-			{
-				GString *error;
-				error = g_string_new (NULL);
-				g_string_printf (error, "%s%d\n%s\n",
-						 _("Error in line "), i + 1,
-						 _
-						 ("I have found filenames in map_koord.txt which are\n"
-						  "not map_* or top_* files. Please rename them and change the entries in\n"
-						  "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-						  "maps.  Otherwise, the maps will not be displayed!"));
-				error_popup ((gpointer *) error->str);
-				g_string_free (error, TRUE);
-				messageshown = TRUE;
-				return FALSE;
-			}
-	}
+    test_loaded_map_names();
 #endif
-
-	friendsagent_cb (NULL, 0);
-	tripreset ();
-	gtk_timeout_add (TRIPMETERTIMEOUT * 1000, (GtkFunction) dotripmeter,
-			 NULL);
-
-	return FALSE;
+    
+    friendsagent_cb (NULL, 0);
+    tripreset ();
+    gtk_timeout_add (TRIPMETERTIMEOUT * 1000, (GtkFunction) dotripmeter,
+		     NULL);
+    
+    return FALSE;
 }
 
 /* *****************************************************************************
@@ -3154,6 +2834,8 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 	gchar buf[400], lname[200], l2name[200];
 	gdouble ldist = 9999.0, l2dist = 9999.0;
 	gdouble tx, ty, lastbearing;
+
+	if ( mydebug >50 ) fprintf(stderr , "watchwp_cb()\n");
 
 	/*  calculate new earth radius */
 	earthr = calcR (current_lat);
@@ -3275,6 +2957,9 @@ display_status2 ()
 	gchar s2[100], buf[200], mf[60];
 	gint h, m;
 	gdouble secs, v;
+
+	if ( mydebug >50 ) fprintf(stderr , "display_status2()\n");
+
 	if (downloadactive == TRUE)
 		return;
 	if (importactive == TRUE)
@@ -3332,7 +3017,7 @@ display_status2 ()
     }
 	}
 
-/* shows the current position on the bottom of the window */
+	/* shows the current position on the bottom of the window */
 	coordinate2gchar(s2, sizeof(s2), current_lat, TRUE, minsecmode);
 	gtk_label_set_text (GTK_LABEL (l1), s2);
 	coordinate2gchar(s2, sizeof(s2), current_long, FALSE, minsecmode);
@@ -3395,6 +3080,8 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	static struct timeval tv1, tv2;
 	struct timezone tz;
 	long runtime, runtime2;
+
+	if ( mydebug >50 ) fprintf(stderr , "drawmacker_cb()\n");
 
 	if (importactive)
 		return TRUE;
@@ -3465,6 +3152,8 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 {
 	gint period;
 
+	if ( mydebug >50 ) fprintf(stderr , "calldrawmarker_cb()\n");
+
 	if (cpuload < 1)
 		cpuload = 1;
 	if (cpuload > 95)
@@ -3503,6 +3192,8 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 	time_t tii;
 	gchar buf[MAXMESG], buf2[40], la[20], lo[20], num[5];
 	gint i;
+
+	if ( mydebug >50 ) fprintf(stderr , "friendsagent_cb()\n");
 
 	/* Don't allow spaces in name */
 	for (i = 0; (size_t) i < strlen (friendsname); i++)
@@ -3569,6 +3260,29 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 }
 
 
+void check_and_reload_way_txt()
+{
+    struct stat buf;
+    gchar mappath[2048];
+    g_strlcpy (mappath, homedir, sizeof (mappath));
+
+    if (!sqlflag)
+	g_strlcat (mappath, activewpfile, sizeof (mappath));
+    else
+	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
+
+    stat (mappath, &buf);
+    if (buf.st_mtime != waytxtstamp)
+	{
+	    loadwaypoints ();
+	    iszoomed = FALSE;
+	    if (!sqlflag)
+		g_print ("%s reloaded\n", activewpfile);
+	    else
+		g_print ("%s reloaded\n", "way-SQLRESULT.txt");
+	}
+}
+
 
 /* *****************************************************************************
  * Master agent 
@@ -3576,30 +3290,15 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 gint
 masteragent_cb (GtkWidget * widget, guint * datum)
 {
-	gchar mappath[400];
-	gint f;
-	struct stat buf;
 	gchar buffer[200];
+
+	if ( mydebug >50 ) fprintf(stderr , "masteragent_cb()\n");
 
 	if (needtosave)
 		writeconfig ();
 
 
-	/* Check for changed map_koord.txt and reload if changed */
-	g_strlcpy (mappath, mapdir, sizeof (mappath));
-	g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
-
-	f = stat (mappath, &buf);
-	if (buf.st_mtime != maptxtstamp)
-	{
-		loadmapconfig ();
-		g_print ("%s reloaded\n", "map_koord.txt");
-		maptxtstamp = buf.st_mtime;
-
-	}
-
-	if (needreloadmapconfig)
-		loadmapconfig ();
+	map_koord_check_and_reload();
 
 	if (needreminder)
 	{
@@ -3624,23 +3323,8 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 		}
 
 	/* Check for changed way.txt and reload if changed */
-	g_strlcpy (mappath, homedir, sizeof (mappath));
+	check_and_reload_way_txt();
 
-	if (!sqlflag)
-		g_strlcat (mappath, activewpfile, sizeof (mappath));
-	else
-		g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
-
-	f = stat (mappath, &buf);
-	if (buf.st_mtime != waytxtstamp)
-	{
-		loadwaypoints ();
-		iszoomed = FALSE;
-		if (!sqlflag)
-			g_print ("%s reloaded\n", activewpfile);
-		else
-			g_print ("%s reloaded\n", "way-SQLRESULT.txt");
-	}
 	if (tracknr > (tracklimit - 1000))
 	{
 		g_print ("tracklimit: %ld", tracklimit);
@@ -3669,6 +3353,8 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
 {
+    if ( mydebug >50 ) fprintf(stderr , "storetrack_cb()\n");
+
 #ifndef DBUS_ENABLE
 	gint /*i,*/ so;
 	gchar buf3[35];
@@ -3766,8 +3452,6 @@ storepoint ()
 	buf3[strlen (buf3) - 1] = '\0';	/* get rid of \n */
 	g_strlcpy ((trackcoord + trackcoordnr)->postime, buf3, 30);
 	trackcoordnr++;
-
-	return TRUE;
 }
 
 /* *****************************************************************************
@@ -4022,6 +3706,9 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 #define SATX 5
 	/*  draw satellite level (field strength) only in NMEA modus */
 
+	if ( mydebug >50 ) fprintf(stderr , "expose_stats_cb()\n");
+
+
 	if (haveNMEA)
 	{
 		gdk_gc_set_foreground (kontext, &lcd);
@@ -4267,7 +3954,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 			mykontext = gdk_gc_new (drawable_sats);
 		if (satsimage == NULL)
 		{
-			gchar mappath[400];
+			gchar mappath[2048];
 
 			g_snprintf (mappath, sizeof (mappath),
 				    "%s/gpsdrive/%s", DATADIR,
@@ -4300,113 +3987,6 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 	}
 	return TRUE;
 }
-
-/* *****************************************************************************
- * Robins hacking 
- * Show (in yellow) any downloaded maps with in +/-20% of the currently requested map download
- * also show bounds of map with a black border
- * This is currently hooked in to the drawdownloadrectangle() function but may be better else where as
- * a seperate function that can be turned on and off as requried.
- * Due to RGB bit masks the map to be downloaded will now be green so that the new download area will be visible
- * over the top of the previous downloaded maps.
- */
-void
-drawloadedmaps ()
-{
-	int i;
-	gdouble x, y, la, lo;
-	gint scale, xo, yo;
-	gchar sc[20];
-
-	for (i = 0; i < nrmaps; i++)
-	{
-		g_strlcpy (sc, newmapsc, sizeof (sc));
-		g_strdelimit (sc, ",", '.');
-		scale = g_strtod (sc, NULL);
-
-		if (maps[i].scale <= scale * 1.2
-		    && maps[i].scale >= scale * 0.8)
-		{
-			//printf("Selected map at long %lf lat %lf\n",maps[i].lat,maps[i].lon);
-			la = maps[i].lat;
-			lo = maps[i].lon;
-			//              scale=maps[i].scale;
-			calcxy (&x, &y, lo, la, zoom);
-			xo = 1280.0 * zoom * scale / mapscale;
-			yo = 1024.0 * zoom * scale / mapscale;
-			// yellow background
-			gdk_gc_set_foreground (kontext, &yellow);
-			gdk_gc_set_function (kontext, GDK_AND);
-			gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-			gdk_draw_rectangle (drawable, kontext, 1, x - xo / 2,
-					    y - yo / 2, xo, yo);
-			// solid border
-			gdk_gc_set_foreground (kontext, &black);
-			gdk_gc_set_function (kontext, GDK_SOLID);
-			gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-			gdk_draw_rectangle (drawable, kontext, 0, x - xo / 2,
-					    y - yo / 2, xo, yo);
-
-		}
-	}
-}
-
-
-/* *****************************************************************************
- * draw downloadrectangle 
- */
-void
-drawdownloadrectangle (gint big)
-{
-
-	drawloadedmaps ();
-
-	if (downloadwindowactive)
-	{
-		gdouble x, y, la, lo;
-		gchar longi[100], lat[100], sc[20];
-		gint scale, xo, yo;
-
-		g_strlcpy (lat, newmaplat, sizeof (lat));
-		g_strdelimit (lat, ",", '.');
-		la = g_strtod (lat, NULL);
-
-		g_strlcpy (longi, newmaplongi, sizeof (longi));
-		g_strdelimit (longi, ",", '.');
-		lo = g_strtod (longi, NULL);
-
-		g_strlcpy (sc, newmapsc, sizeof (sc));
-		g_strdelimit (sc, ",", '.');
-		scale = g_strtod (sc, NULL);
-
-		gdk_gc_set_foreground (kontext, &green2);
-		gdk_gc_set_function (kontext, GDK_AND);
-		gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-		if (big)
-		{
-			calcxy (&x, &y, lo, la, zoom);
-			xo = 1280.0 * zoom * scale / mapscale;
-			yo = 1024.0 * zoom * scale / mapscale;
-			gdk_draw_rectangle (drawable, kontext, 1, x - xo / 2,
-					    y - yo / 2, xo, yo);
-		}
-		else
-		{
-			calcxymini (&x, &y, lo, la, 1);
-			xo = 128.0 * scale / mapscale;
-			yo = 102.0 * scale / mapscale;
-			gdk_draw_rectangle (drawing_miniimage->window,
-					    kontext, 1, x - xo / 2,
-					    y - yo / 2, xo, yo);
-		}
-
-		gdk_gc_set_function (kontext, GDK_COPY);
-	}
-
-}
-
-
-
 
 /* *****************************************************************************
  * Draw Text (lat/lon) into Grid
@@ -4456,6 +4036,8 @@ draw_grid (GtkWidget * widget)
 
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
+
+	if ( mydebug >50 ) fprintf(stderr , "draw_grid()\n");
 
 
 	// calculate the start and stop for lat/lon according to the displayed section
@@ -4586,7 +4168,7 @@ draw_waypoints ()
 	gint k, k2, i, shownwp = 0;
 	gchar txt[200];
 
-	if (debug)
+	if (mydebug >10)
 		printf ("draw_waypoints()\n");
 
 	/*  draw waypoints */
@@ -4738,6 +4320,9 @@ draw_zoom_scale (void)
 	gint pixels;
 	gint m, l;
 	gchar txt[100];
+
+	if (mydebug >50) printf ("draw_zoom_scale()\n");
+
 	pixels = 141 / milesconv;
 	m = mapscale / (20 * zoom);
 	if (m < 1000)
@@ -5359,6 +4944,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 gint
 expose_mini_cb (GtkWidget * widget, guint * datum)
 {
+	if (mydebug >50) printf ("expose_mini_cb()\n");
+
 	/*  draw the minimap */
 	if (!miniimage)
 		return TRUE;
@@ -5405,6 +4992,9 @@ expose_compass (GtkWidget * widget, guint * datum)
 	gdouble w, kurz;
 	GdkPoint poly[16];
 	static GdkPixbuf *compassimage = NULL;
+
+	if (mydebug >50) printf ("expose_compass()\n");
+
 
 	/*   This string means North,East,South,West -- please translate the letters */
 	g_strlcpy (txt2, _("NESW"), sizeof (txt2));
@@ -5573,6 +5163,9 @@ expose_cb (GtkWidget * widget, guint * datum)
 	gint x, y, i, oldxoff, oldyoff, xoffmax, yoffmax, ok, okcount;
 	gdouble tx, ty, lastangle;
 	gchar name[40], s1[40], *tn;
+
+	if (mydebug >50) printf ("expose_cb()\n");
+
 	/*    g_print("\nexpose_cb %d",exposecounter++);   */
 
 	/*   fprintf (stderr, "lat: %f long: %f\n", current_lat, current_long); */
@@ -5587,9 +5180,8 @@ expose_cb (GtkWidget * widget, guint * datum)
 		/*  We don't need to draw anything if there is no map yet */
 		if (!maploaded)
 		{
-			display_status (_
-					("No map available for this position!"));
-			/* return TRUE; */
+		    display_status (_("No map available for this position!"));
+		    /* return TRUE; */
 		}
 
 		if (posmode)
@@ -5702,11 +5294,6 @@ expose_cb (GtkWidget * widget, guint * datum)
 		if (yoff < -yoffmax)
 			yoff = -yoffmax;
 
-		/*       if ((xoff - 640) / zoom < -1280)   xoff = -1280 * zoom + 640; */
-		/*       if ((xoff + 640) / zoom > 1280)    xoff =  1280 * zoom - 640; */
-		/*       if ((yoff - 512) / zoom < -1024)   yoff = -1024 * zoom + 512; */
-		/*       if ((yoff + 512) / zoom > 1024)    yoff =  1024 * zoom - 512; */
-
 		/*  we only need to create a new region if the shift is not changed */
 		if ((oldxoff != xoff) || (oldyoff != yoff))
 			iszoomed = FALSE;
@@ -5719,14 +5306,6 @@ expose_cb (GtkWidget * widget, guint * datum)
 		posx = posx - xoff;
 		posy = posy - yoff;
 	}
-
-	/*       if (scroll) */
-	/*       { */
-	/*    xoff=posx+640; */
-	/*    posx=320; */
-	/*    yoff=posy+512; */
-	/*    posx=256; */
-	/*       } */
 
 
 	/*  zoom from to 1280x1024 map to the SCREEN_XxSCREEN_Y region */
@@ -5825,6 +5404,7 @@ simulated_pos (GtkWidget * widget, guint * datum)
 	gdouble ACCELMAX, ACCEL;
 	gdouble secs, tx, ty, lastdirection;
 
+	if (mydebug >50) printf ("simulated_pos()\n");
 
 	if (!simfollow)
 		return TRUE;
@@ -5895,6 +5475,9 @@ FILE *
 opennmea (const char *name)
 {
 	struct termios tios;
+
+	if (mydebug >50) printf ("opennmea()\n");
+
 	FILE *const out = fopen (name, "w");
 	if (out == NULL)
 	{
@@ -5980,119 +5563,6 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 
 
 /* *****************************************************************************
- *  We load the map 
- */
-void
-loadmap (char *filename)
-{
-	gchar mappath[600];
-	GdkPixbuf *limage;
-	guchar *lpixels, *pixels;
-	int i, j, k;
-
-	if (maploaded)
-		gdk_pixbuf_unref (image);
-
-	if (strstr (filename, "/map_"))
-	{
-		mapistopo = FALSE;
-	}
-	else if (strstr (filename, "/top_"))
-	{
-		mapistopo = TRUE;
-	}
-	else if (!(strncmp (filename, "top_", 4)))
-		mapistopo = TRUE;
-	else
-		mapistopo = FALSE;
-
-	if ((strcmp (filename, "top_GPSWORLD.jpg")) == 0)
-	{
-		g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s",
-			    DATADIR, "top_GPSWORLD.jpg");
-		limage = gdk_pixbuf_new_from_file (mappath, NULL);
-		if (limage == NULL)
-			havedefaultmap = FALSE;
-	}
-	else
-	{
-		g_strlcpy (mappath, mapdir, sizeof (mappath));
-		g_strlcat (mappath, filename, sizeof (mappath));
-		limage = gdk_pixbuf_new_from_file (mappath, NULL);
-	}
-
-	if (limage == NULL)
-	{
-		GString *error;
-		error = g_string_new (NULL);
-		g_string_sprintf (error, "%s\n%s\n",
-				  _(" Mapfile could not be loaded:"),
-				  mappath);
-		error_popup ((gpointer *) error->str);
-		g_string_free (error, TRUE);
-		maploaded = FALSE;
-		return;
-	}
-
-
-	if (!gdk_pixbuf_get_has_alpha (limage))
-		image = limage;
-	else
-	{
-		image = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 1280, 1024);
-		if (image == NULL)
-		{
-			fprintf (stderr,
-				 "can't get image  gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 1280, 1024)\n");
-			exit (1);
-		}
-		lpixels = gdk_pixbuf_get_pixels (limage);
-		pixels = gdk_pixbuf_get_pixels (image);
-		if (pixels == NULL)
-		{
-			fprintf (stderr,
-				 "can't get pixels pixels = gdk_pixbuf_get_pixels (image);\n");
-			exit (1);
-		}
-		j = k = 0;
-		for (i = 0; i < (1280 * 1024); i++)
-		{
-			memcpy ((pixels + j), (lpixels + k), 3);
-			j += 3;
-			k += 4;
-		}
-		gdk_pixbuf_unref (limage);
-
-	}
-
-	expose_cb (NULL, NULL);
-	iszoomed = FALSE;
-	/*        zoom = 1; */
-	xoff = yoff = 0;
-
-	rebuildtracklist ();
-
-	if (!maploaded)
-		display_status (_("Map found!"));
-
-	maploaded = TRUE;
-
-	/*  draw minimap */
-	if (miniimage)
-		gdk_pixbuf_unref (miniimage);
-
-	miniimage = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 128, 103);
-
-	gdk_pixbuf_scale (image, miniimage, 0, 0, 128, 103,
-			  0, 0, 0.1, 0.10, GDK_INTERP_TILES);
-	expose_mini_cb (NULL, 0);
-
-
-
-}
-
-
-/* *****************************************************************************
  */
 gint
 zoom_cb (GtkWidget * widget, guint datum)
@@ -6143,7 +5613,7 @@ gint
 scalerbt_cb (GtkWidget * widget, guint datum)
 {
 	gint val, oldval, old2val;
-	gchar oldfilename[1024];
+	gchar oldfilename[2048];
 
 	g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	val = (GTK_ADJUSTMENT (adj)->value);
@@ -6151,22 +5621,23 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 
 	do
 	{
-		oldval = val;
-		if (datum == 1)
+	    oldval = val;
+	    if (datum == 1)
 		{
-			gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
-						  val + 1);
+		    gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
+					      val + 1);
 		}
-		else
+	    else
 		{
-			gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
-						  val - 1);
+		    gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
+					      val - 1);
 		}
-		val = (GTK_ADJUSTMENT (adj)->value);
+	    val = (GTK_ADJUSTMENT (adj)->value);
 
-		testnewmap ();
+	    testnewmap ();
 	}
-	while (((strcmp (oldfilename, mapfilename)) == 0) && (val != oldval));
+	while ( ( (strcmp (oldfilename, mapfilename)) == 0) 
+		&& (val != oldval));
 
 	if ((strcmp (oldfilename, mapfilename)) == 0)
 		val = old2val;
@@ -6297,7 +5768,7 @@ gint
 other_select_cb (GtkWidget * widget, guint datum)
 {
 	gint i, e;
-	gchar buff[300], mappath[500];
+	gchar buff[300], mappath[2048];
 	struct stat buf;
 
 	i = 0;
@@ -6356,7 +5827,7 @@ download_cb (GtkWidget * widget, guint datum)
 	GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf5, *knopf6,
 		*knopf7;
 	GtkWidget *table, *table2, *knopf8;
-	gchar buff[300], mappath[500];
+	gchar buff[300], mappath[2048];
 	GList *list = NULL;
 	GSList *gr;
 	gint i, e;
@@ -6554,7 +6025,6 @@ downloadsetparm (GtkWidget * widget, guint datum)
 	gdouble f, nlongi;
 	gint ns;
 
-	float Lat, Long;
 	char sctext[40];
 
 	if (!downloadwindowactive)
@@ -6575,19 +6045,16 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
 
 	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+	g_strdelimit (s, ",", '.');
 	g_strlcpy (lat, s, sizeof (lat));
-	checkinput (lat);
 	g_strlcpy (newmaplat, lat, sizeof (newmaplat));
-	g_strdelimit (lat, ",", '.');
-	Lat = atof (lat);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-	g_strlcpy (longi, s, sizeof (longi));
-	checkinput (longi);
-	nlongi = g_strtod (longi, NULL);
-	Long = atof (longi);
 
+	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+	g_strdelimit (s, ",", '.');
+	g_strlcpy (longi, s, sizeof (longi));
 	g_strlcpy (newmaplongi, longi, sizeof (newmaplongi));
-	g_strdelimit (longi, ",", '.');
+	coordinate_string2gdouble(longi,&nlongi);
+
 	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry));
 	g_strlcpy (sctext, sc, sizeof (sctext));
 	g_strlcpy (newmapsc, sctext, sizeof (newmapsc));
@@ -9296,150 +8763,46 @@ create_route_cb (GtkWidget * widget, guint datum)
 void
 usage ()
 {
-
-    /*** Mod by Arms */
-	g_print ("%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-		 "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
-		 "\n              Website: http://www.gpsdrive.de\n\n",
-		 _("-v    show version\n"),
-		 _("-h    print this help\n"),
-		 _("-d    turn on debug info\n"),
-		 _("-D    turn on lot of debug info\n"),
-		 _("-e    use Festival-Lite (flite) for speech output\n"),
-		 _("-t    set serial device for GPS i.e. /dev/ttyS1\n"),
-		 _
-		 ("-o    serial device, pty master, or file for NMEA *output*\n"),
-		 _
-		 ("-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"),
-		 _("-n    Disable use of direct serial connection\n"),
+    
+    g_print ("%s%s%s%s%s%s%s%s%s%s"
 #ifdef DBUS_ENABLE
-		_("-X    Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
+	     "%s"
 #endif
-		 _("-l X  Select language of the voice,\n"
-		   "      X may be english, spanish or german\n"),
-		 _("-s X  set height of the screen, if autodetection\n"
-		   "      don't satisfy you, X is i.e. 768,600,480,200\n"),
-	    /*** Mod by Arms */
-		 _("-r X  set width of the screen, only with -s\n"),
-		 _
-		 ("-1    have only 1 button mouse, for example using touchscreen\n"),
-		 _("-a    don't display battery status (i.e. broken APM)\n"),
-		 _
-		 ("-b X  Servername for NMEA server (if gpsd runs on another host)\n"),
-		 _
-		 ("-c X  set start position in simulation mode to waypoint name X\n"),
-		 _("-x    create separate window for menu\n"),
-		 _("-p    set settings for PDA (iPAQ, Yopy...)\n"),
-		 _
-		 ("-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"),
-		 _("-q    disable SQL support\n"),
-		 _("-F    force display of position even it is invalid\n"),
-		 _("-S    don't show splash screen\n"),
-		 _
-		 ("-E    print out data received from direct serial connection\n"),
-		 _
-		 ("-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
-		 _("-H X  correct altitude, adding this value to altitude\n"),
-		 _("-z    don't display zoom factor and scale\n\n"));
+	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	     "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
+	     "\n              Website: http://www.gpsdrive.de\n\n",
+	     _("-v    show version\n"),
+	     _("-h    print this help\n"),
+	     _("-d    turn on debug info\n"),
+	     _("-D X  set debug Level to X\n"),
+	     _("-e    use Festival-Lite (flite) for speech output\n"),
+	     _("-t    set serial device for GPS i.e. /dev/ttyS1\n"),
+	     _("-o    serial device, pty master, or file for NMEA *output*\n"),
+	     _("-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"),
+	     _("-n    Disable use of direct serial connection\n"),
+#ifdef DBUS_ENABLE
+	     _("-X    Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
+#endif
+	     _("-l X  Select language of the voice,\n"
+	       "      X may be english, spanish or german\n"),
+	     _("-s X  set height of the screen, if autodetection\n"
+	       "      don't satisfy you, X is i.e. 768,600,480,200\n"),
+	     _("-r X  set width of the screen, only with -s\n"),
+	     _("-1    have only 1 button mouse, for example using touchscreen\n"),
+	     _("-a    don't display battery status (i.e. broken APM)\n"),
+	     _("-b X  Servername for NMEA server (if gpsd runs on another host)\n"),
+	     _("-c X  set start position in simulation mode to waypoint name X\n"),
+	     _("-x    create separate window for menu\n"),
+	     _("-p    set settings for PDA (iPAQ, Yopy...)\n"),
+	     _("-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"),
+	     _("-q    disable SQL support\n"),
+	     _("-F    force display of position even it is invalid\n"),
+	     _("-S    don't show splash screen\n"),
+	     _("-E    print out data received from direct serial connection\n"),
+	     _("-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
+	     _("-H X  correct altitude, adding this value to altitude\n"),
+	     _("-z    don't display zoom factor and scale\n\n"));
 
-}
-
-/* *****************************************************************************
- *  load the definitions of the map files 
- */
-gint
-loadmapconfig ()
-{
-	gchar mappath[400];
-	FILE *st;
-	gint i;
-	gchar buf[1512], s1[40], s2[40], s3[40], filename[100];
-	gint p, e;
-
-	init_nasa_mapfile ();
-	if (mapdir[strlen (mapdir) - 1] != '/')
-		g_strlcat (mapdir, "/", sizeof (mapdir));
-
-	g_strlcpy (mappath, mapdir, sizeof (mappath));
-	g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
-	st = fopen (mappath, "r");
-	if (st == NULL)
-	{
-		mkdir (homedir, 0777);
-		st = fopen (mappath, "w+");
-		if (st == NULL)
-		{
-			perror (mappath);
-			return FALSE;
-		}
-		st = freopen (mappath, "r", st);
-		if (st == NULL)
-		{
-			perror (mappath);
-			return FALSE;
-		}
-
-	}
-	if (nrmaps > 0)
-		g_free (maps);
-
-	maps = g_new (mapsstruct, 1);
-	i = nrmaps = 0;
-	havenasa = -1;
-	while ((p = fgets (buf, 1512, st) != 0))
-	{
-		e = sscanf (buf, "%s %s %s %s", filename, s1, s2, s3);
-		if (e == 4)
-		{
-			g_strdelimit (s1, ",", '.');
-			g_strdelimit (s2, ",", '.');
-			g_strdelimit (s3, ",", '.');
-			g_strlcpy ((maps + i)->filename, filename, 200);
-			(maps + i)->lat = g_strtod (s1, NULL);
-			(maps + i)->lon = g_strtod (s2, NULL);
-			(maps + i)->scale = strtol (s3, NULL, 0);
-			i++;
-			nrmaps = i;
-			havenasa = -1;
-			maps = g_renew (mapsstruct, maps, (i + 2));
-		}
-	}
-	fclose (st);
-	needreloadmapconfig = FALSE;
-	return FALSE;
-}
-
-/* *****************************************************************************
- *  write the definitions of the map files 
- * Attention! program  writes decimal point as set in locale
- * i.eg 4.678 is in Germany 4,678 !!! 
- */
-void
-savemapconfig ()
-{
-	gchar mappath[400];
-	FILE *st;
-	gint i;
-
-	if (mapdir[strlen (mapdir) - 1] != '/')
-		g_strlcat (mapdir, "/", sizeof (mapdir));
-
-	g_strlcpy (mappath, mapdir, sizeof (mappath));
-	g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
-	st = fopen (mappath, "w");
-	if (st == NULL)
-	{
-		perror (mappath);
-		exit (2);
-	}
-
-	for (i = 0; i < nrmaps; i++)
-	{
-		fprintf (st, "%s %.5f %.5f %ld\n", (maps + i)->filename,
-			 (maps + i)->lat, (maps + i)->lon, (maps + i)->scale);
-	}
-
-	fclose (st);
 }
 
 /* *****************************************************************************
@@ -9506,7 +8869,7 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 void
 savewaypoints ()
 {
-	gchar mappath[400], la[20], lo[20];
+	gchar mappath[2048], la[20], lo[20];
 	FILE *st;
 	gint i, e;
 
@@ -9545,7 +8908,7 @@ savewaypoints ()
 void
 loadwaypoints ()
 {
-	gchar mappath[400];
+	gchar mappath[2048];
 	FILE *st;
 	gint i, e, p, wlan, action, sqlnr, proximity;
 	gchar buf[512], slat[80], slong[80], typ[40];
@@ -10089,7 +9452,7 @@ main (int argc, char *argv[])
 	do
 	{
 		i = getopt (argc, argv,
-			    "W:ESA:ab:c:zXx1qivdDFepH:hnf:l:t:s:o:r:?");
+			    "W:ESA:ab:c:zXx1qivdD:FepH:hnf:l:t:s:o:r:?");
 		switch (i)
 		{
 		case 'a':
@@ -10108,7 +9471,7 @@ main (int argc, char *argv[])
 			debug = TRUE;
 			break;
 		case 'D':
-			mydebug = TRUE;
+			mydebug = strtol (optarg, NULL, 0);
 			debug = TRUE;
 			break;
 		case 'e':
@@ -10285,7 +9648,7 @@ main (int argc, char *argv[])
 		real_screen_x = min(1280,w-300);
 		real_screen_y = min(1024,h-200);
 		if (debug)
-		    g_print ("Set real Screen size to %ld,%ld\n", 
+		    g_print ("Set real Screen size to %d,%d\n", 
 			     real_screen_x,real_screen_y);
 		
 	}
@@ -10947,7 +10310,7 @@ main (int argc, char *argv[])
 			    1 * PADDING);
 	}
 	havebattery = battery_get_values ();
-	if (debug)
+	if (mydebug >20)
 		fprintf (stderr, "batt: %d, temp: %d\n", havebattery,
 			 havetemperature);
 	if (havebattery)
