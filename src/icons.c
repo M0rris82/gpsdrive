@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2005/04/06 19:38:17  tweety
+use disable/enable keys to improove spee in database creation
+add draw_small_plus_sign, which is used if we would have too many waypoints to display
+extract draw_text from draw_poi loop
+
 Revision 1.6  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -126,7 +131,8 @@ auxiconsstruct auxicons[MAXWPTYPES];
 /***************************************************************************/
 
 
-/* draw a + Sign and its shaddow */
+/* *****************************************************************************
+ * draw a + Sign and its shaddow */
 void
 draw_plus_sign ( gdouble posxdest,   gdouble posydest )
 {
@@ -159,6 +165,40 @@ draw_plus_sign ( gdouble posxdest,   gdouble posydest )
 
 }
 
+/* *****************************************************************************
+ * draw a small + Sign and its shaddow */
+void
+draw_small_plus_sign ( gdouble posxdest,   gdouble posydest )
+{
+  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+  if (shadow)
+    { /*  draw shadow of + sign */
+      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_function (kontext, GDK_AND);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 - 2 + SHADOWOFFSET,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 + 2 + SHADOWOFFSET);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + 2 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET,
+		     posxdest + 1 - 2 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET);
+      gdk_gc_set_function (kontext, GDK_COPY);
+    }
+
+  /*  draw + sign at destination */
+  gdk_gc_set_foreground (kontext, &red);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1,     posydest + 1 - 2, 
+		 posxdest + 1,     posydest + 1 + 2);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1 + 2, posydest + 1, 
+		 posxdest + 1 - 2, posydest + 1);
+
+}
+
 
 /* -----------------------------------------------------------------------------
 
@@ -175,32 +215,19 @@ drawicon (gint posxdest, gint posydest, char *ic)
   if (!sqlflag)
     g_strup (icon);
 
-  if (! strcmp (icon, "REST"))
-    symbol = 1;
-  else if ((strcmp (icon, "MCDONALDS")) == 0)
-    symbol = 2;
-  else if ((strcmp (icon, "HOTEL")) == 0)
-    symbol = 3;
-  else if ((strcmp (icon, "BURGERKING")) == 0)
-    symbol = 4;
-  else if ((strcmp (icon, "SHOP")) == 0)
-    symbol = 5;
-  else if ((strcmp (icon, "MONU")) == 0)
-    symbol = 6;
-  else if ((strcmp (icon, "NIGHTCLUB")) == 0)
-    symbol = 7;
-  else if ((strcmp (icon, "SPEEDTRAP")) == 0)
-    symbol = 8;
-  else if ((strcmp (icon, "AIRPORT")) == 0)
-    symbol = 9;
-  else if ((strcmp (icon, "GOLF")) == 0)
-    symbol = 10;
-  else if ((strcmp (icon, "GASSTATION")) == 0)
-    symbol = 11;
-  else if ((strcmp (icon, "CAFE")) == 0)
-    symbol = 12;
-  else if ((strcmp (icon, "GEOCACHE")) == 0)
-    symbol = 13;
+  if (! strcmp (icon, "REST"))                    symbol = 1;
+  else if ((strcmp (icon, "MCDONALDS")) == 0)     symbol = 2;
+  else if ((strcmp (icon, "HOTEL")) == 0)         symbol = 3;
+  else if ((strcmp (icon, "BURGERKING")) == 0)    symbol = 4;
+  else if ((strcmp (icon, "SHOP")) == 0)          symbol = 5;
+  else if ((strcmp (icon, "MONU")) == 0)          symbol = 6;
+  else if ((strcmp (icon, "NIGHTCLUB")) == 0)     symbol = 7;
+  else if ((strcmp (icon, "SPEEDTRAP")) == 0)     symbol = 8;
+  else if ((strcmp (icon, "AIRPORT")) == 0)       symbol = 9;
+  else if ((strcmp (icon, "GOLF")) == 0)          symbol = 10;
+  else if ((strcmp (icon, "GASSTATION")) == 0)    symbol = 11;
+  else if ((strcmp (icon, "CAFE")) == 0)          symbol = 12;
+  else if ((strcmp (icon, "GEOCACHE")) == 0)      symbol = 13;
 
   for (i = 0; i < lastauxicon; i++)
     if ((strcmp (icon, (auxicons + i)->name)) == 0)
