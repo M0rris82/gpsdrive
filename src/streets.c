@@ -22,30 +22,39 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 /*
-$Log$
-Revision 1.4  2005/02/22 08:18:51  tweety
-change leveing system to simpler scale marking for decission what to show on display
-column_names(DBFuncs.pm get data from Database
-added functions add_index drop_index
-added language to type Database
-for some Data split unpack and mirror Directories
-for some add lat/lon min/max to get faster import for testing
-added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
-on the street data
+  $Log$
+  Revision 1.5  2005/03/27 00:44:42  tweety
+  eperated poi_type_list and streets_type_list
+  and therefor renaming the fields
+  added drop index before adding one
+  poi.*: a little bit more error handling
+  disabling poi and streets if sql is disabled
+  changed som print statements from \n.... to ...\n
+  changed some debug statements from debug to mydebug
 
-Revision 1.3  2005/02/17 09:46:34  tweety
-minor changes
+  Revision 1.4  2005/02/22 08:18:51  tweety
+  change leveing system to simpler scale marking for decission what to show on display
+  column_names(DBFuncs.pm get data from Database
+  added functions add_index drop_index
+  added language to type Database
+  for some Data split unpack and mirror Directories
+  for some add lat/lon min/max to get faster import for testing
+  added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+  on the street data
 
-Revision 1.2  2005/02/13 22:57:00  tweety
-WDB Support
+  Revision 1.3  2005/02/17 09:46:34  tweety
+  minor changes
 
-Revision 1.1  2005/02/13 14:06:54  tweety
-start street randering functions. reading from the database streets and displayi
-ng it on the screen
-improve a little bit in the sql-queries
-fixed linewidth settings in draw_cross
+  Revision 1.2  2005/02/13 22:57:00  tweety
+  WDB Support
 
-Revision 0.0  2005/02/12 20:14:14  tweety
+  Revision 1.1  2005/02/13 14:06:54  tweety
+  start street randering functions. reading from the database streets and displayi
+  ng it on the screen
+  improve a little bit in the sql-queries
+  fixed linewidth settings in draw_cross
+
+  Revision 0.0  2005/02/12 20:14:14  tweety
 
 */
 
@@ -98,7 +107,7 @@ extern GdkColor textbacknew;
 extern GdkColor grey;
 
 extern gdouble current_long, current_lat;
-extern gint debug;
+extern gint debug,mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats, *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
@@ -112,18 +121,30 @@ MYSQL_ROW row;
 
 // keep actual visible Streets in Memory
 streets_struct *streets_list;
-glong streets_list_count;        // current number of streets to count
-glong streets_list_limit;     // max allowed imdex (if you need more you have to alloc memory)
+glong streets_list_count;     // current number of streets to count
+glong streets_list_limit=-1;     // max allowed imdex (if you need more you have to alloc memory)
 
 gint  streets_draw = FALSE;
 
 gchar streets_label_font[100];
 GdkColor streets_colorv;
 
+
+
+typedef struct {
+  gint    streets_type_id;
+  gchar   name[80];
+  gchar   icon_name[80];
+  GdkPixbuf *icon;
+} streets_type_struct;
+#define streets_type_list_max 4000
+streets_type_struct streets_type_list[streets_type_list_max];
+int streets_type_list_count=0;
+
 /* ******************************************************************   */
 
 void streets_rebuild_list (void);
-void get_type_list(void);
+void get_streets_type_list(void);
 
 
 /* ****************************************************************** 
@@ -142,49 +163,100 @@ posxy_on_screen(gdouble posx, gdouble posy) {
 
 /* *******************************************************
  */
-void
-streets_init (void)
+void streets_init (void)
 {
-  streets_list_limit = 20000;
+  if (debug) printf("Streets init\n");
+  streets_list_limit = 1000;
   streets_list = g_new (streets_struct, streets_list_limit);
   streets_rebuild_list ();
-  get_type_list();
+  get_streets_type_list();
 }
 
 
 /* *********************************************************
-*/
+ */
 gdouble streets_lat_lr=0, streets_lon_lr=0;
 gdouble streets_lat_ul=0, streets_lon_ul=0;
 
-int
-streets_check_if_moved(void)
+int streets_check_if_moved(void)
 {
   gdouble lat_lr, lon_lr;
   gdouble lat_ul, lon_ul;
 
   if ( streets_lat_lr == 0 && streets_lon_lr == 0 &&
        streets_lat_ul == 0 && streets_lon_ul == 0    ) 
-      return 1;
+    return 1;
 
   calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
   calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
 
   if ( streets_lat_lr == lat_lr && streets_lon_lr == lon_lr &&
        streets_lat_ul == lat_ul && streets_lon_ul == lon_ul    ) 
-      return 0;
+    return 0;
   if ( debug ) 
     printf("Streets Display moved\n");
   return 1;
 }
 
+
+/* ****************************************************************** */
+/* get a list of all possible types and load there icons */
+void get_streets_type_list (void)
+{
+  char sql_query[3000];
+
+  if (!usesql)
+    return;
+
+  if ( debug ) 
+    printf("get_streets_type_list ()\n");
+
+  g_snprintf (sql_query, sizeof (sql_query),
+	      "SELECT streets_type_id,name,symbol FROM type ORDER BY streets_type_id");
+
+  if (dl_mysql_query (&mysql, sql_query))
+    {
+      fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
+      return;
+    }
+  
+  if (!(res = dl_mysql_store_result (&mysql)))
+    {
+      fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
+      return;
+    }
+
+  while ((row = dl_mysql_fetch_row (res)))
+    {
+      streets_type_list_count = (gint)g_strtod(row[0], NULL);
+      if ( streets_type_list_count < streets_type_list_max ) {
+	streets_type_list[streets_type_list_count].streets_type_id =  streets_type_list_count;
+	if ( row[1] == NULL ) {
+	  streets_type_list[streets_type_list_count].name[0]="\0";
+	} else {
+	  g_strlcpy ( streets_type_list[streets_type_list_count].name, row[1],
+		      sizeof (streets_type_list[streets_type_list_count].name));
+	}
+      }
+    }
+
+  if (!dl_mysql_eof (res))
+    {
+      fprintf(stderr,"Error in dl_mysql_eof: %s\n",dl_mysql_error (&mysql) );
+      return;
+    }
+  
+  dl_mysql_free_result (res);
+  
+}
+
+
 /* *******************************************************
  * if zoom, xoff, yoff or map are changed 
  TODO: use the real datatype for reading from database
-       (dont convert string to double)
- */
-void
-streets_rebuild_list (void)
+ (dont convert string to double)
+*/
+void streets_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_order[5000];
@@ -201,9 +273,11 @@ streets_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
-  if (!maploaded)
+  if (!usesql)
     return;
 
+  if (!maploaded)
+    return;
 
   if (importactive)
     return;
@@ -268,7 +342,7 @@ streets_rebuild_list (void)
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
       // printf ("STREETS mysql where: %s\n", sql_where );
-      printf ("STREETS mapscale: %d\n", (gdouble)mapscale );
+      printf ("STREETS mapscale: %f\n", mapscale );
     }
   }
 
@@ -277,10 +351,10 @@ streets_rebuild_list (void)
 
   // Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
   g_snprintf (sql_query, sizeof (sql_query),
-	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat1,lon1,lat2,lon2,name,type_id "
+	      // "SELECT lat,lon,alt,streets_type_id,proximity "
+	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id "
 	      "FROM streets "
-	      "%s %s LIMIT 20000",
+	      "%s %s LIMIT 2000",
 	      sql_where,sql_order);
 
   if (debug)
@@ -309,10 +383,11 @@ streets_rebuild_list (void)
       gdouble lat2,lon2;
       lat1 = g_strtod(row[0], NULL);
       lon1 = g_strtod(row[1], NULL);
-      calcxy (&streets_posx1, &streets_posy1,    lon1,lat1,     zoom);
-      
       lat2 = g_strtod(row[2], NULL);
       lon2 = g_strtod(row[3], NULL);
+
+	  
+      calcxy (&streets_posx1, &streets_posy1,    lon1,lat1,     zoom);
       calcxy (&streets_posx2, &streets_posy2,    lon2,lat2,     zoom);
 
       if ( posxy_on_screen(streets_posx1,streets_posy1) ||
@@ -322,7 +397,7 @@ streets_rebuild_list (void)
 	  // get next free mem for streets
 	  streets_list_count++;
 	  if (streets_list_count > streets_list_limit) {
-	    streets_list_limit +=  10000;
+	    streets_list_limit +=  1000;
 	    if ( debug) 
 	      printf("renewmemory for street list: %d\n",streets_list_limit);
 	    
@@ -330,7 +405,12 @@ streets_rebuild_list (void)
 	      g_renew (streets_struct, streets_list, streets_list_limit );
 	    // TODO: check if g_renew failed
 	  }
-
+	  if (debug) 
+	    printf ( "pos: (%.4f ,%.4f) (%.4f ,%.4f)\n",
+		     lat1,lon1,
+		     lat2,lon2);
+	  printf("Anz: %d %d\n",streets_list_count , streets_list_limit);
+	  
 	  // Save retrieved streets information into structure
 	  (streets_list + streets_list_count)->lat1        = lat1;
 	  (streets_list + streets_list_count)->lon1        = lon1;
@@ -341,12 +421,12 @@ streets_rebuild_list (void)
 	  (streets_list + streets_list_count)->x2          = streets_posx2;
 	  (streets_list + streets_list_count)->y2          = streets_posy2;
 	  g_strlcpy ((streets_list + streets_list_count)->name, row[4], sizeof ((streets_list + streets_list_count)->name));
-	  (streets_list + streets_list_count)->type_id = (gint)g_strtod(row[5], NULL);
+	  (streets_list + streets_list_count)->streets_type_id = (gint)g_strtod(row[5], NULL);
 
 	  if (debug) 
 	    g_snprintf ((streets_list + streets_list_count)->name, sizeof ((streets_list + streets_list_count)->name),
 			"(%.4f ,%.4f) (%.4f ,%.4f) %s",
-			//			(streets_list + streets_list_count)->type_id,
+			//			(streets_list + streets_list_count)->streets_type_id,
 			lat1,lon1,
 			lat2,lon2,
 			row[2]);
@@ -388,6 +468,7 @@ void draw_text_with_box(gdouble posx,gdouble posy, gchar name[120]) {
   PangoFontDescription *pfd;
   PangoLayout *streets_label_layout;
   gint k, k2;
+  
 
   // Draw Text Label with name
   g_strlcpy (txt, name, sizeof (name));
@@ -444,9 +525,8 @@ void draw_text_with_box(gdouble posx,gdouble posy, gchar name[120]) {
 /* *******************************************************
  * draw streets_ on image 
  TODO: find free space on drawing area. So the Text doesn't overlap
- */
-void
-streets_draw_list (void)
+*/
+void streets_draw_list (void)
 {
   //  gint t;
 
@@ -455,6 +535,9 @@ streets_draw_list (void)
   gint gdks_streets_max =20000;
 
   gint i;
+
+  if (!usesql)
+    return;
 
   if (importactive)
     return;
@@ -466,13 +549,13 @@ streets_draw_list (void)
   }
 
   if ( debug ) 
-      printf("STREETS_draw\n");
+    printf("STREETS_draw\n");
 
   if ( streets_check_if_moved() )
     streets_rebuild_list();  
 
   if ( debug ) 
-      printf("STREETS_draw %d segments\n",streets_list_count);
+    printf("STREETS_draw %d segments\n",streets_list_count);
 
   gdks_streets= g_new0 (GdkSegment, gdks_streets_max);
 
@@ -544,40 +627,40 @@ streets_draw_list (void)
 	  }
 	}
       
-      // draw it if last or type_id changes 
+      // draw it if last or streets_type_id changes 
       if ( ( i == streets_list_count-1 ) ||
-	   ( (streets_list + i)->type_id != (streets_list + i + 1)->type_id )
+	   ( (streets_list + i)->streets_type_id != (streets_list + i + 1)->streets_type_id )
 	   )
-      {
-	/*
-	if ( debug )
-	  printf("Drawing %d segments\n",gdks_streets_count);
-	*/
-	if        ((streets_list + i)->type_id == 1) {
-	  gdk_gc_set_foreground (kontext, &red);
-	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-	} else if ((streets_list + i)->type_id == 2) {
-	  gdk_gc_set_foreground (kontext, &blue);
-	  gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
-	} else if ((streets_list + i)->type_id == 3) {
-	  gdk_gc_set_foreground (kontext, &green);
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	} else if ((streets_list + i)->type_id == 4) {
-	  gdk_gc_set_foreground (kontext, &yellow);
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-  	} else {
-	  gdk_gc_set_foreground (kontext, &red);
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	}
+	{
+	  /*
+	    if ( debug )
+	    printf("Drawing %d segments\n",gdks_streets_count);
+	  */
+	  if        ((streets_list + i)->streets_type_id == 1) {
+	    gdk_gc_set_foreground (kontext, &red);
+	    gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+	  } else if ((streets_list + i)->streets_type_id == 2) {
+	    gdk_gc_set_foreground (kontext, &blue);
+	    gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+	  } else if ((streets_list + i)->streets_type_id == 3) {
+	    gdk_gc_set_foreground (kontext, &green);
+	    gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	  } else if ((streets_list + i)->streets_type_id == 4) {
+	    gdk_gc_set_foreground (kontext, &yellow);
+	    gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	  } else {
+	    gdk_gc_set_foreground (kontext, &red);
+	    gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	  }
 	
-	gdk_draw_segments (drawable, kontext, 
-		     (GdkSegment *) gdks_streets, gdks_streets_count+1);
-	gdks_streets_count=-1;
-      }
+	  gdk_draw_segments (drawable, kontext, 
+			     (GdkSegment *) gdks_streets, gdks_streets_count+1);
+	  gdks_streets_count=-1;
+	}
     }
   
   g_free (gdks_streets);
   
-  if ( debug ) 
+  if ( mydebug ) 
     printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
