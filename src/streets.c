@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  2005/04/10 00:10:32  tweety
+  added gpsd: to gpsd related debug output
+  changed plus to a small + in streets.c
+
   Revision 1.8  2005/04/07 06:35:01  tweety
   Error handling for g_renew
   correct to extern MYSQL mysql;
@@ -217,7 +221,7 @@ int streets_check_if_moved(void) {
 
 
 /* ****************************************************************** */
-/* get a list of all possible types and load there icons */
+/* get a list of all possible types and load their icons */
 void get_streets_type_list (void) {
 	char sql_query[3000];
 
@@ -625,10 +629,10 @@ void streets_draw_list (void) {
 			(gdks_streets + gdks_streets_count)->x2 = posx2;
 			(gdks_streets + gdks_streets_count)->y2 = posy2;
 	  
-			if ( debug) {
+			if ( mydebug ) {
 				gdk_gc_set_foreground (kontext, &red);
-				draw_plus_sign ( posx1,posy1);
-				draw_plus_sign ( posx2,posy2);
+				draw_small_plus_sign ( posx1,posy1);
+				draw_small_plus_sign ( posx2,posy2);
 			}
 	  
 
