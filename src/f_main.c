@@ -1467,6 +1467,7 @@ i.e. '.' in english, ',' in german!! */
 
   etch = !etch;
   etch_cb (NULL, 0);
+  drawgrid_cb (NULL, 0);
   l1 = gtk_label_new (_("000,00000N"));
   gtk_container_add (GTK_CONTAINER (lf1), l1);
   l2 = gtk_label_new (_("000,00000E"));

@@ -41,6 +41,7 @@ gint initgps ();
 gint miles_cb (GtkWidget * widget, guint datum);
 gint shadow_cb (GtkWidget * widget, guint datum);
 gint etch_cb (GtkWidget * widget, guint datum);
+gint drawgrid_cb (GtkWidget * widget, guint datum);
 gint defaultserver_cb (GtkWidget * widget, guint datum);
 gint expose_sats_cb (GtkWidget * widget, guint * datum);
 gint testgarmin_cb (GtkWidget * widget, guint datum);
