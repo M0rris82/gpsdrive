@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.5  2005/02/06 21:18:05  tweety
+more cleanup: extracted more functionality to functions
+
 Revision 1.4  2005/02/02 17:42:54  tweety
 Add some comments
 extract some code into funktions
@@ -2128,7 +2131,7 @@ sqlsetup (void)
 
   g_strlcpy (wheretemp, dbwherestring, sizeof (wheretemp));
 
-  getsqltypelist ();
+  get_sql_type_list ();
 
   for (i = 0; i < dbtypelistcount; i++)
     sqlselects[i] = 0;
