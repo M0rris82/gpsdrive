@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2005/01/11 01:37:06  tweety
+implement first part of drawgrid
+
 Revision 1.7  2005/01/11 00:47:05  tweety
 added an 8th column to way.txt which means proximity
 if this filed is filled a circle arround the
@@ -5146,7 +5149,29 @@ drawmarker (GtkWidget * widget, guint * datum)
 
   if (drawgrid)
     {
+      gdouble lat, lon;
 
+      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_function (kontext, GDK_AND);
+      gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+
+      lat=0;
+      for ( lon=-180 ; lon<180 ; lon = lon + 1 ) {
+	gdouble posxdest, posydest;
+	calcxy (&posxdest, &posydest, lon, lat, zoom);
+	if ((posxdest >= 0) && (posxdest < SCREEN_X) )
+	  gdk_draw_line (drawable, kontext,  posxdest,0, posxdest,SCREEN_Y);
+      }
+
+      lon=0;
+      for ( lat=-90 ; lat < 90 ; lat = lat + 1 ) {
+	gdouble posxdest, posydest;
+	calcxy (&posxdest, &posydest, lon, lat, zoom);
+	if ((posydest >= 0) && (posydest < SCREEN_Y) ) {
+	  gdk_draw_line (drawable, kontext,  0,posydest, SCREEN_X,posydest);
+	}
+			    
+      }
     }
   drawtracks ();
 
