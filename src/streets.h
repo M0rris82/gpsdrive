@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/03/27 21:25:46  tweety
+separating map_import from gpsdrive.c
+
 Revision 1.2  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -47,10 +50,6 @@ fixed linewidth settings in draw_cross
 /*
  * See streets.c for details.
  */
-
-#include <gtk/gtk.h>
-
-
 
 typedef struct
 {

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.7  2005/03/27 21:25:46  tweety
+separating map_import from gpsdrive.c
+
 Revision 1.6  2005/02/10 06:22:25  tweety
 added primitive drawing of icons to POI
 
@@ -41,6 +44,13 @@ extract icon handling to icons.c
 Revision 1.0  2005/02/02 18:11:02  tweety
 */
 
+#ifndef GPSDRIVE_ICONS_H
+#define GPSDRIVE_ICONS_H
+
+/*
+ * See icons.c for details.
+ */
+
 int drawicon (gint posxdest, gint posydest, char *ic);
 void load_friends_icon (void);
 void load_icons(void);
@@ -49,7 +59,9 @@ void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
 
 typedef struct
 {
-    GdkPixbuf *icon;
-    char name[40];
+  GdkPixbuf *icon;
+  char name[40];
 }
 auxiconsstruct;
+
+#endif /* GPSDRIVE_ICONS_H */

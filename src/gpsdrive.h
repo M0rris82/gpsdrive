@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.6  2005/03/27 21:25:46  tweety
+separating map_import from gpsdrive.c
+
 Revision 1.5  2005/02/17 09:46:34  tweety
 minor changes
 
@@ -270,14 +273,30 @@ MYSQL_RES * (*dl_mysql_store_result)(MYSQL *mysql);
 MYSQL_ROW   (*dl_mysql_fetch_row)(MYSQL_RES *result);
 void        (*dl_mysql_free_result)(MYSQL_RES *result);
 my_bool (*dl_mysql_eof)(MYSQL_RES *res);
+gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
+gint importaway_cb (GtkWidget * widget, guint datum);
+gint posmodeoff_cb (GtkWidget * widget, guint * datum);
+gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
+gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
+gint scalerbt_cb (GtkWidget * widget, guint datum);
+
 
 typedef struct
 {
-  char id[30], name[40], 
-    lat[40], longi[40], 
-    timesec[40], speed[10], heading[10];
+  char id[30];
+  char name[40];
+  char lat[40], longi[40];
+  char timesec[40], speed[10], heading[10];
 }
 friendsstruct;
+
+/* typedef struct
+ * {
+ * 	  char id[30], name[40], lat[40], longi[40], timesec[40], speed[10],
+ *     heading[10];
+ * }
+ * friendsstruct;
+ */
 
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -286,5 +305,15 @@ friendsstruct;
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
+
+
+typedef struct
+{
+  gchar filename[200];
+  gdouble lat;
+  gdouble lon;
+  glong scale;
+}
+mapsstruct;
 
 #endif /* GPSDRIVE_GPSDRIVE_H */

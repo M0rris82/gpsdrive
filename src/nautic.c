@@ -24,8 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/03/27 21:25:46  tweety
+separating map_import from gpsdrive.c
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.8  2004/02/02 03:38:32  ganter
 code cleanup
@@ -81,7 +84,7 @@ nautic.c -- routines specific for nautic usage
 
 
 extern GtkWidget *hauptfenster;
-GtkWidget *splash_window;
+extern GtkWidget *splash_window;
 extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag;
