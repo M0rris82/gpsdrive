@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.7  2005/02/17 09:46:34  tweety
+minor changes
+
 Revision 1.6  2005/02/13 22:57:00  tweety
 WDB Support
 
@@ -316,15 +319,17 @@ poi_rebuild_list (void)
 
   { // gernerate mysql ORDER string
     char sql_order_numbers[5000];
-    g_snprintf (sql_order_numbers, sizeof (sql_order),
-		"(abs(%.6f - lat)+abs(%.6f - lon))"
-		,lat_mid,lon_mid);
-    g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
+    /*
+      g_snprintf (sql_order_numbers, sizeof (sql_order),
+      "(abs(%.6f - lat)+abs(%.6f - lon))"
+      ,lat_mid,lon_mid);
+      g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
     
+      g_snprintf (sql_order, sizeof (sql_order),
+      "order by level,%s ",sql_order_numbers);
+    */
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by level,%s ",sql_order_numbers);
-    g_snprintf (sql_order, sizeof (sql_order),
-		"order by %s ",sql_order_numbers);
+		"order by level ");
     /*
       g_snprintf (sql_order, sizeof (sql_order),
       "order by level ");
@@ -360,7 +365,7 @@ poi_rebuild_list (void)
 	      "SELECT lat,lon,name,type_id "
 	      "FROM poi "
 	      //	      "LEFT JOIN oi_ type ON poi_.type_id = type.type_id "
-	      "%s %s LIMIT 4000",
+	      "%s %s LIMIT 1000",
 	      sql_where,sql_order);
   /*    dbwherestring,sql_order,lat,lon);  */
   if (debug)
