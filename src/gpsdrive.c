@@ -23,8 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2004/12/24 15:44:15  commiter
+Split quit_program into separate file
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.526  2004/04/05 18:45:40  ganter
 added patch for kismet hangs and Mac-OS mouse
@@ -2241,15 +2244,8 @@ menu_translate (const gchar * path, gpointer data)
 }
 
 
+#include "f_quit_program.c"
 
-
-/*  quit the program */
-gint
-quit_program (GtkWidget * widget, gpointer datum)
-{
-  gtk_main_quit ();
-  return (TRUE);
-}
 
 gint
 error_popup (gpointer datum)
