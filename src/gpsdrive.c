@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2005/01/11 00:47:05  tweety
+added an 8th column to way.txt which means proximity
+if this filed is filled a circle arround the
+waypoint is displayed with radius proximity Meters
+
 Revision 1.6  2004/12/27 10:21:26  tweety
 Change map filename checks. After this change you can use directoryname and filename to
 specify you map-files in map_koord.txt. So you can use subdirecories in you gpsdrive dir.
@@ -1960,6 +1965,7 @@ typedef struct
   gint wlan;
   gint action;
   gint sqlnr;
+  gint proximity;
 }
 wpstruct;
 wpstruct *wayp, *routelist;
@@ -2593,7 +2599,8 @@ convertGGA (char *f)
       b[4] = field[2][6];
       b[5] = field[2][7];
       b[6] = 0;
-/*       fprintf(stderr,"\nposmode: %d\n",posmode); */
+      if ( debug ) 
+	fprintf(stderr,"\nposmode: %d\n",posmode);
       if (!posmode)
 	{
 	  gdouble cl;
@@ -3641,6 +3648,8 @@ testnewmap ()
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	  if (debug)
 	    g_print ("\nNew map: %s\n", mapfilename);
+	  if (debug)
+	    printf ("\nNew map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
 	  zero_long = (maps + bestmap)->longitude;
 	  zero_lat = (maps + bestmap)->lat;
@@ -3664,8 +3673,6 @@ testnewmap ()
 	  loadmap (mapfilename);
 	}
     }
-
-/*     fprintf (stderr, "nrmaps: %d, nasa: %d\n", nrmaps, ncount); */
 
 }
 
@@ -5149,8 +5156,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 /*  draw waypoints */
       for (i = 0; i < maxwp; i++)
 	{
-	  calcxy (&posxdest, &posydest, (wayp + i)->longitude,
-		  (wayp + i)->lat, zoom);
+	  calcxy (&posxdest, &posydest, 
+		  (wayp + i)->longitude, (wayp + i)->lat,
+		  zoom);
 
 	  if ((posxdest >= 0) && (posxdest < SCREEN_X)
 	      && (shownwp < MAXSHOWNWP))
@@ -5193,8 +5201,29 @@ drawmarker (GtkWidget * widget, guint * datum)
 		      gdk_draw_line (drawable, kontext, posxdest + 1 + 5,
 				     posydest + 1, posxdest + 1 - 5,
 				     posydest + 1);
-		    }
+		      if ( (wayp + i)->proximity > 0.0 ) 
+			{
+			  gint proximity_pixels;
+			  if ( mapscale ) 
+			    proximity_pixels= 
+			      ((wayp + i)->proximity)
+			      * zoom
+			      * PIXELFACT
+			      / mapscale;
+			  else 
+			    proximity_pixels=2;
 
+			  gdk_gc_set_foreground (kontext, &blue);
+
+			  gdk_draw_arc(drawable, kontext, FALSE,
+				       posxdest - proximity_pixels , 
+				       posydest - proximity_pixels ,
+				       proximity_pixels*2,proximity_pixels*2,
+				       0, 64 * 360);
+			}
+		  
+		    }
+	      
 /*  draw shadow of text */
 		  {
 		    /* prints in pango */
