@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.6  2005/02/10 06:22:25  tweety
+added primitive drawing of icons to POI
+
 Revision 1.5  2005/02/08 09:01:48  tweety
 move loading of usericons to icons.c
 
@@ -42,6 +45,7 @@ int drawicon (gint posxdest, gint posydest, char *ic);
 void load_friends_icon (void);
 void load_icons(void);
 void load_user_icon(  char icon_name[200] );
+void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
 
 typedef struct
 {
