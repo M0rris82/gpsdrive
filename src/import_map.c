@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/03/27 21:51:14  tweety
+make x/y Fields editable, to improve map import
+
 Revision 1.1  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -362,8 +365,10 @@ import1_cb (GtkWidget * widget, guint datum)
 
   gtk_entry_set_editable (GTK_ENTRY (dltext7), FALSE);
   gtk_entry_set_editable (GTK_ENTRY (dltext4), FALSE);
+  /*
   gtk_entry_set_editable (GTK_ENTRY (dltext5), FALSE);
   gtk_entry_set_editable (GTK_ENTRY (dltext6), FALSE);
+  */
 
   text = gtk_label_new ("");
 
@@ -418,10 +423,8 @@ import2_cb (GtkWidget * widget, gpointer datum)
   s = gtk_entry_get_text (GTK_ENTRY (dltext2));
   checkinput ((gchar *) s);
   imports[0].lon = g_strtod (s, NULL);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext5));
-  imports[0].x = strtol (s, NULL, 0);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext6));
-  imports[0].y = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));  imports[0].x = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));  imports[0].y = strtol (s, NULL, 0);
 
   gtk_widget_destroy (widget);
   import1_cb (NULL, 2);
@@ -437,16 +440,12 @@ import3_cb (GtkWidget * widget, gpointer datum)
   gdouble longcenter;
   gdouble px, py;
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
-  checkinput ((gchar *) s);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext1));  checkinput ((gchar *) s);
   imports[1].lat = g_strtod (s, NULL);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-  checkinput ((gchar *) s);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext2));  checkinput ((gchar *) s);
   imports[1].lon = g_strtod (s, NULL);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext5));
-  imports[1].x = strtol (s, NULL, 0);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext6));
-  imports[1].y = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));  imports[1].x = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));  imports[1].y = strtol (s, NULL, 0);
   gtk_widget_destroy (widget);
 
 /*  Calc coordinates and scale */
