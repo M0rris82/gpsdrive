@@ -24,6 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.17  2005/10/19 07:22:21  tweety
+  Its now possible to choose units for displaying coordinates also in
+  Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+  Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
   Revision 1.16  2005/08/14 18:46:42  tweety
   remove unnedded xpm Files; read pixmaps with read_icons,
   separate more pixmaps from icons
@@ -1189,11 +1194,7 @@ writeconfig ()
 	else
 		fprintf (fp, "1\n");
 
-	fprintf (fp, "minsecmode = ");
-	if (minsecmode == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
+	fprintf (fp, "minsecmode = %d\n",minsecmode);
 
 	fprintf (fp, "nightmode = ");
 	fprintf (fp, "%d\n", nightmode);
