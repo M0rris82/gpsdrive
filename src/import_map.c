@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/03/28 17:59:38  tweety
+corrected an Error in position calculation by Darazs Attila <zumi@freestart.hu>
+
 Revision 1.2  2005/03/27 21:51:14  tweety
 make x/y Fields editable, to improve map import
 
@@ -540,12 +543,16 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	}
       else
 	{
-	  g_snprintf (s, sizeof (s), "%d", x + SCREEN_X_2 + xoff);
+	  g_snprintf (s, sizeof (s), "%d", x + ( 640 - SCREEN_X_2 ) + xoff);
 	  gtk_entry_set_text (GTK_ENTRY (dltext5), s);
-	  g_snprintf (s, sizeof (s), "%d", y + SCREEN_Y_2 + yoff);
+	  g_snprintf (s, sizeof (s), "%d", y + ( 512 - SCREEN_Y_2 ) + yoff);
 	  gtk_entry_set_text (GTK_ENTRY (dltext6), s);
 
 	}
+      if (mydebug) {
+	fprintf(stderr,"Mouse click at x:%d,y:%d \n",x,y);
+      }
+
     }
   else
     {
