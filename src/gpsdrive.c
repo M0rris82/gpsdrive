@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.34  2005/04/10 10:10:38  tweety
+autor: Rob Stewart <rob@groupboard.com>
+I only use expedia maps, so I've suggested a change for only using
+expedia scales. Currently it's a #define, but it could be made into a
+GUI or makefile thing.
+I've also made it so that you have a choice of the default waypoint
+types for non-SQL users when you add a waypoint. A bit better than a
+blank drop-down list.
+
 Revision 1.33  2005/04/10 09:52:14  tweety
 autor:  Olli Salonen <olli@cabbala.net>
 - GPGGA information is now parsed, even if there are 16 fields
@@ -2121,18 +2130,30 @@ GtkWidget *scaler, *downloadwindow;
 gchar writebuff[2000];
 gchar newmaplat[100], newmaplongi[100], newmapsc[100], oldangle[100];
 GdkCursor *cursor;
-gchar *slist[] = { "1000", "1500", "2000", "3000", "5000", "7500",
-  "10000", "15000", "20000", "30000", "50000", "75000",
-  "100000", "150000", "200000", "300000", "500000", "750000",
-  "1000000", "1500000", "2000000", "3000000", "5000000", "7500000",
-  "10000000", "15000000", "20000000", "30000000", "50000000", "75000000"
-};
+
+// Uncomment this (or add a make flag?) to only have scales for expedia maps
+//#define EXPEDIA_SCALES_ONLY
+
+#ifdef EXPEDIA_SCALES_ONLY
+gint slistsize = 10;
+gchar* slist[] = { "5000", "15000", "20000", "50000", "100000",  "200000",
+				   "750000", "3000000", "7500000", "75000000" };
+gint   nlist[] = {  5000,   15000,   20000,   50000,   100000,    200000,
+					750000,   3000000,   7500000,   75000000 };
+#else
+gint slistsize = 30;
+gchar* slist[] = { "1000", "1500", "2000", "3000", "5000", "7500", "10000",
+				   "15000", "20000", "30000", "50000", "75000", "100000", "150000", "200000",
+				   "300000", "500000", "750000", "1000000", "1500000", "2000000", "3000000",
+				   "5000000", "7500000", "10000000", "15000000", "20000000", "30000000",
+				   "50000000", "75000000"};
 gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
-  10000, 15000, 20000, 30000, 50000, 75000,
-  100000, 150000, 200000, 300000, 500000, 750000,
-  1000000, 1500000, 2000000, 3000000, 5000000, 7500000,
-  10000000, 15000000, 20000000, 30000000, 50000000, 75000000
-};
+				 10000, 15000, 20000, 30000, 50000, 75000,
+				 100000, 150000, 200000, 300000, 500000, 750000,
+				 1000000, 1500000, 2000000, 3000000, 5000000, 7500000,
+				 10000000, 15000000, 20000000, 30000000, 50000000, 75000000 };
+#endif
+
 GtkWidget *l1, *l2, *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
 GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *maptogglebt, *topotogglebt, *savetrackbt;
@@ -7225,8 +7246,9 @@ download_cb (GtkWidget * widget, guint datum)
 
   gtk_widget_set_sensitive (downloadbt, FALSE);
 
-  for (i = 0; i < 30; i++)
-    list = g_list_append (list, slist[i]);
+  for( i = 0; i < slistsize; i++ )
+	  list = g_list_append (list, slist[i]);
+
   downloadwindow = gtk_dialog_new ();
   gtk_window_set_title (GTK_WINDOW (downloadwindow),
 			_("Select coordinates and scale"));
@@ -9212,13 +9234,27 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
   GList *wp_types = NULL;
   gint i;
  
-  if (sqlflag)
-    {
-      get_sql_type_list ();
+  if (sqlflag) {
+	  get_sql_type_list ();
       for (i = 0; i < dbtypelistcount; i++)
-	wp_types = g_list_append (wp_types, dbtypelist[i]);
-    }
-
+		  wp_types = g_list_append (wp_types, dbtypelist[i]);
+  } else {
+	  wp_types = g_list_append( wp_types, "" );
+	  wp_types = g_list_append( wp_types, "Airport" );
+	  wp_types = g_list_append( wp_types, "BurgerKing" );
+	  wp_types = g_list_append( wp_types, "Cafe" );
+	  wp_types = g_list_append( wp_types, "GasStation" );
+	  wp_types = g_list_append( wp_types, "Geocache" );
+	  wp_types = g_list_append( wp_types, "Golf" );
+	  wp_types = g_list_append( wp_types, "Hotel" );
+	  wp_types = g_list_append( wp_types, "McDonalds" );
+	  wp_types = g_list_append( wp_types, "Monu" );
+	  wp_types = g_list_append( wp_types, "Nightclub" );
+	  wp_types = g_list_append( wp_types, "Rest" );
+	  wp_types = g_list_append( wp_types, "Shop" );
+	  wp_types = g_list_append( wp_types, "Speedtrap" );
+  }
+  
   addwaypointwindow = window = gtk_dialog_new ();
   gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (mainwindow));
   gotowindow = window;
@@ -11866,13 +11902,14 @@ main (int argc, char *argv[])
 //KCFX
 /*   if (!pdamode) */
   {
-    adj = gtk_adjustment_new (12, 0, 29, 1, 4, 0.034);
-    scaler = gtk_hscale_new (GTK_ADJUSTMENT (adj));
-    gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
-			GTK_SIGNAL_FUNC (scaler_cb), NULL);
-    gtk_scale_set_draw_value (GTK_SCALE (scaler), FALSE);
+	  adj = gtk_adjustment_new(slistsize / 2, 0, slistsize - 1, 1, 
+							   slistsize / 4,   1 / slistsize );
+	  scaler = gtk_hscale_new (GTK_ADJUSTMENT (adj));
+	  gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
+						  GTK_SIGNAL_FUNC (scaler_cb), NULL);
+	  gtk_scale_set_draw_value (GTK_SCALE (scaler), FALSE);
   }
-
+  
   if (pdamode)
     table1 = gtk_table_new (5, 3, FALSE);
   else
