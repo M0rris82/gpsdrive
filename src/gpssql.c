@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.11  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.10  2005/03/29 01:59:01  tweety
 another set of minor Bugfixes
 
@@ -255,9 +258,9 @@ sqlinit (void)
       fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
       return FALSE;
     }
-/*   if (debug) */
+	/*   if (debug) */
   printf (_("\nSQL: connected to %s as %s using %s\n"), dbhost, dbuser,
-	  dbname);
+					dbname);
   return TRUE;
 }
 
@@ -285,34 +288,34 @@ insertsqldata (double lat, double lon, char *name, char *typ)
   g_strdelimit (name, " ", '_');
   g_strdelimit (typ, " ", '_');
 
-/* escape ' */
+	/* escape ' */
   j = 0;
   for (i = 0; i <= (int) strlen (name); i++)
     {
       if (name[i] != '\'')
-	tname[j++] = name[i];
+				tname[j++] = name[i];
       else
-	{
-	  tname[j++] = '\\';
-	  tname[j++] = '\'';
-	}
+				{
+					tname[j++] = '\\';
+					tname[j++] = '\'';
+				}
     }
 
   j = 0;
   for (i = 0; i <= (int) strlen (typ); i++)
     {
       if (typ[i] != '\'')
-	ttyp[j++] = typ[i];
+				ttyp[j++] = typ[i];
       else
-	{
-	  ttyp[j++] = '\\';
-	  ttyp[j++] = '\'';
-	}
+				{
+					ttyp[j++] = '\\';
+					ttyp[j++] = '\'';
+				}
     }
 
   g_snprintf (q, sizeof (q),
-	      "INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
-	      dbtable, tname, lats, lons, ttyp);
+							"INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
+							dbtable, tname, lats, lons, ttyp);
   if (debug)
     printf ("\nquery: %s\n", q);
   if (dl_mysql_query (&mysql, q))
@@ -322,7 +325,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
     printf (_("rows inserted: %d\n"), r);
 
   g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
-/*   printf ("\nquery: %s\n", q); */
+	/*   printf ("\nquery: %s\n", q); */
   if (dl_mysql_query (&mysql, q))
     exiterr (3);
   if (!(res = dl_mysql_store_result (&mysql)))
@@ -370,7 +373,7 @@ get_sql_type_list (void)
     return FALSE;
 
 
-/* make list of possible type entries */
+	/* make list of possible type entries */
   g_snprintf (q, sizeof (q), "select distinct upper(type) from %s", dbtable);
   if (dl_mysql_query (&mysql, q))
     exiterr (3);
@@ -381,16 +384,16 @@ get_sql_type_list (void)
     {
       g_strlcpy (temp, row[0], sizeof (temp));
       for (i = 0; i < (int) strlen (temp); i++)
-	temp[i] = toupper (temp[i]);
+				temp[i] = toupper (temp[i]);
       g_strlcpy (dbtypelist[r++], temp, sizeof (dbtypelist[0]));
       if (r >= MAXWPTYPES)
-	{
-	  printf ("\nSQL: too many waypoint types!\n");
-	  break;
-	}
+				{
+					printf ("\nSQL: too many waypoint types!\n");
+					break;
+				}
       /* load user defined icons */
       if (usericonsloaded == FALSE)
-	load_user_icon( temp );
+				load_user_icon( temp );
     }
   dl_mysql_free_result (res);
   dbtypelistcount = r;
@@ -424,15 +427,15 @@ getsqldata ()
     }
 
   g_snprintf (sql_order, sizeof (sql_order),
-	      "order by \(abs(%.6f - lat)+abs(%.6f - lon))"
-	      ,current_lat,current_long);
+							"order by \(abs(%.6f - lat)+abs(%.6f - lon))"
+							,current_lat,current_long);
   g_strdelimit (sql_order, ",", '.');
   if (debug)
     printf ("mysql order: %s\n", sql_order);
   
   g_snprintf (q, sizeof (q),
-	      "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
-	      dbtable, dbwherestring,sql_order);
+							"SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
+							dbtable, dbwherestring,sql_order);
   if (debug)
     printf ("waypoints: mysql query: %s\n", q);
 
@@ -454,33 +457,33 @@ getsqldata ()
       rges++;
       /*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
       if ((strcmp (row[3], "WLAN")) == 0)
-	wlan = 1;
+				wlan = 1;
       else if ((strcmp (row[3], "WLAN-WEP")) == 0)
-	wlan = 2;
+				wlan = 2;
       else
-	wlan = 0;
+				wlan = 0;
       action = 0;
       if ((strcmp (row[3], "SPEEDTRAP")) == 0)
-	action = 1;
+				action = 1;
       sqlnr = atol (row[4]);
       if (dbusedist)
-	{
-	  lat = g_strtod (row[1], NULL);
-	  lon = g_strtod (row[2], NULL);
-	  l = calcdist (lon, lat);
-	  if (l < dbdistance)
-	    {
-	      fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
-		       row[1], row[2], row[3], wlan, action, sqlnr);
-	      r++;
-	    }
-	}
+				{
+					lat = g_strtod (row[1], NULL);
+					lon = g_strtod (row[2], NULL);
+					l = calcdist (lon, lat);
+					if (l < dbdistance)
+						{
+							fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
+											 row[1], row[2], row[3], wlan, action, sqlnr);
+							r++;
+						}
+				}
       else
-	{
-	  fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
-		   row[1], row[2], row[3], wlan, action, sqlnr);
-	  r++;
-	}
+				{
+					fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
+									 row[1], row[2], row[3], wlan, action, sqlnr);
+					r++;
+				}
     }
   fclose (st);
 
