@@ -167,7 +167,8 @@ unless ($slat && $slon && $endlat && $endlon) {
 }
 print "Upper left: $slat $slon, Lower Right: $endlat, $endlon\n" if ($debug);
 
-my $count = file_count(\($slat,$slon,$endlat,$endlon));
+my $desired_locations= desired_locations($slat,$slon,$endlat,$endlon);
+my $count = file_count($desired_locations);
 print "You are about to download $count file(s).\n";
 
 unless ($force) {
@@ -188,24 +189,24 @@ if ( $update_koord  ) {
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
-foreach my $scale (@{$SCALES_TO_GET_ref}) {
-    print "Scale: $scale\n";
-   # Setup k
-   my $k = $DIFF * $scale;
-   my $klat = $k - ($k / 2); ### FIX BY CAMEL
-   my $klon = $k - ($k / 6); ### FIX BY CAMEL
-   my $lati = $slat;   
-   while ($lati < $endlat) {
-       printf "   %5.2f: ",$lati;
-       my $long = $slon;
-       while ($long < $endlon) {
-	   print wget_map($scale,$lati,$long);
-	   $long += $klon; ### FIX BY CAMEL
-       }
-       print "\n";
-       $lati += $klat; ### FIX BY CAMEL
-       $long = $slon; ### FIX BY CAMEL
-   }
+# Get or Queue
+for my $scale ( sort keys %{$desired_locations} ) {
+    for my $lati ( sort keys %{$desired_locations->{$scale}} ) {
+	printf "   %5.2f: ",$lati;
+	my @longs = sort keys %{$desired_locations->{$scale}->{$lati}};
+	print "(". scalar( @longs ) . ")\t";
+	#print ":". join(" ", @longs ) . "\t";
+	for my $long ( @longs ) {
+	    print wget_map($scale,$lati,$long);
+	}
+	print "\n";
+    }
+#print "\n";
+}
+
+# Wait for wgets
+while ( my $anzahl = runnung_wgets() ) {
+    printf "%5d wgets am laufen \r",$anzahl;
 }
 
 print "\n";
@@ -293,7 +294,7 @@ sub wget_map($$$){
 }
 
 ######################################################################
-    sub error_check {
+sub error_check {
     my $status;
     
     # Check for a centerpoint
@@ -379,24 +380,50 @@ sub expedia_url($$$){
     return ($url,$mapscale);
 }
 
+#############################################################################
+# create function desired_locations. This function only once calculates
+# which lat/lon/scale Combinations are desired to download
+#############################################################################
+sub desired_locations {
+   my ($slat,$slon,$endlat,$endlon) = @_;
+   my $count;   
+   my $desired_locations;
+
+   foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
+       # Setup k
+       my $k = $DIFF * $scale;
+       my $klat = $k - ($k / 2); ### FIX BY CAMEL
+       my $klon = $k - ($k / 6); ### FIX BY CAMEL
+       my $lati = $slat;   
+       while ($lati <= $endlat) {
+	   my $long = $slon;
+	   if ($debug) {
+	       printf "        %5.2f:",$lati;
+	       printf ("\tlong: %6.3f +=%5.3f ... %6.3f",$slon,$klon,$endlon);
+	       printf "\t\t";	
+	   }
+	   while ($long <= $endlon) {
+	       $long += $klon; ### FIX BY CAMEL
+	       $count++;
+	       $desired_locations->{$scale}->{$lati}->{$long}='?';
+	       printf(" %6.3f",$long) if $debug;
+	   }
+	   $lati += $klat; ### FIX BY CAMEL
+	   $long = $slon; ### FIX BY CAMEL
+       }
+   }
+   return($desired_locations);
+}
 
 ######################################################################
 sub file_count {
-    my ($slat,$slon,$endlat,$endlon) = @_;
-    my $count;
-    foreach my $scale (@{$SCALES_TO_GET_ref}) {
-	my $k = $DIFF * $scale;
-	my $klat = $k - ($k / 2); ### FIX BY CAMEL
-	my $klon = $k - ($k / 6); ### FIX BY CAMEL
-	my $lati = $$slat;   
-	while ($lati < $$endlat) {
-	    my $long = $$slon;
-	    while ($long < $$endlon) {
-		$long += $klon; ### FIX BY CAMEL
+    my $desired_locations = shift;
+    my $count=0;
+    for my $scale ( keys %{$desired_locations} ) {
+	for my $lat ( keys %{$desired_locations->{$scale}} ) {
+	    for my $lon ( keys %{$desired_locations->{$scale}->{$lat}} ) {
 		$count++;
 	    }
-	    $lati += $klat; ### FIX BY CAMEL
-	    $long = $slon; ### FIX BY CAMEL
 	}
     }
     return($count);
