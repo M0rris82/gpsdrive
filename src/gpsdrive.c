@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.63  2005/10/10 13:17:52  tweety
+DBUS Support for connecting to gpsd
+you need to use ./configure --enable-dbus to enable it during compile
+Author: "Belgabor" <belgabor@gmx.de>
+
 Revision 1.62  2005/08/19 07:12:36  tweety
 Autor:Russell MIrov <russell.mirov@sun.com>
 save tracks immedeately
@@ -2457,6 +2462,9 @@ extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 /*  haveGARMIN is TRUE if we get data from program garble in GARMIN we get only long and lat */
 extern gint haveNMEA, haveGARMIN;
+#ifdef DBUS_ENABLE
+extern gint useDBUS;
+#endif
 extern int nmeaverbose;
 extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
@@ -3731,18 +3739,41 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
 {
-	gint i, so;
+#ifndef DBUS_ENABLE
+	gint /*i,*/ so;
 	gchar buf3[35];
 	time_t t;
 	struct tm *ts;
+#endif
 
 	/*    if (posmode) */
 	/*      return TRUE; */
+	/* What the hell is this for? i isn't used anymore onwards...
 	if (posmode)
 		i = 1;
 	else
 		i = 2;
+	*/
+	
+#ifdef DBUS_ENABLE
+	/* If we use DBUS track points are usually stored by the DBUS signal handler */
+	/* Only store them by timer if we are in position mode */
+	if (useDBUS) {
+		if (posmode)
+			storepoint();
+	} else
+		storepoint();
+	return TRUE;
+}
 
+void
+storepoint ()
+{
+	gint /*i,*/ so;
+	gchar buf3[35];
+	time_t t;
+	struct tm *ts;
+#endif
 	/*    g_print("Havepos: %d\n", havepos); */
 	if ((!simmode && !havepos) || posmode /*  ||((!simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
@@ -9383,6 +9414,9 @@ usage ()
 		 _
 		 ("-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"),
 		 _("-n    Disable use of direct serial connection\n"),
+#ifdef DBUS_ENABLE
+		_("-X    Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
+#endif
 		 _("-l X  Select language of the voice,\n"
 		   "      X may be english, spanish or german\n"),
 		 _("-s X  set height of the screen, if autodetection\n"
@@ -9790,6 +9824,9 @@ main (int argc, char *argv[])
 	zoom = 1;
 	milesflag = iszoomed = FALSE;
 	sel_target = NULL;
+#ifdef DBUS_ENABLE
+	useDBUS = FALSE;
+#endif
 	g_strlcpy (wplabelfont, "Sans 11", sizeof (wplabelfont));
 	g_strlcpy (bigfont, "Sans bold 26", sizeof (bigfont));
 	g_strlcpy (friendsserverip, "127.0.0.1", sizeof (friendsserverip));
@@ -10131,7 +10168,7 @@ main (int argc, char *argv[])
 	do
 	{
 		i = getopt (argc, argv,
-			    "W:ESA:ab:c:zx1qivdDFepH:hnf:l:t:s:o:r:?");
+			    "W:ESA:ab:c:zXx1qivdDFepH:hnf:l:t:s:o:r:?");
 		switch (i)
 		{
 		case 'a':
@@ -10162,6 +10199,13 @@ main (int argc, char *argv[])
 			break;
 		case 'x':
 			extrawinmenu = TRUE;
+			break;
+		case 'X':
+#ifdef DBUS_ENABLE
+			useDBUS = TRUE;
+#else
+			g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
+#endif
 			break;
 		case 'p':
 			pdamode = TRUE;
