@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.55  2005/08/11 07:20:27  tweety
+moved top_GPSWORLD.jpg to data/maps/
+
 Revision 1.54  2005/08/09 01:08:30  tweety
 Twist and bend in the Makefiles to install the DataDirectory more apropriate
 move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
@@ -7331,7 +7334,7 @@ loadmap (char *filename)
 
 	if ((strcmp (filename, "top_GPSWORLD.jpg")) == 0)
 	{
-		g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s",
+		g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s",
 			    DATADIR, "top_GPSWORLD.jpg");
 		limage = gdk_pixbuf_new_from_file (mappath, NULL);
 		if (limage == NULL)
