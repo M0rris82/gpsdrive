@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.9  2005/10/10 22:01:26  robstewart
+  Updated to attempt fix on bug reported by Andreas.
+
   Revision 1.8  2005/05/15 06:51:27  tweety
   all speech strings are now represented as arrays of strings
   author: Rob Stewart <rob@groupboard.com>
@@ -619,7 +622,8 @@ speech_out_cb (GtkWidget * widget, guint * datum)
       {
         if( dist <= 1.2 )
         {
-          g_snprintf( s2, sizeof(s2), speech_meters[voicelang], dist * 1000.0 );
+          g_snprintf( s2, sizeof(s2), speech_meters[voicelang], 
+                     (int) (dist * 1000) );
         }
         else if( 1 == (int) dist )
         {
