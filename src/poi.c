@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/02/08 20:18:39  tweety
+small fixes in poi.c
+
 Revision 1.2  2005/02/07 07:53:39  tweety
 added check_if_moved inti function poi_rebuild_list
 
@@ -187,7 +190,7 @@ poi_rebuild_list (void)
   if ( mapscale <= 500000 )   display_level=20;
   if ( mapscale <= 100000 )   display_level=30;
   if ( mapscale <= 50000 )    display_level=60;
-  if ( mapscale <= 4000 )     display_level=99;
+  if ( mapscale <= 8000 )     display_level=99;
   
 
 
@@ -224,33 +227,30 @@ poi_rebuild_list (void)
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   { // gernerate mysql ORDER string
-
+    char sql_order_numbers[5000];
+    g_snprintf (sql_order_numbers, sizeof (sql_order),
+		"\(abs(%.6f - lat)+abs(%.6f - lon)\)"
+		,lat_mid,lon_mid);
+    g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
     
-    {
-      char sql_order_numbers[5000];
-      g_snprintf (sql_order_numbers, sizeof (sql_order),
-		  "\(abs(%.6f - lat)+abs(%.6f - lon)\)"
-		  ,lat_mid,lon_mid);
-      g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
-
-      g_snprintf (sql_order, sizeof (sql_order),
-		  "order by level,%s ",sql_order_numbers);
-      g_snprintf (sql_order, sizeof (sql_order),
-		  "order by %s ",sql_order_numbers);
-    }
-
-    /*
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by level ");
+		"order by level,%s ",sql_order_numbers);
+    g_snprintf (sql_order, sizeof (sql_order),
+		"order by %s ",sql_order_numbers);
+    /*
+      g_snprintf (sql_order, sizeof (sql_order),
+      "order by level ");
     */
     if (debug)
       printf ("POI mysql order: %s\n", sql_order);
   }
-
+  
   { // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
-		"WHERE %.6f < lat AND lat < %.6f AND %.6f < lon AND lon < %.6f AND level_min <= %f AND %f <= level_max "
-		,lat_min,lat_max,lon_min,lon_max,display_level,display_level);
+		"WHERE %.6f <= lat AND lat <= %.6f AND %.6f <= lon AND lon <= %.6f AND level_min <= %f AND %f <= level_max ",
+		lat_min,lat_max,
+		lon_min,lon_max,
+		display_level,display_level);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
       printf ("POI mysql where: %s\n", sql_where );
@@ -269,8 +269,8 @@ poi_rebuild_list (void)
 	      // "SELECT lat,lon,alt,type_id,proximity "
 	      "SELECT lat,lon,name,type_id "
 	      "FROM poi "
-	      //	      "LEFT JOIN poi_ type ON poi_.type_id = type.type_id "
-	      "%s %s LIMIT 500",
+	      //	      "LEFT JOIN oi_ type ON poi_.type_id = type.type_id "
+	      "%s %s LIMIT 4000",
 	      sql_where,sql_order);
   /*    dbwherestring,sql_order,lat,lon);  */
   if (debug)
@@ -360,10 +360,6 @@ poi_rebuild_list (void)
   if ( debug )
     printf (_("%d(%d) rows read in %.2f seconds\n"), poi_max, rges, ti);
 
-  if (!dl_mysql_eof (res))
-    return;
-
-  dl_mysql_free_result (res);
 
   /* remember where the data belongs to */
   poi_lat_lr = lat_lr;
@@ -371,6 +367,10 @@ poi_rebuild_list (void)
   poi_lat_ul = lat_ul; 
   poi_lon_ul = lon_ul;
 
+  if (!dl_mysql_eof (res))
+    return;
+
+  dl_mysql_free_result (res);
 
   printf ("=============================================================================\n");
 }
