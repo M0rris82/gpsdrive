@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.49  2005/07/05 19:44:28  ganter
+fix for locale problem
+
 Revision 1.48  2005/07/05 19:19:56  ganter
 got include files from mysql 4.1.x, now no segfault at program end.
 May break older libmysqlclient
@@ -11706,7 +11709,12 @@ main (int argc, char *argv[])
 	/*  show splash screen */
 	if (!nosplash)
 		splash ();
-
+       { // Set locale for the use of atof()  
+           gchar buf[5];  
+           sprintf(buf,"%.1f",1.2);  
+           localedecimal=buf[1];  
+       }  
+  
 	/* init sql support */
 	if (usesql)
 		usesql = sqlinit ();
