@@ -22,6 +22,9 @@
 /* ******************************************************************** 
 	 
 $Log$
+Revision 1.11  1994/06/07 11:25:45  tweety
+set debug levels more detailed
+
 Revision 1.10  2005/10/19 07:22:21  tweety
 Its now possible to choose units for displaying coordinates also in
 Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
@@ -375,7 +378,7 @@ created settings.c
 gchar homedir[500];
 gchar mapdir[500];
 
-extern gint statusid, debug, havespeechout, posmode, muteflag, sqlflag;
+extern gint statusid, mydebug, havespeechout, posmode, muteflag, sqlflag;
 
 typedef struct
 {
@@ -489,7 +492,7 @@ getTimeTextHHMMSS (gdouble timeValue, gchar * timeText, int timeTextSize)
 		  (int) ((timeValue * 60 - (int) (timeValue * 60)) * 60));
     }
 
-  if (debug)
+  if ( mydebug > 20 )
     {
       printf ("\n timeTextHHMMSS: <%s>\n", timeText);
     }
@@ -548,7 +551,7 @@ change_font_callback (GtkWidget * button, gint data)
       fn =
 	gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
 						 (dialog));
-      if (debug)
+      if ( mydebug > 20 )
 	{
 	  printf ("\n New wp label font: %s\n", fn);
 	}
@@ -626,7 +629,7 @@ change_color_callback (GtkWidget * button, gint data)
       gtk_color_selection_get_current_color (colorsel, &color);
       g_snprintf (bluecolor, sizeof (bluecolor), "#%02x%02x%02x",
 		  color.red >> 8, color.green >> 8, color.blue >> 8);
-      if (debug)
+      if ( mydebug > 20 )
 	{
 	  fprintf (stderr, "\nnew color: %s\n", bluecolor);
 	}
@@ -666,7 +669,7 @@ change_trackcolor_callback (GtkWidget * button, gint data)
       g_snprintf (trackcolor, sizeof (trackcolor), "#%02x%02x%02x",
 		  color.red >> 8, color.green >> 8, color.blue >> 8);
 
-      if (debug)
+      if ( mydebug > 20 )
 	{
 	  fprintf (stderr, "\nnew color: %s\n", trackcolor);
 	}
@@ -708,7 +711,7 @@ change_friendscolor_callback (GtkWidget * button, gint data)
       gtk_color_selection_get_current_color (colorsel, &color);
       g_snprintf (friendscolor, sizeof (friendscolor), "#%02x%02x%02x",
 		  color.red >> 8, color.green >> 8, color.blue >> 8);
-      if (debug)
+      if ( mydebug > 20 )
 	{
 	  fprintf (stderr, "\nnew color: %s\n", trackcolor);
 	}
@@ -1452,7 +1455,7 @@ testifnight (void)
       isnight = FALSE;
     }
 
-  if (debug)
+  if (mydebug > 20)
     {
       if (isnight)
 	{
@@ -1528,7 +1531,7 @@ daylights (void)
   hour = st->tm_hour;
   hour = hour + st->tm_min / 60.0;
 
-  if (debug)
+  if ( mydebug > 20 )
     {
       g_print ("\nhour: %d:%02d",
 	       (int) hour, (int) ((hour - (int) hour) * 60));
@@ -1563,7 +1566,7 @@ infosettz (GtkWidget * widget, guint datum)
   sc = (char *) gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (ge12)->entry));
   sscanf (sc, "GMT%d", &zone);
 
-  if (debug)
+  if ( mydebug > 20 )
     {
       g_print ("\nTimezone: %d", zone);
     }
@@ -2021,7 +2024,7 @@ friendslookup_cb (GtkWidget * widget, guint datum)
   gtk_entry_set_text (GTK_ENTRY (ipbt), friendsserverip);
   iplock = FALSE;
 
-  if (debug)
+  if ( mydebug > 20 )
     {
       printf ("\nserver ip: %s\n", friendsserverip);
     }
@@ -2102,7 +2105,7 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
       g_strlcpy (dbwherestring, "", sizeof (dbwherestring));
     }
 
-  if (debug)
+  if ( mydebug > 20 )
     {
       printf ("\n%s\n", dbwherestring);
     }

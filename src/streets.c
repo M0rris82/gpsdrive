@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.20  1994/06/07 11:25:45  tweety
+  set debug levels more detailed
+
   Revision 1.19  2005/11/06 17:24:26  tweety
   shortened map selection code
   coordinate_string2gdouble:
@@ -257,7 +260,7 @@ posxy_on_screen (gdouble posx, gdouble posy)
 void
 streets_init (void)
 {
-  if (debug)
+  if (mydebug>50)
     printf ("Streets init\n");
 
   get_streets_type_list ();
@@ -304,7 +307,7 @@ streets_check_if_moved (void)
   if (streets_lat_lr == lat_lr && streets_lon_lr == lon_lr &&
       streets_lat_ul == lat_ul && streets_lon_ul == lon_ul)
     return 0;
-  if (debug)
+  if (mydebug>50)
     printf ("streets_check_if_moved: Streets Display moved\n");
   return 1;
 }
@@ -320,13 +323,13 @@ get_streets_type_list (void)
   if (!usesql)
     return;
 
-  if (debug)
+  if (mydebug >50)
     printf ("get_streets_type_list ()\n");
 
   g_snprintf (sql_query, sizeof (sql_query),
 	      "SELECT streets_type_id,name,color FROM streets_type ORDER BY streets_type_id");
 
-  if (mydebug)
+  if (mydebug>20)
     printf ("QUERY:%s\n",sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
@@ -347,7 +350,7 @@ get_streets_type_list (void)
 
   while ((row = dl_mysql_fetch_row (res)))
     {
-	if (mydebug)
+	if (mydebug >50)
 	    printf ("got ROW %s,	%s,	%s\n",
 		    row[0],row[1],row[2]);
 
@@ -464,13 +467,13 @@ streets_rebuild_list (void)
   if (importactive)
     return;
 
-  if (debug)
+  if (mydebug >50)
     printf
       ("streets_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvv\n");
 
   if (!streets_draw)
     {
-      if (debug)
+      if (mydebug >50)
 	printf ("streets_rebuild_list: streets_draw is off\n");
       return;
     }
@@ -511,7 +514,7 @@ streets_rebuild_list (void)
 		lat_min, lat_max, lon_min, lon_max,
 		lat_min, lat_max, lon_min, lon_max, mapscale);
     g_strdelimit (sql_where, ",", '.');	// For different LANG
-    if (debug)
+    if (mydebug >50)
       {
 	// printf ("STREETS mysql where: %s\n", sql_where );
 	printf ("streets_rebuild_list: STREETS mapscale: %ld\n", mapscale);
@@ -527,7 +530,7 @@ streets_rebuild_list (void)
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
 	      "FROM streets " "%s LIMIT 200000", sql_where);
 
-  if (debug)
+  if (mydebug >50)
     printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
@@ -546,7 +549,7 @@ streets_rebuild_list (void)
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("streets_rebuild_list: processing rows\n");
   rges = r = 0;
   streets_list_count = -1;
@@ -572,7 +575,7 @@ streets_rebuild_list (void)
 	  if (streets_list_count >= streets_list_limit)
 	    {
 	      streets_list_limit = streets_list_count + 1000;
-	      if (debug)
+	      if (mydebug >50)
 		printf
 		  ("streets_rebuild_list: renew memory for street list: %ld\n",
 		   streets_list_limit);
@@ -587,10 +590,10 @@ streets_rebuild_list (void)
 		  return;
 		}
 	    }
-	  if (mydebug)
+	  if (mydebug>90)
 	    {
-	      // printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
-	      // printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
+		printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
+		printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
 	    }
 
 	  // Save retrieved streets information into structure
@@ -622,7 +625,7 @@ streets_rebuild_list (void)
     }
 
 
-  if (debug)
+  if (mydebug >50)
     {				// print time for getting Data
       gettimeofday (&t, NULL);
       ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
@@ -648,7 +651,7 @@ streets_rebuild_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  if (debug)
+  if (mydebug >50)
     printf ("streets_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
@@ -735,12 +738,12 @@ streets_draw_list (void)
   if (!(streets_draw))
     {
       streets_check_if_moved_reset ();
-      if (debug)
+      if (mydebug >50)
 	printf ("streets_draw is off\n");
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("streets_draw\n");
 
   if (streets_check_if_moved ())
@@ -751,7 +754,7 @@ streets_draw_list (void)
   if ( 0 >= gdks_streets_max )
       return;
 
-  if (debug)
+  if (mydebug >50)
     printf ("streets_draw %ld segments\n", streets_list_count);
 
   gdks_streets = g_new0 (GdkSegment, gdks_streets_max);
@@ -763,7 +766,7 @@ streets_draw_list (void)
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("created gdk struct for %d segments\n", gdks_streets_max);
 
   /* ------------------------------------------------------------------ */
@@ -779,7 +782,7 @@ streets_draw_list (void)
       posy2 = (streets_list + i)->y2;
 
 
-      /*      if ( mydebug ) {
+      /*      if ( mydebug >90 ) {
        * //printf("    a1 %f,%f\n",  posx1,posy1);
        * //printf("    a2 %f,%f\n",  posx2,posy2);
        * 
@@ -794,7 +797,7 @@ streets_draw_list (void)
 	  posxy_on_screen (posx2, posy2))
 	{
 	  /*
-	   * if (debug) {
+	   * if (mydebug >50) {
 	   * printf ("       Draw: %f %f -> %f, %f\n",
 	   * (streets_list + i)->x1,   (streets_list + i)->y1,
 	   * (streets_list + i)->x2,   (streets_list + i)->y2
@@ -823,7 +826,7 @@ streets_draw_list (void)
 	  (gdks_streets + gdks_streets_count)->x2 = posx2;
 	  (gdks_streets + gdks_streets_count)->y2 = posy2;
 
-	  if (mydebug && 0)
+	  if (mydebug >90)
 	    {
 	      char beschrift[120];
 	      g_snprintf (beschrift, sizeof (beschrift),
@@ -855,7 +858,7 @@ streets_draw_list (void)
 
 	    }
 
-	  if (debug)
+	  if (mydebug >50)
 	    {
 	      //          printf("    1 %f,%f\n",  posx1,posy1);
 	      //          printf("    2 %f,%f\n",  posx2,posy2);
@@ -894,7 +897,7 @@ streets_draw_list (void)
 
   g_free (gdks_streets);
 
-  if (mydebug)
+  if (mydebug >50)
     printf
       ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }

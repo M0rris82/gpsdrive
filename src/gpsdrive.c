@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.72  1994/06/07 11:25:45  tweety
+set debug levels more detailed
+
 Revision 1.71  2005/11/14 06:51:57  tweety
 nlat has to be double
 Autor: Mike Auty
@@ -3052,7 +3055,7 @@ display_status2 ()
 	gtk_label_set_text (GTK_LABEL (l8), s2);
 
 	// TODO: move this code to different location
-	if (debug)
+	if (mydebug >10 )
 	{
 		if (havepos)
 			g_print ("***Position: %f %f***\n", current_lat,
@@ -3102,7 +3105,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 					      &nightcolor);
 			alreadydaymode = FALSE;
 			alreadynightmode = TRUE;
-			if (debug)
+			if (mydebug>1)
 				fprintf (stderr, "setting to night view\n");
 		}
 	}
@@ -3112,7 +3115,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	{
 		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
 				      &defaultcolor);
-		if (debug)
+		if ( mydebug > 10 )
 			fprintf (stderr, "setting to daylight view\n");
 		alreadydaymode = TRUE;
 		alreadynightmode = FALSE;
@@ -3143,7 +3146,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 		runtime += 1000000l * (tv2.tv_sec - tv1.tv_sec);
 	globruntime = runtime / 1000;
 	loadpercent = (int) (100.0 * (float) runtime / (runtime + runtime2));
-	if (mydebug)
+	if ( mydebug>30 )
 		g_print ("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000),
 			 loadpercent);
 
@@ -3228,7 +3231,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 			buf2[4] = num[1];
 			g_snprintf (buf, sizeof (buf), "SND: %s %s %s\n",
 				    buf2, messagename, messagesendtext);
-			if (debug)
+			if ( mydebug > 3 )
 				fprintf (stderr,
 					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
 					 friendsserverip, buf);
@@ -3252,7 +3255,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 				    friendsidstring, friendsname, la, lo, tii,
 				    groundspeed / milesconv,
 				    180.0 * direction / M_PI);
-			if (debug)
+			if ( mydebug > 3 )
 				fprintf (stderr,
 					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
 					 friendsserverip, buf);
@@ -3922,7 +3925,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 		gtk_entry_set_text (GTK_ENTRY (satslabel3), t);
 
 		g_strlcpy (buf, "", sizeof (buf));
-		if (mydebug)
+		if ( mydebug > 30 )
 			g_print ("gpsd: Satfix: %d\n", satfix);
 
     if (satfix != oldsatfix)
@@ -4044,7 +4047,8 @@ draw_grid (GtkWidget * widget)
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 
-	if ( mydebug >50 ) fprintf(stderr , "draw_grid()\n");
+	if ( mydebug >50 ) 
+	    fprintf(stderr , "draw_grid()\n");
 
 
 	// calculate the start and stop for lat/lon according to the displayed section
@@ -4075,7 +4079,7 @@ draw_grid (GtkWidget * widget)
 	lat_min = floor (lat_min / step) * step;
 	lon_min = floor (lon_min / step) * step;
 
-	if (mydebug)
+	if ( mydebug > 30 )
 		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f)\n", lat_min,
 			lon_min, lat_max, lon_max);
 
@@ -4160,7 +4164,7 @@ draw_grid (GtkWidget * widget)
 			    }
 		    }
 	    }
-	if (mydebug)
+	if ( mydebug > 30 )
 	    printf ("draw_grid loops: %d\n", count);
 }
 
@@ -4175,7 +4179,7 @@ draw_waypoints ()
 	gint k, k2, i, shownwp = 0;
 	gchar txt[200];
 
-	if (mydebug >10)
+	if (mydebug > 10)
 		printf ("draw_waypoints()\n");
 
 	/*  draw waypoints */
@@ -4356,7 +4360,7 @@ draw_zoom_scale (void)
 	 */
 	l = (SCREEN_X - 40) - pixels + (pixels - strlen (txt) * 15);
 
-	/*       if (debug) */
+	/*       if ( mydebug > 10 ) */
 	/*  g_print("%d\n", m); */
 
 	gdk_gc_set_function (kontext, GDK_OR);
@@ -5226,7 +5230,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 			if (angle_to_destination < 0)
 				angle_to_destination += 2 * M_PI;
 		}
-		if (mydebug)
+		if ( mydebug>30 )
 			g_print ("Angle_To_Destination: %.1f �\n",
 				 angle_to_destination * 180 / M_PI);
 
@@ -5305,7 +5309,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 		if ((oldxoff != xoff) || (oldyoff != yoff))
 			iszoomed = FALSE;
 
-		if (mydebug)
+		if ( mydebug>30 )
 		{
 			g_print ("x: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x, xoff, oldxoff, zoom, xoffmax);
 			g_print ("y: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y, yoff, oldyoff, zoom, yoffmax);
@@ -5340,7 +5344,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 		}
 
-		if (debug)
+		if ( mydebug > 0 )
 			g_print ("map zoomed!\n");
 		iszoomed = TRUE;
 		expose_mini_cb (NULL, 0);
@@ -5467,7 +5471,7 @@ simulated_pos (GtkWidget * widget, guint * datum)
 			groundspeed = 999;
 		old_lat = current_lat;
 		old_long = current_long;
-		if (mydebug)
+		if (mydebug>30)
 			g_print ("Time: %f\n", secs);
 	}
 
@@ -6111,7 +6115,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 		g_snprintf (newmapsc, sizeof (newmapsc), "%d",
 			    (int) (ns * EXPEDIAFACT));
 	}
-	if (debug)
+	if ( mydebug > 0 )
 		printf ("sctext: %s,newmapsc: %s\n", sctext, newmapsc);
 
 	/*   new URL (08/28/2002) */
@@ -6143,7 +6147,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 				    hostname);
 	}
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("Download URL: %s\n", writebuff);
 
 	if (!expedia)
@@ -6159,12 +6163,12 @@ downloadsetparm (GtkWidget * widget, guint datum)
 		}
 
 		g_strlcpy (url, p, sizeof (url));
-		if (debug)
+		if ( mydebug > 3 )
 			printf ("%s\n", url);
 		p = strstr (url, "Location: ");
 		if (p == NULL)
 		{
-			if (debug)
+			if ( mydebug > 0 )
 				printf ("http data error, could not find 'Location:' sub string\n");
 			return FALSE;
 		}
@@ -6172,19 +6176,19 @@ downloadsetparm (GtkWidget * widget, guint datum)
 		p = strstr (url2, "\n");
 		if (p == NULL)
 		{
-			if (debug)
+			if ( mydebug > 0 )
 				printf ("http data error, could not find new line\n");
 			return FALSE;
 		}
 
 		url2[p - url2] = 0;
-		if (debug)
+		if ( mydebug > 3 )
 			printf ("**********\n%s\n", url2);
 		g_strlcpy (hn, (url2 + 7), sizeof (hn));
 		p = strstr (hn, "/");
 		if (p == NULL)
 		{
-			if (debug)
+			if ( mydebug > 0 )
 				printf ("http request error, could not find forward slash\n");
 			return FALSE;
 		}
@@ -6193,7 +6197,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 		g_strlcpy (url, (url2 + strlen (hn) + 7), sizeof (url));
 		url[strlen (url) - 1] = 0;
 		g_strlcpy (actualhostname, hn, sizeof (actualhostname));
-		if (debug)
+		if ( mydebug > 3 )
 			printf ("hn: %s, url: %s\n", hn, url);
 
 		if (haveproxy == TRUE)
@@ -6230,7 +6234,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 			   sizeof (url2));
 
 		g_strlcpy (writebuff, url2, sizeof (writebuff));
-		if (debug)
+		if ( mydebug > 3 )
 			printf ("\nurl2:\n%s\n**********\n\n%s\n-----------------\n", url2, writebuff);
 
 		downloadstart_cb (widget, 0);
@@ -6338,7 +6342,7 @@ getexpediaurl (GtkWidget * widget)
 	memset (tmpbuff, 0, 8192);
 	if ((e = read (dlsock, tmpbuff, 8000)) < 0)
 		perror (_("read from Webserver"));
-	if (debug)
+	if ( mydebug > 3 )
 		g_print ("Loaded %d Bytes\n", e);
 	if (e > 0)
 		g_strlcpy (url, tmpbuff, sizeof (url));
@@ -6532,7 +6536,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		memset (tmpbuff, 0, 8192);
 		if ((e = read (dlsock, tmpbuff, 8000)) < 0)
 			perror (_("read from Webserver"));
-		if (debug)
+		if ( mydebug > 3 )
 			g_print ("Loaded %d Bytes\n", e);
 		if (e > 0)
 		{
@@ -6683,7 +6687,7 @@ wpfileselect_cb (GtkWidget * widget, guint datum)
 		{
 			g_strlcpy (activewpfile, (names + datum)->n,
 				   sizeof (activewpfile));
-			if (debug)
+			if ( mydebug > 3 )
 				g_print ("activewpfile: %s\n", activewpfile);
 			loadwaypoints ();
 			iszoomed = FALSE;
@@ -7382,7 +7386,7 @@ accepttext (GtkWidget * widget, gpointer data)
 
 	strncpy (messagesendtext, p, 300);
 	messagesendtext[301] = 0;
-	if (debug)
+	if ( mydebug > 8 )
 		fprintf (stderr, "friends: message:\n%s\n", messagesendtext);
 	gtk_widget_destroy (widget);
 	wi = gtk_item_factory_get_item (item_factory,
@@ -7554,12 +7558,12 @@ delwp_cb (GtkWidget * widget, guint datum)
 	gchar *p;
 
 	i = deleteline;
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("delwp: remove line %d\n", i);
 	gtk_clist_get_text (GTK_CLIST (mylist), i, 0, &p);
 	j = atol (p) - 1;
 	gtk_clist_remove (GTK_CLIST (mylist), i);
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("delwp: remove entry %d\n", j);
 
 	deletesqldata ((wayp + j)->sqlnr);
@@ -7605,7 +7609,7 @@ scaler_cb (GtkAdjustment * adj, gdouble * datum)
 	scalewanted = nlist[(gint) rint (adj->value)];
 	g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
 	gtk_label_set_text (GTK_LABEL (l8), s2);
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("Scaler: %d\n", scalewanted);
 	needtosave = TRUE;
 
@@ -7622,7 +7626,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	gint x, y;
 	GdkModifierType state;
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("event:%x key:%c\n", event->keyval, event->keyval);
 
 
@@ -7681,7 +7685,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 
 		calcxytopos (x, y, &lat, &lon, zoom);
 
-		if (debug)
+		if ( mydebug > 0 )
 			printf ("Actual Position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
 		/*  Add mouse position as waypoint */
 		wplat = lat;
@@ -7702,7 +7706,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 
 		gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
 		calcxytopos (x, y, &lat, &lon, zoom);
-		//		if (debug)
+		//		if ( mydebug > 0 )
 		printf ("Add Waypoint: %s lat:%f,lon:%f (x:%d,y:%d)\n", wp_name, lat, lon, x, y);
 		addwaypoint (wp_name, wp_type, lat, lon);
 	}
@@ -8938,8 +8942,8 @@ loadwaypoints ()
 	}
 	else
 	{
-		if (debug)
-			g_print ("\nsqlflag: %d, load waypoint file %s\n",
+		if ( mydebug > 0 )
+			g_print ("\nsqlflag: %d\nload waypoint file %s\n",
 				 sqlflag, mappath);
 
 		i = 0;
@@ -9600,7 +9604,7 @@ main (int argc, char *argv[])
 	if (pro == NULL)
 		pro = g_getenv ("http_proxy");
 
-	if (debug)
+	if ( mydebug > 0 )
 		printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
 
 	if (pro)
@@ -9613,7 +9617,7 @@ main (int argc, char *argv[])
 		{
 			haveproxy = TRUE;
 			g_strlcpy (proxy, s2, sizeof (proxy));
-			if (debug)
+			if ( mydebug > 0 )
 				g_print (_("\nUsing proxy: %s on port %d"),
 					 proxy, proxyport);
 		}
@@ -9625,7 +9629,7 @@ main (int argc, char *argv[])
 		}
 	}
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("\nGpsDrive version %s\n%s\n", VERSION, rcsid);
 
 	/*  show splash screen */
@@ -9653,7 +9657,7 @@ main (int argc, char *argv[])
 	{
 		real_screen_x = min(1280,w-300);
 		real_screen_y = min(1024,h-200);
-		if (debug)
+		if ( mydebug > 0 )
 		    g_print ("Set real Screen size to %d,%d\n", 
 			     real_screen_x,real_screen_y);
 		

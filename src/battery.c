@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  1994/06/07 11:25:45  tweety
+  set debug levels more detailed
+
   Revision 1.8  2005/11/05 01:46:33  tweety
   increase debuglevel for output
 
@@ -301,7 +304,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		  stat (fn, &buf);
 		  if (S_ISREG (buf.st_mode) == TRUE)
 		    {
-		      if (mydebug)
+		      if (mydebug>30)
 			fprintf (stderr, "\nfound file %s\n", fn);
 		      battery = fopen (fn, "r");
 		      if (battery != NULL)
@@ -354,7 +357,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		  stat (fn, &buf);
 		  if (S_ISREG (buf.st_mode) == TRUE)
 		    {
-		      if (mydebug)
+		      if (mydebug>30)
 			fprintf (stderr, "\nfound file %s\n", fn);
 		      battery = fopen (fn, "r");
 		      if (battery == NULL)
@@ -388,7 +391,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		      do
 			{
 			  e = fscanf (battery, "%s%[^\n]", t, t2);
-			  if (mydebug)
+			  if (mydebug>30)
 			    fprintf (stderr, "t: %s, t2: %s\n", t, t2);
 			  if ((strstr (t, "Status:")) != NULL)
 			    {
@@ -424,7 +427,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 
 	}
 
-      if (mydebug)
+      if (mydebug>60)
 	fprintf (stderr, "v1: %d, v2:%d\n", v1, v2);
       if (v2 != 0)
 	*blevel = (int) (((double) v2 / v1) * 100.0);
@@ -449,7 +452,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 	      stat (fn, &buf);
 	      if (S_ISREG (buf.st_mode) == TRUE)
 		{
-		  if (mydebug)
+		  if (mydebug>30)
 		    fprintf (stderr, "\nfound file %s\n", fn);
 		  temperature = fopen (fn, "r");
 		  if (temperature != NULL)
@@ -486,13 +489,13 @@ battery_get_values_fbsd (int *blevel, int *bloading)
 
   if ((fd = open ("/dev/apm", O_RDONLY)) == -1)
     {
-      if (mydebug)
+      if (mydebug>30)
 	fprintf (stderr, "gpsdrive: open(/dev/apm): %s\n", strerror (errno));
       return FALSE;
     }
   if (ioctl (fd, APMIO_GETINFO, &ai) == -1)
     {
-      if (mydebug)
+      if (mydebug>30)
 	fprintf (stderr,
 		 "gpsdrive: ioctl(APMIO_GETINFO): %s\n", strerror (errno));
       close (fd);
@@ -566,13 +569,13 @@ battery_get_values_nbsd (int *blevel, int *bloading)
 
   if ((fd = open ("/dev/apm", O_RDONLY)) == -1)
     {
-      if (mydebug)
+      if (mydebug>30)
 	fprintf (stderr, "gpsdrive: open(/dev/apm): %s\n", strerror (errno));
       return FALSE;
     }
   if (ioctl (fd, APM_IOC_GETPOWER, &ai) == -1)
     {
-      if (mydebug)
+      if ( mydebug > 30 )
 	fprintf (stderr,
 		 "gpsdrive: ioctl(APM_IOC_GETPOWER): %s\n", strerror (errno));
       close (fd);
@@ -650,7 +653,7 @@ battery_get_values (void)
       if (temptooltips != NULL)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
 			      tempeventbox, cputempstring, NULL);
-      if (mydebug)
+      if ( mydebug > 30 )
 	fprintf (stderr, "cputempstring %s\n", cputempstring);
     }
   if (havebattery)
@@ -659,7 +662,7 @@ battery_get_values (void)
       if (temptooltips != NULL)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
 			      batteventbox, batstring, NULL);
-      if (mydebug)
+      if ( mydebug > 30 )
 	fprintf (stderr, "batstring %s\n", batstring);
     }
   return ret;
@@ -783,7 +786,7 @@ expose_display_battery ()
 
   if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
     {
-      if (mydebug)
+      if ( mydebug > 30 )
 	g_print ("\nBattery: %d%%\n", batlevel);
 
       /* This is for Festival, so we cannot use gettext() for i18n */

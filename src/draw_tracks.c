@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.5  1994/06/07 11:25:45  tweety
+  set debug levels more detailed
+
   Revision 1.4  2005/11/06 18:37:38  tweety
   shortened map selection code
   coordinate_string2gdouble:
@@ -167,7 +170,7 @@ void get_tracks_type_list (void);
 void
 tracks_init (void)
 {
-  if (debug)
+  if (mydebug >50)
     printf ("Tracks init\n");
 
   get_tracks_type_list ();
@@ -214,7 +217,7 @@ tracks_check_if_moved (void)
   if (tracks_lat_lr == lat_lr && tracks_lon_lr == lon_lr &&
       tracks_lat_ul == lat_ul && tracks_lon_ul == lon_ul)
     return 0;
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_check_if_moved: Tracks Display moved\n");
   return 1;
 }
@@ -230,7 +233,7 @@ get_tracks_type_list (void)
   if (!usesql)
     return;
 
-  if (debug)
+  if (mydebug >50)
     printf ("get_tracks_type_list ()\n");
 
   g_snprintf (sql_query, sizeof (sql_query),
@@ -339,12 +342,12 @@ tracks_rebuild_list (void)
   if (importactive)
     return;
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvv\n");
 
   if (!tracks_draw)
     {
-      if (debug)
+      if (mydebug >50)
 	printf ("tracks_rebuild_list: tracks_draw is off\n");
       return;
     }
@@ -383,7 +386,7 @@ tracks_rebuild_list (void)
 		lat_min, lat_max, lon_min, lon_max,
 		lat_min, lat_max, lon_min, lon_max);
     g_strdelimit (sql_where, ",", '.');	// For different LANG
-    if (debug)
+    if (mydebug >50)
       {
 	// printf ("TRACKS mysql where: %s\n", sql_where );
 	printf ("tracks_rebuild_list: TRACKS mapscale: %ld\n", mapscale);
@@ -399,7 +402,7 @@ tracks_rebuild_list (void)
 	      "SELECT lat1,lon1,lat2,lon2,name,track_type_id "
 	      "FROM tracks " "%s LIMIT 200000", sql_where);
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_rebuild_list: TRACKS mysql query: %s\n", sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
@@ -418,7 +421,7 @@ tracks_rebuild_list (void)
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_rebuild_list: processing rows\n");
   rges = r = 0;
   tracks_list_count = -1;
@@ -444,7 +447,7 @@ tracks_rebuild_list (void)
 	  if (tracks_list_count >= tracks_list_limit)
 	    {
 	      tracks_list_limit = tracks_list_count + 1000;
-	      if (debug)
+	      if (mydebug >50)
 		printf
 		  ("tracks_rebuild_list: renewmemory for track list: %ld\n",
 		   tracks_list_limit);
@@ -459,7 +462,7 @@ tracks_rebuild_list (void)
 		  return;
 		}
 	    }
-	  if (mydebug)
+	  if (mydebug>50)
 	    {
 	      printf ("tracks_rebuild_list: %ld(%ld)\t", tracks_list_count,
 		      tracks_list_limit);
@@ -490,7 +493,7 @@ tracks_rebuild_list (void)
     }
 
 
-  if (debug)
+  if (mydebug >50)
     {				// print time for getting Data
       gettimeofday (&t, NULL);
       ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
@@ -516,7 +519,7 @@ tracks_rebuild_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
@@ -547,12 +550,12 @@ tracks_draw_list (void)
   if (!(tracks_draw))
     {
       tracks_check_if_moved_reset ();
-      if (debug)
+      if (mydebug >50)
 	printf ("tracks_draw is off\n");
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_draw\n");
 
   if (tracks_check_if_moved ())
@@ -564,7 +567,7 @@ tracks_draw_list (void)
   if (0 >= gdks_tracks_max)
     return;
 
-  if (debug)
+  if (mydebug >50)
     printf ("tracks_draw %ld segments\n", tracks_list_count);
 
   gdks_tracks = g_new0 (GdkSegment, gdks_tracks_max);
@@ -576,7 +579,7 @@ tracks_draw_list (void)
       return;
     }
 
-  if (debug)
+  if (mydebug >50)
     printf ("created gdk struct for %d segments\n", gdks_tracks_max);
 
   /* ------------------------------------------------------------------ */
@@ -592,7 +595,7 @@ tracks_draw_list (void)
       posy2 = (tracks_list + i)->y2;
 
 
-      /*      if ( mydebug ) {
+      /*      if ( mydebug>50 ) {
        * //printf("    a1 %f,%f\n",  posx1,posy1);
        * //printf("    a2 %f,%f\n",  posx2,posy2);
        * 
@@ -606,7 +609,7 @@ tracks_draw_list (void)
       if (posxy_on_screen (posx1, posy1) || posxy_on_screen (posx2, posy2))
 	{
 	  /*
-	   * if (debug) {
+	   * if (mydebug >50) {
 	   * printf ("       Draw: %f %f -> %f, %f\n",
 	   * (tracks_list + i)->x1,   (tracks_list + i)->y1,
 	   * (tracks_list + i)->x2,   (tracks_list + i)->y2
@@ -635,7 +638,7 @@ tracks_draw_list (void)
 	  (gdks_tracks + gdks_tracks_count)->x2 = posx2;
 	  (gdks_tracks + gdks_tracks_count)->y2 = posy2;
 
-	  if (mydebug && 0)
+	  if (mydebug >90)
 	    {
 	      char beschrift[120];
 	      g_snprintf (beschrift, sizeof (beschrift),
@@ -667,7 +670,7 @@ tracks_draw_list (void)
 
 	    }
 
-	  if (debug)
+	  if (mydebug >50)
 	    {
 	      //          printf("    1 %f,%f\n",  posx1,posy1);
 	      //          printf("    2 %f,%f\n",  posx2,posy2);
@@ -688,7 +691,7 @@ tracks_draw_list (void)
 	    {
 	      if (NULL == tracks_type_list[track_id].color)
 		{
-		  if (debug)
+		  if (mydebug >50)
 		    fprintf (stderr,
 			     "ERROR: Undefined Track Color for Segment %d, track_id %d\n",
 			     i, track_id);
@@ -718,7 +721,7 @@ tracks_draw_list (void)
 
   g_free (gdks_tracks);
 
-  if (mydebug)
+  if (mydebug>50)
     printf
       ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }

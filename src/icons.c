@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.17  1994/06/07 11:25:45  tweety
+set debug levels more detailed
+
 Revision 1.16  2005/08/15 13:10:31  tweety
 *** empty log message ***
 
@@ -256,7 +259,7 @@ drawicon (gint posxdest, gint posydest, char *ic)
     {
       if (0 == strcmp (icon, auxicons[counter].name))
 	{
-	  if (debug)
+	  if ( mydebug > 10 )
 	    printf ("Found icon %d \"%s\" (%dx%d)...\n", counter, icon,
 		    gdk_pixbuf_get_width (auxicons[counter].icon),
 		    gdk_pixbuf_get_height (auxicons[counter].icon));
@@ -293,7 +296,7 @@ drawicon (gint posxdest, gint posydest, char *ic)
   if ((posxdest >= 0) && (posxdest < SCREEN_X)
       && (posydest >= 0) && (posydest < SCREEN_Y))
     {
-      if (debug)
+      if ( mydebug > 20 )
 	printf ("Drawing icon %d loaded from icons.txt...\n", symbol);
       gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol],
 		       0, 0,
@@ -319,7 +322,7 @@ read_icon (gchar * icon_name)
 {
   gchar filename[255];
   GdkPixbuf *iconpixbuf;
-  if (debug)
+  if ( mydebug > 5 )
     printf ("read_icon(%s)\n", icon_name);
 
   // Try complete Path
@@ -328,7 +331,7 @@ read_icon (gchar * icon_name)
 
   if (!iconpixbuf)		// Try in Homedir/pixmaps
     {
-      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/pixmaps/%s",
+      g_snprintf (filename, sizeof (filename), "%s/.gpsdrive/pixmaps/%s",
 		  homedir, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
     }
@@ -357,10 +360,13 @@ read_icon (gchar * icon_name)
   if (!iconpixbuf)		// None Found
     {
       printf ("** Failed to open \"%s\"\n", icon_name);
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/unknown.png",
+		  DATADIR, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
     }
   else
     {
-      if (mydebug)
+      if ( mydebug >3)
 	printf ("read_icon(%s) --> %s OK\n", icon_name, filename);
     }
 
@@ -394,7 +400,7 @@ load_icons (void)
 	{
 	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt",
 		    DATADIR);
-	  if (debug)
+	  if ( mydebug > 3 )
 	    {
 	      printf ("Trying default icons.txt: \"%s\"\n", filename);
 	    }
@@ -402,14 +408,14 @@ load_icons (void)
 	}
       if (iconfile)
 	{
-	  if (debug)
-	    printf ("Icons read from: \"%s\"\n", filename);
+	  if ( mydebug > 3)
+	    printf ("Icons will be read from: \"%s\"\n", filename);
 
 	  for (iconcounter = 0; iconcounter < MAX_ICONS; iconcounter++)
 	    {
 	      fscanf (iconfile, "%s %s\n", (char *) &wptype,
 		      (char *) &iconpath);
-	      if (debug)
+	      if (  mydebug > 3 )
 		printf ("Waypoint-type %d \"%s\" gets \"%s\"\n", iconcounter,
 			g_strup ((gchar *) & wptype), (char *) &iconpath);
 	      iconpixbuf[iconcounter] = read_icon (iconpath);
@@ -509,12 +515,12 @@ load_user_icon (char icon_name[200])
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 	  lastauxicon++;
 	}
-      if (debug)
+      if ( mydebug > 3 )
 	printf ("Icon for %s loaded:%s\n", icon_name, path);
     }
   else
     {
-      if (debug)
+      if ( mydebug > 3 )
 	printf ("No Icon for %s loaded\n", icon_name);
     }
 }
