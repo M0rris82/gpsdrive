@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.24  2005/02/13 14:06:54  tweety
+start street randering functions. reading from the database streets and displayi
+ng it on the screen
+improve a little bit in the sql-queries
+fixed linewidth settings in draw_cross
+
 Revision 1.23  2005/02/08 20:12:59  tweety
 savetrackfile got 3 modi
 
@@ -2044,7 +2050,8 @@ gdouble earthr;
 /*  haveGARMIN is TRUE if we get data from program garble in GARMIN we get only long and lat */
 gint haveNMEA, haveGARMIN;
 
-gint maploaded, simmode, zoom, iszoomed;
+gint maploaded=FALSE;
+gint simmode, zoom, iszoomed;
 gchar homedir[500], mapdir[500];
 static gchar const rcsid[] =
   "$Id$";
@@ -2085,7 +2092,7 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 };
 GtkWidget *l1, *l2, *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
-GtkWidget *bestmapbt, *poi_draw_bt, *maptogglebt, *topotogglebt, *savetrackbt;
+GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *maptogglebt, *topotogglebt, *savetrackbt;
 GtkWidget *loadtrackbt, *radio1, *radio2, *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
@@ -2217,6 +2224,7 @@ gdouble normalnull = 0;
 gint etch = 1;
 gint drawgrid = FALSE;
 extern gint poi_draw;
+extern gint streets_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
@@ -5587,6 +5595,7 @@ drawmarker (GtkWidget * widget, guint * datum)
     draw_grid( widget);
   
   poi_draw_list ();
+  streets_draw_list ();
 
   if (wpflag)
     draw_waypoints();
@@ -8287,6 +8296,17 @@ poi_draw_cb (GtkWidget * widget, guint datum)
 {
   poi_draw = !poi_draw;
   poi_draw_list ();
+
+  needtosave = TRUE;
+  return TRUE;
+}
+
+/*  switching STREETS on/off */
+gint
+streets_draw_cb (GtkWidget * widget, guint datum)
+{
+  streets_draw = !streets_draw;
+  streets_draw_list ();
 
   needtosave = TRUE;
   return TRUE;
