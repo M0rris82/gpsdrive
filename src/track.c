@@ -23,8 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/01/11 20:14:14  tweety
+rearanges track handling a little bit
+added suport for interupted tracks
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.18  2004/02/08 17:16:25  ganter
 replacing all strcat with g_strlcat to avoid buffer overflows
@@ -109,6 +113,9 @@ void
 rebuildtracklist (void)
 {
   gdouble posxdest, posydest;
+  gdouble posxsource, posysource;
+  posxsource=-1000;
+  posysource=-1000;
   gint i, so;
 
   if (!maploaded)
@@ -125,51 +132,52 @@ rebuildtracklist (void)
       calcxy (&posxdest, &posydest, (trackcoord + i)->longi,
 	      (trackcoord + i)->lat, zoom);
 
-/* 	    if even  */
-/*       if ((tracknr & 1) == 0)  */
-      if (tracknr == 0)
+      if ( (trackcoord + i)->longi > 1000.0 ) /* Track Break ? */
 	{
-	  if ((trackcoord + i)->longi < 1000.0)
-	    {
-	      (track + tracknr)->x1 = posxdest;
-	      (track + tracknr)->y1 = posydest;
-	      (trackshadow + tracknr)->x1 = posxdest + SHADOWOFFSET;
-	      (trackshadow + tracknr)->y1 = posydest + SHADOWOFFSET;
-	      tracknr++;
-	    }
-	}
+	  posxsource = posysource = -1000;
+	} 
       else
 	{
-	  if ((trackcoord + i)->longi < 1000.0)
+	  if (
+	      ( (posxdest > -50) && (posxdest < (SCREEN_X + 50)) &&
+		(posydest > -50) && (posydest < (SCREEN_Y + 50)) &&
+		(posxsource > -50) && (posxsource < (SCREEN_X + 50))&&
+		(posysource > -50) && (posysource < (SCREEN_Y + 50))
+		)
+	      )
 	    {
-	      if ((posxdest > -50) && (posxdest < (SCREEN_X + 50))
-		  && (posydest > -50) && (posydest < (SCREEN_Y + 50)))
+	      if ( (posxdest != posxsource) || 
+		   (posydest != posysource)
+		   )
 		{
-		  if ((posxdest != (track + tracknr - 1)->x2)
-		      || (posydest != (track + tracknr - 1)->y2))
-		    {
-/*  		so=(int)(((trackcoord + i)->alt))>>5; */
-		      so = SHADOWOFFSET;
+		  /*  		so=(int)(((trackcoord + i)->alt))>>5; */
+		  so = SHADOWOFFSET;
+		  /*
+		  printf("x: %8f %8f Y:%.6f %.6f \t",
+			 posxsource,posxdest,
+			 posysource,posydest);
+		  printf("%.6f, %.6f (%.6f)\n",
+			 (trackcoord + i)->longi,
+			 (trackcoord + i)->lat, zoom);
+		  */
+		  (track + tracknr)->x1       = posxsource;
+		  (track + tracknr)->x2       = posxdest;
+		  (track + tracknr)->y1       = posysource;
+		  (track + tracknr)->y2       = posydest;
+		  (trackshadow + tracknr)->x1 = posxsource + so;
+		  (trackshadow + tracknr)->x2 = posxdest   + so;
+		  (trackshadow + tracknr)->y1 = posysource + so;
+		  (trackshadow + tracknr)->y2 = posydest   + so;
 
-		      (track + tracknr)->x1 = (track + tracknr - 1)->x2 =
-			posxdest;
-		      (track + tracknr)->y1 = (track + tracknr - 1)->y2 =
-			posydest;
-		      (trackshadow + tracknr)->x1 =
-			(trackshadow + tracknr - 1)->x2 = posxdest + so;
-		      (trackshadow + tracknr)->y1 =
-			(trackshadow + tracknr - 1)->y2 = posydest + so;
-		      tracknr += 1;
-		    }
+		  tracknr += 1;
 		}
 	    }
-	  else
-	    tracknr = tracknr & ((glong) - 2);
+	  posxsource = posxdest;
+	  posysource = posydest;
 	}
-
     }
-
 }
+
 
 
 /* draw track on image */
