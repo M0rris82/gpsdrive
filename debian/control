@@ -7,14 +7,15 @@ Standards-Version: 3.6.1
 
 Package: gpsdrive
 Architecture: any
-Depends: ${shlibs:Depends}
-Recommends: gpsd, perl, libmysqlclient10, imagemagick, gdal-bin
-Suggests: grass libarchive-zip-perl libart-2.0-2 libatk1.0-0 libc6 libdate-manip-perl libdbi-perl libexpat1 libfile-find-rule-perl libfontconfig1 libfreetype6 libgcc1 libglib2.0-0 libgtk2.0-0 libgtk2.0-0-dbg libpango1.0-0 libpcre3 libstdc++6 libwww-perl libx11-6 libxcursor1 libxext6 libxft2 libxi6 libxinerama1 libxrandr2 libxrender1 perl-base perl-doc perlmagick zlib1g
+Depends: ${shlibs:Depends}, perl, gdal-bin, grass
+Recommends: gpsd, perl, libmysqlclient10, imagemagick, gdal-bin, gpsbabel, perl-base, perlmagic, zlib1g, festival
+Suggests: grass libarchive-zip-perl libdate-manip-perl libdbi-perl libexpat1 libfile-find-rule-perl libglib2.0-0 libgtk2.0-0 libpango1.0-0 libwww-perl gpsbabel
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
- GpsDrive displays your position provided from your NMEA capable GPS
- receiver on a zoomable map, the map file is autoselected depending
- of the position and preferred scale. Speech output is supported if the
+ GpsDrive displays your position provided from gpsd which gets it
+ from your NMEA or Garmin capable GPS receiver on a zoomable map, 
+ the map file is autoselected depending of the position and preferred
+ scale. Speech output is supported if the
  "festival" software is running. The maps are autoselected for best
  resolution depending of your position. All Garmin GPS reveiver with a
  serial output should be usable, also other GPS receiver which supports
