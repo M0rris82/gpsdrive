@@ -76,8 +76,8 @@ sub insert_hash {
 
 
 #############################################################################
-# Alle noetigen Informationen fuer den connect mit der DB
-# das sind: der host, der user und das passwort, die db ist immer die selbe
+# All necessary information for connecting the DB
+# these are:  host,  user and passwort; the db is always geoinfo
 my $dbh;
 sub db_connect() {
   my $db           = 'geoinfo';
@@ -337,6 +337,9 @@ sub create_db(){
     my $sth; 
 
     $create_statement='CREATE DATABASE IF NOT EXISTS geoinfo;';
+    my $drh = DBI->install_driver("mysql");
+    my $rc = $drh->func('createdb', 'geoinfo', 'localhost', 
+			$main::db_user,$main::db_password, 'admin');
     $dbh = db_connect();
     $sth = $dbh->prepare($create_statement);
     $sth->execute();
@@ -359,57 +362,6 @@ sub create_db(){
     $sth = $dbh->prepare($create_statement);
     $sth->execute();
 
-    $create_statement='
-CREATE TABLE IF NOT EXISTS `navicaches` (
-  `cache_id` int(11) unsigned NOT NULL default \'0\',
-  `waypoint` varchar(7) NOT NULL default \'0\',
-  `country_code` char(2) default NULL,
-  `state` varchar(9) default NULL,
-  `city` varchar(64) default NULL,
-  `name` varchar(128) default NULL,
-  `user_name` varchar(64) default NULL,
-  `hidden_date` date default NULL,
-  `modified_datetime` datetime default NULL,
-  `latitude` float(11,8) default NULL,
-  `longitude` float(11,8) default NULL,
-  `difficulty` float(2,1) default NULL,
-  `terrain` float(2,1) default NULL,
-  `retired` varchar(5) default NULL,
-  `cache_type` varchar(16) default NULL,
-  `cache_size` varchar(16) default NULL,
-  `handicapped` varchar(5) default NULL,
-  `water` varchar(5) default NULL,
-  `restrooms` varchar(5) default NULL,
-  `parking_lot` varchar(5) default NULL,
-  `pets` varchar(5) default NULL,
-  `fees` varchar(5) default NULL,
-  `open_cache` varchar(5) default NULL,
-  `comments` text,
-  `description` text,
-  `cluetitle1` varchar(128) default NULL,
-  `clue1` text,
-  `cluetitle2` varchar(128) default NULL,
-  `clue2` text,
-  `cluetitle3` varchar(128) default NULL,
-  `clue3` text,
-  `cluetitle4` varchar(128) default NULL,
-  `clue4` text,
-  `cluetitle5` varchar(128) default NULL,
-  `clue5` text,
-  `pictitle1` varchar(128) default NULL,
-  `pic1` varchar(128) default NULL,
-  `pictitle2` varchar(128) default NULL,
-  `pic2` varchar(128) default NULL,
-  `pictitle3` varchar(128) default NULL,
-  `pic3` varchar(128) default NULL,
-  `pictitle4` varchar(128) default NULL,
-  `pic4` varchar(128) default NULL,
-  `pictitle5` varchar(128) default NULL,
-  `pic5` varchar(128) default NULL,
-  `source` varchar(64) default NULL,
-  PRIMARY KEY  (`cache_id`,`waypoint`)
-) TYPE=MyISAM;
-';
 $dbh = db_connect();
 $sth = $dbh->prepare($create_statement);
 $sth->execute();
@@ -432,7 +384,9 @@ CREATE TABLE IF NOT EXISTS `poi` (
   `source_id` int(11) NOT NULL default \'0\',
   PRIMARY KEY  (`wp_id`),
   KEY `last_modified` (`last_modified`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `lat` (`lat`),
+  KEY `lon` (`lon`)
 ) TYPE=MyISAM;
 ';
 $dbh = db_connect();
