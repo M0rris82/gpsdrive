@@ -78,6 +78,9 @@ GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon,
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
+sub is_map_file($);      # {}
+sub expedia_url($$$);    # {}
+
 # Print version
 if ($version) {
     print $VERSION, "\n";
@@ -95,7 +98,6 @@ my $RADIUS_KM     = 6371.01;
 my $LAT_DIST_KM   = 110.87;
 my $KM2NAUTICAL   = 0.54;
 my $KM2MILES      = 0.62137119;
-my $polite = 'yes';
 
 
 # Get the list of scales we need
@@ -144,69 +146,42 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
    my $lati = $slat;   
    my $mapscale=0;
    while ($lati < $endlat) {
-      my $long = $slon;
-      while ($long < $endlon) {
-         my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
- 	         
-	if ( is_map_file($filename)) {
-	    $existcount++;
-	} else {
-            LOOP: {
-               if ($mapserver eq 'expedia') {
-                  next LOOP if ($scale <=1000);
-                  my $ns = $scale/$EXPEDIAFACT;
-		  my $di = 999999;
-	 	  my $found=0;			
-	          my $i=0;
-
-    	          for($i=0;$i<11;$i=$i+1)
-		  {              
-		   if(abs($ns-$EXPEDIAALTS[$i]) < $di)
-		   {
-			$di=$ns-$EXPEDIAALTS[$i];
-			$found=$i;
-		   }
-		  }
-		  my $alti=0;
-		  $alti=$EXPEDIAALTS[$found];
-  		  $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);		  		  
-		  print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n"
-			if ($debug);
-        	
-		  my $where;
-                  if ($lon < -30) {
-                     $where = 'USA0409';
-                  } else {
-                     $where = 'EUR0809';
-                  }
-                   print "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000"
-                     if ($debug);
-                   `wget -nd -q -O tmpmap.gif "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000"`;
-              } 
-	       else {
+       my $long = $slon;
+       while ($long < $endlon) {
+	   my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
+	   print "File: $filename\n";
+	   if ( is_map_file($filename)) {
+	       $existcount++;
+	   } else {
+	       my $url;
+	       if ($mapserver eq 'expedia') {
+		   ($url,$mapscale)=expedia_url($lati,$long,$scale);
+	       } else { # of if expedia
 		   print "Unknown map sever :", $mapserver, "\n"; 
-	           }
-               
+	       }
+
+	       print "$url\n" if $debug;
+	       `wget -nd -q -O tmpmap.gif "$url"`;
+	       
 	       if (is_map_file('tmpmap.gif')) {
-                  open(KOORD,">>$KOORD_FILE") || die "Can't open: $KOORD_FILE"; 
-	          print KOORD "$filename $lati $long $mapscale\n";
-                  rename('tmpmap.gif',$filename);
-                  print ".";
-                  print "\nWrote $filename\n" if ($debug);
-		  $newcount++;
-               } else {
-                  $failcount++;
-                  print ",";
-               }
-            }
-            # sleep if polite is turned on to be nice to the webserver of the mapserver
-	      sleep($polite) if ($polite =~ /\d+/);
-	    sleep(1) if (!$polite);
-         }
-         $long += $klon; ### FIX BY CAMEL
-      }
-      $lati += $klat; ### FIX BY CAMEL
-      $long = $slon; ### FIX BY CAMEL
+		   open(KOORD,">>$KOORD_FILE") || die "Can't open: $KOORD_FILE"; 
+		   print KOORD "$filename $lati $long $mapscale\n";
+		   rename('tmpmap.gif',$filename);
+		   print ".";
+		   print "\nWrote $filename\n" if ($debug);
+		   $newcount++;
+	       } else {
+		   $failcount++;
+		   print ",";
+	       }
+	       # sleep if polite is turned on to be nice to the webserver of the mapserver
+	       sleep($polite) if ($polite =~ /\d+/);
+	       sleep(1) if (!$polite);
+	   }
+	   $long += $klon; ### FIX BY CAMEL
+       }
+       $lati += $klat; ### FIX BY CAMEL
+       $long = $slon; ### FIX BY CAMEL
    }
 }
 
@@ -284,6 +259,42 @@ sub get_scales {
     }
     return \@SCALES_TO_GET;
 } #End get_scales
+
+#############################################################################
+sub expedia_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    my $url='';
+    my $ns = $scale/$EXPEDIAFACT;
+    my $di = 999999;
+    my $found=0;			
+    my $i=0;
+
+    for($i=0;$i<11;$i=$i+1){              
+	if(abs($ns-$EXPEDIAALTS[$i]) < $di) {
+	    $di=$ns-$EXPEDIAALTS[$i];
+	    $found=$i;
+	}
+    }
+    my $alti=0;
+    $alti=$EXPEDIAALTS[$found];
+    my $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);		  		  
+    print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n"
+	if ($debug);
+    
+    my $where;
+    if ($long < -30) {
+	$where = 'USA0409';
+    } else {
+	$where = 'EUR0809';
+    }
+    $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
+	."CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000";
+    return ($url,$mapscale);
+}
+
 
 ######################################################################
 sub file_count {
