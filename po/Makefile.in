@@ -20,7 +20,7 @@ srcdir = .
 top_srcdir = ..
 
 
-prefix = /usr/local
+prefix = /opt/gnome
 exec_prefix = ${prefix}
 datadir = ${prefix}/share
 localedir = $(datadir)/locale
@@ -38,7 +38,7 @@ XGETTEXT = /usr/bin/xgettext
 MSGMERGE = msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS =  -g -Wall -Wno-format-y2k -pipe  -DXTHREADS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/X11R6/include -I/usr/include/atk-1.0 -I/usr/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libart-2.0    -Imysql 
+CFLAGS =  -g -Wall -Wno-format-y2k -pipe  -DXTHREADS -D_REENTRANT -DXUSE_MTSAFE_API -pthread -I/usr/include/libart-2.0 -I/opt/gnome/include/gtk-2.0 -I/opt/gnome/lib/gtk-2.0/include -I/usr/X11R6/include -I/opt/gnome/include/atk-1.0 -I/opt/gnome/include/pango-1.0 -I/usr/include/freetype2 -I/usr/include/freetype2/config -I/opt/gnome/include/glib-2.0 -I/opt/gnome/lib/glib-2.0/include    -Imysql 
 CPPFLAGS = 
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
