@@ -8,3 +8,8 @@ ltmain.sh
 *.lo
 *.la
 *Makefile*
+config.log
+config.status
+autom4te.cache
+libtool
+stamp-h1
