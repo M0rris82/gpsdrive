@@ -22,7 +22,7 @@
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 #
-# Apr 26, 2004 Jörg Ostertag
+# Dec 2004 Jörg Ostertag
 #   check for bad/existing maps:
 #      - The check if a map exists is modified in check if the mapsize is lagrer 
 #        than 4K. This detects some files where Error messages have been saved.
@@ -36,20 +36,25 @@
 #      - count the Files retrieved, existing
 #      - moved writing to map_koords.txt to append_koords to be able to 
 #        easy add Files already existing in the Filesystem to the File
+#      - Update Maps found in Filesystem which cannot be found in map_koords.txt
 #   Added new Symbols to Progress Bar:
 #       S Simulated
 #       E Error
 #       + retrieved new file
 #       _ file already exists localy
 #       u file exists but not found in map_koords.txt file (added)
+#   LWP::Mirror:
+#       moved from wget to LWP::Mirror to eliminate the dependency of the 
+#       wget package and configuration. This also enables PROXY use
+#   Minor Bugfixes
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
-modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
-Version 1.05
+modified (Feb 27,2004) by Robin CoRneliu <robin\@cornelius.demon.co.uk>
+Version 1.13
 ";
 
 use Data::Dumper;
@@ -85,18 +90,18 @@ my $scale = '100000';
 my $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 my $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE    = "$CONFIG_DIR/way.txt";
-my $KOORD_FILE    = 'map_koord.txt'; # Should we allow config of this?
+my $KOORD_FILE    = "$CONFIG_DIR/map_koord.txt"; # Should we allow config of this?
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
 my $FILEPREFIX    = 'map_';
 my $mapserver     = 'expedia';
 my $simulate_only = 0;
-my $check_koord_file = 0;
-my $update_koord =0;
 our $MAP_KOORDS={};
 our $MAP_FILES={};
 our $GPSTOOL_MAP_KOORDS={};
 our $GPSTOOL_MAP_FILES={};
 my $PROXY='';
+my $check_koord_file = 0;
+my $update_koord =0;
 
 GetOptions ( 'lat=f'       => \$lat,        'lon=f'       => \$lon, 
 	     'start-lat=f' => \$slat,       'end-lat=f'   => \$endlat, 
@@ -121,9 +126,11 @@ GetOptions ( 'lat=f'       => \$lat,        'lon=f'       => \$lon,
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
+sub debug($);            # {}
 sub is_map_file($);      # {}
 sub expedia_url($$$);    # {}
 sub check_koord_file($); # {}
+sub update_gpsdrive_map_koord_file(); # {}
 sub read_koord_file($);  # {}
 sub read_gpstool_map_file(); # {}
 sub append_koords($$$$); # {}
@@ -134,21 +141,6 @@ sub wget_map($$$);       # {}
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
 
-# Print version
-if ($version) {
-    print $VERSION, "\n";
-    exit();
-}
-
-if ( $check_koord_file ) {
-    check_koord_file("$CONFIG_DIR/$KOORD_FILE");
-    exit();
-}
-
-# Verify that we have the options that we need 
-pod2usage(1) if (&error_check);
-
-
 # Setup up some constants
 my $EXPEDIAFACT   = 3950;
 my $DIFF          = 0.0000028;
@@ -158,28 +150,48 @@ my $KM2NAUTICAL   = 0.54;
 my $KM2MILES      = 0.62137119;
 
 
+# Get unit from config file, unless they override with command line
+$unit = &get_unit unless ($unit);
+
+# Get mapdir from config file, unless they override with command line
+$mapdir = &get_mapdir unless ($mapdir);
+
 #############################################################################
 # LPW::UserAgent initialisieren
 my $ua = LWP::UserAgent->new;
 $ua->proxy(['http','ftp'],"http://$PROXY/") if $PROXY;
 #$ua->level("+trace") if $debug;
 
+
+# Print version
+if ($version) {
+    print $VERSION, "\n";
+    exit();
+}
+
+# Change into the gpsdrive maps directory 
+chdir($CONFIG_DIR);
+
+############################################
+if ( $check_koord_file ) {
+    check_koord_file($KOORD_FILE); # This also memoizes the filenames
+    update_gpsdrive_map_koord_file();
+    exit();
+}
+
+# Verify that we have the options that we need 
+pod2usage(1) if (&error_check);
+
 #############################################################################
 # Get the list of scales we need
 my $SCALES_TO_GET_ref = get_scales(\$scale);
-print "Scale to download: ", join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}), "\n" if ($debug);
+debug( "Scale to download: ". join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}));
 
 # Get the center waypoint if they want one
 if ($waypoint) {
     ($lat,$lon) = get_waypoint(\$waypoint);
 }
-print "Centerpoint: $lat,$lon\n" if ($debug);
-
-# Get unit from config file, unless they override with command line
-$unit = &get_unit unless ($unit);
-
-# Get mapdir from config file, unless they override with command line
-$mapdir = &get_mapdir unless ($mapdir);
+debug("Centerpoint: $lat,$lon");
 
 # Now get the start and end coordinates
 unless ($slat && $slon && $endlat && $endlon) {
@@ -197,19 +209,15 @@ unless ($force) {
     exit if ($answer !~ /^[yY]/);    
 }
 
-# Change into the gpsdrive maps directory 
-chdir($CONFIG_DIR);
-chdir($mapdir);
 
 if ( $update_koord  ) {
     read_gpstool_map_file();
-    read_koord_file("$CONFIG_DIR/$KOORD_FILE");
+    read_koord_file($KOORD_FILE);
 }
 
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
-# Get or Queue
 for my $scale ( sort keys %{$desired_locations} ) {
     for my $lati ( sort keys %{$desired_locations->{$scale}} ) {
 	printf "   %5.2f: ",$lati;
@@ -275,6 +283,7 @@ sub mirror_file($$){
 ######################################################################
 sub is_map_file($){
     my $filename = shift;
+    $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
     return 1 if ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
     return 0;
 }
@@ -295,8 +304,15 @@ sub mirror_map($$){
     unlink('tmpmap.gif') if -f 'tmpmap.gif';
     my $ok = mirror_file("$url",'tmpmap.gif');
     if ( is_map_file('tmpmap.gif') ) {
-	rename('tmpmap.gif',$filename);
-	$ok=1;
+	if ( move('tmpmap.gif',$filename) ) {
+	    $ok=1;
+	} else {
+	    warn "Cannot move('tmpmap.gif' -> '$filename'):$!\n";
+	    $ok=0;
+	}
+    } else {
+	warn "no map downloaded)\n";
+	$ok=0;
     }
 
     # sleep if polite is turned on to be nice to the webserver of the mapserver
@@ -532,7 +548,7 @@ sub get_waypoint {
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
     
-    open(WAYPT,"$WAYPT_FILE") || die "ERROR: Can't open: $WAYPT_FILE: $!\n";
+    open(WAYPT,"$WAYPT_FILE") || die "ERROR: get_waypoint Can't open: $WAYPT_FILE: $!\n";
     my ($name,$lat,$lon);
     while (<WAYPT>) {
 	chomp;
@@ -553,7 +569,7 @@ sub get_unit {
    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
    
    # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE: $!\n";
+   open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_unit Can't open $CONFIG_FILE: $!\n";
    my $unit;
    while (<CONFIG>) {
       next unless (/units\s=/);
@@ -566,12 +582,15 @@ sub get_unit {
 } #End get_unit
 
 ######################################################################
+# Read the map directory from the config File or return 
+# default (the configdir itself)
+######################################################################
 sub get_mapdir {
    # If they give just a filename, we should assume they meant the CONFIG_DIR  
    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
 
    # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE: $!\n";
+   open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_mapdir Can't open $CONFIG_FILE: $!\n";
    my $mapdir;
    while (<CONFIG>) {
       next unless (/mapdir\s=/);
@@ -580,7 +599,7 @@ sub get_mapdir {
       $mapdir =~ s/mapdir\s=\s//;
    }
    close(CONFIG);
-   return $mapdir;
+   return $mapdir ||$CONFIG_DIR;
 
 } #End get_mapdir
 
@@ -661,6 +680,10 @@ sub append_koords($$$$) {
     my $long     = shift;
     my $mapscale = shift;
 
+    die "Missing Params to append_koords($filename,$lati,$long,$mapscale)\n"
+	unless $filename && $lati && $long && $mapscale;
+
+
     if ( is_map_file($filename) ) {
 	# print "$filename $lati $long $mapscale\n";
     } else {
@@ -668,9 +691,10 @@ sub append_koords($$$$) {
 	return 'E';
     }
 
+
     if ( ! defined $MAP_FILES->{$filename} ) {
-	my $koord_filename = "$mapdir/$KOORD_FILE";
-	open(KOORD,">>$koord_filename") || die "Can't open: $koord_filename: $!\n"; 
+	debug("Appending $filename,$lati, $long, $mapscale to $KOORD_FILE");
+	open(KOORD,">>$KOORD_FILE") || die "ERROR: append_koords can't open: $KOORD_FILE: $!\n"; 
 	printf KOORD "$filename %17.13f %17.13f %17d\n",$lati, $long, $mapscale;
 	close KOORD;
 	$MAP_FILES->{$filename} = "$lati, $long, $mapscale";
@@ -680,7 +704,7 @@ sub append_koords($$$$) {
     if ( -s $GPSTOOL_MAP_FILE ) {
 	if ( ! defined $GPSTOOL_MAP_FILES->{$filename} ) {
 	    open(KOORD,">>$GPSTOOL_MAP_FILE") || 
-		die "Can't open: $GPSTOOL_MAP_FILE: $!\n"; 
+		die "ERROR: append_koords can't open: $GPSTOOL_MAP_FILE: $!\n"; 
 	    printf KOORD "$mapdir/$filename %17.13f %17.13f %4d 1280 1024\n",$lati, $long, $mapscale;
 	    close KOORD;
 	    $GPSTOOL_MAP_FILES->{$filename} = "$lati, $long, $mapscale";
@@ -702,7 +726,7 @@ sub read_koord_file($) {
     my $s_time=time();
     return unless -s $koord_file;
     print "reading $koord_file\n";
-    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
+    open(KOORD,"<$koord_file") || die "ERROR: read_kooord_file can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
@@ -726,7 +750,7 @@ sub read_gpstool_map_file() {
     my $s_time=time();
     return unless -s $koord_file;
     print "reading $koord_file\n";
-    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
+    open(KOORD,"<$koord_file") || die "ERROR: read_gpstool_map_file can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
@@ -745,25 +769,28 @@ sub read_gpstool_map_file() {
 
 #############################################################################
 # Read actual Koordinate File (gpstool)
-# and check if all FIles it references are existing
+# and check if all Files it references are existing
 sub check_koord_file($) {
     my $koord_file = shift;
     # Change into the gpsdrive maps directory 
 
     print "Checking all entries in $koord_file\n" if $debug;
     $MAP_FILES={};
-    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n";
+    open(KOORD,"<$koord_file") || die "ERROR: check_koord_file can't open: $koord_file: $!\n";
     my $anz_files = 0;
     my $missing_files =0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
 	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
 	my $full_filename = "$CONFIG_DIR/$filename";
+
+#	debug("Checking ($filename ,$lati, $long, $mapscale)");
+
 	if ( !is_map_file( $full_filename ) ) {
 	    print "ERROR: File $full_filename not found\n";
 	    $missing_files ++;
 	} else {
-	    print "OK:    File $full_filename found\n" if $debug;
+	    debug("OK:    File $full_filename found");
 	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
 	    if ( $MAP_FILES->{$filename} ) {
 		print "ERROR: Duplicate File $full_filename found\n";
@@ -781,9 +808,55 @@ sub check_koord_file($) {
 	    printf KOORD "$filename	%s\n", $MAP_FILES->{$filename};
 	}
 	close KOORD;
-	print "wrote $koord_file.new"; ;
+	print "wrote $koord_file.new\n";
     }
 }
+
+
+###########################################################################
+# Update Maps found in Filesystem which cannot be found in map_koords.txt
+###########################################################################
+use File::Find;
+sub update_file_in_map_koords(); # {} 
+sub update_gpsdrive_map_koord_file(){
+    print "\n";
+    print "\n";
+    print "Check, if Files in Filesystem can be added to map_koord.txt\n";
+
+    debug("Searching for Files in '$mapdir'");
+    find(
+	 { wanted => \&update_file_in_map_koords,
+	   follow => 1
+	   },
+	 $mapdir, );
+}
+
+sub update_file_in_map_koords(){
+    my $filename = $File::Find::name;
+    return if -d $filename;
+    return unless  $filename =~ m/\.gif/;
+    my $short_filename = $filename;
+    $short_filename =~ s,$mapdir,,;
+#    debug("Check File: $short_filename");
+    if ( $MAP_FILES->{$filename} ||
+	 $MAP_FILES->{$short_filename} ) {
+	print "OK       $filename\n";
+    } else {
+	#mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
+	if ( $filename =~ m/map_(\d+)-(\d+\.\d+)-(\d+\.\d+)\.gif/ ) {
+	    my $mapscale=$1;
+	    my $lati=$2;
+	    my $long=$3;
+	    
+#	    print "Appending File: $filename\n";
+	    append_koords($short_filename, $lati, $long, $mapscale);
+	    debug("File:$filename lat:$lati lon:$long");
+	}
+
+    }
+}
+
+
 
 
 #############################################################################
