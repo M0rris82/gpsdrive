@@ -351,7 +351,7 @@ msgstr "Geschwindigkeit"
 
 #: src/gpsdrive.c:7692
 #, c-format
-msgid "distance jump is more then 1000km/h speed, ignoring\n"
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
 
 #: src/gpsdrive.c:7991
