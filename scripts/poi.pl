@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.5  2005/02/17 09:31:16  tweety
+# minor changes
+#
 # Revision 1.4  2005/02/13 22:57:00  tweety
 # WDB Support
 #
@@ -20,8 +23,8 @@
 #
 # Revision 1.0  2005/01/12 22:08:13  tweety
 
-my $VERSION ="poi.pl (c) Jörg Ostertag
-Initial Version (Jan,2005) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
+my $VERSION ="poi.pl (c) Joerg Ostertag
+Initial Version (Jan,2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 Version 1.17
 ";
 
@@ -175,7 +178,7 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil>]
 
 =item B<-earthinfo_nga_mil=xx[,yy][,zz]...>
 
-Still experimental, but works partly.
+********** Experimental ************
 
 Download and import into mysql DB
 
@@ -195,12 +198,15 @@ The download is about ~180 MB
 
 =item B<-opengeodb>
 
-Experimental
+********** Experimental ************
+
+Download and import opengeodb to 
+
+Point of interrests
 
 =item B<-wdb>
 
-Experimental
-------------
+********** Experimental ************
 
 World Database
 
@@ -212,19 +218,21 @@ Download is ~30 MB
 
 =item B<-mapsource_points='Filename'>
 
-Experimental
+******** NO functiion yet *********
 
 =item B<-cameras>
 
-Experimental
-
-=item B<-all>
-
-Experimental
+******** NO functiion yet *********
 
 =item B<--create-db>
 
 Try creating the tables inside the geodata database
+
+
+=item B<-all>
+
+
+Triggers all of the above
 
 =item B<--db-user>
 
