@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.47  2005/05/31 20:58:03  tweety
+Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=16
+Formula for number of gridlines
+
 Revision 1.46  2005/05/30 21:16:46  tweety
 Grid drawing is wrong on zoomed cards.
 Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
@@ -5731,6 +5736,8 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 void
 draw_grid (GtkWidget * widget)
 {
+	int count;
+	gdouble step;
 	gdouble lat, lon;
 	gdouble lat_ul, lon_ul;
 	gdouble lat_ll, lon_ll;
@@ -5740,7 +5747,6 @@ draw_grid (GtkWidget * widget)
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 
-	int count;
 
 	// calculate the start and stop for lat/lon according to the displayed section
 	calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
@@ -5749,27 +5755,10 @@ draw_grid (GtkWidget * widget)
 	calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
 
 	// add more lines as the scale increases
-	gdouble step;
-	step = 10;
-	if (mapscale < 5000000)
-		step = 5;
-	if (mapscale < 2000000)
-		step = 1;
-	if (mapscale < 600000)
-		step = 0.5;
-	if (mapscale < 500000)
-		step = 0.1;
-	if (mapscale < 60000)
-		step = 0.05;
-	if (mapscale < 30000)
-		step = 0.02;
-	if (mapscale < 20000)
-		step = 0.01;
-	if (mapscale < 5000)
-		step = 0.005;
 
-	step /= zoom;
-
+	// Calculate distance between grid lines
+	step = (gdouble) mapscale / 2000000.0 / zoom;
+ 
 	if (mapscale < 5000000)
 	{
 		lat_min = min (lat_ll, lat_ul) - step;
