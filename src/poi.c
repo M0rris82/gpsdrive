@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.9  2005/03/15 08:40:13  tweety
+eliminate doublicate pfd description
+
 Revision 1.8  2005/02/22 08:18:51  tweety
 change leveing system to simpler scale marking for decission what to show on display
 column_names(DBFuncs.pm get data from Database
@@ -572,7 +575,7 @@ poi_draw_list (void)
 	  if (pdamode)
 	    pfd = pango_font_description_from_string ("Sans 8");
 	  else
-	    pfd = pango_font_description_from_string ("Sans bold 11");
+	    pfd = pango_font_description_from_string ("Sans 11");
 	  pango_layout_set_font_description (poi_label_layout, pfd);
 	  pango_layout_get_pixel_size (poi_label_layout, 
 				       &width, &height);
@@ -598,12 +601,9 @@ poi_draw_list (void)
 	  }
 
 	  /* prints in pango */
-	  PangoFontDescription *pfd;
-	  PangoLayout *poi_label_layout;
 
 	  poi_label_layout =
 	    gtk_widget_create_pango_layout (drawing_area, txt);
-	  pfd = pango_font_description_from_string (poi_label_font);
 	  pango_layout_set_font_description (poi_label_layout, pfd);
 
 	  gdk_draw_layout_with_colors (drawable, kontext,
