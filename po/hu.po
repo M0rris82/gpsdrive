@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-19 09:00+0200\n"
+"POT-Creation-Date: 2005-11-19 22:36+0100\n"
 "PO-Revision-Date: 2002-05-14 16:04+0200\n"
 "Last-Translator: Emese Kovács <emese@gnome.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -48,22 +48,22 @@ msgstr ""
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr ""
 
-#: src/friends.c:373 src/gpsdrive.c:7988
+#: src/friends.c:367 src/gpsdrive.c:7389
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/friends.c:396
+#: src/friends.c:381
 #, fuzzy
 msgid "unknown"
 msgstr "Ismeretlen"
 
-#: src/friendsd.c:536
+#: src/friendsd.c:540
 #, c-format
 msgid "server: please don't run me as root\n"
 msgstr ""
 
-#: src/friendsd.c:548
+#: src/friendsd.c:552
 #, c-format
 msgid ""
 "\n"
@@ -72,115 +72,101 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:2497
+#: src/gpsdrive.c:2532
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:2498
+#: src/gpsdrive.c:2533
 msgid "/_Misc. Menu/Maps"
 msgstr ""
 
-#: src/gpsdrive.c:2499
+#: src/gpsdrive.c:2534
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr ""
 
-#: src/gpsdrive.c:2503
+#: src/gpsdrive.c:2538
 msgid "/_Misc. Menu/Maps/_Map Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2505
+#: src/gpsdrive.c:2540
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2507
+#: src/gpsdrive.c:2542
+#, fuzzy
+msgid "/_Misc. Menu/_Reinitialize GPS"
+msgstr "Útvonalfájl kiválasztása"
+
+#: src/gpsdrive.c:2544
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/gpsdrive.c:2511
+#: src/gpsdrive.c:2548
 #, fuzzy
 msgid "/_Misc. Menu/Messages"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/gpsdrive.c:2512
+#: src/gpsdrive.c:2549
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:2517
+#: src/gpsdrive.c:2554
 msgid "/_Misc. Menu/Help"
 msgstr ""
 
-#: src/gpsdrive.c:2518
+#: src/gpsdrive.c:2555
 msgid "/_Misc. Menu/Help/About"
 msgstr ""
 
-#: src/gpsdrive.c:2520
+#: src/gpsdrive.c:2557
 msgid "/_Misc. Menu/Help/Topics"
 msgstr ""
 
-#: src/gpsdrive.c:2603
+#: src/gpsdrive.c:2639
 msgid "  Message  "
 msgstr "  Üzenet  "
 
-#: src/gpsdrive.c:2665
+#: src/gpsdrive.c:2705
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr ""
 
-#: src/gpsdrive.c:2756 src/gpsdrive.c:3022 src/gpsdrive.c:6277
-#: src/gpsdrive.c:7931 src/import_map.c:775
+#: src/gpsdrive.c:2745 src/gpsdrive.c:5683 src/gpsdrive.c:7332
+#: src/import_map.c:782
 msgid "To"
 msgstr ""
 
-#: src/gpsdrive.c:3107
-msgid "Error in line "
-msgstr "Hiba a következõ sorban: "
-
-#: src/gpsdrive.c:3109
-msgid ""
-"I have found filenames in map_koord.txt which are\n"
-"not map_* or top_* files. Please rename them and change the entries in\n"
-"map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-"maps.  Otherwise, the maps will not be displayed!"
-msgstr ""
-"A ~/.gpsdrive/map_koord.txt fájlban találtam olyan fályneveket,\n"
-"amelyek nem illeszkednek a map_* és top_* mintákra!\n"
-"Kérlek nevezd át a fájlokat és írd át a bejegyzést a map_koord.txt\n"
-"fájlban, különben ezek a térképek nem jelennek meg!\n"
-"\n"
-"Használj map_* típusú fájlneveket az utca térképekhez és top_*\n"
-"típusú fájlneveket a topológiai térképekhez."
-
-#: src/gpsdrive.c:3431
+#: src/gpsdrive.c:3051
 msgid "Auto"
 msgstr "Auto"
 
-#: src/gpsdrive.c:3691
+#: src/gpsdrive.c:3325
 #, fuzzy
 msgid "Warning!"
 msgstr "Bearing"
 
-#: src/gpsdrive.c:3693
+#: src/gpsdrive.c:3327
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:4012 src/gpsdrive.c:7417 src/gpsdrive.c:7427
-#: src/gpsdrive.c:11159 src/gpsdrive.c:11169
+#: src/gpsdrive.c:3631 src/gpsdrive.c:6818 src/gpsdrive.c:6828
+#: src/gpsdrive.c:10479 src/gpsdrive.c:10489
 #, fuzzy
 msgid "mi/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:4015 src/gpsdrive.c:7419 src/gpsdrive.c:7430
-#: src/gpsdrive.c:11161 src/gpsdrive.c:11172
+#: src/gpsdrive.c:3634 src/gpsdrive.c:6820 src/gpsdrive.c:6831
+#: src/gpsdrive.c:10481 src/gpsdrive.c:10492
 msgid "knots"
 msgstr "csomó"
 
-#: src/gpsdrive.c:4018 src/gpsdrive.c:7421 src/gpsdrive.c:7433
-#: src/gpsdrive.c:11163 src/gpsdrive.c:11175
+#: src/gpsdrive.c:3637 src/gpsdrive.c:6822 src/gpsdrive.c:6834
+#: src/gpsdrive.c:10483 src/gpsdrive.c:10495
 msgid "km/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:4352
+#: src/gpsdrive.c:3974
 #, c-format
 msgid ""
 "\n"
@@ -191,89 +177,81 @@ msgid ""
 msgstr ""
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:5482
+#: src/gpsdrive.c:5007
 msgid "NESW"
 msgstr ""
 
-#: src/gpsdrive.c:5663
+#: src/gpsdrive.c:5190
 msgid "No map available for this position!"
 msgstr "Nincs elérhetõ térkép ehhez a helyhez!"
 
-#: src/gpsdrive.c:5862
+#: src/gpsdrive.c:5376
 msgid "unused"
 msgstr ""
 
 #. displays zoom factor of map
-#: src/gpsdrive.c:5868 src/gpsdrive.c:5878 src/gpsdrive.c:10970
-#: src/gpsdrive.c:10977 src/gpsdrive.c:10984 src/gpsdrive.c:11050
-#: src/gpsdrive.c:11055 src/gpsdrive.c:11061 src/gpsdrive.c:11097
-#: src/gpsdrive.c:11104 src/settings.c:477
+#: src/gpsdrive.c:5382 src/gpsdrive.c:5392 src/gpsdrive.c:10290
+#: src/gpsdrive.c:10297 src/gpsdrive.c:10304 src/gpsdrive.c:10370
+#: src/gpsdrive.c:10375 src/gpsdrive.c:10381 src/gpsdrive.c:10417
+#: src/gpsdrive.c:10424 src/settings.c:482
 msgid "n/a"
 msgstr "n/a"
 
-#: src/gpsdrive.c:5973
+#: src/gpsdrive.c:5491
 msgid "can't open NMEA output file"
 msgstr "NMEA kimeneti fájl megnyitása sikertelen"
 
-#: src/gpsdrive.c:6101
-msgid " Mapfile could not be loaded:"
-msgstr " A térképfájl betöltése sikertelen:"
-
-#: src/gpsdrive.c:6148
-msgid "Map found!"
-msgstr ""
-
-#: src/gpsdrive.c:6446
+#: src/gpsdrive.c:5852
 msgid "Select coordinates and scale"
 msgstr "Válassz koordinátát és léptéket"
 
-#: src/gpsdrive.c:6449
+#: src/gpsdrive.c:5855
 msgid "Download map"
 msgstr "Térkép letöltése"
 
-#: src/gpsdrive.c:6477 src/gpsdrive.c:8654 src/gpsdrive.c:8944
-#: src/gpsdrive.c:9028 src/gpsdrive.c:9203 src/gpsdrive.c:11331
-#: src/import_map.c:362
+#: src/gpsdrive.c:5883 src/gpsdrive.c:8055 src/gpsdrive.c:8345
+#: src/gpsdrive.c:8429 src/gpsdrive.c:8604 src/gpsdrive.c:10651
+#: src/import_map.c:368
 msgid "Latitude"
 msgstr "Szélesség"
 
-#: src/gpsdrive.c:6479 src/gpsdrive.c:8636 src/gpsdrive.c:8944
-#: src/gpsdrive.c:9028 src/gpsdrive.c:9203 src/gpsdrive.c:11332
-#: src/import_map.c:364
+#: src/gpsdrive.c:5885 src/gpsdrive.c:8037 src/gpsdrive.c:8345
+#: src/gpsdrive.c:8429 src/gpsdrive.c:8604 src/gpsdrive.c:10652
+#: src/import_map.c:370
 msgid "Longitude"
 msgstr "Hosszúság"
 
-#: src/gpsdrive.c:6481
+#: src/gpsdrive.c:5887
 msgid "Map covers"
 msgstr "Térkép lefedi"
 
-#: src/gpsdrive.c:6485 src/import_map.c:373
+#: src/gpsdrive.c:5891 src/import_map.c:380
 msgid "Scale"
 msgstr "Lépték"
 
-#: src/gpsdrive.c:6487
+#: src/gpsdrive.c:5893
 msgid "Map file name"
 msgstr "Térképfájl neve"
 
-#: src/gpsdrive.c:6524 src/settings.c:1174
+#: src/gpsdrive.c:5930 src/settings.c:1179
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/gpsdrive.c:6530 src/settings.c:1181
+#: src/gpsdrive.c:5936 src/settings.c:1186
 msgid "Expedia USA"
 msgstr ""
 
-#: src/gpsdrive.c:6541
+#: src/gpsdrive.c:5947
 msgid ""
 "If selected, you download the map from the german expedia server (expedia.de)"
 msgstr ""
 
-#: src/gpsdrive.c:6545
+#: src/gpsdrive.c:5951
 msgid ""
 "If selected, you download the map from the U.S. expedia server (expedia.com)"
 msgstr ""
 
-#: src/gpsdrive.c:6571 src/gpsdrive.c:6575
+#: src/gpsdrive.c:5977 src/gpsdrive.c:5981
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -281,149 +259,149 @@ msgstr ""
 "A hely megadásához kattinthat\n"
 "a térképre is."
 
-#: src/gpsdrive.c:6577
+#: src/gpsdrive.c:5983
 msgid "Using Proxy and port:"
 msgstr "Proxy és port:"
 
-#: src/gpsdrive.c:6856 src/gpsdrive.c:6985
+#: src/gpsdrive.c:6259 src/gpsdrive.c:6388
 msgid "can't open socket for port 80"
 msgstr "socket megnyitása a 80-as porthoz sikertlen"
 
-#: src/gpsdrive.c:6859 src/gpsdrive.c:6863 src/gpsdrive.c:6890
-#: src/gpsdrive.c:6894 src/gpsdrive.c:6910 src/gpsdrive.c:6914
-#: src/gpsdrive.c:6988 src/gpsdrive.c:6993 src/gpsdrive.c:6997
-#: src/gpsdrive.c:7034 src/gpsdrive.c:7039 src/gpsdrive.c:7043
-#: src/gpsdrive.c:7061 src/gpsdrive.c:7066 src/gpsdrive.c:7070
+#: src/gpsdrive.c:6262 src/gpsdrive.c:6266 src/gpsdrive.c:6293
+#: src/gpsdrive.c:6297 src/gpsdrive.c:6313 src/gpsdrive.c:6317
+#: src/gpsdrive.c:6391 src/gpsdrive.c:6396 src/gpsdrive.c:6400
+#: src/gpsdrive.c:6437 src/gpsdrive.c:6442 src/gpsdrive.c:6446
+#: src/gpsdrive.c:6464 src/gpsdrive.c:6469 src/gpsdrive.c:6473
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Csatlkozás sikertelen a következõhöz: %s"
 
-#: src/gpsdrive.c:6887 src/gpsdrive.c:7031
+#: src/gpsdrive.c:6290 src/gpsdrive.c:6434
 msgid "Can't resolve webserver address"
 msgstr "A webkiszolgáló nevének feloldása sikertelen"
 
-#: src/gpsdrive.c:6907 src/gpsdrive.c:7058
+#: src/gpsdrive.c:6310 src/gpsdrive.c:6461
 msgid "unable to connect to Website"
 msgstr "Sikertelen csatlakozási kísérlet a webhelyhez"
 
-#: src/gpsdrive.c:6937 src/gpsdrive.c:7131
+#: src/gpsdrive.c:6340 src/gpsdrive.c:6534
 msgid "read from Webserver"
 msgstr "olvasás a webkiszolgálóról"
 
-#: src/gpsdrive.c:6966 src/gpsdrive.c:6971 src/gpsdrive.c:6974
+#: src/gpsdrive.c:6369 src/gpsdrive.c:6374 src/gpsdrive.c:6377
 #, c-format
 msgid "Connecting to %s"
 msgstr "Csatlakozás a következõhöz: %s"
 
-#: src/gpsdrive.c:7086 src/gpsdrive.c:7092 src/gpsdrive.c:7095
+#: src/gpsdrive.c:6489 src/gpsdrive.c:6495 src/gpsdrive.c:6498
 #, c-format
 msgid "Now connected to %s"
 msgstr "Csatlakozva a következõhöz: %s"
 
-#: src/gpsdrive.c:7179
+#: src/gpsdrive.c:6582
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "Letöltés: %d kB"
 
-#: src/gpsdrive.c:7195
+#: src/gpsdrive.c:6598
 msgid "Download FAILED!"
 msgstr "Letöltés sikertelen!"
 
-#: src/gpsdrive.c:7198
+#: src/gpsdrive.c:6601
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "A letöltés befejezõdött: %d kB"
 
-#: src/gpsdrive.c:7311
+#: src/gpsdrive.c:6712
 #, fuzzy
 msgid "GpsDrive Control"
 msgstr "GpsDrive menü"
 
-#: src/gpsdrive.c:7426 src/gpsdrive.c:7429 src/gpsdrive.c:7432
-#: src/gpsdrive.c:11168 src/gpsdrive.c:11171 src/gpsdrive.c:11174
-#: src/settings.c:1244
+#: src/gpsdrive.c:6827 src/gpsdrive.c:6830 src/gpsdrive.c:6833
+#: src/gpsdrive.c:10488 src/gpsdrive.c:10491 src/gpsdrive.c:10494
+#: src/settings.c:1249
 msgid "Speed"
 msgstr "Sebesség"
 
-#: src/gpsdrive.c:7692
+#: src/gpsdrive.c:7093
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:7991
+#: src/gpsdrive.c:7392
 msgid "Sending message to friends server..."
 msgstr ""
 
-#: src/gpsdrive.c:8070
+#: src/gpsdrive.c:7471
 #, fuzzy
 msgid "Message for:"
 msgstr "  Üzenet  "
 
-#: src/gpsdrive.c:8112
+#: src/gpsdrive.c:7513
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:8125
+#: src/gpsdrive.c:7526
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:8563
+#: src/gpsdrive.c:7964
 msgid "Add waypoint name"
 msgstr "Útvonalpont nevének megadása"
 
-#: src/gpsdrive.c:8573
+#: src/gpsdrive.c:7974
 msgid " Waypoint name: "
 msgstr " Útvonalpont neve: "
 
-#: src/gpsdrive.c:8619
+#: src/gpsdrive.c:8020
 #, fuzzy
 msgid " Waypoint type: "
 msgstr " Útvonalpont neve: "
 
-#: src/gpsdrive.c:8944
+#: src/gpsdrive.c:8345
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:8944 src/gpsdrive.c:9028 src/gpsdrive.c:9203
-#: src/gpsdrive.c:11145 src/settings.c:1236
+#: src/gpsdrive.c:8345 src/gpsdrive.c:8429 src/gpsdrive.c:8604
+#: src/gpsdrive.c:10465 src/settings.c:1241
 msgid "Distance"
 msgstr "Távolság"
 
-#: src/gpsdrive.c:8955
+#: src/gpsdrive.c:8356
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Cél kijelölése"
 
-#: src/gpsdrive.c:9028 src/gpsdrive.c:9203
+#: src/gpsdrive.c:8429 src/gpsdrive.c:8604
 msgid "Waypoint"
 msgstr "Útvonalpont"
 
-#: src/gpsdrive.c:9049
+#: src/gpsdrive.c:8450
 msgid "Select reference point"
 msgstr "Referenciapont kijelölése"
 
-#: src/gpsdrive.c:9053
+#: src/gpsdrive.c:8454
 msgid "Please select your destination"
 msgstr "Cél kijelölése"
 
-#: src/gpsdrive.c:9085
+#: src/gpsdrive.c:8486
 msgid "Edit route"
 msgstr "Útvonal szerkesztése"
 
-#: src/gpsdrive.c:9088
+#: src/gpsdrive.c:8489
 msgid "Create route"
 msgstr "Útvonal létrehozása"
 
-#: src/gpsdrive.c:9180
+#: src/gpsdrive.c:8581
 msgid "Create a route using some waypoints from this list"
 msgstr "Útvonal létrehozása a listában található pontok segítségével"
 
-#: src/gpsdrive.c:9185
+#: src/gpsdrive.c:8586
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "A kijelölt útvonalpont törlése a listából"
 
-#: src/gpsdrive.c:9189
+#: src/gpsdrive.c:8590
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
@@ -431,23 +409,23 @@ msgstr ""
 "kiválasztásához kattints\n"
 "egy listaelemre!"
 
-#: src/gpsdrive.c:9218
+#: src/gpsdrive.c:8619
 msgid "Define route"
 msgstr "Útvonal definiálása"
 
-#: src/gpsdrive.c:9226
+#: src/gpsdrive.c:8627
 msgid "Start route"
 msgstr "Útvonal indítása"
 
-#: src/gpsdrive.c:9235
+#: src/gpsdrive.c:8636
 msgid "Take all WP as route"
 msgstr "Útvonal az összes pontból"
 
-#: src/gpsdrive.c:9240
+#: src/gpsdrive.c:8641
 msgid "Abort route"
 msgstr "Útvonal megszakítása"
 
-#: src/gpsdrive.c:9300
+#: src/gpsdrive.c:8701
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -455,7 +433,7 @@ msgstr ""
 "Útvonalpont hozzáadásához\n"
 "kattints a listára!"
 
-#: src/gpsdrive.c:9303
+#: src/gpsdrive.c:8704
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -464,14 +442,14 @@ msgstr ""
 "kiválasztásához kattints\n"
 "egy listaelemre!"
 
-#: src/gpsdrive.c:9351
+#: src/gpsdrive.c:8752
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 "Útvonalat készít az összes pontból. A sorrendet a fájlban lévõ sorrend "
 "határozza meg, nem a távolság."
 
-#: src/gpsdrive.c:9355
+#: src/gpsdrive.c:8756
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
@@ -479,57 +457,56 @@ msgstr ""
 "Kattints ide az útazás megkezdéséhez. A GpsDrive végigvezet a listában "
 "található útvonalpontokon."
 
-#: src/gpsdrive.c:9358
+#: src/gpsdrive.c:8759
 msgid "Abort your journey"
 msgstr "Út megszakítása"
 
-#: src/gpsdrive.c:9376
+#: src/gpsdrive.c:8780
 msgid "-v    show version\n"
 msgstr "-v    kiírja a program nevét és változatát\n"
 
-#: src/gpsdrive.c:9377
+#: src/gpsdrive.c:8781
 msgid "-h    print this help\n"
 msgstr "-h    emlékeztetõt ír ki\n"
 
-#: src/gpsdrive.c:9378
+#: src/gpsdrive.c:8782
 #, fuzzy
 msgid "-d    turn on debug info\n"
 msgstr "-d    bekapcsolaja a hibakeresést\n"
 
-#: src/gpsdrive.c:9379
-#, fuzzy
-msgid "-D    turn on lot of debug info\n"
-msgstr "-d    bekapcsolaja a hibakeresést\n"
+#: src/gpsdrive.c:8783
+msgid "-D X  set debug Level to X\n"
+msgstr ""
 
-#: src/gpsdrive.c:9380
+#: src/gpsdrive.c:8784
 msgid "-e    use Festival-Lite (flite) for speech output\n"
 msgstr ""
 
-#: src/gpsdrive.c:9381
+#: src/gpsdrive.c:8785
 msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr ""
 "-t    soros interfész megadása, ahova a GPS csatlakozik (pl. /dev/ttyS1)\n"
 
-#: src/gpsdrive.c:9383
+#: src/gpsdrive.c:8786
 msgid "-o    serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    soros eszköz, pty master, vagy fájl az NMEA *kimenethez*\n"
 
-#: src/gpsdrive.c:9385
+#: src/gpsdrive.c:8787
 #, fuzzy
 msgid "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Barátod szerverének kiválasztása, X lehet pl. linux.quant-x.at\n"
 
-#: src/gpsdrive.c:9386
+#: src/gpsdrive.c:8788
 msgid "-n    Disable use of direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9388
+#: src/gpsdrive.c:8790
 msgid ""
 "-X    Use DBUS for communication with gpsd. This disables serial and socket "
 "communication\n"
 msgstr ""
 
-#: src/gpsdrive.c:9390
+#: src/gpsdrive.c:8792
 msgid ""
 "-l X  Select language of the voice,\n"
 "      X may be english, spanish or german\n"
@@ -537,7 +514,7 @@ msgstr ""
 "-l X  Hang nyelvének kiválasztása,\n"
 "      X lehet angol, spanyol vagy német\n"
 
-#: src/gpsdrive.c:9392
+#: src/gpsdrive.c:8794
 msgid ""
 "-s X  set height of the screen, if autodetection\n"
 "      don't satisfy you, X is i.e. 768,600,480,200\n"
@@ -545,91 +522,90 @@ msgstr ""
 "-s X  a képernyõ magasságának beállítása, ha nem vagy megelégedve\n"
 "      az automatikus felismerésseli. X lehet pl. 768,600,480,200\n"
 
-#. ** Mod by Arms
-#: src/gpsdrive.c:9395
+#: src/gpsdrive.c:8796
 msgid "-r X  set width of the screen, only with -s\n"
 msgstr "-r X  képernyõ szélességének beállítása, csak -s kapcsolóval együtt\n"
 
-#: src/gpsdrive.c:9397
+#: src/gpsdrive.c:8797
 msgid "-1    have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    egy bombos egér, pl. érintõképernyõ\n"
 
-#: src/gpsdrive.c:9398
+#: src/gpsdrive.c:8798
 msgid "-a    don't display battery status (i.e. broken APM)\n"
 msgstr "-a    nem mutatja a telep töltöttségét (pl. rossz APM)\n"
 
-#: src/gpsdrive.c:9400
+#: src/gpsdrive.c:8799
 msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr "-b X  az NMEA kiszolgáló neve (ha a gpsd másik gépen fut)\n"
 
-#: src/gpsdrive.c:9402
+#: src/gpsdrive.c:8800
 msgid "-c X  set start position in simulation mode to waypoint name X\n"
 msgstr "-c X  a szimulációs mód kiindulópontja legyen X útvonalpont\n"
 
-#: src/gpsdrive.c:9403
+#: src/gpsdrive.c:8801
 #, fuzzy
 msgid "-x    create separate window for menu\n"
 msgstr ""
 "-x    menü külön ablakban\n"
 "\n"
 
-#: src/gpsdrive.c:9404
+#: src/gpsdrive.c:8802
 msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
 msgstr ""
 
-#: src/gpsdrive.c:9406
+#: src/gpsdrive.c:8803
 msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 
-#: src/gpsdrive.c:9407
+#: src/gpsdrive.c:8804
 msgid "-q    disable SQL support\n"
 msgstr ""
 
-#: src/gpsdrive.c:9408
+#: src/gpsdrive.c:8805
 msgid "-F    force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:9409
+#: src/gpsdrive.c:8806
 msgid "-S    don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:9411
+#: src/gpsdrive.c:8807
 msgid "-E    print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9413
+#: src/gpsdrive.c:8808
 msgid "-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:9414
+#: src/gpsdrive.c:8809
 msgid "-H X  correct altitude, adding this value to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:9415
+#: src/gpsdrive.c:8810
 msgid ""
 "-z    don't display zoom factor and scale\n"
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:9526
+#: src/gpsdrive.c:8846
 msgid "Select a track file"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/gpsdrive.c:10039
+#: src/gpsdrive.c:9359
 #, c-format
 msgid ""
 "\n"
 "libmysqlclient.so not found.\n"
 msgstr ""
 
-#: src/gpsdrive.c:10045
+#: src/gpsdrive.c:9365
 #, c-format
 msgid ""
 "\n"
 "MySQL support disabled.\n"
 msgstr ""
 
-#: src/gpsdrive.c:10233
+#: src/gpsdrive.c:9553
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -639,12 +615,12 @@ msgstr ""
 "Csak angol, spanyol vagy német választható!\n"
 "\n"
 
-#: src/gpsdrive.c:10266 src/settings.c:1954
+#: src/gpsdrive.c:9586 src/settings.c:1959
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Interfész"
 
-#: src/gpsdrive.c:10297
+#: src/gpsdrive.c:9617
 #, c-format
 msgid ""
 "\n"
@@ -653,7 +629,7 @@ msgstr ""
 "\n"
 "Használt proxy: %s, a port: %d"
 
-#: src/gpsdrive.c:10303
+#: src/gpsdrive.c:9623
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
@@ -663,46 +639,46 @@ msgstr ""
 "HTTP_PROXY: érvénytelen környezeti változó. A formátum http://proxy."
 "szolgáltato.hu:3128 kell legyen!"
 
-#: src/gpsdrive.c:10496
+#: src/gpsdrive.c:9816
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
 msgstr "(c) 2001,2002 F.Ganter"
 
-#: src/gpsdrive.c:10504
+#: src/gpsdrive.c:9824
 msgid "Using speech output"
 msgstr "Navigációs beszéd használata"
 
-#: src/gpsdrive.c:10537
+#: src/gpsdrive.c:9857
 #, fuzzy
 msgid "/Misc. Menu/Maps/Map Manager"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/gpsdrive.c:10540
+#: src/gpsdrive.c:9860
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "Útvonalfájl kiválasztása"
 
 #. download map button
-#: src/gpsdrive.c:10545
+#: src/gpsdrive.c:9865
 #, fuzzy
 msgid "_Download map"
 msgstr "Térkép letöltése"
 
-#: src/gpsdrive.c:10566
+#: src/gpsdrive.c:9886
 #, fuzzy
 msgid "M_ute"
 msgstr "Elnémítás"
 
 #. Checkbox ---- POI Draw
-#: src/gpsdrive.c:10578
+#: src/gpsdrive.c:9898
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:10593
+#: src/gpsdrive.c:9913
 msgid "draw _Streets"
 msgstr ""
 
-#: src/gpsdrive.c:10608
+#: src/gpsdrive.c:9928
 #, fuzzy
 msgid "draw _Track"
 msgstr "Útvonal mutatása"
@@ -713,107 +689,107 @@ msgstr "Útvonal mutatása"
 #. * NULL);
 #.
 #. Checkbox ----   Use SQL
-#: src/gpsdrive.c:10623
+#: src/gpsdrive.c:9943
 msgid "Use SQ_L"
 msgstr ""
 
 #. Checkbox ---- Show WP
-#: src/gpsdrive.c:10636
+#: src/gpsdrive.c:9956
 #, fuzzy
 msgid "Show _WP"
 msgstr "ÚP-k mutatása"
 
-#: src/gpsdrive.c:10663
+#: src/gpsdrive.c:9983
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:10671
+#: src/gpsdrive.c:9991
 #, fuzzy
 msgid "Pos. _mode"
 msgstr "Poz. mód"
 
-#: src/gpsdrive.c:10678
+#: src/gpsdrive.c:9998
 #, fuzzy
 msgid "Show _Track"
 msgstr "Útvonal mutatása"
 
-#: src/gpsdrive.c:10724
+#: src/gpsdrive.c:10044
 msgid "_Navigation"
 msgstr ""
 
 #. Checkbox ---- Start GPSD
-#: src/gpsdrive.c:10741
+#: src/gpsdrive.c:10061
 msgid "Start GPSD"
 msgstr "GPSD indítása"
 
 #. Checkbox ---- Best Map
-#: src/gpsdrive.c:10747
+#: src/gpsdrive.c:10067
 #, fuzzy
 msgid "Auto _best map"
 msgstr "Legjobb térkép"
 
-#: src/gpsdrive.c:10759
+#: src/gpsdrive.c:10079
 msgid "Save track"
 msgstr "Útvonal mentése"
 
 #. Checkbox ---- Show Map
-#: src/gpsdrive.c:10771
+#: src/gpsdrive.c:10091
 msgid "Shown map type"
 msgstr "Térképtípus mutatása"
 
 #. Checkbox ---- Show Map: map_
-#: src/gpsdrive.c:10781
+#: src/gpsdrive.c:10101
 msgid "Street map"
 msgstr "Utca térkép"
 
 #. Checkbox ---- Show Map: top_
-#: src/gpsdrive.c:10790
+#: src/gpsdrive.c:10110
 msgid "Topo map"
 msgstr "Dombor térkép"
 
-#: src/gpsdrive.c:10877
+#: src/gpsdrive.c:10197
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
 
-#: src/gpsdrive.c:10930 src/gpsdrive.c:11336
+#: src/gpsdrive.c:10250 src/gpsdrive.c:10656
 msgid "Bearing"
 msgstr "Bearing"
 
-#: src/gpsdrive.c:10954
+#: src/gpsdrive.c:10274
 msgid "GPS Info"
 msgstr ""
 
-#: src/gpsdrive.c:11007
+#: src/gpsdrive.c:10327
 msgid "Bat."
 msgstr "Telep"
 
-#: src/gpsdrive.c:11024
+#: src/gpsdrive.c:10344
 #, fuzzy
 msgid "TC"
 msgstr "UTC "
 
 #. displays speed over ground
-#: src/gpsdrive.c:11046 src/gpsdrive.c:11346 src/gpsdrive.c:11348
-#: src/gpsdrive.c:11354 src/gpsdrive.c:11356
+#: src/gpsdrive.c:10366 src/gpsdrive.c:10666 src/gpsdrive.c:10668
+#: src/gpsdrive.c:10674 src/gpsdrive.c:10676
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:11127 src/gpsdrive.c:11134
+#: src/gpsdrive.c:10447 src/gpsdrive.c:10454
 #, fuzzy
 msgid "Selected:"
 msgstr "Cél kijelölése"
 
-#: src/gpsdrive.c:11128 src/gpsdrive.c:11135
+#: src/gpsdrive.c:10448 src/gpsdrive.c:10455
 msgid "within"
 msgstr ""
 
-#: src/gpsdrive.c:11143
+#: src/gpsdrive.c:10463
 msgid "Distance to target"
 msgstr "A cél távolsága"
 
-#: src/gpsdrive.c:11185
+#: src/gpsdrive.c:10505
 msgid "Altitude"
 msgstr "Magasság"
 
@@ -821,113 +797,113 @@ msgstr "Magasság"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:11193 src/settings.c:840
+#: src/gpsdrive.c:10513 src/settings.c:845
 #, fuzzy
 msgid "Waypoints"
 msgstr "Útvonalpont"
 
-#: src/gpsdrive.c:11333
+#: src/gpsdrive.c:10653
 msgid "Map file"
 msgstr "Térképfájl"
 
-#: src/gpsdrive.c:11334
+#: src/gpsdrive.c:10654
 msgid "Map scale"
 msgstr "Lépték"
 
-#: src/gpsdrive.c:11335
+#: src/gpsdrive.c:10655
 msgid "Heading"
 msgstr "Heading"
 
-#: src/gpsdrive.c:11337
+#: src/gpsdrive.c:10657
 msgid "Time at Dest."
 msgstr "Hátralévõ idõ"
 
-#: src/gpsdrive.c:11338
+#: src/gpsdrive.c:10658
 msgid "Pref. scale"
 msgstr "Kedvenc lépték"
 
-#: src/gpsdrive.c:11342
+#: src/gpsdrive.c:10662
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:11344
+#: src/gpsdrive.c:10664
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:11350 src/gpsdrive.c:11352
+#: src/gpsdrive.c:10670 src/gpsdrive.c:10672
 msgid "0000"
 msgstr ""
 
-#: src/gpsdrive.c:11459 src/gpsdrive.c:11535 src/gpsdrive.c:11548
+#: src/gpsdrive.c:10779 src/gpsdrive.c:10855 src/gpsdrive.c:10868
 msgid "Menu"
 msgstr ""
 
-#: src/gpsdrive.c:11472 src/gpsdrive.c:11539 src/gpsdrive.c:11549
+#: src/gpsdrive.c:10792 src/gpsdrive.c:10859 src/gpsdrive.c:10869
 #, fuzzy
 msgid "Status"
 msgstr "GpsDrive állapot"
 
-#: src/gpsdrive.c:11531 src/gpsdrive.c:11547
+#: src/gpsdrive.c:10851 src/gpsdrive.c:10867
 msgid "Map"
 msgstr "Térkép"
 
-#: src/gpsdrive.c:11714
+#: src/gpsdrive.c:11034
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:11719
+#: src/gpsdrive.c:11039
 msgid "Number of used satellites/satellites in view"
 msgstr ""
 
-#: src/gpsdrive.c:11723
+#: src/gpsdrive.c:11043
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:11727
+#: src/gpsdrive.c:11047
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:11732
+#: src/gpsdrive.c:11052
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:11735
+#: src/gpsdrive.c:11055
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "Útvonalfájl kiválasztása"
 
-#: src/gpsdrive.c:11738
+#: src/gpsdrive.c:11058
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:11742
+#: src/gpsdrive.c:11062
 msgid "Download map from Internet"
 msgstr "Térkép letöltése az internetrõl"
 
-#: src/gpsdrive.c:11744
+#: src/gpsdrive.c:11064
 msgid "Leave the program"
 msgstr "Kilépés a programból"
 
-#: src/gpsdrive.c:11747
+#: src/gpsdrive.c:11067
 msgid "Disable output of speech"
 msgstr "Beszéd kikapcsolása"
 
-#: src/gpsdrive.c:11750
+#: src/gpsdrive.c:11070
 msgid "Use SQL server for waypoints"
 msgstr ""
 
-#: src/gpsdrive.c:11754
+#: src/gpsdrive.c:11074
 msgid "Show waypoints on the map"
 msgstr "Útvonalpontok mutatása a térképen"
 
-#: src/gpsdrive.c:11757
+#: src/gpsdrive.c:11077
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
@@ -935,101 +911,101 @@ msgstr ""
 "Pozíció mód bekapcsolása. Bal egérgombbal mozoghatsz a térképen.Ha a "
 "képernyõ szélére kattintassz, megjelenik a következõ térkép."
 
-#: src/gpsdrive.c:11760
+#: src/gpsdrive.c:11080
 msgid "Show tracking on the map"
 msgstr "Megtett útvonal mutatása a térképen"
 
-#: src/gpsdrive.c:11765
+#: src/gpsdrive.c:11085
 msgid "Opens the help window"
 msgstr "Megnyitja a súgóablakot"
 
-#: src/gpsdrive.c:11769
+#: src/gpsdrive.c:11089
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:11775
+#: src/gpsdrive.c:11095
 #, fuzzy
 msgid "Stop GPSD"
 msgstr "GPSD indítása"
 
-#: src/gpsdrive.c:11778
+#: src/gpsdrive.c:11098
 msgid "Stop GPSD and switch to simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:11784
+#: src/gpsdrive.c:11104
 msgid "Starts GPSD for NMEA mode"
 msgstr "Elindítja a GPSD-t NMEA módhoz"
 
-#: src/gpsdrive.c:11787
+#: src/gpsdrive.c:11107
 msgid "Settings for GpsDrive"
 msgstr "A GpsDrive beállításai"
 
-#: src/gpsdrive.c:11789
+#: src/gpsdrive.c:11109
 msgid "Zoom into the current map"
 msgstr "Jelenlegi térkép nagyítása"
 
-#: src/gpsdrive.c:11791
+#: src/gpsdrive.c:11111
 msgid "Zooms out off the current map"
 msgstr "Jelenlegi térkép kicsinyítése"
 
-#: src/gpsdrive.c:11793
+#: src/gpsdrive.c:11113
 msgid "Select the next more detailed map"
 msgstr "A következõ, részletesebb térkép kiválasztása"
 
-#: src/gpsdrive.c:11795
+#: src/gpsdrive.c:11115
 msgid "Select the next less detailed map"
 msgstr "A következõ, kevésbe részletes térkép kiválasztása"
 
-#: src/gpsdrive.c:11800
+#: src/gpsdrive.c:11120
 msgid "Select here a destination from the waypoint list"
 msgstr "Cél kiválasztása az útvonlapont listából"
 
-#: src/gpsdrive.c:11805
+#: src/gpsdrive.c:11125
 msgid "Select the map scale of avail. maps."
 msgstr "Az elérhetõ térképek léptékének kiválasztása"
 
-#: src/gpsdrive.c:11812
+#: src/gpsdrive.c:11132
 msgid "Always select the most detailed map available"
 msgstr "Mindíg a legrészletesebb térkép mutatása"
 
-#: src/gpsdrive.c:11815
+#: src/gpsdrive.c:11135
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11818
+#: src/gpsdrive.c:11138
 msgid "Draw Streets found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11820
+#: src/gpsdrive.c:11140
 msgid "Draw Tracks found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11823
+#: src/gpsdrive.c:11143
 msgid "Save the track to given filename at program exit"
 msgstr "Kilépéskor a track elmentése adott fájlnéven"
 
-#: src/gpsdrive.c:11829
+#: src/gpsdrive.c:11149
 msgid "Number of waypoints selected from SQL server"
 msgstr ""
 
-#: src/gpsdrive.c:11833
+#: src/gpsdrive.c:11153
 msgid "Number of selected waypoints, which are in range"
 msgstr ""
 
-#: src/gpsdrive.c:11837
+#: src/gpsdrive.c:11157
 msgid "Range for waypoint selection in kilometers"
 msgstr ""
 
-#: src/gpsdrive.c:11840
+#: src/gpsdrive.c:11160
 msgid "This shows the time from your GPS receiver"
 msgstr ""
 
-#: src/gpsdrive.c:11844
+#: src/gpsdrive.c:11164
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr ""
 
-#: src/gpsdrive.c:11942
+#: src/gpsdrive.c:11262
 #, c-format
 msgid ""
 "\n"
@@ -1042,7 +1018,7 @@ msgstr ""
 msgid "can't open socket for port "
 msgstr "socket megnyitása sikertelen a következõ porthoz: "
 
-#: src/gpsmisc.c:485 src/gpsmisc.c:488 src/gpsmisc.c:522 src/gpsmisc.c:525
+#: src/gpsmisc.c:499 src/gpsmisc.c:502 src/gpsmisc.c:536 src/gpsmisc.c:539
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
@@ -1145,17 +1121,17 @@ msgstr ""
 msgid "Loaded user defined icon %s\n"
 msgstr ""
 
-#: src/import_map.c:203
+#: src/import_map.c:212
 msgid "Select a map file"
 msgstr "Válassz térképfájlt"
 
-#: src/import_map.c:273
+#: src/import_map.c:282
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
 msgstr ""
 
-#: src/import_map.c:275
+#: src/import_map.c:284
 #, fuzzy
 msgid ""
 "\n"
@@ -1174,7 +1150,7 @@ msgstr ""
 "az útvonalpont listából, vagy gépeld be ezeket.\n"
 "Végül kattints az \"Elfogadás\" gombra."
 
-#: src/import_map.c:282
+#: src/import_map.c:291
 #, fuzzy
 msgid ""
 "Now do the same for your second point and click on the\n"
@@ -1183,67 +1159,67 @@ msgstr ""
 "Most tedd ugyanezt a második ponttal és kattints a befejezés gombra. A "
 "térkép most már használható!"
 
-#: src/import_map.c:288
+#: src/import_map.c:298
 msgid "Import Assistant. Step 1"
 msgstr "Importálási segéd, 1. lépés"
 
-#: src/import_map.c:291
+#: src/import_map.c:300
 msgid "Import Assistant. Step 2"
 msgstr "Importálási segéd, 2. lépés"
 
-#: src/import_map.c:298
+#: src/import_map.c:307
 msgid "Accept first point"
 msgstr "Elsõ pont elfogadása"
 
-#: src/import_map.c:305
+#: src/import_map.c:313
 msgid "Accept Scale and Finish"
 msgstr ""
 
-#: src/import_map.c:313
+#: src/import_map.c:320
 msgid "Finish"
 msgstr "Befejezés"
 
-#: src/import_map.c:328
+#: src/import_map.c:335
 msgid "Go up"
 msgstr "Fel"
 
-#: src/import_map.c:331
+#: src/import_map.c:338
 msgid "Go left"
 msgstr "Balra"
 
-#: src/import_map.c:334
+#: src/import_map.c:341
 msgid "Go right"
 msgstr "Jobbra"
 
-#: src/import_map.c:337
+#: src/import_map.c:344
 msgid "Go down"
 msgstr "Le"
 
-#: src/import_map.c:340
+#: src/import_map.c:347
 msgid "Zoom in"
 msgstr "Nagyítás"
 
-#: src/import_map.c:343
+#: src/import_map.c:350
 msgid "Zoom out"
 msgstr "Kicsinyítés"
 
-#: src/import_map.c:366
+#: src/import_map.c:372
 msgid "Screen X"
 msgstr "Képernyõ X"
 
-#: src/import_map.c:368
+#: src/import_map.c:374
 msgid "Screen Y"
 msgstr "Képernyõ Y"
 
-#: src/import_map.c:381
+#: src/import_map.c:386
 msgid "Browse waypoint"
 msgstr "Útvonalpont beállítása"
 
-#: src/import_map.c:408
+#: src/import_map.c:415
 msgid "Browse filename"
 msgstr "Fájlnév beállítása"
 
-#: src/import_map.c:773
+#: src/import_map.c:781
 msgid "SELECTED"
 msgstr "KIJELÖLT"
 
@@ -1252,36 +1228,36 @@ msgstr "KIJELÖLT"
 msgid "Nautic settings"
 msgstr "Egyéb beállítások"
 
-#: src/nautic.c:122 src/settings.c:1100
+#: src/nautic.c:122 src/settings.c:1105
 msgid "Nautic"
 msgstr "Tengeri"
 
-#: src/poi.c:714 src/streets.c:617
+#: src/poi.c:729 src/streets.c:629
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/settings.c:517
+#: src/settings.c:522
 msgid "Setting WP label font"
 msgstr ""
 
-#: src/settings.c:522
+#: src/settings.c:527
 msgid "Setting big display font"
 msgstr ""
 
-#: src/settings.c:606
+#: src/settings.c:611
 msgid "Setting big display color"
 msgstr ""
 
-#: src/settings.c:645
+#: src/settings.c:650
 msgid "Setting track color"
 msgstr ""
 
-#: src/settings.c:689
+#: src/settings.c:694
 msgid "Setting friends label color"
 msgstr ""
 
-#: src/settings.c:826
+#: src/settings.c:831
 #, fuzzy
 msgid ""
 "Don't use more than\n"
@@ -1290,129 +1266,129 @@ msgstr ""
 "Ne használj több mint\n"
 "30 útvonalpont (way*.txt) fájlt!"
 
-#: src/settings.c:838
+#: src/settings.c:843
 #, fuzzy
 msgid "Waypoint files to use"
 msgstr "Használandó útvonalpont fájlok"
 
-#: src/settings.c:870 src/settings.c:875
+#: src/settings.c:875 src/settings.c:880
 #, fuzzy
 msgid "Settings"
 msgstr "GPS beállítások"
 
 #. misc area
-#: src/settings.c:881
+#: src/settings.c:886
 msgid "Misc settings"
 msgstr "Egyéb beállítások"
 
-#: src/settings.c:884
+#: src/settings.c:889
 msgid "Show Shadows"
 msgstr "Árnyékok mutatása"
 
-#: src/settings.c:892
+#: src/settings.c:897
 msgid "Etched frames"
 msgstr ""
 
-#: src/settings.c:900
+#: src/settings.c:905
 msgid "Draw grid"
 msgstr ""
 
-#: src/settings.c:909
+#: src/settings.c:914
 msgid "Simulation: Follow target"
 msgstr "Szimuláció: cél követése"
 
-#: src/settings.c:917
+#: src/settings.c:922
 msgid "Maximum CPU load"
 msgstr ""
 
-#: src/settings.c:926
+#: src/settings.c:931
 #, fuzzy
 msgid "Track"
 msgstr "Útvonal mutatása"
 
-#: src/settings.c:941
+#: src/settings.c:946
 msgid "Maps directory"
 msgstr "Térképkönyvtár"
 
-#: src/settings.c:946
+#: src/settings.c:951
 #, fuzzy
 msgid "Automatic"
 msgstr "Automatikus éjszakai mód"
 
-#: src/settings.c:953
+#: src/settings.c:958
 msgid "On"
 msgstr ""
 
-#: src/settings.c:960
+#: src/settings.c:965
 msgid "Off"
 msgstr ""
 
 #. GPS settings area
-#: src/settings.c:993
+#: src/settings.c:998
 msgid "GPS settings"
 msgstr "GPS beállítások"
 
-#: src/settings.c:1004
+#: src/settings.c:1009
 msgid "Test for GARMIN"
 msgstr "GARMIN próba"
 
-#: src/settings.c:1013
+#: src/settings.c:1018
 msgid "Use DGPS-IP"
 msgstr "DGPS-IP használata"
 
-#: src/settings.c:1022
+#: src/settings.c:1027
 msgid "GPS is Earthmate"
 msgstr ""
 
-#: src/settings.c:1031
+#: src/settings.c:1036
 msgid "Use serial conn."
 msgstr ""
 
-#: src/settings.c:1045
+#: src/settings.c:1050
 msgid "Interface"
 msgstr "Interfész"
 
-#: src/settings.c:1046
+#: src/settings.c:1051
 msgid "Baudrate"
 msgstr ""
 
 #. units area
-#: src/settings.c:1082
+#: src/settings.c:1087
 msgid "Units"
 msgstr "Mértékegység"
 
-#: src/settings.c:1088
+#: src/settings.c:1093
 msgid "Miles"
 msgstr "Mérföld"
 
-#: src/settings.c:1094
+#: src/settings.c:1099
 msgid "Metric"
 msgstr "Metrikus"
 
-#: src/settings.c:1121
+#: src/settings.c:1126
 msgid "Deg.decimal"
 msgstr ""
 
-#: src/settings.c:1128
+#: src/settings.c:1133
 msgid "Deg Min Sec"
 msgstr ""
 
-#: src/settings.c:1136
+#: src/settings.c:1141
 msgid "Deg Min.dec"
 msgstr ""
 
 #. default download server
-#: src/settings.c:1163
+#: src/settings.c:1168
 msgid "Default map server"
 msgstr "Alapértelmezett térképkiszolgáló"
 
 #. Night light mode
-#: src/settings.c:1199
+#: src/settings.c:1204
 msgid "Night light mode"
 msgstr "Éjszakai világítási mód"
 
 #. Sound settings
-#: src/settings.c:1216
+#: src/settings.c:1221
 #, fuzzy
 msgid "Speech output settings"
 msgstr "Egyéb beállítások"
@@ -1425,62 +1401,62 @@ msgstr "Egyéb beállítások"
 #. * sound_gps       ... say GPS status
 #. *
 #.
-#: src/settings.c:1228
+#: src/settings.c:1233
 msgid "Direction"
 msgstr ""
 
-#: src/settings.c:1252
+#: src/settings.c:1257
 #, fuzzy
 msgid "GPS Status"
 msgstr "GpsDrive állapot"
 
-#: src/settings.c:1268
+#: src/settings.c:1273
 msgid "Switch on for speech output of the direction to the target"
 msgstr ""
 
-#: src/settings.c:1273
+#: src/settings.c:1278
 msgid "Switch on for speech output of the distance to the target"
 msgstr ""
 
-#: src/settings.c:1278
+#: src/settings.c:1283
 msgid "Switch on for speech output of your current speed"
 msgstr ""
 
-#: src/settings.c:1282
+#: src/settings.c:1287
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr ""
 
 #. Font settings
-#: src/settings.c:1286
+#: src/settings.c:1291
 #, fuzzy
 msgid "Font and color settings"
 msgstr "GPS beállítások"
 
-#: src/settings.c:1290
+#: src/settings.c:1295
 msgid "WP Label"
 msgstr ""
 
-#: src/settings.c:1291
+#: src/settings.c:1296
 msgid "Big display"
 msgstr ""
 
-#: src/settings.c:1292
+#: src/settings.c:1297
 msgid "Display color"
 msgstr ""
 
-#: src/settings.c:1313
+#: src/settings.c:1318
 msgid "Switch units to statute miles"
 msgstr "Mértékegység átállítása mérföldre"
 
-#: src/settings.c:1316
+#: src/settings.c:1321
 msgid "Switch units to nautical miles"
 msgstr "Mértékegység átállítása tengeri mérföldre"
 
-#: src/settings.c:1319
+#: src/settings.c:1324
 msgid "Switch units to metric system (Kilometers)"
 msgstr "Mértékegység átállítása metrikus rendszerre (kilométer)"
 
-#: src/settings.c:1323
+#: src/settings.c:1328
 #, fuzzy
 msgid ""
 "If selected display latitude and longitude in degree, minutes and seconds "
@@ -1489,7 +1465,7 @@ msgstr ""
 "Ha ki van jelölve, a hosszúsági és szélességi fokok tizedestötrekként "
 "jelennek meg, egyébként fok, perc, másodpercben"
 
-#: src/settings.c:1327
+#: src/settings.c:1332
 #, fuzzy
 msgid ""
 "If selected display latitude and longitude in degrees and decimal minutes "
@@ -1498,37 +1474,37 @@ msgstr ""
 "Ha ki van jelölve, a hosszúsági és szélességi fokok tizedestötrekként "
 "jelennek meg, egyébként fok, perc, másodpercben"
 
-#: src/settings.c:1331
+#: src/settings.c:1336
 #, fuzzy
 msgid "If selected display latitude and longitude in decimal degrees notation"
 msgstr ""
 "Ha ki van jelölve, a hosszúsági és szélességi fokok tizedestötrekként "
 "jelennek meg, egyébként fok, perc, másodpercben"
 
-#: src/settings.c:1335
+#: src/settings.c:1340
 #, fuzzy
 msgid ""
 "Set the german expedia server(expedia.de) as default download server. Use "
 "this if you are in Europe"
 msgstr "Expedia használata alapértelmezett térképkiszolgálóként"
 
-#: src/settings.c:1340
+#: src/settings.c:1345
 msgid "Set Expedia as default download server"
 msgstr "Expedia használata alapértelmezett térképkiszolgálóként"
 
-#: src/settings.c:1343
+#: src/settings.c:1348
 msgid "Switches shadows on map on or off"
 msgstr "Árnyékok ki- vagy bekapcsolása a térképen"
 
-#: src/settings.c:1346
+#: src/settings.c:1351
 msgid "Switches between different type of frame ornaments"
 msgstr ""
 
-#: src/settings.c:1350
+#: src/settings.c:1355
 msgid "This will show a grid over the map"
 msgstr ""
 
-#: src/settings.c:1354
+#: src/settings.c:1359
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load, use 20-30% on notebooks while on "
@@ -1536,15 +1512,15 @@ msgid ""
 "screen"
 msgstr ""
 
-#: src/settings.c:1360
+#: src/settings.c:1365
 msgid "If activated, pointer moves to target in simulation mode"
 msgstr "Az mutató követi a célt szimuláció mód esetén"
 
-#: src/settings.c:1364
+#: src/settings.c:1369
 msgid "Set here the color of the drawn track"
 msgstr ""
 
-#: src/settings.c:1368
+#: src/settings.c:1373
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
@@ -1552,7 +1528,7 @@ msgstr ""
 "A térképfájlok elérési útvonala. A könyvtárban kell legyen egy map_koord.txt "
 "fájl."
 
-#: src/settings.c:1373
+#: src/settings.c:1378
 msgid ""
 "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 "only have a NMEA device."
@@ -1560,13 +1536,13 @@ msgstr ""
 "Ha ez ki van jelölve, a GpsDrive GARMIN módot próbál használni, ha "
 "lehetséges. Ne válaszd ezt, ha csak NMEA eszközöd van."
 
-#: src/settings.c:1378
+#: src/settings.c:1383
 msgid ""
 "Set here the baud rate of your GPS device, NMEA devices usually have a speed "
 "of 4800 baud"
 msgstr ""
 
-#: src/settings.c:1382
+#: src/settings.c:1387
 msgid ""
 "If selected, gpsdrive try to use differential GPS over IP. You must have an "
 "internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
@@ -1575,13 +1551,13 @@ msgstr ""
 "Kell hozzá internetes kapcsolat és egy DGPS képes GPS vevõ. Csak NMEA módban "
 "mûködik!"
 
-#: src/settings.c:1388
+#: src/settings.c:1393
 msgid ""
 "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 "button will provide gpsd with the needed additional parameters"
 msgstr ""
 
-#: src/settings.c:1394
+#: src/settings.c:1399
 msgid ""
 "Select this if you want to use of the direct serial connection. If disabled, "
 "you can use the receiver only through gpsd. On the other hand, the direct "
@@ -1589,11 +1565,11 @@ msgid ""
 "startup"
 msgstr ""
 
-#: src/settings.c:1401
+#: src/settings.c:1406
 msgid "Specify the serial interface where the GPS is connected"
 msgstr "Soros interfész megadása (amelyre a GPS csatlakozik)"
 
-#: src/settings.c:1406
+#: src/settings.c:1411
 #, fuzzy
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
@@ -1602,300 +1578,300 @@ msgstr ""
 "Automatikusan bekapcsolaja az éjszakai módot, ha kint sötét van. Nyomd meg "
 "az 'N' billentyût az éjszakai mód 30 másodperces kikapcsolásához."
 
-#: src/settings.c:1411
+#: src/settings.c:1416
 #, fuzzy
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr ""
 "Bekapcsolja az éjszakai módot. Nyomd meg az 'N' billentyût az éjszakai mód "
 "30 másodperces kikapcsolásához."
 
-#: src/settings.c:1415
+#: src/settings.c:1420
 msgid "Switches night mode off"
 msgstr "Éjszakai mód ki- vagy bekapcsolása"
 
-#: src/settings.c:1419
+#: src/settings.c:1424
 #, fuzzy
 msgid "Here you can set the font for the waypoint labels"
 msgstr "A kijelölt útvonalpont törlése a listából"
 
-#: src/settings.c:1423
+#: src/settings.c:1428
 msgid "Here you can set the font for the big display for Speed and Distance"
 msgstr ""
 
-#: src/settings.c:1428
+#: src/settings.c:1433
 #, fuzzy
 msgid ""
 "Here you can set the color for the big display for speed, distance and "
 "altitude"
 msgstr "A kijelölt útvonalpont törlése a listából"
 
-#: src/settings.c:1601
+#: src/settings.c:1606
 msgid "Geo information"
 msgstr ""
 
-#: src/settings.c:1603
+#: src/settings.c:1608
 msgid "Geo info"
 msgstr ""
 
-#: src/settings.c:1613
+#: src/settings.c:1618
 msgid "Sunrise"
 msgstr ""
 
-#: src/settings.c:1616
+#: src/settings.c:1621
 msgid "Sunset"
 msgstr ""
 
-#: src/settings.c:1619
+#: src/settings.c:1624
 msgid "Standard"
 msgstr ""
 
-#: src/settings.c:1622
+#: src/settings.c:1627
 msgid "Transit"
 msgstr ""
 
-#: src/settings.c:1625
+#: src/settings.c:1630
 msgid "GPS-Time"
 msgstr ""
 
-#: src/settings.c:1628
+#: src/settings.c:1633
 #, fuzzy
 msgid "Astro."
 msgstr "Auto"
 
-#: src/settings.c:1631
+#: src/settings.c:1636
 #, fuzzy
 msgid "Naut."
 msgstr "Tengeri"
 
-#: src/settings.c:1634
+#: src/settings.c:1639
 msgid "Civil"
 msgstr ""
 
-#: src/settings.c:1637
+#: src/settings.c:1642
 msgid "Timezone"
 msgstr ""
 
-#: src/settings.c:1640
+#: src/settings.c:1645
 msgid "Store TZ"
 msgstr ""
 
-#: src/settings.c:1654
+#: src/settings.c:1659
 msgid ""
 "If selected, the timezone is stored, otherwise your actual timezone will "
 "automatically used"
 msgstr ""
 
-#: src/settings.c:1675
+#: src/settings.c:1680
 #, fuzzy
 msgid "Night"
 msgstr "Jobbra"
 
-#: src/settings.c:1679
+#: src/settings.c:1684
 msgid "Day"
 msgstr ""
 
-#: src/settings.c:1798 src/settings.c:1803 src/settings.c:1807
+#: src/settings.c:1803 src/settings.c:1808 src/settings.c:1812
 #, fuzzy
 msgid "Unit:"
 msgstr "Mértékegység"
 
-#: src/settings.c:1798
+#: src/settings.c:1803
 #, fuzzy
 msgid "miles"
 msgstr "Mérföld"
 
-#: src/settings.c:1803
+#: src/settings.c:1808
 msgid "nautic miles/knots"
 msgstr ""
 
-#: src/settings.c:1807
+#: src/settings.c:1812
 msgid "kilometers"
 msgstr ""
 
-#: src/settings.c:1823
+#: src/settings.c:1828
 msgid "Trip information"
 msgstr ""
 
-#: src/settings.c:1825
+#: src/settings.c:1830
 msgid "Trip info"
 msgstr ""
 
-#: src/settings.c:1836
+#: src/settings.c:1841
 msgid "Odometer"
 msgstr ""
 
-#: src/settings.c:1838
+#: src/settings.c:1843
 msgid "Total time"
 msgstr ""
 
-#: src/settings.c:1840
+#: src/settings.c:1845
 msgid "Av. speed"
 msgstr ""
 
-#: src/settings.c:1842
+#: src/settings.c:1847
 msgid "Max. speed"
 msgstr ""
 
-#: src/settings.c:1862
+#: src/settings.c:1867
 msgid "Reset"
 msgstr ""
 
-#: src/settings.c:1868
+#: src/settings.c:1873
 msgid "Resets the trip values to zero"
 msgstr ""
 
-#: src/settings.c:1956
+#: src/settings.c:1961
 msgid "You should change your name in the first field!"
 msgstr ""
 
-#: src/settings.c:2187
+#: src/settings.c:2192
 #, fuzzy
 msgid "Show position newer as"
 msgstr "Útvonalpontok mutatása a térképen"
 
-#: src/settings.c:2189
+#: src/settings.c:2194
 msgid "Friends server setup"
 msgstr ""
 
-#: src/settings.c:2190
+#: src/settings.c:2195
 #, fuzzy
 msgid "Friends"
 msgstr "Befejezés"
 
-#: src/settings.c:2201
+#: src/settings.c:2206
 msgid "Days"
 msgstr ""
 
-#: src/settings.c:2202
+#: src/settings.c:2207
 msgid "Hours"
 msgstr ""
 
-#: src/settings.c:2203
+#: src/settings.c:2208
 #, fuzzy
 msgid "Minutes"
 msgstr "Mérföld"
 
-#: src/settings.c:2208
+#: src/settings.c:2213
 msgid "Your name"
 msgstr ""
 
-#: src/settings.c:2213
+#: src/settings.c:2218
 msgid ""
 "Set here your name which should be shown near your vehicle. You may use "
 "spaces here!"
 msgstr ""
 
-#: src/settings.c:2220
+#: src/settings.c:2225
 msgid "Server name"
 msgstr ""
 
-#: src/settings.c:2224
+#: src/settings.c:2229
 msgid ""
 "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends "
 "server, then you have to press the \"Lookup\" button!"
 msgstr ""
 
-#: src/settings.c:2232
+#: src/settings.c:2237
 msgid "Lookup"
 msgstr ""
 
-#: src/settings.c:2238
+#: src/settings.c:2243
 msgid ""
 "You have to press the \"Lookup\" button to resolve the friends server name!"
 msgstr ""
 
-#: src/settings.c:2246
+#: src/settings.c:2251
 msgid "Set here the color of the label displayed at friends position"
 msgstr ""
 
-#: src/settings.c:2253
+#: src/settings.c:2258
 msgid "Friends server IP"
 msgstr ""
 
-#: src/settings.c:2257
+#: src/settings.c:2262
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
 
-#: src/settings.c:2261 src/settings.c:2266 src/settings.c:2270
+#: src/settings.c:2266 src/settings.c:2271 src/settings.c:2275
 msgid ""
 "Set here the time limit in which the friends position is shown. Older "
 "positions are not shown."
 msgstr ""
 
-#: src/settings.c:2279
+#: src/settings.c:2284
 msgid "Use friends server"
 msgstr ""
 
-#: src/settings.c:2289
+#: src/settings.c:2294
 msgid ""
 "Enable/disable use of friends server. You must enter a Username, don't use "
 "the default name!"
 msgstr ""
 
-#: src/settings.c:2293
+#: src/settings.c:2298
 msgid ""
 "If you enable the friends server mode,\n"
 "<span color=\"red\">everyone</span> using the same server\n"
 "can see your position!"
 msgstr ""
 
-#: src/settings.c:2363
+#: src/settings.c:2368
 msgid "SQL selection criterias"
 msgstr ""
 
-#: src/settings.c:2364
+#: src/settings.c:2369
 msgid "SQL"
 msgstr ""
 
-#: src/settings.c:2391
+#: src/settings.c:2396
 msgid "Dist. limit[km] "
 msgstr ""
 
-#: src/settings.c:2395
+#: src/settings.c:2400
 msgid "If enabled, show waypoints only within this distance"
 msgstr ""
 
-#: src/settings.c:2412
+#: src/settings.c:2417
 msgid "Enable/disable distance selection"
 msgstr ""
 
-#: src/settings.c:2419
+#: src/settings.c:2424
 #, fuzzy
 msgid "Show no_ssid "
 msgstr "ÚP-k mutatása"
 
-#: src/settings.c:2432
+#: src/settings.c:2437
 msgid ""
 "If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
 "you can disable it here"
 msgstr ""
 
-#: src/settings.c:2438
+#: src/settings.c:2443
 #, fuzzy
 msgid "Selection mode"
 msgstr "Szimuláció mód"
 
-#: src/settings.c:2440
+#: src/settings.c:2445
 msgid "include"
 msgstr ""
 
-#: src/settings.c:2443
+#: src/settings.c:2448
 msgid "exclude"
 msgstr ""
 
-#: src/settings.c:2446
+#: src/settings.c:2451
 msgid ""
 "Show only waypoints where the type field contains one of the selected words"
 msgstr ""
 
-#: src/settings.c:2449
+#: src/settings.c:2454
 msgid ""
 "Show only waypoints where the type field doesn't contain any the selected "
 "words"
 msgstr ""
 
-#: src/splash.c:590
+#: src/splash.c:595
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1907,7 +1883,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:598
+#: src/splash.c:603
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1920,7 +1896,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:607
+#: src/splash.c:612
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1933,58 +1909,58 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:617
+#: src/splash.c:622
 #, fuzzy
 msgid "GpsDrive v"
 msgstr "GpsDrive súgó"
 
-#: src/splash.c:623
+#: src/splash.c:628
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.cc\n"
 msgstr ""
 
-#: src/splash.c:627
+#: src/splash.c:632
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
 msgstr ""
 
-#: src/splash.c:632
+#: src/splash.c:637
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 
-#: src/splash.c:637
+#: src/splash.c:642
 #, fuzzy
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Megtett útvonal mutatása a térképen"
 
-#: src/splash.c:645
+#: src/splash.c:650
 msgid "Short cuts:\n"
 msgstr ""
 
-#: src/splash.c:652
+#: src/splash.c:657
 msgid "The other key shortcuts are marked as "
 msgstr ""
 
-#: src/splash.c:655
+#: src/splash.c:660
 msgid "underlined"
 msgstr ""
 
-#: src/splash.c:658
+#: src/splash.c:663
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:661
+#: src/splash.c:666
 msgid "Have a lot of fun!"
 msgstr ""
 
-#: src/splash.c:797
+#: src/splash.c:802
 msgid "Please donate to GpsDrive"
 msgstr ""
 
-#: src/splash.c:803
+#: src/splash.c:808
 msgid ""
 "\n"
 "\n"
@@ -1996,11 +1972,11 @@ msgid ""
 "To do so, just go to"
 msgstr ""
 
-#: src/splash.c:808
+#: src/splash.c:813
 msgid " http://www.gpsdrive.cc "
 msgstr ""
 
-#: src/splash.c:811
+#: src/splash.c:816
 msgid ""
 "and click on the PayPal button.\n"
 "\n"
@@ -2011,36 +1987,36 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:847
+#: src/splash.c:852
 #, fuzzy
 msgid "About GpsDrive donation"
 msgstr "GpsDrive menü"
 
-#: src/splash.c:930
+#: src/splash.c:935
 msgid "From:"
 msgstr ""
 
-#: src/splash.c:1001
+#: src/splash.c:1006
 #, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr ""
 
-#: src/splash.c:1013
+#: src/splash.c:1018
 msgid "You received a message through the friends server from:\n"
 msgstr ""
 
-#: src/splash.c:1024
+#: src/splash.c:1029
 #, fuzzy
 msgid "Message text:\n"
 msgstr "  Üzenet  "
 
-#: src/splash.c:1075
+#: src/splash.c:1080
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr "Hiba a fájl mentésekor: ~/.gpsdrive/gpsdriverc"
 
-#: src/splash.c:1567 src/splash.c:1628
+#: src/splash.c:1572 src/splash.c:1633
 #, c-format
 msgid ""
 "\n"
@@ -2050,10 +2026,34 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:1611
+#: src/splash.c:1616
 #, fuzzy
 msgid "About GpsDrive"
 msgstr "GpsDrive menü"
+
+#~ msgid "Error in line "
+#~ msgstr "Hiba a következõ sorban: "
+
+#~ msgid ""
+#~ "I have found filenames in map_koord.txt which are\n"
+#~ "not map_* or top_* files. Please rename them and change the entries in\n"
+#~ "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
+#~ "maps.  Otherwise, the maps will not be displayed!"
+#~ msgstr ""
+#~ "A ~/.gpsdrive/map_koord.txt fájlban találtam olyan fályneveket,\n"
+#~ "amelyek nem illeszkednek a map_* és top_* mintákra!\n"
+#~ "Kérlek nevezd át a fájlokat és írd át a bejegyzést a map_koord.txt\n"
+#~ "fájlban, különben ezek a térképek nem jelennek meg!\n"
+#~ "\n"
+#~ "Használj map_* típusú fájlneveket az utca térképekhez és top_*\n"
+#~ "típusú fájlneveket a topológiai térképekhez."
+
+#~ msgid " Mapfile could not be loaded:"
+#~ msgstr " A térképfájl betöltése sikertelen:"
+
+#, fuzzy
+#~ msgid "-D    turn on lot of debug info\n"
+#~ msgstr "-d    bekapcsolaja a hibakeresést\n"
 
 #~ msgid ""
 #~ "\n"
