@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2005/02/08 08:43:46  tweety
+wrong dfinition for auxicons array
+
 Revision 1.6  2005/02/08 07:58:22  tweety
 load icons from system directory of .../gpsdrive/icons if exists too
 
@@ -183,7 +186,7 @@ extern gchar homedir[500], mapdir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *openwlanpixbuf, *closedwlanpixbuf;
 extern gint maxauxicons, lastauxicon;
-extern auxiconsstruct *auxicons;
+extern auxiconsstruct auxicons[];
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 gint wptotal = 0, wpselected = 0;
@@ -370,22 +373,18 @@ get_sql_type_list (void)
 /* load user defined icons */
       if (usericonsloaded == FALSE)
 	{
-	  struct stat sbuf;
-	  //	  (auxicons + lastauxicon)->icon = NULL;
 	  for (i = 0; i < (int) strlen (temp); i++)
 	    temp[i] = tolower (temp[i]);
 
 	  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, temp);
-	  gint e = stat (path, &sbuf);
-	  if ( e <= 0 ){
+	  auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
+	  
+	  if ( auxicons[lastauxicon].icon == NULL) {
 	    g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,temp);
-	    e = stat (path, &sbuf);
-	  }
-	  if ( e > 0 ) {
-	    (auxicons + lastauxicon)->icon =  gdk_pixbuf_new_from_file (path, NULL);
+	    auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
 	  }
 
-	  if (e >0 && (auxicons + lastauxicon)->icon != NULL)
+	  if ( (auxicons + lastauxicon)->icon != NULL)
 	    {
 	      for (i = 0; i < (int) strlen (temp); i++)
 		temp[i] = toupper (temp[i]);
