@@ -23,9 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 	$Log$
+	Revision 1.17  2005/04/12 06:14:20  tweety
+	poi.c:
+	 Added Full Path Search for Icons
+	streets.c:
+	 implement basic colors for streets
+	 added text to streets in debug mode
+
 	Revision 1.16  2005/04/10 21:50:50  tweety
 	reformatting c-sources
-
+	
 	Revision 1.15  2005/04/07 06:35:01  tweety
 	Error handling for g_renew
 	correct to extern MYSQL mysql;
@@ -356,21 +363,25 @@ void get_poi_type_list (void) {
 					gchar icon_name[80];
 					gchar path[1024];
 					g_strlcpy ( icon_name, row[2], sizeof (icon_name));
-
-					g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
+					
+					// User config Directory
+					g_snprintf (path, sizeof (path), "%sicons/%s", homedir, icon_name);
 					poi_type_list[index].icon =  gdk_pixbuf_new_from_file (path, NULL);
 	
-					if ( poi_type_list[index].icon == NULL) {
-						g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,icon_name);
+					if ( poi_type_list[index].icon == NULL) { // In System Directory
+						g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s", DATADIR,icon_name);
 						poi_type_list[index].icon =  gdk_pixbuf_new_from_file (path, NULL);
 					} 
-					//poi_type_list[index].icon = icon;
+					if ( poi_type_list[index].icon == NULL) { // Full Path
+						poi_type_list[index].icon =  gdk_pixbuf_new_from_file (icon_name, NULL);
+					} 
+
 					if ( poi_type_list[index].icon == NULL) {
 						if (debug) 
-							printf("get_poi_type_list: %d:Icon '%s' not found\n",index,icon_name);
+							printf("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\tnot found\n",index,icon_name,poi_type_list[index].name);
 					} else {
 						if (mydebug) 
-							printf("get_poi_type_list: %d:Icon '%s' loaded from %s\n",index,icon_name,path);
+							printf("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\tloaded from %s \n",index,icon_name,poi_type_list[index].name,path);
 						counter++;
 					}
 				}
@@ -393,8 +404,8 @@ void get_poi_type_list (void) {
 
 /* *******************************************************
  * if zoom, xoff, yoff or map are changed 
- TODO: use the real datatype for reading from database
- (dont convert string to double)
+ * TODO: use the real datatype for reading from database
+ * (don't convert string to double)
 */
 void poi_rebuild_list (void) {
 	char sql_query[5000];
@@ -518,10 +529,10 @@ void poi_rebuild_list (void) {
 		rges++;
 		gdouble lat,lon;
 
-		/*
-		  if (mydebug) 
-		  fprintf(stderr,"Query Result: %s %s %s %s\n",row[0],row[1],row[2],row[3]);
-		*/
+		
+		if (mydebug) 
+		  fprintf(stderr,"Query Result: %s\t%s\t%s\t%s\n",row[0],row[1],row[2],row[3]);
+		
 		lat = g_strtod(row[0], NULL);
 		lon = g_strtod(row[1], NULL);
 		calcxy (&poi_posx, &poi_posy, 
