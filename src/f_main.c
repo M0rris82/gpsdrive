@@ -1941,7 +1941,17 @@ i.e. '.' in english, ',' in german!! */
   poi_init ();
   streets_init ();
 
-
+/*
+ * setup TERM signal handler so that we can save evrything nicely when the
+ * machine is shutdown.
+ */
+void
+termhandler (int sig)
+{
+  gtk_main_quit ();
+}
+  signal (SIGTERM, termhandler);
+ 
   /*  Mainloop */
 
   gtk_main ();
