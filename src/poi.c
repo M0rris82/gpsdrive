@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.20  2005/04/29 17:41:57  tweety
+  Moved the speech string to a seperate File
+
   Revision 1.19  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -120,12 +123,13 @@ Disclaimer: Please do not use for navigation.
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
+#include <sys/time.h>
+
 #include "gpsdrive.h"
 #include "poi.h"
 #include "config.h"
 #include "gettext.h"
-#include <time.h>
-#include <sys/time.h>
 #include "icons.h"
 
 #if HAVE_LOCALE_H
