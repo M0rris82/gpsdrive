@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.8  2005/02/22 08:18:51  tweety
+change leveing system to simpler scale marking for decission what to show on display
+column_names(DBFuncs.pm get data from Database
+added functions add_index drop_index
+added language to type Database
+for some Data split unpack and mirror Directories
+for some add lat/lon min/max to get faster import for testing
+added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+on the street data
+
 Revision 1.7  2005/02/17 09:46:34  tweety
 minor changes
 
@@ -193,13 +203,13 @@ get_type_list (void)
 
   if (dl_mysql_query (&mysql, sql_query))
     {
-      perror("mysql_error in query");
+      fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
       return;
     }
   
   if (!(res = dl_mysql_store_result (&mysql)))
     {
-      perror("mysql_error in store result");
+      fprintf(stderr,"Error in sotr results: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
@@ -267,23 +277,12 @@ poi_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
-  gdouble display_level;
-
   if ( ! poi_draw ) {
     if ( debug ) 
       printf("POI_draw is off\n");
     return;
   }
   
-  // calculate which levels to display
-  display_level=20;
-  if ( mapscale <= 1000000 )  display_level=1;
-  if ( mapscale <= 500000 )   display_level=20;
-  if ( mapscale <= 100000 )   display_level=30;
-  if ( mapscale <= 50000 )    display_level=60;
-  if ( mapscale <= 8000 )     display_level=99;
-  
-
 
   // calculate the start and stop for lat/lon according to the displayed section
   calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
@@ -326,13 +325,13 @@ poi_rebuild_list (void)
       g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
     
       g_snprintf (sql_order, sizeof (sql_order),
-      "order by level,%s ",sql_order_numbers);
+      "order by scale_min,%s ",sql_order_numbers);
     */
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by level ");
+		"order by scale_min,scale_max ");
     /*
       g_snprintf (sql_order, sizeof (sql_order),
-      "order by level ");
+      "order by scale ");
     */
     if (debug)
       printf ("POI mysql order: %s\n", sql_order);
@@ -342,22 +341,21 @@ poi_rebuild_list (void)
     g_snprintf (sql_where, sizeof (sql_where),
 		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
 		"AND   ( lon BETWEEN %.6f AND %.6f ) "
-		"AND   ( %f  BETWEEN level_min AND level_max) ",
+		"AND   ( %f  BETWEEN scale_min AND scale_max) ",
 		lat_min,lat_max,
 		lon_min,lon_max,
-		display_level);
+		mapscale);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
-      printf ("POI mysql where: %s\n", sql_where );
+      //printf ("POI mysql where: %s\n", sql_where );
       printf ("POI mapscale: %d\n", mapscale );
-      printf ("POI level %f\n", display_level );
     }
   }
 
 
   
 
-  // TODO: Diplay ONLY those POI which are poi.level_min <= level <=poi.level_max for actual scale
+  // TODO: Diplay ONLY those POI which are poi.scale_min <= scale <=poi.scale_max for actual scale
   // TODO: reread really and only when scale/map-pos changes 
 
   g_snprintf (sql_query, sizeof (sql_query),
@@ -373,13 +371,13 @@ poi_rebuild_list (void)
 
   if (dl_mysql_query (&mysql, sql_query))
     {
-      perror ( "mysql_error in query");
+      fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
   if (!(res = dl_mysql_store_result (&mysql)))
     {
-      perror("mysql_error in query");
+      fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
@@ -426,8 +424,8 @@ poi_rebuild_list (void)
 	      `alt` double default \'0\',
 	      `proximity` float default \'0\',
 	      `comment` varchar(255) default NULL,
-	      `level_min` smallint(6) NOT NULL default \'0\',
-	      `level_max` smallint(6) NOT NULL default \'0\',
+	      `scale_min` smallint(6) NOT NULL default \'0\',
+	      `scale_max` smallint(6) NOT NULL default \'0\',
 	      `last_modified` date NOT NULL default \'0000-00-00\',
 	      `url` varchar(160) NULL ,
 	      `address_id` int(11) default \'0\',
@@ -440,8 +438,8 @@ poi_rebuild_list (void)
 	  //(poi_list + poi_nr)->type_id    = g_strtod(row[5], NULL); 
 	  //(poi_list + poi_nr)->proximity  = g_strtod(row[6], NULL);
 	  //(poi_list + poi_nr)->comment[255 ] = row[7]; 
-	  //(poi_list + poi_nr)->level_min     = row[8];  
-	  //(poi_list + poi_nr)->level_max     = row[8];  
+	  //(poi_list + poi_nr)->scale_min     = row[8];  
+	  //(poi_list + poi_nr)->scale_max     = row[8];  
 	  //(poi_list + poi_nr)->last_modified = row[8] 
 	  //(poi_list + poi_nr)->url[160]      = row[10]; 
 	  //(poi_list + poi_nr)->address_id    = row[11];
