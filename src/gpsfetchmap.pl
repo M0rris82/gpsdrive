@@ -55,11 +55,16 @@ Version 1.05
 use Data::Dumper;
 use strict;
 use warnings;
+use LWP::UserAgent;
+use LWP::Debug qw(- -conns -trace);
+#use LWP::Debug qw(+ +conns +trace);
+use HTTP::Request;
 use Getopt::Long;
 use Pod::Usage;
 use File::Basename;
 use File::Path;
 use File::Copy;
+use IO::File;
 
 # Setup possible scales
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
@@ -91,22 +96,26 @@ our $MAP_KOORDS={};
 our $MAP_FILES={};
 our $GPSTOOL_MAP_KOORDS={};
 our $GPSTOOL_MAP_FILES={};
+my $PROXY='';
 
-GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon, 
-	     'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 
-	     'start-lon=f' => \$slon, 'end-lon=f' => \$endlon, 
-	     'sla=f' => \$slat, 'ela=f' => \$endlat, 
-	     'slo=f' => \$slon, 'elo=f' => \$endlon, 
-	     'scale=s' => \$scale, 'mapserver=s' => \$mapserver, 
-	     'waypoint=s' =>, \$waypoint, 'area=s' => \$area, 
-	     'unit=s' => \$unit, 'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
-	     'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 
-	     'PREFIX=s' => \$FILEPREFIX,
-	     'n' => \$simulate_only,
-	     'c' => \$check_koord_file,
-	     'U' => \$update_koord,
-	     'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 
-	     'help|x' => \$help, 'version' => \$version)
+GetOptions ( 'lat=f'       => \$lat,        'lon=f'       => \$lon, 
+	     'start-lat=f' => \$slat,       'end-lat=f'   => \$endlat, 
+	     'start-lon=f' => \$slon,       'end-lon=f'   => \$endlon, 
+	     'sla=f'       => \$slat,       'ela=f'       => \$endlat, 
+	     'slo=f'       => \$slon,       'elo=f'       => \$endlon, 
+	     'scale=s'     => \$scale,      'mapserver=s' => \$mapserver, 
+	     'waypoint=s'  =>, \$waypoint,  'area=s'      => \$area, 
+	     'unit=s'      => \$unit,       'mapdir=s'    => \$mapdir, 'polite:i' => \$polite,
+	     'WAYPOINT=s'  => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
+	     'PREFIX=s'    => \$FILEPREFIX,
+	     'n'           => \$simulate_only,
+	     'c'           => \$check_koord_file,
+	     'U'           => \$update_koord,
+	     'FORCE'       => \$force,     
+	     'PROXY=s'     => \$PROXY,
+	     'debug'       => \$debug,      'MAN' => \$man, 
+	     'help|x'      => \$help,       'version' => \$version
+	     )
     or pod2usage(1);
 
 pod2usage(1) if $help;
@@ -120,6 +129,10 @@ sub read_gpstool_map_file(); # {}
 sub append_koords($$$$); # {}
 sub expedia_url($$$);    # {}
 sub wget_map($$$);       # {}
+
+
+STDERR->autoflush(1);
+STDOUT->autoflush(1);
 
 # Print version
 if ($version) {
@@ -145,6 +158,13 @@ my $KM2NAUTICAL   = 0.54;
 my $KM2MILES      = 0.62137119;
 
 
+#############################################################################
+# LPW::UserAgent initialisieren
+my $ua = LWP::UserAgent->new;
+$ua->proxy(['http','ftp'],"http://$PROXY/") if $PROXY;
+#$ua->level("+trace") if $debug;
+
+#############################################################################
 # Get the list of scales we need
 my $SCALES_TO_GET_ref = get_scales(\$scale);
 print "Scale to download: ", join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}), "\n" if ($debug);
@@ -204,10 +224,6 @@ for my $scale ( sort keys %{$desired_locations} ) {
 #print "\n";
 }
 
-# Wait for wgets
-while ( my $anzahl = runnung_wgets() ) {
-    printf "%5d wgets am laufen \r",$anzahl;
-}
 
 print "\n";
 
@@ -221,6 +237,38 @@ print "New:   $newcount\n";
 #
 ################################################################################
 
+#############################################################################
+# get File with lwp-mirror
+#############################################################################
+sub mirror_file($$){
+    my $url            = shift;
+    my $local_filename = shift;
+
+    my $ok=1;
+
+    debug("mirror_file($url --> $local_filename)");
+    print "mirror_file($url) " if $debug;
+    print "\n" if $debug;
+    my $response = $ua->mirror($url,$local_filename);
+#    debug(sprintf("success = %d <%s>",$response->is_success,$response->status_line));
+    
+    if ( ! $response->is_success ) {
+	if ( $response->status_line =~ /^304/ ) {
+	    print "\tNOT MOD" if $debug ;
+	} else {
+	    print "\tCOULD NOT GET ";
+	    print "$url\n" unless $debug;
+	    print sprintf("ERROR: %s\n",$response->message)
+		if $debug;
+	    $ok=0;
+	}
+    } else {
+	print "\tOK" if $debug;	
+    }    
+    print "\n" if $debug;
+    return $ok;
+}
+
 ######################################################################
 # Check if $filename is a valis map image
 # for now we only check the size and existance
@@ -230,6 +278,60 @@ sub is_map_file($){
     return 1 if ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
     return 0;
 }
+
+######################################################################
+# get a single map
+# Args:
+#     $url
+#     $local_filename
+# Returns:
+#     1 : Success
+#     0 : Failure
+######################################################################
+sub mirror_map($$){
+    my $url = shift;
+    my $filename = shift;
+
+    unlink('tmpmap.gif') if -f 'tmpmap.gif';
+    my $ok = mirror_file("$url",'tmpmap.gif');
+    if ( is_map_file('tmpmap.gif') ) {
+	rename('tmpmap.gif',$filename);
+	$ok=1;
+    }
+
+    # sleep if polite is turned on to be nice to the webserver of the mapserver
+    sleep($polite) if ($polite =~ /\d+/);
+    sleep(1) if (!$polite);
+
+    return $ok;
+}
+
+######################################################################
+# get a single map
+# Args:
+#     $url
+#     $local_filename
+# Returns:
+#     1 : Success
+#     0 : Failure
+######################################################################
+sub mirror2_map($$){
+    my $url = shift;
+    my $filename = shift;
+
+    # sleep if polite is turned on to be nice to the webserver of the mapserver
+    sleep($polite) if ($polite =~ /\d+/);
+    sleep(1) if (!$polite);
+
+    unlink('tmpmap.gif') if -f 'tmpmap.gif';
+    `wget -nd -q -O tmpmap.gif "$url"`;
+    if ( is_map_file('tmpmap.gif') ) {
+	rename('tmpmap.gif',$filename);
+	return 1;
+    }
+    return 0;
+}
+
 
 ######################################################################
 # get a single map at defined position
@@ -246,7 +348,6 @@ sub wget_map($$$){
 	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
 
     mkpath dirname($filename);
-    unlink('tmpmap.gif') if -f 'tmpmap.gif';
     
     if ( $mapserver eq 'expedia') {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
@@ -271,9 +372,7 @@ sub wget_map($$$){
 	    $newcount++;
 	} else {
 	    print "wget $url\n" if ($debug);
-	    `wget -nd -q -O tmpmap.gif "$url"`;
-	    if ( is_map_file('tmpmap.gif') ) {
-		rename('tmpmap.gif',$filename);
+	    if ( mirror_map($url,$filename) ) {
 		append_koords($filename, $lati, $long, $mapscale);
 		$result= "+";
 		print "\nWrote $filename\n" if $debug;
@@ -283,9 +382,6 @@ sub wget_map($$$){
 		$result= "E";
 	    }
 	    
-	    # sleep if polite is turned on to be nice to the webserver of the mapserver
-	    sleep($polite) if ($polite =~ /\d+/);
-	    sleep(1) if (!$polite);
 	}
 	
     }
@@ -381,7 +477,7 @@ sub expedia_url($$$){
 }
 
 #############################################################################
-# create function desired_locations. This function only once calculates
+# This function only once calculates
 # which lat/lon/scale Combinations are desired to download
 #############################################################################
 sub desired_locations {
@@ -690,6 +786,15 @@ sub check_koord_file($) {
 }
 
 
+#############################################################################
+# Debug
+#############################################################################
+sub debug($){
+    my $msg = shift;
+    return unless $debug;
+    print STDERR "DEBUG: $msg\n";
+}
+
 __END__
 
 =head1 NAME
@@ -838,6 +943,10 @@ If not found it is appended into the map_koord.txt file.
 Check map_koord.txt File. This option checks, if every Map also exist
 If any Map-File is missing, a file map_koord.txt.new will be created. 
 This file can be copied to the original file if checked.
+
+=item B<--PROXY>
+
+Set proxy for mirroring image Files
 
 =item B<-d, --debug>
 
