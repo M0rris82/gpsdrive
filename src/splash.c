@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.3  2005/01/20 00:11:38  tweety
+add debug output if config is written
+
 Revision 1.2  2005/01/15 23:46:46  tweety
 Added config option to disable/enable drawing of grid
 
@@ -997,6 +1000,12 @@ writeconfig ()
 
   g_strlcpy (fname, homedir, sizeof (fname));
   g_strlcat (fname, "gpsdriverc", sizeof (fname));
+
+  if (debug) 
+    printf("Write config %s\n",fname);
+
+
+
   fp = fopen (fname, "w");
   if (fp == NULL)
     {
