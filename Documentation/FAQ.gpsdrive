@@ -1,0 +1,159 @@
+This is the GpsDrive FAQ.
+This file is maintained by Fritz Ganter.
+
+Q: Why is this file so short?
+A: I'm still working on it.
+
+Q: GpsDrive 2.x: After compiling Gpsdrive from source, I have the
+   problem that GpsDrive will not display the map when it's running.
+   All of the graphics in the map area are blank. 
+A: Compile with gcc 3.x, this bug is know at least with debian and
+   slackware.
+
+Q: GpsDrive shows "Not enough satellites in view" in the statusbar and don't
+   display my position.
+A: You need at least 3 satellites in view to get a valid position. It may also
+   take some minutes to get a valid position. You have to be outside,
+   GPS doesn't work inside the house. Trees, houses or other barriers 
+   can prevent your GPS receiver getting a valid position.
+   Some GPS receivers have a "Simulation mode" which sends position 
+   signals, but with a "invalid position" flag. GpsDrive won't display
+   a position if this "invalid position" flag is set. To override this
+   (do it only for testing!!!) you can call GpsDrive with the 
+   "-F" command line parameter.
+   
+Q: I have a USB GPS receiver, it works fine with GpsDrive but if I
+   leave the program, Linux crashes.
+A: This is a bug of the "Prolific PL2303 USB to serial adaptor driver"
+   which is used. The crash happens if the serial device is
+   closed. This bug is kernel >=2.4.19
+
+   As workaround start gpsd by hand with the -K option i.e.:
+   gpsd -K -p /dev/ttyUSB0
+
+   Make sure that you DON'T use "direct serial connection", you can
+   this switch of with the command line option "-n" or in the settings
+   menu.
+
+   Another, and better, solution is to use a kernel 2.6.x where this
+   bug is fixed, or 2.4.18 where it doesn't appear.
+
+Q: Why is there no street navigation which gives turn by turn
+   directions?
+
+A: Turn by turn directions are not possible with GpsDrive at the present
+   because no opensource data is available which represents the street
+   coordinates in a form usable for that purpose.  GpsDrive currently
+   works with bitmap images rather than vector data.
+
+   Anyone interested in turn by turn directions should research free
+   vector data which is published in an open format. The data must
+   include street name, city name and latitude/longitude coordinates
+   of the street lines.
+   (provided by Darrick Hartman)
+
+Q: What is GpsDrive?
+A: GpsDrive is an open source navigation system. It displays your current
+   position provided by an NMEA capable GPS receiver on a zoomable map.
+
+Q: How do I install GpsDrive on a Linux box?
+A: I recommend to use the source tarball. Download it from any of the mirrors
+   (http://gpsdrive.spoiledmeat.net/ is the fastest one in Europe). Unpack
+   the tarball with `tar xvzf gpsdrive-X.XX.tar.gz` where X.XX is the version
+   number. Now change into the directory gpsdrive-X.XX and run `./configure`.
+   Some people (including me, Sven) don't like the Garmin protocol. It can
+   be easily disabled with the option `--disable-garmin`. Now run `make`.
+   Depending on your CPU power this will take something between 4 seconds and
+   3 minutes. An Intel Celeron 1000 takes approximately 50 seconds to have
+   the version 1.28pre1 compiled. Now do a `su`, enter your root password and
+   continue with a final `make install`.
+
+Q: I am running FreeBSD. Can I use GpsDrive too?
+A: Yes. See the file README.FreeBSD for further information.
+
+Q: I'm trying to run GpsDrive on iPAQ, but I don't have /dev/ttyS0.
+A: You may want to use /dev/tts/0. When using gpsd, you will have to change
+   some parameters in /etc/gpsd.conf. Use -p /dev/tts/0 and -s4800.
+
+Q: I'm too lazy to get out of my bed, how can I test with my GARMIN GPS III?
+A: Your GARMIN has a built in simulator. Start it on the "satellite screen",
+   then go to setup and enter a speed in the simulator menu. Then
+   "goto" a stored waypoint and look how fine GpsDrive works. Don't forget 
+   to download your maps first.
+
+Q: How can I download maps?
+A: There's a "Download map" button. After pressing it, a new window will
+   appear. 
+
+Q: Can I download multiple maps covering a larger area?
+A: There is a script called "gpsfetchmap.pl" provided. Use the "-h" option
+   to get a help screen.
+
+Q: Can I use own maps?
+A: Yes. Of course you can use your own (self drawn, scanned...) maps. The
+   maps must be gif, jpeg, png or other common file formats (the format
+   must be recognized by the gdk-pixbuf library).  The lat/long coordinates
+   you write into the "map_koord.txt" file must be the center of the map.
+   The map must have a size of 1280x1024 pixels! Important! The maps must be
+   named map_* for streetmaps and top_* for topographical maps. If not,
+   GpsDrive won't display the maps. GpsDrive comes with an import assistant.
+   Simply press the `import` button and follow the instructions.
+
+Q: Which GPS receivers work with GpsDrive?
+A: Any receiver that can pump out NMEA data on a serial port or
+   USB should work. Verified receivers are listed in the file
+   GPS-receivers.
+
+Q: Which receiver is the best one?
+A: This is a religious question, just like the one for the best editor or mail
+   client (which is vi and mutt).
+   Fritz: No, off course its emacs and evolution.
+   
+Q: How can I use the Holux GM-200 USB with GpsDrive?
+A: This device has the Prolific PL-2303 chip in it for the USB => Serial
+   conversion.  The USB => Serial "pl2303.c" driver seems to work pretty
+   well!
+   
+   Quick Start:
+
+   Build GPSDrive (Requires GTK 2)
+   Build new kernel (or module) using "USB Prolific 2303 Single Port Serial
+   Driver (EXPERIMENTAL)" Load the new kernel || module
+   Do: `mknod /dev/ttyUSB0 c 180 0` (If it doesn't already exist)
+   Do: `chmod 666 /dev/ttyUSB0`
+   Do: `gpsd -p /dev/ttyUSB0`
+   Do: `gpsdrive`
+   (provided by Todd E. Johnson)
+   Hint: You want to use a kernel >= 2.4.18. ;)
+
+
+Q: Why is such funny english used in gpsdrive?
+A: Fritz is from Austria and speaks the same kind of "english" as Arnold
+   Schwarzenegger.
+
+Q: Can I use GpsDrive without a GPS receiver?
+A: Yes.  You might want to do this when you have a fast internet connection
+   for downloading maps etc.  Also, you can use it to review stored journey
+   tracks (see below).
+
+Q: Does GpsDrive handle 'tracks' saved in my GPS receiver?
+A: Yes.  You should save the tracks in the .gpsdrive directory (using
+   something like 'garble' or 'gpspoint')  - then you can load them into
+   GpsDrive from the GUI.
+
+Q: I know that we aren't supposed to use GpsDrive 'for navigaton purposes' -
+   but is it any use to (student) aviators?
+A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
+   then download the tracks into GpsDrive when you get home.  It's a great way
+   to see exactly how good your navigational skills are - or maybe where you
+   busted airspace!  Flying schools could use this to analyse students' solo
+   navigational trips.
+
+   
+Q:I have also noticed that the unique ID sent to my Friendsd2 server from
+  my gpsdrive is not unique
+  Is there a way to manually set the unique ID to correct this problem?
+A: Have a look at ~/.gpsdrive/gpsdriverc:
+      friendsidstring = XXX
+   If you delete the key in the file or set it to XXX you should get a new 
+   FriendsID.

@@ -1,0 +1,344 @@
+GPSDRIVE (c) 2001 Fritz Ganter <ganter@ganter.at>
+
+-------------------------------------------------
+Sitio web: www.gpsdrive.de
+Advertencia: Por favor, no lo use para navegar. 
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version. 
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details. 
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    *********************************************************************
+
+======================================================================          
+
+Por favor, lee la página de manual de gpsdrive. para ello, instala el
+programa y escribe 
+
+man gpsdrive
+
+en una ventana de terminal. Con Konqueror, de KDE también puedes verlo con 
+la URL:
+man:gpsdrive
+
+¡La mayoría de la información está ahora en la página de manual!                                        
+
+*************************************************
+
+Cómo instalar el programa:
+----------------------
+
+Desde el código fuente:
+
+Extráelo con tar -xvzf gpsdrive*tar.gz
+
+cd gpsdrive
+./configure --with-pentiumpro
+make
+
+Como root deberías hacer 
+
+make install
+
+Después de compilar e instalar (que es necesario para la
+internacionalización) lee la página de manual de gpsdrive, o inicia el
+programa si eres demasido vago como para leérte los manuales. ;-)
+
+También puedes descargar el archivo RPM e instalarlo mediante:
+
+rpm -Uvh gpsdrive*.rpm                                                          
+
+
+Uninstall:
+---------
+Si lo instalaste usando el código fuente en tarball:
+entra en el directorio de gpsdrive (no en el src), y entonces teclea
+
+make uninstall
+
+Si usaste el paquete RPM:
+
+rpm -e gpsdrive
+
+Usuarios de Comqaq iPaq:
+------------------------
+
+Es también recomendable usar el idioma
+xx, lo cual significa iniciar GpsDrive con:
+
+LANGUAGE=xx gpsdrive                                                            
+
+*************************************************
+
+Primer Uso:
+-----------
+
+Si no existe un directorio ".gpsdrive" en tu directorio home, GpsDrive
+lo creará por ti. E neste directorio se crea un archivo map_koord.txt que
+sirve para guardar la lista de mapas.                                              
+
+
+
+Iniciando el programa:
+----------------------
+
+Hay dos formas de comunicarse con el recptor GPS: modo NMEA y modo GARMIN. 
+
+El modo NMEA es el estándar de comunicación más usado. El modo GARMIN está 
+sólo disponible en algunos receptores GARMIN.
+
+El modo GARMIN es más rápido (varios paquetes de datos por segundo, en el modo 
+NMEA 1 paquete cada 2 segundos), pero los cálculos que realiza el programa 
+quizás no sean tan precisos. Tampoco se muestra el nivel de señal de los 
+satélites (este dato no está soportado por el protocolo GARMIN). 
+
+Si quieres usar el modo GARMIN, asegúrate de no tener "gpsd" corriendo. En
+este caso el receptor GARMIN debe ser puesto en el modo de transferencia:
+"GARMIN host".
+
+En este modo, el programa sólo, recibe datos sobre latitud/longitud, la
+velocidad y la dirección la calcula él mismo.
+
+Después de compilar e instalar (que es requerido para la
+internacionalización) inicia el programa "gpsd" (que se proporciona con
+GpsDrive), si quieres usar el modo NMEA.
+
+gpsd es un demonio que lee datos NMEA del recptor GPS. Los ajustes
+/dev/ttyS0 y 4800 Baudios está precompilados.
+
+Hay otro gpsd de Remco Treffkorn que usa el puerto 2947. si inicias este
+gpsd, será encontrado automágicamente. Si quieres cambiar estos ajustes, por
+ejemplo al segundo puerto serie, inícialo con:
+
+gpsd -serial /dev/ttyS1 
+
+Cea un directorio ".gpsdrive" en tu directorio home. En este directorio
+colocarás primero tus archivos de mapas (ver má abajo).
+
+No olvides editar el archivo "map_koord.txt" en el directorio ~/.gpsdrive.
+Esto no es necesario si usas sólo mapas que descargas de Internet con
+GpsDrive o gpsfetchmap.
+
+Puedes bajar los mapas con el programa o bien con el script  "gpsfetchmap"
+
+Una vez que gpsd está corriendo puedes iniciar el progarma con 
+
+gpsdrive
+
+Para usar el modo GARMIN no debes iniciar gpsd.
+
+Si no tienes un enlace /dev/gps apuntando al puerto serie, o usas otro
+puerto que no sea ttyS0 inicia GpsDrive con
+
+./gpsdrive  -t /dev/ttyS1 
+
+para tu segundo puerto serie.
+
+Verás tu posición en el mapa y otros datos en la barra de estado. Puedes
+ampliar y reducir. Si te mueves fuera del mapa se muestra el siguiente, si
+hay alguno disponible, para tu posición.
+
+Si no tienes receptor GPS conectado:
+------------------------------------
+
+Hay implementado un simulador. Se utiliza automáticamente si no se detecta
+un GPS.
+
+Si has creado un archivo de waypoints y tienes los mapas adecuados, puedes
+hacer click en SELECCIONAR DESTINO. El marcador se moverá a este waypoint.
+
+Soy demasiado vago para salir de la cama, ¿cómo puedo probar mi GARMIN GPS III?
+-------------------------------------------------------------------------------
+
+Tu receptor GARMIN tiene un simulador interno. Inícialo en la "pantalla de
+satélltes", ve a la configuración e introduce una velocidad en el menú del
+simulador.  Entonces dirígete a un waypoint almacenado y comprueba lo bien
+que funciona GpsDrive.  No te olvides dedescargar los mapas primero.
+
+Control con el ratón:
+---------------------
+
+Si haces click con el botón izquierdo en el mapa en el "Modo Display", el cursor es 
+un rectángulo y no se muestra ninguna posición. Si amplías o seleccionas otra 
+escala para los mapas funcionará como si esta fuera tu posición real.
+
+Al botón central te devuelve al modo normal. Al igual que si seleccionas un destino 
+con el botón derecho del ratón.  Mayúsculas-botón izquierdo y Mayúsculas-botón 
+derecho cambia la escala del mapa.
+
+************************************************************************
+
+Cómo obtener tus propios mapas
+------------------------------
+
+Debe hacer un fichero llamado "map_koord.txt" en tu directorio ~/.gpsdrive . 
+Aquí hay un ejemplo:
+
+map_stmk.gif          47.08    15.45    300000
+map_austria.gif       48.0     14.0    1000000
+map_bruck-m-umgeb.gif 47.44    15.29    100000
+
+La primera columna es el nombre del archivo, después vienen la latitud, la
+longitud y la escala del mapa. LA escala 10000000 (1:10.000.000) es buena
+para Europe, y 100000 es para una ciudad como Viena.
+
+Para obtener un mapa debes ir a una URL lcomo esta:
+
+http://www.mapblast.com/gif?&CT=51.0:10.0:2500000&IC=&W=1280&H=1024&FAM=mblast&LB=
+
+Esta es la latitud -------------^^^^
+Esta es la longitud -----------------^^^^
+Esta es la escala -----------------------^^^^^^^^
+
+Toma la latitud, la longitud y la escala de la URL y ponlas en el archivo
+map_koord.txt junto con el nombre del archivo.
+
+GpsDrive selecciona el mapa con la mejor escala para tu posición. Así pues
+obtén mapas para, por ejemplo, Europa, Austria y Viena si quieres conducir
+hasta Viena.
+
+Es también importante dejar el tamaño de 1280x1024 puntos como en la URL
+de arriba.
+
+Para un uso fácil, proporciono un script llamado "gpsfetchmap" para
+obtener los mapas de internet y colocar la entrada correspondiente en el
+archivo map_koord.txt.
+
+Uso: 
+
+gpsfetchmap farchivo latitud longitud escala
+
+El nombre del archivo deberá tener extensión .gif.
+
+USO SENCILLO:
+
+Puedes hacer exactamente lo mismo usando el botón "Descargar mapa" en el
+programa.
+
+ATENCIÓN: Los mapas de Mapblast.com con una escala superior a 1:2 millones
+parecen tener otro sistema de proyección, GpsDrive muestra aquí una
+posición INCORRECTA.  ¿Alguien tiene información sobre esto?
+
+********************************************************
+¡Por favor lee la nota de copyright de www.mapblast.com!
+********************************************************
+
+Internacionalización
+--------------------
+
+Si instalaste el programa verás motrarse los mensajes en inglés, alemán,
+francés, italiano o español, si tu lenguaje está definido con LANG o
+LANGUAGE. LANGUAGE ignora el resto de ajustes. Llama a "locale" para ver
+los ajustes y llama "set" si LANG o LANGUAGE está definido. Para español
+pon:
+
+export LANGUAGE=es
+
+y entonces inicia gpsdrive en esa shell.
+
+Formatos de archivos:
+
+Las comas decimales en way.txt deben tener siempre un punto ('.'), en
+map_koord.txt están permitidos '.' or ','. Si descargas los mapas con el
+programa, GpsDrive escribe el archivo map_koord.txt de acuerdo al ajuste
+de LC_NUMERIC en esa consola.
+
+¿Puedo usar otros mapas?
+------------------------
+
+Puedes también usar tus propios mapas (dijudos, escaneados,...). Los mapas
+deben ser gif, jpeg, png o cualquier otro formato de archivo reconocido
+por la biblioteca gdk-pixbuf library.  Las coordenadas de latitud/longitud
+que escribes en el archivo "map_koord.txt" deben correspoder al centro del
+mapa. El mapa debe tener un tamaño de 1280x1024 pixels. Debes medir y
+calcular la escala tú mismo.
+
+Es importante que uses los nombres de archivo correctos. Deben comenzar con 
+"map_" para callejeros y con "top_" para topográficos.
+
+Importando waypoints:
+---------------------
+
+Debes crear un fichero "way.txt" en tu directorio ~/.gpsdrive parecido a este:
+
+DEFAULT  47.0792  15.4524
+KLGNFR   46.6315  14.3152
+MCDONA   47.0555  15.4488
+
+El waypoint llamado "DEFAULT" es el punto de inicio del programa,
+importante si comienzas en modo simulación. Así pues no todo el mundo
+necesita empezar en mi casa en Austria ;-) También sería correcto si el
+waypoint se llama DEFAUL porque mi GARMIN GPS III alamcena sólo 6
+caracteres para un waypoint.
+
+Las columnas se llaman etiqueta latitud longitud.
+
+Si el archivo no existe o no contiene datos válidos, no habrá botón "Ir a"
+disponible.
+
+Puedes usar el programa "garble" (incluido en el paquete) para leer tus
+waypoints del GPS Garmin (el modo de transferencia debe ser GARMIN aquí).
+
+La forma más sencilla de usar el script "wpget" que lo hace todo por ti.
+
+Asegúrate de tener "wpget", "wpcvt" y "garble" en tu path.
+
+Algunos comentarios sobre las fuentes: 
+--------------------------------------
+
+GpsDrive utiliza la fuente
+
+-monotype-arial-bold-r-normal-*-*-360-*-*-p-*-iso8859-15
+
+para las letras grandes. Si esta fuente no se encuentra, utilizará 
+
+-adobe-helvetica-bold-r-normal-*-*-240-*-*-p-*-iso8859-15
+
+que debería estar disponible en una instalación normal de XFree86.
+
+Si quieres cambiar la fuente, encuentra el define "FONT1" en el código
+fuente y sustitúye el nmbre de la fuente.
+
+Salida de voz:
+-------------
+
+Si quieres disponer de salida de voz debes instalar el software
+"festival". Mira en http://fife.speech.cs.cmu.edu/festival para
+informarte. Si tienes una instalación funcional de festival llámala como
+servidor con:
+
+festival --server
+
+Si inicias entonces GpsDrive, detectará el servidor en el puerto 1314 y 
+obtendrás algunas informaciones obre el estado mediante la voz. Dispondrás de 
+un botón (Mute) para detener la salida de voz.
+
+Hay una opción -l para cambiar el idioma de la voz de salida. Por el
+momento están disponibles inglés y alemán. GpsDrive no ajusta festival en
+el idioma adecuado, así pues debes hacerlo tú mismo. si deseas otro
+idioma, por favor, envíame las traducciones de los textos en gpsdrive.c y
+speech_out.c. Mira las cadenas que comienzan por "SayText".
+
+=======================================================================
+
+¡Se admiten sugerencias!
+
+¡Diviértete!
+
+Fritz Ganter <ganter@gpsdrive.de>
+
+http://www.gpsdrive.de
+
+Traducido por: Félix Martos <pakito@asinkecualo.org>
+Si observas algún error en la traducción, o en la expresión comunícamelo. 
+Gracias
+

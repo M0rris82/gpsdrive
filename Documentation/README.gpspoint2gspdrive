@@ -1,0 +1,37 @@
+NAME
+	gpspoint2gpsdrive.pl
+
+SYNOPSIS
+	gpspoint2gpsdrive -[vhf] [gpspoint-file]
+
+DESCRIPTION
+	Extract track information from a gpspoint file and write in 
+	gpsdrive format track files (track*.sav) for viewing tracks.
+
+	Using this script you can load tracks into gpsdrive and see where
+	you have been!  Useful if you have not been carrying your computer
+	around with you.
+
+COMMAND-LINE OPTIONS
+	-h	Display usage information.
+	
+	-v	Be verbose about the extraction.
+
+	-f 	Specify what file to get the data from.
+
+NOTES
+	Uses the names supplied by the GPS to form the names of the track 
+	files, will OVERWRITE any extant track files with the same names.
+	Although altitude information is converted, I don't think gpsdrive
+	makes any use of it (yet).
+
+SEE ALSO
+	gpspoint
+	gpsdrive
+
+AUTHOR
+	Steve Merrony (steve@cygnet.co.uk)
+
+	Please send bug reports to the above address.
+
+	

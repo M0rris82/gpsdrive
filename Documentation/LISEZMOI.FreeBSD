@@ -1,0 +1,41 @@
+$Id$
+Traduit en français par Jacky François <jfrancois@free.fr>
+
+                    INSTALLER GPSDRIVE SOUS FREEBSD
+
+
+La méthode la plus simple pour installer GpsDrive sous FreeBSD est d'utiliser
+le système de port de FreeBSD: rendez vous à l'adresse:
+http://www.freebsd.org/astro.html et sélectionnez 'gpsdrive'.
+
+
+Pour installer un package binaire vous pouvez utiliser la fonction de téléchargement
+automatique de pkg_add:
+
+$ su -             [devenez root]
+# pkg_add -r gpsdrive
+# exit             [redevenez simple utilisateur]
+
+
+Pour une installation à partir des sources assurez-vous d'avoir vos ports à jour [1]
+et procédez comme ceci:
+
+$ su -             [devenez root]
+# cd /usr/ports/astro/gpsdrive
+# make
+# make install
+# make clean
+# exit             [redevenez simple utilisateur]
+
+
+Amusez-vous bien!
+
+N'hésitez pas à me contacter si vous avez des questions à propos du port sous FreeBSD
+ou si vous désirez une version plus récente.
+
+Marco Molteni <molter@gufi.org>
+http://www.gufi.org/~molter/
+
+[1] http://www.freebsd.org/handbook/ports-using.html. Pour mettre à jour votre base
+    de ports utilisez CVSup comme indiqué sur ce site.
+    NdT: le handbook en français: http://www.freebsd-fr.org/doc/fr_FR.ISO8859-1/books/handbook
