@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/02/13 22:57:00  tweety
+WDB Support
+
 Revision 1.1  2005/02/13 14:06:54  tweety
 start street randering functions. reading from the database streets and displayi
 ng it on the screen
@@ -379,7 +382,8 @@ streets_rebuild_list (void)
 
   dl_mysql_free_result (res);
 
-  printf ("=============================================================================\n");
+  if (  debug )
+    printf ("=============================================================================\n");
 }
 
 
@@ -475,14 +479,8 @@ streets_draw_list (void)
   if ( streets_check_if_moved() )
     streets_rebuild_list();  
 
-  if ( debug ) 
-    printf("streets_draw_list()\n");
-
-
   gdks_streets= g_new0 (GdkSegment, gdks_streets_max);
 
-  if ( debug ) 
-    printf("streets_draw_list():2\n");
 
   /* ------------------------------------------------------------------ */
   /*  draw gdks_streets_list streets */
@@ -496,15 +494,16 @@ streets_draw_list (void)
       posx2 = (streets_list + i)->x2;
       posy2 = (streets_list + i)->y2;
       
-      printf("    a1 %f,%f\n",  posx1,posy1);
-      printf("    a2 %f,%f\n",  posx2,posy2);
-
-      printf ("STREETS Draw: %f %f -> %f, %f            %s\n",
-	      (streets_list + i)->lat1, (streets_list + i)->lon1,
-	      (streets_list + i)->lat2, (streets_list + i)->lon2,
-	      (streets_list + i)->name
-	      );
-
+      if ( debug ) {
+	printf("    a1 %f,%f\n",  posx1,posy1);
+	printf("    a2 %f,%f\n",  posx2,posy2);
+	
+	printf ("STREETS Draw: %f %f -> %f, %f            %s\n",
+		(streets_list + i)->lat1, (streets_list + i)->lon1,
+		(streets_list + i)->lat2, (streets_list + i)->lon2,
+		(streets_list + i)->name
+		);
+      }
       if ( posxy_on_screen(posx1,posy1) ||
 	   posxy_on_screen(posx2,posy2) 
 	   )
@@ -528,17 +527,20 @@ streets_draw_list (void)
 	  (gdks_streets + gdks_streets_count)->x2 = posx2;
 	  (gdks_streets + gdks_streets_count)->y2 = posy2;
 	  
+	  /*
 	  draw_plus_sign ( posx1,posy1);
 	  draw_plus_sign ( posx2,posy2);
+	  */
 
 	  /*
 	    draw_text_with_box(posx1,posy1,(streets_list + i)->name);
 	    draw_text_with_box(posx2,posy2,(streets_list + i)->name);
 	  */
 
-	  printf("    1 %f,%f\n",  posx1,posy1);
-	  printf("    2 %f,%f\n",  posx2,posy2);
-
+	  if ( debug ) {
+	    printf("    1 %f,%f\n",  posx1,posy1);
+	    printf("    2 %f,%f\n",  posx2,posy2);
+	  }
 	}
       
       // draw it if last or type_id changes 
