@@ -23,6 +23,17 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.33  2005/04/10 09:52:14  tweety
+autor:  Olli Salonen <olli@cabbala.net>
+- GPGGA information is now parsed, even if there are 16 fields
+- Latitude and longitude information in RMC and GGA sentences can now
+include the zeroes or not, but GpsDrive will be able cope with it
+- Only the basename of the map filename is displayed in order to avoid
+the problem I described in the chain
+http://s2.selwerd.nl/~dirk-jan/gpsdrive/archive/msg04442.html (this does
+not completely solve the problem, since some of the map filenames are
+still longer than the space we have for them).
+
 Revision 1.32  2005/04/10 00:10:32  tweety
 added gpsd: to gpsd related debug output
 changed plus to a small + in streets.c
@@ -2577,6 +2588,20 @@ convertRMC (char *f)
 	    
     }
 /*  Latitude North / South */
+  /* if field[3] is shorter than 9 characters, add zeroes in the beginning */
+  if (strlen(field[3]) < 9) {
+    if (debug) {
+      g_print("Latitude field %s is shorter than 9 characters. (%d)\n", 
+	      field[3], strlen(field[3]));
+    }
+    for (i = 0; i < 9; i++) {
+      b[i] = '0';
+    }
+    b[9] = 0;
+    g_strlcpy(b + (9 - strlen(field[3])), field[3], sizeof(b));
+    g_strlcpy(field[3], b, sizeof(field[3]));
+  }
+
   b[0] = field[3][0];
   b[1] = field[3][1];
   b[2] = 0;
@@ -2603,6 +2628,21 @@ convertRMC (char *f)
     }
 
 /*  Longitude East / West */
+
+  /* if field[5] is shorter than 10 characters, add zeroes in the beginning */
+  if (strlen(field[5]) < 10) {
+    if (debug) {
+      g_print("Longitude field %s is shorter than 10 characters. (%d)\n", 
+	      field[5], strlen(field[5]));
+    }
+    for (i = 0; i < 10; i++) {
+      b[i] = '0';
+    }
+    b[10] = 0;
+    g_strlcpy(b + (10 - strlen(field[5])), field[5], sizeof(b));
+    g_strlcpy(field[5], b, sizeof(field[5]));
+  }
+
   b[0] = field[5][0];
   b[1] = field[5][1];
   b[2] = field[5][2];
@@ -2791,7 +2831,7 @@ convertGGA (char *f)
 		  g_print("\n");
 	  }
 
-  if (j != 15)
+  if ((j != 15) && (j != 16))
     {
       g_print("GPGGA: wrong number of fields (%d)\n", j);
       return;
@@ -2836,6 +2876,20 @@ convertGGA (char *f)
 	}
 
 /*  Latitude North / South */
+      /* if field[2] is shorter than 9 characters, add zeroes in beginning */
+      if (strlen(field[2]) < 9) {
+        if (debug) {
+          g_print("Latitude field %s is shorter than 9 characters. (%d)\n", 
+        	  field[2], strlen(field[2]));
+        }
+        for (i = 0; i < 9; i++) {
+          b[i] = '0';
+        }
+        b[9] = 0;
+        g_strlcpy(b + (9 - strlen(field[2])), field[2], sizeof(b));
+        g_strlcpy(field[2], b, sizeof(field[2]));
+      }
+
       b[0] = field[2][0];
       b[1] = field[2][1];
       b[2] = 0;
@@ -2865,6 +2919,20 @@ convertGGA (char *f)
 	}
 
 /*  Longitude East / West */
+      /* if field[4] is shorter than 10 chars, add zeroes in the beginning */
+      if (strlen(field[4]) < 10) {
+        if (debug) {
+          g_print("Longitude field %s is shorter than 10 characters. (%d)\n", 
+                  field[4], strlen(field[4]));
+        }
+        for (i = 0; i < 10; i++) {
+          b[i] = '0';
+        }
+        b[10] = 0;
+        g_strlcpy(b + (10 - strlen(field[4])), field[4], sizeof(b));
+        g_strlcpy(field[4], b, sizeof(field[4]));
+      }
+
       b[0] = field[4][0];
       b[1] = field[4][1];
       b[2] = field[4][2];
@@ -4378,7 +4446,7 @@ display_status2 ()
     }
 
   gtk_label_set_text (GTK_LABEL (l2), s2);
-  strncpy (mf, mapfilename, 59);
+  strncpy (mf, g_basename(mapfilename), 59);
   mf[59] = 0;
   gtk_label_set_text (GTK_LABEL (l3), mf);
   g_snprintf (s2, sizeof (s2), "1:%ld", mapscale);
