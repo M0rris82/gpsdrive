@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.30  2005/03/30 10:03:38  tweety
+corrected problem with sigSEG if sqlmode is off
+Added another bunch of comments
+
 Revision 1.29  2005/03/28 18:20:17  tweety
 eliminated includefiles src/f_*.c
 for now I put them all into src/gpsdrive.c
@@ -2278,6 +2282,8 @@ extern char actualstreetname[200];
 int sound_direction = 1, sound_distance = 1, sound_speed = 1, sound_gps = 1;
 int expedia_de = 0;
 
+#define DEG2RAD M_PI/180.0
+
 static GtkItemFactoryEntry main_menu[] = {
   {N_("/_Misc. Menu"), NULL, NULL, 0, "<Branch>"},
   {N_("/_Misc. Menu/Maps"), NULL, NULL, 0, "<Branch>"},
@@ -2999,6 +3005,8 @@ display_status (char *message)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 get_position_data_cb (GtkWidget * widget, guint * datum)
 {
@@ -3233,7 +3241,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  if (mydebug)
 	    g_print("Time: %f\n", secs);
 	}
-/*  display status line */
+
+      /*  display status line */
       if (posmode)
 	display_status (_("Press middle mouse button for navigation"));
       else
@@ -3242,19 +3251,18 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    display_status (_("GARMIN Mode"));
 	}
 
+      /*  return if in GARMIN mode */
       if (haveGARMIN)
 	{
 	  g_free (argumente);
-/*  return if in GARMIN mode */
-
 	  return TRUE;
 	}
     }
 
-/*    only if we have neither NMEA nor GARMIN, means no measured position */
+  /*    only if we have neither NMEA nor GARMIN, means no measured position */
   if (!haveNMEA)
     {
-/*  display status line */
+      /*  display status line */
       if (!simmode)
 	display_status (_("No GPS used"));
       else if (maploaded && !posmode)
@@ -3266,7 +3274,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       return TRUE;
     }
 
-/*  this is the NMEA reading part. data comes from port 2222 served by gpsd */
+  /*  this is the NMEA reading part. data comes from port 2222 served by gpsd */
   FD_ZERO (&readmask);
   FD_SET (sock, &readmask);
   timeout.tv_sec = 0;
@@ -3294,7 +3302,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    {
 	      if (big[i] == '$')
 		{
-/*  collect string for position data $GPRMC */
+		  /*  collect string for position data $GPRMC */
 		  if ((big[i + 3] == 'R') && (big[i + 4] == 'M')
 		      && (big[i + 5] == 'C'))
 		    {
@@ -3313,10 +3321,12 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  tok[found - i] = 0;
 			  lastp = found;
 			  timeoutcount = 0;
-/*  we have the $GPRMC string completed, now parse it */
+
+			  /*  we have the $GPRMC string completed, now parse it */
 			  if (checksum (tok) == TRUE)
 			    convertRMC (tok);
-/*  display the position and map in the statusline */
+
+			  /*  display the position and map in the statusline */
 			  if (havepos)
 			    {
 			      if (posmode)
@@ -3334,8 +3344,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		}
 	    }
 
-/*  collect string for satellite data $GPGSV */
-
+	  /*  collect string for satellite data $GPGSV */
 	  for (i = bigpGSV; i > lastpGSV; i--)
 	    {
 	      if (big[i] == '$')
@@ -3395,8 +3404,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    }
 
 
-/*  collect string for altitude from  $GPGGA if available*/
-
+	  /*  collect string for altitude from  $GPGGA if available*/
 	  for (i = bigpGGA; i > lastpGGA; i--)
 	    {
 	      if (big[i] == '$')
@@ -3460,8 +3468,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		}
 	    }
 
-/*  collect string for precision from  $PGRME if available*/
-
+	  /*  collect string for precision from  $PGRME if available*/
 	  for (i = bigpRME; i > lastpRME; i--)
 	    {
 	      if (big[i] == '$')
@@ -3512,8 +3519,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		}
 	    }
 
-/*  collect string for precision from  $GPGSA if available*/
-
+	  /*  collect string for precision from  $GPGSA if available*/
 	  for (i = bigpGSA; i > lastpGSA; i--)
 	    {
 	      if (big[i] == '$')
@@ -3588,6 +3594,9 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   return (TRUE);
 }
 
+/* *****************************************************************************
+ *
+ */
 int
 checkalarm (void)
 {
@@ -3601,6 +3610,11 @@ checkalarm (void)
 
   fprintf (stderr, _("Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"),
 	   d, alarm_dist);
+
+  /* send sig USR1 to cammain 
+   * TODO: move PID's --> /var/run
+   * TODO: Explain what cammain is?
+   */
   f = fopen ("/tmp/cammain.pid", "r");
   if (f <= 0)
     {
@@ -3611,10 +3625,13 @@ checkalarm (void)
   e = kill (pid, SIGUSR1);
   if (e != 0)
     fprintf (stderr, "sending signal failed!\n");
+
   return 0;
 }
 
-/*  test if we need to load another map */
+/* *****************************************************************************
+ * test if we need to load another map 
+ */
 void
 testnewmap ()
 {
@@ -3653,9 +3670,9 @@ testnewmap ()
 	    {
 	      routenearest = d;
 	    }
-/* 	  g_print */
-/* 	    ("\nroutepointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
-/* 	     routepointer, d, routenearest, ROUTEREACH); */
+	  /* 	  g_print */
+	  /* 	    ("\nroutepointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
+	  /* 	     routepointer, d, routenearest, ROUTEREACH); */
 	  if ((d <= ROUTEREACH) || (d > (ROUTEREACHFACT * routenearest))
 	      || forcenextroutepoint)
 	    {
@@ -3664,7 +3681,8 @@ testnewmap ()
 		{
 		  routenearest = 9999999999.0;
 		  routepointer++;
-/* let's say the waypoint description */
+
+		  /* let's say the waypoint description */
 		  g_strlcpy (mappath, homedir, sizeof (mappath));
 		  g_strlcat (mappath, activewpfile, sizeof (mappath));
 		  saytargettext (mappath, targetname);
@@ -3673,7 +3691,7 @@ testnewmap ()
 		}
 	      else
 		{
-/*  route endpoint reached */
+		  /*  route endpoint reached */
 		  if (saytarget)
 		    {
 		      g_snprintf (str, sizeof (str), "%s: %s", _("To"),
@@ -3686,21 +3704,17 @@ testnewmap ()
 		      switch (voicelang)
 			{
 			case english:
-			  g_snprintf (buf, sizeof (buf),
-				      "You reached the target %s",
-				      targetname);
+			  g_snprintf (buf, sizeof (buf),"You reached the target %s", targetname);
 			  break;
 			case spanish:
-			  g_snprintf (buf, sizeof (buf),
-				      "usted ha llegado a %s", targetname);
+			  g_snprintf (buf, sizeof (buf),"usted ha llegado a %s", targetname);
 			  break;
 			case german:
-			  g_snprintf (buf, sizeof (buf),
-				      "Sie haben das Ziel %s erreicht",
-				      targetname);
+			  g_snprintf (buf, sizeof (buf),"Sie haben das Ziel %s erreicht", targetname);
 			}
 		      speech_out_speek (buf);
-/* let's say the waypoint description */
+
+		      /* let's say the waypoint description */
 		      g_strlcpy (mappath, homedir, sizeof (mappath));
 		      g_strlcat (mappath, activewpfile, sizeof (mappath));
 		      saytargettext (mappath, targetname);
@@ -3711,12 +3725,12 @@ testnewmap ()
     }
 
 
-/* search for suitable maps */
+  /* search for suitable maps */
   if (displaymap_top)
     if ((havenasa < 0) || (!nasaisvalid))
       {
 
-/* delete nasamaps entries from maps list */
+	/* delete nasamaps entries from maps list */
 	for (i = 0; i < nrmaps; i++)
 	  {
 	    if ((strcmp ((maps + i)->filename, "top_NASA_IMAGE.ppm")) == 0)
@@ -3728,8 +3742,8 @@ testnewmap ()
 	      }
 	  }
 
-	havenasa =
-	  create_nasa_mapfile (current_lat, current_long, TRUE, nasaname);
+	/* Try creating a nasamap and add it to the map list */
+	havenasa = create_nasa_mapfile (current_lat, current_long, TRUE, nasaname);
 	if (havenasa > 0)
 	  {
 	    skip = FALSE;
@@ -3737,23 +3751,27 @@ testnewmap ()
 	    nrmaps++;
 	    maps = g_renew (mapsstruct, maps, (nrmaps + 2));
 	    havenasa =
-	      create_nasa_mapfile (current_lat, current_long, FALSE,
-				   nasaname);
+	      create_nasa_mapfile (current_lat, current_long, FALSE, nasaname);
 	    (maps + i)->lat = current_lat;
 	    (maps + i)->lon = current_long;
 	    (maps + i)->scale = havenasa;
 	    g_strlcpy ((maps + i)->filename, nasaname, 200);
 	    if ((strcmp (oldfilename, "top_NASA_IMAGE.ppm")) == 0)
-	      g_strlcpy (oldfilename, "XXXOLDMAPXXX.ppm",
-			 sizeof (oldfilename));
+	      g_strlcpy (oldfilename, "XXXOLDMAPXXX.ppm", sizeof (oldfilename));
 	  }
       }
 
   nasaisvalid = FALSE;
 
-  /* */ 
+  /* have a look through all the maps and decide which map 
+   * is the best/apropriate
+   * RESULT: bestmap [index in (maps + i) for the choosen map]
+   */
   for (i = 0; i < nrmaps; i++)
     {
+      /* check if map is topo or street map 
+       * Result: istopo = TRUE/FALSE
+       */ 
       skip = TRUE;
       if (displaymap_map){
         if (!(strncmp ((maps + i)->filename, "map_", 4))) {
@@ -3780,19 +3798,19 @@ testnewmap ()
         continue;
 
 
-/*        calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
-/*  Longitude */
+      /*  calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
+
+      /*  Longitude */
       if (istopo == FALSE)
 	posx = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180)
-	  * cos (M_PI *	  (maps +   i)->lat /  180.0)
+	  * cos (M_PI *	    (maps + i)->lat /  180.0)
 	  * (current_long - (maps + i)->lon);
       else
 	posx = (Ra[(int) (100 + 0)] * M_PI / 180)
 	  * (current_long - (maps + i)->lon);
 
 
-/*  latitude */
-
+      /*  latitude */
       if (istopo == FALSE)
 	{
 	  posy = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180) 
@@ -3810,11 +3828,13 @@ testnewmap ()
       posx = posx / pixelfactloc;
       posy = posy / pixelfactloc;
 
+      /* */
       if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
 	{
 	  ncount++;
 	}
 
+      /* */
       if ((posx > -(640 - borderlimit)) && (posx < (640 - borderlimit)))
 	{
 	  if (((posy - borderlimit) > -512) && ((posy + borderlimit) < 512))
@@ -3824,7 +3844,7 @@ testnewmap ()
 	      if (displaymap_top)
 		if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
 		  {
-/* nasa map is in range */
+		    /* nasa map is in range */
 		    nasaisvalid = TRUE;
 		  }
 
@@ -3839,10 +3859,10 @@ testnewmap ()
 		    {
 		      bestscale = fact;
 		      bestmap = i;
-/* 			  bestcentereddist = centereddist; */
+		      /* bestcentereddist = centereddist; */
 		    }
 		}
-	      else		/* autobestmap */
+	      else /* autobestmap */
 		{
 		  if ((maps + i)->scale < best)
 		    {
@@ -3850,10 +3870,12 @@ testnewmap ()
 		      best = (maps + i)->scale;
 		    }
 		}
-	    }			/*  End of if posy> ... */
-	}
+	    } /*  End of if posy> ... */
+	} /*  End of if posx> ... */
+    }  /* End of for ... i < nrmaps */
 
-    }
+  // RESULT: bestmap [index in (maps + i) for the choosen map]
+
   if (bestmap != 9999999999LL)
     {
       g_strlcpy (mapfilename, (maps + bestmap)->filename,
@@ -3861,19 +3883,18 @@ testnewmap ()
       if ((strcmp (oldfilename, mapfilename)) != 0)
 	{
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-	  if (debug)
-	    g_print("New map: %s\n", mapfilename);
+	  if (debug) g_print("New map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
 	  zero_long = (maps + bestmap)->lon;
-	  zero_lat = (maps + bestmap)->lat;
-	  mapscale = (maps + bestmap)->scale;
+	  zero_lat  = (maps + bestmap)->lat;
+	  mapscale  = (maps + bestmap)->scale;
 	  xoff = yoff = 0;
 	  if (nrmaps > 0)
 	    loadmap (mapfilename);
 	}
     }
   else
-    {
+    { // No apropriate map found take worldmap
       if (((strcmp (oldfilename, mapfilename)) != 0) && (havedefaultmap))
 	{
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
@@ -3889,8 +3910,9 @@ testnewmap ()
 
 }
 
-/* ----------------------------------------------------------------------------- */
-/*  set the target in routemode */
+/* *****************************************************************************
+ * set the target in routemode 
+ */
 void
 setroutetarget (GtkWidget * widget, gint datum)
 {
@@ -3935,7 +3957,8 @@ setroutetarget (GtkWidget * widget, gint datum)
 }
 
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 posmodeoff_cb (GtkWidget * widget, guint * datum)
 {
@@ -3943,7 +3966,8 @@ posmodeoff_cb (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 lightoff (GtkWidget * widget, guint * datum)
 {
@@ -3952,7 +3976,8 @@ lightoff (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 lighton (void)
 {
@@ -3963,11 +3988,11 @@ lighton (void)
   return TRUE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 tripreset ()
 {
-
   tripodometer = tripavspeed = triptime = tripmaxspeed = triptmp = 0.0;
   tripavspeedcount = 0;
   trip_lat = current_lat;
@@ -3977,8 +4002,11 @@ tripreset ()
   return TRUE;
 }
 
-/* ----------------------------------------------------------------------------- */
-/* map_koord.txt is in mappath! */
+/* *****************************************************************************
+ * map_koord.txt is in mappath! 
+ * TODO: This is a strange collection of function calls 
+ * TODO: put them where they belong
+ */
 gint
 testconfig_cb (GtkWidget * widget, guint * datum)
 {
@@ -4012,7 +4040,9 @@ testconfig_cb (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * check for Radar WP near me and warn me
+ */
 gint
 watchwp_cb (GtkWidget * widget, guint * datum)
 {
@@ -4022,7 +4052,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
   gdouble ldist = 9999.0, l2dist = 9999.0;
   gdouble tx, ty, lastbearing;
 
-/*  calculate new earth radius */
+  /*  calculate new earth radius */
   earthr = calcR (current_lat);
 
   if (importactive)
@@ -4034,7 +4064,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 
   for (i = 0; i < maxwp; i++)
     {
-/*  test for radar */
+      /*  test for radar */
       if (((wayp + i)->action) == 1)
 	{
 	  d = calcdist2 ((wayp + i)->lon, (wayp + i)->lat);
@@ -4151,7 +4181,8 @@ watchwp_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 checkinput (gchar * text)
 {
@@ -4159,7 +4190,8 @@ checkinput (gchar * text)
     mintodecimal (text);
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 decimaltomin (gchar * text, gint islat)
 {
@@ -4197,7 +4229,8 @@ decimaltomin (gchar * text, gint islat)
 
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 mintodecimal (gchar * text)
 {
@@ -4238,8 +4271,10 @@ mintodecimal (gchar * text)
 /*   g_print("%s\n", text); */
 }
 
-/* ----------------------------------------------------------------------------- */
-/*  display upper status line */
+/* *****************************************************************************
+ * display upper status line 
+ * speak how long it takes till we reach our destination
+ */
 void
 display_status2 ()
 {
@@ -4261,7 +4296,7 @@ display_status2 ()
       h = dist / v;
       m = 60 * (dist / v - h);
       if (mydebug)
-	g_print("\nsecs: %.0fs,v:%.0f,h:%d,m:%d", secs, v, h, m);
+	g_print("secs: %.0fs,v:%.0f,h:%d,m:%d\n", secs, v, h, m);
       if ((m < 0) || (h > 99))
 	{
 	  h = 99;
@@ -4362,6 +4397,7 @@ display_status2 ()
     g_snprintf (s2, sizeof (s2), _("Auto"));
   gtk_label_set_text (GTK_LABEL (l8), s2);
 
+  // TODO: move this code to different location
   if (debug)
     {
       if (havepos)
@@ -4382,8 +4418,13 @@ display_status2 ()
 }
 
 
-/* ----------------------------------------------------------------------------- */
-/* draw the marker on the map */
+/* *****************************************************************************
+ * draw the marker on the map 
+ * calculate CPU load: loadpercent
+ * check night mode switching
+ * check for new map
+ * TODO: eventually split this callback or rename it
+ */
 gint
 drawmarker_cb (GtkWidget * widget, guint * datum)
 {
@@ -4406,6 +4447,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	    fprintf (stderr, "setting to night view\n");
 	}
     }
+
   if (((nightmode == 0) || disableisnight || downloadwindowactive)
       && (!alreadydaymode))
     {
@@ -4421,31 +4463,36 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
   runtime2 = tv1.tv_usec - tv2.tv_usec;
   if (tv1.tv_sec != tv2.tv_sec)
     runtime2 += 1000000l * (tv1.tv_sec - tv2.tv_sec);
-/*  we test if we have to load a new map because we are outside 
-the currently loaded map */
+
+  /* we test if we have to load a new map because we are outside 
+   * the currently loaded map 
+   */
   testnewmap ();
-/*   g_print("drawmarker_cb %d\n",drawmarkercounter++); */
+
+  /*   g_print("drawmarker_cb %d\n",drawmarkercounter++); */
   exposed = FALSE;
-/* The position calculation is made in expose_cb() */
+  /* The position calculation is made in expose_cb() */
   gtk_widget_draw (drawing_area, NULL);	/* this  calls expose handler */
   if (!exposed)
     expose_cb (NULL, 0);
   expose_compass (NULL, 0);
+
   gettimeofday (&tv2, &tz);
   runtime = tv2.tv_usec - tv1.tv_usec;
   if (tv2.tv_sec != tv1.tv_sec)
     runtime += 1000000l * (tv2.tv_sec - tv1.tv_sec);
   globruntime = runtime / 1000;
   loadpercent = (int) (100.0 * (float) runtime / (runtime + runtime2));
-/*   if (debug) */
-/*     g_print("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000), loadpercent); */
+   if (mydebug) 
+     g_print("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000), loadpercent);
 
   return FALSE;
 }
 
-/* Try to produce only given CPU load  */
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * Try to produce only given CPU load  
+ */
 gint
 calldrawmarker_cb (GtkWidget * widget, guint * datum)
 {
@@ -4480,7 +4527,8 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 }
 
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 /* Friends agent */
 gint
 friendsagent_cb (GtkWidget * widget, guint * datum)
@@ -4489,18 +4537,18 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
   gchar buf[MAXMESG], buf2[40], la[20], lo[20], num[5];
   gint i;
 
-/* Don't allow spaces in name */
+  /* Don't allow spaces in name */
   for (i = 0; (size_t) i < strlen (friendsname); i++)
     if (friendsname[i] == ' ')
       friendsname[i] = '_';
 
-/*  send position to friendsserver */
+  /*  send position to friendsserver */
 
   if (havefriends)
     {
       if (strlen (messagesendtext) > 0)
 	{
-/* send message to server */
+	  /* send message to server */
 	  if (messagenumber < 99)
 	    messagenumber++;
 	  else
@@ -4525,7 +4573,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 	}
       else
 	{
-/* send position to server */
+	  /* send position to server */
 	  g_snprintf (la, sizeof (la), "%10.6f", current_lat);
 	  g_snprintf (lo, sizeof (lo), "%10.6f", current_long);
 	  g_strdelimit (la, ",", '.');
@@ -4548,8 +4596,9 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 
 
 
-/* ----------------------------------------------------------------------------- */
-/* Master agent */
+/* *****************************************************************************
+ * Master agent 
+ */
 gint
 masteragent_cb (GtkWidget * widget, guint * datum)
 {
@@ -4562,7 +4611,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
     writeconfig ();
 
 
-/* Check for changed map_koord.txt and reload if changed */
+  /* Check for changed map_koord.txt and reload if changed */
   g_strlcpy (mappath, mapdir, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
 
@@ -4598,7 +4647,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	didrootcheck = TRUE;
       }
 
-/* Check for changed way.txt and reload if changed */
+  /* Check for changed way.txt and reload if changed */
   g_strlcpy (mappath, homedir, sizeof (mappath));
 
   if (!sqlflag)
@@ -4635,8 +4684,9 @@ masteragent_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
-/* ----------------------------------------------------------------------------- */
-/* add new trackpoint to  'trackcoordstruct list' to draw track on image */
+/* *****************************************************************************
+ * add new trackpoint to  'trackcoordstruct list' to draw track on image 
+ */
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
 {
@@ -4667,10 +4717,10 @@ storetrack_cb (GtkWidget * widget, guint * datum)
     }
 
 
-/*  The double storage seems to be silly, but I have to use  */
-/*  gdk_draw_segments instead of gdk_draw_lines.   */
-/*  gkd_draw_lines is dog slow because of a gdk-bug. */
-
+  /*  The double storage seems to be silly, but I have to use  */
+  /*  gdk_draw_segments instead of gdk_draw_lines.   */
+  /*  gkd_draw_lines is dog slow because of a gdk-bug. */
+  
   if (tracknr == 0)
     {
       if ((trackcoord + trackcoordnr)->longi < 1000.0)
@@ -4689,7 +4739,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
 	  if ((posx != (track + tracknr - 1)->x2)
 	      || (posy != (track + tracknr - 1)->y2))
 	    {
-/*  		so=(int)(((trackcoord + trackcoordnr)->alt))>>5; */
+	      /* so=(int)(((trackcoord + trackcoordnr)->alt))>>5; */
 	      so = SHADOWOFFSET;
 	      (track + tracknr)->x1 = (track + tracknr - 1)->x2 = posx;
 	      (track + tracknr)->y1 = (track + tracknr - 1)->y2 = posy;
@@ -4713,7 +4763,9 @@ storetrack_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * draw wlan Waypoints
+ */
 void
 drawwlan (gint posxdest, gint posydest, gint wlan)
 {
@@ -4738,7 +4790,8 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
     }
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 drawfriends (void)
 {
@@ -4756,7 +4809,7 @@ drawfriends (void)
   for (i = 0; i < maxfriends; i++)
     {
 
-/* 	    return if too old  */
+      /* return if too old  */
       ti = time (NULL);
       tif = atol ((friends + i)->timesec);
       if (!(tif > 1000000000))
@@ -4771,6 +4824,7 @@ drawfriends (void)
 
       calcxy (&posxdest, &posydest, clong, clat, zoom);
 
+      /* If Friend is visible inside SCREEN display him/her */
       if ((posxdest >= 0) && (posxdest < SCREEN_X))
 	{
 
@@ -4782,7 +4836,8 @@ drawfriends (void)
 			       posydest - 12, 39, 24,
 			       GDK_RGB_DITHER_NONE, 0, 0);
 	      gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-/*  draw pointer to direction */
+
+	      /*  draw pointer to direction */
 	      direction =
 		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
 	      w = direction + M_PI;
@@ -4802,15 +4857,15 @@ drawfriends (void)
 	      gdk_draw_arc (drawable, kontext, 0, posxdest + 2 - 7,
 			    posydest + 2 - 7, 10, 10, 0, 360 * 64);
 
-/*   draw + sign at destination   */
+	      /*   draw + sign at destination   */
 	      gdk_gc_set_foreground (kontext, &red);
 	      gdk_draw_line (drawable, kontext, posxdest + 1,
 			     posydest + 1 - 5, posxdest + 1,
 			     posydest + 1 + 5);
 	      gdk_draw_line (drawable, kontext, posxdest + 1 + 5,
 			     posydest + 1, posxdest + 1 - 5, posydest + 1);
-	      {
-		/* prints in pango */
+
+	      { /* print friends name / speed on map */
 		PangoFontDescription *pfd;
 		PangoLayout *wplabellayout;
 		gchar txt[200], txt2[100], s1[10];
@@ -4846,7 +4901,6 @@ drawfriends (void)
 		g_strlcat (txt, txt2, sizeof (txt));
 		wplabellayout =
 		  gtk_widget_create_pango_layout (drawing_area, txt);
-//KCFX  
 		if (pdamode)
 		  pfd = pango_font_description_from_string ("Sans 8");
 		else
@@ -4877,13 +4931,13 @@ drawfriends (void)
 	    }
 	}
     }
-
-
-
 }
 
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * show satelite information
+ * TODO: change color of sat BARs if the reception is bad/acceptable/good to red/yellow/green
+ */
 gint
 expose_sats_cb (GtkWidget * widget, guint * datum)
 {
@@ -4900,12 +4954,10 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
     {
       gdk_gc_set_foreground (kontext, &lcd);
 
-      gdk_draw_rectangle (drawable_sats, kontext, 1, 3, 0, PSIZE + 2,
-			  PSIZE + 5);
+      gdk_draw_rectangle (drawable_sats, kontext, 1, 3, 0, PSIZE + 2,  PSIZE + 5);
       gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
       gdk_gc_set_foreground (kontext, &black);
-      gdk_draw_rectangle (drawable_sats, kontext, 0, 3, 0, PSIZE + 2,
-			  PSIZE + 5);
+      gdk_draw_rectangle (drawable_sats, kontext, 0, 3, 0, PSIZE + 2,  PSIZE + 5);
 
       gdk_gc_set_foreground (kontext, &lcd);
 
@@ -4947,7 +4999,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 	    gdk_gc_set_foreground (kontext, &blue);
 	}
       j = k = 0;
-#define DEG2RAD M_PI/180.0
+
       if (satposmode)
 	{
 	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
@@ -5186,17 +5238,18 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ * Robins hacking 
+ * Show (in yellow) any downloaded maps with in +/-20% of the currently requested map download
+ * also show bounds of map with a black border
+ * This is currently hooked in to the drawdownloadrectangle() function but may be better else where as
+ * a seperate function that can be turned on and off as requried.
+ * Due to RGB bit masks the map to be downloaded will now be green so that the new download area will be visible
+ * over the top of the previous downloaded maps.
+ */
 void
 drawloadedmaps ()
 {
-  /* Robins hacking 
-     Show (in yellow) any downloaded maps with in +/-20% of the currently requested map download
-     also show bounds of map with a black border
-     This is currently hooked in to the drawdownloadrectangle() function but may be better else where as
-     a seperate function that can be turned on and off as requried.
-     Due to RGB bit masks the map to be downloaded will now be green so that the new download area will be visible
-     over the top of the previous downloaded maps.
-   */
   int i;
   gdouble x, y, la, lo;
   gint scale, xo, yo;
@@ -5235,11 +5288,12 @@ drawloadedmaps ()
 }
 
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * draw downloadrectangle 
+ */
 void
 drawdownloadrectangle (gint big)
 {
-/*   draw downloadrectangle */
   if (downloadwindowactive)
     {
       gdouble x, y, la, lo;
@@ -5288,8 +5342,9 @@ drawdownloadrectangle (gint big)
 
 
 
-/* ----------------------------------------------------------------------------- */
-// Draw Text (lat/lon) into Grid
+/* *****************************************************************************
+ * Draw Text (lat/lon) into Grid
+ */
 void
 draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
 {
@@ -5321,7 +5376,8 @@ draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
 
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 /*
  * Draw a grid over the map
  */
@@ -5340,32 +5396,24 @@ draw_grid(GtkWidget * widget)
   int count;
 
   // calculate the start and stop for lat/lon according to the displayed section
-  calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
-  calcxytopos (0        , SCREEN_Y , &lat_ll, &lon_ll, zoom);
-  calcxytopos (SCREEN_X , 0        , &lat_ur, &lon_ur, zoom);
-  calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
+  calcxytopos ( 0        , 0        , &lat_ul, &lon_ul, zoom );
+  calcxytopos ( 0        , SCREEN_Y , &lat_ll, &lon_ll, zoom );
+  calcxytopos ( SCREEN_X , 0        , &lat_ur, &lon_ur, zoom );
+  calcxytopos ( SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom );
 
   // add more lines as the scale increases
   gdouble step;
   step=10;
-  if (mapscale < 5000000 ) 
-    step=5;
-  if (mapscale < 2000000 ) 
-    step=1;
-  if (mapscale < 600000 ) 
-    step=.5;
-  if (mapscale < 500000 ) 
-    step=.1;
-  if (mapscale < 60000 ) 
-    step=.05;
-  if (mapscale < 30000 ) 
-    step=.02;
-  if (mapscale < 20000 ) 
-    step=.01;
-  if (mapscale < 5000 ) 
-    step=.005;
+  if ( mapscale < 5000000 )   step = 5;
+  if ( mapscale < 2000000 )   step = 1;
+  if ( mapscale < 600000  )   step = 0.5;
+  if ( mapscale < 500000  )   step = 0.1;
+  if ( mapscale < 60000   )   step = 0.05;
+  if ( mapscale < 30000   )   step = 0.02;
+  if ( mapscale < 20000   )   step = 0.01;
+  if ( mapscale < 5000    )   step = 0.005;
 
-  if (mapscale < 5000000 ) {
+  if ( mapscale < 5000000 ) {
     lat_min = min(lat_ll, lat_ul)-step;
     lat_max = max(lat_lr, lat_ur)+step;
     lon_min = min(lon_ll, lon_ul)-step;
@@ -5400,8 +5448,6 @@ draw_grid(GtkWidget * widget)
       gchar str[200];
 
       count++;
-      // TODO: These calculations have a slight offset
-      // Probably ist the wrong funktion to calculate
       calcxy (&posxdest11, &posydest11, lon     , lat     , zoom);
       calcxy (&posxdest12, &posydest12, lon     , lat+step, zoom);
       calcxy (&posxdest21, &posydest21, lon+step, lat     , zoom);
@@ -5457,7 +5503,9 @@ draw_grid(GtkWidget * widget)
     printf("draw_grid loops: %d\n",count);
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ * Draw waypoints on map
+ */
 // TODO: Put this in its own file
 void draw_waypoints()
 {
@@ -5511,9 +5559,8 @@ void draw_waypoints()
 			   0, 64 * 360);
 	    }
 		  
-	  /*  draw shadow of text */
-	  {
-	    /* prints in pango */
+
+	  {  /* draw shadow of text */
 	    PangoFontDescription *pfd;
 	    PangoLayout *wplabellayout;
 	    gint width, height;
@@ -5590,7 +5637,8 @@ void draw_waypoints()
     }
 }
 
-/* ----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 draw_zoom_scale(void)
 {
@@ -5713,8 +5761,11 @@ draw_zoom_scale(void)
   }
 }
 
-/* ----------------------------------------------------------------------------- */
-/* draw the markers on the map */
+/* *****************************************************************************
+ * draw the markers on the map 
+ * And many more 
+ * TODO: sort out
+ */
 gint
 drawmarker (GtkWidget * widget, guint * datum)
 {
@@ -5975,7 +6026,7 @@ drawmarker (GtkWidget * widget, guint * datum)
   else
     gdk_gc_set_foreground (kontext, &red);
   crosstoogle = !crosstoogle;
-/*  draw + sign at destination */
+  /*  draw + sign at destination */
   gdk_draw_line (drawable, kontext, posxdest + 1,
 		 posydest + 1 - 10, posxdest + 1, posydest + 1 - 2);
   gdk_draw_line (drawable, kontext, posxdest + 1,
@@ -5986,9 +6037,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 		 posydest + 1, posxdest + 1 - 10, posydest + 1);
 
 
-/* display messages on map */
+  /* display messages on map */
   display_dsc ();
-/*  if distance is less then 1 km show meters */
+  /*  if distance is less then 1 km show meters */
   if (milesflag)
     {
       if (dist <= 1.0)
@@ -6052,15 +6103,15 @@ drawmarker (GtkWidget * widget, guint * datum)
 	    }
 	}
     }
-/*    display distance, speed and zoom */
-/*   g_snprintf (s3, */
-/* 	   "<span color=\"%s\" font_desc=\"%s\">%s</span><span color=\"%s\" font_desc=\"%s\">%s</span>", */
-/* 	   bluecolor, bigfont, s2, bluecolor, "sans bold 18", s2a); */
+  /*    display distance, speed and zoom */
+  /*   g_snprintf (s3, */
+  /* 	   "<span color=\"%s\" font_desc=\"%s\">%s</span><span color=\"%s\" font_desc=\"%s\">%s</span>", */
+  /* 	   bluecolor, bigfont, s2, bluecolor, "sans bold 18", s2a); */
   g_snprintf (s3, sizeof (s3),
 	      "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
 	      bluecolor, bigfont, s2, s2a);
   gtk_label_set_markup (GTK_LABEL (distlabel), s3);
-/*    gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
+  /* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
   if (milesflag)
     g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
   if (metricflag)
@@ -6072,7 +6123,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	      bigfont, s2);
   gtk_label_set_markup (GTK_LABEL (speedlabel), s3);
 
-/*   gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
+  /* gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
 
   if (havealtitude)
     {
@@ -6134,7 +6185,7 @@ drawmarker (GtkWidget * widget, guint * datum)
       expose_mini_cb (NULL, 0);
     }
 
-/* force to say new direction */
+  /* force to say new direction */
   if (!strcmp (oldangle, "XXX"))
     speech_out_cb (NULL, 0);
 
@@ -6144,8 +6195,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 
 
-/*----------------------------------------------------------------------------- */
-/* Copy Image from loaded map */
+/* *****************************************************************************
+ * Copy Image from loaded map 
+ */
 gint
 expose_mini_cb (GtkWidget * widget, guint * datum)
 {
@@ -6182,7 +6234,8 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
-/*----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 expose_compass (GtkWidget * widget, guint * datum)
 {
@@ -6194,7 +6247,7 @@ expose_compass (GtkWidget * widget, guint * datum)
   GdkPoint poly[16];
   static GdkPixbuf *compassimage = NULL;
 
-/*   This string means North,East,South,West -- please translate the letters */
+  /*   This string means North,East,South,West -- please translate the letters */
   g_strlcpy (txt2, _("NESW"), sizeof (txt2));
 
   txtp = txt2;
@@ -6267,7 +6320,6 @@ expose_compass (GtkWidget * widget, guint * datum)
 	    txtp = g_utf8_next_char (txtp);
 	    wplabellayout =
 	      gtk_widget_create_pango_layout (drawing_bearing, txt);
-//KCFX  
 	    if (pdamode)
 	      pfd = pango_font_description_from_string ("Sans 7");
 	    else
@@ -6334,27 +6386,22 @@ expose_compass (GtkWidget * widget, guint * datum)
 
   gdk_gc_set_foreground (kontext, &black);
 
-
-//  von Zwerg eingefügt ende
-
-
   return TRUE;
 
 }
 
-/*----------------------------------------------------------------------------- */
-/* Copy Image from loaded map */
-
-/* Copy Image from loaded map */
+/* *****************************************************************************
+ * Copy Image from loaded map
+ */
 gint
 expose_cb (GtkWidget * widget, guint * datum)
 {
   gint x, y, i, oldxoff, oldyoff, xoffmax, yoffmax, ok, okcount;
   gdouble tx, ty, lastangle;
   gchar name[40], s1[40], *tn;
-/*    g_print("\nexpose_cb %d",exposecounter++);   */
-
-/*   fprintf (stderr, "lat: %f long: %f\n", current_lat, current_long); */
+  /*    g_print("\nexpose_cb %d",exposecounter++);   */
+  
+  /*   fprintf (stderr, "lat: %f long: %f\n", current_lat, current_long); */
   if (exposed && pdamode)
     return TRUE;
 
@@ -6363,11 +6410,11 @@ expose_cb (GtkWidget * widget, guint * datum)
   errortextmode = FALSE;
   if (!importactive)
     {
-/*  We don't need to draw anything if there is no map yet */
+      /*  We don't need to draw anything if there is no map yet */
       if (!maploaded)
 	{
 	  display_status (_("No map available for this position!"));
-/*        return TRUE; */
+	  /* return TRUE; */
 	}
 
       if (posmode)
@@ -6377,25 +6424,27 @@ expose_cb (GtkWidget * widget, guint * datum)
 	}
 
 
-/*  get pos for current position */
+      /*  get pos for current position */
       calcxy (&posx, &posy, current_long, current_lat, zoom);
-/*  do this because calcxy already substracted xoff and yoff */
+
+      /*  do this because calcxy already substracted xoff and yoff */
       posx = posx + xoff;
       posy = posy + yoff;
-/*  Calculate Angle to destination */
+
+      /*  Calculate Angle to destination */
       tx =
 	(2 * R * M_PI / 360) * cos (M_PI * current_lat / 180.0) *
 	(target_long - current_long);
       ty = (2 * R * M_PI / 360) * (target_lat - current_lat);
       lastangle = angle_to_destination;
       angle_to_destination = atan (tx / ty);
-/*        g_print ("\ntx: %f, ty:%f angle_to_dest: %f", tx, ty, */
-/*  	       angle_to_destination); */
+      /*        g_print ("\ntx: %f, ty:%f angle_to_dest: %f", tx, ty, */
+      /*  	       angle_to_destination); */
       if (!finite (angle_to_destination))
 	angle_to_destination = lastangle;
       else
 	{
-/*  correct the value to be < 2*PI */
+	  /*  correct the value to be < 2*PI */
 	  if (ty < 0)
 	    angle_to_destination = M_PI + angle_to_destination;
 	  if (angle_to_destination >= (2 * M_PI))
@@ -6421,13 +6470,14 @@ expose_cb (GtkWidget * widget, guint * datum)
 	      }
 	  }
 
-/*  Calculate distance to destination */
+      /*  Calculate distance to destination */
       dist = calcdist (target_long, target_lat);
-/*  correct the shift of the map */
+      /*  correct the shift of the map */
       oldxoff = xoff;
       oldyoff = yoff;
-/*  now we test if the marker fits into the map and set the shift of the 
-little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map */
+      /* now we test if the marker fits into the map and set the shift of the 
+       * little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map 
+       */
       okcount = 0;
       do
 	{
@@ -6436,23 +6486,15 @@ little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map */
 	  x = posx - xoff;
 	  y = posy - yoff;
 
-	  if (x < borderlimit)
-	    xoff -= 2 * borderlimit;
-	  if (x > (SCREEN_X - borderlimit))
-	    xoff += 2 * borderlimit;
-	  if (y < borderlimit)
-	    yoff -= 2 * borderlimit;
-	  if (y > (SCREEN_Y - borderlimit))
-	    yoff += 2 * borderlimit;
+	  if (x < borderlimit)              xoff -= 2 * borderlimit;
+	  if (x > (SCREEN_X - borderlimit)) xoff += 2 * borderlimit;
+	  if (y < borderlimit)              yoff -= 2 * borderlimit;
+	  if (y > (SCREEN_Y - borderlimit)) yoff += 2 * borderlimit;
 
-	  if (x < borderlimit)
-	    ok = FALSE;
-	  if (x > (SCREEN_X - borderlimit))
-	    ok = FALSE;
-	  if (y < borderlimit)
-	    ok = FALSE;
-	  if (y > (SCREEN_Y - borderlimit))
-	    ok = FALSE;
+	  if (x < borderlimit)	            ok = FALSE;
+	  if (x > (SCREEN_X - borderlimit)) ok = FALSE;
+	  if (y < borderlimit)	            ok = FALSE;
+	  if (y > (SCREEN_Y - borderlimit)) ok = FALSE;
 	  if (okcount > 20000)
 	    {
 	      g_print ("\nloop detected, please report!\n");
@@ -6463,49 +6505,40 @@ little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map */
 
       xoffmax = (640 * zoom) - SCREEN_X_2;
       yoffmax = (512 * zoom) - SCREEN_Y_2;
-      if (xoff > xoffmax)
-	xoff = xoffmax;
-      if (xoff < -xoffmax)
-	xoff = -xoffmax;
-      if (yoff > yoffmax)
-	yoff = yoffmax;
-      if (yoff < -yoffmax)
-	yoff = -yoffmax;
+      if (xoff > xoffmax)	xoff = xoffmax;
+      if (xoff < -xoffmax)	xoff = -xoffmax;
+      if (yoff > yoffmax)	yoff = yoffmax;
+      if (yoff < -yoffmax)	yoff = -yoffmax;
 
-/*       if ((xoff - 640) / zoom < -1280) */
-/* 	xoff = -1280 * zoom + 640; */
-/*       if ((xoff + 640) / zoom > 1280) */
-/* 	xoff = 1280 * zoom - 640; */
-
-/*       if ((yoff - 512) / zoom < -1024) */
-/* 	yoff = -1024 * zoom + 512; */
-/*       if ((yoff + 512) / zoom > 1024) */
-/* 	yoff = 1024 * zoom - 512; */
-
-/*  we only need to create a new region if the shift is not changed */
+      /*       if ((xoff - 640) / zoom < -1280)  	xoff = -1280 * zoom + 640; */
+      /*       if ((xoff + 640) / zoom > 1280)  	xoff =  1280 * zoom - 640; */
+      /*       if ((yoff - 512) / zoom < -1024)  	yoff = -1024 * zoom + 512; */
+      /*       if ((yoff + 512) / zoom > 1024)  	yoff =  1024 * zoom - 512; */
+      
+      /*  we only need to create a new region if the shift is not changed */
       if ((oldxoff != xoff) || (oldyoff != yoff))
 	iszoomed = FALSE;
-
+      
       if (mydebug)
-	g_print ("\nx: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x,
+	g_print ("x: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x,
 		 xoff, oldxoff, zoom, xoffmax);
       if (mydebug)
-	g_print ("\ny: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y,
+	g_print ("y: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y,
 		 yoff, oldyoff, zoom, yoffmax);
       posx = posx - xoff;
       posy = posy - yoff;
     }
 
-/*       if (scroll) */
-/*       { */
-/* 	  xoff=posx+640; */
-/* 	  posx=320; */
-/* 	  yoff=posy+512; */
-/* 	  posx=256; */
-/*       } */
+  /*       if (scroll) */
+  /*       { */
+  /* 	  xoff=posx+640; */
+  /* 	  posx=320; */
+  /* 	  yoff=posy+512; */
+  /* 	  posx=256; */
+  /*       } */
 
 
-/*  zoom from to 1280x1024 map to the SCREEN_XxSCREEN_Y region */
+  /*  zoom from to 1280x1024 map to the SCREEN_XxSCREEN_Y region */
   if (!iszoomed)
     {
       rebuildtracklist ();
@@ -6515,21 +6548,21 @@ little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map */
 
       if (maploaded)
 	{
-/* 	  g_print ("\nmap loaded, do gdk_pixbuf_scale\n");  */
+	  /* 	  g_print ("\nmap loaded, do gdk_pixbuf_scale\n");  */
 	  gdk_pixbuf_scale (image, tempimage, 0, 0, 1280, 1024,
 			    640 - xoff - 640 * zoom,
 			    512 - yoff - 512 * zoom, zoom, zoom,
 			    GDK_INTERP_BILINEAR);
 
-/*       image=gdk_pixbuf_scale_simple(tempimage,640 - xoff - 640 * zoom,
- *   			  512 - yoff - 512 * zoom, 
- *   			  GDK_INTERP_BILINEAR);
- */
-
+	  /*       image=gdk_pixbuf_scale_simple(tempimage,640 - xoff - 640 * zoom,
+	   *   			  512 - yoff - 512 * zoom, 
+	   *   			  GDK_INTERP_BILINEAR);
+	   */
+	  
 	}
 
       if (debug)
-	g_print ("\nmap zoomed!\n");
+	g_print ("map zoomed!\n");
       iszoomed = TRUE;
       expose_mini_cb (NULL, 0);
 
@@ -6587,9 +6620,10 @@ little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map */
 }
 
 
-/*----------------------------------------------------------------------------- */
-/*  This is called in simulation mode, it moves the position to the  */
-/*  selected destination */
+/* *****************************************************************************
+ *  This is called in simulation mode, it moves the position to the
+ *  selected destination 
+ */
 gint
 simulated_pos (GtkWidget * widget, guint * datum)
 {
@@ -6658,7 +6692,9 @@ simulated_pos (GtkWidget * widget, guint * datum)
 }
 
 
-/*  open serial port or pty master or file for NMEA output */
+/* *****************************************************************************
+ * open serial port or pty master or file for NMEA output 
+ */
 FILE *
 opennmea (const char *name)
 {
@@ -6684,7 +6720,8 @@ opennmea (const char *name)
   return out;
 }
 
-/*----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 write_nmea_line (const char *line)
 {
@@ -6696,7 +6733,8 @@ write_nmea_line (const char *line)
   fflush (nmeaout);
 }
 
-/*----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 void
 gen_nmea_coord (char *out)
 {
@@ -6708,7 +6746,8 @@ gen_nmea_coord (char *out)
 	      (current_long < 0 ? 'W' : 'E'));
 }
 
-/*----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 write_nmea_cb (GtkWidget * widget, guint * datum)
 {
@@ -6743,8 +6782,9 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 }
 
 
-/*----------------------------------------------------------------------------- */
-/*  We load the map */
+/* *****************************************************************************
+ *  We load the map 
+ */
 void
 loadmap (char *filename)
 {
@@ -6756,14 +6796,10 @@ loadmap (char *filename)
   if (maploaded)
     gdk_pixbuf_unref (image);
 
-  if (strstr (filename, "/map_")){
-    mapistopo = FALSE;
-  } else if (strstr (filename, "/top_")){
-    mapistopo = TRUE;
-  } else if (!(strncmp (filename, "top_", 4)))
-    mapistopo = TRUE;
-  else
-    mapistopo = FALSE;
+  if        (  strstr (filename, "/map_")){   mapistopo = FALSE;
+  } else if (  strstr (filename, "/top_")){   mapistopo = TRUE;
+  } else if (!(strncmp (filename,"top_", 4))) mapistopo = TRUE;
+  else                                        mapistopo = FALSE;
 
   if ((strcmp (filename, "top_GPSWORLD.jpg")) == 0)
     {
@@ -6825,7 +6861,7 @@ loadmap (char *filename)
 
   expose_cb (NULL, NULL);
   iszoomed = FALSE;
-/*        zoom = 1; */
+  /*        zoom = 1; */
   xoff = yoff = 0;
 
   rebuildtracklist ();
@@ -6834,7 +6870,8 @@ loadmap (char *filename)
     display_status (_("Map found!"));
 
   maploaded = TRUE;
-/*  draw minimap */
+
+  /*  draw minimap */
   if (miniimage)
     gdk_pixbuf_unref (miniimage);
 
@@ -6849,7 +6886,8 @@ loadmap (char *filename)
 }
 
 
-/*----------------------------------------------------------------------------- */
+/* *****************************************************************************
+ */
 gint
 zoom_cb (GtkWidget * widget, guint datum)
 {
@@ -6891,8 +6929,10 @@ zoom_cb (GtkWidget * widget, guint datum)
 }
 
 
-/*----------------------------------------------------------------------------- */
-// Increase/decrease displayed map scale
+/* *****************************************************************************
+ * Increase/decrease displayed map scale
+ * TODO: Improve finding of next apropriate map
+ */
 gint
 scalerbt_cb (GtkWidget * widget, guint datum)
 {
@@ -6931,7 +6971,9 @@ scalerbt_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  destroy sel_target window */
+/* *****************************************************************************
+ * destroy sel_target window 
+ */
 gint
 sel_targetweg_cb (GtkWidget * widget, guint datum)
 {
@@ -6942,12 +6984,13 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
-/*  cancel sel_route window */
+/* *****************************************************************************
+ * cancel sel_route window 
+ */
 gint
 sel_routecancel_cb (GtkWidget * widget, guint datum)
 {
   gchar str[200];
-
 
   gtk_widget_destroy (GTK_WIDGET (routewindow));
 
@@ -6960,7 +7003,9 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
-/*  destroy sel_route window but continue routing*/
+/* *****************************************************************************
+ * destroy sel_route window but continue routing
+ */
 gint
 sel_routeclose_cb (GtkWidget * widget, guint datum)
 {
@@ -6969,10 +7014,11 @@ sel_routeclose_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
+/* *****************************************************************************
+ */
 gint
 do_route_cb (GtkWidget * widget, guint datum)
 {
-
   gtk_widget_destroy (GTK_WIDGET (routewindow));
   gtk_widget_set_sensitive (create_route_button, TRUE);
   createroute = FALSE;
@@ -6981,17 +7027,19 @@ do_route_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
+/* *****************************************************************************
+ */
 gint
 dlstatusaway_cb (GtkWidget * widget, guint datum)
 {
-
-
   downloadwindowactive = downloadactive = FALSE;
   gtk_widget_set_sensitive (downloadbt, TRUE);
 
   return FALSE;
 }
 
+/* *****************************************************************************
+ */
 gint
 importaway_cb (GtkWidget * widget, guint datum)
 {
@@ -7001,7 +7049,9 @@ importaway_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
-/*  cancel button pressed or widget destroy in download_cb */
+/* *****************************************************************************
+ * cancel button pressed or widget destroy in download_cb 
+ */
 gint
 downloadaway_cb (GtkWidget * widget, guint datum)
 {
@@ -7016,6 +7066,8 @@ downloadaway_cb (GtkWidget * widget, guint datum)
 }
 
 #ifdef DONTKNOWWHATTHISSHITWAS
+/* *****************************************************************************
+ */
 gint
 testnewwp_cb (GtkWidget * widget, guint datum)
 {
@@ -7031,6 +7083,8 @@ testnewwp_cb (GtkWidget * widget, guint datum)
 
 #endif
 
+/* *****************************************************************************
+ */
 gint
 other_select_cb (GtkWidget * widget, guint datum)
 {
@@ -7057,10 +7111,8 @@ other_select_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
-
-
-
+/* *****************************************************************************
+ */
 gint
 dlscale_cb (GtkWidget * widget, guint datum)
 {
@@ -7087,6 +7139,8 @@ dlscale_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 download_cb (GtkWidget * widget, guint datum)
 {
@@ -7278,6 +7332,8 @@ download_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 downloadsetparm (GtkWidget * widget, guint datum)
 {
@@ -7490,6 +7546,8 @@ downloadsetparm (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 char *
 getexpediaurl (GtkWidget * widget)
 {
@@ -7592,6 +7650,8 @@ getexpediaurl (GtkWidget * widget)
 
 }
 
+/* *****************************************************************************
+ */
 gint
 downloadstart_cb (GtkWidget * widget, guint datum)
 {
@@ -7761,37 +7821,37 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 	g_print("Loaded %d Bytes\n", e);
       if (e > 0)
 	{
-/*  in dlbuff we have all download data */
+	  /*  in dlbuff we have all download data */
 	  memcpy ((dlbuff + dlcount), tmpbuff, e);
-/*  in dlcount we have the number of download bytes */
+	  /*  in dlcount we have the number of download bytes */
 	  dlcount += e;
-/* now we try to get the filelength and begin of the gif image data */
+	  /* now we try to get the filelength and begin of the gif image data */
 	  if (dlpstart == NULL)
 	    {
-/*  CONTENT-LENGTH string should hopefully be in the first 4kB */
+	      /*  CONTENT-LENGTH string should hopefully be in the first 4kB */
 	      memcpy (tmpbuff, dlbuff, 4096);
-/*  We make of this a null terminated string */
+	      /*  We make of this a null terminated string */
 	      tmpbuff[4096] = 0;
 	      g_strup (tmpbuff);
 	      p = strstr (tmpbuff, "CONTENT-LENGTH:");
 	      if (p != NULL)
 		{
 		  sscanf (p, "%s %d", str, &downloadfilelen);
-/*  now we look for 2 cr/lf which is the end of the header */
+		  /*  now we look for 2 cr/lf which is the end of the header */
 		  dlpstart = strstr (tmpbuff, nn);
 		  dldiff = dlpstart - tmpbuff + 4;
-/* 		  g_print("content-length: %d\n", downloadfilelen); */
+		  /* 		  g_print("content-length: %d\n", downloadfilelen); */
 		}
 	      else if (dlcount > 1000)
 		{
-/*  Seems there is no CONTENT-LENGTH field in expedia.com*/
+		  /*  Seems there is no CONTENT-LENGTH field in expedia.com*/
 		  dlpstart = strstr (tmpbuff, nn);
 		  dldiff = dlpstart - tmpbuff + 4;
 		  downloadfilelen = 200000;
-/* 		  g_print("\ncontent-length: %d", downloadfilelen); */
+		  /* 		  g_print("\ncontent-length: %d", downloadfilelen); */
 		}
 	    }
-/*  Now we have the length and begin of the gif image data */
+	  /*  Now we have the length and begin of the gif image data */
 	  if ((downloadfilelen != 0) && (dlpstart != NULL))
 	    {
 	      dlbuff = g_renew (gchar, dlbuff, dlcount + 8192);
@@ -7839,7 +7899,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		}
 	      write (fd, dlbuff + dldiff, dlcount - dldiff);
 	      close (fd);
-/* 	      g_free (maps); */
+	      /* g_free (maps); */
 	      loadmapconfig ();
 	      maps = g_renew (mapsstruct, maps, (nrmaps + 2));
 	      g_strlcpy ((maps + nrmaps)->filename,
@@ -7869,6 +7929,8 @@ downloadslave_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 setup2_cb (GtkWidget * widget, guint datum)
 {
@@ -7876,6 +7938,8 @@ setup2_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 wpfileselect_cb (GtkWidget * widget, guint datum)
 {
@@ -7893,6 +7957,8 @@ wpfileselect_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 setup_cb (GtkWidget * widget, guint datum)
 {
@@ -7977,7 +8043,9 @@ setup_cb (GtkWidget * widget, guint datum)
 
 
 
-/*  switching between kilometers and miles */
+/* *****************************************************************************
+ * switching between kilometers and miles 
+ */
 gint
 miles_cb (GtkWidget * widget, guint datum)
 {
@@ -8029,7 +8097,9 @@ miles_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching nightmode */
+/* *****************************************************************************
+ * switching nightmode 
+ */
 gint
 night_cb (GtkWidget * widget, guint datum)
 {
@@ -8052,8 +8122,8 @@ night_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
-
+/* *****************************************************************************
+ */
 gint
 defaultserver_cb (GtkWidget * widget, guint datum)
 {
@@ -8074,7 +8144,9 @@ defaultserver_cb (GtkWidget * widget, guint datum)
 }
 
 
-/*  switching shadow on/off */
+/* *****************************************************************************
+ *  switching shadow on/off 
+ */
 gint
 shadow_cb (GtkWidget * widget, guint datum)
 {
@@ -8083,7 +8155,9 @@ shadow_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching shadow on/off */
+/* *****************************************************************************
+ *  switching etch on/off
+ */
 gint
 etch_cb (GtkWidget * widget, guint datum)
 {
@@ -8119,7 +8193,9 @@ etch_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching grid on/off */
+/* *****************************************************************************
+ * switching grid on/off 
+ */
 gint
 drawgrid_cb (GtkWidget * widget, guint datum)
 {
@@ -8128,7 +8204,9 @@ drawgrid_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching slow cpu on/off */
+/* *****************************************************************************
+ *  switching slow cpu on/off 
+ */
 gint
 slowcpu_cb (GtkWidget * widget, guint datum)
 {
@@ -8144,7 +8222,9 @@ slowcpu_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching decimal or degree, minutes, seconds mode */
+/* *****************************************************************************
+ *  switching decimal or degree, minutes, seconds mode 
+ */
 gint
 minsec_cb (GtkWidget * widget, guint datum)
 {
@@ -8153,7 +8233,9 @@ minsec_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching sat level/sat position display */
+/* *****************************************************************************
+ *  switching sat level/sat position display 
+ */
 gint
 satpos_cb (GtkWidget * widget, guint datum)
 {
@@ -8163,7 +8245,9 @@ satpos_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching simfollow on/off */
+/* *****************************************************************************
+ *  switching simfollow on/off 
+ */
 gint
 simfollow_cb (GtkWidget * widget, guint datum)
 {
@@ -8172,7 +8256,9 @@ simfollow_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching testgarmin on/off */
+/* *****************************************************************************
+ *  switching testgarmin on/off 
+ */
 gint
 testgarmin_cb (GtkWidget * widget, guint datum)
 {
@@ -8181,7 +8267,9 @@ testgarmin_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  should I use DGPS-IP? */
+/* *****************************************************************************
+ *  should I use DGPS-IP? 
+ */
 gint
 usedgps_cb (GtkWidget * widget, guint datum)
 {
@@ -8190,6 +8278,8 @@ usedgps_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 earthmate_cb (GtkWidget * widget, guint datum)
 {
@@ -8198,7 +8288,8 @@ earthmate_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
+/* *****************************************************************************
+ */
 gint
 serialdev_cb (GtkWidget * widget, guint datum)
 {
@@ -8210,7 +8301,8 @@ serialdev_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
+/* *****************************************************************************
+ */
 gint
 mapdir_cb (GtkWidget * widget, guint datum)
 {
@@ -8224,7 +8316,8 @@ mapdir_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
+/* *****************************************************************************
+ */
 gint
 maptoggle_cb (GtkWidget * widget, guint datum)
 {
@@ -8237,6 +8330,8 @@ maptoggle_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 dotripmeter (GtkWidget * widget, guint datum)
 {
@@ -8261,6 +8356,8 @@ dotripmeter (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 bestmap_cb (GtkWidget * widget, guint datum)
 {
@@ -8286,6 +8383,8 @@ bestmap_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 savetrack_cb (GtkWidget * widget, guint datum)
 {
@@ -8300,6 +8399,8 @@ savetrack_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 topotoggle_cb (GtkWidget * widget, guint datum)
 {
@@ -8313,6 +8414,8 @@ topotoggle_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 mute_cb (GtkWidget * widget, guint datum)
 {
@@ -8325,7 +8428,9 @@ mute_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching POI on/off */
+/* *****************************************************************************
+ *  switching POI on/off 
+ */
 gint
 poi_draw_cb (GtkWidget * widget, guint datum)
 {
@@ -8337,7 +8442,9 @@ poi_draw_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching STREETS on/off */
+/* *****************************************************************************
+ * switching STREETS on/off 
+ */
 gint
 streets_draw_cb (GtkWidget * widget, guint datum)
 {
@@ -8348,7 +8455,9 @@ streets_draw_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/* switching SQL on/off */
+/* *****************************************************************************
+ * switching SQL on/off 
+ */
 gint
 sql_cb (GtkWidget * widget, guint datum)
 {
@@ -8366,7 +8475,9 @@ sql_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/* switching Track display on/off */
+/* *****************************************************************************
+ * switching Track display on/off 
+ */
 gint
 track_cb (GtkWidget * widget, guint datum)
 {
@@ -8382,7 +8493,9 @@ track_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/* switching WP display on/off */
+/* *****************************************************************************
+ * switching WP display on/off 
+ */
 gint
 wp_cb (GtkWidget * widget, guint datum)
 {
@@ -8395,6 +8508,8 @@ wp_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 pos_cb (GtkWidget * widget, guint datum)
 {
@@ -8409,7 +8524,9 @@ pos_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  if a waypoint is selected set the target_* variables */
+/* *****************************************************************************
+ * if a waypoint is selected set the target_* variables 
+ */
 gint
 setwp_cb (GtkWidget * widget, guint datum)
 {
@@ -8479,6 +8596,8 @@ setwp_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 accepttext (GtkWidget * widget, gpointer data)
 {
@@ -8506,6 +8625,8 @@ accepttext (GtkWidget * widget, gpointer data)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 textstatus (GtkWidget * widget, gpointer * datum)
 {
@@ -8530,6 +8651,8 @@ textstatus (GtkWidget * widget, gpointer * datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 setmessage_cb (GtkWidget * widget, guint datum)
 {
@@ -8648,6 +8771,8 @@ setmessage_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 delwp_cb (GtkWidget * widget, guint datum)
 {
@@ -8674,6 +8799,8 @@ delwp_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 jumpwp_cb (GtkWidget * widget, guint datum)
 {
@@ -8694,9 +8821,8 @@ jumpwp_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
-
-
+/* *****************************************************************************
+ */
 gint
 scaler_cb (GtkAdjustment * adj, gdouble * datum)
 {
@@ -8711,8 +8837,9 @@ scaler_cb (GtkAdjustment * adj, gdouble * datum)
   return TRUE;
 }
 
-/*  Let user select a destination from the waypoint list */
-
+/* *****************************************************************************
+ * Reactions to key pressed
+ */
 gint
 key_cb (GtkWidget * widget, GdkEventKey * event)
 {
@@ -8841,6 +8968,8 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
   return 0;
 }
 
+/* *****************************************************************************
+ */
 gint
 minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 {
@@ -8906,6 +9035,8 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 addwaypointchange_cb (GtkWidget * widget, guint datum)
 {
@@ -8927,8 +9058,10 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
 }
 
 
-// Add waypoint at wplat, wplon
-// with Strings for Name and Type
+/* *****************************************************************************
+ * Add waypoint at wplat, wplon
+ * with Strings for Name and Type
+ */
 void
 addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
 {
@@ -8965,7 +9098,9 @@ addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
     }
 }
 
-// callback from gtk to add waypoint
+/* *****************************************************************************
+ * callback from gtk to add waypoint
+ */
 gint
 addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 {
@@ -8982,7 +9117,9 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  destroy sel_target window */
+/* *****************************************************************************
+ * destroy sel_target window 
+ */
 gint
 addwaypointdestroy_cb (GtkWidget * widget, guint datum)
 {
@@ -8994,6 +9131,8 @@ addwaypointdestroy_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
 gint
 addwaypoint_cb (GtkWidget * widget, gpointer datum)
 {
@@ -9106,6 +9245,8 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 }
 
 
+/* *****************************************************************************
+ */
 void
 insertwaypoints (gint mobile)
 {
@@ -9194,6 +9335,8 @@ insertwaypoints (gint mobile)
   gtk_clist_sort (GTK_CLIST (mylist));
 }
 
+/* *****************************************************************************
+ */
 gint
 setsortcolumn (GtkWidget * w, gpointer datum)
 {
@@ -9216,6 +9359,8 @@ setsortcolumn (GtkWidget * w, gpointer datum)
 }
 
 
+/* *****************************************************************************
+ */
 void
 insertroutepoints ()
 {
@@ -9247,6 +9392,8 @@ insertroutepoints ()
 
 }
 
+/* *****************************************************************************
+ */
 void
 insertallroutepoints ()
 {
@@ -9280,6 +9427,8 @@ insertallroutepoints ()
 
 }
 
+/* *****************************************************************************
+ */
 gint
 reinsertwp_cb (GtkWidget * widget, guint datum)
 {
@@ -9313,6 +9462,8 @@ reinsertwp_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* *****************************************************************************
+ */
 gint
 click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
 {
@@ -9328,6 +9479,8 @@ click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
 
 }
 
+/* *****************************************************************************
+ */
 gint
 sel_message_cb (GtkWidget * widget, guint datum)
 {
@@ -9406,7 +9559,8 @@ sel_message_cb (GtkWidget * widget, guint datum)
 }
 
 
-
+/* *****************************************************************************
+ */
 gint
 sel_target_cb (GtkWidget * widget, guint datum)
 {
@@ -9720,7 +9874,8 @@ create_route_cb (GtkWidget * widget, guint datum)
 }
 
 
-
+/* *****************************************************************************
+ */
 void
 usage ()
 {
@@ -9766,8 +9921,9 @@ usage ()
 
 }
 
-/*  load the definitions of the map files */
-
+/* *****************************************************************************
+ *  load the definitions of the map files 
+ */
 gint
 loadmapconfig ()
 {
@@ -9830,9 +9986,11 @@ loadmapconfig ()
   return FALSE;
 }
 
-/*  write the definitions of the map files */
-/* Attention! program  writes decimal point as set in locale
-   i.eg 4.678 is in Germany 4,678 !!! */
+/* *****************************************************************************
+ *  write the definitions of the map files 
+ * Attention! program  writes decimal point as set in locale
+ * i.eg 4.678 is in Germany 4,678 !!! 
+ */
 void
 savemapconfig ()
 {
@@ -9862,7 +10020,9 @@ savemapconfig ()
 }
 
 
-/* Load track file and displays it */
+/* *****************************************************************************
+ * Load track file and displays it 
+ */
 gint
 loadtrack_cb (GtkWidget * widget, gpointer datum)
 {
@@ -9932,9 +10092,8 @@ savewaypoints ()
 }
 
 /* *****************************************************************************
+ * load the waypoint from way.txt, if success we display the sel target window 
  */
-
-/*  load the waypoint from way.txt, if success we display the sel target window */
 void
 loadwaypoints ()
 {
@@ -10026,7 +10185,7 @@ loadwaypoints ()
 	}
       fclose (st);
 
-/* Check for changed way.txt file */
+      /* Check for changed way.txt file */
       stat (mappath, &buf2);
       waytxtstamp = buf2.st_mtime;
 
@@ -10038,7 +10197,6 @@ loadwaypoints ()
 
 /* *****************************************************************************
  */
-
 gint
 initgps ()
 {
@@ -10356,22 +10514,22 @@ main (int argc, char *argv[])
 
 
   earthr = calcR (current_lat);
-/*    homedir is the directory where the maps and other  */
-/*  files are stored (~/.gpsdrive) */
+  /* homedir is the directory where the maps and other  */
+  /* files are stored (~/.gpsdrive) */
   hd = g_get_home_dir ();
   g_strlcpy (homedir, hd, sizeof (homedir));
   g_strlcat (homedir, "/.gpsdrive/", sizeof (homedir));
   g_strlcpy (mapdir, homedir, sizeof (mapdir));
 
-/*  all default values must be set BEFORE readconfig! */
+  /*  all default values must be set BEFORE readconfig! */
   g_strlcpy (setpositionname, "", sizeof (setpositionname));
   g_strlcpy (serialdev, "/dev/ttyS3", sizeof (serialdev));
 
-/* setup signal handler */
+  /* setup signal handler */
   signal (SIGUSR1, signalposreq);
 
   usesql = TRUE;
-// It seems like this doesnt work on cygwin unless the dlopen comes first..-jc
+  // It seems like this doesn't work on cygwin unless the dlopen comes first..-jc
   if (usesql)
     {
       handle = dlopen ("/usr/local/lib/libmysqlclient.dll", RTLD_LAZY);
@@ -10513,12 +10671,11 @@ main (int argc, char *argv[])
 	  }
       g_strfreev (lstr);
     }
-  if ((strstr (lstr2, "de_")) != NULL)
-    voicelang = german;
-  else if ((strstr (lstr2, "es_")) != NULL)
-    voicelang = spanish;
-  else
-    voicelang = english;
+
+  /* detect voicelang */
+  if ((strstr (lstr2, "de_")) != NULL)      voicelang = german;
+  else if ((strstr (lstr2, "es_")) != NULL) voicelang = spanish;
+  else                                      voicelang = english;
 
   g_strlcpy (friendsname, "", sizeof (friendsname));
 
@@ -10548,7 +10705,8 @@ main (int argc, char *argv[])
 
 /*  load mapfile configurations */
 /*  Attention! In this file the decimal point is that what locale says, 
-i.e. '.' in english, ',' in german!! */
+ * i.e. '.' in english, ',' in german!! 
+ */
   loadmapconfig ();
 
 /* PORTING */
@@ -10556,20 +10714,20 @@ i.e. '.' in english, ',' in german!! */
   bind_textdomain_codeset (PACKAGE, "utf8");
   p = textdomain (GETTEXT_PACKAGE);
   p = textdomain (NULL);
-/*    needed for right decimal delimiter ('.' or ',') */
+  /*    needed for right decimal delimiter ('.' or ',') */
   mylocale = NULL;
   localedecimal = '.';
   mylocale = localeconv ();
   if (mylocale != NULL)
     localedecimal = (char) mylocale->decimal_point[0];
 
-/*    Setting locale for correct Umlauts */
+  /*    Setting locale for correct Umlauts */
   gtk_set_locale ();
-/*  initialization for GTK+ */
 
-
+  /*  initialization for GTK+ */
   gtk_init (&argc, &argv);
-/* Needed 4 hours to find out that this is IMPORTANT!!!! */
+
+  /* Needed 4 hours to find out that this is IMPORTANT!!!! */
   gdk_rgb_init ();
   h = gdk_screen_height ();
   w = gdk_screen_width ();
@@ -10577,7 +10735,6 @@ i.e. '.' in english, ',' in german!! */
   /* parse cmd args */
   do
     {
-/*** Mod by Arms */
       i = getopt (argc, argv, "W:ESA:ab:c:zx1qivdDFepH:hnf:l:t:s:o:r:?");
       switch (i)
 	{
@@ -10680,7 +10837,6 @@ i.e. '.' in english, ',' in german!! */
 	  usage ();
 	  exit (0);
 	  break;
-/*** Mod by Arms */
 	case 'r':
 	  w = strtol (optarg, NULL, 0);
 	  break;
@@ -10700,15 +10856,9 @@ i.e. '.' in english, ',' in german!! */
 
   load_icons();
 
-/*  Build array for earth radii */
+  /*  Build array for earth radii */
   for (i = -100; i <= 100; i++)
     Ra[i + 100] = calcR (i);
-
-/*** Mod by Arms (move) */
-/*    g_print ("\nHÂŽöhe: %d\n", h); */
-
-
-/* parse args moved up */
 
   gethostname (hostname, 256);
   proxyport = 80;
@@ -10745,25 +10895,21 @@ i.e. '.' in english, ',' in german!! */
   if (debug)
     g_print ("\nGpsDrive version %s\n%s\n", VERSION, rcsid);
 
-/*  show splash screen */
+  /*  show splash screen */
   if (!nosplash)
     splash ();
 
-/* init sql support */
+  /* init sql support */
   if (usesql)
     usesql = sqlinit ();
 
   if (!usesql)
     sqlflag = FALSE;
 
-/* loadwaypoints moved down */
-
-
-/* Create toplevel window */
+  /* Create toplevel window */
 
   PSIZE = 50;
   SMALLMENU = 0;
-/*** Mod by Arms */
   PADDING = 1;
   if (h >= 1024)		/* 1280x1024 */
     {
@@ -10783,7 +10929,6 @@ i.e. '.' in english, ',' in german!! */
     }
   else if (h >= 480)		/* 640x480 */
     {
-/*** Mod by Arms */
       if (w == 0)
 	real_screen_x = 630;
       else
@@ -10792,7 +10937,6 @@ i.e. '.' in english, ',' in german!! */
     }
   else if (h < 480)
     {
-/*** Mod by Arms */
       if (w == 0)
 	real_screen_x = 220;
       else
@@ -10800,7 +10944,6 @@ i.e. '.' in english, ',' in german!! */
       real_screen_y = h - YMINUS;
       PSIZE = 25;
       SMALLMENU = 1;
-/*** Mod by Arms */
       PADDING = 0;
     }
 
@@ -10810,11 +10953,11 @@ i.e. '.' in english, ',' in german!! */
       real_screen_y += YMINUS - 30;
     }
 
-/*   g_print ("\nx: %d, y:%d", h, w); */
+  /*   g_print ("\nx: %d, y:%d", h, w); */
   if (((w == 240) && (h == 320)) || ((h == 240) && (w == 320)))
     {
       pdamode = TRUE;
-/*       SMALLMENU = 1; */
+      /* SMALLMENU = 1; */
       real_screen_x = w - 8;
       real_screen_y = h - 70;
     }
@@ -10822,7 +10965,6 @@ i.e. '.' in english, ',' in german!! */
     {
       extrawinmenu = TRUE;
       PADDING = 0;
-//KCFX          
       g_strlcpy (wplabelfont, "Sans 8", sizeof (wplabelfont));
       g_strlcpy (bigfont, "Sans bold 16", sizeof (bigfont));
       g_print ("\nPDA mode\n");
@@ -10842,9 +10984,11 @@ i.e. '.' in english, ',' in german!! */
   posx = SCREEN_X_2;
   posy = SCREEN_Y_2;
 
-//KCFX
-/*   if (pdamode) mod_setupcounter++;  */
-// Fritz commented out above line
+  // TODO: decide if this is needed
+  //KCFX
+  /*   if (pdamode) mod_setupcounter++;  */
+  // Fritz commented out above line
+
 #ifndef NOPLUGINS
   useplugins = TRUE;
 #endif
@@ -10864,7 +11008,7 @@ i.e. '.' in english, ',' in german!! */
 #ifndef NOPLUGINS
   if (useplugins)
     {
-/*  fly module */
+      /*  fly module */
       modpath = g_module_build_path (LIBDIR, "libfly.so");
       mod1 = g_module_open (".libs/libfly.so", 0);
       if (mod1 == NULL)
@@ -10883,7 +11027,7 @@ i.e. '.' in english, ',' in german!! */
 	  setupfunction[mod_setupcounter] = modulefunction;
 	}
 
-/*  nautic module */
+      /*  nautic module */
       modpath = g_module_build_path (LIBDIR, "libnautic.so");
       mod1 = g_module_open (".libs/libnautic.so", 0);
       if (mod1 == NULL)
@@ -10950,20 +11094,18 @@ i.e. '.' in english, ',' in german!! */
 	break;
       }
 
-/*** Mod by Arms */
   vbig = gtk_vbox_new (FALSE, 0 * PADDING);
   vmenubig = gtk_vbox_new (FALSE, 0 * PADDING);
-/*** Mod by Arms */
   hbig = gtk_hbox_new (FALSE, 0 * PADDING);
-/*   accel_group = gtk_accel_group_new (); */
+  /*   accel_group = gtk_accel_group_new (); */
   item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", NULL);
-/*  ÂŽÜbersetzen laut Bluefish Code */
+  /*  Uebersetzen laut Bluefish Code */
   gtk_item_factory_set_translate_func (item_factory, menu_translate, "<main>",
 				       NULL);
   gtk_item_factory_create_items (item_factory, nmenu_items, main_menu, NULL);
-/*   gtk_accel_group_attach (accel_group, GTK_OBJECT (hauptfenster)); */
-//gtk_accel_group_attach (accel_group, GTK_OBJECT (mainwindow));
-//HRM: above must be new in GTK 2.0!
+  /*   gtk_accel_group_attach (accel_group, GTK_OBJECT (hauptfenster)); */
+  //gtk_accel_group_attach (accel_group, GTK_OBJECT (mainwindow));
+  //HRM: above must be new in GTK 2.0!
 
   menubar = gtk_item_factory_get_widget (item_factory, "<main>");
 
@@ -10977,23 +11119,24 @@ i.e. '.' in english, ',' in german!! */
   if ( ! debug) 
     gtk_widget_set_sensitive (wi, FALSE);
 
-/*  download map button */
+  /*  download map button */
   downloadbt = gtk_button_new_with_mnemonic (_("_Download map"));
-/*   gtk_button_set_use_underline (GTK_BUTTON(downloadbt),TRUE); */
-/*   gtk_label_set_text_with_mnemonic(GTK_LABEL(downloadbt),_("Karte __Download")); */
-/*    gtk_label_set_mnemonic_widget(GTK_LABEL(GTK_BUTTON(downloadbt)),GTK_WIDGET (downloadbt));    */
-
+  /*   gtk_button_set_use_underline (GTK_BUTTON(downloadbt),TRUE); */
+  /*   gtk_label_set_text_with_mnemonic(GTK_LABEL(downloadbt),_("Karte __Download")); */
+  /*    gtk_label_set_mnemonic_widget(GTK_LABEL(GTK_BUTTON(downloadbt)),GTK_WIDGET (downloadbt));    */
+  
   gtk_signal_connect (GTK_OBJECT (downloadbt),
 		      "clicked", G_CALLBACK (download_cb), (gpointer) 1);
-/*  Quit button */
-/* PORTING */
-/*   quit = gtk_button_new_with_label (_("Quit")); */
+
+  /*  Quit button */
+  /* PORTING */
+  /*   quit = gtk_button_new_with_label (_("Quit")); */
   quit = gtk_button_new_from_stock (GTK_STOCK_QUIT);
   gtk_button_set_use_underline (GTK_BUTTON (quit), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (quit),
 		      "clicked", GTK_SIGNAL_FUNC (quit_program), 0);
-/*    GTK_WIDGET_SET_FLAGS (quit, GTK_CAN_DEFAULT); */
+  /*    GTK_WIDGET_SET_FLAGS (quit, GTK_CAN_DEFAULT); */
 
   if (havespeechout)
     {
@@ -11006,44 +11149,42 @@ i.e. '.' in english, ',' in german!! */
 			  "clicked", GTK_SIGNAL_FUNC (mute_cb), (gpointer) 1);
     }
 
-  if (usesql)
-    {
-      // Checkbox ---- POI Draw
-      poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
-      gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
-      if (!poi_draw)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
-      gtk_signal_connect (GTK_OBJECT (poi_draw_bt),
-			  "clicked", GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
-      /*
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
-	_("This will show Point of interrest located in mySQL Database"),
-	NULL);
-      */
+  // Checkbox ---- POI Draw
+  poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
+  gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
+  if (!poi_draw)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
+  gtk_signal_connect (GTK_OBJECT (poi_draw_bt),
+		      "clicked", GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
+  /*
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+    _("This will show Point of interrest located in mySQL Database"),
+    NULL);
+  */
 
-      // Checkbox ---- STREETS Draw
-      streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
-      gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-      if (!streets_draw)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
-      gtk_signal_connect (GTK_OBJECT (streets_draw_bt),
-			  "clicked", GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-      /*
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-	_("This will show Streets Data located in mySQL Database"),
-	NULL);
-      */
+  // Checkbox ---- STREETS Draw
+  streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
+  gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+  if (!streets_draw)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
+  gtk_signal_connect (GTK_OBJECT (streets_draw_bt),
+		      "clicked", GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
+  /*
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+    _("This will show Streets Data located in mySQL Database"),
+    NULL);
+  */
   
 
-      // Checkbox ----   Use SQL
-      sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
-      gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
-      if (sqlflag)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt), TRUE);
+  // Checkbox ----   Use SQL
+  sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
+  gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
+  if (sqlflag)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt), TRUE);
 
-      gtk_signal_connect (GTK_OBJECT (sqlbt),
-			  "clicked", GTK_SIGNAL_FUNC (sql_cb), (gpointer) 1);
-    }
+  gtk_signal_connect (GTK_OBJECT (sqlbt),
+		      "clicked", GTK_SIGNAL_FUNC (sql_cb), (gpointer) 1);
+    
 
 
   // Checkbox ---- Show WP
@@ -11176,12 +11317,10 @@ i.e. '.' in english, ',' in german!! */
 
   // Checkbox ---- Show Map
   frame_maptype = gtk_frame_new (_("Shown map type"));
-/*** Mod by Arms */
   vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
   frame_toogles = gtk_frame_new (NULL);
-/*** Mod by Arms */
   vbox4 = gtk_vbox_new (TRUE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_toogles), vbox4);
 
@@ -11202,56 +11341,54 @@ i.e. '.' in english, ',' in german!! */
   gtk_signal_connect (GTK_OBJECT (topotogglebt),
 		      "clicked", GTK_SIGNAL_FUNC (topotoggle_cb),
 		      (gpointer) 1);
-/*** Mod by Arms */
   gtk_box_pack_start (GTK_BOX (vbox3), maptogglebt, FALSE, FALSE,
 		      0 * PADDING);
-/*** Mod by Arms */
   gtk_box_pack_start (GTK_BOX (vbox3), topotogglebt, FALSE, FALSE,
 		      0 * PADDING);
 
 
 
-/*  Zoom in button */
+  /*  Zoom in button */
   zoomin = gtk_button_new_from_stock (GTK_STOCK_ZOOM_IN);
   gtk_signal_connect (GTK_OBJECT (zoomin),
 		      "clicked", GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 1);
-/*    GTK_WIDGET_SET_FLAGS (zoomin, GTK_CAN_DEFAULT); */
-/*  Zoom out button */
+  /*    GTK_WIDGET_SET_FLAGS (zoomin, GTK_CAN_DEFAULT); */
+  /*  Zoom out button */
   zoomout = gtk_button_new_from_stock (GTK_STOCK_ZOOM_OUT);
   gtk_signal_connect (GTK_OBJECT (zoomout),
 		      "clicked", GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 2);
-/*    GTK_WIDGET_SET_FLAGS (zoomout, GTK_CAN_DEFAULT); */
+  /*    GTK_WIDGET_SET_FLAGS (zoomout, GTK_CAN_DEFAULT); */
 
 
   scalerrbt = gtk_button_new_with_label (">>");
   gtk_signal_connect (GTK_OBJECT (scalerrbt),
 		      "clicked", GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 1);
-/*    GTK_WIDGET_SET_FLAGS (scalerrbt, GTK_CAN_DEFAULT); */
+  /*    GTK_WIDGET_SET_FLAGS (scalerrbt, GTK_CAN_DEFAULT); */
   scalerlbt = gtk_button_new_with_label ("<<");
   gtk_signal_connect (GTK_OBJECT (scalerlbt),
 		      "clicked", GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 2);
-/*    GTK_WIDGET_SET_FLAGS (scalerlbt, GTK_CAN_DEFAULT); */
-
-/*  Select target button */
-/*    if (maxwp > 0) */
+  /*    GTK_WIDGET_SET_FLAGS (scalerlbt, GTK_CAN_DEFAULT); */
+  
+  /*  Select target button */
+  /*    if (maxwp > 0) */
   {
-/* PORTING */
-/*     sel_target = gtk_button_new_with_label (_("Select target")); */
+    /* PORTING */
+    /*     sel_target = gtk_button_new_with_label (_("Select target")); */
     sel_target = gtk_button_new_from_stock (GTK_STOCK_FIND);
-/*     gtk_label_set_text(GTK_BUTTON(sel_target),_("Select target")); */
+    /*     gtk_label_set_text(GTK_BUTTON(sel_target),_("Select target")); */
     gtk_signal_connect (GTK_OBJECT (sel_target),
 			"clicked",
 			GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 2);
-/*        GTK_WIDGET_SET_FLAGS (sel_target, GTK_CAN_DEFAULT); */
+    /*        GTK_WIDGET_SET_FLAGS (sel_target, GTK_CAN_DEFAULT); */
   }
+  
 
 
 
-
-/*    gtk_window_set_default (GTK_WINDOW (mainwindow), zoomin); */
-/*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
-/*    An alternate gpsd server may be on 2947, we try it also */
-
+  /*    gtk_window_set_default (GTK_WINDOW (mainwindow), zoomin); */
+  /*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
+  /*    An alternate gpsd server may be on 2947, we try it also */
+  
   initgps ();
   if (simmode)
     {
@@ -11300,7 +11437,6 @@ i.e. '.' in english, ',' in german!! */
   gtk_frame_set_shadow_type (GTK_FRAME (dframe), GTK_SHADOW_IN);
   drawing_area = gtk_drawing_area_new ();
   gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_area), SCREEN_X, SCREEN_Y);
-/*** Mod by Arms */
   gtk_container_add (GTK_CONTAINER (dframe), drawing_area);
 
   gtk_box_pack_start (GTK_BOX (vbig), dframe, TRUE, TRUE, 0 * PADDING);
@@ -11309,15 +11445,16 @@ i.e. '.' in english, ',' in german!! */
 			     "button-press-event",
 			     GTK_SIGNAL_FUNC (mapclick_cb),
 			     GTK_OBJECT (drawing_area));
-/* Area for navigation pointer */
+
+  /* Area for navigation pointer */
   drawing_bearing = gtk_drawing_area_new ();
   gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_bearing), PSIZE + 2,
 			 PSIZE + 2);
   gtk_signal_connect (GTK_OBJECT (drawing_bearing),
 		      "expose_event", GTK_SIGNAL_FUNC (expose_compass), NULL);
-/* Area for mini map */
-/*** Mod by Arms */
-/* With small displays, this isn't really necessary! */
+
+  /* Area for mini map */
+  /* With small displays, this isn't really necessary! */
   if (SMALLMENU == 0)
     {
       drawing_miniimage = gtk_drawing_area_new ();
@@ -11332,24 +11469,22 @@ i.e. '.' in english, ',' in german!! */
 				 GTK_SIGNAL_FUNC (minimapclick_cb),
 				 GTK_OBJECT (drawing_miniimage));
     }
-/*** Mod by Arms */
   hbox2 = gtk_hbox_new (FALSE, 1 * PADDING);
   hbox2a = gtk_hbox_new (FALSE, 1 * PADDING);
   hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
-/*** Mod by Arms */
   hbox3 = gtk_hbox_new (FALSE, 1 * PADDING);
   frame_bearing = gtk_frame_new (_("Bearing"));
-/*   gtk_container_add (GTK_CONTAINER (frame_bearing), drawing_bearing); */
+  /*   gtk_container_add (GTK_CONTAINER (frame_bearing), drawing_bearing); */
   compasseventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (compasseventbox), drawing_bearing);
   alignment1 = gtk_alignment_new (0.6, 0.5, 0, 0);
   gtk_container_add (GTK_CONTAINER (alignment1), compasseventbox);
   gtk_container_add (GTK_CONTAINER (frame_bearing), alignment1);
 
-/*** Mod by Arms */
   gtk_box_pack_start (GTK_BOX (hbox2), frame_bearing, FALSE, FALSE,
 		      1 * PADDING);
-/* Area for field strength, we have data only in NMEA mode */
+
+  /* Area for field strength, we have data only in NMEA mode */
   drawing_sats = gtk_drawing_area_new ();
   gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_sats), PSIZE + 10,
 			 PSIZE + 6);
@@ -11400,7 +11535,6 @@ i.e. '.' in english, ',' in german!! */
   gtk_entry_set_editable (GTK_ENTRY (satslabel3), FALSE);
   gtk_widget_set_usize (satslabel3, 38, 20);
 
-/*** Mod by Arms */
   gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE, 1 * PADDING);
 
   havebattery = battery_get_values ();
@@ -11419,8 +11553,7 @@ i.e. '.' in english, ',' in german!! */
       gtk_box_pack_start (GTK_BOX (hbox2), fbat, FALSE, FALSE, 1 * PADDING);
     }
 
-/* JH added drawing area for cpu temp meter  */
-
+  /* drawing area for cpu temp meter */
   if (havetemperature)
     {
       drawing_temp = gtk_drawing_area_new ();
@@ -11438,14 +11571,16 @@ i.e. '.' in english, ',' in german!! */
   if (pdamode)
     gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
 
-/*  displays distance to destination */
+  /*  displays distance to destination */
   distlabel = gtk_label_new ("---");
   gtk_label_set_use_markup (GTK_LABEL (distlabel), TRUE);
   gtk_label_set_justify (GTK_LABEL (distlabel), GTK_JUSTIFY_RIGHT);
-/*  displays speed over ground */
+
+  /*  displays speed over ground */
   speedlabel = gtk_label_new (_("---"));
   gtk_label_set_justify (GTK_LABEL (speedlabel), GTK_JUSTIFY_RIGHT);
-/*  displays zoom factor of map */
+
+  /*  displays zoom factor of map */
   altilabel = gtk_label_new (_("n/a"));
   if (pdamode)
     {
@@ -11462,47 +11597,42 @@ i.e. '.' in english, ',' in german!! */
   gtk_label_set_markup (GTK_LABEL (altilabel), s3);
   gtk_label_set_justify (GTK_LABEL (altilabel), GTK_JUSTIFY_RIGHT);
 
-/*  displays waypoints number */
+  /*  displays waypoints number */
   wplabeltable = gtk_table_new (2, 6, TRUE);
 
-/* selected waypoints */
+  /* selected waypoints */
   wplabel1 = gtk_entry_new ();
   wp1eventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (wp1eventbox), wplabel1);
   gtk_entry_set_text (GTK_ENTRY (wplabel1), "--");
-  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp1eventbox, 0, 2, 0,
-			     1);
+  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp1eventbox, 0, 2, 0, 1);
 
-/* waypoints in range */
+  /* waypoints in range */
   wplabel2 = gtk_entry_new ();
   wp2eventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (wp2eventbox), wplabel2);
   gtk_entry_set_text (GTK_ENTRY (wplabel2), "--");
-  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp2eventbox, 2, 4, 0,
-			     1);
+  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp2eventbox, 2, 4, 0, 1);
 
-/* range in km */
+  /* range in km */
   wplabel3 = gtk_entry_new ();
   wp3eventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (wp3eventbox), wplabel3);
   gtk_entry_set_text (GTK_ENTRY (wplabel3), "--");
-  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp3eventbox, 0, 3, 1,
-			     2);
+  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp3eventbox, 0, 3, 1, 2);
 
-/* gps time */
+  /* gps time */
   wplabel4 = gtk_entry_new ();
   wp4eventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (wp4eventbox), wplabel4);
   gtk_entry_set_text (GTK_ENTRY (wplabel4), _("n/a"));
-  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp4eventbox, 3, 6, 1,
-			     2);
+  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp4eventbox, 3, 6, 1, 2);
 
   wplabel5 = gtk_entry_new ();
   wp5eventbox = gtk_event_box_new ();
   gtk_container_add (GTK_CONTAINER (wp5eventbox), wplabel5);
   gtk_entry_set_text (GTK_ENTRY (wplabel5), _("n/a"));
-  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp5eventbox, 4, 6, 0,
-			     1);
+  gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp5eventbox, 4, 6, 0, 1);
 
 
   gtk_entry_set_editable (GTK_ENTRY (wplabel1), FALSE);
@@ -11537,7 +11667,7 @@ i.e. '.' in english, ',' in german!! */
   gtk_label_set_justify (GTK_LABEL (wplabel), GTK_JUSTIFY_LEFT);
 #endif
 
-/*  create frames for labels */
+  /*  create frames for labels */
   frame_target = gtk_frame_new (_("Distance to target"));
   destframe = frame_target;
   gtk_container_add (GTK_CONTAINER (frame_target), distlabel);
@@ -11551,21 +11681,15 @@ i.e. '.' in english, ',' in german!! */
 /* 			2 * PADDING); */
   if (pdamode)
     {
-      if (milesflag)
-	g_snprintf (s1, sizeof (s1), "[%s]", _("mi/h"));
-      else if (nauticflag)
-	g_snprintf (s1, sizeof (s1), "[%s]", _("knots"));
-      else
-	g_snprintf (s1, sizeof (s1), "[%s]", _("km/h"));
+      if (milesflag)	   g_snprintf (s1, sizeof (s1), "[%s]", _("mi/h"));
+      else if (nauticflag) g_snprintf (s1, sizeof (s1), "[%s]", _("knots"));
+      else                 g_snprintf (s1, sizeof (s1), "[%s]", _("km/h"));
     }
   else
     {
-      if (milesflag)
-	g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("mi/h"));
-      else if (nauticflag)
-	g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("knots"));
-      else
-	g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("km/h"));
+      if (milesflag)	   g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("mi/h"));
+      else if (nauticflag) g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("knots"));
+      else                 g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"), _("km/h"));
     }
   frame_speed = gtk_frame_new (s1);
   gtk_container_add (GTK_CONTAINER (frame_speed), speedlabel);
@@ -11655,8 +11779,11 @@ i.e. '.' in english, ',' in german!! */
 
   if (havespeechout)
     gtk_box_pack_start (GTK_BOX (vbox4), mutebt, FALSE, FALSE, 0 * PADDING);
-  gtk_box_pack_start (GTK_BOX (vbox4), poi_draw_bt, FALSE, FALSE, 0 * PADDING);
-  gtk_box_pack_start (GTK_BOX (vbox4), streets_draw_bt, FALSE, FALSE, 0 * PADDING);
+  if (usesql)
+    {
+      gtk_box_pack_start (GTK_BOX (vbox4), poi_draw_bt, FALSE, FALSE, 0 * PADDING);
+      gtk_box_pack_start (GTK_BOX (vbox4), streets_draw_bt, FALSE, FALSE, 0 * PADDING);
+    }
   if (usesql)
     gtk_box_pack_start (GTK_BOX (vbox4), sqlbt, FALSE, FALSE, 0 * PADDING);
   /*    if (maxwp > 0) */
@@ -11823,8 +11950,8 @@ i.e. '.' in english, ',' in german!! */
 	}
     }
 
-/*   if pdamode is set, we use gtk-notebook add arrange the elements */
-/*   in pdamode, extrawinmenu is also set! */
+  /*   if pdamode is set, we use gtk-notebook add arrange the elements */
+  /*   in pdamode, extrawinmenu is also set! */
   mainnotebook = NULL;
   if (pdamode)
     {
@@ -11832,14 +11959,14 @@ i.e. '.' in english, ',' in german!! */
           l1 = gtk_label_new (NULL);
           l2 = gtk_label_new (NULL);
           l3 = gtk_label_new (NULL);
-/* for a better usability in onemousebutton mode */      
+	  /* for a better usability in onemousebutton mode */      
       if (onemousebutton)  {
-/*          gtk_misc_set_padding (GTK_MISC (l1), x, y); */
+	/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
 	  gtk_misc_set_padding (GTK_MISC (l1), 50, 1);
           gtk_misc_set_padding (GTK_MISC (l2), 50, 1);
           gtk_misc_set_padding (GTK_MISC (l3), 50, 1);
 	  
-/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */	  
+	  /* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */	  
 	  
 	  char *markup;
 	  markup = g_markup_printf_escaped ("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>", _("Map") );
@@ -12145,8 +12272,7 @@ i.e. '.' in english, ',' in german!! */
   redrawtimeout =
     gtk_timeout_add (100, (GtkFunction) calldrawmarker_cb, NULL);
 
-/*  if we started in simulator mode we have a little move roboter */
-
+  /*  if we started in simulator mode we have a little move roboter */
   if (simmode)
     simpos_timeout = gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
   if (nmeaout)
