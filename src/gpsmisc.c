@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2005/04/10 00:10:32  tweety
+added gpsd: to gpsd related debug output
+changed plus to a small + in streets.c
+
 Revision 1.3  2005/04/02 12:10:12  tweety
 2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
 Canges made to import a map with one point and enter the scale
@@ -114,8 +118,10 @@ checksum (gchar * text)
     checksum = checksum ^ t[i++];
   g_strlcpy (t2, (t + j + 1),sizeof(t2));
   sscanf (t2, "%X", &orig);
-  if (mydebug)
-    g_print ("%s\norigchecksum: %X,my:%X\n", t, orig, checksum);
+  if (mydebug) {
+    g_print ("gpsd: %s\n", t);
+    g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
+  }
 
   if (orig == checksum)
     {
@@ -124,9 +130,8 @@ checksum (gchar * text)
     }
   else
     {
-      g_print
-	("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
-	 orig, checksum);
+      g_print ("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
+			   orig, checksum);
       return FALSE;
     }
 }
