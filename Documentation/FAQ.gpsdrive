@@ -150,10 +150,29 @@ A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
    navigational trips.
 
    
-Q:I have also noticed that the unique ID sent to my Friendsd2 server from
-  my gpsdrive is not unique
-  Is there a way to manually set the unique ID to correct this problem?
+Q: I have also noticed that the unique ID sent to my Friendsd2 server from
+   my gpsdrive is not unique
+   Is there a way to manually set the unique ID to correct this problem?
 A: Have a look at ~/.gpsdrive/gpsdriverc:
       friendsidstring = XXX
    If you delete the key in the file or set it to XXX you should get a new 
    FriendsID.
+
+Q: My gps seems like being always behind the actual position. It seems like 
+   I'm 13seconds behind.
+A: The problem isn't gpsd or gpsdrive, the problem is the SiRF firmware. Check
+   the gpsd mailinglist.
+   If the GPS device is in SiRF mode, gpsd translates SiRF binary mode to NMEA
+   mode and you'll get a lag of about 13 sec. But if you set the device to
+   NMEA mode, it will work just fine.
+   The question is if gpsd should provide the possibilty to start the GPS
+   device with NMEA mode or if there should be an option in gpsdrive. The
+   default is always the binary mode because it will provide more
+   informations.
+   Solution for gpsdrive users: 
+	gpsd_nmea.sh        
+
+Q: Which projection is assumed for the different map types?
+A: map_* images assume UTM-like projection and scale lon to cos(lat).
+   top_* images assume 1:1 lat/lon scaling (1deg x 1deg is a perfect square)
+
