@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.6  2005/03/27 21:25:46  tweety
+separating map_import from gpsdrive.c
+
 Revision 1.5  2005/02/13 14:06:54  tweety
 start street randering functions. reading from the database streets and displayi
 ng it on the screen
@@ -81,7 +84,6 @@ icons.c is ectracted from gpsdrive.c
 #include "poi.h"
 #include "xpm_icons.h"
 #include "icons.h"
-#include <dlfcn.h>
 #include <pthread.h>
 #include <semaphore.h>
 
