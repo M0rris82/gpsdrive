@@ -21,6 +21,7 @@ BEGIN {
     @ISA     = qw(Exporter);
     @EXPORT  = qw( &debug $debug $debug_range 
 		   &stacktrace &mirror_file &file_newer
+		   &correct_lat_lon
 		   $PROXY $no_mirror $verbose);
     %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
     # your exported package globals go here,
@@ -154,4 +155,48 @@ sub file_newer($$){
     return ($t_1 < $t_1 );
 }
 
+
+#############################################################################
+# correct/convert lat/lon to apropriate Format
+sub correct_lat_lon($){
+    my $point = shift;
+
+    #print "correct_lat_lon(".Dumper($point);
+
+    for my $type ( qw(poi.lat poi.lon) ) {
+	next unless defined $point->{$type};
+	#                               N123 12.34
+	if ( $point->{$type} =~ m/^\s*([NSWE]\d{1,3})\s+(\d+\.\d+)\s*$/ ) {
+	    my $val1 = $1;
+	    my $val2 = $2;
+	    $val1 =~ s/[EN]//;
+	    $val1 =~ s/[SW]/-/;
+	    $point->{$type}  =  sprintf("%0.9f",$val1+$val2/60);
+	}
+	#                               N123.34
+	if ( $point->{$type} =~ m/^\s*([NSEW]\d{1,3}\.\d+)\s*$/ ) {
+	    my $val = $1;
+	    $val =~ s/[NE]//;
+	    $val =~ s/[SW]/-/;
+	    $point->{$type}  =  sprintf("%0.9f",$val);
+	}
+    }
+
+    unless (  defined($point->{Position}) && $point->{Position} ){
+	my $lat = $point->{'poi.lat'};
+	my $lon = $point->{'poi.lon'};
+	if ( $lat =~ s/^-// ) {
+	    $lat ="S$lat";
+	} else {
+	    $lat ="N$lat";
+	}
+	if ( $lon =~ s/^-// ) {
+	    $lon ="W$lon";
+	} else {
+	    $lon ="E$lon";
+	}
+	
+	$point->{Position} = "$lat $lon";
+    }
+}
 1;
