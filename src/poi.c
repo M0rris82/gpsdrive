@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.25  2005/10/20 20:53:14  tweety
+  change in Text Size
+
   Revision 1.24  2005/10/11 08:28:35  tweety
   gpsdrive:
   - add Tracks(MySql) displaying
@@ -263,14 +266,14 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   gdk_gc_set_foreground (kontext, &textback);
 
   poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
-  if (poi_max > 200)
-    pfd = pango_font_description_from_string ("Sans 6");
   if (poi_max > 30)
     pfd = pango_font_description_from_string ("Sans 8");
   else if (pdamode)
     pfd = pango_font_description_from_string ("Sans 8");
   else
     pfd = pango_font_description_from_string ("Sans 11");
+  if (poi_max > 200)
+    pfd = pango_font_description_from_string ("Sans 6");
 
   pango_layout_set_font_description (poi_label_layout, pfd);
   pango_layout_get_pixel_size (poi_label_layout, &width, &height);
@@ -831,7 +834,7 @@ poi_draw_list (void)
 	      {
 		gdk_gc_set_foreground (kontext, &red);
 		if (poi_max < 20000)
-		  {		// Only draw mall + if more than ... Points 
+		  {		// Only draw small + if more than ... Points 
 		    draw_plus_sign (posx, posy);
 		  }
 		else
