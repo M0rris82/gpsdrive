@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2005/02/08 09:01:48  tweety
+move loading of usericons to icons.c
+
 Revision 1.3  2005/02/08 08:43:46  tweety
 wrong dfinition for auxicons array
 
@@ -282,4 +285,52 @@ load_friends_icon (void)
   gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
 		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
 
+}
+
+/* ----------------------------------------------------------------------------- */ 
+/* warning: still modifies icon_name */
+void 
+load_user_icon(  char icon_name[200] )
+{
+  int i;
+  char path[1024];
+  for (i = 0; i < (int) strlen (icon_name); i++)
+    icon_name[i] = tolower (icon_name[i]);
+
+  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
+  auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
+	  
+  if ( auxicons[lastauxicon].icon == NULL) {
+    g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,icon_name);
+    auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
+  }
+
+  if ( (auxicons + lastauxicon)->icon != NULL)
+    {
+      for (i = 0; i < (int) strlen (icon_name); i++)
+	icon_name[i] = toupper (icon_name[i]);
+      if ((strcmp (icon_name, "WLAN") == 0)
+	  || (strcmp (icon_name, "WLAN-WEP") == 0))
+	{
+	  if (strcmp (icon_name, "WLAN") == 0)
+	    openwlanpixbuf = (auxicons + lastauxicon)->icon;
+	  if (strcmp (icon_name, "WLAN-WEP") == 0)
+	    closedwlanpixbuf = (auxicons + lastauxicon)->icon;
+	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
+	}
+      else
+	{
+	  g_strlcpy ((auxicons + lastauxicon)->name, icon_name,
+		     sizeof (auxicons->name));
+	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
+	  lastauxicon++;
+	}
+      if ( debug ) 
+	printf ("Icon for %s loaded:%s\n",icon_name,path);
+    }
+  else 
+    {
+      if ( debug ) 
+	printf ("No Icon for %s loaded\n",icon_name);
+    }
 }
