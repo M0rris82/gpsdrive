@@ -23,8 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/02/06 17:52:44  tweety
+extract icon handling to icons.c
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.37  2004/02/08 18:37:39  ganter
 autsch, fn string in battery.c was too short
@@ -188,7 +191,7 @@ added  Marco Molteni
 
 
 #include "battery.h"
-#include "power.h"
+#include "xpm_power.h"
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -773,7 +776,7 @@ expose_display_battery ()
 		      batlevel);
 	  break;
 	case spanish:
-	  g_snprintf (bbuf, sizeof (bbuf), "Batería restante: %d%%",
+	  g_snprintf (bbuf, sizeof (bbuf), "BaterÃ­a restante: %d%%",
 		      batlevel);
 	  break;
 	case german:
