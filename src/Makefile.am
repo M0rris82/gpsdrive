@@ -49,7 +49,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
 	gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
-	import_map.c import_map.h speech_strings.c speech_strings.h
+	import_map.c import_map.h speech_strings.c speech_strings.h \
+	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 else 
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c  speech_out.h\
 	friends.c battery.c track.c poi.c streets.c settings.c  power.h\
@@ -61,7 +62,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c  speech_out.h\
 	gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h\
 	garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
-	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h
+	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h \
+	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 endif
 gpsdrive_SOURCES= $(PRGS)
 
