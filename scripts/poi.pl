@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.6  2005/02/17 22:15:58  tweety
+# added import from gpsdrive tracks to Streets DB
+#
 # Revision 1.5  2005/02/17 09:31:16  tweety
 # minor changes
 #
@@ -56,6 +59,7 @@ use POI::WDB;
 use POI::PocketGpsPoi;
 use POI::Utils;
 use POI::census;
+use POI::GpsDrive;
 
 my ($man,$help);
 
@@ -70,6 +74,8 @@ my $do_mapsource_points  = 0;
 my $do_cameras           = 0;
 my $do_all               = 0;
 my $do_create_db         = 0;
+my $do_gpsdrive_tracks   = 0;
+
 our $db_user             = 'gast';
 our $db_password         = 'gast';
 
@@ -82,6 +88,7 @@ GetOptions (
 	     'wdb'                 => \$do_wdb,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
+	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
 	     'create-db'           => \$do_create_db,
 	     'all'                 => \$do_all,
 	     'debug'               => \$debug,      
@@ -100,9 +107,14 @@ GetOptions (
     or pod2usage(1);
 
 if ( $do_all ) {
-    $do_create_db =
-	$do_census = $do_earthinfo_nga_mil = $do_opengeodb = $do_wdb
-	= $do_cameras   = 1;
+    $do_create_db 
+	= $do_census 
+	= $do_earthinfo_nga_mil 
+	= $do_opengeodb 
+	= $do_wdb
+	= $do_gpsdrive_tracks
+	= $do_cameras   
+	= 1;
 }
 
 pod2usage(1) if $help;
@@ -147,6 +159,10 @@ POI::OpenGeoDB::import_Data()
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
 POI::WDB::import_Data() 
     if ( $do_wdb );
+
+# extract street Data from all tracks
+POI::GpsDrive::import_Data() 
+    if ( $do_gpsdrive_tracks );
 
 
 __END__
@@ -233,6 +249,21 @@ Try creating the tables inside the geodata database
 
 
 Triggers all of the above
+
+
+=item B<-kismet=Filename>
+
+Read a Kismet File and extract the Tracks
+and insert into  streets DB
+
+*************** not implemented yet :-(
+
+=item B<-gpsdrive-tracks>
+
+Read all gpsdrive Tracks 
+and insert into  streets DB
+
+*************** not implemented yet :-(
 
 =item B<--db-user>
 

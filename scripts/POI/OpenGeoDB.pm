@@ -142,7 +142,7 @@ sub import_Data() {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	my $waypoints = read_open_geo_db($file_name);
 #	write_gpsdrive_waypoints($waypoints,$out_file_name);
-	POI::DBFuncs::db_add_waypoints($waypoints);
+	POI::DBFuncs::add_poi_multi($waypoints);
     }
 
 }

@@ -30,6 +30,12 @@ new POI(Point Of Interest) Database support:
 		- Import of 2.500.000 Points seems to work
 
 
+in das einstellungsmenü verlagern:
+	Speichere Spur 
+ins pulldown diverse verlegen:
+	Starte gpsd 
+	Karte herunterladen
+
 ====================================================================
 
 ChrisJastram:

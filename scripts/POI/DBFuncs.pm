@@ -21,8 +21,11 @@ BEGIN {
         $VERSION = sprintf "%d.%03d", q$Revision$ =~ /(\d+)/g;
 
         @ISA         = qw(Exporter);
-        @EXPORT = qw( &type_names &type_list &db_disconnect &poi_add 
-		      &delete_all_from_source &poi_list &column_names);
+        @EXPORT = qw( &type_names &type_list &db_disconnect 
+		      &add_poi &add_poi_multi
+		      &poi_list
+		      &column_names
+		      &delete_all_from_source);
         %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
         # your exported package globals go here,
         # as well as any optionally exported functions
@@ -266,7 +269,7 @@ sub poi_list(){
 #############################################################################
 # Add all Waypoints from Hash into th MySQL POI Database
 #############################################################################
-sub db_add_waypoints($){
+sub add_poi_multi($){
     my $waypoints = shift;
     print "Adding Waypoints to Database\n";
 
@@ -287,13 +290,13 @@ sub db_add_waypoints($){
 	}
 
 	$values->{Proximity} =~ s/\s*m$//;
-	poi_add($values);
+	add_poi($values);
     }
 }
 
 #############################################################################
 # Add a single poit into DB
-sub poi_add($){
+sub add_poi($){
     my $poi = shift;
     my $point = {};
     my @columns = column_names("poi");

@@ -94,7 +94,7 @@ my $name2country = {
     'cuba'	=> 'cu',
     'cyprus'	=> 'cy',
     'czech republic'	=> 'ez',
-    'cÃï¿œÂte d\'ivoire'	=> 'iv',
+    'cote d\'ivoire'	=> 'iv',
     'denmark'	=> 'da',
     'djibouti'	=> 'dj',
     'dominica'	=> 'do',
@@ -323,7 +323,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 		"More information is available at the Products and Services ".
 		"link at www.nga.mil. The National Geospatial-Intelligence ".
 		"Agency name, initials, and seal are protected by ".
-		"10 United States Code Section Ãï¿œ§445."
+		"10 United States Code Section xxx445."
 	    };
 	POI::DBFuncs::insert_hash("source", $source_hash);
 	$source_id = POI::DBFuncs::source_name2id($source);
@@ -467,7 +467,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 		$values->{'poi.proximity'} = $proximity;
 	    }
 
-	    poi_add($values);
+	    add_poi($values);
 	}
     }
     print "$lines_count_file read\n" if $verbose;

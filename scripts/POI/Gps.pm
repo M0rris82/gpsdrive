@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-package Gps;
+package POI::Gps;
 
 use IO::File;
 use File::Basename;
