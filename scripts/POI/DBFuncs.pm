@@ -81,8 +81,8 @@ sub insert_hash {
 my $dbh;
 sub db_connect() {
   my $db           = 'geoinfo';
-  my $opt_user     = $main::db_user     || 'gast';
-  my $opt_password = $main::db_password || 'gast';
+  my $opt_user     = $main::db_user;
+  my $opt_password = $main::db_password;
   my $host         = 'localhost';
 
 
@@ -292,8 +292,16 @@ sub poi_add($){
 # -----------------------------------------------------------------------------
 
 sub create_db(){
-my $create_statement='
-CREATE TABLE `address` (
+    my $create_statement;
+    my $dbh;
+    my $sth; 
+
+    $create_statement='CREATE DATABASE IF NOT EXISTS geoinfo;';
+    $dbh = db_connect();
+    $sth = $dbh->prepare($create_statement);
+    $sth->execute();
+    
+    $create_statement='CREATE TABLE IF NOT EXISTS `address` (
   `address_id` int(11) NOT NULL auto_increment,
   `country` varchar(40) NOT NULL default \'\',
   `state` varchar(80) NOT NULL default \'\',
@@ -307,12 +315,12 @@ CREATE TABLE `address` (
   PRIMARY KEY  (`address_id`)
 ) TYPE=MyISAM;
 ';
-my $dbh = db_connect();
-my $sth = $dbh->prepare($create_statement);
-$sth->execute();
+    $dbh = db_connect();
+    $sth = $dbh->prepare($create_statement);
+    $sth->execute();
 
-$create_statement='
-CREATE TABLE `navicaches` (
+    $create_statement='
+CREATE TABLE IF NOT EXISTS `navicaches` (
   `cache_id` int(11) unsigned NOT NULL default \'0\',
   `waypoint` varchar(7) NOT NULL default \'0\',
   `country_code` char(2) default NULL,
@@ -367,7 +375,7 @@ $sth = $dbh->prepare($create_statement);
 $sth->execute();
 
 $create_statement='
-CREATE TABLE `poi` (
+CREATE TABLE IF NOT EXISTS `poi` (
   `wp_id` int(11) NOT NULL auto_increment,
   `name` varchar(80) default NULL,
   `type_id` int(11) NOT NULL default \'0\',
@@ -392,7 +400,7 @@ $sth = $dbh->prepare($create_statement);
 $sth->execute();
 
 $create_statement='
-CREATE TABLE `source` (
+CREATE TABLE IF NOT EXISTS `source` (
   `source_id` int(11) NOT NULL auto_increment,
   `name` varchar(80) NOT NULL default \'\',
   `licence` varchar(160) NOT NULL default \'\',
@@ -407,7 +415,7 @@ $sth = $dbh->prepare($create_statement);
 $sth->execute();
 
 $create_statement='
-CREATE TABLE `type` (
+CREATE TABLE IF NOT EXISTS `type` (
   `type_id` int(11) NOT NULL auto_increment,
   `name` varchar(80) NOT NULL default \'\',
   `symbol` varchar(160) NOT NULL default \'\',
@@ -437,7 +445,7 @@ my @icons = qw( unknown
 		EC-Automat
 		Einkaufszentrum
 		Essen-Lieferservice
-		Essen.Gaststätte
+		Essen.Gastst�¤tte
 		Essen.Kneipe
 		Essen.Restaurant
 		Essen.Schnellrestaurant
@@ -453,8 +461,8 @@ my @icons = qw( unknown
 		Freizeit.Nationalpark
 		Freizeit.Oper
 		Freizeit.Reiterhof
-		Freizeit.Sehenswürdigkeit
-		Freizeit.Sehenswürdigkeit.Museum
+		Freizeit.Sehensw�¼rdigkeit
+		Freizeit.Sehensw�¼rdigkeit.Museum
 		Freizeit.Spielplatz
 		Freizeit.Sport.Fussball-Stadion
 		Freizeit.Sport.Fussballplatz
@@ -463,7 +471,7 @@ my @icons = qw( unknown
 		Freizeit.Sport.Tennisplatz
 		Freizeit.Theater
 		Friedhof
-		Fussgänger Zone
+		Fussg�¤nger Zone
 		Geldwechsel
 		Geocache
 		Gesundheit.Ambulanz
@@ -478,7 +486,7 @@ my @icons = qw( unknown
 		Kirche.Synagoge
 		Messe
 		Freizeit.Modellflugplatz
-		Notruf säule
+		Notruf s�¤ule
 		Transport.Park&Ride
 		Transport.Parkplatz
 		Polizei
@@ -493,11 +501,11 @@ my @icons = qw( unknown
 		Transport.Auto-Verlade-Bahnhof
 		Transport.Bahnhof
 		Transport.Bus-Haltestelle
-		Transport.Fähre
-		Transport.Güter-Verlade-Bahnhof
+		Transport.F�¤hre
+		Transport.G�¼ter-Verlade-Bahnhof
 		Transport.Lotsendienst
 		Transport.Mautstation
-		Transport.RaststÃ€tte
+		Transport.Rastst��Źtte
 		Transport.S-Bahn-Haltestelle
 		Transport.Strassen-Bahn-Haltestelle
 		Transport.Strassen.30-Zohne
@@ -524,15 +532,22 @@ my @icons = qw( unknown
 		Übernachtung.ZeltplatzSchwimmbad
 		);
 
-my $i=1;
-for my $icon  ( @icons ) {    
-    my $statement = "INSERT INTO `type` VALUES ($i,'$icon','$icon.png','$icon');\n";
-    $i++;
-    $dbh = db_connect();
-    $sth = $dbh->prepare($statement);
-    $sth->execute();
-}
-
+    my $i=1;
+    for my $icon  ( @icons ) {    
+	my $statement;
+	$statement = "DELETE FROM `type` WHERE type_id = $i LIMIT 1;\n";
+	$dbh = db_connect();
+	$sth = $dbh->prepare($statement);
+	$sth->execute();
+	
+	$statement = "INSERT INTO `type` VALUES ($i,'$icon','$icon.png','$icon');\n";
+	$dbh = db_connect();
+	$sth = $dbh->prepare($statement);
+	$sth->execute();
+	$i++;
+    }
+    
+    print "Creation completed\n";
 }
 # -----------------------------------------------------------------------------
 

@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.2  2005/02/06 21:41:47  tweety
+# added some checks to DB Creation
+#
 # Revision 1.1  2005/02/06 00:22:14  tweety
 # poi.pl to mirror and fill POI Database with Names.
 # This is a early Alpha version
@@ -68,6 +71,8 @@ GetOptions (
 	     'debug'               => \$debug,      
 	     'u=s'                 => \$db_user,
 	     'p=s'                 => \$db_password,
+	     'db-user=s'           => \$db_user,
+	     'db-password=s'       => \$db_password,
 	     'd'                   => \$debug,      
 	     'v'                   => \$verbose,      
 	     'debug_range=s'       => \$debug_range,      
@@ -1148,11 +1153,11 @@ Experimental
 
 Try creating the tables inside the geodata database
 
-=item B<--db_user>
+=item B<--db-user>
 
 username to connect to mySQL database
 
-=item B<--db_password>
+=item B<--db-password>
 
 password for user to connect to mySQL database
 
