@@ -1361,6 +1361,10 @@ msgstr "Mostrar sombras"
 msgid "Etched frames"
 msgstr ""
 
+#: src/settings.c:727
+msgid "Draw grid"
+msgstr "trazar cuadrícula"
+
 #: src/settings.c:735
 msgid "Simulation: Follow target"
 msgstr "Simulación: seguir destino"

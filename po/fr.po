@@ -1404,10 +1404,9 @@ msgstr "Afficher les ombres"
 msgid "Etched frames"
 msgstr ""
 
-
 #: src/settings.c:727
 msgid "Draw grid"
-msgstr "afficher trame"
+msgstr "afficher quadrillage"
 
 #: src/settings.c:735
 msgid "Simulation: Follow target"

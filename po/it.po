@@ -1387,6 +1387,10 @@ msgstr "Mostra ombre"
 msgid "Etched frames"
 msgstr "Etched frames"
 
+#: src/settings.c:727
+msgid "Draw grid"
+msgstr "mostrare griglia geografica"
+
 #: src/settings.c:735
 msgid "Simulation: Follow target"
 msgstr "Simulazione: Segui obiettivo"
