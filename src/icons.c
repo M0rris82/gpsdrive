@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.7  2005/04/06 19:38:17  tweety
 use disable/enable keys to improove spee in database creation
 add draw_small_plus_sign, which is used if we would have too many waypoints to display
@@ -142,26 +145,26 @@ draw_plus_sign ( gdouble posxdest,   gdouble posydest )
       gdk_gc_set_foreground (kontext, &darkgrey);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 - 5 + SHADOWOFFSET,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 + 5 + SHADOWOFFSET);
+										 posxdest + 1 + SHADOWOFFSET,
+										 posydest + 1 - 5 + SHADOWOFFSET,
+										 posxdest + 1 + SHADOWOFFSET,
+										 posydest + 1 + 5 + SHADOWOFFSET);
       gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET,
-		     posxdest + 1 - 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET);
+										 posxdest + 1 + 5 + SHADOWOFFSET,
+										 posydest + 1 + SHADOWOFFSET,
+										 posxdest + 1 - 5 + SHADOWOFFSET,
+										 posydest + 1 + SHADOWOFFSET);
       gdk_gc_set_function (kontext, GDK_COPY);
     }
 
   /*  draw + sign at destination */
   gdk_gc_set_foreground (kontext, &red);
   gdk_draw_line (drawable, kontext, 
-		 posxdest + 1,     posydest + 1 - 5, 
-		 posxdest + 1,     posydest + 1 + 5);
+								 posxdest + 1,     posydest + 1 - 5, 
+								 posxdest + 1,     posydest + 1 + 5);
   gdk_draw_line (drawable, kontext, 
-		 posxdest + 1 + 5, posydest + 1, 
-		 posxdest + 1 - 5, posydest + 1);
+								 posxdest + 1 + 5, posydest + 1, 
+								 posxdest + 1 - 5, posydest + 1);
 
 }
 
@@ -176,33 +179,33 @@ draw_small_plus_sign ( gdouble posxdest,   gdouble posydest )
       gdk_gc_set_foreground (kontext, &darkgrey);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 - 2 + SHADOWOFFSET,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 + 2 + SHADOWOFFSET);
+										 posxdest + 1 + SHADOWOFFSET,
+										 posydest + 1 - 2 + SHADOWOFFSET,
+										 posxdest + 1 + SHADOWOFFSET,
+										 posydest + 1 + 2 + SHADOWOFFSET);
       gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + 2 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET,
-		     posxdest + 1 - 2 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET);
+										 posxdest + 1 + 2 + SHADOWOFFSET,
+										 posydest + 1 + SHADOWOFFSET,
+										 posxdest + 1 - 2 + SHADOWOFFSET,
+										 posydest + 1 + SHADOWOFFSET);
       gdk_gc_set_function (kontext, GDK_COPY);
     }
 
   /*  draw + sign at destination */
   gdk_gc_set_foreground (kontext, &red);
   gdk_draw_line (drawable, kontext, 
-		 posxdest + 1,     posydest + 1 - 2, 
-		 posxdest + 1,     posydest + 1 + 2);
+								 posxdest + 1,     posydest + 1 - 2, 
+								 posxdest + 1,     posydest + 1 + 2);
   gdk_draw_line (drawable, kontext, 
-		 posxdest + 1 + 2, posydest + 1, 
-		 posxdest + 1 - 2, posydest + 1);
+								 posxdest + 1 + 2, posydest + 1, 
+								 posxdest + 1 - 2, posydest + 1);
 
 }
 
 
 /* -----------------------------------------------------------------------------
 
- */
+*/
 int
 drawicon (gint posxdest, gint posydest, char *ic)
 {
@@ -232,20 +235,20 @@ drawicon (gint posxdest, gint posydest, char *ic)
   for (i = 0; i < lastauxicon; i++)
     if ((strcmp (icon, (auxicons + i)->name)) == 0)
       {
-	if ((posxdest >= 0) && (posxdest < SCREEN_X)
-	    && 
-	    (posydest >= 0) && (posydest < SCREEN_Y))
-	  {
-	    x = gdk_pixbuf_get_width ((auxicons + i)->icon);
-	    y = gdk_pixbuf_get_width ((auxicons + i)->icon);
-	    gdk_draw_pixbuf (drawable, kontext, (auxicons + i)->icon,
-			     0, 0,
-			     posxdest - x / 2,
-			     posydest - y / 2, x, y, GDK_RGB_DITHER_NONE,
-			     0, 0);
-	    aux = i;
-	  }
-	return 99999;
+				if ((posxdest >= 0) && (posxdest < SCREEN_X)
+						&& 
+						(posydest >= 0) && (posydest < SCREEN_Y))
+					{
+						x = gdk_pixbuf_get_width ((auxicons + i)->icon);
+						y = gdk_pixbuf_get_width ((auxicons + i)->icon);
+						gdk_draw_pixbuf (drawable, kontext, (auxicons + i)->icon,
+														 0, 0,
+														 posxdest - x / 2,
+														 posydest - y / 2, x, y, GDK_RGB_DITHER_NONE,
+														 0, 0);
+						aux = i;
+					}
+				return 99999;
       }
   
   if (symbol == 0)
@@ -259,16 +262,16 @@ drawicon (gint posxdest, gint posydest, char *ic)
        (posydest >= 0) && (posydest < SCREEN_Y))
     {
       gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol - 1],
-		       0, 0,
-		       posxdest - 12, posydest - 12,
-		       24, 24, GDK_RGB_DITHER_NONE, 0, 0);
+											 0, 0,
+											 posxdest - 12, posydest - 12,
+											 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
     }
   return symbol;
 }
 
 /* -----------------------------------------------------------------------------
 
- */
+*/
 void
 load_icons(void)
 {
@@ -292,7 +295,7 @@ load_icons(void)
 
 /* -----------------------------------------------------------------------------
 
- */
+*/
 void
 load_friends_icon (void)
 {
@@ -309,17 +312,17 @@ load_friends_icon (void)
       GString *error;
       error = g_string_new (NULL);
       g_string_sprintf (error, "\n%s\n%s\n",
-			_(" Friendsicon could not be loaded:"), mappath);
+												_(" Friendsicon could not be loaded:"), mappath);
       fprintf (stderr,
-	       _
-	       ("\nWarning: unable to load friendsicon!\nPlease install the program as root with:\nmake install\n\n"));
+							 _
+							 ("\nWarning: unable to load friendsicon!\nPlease install the program as root with:\nmake install\n\n"));
 
       error_popup ((gpointer *) error->str);
       g_string_free (error, TRUE);
     }
   friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
   gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
-		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
+										0, 0, 1, 1, GDK_INTERP_BILINEAR);
 
 }
 
@@ -344,29 +347,29 @@ load_user_icon(  char icon_name[200] )
   if ( (auxicons + lastauxicon)->icon != NULL)
     {
       for (i = 0; i < (int) strlen (icon_name); i++)
-	icon_name[i] = toupper (icon_name[i]);
+				icon_name[i] = toupper (icon_name[i]);
       if ((strcmp (icon_name, "WLAN") == 0)
-	  || (strcmp (icon_name, "WLAN-WEP") == 0))
-	{
-	  if (strcmp (icon_name, "WLAN") == 0)
-	    openwlanpixbuf = (auxicons + lastauxicon)->icon;
-	  if (strcmp (icon_name, "WLAN-WEP") == 0)
-	    closedwlanpixbuf = (auxicons + lastauxicon)->icon;
-	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
-	}
+					|| (strcmp (icon_name, "WLAN-WEP") == 0))
+				{
+					if (strcmp (icon_name, "WLAN") == 0)
+						openwlanpixbuf = (auxicons + lastauxicon)->icon;
+					if (strcmp (icon_name, "WLAN-WEP") == 0)
+						closedwlanpixbuf = (auxicons + lastauxicon)->icon;
+					fprintf (stderr, _("Loaded user defined icon %s\n"), path);
+				}
       else
-	{
-	  g_strlcpy ((auxicons + lastauxicon)->name, icon_name,
-		     sizeof (auxicons->name));
-	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
-	  lastauxicon++;
-	}
+				{
+					g_strlcpy ((auxicons + lastauxicon)->name, icon_name,
+										 sizeof (auxicons->name));
+					fprintf (stderr, _("Loaded user defined icon %s\n"), path);
+					lastauxicon++;
+				}
       if ( debug ) 
-	printf ("Icon for %s loaded:%s\n",icon_name,path);
+				printf ("Icon for %s loaded:%s\n",icon_name,path);
     }
   else 
     {
       if ( debug ) 
-	printf ("No Icon for %s loaded\n",icon_name);
+				printf ("No Icon for %s loaded\n",icon_name);
     }
 }
