@@ -2,7 +2,7 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
-AC_INIT(gpsdrive, 2.10pre2, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3, ganter@ganter.at)
 AC_CONFIG_SRCDIR(foo.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -291,6 +291,6 @@ CFLAGS="$CFLAGS -Imysql"
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
 
-AC_CONFIG_FILES(Makefile src/Makefile  man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile  man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile data/Makefile)
 AC_OUTPUT
 
