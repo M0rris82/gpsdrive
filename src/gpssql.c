@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2005/02/08 09:01:48  tweety
+move loading of usericons to icons.c
+
 Revision 1.7  2005/02/08 08:43:46  tweety
 wrong dfinition for auxicons array
 
@@ -370,49 +373,9 @@ get_sql_type_list (void)
 	  printf ("\nSQL: too many waypoint types!\n");
 	  break;
 	}
-/* load user defined icons */
+      /* load user defined icons */
       if (usericonsloaded == FALSE)
-	{
-	  for (i = 0; i < (int) strlen (temp); i++)
-	    temp[i] = tolower (temp[i]);
-
-	  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, temp);
-	  auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
-	  
-	  if ( auxicons[lastauxicon].icon == NULL) {
-	    g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,temp);
-	    auxicons[lastauxicon].icon =  gdk_pixbuf_new_from_file (path, NULL);
-	  }
-
-	  if ( (auxicons + lastauxicon)->icon != NULL)
-	    {
-	      for (i = 0; i < (int) strlen (temp); i++)
-		temp[i] = toupper (temp[i]);
-	      if ((strcmp (temp, "WLAN") == 0)
-		  || (strcmp (temp, "WLAN-WEP") == 0))
-		{
-		  if (strcmp (temp, "WLAN") == 0)
-		    openwlanpixbuf = (auxicons + lastauxicon)->icon;
-		  if (strcmp (temp, "WLAN-WEP") == 0)
-		    closedwlanpixbuf = (auxicons + lastauxicon)->icon;
-		  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
-		}
-	      else
-		{
-		  g_strlcpy ((auxicons + lastauxicon)->name, temp,
-			     sizeof (auxicons->name));
-		  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
-		  lastauxicon++;
-		}
-	      if ( debug ) 
-		printf ("Icon for %s loaded:%s\n",temp,path);
-	    }
-	  else 
-	    {
-	      if ( debug ) 
-		printf ("No Icon for %s loaded\n",temp);
-	    }
-	}
+	load_user_icon( temp );
     }
   dl_mysql_free_result (res);
   dbtypelistcount = r;
