@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2005/02/13 14:06:54  tweety
+start street randering functions. reading from the database streets and displayi
+ng it on the screen
+improve a little bit in the sql-queries
+fixed linewidth settings in draw_cross
+
 Revision 1.4  2005/02/08 09:01:48  tweety
 move loading of usericons to icons.c
 
@@ -122,6 +128,7 @@ auxiconsstruct auxicons[MAXWPTYPES];
 void
 draw_plus_sign ( gdouble posxdest,   gdouble posydest )
 {
+  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
   if (shadow)
     { /*  draw shadow of + sign */
       gdk_gc_set_foreground (kontext, &darkgrey);
