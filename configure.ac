@@ -140,7 +140,7 @@ dnl ************************
 dnl Checks for libraries
 dnl ************************
 
-PKG_CHECK_MODULES(PKGCONFIG, gtk+-2.0 >= 2.0.6  gthread-2.0)
+PKG_CHECK_MODULES(PKGCONFIG, gtk+-2.0 >= 2.0.6  gthread-2.0  libart-2.0)
 LIBS="$LIBS $PKGCONFIG_LIBS"
 CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 
