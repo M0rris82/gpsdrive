@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.4  2005/11/06 18:37:38  tweety
+  shortened map selection code
+  coordinate_string2gdouble:
+   - fixed missing format
+    - changed interface to return gdouble
+    change -D option to reflect debuglevels
+    Added more debug Statements for Level>50
+    move map handling to to seperate file
+    speedup memory reservation for map-structure
+    Add code for automatic loading of maps from system
+    DATA/maps/.. Directory
+    changed length of mappath from 400 to 2048 chars
+
   Revision 1.3  2005/10/30 06:57:07  tweety
   eliminate ols tracks.h file
 
@@ -557,14 +570,14 @@ tracks_draw_list (void)
   gdks_tracks = g_new0 (GdkSegment, gdks_tracks_max);
   if (NULL == gdks_tracks)
     {
-      printf ("Problem reserving Memory for %ld track segments\n",
+      printf ("Problem reserving Memory for %d track segments\n",
 	      gdks_tracks_max);
       gdks_tracks_max = -1;
       return;
     }
 
   if (debug)
-    printf ("created gdk struct for %ld segments\n", gdks_tracks_max);
+    printf ("created gdk struct for %d segments\n", gdks_tracks_max);
 
   /* ------------------------------------------------------------------ */
   /*  draw gdks_tracks_list tracks */
@@ -610,7 +623,7 @@ tracks_draw_list (void)
 	      if (NULL == tracks_list)
 		{
 		  g_print
-		    ("Error: Cannot allocate Memory for %ld track-gdk segments\n",
+		    ("Error: Cannot allocate Memory for %d track-gdk segments\n",
 		     gdks_tracks_max);
 		  gdks_tracks_max = -1;
 		  return;
@@ -677,7 +690,7 @@ tracks_draw_list (void)
 		{
 		  if (debug)
 		    fprintf (stderr,
-			     "ERROR: Undefined Track Color for Segment %ld, track_id %ld\n",
+			     "ERROR: Undefined Track Color for Segment %d, track_id %d\n",
 			     i, track_id);
 
 		  gdk_gc_set_foreground (kontext, &green);
