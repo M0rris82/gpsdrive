@@ -54,6 +54,7 @@ my $failcount  = 0;
 my $newcount   = 0;
 my $existcount = 0;
 my $polite = 'yes';
+my $MIN_MAP_BYTES = 4000;   # Minimum Bytes for a map to be accepted as downloaded
 my $scale = '100000';
 my $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 my $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
@@ -147,7 +148,7 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
       while ($long < $endlon) {
          my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
  	         
-	if ( -s $filename) {
+	if ( is_map_file($filename)) {
 	    $existcount++;
 	} else {
             LOOP: {
@@ -186,7 +187,7 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
 		   print "Unknown map sever :", $mapserver, "\n"; 
 	           }
                
-	       if (-s 'tmpmap.gif') {
+	       if (is_map_file('tmpmap.gif')) {
                   open(KOORD,">>$KOORD_FILE") || die "Can't open: $KOORD_FILE"; 
 	          print KOORD "$filename $lati $long $mapscale\n";
                   rename('tmpmap.gif',$filename);
@@ -222,6 +223,17 @@ print "\n";
 #
 ################################################################################
 
+######################################################################
+# Check if $filename is a valis map image
+# for now we only check the size and existance
+######################################################################
+sub is_map_file($){
+    my $filename = shift;
+    return 1 if ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
+    return 0;
+}
+
+######################################################################
 sub error_check {
     my $status;
     
@@ -302,7 +314,7 @@ sub get_waypoint {
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
     
-    open(WAYPT,"$WAYPT_FILE") || die "ERROR: Can't open: $WAYPT_FILE\n";
+    open(WAYPT,"$WAYPT_FILE") || die "ERROR: Can't open: $WAYPT_FILE: $!\n";
     my ($name,$lat,$lon);
     while (<WAYPT>) {
 	chomp;
@@ -319,39 +331,39 @@ sub get_waypoint {
 
 ######################################################################
 sub get_unit {
-    # If they give just a filename, we should assume they meant the CONFIG_DIR
-    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-    
-    # If not specified on the command line, we read from the config file
-    open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
-    my $unit;
-    while (<CONFIG>) {
-	next unless (/units\s=/);
-	chomp;
-	$unit = $_;
-	$unit =~ s/units\s=\s//;
-    }   
-    close(CONFIG);
-    return $unit;
+   # If they give just a filename, we should assume they meant the CONFIG_DIR
+   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+   
+   # If not specified on the command line, we read from the config file
+   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE: $!\n";
+   my $unit;
+   while (<CONFIG>) {
+      next unless (/units\s=/);
+      chomp;
+      $unit = $_;
+      $unit =~ s/units\s=\s//;
+   }   
+   close(CONFIG);
+   return $unit;
 } #End get_unit
 
 ######################################################################
 sub get_mapdir {
-    # If they give just a filename, we should assume they meant the CONFIG_DIR  
-    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-    
-    # If not specified on the command line, we read from the config file
-    open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
-    my $mapdir;
-    while (<CONFIG>) {
-	next unless (/mapdir\s=/);
-	chomp;
-	$mapdir = $_;
-	$mapdir =~ s/mapdir\s=\s//;
-    }
-    close(CONFIG);
-    return $mapdir;
-    
+   # If they give just a filename, we should assume they meant the CONFIG_DIR  
+   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+
+   # If not specified on the command line, we read from the config file
+   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE: $!\n";
+   my $mapdir;
+   while (<CONFIG>) {
+      next unless (/mapdir\s=/);
+      chomp;
+      $mapdir = $_;
+      $mapdir =~ s/mapdir\s=\s//;
+   }
+   close(CONFIG);
+   return $mapdir;
+
 } #End get_mapdir
 
 ######################################################################
@@ -393,8 +405,8 @@ sub calc_offset {
     if ($$unit_ref =~ /miles/) {
 	$$dist_per_degree *= $KM2MILES;   
     } elsif ($$unit_ref =~ /nautic/) {
-       $$dist_per_degree *= $KM2NAUTICAL;
-   }
+	$$dist_per_degree *= $KM2NAUTICAL;
+    }
     
     # The offset for the coordinate is the distance to travel divided by 
     # the dist per degree   
