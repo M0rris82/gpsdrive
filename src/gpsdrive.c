@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.54  2005/08/09 01:08:30  tweety
+Twist and bend in the Makefiles to install the DataDirectory more apropriate
+move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+adapt icons.txt loading according to these directories
+
 Revision 1.53  2005/08/07 23:10:33  tweety
 PDA mode UI has to big tabs and status window is cluttered
 http://bugzilla.gpsdrive.cc/show_bug.cgi?id=28
@@ -5579,7 +5584,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 
 			g_snprintf (mappath, sizeof (mappath),
 				    "%s/gpsdrive/%s", DATADIR,
-				    "gpsdriveanim.gif");
+				    "pixmaps/gpsdriveanim.gif");
 			/*  satsimage = */
 			/*    gdk_pixbuf_new_from_xpm_data ((const char **) pinguin_xpm); */
 			anim = gdk_pixbuf_animation_new_from_file (mappath,
@@ -12119,7 +12124,7 @@ main (int argc, char *argv[])
 		gtk_widget_show (hbox3);
 		gtk_container_add (GTK_CONTAINER (alignment3), hbox3);
 
-		image3 = create_pixmap (mainwindow, "gpsiconbt.png");
+		image3 = create_pixmap (mainwindow, "pixmaps/gpsiconbt.png");
 		gtk_widget_show (image3);
 		gtk_box_pack_start (GTK_BOX (hbox3), image3, FALSE, FALSE, 0);
 		label = gtk_label_new_with_mnemonic (_("_Navigation"));
@@ -13021,7 +13026,7 @@ main (int argc, char *argv[])
 	}
 	gtk_widget_show_all (mainwindow);
 
-	mainwindow_icon_pixbuf = create_pixbuf ("gpsicon.png");
+	mainwindow_icon_pixbuf = create_pixbuf ("pixmaps/gpsicon.png");
 	if (mainwindow_icon_pixbuf)
 	{
 		gtk_window_set_icon (GTK_WINDOW (mainwindow),
