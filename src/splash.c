@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.14  2005/05/15 06:51:27  tweety
+  all speech strings are now represented as arrays of strings
+  author: Rob Stewart <rob@groupboard.com>
+
   Revision 1.13  2005/04/29 17:41:57  tweety
   Moved the speech string to a seperate File
 
@@ -1034,24 +1038,11 @@ message_cb (char *msgid, char *name, char *text, int fs)
 	sockfd = -1;
 	friends_sendmsg (friendsserverip, buf);
 	gdk_beep ();
-	switch (voicelang)
-	{
-	case english:
-		g_snprintf (buf, sizeof (buf),
-			    "You received a message from %s\n", name);
-		break;
-	case spanish:
-		g_snprintf (buf, sizeof (buf),
-			    "You received a message from %s\n", name);
-		break;
-	case german:
-		g_snprintf (buf, sizeof (buf),
-			    "Sie haben eine Nachricht von %s erhalten", name);
-	}
+
+  g_snprintf( buf, sizeof(buf), speech_message_received[voicelang], name );
 	speech_out_speek (buf);
 
 	return TRUE;
-
 }
 
 
