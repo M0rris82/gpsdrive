@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.5  2005/01/22 11:38:06  tweety
+added more Help for keys
+
 Revision 1.4  2005/01/20 00:54:07  tweety
 added Help for more Keys
 
@@ -556,6 +559,8 @@ insert_text (GtkTextBuffer * buffer)
 		"y    : add waypoint at mouse cursor position\n"
 		"n    : switch on light for 60sec in nightmode\n"
 		"g    : Toggle grid\n"
+		"f    : Toggle friends display\n"
+		"w    : Set Waypoint at current location without asking\n"
 		"+    : Zoom in \n"
 		"-    : Zoom out\n"
 		);
