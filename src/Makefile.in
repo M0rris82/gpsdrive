@@ -152,8 +152,8 @@ libgpsd_a_SOURCES = netlib.c nmea_parse.c serial.c  tm.c em.c  	gps.h version.h
 gpsd_SOURCES = gpsd.c  gpsd.h nmea.h version.h
 gpsd_LDADD = -lgpsd -lm
 gpsd_LDFLAGS = -L. 
-@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
-@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h import_map.c import_map.h
+@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h import_map.c import_map.h
 gpsdrive_SOURCES = $(PRGS)
 
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -208,7 +208,7 @@ garble_LDFLAGS =
 @DISABLEGARMIN_FALSE@gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@gpsmisc.$(OBJEXT)
+@DISABLEGARMIN_FALSE@gpsmisc.$(OBJEXT) import_map.$(OBJEXT)
 @DISABLEGARMIN_TRUE@gpsdrive_OBJECTS =  gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -217,7 +217,7 @@ garble_LDFLAGS =
 @DISABLEGARMIN_TRUE@gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@icons.$(OBJEXT) LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@gpsmisc.$(OBJEXT)
+@DISABLEGARMIN_TRUE@gpsmisc.$(OBJEXT) import_map.$(OBJEXT)
 @ENABLETELEATLAS_TRUE@gpsdrive_DEPENDENCIES = 
 @ENABLETELEATLAS_FALSE@gpsdrive_DEPENDENCIES = 
 gpsdrive_LDFLAGS = 
@@ -251,10 +251,10 @@ DEP_FILES =  .deps/LatLong-UTMconversion.P .deps/battery.P .deps/em.P \
 .deps/garmin_link.P .deps/garmin_serial_unix.P .deps/garmin_util.P \
 .deps/gpsd.P .deps/gpsdrive.P .deps/gpsdrivegarble.P .deps/gpskismet.P \
 .deps/gpsmisc.P .deps/gpsnasamap.P .deps/gpsserial.P .deps/gpssql.P \
-.deps/icons.P .deps/nautic.P .deps/navigation.P .deps/netlib.P \
-.deps/nmea_parse.P .deps/poi.P .deps/serial.P .deps/settings.P \
-.deps/speech_out.P .deps/splash.P .deps/streets.P .deps/tm.P \
-.deps/track.P
+.deps/icons.P .deps/import_map.P .deps/nautic.P .deps/navigation.P \
+.deps/netlib.P .deps/nmea_parse.P .deps/poi.P .deps/serial.P \
+.deps/settings.P .deps/speech_out.P .deps/splash.P .deps/streets.P \
+.deps/tm.P .deps/track.P
 SOURCES = $(libgpsd_a_SOURCES) $(libfly_la_SOURCES) $(libnautic_la_SOURCES) $(garble_SOURCES) $(gpsdrive_SOURCES) $(gpsd_SOURCES) $(friendsd2_SOURCES)
 OBJECTS = $(libgpsd_a_OBJECTS) $(libfly_la_OBJECTS) $(libnautic_la_OBJECTS) $(garble_OBJECTS) $(gpsdrive_OBJECTS) $(gpsd_OBJECTS) $(friendsd2_OBJECTS)
 
