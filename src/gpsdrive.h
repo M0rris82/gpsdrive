@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.5  2005/02/17 09:46:34  tweety
+minor changes
+
 Revision 1.4  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -227,10 +230,27 @@ extern gint real_screen_y;
 extern gint shadow;
 
 extern GdkGC *kontext;
-extern GdkColor darkgrey;
-extern GdkColor green;
 extern GdkDrawable *drawable;
 extern GtkWidget *trackbt;
+
+extern GdkColor red;
+extern GdkColor black;
+extern GdkColor white;
+extern GdkColor blue ;
+extern GdkColor nightcolor;
+extern GdkColor lcd;
+extern GdkColor lcd2;
+extern GdkColor yellow;
+extern GdkColor green;
+extern GdkColor green2;
+extern GdkColor mygray;
+extern GdkColor textback;
+extern GdkColor textbacknew;
+extern GdkColor grey;
+extern GdkColor orange;
+extern GdkColor orange2;
+extern GdkColor darkgrey;
+extern GdkColor defaultcolor;
 
 
 
