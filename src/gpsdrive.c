@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.50  2005/07/05 23:12:36  ganter
+anyone has destroyed the GPS-Time display, fixed
+
 Revision 1.49  2005/07/05 19:44:28  ganter
 fix for locale problem
 
@@ -2677,7 +2680,7 @@ convertRMC (char *f)
 				 field[i]);
 		g_print ("\n");
 	}
-	g_snprintf (b, sizeof (b), "gpsd: %c%c:%c%c.%c%c ", field[1][0],
+	g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0],
 		    field[1][1], field[1][2], field[1][3], field[1][4],
 		    field[1][5]);
 	g_strlcpy (utctime, b, sizeof (utctime));
