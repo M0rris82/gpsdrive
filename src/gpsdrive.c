@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.9  2005/01/11 18:11:51  tweety
+improved draw raster
+
 Revision 1.8  2005/01/11 01:37:06  tweety
 implement first part of drawgrid
 
@@ -5149,30 +5152,49 @@ drawmarker (GtkWidget * widget, guint * datum)
 
   if (drawgrid)
     {
+      // TODO: add lat/lon as Text to the lines so we know which is which
       gdouble lat, lon;
+
+      // add more lines as the scale increases
+      gdouble step;
+      step=1;
+      if (mapscale < 600000 ) 
+	step=.5;
 
       gdk_gc_set_foreground (kontext, &darkgrey);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 
-      lat=0;
-      for ( lon=-180 ; lon<180 ; lon = lon + 1 ) {
-	gdouble posxdest, posydest;
-	calcxy (&posxdest, &posydest, lon, lat, zoom);
-	if ((posxdest >= 0) && (posxdest < SCREEN_X) )
-	  gdk_draw_line (drawable, kontext,  posxdest,0, posxdest,SCREEN_Y);
-      }
 
-      lon=0;
-      for ( lat=-90 ; lat < 90 ; lat = lat + 1 ) {
-	gdouble posxdest, posydest;
-	calcxy (&posxdest, &posydest, lon, lat, zoom);
-	if ((posydest >= 0) && (posydest < SCREEN_Y) ) {
-	  gdk_draw_line (drawable, kontext,  0,posydest, SCREEN_X,posydest);
+      // TODO: calculate the start and stop for lat/lon according to the displayed section
+      for ( lon=-180 ; lon<180 ; lon = lon + step ) {
+	for ( lat=-90 ; lat < 90 ; lat = lat + step ) {
+	  gdouble posxdest11, posydest11;
+	  gdouble posxdest12, posydest12;
+	  gdouble posxdest21, posydest21;
+	  gdouble posxdest22, posydest22;
+	  calcxy (&posxdest11, &posydest11, lon  , lat  , zoom);
+	  calcxy (&posxdest12, &posydest12, lon  , lat+step, zoom);
+	  calcxy (&posxdest21, &posydest21, lon+step, lat  , zoom);
+	  calcxy (&posxdest22, &posydest22, lon+step, lat+step, zoom);
+
+	  if ( ( (posxdest11 >= 0) && (posxdest11 < SCREEN_X) &&
+		 (posydest11 >= 0) && (posydest11 < SCREEN_Y) 
+		 )
+	       &&
+	       ( (posxdest22 >= 0) && (posxdest22 < SCREEN_X) &&
+		 (posydest22 >= 0) && (posydest22 < SCREEN_Y) 
+		 )
+	      ) 
+	    {
+	      // TODO: add linethikness 2 for Mayor Lines
+	      gdk_draw_line (drawable, kontext,  posxdest11,posydest11, posxdest21,posydest21);
+	      gdk_draw_line (drawable, kontext,  posxdest11,posydest11, posxdest12,posydest12);
+	    }
 	}
-			    
       }
     }
+      
   drawtracks ();
 
 
