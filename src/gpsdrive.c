@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.42  2005/05/15 07:00:51  tweety
+new Keystroke p adds an instant waypoint at cursor position
+new Keystroke q querys information for thenearest waypoints and street endpoints
+
 Revision 1.41  2005/05/15 06:51:27  tweety
 all speech strings are now represented as arrays of strings
 author: Rob Stewart <rob@groupboard.com>
@@ -9476,8 +9480,38 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		wplat = lat;
 		wplon = lon;
 		addwaypoint_cb (NULL, 0);
+	}
 
+	// Add instant waypoint a current mouse location
+	if ((toupper (event->keyval)) == 'P')
+	{
+		gchar wp_name[100], wp_type[100];
+		time_t t;
+		struct tm *ts;
+		time (&t);
+		ts = localtime (&t);
+		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
+		g_snprintf (wp_type, sizeof (wp_type), "Automatic_key");
 
+		gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
+		calcxytopos (x, y, &lat, &lon, zoom);
+		//		if (debug)
+		printf ("Add Waypoint: %s lat:%f,lon:%f (x:%d,y:%d)\n", wp_name, lat, lon, x, y);
+		addwaypoint (wp_name, wp_type, lat, lon);
+	}
+
+	// Query Info for next points and streets
+	if ( ( (toupper (event->keyval)) == '?' )
+	     || ( (toupper (event->keyval)) == 'Q') )
+	{
+	    gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
+	    gdouble lat1,lon1,lat2,lon2;
+	    gint delta = 20;
+	    calcxytopos (x-delta, y-delta, &lat1, &lon1, zoom);
+	    calcxytopos (x+delta, y+delta, &lat2, &lon2, zoom);
+	    printf ("---------------------------------------------\n");
+	    poi_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
+	    streets_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
 	}
 
 	// In Route mode Force next Route Point
