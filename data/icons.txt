@@ -215,7 +215,7 @@ transport.car.phototrap traffic light speed_trap.gif
 transport.car.rental car_rental.png
 transport.car.rental.avis car_rental.png
 transport.car.rental.herz car_rental.png
-transport.car.rental.sixt car_rental.png
+transport.car.rental.sixt sixt.png
 transport.car.rest area rest_area.gif
 transport.car.toll station car.gif
 transport.car.wrecking service towing.gif
