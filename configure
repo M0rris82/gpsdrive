@@ -20871,6 +20871,20 @@ fi
 
 echo "Using $CC compiler"
 
+if test "$CC" = "gcc" ; then
+
+if $CC -dumpversion|egrep -q "^3\.*"; then
+echo "GCC ok"
+else
+echo "*****************************************"
+echo "You need a gcc >= 3.x to compile GpsDrive"
+echo "*****************************************"
+exit
+fi
+
+fi
+
+
 UNAMEP=`uname -p`
 ARCHP=`arch`
 CFLAGS="$CFLAGS"
