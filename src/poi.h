@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/02/22 08:18:51  tweety
+change leveing system to simpler scale marking for decission what to show on display
+column_names(DBFuncs.pm get data from Database
+added functions add_index drop_index
+added language to type Database
+for some Data split unpack and mirror Directories
+for some add lat/lon min/max to get faster import for testing
+added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+on the street data
+
 Revision 1.2  2005/02/07 07:53:39  tweety
 added check_if_moved inti function poi_rebuild_list
 
@@ -59,8 +69,8 @@ typedef struct
   gint    type_id; 
   gdouble proximity;
   gchar   comment[255]; 
-  gint    level_min;  
-  gint    level_max;  
+  gint    scale_min;  
+  gint    scale_max;  
   //date  last_modified  
   gchar   url[160]; 
   gint    address_id;

@@ -40,28 +40,17 @@ END { }
 # -----------------------------------------------------------------------------
 
 #retrieve Column Names for desired table
-# TODO: get it directly from DB
 sub column_names($){
     my $table = shift;
     my @col;
-    @col = ("address_id","lat","lon","name",
-	    "level_min","level_max","alt","comment",
-	    "last_modified",
-	    "proximity","type_id","url",
-	    "wp_id","source_id") if $table eq "poi";
 
-    @col = ("lat1","lon1",
-	    "lat2","lon2",
-	    "name",
-	    "level_min","level_max","alt",
-	    "last_modified",
-	    "type_id",
-	    "streets_id","source_id") if $table eq "streets";
-
-    @col = ("type_id","name","symbol","description") if $table eq "type";
-
-    @col = ("source_id","name","url","licence","comment","last_update") if $table eq "source";
-
+    my $dbh = db_connect();
+    my $query = "SHOW COLUMNS FROM geoinfo.$table;";
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute() or die $sth->errstr;
+    while ( my $array_ref = $sth->fetchrow_arrayref() ) {
+	push ( @col ,$array_ref->[0] );
+    }
     return @col;
 }
 
@@ -334,14 +323,14 @@ sub add_poi($){
 
     # ---------------------- POI
     $point->{'poi.last_modified'} ||= time();
-    $point->{'poi.level_min'}         ||= 0;
-    $point->{'poi.level_max'}         ||= 0;
+    $point->{'poi.scale_min'}         ||= 0;
+    $point->{'poi.scale_max'}         ||= 0;
     insert_hash("poi",$point);
 
 }
 
 #############################################################################
-# Add a single streetst into DB
+# Add a single streets into DB
 sub streets_add($){
     my $segment = shift;
     my $segment4db = {};
@@ -353,6 +342,7 @@ sub streets_add($){
 
     # ---------------------- SOURCE
     #print Dumper(\$segment4db);
+    # TODO: put this out here for performance reason
     if ( $segment4db->{"source.name"} && ! $segment4db->{'streets.source_id'}) {
 	my $source_id = source_name2id($segment4db->{"source.name"});
 	# print "Source: $segment4db->{'source.name'} -> $source_id\n";
@@ -383,14 +373,118 @@ sub streets_add($){
 
     # ---------------------- STREETS
     $segment4db->{'streets.last_modified'} ||= time();
-    $segment4db->{'streets.level_min'}         ||= 0;
-    $segment4db->{'streets.level_max'}         ||= 0;
+    $segment4db->{'streets.scale_min'}         ||= 0;
+    $segment4db->{'streets.scale_max'}         ||= 0;
     insert_hash("streets",$segment4db);
 
 }
 
-# -----------------------------------------------------------------------------
 
+#############################################################################
+# Add a list of street segments into streets-DB
+sub segments_add($){
+    my $data = shift;
+    my $segment4db = {};
+    my @columns = column_names("streets");
+    map { 
+	$segment4db->{"streets.$_"} = 
+	    ( $data->{"streets.$_"} || $data->{$_} || $data->{lc($_)}) 
+	} @columns;
+
+    # ---------------------- SOURCE
+    #print Dumper(\$segment4db);
+    # TODO: put this out here for performance reason
+    if ( $segment4db->{"source.name"} && ! $segment4db->{'streets.source_id'}) {
+	my $source_id = source_name2id($segment4db->{"source.name"});
+	# print "Source: $segment4db->{'source.name'} -> $source_id\n";
+	
+	$segment4db->{'source.source_id'} = $source_id;
+	$segment4db->{'streets.source_id'}    = $source_id;
+    }
+
+    # ---------------------- Type
+    my $type_name = $data->{'type.name'};
+    if ( $type_name && ! $segment4db->{'streets.type_id'}) {
+	my $type_id = type_name2id($type_name);
+	unless ( $type_id ) {
+	    my $type_hash= {
+		'type.name' => $type_name
+	    };
+	    insert_hash("type",$type_hash);
+	    $type_id = type_name2id($segment4db->{"type.name"});
+	}
+	$segment4db->{'streets.type_id'}    = $type_id;
+    }
+
+    # ---------------------- ADDRESS
+    $segment4db->{'streets.address_id'}    ||= 0;
+
+    # ---------------------- TYPE
+    $segment4db->{'streets.type_id'}       ||= 0;
+
+    # ---------------------- STREETS
+    $segment4db->{'streets.last_modified'} ||= time();
+    $segment4db->{'streets.scale_min'}         ||= 0;
+    $segment4db->{'streets.scale_max'}         ||= 0;
+    my $count = scalar @{$data->{segments}};
+    debug("Writing $count Segments") if $count ;
+    $segment4db->{'streets.lat2'}=0;
+    for my $segment ( @{$data->{segments}} ){
+	$segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
+	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
+	$segment4db->{'streets.lat2'} = $segment->{lat};
+	$segment4db->{'streets.lon2'} = $segment->{lon};
+	next unless $segment4db->{'streets.lat1'};
+	#print Dumper(\$segment4db);
+	insert_hash("streets",$segment4db);
+    }
+}
+
+# -----------------------------------------------------------------------------
+sub db_exec($){
+    my $statement = shift;
+    debug("db_exec($statement)");
+
+    my $dbh = db_connect();
+    my $sth = $dbh->prepare($statement);
+    $sth->execute() 
+	or warn $sth->errstr."\n";
+}
+
+# -----------------------------------------------------------------------------
+sub add_index($){
+    my $table = shift;
+
+    if ( $table eq "poi" ){
+	for my $key ( qw( last_modified name lat lon ) ){
+	    db_exec("ALTER TABLE `$table` ADD INDEX `$key` ( `$key` );");
+	    
+	}
+    } elsif ( $table eq "streets" ){
+	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
+	    db_exec("ALTER TABLE `$table` ADD INDEX  `$key` ( `$key` );");
+	}
+    }
+#ALTER TABLE `address` ADD FULLTEXT ( `comment` )
+}
+
+# -----------------------------------------------------------------------------
+sub drop_index($){
+    my $table = shift;
+
+    if ( $table eq "poi" ){
+	for my $key ( qw( last_modified name lat lon ) ){
+	    db_exec("ALTER TABLE `$table` DROP INDEX `$key` ;");
+	    
+	}
+    } elsif ( $table eq "streets" ){
+	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
+	    db_exec("ALTER TABLE `$table` DROP INDEX `$key` ;");
+	}
+    }
+}
+
+# -----------------------------------------------------------------------------
 sub create_db(){
     my $create_statement;
     my $dbh;
@@ -404,203 +498,197 @@ sub create_db(){
     $sth = $dbh->prepare($create_statement);
     $sth->execute();
     
-    $create_statement='CREATE TABLE IF NOT EXISTS `address` (
-  `address_id` int(11) NOT NULL auto_increment,
-  `country` varchar(40) NOT NULL default \'\',
-  `state` varchar(80) NOT NULL default \'\',
-  `zip` varchar(5) NOT NULL default \'\',
-  `city` varchar(80) NOT NULL default \'\',
-  `city_part` varchar(80) NOT NULL default \'\',
-  `street_name` varchar(80) NOT NULL default \'\',
-  `street_number` varchar(5) NOT NULL default \'\',
-  `phone` varchar(160) NOT NULL default \'\',
-  `comment` varchar(160) NOT NULL default \'\',
+db_exec('CREATE TABLE IF NOT EXISTS `address` (
+  `address_id`    int(11)      NOT NULL auto_increment,
+  `country`       varchar(40)  NOT NULL default \'\',
+  `state`         varchar(80)  NOT NULL default \'\',
+  `zip`           varchar(5)   NOT NULL default \'\',
+  `city`          varchar(80)  NOT NULL default \'\',
+  `city_part`     varchar(80)  NOT NULL default \'\',
+  `street_name`   varchar(80)  NOT NULL default \'\',
+  `street_number` varchar(5)   NOT NULL default \'\',
+  `phone`         varchar(160) NOT NULL default \'\',
+  `comment`       varchar(160) NOT NULL default \'\',
   PRIMARY KEY  (`address_id`)
-) TYPE=MyISAM;
-';
-    $dbh = db_connect();
-    $sth = $dbh->prepare($create_statement);
-    $sth->execute();
+) TYPE=MyISAM;');
+    add_index('address');
 
-$dbh = db_connect();
-$sth = $dbh->prepare($create_statement);
-$sth->execute();
+db_exec('CREATE TABLE IF NOT EXISTS `poi` (
+  `poi_id`        int(11)      NOT NULL auto_increment,
+  `name`          varchar(80)           default NULL,
+  `type_id`       int(11)      NOT NULL default \'0\',
+  `lat`           double                default \'0\',
+  `lon`           double                default \'0\',
+  `alt`           double                default \'0\',
+  `proximity`     float                 default \'0\',
+  `comment`       varchar(255)          default NULL,
+  `scale_min`     smallint(6)  NOT NULL default \'0\',
+  `scale_max`     smallint(6)  NOT NULL default \'0\',
+  `last_modified` date         NOT NULL default \'0000-00-00\',
+  `url`           varchar(160)     NULL ,
+  `address_id`    int(11)               default \'0\',
+  `source_id`     int(11)      NOT NULL default \'0\',
+  PRIMARY KEY  (`poi_id`)
+) TYPE=MyISAM;');
+    add_index('poi');
 
-$create_statement='
-CREATE TABLE IF NOT EXISTS `poi` (
-  `wp_id` int(11) NOT NULL auto_increment,
-  `name` varchar(80) default NULL,
-  `type_id` int(11) NOT NULL default \'0\',
-  `lat` double default \'0\',
-  `lon` double default \'0\',
-  `alt` double default \'0\',
-  `proximity` float default \'0\',
-  `comment` varchar(255) default NULL,
-  `level_min` smallint(6) NOT NULL default \'0\',
-  `level_max` smallint(6) NOT NULL default \'0\',
-  `last_modified` date NOT NULL default \'0000-00-00\',
-  `url` varchar(160) NULL ,
-  `address_id` int(11) default \'0\',
-  `source_id` int(11) NOT NULL default \'0\',
-  PRIMARY KEY  (`wp_id`),
-  KEY `last_modified` (`last_modified`),
-  KEY `name` (`name`),
-  KEY `lat` (`lat`),
-  KEY `lon` (`lon`)
-) TYPE=MyISAM;
-';
-$dbh = db_connect();
-$sth = $dbh->prepare($create_statement);
-$sth->execute();
 
-$create_statement='
-CREATE TABLE IF NOT EXISTS `source` (
-  `source_id` int(11) NOT NULL auto_increment,
-  `name` varchar(80) NOT NULL default \'\',
-  `licence` varchar(160) NOT NULL default \'\',
-  `url` varchar(160) NOT NULL default \'\',
-  `comment` varchar(160) NOT NULL default \'\',
-  `last_update` date NOT NULL default \'0000-00-00\',
+db_exec('CREATE TABLE IF NOT EXISTS `streets` (
+  `street_id`         int(11)      NOT NULL auto_increment,
+  `name`          varchar(80)           default NULL,
+  `type_id`       int(11)      NOT NULL default \'0\',
+  `lat1`          double                default \'0\',
+  `lon1`          double                default \'0\',
+  `alt1`           double                default \'0\',
+  `lat2`          double                default \'0\',
+  `lon2`          double                default \'0\',
+  `alt2`           double                default \'0\',
+  `proximity`     float                 default \'0\',
+  `comment`       varchar(255)          default NULL,
+  `scale_min`     smallint(6)  NOT NULL default \'0\',
+  `scale_max`     smallint(6)  NOT NULL default \'0\',
+  `last_modified` date         NOT NULL default \'0000-00-00\',
+  `source_id`     int(11)      NOT NULL default \'0\',
+  PRIMARY KEY  (`street_id`)
+) TYPE=MyISAM;');
+    add_index('streets');
+
+
+db_exec('CREATE TABLE IF NOT EXISTS `source` (
+  `source_id`   int(11)      NOT NULL auto_increment,
+  `name`        varchar(80)  NOT NULL default \'\',
+  `licence`     varchar(160) NOT NULL default \'\',
+  `url`         varchar(160) NOT NULL default \'\',
+  `comment`     varchar(160) NOT NULL default \'\',
+  `last_update` date         NOT NULL default \'0000-00-00\',
   PRIMARY KEY  (`source_id`)
-) TYPE=MyISAM;
-';
-$dbh = db_connect();
-$sth = $dbh->prepare($create_statement);
-$sth->execute();
+) TYPE=MyISAM;');
+    add_index('source');
 
-$create_statement='
-CREATE TABLE IF NOT EXISTS `type` (
-  `type_id` int(11) NOT NULL auto_increment,
-  `name` varchar(80) NOT NULL default \'\',
-  `symbol` varchar(160) NULL default \'\',
-  `description` varchar(160) NULL default \'\',
-  PRIMARY KEY  (`type_id`),
-  FULLTEXT KEY `description` (`description`)
-) TYPE=MyISAM;
-';
-$dbh = db_connect();
-$sth = $dbh->prepare($create_statement);
-$sth->execute();
+db_exec('CREATE TABLE IF NOT EXISTS `type` (
+  `type_id`     int(11)      NOT NULL auto_increment,
+  `lang`        varchar(2)       NULL default \'en\',
+  `name`        varchar(80)  NOT NULL default \'\',
+  `symbol`      varchar(160)     NULL default \'\',
+  `description` varchar(160)     NULL default \'\',
+  PRIMARY KEY  (`type_id`)
+) TYPE=MyISAM;');
+    add_index('type');
 
-my @icons = qw( unknown
-		Ausbildung.GrundSchule
-		Ausbildung.Gymnasium
-		Ausbildung.HauptSchule
-		Ausbildung.UNI
-		Ausbildung.VHS
-		Ausbildung.Kindergarten
-		Ausbildung.Kinderkrippe
-		Bank
-		Bank.Geldautomat
-		Bank.Geldautomat.EC
-		Transport.Blitzampel
-		Briefkasten
-		Camping Platz
-		EC-Automat
-		Einkaufszentrum
-		Essen-Lieferservice
-		Essen.GaststÃÂ¤tte
-		Essen.Kneipe
-		Essen.Restaurant
-		Essen.Schnellrestaurant
-		Essen.Schnellrestaurant.Burger-King
-		Essen.Schnellrestaurant.MC-Donalds
-		Feuerwehr
-		Einkaufen.Flohmarkt
-		Einkaufen.Lebensmittel.Supermarkt
-		Einkaufen.Lebensmittel
-		Einkaufen.Baumarkt
-		Transport.Flugplatz
-		Freizeit.Kino
-		Freizeit.Nationalpark
-		Freizeit.Oper
-		Freizeit.Reiterhof
-		Freizeit.SehenswÃÂ¼rdigkeit
-		Freizeit.SehenswÃÂ¼rdigkeit.Museum
-		Freizeit.Spielplatz
-		Freizeit.Sport.Fussball-Stadion
-		Freizeit.Sport.Fussballplatz
-		Freizeit.Sport.Golfplatz
-		Freizeit.Sport.Minigolfplatz
-		Freizeit.Sport.Tennisplatz
-		Freizeit.Theater
-		Friedhof
-		FussgÃÂ¤nger Zone
-		Geldwechsel
-		Geocache
-		Gesundheit.Ambulanz
-		Gesundheit.Apotheke
-		Gesundheit.Arzt
-		Gesundheit.Krankenhaus
-		Gesundheit.Notaufnahme
-		Gift-Shop
-		Kino
-		Kirche.Evangelisch
-		Kirche.Katholisch
-		Kirche.Synagoge
-		Messe
-		Freizeit.Modellflugplatz
-		Notruf sÃÂ¤ule
-		Transport.Park&Ride
-		Transport.Parkplatz
-		Polizei
-		Post
-		Recycling.Altglas
-		Recycling.Altpapier
-		Recycling.Wertstoffhof
-		Freizeit.Rummelplatz
-		Stadt Information
-		Stadthalle
-		Telefon-Zelle
-		Transport.Auto-Verlade-Bahnhof
-		Transport.Bahnhof
-		Transport.Bus-Haltestelle
-		Transport.FÃÂ¤hre
-		Transport.GÃÂ¼ter-Verlade-Bahnhof
-		Transport.Lotsendienst
-		Transport.Mautstation
-		Transport.RaststÃï¿½Å¹tte
-		Transport.S-Bahn-Haltestelle
-		Transport.Strassen-Bahn-Haltestelle
-		Transport.Strassen.30-Zohne
-		Transport.Strassen.Autobahn
-		Transport.Strassen.Bundesstrasse
-		Transport.Strassen.Innerorts
-		Transport.Strassen.Landstrasse
-		Transport.Tankstelle
-		Transport.Taxi-Stand
-		Transport.U-Bahn-Haltestelle
-		Transport.Verkehr.Baustelle
-		Transport.Verkehr.Radarfalle
-		Transport.Verkehr.Stau
-		Transport.Werkstatt
-		Freizeit.Veranstaltungshalle
-		Verwaltung.Rathaus
-		Verwaltung.Zulassungsstele
-		WC
-		Transport.Auto.Werkstatt
-		Freizeit.Zoo
-		Ãœbernachtung.Hotel
-		Ãœbernachtung.Jugend Herberge
-		Ãœbernachtung.Motel
-		Ãœbernachtung.ZeltplatzSchwimmbad
+my @icons = qw( de.unknown
+		de.Ausbildung.GrundSchule
+		de.Ausbildung.Gymnasium
+		de.Ausbildung.HauptSchule
+		de.Ausbildung.UNI
+		de.Ausbildung.VHS
+		de.Ausbildung.Kindergarten
+		de.Ausbildung.Kinderkrippe
+		de.Bank
+		de.Bank.Geldautomat
+		de.Bank.Geldautomat.EC
+		de.Transport.Blitzampel
+		de.Briefkasten
+		de.Camping Platz
+		de.EC-Automat
+		de.Einkaufszentrum
+		de.Essen-Lieferservice
+		de.Essen.Gaststaette
+		de.Essen.Kneipe
+		de.Essen.Restaurant
+		de.Essen.Schnellrestaurant
+		de.Essen.Schnellrestaurant.Burger-King
+		de.Essen.Schnellrestaurant.MC-Donalds
+		de.Feuerwehr
+		de.Einkaufen.Flohmarkt
+		de.Einkaufen.Lebensmittel.Supermarkt
+		de.Einkaufen.Lebensmittel
+		de.Einkaufen.Baumarkt
+		de.Transport.Flugplatz
+		de.Freizeit.Kino
+		de.Freizeit.Nationalpark
+		de.Freizeit.Oper
+		de.Freizeit.Reiterhof
+		de.Freizeit.Sehenswuerdigkeit
+		de.Freizeit.Sehenswuerdigkeit.Museum
+		de.Freizeit.Spielplatz
+		de.Freizeit.Sport.Fussball-Stadion
+		de.Freizeit.Sport.Fussballplatz
+		de.Freizeit.Sport.Golfplatz
+		de.Freizeit.Sport.Minigolfplatz
+		de.Freizeit.Sport.Tennisplatz
+		de.Freizeit.Theater
+		de.Friedhof
+		de.Fussgaenger Zone
+		de.Geldwechsel
+		de.Geocache
+		de.Gesundheit.Ambulanz
+		de.Gesundheit.Apotheke
+		de.Gesundheit.Arzt
+		de.Gesundheit.Krankenhaus
+		de.Gesundheit.Notaufnahme
+		de.Gift-Shop
+		de.Kino
+		de.Kirche.Evangelisch
+		de.Kirche.Katholisch
+		de.Kirche.Synagoge
+		de.Messe
+		de.Freizeit.Modellflugplatz
+		de.Notruf saeule
+		de.Transport.Park&Ride
+		de.Transport.Parkplatz
+		de.Polizei
+		de.Post
+		de.Recycling.Altglas
+		de.Recycling.Altpapier
+		de.Recycling.Wertstoffhof
+		de.Freizeit.Rummelplatz
+		de.Stadt Information
+		de.Stadthalle
+		de.Telefon-Zelle
+		de.Transport.Auto-Verlade-Bahnhof
+		de.Transport.Bahnhof
+		de.Transport.Bus-Haltestelle
+		de.Transport.Faehre
+		de.Transport.Gueter-Verlade-Bahnhof
+		de.Transport.Lotsendienst
+		de.Transport.Mautstation
+		de.Transport.Raststaette
+		de.Transport.S-Bahn-Haltestelle
+		de.Transport.Strassen-Bahn-Haltestelle
+		de.Transport.Strassen.30-Zohne
+		de.Transport.Strassen.Autobahn
+		de.Transport.Strassen.Bundesstrasse
+		de.Transport.Strassen.Innerorts
+		de.Transport.Strassen.Landstrasse
+		de.Transport.Tankstelle
+		de.Transport.Taxi-Stand
+		de.Transport.U-Bahn-Haltestelle
+		de.Transport.Verkehr.Baustelle
+		de.Transport.Verkehr.Radarfalle
+		de.Transport.Verkehr.Stau
+		de.Transport.Werkstatt
+		de.Freizeit.Veranstaltungshalle
+		de.Verwaltung.Rathaus
+		de.Verwaltung.Zulassungsstele
+		de.WC
+		de.Transport.Auto.Werkstatt
+		de.Freizeit.Zoo
+		de.Uebernachtung.Hotel
+		de.Uebernachtung.Jugend Herberge
+		de.Uernachtung.Motel
+		de.Uernachtung.ZeltplatzSchwimmbad
 		);
 
     my $i=1;
     for my $icon  ( @icons ) {    
 	my $statement;
-	$statement = "DELETE FROM `type` WHERE type_id = $i LIMIT 1;\n";
-	$dbh = db_connect();
-	$sth = $dbh->prepare($statement);
-	$sth->execute();
-	
-	$statement = "INSERT INTO `type` VALUES ($i,'$icon','$icon.png','$icon');\n";
-	$dbh = db_connect();
-	$sth = $dbh->prepare($statement);
-	$sth->execute();
+	$icon =~ s/(..)\.//;
+	my $lang =$1;
+	$lang ||= 'en';
+	db_exec("DELETE FROM `type` WHERE type_id = $i AND `lang` = '$lang';");
+	db_exec("INSERT INTO `type` VALUES ($i,'$lang','$icon','$icon.png','$icon');");
 	$i++;
     }
-    
     print "Creation completed\n";
 }
 # -----------------------------------------------------------------------------

@@ -415,20 +415,20 @@ sub add_earthinfo_nga_mil_to_db($$){
 		# The scale ranges from 1,  relatively high, to 5, relatively low.  
 		# The scale could also include NULL (no value) as a value for 
 		# populated places with unknown or undetermined classification.
-		my $level_min = 0;
-		my $level_max = 99;
+		my $scale_min = 0;
+		my $scale_max = 99;
 		if ( defined($pc) && $pc ne '' ) { 
 		    #print "pc : $pc \n";
-		    if    ( $pc == 1 ) {   $level_min = 0;	$level_max = 99; }
-		    elsif ( $pc == 2 ) {   $level_min = 10;	$level_max = 99; }
-		    elsif ( $pc == 3 ) {   $level_min = 20;	$level_max = 99; }
-		    elsif ( $pc == 4 ) {   $level_min = 30;	$level_max = 99; }
-		    elsif ( $pc == 5 ) {   $level_min = 40;	$level_max = 99; }
+		    if    ( $pc == 1 ) {   $scale_min = 0;	$scale_max = 100000; }
+		    elsif ( $pc == 2 ) {   $scale_min = 1000;	$scale_max = 1000000; }
+		    elsif ( $pc == 3 ) {   $scale_min = 10000;	$scale_max = 10000000; }
+		    elsif ( $pc == 4 ) {   $scale_min = 100000;	$scale_max = 100000000; }
+		    elsif ( $pc == 5 ) {   $scale_min = 1000000;$scale_max = 100000000; }
 		} else {
-		    $level_min = 50;	$level_max = 99; 
+		    $scale_min = 0;	$scale_max = 100000000; 
 		};
-		$values->{'poi.level_min'} = $level_min;
-		$values->{'poi.level_max'} = $level_max;
+		$values->{'poi.scale_min'} = $scale_min;
+		$values->{'poi.scale_max'} = $scale_max;
 	    }
 
 

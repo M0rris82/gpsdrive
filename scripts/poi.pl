@@ -5,6 +5,16 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.8  2005/02/22 08:18:51  tweety
+# change leveing system to simpler scale marking for decission what to show on display
+# column_names(DBFuncs.pm get data from Database
+# added functions add_index drop_index
+# added language to type Database
+# for some Data split unpack and mirror Directories
+# for some add lat/lon min/max to get faster import for testing
+# added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+# on the street data
+#
 # Revision 1.7  2005/02/18 08:19:39  tweety
 # added reading routine for kismet street data
 #
@@ -69,6 +79,8 @@ my ($man,$help);
 
 our $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 our $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
+our $MIRROR_DIR   = "$CONFIG_DIR/MIRROR";
+our $UNPACK_DIR   = "$CONFIG_DIR/UNPACK";
 
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = 0;
@@ -80,12 +92,15 @@ my $do_all               = 0;
 my $do_create_db         = 0;
 my $do_gpsdrive_tracks   = 0;
 my $do_kismet_tracks     = 0;
+our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
 our $db_user             = 'gast';
 our $db_password         = 'gast';
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
+pod2usage(1)
+    unless @ARGV;
 GetOptions ( 
 	     'census'              => \$do_census,
 	     'earthinfo_nga_mil=s' => \$do_earthinfo_nga_mil,
@@ -102,6 +117,10 @@ GetOptions (
 	     'p=s'                 => \$db_password,
 	     'db-user=s'           => \$db_user,
 	     'db-password=s'       => \$db_password,
+	     'lat_min=s'           => \$lat_min,      
+	     'lat_max=s'           => \$lat_max,
+	     'lon_min=s'           => \$lon_min,      
+	     'lon_max=s'           => \$lon_max,
 	     'd'                   => \$debug,      
 	     'v'                   => \$verbose,      
 	     'debug_range=s'       => \$debug_range,      
@@ -202,37 +221,35 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil>]
 
 =over 8
 
-=item B<-earthinfo_nga_mil=xx[,yy][,zz]...>
+=item B<--earthinfo_nga_mil=xx[,yy][,zz]...>
 
-********** Experimental ************
+Download from earthinfo.nga.mil and import into 
+mysql DB. These are ~2.500.000 City Names arround 
+the world
 
-Download and import into mysql DB
 
 Download Country File from
  http://earth-info.nga.mil/gns/html/
 
 where xx is one or more countries. 
  poi.pl -earthinfo_nga_mil=??
-Gives you a complete list of allowed county tupels.
+ Gives you a complete list of allowed county tupels.
 
 For more info on Countries have a look at
  http://earth-info.nga.mil/gns/html/cntry_files.html
 
 
-The download is about ~180 MB
+The complete download is about ~180 MB
 
 
-=item B<-opengeodb>
+=item B<--opengeodb>
 
-********** Experimental ************
+Download and import opengeodb to Point of interrests
 
-Download and import opengeodb to 
+This Database has about 20003 entries from German Towns
 
-Point of interrests
 
-=item B<-wdb>
-
-********** Experimental ************
+=item B<--wdb>
 
 World Database
 
@@ -242,11 +259,11 @@ These data consists of Country Borders and Waterlines
 
 Download is ~30 MB
 
-=item B<-mapsource_points='Filename'>
+=item B<--mapsource_points='Filename'>
 
 ******** NO function yet *********
 
-=item B<-cameras>
+=item B<--cameras>
 
 ******** NO function yet *********
 
@@ -255,24 +272,31 @@ Download is ~30 MB
 Try creating the tables inside the geodata database
 
 
-=item B<-all>
+=item B<--all>
 
 
 Triggers all of the above
 
 
-=item B<-gpsdrive-tracks>
+=item B<--gpsdrive-tracks>
 
 Read all gpsdrive Tracks 
 and insert into  streets DB
 
 
-=item B<-kismet-tracks=Directory>
+=item B<--kismet-tracks=Directory>
 
-Read al Kismet .gps Files and extract the Tracks
-and insert into  streets DB
+Read all Kismet .gps Files in directory, extract the Tracks
+and insert them into streets DB
 
-*************** not implemented yet :-(
+
+
+=item B<--lat_min --lat_max --lon_min --lon_max>
+
+For debug reasons for some inserts limit to the given rectangle
+
+
+
 
 =item B<--db-user>
 

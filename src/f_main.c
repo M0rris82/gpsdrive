@@ -759,7 +759,8 @@ i.e. '.' in english, ',' in german!! */
   wi =
     gtk_item_factory_get_item (item_factory,
 			       N_("/Misc. Menu/Waypoint Manager"));
-  gtk_widget_set_sensitive (wi, FALSE);
+  if ( ! debug) 
+    gtk_widget_set_sensitive (wi, FALSE);
 
 /*  download map button */
   downloadbt = gtk_button_new_with_mnemonic (_("_Download map"));

@@ -120,25 +120,26 @@ sub read_open_geo_db($){
 # http://www.opengeodb.de/download/
 ########################################################################################
 sub import_Data() {
-	my $opengeodb_dir="$main::CONFIG_DIR/MIRROR/opengeodb";
+    my $mirror_dir="$main::MIRROR_DIR/opengeodb";
+    my $unpack_dir="$main::UNPACK_DIR/opengeodb";
 
-    unless ( -d $opengeodb_dir ) {
-	print "Creating Directory $opengeodb_dir\n";
-	mkpath $opengeodb_dir
-	    or die "Cannot create Directory $opengeodb_dir:$!\n";
-    }
-
+    -d $mirror_dir or mkpath $mirror_dir
+	or die "Cannot create Directory $mirror_dir:$!\n";
+    
+    -d $unpack_dir or mkpath $unpack_dir
+	or die "Cannot create Directory $unpack_dir:$!\n";
+    
     # download
     my $mirror = mirror_file("http://ovh.dl.sourceforge.net/".
 			     "sourceforge/geoclassphp/opengeodb-0.1.3-txt.tar.gz",
-			     "$opengeodb_dir/opengeodb-0.1.3-txt.tar.gz");
+			     "$mirror_dir/opengeodb-0.1.3-txt.tar.gz");
 
     print "Mirror: $mirror\n";
 
     # Unpack it 
-    `(cd $opengeodb_dir/; tar -xvzf opengeodb-0.1.3-txt.tar.gz)`;
+    `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
 
-    for my $file_name ( glob("$opengeodb_dir/opengeodb*.txt") ) {
+    for my $file_name ( glob("$unpack_dir/opengeodb*.txt") ) {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	my $waypoints = read_open_geo_db($file_name);
 #	write_gpsdrive_waypoints($waypoints,$out_file_name);
