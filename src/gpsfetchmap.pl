@@ -60,6 +60,7 @@ my $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 my $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE    = "$CONFIG_DIR/way.txt";
 my $KOORD_FILE    = 'map_koord.txt'; # Should we allow config of this?
+my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
 my $FILEPREFIX    = 'map_';
 my $mapserver     = 'expedia';
 my $check_koord_file = 0;
@@ -88,6 +89,8 @@ sub is_map_file($);      # {}
 sub expedia_url($$$);    # {}
 sub check_koord_file($); # {}
 sub read_koord_file($);  # {}
+sub append_koords($$$$); # {}
+sub expedia_url($$$);    # {}
 
 # Print version
 if ($version) {
@@ -177,9 +180,8 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
 	       `wget -nd -q -O tmpmap.gif "$url"`;
 	       
 	       if (is_map_file('tmpmap.gif')) {
-		   open(KOORD,">>$KOORD_FILE") || die "Can't open: $KOORD_FILE"; 
-		   print KOORD "$filename $lati $long $mapscale\n";
 		   rename('tmpmap.gif',$filename);
+		   append_koords($filename, $lati, $long, $mapscale);
 		   print ".";
 		   print "\nWrote $filename\n" if ($debug);
 		   $newcount++;
@@ -454,6 +456,47 @@ sub calc_lon_dist {
     return ($km_deg);
 } #End calc_longitude_dist
 
+######################################################################
+# Check if Map-image is valid and append one Entry to the map_koord File
+# Returns:
+#  A for Appended
+#  E for Error
+######################################################################
+sub append_koords($$$$) {
+    my $filename = shift;
+    my $lati     = shift;
+    my $long     = shift;
+    my $mapscale = shift;
+
+    if ( is_map_file($filename) ) {
+	# print "$filename $lati $long $mapscale\n";
+    } else {
+	print "Fehler $filename exitiert nicht\n";
+	return 'E';
+    }
+
+    if ( ! defined $MAP_FILES->{$filename} ) {
+	my $koord_filename = "$mapdir/$KOORD_FILE";
+	open(KOORD,">>$koord_filename") || die "Can't open: $koord_filename: $!\n"; 
+	printf KOORD "$filename %17.13f %17.13f %17d\n",$lati, $long, $mapscale;
+	close KOORD;
+	$MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+	$MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+    }
+
+    if ( -s $GPSTOOL_MAP_FILE ) {
+	if ( ! defined $GPSTOOL_MAP_FILES->{$filename} ) {
+	    open(KOORD,">>$GPSTOOL_MAP_FILE") || die "Can't open: $koord_filename: $!\n"; 
+	    printf KOORD "$mapdir/$filename %17.13f %17.13f %4d 1280 1024\n",$lati, $long, $mapscale;
+	    close KOORD;
+	    $GPSTOOL_MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+	    $GPSTOOL_MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+	}
+    }
+    
+    return 'A';
+} # End  append_koords
+
 
 #############################################################################
 # Read actual Koordinate File and memorize in $MAP_KOORDS and $MAP_FILES
@@ -472,6 +515,29 @@ sub read_koord_file($) {
 	if (is_map_file( $filename) ) {
 	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
 	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+	    $anz_files ++;
+	}
+    }
+    close KOORD;
+    my $r_time = time()-$s_time;
+    print "$koord_file read $anz_files in $r_time sec.\n";
+    
+}
+
+#############################################################################
+# Read actual Koordinate File and memorize in $GPSTOOL_MAP_KOORDS and $GPSTOOL_MAP_FILES
+sub read_gpstool_map_file() {
+    my $koord_file = $GPSTOOL_MAP_FILE;
+    my $s_time=time();
+    print "opening  $koord_file\n";
+    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
+    my $anz_files = 0;
+    while ( my $line = <KOORD> ) {
+	my ($filename ,$lati, $long, $mapscale);
+	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
+	if ( is_map_file( $filename) ) {
+	    $GPSTOOL_MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+	    $GPSTOOL_MAP_FILES->{$filename} = "$lati, $long, $mapscale";
 	    $anz_files ++;
 	}
     }
