@@ -791,7 +791,6 @@ i.e. '.' in english, ',' in german!! */
     }
 
 
-  //JMO
   // Checkbox ---- POI Draw
   poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
   gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
@@ -802,6 +801,19 @@ i.e. '.' in english, ',' in german!! */
   /*
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
     _("This will show Point of interrest located in mySQL Database"),
+    NULL);
+  */
+
+  // Checkbox ---- STREETS Draw
+  streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
+  gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+  if (!streets_draw)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
+  gtk_signal_connect (GTK_OBJECT (streets_draw_bt),
+		      "clicked", GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
+  /*
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+    _("This will show Streets Data located in mySQL Database"),
     NULL);
   */
   
@@ -1431,6 +1443,7 @@ i.e. '.' in english, ',' in german!! */
   if (havespeechout)
     gtk_box_pack_start (GTK_BOX (vbox4), mutebt, FALSE, FALSE, 0 * PADDING);
   gtk_box_pack_start (GTK_BOX (vbox4), poi_draw_bt, FALSE, FALSE, 0 * PADDING);
+  gtk_box_pack_start (GTK_BOX (vbox4), streets_draw_bt, FALSE, FALSE, 0 * PADDING);
   if (usesql)
     gtk_box_pack_start (GTK_BOX (vbox4), sqlbt, FALSE, FALSE, 0 * PADDING);
   /*    if (maxwp > 0) */
@@ -1850,6 +1863,9 @@ i.e. '.' in english, ',' in german!! */
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
 			_("Draw Point Of Interrests found in mySQL"),
 			NULL);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+			_("Draw Streets found in mySQL"),
+			NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrackbt,
 			_("Save the track to given filename at program exit"),
 			NULL);
@@ -1918,9 +1934,11 @@ i.e. '.' in english, ',' in german!! */
   bestmap_cb (NULL, 0);
   drawgrid_cb (NULL, 0);
   poi_draw_cb (NULL, 0);
+  streets_draw_cb (NULL, 0);
   needtosave = FALSE;
 
   poi_init ();
+  streets_init ();
 
 
   /*  Mainloop */
