@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.3  2005/11/21 06:57:18  tweety
+# Update icons.txt and DB_Defaults to reflect new icons
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -123,8 +126,10 @@ my $icons = {
     'food.restaurant.chinese'         => 'japanese',
     'food.restaurant.fastfood.burger king'       => "burgerking",
     'food.restaurant.fastfood.mc donalds' 	  => "mcdonalds",
+    'food.restaurant.ice cream parlor'=> 'ice_cream',
     'food.restaurant.japanese'        => 'japanese',
     'food.restaurant.pizza'           => 'pizza',
+    'food.restaurant.fastfood.pizza_hut' => 'pizza',
     'health'                          => "red_cross",
     'health.doctor'                   => 'aesculab',
     'health.emergency'                => 'emergency',
@@ -152,6 +157,9 @@ my $icons = {
     'recreation.sports.golf place'     => "golf",
     'recreation.sports.motorbike'      => "motorbike",
     'recreation.sports.skiing' 	  => 'skiing',
+    'transport.nautical.alpha flag'   => 'alpha_flag',
+    'transport.nautical.dive flag'    => 'dive_flag',
+    'recreation.sports.diving'        => 'alpha_flag',
     'shopping'                        => "shop",
     'shopping.food.bakery'            => 'prezel',
     'shopping.supermarket.lidl'       => "lidl_logo",
@@ -266,7 +274,6 @@ my @poi_type_names
 	  food.cafe
 	  food.delivery_service
 	  food.drinking_water
-	  food.restaurant.ice_cream_parlor
 	  food.restaurant
 	  food.restaurant.asia
 	  food.restaurant.bavarian
@@ -276,6 +283,7 @@ my @poi_type_names
 	  food.restaurant.fastfood.mc_donalds
 	  food.restaurant.fastfood.pizza_hut
 	  food.restaurant.greek
+	  food.restaurant.ice_cream_parlor
 	  food.restaurant.indian
 	  food.restaurant.italian
 	  food.restaurant.japanese
@@ -411,8 +419,8 @@ my @poi_type_names
 	  transport.car.gas_station.shell
 	  transport.car.gas_station.texaco
 	  transport.car.parking
-	  transport.car.parking.park_and_ride
 	  transport.car.parking.handicapped
+	  transport.car.parking.park_and_ride
 	  transport.car.parkinglot
 	  transport.car.phototrap_traffic_light
 	  transport.car.rental
@@ -426,6 +434,8 @@ my @poi_type_names
 	  transport.coach
 	  transport.container_loading_terminal
 	  transport.driver-guide_service
+	  transport.nautical.alpha_flag
+	  transport.nautical.dive_flag
 	  transport.park_and_ride
 	  transport.public.airport
 	  transport.public.airport.aeroplane
@@ -442,7 +452,6 @@ my @poi_type_names
 	  transport.public.station.taxi
 	  transport.public.station.tram
 	  transport.public.station.underground
-	  transport.travel-agency
 	  transport.scale
 	  transport.ship
 	  transport.ship.anker
@@ -451,6 +460,7 @@ my @poi_type_names
 	  transport.traffic.construction
 	  transport.traffic.speedtrap
 	  transport.traffic.traffic_jam
+	  transport.travel-agency
 	  transport.truck
 	  w-lan.open
 	  w-lan.public
@@ -458,8 +468,6 @@ my @poi_type_names
 	  );
 
 my $translate_de = { 
-    'Sparkasse'             => "Sparkasse",
-    'travel-agency'         => "Reisebuero",
     'ATM'                   => 'Geldautomat',
     'EC'                    => 'EC-Automat',
     'HypoVereinsbank' 	=> 'HypoVereinsbank',
@@ -467,90 +475,143 @@ my $translate_de = {
     'Reifeisenbank'         => 'Reifeisenbank',
     'Software'              => 'Software',
     'Sparda'                => 'Sparda',
+    'Sparkasse'             => "Sparkasse",
     'WC'                    => 'WC',
     'accomodation'          => 'Uebernachtung',
     'administration'        => 'Verwaltung',
     'adult_education'       => 'VHS',
+    'aeroplane'             => "Motor Flugzeug",
     'agency'                => "Filiale",
+    'agip'                  => "Agip",
     'airport'               => 'Flugplatz',
     'aldi'                  => "Aldi",
+    'alpha_flag'            => 'Taucher',
     'ambulance'             => 'Ambulanz',
+    'amusement'             => "Freizeit",
+    'anker'                 => "Anker",
+    'aquarium'              => "Aquarium",
+    'aral'                  => "Aral",
     'area'                  => "Gebiet",
     'area'                  => "Gebiet",
+    'asia'                  => "Asiatisch",
+    'avis'                  => "Avis",
+    'bakery'                => "Bakery",
     'bank'                  => 'Bank',
+    'bavarian'              => "Bayrisch",
     'beergarden'            => 'Biergarten',
+    'beverages'             => "Getraenke",
     'bicycling'             => "Fahrrad",
     'boat'                  => "Boot",
+    'bob'                   => "Bob",
     'books'                 => 'Buecher',
+    'bowling'               => "Kegeln",
+    'bridge'                => "Bruecke",
     'burger_king'           => 'Burger_King',
     'bus'                   => "Bus",
+    'butcher'               => "Metzger",
     'cafe'                  => 'cafe',
     'campground'            => 'Campingplatz',
+    'camping'               => "Camping",
     'car'                   => 'Auto',
     'car_loading_terminal'  => 'Auto_Verlade_Bahnhof',
     'car_registration'      => 'Zulassungsstelle',
     'catholic'              => 'Katholisch',
     'cemetary'              => 'Friedhof',
+    'cemetery'              => "Friedhof",
+    'chinese'               => "Chinesisch",
     'church'                => 'Kirche',
     'cinema'                => 'Kino',
     'city'                  => 'Stadt',
+    'climbing'              => "Klettern",
     'coach'                 => 'Kutsche',
     'coast'                 => 'rodeln',
     'computer'              => 'Computer',
+    'concert_hall'          => "Konzert_Halle",
     'construction'          => 'Baustelle',
     'container_loading_terminal' => 'Gueter_Verlade_Bahnhof',
+    'country'               => "Land",
+    'cross-country'         => "langlauf",
     'custom'                => 'Benutzer_Eigene',
+    'dam'                   => "Wehr",
+    'dance_floor'           => "Tanzen",
     'dart'                  => 'Dart',
+    'dea'                   => "Dea",
     'delivery_service'      => 'Lieferservice',
     'developer'             => 'Entwickler',
     'disco'                 => 'disco',
+    'dive_flag'             => 'Taucher',
+    'diving'                => "Tauchen",
     'doctor'                => 'Arzt',
+    'down-hill'             => "Abfahrt",
     'drinking_water'        => "Trinkwasser",
     'driver-guide_service'  => 'Lotsendienst',
+    'dry_cleaner'           => "Reinigung",
+    'dumpstation'           => "Dump Platz",
     'education'             => 'Ausbildung',
+    'electronics'           => "Electronik",
     'emergency'             => 'Notaufnahme',
     'emergency_call'        => 'Notruf_saeule',
     'entrance'              => 'Eingang',
+    'esso'                  => "Esso",
     'event_location'        => 'Veranstaltungshalle',
     'exhibition'            => 'Messe',
     'exhibitions'           => 'Ausstellungen',
+    'exibition'             => "Ausstellung",
     'fairground'            => 'Rummelplatz',
     'fastfood'              => 'Schnellrestaurant',
     'ferry'                 => 'Faehre',
     'fire_department'       => 'Feuerwehr',
+    'fishing'               => "angeln",
+    'fittness'              => "Fittness",
     'flea_market'           => 'Flohmarkt',
     'food'                  => 'Essen',
     'forest'                => "Wald",
     'friends'               => 'Freunde',
     'fruit'                 => 'Obst',
     'furnishing_house'      => 'Einrichtungs_Haus',
+    'furniture'             => "Moebel",
+    'games'                 => "Spiele",
     'garage'                => 'Werkstatt',
     'gas_station'           => 'Tankstelle',
     'geocache'              => 'Geocache',
     'gift_shop'             => 'Geschenke_Laden',
     'glass'                 => 'Glas',
+    'glider'                => "Selgelflugzeug",
     'golf_place'            => 'Golfplatz',
+    'greek'                 => "Griechisch",
     'groceries'             => 'Lebensmittel',
+    'hall'                  => "Halle",
     'handicapped'           => "Behinderte",
+    'harbor'                => "Hafen",
     'hardware'              => 'Hardware',
     'hardware_store'        => 'Baumarkt',
     'health'                => 'Gesundheit',
+    'helicopter'            => "Hubschrauber",
+    'herz'                  => "Herz",
     'highschool'            => 'Gymnasium',
     'home'                  => 'Daheim',
+    'horse'                 => "Pferde",
     'hospital'              => 'Krankenhaus',
     'hotel'                 => 'Hotel',
+    'hunt'                  => "Jagd",
     'ice_cream_parlor'      => 'Eisdiele',
     'ice_scating'           => "Eislaufen",
     'import_way'            => 'import_way',
+    'indian'                => "Indisch",
     'information'           => 'Information',
     'interurban_train_station' => 'S-Bahn-Haltestelle',
+    'italian'               => "Italienisch",
+    'japanese'              => "japanisch",
+    'jet'                   => "Jet",
     'kindergarden'          => 'Kindergarten',
     'lake'                  => "See",
     'landmark'              => 'Sehenswuerdigkeit',
     'letter-box'            => 'Briefkasten',
     'lidl'                  => "Lidl",
     'literature'            => 'Literatur',
+    'market'                => "Markt",
     'mc_donalds'            => 'MC_Donalds',
+    'mine'                  => "Miene",
     'minigolf_place'        => 'Minigolfplatz',
     'model_aircrafts'       => 'Modellflugplatz',
     'money_exchange'        => 'Geldwechsel',
@@ -559,22 +620,32 @@ my $translate_de = {
     'motorbike'             => "Motorrad",
     'mountain'              => "Berg",
     'museum'                => 'Museum',
+    'music'                 => "Music",
+    'my'                    => "Meine",
     'national_park'         => 'Nationalpark',
+    'nautical'              => 'Schiffahrt',
     'night_club'            => 'Nachtclub',
     'nursery'               => 'Kinderkrippe',
     'nursing_home'          => 'Altenheim',
     'office'                => 'Amt',
+    'omv'                   => "Omv",
     'open'                  => 'Offen',
     'opera'                 => 'Oper',
     'paper'                 => 'Papier',
+    'parachute'             => "Fallschirmspringen",
     'park'                  => "Park",
     'park_and_ride'         => 'Park_and_Ride',
     'parking'               => "Parken",
     'parkinglot'            => 'Parkplatz',
+    'pedestrian'            => "Fussgaenger",
     'pedestrian_zone'       => 'Fussgaenger_Zone',
     'penny'                 => "Penny",
     'pharmacy'              => 'Apotheke',
     'phototrap_traffic_light' => 'Blitzampel',
+    'picnic_area'           => "Rastplatz",
+    'pizza'                 => "Pizza",
+    'pizza_hut'             => "Pizza_Hut",
+    'play_street'           => "Spiel Strasse",
     'playground'            => 'Spielplatz',
     'plus'                  => "Plus",
     'plus'                  => "Plus",
@@ -585,22 +656,36 @@ my $translate_de = {
     'protestant'            => "evangelisch",
     'pub'                   => 'Kneipe',
     'public'                => 'oeffentlich',
+    'racing'                => "Rennen",
     'railroad'              => "Eisenbahn",
+    'railway'               => "Eisenbahn",
     'recreation'            => 'Freizeit',
     'recycling'             => 'Recycling',
     'recycling_centre'      => 'Wertstoffhof',
+    'rental'                => "Vermietung",
     'rest_area'             => 'Raststaette',
     'restaurant'            => 'Gaststaette',
     'restaurant'            => 'Restaurant',
     'riding'                => 'Reiten',
     'rock_climbing'         => "Fels klettern",
+    'rocks'                 => "Fels",
+    'rollerblades'          => "Rollerblades",
+    'rollerscates'          => "Rollschuhe",
+    'scale'                 => "Waage",
     'secondary_school'      => 'HauptSchule',
+    'shell'                 => "Shell",
+    'ship'                  => "Boot",
     'shopping'              => 'Einkaufen',
     'shopping_center'       => 'Einkaufszentrum',
+    'shower'                => "Dusche",
+    'sixt'                  => "Sixt",
+    'ski'                   => "Ski",
     'skiing'                => 'Skifahren',
+    'snakeboard'            => "Snakeboard",
     'soccer_field'          => 'Fussballplatz',
     'soccer_stadion'        => 'Fussball_Stadion',
     'speedtrap'             => 'Radarfalle',
+    'sport'                 => "Sport",
     'sports'                => 'Sport',
     'state'                 => "Staat",
     'station'               => "Station",
@@ -614,16 +699,26 @@ my $translate_de = {
     'taxi_stand'            => 'Taxi-Stand',
     'telephone'             => 'Telefon-Zelle',
     'tengelmann'            => "Tengelmann",
+    'tennis'                => "Tennis",
     'tennis_place'          => 'Tennisplatz',
+    'tent'                  => "Zelt",
+    'texaco'                => "Texaco",
+    'theater'               => "Theater",
     'theatre'               => 'Theater',
     'toll_station'          => 'Mautstation',
     'town_hall'             => 'Stadthalle',
     'toys'                  => 'Spielwaren',
+    'trade_show'            => "Handels_Messe",
     'traffic'               => 'Verkehr',
     'traffic_jam'           => 'Stau',
+    'trailer'               => "Wohnwagen",
     'train'                 => 'Zug',
+    'tram'                  => "Strassenbahn",
     'tram_station'          => 'Strassen-Bahn_Haltestelle',
     'transport'             => 'Transport',
+    'travel-agency'         => "Reisebuero",
+    'truck'                 => "Lastwagen",
+    'tunnel'                => "Tunnel",
     'txt'                   => 'txt',
     'underground'           => "U-Bahn",
     'underground_station'   => 'U-Bahn_Haltestelle',
@@ -631,96 +726,13 @@ my $translate_de = {
     'unknown'               => 'unknown',
     'vegetables'            => 'Gemuese',
     'w-lan'                 => 'W-LAN',
-    'wep'                   => 'WEP',
-    'work'                  => 'Arbeit',
-    'youth_hostel'          => 'Jugend_Herberge',
-    'zoo'                   => 'Zoo',
-    'aeroplane'             => "Motor Flugzeug",
-    'agip'                  => "Agip",
-    'amusement'             => "Freizeit",
-    'anker'                 => "Anker",
-    'aquarium'              => "Aquarium",
-    'aral'                  => "Aral",
-    'asia'                  => "Asiatisch",
-    'avis'                  => "Avis",
-    'bakery'                => "Bakery",
-    'bavarian'              => "Bayrisch",
-    'beverages'             => "Getraenke",
-    'bob'                   => "Bob",
-    'bowling'               => "Kegeln",
-    'bridge'                => "Bruecke",
-    'butcher'               => "Metzger",
-    'camping'               => "Camping",
-    'cemetery'              => "Friedhof",
-    'chinese'               => "Chinesisch",
-    'climbing'              => "Klettern",
-    'concert_hall'          => "Konzert_Halle",
-    'country'               => "Land",
-    'cross-country'         => "langlauf",
-    'dam'                   => "Wehr",
-    'dance_floor'           => "Tanzen",
-    'dea'                   => "Dea",
-    'diving'                => "Tauchen",
-    'diving'                => "Tauchen",
-    'down-hill'             => "Abfahrt",
-    'dry_cleaner'           => "Reinigung",
-    'dumpstation'           => "Dump Platz",
-    'electronics'           => "Electronik",
-    'esso'                  => "Esso",
-    'exibition'             => "Ausstellung",
-    'fishing'               => "angeln",
-    'fittness'              => "Fittness",
-    'furniture'             => "Moebel",
-    'games'                 => "Spiele",
-    'glider'                => "Selgelflugzeug",
-    'greek'                 => "Griechisch",
-    'hall'                  => "Halle",
-    'harbor'                => "Hafen",
-    'helicopter'            => "Hubschrauber",
-    'herz'                  => "Herz",
-    'horse'                 => "Pferde",
-    'hunt'                  => "Jagd",
-    'indian'                => "Indisch",
-    'italian'               => "Italienisch",
-    'japanese'              => "japanisch",
-    'jet'                   => "Jet",
-    'market'                => "Markt",
-    'mine'                  => "Miene",
-    'music'                 => "Music",
-    'my'                    => "Meine",
-    'omv'                   => "Omv",
-    'parachute'             => "Fallschirmspringen",
-    'pedestrian'            => "Fussgaenger",
-    'picnic_area'           => "Rastplatz",
-    'pizza'                 => "Pizza",
-    'pizza_hut'             => "Pizza_Hut",
-    'play_street'           => "Spiel Strasse",
-    'racing'                => "Rennen",
-    'railway'               => "Eisenbahn",
-    'rental'                => "Vermietung",
-    'rocks'                 => "Fels",
-    'rollerblades'          => "Rollerblades",
-    'rollerscates'          => "Rollschuhe",
-    'scale'                 => "Waage",
-    'shell'                 => "Shell",
-    'ship'                  => "Boot",
-    'shower'                => "Dusche",
-    'sixt'                  => "Sixt",
-    'ski'                   => "Ski",
-    'snakeboard'            => "Snakeboard",
-    'sport'                 => "Sport",
-    'tennis'                => "Tennis",
-    'tent'                  => "Zelt",
-    'texaco'                => "Texaco",
-    'theater'               => "Theater",
-    'trade_show'            => "Handels_Messe",
-    'trailer'               => "Wohnwagen",
-    'tram'                  => "Strassenbahn",
-    'truck'                 => "Lastwagen",
-    'tunnel'                => "Tunnel",
     'water'                 => "Wasser",
     'water_ski'             => "Wasser Ski",
+    'wep'                   => 'WEP',
+    'work'                  => 'Arbeit',
     'wrecking_service'      => "Abschleppdienst",
+    'youth_hostel'          => 'Jugend_Herberge',
+    'zoo'                   => 'Zoo',
 };
 
 # ------------------------------------------------------------------
@@ -746,8 +758,10 @@ sub translate_icon($){
 # ------------------------------------------------------------------
 # Find Icon
 my $used_icons ={};
-sub find_icon($){
+sub find_icon($$){
     my $name = shift;
+    my $counter = shift;
+
     my $icon;
     my $icon_name = "$name.png";
     while ( $icon_name =~ s/\.[^\.]+$// ){ # cut off last part
@@ -762,7 +776,7 @@ sub find_icon($){
     if ( -s "../data/icons/$icon.png" ) { $icon .= ".png" };
     if ( -s "../data/icons/$icon.gif" ) { $icon .= ".gif" };
 
-    $used_icons->{"../data/icons/$icon"}++;
+    $used_icons->{"../data/icons/$icon"} += $counter;
     
     #debug($icon);
     return $icon;
@@ -779,9 +793,10 @@ sub generate_poi_type_html_page() {
 	die "Icon directory was not found\n";
     }
 
-    my $poi_type_html_page;
-    $poi_type_html_page = IO::File->new(">../data/icons/index.html")
+    my $poi_type_html_page = IO::File->new(">../data/icons/index.html")
 	or warn "Cannot open html Page for writing: $!";;
+    my $poi_type_txt_file = IO::File->new(">../data/icons.txt")
+	or warn "Cannot open txt file for writing: $!";;
     print $poi_type_html_page "<html>\n";
     print $poi_type_html_page "<body bgcolor=\"#AAAAFF\">\n";
     print $poi_type_html_page "<table border>\n";
@@ -796,7 +811,7 @@ sub generate_poi_type_html_page() {
     }
 
     my $poi_type_id=0;
-    for my $name  ( @poi_type_names ) {
+    for my $name  ( sort @poi_type_names ) {
 	$poi_type_id++;
 	
 	# Translate the entries
@@ -805,9 +820,7 @@ sub generate_poi_type_html_page() {
 	$name =~ s/_/ /g;
 	
 	# Find Icon
-	my $icon = find_icon($name);
-
-	$used_icons->{"../data/icons/$icon"}++;
+	my $icon = find_icon($name,1);
 
 	# create description
 	my $description     = $name;    $description    =~ s/\./ /g;
@@ -828,7 +841,7 @@ sub generate_poi_type_html_page() {
 	print $poi_type_html_page "<td valign=TOP >$description_de</td>";
 	print $poi_type_html_page "</tr> \n";
 	
-	
+	print $poi_type_txt_file "$name $icon\n";
 	debug(sprintf("%3d %-20s %-45s %-45s %-45s %-45s ",
 		      $poi_type_id,$icon,$name,$name_de,$description,$description_de));
     } # of for @poi_type_names
@@ -866,7 +879,7 @@ sub generate_poi_type_html_page() {
 
     print $poi_type_html_page "</html> ";
     $poi_type_html_page->close();
-    
+    $poi_type_txt_file->close();    
 
     if ( $unknown_translations ) {
 	print "# Missing poi_type Translations:\n";
@@ -901,7 +914,7 @@ sub fill_default_poi_types() {
 	$name =~ s/_/ /g;
 	
 	# Find Icon
-	my $icon = find_icon($name);
+	my $icon = find_icon($name,0);
 
 	# create description
 	my $description     = $name;    $description    =~ s/\./ /g;
