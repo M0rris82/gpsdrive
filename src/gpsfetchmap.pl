@@ -61,7 +61,7 @@ modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 modified (Dec/Jan,2004/2005) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
-Version 1.16
+Version 1.17
 ";
 
 use Data::Dumper;
@@ -147,6 +147,7 @@ sub append_koords($$$$); # {}
 sub expedia_url($$$);    # {}
 sub wget_map($$$);       # {}
 sub check_coverage($);   # {}
+sub file_count($);       # {}
 
 
 STDERR->autoflush(1);
@@ -217,9 +218,9 @@ unless ($slat && $slon && $endlat && $endlon) {
 print "Upper left:  $slat, $slon\n" if $debug;
 print "Lower right: $endlat, $endlon\n" if ($debug);
 
-my $desired_locations= desired_locations($slat,$slon,$endlat,$endlon);
-my $count = file_count($desired_locations);
-print "You are about to download $count file(s).\n";
+my $desired_locations  = desired_locations($slat,$slon,$endlat,$endlon);
+my ($existing,$wanted) = file_count($desired_locations);
+print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
 
 unless ($force) {
     print "You are violating the map servers copyright!\nAre you sure you want to continue? [y|n] ";
@@ -302,6 +303,7 @@ sub mirror_file($$){
 sub is_map_file($){
     my $filename = shift;
     $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
+    #print "is_map_file($filename)\n";
     return 1 if ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
     return 0;
 }
@@ -368,6 +370,17 @@ sub mirror2_map($$){
 
 
 ######################################################################
+# returns the map filename for given $scale,$lati,$long
+######################################################################
+sub map_filename($$$){
+    my ($scale,$lati,$long) = @_;
+    
+    my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
+	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+    return $filename;
+}
+
+######################################################################
 # get a single map at defined position
 ######################################################################
 sub wget_map($$$){
@@ -378,9 +391,10 @@ sub wget_map($$$){
 
 #    my $plain_filename = "$FILEPREFIX$scale-$lati-$long.gif";
     # mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
-    my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
-	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
-
+    #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
+    #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+    my $filename = map_filename($scale,$lati,$long);
+   
     my $dir =  dirname("$mapdir$filename");
     unless ( -s $dir || -l $dir ) {
 	debug("Create $dir");
@@ -533,43 +547,51 @@ sub desired_locations {
    foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
        # Setup k
        my $k = $DIFF * $scale;
-       my $klat = $k - ($k / 2); ### FIX BY CAMEL
-       my $klon = $k - ($k / 6); ### FIX BY CAMEL
-       my $lati = $slat;   
+       my $delta_lat = $k - ($k / 2); ### FIX BY CAMEL
+       my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
 
        # make the starting points for the loop $slat and $slon 
-       # snap into a grid with a Size depending on the scale 
-       # resulting in $snapped_start_lat and $snapped_start_lon
-       # The grid allows ${overlap} maps in each direction to 
+       # snap into a grid with a Size depending on the scale.
+       # The result is $snapped_start_lat and $snapped_start_lon
+       # The grid allows maps in each direction to 
        # overlapp by 1/$overlap of the size of one map
-       # This snap in to the grid is use so that different downloads use the same lat/lon 
-       # if they overrlap even if they wouldn't without the snap-to-grip
+       # With snap to grid we would have to download the exact same maps
+       # for slightly different starting points. This way we can 
+       # circumvent downloads of almost completely overlaping maps
        my $overlap = 1;
-       my $flat = $overlap / $klat;
-       my $snapped_start_lat = int ( $flat * $slat ) / $flat;
-       my $flon = $overlap / $klon;
-       my $snapped_start_lon = int ( $flon * $slon ) / $flon;
+       my $flat =  $delta_lat / $overlap;
+       my $snapped_start_lat = int ( $slat / $flat  ) * $flat;
+       my $flon = $delta_lon / $overlap;
+       my $snapped_start_lon = int ( $slon / $flon ) * $flon;
 
        print "Scale: $scale\n" if ($local_debug);
-       printf ("  lati: %6.3f(%6.3f) +=%5.3f ... %6.3f\n",$snapped_start_lat,$slat,$klat,$endlat);
-       $lati = $snapped_start_lat;
+       printf "  lati: %6.3f(%6.3f) +=%5.3f ... %6.3f\n",
+	       $snapped_start_lat,$slat,$delta_lat,$endlat;
+
+       my $lati = $snapped_start_lat;
 
        while ($lati <= $endlat) {
 	   my $long = $snapped_start_lon;
 	   if ( $local_debug ) {
 	       printf "        %5.2f:",$lati;
-	       #printf ("\tlong: %6.3f +=%5.3f ... %6.3f",$slon,$klon,$endlon);
-	       printf ("\tlong: %6.3f(%6.3f) +=%5.3f ... %6.3f",$snapped_start_lon,$slon,$klon,$endlon);
+	       printf "\tlong: %6.3f(%6.3f) +=%5.3f ... %6.3f"
+		       ,$snapped_start_lon,$slon,$delta_lon,$endlon;
 	       printf "\t\t";	
 	   }
 	   while ($long <= $endlon) {
-	       $long += $klon; ### FIX BY CAMEL
+	       $long += $delta_lon; ### FIX BY CAMEL
 	       $count++;
 	       $desired_locations->{$scale}->{$lati}->{$long}='?';
-	       printf(" %6.3f",$long) if $local_debug;
+	       if ( $local_debug ) {
+		   my $filename = map_filename($scale,$lati,$long);
+		   my $exist = ( is_map_file($filename) ) ?"e":"g";
+
+		   printf " %6.3f%1s",$long,$exist;
+	       }
+
 	   }
 	   print "\n" if $local_debug;
-	   $lati += $klat; ### FIX BY CAMEL
+	   $lati += $delta_lat; ### FIX BY CAMEL
 	   $long = $slon; ### FIX BY CAMEL
        }
    }
@@ -577,17 +599,28 @@ sub desired_locations {
 }
 
 ######################################################################
-sub file_count {
+# Count the Number of Files to be retrieved
+# Returns: ($existing,$wanted)
+#    $existing : Number of existing maps
+#    $wanted   : Number of maps to be retrieved
+######################################################################
+sub file_count($){
     my $desired_locations = shift;
-    my $count=0;
+    my $existing=0;
+    my $wanted=0;
     for my $scale ( keys %{$desired_locations} ) {
 	for my $lat ( keys %{$desired_locations->{$scale}} ) {
 	    for my $lon ( keys %{$desired_locations->{$scale}->{$lat}} ) {
-		$count++;
+		my $filename = map_filename($scale,$lat,$lon);
+		if ( is_map_file($filename) ) {
+		     $existing++;
+		 } else{
+		     $wanted++;
+		 }
 	    }
 	}
     }
-    return($count);
+    return($existing,$wanted);
 } #end file_count
 
 ######################################################################
@@ -954,8 +987,8 @@ sub check_coverage($){
 	    # Find out which is the desired Distance
 	    my $lon_dist_km = calc_lon_dist($lat);
 	    my $k = $DIFF * $scale;    
-	    my $klat = $k - ($k / 2); my $dlat = $klat * $LAT_DIST_KM;
-	    my $klon = $k - ($k / 6); my $dlon = $klon * $lon_dist_km;
+	    my $delta_lat = $k - ($k / 2); my $dlat = $delta_lat * $LAT_DIST_KM;
+	    my $delta_lon = $k - ($k / 6); my $dlon = $delta_lon * $lon_dist_km;
 	    
 	    # Find Min and Max Distance between 2 Maps
 	    my $min_dist= $RADIUS_KM;
