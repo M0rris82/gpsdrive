@@ -1617,9 +1617,34 @@ i.e. '.' in english, ',' in german!! */
   if (pdamode)
     {
       GtkWidget *l1, *l2, *l3;
-      l1 = gtk_label_new (_("Map"));
-      l2 = gtk_label_new (_("Menu"));
-      l3 = gtk_label_new (_("Status"));
+          l1 = gtk_label_new (NULL);
+          l2 = gtk_label_new (NULL);
+          l3 = gtk_label_new (NULL);
+/* for a better usability in onemousebutton mode */      
+      if (onemousebutton)  {
+/*          gtk_misc_set_padding (GTK_MISC (l1), x, y); */
+	  gtk_misc_set_padding (GTK_MISC (l1), 50, 1);
+          gtk_misc_set_padding (GTK_MISC (l2), 50, 1);
+          gtk_misc_set_padding (GTK_MISC (l3), 50, 1);
+	  
+/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */	  
+	  
+	  char *markup;
+	  markup = g_markup_printf_escaped ("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>", _("Map") );
+	  gtk_label_set_markup (GTK_LABEL (l1), markup);
+	  markup = g_markup_printf_escaped ("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>", _("Menu") );
+	  gtk_label_set_markup (GTK_LABEL (l2), markup);
+	  markup = g_markup_printf_escaped ("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>", _("Status") );
+	  gtk_label_set_markup (GTK_LABEL (l3), markup);
+	  
+	  g_free (markup);
+	  
+	}
+	else {
+	  gtk_label_set_text  (GTK_LABEL (l1),_("Map"));
+	  gtk_label_set_text  (GTK_LABEL (l2),_("Menu"));
+	  gtk_label_set_text  (GTK_LABEL (l3),_("Status"));
+	}
 //KCFX
       vbig1 = gtk_vbox_new (FALSE, 2);
 //      gtk_container_add (GTK_CONTAINER (menuwin2), vbig1);
