@@ -1,3 +1,37 @@
+In Progress:
+------------
+
+Jörg:
+Staighten the naming of latitude and longitude. 
+I found for example lat lati latitude, ...
+
+
+
+Unassigned:
+-----------
+
+Modularising:
+Put every drawing layer into a seperate module.
+
+Database (SQL):
+make gpsdrive read directly from mysql without first writing a file.
+
+Vertor map Data:
+Add code for showing Vectormap Data. Decide about internal representation
+and structure vektor map data.
+
+Waypoints:
+Decide about the structure of waypoints
+
+
+draw grid:
+Add text to draw-grid to see which lat/lon this gridline belongs to.
+Find a more inteligent algorithm to determine which gridlines are to be displayed.
+
+
+Old (has to be checked):
+------------------------
+
 Command line switch to set gpsd hostname and port for remote control.
 
 Add additional server: expedia.com
