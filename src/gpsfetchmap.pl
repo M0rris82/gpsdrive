@@ -566,7 +566,7 @@ sub desired_locations {
        my $flon = $delta_lon / $overlap;
        my $snapped_start_lon = int ( $slon / $flon ) * $flon;
 
-       print "Scale: $scale\n" if ($local_debug);
+       print "Scale: $scale\t";
        printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
 	       $snapped_start_lat,$slat,$delta_lat,$endlat;
 
