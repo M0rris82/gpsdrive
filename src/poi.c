@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.11  2005/03/27 18:22:50  tweety
+only draw cross if less than 5000 poi found
+
 Revision 1.10  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -168,7 +171,7 @@ void get_poi_type_list(void);
  */
 void poi_init (void)
 {
-  poi_limit = 10000;
+  poi_limit = 40000;
   poi_list = g_new (poi_struct, poi_limit);
   if ( poi_list == NULL ) {
     poi_limit =-1;
@@ -431,7 +434,7 @@ void poi_rebuild_list (void)
 	      "SELECT lat,lon,name,poi_type_id "
 	      "FROM poi "
 	      //	      "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s %s LIMIT 5000",
+	      "%s %s LIMIT 40000",
 	      sql_where,sql_order);
   /*    dbwherestring,sql_order,lat,lon);  */
 
@@ -641,60 +644,66 @@ void poi_draw_list (void)
 				 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
 	      }
 	    else 
-	      { /*  draw + sign at destination if no matching Icon found */
+	      if( poi_max < 5000 ) 
+	      // Only draw Cross if less than 1000 Points are to be displayed
+		{ /*  draw + sign at destination if no matching Icon found */
 		gdk_gc_set_foreground (kontext, &red);
 		draw_plus_sign ( posx,posy);
 	      }
 	  }  
-	  gdk_gc_set_foreground (kontext, &textback);
 
-	  poi_label_layout =
-	    gtk_widget_create_pango_layout (drawing_area, txt);
-	  if (pdamode)
-	    pfd = pango_font_description_from_string ("Sans 8");
-	  else
-	    pfd = pango_font_description_from_string ("Sans 11");
-	  pango_layout_set_font_description (poi_label_layout, pfd);
-	  pango_layout_get_pixel_size (poi_label_layout, 
-				       &width, &height);
-	  k = width + 4;
-	  k2 = height;
-	  
-	  gdk_gc_set_function (kontext, GDK_COPY);
-	  
-	  gdk_gc_set_function (kontext, GDK_AND);
-	  
-	  { // Draw rectangle arround Text
-	    // gdk_gc_set_foreground (kontext, &textbacknew);
-	    gdk_gc_set_foreground (kontext, &grey);
-	    gdk_draw_rectangle (drawable, kontext, 1, 
-				posx + 13, posy - k2 / 2, 
-				k + 1, k2);
+	  // Only draw Text if less than 1000 Points are to be displayed
+	  if( poi_max < 1000 ) { 
+	    gdk_gc_set_foreground (kontext, &textback);
 
-	    /*
+	    poi_label_layout =
+	      gtk_widget_create_pango_layout (drawing_area, txt);
+	    if (pdamode)
+	      pfd = pango_font_description_from_string ("Sans 8");
+	    else
+	      pfd = pango_font_description_from_string ("Sans 11");
+	    pango_layout_set_font_description (poi_label_layout, pfd);
+	    pango_layout_get_pixel_size (poi_label_layout, 
+					 &width, &height);
+	    k = width + 4;
+	    k2 = height;
+	  
 	    gdk_gc_set_function (kontext, GDK_COPY);
-	    gdk_gc_set_foreground (kontext, &black);
-	    gdk_gc_set_background (kontext, &textbacknew);
-	    gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-	    gdk_draw_rectangle (drawable, kontext, 0, 
-				posx + 12, posy - k2 / 2 - 1,
-				k + 2, k2);
-	    */
+	  
+	    gdk_gc_set_function (kontext, GDK_AND);
+	  
+	    { // Draw rectangle arround Text
+	      // gdk_gc_set_foreground (kontext, &textbacknew);
+	      gdk_gc_set_foreground (kontext, &grey);
+	      gdk_draw_rectangle (drawable, kontext, 1, 
+				  posx + 13, posy - k2 / 2, 
+				  k + 1, k2);
+
+	      /*
+		gdk_gc_set_function (kontext, GDK_COPY);
+		gdk_gc_set_foreground (kontext, &black);
+		gdk_gc_set_background (kontext, &textbacknew);
+		gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+		gdk_draw_rectangle (drawable, kontext, 0, 
+		posx + 12, posy - k2 / 2 - 1,
+		k + 2, k2);
+	      */
+	    }
+
+	    /* prints in pango */
+
+	    poi_label_layout =
+	      gtk_widget_create_pango_layout (drawing_area, txt);
+	    pango_layout_set_font_description (poi_label_layout, pfd);
+
+	    gdk_draw_layout_with_colors (drawable, kontext,
+					 posx + 15, posy - k2 / 2,
+					 poi_label_layout, &black, NULL);
+	    if (poi_label_layout != NULL)
+	      g_object_unref (G_OBJECT (poi_label_layout));
+	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+	    pango_font_description_free (pfd);
 	  }
-
-	  /* prints in pango */
-
-	  poi_label_layout =
-	    gtk_widget_create_pango_layout (drawing_area, txt);
-	  pango_layout_set_font_description (poi_label_layout, pfd);
-
-	  gdk_draw_layout_with_colors (drawable, kontext,
-				       posx + 15, posy - k2 / 2,
-				       poi_label_layout, &black, NULL);
-	  if (poi_label_layout != NULL)
-	    g_object_unref (G_OBJECT (poi_label_layout));
-	  /* freeing PangoFontDescription, cause it has been copied by prev. call */
-	  pango_font_description_free (pfd);
 	}
     }
   if ( mydebug ) {
