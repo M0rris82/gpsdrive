@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.13  2005/01/20 00:13:14  tweety
+grid size depends on scale
+
 Revision 1.12  2005/01/18 02:09:22  tweety
 separated function draw_grid
 calculate start stop lat/lon for drawgrid
@@ -5206,10 +5209,13 @@ draw_grid(GtkWidget * widget)
     step=1;
   if (mapscale < 600000 ) 
     step=.5;
-  /* Only use after start stop lat is calculated before
-     if (mapscale < 500000 ) 
-     step=.1;
-  */
+  if (mapscale < 500000 ) 
+    step=.1;
+  if (mapscale < 20000 ) 
+    step=.01;
+  if (mapscale < 5000 ) 
+    step=.005;
+
 
 
   // TODO: calculate the start and stop for lat/lon according to the displayed section
@@ -5288,8 +5294,10 @@ draw_grid(GtkWidget * widget)
 	      
 	  if ( step >=1 ) 
 	    sprintf(str,"%.0f",lon);
-	  else 
-	    sprintf(str,"%.1f",lon);
+	  else 	  if ( step >=.1 )
+	      sprintf(str,"%.1f",lon);
+	    else 
+	      sprintf(str,"%.2f",lon);
 	  posxdist = (posxdest12-posxdest11)/4;
 	  posydist = (posydest12-posydest11)/4;
 	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist ,str);
@@ -5298,7 +5306,10 @@ draw_grid(GtkWidget * widget)
 	  if ( step >=1 ) 
 	    sprintf(str,"%.0f",lat);
 	  else 
-	    sprintf(str,"%.1f",lat);
+	    if ( step >=.1 ) 
+	      sprintf(str,"%.1f",lat);
+	    else 
+	      sprintf(str,"%.2f",lat);
 	  posxdist = (posxdest21-posxdest11)/4;
 	  posydist = (posydest21-posydest11)/4;
 	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist,str);
