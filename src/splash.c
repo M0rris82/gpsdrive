@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.13  2005/04/29 17:41:57  tweety
+  Moved the speech string to a seperate File
+
   Revision 1.12  2005/04/21 19:33:40  tweety
   include header files for speech_out
 
@@ -462,6 +465,7 @@ Disclaimer: Please do not use for navigation.
 #include <time.h>
 #include <xpm_talogo.h>
 #include <speech_out.h>
+#include <speech_strings.h>
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -507,9 +511,6 @@ extern gchar bluecolor[40], trackcolor[40], friendscolor[40];
 extern int messagenumber;
 extern int sockfd, serialspeed, disableserial, showsid, storetz;
 extern int sound_direction, sound_distance, sound_speed, sound_gps;
-extern enum
-{ english, german, spanish }
-voicelang;
 
 #define KM2MILES 0.62137119
 #define KM2NAUTIC  0.54
