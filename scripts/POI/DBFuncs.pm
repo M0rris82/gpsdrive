@@ -22,6 +22,7 @@ BEGIN {
 
         @ISA         = qw(Exporter);
         @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id
+		      &streets_type_names &streets_type_list  &streets_type_name2id
 		      &db_disconnect 
 		      &add_poi &add_poi_multi
 		      &poi_list
@@ -172,7 +173,7 @@ sub poi_type_name2id($){
 	$poi_type_id = $poi_type_id_cache->{$type_name};
     } else {
 	my $dbh = db_connect();
-	my $query = "SELECT poi_type_id FROM type WHERE poi_type.name = '$type_name' LIMIT 1";
+	my $query = "SELECT poi_type_id FROM poi_type WHERE poi_type.name = '$type_name' LIMIT 1";
 
 	my $sth=$dbh->prepare($query) or die $dbh->errstr;
 	$sth->execute()               or die $sth->errstr;
@@ -563,7 +564,7 @@ sub drop_index($){
     my $table = shift;
 
     # For Debug Purpose
-    # return 1;
+    return 1;
 
     if ( $table eq "poi" ){
 	for my $key ( qw( last_modified name lat lon ) ){
@@ -657,8 +658,8 @@ db_exec('CREATE TABLE IF NOT EXISTS `streets_type` (
   `lang`            varchar(2)       NULL default \'en\',
   `name`            varchar(80)  NOT NULL default \'\',
   `description`     varchar(160)     NULL default \'\',
-  `color`           varchar(80)  NOT NULL default \'\',
-  `linetype`        varchar(80)  NOT NULL default \'\',
+  `color`           varchar(80)      NULL default \'\',
+  `linetype`        varchar(80)      NULL default \'\',
   PRIMARY KEY  (`streets_type_id`)
 ) TYPE=MyISAM;') or die;
     drop_index('streets_type');

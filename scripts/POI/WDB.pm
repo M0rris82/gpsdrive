@@ -114,9 +114,9 @@ sub import_wdb($){
 	      $streets_type_id = streets_type_name2id($type_name);
 	      unless ( $streets_type_id ) {
 		  my $type_hash= {
-		      'type.name' => $type_name
+		      'streets_type.name' => $type_name
 		      };
-		  POI::DBFuncs::insert_hash("type",$type_hash);
+		  POI::DBFuncs::insert_hash("streets_type",$type_hash);
 		  $streets_type_id = streets_type_name2id($type_name);
 	      }	
 	  } elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
