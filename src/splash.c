@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.12  2005/04/21 19:33:40  tweety
+  include header files for speech_out
+
   Revision 1.11  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -458,6 +461,7 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <time.h>
 #include <xpm_talogo.h>
+#include <speech_out.h>
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
