@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.71  2005/11/14 06:51:57  tweety
+nlat has to be double
+Autor: Mike Auty
+
 Revision 1.70  2005/11/14 06:47:01  tweety
 strtod --> coordinate_string2gdouble
 
@@ -6025,7 +6029,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 {
 	G_CONST_RETURN gchar *s, *sc;
 	gchar longi[100], lat[100], hostname[100], region[10];
-	gdouble f, nlongi;
+	gdouble f, nlongi, nlat;
 	gint ns;
 
 	char sctext[40];
@@ -6051,7 +6055,8 @@ downloadsetparm (GtkWidget * widget, guint datum)
 	g_strdelimit (s, ",", '.');
 	g_strlcpy (lat, s, sizeof (lat));
 	g_strlcpy (newmaplat, lat, sizeof (newmaplat));
-
+	coordinate_string2gdouble(lat, &nlat);
+	
 	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
 	g_strdelimit (s, ",", '.');
 	g_strlcpy (longi, s, sizeof (longi));
@@ -6128,13 +6133,13 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
 		if (expedia_de)
 			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER4, lat, longi, region, sctext,
+				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
+				    WEBSERVER4, nlat, nlongi, region, sctext,
 				    hostname);
 		else
 			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER2, lat, longi, region, sctext,
+				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
+				    WEBSERVER2, nlat, nlongi, region, sctext,
 				    hostname);
 	}
 
