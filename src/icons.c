@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.2  2005/02/06 21:18:05  tweety
+more cleanup: extracted more functionality to functions
+
 Revision 1.1  2005/02/06 17:56:18  tweety
 icons.c is ectracted from gpsdrive.c
 
@@ -93,14 +96,58 @@ icons.c is ectracted from gpsdrive.c
 
 extern gint debug;
 extern gint muteflag , sqlflag , trackflag ;
-extern GdkPixbuf *image, *friendsimage, *tempimage, *friendspixbuf, *miniimage;
+extern GdkColor red;
+extern GdkColor black;
+extern GdkColor white;
+extern GdkColor blue;
 
-/***************************************************************************/
-/***************************************************************************/
-/***************************************************************************/
-
+GdkPixbuf *friendsimage = NULL, *friendspixbuf = NULL;
 GdkPixbuf *kismetpixbuf, *openwlanpixbuf, *closedwlanpixbuf, *iconpixbuf[50];
 
+gint maxauxicons = MAXWPTYPES, lastauxicon = 0;
+auxiconsstruct auxicons[MAXWPTYPES];
+
+/***************************************************************************/
+/***************************************************************************/
+/***************************************************************************/
+
+
+/* draw a + Sign and its shaddow */
+void
+draw_plus_sign ( gdouble posxdest,   gdouble posydest )
+{
+  if (shadow)
+    { /*  draw shadow of + sign */
+      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_function (kontext, GDK_AND);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 - 5 + SHADOWOFFSET,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 + 5 + SHADOWOFFSET);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + 5 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET,
+		     posxdest + 1 - 5 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET);
+      gdk_gc_set_function (kontext, GDK_COPY);
+    }
+
+  /*  draw + sign at destination */
+  gdk_gc_set_foreground (kontext, &red);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1,     posydest + 1 - 5, 
+		 posxdest + 1,     posydest + 1 + 5);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1 + 5, posydest + 1, 
+		 posxdest + 1 - 5, posydest + 1);
+
+}
+
+
+/* -----------------------------------------------------------------------------
+
+ */
 int
 drawicon (gint posxdest, gint posydest, char *ic)
 {
@@ -113,7 +160,7 @@ drawicon (gint posxdest, gint posydest, char *ic)
   if (!sqlflag)
     g_strup (icon);
 
-  if ((strcmp (icon, "REST")) == 0)
+  if (! strcmp (icon, "REST"))
     symbol = 1;
   else if ((strcmp (icon, "MCDONALDS")) == 0)
     symbol = 2;
@@ -143,41 +190,43 @@ drawicon (gint posxdest, gint posydest, char *ic)
   for (i = 0; i < lastauxicon; i++)
     if ((strcmp (icon, (auxicons + i)->name)) == 0)
       {
-	if ((posxdest >= 0) && (posxdest < SCREEN_X))
+	if ((posxdest >= 0) && (posxdest < SCREEN_X)
+	    && 
+	    (posydest >= 0) && (posydest < SCREEN_Y))
 	  {
-
-	    if ((posydest >= 0) && (posydest < SCREEN_Y))
-	      {
-		x = gdk_pixbuf_get_width ((auxicons + i)->icon);
-		y = gdk_pixbuf_get_width ((auxicons + i)->icon);
-		gdk_draw_pixbuf (drawable, kontext, (auxicons + i)->icon,
-				 0, 0,
-				 posxdest - x / 2,
-				 posydest - y / 2, x, y, GDK_RGB_DITHER_NONE,
-				 0, 0);
-		aux = i;
-	      }
+	    x = gdk_pixbuf_get_width ((auxicons + i)->icon);
+	    y = gdk_pixbuf_get_width ((auxicons + i)->icon);
+	    gdk_draw_pixbuf (drawable, kontext, (auxicons + i)->icon,
+			     0, 0,
+			     posxdest - x / 2,
+			     posydest - y / 2, x, y, GDK_RGB_DITHER_NONE,
+			     0, 0);
+	    aux = i;
 	  }
 	return 99999;
       }
-
+  
   if (symbol == 0)
-    return 0;
-
-  if ((posxdest >= 0) && (posxdest < SCREEN_X))
     {
+      draw_plus_sign( posxdest, posydest );
+      return 0;
+    }
 
-      if ((posydest >= 0) && (posydest < SCREEN_Y))
-	{
-	  gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol - 1],
-			   0, 0,
-			   posxdest - 12,
-			   posydest - 12, 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
-	}
+  if ( (posxdest >= 0) && (posxdest < SCREEN_X)
+       &&    
+       (posydest >= 0) && (posydest < SCREEN_Y))
+    {
+      gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol - 1],
+		       0, 0,
+		       posxdest - 12, posydest - 12,
+		       24, 24, GDK_RGB_DITHER_NONE, 0, 0);
     }
   return symbol;
 }
 
+/* -----------------------------------------------------------------------------
+
+ */
 void
 load_icons(void)
 {
