@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.56  2005/08/11 19:28:19  tweety
+Support displaying gpsdrive larger on screens larger than 1280
+
 Revision 1.55  2005/08/11 07:20:27  tweety
 moved top_GPSWORLD.jpg to data/maps/
 
@@ -11757,10 +11760,14 @@ main (int argc, char *argv[])
 	PSIZE = 50;
 	SMALLMENU = 0;
 	PADDING = 1;
-	if (h >= 1024)		/* 1280x1024 */
+	if (h >= 1024)		 /* > 1280x1024 */
 	{
-		real_screen_x = 840;
-		real_screen_y = 600;
+		real_screen_x = min(1280,w-300);
+		real_screen_y = min(1024,h-200);
+		if (debug)
+		    g_print ("Set real Screen size to %ld,%ld\n", 
+			     real_screen_x,real_screen_y);
+		
 	}
 	else if (h >= 768)	/* 1024x768 */
 	{
