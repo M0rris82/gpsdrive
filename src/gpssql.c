@@ -23,8 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/01/11 07:13:27  tweety
+added "order by \(abs(%.6f - lat)+abs(%.6f - lon)),name LIMIT 10000"
+to get the nearest wp first and to have a limit on hov many are retrieved
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.33  2004/02/08 20:37:49  ganter
 handle user-defined icons for open and closed wlans
@@ -153,6 +157,7 @@ added SQL support
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
+extern gdouble current_long, current_lat;
 extern char dbwherestring[5000];
 extern char dbtypelist[100][40];
 extern double dbdistance;
@@ -388,6 +393,7 @@ int
 getsqldata ()
 {
   char q[5000];
+  char sql_order[5000];
   int r, rges, wlan, action, sqlnr;
   gchar mappath[400];
   FILE *st;
@@ -406,12 +412,20 @@ getsqldata ()
       return 1;
     }
 
-
-  g_snprintf (q, sizeof (q),
-	      "SELECT name,lat,lon,upper(type),id FROM %s %s order by name",
-	      dbtable, dbwherestring);
+  g_snprintf (sql_order, sizeof (sql_order),
+	      "order by \(abs(%.6f - lat)+abs(%.6f - lon))"
+	      ,current_lat,current_long);
+  g_strdelimit (sql_order, ",", '.');
   if (debug)
-    printf ("\nquery: %s\n", q);
+    printf ("mysql order: %s\n", sql_order);
+  
+  g_snprintf (q, sizeof (q),
+	      "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
+              //"SELECT name,lat,lon,upper(type),id FROM %s %s order by name",
+	      dbtable, dbwherestring,sql_order,lat,lon);
+  if (debug)
+    printf ("mysql query: %s\n", q);
+
   if (dl_mysql_query (&mysql, q))
     exiterr (3);
   if (!(res = dl_mysql_store_result (&mysql)))
