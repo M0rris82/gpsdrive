@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.3  2005/02/06 17:52:44  tweety
+extract icon handling to icons.c
+
 Revision 1.2  2005/02/02 17:42:54  tweety
 Add some comments
 extract some code into funktions
@@ -256,8 +259,9 @@ my_bool (*dl_mysql_eof)(MYSQL_RES *res);
 
 typedef struct
 {
-	  char id[30], name[40], lat[40], longi[40], timesec[40], speed[10],
-    heading[10];
+  char id[30], name[40], 
+    lat[40], longi[40], 
+    timesec[40], speed[10], heading[10];
 }
 friendsstruct;
 

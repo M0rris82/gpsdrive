@@ -483,32 +483,7 @@ i.e. '.' in english, ',' in german!! */
   if ((strlen (friendsname) == 0))
     g_strlcpy (friendsname, _("EnterYourName"), sizeof (friendsname));
 
-
-  kismetpixbuf = gdk_pixbuf_new_from_xpm_data ((const char **) kismet_xpm);
-  openwlanpixbuf = gdk_pixbuf_new_from_xpm_data ((const char **) open_xpm);
-
-  closedwlanpixbuf =
-    gdk_pixbuf_new_from_xpm_data ((const char **) closed_xpm);
-
-  iconpixbuf[0] = gdk_pixbuf_new_from_xpm_data ((const char **) rest_xpm);
-  iconpixbuf[1] =
-    gdk_pixbuf_new_from_xpm_data ((const char **) mcdonalds_xpm);
-  iconpixbuf[2] = gdk_pixbuf_new_from_xpm_data ((const char **) hotel_xpm);
-  iconpixbuf[3] =
-    gdk_pixbuf_new_from_xpm_data ((const char **) burgerking_xpm);
-  iconpixbuf[4] = gdk_pixbuf_new_from_xpm_data ((const char **) shop_xpm);
-  iconpixbuf[5] = gdk_pixbuf_new_from_xpm_data ((const char **) monu_xpm);
-  iconpixbuf[6] = gdk_pixbuf_new_from_xpm_data ((const char **) girls_xpm);
-  iconpixbuf[7] =
-    gdk_pixbuf_new_from_xpm_data ((const char **) speedtrap_xpm);
-  iconpixbuf[8] = gdk_pixbuf_new_from_xpm_data ((const char **) airport_xpm);
-  iconpixbuf[9] = gdk_pixbuf_new_from_xpm_data ((const char **) golf_xpm);
-  iconpixbuf[10] = gdk_pixbuf_new_from_xpm_data ((const char **) fuel_xpm);
-  iconpixbuf[11] = gdk_pixbuf_new_from_xpm_data ((const char **) cafe_xpm);
-  iconpixbuf[12] =
-    gdk_pixbuf_new_from_xpm_data ((const char **) geocache_xpm);
-
-
+  load_icons();
 
 /*  Build array for earth radii */
   for (i = -100; i <= 100; i++)
@@ -1093,7 +1068,7 @@ i.e. '.' in english, ',' in german!! */
       speech_out_speek (buf);
     }
 
-  loadfriendsicon ();
+  load_friends_icon ();
 
   /*  Area for map */
   dframe = gtk_frame_new (NULL);
