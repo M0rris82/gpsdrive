@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.4  2005/11/01 15:06:10  cjastram
+  Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
+
   Revision 1.3  2005/10/31 09:48:50  tweety
   correct includefile for BSD Systems
 
@@ -138,6 +141,7 @@ extern GtkWidget *mainwindow, *status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
+extern int disableserial, disableserialcl;
 
 // ---------------------- NMEA
 gint haveRMCsentence = FALSE;
@@ -409,6 +413,21 @@ initgps ()
 	  simpos_timeout = 0;
 	}
     }
+
+  if (simmode)
+    {
+      if ((!disableserial) && (!disableserialcl))
+        {
+          haveserial = gpsserialinit ();
+          if (haveserial)
+            {
+              simmode = FALSE;
+              haveNMEA = TRUE;
+              gtk_widget_set_sensitive (startgpsbt, FALSE);
+            }
+        }
+    }
+    
   return FALSE;			/* to remove timer */
 }
 
