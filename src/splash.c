@@ -24,6 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.6  2005/02/02 17:42:54  tweety
+Add some comments
+extract some code into funktions
+added POI mySQL Support
+
 Revision 1.5  2005/01/22 11:38:06  tweety
 added more Help for keys
 
@@ -455,7 +460,7 @@ extern gint scaleprefered, milesflag, nauticflag, metricflag, sqlflag;
 extern gint debug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
-extern gint setdefaultpos, shadow, etch, drawgrid, testgarmin, needtosave, usedgps,
+extern gint setdefaultpos, shadow, etch, drawgrid, poi_draw, testgarmin, needtosave, usedgps,
   simfollow;
 extern gchar activewpfile[200];
 extern gdouble milesconv;
@@ -1196,6 +1201,7 @@ writeconfig ()
     fprintf (fp, "timezone = %d\n", zone);
   fprintf (fp, "etch = %d\n", etch);
   fprintf (fp, "drawgrid = %d\n", drawgrid);
+  fprintf (fp, "drawpoi = %d\n", poi_draw);
   fprintf (fp, "bigcolor = %s\n", bluecolor);
   fprintf (fp, "trackcolor = %s\n", trackcolor);
   fprintf (fp, "friendscolor = %s\n", friendscolor);
@@ -1420,6 +1426,8 @@ readconfig ()
 	    etch = atoi (par2);
 	  if ((strcmp (par1, "drawgrid")) == 0)
 	    drawgrid = atoi (par2);
+	  if ((strcmp (par1, "drawpoi")) == 0)
+	    poi_draw = atoi (par2);
 	  if ((strcmp (par1, "bigcolor")) == 0)
 	    g_strlcpy (bluecolor, par2, sizeof (bluecolor));
 	  if ((strcmp (par1, "trackcolor")) == 0)
