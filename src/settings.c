@@ -24,6 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.4  2005/02/02 17:42:54  tweety
+Add some comments
+extract some code into funktions
+added POI mySQL Support
+
 Revision 1.3  2005/01/15 23:46:46  tweety
 Added config option to disable/enable drawing of grid
 
@@ -320,6 +325,7 @@ created settings.c
 #include <unistd.h>
 #include <sys/mman.h>
 #include <math.h>
+#include "poi.h"
 #include <sys/time.h>
 #include <gpsdrive.h>
 #if HAVE_LOCALE_H
@@ -771,7 +777,7 @@ mainsetup (void)
   gtk_signal_connect (GTK_OBJECT (trackcolorbt), "clicked",
 		      G_CALLBACK (change_trackcolor_callback), (gpointer) 0);
 
-  misctable = gtk_table_new (4, 2, FALSE);
+  misctable = gtk_table_new (7, 5, FALSE);
   gtk_container_add (GTK_CONTAINER (f1), misctable);
   gtk_table_set_row_spacings (GTK_TABLE (misctable), 3);
   gtk_table_set_col_spacings (GTK_TABLE (misctable), 3);
@@ -811,14 +817,17 @@ mainsetup (void)
   gtk_table_attach_defaults (GTK_TABLE (misctable), simfollowbt,     0, 2, 1, 2);
   gtk_table_attach_defaults (GTK_TABLE (misctable), etchbt,          2, 4, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (misctable), drawgridbt,      2, 4, 0, 3);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpulabel,    0, 2, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorlabel, 2, 4, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpubt,       0, 2, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorbt,    2, 4, 3, 4);
 
-/*   gtk_table_attach_defaults (GTK_TABLE (misctable), label2, 0, 2, 3, 4); */
-/*   gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt, 0, 2, 4, 5); */
+  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpulabel,    0, 2, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpubt,       0, 2, 4, 5);
 
+  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorlabel, 2, 4, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorbt,    2, 4, 4, 5);
+
+  /*
+  gtk_table_attach_defaults (GTK_TABLE (misctable), label2,          0, 2, 5, 6); 
+  gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt,        2, 4, 6, 6); 
+  */  
 
 /* GPS settings area */
   f4 = gtk_frame_new (_("GPS settings"));
