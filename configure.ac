@@ -31,7 +31,7 @@ echo "Using $CC compiler"
 
 if test "$CC" = "gcc" ; then
 
-if $CC -dumpversion|egrep -q "^3\.*"; then
+if $CC -dumpversion|egrep -q "^[34]\.*"; then
 echo "GCC ok"
 else
 echo "*****************************************"
