@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.10  2005/03/29 01:59:01  tweety
+another set of minor Bugfixes
+
 Revision 1.9  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -359,7 +362,7 @@ deletesqldata (int index)
 int
 get_sql_type_list (void)
 {
-  char q[200], temp[200], path[1024];
+  char q[200], temp[200];
   int r, i;
   static int usericonsloaded = FALSE;
 
@@ -442,7 +445,7 @@ getsqldata ()
   if (!(res = dl_mysql_store_result (&mysql)))
     {
       fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
-      return;
+      return(1);
     }
 
   rges = r = wlan = 0;
