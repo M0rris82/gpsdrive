@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.67  2005/11/01 14:38:28  tweety
+set distance jump to 2000Km/h
+
 Revision 1.66  2005/10/25 20:37:58  tweety
 moved a few of the functions
 Autor: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
@@ -7605,11 +7608,11 @@ dotripmeter (GtkWidget * widget, guint datum)
 	d = calcdist (trip_long, trip_lat);
 	trip_long = current_long;
 	trip_lat = current_lat;
-	if (!((d >= 0.0) && (d < (1000.0 * TRIPMETERTIMEOUT / 3600.0))))
+	if (!((d >= 0.0) && (d < (2000.0 * TRIPMETERTIMEOUT / 3600.0))))
 	{
 		fprintf (stderr,
 			 _
-			 ("distance jump is more then 1000km/h speed, ignoring\n"));
+			 ("distance jump is more then 2000km/h speed, ignoring\n"));
 		return TRUE;
 	}
 	/* we want always have metric system stored */
