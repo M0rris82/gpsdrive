@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.9  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
 Revision 1.8  2005/02/08 09:01:48  tweety
 move loading of usericons to icons.c
 
@@ -221,6 +230,8 @@ MYSQL_ROW row;
 void
 exiterr (int exitcode)
 {
+  
+  fprintf (stderr, "Error while using mysql\n");
   fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
   exit (exitcode);
 }
@@ -233,6 +244,7 @@ sqlinit (void)
 
   if (!(dl_mysql_init (&mysql)))
     exiterr (1);
+
   if (!
       (dl_mysql_real_connect
        (&mysql, dbhost, dbuser, dbpass, dbname, 0, NULL, 0)))
@@ -334,7 +346,7 @@ deletesqldata (int index)
     return 0;
   g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE id='%d'", dbtable, index);
   if (debug)
-    g_print ("\nquery: %s\n", q);
+    g_print ("query: %s\n", q);
 
   if (dl_mysql_query (&mysql, q))
     exiterr (3);
@@ -419,17 +431,20 @@ getsqldata ()
 	      "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
 	      dbtable, dbwherestring,sql_order);
   if (debug)
-    printf ("mysql query: %s\n", q);
+    printf ("waypoints: mysql query: %s\n", q);
 
   if (dl_mysql_query (&mysql, q))
     {
-      perror("mysql_error in query");
-      // exiterr (3);
+      fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
       return(1);
     }
 
   if (!(res = dl_mysql_store_result (&mysql)))
-    exiterr (4);
+    {
+      fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
+      return;
+    }
+
   rges = r = wlan = 0;
   while ((row = dl_mysql_fetch_row (res)))
     {
