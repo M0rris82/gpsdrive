@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.6  2005/02/08 07:58:22  tweety
+load icons from system directory of .../gpsdrive/icons if exists too
+
 Revision 1.5  2005/02/07 07:53:39  tweety
 added check_if_moved inti function poi_rebuild_list
 
@@ -160,6 +163,7 @@ added SQL support
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <gpsdrive.h>
 #include <ctype.h>
 
@@ -366,11 +370,22 @@ get_sql_type_list (void)
 /* load user defined icons */
       if (usericonsloaded == FALSE)
 	{
+	  struct stat sbuf;
+	  //	  (auxicons + lastauxicon)->icon = NULL;
 	  for (i = 0; i < (int) strlen (temp); i++)
 	    temp[i] = tolower (temp[i]);
+
 	  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, temp);
-	  (auxicons + lastauxicon)->icon =  gdk_pixbuf_new_from_file (path, NULL);
-	  if ((auxicons + lastauxicon)->icon != NULL)
+	  gint e = stat (path, &sbuf);
+	  if ( e <= 0 ){
+	    g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,temp);
+	    e = stat (path, &sbuf);
+	  }
+	  if ( e > 0 ) {
+	    (auxicons + lastauxicon)->icon =  gdk_pixbuf_new_from_file (path, NULL);
+	  }
+
+	  if (e >0 && (auxicons + lastauxicon)->icon != NULL)
 	    {
 	      for (i = 0; i < (int) strlen (temp); i++)
 		temp[i] = toupper (temp[i]);
@@ -390,12 +405,21 @@ get_sql_type_list (void)
 		  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 		  lastauxicon++;
 		}
+	      if ( debug ) 
+		printf ("Icon for %s loaded:%s\n",temp,path);
+	    }
+	  else 
+	    {
+	      if ( debug ) 
+		printf ("No Icon for %s loaded\n",temp);
 	    }
 	}
     }
   dl_mysql_free_result (res);
   dbtypelistcount = r;
   usericonsloaded = TRUE;
+  if ( debug ) 
+    printf("External Icons loaded\n");
   return r;
 }
 
