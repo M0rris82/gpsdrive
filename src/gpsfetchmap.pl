@@ -41,6 +41,7 @@
 #       E Error
 #       + retrieved new file
 #       _ file already exists localy
+#       u file exists but not found in map_koords.txt file (added)
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -188,15 +189,17 @@ print "\nDownloading files:\n";
 
 # Ok start getting the maps
 foreach my $scale (@{$SCALES_TO_GET_ref}) {
+    print "Scale: $scale\n";
    # Setup k
    my $k = $DIFF * $scale;
    my $klat = $k - ($k / 2); ### FIX BY CAMEL
    my $klon = $k - ($k / 6); ### FIX BY CAMEL
    my $lati = $slat;   
    while ($lati < $endlat) {
+       printf "   %5.2f: ",$lati;
        my $long = $slon;
        while ($long < $endlon) {
-	   wget_map($scale,$lati,$long);
+	   print wget_map($scale,$lati,$long);
 	   $long += $klon; ### FIX BY CAMEL
        }
        print "\n";
@@ -232,45 +235,61 @@ sub is_map_file($){
 ######################################################################
 sub wget_map($$$){
     my ($scale,$lati,$long) = @_;
-    my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
+
     my ($url,$mapscale);
-    print "File: $filename\n" if $debug;
-    if ( is_map_file($filename)) {
-	$existcount++;
-	print "_";
-    } else {
-	if ($mapserver eq 'expedia') {
-	    ($url,$mapscale)=expedia_url($lati,$long,$scale);
-	} else { # of if expedia
-	    print "Unknown map sever :", $mapserver, "\n"; 
-	}
-	
-	print "$url\n" if $debug;
-	unlink('tmpmap.gif') if -s 'tmpmap.gif';
-	if ( $simulate_only ) {
-	    print "S";		   
-	} else {
-	    `wget -nd -q -O tmpmap.gif "$url"`;
-	}
-	
-	if (is_map_file('tmpmap.gif')) {
-	    rename('tmpmap.gif',$filename);
+    my $result="?";
+
+#    my $plain_filename = "$FILEPREFIX$scale-$lati-$long.gif";
+    # mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
+    my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
+	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+
+    mkpath dirname($filename);
+    unlink('tmpmap.gif') if -f 'tmpmap.gif';
+    
+    if ( $mapserver eq 'expedia') {
+	($url,$mapscale)=expedia_url($lati,$long,$scale);
+    } else { # of if expedia
+	print "Unknown map sever :", $mapserver, "\n"; 
+	return "E";
+    }
+    
+    print "$url\n" if $debug;
+
+    if ( is_map_file( $filename ) ) {
+	$result= "_";
+	if ( $update_koord
+	     && !defined $MAP_FILES->{$filename} ) {
 	    append_koords($filename, $lati, $long, $mapscale);
-		   print "+";
-	    print "\nWrote $filename\n" if ($debug);
+	    $result= "u";
+	};
+	$existcount++;
+    } else {
+	if ( $simulate_only ) {
+	    $result="S";
 	    $newcount++;
 	} else {
-	    if ( $simulate_only ) {
-		print "S";		   
+	    print "wget $url\n" if ($debug);
+	    `wget -nd -q -O tmpmap.gif "$url"`;
+	    if ( is_map_file('tmpmap.gif') ) {
+		rename('tmpmap.gif',$filename);
+		append_koords($filename, $lati, $long, $mapscale);
+		$result= "+";
+		print "\nWrote $filename\n" if $debug;
+		$newcount++;
 	    } else {
 		$failcount++;
-		print "E";
+		$result= "E";
 	    }
+	    
+	    # sleep if polite is turned on to be nice to the webserver of the mapserver
+	    sleep($polite) if ($polite =~ /\d+/);
+	    sleep(1) if (!$polite);
 	}
-	# sleep if polite is turned on to be nice to the webserver of the mapserver
-	sleep($polite) if ($polite =~ /\d+/);
-	sleep(1) if (!$polite);
+	
     }
+    
+    return $result;
 }
 
 ######################################################################
