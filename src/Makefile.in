@@ -37,6 +37,13 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
+@DISABLEGARMIN_FALSE@am__append_1 = garmin_data.cpp \
+@DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+@DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
+@DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
+@DISABLEGARMIN_FALSE@	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
+@DISABLEGARMIN_FALSE@	garmin_legacy.h garmin_data.h
+
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -99,41 +106,23 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	garmin_application.h garmin_packet.h garmin_types.h \
 	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h \
 	garmin_serial.h garmin_legacy.h garmin_data.h
-@DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	battery.$(OBJEXT) track.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	poi.$(OBJEXT) streets.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	icons.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	LatLong-UTMconversion.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT) map_handler.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	import_map.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	speech_strings.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gps_handler.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_data.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@am__objects_1 = garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
-@DISABLEGARMIN_TRUE@am__objects_1 = gpsdrive.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	battery.$(OBJEXT) track.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	poi.$(OBJEXT) streets.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	icons.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT) map_handler.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	import_map.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT)
-am_gpsdrive_OBJECTS = $(am__objects_1)
+am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
+	navigation.$(OBJEXT) speech_out.$(OBJEXT) friends.$(OBJEXT) \
+	battery.$(OBJEXT) track.$(OBJEXT) poi.$(OBJEXT) \
+	streets.$(OBJEXT) draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
+	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
+	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
+	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) map_handler.$(OBJEXT) \
+	import_map.$(OBJEXT) speech_strings.$(OBJEXT) \
+	gps_handler.$(OBJEXT) $(am__objects_1)
+am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -334,32 +323,14 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEPLUGINS_FALSE@libfly_la_LDFLAGS = -version-info 2:0:0
 @DISABLEPLUGINS_FALSE@libnautic_la_SOURCES = nautic.c
 @DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
-@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-@DISABLEGARMIN_FALSE@	friends.c \
-@DISABLEGARMIN_FALSE@	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
-@DISABLEGARMIN_FALSE@	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
-@DISABLEGARMIN_FALSE@	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-@DISABLEGARMIN_FALSE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-@DISABLEGARMIN_FALSE@	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
-@DISABLEGARMIN_FALSE@	import_map.c import_map.h speech_strings.c speech_strings.h \
-@DISABLEGARMIN_FALSE@	gps_handler.c gps_handler.h	\
-@DISABLEGARMIN_FALSE@	\
-@DISABLEGARMIN_FALSE@	garmin_data.cpp \
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
-@DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
-@DISABLEGARMIN_FALSE@	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
-@DISABLEGARMIN_FALSE@	garmin_legacy.h garmin_data.h
-
-@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-@DISABLEGARMIN_TRUE@	friends.c \
-@DISABLEGARMIN_TRUE@	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
-@DISABLEGARMIN_TRUE@	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
-@DISABLEGARMIN_TRUE@	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-@DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-@DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
-@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h 
-
+PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
+	friends.c battery.c track.c poi.c streets.c draw_tracks.c \
+	settings.c battery.h track.h poi.h streets.h draw_tracks.h \
+	gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h \
+	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
+	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h \
+	talogo.h import_map.c import_map.h speech_strings.c \
+	speech_strings.h gps_handler.c gps_handler.h $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -736,7 +707,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
-@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h	
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

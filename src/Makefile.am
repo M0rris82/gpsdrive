@@ -39,17 +39,6 @@ libnautic_la_SOURCES=nautic.c
 libnautic_la_LDFLAGS = -version-info 2:0:0
 endif
 
-if DISABLEGARMIN
-PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-	friends.c \
-	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
-	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
-	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
-	import_map.c import_map.h speech_strings.c speech_strings.h 
-	gps_handler.c gps_handler.h	
-else 
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	friends.c \
 	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
@@ -58,9 +47,11 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
-	gps_handler.c gps_handler.h	\
-	\
-	garmin_data.cpp \
+	gps_handler.c gps_handler.h	
+
+if DISABLEGARMIN
+else 
+PRGS += garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
