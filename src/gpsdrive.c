@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.27  2005/03/27 18:23:37  tweety
+make filename display 50 chars long
+
 Revision 1.26  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -2047,7 +2050,7 @@ char friendsserverip[20], friendsname[40], friendsidstring[40],
 
 
 gchar *dlpstart;
-gchar oldfilename[200];
+gchar oldfilename[1024];
 GString *tempmapfile;
 gint nrmaps = 0, dldiff;
 gdouble earthr;
@@ -2073,7 +2076,7 @@ GtkStyle *style = NULL;
 GtkRcStyle *mainstyle;
 gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit = 0;
 GtkWidget *mylist, *myroutelist, *destframe;
-gchar mapfilename[200];
+gchar mapfilename[1024];
 gdouble gbreit, glang, milesconv, olddist = 99999.0;
 GTimer *timer, *disttimer;
 gint gcount, milesflag, downloadwindowactive;
@@ -2113,7 +2116,7 @@ gint displaymap_top = TRUE, displaymap_map = TRUE;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
 GtkObject *adj;
-gchar lastradar[40], lastradar2[40], nmeamodeandport[50], importfilename[80];
+gchar lastradar[40], lastradar2[40], nmeamodeandport[50], importfilename[1024];
 gint foundradar, messageshown = FALSE;
 gdouble radarbearing;
 gint errortextmode = TRUE;
@@ -4103,7 +4106,7 @@ mintodecimal (gchar * text)
 void
 display_status2 ()
 {
-  gchar s2[100], buf[200], mf[50];
+  gchar s2[100], buf[200], mf[60];
   gint h, m;
   gdouble secs, v;
   if (downloadactive == TRUE)
@@ -4203,8 +4206,8 @@ display_status2 ()
     }
 
   gtk_label_set_text (GTK_LABEL (l2), s2);
-  strncpy (mf, mapfilename, 18);
-  mf[17] = 0;
+  strncpy (mf, mapfilename, 59);
+  mf[59] = 0;
   gtk_label_set_text (GTK_LABEL (l3), mf);
   g_snprintf (s2, sizeof (s2), "1:%ld", mapscale);
   gtk_label_set_text (GTK_LABEL (l4), s2);
@@ -6524,7 +6527,7 @@ gint
 scalerbt_cb (GtkWidget * widget, guint datum)
 {
   gint val, oldval, old2val;
-  gchar oldfilename[200];
+  gchar oldfilename[1024];
 
   g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
   val = (GTK_ADJUSTMENT (adj)->value);
