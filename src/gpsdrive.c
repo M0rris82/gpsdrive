@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.11  2005/01/15 23:46:46  tweety
+Added config option to disable/enable drawing of grid
+
 Revision 1.10  2005/01/11 21:33:40  tweety
 rename ->longitude ->lon
 
@@ -2116,7 +2119,7 @@ GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
 gint numsats = 0, satsavail = 0;
-gint drawgrid = TRUE, numgrids = 4, scroll = TRUE, deleteline = 0;
+gint numgrids = 4, scroll = TRUE, deleteline = 0;
 gint satposmode = FALSE;
 gint saytarget = FALSE, printoutsats = FALSE;
 extern gchar *displaytext;
@@ -2171,6 +2174,7 @@ extern gint zone;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
 gint etch = 1;
+gint drawgrid = TRUE;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 /* socket for friends  */
@@ -7988,6 +7992,15 @@ etch_cb (GtkWidget * widget, guint datum)
   if (havetemperature)
     gtk_frame_set_shadow_type (GTK_FRAME (ftem), stype);
 
+  needtosave = TRUE;
+  return TRUE;
+}
+
+/*  switching shadow on/off */
+gint
+drawgrid_cb (GtkWidget * widget, guint datum)
+{
+  drawgrid = !drawgrid;
   needtosave = TRUE;
   return TRUE;
 }
