@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.13  2005/08/09 01:08:31  tweety
+Twist and bend in the Makefiles to install the DataDirectory more apropriate
+move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+adapt icons.txt loading according to these directories
+
 Revision 1.12  2005/08/08 20:46:50  tweety
 icons.txt support for non sql use
 Autor:Daniel Hiepler <rigid@akatash.de>
@@ -324,22 +329,16 @@ load_icons (void)
       /* if there is no icons.txt, try to copy it from datadir */
       if (!iconfile)
 	{
-	  snprintf ((char *) &filename, 255, "cp %s/gpsdrive/icons.txt %s",
-		    DATADIR, homedir);
-	  printf ("Initializing default icons.txt: system(\"%s\")\n",
-		  filename);
-	  /* copy default icons.txt */
-	  if (system (filename) == -1)
-	    printf ("error initializing default icons.txt\n");
-	  /* retry */
-	  else
-	    {
-	      snprintf ((char *) &filename, 255, "%s/icons.txt", homedir);
-	      iconfile = fopen (filename, "r");
-	    }
+	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt",
+		    DATADIR);
+	  printf ("Trying default icons.txt: \"%s\"\n", filename);
+	  iconfile = fopen (filename, "r");
 	}
       if (iconfile)
 	{
+	  if (debug)
+	    printf ("Icons read from: \"%s\"\n", filename);
+
 	  for (iconcounter = 0; iconcounter < MAX_ICONS; iconcounter++)
 	    {
 	      fscanf (iconfile, "%s %s\n", (char *) &wptype,
@@ -349,7 +348,23 @@ load_icons (void)
 			g_strup ((gchar *) & wptype), (char *) &iconpath);
 	      iconpixbuf[iconcounter] =
 		gdk_pixbuf_new_from_file ((char *) &iconpath, NULL);
-	      if (!iconpixbuf[iconcounter])
+	      if (!iconpixbuf[iconcounter])	// Try in Homedir/icons
+		{
+		  char filename[255];
+		  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
+			    homedir, iconpath);
+		  iconpixbuf[iconcounter] =
+		    gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+		}
+	      if (!iconpixbuf[iconcounter])	// Try in DATADIR/icons
+		{
+		  char filename[255];
+		  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
+			    DATADIR, iconpath);
+		  iconpixbuf[iconcounter] =
+		    gdk_pixbuf_new_from_file ((char *) &filename, NULL);
+		}
+	      if (!iconpixbuf[iconcounter])	// None Found
 		{
 		  printf ("** Failed to open \"%s\"\n", (char *) &iconpath);
 		  auxicons[iconcounter].icon = NULL;
@@ -379,11 +394,12 @@ load_friends_icon (void)
   gchar mappath[400];
 
   g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s", DATADIR,
-	      "friendsicon.png");
+	      "pixmaps/friendsicon.png");
   friendsimage = gdk_pixbuf_new_from_file (mappath, NULL);
   if (friendsimage == NULL)
     {
-      friendsimage = gdk_pixbuf_new_from_file ("friendsicon.png", NULL);
+      friendsimage =
+	gdk_pixbuf_new_from_file ("pixmaps/friendsicon.png", NULL);
     }
   if (friendsimage == NULL)
     {
