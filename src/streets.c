@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.17  2005/08/14 09:47:17  tweety
+  seperate tracks into it own table in geoinfo database
+  move Info's from TODO abaout geoinfo DB to Man Page
+  rename poi.pl to geoinfo.pl
+
   Revision 1.16  2005/05/24 08:35:25  tweety
   move track splitting to its own function +sub track_add($)
   a little bit more error handling
@@ -550,8 +555,8 @@ streets_rebuild_list (void)
 			}
 			if (mydebug)
 			{
-			    printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
-			    printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
+			    //    printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
+			    //    printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
 			}
 
 			// Save retrieved streets information into structure
@@ -566,8 +571,6 @@ streets_rebuild_list (void)
 			(streets_list + streets_list_count)->streets_type_id =
 				(gint) g_strtod (row[5], NULL);
 
-			if (mydebug)
-			    printf( "Copy ...\n");
 			if ( NULL == (streets_list + streets_list_count)->name) 
 			    (streets_list + streets_list_count)->name[0]='\0';
 			else
@@ -576,8 +579,6 @@ streets_rebuild_list (void)
 				       sizeof ((streets_list +
 						streets_list_count)->name));
 
-			if (mydebug)
-			    printf( "Copy ..1\n");
 			if ( NULL == (streets_list + streets_list_count)->comment)
 			    (streets_list + streets_list_count)->comment[0]='\0';
 			else
@@ -585,8 +586,6 @@ streets_rebuild_list (void)
 				       row[6],
 				       sizeof ((streets_list +
 						streets_list_count)->comment));
-			if (mydebug)
-			    printf( "Copy Done\n");
 		}
 	}
 
