@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.65  2005/10/19 07:22:21  tweety
+Its now possible to choose units for displaying coordinates also in
+Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
 Revision 1.64  2005/10/11 08:28:35  tweety
 gpsdrive:
 - add Tracks(MySql) displaying
@@ -2378,7 +2383,8 @@ gint satposmode = FALSE;
 gint saytarget = FALSE, printoutsats = FALSE;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
-gint minsecmode = FALSE, nightmode = FALSE, isnight = FALSE, disableisnight;
+gint minsecmode = LATLON_DEGDEC;
+gint nightmode = FALSE, isnight = FALSE, disableisnight;
 gint nighttimer;
 GtkWidget *setupentry[50], *setupentrylabel[50];
 void (*setupfunction[50]) ();
@@ -3251,88 +3257,89 @@ void
 checkinput (gchar * text)
 {
 	if ((strstr (text, "'")) != NULL)
-		mintodecimal (text);
+		gchar2dec_coordinate_string (text);
+}
+
+/* *****************************************************************************
+ * Convert a coordinate to a gchar
+ * mode is either LATLON_DMS, LATLON MINDEC or LATLON_DEGDEC 
+ * By Oddgeir Kvien, to adopt for 3-way lat/lon display 
+ */
+void
+coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat, gint mode) 
+{
+    gint grad, min, minus = FALSE;
+    gdouble minf, sec;
+    grad = (gint)pos;
+    if (pos<0) { grad=-grad; pos=-pos; minus=TRUE; }
+    
+    minf = (pos - (gdouble)grad)*60.0;
+    min = (gint)minf;
+    sec = (minf - (gdouble)min)*60.0;
+    switch (mode) 
+	{
+	case LATLON_DMS:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym, min, sec, (minus) ? 'S' : 'N');
+	    else
+		g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym, min, sec, (minus) ? 'W' : 'E');
+	    break;
+	    
+	case LATLON_MINDEC:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf, (minus) ? 'S' : 'N');
+	    else
+		g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf, (minus) ? 'W' : 'E');		
+	    break;
+	    
+	case LATLON_DEGDEC:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym, (minus) ? 'S' : 'N');
+	    else 
+		g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym, (minus) ? 'W' : 'E');
+	    break;
+	}
 }
 
 /* *****************************************************************************
  */
 void
-decimaltomin (gchar * text, gint islat)
+gchar2dec_coordinate_string (gchar * text)
 {
-	gint grad, min, minus = FALSE;
-	gdouble dec, rest, minf, sec;
-	dec = g_strtod (text, NULL);
-	if (dec < 0)
+    gint grad, minus = FALSE;
+    gdouble sec;
+    gint min;
+    gdouble dec;
+    gchar s2;
+    gdouble fmin;
+
+    /*
+     * Handle either DMS or MinDec formats
+     */
+    if ( 4 == sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2) )
 	{
-		minus = TRUE;
-		dec *= -1.0;
+	    /*   g_strdelimit (s1, ",", '.'); */
+	    /*   sscanf(s1,"%f",&sec); */
+	    dec = grad + min / 60.0 + sec / 3600.0;
 	}
-	grad = dec;
-	rest = dec - grad;
+    else if (3 == sscanf (text, "%d\xc2\xb0%lf'%c", &grad, &fmin, &s2) ){
+	dec = grad + fmin / 60.0;
+    } 
+    else if (1 == sscanf (text, "%lf", &dec) ){
+	/* Is already decimal */    
+    }
+    else {
+	/* TODO: handle bad format gracefully */
+    }
 
-	minf = (60.0 * rest);
-	min = minf;
-	rest = minf - min;
-	sec = 60.0 * rest;
-#if PREFER_MinDec
-	/* Hack alert: there should be a 3-way lat/lon format selection in the GUI */
-	if (islat)
-		g_snprintf (text, 100, "%d%s%.3f'%c", grad, gradsym, minf,
-			    (minus) ? 'S' : 'N');
-	else
-		g_snprintf (text, 100, "%d%s%.3f'%c", grad, gradsym, minf,
-			    (minus) ? 'W' : 'E');
-#else
-	if (islat)
-		g_snprintf (text, 100, "%d%s%.2d'%05.2f''%c", grad, gradsym,
-			    min, sec, (minus) ? 'S' : 'N');
-	else
-		g_snprintf (text, 100, "%d%s%.2d'%05.2f''%c", grad, gradsym,
-			    min, sec, (minus) ? 'W' : 'E');
-#endif
-
-}
-
-/* *****************************************************************************
- */
-void
-mintodecimal (gchar * text)
-{
-	gint grad, minus = FALSE;
-	gdouble sec;
-	gint min;
-	gdouble dec;
-	gchar s2;
-	gint rc;
-
-	/*
-	 * Handle either DMS or MinDec formats
-	 */
-	rc = sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2);
-	if (rc == 4)
-	{
-		/*   g_strdelimit (s1, ",", '.'); */
-		/*   sscanf(s1,"%f",&sec); */
-		dec = grad + min / 60.0 + sec / 3600.0;
-	}
-	else
-	{
-		gdouble fmin;
-		rc = sscanf (text, "%d\xc2\xb0%lf'%c", &grad, &fmin, &s2);
-		if (rc != 3)
-		{
-			/* TODO: handle bad format gracefully */
-		}
-		dec = grad + fmin / 60.0;
-	}
-	if (s2 == 'W')
-		minus = TRUE;
-	if (s2 == 'S')
-		minus = TRUE;
-	if (minus)
-		dec *= -1.0;
-	g_snprintf (text, 100, "%.6f", dec);
-	/*   g_print("%s\n", text); */
+    if (s2 == 'W')
+	minus = TRUE;
+    if (s2 == 'S')
+	minus = TRUE;
+    if (minus)
+	dec *= -1.0;
+    g_snprintf (text, 100, "%.6f", dec);
+    /*   g_print("gchar2dec_coordinate_string --> %s\n", text); */
 }
 
 /* *****************************************************************************
@@ -3402,35 +3409,12 @@ display_status2 ()
     }
 	}
 
-	if (minsecmode)
-	{
-		g_snprintf (s2, sizeof (s2), "%8.5f", current_lat);
-		decimaltomin (s2, 1);
-	}
-	else
-	{
-		g_snprintf (s2, sizeof (s2), "%8.5f", fabs (current_lat));
-		if (current_lat >= 0)
-			g_strlcat (s2, "N", sizeof (s2));
-		else
-			g_strlcat (s2, "S", sizeof (s2));
-	}
+/* shows the current position on the bottom of the window */
+	coordinate2gchar(s2, sizeof(s2), current_lat, TRUE, minsecmode);
 	gtk_label_set_text (GTK_LABEL (l1), s2);
-	if (minsecmode)
-	{
-		g_snprintf (s2, sizeof (s2), "%8.5f", current_long);
-		decimaltomin (s2, 0);
-	}
-	else
-	{
-		g_snprintf (s2, sizeof (s2), "%8.5f", fabs (current_long));
-		if (current_long >= 0)
-			g_strlcat (s2, "E", sizeof (s2));
-		else
-			g_strlcat (s2, "W", sizeof (s2));
-	}
-
+	coordinate2gchar(s2, sizeof(s2), current_long, FALSE, minsecmode);
 	gtk_label_set_text (GTK_LABEL (l2), s2);
+
 	strncpy (mf, g_basename (mapfilename), 59);
 	mf[59] = 0;
 	gtk_label_set_text (GTK_LABEL (l3), mf);
@@ -6512,18 +6496,13 @@ download_cb (GtkWidget * widget, guint datum)
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
-	g_snprintf (buff, sizeof (buff), "%.5f", current_lat);
-	if (minsecmode)
-		decimaltomin (buff, 1);
-
+	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
 	gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
 	dltext2 = gtk_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (dltext2), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
-	g_snprintf (buff, sizeof (buff), "%.5f", current_long);
-	if (minsecmode)
-		decimaltomin (buff, 0);
+	coordinate2gchar(buff, sizeof(buff), current_long, FALSE, minsecmode);
 	gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
 	dltext3 = gtk_combo_new ();
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext3, 1, 2, 3, 4);
@@ -7597,7 +7576,7 @@ slowcpu_cb (GtkWidget * widget, guint datum)
 gint
 minsec_cb (GtkWidget * widget, guint datum)
 {
-	minsecmode = !minsecmode;
+	minsecmode=datum;
 	needtosave = TRUE;
 	return TRUE;
 }
@@ -8657,9 +8636,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	{			// Lon
 		GtkWidget *add_wp_lon_label;
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
-		g_snprintf (buff, sizeof (buff), "%.5f", wplon);
-		if (minsecmode)
-			decimaltomin (buff, 0);
+		coordinate2gchar(buff, sizeof(buff), wplon, FALSE, minsecmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lon_text), buff);
 		add_wp_lon_label = gtk_label_new (_("Longitude"));
 		gtk_signal_connect (GTK_OBJECT (add_wp_lon_text), "changed",
@@ -8677,9 +8654,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		GtkWidget *add_wp_lat_label;
 		GtkWidget *add_wp_lat_hbox;
 		add_wp_lat_text = gtk_entry_new_with_max_length (20);
-		g_snprintf (buff, sizeof (buff), "%.5f", wplat);
-		if (minsecmode)
-			decimaltomin (buff, 1);
+		coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
 		add_wp_lat_label = gtk_label_new (_("Latitude"));
 		gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
@@ -8754,14 +8729,8 @@ insertwaypoints (gint mobile)
 			text[1] = (wayp + i)->name;
 
 			g_snprintf (text0, sizeof (text0), "%02d", i + 1);
-			g_snprintf (text1, sizeof (text1), "%8.5f",
-				    (wayp + i)->lat);
-			if (minsecmode)
-				decimaltomin (text1, 1);
-			g_snprintf (text2, sizeof (text2), "%8.5f",
-				    (wayp + i)->lon);
-			if (minsecmode)
-				decimaltomin (text2, 0);
+			coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
+			coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
 			g_snprintf (text3, sizeof (text3), "%9.3f",
 				    (wayp + i)->dist);
 			text[0] = text0;
@@ -8789,13 +8758,8 @@ insertwaypoints (gint mobile)
 		g_snprintf (text0, sizeof (text0), "%d", i + maxwp + 1);
 		la = g_strtod ((friends + i)->lat, NULL);
 		lo = g_strtod ((friends + i)->longi, NULL);
-		g_snprintf (text1, sizeof (text1), "%8.5f", la);
-		g_snprintf (text2, sizeof (text2), "%8.5f", lo);
-		if (minsecmode)
-			decimaltomin (text1, 1);
-
-		if (minsecmode)
-			decimaltomin (text2, 0);
+		coordinate2gchar(text1, sizeof(text1), la, TRUE, minsecmode);
+		coordinate2gchar(text2, sizeof(text2), lo, FALSE, minsecmode);
 
 		if (!mobile)
 		{
@@ -8870,12 +8834,9 @@ insertroutepoints ()
 	(wayp + i)->dist = calcdist ((wayp + i)->lon, (wayp + i)->lat);
 	text[1] = (wayp + i)->name;
 	g_snprintf (text0, sizeof (text0), "%d", i + 1);
-	g_snprintf (text1, sizeof (text1), "%8.5f", (wayp + i)->lat);
-	if (minsecmode)
-		decimaltomin (text1, 1);
-	g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->lon);
-	if (minsecmode)
-		decimaltomin (text2, 0);
+
+	coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
+	coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
 	g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
 	text[0] = text0;
 	text[2] = text1;
@@ -8905,12 +8866,9 @@ insertallroutepoints ()
 			calcdist ((wayp + i)->lon, (wayp + i)->lat);
 		text[1] = (wayp + i)->name;
 		g_snprintf (text0, sizeof (text0), "%d", i + 1);
-		g_snprintf (text1, sizeof (text1), "%8.5f", (wayp + i)->lat);
-		if (minsecmode)
-			decimaltomin (text1, 1);
-		g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->lon);
-		if (minsecmode)
-			decimaltomin (text2, 0);
+
+		coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
+		coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
 		g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
 		text[0] = text0;
 		text[2] = text1;
