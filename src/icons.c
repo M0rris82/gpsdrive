@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.16  2005/08/15 13:10:31  tweety
+*** empty log message ***
+
 Revision 1.15  2005/08/15 12:59:34  tweety
 use gchar/g_sprintf for filename
 
@@ -378,8 +381,8 @@ load_icons (void)
 
   /* hardcoded kismet-stuff */
   kismetpixbuf = read_icon ("kismet.png");
-  openwlanpixbuf = read_icon ("open.png");
-  closedwlanpixbuf = read_icon ("closed.png");
+  openwlanpixbuf = read_icon ("wlan.png");
+  closedwlanpixbuf = read_icon ("wlan-wep.png");
 
   if (!sqlflag)
     {
