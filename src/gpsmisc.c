@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.9  2005/05/15 07:00:51  tweety
+new Keystroke p adds an instant waypoint at cursor position
+new Keystroke q querys information for thenearest waypoints and street endpoints
+
 Revision 1.8  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -169,12 +173,14 @@ lat2radius (gdouble lat)
 	}
 	if (lat > 100)
 	{
-		fprintf (stderr, "ERROR: lat %f out of bound\n", lat);
+	    if (debug)
+		fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 		lat = 100.0;
 	};
 	if (lat < -100)
 	{
-		fprintf (stderr, "ERROR: lat %f out of bound\n", lat);
+	    if (debug)
+		fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 		lat = -100.0;
 	};
 	return lat2RadiusArray[(int) (100 + lat)];
