@@ -56,12 +56,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
 	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
-	gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h\
-	garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
-	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h \
-	gps_handler.c gps_handler.h \
-	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
+	garmin_legacy.h garmin_data.h \
+	gps_handler.c gps_handler.h
 endif
 gpsdrive_SOURCES= $(PRGS)
 
