@@ -1,4 +1,4 @@
-# Einlesen der WDB Daten und schreiben in die geodb Datenbank von 
+# Einlesen der GpsDrive Track Daten und schreiben in die geoinfo Datenbank von 
 # gpsdrive
 
 package POI::GpsDrive;
@@ -89,6 +89,7 @@ sub import_GpsDrive_track_file($$){
 
 	if ( $alt2 == 0 ) { # Otherwise I assume it was POS Mode
 	    print "Altitude = 0  ---> type=10\n";
+	    print "Line: $line\n";
 	    $type_id = 10;
 	}
 

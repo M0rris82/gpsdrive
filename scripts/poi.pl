@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.7  2005/02/18 08:19:39  tweety
+# added reading routine for kismet street data
+#
 # Revision 1.6  2005/02/17 22:15:58  tweety
 # added import from gpsdrive tracks to Streets DB
 #
@@ -60,6 +63,7 @@ use POI::PocketGpsPoi;
 use POI::Utils;
 use POI::census;
 use POI::GpsDrive;
+use POI::Kismet;
 
 my ($man,$help);
 
@@ -75,6 +79,7 @@ my $do_cameras           = 0;
 my $do_all               = 0;
 my $do_create_db         = 0;
 my $do_gpsdrive_tracks   = 0;
+my $do_kismet_tracks     = 0;
 
 our $db_user             = 'gast';
 our $db_password         = 'gast';
@@ -89,6 +94,7 @@ GetOptions (
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
+	     'kismet-tracks=s'     => \$do_kismet_tracks,
 	     'create-db'           => \$do_create_db,
 	     'all'                 => \$do_all,
 	     'debug'               => \$debug,      
@@ -164,6 +170,10 @@ POI::WDB::import_Data()
 POI::GpsDrive::import_Data() 
     if ( $do_gpsdrive_tracks );
 
+# extract street Data from all tracks
+POI::Kismet::import_Data($do_kismet_tracks) 
+    if ( $do_kismet_tracks );
+
 
 __END__
 
@@ -234,11 +244,11 @@ Download is ~30 MB
 
 =item B<-mapsource_points='Filename'>
 
-******** NO functiion yet *********
+******** NO function yet *********
 
 =item B<-cameras>
 
-******** NO functiion yet *********
+******** NO function yet *********
 
 =item B<--create-db>
 
@@ -251,16 +261,15 @@ Try creating the tables inside the geodata database
 Triggers all of the above
 
 
-=item B<-kismet=Filename>
-
-Read a Kismet File and extract the Tracks
-and insert into  streets DB
-
-*************** not implemented yet :-(
-
 =item B<-gpsdrive-tracks>
 
 Read all gpsdrive Tracks 
+and insert into  streets DB
+
+
+=item B<-kismet-tracks=Directory>
+
+Read al Kismet .gps Files and extract the Tracks
 and insert into  streets DB
 
 *************** not implemented yet :-(
