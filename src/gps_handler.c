@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.3  2005/10/31 09:48:50  tweety
+  correct includefile for BSD Systems
+
   Revision 1.2  2005/10/10 13:17:52  tweety
   DBUS Support for connecting to gpsd
   you need to use ./configure --enable-dbus to enable it during compile
@@ -48,6 +51,7 @@ Disclaimer: Please do not use for navigation.
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
