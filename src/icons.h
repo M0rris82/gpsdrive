@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.4  2005/02/08 08:43:46  tweety
+wrong dfinition for auxicons array
+
 Revision 1.3  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -42,7 +45,3 @@ typedef struct
     char name[40];
 }
 auxiconsstruct;
-
-//extern gint maxauxicons, lastauxicon;
-//extern auxiconsstruct *auxicons;
-//extern GdkPixbuf *friendsimage, *friendspixbuf;
