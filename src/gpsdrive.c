@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.40  2005/04/29 17:41:57  tweety
+Moved the speech string to a seperate File
+
 Revision 1.39  2005/04/21 19:33:40  tweety
 include header files for speech_out
 
@@ -1979,9 +1982,11 @@ gpsdrive started
 #include <math.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <xpm_compass.h>
 #include <errno.h>
-#include <speech_out.h>
+
+#include <dlfcn.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -1990,18 +1995,18 @@ gpsdrive started
 #endif
 #include "gettext.h"
 
+#include <dirent.h>
+
 
 #include "LatLong-UTMconversion.h"
 #include "gpsdrive.h"
-#include <dirent.h>
 #include "battery.h"
 #include "track.h"
 #include "poi.h"
 #include "streets.h"
-
-#include <dlfcn.h>
-#include <pthread.h>
-#include <semaphore.h>
+#include <speech_strings.h>
+#include <speech_out.h>
+#include <xpm_compass.h>
 
 #include "import_map.h"
 #include "icons.h"
@@ -2195,9 +2200,6 @@ gchar lastradar[40], lastradar2[40], nmeamodeandport[50];
 gint foundradar, messageshown = FALSE;
 gdouble radarbearing;
 gint errortextmode = TRUE;
-enum
-{ english, german, spanish }
-voicelang;
 gchar serialdev[80];
 GdkSegment *track, *trackshadow;
 glong tracknr;
