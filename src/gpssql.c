@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2005/02/06 21:18:05  tweety
+more cleanup: extracted more functionality to functions
+
 Revision 1.3  2005/01/20 00:12:14  tweety
 don't abort gpsdrive completely on sql query errors
 
@@ -157,6 +160,8 @@ added SQL support
 #include <gpsdrive.h>
 #include <ctype.h>
 
+#include <icons.h>
+
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
@@ -170,11 +175,11 @@ extern int debug, dbusedist;
 extern gchar homedir[500], mapdir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *openwlanpixbuf, *closedwlanpixbuf;
+extern gint maxauxicons, lastauxicon;
+extern auxiconsstruct *auxicons;
+extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 gint wptotal = 0, wpselected = 0;
-
-gint maxauxicons = MAXWPTYPES, lastauxicon = 0;
-auxiconsstruct auxicons[MAXWPTYPES];
 
 
 /*  Defines for gettext I18n */
@@ -327,7 +332,7 @@ deletesqldata (int index)
 }
 
 int
-getsqltypelist (void)
+get_sql_type_list (void)
 {
   char q[200], temp[200], path[1024];
   int r, i;
@@ -361,8 +366,7 @@ getsqltypelist (void)
 	  for (i = 0; i < (int) strlen (temp); i++)
 	    temp[i] = tolower (temp[i]);
 	  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, temp);
-	  (auxicons + lastauxicon)->icon =
-	    gdk_pixbuf_new_from_file (path, NULL);
+	  (auxicons + lastauxicon)->icon =  gdk_pixbuf_new_from_file (path, NULL);
 	  if ((auxicons + lastauxicon)->icon != NULL)
 	    {
 	      for (i = 0; i < (int) strlen (temp); i++)
