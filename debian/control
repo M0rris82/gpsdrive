@@ -8,7 +8,7 @@ Standards-Version: 3.6.1
 Package: gpsdrive
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: gpsd
+Recommends: gpsd, perlmagic, perl
 Suggests: libmysqlclient10, imagemagick
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
