@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.6  2005/03/27 21:25:46  tweety
+  separating map_import from gpsdrive.c
+
   Revision 1.5  2005/03/27 00:44:42  tweety
   eperated poi_type_list and streets_type_list
   and therefor renaming the fields
@@ -314,10 +317,8 @@ void streets_rebuild_list (void)
     printf ("rebuild_streets_list()\n");
   }
 
-  if ( debug) {
-    gettimeofday (&t, NULL);
-    ti = t.tv_sec + t.tv_usec / 1000000.0;
-  }
+  gettimeofday (&t, NULL);
+  ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   { // gernerate mysql ORDER string
     g_snprintf (sql_order, sizeof (sql_order),
