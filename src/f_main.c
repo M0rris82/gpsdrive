@@ -164,6 +164,7 @@ main (int argc, char *argv[])
       if (!handle) handle = dlopen ("/opt/mysql/lib/libmysqlclient.so.10", RTLD_LAZY);
       if (!handle) handle = dlopen ("/sw/lib/libmysqlclient.dylib", RTLD_LAZY);
       if (!handle) handle = dlopen ("/usr/lib/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/libmysqlclient.so.12", RTLD_LAZY);
       if (!handle) handle = dlopen ("/usr/lib/libmysqlclient.so.10", RTLD_LAZY);
       if (!handle) handle = dlopen ("/usr/lib/mysql/libmysqlclient.so", RTLD_LAZY);
       if (!handle) handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.12", RTLD_LAZY);
