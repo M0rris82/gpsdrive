@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.4  2005/02/22 08:18:51  tweety
+change leveing system to simpler scale marking for decission what to show on display
+column_names(DBFuncs.pm get data from Database
+added functions add_index drop_index
+added language to type Database
+for some Data split unpack and mirror Directories
+for some add lat/lon min/max to get faster import for testing
+added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+on the street data
+
 Revision 1.3  2005/02/17 09:46:34  tweety
 minor changes
 
@@ -135,7 +145,7 @@ posxy_on_screen(gdouble posx, gdouble posy) {
 void
 streets_init (void)
 {
-  streets_list_limit = 10000;
+  streets_list_limit = 20000;
   streets_list = g_new (streets_struct, streets_list_limit);
   streets_rebuild_list ();
   get_type_list();
@@ -191,8 +201,6 @@ streets_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
-  gdouble display_level;
-
   if (!maploaded)
     return;
 
@@ -209,17 +217,6 @@ streets_rebuild_list (void)
     return;
   }
   
-
-  // calculate which levels to display
-  display_level=20;
-  if ( mapscale <= 1000000 )  display_level=1;
-  if ( mapscale <= 500000 )   display_level=20;
-  if ( mapscale <= 100000 )   display_level=30;
-  if ( mapscale <= 50000 )    display_level=60;
-  if ( mapscale <= 8000 )     display_level=99;
-  
-
-
   { // calculate the start and stop for lat/lon according to the displayed section
     calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
     calcxytopos (0        , SCREEN_Y , &lat_ll, &lon_ll, zoom);
@@ -249,22 +246,8 @@ streets_rebuild_list (void)
   }
 
   { // gernerate mysql ORDER string
-    /*
-    char sql_order_numbers[5000];
-    g_snprintf (sql_order_numbers, sizeof (sql_order),
-		"(abs(%.6f - lat1)+abs(%.6f - lon1))"
-		,lat_mid,lon_mid);
-    g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
-    
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by type_id,level,%s ",sql_order_numbers);
-*/
-    g_snprintf (sql_order, sizeof (sql_order),
-		"order by type_id,level_min,level_max ");
-    /*
-      g_snprintf (sql_order, sizeof (sql_order),
-      "order by level ");
-    */
+		"order by lat1 ,lon1 ,lat2,lon2,scale_min,scale_max  ");
     if (debug)
       printf ("STREETS mysql order: %s\n", sql_order);
   }
@@ -278,27 +261,26 @@ streets_rebuild_list (void)
 		"   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) "
 		" ) "
 		" AND "
-		" ( %f BETWEEN level_min AND level_max) ",
+		" ( %f BETWEEN scale_min AND scale_max) ",
 		lat_min,lat_max,lon_min,lon_max,
 		lat_min,lat_max,lon_min,lon_max,
-		display_level);
+		mapscale);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
-      printf ("STREETS mysql where: %s\n", sql_where );
+      // printf ("STREETS mysql where: %s\n", sql_where );
       printf ("STREETS mapscale: %d\n", (gdouble)mapscale );
-      printf ("STREETS level %f\n", (gdouble)display_level );
     }
   }
 
 
   
 
-  // Diplay ONLY those STREETS which are streets.level_min <= level <=streets.level_max for actual scale
+  // Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,type_id,proximity "
 	      "SELECT lat1,lon1,lat2,lon2,name,type_id "
 	      "FROM streets "
-	      "%s %s LIMIT 10000",
+	      "%s %s LIMIT 20000",
 	      sql_where,sql_order);
 
   if (debug)
@@ -316,6 +298,8 @@ streets_rebuild_list (void)
       return;
     }
 
+  if ( debug) 
+    printf("processing rows\n");
   rges = r = 0;
   streets_list_count = -1;
   while ((row = dl_mysql_fetch_row (res)))
@@ -339,6 +323,9 @@ streets_rebuild_list (void)
 	  streets_list_count++;
 	  if (streets_list_count > streets_list_limit) {
 	    streets_list_limit +=  10000;
+	    if ( debug) 
+	      printf("renewmemory for street list: %d\n",streets_list_limit);
+	    
 	    streets_list =
 	      g_renew (streets_struct, streets_list, streets_list_limit );
 	    // TODO: check if g_renew failed
@@ -465,7 +452,7 @@ streets_draw_list (void)
 
   GdkSegment *gdks_streets;
   gint gdks_streets_count = -1;
-  gint gdks_streets_max =10000;
+  gint gdks_streets_max =20000;
 
   gint i;
 
@@ -479,10 +466,13 @@ streets_draw_list (void)
   }
 
   if ( debug ) 
-      printf("*****************************************************************************\nSTREETS_draw\n");
+      printf("STREETS_draw\n");
 
   if ( streets_check_if_moved() )
     streets_rebuild_list();  
+
+  if ( debug ) 
+      printf("STREETS_draw %d segments\n",streets_list_count);
 
   gdks_streets= g_new0 (GdkSegment, gdks_streets_max);
 
@@ -536,10 +526,12 @@ streets_draw_list (void)
 	  (gdks_streets + gdks_streets_count)->x2 = posx2;
 	  (gdks_streets + gdks_streets_count)->y2 = posy2;
 	  
-	  /*
-	  draw_plus_sign ( posx1,posy1);
-	  draw_plus_sign ( posx2,posy2);
-	  */
+	  if ( debug) {
+	    gdk_gc_set_foreground (kontext, &red);
+	    draw_plus_sign ( posx1,posy1);
+	    draw_plus_sign ( posx2,posy2);
+	  }
+	  
 
 	  /*
 	    draw_text_with_box(posx1,posy1,(streets_list + i)->name);
