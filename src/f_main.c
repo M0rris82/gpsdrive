@@ -814,6 +814,26 @@ i.e. '.' in english, ',' in german!! */
       gtk_signal_connect (GTK_OBJECT (mutebt),
 			  "clicked", GTK_SIGNAL_FUNC (mute_cb), (gpointer) 1);
     }
+
+
+  //JMO
+  // Checkbox ---- POI Draw
+  poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
+  gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
+  if (!poi_draw)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
+  gtk_signal_connect (GTK_OBJECT (poi_draw_bt),
+		      "clicked", GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
+  /*
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+    _("This will show Point of interrest located in mySQL Database"),
+    NULL);
+  */
+  
+
+
+
+  // Checkbox ----   Use SQL
   if (usesql)
     {
       sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
@@ -826,6 +846,7 @@ i.e. '.' in english, ',' in german!! */
     }
 
 
+  // Checkbox ---- Show WP
   wpbt = gtk_check_button_new_with_label (_("Show _WP"));
   gtk_button_set_use_underline (GTK_BUTTON (wpbt), TRUE);
   if (wpflag)
@@ -925,10 +946,12 @@ i.e. '.' in english, ',' in german!! */
   gtk_signal_connect (GTK_OBJECT (setupbt),
 		      "clicked", GTK_SIGNAL_FUNC (setup_cb), (gpointer) 0);
 
+  // Checkbox ---- Start GPSD
   startgpsbt = gtk_button_new_with_label (_("Start GPSD"));
   gtk_signal_connect (GTK_OBJECT (startgpsbt),
 		      "clicked", GTK_SIGNAL_FUNC (startgpsd), (gpointer) 0);
 
+  // Checkbox ---- Best Map
   bestmapbt = gtk_check_button_new_with_label (_("Auto _best map"));
   gtk_button_set_use_underline (GTK_BUTTON (bestmapbt), TRUE);
 
@@ -938,6 +961,7 @@ i.e. '.' in english, ',' in german!! */
 		      "clicked", GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
 
 
+  // Checkbox ---- Save Track
   savetrackfile (TRUE);
   g_snprintf (s1, sizeof (s1), "%s", _("Save track"));
   savetrackbt = gtk_check_button_new_with_label (s1);
@@ -950,6 +974,7 @@ i.e. '.' in english, ',' in german!! */
   g_snprintf (s1, sizeof (s1), "%s", savetrackfn);
   lab1 = gtk_label_new (s1);
 
+  // Checkbox ---- Show Map
   frame_maptype = gtk_frame_new (_("Shown map type"));
 /*** Mod by Arms */
   vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
@@ -961,6 +986,7 @@ i.e. '.' in english, ',' in german!! */
   gtk_container_add (GTK_CONTAINER (frame_toogles), vbox4);
 
 
+  // Checkbox ---- Show Map: map_
   maptogglebt = gtk_check_button_new_with_label (_("Street map"));
   if (displaymap_map)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
@@ -968,6 +994,7 @@ i.e. '.' in english, ',' in german!! */
   gtk_signal_connect (GTK_OBJECT (maptogglebt),
 		      "clicked", GTK_SIGNAL_FUNC (maptoggle_cb),
 		      (gpointer) 1);
+  // Checkbox ---- Show Map: top_
   topotogglebt = gtk_check_button_new_with_label (_("Topo map"));
   if (displaymap_top)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
@@ -1428,9 +1455,10 @@ i.e. '.' in english, ',' in german!! */
 
   if (havespeechout)
     gtk_box_pack_start (GTK_BOX (vbox4), mutebt, FALSE, FALSE, 0 * PADDING);
+  gtk_box_pack_start (GTK_BOX (vbox4), poi_draw_bt, FALSE, FALSE, 0 * PADDING);
   if (usesql)
     gtk_box_pack_start (GTK_BOX (vbox4), sqlbt, FALSE, FALSE, 0 * PADDING);
-/*    if (maxwp > 0) */
+  /*    if (maxwp > 0) */
   gtk_box_pack_start (GTK_BOX (vbox4), wpbt, FALSE, FALSE, 0 * PADDING);
   gtk_box_pack_start (GTK_BOX (vbox4), posbt, FALSE, FALSE, 0 * PADDING);
   gtk_box_pack_start (GTK_BOX (vbox4), trackbt, FALSE, FALSE, 0 * PADDING);
@@ -1467,7 +1495,6 @@ i.e. '.' in english, ',' in german!! */
 
   etch = !etch;
   etch_cb (NULL, 0);
-  drawgrid_cb (NULL, 0);
   l1 = gtk_label_new (_("000,00000N"));
   gtk_container_add (GTK_CONTAINER (lf1), l1);
   l2 = gtk_label_new (_("000,00000E"));
@@ -1845,6 +1872,9 @@ i.e. '.' in english, ',' in german!! */
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmapbt,
 			_("Always select the most detailed map available"),
 			NULL);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+			_("Draw Point Of Interrests found in mySQL"),
+			NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrackbt,
 			_("Save the track to given filename at program exit"),
 			NULL);
@@ -1908,9 +1938,15 @@ i.e. '.' in english, ',' in german!! */
       speech_saytime_cb (NULL, 1);
       gtk_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
     }
-/*  To set the right sensitive flags */
+
+  /*  To set the checkboxes to the right values */
   bestmap_cb (NULL, 0);
+  drawgrid_cb (NULL, 0);
+  poi_draw_cb (NULL, 0);
   needtosave = FALSE;
+
+  poi_init ();
+
 
   /*  Mainloop */
 

@@ -22,8 +22,13 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/02/02 17:42:54  tweety
+Add some comments
+extract some code into funktions
+added POI mySQL Support
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.29  2004/03/02 01:36:04  ganter
 added German Expedia map server (expedia.de),
@@ -255,5 +260,13 @@ typedef struct
     heading[10];
 }
 friendsstruct;
+
+#ifndef min
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 
 #endif /* GPSDRIVE_GPSDRIVE_H */
