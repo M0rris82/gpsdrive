@@ -22,6 +22,11 @@
 /* ******************************************************************** 
 	 
 $Log$
+Revision 1.10  2005/10/19 07:22:21  tweety
+Its now possible to choose units for displaying coordinates also in
+Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
 Revision 1.9  2005/08/12 06:53:20  tweety
 reformat settings.c
 extract funktions for 24h calculation
@@ -751,7 +756,9 @@ mainsetup (void)
   GtkWidget *menu;
   GtkWidget *menu_item;
   GtkWidget *metric;
-  GtkWidget *minsecbt;
+  GtkWidget *latlon_dms;
+  GtkWidget *latlon_mindec;
+  GtkWidget *latlon_degdec;
   GtkWidget *misctable;
   GtkWidget *nautic;
   GtkWidget *nightModeAuto;
@@ -1114,19 +1121,48 @@ mainsetup (void)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (nautic), TRUE);
     }
 
-  minsecbt = gtk_check_button_new_with_label (_("Decimal position"));
-  if (!minsecmode)
+  latlon_degdec = 
+      gtk_radio_button_new_with_label (NULL,
+				       _("Deg.decimal"));
+  gtk_signal_connect (GTK_OBJECT (latlon_degdec), "clicked",
+		      GTK_SIGNAL_FUNC (minsec_cb), (gpointer) LATLON_DEGDEC);
+
+  latlon_dms = 
+      gtk_radio_button_new_with_label (gtk_radio_button_group
+				       (GTK_RADIO_BUTTON
+					(latlon_degdec)), _("Deg Min Sec"));
+  gtk_signal_connect (GTK_OBJECT (latlon_dms), "clicked",
+		      GTK_SIGNAL_FUNC (minsec_cb), (gpointer) LATLON_DMS);
+
+  latlon_mindec = 
+      gtk_radio_button_new_with_label (gtk_radio_button_group
+						   (GTK_RADIO_BUTTON
+						    (latlon_dms)),
+						   _("Deg Min.dec"));
+  gtk_signal_connect (GTK_OBJECT (latlon_mindec), "clicked",
+		      GTK_SIGNAL_FUNC (minsec_cb), (gpointer) LATLON_MINDEC);
+
+
+  switch (minsecmode)
     {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (minsecbt), TRUE);
+    case LATLON_DEGDEC:
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (latlon_degdec), TRUE);
+      break;
+    case LATLON_DMS:
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (latlon_dms), TRUE);
+      break;
+    case LATLON_MINDEC:
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (latlon_mindec), TRUE);
+      break;
     }
 
-  gtk_signal_connect (GTK_OBJECT (minsecbt), "clicked",
-		      GTK_SIGNAL_FUNC (minsec_cb), (gpointer) 0);
 
   gtk_table_attach_defaults (GTK_TABLE (v2), miles, 0, 1, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (v2), metric, 0, 1, 1, 2);
   gtk_table_attach_defaults (GTK_TABLE (v2), nautic, 0, 1, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (v2), minsecbt, 1, 2, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (v2), latlon_degdec, 1, 2, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (v2), latlon_dms, 1, 2, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (v2), latlon_mindec, 1, 2, 2, 3);
 
   /*  default download server */
   f3 = gtk_frame_new (_("Default map server"));
@@ -1288,10 +1324,17 @@ mainsetup (void)
 			_("Switch units to metric system (Kilometers)"),
 			NULL);
 
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), minsecbt,
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), latlon_dms,
 			_("If selected display latitude and longitude in "
-			  "decimal degrees, otherwise in degree, minutes and "
-			  "seconds notation"), NULL);
+			  "degree, minutes and seconds notation"), NULL);
+
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), latlon_mindec,
+			_("If selected display latitude and longitude in "
+			  "degrees and decimal minutes notation"), NULL);
+
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), latlon_degdec,
+			_("If selected display latitude and longitude in "
+			  "decimal degrees notation"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), s1,
 			_("Set the german expedia server(expedia.de) as "
