@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.52  2005/07/08 05:56:33  tweety
+get the right position with Garmin GPS II.
+Autor: Aart Koelewijn <aart@mtack.xs4all.nl>
+
 Revision 1.51  2005/07/07 06:45:23  tweety
 Autor: Blake Swadling <blake@swadling.com>
 Autor: John Hay <jhay@icomtek.csir.co.za>
@@ -2711,7 +2715,7 @@ convertRMC (char *f)
 	}
 	/*  Latitude North / South */
 	/* if field[3] is shorter than 9 characters, add zeroes in the beginning */
-	if (strlen (field[3]) < 9)
+	if (strlen (field[3]) < 8)
 	{
 		if (debug)
 		{
@@ -2755,7 +2759,7 @@ convertRMC (char *f)
 	/*  Longitude East / West */
 
 	/* if field[5] is shorter than 10 characters, add zeroes in the beginning */
-	if (strlen (field[5]) < 10)
+	if (strlen (field[5]) < 9)
 	{
 		if (debug)
 		{
