@@ -13,6 +13,96 @@ AC_CONFIG_HEADER(config.h)
 ALL_LINGUAS="de es fr it da nl tr de_AT hu sk sv no pt_BR gr ja"
 
 
+
+AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([data/Makefile])
+AC_CONFIG_FILES([debian/Makefile])
+AC_CONFIG_FILES([intl/Makefile])
+AC_CONFIG_FILES([man/Makefile])
+AC_CONFIG_FILES([man/de/Makefile])
+AC_CONFIG_FILES([man/es/Makefile])
+AC_CONFIG_FILES([po/Makefile.in])
+AC_CONFIG_FILES([scripts/Makefile])
+AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([Documentation/Makefile])
+
+
+
+AC_CHECK_FUNCS([bzero])
+AC_CHECK_FUNCS([floor])
+AC_CHECK_FUNCS([gethostbyaddr]) 
+AC_CHECK_FUNCS([gethostbyname])
+AC_CHECK_FUNCS([gethostname])
+AC_CHECK_FUNCS([gettimeofday])
+AC_CHECK_FUNCS([inet_ntoa])
+AC_CHECK_FUNCS([localeconv])
+AC_CHECK_FUNCS([localtime_r])
+AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([mkdir])
+AC_CHECK_FUNCS([nl_langinfo])
+AC_CHECK_FUNCS([pow])
+AC_CHECK_FUNCS([rint])
+AC_CHECK_FUNCS([select])
+AC_CHECK_FUNCS([socket])
+AC_CHECK_FUNCS([sqrt])
+AC_CHECK_FUNCS([strchr])
+AC_CHECK_FUNCS([strcspn])
+AC_CHECK_FUNCS([strerror])
+AC_CHECK_FUNCS([strpbrk])
+AC_CHECK_FUNCS([strrchr])
+AC_CHECK_FUNCS([strstr])
+AC_CHECK_FUNCS([strtol])
+AC_CHECK_FUNCS([strtoull])
+AC_CHECK_FUNCS([tzset])
+
+AC_CHECK_HEADERS([X11/X.h])
+AC_CHECK_HEADERS([arpa/inet.h])
+AC_CHECK_HEADERS([fcntl.h])
+AC_CHECK_HEADERS([float.h])
+AC_CHECK_HEADERS([langinfo.h])
+AC_CHECK_HEADERS([libintl.h])
+AC_CHECK_HEADERS([linux/inet.h])
+AC_CHECK_HEADERS([netdb.h])
+AC_CHECK_HEADERS([netinet/in.h])
+AC_CHECK_HEADERS([stdio.h])
+AC_CHECK_HEADERS([stdio_ext.h])
+AC_CHECK_HEADERS([sys/ioctl.h])
+AC_CHECK_HEADERS([sys/stat.h])
+AC_CHECK_HEADERS([sys/termios.h])
+AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([sys/timeb.h])
+AC_CHECK_HEADERS([sys/types.h])
+AC_CHECK_HEADERS([termio.h])
+AC_CHECK_HEADERS([termios.h])
+AC_CHECK_HEADERS([unistd.h])
+AC_CHECK_HEADERS([wchar.h])
+
+AC_CHECK_MEMBERS([struct stat.st_rdev])
+AC_CHECK_TYPES([ptrdiff_t])
+
+AC_C_VOLATILE
+
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_FUNC_MKTIME
+AC_FUNC_REALLOC
+AC_FUNC_STAT
+AC_FUNC_STRFTIME
+AC_FUNC_STRNLEN
+AC_FUNC_STRTOD
+AC_FUNC_VPRINTF
+
+AC_HEADER_DIRENT
+AC_HEADER_STDBOOL
+
+AC_PROG_GCC_TRADITIONAL
+AC_PROG_YACC
+
+AC_STRUCT_TM
+
+AC_TYPE_SIGNAL
+
 dnl ************************
 dnl Compiler options
 dnl ************************
@@ -155,17 +245,6 @@ fi
 
 localedir='${prefix}/share/locale'
 AC_SUBST(localedir)
-
-dnl ************************
-dnl Checks for header files.
-dnl ************************
-AC_CHECK_HEADERS(sys/types.h sys/termios.h termio.h termios.h sys/stat.h fcntl.h stdio.h unistd.h  netdb.h X11/X.h linux/inet.h sys/ioctl.h)
-
-dnl ************************
-dnl crypt.h and libcrypt
-dnl ************************
-AC_CHECK_HEADERS(crypt.h)
-AC_CHECK_LIB(crypt,crypt)
 
 dnl ************************
 dnl check dynamic loading flags
@@ -322,6 +401,4 @@ CFLAGS="$CFLAGS -I\$(srcdir)/mysql"
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
 
-AC_CONFIG_FILES(Makefile src/Makefile  man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile data/Makefile Documentation/Makefile debian/Makefile)
 AC_OUTPUT
-
