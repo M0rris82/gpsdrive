@@ -1401,6 +1401,10 @@ msgstr "Zeige Schatten"
 msgid "Etched frames"
 msgstr "Versenkte Rahmen"
 
+#: src/settings.c:727
+msgid "Draw grid"
+msgstr "Raster zeichnen"
+
 #: src/settings.c:735
 msgid "Simulation: Follow target"
 msgstr "Simulator: Folge Ziel"

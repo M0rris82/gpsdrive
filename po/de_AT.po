@@ -1351,6 +1351,10 @@ msgstr "Zag an Schottn"
 msgid "Etched frames"
 msgstr ""
 
+#: src/settings.c:727
+msgid "Draw grid"
+msgstr "Zeichne Raster"
+
 #: src/settings.c:735
 msgid "Simulation: Follow target"
 msgstr "Simulator: Züh nachhirschn"
