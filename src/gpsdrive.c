@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.37  2005/04/15 07:18:54  tweety
+extracted lat2raidus into it's own function and added plausibility checks
+sorted addwaypoint function and added comments
+while downloading new maps the already existing maps are always displayed
+
 Revision 1.36  2005/04/13 19:58:31  tweety
 renew indentation to 4 spaces + tabstop=8
 
@@ -2129,7 +2134,7 @@ gchar *dlbuff, downloadfilename[512], localedecimal;
 gint scaleprefered = 1, scalewanted = 100000;
 gint dlcount, downloadactive, importactive, downloadfilelen;
 glong mapscale;
-GtkWidget *dltext1, *dltext2, *dltext3, *dltext4, *wptext1, *wptext2;
+GtkWidget *dltext1, *dltext2, *dltext3, *dltext4, *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
 GtkWidget *myprogress;
 GtkWidget *scaler, *downloadwindow;
@@ -2184,7 +2189,7 @@ glong tracknr;
 trackcoordstruct *trackcoord;
 glong trackcoordnr, tracklimit, trackcoordlimit;
 gint extrawinmenu = FALSE, expedia = TRUE;
-gdouble Ra[201];
+gdouble lat2RadiusArray[201];
 gint haveproxy, proxyport;
 gchar proxy[256], hostname[256], savetrackfn[256];
 
@@ -2217,8 +2222,9 @@ namesstruct;
 namesstruct *names;
 gchar activewpfile[200], gpsdservername[200], setpositionname[80];
 gint newsatslevel = TRUE, testgarmin = TRUE, needtosave = FALSE;
-GtkWidget *serialbt, *mapdirbt, *addwaypoint1, *addwaypoint2, *frame_speed,
-    *frame_sats, *slowcpubt;
+GtkWidget *serialbt, *mapdirbt, *frame_speed, *frame_sats, *slowcpubt;
+GtkWidget *add_wp_lon_text, *add_wp_lat_text;
+
 gdouble altitude = 0.0, precision = (-1.0), gsaprecision = (-1.0);
 gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint wpsize = 1000, satfix = 0, usedgps = FALSE;
@@ -2331,6 +2337,8 @@ int sound_direction = 1, sound_distance = 1, sound_speed = 1, sound_gps = 1;
 int expedia_de = 0;
 
 #define DEG2RAD M_PI/180.0
+gdouble lat2radius(gdouble lat);
+
 
 static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu"), NULL, NULL, 0, "<Branch>"},
@@ -3897,25 +3905,25 @@ testnewmap ()
 
 	    /*  Longitude */
 	    if (istopo == FALSE)
-		posx = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180)
+		posx = (lat2radius((maps + i)->lat) * M_PI / 180)
 		    * cos (M_PI *	    (maps + i)->lat /  180.0)
 		    * (current_long - (maps + i)->lon);
 	    else
-		posx = (Ra[(int) (100 + 0)] * M_PI / 180)
+		posx = (lat2radius(0) * M_PI / 180)
 		    * (current_long - (maps + i)->lon);
 
 
 	    /*  latitude */
 	    if (istopo == FALSE)
 		{
-		    posy = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180) 
+		    posy = (lat2radius((maps + i)->lat) * M_PI / 180) 
 			* (current_lat - (maps + i)->lat);
-		    dif =   Ra[(int) (100 + (maps + i)->lat)] 
+		    dif =   lat2radius((maps + i)->lat)
 			* (1 - (cos((M_PI * (current_long - (maps + i)->lon)) / 180.0)));
 		    posy = posy + dif / 2.0;
 		}
 	    else
-		posy = (Ra[(int) (100 + 0)] * M_PI / 180) 
+		posy = (lat2radius( 0) * M_PI / 180) 
 		    * (current_lat - (maps + i)->lat);
 
 
@@ -5389,13 +5397,14 @@ drawloadedmaps ()
 void
 drawdownloadrectangle (gint big)
 {
+
+    drawloadedmaps ();
+
     if (downloadwindowactive)
 	{
 	    gdouble x, y, la, lo;
 	    gchar longi[100], lat[100], sc[20];
 	    gint scale, xo, yo;
-
-	    drawloadedmaps ();
 
 	    g_strlcpy (lat, newmaplat, sizeof (lat));
 	    g_strdelimit (lat, ",", '.');
@@ -9089,11 +9098,11 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 #define MINISCREEN_Y_2 51
     px = (MINISCREEN_X_2 - x) * 10 * pixelfact;
     py = (-MINISCREEN_Y_2 + y) * 10 * pixelfact;
-    lat = zero_lat - py / (Ra[(int) (100 + current_lat)] * M_PI / 180.0);
-    lat = zero_lat - py / (Ra[(int) (100 + lat)] * M_PI / 180.0);
+    lat = zero_lat - py / (lat2radius( current_lat ) * M_PI / 180.0);
+    lat = zero_lat - py / (lat2radius( lat ) * M_PI / 180.0);
     lon =
 	zero_long -
-	px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) * cos (M_PI * lat / 180.0));
+	px / ((lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
 
     if (mapistopo == FALSE)
 	{
@@ -9104,7 +9113,7 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	dif = 0;
     lon =
 	zero_long -
-	px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) * cos (M_PI * lat / 180.0));
+	px / ((lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
 
 
     /*        g_print("\nstate: %x x:%d y:%d\n", state, x, y); */
@@ -9141,12 +9150,12 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
     gchar *s;
     gdouble lo, la;
 
-    s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (addwaypoint1)));
+    s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (add_wp_lon_text)));
     checkinput (s);
     lo = g_strtod (s, NULL);
     if ((lo > -181) && (lo < 181))
 	wplon = lo;
-    s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (addwaypoint2)));
+    s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (add_wp_lat_text)));
     checkinput (s);
     la = g_strtod (s, NULL);
     if ((la > -181) && (la < 181))
@@ -9204,7 +9213,7 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 {
     G_CONST_RETURN gchar *s1, *s2;
 
-    s1 = gtk_entry_get_text (GTK_ENTRY (wptext1));
+    s1 = gtk_entry_get_text (GTK_ENTRY (add_wp_name_text));
     s2 = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (wptext2)->entry));
 
     addwaypoint(s1,s2,wplat,wplon);
@@ -9234,33 +9243,14 @@ addwaypointdestroy_cb (GtkWidget * widget, guint datum)
 gint
 addwaypoint_cb (GtkWidget * widget, gpointer datum)
 {
-    GtkWidget *window, *l1, *l2, *t1, *t2, *hbox3, *hbox4, *hbox5;
-    GtkWidget *vbox, *hbox, *hbox2, *button, *button2, *label, *label2;
+    GtkWidget *window;
+    GtkWidget *hbox4;
+    GtkWidget *vbox;
     gchar buff[40];
     GList *wp_types = NULL;
     gint i;
  
-    if (sqlflag) {
-	get_sql_type_list ();
-	for (i = 0; i < dbtypelistcount; i++)
-	    wp_types = g_list_append (wp_types, dbtypelist[i]);
-    } else {
-	wp_types = g_list_append( wp_types, "" );
-	wp_types = g_list_append( wp_types, "Airport" );
-	wp_types = g_list_append( wp_types, "BurgerKing" );
-	wp_types = g_list_append( wp_types, "Cafe" );
-	wp_types = g_list_append( wp_types, "GasStation" );
-	wp_types = g_list_append( wp_types, "Geocache" );
-	wp_types = g_list_append( wp_types, "Golf" );
-	wp_types = g_list_append( wp_types, "Hotel" );
-	wp_types = g_list_append( wp_types, "McDonalds" );
-	wp_types = g_list_append( wp_types, "Monu" );
-	wp_types = g_list_append( wp_types, "Nightclub" );
-	wp_types = g_list_append( wp_types, "Rest" );
-	wp_types = g_list_append( wp_types, "Shop" );
-	wp_types = g_list_append( wp_types, "Speedtrap" );
-    }
-  
+
     addwaypointwindow = window = gtk_dialog_new ();
     gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (mainwindow));
     gotowindow = window;
@@ -9269,86 +9259,113 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     gtk_window_set_title (GTK_WINDOW (window), _("Add waypoint name"));
 
-
-
-    button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
-    button2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-
-    GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-    GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
-    gtk_signal_connect (GTK_OBJECT (button), "clicked",
-			GTK_SIGNAL_FUNC (addwaypoint_gtk_cb), GTK_OBJECT (window));
-    gtk_signal_connect (GTK_OBJECT (button2), "clicked",
-			GTK_SIGNAL_FUNC (addwaypointdestroy_cb), 0);
-    gtk_signal_connect (GTK_OBJECT (window),
-			"delete_event",
-			GTK_SIGNAL_FUNC (addwaypointdestroy_cb), 0);
-
     vbox = gtk_vbox_new (TRUE, 2);
-    gtk_box_pack_start (GTK_BOX
-			(GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
+    gtk_box_pack_start (GTK_BOX		(GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
 
-    hbox = gtk_hbox_new (TRUE, 2);
-    hbox2 = gtk_hbox_new (TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox), button2, TRUE, TRUE, 2);
+    { // Name
+	GtkWidget *add_wp_name_hbox;
+	GtkWidget *add_wp_name_label;
+	add_wp_name_text = gtk_entry_new ();
+	add_wp_name_label = gtk_label_new (_(" Waypoint name: "));
+	gtk_window_set_focus (GTK_WINDOW (window), add_wp_name_text);
 
-    addwaypoint1 = t1 = gtk_entry_new_with_max_length (20);
-    g_snprintf (buff, sizeof (buff), "%.5f", wplon);
-    if (minsecmode)
-	decimaltomin (buff, 0);
-    gtk_entry_set_text (GTK_ENTRY (t1), buff);
-    l1 = gtk_label_new (_("Longitude"));
-    addwaypoint2 = t2 = gtk_entry_new_with_max_length (20);
-    g_snprintf (buff, sizeof (buff), "%.5f", wplat);
-    if (minsecmode)
-	decimaltomin (buff, 1);
-    gtk_entry_set_text (GTK_ENTRY (t2), buff);
-    l2 = gtk_label_new (_("Latitude"));
+	add_wp_name_hbox = gtk_hbox_new (TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_name_hbox), add_wp_name_label, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_name_hbox), add_wp_name_text, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (vbox), add_wp_name_hbox, TRUE, TRUE, 2);
+    }
 
-    gtk_signal_connect (GTK_OBJECT (t1),
-			"changed", GTK_SIGNAL_FUNC (addwaypointchange_cb),
-			(gpointer) 1);
-    gtk_signal_connect (GTK_OBJECT (t2),
-			"changed", GTK_SIGNAL_FUNC (addwaypointchange_cb),
-			(gpointer) 2);
+    { // Types
+	GtkWidget *add_wp_type_label;
+	if (sqlflag) {
+	    get_sql_type_list ();
+	    for (i = 0; i < dbtypelistcount; i++)
+		wp_types = g_list_append (wp_types, dbtypelist[i]);
+	} else {
+	    wp_types = g_list_append( wp_types, "" );
+	    wp_types = g_list_append( wp_types, "Airport" );
+	    wp_types = g_list_append( wp_types, "BurgerKing" );
+	    wp_types = g_list_append( wp_types, "Cafe" );
+	    wp_types = g_list_append( wp_types, "GasStation" );
+	    wp_types = g_list_append( wp_types, "Geocache" );
+	    wp_types = g_list_append( wp_types, "Golf" );
+	    wp_types = g_list_append( wp_types, "Hotel" );
+	    wp_types = g_list_append( wp_types, "McDonalds" );
+	    wp_types = g_list_append( wp_types, "Monu" );
+	    wp_types = g_list_append( wp_types, "Nightclub" );
+	    wp_types = g_list_append( wp_types, "Rest" );
+	    wp_types = g_list_append( wp_types, "Shop" );
+	    wp_types = g_list_append( wp_types, "Speedtrap" );
+	}
 
-    hbox3 = gtk_hbox_new (TRUE, 2);
-    hbox4 = gtk_hbox_new (TRUE, 2);
-    hbox5 = gtk_hbox_new (TRUE, 2);
+  	GtkWidget *add_wp_type_hbox;
+	/*   wptext2 = gtk_entry_new (); */
+	wptext2 = gtk_combo_new ();
+	gtk_combo_set_popdown_strings (GTK_COMBO (wptext2), (GList *) wp_types);
 
-    gtk_box_pack_start (GTK_BOX (hbox3), l2, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox3), t2, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox4), l1, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox4), t1, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox3, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox4, TRUE, TRUE, 2);
+	add_wp_type_label = gtk_label_new (_(" Waypoint type: "));
+
+	add_wp_type_hbox = gtk_hbox_new (TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_type_hbox), add_wp_type_label, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_type_hbox), wptext2, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (vbox), add_wp_type_hbox, TRUE, TRUE, 2);
+
+    }
+
+    { // Lon
+	GtkWidget *add_wp_lon_label;
+	add_wp_lon_text = gtk_entry_new_with_max_length (20);
+	g_snprintf (buff, sizeof (buff), "%.5f", wplon);
+	if (minsecmode)
+	    decimaltomin (buff, 0);
+	gtk_entry_set_text (GTK_ENTRY (add_wp_lon_text), buff);
+	add_wp_lon_label = gtk_label_new (_("Longitude"));
+	gtk_signal_connect (GTK_OBJECT (add_wp_lon_text), "changed", GTK_SIGNAL_FUNC (addwaypointchange_cb), (gpointer) 1);
+	hbox4 = gtk_hbox_new (TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (hbox4), add_wp_lon_label, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (hbox4), add_wp_lon_text, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox4, TRUE, TRUE, 2);
+    }
+
+    { // Lat
+	GtkWidget *add_wp_lat_label;
+	GtkWidget *add_wp_lat_hbox;
+	add_wp_lat_text = gtk_entry_new_with_max_length (20);
+	g_snprintf (buff, sizeof (buff), "%.5f", wplat);
+	if (minsecmode)
+	    decimaltomin (buff, 1);
+	gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
+	add_wp_lat_label = gtk_label_new (_("Latitude"));
+	gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed", GTK_SIGNAL_FUNC (addwaypointchange_cb), (gpointer) 2);
+	add_wp_lat_hbox = gtk_hbox_new (TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox), add_wp_lat_label, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox), add_wp_lat_text, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (vbox), add_wp_lat_hbox, TRUE, TRUE, 2);
+    }
 
 
-    wptext1 = gtk_entry_new ();
-    label = gtk_label_new (_(" Waypoint name: "));
-    gtk_window_set_default (GTK_WINDOW (window), button);
-    gtk_window_set_focus (GTK_WINDOW (window), wptext1);
-
-    gtk_box_pack_start (GTK_BOX (hbox2), label, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox2), wptext1, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox2, TRUE, TRUE, 2);
-
-
-    /*   wptext2 = gtk_entry_new (); */
-    wptext2 = gtk_combo_new ();
-    gtk_combo_set_popdown_strings (GTK_COMBO (wptext2), (GList *) wp_types);
-
-    label2 = gtk_label_new (_(" Waypoint type: "));
-
-    gtk_box_pack_start (GTK_BOX (hbox5), label2, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (hbox5), wptext2, TRUE, TRUE, 2);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox5, TRUE, TRUE, 2);
-
-    /*   gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 2); */
-    gtk_box_pack_start (GTK_BOX
-			(GTK_DIALOG (window)->action_area),
-			hbox, TRUE, TRUE, 2);
+    { // Buttons
+	GtkWidget *add_wp_button_hbox;
+	GtkWidget *button, *button2;
+	button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
+	button2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	
+	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
+	GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
+	gtk_signal_connect (GTK_OBJECT (button), "clicked",	GTK_SIGNAL_FUNC (addwaypoint_gtk_cb), GTK_OBJECT (window));
+	gtk_signal_connect (GTK_OBJECT (button2),"clicked", GTK_SIGNAL_FUNC (addwaypointdestroy_cb), 0);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event", GTK_SIGNAL_FUNC (addwaypointdestroy_cb), 0);
+	
+	
+	add_wp_button_hbox = gtk_hbox_new (TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_button_hbox), button, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (add_wp_button_hbox), button2, TRUE, TRUE, 2);
+	gtk_window_set_default (GTK_WINDOW (window), button);
+	/*   gtk_box_pack_start (GTK_BOX (vbox), add_wp_button_hbox, TRUE, TRUE, 2); */
+	gtk_box_pack_start (GTK_BOX
+			    (GTK_DIALOG (window)->action_area),
+			    add_wp_button_hbox, TRUE, TRUE, 2);
+    }
 
 
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
@@ -10970,7 +10987,7 @@ main (int argc, char *argv[])
 
     /*  Build array for earth radii */
     for (i = -100; i <= 100; i++)
-	Ra[i + 100] = calcR (i);
+	lat2RadiusArray[i + 100] = calcR (i);
 
     gethostname (hostname, 256);
     proxyport = 80;
