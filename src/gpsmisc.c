@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2005/04/20 23:33:49  tweety
+reformatted source code with anjuta
+So now we have new indentations
+
 Revision 1.7  2005/04/15 07:18:54  tweety
 extracted lat2raidus into it's own function and added plausibility checks
 sorted addwaypoint function and added comments
@@ -99,13 +103,13 @@ extern gint ignorechecksum, mydebug, debug, mapistopo;
 extern gdouble lat2RadiusArray[201];
 extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-    int_padding;
+	int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
-    bearing;
+	bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
-    milesconv;
+	milesconv;
 
 
 
@@ -117,34 +121,34 @@ extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
 gint
 checksum (gchar * text)
 {
-    gchar t[120], t2[10];
-    gint i = 1, checksum = 0, j, orig;
+	gchar t[120], t2[10];
+	gint i = 1, checksum = 0, j, orig;
 
-    if (ignorechecksum)
-	return TRUE;
+	if (ignorechecksum)
+		return TRUE;
 
-    strncpy (t, text, 100);
-    t[100] = 0;
-    j = strlen (t) - 3;
-    while (('\0' != t[i]) && (i < j))
-	checksum = checksum ^ t[i++];
-    g_strlcpy (t2, (t + j + 1),sizeof(t2));
-    sscanf (t2, "%X", &orig);
-    if (mydebug) {
-	g_print ("gpsd: %s\n", t);
-	g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
-    }
-
-    if (orig == checksum)
+	strncpy (t, text, 100);
+	t[100] = 0;
+	j = strlen (t) - 3;
+	while (('\0' != t[i]) && (i < j))
+		checksum = checksum ^ t[i++];
+	g_strlcpy (t2, (t + j + 1), sizeof (t2));
+	sscanf (t2, "%X", &orig);
+	if (mydebug)
 	{
-	    g_strlcpy (text, t,1000);
-	    return TRUE;
+		g_print ("gpsd: %s\n", t);
+		g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
 	}
-    else
+
+	if (orig == checksum)
 	{
-	    g_print ("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
-		     orig, checksum);
-	    return FALSE;
+		g_strlcpy (text, t, 1000);
+		return TRUE;
+	}
+	else
+	{
+		g_print ("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t, orig, checksum);
+		return FALSE;
 	}
 }
 
@@ -152,22 +156,28 @@ checksum (gchar * text)
 /* **********************************************************************
  * Estimate the earth radius for given latitude
  */
-gdouble lat2radius(gdouble lat) {
-    if ( lat >  90.0 ) {
-	lat = lat -90;
-    }
-    if ( lat < -90.0 ) {
-	lat = lat + 90;
-    }
-    if ( lat >  100 ) {
-	fprintf( stderr,"ERROR: lat %f out of bound\n",lat);
-	lat =  100.0;
-    };
-    if ( lat < -100 ) {
-	fprintf( stderr,"ERROR: lat %f out of bound\n",lat);
-	lat = -100.0;
-    };
-    return lat2RadiusArray[(int) (100 + lat)];
+gdouble
+lat2radius (gdouble lat)
+{
+	if (lat > 90.0)
+	{
+		lat = lat - 90;
+	}
+	if (lat < -90.0)
+	{
+		lat = lat + 90;
+	}
+	if (lat > 100)
+	{
+		fprintf (stderr, "ERROR: lat %f out of bound\n", lat);
+		lat = 100.0;
+	};
+	if (lat < -100)
+	{
+		fprintf (stderr, "ERROR: lat %f out of bound\n", lat);
+		lat = -100.0;
+	};
+	return lat2RadiusArray[(int) (100 + lat)];
 }
 
 /*  **********************************************************************
@@ -176,80 +186,99 @@ gdouble lat2radius(gdouble lat) {
 void
 calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 {
-    int x, y, px, py;
-    gdouble dif, lat, lon;
+	int x, y, px, py;
+	gdouble dif, lat, lon;
 
-    x = posx;
-    y = posy;
-    px = (SCREEN_X_2 - x - xoff) * pixelfact / zoom;
-    py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
+	x = posx;
+	y = posy;
+	px = (SCREEN_X_2 - x - xoff) * pixelfact / zoom;
+	py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
 
 
-    if (mapistopo == FALSE)
+	if (mapistopo == FALSE)
 	{
-	    lat = zero_lat - py / (lat2radius(current_lat) * M_PI / 180.0);
-	    lat = zero_lat - py / (lat2radius(lat) * M_PI / 180.0);
+		lat = zero_lat -
+			py / (lat2radius (current_lat) * M_PI / 180.0);
+		lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
 
-	    if ( lat >  360 ) lat= lat - 360.0;
-	    if ( lat < -360 ) lat= lat + 360.0;
+		if (lat > 360)
+			lat = lat - 360.0;
+		if (lat < -360)
+			lat = lat + 360.0;
 
-	    lon = zero_long - px / ((lat2radius(lat) * M_PI / 180.0) *
-				    cos (M_PI * lat / 180.0));
+		lon = zero_long - px / ((lat2radius (lat) * M_PI / 180.0) *
+					cos (M_PI * lat / 180.0));
 
-	    dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
-	    lat = lat - dif / 1.5;
+		dif = lat * (1 -
+			     (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
+		lat = lat - dif / 1.5;
 
-	    if ( lat >  360 ) lat=  360.0;
-	    if ( lat < -360 ) lat= -360.0;
+		if (lat > 360)
+			lat = 360.0;
+		if (lat < -360)
+			lat = -360.0;
 
-	    lon = zero_long - px / ((lat2radius(lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
+		lon = zero_long -
+			px / ((lat2radius (lat) * M_PI / 180.0) *
+			      cos (M_PI * lat / 180.0));
 	}
-    else
+	else
 	{
-	    lat = zero_lat - py / (lat2radius(0) * M_PI / 180.0);
-	    if ( lat >  360 ) lat=  360.0;
-	    if ( lat < -360 ) lat= -360.0;
-	    lon = zero_long - px / ((lat2radius(0) * M_PI / 180.0));
+		lat = zero_lat - py / (lat2radius (0) * M_PI / 180.0);
+		if (lat > 360)
+			lat = 360.0;
+		if (lat < -360)
+			lat = -360.0;
+		lon = zero_long - px / ((lat2radius (0) * M_PI / 180.0));
 	}
 
-    if ( lat >  360 ) lat=  360.0;
-    if ( lat < -360 ) lat= -360.0;
-    if ( lon >  180 ) lon=  180.0;
-    if ( lon < -180 ) lon= -180.0;
+	if (lat > 360)
+		lat = 360.0;
+	if (lat < -360)
+		lat = -360.0;
+	if (lon > 180)
+		lon = 180.0;
+	if (lon < -180)
+		lon = -180.0;
 
-    *mylat = lat;
-    *mylon = lon;
+	*mylat = lat;
+	*mylon = lon;
 
 }
 
 /* ******************************************************************
  * calculate xy pos of given lon/lat 
- */ 
+ */
 void
 calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
-    gdouble dif;
+	gdouble dif;
 
-    if (mapistopo == FALSE)
-	*posx = (lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0) * (lon - zero_long);
-    else
-	*posx = (lat2radius( 0.0) * M_PI / 180.0) * (lon - zero_long);
+	if (mapistopo == FALSE)
+		*posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
+								 180.0) *
+			(lon - zero_long);
+	else
+		*posx = (lat2radius (0.0) * M_PI / 180.0) * (lon - zero_long);
 
-    *posx = SCREEN_X_2 + *posx * zoom / pixelfact;
-    *posx = *posx - xoff;
+	*posx = SCREEN_X_2 + *posx * zoom / pixelfact;
+	*posx = *posx - xoff;
 
 
-    if (mapistopo == FALSE)
+	if (mapistopo == FALSE)
 	{
-	    *posy = (lat2radius(  lat) * M_PI / 180.0) * (lat - zero_lat);
-	    dif =lat2radius( lat) * (1 - (cos ((M_PI * (lon - zero_long)) / 180.0)));
-	    *posy = *posy + dif / 1.85;
+		*posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
+		dif = lat2radius (lat) * (1 -
+					  (cos
+					   ((M_PI * (lon - zero_long)) /
+					    180.0)));
+		*posy = *posy + dif / 1.85;
 	}
-    else
-	*posy = (lat2radius(lat) * M_PI / 180.0) * (lat - zero_lat);
+	else
+		*posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
 
-    *posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
-    *posy = *posy - yoff;
+	*posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
+	*posy = *posy - yoff;
 }
 
 /* ******************************************************************
@@ -259,26 +288,29 @@ void
 calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 	    gint zoom)
 {
-    gdouble dif;
+	gdouble dif;
 
-    if (mapistopo == FALSE)
-	*posx =
-	    (lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0) *
-	    (lon - zero_long);
-    else
-	*posx = (lat2radius( 0) * M_PI / 180.0) * (lon - zero_long);
+	if (mapistopo == FALSE)
+		*posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
+								 180.0) *
+			(lon - zero_long);
+	else
+		*posx = (lat2radius (0) * M_PI / 180.0) * (lon - zero_long);
 
-    *posx = 64 + *posx * zoom / (10 * pixelfact);
-    *posx = *posx;
+	*posx = 64 + *posx * zoom / (10 * pixelfact);
+	*posx = *posx;
 
-    *posy = (lat2radius( lat) * M_PI / 180.0) * (lat - zero_lat);
-    if (mapistopo == FALSE)
+	*posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
+	if (mapistopo == FALSE)
 	{
-	    dif =lat2radius( lat) * (1 - (cos ((M_PI * (lon - zero_long)) / 180.0)));
-	    *posy = *posy + dif / 1.85;
+		dif = lat2radius (lat) * (1 -
+					  (cos
+					   ((M_PI * (lon - zero_long)) /
+					    180.0)));
+		*posy = *posy + dif / 1.85;
 	}
-    *posy = 51 - *posy * zoom / (10 * pixelfact);
-    *posy = *posy;
+	*posy = 51 - *posy * zoom / (10 * pixelfact);
+	*posy = *posy;
 }
 
 
@@ -288,33 +320,33 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 gdouble
 calcR (gdouble lat)
 {
-    gdouble a = 6378.137, r, sc, x, y, z;
-    gdouble e2 = 0.08182 * 0.08182; 
-    /* the radius of curvature of an ellipsoidal Earth in the plane of 
-     * the meridian is given by 
-     *
-     * R' = a * (1 - e^2) / (1 - e^2 * (sin(lat))^2)^(3/2) 
-     *
-     * where a is the equatorial radius, 
-     *
-     * b is the polar radius, and 
-     * e is the eccentricity of the ellipsoid = sqrt(1 - b^2/a^2) 
-     * 
-     * a = 6378.137 km (3963 mi) Equatorial radius (surface to center distance) 
-     * b = 6356.752 km (3950 mi) Polar radius (surface to center distance) 
-     * e = 0.08182 Eccentricity
-     */
-  
-    lat = lat * M_PI / 180.0;
-    sc = sin (lat);
-    x = a * (1.0 - e2);
-    z = 1.0 - e2 * sc * sc;
-    y = pow (z, 1.5);
-    r = x / y;
+	gdouble a = 6378.137, r, sc, x, y, z;
+	gdouble e2 = 0.08182 * 0.08182;
+	/* the radius of curvature of an ellipsoidal Earth in the plane of 
+	 * the meridian is given by 
+	 *
+	 * R' = a * (1 - e^2) / (1 - e^2 * (sin(lat))^2)^(3/2) 
+	 *
+	 * where a is the equatorial radius, 
+	 *
+	 * b is the polar radius, and 
+	 * e is the eccentricity of the ellipsoid = sqrt(1 - b^2/a^2) 
+	 * 
+	 * a = 6378.137 km (3963 mi) Equatorial radius (surface to center distance) 
+	 * b = 6356.752 km (3950 mi) Polar radius (surface to center distance) 
+	 * e = 0.08182 Eccentricity
+	 */
 
-    r = r * 1000.0;
-    /*      g_print("\nR=%f",r); */
-    return r;
+	lat = lat * M_PI / 180.0;
+	sc = sin (lat);
+	x = a * (1.0 - e2);
+	z = 1.0 - e2 * sc * sc;
+	y = pow (z, 1.5);
+	r = x / y;
+
+	r = r * 1000.0;
+	/*      g_print("\nR=%f",r); */
+	return r;
 }
 
 
@@ -324,26 +356,26 @@ calcR (gdouble lat)
 gdouble
 calcdist2 (gdouble longi, gdouble lati)
 {
-    double a, a1, a2, c, d, dlon, dlat, sa, radiant = M_PI / 180;
+	double a, a1, a2, c, d, dlon, dlat, sa, radiant = M_PI / 180;
 
 
-    dlon = radiant * (current_long - longi);
-    dlat = radiant * (current_lat - lati);
+	dlon = radiant * (current_long - longi);
+	dlat = radiant * (current_lat - lati);
 
-    if ((dlon == 0.0) && (dlat == 0.0))
-	return 0.0;
+	if ((dlon == 0.0) && (dlat == 0.0))
+		return 0.0;
 
-    a1 = sin (dlat / 2);
-    a2 = sin (dlon / 2);
-    a =
-	(a1 * a1) + cos (lati * radiant) * cos (current_lat * radiant) * a2 * a2;
-    sa = sqrt (a);
-    if (sa <= 1.0)
-	c = 2 * asin (sa);
-    else
-	c = 2 * asin (1.0);
-    d = (lat2radius( current_lat) + lat2radius( lati)) * c / 2.0;
-    return milesconv * d / 1000.0;
+	a1 = sin (dlat / 2);
+	a2 = sin (dlon / 2);
+	a = (a1 * a1) +
+		cos (lati * radiant) * cos (current_lat * radiant) * a2 * a2;
+	sa = sqrt (a);
+	if (sa <= 1.0)
+		c = 2 * asin (sa);
+	else
+		c = 2 * asin (1.0);
+	d = (lat2radius (current_lat) + lat2radius (lati)) * c / 2.0;
+	return milesconv * d / 1000.0;
 }
 
 /* ******************************************************************
@@ -352,79 +384,78 @@ calcdist2 (gdouble longi, gdouble lati)
 gdouble
 calcdist (gdouble longi, gdouble lati)
 {
-    gdouble a = 6378137.0;
-    gdouble f = 1.0 / 298.25722210088;
-    gdouble glat1, glat2, glon1, glon2;
-    gdouble radiant = M_PI / 180;
-    gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
-    gdouble sa, c2a, cz, e, c, d;
-    gdouble eps = 0.5e-13;
+	gdouble a = 6378137.0;
+	gdouble f = 1.0 / 298.25722210088;
+	gdouble glat1, glat2, glon1, glon2;
+	gdouble radiant = M_PI / 180;
+	gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
+	gdouble sa, c2a, cz, e, c, d;
+	gdouble eps = 0.5e-13;
 
-    /*   if (cpuload<10)
-     *     {
-     *       r = calcdist2 (longi, lati);
-     *       return r;
-     *     }
-     */
-    if (((lati - current_lat) == 0.0) && ((longi - current_long) == 0.0))
-	return 0.0;
+	/*   if (cpuload<10)
+	 *     {
+	 *       r = calcdist2 (longi, lati);
+	 *       return r;
+	 *     }
+	 */
+	if (((lati - current_lat) == 0.0) && ((longi - current_long) == 0.0))
+		return 0.0;
 
-    glat1 = radiant * current_lat;
-    glat2 = radiant * lati;
-    glon1 = radiant * current_long;
-    glon2 = radiant * longi;
+	glat1 = radiant * current_lat;
+	glat2 = radiant * lati;
+	glon1 = radiant * current_long;
+	glon2 = radiant * longi;
 
-    r = 1.0 - f;
-    tu1 = r * sin (glat1) / cos (glat1);
-    tu2 = r * sin (glat2) / cos (glat2);
-    cu1 = 1.0 / sqrt (tu1 * tu1 + 1.0);
-    su1 = cu1 * tu1;
+	r = 1.0 - f;
+	tu1 = r * sin (glat1) / cos (glat1);
+	tu2 = r * sin (glat2) / cos (glat2);
+	cu1 = 1.0 / sqrt (tu1 * tu1 + 1.0);
+	su1 = cu1 * tu1;
 
-    cu2 = 1.0 / sqrt (tu2 * tu2 + 1.0);
-    s = cu1 * cu2;
-    baz = s * tu2;
-    faz = baz * tu1;
-    x = glon2 - glon1;
+	cu2 = 1.0 / sqrt (tu2 * tu2 + 1.0);
+	s = cu1 * cu2;
+	baz = s * tu2;
+	faz = baz * tu1;
+	x = glon2 - glon1;
 
-    do
+	do
 	{
-	    sx = sin (x);
-	    cx = cos (x);
-	    tu1 = cu2 * sx;
-	    tu2 = baz - su1 * cu2 * cx;
-	    sy = sqrt (tu1 * tu1 + tu2 * tu2);
+		sx = sin (x);
+		cx = cos (x);
+		tu1 = cu2 * sx;
+		tu2 = baz - su1 * cu2 * cx;
+		sy = sqrt (tu1 * tu1 + tu2 * tu2);
 
-	    cy = s * cx + faz;
-	    y = atan2 (sy, cy);
-	    sa = s * sx / sy;
-	    c2a = -sa * sa + 1.0;
-	    cz = faz + faz;
+		cy = s * cx + faz;
+		y = atan2 (sy, cy);
+		sa = s * sx / sy;
+		c2a = -sa * sa + 1.0;
+		cz = faz + faz;
 
-	    if (c2a > 0)
-		cz = -cz / c2a + cy;
-	    e = cz * cz * 2.0 - 1.0;
-	    c = ((-3.0 * c2a + 4.0) * f + 4.0) * c2a * f / 16.0;
-	    d = x;
+		if (c2a > 0)
+			cz = -cz / c2a + cy;
+		e = cz * cz * 2.0 - 1.0;
+		c = ((-3.0 * c2a + 4.0) * f + 4.0) * c2a * f / 16.0;
+		d = x;
 
-	    x = ((e * cy * c + cz) * sy * c + y) * sa;
-	    x = (1.0 - c) * x * f + glon2 - glon1;
+		x = ((e * cy * c + cz) * sy * c + y) * sa;
+		x = (1.0 - c) * x * f + glon2 - glon1;
 	}
-    while (fabs (d - x) > eps);
+	while (fabs (d - x) > eps);
 
-    faz = atan2 (tu1, tu2);
-    baz = atan2 (cu1 * sx, baz * cx - su1 * cu2) + M_PI;
-    x = sqrt ((1.0 / r / r - 1.0) * c2a + 1.0) + 1.0;
-    x = (x - 2.0) / x;
-    c = 1.0 - x;
-    c = (x * x / 4.0 + 1.0) / c;
-    d = (0.375 * x * x - 1.0) * x;
-    x = e * cy;
-    s = 1.0 - e - e;
-    s =
-	((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
-	  cz) * sy * d + y) * c * a * r;
+	faz = atan2 (tu1, tu2);
+	baz = atan2 (cu1 * sx, baz * cx - su1 * cu2) + M_PI;
+	x = sqrt ((1.0 / r / r - 1.0) * c2a + 1.0) + 1.0;
+	x = (x - 2.0) / x;
+	c = 1.0 - x;
+	c = (x * x / 4.0 + 1.0) / c;
+	d = (0.375 * x * x - 1.0) * x;
+	x = e * cy;
+	s = 1.0 - e - e;
+	s = ((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
+	      cz) * sy * d + y) * c * a * r;
 
-    return milesconv * s / 1000.0;
+	return milesconv * s / 1000.0;
 }
 
 /* ******************************************************************
@@ -433,59 +464,63 @@ calcdist (gdouble longi, gdouble lati)
 GdkPixbuf *
 create_pixbuf (const gchar * filename)
 {
-    gchar pathname[200];
-    GdkPixbuf *pixbuf;
-    GError *error = NULL;
+	gchar pathname[200];
+	GdkPixbuf *pixbuf;
+	GError *error = NULL;
 
-    if (!filename || !filename[0])
-	return NULL;
+	if (!filename || !filename[0])
+		return NULL;
 
 
-    g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
-		filename);
-    if (!pathname)
+	g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
+		    filename);
+	if (!pathname)
 	{
-	    if( debug) 
-		fprintf( stderr , _("Couldn't find pixmap file: %s"), pathname);
-	    else 
-		g_warning (_("Couldn't find pixmap file: %s"), pathname);
-	    return NULL;
+		if (debug)
+			fprintf (stderr, _("Couldn't find pixmap file: %s"),
+				 pathname);
+		else
+			g_warning (_("Couldn't find pixmap file: %s"),
+				   pathname);
+		return NULL;
 	}
 
-    pixbuf = gdk_pixbuf_new_from_file (pathname, &error);
-    if (!pixbuf)
+	pixbuf = gdk_pixbuf_new_from_file (pathname, &error);
+	if (!pixbuf)
 	{
-	    fprintf (stderr, "Failed to load pixbuf file: %s: %s\n",
-		     pathname, error->message);
+		fprintf (stderr, "Failed to load pixbuf file: %s: %s\n",
+			 pathname, error->message);
 	}
-    return pixbuf;
+	return pixbuf;
 }
 
 /* ******************************************************************
  * This is an internally used function to create pixmaps. 
  */
-GtkWidget* create_pixmap(GtkWidget *widget, const gchar     *filename)
+GtkWidget *
+create_pixmap (GtkWidget * widget, const gchar * filename)
 {
-    gchar pathname[200];
-    GtkWidget *pixmap=NULL;
- 
-    if (!filename || !filename[0])
-	return gtk_image_new ();
- 
-    g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
-		filename);
+	gchar pathname[200];
+	GtkWidget *pixmap = NULL;
 
- 
-    pixmap = gtk_image_new_from_file (pathname);
-    if (!pixmap)
+	if (!filename || !filename[0])
+		return gtk_image_new ();
+
+	g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
+		    filename);
+
+
+	pixmap = gtk_image_new_from_file (pathname);
+	if (!pixmap)
 	{
-	    if( debug) 
-		fprintf( stderr , _("Couldn't find pixmap file: %s"), pathname);
-	    else 
-		g_warning (_("Couldn't find pixmap file: %s"), pathname);
-	    return gtk_image_new ();
+		if (debug)
+			fprintf (stderr, _("Couldn't find pixmap file: %s"),
+				 pathname);
+		else
+			g_warning (_("Couldn't find pixmap file: %s"),
+				   pathname);
+		return gtk_image_new ();
 	}
 
-    return pixmap;
+	return pixmap;
 }
-
