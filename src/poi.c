@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.12  2005/03/29 01:59:01  tweety
+another set of minor Bugfixes
+
 Revision 1.11  2005/03/27 18:22:50  tweety
 only draw cross if less than 5000 poi found
 
@@ -175,7 +178,7 @@ void poi_init (void)
   poi_list = g_new (poi_struct, poi_limit);
   if ( poi_list == NULL ) {
     poi_limit =-1;
-    printf(stderr,"Error: Cannot allocate Memory for %d poi\n",poi_limit);
+    g_print("Error: Cannot allocate Memory for %ld poi\n",poi_limit);
   }
 
   get_poi_type_list();
@@ -259,7 +262,7 @@ void get_poi_type_list (void)
 	poi_type_list[index].poi_type_id =  index;
 
 	if ( row[1] == NULL ) {
-	  poi_type_list[index].name[0]="\0";
+	  poi_type_list[index].name[0]='\0';
 	} else {
 	  g_strlcpy ( poi_type_list[index].name, row[1],
 		      sizeof (poi_type_list[index].name));
@@ -267,7 +270,7 @@ void get_poi_type_list (void)
 
 
 	if ( row[2] == NULL ) {
-	  poi_type_list[index].icon_name[0]="\0";
+	  poi_type_list[index].icon_name[0]='\0';
 	  fprintf(stderr,"poi_type %d: No Icon Name returned\n",index);
 	} else {
 	  
@@ -388,8 +391,8 @@ void poi_rebuild_list (void)
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   { // gernerate mysql ORDER string
-    char sql_order_numbers[5000];
     /*
+      char sql_order_numbers[5000];
       g_snprintf (sql_order_numbers, sizeof (sql_order),
       "(abs(%.6f - lat)+abs(%.6f - lon))"
       ,lat_mid,lon_mid);
@@ -412,14 +415,14 @@ void poi_rebuild_list (void)
     g_snprintf (sql_where, sizeof (sql_where),
 		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
 		"AND   ( lon BETWEEN %.6f AND %.6f ) "
-		"AND   ( %d  BETWEEN scale_min AND scale_max) ",
+		"AND   ( %ld  BETWEEN scale_min AND scale_max) ",
 		lat_min,lat_max,
 		lon_min,lon_max,
 		mapscale);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (mydebug) {
       //printf ("POI mysql where: %s\n", sql_where );
-      printf ("POI mapscale: %d\n", mapscale );
+      printf ("POI mapscale: %ld\n", mapscale );
     }
   }
 
@@ -541,7 +544,7 @@ void poi_rebuild_list (void)
   gettimeofday (&t, NULL);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
   if ( debug )
-    printf (_("%d(%d) rows read in %.2f seconds\n"), poi_max, rges, ti);
+    printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_max, rges, (gdouble)ti);
 
 
   /* remember where the data belongs to */
