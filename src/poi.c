@@ -22,76 +22,79 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 /*
-$Log$
-Revision 1.15  2005/04/07 06:35:01  tweety
-Error handling for g_renew
-correct to extern MYSQL mysql;
-start getting color from streets_type
+	$Log$
+	Revision 1.16  2005/04/10 21:50:50  tweety
+	reformatting c-sources
 
-Revision 1.14  2005/04/06 19:38:17  tweety
-use disable/enable keys to improove spee in database creation
-add draw_small_plus_sign, which is used if we would have too many waypoints to display
-extract draw_text from draw_poi loop
+	Revision 1.15  2005/04/07 06:35:01  tweety
+	Error handling for g_renew
+	correct to extern MYSQL mysql;
+	start getting color from streets_type
 
-Revision 1.13  2005/03/30 10:03:38  tweety
-corrected problem with sigSEG if sqlmode is off
-Added another bunch of comments
+	Revision 1.14  2005/04/06 19:38:17  tweety
+	use disable/enable keys to improove spee in database creation
+	add draw_small_plus_sign, which is used if we would have too many waypoints to display
+	extract draw_text from draw_poi loop
 
-Revision 1.12  2005/03/29 01:59:01  tweety
-another set of minor Bugfixes
+	Revision 1.13  2005/03/30 10:03:38  tweety
+	corrected problem with sigSEG if sqlmode is off
+	Added another bunch of comments
 
-Revision 1.11  2005/03/27 18:22:50  tweety
-only draw cross if less than 5000 poi found
+	Revision 1.12  2005/03/29 01:59:01  tweety
+	another set of minor Bugfixes
 
-Revision 1.10  2005/03/27 00:44:42  tweety
-eperated poi_type_list and streets_type_list
-and therefor renaming the fields
-added drop index before adding one
-poi.*: a little bit more error handling
-disabling poi and streets if sql is disabled
-changed som print statements from \n.... to ...\n
-changed some debug statements from debug to mydebug
+	Revision 1.11  2005/03/27 18:22:50  tweety
+	only draw cross if less than 5000 poi found
 
-Revision 1.9  2005/03/15 08:40:13  tweety
-eliminate doublicate pfd description
+	Revision 1.10  2005/03/27 00:44:42  tweety
+	eperated poi_type_list and streets_type_list
+	and therefor renaming the fields
+	added drop index before adding one
+	poi.*: a little bit more error handling
+	disabling poi and streets if sql is disabled
+	changed som print statements from \n.... to ...\n
+	changed some debug statements from debug to mydebug
 
-Revision 1.8  2005/02/22 08:18:51  tweety
-change leveling system to simpler scale marking for decission 
-what to show on display
-column_names(DBFuncs.pm get data from Database
-added functions add_index drop_index
-added language to type Database
-for some Data split unpack and mirror Directories
-for some add lat/lon min/max to get faster import for testing
-added POI::DBFuncs::segments_add; this will later be the point 
-to do some excerptions and combinations
-on the street data
+	Revision 1.9  2005/03/15 08:40:13  tweety
+	eliminate doublicate pfd description
 
-Revision 1.7  2005/02/17 09:46:34  tweety
-minor changes
+	Revision 1.8  2005/02/22 08:18:51  tweety
+	change leveling system to simpler scale marking for decission 
+	what to show on display
+	column_names(DBFuncs.pm get data from Database
+	added functions add_index drop_index
+	added language to type Database
+	for some Data split unpack and mirror Directories
+	for some add lat/lon min/max to get faster import for testing
+	added POI::DBFuncs::segments_add; this will later be the point 
+	to do some excerptions and combinations
+	on the street data
 
-Revision 1.6  2005/02/13 22:57:00  tweety
-WDB Support
+	Revision 1.7  2005/02/17 09:46:34  tweety
+	minor changes
 
-Revision 1.5  2005/02/13 14:06:54  tweety
-start street randering functions. reading from the database streets 
-and displaying it on the screen
-improve a little bit in the sql-queries
-fixed linewidth settings in draw_cross
+	Revision 1.6  2005/02/13 22:57:00  tweety
+	WDB Support
 
-Revision 1.4  2005/02/10 06:22:25  tweety
-added primitive drawing of icons to POI
+	Revision 1.5  2005/02/13 14:06:54  tweety
+	start street randering functions. reading from the database streets 
+	and displaying it on the screen
+	improve a little bit in the sql-queries
+	fixed linewidth settings in draw_cross
 
-Revision 1.3  2005/02/08 20:18:39  tweety
-small fixes in poi.c
+	Revision 1.4  2005/02/10 06:22:25  tweety
+	added primitive drawing of icons to POI
 
-Revision 1.2  2005/02/07 07:53:39  tweety
-added check_if_moved inti function poi_rebuild_list
+	Revision 1.3  2005/02/08 20:18:39  tweety
+	small fixes in poi.c
 
-Revision 1.1  2005/02/02 18:11:02  tweety
-Add Point Of Interrest Support with mySQL
+	Revision 1.2  2005/02/07 07:53:39  tweety
+	added check_if_moved inti function poi_rebuild_list
 
-Revision 0.0  2005/01/11 20:14:14  tweety
+	Revision 1.1  2005/02/02 18:11:02  tweety
+	Add Point Of Interrest Support with mySQL
+
+	Revision 0.0  2005/01/11 20:14:14  tweety
 
 */
 
@@ -206,7 +209,7 @@ void draw_text(char *txt, gdouble posx, gdouble posy){
 
 	pango_layout_set_font_description (poi_label_layout, pfd);
 	pango_layout_get_pixel_size (poi_label_layout, 
-								 &width, &height);
+															 &width, &height);
 	k = width + 4;
 	k2 = height;
 	  
@@ -218,8 +221,8 @@ void draw_text(char *txt, gdouble posx, gdouble posy){
 		// gdk_gc_set_foreground (kontext, &textbacknew);
 		gdk_gc_set_foreground (kontext, &grey);
 		gdk_draw_rectangle (drawable, kontext, 1, 
-							posx + 13, posy - k2 / 2, 
-							k + 1, k2);
+												posx + 13, posy - k2 / 2, 
+												k + 1, k2);
 
 	}
 
@@ -228,8 +231,8 @@ void draw_text(char *txt, gdouble posx, gdouble posy){
 	pango_layout_set_font_description (poi_label_layout, pfd);
 
 	gdk_draw_layout_with_colors (drawable, kontext,
-								 posx + 15, posy - k2 / 2,
-								 poi_label_layout, &black, NULL);
+															 posx + 15, posy - k2 / 2,
+															 poi_label_layout, &black, NULL);
 	if (poi_label_layout != NULL)
 		g_object_unref (G_OBJECT (poi_label_layout));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -263,14 +266,14 @@ int poi_check_if_moved(void) {
 	gdouble lat_ul, lon_ul;
 
 	if ( poi_lat_lr == 0 && poi_lon_lr == 0 &&
-		 poi_lat_ul == 0 && poi_lon_ul == 0    ) 
+			 poi_lat_ul == 0 && poi_lon_ul == 0    ) 
 		return 1;
 
 	calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
 	calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
 
 	if ( poi_lat_lr == lat_lr && poi_lon_lr == lon_lr &&
-		 poi_lat_ul == lat_ul && poi_lon_ul == lon_ul    ) 
+			 poi_lat_ul == lat_ul && poi_lon_ul == lon_ul    ) 
 		return 0;  
 	return 1;
 }
@@ -295,7 +298,7 @@ void get_poi_type_list (void) {
 	}
   
 	g_snprintf (sql_query, sizeof (sql_query),
-				"SELECT poi_type_id,name,symbol,description FROM poi_type ORDER BY poi_type_id");
+							"SELECT poi_type_id,name,symbol,description FROM poi_type ORDER BY poi_type_id");
 
 	if (mydebug) 
 		fprintf(stderr,"get_poi_type_list: query: %s\n",sql_query);
@@ -327,7 +330,7 @@ void get_poi_type_list (void) {
 				poi_type_list[index].name[0]='\0';
 			} else {
 				g_strlcpy ( poi_type_list[index].name, row[1],
-							sizeof (poi_type_list[index].name));
+										sizeof (poi_type_list[index].name));
 			}
 
 
@@ -461,7 +464,7 @@ void poi_rebuild_list (void) {
 		  "order by scale_min,%s ",sql_order_numbers);
 		*/
 		g_snprintf (sql_order, sizeof (sql_order),
-					"order by scale_min,scale_max ");
+								"order by scale_min,scale_max ");
 		/*
 		  g_snprintf (sql_order, sizeof (sql_order),
 		  "order by scale ");
@@ -472,12 +475,12 @@ void poi_rebuild_list (void) {
   
 	{ // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
 		g_snprintf (sql_where, sizeof (sql_where),
-					"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
-					"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
-					"\tAND   ( %ld  BETWEEN scale_min AND scale_max) \n",
-					lat_min,lat_max,
-					lon_min,lon_max,
-					mapscale);
+								"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
+								"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
+								"\tAND   ( %ld  BETWEEN scale_min AND scale_max) \n",
+								lat_min,lat_max,
+								lon_min,lon_max,
+								mapscale);
 		g_strdelimit (sql_where, ",", '.'); // For different LANG
 		if (mydebug) {
 			//printf ("POI mysql where: %s\n", sql_where );
@@ -486,13 +489,13 @@ void poi_rebuild_list (void) {
 	}
 
 
-  	g_snprintf (sql_query, sizeof (sql_query),
-				// "SELECT lat,lon,alt,type_id,proximity "
-				"SELECT lat,lon,name,poi_type_id "
-				"FROM poi "
-				//	      "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-				"%s %s LIMIT 40000",
-				sql_where,sql_order);
+	g_snprintf (sql_query, sizeof (sql_query),
+							// "SELECT lat,lon,alt,type_id,proximity "
+							"SELECT lat,lon,name,poi_type_id "
+							"FROM poi "
+							//	      "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
+							"%s %s LIMIT 40000",
+							sql_where,sql_order);
 	/*    dbwherestring,sql_order,lat,lon);  */
 
 	if (debug)
@@ -522,12 +525,12 @@ void poi_rebuild_list (void) {
 		lat = g_strtod(row[0], NULL);
 		lon = g_strtod(row[1], NULL);
 		calcxy (&poi_posx, &poi_posy, 
-				lon,lat,
-				zoom);
+						lon,lat,
+						zoom);
 
 		if ( (poi_posx > -50) && (poi_posx < (SCREEN_X + 50)) &&
-			 (poi_posy > -50) && (poi_posy < (SCREEN_Y + 50)) 
-			 ) {
+				 (poi_posy > -50) && (poi_posy < (SCREEN_Y + 50)) 
+				 ) {
 			// get next free mem for point
 			poi_nr++;
 			if (poi_nr > poi_limit) {
@@ -553,10 +556,10 @@ void poi_rebuild_list (void) {
 			(poi_list + poi_nr)->poi_type_id    = (gint)g_strtod(row[3], NULL);
 			if (debug) { 
 				g_snprintf ((poi_list + poi_nr)->name, sizeof ((poi_list + poi_nr)->name),
-							"%s\n(%.4f ,%.4f)",
-							//			(poi_list + poi_nr)->poi_type_id,
-							row[2],
-							lat,lon);
+										"%s\n(%.4f ,%.4f)",
+										//			(poi_list + poi_nr)->poi_type_id,
+										row[2],
+										lat,lon);
 				/*
 				  `type_id` int(11) NOT NULL default \'0\',
 				  `alt` double default \'0\',
@@ -670,8 +673,8 @@ void poi_draw_list (void) {
 		posy = (poi_list + i)->y;
 
 		if ( (posx >= 0) && (posx < SCREEN_X)  &&
-			 (posy >= 0) && (posy < SCREEN_Y) 
-			 ) {
+				 (posy >= 0) && (posy < SCREEN_Y) 
+				 ) {
 	  
 	  
 			/*
@@ -696,9 +699,9 @@ void poi_draw_list (void) {
 				if ( icon != NULL && icon_index > 0 ) {
 					if( poi_max < 2000 ) 
 						gdk_draw_pixbuf (drawable, kontext, icon,
-										 0, 0,
-										 posx - 12, posy - 12,
-										 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
+														 0, 0,
+														 posx - 12, posy - 12,
+														 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
 				} else {
 					gdk_gc_set_foreground (kontext, &red);
 					if( poi_max < 20000 ) { // Only draw mall + if more than ... Points 
