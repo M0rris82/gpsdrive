@@ -59,7 +59,8 @@ endif
 
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = mysql wpcvt wpget  gpsfetchmap.pl gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  gpspoint2gpsdrive.pl  geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh  top_GPSWORLD.jpg gpsreplay gpssmswatch gpsdriveanim.gif
+#EXTRA_DIST = mysql wpcvt wpget  gpsfetchmap.pl gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  gpspoint2gpsdrive.pl  geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh  top_GPSWORLD.jpg gpsreplay gpssmswatch gpsdriveanim.gif
+EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
 gpsdrivedir = $(datadir)/gpsdrive
 gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
 
