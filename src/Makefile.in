@@ -114,7 +114,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
 	talogo.h import_map.c import_map.h speech_strings.c \
-	speech_strings.h
+	speech_strings.h xpm_compass.h xpm_talogo.h xpm_power.h \
+	xpm_icons.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -356,7 +357,8 @@ gpsd_LDFLAGS = -L.
 @DISABLEGARMIN_FALSE@	gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h\
 @DISABLEGARMIN_FALSE@	garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_FALSE@	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
-@DISABLEGARMIN_FALSE@	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h
+@DISABLEGARMIN_FALSE@	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h \
+@DISABLEGARMIN_FALSE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 
 @DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
 @DISABLEGARMIN_TRUE@	friends.c battery.c track.c poi.c streets.c settings.c  \
@@ -364,7 +366,8 @@ gpsd_LDFLAGS = -L.
 @DISABLEGARMIN_TRUE@	gpskismet.c ../config.h icons.c icons.h gettext.h \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
 @DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
-@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h
+@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h \
+@DISABLEGARMIN_TRUE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
 
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
