@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.44  2005/05/24 08:35:25  tweety
+move track splitting to its own function +sub track_add($)
+a little bit more error handling
+earth_distance somtimes had complex inumbers as result
+implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+this way i can re-read all currently displayed streets from the DB
+fix minor array iindex counting bugs
+add some content to the comment column
+
 Revision 1.43  2005/05/24 08:11:45  tweety
 Fix Forcehavepos
 http://bugzilla.gpsdrive.cc/show_bug.cgi?id=7
@@ -9016,9 +9025,10 @@ poi_draw_cb (GtkWidget * widget, guint datum)
 gint
 streets_draw_cb (GtkWidget * widget, guint datum)
 {
+	if ( ! streets_draw ) 
+	    streets_check_if_moved_reset();
 	streets_draw = !streets_draw;
 	streets_draw_list ();
-
 	needtosave = TRUE;
 	return TRUE;
 }
