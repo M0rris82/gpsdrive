@@ -24,8 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/01/11 00:20:06  tweety
+Formating Debug output
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.75  2004/03/02 02:09:11  ganter
 ...
@@ -1221,9 +1224,9 @@ testifnight (void)
   if (debug)
     {
       if (isnight)
-	g_print ("\nIt is night");
+	g_print ("\nIt is night\n");
       else
-	g_print ("\nIt is day");
+	g_print ("\nIt is day\n");
     }
 }
 
