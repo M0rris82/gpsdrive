@@ -22,15 +22,14 @@
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 
-my $VERSION =<<EOP;
-gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
+my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 Version 1.05
-EOP
+";
 
 use strict;
 use Getopt::Long;
@@ -56,19 +55,23 @@ my $KOORD_FILE    = 'map_koord.txt'; # Should we allow config of this?
 my $FILEPREFIX    = 'map_';
 my $mapserver     = 'expedia';
 
-GetOptions ('lat=f' => \$lat, 'lon=f' => \$lon, 'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 'start-lon=f' => \$slon, 'end-lon=f' => \$endlon, 'scale=s' => \$scale, 'mapserver=s' => \$mapserver, 
-            'waypoint=s' =>, \$waypoint, 'area=s' => \$area, 'unit=s' => \$unit,'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
-            'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 'PREFIX=s' => \$FILEPREFIX,
-            'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 'help|x' => \$help, 'version' => \$version)
-   or pod2usage(1);
+GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon, 
+	     'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 
+	     'start-lon=f' => \$slon, 'end-lon=f' => \$endlon, 
+	     'scale=s' => \$scale, 'mapserver=s' => \$mapserver, 
+	     'waypoint=s' =>, \$waypoint, 'area=s' => \$area, 
+	     'unit=s' => \$unit,'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
+	     'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 'PREFIX=s' => \$FILEPREFIX,
+	     'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 'help|x' => \$help, 'version' => \$version)
+    or pod2usage(1);
 
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
 # Print version
 if ($version) {
-   print $VERSION, "\n";
-   exit();
+    print $VERSION, "\n";
+    exit();
 }
 
 # Verify that we have the options that we need 
@@ -91,7 +94,7 @@ print "Scale to download: ", join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}), "
 
 # Get the center waypoint if they want one
 if ($waypoint) {
-   ($lat,$lon) = get_waypoint(\$waypoint);
+    ($lat,$lon) = get_waypoint(\$waypoint);
 }
 print "Centerpoint: $lat,$lon\n" if ($debug);
 
@@ -103,15 +106,16 @@ $mapdir = &get_mapdir unless ($mapdir);
 
 # Now get the start and end coordinates
 unless ($slat && $slon && $endlat && $endlon) {
-   ($slat,$slon,$endlat,$endlon) = get_coords(\$lat,\$lon,\$area,\$unit); 
+    ($slat,$slon,$endlat,$endlon) = get_coords(\$lat,\$lon,\$area,\$unit); 
 }
 print "Upper left: $slat $slon, Lower Right: $endlat, $endlon\n" if ($debug);
 
 unless ($force) {
-   my $count = file_count(\($slat,$slon,$endlat,$endlon));
-   print "You are about to download $count file(s).\nYou are violating the map servers copyright!\nAre you sure you want to continue? [y|n] ";
-   my $answer = <STDIN>;
-   exit if ($answer !~ /^[yY]/);    
+    my $count = file_count(\($slat,$slon,$endlat,$endlon));
+    print "You are about to download $count file(s).\n";
+    print "You are violating the map servers copyright!\nAre you sure you want to continue? [y|n] ";
+    my $answer = <STDIN>;
+    exit if ($answer !~ /^[yY]/);    
 }
 
 print "\nDownloading files:\n";
@@ -201,192 +205,200 @@ print "\n";
 ################################################################################
 
 sub error_check {
-   my $status;
-   
-   # Check for a centerpoint
-   unless (($waypoint) || ($lat && $lon) || ($slat && $endlat && $slon && $endlon)) {
-      print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longiture\n\n";
-      $status++;
-   }
-   
-   # Check for area
-   unless ($area || ($slat && $endlat && $slon && $endlon)) {
-      print "ERROR: You must define an area to cover or starting and ending coordinates for both latitude and longiture\n\n";
-      $status++;
-   }
-   
-   return $status;
+    my $status;
+    
+    # Check for a centerpoint
+    unless (($waypoint) || ($lat && $lon) || ($slat && $endlat && $slon && $endlon)) {
+	print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longiture\n\n";
+	$status++;
+    }
+    
+    # Check for area
+    unless ($area || ($slat && $endlat && $slon && $endlon)) {
+	print "ERROR: You must define an area to cover or starting and ending coordinates for both latitude and longiture\n\n";
+	$status++;
+    }
+    
+    return $status;
 }
 
+######################################################################
 sub get_scales {
-   my ($scale_ref) = @_;
-   # OK lets figure out what scales they want
-   #
-   # '####'  - just that scale
-   # '>####' - scales above and including the number given
-   # '<####' - scales below and including the number given
-   # '####,####,####' - a list of scales to download
-   # '####-####' - scales from first to last
-   # 
-   my @SCALES_TO_GET;
-   for my $temp_scale (split /,/, $$scale_ref) {
-      if ($temp_scale =~ /^\d+$/) {
-         pod2usage(1) unless (grep (/$temp_scale/, @SCALES));
-         push(@SCALES_TO_GET,$temp_scale);
-      } elsif ($temp_scale =~ /^>\d+$/) {
-         $temp_scale =~ s/>//;
-         push(@SCALES_TO_GET, grep ($_ >= $temp_scale, @SCALES)); 
-      } elsif ($temp_scale =~ /^<\d+$/) {
-         $temp_scale =~ s/<//;
-         push(@SCALES_TO_GET, grep ($_ <= $temp_scale, @SCALES)); 
-      } elsif ($temp_scale =~  /-/) {
-         my(@NUMS) = split(/-/,$temp_scale);
-         @NUMS = sort {$a <=> $b} @NUMS;
-         push(@SCALES_TO_GET, grep (($_ >= $NUMS[0]) && ($_ <= $NUMS[1]), @SCALES));
-      } else {
-         pod2usage(1);
-      }
-   }
-   return \@SCALES_TO_GET;
+    my ($scale_ref) = @_;
+    # OK lets figure out what scales they want
+    #
+    # '####'  - just that scale
+    # '>####' - scales above and including the number given
+    # '<####' - scales below and including the number given
+    # '####,####,####' - a list of scales to download
+    # '####-####' - scales from first to last
+    # 
+    my @SCALES_TO_GET;
+    for my $temp_scale (split /,/, $$scale_ref) {
+	if ($temp_scale =~ /^\d+$/) {
+	    pod2usage(1) unless (grep (/$temp_scale/, @SCALES));
+	    push(@SCALES_TO_GET,$temp_scale);
+	} elsif ($temp_scale =~ /^>\d+$/) {
+	    $temp_scale =~ s/>//;
+	    push(@SCALES_TO_GET, grep ($_ >= $temp_scale, @SCALES)); 
+	} elsif ($temp_scale =~ /^<\d+$/) {
+	    $temp_scale =~ s/<//;
+	    push(@SCALES_TO_GET, grep ($_ <= $temp_scale, @SCALES)); 
+	} elsif ($temp_scale =~  /-/) {
+	    my(@NUMS) = split(/-/,$temp_scale);
+	    @NUMS = sort {$a <=> $b} @NUMS;
+	    push(@SCALES_TO_GET, grep (($_ >= $NUMS[0]) && ($_ <= $NUMS[1]), @SCALES));
+	} else {
+	    pod2usage(1);
+	}
+    }
+    return \@SCALES_TO_GET;
 } #End get_scales
 
+######################################################################
 sub file_count {
-   my ($slat,$slon,$endlat,$endlon) = @_;
-   my $count;
-   foreach my $scale (@{$SCALES_TO_GET_ref}) {
-      my $k = $DIFF * $scale;
-      my $klat = $k - ($k / 2); ### FIX BY CAMEL
-      my $klon = $k - ($k / 6); ### FIX BY CAMEL
-      my $lati = $$slat;   
-      while ($lati < $$endlat) {
-         my $long = $$slon;
-         while ($long < $$endlon) {
-            $long += $klon; ### FIX BY CAMEL
-            $count++;
-         }
-         $lati += $klat; ### FIX BY CAMEL
-         $long = $slon; ### FIX BY CAMEL
-      }
-   }
-   return($count);
+    my ($slat,$slon,$endlat,$endlon) = @_;
+    my $count;
+    foreach my $scale (@{$SCALES_TO_GET_ref}) {
+	my $k = $DIFF * $scale;
+	my $klat = $k - ($k / 2); ### FIX BY CAMEL
+	my $klon = $k - ($k / 6); ### FIX BY CAMEL
+	my $lati = $$slat;   
+	while ($lati < $$endlat) {
+	    my $long = $$slon;
+	    while ($long < $$endlon) {
+		$long += $klon; ### FIX BY CAMEL
+		$count++;
+	    }
+	    $lati += $klat; ### FIX BY CAMEL
+	    $long = $slon; ### FIX BY CAMEL
+	}
+    }
+    return($count);
 } #end file_count
 
+######################################################################
 sub get_waypoint {
-   my ($waypoint_ref) = @_;
-
-   # If they give just a filename, we should assume they meant the CONFIG_DIR
-   $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
-   
-   open(WAYPT,"$WAYPT_FILE") || die "ERROR: Can't open: $WAYPT_FILE\n";
-   my ($name,$lat,$lon);
-   while (<WAYPT>) {
-      chomp;
-      next unless (/$$waypoint_ref/);
-      ($name,$lat,$lon) = split(/\s+/);
-   }
-   close(WAYPT);
-   unless (($lat) && ($lon)) {
-      print "Unable to find waypoint '$$waypoint_ref' in '$WAYPT_FILE'\n";
-      exit;
-   }
-   return($lat,$lon);
+    my ($waypoint_ref) = @_;
+    
+    # If they give just a filename, we should assume they meant the CONFIG_DIR
+    $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
+    
+    open(WAYPT,"$WAYPT_FILE") || die "ERROR: Can't open: $WAYPT_FILE\n";
+    my ($name,$lat,$lon);
+    while (<WAYPT>) {
+	chomp;
+	next unless (/$$waypoint_ref/);
+	($name,$lat,$lon) = split(/\s+/);
+    }
+    close(WAYPT);
+    unless (($lat) && ($lon)) {
+	print "Unable to find waypoint '$$waypoint_ref' in '$WAYPT_FILE'\n";
+	exit;
+    }
+    return($lat,$lon);
 } #End get_waypoint
 
+######################################################################
 sub get_unit {
-   # If they give just a filename, we should assume they meant the CONFIG_DIR
-   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-   
-   # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
-   my $unit;
-   while (<CONFIG>) {
-      next unless (/units\s=/);
-      chomp;
-      $unit = $_;
-      $unit =~ s/units\s=\s//;
-   }   
-   close(CONFIG);
-   return $unit;
+    # If they give just a filename, we should assume they meant the CONFIG_DIR
+    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+    
+    # If not specified on the command line, we read from the config file
+    open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
+    my $unit;
+    while (<CONFIG>) {
+	next unless (/units\s=/);
+	chomp;
+	$unit = $_;
+	$unit =~ s/units\s=\s//;
+    }   
+    close(CONFIG);
+    return $unit;
 } #End get_unit
 
+######################################################################
 sub get_mapdir {
-   # If they give just a filename, we should assume they meant the CONFIG_DIR  
-   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-
-   # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
-   my $mapdir;
-   while (<CONFIG>) {
-      next unless (/mapdir\s=/);
-      chomp;
-      $mapdir = $_;
-      $mapdir =~ s/mapdir\s=\s//;
-   }
-   close(CONFIG);
-   return $mapdir;
-
+    # If they give just a filename, we should assume they meant the CONFIG_DIR  
+    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+    
+    # If not specified on the command line, we read from the config file
+    open(CONFIG,"$CONFIG_FILE") || die "Can't open $CONFIG_FILE\n";
+    my $mapdir;
+    while (<CONFIG>) {
+	next unless (/mapdir\s=/);
+	chomp;
+	$mapdir = $_;
+	$mapdir =~ s/mapdir\s=\s//;
+    }
+    close(CONFIG);
+    return $mapdir;
+    
 } #End get_mapdir
 
+######################################################################
 sub get_coords {
-   my ($lat_ref,$lon_ref,$area_ref,$unit_ref) = @_;
-
-   # Figure out if we are doing square area or a rectangle
-   my ($lat_dist,$lon_dist);
-   if ($$area_ref =~ /x/i) {
-      ($lat_dist,$lon_dist) = split(/x/i,$$area_ref);
-   } else {
-      $lat_dist = $$area_ref;
-      $lon_dist = $$area_ref;
-   }
-   print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug); 
-
-   my $lon_dist_km = calc_lon_dist($lat_ref);
-   my $lat_offset  = calc_offset($unit_ref,\($lat_dist,$LAT_DIST_KM));
-   my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
-
-   print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
-   
-   # Ok subtract the offset for the start point
-   my $slat = $$lat_ref - $$lat_offset;
-   my $slon = $$lon_ref - $$lon_offset;
-   
-   # Ok add the offset for the start point
-   my $elat = $$lat_ref + $$lat_offset;   
-   my $elon = $$lon_ref + $$lon_offset;   
+    my ($lat_ref,$lon_ref,$area_ref,$unit_ref) = @_;
     
-   return ($slat,$slon,$elat,$elon);
+    # Figure out if we are doing square area or a rectangle
+    my ($lat_dist,$lon_dist);
+    if ($$area_ref =~ /x/i) {
+	($lat_dist,$lon_dist) = split(/x/i,$$area_ref);
+    } else {
+	$lat_dist = $$area_ref;
+	$lon_dist = $$area_ref;
+    }
+    print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug); 
+    
+    my $lon_dist_km = calc_lon_dist($lat_ref);
+    my $lat_offset  = calc_offset($unit_ref,\($lat_dist,$LAT_DIST_KM));
+    my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
+
+    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
+   
+    # Ok subtract the offset for the start point
+    my $slat = $$lat_ref - $$lat_offset;
+    my $slon = $$lon_ref - $$lon_offset;
+   
+    # Ok add the offset for the start point
+    my $elat = $$lat_ref + $$lat_offset;   
+    my $elon = $$lon_ref + $$lon_offset;   
+    
+    return ($slat,$slon,$elat,$elon);
 } #End get_coords
 
+######################################################################
 sub calc_offset {
-   my($unit_ref,$area_ref,$dist_per_degree) = @_;
-   
-   # Adjust the dist_per_degree for the unit chosen by the user
-   if ($$unit_ref =~ /miles/) {
-      $$dist_per_degree *= $KM2MILES;   
-   } elsif ($$unit_ref =~ /nautic/) {
-      $$dist_per_degree *= $KM2NAUTICAL;
+    my($unit_ref,$area_ref,$dist_per_degree) = @_;
+    
+    # Adjust the dist_per_degree for the unit chosen by the user
+    if ($$unit_ref =~ /miles/) {
+	$$dist_per_degree *= $KM2MILES;   
+    } elsif ($$unit_ref =~ /nautic/) {
+       $$dist_per_degree *= $KM2NAUTICAL;
    }
-   
-   # The offset for the coordinate is the distance to travel divided by 
-   # the dist per degree   
-   my $offset = sprintf("%.7f", ($$area_ref / 2) / $$dist_per_degree);
-   
-   return(\$offset);
+    
+    # The offset for the coordinate is the distance to travel divided by 
+    # the dist per degree   
+    my $offset = sprintf("%.7f", ($$area_ref / 2) / $$dist_per_degree);
+    
+    return(\$offset);
 } #End calc_offset
 
+######################################################################
 sub calc_lon_dist {
-   my ($lat) = @_;
-   my $PI  = 3.141592654;
-   my $dr = $PI / 180;
-   
-   # calculate the circumference of the small circle at latitude 
-   my $cos = cos($$lat * $dr); # convert degrees to radians
-   my $circ_km = sprintf("%.2f",($PI * 2 * $RADIUS_KM * $cos));
-   
-   # divide that by 360 and you have kilometers per degree
-   my $km_deg = sprintf("%.2f",($circ_km / 360));
-   
-   return ($km_deg);
+    my ($lat) = @_;
+    my $PI  = 3.141592654;
+    my $dr = $PI / 180;
+    
+    # calculate the circumference of the small circle at latitude 
+    my $cos = cos($$lat * $dr); # convert degrees to radians
+    my $circ_km = sprintf("%.2f",($PI * 2 * $RADIUS_KM * $cos));
+    
+    # divide that by 360 and you have kilometers per degree
+    my $km_deg = sprintf("%.2f",($circ_km / 360));
+    
+    return ($km_deg);
 } #End calc_longitude_dist
 
 __END__
