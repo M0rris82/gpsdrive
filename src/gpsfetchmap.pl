@@ -47,7 +47,12 @@
 #   LWP::Mirror:
 #       moved from wget to LWP::Mirror to eliminate the dependency of the 
 #       wget package and configuration. This also enables PROXY use
-#   Minor Bugfixes
+#   Minor Bugfixes, ...
+#       eliminated ref for calc_lon_dist($$lat_ref
+#       make sorting of keys numerocal sort  {$a <=> $b} keys
+#       add desiredDistance, minDistance - maxDistance to --check-coverage
+#       add gap/overlap recognition to --check-coverage
+
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -55,7 +60,8 @@ modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin CoRneliu <robin\@cornelius.demon.co.uk>
-Version 1.13
+modified (Dec,2004) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
+Version 1.15
 ";
 
 use Data::Dumper;
@@ -227,10 +233,10 @@ if ( $update_koord  ) {
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
-for my $scale ( sort keys %{$desired_locations} ) {
-    for my $lati ( sort keys %{$desired_locations->{$scale}} ) {
+for my $scale ( sort  {$a <=> $b} keys %{$desired_locations} ) {
+    for my $lati ( sort  {$a <=> $b} keys %{$desired_locations->{$scale}} ) {
 	printf "   %5.2f: ",$lati;
-	my @longs = sort keys %{$desired_locations->{$scale}->{$lati}};
+	my @longs = sort  {$a <=> $b} keys %{$desired_locations->{$scale}->{$lati}};
 	print "(". scalar( @longs ) . ")\t";
 	#print ":". join(" ", @longs ) . "\t";
 	for my $long ( @longs ) {
@@ -626,7 +632,7 @@ sub get_coords {
     }
     print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug); 
     
-    my $lon_dist_km = calc_lon_dist($lat_ref);
+    my $lon_dist_km = calc_lon_dist($$lat_ref);
     my $lat_offset  = calc_offset($unit_ref,\($lat_dist,$LAT_DIST_KM));
     my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
 
@@ -662,13 +668,16 @@ sub calc_offset {
 } #End calc_offset
 
 ######################################################################
+# Return KM/degree for this latitude
+######################################################################
 sub calc_lon_dist {
-    my ($lat) = @_;
+    my $lat = shift;
+
     my $PI  = 3.141592654;
     my $dr = $PI / 180;
     
     # calculate the circumference of the small circle at latitude 
-    my $cos = cos($$lat * $dr); # convert degrees to radians
+    my $cos = cos($lat * $dr); # convert degrees to radians
     my $circ_km = sprintf("%.2f",($PI * 2 * $RADIUS_KM * $cos));
     
     # divide that by 360 and you have kilometers per degree
@@ -877,14 +886,14 @@ sub update_file_in_map_koords(){
 sub check_coverage($){
     my $koord_file = shift;
     read_koord_file($koord_file);
-    my @scales= sort keys %{$MAP_KOORDS};
+    my @scales= sort  {$a <=> $b} keys %{$MAP_KOORDS};
 
     for my $scale ( @scales ) {
 	print "$scale:\n";;
 	
 	my @all_lons;
 	my %all_lons;
-	my @lats = sort keys %{$MAP_KOORDS->{$scale}};
+	my @lats = sort {$a <=> $b} keys %{$MAP_KOORDS->{$scale}};
 	for my $lat ( @lats ) {
 	    my @lons = keys %{$MAP_KOORDS->{$scale}->{$lat}};
 	    for my $lon ( @lons ) {
@@ -897,15 +906,63 @@ sub check_coverage($){
 	my $last_lon = $all_lons[-1];
 
 	print "lon: ($first_lon - $last_lon))\n";
+	print "lat: (desiredDistance, minDistance - maxDistance) Km\n";
+
 	for my $lat ( @lats ) {
 	    printf "   %7.4f: ", $lat;
-	    my @lons = sort keys %{$MAP_KOORDS->{$scale}->{$lat}};
+	    my @lons = sort {$a <=> $b} keys %{$MAP_KOORDS->{$scale}->{$lat}};
 	    my %lons;
 	    map { $lons{$_}++ }  @lons;
+
+
+	    # Find out which is the desired Distance
+	    my $lon_dist_km = calc_lon_dist($lat);
+	    my $k = $DIFF * $scale;    
+	    my $klat = $k - ($k / 2); my $dlat = $klat * $LAT_DIST_KM;
+	    my $klon = $k - ($k / 6); my $dlon = $klon * $lon_dist_km;
+	    
+	    # Find Min and Max Distance between 2 Maps
+	    my $min_dist= $RADIUS_KM;
+	    my $max_dist=0;
+	    my $count_overlaps=0;
+	    my $prev_lon;
+	    my %gap;
+	    my %overlap;
+	    for my $lon (  sort {$a <=> $b} @all_lons ) {
+		if ( defined $prev_lon ) {
+		    my $dist = abs($lon - $prev_lon) * $lon_dist_km;
+		    if(  $dist < ($dlon * 0.9)) {
+			$overlap{$lon}++;
+			$count_overlaps++;
+			}
+
+		    $gap{$lon}=$dist /$dlon if $dist > ($dlon * 1.2);
+		    $min_dist = $dist if $dist < $min_dist;
+		    $max_dist = $dist if $dist > $max_dist;
+		    $lon - $prev_lon
+		}
+		#print "Dist: ( $min_dist - $max_dist) Km ($prev_lon => $lon = ".($prev_lon -$lon).")\n";
+		$prev_lon = $lon;
+	    };
+				
+	    printf " (%.2f,%.2f - %.2f) Km\t",$dlon,$min_dist,$max_dist;
+	    printf " %d Overlaps\t",$count_overlaps if $count_overlaps;
+	    #*= $LAT_DIST_KM;
+	    
+
+
+	    # Print +/- for existing/non-existing Map
 	    for my $lon ( @all_lons ) {
 #		printf "%7.4f ", $lon;
+		# Print Number of Tiles missing(gap) between last(left) map and this one
+		printf " -%.0f ",$gap{$lon} if $gap{$lon};
+
 		if ( $lons{$lon} ) {
-		    print "+";
+		    if ( $overlap{$lon} ) {
+			print "o";
+		    } else {
+			print "+";
+		    }
 		} else {
 		    print "-";
 		}
