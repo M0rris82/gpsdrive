@@ -62,6 +62,9 @@ my $WAYPT_FILE    = "$CONFIG_DIR/way.txt";
 my $KOORD_FILE    = 'map_koord.txt'; # Should we allow config of this?
 my $FILEPREFIX    = 'map_';
 my $mapserver     = 'expedia';
+my $check_koord_file = 0;
+our $MAP_KOORDS={};
+our $MAP_FILES={};
 
 GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon, 
 	     'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 
@@ -70,9 +73,12 @@ GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon,
 	     'slo=f' => \$slon, 'elo=f' => \$endlon, 
 	     'scale=s' => \$scale, 'mapserver=s' => \$mapserver, 
 	     'waypoint=s' =>, \$waypoint, 'area=s' => \$area, 
-	     'unit=s' => \$unit,'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
-	     'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 'PREFIX=s' => \$FILEPREFIX,
-	     'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 'help|x' => \$help, 'version' => \$version)
+	     'unit=s' => \$unit, 'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
+	     'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 
+	     'PREFIX=s' => \$FILEPREFIX,
+	     'c' => \$check_koord_file,
+	     'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 
+	     'help|x' => \$help, 'version' => \$version)
     or pod2usage(1);
 
 pod2usage(1) if $help;
@@ -80,10 +86,17 @@ pod2usage(-verbose=>2) if $man;
 
 sub is_map_file($);      # {}
 sub expedia_url($$$);    # {}
+sub check_koord_file($); # {}
+sub read_koord_file($);  # {}
 
 # Print version
 if ($version) {
     print $VERSION, "\n";
+    exit();
+}
+
+if ( $check_koord_file ) {
+    check_koord_file("$CONFIG_DIR/$KOORD_FILE");
     exit();
 }
 
@@ -190,7 +203,6 @@ print "\n";
 print "Fail:  $failcount\n";
 print "Exist: $existcount\n";
 print "New:   $newcount\n";
-print "\n";
 
 ################################################################################
 #
@@ -442,6 +454,76 @@ sub calc_lon_dist {
     return ($km_deg);
 } #End calc_longitude_dist
 
+
+#############################################################################
+# Read actual Koordinate File and memorize in $MAP_KOORDS and $MAP_FILES
+sub read_koord_file($) {
+    my $koord_file = shift;
+
+    $MAP_FILES={};
+
+    my $s_time=time();
+    print "opening $koord_file\n";
+    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
+    my $anz_files = 0;
+    while ( my $line = <KOORD> ) {
+	my ($filename ,$lati, $long, $mapscale);
+	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
+	if (is_map_file( $filename) ) {
+	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+	    $anz_files ++;
+	}
+    }
+    close KOORD;
+    my $r_time = time()-$s_time;
+    print "$koord_file read $anz_files in $r_time sec.\n";
+    
+}
+
+#############################################################################
+# Read actual Koordinate File (gpstool)
+# and check if all FIles it references are existing
+sub check_koord_file($) {
+    my $koord_file = shift;
+    # Change into the gpsdrive maps directory 
+
+    print "Checking all entries in $koord_file\n" if $debug;
+    $MAP_FILES={};
+    open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n";
+    my $anz_files = 0;
+    my $missing_files =0;
+    while ( my $line = <KOORD> ) {
+	my ($filename ,$lati, $long, $mapscale);
+	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
+	my $full_filename = "$CONFIG_DIR/$filename";
+	if ( !is_map_file( $full_filename ) ) {
+	    print "ERROR: File $full_filename not found\n";
+	    $missing_files ++;
+	} else {
+	    print "OK:    File $full_filename found\n" if $debug;
+	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+	    if ( $MAP_FILES->{$filename} ) {
+		print "ERROR: Duplicate File $full_filename found\n";
+	    };
+	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+	    $anz_files ++;
+	}
+    }
+    close KOORD;
+    print "Good files: $anz_files\n";
+    if ( $missing_files ) {
+	print "Missing Files: $missing_files\n";
+	open(KOORD,">$koord_file.new") || die "Can't open: $koord_file.new: $!\n"; 
+	foreach my $filename ( keys  %$MAP_FILES )  {
+	    printf KOORD "$filename	%s\n", $MAP_FILES->{$filename};
+	}
+	close KOORD;
+	print "wrote $koord_file.new"; ;
+    }
+}
+
+
 __END__
 
 =head1 NAME
@@ -569,6 +651,18 @@ Takes a prefix string to be used as the start of all saved map files. Default: "
 =item B<-F, --FORCE>
 
 Force program to download maps without asking you to confirm the download.
+
+=item B<-c>
+
+Update map_koord.txt: search map Tree if map_*.gif file exist, but cannot
+be found in map_koords.txt file. This option first reads the 
+map_koord.txt file and checks every Map in the filesystem if it also is 
+found in the map_koord.txt file.
+If not found it is appended into the map_koord.txt file.
+
+Check map_koord.txt File. This option checks, if every Map also exist
+If any Map-File is missing, a file map_koord.txt.new will be created. 
+This file can be copied to the original file if checked.
 
 =item B<-d, --debug>
 
