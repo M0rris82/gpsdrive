@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.15  2005/07/04 04:47:03  tweety
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=25
+"J.D. Schmidt" <jdsmobile@gmail.com>
+Fixed Wrong SQL Escapes
+
 Revision 1.14  2005/05/24 08:35:25  tweety
 move track splitting to its own function +sub track_add($)
 a little bit more error handling
@@ -307,24 +312,28 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 	j = 0;
 	for (i = 0; i <= (int) strlen (name); i++)
 	{
-		if (name[i] != '\'')
+		if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
 			tname[j++] = name[i];
 		else
 		{
 			tname[j++] = '\\';
-			tname[j++] = '\'';
+			tname[j++] = name[i];
+			if (debug)
+			    g_print ("Orig. name : %s\nEscaped name : %s\n",name,tname);
 		}
 	}
 
 	j = 0;
 	for (i = 0; i <= (int) strlen (typ); i++)
 	{
-		if (typ[i] != '\'')
+		if (typ[i] != '\'' && typ[i] != '\\' && typ[i] != '\"')
 			ttyp[j++] = typ[i];
 		else
 		{
 			ttyp[j++] = '\\';
-			ttyp[j++] = '\'';
+			ttyp[j++] = typ[i];
+			if (debug)
+			    g_print ("\n Orig. typ : %s\nEscaped typ : %s\n",typ,ttyp);
 		}
 	}
 
