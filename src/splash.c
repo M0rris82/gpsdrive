@@ -24,8 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/01/15 23:46:46  tweety
+Added config option to disable/enable drawing of grid
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.110  2004/03/02 03:07:17  ganter
 added speech output for received messages
@@ -443,7 +446,7 @@ extern gint scaleprefered, milesflag, nauticflag, metricflag, sqlflag;
 extern gint debug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
-extern gint setdefaultpos, shadow, etch, testgarmin, needtosave, usedgps,
+extern gint setdefaultpos, shadow, etch, drawgrid, testgarmin, needtosave, usedgps,
   simfollow;
 extern gchar activewpfile[200];
 extern gdouble milesconv;
@@ -1170,6 +1173,7 @@ writeconfig ()
   if (storetz)
     fprintf (fp, "timezone = %d\n", zone);
   fprintf (fp, "etch = %d\n", etch);
+  fprintf (fp, "drawgrid = %d\n", drawgrid);
   fprintf (fp, "bigcolor = %s\n", bluecolor);
   fprintf (fp, "trackcolor = %s\n", trackcolor);
   fprintf (fp, "friendscolor = %s\n", friendscolor);
@@ -1392,6 +1396,8 @@ readconfig ()
 	      zone = atoi (par2);
 	  if ((strcmp (par1, "etch")) == 0)
 	    etch = atoi (par2);
+	  if ((strcmp (par1, "drawgrid")) == 0)
+	    drawgrid = atoi (par2);
 	  if ((strcmp (par1, "bigcolor")) == 0)
 	    g_strlcpy (bluecolor, par2, sizeof (bluecolor));
 	  if ((strcmp (par1, "trackcolor")) == 0)
