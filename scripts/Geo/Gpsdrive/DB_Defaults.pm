@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.7  1994/06/08 13:02:31  tweety
+# adjust debug levels
+#
 # Revision 1.6  2005/11/26 18:16:45  tweety
 # insert horse icon
 #
@@ -824,9 +827,11 @@ sub generate_poi_type_html_page() {
     }
 
     my $poi_type_id=0;
-    for my $name  ( sort @poi_type_names ) {
+    for my $name_raw  ( sort @poi_type_names ) {
 	$poi_type_id++;
 	
+	my $name =$name_raw;
+
 	# Translate the entries
 	my $name_de =translate_icon($name);
 
@@ -854,7 +859,7 @@ sub generate_poi_type_html_page() {
 	print $poi_type_html_page "<td valign=TOP >$description_de</td>";
 	print $poi_type_html_page "</tr> \n";
 	
-	print $poi_type_txt_file "$name $icon\n";
+	print $poi_type_txt_file "$name_raw $icon\n";
 	debug(sprintf("%3d %-20s %-45s %-45s %-45s %-45s ",
 		      $poi_type_id,$icon,$name,$name_de,$description,$description_de));
     } # of for @poi_type_names

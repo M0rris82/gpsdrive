@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.10  1994/06/08 13:02:31  tweety
+  adjust debug levels
+
   Revision 1.9  2005/10/10 22:01:26  robstewart
   Updated to attempt fix on bug reported by Andreas.
 
@@ -227,7 +230,8 @@ Disclaimer: Please do not use for navigation.
 enum allowed_languages { english, german, spanish };
 enum allowed_languages voicelang;
 
-extern gint statusid, debug, havespeechout, posmode, muteflag;
+extern gint statusid, havespeechout, posmode, muteflag;
+extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
 extern GdkFont *textfont, *smalltextfont, *bigtextfont;
@@ -291,7 +295,7 @@ speech_out_speek (char *text)
 	if (posmode)
 		return 0;
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print (text);
 	if (!useflite)
 	{
@@ -302,7 +306,7 @@ speech_out_speek (char *text)
 	{
 		g_strlcat (text, ".\n", sizeof (text));
 		g_snprintf (out, sizeof (out), "flite -t '%s'&", text);
-		if (debug)
+		if ( mydebug > 0 )
 			printf ("speech with flite: %s\n", out);
 		system (out);
 	}
@@ -321,7 +325,7 @@ speech_out_speek_raw (char *text)
 	if (posmode)
 		return 0;
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print (text);
 
 	e = write (speechsock, text, strlen (text));

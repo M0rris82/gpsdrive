@@ -2,7 +2,7 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
-AC_INIT(gpsdrive, 2.10pre3-fix-negative-lat-lon, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3-cvs-20051214, ganter@ganter.at)
 AC_CONFIG_SRCDIR(foo.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')

@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.19  1994/06/08 13:02:31  tweety
+  adjust debug levels
+
   Revision 1.18  1994/06/08 08:37:47  tweety
   fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
   instead of atof and strtod
@@ -503,7 +506,7 @@ GtkWidget *splash_window;
 extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag, sqlflag;
-extern gint debug, scalewanted, savetrack, defaultserver;
+extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
 extern gint setdefaultpos, shadow, etch, drawgrid, poi_draw, testgarmin,
@@ -1049,7 +1052,7 @@ message_cb (char *msgid, char *name, char *text, int fs)
 
 	gtk_widget_show_all (window);
 	g_snprintf (buf, sizeof (buf), "ACK: %s", msgid);
-	if (debug)
+	if ( mydebug > 10 )
 		fprintf (stderr, "\nsending to %s:\n%s\n", friendsserverip,
 			 buf);
 	sockfd = -1;
@@ -1073,7 +1076,7 @@ writeconfig ()
 	g_strlcpy (fname, homedir, sizeof (fname));
 	g_strlcat (fname, "gpsdriverc", sizeof (fname));
 
-	if (debug)
+	if ( mydebug > 0 )
 		printf ("Write config %s\n", fname);
 
 
@@ -1283,7 +1286,7 @@ readconfig ()
 	if (fp == NULL)
 		return;
 
-	if (debug)
+	if ( mydebug > 0 )
 		g_print ("reading config file...\n");
 
 	while ((fgets (buf, 1000, fp)) > 0)
@@ -1292,7 +1295,7 @@ readconfig ()
 		g_strlcpy (par2, "", sizeof (par2));
 		e = sscanf (buf, "%s = %[^\n]", par1, par2);
 
-		if (debug)
+		if ( mydebug > 1 )
 			g_print ("%d [%s] = [%s]\n", e, par1, par2);
 
 		if (e == 2)
@@ -1480,7 +1483,7 @@ readconfig ()
 		}		/* if e==2 */
 	}
 
-	if (debug)
+	if ( mydebug > 1 )
 		g_print ("\nreading config file finished\n");
 	fclose (fp);
 }

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.13  1994/06/08 13:02:31  tweety
+adjust debug levels
+
 Revision 1.12  2005/11/05 18:43:45  tweety
 coordinate_string2gdouble:
  - fixed missing format
@@ -116,7 +119,7 @@ code cleanup
 
 
 /* variables */
-extern gint ignorechecksum, mydebug, debug, mapistopo;
+extern gint ignorechecksum, mydebug, mapistopo;
 extern gdouble lat2RadiusArray[201];
 extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
@@ -151,7 +154,7 @@ checksum (gchar * text)
 		checksum = checksum ^ t[i++];
 	g_strlcpy (t2, (t + j + 1), sizeof (t2));
 	sscanf (t2, "%X", &orig);
-	if (mydebug)
+	if ( mydebug > 50 )
 	{
 		g_print ("gpsd: %s\n", t);
 		g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
@@ -186,13 +189,13 @@ lat2radius (gdouble lat)
 	}
 	if (lat > 100)
 	{
-	    if (debug)
+	    if ( mydebug > 1 )
 		fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 		lat = 100.0;
 	};
 	if (lat < -100)
 	{
-	    if (debug)
+	    if ( mydebug > 1 )
 		fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 		lat = -100.0;
 	};
@@ -495,7 +498,7 @@ create_pixbuf (const gchar * filename)
 		    filename);
 	if (!pathname)
 	{
-		if (debug)
+		if ( mydebug > 5 )
 			fprintf (stderr, _("Couldn't find pixmap file: %s"),
 				 pathname);
 		else
@@ -532,7 +535,7 @@ create_pixmap (GtkWidget * widget, const gchar * filename)
 	pixmap = gtk_image_new_from_file (pathname);
 	if (!pixmap)
 	{
-		if (debug)
+		if ( mydebug > 5 )
 			fprintf (stderr, _("Couldn't find pixmap file: %s"),
 				 pathname);
 		else
@@ -629,7 +632,8 @@ coordinate_string2gdouble (gchar * text, gdouble * dec)
 	*dec *= -1.0;
     if (s2 == 'S')
 	*dec *= -1.0;
-    if ( debug ) fprintf(stderr,"coordinate_string2gdouble(%s)-->%f\n",text,*dec);
+    if ( mydebug > 50 ) 
+	fprintf(stderr,"coordinate_string2gdouble(%s)-->%f\n",text,*dec);
 }
 
 /* *****************************************************************************
@@ -637,9 +641,11 @@ coordinate_string2gdouble (gchar * text, gdouble * dec)
 void
 checkinput (gchar * text)
 {
-    if ( debug) fprintf(stderr,"checkinput(%s)\n",text);
+    if ( mydebug > 50 ) 
+	fprintf(stderr,"checkinput(%s)\n",text);
     gdouble dec;
     coordinate_string2gdouble (text,&dec);
     g_snprintf (text, 20, "%.6f", dec);
-    if ( debug)     fprintf(stderr,"checkinput -->'%s'\n",text);
+    if ( mydebug > 50 )
+	fprintf(stderr,"checkinput -->'%s'\n",text);
 }

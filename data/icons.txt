@@ -8,10 +8,10 @@ accomodation.campground.tent hotel.png
 accomodation.campground.trailer hotel.png
 accomodation.hotel hotel.png
 accomodation.motel hotel.png
-accomodation.nursing home hotel.png
-accomodation.youth hostel hotel.png
+accomodation.nursing_home hotel.png
+accomodation.youth_hostel hotel.png
 administration unknown.png
-administration.car registration unknown.png
+administration.car_registration unknown.png
 area.area unknown.png
 area.bridge bridge.png
 area.bridge.car bridge_car.png
@@ -22,8 +22,8 @@ area.country unknown.png
 area.forest trees.png
 area.lake unknown.png
 area.mountain summit.png
-area.pedestrian zone pedestrian.gif
-area.play street unknown.png
+area.pedestrian_zone pedestrian.gif
+area.play_street unknown.png
 area.state unknown.png
 area.tunnel unknown.png
 bank Dollar.png
@@ -34,7 +34,7 @@ bank.agency.Postbank post.png
 bank.agency.Reifeisenbank VR.png
 bank.agency.Sparda Dollar.png
 bank.agency.Sparkasse Dollar.png
-bank.money exchange Dollar.png
+bank.money_exchange Dollar.png
 camping.dumpstation unknown.png
 camping.water tap.png
 church church.gif
@@ -50,30 +50,30 @@ custom.my.home home.png
 custom.my.work work.png
 developer unknown.png
 education unknown.png
-education.adult education unknown.png
+education.adult_education unknown.png
 education.highschool unknown.png
 education.kindergarden unknown.png
 education.nursery unknown.png
-education.primary school ABC.png
-education.secondary school unknown.png
+education.primary_school ABC.png
+education.secondary_school unknown.png
 education.university emc2.png
 entrance unknown.png
 food food.gif
 food.beergarden beergarden.png
 food.cafe cafe.png
 food.cafe.internet cafe.png
-food.delivery service food.gif
-food.drinking water tap_drinking.png
+food.delivery_service food.gif
+food.drinking_water tap_drinking.png
 food.restaurant food.gif
 food.restaurant.asia japanese.png
 food.restaurant.bavarian beergarden.png
 food.restaurant.chinese japanese.png
 food.restaurant.fastfood food.gif
-food.restaurant.fastfood.burger king burgerking.png
-food.restaurant.fastfood.mc donalds mcdonalds.png
-food.restaurant.fastfood.pizza hut food.gif
+food.restaurant.fastfood.burger_king burgerking.png
+food.restaurant.fastfood.mc_donalds mcdonalds.png
+food.restaurant.fastfood.pizza_hut food.gif
 food.restaurant.greek food.gif
-food.restaurant.ice cream parlor ice_cream.gif
+food.restaurant.ice_cream_parlor ice_cream.gif
 food.restaurant.indian food.gif
 food.restaurant.italian food.gif
 food.restaurant.japanese japanese.png
@@ -84,41 +84,41 @@ health.doctor aesculab.png
 health.emergency emergency.png
 health.hospital hospital.png
 health.pharmacy pharmacy.gif
-import way.txt unknown.png
+import_way.txt unknown.png
 information info.gif
 mine mine.png
 office unknown.png
-office.fire department unknown.png
+office.fire_department unknown.png
 office.police unknown.png
-office.town hall unknown.png
+office.town_hall unknown.png
 postal.letter-box letter.png
 postal.office letter1.png
 recreation balloon.png
 recreation.cinema movies.png
-recreation.event location balloon.png
+recreation.event_location balloon.png
 recreation.exhibitions balloon.png
 recreation.exhibitions.exibition balloon.png
 recreation.exhibitions.museum balloon.png
-recreation.exhibitions.trade show balloon.png
+recreation.exhibitions.trade_show balloon.png
 recreation.fairground balloon.png
 recreation.geocache geocache.png
-recreation.gift shop balloon.png
+recreation.gift_shop balloon.png
 recreation.landmark monument.png
 recreation.landmark.monument monument.png
-recreation.model aircrafts balloon.png
+recreation.model_aircrafts balloon.png
 recreation.music music.png
-recreation.music.concert hall music.png
-recreation.music.dance floor music.png
+recreation.music.concert_hall music.png
+recreation.music.dance_floor music.png
 recreation.music.disco music.png
 recreation.music.opera masks.png
 recreation.music.theater masks.png
-recreation.national park balloon.png
-recreation.night club girls.png
+recreation.national_park balloon.png
+recreation.night_club girls.png
 recreation.park balloon.png
 recreation.park.amusement balloon.png
 recreation.park.aquarium balloon.png
 recreation.park.zoo balloon.png
-recreation.picnic area balloon.png
+recreation.picnic_area balloon.png
 recreation.playground swing.png
 recreation.pub beer.png
 recreation.pub.dart dart.gif
@@ -135,32 +135,32 @@ recreation.sports.coast balloon.png
 recreation.sports.diving alpha_flag.png
 recreation.sports.fishing balloon.png
 recreation.sports.fittness balloon.png
-recreation.sports.golf place golf.png
+recreation.sports.golf_place golf.png
 recreation.sports.horse.racing horse.png
 recreation.sports.horse.riding horse.png
 recreation.sports.hunt balloon.png
-recreation.sports.ice scating balloon.png
-recreation.sports.minigolf place balloon.png
+recreation.sports.ice_scating balloon.png
+recreation.sports.minigolf_place balloon.png
 recreation.sports.motorbike motorbike.gif
 recreation.sports.parachute balloon.png
-recreation.sports.rock climbing balloon.png
+recreation.sports.rock_climbing balloon.png
 recreation.sports.rollerblades balloon.png
 recreation.sports.rollerscates balloon.png
 recreation.sports.skiing skiing.png
 recreation.sports.skiing.cross-country skiing.png
 recreation.sports.skiing.down-hill skiing.png
 recreation.sports.snakeboard balloon.png
-recreation.sports.soccer field balloon.png
-recreation.sports.soccer stadion balloon.png
+recreation.sports.soccer_field balloon.png
+recreation.sports.soccer_stadion balloon.png
 recreation.sports.swimming balloon.png
-recreation.sports.swimming area balloon.png
-recreation.sports.tennis place balloon.png
-recreation.sports.water ski balloon.png
+recreation.sports.swimming_area balloon.png
+recreation.sports.tennis_place balloon.png
+recreation.sports.water_ski balloon.png
 recreation.zoo balloon.png
 recycling unknown.png
 recycling.glass unknown.png
 recycling.paper unknown.png
-recycling.recycling centre unknown.png
+recycling.recycling_centre unknown.png
 shopping shop.png
 shopping.beverages shop.png
 shopping.books shop.png
@@ -168,19 +168,19 @@ shopping.computer shop.png
 shopping.computer.games shop.png
 shopping.computer.hardware shop.png
 shopping.computer.software shop.png
-shopping.dry cleaner shop.png
+shopping.dry_cleaner shop.png
 shopping.electronics shop.png
-shopping.flea market shop.png
+shopping.flea_market shop.png
 shopping.food.bakery prezel.png
 shopping.food.butcher shop.png
 shopping.food.fruit shop.png
 shopping.food.market shop.png
 shopping.food.vegetables shop.png
-shopping.furnishing house shop.png
+shopping.furnishing_house shop.png
 shopping.furniture shop.png
-shopping.hardware store shop.png
+shopping.hardware_store shop.png
 shopping.literature shop.png
-shopping.shopping center shop.png
+shopping.shopping_center shop.png
 shopping.sport shop.png
 shopping.sport.diving shop.png
 shopping.sport.ski shop.png
@@ -193,52 +193,52 @@ shopping.supermarket.penny shop.png
 shopping.supermarket.plus shop.png
 shopping.supermarket.tengelmann shop.png
 telephone phone.png
-town hall unknown.png
+town_hall unknown.png
 toys unknown.png
-traffic.emergency call unknown.png
+traffic.emergency_call unknown.png
 transport unknown.png
 transport.car car.gif
 transport.car.garage car_repair.gif
-transport.car.gas station fuel.png
-transport.car.gas station.agip fuel.agip.png
-transport.car.gas station.aral fuel.png
-transport.car.gas station.dea fuel.png
-transport.car.gas station.esso fuel.png
-transport.car.gas station.jet fuel.png
-transport.car.gas station.omv fuel.png
-transport.car.gas station.shell fuel.png
-transport.car.gas station.texaco fuel.png
+transport.car.gas_station fuel.png
+transport.car.gas_station.agip fuel.agip.png
+transport.car.gas_station.aral fuel.png
+transport.car.gas_station.dea fuel.png
+transport.car.gas_station.esso fuel.png
+transport.car.gas_station.jet fuel.png
+transport.car.gas_station.omv fuel.png
+transport.car.gas_station.shell fuel.png
+transport.car.gas_station.texaco fuel.png
 transport.car.parking car.gif
 transport.car.parking.handicapped handicapped.gif
-transport.car.parking.park and ride car.gif
+transport.car.parking.park_and_ride car.gif
 transport.car.parkinglot parking.png
-transport.car.phototrap traffic light speed_trap.gif
+transport.car.phototrap_traffic_light speed_trap.gif
 transport.car.rental car_rental.png
 transport.car.rental.avis car_rental.png
 transport.car.rental.herz car_rental.png
 transport.car.rental.sixt sixt.png
-transport.car.rest area rest_area.gif
-transport.car.toll station car.gif
-transport.car.wrecking service towing.gif
-transport.car loading terminal unknown.png
+transport.car.rest_area rest_area.gif
+transport.car.toll_station car.gif
+transport.car.wrecking_service towing.gif
+transport.car_loading_terminal unknown.png
 transport.coach unknown.png
-transport.container loading terminal unknown.png
-transport.driver-guide service unknown.png
-transport.nautical.alpha flag alpha_flag.png
-transport.nautical.dive flag dive_flag.png
-transport.park and ride P+R.png
+transport.container_loading_terminal unknown.png
+transport.driver-guide_service unknown.png
+transport.nautical.alpha_flag alpha_flag.png
+transport.nautical.dive_flag dive_flag.png
+transport.park_and_ride P+R.png
 transport.public.airport airport.png
 transport.public.airport.aeroplane airport.png
 transport.public.airport.glider airport.png
 transport.public.airport.helicopter airport.png
 transport.public.ferry ferry.png
 transport.public.ferry.car ferry.png
-transport.public.interurban train station unknown.png
+transport.public.interurban_train_station unknown.png
 transport.public.railway train.png
 transport.public.station.bus unknown.png
 transport.public.station.railroad train.png
-transport.public.station.subway city U-Bahn.png
-transport.public.station.subway regional S-Bahn.png
+transport.public.station.subway_city U-Bahn.png
+transport.public.station.subway_regional S-Bahn.png
 transport.public.station.taxi unknown.png
 transport.public.station.tram bus_stop.gif
 transport.public.station.underground unknown.png
@@ -249,7 +249,7 @@ transport.ship.dam unknown.png
 transport.ship.harbor unknown.png
 transport.traffic.construction warning.png
 transport.traffic.speedtrap speed_trap.gif
-transport.traffic.traffic jam warning.png
+transport.traffic.traffic_jam warning.png
 transport.travel-agency unknown.png
 transport.truck truck.png
 unknown unknown.png

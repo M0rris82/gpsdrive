@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.17  1994/06/08 13:02:31  tweety
+adjust debug levels
+
 Revision 1.16  1994/06/08 08:37:47  tweety
 fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
 instead of atof and strtod
@@ -224,7 +227,7 @@ extern char dbtypelist[100][40];
 extern double dbdistance;
 extern int dbtypelistcount;
 extern int usesql;
-extern int debug, dbusedist;
+extern int mydebug, dbusedist;
 extern gchar homedir[500], mapdir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *openwlanpixbuf, *closedwlanpixbuf;
@@ -282,7 +285,7 @@ sqlinit (void)
 		fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
 		return FALSE;
 	}
-	/*   if (debug) */
+	/*   if ( mydebug > 50 ) */
 	printf (_("SQL: connected to %s as %s using %s\n"), dbhost, dbuser,
 		dbname);
 	return TRUE;
@@ -322,7 +325,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		{
 			tname[j++] = '\\';
 			tname[j++] = name[i];
-			if (debug)
+			if ( mydebug > 50 )
 			    g_print ("Orig. name : %s\nEscaped name : %s\n",name,tname);
 		}
 	}
@@ -336,7 +339,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		{
 			ttyp[j++] = '\\';
 			ttyp[j++] = typ[i];
-			if (debug)
+			if ( mydebug > 50 )
 			    g_print ("\n Orig. typ : %s\nEscaped typ : %s\n",typ,ttyp);
 		}
 	}
@@ -344,16 +347,16 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 	g_snprintf (q, sizeof (q),
 		    "INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
 		    dbtable, tname, lats, lons, ttyp);
-	if (debug)
+	if ( mydebug > 50 )
 	    printf ("query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
 	r = dl_mysql_affected_rows (&mysql);
-	if (debug)
+	if ( mydebug > 50 )
 		printf (_("rows inserted: %d\n"), r);
 
 	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
-	if (debug) printf ("insertsqldata: query: %s\n", q);
+	if ( mydebug > 50 ) printf ("insertsqldata: query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
 	if (!(res = dl_mysql_store_result (&mysql))){
@@ -369,7 +372,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		r = strtol (row[0], NULL, 10);	/* last index */
 	}
 
-	if (debug)
+	if ( mydebug > 50 )
 		printf (_("last index: %d\n"), r);
 	return r;
 }
@@ -385,13 +388,13 @@ deletesqldata (int index)
 		return 0;
 	g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE id='%d'", dbtable,
 		    index);
-	if (debug)
+	if ( mydebug > 50 )
 		g_print ("query: %s\n", q);
 
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
 	r = dl_mysql_affected_rows (&mysql);
-	if (debug)
+	if ( mydebug > 50 )
 		g_print (_("rows deleted: %d\n"), r);
 	return 0;
 }
@@ -410,7 +413,7 @@ get_sql_type_list (void)
 	/* make list of possible type entries */
 	g_snprintf (q, sizeof (q), "SELECT DISTINCT upper(type) FROM %s",
 		    dbtable);
-	if (debug) printf ("get_sql_type_list: query: %s\n", q);
+	if ( mydebug > 50 ) printf ("get_sql_type_list: query: %s\n", q);
 
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
@@ -444,7 +447,7 @@ get_sql_type_list (void)
 	dbtypelistcount = r;
 	usericonsloaded = TRUE;
 
-	if (debug)
+	if ( mydebug > 50 )
 		printf ("%d External Icons loaded\n",r);
 	return r;
 }
@@ -476,13 +479,13 @@ getsqldata ()
 		    "order by \(abs(%.6f - lat)+abs(%.6f - lon))",
 		    current_lat, current_long);
 	g_strdelimit (sql_order, ",", '.');
-	if (debug)
+	if ( mydebug > 50 )
 		printf ("mysql order: %s\n", sql_order);
 
 	g_snprintf (q, sizeof (q),
 		    "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
 		    dbtable, dbwherestring, sql_order);
-	if (debug)
+	if ( mydebug > 50 )
 		printf ("waypoints: mysql query: %s\n", q);
 
 	if (dl_mysql_query (&mysql, q))
@@ -542,7 +545,7 @@ getsqldata ()
 
 	gettimeofday (&t, NULL);
 	ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-	if (debug)
+	if ( mydebug > 50 )
 		printf (_("%d(%d) rows read in %.2f seconds\n"), r, rges, ti);
 	wptotal = rges;
 	wpselected = r;
