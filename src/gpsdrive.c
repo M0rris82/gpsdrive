@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.68  2005/11/01 15:06:10  cjastram
+Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
+
 Revision 1.67  2005/11/01 14:38:28  tweety
 set distance jump to 2000Km/h
 
@@ -2516,6 +2519,8 @@ static GtkItemFactoryEntry main_menu[] = {
 	 (gpointer) about_cb, 0, NULL},
 	{N_("/_Misc. Menu/_Waypoint Manager"), NULL,
 	 (gpointer) sel_target_cb, 0, NULL},
+	{N_("/_Misc. Menu/_Reinitialize GPS"), NULL,
+	 (gpointer) reinitgps_cb, 0, NULL},
 	{N_("/_Misc. Menu/_Load track file"), NULL,
 	 (gpointer) loadtrack_cb, 0,
 	 "<StockItem>", GTK_STOCK_OPEN},
@@ -9437,6 +9442,29 @@ savemapconfig ()
 	fclose (st);
 }
 
+/* *****************************************************************************
+ * Re-initialize GPS connection
+ */
+gint
+reinitgps_cb (GtkWidget * widget, gpointer datum)
+{
+	g_print ("\nReinitializing GPS connection...\n");
+	initgps ();
+	/*if (simmode)
+	{
+		if ((!disableserial) && (!disableserialcl))
+		{
+			haveserial = gpsserialinit ();
+			if (haveserial)
+			{
+				simmode = FALSE;
+				haveNMEA = TRUE;
+				gtk_widget_set_sensitive (startgpsbt, FALSE);
+			}
+		}
+	} */
+	return TRUE;
+}
 
 /* *****************************************************************************
  * Load track file and displays it 
@@ -10772,7 +10800,7 @@ main (int argc, char *argv[])
 	/*    An alternate gpsd server may be on 2947, we try it also */
 
 	initgps ();
-	if (simmode)
+	/*if (simmode)
 	{
 		if ((!disableserial) && (!disableserialcl))
 		{
@@ -10784,7 +10812,7 @@ main (int argc, char *argv[])
 				gtk_widget_set_sensitive (startgpsbt, FALSE);
 			}
 		}
-	}
+	}*/
 
 	if (haveGARMIN)
 		gtk_widget_set_sensitive (startgpsbt, FALSE);
