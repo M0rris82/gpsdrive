@@ -93,7 +93,7 @@ my $name2country = {
     'cuba'	=> 'cu',
     'cyprus'	=> 'cy',
     'czech republic'	=> 'ez',
-    'cÃƒÂ”te d\'ivoire'	=> 'iv',
+    'cÃï¿½Â”te d\'ivoire'	=> 'iv',
     'denmark'	=> 'da',
     'djibouti'	=> 'dj',
     'dominica'	=> 'do',
@@ -322,7 +322,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 		"More information is available at the Products and Services ".
 		"link at www.nga.mil. The National Geospatial-Intelligence ".
 		"Agency name, initials, and seal are protected by ".
-		"10 United States Code Section Ã‚Â§445."
+		"10 United States Code Section Ãï¿½§445."
 	    };
 	POI::DBFuncs::insert_hash("source", $source_hash);
 	$source_id = POI::DBFuncs::source_name2id($source);
@@ -445,16 +445,17 @@ sub add_earthinfo_nga_mil_to_db($$){
 		my $symbol = "City";
 		#FC
 		#Feature Classification:
-		if ( $fc eq "A" ) { $symbol = "Administrative region" }
-		elsif ( $fc eq "P " ) { $symbol = "Populated place" }
-		elsif ( $fc eq "V " ) { $symbol = "Vegetation" }
-		elsif ( $fc eq "L " ) { $symbol = "Locality or area" }
-		elsif ( $fc eq "U " ) { $symbol = "Undersea" }
-		elsif ( $fc eq "R " ) { $symbol = "Streets, highways, roads, or railroad" }
-		elsif ( $fc eq "T " ) { $symbol = "Hypsographic" }
-		elsif ( $fc eq "H " ) { $symbol = "Hydrographic" }
-		elsif ( $fc eq "S " ) { $symbol = "Spot feature." }
-		$values->{'poi.symbol'} = $symbol;
+		if    ( $fc eq "A" ) { $symbol = "Administrative region" }
+		elsif ( $fc eq "P" ) { $symbol = "Populated place" }
+		elsif ( $fc eq "V" ) { $symbol = "Vegetation" }
+		elsif ( $fc eq "L" ) { $symbol = "Locality or area" }
+		elsif ( $fc eq "U" ) { $symbol = "Undersea" }
+		elsif ( $fc eq "R" ) { $symbol = "Streets, highways, roads, or railroad" }
+		elsif ( $fc eq "T" ) { $symbol = "Hypsographic" }
+		elsif ( $fc eq "H" ) { $symbol = "Hydrographic" }
+		elsif ( $fc eq "S" ) { $symbol = "Spot feature." }
+		else                 { $symbol = "Unknown" }
+		$values->{'type.name'} = $symbol;
 	    }
 	    
 	    { # Dimension.  Usually used to display elevation or population data.

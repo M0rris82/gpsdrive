@@ -147,6 +147,36 @@ sub source_name2id($){
 }
 
 # -----------------------------------------------------------------------------
+# convert type name to type_id and cache it locally
+my $type_id_cache;
+sub type_name2id($){
+    my $type_name = shift ||'';
+    my $type_id;
+    return 0 unless $type_name;
+    if ( defined $type_id_cache->{$type_name} ) {
+	$type_id = $type_id_cache->{$type_name};
+    } else {
+	my $dbh = db_connect();
+	my $query = "SELECT type_id FROM type WHERE type.name = '$type_name' LIMIT 1";
+	my $sth=$dbh->prepare($query) or die $dbh->errstr;
+	$sth->execute() or die $sth->errstr;
+	my $array_ref = $sth->fetchrow_arrayref();
+	if ( $array_ref ) {
+	    $type_id = $array_ref->[0];
+	    $type_id_cache->{$type_name} = $type_id;
+	} else {
+	    # Nicht gefunden
+	    $type_id=0;
+	}
+	$sth->finish;
+    }
+
+#    debug("Type: $type_name -> $type_id");
+
+    return $type_id;
+}
+
+# -----------------------------------------------------------------------------
 # get a list of all type names
 sub type_names(){
     my @type_names;
@@ -260,10 +290,6 @@ sub poi_add($){
     my $point = {};
     my @columns = column_names("poi");
     map { $point->{"poi.$_"} = ( $poi->{"poi.$_"} || $poi->{$_} || $poi->{lc($_)}) } @columns;
-    @columns = column_names("address");
-    map { $point->{"address.$_"} = ( $poi->{"address.$_"} || $poi->{$_} || $poi->{lc($_)}) } @columns;
-    @columns = column_names("source");
-    map { $point->{"source.$_"} = ( $poi->{"source.$_"} || $poi->{$_} || $poi->{lc($_)}) } @columns;
 
     # ---------------------- SOURCE
     #print Dumper(\$point);
@@ -273,6 +299,20 @@ sub poi_add($){
 	
 	$point->{'source.source_id'} = $source_id;
 	$point->{'poi.source_id'}    = $source_id;
+    }
+
+    # ---------------------- Type
+    my $type_name = $poi->{'type.name'};
+    if ( $type_name && ! $point->{'poi.type_id'}) {
+	my $type_id = type_name2id($type_name);
+	unless ( $type_id ) {
+	    my $type_hash= {
+		'type.name' => $type_name
+	    };
+	    insert_hash("type",$type_hash);
+	    $type_id = type_name2id($point->{"type.name"});
+	}
+	$point->{'poi.type_id'}    = $type_id;
     }
 
     # ---------------------- ADDRESS
@@ -418,8 +458,8 @@ $create_statement='
 CREATE TABLE IF NOT EXISTS `type` (
   `type_id` int(11) NOT NULL auto_increment,
   `name` varchar(80) NOT NULL default \'\',
-  `symbol` varchar(160) NOT NULL default \'\',
-  `description` varchar(160) NOT NULL default \'\',
+  `symbol` varchar(160) NULL default \'\',
+  `description` varchar(160) NULL default \'\',
   PRIMARY KEY  (`type_id`),
   FULLTEXT KEY `description` (`description`)
 ) TYPE=MyISAM;
