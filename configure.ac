@@ -286,7 +286,7 @@ AC_LTDL_DLSYM_USCORE
 #    AC_SUBST(DLSYM_CFLAGS,'-Ddlsym=dlsym_prepend_underscore') 
 #fi
 
-CFLAGS="$CFLAGS -Imysql"
+CFLAGS="$CFLAGS -I\$(srcdir)/mysql"
 
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
