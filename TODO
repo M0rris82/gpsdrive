@@ -1,18 +1,9 @@
 In Progress:
 ------------
 
-Jörg:
-Staighten the naming of latitude and longitude. 
-I found for example lat lati latitude, ...
-
-ChrisJastram:
-Map rotation, ego-centric style (we are always pointing up)
-
-Unassigned:
------------
-
-Modularising:
-Put every drawing layer into a seperate module.
+====================================================================
+JÃ¶rg:
+Staighten the naming of variables and functions
 
 Database (SQL):
 make gpsdrive read directly from mysql without first writing a file.
@@ -25,10 +16,31 @@ Waypoints:
 Decide about the structure of waypoints
 
 
-draw grid:
-Add text to draw-grid to see which lat/lon this gridline belongs to.
-Find a more inteligent algorithm to determine which gridlines are to be displayed.
 
+====================================================================
+ChrisJastram:
+Map rotation, ego-centric style (we are always pointing up)
+
+
+====================================================================
+
+Unassigned:
+-----------
+
+Modularising:
+Put every drawing layer into a seperate module.
+
+
+====================================================================
+
+DONE:
+-----
+- draw grid: Add text to draw-grid to see which lat/lon this gridline belongs to.
+
+- Add Waypoint with one Keypress
+
+
+====================================================================
 
 Old (has to be checked):
 ------------------------
