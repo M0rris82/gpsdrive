@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.14  2005/05/24 08:35:25  tweety
+move track splitting to its own function +sub track_add($)
+a little bit more error handling
+earth_distance somtimes had complex inumbers as result
+implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+this way i can re-read all currently displayed streets from the DB
+fix minor array iindex counting bugs
+add some content to the comment column
+
 Revision 1.13  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -234,11 +243,10 @@ change this functions if you want to implement another database
 
 #include "mysql.h"
 
-
-
 MYSQL mysql;
 MYSQL_RES *res;
 MYSQL_ROW row;
+//res = NULL; // Set res as default NULL
 
 void
 exiterr (int exitcode)
@@ -266,7 +274,7 @@ sqlinit (void)
 		return FALSE;
 	}
 	/*   if (debug) */
-	printf (_("\nSQL: connected to %s as %s using %s\n"), dbhost, dbuser,
+	printf (_("SQL: connected to %s as %s using %s\n"), dbhost, dbuser,
 		dbname);
 	return TRUE;
 }
@@ -324,7 +332,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		    "INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
 		    dbtable, tname, lats, lons, ttyp);
 	if (debug)
-		printf ("\nquery: %s\n", q);
+	    printf ("query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
 	r = dl_mysql_affected_rows (&mysql);
@@ -332,11 +340,16 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		printf (_("rows inserted: %d\n"), r);
 
 	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
-	/*   printf ("\nquery: %s\n", q); */
+	if (debug) printf ("insertsqldata: query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
-	if (!(res = dl_mysql_store_result (&mysql)))
-		exiterr (4);
+	if (!(res = dl_mysql_store_result (&mysql))){
+		dl_mysql_free_result (res);
+		res=NULL;
+		fprintf (stderr, "insert_sql_data: Error in store results: %s\n",
+			 dl_mysql_error (&mysql));
+		return -1;
+	}
 	r = 0;
 	while ((row = dl_mysql_fetch_row (res)))
 	{
@@ -382,14 +395,21 @@ get_sql_type_list (void)
 
 
 	/* make list of possible type entries */
-	g_snprintf (q, sizeof (q), "select distinct upper(type) from %s",
+	g_snprintf (q, sizeof (q), "SELECT DISTINCT upper(type) FROM %s",
 		    dbtable);
+	if (debug) printf ("get_sql_type_list: query: %s\n", q);
+
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
-	if (!(res = dl_mysql_store_result (&mysql)))
-		exiterr (4);
+	if (!(res = dl_mysql_store_result (&mysql))){
+		dl_mysql_free_result (res);
+		res=NULL;
+		fprintf (stderr, "get_sql_type_list: Error in store results: %s\n",
+			 dl_mysql_error (&mysql));
+		return -1;
+	}
 	r = 0;
-	while ((row = dl_mysql_fetch_row (res)))
+	while ( row = dl_mysql_fetch_row (res) )
 	{
 		g_strlcpy (temp, row[0], sizeof (temp));
 		for (i = 0; i < (int) strlen (temp); i++)
@@ -401,14 +421,18 @@ get_sql_type_list (void)
 			break;
 		}
 		/* load user defined icons */
-		if (usericonsloaded == FALSE)
-			load_user_icon (temp);
+		if (FALSE == usericonsloaded)
+		    load_user_icon (temp);
 	}
+
 	dl_mysql_free_result (res);
+	res=NULL;
+
 	dbtypelistcount = r;
 	usericonsloaded = TRUE;
+
 	if (debug)
-		printf ("External Icons loaded\n");
+		printf ("%d External Icons loaded\n",r);
 	return r;
 }
 
@@ -450,7 +474,7 @@ getsqldata ()
 
 	if (dl_mysql_query (&mysql, q))
 	{
-		fprintf (stderr, "Error in query: %s\n",
+		fprintf (stderr, "get_sql_type_list: Error in query: %s\n",
 			 dl_mysql_error (&mysql));
 		return (1);
 	}
@@ -459,6 +483,8 @@ getsqldata ()
 	{
 		fprintf (stderr, "Error in store results: %s\n",
 			 dl_mysql_error (&mysql));
+		dl_mysql_free_result (res);
+		res=NULL;
 		return (1);
 	}
 
@@ -508,8 +534,12 @@ getsqldata ()
 	wptotal = rges;
 	wpselected = r;
 	loadwaypoints ();
-	if (!dl_mysql_eof (res))
-		return FALSE;
+	if (!dl_mysql_eof (res)) {
+	    dl_mysql_free_result (res);
+	    res=NULL;
+	    return FALSE;
+	}
 	dl_mysql_free_result (res);
+	res=NULL;
 	return TRUE;
 }
