@@ -1,6 +1,10 @@
 #!/usr/bin/perl
-
 # gpsfetchmap
+#
+# $Log$
+# Revision 1.3  2005/01/12 22:08:13  tweety
+# trying to get automated change log
+#
 #
 # Kevin Stephens
 # Based on shell script by: Fritz Ganter and Manfred Carus
@@ -9,16 +13,13 @@
 # ive "fixed" the following issues ...
 #
 # .) previous authors forgot to reset "$long = $slon;" after each "$lat" loop
-#    resulting in a non rectangular area of map pieces becaus after each row
+#    resulting in a non rectangular area of map pieces because after each row
 #    the column doesnt get reset to the starting-value $slon and so the $lon
 #    variable is only increased but never reset ...
-#  .) russian style fix so the map pieces of an area do actually overlap vertically.
-#     this fix results in ugly after-comma numbers but hey ... at least i do get
-#     a real area and not "interlaced" maps with gaps ...
-#
-#  do a /CAMEL in vi to see all the changes ...
-#
-#  regards, camel
+#  .) russian style fix so the map pieces of an area do actually overlap
+#     vertically. This fix results in ugly after-comma numbers but 
+#     hey ... at least i do get a real area and not "interlaced" maps with
+#     gaps ...
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 #
@@ -27,7 +28,8 @@
 #      - The check if a map exists is modified in check if the mapsize is lagrer 
 #        than 4K. This detects some files where Error messages have been saved.
 #      - check consistency of map_koord.txt File: (Option -c)
-#        Read actual map_koords.txt file and check if all files it references are existing
+#        Read actual map_koords.txt file and check if all files it references
+#        are existing
 #      - update map_koord.txt File  (Option -U)
 #        if a file exists in your map dir and is not found in map_koords.txt file 
 #        it is added to the map_koords.txt File
