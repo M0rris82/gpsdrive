@@ -59,9 +59,9 @@ modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
-modified (Feb 27,2004) by Robin CoRneliu <robin\@cornelius.demon.co.uk>
-modified (Dec,2004) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
-Version 1.15
+modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
+modified (Dec/Jan,2004/2005) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
+Version 1.16
 ";
 
 use Data::Dumper;
@@ -88,28 +88,28 @@ my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
 my ($lat,$lon,$slat,$endlat,$slon,$endlon,$waypoint,$area,$unit,$mapdir,$debug,$force,$version,$man,$help);
-my $failcount  = 0;
-my $newcount   = 0;
-my $existcount = 0;
-my $polite = 'yes';
-my $MIN_MAP_BYTES = 4000;   # Minimum Bytes for a map to be accepted as downloaded
-my $scale = '100000';
-my $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
-my $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
-my $WAYPT_FILE    = "$CONFIG_DIR/way.txt";
-my $KOORD_FILE    = "$CONFIG_DIR/map_koord.txt"; # Should we allow config of this?
+my $failcount           = 0;
+my $newcount            = 0;
+my $existcount          = 0;
+my $polite              = 'yes';
+my $MIN_MAP_BYTES       = 4000;   # Minimum Bytes for a map to be accepted as downloaded
+my $scale               = '100000';
+my $CONFIG_DIR          = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
+my $CONFIG_FILE         = "$CONFIG_DIR/gpsdriverc";
+my $WAYPT_FILE          = "$CONFIG_DIR/way.txt";
+my $KOORD_FILE          = "$CONFIG_DIR/map_koord.txt"; # Should we allow config of this?
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
-my $FILEPREFIX    = 'map_';
-my $mapserver     = 'expedia';
-my $simulate_only = 0;
-our $MAP_KOORDS={};
-our $MAP_FILES={};
-our $GPSTOOL_MAP_KOORDS={};
-our $GPSTOOL_MAP_FILES={};
+my $FILEPREFIX          = 'map_';
+my $mapserver           = 'expedia';
+my $simulate_only       = 0;
+my $check_koord_file    = 0;
+my $update_koord        = 0;
+my $check_coverage      = 0;
+our $MAP_KOORDS         = {};
+our $MAP_FILES          = {};
+our $GPSTOOL_MAP_KOORDS = {};
+our $GPSTOOL_MAP_FILES  = {};
 my $PROXY='';
-my $check_koord_file = 0;
-my $update_koord =0;
-my $check_coverage=0;
 
 GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon, 
 	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
@@ -117,12 +117,13 @@ GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon,
 	     'sla=f'          => \$slat,       'ela=f'       => \$endlat, 
 	     'slo=f'          => \$slon,       'elo=f'       => \$endlon, 
 	     'scale=s'        => \$scale,      'mapserver=s' => \$mapserver, 
-	     'waypoint=s'     =>, \$waypoint,  'area=s'      => \$area, 
-	     'unit=s'         => \$unit,       'mapdir=s'    => \$mapdir, 'polite:i' => \$polite,
+	     'waypoint=s'     => \$waypoint,   'area=s'      => \$area, 
+	     'unit=s'         => \$unit,       'mapdir=s'    => \$mapdir, 
+	     'polite:i'       => \$polite,
 	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
 	     'PREFIX=s'       => \$FILEPREFIX,
 	     'n'              => \$simulate_only,
-	     'c'              => \$check_koord_file,
+	     'check-koordfile'=> \$check_koord_file,
 	     'check-coverage' => \$check_coverage,
 	     'U'              => \$update_koord,
 	     'FORCE'          => \$force,     
@@ -179,6 +180,10 @@ if ($version) {
     exit();
 }
 
+
+# Verify that we have the options that we need 
+pod2usage(1) if (&error_check);
+
 # Change into the gpsdrive maps directory 
 chdir($CONFIG_DIR);
 
@@ -193,9 +198,6 @@ if ( $check_coverage ) {
     check_coverage($KOORD_FILE); 
     exit();
 }
-
-# Verify that we have the options that we need 
-pod2usage(1) if (&error_check);
 
 #############################################################################
 # Get the list of scales we need
@@ -212,7 +214,8 @@ debug("Centerpoint: $lat,$lon");
 unless ($slat && $slon && $endlat && $endlon) {
     ($slat,$slon,$endlat,$endlon) = get_coords(\$lat,\$lon,\$area,\$unit); 
 }
-print "Upper left: $slat $slon, Lower Right: $endlat, $endlon\n" if ($debug);
+print "Upper left:  $slat, $slon\n" if $debug;
+print "Lower right: $endlat, $endlon\n" if ($debug);
 
 my $desired_locations= desired_locations($slat,$slon,$endlat,$endlon);
 my $count = file_count($desired_locations);
@@ -233,8 +236,8 @@ if ( $update_koord  ) {
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
-for my $scale ( sort  {$a <=> $b} keys %{$desired_locations} ) {
-    for my $lati ( sort  {$a <=> $b} keys %{$desired_locations->{$scale}} ) {
+for my $scale ( sort {$a <=> $b} keys %{$desired_locations} ) {
+    for my $lati ( sort {$a <=> $b} keys %{$desired_locations->{$scale}} ) {
 	printf "   %5.2f: ",$lati;
 	my @longs = sort  {$a <=> $b} keys %{$desired_locations->{$scale}->{$lati}};
 	print "(". scalar( @longs ) . ")\t";
@@ -378,7 +381,12 @@ sub wget_map($$$){
     my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
 	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
 
-    mkpath dirname($filename);
+    my $dir =  dirname("$mapdir$filename");
+    unless ( -s $dir || -l $dir ) {
+	debug("Create $dir");
+	mkpath($dir)
+	    or warn "Could not create $dir:$!\n";;
+    }
     
     if ( $mapserver eq 'expedia') {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
@@ -423,7 +431,10 @@ sub wget_map($$$){
 ######################################################################
 sub error_check {
     my $status;
-    
+
+    return 0 if $check_koord_file;
+    return 0 if $check_coverage;
+
     # Check for a centerpoint
     unless (($waypoint) || ($lat && $lon) || ($slat && $endlat && $slon && $endlon)) {
 	print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longiture\n\n";
@@ -516,25 +527,48 @@ sub desired_locations {
    my $count;   
    my $desired_locations;
 
+   my $local_debug = 0 && $debug;
+
+
    foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
        # Setup k
        my $k = $DIFF * $scale;
        my $klat = $k - ($k / 2); ### FIX BY CAMEL
        my $klon = $k - ($k / 6); ### FIX BY CAMEL
        my $lati = $slat;   
+
+       # make the starting points for the loop $slat and $slon 
+       # snap into a grid with a Size depending on the scale 
+       # resulting in $snapped_start_lat and $snapped_start_lon
+       # The grid allows ${overlap} maps in each direction to 
+       # overlapp by 1/$overlap of the size of one map
+       # This snap in to the grid is use so that different downloads use the same lat/lon 
+       # if they overrlap even if they wouldn't without the snap-to-grip
+       my $overlap = 1;
+       my $flat = $overlap / $klat;
+       my $snapped_start_lat = int ( $flat * $slat ) / $flat;
+       my $flon = $overlap / $klon;
+       my $snapped_start_lon = int ( $flon * $slon ) / $flon;
+
+       print "Scale: $scale\n" if ($local_debug);
+       printf ("  lati: %6.3f(%6.3f) +=%5.3f ... %6.3f\n",$snapped_start_lat,$slat,$klat,$endlat);
+       $lati = $snapped_start_lat;
+
        while ($lati <= $endlat) {
-	   my $long = $slon;
-	   if ($debug) {
+	   my $long = $snapped_start_lon;
+	   if ( $local_debug ) {
 	       printf "        %5.2f:",$lati;
-	       printf ("\tlong: %6.3f +=%5.3f ... %6.3f",$slon,$klon,$endlon);
+	       #printf ("\tlong: %6.3f +=%5.3f ... %6.3f",$slon,$klon,$endlon);
+	       printf ("\tlong: %6.3f(%6.3f) +=%5.3f ... %6.3f",$snapped_start_lon,$slon,$klon,$endlon);
 	       printf "\t\t";	
 	   }
 	   while ($long <= $endlon) {
 	       $long += $klon; ### FIX BY CAMEL
 	       $count++;
 	       $desired_locations->{$scale}->{$lati}->{$long}='?';
-	       printf(" %6.3f",$long) if $debug;
+	       printf(" %6.3f",$long) if $local_debug;
 	   }
+	   print "\n" if $local_debug;
 	   $lati += $klat; ### FIX BY CAMEL
 	   $long = $slon; ### FIX BY CAMEL
        }
@@ -709,7 +743,6 @@ sub append_koords($$$$) {
 	return 'E';
     }
 
-
     if ( ! defined $MAP_FILES->{$filename} ) {
 	debug("Appending $filename,$lati, $long, $mapscale to $KOORD_FILE");
 	open(KOORD,">>$KOORD_FILE") || die "ERROR: append_koords can't open: $KOORD_FILE: $!\n"; 
@@ -799,31 +832,33 @@ sub check_koord_file($) {
 
     print "Checking all entries in $koord_file\n" if $debug;
     $MAP_FILES={};
-    open(KOORD,"<$koord_file") || die "ERROR: check_koord_file can't open: $koord_file: $!\n";
     my $anz_files = 0;
     my $missing_files =0;
-    while ( my $line = <KOORD> ) {
-	my ($filename ,$lati, $long, $mapscale);
-	($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
-	my $full_filename = "$CONFIG_DIR/$filename";
+    if ( -s $koord_file ) {
+	open(KOORD,"<$koord_file") || die "ERROR: check_koord_file can't open: $koord_file: $!\n";
+	while ( my $line = <KOORD> ) {
+	    my ($filename ,$lati, $long, $mapscale);
+	    ($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
+	    my $full_filename = "$CONFIG_DIR/$filename";
 
 #	debug("Checking ($filename ,$lati, $long, $mapscale)");
 
-	if ( !is_map_file( $full_filename ) ) {
-	    print "ERROR: File $full_filename not found\n";
-	    $missing_files ++;
-	} else {
-	    debug("OK:    File $full_filename found");
-	    $MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
-	    if ( $MAP_FILES->{$filename} ) {
-		print "ERROR: Duplicate File $full_filename found\n";
-	    };
-	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
-	    $anz_files ++;
+	    if ( !is_map_file( $full_filename ) ) {
+		print "ERROR: File $full_filename not found\n";
+		$missing_files ++;
+	    } else {
+		debug("OK:    File $full_filename found");
+		$MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
+		if ( $MAP_FILES->{$filename} ) {
+		    print "ERROR: Duplicate File $full_filename found\n";
+		};
+		$MAP_FILES->{$filename} = "$lati, $long, $mapscale";
+		$anz_files ++;
+	    }
 	}
+	close KOORD;
+	print "Good files: $anz_files\n";
     }
-    close KOORD;
-    print "Good files: $anz_files\n";
     if ( $missing_files ) {
 	print "Missing Files: $missing_files\n";
 	open(KOORD,">$koord_file.new") || die "Can't open: $koord_file.new: $!\n"; 
@@ -849,7 +884,7 @@ sub update_gpsdrive_map_koord_file(){
     debug("Searching for Files in '$mapdir'");
     find(
 	 { wanted => \&update_file_in_map_koords,
-	   follow => 1
+	   follow_skip=>2
 	   },
 	 $mapdir, );
 }
@@ -867,9 +902,10 @@ sub update_file_in_map_koords(){
     } else {
 	#mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
 	if ( $filename =~ m/map_(\d+)-(\d+\.\d+)-(\d+\.\d+)\.gif/ ) {
-	    my $mapscale=$1;
+	    my $scale=$1;
 	    my $lati=$2;
 	    my $long=$3;
+	    my ($url,$mapscale)=expedia_url($lati,$long,$scale);
 	    
 #	    print "Appending File: $filename\n";
 	    append_koords($short_filename, $lati, $long, $mapscale);
@@ -939,7 +975,6 @@ sub check_coverage($){
 		    $gap{$lon}=$dist /$dlon if $dist > ($dlon * 1.2);
 		    $min_dist = $dist if $dist < $min_dist;
 		    $max_dist = $dist if $dist > $max_dist;
-		    $lon - $prev_lon
 		}
 		#print "Dist: ( $min_dist - $max_dist) Km ($prev_lon => $lon = ".($prev_lon -$lon).")\n";
 		$prev_lon = $lon;
@@ -983,6 +1018,8 @@ sub debug($){
     return unless $debug;
     print STDERR "DEBUG: $msg\n";
 }
+
+#################################################################################
 
 __END__
 
@@ -1121,7 +1158,7 @@ Dont download anything only tell which maps are missing
 read map_koord.txt file at Start. Then also check for not downloaded map_*.gif Files 
 if they need to be appended to map_koords.txt. 
 
-=item B<-c>
+=item B<--check-koordfile>
 
 Update map_koord.txt: search map Tree if map_*.gif file exist, but cannot
 be found in map_koords.txt file. This option first reads the 
