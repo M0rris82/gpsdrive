@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.48  2005/07/05 19:19:56  ganter
+got include files from mysql 4.1.x, now no segfault at program end.
+May break older libmysqlclient
+Testet with  mysql-4.1.10a
+
 Revision 1.47  2005/05/31 20:58:03  tweety
 Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
 http://bugzilla.gpsdrive.cc/show_bug.cgi?id=16
@@ -11275,6 +11280,8 @@ main (int argc, char *argv[])
 				 RTLD_LAZY);
 		if (!handle)
 			handle = dlopen ("libmysqlclient.so", RTLD_LAZY);
+		if (!handle)
+			handle = dlopen ("libmysqlclient.so.14", RTLD_LAZY);
 		if (!handle)
 			handle = dlopen ("libmysqlclient.so.12", RTLD_LAZY);
 		if (!handle)
