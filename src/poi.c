@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.10  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
 Revision 1.9  2005/03/15 08:40:13  tweety
 eliminate doublicate pfd description
 
@@ -113,7 +122,7 @@ extern GdkColor textbacknew;
 extern GdkColor grey;
 
 extern gdouble current_long, current_lat;
-extern gint debug;
+extern gint debug,mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats, *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
@@ -129,43 +138,45 @@ MYSQL_ROW row;
 
 // keep actual visible POIs in Memory
 poi_struct *poi_list;
-glong poi_nr;        // current number of poi to count
-glong poi_max;       // max index of POIs actually in memory
-glong poi_limit;     // max allowed imdex (if you need more you have to alloc memory)
-gint  poi_draw = FALSE;
+glong poi_nr;           // current number of poi to count
+glong poi_max;          // max index of POIs actually in memory
+glong poi_limit = -1;   // max allowed index (if you need more you have to alloc memory)
+gint  poi_draw  = FALSE;
 
 gchar poi_label_font[100];
 GdkColor poi_colorv;
 PangoFontDescription *pfd;
 PangoLayout *poi_label_layout;
 
-
-typedef struct
-{
-  gint    type_id;
-  gchar   name[80];
-  gchar   icon_name[80];
+#define poi_type_list_string_length 80
+typedef struct {
+  gint    poi_type_id;
+  gchar   name[poi_type_list_string_length];
+  gchar   icon_name[poi_type_list_string_length];
   GdkPixbuf *icon;
-}
-type_struct;
-#define type_list_max 1000
-type_struct type_list[type_list_max];
-int type_list_count=0;
+} poi_type_struct;
+#define poi_type_list_max 4000
+poi_type_struct poi_type_list[poi_type_list_max];
+int poi_type_list_count=0;
 
 /* ******************************************************************   */
 
 void poi_rebuild_list (void);
-void get_type_list(void);
+void get_poi_type_list(void);
 
 /* *******************************************************
  */
-void
-poi_init (void)
+void poi_init (void)
 {
   poi_limit = 10000;
   poi_list = g_new (poi_struct, poi_limit);
-  poi_rebuild_list ();
-  get_type_list();
+  if ( poi_list == NULL ) {
+    poi_limit =-1;
+    printf(stderr,"Error: Cannot allocate Memory for %d poi\n",poi_limit);
+  }
+
+  get_poi_type_list();
+  //poi_rebuild_list ();
 }
 
 
@@ -174,8 +185,7 @@ poi_init (void)
 gdouble poi_lat_lr=0, poi_lon_lr=0;
 gdouble poi_lat_ul=0, poi_lon_ul=0;
 
-int
-poi_check_if_moved(void)
+int poi_check_if_moved(void)
 {
   gdouble lat_lr, lon_lr;
   gdouble lat_ul, lon_ul;
@@ -189,20 +199,36 @@ poi_check_if_moved(void)
 
   if ( poi_lat_lr == lat_lr && poi_lon_lr == lon_lr &&
        poi_lat_ul == lat_ul && poi_lon_ul == lon_ul    ) 
-      return 0;
+    return 0;  
   return 1;
 }
 
 /* ****************************************************************** */
 /* get a list of all possible types and load there icons */
-void
-get_type_list (void)
+void get_poi_type_list (void)
 {
   char sql_query[3000];
-  if ( debug ) 
-    printf("get_type_list ()\n");
+
+
+  if (!usesql)
+    return;
+
+  if ( mydebug ) 
+    printf("get_poi_type_list ()\n");
+
+  { // Delete poi_type_list
+    int i;
+    for (i = 0; i < poi_type_list_max ; i++){
+      poi_type_list[i].icon = NULL;
+    }
+  }
+  
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT type_id,name,symbol FROM type ORDER BY type_id");
+	      "SELECT poi_type_id,name,symbol,description FROM poi_type ORDER BY poi_type_id");
+
+  if (mydebug) 
+    fprintf(stderr,"get_poi_type_list: query: %s\n",sql_query);
+
 
   if (dl_mysql_query (&mysql, sql_query))
     {
@@ -210,51 +236,89 @@ get_type_list (void)
       return;
     }
   
+
   if (!(res = dl_mysql_store_result (&mysql)))
     {
-      fprintf(stderr,"Error in sotr results: %s\n",dl_mysql_error (&mysql) );
+      fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
+  int counter=0;
   while ((row = dl_mysql_fetch_row (res)))
     {
-      type_list_count = (gint)g_strtod(row[0], NULL);
-      if ( type_list_count < type_list_max ) {
-	type_list[type_list_count].type_id =  type_list_count;
-	g_strlcpy ( type_list[type_list_count].name, row[1],
-		    sizeof (type_list[type_list_count].name));
-	g_strlcpy ( type_list[type_list_count].icon_name, row[2],
-		    sizeof (type_list[type_list_count].icon_name));
-	{ // load icon
-	  gchar icon_name[80];
-	  GdkPixbuf *icon;
-	  gchar path[1024];
-	  g_strlcpy ( icon_name, row[2], sizeof (icon_name));
+      int index = (gint)g_strtod(row[0], NULL);
+      if ( index >= poi_type_list_max ) {
+	fprintf(stderr,"Typet_list: index(%d) > poi_type_list_max(%d)\n",index,poi_type_list_max);
+      } else {
+	if ( poi_type_list_count < index )
+	  poi_type_list_count = index;
 
-	  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
-	  icon =  gdk_pixbuf_new_from_file (path, NULL);
-	
-	  if ( icon == NULL) {
-	    g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,icon_name);
-	    icon =  gdk_pixbuf_new_from_file (path, NULL);
-	  } 
-	  type_list[type_list_count].icon = icon;
-	  if ( icon == NULL) {
-	    printf("Icon (%s) not found\n",icon_name);
+	poi_type_list[index].poi_type_id =  index;
+
+	if ( row[1] == NULL ) {
+	  poi_type_list[index].name[0]="\0";
+	} else {
+	  g_strlcpy ( poi_type_list[index].name, row[1],
+		      sizeof (poi_type_list[index].name));
+	}
+
+
+	if ( row[2] == NULL ) {
+	  poi_type_list[index].icon_name[0]="\0";
+	  fprintf(stderr,"poi_type %d: No Icon Name returned\n",index);
+	} else {
+	  
+	  /* This results in an SigSeg later */
+	  /*
+	    fprintf(stderr,"get_poi_type_list:%d -> '%s'\n",index,row[2]);
+	    g_strlcpy ( poi_type_list[index].icon_name, 
+		      row[2],
+		      poi_type_list_string_length-1
+		      );
+	  */
+	  }
+
+	{ // load icon
+	  if ( row[2] == NULL ) {
+	    poi_type_list[index].icon = NULL;
 	  } else {
-	    if (debug) 
-	      printf("Icon (%s) loaded from %s\n",icon_name,path);
+	    gchar icon_name[80];
+	    gchar path[1024];
+	    g_strlcpy ( icon_name, row[2], sizeof (icon_name));
+
+	    g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
+	    poi_type_list[index].icon =  gdk_pixbuf_new_from_file (path, NULL);
+	
+	    if ( poi_type_list[index].icon == NULL) {
+	      g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR,icon_name);
+	      poi_type_list[index].icon =  gdk_pixbuf_new_from_file (path, NULL);
+	    } 
+	    //poi_type_list[index].icon = icon;
+	    if ( poi_type_list[index].icon == NULL) {
+	      if (debug) 
+		printf("%d:Icon '%s' not found\n",index,icon_name);
+	    } else {
+	      if (mydebug) 
+		printf("%d:Icon '%s' loaded from %s\n",index,icon_name,path);
+	      counter++;
+	    }
 	  }
 	}
-      } else {
-	printf("Typet_list: ype_list_count >type_list_max\n");
       }
     }
+
+
   if (!dl_mysql_eof (res))
-    return;
+    {
+      fprintf(stderr,"Error in dl_mysql_eof: %s\n",dl_mysql_error (&mysql) );
+      return;
+    }
 
-  dl_mysql_free_result (res);
 
+  dl_mysql_free_result(res);
+
+  if (mydebug)
+    fprintf(stderr,"Loaded %d Icons for poi_types 0 - %d\n",counter,poi_type_list_count );
 }
 
 /* *******************************************************
@@ -262,8 +326,7 @@ get_type_list (void)
  TODO: use the real datatype for reading from database
        (dont convert string to double)
  */
-void
-poi_rebuild_list (void)
+void poi_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_order[5000];
@@ -280,12 +343,28 @@ poi_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
+
+  if (!usesql)
+    return;
+
   if ( ! poi_draw ) {
     if ( debug ) 
       printf("POI_draw is off\n");
     return;
   }
-  
+
+  if ( mydebug ) {
+    printf ("=============================================================================\n");
+    printf ("rebuild_poi_list()\n");
+  }
+
+
+  if (!maploaded)
+    return;
+
+  if (importactive)
+    return;
+
 
   // calculate the start and stop for lat/lon according to the displayed section
   calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
@@ -302,20 +381,6 @@ poi_rebuild_list (void)
   lon_mid = (lon_min + lon_max)/2;
 
   gdouble poi_posx, poi_posy;
-
-  if ( debug) {
-    printf ("=============================================================================\n");
-    printf ("rebuild_poi_list()\n");
-  }
-
-  if (!maploaded)
-    return;
-
-  //  if (!poi_flag)
-  // return;
-  if (importactive)
-    return;
-
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
@@ -336,7 +401,7 @@ poi_rebuild_list (void)
       g_snprintf (sql_order, sizeof (sql_order),
       "order by scale ");
     */
-    if (debug)
+    if (mydebug)
       printf ("POI mysql order: %s\n", sql_order);
   }
   
@@ -344,12 +409,12 @@ poi_rebuild_list (void)
     g_snprintf (sql_where, sizeof (sql_where),
 		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
 		"AND   ( lon BETWEEN %.6f AND %.6f ) "
-		"AND   ( %f  BETWEEN scale_min AND scale_max) ",
+		"AND   ( %d  BETWEEN scale_min AND scale_max) ",
 		lat_min,lat_max,
 		lon_min,lon_max,
 		mapscale);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
-    if (debug) {
+    if (mydebug) {
       //printf ("POI mysql where: %s\n", sql_where );
       printf ("POI mapscale: %d\n", mapscale );
     }
@@ -363,17 +428,19 @@ poi_rebuild_list (void)
 
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,name,type_id "
+	      "SELECT lat,lon,name,poi_type_id "
 	      "FROM poi "
-	      //	      "LEFT JOIN oi_ type ON poi_.type_id = type.type_id "
-	      "%s %s LIMIT 1000",
+	      //	      "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
+	      "%s %s LIMIT 5000",
 	      sql_where,sql_order);
   /*    dbwherestring,sql_order,lat,lon);  */
+
   if (debug)
     printf ("POI mysql query: %s\n", sql_query);
 
-  if (dl_mysql_query (&mysql, sql_query))
+  if ( dl_mysql_query(&mysql, sql_query))
     {
+      printf("Error in query: \n");
       fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
       return;
     }
@@ -390,6 +457,11 @@ poi_rebuild_list (void)
     {
       rges++;
       gdouble lat,lon;
+
+      /*
+	if (mydebug) 
+	fprintf(stderr,"Query Result: %s %s %s %s\n",row[0],row[1],row[2],row[3]);
+      */
       lat = g_strtod(row[0], NULL);
       lon = g_strtod(row[1], NULL);
       calcxy (&poi_posx, &poi_posy, 
@@ -415,11 +487,11 @@ poi_rebuild_list (void)
 	  (poi_list + poi_nr)->x          = poi_posx;
 	  (poi_list + poi_nr)->y          = poi_posy;
 	  g_strlcpy ((poi_list + poi_nr)->name, row[2], sizeof ((poi_list + poi_nr)->name));
-	  (poi_list + poi_nr)->type_id    = (gint)g_strtod(row[3], NULL);
+	  (poi_list + poi_nr)->poi_type_id    = (gint)g_strtod(row[3], NULL);
 	  if (debug) { 
 	    g_snprintf ((poi_list + poi_nr)->name, sizeof ((poi_list + poi_nr)->name),
 			"%s\n(%.4f ,%.4f)",
-			//			(poi_list + poi_nr)->type_id,
+			//			(poi_list + poi_nr)->poi_type_id,
 			row[2],
 			lat,lon);
 	    /*
@@ -438,7 +510,7 @@ poi_rebuild_list (void)
 	  //(poi_list + poi_nr)->wp_id      = g_strtol (row[0], NULL);
 	  //      (poi_list + poi_nr)->alt        = g_strtod(row[2], NULL);
 	  //(poi_list + poi_nr)->name[80] = row[4];
-	  //(poi_list + poi_nr)->type_id    = g_strtod(row[5], NULL); 
+	  //(poi_list + poi_nr)->poi_type_id    = g_strtod(row[5], NULL); 
 	  //(poi_list + poi_nr)->proximity  = g_strtod(row[6], NULL);
 	  //(poi_list + poi_nr)->comment[255 ] = row[7]; 
 	  //(poi_list + poi_nr)->scale_min     = row[8];  
@@ -480,7 +552,10 @@ poi_rebuild_list (void)
 
   dl_mysql_free_result (res);
 
-  printf ("=============================================================================\n");
+  if ( mydebug ) {
+    printf ("End of rebuild_poi_list()\n");
+    printf ("=============================================================================\n");
+  }
 }
 
 
@@ -489,10 +564,9 @@ poi_rebuild_list (void)
 
 /* *******************************************************
  * draw poi_ on image 
- TODO: find free space on drawing area. So the Text doesn't overlap
+   TODO: find free space on drawing area. So the Text doesn't overlap
  */
-void
-poi_draw_list (void)
+void poi_draw_list (void)
 {
   //  gint t;
   //  GdkSegment *routes;
@@ -501,24 +575,28 @@ poi_draw_list (void)
   gint i;
   gint k, k2;
 
+  if ( mydebug ) {
+    printf ("=============================================================================\n");
+    printf("poi_draw_list\n");
+  }
+
+  if (!usesql)
+    return;
+
   if (importactive)
     return;
 
+  if (!maploaded) 
+    return; 
+
   if ( ! ( poi_draw ) ) {
-    if ( debug ) 
+    if ( mydebug ) 
       printf("POI_draw is off\n");
     return;
   }
 
   if ( poi_check_if_moved() )
     poi_rebuild_list();  
-
-  /*    if (!maploaded) */
-  /*      return; */
-  /*
-    if (!poi_flag)
-    return;
-  */
 
 
   /* ------------------------------------------------------------------ */
@@ -530,32 +608,32 @@ poi_draw_list (void)
       posx = (poi_list + i)->x;
       posy = (poi_list + i)->y;
 
-      // TODO: These calculations have a slight offset
-      // Probably ist the wrong funktion to calculate
-
       if ( (posx >= 0) && (posx < SCREEN_X)  &&
 	   (posy >= 0) && (posy < SCREEN_Y) 
 	   )
 	{
 	  
+	  
 	  /*
-	  if (debug) 
+	  if ( mydebug ) 
 	    printf ("POI Draw: %f %f \t( x:%f, y:%f )\t%s\n",
 		    (poi_list + poi_nr)->lat, (poi_list + poi_nr)->lon, 
 		    (poi_list + poi_nr)->x, (poi_list + poi_nr)->y, 
 		    (poi_list + poi_nr)->name
 		    );
 	  */
+
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
-	
 	  
 	  //	  if ((drawicon (posx, posy, "HOTEL")) == 0)
 	  {
 	    GdkPixbuf *icon;
-	    icon = type_list[(poi_list + i)->type_id].icon;
-	    if ( icon != NULL ) 
+	    int icon_index=(poi_list + i)->poi_type_id;
+	    icon = poi_type_list[icon_index].icon;
+
+	    if ( icon != NULL && icon_index > 0 ) 
 	      {
 		gdk_draw_pixbuf (drawable, kontext, icon,
 				 0, 0,
@@ -563,13 +641,13 @@ poi_draw_list (void)
 				 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
 	      }
 	    else 
-	      { /*  draw + sign at destination if no matching Icon found*/
+	      { /*  draw + sign at destination if no matching Icon found */
 		gdk_gc_set_foreground (kontext, &red);
 		draw_plus_sign ( posx,posy);
 	      }
 	  }  
 	  gdk_gc_set_foreground (kontext, &textback);
-	    
+
 	  poi_label_layout =
 	    gtk_widget_create_pango_layout (drawing_area, txt);
 	  if (pdamode)
@@ -583,21 +661,25 @@ poi_draw_list (void)
 	  k2 = height;
 	  
 	  gdk_gc_set_function (kontext, GDK_COPY);
-	
-	
+	  
 	  gdk_gc_set_function (kontext, GDK_AND);
-	
+	  
 	  { // Draw rectangle arround Text
-	    //gdk_gc_set_foreground (kontext, &textbacknew);
+	    // gdk_gc_set_foreground (kontext, &textbacknew);
+	    gdk_gc_set_foreground (kontext, &grey);
 	    gdk_draw_rectangle (drawable, kontext, 1, 
 				posx + 13, posy - k2 / 2, 
 				k + 1, k2);
+
+	    /*
 	    gdk_gc_set_function (kontext, GDK_COPY);
 	    gdk_gc_set_foreground (kontext, &black);
+	    gdk_gc_set_background (kontext, &textbacknew);
 	    gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 	    gdk_draw_rectangle (drawable, kontext, 0, 
 				posx + 12, posy - k2 / 2 - 1,
 				k + 2, k2);
+	    */
 	  }
 
 	  /* prints in pango */
@@ -615,4 +697,8 @@ poi_draw_list (void)
 	  pango_font_description_free (pfd);
 	}
     }
+  if ( mydebug ) {
+    printf("End of poi_draw_list\n");
+    printf ("=============================================================================\n");
+  }
 }
