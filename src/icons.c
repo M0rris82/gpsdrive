@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2005/02/08 08:43:46  tweety
+wrong dfinition for auxicons array
+
 Revision 1.2  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -256,8 +259,7 @@ load_friends_icon (void)
 {
   gchar mappath[400];
 
-  g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s", DATADIR,
-	      "friendsicon.png");
+  g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s", DATADIR, "friendsicon.png");
   friendsimage = gdk_pixbuf_new_from_file (mappath, NULL);
   if (friendsimage == NULL)
     {
