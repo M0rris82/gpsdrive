@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.10  2005/01/11 21:33:40  tweety
+rename ->longitude ->lon
+
 Revision 1.9  2005/01/11 18:11:51  tweety
 improved draw raster
 
@@ -1953,7 +1956,7 @@ typedef struct
 {
   gchar filename[200];
   gdouble lat;
-  gdouble longitude;
+  gdouble lon;
   glong scale;
 }
 mapsstruct;
@@ -1965,7 +1968,7 @@ typedef struct
 {
   gchar name[40];
   gdouble lat;
-  gdouble longitude;
+  gdouble lon;
   gdouble dist;
   gchar typ[40];
   gint wlan;
@@ -3423,7 +3426,7 @@ testnewmap ()
 	{
 	  if (routemode)
 	    d =
-	      calcdist ((routelist + routepointer)->longitude,
+	      calcdist ((routelist + routepointer)->lon,
 			(routelist + routepointer)->lat);
 	  else
 	    d = calcdist (target_long, target_lat);
@@ -3519,7 +3522,7 @@ testnewmap ()
 	      create_nasa_mapfile (current_lat, current_long, FALSE,
 				   nasaname);
 	    (maps + i)->lat = current_lat;
-	    (maps + i)->longitude = current_long;
+	    (maps + i)->lon = current_long;
 	    (maps + i)->scale = havenasa;
 	    g_strlcpy ((maps + i)->filename, nasaname, 200);
 	    if ((strcmp (oldfilename, "top_NASA_IMAGE.ppm")) == 0)
@@ -3558,7 +3561,7 @@ testnewmap ()
         continue;
 
 
-/*        calcxy (&posx, &posy, (maps + i)->longitude, (maps + i)->lat,1); */
+/*        calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
 /*  Longitude */
       if (istopo == FALSE)
 	posx =
@@ -3566,11 +3569,11 @@ testnewmap ()
 								  (maps +
 								   i)->lat /
 								  180.0) *
-	  (current_long - (maps + i)->longitude);
+	  (current_long - (maps + i)->lon);
       else
 	posx =
 	  (Ra[(int) (100 + 0)] * M_PI / 180) * (current_long -
-						(maps + i)->longitude);
+						(maps + i)->lon);
 
 
 /*  latitude */
@@ -3587,7 +3590,7 @@ testnewmap ()
 						  ((M_PI *
 						    (current_long -
 						     (maps +
-						      i)->longitude)) /
+						      i)->lon)) /
 						   180.0)));
 	  posy = posy + dif / 2.0;
 	}
@@ -3657,7 +3660,7 @@ testnewmap ()
 	  if (debug)
 	    printf ("\nNew map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
-	  zero_long = (maps + bestmap)->longitude;
+	  zero_long = (maps + bestmap)->lon;
 	  zero_lat = (maps + bestmap)->lat;
 	  mapscale = (maps + bestmap)->scale;
 	  xoff = yoff = 0;
@@ -3695,7 +3698,7 @@ setroutetarget (GtkWidget * widget, gint datum)
   g_strlcpy (targetname, (routelist + routepointer)->name,
 	     sizeof (targetname));
   target_lat = (routelist + routepointer)->lat;
-  target_long = (routelist + routepointer)->longitude;
+  target_long = (routelist + routepointer)->lon;
   g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), targetname,
 	      routepointer + 1, routeitems);
   gtk_frame_set_label (GTK_FRAME (destframe), str);
@@ -3823,11 +3826,11 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 /*  test for radar */
       if (((wayp + i)->action) == 1)
 	{
-	  d = calcdist2 ((wayp + i)->longitude, (wayp + i)->lat);
+	  d = calcdist2 ((wayp + i)->lon, (wayp + i)->lat);
 	  if (d < 0.6)
 	    {
 	      lastbearing = radarbearing;
-	      tx = -current_long + (wayp + i)->longitude;
+	      tx = -current_long + (wayp + i)->lon;
 	      ty = -current_lat + (wayp + i)->lat;
 	      radarbearing = atan (tx / ty);
 	      if (!finite (radarbearing))
@@ -5057,9 +5060,9 @@ drawloadedmaps ()
 
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
-	  //printf("Selected map at long %lf lat %lf\n",maps[i].lat,maps[i].longitude);
+	  //printf("Selected map at long %lf lat %lf\n",maps[i].lat,maps[i].lon);
 	  la = maps[i].lat;
-	  lo = maps[i].longitude;
+	  lo = maps[i].lon;
 	  //              scale=maps[i].scale;
 	  calcxy (&x, &y, lo, la, zoom);
 	  xo = 1280.0 * zoom * scale / mapscale;
@@ -5204,7 +5207,7 @@ drawmarker (GtkWidget * widget, guint * datum)
       for (i = 0; i < maxwp; i++)
 	{
 	  calcxy (&posxdest, &posydest, 
-		  (wayp + i)->longitude, (wayp + i)->lat,
+		  (wayp + i)->lon, (wayp + i)->lat,
 		  zoom);
 
 	  if ((posxdest >= 0) && (posxdest < SCREEN_X)
@@ -7366,7 +7369,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 	      g_strlcpy ((maps + nrmaps)->filename,
 			 g_basename (downloadfilename), 200);
 	      (maps + nrmaps)->lat = g_strtod (newmaplat, NULL);
-	      (maps + nrmaps)->longitude = g_strtod (newmaplongi, NULL);
+	      (maps + nrmaps)->lon = g_strtod (newmaplongi, NULL);
 	      (maps + nrmaps)->scale = strtol (newmapsc, NULL, 0);
 	      nrmaps++;
 	      havenasa = -1;
@@ -7472,7 +7475,7 @@ import3_cb (GtkWidget * widget, gpointer datum)
       maps = g_renew (mapsstruct, maps, (nrmaps + 2));
       g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
       (maps + nrmaps)->lat = latcenter;
-      (maps + nrmaps)->longitude = longcenter;
+      (maps + nrmaps)->lon = longcenter;
       (maps + nrmaps)->scale = scale;
       nrmaps++;
       havenasa = -1;
@@ -8861,7 +8864,7 @@ addwaypoint (GtkWidget * widget, guint datum)
     {
       i = maxwp;
       (wayp + i)->lat = wplat;
-      (wayp + i)->longitude = wplon;
+      (wayp + i)->lon = wplon;
       g_strdelimit ((char *) s, " ", '_');
 /*  limit waypoint name to 20 chars */
       g_strlcpy ((wayp + i)->name, s, 40);
@@ -9018,7 +9021,7 @@ insertwaypoints (gint mobile)
   if (!mobile)
     for (i = 0; i < maxwp; i++)
       {
-	(wayp + i)->dist = calcdist ((wayp + i)->longitude, (wayp + i)->lat);
+	(wayp + i)->dist = calcdist ((wayp + i)->lon, (wayp + i)->lat);
 
 	text[1] = (wayp + i)->name;
 
@@ -9026,7 +9029,7 @@ insertwaypoints (gint mobile)
 	g_snprintf (text1, sizeof (text1), "%8.5f", (wayp + i)->lat);
 	if (minsecmode)
 	  decimaltomin (text1, 1);
-	g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->longitude);
+	g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->lon);
 	if (minsecmode)
 	  decimaltomin (text2, 0);
 	g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
@@ -9122,13 +9125,13 @@ insertroutepoints ()
   gchar *text[5], text0[20], text1[20], text2[20], text3[20];
 
   i = thisrouteline;
-  (wayp + i)->dist = calcdist ((wayp + i)->longitude, (wayp + i)->lat);
+  (wayp + i)->dist = calcdist ((wayp + i)->lon, (wayp + i)->lat);
   text[1] = (wayp + i)->name;
   g_snprintf (text0, sizeof (text0), "%d", i + 1);
   g_snprintf (text1, sizeof (text1), "%8.5f", (wayp + i)->lat);
   if (minsecmode)
     decimaltomin (text1, 1);
-  g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->longitude);
+  g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->lon);
   if (minsecmode)
     decimaltomin (text2, 0);
   g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
@@ -9140,7 +9143,7 @@ insertroutepoints ()
   gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
   g_strlcpy ((routelist + routeitems)->name, (wayp + i)->name, 40);
   (routelist + routeitems)->lat = (wayp + i)->lat;
-  (routelist + routeitems)->longitude = (wayp + i)->longitude;
+  (routelist + routeitems)->lon = (wayp + i)->lon;
   routeitems++;
   gtk_widget_set_sensitive (select_route_button, TRUE);
 
@@ -9154,13 +9157,13 @@ insertallroutepoints ()
 
   for (i = 0; i < maxwp; i++)
     {
-      (wayp + i)->dist = calcdist ((wayp + i)->longitude, (wayp + i)->lat);
+      (wayp + i)->dist = calcdist ((wayp + i)->lon, (wayp + i)->lat);
       text[1] = (wayp + i)->name;
       g_snprintf (text0, sizeof (text0), "%d", i + 1);
       g_snprintf (text1, sizeof (text1), "%8.5f", (wayp + i)->lat);
       if (minsecmode)
 	decimaltomin (text1, 1);
-      g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->longitude);
+      g_snprintf (text2, sizeof (text2), "%8.5f", (wayp + i)->lon);
       if (minsecmode)
 	decimaltomin (text2, 0);
       g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
@@ -9172,7 +9175,7 @@ insertallroutepoints ()
       gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
       g_strlcpy ((routelist + routeitems)->name, (wayp + i)->name, 40);
       (routelist + routeitems)->lat = (wayp + i)->lat;
-      (routelist + routeitems)->longitude = (wayp + i)->longitude;
+      (routelist + routeitems)->lon = (wayp + i)->lon;
       routeitems++;
     }
   gtk_widget_set_sensitive (select_route_button, TRUE);
@@ -9561,12 +9564,12 @@ create_route_cb (GtkWidget * widget, guint datum)
       for (i = 0; i < routeitems; i++)
 	{
 	  (routelist + i)->dist =
-	    calcdist ((routelist + i)->longitude, (routelist + i)->lat);
+	    calcdist ((routelist + i)->lon, (routelist + i)->lat);
 	  text[1] = (routelist + i)->name;
 	  g_snprintf (text0, sizeof (text0), "%d", i + 1);
 	  g_snprintf (text1, sizeof (text1), "%8.5f", (routelist + i)->lat);
 	  g_snprintf (text2, sizeof (text2), "%8.5f",
-		      (routelist + i)->longitude);
+		      (routelist + i)->lon);
 	  g_snprintf (text3, sizeof (text3), "%9.3f", (routelist + i)->dist);
 	  text[0] = text0;
 	  text[2] = text1;
@@ -9693,7 +9696,7 @@ loadmapconfig ()
 	  g_strdelimit (s3, ",", '.');
 	  g_strlcpy ((maps + i)->filename, filename, 200);
 	  (maps + i)->lat = g_strtod (s1, NULL);
-	  (maps + i)->longitude = g_strtod (s2, NULL);
+	  (maps + i)->lon = g_strtod (s2, NULL);
 	  (maps + i)->scale = strtol (s3, NULL, 0);
 	  i++;
 	  nrmaps = i;
@@ -9731,7 +9734,7 @@ savemapconfig ()
   for (i = 0; i < nrmaps; i++)
     {
       fprintf (st, "%s %.5f %.5f %ld\n", (maps + i)->filename,
-	       (maps + i)->lat, (maps + i)->longitude, (maps + i)->scale);
+	       (maps + i)->lat, (maps + i)->lon, (maps + i)->scale);
     }
 
   fclose (st);
