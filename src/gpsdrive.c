@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.18  2005/02/02 18:18:13  tweety
+*** empty log message ***
+
 Revision 1.17  2005/02/02 17:42:54  tweety
 Add some comments
 extract some code into funktions
@@ -5527,7 +5530,7 @@ drawmarker (GtkWidget * widget, guint * datum)
   gchar s2[100], s3[200], s2a[20];
   gdouble w;
   GdkPoint poly[16];
-  gint k2;
+  gint k, k2;
 
   gblink = !gblink;
 /*    g_print("\nsimmode: %d, nmea %d garmin %d",simmode,haveNMEA,haveGARMIN); */
