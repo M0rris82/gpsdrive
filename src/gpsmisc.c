@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2005/04/15 07:18:54  tweety
+extracted lat2raidus into it's own function and added plausibility checks
+sorted addwaypoint function and added comments
+while downloading new maps the already existing maps are always displayed
+
 Revision 1.6  2005/04/13 19:58:31  tweety
 renew indentation to 4 spaces + tabstop=8
 
@@ -91,7 +96,7 @@ code cleanup
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug, mapistopo;
-extern gdouble Ra[201];
+extern gdouble lat2RadiusArray[201];
 extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
     int_padding;
@@ -104,10 +109,11 @@ extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
 
 
 
-/* check NMEA checksum
-   ARGS:    NMEA String
-   RETURNS: TRUE if Checksumm is ok
-*/
+/* ******************************************************************
+ * check NMEA checksum
+ * ARGS:    NMEA String
+ * RETURNS: TRUE if Checksumm is ok
+ */
 gint
 checksum (gchar * text)
 {
@@ -142,7 +148,31 @@ checksum (gchar * text)
 	}
 }
 
-/* calculates lat and lon for the given position on the screen */
+
+/* **********************************************************************
+ * Estimate the earth radius for given latitude
+ */
+gdouble lat2radius(gdouble lat) {
+    if ( lat >  90.0 ) {
+	lat = lat -90;
+    }
+    if ( lat < -90.0 ) {
+	lat = lat + 90;
+    }
+    if ( lat >  100 ) {
+	fprintf( stderr,"ERROR: lat %f out of bound\n",lat);
+	lat =  100.0;
+    };
+    if ( lat < -100 ) {
+	fprintf( stderr,"ERROR: lat %f out of bound\n",lat);
+	lat = -100.0;
+    };
+    return lat2RadiusArray[(int) (100 + lat)];
+}
+
+/*  **********************************************************************
+ * calculates lat and lon for the given position on the screen 
+ */
 void
 calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 {
@@ -157,44 +187,53 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 
     if (mapistopo == FALSE)
 	{
-	    lat = zero_lat - py / (Ra[(int) (100 + current_lat)] * M_PI / 180.0);
-	    lat = zero_lat - py / (Ra[(int) (100 + lat)] * M_PI / 180.0);
-	    lon =
-		zero_long -
-		px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
-		      cos (M_PI * lat / 180.0));
+	    lat = zero_lat - py / (lat2radius(current_lat) * M_PI / 180.0);
+	    lat = zero_lat - py / (lat2radius(lat) * M_PI / 180.0);
+
+	    if ( lat >  360 ) lat= lat - 360.0;
+	    if ( lat < -360 ) lat= lat + 360.0;
+
+	    lon = zero_long - px / ((lat2radius(lat) * M_PI / 180.0) *
+				    cos (M_PI * lat / 180.0));
 
 	    dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
 	    lat = lat - dif / 1.5;
-	    lon =
-		zero_long -
-		px / ((Ra[(int) (100 + lat)] * M_PI / 180.0) *
-		      cos (M_PI * lat / 180.0));
+
+	    if ( lat >  360 ) lat=  360.0;
+	    if ( lat < -360 ) lat= -360.0;
+
+	    lon = zero_long - px / ((lat2radius(lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
 	}
     else
 	{
-	    lat = zero_lat - py / (Ra[(int) (100 + 0)] * M_PI / 180.0);
-
-	    lon = zero_long - px / ((Ra[(int) (100 + 0)] * M_PI / 180.0));
+	    lat = zero_lat - py / (lat2radius(0) * M_PI / 180.0);
+	    if ( lat >  360 ) lat=  360.0;
+	    if ( lat < -360 ) lat= -360.0;
+	    lon = zero_long - px / ((lat2radius(0) * M_PI / 180.0));
 	}
+
+    if ( lat >  360 ) lat=  360.0;
+    if ( lat < -360 ) lat= -360.0;
+    if ( lon >  180 ) lon=  180.0;
+    if ( lon < -180 ) lon= -180.0;
 
     *mylat = lat;
     *mylon = lon;
 
 }
 
-/* calculate xy pos of given lon/lat */ 
+/* ******************************************************************
+ * calculate xy pos of given lon/lat 
+ */ 
 void
 calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
     gdouble dif;
 
     if (mapistopo == FALSE)
-	*posx =
-	    (Ra[(int) (100 + lat)] * M_PI / 180.0) * cos (M_PI * lat / 180.0) *
-	    (lon - zero_long);
+	*posx = (lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0) * (lon - zero_long);
     else
-	*posx = (Ra[(int) (100 + 0.0)] * M_PI / 180.0) * (lon - zero_long);
+	*posx = (lat2radius( 0.0) * M_PI / 180.0) * (lon - zero_long);
 
     *posx = SCREEN_X_2 + *posx * zoom / pixelfact;
     *posx = *posx - xoff;
@@ -202,19 +241,20 @@ calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 
     if (mapistopo == FALSE)
 	{
-	    *posy = (Ra[(int) (100 + lat)] * M_PI / 180.0) * (lat - zero_lat);
-	    dif =
-		Ra[(int) (100 + lat)] * (1 -
-					 (cos ((M_PI * (lon - zero_long)) / 180.0)));
+	    *posy = (lat2radius(  lat) * M_PI / 180.0) * (lat - zero_lat);
+	    dif =lat2radius( lat) * (1 - (cos ((M_PI * (lon - zero_long)) / 180.0)));
 	    *posy = *posy + dif / 1.85;
 	}
     else
-	*posy = (Ra[(int) (100 + lat)] * M_PI / 180.0) * (lat - zero_lat);
+	*posy = (lat2radius(lat) * M_PI / 180.0) * (lat - zero_lat);
 
     *posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
     *posy = *posy - yoff;
 }
 
+/* ******************************************************************
+ * calculate xy position in mini map window from given lat/lon
+ */
 void
 calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 	    gint zoom)
@@ -223,20 +263,18 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 
     if (mapistopo == FALSE)
 	*posx =
-	    (Ra[(int) (100 + lat)] * M_PI / 180.0) * cos (M_PI * lat / 180.0) *
+	    (lat2radius( lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0) *
 	    (lon - zero_long);
     else
-	*posx = (Ra[(int) (100 + 0)] * M_PI / 180.0) * (lon - zero_long);
+	*posx = (lat2radius( 0) * M_PI / 180.0) * (lon - zero_long);
 
     *posx = 64 + *posx * zoom / (10 * pixelfact);
     *posx = *posx;
 
-    *posy = (Ra[(int) (100 + lat)] * M_PI / 180.0) * (lat - zero_lat);
+    *posy = (lat2radius( lat) * M_PI / 180.0) * (lat - zero_lat);
     if (mapistopo == FALSE)
 	{
-	    dif =
-		Ra[(int) (100 + lat)] * (1 -
-					 (cos ((M_PI * (lon - zero_long)) / 180.0)));
+	    dif =lat2radius( lat) * (1 - (cos ((M_PI * (lon - zero_long)) / 180.0)));
 	    *posy = *posy + dif / 1.85;
 	}
     *posy = 51 - *posy * zoom / (10 * pixelfact);
@@ -244,7 +282,9 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 }
 
 
-/* calculate Earth radius for given lat */
+/* ******************************************************************
+ * calculate Earth radius for given lat 
+ */
 gdouble
 calcR (gdouble lat)
 {
@@ -278,7 +318,9 @@ calcR (gdouble lat)
 }
 
 
-/* calculate distance to current position */
+/* ******************************************************************
+ * calculate distance from (lati/longi) to current position (current_lat/current_longi)
+ */
 gdouble
 calcdist2 (gdouble longi, gdouble lati)
 {
@@ -300,11 +342,13 @@ calcdist2 (gdouble longi, gdouble lati)
 	c = 2 * asin (sa);
     else
 	c = 2 * asin (1.0);
-    d = (Ra[(int) (100 + current_lat)] + Ra[(int) (100 + lati)]) * c / 2.0;
+    d = (lat2radius( current_lat) + lat2radius( lati)) * c / 2.0;
     return milesconv * d / 1000.0;
 }
 
-/*  same as calcdist2, but much more precise */
+/* ******************************************************************
+ * same as calcdist2, but much more precise 
+ */
 gdouble
 calcdist (gdouble longi, gdouble lati)
 {
@@ -383,7 +427,9 @@ calcdist (gdouble longi, gdouble lati)
     return milesconv * s / 1000.0;
 }
 
-/* This is an internally used function to create pixmaps. */
+/* ******************************************************************
+ * This is an internally used function to create pixmaps. 
+ */
 GdkPixbuf *
 create_pixbuf (const gchar * filename)
 {
@@ -399,7 +445,10 @@ create_pixbuf (const gchar * filename)
 		filename);
     if (!pathname)
 	{
-	    g_warning (_("Couldn't find pixmap file: %s"), pathname);
+	    if( debug) 
+		fprintf( stderr , _("Couldn't find pixmap file: %s"), pathname);
+	    else 
+		g_warning (_("Couldn't find pixmap file: %s"), pathname);
 	    return NULL;
 	}
 
@@ -412,6 +461,9 @@ create_pixbuf (const gchar * filename)
     return pixbuf;
 }
 
+/* ******************************************************************
+ * This is an internally used function to create pixmaps. 
+ */
 GtkWidget* create_pixmap(GtkWidget *widget, const gchar     *filename)
 {
     gchar pathname[200];
@@ -427,7 +479,10 @@ GtkWidget* create_pixmap(GtkWidget *widget, const gchar     *filename)
     pixmap = gtk_image_new_from_file (pathname);
     if (!pixmap)
 	{
-	    g_warning (_("Couldn't find pixmap file: %s"), pathname);
+	    if( debug) 
+		fprintf( stderr , _("Couldn't find pixmap file: %s"), pathname);
+	    else 
+		g_warning (_("Couldn't find pixmap file: %s"), pathname);
 	    return gtk_image_new ();
 	}
 
