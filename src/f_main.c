@@ -937,7 +937,7 @@ i.e. '.' in english, ',' in german!! */
 
 
   // Checkbox ---- Save Track
-  savetrackfile (TRUE);
+  savetrackfile (0);
   g_snprintf (s1, sizeof (s1), "%s", _("Save track"));
   savetrackbt = gtk_check_button_new_with_label (s1);
   if (savetrack)
@@ -1938,7 +1938,7 @@ i.e. '.' in english, ',' in german!! */
   unlink ("/tmp/gpsdrivetext.out");
   unlink ("/tmp/gpsdrivepos");
   if (savetrack)
-    savetrackfile (FALSE);
+    savetrackfile (2);
   sqlend ();
   free (friends);
   free (fserver);

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/02/08 20:12:59  tweety
+savetrackfile got 3 modi
+
 Revision 1.2  2005/01/11 20:14:14  tweety
 rearanges track handling a little bit
 added suport for interupted tracks
@@ -108,6 +111,7 @@ extern GdkColor nightcolor;
 extern GdkColor trackcolorv;
 
 
+/* ----------------------------------------------------------------------------- */ 
 /*  if zoom, xoff, yoff or map are changed */
 void
 rebuildtracklist (void)
@@ -180,6 +184,7 @@ rebuildtracklist (void)
 
 
 
+/* ----------------------------------------------------------------------------- */ 
 /* draw track on image */
 void
 drawtracks (void)
@@ -251,10 +256,16 @@ drawtracks (void)
 }
 
 
+/* ----------------------------------------------------------------------------- */ 
 /* stores the track into a file, if argument testname is true, no saving is 
-   done, only savetrackfn is set */
+   done, only savetrackfn is set 
+mode=0: test Filename
+mode=1: write actual track
+mode=2: write actual track and append to all_track.sav
+*/
+
 void
-savetrackfile (gint testname)
+savetrackfile (gint mode)
 {
   struct stat sbuf;
   gchar buff[1024];
@@ -262,7 +273,7 @@ savetrackfile (gint testname)
   gchar mappath[400], lat[30], alt[30], longi[30];
   FILE *st;
 
-  if (testname)
+  if ( mode == 0 )
     {
       i = 0;
       do
@@ -298,6 +309,9 @@ savetrackfile (gint testname)
     }
   fclose (st);
 
+  if ( mode == 1 )
+    return;
+  
 /* append to existing backup file */
   g_strlcpy (mappath, homedir, sizeof (mappath));
   g_strlcat (mappath, "track-ALL.sav", sizeof(mappath));
