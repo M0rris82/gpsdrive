@@ -1,0 +1,361 @@
+#!/bin/sh
+
+#
+#	geo-nearest: Fetch list of nearest geocaches.
+#
+#	Requires: curl; gpsbabel; bash or ksh;
+#		  mysql (if using the gpsdrive.sql output option)
+#
+#	Donated to the public domain by Rick Richardson <rickr@mn.rr.com>
+#	Use at your own risk.  Not suitable for any purpose.  Not legal tender.
+#		http://home.mn.rr.com/richardsons/sw/geo-nearest
+#
+#
+#
+
+PROGNAME="$0"
+
+usage() {
+	cat <<EOF
+Usage:
+	`basename $PROGNAME` [options]
+	`basename $PROGNAME` [options] latitude longitude
+	`basename $PROGNAME` [options] zipcode
+
+	Fetch a list of nearest geocaches.
+
+Requires:
+	A free login at http://www.geocaching.com.  Visit a cache page
+	and click the "Download to EasyGPS" link at least once so you can
+	read and agree to the license terms.  Otherwise, you will not get
+	any waypoint data.
+
+	curl		http://curl.haxx.se/
+	gpsbabel	http://gpsbabel.sourceforge.net/
+
+Options:
+	-c		Remove cookie file when done
+	-f              Do not report any found or unavailable caches
+	-n num		Return "num" caches [$NUM]
+	-s		Output short names for the caches (gpsbabel option)
+	-u username	Username for http://www.geocaching.com
+	-p password	Password for http://www.geocaching.com
+	-o format	Output format, -o? for possibilities [$OUTFMT]
+			plus "gpsdrive.sql" for direct insertion into MySQL DB
+	-S              Alias for -o gpsdrive.sql
+        -d              For -S, just delete selected records\n"
+	-t type		For -ogpsdrive.sql, the waypoint type [$SQLTAG]
+	-D lvl		Debug level [$DEBUG]
+	-U		Retrieve latest version of this script
+
+Defaults can also be set with variables in file \$HOME/.georc:
+	PASSWORD=password;  USERNAME=username;
+	LAT=latitude;       LON=logitude;
+	NUM=num;            OUTFMT=format;       BABELFLAGS=-s
+	SQLUSER=gast;       SQLPASS=gast;        SQLDB=geoinfo;
+
+Examples:
+	Add nearest 50 caches to a GpsDrive SQL database
+
+	    geo-nearest -n50 -f -s -S
+
+See Also:
+	geo-code	http://home.mn.rr.com/richardsons/sw/geo-code
+EOF
+
+	exit 1
+}
+
+#
+#       Report an error and exit
+#
+error() {
+	echo "`basename $PROGNAME`: $1" >&2
+	exit 1
+}
+
+#
+#       Set default options, can be overriden on command line or in rc file
+#
+DEBUG=0
+COOKIE_FILE=$HOME/.geocookies
+PASSWORD=dummy
+USERNAME=dummy
+LAT=44.9472
+LON=-93.4914
+ZIP=
+OUTFMT=gpsdrive
+NOCOOKIES=0
+BABELFLAGS=
+NUM=25
+SQLUSER=gast	# For -o gpsdrive.sql
+SQLPASS=gast	# For -o gpsdrive.sql
+SQLDB=geoinfo	# For -o gpsdrive.sql
+SQLTAG=Geocache	# For -o gpsdrive.sql
+UPDATEnearestURL=http://home.mn.rr.com/richardsons/sw/geo-nearest
+UPDATEnearestFILE=geo-nearest.new
+NOFOUND=0
+
+#
+#	Read RC file, if there is one
+#
+if [ -f $HOME/.georc ]; then
+	. $HOME/.georc
+fi
+
+#
+#       Process the options
+#
+DELETE=0
+SQL=0
+unset OPTIND
+while getopts "cdfn:o:p:sSt:u:D:Uh?-" opt
+do
+	case $opt in
+	c)	NOCOOKIES=1;;
+	d)	DELETE=1;;
+	f)	NOFOUND=1;;
+	n)	NUM="$OPTARG";;
+	s)	BABELFLAGS="$BABELFLAGS -s";;
+	S)      OUTFMT="gpsdrive.sql";;
+	t)	SQLTAG="$OPTARG";;
+	u)	USERNAME="$OPTARG";;
+	p)	PASSWORD="$OPTARG";;
+	o)	OUTFMT="$OPTARG";;
+	D)	DEBUG="$OPTARG";;
+	U)	echo "Getting latest version of this script..."
+		curl -o$UPDATEnearestFILE "$UPDATEnearestURL"
+		echo "Latest version is in $UPDATEnearestFILE"
+		exit
+		;;
+	h|\?|-)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`
+
+case "$NOFOUND" in
+1)	NOFOUND='/Caches you found:/,$d';;
+*)	NOFOUND=s/Z/Z/;;
+esac
+
+case "$OUTFMT" in
+gpsdrive.sql)
+	OUTFMT=gpsdrive
+	SQL=1
+	# DEBUG=1
+	;;
+\?)
+	gpsbabel -? | sed '1,/File Types/d'
+	echo	"	gpsdrive.sql         " \
+		"GpsDrive direct MySQL database insertion"
+	exit
+	;;
+esac
+
+case "$#" in
+2)
+	LAT="$1"
+	LON="$2"
+	SEARCH="?origin_lat=$LAT&origin_long=$LON"
+	;;
+1)
+	ZIP=$1
+	SEARCH="?zip=$ZIP"
+	;;
+0)
+	SEARCH="?origin_lat=$LAT&origin_long=$LON"
+	;;
+*)
+	usage
+	;;
+esac
+
+[ "$USERNAME" != dummy ] || error "You need a www.geocaching.com username"
+[ "$PASSWORD" != dummy ] || error "You need a www.geocaching.com password"
+
+#
+#	Main Program
+#
+
+if [ $DEBUG -gt 0 ]; then
+    TMP=/tmp/geo
+else
+    TMP=/tmp/geo$$
+fi
+TIMESTAMP=${TMP}.timestamp
+GEOWAY=${TMP}.geocaching.loc
+OUTWAY=${TMP}.way
+CIDS=${TMP}.cids
+
+UA="Mozilla/5.0"
+GEO="http://www.geocaching.com"
+
+#
+# If the username/password doesn't match whats in the cookie file,
+# remove the cookie file
+#
+if ! grep -q -s "username=$USERNAME" $COOKIE_FILE; then
+	rm -f $COOKIE_FILE
+fi
+if ! grep -q -s "password=$PASSWORD" $COOKIE_FILE; then
+	rm -f $COOKIE_FILE
+fi
+
+#
+# Go to the cookie store if our cookie's expired.
+#
+if [ $NOCOOKIES = 1 ]; then
+	touch $TIMESTAMP
+else
+	touch -d "30 minutes ago" $TIMESTAMP
+fi
+if [ $COOKIE_FILE -ot $TIMESTAMP ]; then
+	URL="$GEO/login/default.asp"
+	URL="$URL?username=$USERNAME&password=$PASSWORD"
+	if [ $DEBUG -ge 1 ]; then
+		echo "curl $URL" >&2
+	fi
+	curl -s -D$COOKIE_FILE -A $UA -o /dev/null -L "$URL"
+fi
+rm -f $TIMESTAMP
+
+#
+#	procedure to remove cruft files
+#
+remove_cruft() {
+	if [ $DEBUG = 0 ]; then
+	    for i in $TIMESTAMP $CIDS $GEOWAY $OUTWAY
+	    do
+		    [ -f $i ] && rm -f $i
+	    done
+	fi
+	if [ $NOCOOKIES = 1 ]; then
+		[ -f $COOKIE_FILE ] && rm -f $COOKIE_FILE
+	fi
+}
+
+#
+#	procedure to nag about agreeing to EasyGps download license
+#
+easy_warning() {
+	cat <<-EOF
+	You have not agreed to the EasyGPS download license at $GEO
+
+	Click one of the Download to EasyGPS links at $GEO,
+	read and agree to the license terms, then try this program again.
+	EOF
+}
+
+#
+#	We might combine one or more pages into a single XML, so cobble
+#	up a header with the ?xml and loc tags.
+#	
+cat <<EOF > $GEOWAY
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<loc version="1.0" src="EasyGPS">
+EOF
+
+#
+# Loop, getting at least "NUM" locations
+#
+if [ $DEBUG -gt 0 ]; then
+    filter1="tee $TMP.page"
+    filter2="tee $TMP.bulk"
+else
+    filter1=cat
+    filter2=cat
+fi
+((start=0))
+while ((start < NUM)); do
+	#
+	# Fetch the page of closest caches and scrape the cache ID's
+	#
+	URL="$GEO/seek/nearest_cache.asp"
+	URL="$URL$SEARCH"
+	URL="$URL&start=$start"
+	if [ $DEBUG -ge 1 ]; then
+		echo "curl $URL" >&2
+	fi
+	curl -s -b $COOKIE_FILE -A $UA "$URL" \
+	| $filter1 \
+	| sed -n \
+		-e "$NOFOUND" \
+		-e 's/.*name=CID value="\([0-9]*\)".*/-dCID=\1/p' \
+	> $CIDS
+
+	#
+	# Fetch the waypoints, rip out the ?xml and loc tags, and
+	# append to the $GEOWAY file.
+	#
+	URL="$GEO/waypoints/bulk_waypoints.asp"
+	if [ $DEBUG -ge 1 ]; then
+		echo "curl $URL" >&2
+	fi
+	curl -s -b $COOKIE_FILE -A $UA \
+		`cat $CIDS` -d "image1.x=71" -d "image1.y=9" "$URL" \
+	| $filter2 \
+	| sed -e 's/^<?xml [^>]*>//' \
+		-e 's/<loc [^>]*>//' \
+		-e 's#</loc>##' \
+	>> $GEOWAY
+
+	#
+	# Check to see if the user hasn't agreed to license terms
+	#
+	if grep -s -q "STEP2=NO" $GEOWAY; then
+		easy_warning >&2
+		remove_cruft
+		exit
+	fi
+
+	((start=start+25))
+done
+
+#
+# Convert to desired format
+#
+echo "</loc>" >> $GEOWAY
+
+if [ $DEBUG -gt 0 ]; then
+	cp $GEOWAY /tmp/geocaching.loc
+fi
+
+gpsbabel $BABELFLAGS -i geo -f $GEOWAY -o $OUTFMT -F $OUTWAY
+
+gpsdrive_add() {
+	delcmd="delete from waypoints"
+	addcmd="insert into waypoints (name,lat,lon,type)"
+	echo "use $SQLDB;"
+	while read name lat lon type extra
+	do
+		name=`echo "$name" | tr -d "'"`
+		# Primary key is autoincrementing id number, so delete
+		# the old record (if any) by name and type
+		echo "$delcmd where name='$name' and type='$SQLTAG';"
+
+		if [ $DELETE = 0 ]; then
+		    # Add the new record
+		    echo "$addcmd values ('$name','$lat','$lon','$SQLTAG');"
+		fi
+	done
+}
+
+if [ -f $OUTWAY ]; then
+	if [ $SQL = 1 ]; then
+		#
+		# add it via mysql
+		#
+		if [ $DEBUG -gt 0 ]; then
+			gpsdrive_add <$OUTWAY
+		else
+			gpsdrive_add <$OUTWAY | mysql -u$SQLUSER -p$SQLPASS
+		fi
+	else
+		#
+		# output to stdout
+		#
+		cat $OUTWAY
+	fi
+fi
+
+remove_cruft

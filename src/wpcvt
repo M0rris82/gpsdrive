@@ -1,0 +1,106 @@
+#!/usr/bin/perl -w
+# Converts Garmin data from garble for gpsdrive
+# by Ned Konz <ned@bike-nomad.com> 
+# Sun Feb 17 10:48:09 PST 2002
+#
+# This is licensed under the GPL
+#
+# Usage:
+# wpcvt file [...] > output
+# or:
+# wpcvt < file > output
+#
+# If converting tracks, will name output files like:
+# track2001Oct7_191800.sav
+
+# garble -r
+# four fields, last blank or comment
+# ELIOT  / 47.95, -122.31 / 
+# Routes have blank lines separating them.
+# converted to waypoint format:
+# 1_ELIOT  47.95 -122.31
+
+# garble -t
+# three fields
+# 47.8544, -122.424 / Sun Oct  7 19:18:00 2001
+# converted to track format:
+# 47.8544 -122.424 Sun Oct  7 19:18:00 2001
+# tracks have blank lines between them
+# Each separate track will be in a track file
+# named using the datestamp of the first point.
+
+# garble -w
+# four fields, last non-blank (comment)
+# 004    / 48.1638, -122.516 / 11-FEB-02 19:24
+# converted to:
+# DEFAUL    48.2893 -122.226 
+
+# garble -x
+# id / dist / lat, long / comment
+# 
+
+my $type        = undef;
+my $routeNumber = 1;
+my $lineNumber  = 0;       # within group
+
+while (<>)
+{
+	chomp;
+
+	if (/^$/)
+	{
+		$routeNumber++;
+		$lineNumber = 0;
+		next;
+	}
+
+	if ( $. == 1 )    # first line of new file?
+	{
+		print STDERR "now processing $ARGV\n";
+		$type       = undef;
+		$lineNumber = 0;
+		close OUT;
+		select STDOUT;
+	}
+
+	my @f = split ( /\s*[\/,]\s*/, $_, -1 );
+	$f[0] =~ y/ /_/;    # change spaces in names to _
+
+	if ( !$type )       # determine type, make new output file if needed
+	{
+		if    ( @f == 5 ) { $type = 'x' }
+		elsif ( @f == 3 ) { $type = 't' }
+		elsif ( $f[3] =~ /^\d+-\D+-\d+ \d+:\d+$/ ) { $type = 'w' }
+		else { $type = 'r' }
+	}
+
+	# make new output file if necessary
+	if ( $type eq 't' && $lineNumber == 0 )
+	{
+		my @d = split ( /[ :]+/, $f[2] );
+		my $fileName = "track$d[6]$d[1]$d[2]_$d[3]$d[4]$d[5].sav";
+		open OUT, ">$fileName" or die "can't open $fileName\: $!\n";
+		select OUT;
+	}
+
+	if ( $type eq 'r' )
+	{
+		print "${routeNumber}_$f[0] $f[1] $f[2]\n";
+	}
+	elsif ( $type eq 'x' )
+	{
+		print "$f[0] $f[2] $f[3]\n";
+	}
+	else    # -t or -w output
+	{
+		print "$f[0] $f[1] $f[2]\n";
+	}
+
+	$lineNumber++;
+}
+continue
+{
+	# make sure that $. gets reset
+	close ARGV if eof;
+}
+

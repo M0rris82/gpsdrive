@@ -1,0 +1,410 @@
+#!/bin/sh
+
+#
+#	geo-code: Convert a street address into a latitude/longitude
+#
+#	Requires: curl; gpsbabel; bash or ksh;
+#		  mysql (if using the gpsdrive.sql output option)
+#
+#	Donated to the public domain by Rick Richardson <rickr@mn.rr.com>
+#		http://home.mn.rr.com/richardsons/sw/geo-code
+#
+#	Use at your own risk.  Not suitable for any purpose.  Not legal tender.
+#
+#
+
+PROGNAME="$0"
+
+usage() {
+	cat <<EOF
+Usage:
+	`basename $PROGNAME` [options] address citystate_or_zip [country]
+
+		Convert (geocode) a street address into a latitude/longitude.
+
+	`basename $PROGNAME` [options] tele-phone-number
+
+		Convert (geocode) a phone number into a latitude/longitude.
+
+	In either case, the output can be formatted to any of the output
+	file types that gpsbabel supports, or directly imported into the
+	GpsDrive MySQL waypoint database.
+
+Requires:
+	curl		http://curl.haxx.se/
+	gpsbabel	http://gpsbabel.sourceforge.net/
+
+Options:
+	-o format	Output format, -o? for possibilities [$OUTFMT]
+			plus "gpsdrive.sql" for direct insertion into MySQL DB
+			plus "latlon" for just Lat<tab>Long.
+			plus "map" to display a map.
+	-n name		The waypoint name, e.g. Bob's House.  The default
+			is the street address.
+	-s		Output shortened names (a gpsbabel option)
+	-t type		The waypoint type, e.g. house, cache, bar [$CODETYPE]
+	-q		Quiet. Do not output address confirmation on stderr.
+	-S		Alias for -o gpsdrive.sql
+	-a		For SQL, delete existing record only if it matches
+			all fields.  Otherwise, delete it if it matches
+			just the name and the type. 
+	-D level	Debug level
+	-U		Retrieve latest version of this script
+
+Countries:
+	us, ca, fr, de, it, es, uk
+
+Examples:
+	\$ geo-code "123 AnyStreet" 12345 
+	123AnyStreet 42.81020 -73.95070 new
+
+	\$ geo-code -t house "123 AnyStreet" 12345 
+	123AnyStreet 42.81020 -73.95070 house
+
+	\$ geo-code -n "Bob's House" -t house "123 AnyStreet" 12345 
+	BobsHouse 42.81020 -73.95070 house
+
+	\$ geo-code -S -n "Bob" -t house "123 AnyStreet" 12345 
+	[waypoint is added to GpsDrive MySQL database]
+
+	\$ geo-code 901-555-1212 
+	123AnyStreet 42.81020 -73.95070 new
+
+See Also:
+	geo-nearest	http://home.mn.rr.com/richardsons/sw/geo-nearest
+	geo-pg		http://home.mn.rr.com/richardsons/sw/geo-pg
+EOF
+
+	exit 1
+}
+
+#
+#       Report an error and exit
+#
+error() {
+	echo "`basename $PROGNAME`: $1" >&2
+	exit 1
+}
+
+#
+#       Set default options, can be overriden on command line or in rc file
+#
+DEBUG=0
+OUTFMT=gpsdrive
+COUNTRY=us	# us, ca, fr, de, it,es, uk
+SQLUSER=gast	# For -o gpsdrive.sql
+SQLPASS=gast	# For -o gpsdrive.sql
+SQLDB=geoinfo	# For -o gpsdrive.sql
+CODETYPE=new
+UPDATEcodeURL=http://home.mn.rr.com/richardsons/sw/geo-code
+UPDATEcodeFILE=geo-code.new
+
+#
+#	Read RC file, if there is one
+#
+if [ -f $HOME/.georc ]; then
+	. $HOME/.georc
+fi
+
+#
+#       Process the options
+#
+ADDRESS=
+CSZ=
+MODE=babel
+SQL=0
+NAME=
+GURL=
+QUIET=0
+SQLMATCH=type_name
+unset OPTIND
+while getopts "an:o:qSs:t:D:Uh?" opt
+do
+	case $opt in
+	n)	NAME="$OPTARG";;
+	o)	OUTFMT="$OPTARG";;
+	s)	BABELFLAGS="$BABELFLAGS -s";;
+	S)	OUTFMT="gpsdrive.sql";;
+	t)	CODETYPE="$OPTARG";;
+	q)	QUIET=1;;
+	a)	SQLMATCH=all;;
+	D)	DEBUG="$OPTARG";;
+	U)	echo "Getting latest version of this script..."
+		curl -o$UPDATEcodeFILE "$UPDATEcodeURL"
+		echo "Latest version is in $UPDATEcodeFILE"
+		exit
+		;;
+	h|\?)	usage;;
+	esac
+done
+shift `expr $OPTIND - 1`
+
+case "$OUTFMT" in
+map)
+	MODE=map
+	;;
+latlon)
+	MODE=latlon
+	;;
+gpsdrive)
+	BABELFLAGS=-s
+	;;
+gpsdrive.sql)
+	BABELFLAGS=-s
+	OUTFMT=gpsdrive
+	MODE=sql
+	# DEBUG=1
+	;;
+\?)
+	gpsbabel -? | sed '1,/File Types/d'
+	echo	"	gpsdrive.sql         " \
+		"GpsDrive direct MySQL database insertion"
+	echo	"	latlon               " \
+		"Just latitude and longitude, thank you"
+	exit
+	;;
+esac
+
+case "$#" in
+3)
+	#
+	#	street_address citystate_or_zip country
+	#
+	ADDRESS=$1
+	CSZ=$2
+	COUNTRY=$3
+	address=`echo $ADDRESS | tr ' ' '+'`
+	csz=`echo $CSZ | tr ' ' '+'`
+	country=`echo $COUNTRY | tr '[A-Z]' '[a-z]'`
+	case "$country" in
+	us|usa)		country=us;;
+	ca)		country=ca;;
+	fr)		country=fr;;
+	de)		country=de;;
+	it)		country=it;;
+	es)		country=es;;
+	uk)		country=uk;;
+	*)		error "Unknown country '$3'";;
+	esac
+	;;
+2)
+	#
+	#	street-address citystate_or_zip
+	#
+	ADDRESS=$1
+	CSZ=$2
+	address=`echo $ADDRESS | tr ' ' '+'`
+	csz=`echo $CSZ | tr ' ' '+'`
+	country=$COUNTRY
+	;;
+1)
+	#
+	# Google-able_phone_or_name
+	#
+	# first name (or first initial), last name, city (state is optional)
+	# first name (or first initial), last name, state
+	# first name (or first initial), last name, area code
+	# first name (or first initial), last name, zip code
+	# phone number, including area code
+	# last name, city, state
+	# last name, zip code
+	#
+	ADDRESS=$1
+	GURL="http://www.google.com/search?q=$1"
+	;;
+*)
+	usage
+esac
+
+if [ "$NAME" = "" ]; then
+	NAME="$ADDRESS"
+fi
+
+#
+#	procedure to make a gpsbabel style file
+#
+make_style() {
+	cat <<EOF
+FIELD_DELIMITER		TAB
+RECORD_DELIMITER	NEWLINE
+BADCHARS		TAB
+IFIELD	LAT_DECIMAL, "", "%08.5f"
+IFIELD	LON_DECIMAL, "", "%08.5f"
+IFIELD	DESCRIPTION, "", "%s"
+IFIELD	ICON_DESCR, "", "%s"
+EOF
+}
+
+#
+#	procedure to remove cruft files
+#
+remove_cruft() {
+	for i in $STYLE $COORDS $OUTWAY $MAP
+	do
+		[ -f $i ] && rm -f $i
+	done
+}
+
+#
+#	Main Program
+#
+TMP=/tmp/geo$$
+STYLE=${TMP}.style
+COORDS=${TMP}.coords
+OUTWAY=${TMP}.way
+MAP=${TMP}.gif
+UA="Mozilla/5.0"
+
+if [ "$GURL" != "" ]; then
+	#
+	# Treat a single command line argument as a phone number and use
+	# Google to look up the Yahoo maps link
+	#	
+	if [ $DEBUG -gt 0 ]; then
+		echo "curl $GURL"
+	fi
+	URL=`   curl -s -A "$UA" "$GURL" \
+		| tee $COORDS \
+		| sed -n 's#.*href=http://maps.yahoo.com/\([^>]*\)>.*#\1#p' \
+		| head -n1 \
+		`
+	if [ "$URL" = "" ]; then
+		cp $COORDS /tmp/geo.google
+		error "Unable to lookup telephone number or name with Google"
+	else
+		URL="http://maps.yahoo.com/$URL"
+	fi
+else
+	#
+	#	Fetch a web page which geocode's the lat/lon
+	#
+	#	<input type=hidden name=slt value="44.496478">
+	#	<input type=hidden name=sln value="-93.941013">
+	#
+	URL="http://maps.yahoo.com/py/maps.py"
+	URL="$URL?BFCat="
+	URL="$URL&Pyt=Tmap"
+	URL="$URL&addr=$address"
+	URL="$URL&csz=$csz"
+	URL="$URL&country=$country"	# us, ca, fr, de, it,es, uk
+	URL="$URL&Get&nbsp;Map=Get+Map"
+fi
+
+if [ $DEBUG -gt 0 ]; then
+	echo "curl $URL"
+fi
+
+if [ $DEBUG -gt 0 ]; then
+    filter="tee /tmp/geo.yahoo"
+else
+    filter=cat
+fi
+curl -L -s -A "$UA" "$URL" \
+| $filter \
+| sed -n \
+	-e 's/<title>Yahoo! Maps - \([^<]*\)<.*/\1/p' \
+	-e 's/.*slt=\([^%]*\).*sln=\([^%]*\).*Create.*/\1 \2/p' \
+> $COORDS
+
+if [ $DEBUG -gt 0 ]; then
+	cp $COORDS /tmp/geo.coords
+fi
+
+#
+#	Convert the coords, address, and type to the desired
+#	output format.
+#
+get_latlon() {
+	read title
+	read lat lon
+}
+
+get_latlon < $COORDS;
+
+if [ "$title" != ""  -a "$QUIET" != 1 ]; then
+	echo "$title" >&2
+fi
+if [ "$lat" = "" -o "$lon" = "" ]; then
+	error "Cannot determine coordinates of that address"
+	remove_cruft
+	exit
+fi
+
+case "$MODE" in
+map)
+	echo "$lat	$lon"
+	scale=10000
+	URL="http://www.vicinity.com/gif"
+	URL="$URL?&CT=$lat:$lon:$scale&IC=&W=1280&H=1024&FAM=myblast&LB="
+	curl -L -s -A "$UA" "$URL" > $MAP
+	xv $MAP
+	remove_cruft
+	exit
+	;;
+latlon)
+	echo "$lat	$lon"
+	remove_cruft
+	exit
+	;;
+esac
+
+make_style > $STYLE
+
+echo "$lat	$lon	$NAME	$CODETYPE" \
+| gpsbabel $BABELFLAGS -i xcsv,style=$STYLE -f /dev/fd/0 -o $OUTFMT -F $OUTWAY
+
+#
+#	Output the data or add it to the MySQL database
+#
+gpsdrive_add() {
+	delcmd="delete from waypoints"
+	addcmd="insert into waypoints (name,lat,lon,type,comment)"
+
+	read _name _lat _lon _type
+
+	COMMENT="$ADDRESS"
+	if [ "$CSZ" != "" ]; then
+		COMMENT="$COMMENT, $CSZ"
+	fi
+
+	echo "use $SQLDB;"
+	case "$SQLMATCH" in
+	all)
+		# Must be a complete match to delete existing record
+		echo "$delcmd where name='$_name' and type='$_type'"
+		echo "and lat='$_lat' and lon='$_lon';"
+		;;
+	*)
+		# Must match only name and type
+		echo "$delcmd where name='$_name' and type='$_type';"
+		;;
+	esac
+	echo "$addcmd values ('$_name','$_lat','$_lon','$_type',"
+	echo "'$COMMENT');"
+}
+
+if [ -f $OUTWAY ]; then
+	case "$MODE" in
+	sql)
+		#
+		# add it via mysql
+		#
+		if [ $QUIET != 1 ]; then
+			echo "$NAME $lat $lon $CODETYPE" >&2
+		fi
+		if [ $DEBUG -gt 0 ]; then
+			gpsdrive_add <$OUTWAY
+		else
+			gpsdrive_add <$OUTWAY | mysql -u$SQLUSER -p$SQLPASS
+		fi
+		;;
+	*)
+		#
+		# output to stdout
+		#
+		cat $OUTWAY
+		;;
+	esac
+fi
+
+remove_cruft

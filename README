@@ -1,0 +1,114 @@
+GPSDRIVE (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+-------------------------------------------------
+
+Website: www.gpsdrive.cc
+
+Disclaimer: Please do not use for navigation. 
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+    *********************************************************************
+
+
+
+********************************************************************
+Please read the gpsdrive man page. To do so, install the program and
+type 
+
+man gpsdrive
+
+into a terminal window. With KDE Konqueror you can also see it with
+the URL: 
+
+man:gpsdrive
+
+Most information is now in the man page!
+
+Have also a look at the Changelog file at 
+http://www.gpsdrive.cc/Changelog.gpsdrive
+
+About MySQL support please read README.SQL!
+
+********************************************************************
+
+
+
+
+How to install the program:
+----------------------
+
+To compile gpsdrive you need to development packages of:
+
+GTK-+2.x (better >=2.2.x)
+pango
+atk
+pcre
+xdevel (X11 development)
+gettext
+libcrypt
+glibc
+
+also the compiler gcc >=3.x
+make
+
+
+To compile from the tarball:
+
+Extract it with "tar -xvzf gpsdrive*tar.gz"
+cd gpsdrive
+./configure 
+make
+
+If you don't need the support of the GARMIN protocol (you are using
+only NMEA protocol) you should configure GpsDrive with:
+
+./configure --disable-garmin
+
+You can also add --enable-auto-optimization for optimized compiler flags.
+
+
+As root you should do a 
+make install
+
+to install the program, the gpsd daemon and the language files.
+
+After compiling and installing (install is needed for localisation)
+read the manpage of gpsdrive or start the program if you are to lazy
+to read manuals. ;-)
+
+You can also download the RPM file and install it:
+
+rpm -Uvh gpsdrive*.rpm
+
+Uninstall:
+---------
+
+If you installed using the tarball:
+
+cd into the gpsdrive directory (not the src), then
+
+make uninstall
+
+If you used the rpm package:
+
+rpm -e gpsdrive
+
+
+
+Much more information you find in the manual page, read it with "man
+gpsdrive" or online at 
+
+http://www.gpsdrive.cc/man-en.html
+

@@ -1,0 +1,13 @@
+src/gpsdrive.c
+src/speech_out.c
+src/splash.c
+src/settings.c
+src/fly.c
+src/nautic.c
+src/track.c
+src/gpssql.c
+src/gpskismet.c
+src/friends.c
+src/friendsd.c
+src/gpsnasamap.c
+src/gpsserial.c

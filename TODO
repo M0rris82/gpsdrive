@@ -1,0 +1,17 @@
+Command line switch to set gpsd hostname and port for remote control.
+
+Add additional server: expedia.com
+
+Add  load of trackings (i.e. stored in the GPS and
+converted with a nice perl script anyone will write).
+
+Servermode to display different positions provided over Internet
+server.
+
+
+resizing of window
+centering of map to selected points
+
+render maps in greyscale
+
+create ~/.gpsdrive directory and files if missing.

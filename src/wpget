@@ -1,0 +1,62 @@
+#!/bin/sh
+
+PATH=/bin:/usr/bin:/usr/local/bin
+
+TEMP=`getopt -o rwtd: --long get-routes,get-waypts,get-tracks,device: \
+     -n $0 -- "$@"`
+
+if [ $? != 0 ] ; then 
+	echo "Usage: $0 [-r|--get-routes]|[-w|--get-waypts]|[-t|--get-tracks] [-d device|--device device]" >&2 ;
+	echo "defaults are: --get-waypts and --device /dev/gps" >&2 ;
+	exit 1 ; 
+fi
+
+eval set -- "$TEMP"
+
+opt="";
+device="/dev/gps";
+
+while true ; do
+	case "$1" in
+		-r|--get-routes) opt="$opt -r" ; shift ;;
+		-w|--get-waypts) opt="$opt -w" ; shift ;;
+		-t|--get-tracks) opt="$opt -t" ; shift ;;
+		-d|--device) 
+			case "$2" in 
+				"") echo "Internal error!" >&2 ; exit 1;;
+				*) device=$2 ; shift 2 ;;
+			esac ;;
+		--) shift ; break ;;
+		*) echo "Internal error!" >&2 ; exit 1 ;;
+	esac
+done
+
+opt=${opt:= -w}
+if [[ ${#opt} != "3" && ${#opt} != "12" ]]; then
+	echo "Usage: $0 [-r|--get-routes]|[-w|--get-waypts]|[-t|--get-tracks] [-d device|--device device]" >&2 ;
+	echo "defaults are: --get-waypts and --device /dev/gps" >&2 ;
+	exit 1 ; 
+fi
+
+if ! [ -c $device -o -h $device -a -r $device ]; then
+	echo "device must be a readable character device node" >&2;
+	echo "or a link to a character device node." >&2;
+	exit 1;
+fi
+
+# Create a temporary file
+TMPFILE=`mktemp -q /tmp/wpget.XXXXXX`
+           if [ $? -ne 0 ]; then
+                   echo "$0: Can't create temp file, exiting..." >&2 
+                   exit 1
+           fi
+
+case "$opt" in
+	" -r") garble -r -d $device ;;
+	" -w") garble -w -d $device $TMPFILE ; wpcvt $TMPFILE ;;
+	" -t") garble -t -d $device ;;
+	*) echo "Internal error !" >&2 ; exit 1 ;;
+esac
+
+rm $TMPFILE
+exit 0

@@ -1,0 +1,247 @@
+.TH GPSDRIVE 1 
+.SH NOMBRE
+gpsdrive - muestra la posición del GPS en un mapa
+.SH SINOPSIS
+.B gpsdrive [-v] [-d] [-h] [-m] [-t dispositivo] [-o archivo] [-l english|german|spanish] [-s tamaño] [-x]
+.SH DESCRIPCIÓN
+
+.B Gpsdrive 
+es un sistema de navegación para coches (bicicletas, barcos, aviones).
+Por ahora está implementada la representación de la posición en un mapa
+y un montón de funciones más.
+
+GpsDrive muestra tu posición suministrada por el receptor GPS con 
+capacidades NMEA, en un mapa ampliable. Los mapas se seleccionan 
+automáticamente dependiendo de la posición. Se puede ajustar la escala
+preferida, que el programa intenta obtener entre los mapas disponibles.
+
+GpsDrive ha sido probado con un GARMIN GPS III. Todos los receptores 
+Garmin con una salida serie deberían ser utilizables. También el resto de 
+receptores que envíen sentencias NMEA a través del puerto serie, debería
+funcionar con GpsDrive
+
+Se sabe que los siguientes receptores GPS funfionan con GpsDrive:
+
+Magellan 310, 315, 320
+.br
+Garmin GPS III
+.br
+Garmin etrex
+.br
+Crux II GPS PCMCIA
+
+Advertencia:
+.B ¡No lo uses para navegar!
+
+.SH OPCIONES
+.TP
+.B \-d
+Muestra información de depuración. Si tienes problemas o el programa
+falla, envía esta salida al autor.
+.TP
+.B \-v
+Muestra la versión del programa, junto con la versión CVS del fichero 
+principal gpsdrive.c. Si envías un reporte de error, incluye este dato.
+.TP
+.B \-h
+Muestra una pequeña ayuda.
+.TP
+.B \-m
+Fuerza al programa a utilizar unidades métricas (kilómetros, metros, 
+km/h). Por defecto el programa utiliza el sistema métrico en 
+configuraciones locales, que NO tienen un punto como separador decimal.
+Por ejemplo, en inglés o POSIX mostrará las unidades en millas.
+.TP
+.B \-o fichero_de_salida
+Con esta opción, puedes extraer las sentencias NMEA a un terminal, 
+archivo o dispositivo serie. Esto es útil si utilizas GpsDrive en modo
+de simulación para proveer a otras aplicaciones GPS con datos de prueba.
+.TP
+.B \-t dispositivo
+Dispositivo de puerto serie (p. ej. /dev/ttyS0) sólo en modo GARMIN.
+.TP
+.B \-l idioma
+Ajusta el idioma para la salida de voz. Debes proporcionar los ficheros 
+de voz de Festival tú mismo (ver más abajo). Por el momento se 
+proporcionan los siguientes valores
+.B german
+,
+.B spanish
+and
+.B english
+.
+.TP
+.B \-x
+Crea una ventana propia para los menús de botones. Esto es útil en 
+pequeñas pantallas como la de la iPaq, en la que el menú debería 
+estar oculto.
+.TP
+.B \-s tamaño
+Ajusta el tamaño de la pantalla, si la autodetección no te satisface, 
+.I tamaño
+es, por ejemplo, 768,600,480,200
+
+.SH CONECTAR UN RECEPTOR GPS
+Primero debes elegir qué modo usar, GARMIN o NMEA.
+.B modo NMEA
+Este es el modo más usado. Se proporciona con la mayoría de los 
+recptores GPS. Para usarlo debes ejecutar primero el programa 
+.B gpsd
+que se proporciona. Este programa se ejecuta como un demonio en segundo
+plano proporcionando un servidor que envía datos del GPS a través del 
+puerto 2222.
+Los ajustes /dev/ttyS0 y 4800 Baudios están precompilados.
+
+Si quieres cambiar estos valores, por ejemplo a ttyS1, llámalo con:
+.br
+.B gpsd -serial /dev/ttyS1
+
+Asegúrate de seleccionar el protocolo NMEA y una tasa de transferencia 
+de 4800 Baudios en tu receptor GPS.
+
+Hay otro gpsd creado por Remco Treffkorn, que usa el puerto 2947. Si
+usas este gpsd será detectado automágicamente.
+
+.B modo GARMIN
+
+En este modo, el programa sólo obtiene dqatos sobre layitud/longitud,
+la velocidad y la dirección son calculadas por él mismo. Tampoco se 
+muestra el nivel de la señal de los satélites (este dato no está soportado
+por el protocolo GARMIN.
+
+El modo GARMIN es más rápido (varios paquetes de datos por segundo, en el modo 
+NMEA 1 paquete cada 2 segundos), pero los cálculos que realiza el programa 
+quizás no sean tan precisos.
+
+Si deseas usar el modo GARMIN simplemente conecta el receptor GPS al puerto 
+serie. Puedes hacer un enlace 
+.B /dev/gps
+apuntando al puerto serie. Si no lo haces así, debes usar el parámetro
+.B \-t
+seguido por el nombre del dispositivo, por ejemplo:
+.br
+.B gpsdrive -t /dev/ttyS0
+.br
+
+El modo GARMIN está sólo disponible en algunos receptores GARMIN.
+.br
+
+GpsDrive autodetecta los modos GARMIN o NMEA.
+
+
+.SH USO
+
+Puedes usar GpsDrive sin un dispositivo GPS conectado. Si quieres hacerlo así,
+GpsDrive comenzará automáticamente en
+.B modo simulador
+con el cual te podrás mover por el mapa. Asegúrate de que no haya ningún gpsd 
+corriendo para usar el modo simulación.
+
+.SH DESCARGA DE MAPAS
+
+Puedes descargar mapas de internet con el botón
+.B Descargar
+. Puedes elegir entre el servidor de Mapblast (www.mapblast.com) y el de 
+Expedia (www.expedia.com). 
+
+Por favor lee la información de copyright de www.mapblast.com y 
+www.expedia.com si quieres usar sus mapas.
+
+.SH SERVIDOR PROXY
+Si quieres acceder a Internet a través de un servidor proxy, debes ajustar
+la variable de entorno
+.B HTTP_PROXY
+a un valor como 
+.I http://proxy.provider.com:3128
+donde 3128 es el puerto del proxy.
+
+.SH CONTROL CON EL RATÓN
+
+Si haces click con el botón izquierdo del ratón en el mapa estarás en 
+"Modo display", en el cual un rectángulo es el cursor y no se muestra 
+posición. Si amplías o seleccionas otra escala escala para los mapas 
+funcionará como si esta fuera tu posición real.  
+
+Si haces click con el botón izquierdo cerca del borde, GpsDrive moverá el 
+encuadre del mapa o cargará el siguiente, si tu posición es ya el borde del 
+mapa.
+
+El botón central vuelve al modo normal. Igual si seleccionas un destino con
+el botón derecho. Mayúsculas + Botón izquierdo y Mayúsculas + Botón derecho
+cambi la escala del mapa.
+
+.SH INTERNACIONALIZACIÓN
+
+Si instalaste el programa verás motrarse los mensajes en inglés, alemán,
+francés, italiano o español, si tu lenguaje está definido con LANG o
+LANGUAGE. LANGUAGE ignora el resto de ajustes. Llama a "locale" para ver
+los ajustes y llama "set" si LANG o LANGUAGE está definido. Para español
+pon:
+
+.B export LANGUAGE=es
+
+y entonces inicia gpsdrive en esa shell.
+
+Tambien puedes iniciarlo con  
+.B LANGUAGE=es gpsdrive
+sin cambiar el idioma para la shell.
+
+.SH SALIDA DE VOZ
+
+Si quieres disponer de salida de voz debes instalar el software
+"festival". Mira en 
+.I http://fife.speech.cs.cmu.edu/festival 
+para informarte. 
+
+Para tener salida en alemán debes tener el festival alemán de
+.I www.ims.uni-stuttgart.de/phonetik/synthesis/index.html   
+
+Si tienes una instalación funcional de festival llámala como
+servidor con:
+
+.B festival --server
+
+Si inicias entonces GpsDrive, detectará el servidor en el puerto 1314 y 
+obtendrás algunas informaciones obre el estado mediante la voz. Dispondrás de 
+un botón (Mute) para detener la salida de voz.
+
+Hay una opción -l para cambiar el idioma de la voz de salida. Por el
+momento están disponibles inglés y alemán. GpsDrive ajusta festival en
+el idioma adecuado. Si no se selecciona de forma correcta, mira en 
+
+.B gpsdrive.c
+
+y edita los siguientes defines para ajustarse a tus necesidades:
+and edit following defines do your needs:
+
+.B #define FESTIVAL_ENGLISH_INIT "(voice_ked_diphone)"
+
+.B #define FESTIVAL_GERMAN_INIT "(voice_german_de3_os)"
+
+.B #define FESTIVAL_SPANISH_INIT "(voice_el_diphone)"
+
+Para esto, necesitas las voces ked_diphone para inglés, german_de3_os
+para alemán (es una voz MBROLA) y el_diphone para español.
+
+.SH AUTOR
+Fritz Ganter
+.br
+E-Mail: ganter@ganter.at
+.br
+.I http://www.gpsdrive.de
+
+.SH GARANTÍA
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.                                    
+
+.SH COPYRIGHT
+Copyright (c) 2001-2003 by Fritz Ganter
+.br
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+

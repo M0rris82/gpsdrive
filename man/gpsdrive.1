@@ -1,0 +1,848 @@
+.TH GPSDRIVE 1 
+.SH NAME
+gpsdrive v2.x - displays GPS position on a map
+.SH SYNOPSIS
+.B gpsdrive [options]
+
+.SH About this manual page
+
+This manual page explain the basic functions of GpsDrive and some
+additional info.
+
+In GpsDrive you find tooltips for nearly all buttons, there is also a
+HELP button for usage of the keys and mouse buttons.
+
+For special purposes read the README files, i.e. README.kismet,
+README.SQL ...
+
+.SH DESCRIPTION
+
+.B Gpsdrive 
+is a car (bike, ship, plane) navigation system.  Displaying your
+position on a map and a lot of other functions are implemented.
+
+.B This manual page describes GpsDrive version 2.x
+
+GpsDrive displays your position provided from your NMEA capable GPS
+receiver on a zoomable map . The maps are autoselected depending on
+your position. You can set prefered scale, which the program tries to
+get from available maps.
+
+GpsDrive was tested with a GARMIN GPS III, a Crux II GPS PCMCIA
+card and a Navilock USB receiver. All Garmin GPS reveivers with a serial output should be
+usable. Other GPS reveivers that sends NMEA protocol over the
+serial output should also work with GpsDrive.
+
+These GPS receivers are reported to work with gpsdrive:
+
+Magellan 310, 315, 320
+.br
+Garmin GPS III
+.br
+Garmin etrex
+.br
+GPS 45
+.br
+Crux II GPS PCMCIA card
+.br
+Holux GM-200 serial version
+.br
+Holux GM-200 USB (needs USB to serial support in kernel)
+.br
+eMap
+.br
+GPSMAP 295
+.br
+GNS 530
+.br
+Garmin GPS 12MAP
+.br
+EAGLE Expedition II
+.br
+DeLorme Earthmate
+.br
+Rayming TripNav, TN-200
+.br
+Haicom HI-203E
+.br
+GM-307 USB-Mouse
+.br
+Magellan Meridian Gold (works only with NMEA V2.1 GSA setting)
+.br
+NAVILock GPS Receiver (http://www.navilock.de)
+.br
+Haicom GPS HI204e
+.br
+Magellan Nav 6500 
+.br
+BendixKing KLX 100
+.br
+Motorola i58sr Cellular Phone w/built-in NMEA-compatible GPS
+.br
+.br
+
+Disclaimer:
+.B Do not use for navigation!
+
+.SH OPTIONS
+.TP
+.B \-d
+Shows some debugging information.
+.TP
+.B \-D
+Shows a lot of debugging information. If you have problems or program
+crashes, send this output to the author. You should also combine this
+with -d. See also the section 
+.I BUGS
+.TP
+.B \-v
+Shows program version together with the CVS version of the mainfile
+gpsdrive.c. If you send a bug report, also include this output.
+.TP
+.B \-h
+Displays a short help message.
+.TP
+.BI \-o "\| outputfile\^"
+With this option, you can
+.IR write
+the NMEA sentences to a PTY master, file or serial device. This is
+useful if you use GpsDrive in simulation mode to provide other GPS
+applications with test data.
+.TP
+.BI \-t "\| device\^"
+Serial port device (e.g. 
+.IR /dev/ttyS0
+). You can also set it in the 
+.IR setup
+menu.
+.TP
+.BI \-l "\| language\^"
+Sets the language for the speech output. You have to provide the voice
+files in festival yourself (see below). At the moment
+.IR german
+,
+.IR spanish
+and
+.IR english
+are provided.
+.TP
+.B \-x
+Creates own window for the menu buttons, status and map. This is
+helpful on small displays as the Compaq iPaq or on Head Mounted
+Displays, where the menu should be hidden.
+.TP
+.BI \-s "\| height\^"
+Set the height of the screen, if autodetection don't satisfy you, 
+.IR height
+is i.e. 768,600,480,200
+.TP
+.BI \-r "\| width\^"
+Set the 
+.IR width
+of the screen, if autodetection don't satisfy you. Works
+only in combination with
+.IR -s
+.TP
+.BI \-f "\| friendsserver\^"
+Define a friendsserver to exchange position information with other
+people. You can also set it in the Settings/Friends menu. You can start your own friendsserver with the program
+.B friendsd
+, which is included. More details are in section 
+.I FRIENDSD server
+
+.TP
+.B \-1
+Set special mode if you only have 1 mouse button, i.e. on touchpads.
+.TP
+.B \-a
+Disable display of battery status. Some implementations of the APM-BIOS
+are broken, so use this option if gpsdrive crashes.
+.TP
+.BI \-b "\| servername\^"
+Use a remote NMEA server. You can start gpsd on another
+.IR host
+, which has the GPS receiver connected and display the position on
+your local machine.
+.TP
+.BI \-c "\| waypointname\^"
+Initial position for simulation mode. Specify a
+.IR "waypoint name"
+from your currently used waypoint list.
+.TP
+.B \-q 
+Disables SQL support. Only usefull if you have SQL support compiled in.
+.TP
+.B \-z
+Don't show zoom and scaling on the map.
+.TP
+.BI \-n 
+Disables the direct serial connection. You have to use Garmin mode
+or start gpsd
+.br
+
+
+Use gpsdrive -h to see the actual command line help.
+
+
+.SH CONNECTING A GPS RECEIVER
+First you have to choose if you want use the GARMIN or NMEA mode.
+
+.B NMEA mode.
+.br
+This is the most used mode. This mode is provided by most GPS
+receivers. 
+
+.B New!!!
+
+Since 
+.I Version 2.08
+GpsDrive is now able to handle the serial
+connection itself, so you don't need to start (and use) gpsd anymore.
+.br
+To enable this feature go into the settings menu, switch to settings 2
+and select 
+.I Use serial connection.
+.br
+Make sure that your GPS receiver is connected and running before you
+start GpsDrive, so the program is able to detect the GPS device.
+
+You can also use gpsd, i.e. if you want to share the GPS data over the
+network or if you need additional features.
+.br
+You can force the use of gpsd by adding the
+.B \-n
+commandline parameter, even if you enabled the direct serial connection
+in the settings menu.
+
+.br
+To use NMEA mode with gpsd, you have to start the provided program
+.B gpsd
+first or do this by pressing the 
+.B Start GPSD
+button in the GpsDrive menu after setting the parameters in the settings
+menu.
+This program runs as daemon in background and provides a server,
+which sends the GPS data on port number 2947. 
+The settings /dev/gps and 4800 BPS are precompiled if you start
+gpsd by yourself. If you start it from GpsDrive, the settings defined
+in the 
+.B Settings
+menu are used.
+
+You can also change the gpsd settings i.e. to ttyS1 call it with:
+.br
+.B gpsd -p /dev/ttyS1
+
+but as mentioned, it's easier to do this in GpsDrive.
+.br
+If you are using a GPS receiver with an USB connection, your port may
+be
+.B /dev/ttyUSB0
+for the first device.
+
+Be sure to select NMEA protocol and a baudrate of 4800 BPS in your
+GPS receiver.
+
+To see the output of you GPS do 
+.B telnet localhost 2947
+and after the connect hit the 
+.B R
+key to see the NMEA sentences.
+
+.B NMEA sentences used
+.br
+Following NMEA sentences are used for specified informations:
+
+.I GPRMC: 
+Position, Speed, Heading 
+.br
+.I GPGSV: 
+Satellite signal level display
+.br
+.I GPGGA: 
+Altitude (not available on all receivers) and position if no GPRMC is
+available. In this case, speed and heading are calculated by GpsDrive.
+.br
+.I PGRME: 
+Display EPE (estimated position error), perhaps only available on
+GARMIN receivers
+
+At least you need GPRMC or GPGGA for using GpsDrive. If you can turn
+on GPRMC, please do so.
+
+.B GARMIN mode
+.br
+In this mode, the program only gets lat/long data, the speed and
+direction it calculates itself. There is also no display of the
+satellite signal level (this data is not supported by GARMIN
+protocol).
+
+GARMIN mode is faster (more data packets per second, in NMEA mode there are
+only 1-2 packets every 2 seconds), but the calculations the program
+makes may not be as accurate.
+
+If you want to use Garmin mode, simply connect the GPS receiver to your
+serial port. 
+Garmin mode is only provided by some GARMIN receivers.
+.br
+
+GpsDrive autodetects GARMIN or NMEA mode if enabled in settings
+menu. I would recommend to use NMEA mode.
+
+.SH Compilation without GARMIN protocol
+
+If you don't need the GARMIN protocol (i.e if you use only NMEA), you
+can compile GpsDrive yourself to not include the GARMIN protocol
+support. Do this with:
+
+.br
+ ./configure --disable-garmin
+.br
+ make clean
+.br
+ make
+.br
+ su
+.br
+ make install
+
+This has the advantage to produce a smaller and faster executable.
+
+.SH USAGE
+
+Start GpsDrive as normal user with:
+.B gpsdrive
+from your shell, if you want another language see section 
+.I LOCALISATION
+
+On some distribution you may find a "GpsDrive" entry in your Gnome or
+KDE menu.
+
+It is important that you have installed GpsDrive as root, so it can
+find the necessary files. 
+.B Don't start GpsDrive as root!
+
+You can use GpsDrive without a GPS device connected. If you do so,
+GpsDrive will automatically start in
+.B Simulator mode 
+if no working GPS receiver is connected and no gpsd
+is running. This mode is shown by a rotating globe.
+
+In simulator mode the pointer can move on the map (if enabled in settings
+menu). You can also stop gpsd if it is already running with the "Stop GPSD" Button.
+
+If you have connected a GPS-Receiver, you see in the 
+.I GPS Info
+window how much satellites are in view. You can click on this image to switch to the 
+.I Satellite position view.
+.br
+You must have at least 3 satellites in view. If you want to see your
+altitude, you need at least 4 satellites.  The antenna of your GPS
+receiver must have free sight to the sky, so you cannot use it
+indoor. More satellites gives you a better accuracy.
+
+If your receiver have not enough satellites with usable signal, the
+GPS Info window is red. If your signal is ok and gives a valid
+position, the GPS Info window is green.
+
+There are 3 modes in which GpsDrive is operating:
+
+.B Normal mode:
+
+This mode is entered if you have a GPS receiver connected. The cursor is at the position your receiver sends.
+
+The black and a red arrow shows your position on the map. The 
+.B black arrow
+is pointing to your selected target, the 
+.B red arrow
+shows the direction in which you are moving.
+.br
+If you have no valid position the arrows are blinking.
+
+.B Simulation
+
+If GpsDrive finds no GPS-receiver at program start, it
+shows the last position and the cursor will move to the targets you
+set. You can set your target by right-mouse click on the map or by
+selecting a waypoint from the FIND menu.
+
+.B Position mode
+
+This mode is activated by clicking on the "Pos. mode" button or if you
+"Jump" to a target in the FIND menu.
+
+At this mode, you can temporary change the position for looking around and
+jump to another positions (i.e. for downloading maps). In this mode this
+is 
+.B not your real position
+and is marked as an rectangle.
+
+You can set the position by simple left-mouse click on the map.
+
+You can leave the position mode by by clicking on the "Pos. mode"
+button or middle-mouse click or right-mouse click (which also sets
+your target).
+
+
+
+.SH MAP DOWNLOAD
+
+You can easily download maps from internet with the
+.B Download
+button. GpsDrive stores an index of your maps in the file
+map_koord.txt in your  ~/.gpsdrive directory. You can also use any
+directory for your maps, but you have set the directory in the
+settings menu.
+
+.SH About maps
+
+There is a file called "map_koord.txt" in your ~/.gpsdrive
+directory. Here is a sample:
+
+top_WORLD.jpg 0,00000 0,00000 88226037
+.br
+map_file0000.gif 53,60751 10,01145 3160000
+.br
+map_file0001.gif 43,08210 12,24552 3160000
+.br
+map_file0002.gif 49,81574 9,71454 7900000
+.br
+map_file0003.gif 47,72837 14,46487 592500
+.br
+
+
+The first row is the filename, then comes the latitude, the longitude
+and the scale of the map. The scale of 10000000 is good for Europe,
+and 100000 is for a town. To see detailed streets in a city, choose a
+scale like 10000 or 5000.
+
+GpsDrive selects the map with the best scale for your position. So get
+a map i.e for Europe, Austria and Vienna if you want to drive in
+Vienna.
+
+
+There is also the programs
+.IR gpsfetchmap.pl
+provided to download multiple maps for a bigger area.
+.br
+.B Please consider the copyright information 
+www.expedia.com if you want to use their maps!
+.br
+.B Don't missuse this service by downloading more maps as you need! 
+You will risc that you will be blocked by this servers.
+
+File formats:
+
+The decimal points in way.txt must always be a dot ('.'), in
+map_koord.txt '.' or ',' are possible. If you download maps from
+within the program, GpsDrive writes the map_koord.txt respecting your
+LC_NUMERIC setting.
+
+
+.SH Can I use other maps?
+
+You can also use your own (self drawn, scanned...) maps. The maps must
+be gif, jpeg, png or other common file formats (the format must be
+recognized by the gdk-pixbuf library).  The lat/long coordinates you
+write into the "map_koord.txt" file must be the center of the map. The
+map must have a size of 1280x1024 pixels! 
+
+Important! The maps must now be named map_* for streetmaps
+and top_* for topographical maps. If not, gpsdrive won't
+display the maps.
+
+There is an "import assistant" build in. Use this to import your maps.
+
+.SH Importing waypoints:
+
+
+The easiest way is to use the script "wpget" which does all for you if
+you use a GARMIN receiver.
+You can use the program "garble" (included in the package) to read
+out your waypoints from the Garmin GPS (Transfer mode must be set to
+GARMIN here, while GpsDrive needs NMEA!).
+
+Scripts: "wpget" is a script which calls "garble" in the proper way.
+
+Be sure to have "wpget", "wpcvt" and "garble" in your path. This is
+fullfilled, if you did install the program as root and /usr/local/bin
+is in your path.
+
+The manual way:
+
+You may create a file "way.txt" in your ~/.gpsdrive directory
+which looks like:
+
+DFN-Cert                53.577694    9.991263 FRITZ
+.br
+Finkenwerder            53.541765    9.842541 AIRPORT
+.br
+Fritz_Wohnung           53.582700    9.971390 FRITZ
+
+The rows are: label latitude longitude waypoint-type. You may omit the
+waypoint type.
+
+There is no need to create the way.txt file yourself, you can add the
+waypoints with GpsDrive using the "x" key. See help menu.
+
+
+
+.SH Route planing
+There is no route planing feature at the moment. Route planing would
+need the use of commercial maps and a database license which costs
+more than EUR 10.000. 
+
+.SH PROXY SERVER
+If you must access the internet via a proxy server, you have to set the
+enviroment variable
+.B HTTP_PROXY
+or
+.B http_proxy
+to a value like
+.I http://proxy.provider.com:3128
+where 3128 in this example is the proxy port.
+
+.SH MOUSE CONTROL
+You can switch on the
+.B Position mode
+by selecting this option in the menu.
+
+If you switched to "position mode" there a rectangle is the
+cursor and no position is shown. If you zoom or select another map
+scale with the slider, this is done for the position of the
+rectangle-cursor in the same manner as it would be your actual
+position. If you click with the left button near the border, GpsDrive will
+scroll the map or load the next map if you are on the margin of the map.
+
+The middle mouse button switches back to normal mode, or select the
+"Pos. mode" menu entry. The same if you select a target with the right
+mouse button.  Shift-left-mouse-button and shift-right-mouse-button
+changes the map scale.
+
+Please have also a look into the
+.B Help
+menu in GpsDrive to be informed about the actual mouse functions and key
+shortcuts.
+
+.SH Add new waypoints
+You can simply add new waypoints in two ways:
+
+o To add a waypoint at the
+.B current (GPS) position, 
+simply press CTRL and RIGHT-mouse-click. You can also press the
+.B x
+key.
+
+o To add a waypoint at the
+.B mouse position,
+simply press CTRL and LEFT-mouse-click. You can also press the
+.B y
+key.
+
+In the popup window add the waypoint name (spaces will be converted to
+underscores) and a waypoint type (see below for predefined
+waypoint types). You can create a new waypoint type by typing it into
+the text field or choose a existing waypoint type from the list.
+.B Important:
+The list (in SQL mode only) shows already used waypoint types, NOT the
+predefined. 
+.SH Icons for waypoints
+You can define freely your waypoint type names. But there are special
+names, which results in special icons display in GpsDrive:
+.TP
+.B WLAN
+open WLAN accesspoint
+.TP
+.B WLAN-WEP
+crypted WLAN accesspoint
+.TP
+.B Rest
+a restaurant
+.TP
+.B McDonalds
+a kind of restaurant
+.TP
+.B BurgerKing
+another kind of restaurant
+.TP
+.B Hotel
+A hotel
+.TP
+.B Shop
+Shop
+.TP
+.B Monu
+Monument, touristic attraction
+.TP
+.B Speedtrap
+Speedtrap (Radar), gives warning if this is in front of you
+.TP
+.B Nightclub
+Pssst...
+.TP
+.B Airport
+a Airport
+.TP
+.B Golf
+Golf course
+.TP
+.B Gasstation
+a gas station
+.TP
+.B Cafe
+coffee bar
+.TP
+.B Geocache
+Geocache point
+
+.PD
+.LP
+The names are case insensitive.
+
+Please have also a look on
+.IR README.SQL
+, for a actual list of waypoint types.
+
+.SH User defined waypoint icons
+
+If you are using SQL (see below) for your waypoints, you can define your own
+waypoint icons.
+.br
+Do the following steps:
+.br
+Create the directory: $HOME/.gpsdrive/icons and 
+place your icons (image type must be PNG) into this directory, with the name of
+the waypoint type (the filename must be lowercase). 
+In example for waypoint type "HOTEL" the file must have the name "hotel.png".
+.br
+The PNG image can have transparency, and should have a size around
+16x16 until 32x32, bigger icons may result in a performance hit.
+
+Your user defined waypoints override the built-in waypoint icons.
+
+.SH SQL support
+
+For managing a larger number of waypoints you should use SQL
+support. This needs to install a SQL server on your machine. At the
+moment, only MySQL is supported.
+
+Don't be afraid, MySQL don't need much resources, is very fast, but makes the
+management (including selection of waypoint types) of the waypoints
+much easier. In SQL mode you can select the shown waypoints in the
+.B setup
+menu.
+
+GpsDrive use MySQL automatically if it finds the shared library 
+.I libmysqlclient.so.10 
+and the MySQL Server is running and a connection to the database is possible. For first use you have to run 
+.B create.sql
+once.
+
+.B Please read README.SQL for information how to setup the SQL database.
+
+
+
+.SH Routes
+A route is a list of waypoints. GpsDrive guides you from one waypoint
+to the next on the route. 
+You can add waypoints to a route using
+the waypoint (select target) window. You can also add comments to a
+waypoint which will be spoken by the speech system and also be shown
+in the map window as scrolling text.
+
+.SH Comments for routes
+To add comments create a file with the same name as the waypoint file,
+but change the suffix to .dsc, i.e way-trip.txt and way-trip.dsc, then
+enter the comments in the way*.dsc file in the kind of:
+
+$waypointname
+Text which is displayed and spoken
+
+$nextwaypointname
+another text
+
+Example:
+
+$Fritz_Wohnung
+Hier wohnt Fritz, der Autor von diesem Programm. Er freut sich auf Besuch und eine Einladung zu einem saftigen Steak.
+                                                                                
+$Hubertus
+Hier wohnt Hubertus, ein Freund von Fritz.
+
+There is no limit of the length of the comment. Important is to start
+the line with '$name' and the comment in the next lines.
+
+.SH KISMET support
+Gpsdrive supports
+.IR kismet.
+Kismet is a 802.11b wireless network (WLAN) sniffer. If you have
+kismet running, gpsdrive will detect it and program start and shows
+new WLAN accesspoints in realtime on the map. SQL mode is necessary to
+run Gpsdrive in Kismet mode. WLAN accesspoints which are already
+stored in the SQL database from prior wardrivings are ignored. If you
+have voice output in gpsdrive, you hear information about the new
+found accesspoint.
+
+Please see also the file
+.IR README.kismet
+
+.SH LOCALISATION
+
+If you installed the program it will display messages in english,
+german, french, italian, dutch, dansk, hungarian, slovak, swedish, turkish or
+spanish if your language is set either with LANG or LANGUAGE. LANGUAGE
+overrides all other settings. Call "locale" to see the settings and
+call "set" if LANG or LANGUAGE is set. For german do:
+
+.B export LANGUAGE=de
+
+and then call gpsdrive in this shell.
+
+You can also start it with the line 
+.B LANGUAGE=de gpsdrive
+without setting the language for the shell.
+
+Sometimes you have to do use LANG instead of LANGUAGE.
+
+If your own language isn't available, please contact me if you want to
+make the translations.
+
+.SH SPEECH OUTPUT
+
+If you want speech output you have to install the festival speech output
+system.
+See 
+.I http://fife.speech.cs.cmu.edu/festival
+for information.
+
+For german output you have to get the german festival from
+.I www.ims.uni-stuttgart.de/phonetik/synthesis/index.html
+
+If you have a functional festival software call it as server with:
+
+festival --server
+
+When you start GpsDrive it will detect the server on port 1314 and
+puts out some status information as speech. You also have an
+additonal button (Mute) to switch off sound output.
+
+GpsDrive tries to select the correct language for your locale.
+The -l option can force the languages for speech
+output. At the moment english, spanish, and german are supported. GpsDrive
+sets festival into the proper language. If the initialisation is not
+correct, have a look into 
+.I gpsdrive.c
+and edit following defines do your needs:
+
+#define FESTIVAL_ENGLISH_INIT "(voice_ked_diphone)"
+
+#define FESTIVAL_GERMAN_INIT "(voice_german_de3_os)"
+
+#define FESTIVAL_SPANISH_INIT "(voice_el_diphone)"
+
+For this, you need the voices ked_diphone for english, german_de3_os
+for german (this is a MBROLA voice) and el_diphone for spanish.
+
+There is now an unsupported build of festival including english, german
+and spanish support.
+.B Download 
+it from GpsDrive homepage 
+.B mirrors
+and extract
+the tar file in the directory /usr/local as root:
+
+.br 
+cd /usr/local
+.br
+tar -xvzf festivalbuild.tar.gz
+
+Start the server with
+.B /usr/local/festival/bin/festival --server
+
+
+.SH FRIENDSD server
+
+There is a server program, called
+.B friendsd
+which acts as server for the position of your friends. If you enable
+it in the settings menu, 
+then you can see the position of all gpsdrive connected with this
+server. 
+
+You see the position of your friends as a car symbol on the map, including the name, time, day of week
+and the speed of his last connection. The blue arrow shows the last reported direction of your friend.
+
+The time is transmitted as UTC, but shown on the display as your local time, 
+so it is also correct if your friend lives in another time zone.
+
+The server uses port 50123 (UDP), so be sure that you open the port in
+your firewall. The server needs no root privileges and should run as
+normal user or a special user with no privileges. The server was NOT
+tested for security.
+
+There is a friends server running on www.gpsdrive.cc, you can try it
+if you enable it in the settings menu.
+
+You can also send messages to other mobile targets (Misc. Menu/Messages)
+
+
+.SH MAILING LIST
+The address for the mailing list is 
+.B gpsdrive@warbase.selwerd.nl
+
+Subscribing can be done by sending a mail containing 
+.B subscribe gpsdrive 
+
+to majordomo@warbase.selwerd.nl
+
+.SH BUGS
+Please send bug reports to the author. Report version (gpsdrive -v),
+screen size and info how to reproduce the bug. It is also a big help
+to run gpsdrive for a minute with the -d option and send me the output.
+
+If gpsdrive crashes with a segfault, I need a backtrace of the program
+in addition. To create a backtrace do following:
+
+Extract the tar file, change to gpsdrive directory and do
+.br
+ ./configure \-\-with\-debug
+.br
+ make clean
+.br
+ make
+.br
+ cd src
+.br
+ gdb ./gpsdrive
+
+Inside the debugger do:
+
+run (if you use arguments write it after run)
+
+When you get the segfault type in:
+
+bt
+
+and send me this output.
+ 
+.SH AUTHOR
+Fritz Ganter
+.br
+E-Mail: ganter@ganter.at
+.br
+http://www.gpsdrive.cc
+.SH WARRANTY
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+.SH COPYRIGHT
+Copyright (c) 2001-2004 by Fritz Ganter
+.br
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+

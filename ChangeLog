@@ -1,0 +1,3298 @@
+2004-02-23  Fritz Ganter  <ganter@ganter.local>
+
+	* po/tr.po, src/gpsfetchmap.pl, po/sk.po, po/sv.po, po/no.po, po/pt_BR.po, po/ja.po, po/nl.po, po/hu.po, po/it.po, po/gr.po, po/fr.po, po/es.po, po/de_AT.po, AUTHORS, po/da.po, po/de.po:
+	v 2.08
+
+2004-02-19  Fritz Ganter  <ganter@ganter.local>
+
+	* po/tr.po, src/Makefile.am, src/gpsdrive.spec, src/splash.c, src/talogo.h, po/sk.po, po/sv.po, po/no.po, po/pt_BR.po, po/ja.po, po/nl.po, po/it.po, po/gr.po, po/hu.po, po/es.po, po/fr.po, po/de_AT.po, po/de.po, configure.ac, po/da.po:
+	added Tele Atlas logo in about window
+
+2004-02-18  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsiconbt.png: added
+
+	* src/gpsmisc.c, src/gpsproto.h, src/navigation.c, src/splash.c, src/Makefile.am, src/gpsdrive.c:
+	navigation
+
+2004-02-16  Fritz Ganter  <ganter@ganter.local>
+
+	* po/tr.po, src/Makefile.am, src/gpsdrive.c, src/navigation.c, po/sk.po, po/sv.po, po/no.po, po/pt_BR.po, po/nl.po, po/ja.po, po/hu.po, po/it.po, po/gr.po, po/fr.po, po/es.po, po/de_AT.po, po/de.po, README, configure.ac, po/da.po:
+	activated navigation.c for teleatlas street maps, need some months of work to
+	get it functional.
+
+2004-02-12  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c, src/gpsdrive.h, src/gpsserial.c:
+	added -W switch for enable/disable WAAS/EGNOS (for SiRF II only?)
+
+2004-02-11  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c, src/gpsdrive.h: max. number of sats is now MAXSATS
+
+	* src/gpsdrive.c: added debug output for satellites
+
+	* src/gpsdrive.c: increased max satellite number from 40 to 80
+
+	* src/splash.c, src/gpsdrive.c:
+	added patch from Johnny Cache <johnycsh@hick.org>, dbname is now configurable
+	in gpsdriverc
+	additional search path for libmysql for cygwin
+
+2004-02-09  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c: fixed topomap bug
+
+	* src/gpsserial.c, src/gpsdrive.c:
+	fixed timeout behavior for direct serial connection
+
+2004-02-08  Fritz Ganter  <ganter@ganter.local>
+
+	* man/gpsdrive.1, src/gpssql.c:
+	handle user-defined icons for open and closed wlans
+	the filename should be:
+	for open wlan:  wlan.png
+	for crypted wlan: wlan-wep.png
+
+	* man/gpsdrive.1, src/battery.c:
+	autsch, fn string in battery.c was too short
+	still 2.08pre12
+
+	* po/tr.po, po/sk.po, po/sv.po, po/no.po, po/pt_BR.po, po/ja.po, po/nl.po, po/it.po, po/gr.po, po/hu.po, po/fr.po, po/es.po, po/de.po, po/de_AT.po, po/da.po:
+	...
+
+	* src/gpsserial.c, src/splash.c: v2.08pre12
+
+	* src/battery.c, src/fly.c, src/friendsd.c, src/gpsdrive.c, src/gpskismet.c, src/gpsnasamap.c, src/gpssql.c, src/settings.c, src/speech_out.c, src/splash.c, src/track.c:
+	replacing all strcat with g_strlcat to avoid buffer overflows
+
+	* src/friends.c, src/friendsd.c, src/gpsdrive.c, src/gpskismet.c, src/gpsnasamap.c, src/gpsserial.c, src/gpssql.c, src/navigation.c, src/settings.c, src/speech_out.c, src/gpsdrivemini.png, src/gpsdrivesplash.png, src/splash.c:
+	replacing all sprintf with g_snprintf to avoid buffer overflows
+
+2004-02-07  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsserial.c, src/track.c, src/gpsdrive.c: ...
+
+	* src/friends.c, src/gpskismet.c, src/gpsmisc.c, src/gpsserial.c, src/settings.c:
+	replacing strcpy with g_strlcpy to avoid bufferoverflows
+
+	* po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po:
+	changed status string
+
+	* src/gpsdrive.c, src/gpsserial.c, src/gpssql.c, src/settings.c, src/splash.c, po/sv.po, po/tr.po, po/sk.po, po/no.po, po/pt_BR.po, po/ja.po, po/nl.po, po/it.po, po/gr.po, po/hu.po, po/fr.po, po/es.po, po/de_AT.po, po/da.po, po/de.po:
+	added "store timezone" button in settings menu
+
+2004-02-06  Fritz Ganter  <ganter@ganter.local>
+
+	* configure.ac, src/Makefile.am, src/gpsdrive.spec: ...
+
+	* src/gpsfetchmap: removed gpsfetchmap
+
+	* README, README.SQL, man/de/gpsdrive.1, man/gpsdrive.1, src/friendsd.c, src/gpsnasamap.c, src/speech_out.c:
+	updated README and man page
+
+	* src/gpsdrive.c, src/settings.c: disabled mapblast server
+
+	* src/gpsdrive.c, src/gpsserial.c:
+	added -E parameter, which prints out the NMEA messages received
+
+	* po/sk.po, po/sv.po, po/tr.po, po/POTFILES.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, src/gpssql.c:
+	...
+
+	* src/gpssql.c, po/sv.po, po/tr.po, po/pt_BR.po, po/sk.po, po/no.po, po/ja.po, po/nl.po, po/gr.po, po/hu.po, po/it.po, po/fr.po, po/de_AT.po, po/es.po, po/de.po, po/da.po:
+	updated translation
+
+	* ChangeLog: updated ChangeLog
+
+	* src/gpsdrive.c, src/gpsdrive.h, src/gpssql.c:
+	added support for user-defined icons
+	create the directory: $HOME/.gpsdrive/icons
+	place your icons (type must be png) into this directory, with the name of
+	the waypoint type, filename must be lowercase
+	i.e. for waypoint type "HOTEL" the file must have the name "hotel.png"
+
+	* FAQ.gpsdrive, src/gpsserial.c:
+	added select again, so we can check if data is coming
+
+2004-02-06  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, gpsdrive.h, gpssql.c:
+	added support for user-defined icons
+	create the directory: $HOME/.gpsdrive/icons
+	place your icons (type must be png) into this directory, with the name of
+	the waypoint type, filename must be lowercase
+	i.e. for waypoint type "HOTEL" the file must have the name "hotel.png"
+
+	* gpsserial.c: added select again, so we can check if data is coming
+
+2004-02-05  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsserial.c:
+	code in gpsserial.c didn't work with USB receivers, because the send characters too fast
+	this code now should be ok
+
+	* gpsdrive.c, gpsdrive.h, gpsserial.c, splash.c, track.c:
+	replacing strcpy with g_strlcpy to avoid bufferoverflows
+	USB receiver does not send sentences in direct serial mode,
+	so I first send a "\n" to it
+
+	* gpsdrive.c: if no sat fix, satdisplay is red, otherwise green
+
+2004-02-04  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: adjust sat level bars
+
+	* gpsdrive.h, gpsnasamap.c, gpsdrive.c:
+	added GPGSA sentence for PDOP (Position Dilution Of Precision).
+
+2004-02-03  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, gpsdrive.h, gpsdrive.spec, settings.c:
+	fixed wrong string size
+
+	* gpsd.c, nmea.h, nmea_parse.c, tm.c:
+	added gpsd patches from David Clayton which fixes some bufferoverflows
+	and added support for GPGLL sentence
+
+	* settings.c, gpsdrive.c: night mode works fine
+	map handling for new users also
+	fixed bug: you was unable to edit the name in friends menu
+
+	* gpsnasamap.c, gpsdrive.c:
+	working on problems if gpsdrive is not installed
+
+	* gpsdrive.c: nightmode sets background to red
+
+2004-02-03  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsd.c, nmea.h, nmea_parse.c, tm.c:
+	added gpsd patches from David Clayton which fixes some bufferoverflows
+	and added support for GPGLL sentence
+
+	* settings.c, gpsdrive.c: night mode works fine
+	map handling for new users also
+	fixed bug: you was unable to edit the name in friends menu
+
+	* gpsnasamap.c, gpsdrive.c:
+	working on problems if gpsdrive is not installed
+
+	* gpsdrive.c: nightmode sets background to red
+
+2004-02-02  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdriveanim.gif: let earth rotate in the proper direction
+	:-)
+
+	* gpsdriveanim.gif, gpsserial.c: ..
+
+	* gpsdriveanim.gif: ...
+
+	* gpsdrive.c, gpsdriveanim.gif, settings.c:
+	new, self rendered earth animation
+
+	* gpsdrive.c, gpsdrive.spec, gpsmisc.c: 2.08pre10
+
+	* gpsdrive.c:
+	in "Search" window and in "Send message" window you can sort the entries
+	by clicking on the column label
+
+	* gpsdrive.c, gpsmisc.c, gpsproto.h:
+	inserted function calcxytopos, key x,y and right mouseclick are now correct in topomaps
+
+	* gpsdrive.h, gpskismet.c, gpsmisc.c, gpsproto.h, gpsserial.c, gpssql.c, nautic.c, navigation.c, settings.c, speech_out.c, splash.c, track.c, Makefile.am, battery.c, fly.c, friends.c, gpsdrive.c:
+	code cleanup
+
+2004-02-02  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdriveanim.gif: let earth rotate in the proper direction
+	:-)
+
+	* gpsdriveanim.gif, gpsserial.c: ..
+
+	* gpsdriveanim.gif: ...
+
+	* gpsdrive.c, gpsdriveanim.gif, settings.c:
+	new, self rendered earth animation
+
+	* gpsdrive.c, gpsdrive.spec, gpsmisc.c: 2.08pre10
+
+	* gpsdrive.c:
+	in "Search" window and in "Send message" window you can sort the entries
+	by clicking on the column label
+
+	* gpsdrive.c, gpsmisc.c, gpsproto.h:
+	inserted function calcxytopos, key x,y and right mouseclick are now correct in topomaps
+
+	* gpsdrive.h, gpskismet.c, gpsmisc.c, gpsproto.h, gpsserial.c, gpssql.c, nautic.c, navigation.c, settings.c, speech_out.c, splash.c, track.c, Makefile.am, battery.c, fly.c, friends.c, gpsdrive.c:
+	code cleanup
+
+2004-02-01  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsnasamap.c: added output to gpsnasamap.c
+
+	* gpsnasamap.c: missing nasamaps should now really work!
+	upload again 2.08pre9!
+
+	* gpsnasamap.c: fixed bug if 1 nasamap is missing
+
+	* gpsdrive.spec, settings.c, splash.c:
+	added "no_ssid" button in the SQL settings
+
+	* splash.c: use dbhostname (the hostname of the SQL server) now works
+	dbhostname may be edited in gpsdriverc
+
+	* gpsnasamap.c, gpsdrive.c: it seems that nasamaps now working fine
+
+2004-01-31  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, gpsnasamap.c: pre8
+
+	* gpsdrive.spec, gpsnasamap.c, gpsserial.c, splash.c, gpsdrive.c:
+	nasamaps are working better, but still bugs
+
+	* gpsnasamap.c: i hope the nasa maps work all over the world
+	I expect it works not in australia, will see after i get a little bit sleep
+
+	* gpsdrive.c, gpsnasamap.c: nasa maps at lon=0 works now
+
+	* gpsdrive.c, gpsnasamap.c: ...
+
+	* gpsnasamap.c: oh, forgot to add to CVS
+
+	* gpsdrive.spec: added this README for the NASA satellite maps
+
+	* Makefile.am, convnasamap.c, gpsdrive.c:
+	nasa map loading seems to work
+	bug: it would not work around 0 meridian
+
+2004-01-30  Fritz Ganter  <ganter@ganter.local>
+
+	* convnasamap.c, gpsdrive.c:
+	convnasamap creates mapfiles from the big nasa map files
+
+	* map_GPSWORLD.jpg, top_GPSWORLD.jpg:
+	changed filenames /map_GPSWORLD.jpg to top_GPSWORLD.jpg
+
+	* Makefile.am, gpsdrive.c, gpsdrive.spec, gpsserial.c:
+	i have to add gdk_threads_enter()/gdk_threads_leave() into all timeouts :-(
+
+	* map_GPSWORLD.jpg, gpsdrive.spec, gpsdrivesplash.png, Makefile.am, gpsdrive.c:
+	new splash picture
+
+2004-01-29  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: v2.08pre6
+	changed sat level to GPS info
+
+	* gpsdrive.c, speech_out.c: after valgrind
+
+	* gpsdrive.c: changed layout of sats display
+
+2004-01-28  Fritz Ganter  <ganter@ganter.local>
+
+	* friends.c, gpsdrive.c, gpskismet.c, splash.c: initialize FDs to -1
+
+	* gpsdrive.c: fixed silly  if (sock == 0) bug
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c, gpsdriveanim.gif: replaced earth with a better one
+
+	* friends.c, gpsdrive.c, gpskismet.c, gpsserial.c, settings.c, splash.c:
+	tested for memory leaks with valgrind, looks good :-)
+
+	* gpsserial.c: added #include <sys/select.h>
+	to gpsserial.c
+
+	* Makefile.am, gpsdrive.spec: 2.08pre5
+
+	* gpsdrive.c, gpsdriveanim.gif: new animation
+
+	* gpsdrive.c: moved tooltip
+
+	* gpsdrive.c: ...
+
+	* Makefile.am, gpsdrive.c, gpsdriveanim.gif, stop.h:
+	added gpsdriveanim.gif handling
+
+	* gpsdrive.c: added animated icon
+	you can now switch between gpsd and sim mode
+
+2004-01-27  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsserial.c, settings.c, splash.c, gpsdrive.c:
+	added "direct serial connection" button in settings menu
+
+	* gpsserial.c: removed double defines
+
+	* gpsdrive.c: fixed bug of not working simulation mode
+
+	* gpsdrive.c, gpsdrive.spec, gpsserial.c, settings.c, splash.c:
+	The baudrate is now selectable in settings menu
+	GpsDrive now connects to the GPS receiver in following order:
+	Try to connect to gpsd
+	Try to find Garble-mode Garmin
+	Try to read data directly from serial port
+
+	If this all fails, it falls back into simulation mode
+
+	* Makefile.am, gpsdrive.c, gpsdrive.h, gpsserial.c: added gpsserial.c
+
+	gpsdrive now detects a running gps receiver
+	You don't need to start gpsd now, serial connection is handled by GpsDrive directly
+
+2004-01-26  Fritz Ganter  <ganter@ganter.local>
+
+	* friends.c, friendsd.c, settings.c, splash.c: just indented some files
+
+	* gpsdrive.spec: 2.08pre3
+
+2004-01-25  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: added alignments for battery and temperature
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: centered compass and satlevel display
+
+2004-01-24  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c:
+	fixed bug in NESW (north,east,south,west compass label) string handling with
+	unicode
+
+2004-01-25  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: centered compass and satlevel display
+
+2004-01-24  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c:
+	fixed bug in NESW (north,east,south,west compass label) string handling with
+	unicode
+
+	* gpsdrive.c, settings.c: set transient for file dialogs
+
+	* settings.c, splash.c, gpsdrive.c:
+	friends label color is now changeable in settings menu
+
+2004-01-22  Fritz Ganter  <ganter@ganter.local>
+
+	* Makefile.am, gpsdrive.spec: added desktop file to rpm specfile
+
+	* friends.c, friendsd.c, splash.c: ...
+
+	* friends.c, friendsd.c, gpsdrive.c: working on friendsd
+
+	* Makefile.am, friendsd.c, gpsdrive.c:
+	friendsd now sends a receiving acknoledge
+
+2004-01-21  Fritz Ganter  <ganter@ganter.local>
+
+	* Makefile.am, compass.h, gpsdrive.c, gpsdrive.spec:
+	added compass image
+
+2004-01-20  Fritz Ganter  <ganter@ganter.local>
+
+	* Makefile.am: added desktop file, works only if you use --prefix=/usr
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: import maps is working again
+
+	* track.c, gpsdrive.c: working on import function
+
+	* gpsdrive.c, gpsdrive.spec: fixed N/S bug in display
+	disabled non-working menu entries
+
+2004-01-18  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c, gpsdrive.c: fixed bug for GTK<2.2.x
+
+	* gpsdrive.c, gpsdrive.spec, gpsreplay, splash.c:
+	this is the nice 2.07 release
+
+	* battery.c: fixed last memleak in battery.c (I hope)
+
+	* gpsdrive.c, splash.c: button for reminder window
+
+	* gpsdrive.c, splash.c:
+	try to find the problem that x-server eats cpu after 5 hours
+
+	* gpsdrive.c, settings.c, splash.c:
+	changed all popups to gtk_dialog instead of a toplevel window
+	cosmetic changes in settings menu
+
+2004-01-18  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c: fixed last memleak in battery.c (I hope)
+
+	* gpsdrive.c, splash.c: button for reminder window
+
+	* gpsdrive.c, splash.c:
+	try to find the problem that x-server eats cpu after 5 hours
+
+	* gpsdrive.c, settings.c, splash.c:
+	changed all popups to gtk_dialog instead of a toplevel window
+	cosmetic changes in settings menu
+
+2004-01-17  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c, gpsdrive.c: fixed some memory leaks
+
+	* battery.c: no need to create batimage always new, made it static
+
+	* battery.c, gpsdrive.c, settings.c, speech_out.c:
+	replaced all gdk_pixbuf_render_to_drawable (obsolet) with gdk_draw_pixbuf
+
+	* gpsdrive.c, settings.c, splash.c, track.c:
+	added color setting for track color
+
+	* settings.c: added tooltip for color change button
+
+	* gpsdrive.spec, gpsicon-temp.png, gpsicon.png: some work on icon
+
+	* Makefile.am, gpsdrive.c, gpsico.h, gpsicon-temp.png, gpsicon.png:
+	added better icon
+
+	* gpsdrive.c, splash.c:
+	randomize the startposition and set it the hamburg cementry :-)
+
+2004-01-16  Fritz Ganter  <ganter@ganter.local>
+
+	* Makefile.am, gpsdrive.c, gpsico.h, gpsicon.png, splash.c:
+	added new icon
+
+	* gpsdrive.c, speech_out.c: update targetlist if goto button pressed
+
+2004-01-15  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.spec, gpssmswatch: ...
+
+	* gpsdrive.c: changed waypoint layout
+
+	* battery.c, friends.c, garmin_serial_unix.cpp, garmin_types.h, garmin_util.cpp, serial.c:
+	added openbsd patches
+	real 2.07pre9
+
+	* gpsdrive.c: v2.07pre9
+
+	* gpssmswatch: changed SECONDS to SECS
+
+	* gpssmswatch: added warning about deleting SMS from phone
+
+	* Makefile.am: added gpssmswatch to distribution
+
+	* gpssmswatch: added log entry
+
+	* gpssmswatch:
+	gpssmswatch sends pos to the phone number which sends: PLSSENDPOS
+
+	* gpsdrive.c, gpssmswatch, splash.c: added gpssmswatch
+
+2004-01-14  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: indent
+
+	* gpsdrive.c: cosmetic changes in sendname selection
+
+	* friends.c, gpsdrive.c: removed some debug output
+
+	* friends.c, gpsdrive.c:
+	now message acknoledge is done to and from friendsserver
+
+	* gpsdrive.c:
+	added a Goto button in search menu, now you can jump to your waypoints
+
+	* friends.c, gpsdrive.c, settings.c, splash.c:
+	fixed bug if no crypt is avail.
+
+	* friends.c, gpsdrive.c: ...
+
+2004-01-13  Fritz Ganter  <ganter@ganter.local>
+
+	* friends.c, gpsdrive.c, splash.c:
+	added new field in waypoints display for number of friends received
+
+	* gpsdrive.c: smaller message compose window
+
+	* splash.c: added GNU license to about-popup
+
+	* gpsdrive.c: removed old GTK1.x accelerators
+
+	* friends.c, gpsdrive.c: changed "operations menu" do "Misc. menu"
+
+	* friends.c, gpsdrive.c: status bar
+
+	* friends.c, gpsdrive.c, gpsdrive.spec: ...
+
+	* gpsdrive.c:
+	added patch from Russell Harding <hardingr@billingside.com> for better menu bar
+
+	* friends.c, gpsdrive.c: fixed multiline message bug
+
+2004-01-12  Fritz Ganter  <ganter@ganter.local>
+
+	* friends.c: grrrrrrrrrrrr
+
+	* friends.c, splash.c: grrr
+
+	* friends.c: fixed name bug again, upload tar and cvs again
+
+	* friends.c: fixed wrong sender name in message
+
+	* gpsdrive.spec: gpsdrivemini.png in specfile
+
+	* gpsdrive.spec, splash.c: v2.07pre8
+
+	* friends.c, gpsdrive.c:
+	make message menu entry insensitive if message is not yet send
+
+	* splash.c: some text changes for messages
+
+	* gpsdrive.c: changed "Chat" to "Messages"
+
+	* friends.c, friendsd.c, gpsdrive.c, gpsdrive.h, splash.c:
+	added friends message service
+
+2004-01-11  Fritz Ganter  <ganter@ganter.local>
+
+	* friendsd.c: drop entries which are older than 1 week
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: reduce height
+
+	* gpsdrivemini.png: added image
+
+	* Makefile.am, gpsdrive.c, gpsdrive.spec, settings.c, splash.c:
+	added about screen
+	added menubar
+
+	* speech_out.c: gray border for .dsc file text
+
+2004-01-10  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.spec: v2.07pre7
+
+	* gpsdrive.c: make select target popup larger
+
+	* gpsdrive.c:
+	avoid NAN in calcdist if position is exactly the same as destination
+
+	* gpsdrive.c: autsch, big mistake in drawfriends
+
+	* gpsdrive.c, settings.c: some changes in friendsmode settings menu
+
+2004-01-09  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: fixed locale bug for topo maps
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.spec: 2.07pre6
+
+	* LatLong-UTMconversion.c, LatLong-UTMconversion.h, Makefile.am, gpsdrive.c, gpsdrive.h:
+	added topomap download patch from Russell Harding <hardingr@billingside.com>
+	Thanks for the lot of work!
+
+2004-01-06  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c, gpsdrive.spec:
+	changed target text to the shorter form: "To:" instead of "Distance to"
+
+	* gpsdrive.c:
+	friendsmode: displays selected unit instead of km/h, displayed time now respects timezone setting.
+
+2004-01-05  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, gpskismet.c, gpssql.c, speech_out.c:
+	changed all frames to respect setting
+
+2004-01-04  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, gpsdrive.spec, settings.c:
+	display SQL waypoint fields only if SQL is used
+
+2004-01-03  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.h: translations
+
+	* gpsdrive.c, gpsdrive.h, settings.c, splash.c:
+	added settings switch for etched frames
+
+	* gpsdrive.h, gpsdrive.c: ...
+
+2004-01-02  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c:
+	changed back Geschw. to Geschwindigkeit (in german translation)
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: translated
+
+	* gpsdrive.c: working on wplabels
+
+	* gpsdrive.c: nicer waypoint info
+
+2004-01-01  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.h, gpsdrive.spec, gpskismet.c, gpssql.c, nautic.c, settings.c, speech_out.c, splash.c, track.c, battery.c, fly.c, friends.c, friendsd.c, gpsdrive.c:
+	v2.06
+	trip info is now live updated
+	added cpu temperature display for acpi
+	added tooltips for battery and temperature
+
+2003-12-28  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.spec: 2.06pre7
+
+	* battery.c, gpsdrive.c: ...
+
+	* battery.c, gpsdrive.c: added battery tooltip
+
+	* battery.c, gpsdrive.c: tooltip for temperature
+
+	* battery.c, gpsdrive.c: ...
+
+	* gpsdrive.c: temp tooltip
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: temp...
+
+	* gpsdrive.c: ...
+
+	* battery.c, gpsdrive.c: working on temperature
+
+	* battery.c: ...
+
+	* battery.c, gpsdrive.c: better acpi-temperature support
+
+	* power.h, battery.c, gpsdrive.c:
+	added patch from Jaap Hogenberg for temperature display
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: distance display changes
+
+	* gpsdrive.c, gpsreplay: new gpsreplay version
+
+	* gpsdrive.c: cosmetic changes in distance and altitude display
+
+	* gpsdrive.c: ...
+
+	* gpsdrive.c: removed some warnings
+
+	* gpsdrive.c: changed waypoint window text
+
+	* gpsreplay: update gpsreplay v1.21, now altitude is provided
+
+	* gpsdrive.spec: beta release 2.06pre5
+
+	* gpsdrive.c, gpsreplay: new version 1.20 of gpsreplay
+
+	* gpsreplay: added gpsreplay
+
+	* Makefile.am: ...
+
+	* gpsd.c: added gpsd patch from Mina Naguib <webmaster@topfx.com>
+	that allows GPSD to accept serial speeds up to 115200 via the -s commandline
+	switch.
+
+2003-12-27  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c: ...
+
+	* battery.c: battery.c now reads all batteries
+
+2003-12-23  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.spec: spec file 2.06pre3
+
+	* gpsdrive.c: release 2.06pre2
+
+	* gpsdrive.c:
+	fix bug (download button was not sensitive after download)
+
+	* gpsdrive.c, settings.c: v2.06pre2
+	disable multiple popups
+
+2003-12-22  Fritz Ganter  <ganter@ganter.local>
+
+	* splash.c, gpsdrive.c: better test if image has alpha
+
+2003-12-21  Fritz Ganter  <ganter@ganter.local>
+
+	* gpsdrive.c, splash.c: error handling for not installed program
+	real v2.05 :-)
+
+	* gpsdrive.spec, splash.c: release v2.05
+
+	* settings.c, splash.c, gpsdrive.c: fixed bug in timezone setting
+	timezone will be stored now
+
+2003-12-17  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c, gpsdrive.c, gpsdrive.spec:
+	acpi battery status works now again (tested with 2.4.22ac4)
+
+	* Makefile.am, convgiftopng, gpsdrive.c:
+	now CPU load is reduced heavily through removing alpha channel from image
+
+	* gpsdrive.c, speech_out.c, splash.c: added donation window
+	waypoint describtion (.dsc files) works again
+	added dist_alarm ...
+
+2003-12-17  Fritz Ganter  <ganter@ganter.local>
+
+	* battery.c, gpsdrive.c, gpsdrive.spec:
+	acpi battery status works now again (tested with 2.4.22ac4)
+
+	* Makefile.am, convgiftopng, gpsdrive.c:
+	now CPU load is reduced heavily through removing alpha channel from image
+
+	* gpsdrive.c, speech_out.c, splash.c: added donation window
+	waypoint describtion (.dsc files) works again
+	added dist_alarm ...
+
+2003-12-17  Fritz Ganter  <ganter@ganter.local>
+
+	* Makefile.am, convgiftopng, gpsdrive.c:
+	now CPU load is reduced heavily through removing alpha channel from image
+
+	* gpsdrive.c, speech_out.c, splash.c: added donation window
+	waypoint describtion (.dsc files) works again
+	added dist_alarm ...
+
+2003-12-17  Fritz Ganter  <ganter@ganter.local>
+
+	* configure.ac, src/gpsdrive.c, src/speech_out.c, src/splash.c:
+	added donation window
+	waypoint describtion (.dsc files) works again
+	added dist_alarm ...
+
+2003-12-01  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsfetchmap.pl: bug fixes from camel@insecure.at
+
+2003-10-23  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c: changes for cygwin
+
+	* autogen.sh, config.h.in, configure.ac: changed autogen.sh
+
+	* acinclude.m4, autogen.sh: added acinclude.m4 and autogen.sh to cvs
+
+	* NEWS: added mailinglist archive urls
+
+2003-10-10  Fritz Ganter  <ganter@ganter.local>
+
+	* src/Makefile.am, src/gettext.h: added gettext.h
+
+	* po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/friendsd.c, src/gpsdrive.spec, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po:
+	added security patch for friendsd
+
+2003-10-04  Fritz Ganter  <ganter@ganter.local>
+
+	* po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/friends.c, src/gpsdrive.c, src/settings.c, src/speech_out.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po:
+	translations don't need to be utf-8, but the .po files must specify the
+	correct coding (ie, UTF-8, iso8859-15)
+
+2003-10-01  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c, src/gpsdrive.spec: specfile patched
+
+2003-09-26  Fritz Ganter  <ganter@ganter.local>
+
+	* config.h.in: no changes
+
+2003-09-18  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c: changed orange color
+
+	* FAQ.gpsdrive, src/map_GPSWORLD.jpg: added src/map_GPSWORLD.jpg to cvs
+
+2003-09-17  Fritz Ganter  <ganter@ganter.local>
+
+	* README.SQL, src/fly.c, README.kismet: ...
+
+	* po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po:
+	cvs test
+
+	* po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/friendsd.c, src/gpsdrive.c, src/gpsdrive.spec, po/it.po, po/ja.po, po/nl.po, po/no.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, configure.ac, po/da.po, po/de.po, po/de_AT.po:
+	2.05pre1
+	fixed malloc problem in friends server
+	force name in friendsmode to replace space with underscore
+
+2003-08-31  Fritz Ganter  <ganter@ganter.local>
+
+	* po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.spec, src/gpskismet.c, README.kismet, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	v 2.04: better Kismet support, read end of README.kismet
+
+2003-08-12  Fritz Ganter  <ganter@ganter.local>
+
+	* configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpskismet.c:
+	v2.03
+	fixed kismet bug (wrong GPS position)
+	compiles also on SuSE 8.1
+	compiles on GTK+ >= 2.0.6
+	fixed wrong font (Sans 10 Bold 10 message)
+
+	* po/tr.po, src/friends.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po:
+	v2.03 workaround for missing crypt()
+
+	* src/gpsdrive.spec, src/settings.c, src/splash.c, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/de.po, po/de_AT.po, po/es.po, configure.ac, po/da.po:
+	fixed bugs of PDA patch
+
+2003-07-25  Fritz Ganter  <ganter@ganter.local>
+
+	* src/gpsdrive.c, src/gpsdrive.h: 2.01
+	expedia works again
+
+	* src/Makefile.am, src/client.c, src/friends.c, src/friendsd.c, src/friendsicon.png, src/gpsdrive.c, src/gpsdrive.h, src/gpsdrive.spec, src/serial.c, src/server.c, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, ChangeLog, Makefile.am, config.h.in, configure.ac, man/gpsdrive.1, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	2.00
+
+2003-06-08  Fritz Ganter  <ganter@ganter.local>
+
+	* CREDITS, Makefile.am, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po:
+	added CREDITS file for translator credits
+
+	* src/gpsdrive.spec, src/settings.c, src/splash.c, po/sv.po, po/tr.po, src/Makefile.am, src/battery.c, src/battery.h, src/friends.c, src/gpsdrive.c, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/gr.po, po/hu.po, po/it.po, po/es.po, po/fr.po, po/de.po, po/de_AT.po, FAQ.gpsdrive, configure.ac, po/da.po:
+	release 2.0pre9
+	Added setting of timeperiod in friends mode (see settings menu)
+
+2003-06-08  Fritz Ganter  <ganter@ganter.at>
+
+	* CREDITS, Makefile.am, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po:
+	added CREDITS file for translator credits
+
+	* src/gpsdrive.spec, src/settings.c, src/splash.c, po/sv.po, po/tr.po, src/Makefile.am, src/battery.c, src/battery.h, src/friends.c, src/gpsdrive.c, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/gr.po, po/hu.po, po/it.po, po/es.po, po/fr.po, po/de.po, po/de_AT.po, FAQ.gpsdrive, configure.ac, po/da.po:
+	release 2.0pre9
+	Added setting of timeperiod in friends mode (see settings menu)
+
+2003-06-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/splash.c, po/sv.po, po/tr.po, src/friendsd.c, src/gpsdrive.c, src/settings.c, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/gr.po, po/hu.po, po/it.po, po/de_AT.po, po/es.po, po/fr.po, po/de.po, po/da.po:
+	v2.0pre8
+	friendsmode works fine and can be set in settings menu
+
+2003-05-31  Fritz Ganter  <ganter@ganter.at>
+
+	* po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c:
+	...
+
+	* po/tr.po, src/Makefile.am, src/friends.c, src/gpsdrive.c, src/splash.c, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/fr.po, po/de.po, po/de_AT.po, po/es.po, po/da.po:
+	friendsd2 works fine with sven's server
+
+	* src/Makefile.am, src/friends.c, src/friendsd.c, src/gpsdrive.c, src/gpsdrive.h, src/server.c, src/settings.c, src/splash.c, src/track.c, src/track.h:
+	new UDP friendsserver build in, needs some work
+
+	* src/client.c, src/server.c: starting buildin new server and client
+
+2003-05-30  Fritz Ganter  <ganter@ganter.at>
+
+	* po/tr.po, src/client.c, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/it.po, po/ja.po, po/nl.po, po/fr.po, po/gr.po, po/hu.po, po/de.po, po/de_AT.po, po/es.po, po/da.po:
+	client server working, but not perfectly
+
+	* src/client.c, src/server.c: testing
+
+	* src/client.c, src/server.c: xxx
+
+	* src/Makefile.am: testing...
+
+2003-05-29  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sv.po, po/tr.po, src/gpsdrive.c, src/settings.c, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/de_AT.po, po/es.po, man/de/gpsdrive.1, man/gpsdrive.1, po/da.po, po/de.po:
+	testing...
+
+2003-05-28  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, src/settings.c, src/splash.c, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/gpsdrive.c:
+	added load balancer
+
+2003-05-11  Fritz Ganter  <ganter@ganter.at>
+
+	* po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/convgiftopng, src/fly.c, src/friends.c, src/gpsdrive.c, src/nautic.c, src/navigation.c, src/settings.c, src/speech_out.c, src/splash.c, po/de.po, po/de_AT.po, po/es.po, man/gpsdrive.1, po/da.po:
+	v2.0pre7
+	added script convgiftopng
+	This script converts .gif into .png files, which reduces CPU load
+	run this script in your maps directory, you need "convert" from ImageMagick
+
+	Friends mode runs fine now
+	Added parameter -H to correct the alitude
+
+	* src/friends.c, src/geo-waypoint, src/gpsdrive.c, src/gpsdrive.spec, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, po/ja.po, po/nl.po, po/no.po, po/gr.po, po/hu.po, po/it.po, po/fr.po, po/de.po, po/de_AT.po, po/es.po, configure.ac, man/gpsdrive.1, po/POTFILES.in, po/da.po:
+	friendsmode is now working fine
+
+2003-05-08  Fritz Ganter  <ganter@ganter.at>
+
+	* src/settings.c, src/splash.c, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.h, src/gpsdrive.spec, src/gpsdrivesplash.png, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/hu.po, po/it.po, po/fr.po, po/gr.po, po/de.po, po/de_AT.po, po/es.po, configure.ac, po/da.po:
+	added settings menu entry for fonts setting
+	made a new cool splash screen
+	updated da and it translations
+	v2.0-pre6
+
+	* configure.ac, configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.spec:
+	added new da.po
+
+2003-05-07  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.h, src/track.c:
+	als functions are working (except import)
+	ready for 2.0pre4
+
+	* po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsfetchmap, src/gpssql.c, src/settings.c:
+	replaced degree symbol with unicode string
+	gpsdrive should now be unicode clean
+
+	* man/de/gpsdrive.1, man/gpsdrive.1, src/gpsdrive.c, src/gpsdrive.h, src/speech_out.c, src/splash.c:
+	...
+
+2003-05-06  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/splash.c, src/track.c, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, po/it.po, po/ja.po, po/nl.po, po/fr.po, po/gr.po, po/hu.po, po/de.po, po/de_AT.po, po/es.po, po/da.po:
+	wp label text is now pango
+
+2003-05-03  Fritz Ganter  <ganter@ganter.at>
+
+	* acinclude.m4, configure.ac, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/ja.po, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpssql.c, src/splash.c, src/track.c, src/track.h:
+	shortcuts are now working
+
+	* configure.ac, po/de.po, src/gpsdrive.c, src/gpsdrive.spec, src/splash.c:
+	added help window
+
+2003-05-02  Fritz Ganter  <ganter@ganter.at>
+
+	* po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/gpsdrive.c, src/splash.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/nl.po:
+	changed location of datadir files
+
+	* po/tr.po, src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, src/gpssql.c, src/splash.c, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/gr.po, po/hu.po, po/it.po, po/fr.po, po/de.po, po/de_AT.po, po/es.po, Makefile.am, config.h.in, configure.ac, po/da.po:
+	porting to GTK+-2.2
+	GpsDrive Version 2.0pre3
+
+	* po/de.po: *** empty log message ***
+
+2003-05-01  Fritz Ganter  <ganter@ganter.at>
+
+	* po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/tr.po, po/it.po, po/nl.po, po/fr.po, po/gr.po, po/hu.po, po/de.po, po/de_AT.po, po/es.po, po/da.po:
+	...
+
+2003-04-30  sven  <sven@amd>
+
+	* src/gpsfetchmap: fixed a syntax error in line 53..escaped ( and )
+
+	* src/gpsfetchmap, src/gpsfetchmap.pl: url change: mapblast -> vicinity
+
+2003-04-28  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/track.c: 1.33pre1
+
+	* src/garmin_application.cpp.~1.3.~, src/garmin_data.cpp, src/garmin_data.h, src/garmin_legacy.cpp, src/garmin_legacy.h:
+	added missing garmin_ files
+
+	* po/tr.po, src/Makefile.am, src/garble.cpp, src/garmin_application.cpp, src/gpsdrive.c, src/gpsdrivegarble.cpp, po/nl.po, po/no.po, po/pt_BR.po, po/sk.po, po/sv.po, po/fr.po, po/gr.po, po/hu.po, po/it.po, po/de_AT.po, po/es.po, po/de.po, po/da.po:
+	compiles now with gcc 3.3
+
+	* LISEZMOI.FreeBSD, LISEZMOI.SQL, LISEZMOI.kismet: ..
+
+	* configure.in, src/Makefile.am, src/garble.cpp, src/garmin_application.cpp, src/garmin_application.h, src/garmin_command.h, src/garmin_error.h, src/garmin_link.cpp, src/garmin_link.h, src/garmin_packet.h, src/garmin_phys.h, src/garmin_serial.h, src/garmin_serial_unix.cpp, src/garmin_serial_unix.h, src/garmin_types.h, src/garmin_util.cpp, src/garmin_util.h, src/geo-code, src/geo-nearest, src/gpsdrive.c, src/gpsdrive.h, src/gpsdrive.spec:
+	...
+
+2003-03-31  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in: removed ja translatation, didn't compile
+
+	* po/gr.po, po/ja.po, po/pt_BR.po: added more
+
+	* po/no.po: added no.po
+
+	* src/mysql/Makefile.am~, src/mysql/chardefs.h, src/mysql/dbug.h, src/mysql/errmsg.h, src/mysql/history.h, src/mysql/keymaps.h, src/mysql/m_ctype.h, src/mysql/m_string.h, src/mysql/my_config.h, src/mysql/my_global.h, src/mysql/my_list.h, src/mysql/my_net.h, src/mysql/my_no_pthread.h, src/mysql/my_pthread.h, src/mysql/my_sys.h, src/mysql/mysql.h, src/mysql/mysql_com.h, src/mysql/mysql_version.h, src/mysql/mysqld_error.h, src/mysql/raid.h, src/mysql/readline.h, src/mysql/sslopt-case.h, src/mysql/sslopt-longopts.h, src/mysql/sslopt-usage.h, src/mysql/sslopt-vars.h, src/mysql/tilde.h:
+	added mysql include files
+
+	* src/Makefile.am, po/sk.po, po/sv.po, po/tr.po, po/hu.po, po/it.po, po/nl.po, po/de_AT.po, po/es.po, po/fr.po, po/de.po, README.SQL, configure.in, po/da.po:
+	...
+
+2003-01-26  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/geo-code, src/gpsdrive.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/de.po, po/de_AT.po, po/es.po, configure.in, po/da.po:
+	v1.32
+
+2003-01-25  sven  <sven@amd>
+
+	* src/gpssql_backup.sh, src/gpssql_restore.sh: chmod 755
+
+2003-01-24  sven  <sven@amd>
+
+	* src/gpssql_restore.sh: added some help
+
+2003-01-23  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, src/icons.h, src/netlib.c, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/geo-nearest, src/gpsd.c, src/gpsdrive.c, po/fr.po, po/hu.po, po/it.po, po/de_AT.po, po/es.po, configure.in, po/da.po, po/de.po:
+	added greek translation
+	added geocache scripts
+	added geocache icon
+	improved search for libmysqlclient.so
+
+2003-01-15  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/battery.c, src/gpsdrive.c, src/gpsdrive.spec, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/fr.po, po/hu.po, po/it.po, Makefile.am, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	v1.32pre4
+
+	* src/gpsdrive.h, src/gpsdrive.spec, src/gpskismet.c, src/gpssql.c, config.h.in, configure.in, src/gpsdrive.c:
+	MySQL is now loaded dynamically on runtime, no mysql needed for compile.
+	Needs only libmysqlclient.so now.
+
+	* src/track.c, po/sk.po, po/sv.po, po/tr.po, src/battery.c, src/fly.c, src/gpsdrive.c, src/gpsdrive.spec, src/gpskismet.c, src/gpssql.c, src/icons.h, src/nautic.c, src/navigation.c, src/settings.c, src/speech_out.c, src/splash.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/de.po, po/de_AT.po, po/es.po, FAQ.gpsdrive.fr, README, configure.in, man/de/gpsdrive.1, man/es/gpsdrive.1, man/gpsdrive.1, po/da.po:
+	before dynamically loading mysql
+
+2003-01-02  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsfetchmap.pl: copyright violation warning
+
+	* src/gpsfetchmap: changed copyright
+
+	* src/gpsfetchmap.pl:
+	set polite to yes, because of stupid people violating mapblast's
+	copyright and download thousends of maps
+
+2002-12-30  molter  <molter@amd>
+
+	* src/battery.c:
+	APM is i386 only, allow compilation on FreeBSD alpha too
+
+2002-12-24  Fritz Ganter  <ganter@ganter.at>
+
+	* po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/settings.c, src/splash.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/de_AT.po, po/es.po, po/fr.po, FAQ.gpsdrive, GPS-receivers, po/da.po, po/de.po:
+	FAQ
+
+2002-12-24  sven  <sven@amd>
+
+	* FAQ.gpsdrive: darricks answer's much better than mine..
+
+	* FAQ.gpsdrive: added the PAQ for street navigation..
+
+2002-12-23  Fritz Ganter  <ganter@ganter.at>
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/gpsdrive-nosql.spec, src/gpsdrive.c, src/gpsdrive.spec, src/icons.h, src/mb2gpsdrive.pl, po/fr.po, po/hu.po, po/it.po, po/de.po, po/de_AT.po, po/es.po, FAQ.gpsdrive, Makefile.am, README.SQL, README.mb2gpsdrive, configure.in, create.sql, man/de/gpsdrive.1, man/gpsdrive.1, po/da.po:
+	...
+
+2002-12-19  sven  <sven@amd>
+
+	* README.SQL: added information about backup and restore functionality
+
+	* src/gpssql_backup.sh, src/gpssql_restore.sh:
+	added backup and restore functionality for the database
+
+2002-12-08  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/gpskismet.c, src/gpssql.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, ChangeLog, README.SQL, README.kismet, acinclude.m4, configure.in, man/gpsdrive.1, po/da.po:
+	shortly before 1.31
+
+	* src/gpsdrive.c:
+	perhaps fix for systems without glib-locale installed.
+	added "y" key to create waypoint at current mouse position.
+
+2002-12-07  sven  <sven@amd>
+
+	* src/icons.h:
+	cleaned up the speed trap icon. think it looks better now.
+
+2002-12-07  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: delete wp now also works in sqlmode
+
+2002-12-07  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: delete wp now also works in sqlmode
+
+2002-12-02  Fritz Ganter  <ganter@ganter.at>
+
+	* src/icons.h: better golf icon
+
+2002-11-29  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/de.po, po/de_AT.po, po/es.po, configure.in, po/da.po:
+	v1.31pre3
+
+2002-11-27  Fritz Ganter  <ganter@ganter.at>
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/gpskismet.c, src/gpssql.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, README.SQL, po/da.po, po/de.po:
+	1.31pre2
+
+2002-11-25  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/icons.h: added icons
+
+	* src/gpsdrive.c, src/icons.h: added airport icon
+
+	* src/splash.c, configure.in: ...
+
+2002-11-24  Fritz Ganter  <ganter@ganter.at>
+
+	* src/icons.h: ...
+
+	* src/gpsdrive.spec, src/gpsdrivesplash.png, src/icons.h, src/splash.c, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/fr.po, po/hu.po, po/it.po, po/de.po, po/de_AT.po, po/es.po, README.SQL, po/da.po, update.sql:
+	added icon
+
+	* README.SQL, src/gpsdrive.c: radar R- works again
+
+	* src/gpssql.c, src/icons.h, src/gpsdrive.c:
+	speedtrap works now with sql
+
+	* src/gpsfetchmap.pl: added patch from  Magnus Månsson
+
+	* GPS-receivers, src/gpsdrive.c, src/gpsfetchmap.pl, src/gpssql.c, src/icons.h, update.sql:
+	added speedtrap icon, thanks to Sven Fichtner
+
+2002-11-19  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, src/icons.h, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/fr.po, po/hu.po, po/it.po, Makefile.am, README.SQL, configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, update.sql:
+	...
+
+2002-11-16  Fritz Ganter  <ganter@ganter.at>
+
+	* po/tr.po, src/gpsdrive-nosql.spec, src/gpsdrive.c, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, configure.in, po/da.po, po/de.po:
+	bugfixes for 1.30
+
+	* src/icons.h: v1.30
+
+2002-11-14  Fritz Ganter  <ganter@ganter.at>
+
+	* acinclude.m4: added acinclude.m4
+
+	* config.h.in, configure.in:
+	changed mysql detection in configure.in, borrowed from mysqlcc
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.spec, po/hu.po, po/it.po, po/nl.po, po/de_AT.po, po/es.po, po/fr.po, configure.in, po/da.po, po/de.po:
+	...
+
+	* po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/gpskismet.c, src/icons.h, src/settings.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, Makefile.am, README.SQL, README.kismet, configure.in, create.sql, po/da.po:
+	added README.kismet
+	v 1.30pre5
+
+2002-11-13  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpssql.c, src/gpsdrive.c: fixed buffer overflow in gpssql.c
+
+	* po/tr.po, src/gpsdrive.c, src/gpssql.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/da.po:
+	added display of number of waypoints
+
+2002-11-12  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpskismet.c, src/icons.h, src/settings.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, README.SQL, configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	v30pre4
+	added more icons, fix for kismet w/o mysql
+
+2002-11-09  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sv.po, po/tr.po, src/gpssql.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/da.po:
+	bugfix in gpssql.c
+
+2002-11-08  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpssql.c, src/icons.h, src/gpsdrive.c: v1.30pre3
+
+	* po/tr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/da.po, src/gpssql.c, src/gpsdrive.c:
+	...
+
+2002-11-06  Fritz Ganter  <ganter@ganter.at>
+
+	* src/track.c:
+	if a track is stored, it also will be appended to track-ALL.sav
+
+	* src/gpsdrivegarble.cpp, src/gpskismet.c, src/gpssql.c, src/icons.h, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/Makefile.am, src/garmin_util.cpp, src/gpsd.c, src/gpsdrive.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, configure.in, po/da.po, po/de.po:
+	fixed most warnings
+
+	* src/gpsdrive.c, src/gpskismet.c, src/gpssql.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, configure.in, po/da.po:
+	v1.30pre2
+
+2002-11-05  Fritz Ganter  <ganter@ganter.at>
+
+	* create.sql, po/POTFILES.in, src/gpsdrive.c, src/gpskismet.c: ...
+
+	* po/tr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/da.po:
+	v30pre1
+
+	* src/gpskismet.c: bugfixes for kismet mode
+
+	* src/gpskismet.c: ...
+
+	* src/gpsdrive.c, src/gpskismet.c: gpskismet seems to work
+
+2002-11-04  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in, po/fr.po, src/Makefile.am, src/gpskismet.c:
+	added gpskismet.c
+
+2002-11-02  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in: new v1.29, fixed configure.in
+
+	* po/sv.po, po/tr.po, src/Makefile.am, src/gpsdrive-nosql.spec, src/gpsdrive.spec, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, README, README.SQL, configure.in, po/da.po:
+	..
+
+	* man/de/gpsdrive.1, man/es/gpsdrive.1, man/gpsdrive.1, src/battery.c, src/battery.h, src/fly.c, src/gpsdrive.c, src/gpsdrive.h, src/gpssql.c, src/nautic.c, src/navigation.c, src/settings.c, src/speech_out.c, src/splash.c, src/track.c:
+	changed website to www.gpsdrive.de
+
+	* intl/COPYING.LIB-2.0, intl/COPYING.LIB-2.1, intl/config.charset, intl/dcigettext.c, intl/dcngettext.c, intl/dngettext.c, intl/eval-plural.h, intl/gmo.h, intl/libgnuintl.h, intl/localcharset.c, intl/locale.alias, intl/localename.c, intl/ngettext.c, intl/os2compat.c, intl/os2compat.h, intl/osdep.c, intl/plural-exp.c, intl/plural-exp.h, intl/plural.c, intl/plural.y, intl/ref-add.sin, intl/ref-del.sin:
+	added new intl
+
+	* NMEA.txt, wp2sql: ...
+
+	* LEEME, LISEZMOI, README: changing URLs
+
+2002-10-31  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in: ...
+
+2002-10-30  Fritz Ganter  <ganter@ganter.at>
+
+	* README.SQL: changed README.SQL wp2sql
+
+	* configure.in: ...
+
+	* acconfig.h: removed acconfig.h
+
+	* configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po:
+	...
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/settings.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/da.po, po/de.po:
+	added tooltips in settings.c
+
+	* po/tr.po, src/em.c, src/gpsdrive.c, src/settings.c, po/sv.po, po/sk.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/de_AT.po, po/es.po, po/da.po, po/de.po:
+	v1.29pre9
+	hopefully removed all gtk-warnings
+
+2002-10-29  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec: 1.29pre9
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, config.h.in, configure.in, po/da.po, po/de.po:
+	improved configure.in (sql can be disabled)
+	v1.29pre9
+
+2002-10-27  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, src/gpssql.c, src/settings.c, src/splash.c, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, configure.in, po/da.po, po/de.po:
+	1.28pre8
+
+2002-10-24  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/gpssql.c, src/settings.c, src/splash.c, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, configure.in, po/da.po:
+	...
+
+2002-10-17  Fritz Ganter  <ganter@ganter.at>
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.spec, src/gpssql.c, src/settings.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, Makefile.am, README.SQL, configure.in, po/da.po, po/de.po:
+	wp2sql added
+
+2002-10-16  sven  <sven@wuffi>
+
+	* FAQ.gpsdrive: additional information on usb serial issues
+
+2002-10-16  Fritz Ganter  <ganter@ganter.at>
+
+	* po/POTFILES: ...
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/gpssql.c, src/settings.c, src/splash.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, Makefile.am, README.SQL, configure.in, create.sql, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	working on SQL gui
+
+2002-10-15  sven  <sven@wuffi>
+
+	* FAQ.gpsdrive: Some grammar corrections by Gareth Bowker. Thanks!
+
+2002-10-15  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/gpssql.c, src/settings.c, src/splash.c, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, configure.in, po/da.po, po/de.po, po/de_AT.po:
+	...
+
+2002-10-14  Fritz Ganter  <ganter@ganter.at>
+
+	* README.SQL: changed README
+
+	* src/Makefile.am, src/gpsd.c, src/gpsdrive.c, src/gpsdrive.spec, src/gpssql.c, src/nmea.h, src/nmea_parse.c, src/settings.c, src/splash.c, src/track.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, README.SQL, acconfig.h, config.h.in, configure.in, create.sql, missing, po/POTFILES, po/POTFILES.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, Makefile.am:
+	v1.29pre3
+	added SQL support
+
+2002-09-28  sven  <sven@wuffi>
+
+	* src/gpsfetchmap:
+	never underestimate the power of tiredness. i fixed one and added another bug.
+
+	* src/gpsfetchmap:
+	fixed a typo which made the script useless. i'm sorry.
+
+2002-09-24  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in, src/gpsdrive.spec: v1.28
+
+	* po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, AUTHORS, po/da.po:
+	updated translations
+	changed gpsdrive.spec
+
+2002-09-23  Fritz Ganter  <ganter@ganter.at>
+
+	* po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.spec, Makefile.am, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po:
+	added FAQ into distro
+
+	* FAQ.gpsdrive.fr: formated
+
+	* configure.in, po/sv.po, src/gpsdrive.spec, src/splash.c:
+	splited help text in more strings
+	v1.28pre2
+
+2002-09-20  sven  <sven@wuffi>
+
+	* FAQ.gpsdrive.fr: translated by jacky
+
+2002-09-20  Fritz Ganter  <ganter@ganter.at>
+
+	* FAQ.gpsdrive: added entries
+
+	* FAQ.gpsdrive: updated FAQ
+
+2002-09-19  sven  <sven@wuffi>
+
+	* FAQ.gpsdrive:
+	added more FAQ. changed the answer of "How can I download maps?""
+
+2002-09-19  Fritz Ganter  <ganter@ganter.at>
+
+	* po/tr.po, src/gpsd.c, src/gpsdrive.spec, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, FAQ.gpsdrive, Makefile.am, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	added FAQ
+
+2002-09-18  sven  <sven@wuffi>
+
+	* src/gpsfetchmap: fixed the mapblast url
+
+	* FAQ.gpsdrive: some more FAQ added
+
+	* FAQ.gpsdrive: added some more FAQ
+
+	* FAQ.gpsdrive:
+	Initial release. This file will be incomplete at any time. ;)
+
+	* src/gpsfetchmap.pl: mapblast changed the url again.
+
+2002-09-18  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po:
+	mapblast url changed again
+	v1.28pre1
+
+2002-09-17  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sk.po, po/sv.po, po/tr.po, src/gpsd.c, src/gpsdrive.c, src/gpsdrive.spec, src/track.c, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, AUTHORS, README.gpsd, configure.in, po/da.po, po/de.po, po/de_AT.po:
+	added copyright and README for gpsd
+	v1.27
+
+2002-09-15  sven  <sven@wuffi>
+
+	* GPS-receivers: corrected some typos
+
+2002-09-12  Fritz Ganter  <ganter@ganter.at>
+
+	* po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsd.c:
+	v1.27pre2
+
+	* po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsd.c, src/gpsdrive.c, configure.in, po/POTFILES, po/POTFILES.in, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po:
+	fixed Timeout if getting only GGA data
+
+2002-09-10  Fritz Ganter  <ganter@ganter.at>
+
+	* po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, src/gpsdrive.c, configure.in, po/da.po, po/de.po, po/de_AT.po, po/es.po:
+	v1.27pre1
+	set battery status update to 5 seconds
+	added portuguese translation
+
+2002-09-08  sven  <sven@wuffi>
+
+	* src/gpsfetchmap.pl: fixed the mapblast url
+
+2002-09-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/battery.c, src/gpsdrive.c: fixed segfault on no apm computers
+
+2002-08-31  Fritz Ganter  <ganter@ganter.at>
+
+	* po/de.po, po/es.po: new spanish .po
+
+	* po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po:
+	german translation
+
+	* src/gpsdrive.c, src/battery.c: v1.26 release
+
+	Mapblast server works again (they changed the URL).
+	Bugfix for -a option.
+	Added -i option to ignore NMEA checksum (for broken GPS receivers).
+	Added "j" key to switch to next waypoint on route mode.
+	Added support for festival lite (flite) speech output.
+
+2002-08-29  sven  <sven@wuffi>
+
+	* README.mb2gpsdrive: m2g is dead.
+
+2002-08-29  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in, src/gpsdrive.c, src/gpsdrive.spec, src/settings.c:
+	timezone in settings/geoinfo works, but window must be refreshed
+
+2002-08-29  sven  <sven@wuffi>
+
+	* src/mb2gpsdrive.pl: mb2gpsdrive is dead.
+
+2002-08-29  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/gpspoint2gpsdrive.pl, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, configure.in:
+	1.26pre65
+	Mapblast works again.
+	Download between 0E and 1W works now in non-degree display mode.
+	Current speed speech output only when driving faster than 20km/h
+
+	* src/gpsdrive.c: will change mapblast URL
+
+2002-08-16  Fritz Ganter  <ganter@ganter.at>
+
+	* src/mb2gpsdrive.pl, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/es.po, po/fr.po, po/hu.po, po/da.po, po/de.po, po/de_AT.po, man/es/Makefile.am, man/de/Makefile.am, man/Makefile.am, README.mb2gpsdrive:
+	added 0.0.10pre4 of mb2gpsdrive
+
+2002-08-05  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.h, src/gpsdrive.spec, configure.in: 1.26pre4
+
+	* src/gpsdrive.c:
+	fixed bug in mapdownload (triggered thru change to HTTP1.1)
+
+2002-08-04  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c:
+	Current speed speech output only when driving faster than 20km/h
+
+2002-07-30  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, man/es/Makefile.am, man/de/Makefile.am, man/Makefile.am, Makefile.am, configure.in:
+	changed Makefile.am in man dir
+
+	* src/gpsdrive.c, src/gpsdrive.h, src/gpspoint2gpsdrive.pl, src/splash.c, src/track.c, src/track.h, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po:
+	added "J" key to switch to next waypoint
+
+	* src/Makefile.am, src/battery.h, src/gpsdrive.c, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po:
+	added patches from Marco Molteni for separate track.c
+
+	* src/settings.c, src/speech_out.c, src/Makefile.am, src/battery.c, src/gpsdrive.c, src/gpsdrive.spec, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, configure.in:
+	1.26pre3
+	added support for festival lite (flite)
+	changed http request to HTTP1.1 and added correct servername
+
+2002-07-17  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, ChangeLog, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, man/Makefile.am:
+	...
+
+	* src/gpsdrive.c: v1.25
+
+	* src/Makefile.am, src/gpsdrive.spec, src/gpspoint2gpsdrive.pl, src/settings.c, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/es.po, po/fr.po, po/hu.po, po/da.po, po/de.po, po/de_AT.po, man/Makefile.am, Makefile.am, README.gpspoint2gspdrive, configure.in:
+	added gpspoint2gspdrive
+	changed specfile, thanks to Silke Reimer
+
+2002-07-17  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, man/Makefile.am:
+	...
+
+	* src/gpsdrive.c: v1.25
+
+	* src/Makefile.am, src/gpsdrive.spec, src/gpspoint2gpsdrive.pl, src/settings.c, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/es.po, po/fr.po, po/hu.po, po/da.po, po/de.po, po/de_AT.po, man/Makefile.am, Makefile.am, README.gpspoint2gspdrive, configure.in:
+	added gpspoint2gspdrive
+	changed specfile, thanks to Silke Reimer
+
+2002-07-14  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, src/netlib.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/sk.po, po/sv.po, po/tr.po, po/de_AT.po, po/es.po, po/da.po, po/de.po, configure.in, ltmain.sh:
+	v1.25pre1
+
+	* src/gpsdrive.c: testnewmap works now again, but w/o new algorithmus
+
+2002-07-13  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: changed testnewmap algorithmus
+
+	* src/gpsdrive.c: in download menu the download area is now marked
+
+2002-07-02  Fritz Ganter  <ganter@ganter.at>
+
+	* po/it.po, po/pt.po, po/ru.po, configure.in:
+	removed pt and ru po files
+
+	* po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/de_AT.po, po/es.po, po/da.po, po/de.po, configure.in:
+	removed xx.po
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/settings.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, configure.in:
+	v1.24
+
+2002-07-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/battery.c, src/gpsdrive.c, src/gpsdrive.spec, src/settings.c, po/tr.po, po/xx.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/da.po, configure.in:
+	added trip info (in settings menu)
+	ACPI fixes (close battery fd)
+
+2002-06-30  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, src/friendsd.c, src/gpsdrive.c, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, configure.in:
+	fix convertRMC
+	new arrows
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, configure.in:
+	make fields in convertXXX larger, earthmate seems to send larger GPGSV
+	v1.24pre1
+
+2002-06-29  Fritz Ganter  <ganter@ganter.at>
+
+	* src/battery.c, src/gpsdrive.c, src/gpsdrive.spec, src/mb2gpsdrive.pl, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, configure.in, README.mb2gpsdrive:
+	v1.23
+
+	* src/gpsdrive.c: v1.23pre10
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, src/tm.c, src/version.h, src/battery.c, src/em.c, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, AUTHORS, configure.in:
+	added ACPI support for battery meter
+
+2002-06-27  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsd.c: patches from Marco Molteni <molter@tin.it>
+
+2002-06-23  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/power.h, src/settings.c, src/speech_out.c, src/splash.c, src/battery.c, src/fly.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, configure.in:
+	v1.23pre9
+	now PDA mode looks good.
+
+	* src/gpsdrive.c: changed menu look for -x
+
+2002-06-16  Fritz Ganter  <ganter@ganter.at>
+
+	* src/settings.c, src/gpsdrive.c: got settings smaller
+
+	* src/gpsdrive.spec, src/gpsdrivesplash.png, src/settings.c, src/fly.c, src/gpsdrive.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, AUTHORS, configure.in:
+	working on PDA screen
+
+2002-06-12  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive-ng.spec, src/gpsdrive.c, src/mb2gpsdrive.pl, src/navigation.c, src/settings.c, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, man/gpsdrive.1, AUTHORS:
+	v1.23pre7
+
+2002-06-10  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: added compass
+
+2002-06-02  Fritz Ganter  <ganter@ganter.at>
+
+	* src/nautic.c, src/navigation.c, src/settings.c, src/speech_out.c, src/splash.c, src/Makefile.am, src/fly.c, src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, configure.in:
+	added navigation.c and copyrights
+
+	* src/gpsdrive.c, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, man/gpsdrive.1, configure.in:
+	v1.23pre6
+	did lot of bug fixing for small displays.
+
+2002-06-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/fly.c, src/gpsdrive-ng.spec, src/gpsdrive.c, src/gpsdrive.spec, src/wpget, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, GPS-receivers, configure.in:
+	fixed bug for little screens
+	added new wpget from Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>
+
+	* src/gpsdrive.c: working on bugfix for small screens
+
+2002-05-30  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/sv.po, po/tr.po, po/xx.po, man/gpsdrive.1, configure.in:
+	v1.23pre4
+	use GPGGA if no GPRMC is available
+
+2002-05-29  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sv.po: added
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/tr.po, po/xx.po, po/da.po, po/de.po, man/de/gpsdrive.1, man/gpsdrive.1, configure.in:
+	added swedish translation
+
+	* src/geocache2way, src/gpsdrive.c, src/gpsfetchmap.pl, po/da.po, po/de.po, po/de_AT.po, po/es.po, po/fr.po, po/hu.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/sk.po, po/tr.po, po/xx.po, configure.in:
+	added gpsfetchmap.pl and geocache2way
+
+2002-05-25  Fritz Ganter  <ganter@ganter.at>
+
+	* po/sk.po, po/de_AT.po, po/hu.po, po/tr.po, src/Makefile.am, src/gpsdrive-ng.spec, src/gpsdrive.spec, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/ru.po, po/xx.po, po/da.po, po/de.po, configure.in:
+	added
+
+2002-05-23  Fritz Ganter  <ganter@ganter.at>
+
+	* src/battery.c, AUTHORS: added  Marco Molteni
+
+	* src/Makefile.am, src/battery.c, src/battery.h, src/gpsdrive.c, src/power.h, src/settings.c, src/splash.c, src/stop.h, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, configure.in:
+	v1.23pre1
+	added new BSD battery stuff
+
+2002-05-20  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/settings.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, AUTHORS:
+	removed race condition in setutc()
+	new 1.22
+
+	* src/fly.c, src/gpsdrive.c, src/gpsdrive.spec, src/nautic.c, src/settings.c, src/splash.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/POTFILES, po/POTFILES.in, po/da.po, po/de.po, po/es.po, man/de/gpsdrive.1, man/gpsdrive.1, configure.in:
+	v1.22
+
+	* src/fly.c, src/gpsdrive.c, src/gpsdrive.spec, src/settings.c, src/splash.c, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, configure.in:
+	v1.22pre7
+
+	* README.FreeBSD: gpsdrive is now  officially in the FreeBSD ports.
+
+2002-05-19  Fritz Ganter  <ganter@ganter.at>
+
+	* src/nautic.c: added nautic.c
+
+	* src/Makefile.am, src/fly.c, src/gpsdrive.c, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po:
+	fly and nautic loading works
+
+2002-05-18  Fritz Ganter  <ganter@ganter.at>
+
+	* src/settings.c, src/gpsdrive.c, src/gpsdrive.spec, po/POTFILES, po/POTFILES.in, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, configure.in:
+	finished geo infos
+	v1.22pre5
+
+	* src/gpsdrive.spec, src/settings.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, AUTHORS, configure.in:
+	added slovak translations
+	fixed segfault
+	v1.22pre3
+
+2002-05-17  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in: v1.22pre2
+
+	* src/gpsdrive.c, src/settings.c: added sunrise,sunset in settings menu
+
+	* src/wpget: changed target file to $HOME/.gpsdrive/way-wpget.txt
+
+	* src/gpsdrive.c, src/mb2gpsdrive.pl, src/settings.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, README.mb2gpsdrive:
+	changed settings menu to notebook widget
+
+2002-05-15  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/gpsdrive.c, src/mb2gpsdrive.pl, src/settings.c, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, README.mb2gpsdrive, configure.in:
+	created settings.c
+
+2002-05-13  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, po/de.po:
+	fixed bug in downloadsetparm if not decimal notation
+	new v1.21
+
+2002-05-12  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, Makefile.am:
+	..
+
+	* src/Makefile.am, src/README.mb2gpsdrive, src/gpsdrive.c, src/splash.c, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, Makefile.am, README.mb2gpsdrive:
+	new 1.21
+	changed B to N key.
+
+	* src/Makefile.am, src/README.mb2gpsdrive, src/gpsdrive.spec, src/mb2gpsdrive.pl:
+	added  README.mb2gpsdrive mb2gpsdrive.pl
+
+	* po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, ChangeLog:
+	...
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, configure.in:
+	v1.21
+
+	* src/gpsdrive.c: added nightmode. See settings menu.
+
+2002-05-12  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, configure.in:
+	v1.21
+
+	* src/gpsdrive.c: added nightmode. See settings menu.
+
+2002-05-11  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/speech_out.c, src/splash.c, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, Makefile.am, configure.in:
+	v1.21pre1
+	degree,minutes,seconds should work now
+
+2002-05-10  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c:
+	display of lat/long is switchable between decimal and degree,minutes
+	and seconds display
+	added display of radar warning as scrolling text
+	distance to recognize arriving of the destination is now speed
+	depending
+	added check of the checksum of the NMEA sentences to avoid crashes if
+	invalid NMEA sentences are received
+
+2002-05-05  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, man/gpsdrive.1, AUTHORS, README, configure.in:
+	v1.20
+
+	* src/gpsdrive.spec, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, man/gpsdrive.1, LISEZMOI, Makefile.am, configure.in:
+	v1.20pre3
+
+2002-05-04  Fritz Ganter  <ganter@ganter.at>
+
+	* src/speech_out.c: v1.20pre2
+
+	* src/speech_out.c, src/gpsdrive.c, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po:
+	added new intl subdir
+
+2002-05-02  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/speech_out.c, src/splash.c, configure.in:
+	added speech output of waypoint description
+
+	* src/gpsdrive.c:
+	speech output: say reached target also if not in route mode
+
+2002-05-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/nl.po, po/pt.po, po/xx.po, po/it.po, po/da.po, po/de.po, po/es.po, po/fr.po, README.FreeBSD, configure.in:
+	added README.FreeBSD
+
+2002-04-29  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/splash.c, po/nl.po, po/pt.po, po/xx.po, po/it.po, po/da.po, po/de.po, po/es.po, po/fr.po, configure.in:
+	v1.20pre1
+	added display of sat position
+
+2002-04-28  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po:
+	new 1.19 ;-)
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, configure.in:
+	v1.19
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, configure.in:
+	v1.19pre2
+	button to delete waypoint
+	fixed miles distance on startup in miles mode
+	new sat level display colors
+
+2002-04-21  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.spec, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	v1.18
+
+	* src/gpsdrive.c: fixed bug in downloadsetparms (longitude comparision)
+
+	* src/gpsdrive.spec, configure.in: v1.18pre4
+
+	* src/gpsdrive.c:
+	Now getting good maps for USA from expedia server works: I changed in
+	the URL EUR0809 to USA0409 if longitude is west of 30°W. If anyone
+	have found a system for this EUR0809,USA0409 strings in the URL,
+	please inform me.
+
+	* src/gpsdrive.spec, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po:
+	...
+
+	* configure.in, missing: v1.18pre3
+	added new missing file
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po:
+	v1.18pre3
+	much more precise calculation of distance (uses WGS84 elipsoid)
+
+2002-04-19  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsd.c:
+	Thanks to the patch of Derrick J Brashear now some more receivers
+	are providing the altitude.
+
+2002-04-18  Fritz Ganter  <ganter@ganter.at>
+
+	* configure.in: v1.18pre2
+
+	* src/garmin_types.h, src/garmin_util.cpp, src/gpsd.c, src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, GPS-receivers, configure.in:
+	added turkish translation
+	added display number of satellites
+	v1.18pre2
+
+2002-04-16  Fritz Ganter  <ganter@ganter.at>
+
+	* src/em.c, src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, AUTHORS, Makefile.am, configure.in:
+	...
+
+2002-04-15  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/gpsdrive.spec, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, man/gpsdrive.1, configure.in:
+	new 1.17
+	set libfly version to 1.0.0
+	moved installed files to prefix/lib and prefix/share/lib
+
+2002-04-14  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/speech_out.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/de.po, po/es.po, po/da.po, man/gpsdrive.1, configure.in:
+	v1.17
+
+	* src/fly.c, src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, config.h.in, configure.in:
+	v1.17pre3
+	added simulaton follow switch in setup menu
+
+2002-04-13  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: added comment
+
+	* po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, Makefile.am:
+	added depcomp
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po:
+	...
+
+	* config.h.in, depcomp: added
+
+	* src/fly.c: ...
+
+	* src/Makefile.am, src/fly.c, src/gpsdrive.c, src/splash.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, man/gpsdrive.1, AUTHORS, README, config.h.in, configure.in, ltmain.sh:
+	v1.17pre2
+
+2002-04-12  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c:
+	removed way.txt checking and popup, if there are wrong entries, the
+	entries are ignored, not the whole file.
+
+2002-04-10  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c:
+	sometimes wrong coordinates in download map window, fixed.
+
+2002-04-07  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsfetchmap, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po:
+	bugfix in gpsdrive.c and gpsfetchmap
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, man/gpsdrive.1, README, configure.in, AUTHORS:
+	v1.16
+
+	* src/gpsfetchmap: changed line
+	while [ `echo "$lat > $endlat" | bc` = 1 ]
+	to
+	while [ `echo "$lat < $endlat" | bc` = 1 ]
+
+	* src/gpsdrive.c, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	v1.16pre9
+
+	* src/Makefile.am, src/display.c: removed display.c
+
+	* src/Makefile.am, src/fly.c, src/gpsdrive.c, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, po/da.po, po/de.po, GPS-receivers:
+	added fly.c
+	added more GPS-receivers
+
+2002-04-06  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c:
+	I found a better documentation for GARMIN receivers. So I removed DOP
+	and added EPE (estimated position error). Sorry, if you have no
+	GARMIN. The used NMEA sentence is $PGRME.
+
+	* src/gpsdrive.c: changed #elif to #else
+
+	* src/em.c, src/gpsd.c, src/gpsdrive.c, src/serial.c, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/pt.po, po/xx.po, config.h.in, configure.in:
+	v1.16pre8
+	cleanup of gpsd files
+
+	* src/gpsdrive.c:
+	removed feature to set posmode on with left mouseclick in the map
+	window. It has to switched on with the toogle button in the menu.
+
+	* po/pt.po: added
+
+	* src/Makefile.am, src/gpsd.c, src/gpsdrive.c, src/netlib.c, src/version.h, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po:
+	changing filelist
+
+2002-04-05  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: added DGPS displaying
+	added DOP (DILUTION OF PRECISION):
+	A measure of the GPS receiver-satellite geometry. A low DOP value
+	indicates better relative geometry and correspondingly higher
+	accuracy.
+
+	* src/gpsd.c: added comment
+
+	* src/display.c, src/em.c, src/gps.h, src/gpsd.c, src/gpsd.h, src/netlib.c, src/nmea.h, src/nmea_parse.c, src/serial.c, src/tm.c, src/version.h:
+	added
+
+	* src/gpsd_main.cpp, src/gpsdrive.c, src/viz_system.cpp, src/viz_system.h, src/viz_types.h, src/Makefile.am, config.h.in, configure.in:
+	changed to Remco Treffkorn's gpsd
+
+2002-04-04  Fritz Ganter  <ganter@ganter.at>
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.16pre7
+	added altitude in stored tracks
+	added zoom factor display on map
+
+2002-04-03  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c: added altitude display
+
+	* src/gpsdrive.c: trying to get out altitude
+
+2002-04-02  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	v1.16pre4
+	you can type in coordinates in the "Add waypoint" window (x-key)
+	Autosave of configuration
+	update spanish translation (translater had holiday)
+
+2002-04-01  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po:
+	v1.16pre3
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, configure.in:
+	added garmin and serialdevice in setup
+
+	* src/gpsdrive.c: really upload new 1.15 and v1.16-pre2
+	added penguin
+	fixed gpsd detection
+	variable testgarmin inserted, set it to FALSE if you have problems with your
+	NMEA receiver detection.
+	don't forget to call "gpsdrive -t /dev/ttySx" the first time, where x is
+	your port number (0=COM1:)
+
+	* src/gpsdrive.c, src/stop.h, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.16-pre2
+	serialdev fix was not good enough
+
+	* src/gpsdrive.c, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, configure.in:
+	I decided to create a new 1.15 from 1.16-pre1 because if the serialdev bug.
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.16-pre1 bugfix for serialdev if no gpsdriverc exists yet
+
+	* src/gpsdrive.c: added -b parameter for NMEA server
+	added -c parameter to set position in simulation mode to waypoint name
+
+2002-03-31  Fritz Ganter  <ganter@ganter.at>
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, man/de/gpsdrive.1, man/gpsdrive.1, ChangeLog, README, configure.in:
+	v1.15 Summary:
+	You can select your "way*.txt" file in setup menu.
+		   The DEFAUL entry in way.txt is now obsolet.
+		   The "setdefaultpos" entry in gpsdricerc in now obsolet.
+		   Added battery meter, shows battery capacity and battery/plugged mode
+		   (only shown on notebooks).
+		   Removed command line parameter: -w.
+		   Added command line parameter: -a , use it if gpsdrive
+		   crashes (happens on broken apm BIOSes).
+		   Removed popup to start GPSD, its now a button.
+		   Added new unit "nautical miles".
+		   Moved buttons to setup menu, setup menu with new options.
+
+	* src/splash.c, src/gpsdrive.c, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	v1.15-pre5
+	you can select your "way*.txt" file in setup menu
+	The DEFAUL entry in way.txt is now obsolet
+	The "setdefaultpos" entry in gpsdricerc in now obsolet
+
+	* src/gpsdrive.c:
+	The "DEFAULT" waypoint is now obsolet. All references to it will now
+	be removed.
+
+	* src/gpsdrive.c: working on chooseable waypoint files
+
+2002-03-31  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/splash.c, src/gpsdrive.c, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	v1.15-pre5
+	you can select your "way*.txt" file in setup menu
+	The DEFAUL entry in way.txt is now obsolet
+	The "setdefaultpos" entry in gpsdricerc in now obsolet
+
+	* src/gpsdrive.c:
+	The "DEFAULT" waypoint is now obsolet. All references to it will now
+	be removed.
+
+	* src/gpsdrive.c: working on chooseable waypoint files
+
+2002-03-30  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po:
+	2nd pre 1.15
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, src/stop.h, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, configure.in:
+	pre 1.15
+
+	* src/gpsdrive.c: created setup menu
+
+2002-03-29  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	added battery meter, shows battery capacity and battery/plugged mode
+
+2002-03-28  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsfetchmap: new version from Manfred Caruso
+
+2002-03-24  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.14
+
+	* src/gpsdrive.c, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	v1.14 some cosmetic changes
+
+2002-03-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.13
+
+	* src/gpsdrive.c:
+	added better background for waypoint text, wp text has now a bold font
+
+2002-03-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	bugfix for late gpsd start
+	remembering last position if setdefaultpos = 0 in gpsdriverc
+
+2002-03-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c:
+	added question if gpsd should be started.
+	Thanks to daZwerg(gEb-Dude) for suggestion.
+
+2002-03-19  Fritz Ganter  <ganter@grazforyou.at>
+
+	* po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	update language files
+
+2002-03-18  Fritz Ganter  <ganter@grazforyou.at>
+
+	* po/fr.po: ...
+
+2002-03-17  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po:
+	v1.12
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	added route
+	v1.12 preview
+
+2002-03-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	fixed segfault if no gpsdriverc exists. New v1.11
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.11
+
+	* src/gpsdrive.c: added gpsdriverc file to save and restore settings
+	added shadow to all drawn elements on map
+	removed -m flag for setting miles because it is saved in gpsdriverc
+
+2002-03-14  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: added speech output of target set
+	use HTTP_PROXY or http_proxy for enviroment variable to set proxy server
+
+2002-03-11  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: added portugese
+
+	* configure.in: added pt
+
+	* AUTHORS: added italian author
+
+	* GPS-receivers: added Holux
+
+2002-03-10  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.10
+
+	* src/gpsdrive.c: minimap is now clickable for switch to position mode
+	parameter -1 for 1 button mouse, i.e. touchpads
+	viewable satellites with 0db Signal are shown als short red bar
+
+2002-03-03  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	posmode is switched off after 10 seconds automatically
+
+2002-02-27  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: download default is now expedia server
+
+2002-02-26  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po:
+	added x key for set waypoint on actual position
+
+2002-02-25  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	bugfix for loading tracks. now date/time is also loaded
+
+2002-02-24  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	new v1.9, added shortcuts
+
+	* src/wpcvt:
+	replaced my version with the version of Ned Konz <ned@bike-nomad.com>
+
+	* src/gpsdrive.c: prevent to call target window more than once
+
+	* configure.in: v1.9
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	Real, real v1.9, fixed division by zero handling
+
+	* src/gpsdrive.c, configure.in:
+	Real v1.9, added  -ffast-math because of better DIVZERO handling in code
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.9
+
+	* src/gpsdrive.c:
+	the "select waypoint" window is now auto-updated and shows every 5
+	seconds the true distance to the waypoints.
+
+2002-02-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	added set waypoint at current position by CTRL-right mouse click
+
+2002-02-20  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsfetchmap: fixed for mapblast working again
+
+	* po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po:
+	xx
+
+2002-02-18  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/splash.c: changed help text
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	added set waypoint by CTRL-left mouse click and storing into way.txt
+
+2002-02-17  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: perhaps bugfix for black maps
+	added reread of way.txt if file is changed
+
+2002-01-11  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	changed spec file
+
+	* AUTHORS: added Richard Scheffenegger <rscheff@chello.at>
+
+	* src/gpsdrive.spec, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po, man/Makefile.am, configure.in:
+	v 1.7 changed URLs of map server. Better support for small displays.
+
+	* src/gpsdrive.c:
+	Changed URL for map webservers. A lot of thanks to Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>!
+
+2001-12-12  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	added changes from Richard Scheffenegger <rscheff@chello.at>
+
+2001-12-02  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	fixed bug in setlocale
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, man/de/gpsdrive.1, man/gpsdrive.1, GPS-receivers, README, configure.in:
+	friends mode bugfix. Enhanced -x option
+
+2001-11-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, src/gpsdrive.c, configure.in: v1.5
+
+	* src/garble.cpp, src/gpsdrive.c, src/gpsdrivegarble.cpp, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po:
+	tcpserver/client works
+
+2001-11-13  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/friendsd.c, src/gpsdrive.c, src/gpsdrive.spec, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, man/gpsdrive.1, configure.in:
+	v1.4 enhanced friends functions
+
+2001-11-12  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: added friendsd to distrib
+
+	* po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	..
+
+	* src/gpsdrive.spec, src/Makefile.am, src/friendsd.c, src/friendsicon.png, src/friendsicon2.png, src/gpsdrive.c, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/da.po, configure.in:
+	v1.3
+
+	* src/Makefile.am, src/friends.c, src/friendsd.c, src/gpsdrive.c, po/POTFILES, configure.in:
+	friends server and client starting to work
+
+2001-11-11  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am, src/friends.c, src/friendsd.c, src/gpsdrive.c:
+	added friendsd
+
+	* po/POTFILES: added
+
+	* src/Makefile.am, src/friends.c, po/it.po, po/nl.po, po/xx.po, po/da.po, po/de.po, po/es.po, po/fr.po:
+	added friends.c
+
+2001-11-04  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, configure.in: v1.2
+
+	* src/gpsdrive.c:
+	autodetects setting for voice output, cosmetic changes
+
+	* po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	update french
+
+	* man/de/gpsdrive.1, man/Makefile.am, man/gpsdrive.1:
+	added german man page, changed some in english manpage
+
+2001-11-03  Fritz Ganter  <ganter@grazforyou.at>
+
+	* man/de/gpsdrive.1: ...
+
+	* man/es/gpsdrive.1, man/de/gpsdrive.1, man/Makefile.am, man/gpsdrive.1:
+	added
+
+	* src/Makefile.am, src/gpsdrive.1, src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, Makefile.am, configure.in:
+	moved manpages to man directory
+
+	* src/gpsdrive.c, po/da.po, po/de.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	next public v1.1, made testnewmap more accurate
+
+	* src/gpsdrive.c: new layout, some buttons are now checkboxes
+
+	* src/gpsdrive.spec: removed dk and added da for dansk
+
+	* po/da.po, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	replaced dk with da. da is dansk
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v1.1, added best map button and next more/less detailed map button
+
+2001-11-02  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.1, src/gpsdrive.c: real v1.0, changed manpage
+
+	* po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	real v1.0, changed README
+
+	* src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	v1.0 for public
+
+2001-11-01  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, src/speech_out.c, src/gpsdrive.1, src/gpsdrive.c, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/de.po, po/dk.po, po/es.po, configure.in:
+	v1.0 added spanish voice output
+
+	* src/gpsdrive.1, src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v0.36
+
+	* src/gpsdrive.c:
+	added festival init for german and english. See manpage
+
+2001-10-29  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, AUTHORS:
+	added -o
+
+	* src/gpsdrive.c:
+	added -o option to output NMEA sentences. Written by Dan Egnor <egnor@ofb.net>
+
+2001-10-28  Fritz Ganter  <ganter@grazforyou.at>
+
+	* LEEME, README: removed remark about iPAQ define
+
+	* src/gpsdrive.spec: LEEME spelling
+
+	* Makefile.am: added LEEME
+
+	* src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, AUTHORS, LEEME, configure.in:
+	added LEEME, fixed gtk-pixbuf config, updated spanish and dutch translation
+
+	* src/gpsdrive.c, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, po/de.po:
+	v0.35
+
+	* src/gpsdrive.spec, src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v0.35 added load and store track
+
+2001-10-27  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, GPS-receivers:
+	autodetected screen size
+
+2001-10-26  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: added auto detecting screen size
+
+2001-10-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	added %doc to spec file, still v0.34
+
+2001-10-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.1: added proxy server in v0.34
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, configure.in:
+	v 0.34 added proxy server
+
+2001-10-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	v 0.33
+
+	* src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	v0.33
+
+	* src/gpsdrive.c, src/gpsdrive.spec, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po, GPS-receivers, configure.in:
+	bugfix in position calculation for big maps.
+	pre 0.33
+
+	* src/gpsdrive.c:
+	found buffer overflow in get_position_data_cb only in NMEA mode, result was wrong text translations.
+
+	* src/gpsdrive.c:
+	new position calculation looks good, but in progress...
+
+2001-10-19  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	track parts are not drawn if no GPS Fix is avail. Should work...
+
+2001-10-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* config.h.in: added
+
+	* src/gpsdrive.c, po/de.po, po/dk.po, po/es.po, po/fr.po, po/it.po, po/nl.po, po/xx.po:
+	added po files
+
+2001-10-14  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, acconfig.h, configure.in:
+	really V0.32 expedia server works now
+
+	* src/gpsdrive.c: working on expedia scaling
+
+	* src/Makefile.am, Makefile.am, README: Changed README
+
+	* src/gpsdrive.c:
+	Program now creates a ~/.gpsdrive directory if it was not found. Also
+	it creates a map_koord.txt in it.
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, configure.in:
+	v0.32 correct path for prefix other than /usr/local
+
+2001-10-13  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec:
+	prefix for rpm is now /usr while tarball defaults to /usr/local
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, src/splash.c, acconfig.h, config.h.in, configure.in:
+	corrected paths for locale and pixmap, ./configure --prefix= works now as
+	expected
+
+	* src/gpsdrive.c, config.h.in: test
+
+2001-10-09  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in: added dutch
+
+	* src/gpsdrive.spec, src/gpsdrive.c, configure.in: v0.31
+
+	* src/garble.cpp, src/garmin_serial_unix.cpp, src/gpsdrivegarble.cpp, src/wpcvt, AUTHORS, TODO:
+	updated spanish translation, radar works, fix for g++ 3.x compilers
+	updated wpcvt added expedia.com mapserver, but not working yet
+
+2001-10-08  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	added download from expedia.com, but it don't work yet.
+	Reason: Server don't send CONTENT-LENGTH
+
+	* src/gpsdrive.c: radar detection stopped working, runs now again
+
+	* src/gpsdrive.spec: man page is gzipt
+
+	* README: changed README
+
+	* src/Makefile.am: bugfix in EXTRA_DIST
+
+	* src/gpsdrive.spec: added manpage
+
+	* src/gpsdrive.1, src/gpsdrive.c, README: fixed bug in testconfig_cb
+
+	* src/Makefile.am, src/gpsdrive.1: added manpage
+
+2001-10-07  Fritz Ganter  <ganter@grazforyou.at>
+
+	* README: inserted map_* and top_* in README
+
+	* src/gpsdrive.c: detects wrong names in map_koord.txt
+
+	* config.h: removed
+
+	* config.h, README, ChangeLog, src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	v0.30
+
+	* src/gpsdrive.c: removed some debugging lines
+
+	* src/gpsdrive.c: import seems to work
+
+	* src/gpsdrive.c: map import nearly finished
+
+2001-10-07  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in: v0.30
+
+	* src/gpsdrive.c: removed some debugging lines
+
+	* src/gpsdrive.c: import seems to work
+
+	* src/gpsdrive.c: map import nearly finished
+
+2001-10-04  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: added rectangle on minimap
+	working on map import
+
+2001-09-30  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrivelogo.png: removed
+
+	* ChangeLog: v0.29
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/speech_out.c, src/splash.c, po/POTFILES.in, config.h, configure.in:
+	v0.29
+	added choice of map type
+
+	* src/Makefile.am, src/gpsdrive.c, src/splash.c, po/POTFILES.in, configure.in:
+	added minimap, removed gpsdrivelogo
+
+	* src/speech_out.c: added help menu
+
+	* src/gpsdrive.c:
+	added parameter -x to use a seperate window for the menu
+	some changes in speech output
+	added help button
+
+2001-09-30  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/speech_out.c, src/splash.c, po/POTFILES.in, config.h, configure.in:
+	v0.29
+	added choice of map type
+
+	* src/Makefile.am, src/gpsdrive.c, src/splash.c, po/POTFILES.in, configure.in:
+	added minimap, removed gpsdrivelogo
+
+	* src/speech_out.c: added help menu
+
+	* src/gpsdrive.c:
+	added parameter -x to use a seperate window for the menu
+	some changes in speech output
+	added help button
+
+2001-09-28  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.spec, src/gpsdrivelogo.png, src/speech_out.c, src/splash.c, config.h, configure.in:
+	v0.28 changed layout, some bugfixes
+
+2001-09-27  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: ...
+
+2001-09-25  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog: v0.27
+
+	* src/speech_out.c, src/gpsdrive.c, src/gpsdrive.spec, src/gpsdrivegarble.cpp, README, TODO, configure.in:
+	v 0.27
+
+	* src/gpsdrive.c: some bugfixes for tracking
+
+	* src/gpsdrive.c: tracking is working
+
+	* src/gpsdrive.c: fallback font strings corrected
+
+2001-09-25  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/speech_out.c, src/gpsdrive.c, src/gpsdrive.spec, src/gpsdrivegarble.cpp, README, TODO, configure.in:
+	v 0.27
+
+	* src/gpsdrive.c: some bugfixes for tracking
+
+	* src/gpsdrive.c: tracking is working
+
+	* src/gpsdrive.c: fallback font strings corrected
+
+2001-09-24  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	removed -s -g -f command line options. GpsDrive tries first port 2222,
+	then port 2947 and if not found the GARMIN mode. If this is also not
+	found it switches to simulation mode.
+
+	* src/gpsdrive.c:
+	added support for gpsd by  Remco Treffkorn using port 2947
+
+2001-09-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, AUTHORS: added dansk
+
+	* ChangeLog, config.h: ...
+
+	* src/gpsdrive.spec, configure.in: v 0.26
+
+	* src/gpsico.h, src/rotatetest.c, src/speech_out.c, src/Makefile.am, src/gpsdrive.c, src/gpsdrivegarble.cpp, AUTHORS, GPS-receivers, Makefile.am, README, TODO, config.h, configure.in:
+	v0.26
+
+	* src/gpsdrive.c:
+	Added -t and -l command line switches, see gpsdrive -h
+	Added german speech texts.
+	Bugfix in radar detection. Only the nearest Radar gives speech output.
+	Cosmetic changes for markers.
+	#define MAXSHOWNWP 100 for max. shown waypoints. Tested with list of
+	30000 waypoints. If gpsdrive hangs, reduce number of waypoints in
+	file.
+	Better fallbacks for fonts. I prefer an arial truetype font. Helvetica
+	is used if no arial font is found.
+
+	* src/gpsdrive.c: ...
+
+2001-09-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	Added program icon. Added check for way.txt format errors.
+
+2001-09-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, configure.in: v 0.26
+
+	* src/gpsico.h, src/rotatetest.c, src/speech_out.c, src/Makefile.am, src/gpsdrive.c, src/gpsdrivegarble.cpp, AUTHORS, GPS-receivers, Makefile.am, README, TODO, config.h, configure.in:
+	v0.26
+
+	* src/gpsdrive.c:
+	Added -t and -l command line switches, see gpsdrive -h
+	Added german speech texts.
+	Bugfix in radar detection. Only the nearest Radar gives speech output.
+	Cosmetic changes for markers.
+	#define MAXSHOWNWP 100 for max. shown waypoints. Tested with list of
+	30000 waypoints. If gpsdrive hangs, reduce number of waypoints in
+	file.
+	Better fallbacks for fonts. I prefer an arial truetype font. Helvetica
+	is used if no arial font is found.
+
+	* src/gpsdrive.c: ...
+
+2001-09-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	Added program icon. Added check for way.txt format errors.
+
+	* src/config.h.in, src/gpsdrive.c, src/rotatetest.c, config.h, configure.in:
+	solved this intl compile problem
+
+2001-09-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am: added stop.h
+
+	* src/gpsdrive.c: v0.25
+
+	* src/gpsdrive.c, src/stop.h:
+	added error message for not existent DEFAULT waypoint
+	added popup error window
+
+	* src/gpsdrive.spec, src/gpsdrive.c, README, configure.in:
+	In the way.txt waypoint file the waypoint
+	named "DEFAULT" is the start position of the program,
+	important if you start it in simulation mode.
+	So not everybody in the world need to start at my
+	house in Austria! ;-)
+	Bugfix if at start no map is found.
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	V0.24: bugfix for displays which have not 16 bit colordepth
+
+2001-09-20  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog: added radar warning
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	added Radar warning. If you store the radars as waypoints named R-XXXX where
+	XXXX can be a incremented number. You hear radar warning as voice message and
+	a red/black blinking Bearing pointer.
+
+2001-09-20  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	added Radar warning. If you store the radars as waypoints named R-XXXX where
+	XXXX can be a incremented number. You hear radar warning as voice message and
+	a red/black blinking Bearing pointer.
+
+2001-09-18  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, ChangeLog, README, configure.in:
+	v0.22
+
+	* src/gpsdrive.c:
+	If you click with the left mouse button on the map you are in "Display
+	mode" where a rectangle is the cursor and no position is shown. If you
+	zoom or select another map scale, this is done for the position of the
+	rectangle-cursor in the same manner as it would be your actual
+	position.
+
+	The middle mouse button switches back to normal mode. The same if you
+	select a target with the right mouse button.  Shift-left-mouse-button
+	and shift-right-mouse-button changes the map scale.
+
+	* src/gpsdrive.c: testnewmap is not o.k.
+
+	* src/gpsdrive.spec, configure.in: v0.21
+
+	* src/gpsdrive.c: v0.21 using double buffering to avoid flicker.
+
+	* src/gpsdrive.spec, configure.in: v0.20
+
+	* src/gpsdrive.c, src/speech_out.c: ..
+
+2001-09-18  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	If you click with the left mouse button on the map you are in "Display
+	mode" where a rectangle is the cursor and no position is shown. If you
+	zoom or select another map scale, this is done for the position of the
+	rectangle-cursor in the same manner as it would be your actual
+	position.
+
+	The middle mouse button switches back to normal mode. The same if you
+	select a target with the right mouse button.  Shift-left-mouse-button
+	and shift-right-mouse-button changes the map scale.
+
+	* src/gpsdrive.c: testnewmap is not o.k.
+
+	* src/gpsdrive.spec, configure.in: v0.21
+
+	* src/gpsdrive.c: v0.21 using double buffering to avoid flicker.
+
+	* src/gpsdrive.spec, configure.in: v0.20
+
+	* src/gpsdrive.c, src/speech_out.c: ..
+
+2001-09-17  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: changed speech text
+
+	* src/gpsdrive.spec: strips the binary
+
+	* src/gpsdrive.c, src/speech_out.c: added speech output of bearing
+
+2001-09-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.h, src/gpsdrive.spec, src/speech_out.c, README, configure.in:
+	speech output is working
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.h, src/speech_out.c:
+	...
+
+	* src/Makefile.am, src/gpsdrive.c, src/gpsdrive.h, src/speech_out.c:
+	added gpsdrive.h for global variables
+
+	* src/speech_out.c: start speech output
+
+	* src/gpsdrive.c: now we work on speech output
+
+2001-09-09  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog: v0.18
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	v0.18 added defines to make it possible to define smaller screen sizes
+	this is the way to porting for iPaq
+
+	* src/viz_system.cpp: changed back to ttyS0
+
+	* src/gpsdrive.c:
+	numbers changed to SCREEN_X and SCREEN_Y, but doesn't work yet
+
+	* src/gpsdrive.c:
+	beginning rewrite source to set screenwidth and height as define
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/viz_system.cpp, configure.in:
+	v0.17
+
+2001-09-09  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in:
+	v0.18 added defines to make it possible to define smaller screen sizes
+	this is the way to porting for iPaq
+
+	* src/viz_system.cpp: changed back to ttyS0
+
+	* src/gpsdrive.c:
+	numbers changed to SCREEN_X and SCREEN_Y, but doesn't work yet
+
+	* src/gpsdrive.c:
+	beginning rewrite source to set screenwidth and height as define
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/viz_system.cpp, configure.in:
+	v0.17
+
+2001-09-08  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: added + sign as marker for the selected target
+
+	* src/gpsdrive.c: added tooltips
+
+2001-09-06  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec, configure.in:
+	v0.16 target is selectable with right mouse click on the map
+
+	* src/gpsdrive.c:
+	added: click with right mouse button on map sets the target waypoint
+
+	* src/gpsdrive.c: changed strings
+
+	* src/gpsdrive.c: changed label order, now really v0.15
+
+	* src/gpsdrive.c: some string changes, really v0.15
+
+	* README: some comments
+
+	* src/gpsdrive.spec: removed ppro switch
+
+	* src/gpsdrive.c: display_status
+
+	* src/gpsdrive.spec, configure.in: v0.15
+
+	* src/gpsdrive.c: new fields layout
+
+2001-09-05  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: scaler works
+
+	* src/gpsdrive.c: created scaler for map scale selection
+
+	* configure.in: ...
+
+	* configure.in:
+	remove -fast-math. This caused division/zero because it didn't allow
+	NaN, which I used.
+
+2001-09-04  Fritz Ganter  <ganter@grazforyou.at>
+
+	* README: added ppro optimizations
+
+	* src/gpsdrive.spec, configure.in:
+	v0.14 rpm is default pentium optimized
+
+	* src/gpsdrive.c: ...
+
+	* configure.in: added time to destination
+
+	* src/gpsdrive.c:
+	added time to destination. I didn't calculate with bearing.
+
+	* src/gpsdrive.c: moved progress bar into the download window
+	download window is only removed after download
+	added delete_event handler for download_cb
+
+	* src/wpget: added rm x.tmp
+
+	* src/gpsdrive.c: added progress bar for download status
+
+	* src/gpsdrive.c: restore cursor on end of download
+
+	* src/gpsdrive.c: added cool cursor for map position selection
+
+2001-09-03  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: ...
+
+	* src/gpsdrive.c: translations
+
+	* src/gpsdrive.c, src/gpsdrive.spec, ChangeLog, configure.in:
+	public v0.13
+
+	* src/gpsdrive.c:
+	map is now clickable for selection of the download position.
+	yardstick is fixed for m/yards display.
+
+	* src/gpsdrive.c: missing translation
+
+	* src/gpsdrive.c, configure.in: added scale marker on map
+
+	* configure.in: added scale line
+
+	* src/gpsdrive.c: added scale line, it's not perfect yet
+
+2001-09-03  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	map is now clickable for selection of the download position.
+	yardstick is fixed for m/yards display.
+
+	* src/gpsdrive.c: missing translation
+
+	* src/gpsdrive.c, configure.in: added scale marker on map
+
+	* configure.in: added scale line
+
+	* src/gpsdrive.c: added scale line, it's not perfect yet
+
+2001-09-02  Fritz Ganter  <ganter@grazforyou.at>
+
+	* README: public 0.12
+
+	* src/gpsdrive.c, src/gpsdrive.spec, configure.in: near to v0.12
+
+	* src/gpsdrive.c: download of gif doesn't work correctly sometimes
+
+	* src/gpsdrive.c: ...
+
+2001-09-01  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: download in a non-blocking timeout routine
+
+	* src/gpsdrive.c: working on downloading maps from internet
+
+2001-08-31  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: added italian .mo file
+
+	* src/gpsdrive.spec, configure.in: version 0.11
+
+	* src/gpsdrive.c: rearranged calls of draw_marker.
+	fixed little bug in zoom-out, works now like expected.
+
+	* config.h: added
+
+	* src/Makefile.am, src/gpsdrive.spec, src/gpsfetchmap, README:
+	added gpsfetchmap and install all the scripts, also added in RPM
+
+	* src/gpsfetchmap: created
+
+	* src/gpsdrive.c:
+	fixed bug if you are West or South. Thanks to Jason Aras.
+
+	* src/gpsdrive.spec: v 0.10
+
+	* src/gpsdrive.c, configure.in: version 0.10
+
+2001-08-30  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: better simulator
+
+	* src/gpsdrive.c:
+	more beautifully indent. Thanks to timecop@japan.co.jp
+
+2001-08-29  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: added garble
+
+	* src/gpsdrive.c, src/gpsdrive.spec, src/gpsdrivegarble.cpp, configure.in:
+	version 0.9
+
+	* src/gpsdrive.c: code cleanup, translated to english
+
+	* src/gpsdrive.c:
+	main() code rewritten for better readability because japanese people
+	complained about bad style coding.
+	Also translate all variable and messages to english.
+
+	* src/splash.c: trying splashfile also in current dir
+
+	* src/Makefile.am, src/gpsdrivesplash.xpm, po/en.po, configure.in:
+	change programing lanuage to english
+
+	* src/gpsdrive.c: changed variable names to english
+
+	* src/splash.c: removed large xpm file, load png instead
+
+2001-08-27  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: get groundspeed to zero if no movement
+
+	* po/en.po: v0.8
+
+	* src/gpsdrive.spec, configure.in: v0.8: bugfix locale
+
+	* po/en.po: bugfix locale
+
+	* src/gpsdrive.c: bugfix: . or , should be set depending on  LC_NUMERIC
+
+	* src/gpsdrive.spec: V0.7
+
+	* ChangeLog: added GARMIN mode
+
+	* src/gpsdrivegarble.cpp, src/gpsdrive.c, po/en.po: Version 0.7
+
+	* README: added comments about GARMIN mode.
+
+	* src/Makefile:  removed
+
+	* src/Makefile, po/en.po: ..
+
+	* src/Makefile.am: added .h files from garble sources
+
+	* src/Makefile.in: removed
+
+	* configure.in:
+	experimental added -f flag for direct GARMIN format. Don't start gpsd
+	in this mode!
+
+	* src/garmin_application.cpp, src/garmin_application.h, src/gpsdrive.c, src/gpsdrivegarble.cpp:
+	Version 0.7 added experimental -f flag for direct use of GARMIN format
+	no gpsd must be started!
+
+2001-08-26  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in: added garble files
+
+	* src/gpsdrivegarble.cpp: changed for gpsdrive
+
+	* src/viz_system.h, src/viz_types.h, src/Makefile, src/Makefile.am, src/Makefile.in, src/garble.cpp, src/garmin_application.cpp, src/garmin_application.h, src/garmin_command.h, src/garmin_error.h, src/garmin_link.cpp, src/garmin_link.h, src/garmin_packet.h, src/garmin_phys.h, src/garmin_serial.cpp, src/garmin_serial.h, src/garmin_serial_unix.cpp, src/garmin_serial_unix.h, src/garmin_types.h, src/garmin_util.cpp, src/garmin_util.h, src/gpsd_main.cpp, src/gpsdrive.c, src/gpsdrivegarble.cpp, src/map_koord.txt, src/viz_system.cpp:
+	added garble sources to included in gpsdrive
+
+2001-08-27  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrivegarble.cpp, src/gpsdrive.c, po/en.po: Version 0.7
+
+	* README: added comments about GARMIN mode.
+
+	* src/Makefile:  removed
+
+	* src/Makefile, po/en.po: ..
+
+	* src/Makefile.am: added .h files from garble sources
+
+	* src/Makefile.in: removed
+
+	* configure.in:
+	experimental added -f flag for direct GARMIN format. Don't start gpsd
+	in this mode!
+
+	* src/garmin_application.cpp, src/garmin_application.h, src/gpsdrive.c, src/gpsdrivegarble.cpp:
+	Version 0.7 added experimental -f flag for direct use of GARMIN format
+	no gpsd must be started!
+
+2001-08-26  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in: added garble files
+
+	* src/gpsdrivegarble.cpp: changed for gpsdrive
+
+	* src/viz_system.h, src/viz_types.h, src/Makefile, src/Makefile.am, src/Makefile.in, src/garble.cpp, src/garmin_application.cpp, src/garmin_application.h, src/garmin_command.h, src/garmin_error.h, src/garmin_link.cpp, src/garmin_link.h, src/garmin_packet.h, src/garmin_phys.h, src/garmin_serial.cpp, src/garmin_serial.h, src/garmin_serial_unix.cpp, src/garmin_serial_unix.h, src/garmin_types.h, src/garmin_util.cpp, src/garmin_util.h, src/gpsd_main.cpp, src/gpsdrive.c, src/gpsdrivegarble.cpp, src/map_koord.txt, src/viz_system.cpp:
+	added garble sources to included in gpsdrive
+
+	* README, po/en.po: ..
+
+	* README: comments about simulator
+
+	* src/gpsdrive.c: indent
+
+	* src/gpsdrive.c: "distance to" frame label shows target name
+
+	* po/en.po: ,,
+
+	* po/de.gmo, po/en.po: removed
+
+	* po/en.po: Version 0.6
+
+	* src/gpsdrive.c: changed usage, still v0.6
+
+	* src/gpsdrive.spec, configure.in, src/gpsdrive.c: Version 0.6
+
+	* src/gpsdrive.c: added big zoom field, set refresh rate to 500ms
+
+	* src/Makefile.am: added wpget
+
+	* src/gpsdrive.c, src/splash.c: indent
+
+	* src/gpsdrive.c: added splash(), coooool!
+
+	* src/splash.c: works fine
+
+	* src/splash.c, src/gpsdrivesplash.xpm: added splash.c
+
+	* src/gpsdrivesplash.png: added splash logo
+
+	* README: added simulator comments
+
+2001-08-25  Fritz Ganter  <ganter@grazforyou.at>
+
+	* po/en.po: v0.5
+
+	* README: *** empty log message ***
+
+	* src/gpsdrive.spec: added french
+
+	* po/en.po, src/gpsdrive.spec: v0.5
+
+	* src/gpsdrive.c, ChangeLog: *** empty log message ***
+
+	* configure.in, src/wpget, po/en.po, src/gpsdrive.c: pre v0.5
+
+	* README: added comments about fonts and wpget
+
+	* src/gpsdrive.c: added frames for fields
+
+2001-08-25  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in, src/wpget, po/en.po, src/gpsdrive.c: pre v0.5
+
+	* README: added comments about fonts and wpget
+
+	* src/gpsdrive.c: added frames for fields
+
+2001-08-24  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c: simulator mode: pointer moves to selected destination
+
+	* src/gpsdrive.c: working on satellites
+
+	* src/gpsdrive.c: course pointer is something ugly
+
+	* src/gpsdrive.c:
+	corrected angel values, 0° is on top (north) and angel is counting clockwise
+
+2001-08-23  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: version 0.4
+
+	* configure.in: .
+
+	* src/gpsdrive.c: added pointer to destination
+
+2001-08-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* README: added waypoints
+
+	* src/gpsdrive.c: changes to way.txt handling
+
+	* ChangeLog: .
+
+	* ChangeLog, src/gpsdrive.c: version 0.4 for public
+
+	* src/wpcvt, po/en.po: distance measurment working fine
+
+	* src/gpsdrive.c: distance measurment adjusted
+
+2001-08-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am: added wpcvt
+
+	* configure.in: version 0.4
+
+	* po/en.po: .
+
+	* configure.in: *** empty log message ***
+
+	* src/gpsdrive.c: destination selection added
+
+2001-08-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog, src/gpsdrive.c: version 0.4 for public
+
+	* src/wpcvt, po/en.po: distance measurment working fine
+
+	* src/gpsdrive.c: distance measurment adjusted
+
+2001-08-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am: added wpcvt
+
+	* configure.in: version 0.4
+
+	* po/en.po: .
+
+	* configure.in: *** empty log message ***
+
+	* src/gpsdrive.c: destination selection added
+
+2001-08-22  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/wpcvt, po/en.po: distance measurment working fine
+
+	* src/gpsdrive.c: distance measurment adjusted
+
+2001-08-21  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am: added wpcvt
+
+	* configure.in: version 0.4
+
+	* po/en.po: .
+
+	* configure.in: *** empty log message ***
+
+	* src/gpsdrive.c: destination selection added
+
+2001-08-20  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: x
+
+	* po/en.gmo, po/en.po, configure.in: *** empty log message ***
+
+	* README: added gnu stuff
+
+	* ChangeLog: *** empty log message ***
+
+	* src/gpsdrive.c:
+	little bug in zoom out found, xoff and yoff was not updated.
+
+2001-08-20  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.c:
+	little bug in zoom out found, xoff and yoff was not updated.
+
+2001-08-19  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: added gpsd
+
+	* src/Makefile.am: removed map file
+
+	* src/gpsdrive.c, po/en.gmo, po/en.po, README:
+	Version 0.3 ready for public
+
+	* configure.in: changed to version 0.3
+
+	* src/gpsdrive.c: some cleanups
+
+	* src/gpsdrive.c: fixed offset=0 when new map loaded.
+
+	* po/en.gmo, po/en.po: .
+
+	* po/en.gmo, po/en.po: seems all to work, make a testdrive now.
+
+	* src/gpsdrive.c: found this little bug (x instead of y in line 469).
+	Am I too old for programming?
+
+	* src/Makefile.am, po/en.gmo, po/en.po, README: nearly working
+
+	* src/gpsdrive.c: there is only a big bug in the y direction.
+
+	* ChangeLog: *** empty log message ***
+
+	* src/gpsdrive.spec: addes .mo files
+
+	* configure.in: removed profiling
+
+	* configure.in: added spanish
+
+	* po/en.gmo, po/en.po, po/st.gmo: removed st.gmo
+
+	* src/gpsdrive.c: working hard on zooming...
+
+2001-08-19  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/gpsdrive.spec: addes .mo files
+
+	* configure.in: removed profiling
+
+	* configure.in: added spanish
+
+	* po/en.gmo, po/en.po, po/st.gmo: removed st.gmo
+
+	* src/gpsdrive.c: working hard on zooming...
+
+2001-08-18  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in: switch on profiling
+
+	* src/gpsdrive.c: working on zooming
+
+	* src/gpsdrive.c: added command line options
+
+	* ChangeLog: map switching works
+
+	* src/gpsdrive.c:
+	map switching works (theroretical, I need a testdrive, now at 6.00am localtime)
+
+	* src/gpsdrive.c:
+	"big" image is working, wackel() simulates moving of map.
+
+2001-08-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am: removed erde.png
+
+	* po/en.po, po/en.gmo:  position on map is working
+
+	* src/gpsdrive.c:
+	displaying position on map is working and tested through test drive ;-)
+
+	* src/gpsdrive.c: should work
+
+2001-08-15  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog, configure.in: Version 0.2
+
+	* configure.in, src/gpsdrive.c: new version
+
+2001-08-16  Fritz Ganter  <ganter@grazforyou.at>
+
+	* po/en.po, po/en.gmo:  position on map is working
+
+	* src/gpsdrive.c:
+	displaying position on map is working and tested through test drive ;-)
+
+	* src/gpsdrive.c: should work
+
+2001-08-15  Fritz Ganter  <ganter@grazforyou.at>
+
+	* ChangeLog, configure.in: Version 0.2
+
+	* configure.in, src/gpsdrive.c: new version
+
+	* src/gpsdrive.c: data conversion for statusline works
+
+	* src/gpsdrive.c, src/Makefile.am:
+	get GPS data and display in statusbar is working
+
+2001-08-15  Fritz Ganter  <ganter@grazforyou.at>
+
+	* configure.in: Version 0.2
+
+	* configure.in, src/gpsdrive.c: new version
+
+	* src/gpsdrive.c: data conversion for statusline works
+
+	* src/gpsdrive.c, src/Makefile.am:
+	get GPS data and display in statusbar is working
+
+2001-08-14  Fritz Ganter  <ganter@grazforyou.at>
+
+	* src/Makefile.am, src/stamp-h.in: .
+
+	* src/gpsdrive.c, po/en.gmo, po/en.po: first version running
+
+	* src/Makefile.in, Makefile.in, aclocal.m4, configure: .
+
+	* ABOUT-NLS, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, Makefile.in, NEWS, README, acconfig.h, aclocal.m4, configure, configure.in, install-sh, intl/ChangeLog, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c, intl/cat-compat.c, intl/dcgettext.c, intl/dgettext.c, intl/explodename.c, intl/finddomain.c, intl/gettext.c, intl/gettext.h, intl/gettextP.h, intl/hash-string.h, intl/intl-compat.c, intl/l10nflist.c, intl/libgettext.h, intl/linux-msg.sed, intl/loadinfo.h, intl/loadmsgcat.c, intl/localealias.c, intl/po2tbl.sed.in, intl/textdomain.c, intl/xopen-msg.sed, missing, mkinstalldirs, po/ChangeLog, po/Makefile.in.in, po/POTFILES.in, po/de.gmo, po/en.gmo, po/en.po, po/st.gmo, src/Makefile.am, src/Makefile.in, src/config.h.in, src/gpsdrive.c, src/gpsdrive.spec, src/stamp-h.in:
+	New file.
+
+	* ABOUT-NLS, AUTHORS, COPYING, ChangeLog, INSTALL, Makefile.am, Makefile.in, NEWS, README, acconfig.h, aclocal.m4, configure, configure.in, install-sh, intl/ChangeLog, intl/Makefile.in, intl/VERSION, intl/bindtextdom.c, intl/cat-compat.c, intl/dcgettext.c, intl/dgettext.c, intl/explodename.c, intl/finddomain.c, intl/gettext.c, intl/gettext.h, intl/gettextP.h, intl/hash-string.h, intl/intl-compat.c, intl/l10nflist.c, intl/libgettext.h, intl/linux-msg.sed, intl/loadinfo.h, intl/loadmsgcat.c, intl/localealias.c, intl/po2tbl.sed.in, intl/textdomain.c, intl/xopen-msg.sed, missing, mkinstalldirs, po/ChangeLog, po/Makefile.in.in, po/POTFILES.in, po/de.gmo, po/en.gmo, po/en.po, po/st.gmo, src/Makefile.am, src/Makefile.in, src/config.h.in, src/gpsdrive.c, src/gpsdrive.spec, src/stamp-h.in:
+	gpsdrive started
+
+
