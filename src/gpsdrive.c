@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.41  2005/05/15 06:51:27  tweety
+all speech strings are now represented as arrays of strings
+author: Rob Stewart <rob@groupboard.com>
+
 Revision 1.40  2005/04/29 17:41:57  tweety
 Moved the speech string to a seperate File
 
@@ -1179,7 +1183,7 @@ fixed bug in downloadsetparms (longitude comparision)
 
 Revision 1.230  2002/04/21 13:15:02  ganter
 Now getting good maps for USA from expedia server works: I changed in
-the URL EUR0809 to USA0409 if longitude is west of 30ÂŽ°W. If anyone
+the URL EUR0809 to USA0409 if longitude is west of 30 degrees W. If anyone
 have found a system for this EUR0809,USA0409 strings in the URL,
 please inform me.
 
@@ -1890,7 +1894,7 @@ Revision 1.25  2001/08/24 09:58:57  ganter
 course pointer is something ugly
 
 Revision 1.24  2001/08/24 00:25:29  ganter
-corrected angel values, 0ÂŽ° is on top (north) and angel is counting clockwise
+corrected angel values, 0ï¿½ï¿½ï¿½ is on top (north) and angel is counting clockwise
 
 Revision 1.23  2001/08/23 00:08:11  ganter
 added pointer to destination
@@ -3936,29 +3940,10 @@ testnewmap ()
 						routemode = FALSE;
 						saytarget = FALSE;
 						routepointer = routeitems = 0;
-						switch (voicelang)
-						{
-						case english:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "You reached the target %s",
-								    targetname);
-							break;
-						case spanish:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "usted ha llegado a %s",
-								    targetname);
-							break;
-						case german:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Sie haben das Ziel %s erreicht",
-								    targetname);
-						}
+
+            g_snprintf(
+                buf, sizeof (buf),speech_target_reached[voicelang],
+                targetname );
 						speech_out_speek (buf);
 
 						/* let's say the waypoint description */
@@ -4225,19 +4210,9 @@ setroutetarget (GtkWidget * widget, gint datum)
 	else
 		g_strlcat (buf2, tn, sizeof (buf2));
 
-	switch (voicelang)
-	{
-	case english:
-		g_snprintf (buf, sizeof (buf), "New target is %s", buf2);
-		break;
-	case spanish:
-		g_snprintf (buf, sizeof (buf), "DestinaciÂŽón definida: %s",
-			    buf2);
-		break;
-	case german:
-		g_snprintf (buf, sizeof (buf), "Neues Ziel ist %s ", buf2);
-	}
+  g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
 	speech_out_speek (buf);
+
 	speechcount = 0;
 	g_strlcpy (oldangle, "XXX", sizeof (oldangle));
 	saytarget = TRUE;
@@ -4417,26 +4392,12 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 		if ((strcmp (lname, lastradar)) != 0)
 		{
 			g_strlcpy (lastradar, lname, sizeof (lastradar));
-			switch (voicelang)
-			{
-			case english:
-				g_snprintf (buf, sizeof (buf),
-					    "Danger, Danger, Radar in %d meters, Your speed is %d",
-					    (int) (ldist * 1000.0),
-					    (int) groundspeed);
-				break;
-			case spanish:
-				g_snprintf (buf, sizeof (buf),
-					    "Atención Atención, control de  velocidad en %d metros, Su velocidad es %d",
-					    (int) (ldist * 1000.0),
-					    (int) groundspeed);
-				break;
-			case german:
-				g_snprintf (buf, sizeof (buf),
-					    "Achtung, Achtung, Radar in %d metern, Ihre Geschwindigkeit ist %d",
-					    (int) (ldist * 1000.0),
-					    (int) groundspeed);
-			}
+
+      g_snprintf(
+          buf, sizeof(buf), speech_danger_radar[voicelang],
+          (int) (ldist * 1000.0), (int) groundspeed );
+			speech_out_speek (buf);
+
 			if (displaytext != NULL)
 				free (displaytext);
 			displaytext = strdup (buf + 10);
@@ -4445,32 +4406,16 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 
 			do_display_dsc = TRUE;
 			textcount = 0;
-
-			speech_out_speek (buf);
 		}
 
 		if (radarnear)
 			if ((strcmp (l2name, lastradar2)) != 0)
 			{
-				g_strlcpy (lastradar2, l2name,
-					   sizeof (lastradar2));
-				switch (voicelang)
-				{
-				case english:
-					g_snprintf (buf, sizeof (buf),
-						    "Information, Radar in %d meters",
-						    (int) (ldist * 1000.0));
-					break;
-				case spanish:
-					g_snprintf (buf, sizeof (buf),
-						    "InformaciÂŽón, control de  velocidad en %d metros",
-						    (int) (ldist * 1000.0));
-					break;
-				case german:
-					g_snprintf (buf, sizeof (buf),
-						    "Information, Radar in %d meter",
-						    (int) (ldist * 1000.0));
-				}
+				g_strlcpy (lastradar2, l2name, sizeof (lastradar2));
+
+        g_snprintf(
+            buf, sizeof(buf), speech_info_radar[voicelang],
+            (int) (ldist * 1000.0) );
 				speech_out_speek (buf);
 			}
 
@@ -4604,56 +4549,36 @@ display_status2 ()
 		olddist = dist;
 		hours = h;
 		minutes = m;
-		if (!muteflag)
-			if (hours < 99)
-			{
-				switch (voicelang)
-				{
-				case english:
-					if (hours > 0)
-						g_snprintf (buf, sizeof (buf),
-							    "Arrival in approximatly %d hours and %d minutes",
-							    hours, minutes);
-					else
-						g_snprintf (buf, sizeof (buf),
-							    "Arrival in approximatly %d minutes",
-							    minutes);
-					break;
-				case spanish:
-					if (hours > 0)
-						g_snprintf (buf, sizeof (buf),
-							    "Llegada en %d horas y %d minutos",
-							    hours, minutes);
-					else
-						g_snprintf (buf, sizeof (buf),
-							    "Llegada en %d minutos",
-							    minutes);
-					break;
-				case german:
-					if (hours > 0)
-					{
-						if (hours == 1)
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Ankunft in circa einer Stunde und %d minuten",
-								    minutes);
-						else
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Ankunft in circa %d Stunden und %d minuten",
-								    hours,
-								    minutes);
-					}
-					else
-						g_snprintf (buf, sizeof (buf),
-							    "Ankunft in zirca %d minuten",
-							    minutes);
-					speech_out_speek (buf);
-				}
-			}
 
+
+    if( !muteflag )
+    {
+      if( hours < 99 )
+      {
+        if( hours > 0 )
+        {
+          if( 1 == hours )
+          {
+            g_snprintf(
+              buf, sizeof(buf), speech_arrival_one_hour_mins[voicelang],
+              minutes );
+          }
+          else
+          {
+            g_snprintf(
+              buf, sizeof(buf), speech_arrival_hours_mins[voicelang], hours,
+              minutes );
+          }
+        }
+        else
+        {
+          g_snprintf(
+            buf, sizeof(buf), speech_arrival_mins[voicelang], minutes );
+        }
+
+        speech_out_speek( buf );
+	    }
+    }
 	}
 
 	if (minsecmode)
@@ -5553,85 +5478,36 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 		g_strlcpy (buf, "", sizeof (buf));
 		if (mydebug)
 			g_print ("gpsd: Satfix: %d\n", satfix);
-		if (satfix != oldsatfix)
-		{
-			if (satfix == 2)
-			{
-				switch (voicelang)
-				{
-				case english:
-					g_snprintf (buf, sizeof (buf),
-						    "Differential GPS signal found");
-					break;
-				case spanish:
-					g_snprintf (buf, sizeof (buf),
-						    "Destinación definida: ");
-					break;
-				case german:
-					g_snprintf (buf, sizeof (buf),
-						    "Ein differenzielles GPS Signal wurde gefunden");
-				}
-			}
-			else if ((satfix == 1) && (oldsatfix == 2))
-			{
-				switch (voicelang)
-				{
-				case english:
-					g_snprintf (buf, sizeof (buf),
-						    "No differential GPS signal detected");
-					break;
-				case spanish:
-					g_snprintf (buf, sizeof (buf),
-						    "No differential GPS signal detected ");
-					break;
-				case german:
-					g_snprintf (buf, sizeof (buf),
-						    "Kein differenzielles GPS Signal vorhanden");
-				}
-			}
 
-			if (satfix == 0)
-			{
-				switch (voicelang)
-				{
-				case english:
-					g_snprintf (buf, sizeof (buf),
-						    "No sufficent GPS signal");
-					break;
-				case spanish:
-					g_snprintf (buf, sizeof (buf),
-						    "No sufficent GPS signal detected ");
-					break;
-				case german:
-					g_snprintf (buf, sizeof (buf),
-						    "Kein ausreichendes GPS Signal vorhanden");
-				}
-			}
-			if (satfix == 1)
-			{
-				switch (voicelang)
-				{
-				case english:
-					g_snprintf (buf, sizeof (buf),
-						    "GPS signal good");
-					break;
-				case spanish:
-					g_snprintf (buf, sizeof (buf),
-						    "GPS signal bueno ");
-					break;
-				case german:
-					g_snprintf (buf, sizeof (buf),
-						    "Gutes GPS Signal vorhanden");
-				}
-			}
+    if (satfix != oldsatfix)
+    {
+      if( !muteflag && sound_gps )
+      {
+        if( 0 == satfix )
+        {
+          g_snprintf( buf, sizeof(buf), speech_gps_lost[voicelang] );
+        }
+        else if( 1 == satfix )
+        {
+          if( 2 == oldsatfix )
+          {
+            g_snprintf( buf, sizeof(buf), speech_diff_gps_lost[voicelang] );
+          }
+          else
+          {
+            g_snprintf( buf, sizeof(buf), speech_gps_good[voicelang] );
+          }
+        }
+        else if( 2 == satfix )
+        {
+          g_snprintf( buf, sizeof(buf), speech_diff_gps_found[voicelang] );
+        }
 
+        speech_out_speek( buf );
+      }
 
-
-
-			oldsatfix = satfix;
-			if (!muteflag && sound_gps)
-				speech_out_speek (buf);
-		}
+      oldsatfix = satfix;
+    }
 	}
 	else
 	{
@@ -7024,7 +6900,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 				angle_to_destination += 2 * M_PI;
 		}
 		if (mydebug)
-			g_print ("Angle_To_Destination: %.1f °\n",
+			g_print ("Angle_To_Destination: %.1f ï¿½\n",
 				 angle_to_destination * 180 / M_PI);
 
 		if (havefriends && targetname[0] == '*')
@@ -9268,19 +9144,9 @@ setwp_cb (GtkWidget * widget, guint datum)
 	else
 		g_strlcat (buf2, tn, sizeof (buf2));
 
-	switch (voicelang)
-	{
-	case english:
-		g_snprintf (buf, sizeof (buf), "New target is %s", buf2);
-		break;
-	case spanish:
-		g_snprintf (buf, sizeof (buf), "Destinación definida: %s",
-			    buf2);
-		break;
-	case german:
-		g_snprintf (buf, sizeof (buf), "Neues Ziel ist %s", buf2);
-	}
+  g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
 	speech_out_speek (buf);
+
 	saytarget = TRUE;
 	routenearest = 9999999;
 
@@ -9603,7 +9469,6 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
 
 		calcxytopos (x, y, &lat, &lon, zoom);
-
 
 		if (debug)
 			printf ("Actual Position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
@@ -10429,7 +10294,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 				   GTK_SIGNAL_FUNC
 				   (sel_targetweg_cb), GTK_OBJECT (window));
 
-	/* Font ändern falls PDA-Mode und Touchscreen */
+	/* Font ï¿½ndern falls PDA-Mode und Touchscreen */
 	if (pdamode)
 	{
 		if (onemousebutton)
@@ -10569,7 +10434,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 				   GTK_SIGNAL_FUNC
 				   (sel_routeclose_cb), GTK_OBJECT (window));
 
-	/* Font ändern falls PDA-Mode und Touchscreen */
+	/* Font ï¿½ndern falls PDA-Mode und Touchscreen */
 	if (pdamode)
 	{
 		if (onemousebutton)
@@ -12320,25 +12185,13 @@ main (int argc, char *argv[])
 
 	if (usesql)
 		initkismet ();
-	if (havekismet)
-	{
-		g_print (_("\nkismet server found\n"));
-		switch (voicelang)
-		{
-		case english:
-			g_snprintf (buf, sizeof (buf),
-				    "Found kismet. Happy wardriving");
-			break;
-		case spanish:
-			g_snprintf (buf, sizeof (buf),
-				    "Found kismet. Happy wardriving");
-			break;
-		case german:
-			g_snprintf (buf, sizeof (buf),
-				    "Kismet gefunden. Viel Spass beim wordreifing");
-		}
-		speech_out_speek (buf);
-	}
+
+  if( havekismet )
+  {
+    g_print (_("\nkismet server found\n"));
+    g_snprintf( buf, sizeof(buf), speech_kismet_found[voicelang] );
+    speech_out_speek (buf);
+  }
 
 	load_friends_icon ();
 
