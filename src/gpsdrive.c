@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.22  2005/02/07 07:53:39  tweety
+added check_if_moved inti function poi_rebuild_list
+
 Revision 1.21  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -2196,14 +2199,13 @@ char dbwherestring[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
 extern gint sqlselects[100], sqlplace, friendsplace, kismetsock, havekismet;
+
 extern GdkPixbuf *kismetpixbuf, *openwlanpixbuf, *closedwlanpixbuf, *iconpixbuf[50];
 gint earthmate = FALSE;
-/* gchar *p_1, *p_2, *p_3;
- * gsize *size_1;
- * gchar s_1[100], s_2[100];
- */
+
 extern gint wptotal, wpselected;
 gchar wplabelfont[100], bigfont[100];
+
 gint showroute = TRUE;
 extern gint zone;
 /* gchar gradsym[]="\302\260";  */
@@ -2214,9 +2216,11 @@ gint drawgrid = FALSE;
 extern gint poi_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
+
 /* socket for friends  */
 extern int sockfd;
 extern long int maxfriendssecs;
+
 gint forcehavepos = FALSE, needreminder = TRUE;
 char actualhostname[200];
 gdouble alarm_lat = 53.583033, alarm_long = 9.969533, alarm_dist = 9999999.0;
@@ -2284,7 +2288,14 @@ static GtkItemFactoryEntry main_menu[] = {
 };
 
 
+void addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon );
 
+
+
+/* *****************************************************************************
+   *****************************************************************************
+   *****************************************************************************
+*/
 
 
 /*  stolen from bluefish, translates the menu */
@@ -2381,7 +2392,6 @@ convertRMC (char *f)
       if (haveposcount == 3)
 	{
 	  rebuildtracklist ();
-	  poi_rebuild_list (); // Don't know why, just to be shure
 	}
 	    
     }
@@ -2638,7 +2648,6 @@ convertGGA (char *f)
 	  if (haveposcount == 3)
 	    {
 	      rebuildtracklist ();
-	      poi_rebuild_list (); // Don't know why, just to be shure
 	    }
 	}
 
@@ -3452,7 +3461,7 @@ testnewmap ()
   gdouble posx, posy;
   long long bestmap = 9999999999LL;
   gdouble pixelfactloc, bestscale = 1000000000.0, fact;
-  gint i, j, skip, istopo, ncount = 0;
+  gint i, j, skip, istopo=FALSE, ncount = 0;
   gchar str[100], buf[200], mappath[500];
   gdouble dif;
   gchar nasaname[255];
@@ -3581,6 +3590,7 @@ testnewmap ()
 
   nasaisvalid = FALSE;
 
+  /* */ 
   for (i = 0; i < nrmaps; i++)
     {
       skip = TRUE;
@@ -3612,40 +3622,27 @@ testnewmap ()
 /*        calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
 /*  Longitude */
       if (istopo == FALSE)
-	posx =
-	  (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180) * cos (M_PI *
-								  (maps +
-								   i)->lat /
-								  180.0) *
-	  (current_long - (maps + i)->lon);
+	posx = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180)
+	  * cos (M_PI *	  (maps +   i)->lat /  180.0)
+	  * (current_long - (maps + i)->lon);
       else
-	posx =
-	  (Ra[(int) (100 + 0)] * M_PI / 180) * (current_long -
-						(maps + i)->lon);
+	posx = (Ra[(int) (100 + 0)] * M_PI / 180)
+	  * (current_long - (maps + i)->lon);
 
 
 /*  latitude */
 
       if (istopo == FALSE)
 	{
-	  posy =
-	    (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180) * (current_lat -
-								(maps +
-								 i)->lat);
-	  dif =
-	    Ra[(int) (100 + (maps + i)->lat)] * (1 -
-						 (cos
-						  ((M_PI *
-						    (current_long -
-						     (maps +
-						      i)->lon)) /
-						   180.0)));
+	  posy = (Ra[(int) (100 + (maps + i)->lat)] * M_PI / 180) 
+	    * (current_lat - (maps + i)->lat);
+	  dif =   Ra[(int) (100 + (maps + i)->lat)] 
+	    * (1 - (cos((M_PI * (current_long - (maps + i)->lon)) / 180.0)));
 	  posy = posy + dif / 2.0;
 	}
       else
-	posy =
-	  (Ra[(int) (100 + 0)] * M_PI / 180) * (current_lat -
-						(maps + i)->lat);
+	posy = (Ra[(int) (100 + 0)] * M_PI / 180) 
+	  * (current_lat - (maps + i)->lat);
 
 
       pixelfactloc = (maps + i)->scale / PIXELFACT;
@@ -3733,6 +3730,7 @@ testnewmap ()
 
 }
 
+/* ----------------------------------------------------------------------------- */
 /*  set the target in routemode */
 void
 setroutetarget (GtkWidget * widget, gint datum)
@@ -3778,6 +3776,7 @@ setroutetarget (GtkWidget * widget, gint datum)
 }
 
 
+/* ----------------------------------------------------------------------------- */
 gint
 posmodeoff_cb (GtkWidget * widget, guint * datum)
 {
@@ -3785,6 +3784,7 @@ posmodeoff_cb (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
+/* ----------------------------------------------------------------------------- */
 gint
 lightoff (GtkWidget * widget, guint * datum)
 {
@@ -3793,6 +3793,7 @@ lightoff (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
+/* ----------------------------------------------------------------------------- */
 gint
 lighton (void)
 {
@@ -3803,6 +3804,7 @@ lighton (void)
   return TRUE;
 }
 
+/* ----------------------------------------------------------------------------- */
 gint
 tripreset ()
 {
@@ -3816,6 +3818,7 @@ tripreset ()
   return TRUE;
 }
 
+/* ----------------------------------------------------------------------------- */
 /* map_koord.txt is in mappath! */
 gint
 testconfig_cb (GtkWidget * widget, guint * datum)
@@ -3850,6 +3853,7 @@ testconfig_cb (GtkWidget * widget, guint * datum)
   return FALSE;
 }
 
+/* ----------------------------------------------------------------------------- */
 gint
 watchwp_cb (GtkWidget * widget, guint * datum)
 {
@@ -3988,6 +3992,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
+/* ----------------------------------------------------------------------------- */
 void
 checkinput (gchar * text)
 {
@@ -3995,6 +4000,7 @@ checkinput (gchar * text)
     mintodecimal (text);
 }
 
+/* ----------------------------------------------------------------------------- */
 void
 decimaltomin (gchar * text, gint islat)
 {
@@ -4032,6 +4038,7 @@ decimaltomin (gchar * text, gint islat)
 
 }
 
+/* ----------------------------------------------------------------------------- */
 void
 mintodecimal (gchar * text)
 {
@@ -4072,6 +4079,7 @@ mintodecimal (gchar * text)
 /*   g_print ("%s\n", text); */
 }
 
+/* ----------------------------------------------------------------------------- */
 /*  display upper status line */
 void
 display_status2 ()
@@ -4215,6 +4223,7 @@ display_status2 ()
 }
 
 
+/* ----------------------------------------------------------------------------- */
 /* draw the marker on the map */
 gint
 drawmarker_cb (GtkWidget * widget, guint * datum)
@@ -4277,6 +4286,7 @@ the currently loaded map */
 
 /* Try to produce only given CPU load  */
 
+/* ----------------------------------------------------------------------------- */
 gint
 calldrawmarker_cb (GtkWidget * widget, guint * datum)
 {
@@ -4311,6 +4321,7 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 }
 
 
+/* ----------------------------------------------------------------------------- */
 /* Friends agent */
 gint
 friendsagent_cb (GtkWidget * widget, guint * datum)
@@ -4386,6 +4397,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 
 
 
+/* ----------------------------------------------------------------------------- */
 /* Master agent */
 gint
 masteragent_cb (GtkWidget * widget, guint * datum)
@@ -4472,6 +4484,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
+/* ----------------------------------------------------------------------------- */
 /* draw track on image */
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
@@ -4549,6 +4562,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
+/* ----------------------------------------------------------------------------- */
 void
 drawwlan (gint posxdest, gint posydest, gint wlan)
 {
@@ -4573,6 +4587,7 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
     }
 }
 
+/* ----------------------------------------------------------------------------- */
 void
 drawfriends (void)
 {
@@ -4717,6 +4732,7 @@ drawfriends (void)
 }
 
 
+/* ----------------------------------------------------------------------------- */
 gint
 expose_sats_cb (GtkWidget * widget, guint * datum)
 {
@@ -5068,6 +5084,7 @@ drawloadedmaps ()
 }
 
 
+/* ----------------------------------------------------------------------------- */
 void
 drawdownloadrectangle (gint big)
 {
@@ -5120,7 +5137,7 @@ drawdownloadrectangle (gint big)
 
 
 
-//------------------------------------------------------------------------
+/* ----------------------------------------------------------------------------- */
 // Draw Text (lat/lon) into Grid
 void
 draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
@@ -5554,7 +5571,7 @@ drawmarker (GtkWidget * widget, guint * datum)
   gchar s2[100], s3[200], s2a[20];
   gdouble w;
   GdkPoint poly[16];
-  gint k, k2;
+  gint k;
 
   gblink = !gblink;
 /*    g_print("\nsimmode: %d, nmea %d garmin %d",simmode,haveNMEA,haveGARMIN); */
@@ -5972,6 +5989,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 
 
+/*----------------------------------------------------------------------------- */
 /* Copy Image from loaded map */
 gint
 expose_mini_cb (GtkWidget * widget, guint * datum)
@@ -6009,6 +6027,7 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
   return TRUE;
 }
 
+/*----------------------------------------------------------------------------- */
 gint
 expose_compass (GtkWidget * widget, guint * datum)
 {
@@ -6168,9 +6187,11 @@ expose_compass (GtkWidget * widget, guint * datum)
 
 }
 
+/*----------------------------------------------------------------------------- */
 /* Copy Image from loaded map */
 #include "f_expose_cb.c"
 
+/*----------------------------------------------------------------------------- */
 /*  This is called in simulation mode, it moves the position to the  */
 /*  selected destination */
 gint
@@ -6267,6 +6288,7 @@ opennmea (const char *name)
   return out;
 }
 
+/*----------------------------------------------------------------------------- */
 void
 write_nmea_line (const char *line)
 {
@@ -6278,6 +6300,7 @@ write_nmea_line (const char *line)
   fflush (nmeaout);
 }
 
+/*----------------------------------------------------------------------------- */
 void
 gen_nmea_coord (char *out)
 {
@@ -6289,6 +6312,7 @@ gen_nmea_coord (char *out)
 	      (current_long < 0 ? 'W' : 'E'));
 }
 
+/*----------------------------------------------------------------------------- */
 gint
 write_nmea_cb (GtkWidget * widget, guint * datum)
 {
@@ -6323,6 +6347,7 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 }
 
 
+/*----------------------------------------------------------------------------- */
 /*  We load the map */
 void
 loadmap (char *filename)
@@ -6408,7 +6433,6 @@ loadmap (char *filename)
   xoff = yoff = 0;
 
   rebuildtracklist ();
-  poi_rebuild_list ();
 
   if (!maploaded)
     display_status (_("Map found!"));
@@ -6429,6 +6453,7 @@ loadmap (char *filename)
 }
 
 
+/*----------------------------------------------------------------------------- */
 gint
 zoom_cb (GtkWidget * widget, guint datum)
 {
@@ -6470,6 +6495,7 @@ zoom_cb (GtkWidget * widget, guint datum)
 }
 
 
+/*----------------------------------------------------------------------------- */
 // Increase/decrease displayed map scale
 gint
 scalerbt_cb (GtkWidget * widget, guint datum)
@@ -8255,7 +8281,6 @@ gint
 poi_draw_cb (GtkWidget * widget, guint datum)
 {
   poi_draw = !poi_draw;
-  poi_rebuild_list ();
   poi_draw_list ();
 
   needtosave = TRUE;
@@ -8668,7 +8693,6 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
   if ((toupper (event->keyval)) == 'I' )
     {
       poi_draw = !poi_draw;
-      poi_rebuild_list ();
       poi_draw_list ();
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), poi_draw);
       needtosave = TRUE;
@@ -8693,15 +8717,15 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
   // Add Waypoint at current gps location without asking
   if ((toupper (event->keyval)) == 'W')
     {
-      gchar s1[100], s2[100];
+      gchar wp_name[100], wp_type[100];
       time_t t;
       struct tm *ts;
       time (&t);
       ts = localtime (&t);
-      g_snprintf (s1, sizeof (s1),"%s", asctime (ts));
-      g_snprintf (s2, sizeof (s2),"Automatic_key");
+      g_snprintf (wp_name, sizeof (wp_name),"%s", asctime (ts));
+      g_snprintf (wp_type, sizeof (wp_type),"Automatic_key");
 
-      addwaypoint(s1,s2,current_lat,current_long);
+      addwaypoint(wp_name,wp_type,current_lat,current_long);
     }
 
   // Add waypoint a current mouse location
@@ -8867,7 +8891,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	      posmode_x = lon;
 	      posmode_y = lat;
 	      rebuildtracklist ();
-	      poi_rebuild_list ();
 	      if (onemousebutton)
 		gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
 	    }
@@ -8878,7 +8901,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 
 	  rebuildtracklist ();
-	  poi_rebuild_list ();
 	}
 /*  Right mouse button */
       if ((state & GDK_BUTTON3_MASK) == GDK_BUTTON3_MASK)
@@ -8887,7 +8909,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 /* only if RIGHT mouse button clicked */
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 	  rebuildtracklist ();
-	  poi_rebuild_list ();
 	  g_strlcpy (targetname, _("SELECTED"), sizeof (targetname));
 	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), targetname);
 	  gtk_frame_set_label (GTK_FRAME (destframe), s);
@@ -8953,7 +8974,6 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	  posmode_x = lon;
 	  posmode_y = lat;
 	  rebuildtracklist ();
-	  poi_rebuild_list ();
 	  if (onemousebutton)
 	    gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
 	}
@@ -8963,7 +8983,6 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
       rebuildtracklist ();
-      poi_rebuild_list ();
     }
 
 /*    g_print ("\nx: %d, y: %d", x, y); */
@@ -8994,7 +9013,7 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
 
 // Add waypoint at wplat, wplon
 // with Strings for Name and Type
-gint
+void
 addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
 {
   gint i;
