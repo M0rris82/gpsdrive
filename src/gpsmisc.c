@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2005/04/02 12:10:12  tweety
+2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+Canges made to import a map with one point and enter the scale
+
 Revision 1.2  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -229,27 +233,27 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 }
 
 
-/* calculate Earth radius or given lat */
+/* calculate Earth radius for given lat */
 gdouble
 calcR (gdouble lat)
 {
   gdouble a = 6378.137, r, sc, x, y, z;
-  gdouble e2 = 0.081082 * 0.081082;
-/*
-the radius of curvature of an ellipsoidal Earth in the plane of the 
-meridian is given by 
-
- R' = a * (1 - e^2) / (1 - e^2 * (sin(lat))^2)^(3/2) 
-
- where a is the equatorial radius, 
-b is the polar radius, and 
-e is the eccentricity of the ellipsoid = sqrt(1 - b^2/a^2) 
-
-a = 6378 km (3963 mi) Equatorial radius (surface to center distance) 
-b = 6356.752 km (3950 mi) Polar radius (surface to center distance) 
-e = 0.081082 Eccentricity 
-*/
-
+  gdouble e2 = 0.08182 * 0.08182; 
+  /* the radius of curvature of an ellipsoidal Earth in the plane of 
+   * the meridian is given by 
+   *
+   * R' = a * (1 - e^2) / (1 - e^2 * (sin(lat))^2)^(3/2) 
+   *
+   * where a is the equatorial radius, 
+   *
+   * b is the polar radius, and 
+   * e is the eccentricity of the ellipsoid = sqrt(1 - b^2/a^2) 
+   * 
+   * a = 6378.137 km (3963 mi) Equatorial radius (surface to center distance) 
+   * b = 6356.752 km (3950 mi) Polar radius (surface to center distance) 
+   * e = 0.08182 Eccentricity
+   */
+  
   lat = lat * M_PI / 180.0;
   sc = sin (lat);
   x = a * (1.0 - e2);
