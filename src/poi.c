@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.5  2005/02/13 14:06:54  tweety
+start street randering functions. reading from the database streets and displayi
+ng it on the screen
+improve a little bit in the sql-queries
+fixed linewidth settings in draw_cross
+
 Revision 1.4  2005/02/10 06:22:25  tweety
 added primitive drawing of icons to POI
 
@@ -150,7 +156,7 @@ gdouble poi_lat_lr=0, poi_lon_lr=0;
 gdouble poi_lat_ul=0, poi_lon_ul=0;
 
 int
-check_if_moved(void)
+poi_check_if_moved(void)
 {
   gdouble lat_lr, lon_lr;
   gdouble lat_ul, lon_ul;
@@ -326,10 +332,12 @@ poi_rebuild_list (void)
   
   { // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
-		"WHERE %.6f <= lat AND lat <= %.6f AND %.6f <= lon AND lon <= %.6f AND level_min <= %f AND %f <= level_max ",
+		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
+		"AND   ( lon BETWEEN %.6f AND %.6f ) "
+		"AND   ( %f  BETWEEN level_min AND level_max) ",
 		lat_min,lat_max,
 		lon_min,lon_max,
-		display_level,display_level);
+		display_level);
     g_strdelimit (sql_where, ",", '.'); // For different LANG
     if (debug) {
       printf ("POI mysql where: %s\n", sql_where );
@@ -481,7 +489,7 @@ poi_draw_list (void)
     return;
   }
 
-  if ( check_if_moved() )
+  if ( poi_check_if_moved() )
     poi_rebuild_list();  
 
   /*    if (!maploaded) */
