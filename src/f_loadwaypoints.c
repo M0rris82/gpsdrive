@@ -38,7 +38,7 @@ loadwaypoints ()
 		    (wayp + i)->name, slat, slong, typ,
 		    &wlan, &action, &sqlnr, &proximity);
 	  (wayp + i)->lat = g_strtod (slat, NULL);
-	  (wayp + i)->longitude = g_strtod (slong, NULL);
+	  (wayp + i)->lon = g_strtod (slong, NULL);
 /*  limit waypoint name to 20 chars */
 	  (wayp + i)->name[20] = 0;
 	  g_strlcpy ((wayp + i)->typ, "", 40);

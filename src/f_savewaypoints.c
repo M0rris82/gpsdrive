@@ -1,5 +1,5 @@
 
-/*  load the waypoint from way.txt, if success we display the sel target window */
+/*  save waypoints to way.txt */
 void
 savewaypoints ()
 {
@@ -21,7 +21,7 @@ savewaypoints ()
       for (i = 0; i < maxwp; i++)
 	{
 	  g_snprintf (la, sizeof (la), "%10.6f", (wayp + i)->lat);
-	  g_snprintf (lo, sizeof (lo), "%10.6f", (wayp + i)->longitude);
+	  g_snprintf (lo, sizeof (lo), "%10.6f", (wayp + i)->lon);
 	  g_strdelimit (la, ",", '.');
 	  g_strdelimit (lo, ",", '.');
 

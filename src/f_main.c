@@ -849,14 +849,14 @@ i.e. '.' in english, ',' in german!! */
 	  if (!(strcasecmp ((wayp + i)->name, setpositionname)))
 	    {
 	      current_lat = (wayp + i)->lat;
-	      current_long = (wayp + i)->longitude;
+	      current_long = (wayp + i)->lon;
 	      target_long = current_long + 0.00001;
 	      target_lat = current_lat + 0.00001;
 	    }
 	  if (!(strcasecmp ((wayp + i)->name, _("HomeBase"))))
 	    {
 	      alarm_lat = (wayp + i)->lat;
-	      alarm_long = (wayp + i)->longitude;
+	      alarm_long = (wayp + i)->lon;
 	    }
 	}
     }
