@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.3  2005/01/15 23:46:46  tweety
+Added config option to disable/enable drawing of grid
+
 Revision 1.2  2005/01/11 00:20:06  tweety
 Formating Debug output
 
@@ -398,7 +401,7 @@ extern char dbwherestring[5000];
 extern char dbtypelist[100][40];
 extern int dbtypelistcount;
 extern double dbdistance;
-extern int dbusedist, havefriends, etch, serialspeed, disableserial;
+extern int dbusedist, havefriends, etch, drawgrid, serialspeed, disableserial;
 GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[100], sqlandmode = TRUE;
 static int sqldontquery = FALSE;
@@ -627,7 +630,7 @@ mainsetup (void)
 {
   GtkWidget *mainbox, *ftable, *label1, *gpstable, *misctable, *fontbox;
   GtkWidget *metric, *nautic, *garminbt, *dgpsbt, *earthmatebt, *minsecbt;
-  GtkWidget *table2, *shadowbt, *etchbt, *s1, *s2, *nighttable, *label1a;
+  GtkWidget *table2, *shadowbt, *etchbt,*drawgridbt, *s1, *s2, *nighttable, *label1a;
   GtkWidget *label2, *f1, *f2, *f3, *f4, *f5, *framefont, *simfollowbt;
   GtkWidget *night1, *night2, *night3, *vbox, *font1, *font2,
     *font3, *slowcpulabel, *trackcolorlabel, *trackcolorbt, *noserialbt;
@@ -737,6 +740,13 @@ mainsetup (void)
   gtk_signal_connect (GTK_OBJECT (etchbt),
 		      "clicked", GTK_SIGNAL_FUNC (etch_cb), (gpointer) 1);
 
+  drawgridbt = gtk_check_button_new_with_label (_("Draw grid"));
+  if (drawgrid)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (drawgridbt), TRUE);
+
+  gtk_signal_connect (GTK_OBJECT (drawgridbt),
+		      "clicked", GTK_SIGNAL_FUNC (drawgrid_cb), (gpointer) 1);
+
   simfollowbt =
     gtk_check_button_new_with_label (_("Simulation: Follow target"));
   if (simfollow)
@@ -797,14 +807,14 @@ mainsetup (void)
   if (nightmode == 2)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (night1), TRUE);
 
-  gtk_table_attach_defaults (GTK_TABLE (misctable), shadowbt, 0, 2, 0, 1);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), simfollowbt, 0, 2, 1, 2);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), etchbt, 2, 4, 0, 1);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpulabel, 0, 2, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorlabel, 2, 4, 2,
-			     3);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpubt, 0, 2, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorbt, 2, 4, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), shadowbt,        0, 2, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), simfollowbt,     0, 2, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), etchbt,          2, 4, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), drawgridbt,      2, 4, 0, 3);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpulabel,    0, 2, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorlabel, 2, 4, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), slowcpubt,       0, 2, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorbt,    2, 4, 3, 4);
 
 /*   gtk_table_attach_defaults (GTK_TABLE (misctable), label2, 0, 2, 3, 4); */
 /*   gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt, 0, 2, 4, 5); */
@@ -1130,6 +1140,11 @@ sound_gps       ... say GPS status
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), etchbt,
 			_
 			("Switches between different type of frame ornaments"),
+			NULL);
+
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), drawgridbt,
+			_
+			("This will show a grid over the map"),
 			NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), GTK_COMBO (slowcpubt)->entry,
