@@ -23,8 +23,17 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.5  2004/02/18 13:24:19  ganter
 navigation
@@ -67,7 +76,7 @@ code cleanup
 
 
 /* variables */
-extern gint ignorechecksum, debug, mapistopo;
+extern gint ignorechecksum, mydebug, debug, mapistopo;
 extern gdouble Ra[201];
 extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
@@ -81,6 +90,10 @@ extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
 
 
 
+/* check NMEA checksum
+   ARGS:    NMEA String
+   RETURNS: TRUE if Checksumm is ok
+ */
 gint
 checksum (gchar * text)
 {
@@ -97,8 +110,8 @@ checksum (gchar * text)
     checksum = checksum ^ t[i++];
   g_strlcpy (t2, (t + j + 1),sizeof(t2));
   sscanf (t2, "%X", &orig);
-  if (debug)
-    g_print ("\n%s\norigchecksum: %X,my:%X", t, orig, checksum);
+  if (mydebug)
+    g_print ("%s\norigchecksum: %X,my:%X\n", t, orig, checksum);
 
   if (orig == checksum)
     {
@@ -155,6 +168,7 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 
 }
 
+/* calculate xy pos of given lon/lat */ 
 void
 calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
@@ -215,6 +229,7 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 }
 
 
+/* calculate Earth radius or given lat */
 gdouble
 calcR (gdouble lat)
 {
@@ -248,6 +263,7 @@ e = 0.081082 Eccentricity
 }
 
 
+/* calculate distance to current position */
 gdouble
 calcdist2 (gdouble longi, gdouble lati)
 {
