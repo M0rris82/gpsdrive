@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.14  2005/01/20 00:16:00  tweety
+print aictual mouse position as lat/lon and x/y in debug mode
+print actual Mouse position when creating wp at Mouse position
+
 Revision 1.13  2005/01/20 00:13:14  tweety
 grid size depends on scale
 
@@ -4158,12 +4162,23 @@ display_status2 ()
   else
     g_snprintf (s2, sizeof (s2), _("Auto"));
   gtk_label_set_text (GTK_LABEL (l8), s2);
+
   if (debug)
     {
       if (havepos)
 	g_print ("\n***Position: %f %f***\n", current_lat, current_long);
       else
 	g_print ("\n***no valid Position:\n");
+
+      { // Print out actual position of Mouse
+	gdouble lat, lon;
+	GdkModifierType state;
+	gint x, y;
+
+	gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
+	calcxytopos (x, y, &lat, &lon, zoom);
+	printf("Actual Position: lat:%f,lon:%f (x:%d,y:%d)\n",lat,lon,x,y);
+      }
     }
 }
 
@@ -8725,7 +8740,19 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
   gint x, y;
   GdkModifierType state;
 
-/*    g_print ("\nevent:%x key:%c\n",event->keyval,event->keyval); */
+  if (debug)
+    g_print ("\nevent:%x key:%c\n",event->keyval,event->keyval);
+
+
+  // Toggle Grid Display
+
+  if ((toupper (event->keyval)) == 'G')
+    {
+      drawgrid = !drawgrid;
+    }
+
+  // Add Waypoint at current gps location
+
   if ((toupper (event->keyval)) == 'X')
     {
       wplat = current_lat;
@@ -8733,8 +8760,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
       addwaypoint_cb (NULL, NULL);
     }
 
-// xxxxxxxxxxxxxxxxxxxxxxxxxxx
-
+  // Add waypoint a current mouse location
   if ((toupper (event->keyval)) == 'Y')
     {
 
@@ -8743,20 +8769,24 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
       calcxytopos (x, y, &lat, &lon, zoom);
 
 
-/*  Add mouse position as waypoint */
+      if ( debug) 
+	printf("Actual Position: lat:%f,lon:%f (x:%d,y:%d)\n",lat,lon,x,y);
+      /*  Add mouse position as waypoint */
       wplat = lat;
       wplon = lon;
       addwaypoint_cb (NULL, 0);
 
 
     }
-// xxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  // In Route mode Force next Route Point
 
   if (((toupper (event->keyval)) == 'J') && routemode)
     {
       forcenextroutepoint = TRUE;
     }
 
+  // Switch Night Mode
   if ((toupper (event->keyval)) == 'N')
     {
       if (nightmode != 0)
