@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2005/01/20 00:12:14  tweety
+don't abort gpsdrive completely on sql query errors
+
 Revision 1.2  2005/01/11 07:13:27  tweety
 added "order by \(abs(%.6f - lat)+abs(%.6f - lon)),name LIMIT 10000"
 to get the nearest wp first and to have a limit on hov many are retrieved
@@ -427,7 +430,12 @@ getsqldata ()
     printf ("mysql query: %s\n", q);
 
   if (dl_mysql_query (&mysql, q))
-    exiterr (3);
+    {
+      perror("mysql_error in query");
+      // exiterr (3);
+      return(1);
+    }
+
   if (!(res = dl_mysql_store_result (&mysql)))
     exiterr (4);
   rges = r = wlan = 0;
