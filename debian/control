@@ -8,8 +8,8 @@ Standards-Version: 3.6.1
 Package: gpsdrive
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: gpsd, perlmagic, perl
-Suggests: libmysqlclient10, imagemagick
+Recommends: gpsd, perl, libmysqlclient10, imagemagick, gdal-bin
+Suggests: grass
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
  GpsDrive displays your position provided from your NMEA capable GPS
