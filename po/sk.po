@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.30pre5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-14 16:59+0200\n"
+"POT-Creation-Date: 2005-08-16 08:14+0200\n"
 "PO-Revision-Date: 2002-12-31 09:30+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -47,7 +47,7 @@ msgstr "max. zvislá odchýlka"
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr "zaká¾e varovanie o vertikálnej odchýlke nad 5000stôp MSL"
 
-#: src/friends.c:373 src/gpsdrive.c:7959
+#: src/friends.c:373 src/gpsdrive.c:7957
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "Výber súboru so stopou"
@@ -71,72 +71,72 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:2454
+#: src/gpsdrive.c:2457
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:2455
+#: src/gpsdrive.c:2458
 msgid "/_Misc. Menu/Maps"
 msgstr ""
 
-#: src/gpsdrive.c:2456
+#: src/gpsdrive.c:2459
 #, fuzzy
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr "i    : importovanie mapy\n"
 
-#: src/gpsdrive.c:2460
+#: src/gpsdrive.c:2463
 msgid "/_Misc. Menu/Maps/_Map Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2462
+#: src/gpsdrive.c:2465
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2464
+#: src/gpsdrive.c:2467
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "Výber súboru so stopou"
 
-#: src/gpsdrive.c:2468
+#: src/gpsdrive.c:2471
 #, fuzzy
 msgid "/_Misc. Menu/Messages"
 msgstr "Výber súboru so stopou"
 
-#: src/gpsdrive.c:2469
+#: src/gpsdrive.c:2472
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:2474
+#: src/gpsdrive.c:2477
 msgid "/_Misc. Menu/Help"
 msgstr ""
 
-#: src/gpsdrive.c:2475
+#: src/gpsdrive.c:2478
 msgid "/_Misc. Menu/Help/About"
 msgstr ""
 
-#: src/gpsdrive.c:2477
+#: src/gpsdrive.c:2480
 msgid "/_Misc. Menu/Help/Topics"
 msgstr ""
 
-#: src/gpsdrive.c:2560
+#: src/gpsdrive.c:2563
 msgid "  Message  "
 msgstr "  Správa  "
 
-#: src/gpsdrive.c:2622
+#: src/gpsdrive.c:2625
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr ""
 
-#: src/gpsdrive.c:2713 src/gpsdrive.c:2979 src/gpsdrive.c:6243
-#: src/gpsdrive.c:7902 src/import_map.c:783
+#: src/gpsdrive.c:2716 src/gpsdrive.c:2982 src/gpsdrive.c:6241
+#: src/gpsdrive.c:7900 src/import_map.c:783
 msgid "To"
 msgstr ""
 
-#: src/gpsdrive.c:3064
+#: src/gpsdrive.c:3067
 msgid "Error in line "
 msgstr "Chyba na riadku"
 
-#: src/gpsdrive.c:3066
+#: src/gpsdrive.c:3069
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -149,35 +149,35 @@ msgstr ""
 "v súbore map_koord.txt. Pre mapy s ulicami pou¾ite map_*\n"
 "a top_* pre topografické mapy.  Inak tieto mapy nebudú zobrazené!"
 
-#: src/gpsdrive.c:3410
+#: src/gpsdrive.c:3413
 msgid "Auto"
 msgstr "Automaticky"
 
-#: src/gpsdrive.c:3670
+#: src/gpsdrive.c:3673
 #, fuzzy
 msgid "Warning!"
 msgstr "Azimut"
 
-#: src/gpsdrive.c:3672
+#: src/gpsdrive.c:3675
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:3967 src/gpsdrive.c:7388 src/gpsdrive.c:7398
-#: src/gpsdrive.c:11138 src/gpsdrive.c:11148
+#: src/gpsdrive.c:3970 src/gpsdrive.c:7386 src/gpsdrive.c:7396
+#: src/gpsdrive.c:11136 src/gpsdrive.c:11146
 msgid "mi/h"
 msgstr "mi/h"
 
-#: src/gpsdrive.c:3970 src/gpsdrive.c:7390 src/gpsdrive.c:7401
-#: src/gpsdrive.c:11140 src/gpsdrive.c:11151
+#: src/gpsdrive.c:3973 src/gpsdrive.c:7388 src/gpsdrive.c:7399
+#: src/gpsdrive.c:11138 src/gpsdrive.c:11149
 msgid "knots"
 msgstr "uzlov"
 
-#: src/gpsdrive.c:3973 src/gpsdrive.c:7392 src/gpsdrive.c:7404
-#: src/gpsdrive.c:11142 src/gpsdrive.c:11154
+#: src/gpsdrive.c:3976 src/gpsdrive.c:7390 src/gpsdrive.c:7402
+#: src/gpsdrive.c:11140 src/gpsdrive.c:11152
 msgid "km/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:4309
+#: src/gpsdrive.c:4310
 #, c-format
 msgid ""
 "\n"
@@ -188,90 +188,90 @@ msgid ""
 msgstr ""
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:5445
+#: src/gpsdrive.c:5446
 msgid "NESW"
 msgstr "NESW"
 
-#: src/gpsdrive.c:5629
+#: src/gpsdrive.c:5627
 msgid "No map available for this position!"
 msgstr "Pre túto pozíciu nie je dostupná mapa!"
 
-#: src/gpsdrive.c:5828
+#: src/gpsdrive.c:5826
 #, fuzzy
 msgid "unused"
 msgstr "Západ slnka"
 
 #. displays zoom factor of map
-#: src/gpsdrive.c:5834 src/gpsdrive.c:5844 src/gpsdrive.c:10949
-#: src/gpsdrive.c:10956 src/gpsdrive.c:10963 src/gpsdrive.c:11029
-#: src/gpsdrive.c:11034 src/gpsdrive.c:11040 src/gpsdrive.c:11076
-#: src/gpsdrive.c:11083 src/settings.c:477
+#: src/gpsdrive.c:5832 src/gpsdrive.c:5842 src/gpsdrive.c:10947
+#: src/gpsdrive.c:10954 src/gpsdrive.c:10961 src/gpsdrive.c:11027
+#: src/gpsdrive.c:11032 src/gpsdrive.c:11038 src/gpsdrive.c:11074
+#: src/gpsdrive.c:11081 src/settings.c:477
 msgid "n/a"
 msgstr "nie"
 
-#: src/gpsdrive.c:5939
+#: src/gpsdrive.c:5937
 msgid "can't open NMEA output file"
 msgstr "nie je mo¾né otvori» NMEA výstupný súbor"
 
-#: src/gpsdrive.c:6067
+#: src/gpsdrive.c:6065
 msgid " Mapfile could not be loaded:"
 msgstr " Súbor s mapou nie je mo¾né naèíta»:"
 
-#: src/gpsdrive.c:6114
+#: src/gpsdrive.c:6112
 msgid "Map found!"
 msgstr ""
 
-#: src/gpsdrive.c:6412
+#: src/gpsdrive.c:6410
 msgid "Select coordinates and scale"
 msgstr "Výber súradníc a mierky"
 
-#: src/gpsdrive.c:6415
+#: src/gpsdrive.c:6413
 msgid "Download map"
 msgstr "Stiahnu» mapu"
 
-#: src/gpsdrive.c:6443 src/gpsdrive.c:8629 src/gpsdrive.c:8936
-#: src/gpsdrive.c:9020 src/gpsdrive.c:9195 src/gpsdrive.c:11310
+#: src/gpsdrive.c:6441 src/gpsdrive.c:8627 src/gpsdrive.c:8934
+#: src/gpsdrive.c:9018 src/gpsdrive.c:9193 src/gpsdrive.c:11308
 #: src/import_map.c:362
 msgid "Latitude"
 msgstr "Zemepisná ¹írka"
 
-#: src/gpsdrive.c:6445 src/gpsdrive.c:8609 src/gpsdrive.c:8936
-#: src/gpsdrive.c:9020 src/gpsdrive.c:9195 src/gpsdrive.c:11311
+#: src/gpsdrive.c:6443 src/gpsdrive.c:8607 src/gpsdrive.c:8934
+#: src/gpsdrive.c:9018 src/gpsdrive.c:9193 src/gpsdrive.c:11309
 #: src/import_map.c:364
 msgid "Longitude"
 msgstr "Zemepisná då¾ka"
 
-#: src/gpsdrive.c:6447
+#: src/gpsdrive.c:6445
 msgid "Map covers"
 msgstr "Mapa pokrýva"
 
-#: src/gpsdrive.c:6451 src/import_map.c:373
+#: src/gpsdrive.c:6449 src/import_map.c:373
 msgid "Scale"
 msgstr "Veµkos»"
 
-#: src/gpsdrive.c:6453
+#: src/gpsdrive.c:6451
 msgid "Map file name"
 msgstr "Názov súboru mapy"
 
-#: src/gpsdrive.c:6495 src/settings.c:1143
+#: src/gpsdrive.c:6493 src/settings.c:1143
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/gpsdrive.c:6501 src/settings.c:1150
+#: src/gpsdrive.c:6499 src/settings.c:1150
 msgid "Expedia USA"
 msgstr ""
 
-#: src/gpsdrive.c:6512
+#: src/gpsdrive.c:6510
 msgid ""
 "If selected, you download the map from the german expedia server (expedia.de)"
 msgstr ""
 
-#: src/gpsdrive.c:6516
+#: src/gpsdrive.c:6514
 msgid ""
 "If selected, you download the map from the U.S. expedia server (expedia.com)"
 msgstr ""
 
-#: src/gpsdrive.c:6542 src/gpsdrive.c:6546
+#: src/gpsdrive.c:6540 src/gpsdrive.c:6544
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -279,171 +279,171 @@ msgstr ""
 "Pozíciu mô¾ete tie¾ vybra»\n"
 "pomocou kliknutia my¹ou na mapu."
 
-#: src/gpsdrive.c:6548
+#: src/gpsdrive.c:6546
 msgid "Using Proxy and port:"
 msgstr "Pou¾ívam proxy a port:"
 
-#: src/gpsdrive.c:6827 src/gpsdrive.c:6956
+#: src/gpsdrive.c:6825 src/gpsdrive.c:6954
 msgid "can't open socket for port 80"
 msgstr "nie je mo¾né otvori» soket pre port 80"
 
-#: src/gpsdrive.c:6830 src/gpsdrive.c:6834 src/gpsdrive.c:6861
-#: src/gpsdrive.c:6865 src/gpsdrive.c:6881 src/gpsdrive.c:6885
-#: src/gpsdrive.c:6959 src/gpsdrive.c:6964 src/gpsdrive.c:6968
-#: src/gpsdrive.c:7005 src/gpsdrive.c:7010 src/gpsdrive.c:7014
-#: src/gpsdrive.c:7032 src/gpsdrive.c:7037 src/gpsdrive.c:7041
+#: src/gpsdrive.c:6828 src/gpsdrive.c:6832 src/gpsdrive.c:6859
+#: src/gpsdrive.c:6863 src/gpsdrive.c:6879 src/gpsdrive.c:6883
+#: src/gpsdrive.c:6957 src/gpsdrive.c:6962 src/gpsdrive.c:6966
+#: src/gpsdrive.c:7003 src/gpsdrive.c:7008 src/gpsdrive.c:7012
+#: src/gpsdrive.c:7030 src/gpsdrive.c:7035 src/gpsdrive.c:7039
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Pripojenie k %s ZLYHALO!"
 
-#: src/gpsdrive.c:6858 src/gpsdrive.c:7002
+#: src/gpsdrive.c:6856 src/gpsdrive.c:7000
 msgid "Can't resolve webserver address"
 msgstr "Nie je mo¾né rozlú¹ti» adresu webserveru"
 
-#: src/gpsdrive.c:6878 src/gpsdrive.c:7029
+#: src/gpsdrive.c:6876 src/gpsdrive.c:7027
 msgid "unable to connect to Website"
 msgstr "nie je mo¾né sa pripoji» k Website"
 
-#: src/gpsdrive.c:6908 src/gpsdrive.c:7102
+#: src/gpsdrive.c:6906 src/gpsdrive.c:7100
 msgid "read from Webserver"
 msgstr "èíta» z Webservera"
 
-#: src/gpsdrive.c:6937 src/gpsdrive.c:6942 src/gpsdrive.c:6945
+#: src/gpsdrive.c:6935 src/gpsdrive.c:6940 src/gpsdrive.c:6943
 #, c-format
 msgid "Connecting to %s"
 msgstr "Pripájam sa na %s"
 
-#: src/gpsdrive.c:7057 src/gpsdrive.c:7063 src/gpsdrive.c:7066
+#: src/gpsdrive.c:7055 src/gpsdrive.c:7061 src/gpsdrive.c:7064
 #, c-format
 msgid "Now connected to %s"
 msgstr "Teraz pripojené k %s"
 
-#: src/gpsdrive.c:7150
+#: src/gpsdrive.c:7148
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "Stiahnuté %d kB"
 
-#: src/gpsdrive.c:7166
+#: src/gpsdrive.c:7164
 msgid "Download FAILED!"
 msgstr "S»ahovanie zlyhalo"
 
-#: src/gpsdrive.c:7169
+#: src/gpsdrive.c:7167
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "S»ahovanie dokonèené, prijatých %dkB"
 
-#: src/gpsdrive.c:7282
+#: src/gpsdrive.c:7280
 msgid "GpsDrive Control"
 msgstr "Ovládanie GpsDrive"
 
-#: src/gpsdrive.c:7397 src/gpsdrive.c:7400 src/gpsdrive.c:7403
-#: src/gpsdrive.c:11147 src/gpsdrive.c:11150 src/gpsdrive.c:11153
+#: src/gpsdrive.c:7395 src/gpsdrive.c:7398 src/gpsdrive.c:7401
+#: src/gpsdrive.c:11145 src/gpsdrive.c:11148 src/gpsdrive.c:11151
 #: src/settings.c:1213
 msgid "Speed"
 msgstr "Rýchlos»"
 
-#: src/gpsdrive.c:7663
+#: src/gpsdrive.c:7661
 #, c-format
 msgid "distance jump is more then 1000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:7962
+#: src/gpsdrive.c:7960
 #, fuzzy
 msgid "Sending message to friends server..."
 msgstr "Povoli»/nepovoli» výber vzdialenosti"
 
-#: src/gpsdrive.c:8041
+#: src/gpsdrive.c:8039
 #, fuzzy
 msgid "Message for:"
 msgstr "  Správa  "
 
-#: src/gpsdrive.c:8083
+#: src/gpsdrive.c:8081
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:8096
+#: src/gpsdrive.c:8094
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:8534
+#: src/gpsdrive.c:8532
 msgid "Add waypoint name"
 msgstr "Prida» názov bodu trasy"
 
-#: src/gpsdrive.c:8544
+#: src/gpsdrive.c:8542
 msgid " Waypoint name: "
 msgstr " Názov bodu trasy: "
 
-#: src/gpsdrive.c:8590
+#: src/gpsdrive.c:8588
 msgid " Waypoint type: "
 msgstr " Typ bodu trasy: "
 
-#: src/gpsdrive.c:8936
+#: src/gpsdrive.c:8934
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:8936 src/gpsdrive.c:9020 src/gpsdrive.c:9195
-#: src/gpsdrive.c:11124 src/settings.c:1205
+#: src/gpsdrive.c:8934 src/gpsdrive.c:9018 src/gpsdrive.c:9193
+#: src/gpsdrive.c:11122 src/settings.c:1205
 msgid "Distance"
 msgstr "Vzdialenos»"
 
-#: src/gpsdrive.c:8947
+#: src/gpsdrive.c:8945
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Zvoµte si prosím vá¹ cieµ cesty"
 
-#: src/gpsdrive.c:9020 src/gpsdrive.c:9195
+#: src/gpsdrive.c:9018 src/gpsdrive.c:9193
 msgid "Waypoint"
 msgstr "Bod trasy"
 
-#: src/gpsdrive.c:9041
+#: src/gpsdrive.c:9039
 msgid "Select reference point"
 msgstr "Výber referenèného bodu"
 
-#: src/gpsdrive.c:9045
+#: src/gpsdrive.c:9043
 msgid "Please select your destination"
 msgstr "Zvoµte si prosím vá¹ cieµ cesty"
 
-#: src/gpsdrive.c:9077
+#: src/gpsdrive.c:9075
 msgid "Edit route"
 msgstr "Upravi» trasu"
 
-#: src/gpsdrive.c:9080
+#: src/gpsdrive.c:9078
 msgid "Create route"
 msgstr "Vytvori» trasu"
 
-#: src/gpsdrive.c:9172
+#: src/gpsdrive.c:9170
 msgid "Create a route using some waypoints from this list"
 msgstr "Vytvorenie trasy s pou¾itím niekoµkých bodov zo zoznamu"
 
-#: src/gpsdrive.c:9177
+#: src/gpsdrive.c:9175
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Zmazanie zvoleného bodu zo zoznamu"
 
-#: src/gpsdrive.c:9181
+#: src/gpsdrive.c:9179
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
 "Kliknite na zoznam polo¾iek\n"
 "a zvoµte nasledujúci bod trasy"
 
-#: src/gpsdrive.c:9210
+#: src/gpsdrive.c:9208
 msgid "Define route"
 msgstr "Definova» trasu"
 
-#: src/gpsdrive.c:9218
+#: src/gpsdrive.c:9216
 msgid "Start route"
 msgstr "Zaèa» cestu"
 
-#: src/gpsdrive.c:9227
+#: src/gpsdrive.c:9225
 msgid "Take all WP as route"
 msgstr "Pou¾i» v¹etky body ako trasu"
 
-#: src/gpsdrive.c:9232
+#: src/gpsdrive.c:9230
 msgid "Abort route"
 msgstr "Preru¹i» cestu"
 
-#: src/gpsdrive.c:9292
+#: src/gpsdrive.c:9290
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -451,7 +451,7 @@ msgstr ""
 "Kliknite na zoznam bodov trasy\n"
 "na pridanie bodov."
 
-#: src/gpsdrive.c:9295
+#: src/gpsdrive.c:9293
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -459,14 +459,14 @@ msgstr ""
 "Kliknite na zoznam polo¾iek\n"
 "a zvoµte nasledujúci bod trasy"
 
-#: src/gpsdrive.c:9343
+#: src/gpsdrive.c:9341
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 "Vytvorí cestu zo v¹etkých bodov. Poradie bude urèené pola ich usporiadania v "
 "súbore a nie podµa vzdialenosti."
 
-#: src/gpsdrive.c:9347
+#: src/gpsdrive.c:9345
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
@@ -474,48 +474,48 @@ msgstr ""
 "Kliknite sem, aby sa zaèala va¹a cesta. GpsDrive vás prevedie cez jednotlivé "
 "body trasy v tomto zozname."
 
-#: src/gpsdrive.c:9350
+#: src/gpsdrive.c:9348
 msgid "Abort your journey"
 msgstr "Preru¹í va¹u cestu"
 
-#: src/gpsdrive.c:9368
+#: src/gpsdrive.c:9366
 msgid "-v    show version\n"
 msgstr "-v    zobrazí verziu\n"
 
-#: src/gpsdrive.c:9369
+#: src/gpsdrive.c:9367
 msgid "-h    print this help\n"
 msgstr "-h    zobrazí tohoto pomocníka\n"
 
-#: src/gpsdrive.c:9370
+#: src/gpsdrive.c:9368
 msgid "-d    turn on debug info\n"
 msgstr "-d    zapne ladenie\n"
 
-#: src/gpsdrive.c:9371
+#: src/gpsdrive.c:9369
 msgid "-D    turn on lot of debug info\n"
 msgstr "-d    zapne podrobné ladenie\n"
 
-#: src/gpsdrive.c:9372
+#: src/gpsdrive.c:9370
 msgid "-e    use Festival-Lite (flite) for speech output\n"
 msgstr "-e    pou¾i» Festival-Lite (flite) pre reèový výstup\n"
 
-#: src/gpsdrive.c:9373
+#: src/gpsdrive.c:9371
 msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    nastaví seriálové zariadenia na GPS t.j. /dev/ttyS1\n"
 
-#: src/gpsdrive.c:9375
+#: src/gpsdrive.c:9373
 msgid "-o    serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    sériové zariadenie, pty master, alebo súbor pre NMEA *výstup*\n"
 
-#: src/gpsdrive.c:9377
+#: src/gpsdrive.c:9375
 #, fuzzy
 msgid "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Výber priateµského servera, t.j. X je linux.quant-x.at\n"
 
-#: src/gpsdrive.c:9378
+#: src/gpsdrive.c:9376
 msgid "-n    Disable use of direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9379
+#: src/gpsdrive.c:9377
 msgid ""
 "-l X  Select language of the voice,\n"
 "      X may be english, spanish or german\n"
@@ -523,7 +523,7 @@ msgstr ""
 "-l X  Výber jazyka hlasu, kde X mô¾e by» english pre angliètinu, spanish\n"
 "      pre ¹panielèinu alebo german pre nemèinu\n"
 
-#: src/gpsdrive.c:9381
+#: src/gpsdrive.c:9379
 msgid ""
 "-s X  set height of the screen, if autodetection\n"
 "      don't satisfy you, X is i.e. 768,600,480,200\n"
@@ -532,66 +532,66 @@ msgstr ""
 "      neuspokojujú; t.j. X mô¾e by» 768, 600, 480, 200\n"
 
 #. ** Mod by Arms
-#: src/gpsdrive.c:9384
+#: src/gpsdrive.c:9382
 msgid "-r X  set width of the screen, only with -s\n"
 msgstr "-r X  nastavenie vý¹ky obrazovky, iba s prepínaèom -s \n"
 
-#: src/gpsdrive.c:9386
+#: src/gpsdrive.c:9384
 msgid "-1    have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    pre 1 tlaèítkovú my¹, ako je napr. dotyková obrazovka\n"
 
-#: src/gpsdrive.c:9387
+#: src/gpsdrive.c:9385
 msgid "-a    don't display battery status (i.e. broken APM)\n"
 msgstr "-a    nezobrazi» stav batérie (t.j. po¹kodené APM)\n"
 
-#: src/gpsdrive.c:9389
+#: src/gpsdrive.c:9387
 msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr "-b X  Názov NMEA servera (ak gpsd je spustené alebo iný hostiteµ)\n"
 
-#: src/gpsdrive.c:9391
+#: src/gpsdrive.c:9389
 msgid "-c X  set start position in simulation mode to waypoint name X\n"
 msgstr ""
 "-c X  nastavenie ¹tartovacej pozície v simulaènom re¾ime na bod trasy X\n"
 
-#: src/gpsdrive.c:9392
+#: src/gpsdrive.c:9390
 msgid "-x    create separate window for menu\n"
 msgstr "-x    vytvorí oddelené okno pre ponuku\n"
 
-#: src/gpsdrive.c:9393
+#: src/gpsdrive.c:9391
 msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
 msgstr "-p    nastaví mo¾nosti pre PDA (iPAQ, Yopy...)\n"
 
-#: src/gpsdrive.c:9395
+#: src/gpsdrive.c:9393
 msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 "-i    ignorova» NMEA kontrolný súèet (riskantné, iba pre po¹kodené GPS "
 "prijímaèe\n"
 
-#: src/gpsdrive.c:9396
+#: src/gpsdrive.c:9394
 msgid "-q    disable SQL support\n"
 msgstr "-q    nepovoli» SQL podporu\n"
 
-#: src/gpsdrive.c:9397
+#: src/gpsdrive.c:9395
 msgid "-F    force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:9398
+#: src/gpsdrive.c:9396
 msgid "-S    don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:9400
+#: src/gpsdrive.c:9398
 msgid "-E    print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9402
+#: src/gpsdrive.c:9400
 msgid "-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:9403
+#: src/gpsdrive.c:9401
 msgid "-H X  correct altitude, adding this value to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:9404
+#: src/gpsdrive.c:9402
 msgid ""
 "-z    don't display zoom factor and scale\n"
 "\n"
@@ -599,25 +599,25 @@ msgstr ""
 "-z    nezobrazi» faktor zväè¹enia a mierku\n"
 "\n"
 
-#: src/gpsdrive.c:9515
+#: src/gpsdrive.c:9513
 msgid "Select a track file"
 msgstr "Výber súboru so stopou"
 
-#: src/gpsdrive.c:10025
+#: src/gpsdrive.c:10023
 #, c-format
 msgid ""
 "\n"
 "libmysqlclient.so not found.\n"
 msgstr ""
 
-#: src/gpsdrive.c:10031
+#: src/gpsdrive.c:10029
 #, c-format
 msgid ""
 "\n"
 "MySQL support disabled.\n"
 msgstr ""
 
-#: src/gpsdrive.c:10212
+#: src/gpsdrive.c:10210
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -627,12 +627,12 @@ msgstr ""
 "Mô¾ete si zvoli» iba medzi angliètinou, ¹panielèinou a nemèinou\n"
 "\n"
 
-#: src/gpsdrive.c:10245 src/settings.c:1916
+#: src/gpsdrive.c:10243 src/settings.c:1916
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Rozhranie"
 
-#: src/gpsdrive.c:10276
+#: src/gpsdrive.c:10274
 #, c-format
 msgid ""
 "\n"
@@ -641,7 +641,7 @@ msgstr ""
 "\n"
 "Pou¾ívam proxy: %s na porte %d"
 
-#: src/gpsdrive.c:10282
+#: src/gpsdrive.c:10280
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
@@ -651,46 +651,46 @@ msgstr ""
 "Neplatná premenná prostredia HTTP_PROXY, musí by» vo formáte: http://proxy."
 "provider.de:3128"
 
-#: src/gpsdrive.c:10475
+#: src/gpsdrive.c:10473
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
 msgstr "(c)2001,2002 F.Ganter"
 
-#: src/gpsdrive.c:10483
+#: src/gpsdrive.c:10481
 msgid "Using speech output"
 msgstr "Pou¾ívam reèový výstup"
 
-#: src/gpsdrive.c:10516
+#: src/gpsdrive.c:10514
 #, fuzzy
 msgid "/Misc. Menu/Maps/Map Manager"
 msgstr "Výber súboru so stopou"
 
-#: src/gpsdrive.c:10519
+#: src/gpsdrive.c:10517
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "Výber súboru so stopou"
 
 #. download map button
-#: src/gpsdrive.c:10524
+#: src/gpsdrive.c:10522
 #, fuzzy
 msgid "_Download map"
 msgstr "Stiahnu» mapu"
 
-#: src/gpsdrive.c:10545
+#: src/gpsdrive.c:10543
 #, fuzzy
 msgid "M_ute"
 msgstr "Potichu"
 
 #. Checkbox ---- POI Draw
-#: src/gpsdrive.c:10557
+#: src/gpsdrive.c:10555
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:10572
+#: src/gpsdrive.c:10570
 msgid "draw _Streets"
 msgstr ""
 
-#: src/gpsdrive.c:10587
+#: src/gpsdrive.c:10585
 #, fuzzy
 msgid "draw _Track"
 msgstr "Zobrazi» stopu"
@@ -701,66 +701,66 @@ msgstr "Zobrazi» stopu"
 #. * NULL);
 #.
 #. Checkbox ----   Use SQL
-#: src/gpsdrive.c:10602
+#: src/gpsdrive.c:10600
 #, fuzzy
 msgid "Use SQ_L"
 msgstr "Pou¾i» SQL"
 
 #. Checkbox ---- Show WP
-#: src/gpsdrive.c:10615
+#: src/gpsdrive.c:10613
 #, fuzzy
 msgid "Show _WP"
 msgstr "Zobrazi» body trasy"
 
-#: src/gpsdrive.c:10642
+#: src/gpsdrive.c:10640
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:10650
+#: src/gpsdrive.c:10648
 #, fuzzy
 msgid "Pos. _mode"
 msgstr "Pos. re¾im"
 
-#: src/gpsdrive.c:10657
+#: src/gpsdrive.c:10655
 #, fuzzy
 msgid "Show _Track"
 msgstr "Zobrazi» stopu"
 
-#: src/gpsdrive.c:10703
+#: src/gpsdrive.c:10701
 msgid "_Navigation"
 msgstr ""
 
 #. Checkbox ---- Start GPSD
-#: src/gpsdrive.c:10720
+#: src/gpsdrive.c:10718
 msgid "Start GPSD"
 msgstr "Spusti» GPSD"
 
 #. Checkbox ---- Best Map
-#: src/gpsdrive.c:10726
+#: src/gpsdrive.c:10724
 #, fuzzy
 msgid "Auto _best map"
 msgstr "Auto najlep¹ia mapa"
 
-#: src/gpsdrive.c:10738
+#: src/gpsdrive.c:10736
 msgid "Save track"
 msgstr "Ulo¾i» stopu"
 
 #. Checkbox ---- Show Map
-#: src/gpsdrive.c:10750
+#: src/gpsdrive.c:10748
 msgid "Shown map type"
 msgstr "Zobrazi» typ mapy"
 
 #. Checkbox ---- Show Map: map_
-#: src/gpsdrive.c:10760
+#: src/gpsdrive.c:10758
 msgid "Street map"
 msgstr "Mapa ulíc"
 
 #. Checkbox ---- Show Map: top_
-#: src/gpsdrive.c:10769
+#: src/gpsdrive.c:10767
 msgid "Topo map"
 msgstr "Topo mapa"
 
-#: src/gpsdrive.c:10856
+#: src/gpsdrive.c:10854
 msgid ""
 "\n"
 "kismet server found\n"
@@ -768,44 +768,44 @@ msgstr ""
 "\n"
 "nájdený kismet server\n"
 
-#: src/gpsdrive.c:10909 src/gpsdrive.c:11315
+#: src/gpsdrive.c:10907 src/gpsdrive.c:11313
 msgid "Bearing"
 msgstr "Azimut"
 
-#: src/gpsdrive.c:10933
+#: src/gpsdrive.c:10931
 #, fuzzy
 msgid "GPS Info"
 msgstr "Geo info"
 
-#: src/gpsdrive.c:10986
+#: src/gpsdrive.c:10984
 msgid "Bat."
 msgstr "Bat."
 
-#: src/gpsdrive.c:11003
+#: src/gpsdrive.c:11001
 #, fuzzy
 msgid "TC"
 msgstr "UTC "
 
 #. displays speed over ground
-#: src/gpsdrive.c:11025 src/gpsdrive.c:11325 src/gpsdrive.c:11327
-#: src/gpsdrive.c:11333 src/gpsdrive.c:11335
+#: src/gpsdrive.c:11023 src/gpsdrive.c:11323 src/gpsdrive.c:11325
+#: src/gpsdrive.c:11331 src/gpsdrive.c:11333
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:11106 src/gpsdrive.c:11113
+#: src/gpsdrive.c:11104 src/gpsdrive.c:11111
 #, fuzzy
 msgid "Selected:"
 msgstr "Vybra» cieµ"
 
-#: src/gpsdrive.c:11107 src/gpsdrive.c:11114
+#: src/gpsdrive.c:11105 src/gpsdrive.c:11112
 msgid "within"
 msgstr ""
 
-#: src/gpsdrive.c:11122
+#: src/gpsdrive.c:11120
 msgid "Distance to target"
 msgstr "Vzdialenos» k cieµu"
 
-#: src/gpsdrive.c:11164
+#: src/gpsdrive.c:11162
 msgid "Altitude"
 msgstr "Kóta"
 
@@ -813,112 +813,112 @@ msgstr "Kóta"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:11172 src/settings.c:838
+#: src/gpsdrive.c:11170 src/settings.c:838
 msgid "Waypoints"
 msgstr "Body trasy"
 
-#: src/gpsdrive.c:11312
+#: src/gpsdrive.c:11310
 msgid "Map file"
 msgstr "Súbor s mapou"
 
-#: src/gpsdrive.c:11313
+#: src/gpsdrive.c:11311
 msgid "Map scale"
 msgstr "Mierka mapy"
 
-#: src/gpsdrive.c:11314
+#: src/gpsdrive.c:11312
 msgid "Heading"
 msgstr "Kurz"
 
-#: src/gpsdrive.c:11316
+#: src/gpsdrive.c:11314
 msgid "Time at Dest."
 msgstr "Èas v cieli"
 
-#: src/gpsdrive.c:11317
+#: src/gpsdrive.c:11315
 msgid "Pref. scale"
 msgstr "Pref. mierka"
 
-#: src/gpsdrive.c:11321
+#: src/gpsdrive.c:11319
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:11323
+#: src/gpsdrive.c:11321
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:11329 src/gpsdrive.c:11331
+#: src/gpsdrive.c:11327 src/gpsdrive.c:11329
 msgid "0000"
 msgstr ""
 
-#: src/gpsdrive.c:11438 src/gpsdrive.c:11514 src/gpsdrive.c:11527
+#: src/gpsdrive.c:11436 src/gpsdrive.c:11512 src/gpsdrive.c:11525
 msgid "Menu"
 msgstr "Ponuka"
 
-#: src/gpsdrive.c:11451 src/gpsdrive.c:11518 src/gpsdrive.c:11528
+#: src/gpsdrive.c:11449 src/gpsdrive.c:11516 src/gpsdrive.c:11526
 msgid "Status"
 msgstr "Stav"
 
-#: src/gpsdrive.c:11510 src/gpsdrive.c:11526
+#: src/gpsdrive.c:11508 src/gpsdrive.c:11524
 msgid "Map"
 msgstr "Mapa"
 
-#: src/gpsdrive.c:11693
+#: src/gpsdrive.c:11691
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:11698
+#: src/gpsdrive.c:11696
 #, fuzzy
 msgid "Number of used satellites/satellites in view"
 msgstr "Nedostatoèné mno¾stvo videteµných satelitov!"
 
-#: src/gpsdrive.c:11702
+#: src/gpsdrive.c:11700
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:11706
+#: src/gpsdrive.c:11704
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:11711
+#: src/gpsdrive.c:11709
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:11714
+#: src/gpsdrive.c:11712
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "Výber súboru so stopou"
 
-#: src/gpsdrive.c:11717
+#: src/gpsdrive.c:11715
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:11721
+#: src/gpsdrive.c:11719
 msgid "Download map from Internet"
 msgstr "Stiahnu» mapu z Internetu"
 
-#: src/gpsdrive.c:11723
+#: src/gpsdrive.c:11721
 msgid "Leave the program"
 msgstr "Odís» z programu"
 
-#: src/gpsdrive.c:11726
+#: src/gpsdrive.c:11724
 msgid "Disable output of speech"
 msgstr "Zakáza» reèový výstup"
 
-#: src/gpsdrive.c:11729
+#: src/gpsdrive.c:11727
 msgid "Use SQL server for waypoints"
 msgstr "Pou¾i» SQL server pre body trasy"
 
-#: src/gpsdrive.c:11733
+#: src/gpsdrive.c:11731
 msgid "Show waypoints on the map"
 msgstr "Zobrazi» body trasy na mape"
 
-#: src/gpsdrive.c:11736
+#: src/gpsdrive.c:11734
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
@@ -926,102 +926,102 @@ msgstr ""
 "Zapnite pozièný re¾im. Po mape sa mô¾ete pohybova» pomocou kliknutia s µavým "
 "tlaèítko my¹i. Kliknutie do blízkosti okraja prepne na najbli¾¹iu mapu."
 
-#: src/gpsdrive.c:11739
+#: src/gpsdrive.c:11737
 msgid "Show tracking on the map"
 msgstr "Zobrazi» stopovanie na mape"
 
-#: src/gpsdrive.c:11744
+#: src/gpsdrive.c:11742
 msgid "Opens the help window"
 msgstr "Otvorí pomocníka"
 
-#: src/gpsdrive.c:11748
+#: src/gpsdrive.c:11746
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:11754
+#: src/gpsdrive.c:11752
 #, fuzzy
 msgid "Stop GPSD"
 msgstr "Spusti» GPSD"
 
-#: src/gpsdrive.c:11757
+#: src/gpsdrive.c:11755
 #, fuzzy
 msgid "Stop GPSD and switch to simulation mode"
 msgstr "p    : prepne do pozièného módu\n"
 
-#: src/gpsdrive.c:11763
+#: src/gpsdrive.c:11761
 msgid "Starts GPSD for NMEA mode"
 msgstr "Spustí GPSD v re¾ime NMEA"
 
-#: src/gpsdrive.c:11766
+#: src/gpsdrive.c:11764
 msgid "Settings for GpsDrive"
 msgstr "Nastavenia pre GpsDrive"
 
-#: src/gpsdrive.c:11768
+#: src/gpsdrive.c:11766
 msgid "Zoom into the current map"
 msgstr "Zväè¹enie aktuálnej mapy"
 
-#: src/gpsdrive.c:11770
+#: src/gpsdrive.c:11768
 msgid "Zooms out off the current map"
 msgstr "Zmen¹enie aktuálnej mapy"
 
-#: src/gpsdrive.c:11772
+#: src/gpsdrive.c:11770
 msgid "Select the next more detailed map"
 msgstr "Výber nasledujúcej detailnej¹ej mapy"
 
-#: src/gpsdrive.c:11774
+#: src/gpsdrive.c:11772
 msgid "Select the next less detailed map"
 msgstr "Výber nasledujúcej menej detailnej mapy"
 
-#: src/gpsdrive.c:11779
+#: src/gpsdrive.c:11777
 msgid "Select here a destination from the waypoint list"
 msgstr "Výber cieµa zo zoznamu bodov trasy"
 
-#: src/gpsdrive.c:11784
+#: src/gpsdrive.c:11782
 msgid "Select the map scale of avail. maps."
 msgstr "Výber mierky mapy dostupných máp."
 
-#: src/gpsdrive.c:11791
+#: src/gpsdrive.c:11789
 msgid "Always select the most detailed map available"
 msgstr "V¾dy zvoli» najdetailnej¹iu dostupnú mapu"
 
-#: src/gpsdrive.c:11794
+#: src/gpsdrive.c:11792
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11797
+#: src/gpsdrive.c:11795
 msgid "Draw Streets found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11799
+#: src/gpsdrive.c:11797
 msgid "Draw Tracks found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11802
+#: src/gpsdrive.c:11800
 msgid "Save the track to given filename at program exit"
 msgstr "Ulo¾i» stopu pod zadaným názvom a ukonèi» program"
 
-#: src/gpsdrive.c:11808
+#: src/gpsdrive.c:11806
 msgid "Number of waypoints selected from SQL server"
 msgstr ""
 
-#: src/gpsdrive.c:11812
+#: src/gpsdrive.c:11810
 msgid "Number of selected waypoints, which are in range"
 msgstr ""
 
-#: src/gpsdrive.c:11816
+#: src/gpsdrive.c:11814
 msgid "Range for waypoint selection in kilometers"
 msgstr ""
 
-#: src/gpsdrive.c:11819
+#: src/gpsdrive.c:11817
 msgid "This shows the time from your GPS receiver"
 msgstr ""
 
-#: src/gpsdrive.c:11823
+#: src/gpsdrive.c:11821
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr ""
 
-#: src/gpsdrive.c:11921
+#: src/gpsdrive.c:11919
 #, c-format
 msgid ""
 "\n"
@@ -1124,11 +1124,11 @@ msgstr "vlo¾ené riadky: %d\n"
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) preèítaných riadkov za %.2f sekúnd\n"
 
-#: src/icons.c:409
+#: src/icons.c:458
 msgid " Friendsicon could not be loaded:"
 msgstr " Nie je mo¾né naèíta» Friendsicon:"
 
-#: src/icons.c:412
+#: src/icons.c:461
 #, c-format
 msgid ""
 "\n"
@@ -1138,7 +1138,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:454 src/icons.c:460
+#: src/icons.c:503 src/icons.c:509
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1868,7 +1868,7 @@ msgstr ""
 "Zobrazi» iba body trasy, ktorých políèko typu neobsahuje ¾iadne zo zvolených "
 "slov"
 
-#: src/splash.c:587
+#: src/splash.c:590
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1880,7 +1880,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:595
+#: src/splash.c:598
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1893,7 +1893,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:604
+#: src/splash.c:607
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1906,19 +1906,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:614
+#: src/splash.c:617
 #, fuzzy
 msgid "GpsDrive v"
 msgstr "GpsDrive pomocník"
 
-#: src/splash.c:620
+#: src/splash.c:623
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.cc\n"
 msgstr ""
 
-#: src/splash.c:624
+#: src/splash.c:627
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1926,45 +1926,45 @@ msgstr ""
 "Prehlásenie: Nepou¾ívajte prosím na navigáciu. \n"
 "\n"
 
-#: src/splash.c:629
+#: src/splash.c:632
 #, fuzzy
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 "Pozrite si manuálovú stránku programu, kde sú detaily\n"
 "\n"
 
-#: src/splash.c:634
+#: src/splash.c:637
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Ovládanie my¹ou (kliknutím na mapu):\n"
 
-#: src/splash.c:642
+#: src/splash.c:645
 msgid "Short cuts:\n"
 msgstr "Klávesové skratky:\n"
 
-#: src/splash.c:649
+#: src/splash.c:652
 msgid "The other key shortcuts are marked as "
 msgstr ""
 
-#: src/splash.c:652
+#: src/splash.c:655
 msgid "underlined"
 msgstr ""
 
-#: src/splash.c:655
+#: src/splash.c:658
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:658
+#: src/splash.c:661
 #, fuzzy
 msgid "Have a lot of fun!"
 msgstr ""
 "Prajeme vám veµa zábavy!\n"
 "\n"
 
-#: src/splash.c:794
+#: src/splash.c:797
 msgid "Please donate to GpsDrive"
 msgstr ""
 
-#: src/splash.c:800
+#: src/splash.c:803
 msgid ""
 "\n"
 "\n"
@@ -1976,11 +1976,11 @@ msgid ""
 "To do so, just go to"
 msgstr ""
 
-#: src/splash.c:805
+#: src/splash.c:808
 msgid " http://www.gpsdrive.cc "
 msgstr ""
 
-#: src/splash.c:808
+#: src/splash.c:811
 msgid ""
 "and click on the PayPal button.\n"
 "\n"
@@ -1991,37 +1991,37 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:844
+#: src/splash.c:847
 #, fuzzy
 msgid "About GpsDrive donation"
 msgstr "Ovládanie GpsDrive"
 
-#: src/splash.c:927
+#: src/splash.c:930
 msgid "From:"
 msgstr ""
 
-#: src/splash.c:998
+#: src/splash.c:1001
 #, fuzzy, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr "Povoli»/nepovoli» výber vzdialenosti"
 
-#: src/splash.c:1010
+#: src/splash.c:1013
 #, fuzzy
 msgid "You received a message through the friends server from:\n"
 msgstr "Povoli»/nepovoli» výber vzdialenosti"
 
-#: src/splash.c:1021
+#: src/splash.c:1024
 #, fuzzy
 msgid "Message text:\n"
 msgstr "  Správa  "
 
-#: src/splash.c:1072
+#: src/splash.c:1075
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr "Chyba poèas ukladania konfiguraèného súboru ~/.gpsdrive/gpsdriverc"
 
-#: src/splash.c:1570 src/splash.c:1631
+#: src/splash.c:1571 src/splash.c:1632
 #, c-format
 msgid ""
 "\n"
@@ -2031,7 +2031,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:1614
+#: src/splash.c:1615
 #, fuzzy
 msgid "About GpsDrive"
 msgstr "Ovládanie GpsDrive"
