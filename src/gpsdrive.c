@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.70  2005/11/14 06:47:01  tweety
+strtod --> coordinate_string2gdouble
+
 Revision 1.69  2005/11/06 17:24:26  tweety
 shortened map selection code
 coordinate_string2gdouble:
@@ -6629,10 +6632,8 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 				g_strlcpy ((maps + nrmaps)->filename,
 					   g_basename (downloadfilename),
 					   200);
-				(maps + nrmaps)->lat =
-					g_strtod (newmaplat, NULL);
-				(maps + nrmaps)->lon =
-					g_strtod (newmaplongi, NULL);
+				coordinate_string2gdouble (newmaplat, &((maps + nrmaps)->lat));
+				coordinate_string2gdouble (newmaplongi, &((maps + nrmaps)->lon));
 				(maps + nrmaps)->scale =
 					strtol (newmapsc, NULL, 0);
 				nrmaps++;
