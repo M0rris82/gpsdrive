@@ -6,24 +6,27 @@ Website: www.gpsdrive.de
 
 Disclaimer: Please do not use for navigation. 
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    *********************************************************************
+*********************************************************************
 
 
 $Log$
+Revision 1.4  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.3  2005/04/10 20:47:49  tweety
 added src/speech_out.h
 update configure and po Files
@@ -80,7 +83,7 @@ waypoint describtion (.dsc files) works again
 added dist_alarm ...
 
 Revision 1.25  2003/10/04 17:43:58  ganter
-translations don't need to be utf-8, but the .po files must specify the
+translations dont need to be utf-8, but the .po files must specify the
 correct coding (ie, UTF-8, iso8859-15)
 
 Revision 1.24  2003/05/11 21:15:46  ganter
@@ -163,11 +166,11 @@ Revision 1.3  2001/09/16 19:12:35  ganter
 */
 
 
-/*  There must be the software "festival" running in server mode */
-/*  http://www.speech.cs.cmu.edu/festival */
+	/*  There must be the software "festival" running in server mode */
+	/*  http://www.speech.cs.cmu.edu/festival */
 
 
-/*  Include Dateien */
+	/*  Include Dateien */
 #include "config.h"
 #include <stdlib.h>
 #include <string.h>
@@ -195,7 +198,7 @@ Revision 1.3  2001/09/16 19:12:35  ganter
 
 #include <time.h>
 
-/*  Defines for gettext I18n */
+	/*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)
 # ifdef gettext_noop
@@ -204,7 +207,7 @@ Revision 1.3  2001/09/16 19:12:35  ganter
 #  define N_(String) (String)
 # endif
 
-extern gint statusid, debug, havespeechout, posmode, muteflag;
+	extern gint statusid, debug, havespeechout, posmode, muteflag;
 gint speechsock = -1;
 gchar *displaytext = NULL;
 extern enum
@@ -224,27 +227,26 @@ extern int sound_direction, sound_distance, sound_speed, sound_gps;
 
 #define SPEECHOUTSERVER "127.0.0.1"
 
-
-gint
-speech_out_init ()
-{
+/* *****************************************************************************
+ */
+gint speech_out_init () {
   struct sockaddr_in server;
   struct hostent *server_data;
 
-/*  open socket to port 1314 */
+	/*  open socket to port 1314 */
   if ((speechsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
       return (FALSE);
     }
   server.sin_family = AF_INET;
-/*  We retrieve the IP address of the server from its name: */
+	/*  We retrieve the IP address of the server from its name: */
   if ((server_data = gethostbyname (SPEECHOUTSERVER)) == NULL)
     {
       return (FALSE);
     }
   memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
   server.sin_port = htons (1314);
-/*  We initiate the connection  */
+	/*  We initiate the connection  */
   if (connect (speechsock, (struct sockaddr *) &server, sizeof server) < 0)
     {
       return (FALSE);
@@ -255,9 +257,9 @@ speech_out_init ()
 }
 
 
-gint
-speech_out_speek (char *text)
-{
+/* *****************************************************************************
+ */
+gint speech_out_speek (char *text) {
   gint e;
   gchar out[2000];
 
@@ -278,15 +280,15 @@ speech_out_speek (char *text)
       g_strlcat (text, ".\n", sizeof (text));
       g_snprintf (out, sizeof (out), "flite -t '%s'&",text);
       if ( debug ) 
-	printf("speech with flite: %s\n",out);
+				printf("speech with flite: %s\n",out);
       system (out);
     }
   return e;
 }
 
-gint
-speech_out_speek_raw (char *text)
-{
+/* *****************************************************************************
+ */
+gint speech_out_speek_raw (char *text) {
   gint e;
 
   if (!havespeechout)
@@ -302,10 +304,10 @@ speech_out_speek_raw (char *text)
   return e;
 }
 
-/*  if second parameter is TRUE, then also greeting is spoken */
-gint
-speech_saytime_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ *  if second parameter is TRUE, then also greeting is spoken 
+ */
+gint speech_saytime_cb (GtkWidget * widget, guint datum) {
   time_t t;
   struct tm *ts;
   gchar buf[200];
@@ -317,61 +319,57 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
   ts = localtime (&t);
 
   if (havespeechout)
-    switch (voicelang)
-      {
+    switch (voicelang) {
       case english:
-	if (datum == 1)
-	  {
-	    if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
-	      g_snprintf (buf, sizeof (buf), "Good Morning,");
-	    if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
-	      g_snprintf (buf, sizeof (buf), "Good afternoon,");
-	    if (ts->tm_hour >= 18)
-	      g_snprintf (buf, sizeof (buf), "Good evening,");
-	    speech_out_speek (buf);
-	  }
-	g_snprintf (buf, sizeof (buf),
-		    "it is %d o clock and %d minutes.", ts->tm_hour,
-		    ts->tm_min);
-	speech_out_speek (buf);
-	break;
+				if (datum == 1) {
+						if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
+							g_snprintf (buf, sizeof (buf), "Good Morning,");
+						if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
+							g_snprintf (buf, sizeof (buf), "Good afternoon,");
+						if (ts->tm_hour >= 18)
+							g_snprintf (buf, sizeof (buf), "Good evening,");
+						speech_out_speek (buf);
+					}
+				g_snprintf (buf, sizeof (buf),
+										"it is %d o clock and %d minutes.", ts->tm_hour,
+										ts->tm_min);
+				speech_out_speek (buf);
+				break;
       case spanish:
-	if (datum == 1)
-	  {
-	    if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
-	      g_snprintf (buf, sizeof (buf), "buenos dÂŽías.");
-	    if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
-	      g_snprintf (buf, sizeof (buf), "buenos tardes.");
-	    if (ts->tm_hour >= 18)
-	      g_snprintf (buf, sizeof (buf), "buenas noches");
-	    speech_out_speek (buf);
-	  }
-	if (ts->tm_hour == 1)
-	  g_snprintf (buf, sizeof (buf), "es la una y %d minutos.",
-		      ts->tm_min);
-	else
-	  g_snprintf (buf, sizeof (buf),
-		      "son las %d horas y %d minutos.", ts->tm_hour,
-		      ts->tm_min);
-	speech_out_speek (buf);
-	break;
+				if (datum == 1) {
+						if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
+							g_snprintf (buf, sizeof (buf), "buenos dÂŽías.");
+						if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
+							g_snprintf (buf, sizeof (buf), "buenos tardes.");
+						if (ts->tm_hour >= 18)
+							g_snprintf (buf, sizeof (buf), "buenas noches");
+						speech_out_speek (buf);
+					}
+				if (ts->tm_hour == 1)
+					g_snprintf (buf, sizeof (buf), "es la una y %d minutos.",
+											ts->tm_min);
+				else
+					g_snprintf (buf, sizeof (buf),
+											"son las %d horas y %d minutos.", ts->tm_hour,
+											ts->tm_min);
+				speech_out_speek (buf);
+				break;
       case german:
-	if (datum == 1)
-	  {
-	    if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
-	      g_snprintf (buf, sizeof (buf), "Guten Morgen.");
-	    if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
-	      g_snprintf (buf, sizeof (buf), "Guten Tag.");
-	    if (ts->tm_hour >= 18)
-	      g_snprintf (buf, sizeof (buf), "Guten Abend.");
-	    speech_out_speek (buf);
-	  }
-	if (ts->tm_hour == 1)
-	  g_snprintf (buf, sizeof (buf), "es ist ein Uhr %d", ts->tm_min);
-	else
-	  g_snprintf (buf, sizeof (buf), "es ist %d Uhr %d", ts->tm_hour,
-		      ts->tm_min);
-	speech_out_speek (buf);
+				if (datum == 1) {
+						if ((ts->tm_hour >= 0) && (ts->tm_hour < 12))
+							g_snprintf (buf, sizeof (buf), "Guten Morgen.");
+						if ((ts->tm_hour >= 12) && (ts->tm_hour < 18))
+							g_snprintf (buf, sizeof (buf), "Guten Tag.");
+						if (ts->tm_hour >= 18)
+							g_snprintf (buf, sizeof (buf), "Guten Abend.");
+						speech_out_speek (buf);
+					}
+				if (ts->tm_hour == 1)
+					g_snprintf (buf, sizeof (buf), "es ist ein Uhr %d", ts->tm_min);
+				else
+					g_snprintf (buf, sizeof (buf), "es ist %d Uhr %d", ts->tm_hour,
+											ts->tm_min);
+				speech_out_speek (buf);
 
       }
 
@@ -379,26 +377,26 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
 
 }
 
-void
-saytargettext (gchar * filename, gchar * tg)
-{
+/* *****************************************************************************
+ */
+void saytargettext (gchar * filename, gchar * tg) {
   gchar file[500];
   gint fd, e;
   gchar *start, *end;
   struct stat buf;
   gchar *data, *b, *tg2, target[100];
 
-/* build .dsc filename */
+	/* build .dsc filename */
   g_strlcpy (file, filename, sizeof (file));
   file[strlen (file) - 3] = 0;
   g_strlcat (file, "dsc", sizeof (file));
-/* get size */
+	/* get size */
   e = stat (file, &buf);
   if (e != 0)
     return;
 
   fd = open (file, O_RDONLY);
-/* map +2000 bytes to get 0 at the end */
+	/* map +2000 bytes to get 0 at the end */
   data = mmap (0, buf.st_size + 2000, PROT_READ, MAP_SHARED, fd, 0);
   g_strlcpy (target, "$", sizeof (target));
   tg2 = g_strdelimit (tg, " ", '_');
@@ -409,10 +407,10 @@ saytargettext (gchar * filename, gchar * tg)
       start = strstr (start, "\n");
       end = strstr (start, "$");
       if (end == NULL)
-	end = start + strlen (start);
+				end = start + strlen (start);
       b = calloc (end - start + 50, 1);
       if (displaytext != NULL)
-	free (displaytext);
+				free (displaytext);
       displaytext = calloc (end - start + 50, 1);
       strncpy (displaytext, start, end - start);
       displaytext[end - start + 1] = 0;
@@ -426,9 +424,9 @@ saytargettext (gchar * filename, gchar * tg)
   munmap (data, buf.st_size + 2000);
 }
 
-void
-display_dsc (void)
-{
+/* *****************************************************************************
+ */
+void display_dsc (void) {
   GdkGC *kontext;
   gint len;
   gchar *text;
@@ -451,31 +449,31 @@ display_dsc (void)
     text = displaytext;
   kontext = gdk_gc_new (drawable);
   len = strlen (text);
-/*   if (len>10) */
-/*       len=10; */
+	/*   if (len>10) */
+	/*       len=10; */
 
 
-/*   gdk_gc_set_function (kontext, GDK_OR); */
+	/*   gdk_gc_set_function (kontext, GDK_OR); */
 
   gdk_gc_set_foreground (kontext, &mygray);
   gdk_draw_rectangle (drawable, kontext, 1, 0, SCREEN_Y - 40, SCREEN_X, 40);
   gdk_gc_set_function (kontext, GDK_COPY);
-/*   gdk_gc_set_foreground (kontext, &blue); */
-/*   gdk_draw_text (drawable, bigtextfont, kontext, */
-/* 		 11, SCREEN_Y - 30, text, len); */
+	/*   gdk_gc_set_foreground (kontext, &blue); */
+	/*   gdk_draw_text (drawable, bigtextfont, kontext, */
+	/* 		 11, SCREEN_Y - 30, text, len); */
 
   /* prints in pango */
 
   wplabellayout = gtk_widget_create_pango_layout (drawing_area, text);
-//KCFX  
+	//KCFX  
   if (pdamode)
     pfd = pango_font_description_from_string ("Sans 8");
   else
     pfd = pango_font_description_from_string ("Sans bold 14");
   pango_layout_set_font_description (wplabellayout, pfd);
-/* 		pango_layout_get_pixel_size (wplabellayout, &width, &height); */
+	/* 		pango_layout_get_pixel_size (wplabellayout, &width, &height); */
   gdk_draw_layout_with_colors (drawable, kontext, 11, SCREEN_Y - 30,
-			       wplabellayout, &blue, NULL);
+															 wplabellayout, &blue, NULL);
 
   if (wplabellayout != NULL)
     g_object_unref (G_OBJECT (wplabellayout));
@@ -488,28 +486,25 @@ display_dsc (void)
 
 }
 
-void
-speech_out_close (void)
-{
+/* *****************************************************************************
+ */
+void speech_out_close (void) {
   if (speechsock != -1)
     close (speechsock);
 }
 
 
-gint
-speech_out_cb (GtkWidget * widget, guint * datum)
-{
+/* *****************************************************************************
+ */
+gint speech_out_cb (GtkWidget * widget, guint * datum) {
   gchar buf[500], s2[100];
   gint angle;
 
   if (strcmp (oldangle, "XXX"))
     {
-      if (muteflag)
-	return TRUE;
-      if (foundradar)
-	return TRUE;
-      if (importactive)
-	return TRUE;
+      if (muteflag)				return TRUE;
+      if (foundradar)				return TRUE;
+      if (importactive)				return TRUE;
     }
 
   speechcount++;
@@ -518,18 +513,18 @@ speech_out_cb (GtkWidget * widget, guint * datum)
   if (!simmode && !havepos)
     {
       switch (voicelang)
-	{
-	case english:
-	  g_snprintf (buf, sizeof (buf), "Not enough satellites in view");
-	  break;
-	case spanish:
-	  g_snprintf (buf, sizeof (buf), "El GPS Fix no estÂŽá disponible");
-	  break;
-	case german:
-	  g_snprintf (buf, sizeof (buf), "Zuwenig Satelliten in Sicht");
-	}
+				{
+				case english:
+					g_snprintf (buf, sizeof (buf), "Not enough satellites in view");
+					break;
+				case spanish:
+					g_snprintf (buf, sizeof (buf), "El GPS Fix no estÂŽá disponible");
+					break;
+				case german:
+					g_snprintf (buf, sizeof (buf), "Zuwenig Satelliten in Sicht");
+				}
       if ((speechcount == 1) && sound_gps)
-	speech_out_speek (buf);
+				speech_out_speek (buf);
       return TRUE;
     }
 
@@ -537,113 +532,76 @@ speech_out_cb (GtkWidget * widget, guint * datum)
   switch (voicelang)
     {
     case english:
-      if ((angle >= 338) || (angle < 22))
-	g_strlcpy (s2, "in front of you", sizeof (s2));
-      if ((angle >= 22) && (angle < 68))
-	g_strlcpy (s2, "ahead of you to the right", sizeof (s2));
-      if ((angle >= 68) && (angle < 112))
-	g_strlcpy (s2, "to your right", sizeof (s2));
-      if ((angle >= 112) && (angle < 158))
-	g_strlcpy (s2, "behind you to the right", sizeof (s2));
-      if ((angle >= 158) && (angle < 202))
-	g_strlcpy (s2, "behind you", sizeof (s2));
-      if ((angle >= 202) && (angle < 248))
-	g_strlcpy (s2, "behind you to the left", sizeof (s2));
-      if ((angle >= 248) && (angle < 292))
-	g_strlcpy (s2, "to your left", sizeof (s2));
-      if ((angle >= 292) && (angle < 338))
-	g_strlcpy (s2, "ahead of you to the left", sizeof (s2));
+      if ((angle >= 338) || (angle < 22))				g_strlcpy (s2, "in front of you", sizeof (s2));
+      if ((angle >= 22) && (angle < 68))				g_strlcpy (s2, "ahead of you to the right", sizeof (s2));
+      if ((angle >= 68) && (angle < 112))				g_strlcpy (s2, "to your right", sizeof (s2));
+      if ((angle >= 112) && (angle < 158))			g_strlcpy (s2, "behind you to the right", sizeof (s2));
+      if ((angle >= 158) && (angle < 202))			g_strlcpy (s2, "behind you", sizeof (s2));
+      if ((angle >= 202) && (angle < 248))			g_strlcpy (s2, "behind you to the left", sizeof (s2));
+      if ((angle >= 248) && (angle < 292))			g_strlcpy (s2, "to your left", sizeof (s2));
+      if ((angle >= 292) && (angle < 338))			g_strlcpy (s2, "ahead of you to the left", sizeof (s2));
       break;
     case spanish:
-      if ((angle >= 338) || (angle < 22))
-	g_strlcpy (s2, "delante de usted", sizeof (s2));
-      if ((angle >= 22) && (angle < 68))
-	g_strlcpy (s2, "delante de usted a la derecha", sizeof (s2));
-      if ((angle >= 68) && (angle < 112))
-	g_strlcpy (s2, "a la derecha", sizeof (s2));
-      if ((angle >= 112) && (angle < 158))
-	g_strlcpy (s2, "de tras de usted a la derecha", sizeof (s2));
-      if ((angle >= 158) && (angle < 202))
-	g_strlcpy (s2, "de tras de usted", sizeof (s2));
-      if ((angle >= 202) && (angle < 248))
-	g_strlcpy (s2, "de tras de usted a la izquierda", sizeof (s2));
-      if ((angle >= 248) && (angle < 292))
-	g_strlcpy (s2, "a la izquierda", sizeof (s2));
-      if ((angle >= 292) && (angle < 338))
-	g_strlcpy (s2, "delante de usted a la izquierda", sizeof (s2));
+      if ((angle >= 338) || (angle < 22))				g_strlcpy (s2, "delante de usted", sizeof (s2));
+      if ((angle >= 22) && (angle < 68))				g_strlcpy (s2, "delante de usted a la derecha", sizeof (s2));
+      if ((angle >= 68) && (angle < 112))				g_strlcpy (s2, "a la derecha", sizeof (s2));
+      if ((angle >= 112) && (angle < 158))			g_strlcpy (s2, "de tras de usted a la derecha", sizeof (s2));
+      if ((angle >= 158) && (angle < 202))			g_strlcpy (s2, "de tras de usted", sizeof (s2));
+      if ((angle >= 202) && (angle < 248))			g_strlcpy (s2, "de tras de usted a la izquierda", sizeof (s2));
+      if ((angle >= 248) && (angle < 292))			g_strlcpy (s2, "a la izquierda", sizeof (s2));
+      if ((angle >= 292) && (angle < 338))			g_strlcpy (s2, "delante de usted a la izquierda", sizeof (s2));
       break;
     case german:
-      if ((angle >= 338) || (angle < 22))
-	g_strlcpy (s2, "vor ihnen", sizeof (s2));
-
-      if ((angle >= 22) && (angle < 68))
-	g_strlcpy (s2, "rechts vor ihnen", sizeof (s2));
-      if ((angle >= 68) && (angle < 112))
-	g_strlcpy (s2, "rechts", sizeof (s2));
-      if ((angle >= 112) && (angle < 158))
-	g_strlcpy (s2, "rechts hinter ihnen", sizeof (s2));
-      if ((angle >= 158) && (angle < 202))
-	g_strlcpy (s2, "hinter ihnen", sizeof (s2));
-      if ((angle >= 202) && (angle < 248))
-	g_strlcpy (s2, "links hinter ihnen", sizeof (s2));
-      if ((angle >= 248) && (angle < 292))
-	g_strlcpy (s2, "links", sizeof (s2));
-      if ((angle >= 292) && (angle < 338))
-	g_strlcpy (s2, "links vor ihnen", sizeof (s2));
+      if ((angle >= 338) || (angle < 22))				g_strlcpy (s2, "vor ihnen", sizeof (s2));
+      if ((angle >= 22) && (angle < 68))				g_strlcpy (s2, "rechts vor ihnen", sizeof (s2));
+      if ((angle >= 68) && (angle < 112))				g_strlcpy (s2, "rechts", sizeof (s2));
+      if ((angle >= 112) && (angle < 158))			g_strlcpy (s2, "rechts hinter ihnen", sizeof (s2));
+      if ((angle >= 158) && (angle < 202))			g_strlcpy (s2, "hinter ihnen", sizeof (s2));
+      if ((angle >= 202) && (angle < 248))			g_strlcpy (s2, "links hinter ihnen", sizeof (s2));
+      if ((angle >= 248) && (angle < 292))			g_strlcpy (s2, "links", sizeof (s2));
+      if ((angle >= 292) && (angle < 338))			g_strlcpy (s2, "links vor ihnen", sizeof (s2));
     }
   if ((speechcount == 1) || (strcmp (s2, oldangle)))
     {
       switch (voicelang)
-	{
-	case english:
-	  g_snprintf (buf, sizeof (buf), "Destination is %s", s2);
-	  break;
-	case spanish:
-	  g_snprintf (buf, sizeof (buf), "Su destinaciÂŽón estÂŽá %s", s2);
-	  break;
-	case german:
-	  g_snprintf (buf, sizeof (buf), "Das Ziel ist %s", s2);
-	}
+				{
+				case english:
+					g_snprintf (buf, sizeof (buf), "Destination is %s", s2);
+					break;
+				case spanish:
+					g_snprintf (buf, sizeof (buf), "Su destinaciÂŽón estÂŽá %s", s2);
+					break;
+				case german:
+					g_snprintf (buf, sizeof (buf), "Das Ziel ist %s", s2);
+				}
       if (sound_direction)
-      speech_out_speek (buf);
+				speech_out_speek (buf);
       g_strlcpy (oldangle, s2, sizeof (oldangle));
     }
   if (speechcount == 3 && groundspeed >= 20)
     {
       switch (voicelang)
-	{
-	case english:
-	  if (milesflag)
-	    g_snprintf (buf, sizeof (buf),
-			"The current speed is %d miles per hour",
-			(int) (groundspeed));
-	  else
-	    g_snprintf (buf, sizeof (buf),
-			"The current speed is %d kilometers per hour",
-			(int) groundspeed);
-	  break;
-	case spanish:
-	  if (milesflag)
-	    g_snprintf (buf, sizeof (buf),
-			"La velocidad actual es %d milla por hora",
-			(int) (groundspeed));
-	  else
-	    g_snprintf (buf, sizeof (buf),
-			"La velocidad actual es %d kilometros por hora",
-			(int) groundspeed);
-	  break;
-	case german:
-	  if (milesflag)
-	    g_snprintf (buf, sizeof (buf),
-			"Die momentane Geschwindigkeit ist %d Meilen pro Stunde",
-			(int) (groundspeed));
-	  else
-	    g_snprintf (buf, sizeof (buf),
-			"Die momentane Geschwindigkeit ist %d kmh",
-			(int) groundspeed);
-	}
+				{
+				case english:
+					if (milesflag)
+						g_snprintf (buf, sizeof (buf),			"The current speed is %d miles per hour",			(int) (groundspeed));
+					else
+						g_snprintf (buf, sizeof (buf),			"The current speed is %d kilometers per hour",			(int) groundspeed);
+					break;
+				case spanish:
+					if (milesflag)
+						g_snprintf (buf, sizeof (buf),			"La velocidad actual es %d milla por hora",			(int) (groundspeed));
+					else
+						g_snprintf (buf, sizeof (buf),			"La velocidad actual es %d kilometros por hora",			(int) groundspeed);
+					break;
+				case german:
+					if (milesflag)
+						g_snprintf (buf, sizeof (buf),			"Die momentane Geschwindigkeit ist %d Meilen pro Stunde",			(int) (groundspeed));
+					else
+						g_snprintf (buf, sizeof (buf),			"Die momentane Geschwindigkeit ist %d kmh",			(int) groundspeed);
+				}
       if (sound_speed)
-      speech_out_speek (buf);
+				speech_out_speek (buf);
     }
 
   if (speechcount > 10)
@@ -653,70 +611,70 @@ speech_out_cb (GtkWidget * widget, guint * datum)
   if ((speechcount == 2) || ((dist < 1.2) && (speechcount == 7)))
     {
       if (milesflag)
-	{
-	  switch (voicelang)
-	    {
-	    case english:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f yards", dist * 1760.0);
-	      else
-		g_snprintf (s2, sizeof (s2), "%.0f miles", dist);
-	      break;
-	    case spanish:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f yards", dist * 1760.0);
-	      else
-		g_snprintf (s2, sizeof (s2), "%.0f millas", dist);
-	      break;
-	    case german:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f yard", dist * 1760.0);
-	      else
-		g_snprintf (s2, sizeof (s2), "%.0f Meilen", dist);
-	    }
-	}
+				{
+					switch (voicelang)
+						{
+						case english:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f yards", dist * 1760.0);
+							else
+								g_snprintf (s2, sizeof (s2), "%.0f miles", dist);
+							break;
+						case spanish:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f yards", dist * 1760.0);
+							else
+								g_snprintf (s2, sizeof (s2), "%.0f millas", dist);
+							break;
+						case german:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f yard", dist * 1760.0);
+							else
+								g_snprintf (s2, sizeof (s2), "%.0f Meilen", dist);
+						}
+				}
       else
-	{
-	  switch (voicelang)
-	    {
-	    case english:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f meters", dist * 1000.0);
-	      else
-		g_snprintf (s2, sizeof (s2), "%.0f kilometers", dist);
-	      break;
-	    case spanish:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f metros", dist * 1000.0);
-	      else
-		g_snprintf (s2, sizeof (s2), "%.0f kilometros", dist);
-	      break;
-	    case german:
-	      if (dist <= 1.2)
-		g_snprintf (s2, sizeof (s2), "%.0f meter", dist * 1000.0);
-	      else if ((int) dist == 1)
-		g_snprintf (s2, sizeof (s2), "ein kilometer");
-	      else
-		g_snprintf (s2, sizeof (s2), "%d kilometer", (int) dist);
-	    }
-	}
+				{
+					switch (voicelang)
+						{
+						case english:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f meters", dist * 1000.0);
+							else
+								g_snprintf (s2, sizeof (s2), "%.0f kilometers", dist);
+							break;
+						case spanish:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f metros", dist * 1000.0);
+							else
+								g_snprintf (s2, sizeof (s2), "%.0f kilometros", dist);
+							break;
+						case german:
+							if (dist <= 1.2)
+								g_snprintf (s2, sizeof (s2), "%.0f meter", dist * 1000.0);
+							else if ((int) dist == 1)
+								g_snprintf (s2, sizeof (s2), "ein kilometer");
+							else
+								g_snprintf (s2, sizeof (s2), "%d kilometer", (int) dist);
+						}
+				}
 
       switch (voicelang)
-	{
-	case english:
-	  g_snprintf (buf, sizeof (buf), "Distance to %s is %s", targetname,
-		      s2);
-	  break;
-	case spanish:
-	  g_snprintf (buf, sizeof (buf), "La distancia a la %s es %s",
-		      targetname, s2);
-	  break;
-	case german:
-	  g_snprintf (buf, sizeof (buf), "Die Entfernung bis %s ist %s",
-		      targetname, s2);
-	}
+				{
+				case english:
+					g_snprintf (buf, sizeof (buf), "Distance to %s is %s", targetname,
+											s2);
+					break;
+				case spanish:
+					g_snprintf (buf, sizeof (buf), "La distancia a la %s es %s",
+											targetname, s2);
+					break;
+				case german:
+					g_snprintf (buf, sizeof (buf), "Die Entfernung bis %s ist %s",
+											targetname, s2);
+				}
       if (sound_distance)
-      speech_out_speek (buf);
+				speech_out_speek (buf);
     }
 
   return TRUE;
