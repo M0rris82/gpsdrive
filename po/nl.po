@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-02-12 14:03+0100\n"
+"POT-Creation-Date: 2005-02-13 18:41+0100\n"
 "PO-Revision-Date: 2004-01-13 22:39+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -33,9 +33,9 @@ msgid "unused"
 msgstr "ongebruikt"
 
 #. displays zoom factor of map
-#: src/f_expose_cb.c:223 src/f_expose_cb.c:232 src/f_main.c:1153
-#: src/f_main.c:1160 src/f_main.c:1167 src/f_main.c:1224 src/f_main.c:1229
-#: src/f_main.c:1235 src/f_main.c:1271 src/f_main.c:1278 src/f_startgpsd.c:58
+#: src/f_expose_cb.c:223 src/f_expose_cb.c:232 src/f_main.c:1165
+#: src/f_main.c:1172 src/f_main.c:1179 src/f_main.c:1236 src/f_main.c:1241
+#: src/f_main.c:1247 src/f_main.c:1283 src/f_main.c:1290 src/f_startgpsd.c:58
 #: src/f_startgpsd.c:59 src/f_startgpsd.c:60 src/settings.c:1458
 #: src/settings.c:1467 src/settings.c:1476 src/settings.c:1501
 #: src/settings.c:1511 src/settings.c:1520 src/settings.c:1531
@@ -193,71 +193,80 @@ msgstr "Download kaart"
 msgid "M_ute"
 msgstr "Uitschakelen"
 
-#. JMO
 #. Checkbox ---- POI Draw
-#: src/f_main.c:796
+#: src/f_main.c:795
 msgid "draw PO_I"
 msgstr ""
 
-#: src/f_main.c:814
+#.
+#. gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+#. _("This will show Point of interrest located in mySQL Database"),
+#. NULL);
+#.
+#. Checkbox ---- STREETS Draw
+#: src/f_main.c:808
+msgid "draw _Streets"
+msgstr ""
+
+#: src/f_main.c:826
 msgid "Use SQ_L"
 msgstr "Gebruik SQL"
 
 #. Checkbox ---- Show WP
-#: src/f_main.c:825
+#: src/f_main.c:837
 #, fuzzy
 msgid "Show _WP"
 msgstr "Laat WP zien"
 
-#: src/f_main.c:852
+#: src/f_main.c:864
 msgid "HomeBase"
 msgstr "ThuisBasis"
 
-#: src/f_main.c:860
+#: src/f_main.c:872
 #, fuzzy
 msgid "Pos. _mode"
 msgstr "Pos. modus"
 
-#: src/f_main.c:866
+#: src/f_main.c:878
 #, fuzzy
 msgid "Show _Track"
 msgstr "Laat route zien"
 
-#: src/f_main.c:909
+#: src/f_main.c:921
 msgid "_Navigation"
 msgstr ""
 
 #. Checkbox ---- Start GPSD
-#: src/f_main.c:925 src/f_startgpsd.c:43
+#: src/f_main.c:937 src/f_startgpsd.c:43
 msgid "Start GPSD"
 msgstr "Start GPSD"
 
 #. Checkbox ---- Best Map
-#: src/f_main.c:930
+#: src/f_main.c:942
 #, fuzzy
 msgid "Auto _best map"
 msgstr "Beste kaart"
 
-#: src/f_main.c:941
+#: src/f_main.c:953
 msgid "Save track"
 msgstr "Route opslaan"
 
 #. Checkbox ---- Show Map
-#: src/f_main.c:953
+#: src/f_main.c:965
 msgid "Shown map type"
 msgstr "Laat kaarttype zien"
 
 #. Checkbox ---- Show Map: map_
-#: src/f_main.c:965
+#: src/f_main.c:977
 msgid "Street map"
 msgstr "Straat kaart"
 
 #. Checkbox ---- Show Map: top_
-#: src/f_main.c:973
+#: src/f_main.c:985
 msgid "Topo map"
 msgstr "Topografische kaart"
 
-#: src/f_main.c:1055
+#: src/f_main.c:1067
 msgid ""
 "\n"
 "kismet server found\n"
@@ -265,62 +274,62 @@ msgstr ""
 "\n"
 "kismet server gevonden\n"
 
-#: src/f_main.c:1116 src/f_main.c:1467
+#: src/f_main.c:1128 src/f_main.c:1480
 msgid "Bearing"
 msgstr "Bearing"
 
-#: src/f_main.c:1137
+#: src/f_main.c:1149
 #, fuzzy
 msgid "GPS Info"
 msgstr "Geo info"
 
-#: src/f_main.c:1188
+#: src/f_main.c:1200
 msgid "Bat."
 msgstr "Bat."
 
-#: src/f_main.c:1203
+#: src/f_main.c:1215
 #, fuzzy
 msgid "TC"
 msgstr "TC"
 
 #. displays speed over ground
-#: src/f_main.c:1221 src/f_main.c:1477 src/f_main.c:1479 src/f_main.c:1485
-#: src/f_main.c:1487
+#: src/f_main.c:1233 src/f_main.c:1490 src/f_main.c:1492 src/f_main.c:1498
+#: src/f_main.c:1500
 msgid "---"
 msgstr "---"
 
-#: src/f_main.c:1301 src/f_main.c:1308
+#: src/f_main.c:1313 src/f_main.c:1320
 #, fuzzy
 msgid "Selected:"
 msgstr "geselecteerd:"
 
-#: src/f_main.c:1301 src/f_main.c:1308
+#: src/f_main.c:1313 src/f_main.c:1320
 msgid "within"
 msgstr "binnen"
 
 #. create frames for labels
-#: src/f_main.c:1316
+#: src/f_main.c:1328
 msgid "Distance to target"
 msgstr "Afstand tot doel"
 
-#: src/f_main.c:1330 src/f_main.c:1339 src/gpsdrive.c:4690 src/gpsdrive.c:7968
-#: src/gpsdrive.c:7977
+#: src/f_main.c:1342 src/f_main.c:1351 src/gpsdrive.c:4698 src/gpsdrive.c:7977
+#: src/gpsdrive.c:7986
 #, fuzzy
 msgid "mi/h"
 msgstr "mi/h"
 
-#: src/f_main.c:1332 src/f_main.c:1341 src/gpsdrive.c:4692 src/gpsdrive.c:7970
-#: src/gpsdrive.c:7979
+#: src/f_main.c:1344 src/f_main.c:1353 src/gpsdrive.c:4700 src/gpsdrive.c:7979
+#: src/gpsdrive.c:7988
 msgid "knots"
 msgstr "knopen"
 
-#: src/f_main.c:1334 src/f_main.c:1343 src/gpsdrive.c:4694 src/gpsdrive.c:7972
-#: src/gpsdrive.c:7981
+#: src/f_main.c:1346 src/f_main.c:1355 src/gpsdrive.c:4702 src/gpsdrive.c:7981
+#: src/gpsdrive.c:7990
 msgid "km/h"
 msgstr "km/h"
 
-#: src/f_main.c:1339 src/f_main.c:1341 src/f_main.c:1343 src/gpsdrive.c:7977
-#: src/gpsdrive.c:7979 src/gpsdrive.c:7981 src/settings.c:1053
+#: src/f_main.c:1351 src/f_main.c:1353 src/f_main.c:1355 src/gpsdrive.c:7986
+#: src/gpsdrive.c:7988 src/gpsdrive.c:7990 src/settings.c:1053
 msgid "Speed"
 msgstr "Snelheid"
 
@@ -328,7 +337,7 @@ msgstr "Snelheid"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_speed, TRUE, TRUE,
 #. 1 * PADDING);
-#: src/f_main.c:1352
+#: src/f_main.c:1364
 msgid "Altitude"
 msgstr "Breedtegraad"
 
@@ -336,70 +345,70 @@ msgstr "Breedtegraad"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/f_main.c:1359 src/settings.c:699
+#: src/f_main.c:1371 src/settings.c:699
 #, fuzzy
 msgid "Waypoints"
 msgstr "Wegmarkering"
 
-#: src/f_main.c:1462 src/gpsdrive.c:6746 src/gpsdrive.c:7734
-#: src/gpsdrive.c:9145 src/gpsdrive.c:9425 src/gpsdrive.c:9504
-#: src/gpsdrive.c:9651
+#: src/f_main.c:1475 src/gpsdrive.c:6755 src/gpsdrive.c:7743
+#: src/gpsdrive.c:9165 src/gpsdrive.c:9445 src/gpsdrive.c:9524
+#: src/gpsdrive.c:9671
 msgid "Latitude"
 msgstr "Breedtegraad"
 
-#: src/f_main.c:1463 src/gpsdrive.c:6748 src/gpsdrive.c:7736
-#: src/gpsdrive.c:9139 src/gpsdrive.c:9425 src/gpsdrive.c:9504
-#: src/gpsdrive.c:9651
+#: src/f_main.c:1476 src/gpsdrive.c:6757 src/gpsdrive.c:7745
+#: src/gpsdrive.c:9159 src/gpsdrive.c:9445 src/gpsdrive.c:9524
+#: src/gpsdrive.c:9671
 msgid "Longitude"
 msgstr "Lengtegraad"
 
-#: src/f_main.c:1464
+#: src/f_main.c:1477
 msgid "Map file"
 msgstr "Kaart bestand"
 
-#: src/f_main.c:1465
+#: src/f_main.c:1478
 msgid "Map scale"
 msgstr "Kaart schaal"
 
-#: src/f_main.c:1466
+#: src/f_main.c:1479
 msgid "Heading"
 msgstr "Richting"
 
-#: src/f_main.c:1468
+#: src/f_main.c:1481
 msgid "Time at Dest."
 msgstr "Aankomsttijd."
 
-#: src/f_main.c:1469
+#: src/f_main.c:1482
 msgid "Pref. scale"
 msgstr "Voorkeurs schaal"
 
-#: src/f_main.c:1473
+#: src/f_main.c:1486
 msgid "000,00000N"
 msgstr ""
 
-#: src/f_main.c:1475
+#: src/f_main.c:1488
 msgid "000,00000E"
 msgstr ""
 
-#: src/f_main.c:1481 src/f_main.c:1483
+#: src/f_main.c:1494 src/f_main.c:1496
 msgid "0000"
 msgstr ""
 
 #. gdk_window_lower((GdkWindow *)menuwin);
-#: src/f_main.c:1556 src/f_main.c:1607
+#: src/f_main.c:1569 src/f_main.c:1620
 msgid "Menu"
 msgstr "Menu"
 
 #. gdk_window_lower((GdkWindow *)menuwin2);
-#: src/f_main.c:1565 src/f_main.c:1608
+#: src/f_main.c:1578 src/f_main.c:1621
 msgid "Status"
 msgstr "Status"
 
-#: src/f_main.c:1606 src/gpsdrive.c:2462
+#: src/f_main.c:1619 src/gpsdrive.c:2470
 msgid "Map"
 msgstr "Kaart"
 
-#: src/f_main.c:1759
+#: src/f_main.c:1772
 #, fuzzy
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
@@ -407,57 +416,57 @@ msgid ""
 msgstr ""
 "Klik kier om te schakelen tussen satelliet-signaal en -positie weergave"
 
-#: src/f_main.c:1763
+#: src/f_main.c:1776
 #, fuzzy
 msgid "Number of used satellites/satellites in view"
 msgstr "Niet genoeg satelieten in zicht!"
 
-#: src/f_main.c:1766
+#: src/f_main.c:1779
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/f_main.c:1770
+#: src/f_main.c:1783
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/f_main.c:1775
+#: src/f_main.c:1788
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/f_main.c:1778
+#: src/f_main.c:1791
 msgid "/Misc. Menu"
 msgstr "/Misc. Menu"
 
-#: src/f_main.c:1781
+#: src/f_main.c:1794
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr "Hier vind je extra funkties voor kaarten, tracks en berichten"
 
-#: src/f_main.c:1785
+#: src/f_main.c:1798
 msgid "Download map from Internet"
 msgstr "Download kaart van Internet"
 
-#: src/f_main.c:1787
+#: src/f_main.c:1800
 msgid "Leave the program"
 msgstr "Verlaat het programma"
 
-#: src/f_main.c:1790
+#: src/f_main.c:1803
 msgid "Disable output of speech"
 msgstr "Spraak uitschakelen"
 
-#: src/f_main.c:1793
+#: src/f_main.c:1806
 msgid "Use SQL server for waypoints"
 msgstr "Gebruik SQL server voor wegmarkeringen"
 
-#: src/f_main.c:1796
+#: src/f_main.c:1809
 msgid "Show waypoints on the map"
 msgstr "Laat waypoints op de kaart zien"
 
-#: src/f_main.c:1799
+#: src/f_main.c:1812
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
@@ -466,95 +475,99 @@ msgstr ""
 "linker muis knop. Klikken bij de rand zorgt voor het schakelen naar de "
 "volgende kaart."
 
-#: src/f_main.c:1802
+#: src/f_main.c:1815
 msgid "Show tracking on the map"
 msgstr "Laat route op de kaart zien"
 
-#: src/f_main.c:1807
+#: src/f_main.c:1820
 msgid "Opens the help window"
 msgstr "Opent het hulp venster"
 
-#: src/f_main.c:1810
+#: src/f_main.c:1823
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/f_main.c:1815 src/f_startgpsd.c:19
+#: src/f_main.c:1828 src/f_startgpsd.c:19
 #, fuzzy
 msgid "Stop GPSD"
 msgstr "Start GPSD"
 
-#: src/f_main.c:1817 src/f_startgpsd.c:21
+#: src/f_main.c:1830 src/f_startgpsd.c:21
 msgid "Stop GPSD and switch to simulation mode"
 msgstr ""
 
-#: src/f_main.c:1823 src/f_startgpsd.c:45
+#: src/f_main.c:1836 src/f_startgpsd.c:45
 msgid "Starts GPSD for NMEA mode"
 msgstr "Start GPSD voor NMEA modus"
 
-#: src/f_main.c:1826
+#: src/f_main.c:1839
 msgid "Settings for GpsDrive"
 msgstr "Instellingen voor GpsDrive"
 
-#: src/f_main.c:1828
+#: src/f_main.c:1841
 msgid "Zoom into the current map"
 msgstr "Inzoomen van huidige kaart"
 
-#: src/f_main.c:1830
+#: src/f_main.c:1843
 msgid "Zooms out off the current map"
 msgstr "Uitzoomen van huidige kaart"
 
-#: src/f_main.c:1832
+#: src/f_main.c:1845
 msgid "Select the next more detailed map"
 msgstr "Selecteer de kaart met meer detail"
 
-#: src/f_main.c:1834
+#: src/f_main.c:1847
 msgid "Select the next less detailed map"
 msgstr "Selecteer de kaart met minder detail"
 
-#: src/f_main.c:1839
+#: src/f_main.c:1852
 msgid "Select here a destination from the waypoint list"
 msgstr "Selecteer een doel uit de lijst met wegmarkeringen"
 
-#: src/f_main.c:1843
+#: src/f_main.c:1856
 msgid "Select the map scale of avail. maps."
 msgstr "Selecteer de schaal van beschikbare kaarten"
 
-#: src/f_main.c:1848
+#: src/f_main.c:1861
 msgid "Always select the most detailed map available"
 msgstr ""
 "Selecteer altijd de meest gedetailleerde versie van de beschikbare kaarten"
 
-#: src/f_main.c:1851
+#: src/f_main.c:1864
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/f_main.c:1854
+#: src/f_main.c:1867
+msgid "Draw Streets found in mySQL"
+msgstr ""
+
+#: src/f_main.c:1870
 msgid "Save the track to given filename at program exit"
 msgstr "De route als gegeven naam opslaan bij het afsluiten van het programma"
 
-#: src/f_main.c:1860
+#: src/f_main.c:1876
 msgid "Number of waypoints selected from SQL server"
 msgstr "Aantal wegmarkeringen geselecteerd van SQL server"
 
-#: src/f_main.c:1864
+#: src/f_main.c:1880
 msgid "Number of selected waypoints, which are in range"
 msgstr "Aantal geselecteerde wegmarkeringen in het bereik"
 
-#: src/f_main.c:1868
+#: src/f_main.c:1884
 msgid "Range for waypoint selection in kilometers"
 msgstr "Bereik voor wegmarkeringen in kilometers"
 
-#: src/f_main.c:1871
+#: src/f_main.c:1887
 msgid "This shows the time from your GPS receiver"
 msgstr "Hier wordt de tijd van de gps ontvanger getoond"
 
-#: src/f_main.c:1874
+#: src/f_main.c:1890
 #, fuzzy
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr "Aantal wegmarkeringen geselecteerd van SQL server"
 
-#: src/f_main.c:1954
+#: src/f_main.c:1972
 #, c-format
 msgid ""
 "\n"
@@ -567,7 +580,7 @@ msgstr ""
 "Bedankt voor het gebruiken van GpsDrive!\n"
 "\n"
 
-#: src/friends.c:351 src/gpsdrive.c:8445
+#: src/friends.c:351 src/gpsdrive.c:8465
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "/Misc. Menu/Berichten"
@@ -591,110 +604,110 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:2265
+#: src/gpsdrive.c:2273
 msgid "/_Misc. Menu"
 msgstr "/_Misc. Menu"
 
-#: src/gpsdrive.c:2266
+#: src/gpsdrive.c:2274
 msgid "/_Misc. Menu/Maps"
 msgstr "/_Misc. Menu/Kaarten"
 
-#: src/gpsdrive.c:2267
+#: src/gpsdrive.c:2275
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr "/_Misc. Menu/Kaarten/_Kaart importeren"
 
-#: src/gpsdrive.c:2271
+#: src/gpsdrive.c:2279
 msgid "/_Misc. Menu/Maps/_Map Manager"
 msgstr "/_Misc. Menu/Kaarten/_Kaart Manager"
 
-#: src/gpsdrive.c:2273
+#: src/gpsdrive.c:2281
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr "/_Misc. Menu/_Markeringen Manager"
 
-#: src/gpsdrive.c:2275
+#: src/gpsdrive.c:2283
 msgid "/_Misc. Menu/_Load track file"
 msgstr "/_Misc. Menu/_Selecteer een route bestand"
 
-#: src/gpsdrive.c:2279
+#: src/gpsdrive.c:2287
 msgid "/_Misc. Menu/Messages"
 msgstr "/_Misc. Menu/Berichten"
 
-#: src/gpsdrive.c:2280
+#: src/gpsdrive.c:2288
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
 msgstr "/_Misc. Menu/Berichten/Stuur bericht naar ander voertuig"
 
-#: src/gpsdrive.c:2285
+#: src/gpsdrive.c:2293
 msgid "/_Misc. Menu/Help"
 msgstr "/_Misc. Menu/Help"
 
-#: src/gpsdrive.c:2286
+#: src/gpsdrive.c:2294
 msgid "/_Misc. Menu/Help/About"
 msgstr "/_Misc. Menu/Help/Over"
 
-#: src/gpsdrive.c:2288
+#: src/gpsdrive.c:2296
 msgid "/_Misc. Menu/Help/Topics"
 msgstr "/_Misc. Menu/Help/Onderwerpen"
 
-#: src/gpsdrive.c:2348 src/gpsdrive.c:3103
+#: src/gpsdrive.c:2356 src/gpsdrive.c:3111
 msgid "Simulation mode"
 msgstr "Simulatie modus"
 
-#: src/gpsdrive.c:2370
+#: src/gpsdrive.c:2378
 msgid "got RMC data, using it\n"
 msgstr ""
 
 #. if (debug)
-#: src/gpsdrive.c:2625
+#: src/gpsdrive.c:2633
 msgid "got no RMC data, using GGA data\n"
 msgstr ""
 
-#: src/gpsdrive.c:2879
+#: src/gpsdrive.c:2887
 #, fuzzy
 msgid "Timeout getting data from GPS-Receiver!"
 msgstr "Geen connectie met GPS-ontvanger!"
 
-#: src/gpsdrive.c:2926 src/gpsdrive.c:2975 src/gpsdrive.c:3080
-#: src/gpsdrive.c:3166 src/gpsdrive.c:3291
+#: src/gpsdrive.c:2934 src/gpsdrive.c:2983 src/gpsdrive.c:3088
+#: src/gpsdrive.c:3174 src/gpsdrive.c:3299
 msgid "Press middle mouse button for navigation"
 msgstr "Druk op de middelste muis knop voor navigatie"
 
-#: src/gpsdrive.c:2930
+#: src/gpsdrive.c:2938
 #, fuzzy, c-format
 msgid "Direct serial connection to %s"
 msgstr "Verbinding met %s"
 
-#: src/gpsdrive.c:2980 src/gpsdrive.c:3012 src/gpsdrive.c:3172
-#: src/gpsdrive.c:3297
+#: src/gpsdrive.c:2988 src/gpsdrive.c:3020 src/gpsdrive.c:3180
+#: src/gpsdrive.c:3305
 msgid "Not enough satellites in view!"
 msgstr "Niet genoeg satelieten in zicht!"
 
-#: src/gpsdrive.c:3084
+#: src/gpsdrive.c:3092
 msgid "GARMIN Mode"
 msgstr "GARMIN Modus"
 
-#: src/gpsdrive.c:3101
+#: src/gpsdrive.c:3109
 msgid "No GPS used"
 msgstr "Geen GPS in gebruik"
 
-#: src/gpsdrive.c:3105
+#: src/gpsdrive.c:3113
 msgid "Press middle mouse button for sim mode"
 msgstr "Klik op de middelste muis knop voor simulatie modus"
 
-#: src/gpsdrive.c:3444
+#: src/gpsdrive.c:3452
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr "Afstand naar Thuisbasis: %.1fkm, max. toegestaan: %.1fkm\n"
 
-#: src/gpsdrive.c:3521 src/gpsdrive.c:3751 src/gpsdrive.c:6561
-#: src/gpsdrive.c:8382 src/gpsdrive.c:8918
+#: src/gpsdrive.c:3529 src/gpsdrive.c:3759 src/gpsdrive.c:6570
+#: src/gpsdrive.c:8402 src/gpsdrive.c:8938
 msgid "To"
 msgstr "Naar"
 
-#: src/gpsdrive.c:3838
+#: src/gpsdrive.c:3846
 msgid "Error in line "
 msgstr "Fout in regel "
 
-#: src/gpsdrive.c:3840
+#: src/gpsdrive.c:3848
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -712,20 +725,20 @@ msgstr ""
 "Gebruik map_* voor stratenkaarten en \n"
 "top_* voor topografische kaarten."
 
-#: src/gpsdrive.c:4206
+#: src/gpsdrive.c:4214
 msgid "Auto"
 msgstr "Automatisch"
 
-#: src/gpsdrive.c:4447
+#: src/gpsdrive.c:4455
 #, fuzzy
 msgid "Warning!"
 msgstr "Bearing"
 
-#: src/gpsdrive.c:4448
+#: src/gpsdrive.c:4456
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:5023
+#: src/gpsdrive.c:5031
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -741,61 +754,61 @@ msgstr ""
 "\n"
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:6046
+#: src/gpsdrive.c:6055
 msgid "NESW"
 msgstr "NOZW"
 
-#: src/gpsdrive.c:6276
+#: src/gpsdrive.c:6285
 msgid "can't open NMEA output file"
 msgstr "Kan NMEA output file niet openen"
 
-#: src/gpsdrive.c:6395
+#: src/gpsdrive.c:6404
 msgid " Mapfile could not be loaded:"
 msgstr " Kaart bestand kon niet worden geladen:"
 
-#: src/gpsdrive.c:6441
+#: src/gpsdrive.c:6450
 msgid "Map found!"
 msgstr ""
 
-#: src/gpsdrive.c:6717
+#: src/gpsdrive.c:6726
 msgid "Select coordinates and scale"
 msgstr "Selecteer coordinaten en schaal"
 
-#: src/gpsdrive.c:6720
+#: src/gpsdrive.c:6729
 msgid "Download map"
 msgstr "Download kaart"
 
-#: src/gpsdrive.c:6750
+#: src/gpsdrive.c:6759
 msgid "Map covers"
 msgstr "Kaart bereik"
 
-#: src/gpsdrive.c:6754
+#: src/gpsdrive.c:6763
 msgid "Scale"
 msgstr "Schaal"
 
-#: src/gpsdrive.c:6756
+#: src/gpsdrive.c:6765
 msgid "Map file name"
 msgstr "Kaart bestands naam"
 
-#: src/gpsdrive.c:6796 src/settings.c:986
+#: src/gpsdrive.c:6805 src/settings.c:986
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/gpsdrive.c:6802 src/settings.c:992
+#: src/gpsdrive.c:6811 src/settings.c:992
 msgid "Expedia USA"
 msgstr ""
 
-#: src/gpsdrive.c:6813
+#: src/gpsdrive.c:6822
 msgid ""
 "If selected, you download the map from the german expedia server (expedia.de)"
 msgstr ""
 
-#: src/gpsdrive.c:6817
+#: src/gpsdrive.c:6826
 msgid ""
 "If selected, you download the map from the U.S. expedia server (expedia.com)"
 msgstr ""
 
-#: src/gpsdrive.c:6841 src/gpsdrive.c:6845
+#: src/gpsdrive.c:6850 src/gpsdrive.c:6854
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -803,70 +816,70 @@ msgstr ""
 "Het is ook mogelijk de positie te selecteren door\n"
 "met de muis op de kaart te klikken."
 
-#: src/gpsdrive.c:6847
+#: src/gpsdrive.c:6856
 msgid "Using Proxy and port:"
 msgstr "Gebruik maken van proxy en poort:"
 
-#: src/gpsdrive.c:7113 src/gpsdrive.c:7229
+#: src/gpsdrive.c:7122 src/gpsdrive.c:7238
 msgid "can't open socket for port 80"
 msgstr "Kan socket voor poort 80 niet openen"
 
-#: src/gpsdrive.c:7115 src/gpsdrive.c:7118 src/gpsdrive.c:7142
-#: src/gpsdrive.c:7145 src/gpsdrive.c:7160 src/gpsdrive.c:7163
-#: src/gpsdrive.c:7231 src/gpsdrive.c:7236 src/gpsdrive.c:7239
-#: src/gpsdrive.c:7275 src/gpsdrive.c:7280 src/gpsdrive.c:7283
-#: src/gpsdrive.c:7300 src/gpsdrive.c:7305 src/gpsdrive.c:7308
+#: src/gpsdrive.c:7124 src/gpsdrive.c:7127 src/gpsdrive.c:7151
+#: src/gpsdrive.c:7154 src/gpsdrive.c:7169 src/gpsdrive.c:7172
+#: src/gpsdrive.c:7240 src/gpsdrive.c:7245 src/gpsdrive.c:7248
+#: src/gpsdrive.c:7284 src/gpsdrive.c:7289 src/gpsdrive.c:7292
+#: src/gpsdrive.c:7309 src/gpsdrive.c:7314 src/gpsdrive.c:7317
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Verbinding met %s MISLUKT!"
 
-#: src/gpsdrive.c:7140 src/gpsdrive.c:7273
+#: src/gpsdrive.c:7149 src/gpsdrive.c:7282
 msgid "Can't resolve webserver address"
 msgstr "Kan het adres van de webserver niet resolven"
 
-#: src/gpsdrive.c:7158 src/gpsdrive.c:7298
+#: src/gpsdrive.c:7167 src/gpsdrive.c:7307
 msgid "unable to connect to Website"
 msgstr "Verbinding maken met website mislukt"
 
-#: src/gpsdrive.c:7186 src/gpsdrive.c:7366
+#: src/gpsdrive.c:7195 src/gpsdrive.c:7375
 msgid "read from Webserver"
 msgstr "Lees van webserver"
 
-#: src/gpsdrive.c:7213 src/gpsdrive.c:7217 src/gpsdrive.c:7219
+#: src/gpsdrive.c:7222 src/gpsdrive.c:7226 src/gpsdrive.c:7228
 #, c-format
 msgid "Connecting to %s"
 msgstr "Verbinding met %s"
 
-#: src/gpsdrive.c:7324 src/gpsdrive.c:7328 src/gpsdrive.c:7330
+#: src/gpsdrive.c:7333 src/gpsdrive.c:7337 src/gpsdrive.c:7339
 #, c-format
 msgid "Now connected to %s"
 msgstr "Nu verbinding maken met %s"
 
-#: src/gpsdrive.c:7409
+#: src/gpsdrive.c:7418
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "%d kBytes gedownload"
 
-#: src/gpsdrive.c:7422
+#: src/gpsdrive.c:7431
 msgid "Download FAILED!"
 msgstr "Downloaden MISLUKT!"
 
-#: src/gpsdrive.c:7424
+#: src/gpsdrive.c:7433
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "Download, ter grootte van %dkB, geslaagd"
 
-#: src/gpsdrive.c:7595
+#: src/gpsdrive.c:7604
 msgid "Select a map file"
 msgstr "Selecteer een kaart bestand"
 
-#: src/gpsdrive.c:7660
+#: src/gpsdrive.c:7669
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
 msgstr ""
 
-#: src/gpsdrive.c:7662
+#: src/gpsdrive.c:7671
 #, fuzzy
 msgid ""
 "\n"
@@ -885,7 +898,7 @@ msgstr ""
 "het in.\n"
 "Klik vervolgens op de accepteer knop."
 
-#: src/gpsdrive.c:7669
+#: src/gpsdrive.c:7678
 #, fuzzy
 msgid ""
 "Now do the same for your second point and click on the\n"
@@ -894,68 +907,68 @@ msgstr ""
 "Doe nu hetzelfde voor het tweede punt en klik op de \"einde\" knop. De kaart "
 "kan vervolgens gebruikt worden."
 
-#: src/gpsdrive.c:7674
+#: src/gpsdrive.c:7683
 msgid "Import Assistant. Step 1"
 msgstr "Import assistent. Stap 1"
 
-#: src/gpsdrive.c:7676
+#: src/gpsdrive.c:7685
 msgid "Import Assistant. Step 2"
 msgstr "Import assistent. Stap 2"
 
-#: src/gpsdrive.c:7681
+#: src/gpsdrive.c:7690
 msgid "Accept first point"
 msgstr "Accepteer eerste punt"
 
-#: src/gpsdrive.c:7683
+#: src/gpsdrive.c:7692
 msgid "Finish"
 msgstr "Einde"
 
-#: src/gpsdrive.c:7704
+#: src/gpsdrive.c:7713
 msgid "Go up"
 msgstr "Naar boven"
 
-#: src/gpsdrive.c:7707
+#: src/gpsdrive.c:7716
 msgid "Go left"
 msgstr "Naar links"
 
-#: src/gpsdrive.c:7710
+#: src/gpsdrive.c:7719
 msgid "Go right"
 msgstr "Naar rechts"
 
-#: src/gpsdrive.c:7713
+#: src/gpsdrive.c:7722
 msgid "Go down"
 msgstr "Naar beneden"
 
-#: src/gpsdrive.c:7716
+#: src/gpsdrive.c:7725
 msgid "Zoom in"
 msgstr "Zoom in"
 
-#: src/gpsdrive.c:7719
+#: src/gpsdrive.c:7728
 msgid "Zoom out"
 msgstr "Zoom uit"
 
-#: src/gpsdrive.c:7738
+#: src/gpsdrive.c:7747
 msgid "Screen X"
 msgstr "Scherm X"
 
-#: src/gpsdrive.c:7740
+#: src/gpsdrive.c:7749
 msgid "Screen Y"
 msgstr "Scherm Y"
 
-#: src/gpsdrive.c:7742
+#: src/gpsdrive.c:7751
 msgid "Browse waypoint"
 msgstr "Zoek waypoint"
 
-#: src/gpsdrive.c:7773
+#: src/gpsdrive.c:7782
 msgid "Browse filename"
 msgstr "Zoek bestandsnaam"
 
-#: src/gpsdrive.c:7866
+#: src/gpsdrive.c:7875
 #, fuzzy
 msgid "GpsDrive Control"
 msgstr "GpsDrive Menu"
 
-#: src/gpsdrive.c:8207
+#: src/gpsdrive.c:8216
 #, c-format
 msgid ""
 "\n"
@@ -964,109 +977,109 @@ msgstr ""
 "\n"
 "Snelheid verschil meer dan 1000 km/h, wordt genegeerd \n"
 
-#: src/gpsdrive.c:8448
+#: src/gpsdrive.c:8468
 #, fuzzy
 msgid "Sending message to friends server..."
 msgstr "Bericht wordt verstuurd vrienden server"
 
-#: src/gpsdrive.c:8521
+#: src/gpsdrive.c:8541
 #, fuzzy
 msgid "Message for:"
 msgstr "Bericht voor:"
 
-#: src/gpsdrive.c:8562
+#: src/gpsdrive.c:8582
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:8575
+#: src/gpsdrive.c:8595
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:8917
+#: src/gpsdrive.c:8937
 msgid "SELECTED"
 msgstr "GESELECTEERD"
 
-#: src/gpsdrive.c:9108
+#: src/gpsdrive.c:9128
 msgid "Add waypoint name"
 msgstr "Toevoegen naam waypoint"
 
-#: src/gpsdrive.c:9167
+#: src/gpsdrive.c:9187
 msgid " Waypoint name: "
 msgstr "Wegmarkering naam: "
 
-#: src/gpsdrive.c:9180
+#: src/gpsdrive.c:9200
 #, fuzzy
 msgid " Waypoint type: "
 msgstr "Wegmarkering type: "
 
-#: src/gpsdrive.c:9425
+#: src/gpsdrive.c:9445
 msgid "Name"
 msgstr "Naam"
 
-#: src/gpsdrive.c:9425 src/gpsdrive.c:9504 src/gpsdrive.c:9651
+#: src/gpsdrive.c:9445 src/gpsdrive.c:9524 src/gpsdrive.c:9671
 #: src/settings.c:1046
 msgid "Distance"
 msgstr "Afstand"
 
-#: src/gpsdrive.c:9435
+#: src/gpsdrive.c:9455
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Selecteer a.u.b. de ontvanger van het bericht"
 
-#: src/gpsdrive.c:9504 src/gpsdrive.c:9651
+#: src/gpsdrive.c:9524 src/gpsdrive.c:9671
 msgid "Waypoint"
 msgstr "Wegmarkering"
 
-#: src/gpsdrive.c:9523
+#: src/gpsdrive.c:9543
 msgid "Select reference point"
 msgstr "Selecteer uw referentie punt"
 
-#: src/gpsdrive.c:9527
+#: src/gpsdrive.c:9547
 msgid "Please select your destination"
 msgstr "Selecteer a.u.b. uw bestemming"
 
-#: src/gpsdrive.c:9556
+#: src/gpsdrive.c:9576
 msgid "Edit route"
 msgstr "Aanpassen route"
 
-#: src/gpsdrive.c:9558
+#: src/gpsdrive.c:9578
 msgid "Create route"
 msgstr "Aanmaken route"
 
-#: src/gpsdrive.c:9629
+#: src/gpsdrive.c:9649
 msgid "Create a route using some waypoints from this list"
 msgstr ""
 "Creeer een route door gebruik te maken van de wegmakeringen uit deze lijst"
 
-#: src/gpsdrive.c:9634
+#: src/gpsdrive.c:9654
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Wis de geselecteerde wegmarkering uit de lijst met wegmarkeringen"
 
-#: src/gpsdrive.c:9638
+#: src/gpsdrive.c:9658
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
 "Klik op item lijst om\n"
 "volgend waypoint te selecteren"
 
-#: src/gpsdrive.c:9665
+#: src/gpsdrive.c:9685
 msgid "Define route"
 msgstr "Definieren route"
 
-#: src/gpsdrive.c:9673
+#: src/gpsdrive.c:9693
 msgid "Start route"
 msgstr "Route beginnen"
 
-#: src/gpsdrive.c:9682
+#: src/gpsdrive.c:9702
 msgid "Take all WP as route"
 msgstr "Gebruik alle WP als route"
 
-#: src/gpsdrive.c:9687
+#: src/gpsdrive.c:9707
 msgid "Abort route"
 msgstr "Route afbreken"
 
-#: src/gpsdrive.c:9731
+#: src/gpsdrive.c:9751
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1074,7 +1087,7 @@ msgstr ""
 "Klik op waypoint lijst om\n"
 "waypoints toe te voegen"
 
-#: src/gpsdrive.c:9733
+#: src/gpsdrive.c:9753
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1082,14 +1095,14 @@ msgstr ""
 "Klik op item lijst om\n"
 "volgend waypoint te selecteren"
 
-#: src/gpsdrive.c:9774
+#: src/gpsdrive.c:9794
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 "Maak een route van alle wegmarkeringen. Sorteer met volgorde in bestand, "
 "niet in afstand."
 
-#: src/gpsdrive.c:9778
+#: src/gpsdrive.c:9798
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
@@ -1097,50 +1110,50 @@ msgstr ""
 "Klik hier om de reis te beginnen. GpsDrive navigeert u via de wegmarkeringen "
 "in deze lijst"
 
-#: src/gpsdrive.c:9781
+#: src/gpsdrive.c:9801
 msgid "Abort your journey"
 msgstr "Reis afbreken"
 
-#: src/gpsdrive.c:9798
+#: src/gpsdrive.c:9818
 msgid "-v    show version\n"
 msgstr "-v   geef versie informatie weer\n"
 
-#: src/gpsdrive.c:9799
+#: src/gpsdrive.c:9819
 msgid "-h    print this help\n"
 msgstr "-h    Deze help pagina\n"
 
-#: src/gpsdrive.c:9800
+#: src/gpsdrive.c:9820
 #, fuzzy
 msgid "-d    turn on debug info\n"
 msgstr "-d    Start in debug mode\n"
 
-#: src/gpsdrive.c:9801
+#: src/gpsdrive.c:9821
 #, fuzzy
 msgid "-D    turn on lot of debug info\n"
 msgstr "-D    Start in maximale debug mode\n"
 
-#: src/gpsdrive.c:9802
+#: src/gpsdrive.c:9822
 msgid "-e    use Festival-Lite (flite) for speech output\n"
 msgstr "-e    gebruik Festival-Lite (file) voor spraak uitvoer\n"
 
-#: src/gpsdrive.c:9803
+#: src/gpsdrive.c:9823
 msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    instellen van de serieele poort van de GPS, b.v. /dev/ttyS1\n"
 
-#: src/gpsdrive.c:9804
+#: src/gpsdrive.c:9824
 msgid "-o    serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    serieel apparaat, pty master, of bestand voor NMEA *output*\n"
 
-#: src/gpsdrive.c:9805
+#: src/gpsdrive.c:9825
 #, fuzzy
 msgid "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Selecteer vrienden server, X is b.v. linux.quant-x.at\n"
 
-#: src/gpsdrive.c:9806
+#: src/gpsdrive.c:9826
 msgid "-n    Disable use of direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9807
+#: src/gpsdrive.c:9827
 msgid ""
 "-l X  Select language of the voice,\n"
 "      X may be english, spanish or german\n"
@@ -1148,7 +1161,7 @@ msgstr ""
 "-l X Selecteer de taal van de stem,\n"
 "        X kan 'english', 'spanish' of 'german' zijn.\n"
 
-#: src/gpsdrive.c:9809
+#: src/gpsdrive.c:9829
 msgid ""
 "-s X  set height of the screen, if autodetection\n"
 "      don't satisfy you, X is i.e. 768,600,480,200\n"
@@ -1157,68 +1170,68 @@ msgstr ""
 "     niet bevalt. X is b.v. 768,600,480,200\n"
 
 #. ** Mod by Arms
-#: src/gpsdrive.c:9812
+#: src/gpsdrive.c:9832
 msgid "-r X  set width of the screen, only with -s\n"
 msgstr "-r X instellen breedte van het scherm, werkt enkel met -s\n"
 
-#: src/gpsdrive.c:9814
+#: src/gpsdrive.c:9834
 msgid "-1    have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    werk met een knops muis, b.v. bij gebruik van touchscreen\n"
 
-#: src/gpsdrive.c:9815
+#: src/gpsdrive.c:9835
 msgid "-a    don't display battery status (i.e. broken APM)\n"
 msgstr ""
 "-a    de batterij status niet laten zien (b.v. indien APM niet werkt)\n"
 
-#: src/gpsdrive.c:9817
+#: src/gpsdrive.c:9837
 msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr ""
 "-b X  Servernaam vor NMEA server (indien gpsd op een andere host draait)\n"
 
-#: src/gpsdrive.c:9819
+#: src/gpsdrive.c:9839
 msgid "-c X  set start position in simulation mode to waypoint name X\n"
 msgstr "-c X  instellen aanvangspositie in simulatie modus op wegmarkering X\n"
 
-#: src/gpsdrive.c:9820
+#: src/gpsdrive.c:9840
 #, fuzzy
 msgid "-x    create separate window for menu\n"
 msgstr "-x   open apart venster voor het menu\n"
 
-#: src/gpsdrive.c:9821
+#: src/gpsdrive.c:9841
 msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
 msgstr "-p    gebruik instellingen voor PDA (iPAQ, Yopy, ...)\n"
 
-#: src/gpsdrive.c:9823
+#: src/gpsdrive.c:9843
 msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 "-i    negeer NMEA controlegetal (alleen voor GPS ontvangers \n"
 "      die niet voldoen aan NMEA standaard)\n"
 
-#: src/gpsdrive.c:9824
+#: src/gpsdrive.c:9844
 msgid "-q    disable SQL support\n"
 msgstr "-q    SQL support uitschakelen\n"
 
-#: src/gpsdrive.c:9825
+#: src/gpsdrive.c:9845
 msgid "-F    force display of position even it is invalid\n"
 msgstr "-F    forceer tonen van (niet geldige) positie\n"
 
-#: src/gpsdrive.c:9826
+#: src/gpsdrive.c:9846
 msgid "-S    don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:9827
+#: src/gpsdrive.c:9847
 msgid "-E    print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:9829
+#: src/gpsdrive.c:9849
 msgid "-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:9830
+#: src/gpsdrive.c:9850
 msgid "-H X  correct altitude, adding this value to altitude\n"
 msgstr "-H X  corrigeer hoogte door de waarde X erbij op te tellen\n"
 
-#: src/gpsdrive.c:9831
+#: src/gpsdrive.c:9851
 msgid ""
 "-z    don't display zoom factor and scale\n"
 "\n"
@@ -1226,7 +1239,7 @@ msgstr ""
 "-z    toon geen zoom factor en schaal\n"
 "\n"
 
-#: src/gpsdrive.c:9937
+#: src/gpsdrive.c:9957
 msgid "Select a track file"
 msgstr "Selecteer een route bestand"
 
