@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.61  2005/08/18 06:59:09  tweety
+save tracks periodically 1st part
+Autor: Russell MIrov <russell.mirov@sun.com>
+
 Revision 1.60  2005/08/14 18:46:42  tweety
 remove unnedded xpm Files; read pixmaps with read_icons,
 separate more pixmaps from icons
@@ -2289,7 +2293,7 @@ gchar serialdev[80];
 GdkSegment *track, *trackshadow;
 glong tracknr;
 trackcoordstruct *trackcoord;
-glong trackcoordnr, tracklimit, trackcoordlimit;
+extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gint extrawinmenu = FALSE, expedia = TRUE;
 gdouble lat2RadiusArray[201];
 gint haveproxy, proxyport;
