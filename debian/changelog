@@ -1,3 +1,11 @@
+gpsdrive (2.09-pre3) unstable; urgency=low
+
+  * Vector Support
+  * More Map sources
+  * Code cleanup
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 21 Oct 2005 07:05:36 +0100
+ 
 gpsdrive (2.09-2) unstable; urgency=low
 
   * closes: #286902 (does not compile with gcc-4.x (FTBFS (amd64/gcc-4.0)))
