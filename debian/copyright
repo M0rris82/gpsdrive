@@ -1,0 +1,18 @@
+This package was debianized by Frank Kirschner <kirfrank@debian.org> on
+Wed Apr 17 18:35:19 CEST 2002.
+
+It was downloaded from http://www.gpsdrive.cc/gpsdrive-2.07.tar.gz
+
+Homepage: http://www.gpsdrive.cc/
+Project Page: http://freshmeat.net/projects/gpsdrive/
+
+Upstream Author: Fritz Ganter <ganter@ganter.at>
+
+Copyright:
+
+Fritz Ganter released GpsDrive under the terms and conditions of the GNU
+General Public License Version 2 (GPL2).
+On Debian GNU/Linux systems, the complete text of the
+GNU General Public License Version 2 may be found in
+`/usr/share/common-licenses/GPL2'.
+

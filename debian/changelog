@@ -1,0 +1,87 @@
+gpsdrive (2.09-2) unstable; urgency=low
+
+  * closes: #286902 (does not compile with gcc-4.x (FTBFS (amd64/gcc-4.0)))
+  * closes: #224905 (gpsdrive: Please give gpsd it's own package)
+  * closes: #238050 (new upstream version)
+  * closes: #282886 (gpsdrive: missing dependency to libgdk-pixbuf2)
+                    (was never needed, since libgdk-pixbuf2 is part
+                     of libgtk2.0)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Mon, 10 Jan 2005 12:05:36 +0100
+
+gpsdrive (2.09-1) unstable; urgency=low
+
+  * new upstream release
+  * closes: #248609 (mapblast/expedia map-servers do work again)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Tue, 25 May 2004 11:44:03 +0200
+
+gpsdrive (2.07-1) unstable; urgency=low
+
+  * new upstream release
+  * replaced non-free script 'gpsfetchmap' with a wrapper to 'gpsfetchmap.pl'
+    closes: #224913
+
+ -- Frank Kirschner <kirfrank@debian.org>  Tue, 27 Jan 2004 13:25:20 +0100
+
+gpsdrive (2.04-2) unstable; urgency=low
+
+  * closes: #200247 (bug in loadmapconfig() on map_koord.txt files < 512 bytes
+                     long) (This was not a real bug)
+  * Suggests libmysql for MySQL support.
+  * fixed several lintian warnings
+
+ -- Frank Kirschner <kirfrank@debian.org>  Thu,  9 Oct 2003 14:20:05 +0200
+
+gpsdrive (2.04-1) unstable; urgency=low
+
+  * new upstream release.
+  * closes: #186437 (MySQL Support needed)
+  * closes: #194403 (mapblast doesn't send images)
+  * closes: #197789 (FTBFS with g++-3.3: Missing <cassert> include)
+  * closes: #197832 (gpsfetchmap script gives syntax error)
+  * closes: #199364 (Expedia map service changed, no longer directly
+                     compatible with gpsdrive)
+  * closes: #210807 (Gpsdrive requires xfonts-75dpi to run)
+  * closes: #210977 (much newer version available)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Thu,  9 Oct 2003 09:33:26 +0200
+
+gpsdrive (2.0-0pre9-1) unstable; urgency=low
+
+  * new upstream release.
+
+ -- Frank Kirschner <kirfrank@ibmtux>  Tue,  1 Jul 2003 20:00:06 +0200
+
+gpsdrive (1.32-1) unstable; urgency=low
+
+  * new upstram release. (closes: #183066)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Wed, 12 Mar 2003 17:14:37 +0100
+
+gpsdrive (1.30-1) unstable; urgency=low
+
+  * new upstream release. (closes: #170823)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Sat, 30 Nov 2002 12:18:33 +0100
+
+gpsdrive (1.18-1) unstable; urgency=low
+
+  * new upstream release.
+  * added xutils to build-dependencies. (closes: #144287)
+
+ -- Frank Kirschner <kirfrank@debian.org>  Wed, 24 Apr 2002 23:40:31 +0200
+
+gpsdrive (1.17-1) unstable; urgency=low
+
+  * new package-maintainer. (closes: #143320)
+  * new upstream release.
+
+ -- Frank Kirschner <kirfrank@debian.org>  Wed, 17 Apr 2002 18:44:47 +0200
+
+gpsdrive (1.6-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Cosimo Alfarano <kalfa@debian.org>  Fri,  7 Dec 2001 19:14:57 +0100
+
