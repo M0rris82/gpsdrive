@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.20  2005/02/06 17:52:44  tweety
+extract icon handling to icons.c
+
 Revision 1.19  2005/02/02 19:13:43  tweety
 grid start position was calculated wrong
 
@@ -1889,7 +1892,7 @@ gpsdrive started
 #include <math.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <compass.h>
+#include <xpm_compass.h>
 #include <errno.h>
 
 #if HAVE_LOCALE_H
@@ -4568,82 +4571,6 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
     }
 }
 
-int
-drawicon (gint posxdest, gint posydest, char *ic)
-{
-  int symbol = 0, aux = -1, i, x, y;
-  gchar icon[80];
-
-
-  g_strlcpy (icon, ic, sizeof (icon));
-  if (!sqlflag)
-    g_strup (icon);
-
-  if ((strcmp (icon, "REST")) == 0)
-    symbol = 1;
-  else if ((strcmp (icon, "MCDONALDS")) == 0)
-    symbol = 2;
-  else if ((strcmp (icon, "HOTEL")) == 0)
-    symbol = 3;
-  else if ((strcmp (icon, "BURGERKING")) == 0)
-    symbol = 4;
-  else if ((strcmp (icon, "SHOP")) == 0)
-    symbol = 5;
-  else if ((strcmp (icon, "MONU")) == 0)
-    symbol = 6;
-  else if ((strcmp (icon, "NIGHTCLUB")) == 0)
-    symbol = 7;
-  else if ((strcmp (icon, "SPEEDTRAP")) == 0)
-    symbol = 8;
-  else if ((strcmp (icon, "AIRPORT")) == 0)
-    symbol = 9;
-  else if ((strcmp (icon, "GOLF")) == 0)
-    symbol = 10;
-  else if ((strcmp (icon, "GASSTATION")) == 0)
-    symbol = 11;
-  else if ((strcmp (icon, "CAFE")) == 0)
-    symbol = 12;
-  else if ((strcmp (icon, "GEOCACHE")) == 0)
-    symbol = 13;
-
-  for (i = 0; i < lastauxicon; i++)
-    if ((strcmp (icon, (auxicons + i)->name)) == 0)
-      {
-	if ((posxdest >= 0) && (posxdest < SCREEN_X))
-	  {
-
-	    if ((posydest >= 0) && (posydest < SCREEN_Y))
-	      {
-		x = gdk_pixbuf_get_width ((auxicons + i)->icon);
-		y = gdk_pixbuf_get_width ((auxicons + i)->icon);
-		gdk_draw_pixbuf (drawable, kontext, (auxicons + i)->icon,
-				 0, 0,
-				 posxdest - x / 2,
-				 posydest - y / 2, x, y, GDK_RGB_DITHER_NONE,
-				 0, 0);
-		aux = i;
-	      }
-	  }
-	return 99999;
-      }
-
-  if (symbol == 0)
-    return 0;
-
-  if ((posxdest >= 0) && (posxdest < SCREEN_X))
-    {
-
-      if ((posydest >= 0) && (posydest < SCREEN_Y))
-	{
-	  gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol - 1],
-			   0, 0,
-			   posxdest - 12,
-			   posydest - 12, 24, 24, GDK_RGB_DITHER_NONE, 0, 0);
-	}
-    }
-  return symbol;
-}
-
 void
 drawfriends (void)
 {
@@ -5339,7 +5266,7 @@ draw_grid(GtkWidget * widget)
 	    g_snprintf (str, sizeof (str),"%.2f",lon);
 	  posxdist = (posxdest12-posxdest11)/4;
 	  posydist = (posydest12-posydest11)/4;
-	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist ,str);
+	  draw_grid_text (widget,  posxdest11+posxdist,posydest11+posydist ,str);
 	      
 	      
 	  if ( step >=1 ) 
@@ -5351,7 +5278,7 @@ draw_grid(GtkWidget * widget)
 	      g_snprintf (str, sizeof (str),"%.2f",lat);
 	  posxdist = (posxdest21-posxdest11)/4;
 	  posydist = (posydest21-posydest11)/4;
-	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist,str);
+	  draw_grid_text (widget,  posxdest11+posxdist,posydest11+posydist,str);
 	}
     }
   }
@@ -5398,6 +5325,9 @@ void draw_waypoints()
   gdouble posxdest, posydest;
   gint  k, k2, i, shownwp = 0;
   gchar txt[200];
+
+  if ( debug )
+    printf( "draw_waypoints()\n" );
 
   /*  draw waypoints */
   for (i = 0; i < maxwp; i++)
@@ -6542,37 +6472,6 @@ loadmap (char *filename)
 
 }
 
-
-void
-loadfriendsicon (void)
-{
-  gchar mappath[400];
-
-  g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s", DATADIR,
-	      "friendsicon.png");
-  friendsimage = gdk_pixbuf_new_from_file (mappath, NULL);
-  if (friendsimage == NULL)
-    {
-      friendsimage = gdk_pixbuf_new_from_file ("friendsicon.png", NULL);
-    }
-  if (friendsimage == NULL)
-    {
-      GString *error;
-      error = g_string_new (NULL);
-      g_string_sprintf (error, "\n%s\n%s\n",
-			_(" Friendsicon could not be loaded:"), mappath);
-      fprintf (stderr,
-	       _
-	       ("\nWarning: unable to load friendsicon!\nPlease install the program as root with:\nmake install\n\n"));
-
-      error_popup ((gpointer *) error->str);
-      g_string_free (error, TRUE);
-    }
-  friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
-  gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
-		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
-
-}
 
 gint
 zoom_cb (GtkWidget * widget, guint datum)
@@ -9155,10 +9054,14 @@ addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
       (wayp + i)->lat = wp_lat;
       (wayp + i)->lon = wp_lon;
       g_strdelimit ((char *) wp_name, " ", '_');
-/*  limit waypoint name to 20 chars */
+
+      /*  limit waypoint name to 20 chars */
       g_strlcpy ((wayp + i)->name, wp_name, 40);
       (wayp + i)->name[20] = 0;
+
       g_strlcpy ((wayp + i)->typ, wp_type, 40);
+      (wayp + i)->typ[40] = 0;
+
       (wayp + i)->wlan = 0;
 
       maxwp++;
