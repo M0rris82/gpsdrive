@@ -155,32 +155,26 @@ main (int argc, char *argv[])
   if (usesql)
     {
       handle = dlopen ("/usr/local/lib/libmysqlclient.dll", RTLD_LAZY);
-      if (!handle)
-	handle =
-	  dlopen ("@PREFIX@/lib/mysql/libmysqlclient.10.dylib", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/mysql/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle =
-	  dlopen ("/usr/local/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/sw/lib/libmysqlclient.dylib", RTLD_LAZY);
+      if (!handle) handle = dlopen ("libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("libmysqlclient.so.12", RTLD_LAZY);
+      if (!handle) handle = dlopen ("libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/opt/lib/mysql/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/opt/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/opt/mysql/lib/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/opt/mysql/lib/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/sw/lib/libmysqlclient.dylib", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/mysql/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.12", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/lib/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/lib/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/lib/mysql/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/mysql/libmysqlclient.so", RTLD_LAZY);
+      if (!handle) handle = dlopen ("/usr/local/mysql/libmysqlclient.so.10", RTLD_LAZY);
+      if (!handle) handle = dlopen ("@PREFIX@/lib/mysql/libmysqlclient.10.dylib", RTLD_LAZY);
 
       if (handle)
 	{
