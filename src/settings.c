@@ -1,29 +1,30 @@
 /*
-
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
-
-Website: www.gpsdrive.de
-
-Disclaimer: Please do not use for navigation. 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    *********************************************************************
-
-
+  Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+	
+	Website: www.gpsdrive.de
+	
+	Disclaimer: Please do not use for navigation. 
+	
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+	
+/* ******************************************************************** 
+	 
 $Log$
+Revision 1.6  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.5  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -398,10 +399,10 @@ extern GtkWidget *settingsnotebook, *slowcpubt;
 GtkWidget *ge12;
 static gchar *slist[] =
   { "GMT-12", "GMT-11", "GMT-10", "GMT-9", "GMT-8", "GMT-7", "GMT-6", "GMT-5",
-  "GMT-4", "GMT-3", "GMT-2", "GMT-1", "GMT+0", "GMT+1", "GMT+2", "GMT+3",
-  "GMT+4", "GMT+5",
-  "GMT+6", "GMT+7", "GMT+8", "GMT+9", "GMT+10", "GMT+11", "GMT+12"
-};
+		"GMT-4", "GMT-3", "GMT-2", "GMT-1", "GMT+0", "GMT+1", "GMT+2", "GMT+3",
+		"GMT+4", "GMT+5",
+		"GMT+6", "GMT+7", "GMT+8", "GMT+9", "GMT+10", "GMT+11", "GMT+12"
+	};
 gint zone;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
@@ -435,16 +436,16 @@ int showsid = TRUE;
 extern int sound_direction, sound_distance, sound_speed, sound_gps;
 extern int expedia_de;
 
-static void
-baud_cb (GtkOptionMenu * button, gint data)
-{
+/* *****************************************************************************
+ */
+static void baud_cb (GtkOptionMenu * button, gint data) {
   serialspeed = gtk_option_menu_get_history (button);
 }
 
 
-static void
-change_font_callback (GtkWidget * button, gint data)
-{
+/* *****************************************************************************
+ */
+static void change_font_callback (GtkWidget * button, gint data) {
   GtkWidget *dialog = NULL;
   gint response;
   gchar *fn;
@@ -459,13 +460,13 @@ change_font_callback (GtkWidget * button, gint data)
 
   gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (mainwindow));
 
-/* 	printf("\ndata=%d\n",data);  */
+	/* 	printf("\ndata=%d\n",data);  */
   if (data == 1)
     gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					     (dialog), wplabelfont);
+																						 (dialog), wplabelfont);
   if (data == 2)
     gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					     (dialog), bigfont);
+																						 (dialog), bigfont);
 
   response = gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -473,14 +474,14 @@ change_font_callback (GtkWidget * button, gint data)
     {
 
       fn =
-	gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
-						 (dialog));
+				gtk_font_selection_dialog_get_font_name (GTK_FONT_SELECTION_DIALOG
+																								 (dialog));
       if (debug)
-	printf ("\n New wp label font: %s\n", fn);
+				printf ("\n New wp label font: %s\n", fn);
       if (data == 1)
-	g_strlcpy (wplabelfont, fn, sizeof (wplabelfont));
+				g_strlcpy (wplabelfont, fn, sizeof (wplabelfont));
       if (data == 2)
-	g_strlcpy (bigfont, fn, sizeof (bigfont));
+				g_strlcpy (bigfont, fn, sizeof (bigfont));
       needtosave = TRUE;
     }
 
@@ -488,9 +489,9 @@ change_font_callback (GtkWidget * button, gint data)
 }
 
 
-gint
-soundsettings_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint soundsettings_cb (GtkWidget * widget, guint datum) {
 
   switch (datum)
     {
@@ -512,9 +513,9 @@ soundsettings_cb (GtkWidget * widget, guint datum)
 }
 
 
-static void
-change_color_callback (GtkWidget * button, gint data)
-{
+/* *****************************************************************************
+ */
+static void change_color_callback (GtkWidget * button, gint data) {
   GtkWidget *dialog = NULL;
   gint response;
   GtkColorSelection *colorsel;
@@ -526,7 +527,7 @@ change_color_callback (GtkWidget * button, gint data)
 
   gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (mainwindow));
 
-/* 	printf("\ndata=%d\n",data);  */
+	/* 	printf("\ndata=%d\n",data);  */
 
   colorsel =
     GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (dialog)->colorsel);
@@ -542,18 +543,18 @@ change_color_callback (GtkWidget * button, gint data)
     {
       gtk_color_selection_get_current_color (colorsel, &color);
       g_snprintf (bluecolor, sizeof (bluecolor), "#%02x%02x%02x",
-		  color.red >> 8, color.green >> 8, color.blue >> 8);
+									color.red >> 8, color.green >> 8, color.blue >> 8);
       if (debug)
-	fprintf (stderr, "\nnew color: %s\n", bluecolor);
+				fprintf (stderr, "\nnew color: %s\n", bluecolor);
       needtosave = TRUE;
     }
 
   gtk_widget_destroy (dialog);
 }
 
-static void
-change_trackcolor_callback (GtkWidget * button, gint data)
-{
+/* *****************************************************************************
+ */
+static void change_trackcolor_callback (GtkWidget * button, gint data) {
   GtkWidget *dialog = NULL;
   gint response;
   GtkColorSelection *colorsel;
@@ -564,7 +565,7 @@ change_trackcolor_callback (GtkWidget * button, gint data)
 
   gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (mainwindow));
 
-/* 	printf("\ndata=%d\n",data);  */
+	/* 	printf("\ndata=%d\n",data);  */
 
   colorsel =
     GTK_COLOR_SELECTION (GTK_COLOR_SELECTION_DIALOG (dialog)->colorsel);
@@ -580,9 +581,9 @@ change_trackcolor_callback (GtkWidget * button, gint data)
     {
       gtk_color_selection_get_current_color (colorsel, &color);
       g_snprintf (trackcolor, sizeof (trackcolor), "#%02x%02x%02x",
-		  color.red >> 8, color.green >> 8, color.blue >> 8);
+									color.red >> 8, color.green >> 8, color.blue >> 8);
       if (debug)
-	fprintf (stderr, "\nnew color: %s\n", trackcolor);
+				fprintf (stderr, "\nnew color: %s\n", trackcolor);
       trackcolorv = color;
       gdk_color_alloc (cmap, &trackcolorv);
 
@@ -592,9 +593,9 @@ change_trackcolor_callback (GtkWidget * button, gint data)
   gtk_widget_destroy (dialog);
 }
 
-static void
-change_friendscolor_callback (GtkWidget * button, gint data)
-{
+/* *****************************************************************************
+ */
+static void change_friendscolor_callback (GtkWidget * button, gint data) {
   GtkWidget *dialog = NULL;
   gint response;
   GtkColorSelection *colorsel;
@@ -620,9 +621,9 @@ change_friendscolor_callback (GtkWidget * button, gint data)
     {
       gtk_color_selection_get_current_color (colorsel, &color);
       g_snprintf (friendscolor, sizeof (friendscolor), "#%02x%02x%02x",
-		  color.red >> 8, color.green >> 8, color.blue >> 8);
+									color.red >> 8, color.green >> 8, color.blue >> 8);
       if (debug)
-	fprintf (stderr, "\nnew color: %s\n", trackcolor);
+				fprintf (stderr, "\nnew color: %s\n", trackcolor);
       orange = color;
       gdk_color_alloc (cmap, &orange);
 
@@ -634,9 +635,9 @@ change_friendscolor_callback (GtkWidget * button, gint data)
 
 
 
-void
-mainsetup (void)
-{
+/* *****************************************************************************
+ */
+void mainsetup (void) {
   GtkWidget *mainbox, *ftable, *label1, *gpstable, *misctable, *fontbox;
   GtkWidget *metric, *nautic, *garminbt, *dgpsbt, *earthmatebt, *minsecbt;
   GtkWidget *table2, *shadowbt, *etchbt,*drawgridbt, *s1, *s2, *nighttable, *label1a;
@@ -669,26 +670,26 @@ mainsetup (void)
   if (d != NULL)
     {
       do
-	{
-	  dat = readdir (d);
-	  if (dat != NULL)
-	    {
-	      if ((strncmp (dat->d_name, "way", 3)) == 0)
-		if ((strncmp
-		     ((dat->d_name + (strlen (dat->d_name) - 4)), ".txt",
-		      4)) == 0)
-		  {
-		    g_strlcpy ((names + dircount)->n, dat->d_name, 200);
-		    dircount++;
-		    if (dircount >= 100)
-		      {
-			error_popup (_
-				     ("Don't use more than\n100 waypoint(way*.txt) files!"));
-			g_free (names);
-		      }
-		  }
-	    }
-	}
+				{
+					dat = readdir (d);
+					if (dat != NULL)
+						{
+							if ((strncmp (dat->d_name, "way", 3)) == 0)
+								if ((strncmp
+										 ((dat->d_name + (strlen (dat->d_name) - 4)), ".txt",
+											4)) == 0)
+									{
+										g_strlcpy ((names + dircount)->n, dat->d_name, 200);
+										dircount++;
+										if (dircount >= 100)
+											{
+												error_popup (_
+																		 ("Don't use more than\n100 waypoint(way*.txt) files!"));
+												g_free (names);
+											}
+									}
+						}
+				}
       while (dat != NULL);
     }
 
@@ -705,18 +706,18 @@ mainsetup (void)
   for (i = 0; i < dircount; i++)
     {
       if (i == 0)
-	setupfn[i] = gtk_radio_button_new_with_label (NULL, (names + i)->n);
+				setupfn[i] = gtk_radio_button_new_with_label (NULL, (names + i)->n);
       else
-	setupfn[i] = gtk_radio_button_new_with_label (gtk_radio_button_group
-						      (GTK_RADIO_BUTTON
-						       (setupfn[0])),
-						      (names + i)->n);
+				setupfn[i] = gtk_radio_button_new_with_label (gtk_radio_button_group
+																											(GTK_RADIO_BUTTON
+																											 (setupfn[0])),
+																											(names + i)->n);
       gtk_signal_connect (GTK_OBJECT (setupfn[i]), "clicked",
-			  GTK_SIGNAL_FUNC (wpfileselect_cb), (gpointer) i);
+													GTK_SIGNAL_FUNC (wpfileselect_cb), (gpointer) i);
       gtk_table_attach_defaults (GTK_TABLE (table2), setupfn[i], i % 2,
-				 i % 2 + 1, i / 2, i / 2 + 1);
+																 i % 2 + 1, i / 2, i / 2 + 1);
       if (!(strcmp (activewpfile, (names + i)->n)))
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (setupfn[i]), TRUE);
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (setupfn[i]), TRUE);
 
     }
   setupentrylabel[0] = gtk_label_new (_("Settings"));
@@ -730,7 +731,7 @@ mainsetup (void)
   gtk_container_set_border_width (GTK_CONTAINER (mainbox2), 5 * PADDING);
 
 
-/* misc area */
+	/* misc area */
   f1 = gtk_frame_new (_("Misc settings"));
 
   gtk_box_pack_start (GTK_BOX (mainbox), f1, FALSE, TRUE, 1 * PADDING);
@@ -740,21 +741,21 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (shadowbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (shadowbt),
-		      "clicked", GTK_SIGNAL_FUNC (shadow_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (shadow_cb), (gpointer) 1);
 
   etchbt = gtk_check_button_new_with_label (_("Etched frames"));
   if (etch)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (etchbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (etchbt),
-		      "clicked", GTK_SIGNAL_FUNC (etch_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (etch_cb), (gpointer) 1);
 
   drawgridbt = gtk_check_button_new_with_label (_("Draw grid"));
   if (drawgrid)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (drawgridbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (drawgridbt),
-		      "clicked", GTK_SIGNAL_FUNC (drawgrid_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (drawgrid_cb), (gpointer) 1);
 
   simfollowbt =
     gtk_check_button_new_with_label (_("Simulation: Follow target"));
@@ -762,8 +763,8 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (simfollowbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (simfollowbt),
-		      "clicked", GTK_SIGNAL_FUNC (simfollow_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (simfollow_cb),
+											(gpointer) 1);
   slowcpulabel = gtk_label_new (_("Maximum CPU load"));
 
   slowcpubt = gtk_combo_new ();
@@ -771,14 +772,14 @@ mainsetup (void)
   g_snprintf (buf, sizeof (buf), "%d%%", cpuload);
   gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (slowcpubt)->entry), buf);
   gtk_signal_connect (GTK_OBJECT (GTK_COMBO (slowcpubt)->entry), "changed",
-		      GTK_SIGNAL_FUNC (slowcpu_cb), (gpointer) 0);
+											GTK_SIGNAL_FUNC (slowcpu_cb), (gpointer) 0);
 
 
   trackcolorlabel = gtk_label_new (_("Track"));
   trackcolorbt = gtk_button_new_from_stock (GTK_STOCK_SELECT_COLOR);
-/*   gtk_button_set_label(GTK_BUTTON(trackcolorbt),_("Track")); */
+	/*   gtk_button_set_label(GTK_BUTTON(trackcolorbt),_("Track")); */
   gtk_signal_connect (GTK_OBJECT (trackcolorbt), "clicked",
-		      G_CALLBACK (change_trackcolor_callback), (gpointer) 0);
+											G_CALLBACK (change_trackcolor_callback), (gpointer) 0);
 
   misctable = gtk_table_new (7, 5, FALSE);
   gtk_container_add (GTK_CONTAINER (f1), misctable);
@@ -792,23 +793,23 @@ mainsetup (void)
   label2 = gtk_label_new (_("Maps directory"));
 
   gtk_signal_connect (GTK_OBJECT (mapdirbt),
-		      "changed", GTK_SIGNAL_FUNC (mapdir_cb), (gpointer) 1);
+											"changed", GTK_SIGNAL_FUNC (mapdir_cb), (gpointer) 1);
 
 
   night1 = gtk_radio_button_new_with_label (NULL, _("Automatic"));
   gtk_signal_connect (GTK_OBJECT (night1),
-		      "clicked", GTK_SIGNAL_FUNC (night_cb), (gpointer) 2);
+											"clicked", GTK_SIGNAL_FUNC (night_cb), (gpointer) 2);
 
   night2 =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (night1)), _("On"));
+																		 (GTK_RADIO_BUTTON (night1)), _("On"));
   gtk_signal_connect (GTK_OBJECT (night2), "clicked",
-		      GTK_SIGNAL_FUNC (night_cb), (gpointer) 1);
+											GTK_SIGNAL_FUNC (night_cb), (gpointer) 1);
   night3 =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (night1)), _("Off"));
+																		 (GTK_RADIO_BUTTON (night1)), _("Off"));
   gtk_signal_connect (GTK_OBJECT (night3), "clicked",
-		      GTK_SIGNAL_FUNC (night_cb), (gpointer) 0);
+											GTK_SIGNAL_FUNC (night_cb), (gpointer) 0);
   if (nightmode == 0)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (night3), TRUE);
   if (nightmode == 1)
@@ -828,11 +829,11 @@ mainsetup (void)
   gtk_table_attach_defaults (GTK_TABLE (misctable), trackcolorbt,    2, 4, 4, 5);
 
   /*
-  gtk_table_attach_defaults (GTK_TABLE (misctable), label2,          0, 2, 5, 6); 
-  gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt,        2, 4, 6, 6); 
+		gtk_table_attach_defaults (GTK_TABLE (misctable), label2,          0, 2, 5, 6); 
+		gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt,        2, 4, 6, 6); 
   */  
 
-/* GPS settings area */
+	/* GPS settings area */
   f4 = gtk_frame_new (_("GPS settings"));
 
   v4 = gtk_vbox_new (FALSE, 2 * PADDING);
@@ -840,11 +841,11 @@ mainsetup (void)
 
   gpstable = gtk_table_new (4, 2, TRUE);
 
-//KCFX
+	//KCFX
   gtk_box_pack_end (GTK_BOX (mainbox2), f4, FALSE, TRUE, 1 * PADDING);
-//  gtk_table_attach_defaults (GTK_TABLE (table), f4, 1, 2, 1, 2);
+	//  gtk_table_attach_defaults (GTK_TABLE (table), f4, 1, 2, 1, 2);
   gtk_box_pack_start (GTK_BOX (v4), gpstable, FALSE, FALSE, 1 * PADDING);
-/*   gtk_container_add (GTK_CONTAINER (f4), gpstable); */
+	/*   gtk_container_add (GTK_CONTAINER (f4), gpstable); */
 
 
   garminbt = gtk_check_button_new_with_label (_("Test for GARMIN"));
@@ -852,8 +853,8 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (garminbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (garminbt),
-		      "clicked", GTK_SIGNAL_FUNC (testgarmin_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (testgarmin_cb),
+											(gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), garminbt, 0, 1, 0, 1);
 
@@ -863,7 +864,7 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dgpsbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (dgpsbt),
-		      "clicked", GTK_SIGNAL_FUNC (usedgps_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (usedgps_cb), (gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), dgpsbt, 0, 1, 1, 2);
 
@@ -873,8 +874,8 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (earthmatebt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (earthmatebt),
-		      "clicked", GTK_SIGNAL_FUNC (earthmate_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (earthmate_cb),
+											(gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), earthmatebt, 1, 2, 0, 1);
 
@@ -883,7 +884,7 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (noserialbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (noserialbt),
-		      "clicked", GTK_SIGNAL_FUNC (noserial_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (noserial_cb), (gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), noserialbt, 1, 2, 1, 2);
 
@@ -897,8 +898,8 @@ mainsetup (void)
   label1a = gtk_label_new (_("Baudrate"));
 
   gtk_signal_connect (GTK_OBJECT (serialbt),
-		      "changed", GTK_SIGNAL_FUNC (serialdev_cb),
-		      (gpointer) 1);
+											"changed", GTK_SIGNAL_FUNC (serialdev_cb),
+											(gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), label1, 0, 1, 2, 3);
   gtk_table_attach_defaults (GTK_TABLE (gpstable), label1a, 1, 2, 2, 3);
@@ -912,9 +913,9 @@ mainsetup (void)
     {
       g_snprintf (buf2, sizeof (buf2), "%d", br);
       if (i == 4)
-	br += br / 2;
+				br += br / 2;
       else
-	br += br;
+				br += br;
       menu_item = gtk_menu_item_new_with_label (buf2);
       gtk_widget_show (menu_item);
       gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
@@ -924,11 +925,11 @@ mainsetup (void)
   gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
   gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), serialspeed);
   gtk_signal_connect (GTK_OBJECT (option_menu), "changed",
-		      GTK_SIGNAL_FUNC (baud_cb), (gpointer) 0);
+											GTK_SIGNAL_FUNC (baud_cb), (gpointer) 0);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), option_menu, 1, 2, 3, 4);
 
-/*  units area */
+	/*  units area */
   f2 = gtk_frame_new (_("Units"));
   v2 = gtk_table_new (4, 2, FALSE);
 
@@ -937,17 +938,17 @@ mainsetup (void)
 
   miles = gtk_radio_button_new_with_label (NULL, _("Miles"));
   gtk_signal_connect (GTK_OBJECT (miles),
-		      "clicked", GTK_SIGNAL_FUNC (miles_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (miles_cb), (gpointer) 1);
   metric =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (miles)), _("Metric"));
+																		 (GTK_RADIO_BUTTON (miles)), _("Metric"));
   gtk_signal_connect (GTK_OBJECT (metric), "clicked",
-		      GTK_SIGNAL_FUNC (miles_cb), (gpointer) 2);
+											GTK_SIGNAL_FUNC (miles_cb), (gpointer) 2);
   nautic =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (miles)), _("Nautic"));
+																		 (GTK_RADIO_BUTTON (miles)), _("Nautic"));
   gtk_signal_connect (GTK_OBJECT (nautic), "clicked",
-		      GTK_SIGNAL_FUNC (miles_cb), (gpointer) 3);
+											GTK_SIGNAL_FUNC (miles_cb), (gpointer) 3);
   if (milesflag)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (miles), TRUE);
   if (metricflag)
@@ -960,42 +961,42 @@ mainsetup (void)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (minsecbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (minsecbt),
-		      "clicked", GTK_SIGNAL_FUNC (minsec_cb), (gpointer) 0);
+											"clicked", GTK_SIGNAL_FUNC (minsec_cb), (gpointer) 0);
 
   gtk_table_attach_defaults (GTK_TABLE (v2), miles, 0, 1, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (v2), metric, 0, 1, 1, 2);
   gtk_table_attach_defaults (GTK_TABLE (v2), nautic, 0, 1, 2, 3);
   gtk_table_attach_defaults (GTK_TABLE (v2), minsecbt, 1, 2, 0, 1);
 
-/*  gtk_box_pack_start (GTK_BOX (v2), miles, TRUE, FALSE, 2 * PADDING);
-  gtk_box_pack_start (GTK_BOX (v2), metric, TRUE, FALSE, 2 * PADDING);
-  gtk_box_pack_start (GTK_BOX (v2), nautic, TRUE, FALSE, 2 * PADDING);
-  gtk_box_pack_start (GTK_BOX (v2), minsecbt, TRUE, FALSE, 2 * PADDING);
-*/
-/*  default download server */
+	/*  gtk_box_pack_start (GTK_BOX (v2), miles, TRUE, FALSE, 2 * PADDING);
+			gtk_box_pack_start (GTK_BOX (v2), metric, TRUE, FALSE, 2 * PADDING);
+			gtk_box_pack_start (GTK_BOX (v2), nautic, TRUE, FALSE, 2 * PADDING);
+			gtk_box_pack_start (GTK_BOX (v2), minsecbt, TRUE, FALSE, 2 * PADDING);
+	*/
+	/*  default download server */
   f3 = gtk_frame_new (_("Default map server"));
   h1 = gtk_hbox_new (FALSE, 2 * PADDING);
   h2 = gtk_hbox_new (FALSE, 2 * PADDING);
   v3 = gtk_vbox_new (FALSE, 2 * PADDING);
-//KCFX
+	//KCFX
   gtk_box_pack_start (GTK_BOX (mainbox2), f3, FALSE, TRUE, 1 * PADDING);
-//  gtk_table_attach_defaults (GTK_TABLE (table), f3, 1, 2, 0, 1);
+	//  gtk_table_attach_defaults (GTK_TABLE (table), f3, 1, 2, 0, 1);
   gtk_container_add (GTK_CONTAINER (f3), v3);
   gtk_box_pack_start (GTK_BOX (v3), h1, TRUE, FALSE, 2 * PADDING);
 
   s1 = gtk_radio_button_new_with_label (NULL, _("Expedia Germany"));
   gtk_signal_connect (GTK_OBJECT (s1),
-		      "clicked", GTK_SIGNAL_FUNC (defaultserver_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (defaultserver_cb),
+											(gpointer) 1);
   s2 =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (s1)), _("Expedia USA"));
+																		 (GTK_RADIO_BUTTON (s1)), _("Expedia USA"));
   gtk_signal_connect (GTK_OBJECT (s2), "clicked",
-		      GTK_SIGNAL_FUNC (defaultserver_cb), (gpointer) 2);
+											GTK_SIGNAL_FUNC (defaultserver_cb), (gpointer) 2);
 
-/* disable mapblast */
-/*   gtk_widget_set_sensitive (s1, FALSE); */
-/*   defaultserver = 1; */
+	/* disable mapblast */
+	/*   gtk_widget_set_sensitive (s1, FALSE); */
+	/*   defaultserver = 1; */
 
   if (defaultserver == 0)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (s1), TRUE);
@@ -1005,11 +1006,11 @@ mainsetup (void)
   gtk_box_pack_start (GTK_BOX (h1), s1, TRUE, FALSE, 2 * PADDING);
   gtk_box_pack_start (GTK_BOX (h1), s2, TRUE, FALSE, 2 * PADDING);
 
-/* Night light mode */
+	/* Night light mode */
   f5 = gtk_frame_new (_("Night light mode"));
   nighttable = gtk_table_new (1, 3, TRUE);
   gtk_container_add (GTK_CONTAINER (f5), nighttable);
-/*   gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);  */
+	/*   gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);  */
   gtk_box_pack_start (GTK_BOX (v3), h2, TRUE, FALSE, 2 * PADDING);
   gtk_box_pack_start (GTK_BOX (h2), label2, FALSE, FALSE, 2 * PADDING);
   gtk_box_pack_start (GTK_BOX (h2), mapdirbt, TRUE, TRUE, 2 * PADDING);
@@ -1018,229 +1019,229 @@ mainsetup (void)
   gtk_table_attach_defaults (GTK_TABLE (nighttable), night2, 1, 2, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (nighttable), night3, 2, 3, 0, 1);
 
-//KCFX
+	//KCFX
   gtk_box_pack_end (GTK_BOX (mainbox2), f5, FALSE, TRUE, 1 * PADDING);
-//  gtk_table_attach_defaults (GTK_TABLE (table), f5, 0, 2, 2, 3);
+	//  gtk_table_attach_defaults (GTK_TABLE (table), f5, 0, 2, 2, 3);
 
-/* Sound settings */
+	/* Sound settings */
 
   framesound = gtk_frame_new (_("Speech output settings"));
   soundtable = gtk_table_new (2, 2, TRUE);
   gtk_container_add (GTK_CONTAINER (framesound), soundtable);
 
-/*
-set following sounds
-sound_direction ... say direction to target
-sound_distance  ... say distance to target
-sound_speed     ... say your current speed
-sound_gps       ... say GPS status
+	/*
+		set following sounds
+		sound_direction ... say direction to target
+		sound_distance  ... say distance to target
+		sound_speed     ... say your current speed
+		sound_gps       ... say GPS status
 
-*/
+	*/
   sounddirbt = gtk_check_button_new_with_label (_("Direction"));
   if (sound_direction)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sounddirbt), TRUE);
   gtk_signal_connect (GTK_OBJECT (sounddirbt),
-		      "clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
+											(gpointer) 1);
 
   sounddistbt = gtk_check_button_new_with_label (_("Distance"));
   if (sound_distance)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sounddistbt), TRUE);
   gtk_signal_connect (GTK_OBJECT (sounddistbt),
-		      "clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
-		      (gpointer) 2);
+											"clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
+											(gpointer) 2);
 
   soundspeedbt = gtk_check_button_new_with_label (_("Speed"));
   if (sound_speed)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (soundspeedbt), TRUE);
   gtk_signal_connect (GTK_OBJECT (soundspeedbt),
-		      "clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
-		      (gpointer) 3);
+											"clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
+											(gpointer) 3);
 
   soundgpsbt = gtk_check_button_new_with_label (_("GPS Status"));
   if (sound_gps)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (soundgpsbt), TRUE);
   gtk_signal_connect (GTK_OBJECT (soundgpsbt),
-		      "clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
-		      (gpointer) 4);
+											"clicked", GTK_SIGNAL_FUNC (soundsettings_cb),
+											(gpointer) 4);
   gtk_table_attach_defaults (GTK_TABLE (soundtable), sounddirbt, 0, 1, 0, 1);
   gtk_table_attach_defaults (GTK_TABLE (soundtable), sounddistbt, 0, 1, 1, 2);
   gtk_table_attach_defaults (GTK_TABLE (soundtable), soundspeedbt, 1, 2, 0,
-			     1);
+														 1);
   gtk_table_attach_defaults (GTK_TABLE (soundtable), soundgpsbt, 1, 2, 1, 2);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sounddirbt,
-			_
-			("Switch on for speech output of the direction to the target"),
-			NULL);
+												_
+												("Switch on for speech output of the direction to the target"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sounddistbt,
-			_
-			("Switch on for speech output of the distance to the target"),
-			NULL);
+												_
+												("Switch on for speech output of the distance to the target"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), soundspeedbt,
-			_
-			("Switch on for speech output of your current speed"),
-			NULL);
+												_
+												("Switch on for speech output of your current speed"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), soundgpsbt,
-			_
-			("Switch on for speech output of the status of your GPS signal"),
-			NULL);
+												_
+												("Switch on for speech output of the status of your GPS signal"),
+												NULL);
 
 
   /* Font settings */
   framefont = gtk_frame_new (_("Font and color settings"));
   fontbox = gtk_hbutton_box_new ();
   gtk_container_add (GTK_CONTAINER (framefont), fontbox);
-/*   gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);  */
+	/*   gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);  */
 
   font1 = gtk_button_new_with_label (_("WP Label"));
   font2 = gtk_button_new_with_label (_("Big display"));
   font3 = gtk_button_new_with_label (_("Display color"));
-/*   gtk_widget_set_sensitive (font3, FALSE); */
+	/*   gtk_widget_set_sensitive (font3, FALSE); */
 
   gtk_signal_connect (GTK_OBJECT (font1), "clicked",
-		      G_CALLBACK (change_font_callback), (gpointer) 1);
+											G_CALLBACK (change_font_callback), (gpointer) 1);
   gtk_signal_connect (GTK_OBJECT (font2), "clicked",
-		      G_CALLBACK (change_font_callback), (gpointer) 2);
+											G_CALLBACK (change_font_callback), (gpointer) 2);
   gtk_signal_connect (GTK_OBJECT (font3), "clicked",
-		      G_CALLBACK (change_color_callback), (gpointer) 3);
+											G_CALLBACK (change_color_callback), (gpointer) 3);
   gtk_box_pack_start (GTK_BOX (fontbox), font1, TRUE, TRUE, 2);
   gtk_box_pack_start (GTK_BOX (fontbox), font2, TRUE, TRUE, 2);
   gtk_box_pack_start (GTK_BOX (fontbox), font3, TRUE, TRUE, 2);
 
-/*   gtk_table_attach_defaults (GTK_TABLE (table), framefont, 0, 2, 3, 4); */
+	/*   gtk_table_attach_defaults (GTK_TABLE (table), framefont, 0, 2, 3, 4); */
   gtk_box_pack_start (GTK_BOX (mainbox), framesound, FALSE, TRUE,
-		      1 * PADDING);
+											1 * PADDING);
   gtk_box_pack_start (GTK_BOX (mainbox), framefont, FALSE, TRUE, 1 * PADDING);
 
-/*   gtk_table_attach_defaults (GTK_TABLE (bigtable), table, 0, 1, 0, 1); */
+	/*   gtk_table_attach_defaults (GTK_TABLE (bigtable), table, 0, 1, 0, 1); */
 
-/*   gtk_table_set_row_spacings (GTK_TABLE (bigtable), 5 * PADDING); */
-/*   gtk_table_set_col_spacings (GTK_TABLE (bigtable), 5 * PADDING); */
+	/*   gtk_table_set_row_spacings (GTK_TABLE (bigtable), 5 * PADDING); */
+	/*   gtk_table_set_col_spacings (GTK_TABLE (bigtable), 5 * PADDING); */
 
   gtk_table_set_row_spacings (GTK_TABLE (table2), 5 * PADDING);
   gtk_table_set_col_spacings (GTK_TABLE (table2), 5 * PADDING);
 
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), miles,
-			_("Switch units to statute miles"), NULL);
+												_("Switch units to statute miles"), NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), nautic,
-			_("Switch units to nautical miles"), NULL);
+												_("Switch units to nautical miles"), NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), metric,
-			_("Switch units to metric system (Kilometers)"),
-			NULL);
+												_("Switch units to metric system (Kilometers)"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), minsecbt,
-			_
-			("If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"),
-			NULL);
+												_
+												("If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), s1,
-			_
-			("Set the german expedia server(expedia.de) as default download server. Use this if you are in Europe"),
-			NULL);
+												_
+												("Set the german expedia server(expedia.de) as default download server. Use this if you are in Europe"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), s2,
-			_("Set Expedia as default download server"), NULL);
+												_("Set Expedia as default download server"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), shadowbt,
-			_("Switches shadows on map on or off"), NULL);
+												_("Switches shadows on map on or off"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), etchbt,
-			_
-			("Switches between different type of frame ornaments"),
-			NULL);
+												_
+												("Switches between different type of frame ornaments"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), drawgridbt,
-			_
-			("This will show a grid over the map"),
-			NULL);
+												_
+												("This will show a grid over the map"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), GTK_COMBO (slowcpubt)->entry,
-			_
-			("Select the approx. maximum CPU load, use 20-30% on notebooks while on battery to save battery power. This effects the refresh rate of the map screen"),
-			NULL);
+												_
+												("Select the approx. maximum CPU load, use 20-30% on notebooks while on battery to save battery power. This effects the refresh rate of the map screen"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), simfollowbt,
-			_
-			("If activated, pointer moves to target in simulation mode"),
-			NULL);
+												_
+												("If activated, pointer moves to target in simulation mode"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), trackcolorbt,
-			_("Set here the color of the drawn track"), NULL);
+												_("Set here the color of the drawn track"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapdirbt,
-			_
-			("Path to your map files. In the specified directory also the index file map_koord.txt must be present."),
-			NULL);
+												_
+												("Path to your map files. In the specified directory also the index file map_koord.txt must be present."),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), garminbt,
-			_
-			("If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."),
-			NULL);
+												_
+												("If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), option_menu,
-			_
-			("Set here the baud rate of your GPS device, NMEA devices usually have a speed of 4800 baud"),
-			NULL);
+												_
+												("Set here the baud rate of your GPS device, NMEA devices usually have a speed of 4800 baud"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), dgpsbt,
-			_
-			("If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"),
-			NULL);
+												_
+												("If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), earthmatebt,
-			_
-			("Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"),
-			NULL);
+												_
+												("Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), noserialbt,
-			_
-			("Select this if you want to use of the direct serial connection. If disabled, you can use the receiver only through gpsd. On the other hand, the direct serial connection needs no gpsd running and detects the working receiver on startup"),
-			NULL);
+												_
+												("Select this if you want to use of the direct serial connection. If disabled, you can use the receiver only through gpsd. On the other hand, the direct serial connection needs no gpsd running and detects the working receiver on startup"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), serialbt,
-			_
-			("Specify the serial interface where the GPS is connected"),
-			NULL);
+												_
+												("Specify the serial interface where the GPS is connected"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), night1,
-			_
-			("Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."),
-			NULL);
+												_
+												("Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."),
+												NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), night2,
-			_
-			("Switches night mode on. Press 'N' key to turn off nightmode."),
-			NULL);
+												_
+												("Switches night mode on. Press 'N' key to turn off nightmode."),
+												NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), night3,
-			_("Switches night mode off"), NULL);
+												_("Switches night mode off"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font1,
-			_
-			("Here you can set the font for the waypoint labels"),
-			NULL);
+												_
+												("Here you can set the font for the waypoint labels"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font2,
-			_
-			("Here you can set the font for the big display for Speed and Distance"),
-			NULL);
+												_
+												("Here you can set the font for the big display for Speed and Distance"),
+												NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font3,
-			_
-			("Here you can set the color for the big display for speed, distance and altitude"),
-			NULL);
+												_
+												("Here you can set the color for the big display for speed, distance and altitude"),
+												NULL);
 
 
   gtk_widget_show_all (mainbox);
-/*    g_free (names); */
+	/*    g_free (names); */
 
 }
 
-void
-testifnight (void)
-{
+/* *****************************************************************************
+ */
+void testifnight (void) {
   daylights ();
   isnight = FALSE;
   if (hour > sunset)
@@ -1251,16 +1252,15 @@ testifnight (void)
   if (debug)
     {
       if (isnight)
-	g_print ("\nIt is night\n");
+				g_print ("\nIt is night\n");
       else
-	g_print ("\nIt is day\n");
+				g_print ("\nIt is day\n");
     }
 }
 
-
-void
-daylights (void)
-{
+/* *****************************************************************************
+ */
+void daylights (void) {
   gint Rank, D, TZ;
   gdouble MA, C, RR, ET, L, Dec, Ho, lat, lon;
   time_t now = time (NULL);
@@ -1321,31 +1321,19 @@ daylights (void)
   dawnciv = 12.0 - Ho + ET / 60.0 - current_long / 15 + TZ;
   duskciv = 12.0 + Ho + ET / 60.0 - current_long / 15 + TZ;
 
-  if (dawnastro < 0)
-    dawnastro += 24;
-  if (dawnnaut < 0)
-    dawnnaut += 24;
-  if (dawnciv < 0)
-    dawnciv += 24;
-  if (duskastro < 0)
-    duskastro += 24;
-  if (dusknaut < 0)
-    dusknaut += 24;
-  if (duskciv < 0)
-    duskciv += 24;
+  if (dawnastro < 0)    dawnastro += 24;
+  if (dawnnaut < 0)     dawnnaut += 24;
+  if (dawnciv < 0)      dawnciv += 24;
+  if (duskastro < 0)    duskastro += 24;
+  if (dusknaut < 0)     dusknaut += 24;
+  if (duskciv < 0)      duskciv += 24;
 
-  if (dawnastro > 24)
-    dawnastro -= 24;
-  if (dawnnaut > 24)
-    dawnnaut -= 24;
-  if (dawnciv > 24)
-    dawnciv -= 24;
-  if (duskastro > 24)
-    duskastro -= 24;
-  if (dusknaut > 24)
-    dusknaut -= 24;
-  if (duskciv > 24)
-    duskciv -= 24;
+  if (dawnastro > 24)   dawnastro -= 24;
+  if (dawnnaut > 24)    dawnnaut -= 24;
+  if (dawnciv > 24)     dawnciv -= 24;
+  if (duskastro > 24)   duskastro -= 24;
+  if (dusknaut > 24)    dusknaut -= 24;
+  if (duskciv > 24)     duskciv -= 24;
 
 
   hour = st->tm_hour;
@@ -1353,26 +1341,26 @@ daylights (void)
   if (debug)
     {
       g_print ("\nhour: %d:%02d, sunrise: %d:%02d ",
-	       (int) hour, (int) ((hour - (int) hour) * 60), (int) sunrise,
-	       (int) ((sunrise - (int) sunrise) * 60));
+							 (int) hour, (int) ((hour - (int) hour) * 60), (int) sunrise,
+							 (int) ((sunrise - (int) sunrise) * 60));
       g_print ("\nhour: %d:%02d, transit: %d:%02d ",
-	       (int) hour, (int) ((hour - (int) hour) * 60), (int) suntransit,
-	       (int) ((suntransit - (int) suntransit) * 60));
+							 (int) hour, (int) ((hour - (int) hour) * 60), (int) suntransit,
+							 (int) ((suntransit - (int) suntransit) * 60));
       g_print ("\nhour: %d:%02d, sunset: %d:%02d ",
-	       (int) hour, (int) ((hour - (int) hour) * 60), (int) sunset,
-	       (int) ((sunset - (int) sunset) * 60));
+							 (int) hour, (int) ((hour - (int) hour) * 60), (int) sunset,
+							 (int) ((sunset - (int) sunset) * 60));
     }
 
-/* Formulas for dawn and dusk are almost the same than sunrise and sunset. In the */
-/* formula for Cos Ho -0.01454 must be replaced by: */
-/* astronomical: -0.309 */
-/* nautical: -0.208 */
-/* civil: -0.105 */
+	/* Formulas for dawn and dusk are almost the same than sunrise and sunset. In the */
+	/* formula for Cos Ho -0.01454 must be replaced by: */
+	/* astronomical: -0.309 */
+	/* nautical: -0.208 */
+	/* civil: -0.105 */
 }
 
-gint
-infosettz (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint infosettz (GtkWidget * widget, guint datum) {
   gchar *sc;
 
   sc = (char *) gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (ge12)->entry));
@@ -1383,18 +1371,18 @@ infosettz (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-storetz_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint storetz_cb (GtkWidget * widget, guint datum) {
   storetz = !storetz;
   needtosave = TRUE;
   fprintf (stderr, "storetz: %d\n", storetz);
   return TRUE;
 }
 
-void
-infos (void)
-{
+/* *****************************************************************************
+ */
+void infos (void) {
   GtkWidget *mainbox, *frame, *l1, *l2, *l5, *e1, *e2;
   GtkWidget *e3, *e4, *e5, *l6, *l8, *l9, *l10, *l11, *l12, *l13;
   GtkWidget *e6, *e7, *e8, *e9, *e10, *e11;
@@ -1444,13 +1432,13 @@ infos (void)
   if (storetz)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (l13), TRUE);
   gtk_signal_connect (GTK_OBJECT (l13),
-		      "clicked", GTK_SIGNAL_FUNC (storetz_cb), (gpointer) 0);
+											"clicked", GTK_SIGNAL_FUNC (storetz_cb), (gpointer) 0);
 
   tooltips = gtk_tooltips_new ();
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), l13,
-			_
-			("If selected, the timezone is stored, otherwise your actual timezone will automatically used"),
-			NULL);
+												_
+												("If selected, the timezone is stored, otherwise your actual timezone will automatically used"),
+												NULL);
 
 
   e1 = gtk_entry_new ();
@@ -1458,7 +1446,7 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d", (int) sunrise,
-		(int) ((sunrise - (int) sunrise) * 60));
+								(int) ((sunrise - (int) sunrise) * 60));
   gtk_entry_set_text (GTK_ENTRY (e1), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e1, 1, 2, 1, 2);
 
@@ -1467,7 +1455,7 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d", (int) sunset,
-		(int) ((sunset - (int) sunset) * 60));
+								(int) ((sunset - (int) sunset) * 60));
   gtk_entry_set_text (GTK_ENTRY (e2), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e2, 2, 3, 1, 2);
 
@@ -1476,8 +1464,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) suntransit,
-		(int) ((suntransit - (int) suntransit) * 60),
-		(int) ((suntransit * 60 - (int) (suntransit * 60)) * 60));
+								(int) ((suntransit - (int) suntransit) * 60),
+								(int) ((suntransit * 60 - (int) (suntransit * 60)) * 60));
   gtk_entry_set_text (GTK_ENTRY (e3), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e3, 1, 2, 6, 7);
 
@@ -1501,8 +1489,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) dawnastro,
-		(int) ((dawnastro - (int) dawnastro) * 60),
-		(int) ((dawnastro * 60 - (int) (dawnastro * 60)) * 60));
+								(int) ((dawnastro - (int) dawnastro) * 60),
+								(int) ((dawnastro * 60 - (int) (dawnastro * 60)) * 60));
 
   gtk_entry_set_text (GTK_ENTRY (e6), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e6, 1, 2, 2, 3);
@@ -1511,8 +1499,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) dawnnaut,
-		(int) ((dawnnaut - (int) dawnnaut) * 60),
-		(int) ((dawnnaut * 60 - (int) (dawnnaut * 60)) * 60));
+								(int) ((dawnnaut - (int) dawnnaut) * 60),
+								(int) ((dawnnaut * 60 - (int) (dawnnaut * 60)) * 60));
   gtk_entry_set_text (GTK_ENTRY (e7), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e7, 1, 2, 3, 4);
   e8 = gtk_entry_new ();
@@ -1520,8 +1508,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) dawnciv,
-		(int) ((dawnciv - (int) dawnciv) * 60),
-		(int) ((dawnciv * 60 - (int) (dawnciv * 60)) * 60));
+								(int) ((dawnciv - (int) dawnciv) * 60),
+								(int) ((dawnciv * 60 - (int) (dawnciv * 60)) * 60));
 
   gtk_entry_set_text (GTK_ENTRY (e8), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e8, 1, 2, 4, 5);
@@ -1531,8 +1519,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) duskastro,
-		(int) ((duskastro - (int) duskastro) * 60),
-		(int) ((duskastro * 60 - (int) (duskastro * 60)) * 60));
+								(int) ((duskastro - (int) duskastro) * 60),
+								(int) ((duskastro * 60 - (int) (duskastro * 60)) * 60));
   gtk_entry_set_text (GTK_ENTRY (e9), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e9, 2, 3, 2, 3);
   e10 = gtk_entry_new ();
@@ -1540,8 +1528,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) dusknaut,
-		(int) ((dusknaut - (int) dusknaut) * 60),
-		(int) ((dusknaut * 60 - (int) (dusknaut * 60)) * 60));
+								(int) ((dusknaut - (int) dusknaut) * 60),
+								(int) ((dusknaut * 60 - (int) (dusknaut * 60)) * 60));
 
   gtk_entry_set_text (GTK_ENTRY (e10), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e10, 2, 3, 3, 4);
@@ -1550,8 +1538,8 @@ infos (void)
     g_strlcpy (text, _("n/a"), sizeof (text));
   else
     g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) duskciv,
-		(int) ((duskciv - (int) duskciv) * 60),
-		(int) ((duskciv * 60 - (int) (duskciv * 60)) * 60));
+								(int) ((duskciv - (int) duskciv) * 60),
+								(int) ((duskciv * 60 - (int) (duskciv * 60)) * 60));
 
   gtk_entry_set_text (GTK_ENTRY (e11), text);
   gtk_table_attach_defaults (GTK_TABLE (table), e11, 2, 3, 4, 5);
@@ -1559,7 +1547,7 @@ infos (void)
   gtk_combo_set_popdown_strings (GTK_COMBO (ge12), (GList *) list);
   gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (ge12)->entry), slist[zone + 12]);
   gtk_signal_connect (GTK_OBJECT (GTK_COMBO (ge12)->entry), "changed",
-		      GTK_SIGNAL_FUNC (infosettz), (gpointer) 0);
+											GTK_SIGNAL_FUNC (infosettz), (gpointer) 0);
 
   gtk_table_attach_defaults (GTK_TABLE (table), ge12, 1, 2, 9, 10);
 
@@ -1594,10 +1582,9 @@ infos (void)
 }
 
 
-
-gint
-settripvalues (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint settripvalues (GtkWidget * widget, guint datum) {
   gchar text[80], s1[80];
   gdouble f;
 
@@ -1608,12 +1595,12 @@ settripvalues (GtkWidget * widget, guint datum)
   gtk_entry_set_text (GTK_ENTRY (entrytripodometer), text);
   f = (time (NULL) - triptime) / 3600.0;
   g_snprintf (text, sizeof (text), "%02d:%02d:%02d", (int) f,
-	      (int) ((f - (int) f) * 60),
-	      (int) ((f * 60 - (int) (f * 60)) * 60));
+							(int) ((f - (int) f) * 60),
+							(int) ((f * 60 - (int) (f * 60)) * 60));
   gtk_entry_set_text (GTK_ENTRY (entrytriptime), text);
   if (tripavspeedcount > 0)
     g_snprintf (text, sizeof (text), "%.1f",
-		tripavspeed * milesconv / tripavspeedcount);
+								tripavspeed * milesconv / tripavspeedcount);
   else
     g_snprintf (text, sizeof (text), "---");
   gtk_entry_set_text (GTK_ENTRY (entryavspeed), text);
@@ -1625,7 +1612,7 @@ settripvalues (GtkWidget * widget, guint datum)
     g_snprintf (s1, sizeof (s1), "%s [%s]", _("Unit:"), _("miles"));
   else if (nauticflag)
     g_snprintf (s1, sizeof (s1), "%s [%s]", _("Unit:"),
-		_("nautic miles/knots"));
+								_("nautic miles/knots"));
   else
     g_snprintf (s1, sizeof (s1), "%s [%s]", _("Unit:"), _("kilometers"));
 
@@ -1634,9 +1621,9 @@ settripvalues (GtkWidget * widget, guint datum)
 }
 
 
-void
-trip (void)
-{
+/* *****************************************************************************
+ */
+void trip (void) {
   GtkWidget *mainbox, *frame, *l1, *l2, *l5;
   GtkWidget *l6;
   GtkWidget *table, *knopf;
@@ -1670,7 +1657,7 @@ trip (void)
   entrytripodometer = gtk_entry_new ();
   gtk_entry_set_text (GTK_ENTRY (entrytripodometer), "---");
   gtk_table_attach_defaults (GTK_TABLE (table), entrytripodometer, 1, 2, 1,
-			     2);
+														 2);
 
 
   entrytriptime = gtk_entry_new ();
@@ -1690,10 +1677,10 @@ trip (void)
 
   knopf = gtk_button_new_with_label (_("Reset"));
   gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
-			     GTK_SIGNAL_FUNC (tripreset), NULL);
+														 GTK_SIGNAL_FUNC (tripreset), NULL);
   tooltips = gtk_tooltips_new ();
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), knopf,
-			_("Resets the trip values to zero"), NULL);
+												_("Resets the trip values to zero"), NULL);
 
   gtk_table_attach_defaults (GTK_TABLE (table), knopf, 1, 2, 5, 6);
 
@@ -1711,9 +1698,9 @@ trip (void)
   triptimer = gtk_timeout_add (1000, (GtkFunction) settripvalues, 0);
 }
 
-gint
-dbdistance_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint dbdistance_cb (GtkWidget * widget, guint datum) {
   gchar *s;
 
   s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (widget)));
@@ -1723,25 +1710,25 @@ dbdistance_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-callsqlupdateonce_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint callsqlupdateonce_cb (GtkWidget * widget, guint datum) {
   getsqldata ();
   return FALSE;
 }
 
-gint
-dbusedist_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint dbusedist_cb (GtkWidget * widget, guint datum) {
   dbusedist = !dbusedist;
   needtosave = TRUE;
   getsqldata ();
   return TRUE;
 }
 
-gint
-showsid_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint showsid_cb (GtkWidget * widget, guint datum) {
   showsid = !showsid;
   needtosave = TRUE;
   dbbuildquery_cb (NULL, 999999);
@@ -1749,17 +1736,17 @@ showsid_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-noserial_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint noserial_cb (GtkWidget * widget, guint datum) {
   disableserial = !disableserial;
   needtosave = TRUE;
   return TRUE;
 }
 
-gint
-usefriends_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint usefriends_cb (GtkWidget * widget, guint datum) {
   if ((strcmp (friendsname, _("EnterYourName"))) == 0)
     {
       error_popup (_("You should change your name in the first field!"));
@@ -1770,9 +1757,9 @@ usefriends_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-friendsname_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint friendsname_cb (GtkWidget * widget, guint datum) {
   gchar *s;
 
   s = (char *) gtk_entry_get_text (GTK_ENTRY (widget));
@@ -1781,9 +1768,9 @@ friendsname_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-friendsserverfqn_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint friendsserverfqn_cb (GtkWidget * widget, guint datum) {
   gchar *s;
 
   s = (char *) gtk_entry_get_text (GTK_ENTRY (widget));
@@ -1792,9 +1779,9 @@ friendsserverfqn_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-friendslookup_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint friendslookup_cb (GtkWidget * widget, guint datum) {
   struct hostent *hent = NULL;
 
   char *quad;
@@ -1818,9 +1805,9 @@ friendslookup_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
-gint
-friendsserverip_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint friendsserverip_cb (GtkWidget * widget, guint datum) {
   gchar *s;
 
   if (iplock == TRUE)
@@ -1832,22 +1819,20 @@ friendsserverip_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
-
-gint
-dbbuildquery_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint dbbuildquery_cb (GtkWidget * widget, guint datum) {
   gint i, sel;
   gchar s[50];
   gint flag = 0;
 
   if (datum != 999999)
     {
-/*   printf ("\n%d andmode: %d\n", datum,sqlandmode); */
+			/*   printf ("\n%d andmode: %d\n", datum,sqlandmode); */
       if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-	sqlselects[datum] = TRUE;
+				sqlselects[datum] = TRUE;
       else
-	sqlselects[datum] = FALSE;
+				sqlselects[datum] = FALSE;
     }
 
   g_strlcpy (dbwherestring, "WHERE (", sizeof (dbwherestring));
@@ -1855,25 +1840,25 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
     {
       sel = sqlselects[i];
       if (sel)
-	{
-	  flag = TRUE;
-	  if (sqlandmode)
-	    {
-	      g_snprintf (s, sizeof (s), "type  = '%s' OR  ", dbtypelist[i]);
-	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
-	    }
-	  else
-	    {
-	      g_snprintf (s, sizeof (s), "type != '%s' AND ", dbtypelist[i]);
-	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
-	    }
-	}
+				{
+					flag = TRUE;
+					if (sqlandmode)
+						{
+							g_snprintf (s, sizeof (s), "type  = '%s' OR  ", dbtypelist[i]);
+							g_strlcat (dbwherestring, s, sizeof (dbwherestring));
+						}
+					else
+						{
+							g_snprintf (s, sizeof (s), "type != '%s' AND ", dbtypelist[i]);
+							g_strlcat (dbwherestring, s, sizeof (dbwherestring));
+						}
+				}
     }
   dbwherestring[strlen (dbwherestring) - 4] = 0;
   g_strlcat (dbwherestring, ")", sizeof (dbwherestring));
   if (!showsid)
     g_strlcat (dbwherestring, " AND name != 'no_ssid'",
-	       sizeof (dbwherestring));
+							 sizeof (dbwherestring));
 
   if (!flag)
     g_strlcpy (dbwherestring, "", sizeof (dbwherestring));
@@ -1885,9 +1870,9 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-sqlselectmode_cb (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint sqlselectmode_cb (GtkWidget * widget, guint datum) {
   if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
     sqlandmode = TRUE;
   else
@@ -1896,9 +1881,9 @@ sqlselectmode_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-gint
-grab_spinner_value (GtkSpinButton * a_spinner, gpointer user_data)
-{
+/* *****************************************************************************
+ */
+gint grab_spinner_value (GtkSpinButton * a_spinner, gpointer user_data) {
   long int secs;
 
   secs = 60 * gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spinner3));
@@ -1908,15 +1893,15 @@ grab_spinner_value (GtkSpinButton * a_spinner, gpointer user_data)
     24 * 3600 * gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (spinner1));
   maxfriendssecs = secs;
 
-/*   printf ("\nmaxfriendssecs: %ld\n", maxfriendssecs);  */
+	/*   printf ("\nmaxfriendssecs: %ld\n", maxfriendssecs);  */
   needtosave = TRUE;
   return TRUE;
 }
 
 
-void
-friendssetup (void)
-{
+/* *****************************************************************************
+ */
+void friendssetup (void) {
   GtkWidget *mainbox, *frame, *friendscolorbt, *hbbox;
 
   GtkWidget *table, *spintable, *sl1, *sl2, *sl3;
@@ -1928,24 +1913,24 @@ friendssetup (void)
   d = maxfriendssecs / 86400;
   spinner1_adj =
     (GtkAdjustment *) gtk_adjustment_new ((float) d, 0.0, 90.0, 1.0, 5.0,
-					  5.0);
+																					5.0);
   spinner1 = gtk_spin_button_new (spinner1_adj, 1.0, 0);
   h = (maxfriendssecs - d * 86400) / 3600;
   spinner2_adj =
     (GtkAdjustment *) gtk_adjustment_new ((float) h, 0.0, 23.0, 1.0, 5.0,
-					  5.0);
+																					5.0);
   spinner2 = gtk_spin_button_new (spinner2_adj, 1.0, 0);
   m = (maxfriendssecs - d * 86400 - h * 3600) / 60;
   spinner3_adj =
     (GtkAdjustment *) gtk_adjustment_new ((float) m, 0.0, 59.0, 1.0, 5.0,
-					  5.0);
+																					5.0);
   spinner3 = gtk_spin_button_new (spinner3_adj, 1.0, 0);
   gtk_signal_connect (GTK_OBJECT (spinner1),
-		      "changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
+											"changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
   gtk_signal_connect (GTK_OBJECT (spinner2),
-		      "changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
+											"changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
   gtk_signal_connect (GTK_OBJECT (spinner3),
-		      "changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
+											"changed", GTK_SIGNAL_FUNC (grab_spinner_value), NULL);
 
 
   d9 = gtk_label_new (_("Show position newer as"));
@@ -1975,14 +1960,14 @@ friendssetup (void)
   d2 = gtk_entry_new ();
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d2,
-			_
-			("Set here your name which should be shown near your vehicle. You may use spaces here!"),
-			NULL);
+												_
+												("Set here your name which should be shown near your vehicle. You may use spaces here!"),
+												NULL);
 
   gtk_entry_set_text (GTK_ENTRY (d2), friendsname);
   gtk_widget_set_usize (d2, USIZE_X, USIZE_Y);
   gtk_signal_connect (GTK_OBJECT (d2),
-		      "changed", GTK_SIGNAL_FUNC (friendsname_cb), d2);
+											"changed", GTK_SIGNAL_FUNC (friendsname_cb), d2);
 
 
 
@@ -1992,37 +1977,37 @@ friendssetup (void)
   d4 = gtk_entry_new ();
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d4,
-			_
-			("Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends server, then you have to press the \"Lookup\" button!"),
-			NULL);
+												_
+												("Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends server, then you have to press the \"Lookup\" button!"),
+												NULL);
 
 
   gtk_entry_set_text (GTK_ENTRY (d4), friendsserverfqn);
   gtk_widget_set_usize (d4, USIZE_X, USIZE_Y);
   gtk_signal_connect (GTK_OBJECT (d4),
-		      "changed", GTK_SIGNAL_FUNC (friendsserverfqn_cb), d2);
+											"changed", GTK_SIGNAL_FUNC (friendsserverfqn_cb), d2);
 
   look = gtk_button_new_with_label (_("Lookup"));
 
   gtk_signal_connect (GTK_OBJECT (look),
-		      "clicked", GTK_SIGNAL_FUNC (friendslookup_cb), d2);
+											"clicked", GTK_SIGNAL_FUNC (friendslookup_cb), d2);
   GTK_WIDGET_SET_FLAGS (look, GTK_CAN_DEFAULT);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), look,
-			_
-			("You have to press the \"Lookup\" button to resolve the friends server name!"),
-			NULL);
+												_
+												("You have to press the \"Lookup\" button to resolve the friends server name!"),
+												NULL);
 
   friendscolorbt = gtk_button_new_from_stock (GTK_STOCK_SELECT_COLOR);
-/*   gtk_button_set_label(GTK_BUTTON(trackcolorbt),_("Track")); */
+	/*   gtk_button_set_label(GTK_BUTTON(trackcolorbt),_("Track")); */
   gtk_signal_connect (GTK_OBJECT (friendscolorbt), "clicked",
-		      G_CALLBACK (change_friendscolor_callback),
-		      (gpointer) 0);
+											G_CALLBACK (change_friendscolor_callback),
+											(gpointer) 0);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), friendscolorbt,
-			_
-			("Set here the color of the label displayed at friends position"),
-			NULL);
+												_
+												("Set here the color of the label displayed at friends position"),
+												NULL);
   hbbox = gtk_hbutton_box_new ();
   gtk_box_pack_start (GTK_BOX (hbbox), friendscolorbt, TRUE, TRUE, 3);
   gtk_box_pack_start (GTK_BOX (hbbox), look, TRUE, TRUE, 3);
@@ -2031,28 +2016,28 @@ friendssetup (void)
   ipbt = d6 = gtk_entry_new ();
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d6,
-			_
-			("Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"),
-			NULL);
+												_
+												("Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), spinner1,
-			_
-			("Set here the time limit in which the friends position is shown. Older positions are not shown."),
-			NULL);
+												_
+												("Set here the time limit in which the friends position is shown. Older positions are not shown."),
+												NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), spinner2,
-			_
-			("Set here the time limit in which the friends position is shown. Older positions are not shown."),
-			NULL);
+												_
+												("Set here the time limit in which the friends position is shown. Older positions are not shown."),
+												NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), spinner3,
-			_
-			("Set here the time limit in which the friends position is shown. Older positions are not shown."),
-			NULL);
+												_
+												("Set here the time limit in which the friends position is shown. Older positions are not shown."),
+												NULL);
 
   gtk_entry_set_text (GTK_ENTRY (d6), friendsserverip);
   gtk_widget_set_usize (d6, USIZE_X, USIZE_Y);
   gtk_signal_connect (GTK_OBJECT (d6),
-		      "changed", GTK_SIGNAL_FUNC (friendsserverip_cb), d2);
+											"changed", GTK_SIGNAL_FUNC (friendsserverip_cb), d2);
 
 
 
@@ -2063,14 +2048,14 @@ friendssetup (void)
   if (havefriends)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d8), TRUE);
   gtk_signal_connect (GTK_OBJECT (d8),
-		      "clicked", GTK_SIGNAL_FUNC (usefriends_cb), d8);
+											"clicked", GTK_SIGNAL_FUNC (usefriends_cb), d8);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d8,
-			_
-			("Enable/disable use of friends server. You must enter a Username, don't use the default name!"),
-			NULL);
+												_
+												("Enable/disable use of friends server. You must enter a Username, don't use the default name!"),
+												NULL);
 
   label = gtk_label_new (_("If you enable the friendsserver mode,\n"
-			   "<span color=\"red\">everyone</span> using the same server\ncan see your position!"));
+													 "<span color=\"red\">everyone</span> using the same server\ncan see your position!"));
   gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 
   gtk_table_attach_defaults (GTK_TABLE (spintable), sl1, 0, 1, 0, 1);
@@ -2114,9 +2099,9 @@ friendssetup (void)
 }
 
 
-void
-sqlsetup (void)
-{
+/* *****************************************************************************
+ */
+void sqlsetup (void) {
   GtkWidget *mainbox, *frame, *l[100], *scroll;
   GtkWidget *table, *table2, *t0, *t1, *t2;
   GtkWidget *d1, *d2, *d4, *d5, *hbox;
@@ -2141,7 +2126,7 @@ sqlsetup (void)
   mainbox = gtk_vbox_new (FALSE, 15 * PADDING);
   scroll = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy ((GtkScrolledWindow *) scroll,
-				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+																	GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   table = gtk_table_new (4, 2, FALSE);
   table2 = gtk_table_new (dbtypelistcount, 2, FALSE);
@@ -2155,14 +2140,14 @@ sqlsetup (void)
   d2 = gtk_entry_new ();
   g_snprintf (text, sizeof (text), "%0.1f", dbdistance);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d2,
-			_
-			("If enabled, show waypoints only within this distance"),
-			NULL);
+												_
+												("If enabled, show waypoints only within this distance"),
+												NULL);
 
   gtk_entry_set_text (GTK_ENTRY (d2), text);
   gtk_widget_set_usize (d2, USIZE_X, USIZE_Y);
   gtk_signal_connect (GTK_OBJECT (d2),
-		      "changed", GTK_SIGNAL_FUNC (dbdistance_cb), d2);
+											"changed", GTK_SIGNAL_FUNC (dbdistance_cb), d2);
 
 
   d4 = gtk_check_button_new ();
@@ -2170,9 +2155,9 @@ sqlsetup (void)
   if (dbusedist)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d4), TRUE);
   gtk_signal_connect (GTK_OBJECT (d4),
-		      "clicked", GTK_SIGNAL_FUNC (dbusedist_cb), d4);
+											"clicked", GTK_SIGNAL_FUNC (dbusedist_cb), d4);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d4,
-			_("Enable/disable distance selection"), NULL);
+												_("Enable/disable distance selection"), NULL);
   gtk_box_pack_start (GTK_BOX (hbox), d1, FALSE, FALSE, 0 * PADDING);
   gtk_box_pack_start (GTK_BOX (hbox), d4, FALSE, FALSE, 0 * PADDING);
 
@@ -2186,14 +2171,14 @@ sqlsetup (void)
   if (showsid)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d5), TRUE);
   gtk_signal_connect (GTK_OBJECT (d5),
-		      "clicked", GTK_SIGNAL_FUNC (showsid_cb), d4);
+											"clicked", GTK_SIGNAL_FUNC (showsid_cb), d4);
 
   gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 3, 4);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d5,
-			_
-			("If enabled, WLANs with no SSID are shown, because this is perhaps useless, you can disable it here"),
-			NULL);
+												_
+												("If enabled, WLANs with no SSID are shown, because this is perhaps useless, you can disable it here"),
+												NULL);
 
 
   sqldontquery = TRUE;
@@ -2203,20 +2188,20 @@ sqlsetup (void)
   t1 = gtk_radio_button_new_with_label (NULL, _("include"));
   t2 =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (t1)), _("exclude"));
+																		 (GTK_RADIO_BUTTON (t1)), _("exclude"));
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t1,
-			_
-			("Show only waypoints where the type field contains one of the selected words"),
-			NULL);
+												_
+												("Show only waypoints where the type field contains one of the selected words"),
+												NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t2,
-			_
-			("Show only waypoints where the type field doesn't contain any the selected words"),
-			NULL);
+												_
+												("Show only waypoints where the type field doesn't contain any the selected words"),
+												NULL);
 
   gtk_signal_connect (GTK_OBJECT (t1),
-		      "clicked", GTK_SIGNAL_FUNC (sqlselectmode_cb),
-		      (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (sqlselectmode_cb),
+											(gpointer) 1);
 
   if ((strstr (wheretemp, "type != ")) != NULL)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (t2), TRUE);
@@ -2226,7 +2211,7 @@ sqlsetup (void)
   gtk_table_attach_defaults (GTK_TABLE (table), t2, 1, 2, 2, 3);
 
   gtk_scrolled_window_add_with_viewport ((GtkScrolledWindow *) scroll,
-					 table2);
+																				 table2);
 
   gtk_box_pack_start (GTK_BOX (mainbox), scroll, TRUE, TRUE, 3 * PADDING);
 
@@ -2241,14 +2226,14 @@ sqlsetup (void)
 
       sqlfn[i] = gtk_check_button_new ();
       gtk_signal_connect (GTK_OBJECT (sqlfn[i]),
-			  "clicked", GTK_SIGNAL_FUNC (dbbuildquery_cb),
-			  (gpointer) i);
+													"clicked", GTK_SIGNAL_FUNC (dbbuildquery_cb),
+													(gpointer) i);
       g_snprintf (temp, sizeof (temp), "= '%s'", dbtypelist[i]);
       if ((strstr (wheretemp, temp)) != NULL)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlfn[i]), TRUE);
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlfn[i]), TRUE);
 
       gtk_table_attach_defaults (GTK_TABLE (table2), sqlfn[i], 1, 2, i,
-				 i + 1);
+																 i + 1);
 
     }
   sqldontquery = FALSE;
@@ -2260,25 +2245,22 @@ sqlsetup (void)
   gtk_widget_show_all (frame);
 }
 
-
-
-
-gint
-setutc (GtkWidget * widget, guint datum)
-{
+/* *****************************************************************************
+ */
+gint setutc (GtkWidget * widget, guint datum) {
   gchar text[20];
   g_snprintf (text, sizeof (text), "%s", loctime);
-/*   g_print("\nwidget da: %d", GTK_IS_WIDGET(utclabel));  */
+	/*   g_print("\nwidget da: %d", GTK_IS_WIDGET(utclabel));  */
   if (GTK_IS_WIDGET (utclabel))
     gtk_entry_set_text (GTK_ENTRY (utclabel), text);
 
   return TRUE;
 }
 
-gint
-removesetutc (GtkWidget * widget, guint datum)
-{
-/*   g_print ("\n\nremove timer!\n\a\n"); */
+/* *****************************************************************************
+ */
+gint removesetutc (GtkWidget * widget, guint datum) {
+	/*   g_print ("\n\nremove timer!\n\a\n"); */
   lastnotebook =
     gtk_notebook_get_current_page (GTK_NOTEBOOK (settingsnotebook));
   gtk_timeout_remove (utctimer);
