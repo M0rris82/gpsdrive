@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2005/02/07 07:53:39  tweety
+added check_if_moved inti function poi_rebuild_list
+
 Revision 1.4  2005/02/06 21:18:05  tweety
 more cleanup: extracted more functionality to functions
 
@@ -428,8 +431,7 @@ getsqldata ()
   
   g_snprintf (q, sizeof (q),
 	      "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
-              //"SELECT name,lat,lon,upper(type),id FROM %s %s order by name",
-	      dbtable, dbwherestring,sql_order,lat,lon);
+	      dbtable, dbwherestring,sql_order);
   if (debug)
     printf ("mysql query: %s\n", q);
 
