@@ -113,7 +113,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	../config.h icons.c icons.h garmin_legacy.h garmin_data.h \
 	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
-	talogo.h import_map.c import_map.h
+	talogo.h import_map.c import_map.h speech_strings.c \
+	speech_strings.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -129,7 +130,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_FALSE@	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT)
+@DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	speech_strings.$(OBJEXT)
 @DISABLEGARMIN_TRUE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -139,7 +141,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_TRUE@	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT)
+@DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT) import_map.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	speech_strings.$(OBJEXT)
 am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -343,15 +346,40 @@ libgpsd_a_SOURCES = netlib.c nmea_parse.c serial.c  tm.c em.c  \
 gpsd_SOURCES = gpsd.c  gpsd.h nmea.h version.h
 gpsd_LDADD = -lgpsd -lm
 gpsd_LDFLAGS = -L. 
-@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c  speech_out.h friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h import_map.c import_map.h
-@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h import_map.c import_map.h
+@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c  speech_out.h\
+@DISABLEGARMIN_FALSE@	friends.c battery.c track.c poi.c streets.c settings.c  power.h\
+@DISABLEGARMIN_FALSE@	battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp \
+@DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+@DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
+@DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
+@DISABLEGARMIN_FALSE@	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
+@DISABLEGARMIN_FALSE@	gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h\
+@DISABLEGARMIN_FALSE@	garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
+@DISABLEGARMIN_FALSE@	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
+@DISABLEGARMIN_FALSE@	talogo.h import_map.c import_map.h  speech_strings.c speech_strings.h
+
+@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
+@DISABLEGARMIN_TRUE@	friends.c battery.c track.c poi.c streets.c settings.c  \
+@DISABLEGARMIN_TRUE@	power.h battery.h track.h poi.h streets.h gpsdrive.h gpssql.c \
+@DISABLEGARMIN_TRUE@	gpskismet.c ../config.h icons.c icons.h gettext.h \
+@DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
+@DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
+@DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h
+
 gpsdrive_SOURCES = $(PRGS)
-@DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
+@DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
+@DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
+
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
+EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt \
+		gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png \
+		friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
+
 gpsdrivedir = $(datadir)/gpsdrive
-gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
+gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg \
+		gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
+
 distpixmapdir = $(datadir)/pixmaps
 distpixmap_DATA = gpsicon.png
 all: all-am
@@ -503,6 +531,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/serial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_strings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tm.Po@am__quote@
