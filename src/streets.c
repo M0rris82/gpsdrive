@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.10  2005/04/10 21:50:50  tweety
+  reformatting c-sources
+
   Revision 1.9  2005/04/10 00:10:32  tweety
   added gpsd: to gpsd related debug output
   changed plus to a small + in streets.c
@@ -168,8 +171,8 @@ void get_streets_type_list(void);
 */
 int posxy_on_screen(gdouble posx, gdouble posy) {
 	if ( (posx >= 0) && (posx < SCREEN_X)    &&  
-		 (posy >= 0) && (posy < SCREEN_Y)
-		 )  
+			 (posy >= 0) && (posy < SCREEN_Y)
+			 )  
 		return TRUE;
 	return FALSE;
 }
@@ -205,14 +208,14 @@ int streets_check_if_moved(void) {
 	gdouble lat_ul, lon_ul;
 
 	if ( streets_lat_lr == 0 && streets_lon_lr == 0 &&
-		 streets_lat_ul == 0 && streets_lon_ul == 0    ) 
+			 streets_lat_ul == 0 && streets_lon_ul == 0    ) 
 		return 1;
 
 	calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
 	calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
 
 	if ( streets_lat_lr == lat_lr && streets_lon_lr == lon_lr &&
-		 streets_lat_ul == lat_ul && streets_lon_ul == lon_ul    ) 
+			 streets_lat_ul == lat_ul && streets_lon_ul == lon_ul    ) 
 		return 0;
 	if ( debug ) 
 		printf("streets_check_if_moved: Streets Display moved\n");
@@ -232,7 +235,7 @@ void get_streets_type_list (void) {
 		printf("get_streets_type_list ()\n");
 
 	g_snprintf (sql_query, sizeof (sql_query),
-				"SELECT streets_type_id,name,symbol,color FROM streets_type ORDER BY streets_type_id");
+							"SELECT streets_type_id,name,symbol,color FROM streets_type ORDER BY streets_type_id");
 
 	if (dl_mysql_query (&mysql, sql_query))		{
 		fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
@@ -254,7 +257,7 @@ void get_streets_type_list (void) {
 			} else {
 				// memorize name
 				g_strlcpy ( streets_type_list[streets_type_list_count].name, row[1],
-							sizeof (streets_type_list[streets_type_list_count].name));
+										sizeof (streets_type_list[streets_type_list_count].name));
 
 				// memorize color
 				if        (streets_type_list_count == 1) {
@@ -345,24 +348,24 @@ void streets_rebuild_list (void) {
 
 	{ // gernerate mysql ORDER string
 		g_snprintf (sql_order, sizeof (sql_order),
-					"order by lat1 ,lon1 ,lat2,lon2,scale_min,scale_max  ");
+								"order by lat1 ,lon1 ,lat2,lon2,scale_min,scale_max  ");
 		if (debug)
 			printf ("streets_rebuild_list: STREETS mysql order: %s\n", sql_order);
 	}
   
 	{ // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
 		g_snprintf (sql_where, sizeof (sql_where),
-					"WHERE \n"
-					"\t\t ( \n"
-					"\t\t   ( ( lat1 BETWEEN %.6f AND %.6f ) AND ( lon1 BETWEEN %.6f AND %.6f ) ) \n"
-					"\t\t   OR \n"
-					"\t\t   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) \n"
-					"\t\t ) \n"
-					"\t\t AND \n"
-					"\t\t ( %ld BETWEEN scale_min AND scale_max) \n",
-					lat_min,lat_max,lon_min,lon_max,
-					lat_min,lat_max,lon_min,lon_max,
-					mapscale);
+								"WHERE \n"
+								"\t\t ( \n"
+								"\t\t   ( ( lat1 BETWEEN %.6f AND %.6f ) AND ( lon1 BETWEEN %.6f AND %.6f ) ) \n"
+								"\t\t   OR \n"
+								"\t\t   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) \n"
+								"\t\t ) \n"
+								"\t\t AND \n"
+								"\t\t ( %ld BETWEEN scale_min AND scale_max) \n",
+								lat_min,lat_max,lon_min,lon_max,
+								lat_min,lat_max,lon_min,lon_max,
+								mapscale);
 		g_strdelimit (sql_where, ",", '.'); // For different LANG
 		if (debug) {
 			// printf ("STREETS mysql where: %s\n", sql_where );
@@ -375,11 +378,11 @@ void streets_rebuild_list (void) {
 
 	// Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
 	g_snprintf (sql_query, sizeof (sql_query),
-				// "SELECT lat,lon,alt,streets_type_id,proximity "
-				"SELECT lat1,lon1,lat2,lon2,name,streets_type_id "
-				"FROM streets "
-				"%s %s LIMIT 200000",
-				sql_where,sql_order);
+							// "SELECT lat,lon,alt,streets_type_id,proximity "
+							"SELECT lat1,lon1,lat2,lon2,name,streets_type_id "
+							"FROM streets "
+							"%s %s LIMIT 200000",
+							sql_where,sql_order);
 
 	if (debug)
 		printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
@@ -412,8 +415,8 @@ void streets_rebuild_list (void) {
 		calcxy (&streets_posx2, &streets_posy2,    lon2,lat2,     zoom);
 
 		if ( posxy_on_screen(streets_posx1,streets_posy1) ||
-			 posxy_on_screen(streets_posx2,streets_posy2)
-			 ) {
+				 posxy_on_screen(streets_posx2,streets_posy2)
+				 ) {
 			// get next free mem for streets
 			streets_list_count++;
 			if (streets_list_count > streets_list_limit) {
@@ -431,8 +434,8 @@ void streets_rebuild_list (void) {
 			}
 			if (debug) 
 				printf ( "streets_rebuild_list: pos: (%.4f ,%.4f) (%.4f ,%.4f)\n",
-						 lat1,lon1,
-						 lat2,lon2);
+								 lat1,lon1,
+								 lat2,lon2);
 			printf("Anz: %ld %ld\n",streets_list_count , streets_list_limit);
 	  
 			// Save retrieved streets information into structure
@@ -449,11 +452,11 @@ void streets_rebuild_list (void) {
 
 			if (debug) 
 				g_snprintf ((streets_list + streets_list_count)->name, sizeof ((streets_list + streets_list_count)->name),
-							"(%.4f ,%.4f) (%.4f ,%.4f) %s",
-							//			(streets_list + streets_list_count)->streets_type_id,
-							lat1,lon1,
-							lat2,lon2,
-							row[2]);
+										"(%.4f ,%.4f) (%.4f ,%.4f) %s",
+										//			(streets_list + streets_list_count)->streets_type_id,
+										lat1,lon1,
+										lat2,lon2,
+										row[2]);
 	  
 		}
 	}
@@ -505,7 +508,7 @@ void draw_text_with_box(gdouble posx,gdouble posy, gchar name[120]) {
 		pfd = pango_font_description_from_string ("Sans bold 11");
 	pango_layout_set_font_description (streets_label_layout, pfd);
 	pango_layout_get_pixel_size (streets_label_layout, 
-								 &width, &height);
+															 &width, &height);
 	k = width + 4;
 	k2 = height;
 	  
@@ -516,14 +519,14 @@ void draw_text_with_box(gdouble posx,gdouble posy, gchar name[120]) {
 	{ // Draw rectangle arround Text
 		//gdk_gc_set_foreground (kontext, &textbacknew);
 		gdk_draw_rectangle (drawable, kontext, 1, 
-							posx + 13, posy - k2 / 2, 
-							k + 1, k2);
+												posx + 13, posy - k2 / 2, 
+												k + 1, k2);
 		gdk_gc_set_function (kontext, GDK_COPY);
 		gdk_gc_set_foreground (kontext, &black);
 		gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 		gdk_draw_rectangle (drawable, kontext, 0, 
-							posx + 12, posy - k2 / 2 - 1,
-							k + 2, k2);
+												posx + 12, posy - k2 / 2 - 1,
+												k + 2, k2);
 	}
 
 	/* prints in pango */
@@ -534,8 +537,8 @@ void draw_text_with_box(gdouble posx,gdouble posy, gchar name[120]) {
 	pango_layout_set_font_description (streets_label_layout, pfd);
 
 	gdk_draw_layout_with_colors (drawable, kontext,
-								 posx + 15, posy - k2 / 2,
-								 streets_label_layout, &black, NULL);
+															 posx + 15, posy - k2 / 2,
+															 streets_label_layout, &black, NULL);
 	if (streets_label_layout != NULL)
 		g_object_unref (G_OBJECT (streets_label_layout));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -606,8 +609,8 @@ void streets_draw_list (void) {
 		  }
 		*/
 		if ( posxy_on_screen(posx1,posy1) ||
-			 posxy_on_screen(posx2,posy2) 
-			 ) {
+				 posxy_on_screen(posx2,posy2) 
+				 ) {
 			/*
 			  if (debug) {
 			  printf ("       Draw: %f %f -> %f, %f\n",
@@ -649,8 +652,8 @@ void streets_draw_list (void) {
       
 		// draw it if last or streets_type_id changes 
 		if ( ( i == streets_list_count-1 ) ||
-			 ( (streets_list + i)->streets_type_id != (streets_list + i + 1)->streets_type_id )
-			 ) {
+				 ( (streets_list + i)->streets_type_id != (streets_list + i + 1)->streets_type_id )
+				 ) {
 			/*
 			  if ( debug )
 			  printf("Drawing %d segments\n",gdks_streets_count);
@@ -677,7 +680,7 @@ void streets_draw_list (void) {
 			}
 	
 			gdk_draw_segments (drawable, kontext, 
-							   (GdkSegment *) gdks_streets, gdks_streets_count+1);
+												 (GdkSegment *) gdks_streets, gdks_streets_count+1);
 			gdks_streets_count=-1;
 		}
 	}
