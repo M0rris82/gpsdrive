@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-11 21:56+0200\n"
+"POT-Creation-Date: 2005-08-12 09:44+0200\n"
 "PO-Revision-Date: 2002-04-17 11:45 GMT+2\n"
 "Last-Translator: A. Burak Ilgicioglu <ilgici@ttnet.net.tr>\n"
 "Language-Team: LANGUAGE <tr@li.org>\n"
@@ -146,10 +146,7 @@ msgstr "NMEA modu iin GPSD'yi balatr"
 #: src/gpsdrive.c:7125 src/gpsdrive.c:7135 src/gpsdrive.c:12386
 #: src/gpsdrive.c:12393 src/gpsdrive.c:12400 src/gpsdrive.c:12466
 #: src/gpsdrive.c:12471 src/gpsdrive.c:12477 src/gpsdrive.c:12513
-#: src/gpsdrive.c:12520 src/settings.c:1577 src/settings.c:1586
-#: src/settings.c:1595 src/settings.c:1622 src/settings.c:1634
-#: src/settings.c:1645 src/settings.c:1658 src/settings.c:1669
-#: src/settings.c:1681
+#: src/gpsdrive.c:12520 src/settings.c:477
 msgid "n/a"
 msgstr "n/a"
 
@@ -333,11 +330,11 @@ msgstr "lek"
 msgid "Map file name"
 msgstr "Harita dosyasnn ad"
 
-#: src/gpsdrive.c:7786 src/settings.c:1080
+#: src/gpsdrive.c:7786 src/settings.c:1143
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/gpsdrive.c:7792 src/settings.c:1086
+#: src/gpsdrive.c:7792 src/settings.c:1150
 msgid "Expedia USA"
 msgstr ""
 
@@ -419,7 +416,7 @@ msgstr "GpsDrive Mens"
 
 #: src/gpsdrive.c:8688 src/gpsdrive.c:8691 src/gpsdrive.c:8694
 #: src/gpsdrive.c:12584 src/gpsdrive.c:12587 src/gpsdrive.c:12590
-#: src/settings.c:1150
+#: src/settings.c:1213
 msgid "Speed"
 msgstr "Hz"
 
@@ -464,7 +461,7 @@ msgid "Name"
 msgstr ""
 
 #: src/gpsdrive.c:10212 src/gpsdrive.c:10296 src/gpsdrive.c:10471
-#: src/gpsdrive.c:12561 src/settings.c:1143
+#: src/gpsdrive.c:12561 src/settings.c:1205
 msgid "Distance"
 msgstr "Uzaklk"
 
@@ -734,7 +731,7 @@ msgstr ""
 "Sadece ingilizce, almanca veya ispanyolca arasndan seebilirsiniz\n"
 "\n"
 
-#: src/gpsdrive.c:11697 src/settings.c:1919
+#: src/gpsdrive.c:11697 src/settings.c:1916
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Arayz"
@@ -906,7 +903,7 @@ msgstr "Ykseklik"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:12609 src/settings.c:743
+#: src/gpsdrive.c:12609 src/settings.c:838
 #, fuzzy
 msgid "Waypoints"
 msgstr "Yolnoktas"
@@ -1312,7 +1309,7 @@ msgstr "SEL"
 msgid "Nautic settings"
 msgstr "eitli ayarlar"
 
-#: src/nautic.c:122 src/settings.c:1037
+#: src/nautic.c:122 src/settings.c:1098
 msgid "Nautic"
 msgstr "Denizcilikle ilgili"
 
@@ -1321,27 +1318,27 @@ msgstr "Denizcilikle ilgili"
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/settings.c:471
+#: src/settings.c:517
 msgid "Setting WP label font"
 msgstr ""
 
-#: src/settings.c:474
+#: src/settings.c:522
 msgid "Setting big display font"
 msgstr ""
 
-#: src/settings.c:546
+#: src/settings.c:606
 msgid "Setting big display color"
 msgstr ""
 
-#: src/settings.c:589
+#: src/settings.c:645
 msgid "Setting track color"
 msgstr ""
 
-#: src/settings.c:637
+#: src/settings.c:689
 msgid "Setting friends label color"
 msgstr ""
 
-#: src/settings.c:730
+#: src/settings.c:824
 #, fuzzy
 msgid ""
 "Don't use more than\n"
@@ -1350,133 +1347,122 @@ msgstr ""
 "30 yolnoktas (way*.txt)\n"
 "dosyasndan fazlasn kullanmayn!"
 
-#: src/settings.c:741
+#: src/settings.c:836
 #, fuzzy
 msgid "Waypoint files to use"
 msgstr "Kullanlacak yolnoktas dosyas"
 
-#: src/settings.c:774 src/settings.c:779
+#: src/settings.c:868 src/settings.c:873
 #, fuzzy
 msgid "Settings"
 msgstr "GPS ayarlar"
 
 #. misc area
-#: src/settings.c:787
+#: src/settings.c:879
 msgid "Misc settings"
 msgstr "eitli ayarlar"
 
-#: src/settings.c:791
+#: src/settings.c:882
 msgid "Show Shadows"
 msgstr "Glgeleri gster"
 
-#: src/settings.c:800
+#: src/settings.c:890
 msgid "Etched frames"
 msgstr ""
 
-#: src/settings.c:809
+#: src/settings.c:898
 msgid "Draw grid"
 msgstr ""
 
-#: src/settings.c:820
+#: src/settings.c:907
 msgid "Simulation: Follow target"
 msgstr "Simulasyon: Hedefi takip et"
 
-#: src/settings.c:828
+#: src/settings.c:915
 msgid "Maximum CPU load"
 msgstr ""
 
-#: src/settings.c:839
+#: src/settings.c:924
 #, fuzzy
 msgid "Track"
 msgstr "Yolu gster"
 
-#: src/settings.c:855
+#: src/settings.c:939
 msgid "Maps directory"
 msgstr "Haritalar dizini"
 
-#: src/settings.c:862
+#: src/settings.c:944
 #, fuzzy
 msgid "Automatic"
 msgstr "Otomatik"
 
-#: src/settings.c:869
+#: src/settings.c:951
 msgid "On"
 msgstr ""
 
-#: src/settings.c:874
+#: src/settings.c:958
 msgid "Off"
 msgstr ""
 
-#.
-#. * gtk_table_attach_defaults (GTK_TABLE (misctable), label2,          0, 2, 5, 6);
-#. * gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt,        2, 4, 6, 6);
-#.
 #. GPS settings area
-#: src/settings.c:911
+#: src/settings.c:991
 msgid "GPS settings"
 msgstr "GPS ayarlar"
 
-#. gtk_container_add (GTK_CONTAINER (f4), gpstable);
-#: src/settings.c:926
+#: src/settings.c:1002
 msgid "Test for GARMIN"
 msgstr "GARMIN testi"
 
-#: src/settings.c:939
+#: src/settings.c:1011
 msgid "Use DGPS-IP"
 msgstr "DGPS-IP'yi kullan"
 
-#: src/settings.c:951
+#: src/settings.c:1020
 msgid "GPS is Earthmate"
 msgstr ""
 
-#: src/settings.c:963
+#: src/settings.c:1029
 msgid "Use serial conn."
 msgstr ""
 
-#: src/settings.c:981
+#: src/settings.c:1043
 msgid "Interface"
 msgstr "Arayz"
 
-#: src/settings.c:982
+#: src/settings.c:1044
 msgid "Baudrate"
 msgstr ""
 
 #. units area
-#: src/settings.c:1020
+#: src/settings.c:1080
 msgid "Units"
 msgstr "Birim"
 
-#: src/settings.c:1026
+#: src/settings.c:1086
 msgid "Miles"
 msgstr "Mil"
 
-#: src/settings.c:1032
+#: src/settings.c:1092
 msgid "Metric"
 msgstr "Metrik"
 
-#: src/settings.c:1050
+#: src/settings.c:1117
 msgid "Decimal position"
 msgstr ""
 
-#. gtk_box_pack_start (GTK_BOX (v2), miles, TRUE, FALSE, 2 * PADDING);
-#. * gtk_box_pack_start (GTK_BOX (v2), metric, TRUE, FALSE, 2 * PADDING);
-#. * gtk_box_pack_start (GTK_BOX (v2), nautic, TRUE, FALSE, 2 * PADDING);
-#. * gtk_box_pack_start (GTK_BOX (v2), minsecbt, TRUE, FALSE, 2 * PADDING);
-#.
 #. default download server
-#: src/settings.c:1070
+#: src/settings.c:1132
 msgid "Default map server"
 msgstr "ntanml harita sunucusu"
 
 #. Night light mode
-#: src/settings.c:1103
+#: src/settings.c:1168
 #, fuzzy
 msgid "Night light mode"
 msgstr "Haritadaki glgeleri etkin yapar veya kaldrr"
 
-#. gtk_table_attach_defaults (GTK_TABLE (table), f5, 0, 2, 2, 3);
 #. Sound settings
-#: src/settings.c:1124
+#: src/settings.c:1185
 #, fuzzy
 msgid "Speech output settings"
 msgstr "eitli ayarlar"
@@ -1489,92 +1475,91 @@ msgstr "eitli ayarlar"
 #. * sound_gps       ... say GPS status
 #. *
 #.
-#: src/settings.c:1136
+#: src/settings.c:1197
 msgid "Direction"
 msgstr ""
 
-#: src/settings.c:1157
+#: src/settings.c:1221
 #, fuzzy
 msgid "GPS Status"
 msgstr "GpsDrive Durumu"
 
-#: src/settings.c:1174
+#: src/settings.c:1237
 msgid "Switch on for speech output of the direction to the target"
 msgstr ""
 
-#: src/settings.c:1179
+#: src/settings.c:1242
 msgid "Switch on for speech output of the distance to the target"
 msgstr ""
 
-#: src/settings.c:1184
+#: src/settings.c:1247
 msgid "Switch on for speech output of your current speed"
 msgstr ""
 
-#: src/settings.c:1189
+#: src/settings.c:1251
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr ""
 
 #. Font settings
-#: src/settings.c:1194
+#: src/settings.c:1255
 #, fuzzy
 msgid "Font and color settings"
 msgstr "GPS ayarlar"
 
-#. gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);
-#: src/settings.c:1199
+#: src/settings.c:1259
 msgid "WP Label"
 msgstr ""
 
-#: src/settings.c:1200
+#: src/settings.c:1260
 msgid "Big display"
 msgstr ""
 
-#: src/settings.c:1201
+#: src/settings.c:1261
 msgid "Display color"
 msgstr ""
 
-#: src/settings.c:1230
+#: src/settings.c:1282
 msgid "Switch units to statute miles"
 msgstr "Statue mili birimlerine ge"
 
-#: src/settings.c:1232
+#: src/settings.c:1285
 msgid "Switch units to nautical miles"
 msgstr "Deniz mili birimlerine ge"
 
-#: src/settings.c:1234
+#: src/settings.c:1288
 msgid "Switch units to metric system (Kilometers)"
 msgstr "Metrik sistem (Kilometre) birimilerine ge"
 
-#: src/settings.c:1239
+#: src/settings.c:1292
 msgid ""
 "If selected display latitude and longitude in decimal degrees, otherwise in "
 "degree, minutes and seconds notation"
 msgstr ""
 
-#: src/settings.c:1244
+#: src/settings.c:1297
 #, fuzzy
 msgid ""
 "Set the german expedia server(expedia.de) as default download server. Use "
 "this if you are in Europe"
 msgstr "Expedia'y ntanml sunucu yap"
 
-#: src/settings.c:1248
+#: src/settings.c:1302
 msgid "Set Expedia as default download server"
 msgstr "Expedia'y ntanml sunucu yap"
 
-#: src/settings.c:1252
+#: src/settings.c:1305
 msgid "Switches shadows on map on or off"
 msgstr "Haritadaki glgeleri etkin yapar veya kaldrr"
 
-#: src/settings.c:1256
+#: src/settings.c:1308
 msgid "Switches between different type of frame ornaments"
 msgstr ""
 
-#: src/settings.c:1260
+#: src/settings.c:1312
 msgid "This will show a grid over the map"
 msgstr ""
 
-#: src/settings.c:1265
+#: src/settings.c:1316
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load, use 20-30% on notebooks while on "
@@ -1582,23 +1567,23 @@ msgid ""
 "screen"
 msgstr ""
 
-#: src/settings.c:1270
+#: src/settings.c:1322
 msgid "If activated, pointer moves to target in simulation mode"
 msgstr ""
 "Etkinletirildii takdirde simulasyon modunda pointer hedefe doru hareket eder"
 
-#: src/settings.c:1274
+#: src/settings.c:1326
 msgid "Set here the color of the drawn track"
 msgstr ""
 
-#: src/settings.c:1279
+#: src/settings.c:1330
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
 msgstr ""
 "Harita dosyalarnzn yolu. Belirlenen dizindemap_koord.txt dosyas yer almal."
 
-#: src/settings.c:1284
+#: src/settings.c:1335
 msgid ""
 "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 "only have a NMEA device."
@@ -1606,13 +1591,13 @@ msgstr ""
 "Seildii takdirde eer mmknse gpsdrive GARMIN modunu kullanmaya alr.  Eer "
 "sadece NMEA aletiniz varsa semeyin."
 
-#: src/settings.c:1289
+#: src/settings.c:1340
 msgid ""
 "Set here the baud rate of your GPS device, NMEA devices usually have a speed "
 "of 4800 baud"
 msgstr ""
 
-#: src/settings.c:1294
+#: src/settings.c:1344
 msgid ""
 "If selected, gpsdrive try to use differential GPS over IP. You must have an "
 "internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
@@ -1621,13 +1606,13 @@ msgstr ""
 "iin internet balantnz ve DGPS uyumlu GPS alcnz olmal. Sadece NMEA modunda "
 "alr!"
 
-#: src/settings.c:1299
+#: src/settings.c:1350
 msgid ""
 "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 "button will provide gpsd with the needed additional parameters"
 msgstr ""
 
-#: src/settings.c:1304
+#: src/settings.c:1356
 msgid ""
 "Select this if you want to use of the direct serial connection. If disabled, "
 "you can use the receiver only through gpsd. On the other hand, the direct "
@@ -1635,225 +1620,225 @@ msgid ""
 "startup"
 msgstr ""
 
-#: src/settings.c:1309
+#: src/settings.c:1363
 msgid "Specify the serial interface where the GPS is connected"
 msgstr "GPS'nin bal olduu seri arayz sein"
 
-#: src/settings.c:1314
+#: src/settings.c:1368
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
 "turn off nightmode."
 msgstr ""
 
-#: src/settings.c:1318
+#: src/settings.c:1373
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr ""
 
-#: src/settings.c:1321
+#: src/settings.c:1377
 #, fuzzy
 msgid "Switches night mode off"
 msgstr "Haritadaki glgeleri etkin yapar veya kaldrr"
 
-#: src/settings.c:1325
+#: src/settings.c:1381
 #, fuzzy
 msgid "Here you can set the font for the waypoint labels"
 msgstr "Yolnoktas listesinden buray hedef olarak se"
 
-#: src/settings.c:1330
+#: src/settings.c:1385
 msgid "Here you can set the font for the big display for Speed and Distance"
 msgstr ""
 
-#: src/settings.c:1334
+#: src/settings.c:1390
 #, fuzzy
 msgid ""
 "Here you can set the color for the big display for speed, distance and "
 "altitude"
 msgstr "Yolnoktas listesinden buray hedef olarak se"
 
-#: src/settings.c:1527
+#: src/settings.c:1563
 msgid "Geo information"
 msgstr ""
 
-#: src/settings.c:1529
+#: src/settings.c:1565
 msgid "Geo info"
 msgstr ""
 
-#: src/settings.c:1541
+#: src/settings.c:1575
 msgid "Sunrise"
 msgstr ""
 
-#: src/settings.c:1543
+#: src/settings.c:1578
 msgid "Sunset"
 msgstr ""
 
-#: src/settings.c:1546
+#: src/settings.c:1581
 msgid "Standard"
 msgstr ""
 
-#: src/settings.c:1548
+#: src/settings.c:1584
 msgid "Transit"
 msgstr ""
 
-#: src/settings.c:1550
+#: src/settings.c:1587
 msgid "GPS-Time"
 msgstr ""
 
-#: src/settings.c:1552
+#: src/settings.c:1590
 #, fuzzy
 msgid "Astro."
 msgstr "Otomatik"
 
-#: src/settings.c:1554
+#: src/settings.c:1593
 #, fuzzy
 msgid "Naut."
 msgstr "Denizcilikle ilgili"
 
-#: src/settings.c:1556
+#: src/settings.c:1596
 msgid "Civil"
 msgstr ""
 
-#: src/settings.c:1558
+#: src/settings.c:1599
 msgid "Timezone"
 msgstr ""
 
-#: src/settings.c:1560
+#: src/settings.c:1602
 msgid "Store TZ"
 msgstr ""
 
-#: src/settings.c:1571
+#: src/settings.c:1616
 msgid ""
 "If selected, the timezone is stored, otherwise your actual timezone will "
 "automatically used"
 msgstr ""
 
-#: src/settings.c:1607
+#: src/settings.c:1637
 #, fuzzy
 msgid "Night"
 msgstr "Saa git"
 
-#: src/settings.c:1609
+#: src/settings.c:1641
 msgid "Day"
 msgstr ""
 
-#: src/settings.c:1760 src/settings.c:1763 src/settings.c:1766
+#: src/settings.c:1760 src/settings.c:1765 src/settings.c:1769
 #, fuzzy
 msgid "Unit:"
 msgstr "Birim"
 
-#: src/settings.c:1761
+#: src/settings.c:1760
 #, fuzzy
 msgid "miles"
 msgstr "Mil"
 
-#: src/settings.c:1764
+#: src/settings.c:1765
 msgid "nautic miles/knots"
 msgstr ""
 
-#: src/settings.c:1767
+#: src/settings.c:1769
 msgid "kilometers"
 msgstr ""
 
-#: src/settings.c:1784
+#: src/settings.c:1785
 msgid "Trip information"
 msgstr ""
 
-#: src/settings.c:1786
+#: src/settings.c:1787
 msgid "Trip info"
 msgstr ""
 
-#: src/settings.c:1802
+#: src/settings.c:1798
 msgid "Odometer"
 msgstr ""
 
-#: src/settings.c:1804
+#: src/settings.c:1800
 msgid "Total time"
 msgstr ""
 
-#: src/settings.c:1806
+#: src/settings.c:1802
 msgid "Av. speed"
 msgstr ""
 
-#: src/settings.c:1808
+#: src/settings.c:1804
 msgid "Max. speed"
 msgstr ""
 
-#: src/settings.c:1835
+#: src/settings.c:1824
 msgid "Reset"
 msgstr ""
 
-#: src/settings.c:1840
+#: src/settings.c:1830
 msgid "Resets the trip values to zero"
 msgstr ""
 
-#: src/settings.c:1922
+#: src/settings.c:1918
 msgid "You should change your name in the first field!"
 msgstr ""
 
-#: src/settings.c:2131
+#: src/settings.c:2149
 #, fuzzy
 msgid "Show position newer as"
 msgstr "Haritada yolnoktalarn gster"
 
-#: src/settings.c:2133
+#: src/settings.c:2151
 msgid "Friends server setup"
 msgstr ""
 
-#: src/settings.c:2134
+#: src/settings.c:2152
 #, fuzzy
 msgid "Friends"
 msgstr "Bitir"
 
-#: src/settings.c:2146
+#: src/settings.c:2163
 msgid "Days"
 msgstr ""
 
-#: src/settings.c:2147
+#: src/settings.c:2164
 msgid "Hours"
 msgstr ""
 
-#: src/settings.c:2148
+#: src/settings.c:2165
 #, fuzzy
 msgid "Minutes"
 msgstr "Mil"
 
-#: src/settings.c:2155
+#: src/settings.c:2170
 msgid "Your name"
 msgstr ""
 
-#: src/settings.c:2160
+#: src/settings.c:2175
 msgid ""
 "Set here your name which should be shown near your vehicle. You may use "
 "spaces here!"
 msgstr ""
 
-#: src/settings.c:2172
+#: src/settings.c:2182
 msgid "Server name"
 msgstr ""
 
-#: src/settings.c:2177
+#: src/settings.c:2186
 msgid ""
 "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends "
 "server, then you have to press the \"Lookup\" button!"
 msgstr ""
 
-#: src/settings.c:2187
+#: src/settings.c:2194
 msgid "Lookup"
 msgstr ""
 
-#: src/settings.c:2196
+#: src/settings.c:2200
 msgid ""
 "You have to press the \"Lookup\" button to resolve the friends server name!"
 msgstr ""
 
-#: src/settings.c:2207
+#: src/settings.c:2208
 msgid "Set here the color of the label displayed at friends position"
 msgstr ""
 
-#: src/settings.c:2213
+#: src/settings.c:2215
 msgid "Friends server IP"
 msgstr ""
 
-#: src/settings.c:2218
+#: src/settings.c:2219
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
@@ -1864,73 +1849,73 @@ msgid ""
 "positions are not shown."
 msgstr ""
 
-#: src/settings.c:2245
+#: src/settings.c:2241
 msgid "Use friends server"
 msgstr ""
 
-#: src/settings.c:2253
+#: src/settings.c:2251
 msgid ""
 "Enable/disable use of friends server. You must enter a Username, don't use "
 "the default name!"
 msgstr ""
 
-#: src/settings.c:2256
+#: src/settings.c:2255
 msgid ""
-"If you enable the friendsserver mode,\n"
+"If you enable the friends server mode,\n"
 "<span color=\"red\">everyone</span> using the same server\n"
 "can see your position!"
 msgstr ""
 
-#: src/settings.c:2317
+#: src/settings.c:2325
 msgid "SQL selection criterias"
 msgstr ""
 
-#: src/settings.c:2318
+#: src/settings.c:2326
 msgid "SQL"
 msgstr ""
 
-#: src/settings.c:2346
+#: src/settings.c:2353
 msgid "Dist. limit[km] "
 msgstr ""
 
-#: src/settings.c:2351
+#: src/settings.c:2357
 msgid "If enabled, show waypoints only within this distance"
 msgstr ""
 
-#: src/settings.c:2367
+#: src/settings.c:2374
 msgid "Enable/disable distance selection"
 msgstr ""
 
-#: src/settings.c:2376
+#: src/settings.c:2381
 #, fuzzy
 msgid "Show no_ssid "
 msgstr "WP'yi gster"
 
-#: src/settings.c:2387
+#: src/settings.c:2394
 msgid ""
 "If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
 "you can disable it here"
 msgstr ""
 
-#: src/settings.c:2393
+#: src/settings.c:2400
 #, fuzzy
 msgid "Selection mode"
 msgstr "Simulasyon modu"
 
-#: src/settings.c:2395
+#: src/settings.c:2402
 msgid "include"
 msgstr ""
 
-#: src/settings.c:2398
+#: src/settings.c:2405
 msgid "exclude"
 msgstr ""
 
-#: src/settings.c:2402
+#: src/settings.c:2408
 msgid ""
 "Show only waypoints where the type field contains one of the selected words"
 msgstr ""
 
-#: src/settings.c:2406
+#: src/settings.c:2411
 msgid ""
 "Show only waypoints where the type field doesn't contain any the selected "
 "words"
