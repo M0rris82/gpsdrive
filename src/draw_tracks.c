@@ -23,6 +23,29 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.2  2005/10/11 08:28:35  tweety
+  gpsdrive:
+  - add Tracks(MySql) displaying
+  - reindent files modified
+  - Fix setting of Color for Grid
+  - poi Text is different in size depending on Number of POIs shown on
+    screen
+
+  geoinfo:
+   - get Proxy settings from Environment
+   - create tracks Table in Database and fill it
+     this separates Street Data from Track Data
+   - make geoinfo.pl download also Opengeodb Version 2
+   - add some poi-types
+   - Split off Filling DB with example Data
+   - extract some more Funtionality to Procedures
+   - Add some Example POI for Kirchheim(Munich) Area
+   - Adjust some Output for what is done at the moment
+   - Add more delayed index generations 'disable/enable key'
+   - If LANG=*de_DE* then only impert europe with --all option
+   - WDB will import more than one country if you wish
+   - add more things to be done with the --all option
+
   Revision 1.1  2005/08/14 10:05:24  tweety
   added new Files src/draw_tracks.?
 
@@ -83,7 +106,7 @@ extern GdkColor grey;
 extern gdouble current_long, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-	*drawing_miniimage;
+  *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
@@ -108,11 +131,11 @@ gchar tracks_label_font[100];
 
 typedef struct
 {
-	gint track_type_id;
-	gchar name[80];
-	gchar icon_name[80];
-	GdkColor *color;
-	GdkPixbuf *icon;
+  gint track_type_id;
+  gchar name[80];
+  gchar icon_name[80];
+  GdkColor *color;
+  GdkPixbuf *icon;
 } tracks_type_struct;
 #define tracks_type_list_max 500
 tracks_type_struct tracks_type_list[tracks_type_list_max];
@@ -129,22 +152,22 @@ void get_tracks_type_list (void);
 void
 tracks_init (void)
 {
-	if (debug)
-		printf ("Tracks init\n");
+  if (debug)
+    printf ("Tracks init\n");
 
-	get_tracks_type_list ();
+  get_tracks_type_list ();
 
-	tracks_list_limit = 10000;
-	tracks_list = g_new (tracks_struct, tracks_list_limit);
-	if (tracks_list == NULL)
-	{
-		g_print ("Error: Cannot allocate Memory for %ld tracks\n",
-			 tracks_list_limit);
-		tracks_list_limit = -1;
-		return;
-	}
+  tracks_list_limit = 10000;
+  tracks_list = g_new (tracks_struct, tracks_list_limit);
+  if (tracks_list == NULL)
+    {
+      g_print ("Error: Cannot allocate Memory for %ld tracks\n",
+	       tracks_list_limit);
+      tracks_list_limit = -1;
+      return;
+    }
 
-	tracks_rebuild_list ();
+  tracks_rebuild_list ();
 }
 
 
@@ -156,29 +179,29 @@ gdouble tracks_lat_ul = 0, tracks_lon_ul = 0;
 void
 tracks_check_if_moved_reset (void)
 {
-    tracks_lat_lr = 0, tracks_lon_lr = 0;
-    tracks_lat_ul = 0, tracks_lon_ul = 0;
+  tracks_lat_lr = 0, tracks_lon_lr = 0;
+  tracks_lat_ul = 0, tracks_lon_ul = 0;
 }
 
 int
 tracks_check_if_moved (void)
 {
-	gdouble lat_lr, lon_lr;
-	gdouble lat_ul, lon_ul;
+  gdouble lat_lr, lon_lr;
+  gdouble lat_ul, lon_ul;
 
-	if (tracks_lat_lr == 0 && tracks_lon_lr == 0 &&
-	    tracks_lat_ul == 0 && tracks_lon_ul == 0)
-		return 1;
+  if (tracks_lat_lr == 0 && tracks_lon_lr == 0 &&
+      tracks_lat_ul == 0 && tracks_lon_ul == 0)
+    return 1;
 
-	calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
-	calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
 
-	if (tracks_lat_lr == lat_lr && tracks_lon_lr == lon_lr &&
-	    tracks_lat_ul == lat_ul && tracks_lon_ul == lon_ul)
-		return 0;
-	if (debug)
-		printf ("tracks_check_if_moved: Tracks Display moved\n");
-	return 1;
+  if (tracks_lat_lr == lat_lr && tracks_lon_lr == lon_lr &&
+      tracks_lat_ul == lat_ul && tracks_lon_ul == lon_ul)
+    return 0;
+  if (debug)
+    printf ("tracks_check_if_moved: Tracks Display moved\n");
+  return 1;
 }
 
 
@@ -187,91 +210,85 @@ tracks_check_if_moved (void)
 void
 get_tracks_type_list (void)
 {
-	char sql_query[3000];
+  char sql_query[3000];
 
-	if (!usesql)
-		return;
+  if (!usesql)
+    return;
 
-	if (debug)
-		printf ("get_tracks_type_list ()\n");
+  if (debug)
+    printf ("get_tracks_type_list ()\n");
 
-	g_snprintf (sql_query, sizeof (sql_query),
-		    "SELECT track_type_id,name,color FROM tracks_type ORDER BY track_type_id");
+  g_snprintf (sql_query, sizeof (sql_query),
+	      "SELECT track_type_id,name,color FROM tracks_type ORDER BY track_type_id");
 
-	if (dl_mysql_query (&mysql, sql_query))
+  if (dl_mysql_query (&mysql, sql_query))
+    {
+      fprintf (stderr, "get_tracks_type_list: Error in query: %s\n",
+	       dl_mysql_error (&mysql));
+      return;
+    }
+
+  if (!(res = dl_mysql_store_result (&mysql)))
+    {
+      fprintf (stderr, "Error in store results: %s\n",
+	       dl_mysql_error (&mysql));
+      dl_mysql_free_result (res);
+      res = NULL;
+      return;
+    }
+
+  while ((row = dl_mysql_fetch_row (res)))
+    {
+      tracks_type_list_count = (gint) g_strtod (row[0], NULL);
+      if (tracks_type_list_count < tracks_type_list_max)
 	{
-		fprintf (stderr, "get_tracks_type_list: Error in query: %s\n",
-			 dl_mysql_error (&mysql));
-		return;
+	  tracks_type_list[tracks_type_list_count].
+	    track_type_id = tracks_type_list_count;
+
+	  if (NULL == row[1])
+	    {
+	      tracks_type_list[tracks_type_list_count].name[0] = '\0';
+	    }
+	  else
+	    {
+	      // memorize name
+	      g_strlcpy (tracks_type_list
+			 [tracks_type_list_count].name,
+			 row[1],
+			 sizeof (tracks_type_list
+				 [tracks_type_list_count].name));
+	    }
+
+	  // memorize color
+	  if (tracks_type_list_count == 1)	// Actual Track
+	    {
+	      tracks_type_list[tracks_type_list_count].color = &blue;
+	    }
+	  else if (tracks_type_list_count == 2)	// Old Tracks 
+	    {
+	      tracks_type_list[tracks_type_list_count].color = &green;
+	    }
+	  else if (tracks_type_list_count == 3)	// Error in Track
+	    {
+	      tracks_type_list[tracks_type_list_count].color = &red;
+	    }
+	  else
+	    {
+	      tracks_type_list[tracks_type_list_count].color = &red;
+	    }
 	}
+    }
 
-	if (!(res = dl_mysql_store_result (&mysql)))
-	{
-		fprintf (stderr, "Error in store results: %s\n",
-			 dl_mysql_error (&mysql));
-	dl_mysql_free_result (res);
-	res=NULL;
-		return;
-	}
+  if (!dl_mysql_eof (res))
+    {
+      fprintf (stderr, "Error in dl_mysql_eof: %s\n",
+	       dl_mysql_error (&mysql));
+      dl_mysql_free_result (res);
+      res = NULL;
+    }
 
-	while ((row = dl_mysql_fetch_row (res)))
-	{
-		tracks_type_list_count = (gint) g_strtod (row[0], NULL);
-		if (tracks_type_list_count < tracks_type_list_max)
-		{
-			tracks_type_list[tracks_type_list_count].
-				track_type_id = tracks_type_list_count;
-
-			if (row[1] == NULL)
-			{
-				tracks_type_list[tracks_type_list_count].
-					name[0] = '\0';
-			}
-			else
-			{
-				// memorize name
-				g_strlcpy (tracks_type_list
-					   [tracks_type_list_count].name,
-					   row[1],
-					   sizeof (tracks_type_list
-						   [tracks_type_list_count].
-						   name));
-			}
-
-			// memorize color
-			if (tracks_type_list_count == 1) // Actual Track
-			{
-				tracks_type_list[tracks_type_list_count].
-					color = &blue;
-			}
-			else if (tracks_type_list_count == 2) // Old Tracks 
-			{
-				tracks_type_list[tracks_type_list_count].
-					color = &green;
-			}
-			else if (tracks_type_list_count == 3) // Error in Track
-			{
-				tracks_type_list[tracks_type_list_count].
-				    color = &red;
-			}
-			else
-			{
-				tracks_type_list[tracks_type_list_count].
-					color = &red;
-			}
-		}
-	}
-
-	if (!dl_mysql_eof (res))
-	{
-		fprintf (stderr, "Error in dl_mysql_eof: %s\n",
-			 dl_mysql_error (&mysql));
-	dl_mysql_free_result (res);
-	res=NULL;
-	}
-
-	dl_mysql_free_result (res);
-	res=NULL;
+  dl_mysql_free_result (res);
+  res = NULL;
 
 }
 
@@ -284,208 +301,208 @@ get_tracks_type_list (void)
 void
 tracks_rebuild_list (void)
 {
-	char sql_query[5000];
-	char sql_where[5000];
-	struct timeval t;
-	int r, rges;
-	time_t ti;
+  char sql_query[5000];
+  char sql_where[5000];
+  struct timeval t;
+  int r, rges;
+  time_t ti;
 
-	gdouble lat_ul, lon_ul;
-	gdouble lat_ll, lon_ll;
-	gdouble lat_ur, lon_ur;
-	gdouble lat_lr, lon_lr;
-	gdouble lat_min, lon_min;
-	gdouble lat_max, lon_max;
-	gdouble lat_mid, lon_mid;
+  gdouble lat_ul, lon_ul;
+  gdouble lat_ll, lon_ll;
+  gdouble lat_ur, lon_ur;
+  gdouble lat_lr, lon_lr;
+  gdouble lat_min, lon_min;
+  gdouble lat_max, lon_max;
+  gdouble lat_mid, lon_mid;
 
-	if (!usesql)
-		return;
+  if (!usesql)
+    return;
 
-	if (!maploaded)
-		return;
+  if (!maploaded)
+    return;
 
-	if (importactive)
-		return;
+  if (importactive)
+    return;
 
-	if (debug)
-		printf ("tracks_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvv\n");
+  if (debug)
+    printf ("tracks_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvv\n");
 
-	if (!tracks_draw)
+  if (!tracks_draw)
+    {
+      if (debug)
+	printf ("tracks_rebuild_list: tracks_draw is off\n");
+      return;
+    }
+
+  {				// calculate the start and stop for lat/lon according to the displayed section
+    calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+    calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
+    calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
+    calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+
+    lat_min = min (lat_ll, lat_ul);
+    lat_max = max (lat_lr, lat_ur);
+    lon_min = min (lon_ll, lon_ul);
+    lon_max = max (lon_lr, lon_ur);
+
+    lat_mid = (lat_min + lat_max) / 2;
+    lon_mid = (lon_min + lon_max) / 2;
+  }
+
+  gdouble tracks_posx1, tracks_posy1;
+  gdouble tracks_posx2, tracks_posy2;
+
+
+  gettimeofday (&t, NULL);
+  ti = t.tv_sec + t.tv_usec / 1000000.0;
+
+
+  {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
+    g_snprintf (sql_where, sizeof (sql_where),
+		"WHERE \n"
+		"\t\t ( \n"
+		"\t\t   ( ( lat1 BETWEEN %.6f AND %.6f ) AND ( lon1 BETWEEN %.6f AND %.6f ) ) \n"
+		"\t\t   OR \n"
+		"\t\t   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) \n"
+		"\t\t ) \n",
+		lat_min, lat_max, lon_min, lon_max,
+		lat_min, lat_max, lon_min, lon_max);
+    g_strdelimit (sql_where, ",", '.');	// For different LANG
+    if (debug)
+      {
+	// printf ("TRACKS mysql where: %s\n", sql_where );
+	printf ("tracks_rebuild_list: TRACKS mapscale: %ld\n", mapscale);
+      }
+  }
+
+
+
+
+  // Diplay ONLY those TRACKS which are tracks.scale_min <= level <=tracks.scale_max for actual scale
+  g_snprintf (sql_query, sizeof (sql_query),
+	      // "SELECT lat,lon,alt,track_type_id,proximity "
+	      "SELECT lat1,lon1,lat2,lon2,name,track_type_id "
+	      "FROM tracks " "%s LIMIT 200000", sql_where);
+
+  if (debug)
+    printf ("tracks_rebuild_list: TRACKS mysql query: %s\n", sql_query);
+
+  if (dl_mysql_query (&mysql, sql_query))
+    {
+      fprintf (stderr, "tracks_rebuild_list: Error in query: %s\n",
+	       dl_mysql_error (&mysql));
+      return;
+    }
+
+  if (!(res = dl_mysql_store_result (&mysql)))
+    {
+      fprintf (stderr, "Error in store result: %s\n",
+	       dl_mysql_error (&mysql));
+      dl_mysql_free_result (res);
+      res = NULL;
+      return;
+    }
+
+  if (debug)
+    printf ("tracks_rebuild_list: processing rows\n");
+  rges = r = 0;
+  tracks_list_count = -1;
+  while ((row = dl_mysql_fetch_row (res)))
+    {
+      rges++;
+      gdouble lat1, lon1;
+      gdouble lat2, lon2;
+      lat1 = g_strtod (row[0], NULL);
+      lon1 = g_strtod (row[1], NULL);
+      lat2 = g_strtod (row[2], NULL);
+      lon2 = g_strtod (row[3], NULL);
+
+
+      calcxy (&tracks_posx1, &tracks_posy1, lon1, lat1, zoom);
+      calcxy (&tracks_posx2, &tracks_posy2, lon2, lat2, zoom);
+
+      if (posxy_on_screen (tracks_posx1, tracks_posy1) ||
+	  posxy_on_screen (tracks_posx2, tracks_posy2))
 	{
-		if (debug)
-			printf ("tracks_rebuild_list: tracks_draw is off\n");
-		return;
-	}
+	  // get next free mem for tracks
+	  tracks_list_count++;
+	  if (tracks_list_count >= tracks_list_limit)
+	    {
+	      tracks_list_limit = tracks_list_count + 1000;
+	      if (debug)
+		printf
+		  ("tracks_rebuild_list: renewmemory for track list: %ld\n",
+		   tracks_list_limit);
 
-	{			// calculate the start and stop for lat/lon according to the displayed section
-		calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-		calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-		calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
-		calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
-
-		lat_min = min (lat_ll, lat_ul);
-		lat_max = max (lat_lr, lat_ur);
-		lon_min = min (lon_ll, lon_ul);
-		lon_max = max (lon_lr, lon_ur);
-
-		lat_mid = (lat_min + lat_max) / 2;
-		lon_mid = (lon_min + lon_max) / 2;
-	}
-
-	gdouble tracks_posx1, tracks_posy1;
-	gdouble tracks_posx2, tracks_posy2;
-
-
-	gettimeofday (&t, NULL);
-	ti = t.tv_sec + t.tv_usec / 1000000.0;
-
-
-	{			// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
-		g_snprintf (sql_where, sizeof (sql_where),
-			    "WHERE \n"
-			    "\t\t ( \n"
-			    "\t\t   ( ( lat1 BETWEEN %.6f AND %.6f ) AND ( lon1 BETWEEN %.6f AND %.6f ) ) \n"
-			    "\t\t   OR \n"
-			    "\t\t   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) \n"
-			    "\t\t ) \n",
-			    lat_min, lat_max, lon_min, lon_max,
-			    lat_min, lat_max, lon_min, lon_max
-			    );
-		g_strdelimit (sql_where, ",", '.');	// For different LANG
-		if (debug)
+	      tracks_list =
+		g_renew (tracks_struct, tracks_list, tracks_list_limit);
+	      if (NULL == tracks_list)
 		{
-			// printf ("TRACKS mysql where: %s\n", sql_where );
-			printf ("tracks_rebuild_list: TRACKS mapscale: %ld\n", mapscale);
+		  g_print ("Error: Cannot allocate Memory for %ld tracks\n",
+			   tracks_list_limit);
+		  tracks_list_limit = -1;
+		  return;
 		}
+	    }
+	  if (mydebug)
+	    {
+	      printf ("tracks_rebuild_list: %ld(%ld)\t", tracks_list_count,
+		      tracks_list_limit);
+	      printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2,
+		      lon2);
+	    }
+
+	  // Save retrieved tracks information into structure
+	  (tracks_list + tracks_list_count)->lat1 = lat1;
+	  (tracks_list + tracks_list_count)->lon1 = lon1;
+	  (tracks_list + tracks_list_count)->lat2 = lat2;
+	  (tracks_list + tracks_list_count)->lon2 = lon2;
+	  (tracks_list + tracks_list_count)->x1 = tracks_posx1;
+	  (tracks_list + tracks_list_count)->y1 = tracks_posy1;
+	  (tracks_list + tracks_list_count)->x2 = tracks_posx2;
+	  (tracks_list + tracks_list_count)->y2 = tracks_posy2;
+	  (tracks_list + tracks_list_count)->track_type_id =
+	    (gint) g_strtod (row[5], NULL);
+
+	  if (NULL == (tracks_list + tracks_list_count)->name)
+	    (tracks_list + tracks_list_count)->name[0] = '\0';
+	  else
+	    g_strlcpy ((tracks_list + tracks_list_count)->name,
+		       row[4],
+		       sizeof ((tracks_list + tracks_list_count)->name));
+
 	}
+    }
 
 
+  if (debug)
+    {				// print time for getting Data
+      gettimeofday (&t, NULL);
+      ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
+      g_print (_("%ld(%d) rows read in %.2f seconds\n"),
+	       tracks_list_count, rges, (gdouble) ti);
+    }
 
+  {				/* remember where the data belongs to */
+    tracks_lat_lr = lat_lr;
+    tracks_lon_lr = lon_lr;
+    tracks_lat_ul = lat_ul;
+    tracks_lon_ul = lon_ul;
+  }
 
-	// Diplay ONLY those TRACKS which are tracks.scale_min <= level <=tracks.scale_max for actual scale
-	g_snprintf (sql_query, sizeof (sql_query),
-		    // "SELECT lat,lon,alt,track_type_id,proximity "
-		    "SELECT lat1,lon1,lat2,lon2,name,track_type_id "
-		    "FROM tracks "
-		    "%s LIMIT 200000", sql_where);
+  if (!dl_mysql_eof (res))
+    {
+      fprintf (stderr, "Error in dl_mysql_eof: %s\n",
+	       dl_mysql_error (&mysql));
+      dl_mysql_free_result (res);
+      res = NULL;
+    }
 
-	if (debug)
-		printf ("tracks_rebuild_list: TRACKS mysql query: %s\n",
-			sql_query);
+  dl_mysql_free_result (res);
+  res = NULL;
 
-	if (dl_mysql_query (&mysql, sql_query))
-	{
-		fprintf (stderr, "tracks_rebuild_list: Error in query: %s\n",
-			 dl_mysql_error (&mysql));
-		return;
-	}
-
-	if (!(res = dl_mysql_store_result (&mysql)))
-	{
-		fprintf (stderr, "Error in store result: %s\n",
-			 dl_mysql_error (&mysql));
-	dl_mysql_free_result (res);
-	res=NULL;
-		return;
-	}
-
-	if (debug)
-		printf ("tracks_rebuild_list: processing rows\n");
-	rges = r = 0;
-	tracks_list_count = -1;
-	while ((row = dl_mysql_fetch_row (res)))
-	{
-		rges++;
-		gdouble lat1, lon1;
-		gdouble lat2, lon2;
-		lat1 = g_strtod (row[0], NULL);
-		lon1 = g_strtod (row[1], NULL);
-		lat2 = g_strtod (row[2], NULL);
-		lon2 = g_strtod (row[3], NULL);
-
-
-		calcxy (&tracks_posx1, &tracks_posy1, lon1, lat1, zoom);
-		calcxy (&tracks_posx2, &tracks_posy2, lon2, lat2, zoom);
-
-		if (posxy_on_screen (tracks_posx1, tracks_posy1) ||
-		    posxy_on_screen (tracks_posx2, tracks_posy2))
-		{
-			// get next free mem for tracks
-			tracks_list_count++;
-			if (tracks_list_count >= tracks_list_limit)
-			{
-				tracks_list_limit = tracks_list_count + 1000;
-				if (debug)
-					printf ("tracks_rebuild_list: renewmemory for track list: %ld\n", tracks_list_limit);
-
-				tracks_list =
-					g_renew (tracks_struct, tracks_list,
-						 tracks_list_limit);
-				if (NULL == tracks_list)
-				{
-					g_print ("Error: Cannot allocate Memory for %ld tracks\n", tracks_list_limit);
-					tracks_list_limit = -1;
-					return;
-				}
-			}
-			if (mydebug)
-			{
-			    printf ("tracks_rebuild_list: %ld(%ld)\t", tracks_list_count, tracks_list_limit);
-			    printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
-			}
-
-			// Save retrieved tracks information into structure
-			(tracks_list + tracks_list_count)->lat1 = lat1;
-			(tracks_list + tracks_list_count)->lon1 = lon1;
-			(tracks_list + tracks_list_count)->lat2 = lat2;
-			(tracks_list + tracks_list_count)->lon2 = lon2;
-			(tracks_list + tracks_list_count)->x1 = tracks_posx1;
-			(tracks_list + tracks_list_count)->y1 = tracks_posy1;
-			(tracks_list + tracks_list_count)->x2 = tracks_posx2;
-			(tracks_list + tracks_list_count)->y2 = tracks_posy2;
-			(tracks_list + tracks_list_count)->track_type_id =
-				(gint) g_strtod (row[5], NULL);
-
-			if ( NULL == (tracks_list + tracks_list_count)->name) 
-			    (tracks_list + tracks_list_count)->name[0]='\0';
-			else
-			    g_strlcpy ((tracks_list + tracks_list_count)->name,
-				       row[4],
-				       sizeof ((tracks_list +
-						tracks_list_count)->name));
-
-		}
-	}
-
-
-	if (debug)
-	{			// print time for getting Data
-		gettimeofday (&t, NULL);
-		ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-		g_print (_("%ld(%d) rows read in %.2f seconds\n"),
-			 tracks_list_count, rges, (gdouble) ti);
-	}
-
-	{			/* remember where the data belongs to */
-		tracks_lat_lr = lat_lr;
-		tracks_lon_lr = lon_lr;
-		tracks_lat_ul = lat_ul;
-		tracks_lon_ul = lon_ul;
-	}
-
-	if (!dl_mysql_eof (res))
-	{
-		fprintf (stderr, "Error in dl_mysql_eof: %s\n",
-			 dl_mysql_error (&mysql));
-	dl_mysql_free_result (res);
-	res=NULL;
-	}
-
-	dl_mysql_free_result (res);
-	res=NULL;
-
-	if (debug)
-		printf ("tracks_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
+  if (debug)
+    printf ("tracks_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
 
@@ -498,189 +515,197 @@ tracks_rebuild_list (void)
 void
 tracks_draw_list (void)
 {
-	//  gint t;
+  //  gint t;
 
-	GdkSegment *gdks_tracks;
-	gint gdks_tracks_count = -1;
-	gint gdks_tracks_max = tracks_list_count+1;
+  GdkSegment *gdks_tracks;
+  gint gdks_tracks_count = -1;
+  gint gdks_tracks_max = tracks_list_count + 1;
 
-	gint i;
+  gint i;
 
-	if (!usesql)
-		return;
+  if (!usesql)
+    return;
 
-	if (importactive)
-		return;
+  if (importactive)
+    return;
 
-	if (!(tracks_draw))
+  if (!(tracks_draw))
+    {
+      tracks_check_if_moved_reset ();
+      if (debug)
+	printf ("tracks_draw is off\n");
+      return;
+    }
+
+  if (debug)
+    printf ("tracks_draw\n");
+
+  if (tracks_check_if_moved ())
+    tracks_rebuild_list ();
+
+  gdks_tracks_max = tracks_list_count + 1;
+
+
+  if (0 >= gdks_tracks_max)
+    return;
+
+  if (debug)
+    printf ("tracks_draw %ld segments\n", tracks_list_count);
+
+  gdks_tracks = g_new0 (GdkSegment, gdks_tracks_max);
+  if (NULL == gdks_tracks)
+    {
+      printf ("Problem reserving Memory for %ld track segments\n",
+	      gdks_tracks_max);
+      gdks_tracks_max = -1;
+      return;
+    }
+
+  if (debug)
+    printf ("created gdk struct for %ld segments\n", gdks_tracks_max);
+
+  /* ------------------------------------------------------------------ */
+  /*  draw gdks_tracks_list tracks */
+  for (i = 0; i < tracks_list_count; i++)
+    {
+      gdouble posx1, posy1;
+      gdouble posx2, posy2;
+
+      posx1 = (tracks_list + i)->x1;
+      posy1 = (tracks_list + i)->y1;
+      posx2 = (tracks_list + i)->x2;
+      posy2 = (tracks_list + i)->y2;
+
+
+      /*      if ( mydebug ) {
+       * //printf("    a1 %f,%f\n",  posx1,posy1);
+       * //printf("    a2 %f,%f\n",  posx2,posy2);
+       * 
+       * printf ("TRACKS Draw: %f %f -> %f, %f            %s\n",
+       * (tracks_list + i)->lat1, (tracks_list + i)->lon1,
+       * (tracks_list + i)->lat2, (tracks_list + i)->lon2,
+       * (tracks_list + i)->name
+       * );
+       * }
+       */
+      if (posxy_on_screen (posx1, posy1) || posxy_on_screen (posx2, posy2))
 	{
-	    tracks_check_if_moved_reset();
-		if (debug)
-			printf ("tracks_draw is off\n");
-		return;
+	  /*
+	   * if (debug) {
+	   * printf ("       Draw: %f %f -> %f, %f\n",
+	   * (tracks_list + i)->x1,   (tracks_list + i)->y1,
+	   * (tracks_list + i)->x2,   (tracks_list + i)->y2
+	   * );
+	   * }
+	   */
+
+	  // Alloc Memory if we need more
+	  gdks_tracks_count++;
+	  if (gdks_tracks_count >= gdks_tracks_max)
+	    {
+	      gdks_tracks_max = gdks_tracks_count + 1000;
+	      g_renew (GdkSegment, gdks_tracks, gdks_tracks_max);
+	      if (NULL == tracks_list)
+		{
+		  g_print
+		    ("Error: Cannot allocate Memory for %ld track-gdk segments\n",
+		     gdks_tracks_max);
+		  gdks_tracks_max = -1;
+		  return;
+		}
+	    }
+
+	  (gdks_tracks + gdks_tracks_count)->x1 = posx1;
+	  (gdks_tracks + gdks_tracks_count)->y1 = posy1;
+	  (gdks_tracks + gdks_tracks_count)->x2 = posx2;
+	  (gdks_tracks + gdks_tracks_count)->y2 = posy2;
+
+	  if (mydebug && 0)
+	    {
+	      char beschrift[120];
+	      g_snprintf (beschrift, sizeof (beschrift),
+			  "(%.4f ,%.4f)\n(%.4f ,%.4f)\n%s",
+			  (tracks_list + i)->lat1,
+			  (tracks_list + i)->lon1,
+			  (tracks_list + i)->lat2, (tracks_list + i)->lon2,
+			  //(tracks_list + i)->track_type_id,
+			  (tracks_list + i)->name);
+
+	      draw_text_with_box (posx1 +
+				  (posx2 - posx1) / 2,
+				  posy1 + (posy2 - posy1) / 2, beschrift);
+	      //draw_text_with_box(posx1+(posx2-posx1)/2,posy1+(posy2-posy1)/2,(tracks_list + i)->name);
+	      if (0)
+		{
+		  draw_small_plus_sign (posx1 +
+					(posx2 -
+					 posx1) / 2,
+					posy1 + (posy2 - posy1) / 2);
+		  draw_text_with_box (posx1, posy1 - 15,
+				      (tracks_list + i)->name);
+		  draw_text_with_box (posx2, posy2 + 15,
+				      (tracks_list + i)->name);
+		}
+	      gdk_gc_set_foreground (kontext, &red);
+	      draw_small_plus_sign (posx1, posy1);
+	      draw_small_plus_sign (posx2, posy2);
+
+	    }
+
+	  if (debug)
+	    {
+	      //          printf("    1 %f,%f\n",  posx1,posy1);
+	      //          printf("    2 %f,%f\n",  posx2,posy2);
+	    }
 	}
 
-	if (debug)
-		printf ("tracks_draw\n");
-
-	if (tracks_check_if_moved ())
-		tracks_rebuild_list ();
-
-	gdks_tracks_max = tracks_list_count+1;
-
-	if (debug)
-		printf ("tracks_draw %ld segments\n", tracks_list_count);
-
-	gdks_tracks = g_new0 (GdkSegment, gdks_tracks_max);
-	if ( NULL == gdks_tracks) {
-	    printf ("Problem reserving Memory for %ld segments\n", gdks_tracks_max);
-	    gdks_tracks_max =-1;
-	    return;
-	}
-
-	if (debug)
-		printf ("created gdk struct for %ld segments\n", gdks_tracks_max);
-
-	/* ------------------------------------------------------------------ */
-	/*  draw gdks_tracks_list tracks */
-	for (i = 0; i < tracks_list_count; i++)
+      // draw it if last or track_type_id changes 
+      if ((i == tracks_list_count - 1) ||
+	  ((tracks_list + i)->track_type_id !=
+	   (tracks_list + i + 1)->track_type_id))
 	{
-		gdouble posx1, posy1;
-		gdouble posx2, posy2;
-
-		posx1 = (tracks_list + i)->x1;
-		posy1 = (tracks_list + i)->y1;
-		posx2 = (tracks_list + i)->x2;
-		posy2 = (tracks_list + i)->y2;
-
-
-		/*      if ( mydebug ) {
-		 * //printf("    a1 %f,%f\n",  posx1,posy1);
-		 * //printf("    a2 %f,%f\n",  posx2,posy2);
-		 * 
-		 * printf ("TRACKS Draw: %f %f -> %f, %f            %s\n",
-		 * (tracks_list + i)->lat1, (tracks_list + i)->lon1,
-		 * (tracks_list + i)->lat2, (tracks_list + i)->lon2,
-		 * (tracks_list + i)->name
-		 * );
-		 * }
-		 */
-		if (posxy_on_screen (posx1, posy1) ||
-		    posxy_on_screen (posx2, posy2))
+	  /*
+	   * if ( debug )
+	   * printf("Drawing %d segments\n",gdks_tracks_count);
+	   */
+	  int track_id = (tracks_list + i)->track_type_id;
+	  if (track_id < tracks_type_list_max)
+	    {
+	      if (NULL == tracks_type_list[track_id].color)
 		{
-			/*
-			 * if (debug) {
-			 * printf ("       Draw: %f %f -> %f, %f\n",
-			 * (tracks_list + i)->x1,   (tracks_list + i)->y1,
-			 * (tracks_list + i)->x2,   (tracks_list + i)->y2
-			 * );
-			 * }
-			 */
+		  if (debug)
+		    fprintf (stderr,
+			     "ERROR: Undefined Track Color for Segment %ld, track_id %ld\n",
+			     i, track_id);
 
-			// Alloc Memory if we need more
-			gdks_tracks_count++;
-			if (gdks_tracks_count >= gdks_tracks_max )
-			{
-				gdks_tracks_max = gdks_tracks_count + 1000;
-				g_renew (GdkSegment, gdks_tracks,
-					 gdks_tracks_max);
-				if (NULL == tracks_list)
-				{
-					g_print ("Error: Cannot allocate Memory for %ld track-gdk segments\n", 
-						 gdks_tracks_max);
-					gdks_tracks_max = -1;
-					return;
-				}
-			}
-
-			(gdks_tracks + gdks_tracks_count)->x1 = posx1;
-			(gdks_tracks + gdks_tracks_count)->y1 = posy1;
-			(gdks_tracks + gdks_tracks_count)->x2 = posx2;
-			(gdks_tracks + gdks_tracks_count)->y2 = posy2;
-
-			if (mydebug && 0)
-			{
-				char beschrift[120];
-				g_snprintf (beschrift, sizeof (beschrift),
-					    "(%.4f ,%.4f)\n(%.4f ,%.4f)\n%s",
-					    (tracks_list + i)->lat1,
-					    (tracks_list + i)->lon1,
-					    (tracks_list + i)->lat2,
-					    (tracks_list + i)->lon2,
-					    //(tracks_list + i)->track_type_id,
-					    (tracks_list + i)->name);
-
-				draw_text_with_box (posx1 +
-						    (posx2 - posx1) / 2,
-						    posy1 + (posy2 -
-							     posy1) / 2,
-						    beschrift);
-				//draw_text_with_box(posx1+(posx2-posx1)/2,posy1+(posy2-posy1)/2,(tracks_list + i)->name);
-				if (0)
-				{
-					draw_small_plus_sign (posx1 +
-							      (posx2 -
-							       posx1) / 2,
-							      posy1 + (posy2 -
-								       posy1)
-							      / 2);
-					draw_text_with_box (posx1, posy1 - 15,
-							    (tracks_list +
-							     i)->name);
-					draw_text_with_box (posx2, posy2 + 15,
-							    (tracks_list +
-							     i)->name);
-				}
-				gdk_gc_set_foreground (kontext, &red);
-				draw_small_plus_sign (posx1, posy1);
-				draw_small_plus_sign (posx2, posy2);
-
-			}
-
-			if (debug)
-			{
-				//          printf("    1 %f,%f\n",  posx1,posy1);
-				//          printf("    2 %f,%f\n",  posx2,posy2);
-			}
+		  gdk_gc_set_foreground (kontext, &green);
+		  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 		}
-
-		// draw it if last or track_type_id changes 
-		if ((i == tracks_list_count - 1) ||
-		    ((tracks_list + i)->track_type_id !=
-		     (tracks_list + i + 1)->track_type_id))
+	      else
 		{
-			/*
-			 * if ( debug )
-			 * printf("Drawing %d segments\n",gdks_tracks_count);
-			 */
-			int track_id = (tracks_list + i)->track_type_id;
-			if (track_id < tracks_type_list_max)
-			{
-				//gdk_gc_set_foreground (kontext, &red);
-				gdk_gc_set_foreground (kontext,
-						       tracks_type_list
-						       [track_id].color);
-				gdk_gc_set_line_attributes (kontext, 2, 0, 0,
-							    0);
-			}
-			else
-			{
-				gdk_gc_set_foreground (kontext, &red);
-				gdk_gc_set_line_attributes (kontext, 5, 0, 0,
-							    0);
-			}
-
-			gdk_draw_segments (drawable, kontext,
-					   (GdkSegment *) gdks_tracks,
-					   gdks_tracks_count + 1);
-			gdks_tracks_count = -1;
+		  gdk_gc_set_foreground (kontext,
+					 tracks_type_list[track_id].color);
+		  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 		}
+	    }
+	  else
+	    {
+	      gdk_gc_set_foreground (kontext, &red);
+	      gdk_gc_set_line_attributes (kontext, 5, 0, 0, 0);
+	    }
+
+	  gdk_draw_segments (drawable, kontext,
+			     (GdkSegment *) gdks_tracks,
+			     gdks_tracks_count + 1);
+	  gdks_tracks_count = -1;
 	}
+    }
 
-	g_free (gdks_tracks);
+  g_free (gdks_tracks);
 
-	if (mydebug)
-		printf ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+  if (mydebug)
+    printf
+      ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
 
 
@@ -688,29 +713,33 @@ tracks_draw_list (void)
  * query all Info for tracks in area arround lat/lon
 */
 void
-tracks_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 )
+tracks_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 {
-    gint i;
-    printf ("Query Tracks: %f ... %f , %f ... %f\n", lat1,lat2, lon1,lon2);
-    
-    for (i = 0; i < tracks_list_count; i++)
-	{   
-	    // TODO:: make real checks if in rectangle or crossing rectangle
-	    if ( ( ( lat1 <= (tracks_list + i)->lat1 ) && ( (tracks_list + i)->lat1 <= lat2 ) &&
-		   ( lon1 <= (tracks_list + i)->lon1 ) && ( (tracks_list + i)->lon1 <= lon2 ) ) ||
-		 ( ( lat1 <= (tracks_list + i)->lat2 ) && ( (tracks_list + i)->lat2 <= lat2 ) &&
-		   ( lon1 <= (tracks_list + i)->lon2 ) && ( (tracks_list + i)->lon2 <= lon2 ) ) 
-		 ) {
-		printf ("Tracks: %ld: %f,%f --> %f,%f :%s\t",
-			i,
-			(tracks_list + i)->lat1, (tracks_list + i)->lon1,
-			(tracks_list + i)->lat2, (tracks_list + i)->lon2,
-			(tracks_list + i)->name);
-		gint track_type_id = (tracks_list + i)->track_type_id;
-		
-		printf ("Type: %s\t",tracks_type_list[track_type_id].name);
-		printf ("%s\n", (tracks_list + i)->comment);
-	    }
+  gint i;
+  printf ("Query Tracks: %f ... %f , %f ... %f\n", lat1, lat2, lon1, lon2);
+
+  for (i = 0; i < tracks_list_count; i++)
+    {
+      // TODO:: make real checks if in rectangle or crossing rectangle
+      if (((lat1 <= (tracks_list + i)->lat1)
+	   && ((tracks_list + i)->lat1 <= lat2)
+	   && (lon1 <= (tracks_list + i)->lon1)
+	   && ((tracks_list + i)->lon1 <= lon2))
+	  || ((lat1 <= (tracks_list + i)->lat2)
+	      && ((tracks_list + i)->lat2 <= lat2)
+	      && (lon1 <= (tracks_list + i)->lon2)
+	      && ((tracks_list + i)->lon2 <= lon2)))
+	{
+	  printf ("Tracks: %ld: %f,%f --> %f,%f :%s\t",
+		  i,
+		  (tracks_list + i)->lat1, (tracks_list + i)->lon1,
+		  (tracks_list + i)->lat2, (tracks_list + i)->lon2,
+		  (tracks_list + i)->name);
+	  gint track_type_id = (tracks_list + i)->track_type_id;
+
+	  printf ("Type: %s\t", tracks_type_list[track_type_id].name);
+	  printf ("%s\n", (tracks_list + i)->comment);
 	}
+    }
 
 }
