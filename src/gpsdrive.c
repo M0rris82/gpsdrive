@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.23  2005/02/08 20:12:59  tweety
+savetrackfile got 3 modi
+
 Revision 1.22  2005/02/07 07:53:39  tweety
 added check_if_moved inti function poi_rebuild_list
 
@@ -4485,7 +4488,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 }
 
 /* ----------------------------------------------------------------------------- */
-/* draw track on image */
+/* add new trackpoint to  'trackcoordstruct list' to draw track on image */
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
 {
@@ -8248,6 +8251,8 @@ savetrack_cb (GtkWidget * widget, guint datum)
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrackbt), FALSE);
   needtosave = TRUE;
+  if (savetrack)
+    savetrackfile (1);
   return TRUE;
 }
 
