@@ -238,6 +238,7 @@ print "\nDownloading files:\n";
 
 # Ok start getting the maps
 for my $scale ( sort {$a <=> $b} keys %{$desired_locations} ) {
+    print "Scale: $scale\n";
     for my $lati ( sort {$a <=> $b} keys %{$desired_locations->{$scale}} ) {
 	printf "   %5.2f: ",$lati;
 	my @longs = sort  {$a <=> $b} keys %{$desired_locations->{$scale}->{$lati}};
@@ -549,6 +550,7 @@ sub desired_locations {
        my $k = $DIFF * $scale;
        my $delta_lat = $k - ($k / 2); ### FIX BY CAMEL
        my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
+       #TODO: $delta_lon sollte von lat abhängen
 
        # make the starting points for the loop $slat and $slon 
        # snap into a grid with a Size depending on the scale.
@@ -565,7 +567,7 @@ sub desired_locations {
        my $snapped_start_lon = int ( $slon / $flon ) * $flon;
 
        print "Scale: $scale\n" if ($local_debug);
-       printf "  lati: %6.3f(%6.3f) +=%5.3f ... %6.3f\n",
+       printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
 	       $snapped_start_lat,$slat,$delta_lat,$endlat;
 
        my $lati = $snapped_start_lat;
@@ -573,8 +575,8 @@ sub desired_locations {
        while ($lati <= $endlat) {
 	   my $long = $snapped_start_lon;
 	   if ( $local_debug ) {
-	       printf "        %5.2f:",$lati;
-	       printf "\tlong: %6.3f(%6.3f) +=%5.3f ... %6.3f"
+	       printf "        %5.5f:",$lati;
+	       printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
 		       ,$snapped_start_lon,$slon,$delta_lon,$endlon;
 	       printf "\t\t";	
 	   }
@@ -584,9 +586,9 @@ sub desired_locations {
 	       $desired_locations->{$scale}->{$lati}->{$long}='?';
 	       if ( $local_debug ) {
 		   my $filename = map_filename($scale,$lati,$long);
-		   my $exist = ( is_map_file($filename) ) ?"e":"g";
+		   my $exist = ( is_map_file($filename) ) ? " ":"+";
 
-		   printf " %6.3f%1s",$long,$exist;
+		   printf " %6.3f %1s",$long,$exist;
 	       }
 
 	   }
