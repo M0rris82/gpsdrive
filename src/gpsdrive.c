@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.46  2005/05/30 21:16:46  tweety
+Grid drawing is wrong on zoomed cards.
+Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=15
+
 Revision 1.45  2005/05/30 00:03:14  tweety
 http://bugzilla.gpsdrive.cc/show_bug.cgi?id=7
 Von: Olli Salonen <olli@cabbala.net>
@@ -5762,6 +5767,8 @@ draw_grid (GtkWidget * widget)
 		step = 0.01;
 	if (mapscale < 5000)
 		step = 0.005;
+
+	step /= zoom;
 
 	if (mapscale < 5000000)
 	{
