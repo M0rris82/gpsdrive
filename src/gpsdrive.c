@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.60  2005/08/14 18:46:42  tweety
+remove unnedded xpm Files; read pixmaps with read_icons,
+separate more pixmaps from icons
+
 Revision 1.59  2005/08/14 10:18:14  tweety
 *** empty log message ***
 
@@ -2094,7 +2098,6 @@ gpsdrive started
 #include "gps_handler.h"
 #include <speech_strings.h>
 #include <speech_out.h>
-#include <xpm_compass.h>
 
 #include "import_map.h"
 #include "icons.h"
@@ -4299,8 +4302,6 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 			g_snprintf (mappath, sizeof (mappath),
 				    "%s/gpsdrive/%s", DATADIR,
 				    "pixmaps/gpsdriveanim.gif");
-			/*  satsimage = */
-			/*    gdk_pixbuf_new_from_xpm_data ((const char **) pinguin_xpm); */
 			anim = gdk_pixbuf_animation_new_from_file (mappath,
 								   NULL);
 			if (anim == NULL)
@@ -5449,10 +5450,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 	if (compasskontext == NULL)
 		compasskontext = gdk_gc_new (drawable_bearing);
 	if (compassimage == NULL)
-		compassimage =
-			gdk_pixbuf_new_from_xpm_data ((const char **)
-						      compass_xpm);
-
+		compassimage = read_icon("compass.png");
 
 	gdk_draw_pixbuf (drawable_bearing, compasskontext, compassimage, 0, 0,
 			 0, 0, PSIZE, PSIZE, GDK_RGB_DITHER_NONE, 0, 0);
