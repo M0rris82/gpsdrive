@@ -4,3 +4,6 @@ Makefile*
 gpsdrive
 garble
 gpsd
+.libs
+.deps
+friendsd2
