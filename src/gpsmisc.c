@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.11  2005/10/25 20:37:58  tweety
+moved a few of the functions
+Autor: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
 Revision 1.10  2005/10/19 07:22:21  tweety
 Its now possible to choose units for displaying coordinates also in
 Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
@@ -118,7 +122,7 @@ extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
 	milesconv;
-
+static gchar gradsym[] = "\xc2\xb0";
 
 
 /* ******************************************************************
@@ -535,3 +539,94 @@ create_pixmap (GtkWidget * widget, const gchar * filename)
 	return pixmap;
 }
 
+
+/* *****************************************************************************
+ * Convert a coordinate to a gchar
+ * mode is either LATLON_DMS, LATLON MINDEC or LATLON_DEGDEC 
+ * By Oddgeir Kvien, to adopt for 3-way lat/lon display 
+ */
+void
+coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat, gint mode) 
+{
+    gint grad, min, minus = FALSE;
+    gdouble minf, sec;
+    grad = (gint)pos;
+    if (pos<0) { grad=-grad; pos=-pos; minus=TRUE; }
+    
+    minf = (pos - (gdouble)grad)*60.0;
+    min = (gint)minf;
+    sec = (minf - (gdouble)min)*60.0;
+    switch (mode) 
+	{
+	case LATLON_DMS:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym, min, sec, (minus) ? 'S' : 'N');
+	    else
+		g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym, min, sec, (minus) ? 'W' : 'E');
+	    break;
+	    
+	case LATLON_MINDEC:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf, (minus) ? 'S' : 'N');
+	    else
+		g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf, (minus) ? 'W' : 'E');		
+	    break;
+	    
+	case LATLON_DEGDEC:
+	    if (islat)
+		g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym, (minus) ? 'S' : 'N');
+	    else 
+		g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym, (minus) ? 'W' : 'E');
+	    break;
+	}
+}
+
+/* *****************************************************************************
+ */
+void
+gchar2dec_coordinate_string (gchar * text)
+{
+    gint grad, minus = FALSE;
+    gdouble sec;
+    gint min;
+    gdouble dec;
+    gchar s2;
+    gdouble fmin;
+
+    /*
+     * Handle either DMS or MinDec formats
+     */
+    if ( 4 == sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2) )
+	{
+	    /*   g_strdelimit (s1, ",", '.'); */
+	    /*   sscanf(s1,"%f",&sec); */
+	    dec = grad + min / 60.0 + sec / 3600.0;
+	}
+    else if (3 == sscanf (text, "%d\xc2\xb0%lf'%c", &grad, &fmin, &s2) ){
+	dec = grad + fmin / 60.0;
+    } 
+    else if (1 == sscanf (text, "%lf", &dec) ){
+	/* Is already decimal */    
+    }
+    else {
+	/* TODO: handle bad format gracefully */
+    }
+
+    if (s2 == 'W')
+	minus = TRUE;
+    if (s2 == 'S')
+	minus = TRUE;
+    if (minus)
+	dec *= -1.0;
+    g_snprintf (text, 100, "%.6f", dec);
+    /*   g_print("gchar2dec_coordinate_string --> %s\n", text); */
+}
+
+/* *****************************************************************************
+ */
+void
+checkinput (gchar * text)
+{
+	if ((strstr (text, "'")) != NULL)
+		gchar2dec_coordinate_string (text);
+}
