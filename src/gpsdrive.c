@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.59  2005/08/14 10:18:14  tweety
+*** empty log message ***
+
 Revision 1.58  2005/08/14 09:47:17  tweety
 seperate tracks into it own table in geoinfo database
 move Info's from TODO abaout geoinfo DB to Man Page
@@ -2088,7 +2091,7 @@ gpsdrive started
 #include "poi.h"
 #include "streets.h"
 #include "draw_tracks.h"
-#include "nmea_handler.h"
+#include "gps_handler.h"
 #include <speech_strings.h>
 #include <speech_out.h>
 #include <xpm_compass.h>
