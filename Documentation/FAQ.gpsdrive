@@ -173,6 +173,13 @@ A: The problem isn't gpsd or gpsdrive, the problem is the SiRF firmware. Check
 	gpsd_nmea.sh        
 
 Q: Which projection is assumed for the different map types?
-A: map_* images assume UTM-like projection and scale lon to cos(lat).
-   top_* images assume 1:1 lat/lon scaling (1deg x 1deg is a perfect square)
+A: top_* is scaled 1:1 So top_ is for lat/lon maps 
+   map_* is scaled 1:cos(lat) or something close to that.
+   map_ is for UTM or other t.merc.-like projected projections. 
+   The nice thing about using a UTM like projection is that over a small 
+   area 1 unit in either the x and y direction is the same. 
+   Thus it is much easier to calculate areas, directions, lengths, draw 
+   stuff to the screen, etc without having to get into complicated 
+   great-circle calculations as you need to do with lat/lon.
+   For example at 45S, 1 degree lon is 0.707 of a degree lat.
 
