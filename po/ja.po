@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.32\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2003-02-03 20:08+0900\n"
 "Last-Translator:  <maruyama@sh.rim.or.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -1228,11 +1228,11 @@ msgstr "rows deleted: %d\n"
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) rows read in %.2f seconds\n"
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr "フレンズアイコンがロードできませんでした:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1247,7 +1247,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1365,7 +1365,7 @@ msgstr "航海関連設定"
 msgid "Nautic"
 msgstr "Nautic"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) rows read in %.2f seconds\n"

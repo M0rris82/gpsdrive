@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2002-04-17 11:45 GMT+2\n"
 "Last-Translator: A. Burak Ilgicioglu <ilgici@ttnet.net.tr>\n"
 "Language-Team: LANGUAGE <tr@li.org>\n"
@@ -1207,11 +1207,11 @@ msgstr ""
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr " Friendsicon yklenemedi:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1221,7 +1221,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1337,7 +1337,7 @@ msgstr "eitli ayarlar"
 msgid "Nautic"
 msgstr "Denizcilikle ilgili"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""

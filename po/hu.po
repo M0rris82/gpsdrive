@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.21\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2002-05-14 16:04+0200\n"
 "Last-Translator: Emese Kovács <emese@gnome.hu>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -1207,11 +1207,11 @@ msgstr ""
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr " Az ikon betöltése sikertelen:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1221,7 +1221,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1337,7 +1337,7 @@ msgstr "Egyéb beállítások"
 msgid "Nautic"
 msgstr "Tengeri"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""

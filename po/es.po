@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2002-09-23 20:22GMT\n"
 "Last-Translator: Félix Martos <pakito@asinkecualo.org>\n"
 "Language-Team: Español <es@li.org>\n"
@@ -1210,11 +1210,11 @@ msgstr ""
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr "Imposible cargar icono de amigo:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1224,7 +1224,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1340,7 +1340,7 @@ msgstr "Opciones náuticas"
 msgid "Nautic"
 msgstr "Náutico"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""

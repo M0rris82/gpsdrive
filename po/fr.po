@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2004-02-19 19:04+0100\n"
 "Last-Translator: Fritz Ganter <ganter@ganter.at>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -1217,11 +1217,11 @@ msgstr "lignes effacées: %d\n"
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) lignes lues en %.2f secondes\n"
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr "Impossible de charger Friendsicon:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1236,7 +1236,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1352,7 +1352,7 @@ msgstr "Paramètres nautiques"
 msgid "Nautic"
 msgstr "Nautique"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) lignes lues en %.2f secondes\n"

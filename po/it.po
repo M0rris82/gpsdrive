@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-03 18:19+0200\n"
+"POT-Creation-Date: 2005-04-07 08:15+0200\n"
 "PO-Revision-Date: 2004-01-13 11:53+0100\n"
 "Last-Translator: Manfred Caruso <bertoz@bertoz.com>\n"
 "Language-Team: Italiano <it@li.org>\n"
@@ -1218,11 +1218,11 @@ msgstr "righe cancellate: %d\n"
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) righe lette in %.2f secondi\n"
 
-#: src/icons.c:285
+#: src/icons.c:312
 msgid " Friendsicon could not be loaded:"
 msgstr " Friendsicon non può essere caricato:"
 
-#: src/icons.c:288
+#: src/icons.c:315
 #, c-format
 msgid ""
 "\n"
@@ -1237,7 +1237,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:328 src/icons.c:334
+#: src/icons.c:355 src/icons.c:361
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1352,7 +1352,7 @@ msgstr "Settaggi nautici"
 msgid "Nautic"
 msgstr "Miglia nautiche"
 
-#: src/poi.c:553 src/streets.c:446
+#: src/poi.c:599 src/streets.c:456
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) righe lette in %.2f secondi\n"
