@@ -23,6 +23,29 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.64  2005/10/11 08:28:35  tweety
+gpsdrive:
+- add Tracks(MySql) displaying
+- reindent files modified
+- Fix setting of Color for Grid
+- poi Text is different in size depending on Number of POIs shown on
+  screen
+
+geoinfo:
+ - get Proxy settings from Environment
+ - create tracks Table in Database and fill it
+   this separates Street Data from Track Data
+ - make geoinfo.pl download also Opengeodb Version 2
+ - add some poi-types
+ - Split off Filling DB with example Data
+ - extract some more Funtionality to Procedures
+ - Add some Example POI for Kirchheim(Munich) Area
+ - Adjust some Output for what is done at the moment
+ - Add more delayed index generations 'disable/enable key'
+ - If LANG=*de_DE* then only impert europe with --all option
+ - WDB will import more than one country if you wish
+ - add more things to be done with the --all option
+
 Revision 1.63  2005/10/10 13:17:52  tweety
 DBUS Support for connecting to gpsd
 you need to use ./configure --enable-dbus to enable it during compile
@@ -4486,30 +4509,23 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 {
 	/* prints in pango */
 	PangoFontDescription *pfd;
-	PangoLayout *wplabellayout;
+	PangoLayout *grid_label_layout;
 	gint width, height;
 
-	wplabellayout = gtk_widget_create_pango_layout (drawing_area, txt);
+	grid_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
 
-	//KCFX  
-	if (pdamode)
-		pfd = pango_font_description_from_string ("Sans 8");
-	else
-		pfd = pango_font_description_from_string ("Sans 11");
-	pango_layout_set_font_description (wplabellayout, pfd);
-	pango_layout_get_pixel_size (wplabellayout, &width, &height);
-	gdk_gc_set_foreground (kontext, &textbacknew);
-	//  gdk_draw_rectangle (drawable, kontext, 1, posx + 18,    posy - height/2 , width + 2,     height + 2);
+	pfd = pango_font_description_from_string ("Sans 8");
 
+	pango_layout_set_font_description (grid_label_layout, pfd);
+	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
+	gdk_gc_set_foreground (kontext, &mygray);
+	
 	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
-				     posy - height / 2 + 1, wplabellayout,
-				     &black, NULL);
-	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
-				     posy - height / 2, wplabellayout, &blue,
+				     posy - height / 2, grid_label_layout, &black,
 				     NULL);
 
-	if (wplabellayout != NULL)
-		g_object_unref (G_OBJECT (wplabellayout));
+	if (grid_label_layout != NULL)
+		g_object_unref (G_OBJECT (grid_label_layout));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
 	pango_font_description_free (pfd);
 
@@ -4568,17 +4584,15 @@ draw_grid (GtkWidget * widget)
 			lon_min, lat_max, lon_max);
 
 	// Set Drawing Colors
-	gdk_gc_set_foreground (kontext, &darkgrey);
 	gdk_gc_set_function (kontext, GDK_AND);
-	gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 
 
 	// Loop over desired lat/lon  
 	count = 0;
 	for (lon = lon_min; lon <= lon_max; lon = lon + step)
-	{
+	    {
 		for (lat = lat_min; lat <= lat_max; lat = lat + step)
-		{
+		    {
 			gdouble posxdest11, posydest11;
 			gdouble posxdest12, posydest12;
 			gdouble posxdest21, posydest21;
@@ -4606,49 +4620,52 @@ draw_grid (GtkWidget * widget)
 			    ||
 			    ((posxdest12 >= 0) && (posxdest12 < SCREEN_X) &&
 			     (posydest12 >= 0) && (posydest12 < SCREEN_Y)))
-			{
+			    {
 				// TODO: add linethikness 2 for Mayor Lines
+				gdk_gc_set_foreground (kontext, &darkgrey);
+				gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+
 				gdk_draw_line (drawable, kontext, posxdest11,
 					       posydest11, posxdest21,
 					       posydest21);
 				gdk_draw_line (drawable, kontext, posxdest11,
 					       posydest11, posxdest12,
 					       posydest12);
-
-
+			    
+				// Text lon
 				if (step >= 1)
-					g_snprintf (str, sizeof (str), "%.0f",
-						    lon);
+				    g_snprintf (str, sizeof (str), "%.0f",
+						lon);
 				else if (step >= .1)
-					g_snprintf (str, sizeof (str), "%.1f",
-						    lon);
+				    g_snprintf (str, sizeof (str), "%.1f",
+						lon);
 				else
-					g_snprintf (str, sizeof (str), "%.2f",
-						    lon);
+				    g_snprintf (str, sizeof (str), "%.2f",
+						lon);
 				posxdist = (posxdest12 - posxdest11) / 4;
 				posydist = (posydest12 - posydest11) / 4;
 				draw_grid_text (widget, posxdest11 + posxdist,
 						posydest11 + posydist, str);
-
-
+				
+				// Text lat
 				if (step >= 1)
-					g_snprintf (str, sizeof (str), "%.0f",
-						    lat);
+				    g_snprintf (str, sizeof (str), "%.0f",
+						lat);
 				else if (step >= .1)
-					g_snprintf (str, sizeof (str), "%.1f",
-						    lat);
+				    g_snprintf (str, sizeof (str), "%.1f",
+						lat);
 				else
-					g_snprintf (str, sizeof (str), "%.2f",
-						    lat);
+				    g_snprintf (str, sizeof (str), "%.2f",
+						lat);
 				posxdist = (posxdest21 - posxdest11) / 4;
 				posydist = (posydest21 - posydest11) / 4;
 				draw_grid_text (widget, posxdest11 + posxdist,
 						posydest11 + posydist, str);
-			}
-		}
-	}
+			    }
+		    }
+	    }
 	if (mydebug)
-		printf ("draw_grid loops: %d\n", count);
+	    printf ("draw_grid loops: %d\n", count);
 }
 
 /* *****************************************************************************
