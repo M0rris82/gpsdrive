@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.18  1994/06/08 08:37:47  tweety
+  fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
+  instead of atof and strtod
+
   Revision 1.17  2005/10/19 07:22:21  tweety
   Its now possible to choose units for displaying coordinates also in
   Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
@@ -1341,10 +1345,13 @@ readconfig ()
 				g_strlcpy (serialdev, par2,
 					   sizeof (serialdev));
 			if ((strcmp (par1, "lastlong")) == 0)
-				current_long = g_strtod (par2, 0);
+			    coordinate_string2gdouble(par2, &current_long);
 			if ((strcmp (par1, "lastlat")) == 0)
-				current_lat = g_strtod (par2, 0);
-			/*        if ((strcmp (par1, "setdefaultpos")) == 0)            setdefaultpos = atoi (par2); */
+			    coordinate_string2gdouble(par2, &current_lat);
+			/* 
+			   if ((strcmp (par1, "setdefaultpos")) == 0)            
+			   setdefaultpos = atoi (par2); 
+			*/
 			if ((strcmp (par1, "shadow")) == 0)
 				shadow = atoi (par2);
 			if ((strcmp (par1, "defaultserver")) == 0)

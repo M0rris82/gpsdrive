@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.73  1994/06/08 08:37:47  tweety
+fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
+instead of atof and strtod
+
 Revision 1.72  1994/06/07 11:25:45  tweety
 set debug levels more detailed
 
@@ -3525,9 +3529,8 @@ drawfriends (void)
 		if ((ti - maxfriendssecs) > tif)
 			continue;
 		actualfriends++;
-		clong = g_strtod ((friends + i)->longi, NULL);
-		clat = g_strtod ((friends + i)->lat, NULL);
-
+		coordinate_string2gdouble( (friends + i)->longi, &clong );
+		coordinate_string2gdouble( (friends + i)->lat,   &clat  );
 
 		calcxy (&posxdest, &posydest, clong, clat, zoom);
 
@@ -5244,12 +5247,8 @@ expose_cb (GtkWidget * widget, guint * datum)
 				tn = g_strdelimit (name, "_", ' ');
 				if ((strcmp (targetname, tn)) == 0)
 				{
-					target_lat =
-						g_strtod ((friends + i)->lat,
-							  NULL);
-					target_long =
-						g_strtod ((friends +
-							   i)->longi, NULL);
+				    coordinate_string2gdouble((friends + i)->lat, &target_lat);
+				    coordinate_string2gdouble((friends + i)->longi, &target_long);
 				}
 			}
 
@@ -7337,11 +7336,9 @@ setwp_cb (GtkWidget * widget, guint datum)
 	tn = g_strdelimit (str, "_", ' ');
 	gtk_frame_set_label (GTK_FRAME (destframe), tn);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 2, &p);
-	checkinput (p);
-	target_lat = atof (p);
+	coordinate_string2gdouble(p, &target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
-	checkinput (p);
-	target_long = atof (p);
+	coordinate_string2gdouble(p, &target_long);
 	/*    gtk_timeout_add (5000, (GtkFunction) sel_targetweg_cb, widget); */
 	g_timer_stop (disttimer);
 	g_timer_start (disttimer);
@@ -7587,9 +7584,9 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 
 	i = deleteline;
 	gtk_clist_get_text (GTK_CLIST (mylist), i, 2, &p);
-	current_lat = atof (p);
+	coordinate_string2gdouble(p, &current_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
-	current_long = atof (p);
+	coordinate_string2gdouble(p, &current_long);
 
 	if ((!posmode) && (!simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
@@ -7856,14 +7853,12 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
 
 	s = g_strstrip ((char *)
 			gtk_entry_get_text (GTK_ENTRY (add_wp_lon_text)));
-	checkinput (s);
-	lo = g_strtod (s, NULL);
+	coordinate_string2gdouble(s, &lo);
 	if ((lo > -181) && (lo < 181))
 		wplon = lo;
 	s = g_strstrip ((char *)
 			gtk_entry_get_text (GTK_ENTRY (add_wp_lat_text)));
-	checkinput (s);
-	la = g_strtod (s, NULL);
+	coordinate_string2gdouble(s, &la);
 	if ((la > -181) && (la < 181))
 		wplat = la;
 
@@ -8156,8 +8151,8 @@ insertwaypoints (gint mobile)
 			g_strlcpy (name, "*", sizeof (name));
 		g_strlcat (name, (friends + i)->name, sizeof (name));
 		g_snprintf (text0, sizeof (text0), "%d", i + maxwp + 1);
-		la = g_strtod ((friends + i)->lat, NULL);
-		lo = g_strtod ((friends + i)->longi, NULL);
+		coordinate_string2gdouble((friends + i)->lat, &la);
+		coordinate_string2gdouble((friends + i)->longi, &lo);
 		coordinate2gchar(text1, sizeof(text1), la, TRUE, minsecmode);
 		coordinate2gchar(text2, sizeof(text2), lo, FALSE, minsecmode);
 
@@ -8952,8 +8947,8 @@ loadwaypoints ()
 			e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
 				    (wayp + i)->name, slat, slong, typ,
 				    &wlan, &action, &sqlnr, &proximity);
-			(wayp + i)->lat = g_strtod (slat, NULL);
-			(wayp + i)->lon = g_strtod (slong, NULL);
+			coordinate_string2gdouble(slat, &((wayp + i)->lat));
+			coordinate_string2gdouble(slong,&((wayp + i)->lon));
 			/*  limit waypoint name to 20 chars */
 			(wayp + i)->name[20] = 0;
 			g_strlcpy ((wayp + i)->typ, "", 40);

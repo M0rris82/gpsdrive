@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  1994/06/08 08:37:47  tweety
+fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
+instead of atof and strtod
+
 Revision 1.2  2005/11/09 16:29:55  tweety
 changed pixelfac for top_GPSWORLD
 added comment to gpsd_nmea.sh
@@ -291,8 +295,8 @@ loadmapconfig ()
 	  g_strdelimit (s3, ",", '.');
 
 	  g_strlcpy ((maps + i)->filename, filename, 200);
-	  (maps + i)->lat = g_strtod (s1, NULL);
-	  (maps + i)->lon = g_strtod (s2, NULL);
+	  coordinate_string2gdouble(s1, &((maps + i)->lat));
+	  coordinate_string2gdouble(s2, &((maps + i)->lon));
 	  (maps + i)->scale = strtol (s3, NULL, 0);
 	  i++;
 	  nrmaps = i;
@@ -817,13 +821,8 @@ drawdownloadrectangle (gint big)
       gchar longi[100], lat[100], sc[20];
       gint scale, xo, yo;
 
-      g_strlcpy (lat, newmaplat, sizeof (lat));
-      g_strdelimit (lat, ",", '.');
-      la = g_strtod (lat, NULL);
-
-      g_strlcpy (longi, newmaplongi, sizeof (longi));
-      g_strdelimit (longi, ",", '.');
-      lo = g_strtod (longi, NULL);
+      coordinate_string2gdouble(newmaplat, &la);
+      coordinate_string2gdouble(newmaplongi, &lo);
 
       g_strlcpy (sc, newmapsc, sizeof (sc));
       g_strdelimit (sc, ",", '.');

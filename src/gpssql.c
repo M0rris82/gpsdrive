@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.16  1994/06/08 08:37:47  tweety
+fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
+instead of atof and strtod
+
 Revision 1.15  2005/07/04 04:47:03  tweety
 http://bugzilla.gpsdrive.cc/show_bug.cgi?id=25
 "J.D. Schmidt" <jdsmobile@gmail.com>
@@ -514,16 +518,16 @@ getsqldata ()
 		sqlnr = atol (row[4]);
 		if (dbusedist)
 		{
-			lat = g_strtod (row[1], NULL);
-			lon = g_strtod (row[2], NULL);
-			l = calcdist (lon, lat);
-			if (l < dbdistance)
+		    coordinate_string2gdouble(row[1], &lat);
+		    coordinate_string2gdouble(row[2], &lon);
+		    l = calcdist (lon, lat);
+		    if (l < dbdistance)
 			{
-				fprintf (st,
-					 "%-22s %10s %11s %20s %d %d %d\n",
-					 row[0], row[1], row[2], row[3], wlan,
-					 action, sqlnr);
-				r++;
+			    fprintf (st,
+				     "%-22s %10s %11s %20s %d %d %d\n",
+				     row[0], row[1], row[2], row[3], wlan,
+				     action, sqlnr);
+			    r++;
 			}
 		}
 		else
