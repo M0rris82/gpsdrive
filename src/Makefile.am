@@ -1,7 +1,12 @@
 DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
-	-DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
+	-DLIBDIR=\"${libdir}\" \
+	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
+	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS} \
+	-I/usr/include/
+
+
+#	-I/usr/include/dbus-1.0/ 
 
 includedir = mysql
 
@@ -11,7 +16,11 @@ else
 PRG1=garble
 endif
 bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
-LIBS=
+LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS) 
+
+if HAVE_DBUS
+INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
+endif
 
 if ENABLETELEATLAS
 GPSNAVLIB=-lgpsnavlib
