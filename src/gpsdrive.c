@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.16  2005/01/22 10:52:45  tweety
+Added Key W for adding Waypoint without additional Questtions at current location
+Added Key F to toggle Friends Display
+
 Revision 1.15  2005/01/20 00:31:24  tweety
 Added Keyboard events +/- for zooming in/out
 
@@ -5311,23 +5315,23 @@ draw_grid(GtkWidget * widget)
 
 	      
 	  if ( step >=1 ) 
-	    sprintf(str,"%.0f",lon);
+	    g_snprintf (str, sizeof (str),"%.0f",lon);
 	  else 	  if ( step >=.1 )
-	      sprintf(str,"%.1f",lon);
-	    else 
-	      sprintf(str,"%.2f",lon);
+	    g_snprintf (str, sizeof (str),"%.1f",lon);
+	  else 
+	    g_snprintf (str, sizeof (str),"%.2f",lon);
 	  posxdist = (posxdest12-posxdest11)/4;
 	  posydist = (posydest12-posydest11)/4;
 	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist ,str);
 	      
 	      
 	  if ( step >=1 ) 
-	    sprintf(str,"%.0f",lat);
+	    g_snprintf (str, sizeof (str),"%.0f",lat);
 	  else 
 	    if ( step >=.1 ) 
-	      sprintf(str,"%.1f",lat);
+	      g_snprintf (str, sizeof (str),"%.1f",lat);
 	    else 
-	      sprintf(str,"%.2f",lat);
+	      g_snprintf (str, sizeof (str),"%.2f",lat);
 	  posxdist = (posxdest21-posxdest11)/4;
 	  posydist = (posydest21-posydest11)/4;
 	  draw_grid_text (drawable,  posxdest11+posxdist,posydest11+posydist,str);
@@ -8755,6 +8759,13 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
       drawgrid = !drawgrid;
     }
 
+  // Toggle Friends Server activities
+
+  if ((toupper (event->keyval)) == 'F')
+    {
+      havefriends = !havefriends;
+    }
+
   // Add Waypoint at current gps location
 
   if ((toupper (event->keyval)) == 'X')
@@ -8762,6 +8773,21 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
       wplat = current_lat;
       wplon = current_long;
       addwaypoint_cb (NULL, NULL);
+    }
+
+  // Add Waypoint at current gps location without asking
+
+  if ((toupper (event->keyval)) == 'W')
+    {
+      gchar s1[100], s2[100];
+      time_t t;
+      struct tm *ts;
+      time (&t);
+      ts = localtime (&t);
+      g_snprintf (s1, sizeof (s1),"%s", asctime (ts));
+      g_snprintf (s2, sizeof (s2),"Automatic_key");
+
+      addwaypoint(s1,s2,current_lat,current_long);
     }
 
   // Add waypoint a current mouse location
@@ -9046,30 +9072,29 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+
+// Add waypoint at wplat, wplon
+// with Strings for Name and Type
 gint
-addwaypoint (GtkWidget * widget, guint datum)
+addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
 {
   gint i;
-  G_CONST_RETURN gchar *s, *s2;
-
-  s = gtk_entry_get_text (GTK_ENTRY (wptext1));
-  s2 = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (wptext2)->entry));
   if (sqlflag)
     {
-      insertsqldata (wplat, wplon, (char *) s, (char *) s2);
+      insertsqldata (wp_lat, wp_lon, (char *) wp_name, (char *) wp_type);
       getsqltypelist ();
       getsqldata ();
     }
   else
     {
       i = maxwp;
-      (wayp + i)->lat = wplat;
-      (wayp + i)->lon = wplon;
-      g_strdelimit ((char *) s, " ", '_');
+      (wayp + i)->lat = wp_lat;
+      (wayp + i)->lon = wp_lon;
+      g_strdelimit ((char *) wp_name, " ", '_');
 /*  limit waypoint name to 20 chars */
-      g_strlcpy ((wayp + i)->name, s, 40);
+      g_strlcpy ((wayp + i)->name, wp_name, 40);
       (wayp + i)->name[20] = 0;
-      g_strlcpy ((wayp + i)->typ, s2, 40);
+      g_strlcpy ((wayp + i)->typ, wp_type, 40);
       (wayp + i)->wlan = 0;
 
       maxwp++;
@@ -9080,8 +9105,22 @@ addwaypoint (GtkWidget * widget, guint datum)
 	}
       savewaypoints ();
     }
+}
+
+// callback from gtk to add waypoint
+gint
+addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
+{
+  G_CONST_RETURN gchar *s1, *s2;
+
+  s1 = gtk_entry_get_text (GTK_ENTRY (wptext1));
+  s2 = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (wptext2)->entry));
+
+  addwaypoint(s1,s2,wplat,wplon);
+
   gtk_widget_destroy (GTK_WIDGET (datum));
   markwaypoint = FALSE;
+
   return TRUE;
 }
 
@@ -9096,20 +9135,21 @@ addwaypointdestroy_cb (GtkWidget * widget, guint datum)
   return FALSE;
 }
 
+
 gint
 addwaypoint_cb (GtkWidget * widget, gpointer datum)
 {
   GtkWidget *window, *l1, *l2, *t1, *t2, *hbox3, *hbox4, *hbox5;
   GtkWidget *vbox, *hbox, *hbox2, *button, *button2, *label, *label2;
   gchar buff[40];
-  GList *list = NULL;
+  GList *wp_types = NULL;
   gint i;
-
+ 
   if (sqlflag)
     {
       getsqltypelist ();
       for (i = 0; i < dbtypelistcount; i++)
-	list = g_list_append (list, dbtypelist[i]);
+	wp_types = g_list_append (wp_types, dbtypelist[i]);
     }
 
   addwaypointwindow = window = gtk_dialog_new ();
@@ -9128,7 +9168,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
   GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
   GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
   gtk_signal_connect (GTK_OBJECT (button), "clicked",
-		      GTK_SIGNAL_FUNC (addwaypoint), GTK_OBJECT (window));
+		      GTK_SIGNAL_FUNC (addwaypoint_gtk_cb), GTK_OBJECT (window));
   gtk_signal_connect (GTK_OBJECT (button2), "clicked",
 		      GTK_SIGNAL_FUNC (addwaypointdestroy_cb), 0);
   gtk_signal_connect (GTK_OBJECT (window),
@@ -9188,7 +9228,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 /*   wptext2 = gtk_entry_new (); */
   wptext2 = gtk_combo_new ();
-  gtk_combo_set_popdown_strings (GTK_COMBO (wptext2), (GList *) list);
+  gtk_combo_set_popdown_strings (GTK_COMBO (wptext2), (GList *) wp_types);
 
   label2 = gtk_label_new (_(" Waypoint type: "));
 
