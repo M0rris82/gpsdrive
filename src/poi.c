@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.6  2005/02/13 22:57:00  tweety
+WDB Support
+
 Revision 1.5  2005/02/13 14:06:54  tweety
 start street randering functions. reading from the database streets and displayi
 ng it on the screen
@@ -407,13 +410,25 @@ poi_rebuild_list (void)
 	  (poi_list + poi_nr)->y          = poi_posy;
 	  g_strlcpy ((poi_list + poi_nr)->name, row[2], sizeof ((poi_list + poi_nr)->name));
 	  (poi_list + poi_nr)->type_id    = (gint)g_strtod(row[3], NULL);
-	  if (debug) 
+	  if (debug) { 
 	    g_snprintf ((poi_list + poi_nr)->name, sizeof ((poi_list + poi_nr)->name),
-			"(%.4f ,%.4f) %s",
+			"%s\n(%.4f ,%.4f)",
 			//			(poi_list + poi_nr)->type_id,
-			lat,lon,
-			row[2]);
-			
+			row[2],
+			lat,lon);
+	    /*
+	      `type_id` int(11) NOT NULL default \'0\',
+	      `alt` double default \'0\',
+	      `proximity` float default \'0\',
+	      `comment` varchar(255) default NULL,
+	      `level_min` smallint(6) NOT NULL default \'0\',
+	      `level_max` smallint(6) NOT NULL default \'0\',
+	      `last_modified` date NOT NULL default \'0000-00-00\',
+	      `url` varchar(160) NULL ,
+	      `address_id` int(11) default \'0\',
+	      `source_id` int(11) NOT NULL default \'0\',
+	      */
+	  }
 	  //(poi_list + poi_nr)->wp_id      = g_strtol (row[0], NULL);
 	  //      (poi_list + poi_nr)->alt        = g_strtod(row[2], NULL);
 	  //(poi_list + poi_nr)->name[80] = row[4];
