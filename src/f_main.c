@@ -271,7 +271,7 @@ main (int argc, char *argv[])
     }
   if (!usesql)
     fprintf (stderr, _("\nMySQL support disabled.\n"));
-
+  
 /*  I18l */
 
 /*  Detect the language for voice output */
@@ -791,39 +791,36 @@ i.e. '.' in english, ',' in german!! */
 			  "clicked", GTK_SIGNAL_FUNC (mute_cb), (gpointer) 1);
     }
 
-
-  // Checkbox ---- POI Draw
-  poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
-  gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
-  if (!poi_draw)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
-  gtk_signal_connect (GTK_OBJECT (poi_draw_bt),
-		      "clicked", GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
-  /*
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
-    _("This will show Point of interrest located in mySQL Database"),
-    NULL);
-  */
-
-  // Checkbox ---- STREETS Draw
-  streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
-  gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-  if (!streets_draw)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
-  gtk_signal_connect (GTK_OBJECT (streets_draw_bt),
-		      "clicked", GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-  /*
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-    _("This will show Streets Data located in mySQL Database"),
-    NULL);
-  */
-  
-
-
-
-  // Checkbox ----   Use SQL
   if (usesql)
     {
+      // Checkbox ---- POI Draw
+      poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
+      gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
+      if (!poi_draw)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
+      gtk_signal_connect (GTK_OBJECT (poi_draw_bt),
+			  "clicked", GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
+      /*
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+	_("This will show Point of interrest located in mySQL Database"),
+	NULL);
+      */
+
+      // Checkbox ---- STREETS Draw
+      streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
+      gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+      if (!streets_draw)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
+      gtk_signal_connect (GTK_OBJECT (streets_draw_bt),
+			  "clicked", GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
+      /*
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+	_("This will show Streets Data located in mySQL Database"),
+	NULL);
+      */
+  
+
+      // Checkbox ----   Use SQL
       sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
       gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
       if (sqlflag)
@@ -1193,7 +1190,7 @@ i.e. '.' in english, ',' in german!! */
 
   havebattery = battery_get_values ();
   if (debug)
-    fprintf (stderr, "batt: %d, temp: %d", havebattery, havetemperature);
+    fprintf (stderr, "batt: %d, temp: %d\n", havebattery, havetemperature);
   if (havebattery)
     {
       drawing_battery = gtk_drawing_area_new ();

@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
 Revision 1.1  2005/02/13 14:06:54  tweety
 start street randering functions. reading from the database streets and displayi
 ng it on the screen
@@ -55,7 +64,7 @@ typedef struct
   gdouble x2;    // x position on screen end
   gdouble y2;    // y position on screen
   gchar   name[80];
-  gdouble type_id;    // type of street
+  gdouble streets_type_id;    // type of street
 }
 streets_struct;
 

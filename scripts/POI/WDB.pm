@@ -82,7 +82,7 @@ sub import_wdb($){
 
 
 
-    my $type_id=0;
+    my $streets_type_id=0;
     my @segments;
     while ( my $line = $fh->getline() ) {
 	chomp $line;
@@ -97,7 +97,7 @@ sub import_wdb($){
 	    POI::DBFuncs::segments_add(
 				       { scale_min => 1,
 					 scale_max => $scale_max,
-					 type_id => $type_id, 
+					 streets_type_id => $streets_type_id, 
 					 source_id => $source_id,
 					 segments => \@segments
 					 }
@@ -111,13 +111,13 @@ sub import_wdb($){
 
 	      # ---------------------- Type    
 	      my $type_name = "WDB $type_string rank $rank";
-	      $type_id = type_name2id($type_name);
-	      unless ( $type_id ) {
+	      $streets_type_id = streets_type_name2id($type_name);
+	      unless ( $streets_type_id ) {
 		  my $type_hash= {
 		      'type.name' => $type_name
 		      };
 		  POI::DBFuncs::insert_hash("type",$type_hash);
-		  $type_id = type_name2id($type_name);
+		  $streets_type_id = streets_type_name2id($type_name);
 	      }	
 	  } elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
 	      ( $lat1,$lon1 ) = ( $lat2 , $lon2 );
@@ -143,7 +143,7 @@ sub import_wdb($){
     }
     POI::DBFuncs::segments_add(
 			       { scale_min => 0, scale_max => 100000000,
-				 type_id => $type_id, 
+				 streets_type_id => $streets_type_id, 
 				 source_id => $source_id,
 				 segments => \@segments
 				 }

@@ -21,11 +21,12 @@ BEGIN {
         $VERSION = sprintf "%d.%03d", q$Revision$ =~ /(\d+)/g;
 
         @ISA         = qw(Exporter);
-        @EXPORT = qw( &type_names &type_list &db_disconnect 
+        @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id
+		      &db_disconnect 
 		      &add_poi &add_poi_multi
 		      &poi_list
 		      &column_names
-		      &source_name2id &type_name2id
+		      &source_name2id
 		      &delete_all_from_source);
         %EXPORT_TAGS = ( );     # eg: TAG => [ qw!name1 name2! ],
         # your exported package globals go here,
@@ -39,7 +40,6 @@ our @EXPORT_OK;
 END { } 
 
 # -----------------------------------------------------------------------------
-
 #retrieve Column Names for desired table
 sub column_names($){
     my $table = shift;
@@ -47,8 +47,10 @@ sub column_names($){
 
     my $dbh = db_connect();
     my $query = "SHOW COLUMNS FROM geoinfo.$table;";
+
     my $sth=$dbh->prepare($query) or die $dbh->errstr;
-    $sth->execute() or die $sth->errstr;
+    $sth->execute()               or die $sth->errstr;
+
     while ( my $array_ref = $sth->fetchrow_arrayref() ) {
 	push ( @col ,$array_ref->[0] );
     }
@@ -72,8 +74,14 @@ sub insert_hash {
     #print "insert_hash($table, ".Dumper(\$field_values).")\n";
     #print "$sql\n";
     my $sth = $dbh->prepare_cached($sql);
-    return $sth->execute(@values);
-}
+    my $res = $sth->execute(@values);
+    if ( ! $res ) {
+	warn "Error while inserting Hash ".Dumper($field_values)." into table '$table'\n";
+	$sth->errstr;
+    }
+    
+    return $res;
+    }
 
 
 #############################################################################
@@ -113,8 +121,10 @@ sub delete_all_from_source($){
     return unless $source_id >0;
 
     my $query = "DELETE FROM poi WHERE poi.source_id = '$source_id'";
+
     my $sth=$dbh->prepare($query) or die $dbh->errstr;
-    $sth->execute() or die $sth->errstr;
+    $sth->execute()               or die $sth->errstr;
+
     $sth->finish;
 }
 
@@ -129,8 +139,10 @@ sub source_name2id($){
     } else {
 	my $dbh = db_connect();
 	my $query = "SELECT source_id FROM source WHERE source.name = '$source_name' LIMIT 1";
+
 	my $sth=$dbh->prepare($query) or die $dbh->errstr;
-	$sth->execute() or die $sth->errstr;
+	$sth->execute()               or die $sth->errstr;
+
 	my $array_ref = $sth->fetchrow_arrayref();
 	if ( $array_ref ) {
 	    $source_id = $array_ref->[0];
@@ -148,101 +160,183 @@ sub source_name2id($){
 }
 
 # -----------------------------------------------------------------------------
-# convert type name to type_id and cache it locally
-my $type_id_cache;
-sub type_name2id($){
+# convert poi_type.name to poi_type_id and cache it locally
+my $poi_type_id_cache;
+sub poi_type_name2id($){
     my $type_name = shift ||'';
-    my $type_id;
+    my $poi_type_id;
+
     return 0 unless $type_name;
-    if ( defined $type_id_cache->{$type_name} ) {
-	$type_id = $type_id_cache->{$type_name};
+
+    if ( defined $poi_type_id_cache->{$type_name} ) {
+	$poi_type_id = $poi_type_id_cache->{$type_name};
     } else {
 	my $dbh = db_connect();
-	my $query = "SELECT type_id FROM type WHERE type.name = '$type_name' LIMIT 1";
+	my $query = "SELECT poi_type_id FROM type WHERE poi_type.name = '$type_name' LIMIT 1";
+
 	my $sth=$dbh->prepare($query) or die $dbh->errstr;
-	$sth->execute() or die $sth->errstr;
+	$sth->execute()               or die $sth->errstr;
+
 	my $array_ref = $sth->fetchrow_arrayref();
 	if ( $array_ref ) {
-	    $type_id = $array_ref->[0];
-	    $type_id_cache->{$type_name} = $type_id;
+	    $poi_type_id = $array_ref->[0];
+	    $poi_type_id_cache->{$type_name} = $poi_type_id;
 	} else {
 	    # Nicht gefunden
-	    $type_id=0;
+	    $poi_type_id=0;
 	}
 	$sth->finish;
     }
 
-#    debug("Type: $type_name -> $type_id");
+#    debug("Type: $type_name -> $poi_type_id");
 
-    return $type_id;
+    return $poi_type_id;
 }
 
 # -----------------------------------------------------------------------------
 # get a list of all type names
-sub type_names(){
-    my @type_names;
+sub poi_type_names(){
+    my @poi_type_names;
 
     my $dbh = db_connect();
     
-    my $query = "SELECT name FROM type";
+    my $query = "SELECT name FROM poi_type";
     
-    my $sth=$dbh->prepare($query) 
-	or die $dbh->errstr;
-    
-    $sth->execute() 
-	or die $sth->errstr;
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute()               or die $sth->errstr;
 
     while (my $row = $sth->fetchrow_arrayref) {
-	push(@type_names,$row->[0]);
+	push(@poi_type_names,$row->[0]);
     }
     $sth->finish;
 
-    return @type_names;
+    return @poi_type_names;
 }
 
 # -----------------------------------------------------------------------------
 # retrieve a complete list of known types
-sub type_list(){
-    my @type_list;
+# This returns a list with a hash for each type with all relevant data
+sub poi_type_list(){
+    my @poi_type_list;
 
     my $dbh = db_connect();
     
-    my @columns = column_names("type");
-    my $query = "SELECT ".join(',', @columns)."  FROM type";
+    my @columns = column_names("poi_type");
+    my $query = "SELECT ".join(',', @columns)."  FROM poi_type";
     
-    my $sth=$dbh->prepare($query) 
-	or die $dbh->errstr;
-    
-    $sth->execute() 
-	or die $sth->errstr;
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute()               or die $sth->errstr;
 
     while (my $row = $sth->fetchrow_arrayref) {
-	my $type = {};
+	my $poi_type = {};
 	for my $i ( 0.. $#columns) {
-	    $type->{$columns[$i]} = $row->[$i];
+	    $poi_type->{$columns[$i]} = $row->[$i];
 	}
-	push(@type_list,$type);
+	push(@poi_type_list,$poi_type);
     }
     $sth->finish;
 
-    return @type_list;
+    return @poi_type_list;
+}
+
+
+
+
+
+# -----------------------------------------------------------------------------
+# convert streets_type.name to streets_type_id and cache it locally
+my $streets_type_id_cache;
+sub streets_type_name2id($){
+    my $type_name = shift ||'';
+    my $streets_type_id;
+
+    return 0 unless $type_name;
+
+    if ( defined $streets_type_id_cache->{$type_name} ) {
+	$streets_type_id = $streets_type_id_cache->{$type_name};
+    } else {
+	my $dbh = db_connect();
+	my $query = "SELECT streets_type_id FROM streets_type WHERE streets_type.name = '$type_name' LIMIT 1";
+
+	my $sth=$dbh->prepare($query) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+
+	my $array_ref = $sth->fetchrow_arrayref();
+	if ( $array_ref ) {
+	    $streets_type_id = $array_ref->[0];
+	    $streets_type_id_cache->{$type_name} = $streets_type_id;
+	} else {
+	    # Nicht gefunden
+	    $streets_type_id=0;
+	}
+	$sth->finish;
+    }
+
+#    debug("Type: $type_name -> $streets_type_id");
+
+    return $streets_type_id;
 }
 
 # -----------------------------------------------------------------------------
-# retrieve first 100 entries from  poi Table
-sub poi_list(){
+# get a list of all streets_type names
+sub streets_type_names(){
+    my @streets_type_names;
+
+    my $dbh = db_connect();
+    
+    my $query = "SELECT name FROM streets_type";
+    
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute()               or die $sth->errstr;
+
+    while (my $row = $sth->fetchrow_arrayref) {
+	push(@streets_type_names,$row->[0]);
+    }
+    $sth->finish;
+
+    return @streets_type_names;
+}
+
+# -----------------------------------------------------------------------------
+# retrieve a complete list of known types
+sub streets_type_list(){
+    my @streets_type_list;
+
+    my $dbh = db_connect();
+    
+    my @columns = column_names("streets_type");
+    my $query = "SELECT ".join(',', @columns)."  FROM streets_type";
+    
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute()               or die $sth->errstr;
+
+    while (my $row = $sth->fetchrow_arrayref) {
+	my $streets_type = {};
+	for my $i ( 0.. $#columns) {
+	    $streets_type->{$columns[$i]} = $row->[$i];
+	}
+	push(@streets_type_list,$streets_type);
+    }
+    $sth->finish;
+
+    return @streets_type_list;
+}
+
+
+# -----------------------------------------------------------------------------
+# retrieve first n entries from  poi Table
+# default is 100 Entries
+sub poi_list(;$){
+    my $limit = shift || 100;
     my @poi_list;
 
     my $dbh = db_connect();
     
     my @columns = column_names("poi");
-    my $query = "SELECT ".join(',', @columns)."  FROM poi LIMIT 100";
+    my $query = "SELECT ".join(',', @columns)."  FROM poi LIMIT $limit";
     
-    my $sth=$dbh->prepare($query) 
-	or die $dbh->errstr;
-    
-    $sth->execute() 
-	or die $sth->errstr;
+    my $sth=$dbh->prepare($query) or die $dbh->errstr;
+    $sth->execute()               or die $sth->errstr;
 
     while (my $row = $sth->fetchrow_arrayref) {
 	my $poi = {};
@@ -273,6 +367,7 @@ sub add_poi_multi($){
 
 	correct_lat_lon($values);
 
+	# TODO: Check if this is obsolete
 	for my $t (qw(Wlan Action Sqlnr Proximity) ) {
 	    unless ( defined ( $values->{$t})) {
 		$values->{$t} = 0;
@@ -285,7 +380,7 @@ sub add_poi_multi($){
 }
 
 #############################################################################
-# Add a single poit into DB
+# Add a single poi into DB
 sub add_poi($){
     my $poi = shift;
     my $point = {};
@@ -302,30 +397,30 @@ sub add_poi($){
 	$point->{'poi.source_id'}    = $source_id;
     }
 
-    # ---------------------- Type
-    my $type_name = $poi->{'type.name'};
-    if ( $type_name && ! $point->{'poi.type_id'}) {
-	my $type_id = type_name2id($type_name);
-	unless ( $type_id ) {
+    # ---------------------- POI_Type
+    my $type_name = $poi->{'poi_type.name'};
+    if ( $type_name && ! $point->{'poi.poi_type_id'}) {
+	my $poi_type_id = type_name2id($type_name);
+	unless ( $poi_type_id ) {
 	    my $type_hash= {
-		'type.name' => $type_name
+		'poi_type.name' => $type_name
 	    };
-	    insert_hash("type",$type_hash);
-	    $type_id = type_name2id($point->{"type.name"});
+	    insert_hash("poi_type",$type_hash);
+	    $poi_type_id = type_name2id($point->{"type.name"});
 	}
-	$point->{'poi.type_id'}    = $type_id;
+	$point->{'poi.poi_type_id'}    = $poi_type_id;
     }
 
     # ---------------------- ADDRESS
     $point->{'poi.address_id'}    ||= 0;
 
     # ---------------------- TYPE
-    $point->{'poi.type_id'}       ||= 0;
+    $point->{'poi.poi_type_id'}       ||= 0;
 
     # ---------------------- POI
     $point->{'poi.last_modified'} ||= time();
     $point->{'poi.scale_min'}         ||= 0;
-    $point->{'poi.scale_max'}         ||= 0;
+    $point->{'poi.scale_max'}         ||= 9999999999999;
     insert_hash("poi",$point);
 
 }
@@ -353,31 +448,30 @@ sub streets_add($){
     }
 
     # ---------------------- Type
-    my $type_name = $segment->{'type.name'};
-    if ( $type_name && ! $segment4db->{'streets.type_id'}) {
-	my $type_id = type_name2id($type_name);
-	unless ( $type_id ) {
+    my $type_name = $segment->{'streets_type.name'};
+    if ( $type_name && ! $segment4db->{'streets.streets_type_id'}) {
+	my $poi_type_id = type_name2id($type_name);
+	unless ( $poi_type_id ) {
 	    my $type_hash= {
-		'type.name' => $type_name
+		'streets_type.name' => $type_name
 	    };
-	    insert_hash("type",$type_hash);
-	    $type_id = type_name2id($segment4db->{"type.name"});
+	    insert_hash("streets_type",$type_hash);
+	    $poi_type_id = type_name2id($segment4db->{"streets_type.name"});
 	}
-	$segment4db->{'streets.type_id'}    = $type_id;
+	$segment4db->{'streets.streets_type_id'}    = $poi_type_id;
     }
 
     # ---------------------- ADDRESS
-    $segment4db->{'streets.address_id'}    ||= 0;
+    $segment4db->{'streets.address_id'}      ||= 0;
 
     # ---------------------- TYPE
-    $segment4db->{'streets.type_id'}       ||= 0;
+    $segment4db->{'streets.streets_type_id'} ||= 0;
 
     # ---------------------- STREETS
-    $segment4db->{'streets.last_modified'} ||= time();
-    $segment4db->{'streets.scale_min'}         ||= 0;
-    $segment4db->{'streets.scale_max'}         ||= 0;
+    $segment4db->{'streets.last_modified'}   ||= time();
+    $segment4db->{'streets.scale_min'}       ||= 0;
+    $segment4db->{'streets.scale_max'}       ||= 99999999999999;
     insert_hash("streets",$segment4db);
-
 }
 
 
@@ -396,7 +490,7 @@ sub segments_add($){
     $segment4db->{'streets.address_id'}    ||= 0;
 
     # ---------------------- TYPE
-    $segment4db->{'streets.type_id'}       ||= 0;
+    $segment4db->{'streets.streets_type_id'}       ||= 0;
 
     # ---------------------- STREETS
     $segment4db->{'streets.last_modified'} ||= time();
@@ -416,11 +510,11 @@ sub segments_add($){
 
 	next unless $segment4db->{'streets.lat1'}; # skip first entry
 
-	$segment4db->{'streets.name'}      = $data->{name}      || $segment->{name};
-	$segment4db->{'streets.type_id'}   = $data->{type_id}   || $segment->{type_id};
-	$segment4db->{'streets.source_id'} = $data->{source_id} || $segment->{source_id};
-	$segment4db->{'streets.scale_min'} = $data->{scale_min} || $segment->{scale_min}||1;
-	$segment4db->{'streets.scale_max'} = $data->{scale_max} || $segment->{scale_max}||10000000000;
+	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
+	$segment4db->{'streets.streets_type_id'} = $data->{streets_type_id} || $segment->{streets_type_id};
+	$segment4db->{'streets.source_id'}       = $data->{source_id}       || $segment->{source_id};
+	$segment4db->{'streets.scale_min'}       = $data->{scale_min}       || $segment->{scale_min}||1;
+	$segment4db->{'streets.scale_max'}       = $data->{scale_max}       || $segment->{scale_max}||10000000000;
 
 	#print Dumper(\$segment4db);
 	insert_hash("streets",$segment4db);
@@ -434,40 +528,54 @@ sub db_exec($){
 
     my $dbh = db_connect();
     my $sth = $dbh->prepare($statement);
-    $sth->execute() 
-	or warn $sth->errstr."\n";
+    unless ( $sth->execute() ) {
+	warn "Error in query '$statement'\n";
+	$sth->errstr;
+	return 0;
+    }
+    return 1;
 }
 
 # -----------------------------------------------------------------------------
+# create known indices for given table
 sub add_index($){
     my $table = shift;
 
     if ( $table eq "poi" ){
 	for my $key ( qw( last_modified name lat lon ) ){
-	    db_exec("ALTER TABLE `$table` ADD INDEX `$key` ( `$key` );");
-	    
+	    db_exec("ALTER TABLE `$table` ADD INDEX `$key` ( `$key` );");	    
 	}
+	db_exec("ALTER TABLE `$table` ADD INDEX `combi1` ( `lat`,`lon`,`scale_min`,`scale_max` );");	    
     } elsif ( $table eq "streets" ){
 	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
 	    db_exec("ALTER TABLE `$table` ADD INDEX  `$key` ( `$key` );");
 	}
+	db_exec("ALTER TABLE `$table` ADD INDEX `combi1` ( `lat1`,`lon1`,`lat2`,`lon2`,`scale_min`,`scale_max` );");	    
     }
+
+# TODO: add more index
 #ALTER TABLE `address` ADD FULLTEXT ( `comment` )
 }
 
 # -----------------------------------------------------------------------------
+# drop (delete) all indices for given table
 sub drop_index($){
     my $table = shift;
+
+    # For Debug Purpose
+    # return 1;
 
     if ( $table eq "poi" ){
 	for my $key ( qw( last_modified name lat lon ) ){
 	    db_exec("ALTER TABLE `$table` DROP INDEX `$key` ;");
 	    
 	}
+	db_exec("ALTER TABLE `$table` DROP INDEX `combi1` ;");
     } elsif ( $table eq "streets" ){
 	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
 	    db_exec("ALTER TABLE `$table` DROP INDEX `$key` ;");
 	}
+	db_exec("ALTER TABLE `$table` DROP INDEX `combi1` ;");
     }
 }
 
@@ -483,27 +591,29 @@ sub create_db(){
 			$main::db_user,$main::db_password, 'admin');
     $dbh = db_connect();
     $sth = $dbh->prepare($create_statement);
-    $sth->execute();
+    $sth->execute()
+	or die $sth->errstr;
     
 db_exec('CREATE TABLE IF NOT EXISTS `address` (
-  `address_id`    int(11)      NOT NULL auto_increment,
-  `country`       varchar(40)  NOT NULL default \'\',
-  `state`         varchar(80)  NOT NULL default \'\',
-  `zip`           varchar(5)   NOT NULL default \'\',
-  `city`          varchar(80)  NOT NULL default \'\',
-  `city_part`     varchar(80)  NOT NULL default \'\',
-  `street_name`   varchar(80)  NOT NULL default \'\',
-  `street_number` varchar(5)   NOT NULL default \'\',
-  `phone`         varchar(160) NOT NULL default \'\',
-  `comment`       varchar(160) NOT NULL default \'\',
+  `address_id`     int(11)      NOT NULL auto_increment,
+  `country`        varchar(40)  NOT NULL default \'\',
+  `state`          varchar(80)  NOT NULL default \'\',
+  `zip`            varchar(5)   NOT NULL default \'\',
+  `city`           varchar(80)  NOT NULL default \'\',
+  `city_part`      varchar(80)  NOT NULL default \'\',
+  `streets_name`   varchar(80)  NOT NULL default \'\',
+  `streets_number` varchar(5)   NOT NULL default \'\',
+  `phone`          varchar(160) NOT NULL default \'\',
+  `comment`        varchar(160) NOT NULL default \'\',
   PRIMARY KEY  (`address_id`)
-) TYPE=MyISAM;');
+) TYPE=MyISAM;') or die;
+    drop_index('address');
     add_index('address');
 
 db_exec('CREATE TABLE IF NOT EXISTS `poi` (
   `poi_id`        int(11)      NOT NULL auto_increment,
   `name`          varchar(80)           default NULL,
-  `type_id`       int(11)      NOT NULL default \'0\',
+  `poi_type_id`   int(11)      NOT NULL default \'0\',
   `lat`           double                default \'0\',
   `lon`           double                default \'0\',
   `alt`           double                default \'0\',
@@ -516,155 +626,173 @@ db_exec('CREATE TABLE IF NOT EXISTS `poi` (
   `address_id`    int(11)               default \'0\',
   `source_id`     int(11)      NOT NULL default \'0\',
   PRIMARY KEY  (`poi_id`)
-) TYPE=MyISAM;');
+) TYPE=MyISAM;') or die;
+    drop_index('poi');
     add_index('poi');
 
 
 db_exec('CREATE TABLE IF NOT EXISTS `streets` (
-  `street_id`         int(11)      NOT NULL auto_increment,
-  `name`          varchar(80)           default NULL,
-  `type_id`       int(11)      NOT NULL default \'0\',
-  `lat1`          double                default \'0\',
-  `lon1`          double                default \'0\',
-  `alt1`           double                default \'0\',
-  `lat2`          double                default \'0\',
-  `lon2`          double                default \'0\',
-  `alt2`           double                default \'0\',
-  `proximity`     float                 default \'0\',
-  `comment`       varchar(255)          default NULL,
-  `scale_min`     int(12)  NOT NULL default \'0\',
-  `scale_max`     int(12)  NOT NULL default \'0\',
-  `last_modified` date         NOT NULL default \'0000-00-00\',
-  `source_id`     int(11)      NOT NULL default \'0\',
-  PRIMARY KEY  (`street_id`)
-) TYPE=MyISAM;');
+  `streets_id`      int(11)      NOT NULL auto_increment,
+  `name`            varchar(80)           default NULL,
+  `streets_type_id` int(11)      NOT NULL default \'0\',
+  `lat1`            double                default \'0\',
+  `lon1`            double                default \'0\',
+  `alt1`            double                default \'0\',
+  `lat2`            double                default \'0\',
+  `lon2`            double                default \'0\',
+  `alt2`            double                default \'0\',
+  `proximity`       float                 default \'0\',
+  `comment`         varchar(255)          default NULL,
+  `scale_min`       int(12)  NOT NULL default \'0\',
+  `scale_max`       int(12)  NOT NULL default \'0\',
+  `last_modified`   date         NOT NULL default \'0000-00-00\',
+  `source_id`       int(11)      NOT NULL default \'0\',
+  PRIMARY KEY  (`streets_id`)
+) TYPE=MyISAM;') or die;
+    drop_index('streets');
     add_index('streets');
 
+db_exec('CREATE TABLE IF NOT EXISTS `streets_type` (
+  `streets_type_id` int(11)      NOT NULL auto_increment,
+  `lang`            varchar(2)       NULL default \'en\',
+  `name`            varchar(80)  NOT NULL default \'\',
+  `description`     varchar(160)     NULL default \'\',
+  `color`           varchar(80)  NOT NULL default \'\',
+  `linetype`        varchar(80)  NOT NULL default \'\',
+  PRIMARY KEY  (`streets_type_id`)
+) TYPE=MyISAM;') or die;
+    drop_index('streets_type');
+    add_index('streets_type');
 
 db_exec('CREATE TABLE IF NOT EXISTS `source` (
-  `source_id`   int(11)      NOT NULL auto_increment,
-  `name`        varchar(80)  NOT NULL default \'\',
-  `licence`     varchar(160) NOT NULL default \'\',
-  `url`         varchar(160) NOT NULL default \'\',
-  `comment`     varchar(160) NOT NULL default \'\',
-  `last_update` date         NOT NULL default \'0000-00-00\',
+  `source_id`      int(11)      NOT NULL auto_increment,
+  `name`           varchar(80)  NOT NULL default \'\',
+  `licence`        varchar(160) NOT NULL default \'\',
+  `url`            varchar(160) NOT NULL default \'\',
+  `comment`        varchar(160) NOT NULL default \'\',
+  `last_update`    date         NOT NULL default \'0000-00-00\',
   PRIMARY KEY  (`source_id`)
-) TYPE=MyISAM;');
+) TYPE=MyISAM;') or die;
+    drop_index('source');
     add_index('source');
 
-db_exec('CREATE TABLE IF NOT EXISTS `type` (
-  `type_id`     int(11)      NOT NULL auto_increment,
+db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
+  `poi_type_id` int(11)      NOT NULL auto_increment,
   `lang`        varchar(2)       NULL default \'en\',
   `name`        varchar(80)  NOT NULL default \'\',
   `symbol`      varchar(160)     NULL default \'\',
   `description` varchar(160)     NULL default \'\',
-  PRIMARY KEY  (`type_id`)
-) TYPE=MyISAM;');
-    add_index('type');
+  PRIMARY KEY  (`poi_type_id`)
+) TYPE=MyISAM;') or die;
+    drop_index('poi_type');
+    add_index('poi_type');
 
-my @icons = qw( de.unknown
-		de.Ausbildung.GrundSchule
-		de.Ausbildung.Gymnasium
-		de.Ausbildung.HauptSchule
-		de.Ausbildung.UNI
-		de.Ausbildung.VHS
-		de.Ausbildung.Kindergarten
-		de.Ausbildung.Kinderkrippe
-		de.Bank
-		de.Bank.Geldautomat
-		de.Bank.Geldautomat.EC
-		de.Transport.Blitzampel
-		de.Briefkasten
-		de.Camping Platz
-		de.EC-Automat
-		de.Einkaufszentrum
-		de.Essen-Lieferservice
-		de.Essen.Gaststaette
-		de.Essen.Kneipe
-		de.Essen.Restaurant
-		de.Essen.Schnellrestaurant
-		de.Essen.Schnellrestaurant.Burger-King
-		de.Essen.Schnellrestaurant.MC-Donalds
-		de.Feuerwehr
-		de.Einkaufen.Flohmarkt
-		de.Einkaufen.Lebensmittel.Supermarkt
-		de.Einkaufen.Lebensmittel
-		de.Einkaufen.Baumarkt
-		de.Transport.Flugplatz
-		de.Freizeit.Kino
-		de.Freizeit.Nationalpark
-		de.Freizeit.Oper
-		de.Freizeit.Reiterhof
-		de.Freizeit.Sehenswuerdigkeit
-		de.Freizeit.Sehenswuerdigkeit.Museum
-		de.Freizeit.Spielplatz
-		de.Freizeit.Sport.Fussball-Stadion
-		de.Freizeit.Sport.Fussballplatz
-		de.Freizeit.Sport.Golfplatz
-		de.Freizeit.Sport.Minigolfplatz
-		de.Freizeit.Sport.Tennisplatz
-		de.Freizeit.Theater
-		de.Friedhof
-		de.Fussgaenger Zone
-		de.Geldwechsel
-		de.Geocache
-		de.Gesundheit.Ambulanz
-		de.Gesundheit.Apotheke
-		de.Gesundheit.Arzt
-		de.Gesundheit.Krankenhaus
-		de.Gesundheit.Notaufnahme
-		de.Gift-Shop
-		de.Kino
-		de.Kirche.Evangelisch
-		de.Kirche.Katholisch
-		de.Kirche.Synagoge
-		de.Messe
-		de.Freizeit.Modellflugplatz
-		de.Notruf saeule
-		de.Transport.Park&Ride
-		de.Transport.Parkplatz
-		de.Polizei
-		de.Post
-		de.Recycling.Altglas
-		de.Recycling.Altpapier
-		de.Recycling.Wertstoffhof
-		de.Freizeit.Rummelplatz
-		de.Stadt Information
-		de.Stadthalle
-		de.Telefon-Zelle
-		de.Transport.Auto-Verlade-Bahnhof
-		de.Transport.Bahnhof
-		de.Transport.Bus-Haltestelle
-		de.Transport.Faehre
-		de.Transport.Gueter-Verlade-Bahnhof
-		de.Transport.Lotsendienst
-		de.Transport.Mautstation
-		de.Transport.Raststaette
-		de.Transport.S-Bahn-Haltestelle
-		de.Transport.Strassen-Bahn-Haltestelle
-		de.Transport.Strassen.30-Zohne
-		de.Transport.Strassen.Autobahn
-		de.Transport.Strassen.Bundesstrasse
-		de.Transport.Strassen.Innerorts
-		de.Transport.Strassen.Landstrasse
-		de.Transport.Tankstelle
-		de.Transport.Taxi-Stand
-		de.Transport.U-Bahn-Haltestelle
-		de.Transport.Verkehr.Baustelle
-		de.Transport.Verkehr.Radarfalle
-		de.Transport.Verkehr.Stau
-		de.Transport.Werkstatt
-		de.Freizeit.Veranstaltungshalle
-		de.Verwaltung.Rathaus
-		de.Verwaltung.Zulassungsstele
-		de.WC
-		de.Transport.Auto.Werkstatt
-		de.Freizeit.Zoo
-		de.Uebernachtung.Hotel
-		de.Uebernachtung.Jugend Herberge
-		de.Uernachtung.Motel
-		de.Uernachtung.ZeltplatzSchwimmbad
-		);
+
+{ # Fill poi_type database
+    my @icons = qw( de.unknown
+		    de.Ausbildung.GrundSchule
+		    de.Ausbildung.Gymnasium
+		    de.Ausbildung.HauptSchule
+		    de.Ausbildung.Kindergarten
+		    de.Ausbildung.Kinderkrippe
+		    de.Ausbildung.UNI
+		    de.Ausbildung.VHS
+		    de.Bank
+		    de.Bank.Geldautomat
+		    de.Bank.Geldautomat.EC
+		    de.Briefkasten
+		    de.EC-Automat
+		    de.Einkaufen.Baumarkt
+		    de.Einkaufen.Flohmarkt
+		    de.Einkaufen.Lebensmittel
+		    de.Einkaufen.Lebensmittel.Supermarkt
+		    de.Einkaufszentrum
+		    de.Essen-Lieferservice
+		    de.Essen.Gaststaette
+		    de.Essen.Kneipe
+		    de.Essen.Restaurant
+		    de.Essen.Schnellrestaurant
+		    de.Essen.Schnellrestaurant.Burger_King
+		    de.Essen.Schnellrestaurant.MC_Donalds
+		    de.Feuerwehr
+		    de.Freizeit.Gift_Shop
+		    de.Freizeit.Kino
+		    de.Freizeit.Modellflugplatz
+		    de.Freizeit.Nationalpark
+		    de.Freizeit.Oper
+		    de.Freizeit.Reiterhof
+		    de.Freizeit.Rummelplatz
+		    de.Freizeit.Schwimmbad
+		    de.Freizeit.Sehenswuerdigkeit
+		    de.Freizeit.Sehenswuerdigkeit.Museum
+		    de.Freizeit.Spielplatz
+		    de.Freizeit.Sport.Fussball_Stadion
+		    de.Freizeit.Sport.Fussballplatz
+		    de.Freizeit.Sport.Golfplatz
+		    de.Freizeit.Sport.Minigolfplatz
+		    de.Freizeit.Sport.Tennisplatz
+		    de.Freizeit.Theater
+		    de.Freizeit.Veranstaltungshalle
+		    de.Freizeit.Zoo
+		    de.Friedhof
+		    de.Fussgaenger_Zone
+		    de.Geldwechsel
+		    de.Geocache
+		    de.Gesundheit.Ambulanz
+		    de.Gesundheit.Apotheke
+		    de.Gesundheit.Arzt
+		    de.Gesundheit.Krankenhaus
+		    de.Gesundheit.Notaufnahme
+		    de.Kino
+		    de.Kirche.Evangelisch
+		    de.Kirche.Katholisch
+		    de.Kirche.Synagoge
+		    de.Messe
+		    de.Notruf_saeule
+		    de.Polizei
+		    de.Post
+		    de.Recycling.Altglas
+		    de.Recycling.Altpapier
+		    de.Recycling.Wertstoffhof
+		    de.Stadt Information
+		    de.Stadthalle
+		    de.Telefon-Zelle
+		    de.Transport.Auto.Werkstatt
+		    de.Transport.Auto_Verlade_Bahnhof
+		    de.Transport.Bahnhof
+		    de.Transport.Blitzampel
+		    de.Transport.Bus-Haltestelle
+		    de.Transport.Faehre
+		    de.Transport.Flugplatz
+		    de.Transport.Gueter_Verlade_Bahnhof
+		    de.Transport.Lotsendienst
+		    de.Transport.Mautstation
+		    de.Transport.ParkRide
+		    de.Transport.Parkplatz
+		    de.Transport.Raststaette
+		    de.Transport.S-Bahn-Haltestelle
+		    de.Transport.Strassen-Bahn_Haltestelle
+		    de.Transport.Strassen.30_Zohne
+		    de.Transport.Strassen.Autobahn
+		    de.Transport.Strassen.Bundesstrasse
+		    de.Transport.Strassen.Innerorts
+		    de.Transport.Strassen.Landstrasse
+		    de.Transport.Tankstelle
+		    de.Transport.Taxi-Stand
+		    de.Transport.U-Bahn_Haltestelle
+		    de.Transport.Verkehr.Baustelle
+		    de.Transport.Verkehr.Radarfalle
+		    de.Transport.Verkehr.Stau
+		    de.Transport.Werkstatt
+		    de.Uebernachtung.Camping_Platz
+		    de.Uebernachtung.Hotel
+		    de.Uebernachtung.Jugend_Herberge
+		    de.Uernachtung.Motel
+		    de.Uernachtung.Zeltplatz
+		    de.Verwaltung.Rathaus
+		    de.Verwaltung.Zulassungsstele
+		    de.WC
+		    );
 
     my $i=1;
     for my $icon  ( @icons ) {    
@@ -672,11 +800,47 @@ my @icons = qw( de.unknown
 	$icon =~ s/(..)\.//;
 	my $lang =$1;
 	$lang ||= 'en';
-	db_exec("DELETE FROM `type` WHERE type_id = $i AND `lang` = '$lang';");
-	db_exec("INSERT INTO `type` VALUES ($i,'$lang','$icon','$icon.png','$icon');");
+	my $name = $icon;
+	$name =~ s/_/ /g;
+	db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $i AND `lang` = '$lang';");
+	db_exec("INSERT INTO `poi_type` ".
+		"       (poi_type_id, lang, name, symbol, description ) ".
+		"VALUES ($i,'$lang','$name','$icon.png','$name');") or die;
 	$i++;
     }
+}
+
+{ # Fill streets_type database
+    my @icons = qw( de.unknown_xFFFFFF
+		    de.30_Zohne_x00FFFF
+		    de.Innerorts_x00FFFF
+		    de.Landstrasse_x00FFFF
+		    de.Bundesstrasse_x00FFFF
+		    de.Autobahn_x0000FF
+		    );
+
+    my $i=1;
+    for my $entry  ( @icons ) {    
+	my $statement;
+	$entry =~ m/^(..)\.(.*)_x(......)$/;
+	my $lang  = $1;
+	my $name  = $2;
+	my $color = $3;
+	if ( ! $lang ) {
+	    die "Error in street type entry '$entry'\n";
+	}
+	$lang ||= 'en';
+	$name =~ s/_/ /g;
+	my $linetype='';
+	db_exec("DELETE FROM `streets_type` WHERE streets_type_id = $i AND `lang` = '$lang';");
+	db_exec("INSERT INTO `streets_type` ".
+		"        (streets_type_id, lang, name, description , color , linetype )".
+		" VALUES ($i,'$lang','$name','$name','$color','$linetype');");
+	$i++;
+    }
+}
     print "Creation completed\n";
+
 }
 # -----------------------------------------------------------------------------
 

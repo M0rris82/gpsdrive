@@ -64,7 +64,7 @@ sub import_Kismet_track_file($$){
     my $line1='';
     while ( my $line = $fh->getline() ) {
 	my $valid=0;
-	my $type_id = 2;
+	my $streets_type_id = 2;
 	my $dist;
 	my $time_delta;
 	my $speed;
@@ -112,14 +112,14 @@ sub import_Kismet_track_file($$){
 	    $time_delta = $time2 - $time1;
 	    $speed      = $valid&&$time_delta ? $dist / $time_delta * 3.600 : -1;
 	    #printf "Dist: %.4f/%.2f =>  %.2f\n",$dist,$time_delta,$speed;
-	    $type_id = 1 if ( $speed >0 );
-	    $type_id = 2 if ( $speed >30 );
-	    $type_id = 3 if ( $speed >60 );
-	    $type_id = 4 if ( $speed >100 );
+	    $streets_type_id = 1 if ( $speed >0 );
+	    $streets_type_id = 2 if ( $speed >30 );
+	    $streets_type_id = 3 if ( $speed >60 );
+	    $streets_type_id = 4 if ( $speed >100 );
 
 	    if ( $alt2 == 0 ) { # Otherwise I assume it was POS Mode
 		print "Altitude = 0  ---> type=10\n";
-		$type_id = 10;
+		$streets_type_id = 10;
 	    }
 
 	    if ( $time_delta >300 ) {
@@ -140,12 +140,12 @@ sub import_Kismet_track_file($$){
 	}
 
 	if ( $valid ) {
-	    #debug(sprintf "\t(%.3f,%.3f) - (%.3f,%.3f) %.0f m (%.1f Km/h) (Type %d)",$lat1,$lon1,$lat2,$lon2,$dist,$speed,$type_id);
+	    #debug(sprintf "\t(%.3f,%.3f) - (%.3f,%.3f) %.0f m (%.1f Km/h) (Type %d)",$lat1,$lon1,$lat2,$lon2,$dist,$speed,$streets_type_id);
 	    POI::DBFuncs::streets_add(
 				      { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
 					lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
 					level_min => 0, level_max => 99,
-					type_id => $type_id, 
+					streets_type_id => $streets_type_id, 
 					name => "$dist $full_filename",
 					source_id => $source_id
 					}

@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.4  2005/03/27 00:44:42  tweety
+eperated poi_type_list and streets_type_list
+and therefor renaming the fields
+added drop index before adding one
+poi.*: a little bit more error handling
+disabling poi and streets if sql is disabled
+changed som print statements from \n.... to ...\n
+changed some debug statements from debug to mydebug
+
 Revision 1.3  2005/02/22 08:18:51  tweety
 change leveing system to simpler scale marking for decission what to show on display
 column_names(DBFuncs.pm get data from Database
@@ -66,7 +75,7 @@ typedef struct
   gdouble lat;
   gdouble alt;
   gchar   name[80];
-  gint    type_id; 
+  gint    poi_type_id; 
   gdouble proximity;
   gchar   comment[255]; 
   gint    scale_min;  
