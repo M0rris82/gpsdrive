@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.3  2005/10/30 06:57:07  tweety
+  eliminate ols tracks.h file
+
   Revision 1.2  2005/10/11 08:28:35  tweety
   gpsdrive:
   - add Tracks(MySql) displaying
@@ -62,7 +65,6 @@ Disclaimer: Please do not use for navigation.
 #include <string.h>
 #include <sys/stat.h>
 #include "gpsdrive.h"
-#include "tracks.h"
 #include "draw_tracks.h"
 #include "config.h"
 #include "gettext.h"
