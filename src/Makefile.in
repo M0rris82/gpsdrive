@@ -86,14 +86,13 @@ am__garble_SOURCES_DIST = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 garble_OBJECTS = $(am_garble_OBJECTS)
 garble_LDADD = $(LDADD)
 am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
-	speech_out.c speech_out.h friends.c power.h battery.c track.c \
-	poi.c streets.c draw_tracks.c settings.c battery.h track.h \
-	poi.h streets.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
+	speech_out.c speech_out.h friends.c battery.c track.c poi.c \
+	streets.c draw_tracks.c settings.c battery.h track.h poi.h \
+	streets.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
 	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
-	LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c \
-	gpsmisc.c gpsproto.h talogo.h import_map.c import_map.h \
-	speech_strings.c speech_strings.h xpm_compass.h xpm_talogo.h \
-	xpm_power.h xpm_icons.h garmin_data.cpp garmin_serial_unix.cpp \
+	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
+	gpsproto.h talogo.h import_map.c import_map.h speech_strings.c \
+	speech_strings.h garmin_data.cpp garmin_serial_unix.cpp \
 	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
 	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
 	garmin_serial_unix.h garmin_application.h garmin_packet.h \
@@ -320,14 +319,13 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEPLUGINS_FALSE@libnautic_la_SOURCES = nautic.c
 @DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
 @DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-@DISABLEGARMIN_FALSE@	friends.c power.h \
+@DISABLEGARMIN_FALSE@	friends.c \
 @DISABLEGARMIN_FALSE@	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
 @DISABLEGARMIN_FALSE@	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 @DISABLEGARMIN_FALSE@	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-@DISABLEGARMIN_FALSE@	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
+@DISABLEGARMIN_FALSE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_FALSE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 @DISABLEGARMIN_FALSE@	import_map.c import_map.h speech_strings.c speech_strings.h \
-@DISABLEGARMIN_FALSE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h \
 @DISABLEGARMIN_FALSE@	\
 @DISABLEGARMIN_FALSE@	garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
@@ -338,15 +336,14 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEGARMIN_FALSE@	gps_handler.c gps_handler.h
 
 @DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-@DISABLEGARMIN_TRUE@	friends.c power.h \
+@DISABLEGARMIN_TRUE@	friends.c \
 @DISABLEGARMIN_TRUE@	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
 @DISABLEGARMIN_TRUE@	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 @DISABLEGARMIN_TRUE@	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-@DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
+@DISABLEGARMIN_TRUE@	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 @DISABLEGARMIN_TRUE@	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 @DISABLEGARMIN_TRUE@	import_map.c import_map.h speech_strings.c speech_strings.h \
-@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h \
-@DISABLEGARMIN_TRUE@	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
+@DISABLEGARMIN_TRUE@	gps_handler.c gps_handler.h	
 
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
