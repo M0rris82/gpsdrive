@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.7  2005/04/29 17:41:57  tweety
+  Moved the speech string to a seperate File
+
   Revision 1.6  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -194,7 +197,7 @@ Disclaimer: Please do not use for navigation.
 #include <math.h>
 #include <sys/time.h>
 #include <gpsdrive.h>
-#include <speech_out.h>
+#include <speech_strings.h>
 
 #if HAVE_LOCALE_H
 #include <locale.h>
@@ -214,12 +217,12 @@ Disclaimer: Please do not use for navigation.
 #  define N_(String) (String)
 # endif
 
+enum allowed_languages { english, german, spanish };
+enum allowed_languages voicelang;
+
 extern gint statusid, debug, havespeechout, posmode, muteflag;
 gint speechsock = -1;
 gchar *displaytext = NULL;
-extern enum
-{ english, german, spanish }
-voicelang;
 extern GdkFont *textfont, *smalltextfont, *bigtextfont;
 extern GdkColor white, red, mygray, blue;
 extern GdkDrawable *drawable;
