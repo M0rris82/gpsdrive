@@ -46,7 +46,7 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
+	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h 
 	gps_handler.c gps_handler.h	
 else 
@@ -56,7 +56,7 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
+	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h	\
 	\
