@@ -31,8 +31,6 @@ echo "Using $CC compiler"
 
 if test "$CC" = "gcc" ; then
 
-$CC -dumpversion
-
 if $CC -dumpversion|egrep -q -e '^3\.*' -e '^4\.*'; then
 echo "GCC ok"
 else
