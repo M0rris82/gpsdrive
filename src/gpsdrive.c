@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.74  1994/06/10 02:11:00  tweety
+move nmea handling to it's own file Part 1
+
 Revision 1.73  1994/06/08 08:37:47  tweety
 fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
 instead of atof and strtod
@@ -2173,6 +2176,7 @@ gpsdrive started
 #include "streets.h"
 #include "draw_tracks.h"
 #include "gps_handler.h"
+#include "nmea_handler.h"
 #include <speech_strings.h>
 #include <speech_out.h>
 
@@ -5478,99 +5482,6 @@ simulated_pos (GtkWidget * widget, guint * datum)
 }
 
 
-/* *****************************************************************************
- * open serial port or pty master or file for NMEA output 
- */
-FILE *
-opennmea (const char *name)
-{
-	struct termios tios;
-
-	if (mydebug >50) printf ("opennmea()\n");
-
-	FILE *const out = fopen (name, "w");
-	if (out == NULL)
-	{
-		perror (_("can't open NMEA output file"));
-		exit (1);
-	}
-
-	if (tcgetattr (fileno (out), &tios))
-		return out;	/* not a terminal, oh well */
-
-	tios.c_iflag = 0;
-	tios.c_oflag = 0;
-	tios.c_cflag = CS8 | CLOCAL;
-	tios.c_lflag = 0;
-	tios.c_cc[VMIN] = 1;
-	tios.c_cc[VTIME] = 0;
-	cfsetospeed (&tios, B4800);
-	tcsetattr (fileno (out), TCSAFLUSH, &tios);
-	return out;
-}
-
-/* *****************************************************************************
- */
-void
-write_nmea_line (const char *line)
-{
-	int checksum = 0;
-	fprintf (nmeaout, "$%s*", line);
-	while ('\0' != *line)
-		checksum = checksum ^ *line++;
-	fprintf (nmeaout, "%02X\r\n", checksum);
-	fflush (nmeaout);
-}
-
-/* *****************************************************************************
- */
-void
-gen_nmea_coord (char *out)
-{
-	gdouble lat = fabs (current_lat), lon = fabs (current_long);
-	g_snprintf (out, sizeof (out), ",%02d%07.5f,%c,%03d%07.5f,%c",
-		    (int) floor (lat), 60 * (lat - floor (lat)),
-		    (current_lat < 0 ? 'S' : 'N'),
-		    (int) floor (lon), 60 * (lon - floor (lon)),
-		    (current_long < 0 ? 'W' : 'E'));
-}
-
-/* *****************************************************************************
- */
-gint
-write_nmea_cb (GtkWidget * widget, guint * datum)
-{
-	char buffer[180];
-	time_t now = time (NULL);
-	struct tm *st = gmtime (&now);
-
-	strftime (buffer, sizeof (buffer), "GPGGA,%H%M%S.000", st);
-	gen_nmea_coord (buffer + strlen (buffer));
-	g_strlcpy (buffer + strlen (buffer), ",1,00,0.0,,M,,,,0000",
-		   sizeof (buffer) - strlen (buffer));
-	write_nmea_line (buffer);
-
-	g_strlcpy (buffer, "GPGLL", sizeof (buffer));
-	gen_nmea_coord (buffer + strlen (buffer));
-	strftime (buffer + strlen (buffer), 80, ",%H%M%S.000,A", st);
-	write_nmea_line (buffer);
-
-	strftime (buffer, sizeof (buffer), "GPRMC,%H%M%S.000,A", st);
-	gen_nmea_coord (buffer + strlen (buffer));
-	g_snprintf (buffer + strlen (buffer), sizeof (buffer), ",%.2f,%.2f",
-		    groundspeed / milesconv / 1.852,
-		    direction * 180.0 / M_PI);
-	strftime (buffer + strlen (buffer), 80, ",%d%m%y,,", st);
-	write_nmea_line (buffer);
-
-	g_snprintf (buffer, sizeof (buffer), "GPVTG,%.2f,T,,M,%.2f,N,%.2f,K",
-		    direction * 180.0 / M_PI,
-		    groundspeed / milesconv / 1.852, groundspeed / milesconv);
-	write_nmea_line (buffer);
-
-	return TRUE;
-}
-
 
 /* *****************************************************************************
  */
@@ -8808,30 +8719,6 @@ usage ()
 	     _("-H X  correct altitude, adding this value to altitude\n"),
 	     _("-z    don't display zoom factor and scale\n\n"));
 
-}
-
-/* *****************************************************************************
- * Re-initialize GPS connection
- */
-gint
-reinitgps_cb (GtkWidget * widget, gpointer datum)
-{
-	g_print ("\nReinitializing GPS connection...\n");
-	initgps ();
-	/*if (simmode)
-	{
-		if ((!disableserial) && (!disableserialcl))
-		{
-			haveserial = gpsserialinit ();
-			if (haveserial)
-			{
-				simmode = FALSE;
-				haveNMEA = TRUE;
-				gtk_widget_set_sensitive (startgpsbt, FALSE);
-			}
-		}
-	} */
-	return TRUE;
 }
 
 /* *****************************************************************************

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.15  1994/06/10 02:11:00  tweety
+move nmea handling to it's own file Part 1
+
 Revision 1.14  1994/06/09 01:20:23  tweety
 ndent, change error messages for lat2radius
 
@@ -134,49 +137,6 @@ extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
   milesconv;
 static gchar gradsym[] = "\xc2\xb0";
-
-
-/* ******************************************************************
- * check NMEA checksum
- * ARGS:    NMEA String
- * RETURNS: TRUE if Checksumm is ok
- */
-gint
-checksum (gchar * text)
-{
-  gchar t[120], t2[10];
-  gint i = 1, checksum = 0, j, orig;
-
-  if (ignorechecksum)
-    return TRUE;
-
-  strncpy (t, text, 100);
-  t[100] = 0;
-  j = strlen (t) - 3;
-  while (('\0' != t[i]) && (i < j))
-    checksum = checksum ^ t[i++];
-  g_strlcpy (t2, (t + j + 1), sizeof (t2));
-  sscanf (t2, "%X", &orig);
-  if (mydebug > 50)
-    {
-      g_print ("gpsd: %s\n", t);
-      g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
-    }
-
-  if (orig == checksum)
-    {
-      g_strlcpy (text, t, 1000);
-      return TRUE;
-    }
-  else
-    {
-      g_print
-	("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
-	 orig, checksum);
-      return FALSE;
-    }
-}
-
 
 /* **********************************************************************
  * Estimate the earth radius for given latitude

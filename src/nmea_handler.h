@@ -23,39 +23,28 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
-Revision 1.3  1994/06/10 02:11:00  tweety
+Revision 1.1  1994/06/10 02:11:00  tweety
 move nmea handling to it's own file Part 1
 
-Revision 1.2  2005/10/10 13:17:52  tweety
-DBUS Support for connecting to gpsd
-you need to use ./configure --enable-dbus to enable it during compile
-Author: "Belgabor" <belgabor@gmx.de>
-
-Revision 1.1  2005/08/13 10:16:02  tweety
-extract all/some gps_handling parts to File src/gps_handler.c
 
 
 */
 
 
-#ifndef GPS_HANDLER_H
-#define GPS_HANDLER_H
+#ifndef NMEA_HANDLER_H
+#define NMEA_HANDLER_H
+gint get_position_data_cb (GtkWidget * widget, guint * datum);
+void convertRMC (char *f);
+void convertGGA (char *f);
+void convertRME (char *f);
+void convertGSA (char *f);
+
+gint checksum (gchar * text);
+FILE *opennmea (const char *name);
+void write_nmea_line (const char *line);
+void gen_nmea_coord (char *out);
+gint write_nmea_cb (GtkWidget * widget, guint * datum);
 
 
-#include <gtk/gtk.h>
 
-gint initgps ();
-void startgpsd (guint datum);
-void gpsd_close();
-gint reinitgps_cb (GtkWidget * widget, gpointer datum);
-
-int garblemain (int argc, char **argv);
-
-#ifdef DBUS_ENABLE
-#include <dbus/dbus.h>
-static DBusHandlerResult dbus_signal_handler (
-		DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
-#endif
-
-#endif /* GPS_HANDLER_H */
+#endif /* NMEA_HANDLER_H */

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.6  1994/06/10 02:11:00  tweety
+  move nmea handling to it's own file Part 1
+
   Revision 1.5  1994/06/07 11:25:45  tweety
   set debug levels more detailed
 
@@ -49,6 +52,7 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "icons.h"
 #include "gps_handler.h"
+#include "nmea_handler.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
@@ -147,14 +151,15 @@ extern gint earthmate;
 extern int disableserial, disableserialcl;
 
 // ---------------------- NMEA
-gint haveRMCsentence = FALSE;
-gchar nmeamodeandport[50];
-gdouble NMEAsecs = 0.0;
-gint NMEAoldsecs = 0;
-FILE *nmeaout = NULL;
+extern gint haveRMCsentence;
+extern gdouble NMEAsecs;
+extern gint NMEAoldsecs;
+extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 /*  haveGARMIN is TRUE if we get data from program garble in GARMIN we get only long and lat */
-gint haveNMEA, haveGARMIN;
+extern gchar nmeamodeandport[50];
+extern gint haveNMEA, haveGARMIN;
+
 #ifdef DBUS_ENABLE
 gint useDBUS;
 DBusError dbuserror;
@@ -189,6 +194,31 @@ gint sock = -1;
 
 
 /* *****************************************************************************
+ * Re-initialize GPS connection
+ */
+gint
+reinitgps_cb (GtkWidget * widget, gpointer datum)
+{
+	g_print ("\nReinitializing GPS connection...\n");
+	initgps ();
+	/*if (simmode)
+	{
+		if ((!disableserial) && (!disableserialcl))
+		{
+			haveserial = gpsserialinit ();
+			if (haveserial)
+			{
+				simmode = FALSE;
+				haveNMEA = TRUE;
+				gtk_widget_set_sensitive (startgpsbt, FALSE);
+			}
+		}
+	} */
+	return TRUE;
+}
+
+
+/* *****************************************************************************
  */
 void
 gpsd_close ()
@@ -199,10 +229,10 @@ gpsd_close ()
 
 /* *****************************************************************************
  */
-#ifdef DBUS_ENABLE
 void
 init_dbus_current_fix()
 {
+#ifdef DBUS_ENABLE
 	// Preserve the time
 	dbus_current_fix.mode = 0;
 	dbus_current_fix.ept = NAN;
@@ -217,17 +247,10 @@ init_dbus_current_fix()
 	dbus_current_fix.eps = NAN;
 	dbus_current_fix.climb = NAN;
 	dbus_current_fix.epc = NAN;
-}
 #endif
+}
 
-gint
-initgps ()
-{
-  struct sockaddr_in server;
-  struct hostent *server_data;
-
-#ifdef DBUS_ENABLE
-  if (useDBUS) {
+void init_dbus(){
 	haveNMEA = TRUE;
 	haveserial = FALSE;
 	haveGARMIN = FALSE;
@@ -258,11 +281,16 @@ initgps ()
 	g_strlcpy (nmeamodeandport,
 		_("DBUS Mode"), sizeof (nmeamodeandport));
 	dbus_connection_setup_with_g_main (connection, NULL);
-	
-  } else
-#endif
+}
 
-  /*  We test for gpsd serving */
+
+/* ******************************************************************
+ */
+gint
+init_nmea_socket ()
+{
+  struct sockaddr_in server;
+  struct hostent *server_data;
   {
     /*  open socket to port */
     if (sock != -1)
@@ -335,6 +363,22 @@ initgps ()
 
 
   }
+}
+
+/* ******************************************************************
+ */
+gint
+initgps ()
+{
+
+#ifdef DBUS_ENABLE
+  if (useDBUS) {
+      init_dbus();
+  } else
+#endif
+
+      init_nmea_socket ();
+  /*  We test for gpsd serving */
 
   haveGARMIN = FALSE;
 
@@ -433,575 +477,6 @@ initgps ()
     
   return FALSE;			/* to remove timer */
 }
-
-
-
-/* *****************************************************************************
- */
-void
-convertRMC (char *f)
-{
-  gchar field[50][100], b[100];
-  gint start = 0;
-  gint longdegree, latdegree;
-  gchar langri, breitri;
-  size_t i, j = 0;
-  memset (b, 0, 100);
-
-  /*  if simulation mode we display status and return */
-  if (simmode && maploaded && !posmode)
-    {
-      display_status (_("Simulation mode"));
-      return;
-    }
-
-  /*  get fields delimited with ',' */
-  for (i = 0; i < strlen (f); i++)
-    {
-      if (f[i] == ',')
-	{
-	  g_strlcpy (field[j], (f + start), 100);
-	  field[j][i - start] = 0;
-	  start = i + 1;
-	  j++;
-	}
-    }
-  if ((j != 11) && (j != 12))
-    {
-      g_print ("gpsd: GPRMC: wrong number of fields (%d)\n", (int) j);
-      return;
-    }
-  if (!haveRMCsentence)
-    {
-      if ( mydebug > 30 )
-	g_print (_("gpsd: got RMC data, using it\n"));
-      haveRMCsentence = TRUE;
-    }
-
-  if ( mydebug > 30 )
-    {
-      g_print ("gpsd: RMC Fields: \n");
-      for (i = 0; i < j; i++)
-	g_print ("gpsd: RMC Field %d:%s\n", (int) i, field[i]);
-      g_print ("\n");
-    }
-  g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0],
-	      field[1][1], field[1][2], field[1][3], field[1][4],
-	      field[1][5]);
-  g_strlcpy (utctime, b, sizeof (utctime));
-  if ( mydebug > 30 )
-    g_print ("gpsd: utctime: %s\n", utctime);
-  if ((field[2][0] != 'A') && !forcehavepos)
-    {
-      havepos = FALSE;
-      haveposcount = 0;
-      return;
-    }
-  else
-    {
-      havepos = TRUE;
-      haveposcount++;
-      if (haveposcount == 3)
-	{
-	  rebuildtracklist ();
-	}
-
-    }
-  /*  Latitude North / South */
-  /* if field[3] is shorter than 9 characters, add zeroes in the beginning */
-  if (strlen (field[3]) < 8)
-    {
-      if ( mydebug > 0 )
-	{
-	  g_print ("Latitude field %s is shorter than 9 characters. (%d)\n",
-		   field[3], strlen (field[3]));
-	}
-      for (i = 0; i < 9; i++)
-	{
-	  b[i] = '0';
-	}
-      b[9] = 0;
-      g_strlcpy (b + (9 - strlen (field[3])), field[3], sizeof (b));
-      g_strlcpy (field[3], b, sizeof (field[3]));
-    }
-
-  b[0] = field[3][0];
-  b[1] = field[3][1];
-  b[2] = 0;
-  latdegree = atoi (b);
-
-
-  b[0] = field[3][2];
-  b[1] = field[3][3];
-  b[2] = localedecimal;
-  b[3] = field[3][5];
-  b[4] = field[3][6];
-  b[5] = field[3][7];
-  b[6] = 0;
-  if (!posmode)
-    {
-      gdouble cl;
-      cl = latdegree + atof (b) / 60.0;
-      if (field[4][0] == 'S')
-	cl = cl * -1;
-      if ((cl >= -90.0) && (cl <= 90.0))
-	current_lat = cl;
-      breitri = field[4][0];
-      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lat, gradsym, breitri);
-    }
-
-  /*  Longitude East / West */
-
-  /* if field[5] is shorter than 10 characters, add zeroes in the beginning */
-  if (strlen (field[5]) < 9)
-    {
-      if ( mydebug > 0 )
-	{
-	  g_print ("Longitude field %s is shorter than 10 characters. (%d)\n",
-		   field[5], strlen (field[5]));
-	}
-      for (i = 0; i < 10; i++)
-	{
-	  b[i] = '0';
-	}
-      b[10] = 0;
-      g_strlcpy (b + (10 - strlen (field[5])), field[5], sizeof (b));
-      g_strlcpy (field[5], b, sizeof (field[5]));
-    }
-
-  b[0] = field[5][0];
-  b[1] = field[5][1];
-  b[2] = field[5][2];
-  b[3] = 0;
-  longdegree = atoi (b);
-
-  b[0] = field[5][3];
-  b[1] = field[5][4];
-  b[2] = localedecimal;
-  b[3] = field[5][6];
-  b[4] = field[5][7];
-  b[5] = field[5][8];
-  b[6] = 0;
-  if (!posmode)
-    {
-      gdouble cl;
-      cl = longdegree + atof (b) / 60.0;
-      if (field[6][0] == 'W')
-	cl = cl * -1;
-      if ((cl >= -180.0) && (cl <= 180.0))
-	current_long = cl;
-
-      langri = field[6][0];
-      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_long, gradsym, langri);
-    }
-
-  /*  speed */
-  b[0] = field[7][0];
-  b[1] = field[7][1];
-  b[2] = field[7][2];
-  b[3] = localedecimal;
-  b[4] = field[7][4];
-  b[5] = 0;
-  groundspeed = atof (b) * 1.852 * milesconv;
-  g_snprintf (b, sizeof (b), " %s: %s", _("Map"), mapfilename);
-  /*    g_print("Field %s\n",field[8]); */
-  b[0] = field[8][0];
-  b[1] = field[8][1];
-  b[2] = field[8][2];
-  b[3] = localedecimal;
-  b[4] = field[8][4];
-  b[5] = 0;
-  /*  direction is the course we are driving */
-  direction = atof (b);
-  direction = direction * M_PI / 180;
-
-  {
-    int h, m, s;
-    h = m = s = 0;
-    if (strcmp (utctime, "n/a") != 0)
-      {
-	sscanf (utctime, "%d:%d.%d", &h, &m, &s);
-	h += zone;
-	if (h > 23)
-	  h -= 24;
-	if (h < 0)
-	  h += 24;
-	g_snprintf (loctime, sizeof (loctime), "%d:%02d.%02d", h, m, s);
-      }
-    else
-      g_strlcpy (loctime, "n/a", sizeof (loctime));
-  }
-
-}
-
-/*  show satellites signal level */
-gint
-convertGSV (char *f)
-{
-  gchar field[50][100], b[500];
-  gint i, l, i2, j = 0, start = 0, n, db, anz, az, el;
-
-  memset (b, 0, 100);
-  l = strlen (f);
-  for (i = 0; i < l; i++)
-    {
-      if ((f[i] == ',') || (f[i] == '*'))
-	{
-	  g_strlcpy (field[j], (f + start), 100);
-	  field[j][i - start] = 0;
-	  start = i + 1;
-	  j++;
-	}
-    }
-  if ( mydebug > 30 )
-    {
-      g_print ("gpsd: GSV Fields:\n");
-      g_print ("gpsd: ");
-      for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
-      g_print ("\n");
-    }
-  if (j > 40)
-    {
-      g_print ("gpsd: GPGSV: wrong number of fields (%d)\n", j);
-      return FALSE;
-    }
-
-  if (field[2][0] == '1')
-    satbit = satbit | 1;
-  if (field[2][0] == '2')
-    satbit = satbit | 2;
-  if (field[2][0] == '3')
-    satbit = satbit | 4;
-
-  anz = atoi (field[3]);
-  b[0] = field[1][0];
-  b[1] = 0;
-  i2 = atof (b);
-  if (mydebug)
-    g_print ("gpsd: bits should be:%d  is: %d\n", i2, satbit);
-  g_snprintf (b, sizeof (b), "Satellites: %d\n", anz);
-  if (anz != oldsatsanz)
-    newsatslevel = TRUE;
-  oldsatsanz = anz;
-
-  for (i = 4; i < j; i += 4)
-    {
-      n = atoi (field[i]);
-      if (n > MAXSATS)
-	{
-	  fprintf (stderr,
-		   "gpsd: illegal satellite number: %d, ignoring\n", n);
-	  continue;
-	}
-      db = atoi (field[i + 3]);
-      el = atoi (field[i + 1]);
-      az = atoi (field[i + 2]);
-      if ( mydebug > 30 )
-	fprintf (stderr,
-		 "gpsd: satnumber: %2d elev: %3d azimut: %3d signal %3ddb\n",
-		 n, el, az, db);
-
-      satlist[n][0] = n;
-      satlist[n][1] = db;
-      satlist[n][2] = el;
-      satlist[n][3] = az;
-    }
-
-  if (((pow (2, i2)) - 1) == satbit)
-    {
-      satsavail = 0;
-      for (i = 0; i < MAXSATS; i++)
-	if (satlist[i][0] != 0)
-	  {
-	    g_snprintf (b, sizeof (b), "% 2d: % 2ddb   ",
-			satlist[i][0], satlist[i][1]);
-	    satsavail++;
-	  }
-      satbit = 0;
-
-      memcpy (satlistdisp, satlist, sizeof (satlist));
-      memset (satlist, 0, sizeof (satlist));
-      newsatslevel = TRUE;
-      return TRUE;
-    }
-  return FALSE;
-}
-
-
-/*  show altitude and satfix */
-void
-convertGGA (char *f)
-{
-  gchar field[50][100], b[500];
-  gint i, l, j = 0, start = 0;
-  gint longdegree, latdegree;
-  gchar langri, breitri;
-
-  memset (b, 0, 100);
-  l = strlen (f);
-  for (i = 0; i < l; i++)
-    {
-      if ((f[i] == ',') || (f[i] == '*'))
-	{
-	  g_strlcpy (field[j], (f + start), 100);
-	  field[j][i - start] = 0;
-	  start = i + 1;
-	  j++;
-	}
-    }
-  if ( mydebug > 30 )
-    {
-      g_print ("gpsd: GGA Fields: ");
-      for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
-      g_print ("\n");
-    }
-
-  if ((j != 15) && (j != 16))
-    {
-      g_print ("GPGGA: wrong number of fields (%d)\n", j);
-      return;
-    }
-
-  /*   the receiver sends no GPRMC, so we get the data from here */
-  if (!haveRMCsentence)
-    {
-      gint mysecs;
-
-      if ( mydebug > 30 )
-	g_print ("got no RMC data, using GGA data\n");
-      g_snprintf (b, sizeof (b), "%c%c", field[1][4], field[1][5]);
-      sscanf (b, "%d", &mysecs);
-      if (mysecs != NMEAoldsecs)
-	{
-	  NMEAsecs = mysecs - NMEAoldsecs;
-	  if (NMEAsecs < 0)
-	    NMEAsecs += 60;
-	  NMEAoldsecs = mysecs;
-	}
-      /*       g_print("nmeasecs: %.2f mysecs: %d, nmeaoldsecs: %d\n", NMEAsecs, */
-      /*         mysecs, NMEAoldsecs); */
-      g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0],
-		  field[1][1], field[1][2], field[1][3],
-		  field[1][4], field[1][5]);
-      g_strlcpy (utctime, b, sizeof (utctime));
-
-      if (field[6][0] == '0')
-	{
-	  havepos = FALSE;
-	  haveposcount = 0;
-	  return;
-	}
-      else
-	{
-	  havepos = TRUE;
-	  haveposcount++;
-	  if (haveposcount == 3)
-	    {
-	      rebuildtracklist ();
-	    }
-	}
-
-      /*  Latitude North / South */
-      /* if field[2] is shorter than 9 characters, add zeroes in beginning */
-      if (strlen (field[2]) < 9)
-	{
-	  if ( mydebug > 0 )
-	    {
-	      g_print
-		("Latitude field %s is shorter than 9 characters. (%d)\n",
-		 field[2], strlen (field[2]));
-	    }
-	  for (i = 0; i < 9; i++)
-	    {
-	      b[i] = '0';
-	    }
-	  b[9] = 0;
-	  g_strlcpy (b + (9 - strlen (field[2])), field[2], sizeof (b));
-	  g_strlcpy (field[2], b, sizeof (field[2]));
-	}
-
-      b[0] = field[2][0];
-      b[1] = field[2][1];
-      b[2] = 0;
-      latdegree = atoi (b);
-
-
-      b[0] = field[2][2];
-      b[1] = field[2][3];
-      b[2] = localedecimal;
-      b[3] = field[2][5];
-      b[4] = field[2][6];
-      b[5] = field[2][7];
-      b[6] = 0;
-      if ( mydebug > 30 )
-	fprintf (stderr, "posmode: %d\n", posmode);
-      if (!posmode)
-	{
-	  gdouble cl;
-	  cl = latdegree + atof (b) / 60.0;
-	  if (field[3][0] == 'S')
-	    cl = cl * -1;
-	  if ((cl >= -90.0) && (cl <= 90.0))
-	    current_lat = cl;
-
-	  breitri = field[3][0];
-	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lat, gradsym, breitri,cl); */
-	}
-
-      /*  Longitude East / West */
-      /* if field[4] is shorter than 10 chars, add zeroes in the beginning */
-      if (strlen (field[4]) < 10)
-	{
-	  if ( mydebug > 0 )
-	    {
-	      g_print
-		("Longitude field %s is shorter than 10 characters. (%d)\n",
-		 field[4], strlen (field[4]));
-	    }
-	  for (i = 0; i < 10; i++)
-	    {
-	      b[i] = '0';
-	    }
-	  b[10] = 0;
-	  g_strlcpy (b + (10 - strlen (field[4])), field[4], sizeof (b));
-	  g_strlcpy (field[4], b, sizeof (field[4]));
-	}
-
-      b[0] = field[4][0];
-      b[1] = field[4][1];
-      b[2] = field[4][2];
-      b[3] = 0;
-      longdegree = atoi (b);
-
-      b[0] = field[4][3];
-      b[1] = field[4][4];
-      b[2] = localedecimal;
-      b[3] = field[4][6];
-      b[4] = field[4][7];
-      b[5] = field[4][8];
-      b[6] = 0;
-
-      if (!posmode)
-	{
-	  gdouble cl;
-	  cl = longdegree + atof (b) / 60.0;
-	  if (field[5][0] == 'W')
-	    cl = cl * -1;
-	  if ((cl >= -180.0) && (cl <= 180.0))
-	    current_long = cl;
-
-	  langri = field[5][0];
-	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_long, gradsym, langri,cl); */
-	}
-
-      if ( mydebug > 30 )
-	g_print ("gpsd: GGA pos: %f %f\n", current_lat, current_long);
-    }
-
-  satfix = g_strtod (field[6], 0);
-  numsats = g_strtod (field[7], 0);
-  if (havepos)
-    {
-      havealtitude = TRUE;
-      altitude = g_strtod (field[9], 0);
-      if ( mydebug > 30 )
-	g_print ("gpsd: Altitude: %.1f, Fix: %d\n", altitude, satfix);
-    }
-  else
-    {
-      groundspeed = 0;
-      numsats = 0;
-    }
-  {
-    int h, m, s;
-    h = m = s = 0;
-    if (strcmp (utctime, "n/a") != 0)
-      {
-	sscanf (utctime, "%d:%d.%d", &h, &m, &s);
-	h += zone;
-	if (h > 23)
-	  h -= 24;
-	if (h < 0)
-	  h += 24;
-	g_snprintf (loctime, sizeof (loctime), "%d:%02d.%02d", h, m, s);
-      }
-    else
-      g_strlcpy (loctime, "n/a", sizeof (loctime));
-  }
-}
-
-
-/*  show estimated position error $PGRME (Garmin only)  */
-void
-convertRME (char *f)
-{
-  gchar field[50][100], b[500];
-  gint i, l, j = 0, start = 0;
-
-  memset (b, 0, 100);
-  l = strlen (f);
-  for (i = 0; i < l; i++)
-    {
-      if ((f[i] == ',') || (f[i] == '*'))
-	{
-	  g_strlcpy (field[j], (f + start), 100);
-	  field[j][i - start] = 0;
-	  start = i + 1;
-	  j++;
-	}
-    }
-  if ( mydebug > 30 )
-    {
-      g_print ("gpsd: RME Fields: ");
-      for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
-      g_print ("\n");
-    }
-  if (havepos)
-    {
-      precision = g_strtod (field[1], 0);
-      if ( mydebug > 30 )
-	g_print ("gpsd: RME precision: %.1f\n", precision);
-    }
-}
-
-/*  show  HDOP in meters */
-void
-convertGSA (char *f)
-{
-  gchar field[50][100], b[500];
-  gint i, l, j = 0, start = 0;
-
-  memset (b, 0, 100);
-  l = strlen (f);
-  for (i = 0; i < l; i++)
-    {
-      if ((f[i] == ',') || (f[i] == '*'))
-	{
-	  g_strlcpy (field[j], (f + start), 100);
-	  field[j][i - start] = 0;
-	  start = i + 1;
-	  j++;
-	}
-    }
-  if ( mydebug > 30 )
-    {
-      g_print ("gpsd: GSA Fields: ");
-      for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
-      g_print ("\n");
-    }
-  if (havepos)
-    {
-
-      gsaprecision = g_strtod (field[15], 0);
-      if ( mydebug > 30 )
-	g_print ("gpsd: GSA PDOP: %.1f\n", gsaprecision);
-    }
-}
-
 
 
 /* *****************************************************************************
@@ -1170,7 +645,7 @@ dbus_process_fix(gint early)
 			direction = atan2(sin(lon2-lon1)*cos(lat2),
 				cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon2-lon1));
 	}
-	if ( mydebug > 30 )
+	if ( mydebug > 80 )
 		g_print("DBUS fix: %6.0f %10.6f/%10.6f sp:%5.2f(%5.2f) crs:%5.1f(%5.2f)\n", dbus_current_fix.time, 
 			dbus_current_fix.latitude, dbus_current_fix.longitude, dbus_current_fix.speed, groundspeed, 
 			dbus_current_fix.track, direction * 180 / M_PI);
@@ -1231,7 +706,7 @@ static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message) {
 	dbus_message_iter_next (&iter);
 	fix.epc		= dbus_message_iter_get_double (&iter);
 
-	if ( mydebug > 30 ) {
+	if ( mydebug > 80 ) {
 		g_print("DBUS raw: ti:%6.0f mode:%d ept:%f %10.6f/%10.6f eph:%f\n", fix.time, fix.mode, fix.ept, fix.latitude, fix.longitude, fix.eph);
 		g_print("          alt:%6.2f epv:%f crs:%5.1f edp:%f sp:%5.2f eps:%f cl:%f epc:%f\n", fix.altitude, fix.epv, fix.track, fix.epd, fix.speed, fix.eps, fix.climb, fix.epc);
 	}
@@ -1509,7 +984,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  if (groundspeed < 3.6)
 	    groundspeed = 0;
 
-	  if ( mydebug > 30 )
+	  if ( mydebug > 80 )
 	    g_print ("Time: %f\n", secs);
 	}
 
@@ -1581,7 +1056,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  if (mydebug>30)
 	    g_print ("gpsd: !!bigp:%d, e: %d!! ", bigp, e);
 	  g_strlcat (big, buffer, MAXBIG);
-	  if ( mydebug > 30 )
+	  if ( mydebug > 80 )
 	    g_print (", strlen big:%d", strlen (big));
 	  bigp += e;
 	  bigpGSA = bigpRME = bigpGSV = bigpGGA = bigp;
@@ -1595,7 +1070,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'M') && (big[i + 5] == 'C'))
 		    {
 		      found = 0;
-		      if ( mydebug > 30 )
+		      if ( mydebug > 80 )
 			g_print ("gpsd: found #RMC#\n");
 		      for (j = i; j <= bigp; j++)
 			if (big[j] == 13)
@@ -1642,7 +1117,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'S') && (big[i + 5] == 'V'))
 		    {
 		      foundGSV = 0;
-		      if ( mydebug > 30 )
+		      if ( mydebug > 80 )
 			g_print ("gpsd: found #GSV#, bigpGSV: %d\n", bigpGSV);
 		      for (j = i; j <= bigpGSV; j++)
 			if (big[j] == 13)
@@ -1702,7 +1177,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'G') && (big[i + 5] == 'A'))
 		    {
 		      foundGGA = 0;
-		      if ( mydebug > 30 )
+		      if ( mydebug > 80 )
 			g_print ("gpsd: found #GGA#\n");
 		      timeoutcount = 0;
 
@@ -1769,7 +1244,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'M') && (big[i + 5] == 'E'))
 		    {
 		      foundRME = 0;
-		      if ( mydebug > 30 )
+		      if ( mydebug > 80 )
 			g_print ("gpsd: found #RME#\n");
 		      for (j = i; j <= bigpRME; j++)
 			if (big[j] == 13)
@@ -1821,7 +1296,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'S') && (big[i + 5] == 'A'))
 		    {
 		      foundGSA = 0;
-		      if ( mydebug > 30 )
+		      if ( mydebug > 80 )
 			g_print ("gpsd: found #GSA#\n");
 		      for (j = i; j <= bigpGSA; j++)
 			if (big[j] == 13)
@@ -1863,7 +1338,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 
 
-	  if ( mydebug > 30 )
+	  if ( mydebug > 80 )
 	    {
 	      g_print ("gpsd: size:%d lastp: %d \n", e, lastp);
 	      g_print ("gpsd: %s\n", buffer);
