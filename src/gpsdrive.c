@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.15  2005/01/20 00:31:24  tweety
+Added Keyboard events +/- for zooming in/out
+
 Revision 1.14  2005/01/20 00:16:00  tweety
 print aictual mouse position as lat/lon and x/y in debug mode
 print actual Mouse position when creating wp at Mouse position
@@ -6574,6 +6577,7 @@ zoom_cb (GtkWidget * widget, guint datum)
 }
 
 
+// Increase/decrease displayed map scale
 gint
 scalerbt_cb (GtkWidget * widget, guint datum)
 {
@@ -8802,14 +8806,29 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	}
     }
 
-/*   From Russell Mirov: */
-  if (pdamode)
-    {
-      if (event->keyval == 0xFF52)
-	scalerbt_cb (NULL, 1);	/* RNM */
-      if (event->keyval == 0xFF54)
-	scalerbt_cb (NULL, 2);	/* RNM */
-    }
+  // Zoom in/out
+  {
+    /*   From Russell Mirov: */
+    if (pdamode)
+      {
+	if (event->keyval == 0xFF52)
+	  scalerbt_cb (NULL, 1);	/* RNM */
+	if (event->keyval == 0xFF54)
+	  scalerbt_cb (NULL, 2);	/* RNM */
+      }
+    
+    if ( (toupper (event->keyval)) == '+'
+	 || (event->keyval == 0xFFab))  // Zoom in
+      {
+	scalerbt_cb (NULL, 2);
+      }
+    
+    if ( (toupper (event->keyval)) == '-'
+	 || (event->keyval == 0xFFad))  // Zoom out
+      {
+	scalerbt_cb (NULL, 1);
+      }
+  }
 
 
   return 0;
