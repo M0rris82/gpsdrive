@@ -16,7 +16,6 @@
 
 
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -63,8 +62,7 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
-	"$(DESTDIR)$(distpixmapdir)" "$(DESTDIR)$(gpsdrivedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libfly_la_LIBADD =
@@ -171,9 +169,6 @@ DIST_SOURCES = $(libgpsd_a_SOURCES) $(am__libfly_la_SOURCES_DIST) \
 	$(am__libnautic_la_SOURCES_DIST) $(friendsd2_SOURCES) \
 	$(am__garble_SOURCES_DIST) $(gpsd_SOURCES) \
 	$(am__gpsdrive_SOURCES_DIST)
-distpixmapDATA_INSTALL = $(INSTALL_DATA)
-gpsdriveDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(distpixmap_DATA) $(gpsdrive_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -375,16 +370,7 @@ gpsdrive_SOURCES = $(PRGS)
 
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt \
-		gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png \
-		friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
-
-gpsdrivedir = $(datadir)/gpsdrive
-gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg \
-		gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
-
-distpixmapdir = $(datadir)/pixmaps
-distpixmap_DATA = gpsicon.png
+EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec
 all: all-am
 
 .SUFFIXES:
@@ -591,40 +577,6 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-distpixmapDATA: $(distpixmap_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(distpixmapdir)" || $(mkdir_p) "$(DESTDIR)$(distpixmapdir)"
-	@list='$(distpixmap_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(distpixmapDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(distpixmapdir)/$$f'"; \
-	  $(distpixmapDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(distpixmapdir)/$$f"; \
-	done
-
-uninstall-distpixmapDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(distpixmap_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(distpixmapdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(distpixmapdir)/$$f"; \
-	done
-install-gpsdriveDATA: $(gpsdrive_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(gpsdrivedir)" || $(mkdir_p) "$(DESTDIR)$(gpsdrivedir)"
-	@list='$(gpsdrive_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(gpsdriveDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(gpsdrivedir)/$$f'"; \
-	  $(gpsdriveDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(gpsdrivedir)/$$f"; \
-	done
-
-uninstall-gpsdriveDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(gpsdrive_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(gpsdrivedir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(gpsdrivedir)/$$f"; \
-	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -703,11 +655,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS) $(DATA)
+all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS)
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(distpixmapdir)" "$(DESTDIR)$(gpsdrivedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -755,7 +707,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-distpixmapDATA install-gpsdriveDATA
+install-data-am:
 
 install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
 
@@ -783,8 +735,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-distpixmapDATA \
-	uninstall-gpsdriveDATA uninstall-info-am \
+uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
@@ -792,15 +743,13 @@ uninstall-am: uninstall-binPROGRAMS uninstall-distpixmapDATA \
 	clean-noinstLIBRARIES ctags distclean distclean-compile \
 	distclean-generic distclean-libtool distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am \
-	install-distpixmapDATA install-exec install-exec-am \
-	install-gpsdriveDATA install-info install-info-am \
+	install-binPROGRAMS install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am \
 	install-libLTLIBRARIES install-man install-strip installcheck \
 	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-distpixmapDATA uninstall-gpsdriveDATA \
 	uninstall-info-am uninstall-libLTLIBRARIES
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

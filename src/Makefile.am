@@ -76,12 +76,4 @@ endif
 
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = 	mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt \
-		gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png \
-		friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
-gpsdrivedir = $(datadir)/gpsdrive
-gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg \
-		gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
-
-distpixmapdir = $(datadir)/pixmaps
-distpixmap_DATA = gpsicon.png
+EXTRA_DIST = 	mysql gpsdrive.spec gpsdrive-nosql.spec
