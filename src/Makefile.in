@@ -15,7 +15,6 @@
 @SET_MAKE@
 
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -37,8 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) gpsd$(EXEEXT) \
-	friendsd2$(EXEEXT)
+bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,13 +47,6 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-LIBRARIES = $(noinst_LIBRARIES)
-ARFLAGS = cru
-libgpsd_a_AR = $(AR) $(ARFLAGS)
-libgpsd_a_LIBADD =
-am_libgpsd_a_OBJECTS = netlib.$(OBJEXT) nmea_parse.$(OBJEXT) \
-	serial.$(OBJEXT) tm.$(OBJEXT) em.$(OBJEXT)
-libgpsd_a_OBJECTS = $(am_libgpsd_a_OBJECTS)
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -94,9 +85,6 @@ am__garble_SOURCES_DIST = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT)
 garble_OBJECTS = $(am_garble_OBJECTS)
 garble_LDADD = $(LDADD)
-am_gpsd_OBJECTS = gpsd.$(OBJEXT)
-gpsd_OBJECTS = $(am_gpsd_OBJECTS)
-gpsd_DEPENDENCIES =
 am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	speech_out.c speech_out.h friends.c battery.c track.c poi.c \
 	streets.c settings.c power.h battery.h track.h poi.h streets.h \
@@ -162,13 +150,11 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libgpsd_a_SOURCES) $(libfly_la_SOURCES) \
-	$(libnautic_la_SOURCES) $(friendsd2_SOURCES) $(garble_SOURCES) \
-	$(gpsd_SOURCES) $(gpsdrive_SOURCES)
-DIST_SOURCES = $(libgpsd_a_SOURCES) $(am__libfly_la_SOURCES_DIST) \
+SOURCES = $(libfly_la_SOURCES) $(libnautic_la_SOURCES) \
+	$(friendsd2_SOURCES) $(garble_SOURCES) $(gpsdrive_SOURCES)
+DIST_SOURCES = $(am__libfly_la_SOURCES_DIST) \
 	$(am__libnautic_la_SOURCES_DIST) $(friendsd2_SOURCES) \
-	$(am__garble_SOURCES_DIST) $(gpsd_SOURCES) \
-	$(am__gpsdrive_SOURCES_DIST)
+	$(am__garble_SOURCES_DIST) $(am__gpsdrive_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -322,26 +308,12 @@ target_alias = @target_alias@
 @DISABLEGARMIN_TRUE@PRG1 = 
 @ENABLETELEATLAS_FALSE@GPSNAVLIB = 
 @ENABLETELEATLAS_TRUE@GPSNAVLIB = -lgpsnavlib
-
-# gpsdrive_LDADD= $(GLIB_LIBS) $(GTK_LIBS) $(PIXLIBS)
-#gpsdrive_LDADD=@LIBS@
 gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
-#gpsdrive_LDADD= @XLIBS@
-# gpsdrive_CFLAGS=@CFLAGS@
-# libgpsd_a_CFLAGS=@CFLAGS@
-# CFLAGS=
-noinst_LIBRARIES = libgpsd.a
 @DISABLEPLUGINS_FALSE@lib_LTLIBRARIES = libfly.la libnautic.la
 @DISABLEPLUGINS_FALSE@libfly_la_SOURCES = fly.c
 @DISABLEPLUGINS_FALSE@libfly_la_LDFLAGS = -version-info 2:0:0
 @DISABLEPLUGINS_FALSE@libnautic_la_SOURCES = nautic.c
 @DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
-libgpsd_a_SOURCES = netlib.c nmea_parse.c serial.c  tm.c em.c  \
-	gps.h version.h 
-
-gpsd_SOURCES = gpsd.c  gpsd.h nmea.h version.h
-gpsd_LDADD = -lgpsd -lm
-gpsd_LDFLAGS = -L. 
 @DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c  speech_out.h\
 @DISABLEGARMIN_FALSE@	friends.c battery.c track.c poi.c streets.c settings.c  power.h\
 @DISABLEGARMIN_FALSE@	battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp \
@@ -404,13 +376,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libgpsd.a: $(libgpsd_a_OBJECTS) $(libgpsd_a_DEPENDENCIES) 
-	-rm -f libgpsd.a
-	$(libgpsd_a_AR) libgpsd.a $(libgpsd_a_OBJECTS) $(libgpsd_a_LIBADD)
-	$(RANLIB) libgpsd.a
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
 	test -z "$(libdir)" || $(mkdir_p) "$(DESTDIR)$(libdir)"
@@ -476,9 +441,6 @@ friendsd2$(EXEEXT): $(friendsd2_OBJECTS) $(friendsd2_DEPENDENCIES)
 garble$(EXEEXT): $(garble_OBJECTS) $(garble_DEPENDENCIES) 
 	@rm -f garble$(EXEEXT)
 	$(CXXLINK) $(garble_LDFLAGS) $(garble_OBJECTS) $(garble_LDADD) $(LIBS)
-gpsd$(EXEEXT): $(gpsd_OBJECTS) $(gpsd_DEPENDENCIES) 
-	@rm -f gpsd$(EXEEXT)
-	$(LINK) $(gpsd_LDFLAGS) $(gpsd_OBJECTS) $(gpsd_LDADD) $(LIBS)
 gpsdrive$(EXEEXT): $(gpsdrive_OBJECTS) $(gpsdrive_DEPENDENCIES) 
 	@rm -f gpsdrive$(EXEEXT)
 	$(CXXLINK) $(gpsdrive_LDFLAGS) $(gpsdrive_OBJECTS) $(gpsdrive_LDADD) $(LIBS)
@@ -491,7 +453,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LatLong-UTMconversion.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/em.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/friends.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/friendsd.Po@am__quote@
@@ -502,7 +463,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_link.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_serial_unix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrivegarble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpskismet.Po@am__quote@
@@ -514,16 +474,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netlib.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmea_parse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poi.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/serial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_strings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/track.Po@am__quote@
 
 .c.o:
@@ -655,7 +611,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(PROGRAMS)
+all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
 install-binPROGRAMS: install-libLTLIBRARIES
 
 installdirs:
@@ -689,7 +645,7 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-noinstLIBRARIES mostlyclean-am
+	clean-libtool mostlyclean-am
 
 distclean: distclean-am
 	-rm -rf ./$(DEPDIR)
@@ -739,18 +695,18 @@ uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-binPROGRAMS \
-	clean-generic clean-libLTLIBRARIES clean-libtool \
-	clean-noinstLIBRARIES ctags distclean distclean-compile \
-	distclean-generic distclean-libtool distclean-tags distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binPROGRAMS install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-info-am uninstall-libLTLIBRARIES
+	clean-generic clean-libLTLIBRARIES clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-libLTLIBRARIES \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-info-am \
+	uninstall-libLTLIBRARIES
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

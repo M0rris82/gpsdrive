@@ -9,7 +9,7 @@ PRG1=
 else 
 PRG1=garble
 endif
-bin_PROGRAMS = $(PRG1) gpsdrive gpsd  friendsd2 
+bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
 LIBS=
 
 if ENABLETELEATLAS
@@ -18,14 +18,8 @@ else
 GPSNAVLIB=
 endif
 
-# gpsdrive_LDADD= $(GLIB_LIBS) $(GTK_LIBS) $(PIXLIBS)
-#gpsdrive_LDADD=@LIBS@
 gpsdrive_LDADD=@LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
-#gpsdrive_LDADD= @XLIBS@
-# gpsdrive_CFLAGS=@CFLAGS@
-# libgpsd_a_CFLAGS=@CFLAGS@
-# CFLAGS=
-noinst_LIBRARIES = libgpsd.a
+
 if DISABLEPLUGINS
 else
 lib_LTLIBRARIES =libfly.la libnautic.la
@@ -34,13 +28,6 @@ libfly_la_LDFLAGS = -version-info 2:0:0
 libnautic_la_SOURCES=nautic.c
 libnautic_la_LDFLAGS = -version-info 2:0:0
 endif
-
-libgpsd_a_SOURCES=netlib.c nmea_parse.c serial.c  tm.c em.c  \
-	gps.h version.h 
-gpsd_SOURCES= gpsd.c  gpsd.h nmea.h version.h
-gpsd_LDADD= -lgpsd -lm
-gpsd_LDFLAGS = -L. 
-
 
 if DISABLEGARMIN
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
