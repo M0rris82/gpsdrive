@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.2  2005/11/09 16:29:55  tweety
+changed pixelfac for top_GPSWORLD
+added comment to gpsd_nmea.sh
+
 Revision 1.1  2005/11/06 17:24:26  tweety
 shortened map selection code
 coordinate_string2gdouble:
@@ -454,10 +458,10 @@ load_best_map (long long bestmap)
 	{
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	  g_strlcpy (mapfilename, "top_GPSWORLD.jpg", sizeof (mapfilename));
-	  pixelfact = 88226037.0 / PIXELFACT;
+	  pixelfact = 88067900.43 / PIXELFACT;
 	  zero_long = 0;
 	  zero_lat = 0;
-	  mapscale = 88226037;
+	  mapscale = 88067900.43;
 	  xoff = yoff = 0;
 	  loadmap (mapfilename);
 	}
