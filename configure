@@ -30883,7 +30883,7 @@ CFLAGS="$CFLAGS -I\$(srcdir)/mysql"
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
 
-                                                                                          ac_config_files="$ac_config_files Makefile src/Makefile man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile data/Makefile"
+                                                                                                              ac_config_files="$ac_config_files Makefile src/Makefile man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile data/Makefile Documentation/Makefile debian/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -31492,6 +31492,8 @@ do
   "intl/Makefile" ) CONFIG_FILES="$CONFIG_FILES intl/Makefile" ;;
   "scripts/Makefile" ) CONFIG_FILES="$CONFIG_FILES scripts/Makefile" ;;
   "data/Makefile" ) CONFIG_FILES="$CONFIG_FILES data/Makefile" ;;
+  "Documentation/Makefile" ) CONFIG_FILES="$CONFIG_FILES Documentation/Makefile" ;;
+  "debian/Makefile" ) CONFIG_FILES="$CONFIG_FILES debian/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
