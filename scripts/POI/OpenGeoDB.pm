@@ -22,7 +22,20 @@ sub read_open_geo_db($){
     $fh or die ("read_open_geo_db: Cannot open $full_filename:$!\n");
 
     my $source = "open geo db";
-    my $source_id = source_name2id($source);
+    delete_all_from_source($source);
+    my $source_id = POI::DBFuncs::source_name2id($source);
+
+    unless ( $source_id ) {
+	my $source_hash = {
+	    'source.url'     => "http://ovh.dl.sourceforge.net/".
+		"sourceforge/geoclassphp/opengeodb-0.1.3-txt.tar.gz",
+	    'source.name'    => $source ,
+	    'source.comment' => '' ,
+	    'source.licence' => ""
+	    };
+	POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = POI::DBFuncs::source_name2id($source);
+    }
 
     my @columns;
     @columns = qw( primarykey 
@@ -73,14 +86,15 @@ sub read_open_geo_db($){
 		$values->{'poi.name'}=$wp_name;
 		if (  $plz =~ m/000$/ ) {
 		    print "$plz $values->{'address.ort'} $values->{'address.ortsteil'} $values->{'address.gemeindeteil'}\n";
-		    $values->{'poi.level'}=0;
+		    $values->{'poi.level_min'}=0;
 		} elsif (  $plz =~ m/00$/ ) {
-		    $values->{'poi.level'}=1;
+		    $values->{'poi.level_min'}=22;
 		} elsif (  $plz =~ m/0$/ ) {
-		    $values->{'poi.level'}=2;
+		    $values->{'poi.level_min'}=44;
 		} else {
-		    $values->{'poi.level'}=3;
+		    $values->{'poi.level_min'}=55;
 		}
+		$values->{'poi.level_max'}=99;
 		
 		unless ( defined($values->{'poi.lat'}) ) {
 		    print "Undefined lat".Dumper(\$values);
@@ -104,8 +118,8 @@ sub read_open_geo_db($){
 # Get and Unpack opengeodb
 # http://www.opengeodb.de/download/
 ########################################################################################
-sub import_OpenGeoDB() {
-	my $opengeodb_dir="$CONFIG_DIR/MIRROR/opengeodb";
+sub import_Data() {
+	my $opengeodb_dir="$main::CONFIG_DIR/MIRROR/opengeodb";
 
     unless ( -d $opengeodb_dir ) {
 	print "Creating Directory $opengeodb_dir\n";
@@ -124,10 +138,10 @@ sub import_OpenGeoDB() {
     `(cd $opengeodb_dir/; tar -xvzf opengeodb-0.1.3-txt.tar.gz)`;
 
     for my $file_name ( glob("$opengeodb_dir/opengeodb*.txt") ) {
-	my $out_file_name = "$CONFIG_DIR/way_opengeodb.txt";
+	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	my $waypoints = read_open_geo_db($file_name);
-	write_gpsdrive_waypoints($waypoints,$out_file_name);
-	db_add_waypoints($waypoints);
+#	write_gpsdrive_waypoints($waypoints,$out_file_name);
+	POI::DBFuncs::db_add_waypoints($waypoints);
     }
 
 }

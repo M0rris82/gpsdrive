@@ -47,6 +47,14 @@ sub column_names($){
 	    "proximity","type_id","url",
 	    "wp_id","source_id") if $table eq "poi";
 
+    @col = ("lat1","lon1",
+	    "lat2","lon2",
+	    "name",
+	    "level_min","level_max","alt",
+	    "last_modified",
+	    "type_id",
+	    "streets_id","source_id") if $table eq "streets";
+
     @col = ("type_id","name","symbol","description") if $table eq "type";
 
     @col = ("source_id","name","url","licence","comment","last_update") if $table eq "source";
@@ -326,6 +334,55 @@ sub poi_add($){
     $point->{'poi.level_min'}         ||= 0;
     $point->{'poi.level_max'}         ||= 0;
     insert_hash("poi",$point);
+
+}
+
+#############################################################################
+# Add a single streetst into DB
+sub streets_add($){
+    my $segment = shift;
+    my $segment4db = {};
+    my @columns = column_names("streets");
+    map { 
+	$segment4db->{"streets.$_"} = 
+	    ( $segment->{"streets.$_"} || $segment->{$_} || $segment->{lc($_)}) 
+	} @columns;
+
+    # ---------------------- SOURCE
+    #print Dumper(\$segment4db);
+    if ( $segment4db->{"source.name"} && ! $segment4db->{'streets.source_id'}) {
+	my $source_id = source_name2id($segment4db->{"source.name"});
+	# print "Source: $segment4db->{'source.name'} -> $source_id\n";
+	
+	$segment4db->{'source.source_id'} = $source_id;
+	$segment4db->{'streets.source_id'}    = $source_id;
+    }
+
+    # ---------------------- Type
+    my $type_name = $segment->{'type.name'};
+    if ( $type_name && ! $segment4db->{'streets.type_id'}) {
+	my $type_id = type_name2id($type_name);
+	unless ( $type_id ) {
+	    my $type_hash= {
+		'type.name' => $type_name
+	    };
+	    insert_hash("type",$type_hash);
+	    $type_id = type_name2id($segment4db->{"type.name"});
+	}
+	$segment4db->{'streets.type_id'}    = $type_id;
+    }
+
+    # ---------------------- ADDRESS
+    $segment4db->{'streets.address_id'}    ||= 0;
+
+    # ---------------------- TYPE
+    $segment4db->{'streets.type_id'}       ||= 0;
+
+    # ---------------------- STREETS
+    $segment4db->{'streets.last_modified'} ||= time();
+    $segment4db->{'streets.level_min'}         ||= 0;
+    $segment4db->{'streets.level_max'}         ||= 0;
+    insert_hash("streets",$segment4db);
 
 }
 

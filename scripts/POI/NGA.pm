@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use IO::File;
+use File::Path;
 use POI::DBFuncs;
 use POI::Utils;
 
@@ -93,7 +94,7 @@ my $name2country = {
     'cuba'	=> 'cu',
     'cyprus'	=> 'cy',
     'czech republic'	=> 'ez',
-    'c��te d\'ivoire'	=> 'iv',
+    'cÃï¿œÂte d\'ivoire'	=> 'iv',
     'denmark'	=> 'da',
     'djibouti'	=> 'dj',
     'dominica'	=> 'do',
@@ -322,7 +323,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 		"More information is available at the Products and Services ".
 		"link at www.nga.mil. The National Geospatial-Intelligence ".
 		"Agency name, initials, and seal are protected by ".
-		"10 United States Code Section ���445."
+		"10 United States Code Section Ãï¿œ§445."
 	    };
 	POI::DBFuncs::insert_hash("source", $source_hash);
 	$source_id = POI::DBFuncs::source_name2id($source);

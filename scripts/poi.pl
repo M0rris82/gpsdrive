@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.4  2005/02/13 22:57:00  tweety
+# WDB Support
+#
 # Revision 1.3  2005/02/07 19:05:58  tweety
 # splitpoi.pl intomodules
 #
@@ -17,8 +20,8 @@
 #
 # Revision 1.0  2005/01/12 22:08:13  tweety
 
-my $VERSION ="poi.pl (c) Jörg Ostertag
-Initial Version (Jan,2005) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
+my $VERSION ="poi.pl (c) JÃ¶rg Ostertag
+Initial Version (Jan,2005) by JÃ¶rg Ostertag <joerg.ostertag\@rechengilde.de>
 Version 1.17
 ";
 
@@ -44,10 +47,12 @@ use IO::File;
 use Pod::Usage;
 
 use POI::DBFuncs;
-use POI::Utils;
 use POI::NGA;
-use POI::census;
+use POI::OpenGeoDB;
+use POI::WDB;
 use POI::PocketGpsPoi;
+use POI::Utils;
+use POI::census;
 
 my ($man,$help);
 
@@ -57,6 +62,7 @@ our $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = 0;
 my $do_opengeodb         = 0;
+my $do_wdb               = 0;
 my $do_mapsource_points  = 0; 
 my $do_cameras           = 0;
 my $do_all               = 0;
@@ -70,6 +76,7 @@ GetOptions (
 	     'census'              => \$do_census,
 	     'earthinfo_nga_mil=s' => \$do_earthinfo_nga_mil,
 	     'opengeodb'           => \$do_opengeodb,
+	     'wdb'                 => \$do_wdb,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'create-db'           => \$do_create_db,
@@ -91,7 +98,7 @@ GetOptions (
 
 if ( $do_all ) {
     $do_create_db =
-	$do_census = $do_earthinfo_nga_mil = $do_opengeodb 
+	$do_census = $do_earthinfo_nga_mil = $do_opengeodb = $do_wdb
 	= $do_cameras   = 1;
 }
 
@@ -131,8 +138,12 @@ POI::NGA::import_Data($do_earthinfo_nga_mil)
 
 
 # Get and Unpack opengeodb  http://www.opengeodb.de/download/
-POI::OpenGEODB::import_Data() 
-    if ( $do_opengeodb ) 
+POI::OpenGeoDB::import_Data() 
+    if ( $do_opengeodb );
+
+# Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
+POI::WDB::import_Data() 
+    if ( $do_wdb );
 
 
 __END__
@@ -166,6 +177,8 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil>]
 
 Still experimental, but works partly.
 
+Download and import into mysql DB
+
 Download Country File from
  http://earth-info.nga.mil/gns/html/
 
@@ -176,9 +189,26 @@ Gives you a complete list of allowed county tupels.
 For more info on Countries have a look at
  http://earth-info.nga.mil/gns/html/cntry_files.html
 
+
+The download is about ~180 MB
+
+
 =item B<-opengeodb>
 
 Experimental
+
+=item B<-wdb>
+
+Experimental
+------------
+
+World Database
+
+Download and import WDB Data
+
+These data consists of Country Borders and Waterlines
+
+Download is ~30 MB
 
 =item B<-mapsource_points='Filename'>
 
