@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.15  2005/05/15 07:00:51  tweety
+  new Keystroke p adds an instant waypoint at cursor position
+  new Keystroke q querys information for thenearest waypoints and street endpoints
+
   Revision 1.14  2005/05/13 21:27:48  tweety
   delete order by to speed up database actions
 
@@ -812,4 +816,31 @@ streets_draw_list (void)
 
 	if (mydebug)
 		printf ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+}
+
+
+/* *******************************************************
+ * query all Info for streets in area arround lat/lon
+*/
+void
+streets_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 )
+{
+    gint i;
+    printf ("Query Streets: %f ... %f , %f ... %f\n", lat1,lat2, lon1,lon2);
+    
+    for (i = 0; i < streets_list_count; i++)
+	{   
+	    // TODO:: make real checks if in rectangle or crossing rectangle
+	    if ( ( ( lat1 <= (streets_list + i)->lat1 ) && ( (streets_list + i)->lat1 <= lat2 ) &&
+		   ( lon1 <= (streets_list + i)->lon1 ) && ( (streets_list + i)->lon1 <= lon2 ) ) ||
+		 ( ( lat1 <= (streets_list + i)->lat2 ) && ( (streets_list + i)->lat2 <= lat2 ) &&
+		   ( lon1 <= (streets_list + i)->lon2 ) && ( (streets_list + i)->lon2 <= lon2 ) ) 
+		 ) {
+		printf ("Streets: %ld: %f,%f --> %f,%f :%s\n",
+			i,
+			(streets_list + i)->lat1, (streets_list + i)->lon1,
+			(streets_list + i)->lat2, (streets_list + i)->lon2,
+			(streets_list + i)->name);
+	    }
+	}
 }

@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.22  2005/05/15 07:00:51  tweety
+  new Keystroke p adds an instant waypoint at cursor position
+  new Keystroke q querys information for thenearest waypoints and street endpoints
+
   Revision 1.21  2005/05/13 21:27:48  tweety
   delete order by to speed up database actions
 
@@ -808,4 +812,27 @@ poi_draw_list (void)
 	}
 	if (mydebug)
 		printf ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+}
+
+
+/* *******************************************************
+ * query all Info for Points in area arround lat/lon
+*/
+void
+poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 )
+{
+    gint i;
+    printf ("Query: %f ... %f , %f ... %f\n", lat1,lat2, lon1,lon2);
+    
+    for (i = 0; i < poi_max; i++)
+	{   
+	    //printf ("check POI: %ld: %f %f :%s\n",i,(poi_list + i)->lat, (poi_list + i)->lon,(poi_list + i)->name);
+	    if ( ( lat1 <= (poi_list + i)->lat ) &&
+		 ( (poi_list + i)->lat <= lat2 ) &&
+		 ( lon1 <= (poi_list + i)->lon ) &&
+		 ((poi_list + i)->lon <= lon2  ) ) {
+		printf ("Query POI: %ld: %f %f :%s\n",
+			i,(poi_list + i)->lat, (poi_list + i)->lon,(poi_list + i)->name);
+	    }
+	}
 }
