@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.2  1994/06/10 02:43:13  tweety
+move gps_mea handling
+
 Revision 1.1  1994/06/10 02:11:00  tweety
 move nmea handling to it's own file Part 1
 
@@ -41,6 +44,7 @@ move nmea handling to it's own file Part 1
 #include <config.h>
 #include <math.h>
 #include <termios.h>
+#include "gps_handler.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.7  1994/06/10 02:43:13  tweety
+  move gps_mea handling
+
   Revision 1.6  1994/06/10 02:11:00  tweety
   move nmea handling to it's own file Part 1
 
@@ -229,10 +232,10 @@ gpsd_close ()
 
 /* *****************************************************************************
  */
+#ifdef DBUS_ENABLE
 void
 init_dbus_current_fix()
 {
-#ifdef DBUS_ENABLE
 	// Preserve the time
 	dbus_current_fix.mode = 0;
 	dbus_current_fix.ept = NAN;
@@ -247,7 +250,6 @@ init_dbus_current_fix()
 	dbus_current_fix.eps = NAN;
 	dbus_current_fix.climb = NAN;
 	dbus_current_fix.epc = NAN;
-#endif
 }
 
 void init_dbus(){
@@ -283,6 +285,7 @@ void init_dbus(){
 	dbus_connection_setup_with_g_main (connection, NULL);
 }
 
+#endif
 
 /* ******************************************************************
  */
