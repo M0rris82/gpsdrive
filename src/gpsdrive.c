@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.53  2005/08/07 23:10:33  tweety
+PDA mode UI has to big tabs and status window is cluttered
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=28
+Autor:  Philippe De Swert
+
 Revision 1.52  2005/07/08 05:56:33  tweety
 get the right position with Garmin GPS II.
 Autor: Aart Koelewijn <aart@mtack.xs4all.nl>
@@ -10516,7 +10521,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 			PangoFontDescription *font_desc;
 			font_desc =
 				pango_font_description_from_string
-				("Sans 20");
+				("Sans 10");
 			gtk_widget_modify_font (myroutelist, font_desc);
 			pango_font_description_free (font_desc);
 		}
@@ -12322,6 +12327,7 @@ main (int argc, char *argv[])
 	hbox2a = gtk_hbox_new (FALSE, 1 * PADDING);
 	hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
 	hbox3 = gtk_hbox_new (FALSE, 1 * PADDING);
+
 	frame_bearing = gtk_frame_new (_("Bearing"));
 	/*   gtk_container_add (GTK_CONTAINER (frame_bearing), drawing_bearing); */
 	compasseventbox = gtk_event_box_new ();
@@ -12343,6 +12349,9 @@ main (int argc, char *argv[])
 			       GDK_BUTTON_PRESS_MASK);
 	gtk_signal_connect (GTK_OBJECT (drawing_sats), "button-press-event",
 			    GTK_SIGNAL_FUNC (satpos_cb), NULL);
+
+        if(!pdamode)
+	{
 	frame_sats = gtk_frame_new (_("GPS Info"));
 	sateventbox = gtk_event_box_new ();
 	gtk_container_add (GTK_CONTAINER (sateventbox), drawing_sats);
@@ -12386,7 +12395,7 @@ main (int argc, char *argv[])
 
 	gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE,
 			    1 * PADDING);
-
+	}
 	havebattery = battery_get_values ();
 	if (debug)
 		fprintf (stderr, "batt: %d, temp: %d\n", havebattery,
@@ -12531,7 +12540,10 @@ main (int argc, char *argv[])
 #endif
 
 	/*  create frames for labels */
-	frame_target = gtk_frame_new (_("Distance to target"));
+        if(!pdamode)
+		frame_target = gtk_frame_new (_("Distance to target"));
+	else
+		frame_target = gtk_frame_new (_("Distance"));
 	destframe = frame_target;
 	gtk_container_add (GTK_CONTAINER (frame_target), distlabel);
     /*** Mod by Arms */
@@ -12569,9 +12581,11 @@ main (int argc, char *argv[])
 	/*   if (!pdamode) */
 	/*     gtk_box_pack_start (GTK_BOX (hbox2), frame_speed, TRUE, TRUE, */
 	/*                  1 * PADDING); */
-
+	if (!pdamode)
+	{
 	frame_altitude = gtk_frame_new (_("Altitude"));
 	gtk_container_add (GTK_CONTAINER (frame_altitude), altilabel);
+	}
     /*** Mod by Arms */
 	/*   if (!pdamode) */
 	/*     gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE, */
@@ -12583,7 +12597,10 @@ main (int argc, char *argv[])
 	/*   if (!pdamode) */
 	/*     gtk_box_pack_start (GTK_BOX (hbox2), frame_wp, FALSE, TRUE, 1 * PADDING); */
 
-	vtable = gtk_table_new (1, 20, TRUE);
+	if (!pdamode)
+		vtable = gtk_table_new (1, 20, TRUE);
+	else
+		vtable = gtk_table_new (1, 20, FALSE);
 	gtk_table_attach_defaults (GTK_TABLE (vtable), frame_target, 0, 6, 0,
 				   1);
 	gtk_table_attach_defaults (GTK_TABLE (vtable), frame_speed, 6, 12, 0,
@@ -12861,9 +12878,6 @@ main (int argc, char *argv[])
 		    /*** Mod by Arms */
 			gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE,
 					    TRUE, 2 * PADDING);
-			if (pdamode)
-				gtk_box_pack_start (GTK_BOX (vbig1), hbox2a,
-						    TRUE, TRUE, 2 * PADDING);
 		    /*** Mod by Arms */
 			gtk_box_pack_start (GTK_BOX (vbig1), table1, TRUE,
 					    TRUE, 2 * PADDING);
@@ -12904,23 +12918,23 @@ main (int argc, char *argv[])
 		if (onemousebutton)
 		{
 			/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
-			gtk_misc_set_padding (GTK_MISC (l1), 50, 1);
-			gtk_misc_set_padding (GTK_MISC (l2), 50, 1);
-			gtk_misc_set_padding (GTK_MISC (l3), 50, 1);
+			gtk_misc_set_padding (GTK_MISC (l1), 20, 1);
+			gtk_misc_set_padding (GTK_MISC (l2), 20, 1);
+			gtk_misc_set_padding (GTK_MISC (l3), 20, 1);
 
 			/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
 
 			char *markup;
 			markup = g_markup_printf_escaped
-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
+				("<span font_desc='10'>%s</span>",
 				 _("Map"));
 			gtk_label_set_markup (GTK_LABEL (l1), markup);
 			markup = g_markup_printf_escaped
-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
+				("<span font_desc='10'>%s</span>",
 				 _("Menu"));
 			gtk_label_set_markup (GTK_LABEL (l2), markup);
 			markup = g_markup_printf_escaped
-				("<span weight='heavy' stretch='ultraexpanded'  size='20480'>%s</span>",
+				("<span font_desc='10'>%s</span>",
 				 _("Status"));
 			gtk_label_set_markup (GTK_LABEL (l3), markup);
 
@@ -12942,10 +12956,11 @@ main (int argc, char *argv[])
 				    2 * PADDING);
 		gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE,
 				    2 * PADDING);
+/*
 		gtk_box_pack_start (GTK_BOX (hbox2b), frame_speed, TRUE, TRUE,
 				    1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (hbox2b), frame_altitude, TRUE,
-				    TRUE, 1 * PADDING);
+				    TRUE, 1 * PADDING);*/
 		//KCFX          
 		gtk_box_pack_start (GTK_BOX (hbox2a), frame_wp, TRUE, TRUE,
 				    1 * PADDING);
