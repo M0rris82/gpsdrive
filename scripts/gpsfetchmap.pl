@@ -237,7 +237,7 @@ if ( $update_koord  ) {
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
-for my $scale ( sort {$a <=> $b} keys %{$desired_locations} ) {
+for my $scale ( sort {$b <=> $a} keys %{$desired_locations} ) {
     print "Scale: $scale\n";
     for my $lati ( sort {$a <=> $b} keys %{$desired_locations->{$scale}} ) {
 	printf "   %5.2f: ",$lati;
@@ -538,12 +538,20 @@ sub expedia_url($$$){
 # which lat/lon/scale Combinations are desired to download
 #############################################################################
 sub desired_locations {
-   my ($slat,$slon,$endlat,$endlon) = @_;
+   my ($slat,$slon,$elat,$elon) = @_;
    my $count;   
    my $desired_locations;
 
    my $local_debug = 0 && $debug;
 
+   my $min_lat=-180;
+   my $max_lat= 180;
+   my $min_lon=-90;
+   my $max_lon= 90;
+   if ( $slat < $min_lat ) { warn ("Starting Latitude  ($slat) set to $min_lat\n"); $slat=$min_lat; };
+   if ( $elat > $max_lat ) { warn ("End      Latitude  ($elat) set to $max_lat\n"); $elat=$max_lat; };
+   if ( $slon < $min_lon ) { warn ("Starting Longitude ($slon) set to $min_lon\n"); $slon=$min_lon; };
+   if ( $elon > $max_lon ) { warn ("End      Longitude ($elon) set to $max_lon\n"); $elon=$max_lon; };
 
    foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
        # Setup k
@@ -568,19 +576,19 @@ sub desired_locations {
 
        print "Scale: $scale\t";
        printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
-	       $snapped_start_lat,$slat,$delta_lat,$endlat;
+	       $snapped_start_lat,$slat,$delta_lat,$elat;
 
        my $lati = $snapped_start_lat;
 
-       while ($lati <= $endlat) {
+       while ($lati <= $elat) {
 	   my $long = $snapped_start_lon;
 	   if ( $local_debug ) {
 	       printf "        %5.5f:",$lati;
 	       printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
-		       ,$snapped_start_lon,$slon,$delta_lon,$endlon;
+		       ,$snapped_start_lon,$slon,$delta_lon,$elon;
 	       printf "\t\t";	
 	   }
-	   while ($long <= $endlon) {
+	   while ($long <= $elon) {
 	       $long += $delta_lon; ### FIX BY CAMEL
 	       $count++;
 	       $desired_locations->{$scale}->{$lati}->{$long}='?';
@@ -768,7 +776,7 @@ sub append_koords($$$$) {
     my $mapscale = shift;
 
     die "Missing Params to append_koords($filename,$lati,$long,$mapscale)\n"
-	unless $filename && $lati && $long && $mapscale;
+	unless $filename && defined($lati) && defined($long) && $mapscale;
 
 
     if ( is_map_file($filename) ) {
@@ -957,7 +965,7 @@ sub update_file_in_map_koords(){
 sub check_coverage($){
     my $koord_file = shift;
     read_koord_file($koord_file);
-    my @scales= sort  {$a <=> $b} keys %{$MAP_KOORDS};
+    my @scales= sort  {$b <=> $a} keys %{$MAP_KOORDS};
 
     for my $scale ( @scales ) {
 	print "$scale:\n";;
