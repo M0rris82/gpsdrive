@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.43  2005/05/24 08:11:45  tweety
+Fix Forcehavepos
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=7
+Parameter -F is not working
+
 Revision 1.42  2005/05/15 07:00:51  tweety
 new Keystroke p adds an instant waypoint at cursor position
 new Keystroke q querys information for thenearest waypoints and street endpoints
@@ -2646,7 +2651,7 @@ convertRMC (char *f)
 	g_strlcpy (utctime, b, sizeof (utctime));
 	if (debug)
 		g_print ("gpsd: utctime: %s\n", utctime);
-	if ((field[2][0] != 'A') || forcehavepos)
+	if ((field[2][0] != 'A') || !forcehavepos)
 	{
 		havepos = FALSE;
 		haveposcount = 0;
