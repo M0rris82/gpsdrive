@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.7  2005/02/06 17:52:44  tweety
+extract icon handling to icons.c
+
 Revision 1.6  2005/02/02 17:42:54  tweety
 Add some comments
 extract some code into funktions
@@ -440,7 +443,7 @@ added splash.c
 #include <config.h>
 #include <gpsdrive.h>
 #include <time.h>
-#include <talogo.h>
+#include <xpm_talogo.h>
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
