@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.4  2005/01/20 00:54:07  tweety
+added Help for more Keys
+
 Revision 1.3  2005/01/20 00:11:38  tweety
 add debug output if config is written
 
@@ -550,7 +553,12 @@ insert_text (GtkTextBuffer * buffer)
 
   gchar *t2 = _("j    : switch to next waypoint in route mode\n"
 		"x    : add waypoint at current position\n"
-		"y    : add waypoint at mouse cursor position\n");
+		"y    : add waypoint at mouse cursor position\n"
+		"n    : switch on light for 60sec in nightmode\n"
+		"g    : Toggle grid\n"
+		"+    : Zoom in \n"
+		"-    : Zoom out\n"
+		);
   gchar *t3 =
     _("Press the underlined key together with the ALT-key.\n\n"
       "You can move on the map by selecting the Position-Mode"
