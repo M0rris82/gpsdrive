@@ -73,8 +73,8 @@ sub import_Jigle_file($$){
 	    $point->{'poi.wep'}        = $line[8];
 	    $point->{'poi.comment'}      = $point->{'poi.bssid'};
 	    $point->{'poi.date2'}      = $line[12];
-	    $point->{'poi.scale_min'}  = 0;
-	    $point->{'poi.scale_max'}  = 1000000;
+	    $point->{'poi.scale_min'}  = 1;
+	    $point->{'poi.scale_max'}  = 100000;
 	    $point->{'poi.proximity'}  = 100;
 	    
 	    # Kismet: bssid time-sec time-usec lat lon alt spd heading fix signal quality noise
@@ -101,7 +101,6 @@ sub import_Data($){
     my $dir = shift;
     my $jigle_dir = $dir || "~/JiGLE/WiGLEnet/data";
     my $source = "JiGLE WLAN";
-    delete_all_from_source($source);
 
 
     my $source_id = POI::DBFuncs::source_name2id($source);
@@ -122,13 +121,16 @@ sub import_Data($){
     $wlan_public = poi_type_name2id("W-LAN.Oeffentlich");
 
 
+    POI::DBFuncs::disble_keys('poi');
+
+    delete_all_from_source($source);
+
     debug("$jigle_dir/*.autocache");
-    POI::DBFuncs::disble_keys();    
     foreach  my $full_filename ( glob("$jigle_dir/*.autocache") ) {
 	import_Jigle_file($full_filename,$source_id)
 	    if ( -s $full_filename > 110 );
     }
-    POI::DBFuncs::enable_keys();    
+    POI::DBFuncs::enable_keys('poi');
 }
 
 1;

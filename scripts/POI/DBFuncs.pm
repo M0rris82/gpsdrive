@@ -42,14 +42,16 @@ END { }
 
 # -----------------------------------------------------------------------------
 # switch off updating of index
-sub disble_keys(){    
-    db_exec("DISABLE KEYS;");
+sub disble_keys($){    
+    my $table = shift;
+    db_exec("ALTER TABLE  $table DISABLE KEYS;");
 }
 
 # -----------------------------------------------------------------------------
 # switch on updating of index
-sub enable_keys(){
-    db_exec("ENABLE KEYS;");
+sub enable_keys($){
+    my $table = shift;
+    db_exec("ALTER TABLE  $table ENABLE KEYS;");
 }
 
 # -----------------------------------------------------------------------------

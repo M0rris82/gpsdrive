@@ -153,10 +153,14 @@ sub import_Data() {
     # Unpack it 
     `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
 
+    POI::DBFuncs::disble_keys('poi');
+
     for my $file_name ( glob("$unpack_dir/opengeodb*.txt") ) {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	read_open_geo_db($file_name);
     }
+
+    POI::DBFuncs::enable_keys('poi');
 
 }
 
