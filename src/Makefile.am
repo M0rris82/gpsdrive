@@ -42,8 +42,7 @@ gpsd_LDADD= -lgpsd -lm
 gpsd_LDFLAGS = -L. 
 
 
-bin_SCRIPTS=
-#wpcvt wpget  gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch
+#bin_SCRIPTS=wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch
 
 if DISABLEGARMIN
 PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c settings.c  power.h battery.h track.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
