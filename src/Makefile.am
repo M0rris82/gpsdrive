@@ -31,25 +31,23 @@ endif
 
 if DISABLEGARMIN
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-	friends.c power.h \
+	friends.c \
 	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
+	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
-	gps_handler.c gps_handler.h \
-	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h
+	gps_handler.c gps_handler.h	
 else 
 PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
-	friends.c power.h \
+	friends.c \
 	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
-	LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h \
+	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
-	xpm_compass.h xpm_talogo.h xpm_power.h xpm_icons.h \
 	\
 	garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
