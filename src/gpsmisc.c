@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.10  2005/10/19 07:22:21  tweety
+Its now possible to choose units for displaying coordinates also in
+Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
 Revision 1.9  2005/05/15 07:00:51  tweety
 new Keystroke p adds an instant waypoint at cursor position
 new Keystroke q querys information for thenearest waypoints and street endpoints
@@ -99,7 +104,6 @@ code cleanup
 # else
 #  define N_(String) (String)
 # endif
-
 
 
 /* variables */
@@ -530,3 +534,4 @@ create_pixmap (GtkWidget * widget, const gchar * filename)
 
 	return pixmap;
 }
+
