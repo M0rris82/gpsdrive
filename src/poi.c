@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.13  2005/03/30 10:03:38  tweety
+corrected problem with sigSEG if sqlmode is off
+Added another bunch of comments
+
 Revision 1.12  2005/03/29 01:59:01  tweety
 another set of minor Bugfixes
 
@@ -42,13 +46,15 @@ Revision 1.9  2005/03/15 08:40:13  tweety
 eliminate doublicate pfd description
 
 Revision 1.8  2005/02/22 08:18:51  tweety
-change leveing system to simpler scale marking for decission what to show on display
+change leveling system to simpler scale marking for decission 
+what to show on display
 column_names(DBFuncs.pm get data from Database
 added functions add_index drop_index
 added language to type Database
 for some Data split unpack and mirror Directories
 for some add lat/lon min/max to get faster import for testing
-added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
+added POI::DBFuncs::segments_add; this will later be the point 
+to do some excerptions and combinations
 on the street data
 
 Revision 1.7  2005/02/17 09:46:34  tweety
@@ -58,8 +64,8 @@ Revision 1.6  2005/02/13 22:57:00  tweety
 WDB Support
 
 Revision 1.5  2005/02/13 14:06:54  tweety
-start street randering functions. reading from the database streets and displayi
-ng it on the screen
+start street randering functions. reading from the database streets 
+and displaying it on the screen
 improve a little bit in the sql-queries
 fixed linewidth settings in draw_cross
 
