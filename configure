@@ -467,7 +467,7 @@ ac_includes_default="\
 #endif"
 
 ac_default_prefix="/usr/local"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar FRIENDSSERVERVERSION build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKG_CONFIG ac_pt_PKG_CONFIG PKGCONFIG_CFLAGS PKGCONFIG_LIBS PCRE_CONFIG localedir LIBADD_DL pkgdatadir MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE GLIBC2 ALLOCA GLIBC21 INTL_MACOSX_LIBS HAVE_POSIX_PRINTF HAVE_ASPRINTF HAVE_SNPRINTF HAVE_WPRINTF LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB GETTEXT_PACKAGE NOGARMIN DISABLEGARMIN_TRUE DISABLEGARMIN_FALSE NOPLUGINS DISABLEPLUGINS_TRUE DISABLEPLUGINS_FALSE USETELEATLAS ENABLETELEATLAS_TRUE ENABLETELEATLAS_FALSE LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar FRIENDSSERVERVERSION build build_cpu build_vendor build_os host host_cpu host_vendor host_os CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE EGREP LN_S ECHO AR ac_ct_AR RANLIB ac_ct_RANLIB CPP CXX CXXFLAGS ac_ct_CXX CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CXXCPP F77 FFLAGS ac_ct_F77 LIBTOOL PKG_CONFIG ac_pt_PKG_CONFIG PKGCONFIG_CFLAGS PKGCONFIG_LIBS PCRE_CONFIG localedir LIBADD_DL pkgdatadir MKINSTALLDIRS USE_NLS MSGFMT GMSGFMT XGETTEXT MSGMERGE GLIBC2 ALLOCA GLIBC21 INTL_MACOSX_LIBS HAVE_POSIX_PRINTF HAVE_ASPRINTF HAVE_SNPRINTF HAVE_WPRINTF LIBICONV LTLIBICONV INTLBISON BUILD_INCLUDED_LIBINTL USE_INCLUDED_LIBINTL CATOBJEXT DATADIRNAME INSTOBJEXT GENCAT INTLOBJS INTL_LIBTOOL_SUFFIX_PREFIX INTLLIBS LIBINTL LTLIBINTL POSUB GETTEXT_PACKAGE NOGARMIN DISABLEGARMIN_TRUE DISABLEGARMIN_FALSE NOPLUGINS DISABLEPLUGINS_TRUE DISABLEPLUGINS_FALSE USETELEATLAS ENABLETELEATLAS_TRUE ENABLETELEATLAS_FALSE DBUS_CFLAGS DBUS_LIBS DBUS_GLIB_LIBS HAVE_DBUS_TRUE HAVE_DBUS_FALSE PERL_PACKAGE_DIR LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -960,6 +960,14 @@ ac_env_PKGCONFIG_LIBS_set=${PKGCONFIG_LIBS+set}
 ac_env_PKGCONFIG_LIBS_value=$PKGCONFIG_LIBS
 ac_cv_env_PKGCONFIG_LIBS_set=${PKGCONFIG_LIBS+set}
 ac_cv_env_PKGCONFIG_LIBS_value=$PKGCONFIG_LIBS
+ac_env_DBUS_CFLAGS_set=${DBUS_CFLAGS+set}
+ac_env_DBUS_CFLAGS_value=$DBUS_CFLAGS
+ac_cv_env_DBUS_CFLAGS_set=${DBUS_CFLAGS+set}
+ac_cv_env_DBUS_CFLAGS_value=$DBUS_CFLAGS
+ac_env_DBUS_LIBS_set=${DBUS_LIBS+set}
+ac_env_DBUS_LIBS_value=$DBUS_LIBS
+ac_cv_env_DBUS_LIBS_set=${DBUS_LIBS+set}
+ac_cv_env_DBUS_LIBS_value=$DBUS_LIBS
 
 #
 # Report the --help message.
@@ -1069,6 +1077,8 @@ Optional Features:
   --enable-teleatlas      enable street navigation using Teleatlas maps, needs
                           gpsnavlib. Ignore this option until announced at
                           www.gpsdrive.cc
+  --enable-dbus           enable DBUS support. No checks are performed, you
+                          are responsible for having it installed =)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1104,6 +1114,8 @@ Some influential environment variables:
               C compiler flags for PKGCONFIG, overriding pkg-config
   PKGCONFIG_LIBS
               linker flags for PKGCONFIG, overriding pkg-config
+  DBUS_CFLAGS C compiler flags for DBUS, overriding pkg-config
+  DBUS_LIBS   linker flags for DBUS, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -3706,7 +3718,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 3709 "configure"' > conftest.$ac_ext
+  echo '#line 3721 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -5277,7 +5289,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:5280:" \
+echo "$as_me:5292:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -6373,11 +6385,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6376: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6388: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6380: \$? = $ac_status" >&5
+   echo "$as_me:6392: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6635,11 +6647,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6638: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6650: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:6642: \$? = $ac_status" >&5
+   echo "$as_me:6654: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -6697,11 +6709,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:6700: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:6712: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:6704: \$? = $ac_status" >&5
+   echo "$as_me:6716: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8949,7 +8961,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 8952 "configure"
+#line 8964 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9047,7 +9059,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9050 "configure"
+#line 9062 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11300,11 +11312,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11303: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11315: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:11307: \$? = $ac_status" >&5
+   echo "$as_me:11319: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -11362,11 +11374,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:11365: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:11377: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:11369: \$? = $ac_status" >&5
+   echo "$as_me:11381: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -12747,7 +12759,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12750 "configure"
+#line 12762 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12845,7 +12857,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12848 "configure"
+#line 12860 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13730,11 +13742,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13733: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13745: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:13737: \$? = $ac_status" >&5
+   echo "$as_me:13749: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -13792,11 +13804,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:13795: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:13807: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:13799: \$? = $ac_status" >&5
+   echo "$as_me:13811: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -15933,11 +15945,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:15936: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:15948: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:15940: \$? = $ac_status" >&5
+   echo "$as_me:15952: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16195,11 +16207,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16198: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16210: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16202: \$? = $ac_status" >&5
+   echo "$as_me:16214: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16257,11 +16269,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16260: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16272: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16264: \$? = $ac_status" >&5
+   echo "$as_me:16276: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18509,7 +18521,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18512 "configure"
+#line 18524 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18607,7 +18619,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18610 "configure"
+#line 18622 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -23291,7 +23303,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 23294 "configure"
+#line 23306 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -30345,6 +30357,130 @@ else
 fi
 
 
+# Check whether --enable-dbus or --disable-dbus was given.
+if test "${enable_dbus+set}" = set; then
+  enableval="$enable_dbus"
+  ac_dbus=$enableval
+else
+  ac_dbus=no
+fi;
+echo "$as_me:$LINENO: checking for DBUS support" >&5
+echo $ECHO_N "checking for DBUS support... $ECHO_C" >&6
+if test x"$ac_dbus" == "xyes"; then
+    echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define DBUS_ENABLE 1
+_ACEOF
+
+    # Older versions of atotools barf and die on this.
+
+pkg_failed=no
+echo "$as_me:$LINENO: checking for DBUS" >&5
+echo $ECHO_N "checking for DBUS... $ECHO_C" >&6
+
+if test -n "$PKG_CONFIG"; then
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"dbus-1 >= 0.23.4 \"") >&5
+  ($PKG_CONFIG --exists --print-errors "dbus-1 >= 0.23.4 ") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_DBUS_CFLAGS=`$PKG_CONFIG --cflags "dbus-1 >= 0.23.4 " 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+        if test -n "$PKG_CONFIG" && \
+    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"dbus-1 >= 0.23.4 \"") >&5
+  ($PKG_CONFIG --exists --print-errors "dbus-1 >= 0.23.4 ") 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; then
+  pkg_cv_DBUS_LIBS=`$PKG_CONFIG --libs "dbus-1 >= 0.23.4 " 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+else
+	pkg_failed=untried
+fi
+
+if test $pkg_failed = yes; then
+	DBUS_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "dbus-1 >= 0.23.4 "`
+	# Put the nasty error message in config.log where it belongs
+	echo "$DBUS_PKG_ERRORS" 1>&5
+
+	{ { echo "$as_me:$LINENO: error: Package requirements (dbus-1 >= 0.23.4 ) were not met.
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively you may set the DBUS_CFLAGS and DBUS_LIBS environment variables
+to avoid the need to call pkg-config.  See the pkg-config man page for
+more details." >&5
+echo "$as_me: error: Package requirements (dbus-1 >= 0.23.4 ) were not met.
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively you may set the DBUS_CFLAGS and DBUS_LIBS environment variables
+to avoid the need to call pkg-config.  See the pkg-config man page for
+more details." >&2;}
+   { (exit 1); exit 1; }; }
+elif test $pkg_failed = untried; then
+	{ { echo "$as_me:$LINENO: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively you may set the DBUS_CFLAGS and DBUS_LIBS environment variables
+to avoid the need to call pkg-config.  See the pkg-config man page for
+more details.
+
+To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+See \`config.log' for more details." >&5
+echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively you may set the DBUS_CFLAGS and DBUS_LIBS environment variables
+to avoid the need to call pkg-config.  See the pkg-config man page for
+more details.
+
+To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
+else
+	DBUS_CFLAGS=$pkg_cv_DBUS_CFLAGS
+	DBUS_LIBS=$pkg_cv_DBUS_LIBS
+        echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+	:
+fi
+    DBUS_CFLAGS=`pkg-config --cflags dbus-glib-1`
+    DBUS_LIBS=`pkg-config --libs dbus-1`
+
+
+    DBUS_GLIB_LIBS=`pkg-config --libs dbus-glib-1`
+
+else
+    echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test x"$ac_dbus" = x"yes"; then
+  HAVE_DBUS_TRUE=
+  HAVE_DBUS_FALSE='#'
+else
+  HAVE_DBUS_TRUE='#'
+  HAVE_DBUS_FALSE=
+fi
+
+
+PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
 
 
 
@@ -31328,7 +31464,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 31331 "configure"
+#line 31467 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -31583,6 +31719,13 @@ if test -z "${ENABLETELEATLAS_TRUE}" && test -z "${ENABLETELEATLAS_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"ENABLETELEATLAS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"ENABLETELEATLAS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAVE_DBUS_TRUE}" && test -z "${HAVE_DBUS_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_DBUS\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_DBUS\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -32249,6 +32392,12 @@ s,@DISABLEPLUGINS_FALSE@,$DISABLEPLUGINS_FALSE,;t t
 s,@USETELEATLAS@,$USETELEATLAS,;t t
 s,@ENABLETELEATLAS_TRUE@,$ENABLETELEATLAS_TRUE,;t t
 s,@ENABLETELEATLAS_FALSE@,$ENABLETELEATLAS_FALSE,;t t
+s,@DBUS_CFLAGS@,$DBUS_CFLAGS,;t t
+s,@DBUS_LIBS@,$DBUS_LIBS,;t t
+s,@DBUS_GLIB_LIBS@,$DBUS_GLIB_LIBS,;t t
+s,@HAVE_DBUS_TRUE@,$HAVE_DBUS_TRUE,;t t
+s,@HAVE_DBUS_FALSE@,$HAVE_DBUS_FALSE,;t t
+s,@PERL_PACKAGE_DIR@,$PERL_PACKAGE_DIR,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

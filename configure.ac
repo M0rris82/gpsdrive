@@ -260,7 +260,34 @@ AC_HELP_STRING([--enable-teleatlas],[enable street navigation using Teleatlas ma
 ])
 AM_CONDITIONAL(ENABLETELEATLAS, test x$enableteleatlas = xtrue)
 
+dnl Manually configure DBUS until we figure out a 
+dnl distro-independent was to check for both libraries and headers
+AC_ARG_ENABLE(dbus,
+    AC_HELP_STRING([--enable-dbus],
+                [enable DBUS support. No checks are performed, you are responsible for having it installed =)]),
+    [ac_dbus=$enableval], [ac_dbus=no])
+AC_MSG_CHECKING([for DBUS support])
+if test x"$ac_dbus" == "xyes"; then
+    AC_MSG_RESULT([yes])
+    AC_DEFINE([DBUS_ENABLE], 1, [DBUS support])
+    # Older versions of atotools barf and die on this.
+    PKG_CHECK_MODULES(DBUS, dbus-1 >= 0.23.4 )
+    DBUS_CFLAGS=`pkg-config --cflags dbus-glib-1`
+    DBUS_LIBS=`pkg-config --libs dbus-1`
+    AC_SUBST(DBUS_CFLAGS)
+    AC_SUBST(DBUS_LIBS)
+    DBUS_GLIB_LIBS=`pkg-config --libs dbus-glib-1`
+    AC_SUBST(DBUS_GLIB_LIBS)
+else
+    AC_MSG_RESULT([no])
+fi
 
+AM_CONDITIONAL([HAVE_DBUS], [test x"$ac_dbus" = x"yes"])
+
+dnl Setup install path root for perl.
+dnl Yep, its ebil, but I don't know better...
+PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
+AC_SUBST(PERL_PACKAGE_DIR)
 
 dnl ************************
 dnl crypt.h and libcrypt
