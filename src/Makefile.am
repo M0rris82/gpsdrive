@@ -45,9 +45,9 @@ gpsd_LDFLAGS = -L.
 #bin_SCRIPTS=wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch
 
 if DISABLEGARMIN
-PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c settings.c  power.h battery.h track.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
 else 
-PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c settings.c  power.h battery.h track.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
 endif
 gpsdrive_SOURCES= $(PRGS)
 
