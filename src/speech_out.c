@@ -24,8 +24,12 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/03/25 14:38:46  tweety
+change flite usage so no file is generated inbetween. This also fixes problem with flite having
+problems speaking a file without a trailing \n
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.37  2004/03/02 00:53:35  ganter
 v2.09pre1
@@ -251,7 +255,6 @@ speech_out_speek (char *text)
 {
   gint e;
   gchar out[2000];
-  gint file;
 
   if (!havespeechout)
     return 0;
@@ -267,13 +270,10 @@ speech_out_speek (char *text)
     }
   else
     {
-      file = creat ("/tmp/gpsdrivetext.out", 0666);
-      if (file == -1)
-	return 0;
       g_strlcat (text, ".\n", sizeof (text));
-      e = write (file, text, strlen (text));
-      close (file);
-      g_snprintf (out, sizeof (out), "flite -f /tmp/gpsdrivetext.out&");
+      g_snprintf (out, sizeof (out), "flite -t '%s'&",text);
+      if ( debug ) 
+	printf("speech with flite: %s\n",out);
       system (out);
     }
   return e;
