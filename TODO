@@ -2,34 +2,113 @@ In Progress:
 ------------
 
 ====================================================================
-Jörg:
+
+Joerg:
+------
 Staighten the naming of variables and functions
+   -first step done, but stil a long way to go
+	still open:
+		longi --> lon
+		xy_draw --> draw_xy
+		cb_t_xy		for Callback Timer xy 
+		cb_c_xy		for Callback of Checkbox xy 
+		bt_xy		for Button xy 
+		load_xy		for loading Data for xy
+		save_xy		for saving Data for xy
 
 Database (SQL):
 make gpsdrive read directly from mysql without first writing a file.
+   -first step done
 
 Vertor map Data:
-Add code for showing Vectormap Data. Decide about internal representation
-and structure vektor map data.
+	Add code for showing Vectormap Data. 
+	Decide about internal representation and structure vektor map data.
 
-Waypoints:
-Decide about the structure of waypoints
-
+new POI(Point Of Interest) Database support:
+	- started. 
+		- It already shows points in database (lat/lon/name/Icon)
+		- Import of 2.500.000 Points seems to work
 
 
 ====================================================================
+
 ChrisJastram:
+-------------
+
 Map rotation, ego-centric style (we are always pointing up)
 
-
 ====================================================================
+
+Fritz:
+------
+
+Start Doxygen Documentation
+
+change config File handling
+
+
+
+
+
+
+
+
+####################################################################
 
 Unassigned:
 -----------
 
 Modularising:
-Put every drawing layer into a seperate module.
+	Put every drawing layer into a seperate module.
 
+	moving configuration Data into a structure
+
+	moving actual settings into another structure
+	
+	move more stuff from gpsdrive.c into standalone Files
+		examples:
+		- waypoint.{c,h}
+		- gps_handling.{c.h}
+		- icons.{c.h}
+
+Documentation:
+	Write comments to all the existing code
+	Write man Pages
+	Translate man Pages
+	Translate in Programm Text
+
+Icons:
+	Draw Icons for different Waypoint Types
+	think about waypoint type names
+
+Makefiles:
+	include generation of icon Directory while installing gpsdrive
+	
+Vektor Map Sources:
+	Find new Sources for Maps with Free Licence
+	Write conversion routines/scripts for these different map Sources 
+	to import them into the local mySQL Database 
+	
+Distribution:
+	update the distribution dependant Files (debian, suse, ...)
+
+Central POI Server:
+	We want to set up an central POI(Point of interrest) Server. 
+	Idea is: to populate this Server from all the point of interrests
+		 you have. 
+		Then give the Server a Web-interface(first step) to download alle 
+		these POIs and import them into your local DB.
+		Further steps will be to write sync-routines to
+		sync this local Data with the central Server.
+
+====================================================================
+
+Unassigned User Requests:
+-------------------------
+
+	- Autosave Tracks periodically
+		- started: savetrack was seperated and got 
+ 			   option to save only aktuall Track an not track_ALL.sav
 
 ====================================================================
 
