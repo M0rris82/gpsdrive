@@ -1,8 +1,9 @@
-gpsdrive (2.09-pre3) unstable; urgency=low
+gpsdrive (2.10-pre3) unstable; urgency=low
 
   * Vector Support
   * More Map sources
   * Code cleanup
+  * Minor Bug Fixes
 
  -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 21 Oct 2005 07:05:36 +0100
  
