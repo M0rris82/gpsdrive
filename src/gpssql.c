@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.13  2005/04/20 23:33:49  tweety
+reformatted source code with anjuta
+So now we have new indentations
+
 Revision 1.12  2005/04/13 19:58:31  tweety
 renew indentation to 4 spaces + tabstop=8
 
@@ -239,266 +243,273 @@ MYSQL_ROW row;
 void
 exiterr (int exitcode)
 {
-  
-    fprintf (stderr, "Error while using mysql\n");
-    fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
-    exit (exitcode);
+
+	fprintf (stderr, "Error while using mysql\n");
+	fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
+	exit (exitcode);
 }
 
 int
 sqlinit (void)
 {
-    if (!usesql)
-	return 0;
+	if (!usesql)
+		return 0;
 
-    if (!(dl_mysql_init (&mysql)))
-	exiterr (1);
+	if (!(dl_mysql_init (&mysql)))
+		exiterr (1);
 
-    if (!
-	(dl_mysql_real_connect
-	 (&mysql, dbhost, dbuser, dbpass, dbname, 0, NULL, 0)))
+	if (!
+	    (dl_mysql_real_connect
+	     (&mysql, dbhost, dbuser, dbpass, dbname, 0, NULL, 0)))
 	{
-	    fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
-	    return FALSE;
+		fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
+		return FALSE;
 	}
-    /*   if (debug) */
-    printf (_("\nSQL: connected to %s as %s using %s\n"), dbhost, dbuser,
-	    dbname);
-    return TRUE;
+	/*   if (debug) */
+	printf (_("\nSQL: connected to %s as %s using %s\n"), dbhost, dbuser,
+		dbname);
+	return TRUE;
 }
 
 void
 sqlend (void)
 {
-    if (!usesql)
-	return;
-    dl_mysql_close (&mysql);
+	if (!usesql)
+		return;
+	dl_mysql_close (&mysql);
 }
 
 
 int
 insertsqldata (double lat, double lon, char *name, char *typ)
 {
-    char q[200], lats[20], lons[20], tname[500], ttyp[50];
-    int r, j, i;
+	char q[200], lats[20], lons[20], tname[500], ttyp[50];
+	int r, j, i;
 
-    if (!usesql)
-	return 0;
-    g_snprintf (lats, sizeof (lats), "%.6f", lat);
-    g_strdelimit (lats, ",", '.');
-    g_snprintf (lons, sizeof (lons), "%.6f", lon);
-    g_strdelimit (lons, ",", '.');
-    g_strdelimit (name, " ", '_');
-    g_strdelimit (typ, " ", '_');
+	if (!usesql)
+		return 0;
+	g_snprintf (lats, sizeof (lats), "%.6f", lat);
+	g_strdelimit (lats, ",", '.');
+	g_snprintf (lons, sizeof (lons), "%.6f", lon);
+	g_strdelimit (lons, ",", '.');
+	g_strdelimit (name, " ", '_');
+	g_strdelimit (typ, " ", '_');
 
-    /* escape ' */
-    j = 0;
-    for (i = 0; i <= (int) strlen (name); i++)
+	/* escape ' */
+	j = 0;
+	for (i = 0; i <= (int) strlen (name); i++)
 	{
-	    if (name[i] != '\'')
-		tname[j++] = name[i];
-	    else
+		if (name[i] != '\'')
+			tname[j++] = name[i];
+		else
 		{
-		    tname[j++] = '\\';
-		    tname[j++] = '\'';
+			tname[j++] = '\\';
+			tname[j++] = '\'';
 		}
 	}
 
-    j = 0;
-    for (i = 0; i <= (int) strlen (typ); i++)
+	j = 0;
+	for (i = 0; i <= (int) strlen (typ); i++)
 	{
-	    if (typ[i] != '\'')
-		ttyp[j++] = typ[i];
-	    else
+		if (typ[i] != '\'')
+			ttyp[j++] = typ[i];
+		else
 		{
-		    ttyp[j++] = '\\';
-		    ttyp[j++] = '\'';
+			ttyp[j++] = '\\';
+			ttyp[j++] = '\'';
 		}
 	}
 
-    g_snprintf (q, sizeof (q),
-		"INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
-		dbtable, tname, lats, lons, ttyp);
-    if (debug)
-	printf ("\nquery: %s\n", q);
-    if (dl_mysql_query (&mysql, q))
-	exiterr (3);
-    r = dl_mysql_affected_rows (&mysql);
-    if (debug)
-	printf (_("rows inserted: %d\n"), r);
+	g_snprintf (q, sizeof (q),
+		    "INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
+		    dbtable, tname, lats, lons, ttyp);
+	if (debug)
+		printf ("\nquery: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (debug)
+		printf (_("rows inserted: %d\n"), r);
 
-    g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
-    /*   printf ("\nquery: %s\n", q); */
-    if (dl_mysql_query (&mysql, q))
-	exiterr (3);
-    if (!(res = dl_mysql_store_result (&mysql)))
-	exiterr (4);
-    r = 0;
-    while ((row = dl_mysql_fetch_row (res)))
+	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
+	/*   printf ("\nquery: %s\n", q); */
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	if (!(res = dl_mysql_store_result (&mysql)))
+		exiterr (4);
+	r = 0;
+	while ((row = dl_mysql_fetch_row (res)))
 	{
-	    r = strtol (row[0], NULL, 10);	/* last index */
+		r = strtol (row[0], NULL, 10);	/* last index */
 	}
 
-    if (debug)
-	printf (_("last index: %d\n"), r);
-    return r;
+	if (debug)
+		printf (_("last index: %d\n"), r);
+	return r;
 }
 
 
 int
 deletesqldata (int index)
 {
-    char q[200];
-    int r;
+	char q[200];
+	int r;
 
-    if (!usesql)
+	if (!usesql)
+		return 0;
+	g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE id='%d'", dbtable,
+		    index);
+	if (debug)
+		g_print ("query: %s\n", q);
+
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (debug)
+		g_print (_("rows deleted: %d\n"), r);
 	return 0;
-    g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE id='%d'", dbtable, index);
-    if (debug)
-	g_print ("query: %s\n", q);
-
-    if (dl_mysql_query (&mysql, q))
-	exiterr (3);
-    r = dl_mysql_affected_rows (&mysql);
-    if (debug)
-	g_print (_("rows deleted: %d\n"), r);
-    return 0;
 }
 
 int
 get_sql_type_list (void)
 {
-    char q[200], temp[200];
-    int r, i;
-    static int usericonsloaded = FALSE;
+	char q[200], temp[200];
+	int r, i;
+	static int usericonsloaded = FALSE;
 
-    if (!usesql)
-	return FALSE;
+	if (!usesql)
+		return FALSE;
 
 
-    /* make list of possible type entries */
-    g_snprintf (q, sizeof (q), "select distinct upper(type) from %s", dbtable);
-    if (dl_mysql_query (&mysql, q))
-	exiterr (3);
-    if (!(res = dl_mysql_store_result (&mysql)))
-	exiterr (4);
-    r = 0;
-    while ((row = dl_mysql_fetch_row (res)))
+	/* make list of possible type entries */
+	g_snprintf (q, sizeof (q), "select distinct upper(type) from %s",
+		    dbtable);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	if (!(res = dl_mysql_store_result (&mysql)))
+		exiterr (4);
+	r = 0;
+	while ((row = dl_mysql_fetch_row (res)))
 	{
-	    g_strlcpy (temp, row[0], sizeof (temp));
-	    for (i = 0; i < (int) strlen (temp); i++)
-		temp[i] = toupper (temp[i]);
-	    g_strlcpy (dbtypelist[r++], temp, sizeof (dbtypelist[0]));
-	    if (r >= MAXWPTYPES)
+		g_strlcpy (temp, row[0], sizeof (temp));
+		for (i = 0; i < (int) strlen (temp); i++)
+			temp[i] = toupper (temp[i]);
+		g_strlcpy (dbtypelist[r++], temp, sizeof (dbtypelist[0]));
+		if (r >= MAXWPTYPES)
 		{
-		    printf ("\nSQL: too many waypoint types!\n");
-		    break;
+			printf ("\nSQL: too many waypoint types!\n");
+			break;
 		}
-	    /* load user defined icons */
-	    if (usericonsloaded == FALSE)
-		load_user_icon( temp );
+		/* load user defined icons */
+		if (usericonsloaded == FALSE)
+			load_user_icon (temp);
 	}
-    dl_mysql_free_result (res);
-    dbtypelistcount = r;
-    usericonsloaded = TRUE;
-    if ( debug ) 
-	printf("External Icons loaded\n");
-    return r;
+	dl_mysql_free_result (res);
+	dbtypelistcount = r;
+	usericonsloaded = TRUE;
+	if (debug)
+		printf ("External Icons loaded\n");
+	return r;
 }
 
 int
 getsqldata ()
 {
-    char q[5000];
-    char sql_order[5000];
-    int r, rges, wlan, action, sqlnr;
-    gchar mappath[400];
-    FILE *st;
-    double lat, lon, l, ti;
-    struct timeval t;
-    if (!usesql)
-	return FALSE;
-    gettimeofday (&t, NULL);
-    ti = t.tv_sec + t.tv_usec / 1000000.0;
-    g_strlcpy (mappath, homedir, sizeof (mappath));
-    g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
-    st = fopen (mappath, "w+");
-    if (st == NULL)
+	char q[5000];
+	char sql_order[5000];
+	int r, rges, wlan, action, sqlnr;
+	gchar mappath[400];
+	FILE *st;
+	double lat, lon, l, ti;
+	struct timeval t;
+	if (!usesql)
+		return FALSE;
+	gettimeofday (&t, NULL);
+	ti = t.tv_sec + t.tv_usec / 1000000.0;
+	g_strlcpy (mappath, homedir, sizeof (mappath));
+	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
+	st = fopen (mappath, "w+");
+	if (st == NULL)
 	{
-	    perror (mappath);
-	    return 1;
+		perror (mappath);
+		return 1;
 	}
 
-    g_snprintf (sql_order, sizeof (sql_order),
-		"order by \(abs(%.6f - lat)+abs(%.6f - lon))"
-		,current_lat,current_long);
-    g_strdelimit (sql_order, ",", '.');
-    if (debug)
-	printf ("mysql order: %s\n", sql_order);
-  
-    g_snprintf (q, sizeof (q),
-		"SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
-		dbtable, dbwherestring,sql_order);
-    if (debug)
-	printf ("waypoints: mysql query: %s\n", q);
+	g_snprintf (sql_order, sizeof (sql_order),
+		    "order by \(abs(%.6f - lat)+abs(%.6f - lon))",
+		    current_lat, current_long);
+	g_strdelimit (sql_order, ",", '.');
+	if (debug)
+		printf ("mysql order: %s\n", sql_order);
 
-    if (dl_mysql_query (&mysql, q))
+	g_snprintf (q, sizeof (q),
+		    "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
+		    dbtable, dbwherestring, sql_order);
+	if (debug)
+		printf ("waypoints: mysql query: %s\n", q);
+
+	if (dl_mysql_query (&mysql, q))
 	{
-	    fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
-	    return(1);
+		fprintf (stderr, "Error in query: %s\n",
+			 dl_mysql_error (&mysql));
+		return (1);
 	}
 
-    if (!(res = dl_mysql_store_result (&mysql)))
+	if (!(res = dl_mysql_store_result (&mysql)))
 	{
-	    fprintf(stderr,"Error in store results: %s\n",dl_mysql_error (&mysql) );
-	    return(1);
+		fprintf (stderr, "Error in store results: %s\n",
+			 dl_mysql_error (&mysql));
+		return (1);
 	}
 
-    rges = r = wlan = 0;
-    while ((row = dl_mysql_fetch_row (res)))
+	rges = r = wlan = 0;
+	while ((row = dl_mysql_fetch_row (res)))
 	{
-	    rges++;
-	    /*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
-	    if ((strcmp (row[3], "WLAN")) == 0)
-		wlan = 1;
-	    else if ((strcmp (row[3], "WLAN-WEP")) == 0)
-		wlan = 2;
-	    else
-		wlan = 0;
-	    action = 0;
-	    if ((strcmp (row[3], "SPEEDTRAP")) == 0)
-		action = 1;
-	    sqlnr = atol (row[4]);
-	    if (dbusedist)
+		rges++;
+		/*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
+		if ((strcmp (row[3], "WLAN")) == 0)
+			wlan = 1;
+		else if ((strcmp (row[3], "WLAN-WEP")) == 0)
+			wlan = 2;
+		else
+			wlan = 0;
+		action = 0;
+		if ((strcmp (row[3], "SPEEDTRAP")) == 0)
+			action = 1;
+		sqlnr = atol (row[4]);
+		if (dbusedist)
 		{
-		    lat = g_strtod (row[1], NULL);
-		    lon = g_strtod (row[2], NULL);
-		    l = calcdist (lon, lat);
-		    if (l < dbdistance)
+			lat = g_strtod (row[1], NULL);
+			lon = g_strtod (row[2], NULL);
+			l = calcdist (lon, lat);
+			if (l < dbdistance)
 			{
-			    fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
-				     row[1], row[2], row[3], wlan, action, sqlnr);
-			    r++;
+				fprintf (st,
+					 "%-22s %10s %11s %20s %d %d %d\n",
+					 row[0], row[1], row[2], row[3], wlan,
+					 action, sqlnr);
+				r++;
 			}
 		}
-	    else
+		else
 		{
-		    fprintf (st, "%-22s %10s %11s %20s %d %d %d\n", row[0],
-			     row[1], row[2], row[3], wlan, action, sqlnr);
-		    r++;
+			fprintf (st, "%-22s %10s %11s %20s %d %d %d\n",
+				 row[0], row[1], row[2], row[3], wlan, action,
+				 sqlnr);
+			r++;
 		}
 	}
-    fclose (st);
+	fclose (st);
 
-    gettimeofday (&t, NULL);
-    ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-    if (debug)
-	printf (_("%d(%d) rows read in %.2f seconds\n"), r, rges, ti);
-    wptotal = rges;
-    wpselected = r;
-    loadwaypoints ();
-    if (!dl_mysql_eof (res))
-	return FALSE;
-    dl_mysql_free_result (res);
-    return TRUE;
+	gettimeofday (&t, NULL);
+	ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
+	if (debug)
+		printf (_("%d(%d) rows read in %.2f seconds\n"), r, rges, ti);
+	wptotal = rges;
+	wpselected = r;
+	loadwaypoints ();
+	if (!dl_mysql_eof (res))
+		return FALSE;
+	dl_mysql_free_result (res);
+	return TRUE;
 }
