@@ -21,6 +21,26 @@
 #  regards, camel
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
+#
+# Apr 26, 2004 Jörg Ostertag
+#   check for bad/existing maps:
+#      - The check if a map exists is modified in check if the mapsize is lagrer 
+#        than 4K. This detects some files where Error messages have been saved.
+#      - check consistency of map_koord.txt File: (Option -c)
+#        Read actual map_koords.txt file and check if all files it references are existing
+#      - update map_koord.txt File  (Option -U)
+#        if a file exists in your map dir and is not found in map_koords.txt file 
+#        it is added to the map_koords.txt File
+#      - Simulate Only Option. Only tells what would be done. (Option -n)
+#      - Formated output of progress bar
+#      - count the Files retrieved, existing
+#      - moved writing to map_koords.txt to append_koords to be able to 
+#        easy add Files already existing in the Filesystem to the File
+#   Added new Symbols to Progress Bar:
+#       S Simulated
+#       E Error
+#       + retrieved new file
+#       _ file already exists localy
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -63,9 +83,13 @@ my $KOORD_FILE    = 'map_koord.txt'; # Should we allow config of this?
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
 my $FILEPREFIX    = 'map_';
 my $mapserver     = 'expedia';
+my $simulate_only = 0;
 my $check_koord_file = 0;
+my $update_koord =0;
 our $MAP_KOORDS={};
 our $MAP_FILES={};
+our $GPSTOOL_MAP_KOORDS={};
+our $GPSTOOL_MAP_FILES={};
 
 GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon, 
 	     'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 
@@ -77,7 +101,9 @@ GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon,
 	     'unit=s' => \$unit, 'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
 	     'WAYPOINT=s' => \$WAYPT_FILE, 'CONFIG=s' => \$CONFIG_FILE, 
 	     'PREFIX=s' => \$FILEPREFIX,
+	     'n' => \$simulate_only,
 	     'c' => \$check_koord_file,
+	     'U' => \$update_koord,
 	     'FORCE' => \$force, 'debug' => \$debug, 'MAN' => \$man, 
 	     'help|x' => \$help, 'version' => \$version)
     or pod2usage(1);
@@ -91,6 +117,7 @@ sub check_koord_file($); # {}
 sub read_koord_file($);  # {}
 sub append_koords($$$$); # {}
 sub expedia_url($$$);    # {}
+sub read_gpstool_map_file(); # {}
 
 # Print version
 if ($version) {
@@ -151,6 +178,11 @@ unless ($force) {
 chdir($CONFIG_DIR);
 chdir($mapdir);
 
+if ( $update_koord  ) {
+    read_gpstool_map_file();
+    read_koord_file("$CONFIG_DIR/$KOORD_FILE");
+}
+
 print "\nDownloading files:\n";
 
 # Ok start getting the maps
@@ -165,9 +197,10 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
        my $long = $slon;
        while ($long < $endlon) {
 	   my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
-	   print "File: $filename\n";
+	   print "File: $filename\n" if $debug;
 	   if ( is_map_file($filename)) {
 	       $existcount++;
+	       print "_";
 	   } else {
 	       my $url;
 	       if ($mapserver eq 'expedia') {
@@ -177,17 +210,25 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
 	       }
 
 	       print "$url\n" if $debug;
-	       `wget -nd -q -O tmpmap.gif "$url"`;
+	       if ( $simulate_only ) {
+		   print "S";		   
+	       } else {
+		   `wget -nd -q -O tmpmap.gif "$url"`;
+	       }
 	       
 	       if (is_map_file('tmpmap.gif')) {
 		   rename('tmpmap.gif',$filename);
 		   append_koords($filename, $lati, $long, $mapscale);
-		   print ".";
+		   print "+";
 		   print "\nWrote $filename\n" if ($debug);
 		   $newcount++;
 	       } else {
-		   $failcount++;
-		   print ",";
+		   if ( $simulate_only ) {
+		       print "S";		   
+		   } else {
+		       $failcount++;
+		       print "E";
+		   }
 	       }
 	       # sleep if polite is turned on to be nice to the webserver of the mapserver
 	       sleep($polite) if ($polite =~ /\d+/);
@@ -195,6 +236,7 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
 	   }
 	   $long += $klon; ### FIX BY CAMEL
        }
+	   print "\n";
        $lati += $klat; ### FIX BY CAMEL
        $long = $slon; ### FIX BY CAMEL
    }
@@ -486,7 +528,8 @@ sub append_koords($$$$) {
 
     if ( -s $GPSTOOL_MAP_FILE ) {
 	if ( ! defined $GPSTOOL_MAP_FILES->{$filename} ) {
-	    open(KOORD,">>$GPSTOOL_MAP_FILE") || die "Can't open: $koord_filename: $!\n"; 
+	    open(KOORD,">>$GPSTOOL_MAP_FILE") || 
+		die "Can't open: $GPSTOOL_MAP_FILE: $!\n"; 
 	    printf KOORD "$mapdir/$filename %17.13f %17.13f %4d 1280 1024\n",$lati, $long, $mapscale;
 	    close KOORD;
 	    $GPSTOOL_MAP_FILES->{$filename} = "$lati, $long, $mapscale";
@@ -506,7 +549,8 @@ sub read_koord_file($) {
     $MAP_FILES={};
 
     my $s_time=time();
-    print "opening $koord_file\n";
+    return unless -s $koord_file;
+    print "reading $koord_file\n";
     open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
@@ -529,7 +573,8 @@ sub read_koord_file($) {
 sub read_gpstool_map_file() {
     my $koord_file = $GPSTOOL_MAP_FILE;
     my $s_time=time();
-    print "opening  $koord_file\n";
+    return unless -s $koord_file;
+    print "reading $koord_file\n";
     open(KOORD,"<$koord_file") || die "Can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
@@ -618,7 +663,7 @@ gpsfetchmap [-w <WAYPOINT NAME>]
             [-slo <start longitude DD.MMMM>] [-endlo <end longitude DD.MMMM>]
             [-sc <SCALE>] [-a <#>] [-p] [-m <MAPSERVER>]
             [-u <UNIT>] [-md <DIR>] [-W <FILE>]
-            [-C <FILE>] [-P <PREFIX>] [-F] [-d] [-v] [-h] [-M]
+            [-C <FILE>] [-P <PREFIX>] [-F] [-d] [-v] [-h] [-M] [-n] [-U] [-c]
 
 =head1 OPTIONS
 
@@ -717,6 +762,15 @@ Takes a prefix string to be used as the start of all saved map files. Default: "
 =item B<-F, --FORCE>
 
 Force program to download maps without asking you to confirm the download.
+
+=item B<-n>
+
+Dont download anything only tell which maps are missing
+
+=item B<-U>
+
+read map_koord.txt file at Start. Then also check for not downloaded map_*.gif Files 
+if they need to be appended to map_koords.txt. 
 
 =item B<-c>
 
