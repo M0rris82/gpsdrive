@@ -31,9 +31,14 @@ modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 Version 1.05
 ";
 
+use Data::Dumper;
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
+use File::Basename;
+use File::Path;
+use File::Copy;
 
 # Setup possible scales
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
@@ -45,7 +50,9 @@ my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
 my ($lat,$lon,$slat,$endlat,$slon,$endlon,$waypoint,$area,$unit,$mapdir,$debug,$force,$version,$man,$help);
-my $failcount = 0;
+my $failcount  = 0;
+my $newcount   = 0;
+my $existcount = 0;
 my $polite = 'yes';
 my $scale = '100000';
 my $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
@@ -58,6 +65,8 @@ my $mapserver     = 'expedia';
 GetOptions ( 'lat=f' => \$lat, 'lon=f' => \$lon, 
 	     'start-lat=f' => \$slat, 'end-lat=f' => \$endlat, 
 	     'start-lon=f' => \$slon, 'end-lon=f' => \$endlon, 
+	     'sla=f' => \$slat, 'ela=f' => \$endlat, 
+	     'slo=f' => \$slon, 'elo=f' => \$endlon, 
 	     'scale=s' => \$scale, 'mapserver=s' => \$mapserver, 
 	     'waypoint=s' =>, \$waypoint, 'area=s' => \$area, 
 	     'unit=s' => \$unit,'mapdir=s' => \$mapdir, 'polite:i' => \$polite,
@@ -110,19 +119,20 @@ unless ($slat && $slon && $endlat && $endlon) {
 }
 print "Upper left: $slat $slon, Lower Right: $endlat, $endlon\n" if ($debug);
 
+my $count = file_count(\($slat,$slon,$endlat,$endlon));
+print "You are about to download $count file(s).\n";
+
 unless ($force) {
-    my $count = file_count(\($slat,$slon,$endlat,$endlon));
-    print "You are about to download $count file(s).\n";
     print "You are violating the map servers copyright!\nAre you sure you want to continue? [y|n] ";
     my $answer = <STDIN>;
     exit if ($answer !~ /^[yY]/);    
 }
 
-print "\nDownloading files:\n";
-
 # Change into the gpsdrive maps directory 
 chdir($CONFIG_DIR);
 chdir($mapdir);
+
+print "\nDownloading files:\n";
 
 # Ok start getting the maps
 foreach my $scale (@{$SCALES_TO_GET_ref}) {
@@ -137,7 +147,9 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
       while ($long < $endlon) {
          my $filename = "$FILEPREFIX$scale-$lati-$long.gif";
  	         
-	if (! -s $filename) {
+	if ( -s $filename) {
+	    $existcount++;
+	} else {
             LOOP: {
                if ($mapserver eq 'expedia') {
                   next LOOP if ($scale <=1000);
@@ -180,6 +192,7 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
                   rename('tmpmap.gif',$filename);
                   print ".";
                   print "\nWrote $filename\n" if ($debug);
+		  $newcount++;
                } else {
                   $failcount++;
                   print ",";
@@ -195,7 +208,12 @@ foreach my $scale (@{$SCALES_TO_GET_ref}) {
       $long = $slon; ### FIX BY CAMEL
    }
 }
-print "Failcount: $failcount\n";
+
+print "\n";
+
+print "Fail:  $failcount\n";
+print "Exist: $existcount\n";
+print "New:   $newcount\n";
 print "\n";
 
 ################################################################################
