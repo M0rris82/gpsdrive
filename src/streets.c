@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/02/17 09:46:34  tweety
+minor changes
+
 Revision 1.2  2005/02/13 22:57:00  tweety
 WDB Support
 
@@ -246,6 +249,7 @@ streets_rebuild_list (void)
   }
 
   { // gernerate mysql ORDER string
+    /*
     char sql_order_numbers[5000];
     g_snprintf (sql_order_numbers, sizeof (sql_order),
 		"(abs(%.6f - lat1)+abs(%.6f - lon1))"
@@ -254,8 +258,9 @@ streets_rebuild_list (void)
     
     g_snprintf (sql_order, sizeof (sql_order),
 		"order by type_id,level,%s ",sql_order_numbers);
+*/
     g_snprintf (sql_order, sizeof (sql_order),
-		"order by %s ",sql_order_numbers);
+		"order by type_id,level_min,level_max ");
     /*
       g_snprintf (sql_order, sizeof (sql_order),
       "order by level ");
@@ -301,13 +306,13 @@ streets_rebuild_list (void)
 
   if (dl_mysql_query (&mysql, sql_query))
     {
-      perror ( "mysql_error in query");
+      fprintf(stderr,"Error in query: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
   if (!(res = dl_mysql_store_result (&mysql)))
     {
-      perror("mysql_error in query");
+      fprintf(stderr,"Error in store result: %s\n",dl_mysql_error (&mysql) );
       return;
     }
 
@@ -494,26 +499,30 @@ streets_draw_list (void)
       posx2 = (streets_list + i)->x2;
       posy2 = (streets_list + i)->y2;
       
-      if ( debug ) {
+      /*
+	if ( debug ) {
 	printf("    a1 %f,%f\n",  posx1,posy1);
 	printf("    a2 %f,%f\n",  posx2,posy2);
 	
 	printf ("STREETS Draw: %f %f -> %f, %f            %s\n",
-		(streets_list + i)->lat1, (streets_list + i)->lon1,
-		(streets_list + i)->lat2, (streets_list + i)->lon2,
-		(streets_list + i)->name
-		);
-      }
+	(streets_list + i)->lat1, (streets_list + i)->lon1,
+	(streets_list + i)->lat2, (streets_list + i)->lon2,
+	(streets_list + i)->name
+	);
+	}
+      */
       if ( posxy_on_screen(posx1,posy1) ||
 	   posxy_on_screen(posx2,posy2) 
 	   )
 	{
-	  if (debug) {
+	  /*
+	    if (debug) {
 	    printf ("       Draw: %f %f -> %f, %f\n",
-		    (streets_list + i)->x1,   (streets_list + i)->y1,
-		    (streets_list + i)->x2,   (streets_list + i)->y2
-		    );
-	  }
+	    (streets_list + i)->x1,   (streets_list + i)->y1,
+	    (streets_list + i)->x2,   (streets_list + i)->y2
+	    );
+	    }
+	  */
 
 	  // Alloc Memory if we need more
 	  gdks_streets_count++;
@@ -538,8 +547,8 @@ streets_draw_list (void)
 	  */
 
 	  if ( debug ) {
-	    printf("    1 %f,%f\n",  posx1,posy1);
-	    printf("    2 %f,%f\n",  posx2,posy2);
+	    //	    printf("    1 %f,%f\n",  posx1,posy1);
+	    //	    printf("    2 %f,%f\n",  posx2,posy2);
 	  }
 	}
       
@@ -548,21 +557,25 @@ streets_draw_list (void)
 	   ( (streets_list + i)->type_id != (streets_list + i + 1)->type_id )
 	   )
       {
+	/*
 	if ( debug )
 	  printf("Drawing %d segments\n",gdks_streets_count);
-
-	if ((streets_list + i)->type_id == 1) {
+	*/
+	if        ((streets_list + i)->type_id == 1) {
 	  gdk_gc_set_foreground (kontext, &red);
 	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-	} else 	if ((streets_list + i)->type_id == 2) {
+	} else if ((streets_list + i)->type_id == 2) {
 	  gdk_gc_set_foreground (kontext, &blue);
+	  gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+	} else if ((streets_list + i)->type_id == 3) {
+	  gdk_gc_set_foreground (kontext, &green);
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	} else 	if ((streets_list + i)->type_id == 3) {
-	  gdk_gc_set_foreground (kontext, &blue);
-	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+	} else if ((streets_list + i)->type_id == 4) {
+	  gdk_gc_set_foreground (kontext, &yellow);
+	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
   	} else {
-	  gdk_gc_set_foreground (kontext, &blue);
-	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+	  gdk_gc_set_foreground (kontext, &red);
+	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	}
 	
 	gdk_draw_segments (drawable, kontext, 
