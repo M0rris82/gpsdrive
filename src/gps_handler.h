@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/10/10 13:17:52  tweety
+DBUS Support for connecting to gpsd
+you need to use ./configure --enable-dbus to enable it during compile
+Author: "Belgabor" <belgabor@gmx.de>
+
 Revision 1.1  2005/08/13 10:16:02  tweety
 extract all/some gps_handling parts to File src/gps_handler.c
 
@@ -46,5 +51,11 @@ void convertGSA (char *f);
 
 #include <gtk/gtk.h>
 
+#ifdef DBUS_ENABLE
+#include <dbus/dbus.h>
+static DBusHandlerResult dbus_signal_handler (
+		DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
+#endif
 
 #endif /* GPS_HANDLER_H */
