@@ -23,6 +23,13 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.51  2005/07/07 06:45:23  tweety
+Autor: Blake Swadling <blake@swadling.com>
+Autor: John Hay <jhay@icomtek.csir.co.za>
+Honor Makefile src
+honor +- in import track
+update TODO
+
 Revision 1.50  2005/07/05 23:12:36  ganter
 anyone has destroyed the GPS-Time display, fixed
 
@@ -11358,6 +11365,9 @@ main (int argc, char *argv[])
 
 		if (handle)
 		{
+			// Clear previous errors
+			dlerror ();
+
 			dl_mysql_error = dlsym (handle, "mysql_error");
 			if ((error = dlerror ()) != NULL)
 			{
