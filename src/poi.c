@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.15  2005/04/07 06:35:01  tweety
+Error handling for g_renew
+correct to extern MYSQL mysql;
+start getting color from streets_type
+
 Revision 1.14  2005/04/06 19:38:17  tweety
 use disable/enable keys to improove spee in database creation
 add draw_small_plus_sign, which is used if we would have too many waypoints to display
@@ -149,9 +154,9 @@ char txt[5000];
 PangoLayout *poi_label_layout;
 #include "mysql.h"
 
-MYSQL mysql;
-MYSQL_RES *res;
-MYSQL_ROW row;
+extern MYSQL mysql;
+extern MYSQL_RES *res;
+extern MYSQL_ROW row;
 
 // keep actual visible POIs in Memory
 poi_struct *poi_list;
@@ -238,8 +243,9 @@ void poi_init (void)
 	poi_limit = 40000;
 	poi_list = g_new (poi_struct, poi_limit);
 	if ( poi_list == NULL ) {
-		poi_limit =-1;
 		g_print("Error: Cannot allocate Memory for %ld poi\n",poi_limit);
+		poi_limit = -1;
+		return;
 	}
 
 	get_poi_type_list();
@@ -526,8 +532,15 @@ void poi_rebuild_list (void) {
 			poi_nr++;
 			if (poi_nr > poi_limit) {
 				poi_limit +=  10000;
-				poi_list =
-					g_renew (poi_struct, poi_list, poi_limit );
+				if ( debug)
+					g_print("Try to allocate Memory for %ld poi\n",poi_limit);
+
+				poi_list = g_renew (poi_struct, poi_list, poi_limit );
+				if ( poi_list == NULL ) {
+					g_print("Error: Cannot allocate Memory for %ld poi\n",poi_limit);
+					poi_limit = -1;
+					return;
+				}
 				// TODO: check if g_renew failed
 			}
 
@@ -702,8 +715,8 @@ void poi_draw_list (void) {
 			}
 		}
 
-		if ( mydebug )
-			printf("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 		
 	}
+	if ( mydebug )
+		printf("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
