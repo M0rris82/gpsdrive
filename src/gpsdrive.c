@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.17  2005/02/02 17:42:54  tweety
+Add some comments
+extract some code into funktions
+added POI mySQL Support
+
 Revision 1.16  2005/01/22 10:52:45  tweety
 Added Key W for adding Waypoint without additional Questtions at current location
 Added Key F to toggle Friends Display
@@ -1894,6 +1899,7 @@ gpsdrive started
 #include <dirent.h>
 #include "battery.h"
 #include "track.h"
+#include "poi.h"
 #include "icons.h"
 #include <dlfcn.h>
 #include <pthread.h>
@@ -2062,7 +2068,7 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 };
 GtkWidget *l1, *l2, *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
-GtkWidget *bestmapbt, *maptogglebt, *topotogglebt, *savetrackbt;
+GtkWidget *bestmapbt, *poi_draw_bt, *maptogglebt, *topotogglebt, *savetrackbt;
 GtkWidget *loadtrackbt, *radio1, *radio2, *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
@@ -2193,7 +2199,8 @@ extern gint zone;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
 gint etch = 1;
-gint drawgrid = TRUE;
+gint drawgrid = FALSE;
+extern gint poi_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 /* socket for friends  */
@@ -2361,7 +2368,11 @@ convertRMC (char *f)
       havepos = TRUE;
       haveposcount++;
       if (haveposcount == 3)
-	rebuildtracklist ();
+	{
+	  rebuildtracklist ();
+	  poi_rebuild_list (); // Don't know why, just to be shure
+	}
+	    
     }
 /*  Latitude North / South */
   b[0] = field[3][0];
@@ -2614,7 +2625,10 @@ convertGGA (char *f)
 	  havepos = TRUE;
 	  haveposcount++;
 	  if (haveposcount == 3)
-	    rebuildtracklist ();
+	    {
+	      rebuildtracklist ();
+	      poi_rebuild_list (); // Don't know why, just to be shure
+	    }
 	}
 
 /*  Latitude North / South */
@@ -5172,7 +5186,7 @@ drawdownloadrectangle (gint big)
 
 
 //------------------------------------------------------------------------
-// JMO
+// Draw Text (lat/lon) into Grid
 void
 draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
 {
@@ -5210,7 +5224,6 @@ draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
 void
 draw_grid(GtkWidget * widget)
 {
-  // TODO: add lat/lon as Text to the lines so we know which is which
   gdouble lat, lon;
   gdouble lat_ul, lon_ul;
   gdouble lat_ll, lon_ll;
@@ -5221,6 +5234,12 @@ draw_grid(GtkWidget * widget)
   gdouble lat_max, lon_max;
 
   int count;
+
+  // calculate the start and stop for lat/lon according to the displayed section
+  calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
+  calcxytopos (0        , SCREEN_Y , &lat_ll, &lon_ll, zoom);
+  calcxytopos (SCREEN_X , 0        , &lat_ur, &lon_ur, zoom);
+  calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
 
   // add more lines as the scale increases
   gdouble step;
@@ -5233,33 +5252,21 @@ draw_grid(GtkWidget * widget)
     step=.5;
   if (mapscale < 500000 ) 
     step=.1;
+  if (mapscale < 60000 ) 
+    step=.05;
+  if (mapscale < 30000 ) 
+    step=.02;
   if (mapscale < 20000 ) 
     step=.01;
   if (mapscale < 5000 ) 
     step=.005;
-
-
-
-  // TODO: calculate the start and stop for lat/lon according to the displayed section
-  calcxytopos (0        , 0        , &lat_ul, &lon_ul, zoom);
-  calcxytopos (0        , SCREEN_Y , &lat_ll, &lon_ll, zoom);
-  calcxytopos (SCREEN_X , 0        , &lat_ur, &lon_ur, zoom);
-  calcxytopos (SCREEN_X , SCREEN_Y , &lat_lr, &lon_lr, zoom);
-  // TODO:: Auslagern
-#ifndef min
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-#endif
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
 
   if (mapscale < 5000000 ) {
     lat_min = min(lat_ll, lat_ul)-step;
     lat_max = max(lat_lr, lat_ur)+step;
     lon_min = min(lon_ll, lon_ul)-step;
     lon_max = max(lon_lr, lon_ur)+step;
-  } 
-  else {
+  } else {
     lat_min =  -90;
     lat_max =   90;
     lon_min = -180;
@@ -5287,6 +5294,8 @@ draw_grid(GtkWidget * widget)
       gchar str[200];
 
       count++;
+      // TODO: These calculations have a slight offset
+      // Probably ist the wrong funktion to calculate
       calcxy (&posxdest11, &posydest11, lon     , lat     , zoom);
       calcxy (&posxdest12, &posydest12, lon     , lat+step, zoom);
       calcxy (&posxdest21, &posydest21, lon+step, lat     , zoom);
@@ -5342,16 +5351,183 @@ draw_grid(GtkWidget * widget)
     printf("draw_grid loops: %d\n",count);
 }
 
+/* draw a + Sign and its shaddow */
+void
+draw_plus_sign ( gdouble posxdest,   gdouble posydest )
+{
+  if (shadow)
+    { /*  draw shadow of + sign */
+      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_function (kontext, GDK_AND);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 - 5 + SHADOWOFFSET,
+		     posxdest + 1 + SHADOWOFFSET,
+		     posydest + 1 + 5 + SHADOWOFFSET);
+      gdk_draw_line (drawable, kontext,
+		     posxdest + 1 + 5 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET,
+		     posxdest + 1 - 5 + SHADOWOFFSET,
+		     posydest + 1 + SHADOWOFFSET);
+      gdk_gc_set_function (kontext, GDK_COPY);
+    }
+
+  /*  draw + sign at destination */
+  gdk_gc_set_foreground (kontext, &red);
+  gdk_draw_line (drawable, kontext, posxdest + 1,
+		 posydest + 1 - 5, posxdest + 1,
+		 posydest + 1 + 5);
+  gdk_draw_line (drawable, kontext, posxdest + 1 + 5,
+		 posydest + 1, posxdest + 1 - 5,
+		 posydest + 1);
+
+}
+
+
+// TODO: Put this in its own file
+void draw_waypoints()
+{
+  gdouble posxdest, posydest;
+  gint  k, k2, i, shownwp = 0;
+  gchar txt[200];
+
+  /*  draw waypoints */
+  for (i = 0; i < maxwp; i++)
+    {
+      calcxy (&posxdest, &posydest, 
+	      (wayp + i)->lon, (wayp + i)->lat,
+	      zoom);
+
+      if ((posxdest >= 0) && (posxdest < SCREEN_X)
+	  && (shownwp < MAXSHOWNWP))
+	{
+	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+
+	  if ((posydest >= 0) && (posydest < SCREEN_Y))
+	    {
+	      shownwp++;
+	      g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
+
+	      // Draw Icon(typ) or + Sign
+	      if ((wayp + i)->wlan > 0)
+		drawwlan (posxdest, posydest, (wayp + i)->wlan);
+	      else
+		if ((drawicon (posxdest, posydest, (wayp + i)->typ)) == 0)
+		  {
+		    draw_plus_sign( posxdest, posydest );
+		  }		
+
+	      // Draw Proximity Circle
+	      if ( (wayp + i)->proximity > 0.0 ) 
+		{
+		  gint proximity_pixels;
+		  if ( mapscale ) 
+		    proximity_pixels= 
+		      ((wayp + i)->proximity)
+		      * zoom
+		      * PIXELFACT
+		      / mapscale;
+		  else 
+		    proximity_pixels=2;
+		      
+		  gdk_gc_set_foreground (kontext, &blue);
+		      
+		  gdk_draw_arc(drawable, kontext, FALSE,
+			       posxdest - proximity_pixels , 
+			       posydest - proximity_pixels ,
+			       proximity_pixels*2,proximity_pixels*2,
+			       0, 64 * 360);
+		}
+		  
+	      /*  draw shadow of text */
+	      {
+		/* prints in pango */
+		PangoFontDescription *pfd;
+		PangoLayout *wplabellayout;
+		gint width, height;
+		gchar *tn;
+
+		gdk_gc_set_foreground (kontext, &darkgrey);
+		gdk_gc_set_function (kontext, GDK_AND);
+		tn = g_strdelimit (txt, "_", ' ');
+
+		wplabellayout =
+		  gtk_widget_create_pango_layout (drawing_area, tn);
+		pfd = pango_font_description_from_string (wplabelfont);
+		pango_layout_set_font_description (wplabellayout, pfd);
+		pango_layout_get_pixel_size (wplabellayout, &width,
+					     &height);
+		/* printf("\nj: %d",height);    */
+		k = width + 4;
+		k2 = height;
+		if (shadow)
+		  {
+		    gdk_draw_layout_with_colors (drawable, kontext,
+						 posxdest + 15 +     SHADOWOFFSET,
+						 posydest - k2 / 2 + SHADOWOFFSET,
+						 wplabellayout, &darkgrey,
+						 NULL);
+		  }
+		if (wplabellayout != NULL)
+		  g_object_unref (G_OBJECT (wplabellayout));
+		/* freeing PangoFontDescription, cause it has been copied by prev. call */
+		pango_font_description_free (pfd);
+
+	      }
+	      gdk_gc_set_function (kontext, GDK_COPY);
+
+
+	      gdk_gc_set_function (kontext, GDK_AND);
+
+	      gdk_gc_set_foreground (kontext, &textbacknew);
+	      gdk_draw_rectangle (drawable, kontext, 1, posxdest + 13,
+				  posydest - k2 / 2, k + 1, k2);
+	      gdk_gc_set_function (kontext, GDK_COPY);
+	      gdk_gc_set_foreground (kontext, &black);
+	      gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+	      gdk_draw_rectangle (drawable, kontext, 0, posxdest + 12,
+				  posydest - k2 / 2 - 1, k + 2, k2);
+
+	      /* 		  gdk_gc_set_foreground (kontext, &yellow);  */
+	      {
+		/* prints in pango */
+		PangoFontDescription *pfd;
+		PangoLayout *wplabellayout;
+
+		wplabellayout =
+		  gtk_widget_create_pango_layout (drawing_area, txt);
+		pfd = pango_font_description_from_string (wplabelfont);
+		pango_layout_set_font_description (wplabellayout, pfd);
+
+		gdk_draw_layout_with_colors (drawable, kontext,
+					     posxdest + 15,
+					     posydest - k2 / 2,
+					     wplabellayout, &white, NULL);
+		if (wplabellayout != NULL)
+		  g_object_unref (G_OBJECT (wplabellayout));
+		/* freeing PangoFontDescription, cause it has been copied by prev. call */
+		pango_font_description_free (pfd);
+
+	      }
+
+	      /* 		    gdk_draw_text (drawable, smalltextfont, kontext,
+	       * 				 posxdest + 13, posydest + 6, txt,
+	       * 				 strlen (txt));
+	       */
+	    }
+	}
+    }
+}
 
 /* draw the marker on the map */
 gint
 drawmarker (GtkWidget * widget, guint * datum)
 {
   gdouble posxdest, posydest, posxmarker, posymarker;
-  gchar s2[100], s3[200], txt[200], s2a[20];
+  gchar s2[100], s3[200], s2a[20];
   gdouble w;
   GdkPoint poly[16];
-  gint k, k2, i, shownwp = 0;
+  gint k2;
 
   gblink = !gblink;
 /*    g_print("\nsimmode: %d, nmea %d garmin %d",simmode,haveNMEA,haveGARMIN); */
@@ -5363,163 +5539,11 @@ drawmarker (GtkWidget * widget, guint * datum)
     draw_grid( widget);
   
   drawtracks ();
-
+  
+  poi_draw_list ();
 
   if (wpflag)
-    {
-/*  draw waypoints */
-      for (i = 0; i < maxwp; i++)
-	{
-	  calcxy (&posxdest, &posydest, 
-		  (wayp + i)->lon, (wayp + i)->lat,
-		  zoom);
-
-	  if ((posxdest >= 0) && (posxdest < SCREEN_X)
-	      && (shownwp < MAXSHOWNWP))
-	    {
-	      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-
-	      if ((posydest >= 0) && (posydest < SCREEN_Y))
-		{
-		  shownwp++;
-		  g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
-
-		  if ((wayp + i)->wlan > 0)
-		    drawwlan (posxdest, posydest, (wayp + i)->wlan);
-		  else
-		    if ((drawicon (posxdest, posydest, (wayp + i)->typ)) == 0)
-		    {
-		      if (shadow)
-			{
-/*  draw shadow of + sign */
-			  gdk_gc_set_foreground (kontext, &darkgrey);
-			  gdk_gc_set_function (kontext, GDK_AND);
-			  gdk_draw_line (drawable, kontext,
-					 posxdest + 1 + SHADOWOFFSET,
-					 posydest + 1 - 5 + SHADOWOFFSET,
-					 posxdest + 1 + SHADOWOFFSET,
-					 posydest + 1 + 5 + SHADOWOFFSET);
-			  gdk_draw_line (drawable, kontext,
-					 posxdest + 1 + 5 + SHADOWOFFSET,
-					 posydest + 1 + SHADOWOFFSET,
-					 posxdest + 1 - 5 + SHADOWOFFSET,
-					 posydest + 1 + SHADOWOFFSET);
-			  gdk_gc_set_function (kontext, GDK_COPY);
-			}
-
-/*  draw + sign at destination */
-		      gdk_gc_set_foreground (kontext, &red);
-		      gdk_draw_line (drawable, kontext, posxdest + 1,
-				     posydest + 1 - 5, posxdest + 1,
-				     posydest + 1 + 5);
-		      gdk_draw_line (drawable, kontext, posxdest + 1 + 5,
-				     posydest + 1, posxdest + 1 - 5,
-				     posydest + 1);
-		      if ( (wayp + i)->proximity > 0.0 ) 
-			{
-			  gint proximity_pixels;
-			  if ( mapscale ) 
-			    proximity_pixels= 
-			      ((wayp + i)->proximity)
-			      * zoom
-			      * PIXELFACT
-			      / mapscale;
-			  else 
-			    proximity_pixels=2;
-
-			  gdk_gc_set_foreground (kontext, &blue);
-
-			  gdk_draw_arc(drawable, kontext, FALSE,
-				       posxdest - proximity_pixels , 
-				       posydest - proximity_pixels ,
-				       proximity_pixels*2,proximity_pixels*2,
-				       0, 64 * 360);
-			}
-		  
-		    }
-	      
-/*  draw shadow of text */
-		  {
-		    /* prints in pango */
-		    PangoFontDescription *pfd;
-		    PangoLayout *wplabellayout;
-		    gint width, height;
-		    gchar *tn;
-
-		    gdk_gc_set_foreground (kontext, &darkgrey);
-		    gdk_gc_set_function (kontext, GDK_AND);
-		    tn = g_strdelimit (txt, "_", ' ');
-
-		    wplabellayout =
-		      gtk_widget_create_pango_layout (drawing_area, tn);
-		    pfd = pango_font_description_from_string (wplabelfont);
-		    pango_layout_set_font_description (wplabellayout, pfd);
-		    pango_layout_get_pixel_size (wplabellayout, &width,
-						 &height);
-/* 		  printf("\nj: %d",height);    */
-		    k = width + 4;
-		    k2 = height;
-		    if (shadow)
-		      {
-
-			gdk_draw_layout_with_colors (drawable, kontext,
-						     posxdest + 15 +
-						     SHADOWOFFSET,
-						     posydest - k2 / 2 +
-						     SHADOWOFFSET,
-						     wplabellayout, &darkgrey,
-						     NULL);
-		      }
-		    if (wplabellayout != NULL)
-		      g_object_unref (G_OBJECT (wplabellayout));
-		    /* freeing PangoFontDescription, cause it has been copied by prev. call */
-		    pango_font_description_free (pfd);
-
-		  }
-		  gdk_gc_set_function (kontext, GDK_COPY);
-
-
-		  gdk_gc_set_function (kontext, GDK_AND);
-
-		  gdk_gc_set_foreground (kontext, &textbacknew);
-		  gdk_draw_rectangle (drawable, kontext, 1, posxdest + 13,
-				      posydest - k2 / 2, k + 1, k2);
-		  gdk_gc_set_function (kontext, GDK_COPY);
-		  gdk_gc_set_foreground (kontext, &black);
-		  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-		  gdk_draw_rectangle (drawable, kontext, 0, posxdest + 12,
-				      posydest - k2 / 2 - 1, k + 2, k2);
-
-/* 		  gdk_gc_set_foreground (kontext, &yellow);  */
-		  {
-		    /* prints in pango */
-		    PangoFontDescription *pfd;
-		    PangoLayout *wplabellayout;
-
-		    wplabellayout =
-		      gtk_widget_create_pango_layout (drawing_area, txt);
-		    pfd = pango_font_description_from_string (wplabelfont);
-		    pango_layout_set_font_description (wplabellayout, pfd);
-
-		    gdk_draw_layout_with_colors (drawable, kontext,
-						 posxdest + 15,
-						 posydest - k2 / 2,
-						 wplabellayout, &white, NULL);
-		    if (wplabellayout != NULL)
-		      g_object_unref (G_OBJECT (wplabellayout));
-		    /* freeing PangoFontDescription, cause it has been copied by prev. call */
-		    pango_font_description_free (pfd);
-
-		  }
-
-/* 		    gdk_draw_text (drawable, smalltextfont, kontext,
- * 				 posxdest + 13, posydest + 6, txt,
- * 				 strlen (txt));
- */
-		}
-	    }
-	}
-    }
+    draw_waypoints();
 
   if (havefriends)
     drawfriends ();
@@ -6489,7 +6513,10 @@ loadmap (char *filename)
   iszoomed = FALSE;
 /*        zoom = 1; */
   xoff = yoff = 0;
+
   rebuildtracklist ();
+  poi_rebuild_list ();
+
   if (!maploaded)
     display_status (_("Map found!"));
 
@@ -8157,7 +8184,7 @@ etch_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-/*  switching shadow on/off */
+/*  switching grid on/off */
 gint
 drawgrid_cb (GtkWidget * widget, guint datum)
 {
@@ -8361,6 +8388,19 @@ mute_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/*  switching POI on/off */
+gint
+poi_draw_cb (GtkWidget * widget, guint datum)
+{
+  poi_draw = !poi_draw;
+  poi_rebuild_list ();
+  poi_draw_list ();
+
+  needtosave = TRUE;
+  return TRUE;
+}
+
+/* switching SQL on/off */
 gint
 sql_cb (GtkWidget * widget, guint datum)
 {
@@ -8378,6 +8418,7 @@ sql_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* switching Track display on/off */
 gint
 track_cb (GtkWidget * widget, guint datum)
 {
@@ -8393,6 +8434,7 @@ track_cb (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
+/* switching WP display on/off */
 gint
 wp_cb (GtkWidget * widget, guint datum)
 {
@@ -8753,21 +8795,32 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 
 
   // Toggle Grid Display
-
   if ((toupper (event->keyval)) == 'G')
     {
       drawgrid = !drawgrid;
+      needtosave = TRUE;
     }
 
-  // Toggle Friends Server activities
+  // Toggle POI Display
+  /*
+  if ((toupper (event->keyval)) == 'I' )
+    {
+      poi_draw = !poi_draw;
+      poi_rebuild_list ();
+      poi_draw_list ();
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), poi_draw);
+      needtosave = TRUE;
+    }
+  */
 
+  // Toggle Friends Server activities
   if ((toupper (event->keyval)) == 'F')
     {
       havefriends = !havefriends;
+      needtosave = TRUE;
     }
 
   // Add Waypoint at current gps location
-
   if ((toupper (event->keyval)) == 'X')
     {
       wplat = current_lat;
@@ -8776,7 +8829,6 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
     }
 
   // Add Waypoint at current gps location without asking
-
   if ((toupper (event->keyval)) == 'W')
     {
       gchar s1[100], s2[100];
@@ -8953,6 +9005,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	      posmode_x = lon;
 	      posmode_y = lat;
 	      rebuildtracklist ();
+	      poi_rebuild_list ();
 	      if (onemousebutton)
 		gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
 	    }
@@ -8963,6 +9016,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 
 	  rebuildtracklist ();
+	  poi_rebuild_list ();
 	}
 /*  Right mouse button */
       if ((state & GDK_BUTTON3_MASK) == GDK_BUTTON3_MASK)
@@ -8971,6 +9025,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 /* only if RIGHT mouse button clicked */
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 	  rebuildtracklist ();
+	  poi_rebuild_list ();
 	  g_strlcpy (targetname, _("SELECTED"), sizeof (targetname));
 	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), targetname);
 	  gtk_frame_set_label (GTK_FRAME (destframe), s);
@@ -9036,6 +9091,7 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	  posmode_x = lon;
 	  posmode_y = lat;
 	  rebuildtracklist ();
+	  poi_rebuild_list ();
 	  if (onemousebutton)
 	    gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
 	}
@@ -9045,6 +9101,7 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
       rebuildtracklist ();
+      poi_rebuild_list ();
     }
 
 /*    g_print ("\nx: %d, y: %d", x, y); */
