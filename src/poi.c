@@ -23,6 +23,18 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.26  2005/11/06 17:24:26  tweety
+  shortened map selection code
+  coordinate_string2gdouble:
+   - fixed missing format
+   - changed interface to return gdouble
+  change -D option to reflect debuglevels
+  Added more debug Statements for Level>50
+  move map handling to to seperate file
+  speedup memory reservation for map-structure
+  Add code for automatic loading of maps from system DATA/maps/.. Directory
+  changed length of mappath from 400 to 2048 chars
+
   Revision 1.25  2005/10/20 20:53:14  tweety
   change in Text Size
 
@@ -261,7 +273,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 
 
   if (mydebug)
-    fprintf (stderr, "draw_text(%s,%ld,%ld)\n", txt,posx,posy);
+    fprintf (stderr, "draw_text(%s,%g,%g)\n", txt,posx,posy);
 
   gdk_gc_set_foreground (kontext, &textback);
 
@@ -303,7 +315,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
   pango_font_description_free (pfd);
   if (mydebug)
-    fprintf (stderr, " .... draw_text()\n", txt,posx,posy);
+    fprintf (stderr, " .... draw_text(%s,%g,%g)\n", txt,posx,posy);
 }
 
 /* *******************************************************

@@ -23,6 +23,18 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.19  2005/11/06 17:24:26  tweety
+  shortened map selection code
+  coordinate_string2gdouble:
+   - fixed missing format
+   - changed interface to return gdouble
+  change -D option to reflect debuglevels
+  Added more debug Statements for Level>50
+  move map handling to to seperate file
+  speedup memory reservation for map-structure
+  Add code for automatic loading of maps from system DATA/maps/.. Directory
+  changed length of mappath from 400 to 2048 chars
+
   Revision 1.18  2005/10/11 08:28:35  tweety
   gpsdrive:
   - add Tracks(MySql) displaying
@@ -745,14 +757,14 @@ streets_draw_list (void)
   gdks_streets = g_new0 (GdkSegment, gdks_streets_max);
   if (NULL == gdks_streets)
     {
-      printf ("Problem reserving Memory for %ld Street segments\n",
+      printf ("Problem reserving Memory for %d Street segments\n",
 	      gdks_streets_max);
       gdks_streets_max = -1;
       return;
     }
 
   if (debug)
-    printf ("created gdk struct for %ld segments\n", gdks_streets_max);
+    printf ("created gdk struct for %d segments\n", gdks_streets_max);
 
   /* ------------------------------------------------------------------ */
   /*  draw gdks_streets_list streets */
@@ -799,7 +811,7 @@ streets_draw_list (void)
 	      if (NULL == streets_list)
 		{
 		  g_print
-		    ("Error: Cannot allocate Memory for %ld street-gdk segments\n",
+		    ("Error: Cannot allocate Memory for %d street-gdk segments\n",
 		     gdks_streets_max);
 		  gdks_streets_max = -1;
 		  return;
@@ -909,7 +921,7 @@ streets_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 	      && (lon1 <= (streets_list + i)->lon2)
 	      && ((streets_list + i)->lon2 <= lon2)))
 	{
-	  printf ("Streets: %ld: %f,%f --> %f,%f :%s\t",
+	  printf ("Streets: %d: %f,%f --> %f,%f :%s\t",
 		  i,
 		  (streets_list + i)->lat1, (streets_list + i)->lon1,
 		  (streets_list + i)->lat2, (streets_list + i)->lon2,
