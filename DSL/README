@@ -1,0 +1,42 @@
+GPSDrive for DSL
+========================
+
+This package is intended to be installed on Damn Small Linux (DSL)
+it was constructed from the CVS files downloaded from CVS and compiled
+on Debian linux.
+
+To install on DSL First download and install the package named gtk2-0705.dsl
+using the mydsl package installer normally found on the desktop.  
+
+Then install gpsdrive.tar.gz using the mydsl button in the Emelfm file manager.
+
+Note:
+I have noticed that sometimes after installing Gpsdrive the desktop icon doesn't 
+start the application.  Installing it again seems to solve the problem.
+I have no idea why and the files don't appear any different.  It is something 
+to do with the Desktop link file /home/dsl/.xtdesktop/Gpsdrive.lnk
+
+All of the program files are installed into /opt/gpsdrive with the following
+exceptions.  If these files already exist on your copy of DSL  you may have 
+problems with other software already installed on your system. 
+None of them exist in a default build of DSL.
+
+/etc/gtk-2.0/gdk-pixbuf.loaders
+/etc/gtk-2.0/gtk.immodules
+/etc/pango/pango.modules
+/etc/pango/pangox.aliases
+
+Use the desktop icon to start the program. 
+(I know the icon is lame, feel free to build a better one)
+If you prefer to use the command line then the following should work.
+
+LD_LIBRARY_PATH=/opt/gpsdrive/lib /opt/gpsdrive/bin/gpsdrive
+
+I haven't done extensive testing but the program seems to be fully operational.
+If you find problems please post details on the GPSDrive Mailing list.
+
+David
+
+Date CVS Last updated (GMT +10)
+-------------------------------
+Wed Dec 14 08:20:18 EST 2005
