@@ -291,6 +291,6 @@ CFLAGS="$CFLAGS -Imysql"
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
 
-AC_CONFIG_FILES(Makefile src/Makefile  man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile  man/Makefile man/de/Makefile man/es/Makefile po/Makefile.in intl/Makefile scripts/Makefile)
 AC_OUTPUT
 
