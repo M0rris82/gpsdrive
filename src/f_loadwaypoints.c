@@ -5,7 +5,7 @@ loadwaypoints ()
 {
   gchar mappath[400];
   FILE *st;
-  gint i, e, p, wlan, action, sqlnr;
+  gint i, e, p, wlan, action, sqlnr, proximity;
   gchar buf[512], slat[80], slong[80], typ[40];
   struct stat buf2;
 
@@ -34,8 +34,9 @@ loadwaypoints ()
       while ((p = fgets (buf, 512, st) != 0))
 	{
 	  e =
-	    sscanf (buf, "%s %s %s %s %d %d %d\n", (wayp + i)->name, slat,
-		    slong, typ, &wlan, &action, &sqlnr);
+	    sscanf (buf, "%s %s %s %s %d %d %d %d\n",
+		    (wayp + i)->name, slat, slong, typ,
+		    &wlan, &action, &sqlnr, &proximity);
 	  (wayp + i)->lat = g_strtod (slat, NULL);
 	  (wayp + i)->longitude = g_strtod (slong, NULL);
 /*  limit waypoint name to 20 chars */
@@ -44,6 +45,7 @@ loadwaypoints ()
 	  (wayp + i)->wlan = 0;
 	  (wayp + i)->action = 0;
 	  (wayp + i)->sqlnr = -1;
+	  (wayp + i)->proximity = 0;
 
 	  if (e >= 3)
 	    {
@@ -58,7 +60,8 @@ loadwaypoints ()
 		(wayp + i)->action = action;
 	      if (e >= 7)
 		(wayp + i)->sqlnr = sqlnr;
-
+	      if (e >= 8)
+		(wayp + i)->proximity = proximity;
 
 	      if (!sqlflag)
 		{
