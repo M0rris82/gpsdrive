@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.39  2005/04/21 19:33:40  tweety
+include header files for speech_out
+
 Revision 1.38  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -1978,6 +1981,7 @@ gpsdrive started
 #include <sys/time.h>
 #include <xpm_compass.h>
 #include <errno.h>
+#include <speech_out.h>
 
 #if HAVE_LOCALE_H
 #include <locale.h>
