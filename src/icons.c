@@ -23,8 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.15  2005/08/15 12:59:34  tweety
+use gchar/g_sprintf for filename
+
 Revision 1.14  2005/08/14 18:46:42  tweety
-remove unnedded xpm Files; read pixmaps with read_icons,
+remove unnedded xpm Files; read pixmaps with read_icon,
 separate more pixmaps from icons
 
 Revision 1.13  2005/08/09 01:08:31  tweety
@@ -58,8 +61,8 @@ Revision 1.6  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
 Revision 1.5  2005/02/13 14:06:54  tweety
-start street randering functions. reading from the database streets and displayi
-ng it on the screen
+start street randering functions. reading from the database streets and
+displaying it on the screen
 improve a little bit in the sql-queries
 fixed linewidth settings in draw_cross
 
@@ -141,6 +144,7 @@ icons.c is ectracted from gpsdrive.c
 #define	MAX_ICONS	MAXWPTYPES
 
 extern gint debug;
+extern gint mydebug;
 extern gint muteflag, sqlflag, trackflag;
 extern GdkColor red;
 extern GdkColor black;
@@ -230,8 +234,6 @@ draw_small_plus_sign (gdouble posxdest, gdouble posydest)
 
 
 /* -----------------------------------------------------------------------------
-	14.07.2005 - modified by D.Hiepler
-  - added icons.txt support
 */
 int
 drawicon (gint posxdest, gint posydest, char *ic)
@@ -310,53 +312,54 @@ drawicon (gint posxdest, gint posydest, char *ic)
  * load icon into pixbuff from either system directory or user directory
 */
 GdkPixbuf *
-read_icon(char *icon_name){
-  char filename[255];
+read_icon (gchar * icon_name)
+{
+  gchar filename[255];
   GdkPixbuf *iconpixbuf;
   if (debug)
-      printf ("read Icon %s\n", (char *) &icon_name);
+    printf ("read_icon(%s)\n", icon_name);
 
   // Try complete Path
-  iconpixbuf =
-      gdk_pixbuf_new_from_file ((char *) &icon_name, NULL);
+  iconpixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
 
 
-  if (!iconpixbuf)	// Try in Homedir/pixmaps
-      {
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/pixmaps/%s",
-		    homedir, icon_name);
-	  iconpixbuf =
-	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-      }
+  if (!iconpixbuf)		// Try in Homedir/pixmaps
+    {
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/pixmaps/%s",
+		  homedir, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
 
-  if (!iconpixbuf)	// Try in DATADIR/pixmaps
-      {
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/pixmaps/%s",
-		    DATADIR, icon_name);
-	  iconpixbuf =
-	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-      }
+  if (!iconpixbuf)		// Try in DATADIR/pixmaps
+    {
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/pixmaps/%s",
+		  DATADIR, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
 
-  if (!iconpixbuf)	// Try in Homedir/icons
-      {
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
-		    homedir, icon_name);
-	  iconpixbuf =
-	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-      }
+  if (!iconpixbuf)		// Try in Homedir/icons
+    {
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
+		  homedir, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
 
-  if (!iconpixbuf)	// Try in DATADIR/icons
-      {
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
-		    DATADIR, icon_name);
-	  iconpixbuf =
-	      gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-      }
+  if (!iconpixbuf)		// Try in DATADIR/icons
+    {
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
+		  DATADIR, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
 
-  if (!iconpixbuf)	// None Found
-      {
-	  printf ("** Failed to open \"%s\"\n", (char *) &icon_name);
-      }
+  if (!iconpixbuf)		// None Found
+    {
+      printf ("** Failed to open \"%s\"\n", icon_name);
+    }
+  else
+    {
+      if (mydebug)
+	printf ("read_icon(%s) --> %s OK\n", icon_name, filename);
+    }
 
   return iconpixbuf;
 }
@@ -374,9 +377,9 @@ load_icons (void)
   int iconcounter;
 
   /* hardcoded kismet-stuff */
-  kismetpixbuf = read_icon("kismet.png");
-  openwlanpixbuf = read_icon("open.png");
-  closedwlanpixbuf =read_icon("closed.png");
+  kismetpixbuf = read_icon ("kismet.png");
+  openwlanpixbuf = read_icon ("open.png");
+  closedwlanpixbuf = read_icon ("closed.png");
 
   if (!sqlflag)
     {
@@ -388,7 +391,10 @@ load_icons (void)
 	{
 	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt",
 		    DATADIR);
-	  printf ("Trying default icons.txt: \"%s\"\n", filename);
+	  if (debug)
+	    {
+	      printf ("Trying default icons.txt: \"%s\"\n", filename);
+	    }
 	  iconfile = fopen (filename, "r");
 	}
       if (iconfile)
@@ -403,24 +409,7 @@ load_icons (void)
 	      if (debug)
 		printf ("Waypoint-type %d \"%s\" gets \"%s\"\n", iconcounter,
 			g_strup ((gchar *) & wptype), (char *) &iconpath);
-	      iconpixbuf[iconcounter] =
-		gdk_pixbuf_new_from_file ((char *) &iconpath, NULL);
-	      if (!iconpixbuf[iconcounter])	// Try in Homedir/icons
-		{
-		  char filename[255];
-		  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
-			    homedir, iconpath);
-		  iconpixbuf[iconcounter] =
-		    gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-		}
-	      if (!iconpixbuf[iconcounter])	// Try in DATADIR/icons
-		{
-		  char filename[255];
-		  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons/%s",
-			    DATADIR, iconpath);
-		  iconpixbuf[iconcounter] =
-		    gdk_pixbuf_new_from_file ((char *) &filename, NULL);
-		}
+	      iconpixbuf[iconcounter] = read_icon (iconpath);
 	      if (!iconpixbuf[iconcounter])	// None Found
 		{
 		  printf ("** Failed to open \"%s\"\n", (char *) &iconpath);
