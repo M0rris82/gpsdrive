@@ -183,3 +183,26 @@ A: top_* is scaled 1:1 So top_ is for lat/lon maps
    great-circle calculations as you need to do with lat/lon.
    For example at 45S, 1 degree lon is 0.707 of a degree lat.
 
+
+Q: if i download 5m, 500k, 50k and 5k and open gpsdrive, i get
+   the smallest map that i can not zoom out at all.
+A: If you're using automap gpsdrive alway displays the map with 
+   the smallest resolution it can find. Changing the scale 
+   has no effect while autobestmap is on.
+
+
+Q: if 'auto best map' is disabled, i sort of can choose scale at the lower
+   right corner, but i can not zoom in from the biggest view and get small
+   scale maps automatically...
+A: If autobestmap is disabled gpsdrive should select the smallest-scale map
+   greater then your suggested scale.
+   With "Pref. scale" you tell gpsdrive which scale you'd prefer to have. 
+   Then gpsdrive has a look at every map in map_koord.txt to see which map 
+   is in sight with a map-scale >= pref-scale.
+
+Q: I also can not find a way to move the map (as i can see larger area in
+   lower left hand corner...)
+A: If you click on pos-mode. You can set your Car-Position in Gpsdrive to
+   any location on the map. If your car-position is in the outer ~10% of 
+   the map gpsdrive tries to see if there is a map available which 
+   would fit better for your Position.
