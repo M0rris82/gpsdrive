@@ -109,10 +109,10 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	garmin_link.h garmin_serial_unix.h garmin_application.h \
 	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
 	garmin_util.h garmin_error.h garmin_serial.h gpssql.c \
-	gpskismet.c ../config.h icons.h garmin_legacy.h garmin_data.h \
-	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
-	talogo.h
+	gpskismet.c ../config.h icons.c icons.h garmin_legacy.h \
+	garmin_data.h gettext.h LatLong-UTMconversion.c \
+	LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c \
+	gpsmisc.c gpsproto.h talogo.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
@@ -125,7 +125,7 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT) gpssql.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpskismet.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsmisc.$(OBJEXT)
@@ -135,6 +135,7 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_TRUE@	battery.$(OBJEXT) track.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	poi.$(OBJEXT) settings.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	icons.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT)
@@ -340,15 +341,12 @@ libgpsd_a_SOURCES = netlib.c nmea_parse.c serial.c  tm.c em.c  \
 gpsd_SOURCES = gpsd.c  gpsd.h nmea.h version.h
 gpsd_LDADD = -lgpsd -lm
 gpsd_LDFLAGS = -L. 
-@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
-
-#bin_SCRIPTS=wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch
-@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-#EXTRA_DIST = mysql wpcvt wpget  gpsfetchmap.pl gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  gpspoint2gpsdrive.pl  geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh  top_GPSWORLD.jpg gpsreplay gpssmswatch gpsdriveanim.gif
 EXTRA_DIST = mysql gpsdrive.spec gpsdrive-nosql.spec map_koord.txt gpsdrivesplash.png gpsicon.png  gpsiconbt.png gpsdrivemini.png friendsicon.png  top_GPSWORLD.jpg gpsdriveanim.gif
 gpsdrivedir = $(datadir)/gpsdrive
 gpsdrive_DATA = gpsdrivesplash.png friendsicon.png top_GPSWORLD.jpg gpsdrivemini.png gpsicon.png  gpsiconbt.png gpsdriveanim.gif
@@ -493,6 +491,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsnasamap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsserial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpssql.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netlib.Po@am__quote@
