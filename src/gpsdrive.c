@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.31  2005/04/01 21:17:07  tweety
+Fix grid config bug. The grid was alway on after start
+reformatted reading of parameters
+
 Revision 1.30  2005/03/30 10:03:38  tweety
 corrected problem with sigSEG if sqlmode is off
 Added another bunch of comments
@@ -8199,8 +8203,10 @@ etch_cb (GtkWidget * widget, guint datum)
 gint
 drawgrid_cb (GtkWidget * widget, guint datum)
 {
-  drawgrid = !drawgrid;
-  needtosave = TRUE;
+  if ( datum == 1 ) {
+    drawgrid = !drawgrid;
+    needtosave = TRUE;
+  }
   return TRUE;
 }
 
