@@ -102,23 +102,24 @@ am_gpsd_OBJECTS = gpsd.$(OBJEXT)
 gpsd_OBJECTS = $(am_gpsd_OBJECTS)
 gpsd_DEPENDENCIES =
 am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
-	speech_out.c friends.c battery.c track.c poi.c settings.c \
-	power.h battery.h track.h poi.h gpsdrive.h garmin_data.cpp \
-	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
-	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
-	garmin_link.h garmin_serial_unix.h garmin_application.h \
-	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
-	garmin_util.h garmin_error.h garmin_serial.h gpssql.c \
-	gpskismet.c ../config.h icons.c icons.h garmin_legacy.h \
-	garmin_data.h gettext.h LatLong-UTMconversion.c \
-	LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c \
-	gpsmisc.c gpsproto.h talogo.h
+	speech_out.c friends.c battery.c track.c poi.c streets.c \
+	settings.c power.h battery.h track.h poi.h streets.h \
+	gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp \
+	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
+	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
+	garmin_serial_unix.h garmin_application.h garmin_packet.h \
+	garmin_types.h garmin_command.h garmin_phys.h garmin_util.h \
+	garmin_error.h garmin_serial.h gpssql.c gpskismet.c \
+	../config.h icons.c icons.h garmin_legacy.h garmin_data.h \
+	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
+	compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h \
+	talogo.h
 @DISABLEGARMIN_FALSE@am__objects_1 = gpsdrive.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	battery.$(OBJEXT) track.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	poi.$(OBJEXT) settings.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_data.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	poi.$(OBJEXT) streets.$(OBJEXT) \
+@DISABLEGARMIN_FALSE@	settings.$(OBJEXT) garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
@@ -133,9 +134,9 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_TRUE@	splash.$(OBJEXT) navigation.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	speech_out.$(OBJEXT) friends.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	battery.$(OBJEXT) track.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	poi.$(OBJEXT) settings.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
-@DISABLEGARMIN_TRUE@	icons.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	poi.$(OBJEXT) streets.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	settings.$(OBJEXT) gpssql.$(OBJEXT) \
+@DISABLEGARMIN_TRUE@	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	LatLong-UTMconversion.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) \
 @DISABLEGARMIN_TRUE@	gpsmisc.$(OBJEXT)
@@ -341,8 +342,8 @@ libgpsd_a_SOURCES = netlib.c nmea_parse.c serial.c  tm.c em.c  \
 gpsd_SOURCES = gpsd.c  gpsd.h nmea.h version.h
 gpsd_LDADD = -lgpsd -lm
 gpsd_LDFLAGS = -L. 
-@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
-@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c settings.c  power.h battery.h track.h poi.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+@DISABLEGARMIN_FALSE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h    garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h gpssql.c gpskismet.c ../config.h icons.c icons.h garmin_legacy.h garmin_data.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
+@DISABLEGARMIN_TRUE@PRGS = gpsdrive.c splash.c navigation.c speech_out.c friends.c battery.c track.c poi.c streets.c settings.c  power.h battery.h track.h poi.h streets.h gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h compass.h gpsserial.c gpsnasamap.c gpsmisc.c gpsproto.h talogo.h
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
 friendsd2_SOURCES = friendsd.c
@@ -501,6 +502,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splash.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/track.Po@am__quote@
 
