@@ -5,6 +5,10 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.9  2005/04/06 06:39:10  tweety
+# po.pl get new import method JiGLE for importing JiGLE WLAN Spots
+# update TODO
+#
 # Revision 1.8  2005/02/22 08:18:51  tweety
 # change leveing system to simpler scale marking for decission what to show on display
 # column_names(DBFuncs.pm get data from Database
@@ -74,6 +78,7 @@ use POI::Utils;
 use POI::census;
 use POI::GpsDrive;
 use POI::Kismet;
+use POI::JiGLE;
 
 my ($man,$help);
 
@@ -92,6 +97,8 @@ my $do_all               = 0;
 my $do_create_db         = 0;
 my $do_gpsdrive_tracks   = 0;
 my $do_kismet_tracks     = 0;
+my $do_jigle             = 0;
+
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
 our $db_user             = 'gast';
@@ -110,6 +117,7 @@ GetOptions (
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
 	     'kismet-tracks=s'     => \$do_kismet_tracks,
+	     'jigle=s'     	   => \$do_jigle,
 	     'create-db'           => \$do_create_db,
 	     'all'                 => \$do_all,
 	     'debug'               => \$debug,      
@@ -132,13 +140,14 @@ GetOptions (
     or pod2usage(1);
 
 if ( $do_all ) {
-    $do_create_db 
-	= $do_census 
-	= $do_earthinfo_nga_mil 
-	= $do_opengeodb 
+    $do_create_db
+	= $do_census
+	= $do_earthinfo_nga_mil
+	= $do_opengeodb
 	= $do_wdb
 	= $do_gpsdrive_tracks
-	= $do_cameras   
+	= $do_cameras
+	= $do_jigle
 	= 1;
 }
 
@@ -193,6 +202,10 @@ POI::GpsDrive::import_Data()
 POI::Kismet::import_Data($do_kismet_tracks) 
     if ( $do_kismet_tracks );
 
+# extract WLAN Points from JiGLE Data
+POI::JiGLE::import_Data($do_jigle) 
+    if ( $do_jigle );
+
 
 __END__
 
@@ -211,11 +224,17 @@ can already be retrieved with it.
 
 So: Have Fun, improve it and send me fixes :-))
 
+WARNING: 
+    This programm replaces some/all waypoints of desire. 
+    So any changes made to the database may be overwritten!!!
+    If you have any self collected/changed Data do a backup first!!
+
+
 =head1 SYNOPSIS
 
 B<Common usages:>
 
-poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil>]
+poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb] [--mapsource_points='Filename']
 
 =head1 OPTIONS
 
@@ -253,7 +272,7 @@ This Database has about 20003 entries from German Towns
 
 World Database
 
-Download and import WDB Data
+Download and import WDB Data into geoinfo.streets Table
 
 These data consists of Country Borders and Waterlines
 
@@ -269,8 +288,10 @@ Download is ~30 MB
 
 =item B<--create-db>
 
-Try creating the tables inside the geodata database
-
+Try creating the tables inside the geoinfo database. 
+This also fills the database with some predefined types.
+and imports wour way*.txt Files.
+This also creates and modified the old waypoints table.
 
 =item B<--all>
 
@@ -289,6 +310,13 @@ and insert into  streets DB
 Read all Kismet .gps Files in directory, extract the Tracks
 and insert them into streets DB
 
+
+=item B<--jigle=Directory>
+
+Read all jigle Files in directory, extract the Wavelan points
+and insert them into POI DB
+
+See http://www.wigle.net/
 
 
 =item B<--lat_min --lat_max --lon_min --lon_max>

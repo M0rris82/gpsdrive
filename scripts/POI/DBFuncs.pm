@@ -42,12 +42,13 @@ END { }
 
 # -----------------------------------------------------------------------------
 # switch off updating of index
-sub disble_keys($){
+sub disble_keys(){    
     db_exec("DISABLE KEYS;");
 }
 
+# -----------------------------------------------------------------------------
 # switch on updating of index
-sub enable_keys($){
+sub enable_keys(){
     db_exec("ENABLE KEYS;");
 }
 
@@ -225,7 +226,7 @@ sub poi_type_name2id($){
 	$sth->finish;
     }
 
-#    debug("Type: $type_name -> $poi_type_id");
+    debug("Type: $type_name -> $poi_type_id");
 
     return $poi_type_id;
 }
@@ -898,6 +899,9 @@ sub create_db(){
 			    de.Uernachtung.Zeltplatz
 			    de.Verwaltung.Rathaus
 			    de.Verwaltung.Zulassungsstele
+			    de.W-LAN.Oeffentlich
+			    de.W-LAN.Offen
+			    de.W-LAN.WEP
 			    de.WC
 			    );
 
