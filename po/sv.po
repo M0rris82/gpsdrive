@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-30 15:26+0200\n"
+"POT-Creation-Date: 2005-05-16 21:21+0200\n"
 "PO-Revision-Date: 2004-01-25 00:27+0100\n"
 "Last-Translator: Fritz Ganter <ganter@ganter.at>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -49,7 +49,7 @@ msgstr "maximal vertikal avvikelse "
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr "stäng av varning för vertikal avvikelse över 5000 fot MSL"
 
-#: src/friends.c:373 src/gpsdrive.c:9312
+#: src/friends.c:373 src/gpsdrive.c:9178
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "Välj en spårfil"
@@ -73,89 +73,89 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:2362
+#: src/gpsdrive.c:2366
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:2363
+#: src/gpsdrive.c:2367
 msgid "/_Misc. Menu/Maps"
 msgstr ""
 
-#: src/gpsdrive.c:2364
+#: src/gpsdrive.c:2368
 #, fuzzy
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr "i    : importera karta\n"
 
-#: src/gpsdrive.c:2368
+#: src/gpsdrive.c:2372
 msgid "/_Misc. Menu/Maps/_Map Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2370
+#: src/gpsdrive.c:2374
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2372
+#: src/gpsdrive.c:2376
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:2376
+#: src/gpsdrive.c:2380
 #, fuzzy
 msgid "/_Misc. Menu/Messages"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:2377
+#: src/gpsdrive.c:2381
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:2382
+#: src/gpsdrive.c:2386
 msgid "/_Misc. Menu/Help"
 msgstr ""
 
-#: src/gpsdrive.c:2383
+#: src/gpsdrive.c:2387
 msgid "/_Misc. Menu/Help/About"
 msgstr ""
 
-#: src/gpsdrive.c:2385
+#: src/gpsdrive.c:2389
 msgid "/_Misc. Menu/Help/Topics"
 msgstr ""
 
-#: src/gpsdrive.c:2468
+#: src/gpsdrive.c:2472
 msgid "  Message  "
 msgstr "  Meddelande  "
 
-#: src/gpsdrive.c:2518 src/gpsdrive.c:13224
+#: src/gpsdrive.c:2522 src/gpsdrive.c:13077
 #, fuzzy
 msgid "Stop GPSD"
 msgstr "Starta GPSD"
 
-#: src/gpsdrive.c:2521 src/gpsdrive.c:13227
+#: src/gpsdrive.c:2525 src/gpsdrive.c:13080
 #, fuzzy
 msgid "Stop GPSD and switch to simulation mode"
 msgstr "p    : växla till positionsläge\n"
 
 #. Checkbox ---- Start GPSD
-#: src/gpsdrive.c:2545 src/gpsdrive.c:12190
+#: src/gpsdrive.c:2549 src/gpsdrive.c:12055
 msgid "Start GPSD"
 msgstr "Starta GPSD"
 
-#: src/gpsdrive.c:2547 src/gpsdrive.c:13233
+#: src/gpsdrive.c:2551 src/gpsdrive.c:13086
 msgid "Starts GPSD for NMEA mode"
 msgstr "Startar GPSD för NMEA-läge"
 
 #. displays zoom factor of map
-#: src/gpsdrive.c:2562 src/gpsdrive.c:2563 src/gpsdrive.c:2564
-#: src/gpsdrive.c:7192 src/gpsdrive.c:7202 src/gpsdrive.c:12427
-#: src/gpsdrive.c:12434 src/gpsdrive.c:12441 src/gpsdrive.c:12507
-#: src/gpsdrive.c:12512 src/gpsdrive.c:12518 src/gpsdrive.c:12554
-#: src/gpsdrive.c:12561 src/settings.c:1577 src/settings.c:1586
+#: src/gpsdrive.c:2566 src/gpsdrive.c:2567 src/gpsdrive.c:2568
+#: src/gpsdrive.c:7068 src/gpsdrive.c:7078 src/gpsdrive.c:12280
+#: src/gpsdrive.c:12287 src/gpsdrive.c:12294 src/gpsdrive.c:12360
+#: src/gpsdrive.c:12365 src/gpsdrive.c:12371 src/gpsdrive.c:12407
+#: src/gpsdrive.c:12414 src/settings.c:1577 src/settings.c:1586
 #: src/settings.c:1595 src/settings.c:1622 src/settings.c:1634
 #: src/settings.c:1645 src/settings.c:1658 src/settings.c:1669
 #: src/settings.c:1681
 msgid "n/a"
 msgstr "-"
 
-#: src/gpsdrive.c:2578 src/gpsdrive.c:11106
+#: src/gpsdrive.c:2582 src/gpsdrive.c:10971
 msgid ""
 "\n"
 "no garmin support compiled in\n"
@@ -163,64 +163,64 @@ msgstr ""
 "\n"
 "inget garmin-stöd inkompilerat\n"
 
-#: src/gpsdrive.c:2599 src/gpsdrive.c:3458
+#: src/gpsdrive.c:2603 src/gpsdrive.c:3462
 msgid "Simulation mode"
 msgstr "Simuleringsläge"
 
-#: src/gpsdrive.c:2623
+#: src/gpsdrive.c:2627
 msgid "gpsd: got RMC data, using it\n"
 msgstr ""
 
-#: src/gpsdrive.c:2754 src/gpsdrive.c:12981 src/gpsdrive.c:12997
+#: src/gpsdrive.c:2758 src/gpsdrive.c:12834 src/gpsdrive.c:12850
 msgid "Map"
 msgstr "Karta"
 
-#: src/gpsdrive.c:3213
+#: src/gpsdrive.c:3217
 msgid "Timeout getting data from GPS-Receiver!"
 msgstr "Gjorde time-out vid väntan på data från GPS-mottagaren!"
 
-#: src/gpsdrive.c:3265 src/gpsdrive.c:3322 src/gpsdrive.c:3436
-#: src/gpsdrive.c:3531 src/gpsdrive.c:3664
+#: src/gpsdrive.c:3269 src/gpsdrive.c:3326 src/gpsdrive.c:3440
+#: src/gpsdrive.c:3535 src/gpsdrive.c:3668
 msgid "Press middle mouse button for navigation"
 msgstr "Tryck på mittenknappen på musen för navigering"
 
-#: src/gpsdrive.c:3271
+#: src/gpsdrive.c:3275
 #, fuzzy, c-format
 msgid "Direct serial connection to %s"
 msgstr "Ansluter till %s"
 
-#: src/gpsdrive.c:3328 src/gpsdrive.c:3362 src/gpsdrive.c:3539
-#: src/gpsdrive.c:3672
+#: src/gpsdrive.c:3332 src/gpsdrive.c:3366 src/gpsdrive.c:3543
+#: src/gpsdrive.c:3676
 msgid "Not enough satellites in view!"
 msgstr "Inte tillräckligt många satelliter i sikte!"
 
-#: src/gpsdrive.c:3440
+#: src/gpsdrive.c:3444
 msgid "GARMIN Mode"
 msgstr "GARMIN-läge"
 
-#: src/gpsdrive.c:3456
+#: src/gpsdrive.c:3460
 msgid "No GPS used"
 msgstr "Ingen GPS används"
 
-#: src/gpsdrive.c:3461
+#: src/gpsdrive.c:3465
 msgid "Press middle mouse button for sim mode"
 msgstr "Tryck på mittenknappen på musen för simuleringsläge"
 
-#: src/gpsdrive.c:3839
+#: src/gpsdrive.c:3843
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr ""
 
-#: src/gpsdrive.c:3930 src/gpsdrive.c:4215 src/gpsdrive.c:7601
-#: src/gpsdrive.c:9245 src/import_map.c:783
+#: src/gpsdrive.c:3934 src/gpsdrive.c:4200 src/gpsdrive.c:7477
+#: src/gpsdrive.c:9121 src/import_map.c:783
 msgid "To"
 msgstr ""
 
-#: src/gpsdrive.c:4310
+#: src/gpsdrive.c:4285
 msgid "Error in line "
 msgstr "Fel på rad "
 
-#: src/gpsdrive.c:4312
+#: src/gpsdrive.c:4287
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -232,35 +232,35 @@ msgstr ""
 "map_koord.txt. Använd map_* för vägkartor och top_* för topografiska\n"
 "kartor. Annars kommer inte kartorna visas!"
 
-#: src/gpsdrive.c:4706
+#: src/gpsdrive.c:4631
 msgid "Auto"
 msgstr "Auto"
 
-#: src/gpsdrive.c:4966
+#: src/gpsdrive.c:4891
 #, fuzzy
 msgid "Warning!"
 msgstr "Riktning"
 
-#: src/gpsdrive.c:4968
+#: src/gpsdrive.c:4893
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:5263 src/gpsdrive.c:8746 src/gpsdrive.c:8756
-#: src/gpsdrive.c:12613 src/gpsdrive.c:12623
+#: src/gpsdrive.c:5188 src/gpsdrive.c:8622 src/gpsdrive.c:8632
+#: src/gpsdrive.c:12466 src/gpsdrive.c:12476
 msgid "mi/h"
 msgstr "eng. mil/h"
 
-#: src/gpsdrive.c:5266 src/gpsdrive.c:8748 src/gpsdrive.c:8759
-#: src/gpsdrive.c:12615 src/gpsdrive.c:12626
+#: src/gpsdrive.c:5191 src/gpsdrive.c:8624 src/gpsdrive.c:8635
+#: src/gpsdrive.c:12468 src/gpsdrive.c:12479
 msgid "knots"
 msgstr "knop"
 
-#: src/gpsdrive.c:5269 src/gpsdrive.c:8750 src/gpsdrive.c:8762
-#: src/gpsdrive.c:12617 src/gpsdrive.c:12629
+#: src/gpsdrive.c:5194 src/gpsdrive.c:8626 src/gpsdrive.c:8638
+#: src/gpsdrive.c:12470 src/gpsdrive.c:12482
 msgid "km/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:5654
+#: src/gpsdrive.c:5530
 #, c-format
 msgid ""
 "\n"
@@ -271,82 +271,82 @@ msgid ""
 msgstr ""
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:6803
+#: src/gpsdrive.c:6679
 msgid "NESW"
 msgstr "NÖSV"
 
-#: src/gpsdrive.c:6987
+#: src/gpsdrive.c:6863
 msgid "No map available for this position!"
 msgstr "Ingen karta tillgänglig för den här positionen!"
 
-#: src/gpsdrive.c:7186
+#: src/gpsdrive.c:7062
 #, fuzzy
 msgid "unused"
 msgstr "Solnedgång"
 
-#: src/gpsdrive.c:7297
+#: src/gpsdrive.c:7173
 msgid "can't open NMEA output file"
 msgstr "kan inte öppna NMEA-utdatafil"
 
-#: src/gpsdrive.c:7425
+#: src/gpsdrive.c:7301
 msgid " Mapfile could not be loaded:"
 msgstr " Kartfilen kunde inte laddas:"
 
-#: src/gpsdrive.c:7472
+#: src/gpsdrive.c:7348
 msgid "Map found!"
 msgstr ""
 
-#: src/gpsdrive.c:7770
+#: src/gpsdrive.c:7646
 msgid "Select coordinates and scale"
 msgstr "Välj koordinater och skala"
 
-#: src/gpsdrive.c:7773
+#: src/gpsdrive.c:7649
 msgid "Download map"
 msgstr "Hämta karta"
 
-#: src/gpsdrive.c:7801 src/gpsdrive.c:9952 src/gpsdrive.c:10259
-#: src/gpsdrive.c:10343 src/gpsdrive.c:10518 src/gpsdrive.c:12778
+#: src/gpsdrive.c:7677 src/gpsdrive.c:9817 src/gpsdrive.c:10124
+#: src/gpsdrive.c:10208 src/gpsdrive.c:10383 src/gpsdrive.c:12631
 #: src/import_map.c:362
 msgid "Latitude"
 msgstr "Latitud"
 
-#: src/gpsdrive.c:7803 src/gpsdrive.c:9932 src/gpsdrive.c:10259
-#: src/gpsdrive.c:10343 src/gpsdrive.c:10518 src/gpsdrive.c:12779
+#: src/gpsdrive.c:7679 src/gpsdrive.c:9797 src/gpsdrive.c:10124
+#: src/gpsdrive.c:10208 src/gpsdrive.c:10383 src/gpsdrive.c:12632
 #: src/import_map.c:364
 msgid "Longitude"
 msgstr "Longitud"
 
-#: src/gpsdrive.c:7805
+#: src/gpsdrive.c:7681
 msgid "Map covers"
 msgstr "Kartomslag"
 
-#: src/gpsdrive.c:7809 src/import_map.c:373
+#: src/gpsdrive.c:7685 src/import_map.c:373
 msgid "Scale"
 msgstr "Skala"
 
-#: src/gpsdrive.c:7811
+#: src/gpsdrive.c:7687
 msgid "Map file name"
 msgstr "Kartfilnamn"
 
-#: src/gpsdrive.c:7853 src/settings.c:1080
+#: src/gpsdrive.c:7729 src/settings.c:1080
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/gpsdrive.c:7859 src/settings.c:1086
+#: src/gpsdrive.c:7735 src/settings.c:1086
 msgid "Expedia USA"
 msgstr ""
 
-#: src/gpsdrive.c:7870
+#: src/gpsdrive.c:7746
 msgid ""
 "If selected, you download the map from the german expedia server (expedia.de)"
 msgstr ""
 
-#: src/gpsdrive.c:7874
+#: src/gpsdrive.c:7750
 msgid ""
 "If selected, you download the map from the U.S. expedia server (expedia.com)"
 msgstr ""
 
-#: src/gpsdrive.c:7900 src/gpsdrive.c:7904
+#: src/gpsdrive.c:7776 src/gpsdrive.c:7780
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -354,171 +354,171 @@ msgstr ""
 "Du kan också välja positionen\n"
 "med ett musklick på kartan."
 
-#: src/gpsdrive.c:7906
+#: src/gpsdrive.c:7782
 msgid "Using Proxy and port:"
 msgstr "Använder proxyserver och port:"
 
-#: src/gpsdrive.c:8185 src/gpsdrive.c:8314
+#: src/gpsdrive.c:8061 src/gpsdrive.c:8190
 msgid "can't open socket for port 80"
 msgstr "kan inte öppna uttag (socket) för port 80"
 
-#: src/gpsdrive.c:8188 src/gpsdrive.c:8192 src/gpsdrive.c:8219
-#: src/gpsdrive.c:8223 src/gpsdrive.c:8239 src/gpsdrive.c:8243
-#: src/gpsdrive.c:8317 src/gpsdrive.c:8322 src/gpsdrive.c:8326
-#: src/gpsdrive.c:8363 src/gpsdrive.c:8368 src/gpsdrive.c:8372
-#: src/gpsdrive.c:8390 src/gpsdrive.c:8395 src/gpsdrive.c:8399
+#: src/gpsdrive.c:8064 src/gpsdrive.c:8068 src/gpsdrive.c:8095
+#: src/gpsdrive.c:8099 src/gpsdrive.c:8115 src/gpsdrive.c:8119
+#: src/gpsdrive.c:8193 src/gpsdrive.c:8198 src/gpsdrive.c:8202
+#: src/gpsdrive.c:8239 src/gpsdrive.c:8244 src/gpsdrive.c:8248
+#: src/gpsdrive.c:8266 src/gpsdrive.c:8271 src/gpsdrive.c:8275
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Anslutning till %s MISSLYCKADES!"
 
-#: src/gpsdrive.c:8216 src/gpsdrive.c:8360
+#: src/gpsdrive.c:8092 src/gpsdrive.c:8236
 msgid "Can't resolve webserver address"
 msgstr "Kan inte slå upp webbserverns adress"
 
-#: src/gpsdrive.c:8236 src/gpsdrive.c:8387
+#: src/gpsdrive.c:8112 src/gpsdrive.c:8263
 msgid "unable to connect to Website"
 msgstr "kunde inte ansluta till webbplatsen"
 
-#: src/gpsdrive.c:8266 src/gpsdrive.c:8460
+#: src/gpsdrive.c:8142 src/gpsdrive.c:8336
 msgid "read from Webserver"
 msgstr "läsning från webbserver"
 
-#: src/gpsdrive.c:8295 src/gpsdrive.c:8300 src/gpsdrive.c:8303
+#: src/gpsdrive.c:8171 src/gpsdrive.c:8176 src/gpsdrive.c:8179
 #, c-format
 msgid "Connecting to %s"
 msgstr "Ansluter till %s"
 
-#: src/gpsdrive.c:8415 src/gpsdrive.c:8421 src/gpsdrive.c:8424
+#: src/gpsdrive.c:8291 src/gpsdrive.c:8297 src/gpsdrive.c:8300
 #, c-format
 msgid "Now connected to %s"
 msgstr "Ansluten till %s"
 
-#: src/gpsdrive.c:8508
+#: src/gpsdrive.c:8384
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "Hämtade %d kilobyte"
 
-#: src/gpsdrive.c:8524
+#: src/gpsdrive.c:8400
 msgid "Download FAILED!"
 msgstr "Hämtning MISSLYCKADES!"
 
-#: src/gpsdrive.c:8527
+#: src/gpsdrive.c:8403
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "Hämtning klar, fick %d kB"
 
-#: src/gpsdrive.c:8640
+#: src/gpsdrive.c:8516
 msgid "GpsDrive Control"
 msgstr "GpsDrive-meny"
 
-#: src/gpsdrive.c:8755 src/gpsdrive.c:8758 src/gpsdrive.c:8761
-#: src/gpsdrive.c:12622 src/gpsdrive.c:12625 src/gpsdrive.c:12628
+#: src/gpsdrive.c:8631 src/gpsdrive.c:8634 src/gpsdrive.c:8637
+#: src/gpsdrive.c:12475 src/gpsdrive.c:12478 src/gpsdrive.c:12481
 #: src/settings.c:1150
 msgid "Speed"
 msgstr "Fart"
 
-#: src/gpsdrive.c:9021
+#: src/gpsdrive.c:8897
 #, c-format
 msgid "distance jump is more then 1000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:9315
+#: src/gpsdrive.c:9181
 msgid "Sending message to friends server..."
 msgstr ""
 
-#: src/gpsdrive.c:9394
+#: src/gpsdrive.c:9260
 #, fuzzy
 msgid "Message for:"
 msgstr "  Meddelande  "
 
-#: src/gpsdrive.c:9436
+#: src/gpsdrive.c:9302
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:9449
+#: src/gpsdrive.c:9315
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:9857
+#: src/gpsdrive.c:9722
 msgid "Add waypoint name"
 msgstr "Lägg till vägpunktsnamn"
 
-#: src/gpsdrive.c:9867
+#: src/gpsdrive.c:9732
 msgid " Waypoint name: "
 msgstr " Vägpunktsnamn: "
 
-#: src/gpsdrive.c:9913
+#: src/gpsdrive.c:9778
 #, fuzzy
 msgid " Waypoint type: "
 msgstr " Vägpunktsnamn: "
 
-#: src/gpsdrive.c:10259
+#: src/gpsdrive.c:10124
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:10259 src/gpsdrive.c:10343 src/gpsdrive.c:10518
+#: src/gpsdrive.c:10124 src/gpsdrive.c:10208 src/gpsdrive.c:10383
 #: src/settings.c:1143
 msgid "Distance"
 msgstr "Avstånd"
 
-#: src/gpsdrive.c:10270
+#: src/gpsdrive.c:10135
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Välj din destination"
 
-#: src/gpsdrive.c:10343 src/gpsdrive.c:10518
+#: src/gpsdrive.c:10208 src/gpsdrive.c:10383
 msgid "Waypoint"
 msgstr "Vägpunkt"
 
-#: src/gpsdrive.c:10364
+#: src/gpsdrive.c:10229
 msgid "Select reference point"
 msgstr "Välj referenspunkt"
 
-#: src/gpsdrive.c:10368
+#: src/gpsdrive.c:10233
 msgid "Please select your destination"
 msgstr "Välj din destination"
 
-#: src/gpsdrive.c:10400
+#: src/gpsdrive.c:10265
 msgid "Edit route"
 msgstr "Ändra rutt"
 
-#: src/gpsdrive.c:10403
+#: src/gpsdrive.c:10268
 msgid "Create route"
 msgstr "Skapa rutt"
 
-#: src/gpsdrive.c:10495
+#: src/gpsdrive.c:10360
 msgid "Create a route using some waypoints from this list"
 msgstr "Skapa en rutt med några vägpunkter från den här listan"
 
-#: src/gpsdrive.c:10500
+#: src/gpsdrive.c:10365
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Ta bort den valda vägpunkten från vägpunktslistan"
 
-#: src/gpsdrive.c:10504
+#: src/gpsdrive.c:10369
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
 "Klicka på listelement\n"
 "för att välja nästa vägpunkt"
 
-#: src/gpsdrive.c:10533
+#: src/gpsdrive.c:10398
 msgid "Define route"
 msgstr "Definiera rutt"
 
-#: src/gpsdrive.c:10541
+#: src/gpsdrive.c:10406
 msgid "Start route"
 msgstr "Starta rutt"
 
-#: src/gpsdrive.c:10550
+#: src/gpsdrive.c:10415
 msgid "Take all WP as route"
 msgstr "Ta alla VP som rutt"
 
-#: src/gpsdrive.c:10555
+#: src/gpsdrive.c:10420
 msgid "Abort route"
 msgstr "Avbryt rutt"
 
-#: src/gpsdrive.c:10615
+#: src/gpsdrive.c:10480
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -526,7 +526,7 @@ msgstr ""
 "Klicka på vägpunktslistan\n"
 "för att lägga till vägpunkter"
 
-#: src/gpsdrive.c:10618
+#: src/gpsdrive.c:10483
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -534,14 +534,14 @@ msgstr ""
 "Klicka på listelement\n"
 "för att välja nästa vägpunkt"
 
-#: src/gpsdrive.c:10666
+#: src/gpsdrive.c:10531
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 "Skapa en rutt från alla vägpunkter. Sorterad efter ordningen i filen, inte "
 "avstånd."
 
-#: src/gpsdrive.c:10670
+#: src/gpsdrive.c:10535
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
@@ -549,48 +549,48 @@ msgstr ""
 "Klicka här för att påbörja din resa. GpsDrive leder dig genom vägpunkterna i "
 "den här listan."
 
-#: src/gpsdrive.c:10673
+#: src/gpsdrive.c:10538
 msgid "Abort your journey"
 msgstr "Avbryt din resa"
 
-#: src/gpsdrive.c:10691
+#: src/gpsdrive.c:10556
 msgid "-v    show version\n"
 msgstr "-v    visa version\n"
 
-#: src/gpsdrive.c:10692
+#: src/gpsdrive.c:10557
 msgid "-h    print this help\n"
 msgstr "-h    visa denna hjälptext\n"
 
-#: src/gpsdrive.c:10693
+#: src/gpsdrive.c:10558
 msgid "-d    turn on debug info\n"
 msgstr "-d    sätt på felsökningsinformation\n"
 
-#: src/gpsdrive.c:10694
+#: src/gpsdrive.c:10559
 msgid "-D    turn on lot of debug info\n"
 msgstr "-D    sätt på mycket felsökningsinformation\n"
 
-#: src/gpsdrive.c:10695
+#: src/gpsdrive.c:10560
 msgid "-e    use Festival-Lite (flite) for speech output\n"
 msgstr "-e    använd Festival-Lite (flite) för textuppläsning\n"
 
-#: src/gpsdrive.c:10696
+#: src/gpsdrive.c:10561
 msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    sätt seriell port för GPS t.ex. /dev/ttyS1\n"
 
-#: src/gpsdrive.c:10698
+#: src/gpsdrive.c:10563
 msgid "-o    serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    seriell enhet, pty-master, eller fil för NMEA-*utdata*\n"
 
-#: src/gpsdrive.c:10700
+#: src/gpsdrive.c:10565
 #, fuzzy
 msgid "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Välj kompisserver, X är t.ex. linux.quant-x.at\n"
 
-#: src/gpsdrive.c:10701
+#: src/gpsdrive.c:10566
 msgid "-n    Disable use of direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:10702
+#: src/gpsdrive.c:10567
 msgid ""
 "-l X  Select language of the voice,\n"
 "      X may be english, spanish or german\n"
@@ -599,7 +599,7 @@ msgstr ""
 "      X kan vara \"english\" (engelska), \"spanish\" (spanska) eller\n"
 "      \"german\" (tyska)\n"
 
-#: src/gpsdrive.c:10704
+#: src/gpsdrive.c:10569
 msgid ""
 "-s X  set height of the screen, if autodetection\n"
 "      don't satisfy you, X is i.e. 768,600,480,200\n"
@@ -608,66 +608,66 @@ msgstr ""
 "      inte duger. X är t.ex. 768,600,480,200\n"
 
 #. ** Mod by Arms
-#: src/gpsdrive.c:10707
+#: src/gpsdrive.c:10572
 msgid "-r X  set width of the screen, only with -s\n"
 msgstr "-r X  sätt skärmbredd, bara med -s\n"
 
-#: src/gpsdrive.c:10709
+#: src/gpsdrive.c:10574
 msgid "-1    have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    bara enknappsmus, t.ex. för touchscreen\n"
 
-#: src/gpsdrive.c:10710
+#: src/gpsdrive.c:10575
 msgid "-a    don't display battery status (i.e. broken APM)\n"
 msgstr "-a    visa inte batteristatus (t.ex. trasig APM)\n"
 
-#: src/gpsdrive.c:10712
+#: src/gpsdrive.c:10577
 msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr "-b X  Värdnamn för NMEA-server (om gpsd kör på en annan värd)\n"
 
-#: src/gpsdrive.c:10714
+#: src/gpsdrive.c:10579
 msgid "-c X  set start position in simulation mode to waypoint name X\n"
 msgstr ""
 "-c X  sätt startpositionen i simuleringsläge till vägpunkten med namn X\n"
 
-#: src/gpsdrive.c:10715
+#: src/gpsdrive.c:10580
 msgid "-x    create separate window for menu\n"
 msgstr "-x    skapa separat fönster för meny\n"
 
-#: src/gpsdrive.c:10716
+#: src/gpsdrive.c:10581
 msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
 msgstr "-p    sätt inställningar för handdator (iPAQ, Yopy...)\n"
 
-#: src/gpsdrive.c:10718
+#: src/gpsdrive.c:10583
 msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 "-i    ignorera NMEA-kontrollsumman (farligt, bara för trasiga GPS-"
 "mottagare)\n"
 
-#: src/gpsdrive.c:10719
+#: src/gpsdrive.c:10584
 msgid "-q    disable SQL support\n"
 msgstr ""
 
-#: src/gpsdrive.c:10720
+#: src/gpsdrive.c:10585
 msgid "-F    force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:10721
+#: src/gpsdrive.c:10586
 msgid "-S    don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:10723
+#: src/gpsdrive.c:10588
 msgid "-E    print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:10725
+#: src/gpsdrive.c:10590
 msgid "-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:10726
+#: src/gpsdrive.c:10591
 msgid "-H X  correct altitude, adding this value to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:10727
+#: src/gpsdrive.c:10592
 msgid ""
 "-z    don't display zoom factor and scale\n"
 "\n"
@@ -675,30 +675,30 @@ msgstr ""
 "-z    visa inte zoomfaktor och skala\n"
 "\n"
 
-#: src/gpsdrive.c:10838
+#: src/gpsdrive.c:10703
 msgid "Select a track file"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:11029 src/gpskismet.c:450
+#: src/gpsdrive.c:10894 src/gpskismet.c:425
 msgid "can't open socket for port "
 msgstr "kan inte öppna uttag (socket) för port "
 
-#: src/gpsdrive.c:11053
+#: src/gpsdrive.c:10918
 #, c-format
 msgid ""
 "\n"
 "Cannot connect to %s: unknown host\n"
 msgstr ""
 
-#: src/gpsdrive.c:11079
+#: src/gpsdrive.c:10944
 msgid "NMEA Mode, Port 2222"
 msgstr "NMEA-läge, port 2222"
 
-#: src/gpsdrive.c:11089
+#: src/gpsdrive.c:10954
 msgid "NMEA Mode, Port 2947"
 msgstr "NMEA-läge, port 2947"
 
-#: src/gpsdrive.c:11110
+#: src/gpsdrive.c:10975
 msgid ""
 "\n"
 "Garmin protocol detection disabled!\n"
@@ -706,21 +706,21 @@ msgstr ""
 "\n"
 "Igenkänning av Garminprotokoll avstängt!\n"
 
-#: src/gpsdrive.c:11519
+#: src/gpsdrive.c:11384
 #, c-format
 msgid ""
 "\n"
 "libmysqlclient.so not found.\n"
 msgstr ""
 
-#: src/gpsdrive.c:11525
+#: src/gpsdrive.c:11390
 #, c-format
 msgid ""
 "\n"
 "MySQL support disabled.\n"
 msgstr ""
 
-#: src/gpsdrive.c:11706
+#: src/gpsdrive.c:11571
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -731,12 +731,12 @@ msgstr ""
 "\"german\" (tyska)\n"
 "\n"
 
-#: src/gpsdrive.c:11739 src/settings.c:1919
+#: src/gpsdrive.c:11604 src/settings.c:1919
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Gränssnitt"
 
-#: src/gpsdrive.c:11770
+#: src/gpsdrive.c:11635
 #, c-format
 msgid ""
 "\n"
@@ -745,7 +745,7 @@ msgstr ""
 "\n"
 "Använder proxyserver: %s på port %d"
 
-#: src/gpsdrive.c:11776
+#: src/gpsdrive.c:11641
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
@@ -755,42 +755,42 @@ msgstr ""
 "Ogiltig miljövariabel HTTP_PROXY, måste vara på formatet http://proxy."
 "leverantör.se:3128"
 
-#: src/gpsdrive.c:11960
+#: src/gpsdrive.c:11825
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
 msgstr "© 2001, 2002 F.Ganter"
 
-#: src/gpsdrive.c:11968
+#: src/gpsdrive.c:11833
 msgid "Using speech output"
 msgstr "Använder talutdata"
 
-#: src/gpsdrive.c:12001
+#: src/gpsdrive.c:11866
 #, fuzzy
 msgid "/Misc. Menu/Maps/Map Manager"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:12004
+#: src/gpsdrive.c:11869
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "Välj en spårfil"
 
 #. download map button
-#: src/gpsdrive.c:12009
+#: src/gpsdrive.c:11874
 #, fuzzy
 msgid "_Download map"
 msgstr "Hämta karta"
 
-#: src/gpsdrive.c:12030
+#: src/gpsdrive.c:11895
 #, fuzzy
 msgid "M_ute"
 msgstr "Tysta"
 
 #. Checkbox ---- POI Draw
-#: src/gpsdrive.c:12042
+#: src/gpsdrive.c:11907
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:12057
+#: src/gpsdrive.c:11922
 msgid "draw _Streets"
 msgstr ""
 
@@ -800,100 +800,100 @@ msgstr ""
 #. * NULL);
 #.
 #. Checkbox ----   Use SQL
-#: src/gpsdrive.c:12072
+#: src/gpsdrive.c:11937
 msgid "Use SQ_L"
 msgstr ""
 
 #. Checkbox ---- Show WP
-#: src/gpsdrive.c:12085
+#: src/gpsdrive.c:11950
 #, fuzzy
 msgid "Show _WP"
 msgstr "Visa VP"
 
-#: src/gpsdrive.c:12112
+#: src/gpsdrive.c:11977
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:12120
+#: src/gpsdrive.c:11985
 #, fuzzy
 msgid "Pos. _mode"
 msgstr "Pos.-läge"
 
-#: src/gpsdrive.c:12127
+#: src/gpsdrive.c:11992
 #, fuzzy
 msgid "Show _Track"
 msgstr "Visa spår"
 
-#: src/gpsdrive.c:12173
+#: src/gpsdrive.c:12038
 msgid "_Navigation"
 msgstr ""
 
 #. Checkbox ---- Best Map
-#: src/gpsdrive.c:12196
+#: src/gpsdrive.c:12061
 #, fuzzy
 msgid "Auto _best map"
 msgstr "Auto. bäst karta"
 
-#: src/gpsdrive.c:12208
+#: src/gpsdrive.c:12073
 msgid "Save track"
 msgstr "Spara spår"
 
 #. Checkbox ---- Show Map
-#: src/gpsdrive.c:12220
+#: src/gpsdrive.c:12085
 msgid "Shown map type"
 msgstr "Visad karttyp"
 
 #. Checkbox ---- Show Map: map_
-#: src/gpsdrive.c:12230
+#: src/gpsdrive.c:12095
 msgid "Street map"
 msgstr "Vägkarta"
 
 #. Checkbox ---- Show Map: top_
-#: src/gpsdrive.c:12239
+#: src/gpsdrive.c:12104
 msgid "Topo map"
 msgstr "Topologisk karta"
 
-#: src/gpsdrive.c:12325
+#: src/gpsdrive.c:12191
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
 
-#: src/gpsdrive.c:12390 src/gpsdrive.c:12783
+#: src/gpsdrive.c:12243 src/gpsdrive.c:12636
 msgid "Bearing"
 msgstr "Riktning"
 
-#: src/gpsdrive.c:12411
+#: src/gpsdrive.c:12264
 #, fuzzy
 msgid "GPS Info"
 msgstr "Geoinfo"
 
-#: src/gpsdrive.c:12464
+#: src/gpsdrive.c:12317
 msgid "Bat."
 msgstr "Batt."
 
-#: src/gpsdrive.c:12481
+#: src/gpsdrive.c:12334
 #, fuzzy
 msgid "TC"
 msgstr "UTC "
 
 #. displays speed over ground
-#: src/gpsdrive.c:12503 src/gpsdrive.c:12793 src/gpsdrive.c:12795
-#: src/gpsdrive.c:12801 src/gpsdrive.c:12803
+#: src/gpsdrive.c:12356 src/gpsdrive.c:12646 src/gpsdrive.c:12648
+#: src/gpsdrive.c:12654 src/gpsdrive.c:12656
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:12584 src/gpsdrive.c:12591
+#: src/gpsdrive.c:12437 src/gpsdrive.c:12444
 #, fuzzy
 msgid "Selected:"
 msgstr "Välj mål"
 
-#: src/gpsdrive.c:12585 src/gpsdrive.c:12592
+#: src/gpsdrive.c:12438 src/gpsdrive.c:12445
 msgid "within"
 msgstr ""
 
 #. create frames for labels
-#: src/gpsdrive.c:12599
+#: src/gpsdrive.c:12452
 msgid "Distance to target"
 msgstr "Avstånd till målet"
 
@@ -901,7 +901,7 @@ msgstr "Avstånd till målet"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_speed, TRUE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:12638
+#: src/gpsdrive.c:12491
 msgid "Altitude"
 msgstr "Höjd"
 
@@ -909,108 +909,108 @@ msgstr "Höjd"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:12645 src/settings.c:743
+#: src/gpsdrive.c:12498 src/settings.c:743
 msgid "Waypoints"
 msgstr "Vägpunkter"
 
-#: src/gpsdrive.c:12780
+#: src/gpsdrive.c:12633
 msgid "Map file"
 msgstr "Kartfil"
 
-#: src/gpsdrive.c:12781
+#: src/gpsdrive.c:12634
 msgid "Map scale"
 msgstr "Kartskala"
 
-#: src/gpsdrive.c:12782
+#: src/gpsdrive.c:12635
 msgid "Heading"
 msgstr "Kurs"
 
-#: src/gpsdrive.c:12784
+#: src/gpsdrive.c:12637
 msgid "Time at Dest."
 msgstr "Tid vid mål"
 
-#: src/gpsdrive.c:12785
+#: src/gpsdrive.c:12638
 msgid "Pref. scale"
 msgstr "Föredragen skala"
 
-#: src/gpsdrive.c:12789
+#: src/gpsdrive.c:12642
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:12791
+#: src/gpsdrive.c:12644
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:12797 src/gpsdrive.c:12799
+#: src/gpsdrive.c:12650 src/gpsdrive.c:12652
 msgid "0000"
 msgstr ""
 
-#: src/gpsdrive.c:12906 src/gpsdrive.c:12985 src/gpsdrive.c:12998
+#: src/gpsdrive.c:12759 src/gpsdrive.c:12838 src/gpsdrive.c:12851
 msgid "Menu"
 msgstr "Meny"
 
-#: src/gpsdrive.c:12919 src/gpsdrive.c:12989 src/gpsdrive.c:12999
+#: src/gpsdrive.c:12772 src/gpsdrive.c:12842 src/gpsdrive.c:12852
 msgid "Status"
 msgstr "Status"
 
-#: src/gpsdrive.c:13163
+#: src/gpsdrive.c:13016
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:13168
+#: src/gpsdrive.c:13021
 #, fuzzy
 msgid "Number of used satellites/satellites in view"
 msgstr "Inte tillräckligt många satelliter i sikte!"
 
-#: src/gpsdrive.c:13172
+#: src/gpsdrive.c:13025
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:13176
+#: src/gpsdrive.c:13029
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:13181
+#: src/gpsdrive.c:13034
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:13184
+#: src/gpsdrive.c:13037
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:13187
+#: src/gpsdrive.c:13040
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:13191
+#: src/gpsdrive.c:13044
 msgid "Download map from Internet"
 msgstr "Hämta karta från Internet"
 
-#: src/gpsdrive.c:13193
+#: src/gpsdrive.c:13046
 msgid "Leave the program"
 msgstr "Lämna programmet"
 
-#: src/gpsdrive.c:13196
+#: src/gpsdrive.c:13049
 msgid "Disable output of speech"
 msgstr "Stäng av röstutdata"
 
-#: src/gpsdrive.c:13199
+#: src/gpsdrive.c:13052
 msgid "Use SQL server for waypoints"
 msgstr ""
 
-#: src/gpsdrive.c:13203
+#: src/gpsdrive.c:13056
 msgid "Show waypoints on the map"
 msgstr "Visa vägpunkter på kartan"
 
-#: src/gpsdrive.c:13206
+#: src/gpsdrive.c:13059
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
@@ -1018,84 +1018,84 @@ msgstr ""
 "Sätt på positionsläge. Du kan flytta på kartan med vänster musknapp. Klickar "
 "du nära kanten flyttas du till den närmaste kartan."
 
-#: src/gpsdrive.c:13209
+#: src/gpsdrive.c:13062
 msgid "Show tracking on the map"
 msgstr "Visa spår på kartan"
 
-#: src/gpsdrive.c:13214
+#: src/gpsdrive.c:13067
 msgid "Opens the help window"
 msgstr "Öppnar hjälpfönstret"
 
-#: src/gpsdrive.c:13218
+#: src/gpsdrive.c:13071
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:13236
+#: src/gpsdrive.c:13089
 msgid "Settings for GpsDrive"
 msgstr "Inställningar för GpsDrive"
 
-#: src/gpsdrive.c:13238
+#: src/gpsdrive.c:13091
 msgid "Zoom into the current map"
 msgstr "Zooma in i den nuvarande kartan"
 
-#: src/gpsdrive.c:13240
+#: src/gpsdrive.c:13093
 msgid "Zooms out off the current map"
 msgstr "Zooma ut ur den nuvarande kartan"
 
-#: src/gpsdrive.c:13242
+#: src/gpsdrive.c:13095
 msgid "Select the next more detailed map"
 msgstr "Välj nästa mer detaljerade karta"
 
-#: src/gpsdrive.c:13244
+#: src/gpsdrive.c:13097
 msgid "Select the next less detailed map"
 msgstr "Välj nästa mindre detaljerade karta"
 
-#: src/gpsdrive.c:13249
+#: src/gpsdrive.c:13102
 msgid "Select here a destination from the waypoint list"
 msgstr "Välj en destination från listan med vägpunkter"
 
-#: src/gpsdrive.c:13254
+#: src/gpsdrive.c:13107
 msgid "Select the map scale of avail. maps."
 msgstr "Välj skala på tillgängliga kartor."
 
-#: src/gpsdrive.c:13261
+#: src/gpsdrive.c:13114
 msgid "Always select the most detailed map available"
 msgstr "Välj alltid den mest detaljerade tillgängliga kartan"
 
-#: src/gpsdrive.c:13264
+#: src/gpsdrive.c:13117
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:13267
+#: src/gpsdrive.c:13120
 msgid "Draw Streets found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:13270
+#: src/gpsdrive.c:13123
 msgid "Save the track to given filename at program exit"
 msgstr "Spara spåret till givet filnamn vid programslut"
 
-#: src/gpsdrive.c:13276
+#: src/gpsdrive.c:13129
 msgid "Number of waypoints selected from SQL server"
 msgstr ""
 
-#: src/gpsdrive.c:13280
+#: src/gpsdrive.c:13133
 msgid "Number of selected waypoints, which are in range"
 msgstr ""
 
-#: src/gpsdrive.c:13284
+#: src/gpsdrive.c:13137
 msgid "Range for waypoint selection in kilometers"
 msgstr ""
 
-#: src/gpsdrive.c:13287
+#: src/gpsdrive.c:13140
 msgid "This shows the time from your GPS receiver"
 msgstr ""
 
-#: src/gpsdrive.c:13291
+#: src/gpsdrive.c:13144
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr ""
 
-#: src/gpsdrive.c:13388
+#: src/gpsdrive.c:13241
 #, c-format
 msgid ""
 "\n"
@@ -1323,7 +1323,7 @@ msgstr "Sjöinställningar"
 msgid "Nautic"
 msgstr "Nautiskt"
 
-#: src/poi.c:696 src/streets.c:562
+#: src/poi.c:675 src/streets.c:559
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""
@@ -1937,7 +1937,7 @@ msgid ""
 "words"
 msgstr ""
 
-#: src/splash.c:578
+#: src/splash.c:582
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1949,7 +1949,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:586
+#: src/splash.c:590
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1962,7 +1962,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:595
+#: src/splash.c:599
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1975,19 +1975,19 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:605
+#: src/splash.c:609
 #, fuzzy
 msgid "GpsDrive v"
 msgstr "GpsDrive-hjälp"
 
-#: src/splash.c:611
+#: src/splash.c:615
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.cc\n"
 msgstr ""
 
-#: src/splash.c:615
+#: src/splash.c:619
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1995,45 +1995,45 @@ msgstr ""
 "Använd inte för navigation.\n"
 "\n"
 
-#: src/splash.c:620
+#: src/splash.c:624
 #, fuzzy
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 "See manualbladet för detaljer om programmet\n"
 "\n"
 
-#: src/splash.c:625
+#: src/splash.c:629
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Muskontroll (klickande på kartan):\n"
 
-#: src/splash.c:633
+#: src/splash.c:637
 msgid "Short cuts:\n"
 msgstr "Snabbtangenter:\n"
 
-#: src/splash.c:640
+#: src/splash.c:644
 msgid "The other key shortcuts are marked as "
 msgstr ""
 
-#: src/splash.c:643
+#: src/splash.c:647
 msgid "underlined"
 msgstr ""
 
-#: src/splash.c:646
+#: src/splash.c:650
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:649
+#: src/splash.c:653
 #, fuzzy
 msgid "Have a lot of fun!"
 msgstr ""
 "Ha det så kul!\n"
 "\n"
 
-#: src/splash.c:785
+#: src/splash.c:789
 msgid "Please donate to GpsDrive"
 msgstr ""
 
-#: src/splash.c:791
+#: src/splash.c:795
 msgid ""
 "\n"
 "\n"
@@ -2045,11 +2045,11 @@ msgid ""
 "To do so, just go to"
 msgstr ""
 
-#: src/splash.c:796
+#: src/splash.c:800
 msgid " http://www.gpsdrive.cc "
 msgstr ""
 
-#: src/splash.c:799
+#: src/splash.c:803
 msgid ""
 "and click on the PayPal button.\n"
 "\n"
@@ -2060,36 +2060,36 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:835
+#: src/splash.c:839
 #, fuzzy
 msgid "About GpsDrive donation"
 msgstr "GpsDrive-meny"
 
-#: src/splash.c:918
+#: src/splash.c:922
 msgid "From:"
 msgstr ""
 
-#: src/splash.c:989
+#: src/splash.c:993
 #, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr ""
 
-#: src/splash.c:1001
+#: src/splash.c:1005
 msgid "You received a message through the friends server from:\n"
 msgstr ""
 
-#: src/splash.c:1012
+#: src/splash.c:1016
 #, fuzzy
 msgid "Message text:\n"
 msgstr "  Meddelande  "
 
-#: src/splash.c:1076
+#: src/splash.c:1067
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr "Fel vid sparande av konfigurationsfilen ~/.gpsdrive/gpsdriverc"
 
-#: src/splash.c:1574 src/splash.c:1635
+#: src/splash.c:1565 src/splash.c:1626
 #, c-format
 msgid ""
 "\n"
@@ -2099,7 +2099,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:1618
+#: src/splash.c:1609
 #, fuzzy
 msgid "About GpsDrive"
 msgstr "GpsDrive-meny"
