@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.19  2005/02/02 19:13:43  tweety
+grid start position was calculated wrong
+
 Revision 1.18  2005/02/02 18:18:13  tweety
 *** empty log message ***
 
@@ -5275,6 +5278,8 @@ draw_grid(GtkWidget * widget)
     lon_min = -180;
     lon_max =  180;
   }
+  lat_min= floor(lat_min/step)*step;
+  lon_min= floor(lon_min/step)*step;
 
   if (debug)
     printf("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f)\n",lat_min,lon_min,lat_max,lon_max);
@@ -5377,12 +5382,12 @@ draw_plus_sign ( gdouble posxdest,   gdouble posydest )
 
   /*  draw + sign at destination */
   gdk_gc_set_foreground (kontext, &red);
-  gdk_draw_line (drawable, kontext, posxdest + 1,
-		 posydest + 1 - 5, posxdest + 1,
-		 posydest + 1 + 5);
-  gdk_draw_line (drawable, kontext, posxdest + 1 + 5,
-		 posydest + 1, posxdest + 1 - 5,
-		 posydest + 1);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1,     posydest + 1 - 5, 
+		 posxdest + 1,     posydest + 1 + 5);
+  gdk_draw_line (drawable, kontext, 
+		 posxdest + 1 + 5, posydest + 1, 
+		 posxdest + 1 - 5, posydest + 1);
 
 }
 
@@ -5537,11 +5542,10 @@ drawmarker (GtkWidget * widget, guint * datum)
 
   if (importactive)
     return TRUE;
-
+  drawtracks ();
+  
   if (drawgrid)
     draw_grid( widget);
-  
-  drawtracks ();
   
   poi_draw_list ();
 
