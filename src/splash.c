@@ -24,6 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.15  2005/08/09 01:08:31  tweety
+  Twist and bend in the Makefiles to install the DataDirectory more apropriate
+  move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+  adapt icons.txt loading according to these directories
+
   Revision 1.14  2005/05/15 06:51:27  tweety
   all speech strings are now represented as arrays of strings
   author: Rob Stewart <rob@groupboard.com>
@@ -1535,7 +1540,7 @@ splash (void)
 
 
 	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR,
-		    "gpsdrivesplash.png");
+		    "pixmaps/gpsdrivesplash.png");
 
 	splash_window = gtk_window_new (GTK_WINDOW_POPUP);
 
