@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.21  2005/02/06 21:18:05  tweety
+more cleanup: extracted more functionality to functions
+
 Revision 1.20  2005/02/06 17:52:44  tweety
 extract icon handling to icons.c
 
@@ -1957,38 +1960,37 @@ gdouble current_long, current_lat, old_long, old_lat, groundspeed;
 gdouble zero_long, zero_lat, target_long, target_lat, dist;
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext;
-GdkColor red = { 0, 0xFF00, 0x00, 0x00 };
-GdkColor black = { 0, 0x00, 0x00, 0x00 };
-GdkColor white = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
-GdkColor blue = { 0, 0x00, 0x00, 0xff00 };
-
-//GdkColor nightcolor = { 0, 0x0000, 0xa000, 0x0000 };
-
-GdkColor nightcolor = { 0, 0xa000, 0x0000, 0x0000 };
-GdkColor lcd = { 0, 0x8b00, 0x9500, 0x8b00 };
-GdkColor lcd2 = { 0, 0x7300, 0x7d00, 0x6a00 };
-GdkColor yellow = { 0, 0xff00, 0xff00, 0x00 };
-GdkColor green = { 0, 0x0000, 0xb000, 0x0000 };
-GdkColor green2 = { 0, 0x0000, 0xff00, 0x0000 };
-GdkColor mygray = { 0, 0xd500, 0xd600, 0xd500 };
-GdkColor textback = { 0, 0xa500, 0xa600, 0xa500 };
+GdkColor red         = { 0, 0xFF00, 0x0000, 0x0000 };
+GdkColor black       = { 0, 0x0000, 0x0000, 0x0000 };
+GdkColor white       = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
+GdkColor blue        = { 0, 0x0000, 0x0000, 0xff00 };
+GdkColor nightcolor  = { 0, 0xa000, 0x0000, 0x0000 };
+GdkColor lcd         = { 0, 0x8b00, 0x9500, 0x8b00 };
+GdkColor lcd2        = { 0, 0x7300, 0x7d00, 0x6a00 };
+GdkColor yellow      = { 0, 0xff00, 0xff00, 0x0000 };
+GdkColor green       = { 0, 0x0000, 0xb000, 0x0000 };
+GdkColor green2      = { 0, 0x0000, 0xff00, 0x0000 };
+GdkColor mygray      = { 0, 0xd500, 0xd600, 0xd500 };
+GdkColor textback    = { 0, 0xa500, 0xa600, 0xa500 };
 GdkColor textbacknew = { 0, 0x4000, 0x7600, 0xcf00 };
-GdkColor grey = { 0, 0xC000, 0xC000, 0xC000 };
+GdkColor grey        = { 0, 0xC000, 0xC000, 0xC000 };
+GdkColor orange      = { 0, 0xf000, 0x6000, 0x0000 };
+GdkColor orange2     = { 0, 0xff00, 0x8000, 0x0000 };
+GdkColor darkgrey    = { 0, SHADOWGREY, SHADOWGREY, SHADOWGREY };
 GdkColor defaultcolor;
 
-/* GdkColor orange = { 0, 0xfb00, 0x8d00, 0x0a00 }; */
-GdkColor orange = { 0, 0xf000, 0x6000, 0x0000 };
-GdkColor darkgrey = { 0, SHADOWGREY, SHADOWGREY, SHADOWGREY };
-
 GtkWidget *drawing_area, *drawing_bearing, *drawing_sats, *drawing_miniimage;
-GdkColor orange2 = { 0, 0xff00, 0x8000, 0x0000 };
 GtkWidget *drawing_battery, *drawing_temp;
 GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
-GdkPixbuf *image = NULL, *friendsimage = NULL, *tempimage =
-  NULL, *friendspixbuf = NULL, *miniimage = NULL;
+GdkPixbuf *image = NULL, *tempimage = NULL, *miniimage = NULL;
+
+extern gint maxauxicons, lastauxicon;
+extern auxiconsstruct *auxicons;
+extern GdkPixbuf *friendsimage, *friendspixbuf;
+
 typedef struct
 {
   gchar filename[200];
@@ -2194,7 +2196,7 @@ char dbwherestring[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
 extern gint sqlselects[100], sqlplace, friendsplace, kismetsock, havekismet;
-GdkPixbuf *kismetpixbuf, *openwlanpixbuf, *closedwlanpixbuf, *iconpixbuf[50];
+extern GdkPixbuf *kismetpixbuf, *openwlanpixbuf, *closedwlanpixbuf, *iconpixbuf[50];
 gint earthmate = FALSE;
 /* gchar *p_1, *p_2, *p_3;
  * gsize *size_1;
@@ -5151,6 +5153,7 @@ draw_grid_text(GtkWidget * widget, gdouble posx, gdouble posy, gchar *txt)
 
 }
 
+/* ----------------------------------------------------------------------------- */
 /*
  * Draw a grid over the map
  */
@@ -5286,39 +5289,7 @@ draw_grid(GtkWidget * widget)
     printf("draw_grid loops: %d\n",count);
 }
 
-/* draw a + Sign and its shaddow */
-void
-draw_plus_sign ( gdouble posxdest,   gdouble posydest )
-{
-  if (shadow)
-    { /*  draw shadow of + sign */
-      gdk_gc_set_foreground (kontext, &darkgrey);
-      gdk_gc_set_function (kontext, GDK_AND);
-      gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 - 5 + SHADOWOFFSET,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 + 5 + SHADOWOFFSET);
-      gdk_draw_line (drawable, kontext,
-		     posxdest + 1 + 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET,
-		     posxdest + 1 - 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET);
-      gdk_gc_set_function (kontext, GDK_COPY);
-    }
-
-  /*  draw + sign at destination */
-  gdk_gc_set_foreground (kontext, &red);
-  gdk_draw_line (drawable, kontext, 
-		 posxdest + 1,     posydest + 1 - 5, 
-		 posxdest + 1,     posydest + 1 + 5);
-  gdk_draw_line (drawable, kontext, 
-		 posxdest + 1 + 5, posydest + 1, 
-		 posxdest + 1 - 5, posydest + 1);
-
-}
-
-
+/* ----------------------------------------------------------------------------- */
 // TODO: Put this in its own file
 void draw_waypoints()
 {
@@ -5336,128 +5307,246 @@ void draw_waypoints()
 	      (wayp + i)->lon, (wayp + i)->lat,
 	      zoom);
 
-      if ((posxdest >= 0) && (posxdest < SCREEN_X)
-	  && (shownwp < MAXSHOWNWP))
+      if ( (posxdest >= 0) && (posxdest < SCREEN_X)
+	  && (shownwp < MAXSHOWNWP)
+	  && (posydest >= 0) && (posydest < SCREEN_Y))
 	{
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-
-	  if ((posydest >= 0) && (posydest < SCREEN_Y))
+	  shownwp++;
+	  g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
+	  
+	  // Draw Icon(typ) or + Sign
+	  if ((wayp + i)->wlan > 0)
+	    drawwlan (posxdest, posydest, (wayp + i)->wlan);
+	  else
+	    drawicon (posxdest, posydest, (wayp + i)->typ);
+	      
+	  // Draw Proximity Circle
+	  if ( (wayp + i)->proximity > 0.0 ) 
 	    {
-	      shownwp++;
-	      g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
-
-	      // Draw Icon(typ) or + Sign
-	      if ((wayp + i)->wlan > 0)
-		drawwlan (posxdest, posydest, (wayp + i)->wlan);
-	      else
-		if ((drawicon (posxdest, posydest, (wayp + i)->typ)) == 0)
-		  {
-		    draw_plus_sign( posxdest, posydest );
-		  }		
-
-	      // Draw Proximity Circle
-	      if ( (wayp + i)->proximity > 0.0 ) 
-		{
-		  gint proximity_pixels;
-		  if ( mapscale ) 
-		    proximity_pixels= 
-		      ((wayp + i)->proximity)
-		      * zoom
-		      * PIXELFACT
-		      / mapscale;
-		  else 
-		    proximity_pixels=2;
+	      gint proximity_pixels;
+	      if ( mapscale ) 
+		proximity_pixels= 
+		  ((wayp + i)->proximity)
+		  * zoom
+		  * PIXELFACT
+		  / mapscale;
+	      else 
+		proximity_pixels=2;
 		      
-		  gdk_gc_set_foreground (kontext, &blue);
+	      gdk_gc_set_foreground (kontext, &blue);
 		      
-		  gdk_draw_arc(drawable, kontext, FALSE,
-			       posxdest - proximity_pixels , 
-			       posydest - proximity_pixels ,
-			       proximity_pixels*2,proximity_pixels*2,
-			       0, 64 * 360);
-		}
-		  
-	      /*  draw shadow of text */
-	      {
-		/* prints in pango */
-		PangoFontDescription *pfd;
-		PangoLayout *wplabellayout;
-		gint width, height;
-		gchar *tn;
-
-		gdk_gc_set_foreground (kontext, &darkgrey);
-		gdk_gc_set_function (kontext, GDK_AND);
-		tn = g_strdelimit (txt, "_", ' ');
-
-		wplabellayout =
-		  gtk_widget_create_pango_layout (drawing_area, tn);
-		pfd = pango_font_description_from_string (wplabelfont);
-		pango_layout_set_font_description (wplabellayout, pfd);
-		pango_layout_get_pixel_size (wplabellayout, &width,
-					     &height);
-		/* printf("\nj: %d",height);    */
-		k = width + 4;
-		k2 = height;
-		if (shadow)
-		  {
-		    gdk_draw_layout_with_colors (drawable, kontext,
-						 posxdest + 15 +     SHADOWOFFSET,
-						 posydest - k2 / 2 + SHADOWOFFSET,
-						 wplabellayout, &darkgrey,
-						 NULL);
-		  }
-		if (wplabellayout != NULL)
-		  g_object_unref (G_OBJECT (wplabellayout));
-		/* freeing PangoFontDescription, cause it has been copied by prev. call */
-		pango_font_description_free (pfd);
-
-	      }
-	      gdk_gc_set_function (kontext, GDK_COPY);
-
-
-	      gdk_gc_set_function (kontext, GDK_AND);
-
-	      gdk_gc_set_foreground (kontext, &textbacknew);
-	      gdk_draw_rectangle (drawable, kontext, 1, posxdest + 13,
-				  posydest - k2 / 2, k + 1, k2);
-	      gdk_gc_set_function (kontext, GDK_COPY);
-	      gdk_gc_set_foreground (kontext, &black);
-	      gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-	      gdk_draw_rectangle (drawable, kontext, 0, posxdest + 12,
-				  posydest - k2 / 2 - 1, k + 2, k2);
-
-	      /* 		  gdk_gc_set_foreground (kontext, &yellow);  */
-	      {
-		/* prints in pango */
-		PangoFontDescription *pfd;
-		PangoLayout *wplabellayout;
-
-		wplabellayout =
-		  gtk_widget_create_pango_layout (drawing_area, txt);
-		pfd = pango_font_description_from_string (wplabelfont);
-		pango_layout_set_font_description (wplabellayout, pfd);
-
-		gdk_draw_layout_with_colors (drawable, kontext,
-					     posxdest + 15,
-					     posydest - k2 / 2,
-					     wplabellayout, &white, NULL);
-		if (wplabellayout != NULL)
-		  g_object_unref (G_OBJECT (wplabellayout));
-		/* freeing PangoFontDescription, cause it has been copied by prev. call */
-		pango_font_description_free (pfd);
-
-	      }
-
-	      /* 		    gdk_draw_text (drawable, smalltextfont, kontext,
-	       * 				 posxdest + 13, posydest + 6, txt,
-	       * 				 strlen (txt));
-	       */
+	      gdk_draw_arc(drawable, kontext, FALSE,
+			   posxdest - proximity_pixels , 
+			   posydest - proximity_pixels ,
+			   proximity_pixels*2,proximity_pixels*2,
+			   0, 64 * 360);
 	    }
+		  
+	  /*  draw shadow of text */
+	  {
+	    /* prints in pango */
+	    PangoFontDescription *pfd;
+	    PangoLayout *wplabellayout;
+	    gint width, height;
+	    gchar *tn;
+
+	    gdk_gc_set_foreground (kontext, &darkgrey);
+	    gdk_gc_set_function (kontext, GDK_AND);
+	    tn = g_strdelimit (txt, "_", ' ');
+
+	    wplabellayout =
+	      gtk_widget_create_pango_layout (drawing_area, tn);
+	    pfd = pango_font_description_from_string (wplabelfont);
+	    pango_layout_set_font_description (wplabellayout, pfd);
+	    pango_layout_get_pixel_size (wplabellayout, &width,
+					 &height);
+	    /* printf("\nj: %d",height);    */
+	    k = width + 4;
+	    k2 = height;
+	    if (shadow)
+	      {
+		gdk_draw_layout_with_colors (drawable, kontext,
+					     posxdest + 15 +     SHADOWOFFSET,
+					     posydest - k2 / 2 + SHADOWOFFSET,
+					     wplabellayout, &darkgrey,
+					     NULL);
+	      }
+	    if (wplabellayout != NULL)
+	      g_object_unref (G_OBJECT (wplabellayout));
+	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+	    pango_font_description_free (pfd);
+
+	  }
+	  gdk_gc_set_function (kontext, GDK_COPY);
+
+
+	  gdk_gc_set_function (kontext, GDK_AND);
+
+	  gdk_gc_set_foreground (kontext, &textbacknew);
+	  gdk_draw_rectangle (drawable, kontext, 1, posxdest + 13,
+			      posydest - k2 / 2, k + 1, k2);
+	  gdk_gc_set_function (kontext, GDK_COPY);
+	  gdk_gc_set_foreground (kontext, &black);
+	  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+	  gdk_draw_rectangle (drawable, kontext, 0, posxdest + 12,
+			      posydest - k2 / 2 - 1, k + 2, k2);
+
+	  /* 		  gdk_gc_set_foreground (kontext, &yellow);  */
+	  {
+	    /* prints in pango */
+	    PangoFontDescription *pfd;
+	    PangoLayout *wplabellayout;
+
+	    wplabellayout =
+	      gtk_widget_create_pango_layout (drawing_area, txt);
+	    pfd = pango_font_description_from_string (wplabelfont);
+	    pango_layout_set_font_description (wplabellayout, pfd);
+
+	    gdk_draw_layout_with_colors (drawable, kontext,
+					 posxdest + 15,
+					 posydest - k2 / 2,
+					 wplabellayout, &white, NULL);
+	    if (wplabellayout != NULL)
+	      g_object_unref (G_OBJECT (wplabellayout));
+	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+	    pango_font_description_free (pfd);
+
+	  }
+
+	  /* 		    gdk_draw_text (drawable, smalltextfont, kontext,
+	   * 				 posxdest + 13, posydest + 6, txt,
+	   * 				 strlen (txt));
+	   */
 	}
     }
 }
 
-/* draw the marker on the map */
+/* ----------------------------------------------------------------------------- */
+void
+draw_zoom_scale(void)
+{
+  gint pixels;
+  gint m, l;
+  gchar txt[100];
+  pixels = 141 / milesconv;
+  m = mapscale / (20 * zoom);
+  if (m < 1000)
+    {
+      if (!nauticflag)
+	g_snprintf (txt, sizeof (txt), "%d%s", m,
+		    (milesflag) ? "yrds" : "m");
+      else
+	g_snprintf (txt, sizeof (txt), "%.3f%s", m / 1000.0,
+		    (milesflag) ? "mi" : ((metricflag) ? "km" : "nmi"));
+
+      if (!metricflag)
+	pixels = pixels * milesconv * 0.9144;
+    }
+  else
+    g_snprintf (txt, sizeof (txt), "%.1f%s", m / 1000.0,
+		(milesflag) ? "mi" : ((metricflag) ? "km" : "nmi"));
+  /*       l =
+   * 	(SCREEN_X - 20) - pixels + (pixels -
+   * 				    gdk_text_width (smalltextfont, txt,
+   * 						    strlen (txt))) / 2;
+   */
+  l = (SCREEN_X - 40) - pixels + (pixels - strlen (txt) * 15);
+
+  /*       if (debug) */
+  /* 	g_print ("%d\n", m); */
+
+  gdk_gc_set_function (kontext, GDK_OR);
+  gdk_gc_set_foreground (kontext, &textback);
+  gdk_draw_rectangle (drawable, kontext, 1, (SCREEN_X - 20) - pixels - 5,
+		      SCREEN_Y - 35, pixels + 10, 30);
+  gdk_gc_set_function (kontext, GDK_COPY);
+
+  gdk_gc_set_foreground (kontext, &black);
+
+  /* 	  gdk_draw_text (drawable, smalltextfont, kontext, l, SCREEN_Y - 20, txt,
+   * 		     strlen (txt));
+   */
+  {
+    /* prints in pango */
+    PangoFontDescription *pfd;
+    PangoLayout *wplabellayout;
+
+    wplabellayout = gtk_widget_create_pango_layout (drawing_area, txt);
+    //KCFX  
+    if (pdamode)
+      pfd = pango_font_description_from_string ("Sans 8");
+    else
+      pfd = pango_font_description_from_string ("Sans 11");
+    pango_layout_set_font_description (wplabellayout, pfd);
+
+    gdk_draw_layout_with_colors (drawable, kontext,
+				 l, SCREEN_Y - 33,
+				 wplabellayout, &black, NULL);
+    if (wplabellayout != NULL)
+      g_object_unref (G_OBJECT (wplabellayout));
+    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+    pango_font_description_free (pfd);
+
+  }
+
+  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+  gdk_draw_line (drawable, kontext, 
+		 (SCREEN_X - 20) - pixels, SCREEN_Y - 20 + 5, 
+		 (SCREEN_X - 20), SCREEN_Y - 20 + 5);
+  gdk_draw_line (drawable, kontext, 
+		 (SCREEN_X - 20) - pixels, SCREEN_Y - 20, 
+		 (SCREEN_X - 20) - pixels, SCREEN_Y - 20 + 10);
+  gdk_draw_line (drawable, kontext, 
+		 (SCREEN_X - 20), SCREEN_Y - 20, 
+		 (SCREEN_X - 20), SCREEN_Y - 20 + 10);
+    
+#ifdef USETELEATLAS
+  /* display the streetname */
+  ta_displaystreetname (actualstreetname);
+#endif
+
+
+  /*  draw zoom factor */
+  g_snprintf (txt, sizeof (txt), "%dx", zoom);
+  /*       l = (SCREEN_X - 15) - gdk_text_width (textfont, txt, strlen (txt)) / 2;  */
+
+  l = (SCREEN_X - 15) - 14 - strlen (txt) * 2;
+
+  gdk_gc_set_function (kontext, GDK_OR);
+
+  gdk_gc_set_foreground (kontext, &mygray);
+  gdk_draw_rectangle (drawable, kontext, 1, (SCREEN_X - 30), 0, 30, 30);
+  gdk_gc_set_function (kontext, GDK_COPY);
+
+  gdk_gc_set_foreground (kontext, &blue);
+
+  /*       gdk_draw_text (drawable, textfont, kontext, l, 22, txt, strlen (txt));  */
+  {
+    /* prints in pango */
+    PangoFontDescription *pfd;
+    PangoLayout *wplabellayout;
+
+    wplabellayout = gtk_widget_create_pango_layout (drawing_area, txt);
+    //KCFX  
+    if (pdamode)
+      pfd = pango_font_description_from_string ("Sans 9");
+    else
+      pfd = pango_font_description_from_string ("Sans 14");
+    pango_layout_set_font_description (wplabellayout, pfd);
+
+    gdk_draw_layout_with_colors (drawable, kontext,
+				 l, 2, wplabellayout, &blue, NULL);
+    if (wplabellayout != NULL)
+      g_object_unref (G_OBJECT (wplabellayout));
+    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+    pango_font_description_free (pfd);
+
+  }
+}
+
+/* ----------------------------------------------------------------------------- */
+/* draw the markers on the map */
 gint
 drawmarker (GtkWidget * widget, guint * datum)
 {
@@ -5490,178 +5579,61 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 /*  draw scale */
   if (zoomscale)
+    draw_zoom_scale();
+
+  if (havekismet)
+    gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
+		     10, SCREEN_Y - 42,
+		     36, 20, GDK_RGB_DITHER_NONE, 0, 0);
+  
+  if (savetrack)
     {
-      gint pixels;
-      gint m, l;
-      gchar txt[100];
-      pixels = 141 / milesconv;
-      m = mapscale / (20 * zoom);
-      if (m < 1000)
-	{
-	  if (!nauticflag)
-	    g_snprintf (txt, sizeof (txt), "%d%s", m,
-			(milesflag) ? "yrds" : "m");
-	  else
-	    g_snprintf (txt, sizeof (txt), "%.3f%s", m / 1000.0,
-			(milesflag) ? "mi" : ((metricflag) ? "km" : "nmi"));
-
-	  if (!metricflag)
-	    pixels = pixels * milesconv * 0.9144;
-	}
-      else
-	g_snprintf (txt, sizeof (txt), "%.1f%s", m / 1000.0,
-		    (milesflag) ? "mi" : ((metricflag) ? "km" : "nmi"));
-/*       l =
- * 	(SCREEN_X - 20) - pixels + (pixels -
- * 				    gdk_text_width (smalltextfont, txt,
- * 						    strlen (txt))) / 2;
- */
-      l = (SCREEN_X - 40) - pixels + (pixels - strlen (txt) * 15);
-
-/*       if (debug) */
-/* 	g_print ("%d\n", m); */
-
-      gdk_gc_set_function (kontext, GDK_OR);
-      gdk_gc_set_foreground (kontext, &textback);
-      gdk_draw_rectangle (drawable, kontext, 1, (SCREEN_X - 20) - pixels - 5,
-			  SCREEN_Y - 35, pixels + 10, 30);
-      gdk_gc_set_function (kontext, GDK_COPY);
-
-      gdk_gc_set_foreground (kontext, &black);
-
-/* 	  gdk_draw_text (drawable, smalltextfont, kontext, l, SCREEN_Y - 20, txt,
- * 		     strlen (txt));
- */
+      /*  k = gdk_text_width (smalltextfont, savetrackfn, strlen (savetrackfn));
+       */
+      k = 100;
+      gdk_gc_set_foreground (kontext, &white);
+      gdk_draw_rectangle (drawable, kontext, 1, 10,
+			  SCREEN_Y - 21, k + 3, 14);
+      gdk_gc_set_foreground (kontext, &red);
       {
 	/* prints in pango */
 	PangoFontDescription *pfd;
 	PangoLayout *wplabellayout;
-
-	wplabellayout = gtk_widget_create_pango_layout (drawing_area, txt);
-//KCFX  
+	  
+	wplabellayout =
+	  gtk_widget_create_pango_layout (drawing_area, savetrackfn);
+	//KCFX  
 	if (pdamode)
-	  pfd = pango_font_description_from_string ("Sans 8");
+	  pfd = pango_font_description_from_string ("Sans 7");
 	else
-	  pfd = pango_font_description_from_string ("Sans 11");
+	  pfd = pango_font_description_from_string ("Sans 10");
 	pango_layout_set_font_description (wplabellayout, pfd);
-
+	  
 	gdk_draw_layout_with_colors (drawable, kontext,
-				     l, SCREEN_Y - 33,
-				     wplabellayout, &black, NULL);
+				     14, SCREEN_Y - 22,
+				     wplabellayout, &red, NULL);
 	if (wplabellayout != NULL)
 	  g_object_unref (G_OBJECT (wplabellayout));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
 	pango_font_description_free (pfd);
-
+	    
       }
 
-      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-      gdk_draw_line (drawable, kontext, (SCREEN_X - 20) - pixels,
-		     SCREEN_Y - 20 + 5, (SCREEN_X - 20), SCREEN_Y - 20 + 5);
-      gdk_draw_line (drawable, kontext, (SCREEN_X - 20) - pixels,
-		     SCREEN_Y - 20, (SCREEN_X - 20) - pixels,
-		     SCREEN_Y - 20 + 10);
-      gdk_draw_line (drawable, kontext, (SCREEN_X - 20),
-		     SCREEN_Y - 20, (SCREEN_X - 20), SCREEN_Y - 20 + 10);
 
-#ifdef USETELEATLAS
-/* display the streetname */
-      ta_displaystreetname (actualstreetname);
-#endif
+      /* 	  gdk_draw_text (drawable, smalltextfont, kontext,
+       * 			 11, SCREEN_Y - 10, savetrackfn,
+       * 			 strlen (savetrackfn));
+       */
 
-
-/*  draw zoom factor */
-      g_snprintf (txt, sizeof (txt), "%dx", zoom);
-/*       l = (SCREEN_X - 15) - gdk_text_width (textfont, txt, strlen (txt)) / 2;  */
-
-      l = (SCREEN_X - 15) - 14 - strlen (txt) * 2;
-
-      gdk_gc_set_function (kontext, GDK_OR);
-
-      gdk_gc_set_foreground (kontext, &mygray);
-      gdk_draw_rectangle (drawable, kontext, 1, (SCREEN_X - 30), 0, 30, 30);
-      gdk_gc_set_function (kontext, GDK_COPY);
-
-      gdk_gc_set_foreground (kontext, &blue);
-
-/*       gdk_draw_text (drawable, textfont, kontext, l, 22, txt, strlen (txt));  */
-      {
-	/* prints in pango */
-	PangoFontDescription *pfd;
-	PangoLayout *wplabellayout;
-
-	wplabellayout = gtk_widget_create_pango_layout (drawing_area, txt);
-//KCFX  
-	if (pdamode)
-	  pfd = pango_font_description_from_string ("Sans 9");
-	else
-	  pfd = pango_font_description_from_string ("Sans 14");
-	pango_layout_set_font_description (wplabellayout, pfd);
-
-	gdk_draw_layout_with_colors (drawable, kontext,
-				     l, 2, wplabellayout, &blue, NULL);
-	if (wplabellayout != NULL)
-	  g_object_unref (G_OBJECT (wplabellayout));
-	/* freeing PangoFontDescription, cause it has been copied by prev. call */
-	pango_font_description_free (pfd);
-
-      }
-
-      if (havekismet)
-	gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
-			 10, SCREEN_Y - 42,
-			 36, 20, GDK_RGB_DITHER_NONE, 0, 0);
-
-      if (savetrack)
-	{
-/* 	  k =
- * 	    gdk_text_width (smalltextfont, savetrackfn, strlen (savetrackfn));
- */
-	  k = 100;
-	  gdk_gc_set_foreground (kontext, &white);
-	  gdk_draw_rectangle (drawable, kontext, 1, 10,
-			      SCREEN_Y - 21, k + 3, 14);
-	  gdk_gc_set_foreground (kontext, &red);
-	  {
-	    /* prints in pango */
-	    PangoFontDescription *pfd;
-	    PangoLayout *wplabellayout;
-
-	    wplabellayout =
-	      gtk_widget_create_pango_layout (drawing_area, savetrackfn);
-//KCFX  
-	    if (pdamode)
-	      pfd = pango_font_description_from_string ("Sans 7");
-	    else
-	      pfd = pango_font_description_from_string ("Sans 10");
-	    pango_layout_set_font_description (wplabellayout, pfd);
-
-	    gdk_draw_layout_with_colors (drawable, kontext,
-					 14, SCREEN_Y - 22,
-					 wplabellayout, &red, NULL);
-	    if (wplabellayout != NULL)
-	      g_object_unref (G_OBJECT (wplabellayout));
-	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
-	    pango_font_description_free (pfd);
-
-	  }
-
-
-/* 	  gdk_draw_text (drawable, smalltextfont, kontext,
- * 			 11, SCREEN_Y - 10, savetrackfn,
- * 			 strlen (savetrackfn));
- */
-
-/*      gdk_draw_text (drawable, textfont, kontext, 10, */
-/*  		   SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
-	}
+      /*      gdk_draw_text (drawable, textfont, kontext, 10, */
+      /*  		   SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
     }
-
-
+    
   if (posmode)
     {
       blink = TRUE;
     }
+
 #define PFSIZE 55
 #define PFSIZE2 45
 
@@ -5679,83 +5651,67 @@ drawmarker (GtkWidget * widget, guint * datum)
 	{
 	  if (shadow)
 	    {
-/*  draw shadow of  position marker */
+	      /*  draw shadow of  position marker */
 	      gdk_gc_set_foreground (kontext, &darkgrey);
 	      gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
 	      gdk_gc_set_function (kontext, GDK_AND);
 	      gdk_draw_arc (drawable, kontext, 0, posx - 7 + SHADOWOFFSET,
 			    posy - 7 + SHADOWOFFSET, 14, 14, 0, 360 * 64);
-/*  draw pointer to destination */
+	      /*  draw pointer to destination */
 	      gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-/* 	      gdk_draw_line (drawable, kontext, */
-/* 			     posx + 4 * sin (angle_to_destination) + */
-/* 			     SHADOWOFFSET, */
-/* 			     posy - 4 * cos (angle_to_destination) + */
-/* 			     SHADOWOFFSET, */
-/* 			     posx + 20 * sin (angle_to_destination) + */
-/* 			     SHADOWOFFSET, */
-/* 			     posy - 20 * cos (angle_to_destination) + */
-/* 			     SHADOWOFFSET); */
+	      /* gdk_draw_line (drawable, kontext, */
+	      /*	     posx + 4 * sin (angle_to_destination) + */
+	      /*	     SHADOWOFFSET, */
+	      /*	     posy - 4 * cos (angle_to_destination) + */
+	      /*	     SHADOWOFFSET, */
+	      /*	     posx + 20 * sin (angle_to_destination) + */
+	      /*	     SHADOWOFFSET, */
+	      /*	     posy - 20 * cos (angle_to_destination) + */
+	      /*	     SHADOWOFFSET); */
 	      w = angle_to_destination + M_PI;
-	      poly[0].x =
-		posx + SHADOWOFFSET + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
-	      poly[0].y =
-		posy + SHADOWOFFSET + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
-	      poly[1].x =
-		posx + SHADOWOFFSET + (PFSIZE) / 9 * (cos (w + M_PI));
-	      poly[1].y =
-		posy + SHADOWOFFSET + (PFSIZE) / 9 * (sin (w + M_PI));
-	      poly[2].x =
-		posx + SHADOWOFFSET + PFSIZE / 10 * (cos (w + M_PI_2));
-	      poly[2].y =
-		posy + SHADOWOFFSET + PFSIZE / 10 * (sin (w + M_PI_2));
-	      poly[3].x =
-		posx + SHADOWOFFSET - (PFSIZE) / 9 * (cos (w + M_PI));
-	      poly[3].y =
-		posy + SHADOWOFFSET - (PFSIZE) / 9 * (sin (w + M_PI));
+	      poly[0].x = posx + SHADOWOFFSET + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
+	      poly[0].y = posy + SHADOWOFFSET + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
+	      poly[1].x = posx + SHADOWOFFSET + (PFSIZE) / 9 * (cos (w + M_PI));
+	      poly[1].y = posy + SHADOWOFFSET + (PFSIZE) / 9 * (sin (w + M_PI));
+	      poly[2].x = posx + SHADOWOFFSET + PFSIZE / 10 * (cos (w + M_PI_2));
+	      poly[2].y = posy + SHADOWOFFSET + PFSIZE / 10 * (sin (w + M_PI_2));
+	      poly[3].x = posx + SHADOWOFFSET - (PFSIZE) / 9 * (cos (w + M_PI));
+	      poly[3].y = posy + SHADOWOFFSET - (PFSIZE) / 9 * (sin (w + M_PI));
 	      poly[4].x = poly[0].x;
 	      poly[4].y = poly[0].y;
 	      gdk_draw_polygon (drawable, kontext, 1, (GdkPoint *) poly, 5);
 
-/*  draw pointer to direction */
-/* 	      gdk_draw_line (drawable, kontext, */
-/* 			     posx + 4 * sin (direction) + SHADOWOFFSET, */
-/* 			     posy - 4 * cos (direction) + SHADOWOFFSET, */
-/* 			     posx + 20 * sin (direction) + SHADOWOFFSET, */
-/* 			     posy - 20 * cos (direction) + SHADOWOFFSET); */
+	      /*  draw pointer to direction */
+	      /*  gdk_draw_line (drawable, kontext, */
+	      /*	     posx + 4 * sin (direction) + SHADOWOFFSET, */
+	      /*	     posy - 4 * cos (direction) + SHADOWOFFSET, */
+	      /*	     posx + 20 * sin (direction) + SHADOWOFFSET, */
+	      /*	     posy - 20 * cos (direction) + SHADOWOFFSET); */
 	      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	      gdk_draw_arc (drawable, kontext, 0, posx + 2 - 7 + SHADOWOFFSET,
 			    posy + 2 - 7 + SHADOWOFFSET, 10, 10, 0, 360 * 64);
 
 	      w = direction + M_PI;
-	      poly[0].x =
-		posx + SHADOWOFFSET + (PFSIZE2) / 2.3 * (cos (w + M_PI_2));
-	      poly[0].y =
-		posy + SHADOWOFFSET + (PFSIZE2) / 2.3 * (sin (w + M_PI_2));
-	      poly[1].x =
-		posx + SHADOWOFFSET + (PFSIZE2) / 9 * (cos (w + M_PI));
-	      poly[1].y =
-		posy + SHADOWOFFSET + (PFSIZE2) / 9 * (sin (w + M_PI));
-	      poly[2].x =
-		posx + SHADOWOFFSET + PFSIZE2 / 10 * (cos (w + M_PI_2));
-	      poly[2].y =
-		posy + SHADOWOFFSET + PFSIZE2 / 10 * (sin (w + M_PI_2));
-	      poly[3].x =
-		posx + SHADOWOFFSET - (PFSIZE2) / 9 * (cos (w + M_PI));
-	      poly[3].y =
-		posy + SHADOWOFFSET - (PFSIZE2) / 9 * (sin (w + M_PI));
+	      poly[0].x = posx + SHADOWOFFSET + (PFSIZE2) / 2.3 * (cos (w + M_PI_2));
+	      poly[0].y = posy + SHADOWOFFSET + (PFSIZE2) / 2.3 * (sin (w + M_PI_2));
+	      poly[1].x = posx + SHADOWOFFSET + (PFSIZE2) / 9 * (cos (w + M_PI));
+	      poly[1].y = posy + SHADOWOFFSET + (PFSIZE2) / 9 * (sin (w + M_PI));
+	      poly[2].x = posx + SHADOWOFFSET + PFSIZE2 / 10 * (cos (w + M_PI_2));
+	      poly[2].y = posy + SHADOWOFFSET + PFSIZE2 / 10 * (sin (w + M_PI_2));
+	      poly[3].x = posx + SHADOWOFFSET - (PFSIZE2) / 9 * (cos (w + M_PI));
+	      poly[3].y = posy + SHADOWOFFSET - (PFSIZE2) / 9 * (sin (w + M_PI));
 	      poly[4].x = poly[0].x;
 	      poly[4].y = poly[0].y;
 	      gdk_draw_polygon (drawable, kontext, 0, (GdkPoint *) poly, 5);
 	      gdk_gc_set_function (kontext, GDK_COPY);
 	    }
-/*  draw real position marker */
+	  /*  draw real position marker */
 
 	  gdk_gc_set_foreground (kontext, &black);
 	  gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
 	  gdk_draw_arc (drawable, kontext, 0, posx - 7, posy - 7, 14,
 			14, 0, 360 * 64);
-/*  draw pointer to destination */
+	  /*  draw pointer to destination */
 
 	  w = angle_to_destination + M_PI;
 
@@ -5771,7 +5727,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	  poly[4].y = poly[0].y;
 	  gdk_draw_polygon (drawable, kontext, 1, (GdkPoint *) poly, 5);
 
-/*  draw pointer to direction */
+	  /*  draw pointer to direction */
 	  gdk_gc_set_foreground (kontext, &red);
 	  gdk_draw_arc (drawable, kontext, 0, posx + 2 - 7,
 			posy + 2 - 7, 10, 10, 0, 360 * 64);
@@ -5797,8 +5753,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 	  gdk_draw_arc (drawable, kontext, 0, posxmarker - 10,
 			posymarker - 10, 20, 20, 0, 360 * 64);
 	}
-/*  If we are in position mode we set direction to zero to see where is the  */
-/*  target  */
+      /*  If we are in position mode we set direction to zero to see where is the  */
+      /*  target  */
       if (posmode)
 	direction = 0;
 
@@ -5813,7 +5769,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 
 
-/*  now draw marker for destination point */
+  /*  now draw marker for destination point */
 
   calcxy (&posxdest, &posydest, target_long, target_lat, zoom);
 
@@ -8314,7 +8270,7 @@ sql_cb (GtkWidget * widget, guint datum)
   if (sqlflag)
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt), TRUE);
-      getsqltypelist ();
+      get_sql_type_list ();
       getsqldata ();
     }
   else
@@ -9045,7 +9001,7 @@ addwaypoint ( gchar *wp_name, gchar *wp_type , gdouble wp_lat, gdouble wp_lon )
   if (sqlflag)
     {
       insertsqldata (wp_lat, wp_lon, (char *) wp_name, (char *) wp_type);
-      getsqltypelist ();
+      get_sql_type_list ();
       getsqldata ();
     }
   else
@@ -9114,7 +9070,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
  
   if (sqlflag)
     {
-      getsqltypelist ();
+      get_sql_type_list ();
       for (i = 0; i < dbtypelistcount; i++)
 	wp_types = g_list_append (wp_types, dbtypelist[i]);
     }
