@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/02/07 07:53:39  tweety
+added check_if_moved inti function poi_rebuild_list
+
 Revision 1.1  2005/02/02 18:11:02  tweety
 Add Point Of Interrest Support with mySQL
 
@@ -56,7 +59,8 @@ typedef struct
   gint    type_id; 
   gdouble proximity;
   gchar   comment[255]; 
-  gint    level[6];  
+  gint    level_min;  
+  gint    level_max;  
   //date  last_modified  
   gchar   url[160]; 
   gint    address_id;
