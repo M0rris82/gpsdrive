@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.6  2005/11/26 18:16:45  tweety
+# insert horse icon
+#
 # Revision 1.5  2005/11/21 07:35:14  tweety
 # *** empty log message ***
 #
@@ -122,6 +125,7 @@ my $icons = {
     'food' 		                => "food",
     'food.beergarden'                   => 'beergarden',
     'food.cafe'                         => "cafe",
+    'food.cafe.internet'                => "cafe",
     'food.drinking water'               => 'tap_drinking',
     'food.ice cream parlor'		=> "ice_cream",
     'food.restaurant.asia'            => 'japanese',
@@ -129,10 +133,10 @@ my $icons = {
     'food.restaurant.chinese'         => 'japanese',
     'food.restaurant.fastfood.burger king'       => "burgerking",
     'food.restaurant.fastfood.mc donalds' 	  => "mcdonalds",
+    'food.restaurant.fastfood.pizza_hut' => 'pizza',
     'food.restaurant.ice cream parlor'=> 'ice_cream',
     'food.restaurant.japanese'        => 'japanese',
     'food.restaurant.pizza'           => 'pizza',
-    'food.restaurant.fastfood.pizza_hut' => 'pizza',
     'health'                          => "red_cross",
     'health.doctor'                   => 'aesculab',
     'health.emergency'                => 'emergency',
@@ -157,12 +161,12 @@ my $icons = {
     'recreation.pub.dart'             => "dart",
     'recreation.sports.bicycling' => 'bicycling',
     'recreation.sports.boat'           => "boat",
+    'recreation.sports.diving'        => 'alpha_flag',
     'recreation.sports.golf place'     => "golf",
+    'recreation.sports.horse.racing'    => 'horse',
+    'recreation.sports.horse.riding'    => 'horse',
     'recreation.sports.motorbike'      => "motorbike",
     'recreation.sports.skiing' 	  => 'skiing',
-    'transport.nautical.alpha flag'   => 'alpha_flag',
-    'transport.nautical.dive flag'    => 'dive_flag',
-    'recreation.sports.diving'        => 'alpha_flag',
     'shopping'                        => "shop",
     'shopping.food.bakery'            => 'prezel',
     'shopping.supermarket.lidl'       => "lidl_logo",
@@ -181,6 +185,8 @@ my $icons = {
     'transport.car.rental.sixt'       => 'sixt',
     'transport.car.rest area' 	  => 'rest_area',
     'transport.car.wrecking service'  => 'towing',
+    'transport.nautical.alpha flag'   => 'alpha_flag',
+    'transport.nautical.dive flag'    => 'dive_flag',
     'transport.park and ride'         => 'P+R',
     'transport.public.airport'        => 'airport',
     'transport.public.bus station'   => 'bus_stop',
@@ -197,6 +203,7 @@ my $icons = {
     'w-lan.open' 	                  => "wlan",
     'w-lan.public' 	                  => "tower",		
     'w-lan.wep' 	                  => "wlan-wep",
+
 };
 # Some suggestions for pictures
 #  education.nursery ==> Schnuller
@@ -277,6 +284,7 @@ my @poi_type_names
 	  food
 	  food.beergarden
 	  food.cafe
+	  food.cafe.internet
 	  food.delivery_service
 	  food.drinking_water
 	  food.restaurant
@@ -380,7 +388,7 @@ my @poi_type_names
 	  shopping.beverages
 	  shopping.books
 	  shopping.computer
-	  shopping.computer.Software
+	  shopping.computer.software
 	  shopping.computer.games
 	  shopping.computer.hardware
 	  shopping.dry_cleaner
@@ -478,7 +486,7 @@ my $translate_de = {
     'HypoVereinsbank' 	=> 'HypoVereinsbank',
     'Postbank'              => 'Postbank',
     'Reifeisenbank'         => 'Reifeisenbank',
-    'Software'              => 'Software',
+    'software'              => 'Software',
     'Sparda'                => 'Sparda',
     'Sparkasse'             => "Sparkasse",
     'WC'                    => 'WC',

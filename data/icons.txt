@@ -61,6 +61,7 @@ entrance unknown.png
 food food.gif
 food.beergarden beergarden.png
 food.cafe cafe.png
+food.cafe.internet cafe.png
 food.delivery service food.gif
 food.drinking water tap_drinking.png
 food.restaurant food.gif
@@ -135,8 +136,8 @@ recreation.sports.diving alpha_flag.png
 recreation.sports.fishing balloon.png
 recreation.sports.fittness balloon.png
 recreation.sports.golf place golf.png
-recreation.sports.horse.racing balloon.png
-recreation.sports.horse.riding balloon.png
+recreation.sports.horse.racing horse.png
+recreation.sports.horse.riding horse.png
 recreation.sports.hunt balloon.png
 recreation.sports.ice scating balloon.png
 recreation.sports.minigolf place balloon.png
@@ -164,9 +165,9 @@ shopping shop.png
 shopping.beverages shop.png
 shopping.books shop.png
 shopping.computer shop.png
-shopping.computer.Software shop.png
 shopping.computer.games shop.png
 shopping.computer.hardware shop.png
+shopping.computer.software shop.png
 shopping.dry cleaner shop.png
 shopping.electronics shop.png
 shopping.flea market shop.png
