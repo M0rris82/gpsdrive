@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.6  2004/12/27 10:21:26  tweety
+Change map filename checks. After this change you can use directoryname and filename to
+specify you map-files in map_koord.txt. So you can use subdirecories in you gpsdrive dir.
+
 Revision 1.5  2004/12/25 19:21:51  commiter
 splitting functions out of gpsdrive.c
 
@@ -3516,19 +3520,30 @@ testnewmap ()
   for (i = 0; i < nrmaps; i++)
     {
       skip = TRUE;
-      if (displaymap_map)
-	if (!(strncmp ((maps + i)->filename, "map_", 4)))
-	  skip = FALSE;
-      if (displaymap_top)
-	if (!(strncmp ((maps + i)->filename, "top_", 4)))
-	  skip = FALSE;
+      if (displaymap_map){
+        if (!(strncmp ((maps + i)->filename, "map_", 4))) {
+          skip = FALSE;
+          istopo = FALSE;
+        }
+        if (strstr ((maps + i)->filename, "/map_")){
+          skip = FALSE;
+          istopo = FALSE;
+        }
+      }
+      if (displaymap_top) {
+        if (!(strncmp ((maps + i)->filename, "top_", 4))) {
+          skip = FALSE;
+          istopo = TRUE;
+        }
+        if (strstr ((maps + i)->filename, "/top_")){
+          skip = FALSE;
+          istopo = TRUE;
+        }
+      }
 
       if (skip)
-	continue;
-      if (!(strncmp ((maps + i)->filename, "top_", 4)))
-	istopo = TRUE;
-      else
-	istopo = FALSE;
+        continue;
+
 
 /*        calcxy (&posx, &posy, (maps + i)->longitude, (maps + i)->lat,1); */
 /*  Longitude */
@@ -6160,7 +6175,11 @@ loadmap (char *filename)
   if (maploaded)
     gdk_pixbuf_unref (image);
 
-  if (!(strncmp (filename, "top_", 4)))
+  if (strstr (filename, "/map_")){
+    mapistopo = FALSE;
+  } else if (strstr (filename, "/top_")){
+    mapistopo = TRUE;
+  } else if (!(strncmp (filename, "top_", 4)))
     mapistopo = TRUE;
   else
     mapistopo = FALSE;
