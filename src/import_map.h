@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2005/04/02 12:10:12  tweety
+2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+Canges made to import a map with one point and enter the scale
+
 Revision 1.1  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -48,5 +52,7 @@ gint setrefpoint_cb (GtkWidget * widget, guint datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint importshift_cb (GtkWidget * widget, guint datum);
 gint importshift_cb (GtkWidget * widget, guint datum);
+gint import_scale_cb(GtkWidget * widget, gpointer datum);
+
 
 #endif /* GPSDRIVE_IMPORT_MAP_H */

@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.5  2005/04/02 12:10:12  tweety
+2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+Canges made to import a map with one point and enter the scale
+
+
+2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+Canges made to import a map with one point and enter the scale
+
+
 Revision 1.4  2005/03/28 18:05:42  tweety
 Von: Darazs Attila <zumi@freestart.hu>
 added zoom correction for map import Function
@@ -133,7 +142,7 @@ impstruct;
 impstruct imports[3];
 extern gdouble earthr;
 #define R earthr
-GtkWidget *dltext5, *dltext6, *dltext7;
+GtkWidget *dltext5, *dltext6, *dltext7,  *scale_input;
 gchar importfilename[1024];
 
 
@@ -242,7 +251,7 @@ gint
 import1_cb (GtkWidget * widget, guint datum)
 {
   GtkWidget *mainbox, *window;
-  GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf6;
+  GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf6, *knopf_scale_finish, *scale_txt;
   GtkWidget *table, *knopf9, *knopf10, *knopf11, *s1, *s2, *s3, *s4;
   GtkWidget *s5, *s6;
   gchar buff[1300];
@@ -268,20 +277,26 @@ import1_cb (GtkWidget * widget, guint datum)
 
   gtk_container_set_border_width (GTK_CONTAINER (window), 5);
   mainbox = gtk_vbox_new (TRUE, 2);
+  
   if (datum == 1)
+  {
     knopf = gtk_button_new_with_label (_("Accept first point"));
-  else
-    knopf = gtk_button_new_with_label (_("Finish"));
-  if (datum == 1)
     gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
 			       GTK_SIGNAL_FUNC (import2_cb),
 			       GTK_OBJECT (window));
+
+    knopf_scale_finish = gtk_button_new_with_label (_("Accept Scale and Finish"));
+    gtk_signal_connect_object (GTK_OBJECT (knopf_scale_finish), "clicked",
+    				GTK_SIGNAL_FUNC (import_scale_cb),
+    				GTK_OBJECT (window));
+  }
   else
-    {
-      gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
+  {
+    knopf = gtk_button_new_with_label (_("Finish"));
+    gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
 				 GTK_SIGNAL_FUNC (import3_cb),
 				 GTK_OBJECT (window));
-    }
+  }
 
   knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
   gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
@@ -313,13 +328,16 @@ import1_cb (GtkWidget * widget, guint datum)
 
   gtk_box_pack_start (GTK_BOX
 		      (GTK_DIALOG (window)->
+		       action_area), knopf_scale_finish, TRUE, TRUE, 2);
+  gtk_box_pack_start (GTK_BOX
+		      (GTK_DIALOG (window)->
 		       action_area), knopf, TRUE, TRUE, 2);
   gtk_box_pack_start (GTK_BOX
 		      (GTK_DIALOG (window)->
 		       action_area), knopf2, TRUE, TRUE, 2);
   GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
   GTK_WIDGET_SET_FLAGS (knopf2, GTK_CAN_DEFAULT);
-  table = gtk_table_new (6, 4, TRUE);
+  table = gtk_table_new (7, 4, TRUE);
   gtk_box_pack_start (GTK_BOX
 		      (GTK_DIALOG (window)->vbox), table, TRUE, TRUE, 2);
   knopf3 = gtk_label_new (_("Latitude"));
@@ -330,11 +348,20 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_table_attach_defaults (GTK_TABLE (table), knopf9, 2, 3, 0, 1);
   knopf10 = gtk_label_new (_("Screen Y"));
   gtk_table_attach_defaults (GTK_TABLE (table), knopf10, 2, 3, 1, 2);
+
+  if (  datum==1 ) 
+    {
+      scale_txt = gtk_label_new(_("Scale"));
+      gtk_table_attach_defaults (GTK_TABLE (table), scale_txt, 0, 1, 2, 3);
+      scale_input = gtk_entry_new();
+      gtk_table_attach_defaults (GTK_TABLE (table), scale_input, 1, 2, 2, 3);
+    }
+
   knopf6 = gtk_button_new_with_label (_("Browse waypoint"));
   gtk_signal_connect (GTK_OBJECT (knopf6), "clicked",
 		      GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 1);
 
-  gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
   dltext1 = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
   g_snprintf (buff, sizeof (buff), "%.5f", current_lat);
@@ -355,16 +382,16 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_table_attach_defaults (GTK_TABLE (table), dltext6, 3, 4, 1, 2);
 
   dltext4 = gtk_entry_new ();
-  gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 3, 4);
   dltext7 = gtk_entry_new ();
-  gtk_table_attach_defaults (GTK_TABLE (table), dltext7, 3, 4, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext7, 3, 4, 3, 4);
 
   if (datum == 1)
     {
       knopf11 = gtk_button_new_with_label (_("Browse filename"));
       gtk_signal_connect_object (GTK_OBJECT (knopf11), "clicked",
 				 GTK_SIGNAL_FUNC (importfb_cb), 0);
-      gtk_table_attach_defaults (GTK_TABLE (table), knopf11, 2, 3, 2, 3);
+      gtk_table_attach_defaults (GTK_TABLE (table), knopf11, 2, 3, 3, 4);
     }
   else
     gtk_entry_set_text (GTK_ENTRY (dltext7), importfilename);
@@ -396,13 +423,14 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_box_pack_start (GTK_BOX (hbox), text, TRUE, TRUE, 0);
 /*   gtk_box_pack_start (GTK_BOX (hbox), scrollbar, FALSE, FALSE, 0); */
 
-  gtk_table_attach_defaults (GTK_TABLE (table), hbox, 2, 4, 3, 6);
-  gtk_table_attach_defaults (GTK_TABLE (table), s1, 0, 1, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (table), s5, 1, 2, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (table), s2, 0, 1, 4, 5);
-  gtk_table_attach_defaults (GTK_TABLE (table), s3, 1, 2, 4, 5);
-  gtk_table_attach_defaults (GTK_TABLE (table), s4, 0, 1, 5, 6);
-  gtk_table_attach_defaults (GTK_TABLE (table), s6, 1, 2, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), hbox, 2, 4, 4, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), s1, 0, 1, 4, 5);
+  gtk_table_attach_defaults (GTK_TABLE (table), s5, 1, 2, 4, 5);
+  gtk_table_attach_defaults (GTK_TABLE (table), s2, 0, 1, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), s3, 1, 2, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), s4, 0, 1, 6, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), s6, 1, 2, 6, 7);
+  
   gtk_table_set_row_spacings (GTK_TABLE (table), 3);
   gtk_table_set_col_spacings (GTK_TABLE (table), 3);
 /*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
@@ -415,6 +443,88 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_widget_show_all (window);
   importactive = TRUE;
 
+  return TRUE;
+}
+
+
+/* *****************************************************************************
+ * Import map with one point and given scale
+ */
+gint import_scale_cb(GtkWidget * widget, gpointer datum)
+{
+  G_CONST_RETURN gchar *s;
+  gdouble dx_pix, dy_pix, x, y, maxx, maxy, dx_m, dy_m, m_pr_pix, lat, lon;
+  gdouble dlat, dlon, lat_pr_m, lon_pr_m, scale, latcenter, longcenter;
+  maxx=1280;
+  maxy=1024;
+
+  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  checkinput ((gchar *) s);
+  lat = g_strtod (s, NULL);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  checkinput ((gchar *) s);
+  lon = g_strtod (s, NULL);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));  x = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));  y = strtol (s, NULL, 0);
+
+  s = gtk_entry_get_text (GTK_ENTRY (scale_input)); 
+  checkinput ((gchar *) s);
+  scale = (gdouble) strtol (s, NULL, 0);
+  // g_print ("Import: scale: %g, lat: %g, lon: %g, x: %g, y: %g\n", scale, lat, lon, x, y);  
+  
+  gtk_widget_destroy (widget);
+
+  /*  Calc coordinates  */
+  // distance from selected point on map to center in pixels
+  dx_pix = maxx/2 - x;
+  dy_pix = y - maxy/2;
+	
+  // calculate meter pr pixel of map
+  m_pr_pix = scale/PIXELFACT;
+  // g_print ("dx_pix %g, dy_pix %g, m_pr_pix %g\n", dx_pix, dy_pix, m_pr_pix);  
+	
+  // distance from selected point on map to center in meters
+  dx_m = dx_pix*m_pr_pix;
+  dy_m = dy_pix*m_pr_pix;
+  //   g_print ("dx_m %g, dy_m %g\n", dx_m, dy_m);  
+	
+  // length of 1 deg lat and lon i meters
+  // lat_pr_m = 360.0/(2.0*M_PI*R); 
+  /* This should be the correct length, but using this formulas gives me 
+   * a nautical mile that are 1857.85 m which are wrong. Therefore I am 
+   * hardcoding it to a nautical mile that are 1851.85 m 
+  */
+  lat_pr_m = 1.0/(1851.85*60.0);
+  lon_pr_m = lat_pr_m / cos(M_PI*lat/180.0);
+  /*
+    g_print ("R %g, M_PI %g lat_pr_m %g, lon_pr_m %g, meter pr deg lat %g\n",R, M_PI, lat_pr_m, lon_pr_m, 1.0/lat_pr_m);  
+  */
+	
+  // dinstance in deg from selected point on map to center
+  dlat = dy_m*lat_pr_m;
+  dlon = dx_m*lon_pr_m;
+  //   g_print ("dlat %g, dlon %g\n", dlat, dlon);  
+	
+  // map mid point in deg
+  latcenter = lat+dlat;
+  longcenter = lon+dlon;
+  //   g_print ("Import: scale: %g, latcenter: %g, loncenter: %g\n", scale, latcenter, longcenter);  
+	
+  if (strlen (importfilename) > 4)
+    {
+      maps = g_renew (mapsstruct, maps, (nrmaps + 2));
+      g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
+      (maps + nrmaps)->lat = latcenter;
+      (maps + nrmaps)->lon = longcenter;
+      (maps + nrmaps)->scale = scale;
+      nrmaps++;
+      havenasa = -1;
+
+      savemapconfig ();
+    }
+
+  importactive = FALSE;
+  g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
   return TRUE;
 }
 
