@@ -832,7 +832,7 @@ i.e. '.' in english, ',' in german!! */
 
   if (sqlflag)
     {
-      getsqltypelist ();
+      get_sql_type_list ();
       getsqldata ();
     }
   else

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.3  2005/02/06 21:18:05  tweety
+more cleanup: extracted more functionality to functions
+
 Revision 1.2  2005/02/06 17:52:44  tweety
 extract icon handling to icons.c
 
@@ -32,3 +35,14 @@ Revision 1.0  2005/02/02 18:11:02  tweety
 int drawicon (gint posxdest, gint posydest, char *ic);
 void load_friends_icon (void);
 void load_icons(void);
+
+typedef struct
+{
+    GdkPixbuf *icon;
+    char name[40];
+}
+auxiconsstruct;
+
+//extern gint maxauxicons, lastauxicon;
+//extern auxiconsstruct *auxicons;
+//extern GdkPixbuf *friendsimage, *friendspixbuf;

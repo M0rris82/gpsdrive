@@ -2,7 +2,7 @@
 /*  Prototypes */
 int initkismet (void);
 int readkismet (void);
-int getsqltypelist (void);
+int get_sql_type_list (void);
 int deletesqldata (int index);
 int insertsqldata (double lat, double lon, char *name, char *typ);
 int sqlinit (void);
