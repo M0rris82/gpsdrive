@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.14  2005/05/13 21:27:48  tweety
+  delete order by to speed up database actions
+
   Revision 1.13  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -377,7 +380,6 @@ void
 streets_rebuild_list (void)
 {
 	char sql_query[5000];
-	char sql_order[5000];
 	char sql_where[5000];
 	struct timeval t;
 	int r, rges;
@@ -432,12 +434,6 @@ streets_rebuild_list (void)
 	gettimeofday (&t, NULL);
 	ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-	{			// gernerate mysql ORDER string
-		g_snprintf (sql_order, sizeof (sql_order),
-			    "order by lat1 ,lon1 ,lat2,lon2,scale_min,scale_max  ");
-		if (debug)
-			printf ("streets_rebuild_list: STREETS mysql order: %s\n", sql_order);
-	}
 
 	{			// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
 		g_snprintf (sql_where, sizeof (sql_where),
@@ -467,7 +463,7 @@ streets_rebuild_list (void)
 		    // "SELECT lat,lon,alt,streets_type_id,proximity "
 		    "SELECT lat1,lon1,lat2,lon2,name,streets_type_id "
 		    "FROM streets "
-		    "%s %s LIMIT 200000", sql_where, sql_order);
+		    "%s LIMIT 200000", sql_where);
 
 	if (debug)
 		printf ("streets_rebuild_list: STREETS mysql query: %s\n",
@@ -527,9 +523,10 @@ streets_rebuild_list (void)
 				}
 			}
 			if (debug)
-				printf ("streets_rebuild_list: pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
-			printf ("Anz: %ld %ld\n", streets_list_count,
-				streets_list_limit);
+			{
+			    printf ("streets_rebuild_list: pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
+			    printf ("Anz: %ld %ld\n", streets_list_count, streets_list_limit);
+			}
 
 			// Save retrieved streets information into structure
 			(streets_list + streets_list_count)->lat1 = lat1;

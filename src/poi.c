@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.21  2005/05/13 21:27:48  tweety
+  delete order by to speed up database actions
+
   Revision 1.20  2005/04/29 17:41:57  tweety
   Moved the speech string to a seperate File
 
@@ -474,7 +477,6 @@ void
 poi_rebuild_list (void)
 {
 	char sql_query[5000];
-	char sql_order[5000];
 	char sql_where[5000];
 	struct timeval t;
 	int r, rges;
@@ -530,28 +532,6 @@ poi_rebuild_list (void)
 	gettimeofday (&t, NULL);
 	ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-	{			// gernerate mysql ORDER string
-		/*
-		 * char sql_order_numbers[5000];
-		 * g_snprintf (sql_order_numbers, sizeof (sql_order),
-		 * "(abs(%.6f - lat)+abs(%.6f - lon))"
-		 * ,lat_mid,lon_mid);
-		 * g_strdelimit (sql_order_numbers, ",", '.'); // For different LANG
-		 * 
-		 * g_snprintf (sql_order, sizeof (sql_order),
-		 * "order by scale_min,%s ",sql_order_numbers);
-		 */
-		g_snprintf (sql_order, sizeof (sql_order),
-			    "order by scale_min,scale_max ");
-		/*
-		 * g_snprintf (sql_order, sizeof (sql_order),
-		 * "order by scale ");
-		 */
-		if (mydebug)
-			printf ("poi_rebuild_list: POI mysql order: %s\n",
-				sql_order);
-	}
-
 	{			// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
 		g_snprintf (sql_where, sizeof (sql_where),
 			    "\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
@@ -572,8 +552,7 @@ poi_rebuild_list (void)
 		    // "SELECT lat,lon,alt,type_id,proximity "
 		    "SELECT lat,lon,name,poi_type_id " "FROM poi "
 		    //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-		    "%s %s LIMIT 40000", sql_where, sql_order);
-	/*    dbwherestring,sql_order,lat,lon);  */
+		    "%s LIMIT 40000", sql_where);
 
 	if (debug)
 		printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
