@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.58  2005/08/14 09:47:17  tweety
+seperate tracks into it own table in geoinfo database
+move Info's from TODO abaout geoinfo DB to Man Page
+rename poi.pl to geoinfo.pl
+
 Revision 1.57  2005/08/13 10:16:02  tweety
 extract all/some gps_handling parts to File src/gps_handler.c
 
@@ -2082,6 +2087,7 @@ gpsdrive started
 #include "track.h"
 #include "poi.h"
 #include "streets.h"
+#include "draw_tracks.h"
 #include "nmea_handler.h"
 #include <speech_strings.h>
 #include <speech_out.h>
@@ -2259,7 +2265,7 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 
 GtkWidget *l1, *l2, *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
-GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *maptogglebt,
+GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt, *maptogglebt,
 	*topotogglebt, *savetrackbt;
 GtkWidget *loadtrackbt, *radio1, *radio2, *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
@@ -2379,6 +2385,7 @@ gint etch = 1;
 gint drawgrid = FALSE;
 extern gint poi_draw;
 extern gint streets_draw;
+extern gint tracks_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
@@ -4914,6 +4921,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	{
 		poi_draw_list ();
 		streets_draw_list ();
+		tracks_draw_list ();
 	}
 
 	if (wpflag)
@@ -7771,6 +7779,20 @@ streets_draw_cb (GtkWidget * widget, guint datum)
 }
 
 /* *****************************************************************************
+ * switching TRACK on/off 
+ */
+gint
+tracks_draw_cb (GtkWidget * widget, guint datum)
+{
+	if ( ! tracks_draw ) 
+	    tracks_check_if_moved_reset();
+	tracks_draw = !tracks_draw;
+	tracks_draw_list ();
+	needtosave = TRUE;
+	return TRUE;
+}
+
+/* *****************************************************************************
  * switching SQL on/off 
  */
 gint
@@ -8264,6 +8286,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	    printf ("---------------------------------------------\n");
 	    poi_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
 	    streets_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
+	    tracks_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
 	}
 
 	// In Route mode Force next Route Point
@@ -10556,6 +10579,21 @@ main (int argc, char *argv[])
 	 * NULL);
 	 */
 
+	// Checkbox ---- TRACK Draw
+	tracks_draw_bt =
+		gtk_check_button_new_with_label (_("draw _Track"));
+	gtk_button_set_use_underline (GTK_BUTTON (tracks_draw_bt), TRUE);
+	if (!tracks_draw)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
+					      (tracks_draw_bt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (tracks_draw_bt), "clicked",
+			    GTK_SIGNAL_FUNC (tracks_draw_cb), (gpointer) 1);
+	/*
+	 * gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
+	 * _("This will show Track Data located in mySQL Database"),
+	 * NULL);
+	 */
+
 
 	// Checkbox ----   Use SQL
 	sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
@@ -11230,6 +11268,8 @@ main (int argc, char *argv[])
 				    FALSE, 0 * PADDING);
 		gtk_box_pack_start (GTK_BOX (vbox4), streets_draw_bt, FALSE,
 				    FALSE, 0 * PADDING);
+		gtk_box_pack_start (GTK_BOX (vbox4), tracks_draw_bt, FALSE,
+				    FALSE, 0 * PADDING);
 	}
 	if (usesql)
 		gtk_box_pack_start (GTK_BOX (vbox4), sqlbt, FALSE, FALSE,
@@ -11752,6 +11792,8 @@ main (int argc, char *argv[])
 			      NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
 			      _("Draw Streets found in mySQL"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
+			      _("Draw Tracks found in mySQL"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrackbt,
 			      _
 			      ("Save the track to given filename at program exit"),
@@ -11829,10 +11871,12 @@ main (int argc, char *argv[])
 	drawgrid_cb (NULL, 0);
 	poi_draw_cb (NULL, 0);
 	streets_draw_cb (NULL, 0);
+	tracks_draw_cb (NULL, 0);
 	needtosave = FALSE;
 
 	poi_init ();
 	streets_init ();
+	tracks_init ();
 
 	/*
 	 * setup TERM signal handler so that we can save evrything nicely when the
