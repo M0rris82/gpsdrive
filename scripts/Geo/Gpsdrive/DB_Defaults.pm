@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.4  2005/11/21 07:20:17  tweety
+# added fuel.agip.png
+#
 # Revision 1.3  2005/11/21 06:57:18  tweety
 # Update icons.txt and DB_Defaults to reflect new icons
 #
@@ -169,6 +172,7 @@ my $icons = {
     'transport.car'                   => "car",
     'transport.car.garage'            => "car_repair",
     'transport.car.gas station'       => "fuel",
+    'transport.car.gas station.agip'  => "fuel.agip",
     'transport.car.parking.handicapped'=> "handicapped",
     'transport.car.parking.park_and_ride'=> "P+R",
     'transport.car.parkinglot'        => "parking",

@@ -199,7 +199,7 @@ transport unknown.png
 transport.car car.gif
 transport.car.garage car_repair.gif
 transport.car.gas station fuel.png
-transport.car.gas station.agip fuel.png
+transport.car.gas station.agip fuel.agip.png
 transport.car.gas station.aral fuel.png
 transport.car.gas station.dea fuel.png
 transport.car.gas station.esso fuel.png
