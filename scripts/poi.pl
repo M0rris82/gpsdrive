@@ -5,6 +5,13 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.10  2005/04/07 06:20:45  tweety
+# allow lat-min also intead of lat_min for poi.pl as parameter
+# add POI::DBFuncs::enable_keys to WDB.pm for speed improovement
+# change to extern MYSQL mysql; in poi.c and streets.c
+# handle errors for g_renewi
+# start for usage of streets_type_list[streets_type_list_count].color from streets_type
+#
 # Revision 1.9  2005/04/06 06:39:10  tweety
 # po.pl get new import method JiGLE for importing JiGLE WLAN Spots
 # update TODO
@@ -129,6 +136,10 @@ GetOptions (
 	     'lat_max=s'           => \$lat_max,
 	     'lon_min=s'           => \$lon_min,      
 	     'lon_max=s'           => \$lon_max,
+	     'lat-min=s'           => \$lat_min,      
+	     'lat-max=s'           => \$lat_max,
+	     'lon-min=s'           => \$lon_min,      
+	     'lon-max=s'           => \$lon_max,
 	     'd'                   => \$debug,      
 	     'v'                   => \$verbose,      
 	     'debug_range=s'       => \$debug_range,      
@@ -277,6 +288,13 @@ Download and import WDB Data into geoinfo.streets Table
 These data consists of Country Borders and Waterlines
 
 Download is ~30 MB
+Unpacking: ~119 MB
+
+At the moment it only import europe Data for testing.
+Available regions would be: 
+	africa  asia  europe 
+	namer(North America) samer(South America)
+
 
 =item B<--mapsource_points='Filename'>
 
