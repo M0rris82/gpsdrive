@@ -274,6 +274,58 @@ Central POI Server:
 Unassigned User Requests:
 -------------------------
 
+<<<<<<< TODO
+One thing which would e nice; if you drop me/us a note on the things 
+you start programming. Just to synchronize work and  circumventing two 
+people trying to solve the same problem.
+
+One small comment: We are just planing a major userinterface change/rewrite. 
+The plan is, that this change will enable userinterface changes with anjuta and 
+glade-2. So if you want to make changes inside the userinterface code you  
+might want to wait another 3-4 weeks until these changes have made it into the CVS. 
+
+- Autosave Tracks periodically
+	- started: savetrack was seperated and got 
+			   option to save only aktuall Track an not track_ALL.sav
+- Find Error in gpsd 2.20 Handling concerning the number of seen 
+  Satelites and wrong latitude
+
+
+- Finding and correcting Bugs in the existing Code.
+- writing lots of usefull comments to the existing code.
+- extracting functionality into meaningfull extra files.
+- Help drawing icons for the waypoints.
+- Help make the code more error resistant
+- Help translate the gettext strings (po-Files) in to your native language
+- writing code for the handling the Point Of Interest Data 
+  inside the Database.
+     - this would be searching an point of interrest in 
+       the Database and displaying it on the map
+     - having an interface to select what kind of POIs to 
+       display at the moment
+- Have a close look over the POI-Types and add categories/new types 
+  including descriptions and icons
+- Point and measure Mode: Show the lat/lon of a point you clicked on. 
+  Click an another point and then show the distance between those two points.
+- writing and correcting text for the FAQ/man pages
+- find Data for importing into the new Datastructure POI/streets which 
+  have an acceptable public licence. The second step would then be to 
+  find a way to import this Data into the Database.
+- write routines to import gps Tracks into the Database. The difficulty 
+  here is to classify the Data and find corresponding tracks and merge 
+  them together. Also to find gaps in the tracks and split them at 
+  this point.
+- have a look at gdal and get an idea if we could combine gdal 
+  development and gpsdrive development
+- make gpsdrive compile inside eclipse.
+- refactor the variable names inside gpsdrive.
+- write an interface to use functions like gpsbabel gpstrans from inside
+  gpsdrive.
+
+.... many mode i didn't think of at the moment. If these are not enough 
+or don't please you, you also you might find more ideas if you have a 
+short look at the old mails inside the mailinglist.
+=======
 - Autosave Tracks periodically
 	- started: savetrack was seperated and got 
 		   option to save only aktuall Track an not track_ALL.sav
@@ -285,6 +337,7 @@ Unassigned User Requests:
 - add support for moving the map with the cursor keys if in POS-Mode
 
 - Correct/complete/add-new translations in the po Files
+>>>>>>> 1.7
 
 ====================================================================
 
