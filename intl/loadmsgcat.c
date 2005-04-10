@@ -46,7 +46,7 @@
 #   include <alloca.h>
 #  else
 #   ifdef _AIX
- #pragma alloca
+#pragma alloca
 #   else
 #    ifndef alloca
 char *alloca ();
@@ -476,12 +476,12 @@ char *alloca ();
 /* For systems that distinguish between text and binary I/O.
    O_BINARY is usually declared in <fcntl.h>. */
 #if !defined O_BINARY && defined _O_BINARY
-  /* For MSC-compatible compilers.  */
+/* For MSC-compatible compilers.  */
 # define O_BINARY _O_BINARY
 # define O_TEXT _O_TEXT
 #endif
 #ifdef __BEOS__
-  /* BeOS 5 has O_BINARY and O_TEXT, but they have no effect.  */
+/* BeOS 5 has O_BINARY and O_TEXT, but they have no effect.  */
 # undef O_BINARY
 # undef O_TEXT
 #endif
@@ -510,251 +510,251 @@ get_sysdep_segment_value (const char *name)
   if (name[0] == 'P' && name[1] == 'R' && name[2] == 'I')
     {
       if (name[3] == 'd' || name[3] == 'i' || name[3] == 'o' || name[3] == 'u'
-	  || name[3] == 'x' || name[3] == 'X')
-	{
-	  if (name[4] == '8' && name[5] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRId8;
-	      if (name[3] == 'i')
-		return PRIi8;
-	      if (name[3] == 'o')
-		return PRIo8;
-	      if (name[3] == 'u')
-		return PRIu8;
-	      if (name[3] == 'x')
-		return PRIx8;
-	      if (name[3] == 'X')
-		return PRIX8;
-	      abort ();
-	    }
-	  if (name[4] == '1' && name[5] == '6' && name[6] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRId16;
-	      if (name[3] == 'i')
-		return PRIi16;
-	      if (name[3] == 'o')
-		return PRIo16;
-	      if (name[3] == 'u')
-		return PRIu16;
-	      if (name[3] == 'x')
-		return PRIx16;
-	      if (name[3] == 'X')
-		return PRIX16;
-	      abort ();
-	    }
-	  if (name[4] == '3' && name[5] == '2' && name[6] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRId32;
-	      if (name[3] == 'i')
-		return PRIi32;
-	      if (name[3] == 'o')
-		return PRIo32;
-	      if (name[3] == 'u')
-		return PRIu32;
-	      if (name[3] == 'x')
-		return PRIx32;
-	      if (name[3] == 'X')
-		return PRIX32;
-	      abort ();
-	    }
-	  if (name[4] == '6' && name[5] == '4' && name[6] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRId64;
-	      if (name[3] == 'i')
-		return PRIi64;
-	      if (name[3] == 'o')
-		return PRIo64;
-	      if (name[3] == 'u')
-		return PRIu64;
-	      if (name[3] == 'x')
-		return PRIx64;
-	      if (name[3] == 'X')
-		return PRIX64;
-	      abort ();
-	    }
-	  if (name[4] == 'L' && name[5] == 'E' && name[6] == 'A'
-	      && name[7] == 'S' && name[8] == 'T')
-	    {
-	      if (name[9] == '8' && name[10] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdLEAST8;
-		  if (name[3] == 'i')
-		    return PRIiLEAST8;
-		  if (name[3] == 'o')
-		    return PRIoLEAST8;
-		  if (name[3] == 'u')
-		    return PRIuLEAST8;
-		  if (name[3] == 'x')
-		    return PRIxLEAST8;
-		  if (name[3] == 'X')
-		    return PRIXLEAST8;
-		  abort ();
-		}
-	      if (name[9] == '1' && name[10] == '6' && name[11] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdLEAST16;
-		  if (name[3] == 'i')
-		    return PRIiLEAST16;
-		  if (name[3] == 'o')
-		    return PRIoLEAST16;
-		  if (name[3] == 'u')
-		    return PRIuLEAST16;
-		  if (name[3] == 'x')
-		    return PRIxLEAST16;
-		  if (name[3] == 'X')
-		    return PRIXLEAST16;
-		  abort ();
-		}
-	      if (name[9] == '3' && name[10] == '2' && name[11] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdLEAST32;
-		  if (name[3] == 'i')
-		    return PRIiLEAST32;
-		  if (name[3] == 'o')
-		    return PRIoLEAST32;
-		  if (name[3] == 'u')
-		    return PRIuLEAST32;
-		  if (name[3] == 'x')
-		    return PRIxLEAST32;
-		  if (name[3] == 'X')
-		    return PRIXLEAST32;
-		  abort ();
-		}
-	      if (name[9] == '6' && name[10] == '4' && name[11] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdLEAST64;
-		  if (name[3] == 'i')
-		    return PRIiLEAST64;
-		  if (name[3] == 'o')
-		    return PRIoLEAST64;
-		  if (name[3] == 'u')
-		    return PRIuLEAST64;
-		  if (name[3] == 'x')
-		    return PRIxLEAST64;
-		  if (name[3] == 'X')
-		    return PRIXLEAST64;
-		  abort ();
-		}
-	    }
-	  if (name[4] == 'F' && name[5] == 'A' && name[6] == 'S'
-	      && name[7] == 'T')
-	    {
-	      if (name[8] == '8' && name[9] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdFAST8;
-		  if (name[3] == 'i')
-		    return PRIiFAST8;
-		  if (name[3] == 'o')
-		    return PRIoFAST8;
-		  if (name[3] == 'u')
-		    return PRIuFAST8;
-		  if (name[3] == 'x')
-		    return PRIxFAST8;
-		  if (name[3] == 'X')
-		    return PRIXFAST8;
-		  abort ();
-		}
-	      if (name[8] == '1' && name[9] == '6' && name[10] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdFAST16;
-		  if (name[3] == 'i')
-		    return PRIiFAST16;
-		  if (name[3] == 'o')
-		    return PRIoFAST16;
-		  if (name[3] == 'u')
-		    return PRIuFAST16;
-		  if (name[3] == 'x')
-		    return PRIxFAST16;
-		  if (name[3] == 'X')
-		    return PRIXFAST16;
-		  abort ();
-		}
-	      if (name[8] == '3' && name[9] == '2' && name[10] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdFAST32;
-		  if (name[3] == 'i')
-		    return PRIiFAST32;
-		  if (name[3] == 'o')
-		    return PRIoFAST32;
-		  if (name[3] == 'u')
-		    return PRIuFAST32;
-		  if (name[3] == 'x')
-		    return PRIxFAST32;
-		  if (name[3] == 'X')
-		    return PRIXFAST32;
-		  abort ();
-		}
-	      if (name[8] == '6' && name[9] == '4' && name[10] == '\0')
-		{
-		  if (name[3] == 'd')
-		    return PRIdFAST64;
-		  if (name[3] == 'i')
-		    return PRIiFAST64;
-		  if (name[3] == 'o')
-		    return PRIoFAST64;
-		  if (name[3] == 'u')
-		    return PRIuFAST64;
-		  if (name[3] == 'x')
-		    return PRIxFAST64;
-		  if (name[3] == 'X')
-		    return PRIXFAST64;
-		  abort ();
-		}
-	    }
-	  if (name[4] == 'M' && name[5] == 'A' && name[6] == 'X'
-	      && name[7] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRIdMAX;
-	      if (name[3] == 'i')
-		return PRIiMAX;
-	      if (name[3] == 'o')
-		return PRIoMAX;
-	      if (name[3] == 'u')
-		return PRIuMAX;
-	      if (name[3] == 'x')
-		return PRIxMAX;
-	      if (name[3] == 'X')
-		return PRIXMAX;
-	      abort ();
-	    }
-	  if (name[4] == 'P' && name[5] == 'T' && name[6] == 'R'
-	      && name[7] == '\0')
-	    {
-	      if (name[3] == 'd')
-		return PRIdPTR;
-	      if (name[3] == 'i')
-		return PRIiPTR;
-	      if (name[3] == 'o')
-		return PRIoPTR;
-	      if (name[3] == 'u')
-		return PRIuPTR;
-	      if (name[3] == 'x')
-		return PRIxPTR;
-	      if (name[3] == 'X')
-		return PRIXPTR;
-	      abort ();
-	    }
-	}
+					|| name[3] == 'x' || name[3] == 'X')
+				{
+					if (name[4] == '8' && name[5] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRId8;
+							if (name[3] == 'i')
+								return PRIi8;
+							if (name[3] == 'o')
+								return PRIo8;
+							if (name[3] == 'u')
+								return PRIu8;
+							if (name[3] == 'x')
+								return PRIx8;
+							if (name[3] == 'X')
+								return PRIX8;
+							abort ();
+						}
+					if (name[4] == '1' && name[5] == '6' && name[6] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRId16;
+							if (name[3] == 'i')
+								return PRIi16;
+							if (name[3] == 'o')
+								return PRIo16;
+							if (name[3] == 'u')
+								return PRIu16;
+							if (name[3] == 'x')
+								return PRIx16;
+							if (name[3] == 'X')
+								return PRIX16;
+							abort ();
+						}
+					if (name[4] == '3' && name[5] == '2' && name[6] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRId32;
+							if (name[3] == 'i')
+								return PRIi32;
+							if (name[3] == 'o')
+								return PRIo32;
+							if (name[3] == 'u')
+								return PRIu32;
+							if (name[3] == 'x')
+								return PRIx32;
+							if (name[3] == 'X')
+								return PRIX32;
+							abort ();
+						}
+					if (name[4] == '6' && name[5] == '4' && name[6] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRId64;
+							if (name[3] == 'i')
+								return PRIi64;
+							if (name[3] == 'o')
+								return PRIo64;
+							if (name[3] == 'u')
+								return PRIu64;
+							if (name[3] == 'x')
+								return PRIx64;
+							if (name[3] == 'X')
+								return PRIX64;
+							abort ();
+						}
+					if (name[4] == 'L' && name[5] == 'E' && name[6] == 'A'
+							&& name[7] == 'S' && name[8] == 'T')
+						{
+							if (name[9] == '8' && name[10] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdLEAST8;
+									if (name[3] == 'i')
+										return PRIiLEAST8;
+									if (name[3] == 'o')
+										return PRIoLEAST8;
+									if (name[3] == 'u')
+										return PRIuLEAST8;
+									if (name[3] == 'x')
+										return PRIxLEAST8;
+									if (name[3] == 'X')
+										return PRIXLEAST8;
+									abort ();
+								}
+							if (name[9] == '1' && name[10] == '6' && name[11] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdLEAST16;
+									if (name[3] == 'i')
+										return PRIiLEAST16;
+									if (name[3] == 'o')
+										return PRIoLEAST16;
+									if (name[3] == 'u')
+										return PRIuLEAST16;
+									if (name[3] == 'x')
+										return PRIxLEAST16;
+									if (name[3] == 'X')
+										return PRIXLEAST16;
+									abort ();
+								}
+							if (name[9] == '3' && name[10] == '2' && name[11] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdLEAST32;
+									if (name[3] == 'i')
+										return PRIiLEAST32;
+									if (name[3] == 'o')
+										return PRIoLEAST32;
+									if (name[3] == 'u')
+										return PRIuLEAST32;
+									if (name[3] == 'x')
+										return PRIxLEAST32;
+									if (name[3] == 'X')
+										return PRIXLEAST32;
+									abort ();
+								}
+							if (name[9] == '6' && name[10] == '4' && name[11] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdLEAST64;
+									if (name[3] == 'i')
+										return PRIiLEAST64;
+									if (name[3] == 'o')
+										return PRIoLEAST64;
+									if (name[3] == 'u')
+										return PRIuLEAST64;
+									if (name[3] == 'x')
+										return PRIxLEAST64;
+									if (name[3] == 'X')
+										return PRIXLEAST64;
+									abort ();
+								}
+						}
+					if (name[4] == 'F' && name[5] == 'A' && name[6] == 'S'
+							&& name[7] == 'T')
+						{
+							if (name[8] == '8' && name[9] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdFAST8;
+									if (name[3] == 'i')
+										return PRIiFAST8;
+									if (name[3] == 'o')
+										return PRIoFAST8;
+									if (name[3] == 'u')
+										return PRIuFAST8;
+									if (name[3] == 'x')
+										return PRIxFAST8;
+									if (name[3] == 'X')
+										return PRIXFAST8;
+									abort ();
+								}
+							if (name[8] == '1' && name[9] == '6' && name[10] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdFAST16;
+									if (name[3] == 'i')
+										return PRIiFAST16;
+									if (name[3] == 'o')
+										return PRIoFAST16;
+									if (name[3] == 'u')
+										return PRIuFAST16;
+									if (name[3] == 'x')
+										return PRIxFAST16;
+									if (name[3] == 'X')
+										return PRIXFAST16;
+									abort ();
+								}
+							if (name[8] == '3' && name[9] == '2' && name[10] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdFAST32;
+									if (name[3] == 'i')
+										return PRIiFAST32;
+									if (name[3] == 'o')
+										return PRIoFAST32;
+									if (name[3] == 'u')
+										return PRIuFAST32;
+									if (name[3] == 'x')
+										return PRIxFAST32;
+									if (name[3] == 'X')
+										return PRIXFAST32;
+									abort ();
+								}
+							if (name[8] == '6' && name[9] == '4' && name[10] == '\0')
+								{
+									if (name[3] == 'd')
+										return PRIdFAST64;
+									if (name[3] == 'i')
+										return PRIiFAST64;
+									if (name[3] == 'o')
+										return PRIoFAST64;
+									if (name[3] == 'u')
+										return PRIuFAST64;
+									if (name[3] == 'x')
+										return PRIxFAST64;
+									if (name[3] == 'X')
+										return PRIXFAST64;
+									abort ();
+								}
+						}
+					if (name[4] == 'M' && name[5] == 'A' && name[6] == 'X'
+							&& name[7] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRIdMAX;
+							if (name[3] == 'i')
+								return PRIiMAX;
+							if (name[3] == 'o')
+								return PRIoMAX;
+							if (name[3] == 'u')
+								return PRIuMAX;
+							if (name[3] == 'x')
+								return PRIxMAX;
+							if (name[3] == 'X')
+								return PRIXMAX;
+							abort ();
+						}
+					if (name[4] == 'P' && name[5] == 'T' && name[6] == 'R'
+							&& name[7] == '\0')
+						{
+							if (name[3] == 'd')
+								return PRIdPTR;
+							if (name[3] == 'i')
+								return PRIiPTR;
+							if (name[3] == 'o')
+								return PRIoPTR;
+							if (name[3] == 'u')
+								return PRIuPTR;
+							if (name[3] == 'x')
+								return PRIxPTR;
+							if (name[3] == 'X')
+								return PRIXPTR;
+							abort ();
+						}
+				}
     }
   /* Test for a glibc specific printf() format directive flag.  */
   if (name[0] == 'I' && name[1] == '\0')
     {
 #if defined _LIBC || __GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2)
       /* The 'I' flag, in numeric format directives, replaces ASCII digits
-	 with the 'outdigits' defined in the LC_CTYPE locale facet.  This is
-	 used for Farsi (Persian) and maybe Arabic.  */
+				 with the 'outdigits' defined in the LC_CTYPE locale facet.  This is
+				 used for Farsi (Persian) and maybe Arabic.  */
       return "I";
 #else
       return "";
@@ -769,8 +769,8 @@ get_sysdep_segment_value (const char *name)
 const char *
 internal_function
 _nl_init_domain_conv (struct loaded_l10nfile *domain_file,
-		      struct loaded_domain *domain,
-		      struct binding *domainbinding)
+											struct loaded_domain *domain,
+											struct binding *domainbinding)
 {
   /* Find out about the character set the file is encoded with.
      This can be found (in textual form) in the entry "".  If this
@@ -802,81 +802,81 @@ _nl_init_domain_conv (struct loaded_l10nfile *domain_file,
 
       charsetstr = strstr (nullentry, "charset=");
       if (charsetstr != NULL)
-	{
-	  size_t len;
-	  char *charset;
-	  const char *outcharset;
+				{
+					size_t len;
+					char *charset;
+					const char *outcharset;
 
-	  charsetstr += strlen ("charset=");
-	  len = strcspn (charsetstr, " \t\n");
+					charsetstr += strlen ("charset=");
+					len = strcspn (charsetstr, " \t\n");
 
-	  charset = (char *) alloca (len + 1);
+					charset = (char *) alloca (len + 1);
 # if defined _LIBC || HAVE_MEMPCPY
-	  *((char *) mempcpy (charset, charsetstr, len)) = '\0';
+					*((char *) mempcpy (charset, charsetstr, len)) = '\0';
 # else
-	  memcpy (charset, charsetstr, len);
-	  charset[len] = '\0';
+					memcpy (charset, charsetstr, len);
+					charset[len] = '\0';
 # endif
 
-	  /* The output charset should normally be determined by the
-	     locale.  But sometimes the locale is not used or not correctly
-	     set up, so we provide a possibility for the user to override
-	     this.  Moreover, the value specified through
-	     bind_textdomain_codeset overrides both.  */
-	  if (domainbinding != NULL && domainbinding->codeset != NULL)
-	    outcharset = domainbinding->codeset;
-	  else
-	    {
-	      outcharset = getenv ("OUTPUT_CHARSET");
-	      if (outcharset == NULL || outcharset[0] == '\0')
-		{
+					/* The output charset should normally be determined by the
+						 locale.  But sometimes the locale is not used or not correctly
+						 set up, so we provide a possibility for the user to override
+						 this.  Moreover, the value specified through
+						 bind_textdomain_codeset overrides both.  */
+					if (domainbinding != NULL && domainbinding->codeset != NULL)
+						outcharset = domainbinding->codeset;
+					else
+						{
+							outcharset = getenv ("OUTPUT_CHARSET");
+							if (outcharset == NULL || outcharset[0] == '\0')
+								{
 # ifdef _LIBC
-		  outcharset = _NL_CURRENT (LC_CTYPE, CODESET);
+									outcharset = _NL_CURRENT (LC_CTYPE, CODESET);
 # else
 #  if HAVE_ICONV
-		  extern const char *locale_charset (void);
-		  outcharset = locale_charset ();
+									extern const char *locale_charset (void);
+									outcharset = locale_charset ();
 #  endif
 # endif
-		}
-	    }
+								}
+						}
 
 # ifdef _LIBC
-	  /* We always want to use transliteration.  */
-	  outcharset = norm_add_slashes (outcharset, "TRANSLIT");
-	  charset = norm_add_slashes (charset, NULL);
-	  if (__gconv_open (outcharset, charset, &domain->conv,
-			    GCONV_AVOID_NOCONV)
-	      != __GCONV_OK)
-	    domain->conv = (__gconv_t) -1;
+					/* We always want to use transliteration.  */
+					outcharset = norm_add_slashes (outcharset, "TRANSLIT");
+					charset = norm_add_slashes (charset, NULL);
+					if (__gconv_open (outcharset, charset, &domain->conv,
+														GCONV_AVOID_NOCONV)
+							!= __GCONV_OK)
+						domain->conv = (__gconv_t) -1;
 # else
 #  if HAVE_ICONV
-	  /* When using GNU libc >= 2.2 or GNU libiconv >= 1.5,
-	     we want to use transliteration.  */
+					/* When using GNU libc >= 2.2 or GNU libiconv >= 1.5,
+						 we want to use transliteration.  */
 #   if (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 2) || __GLIBC__ > 2 \
        || _LIBICONV_VERSION >= 0x0105
-	  if (strchr (outcharset, '/') == NULL)
-	    {
-	      char *tmp;
+					if (strchr (outcharset, '/') == NULL)
+						{
+							char *tmp;
 
-	      len = strlen (outcharset);
-	      tmp = (char *) alloca (len + 10 + 1);
-	      memcpy (tmp, outcharset, len);
-	      memcpy (tmp + len, "//TRANSLIT", 10 + 1);
-	      outcharset = tmp;
+							len = strlen (outcharset);
+							tmp = (char *) alloca (len + 10 + 1);
+							memcpy (tmp, outcharset, len);
+							memcpy (tmp + len, "//TRANSLIT", 10 + 1);
+							outcharset = tmp;
 
-	      domain->conv = iconv_open (outcharset, charset);
+							domain->conv = iconv_open (outcharset, charset);
 
-	      freea (outcharset);
-	    }
-	  else
+							freea (outcharset);
+						}
+					else
 #   endif
-	    domain->conv = iconv_open (outcharset, charset);
+						domain->conv = iconv_open (outcharset, charset);
 #  endif
 # endif
 
-	  freea (charset);
-	}
+					freea (charset);
+				}
 #endif /* _LIBC || HAVE_ICONV */
     }
 
@@ -907,7 +907,7 @@ _nl_free_domain_conv (struct loaded_domain *domain)
 void
 internal_function
 _nl_load_domain (struct loaded_l10nfile *domain_file,
-		 struct binding *domainbinding)
+								 struct binding *domainbinding)
 {
   int fd;
   size_t size;
@@ -960,7 +960,7 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
   /* Now we are ready to load the file.  If mmap() is available we try
      this first.  If not available or it failed we try to load it.  */
   data = (struct mo_file_header *) mmap (NULL, size, PROT_READ,
-					 MAP_PRIVATE, fd, 0);
+																				 MAP_PRIVATE, fd, 0);
 
   if (__builtin_expect (data != (struct mo_file_header *) -1, 1))
     {
@@ -979,25 +979,25 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
 
       data = (struct mo_file_header *) malloc (size);
       if (data == NULL)
-	return;
+				return;
 
       to_read = size;
       read_ptr = (char *) data;
       do
-	{
-	  long int nb = (long int) read (fd, read_ptr, to_read);
-	  if (nb <= 0)
-	    {
+				{
+					long int nb = (long int) read (fd, read_ptr, to_read);
+					if (nb <= 0)
+						{
 #ifdef EINTR
-	      if (nb == -1 && errno == EINTR)
-		continue;
+							if (nb == -1 && errno == EINTR)
+								continue;
 #endif
-	      close (fd);
-	      return;
-	    }
-	  read_ptr += nb;
-	  to_read -= nb;
-	}
+							close (fd);
+							return;
+						}
+					read_ptr += nb;
+					to_read -= nb;
+				}
       while (to_read > 0);
 
       close (fd);
@@ -1006,15 +1006,15 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
   /* Using the magic number we can test whether it really is a message
      catalog file.  */
   if (__builtin_expect (data->magic != _MAGIC && data->magic != _MAGIC_SWAPPED,
-			0))
+												0))
     {
       /* The magic number is wrong: not a message catalog file.  */
 #ifdef HAVE_MMAP
       if (use_mmap)
-	munmap ((caddr_t) data, size);
+				munmap ((caddr_t) data, size);
       else
 #endif
-	free (data);
+				free (data);
       return;
     }
 
@@ -1038,348 +1038,348 @@ _nl_load_domain (struct loaded_l10nfile *domain_file,
     case 1:
       domain->nstrings = W (domain->must_swap, data->nstrings);
       domain->orig_tab = (const struct string_desc *)
-	((char *) data + W (domain->must_swap, data->orig_tab_offset));
+				((char *) data + W (domain->must_swap, data->orig_tab_offset));
       domain->trans_tab = (const struct string_desc *)
-	((char *) data + W (domain->must_swap, data->trans_tab_offset));
+				((char *) data + W (domain->must_swap, data->trans_tab_offset));
       domain->hash_size = W (domain->must_swap, data->hash_tab_size);
       domain->hash_tab =
-	(domain->hash_size > 2
-	 ? (const nls_uint32 *)
-	   ((char *) data + W (domain->must_swap, data->hash_tab_offset))
-	 : NULL);
+				(domain->hash_size > 2
+				 ? (const nls_uint32 *)
+				 ((char *) data + W (domain->must_swap, data->hash_tab_offset))
+				 : NULL);
       domain->must_swap_hash_tab = domain->must_swap;
 
       /* Now dispatch on the minor revision.  */
       switch (revision & 0xffff)
-	{
-	case 0:
-	  domain->n_sysdep_strings = 0;
-	  domain->orig_sysdep_tab = NULL;
-	  domain->trans_sysdep_tab = NULL;
-	  break;
-	case 1:
-	default:
-	  {
-	    nls_uint32 n_sysdep_strings;
-
-	    if (domain->hash_tab == NULL)
-	      /* This is invalid.  These minor revisions need a hash table.  */
-	      goto invalid;
-
-	    n_sysdep_strings =
-	      W (domain->must_swap, data->n_sysdep_strings);
-	    if (n_sysdep_strings > 0)
-	      {
-		nls_uint32 n_sysdep_segments;
-		const struct sysdep_segment *sysdep_segments;
-		const char **sysdep_segment_values;
-		const nls_uint32 *orig_sysdep_tab;
-		const nls_uint32 *trans_sysdep_tab;
-		nls_uint32 n_inmem_sysdep_strings;
-		size_t memneed;
-		char *mem;
-		struct sysdep_string_desc *inmem_orig_sysdep_tab;
-		struct sysdep_string_desc *inmem_trans_sysdep_tab;
-		nls_uint32 *inmem_hash_tab;
-		unsigned int i, j;
-
-		/* Get the values of the system dependent segments.  */
-		n_sysdep_segments =
-		  W (domain->must_swap, data->n_sysdep_segments);
-		sysdep_segments = (const struct sysdep_segment *)
-		  ((char *) data
-		   + W (domain->must_swap, data->sysdep_segments_offset));
-		sysdep_segment_values =
-		  alloca (n_sysdep_segments * sizeof (const char *));
-		for (i = 0; i < n_sysdep_segments; i++)
-		  {
-		    const char *name =
-		      (char *) data
-		      + W (domain->must_swap, sysdep_segments[i].offset);
-		    nls_uint32 namelen =
-		      W (domain->must_swap, sysdep_segments[i].length);
-
-		    if (!(namelen > 0 && name[namelen - 1] == '\0'))
-		      {
-			freea (sysdep_segment_values);
-			goto invalid;
-		      }
-
-		    sysdep_segment_values[i] = get_sysdep_segment_value (name);
-		  }
-
-		orig_sysdep_tab = (const nls_uint32 *)
-		  ((char *) data
-		   + W (domain->must_swap, data->orig_sysdep_tab_offset));
-		trans_sysdep_tab = (const nls_uint32 *)
-		  ((char *) data
-		   + W (domain->must_swap, data->trans_sysdep_tab_offset));
-
-		/* Compute the amount of additional memory needed for the
-		   system dependent strings and the augmented hash table.
-		   At the same time, also drop string pairs which refer to
-		   an undefined system dependent segment.  */
-		n_inmem_sysdep_strings = 0;
-		memneed = domain->hash_size * sizeof (nls_uint32);
-		for (i = 0; i < n_sysdep_strings; i++)
-		  {
-		    int valid = 1;
-		    size_t needs[2];
-
-		    for (j = 0; j < 2; j++)
-		      {
-			const struct sysdep_string *sysdep_string =
-			  (const struct sysdep_string *)
-			  ((char *) data
-			   + W (domain->must_swap,
-				j == 0
-				? orig_sysdep_tab[i]
-				: trans_sysdep_tab[i]));
-			size_t need = 0;
-			const struct segment_pair *p = sysdep_string->segments;
-
-			if (W (domain->must_swap, p->sysdepref) != SEGMENTS_END)
-			  for (p = sysdep_string->segments;; p++)
-			    {
-			      nls_uint32 sysdepref;
-
-			      need += W (domain->must_swap, p->segsize);
-
-			      sysdepref = W (domain->must_swap, p->sysdepref);
-			      if (sysdepref == SEGMENTS_END)
-				break;
-
-			      if (sysdepref >= n_sysdep_segments)
 				{
-				  /* Invalid.  */
-				  freea (sysdep_segment_values);
-				  goto invalid;
+				case 0:
+					domain->n_sysdep_strings = 0;
+					domain->orig_sysdep_tab = NULL;
+					domain->trans_sysdep_tab = NULL;
+					break;
+				case 1:
+				default:
+					{
+						nls_uint32 n_sysdep_strings;
+
+						if (domain->hash_tab == NULL)
+							/* This is invalid.  These minor revisions need a hash table.  */
+							goto invalid;
+
+						n_sysdep_strings =
+							W (domain->must_swap, data->n_sysdep_strings);
+						if (n_sysdep_strings > 0)
+							{
+								nls_uint32 n_sysdep_segments;
+								const struct sysdep_segment *sysdep_segments;
+								const char **sysdep_segment_values;
+								const nls_uint32 *orig_sysdep_tab;
+								const nls_uint32 *trans_sysdep_tab;
+								nls_uint32 n_inmem_sysdep_strings;
+								size_t memneed;
+								char *mem;
+								struct sysdep_string_desc *inmem_orig_sysdep_tab;
+								struct sysdep_string_desc *inmem_trans_sysdep_tab;
+								nls_uint32 *inmem_hash_tab;
+								unsigned int i, j;
+
+								/* Get the values of the system dependent segments.  */
+								n_sysdep_segments =
+									W (domain->must_swap, data->n_sysdep_segments);
+								sysdep_segments = (const struct sysdep_segment *)
+									((char *) data
+									 + W (domain->must_swap, data->sysdep_segments_offset));
+								sysdep_segment_values =
+									alloca (n_sysdep_segments * sizeof (const char *));
+								for (i = 0; i < n_sysdep_segments; i++)
+									{
+										const char *name =
+											(char *) data
+											+ W (domain->must_swap, sysdep_segments[i].offset);
+										nls_uint32 namelen =
+											W (domain->must_swap, sysdep_segments[i].length);
+
+										if (!(namelen > 0 && name[namelen - 1] == '\0'))
+											{
+												freea (sysdep_segment_values);
+												goto invalid;
+											}
+
+										sysdep_segment_values[i] = get_sysdep_segment_value (name);
+									}
+
+								orig_sysdep_tab = (const nls_uint32 *)
+									((char *) data
+									 + W (domain->must_swap, data->orig_sysdep_tab_offset));
+								trans_sysdep_tab = (const nls_uint32 *)
+									((char *) data
+									 + W (domain->must_swap, data->trans_sysdep_tab_offset));
+
+								/* Compute the amount of additional memory needed for the
+									 system dependent strings and the augmented hash table.
+									 At the same time, also drop string pairs which refer to
+									 an undefined system dependent segment.  */
+								n_inmem_sysdep_strings = 0;
+								memneed = domain->hash_size * sizeof (nls_uint32);
+								for (i = 0; i < n_sysdep_strings; i++)
+									{
+										int valid = 1;
+										size_t needs[2];
+
+										for (j = 0; j < 2; j++)
+											{
+												const struct sysdep_string *sysdep_string =
+													(const struct sysdep_string *)
+													((char *) data
+													 + W (domain->must_swap,
+																j == 0
+																? orig_sysdep_tab[i]
+																: trans_sysdep_tab[i]));
+												size_t need = 0;
+												const struct segment_pair *p = sysdep_string->segments;
+
+												if (W (domain->must_swap, p->sysdepref) != SEGMENTS_END)
+													for (p = sysdep_string->segments;; p++)
+														{
+															nls_uint32 sysdepref;
+
+															need += W (domain->must_swap, p->segsize);
+
+															sysdepref = W (domain->must_swap, p->sysdepref);
+															if (sysdepref == SEGMENTS_END)
+																break;
+
+															if (sysdepref >= n_sysdep_segments)
+																{
+																	/* Invalid.  */
+																	freea (sysdep_segment_values);
+																	goto invalid;
+																}
+
+															if (sysdep_segment_values[sysdepref] == NULL)
+																{
+																	/* This particular string pair is invalid.  */
+																	valid = 0;
+																	break;
+																}
+
+															need += strlen (sysdep_segment_values[sysdepref]);
+														}
+
+												needs[j] = need;
+												if (!valid)
+													break;
+											}
+
+										if (valid)
+											{
+												n_inmem_sysdep_strings++;
+												memneed += needs[0] + needs[1];
+											}
+									}
+								memneed += 2 * n_inmem_sysdep_strings
+									* sizeof (struct sysdep_string_desc);
+
+								if (n_inmem_sysdep_strings > 0)
+									{
+										unsigned int k;
+
+										/* Allocate additional memory.  */
+										mem = (char *) malloc (memneed);
+										if (mem == NULL)
+											goto invalid;
+
+										domain->malloced = mem;
+										inmem_orig_sysdep_tab = (struct sysdep_string_desc *) mem;
+										mem += n_inmem_sysdep_strings
+											* sizeof (struct sysdep_string_desc);
+										inmem_trans_sysdep_tab = (struct sysdep_string_desc *) mem;
+										mem += n_inmem_sysdep_strings
+											* sizeof (struct sysdep_string_desc);
+										inmem_hash_tab = (nls_uint32 *) mem;
+										mem += domain->hash_size * sizeof (nls_uint32);
+
+										/* Compute the system dependent strings.  */
+										k = 0;
+										for (i = 0; i < n_sysdep_strings; i++)
+											{
+												int valid = 1;
+
+												for (j = 0; j < 2; j++)
+													{
+														const struct sysdep_string *sysdep_string =
+															(const struct sysdep_string *)
+															((char *) data
+															 + W (domain->must_swap,
+																		j == 0
+																		? orig_sysdep_tab[i]
+																		: trans_sysdep_tab[i]));
+														const struct segment_pair *p =
+															sysdep_string->segments;
+
+														if (W (domain->must_swap, p->sysdepref)
+																!= SEGMENTS_END)
+															for (p = sysdep_string->segments;; p++)
+																{
+																	nls_uint32 sysdepref;
+
+																	sysdepref =
+																		W (domain->must_swap, p->sysdepref);
+																	if (sysdepref == SEGMENTS_END)
+																		break;
+
+																	if (sysdep_segment_values[sysdepref] == NULL)
+																		{
+																			/* This particular string pair is
+																				 invalid.  */
+																			valid = 0;
+																			break;
+																		}
+																}
+
+														if (!valid)
+															break;
+													}
+
+												if (valid)
+													{
+														for (j = 0; j < 2; j++)
+															{
+																const struct sysdep_string *sysdep_string =
+																	(const struct sysdep_string *)
+																	((char *) data
+																	 + W (domain->must_swap,
+																				j == 0
+																				? orig_sysdep_tab[i]
+																				: trans_sysdep_tab[i]));
+																const char *static_segments =
+																	(char *) data
+																	+ W (domain->must_swap, sysdep_string->offset);
+																const struct segment_pair *p =
+																	sysdep_string->segments;
+
+																/* Concatenate the segments, and fill
+																	 inmem_orig_sysdep_tab[k] (for j == 0) and
+																	 inmem_trans_sysdep_tab[k] (for j == 1).  */
+
+																struct sysdep_string_desc *inmem_tab_entry =
+																	(j == 0
+																	 ? inmem_orig_sysdep_tab
+																	 : inmem_trans_sysdep_tab)
+																	+ k;
+
+																if (W (domain->must_swap, p->sysdepref)
+																		== SEGMENTS_END)
+																	{
+																		/* Only one static segment.  */
+																		inmem_tab_entry->length =
+																			W (domain->must_swap, p->segsize);
+																		inmem_tab_entry->pointer = static_segments;
+																	}
+																else
+																	{
+																		inmem_tab_entry->pointer = mem;
+
+																		for (p = sysdep_string->segments;; p++)
+																			{
+																				nls_uint32 segsize =
+																					W (domain->must_swap, p->segsize);
+																				nls_uint32 sysdepref =
+																					W (domain->must_swap, p->sysdepref);
+																				size_t n;
+
+																				if (segsize > 0)
+																					{
+																						memcpy (mem, static_segments, segsize);
+																						mem += segsize;
+																						static_segments += segsize;
+																					}
+
+																				if (sysdepref == SEGMENTS_END)
+																					break;
+
+																				n = strlen (sysdep_segment_values[sysdepref]);
+																				memcpy (mem, sysdep_segment_values[sysdepref], n);
+																				mem += n;
+																			}
+
+																		inmem_tab_entry->length =
+																			mem - inmem_tab_entry->pointer;
+																	}
+															}
+
+														k++;
+													}
+											}
+										if (k != n_inmem_sysdep_strings)
+											abort ();
+
+										/* Compute the augmented hash table.  */
+										for (i = 0; i < domain->hash_size; i++)
+											inmem_hash_tab[i] =
+												W (domain->must_swap_hash_tab, domain->hash_tab[i]);
+										for (i = 0; i < n_inmem_sysdep_strings; i++)
+											{
+												const char *msgid = inmem_orig_sysdep_tab[i].pointer;
+												nls_uint32 hash_val = hash_string (msgid);
+												nls_uint32 idx = hash_val % domain->hash_size;
+												nls_uint32 incr =
+													1 + (hash_val % (domain->hash_size - 2));
+
+												for (;;)
+													{
+														if (inmem_hash_tab[idx] == 0)
+															{
+																/* Hash table entry is empty.  Use it.  */
+																inmem_hash_tab[idx] = 1 + domain->nstrings + i;
+																break;
+															}
+
+														if (idx >= domain->hash_size - incr)
+															idx -= domain->hash_size - incr;
+														else
+															idx += incr;
+													}
+											}
+
+										domain->n_sysdep_strings = n_inmem_sysdep_strings;
+										domain->orig_sysdep_tab = inmem_orig_sysdep_tab;
+										domain->trans_sysdep_tab = inmem_trans_sysdep_tab;
+
+										domain->hash_tab = inmem_hash_tab;
+										domain->must_swap_hash_tab = 0;
+									}
+								else
+									{
+										domain->n_sysdep_strings = 0;
+										domain->orig_sysdep_tab = NULL;
+										domain->trans_sysdep_tab = NULL;
+									}
+
+								freea (sysdep_segment_values);
+							}
+						else
+							{
+								domain->n_sysdep_strings = 0;
+								domain->orig_sysdep_tab = NULL;
+								domain->trans_sysdep_tab = NULL;
+							}
+					}
+					break;
 				}
-
-			      if (sysdep_segment_values[sysdepref] == NULL)
-				{
-				  /* This particular string pair is invalid.  */
-				  valid = 0;
-				  break;
-				}
-
-			      need += strlen (sysdep_segment_values[sysdepref]);
-			    }
-
-			needs[j] = need;
-			if (!valid)
-			  break;
-		      }
-
-		    if (valid)
-		      {
-			n_inmem_sysdep_strings++;
-			memneed += needs[0] + needs[1];
-		      }
-		  }
-		memneed += 2 * n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
-
-		if (n_inmem_sysdep_strings > 0)
-		  {
-		    unsigned int k;
-
-		    /* Allocate additional memory.  */
-		    mem = (char *) malloc (memneed);
-		    if (mem == NULL)
-		      goto invalid;
-
-		    domain->malloced = mem;
-		    inmem_orig_sysdep_tab = (struct sysdep_string_desc *) mem;
-		    mem += n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
-		    inmem_trans_sysdep_tab = (struct sysdep_string_desc *) mem;
-		    mem += n_inmem_sysdep_strings
-			   * sizeof (struct sysdep_string_desc);
-		    inmem_hash_tab = (nls_uint32 *) mem;
-		    mem += domain->hash_size * sizeof (nls_uint32);
-
-		    /* Compute the system dependent strings.  */
-		    k = 0;
-		    for (i = 0; i < n_sysdep_strings; i++)
-		      {
-			int valid = 1;
-
-			for (j = 0; j < 2; j++)
-			  {
-			    const struct sysdep_string *sysdep_string =
-			      (const struct sysdep_string *)
-			      ((char *) data
-			       + W (domain->must_swap,
-				    j == 0
-				    ? orig_sysdep_tab[i]
-				    : trans_sysdep_tab[i]));
-			    const struct segment_pair *p =
-			      sysdep_string->segments;
-
-			    if (W (domain->must_swap, p->sysdepref)
-				!= SEGMENTS_END)
-			      for (p = sysdep_string->segments;; p++)
-				{
-				  nls_uint32 sysdepref;
-
-				  sysdepref =
-				    W (domain->must_swap, p->sysdepref);
-				  if (sysdepref == SEGMENTS_END)
-				    break;
-
-				  if (sysdep_segment_values[sysdepref] == NULL)
-				    {
-				      /* This particular string pair is
-					 invalid.  */
-				      valid = 0;
-				      break;
-				    }
-				}
-
-			    if (!valid)
-			      break;
-			  }
-
-			if (valid)
-			  {
-			    for (j = 0; j < 2; j++)
-			      {
-				const struct sysdep_string *sysdep_string =
-				  (const struct sysdep_string *)
-				  ((char *) data
-				   + W (domain->must_swap,
-					j == 0
-					? orig_sysdep_tab[i]
-					: trans_sysdep_tab[i]));
-				const char *static_segments =
-				  (char *) data
-				  + W (domain->must_swap, sysdep_string->offset);
-				const struct segment_pair *p =
-				  sysdep_string->segments;
-
-				/* Concatenate the segments, and fill
-				   inmem_orig_sysdep_tab[k] (for j == 0) and
-				   inmem_trans_sysdep_tab[k] (for j == 1).  */
-
-				struct sysdep_string_desc *inmem_tab_entry =
-				  (j == 0
-				   ? inmem_orig_sysdep_tab
-				   : inmem_trans_sysdep_tab)
-				  + k;
-
-				if (W (domain->must_swap, p->sysdepref)
-				    == SEGMENTS_END)
-				  {
-				    /* Only one static segment.  */
-				    inmem_tab_entry->length =
-				      W (domain->must_swap, p->segsize);
-				    inmem_tab_entry->pointer = static_segments;
-				  }
-				else
-				  {
-				    inmem_tab_entry->pointer = mem;
-
-				    for (p = sysdep_string->segments;; p++)
-				      {
-					nls_uint32 segsize =
-					  W (domain->must_swap, p->segsize);
-					nls_uint32 sysdepref =
-					  W (domain->must_swap, p->sysdepref);
-					size_t n;
-
-					if (segsize > 0)
-					  {
-					    memcpy (mem, static_segments, segsize);
-					    mem += segsize;
-					    static_segments += segsize;
-					  }
-
-					if (sysdepref == SEGMENTS_END)
-					  break;
-
-					n = strlen (sysdep_segment_values[sysdepref]);
-					memcpy (mem, sysdep_segment_values[sysdepref], n);
-					mem += n;
-				      }
-
-				    inmem_tab_entry->length =
-				      mem - inmem_tab_entry->pointer;
-				  }
-			      }
-
-			    k++;
-			  }
-		      }
-		    if (k != n_inmem_sysdep_strings)
-		      abort ();
-
-		    /* Compute the augmented hash table.  */
-		    for (i = 0; i < domain->hash_size; i++)
-		      inmem_hash_tab[i] =
-			W (domain->must_swap_hash_tab, domain->hash_tab[i]);
-		    for (i = 0; i < n_inmem_sysdep_strings; i++)
-		      {
-			const char *msgid = inmem_orig_sysdep_tab[i].pointer;
-			nls_uint32 hash_val = hash_string (msgid);
-			nls_uint32 idx = hash_val % domain->hash_size;
-			nls_uint32 incr =
-			  1 + (hash_val % (domain->hash_size - 2));
-
-			for (;;)
-			  {
-			    if (inmem_hash_tab[idx] == 0)
-			      {
-				/* Hash table entry is empty.  Use it.  */
-				inmem_hash_tab[idx] = 1 + domain->nstrings + i;
-				break;
-			      }
-
-			    if (idx >= domain->hash_size - incr)
-			      idx -= domain->hash_size - incr;
-			    else
-			      idx += incr;
-			  }
-		      }
-
-		    domain->n_sysdep_strings = n_inmem_sysdep_strings;
-		    domain->orig_sysdep_tab = inmem_orig_sysdep_tab;
-		    domain->trans_sysdep_tab = inmem_trans_sysdep_tab;
-
-		    domain->hash_tab = inmem_hash_tab;
-		    domain->must_swap_hash_tab = 0;
-		  }
-		else
-		  {
-		    domain->n_sysdep_strings = 0;
-		    domain->orig_sysdep_tab = NULL;
-		    domain->trans_sysdep_tab = NULL;
-		  }
-
-		freea (sysdep_segment_values);
-	      }
-	    else
-	      {
-		domain->n_sysdep_strings = 0;
-		domain->orig_sysdep_tab = NULL;
-		domain->trans_sysdep_tab = NULL;
-	      }
-	  }
-	  break;
-	}
       break;
     default:
       /* This is an invalid revision.  */
     invalid:
       /* This is an invalid .mo file.  */
       if (domain->malloced)
-	free (domain->malloced);
+				free (domain->malloced);
 #ifdef HAVE_MMAP
       if (use_mmap)
-	munmap ((caddr_t) data, size);
+				munmap ((caddr_t) data, size);
       else
 #endif
-	free (data);
+				free (data);
       free (domain);
       domain_file->data = NULL;
       return;

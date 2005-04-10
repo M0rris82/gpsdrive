@@ -21,8 +21,11 @@
  * 
  *     *********************************************************************
  $Log$
- Revision 1.1  2004/12/23 16:03:24  commiter
- Initial revision
+ Revision 1.2  2005/04/10 21:50:49  tweety
+ reformatting c-sources
+
+ Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+ Initial import, straight from 2.10pre2 tar.gz archive
 
  Revision 1.21  2004/02/08 17:16:25  ganter
  replacing all strcat with g_strlcat to avoid buffer overflows
@@ -84,7 +87,7 @@
  Revision 1.2  2003/05/30 15:35:16  ganter
  testing
 
- */
+*/
 
 
 #include "../config.h"
@@ -172,161 +175,161 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
       n = recvfrom (sockfd, mesg, MAXMESG, 0, pcli_addr, &clilen);
 
       if (n < 0)
-	{
-	  perror ("recvfrom");
-	}
-      else
-	{
-/* 	got string  */
-	  g_strlcpy (msgname, "", sizeof (msgname));
-	  g_strlcpy (msgtext, "", sizeof (msgtext));
-	  newclient = 1;
-
-	  if ((strncmp (mesg, "SND: ", 5)) == 0)
-	    {
-	      e = sscanf (mesg, "SND: %s %s %[^\n]", id, msgname, msgtext);
-	      if (e == 3)
-		{
-		  fprintf (stderr, "\ne: %d received for %s: %s\n", e,
-			   msgname, msgtext);
-		  for (i = 0; i < listnum; i++)
-		    {
-/* 	id is already here  */
-		      if ((strcmp ((list + i)->id, id)) == 0)
-			{
-			  newclient = 0;
-			  strncpy ((list + i)->txt, mesg, MAXMESG - 1);
-			  (list + i)->times =
-			    time (NULL) - MAXSEC + MAXMSGTIME;
-			}
-		    }
-		  if (newclient)
-		    {
-/* new id found  */
-		      listnum++;
-		      if (listnum >= MAXLISTENTRIES)
-			listnum = 0;
-		      strncpy ((list + i)->txt, mesg, MAXMESG - 1);
-		      strncpy ((list + i)->id, id, 30);
-		      (list + i)->times = time (NULL) - MAXSEC + MAXMSGTIME;
-		    }
-		}
-	    }
-	  if ((strncmp (mesg, "POS: ", 5)) == 0)
-	    {
-/* 	found POS string  */
-
-	      e =
-		sscanf (mesg, "POS: %30s %40s %40s %40s %40s %10s %10s", id,
-			name, lat, longi, timesec, speed, heading);
-/* 		    printf("\nGot %d arguments\n",e);  */
-	      if ((e == 7) && (strstr (id, "queryqueryqueryqueryqu") == NULL))
-		{
-/* string is a POS string  */
-		  for (i = 0; i < listnum; i++)
-		    {
-/* 	id is already here  */
-		      if ((strcmp ((list + i)->id, id)) == 0)
-			{
-			  newclient = 0;
-			  strncpy ((list + i)->txt, mesg, 200);
-			  (list + i)->times = atol (timesec);
-			}
-		    }
-
-		  if (newclient)
-		    {
-/* new id found  */
-		      listnum++;
-		      if (listnum >= MAXLISTENTRIES)
-			listnum = 0;
-		      strncpy ((list + i)->txt, mesg, 200);
-		      strncpy ((list + i)->id, id, 30);
-		      (list + i)->times = atol (timesec);
-		    }
-		}
-	    }
-/* send ack message to sender and delete messages where we got an ACK */
-	  if ((strncmp (mesg, "ACK: ", 5)) == 0)
-	    {
-	      char recname[80], tmp[80], msgname[80];
-	      g_strlcpy (recname, "", sizeof (recname));
-	      e = sscanf (mesg, "ACK: %s ", ackid);
-	      if (e == 1)
-		for (i = 0; i < listnum; i++)
-		  {
-		    if ((strcmp ((list + i)->id, ackid)) == 0)
-		      {
-			int j, own;
-			char sid[40];
-/* find sender of orig message (msgname)*/
-			if (strcmp ((ackid + 5), (serverid + 5)) == 0)
-			  own = 1;
-			else
-			  own = 0;
-
-			if (own)
-			  {
-/* 			    its the ack for myself, delete from list */
-			    for (j = i; j < listnum; j++)
-			      *(list + j) = *(list + j + 1);
-			    listnum--;
-			    fprintf (stderr,
-				     "ack for my OWN msg %s, deleting entry\n",
-				     ackid);
-			    break;
-			  }
-			else
-			  {
-			    for (j = 0; j < listnum; j++)
-			      if (strcmp ((ackid + 5), (((list + j)->id) + 5))
-				  == 0)
 				{
-				  e =
-				    sscanf ((list + j)->txt, "POS: %s %s",
-					    tmp, msgname);
-				  break;
+					perror ("recvfrom");
 				}
-/* find receiver of message (recname) */
-			    e =
-			      sscanf ((list + i)->txt, "SND: %s %s", tmp,
-				      recname);
-			    g_snprintf (sid, sizeof (sid), "MSG%02d%s",
-					messagecounter++, (serverid + 5));
-			    g_snprintf ((list + i)->id, sizeof (list->id),
-					sid);
-			    g_snprintf ((list + i)->txt, sizeof (list->txt),
-					"SND: %s %s \nConfirmation:\n The user %s has read your message!",
-					sid, msgname, recname);
-			    (list + i)->times =
-			      time (NULL) - MAXSEC + MAXMSGTIME;
-			    fprintf (stderr,
-				     "received acknoledge for msg %s, deleting entry\n",
-				     ackid);
-			  }
+      else
+				{
+					/* 	got string  */
+					g_strlcpy (msgname, "", sizeof (msgname));
+					g_strlcpy (msgtext, "", sizeof (msgtext));
+					newclient = 1;
 
-		      }
-		  }
-	    }
+					if ((strncmp (mesg, "SND: ", 5)) == 0)
+						{
+							e = sscanf (mesg, "SND: %s %s %[^\n]", id, msgname, msgtext);
+							if (e == 3)
+								{
+									fprintf (stderr, "\ne: %d received for %s: %s\n", e,
+													 msgname, msgtext);
+									for (i = 0; i < listnum; i++)
+										{
+											/* 	id is already here  */
+											if ((strcmp ((list + i)->id, id)) == 0)
+												{
+													newclient = 0;
+													strncpy ((list + i)->txt, mesg, MAXMESG - 1);
+													(list + i)->times =
+														time (NULL) - MAXSEC + MAXMSGTIME;
+												}
+										}
+									if (newclient)
+										{
+											/* new id found  */
+											listnum++;
+											if (listnum >= MAXLISTENTRIES)
+												listnum = 0;
+											strncpy ((list + i)->txt, mesg, MAXMESG - 1);
+											strncpy ((list + i)->id, id, 30);
+											(list + i)->times = time (NULL) - MAXSEC + MAXMSGTIME;
+										}
+								}
+						}
+					if ((strncmp (mesg, "POS: ", 5)) == 0)
+						{
+							/* 	found POS string  */
 
-/* sort out entries older than MAXSEC seconds */
-	  for (i = 0; i < listnum; i++)
-	    {
-	      time_t tii;
+							e =
+								sscanf (mesg, "POS: %30s %40s %40s %40s %40s %10s %10s", id,
+												name, lat, longi, timesec, speed, heading);
+							/* 		    printf("\nGot %d arguments\n",e);  */
+							if ((e == 7) && (strstr (id, "queryqueryqueryqueryqu") == NULL))
+								{
+									/* string is a POS string  */
+									for (i = 0; i < listnum; i++)
+										{
+											/* 	id is already here  */
+											if ((strcmp ((list + i)->id, id)) == 0)
+												{
+													newclient = 0;
+													strncpy ((list + i)->txt, mesg, 200);
+													(list + i)->times = atol (timesec);
+												}
+										}
 
-	      if ((strncmp ((list + i)->txt, "SRV:", 4)) != 0)
-		{
-		  tii = time (NULL);
-		  if ((tii - (list + i)->times) > MAXSEC)
-		    {
-		      int j;
-		      for (j = i; j < listnum; j++)
-			*(list + j) = *(list + j + 1);
-		      listnum--;
-		    }
-		}
-	    }
-	}
+									if (newclient)
+										{
+											/* new id found  */
+											listnum++;
+											if (listnum >= MAXLISTENTRIES)
+												listnum = 0;
+											strncpy ((list + i)->txt, mesg, 200);
+											strncpy ((list + i)->id, id, 30);
+											(list + i)->times = atol (timesec);
+										}
+								}
+						}
+					/* send ack message to sender and delete messages where we got an ACK */
+					if ((strncmp (mesg, "ACK: ", 5)) == 0)
+						{
+							char recname[80], tmp[80], msgname[80];
+							g_strlcpy (recname, "", sizeof (recname));
+							e = sscanf (mesg, "ACK: %s ", ackid);
+							if (e == 1)
+								for (i = 0; i < listnum; i++)
+									{
+										if ((strcmp ((list + i)->id, ackid)) == 0)
+											{
+												int j, own;
+												char sid[40];
+												/* find sender of orig message (msgname)*/
+												if (strcmp ((ackid + 5), (serverid + 5)) == 0)
+													own = 1;
+												else
+													own = 0;
+
+												if (own)
+													{
+														/* 			    its the ack for myself, delete from list */
+														for (j = i; j < listnum; j++)
+															*(list + j) = *(list + j + 1);
+														listnum--;
+														fprintf (stderr,
+																		 "ack for my OWN msg %s, deleting entry\n",
+																		 ackid);
+														break;
+													}
+												else
+													{
+														for (j = 0; j < listnum; j++)
+															if (strcmp ((ackid + 5), (((list + j)->id) + 5))
+																	== 0)
+																{
+																	e =
+																		sscanf ((list + j)->txt, "POS: %s %s",
+																						tmp, msgname);
+																	break;
+																}
+														/* find receiver of message (recname) */
+														e =
+															sscanf ((list + i)->txt, "SND: %s %s", tmp,
+																			recname);
+														g_snprintf (sid, sizeof (sid), "MSG%02d%s",
+																				messagecounter++, (serverid + 5));
+														g_snprintf ((list + i)->id, sizeof (list->id),
+																				sid);
+														g_snprintf ((list + i)->txt, sizeof (list->txt),
+																				"SND: %s %s \nConfirmation:\n The user %s has read your message!",
+																				sid, msgname, recname);
+														(list + i)->times =
+															time (NULL) - MAXSEC + MAXMSGTIME;
+														fprintf (stderr,
+																		 "received acknoledge for msg %s, deleting entry\n",
+																		 ackid);
+													}
+
+											}
+									}
+						}
+
+					/* sort out entries older than MAXSEC seconds */
+					for (i = 0; i < listnum; i++)
+						{
+							time_t tii;
+
+							if ((strncmp ((list + i)->txt, "SRV:", 4)) != 0)
+								{
+									tii = time (NULL);
+									if ((tii - (list + i)->times) > MAXSEC)
+										{
+											int j;
+											for (j = i; j < listnum; j++)
+												*(list + j) = *(list + j + 1);
+											listnum--;
+										}
+								}
+						}
+				}
 
       memcpy (&iaddr, (pcli_addr->sa_data + 2), 4);
       fromaddr = inet_ntoa (iaddr);
@@ -339,42 +342,42 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 
 
       hostname = gethostbyaddr ((char *) &(sin.sin_addr),
-				sizeof (sin.sin_addr), (int) sin.sin_family);
+																sizeof (sin.sin_addr), (int) sin.sin_family);
 
 
       if (hostname == NULL)
-	{
-	  perror ("hostname");
-	  g_strlcpy (hname, "unknown", sizeof (hname));
-	}
+				{
+					perror ("hostname");
+					g_strlcpy (hname, "unknown", sizeof (hname));
+				}
       else
-	g_strlcpy (hname, hostname->h_name, sizeof (hname));
+				g_strlcpy (hname, hostname->h_name, sizeof (hname));
 
       mesg[n - 1] = 0;
 
       for (i = -1; i <= listnum; i++)
-	{
-	  if (i == -1)
-	    g_strlcpy (txt, "$START:$", sizeof (txt));
-	  else if (i == listnum)
-	    g_strlcpy (txt, "$END:$", sizeof (txt));
-	  else
-	    g_strlcpy (txt, (list + i)->txt, sizeof (txt));
+				{
+					if (i == -1)
+						g_strlcpy (txt, "$START:$", sizeof (txt));
+					else if (i == listnum)
+						g_strlcpy (txt, "$END:$", sizeof (txt));
+					else
+						g_strlcpy (txt, (list + i)->txt, sizeof (txt));
 
-	  g_strlcat (txt, "\n", sizeof (txt));
-	  l = strlen (txt);
-	  if (i == -1)
-	    fprintf (stderr, "%d clients, last: %s[%s]:\n",
-		     listnum, hname, fromaddr);
+					g_strlcat (txt, "\n", sizeof (txt));
+					l = strlen (txt);
+					if (i == -1)
+						fprintf (stderr, "%d clients, last: %s[%s]:\n",
+										 listnum, hname, fromaddr);
 
-	  fprintf (stderr, txt);
-/*       printf ("sende\n%s, Länge %d, clilen %d", txt, l,clilen);  */
-	  if ((nosent = sendto (sockfd, txt, l, 0, pcli_addr, clilen)) != l)
-	    {
-	      perror ("sendto");
-	      return;
-	    }
-	}
+					fprintf (stderr, txt);
+					/*       printf ("sende\n%s, Laenge %d, clilen %d", txt, l,clilen);  */
+					if ((nosent = sendto (sockfd, txt, l, 0, pcli_addr, clilen)) != l)
+						{
+							perror ("sendto");
+							return;
+						}
+				}
       fprintf (stderr, "\n");
     }
 }
@@ -447,10 +450,10 @@ friendsinit ()
 #else
   r = r * r;
   g_snprintf (friendsidstring, sizeof (friendsidstring), "nocrypt%015ld",
-	      labs (r));
+							labs (r));
 #endif
   printf ("\nKey: %s,id: %s %d bytes, time: %ld\n", key,
-	  friendsidstring, strlen (friendsidstring), ti);
+					friendsidstring, strlen (friendsidstring), ti);
 
   g_strlcpy (serverid, friendsidstring, sizeof (serverid));
   return (0);
@@ -484,8 +487,8 @@ main (int argc, char *argv[])
     case 'h':
     case '?':
       printf (_
-	      ("\nUsage:\n   %s -n servername\nprovides a name for your server\n"),
-	      pname);
+							("\nUsage:\n   %s -n servername\nprovides a name for your server\n"),
+							pname);
       exit (0);
       break;
     }
@@ -498,22 +501,22 @@ main (int argc, char *argv[])
   friendsinit ();
   list = malloc (MAXLISTENTRIES * sizeof (*list));
 
-/* make the first entry */
+	/* make the first entry */
   g_snprintf ((list + listnum)->id, sizeof (list->id), serverid);
   g_snprintf ((list + listnum)->txt, sizeof (list->txt),
-	      "SRV: %s %s 53.566593   9.948155 %d 0 0", serverid,
-	      serverstring, (int) time (NULL));
+							"SRV: %s %s 53.566593   9.948155 %d 0 0", serverid,
+							serverstring, (int) time (NULL));
   (list + listnum)->times = time (NULL);
   listnum++;
 
-/*   printf ("\nsizeoflist: %d\n", sizeof (*list)); */
+	/*   printf ("\nsizeoflist: %d\n", sizeof (*list)); */
   if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
     {
       fprintf (stderr, "server: errno = %d\n", errno);
       fprintf (stderr, "server: can't open datagram socket\n");
       exit (1);
     }
-/*  setnonblocking(sockfd);  */
+	/*  setnonblocking(sockfd);  */
 
   fprintf (stderr, "server: sockfd = %d\n", sockfd);
   bzero ((char *) &serv_addr, sizeof (serv_addr));

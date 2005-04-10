@@ -75,7 +75,7 @@ nlos2_initialize ()
           memcpy (_nlos2_localealiaspath, root, sl);
           memcpy (_nlos2_localealiaspath + sl, LOCALE_ALIAS_PATH, strlen (LOCALE_ALIAS_PATH) + 1);
         }
-     else
+			else
         _nlos2_localealiaspath = LOCALE_ALIAS_PATH;
     }
 

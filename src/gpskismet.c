@@ -23,8 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.24  2004/04/05 18:45:41  ganter
 added patch for kismet hangs and Mac-OS mouse
@@ -166,7 +169,7 @@ fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
 enum
-{ english, german, spanish }
+	{ english, german, spanish }
 voicelang;
 
 #define KISMETSERVERNAME "localhost"
@@ -188,185 +191,185 @@ readkismet (void)
   do
     {
       if (select (FD_SETSIZE, &kismetreadmask, NULL, NULL, &kismettimeout) <
-	  0)
-	{
-	  perror ("select() call");
-	  return FALSE;
-	}
+					0)
+				{
+					perror ("select() call");
+					return FALSE;
+				}
 
       if ((have = FD_ISSET (kismetsock, &kismetreadmask)))
-	{
-	  while ((e = read (kismetsock, &c, 1)) > 0)
-	    {
-	      if (c != '\n')
-		*(kbuffer + bc++) = c;
-	      else
-		{
-		  c = -1;
-		  g_strlcat (kbuffer, "\n", sizeof(kbuffer));
-/* 	g_print("\nfinished: %d",bc); */
-		  break;
-		}
-	      if (bc > 20000)
-		{
-		  bc = 0;
-		  g_print ("kbuffer overflow!\n");
-		}
+				{
+					while ((e = read (kismetsock, &c, 1)) > 0)
+						{
+							if (c != '\n')
+								*(kbuffer + bc++) = c;
+							else
+								{
+									c = -1;
+									g_strlcat (kbuffer, "\n", sizeof(kbuffer));
+									/* 	g_print("\nfinished: %d",bc); */
+									break;
+								}
+							if (bc > 20000)
+								{
+									bc = 0;
+									g_print ("kbuffer overflow!\n");
+								}
 
-	    }
-	}
+						}
+				}
 
 
       if (c == -1)
-	{
-/* have read a line */
-	  bc = c = 0;
-	  if ((strstr (kbuffer, "*NETWORK:")) == kbuffer)
-	    {
-	      if (debug)
-		g_print ("\nkbuffer:%s\n", kbuffer);
-	      e =
-		sscanf (kbuffer,
-			"%s %s %d \001%255[^\001]\001 %d"
-			" %d  %s %s %s %s %[^\n]", tbuf, macaddr, &nettype,
-			name, &channel, &wep, lat, lon, bestlat, bestlon,
-			tbuf);
+				{
+					/* have read a line */
+					bc = c = 0;
+					if ((strstr (kbuffer, "*NETWORK:")) == kbuffer)
+						{
+							if (debug)
+								g_print ("\nkbuffer:%s\n", kbuffer);
+							e =
+								sscanf (kbuffer,
+												"%s %s %d \001%255[^\001]\001 %d"
+												" %d  %s %s %s %s %[^\n]", tbuf, macaddr, &nettype,
+												name, &channel, &wep, lat, lon, bestlat, bestlon,
+												tbuf);
 
-	    }
-	  if (e == 10)
-	    {
-	      if (debug)
-		g_print
-		  ("\ne: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
-		   "lat: %s lon: %s bestlat: %s bestlon: %s\n", e, macaddr,
-		   nettype, name, channel, wep, lat, lon, bestlat, bestlon);
+						}
+					if (e == 10)
+						{
+							if (debug)
+								g_print
+									("\ne: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
+									 "lat: %s lon: %s bestlat: %s bestlon: %s\n", e, macaddr,
+									 nettype, name, channel, wep, lat, lon, bestlat, bestlon);
 
-/* insert waypoint only if we had not just inserted it */
-/* 	      if ((strcmp (lastmacaddr, macaddr)) != 0) */
-	      {
-/* 		  g_strlcpy (lastmacaddr, macaddr); */
-		g_snprintf (q, sizeof (q),
-			    "select id,lat,lon from %s where macaddr='%s'",
-			    dbtable, macaddr);
-		if (debug)
-		  g_print ("\nquery: %s\n", q);
-		if (dl_mysql_query (&mysql, q))
-		  exiterr (3);
-		if (!(res = dl_mysql_store_result (&mysql)))
-		  exiterr (4);
-		r = 0;
-		while ((row = dl_mysql_fetch_row (res)))
-		  {
-		    sqlid = atol (row[0]);
-		    g_strlcpy (sqllat, row[1], sizeof (sqllat));
-		    g_strlcpy (sqllon, row[2], sizeof (sqllon));
+							/* insert waypoint only if we had not just inserted it */
+							/* 	      if ((strcmp (lastmacaddr, macaddr)) != 0) */
+							{
+								/* 		  g_strlcpy (lastmacaddr, macaddr); */
+								g_snprintf (q, sizeof (q),
+														"select id,lat,lon from %s where macaddr='%s'",
+														dbtable, macaddr);
+								if (debug)
+									g_print ("\nquery: %s\n", q);
+								if (dl_mysql_query (&mysql, q))
+									exiterr (3);
+								if (!(res = dl_mysql_store_result (&mysql)))
+									exiterr (4);
+								r = 0;
+								while ((row = dl_mysql_fetch_row (res)))
+									{
+										sqlid = atol (row[0]);
+										g_strlcpy (sqllat, row[1], sizeof (sqllat));
+										g_strlcpy (sqllon, row[2], sizeof (sqllon));
 
-		    r++;
-		  }
+										r++;
+									}
 
-		if (r > 1)
-		  g_print
-		    ("\n\a\a*** ERROR: duplicate macaddr in database ***\n");
+								if (r > 1)
+									g_print
+										("\n\a\a*** ERROR: duplicate macaddr in database ***\n");
 
-		dl_mysql_free_result (res);
-		if (debug)
-		  g_print ("\nnum fields: %d", r);
+								dl_mysql_free_result (res);
+								if (debug)
+									g_print ("\nnum fields: %d", r);
 
-		if ((strcmp (name, "<no ssid>")) == 0)
-		  g_strlcpy (name, "no_ssid", sizeof (name));
-		g_strdelimit (name, " ", '_');
-/* escape ' */
-		j = 0;
-		for (i = 0; i <= (int) strlen (name); i++)
-		  {
-		    if (name[i] != '\'')
-		      tname[j++] = name[i];
-		    else
-		      {
-			tname[j++] = '\\';
-			tname[j++] = '\'';
-		      }
-		  }
-
-
-/* 		  we have it in the database, but update bestlat and bestlong */
-		if (r > 0)
-		  if ((strcmp (sqllat, lat) != 0) &&
-		      (strcmp (sqllon, lon) != 0))
-		    {
-		      if ((atol (bestlat) != 0.0) && (atol (bestlon) != 0))
-			if ((strcmp (lat, "90.000000") != 0) &&
-			    (strcmp (lon, "180.000000") != 0))
-			  {
-			    if (debug)
-			      g_print
-				("*** This is a changed waypoint: %s [%s]\n",
-				 name, macaddr);
-
-			    g_snprintf (q, sizeof (q),
-					"UPDATE %s SET name='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',type='%s',wep='%d' WHERE id='%d'",
-					dbtable, tname, macaddr, nettype,
-					bestlat, bestlon,
-					(wep) ? "WLAN-WEP" : "WLAN", wep,
-					sqlid);
-			    if (debug)
-			      printf ("\nquery: %s\n", q);
-			    if (dl_mysql_query (&mysql, q))
-			      exiterr (3);
-			  }
-		    }
+								if ((strcmp (name, "<no ssid>")) == 0)
+									g_strlcpy (name, "no_ssid", sizeof (name));
+								g_strdelimit (name, " ", '_');
+								/* escape ' */
+								j = 0;
+								for (i = 0; i <= (int) strlen (name); i++)
+									{
+										if (name[i] != '\'')
+											tname[j++] = name[i];
+										else
+											{
+												tname[j++] = '\\';
+												tname[j++] = '\'';
+											}
+									}
 
 
-/* 		  this is a new network, we store it in the database */
-		if ((r == 0) && (strcmp (lat, "90.000000") != 0) &&
-		    (strcmp (lon, "180.000000") != 0))
-		  {
-		    g_strlcpy (lastmacaddr, macaddr, sizeof (lastmacaddr));
-		    if (debug)
-		      g_print ("*** This is a new waypoint: %s [%s]\n", name,
-			       macaddr);
+								/* 		  we have it in the database, but update bestlat and bestlong */
+								if (r > 0)
+									if ((strcmp (sqllat, lat) != 0) &&
+											(strcmp (sqllon, lon) != 0))
+										{
+											if ((atol (bestlat) != 0.0) && (atol (bestlon) != 0))
+												if ((strcmp (lat, "90.000000") != 0) &&
+														(strcmp (lon, "180.000000") != 0))
+													{
+														if (debug)
+															g_print
+																("*** This is a changed waypoint: %s [%s]\n",
+																 name, macaddr);
 
-		    g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (name,macaddr,nettype,lat,lon,type,wep)"
-				" VALUES ('%s','%s','%d','%s','%s','%s','%d')",
-				dbtable, tname, macaddr, nettype, lat, lon,
-				(wep) ? "WLAN-WEP" : "WLAN", wep);
-		    if (debug)
-		      printf ("\nquery: %s\n", q);
-		    if (dl_mysql_query (&mysql, q))
-		      exiterr (3);
+														g_snprintf (q, sizeof (q),
+																				"UPDATE %s SET name='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',type='%s',wep='%d' WHERE id='%d'",
+																				dbtable, tname, macaddr, nettype,
+																				bestlat, bestlon,
+																				(wep) ? "WLAN-WEP" : "WLAN", wep,
+																				sqlid);
+														if (debug)
+															printf ("\nquery: %s\n", q);
+														if (dl_mysql_query (&mysql, q))
+															exiterr (3);
+													}
+										}
 
-		    g_strdelimit (name, "_", ' ');
-		    switch (voicelang)
-		      {
-		      case english:
-			g_snprintf (buf, sizeof (buf),
-				    "Found new %s access point: %s",
-				    (wep) ? "crypted" : "open", name);
-			break;
-		      case spanish:
-			g_snprintf (buf, sizeof (buf),
-				    "Found new %s access point: %s",
-				    (wep) ? "closed" : "open", name);
-			break;
-		      case german:
-			g_snprintf (buf, sizeof (buf),
-				    "Es wurde ein neuer  %s exses point gefunden: %s",
-				    (wep) ? "verschlüsselter" : "offener",
-				    name);
-			break;
-		      }
-		    speech_out_speek (buf);
-		    /* if (debug) */
-/* 		    printf (_("rows inserted: %d\n"), r); */
-		    getsqldata ();
-		  }
-	      }
-	    }
 
-	  memset (kbuffer, 0, 20000);
-	  g_strlcpy (kbuffer, "", sizeof (kbuffer));
-	}
+								/* 		  this is a new network, we store it in the database */
+								if ((r == 0) && (strcmp (lat, "90.000000") != 0) &&
+										(strcmp (lon, "180.000000") != 0))
+									{
+										g_strlcpy (lastmacaddr, macaddr, sizeof (lastmacaddr));
+										if (debug)
+											g_print ("*** This is a new waypoint: %s [%s]\n", name,
+															 macaddr);
+
+										g_snprintf (q, sizeof (q),
+																"INSERT INTO %s (name,macaddr,nettype,lat,lon,type,wep)"
+																" VALUES ('%s','%s','%d','%s','%s','%s','%d')",
+																dbtable, tname, macaddr, nettype, lat, lon,
+																(wep) ? "WLAN-WEP" : "WLAN", wep);
+										if (debug)
+											printf ("\nquery: %s\n", q);
+										if (dl_mysql_query (&mysql, q))
+											exiterr (3);
+
+										g_strdelimit (name, "_", ' ');
+										switch (voicelang)
+											{
+											case english:
+												g_snprintf (buf, sizeof (buf),
+																		"Found new %s access point: %s",
+																		(wep) ? "crypted" : "open", name);
+												break;
+											case spanish:
+												g_snprintf (buf, sizeof (buf),
+																		"Found new %s access point: %s",
+																		(wep) ? "closed" : "open", name);
+												break;
+											case german:
+												g_snprintf (buf, sizeof (buf),
+																		"Es wurde ein neuer  %s exses point gefunden: %s",
+																		(wep) ? "verschlÃ¼sselter" : "offener",
+																		name);
+												break;
+											}
+										speech_out_speek (buf);
+										/* if (debug) */
+										/* 		    printf (_("rows inserted: %d\n"), r); */
+										getsqldata ();
+									}
+							}
+						}
+
+					memset (kbuffer, 0, 20000);
+					g_strlcpy (kbuffer, "", sizeof (kbuffer));
+				}
 
     }
   while (have != 0);
@@ -382,14 +385,14 @@ initkismet (void)
   char buf[180];
 
   g_strlcpy (lastmacaddr, "", sizeof (lastmacaddr));
-/*  open socket to port */
+	/*  open socket to port */
   if ((kismetsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
       perror (_("can't open socket for port "));
       return -1;
     }
   server.sin_family = AF_INET;
-/*  We retrieve the IP address of the server from its name: */
+	/*  We retrieve the IP address of the server from its name: */
   if ((server_data = gethostbyname (KISMETSERVERNAME)) == NULL)
     {
       fprintf (stderr, "%s: unknown host", KISMETSERVERNAME);
@@ -398,7 +401,7 @@ initkismet (void)
     }
   memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
   server.sin_port = htons (2501);
-/*  We initiate the connection  */
+	/*  We initiate the connection  */
   if (connect (kismetsock, (struct sockaddr *) &server, sizeof server) < 0)
     {
       close (kismetsock);
@@ -409,8 +412,8 @@ initkismet (void)
     {
       havekismet = TRUE;
       g_strlcpy (buf,
-		 "!0 ENABLE NETWORK bssid,type,ssid,channel,wep,minlat,minlon,bestlat,bestlon\n",
-		 sizeof (buf));
+								 "!0 ENABLE NETWORK bssid,type,ssid,channel,wep,minlat,minlon,bestlat,bestlon\n",
+								 sizeof (buf));
       write (kismetsock, buf, strlen (buf));
     }
 

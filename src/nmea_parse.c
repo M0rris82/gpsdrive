@@ -15,63 +15,63 @@ static void update_field_f(char *sentence, int fld, double *dest, int mask);
 /* ----------------------------------------------------------------------- */
 
 /*
-   The time field in the GPRMC sentence is in the format hhmmss;
-   the date field is in the format ddmmyy. The output will
-   be in the format:
+	The time field in the GPRMC sentence is in the format hhmmss;
+	the date field is in the format ddmmyy. The output will
+	be in the format:
 
-   mm/dd/yyyy hh:mm:ss
-   01234567890123456789
- */
+	mm/dd/yyyy hh:mm:ss
+	01234567890123456789
+*/
 
 void processGPRMC(char *sentence)
 {
-    char s[20], d[10];
-    int tmp;
+	char s[20], d[10];
+	int tmp;
 
-    sscanf(field(sentence, 9), "%s", d);	/* Date: ddmmyy */
+	sscanf(field(sentence, 9), "%s", d);	/* Date: ddmmyy */
 
-    strncpy(s, d + 2, 2);	/* copy month */
+	strncpy(s, d + 2, 2);	/* copy month */
 
-    strncpy(s + 3, d, 2);	/* copy date */
+	strncpy(s + 3, d, 2);	/* copy date */
 
-    sscanf((d+4), "%2d", &tmp);
+	sscanf((d+4), "%2d", &tmp);
 
-    /* Tf.: Window the year from 1970 to 2069. This buys us some time. */
-    if (tmp < 70) 
-      strncpy(s + 6, "20", 2);	/* 21th century */
-    else
-      strncpy(s + 6, "19", 2);	/* 20th century */
+	/* Tf.: Window the year from 1970 to 2069. This buys us some time. */
+	if (tmp < 70) 
+		strncpy(s + 6, "20", 2);	/* 21th century */
+	else
+		strncpy(s + 6, "19", 2);	/* 20th century */
 
-    strncpy(s + 8, d + 4, 2);	/* copy year */
+	strncpy(s + 8, d + 4, 2);	/* copy year */
 
-    sscanf(field(sentence, 1), "%s", d);	/* Time: hhmmss */
+	sscanf(field(sentence, 1), "%s", d);	/* Time: hhmmss */
 
-    strncpy(s + 11, d, 2);	/* copy hours */
+	strncpy(s + 11, d, 2);	/* copy hours */
 
-    strncpy(s + 14, d + 2, 2);	/* copy minutes */
+	strncpy(s + 14, d + 2, 2);	/* copy minutes */
 
-    strncpy(s + 17, d + 4, 2);	/* copy seconds */
+	strncpy(s + 17, d + 4, 2);	/* copy seconds */
 
-    s[2] = s[5] = '/';		/* add the '/'s, ':'s, ' ' and string terminator */
+	s[2] = s[5] = '/';		/* add the '/'s, ':'s, ' ' and string terminator */
 
-    s[10] = ' ';
-    s[13] = s[16] = ':';
-    s[19] = '\0';
+	s[10] = ' ';
+	s[13] = s[16] = ':';
+	s[19] = '\0';
 
-    strcpy(gNMEAdata.utc, s);
+	strcpy(gNMEAdata.utc, s);
 
-    /* A = valid, V = invalid */
-    if (strcmp(field(sentence, 2), "V") == 0)
-	gNMEAdata.status = 0;
+	/* A = valid, V = invalid */
+	if (strcmp(field(sentence, 2), "V") == 0)
+		gNMEAdata.status = 0;
 #if 0    /* Let the GGA sentence do the update so we catch diff fixes */
-    else
-	gNMEAdata.status = 0;
+	else
+		gNMEAdata.status = 0;
 #endif
 
-    sscanf(field(sentence, 7), "%lf", &gNMEAdata.speed);
-    sscanf(field(sentence, 8), "%lf", &gNMEAdata.track);
+	sscanf(field(sentence, 7), "%lf", &gNMEAdata.speed);
+	sscanf(field(sentence, 8), "%lf", &gNMEAdata.track);
 
-    do_lat_lon(sentence, 3);
+	do_lat_lon(sentence, 3);
 
 }
 
@@ -79,139 +79,139 @@ void processGPRMC(char *sentence)
 
 void processGPGGA(char *sentence)
 {
-    do_lat_lon(sentence, 2);
-    /* 0 = none, 1 = normal, 2 = diff */
-    sscanf(field(sentence, 6), "%d", &gNMEAdata.status);
-    sscanf(field(sentence, 7), "%d", &gNMEAdata.satellites);
-    sscanf(field(sentence, 9), "%lf", &gNMEAdata.altitude);
+	do_lat_lon(sentence, 2);
+	/* 0 = none, 1 = normal, 2 = diff */
+	sscanf(field(sentence, 6), "%d", &gNMEAdata.status);
+	sscanf(field(sentence, 7), "%d", &gNMEAdata.satellites);
+	sscanf(field(sentence, 9), "%lf", &gNMEAdata.altitude);
 }
 
 /* ----------------------------------------------------------------------- */
 
 void processGPGSA(char *sentence)
 {
-    /* 1 = none, 2 = 2d, 3 = 3d */
-    sscanf(field(sentence, 2), "%d", &gNMEAdata.mode);
-    sscanf(field(sentence, 15), "%lf", &gNMEAdata.pdop);
-    sscanf(field(sentence, 16), "%lf", &gNMEAdata.hdop);
-    sscanf(field(sentence, 17), "%lf", &gNMEAdata.vdop);
+	/* 1 = none, 2 = 2d, 3 = 3d */
+	sscanf(field(sentence, 2), "%d", &gNMEAdata.mode);
+	sscanf(field(sentence, 15), "%lf", &gNMEAdata.pdop);
+	sscanf(field(sentence, 16), "%lf", &gNMEAdata.hdop);
+	sscanf(field(sentence, 17), "%lf", &gNMEAdata.vdop);
 }
 
 /* ----------------------------------------------------------------------- */
 
 void processGPGSV(char *sentence)
 {
-    int n, m, f = 4;
+	int n, m, f = 4;
 
-    sscanf(field(sentence, 2), "%d", &n);
-    update_field_i(sentence, 3, &gNMEAdata.in_view, C_SAT);
+	sscanf(field(sentence, 2), "%d", &n);
+	update_field_i(sentence, 3, &gNMEAdata.in_view, C_SAT);
 
-    n = (n - 1) * 4;
-    m = n + 4;
+	n = (n - 1) * 4;
+	m = n + 4;
 
-    while (n < gNMEAdata.in_view && n < m) {
-	update_field_i(sentence, f++, &gNMEAdata.PRN[n], C_SAT);
-	update_field_i(sentence, f++, &gNMEAdata.elevation[n], C_SAT);
-	update_field_i(sentence, f++, &gNMEAdata.azimuth[n], C_SAT);
-	if (*(field(sentence, f)))
+	while (n < gNMEAdata.in_view && n < m) {
+		update_field_i(sentence, f++, &gNMEAdata.PRN[n], C_SAT);
+		update_field_i(sentence, f++, &gNMEAdata.elevation[n], C_SAT);
+		update_field_i(sentence, f++, &gNMEAdata.azimuth[n], C_SAT);
+		if (*(field(sentence, f)))
 	    update_field_i(sentence, f, &gNMEAdata.ss[n], C_SAT);
-	f++;
-	n++;
-    }
+		f++;
+		n++;
+	}
 }
 
 /* ----------------------------------------------------------------------- */
 
 void processPRWIZCH(char *sentence)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < 12; i++) {
-	update_field_i(sentence, 2 * i + 1, &gNMEAdata.Zs[i], C_ZCH);
-	update_field_i(sentence, 2 * i + 2, &gNMEAdata.Zv[i], C_ZCH);
-    }
-    gNMEAdata.ZCHseen = 1;
+	for (i = 0; i < 12; i++) {
+		update_field_i(sentence, 2 * i + 1, &gNMEAdata.Zs[i], C_ZCH);
+		update_field_i(sentence, 2 * i + 2, &gNMEAdata.Zv[i], C_ZCH);
+	}
+	gNMEAdata.ZCHseen = 1;
 }
 
 /* ----------------------------------------------------------------------- */
 
 void processGPGLL(char *sentence)
 {
-    do_lat_lon(sentence, 1);
+	do_lat_lon(sentence, 1);
 
-    /* A = valid, V = invalid */
-    if (strcmp(field(sentence, 6), "V") == 0)
-        gNMEAdata.status = 0;
+	/* A = valid, V = invalid */
+	if (strcmp(field(sentence, 6), "V") == 0)
+		gNMEAdata.status = 0;
 }
 
 /* ----------------------------------------------------------------------- */
 
 static void do_lat_lon(char *sentence, int begin)
 {
-    double lat, lon, d, m;
-    char str[20], *p;
-    int updated = 0;
+	double lat, lon, d, m;
+	char str[20], *p;
+	int updated = 0;
 
-    if (*(p = field(sentence, begin + 0)) != '\0') {
-	strncpy(str, p, 20);
-	sscanf(p, "%lf", &lat);
-	m = 100.0 * modf(lat / 100.0, &d);
-	lat = d + m / 60.0;
-	p = field(sentence, begin + 1);
-	if (*p == 'S')
+	if (*(p = field(sentence, begin + 0)) != '\0') {
+		strncpy(str, p, 20);
+		sscanf(p, "%lf", &lat);
+		m = 100.0 * modf(lat / 100.0, &d);
+		lat = d + m / 60.0;
+		p = field(sentence, begin + 1);
+		if (*p == 'S')
 	    lat = -lat;
-	if (gNMEAdata.latitude != lat) {
+		if (gNMEAdata.latitude != lat) {
 	    gNMEAdata.latitude = lat;
 	    gNMEAdata.cmask |= C_LATLON;
+		}
+		updated++;
 	}
-        updated++;
-    }
-    if (*(p = field(sentence, begin + 2)) != '\0') {
-	strncpy(str, p, 20);
-	sscanf(p, "%lf", &lon);
-	m = 100.0 * modf(lon / 100.0, &d);
-	lon = d + m / 60.0;
+	if (*(p = field(sentence, begin + 2)) != '\0') {
+		strncpy(str, p, 20);
+		sscanf(p, "%lf", &lon);
+		m = 100.0 * modf(lon / 100.0, &d);
+		lon = d + m / 60.0;
 
-	p = field(sentence, begin + 3);
-	if (*p == 'W')
+		p = field(sentence, begin + 3);
+		if (*p == 'W')
 	    lon = -lon;
-	if (gNMEAdata.longitude != lon) {
+		if (gNMEAdata.longitude != lon) {
 	    gNMEAdata.longitude = lon;
 	    gNMEAdata.cmask |= C_LATLON;
+		}
+		updated++;
 	}
-        updated++;
-    }
-    if (updated == 2)
-        gNMEAdata.last_update = time(NULL);
+	if (updated == 2)
+		gNMEAdata.last_update = time(NULL);
 }
 
 
 static void update_field_i(char *sentence, int fld, int *dest, int mask)
 {
-    int tmp;
+	int tmp;
 
-    sscanf(field(sentence, fld), "%d", &tmp);
+	sscanf(field(sentence, fld), "%d", &tmp);
 
-    if (dest == NULL) return;
+	if (dest == NULL) return;
     
-    if (tmp != *dest)
+	if (tmp != *dest)
     {
-        *dest = tmp;
-        gNMEAdata.cmask |= mask;
+			*dest = tmp;
+			gNMEAdata.cmask |= mask;
     }
 }
 
 #if 0
 static void update_field_f(char *sentence, int fld, double *dest, int mask)
 {
-    double tmp;
+	double tmp;
 
-    scanf(field(sentence, fld), "%lf", &tmp);
+	scanf(field(sentence, fld), "%lf", &tmp);
 
-    if (tmp != *dest) {
-	*dest = tmp;
-	gNMEAdata.cmask |= mask;
-    }
+	if (tmp != *dest) {
+		*dest = tmp;
+		gNMEAdata.cmask |= mask;
+	}
 }
 #endif
 
@@ -219,80 +219,80 @@ static void update_field_f(char *sentence, int fld, double *dest, int mask)
 
 int checksum(char *sentence)
 {
-    /* static for speed */
-    static char s[100], csum[3];
-    /* int for speed */
-    int i = 1, mesg_len, checksum = 0, csum_orig;
+	/* static for speed */
+	static char s[100], csum[3];
+	/* int for speed */
+	int i = 1, mesg_len, checksum = 0, csum_orig;
 
-    strncpy (s, sentence, 99);
-    s[99] = 0;
-    mesg_len = strlen (s) - 3;
-    while (('\0' != s[i]) && (i < mesg_len))
-        checksum ^= s[i++];
+	strncpy (s, sentence, 99);
+	s[99] = 0;
+	mesg_len = strlen (s) - 3;
+	while (('\0' != s[i]) && (i < mesg_len))
+		checksum ^= s[i++];
 
-    if (s[mesg_len] != '*')
+	if (s[mesg_len] != '*')
     {
-        fprintf(stderr, "checksum error: checksum not preceded with '*'\n");
-        return 0;
+			fprintf(stderr, "checksum error: checksum not preceded with '*'\n");
+			return 0;
     }
 
-    strcpy (csum, (s + mesg_len + 1));
-    sscanf (csum, "%X", &csum_orig);
+	strcpy (csum, (s + mesg_len + 1));
+	sscanf (csum, "%X", &csum_orig);
 
-    /*
+	/*
     fprintf(stderr, "\n%s\norigchecksum: %0X, my:%0X\n", s, csum_orig, checksum);
-    */
+	*/
 
-    if (csum_orig == checksum)
+	if (csum_orig == checksum)
     {
-        return 1; /* returning checksum could return 0, 1 time out of 2^8 */
+			return 1; /* returning checksum could return 0, 1 time out of 2^8 */
     }
-    else
+	else
     {
-        fprintf(stderr, "checksum error: NMEA: \"%s\", read as: %#04X, calculated as: %#04X\n",
-                csum, csum_orig, checksum);
-        return 0;
+			fprintf(stderr, "checksum error: NMEA: \"%s\", read as: %#04X, calculated as: %#04X\n",
+							csum, csum_orig, checksum);
+			return 0;
     }
 
-    //    unsigned char sum = '\0';
-    //    char c, *p = sentence, csum[3];
+	//    unsigned char sum = '\0';
+	//    char c, *p = sentence, csum[3];
 
-    //    while ((c = *p++) != '*')
-    //	sum ^= c;
+	//    while ((c = *p++) != '*')
+	//	sum ^= c;
 
-    //    sprintf(csum, "%02X", sum);
-    //    return (strncmp(csum, p, 2) == 0);
+	//    sprintf(csum, "%02X", sum);
+	//    return (strncmp(csum, p, 2) == 0);
 }
 
 void add_checksum(char *sentence)
 {
-    unsigned char sum = '\0';
-    char c, *p = sentence;
+	unsigned char sum = '\0';
+	char c, *p = sentence;
 
-    while ((c = *p++) != '*')
-	sum ^= c;
+	while ((c = *p++) != '*')
+		sum ^= c;
 
-    sprintf(p, "%02X\r\n", sum);
+	sprintf(p, "%02X\r\n", sum);
 }
 
 /* ----------------------------------------------------------------------- */
 
 /* field() returns a string containing the nth comma delimited
    field from sentence string
- */
+*/
 
 static char *field(char *sentence, short n)
 {
-    static char result[100];
-    char *p = sentence;
+	static char result[100];
+	char *p = sentence;
 
-    while (n-- > 0)
-	while (*p++ != ',');
-    strcpy(result, p);
-    p = result;
-    while (*p && *p != ',' && *p != '*' && *p != '\r')
-	p++;
+	while (n-- > 0)
+		while (*p++ != ',');
+	strcpy(result, p);
+	p = result;
+	while (*p && *p != ',' && *p != '*' && *p != '\r')
+		p++;
 
-    *p = '\0';
-    return result;
+	*p = '\0';
+	return result;
 }

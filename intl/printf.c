@@ -33,7 +33,7 @@
 #   include <alloca.h>
 #  else
 #   ifdef _AIX
- #pragma alloca
+#pragma alloca
 #   else
 #    ifndef alloca
 char *alloca ();
@@ -87,11 +87,11 @@ libintl_vfprintf (FILE *stream, const char *format, va_list args)
       char *result = libintl_vasnprintf (NULL, &length, format, args);
       int retval = -1;
       if (result != NULL)
-	{
-	  if (fwrite (result, 1, length, stream) == length)
-	    retval = length;
-	  free (result);
-	}
+				{
+					if (fwrite (result, 1, length, stream) == length)
+						retval = length;
+					free (result);
+				}
       return retval;
     }
 }
@@ -140,12 +140,12 @@ libintl_vsprintf (char *resultbuf, const char *format, va_list args)
       size_t length = (size_t) ~0 / (4 * sizeof (char));
       char *result = libintl_vasnprintf (resultbuf, &length, format, args);
       if (result != resultbuf)
-	{
-	  free (result);
-	  return -1;
-	}
+				{
+					free (result);
+					return -1;
+				}
       else
-	return length;
+				return length;
     }
 }
 
@@ -165,10 +165,10 @@ libintl_sprintf (char *resultbuf, const char *format, ...)
 #if HAVE_SNPRINTF
 
 # if HAVE_DECL__SNPRINTF
-   /* Windows.  */
+/* Windows.  */
 #  define system_vsnprintf _vsnprintf
 # else
-   /* Unix.  */
+/* Unix.  */
 #  define system_vsnprintf vsnprintf
 # endif
 
@@ -183,19 +183,19 @@ libintl_vsnprintf (char *resultbuf, size_t length, const char *format, va_list a
       size_t maxlength = length;
       char *result = libintl_vasnprintf (resultbuf, &length, format, args);
       if (result != resultbuf)
-	{
-	  if (maxlength > 0)
-	    {
-	      if (length < maxlength)
-		abort ();
-	      memcpy (resultbuf, result, maxlength - 1);
-	      resultbuf[maxlength - 1] = '\0';
-	    }
-	  free (result);
-	  return -1;
-	}
+				{
+					if (maxlength > 0)
+						{
+							if (length < maxlength)
+								abort ();
+							memcpy (resultbuf, result, maxlength - 1);
+							resultbuf[maxlength - 1] = '\0';
+						}
+					free (result);
+					return -1;
+				}
       else
-	return length;
+				return length;
     }
 }
 
@@ -261,10 +261,10 @@ libintl_asprintf (char **resultp, const char *format, ...)
 #endif
 
 # if HAVE_DECL__SNWPRINTF
-   /* Windows.  */
+/* Windows.  */
 #  define system_vswprintf _vsnwprintf
 # else
-   /* Unix.  */
+/* Unix.  */
 #  define system_vswprintf vswprintf
 # endif
 
@@ -280,15 +280,15 @@ libintl_vfwprintf (FILE *stream, const wchar_t *format, va_list args)
       wchar_t *result = libintl_vasnwprintf (NULL, &length, format, args);
       int retval = -1;
       if (result != NULL)
-	{
-	  size_t i;
-	  for (i = 0; i < length; i++)
-	    if (fputwc (result[i], stream) == WEOF)
-	      break;
-	  if (i == length)
-	    retval = length;
-	  free (result);
-	}
+				{
+					size_t i;
+					for (i = 0; i < length; i++)
+						if (fputwc (result[i], stream) == WEOF)
+							break;
+					if (i == length)
+						retval = length;
+					free (result);
+				}
       return retval;
     }
 }
@@ -337,19 +337,19 @@ libintl_vswprintf (wchar_t *resultbuf, size_t length, const wchar_t *format, va_
       size_t maxlength = length;
       wchar_t *result = libintl_vasnwprintf (resultbuf, &length, format, args);
       if (result != resultbuf)
-	{
-	  if (maxlength > 0)
-	    {
-	      if (length < maxlength)
-		abort ();
-	      memcpy (resultbuf, result, (maxlength - 1) * sizeof (wchar_t));
-	      resultbuf[maxlength - 1] = 0;
-	    }
-	  free (result);
-	  return -1;
-	}
+				{
+					if (maxlength > 0)
+						{
+							if (length < maxlength)
+								abort ();
+							memcpy (resultbuf, result, (maxlength - 1) * sizeof (wchar_t));
+							resultbuf[maxlength - 1] = 0;
+						}
+					free (result);
+					return -1;
+				}
       else
-	return length;
+				return length;
     }
 }
 

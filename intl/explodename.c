@@ -41,7 +41,7 @@ char *
 _nl_find_language (const char *name)
 {
   while (name[0] != '\0' && name[0] != '_' && name[0] != '@'
-	 && name[0] != '+' && name[0] != ',')
+				 && name[0] != '+' && name[0] != ',')
     ++name;
 
   return (char *) name;
@@ -50,10 +50,10 @@ _nl_find_language (const char *name)
 
 int
 _nl_explode_name (char *name,
-		  const char **language, const char **modifier,
-		  const char **territory, const char **codeset,
-		  const char **normalized_codeset, const char **special,
-		  const char **sponsor, const char **revision)
+									const char **language, const char **modifier,
+									const char **territory, const char **codeset,
+									const char **normalized_codeset, const char **special,
+									const char **sponsor, const char **revision)
 {
   enum { undecided, xpg, cen } syntax;
   char *cp;
@@ -86,33 +86,33 @@ _nl_explode_name (char *name,
       *territory = ++cp;
 
       while (cp[0] != '\0' && cp[0] != '.' && cp[0] != '@'
-	     && cp[0] != '+' && cp[0] != ',' && cp[0] != '_')
-	++cp;
+						 && cp[0] != '+' && cp[0] != ',' && cp[0] != '_')
+				++cp;
 
       mask |= TERRITORY;
 
       if (cp[0] == '.')
-	{
-	  /* Next is the codeset.  */
-	  syntax = xpg;
-	  cp[0] = '\0';
-	  *codeset = ++cp;
+				{
+					/* Next is the codeset.  */
+					syntax = xpg;
+					cp[0] = '\0';
+					*codeset = ++cp;
 
-	  while (cp[0] != '\0' && cp[0] != '@')
-	    ++cp;
+					while (cp[0] != '\0' && cp[0] != '@')
+						++cp;
 
-	  mask |= XPG_CODESET;
+					mask |= XPG_CODESET;
 
-	  if (*codeset != cp && (*codeset)[0] != '\0')
-	    {
-	      *normalized_codeset = _nl_normalize_codeset (*codeset,
-							   cp - *codeset);
-	      if (strcmp (*codeset, *normalized_codeset) == 0)
-		free ((char *) *normalized_codeset);
-	      else
-		mask |= XPG_NORM_CODESET;
-	    }
-	}
+					if (*codeset != cp && (*codeset)[0] != '\0')
+						{
+							*normalized_codeset = _nl_normalize_codeset (*codeset,
+																													 cp - *codeset);
+							if (strcmp (*codeset, *normalized_codeset) == 0)
+								free ((char *) *normalized_codeset);
+							else
+								mask |= XPG_NORM_CODESET;
+						}
+				}
     }
 
   if (cp[0] == '@' || (syntax != xpg && cp[0] == '+'))
@@ -123,8 +123,8 @@ _nl_explode_name (char *name,
       *modifier = ++cp;
 
       while (syntax == cen && cp[0] != '\0' && cp[0] != '+'
-	     && cp[0] != ',' && cp[0] != '_')
-	++cp;
+						 && cp[0] != ',' && cp[0] != '_')
+				++cp;
 
       mask |= XPG_MODIFIER | CEN_AUDIENCE;
     }
@@ -134,37 +134,37 @@ _nl_explode_name (char *name,
       syntax = cen;
 
       if (cp[0] == '+')
-	{
- 	  /* Next is special application (CEN syntax).  */
-	  cp[0] = '\0';
-	  *special = ++cp;
+				{
+					/* Next is special application (CEN syntax).  */
+					cp[0] = '\0';
+					*special = ++cp;
 
-	  while (cp[0] != '\0' && cp[0] != ',' && cp[0] != '_')
-	    ++cp;
+					while (cp[0] != '\0' && cp[0] != ',' && cp[0] != '_')
+						++cp;
 
-	  mask |= CEN_SPECIAL;
-	}
+					mask |= CEN_SPECIAL;
+				}
 
       if (cp[0] == ',')
-	{
- 	  /* Next is sponsor (CEN syntax).  */
-	  cp[0] = '\0';
-	  *sponsor = ++cp;
+				{
+					/* Next is sponsor (CEN syntax).  */
+					cp[0] = '\0';
+					*sponsor = ++cp;
 
-	  while (cp[0] != '\0' && cp[0] != '_')
-	    ++cp;
+					while (cp[0] != '\0' && cp[0] != '_')
+						++cp;
 
-	  mask |= CEN_SPONSOR;
-	}
+					mask |= CEN_SPONSOR;
+				}
 
       if (cp[0] == '_')
-	{
- 	  /* Next is revision (CEN syntax).  */
-	  cp[0] = '\0';
-	  *revision = ++cp;
+				{
+					/* Next is revision (CEN syntax).  */
+					cp[0] = '\0';
+					*revision = ++cp;
 
-	  mask |= CEN_REVISION;
-	}
+					mask |= CEN_REVISION;
+				}
     }
 
   /* For CEN syntax values it might be important to have the
@@ -172,13 +172,13 @@ _nl_explode_name (char *name,
   if (syntax == xpg)
     {
       if (*territory != NULL && (*territory)[0] == '\0')
-	mask &= ~TERRITORY;
+				mask &= ~TERRITORY;
 
       if (*codeset != NULL && (*codeset)[0] == '\0')
-	mask &= ~XPG_CODESET;
+				mask &= ~XPG_CODESET;
 
       if (*modifier != NULL && (*modifier)[0] == '\0')
-	mask &= ~XPG_MODIFIER;
+				mask &= ~XPG_MODIFIER;
     }
 
   return mask;

@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.3  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
 Revision 1.2  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -108,20 +111,20 @@ modulesetup ()
 
   setupentry[myplace] = gtk_frame_new (_("Nautic settings"));
   gtk_container_set_border_width (GTK_CONTAINER
-				  (setupentry[myplace]), 5);
+																	(setupentry[myplace]), 5);
   setupentrylabel[myplace] = gtk_label_new (_("Nautic"));
   mainbox = gtk_vbox_new (FALSE, 15);
   gtk_container_add (GTK_CONTAINER (setupentry[myplace]), mainbox);
 
   if (debug)
-  g_print ("\nCreated nautic setup window.%d\n",myplace);
+		g_print ("\nCreated nautic setup window.%d\n",myplace);
   return 0;
 }
 
 gint
 g_module_check_init ()
 {
-    myplace=mod_setupcounter+1;
+	myplace=mod_setupcounter+1;
   g_print ("\nModule nautic loaded");
   return 0;
 }

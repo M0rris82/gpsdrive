@@ -26,10 +26,10 @@ extern char lond;
 #define PI 3.14159265358979323846
 
 enum
-{
-  EM_HUNT_FF, EM_HUNT_81, EM_HUNT_ID, EM_HUNT_WC,
-  EM_HUNT_FLAGS, EM_HUNT_CS, EM_HUNT_DATA, EM_HUNT_A
-};
+	{
+		EM_HUNT_FF, EM_HUNT_81, EM_HUNT_ID, EM_HUNT_WC,
+		EM_HUNT_FLAGS, EM_HUNT_CS, EM_HUNT_DATA, EM_HUNT_A
+	};
 
 #define O(x) (x-6)
 
@@ -110,7 +110,7 @@ em_init ()
       tm = gmtime (&t);
 
       if (sn++ > 32767)
-	sn = 0;
+				sn = 0;
 
       memset (data, 0, sizeof (data));
 
@@ -190,13 +190,13 @@ handle1000 (unsigned short *p)
 {
 #if 0
   fprintf (stderr, "date: %d %d %d  %d:%d:%d\n",
-	   p[O (19)], p[O (20)], p[O (21)], p[O (22)], p[O (23)], p[O (24)]);
+					 p[O (19)], p[O (20)], p[O (21)], p[O (22)], p[O (23)], p[O (24)]);
 
   fprintf (stderr, "  solution invalid:\n");
   fprintf (stderr, "    altitude: %d\n", (p[O (10)] & 1) ? 1 : 0);
   fprintf (stderr, "    no diff gps: %d\n", (p[O (10)] & 2) ? 1 : 0);
   fprintf (stderr, "    not enough satellites: %d\n",
-	   (p[O (10)] & 4) ? 1 : 0);
+					 (p[O (10)] & 4) ? 1 : 0);
   fprintf (stderr, "    exceed max EHPE: %d\n", (p[O (10)] & 8) ? 1 : 0);
   fprintf (stderr, "    exceed max EVPE: %d\n", (p[O (10)] & 16) ? 1 : 0);
   fprintf (stderr, "  solution type:\n");
@@ -205,21 +205,21 @@ handle1000 (unsigned short *p)
   fprintf (stderr, "    differential: %d\n", (p[O (11)] & 4) ? 1 : 0);
   fprintf (stderr, "Number of measurements in solution: %d\n", p[O (12)]);
   fprintf (stderr, "Lat: %f\n",
-	   180.0 / (PI / ((double) getlong (p + O (27)) / 100000000)));
+					 180.0 / (PI / ((double) getlong (p + O (27)) / 100000000)));
   fprintf (stderr, "Lon: %f\n",
-	   180.0 / (PI / ((double) getlong (p + O (29)) / 100000000)));
+					 180.0 / (PI / ((double) getlong (p + O (29)) / 100000000)));
   fprintf (stderr, "Alt: %f\n", (double) getlong (p + O (31)) / 100.0);
   fprintf (stderr, "Speed: %f\n",
-	   (double) getlong (p + O (34)) / 100.0) * 1.94387;
+					 (double) getlong (p + O (34)) / 100.0) * 1.94387;
   fprintf (stderr, "Map datum: %d\n", p[O (39)]);
   fprintf (stderr, "Magnetic variation: %f\n",
-	   p[O (37)] * 180 / (PI * 10000));
+					 p[O (37)] * 180 / (PI * 10000));
   fprintf (stderr, "Course: %f\n", (p[O (36)] * 180 / (PI * 1000)));
   fprintf (stderr, "Separation: %f\n", (p[O (33)] / 100));
 #endif
 
   sprintf (gNMEAdata.utc, "%02d/%02d/%d %02d:%02d:%02d",
-	   p[O (19)], p[O (20)], p[O (21)], p[O (22)], p[O (23)], p[O (24)]);
+					 p[O (19)], p[O (20)], p[O (21)], p[O (22)], p[O (23)], p[O (24)]);
 
   gNMEAdata.mag_var = p[O (37)] * 180 / (PI * 10000);	/* degrees */
 
@@ -286,13 +286,13 @@ handle1002 (unsigned short *p)
       fprintf (stderr, " C/No:%d\n", p[O (17 + (3 * i))]);
 #endif
       for (j = 0; j < 12; j++)
-	{
-	  if (gNMEAdata.PRN[j] != p[O (16 + (3 * i))])
-	    continue;
-	  gNMEAdata.used[j] = (p[O (15 + (3 * i))] & 1);
-	  gNMEAdata.ss[j] = p[O (17 + (3 * i))];
-	  break;
-	}
+				{
+					if (gNMEAdata.PRN[j] != p[O (16 + (3 * i))])
+						continue;
+					gNMEAdata.used[j] = (p[O (15 + (3 * i))] & 1);
+					gNMEAdata.ss[j] = p[O (17 + (3 * i))];
+					break;
+				}
     }
 }
 
@@ -309,24 +309,24 @@ handle1003 (unsigned short *p)
   for (j = 0; j < 12; j++)
     {
       if (j < gNMEAdata.in_view)
-	{
-	  gNMEAdata.PRN[j] = p[O (15 + (3 * j))];
-	  gNMEAdata.azimuth[j] = p[O (16 + (3 * j))] * 180 / (PI * 10000);
-	  gNMEAdata.elevation[j] = p[O (17 + (3 * j))] * 180 / (PI * 10000);
+				{
+					gNMEAdata.PRN[j] = p[O (15 + (3 * j))];
+					gNMEAdata.azimuth[j] = p[O (16 + (3 * j))] * 180 / (PI * 10000);
+					gNMEAdata.elevation[j] = p[O (17 + (3 * j))] * 180 / (PI * 10000);
 #if 0
-	  fprintf (stderr, "Sat%02d:", i);
-	  fprintf (stderr, " PRN:%d", p[O (15 + (3 * i))]);
-	  fprintf (stderr, " az:%d", p[O (16 + (3 * i))]);
-	  fprintf (stderr, " el:%d", p[O (17 + (3 * i))]);
-	  fprintf (stderr, "\n");
+					fprintf (stderr, "Sat%02d:", i);
+					fprintf (stderr, " PRN:%d", p[O (15 + (3 * i))]);
+					fprintf (stderr, " az:%d", p[O (16 + (3 * i))]);
+					fprintf (stderr, " el:%d", p[O (17 + (3 * i))]);
+					fprintf (stderr, "\n");
 #endif
-	}
+				}
       else
-	{
-	  gNMEAdata.PRN[j] = 0;
-	  gNMEAdata.azimuth[j] = 0.0;
-	  gNMEAdata.elevation[j] = 0.0;
-	}
+				{
+					gNMEAdata.PRN[j] = 0;
+					gNMEAdata.azimuth[j] = 0.0;
+					gNMEAdata.elevation[j] = 0.0;
+				}
     }
 }
 
@@ -350,7 +350,7 @@ handle1005 (unsigned short *p)
       fprintf (stderr, "sat health:%d", (p[O (13 + i)] & 512) ? 1 : 0);
       fprintf (stderr, "rtcm sat health:%d", (p[O (13 + i)] & 1024) ? 1 : 0);
       fprintf (stderr, "corrections state:%d",
-	       (p[O (13 + i)] & 2048) ? 1 : 0);
+							 (p[O (13 + i)] & 2048) ? 1 : 0);
       fprintf (stderr, "iode mismatch:%d", (p[O (13 + i)] & 4096) ? 1 : 0);
     }
 #endif
@@ -358,7 +358,7 @@ handle1005 (unsigned short *p)
 
 static void
 analyze (struct header *h, unsigned short *p, fd_set * afds,
-	 fd_set * nmea_fds)
+				 fd_set * nmea_fds)
 {
   unsigned char buf[BUFSIZE];
   char *bufp;
@@ -370,123 +370,123 @@ analyze (struct header *h, unsigned short *p, fd_set * afds,
   if (p[h->ndata] == em_checksum (p, h->ndata))
     {
       if (debug > 5)
-	fprintf (stderr, "id %d\n", h->id);
+				fprintf (stderr, "id %d\n", h->id);
       switch (h->id)
-	{
-	case 1000:
-	  handle1000 (p);
-	  bufp = buf;
-	  if (gNMEAdata.mode > 1)
-	    {
-	      sprintf (bufp,
-			"$GPGGA,%02d%02d%02d,%09.4lf,%c,%010.4lf,%c,%d,%02d,%.2f,%.1f,%c,%f,%c,%s,%s*",
-		       gNMEAdata.hours, gNMEAdata.minutes, gNMEAdata.seconds,
-		       degtodm (fabs (gNMEAdata.latitude)),
-		       ((gNMEAdata.latitude > 0) ? 'N' : 'S'),
-		       degtodm (fabs (gNMEAdata.longitude)),
-		       ((gNMEAdata.longitude > 0) ? 'E' : 'W'),
-		    gNMEAdata.status, gNMEAdata.satellites, gNMEAdata.hdop,
-		       gNMEAdata.altitude, 'M', gNMEAdata.separation, 'M', "",
-		       "");
-	      add_checksum (bufp + 1);
-	      bufp = bufp + strlen (bufp);
-	    }
-	  sprintf (bufp,
-		    "$GPRMC,%02d%02d%02d,%c,%09.4lf,%c,%010.4lf,%c,%f,%f,%02d%02d%02d,%02f,%c*",
-		   gNMEAdata.hours, gNMEAdata.minutes, gNMEAdata.seconds,
-		   gNMEAdata.status ? 'A' : 'V',
-		   degtodm (fabs (gNMEAdata.latitude)),
-		   ((gNMEAdata.latitude > 0) ? 'N' : 'S'),
-		   degtodm (fabs (gNMEAdata.longitude)),
-		   ((gNMEAdata.longitude > 0) ? 'E' : 'W'), gNMEAdata.speed,
-		   gNMEAdata.course, gNMEAdata.day, gNMEAdata.month,
-		   (gNMEAdata.year % 100), gNMEAdata.mag_var,
-		   (gNMEAdata.mag_var > 0) ? 'E' : 'W');
-	  add_checksum (bufp + 1);
-	  nmea = 1000;
-	  break;
-	case 1002:
-	  handle1002 (p);
-	  bufp2 = bufp = buf;
-	  sprintf (bufp, "$GPGSA,%c,%d,", 'A', gNMEAdata.mode);
-	  j = 0;
-	  for (i = 0; i < 12; i++)
-	    {
-	      if (gNMEAdata.used[i])
-		{
-		  bufp = bufp + strlen (bufp);
-		  sprintf (bufp, "%02d,", gNMEAdata.PRN[i]);
-		  j++;
-		}
-	    }
-	  for (i = j; i < 12; i++)
-	    {
-	      bufp = bufp + strlen (bufp);
-	      sprintf (bufp, ",");
-	    }
-	  bufp = bufp + strlen (bufp);
-	  sprintf (bufp, "%.2f,%.2f,%.2f*", gNMEAdata.pdop, gNMEAdata.hdop,
-		   gNMEAdata.vdop);
-	  add_checksum (bufp2 + 1);
-	  bufp2 = bufp = bufp + strlen (bufp);
-	  sprintf (bufp, "$PRWIZCH");
-	  bufp = bufp + strlen (bufp);
-	  for (i = 0; i < 12; i++)
-	    {
-	      sprintf (bufp, ",%02d,%X", gNMEAdata.Zs[i], gNMEAdata.Zv[i]);
-	      bufp = bufp + strlen (bufp);
-	    }
-	  sprintf (bufp, "*");
-	  bufp = bufp + strlen (bufp);
-	  add_checksum (bufp2 + 1);
-	  nmea = 1002;
-	  break;
-	case 1003:
-	  handle1003 (p);
-	  bufp2 = bufp = buf;
-	  j =
-	    (gNMEAdata.in_view / 4) + (((gNMEAdata.in_view % 4) > 0) ? 1 : 0);
-	  while (i < 12)
-	    {
-	      if (i % 4 == 0)
-		sprintf (bufp, "$GPGSV,%d,%d,%02d", j, (i / 4) + 1,
-			 gNMEAdata.in_view);
-	      bufp += strlen (bufp);
-	      if (i <= gNMEAdata.in_view && gNMEAdata.elevation[i])
-		sprintf (bufp, ",%02d,%02d,%03d,%02d", gNMEAdata.PRN[i],
-			 gNMEAdata.elevation[i], gNMEAdata.azimuth[i],
-			 gNMEAdata.ss[i]);
-	      else
-		sprintf (bufp, ",%02d,00,000,%02d,", gNMEAdata.PRN[i],
-			 gNMEAdata.ss[i]);
-	      bufp += strlen (bufp);
-	      if (i % 4 == 3)
-		{
-		  sprintf (bufp, "*");
-		  add_checksum (bufp2 + 1);
-		  bufp += strlen (bufp);
-		  bufp2 = bufp;
-		}
-	      i++;
-	    }
-	  nmea = 1003;
-	  break;
-	case 1005:
-	  handle1005 (p);
-	  break;
-	}
+				{
+				case 1000:
+					handle1000 (p);
+					bufp = buf;
+					if (gNMEAdata.mode > 1)
+						{
+							sprintf (bufp,
+											 "$GPGGA,%02d%02d%02d,%09.4lf,%c,%010.4lf,%c,%d,%02d,%.2f,%.1f,%c,%f,%c,%s,%s*",
+											 gNMEAdata.hours, gNMEAdata.minutes, gNMEAdata.seconds,
+											 degtodm (fabs (gNMEAdata.latitude)),
+											 ((gNMEAdata.latitude > 0) ? 'N' : 'S'),
+											 degtodm (fabs (gNMEAdata.longitude)),
+											 ((gNMEAdata.longitude > 0) ? 'E' : 'W'),
+											 gNMEAdata.status, gNMEAdata.satellites, gNMEAdata.hdop,
+											 gNMEAdata.altitude, 'M', gNMEAdata.separation, 'M', "",
+											 "");
+							add_checksum (bufp + 1);
+							bufp = bufp + strlen (bufp);
+						}
+					sprintf (bufp,
+									 "$GPRMC,%02d%02d%02d,%c,%09.4lf,%c,%010.4lf,%c,%f,%f,%02d%02d%02d,%02f,%c*",
+									 gNMEAdata.hours, gNMEAdata.minutes, gNMEAdata.seconds,
+									 gNMEAdata.status ? 'A' : 'V',
+									 degtodm (fabs (gNMEAdata.latitude)),
+									 ((gNMEAdata.latitude > 0) ? 'N' : 'S'),
+									 degtodm (fabs (gNMEAdata.longitude)),
+									 ((gNMEAdata.longitude > 0) ? 'E' : 'W'), gNMEAdata.speed,
+									 gNMEAdata.course, gNMEAdata.day, gNMEAdata.month,
+									 (gNMEAdata.year % 100), gNMEAdata.mag_var,
+									 (gNMEAdata.mag_var > 0) ? 'E' : 'W');
+					add_checksum (bufp + 1);
+					nmea = 1000;
+					break;
+				case 1002:
+					handle1002 (p);
+					bufp2 = bufp = buf;
+					sprintf (bufp, "$GPGSA,%c,%d,", 'A', gNMEAdata.mode);
+					j = 0;
+					for (i = 0; i < 12; i++)
+						{
+							if (gNMEAdata.used[i])
+								{
+									bufp = bufp + strlen (bufp);
+									sprintf (bufp, "%02d,", gNMEAdata.PRN[i]);
+									j++;
+								}
+						}
+					for (i = j; i < 12; i++)
+						{
+							bufp = bufp + strlen (bufp);
+							sprintf (bufp, ",");
+						}
+					bufp = bufp + strlen (bufp);
+					sprintf (bufp, "%.2f,%.2f,%.2f*", gNMEAdata.pdop, gNMEAdata.hdop,
+									 gNMEAdata.vdop);
+					add_checksum (bufp2 + 1);
+					bufp2 = bufp = bufp + strlen (bufp);
+					sprintf (bufp, "$PRWIZCH");
+					bufp = bufp + strlen (bufp);
+					for (i = 0; i < 12; i++)
+						{
+							sprintf (bufp, ",%02d,%X", gNMEAdata.Zs[i], gNMEAdata.Zv[i]);
+							bufp = bufp + strlen (bufp);
+						}
+					sprintf (bufp, "*");
+					bufp = bufp + strlen (bufp);
+					add_checksum (bufp2 + 1);
+					nmea = 1002;
+					break;
+				case 1003:
+					handle1003 (p);
+					bufp2 = bufp = buf;
+					j =
+						(gNMEAdata.in_view / 4) + (((gNMEAdata.in_view % 4) > 0) ? 1 : 0);
+					while (i < 12)
+						{
+							if (i % 4 == 0)
+								sprintf (bufp, "$GPGSV,%d,%d,%02d", j, (i / 4) + 1,
+												 gNMEAdata.in_view);
+							bufp += strlen (bufp);
+							if (i <= gNMEAdata.in_view && gNMEAdata.elevation[i])
+								sprintf (bufp, ",%02d,%02d,%03d,%02d", gNMEAdata.PRN[i],
+												 gNMEAdata.elevation[i], gNMEAdata.azimuth[i],
+												 gNMEAdata.ss[i]);
+							else
+								sprintf (bufp, ",%02d,00,000,%02d,", gNMEAdata.PRN[i],
+												 gNMEAdata.ss[i]);
+							bufp += strlen (bufp);
+							if (i % 4 == 3)
+								{
+									sprintf (bufp, "*");
+									add_checksum (bufp2 + 1);
+									bufp += strlen (bufp);
+									bufp2 = bufp;
+								}
+							i++;
+						}
+					nmea = 1003;
+					break;
+				case 1005:
+					handle1005 (p);
+					break;
+				}
     }
   if (nmea > 0)
     {
       if (debug > 4)
-	fprintf (stderr, "%s", buf);
+				fprintf (stderr, "%s", buf);
       for (fd = 0; fd < nfds; fd++)
-	if (FD_ISSET (fd, nmea_fds))
-	  if (write (fd, buf, strlen (buf)) < 0)
-	    {
-	      FD_CLR (fd, afds);
-	      FD_CLR (fd, nmea_fds);
-	    }
+				if (FD_ISSET (fd, nmea_fds))
+					if (write (fd, buf, strlen (buf)) < 0)
+						{
+							FD_CLR (fd, afds);
+							FD_CLR (fd, nmea_fds);
+						}
     }
   if (eminit)
     em_init ();
@@ -519,64 +519,64 @@ em_eat (unsigned char c, fd_set * afds, fd_set * nmea_fds)
 
     case EM_HUNT_FF:
       if (c == 0xff)
-	state = EM_HUNT_81;
+				state = EM_HUNT_81;
       if (c == 'E')
-	state = EM_HUNT_A;
+				state = EM_HUNT_A;
       break;
 
     case EM_HUNT_A:
       /* A better be right after E */
       if (c == 'A')
-	write (gNMEAdata.fdout, "EARTHA\r\n", 8);
+				write (gNMEAdata.fdout, "EARTHA\r\n", 8);
       state = EM_HUNT_FF;
       break;
 
     case EM_HUNT_81:
       if (c == 0x81)
-	state = EM_HUNT_ID;
+				state = EM_HUNT_ID;
       h.sync = 0x81ff;
       byte = 0;
       break;
 
     case EM_HUNT_ID:
       if (!(byte = putword (&(h.id), c, byte)))
-	state = EM_HUNT_WC;
+				state = EM_HUNT_WC;
       break;
 
     case EM_HUNT_WC:
       if (!(byte = putword (&(h.ndata), c, byte)))
-	state = EM_HUNT_FLAGS;
+				state = EM_HUNT_FLAGS;
       break;
 
     case EM_HUNT_FLAGS:
       if (!(byte = putword (&(h.flags), c, byte)))
-	state = EM_HUNT_CS;
+				state = EM_HUNT_CS;
       break;
 
     case EM_HUNT_CS:
       if (!(byte = putword (&(h.csum), c, byte)))
-	{
+				{
 
-	  if (h.csum == em_checksum ((unsigned short *) &h, 4))
-	    {
-	      state = EM_HUNT_DATA;
-	      data = (unsigned short *) malloc ((h.ndata + 1) * 2);
-	      words = 0;
-	    }
-	  else
-	    state = EM_HUNT_FF;
-	}
+					if (h.csum == em_checksum ((unsigned short *) &h, 4))
+						{
+							state = EM_HUNT_DATA;
+							data = (unsigned short *) malloc ((h.ndata + 1) * 2);
+							words = 0;
+						}
+					else
+						state = EM_HUNT_FF;
+				}
       break;
 
     case EM_HUNT_DATA:
       if (!(byte = putword (data + words, c, byte)))
-	words++;
+				words++;
       if (words == h.ndata + 1)
-	{
-	  analyze (&h, data, afds, nmea_fds);
-	  free (data);
-	  state = EM_HUNT_FF;
-	}
+				{
+					analyze (&h, data, afds, nmea_fds);
+					free (data);
+					state = EM_HUNT_FF;
+				}
       break;
     }
 }

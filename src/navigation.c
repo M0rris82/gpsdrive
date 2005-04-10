@@ -24,8 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/04/10 21:50:50  tweety
+reformatting c-sources
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.9  2004/02/18 13:24:19  ganter
 navigation
@@ -101,18 +104,18 @@ nav_doit (GtkWidget * widget, guint * datum)
 
   e =
     ta_getstreetname (current_lat, current_long, streetname,
-		      sizeof (streetname));
+											sizeof (streetname));
   if (e)
     {
       g_strlcpy (actualstreetname, streetname, sizeof (actualstreetname));
       if (debug)
-	fprintf (stderr, "Location: %s\n", streetname);
+				fprintf (stderr, "Location: %s\n", streetname);
     }
   else
     {
       g_strlcpy (actualstreetname, "---", sizeof (actualstreetname));
       if (debug)
-	fprintf (stderr, "unknown location\n");
+				fprintf (stderr, "unknown location\n");
     }
   if (strcmp (actualstreetname, oldstreetname) != 0)
     {
@@ -129,5 +132,5 @@ gint
 navi_cb (GtkWidget * widget, guint datum)
 {
 
-    return TRUE;
+	return TRUE;
 }

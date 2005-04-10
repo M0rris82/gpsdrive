@@ -47,7 +47,7 @@
 #   include <alloca.h>
 #  else
 #   ifdef _AIX
- #pragma alloca
+#pragma alloca
 #   else
 #    ifndef alloca
 char *alloca ();
@@ -142,13 +142,13 @@ static size_t maxmap;
 /* Prototypes for local functions.  */
 static size_t read_alias_file (const char *fname, int fname_len)
      internal_function;
-static int extend_alias_table (void);
-static int alias_compare (const struct alias_map *map1,
-			  const struct alias_map *map2);
+		 static int extend_alias_table (void);
+		 static int alias_compare (const struct alias_map *map1,
+															 const struct alias_map *map2);
 
 
-const char *
-_nl_expand_alias (const char *name)
+		 const char *
+		 _nl_expand_alias (const char *name)
 {
   static const char *locale_alias_path;
   struct alias_map *retval;
@@ -169,38 +169,38 @@ _nl_expand_alias (const char *name)
       item.alias = name;
 
       if (nmap > 0)
-	retval = (struct alias_map *) bsearch (&item, map, nmap,
-					       sizeof (struct alias_map),
-					       (int (*) (const void *,
-							 const void *)
-						) alias_compare);
+				retval = (struct alias_map *) bsearch (&item, map, nmap,
+																							 sizeof (struct alias_map),
+																							 (int (*) (const void *,
+																												 const void *)
+																								) alias_compare);
       else
-	retval = NULL;
+				retval = NULL;
 
       /* We really found an alias.  Return the value.  */
       if (retval != NULL)
-	{
-	  result = retval->value;
-	  break;
-	}
+				{
+					result = retval->value;
+					break;
+				}
 
       /* Perhaps we can find another alias file.  */
       added = 0;
       while (added == 0 && locale_alias_path[0] != '\0')
-	{
-	  const char *start;
+				{
+					const char *start;
 
-	  while (locale_alias_path[0] == PATH_SEPARATOR)
-	    ++locale_alias_path;
-	  start = locale_alias_path;
+					while (locale_alias_path[0] == PATH_SEPARATOR)
+						++locale_alias_path;
+					start = locale_alias_path;
 
-	  while (locale_alias_path[0] != '\0'
-		 && locale_alias_path[0] != PATH_SEPARATOR)
-	    ++locale_alias_path;
+					while (locale_alias_path[0] != '\0'
+								 && locale_alias_path[0] != PATH_SEPARATOR)
+						++locale_alias_path;
 
-	  if (start < locale_alias_path)
-	    added = read_alias_file (start, locale_alias_path - start);
-	}
+					if (start < locale_alias_path)
+						added = read_alias_file (start, locale_alias_path - start);
+				}
     }
   while (added != 0);
 
@@ -224,7 +224,7 @@ read_alias_file (const char *fname, int fname_len)
   full_fname = (char *) alloca (fname_len + sizeof aliasfile);
 #ifdef HAVE_MEMPCPY
   mempcpy (mempcpy (full_fname, fname, fname_len),
-	   aliasfile, sizeof aliasfile);
+					 aliasfile, sizeof aliasfile);
 #else
   memcpy (full_fname, fname, fname_len);
   memcpy (&full_fname[fname_len], aliasfile, sizeof aliasfile);
@@ -244,112 +244,112 @@ read_alias_file (const char *fname, int fname_len)
   while (!FEOF (fp))
     {
       /* It is a reasonable approach to use a fix buffer here because
-	 a) we are only interested in the first two fields
-	 b) these fields must be usable as file names and so must not
-	    be that long
-	 We avoid a multi-kilobyte buffer here since this would use up
-	 stack space which we might not have if the program ran out of
-	 memory.  */
+				 a) we are only interested in the first two fields
+				 b) these fields must be usable as file names and so must not
+				 be that long
+				 We avoid a multi-kilobyte buffer here since this would use up
+				 stack space which we might not have if the program ran out of
+				 memory.  */
       char buf[400];
       char *alias;
       char *value;
       char *cp;
 
       if (FGETS (buf, sizeof buf, fp) == NULL)
-	/* EOF reached.  */
-	break;
+				/* EOF reached.  */
+				break;
 
       cp = buf;
       /* Ignore leading white space.  */
       while (isspace ((unsigned char) cp[0]))
-	++cp;
+				++cp;
 
       /* A leading '#' signals a comment line.  */
       if (cp[0] != '\0' && cp[0] != '#')
-	{
-	  alias = cp++;
-	  while (cp[0] != '\0' && !isspace ((unsigned char) cp[0]))
-	    ++cp;
-	  /* Terminate alias name.  */
-	  if (cp[0] != '\0')
-	    *cp++ = '\0';
+				{
+					alias = cp++;
+					while (cp[0] != '\0' && !isspace ((unsigned char) cp[0]))
+						++cp;
+					/* Terminate alias name.  */
+					if (cp[0] != '\0')
+						*cp++ = '\0';
 
-	  /* Now look for the beginning of the value.  */
-	  while (isspace ((unsigned char) cp[0]))
-	    ++cp;
+					/* Now look for the beginning of the value.  */
+					while (isspace ((unsigned char) cp[0]))
+						++cp;
 
-	  if (cp[0] != '\0')
-	    {
-	      size_t alias_len;
-	      size_t value_len;
+					if (cp[0] != '\0')
+						{
+							size_t alias_len;
+							size_t value_len;
 
-	      value = cp++;
-	      while (cp[0] != '\0' && !isspace ((unsigned char) cp[0]))
-		++cp;
-	      /* Terminate value.  */
-	      if (cp[0] == '\n')
-		{
-		  /* This has to be done to make the following test
-		     for the end of line possible.  We are looking for
-		     the terminating '\n' which do not overwrite here.  */
-		  *cp++ = '\0';
-		  *cp = '\n';
-		}
-	      else if (cp[0] != '\0')
-		*cp++ = '\0';
+							value = cp++;
+							while (cp[0] != '\0' && !isspace ((unsigned char) cp[0]))
+								++cp;
+							/* Terminate value.  */
+							if (cp[0] == '\n')
+								{
+									/* This has to be done to make the following test
+										 for the end of line possible.  We are looking for
+										 the terminating '\n' which do not overwrite here.  */
+									*cp++ = '\0';
+									*cp = '\n';
+								}
+							else if (cp[0] != '\0')
+								*cp++ = '\0';
 
-	      if (nmap >= maxmap)
-		if (__builtin_expect (extend_alias_table (), 0))
-		  return added;
+							if (nmap >= maxmap)
+								if (__builtin_expect (extend_alias_table (), 0))
+									return added;
 
-	      alias_len = strlen (alias) + 1;
-	      value_len = strlen (value) + 1;
+							alias_len = strlen (alias) + 1;
+							value_len = strlen (value) + 1;
 
-	      if (string_space_act + alias_len + value_len > string_space_max)
-		{
-		  /* Increase size of memory pool.  */
-		  size_t new_size = (string_space_max
-				     + (alias_len + value_len > 1024
-					? alias_len + value_len : 1024));
-		  char *new_pool = (char *) realloc (string_space, new_size);
-		  if (new_pool == NULL)
-		    return added;
+							if (string_space_act + alias_len + value_len > string_space_max)
+								{
+									/* Increase size of memory pool.  */
+									size_t new_size = (string_space_max
+																		 + (alias_len + value_len > 1024
+																				? alias_len + value_len : 1024));
+									char *new_pool = (char *) realloc (string_space, new_size);
+									if (new_pool == NULL)
+										return added;
 
-		  if (__builtin_expect (string_space != new_pool, 0))
-		    {
-		      size_t i;
+									if (__builtin_expect (string_space != new_pool, 0))
+										{
+											size_t i;
 
-		      for (i = 0; i < nmap; i++)
-			{
-			  map[i].alias += new_pool - string_space;
-			  map[i].value += new_pool - string_space;
-			}
-		    }
+											for (i = 0; i < nmap; i++)
+												{
+													map[i].alias += new_pool - string_space;
+													map[i].value += new_pool - string_space;
+												}
+										}
 
-		  string_space = new_pool;
-		  string_space_max = new_size;
-		}
+									string_space = new_pool;
+									string_space_max = new_size;
+								}
 
-	      map[nmap].alias = memcpy (&string_space[string_space_act],
-					alias, alias_len);
-	      string_space_act += alias_len;
+							map[nmap].alias = memcpy (&string_space[string_space_act],
+																				alias, alias_len);
+							string_space_act += alias_len;
 
-	      map[nmap].value = memcpy (&string_space[string_space_act],
-					value, value_len);
-	      string_space_act += value_len;
+							map[nmap].value = memcpy (&string_space[string_space_act],
+																				value, value_len);
+							string_space_act += value_len;
 
-	      ++nmap;
-	      ++added;
-	    }
-	}
+							++nmap;
+							++added;
+						}
+				}
 
       /* Possibly not the whole line fits into the buffer.  Ignore
-	 the rest of the line.  */
+				 the rest of the line.  */
       while (strchr (buf, '\n') == NULL)
-	if (FGETS (buf, sizeof buf, fp) == NULL)
-	  /* Make sure the inner loop will be left.  The outer loop
-	     will exit at the `feof' test.  */
-	  break;
+				if (FGETS (buf, sizeof buf, fp) == NULL)
+					/* Make sure the inner loop will be left.  The outer loop
+						 will exit at the `feof' test.  */
+					break;
     }
 
   /* Should we test for ferror()?  I think we have to silently ignore
@@ -358,7 +358,7 @@ read_alias_file (const char *fname, int fname_len)
 
   if (added > 0)
     qsort (map, nmap, sizeof (struct alias_map),
-	   (int (*) (const void *, const void *)) alias_compare);
+					 (int (*) (const void *, const void *)) alias_compare);
 
   return added;
 }
@@ -372,7 +372,7 @@ extend_alias_table ()
 
   new_size = maxmap == 0 ? 100 : 2 * maxmap;
   new_map = (struct alias_map *) realloc (map, (new_size
-						* sizeof (struct alias_map)));
+																								* sizeof (struct alias_map)));
   if (new_map == NULL)
     /* Simply don't extend: we don't have any more core.  */
     return -1;
@@ -399,11 +399,11 @@ alias_compare (const struct alias_map *map1, const struct alias_map *map2)
   do
     {
       /* I know this seems to be odd but the tolower() function in
-	 some systems libc cannot handle nonalpha characters.  */
+				 some systems libc cannot handle nonalpha characters.  */
       c1 = isupper (*p1) ? tolower (*p1) : *p1;
       c2 = isupper (*p2) ? tolower (*p2) : *p2;
       if (c1 == '\0')
-	break;
+				break;
       ++p1;
       ++p2;
     }

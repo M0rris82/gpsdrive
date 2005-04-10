@@ -65,17 +65,17 @@ static char *stpcpy (char *dest, const char *src);
 /* Pathname support.
    ISSLASH(C)           tests whether C is a directory separator character.
    IS_ABSOLUTE_PATH(P)  tests whether P is an absolute path.  If it is not,
-                        it may be concatenated to a directory pathname.
- */
+	 it may be concatenated to a directory pathname.
+*/
 #if defined _WIN32 || defined __WIN32__ || defined __EMX__ || defined __DJGPP__
-  /* Win32, OS/2, DOS */
+/* Win32, OS/2, DOS */
 # define ISSLASH(C) ((C) == '/' || (C) == '\\')
 # define HAS_DEVICE(P) \
     ((((P)[0] >= 'A' && (P)[0] <= 'Z') || ((P)[0] >= 'a' && (P)[0] <= 'z')) \
      && (P)[1] == ':')
 # define IS_ABSOLUTE_PATH(P) (ISSLASH ((P)[0]) || HAS_DEVICE (P))
 #else
-  /* Unix */
+/* Unix */
 # define ISSLASH(C) ((C) == '/')
 # define IS_ABSOLUTE_PATH(P) ISSLASH ((P)[0])
 #endif
@@ -117,7 +117,7 @@ argz_stringify__ (char *argz, size_t len, int sep)
       argz += part_len;
       len -= part_len + 1;
       if (len > 0)
-	*argz++ = sep;
+				*argz++ = sep;
     }
 }
 # undef __argz_stringify
@@ -167,12 +167,12 @@ pop (int x)
 
 struct loaded_l10nfile *
 _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
-		    const char *dirlist, size_t dirlist_len,
-		    int mask, const char *language, const char *territory,
-		    const char *codeset, const char *normalized_codeset,
-		    const char *modifier, const char *special,
-		    const char *sponsor, const char *revision,
-		    const char *filename, int do_allocate)
+										const char *dirlist, size_t dirlist_len,
+										int mask, const char *language, const char *territory,
+										const char *codeset, const char *normalized_codeset,
+										const char *modifier, const char *special,
+										const char *sponsor, const char *revision,
+										const char *filename, int do_allocate)
 {
   char *abs_filename;
   struct loaded_l10nfile **lastp;
@@ -189,25 +189,25 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
 
   /* Allocate room for the full file name.  */
   abs_filename = (char *) malloc (dirlist_len
-				  + strlen (language)
-				  + ((mask & TERRITORY) != 0
-				     ? strlen (territory) + 1 : 0)
-				  + ((mask & XPG_CODESET) != 0
-				     ? strlen (codeset) + 1 : 0)
-				  + ((mask & XPG_NORM_CODESET) != 0
-				     ? strlen (normalized_codeset) + 1 : 0)
-				  + (((mask & XPG_MODIFIER) != 0
-				      || (mask & CEN_AUDIENCE) != 0)
-				     ? strlen (modifier) + 1 : 0)
-				  + ((mask & CEN_SPECIAL) != 0
-				     ? strlen (special) + 1 : 0)
-				  + (((mask & CEN_SPONSOR) != 0
-				      || (mask & CEN_REVISION) != 0)
-				     ? (1 + ((mask & CEN_SPONSOR) != 0
-					     ? strlen (sponsor) : 0)
-					+ ((mask & CEN_REVISION) != 0
-					   ? strlen (revision) + 1 : 0)) : 0)
-				  + 1 + strlen (filename) + 1);
+																	+ strlen (language)
+																	+ ((mask & TERRITORY) != 0
+																		 ? strlen (territory) + 1 : 0)
+																	+ ((mask & XPG_CODESET) != 0
+																		 ? strlen (codeset) + 1 : 0)
+																	+ ((mask & XPG_NORM_CODESET) != 0
+																		 ? strlen (normalized_codeset) + 1 : 0)
+																	+ (((mask & XPG_MODIFIER) != 0
+																			|| (mask & CEN_AUDIENCE) != 0)
+																		 ? strlen (modifier) + 1 : 0)
+																	+ ((mask & CEN_SPECIAL) != 0
+																		 ? strlen (special) + 1 : 0)
+																	+ (((mask & CEN_SPONSOR) != 0
+																			|| (mask & CEN_REVISION) != 0)
+																		 ? (1 + ((mask & CEN_SPONSOR) != 0
+																						 ? strlen (sponsor) : 0)
+																				+ ((mask & CEN_REVISION) != 0
+																					 ? strlen (revision) + 1 : 0)) : 0)
+																	+ 1 + strlen (filename) + 1);
 
   if (abs_filename == NULL)
     return NULL;
@@ -242,7 +242,7 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   if ((mask & (XPG_MODIFIER | CEN_AUDIENCE)) != 0)
     {
       /* This component can be part of both syntaces but has different
-	 leading characters.  For CEN we use `+', else `@'.  */
+				 leading characters.  For CEN we use `+', else `@'.  */
       *cp++ = (mask & CEN_AUDIENCE) != 0 ? '+' : '@';
       cp = stpcpy (cp, modifier);
     }
@@ -255,12 +255,12 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
     {
       *cp++ = ',';
       if ((mask & CEN_SPONSOR) != 0)
-	cp = stpcpy (cp, sponsor);
+				cp = stpcpy (cp, sponsor);
       if ((mask & CEN_REVISION) != 0)
-	{
-	  *cp++ = '_';
-	  cp = stpcpy (cp, revision);
-	}
+				{
+					*cp++ = '_';
+					cp = stpcpy (cp, revision);
+				}
     }
 
   *cp++ = '/';
@@ -272,18 +272,18 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   for (retval = *l10nfile_list; retval != NULL; retval = retval->next)
     if (retval->filename != NULL)
       {
-	int compare = strcmp (retval->filename, abs_filename);
-	if (compare == 0)
-	  /* We found it!  */
-	  break;
-	if (compare < 0)
-	  {
-	    /* It's not in the list.  */
-	    retval = NULL;
-	    break;
-	  }
+				int compare = strcmp (retval->filename, abs_filename);
+				if (compare == 0)
+					/* We found it!  */
+					break;
+				if (compare < 0)
+					{
+						/* It's not in the list.  */
+						retval = NULL;
+						break;
+					}
 
-	lastp = &retval->next;
+				lastp = &retval->next;
       }
 
   if (retval != NULL || do_allocate == 0)
@@ -298,8 +298,8 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
   retval =
     (struct loaded_l10nfile *)
     malloc (sizeof (*retval)
-	    + (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
-	       * sizeof (struct loaded_l10nfile *)));
+						+ (((dirlist_count << pop (mask)) + (dirlist_count > 1 ? 1 : 0))
+							 * sizeof (struct loaded_l10nfile *)));
   if (retval == NULL)
     return NULL;
 
@@ -310,8 +310,8 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      correspond to a real file (dirlist_count > 1) or is not worth
      looking up (if an unnormalized codeset was specified).  */
   retval->decided = (dirlist_count > 1
-		     || ((mask & XPG_CODESET) != 0
-			 && (mask & XPG_NORM_CODESET) != 0));
+										 || ((mask & XPG_CODESET) != 0
+												 && (mask & XPG_NORM_CODESET) != 0));
   retval->data = NULL;
 
   retval->next = *lastp;
@@ -332,28 +332,28 @@ _nl_make_l10nflist (struct loaded_l10nfile **l10nfile_list,
      normalized_codeset.  */
   for (cnt = dirlist_count > 1 ? mask : mask - 1; cnt >= 0; --cnt)
     if ((cnt & ~mask) == 0
-	&& ((cnt & CEN_SPECIFIC) == 0 || (cnt & XPG_SPECIFIC) == 0)
-	&& ((cnt & XPG_CODESET) == 0 || (cnt & XPG_NORM_CODESET) == 0))
+				&& ((cnt & CEN_SPECIFIC) == 0 || (cnt & XPG_SPECIFIC) == 0)
+				&& ((cnt & XPG_CODESET) == 0 || (cnt & XPG_NORM_CODESET) == 0))
       {
-	if (dirlist_count > 1)
-	  {
-	    /* Iterate over all elements of the DIRLIST.  */
-	    char *dir = NULL;
+				if (dirlist_count > 1)
+					{
+						/* Iterate over all elements of the DIRLIST.  */
+						char *dir = NULL;
 
-	    while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
-		   != NULL)
-	      retval->successor[entries++]
-		= _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
-				      cnt, language, territory, codeset,
-				      normalized_codeset, modifier, special,
-				      sponsor, revision, filename, 1);
-	  }
-	else
-	  retval->successor[entries++]
-	    = _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len,
-				  cnt, language, territory, codeset,
-				  normalized_codeset, modifier, special,
-				  sponsor, revision, filename, 1);
+						while ((dir = __argz_next ((char *) dirlist, dirlist_len, dir))
+									 != NULL)
+							retval->successor[entries++]
+								= _nl_make_l10nflist (l10nfile_list, dir, strlen (dir) + 1,
+																			cnt, language, territory, codeset,
+																			normalized_codeset, modifier, special,
+																			sponsor, revision, filename, 1);
+					}
+				else
+					retval->successor[entries++]
+						= _nl_make_l10nflist (l10nfile_list, dirlist, dirlist_len,
+																	cnt, language, territory, codeset,
+																	normalized_codeset, modifier, special,
+																	sponsor, revision, filename, 1);
       }
   retval->successor[entries] = NULL;
 
@@ -376,10 +376,10 @@ _nl_normalize_codeset (const char *codeset, size_t name_len)
   for (cnt = 0; cnt < name_len; ++cnt)
     if (isalnum ((unsigned char) codeset[cnt]))
       {
-	++len;
+				++len;
 
-	if (isalpha ((unsigned char) codeset[cnt]))
-	  only_digit = 0;
+				if (isalpha ((unsigned char) codeset[cnt]))
+					only_digit = 0;
       }
 
   retval = (char *) malloc ((only_digit ? 3 : 0) + len + 1);
@@ -387,15 +387,15 @@ _nl_normalize_codeset (const char *codeset, size_t name_len)
   if (retval != NULL)
     {
       if (only_digit)
-	wp = stpcpy (retval, "iso");
+				wp = stpcpy (retval, "iso");
       else
-	wp = retval;
+				wp = retval;
 
       for (cnt = 0; cnt < name_len; ++cnt)
-	if (isalpha ((unsigned char) codeset[cnt]))
-	  *wp++ = tolower ((unsigned char) codeset[cnt]);
-	else if (isdigit ((unsigned char) codeset[cnt]))
-	  *wp++ = codeset[cnt];
+				if (isalpha ((unsigned char) codeset[cnt]))
+					*wp++ = tolower ((unsigned char) codeset[cnt]);
+				else if (isdigit ((unsigned char) codeset[cnt]))
+					*wp++ = codeset[cnt];
 
       *wp = '\0';
     }

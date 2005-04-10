@@ -33,32 +33,32 @@
 /* These structs are the constant expression for the germanic plural
    form determination.  It represents the expression  "n != 1".  */
 static const struct expression plvar =
-{
-  .nargs = 0,
-  .operation = var,
-};
+	{
+		.nargs = 0,
+		.operation = var,
+	};
 static const struct expression plone =
-{
-  .nargs = 0,
-  .operation = num,
-  .val =
-  {
-    .num = 1
-  }
-};
+	{
+		.nargs = 0,
+		.operation = num,
+		.val =
+		{
+			.num = 1
+		}
+	};
 struct expression GERMANIC_PLURAL =
-{
-  .nargs = 2,
-  .operation = not_equal,
-  .val =
-  {
-    .args =
-    {
-      [0] = (struct expression *) &plvar,
-      [1] = (struct expression *) &plone
-    }
-  }
-};
+	{
+		.nargs = 2,
+		.operation = not_equal,
+		.val =
+		{
+			.args =
+			{
+				[0] = (struct expression *) &plvar,
+				[1] = (struct expression *) &plone
+			}
+		}
+	};
 
 # define INIT_GERMANIC_PLURAL()
 
@@ -97,7 +97,7 @@ init_germanic_plural ()
 void
 internal_function
 EXTRACT_PLURAL_EXPRESSION (const char *nullentry, struct expression **pluralp,
-			   unsigned long int *npluralsp)
+													 unsigned long int *npluralsp)
 {
   if (nullentry != NULL)
     {
@@ -107,39 +107,39 @@ EXTRACT_PLURAL_EXPRESSION (const char *nullentry, struct expression **pluralp,
       plural = strstr (nullentry, "plural=");
       nplurals = strstr (nullentry, "nplurals=");
       if (plural == NULL || nplurals == NULL)
-	goto no_plural;
+				goto no_plural;
       else
-	{
-	  char *endp;
-	  unsigned long int n;
-	  struct parse_args args;
+				{
+					char *endp;
+					unsigned long int n;
+					struct parse_args args;
 
-	  /* First get the number.  */
-	  nplurals += 9;
-	  while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
-	    ++nplurals;
-	  if (!(*nplurals >= '0' && *nplurals <= '9'))
-	    goto no_plural;
+					/* First get the number.  */
+					nplurals += 9;
+					while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
+						++nplurals;
+					if (!(*nplurals >= '0' && *nplurals <= '9'))
+						goto no_plural;
 #if defined HAVE_STRTOUL || defined _LIBC
-	  n = strtoul (nplurals, &endp, 10);
+					n = strtoul (nplurals, &endp, 10);
 #else
-	  for (endp = nplurals, n = 0; *endp >= '0' && *endp <= '9'; endp++)
-	    n = n * 10 + (*endp - '0');
+					for (endp = nplurals, n = 0; *endp >= '0' && *endp <= '9'; endp++)
+						n = n * 10 + (*endp - '0');
 #endif
-	  if (nplurals == endp)
-	    goto no_plural;
-	  *npluralsp = n;
+					if (nplurals == endp)
+						goto no_plural;
+					*npluralsp = n;
 
-	  /* Due to the restrictions bison imposes onto the interface of the
-	     scanner function we have to put the input string and the result
-	     passed up from the parser into the same structure which address
-	     is passed down to the parser.  */
-	  plural += 7;
-	  args.cp = plural;
-	  if (PLURAL_PARSE (&args) != 0)
-	    goto no_plural;
-	  *pluralp = args.res;
-	}
+					/* Due to the restrictions bison imposes onto the interface of the
+						 scanner function we have to put the input string and the result
+						 passed up from the parser into the same structure which address
+						 is passed down to the parser.  */
+					plural += 7;
+					args.cp = plural;
+					if (PLURAL_PARSE (&args) != 0)
+						goto no_plural;
+					*pluralp = args.res;
+				}
     }
   else
     {

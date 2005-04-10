@@ -24,8 +24,11 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2005/04/10 21:50:49  tweety
+reformatting c-sources
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.18  2004/02/08 17:16:25  ganter
 replacing all strcat with g_strlcat to avoid buffer overflows
@@ -163,17 +166,17 @@ modulesetup ()
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flymodebt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (flymodebt),
-		      "clicked", GTK_SIGNAL_FUNC (flymode_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (flymode_cb), (gpointer) 1);
 
   vfr1 = gtk_radio_button_new_with_label (NULL, _("Use VFR"));
   gtk_signal_connect (GTK_OBJECT (vfr1),
-		      "clicked", GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 1);
 
   vfr2 =
     gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (vfr1)), _("Use IFR"));
+																		 (GTK_RADIO_BUTTON (vfr1)), _("Use IFR"));
   gtk_signal_connect (GTK_OBJECT (vfr2), "clicked",
-		      GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 2);
+											GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 2);
 
 
   gtk_table_attach_defaults (GTK_TABLE (table), flymodebt, 0, 2, 0, 1);
@@ -203,7 +206,7 @@ modulesetup ()
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disdevbt), TRUE);
 
   gtk_signal_connect (GTK_OBJECT (disdevbt),
-		      "clicked", GTK_SIGNAL_FUNC (disdev_cb), (gpointer) 1);
+											"clicked", GTK_SIGNAL_FUNC (disdev_cb), (gpointer) 1);
   gtk_table_attach_defaults (GTK_TABLE (table), disdevbt, 0, 2, 6, 7);
 
 
