@@ -1,3 +1,13 @@
+# Read Data from US Census Bureau and import into geoinfo DB
+#
+# $Log$
+# Revision 1.2  2005/04/10 00:15:58  tweety
+# changed primary language for poi-type generation to english
+# added translation for POI-types
+# added some icons classifications to poi-types
+# added LOG: Entry for CVS to some *.pm Files
+#
+
 package POI::census;
 
 use strict;

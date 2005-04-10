@@ -1,3 +1,13 @@
+# Some small ungrouped Utility functions
+#
+# $Log$
+# Revision 1.3  2005/04/10 00:15:58  tweety
+# changed primary language for poi-type generation to english
+# added translation for POI-types
+# added some icons classifications to poi-types
+# added LOG: Entry for CVS to some *.pm Files
+#
+
 package POI::Utils;
 
 use strict;

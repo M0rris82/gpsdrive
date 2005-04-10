@@ -26,6 +26,14 @@
 #---------------------------------------------------------------------------------
 # S.Merrony       0.0.2        Fix bogus track extraction, add waypoint extraction
 # S.Merrony       0.0.3        Fix case where no altitude, add version number to help
+#
+# $Log$
+# Revision 1.2  2005/04/10 00:15:58  tweety
+# changed primary language for poi-type generation to english
+# added translation for POI-types
+# added some icons classifications to poi-types
+# added LOG: Entry for CVS to some *.pm Files
+#
 
 use strict;
 

@@ -1,5 +1,13 @@
 # Einlesen der WDB Daten und schreiben in die geodb Datenbank von 
 # gpsdrive
+#
+# $Log$
+# Revision 1.7  2005/04/10 00:15:58  tweety
+# changed primary language for poi-type generation to english
+# added translation for POI-types
+# added some icons classifications to poi-types
+# added LOG: Entry for CVS to some *.pm Files
+#
 
 package POI::WDB;
 
