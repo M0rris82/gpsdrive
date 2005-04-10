@@ -1,3 +1,12 @@
+# Read waypoints from Mapsource Data exported as txt
+# and import into geoinfo.poi
+#
+# $Log$
+# Revision 1.2  2005/04/10 20:47:49  tweety
+# added src/speech_out.h
+# update configure and po Files
+#
+
 package POI::mapsource;
 
 use strict;
@@ -29,7 +38,7 @@ sub read_mapsource_waypoints($){
 	$lines_count_file ++;
 	$line =~ s/[\t\r\n\s]*$//g;;
 	# print "line: '$line'\n";
-	if ($line =~ m/^Grid\s+Breite\/LÃÂ€nge hddd\.dddddÂÂ°/ ) {
+	if ($line =~ m/^Grid\s+Breite\/L.nge / ) {
 	} elsif ( $line =~ m/^$/ ) {
 	} elsif ( $line =~ m/^Datum\s+WGS 84/ ) {
 	} elsif ( $line =~ m/^Header/ ) {

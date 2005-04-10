@@ -1,3 +1,10 @@
+#
+# $Log$
+# Revision 1.2  2005/04/10 20:47:49  tweety
+# added src/speech_out.h
+# update configure and po Files
+#
+
 package POI::mapsource;
 
 use strict;
@@ -28,13 +35,13 @@ sub write_gpsdrive_waypoints($$){
 	    print "Error undefined poi.lon: ".Dumper(\$values);
 	}
 
-	$wp_name =~ s/ÃÂ€/ae/g;
-	$wp_name =~ s/ÃÂ¶/oe/g;
-	$wp_name =~ s/ÃÂŒ/ue/g;
-	$wp_name =~ s/ÃÂ€/Ae/g;
-	$wp_name =~ s/Ã/Oe/g;
-	$wp_name =~ s/Ã/Ue/g;
-	$wp_name =~ s/Ã/sss/g;
+	$wp_name =~ s/�/ae/g;
+	$wp_name =~ s/�/oe/g;
+	$wp_name =~ s/�/ue/g;
+	$wp_name =~ s/�/Ae/g;
+	$wp_name =~ s/�/Oe/g;
+	$wp_name =~ s/�/Ue/g;
+	$wp_name =~ s/�/sss/g;
 
 	correct_lat_lon($values);
 
