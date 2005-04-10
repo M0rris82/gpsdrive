@@ -75,6 +75,14 @@ Koji <koji@e-mail.jp>
   http://www.mapion.co.jp/c/f?el=139/36/45.600&scl=70000&size=1280,1024&uc=1&grp=MapionBB&nl=35/31/36.300
 
 
+=============================================================================
+Rob Stewart <rob@groupboard.com>
+
+I've already looked at the festival speech stuff and I think I could 
+make a change for the better there. However, the biggest thing I would 
+suggest is setting a good coding standard, I think what currently exists 
+is a little scary! Here's my top suggestions...
+
 #############################################################################
 
 Vector Support description and thoughts:
