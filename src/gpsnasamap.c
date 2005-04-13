@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2005/04/13 19:58:31  tweety
+renew indentation to 4 spaces + tabstop=8
+
 Revision 1.2  2005/04/10 21:50:50  tweety
 reformatting c-sources
 
@@ -113,225 +116,225 @@ int
 init_nasa_mapfile ()
 {
 
-  havenasamaps = FALSE;
+    havenasamaps = FALSE;
 
-  if (mapdir[strlen (mapdir) - 1] != '/')
-    g_strlcat (mapdir, "/", sizeof(mapdir));
+    if (mapdir[strlen (mapdir) - 1] != '/')
+	g_strlcat (mapdir, "/", sizeof(mapdir));
 
 
-  g_snprintf (outfilename, sizeof (outfilename), "%stop_NASA_IMAGE.ppm",
-							mapdir);
+    g_snprintf (outfilename, sizeof (outfilename), "%stop_NASA_IMAGE.ppm",
+		mapdir);
 
-  g_snprintf (inputfilename_e, sizeof (inputfilename_e),
-							"%snasamaps/top_nasamap_east.raw", homedir);
+    g_snprintf (inputfilename_e, sizeof (inputfilename_e),
+		"%snasamaps/top_nasamap_east.raw", homedir);
 
-  g_snprintf (inputfilename_w, sizeof (inputfilename_w),
-							"%snasamaps/top_nasamap_west.raw", homedir);
+    g_snprintf (inputfilename_w, sizeof (inputfilename_w),
+		"%snasamaps/top_nasamap_west.raw", homedir);
 
-  fdin_e = open (inputfilename_e, O_RDONLY);
-  if (fdin_e >= 0)
-    havenasamaps = TRUE;
-  fdin_w = open (inputfilename_w, O_RDONLY);
-  if (fdin_w >= 0)
-    havenasamaps = TRUE;
+    fdin_e = open (inputfilename_e, O_RDONLY);
+    if (fdin_e >= 0)
+	havenasamaps = TRUE;
+    fdin_w = open (inputfilename_w, O_RDONLY);
+    if (fdin_w >= 0)
+	havenasamaps = TRUE;
 
-  return 0;
+    return 0;
 }
 
 void
 cleanup_nasa_mapfile ()
 {
-  if (fdin_w >= 0)
-    close (fdin_w);
-  if (fdin_e >= 0)
-    close (fdin_e);
+    if (fdin_w >= 0)
+	close (fdin_w);
+    if (fdin_e >= 0)
+	close (fdin_e);
 }
 
 int
 create_nasa_mapfile (double lat, double lon, int test, char *fn)
 {
-	/*     lat,lon= koordinates */
-	/* test= test if maps are present */
-	/* fn = filename of the generated file */
-  int fdout, uc = 0;
-  int scale, e, xsize_e, xsize_w;
-  int xstart, ystart, y, x_w, x_e;
-  double mylon;
-  GtkWidget *myprogress, *text, *vbox;
-  char textbuf[40];
+    /*     lat,lon= koordinates */
+    /* test= test if maps are present */
+    /* fn = filename of the generated file */
+    int fdout, uc = 0;
+    int scale, e, xsize_e, xsize_w;
+    int xstart, ystart, y, x_w, x_e;
+    double mylon;
+    GtkWidget *myprogress, *text, *vbox;
+    char textbuf[40];
 
-  if (!havenasamaps)
-    return -1;
+    if (!havenasamaps)
+	return -1;
 
-  scale = 2614061;
-  mylon = lon;
+    scale = 2614061;
+    mylon = lon;
 
-  g_strlcpy (fn, "nofile.sorry", 255);
+    g_strlcpy (fn, "nofile.sorry", 255);
 
-	/* return if no map found */
-  if (lon > 0)
-    {
-      xstart = (int) (21600.0 * (lon / 180.0));
-      if (((xstart < 1280) || (xstart > 20320)) && (fdin_w < 0))
-				return -1;
-      if (fdin_e < 0)
-				return -1;
-    }
-  else
-    {
-      lon = 180.0 + lon;
-      xstart = (int) (21600.0 * (lon / 180.0));
-      if (((xstart < 1280) || (xstart > 20320)) && (fdin_e < 0))
-				return -1;
-      if (fdin_w < 0)
-				return -1;
-    }
+    /* return if no map found */
+    if (lon > 0)
+	{
+	    xstart = (int) (21600.0 * (lon / 180.0));
+	    if (((xstart < 1280) || (xstart > 20320)) && (fdin_w < 0))
+		return -1;
+	    if (fdin_e < 0)
+		return -1;
+	}
+    else
+	{
+	    lon = 180.0 + lon;
+	    xstart = (int) (21600.0 * (lon / 180.0));
+	    if (((xstart < 1280) || (xstart > 20320)) && (fdin_e < 0))
+		return -1;
+	    if (fdin_w < 0)
+		return -1;
+	}
 
-  if (!test)
-    {
-      fdout = open (outfilename, O_RDWR | O_TRUNC | O_CREAT, 0644);
-      if (fdout < 0)
-				{
-					fprintf (stderr, _("could not create output map file %s!\n"),
-									 outfilename);
-					return -1;
-				}
+    if (!test)
+	{
+	    fdout = open (outfilename, O_RDWR | O_TRUNC | O_CREAT, 0644);
+	    if (fdout < 0)
+		{
+		    fprintf (stderr, _("could not create output map file %s!\n"),
+			     outfilename);
+		    return -1;
+		}
 
-      nasawindow = gtk_window_new (GTK_WINDOW_POPUP);
-      vbox = gtk_vbox_new (FALSE, 6);
-      gtk_container_add (GTK_CONTAINER (nasawindow), vbox);
-			/*       gtk_window_set_transient_for (GTK_WINDOW (nasawindow), */
-			/* 				    GTK_WINDOW (mainwindow)); */
-      gtk_window_set_position (GTK_WINDOW (nasawindow), GTK_WIN_POS_CENTER);
+	    nasawindow = gtk_window_new (GTK_WINDOW_POPUP);
+	    vbox = gtk_vbox_new (FALSE, 6);
+	    gtk_container_add (GTK_CONTAINER (nasawindow), vbox);
+	    /*       gtk_window_set_transient_for (GTK_WINDOW (nasawindow), */
+	    /* 				    GTK_WINDOW (mainwindow)); */
+	    gtk_window_set_position (GTK_WINDOW (nasawindow), GTK_WIN_POS_CENTER);
 
-			/*   g_signal_connect (window, "destroy", */
-			/* 		    G_CALLBACK (gtk_widget_destroyed), &window); */
+	    /*   g_signal_connect (window, "destroy", */
+	    /* 		    G_CALLBACK (gtk_widget_destroyed), &window); */
 
-      gtk_window_set_title (GTK_WINDOW (nasawindow), _("Creating map..."));
-      gtk_container_set_border_width (GTK_CONTAINER (nasawindow), 20);
+	    gtk_window_set_title (GTK_WINDOW (nasawindow), _("Creating map..."));
+	    gtk_container_set_border_width (GTK_CONTAINER (nasawindow), 20);
 
-      myprogress = gtk_progress_bar_new ();
-      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress), 0.0);
-      gtk_box_pack_start (GTK_BOX (vbox), myprogress, TRUE, TRUE, 2);
-      text =
-				gtk_label_new (_
-											 ("Creating a temporary map from NASA satellite images"));
-      gtk_box_pack_start (GTK_BOX (vbox), text, TRUE, TRUE, 2);
+	    myprogress = gtk_progress_bar_new ();
+	    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress), 0.0);
+	    gtk_box_pack_start (GTK_BOX (vbox), myprogress, TRUE, TRUE, 2);
+	    text =
+		gtk_label_new (_
+			       ("Creating a temporary map from NASA satellite images"));
+	    gtk_box_pack_start (GTK_BOX (vbox), text, TRUE, TRUE, 2);
 
-			/*       gtk_widget_show_all (nasawindow); */
-      gtk_widget_show_all (nasawindow);
-      if (debug)
-				fprintf (stdout,
-								 _("converting map for latitude: %f and longitude: %f ...\n"),
-								 lat, lon);
+	    /*       gtk_widget_show_all (nasawindow); */
+	    gtk_widget_show_all (nasawindow);
+	    if (debug)
+		fprintf (stdout,
+			 _("converting map for latitude: %f and longitude: %f ...\n"),
+			 lat, lon);
 
-			/*       if (lon < 0.0) */
-			/* 	lon = 180.0 + lon; */
-      g_strlcpy (fn, "top_NASA_IMAGE.ppm", 255);
-
-
-      g_snprintf (mybuffer, sizeof (mybuffer),
-									"P6\n# CREATOR: GpsDrive\n1280 1024\n255\n");
-
-      e = write (fdout, mybuffer, strlen (mybuffer));
-      uc = e;
-      lon = mylon;
-      xstart = (int) (21600.0 * (lon / 180.0));
-
-      ystart = 3 * 21600 * (int) (10800 - 10800.0 * (lat / 90.0));
-
-			/*    fprintf (stdout, "xstart: %d, ystart: %d\n", xstart, ystart);  */
-      xstart -= 640;
-      ystart = ystart - 512 * 21600 * 3;
-
-      x_w = x_e = -1;
-      xsize_w = xsize_e = 1280;
-
-      if (xstart < 0)
-				{
-					x_w = 21600 + xstart;
-					x_e = 1280 - x_w;
-
-					if (x_e < -20320)
-						x_e = -1;
-					else if (x_e < 0)
-						x_e = 0;
-
-					if (x_w < -20320)
-						x_w = -1;
-					else if (x_w < 0)
-						x_w = 0;
-					xsize_w = 21600 - x_w;
-					xsize_e = 1280 - xsize_w;
-				}
-      else if (xstart > 20320)
-				{
-					x_w = (xstart + 1280) - 21600;
-					x_e = 1280 - x_w;
-					if (x_e < 20320)
-						x_e = -1;
-					if (x_e < 0)
-						x_e = 0;
-					xsize_w = x_w;
-					xsize_e = 1280 - xsize_w;
-				}
-      else
-				{
-					if (mylon >= 0.0)
-						x_e = xstart;
-					else
-						x_w = xstart;
-				}
-      if (xsize_w > 1280)
-				xsize_w = 1280;
-      if (xsize_e > 1280)
-				xsize_e = 1280;
-      x_w *= 3;
-      x_e *= 3;
-
-      for (y = 0; y < 1024; y++)
-				{
-					if ((y % 32) == 0)
-						{
-							gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress),
-																						 y / 1024.0);
-							g_snprintf (textbuf, sizeof (textbuf), "%d%%",
-													(int) (100.0 * y / 1024));
-							gtk_progress_bar_set_text (GTK_PROGRESS_BAR (myprogress),
-																				 textbuf);
-							while (gtk_events_pending ())
-								gtk_main_iteration ();
-
-						}
-
-					if (x_w != -3)
-						{
-							e = lseek (fdin_w, x_w + ystart + y * 21600 * 3, SEEK_SET);
-							e = read (fdin_w, mybuffer, xsize_w * 3);
-							e = write (fdout, mybuffer, xsize_w * 3);
-							uc += e;
-						}
-					if (x_e != -3)
-						{
-							e = lseek (fdin_e, x_e + ystart + y * 21600 * 3, SEEK_SET);
-							e = read (fdin_e, mybuffer, xsize_e * 3);
-							e = write (fdout, mybuffer, xsize_e * 3);
-							uc += e;
-						}
-				}
-			/*       fprintf (stderr, "wrote %d bytes (%.1f MB) to mapfile\n", uc, */
-			/* 	       uc / (1024.0 * 1024.0)); */
-
-      gtk_widget_destroy (GTK_WIDGET (nasawindow));
-      close (fdout);
-      g_strlcpy (mybuffer, g_basename (outfilename), sizeof (mybuffer));
-      fprintf (stdout,
-							 _
-							 ("\nYou can permanently add this map file with following line in your\nmap_koord.txt (rename the file!):\n"));
-      fprintf (stdout, "\n%s %f %f %d\n", mybuffer, lat, lon, scale);
-
-    }				/* End of if !test */
+	    /*       if (lon < 0.0) */
+	    /* 	lon = 180.0 + lon; */
+	    g_strlcpy (fn, "top_NASA_IMAGE.ppm", 255);
 
 
-  return scale;
+	    g_snprintf (mybuffer, sizeof (mybuffer),
+			"P6\n# CREATOR: GpsDrive\n1280 1024\n255\n");
+
+	    e = write (fdout, mybuffer, strlen (mybuffer));
+	    uc = e;
+	    lon = mylon;
+	    xstart = (int) (21600.0 * (lon / 180.0));
+
+	    ystart = 3 * 21600 * (int) (10800 - 10800.0 * (lat / 90.0));
+
+	    /*    fprintf (stdout, "xstart: %d, ystart: %d\n", xstart, ystart);  */
+	    xstart -= 640;
+	    ystart = ystart - 512 * 21600 * 3;
+
+	    x_w = x_e = -1;
+	    xsize_w = xsize_e = 1280;
+
+	    if (xstart < 0)
+		{
+		    x_w = 21600 + xstart;
+		    x_e = 1280 - x_w;
+
+		    if (x_e < -20320)
+			x_e = -1;
+		    else if (x_e < 0)
+			x_e = 0;
+
+		    if (x_w < -20320)
+			x_w = -1;
+		    else if (x_w < 0)
+			x_w = 0;
+		    xsize_w = 21600 - x_w;
+		    xsize_e = 1280 - xsize_w;
+		}
+	    else if (xstart > 20320)
+		{
+		    x_w = (xstart + 1280) - 21600;
+		    x_e = 1280 - x_w;
+		    if (x_e < 20320)
+			x_e = -1;
+		    if (x_e < 0)
+			x_e = 0;
+		    xsize_w = x_w;
+		    xsize_e = 1280 - xsize_w;
+		}
+	    else
+		{
+		    if (mylon >= 0.0)
+			x_e = xstart;
+		    else
+			x_w = xstart;
+		}
+	    if (xsize_w > 1280)
+		xsize_w = 1280;
+	    if (xsize_e > 1280)
+		xsize_e = 1280;
+	    x_w *= 3;
+	    x_e *= 3;
+
+	    for (y = 0; y < 1024; y++)
+		{
+		    if ((y % 32) == 0)
+			{
+			    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress),
+							   y / 1024.0);
+			    g_snprintf (textbuf, sizeof (textbuf), "%d%%",
+					(int) (100.0 * y / 1024));
+			    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (myprogress),
+						       textbuf);
+			    while (gtk_events_pending ())
+				gtk_main_iteration ();
+
+			}
+
+		    if (x_w != -3)
+			{
+			    e = lseek (fdin_w, x_w + ystart + y * 21600 * 3, SEEK_SET);
+			    e = read (fdin_w, mybuffer, xsize_w * 3);
+			    e = write (fdout, mybuffer, xsize_w * 3);
+			    uc += e;
+			}
+		    if (x_e != -3)
+			{
+			    e = lseek (fdin_e, x_e + ystart + y * 21600 * 3, SEEK_SET);
+			    e = read (fdin_e, mybuffer, xsize_e * 3);
+			    e = write (fdout, mybuffer, xsize_e * 3);
+			    uc += e;
+			}
+		}
+	    /*       fprintf (stderr, "wrote %d bytes (%.1f MB) to mapfile\n", uc, */
+	    /* 	       uc / (1024.0 * 1024.0)); */
+
+	    gtk_widget_destroy (GTK_WIDGET (nasawindow));
+	    close (fdout);
+	    g_strlcpy (mybuffer, g_basename (outfilename), sizeof (mybuffer));
+	    fprintf (stdout,
+		     _
+		     ("\nYou can permanently add this map file with following line in your\nmap_koord.txt (rename the file!):\n"));
+	    fprintf (stdout, "\n%s %f %f %d\n", mybuffer, lat, lon, scale);
+
+	}				/* End of if !test */
+
+
+    return scale;
 }

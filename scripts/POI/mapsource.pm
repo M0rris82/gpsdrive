@@ -2,6 +2,9 @@
 # and import into geoinfo.poi
 #
 # $Log$
+# Revision 1.3  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.2  2005/04/10 20:47:49  tweety
 # added src/speech_out.h
 # update configure and po Files
@@ -80,7 +83,7 @@ sub read_mapsource_waypoints($){
 }
 
 sub POI::mapsource::import_DB
- {
+{
     my $waypoints = read_mapsource_waypoints($do_mapsource_points);
     db_add_waypoints($waypoints);
 }

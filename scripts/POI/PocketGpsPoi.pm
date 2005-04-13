@@ -1,6 +1,9 @@
 # Import Speedtrap Data into geoinfo.poi
 #
 # $Log$
+# Revision 1.3  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.2  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -97,7 +100,7 @@ if ( 0 ) {
 
     # download
     my $mirror = mirror_file("http://www.pocketgpspoi.com/downloads/pocketgps_uk_sc.zip",
-			 "$POCKETGPS_DIR/pocketgps_uk_sc.zip");
+			     "$POCKETGPS_DIR/pocketgps_uk_sc.zip");
 
     print "Mirror: $mirror\n";
 

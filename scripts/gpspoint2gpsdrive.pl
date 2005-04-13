@@ -28,6 +28,9 @@
 # S.Merrony       0.0.3        Fix case where no altitude, add version number to help
 #
 # $Log$
+# Revision 1.3  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.2  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -56,29 +59,29 @@ my $trackcount    = 0;
 
 # Help!
 if ($opts{h} ) {
-  my $help = <<'ENDOFHELP';
+    my $help = <<'ENDOFHELP';
 
-gpspoint2gpsdrive.pl:
-=====================
+    gpspoint2gpsdrive.pl:
+    =====================
 
-Extract gpsdrive-compatible track file(s) from a gpspoint file.
-Optionally also extracts waypoints and appends them to way.txt.
+	Extract gpsdrive-compatible track file(s) from a gpspoint file.
+	Optionally also extracts waypoints and appends them to way.txt.
 
- -h                     This help message - you guessed that!
- -f <gpspointfilename>  The file to extract tracks from.
- -w                     Extract waypoints and append to way.txt
- -v                     Verbose mode - yada yada yada
+	-h                     This help message - you guessed that!
+	-f <gpspointfilename>  The file to extract tracks from.
+	-w                     Extract waypoints and append to way.txt
+	-v                     Verbose mode - yada yada yada
 
-Version 0.0.3 (August 2002)
+	Version 0.0.3 (August 2002)
 
-ENDOFHELP
-  print $help;
-  exit;
+	ENDOFHELP
+	print $help;
+    exit;
 }
 
 if (!$opts{f} or $opts{f} eq "" ) {
-  print "Error: You must enter a filename via the -f switch.\n";
-  exit;
+    print "Error: You must enter a filename via the -f switch.\n";
+    exit;
 }
 
 use FileHandle;
@@ -88,8 +91,8 @@ my $infile;
 # open the file for reading if we can - else bail out
 $infile = new FileHandle "< $opts{f}";
 if (!defined( $infile )) {
-  print "Error: Unable to open file '$opts{f}' for input\n";
-  exit;
+    print "Error: Unable to open file '$opts{f}' for input\n";
+    exit;
 }
 
 my $am_writing = 0;
@@ -106,104 +109,104 @@ my $dummytime = 0;
 # plough through the file
 while (<$infile>) {
 
-  $thisline = $_;
-  chomp( $thisline ); # remove newline
+    $thisline = $_;
+    chomp( $thisline ); # remove newline
 
-  # Gpspoint files contain comments starting with a # symbol, blank lines
-  # and lines with comma separated lists of values and name-value pairs
-  # We only want certain name-value pairs...
+    # Gpspoint files contain comments starting with a # symbol, blank lines
+    # and lines with comma separated lists of values and name-value pairs
+    # We only want certain name-value pairs...
 
-  # ignore comments and blank or very short lines
-  if ( (substr( $thisline, 0, 1 ) ne "#") &&
-       (length( $thisline ) > 5 ) ) {
-    
-    my (@pairs, $pair);
-
-    @pairs = split( ' ', $thisline );
-    foreach $pair ( @pairs ) {
-      my $name = "";
-      my $value = "";
-      ($name, $value) = split( '=', $pair );
-      if (defined( $name ) && defined( $value )) { # only process pairs
-	$value = substr( $value, 1, length( $value ) - 2 );  # remove quotes
-
-	# starting a new track?
-	if (($name eq "type") && ($value eq "track" )) {
-	  # $trackfile->close if ($am_writing);
-	  $am_writing = 0;
-	  $blocktype = "TRACK";
-	  print "Info: Found start of track\n" if ($opts{v} eq 1);
-	}
-	# new set of waypoints?
-	elsif (($name eq "type") && ($value eq "waypointlist") && $opts{w}) {
-	  $am_writing = 0;
-	  $blocktype = "WAYPOINTS";
-	  print "Info: Found start of waypoint list\n" if ($opts{v} eq 1);
-	  if (!$wayptfile->open( ">> $wayptfilename" )) {
-	    print "Error: Unable to append to waypoint file '$wayptfilename'\n";
-	    exit;
-	  }
-	  $am_writing = 1;
-	  print "Info: Starting writing waypoint s to '$wayptfilename'\n" if ($opts{v} eq 1);
-	}
-	elsif (($name eq "type") && ($value eq "route")) {
-	  # not interested in routes at this stage
-	  $blocktype = "";
-	  $am_writing = 0;
-	}
-     
-	# trap other info types here?
-
-	# name of a new track
-	if (defined( $name ) && ($name eq "name") && defined( $blocktype ) && ($blocktype eq "TRACK")) {
-	  $trackfilename = $trackfnprefix . $value . $trackfnext;
-	  if (!$trackfile->open("> $trackfilename" )) {
-	    print "Error: Unable to open track output file '$trackfilename'\n";
-	    exit;
-	  }
-	  $am_writing = 1;
-	  $trackcount++;
-	  print "Info: Starting to write track '$trackfilename'\n" if ($opts{v} eq 1);
-	}
-
-	# name of a new waypoint
-	if (($opts{w} eq 1) && ($blocktype eq "WAYPOINTS") && ($name eq "name")) {
-	  $wayptname = $value;
-	  $wayptcnt++;
-	}
-
-	if ($name eq "latitude" ) {
-	  $latitude  = $value;
-	}
-	if ($name eq "longitude" ) {
-	  $longitude = $value;
-	}
-	if ($name eq "altitude" ) {
-	  $altitude  = $value;
-	}
-	if ($name eq "unixtime" ) {
-	  $timestamp = localtime( $value );
-	}
-      }
+    # ignore comments and blank or very short lines
+    if ( (substr( $thisline, 0, 1 ) ne "#") &&
+	 (length( $thisline ) > 5 ) ) {
 	
-    } # end of name-value pair loop
-    #print $thisline;
-  } #end if
+	my (@pairs, $pair);
 
-  # done with this line - write out a trackfile line if we have one
-  if ($am_writing && defined( $longitude )  && ($blocktype eq "TRACK")) {
-    # some tracks have no time info - so we'll insert an early timestamp
-    $timestamp = localtime(0) if (!defined( $timestamp ));
-    printf $trackfile $pointformat, ($latitude, $longitude, $altitude, $timestamp);
-  }
+	@pairs = split( ' ', $thisline );
+	foreach $pair ( @pairs ) {
+	    my $name = "";
+	    my $value = "";
+	    ($name, $value) = split( '=', $pair );
+	    if (defined( $name ) && defined( $value )) { # only process pairs
+		$value = substr( $value, 1, length( $value ) - 2 );  # remove quotes
 
-  # done with this line - write out a waypoint line if we have one
-  if ($am_writing && defined( $latitude )  && ($blocktype eq "WAYPOINTS")) {
-    printf $wayptfile $wayptformat, ($wayptname, $latitude, $longitude);
-  }
+		# starting a new track?
+		if (($name eq "type") && ($value eq "track" )) {
+		    # $trackfile->close if ($am_writing);
+		    $am_writing = 0;
+		    $blocktype = "TRACK";
+		    print "Info: Found start of track\n" if ($opts{v} eq 1);
+		}
+		# new set of waypoints?
+		elsif (($name eq "type") && ($value eq "waypointlist") && $opts{w}) {
+		    $am_writing = 0;
+		    $blocktype = "WAYPOINTS";
+		    print "Info: Found start of waypoint list\n" if ($opts{v} eq 1);
+		    if (!$wayptfile->open( ">> $wayptfilename" )) {
+			print "Error: Unable to append to waypoint file '$wayptfilename'\n";
+			exit;
+		    }
+		    $am_writing = 1;
+		    print "Info: Starting writing waypoint s to '$wayptfilename'\n" if ($opts{v} eq 1);
+		}
+		elsif (($name eq "type") && ($value eq "route")) {
+		    # not interested in routes at this stage
+		    $blocktype = "";
+		    $am_writing = 0;
+		}
+		
+		# trap other info types here?
+
+		# name of a new track
+		if (defined( $name ) && ($name eq "name") && defined( $blocktype ) && ($blocktype eq "TRACK")) {
+		    $trackfilename = $trackfnprefix . $value . $trackfnext;
+		    if (!$trackfile->open("> $trackfilename" )) {
+			print "Error: Unable to open track output file '$trackfilename'\n";
+			exit;
+		    }
+		    $am_writing = 1;
+		    $trackcount++;
+		    print "Info: Starting to write track '$trackfilename'\n" if ($opts{v} eq 1);
+		}
+
+		# name of a new waypoint
+		if (($opts{w} eq 1) && ($blocktype eq "WAYPOINTS") && ($name eq "name")) {
+		    $wayptname = $value;
+		    $wayptcnt++;
+		}
+
+		if ($name eq "latitude" ) {
+		    $latitude  = $value;
+		}
+		if ($name eq "longitude" ) {
+		    $longitude = $value;
+		}
+		if ($name eq "altitude" ) {
+		    $altitude  = $value;
+		}
+		if ($name eq "unixtime" ) {
+		    $timestamp = localtime( $value );
+		}
+	    }
+	    
+	} # end of name-value pair loop
+	#print $thisline;
+    } #end if
+
+    # done with this line - write out a trackfile line if we have one
+    if ($am_writing && defined( $longitude )  && ($blocktype eq "TRACK")) {
+	# some tracks have no time info - so we'll insert an early timestamp
+	$timestamp = localtime(0) if (!defined( $timestamp ));
+	printf $trackfile $pointformat, ($latitude, $longitude, $altitude, $timestamp);
+    }
+
+    # done with this line - write out a waypoint line if we have one
+    if ($am_writing && defined( $latitude )  && ($blocktype eq "WAYPOINTS")) {
+	printf $wayptfile $wayptformat, ($wayptname, $latitude, $longitude);
+    }
 
 } # end of per-line loop
- 
+
 # clean up nicely
 $infile->close;
 $trackfile->close if ($opts{w} eq 1);

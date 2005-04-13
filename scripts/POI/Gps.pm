@@ -1,6 +1,9 @@
 # Some Gps related Functions
 #
 # $Log$
+# Revision 1.4  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.3  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -60,7 +63,7 @@ sub is_in_country($$){
     } else {
 	return is_germany($point);
     }
-	return 1;
+    return 1;
 }
 
 #############################################################################
@@ -100,7 +103,7 @@ sub is_bayern($){
     return 1;
 }
 
-    
+
 #############################################################################
 
 sub earth_distance($$$$){
@@ -126,7 +129,7 @@ sub earth_distance($$$$){
     # my $calcedR = calcR((double)(lat1+lat2)) / 2;
     # my $a = acos((x1*x2 + y1*y2 + z1*z2)/square(calcedR));
     # */
-	
+    
     my $x1 = calcR( $lat1 ) * cos(rad2deg( $lon1 )) * sin(rad2deg( 90-$lat1 ));
     my $x2 = calcR( $lat2 ) * cos(rad2deg( $lon2 )) * sin(rad2deg( 90-$lat2 ));
     my $y1 = calcR( $lat1 ) * sin(rad2deg( $lon1 )) * sin(rad2deg( 90-$lat1 ));     

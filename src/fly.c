@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.3  2005/04/13 19:58:31  tweety
+renew indentation to 4 spaces + tabstop=8
+
 Revision 1.2  2005/04/10 21:50:49  tweety
 reformatting c-sources
 
@@ -148,79 +151,79 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_paddin
 gint
 modulesetup ()
 {
-  GtkWidget *mainbox, *table, *flymodebt,*disdevbt;
-  GtkWidget *l3, *l4, *vfr1, *vfr2,*e1,*e2;
-  gchar text[100];
+    GtkWidget *mainbox, *table, *flymodebt,*disdevbt;
+    GtkWidget *l3, *l4, *vfr1, *vfr2,*e1,*e2;
+    gchar text[100];
 
-  setupentry[myplace] = gtk_frame_new (_("Aeronautical settings"));
-  gtk_container_set_border_width (GTK_CONTAINER (setupentry[myplace]), 5* PADDING);
-  setupentrylabel[myplace] = gtk_label_new (_("Fly"));
-  mainbox = gtk_vbox_new (FALSE, 15* PADDING);
-  gtk_container_add (GTK_CONTAINER (setupentry[myplace]), mainbox);
+    setupentry[myplace] = gtk_frame_new (_("Aeronautical settings"));
+    gtk_container_set_border_width (GTK_CONTAINER (setupentry[myplace]), 5* PADDING);
+    setupentrylabel[myplace] = gtk_label_new (_("Fly"));
+    mainbox = gtk_vbox_new (FALSE, 15* PADDING);
+    gtk_container_add (GTK_CONTAINER (setupentry[myplace]), mainbox);
 
-  table = gtk_table_new (7, 2, FALSE);
-  gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 10* PADDING);
+    table = gtk_table_new (7, 2, FALSE);
+    gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 10* PADDING);
 
-  flymodebt = gtk_check_button_new_with_label (_("Plane mode"));
-  if (flymode)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flymodebt), TRUE);
+    flymodebt = gtk_check_button_new_with_label (_("Plane mode"));
+    if (flymode)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (flymodebt), TRUE);
 
-  gtk_signal_connect (GTK_OBJECT (flymodebt),
-											"clicked", GTK_SIGNAL_FUNC (flymode_cb), (gpointer) 1);
+    gtk_signal_connect (GTK_OBJECT (flymodebt),
+			"clicked", GTK_SIGNAL_FUNC (flymode_cb), (gpointer) 1);
 
-  vfr1 = gtk_radio_button_new_with_label (NULL, _("Use VFR"));
-  gtk_signal_connect (GTK_OBJECT (vfr1),
-											"clicked", GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 1);
+    vfr1 = gtk_radio_button_new_with_label (NULL, _("Use VFR"));
+    gtk_signal_connect (GTK_OBJECT (vfr1),
+			"clicked", GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 1);
 
-  vfr2 =
-    gtk_radio_button_new_with_label (gtk_radio_button_group
-																		 (GTK_RADIO_BUTTON (vfr1)), _("Use IFR"));
-  gtk_signal_connect (GTK_OBJECT (vfr2), "clicked",
-											GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 2);
-
-
-  gtk_table_attach_defaults (GTK_TABLE (table), flymodebt, 0, 2, 0, 1);
-
-  gtk_table_attach_defaults (GTK_TABLE (table), vfr1, 0, 1, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (table), vfr2, 1, 2, 2, 3);
-
-  l3 = gtk_label_new (_("max. horizontal deviation "));
-  gtk_table_attach_defaults (GTK_TABLE (table), l3, 0, 1, 4, 5);
-  l4 = gtk_label_new (_("max. vertical deviation "));
-  gtk_table_attach_defaults (GTK_TABLE (table), l4, 0, 1, 5, 6);
-
-  e1 = gtk_entry_new ();
-  g_snprintf (text, sizeof(text),"%d", (int) 500);
-  gtk_entry_set_text (GTK_ENTRY (e1), text);
-  gtk_table_attach_defaults (GTK_TABLE (table), e1, 1, 2, 4, 5);
-  e2 = gtk_entry_new ();
-  g_snprintf (text, sizeof(text), "%d", (int) 1000);
-  gtk_entry_set_text (GTK_ENTRY (e2), text);
-  gtk_table_attach_defaults (GTK_TABLE (table), e2, 1, 2, 5, 6);
-
-  gtk_widget_set_usize (e1, 20, 22);
-  gtk_widget_set_usize (e2, 20, 22);
-
-  disdevbt = gtk_check_button_new_with_label (_("disable vert. deviation warning above 5000ft MSL"));
-  if (disdevwarn)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disdevbt), TRUE);
-
-  gtk_signal_connect (GTK_OBJECT (disdevbt),
-											"clicked", GTK_SIGNAL_FUNC (disdev_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (table), disdevbt, 0, 2, 6, 7);
+    vfr2 =
+	gtk_radio_button_new_with_label (gtk_radio_button_group
+					 (GTK_RADIO_BUTTON (vfr1)), _("Use IFR"));
+    gtk_signal_connect (GTK_OBJECT (vfr2), "clicked",
+			GTK_SIGNAL_FUNC (vfr_cb), (gpointer) 2);
 
 
-  if (debug)
-    g_print ("\nCreated fly setup window. %d\n", myplace);
-  return 0;
+    gtk_table_attach_defaults (GTK_TABLE (table), flymodebt, 0, 2, 0, 1);
+
+    gtk_table_attach_defaults (GTK_TABLE (table), vfr1, 0, 1, 2, 3);
+    gtk_table_attach_defaults (GTK_TABLE (table), vfr2, 1, 2, 2, 3);
+
+    l3 = gtk_label_new (_("max. horizontal deviation "));
+    gtk_table_attach_defaults (GTK_TABLE (table), l3, 0, 1, 4, 5);
+    l4 = gtk_label_new (_("max. vertical deviation "));
+    gtk_table_attach_defaults (GTK_TABLE (table), l4, 0, 1, 5, 6);
+
+    e1 = gtk_entry_new ();
+    g_snprintf (text, sizeof(text),"%d", (int) 500);
+    gtk_entry_set_text (GTK_ENTRY (e1), text);
+    gtk_table_attach_defaults (GTK_TABLE (table), e1, 1, 2, 4, 5);
+    e2 = gtk_entry_new ();
+    g_snprintf (text, sizeof(text), "%d", (int) 1000);
+    gtk_entry_set_text (GTK_ENTRY (e2), text);
+    gtk_table_attach_defaults (GTK_TABLE (table), e2, 1, 2, 5, 6);
+
+    gtk_widget_set_usize (e1, 20, 22);
+    gtk_widget_set_usize (e2, 20, 22);
+
+    disdevbt = gtk_check_button_new_with_label (_("disable vert. deviation warning above 5000ft MSL"));
+    if (disdevwarn)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (disdevbt), TRUE);
+
+    gtk_signal_connect (GTK_OBJECT (disdevbt),
+			"clicked", GTK_SIGNAL_FUNC (disdev_cb), (gpointer) 1);
+    gtk_table_attach_defaults (GTK_TABLE (table), disdevbt, 0, 2, 6, 7);
+
+
+    if (debug)
+	g_print ("\nCreated fly setup window. %d\n", myplace);
+    return 0;
 }
 
 gint
 g_module_check_init ()
 {
-  myplace = mod_setupcounter + 1;
-  g_print ("\nModule fly loaded");
-  return 0;
+    myplace = mod_setupcounter + 1;
+    g_print ("\nModule fly loaded");
+    return 0;
 }
 
 /*  switching nightmode */
@@ -228,35 +231,35 @@ gint
 vfr_cb (GtkWidget *widget, guint datum)
 {
 
-  switch (datum)
-    {
-    case 1:
-      vfr = 1;
-      break;
-    case 2:
-      vfr = 2;
-      break;
+    switch (datum)
+	{
+	case 1:
+	    vfr = 1;
+	    break;
+	case 2:
+	    vfr = 2;
+	    break;
 
-    }
-  needtosave = TRUE;
-  return TRUE;
+	}
+    needtosave = TRUE;
+    return TRUE;
 }
 
 /*  switching flymode on/off */
 gint
 flymode_cb (GtkWidget *widget, guint datum)
 {
-  flymode = !flymode;
-  needtosave = TRUE;
-  return TRUE;
+    flymode = !flymode;
+    needtosave = TRUE;
+    return TRUE;
 }
 
 /*  switching flymode on/off */
 gint
 disdev_cb (GtkWidget *widget, guint datum)
 {
-  disdevwarn = !disdevwarn;
-  needtosave = TRUE;
-  return TRUE;
+    disdevwarn = !disdevwarn;
+    needtosave = TRUE;
+    return TRUE;
 }
 

@@ -2,6 +2,9 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.5  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.4  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -126,22 +129,22 @@ sub import_GpsDrive_track_file($$){
 	
 	if ( $valid ) {
 	    POI::DBFuncs::streets_add(
-				      { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
-					lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
-					level_min => 0, level_max => 99,
-					streets_type_id => $streets_type_id, 
-					name => "$dist $full_filename",
-					source_id => $source_id
-					}
+				  { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
+				    lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
+				    level_min => 0, level_max => 99,
+				    streets_type_id => $streets_type_id, 
+				    name => "$dist $full_filename",
+				    source_id => $source_id
+				    }
 				      );
-	      $segments_in_street++;
-	  } else {
-	      if ( $segments_in_street ) {
-		  $street_nr ++;
-		  print "Streets: $street_nr ($segments_in_street Segments)\n";
-	      }
-	      $segments_in_street=0;
-	  }
+	    $segments_in_street++;
+	} else {
+	    if ( $segments_in_street ) {
+		$street_nr ++;
+		print "Streets: $street_nr ($segments_in_street Segments)\n";
+	    }
+	    $segments_in_street=0;
+	}
     }
 }
 

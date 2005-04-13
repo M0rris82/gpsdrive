@@ -2,6 +2,9 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.4  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.3  2005/01/12 22:08:13  tweety
 # trying to get automated change log
 #
@@ -23,7 +26,7 @@
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 #
-# Dec 2004 Jörg Ostertag
+# Dec 2004 JÃƒÂ¶rg Ostertag
 #   check for bad/existing maps:
 #      - The check if a map exists is modified in check if the mapsize is lagrer 
 #        than 4K. This detects some files where Error messages have been saved.
@@ -59,10 +62,10 @@
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
+modified (Nov 21, 2002) by Magnus MÃ¥nsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
-modified (Dec/Jan,2004/2005) by Jörg Ostertag <joerg.ostertag\@rechengilde.de>
+modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 Version 1.17
 ";
 
@@ -397,7 +400,7 @@ sub wget_map($$$){
     #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
     my $filename = map_filename($scale,$lati,$long);
-   
+    
     my $dir =  dirname("$mapdir$filename");
     unless ( -s $dir || -l $dir ) {
 	debug("Create $dir");
@@ -540,74 +543,74 @@ sub expedia_url($$$){
 # which lat/lon/scale Combinations are desired to download
 #############################################################################
 sub desired_locations {
-   my ($slat,$slon,$elat,$elon) = @_;
-   my $count;   
-   my $desired_locations;
+    my ($slat,$slon,$elat,$elon) = @_;
+    my $count;   
+    my $desired_locations;
 
-   my $local_debug = 0 && $debug;
+    my $local_debug = 0 && $debug;
 
-   my $min_lat=-180;
-   my $max_lat= 180;
-   my $min_lon=-90;
-   my $max_lon= 90;
-   if ( $slat < $min_lat ) { warn ("Starting Latitude  ($slat) set to $min_lat\n"); $slat=$min_lat; };
-   if ( $elat > $max_lat ) { warn ("End      Latitude  ($elat) set to $max_lat\n"); $elat=$max_lat; };
-   if ( $slon < $min_lon ) { warn ("Starting Longitude ($slon) set to $min_lon\n"); $slon=$min_lon; };
-   if ( $elon > $max_lon ) { warn ("End      Longitude ($elon) set to $max_lon\n"); $elon=$max_lon; };
+    my $min_lat=-180;
+    my $max_lat= 180;
+    my $min_lon=-90;
+    my $max_lon= 90;
+    if ( $slat < $min_lat ) { warn ("Starting Latitude  ($slat) set to $min_lat\n"); $slat=$min_lat; };
+    if ( $elat > $max_lat ) { warn ("End      Latitude  ($elat) set to $max_lat\n"); $elat=$max_lat; };
+    if ( $slon < $min_lon ) { warn ("Starting Longitude ($slon) set to $min_lon\n"); $slon=$min_lon; };
+    if ( $elon > $max_lon ) { warn ("End      Longitude ($elon) set to $max_lon\n"); $elon=$max_lon; };
 
-   foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
-       # Setup k
-       my $k = $DIFF * $scale;
-       my $delta_lat = $k - ($k / 2); ### FIX BY CAMEL
-       my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
-       #TODO: $delta_lon sollte von lat abhängen
+    foreach my $scale ( @{$SCALES_TO_GET_ref} ) {
+	# Setup k
+	my $k = $DIFF * $scale;
+	my $delta_lat = $k - ($k / 2); ### FIX BY CAMEL
+	my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
+	#TODO: $delta_lon sollte von lat abhaengen
 
-       # make the starting points for the loop $slat and $slon 
-       # snap into a grid with a Size depending on the scale.
-       # The result is $snapped_start_lat and $snapped_start_lon
-       # The grid allows maps in each direction to 
-       # overlapp by 1/$overlap of the size of one map
-       # With snap to grid we would have to download the exact same maps
-       # for slightly different starting points. This way we can 
-       # circumvent downloads of almost completely overlaping maps
-       my $overlap = 1;
-       my $flat =  $delta_lat / $overlap;
-       my $snapped_start_lat = int ( $slat / $flat  ) * $flat;
-       my $flon = $delta_lon / $overlap;
-       my $snapped_start_lon = int ( $slon / $flon ) * $flon;
+	# make the starting points for the loop $slat and $slon 
+	# snap into a grid with a Size depending on the scale.
+	# The result is $snapped_start_lat and $snapped_start_lon
+	# The grid allows maps in each direction to 
+	# overlapp by 1/$overlap of the size of one map
+	# With snap to grid we would have to download the exact same maps
+	# for slightly different starting points. This way we can 
+	# circumvent downloads of almost completely overlaping maps
+	my $overlap = 1;
+	my $flat =  $delta_lat / $overlap;
+	my $snapped_start_lat = int ( $slat / $flat  ) * $flat;
+	my $flon = $delta_lon / $overlap;
+	my $snapped_start_lon = int ( $slon / $flon ) * $flon;
 
-       print "Scale: $scale\t";
-       printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
-	       $snapped_start_lat,$slat,$delta_lat,$elat;
+	print "Scale: $scale\t";
+	printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
+	$snapped_start_lat,$slat,$delta_lat,$elat;
 
-       my $lati = $snapped_start_lat;
+	my $lati = $snapped_start_lat;
 
-       while ($lati <= $elat) {
-	   my $long = $snapped_start_lon;
-	   if ( $local_debug ) {
-	       printf "        %5.5f:",$lati;
-	       printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
-		       ,$snapped_start_lon,$slon,$delta_lon,$elon;
-	       printf "\t\t";	
-	   }
-	   while ($long <= $elon) {
-	       $long += $delta_lon; ### FIX BY CAMEL
-	       $count++;
-	       $desired_locations->{$scale}->{$lati}->{$long}='?';
-	       if ( $local_debug ) {
-		   my $filename = map_filename($scale,$lati,$long);
-		   my $exist = ( is_map_file($filename) ) ? " ":"+";
+	while ($lati <= $elat) {
+	    my $long = $snapped_start_lon;
+	    if ( $local_debug ) {
+		printf "        %5.5f:",$lati;
+		printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
+		    ,$snapped_start_lon,$slon,$delta_lon,$elon;
+		printf "\t\t";	
+	    }
+	    while ($long <= $elon) {
+		$long += $delta_lon; ### FIX BY CAMEL
+		$count++;
+		$desired_locations->{$scale}->{$lati}->{$long}='?';
+		if ( $local_debug ) {
+		    my $filename = map_filename($scale,$lati,$long);
+		    my $exist = ( is_map_file($filename) ) ? " ":"+";
 
-		   printf " %6.3f %1s",$long,$exist;
-	       }
+		    printf " %6.3f %1s",$long,$exist;
+		}
 
-	   }
-	   print "\n" if $local_debug;
-	   $lati += $delta_lat; ### FIX BY CAMEL
-	   $long = $slon; ### FIX BY CAMEL
-       }
-   }
-   return($desired_locations);
+	    }
+	    print "\n" if $local_debug;
+	    $lati += $delta_lat; ### FIX BY CAMEL
+	    $long = $slon; ### FIX BY CAMEL
+	}
+    }
+    return($desired_locations);
 }
 
 ######################################################################
@@ -625,10 +628,10 @@ sub file_count($){
 	    for my $lon ( keys %{$desired_locations->{$scale}->{$lat}} ) {
 		my $filename = map_filename($scale,$lat,$lon);
 		if ( is_map_file($filename) ) {
-		     $existing++;
-		 } else{
-		     $wanted++;
-		 }
+		    $existing++;
+		} else{
+		    $wanted++;
+		}
 	    }
 	}
     }
@@ -659,20 +662,20 @@ sub get_waypoint {
 
 ######################################################################
 sub get_unit {
-   # If they give just a filename, we should assume they meant the CONFIG_DIR
-   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-   
-   # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_unit Can't open $CONFIG_FILE: $!\n";
-   my $unit;
-   while (<CONFIG>) {
-      next unless (/units\s=/);
-      chomp;
-      $unit = $_;
-      $unit =~ s/units\s=\s//;
-   }   
-   close(CONFIG);
-   return $unit;
+    # If they give just a filename, we should assume they meant the CONFIG_DIR
+    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+    
+    # If not specified on the command line, we read from the config file
+    open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_unit Can't open $CONFIG_FILE: $!\n";
+    my $unit;
+    while (<CONFIG>) {
+	next unless (/units\s=/);
+	chomp;
+	$unit = $_;
+	$unit =~ s/units\s=\s//;
+    }   
+    close(CONFIG);
+    return $unit;
 } #End get_unit
 
 ######################################################################
@@ -680,20 +683,20 @@ sub get_unit {
 # default (the configdir itself)
 ######################################################################
 sub get_mapdir {
-   # If they give just a filename, we should assume they meant the CONFIG_DIR  
-   $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
+    # If they give just a filename, we should assume they meant the CONFIG_DIR  
+    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
 
-   # If not specified on the command line, we read from the config file
-   open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_mapdir Can't open $CONFIG_FILE: $!\n";
-   my $mapdir;
-   while (<CONFIG>) {
-      next unless (/mapdir\s=/);
-      chomp;
-      $mapdir = $_;
-      $mapdir =~ s/mapdir\s=\s//;
-   }
-   close(CONFIG);
-   return $mapdir ||$CONFIG_DIR;
+    # If not specified on the command line, we read from the config file
+    open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_mapdir Can't open $CONFIG_FILE: $!\n";
+    my $mapdir;
+    while (<CONFIG>) {
+	next unless (/mapdir\s=/);
+	chomp;
+	$mapdir = $_;
+	$mapdir =~ s/mapdir\s=\s//;
+    }
+    close(CONFIG);
+    return $mapdir ||$CONFIG_DIR;
 
 } #End get_mapdir
 
@@ -713,19 +716,19 @@ sub get_coords {
     
     my $lon_dist_km = calc_lon_dist($$lat_ref);
     my $lat_offset  = calc_offset($unit_ref,\($lat_dist,$LAT_DIST_KM));
-    my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
+my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
 
-    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
-   
-    # Ok subtract the offset for the start point
-    my $slat = $$lat_ref - $$lat_offset;
-    my $slon = $$lon_ref - $$lon_offset;
-   
-    # Ok add the offset for the start point
-    my $elat = $$lat_ref + $$lat_offset;   
-    my $elon = $$lon_ref + $$lon_offset;   
-    
-    return ($slat,$slon,$elat,$elon);
+print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
+
+# Ok subtract the offset for the start point
+my $slat = $$lat_ref - $$lat_offset;
+my $slon = $$lon_ref - $$lon_offset;
+
+# Ok add the offset for the start point
+my $elat = $$lat_ref + $$lat_offset;   
+my $elon = $$lon_ref + $$lon_offset;   
+
+return ($slat,$slon,$elat,$elon);
 } #End get_coords
 
 ######################################################################
@@ -928,9 +931,9 @@ sub update_gpsdrive_map_koord_file(){
 
     debug("Searching for Files in '$mapdir'");
     find(
-	 { wanted => \&update_file_in_map_koords,
-	   follow_skip=>2
-	   },
+     { wanted => \&update_file_in_map_koords,
+       follow_skip=>2
+       },
 	 $mapdir, );
 }
 
@@ -1015,7 +1018,7 @@ sub check_coverage($){
 		    if(  $dist < ($dlon * 0.9)) {
 			$overlap{$lon}++;
 			$count_overlaps++;
-			}
+		    }
 
 		    $gap{$lon}=$dist /$dlon if $dist > ($dlon * 1.2);
 		    $min_dist = $dist if $dist < $min_dist;
@@ -1024,7 +1027,7 @@ sub check_coverage($){
 		#print "Dist: ( $min_dist - $max_dist) Km ($prev_lon => $lon = ".($prev_lon -$lon).")\n";
 		$prev_lon = $lon;
 	    };
-				
+	    
 	    printf " (%.2f,%.2f - %.2f) Km\t",$dlon,$min_dist,$max_dist;
 	    printf " %d Overlaps\t",$count_overlaps if $count_overlaps;
 	    #*= $LAT_DIST_KM;

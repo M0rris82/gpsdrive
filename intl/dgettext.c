@@ -49,7 +49,7 @@
 char *
 DGETTEXT (const char *domainname, const char *msgid)
 {
-  return DCGETTEXT (domainname, msgid, LC_MESSAGES);
+    return DCGETTEXT (domainname, msgid, LC_MESSAGES);
 }
 
 #ifdef _LIBC

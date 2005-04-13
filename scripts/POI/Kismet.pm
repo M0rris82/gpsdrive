@@ -2,6 +2,9 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.4  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.3  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -150,25 +153,25 @@ sub import_Kismet_track_file($$){
 	if ( $valid ) {
 	    #debug(sprintf "\t(%.3f,%.3f) - (%.3f,%.3f) %.0f m (%.1f Km/h) (Type %d)",$lat1,$lon1,$lat2,$lon2,$dist,$speed,$streets_type_id);
 	    POI::DBFuncs::streets_add(
-				      { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
-					lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
-					level_min => 0, level_max => 99,
-					streets_type_id => $streets_type_id, 
-					name => "$dist $full_filename",
-					source_id => $source_id
-					}
+				  { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
+				    lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
+				    level_min => 0, level_max => 99,
+				    streets_type_id => $streets_type_id, 
+				    name => "$dist $full_filename",
+				    source_id => $source_id
+				    }
 				      );
-	      $segments_in_street++;
-	      $distance_street +=$dist;
-	      $distance_streets +=$dist;
-	  } else {
-	      if ( $segments_in_street ) {
-		  $street_nr ++;
-		  printf "Streets: $street_nr ($segments_in_street Segments)    %.2f Km \n"
-		      ,$distance_streets/1000;
-	      }
-	      $segments_in_street=0;
-	  }
+	    $segments_in_street++;
+	    $distance_street +=$dist;
+	    $distance_streets +=$dist;
+	} else {
+	    if ( $segments_in_street ) {
+		$street_nr ++;
+		printf "Streets: $street_nr ($segments_in_street Segments)    %.2f Km \n"
+		    ,$distance_streets/1000;
+	    }
+	    $segments_in_street=0;
+	}
 	$line1=$line;
     }
     if ($segments_in_street ) {

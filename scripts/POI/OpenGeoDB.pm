@@ -1,6 +1,9 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.9  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.8  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -37,9 +40,9 @@ sub read_open_geo_db($){
 	my $source_hash = {
 	    'source.url'     => "http://ovh.dl.sourceforge.net/".
 		"sourceforge/geoclassphp/opengeodb-0.1.3-txt.tar.gz",
-	    'source.name'    => $source ,
-	    'source.comment' => '' ,
-	    'source.licence' => ""
+		'source.name'    => $source ,
+		'source.comment' => '' ,
+		'source.licence' => ""
 	    };
 	POI::DBFuncs::insert_hash("source", $source_hash);
 	$source_id = POI::DBFuncs::source_name2id($source);

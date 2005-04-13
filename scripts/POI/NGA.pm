@@ -1,6 +1,9 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.7  2005/04/13 19:58:30  tweety
+# renew indentation to 4 spaces + tabstop=8
+#
 # Revision 1.6  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -20,28 +23,28 @@ use POI::Utils;
 
 #############################################################################
 our @countries = qw(aa ac ae af ag aj al am an ao ar as at au av 
-					ba bb bc bd be bf bg bh bk bl bm bn bo bp br bs bt bu bv bx by 
-					ca cb cd ce cf cg ch ci cj ck cm cn co cr cs ct cu cv cw cy
-					da dj do dr ec eg ei ek en er es et eu ez 
-					fg fi fj fk fm fo fp fr fs
-					ga gb gg gh gi gj  gk gl gm go gp gr gt gv gy gz 
-					ha hk hm ho hr hu
-					ic id im in io ip ir is it iv iz 
-					ja je jm jn jo ju ke kg kn kr ks kt ku kz
-					la le lg lh li lo ls lt lu ly 
-					ma mb mc md mf mg mh mi mk ml mn mo mp mr mt mu mv mx my mz 
-					nc ne nf ng nh ni nl nm no np nr ns nt nu nz 
-					os 
-					pa pc pe pf pg pk pl pm po pp ps pu
-					qa re rm ro 
-					rp rs rw 
-					sa sb sc se sf sg sh si sl sm sn so sp st su sv sw sx sy sz
-					td te th ti tk tl tn to tp ts tt tu tv tw tx tz 
-					uf ug uk up uv uy uz 
-					vc ve vi vm vt
-					wa we wf wi ws wz 
-					yi ym 
-					za zi);
+		    ba bb bc bd be bf bg bh bk bl bm bn bo bp br bs bt bu bv bx by 
+		    ca cb cd ce cf cg ch ci cj ck cm cn co cr cs ct cu cv cw cy
+		    da dj do dr ec eg ei ek en er es et eu ez 
+		    fg fi fj fk fm fo fp fr fs
+		    ga gb gg gh gi gj  gk gl gm go gp gr gt gv gy gz 
+		    ha hk hm ho hr hu
+		    ic id im in io ip ir is it iv iz 
+		    ja je jm jn jo ju ke kg kn kr ks kt ku kz
+		    la le lg lh li lo ls lt lu ly 
+		    ma mb mc md mf mg mh mi mk ml mn mo mp mr mt mu mv mx my mz 
+		    nc ne nf ng nh ni nl nm no np nr ns nt nu nz 
+		    os 
+		    pa pc pe pf pg pk pl pm po pp ps pu
+		    qa re rm ro 
+		    rp rs rw 
+		    sa sb sc se sf sg sh si sl sm sn so sp st su sv sw sx sy sz
+		    td te th ti tk tl tn to tp ts tt tu tv tw tx tz 
+		    uf ug uk up uv uy uz 
+		    vc ve vi vm vt
+		    wa we wf wi ws wz 
+		    yi ym 
+		    za zi);
 
 our $name2country = {
     'afghanistan'	=> 'af',
@@ -417,65 +420,65 @@ sub add_earthinfo_nga_mil_to_db($$){
 
 	    $values->{'poi.last_modified'}=$values->{'mod_date'};
 
-	    {
-		my $pc = $values->{'pc'};
-		# Populated Place Classification.  
-		# A graduated numerical scale denoting the relative importance 
-		# of a populated place.  
-		# The scale ranges from 1,  relatively high, to 5, relatively low.  
-		# The scale could also include NULL (no value) as a value for 
-		# populated places with unknown or undetermined classification.
-		my $scale_min = 0;
-		my $scale_max = 99;
-		if ( defined($pc) && $pc ne '' ) { 
-		    #print "pc : $pc \n";
-		    if    ( $pc == 1 ) {   $scale_min = 1;  $scale_max = 1000; }
-		    elsif ( $pc == 2 ) {   $scale_min = 1;	$scale_max = 10000; }
-		    elsif ( $pc == 3 ) {   $scale_min = 1;	$scale_max = 100000; }
-		    elsif ( $pc == 4 ) {   $scale_min = 1;	$scale_max = 1000000; }
-		    elsif ( $pc == 5 ) {   $scale_min = 1;  $scale_max = 10000000; }
-		} else {
-		    $scale_min = 1;	$scale_max = 10000; 
-		};
-		$values->{'poi.scale_min'} = $scale_min;
-		$values->{'poi.scale_max'} = $scale_max;
-	    }
+	{
+	    my $pc = $values->{'pc'};
+	    # Populated Place Classification.  
+	    # A graduated numerical scale denoting the relative importance 
+	    # of a populated place.  
+	    # The scale ranges from 1,  relatively high, to 5, relatively low.  
+	    # The scale could also include NULL (no value) as a value for 
+	    # populated places with unknown or undetermined classification.
+	    my $scale_min = 0;
+	    my $scale_max = 99;
+	    if ( defined($pc) && $pc ne '' ) { 
+		#print "pc : $pc \n";
+		if    ( $pc == 1 ) {   $scale_min = 1;  $scale_max = 1000; }
+		elsif ( $pc == 2 ) {   $scale_min = 1;	$scale_max = 10000; }
+		elsif ( $pc == 3 ) {   $scale_min = 1;	$scale_max = 100000; }
+		elsif ( $pc == 4 ) {   $scale_min = 1;	$scale_max = 1000000; }
+		elsif ( $pc == 5 ) {   $scale_min = 1;  $scale_max = 10000000; }
+	    } else {
+		$scale_min = 1;	$scale_max = 10000; 
+	    };
+	    $values->{'poi.scale_min'} = $scale_min;
+	    $values->{'poi.scale_max'} = $scale_max;
+	}
 
 
 	    
-	    {   # NT Name Type:
-		# C = Conventional;
-		# D = Not verified;
-		# N = Native;
-		# V = Variant or alternate.
-		my $nt = $values->{'nt'};
-	    }
+	{   # NT Name Type:
+	    # C = Conventional;
+	    # D = Not verified;
+	    # N = Native;
+	    # V = Variant or alternate.
+	    my $nt = $values->{'nt'};
+	}
 
-	    { # decide which symbol
-		my $fc = $values->{'fc'};
-		my $symbol = "City";
-		#FC
-		#Feature Classification:
-		if    ( $fc eq "A" ) { $symbol = "Administrative region" }
-		elsif ( $fc eq "P" ) { $symbol = "Populated place" }
-		elsif ( $fc eq "V" ) { $symbol = "Vegetation" }
-		elsif ( $fc eq "L" ) { $symbol = "Locality or area" }
-		elsif ( $fc eq "U" ) { $symbol = "Undersea" }
-		elsif ( $fc eq "R" ) { $symbol = "Streets, highways, roads, or railroad" }
-		elsif ( $fc eq "T" ) { $symbol = "Hypsographic" }
-		elsif ( $fc eq "H" ) { $symbol = "Hydrographic" }
-		elsif ( $fc eq "S" ) { $symbol = "Spot feature." }
-		else                 { $symbol = "Unknown" }
-		$values->{'type.name'} = $symbol;
-	    }
+	{ # decide which symbol
+	    my $fc = $values->{'fc'};
+	    my $symbol = "City";
+	    #FC
+	    #Feature Classification:
+	    if    ( $fc eq "A" ) { $symbol = "Administrative region" }
+	    elsif ( $fc eq "P" ) { $symbol = "Populated place" }
+	    elsif ( $fc eq "V" ) { $symbol = "Vegetation" }
+	    elsif ( $fc eq "L" ) { $symbol = "Locality or area" }
+	    elsif ( $fc eq "U" ) { $symbol = "Undersea" }
+	    elsif ( $fc eq "R" ) { $symbol = "Streets, highways, roads, or railroad" }
+	    elsif ( $fc eq "T" ) { $symbol = "Hypsographic" }
+	    elsif ( $fc eq "H" ) { $symbol = "Hydrographic" }
+	    elsif ( $fc eq "S" ) { $symbol = "Spot feature." }
+	    else                 { $symbol = "Unknown" }
+	    $values->{'type.name'} = $symbol;
+	}
 	    
-	    { # Dimension.  Usually used to display elevation or population data.
-		my $proximity = $values->{'dim'} ;
-		$proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
-		$proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
-		$proximity ||= ' 100m';
-		$values->{'poi.proximity'} = $proximity;
-	    }
+	{ # Dimension.  Usually used to display elevation or population data.
+	    my $proximity = $values->{'dim'} ;
+	    $proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
+	    $proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
+	    $proximity ||= ' 100m';
+	    $values->{'poi.proximity'} = $proximity;
+	}
 
 	    add_poi($values);
 	}
