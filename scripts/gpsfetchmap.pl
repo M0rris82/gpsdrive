@@ -2,6 +2,11 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.5  2005/04/15 07:18:54  tweety
+# extracted lat2raidus into it's own function and added plausibility checks
+# sorted addwaypoint function and added comments
+# while downloading new maps the already existing maps are always displayed
+#
 # Revision 1.4  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -26,7 +31,7 @@
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 #
-# Dec 2004 JÃƒÂ¶rg Ostertag
+# Dec 2004 JÃï¿½¶rg Ostertag
 #   check for bad/existing maps:
 #      - The check if a map exists is modified in check if the mapsize is lagrer 
 #        than 4K. This detects some files where Error messages have been saved.
@@ -62,7 +67,7 @@
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Nov 21, 2002) by Magnus MÃ¥nsson <ganja\@0x63.nu>
+modified (Nov 21, 2002) by Magnus MÃÂ¥nsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
@@ -383,6 +388,8 @@ sub map_filename($$$){
     
     my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
 	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+    print"Filename: $filename\n"
+	if $debug;
     return $filename;
 }
 
@@ -524,8 +531,12 @@ sub expedia_url($$$){
     my $alti=0;
     $alti=$EXPEDIAALTS[$found];
     my $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);		  		  
-    print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n"
-	if ($debug);
+    if ($debug) {
+	print "\n";
+	print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
+	print "lat: $lati\n";
+	print "lon: $long\n";
+    }
     
     my $where;
     if ($long < -30) {
