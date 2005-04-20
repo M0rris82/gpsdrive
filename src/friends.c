@@ -21,6 +21,10 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.4  2005/04/20 23:33:49  tweety
+ reformatted source code with anjuta
+ So now we have new indentations
+
  Revision 1.3  2005/04/13 19:58:31  tweety
  renew indentation to 4 spaces + tabstop=8
 
@@ -203,220 +207,277 @@ extern gchar messagename[40], messagesendtext[1024], messageack[100];
 void
 setnonblocking (int sock)
 {
-    int opts;
+	int opts;
 
-    opts = fcntl (sock, F_GETFL);
-    if (opts < 0)
+	opts = fcntl (sock, F_GETFL);
+	if (opts < 0)
 	{
-	    perror ("fcntl(F_GETFL)");
-	    exit (EXIT_FAILURE);
+		perror ("fcntl(F_GETFL)");
+		exit (EXIT_FAILURE);
 	}
-    opts = (opts | O_NONBLOCK);
-    if (fcntl (sock, F_SETFL, opts) < 0)
+	opts = (opts | O_NONBLOCK);
+	if (fcntl (sock, F_SETFL, opts) < 0)
 	{
-	    perror ("fcntl(F_SETFL)");
-	    exit (EXIT_FAILURE);
+		perror ("fcntl(F_SETFL)");
+		exit (EXIT_FAILURE);
 	}
-    return;
+	return;
 }
 
 int
 friends_sendmsg (char *serverip, char *message)
 {
-    int n, nosent, endflag, e;
-    char recvline[MAXLINE + 1];
-    int i, fc;
-    struct sockaddr_in cli_addr;
-    struct sockaddr_in serv_addr;
-    struct sockaddr *pserv_addr;
-    socklen_t servlen;
-    friendsstruct *f;
-    char msgname[40], msgid[40], msgtext[1024];
-    GtkWidget *wi;
+	int n, nosent, endflag, e;
+	char recvline[MAXLINE + 1];
+	int i, fc;
+	struct sockaddr_in cli_addr;
+	struct sockaddr_in serv_addr;
+	struct sockaddr *pserv_addr;
+	socklen_t servlen;
+	friendsstruct *f;
+	char msgname[40], msgid[40], msgtext[1024];
+	GtkWidget *wi;
 
-    if (serverip == NULL)
+	if (serverip == NULL)
 	{
-	    fprintf (stderr, "error in friends_sendmsg: serverip=NULL\n");
-	    return 0;
+		fprintf (stderr, "error in friends_sendmsg: serverip=NULL\n");
+		return 0;
 	}
 
-    if (message != NULL)
-	if (strlen (message) == 0)
-	    {
-		fprintf (stderr, "error in friends_sendmsg: message=empty\n");
-		return 0;
-	    }
+	if (message != NULL)
+		if (strlen (message) == 0)
+		{
+			fprintf (stderr,
+				 "error in friends_sendmsg: message=empty\n");
+			return 0;
+		}
 
-    f = friends;
-    g_strlcpy (msgname, "", sizeof (msgname));
-    g_strlcpy (msgtext, "", sizeof (msgtext));
+	f = friends;
+	g_strlcpy (msgname, "", sizeof (msgname));
+	g_strlcpy (msgtext, "", sizeof (msgtext));
 
-    /*   skip if we already have an sockfd  */
-    if (message != NULL)
-	if (sockfd == -1)
-	    {
-		bzero ((char *) &serv_addr, sizeof (serv_addr));
-		serv_addr.sin_family = AF_INET;
+	/*   skip if we already have an sockfd  */
+	if (message != NULL)
+		if (sockfd == -1)
+		{
+			bzero ((char *) &serv_addr, sizeof (serv_addr));
+			serv_addr.sin_family = AF_INET;
 
-		serv_addr.sin_addr.s_addr = inet_addr (serverip);
-		serv_addr.sin_port = htons (SERV_UDP_PORT);
-		pserv_addr = (struct sockaddr *) &serv_addr;
+			serv_addr.sin_addr.s_addr = inet_addr (serverip);
+			serv_addr.sin_port = htons (SERV_UDP_PORT);
+			pserv_addr = (struct sockaddr *) &serv_addr;
 
-		if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
-		    {
-			perror ("friendsclient local socket");
-			return (1);
-		    }
-		setnonblocking (sockfd);
+			if ((sockfd = socket (AF_INET, SOCK_DGRAM, 0)) < 0)
+			{
+				perror ("friendsclient local socket");
+				return (1);
+			}
+			setnonblocking (sockfd);
 
-		servlen = sizeof (serv_addr);
-		bzero ((char *) &cli_addr, sizeof (cli_addr));
+			servlen = sizeof (serv_addr);
+			bzero ((char *) &cli_addr, sizeof (cli_addr));
 
-		cli_addr.sin_family = AF_INET;
-		cli_addr.sin_addr.s_addr = htons (INADDR_ANY);
-		cli_addr.sin_port = htons (0);
+			cli_addr.sin_family = AF_INET;
+			cli_addr.sin_addr.s_addr = htons (INADDR_ANY);
+			cli_addr.sin_port = htons (0);
 
-		if (bind (sockfd, (struct sockaddr *) &cli_addr, sizeof (cli_addr)) <
-		    0)
-		    {
-			perror ("friendsclient bind local address");
-			return (2);
-		    }
+			if (bind
+			    (sockfd, (struct sockaddr *) &cli_addr,
+			     sizeof (cli_addr)) < 0)
+			{
+				perror ("friendsclient bind local address");
+				return (2);
+			}
 
-		n = strlen (message);
-		/*   printf ("sending...\n");  */
-		if ((nosent =
-		     sendto (sockfd, message, n, 0, pserv_addr, servlen)) != n)
-		    {
-			perror ("friendsclient sendto");
-			return (3);
-		    }
+			n = strlen (message);
+			/*   printf ("sending...\n");  */
+			if ((nosent =
+			     sendto (sockfd, message, n, 0, pserv_addr,
+				     servlen)) != n)
+			{
+				perror ("friendsclient sendto");
+				return (3);
+			}
+			else
+			{
+				pleasepollme = TRUE;
+			}
+
+			/*     end skip if we already have an sockfd  */
+
+			/*       return, so we read the next time */
+			return 0;
+		}
+	endflag = i = 0;
+
+	fc = 0;
+	do
+	{
+		n = recvfrom (sockfd, recvline, MAXLINE, 0 /* MSG_WAITALL */ ,
+			      (struct sockaddr *) 0, (int *) 0);
+		if (n < 0)
+		{
+			i++;
+			usleep (100000);
+			fprintf (stderr, "errno %d:", errno);
+			perror ("recv");
+		}
 		else
-		    {
-			pleasepollme = TRUE;
-		    }
-
-		/*     end skip if we already have an sockfd  */
-
-		/*       return, so we read the next time */
-		return 0;
-	    }
-    endflag = i = 0;
-
-    fc = 0;
-    do
-	{
-	    n = recvfrom (sockfd, recvline, MAXLINE, 0 /* MSG_WAITALL */ ,
-			  (struct sockaddr *) 0, (int *) 0);
-	    if (n < 0)
+			i = 0;
+		if (n > 0)
 		{
-		    i++;
-		    usleep (100000);
-		    fprintf (stderr, "errno %d:", errno);
-		    perror ("recv");
-		}
-	    else
-		i = 0;
-	    if (n > 0)
-		{
-		    if ((strncmp (recvline, "$END:$", 6)) == 0)
-			endflag = 1;
-		    recvline[n] = 0;
-		    /* 	  if (debug) */
-		    /* 	    printf ("received...%d bytes: %s\n=======\n", n, recvline); */
-		    /* scanning reply  */
-		    if ((strncmp (recvline, "POS: ", 5)) == 0)
+			if ((strncmp (recvline, "$END:$", 6)) == 0)
+				endflag = 1;
+			recvline[n] = 0;
+			/*    if (debug) */
+			/*      printf ("received...%d bytes: %s\n=======\n", n, recvline); */
+			/* scanning reply  */
+			if ((strncmp (recvline, "POS: ", 5)) == 0)
 			{
-			    e =
-				sscanf (recvline, "POS: %s %s %s %s %s %s %s", (f + fc)->id,
-					(f + fc)->name, (f + fc)->lat, (f + fc)->longi,
-					(f + fc)->timesec, (f + fc)->speed,
-					(f + fc)->heading);
-			    /* 		    printf("\nreceived %d arguments\n",e);  */
-			    fc++;
+				e = sscanf (recvline,
+					    "POS: %s %s %s %s %s %s %s",
+					    (f + fc)->id, (f + fc)->name,
+					    (f + fc)->lat, (f + fc)->longi,
+					    (f + fc)->timesec,
+					    (f + fc)->speed,
+					    (f + fc)->heading);
+				/*              printf("\nreceived %d arguments\n",e);  */
+				fc++;
 			}
-		    if ((strncmp (recvline, "SRV: ", 5)) == 0)
+			if ((strncmp (recvline, "SRV: ", 5)) == 0)
 			{
-			    e =
-				sscanf (recvline, "SRV: %s %s %s %s %s %s %s", fserver->id,
-					fserver->name, fserver->lat, fserver->longi,
-					fserver->timesec, fserver->speed, fserver->heading);
-			    /* 		    printf("\nreceived %d arguments\n",e);  */
+				e = sscanf (recvline,
+					    "SRV: %s %s %s %s %s %s %s",
+					    fserver->id, fserver->name,
+					    fserver->lat, fserver->longi,
+					    fserver->timesec, fserver->speed,
+					    fserver->heading);
+				/*              printf("\nreceived %d arguments\n",e);  */
 			}
-		    if ((strncmp (recvline, "SND: ", 5)) == 0)
+			if ((strncmp (recvline, "SND: ", 5)) == 0)
 			{
-			    if ((strlen (messageack) > 0)
-				&& (strncmp (recvline, messageack, strlen (messageack)) ==
-				    0))
+				if ((strlen (messageack) > 0)
+				    &&
+				    (strncmp
+				     (recvline, messageack,
+				      strlen (messageack)) == 0))
 				{
-				    g_strlcpy (messagename, "", sizeof (messagename));
-				    g_strlcpy (messageack, "", sizeof (messageack));
-				    g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
-				    wi =
-					gtk_item_factory_get_item (item_factory,
-								   N_("/Misc. Menu/Messages"));
-				    gtk_widget_set_sensitive (wi, TRUE);
-				    gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-				    statuslock = FALSE;
+					g_strlcpy (messagename, "",
+						   sizeof (messagename));
+					g_strlcpy (messageack, "",
+						   sizeof (messageack));
+					g_strlcpy (messagesendtext, "",
+						   sizeof (messagesendtext));
+					wi = gtk_item_factory_get_item
+						(item_factory,
+						 N_("/Misc. Menu/Messages"));
+					gtk_widget_set_sensitive (wi, TRUE);
+					gtk_statusbar_pop (GTK_STATUSBAR
+							   (status),
+							   statusid);
+					statuslock = FALSE;
 				}
-			    else
+				else
 				{
-				    e =
-					sscanf (recvline, "SND: %s %s %[^\n]", msgid, msgname,
-						msgtext);
-				    if (e == 3)
-					if (strcmp ((msgname), (friendsname)) == 0)
-					    {
-						int j, k = 0, fsmessage = 0;
+					e = sscanf (recvline,
+						    "SND: %s %s %[^\n]",
+						    msgid, msgname, msgtext);
+					if (e == 3)
+						if (strcmp
+						    ((msgname),
+						     (friendsname)) == 0)
+						{
+							int j, k =
+								0, fsmessage =
+								0;
 
-						g_strlcpy (msgname, _("unknown"), sizeof (msgname));
-						if (strcmp ((msgid + 5), ((fserver->id) + 5)) == 0)
-						    {
-							g_snprintf (msgname, sizeof (msgname),
-								    fserver->name);
-							fsmessage = TRUE;
-						    }
-						for (j = 0; j < fc; j++)
-						    if (strcmp ((msgid + 5), (((f + j)->id) + 5)) == 0)
-							g_strlcpy (msgname, (f + j)->name,
-								   sizeof (msgname));
-						for (j = 0; j < (int) strlen (recvline); j++)
-						    {
-							if (*(recvline + j) == ' ')
-							    k++;
-							if (k >= 3)
-							    break;
-						    }
-						g_strlcpy (msgtext, (recvline + j + 1),
-							   sizeof (msgtext));
-						/* 			if (debug) */
-						/* 			  fprintf (stderr, "\ne: %d, received from %s: %s\n", */
-						/* 				   e, msgname, msgtext); */
-						message_cb (msgid, msgname, msgtext, fsmessage);
-					    }
+							g_strlcpy (msgname,
+								   _
+								   ("unknown"),
+								   sizeof
+								   (msgname));
+							if (strcmp
+							    ((msgid + 5),
+							     ((fserver->id) +
+							      5)) == 0)
+							{
+								g_snprintf
+									(msgname,
+									 sizeof
+									 (msgname),
+									 fserver->
+									 name);
+								fsmessage =
+									TRUE;
+							}
+							for (j = 0; j < fc;
+							     j++)
+								if (strcmp
+								    ((msgid +
+								      5),
+								     (((f +
+									j)->
+								       id) +
+								      5)) ==
+								    0)
+									g_strlcpy
+										(msgname,
+										 (f
+										  +
+										  j)->
+										 name,
+										 sizeof
+										 (msgname));
+							for (j = 0;
+							     j <
+							     (int)
+							     strlen
+							     (recvline); j++)
+							{
+								if (*
+								    (recvline
+								     + j) ==
+								    ' ')
+									k++;
+								if (k >= 3)
+									break;
+							}
+							g_strlcpy (msgtext,
+								   (recvline +
+								    j + 1),
+								   sizeof
+								   (msgtext));
+							/*                      if (debug) */
+							/*                        fprintf (stderr, "\ne: %d, received from %s: %s\n", */
+							/*                                 e, msgname, msgtext); */
+							message_cb (msgid,
+								    msgname,
+								    msgtext,
+								    fsmessage);
+						}
 				}
 			}
 
-		    if (debug)
-			fprintf (stderr, recvline);
+			if (debug)
+				fprintf (stderr, recvline);
 
 		}
-	    /*  	printf("\ni: %d, endflag: %d\n",i,endflag);   */
+		/*          printf("\ni: %d, endflag: %d\n",i,endflag);   */
 	}
-    while ((n > 0) && (!endflag));
+	while ((n > 0) && (!endflag));
 
-    /* printf("\nafter while i: %d, endflag: %d\n",i,endflag);  */
-    if (endflag)
+	/* printf("\nafter while i: %d, endflag: %d\n",i,endflag);  */
+	if (endflag)
 	{
-	    close (sockfd);
-	    sockfd = -1;
-	    pleasepollme = FALSE;
-	    if (fc != 0)
-		maxfriends = fc;
+		close (sockfd);
+		sockfd = -1;
+		pleasepollme = FALSE;
+		if (fc != 0)
+			maxfriends = fc;
 	}
 
 
-    return 0;
+	return 0;
 }
 
 
@@ -424,40 +485,41 @@ int
 friendsinit ()
 {
 
-    char *key, buf2[20];
-    int f;
-    long int r;
-    time_t ti, tii;
+	char *key, buf2[20];
+	int f;
+	long int r;
+	time_t ti, tii;
 
-    if ((strcmp (friendsidstring, "XXX")) == 0)
+	if ((strcmp (friendsidstring, "XXX")) == 0)
 	{
-	    r = 0x12345678;
-	    f = open ("/dev/random", O_RDONLY);
-	    if (f >= 0)
+		r = 0x12345678;
+		f = open ("/dev/random", O_RDONLY);
+		if (f >= 0)
 		{
-		    read (f, &r, 4);
-		    close (f);
+			read (f, &r, 4);
+			close (f);
 		}
-	    tii = ti = time (NULL);
-	    ti = ti & 0xffffff;
-	    r += ti;
+		tii = ti = time (NULL);
+		ti = ti & 0xffffff;
+		r += ti;
 
-	    g_snprintf (buf2, sizeof (buf2), "$1$%08lx$", r);
-	    key = "havenocrypt";
+		g_snprintf (buf2, sizeof (buf2), "$1$%08lx$", r);
+		key = "havenocrypt";
 #ifdef HAVE_CRYPT_H
-	    key = crypt ("fritz", buf2);
-	    g_strlcpy (friendsidstring, (key + 12), sizeof (friendsidstring));
+		key = crypt ("fritz", buf2);
+		g_strlcpy (friendsidstring, (key + 12),
+			   sizeof (friendsidstring));
 #else
-	    r = r * r;
-	    g_snprintf (friendsidstring, sizeof (friendsidstring), "nocrypt%015ld",
-			labs (r));
+		r = r * r;
+		g_snprintf (friendsidstring, sizeof (friendsidstring),
+			    "nocrypt%015ld", labs (r));
 #endif
-	    printf ("\nKey: %s,id: %s %d bytes, time: %ld\n", key,
-		    friendsidstring, strlen (friendsidstring), ti);
-	    needtosave = 1;
+		printf ("\nKey: %s,id: %s %d bytes, time: %ld\n", key,
+			friendsidstring, strlen (friendsidstring), ti);
+		needtosave = 1;
 	}
-    friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
-    fserver = malloc (1 * sizeof (friendsstruct));
+	friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
+	fserver = malloc (1 * sizeof (friendsstruct));
 
-    return (0);
+	return (0);
 }

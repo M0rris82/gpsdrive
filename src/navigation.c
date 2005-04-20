@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.4  2005/04/20 23:33:49  tweety
+reformatted source code with anjuta
+So now we have new indentations
+
 Revision 1.3  2005/04/13 19:58:31  tweety
 renew indentation to 4 spaces + tabstop=8
 
@@ -102,38 +106,40 @@ gint
 nav_doit (GtkWidget * widget, guint * datum)
 {
 #ifdef USETELEATLAS
-    int e;
-    static char streetname[200], buf[220];
+	int e;
+	static char streetname[200], buf[220];
 
-    e =
-	ta_getstreetname (current_lat, current_long, streetname,
-			  sizeof (streetname));
-    if (e)
+	e = ta_getstreetname (current_lat, current_long, streetname,
+			      sizeof (streetname));
+	if (e)
 	{
-	    g_strlcpy (actualstreetname, streetname, sizeof (actualstreetname));
-	    if (debug)
-		fprintf (stderr, "Location: %s\n", streetname);
+		g_strlcpy (actualstreetname, streetname,
+			   sizeof (actualstreetname));
+		if (debug)
+			fprintf (stderr, "Location: %s\n", streetname);
 	}
-    else
+	else
 	{
-	    g_strlcpy (actualstreetname, "---", sizeof (actualstreetname));
-	    if (debug)
-		fprintf (stderr, "unknown location\n");
+		g_strlcpy (actualstreetname, "---",
+			   sizeof (actualstreetname));
+		if (debug)
+			fprintf (stderr, "unknown location\n");
 	}
-    if (strcmp (actualstreetname, oldstreetname) != 0)
+	if (strcmp (actualstreetname, oldstreetname) != 0)
 	{
-	    g_strlcpy (oldstreetname, actualstreetname, sizeof (oldstreetname));
-	    g_snprintf (buf, sizeof (buf), "%s\n", actualstreetname);
-	    speech_out_speek (buf);
+		g_strlcpy (oldstreetname, actualstreetname,
+			   sizeof (oldstreetname));
+		g_snprintf (buf, sizeof (buf), "%s\n", actualstreetname);
+		speech_out_speek (buf);
 	}
 
 #endif
-    return TRUE;
+	return TRUE;
 }
 
 gint
 navi_cb (GtkWidget * widget, guint datum)
 {
 
-    return TRUE;
+	return TRUE;
 }

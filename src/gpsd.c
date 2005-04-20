@@ -16,6 +16,10 @@ Patch for file input: Iwo Mergler <Iwo.Mergler@soton.sc.philips.com>
 
 /*
   $Log$
+  Revision 1.4  2005/04/20 23:33:49  tweety
+  reformatted source code with anjuta
+  So now we have new indentations
+
   Revision 1.3  2005/04/13 19:58:31  tweety
   renew indentation to 4 spaces + tabstop=8
 
@@ -139,17 +143,17 @@ Patch for file input: Iwo Mergler <Iwo.Mergler@soton.sc.philips.com>
 int debug = 0;
 int device_speed = B4800;
 int device_type;
-int nfds;  /* number of file descriptors to select() for */
+int nfds;			/* number of file descriptors to select() for */
 char *device_name = 0;
 char *latitude = 0;
 char *longitude = 0;
 char latd = 'N';
 char lond = 'W';
-int  keep_gps = 0;	/* If non-zero, don't close gps device ever */
+int keep_gps = 0;		/* If non-zero, don't close gps device ever */
 
 /* File input stuff */
-char   *infile_name = 0;
-int    infile = 0;
+char *infile_name = 0;
+int infile = 0;
 double InfileLineTime = 0.2;
 
 /* command line option defaults */
@@ -157,7 +161,7 @@ static char *default_device_name = "/dev/gps";
 static char *default_latitude = "3600.000";
 static char *default_longitude = "-12300.000";
 
-static int dsock; /* socket to dpgs server */
+static int dsock;		/* socket to dpgs server */
 
 /* If set, close (and reopen?) the serial interface. Triggered by SIGUSR1. */
 static int reopen = 0;
@@ -174,191 +178,193 @@ extern void em_send_rtcm (unsigned short *rtcmbuf, int rtcmbytes);
 static void
 onsig (int sig)
 {
-    serial_close ();
-    close (dsock);
-    syslog (LOG_NOTICE, "Received signal %d. Exiting...", sig);
-    exit (10 + sig);
+	serial_close ();
+	close (dsock);
+	syslog (LOG_NOTICE, "Received signal %d. Exiting...", sig);
+	exit (10 + sig);
 }
 
 static void
 sigusr1 (int sig)
 {
-    reopen = 1;
+	reopen = 1;
 }
 
 int
 daemonize ()
 {
-    int fd;
-    pid_t pid;
+	int fd;
+	pid_t pid;
 
-    pid = fork ();
+	pid = fork ();
 
-    switch (pid)
+	switch (pid)
 	{
 	case -1:
-	    return -1;
+		return -1;
 	case 0:
-	    break;
+		break;
 	default:
-	    _exit (pid);
+		_exit (pid);
 	}
 
-    if (setsid () == -1)
-	return -1;
-    chdir ("/");
-    fd = open (_PATH_DEVNULL, O_RDWR, 0);
-    if (fd != -1)
+	if (setsid () == -1)
+		return -1;
+	chdir ("/");
+	fd = open (_PATH_DEVNULL, O_RDWR, 0);
+	if (fd != -1)
 	{
-	    dup2 (fd, STDIN_FILENO);
-	    dup2 (fd, STDOUT_FILENO);
-	    dup2 (fd, STDERR_FILENO);
-	    if (fd > 2)
-		close (fd);
+		dup2 (fd, STDIN_FILENO);
+		dup2 (fd, STDOUT_FILENO);
+		dup2 (fd, STDERR_FILENO);
+		if (fd > 2)
+			close (fd);
 	}
-    return 0;
+	return 0;
 }
 
 void
 send_dgps ()
 {
-    char buf[BUFSIZE];
+	char buf[BUFSIZE];
 
-    sprintf (buf, "R %0.2f %0.2f %0.2f\r\n", gNMEAdata.latitude,
-	     gNMEAdata.longitude, gNMEAdata.altitude);
-    write (dsock, buf, strlen (buf));
+	sprintf (buf, "R %0.2f %0.2f %0.2f\r\n", gNMEAdata.latitude,
+		 gNMEAdata.longitude, gNMEAdata.altitude);
+	write (dsock, buf, strlen (buf));
 }
 
 int
 main (int argc, char *argv[])
 {
-    char *default_service = "gpsd";
-    char *default_dgpsserver = "dgps.wsrcc.com";
-    char *default_dgpsport = "rtcm-sc104";
-    char *service = 0; /* port number to listen to */
-    char *dgpsport = 0;
-    char *dgpsserver = 0;
-    struct sockaddr_in fsin;
-    int msock; /* listening socket fd */
-    fd_set rfds;
-    fd_set afds;
-    fd_set nmea_fds;
-    int alen;
-    int fd;
-    int input; /* GPS device fd */
-    int need_gps, need_dgps = 0, need_init = 1;
-    extern char *optarg;
-    int option;
-    double baud;
-    char buf[BUFSIZE];
-    int sentdgps = 0, fixcnt = 0;
-    time_t curtime;
+	char *default_service = "gpsd";
+	char *default_dgpsserver = "dgps.wsrcc.com";
+	char *default_dgpsport = "rtcm-sc104";
+	char *service = 0;	/* port number to listen to */
+	char *dgpsport = 0;
+	char *dgpsserver = 0;
+	struct sockaddr_in fsin;
+	int msock;		/* listening socket fd */
+	fd_set rfds;
+	fd_set afds;
+	fd_set nmea_fds;
+	int alen;
+	int fd;
+	int input;		/* GPS device fd */
+	int need_gps, need_dgps = 0, need_init = 1;
+	extern char *optarg;
+	int option;
+	double baud;
+	char buf[BUFSIZE];
+	int sentdgps = 0, fixcnt = 0;
+	time_t curtime;
 
-    while ((option = getopt (argc, argv, "D:L:S:T:hncl:p:s:d:r:F:f:K")) != -1)
+	while ((option =
+		getopt (argc, argv, "D:L:S:T:hncl:p:s:d:r:F:f:K")) != -1)
 	{
-	    switch (option)
+		switch (option)
 		{
 		case 'T':
-		    switch (*optarg)
+			switch (*optarg)
 			{
 			case 't':
-			    device_type = DEVICE_TRIPMATE;
-			    break;
+				device_type = DEVICE_TRIPMATE;
+				break;
 			case 'e':
-			    device_type = DEVICE_EARTHMATE;
-			    break;
+				device_type = DEVICE_EARTHMATE;
+				break;
 			default:
-			    fprintf (stderr, "Invalid device type \"%s\"\n"
-				     "Using GENERIC instead\n", optarg);
-			    break;
+				fprintf (stderr,
+					 "Invalid device type \"%s\"\n"
+					 "Using GENERIC instead\n", optarg);
+				break;
 			}
-		    break;
+			break;
 		case 'D':
-		    debug = (int) strtol (optarg, 0, 0);
-		    break;
+			debug = (int) strtol (optarg, 0, 0);
+			break;
 		case 'd':
-		    dgpsserver = optarg;
-		    break;
+			dgpsserver = optarg;
+			break;
 		case 'L':
-		    if (optarg[strlen (optarg) - 1] == 'W'
-			|| optarg[strlen (optarg) - 1] == 'w'
-			|| optarg[strlen (optarg) - 1] == 'E'
-			|| optarg[strlen (optarg) - 1] == 'e')
+			if (optarg[strlen (optarg) - 1] == 'W'
+			    || optarg[strlen (optarg) - 1] == 'w'
+			    || optarg[strlen (optarg) - 1] == 'E'
+			    || optarg[strlen (optarg) - 1] == 'e')
 			{
-			    lond = toupper (optarg[strlen (optarg) - 1]);
-			    longitude = optarg;
-			    longitude[strlen (optarg) - 1] = '\0';
+				lond = toupper (optarg[strlen (optarg) - 1]);
+				longitude = optarg;
+				longitude[strlen (optarg) - 1] = '\0';
 			}
-		    else
-			fprintf (stderr,
-				 "skipping invalid longitude (-L) option;  %s must end in W or E\n",
-				 optarg);
-		    break;
+			else
+				fprintf (stderr,
+					 "skipping invalid longitude (-L) option;  %s must end in W or E\n",
+					 optarg);
+			break;
 		case 'S':
-		    service = optarg;
-		    break;
+			service = optarg;
+			break;
 		case 'r':
-		    dgpsport = optarg;
-		    break;
+			dgpsport = optarg;
+			break;
 		case 'l':
-		    if (optarg[strlen (optarg) - 1] == 'N'
-			|| optarg[strlen (optarg) - 1] == 'n'
-			|| optarg[strlen (optarg) - 1] == 'S'
-			|| optarg[strlen (optarg) - 1] == 's')
+			if (optarg[strlen (optarg) - 1] == 'N'
+			    || optarg[strlen (optarg) - 1] == 'n'
+			    || optarg[strlen (optarg) - 1] == 'S'
+			    || optarg[strlen (optarg) - 1] == 's')
 			{
-			    latd = toupper (optarg[strlen (optarg) - 1]);
-			    latitude = optarg;
-			    latitude[strlen (optarg) - 1] = '\0';
+				latd = toupper (optarg[strlen (optarg) - 1]);
+				latitude = optarg;
+				latitude[strlen (optarg) - 1] = '\0';
 			}
-		    else
-			fprintf (stderr,
-				 "skipping invalid latitude (-l) option;  %s must end in N or S\n",
-				 optarg);
-		    break;
+			else
+				fprintf (stderr,
+					 "skipping invalid latitude (-l) option;  %s must end in N or S\n",
+					 optarg);
+			break;
 		case 'p':
-		    device_name = optarg;
-		    break;
+			device_name = optarg;
+			break;
 		case 's':
-		    baud = strtod (optarg, 0);
-		    if (baud < 200)
-			baud *= 1000;
-		    if (baud < 2400)
-			device_speed = B1200;
-		    else if (baud < 4800)
-			device_speed = B2400;
-		    else if (baud < 9600)
-			device_speed = B4800;
-		    else if (baud < 19200)
-			device_speed = B9600;
-		    else if (baud < 38400)
-			device_speed = B19200;
-		    else if (baud < 57600)
-			device_speed = B38400;
-		    else if (baud < 115200)
-			device_speed = B57600;
-		    else
-			device_speed = B115200;
-		    break;
+			baud = strtod (optarg, 0);
+			if (baud < 200)
+				baud *= 1000;
+			if (baud < 2400)
+				device_speed = B1200;
+			else if (baud < 4800)
+				device_speed = B2400;
+			else if (baud < 9600)
+				device_speed = B4800;
+			else if (baud < 19200)
+				device_speed = B9600;
+			else if (baud < 38400)
+				device_speed = B19200;
+			else if (baud < 57600)
+				device_speed = B38400;
+			else if (baud < 115200)
+				device_speed = B57600;
+			else
+				device_speed = B115200;
+			break;
 		case 'c':
-		    need_dgps = 1;
-		    break;
+			need_dgps = 1;
+			break;
 		case 'n':
-		    need_init = 0;
-		    break;
+			need_init = 0;
+			break;
 		case 'F':
-		    infile_name = optarg;
-		    infile = 1;
-		    break;
+			infile_name = optarg;
+			infile = 1;
+			break;
 		case 'f':
-		    InfileLineTime = strtod (optarg, NULL);
-		    break;
+			InfileLineTime = strtod (optarg, NULL);
+			break;
 		case 'K':
-		    keep_gps = 1;
-		    break;
+			keep_gps = 1;
+			break;
 		case 'h':
 		case '?':
 		default:
-		    fputs ("usage:  gpsd [options] \n\
+			fputs ("usage:  gpsd [options] \n\
   options include: \n\
   -D level     [ set debug level. If >= 2, remain in foreground ] \n\
   -L longitude [ set longitude ] \n\
@@ -376,266 +382,285 @@ main (int argc, char *argv[])
   -f seconds   [ delay per input file line in seconds (default=0.2)] \n\
   -K           [ keep gps device open all the time (linux USB workaround) ] \n\
 ", stderr);
-		    exit (0);
+			exit (0);
 		}
 	}
-    if (!device_name)
-	device_name = default_device_name;
-    if (need_init && !latitude)
-	latitude = default_latitude;
-    if (need_init && !longitude)
-	longitude = default_longitude;
-    if (!service)
+	if (!device_name)
+		device_name = default_device_name;
+	if (need_init && !latitude)
+		latitude = default_latitude;
+	if (need_init && !longitude)
+		longitude = default_longitude;
+	if (!service)
 	{
-	    if (!getservbyname (default_service, "tcp"))
+		if (!getservbyname (default_service, "tcp"))
 		{
-		    service = "2947";
+			service = "2947";
 		}
-	    else
+		else
 		{
-		    service = default_service;
+			service = default_service;
 		}
 	}
-    if (need_dgps && !dgpsserver)
-	dgpsserver = default_dgpsserver;
-    if (need_dgps && !dgpsport)
-	dgpsport = default_dgpsport;
-    if (debug > 0)
+	if (need_dgps && !dgpsserver)
+		dgpsserver = default_dgpsserver;
+	if (need_dgps && !dgpsport)
+		dgpsport = default_dgpsport;
+	if (debug > 0)
 	{
-	    fprintf (stderr, "command line options:\n");
-	    fprintf (stderr, "  debug level:        %d\n", debug);
-	    if (infile)
+		fprintf (stderr, "command line options:\n");
+		fprintf (stderr, "  debug level:        %d\n", debug);
+		if (infile)
 		{
-		    fprintf (stderr, "  gps file name:      %s\n", infile_name);
-		    fprintf (stderr, "  file line timing:   %.3f sec\n",InfileLineTime);
+			fprintf (stderr, "  gps file name:      %s\n",
+				 infile_name);
+			fprintf (stderr, "  file line timing:   %.3f sec\n",
+				 InfileLineTime);
 		}
-	    else
+		else
 		{
-		    fprintf (stderr, "  gps device name:    %s\n", device_name);
-		    fprintf (stderr, "  gps device speed:   %d\n", device_speed);
+			fprintf (stderr, "  gps device name:    %s\n",
+				 device_name);
+			fprintf (stderr, "  gps device speed:   %d\n",
+				 device_speed);
 		}
-	    fprintf (stderr, "  gpsd port:          %s\n", service);
-	    if (need_dgps)
+		fprintf (stderr, "  gpsd port:          %s\n", service);
+		if (need_dgps)
 		{
-		    fprintf (stderr, "  dgps server:        %s\n", dgpsserver);
-		    fprintf (stderr, "  dgps port:        %s\n", dgpsport);
+			fprintf (stderr, "  dgps server:        %s\n",
+				 dgpsserver);
+			fprintf (stderr, "  dgps port:        %s\n",
+				 dgpsport);
 		}
-	    fprintf (stderr, "  latitude:           %s%c\n", latitude, latd);
-	    fprintf (stderr, "  longitude:          %s%c\n", longitude, lond);
+		fprintf (stderr, "  latitude:           %s%c\n", latitude,
+			 latd);
+		fprintf (stderr, "  longitude:          %s%c\n", longitude,
+			 lond);
 	}
-    if (debug < 2)
-	daemonize ();
+	if (debug < 2)
+		daemonize ();
 
-    /* Handle some signals */
-    signal (SIGUSR1, sigusr1);
-    signal (SIGINT, onsig);
-    signal (SIGHUP, onsig);
-    signal (SIGTERM, onsig);
-    signal (SIGQUIT, onsig);
+	/* Handle some signals */
+	signal (SIGUSR1, sigusr1);
+	signal (SIGINT, onsig);
+	signal (SIGHUP, onsig);
+	signal (SIGTERM, onsig);
+	signal (SIGQUIT, onsig);
 
-    openlog ("gpsd", LOG_PID, LOG_USER);
-    syslog (LOG_NOTICE, "Gpsd started (Version %s)", GPSDVERSION);
-    if (need_dgps)
-	syslog (LOG_NOTICE, "Gpsd in DGPS-IP mode");
+	openlog ("gpsd", LOG_PID, LOG_USER);
+	syslog (LOG_NOTICE, "Gpsd started (Version %s)", GPSDVERSION);
+	if (need_dgps)
+		syslog (LOG_NOTICE, "Gpsd in DGPS-IP mode");
 
-    syslog (LOG_NOTICE, "Gpsd listening on port %s", service);
+	syslog (LOG_NOTICE, "Gpsd listening on port %s", service);
 
-    msock = passiveTCP (service, QLEN);
+	msock = passiveTCP (service, QLEN);
 
-    if (need_dgps)
+	if (need_dgps)
 	{
-	    if (!getservbyname (dgpsport, "tcp"))
-		dgpsport = "2101";
-	    dsock = connectsock (dgpsserver, dgpsport, "tcp");
-	    if (dsock < 0)
+		if (!getservbyname (dgpsport, "tcp"))
+			dgpsport = "2101";
+		dsock = connectsock (dgpsserver, dgpsport, "tcp");
+		if (dsock < 0)
 		{
-		    fprintf (stderr, "Can't connect to dgps server\n");
-		    need_dgps = 0;
+			fprintf (stderr, "Can't connect to dgps server\n");
+			need_dgps = 0;
 		}
 	}
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif
-    /* still wrong, but at least do not coredump */
-    nfds = min (getdtablesize (), FD_SETSIZE);
+	/* still wrong, but at least do not coredump */
+	nfds = min (getdtablesize (), FD_SETSIZE);
 
-    FD_ZERO (&afds);
-    FD_ZERO (&nmea_fds);
-    FD_SET (msock, &afds);
-    if (need_dgps)
+	FD_ZERO (&afds);
+	FD_ZERO (&nmea_fds);
+	FD_SET (msock, &afds);
+	if (need_dgps)
 	{
-	    char hn[256];
-	    gethostname (hn, sizeof (hn));
+		char hn[256];
+		gethostname (hn, sizeof (hn));
 
-	    sprintf (buf, "HELO %s gpsdrive-%s/gpsd %s\r\nR\r\n", hn, VERSION,
-		     GPSDVERSION);
-	    write (dsock, buf, strlen (buf));
-	    FD_SET (dsock, &afds);
+		sprintf (buf, "HELO %s gpsdrive-%s/gpsd %s\r\nR\r\n", hn,
+			 VERSION, GPSDVERSION);
+		write (dsock, buf, strlen (buf));
+		FD_SET (dsock, &afds);
 	}
 
-    input = -1;
+	input = -1;
 
-    while (1)
+	while (1)
 	{
-	    memcpy (&rfds, &afds, sizeof (rfds));
+		memcpy (&rfds, &afds, sizeof (rfds));
 
-	    if (select (nfds, &rfds, NULL, NULL, NULL) < 0)
+		if (select (nfds, &rfds, NULL, NULL, NULL) < 0)
 		{
-		    if (errno == EINTR)
-			continue;
-		    errexit ("select");
+			if (errno == EINTR)
+				continue;
+			errexit ("select");
 		}
-	    curtime = time(NULL);
-	    if (curtime > gNMEAdata.last_update + GPS_TIMEOUT) {
-		gNMEAdata.mode = 0;
-		gNMEAdata.status = 0;
-	    }
-	    /* data received on dgps socket */
-	    if (FD_ISSET (dsock, &rfds))
+		curtime = time (NULL);
+		if (curtime > gNMEAdata.last_update + GPS_TIMEOUT)
 		{
-		    int rtcmbytes, cnt;
-		    char *ptr;
+			gNMEAdata.mode = 0;
+			gNMEAdata.status = 0;
+		}
+		/* data received on dgps socket */
+		if (FD_ISSET (dsock, &rfds))
+		{
+			int rtcmbytes, cnt;
+			char *ptr;
 
-		    rtcmbytes = read (dsock, buf, BUFSIZE);
+			rtcmbytes = read (dsock, buf, BUFSIZE);
 
-		    if (device_type == DEVICE_EARTHMATEb)
+			if (device_type == DEVICE_EARTHMATEb)
 			{
-			    ptr = buf;
-			    while (rtcmbytes > 0)
+				ptr = buf;
+				while (rtcmbytes > 0)
 				{
-				    cnt = (rtcmbytes < 65) ? rtcmbytes : 64;
-				    em_send_rtcm ((unsigned short *)buf, cnt);
-				    rtcmbytes -= cnt;
-				    ptr += cnt;
+					cnt = (rtcmbytes <
+					       65) ? rtcmbytes : 64;
+					em_send_rtcm ((unsigned short *) buf,
+						      cnt);
+					rtcmbytes -= cnt;
+					ptr += cnt;
 				}
 			}
-		    else
+			else
 			{
-			    /*
-			     * device must need generic RTCM-104 serial data.
-			     * We can send these one character at a time. 
-			     */
-			    if (rtcmbytes > 0)
+				/*
+				 * device must need generic RTCM-104 serial data.
+				 * We can send these one character at a time. 
+				 */
+				if (rtcmbytes > 0)
 				{
 #if 0
-				    fprintf (stderr, "\n\nSending %d rtcm bytes out\n",
-					     rtcmbytes);
-				    for (cnt = 0; cnt < rtcmbytes; cnt++)
-					fprintf (stderr, "%x", (unsigned char) buf[cnt]);
-				    fprintf (stderr, "\n");
+					fprintf (stderr,
+						 "\n\nSending %d rtcm bytes out\n",
+						 rtcmbytes);
+					for (cnt = 0; cnt < rtcmbytes; cnt++)
+						fprintf (stderr, "%x",
+							 (unsigned char)
+							 buf[cnt]);
+					fprintf (stderr, "\n");
 #endif
-				    ptr = buf;
-				    while (rtcmbytes > 0)
+					ptr = buf;
+					while (rtcmbytes > 0)
 					{
-					    cnt = write (gNMEAdata.fdout, ptr, rtcmbytes);
-					    if (cnt == rtcmbytes)
-						rtcmbytes = 0;	/* stops the loop */
+						cnt = write (gNMEAdata.fdout,
+							     ptr, rtcmbytes);
+						if (cnt == rtcmbytes)
+							rtcmbytes = 0;	/* stops the loop */
 
-					    if (cnt > 0)
+						if (cnt > 0)
 						{
-						    /* Set up for next iteration */
-						    rtcmbytes -= cnt;
-						    ptr += cnt;
+							/* Set up for next iteration */
+							rtcmbytes -= cnt;
+							ptr += cnt;
 						}
 					}
-				    rtcmbytes = 0;
+					rtcmbytes = 0;
 				}
 			}
 		}
-	    /* data received on client socket */
-	    if (FD_ISSET (msock, &rfds))
+		/* data received on client socket */
+		if (FD_ISSET (msock, &rfds))
 		{
-		    int ssock;
+			int ssock;
 
-		    alen = sizeof (fsin);
-		    ssock = accept (msock, (struct sockaddr *) &fsin, &alen);
+			alen = sizeof (fsin);
+			ssock = accept (msock, (struct sockaddr *) &fsin,
+					&alen);
 
-		    if (ssock < 0)
-			errexit ("accept");
+			if (ssock < 0)
+				errexit ("accept");
 
-		    FD_SET (ssock, &afds);
+			FD_SET (ssock, &afds);
 		}
-	    /* data available on serial port */
-	    if (input >= 0 && FD_ISSET (input, &rfds))
+		/* data available on serial port */
+		if (input >= 0 && FD_ISSET (input, &rfds))
 		{
-		    if (device_type == DEVICE_EARTHMATEb)
-			handle_EMinput (input, &afds, &nmea_fds);
-		    else
-			handle_input (input, &afds, &nmea_fds);
+			if (device_type == DEVICE_EARTHMATEb)
+				handle_EMinput (input, &afds, &nmea_fds);
+			else
+				handle_input (input, &afds, &nmea_fds);
 		}
-	    /* misc gps stuff ... */
-	    if (gNMEAdata.status > 0)
-		fixcnt++;
-	    if (fixcnt > 10)
-		if (!sentdgps)
-		    {
-			sentdgps++;
-			if (need_dgps)
-			    send_dgps ();
-		    }
-	    need_gps = keep_gps;
-	    if (reopen)
-		{
-		    FD_CLR (input, &afds);
-		    input = -1;
-		    gNMEAdata.fdin = input;
-		    gNMEAdata.fdout = input;
-		    serial_close ();
-		    if (device_type == DEVICE_EARTHMATEb)
-			device_type = DEVICE_EARTHMATE;
-		    syslog (LOG_NOTICE, "Closed gps");
-		    gNMEAdata.mode = 1;
-		    gNMEAdata.status = 0;
-		    need_gps++;
-		}
-	    for (fd = 0; fd < nfds; fd++)
-		{
-		    if (fd != msock && fd != input && fd != dsock &&
-			FD_ISSET (fd, &rfds))
+		/* misc gps stuff ... */
+		if (gNMEAdata.status > 0)
+			fixcnt++;
+		if (fixcnt > 10)
+			if (!sentdgps)
 			{
-			    if (input == -1)
+				sentdgps++;
+				if (need_dgps)
+					send_dgps ();
+			}
+		need_gps = keep_gps;
+		if (reopen)
+		{
+			FD_CLR (input, &afds);
+			input = -1;
+			gNMEAdata.fdin = input;
+			gNMEAdata.fdout = input;
+			serial_close ();
+			if (device_type == DEVICE_EARTHMATEb)
+				device_type = DEVICE_EARTHMATE;
+			syslog (LOG_NOTICE, "Closed gps");
+			gNMEAdata.mode = 1;
+			gNMEAdata.status = 0;
+			need_gps++;
+		}
+		for (fd = 0; fd < nfds; fd++)
+		{
+			if (fd != msock && fd != input && fd != dsock &&
+			    FD_ISSET (fd, &rfds))
+			{
+				if (input == -1)
 				{
-				    if (infile)
+					if (infile)
 					{
-					    input = open(infile_name,O_RDONLY);
-					    if (input < 0)
-						errexit ("File open: ");
+						input = open (infile_name,
+							      O_RDONLY);
+						if (input < 0)
+							errexit ("File open: ");
 					}
-				    else
+					else
 					{
-					    if ((input = serial_open ()) < 0)
-						errexit ("serial open: ");
+						if ((input =
+						     serial_open ()) < 0)
+							errexit ("serial open: ");
 					}
-				    syslog (LOG_NOTICE, "Opened gps");
-				    FD_SET (input, &afds);
-				    gNMEAdata.fdin = input;
-				    gNMEAdata.fdout = input;
+					syslog (LOG_NOTICE, "Opened gps");
+					FD_SET (input, &afds);
+					gNMEAdata.fdin = input;
+					gNMEAdata.fdout = input;
 				}
-			    if (handle_request (fd, &nmea_fds) == 0)
+				if (handle_request (fd, &nmea_fds) == 0)
 				{
-				    (void) close (fd);
-				    FD_CLR (fd, &afds);
-				    FD_CLR (fd, &nmea_fds);
+					(void) close (fd);
+					FD_CLR (fd, &afds);
+					FD_CLR (fd, &nmea_fds);
 				}
 			}
-		    if (fd != msock && fd != input && FD_ISSET (fd, &afds))
+			if (fd != msock && fd != input
+			    && FD_ISSET (fd, &afds))
 			{
-			    need_gps++;
+				need_gps++;
 			}
 		}
 
-	    if (!need_gps && input != -1)
+		if (!need_gps && input != -1)
 		{
-		    FD_CLR (input, &afds);
-		    input = -1;
-		    gNMEAdata.fdin = input;
-		    gNMEAdata.fdout = input;
-		    serial_close ();
-		    if (device_type == DEVICE_EARTHMATEb)
-			device_type = DEVICE_EARTHMATE;
-		    syslog (LOG_NOTICE, "Closed gps");
-		    gNMEAdata.mode = 1;
-		    gNMEAdata.status = 0;
+			FD_CLR (input, &afds);
+			input = -1;
+			gNMEAdata.fdin = input;
+			gNMEAdata.fdout = input;
+			serial_close ();
+			if (device_type == DEVICE_EARTHMATEb)
+				device_type = DEVICE_EARTHMATE;
+			syslog (LOG_NOTICE, "Closed gps");
+			gNMEAdata.mode = 1;
+			gNMEAdata.status = 0;
 		}
 	}
 }
@@ -643,197 +668,210 @@ main (int argc, char *argv[])
 static int
 handle_request (int fd, fd_set * fds)
 {
-    char buf[BUFSIZE];
-    char reply[BUFSIZE];
-    char *p;
-    int cc;
+	char buf[BUFSIZE];
+	char reply[BUFSIZE];
+	char *p;
+	int cc;
 
-    cc = read (fd, buf, sizeof (buf) - 1);
-    if (cc < 0)
-	return 0;
+	cc = read (fd, buf, sizeof (buf) - 1);
+	if (cc < 0)
+		return 0;
 
-    buf[cc] = '\0';
+	buf[cc] = '\0';
 
-    sprintf (reply, "GPSD");
-    p = buf;
-    while (*p)
+	sprintf (reply, "GPSD");
+	p = buf;
+	while (*p)
 	{
-	    switch (*p)
+		switch (*p)
 		{
 		case 'P':
 		case 'p':
-		    sprintf (reply + strlen (reply),
-			     ",P=%f %f", gNMEAdata.latitude, gNMEAdata.longitude);
-		    break;
+			sprintf (reply + strlen (reply),
+				 ",P=%f %f", gNMEAdata.latitude,
+				 gNMEAdata.longitude);
+			break;
 		case 'D':
 		case 'd':
-		    sprintf (reply + strlen (reply), ",D=%s", gNMEAdata.utc);
-		    break;
+			sprintf (reply + strlen (reply), ",D=%s",
+				 gNMEAdata.utc);
+			break;
 		case 'A':
 		case 'a':
-		    sprintf (reply + strlen (reply), ",A=%f", gNMEAdata.altitude);
-		    break;
+			sprintf (reply + strlen (reply), ",A=%f",
+				 gNMEAdata.altitude);
+			break;
 		case 'V':
 		case 'v':
-		    sprintf (reply + strlen (reply), ",V=%f", gNMEAdata.speed);
-		    break;
+			sprintf (reply + strlen (reply), ",V=%f",
+				 gNMEAdata.speed);
+			break;
 		case 'R':
 		case 'r':
-		    if (FD_ISSET (fd, fds))
+			if (FD_ISSET (fd, fds))
 			{
-			    FD_CLR (fd, fds);
-			    sprintf (reply + strlen (reply), ",R=0");
+				FD_CLR (fd, fds);
+				sprintf (reply + strlen (reply), ",R=0");
 			}
-		    else
+			else
 			{
-			    FD_SET (fd, fds);
-			    sprintf (reply + strlen (reply), ",R=1");
+				FD_SET (fd, fds);
+				sprintf (reply + strlen (reply), ",R=1");
 			}
-		    break;
+			break;
 		case 'S':
 		case 's':
-		    sprintf (reply + strlen (reply), ",S=%d", gNMEAdata.status);
-		    break;
+			sprintf (reply + strlen (reply), ",S=%d",
+				 gNMEAdata.status);
+			break;
 		case 'M':
 		case 'm':
-		    sprintf (reply + strlen (reply), ",M=%d", gNMEAdata.mode);
-		    break;
+			sprintf (reply + strlen (reply), ",M=%d",
+				 gNMEAdata.mode);
+			break;
 		case '\r':
 		case '\n':
-		    *p = '\0';		/* ignore the rest */
-		    break;
+			*p = '\0';	/* ignore the rest */
+			break;
 
 		}
-	    p++;
+		p++;
 	}
-    strcat (reply, "\r\n");
+	strcat (reply, "\r\n");
 
-    if (cc && write (fd, reply, strlen (reply) + 1) < 0)
-	return 0;
+	if (cc && write (fd, reply, strlen (reply) + 1) < 0)
+		return 0;
 
-    return cc;
+	return cc;
 }
 
 /* Returns time difference in seconds (accurate to 10^-3) */
 static double
-time_diff(struct timeval start,struct timeval end) 
+time_diff (struct timeval start, struct timeval end)
 {
-    double retval;
-  
-    retval = (double)(end.tv_sec - start.tv_sec);
-  
-    retval += (double)((end.tv_usec - start.tv_usec)/1000)/1000.0;
-  
-    return(retval);
+	double retval;
+
+	retval = (double) (end.tv_sec - start.tv_sec);
+
+	retval += (double) ((end.tv_usec - start.tv_usec) / 1000) / 1000.0;
+
+	return (retval);
 }
 
 static int
 handle_input (int input, fd_set * afds, fd_set * nmea_fds)
 {
-    static unsigned char buf[BUFSIZE];	/* that is more then a sentence */
-    static int offset = 0;
-    static int bincount;
-    int fd;
-  
-    /* Reading from file. */
-    static struct timeval Msg_Time = {0,0}; /* Occurence of last line */
-    struct timeval time;
-  
-    while (offset < BUFSIZE)
+	static unsigned char buf[BUFSIZE];	/* that is more then a sentence */
+	static int offset = 0;
+	static int bincount;
+	int fd;
+
+	/* Reading from file. */
+	static struct timeval Msg_Time = { 0, 0 };	/* Occurence of last line */
+	struct timeval time;
+
+	while (offset < BUFSIZE)
 	{
-    
-	    /* This delays the reading of another line from file */
-	    if (infile)
-		{    
-		    gettimeofday(&time,NULL);
-		    if (time_diff(Msg_Time,time) < InfileLineTime )
-			{
-			    usleep(1);
-			    return 1;
-			}
-		}
-    
-	    if (read (input, buf + offset, 1) != 1)
+
+		/* This delays the reading of another line from file */
+		if (infile)
 		{
-		    /* In case of file input, we must sleep for a while,
-		       otherwise gpsd runs the CPU at full tilt when the file is finished. */
-		    if (infile)
+			gettimeofday (&time, NULL);
+			if (time_diff (Msg_Time, time) < InfileLineTime)
 			{
-			    usleep(1000);
+				usleep (1);
+				return 1;
 			}
-		    return 1;
 		}
 
-	    if (buf[offset] == '\n' || buf[offset] == '\r')
+		if (read (input, buf + offset, 1) != 1)
 		{
-		    buf[offset] = '\0';
-		    if (strlen (buf))
+			/* In case of file input, we must sleep for a while,
+			 * otherwise gpsd runs the CPU at full tilt when the file is finished. */
+			if (infile)
 			{
-			    handle_message (buf);
-                 
-			    /* A new line arrived, remember time */
-			    if (infile)
+				usleep (1000);
+			}
+			return 1;
+		}
+
+		if (buf[offset] == '\n' || buf[offset] == '\r')
+		{
+			buf[offset] = '\0';
+			if (strlen (buf))
+			{
+				handle_message (buf);
+
+				/* A new line arrived, remember time */
+				if (infile)
 				{
-				    gettimeofday(&time,NULL);
-				    Msg_Time = time;
+					gettimeofday (&time, NULL);
+					Msg_Time = time;
 				}
-                   
-			    strcat (buf, "\r\n");
-			    for (fd = 0; fd < nfds; fd++)
+
+				strcat (buf, "\r\n");
+				for (fd = 0; fd < nfds; fd++)
 				{
-				    if (FD_ISSET (fd, nmea_fds))
+					if (FD_ISSET (fd, nmea_fds))
 					{
-					    if (write (fd, buf, strlen (buf)) < 0)
+						if (write
+						    (fd, buf,
+						     strlen (buf)) < 0)
 						{
-						    syslog (LOG_NOTICE, "Raw write: %s",
-							    strerror (errno));
-						    FD_CLR (fd, afds);
-						    FD_CLR (fd, nmea_fds);
+							syslog (LOG_NOTICE,
+								"Raw write: %s",
+								strerror
+								(errno));
+							FD_CLR (fd, afds);
+							FD_CLR (fd, nmea_fds);
 						}
 					}
 				}
 			}
-		    offset = 0;
-		    return 1;
+			offset = 0;
+			return 1;
 		}
-	    /*
-	      The following tries to recognise if the EarthMate is
-	      in binary mode. If so, it will switch to EarthMate mode.
+		/*
+		 * The following tries to recognise if the EarthMate is
+		 * in binary mode. If so, it will switch to EarthMate mode.
+		 * 
+		 * Tf.20000105: this block does not serve any purpose.
+		 * Please look it over, and delete it if you agree.
+		 */
 
-	      Tf.20000105: this block does not serve any purpose.
-	      Please look it over, and delete it if you agree.
-	    */
-
-	    if (device_type == DEVICE_EARTHMATE)
+		if (device_type == DEVICE_EARTHMATE)
 		{
-		    if (offset)
+			if (offset)
 			{
-			    if (buf[offset - 1] == (unsigned char) 0xff)
+				if (buf[offset - 1] == (unsigned char) 0xff)
 				{
-				    if (buf[offset] == (unsigned char) 0x81)
+					if (buf[offset] ==
+					    (unsigned char) 0x81)
 					{
-					    if (bincount++ == 5)
+						if (bincount++ == 5)
 						{
-						    syslog (LOG_NOTICE, "Found an EarthMate (syn).");
-						    device_type = DEVICE_EARTHMATEb;
-						    return 0;
+							syslog (LOG_NOTICE,
+								"Found an EarthMate (syn).");
+							device_type =
+								DEVICE_EARTHMATEb;
+							return 0;
 						}
 					}
 				}
 			}
 		}
-	    offset++;
-	    buf[offset] = '\0';
+		offset++;
+		buf[offset] = '\0';
 	}
-    offset = 0;			/* discard input ! */
-    return 1;
+	offset = 0;		/* discard input ! */
+	return 1;
 }
 
 int
 errexit (char *s)
 {
-    syslog (LOG_ERR, "%s: %s\nExit now...\n", s, strerror (errno));
-    serial_close ();
-    close (dsock);
-    exit (2);
+	syslog (LOG_ERR, "%s: %s\nExit now...\n", s, strerror (errno));
+	serial_close ();
+	close (dsock);
+	exit (2);
 }

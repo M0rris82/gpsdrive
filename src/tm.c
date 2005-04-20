@@ -22,102 +22,128 @@ extern char lond;
 void do_eminit ();
 
 
-void process_message(char *sentence)
+void
+process_message (char *sentence)
 {
-    char *message = sentence + 1;
+	char *message = sentence + 1;
 
-    if (checksum(sentence)) {
-	if (strncmp(GPGSV, message, 5) == 0) {
-	    processGPGSV(message);
-	} else if (strncmp(GPGLL, message, 5) == 0) {
-	    processGPGLL(message);
-	} else if (strncmp(GPGGA, message, 5) == 0) {
-	    processGPGGA(message);
-	} else if (strncmp(GPRMC, message, 5) == 0) {
-	    processGPRMC(message);
-	} else if (strncmp(GPGSA, message, 5) == 0) {
-	    processGPGSA(message);
-	} else if (strncmp(PRWIZCH, message, 7) == 0) {
-	    processPRWIZCH(message);
-	} else {
-	    if (debug > 1) {
-		fprintf(stderr, "Unknown sentence: \"%s\"\n",
-			sentence);
-	    }
+	if (checksum (sentence))
+	{
+		if (strncmp (GPGSV, message, 5) == 0)
+		{
+			processGPGSV (message);
+		}
+		else if (strncmp (GPGLL, message, 5) == 0)
+		{
+			processGPGLL (message);
+		}
+		else if (strncmp (GPGGA, message, 5) == 0)
+		{
+			processGPGGA (message);
+		}
+		else if (strncmp (GPRMC, message, 5) == 0)
+		{
+			processGPRMC (message);
+		}
+		else if (strncmp (GPGSA, message, 5) == 0)
+		{
+			processGPGSA (message);
+		}
+		else if (strncmp (PRWIZCH, message, 7) == 0)
+		{
+			processPRWIZCH (message);
+		}
+		else
+		{
+			if (debug > 1)
+			{
+				fprintf (stderr, "Unknown sentence: \"%s\"\n",
+					 sentence);
+			}
+		}
 	}
-    }
 }
 
-void send_init()
+void
+send_init ()
 {
-    char buf[82];
-    time_t t;
-    struct tm *tm;
+	char buf[82];
+	time_t t;
+	struct tm *tm;
 
-    if (latitude && longitude) {
-	t = time(NULL);
-	tm = gmtime(&t);
+	if (latitude && longitude)
+	{
+		t = time (NULL);
+		tm = gmtime (&t);
 
-	sprintf(buf,
-		"$PRWIINIT,V,,,%s,%c,%s,%c,100.0,0.0,M,0.0,T,%02d%02d%02d,%02d%02d%02d*",
-		latitude, latd, longitude, lond,
-		tm->tm_hour, tm->tm_min, tm->tm_sec,
-		tm->tm_mday, tm->tm_mon + 1, tm->tm_year);
-	add_checksum(buf + 1);	/* add c-sum + cr/lf */
-	write(gNMEAdata.fdout, buf, strlen(buf));
-	if (debug > 1) {
-	    fprintf(stderr, "Sending: %s", buf);
+		sprintf (buf,
+			 "$PRWIINIT,V,,,%s,%c,%s,%c,100.0,0.0,M,0.0,T,%02d%02d%02d,%02d%02d%02d*",
+			 latitude, latd, longitude, lond,
+			 tm->tm_hour, tm->tm_min, tm->tm_sec,
+			 tm->tm_mday, tm->tm_mon + 1, tm->tm_year);
+		add_checksum (buf + 1);	/* add c-sum + cr/lf */
+		write (gNMEAdata.fdout, buf, strlen (buf));
+		if (debug > 1)
+		{
+			fprintf (stderr, "Sending: %s", buf);
+		}
 	}
-    }
 }
 
-void do_init()
+void
+do_init ()
 {
-    static int count = 0;
+	static int count = 0;
 
-    count++;
+	count++;
 
-    if (count == 2) {
-	count = 0;
-	send_init();
-    }
+	if (count == 2)
+	{
+		count = 0;
+		send_init ();
+	}
 }
 
-void process_exception(char *sentence)
+void
+process_exception (char *sentence)
 {
-    if (strncmp("ASTRAL", sentence, 6) == 0 && isatty(gNMEAdata.fdout)) {
-	write(gNMEAdata.fdout, "$IIGPQ,ASTRAL*73\r\n", 18);
-	syslog(LOG_NOTICE, "Found a TripMate, initializing...");
-	do_init();
-    } else if ((strncmp("EARTHA", sentence, 6) == 0 
-		&& isatty(gNMEAdata.fdout))) {
-	write(gNMEAdata.fdout, "EARTHA\r\n", 8);
-	device_type = DEVICE_EARTHMATEb;
-	syslog(LOG_NOTICE, "Found an EarthMate (id).");
-	do_eminit();
-    } else if (debug > 1) {
-	fprintf(stderr, "Unknown exception: \"%s\"\n",
-		sentence);
-    }
+	if (strncmp ("ASTRAL", sentence, 6) == 0 && isatty (gNMEAdata.fdout))
+	{
+		write (gNMEAdata.fdout, "$IIGPQ,ASTRAL*73\r\n", 18);
+		syslog (LOG_NOTICE, "Found a TripMate, initializing...");
+		do_init ();
+	}
+	else if ((strncmp ("EARTHA", sentence, 6) == 0
+		  && isatty (gNMEAdata.fdout)))
+	{
+		write (gNMEAdata.fdout, "EARTHA\r\n", 8);
+		device_type = DEVICE_EARTHMATEb;
+		syslog (LOG_NOTICE, "Found an EarthMate (id).");
+		do_eminit ();
+	}
+	else if (debug > 1)
+	{
+		fprintf (stderr, "Unknown exception: \"%s\"\n", sentence);
+	}
 }
 
-void handle_message(char *sentence)
+void
+handle_message (char *sentence)
 {
-    if (debug > 5)
-	fprintf(stderr, "%s\n", sentence);
-    if (*sentence == '$')
-	process_message(sentence);
-    else
-	process_exception(sentence);
+	if (debug > 5)
+		fprintf (stderr, "%s\n", sentence);
+	if (*sentence == '$')
+		process_message (sentence);
+	else
+		process_exception (sentence);
 
-    if (debug > 2) {
-	fprintf(stderr,
-		"Lat: %f Lon: %f Alt: %f Sat: %d Mod: %d Time: %s\n",
-		gNMEAdata.latitude,
-		gNMEAdata.longitude,
-		gNMEAdata.altitude,
-		gNMEAdata.satellites,
-		gNMEAdata.mode,
-		gNMEAdata.utc);
-    }
+	if (debug > 2)
+	{
+		fprintf (stderr,
+			 "Lat: %f Lon: %f Alt: %f Sat: %d Mod: %d Time: %s\n",
+			 gNMEAdata.latitude,
+			 gNMEAdata.longitude,
+			 gNMEAdata.altitude,
+			 gNMEAdata.satellites, gNMEAdata.mode, gNMEAdata.utc);
+	}
 }

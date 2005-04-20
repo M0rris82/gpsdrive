@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.5  2005/04/20 23:33:49  tweety
+reformatted source code with anjuta
+So now we have new indentations
+
 Revision 1.4  2005/04/13 19:58:31  tweety
 renew indentation to 4 spaces + tabstop=8
 
@@ -101,7 +105,7 @@ extern gint setdefaultpos, shadow, testgarmin, needtosave, usedgps;
 extern gchar activewpfile[200];
 extern gint mod_setupcounter;
 extern GtkWidget *setupentry[50], *setupentrylabel[50];
-void (*setupfunction[50])();
+void (*setupfunction[50]) ();
 static gint myplace;
 gint moduleversion = 2;
 
@@ -109,25 +113,25 @@ gint moduleversion = 2;
 gint
 modulesetup ()
 {
-    GtkWidget *mainbox;
+	GtkWidget *mainbox;
 
 
-    setupentry[myplace] = gtk_frame_new (_("Nautic settings"));
-    gtk_container_set_border_width (GTK_CONTAINER
-				    (setupentry[myplace]), 5);
-    setupentrylabel[myplace] = gtk_label_new (_("Nautic"));
-    mainbox = gtk_vbox_new (FALSE, 15);
-    gtk_container_add (GTK_CONTAINER (setupentry[myplace]), mainbox);
+	setupentry[myplace] = gtk_frame_new (_("Nautic settings"));
+	gtk_container_set_border_width (GTK_CONTAINER
+					(setupentry[myplace]), 5);
+	setupentrylabel[myplace] = gtk_label_new (_("Nautic"));
+	mainbox = gtk_vbox_new (FALSE, 15);
+	gtk_container_add (GTK_CONTAINER (setupentry[myplace]), mainbox);
 
-    if (debug)
-	g_print ("\nCreated nautic setup window.%d\n",myplace);
-    return 0;
+	if (debug)
+		g_print ("\nCreated nautic setup window.%d\n", myplace);
+	return 0;
 }
 
 gint
 g_module_check_init ()
 {
-    myplace=mod_setupcounter+1;
-    g_print ("\nModule nautic loaded");
-    return 0;
+	myplace = mod_setupcounter + 1;
+	g_print ("\nModule nautic loaded");
+	return 0;
 }
