@@ -1,6 +1,16 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.10  2005/05/01 13:49:36  tweety
+# Added more Icons
+# Moved filling with defaults to DB_Defaults.pm
+# Added some more default POI Types
+# Added icons.html to see which icons are used
+# Added more Comments
+# Reformating Makefiles
+# Added new options for importing from way*.txt and adding defaults
+# Added more source_id and type_id
+#
 # Revision 1.9  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -100,7 +110,7 @@ sub read_open_geo_db($){
 		$values->{'poi.name'}=$wp_name;
 		if (  $plz =~ m/000$/ ) {
 		    print "$values->{'address.state'}-$plz $values->{'address.ort'}\n";
-		    $values->{'poi.scale_max'}=1000000000;
+		    $values->{'poi.scale_max'} = 1000000000;
 		    $values->{'poi.proximity'} = "10000m";
 		} elsif ( $values->{'address.ortsteil'}         eq "-" && 
 			  $values->{'address.gemeindeteil'}     eq "-" &&
@@ -109,20 +119,20 @@ sub read_open_geo_db($){
 			  $first_in_a_row
 			  ) {
 		    print "$values->{'address.state'}-$plz :". join("\t",@values)."\n";
-		    $values->{'poi.scale_max'}=100000000;
+		    $values->{'poi.scale_max'} = 100000000;
 		    $values->{'poi.proximity'} = "5000m";
 		    $first_in_a_row=0;
 		} elsif ( $plz =~ m/00$/ ) {
-		    $values->{'poi.scale_max'}=5000000;
+		    $values->{'poi.scale_max'} = 5000000;
 		    $values->{'poi.proximity'} = "5000m";
 		} elsif (  $plz =~ m/0$/ ) {
-		    $values->{'poi.scale_max'}=1000000;
+		    $values->{'poi.scale_max'} = 1000000;
 		    $values->{'poi.proximity'} = "1000m";
 		} else {
-		    $values->{'poi.scale_max'}=100000;
+		    $values->{'poi.scale_max'} = 100000;
 		    $values->{'poi.proximity'} = "300m";
 		}
-		$values->{'poi.scale_min'}=0;
+		$values->{'poi.scale_min'} = 0;
 		
 		$values->{'poi.name'}.=$values->{'poi.scale_max'};
 		unless ( defined($values->{'poi.lat'}) ) {

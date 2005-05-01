@@ -5,6 +5,16 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.11  2005/05/01 13:49:36  tweety
+# Added more Icons
+# Moved filling with defaults to DB_Defaults.pm
+# Added some more default POI Types
+# Added icons.html to see which icons are used
+# Added more Comments
+# Reformating Makefiles
+# Added new options for importing from way*.txt and adding defaults
+# Added more source_id and type_id
+#
 # Revision 1.10  2005/04/07 06:20:45  tweety
 # allow lat-min also intead of lat_min for poi.pl as parameter
 # add POI::DBFuncs::enable_keys to WDB.pm for speed improovement
@@ -71,21 +81,23 @@ use File::Basename;
 use File::Copy;
 use File::Path;
 use Getopt::Long;
-use POI::Gps;
 use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 
 use POI::DBFuncs;
+use POI::DB_Defaults;
+use POI::Gps;
+use POI::GpsDrive;
+use POI::JiGLE;
+use POI::Kismet;
 use POI::NGA;
 use POI::OpenGeoDB;
-use POI::WDB;
 use POI::PocketGpsPoi;
 use POI::Utils;
+use POI::WDB;
+use POI::Way_Txt;
 use POI::census;
-use POI::GpsDrive;
-use POI::Kismet;
-use POI::JiGLE;
 
 my ($man,$help);
 
@@ -105,6 +117,10 @@ my $do_create_db         = 0;
 my $do_gpsdrive_tracks   = 0;
 my $do_kismet_tracks     = 0;
 my $do_jigle             = 0;
+my $do_import_defaults   = 0;
+my $do_import_way_txt    = 0;
+our $do_delete_db_content = 0;
+our $do_collect_init_data = 0;
 
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
@@ -125,13 +141,17 @@ GetOptions (
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
 	     'kismet-tracks=s'     => \$do_kismet_tracks,
 	     'jigle=s'     	   => \$do_jigle,
+	     'import-way-txt'      => \$do_import_way_txt,
 	     'create-db'           => \$do_create_db,
+	     'fill-defaults'       => \$do_import_defaults,
 	     'all'                 => \$do_all,
 	     'debug'               => \$debug,      
 	     'u=s'                 => \$db_user,
 	     'p=s'                 => \$db_password,
 	     'db-user=s'           => \$db_user,
 	     'db-password=s'       => \$db_password,
+	     'delete-db-content'   => \$do_delete_db_content,
+	     'collect-init-data'   => \$do_collect_init_data,
 	     'lat_min=s'           => \$lat_min,      
 	     'lat_max=s'           => \$lat_max,
 	     'lon_min=s'           => \$lon_min,      
@@ -159,6 +179,7 @@ if ( $do_all ) {
 	= $do_gpsdrive_tracks
 	= $do_cameras
 	= $do_jigle
+	= $do_import_defaults
 	= 1;
 }
 
@@ -177,7 +198,14 @@ pod2usage(-verbose=>2) if $man;
 
 
 POI::DBFuncs::create_db()
-    if ( $do_create_db );
+    if $do_create_db;
+
+POI::DB_Defaults::defaults()
+    if $do_import_defaults;
+
+POI::Way_Txt::import_Data()
+    if $do_import_way_txt;
+
 
 # Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
 POI::census::import_Data()
@@ -311,6 +339,17 @@ This also fills the database with some predefined types.
 and imports wour way*.txt Files.
 This also creates and modified the old waypoints table.
 
+=item B<--fill-defaults>
+
+Fill the Databases with usefull defaults. This option is 
+needed before you can import any of the other importers.
+
+=item B<collect-init-data>
+
+Collects default data and writes them into the default Files.
+This option is normally used by the maintainer to create the 
+Defaults for filling the DB.
+
 =item B<--all>
 
 
@@ -323,9 +362,14 @@ Read all gpsdrive Tracks
 and insert into  streets DB
 
 
+=item B<--import-way-txt>
+
+Read all gpsdrive way*.txt 
+and insert into  poi DB
+
 =item B<--kismet-tracks=Directory>
 
-Read all Kismet .gps Files in directory, extract the Tracks
+Read all Kismet .gps Files in 'Directory', extract the Tracks
 and insert them into streets DB
 
 
@@ -334,14 +378,14 @@ and insert them into streets DB
 Read all jigle Files in directory, extract the Wavelan points
 and insert them into POI DB
 
-See http://www.wigle.net/
+See http://www.wigle.net/ for the jiggle client
 
 
 =item B<--lat_min --lat_max --lon_min --lon_max>
 
-For debug reasons for some inserts limit to the given rectangle
-
-
+For example for debug reasons for some inserts limit to the 
+given rectangle.
+This feature is not implemented on all insert statements yet.
 
 
 =item B<--db-user>

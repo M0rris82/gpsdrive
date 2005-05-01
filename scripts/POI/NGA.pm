@@ -1,6 +1,16 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.8  2005/05/01 13:49:36  tweety
+# Added more Icons
+# Moved filling with defaults to DB_Defaults.pm
+# Added some more default POI Types
+# Added icons.html to see which icons are used
+# Added more Comments
+# Reformating Makefiles
+# Added new options for importing from way*.txt and adding defaults
+# Added more source_id and type_id
+#
 # Revision 1.7  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -20,6 +30,10 @@ use IO::File;
 use File::Path;
 use POI::DBFuncs;
 use POI::Utils;
+use Data::Dumper;
+
+
+our $write_defaults_poi_list;
 
 #############################################################################
 our @countries = qw(aa ac ae af ag aj al am an ao ar as at au av 
@@ -298,6 +312,10 @@ our $name2country = {
     'zimbabwe'	=> 'zi',
 };
 
+my $country2name={};
+for my $name ( keys %{$name2country} ) {
+    $country2name->{$name2country->{$name}}=$name;
+}
 
 
 
@@ -311,7 +329,9 @@ sub add_earthinfo_nga_mil_to_db($$){
     my $full_filename = shift;
     my $source = shift;
 
-    print "Reading earthinfo_nga_mil ($full_filename) and writing to db\n";
+    my ($country) = ($full_filename =~ m,/([^/]+).txt,);
+    
+    print "Reading earthinfo_nga_mil ($full_filename) [$country2name->{$country}] and writing to db\n";
 
     my $fh = IO::File->new("<$full_filename");
     $fh or die ("add_earthinfo_nga_mil_to_db: Cannot open $full_filename:$!\n");
@@ -347,7 +367,8 @@ sub add_earthinfo_nga_mil_to_db($$){
     @columns = qw( rc      ufi     uni     
 		   poi.lat     poi.lon    
 		   dms_lat dms_long        
-		   utm     jog     fc      dsg     pc      cc1     
+		   utm     jog     fc      
+		   dsg     pc      cc1     
 		   adm1    adm2    
 		   dim     
 		   cc2     nt      lc      
@@ -358,6 +379,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 		   );
     my $lines_count_file =0;
     my $line = $fh->getline(); # Header entfernen
+    my $count_entries = {}; # Count the entries for special types
     while ( $line = $fh->getline() ) {
 	$lines_count_file ++;
 	print "$lines_count_file\r" if $verbose && ! ($lines_count_file % 100);
@@ -432,11 +454,11 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    my $scale_max = 99;
 	    if ( defined($pc) && $pc ne '' ) { 
 		#print "pc : $pc \n";
-		if    ( $pc == 1 ) {   $scale_min = 1;  $scale_max = 1000; }
-		elsif ( $pc == 2 ) {   $scale_min = 1;	$scale_max = 10000; }
-		elsif ( $pc == 3 ) {   $scale_min = 1;	$scale_max = 100000; }
-		elsif ( $pc == 4 ) {   $scale_min = 1;	$scale_max = 1000000; }
-		elsif ( $pc == 5 ) {   $scale_min = 1;  $scale_max = 10000000; }
+		if    ( $pc == 1 ) {   $scale_min = 1;  $scale_max = 100000000; }
+		elsif ( $pc == 2 ) {   $scale_min = 1;	$scale_max = 10000000; }
+		elsif ( $pc == 3 ) {   $scale_min = 1;	$scale_max = 1000000; }
+		elsif ( $pc == 4 ) {   $scale_min = 1;	$scale_max = 100000; }
+		elsif ( $pc == 5 ) {   $scale_min = 1;  $scale_max = 10000; }
 	    } else {
 		$scale_min = 1;	$scale_max = 10000; 
 	    };
@@ -472,7 +494,9 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    $values->{'type.name'} = $symbol;
 	}
 	    
-	{ # Dimension.  Usually used to display elevation or population data.
+	{   # DIM Dimension.  
+	    #     Usually used to display elevation or population data.
+	    #     Ãï¿½± 10 Digits
 	    my $proximity = $values->{'dim'} ;
 	    $proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
 	    $proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
@@ -480,17 +504,150 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    $values->{'poi.proximity'} = $proximity;
 	}
 
-	    add_poi($values);
+	    # RC Region Code.  
+	    #    A code that determines the character mapping used in the Full_Name 
+	    #    field (refer to REGIONS.PDF for character mapping):
+	    # 1 = Western Europe/Americas;
+	    # 2 = Eastern Europe;
+	    # 3 = Africa/Middle East;
+	    # 4 = Central Asia;
+	    # 5 = Asia/Pacific;
+	    # 6 = Vietnam.
+
+	    # UFI
+	    # Unique Feature Identifier.  A number which uniquely identifies the feature. 
+	    # number Ãï¿½± 10 Digits
+
+	    # UNI
+	    # Unique Name Identifier.  A number which uniquely identifies a name.
+	    # number Ãï¿½± 10 Digits
+
+
+	    # LAT      Latitude of the feature in Ãï¿½± decimal degrees (WGS84):                Ãï¿½± 2.7 Digits
+	    # LONG     Longitude of the feature in Ãï¿½± decimal degrees (WGS84):               Ãï¿½± 3.7 Digits
+	    # DMS_LAT  Latitude of the feature in Ãï¿½± degrees, minutes, and seconds (WGS84):  Ãï¿½± 6 Digits
+	    # DMS_LONG Longitude of the feature in Ãï¿½± degrees, minutes, and seconds (WGS84): Ãï¿½± 7 Digits
+	    # UTM      Universal Transverse Mercator coordinate grid reference.               4 Characters
+	    # JOG      Joint Operations Graphic reference.                                    7 Characters
+
+
+	    # DSG Feature Designation Code.  
+	    #     A two to five-character code used to identify the type of feature a name is applied to.
+
+	    # PC Populated Place Classification.  
+	    #    A graduated numerical scale denoting the relative importance of a populated place.  
+	    #    The scale ranges from 1,  relatively high, to 5, relatively low.  The scale could also
+	    #    include NULL (no value) as a value for populated places with unknown or undetermined classification.
+
+	    # CC1 Primary Country Code.  
+	    #     A two alphabetic character code uniquely identifying a 
+	    #     geopolitical entity (countries, dependencies, 
+	    #     and areas of special sovereignty).
+
+	    # ADM1 First-order administrative division.  
+	    #      A two alphanumeric character code uniquely identifying a 
+	    #      primary administrative division of a country,
+	    #      such as a state in the United States.
+	    
+	    # ADM2 Second-order administrative division.  
+	    #      The name of a subdivision of a first-order administrative division, 
+	    #      such as a county in the United States.
+	    #      200 Characters
+
+
+	    # CC2 Secondary Country Code.  
+	    #     A two alphabetic character code uniquely identifying the 
+	    #     country code of a particular name if different than that of the feature.
+
+	    # LC Language Code.  
+	    #    A two alphabetic character code uniquely identifying a 
+	    #    language of a country if multiple official languages are used.
+	    #    2 Characters
+	
+	    # SHORT_FORM
+	    #     A specific part of the name that could substitute for the full name.
+	    #     128 Characters
+
+	    # GENERIC
+	    #     The descriptive part of the full name (does not apply to populated place names).
+	    #     128 Characters
+
+	    # SORT_NAME
+	    #      A form of the full name which allows for easy sorting of the name 
+	    #      into alpha-numeric sequence.  It is comprised of the specific name, 
+	    #      generic name, and any articles or prepositions. This field is all 
+	    #      upper case with spaces, diacritics, and hyphens removed and numbers
+	    #      are substituted with lower case alphabetic characters.
+	    #      200 Characters
+
+	    # FULL_NAME
+	    #      The full name is a complete name which identifies the named feature.  
+	    #      It is comprised of  the specific name, generic name, and any articles 
+	    #      or prepositions (refer to REGIONS.PDF for character mapping).
+	    #      200 Characters
+
+	    # FULL_NAME_ND
+	    #      Same as the full name but the diacritics and special characters are
+	    #      substituted with Roman characters (refer to REGIONS.PDF for character mapping).
+	    #      ND = No Diacritics / Stripped Diacritics.
+	    #      200 Characters
+
+	    # MOD_DATE
+	    # The date a new feature was added or any part of an existing feature was modified (YYYY-MM-DD).
+
+	    if ($main::do_collect_init_data ) { # Collect Major Cities
+		for my $type ( qw(pc) ) {
+		    $count_entries->{$type}->{$values->{$type}}++;
+		}		
+		$count_entries->{dim}->{x} if $values->{dim} &&  $values->{dim} > 0;
+		
+		if ( $values->{pc} eq "1"  && $write_defaults_poi_list ) {   
+		    my $name = $values->{'poi.name'};
+		    $name =~ s/'/\\'/g; # '
+		    $name =~ s/`/\\`/g; # `
+		    print $write_defaults_poi_list '		';
+		    print $write_defaults_poi_list "{ name => '$name',";
+		    print $write_defaults_poi_list '	lat => '.$values->{'poi.lat'}.",";
+		    print $write_defaults_poi_list '	lon => '.$values->{'poi.lon'}." },\n";
+		    print "Name:".$values->{'poi.name'}."\n";
+		    print "DIM:".$values->{dim}."\n" if $values->{dim};
+#		print "ADM1:".$values->{adm1}."\n";
+#		print "ADM2:".$values->{adm2}."\n";
+#		print "FC:".$values->{fc}."\n";
+#		print join("",map{"\t$_ \t=> ".$values->{$_}."\n" } keys %$values);
+		    add_poi($values);
+		}
+	    }
+
+# DEBUG
+#	    add_poi($values);
 	}
     }
     print "$lines_count_file read\n" if $verbose;
+    if ( $debug && $verbose ) {
+	for my $type ( keys %{$count_entries} ) {
+	    for my $sub_type ( keys %{$count_entries->{$type}} ) {
+		print "  $type=$sub_type: ".$count_entries->{$type}->{$sub_type}."\n";
+	    }
+	}
+    }
 }
 
 # *****************************************************************************
 sub import_Data($){
     my $what = shift;
     my $earthinfo_dir="$main::CONFIG_DIR/MIRROR/earthinfo";
-    
+
+    # If the File exist it will be filled with the Major cities
+    # So just touch it and it will be filled
+    if ($main::do_collect_init_data ) { # Collect Major Cities
+	if ( -d "../data/" ) {
+	    $write_defaults_poi_list = IO::File->new(">../data/Default_poi.txt");
+	} else {
+	    print "Warning: ../data not a directory; writing no default poi list\n";
+	};
+    }
+
     unless ( -d $earthinfo_dir ) {
 	print "Creating Directory $earthinfo_dir\n";
 	mkpath $earthinfo_dir
@@ -518,7 +675,8 @@ sub import_Data($){
 		    print "List of valid countries:\n";
 		    print join(",",@countries);
 		    print "\n";
-		    print "Use:\npoi.pl -earthinfo_nga_mil=??\n";
+		    print "Use:\n";
+		    print "poi.pl -earthinfo_nga_mil=??\n";
 		    print "For detailed list\n;"
 			
 		    }

@@ -2,6 +2,16 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.9  2005/05/01 13:49:36  tweety
+# Added more Icons
+# Moved filling with defaults to DB_Defaults.pm
+# Added some more default POI Types
+# Added icons.html to see which icons are used
+# Added more Comments
+# Reformating Makefiles
+# Added new options for importing from way*.txt and adding defaults
+# Added more source_id and type_id
+#
 # Revision 1.8  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -189,7 +199,7 @@ sub import_Data(){
 	print "unpack: $dst_file up to date\n" unless $verbose;
     }
     
-    POI::DBFuncs::enable_keys('streets');
+    POI::DBFuncs::disable_keys('streets');
     debug("$unpack_dir/WDB/*.txt");
     foreach  my $full_filename ( glob("$unpack_dir/WDB/euro*.txt") ) {
 	# print "Mirror: $mirror\n";

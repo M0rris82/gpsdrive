@@ -193,8 +193,17 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch gpsfetchmap.pl
-EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch
+
+#scriptsdir = $(datadir)/gpsdrive/scripts
+bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
+		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
+		gpssmswatch gpsfetchmap.pl \
+		poi.pl 	POI/census.pm POI/Kismet.pm POI/DBFuncs.pm POI/mapsource.pm \
+		       	POI/Defaults_Cities.pm POI/NGA.pm POI/gpsdrive.pm \
+			POI/OpenGeoDB.pm POI/GpsDrive.pm POI/PocketGpsPoi.pm \
+			POI/Gps.pm POI/Utils.pm POI/JiGLE.pm POI/WDB.pm
+
+EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch poi.pl POI/census.pm POI/Kismet.pm POI/DBFuncs.pm POI/mapsource.pm POI/Defaults_Cities.pm POI/NGA.pm POI/gpsdrive.pm POI/OpenGeoDB.pm POI/GpsDrive.pm POI/PocketGpsPoi.pm POI/Gps.pm POI/Utils.pm POI/JiGLE.pm POI/WDB.pm
 gpsdrivedir = $(datadir)/gpsdrive
 all: all-am
 
@@ -265,6 +274,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/POI
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -378,6 +388,9 @@ uninstall-am: uninstall-binSCRIPTS uninstall-info-am
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	uninstall uninstall-am uninstall-binSCRIPTS uninstall-info-am
 
+
+poi:
+	PERLLIB=./POI PATH=./POI:$$PATH ./poi.pl --help
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
