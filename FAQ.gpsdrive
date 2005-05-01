@@ -150,3 +150,10 @@ A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
    navigational trips.
 
    
+Q:I have also noticed that the unique ID sent to my Friendsd2 server from
+  my gpsdrive is not unique
+  Is there a way to manually set the unique ID to correct this problem?
+A: Have a look at ~/.gpsdrive/gpsdriverc:
+      friendsidstring = XXX
+   If you delete the key in the file or set it to XXX you should get a new 
+   FriendsID.
