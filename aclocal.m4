@@ -8195,7 +8195,7 @@ m4_define([_PKG_CONFIG],
 [if test "x$ac_cv_env_[]$1[]_set" = "xset"; then
 	pkg_cv_[]$1=$ac_cv_env_[]$1[]_value
 elif test -n "$PKG_CONFIG"; then
-	if $PKG_CONFIG --exists "$3" >/dev/null 2>&1; then
+	if AC_RUN_LOG([$PKG_CONFIG --exists "$3" >/dev/null 2>&1]); then
 		pkg_cv_[]$1=`$PKG_CONFIG --[]$2 "$3" 2>/dev/null`
 	else
 		pkg_failed=yes
@@ -8207,6 +8207,13 @@ fi[]dnl
 
 # PKG_CHECK_MODULES(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
 # [ACTION-IF-NOT-FOUND])
+#
+#
+# Note that if there is a possibility the first call to
+# PKG_CHECK_MODULES might not happen, you should be sure to include an
+# explicit call to PKG_PROG_PKG_CONFIG in your configure.in
+#
+#
 # --------------------------------------------------------------
 AC_DEFUN([PKG_CHECK_MODULES],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
@@ -8215,9 +8222,9 @@ AC_ARG_VAR([$1][_LIBS], [linker flags for $1, overriding pkg-config])dnl
 
 pkg_failed=no
 AC_CACHE_CHECK([for $1][_CFLAGS], [pkg_cv_][$1][_CFLAGS],
-	[_PKG_CONFIG([$1][_CFLAGS], [cflags], [[$2]])])
+	[_PKG_CONFIG([$1][_CFLAGS], [cflags], [$2])])
 AC_CACHE_CHECK([for $1][_LIBS], [pkg_cv_][$1][_LIBS],
-	[_PKG_CONFIG([$1][_LIBS], [libs], [[$2]])])
+	[_PKG_CONFIG([$1][_LIBS], [libs], [$2])])
 
 if test $pkg_failed = yes; then
 	$1[]_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "$2"`
@@ -8225,17 +8232,17 @@ if test $pkg_failed = yes; then
 	echo "$$1[]_PKG_ERRORS" 1>&AS_MESSAGE_LOG_FD
 
 	ifelse([$4], , [AC_MSG_ERROR(dnl
-[[Package requirements ($2) were not met.
+[Package requirements ($2) were not met.
 Consider adjusting the PKG_CONFIG_PATH environment variable if you
 installed software in a non-standard prefix.
 
 Alternatively you may set the $1_CFLAGS and $1_LIBS environment variables
 to avoid the need to call pkg-config.  See the pkg-config man page for
-more details.]])],
+more details.])],
 		[$4])
 elif test $pkg_failed = untried; then
 	ifelse([$4], , [AC_MSG_FAILURE(dnl
-[[The pkg-config script could not be found or is too old.  Make sure it
+[The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
 path to pkg-config.
 
@@ -8243,7 +8250,7 @@ Alternatively you may set the $1_CFLAGS and $1_LIBS environment variables
 to avoid the need to call pkg-config.  See the pkg-config man page for
 more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.]])],
+To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.])],
 		[$4])
 else
 	$1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS

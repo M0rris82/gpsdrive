@@ -294,13 +294,13 @@
 #define PACKAGE_NAME "gpsdrive"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "gpsdrive 2.10pre2"
+#define PACKAGE_STRING "gpsdrive 2.10pre3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "gpsdrive"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.10pre2"
+#define PACKAGE_VERSION "2.10pre3"
 
 /* Define if <inttypes.h> exists and defines unusable PRI* macros. */
 /* #undef PRI_MACROS_BROKEN */
@@ -333,7 +333,7 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "2.10pre2"
+#define VERSION "2.10pre3"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
