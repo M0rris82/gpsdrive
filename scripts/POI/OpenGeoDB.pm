@@ -1,6 +1,9 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.11  2005/05/10 05:28:49  tweety
+# type in disable_keys
+#
 # Revision 1.10  2005/05/01 13:49:36  tweety
 # Added more Icons
 # Moved filling with defaults to DB_Defaults.pm
@@ -67,7 +70,7 @@ sub read_open_geo_db($){
 		   poi.autokennzeichen
 		   address.plz);
     my $lines_count_file =0;
-    print "  ". join("\t",@columns)."\n";
+    debug( "  ". join("\t",@columns));
     while ( my $line = $fh->getline() ) {
 	$lines_count_file ++;
 	$line =~ s/[\t\r\n\s]*$//g;;
@@ -118,7 +121,7 @@ sub read_open_geo_db($){
 			  $values->{'address.verwaltungszusammenschluss'} eq "-" &&
 			  $first_in_a_row
 			  ) {
-		    print "$values->{'address.state'}-$plz :". join("\t",@values)."\n";
+		    debug( "$values->{'address.state'}-$plz :". join("\t",@values));
 		    $values->{'poi.scale_max'} = 100000000;
 		    $values->{'poi.proximity'} = "5000m";
 		    $first_in_a_row=0;
@@ -176,7 +179,7 @@ sub import_Data() {
     # Unpack it 
     `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
 
-    POI::DBFuncs::disble_keys('poi');
+    POI::DBFuncs::disable_keys('poi');
 
     for my $file_name ( glob("$unpack_dir/opengeodb*.txt") ) {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";

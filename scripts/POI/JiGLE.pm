@@ -3,6 +3,9 @@
 # schreiben in die POI Datenbank
 #
 # $Log$
+# Revision 1.4  2005/05/10 05:28:49  tweety
+# type in disable_keys
+#
 # Revision 1.3  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -129,7 +132,7 @@ sub import_Data($){
     $wlan_public = poi_type_name2id("W-LAN.Oeffentlich");
 
 
-    POI::DBFuncs::disble_keys('poi');
+    POI::DBFuncs::disable_keys('poi');
 
     delete_all_from_source($source);
 

@@ -1,6 +1,9 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.17  2005/05/10 05:28:49  tweety
+# type in disable_keys
+#
 # Revision 1.16  2005/05/01 13:49:36  tweety
 # Added more Icons
 # Moved filling with defaults to DB_Defaults.pm
@@ -76,7 +79,7 @@ END { }
 
 # -----------------------------------------------------------------------------
 # switch off updating of index
-sub disble_keys($){    
+sub disable_keys($){    
     my $table = shift;
     db_exec("ALTER TABLE  $table DISABLE KEYS;");
 }
