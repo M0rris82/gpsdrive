@@ -2,6 +2,10 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.6  2005/05/13 06:30:50  tweety
+# Modified desired_locations(...) so you can call it multiple times
+# and it adds up all the maps for the locations
+#
 # Revision 1.5  2005/04/15 07:18:54  tweety
 # extracted lat2raidus into it's own function and added plausibility checks
 # sorted addwaypoint function and added comments
@@ -31,7 +35,7 @@
 # 
 # Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
 #
-# Dec 2004 JÃï¿½¶rg Ostertag
+# Dec 2004 Joerg Ostertag
 #   check for bad/existing maps:
 #      - The check if a map exists is modified in check if the mapsize is lagrer 
 #        than 4K. This detects some files where Error messages have been saved.
@@ -67,7 +71,7 @@
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Nov 21, 2002) by Magnus MÃÂ¥nsson <ganja\@0x63.nu>
+modified (Nov 21, 2002) by Magnus MÃƒÃ‚Â¥nsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
@@ -228,7 +232,8 @@ unless ($slat && $slon && $endlat && $endlon) {
 print "Upper left:  $slat, $slon\n" if $debug;
 print "Lower right: $endlat, $endlon\n" if ($debug);
 
-my $desired_locations  = desired_locations($slat,$slon,$endlat,$endlon);
+my $desired_locations = {};
+desired_locations($desired_locations,$slat,$slon,$endlat,$endlon);
 my ($existing,$wanted) = file_count($desired_locations);
 print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
 
@@ -552,11 +557,17 @@ sub expedia_url($$$){
 #############################################################################
 # This function only once calculates
 # which lat/lon/scale Combinations are desired to download
+# Args:
+#    $slat,$slon : Start latitude /longitude
+#    $elat,$elon : End   latitude /longitude
+# Returns:
+#     $desired_locations->{$scale}->{$lati}->{$long}='?';
 #############################################################################
 sub desired_locations {
+    my $desired_locations = shift;
     my ($slat,$slon,$elat,$elon) = @_;
+    print Dumper(\$desired_locations);
     my $count;   
-    my $desired_locations;
 
     my $local_debug = 0 && $debug;
 
@@ -607,7 +618,8 @@ sub desired_locations {
 	    while ($long <= $elon) {
 		$long += $delta_lon; ### FIX BY CAMEL
 		$count++;
-		$desired_locations->{$scale}->{$lati}->{$long}='?';
+		$desired_locations->{$scale}->{$lati}->{$long} ||='?';
+		
 		if ( $local_debug ) {
 		    my $filename = map_filename($scale,$lati,$long);
 		    my $exist = ( is_map_file($filename) ) ? " ":"+";
@@ -621,7 +633,6 @@ sub desired_locations {
 	    $long = $slon; ### FIX BY CAMEL
 	}
     }
-    return($desired_locations);
 }
 
 ######################################################################
