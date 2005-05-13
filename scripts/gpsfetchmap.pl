@@ -2,6 +2,10 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.7  2005/05/13 07:33:41  tweety
+# remove som unnecessary indirections
+# replace get_unit and get_mapdir with read_config
+#
 # Revision 1.6  2005/05/13 06:30:50  tweety
 # Modified desired_locations(...) so you can call it multiple times
 # and it adds up all the maps for the locations
@@ -176,11 +180,15 @@ my $KM2NAUTICAL   = 0.54;
 my $KM2MILES      = 0.62137119;
 
 
+my $CFG = read_config();
 # Get unit from config file, unless they override with command line
-$unit = &get_unit unless ($unit);
+$unit ||= $CFG->{units};
 
 # Get mapdir from config file, unless they override with command line
-$mapdir = &get_mapdir unless ($mapdir);
+$mapdir ||= $CFG->{mapdir};
+$mapdir ||= $CONFIG_DIR;
+
+
 
 #############################################################################
 # LPW::UserAgent initialisieren
@@ -221,13 +229,13 @@ debug( "Scale to download: ". join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}));
 
 # Get the center waypoint if they want one
 if ($waypoint) {
-    ($lat,$lon) = get_waypoint(\$waypoint);
+    ($lat,$lon) = get_waypoint($waypoint);
 }
 debug("Centerpoint: $lat,$lon");
 
 # Now get the start and end coordinates
 unless ($slat && $slon && $endlat && $endlon) {
-    ($slat,$slon,$endlat,$endlon) = get_coords(\$lat,\$lon,\$area,\$unit); 
+    ($slat,$slon,$endlat,$endlon) = get_coords($lat,$lon,$area,$unit); 
 }
 print "Upper left:  $slat, $slon\n" if $debug;
 print "Lower right: $endlat, $endlon\n" if ($debug);
@@ -566,7 +574,6 @@ sub expedia_url($$$){
 sub desired_locations {
     my $desired_locations = shift;
     my ($slat,$slon,$elat,$elon) = @_;
-    print Dumper(\$desired_locations);
     my $count;   
 
     my $local_debug = 0 && $debug;
@@ -661,8 +668,8 @@ sub file_count($){
 } #end file_count
 
 ######################################################################
-sub get_waypoint {
-    my ($waypoint_ref) = @_;
+sub get_waypoint($) {
+    my $waypoint = shift;
     
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
@@ -671,104 +678,86 @@ sub get_waypoint {
     my ($name,$lat,$lon);
     while (<WAYPT>) {
 	chomp;
-	next unless (/$$waypoint_ref/);
+	next unless (/$waypoint/);
 	($name,$lat,$lon) = split(/\s+/);
     }
     close(WAYPT);
     unless (($lat) && ($lon)) {
-	print "Unable to find waypoint '$$waypoint_ref' in '$WAYPT_FILE'\n";
+	print "Unable to find waypoint '$waypoint' in '$WAYPT_FILE'\n";
 	exit;
     }
     return($lat,$lon);
 } #End get_waypoint
 
+
 ######################################################################
-sub get_unit {
+# Read the config File (~/.gpsdrive/gpsdriverc) 
+# and return all Config Keys as a Hash reference
+sub read_config {
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
     
     # If not specified on the command line, we read from the config file
     open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_unit Can't open $CONFIG_FILE: $!\n";
-    my $unit;
-    while (<CONFIG>) {
-	next unless (/units\s=/);
-	chomp;
-	$unit = $_;
-	$unit =~ s/units\s=\s//;
+
+    my $cfg =  {};
+    while (my $line = <CONFIG>) {
+	chomp $line;
+	my ($key,$val) = split(/\s*=\s*/,$line);
+	$cfg->{lc($key)} = $val
+	    if $key;
     }   
     close(CONFIG);
-    return $unit;
-} #End get_unit
-
-######################################################################
-# Read the map directory from the config File or return 
-# default (the configdir itself)
-######################################################################
-sub get_mapdir {
-    # If they give just a filename, we should assume they meant the CONFIG_DIR  
-    $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-
-    # If not specified on the command line, we read from the config file
-    open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_mapdir Can't open $CONFIG_FILE: $!\n";
-    my $mapdir;
-    while (<CONFIG>) {
-	next unless (/mapdir\s=/);
-	chomp;
-	$mapdir = $_;
-	$mapdir =~ s/mapdir\s=\s//;
-    }
-    close(CONFIG);
-    return $mapdir ||$CONFIG_DIR;
-
-} #End get_mapdir
+    return $cfg;
+} #End read_config
 
 ######################################################################
 sub get_coords {
-    my ($lat_ref,$lon_ref,$area_ref,$unit_ref) = @_;
+    my ($lat,$lon,$area,$unit) = @_;
     
     # Figure out if we are doing square area or a rectangle
     my ($lat_dist,$lon_dist);
-    if ($$area_ref =~ /x/i) {
-	($lat_dist,$lon_dist) = split(/x/i,$$area_ref);
+    if ($area =~ /x/i) {
+	($lat_dist,$lon_dist) = split(/x/i,$area);
     } else {
-	$lat_dist = $$area_ref;
-	$lon_dist = $$area_ref;
+	$lat_dist = $area;
+	$lon_dist = $area;
     }
     print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug); 
     
-    my $lon_dist_km = calc_lon_dist($$lat_ref);
-    my $lat_offset  = calc_offset($unit_ref,\($lat_dist,$LAT_DIST_KM));
-my $lon_offset  = calc_offset($unit_ref,\($lon_dist,$lon_dist_km));   
+    my $lon_dist_km = calc_lon_dist($lat);
+    my $lat_offset  = calc_offset($unit,$lat_dist,\$LAT_DIST_KM);
+    my $lon_offset  = calc_offset($unit,$lon_dist,\$lon_dist_km);   
+    
+    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
+    
+    # Ok subtract the offset for the start point
+    my $slat = $lat - $lat_offset;
+    my $slon = $lon - $lon_offset;
 
-print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
-
-# Ok subtract the offset for the start point
-my $slat = $$lat_ref - $$lat_offset;
-my $slon = $$lon_ref - $$lon_offset;
-
-# Ok add the offset for the start point
-my $elat = $$lat_ref + $$lat_offset;   
-my $elon = $$lon_ref + $$lon_offset;   
-
-return ($slat,$slon,$elat,$elon);
+    # Ok add the offset for the start point
+    my $elat = $lat + $lat_offset;   
+    my $elon = $lon + $lon_offset;   
+    
+    return ($slat,$slon,$elat,$elon);
 } #End get_coords
 
 ######################################################################
 sub calc_offset {
-    my($unit_ref,$area_ref,$dist_per_degree) = @_;
-    
+    my($unit,$area,$dist_per_degree) = @_;
     # Adjust the dist_per_degree for the unit chosen by the user
-    if ($$unit_ref =~ /miles/) {
+    if ($unit =~ /miles/) {
 	$$dist_per_degree *= $KM2MILES;   
-    } elsif ($$unit_ref =~ /nautic/) {
+    } elsif ($unit =~ /nautic/) {
 	$$dist_per_degree *= $KM2NAUTICAL;
     }
     
     # The offset for the coordinate is the distance to travel divided by 
     # the dist per degree   
-    my $offset = sprintf("%.7f", ($$area_ref / 2) / $$dist_per_degree);
+    my $offset = sprintf("%.7f", ($area / 2) / $$dist_per_degree);
     
-    return(\$offset);
+    #print "-\n".Dumper($area,\$dist_per_degree,$offset);
+    return($offset);
 } #End calc_offset
 
 ######################################################################
