@@ -1,6 +1,11 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.9  2005/05/14 21:21:23  tweety
+# Update Index createion
+# Update default Streets
+# Eliminate some undefined Value
+#
 # Revision 1.8  2005/05/01 13:49:36  tweety
 # Added more Icons
 # Moved filling with defaults to DB_Defaults.pm
@@ -496,7 +501,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    
 	{   # DIM Dimension.  
 	    #     Usually used to display elevation or population data.
-	    #     ��� 10 Digits
+	    #     Ãï¿œ± 10 Digits
 	    my $proximity = $values->{'dim'} ;
 	    $proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
 	    $proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
@@ -516,17 +521,17 @@ sub add_earthinfo_nga_mil_to_db($$){
 
 	    # UFI
 	    # Unique Feature Identifier.  A number which uniquely identifies the feature. 
-	    # number ��� 10 Digits
+	    # number Ãï¿œ± 10 Digits
 
 	    # UNI
 	    # Unique Name Identifier.  A number which uniquely identifies a name.
-	    # number ��� 10 Digits
+	    # number Ãï¿œ± 10 Digits
 
 
-	    # LAT      Latitude of the feature in ��� decimal degrees (WGS84):                ��� 2.7 Digits
-	    # LONG     Longitude of the feature in ��� decimal degrees (WGS84):               ��� 3.7 Digits
-	    # DMS_LAT  Latitude of the feature in ��� degrees, minutes, and seconds (WGS84):  ��� 6 Digits
-	    # DMS_LONG Longitude of the feature in ��� degrees, minutes, and seconds (WGS84): ��� 7 Digits
+	    # LAT      Latitude of the feature in Ãï¿œ± decimal degrees (WGS84):                Ãï¿œ± 2.7 Digits
+	    # LONG     Longitude of the feature in Ãï¿œ± decimal degrees (WGS84):               Ãï¿œ± 3.7 Digits
+	    # DMS_LAT  Latitude of the feature in Ãï¿œ± degrees, minutes, and seconds (WGS84):  Ãï¿œ± 6 Digits
+	    # DMS_LONG Longitude of the feature in Ãï¿œ± degrees, minutes, and seconds (WGS84): Ãï¿œ± 7 Digits
 	    # UTM      Universal Transverse Mercator coordinate grid reference.               4 Characters
 	    # JOG      Joint Operations Graphic reference.                                    7 Characters
 
@@ -599,7 +604,8 @@ sub add_earthinfo_nga_mil_to_db($$){
 		for my $type ( qw(pc) ) {
 		    $count_entries->{$type}->{$values->{$type}}++;
 		}		
-		$count_entries->{dim}->{x} if $values->{dim} &&  $values->{dim} > 0;
+
+		#$count_entries->{dim}->{x} if defined($values->{dim}) && ( $values->{dim} > 0);
 		
 		if ( $values->{pc} eq "1"  && $write_defaults_poi_list ) {   
 		    my $name = $values->{'poi.name'};

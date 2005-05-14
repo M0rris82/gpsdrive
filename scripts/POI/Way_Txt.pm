@@ -1,12 +1,17 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.2  2005/05/14 21:21:23  tweety
+# Update Index createion
+# Update default Streets
+# Eliminate some undefined Value
+#
 # Revision 1.1  2005/05/09 19:35:12  tweety
 # Split Default Values into seperate File
 # Add new Icon
 #
 
-package POI::DB_Defaults;
+package POI::Way_Txt;
 
 use strict;
 use warnings;
@@ -48,14 +53,14 @@ sub import_Data(){
     # Import Points from way*.txt into DB
 
     my $type2poi_type = { 
-	AIRPORT    => "transport.airport" ,
-	BURGERKING => "food.fastfood.burger king" ,
+	AIRPORT    => "transport.public.airport" ,
+	BURGERKING => "food.restaurant.fastfood.burger king" ,
 	CAFE       => "food.cafe" ,
 	GASSTATION => "transport.car.gas station" ,
 	GEOCACHE   => "recreation.geocache" ,
 	GOLF       => "recreation.sports.golf place" ,
 	HOTEL      => "accomodation" ,
-	MCDONALDS  => "food.fastfood.mc donalds" ,
+	MCDONALDS  => "food.restaurant.fastfood.mc donalds" ,
 	MONU       => "recreation.landmark" ,
 	NIGHTCLUB  => "recreation.night club" ,
 	SHOP       => "shopping" ,
@@ -63,12 +68,13 @@ sub import_Data(){
 	WLAN       => "w-lan.open" ,
 	'WLAN-WEP' => "w-lan.wep" ,
 	'Automatic_key' => "unknown" ,
-	'Reiten'   => 'recreation.sports.horse riding',
+	'Reiten'   => 'recreation.sports.horse.riding',
+	'FRITZ'    => 'custom.friends.home',
     };
 
     for my $k ( keys %{$type2poi_type} ) {
 	if ( ! poi_type_name2id($type2poi_type->{$k}) ) {
-	    print "Undefined Type $k => $type2poi_type->{$k}\n";
+	    print "Undefined Type for WP-translation $k => $type2poi_type->{$k}\n";
 	} else {
 	    #print " Type $k => $type2poi_type->{$k} => ".poi_type_name2id($type2poi_type->{$k})."\n";
 	}
@@ -88,8 +94,12 @@ sub import_Data(){
 	my $fh = IO::File->new($file_name);
 	my $count =0;
 	while ( my $line = $fh->getline() ) {
+	    # Columns: (wayp + i)->name, slat, slong, typ, wlan, action, sqlnr, proximity
 	    my @columns = ('')x10;
 	    @columns = split(/\t/,$line);
+	    unless (  $columns[0] && $columns[1] && $columns[2]){
+		@columns = split(/\s+/,$line);
+	    };
 	    next unless $columns[0] && $columns[1] && $columns[2];
 	    $columns[0] =~ s/'/\\'/g;
 	    my $type = "unknown";
@@ -102,7 +112,7 @@ sub import_Data(){
 
 	    my $poi_type_id = poi_type_name2id($type2poi_type->{"$type"});
 	    $poi_type_id ||= poi_type_name2id("$type");
-	    $poi_type_id || printf "Unknown Waypoint Type '$type' in %s\n".join(",",@columns);
+	    $poi_type_id || printf "Unknown Waypoint Type '$type' in $line\n";
 	    $poi_type_id ||= poi_type_name2id("import way.txt");
 
 	    for my $t ( qw(waypoints poi)) {
@@ -112,11 +122,12 @@ sub import_Data(){
 			   "poi.poi_type_id"    => $poi_type_id,
 			   "poi.source_id"      => $source_id,
 			   "poi.scale_min"      => 1,
-			   "poi.scale_max"      => 5000,
+			   "poi.scale_max"      => 100000,
 			   "poi.last_modified"  => localtime(time()),
 			   "$t.name"            => $columns[0],
 			   "$t.lat"             => $columns[1],
 			   "$t.lon"             => $columns[2],
+			   "$t.proximity"       => $columns[7],
 			   "$t.type"            => $type,
 			   "$t.wep"             => $wep,
 		       };

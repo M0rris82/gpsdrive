@@ -5,6 +5,11 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.12  2005/05/14 21:21:23  tweety
+# Update Index createion
+# Update default Streets
+# Eliminate some undefined Value
+#
 # Revision 1.11  2005/05/01 13:49:36  tweety
 # Added more Icons
 # Moved filling with defaults to DB_Defaults.pm
@@ -344,7 +349,7 @@ This also creates and modified the old waypoints table.
 Fill the Databases with usefull defaults. This option is 
 needed before you can import any of the other importers.
 
-=item B<collect-init-data>
+=item B<--collect-init-data>
 
 Collects default data and writes them into the default Files.
 This option is normally used by the maintainer to create the 

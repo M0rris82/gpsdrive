@@ -2,6 +2,11 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.8  2005/05/14 21:21:23  tweety
+# Update Index createion
+# Update default Streets
+# Eliminate some undefined Value
+#
 # Revision 1.7  2005/05/13 07:33:41  tweety
 # remove som unnecessary indirections
 # replace get_unit and get_mapdir with read_config
@@ -166,7 +171,7 @@ sub expedia_url($$$);    # {}
 sub wget_map($$$);       # {}
 sub check_coverage($);   # {}
 sub file_count($);       # {}
-
+sub get_waypoint($);     # {}
 
 STDERR->autoflush(1);
 STDOUT->autoflush(1);

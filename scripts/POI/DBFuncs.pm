@@ -1,6 +1,11 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.18  2005/05/14 21:21:23  tweety
+# Update Index createion
+# Update default Streets
+# Eliminate some undefined Value
+#
 # Revision 1.17  2005/05/10 05:28:49  tweety
 # type in disable_keys
 #
@@ -92,7 +97,7 @@ sub enable_keys($){
 }
 
 # -----------------------------------------------------------------------------
-#retrieve Column Names for desired table
+# retrieve Column Names for desired table
 sub column_names($){
     my $table = shift;
     my @col;
@@ -111,7 +116,10 @@ sub column_names($){
 
 
 # -----------------------------------------------------------------------------
-# 
+# get all indix info for $table
+# RETURNS:
+#    	    $result->{$name}->{...}
+# where $name is name of index
 sub show_index($) {
     my $table  = shift;
 
@@ -120,9 +128,25 @@ sub show_index($) {
     my $sth=$dbh->prepare($query) or die $dbh->errstr;
     $sth->execute()               or die $sth->errstr;
 
-    my $result;
+    my $result ={};
     foreach my $row ( @{ $sth->fetchall_arrayref({}) } ) {
-	$result->{$row->{'Key_name'}} = $row;
+	my $name =$row->{'Key_name'}; 
+	my $seq_index = $row->{'Seq_in_index'};
+	if ( $seq_index ) {
+	    $result->{$name}->{Columns}->[$seq_index-1] = $row->{'Column_name'};
+	    for my $k ( keys %{$row} ) {
+		if ( ! exists($result->{$name} ) ||
+		     ! exists($result->{$name}->{$k}) ) {
+		    $result->{$name}->{$k} = $row->{$k};
+		} elsif ( !defined($result->{$name}->{$k}) && !defined($row->{$k}) ) {
+		    # Avoid undef warnings
+		} elsif ( $result->{$name}->{$k} ne $row->{$k} ) {
+		    $result->{$name}->{$k} .= ",$row->{$k}";
+		}
+	    }
+	} else {
+	    $result->{$name} = $row;
+	}
     }
     
     return $result;
@@ -629,22 +653,27 @@ sub add_if_not_exist_index($$;$){
     my $keys  = shift || $name;
     
     my $indices = show_index($table);
-    #print Dumper(\$indices);
-    #printf "Index for $table: %s\n" , join(",",keys %{$indices});
-    if ( $keys =~ m/,/ &&
-	 defined $indices->{$name}->{'Column_name'} ) {
-	print "Multi Index $name	Exists\n";
-    } elsif ( $indices->{$name}->{'Column_name'} eq $keys ) {
-	print "Index $table.$name	Exists\n";
-    } else {
-	if ( defined $indices->{$name}->{'Column_name'} ) {
-	    print "Droping Index: $table.$name\n";
-	    db_exec("ALTER TABLE `$table` DROP INDEX `$name`;");
+    debug( "If not exist; adding Index $table.$name: `$keys`");
+    if ( $keys =~ m/\,/ ) { # Multi Key
+	my $ist ='';
+	if ( exists $indices->{$name}->{Columns} ) {
+	    $ist = join('`,`',@{$indices->{$name}->{Columns}});
+	    if ( $ist eq $keys ) { # exists and correct
+		return;
+	    } else {
+		print "Droping Index: $table.$name\n";
+		db_exec("ALTER TABLE `$table` DROP INDEX `$name`;");
+	    }
 	}
-
-	print "Adding Index: $table.$name ( `$keys` )\n";
-	db_exec("ALTER TABLE `$table` ADD INDEX `$name` ( `$keys` );");
+    } elsif ( $indices->{$name}->{'Column_name'} eq $keys ) {
+	return;
+    } elsif ( defined $indices->{$name}->{'Column_name'} ) {
+	print "Droping Index: $table.$name\n";
+	db_exec("ALTER TABLE `$table` DROP INDEX `$name`;");
     }
+
+    debug( "Adding Index: $table.$name: `$keys`");
+    db_exec("ALTER TABLE `$table` ADD INDEX `$name` ( `$keys` );");
 }
 
 # -----------------------------------------------------------------------------
