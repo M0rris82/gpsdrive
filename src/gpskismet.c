@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2005/05/15 06:51:27  tweety
+all speech strings are now represented as arrays of strings
+author: Rob Stewart <rob@groupboard.com>
+
 Revision 1.4  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -137,6 +141,8 @@ reads info from kismet server and insert waypoints into database
 #include <string.h>
 #include <sys/time.h>
 #include <gpsdrive.h>
+#include <speech_out.h>
+#include <speech_strings.h>
 
 
 #define MAXDBNAME 30
@@ -175,9 +181,6 @@ static int bc = 0;
 fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
-enum
-{ english, german, spanish }
-voicelang;
 
 #define KISMETSERVERNAME "localhost"
 
@@ -384,40 +387,12 @@ readkismet (void)
 							exiterr (3);
 
 						g_strdelimit (name, "_", ' ');
-						switch (voicelang)
-						{
-						case english:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Found new %s access point: %s",
-								    (wep) ?
-								    "crypted"
-								    : "open",
-								    name);
-							break;
-						case spanish:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Found new %s access point: %s",
-								    (wep) ?
-								    "closed" :
-								    "open",
-								    name);
-							break;
-						case german:
-							g_snprintf (buf,
-								    sizeof
-								    (buf),
-								    "Es wurde ein neuer  %s exses point gefunden: %s",
-								    (wep) ?
-								    "verschlÃŒsselter"
-								    :
-								    "offener",
-								    name);
-							break;
-						}
+
+            g_snprintf (
+                buf, sizeof(buf), speech_found_access_point[voicelang],
+                (wep) ? speech_access_closed[voicelang] :
+                        speech_access_open[voicelang],
+                name);
 						speech_out_speek (buf);
 						/* if (debug) */
 						/*                  printf (_("rows inserted: %d\n"), r); */

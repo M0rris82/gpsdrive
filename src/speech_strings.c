@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 /*
 $Log$
+Revision 1.2  2005/05/15 06:51:27  tweety
+all speech strings are now represented as arrays of strings
+author: Rob Stewart <rob@groupboard.com>
+
 Revision 1.1  2005/04/29 17:41:57  tweety
 Moved the speech string to a seperate File
 
@@ -319,6 +323,40 @@ gchar* speech_one_kilometer[] =
   "one kilometer.",
   "ein kilometer.",
   "one kilometer."
+};
+
+gchar* speech_remaining_battery[] =
+{
+  "Remaining battery: %d%%",
+  "Batterieladung: %d%%",
+  "BaterÃa restante: %d%%"
+};
+
+// **** TODO ****
+// Spanish string needs corrected
+gchar* speech_found_access_point[] =
+{
+  "Found new %s access point: %s",
+  "Es wurde ein neuer %s exses point gefunden: %s",
+  "Found new %s access point: %s"
+};
+
+// **** TODO ****
+// Spanish string needs corrected
+gchar* speech_access_closed[] =
+{
+  "closed",
+  "verschlÃŒsselter",
+  "closed"
+};
+
+// **** TODO ****
+// Spanish string needs corrected
+gchar* speech_access_open[] =
+{
+  "open",
+  "offener",
+  "open"
 };
 
 // ************************************************************************** //

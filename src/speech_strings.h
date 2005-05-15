@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *******************************************************************************/
 /*
 $Log$
+Revision 1.2  2005/05/15 06:51:27  tweety
+all speech strings are now represented as arrays of strings
+author: Rob Stewart <rob@groupboard.com>
+
 Revision 1.1  2005/04/29 17:41:57  tweety
 Moved the speech string to a seperate File
 
@@ -32,6 +36,7 @@ Moved the speech string to a seperate File
 
 #ifndef GPSDRIVE_SPEECH_STRINGS_H
 #define GPSDRIVE_SPEECH_STRINGS_H
+
 
 extern gchar* speech_target_reached[];
 extern gchar* speech_new_target[];
@@ -69,5 +74,10 @@ extern gchar* speech_miles[];
 extern gchar* speech_meters[];
 extern gchar* speech_kilometers[];
 extern gchar* speech_one_kilometer[];
+extern gchar* speech_remaining_battery[];
+extern gchar* speech_found_access_point[];
+extern gchar* speech_access_closed[];
+extern gchar* speech_access_open[];
+
 
 #endif // GPSDRIVE_SPEECH_STRINGS_H
