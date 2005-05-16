@@ -2,6 +2,10 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.9  2005/05/16 19:37:29  tweety
+# added patch from Olli Salonen <olli@cabbala.net>
+# downloading all maps along track, between waypoints
+#
 # Revision 1.8  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -80,10 +84,11 @@
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Nov 21, 2002) by Magnus MÃÂ¥nsson <ganja\@0x63.nu>
+modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 29, 2003) by camel <camel\@insecure.at>
 modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
+modified (May 15, 2005) by Olli Salonen <olli\@cabbala.net>
 Version 1.17
 ";
 
@@ -100,6 +105,8 @@ use File::Basename;
 use File::Path;
 use File::Copy;
 use IO::File;
+use POSIX qw(ceil floor);
+
 
 # Setup possible scales
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
@@ -110,7 +117,11 @@ my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
-my ($lat,$lon,$slat,$endlat,$slon,$endlon,$waypoint,$area,$unit,$mapdir,$debug,$force,$version,$man,$help);
+my ($lat,$lon);
+my ($slat,$endlat,$slon,$endlon);
+my ($waypoint,$area,$unit,$mapdir);
+my ($debug,$force,$version,$man,$help);
+my $cover_route;
 my $failcount           = 0;
 my $newcount            = 0;
 my $existcount          = 0;
@@ -128,6 +139,7 @@ my $simulate_only       = 0;
 my $check_koord_file    = 0;
 my $update_koord        = 0;
 my $check_coverage      = 0;
+my $TRACK_FILE          = "";
 our $MAP_KOORDS         = {};
 our $MAP_FILES          = {};
 our $GPSTOOL_MAP_KOORDS = {};
@@ -146,6 +158,7 @@ GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon,
 	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
 	     'PREFIX=s'       => \$FILEPREFIX,
 	     'n'              => \$simulate_only,
+	     'track=s'        => \$TRACK_FILE, 'route'       => \$cover_route,
 	     'check-koordfile'=> \$check_koord_file,
 	     'check-coverage' => \$check_coverage,
 	     'U'              => \$update_koord,
@@ -159,19 +172,22 @@ GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon,
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
-sub debug($);            # {}
-sub is_map_file($);      # {}
-sub expedia_url($$$);    # {}
-sub check_koord_file($); # {}
-sub update_gpsdrive_map_koord_file(); # {}
-sub read_koord_file($);  # {}
-sub read_gpstool_map_file(); # {}
 sub append_koords($$$$); # {}
-sub expedia_url($$$);    # {}
-sub wget_map($$$);       # {}
 sub check_coverage($);   # {}
+sub check_koord_file($); # {}
+sub debug($);            # {}
+sub expedia_url($$$);    # {}
+sub expedia_url($$$);    # {}
 sub file_count($);       # {}
+sub file_count($);       # {}
+sub get_coords_for_route; # {}
+sub get_coords_for_track($); # {}
 sub get_waypoint($);     # {}
+sub is_map_file($);      # {}
+sub read_gpstool_map_file(); # {}
+sub read_koord_file($);  # {}
+sub update_gpsdrive_map_koord_file(); # {}
+sub wget_map($$$);       # {}
 
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
@@ -235,27 +251,55 @@ debug( "Scale to download: ". join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}));
 # Get the center waypoint if they want one
 if ($waypoint) {
     ($lat,$lon) = get_waypoint($waypoint);
+    debug("Centerpoint: $lat,$lon");
 }
-debug("Centerpoint: $lat,$lon");
 
-# Now get the start and end coordinates
-unless ($slat && $slon && $endlat && $endlon) {
-    ($slat,$slon,$endlat,$endlon) = get_coords($lat,$lon,$area,$unit); 
-}
-print "Upper left:  $slat, $slon\n" if $debug;
-print "Lower right: $endlat, $endlon\n" if ($debug);
 
 my $desired_locations = {};
-desired_locations($desired_locations,$slat,$slon,$endlat,$endlon);
+
+if ($TRACK_FILE) { # download maps along a saved track
+    my ($number, $i);
+    print "Downloading maps along a saved track $TRACK_FILE.\n" if $debug;
+    my ($latsref, $lonsref) = get_coords_for_track($TRACK_FILE);
+    my ($sla, $slo, $ela, $elo);
+    $area ||= 1;
+    $number = @{$latsref};
+    print "Inserting $number points to the list.\n" if $debug;
+    for ($i = 0; $i < $number; $i++) {
+	($sla,$slo,$ela,$elo) = get_coords($latsref->[$i],$lonsref->[$i],$area,$unit);
+	desired_locations($desired_locations,$sla,$slo,$ela,$elo);
+    }
+} elsif ($cover_route) { # download maps between a set of waypoints
+    print "Downloading maps along the following route:\n" if $debug;
+    my ($latsref, $lonsref) = get_coords_for_route;
+    my ($sla, $slo, $ela, $elo, $number, $i);
+    $area ||= 1;
+    $number = @{$latsref};
+    print "Inserting $number points to the list.\n" if $debug;
+    for ($i = 0; $i < $number; $i++) {
+	($sla,$slo,$ela,$elo) = get_coords($latsref->[$i],$lonsref->[$i],$area,$unit);
+	desired_locations($desired_locations,$sla,$slo,$ela,$elo);
+    }
+} else { # we are not downloading maps a saved track or between waypoints
+    # Now get the start and end coordinates
+    unless ($slat && $slon && $endlat && $endlon) {
+        ($slat,$slon,$endlat,$endlon) = get_coords($lat,$lon,$area,$unit); 
+    }
+    print "Upper left:  $slat, $slon\n" if $debug;
+    print "Lower right: $endlat, $endlon\n" if ($debug);
+
+    desired_locations($desired_locations,$slat,$slon,$endlat,$endlon);
+}
+
 my ($existing,$wanted) = file_count($desired_locations);
 print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
 
 unless ($force) {
-    print "You are violating the map servers copyright!\nAre you sure you want to continue? [y|n] ";
+    print "You are violating the map servers copyright!\n";
+    print "Are you sure you want to continue? [y|n] ";
     my $answer = <STDIN>;
     exit if ($answer !~ /^[yY]/);    
 }
-
 
 if ( $update_koord  ) {
     read_gpstool_map_file();
@@ -479,6 +523,16 @@ sub error_check {
 
     return 0 if $check_koord_file;
     return 0 if $check_coverage;
+    return 0 if $TRACK_FILE;
+    if ($cover_route) {
+	my $num = @ARGV;
+	if ($num < 2) {
+	    print "ERROR: You must supply at least two waypoints\n\n";
+	    return 1;
+	} else {
+	    return 0;
+	}
+    }
 
     # Check for a centerpoint
     unless (($waypoint) || ($lat && $lon) || ($slat && $endlat && $slon && $endlon)) {
@@ -619,7 +673,7 @@ sub desired_locations {
 
 	my $lati = $snapped_start_lat;
 
-	while ($lati <= $elat) {
+	while (($lati <= $elat) || (!$count)) {
 	    my $long = $snapped_start_lon;
 	    if ( $local_debug ) {
 		printf "        %5.5f:",$lati;
@@ -627,18 +681,17 @@ sub desired_locations {
 		    ,$snapped_start_lon,$slon,$delta_lon,$elon;
 		printf "\t\t";	
 	    }
-	    while ($long <= $elon) {
-		$long += $delta_lon; ### FIX BY CAMEL
-		$count++;
+	    while (($long <= $elon) || (!$count)) {
 		$desired_locations->{$scale}->{$lati}->{$long} ||='?';
-		
+
 		if ( $local_debug ) {
 		    my $filename = map_filename($scale,$lati,$long);
 		    my $exist = ( is_map_file($filename) ) ? " ":"+";
 
 		    printf " %6.3f %1s",$long,$exist;
 		}
-
+		$long += $delta_lon; ### FIX BY CAMEL
+		$count++;
 	    }
 	    print "\n" if $local_debug;
 	    $lati += $delta_lat; ### FIX BY CAMEL
@@ -734,7 +787,7 @@ sub get_coords {
     my $lat_offset  = calc_offset($unit,$lat_dist,\$LAT_DIST_KM);
     my $lon_offset  = calc_offset($unit,$lon_dist,\$lon_dist_km);   
     
-    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
+#    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
     
     # Ok subtract the offset for the start point
     my $slat = $lat - $lat_offset;
@@ -764,6 +817,100 @@ sub calc_offset {
     #print "-\n".Dumper($area,\$dist_per_degree,$offset);
     return($offset);
 } #End calc_offset
+
+######################################################################
+# Opens a track file and returns two identically sized arrays,
+# one that contains the latitudes and other that contains the
+# longitudes.
+######################################################################
+sub get_coords_for_track($) {
+    my $filename = shift;
+
+    my @lats;
+    my @lons;
+    print "Opening Track file: $filename\n" if $debug;
+    my $fh = IO::File->new("<$filename");
+    $fh or die("Error: $!");
+
+    my ($la, $lo, $oldla, $oldlo, $line, $delta_la, $delta_lo, $rest);
+    my ($step_la, $step_lo, $ste_la, $ste_lo);
+
+    my $max_lat= 180;
+    my $max_lon= 90;
+
+    $oldla = 0;
+    $oldlo = 0;
+    $step_la = ($DIFF * $scale) - ($DIFF * $scale) / 2;
+    $step_lo = ($DIFF * $scale) - ($DIFF * $scale) / 1.5;
+
+    # loop through each line of the track file
+    while ($line = $fh->getline()) {
+        $line =~ s/^\s+//;
+        ($la,$lo,$rest) = split(/\s+/, $line);
+	debug("($la,$lo,$rest)");
+	next if ( $la == 1001 ) && ( $lo == 1001) ;
+        if ((($la != $oldla) || ($lo != $oldlo)) && ($la < $max_lat) && ($lo < $max_lon)) {
+            $delta_la = abs($la - $oldla);
+            $delta_lo = abs($lo - $oldlo);
+            if (($delta_la > $step_la) || ($delta_lo > $step_lo)) {
+		push(@lats, $la);
+		push(@lons, $lo);
+                $oldla = $la;
+                $oldlo = $lo;
+            }
+        }
+    }
+    # Close the file and release lock or die.
+    $fh->close() or die("Error: $!");    
+    return (\@lats, \@lons);
+} # end get_coords_for_track
+
+######################################################################
+# Creates a track between given waypoints. Returns two identically 
+# sized arrays, one that contains the latitudes and other that 
+# contains the longitudes.
+######################################################################
+sub get_coords_for_route {
+    my @lats;
+    my @lons;
+    my @waypoints = @ARGV;
+    foreach $waypoint (@waypoints) {
+        # check if all given waypoints exist
+        &get_waypoint($waypoint);
+    }    
+
+    my (@start, @end, @delta, @steps);
+    my ($la, $lo, $i, $j);
+
+    my $step_la = ($DIFF * $scale) - ($DIFF * $scale) / 2;
+    my $step_lo = ($DIFF * $scale) - ($DIFF * $scale) / 1.5;
+
+    while (@waypoints > 1) {
+        # download maps for each etap
+        print("$waypoints[0] - $waypoints[1]\n");
+        @start = &get_waypoint($waypoints[0]);
+        @end = &get_waypoint($waypoints[1]);
+        shift(@waypoints);
+
+        $delta[0] = $start[0] - $end[0];
+        $delta[1] = $start[1] - $end[1];
+        $steps[0] = $delta[0] / $step_la;
+        $steps[1] = $delta[1] / $step_lo;
+        if ($steps[0] > $steps[1]) {
+            $i = abs(ceil($steps[0]));
+        } else {
+            $i = abs(ceil($steps[1]));
+        }
+        for ($j=1; $j<=$i; $j++) {
+            $la = $start[0] - ($delta[0] / $i)*$j;
+            $lo = $start[1] - ($delta[1] / $i)*$j;
+	    push(@lats, $la);
+	    push(@lons, $lo);
+        }
+    }
+    return (\@lats, \@lons);
+} #End get_coords_for_track
+
 
 ######################################################################
 # Return KM/degree for this latitude
@@ -1105,6 +1252,8 @@ gpsfetchmap -la <latitude MM.DDDD> -lo <latitude MM.DDDD> -sc <SCALE> -a <#> -p
 
 gpsfetchmap -sla <start latitude MM.DDDD> -endla <end latitude MM.DDDD> -slo <start longitude MM.DDDD> -endlo <end longitude MM.DDDD> -sc <SCALE> -a <#> -p
 
+gpsfetchmap -sc <SCALE> -a <#> -r <WAYPOINT 1> <WAYPOINT 2> ... <WAYPOINT n> -p
+
 B<All options:>
 
 gpsfetchmap [-w <WAYPOINT NAME>]
@@ -1112,7 +1261,7 @@ gpsfetchmap [-w <WAYPOINT NAME>]
             [-sla <start latitude DD.MMMM>] [-endla <end latitude DD.MMMM>]
             [-slo <start longitude DD.MMMM>] [-endlo <end longitude DD.MMMM>]
             [-sc <SCALE>] [-a <#>] [-p] [-m <MAPSERVER>]
-            [-u <UNIT>] [-md <DIR>] [-W <FILE>]
+            [-u <UNIT>] [-md <DIR>] [-W <FILE>] [-t <FILE>] [-r]
             [-C <FILE>] [-P <PREFIX>] [-F] [-d] [-v] [-h] [-M] [-n] [-U] [-c]
 
 =head1 OPTIONS
@@ -1121,8 +1270,9 @@ gpsfetchmap [-w <WAYPOINT NAME>]
 
 =item B<-w, --waypoint <WAYPOINT NAME>>
    
-Takes a waypoint name and uses the latitude and longitude for that waypoint as the centerpoint
-of the area to be covered. Waypoints are read from 'way.txt', or file defined by '-W'. This, '-la' and '-lo' or '-sla', '-ela', '-slo', '-elo' is required. 
+Takes a waypoint name and uses the latitude and longitude for that waypoint as
+the centerpoint of the area to be covered. Waypoints are read from 'way.txt', 
+or file defined by '-W'. This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
 
 =item B<-la,  --lat <latitude DD.MMMM>>
 
@@ -1186,7 +1336,7 @@ Takes an optional value of number of seconds to sleep.
 
 =item B<-m, --mapserver <MAPSERVER>>
 
-Mapserver to download from. Currently can use: 'mapblast' or 'expedia'.Default: 'mapblast'. 
+Mapserver to download from. Currently can use: 'mapblast' or 'expedia'. Default: 'expedia'. 
 
 =item B<-u, --unit <UNIT>>
 
@@ -1200,6 +1350,14 @@ Override the configfiles mapdir with this value.
 =item B<-W, --WAYPOINT <FILE>>
 
 File to read waypoints from. Default: '~/.gpsdrive/way.txt'. 
+
+=item B<-t, --track <FILE>>
+
+Download maps that are along a saved track. File is a standard track filed saved from GpsDrive.
+
+=item B<-r, --route>
+
+Download maps that are along a route defined by waypoints. You must give a list of waypoints as parameters separated with space.
 
 =item B<-C, --CONFIG>
 
