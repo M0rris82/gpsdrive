@@ -2,6 +2,15 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.5  2005/05/24 08:35:25  tweety
+# move track splitting to its own function +sub track_add($)
+# a little bit more error handling
+# earth_distance somtimes had complex inumbers as result
+# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+# this way i can re-read all currently displayed streets from the DB
+# fix minor array iindex counting bugs
+# add some content to the comment column
+#
 # Revision 1.4  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -44,14 +53,13 @@ sub bad_location($$){
 ##########################################################################
 
 sub import_Kismet_track_file($$){
-    my  $full_filename = shift;
+    my $full_filename = shift;
     my $source = shift;
+
     print "Reading $full_filename                   \n";
 
     my $fh = IO::File->new("<$full_filename");
 
-    my ($lat1,$lon1,$alt1,$time1) = (1001,1001,0,0);
-    my ($lat2,$lon2,$alt2,$time2) = (1001,1001,0,0);
 
     my $source_id = POI::DBFuncs::source_name2id($source);
 
@@ -66,119 +74,53 @@ sub import_Kismet_track_file($$){
 	$source_id = POI::DBFuncs::source_name2id($source);
     }
     
+    my $track = { 
+	scale_min => 0, 
+	scale_max => 10000000,
+	name      => sprintf("Track %s",basename($full_filename)),
+	source_id => $source_id,
+	segments  => [],
+    } ;
 
+    my $line_count=0;
 
-    my $distance_street=0;
-    my $distance_streets=0;
-    my $street_nr=0;
-    my $segments_in_street=0;
-    my $line1='';
     while ( my $line = $fh->getline() ) {
-	my $valid=0;
-	my $streets_type_id = 2;
-	my $dist;
-	my $time_delta;
-	my $speed;
-
+	$line_count++;
 	chomp $line;
-#	print "line: $line\n";
-	#48.175667  11.754383        561 Tue May 18 18:28:04 2004
+	# <gps-point bssid="GP:SD:TR:AC:KL:OG" time-sec="1081010927" time-usec="47374" 
+	#            lat="48.175289" lon="11.747722" alt="1672.439941" spd="33.257549" 
+	#            heading="267.482422" fix="3" signal="18" quality="0" noise="7"/>
 
-        next unless ( $line =~ s/.*gps-point\s+bssid="GP:SD:TR:AC:KL:OG"\s*// );
-#       print $line;
+        next unless ( $line =~ s/^\s*<.*gps-point\s+bssid="GP:SD:TR:AC:KL:OG"\s*// );
+        unless ( $line =~ s/\/>\s*$// ) {
+	    print "incomplete Line: $line\n";
+	    next;
+	}
+	#print "$line\n";
 
-	( $lat1,$lon1,$alt1,$time1 ) = ( $lat2,$lon2,$alt2,$time2 );
-	( $lat2,$lon2,$alt2,$time2 ) = (1001,1001,0,0);
+        my %elem;
+	( $elem{lat},$elem{lon},$elem{alt} ) = (1001,1001,-1001);
 
-        my %elem = split(/[\s=]+/,$line);
+        %elem = split(/[\s=]+/,$line);
         for my $k ( keys %elem ) {
             $elem{$k} =~ s/^"(.*)"$/$1/;
         }
         
-	$lat2  = $elem{lat};
-	$lon2  = $elem{lon};
-	$alt2  = $elem{alt};
-	#       Wed Dec 10 09:38:24 2003
-	$time2 = $elem{'time-sec'}+( $elem{'time-usec'}/1000000);
+	$elem{time} = $elem{'time-sec'}+( $elem{'time-usec'}/1000000);
 
-	$valid=1;
-#	print Dumper(\%elem);
-
-	
-        # print Dumper(\%elem);
-	my $time2= $elem{'time-sec'}+( $elem{'time-usec'}/1000000);
-
-	if ( $lat1 > 1000 ||
-	     $lon1 > 1000 ||
-	     $lat2 > 1000 ||
-	     $lon2 > 1000 
-	     ) {
-	    #print "lat/lon >1000\n";
-	    #print "\t($lat1,$lon1) - ($lat2,$lon2)\n";
-	    $valid = 0;
-	}
-	
-	if ( $valid ) {
-	    $dist = POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);;
-	    $time_delta = $time2 - $time1;
-	    $speed      = $valid&&$time_delta ? $dist / $time_delta * 3.600 : -1;
-	    #printf "Dist: %.4f/%.2f =>  %.2f\n",$dist,$time_delta,$speed;
-	    $streets_type_id = 1 if ( $speed >0 );
-	    $streets_type_id = 2 if ( $speed >30 );
-	    $streets_type_id = 3 if ( $speed >60 );
-	    $streets_type_id = 4 if ( $speed >100 );
-
-	    if ( $alt2 == 0 ) { # Otherwise I assume it was POS Mode
-		print "Altitude = 0  ---> type=10\n";
-		$streets_type_id = 10;
-	    }
-
-	    if ( $time_delta >300 ) {
-		print "Time diff = $time_delta\n";
-		$valid = 0;
-	    }
-
-	    if ( $speed >400 ) {
-		print "Speed = $speed\n";
-		$valid = 0;
-	    }
-
-	    if ( $dist > 200  ) {
-		printf "earth_distance($lat1,$lon1,$lat2,$lon2) => %.2f\n",$dist;
-		$valid = 0;
-	    }
-
-	}
-
-	if ( $valid ) {
-	    #debug(sprintf "\t(%.3f,%.3f) - (%.3f,%.3f) %.0f m (%.1f Km/h) (Type %d)",$lat1,$lon1,$lat2,$lon2,$dist,$speed,$streets_type_id);
-	    POI::DBFuncs::streets_add(
-				  { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
-				    lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
-				    level_min => 0, level_max => 99,
-				    streets_type_id => $streets_type_id, 
-				    name => "$dist $full_filename",
-				    source_id => $source_id
-				    }
-				      );
-	    $segments_in_street++;
-	    $distance_street +=$dist;
-	    $distance_streets +=$dist;
-	} else {
-	    if ( $segments_in_street ) {
-		$street_nr ++;
-		printf "Streets: $street_nr ($segments_in_street Segments)    %.2f Km \n"
-		    ,$distance_streets/1000;
-	    }
-	    $segments_in_street=0;
-	}
-	$line1=$line;
+	push (@{$track->{segments}}, {
+	    lat     => $elem{lat},
+	    lon     => $elem{lon},
+	    alt     => $elem{alt},
+	    time    => $elem{time},
+	    speed   => miles2km($elem{spd}),
+	    heading => $elem{heading}
+	});
+		 
     }
-    if ($segments_in_street ) {
-	printf "Streets: $street_nr ($segments_in_street Segments)    %.2f Km \n"
-	    ,$distance_streets/1000;
-    }
-
+    my $segment_count = @{$track->{segments}};
+    POI::DBFuncs::track_add( $track );
+    print "read $line_count lines with $segment_count segments from $full_filename\n";
 }
 
 
@@ -187,14 +129,20 @@ sub import_Kismet_track_file($$){
 # *****************************************************************************
 sub import_Data($){
     my $dir = shift;
-    my $kismet_dir = $dir || "$main::CONFIG_DIR/kismet";
+    my $kismet_file_pattern = $dir || "$main::CONFIG_DIR}/kismet";
     my $source = "Kismet Tracks";
     delete_all_from_source($source);
-    
-    debug("$kismet_dir/{tracks}/*.gps");
-    foreach  my $full_filename ( glob("$kismet_dir/*.gps") ) {
+
+    $kismet_file_pattern = "$kismet_file_pattern/*.gps" if -d $kismet_file_pattern;
+    $kismet_file_pattern = "$kismet_file_pattern*.gps" unless $kismet_file_pattern =~ m/\.gps$/;
+
+    my @files = glob($kismet_file_pattern);
+    printf "Importing (%d) files from $kismet_file_pattern/*.gps\n",scalar @files;
+    POI::DBFuncs::disable_keys('streets');
+    foreach  my $full_filename ( @files ) {
 	import_Kismet_track_file($full_filename,$source);
     }
+    POI::DBFuncs::enable_keys('streets');
 }
 
 1;

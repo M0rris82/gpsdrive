@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.4  2005/05/24 08:35:25  tweety
+move track splitting to its own function +sub track_add($)
+a little bit more error handling
+earth_distance somtimes had complex inumbers as result
+implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+this way i can re-read all currently displayed streets from the DB
+fix minor array iindex counting bugs
+add some content to the comment column
+
 Revision 1.3  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -63,6 +72,7 @@ typedef struct
   gdouble x2;    // x position on screen end
   gdouble y2;    // y position on screen
   gchar   name[80];
+  gchar   comment[256];
   gdouble streets_type_id;    // type of street
 }
 streets_struct;
@@ -71,6 +81,6 @@ void streets_init (void);
 void streets_rebuild_list (void);
 void streets_draw_list (void);
 gint streets_draw_cb (GtkWidget * widget, guint datum);
-
+void streets_check_if_moved_reset (void);
 
 #endif /* GPSDRIVE_STREETS_H */

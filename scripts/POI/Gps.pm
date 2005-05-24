@@ -1,6 +1,15 @@
 # Some Gps related Functions
 #
 # $Log$
+# Revision 1.5  2005/05/24 08:35:25  tweety
+# move track splitting to its own function +sub track_add($)
+# a little bit more error handling
+# earth_distance somtimes had complex inumbers as result
+# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+# this way i can re-read all currently displayed streets from the DB
+# fix minor array iindex counting bugs
+# add some content to the comment column
+#
 # Revision 1.4  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -136,27 +145,23 @@ sub earth_distance($$$$){
     my $y2 = calcR( $lat2 ) * sin(rad2deg( $lon2 )) * sin(rad2deg( 90-$lat2 ));
     my $z1 = calcR( $lat1 ) * cos(rad2deg( 90 - $lat1 ));
     my $z2 = calcR( $lat2 ) * cos(rad2deg( 90 - $lat2 ));   
+    my $r = calcR( ($lat1+$lat2)/2);
 
-    my $a = acos( ($x1*$x2 + $y1*$y2 + $z1*$z2) / pow(calcR( ($lat1+$lat2)/2),2) );
+#    print "earth_distance($lat1,$lon1,$lat2,$lon2)\n";
 
-    if(0){
-	if ( $a =~ m/i/ ) {
-	    my $a1 =      ($x1*$x2 + $y1*$y2 + $z1*$z2);
-	    my $a2 =                                          calcR( ($lat1+$lat2)/2) ;
-	    my $a3 =    ( ($x1*$x2 + $y1*$y2 + $z1*$z2) / pow(calcR( ($lat1+$lat2)/2),2) ) ;
-	    my $b = acos( $a3 );
-	    my $t1 = 40590335705258.5;
-	    my $t2 = 40590335705258.5;
-	    my $t3 = $t1/pow($t2,2);
-	    print "acos(1)= ".acos(1)."\n";
-	    print "acos($a3)= ".acos($a3)."\n";
-	    print "acos($t3)= ".acos($t3)."\n";
-	    print "earth_distance($lat1,$lon1,$lat2,$lon2) 	$b	1: $a1	2:$a2	3:$a3   ($x1*$x2 + $y1*$y2 + $z1*$z2)\n";
-	}
+    my $a = acos( ($x1*$x2 + $y1*$y2 + $z1*$z2) / pow($r,2) );
+    if ( UNIVERSAL::isa($a,'Math::Complex')) {
+	$a = $a->Re();
     }
+
     my $erg = calcR( ($lat1+$lat2) / 2) * $a;
     $erg = $erg / 3340;
-    $erg =~ s/.*e-0\di\s*$/0.0/; # damit werte von  '2.98023223876953e-08i' eliminiert werden
+
+    if (  $erg =~ m/i$/) {
+	print "==================================================================\n";
+	print "WARNING: Complex Result\n";
+	print "earth_distance($lat1,$lon1,$lat2,$lon2) = ($erg)".Dumper($erg);
+    };
     return $erg;
 }
 
@@ -205,7 +210,7 @@ my $draw_y_offset=0;
 
 sub miles2km($){
     my $m = shift;
-    return $m * 1.6;
+    return $m * 1.609344;
 }
 
 sub hash2str($){

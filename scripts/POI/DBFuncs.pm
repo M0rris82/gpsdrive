@@ -1,6 +1,15 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.19  2005/05/24 08:35:25  tweety
+# move track splitting to its own function +sub track_add($)
+# a little bit more error handling
+# earth_distance somtimes had complex inumbers as result
+# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+# this way i can re-read all currently displayed streets from the DB
+# fix minor array iindex counting bugs
+# add some content to the comment column
+#
 # Revision 1.18  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -67,6 +76,7 @@ BEGIN {
 		  &streets_type_names &streets_type_list  &streets_type_name2id
 		  &db_disconnect 
 		  &add_poi &add_poi_multi
+		  &track_add
 		  &poi_list
 		  &column_names
 		  &source_name2id
@@ -583,10 +593,211 @@ sub streets_add($){
 
 
 #############################################################################
+# Add a track to geoinfo.streets 
+# this includes splitting and categirizing
+# 
+sub track_add($){
+    my $data = shift;
+
+    unless ( $data->{segments} ){
+	print "ERROR: track_add(): No Segments:". Dumper($data);
+	return;
+    }	    
+    my $wrote_tracks=0;
+    my $street_nr=0;
+    my $segments_in_street=0;
+
+    my $track = {};
+    $track->{segments}=[];
+    $track->{'streets.streets_type_id'} = 10;
+
+    my @columns = column_names("streets");
+    map { 
+	$track->{"streets.$_"} = 
+	    ( $data->{"streets.$_"} || $data->{$_} || $data->{lc($_)}) 
+	} @columns;
+
+#    print "track_add init:".Dumper(\$track);
+    my $segment_count = scalar(@{$data->{segments}});
+    debug("Adding $segment_count Segments");
+
+    my $max_speed=0;
+
+    my ($lat2,$lon2,$alt2,$time2) = (1001.0,1001.0,0,0);
+    my $heading2 = -999;
+    my $segment_number=0;
+
+    my $statistic={};
+
+    for my $segment ( @{$data->{segments}} ){
+	my ($lat1,$lon1,$alt1,$time1,$heading1) =  ($lat2,$lon2,$alt2,$time2,$heading2);
+
+	if ( ref($segment) eq "ARRAY" ) {
+	    $lat2 = $segment->[0];
+	    $lon2 = $segment->[1];
+	    $alt2 = $segment->[2];
+	    $alt2 = $segment->[3];
+	} else {
+	    $lat2  = $segment->{'lat'};
+	    $lon2  = $segment->{'lon'};
+	    $alt2  = $segment->{'alt'};
+	    $time2 = $segment->{'time'};
+	    $heading2 = $segment->{'heading'};
+	};
+
+	$segment_number++;
+
+	my $valid=1;
+
+	if ( $lat1 > 1000 ||
+	     $lon1 > 1000 ||
+	     $lat2 > 1000 ||
+	     $lon2 > 1000 
+	     ) {
+	    $valid = 0;
+	}
+	
+	
+	if ( $valid ) {
+	    my $split="";
+	    my $dist = POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);
+	    my $time_delta = $time2 - $time1;
+	    my $speed      = $segment->{speed};
+	    my $calc_speed = ( $time_delta ? ($dist / $time_delta * 3.600) : -1);
+	    $speed ||= $calc_speed;
+#	    debug(sprintf "Dist: %.4f/%.2f =>  %.2f Km/h",$dist,$time_delta,$speed);
+
+	    if ( $alt2 == 0.000 ) { # I assume it was POS Mode
+		print "Altitude = 0 (lat/lon:$lat2,$lon2)  ---> type=10\n";
+		$track->{'streets.streets_type_id'} = 10;
+	    }
+
+	    if ( $time_delta > 15 ) {
+		$split .= "time";
+		$valid = 0;
+	    }
+
+	    if ( $speed > 200 ) {
+		$split .= "speed";
+		$valid = 0;
+	    }
+
+	    if ( $valid && $speed < 0.001 ) {
+		#printf "track_add(Seg:$segment_number): Low Speed = %.6f;	Dist=%.6f\n",$speed,$dist;
+		#$valid = 0;
+	    }
+
+	    if ( $valid && $dist > 800  ) {
+		$split .= "dist";
+		$valid = 0;
+	    }
+	    if ( $split ) {
+		printf "track_add(Seg:$segment_number): ";
+		if ($dist>1000) {
+		    printf "\tdist: %6.2f Km, ",$dist/1000;
+		} else {
+		    printf "\tdist: %6.2f m, ",$dist;
+		}
+		printf "\tspeed %6.2f(%6.2f) Km/h ",$speed,$calc_speed;
+		printf "\tTime diff = ";
+		if ($time_delta > 3600) {
+		    printf " %5.2f hours",$time_delta/3600;
+		} elsif ( $time_delta > 60 ) {
+		    printf " %5.2f min",$time_delta/60;
+		} else {
+		    printf " %5.2f sec",$time_delta;
+		}
+		printf "\tsplit: $split\n";
+	    }
+
+	    if ( $valid ) {
+		$max_speed = $speed if $max_speed < $speed;
+		$statistic->{time_delta}->{val} = $time_delta;
+		$statistic->{speed}->{val}      = $speed;
+		$statistic->{dist}->{val}       = $dist;
+		$statistic->{time}->{val}       = $time2;
+		$statistic->{alt}->{val}        = $alt2;
+		$statistic->{lat}->{val}        = $lat2;
+		$statistic->{lon}->{val}        = $lon2;
+		for my $k ( qw(time_delta speed dist time lat lon alt)){
+		    my $val = $statistic->{$k}->{val};		    
+#		    printf "-- $k: %f\n",$val;
+#		    print Dumper(\$statistic);
+		    for my $t ( qw(min max)){
+			$statistic->{$k}->{$t} = $val unless defined $statistic->{$k}->{$t};
+		    }
+		    $statistic->{$k}->{'min'} = $val if $val < $statistic->{$k}->{'min'};
+		    $statistic->{$k}->{'max'} = $val if $val > $statistic->{$k}->{'max'};
+		    $statistic->{$k}->{'sum'} ||=0;
+		    $statistic->{$k}->{'sum'} += $val;
+		}
+		
+	    }
+    
+	}
+
+
+	$track->{'streets.streets_type_id'} = 1 if ( $max_speed >0 );
+	$track->{'streets.streets_type_id'} = 2 if ( $max_speed >30 );
+	$track->{'streets.streets_type_id'} = 3 if ( $max_speed >60 );
+	$track->{'streets.streets_type_id'} = 4 if ( $max_speed >100 );
+
+	if ( $valid ) {
+	    $segments_in_street++;
+	    push( @{$track->{segments}},{lat => $lat2, lon => $lon2, alt => $alt2});
+	} else {
+	    my $segment_count = scalar (@{$track->{segments}});
+	    if ( $segment_count ) {
+		#print Dumper(\@columns);
+		#print Dumper(\$track);
+
+		for my $k ( qw(time_delta speed dist time lat lon alt)){
+		    $statistic->{$k}->{avg} = $statistic->{$k}->{sum}/$segment_count;
+		}
+
+		$track->{'streets.comment'} = " $segment_count seg\t";
+
+		for my $k ( qw(time_delta speed dist lat lon alt)){
+		    $track->{'streets.comment'} .= "$k: ";
+		    my $min = sprintf( "%.2f",$statistic->{$k}->{min});
+		    my $max = sprintf( "%.2f",$statistic->{$k}->{max});
+		    my $avg = sprintf( "%.2f",$statistic->{$k}->{avg});
+		    if ( $min == $max ) {
+			$track->{'streets.comment'} .= "$min\t",
+		    } else {
+			$track->{'streets.comment'} .= sprintf( "%.2f %.2f %.2f\t",$min,$avg,$max);
+		    }
+		};
+		$track->{'streets.comment'} .= sprintf( "start: %s\t",scalar localtime($statistic->{time}->{min}));
+		$track->{'streets.comment'} .= sprintf( "end: %s\t",scalar localtime($statistic->{time}->{max}));
+		
+		$statistic={};
+
+		segments_add($track);
+		$wrote_tracks++;
+		$max_speed=0;
+	    }
+	    $track->{segments}=[];
+	}
+    }
+    if ( @{$track->{segments}} ) {
+#	print "Last Insert\n".Dumper($track);
+	segments_add($track);
+	$wrote_tracks++;
+    }
+    print "track_add wrote $wrote_tracks Sub-Tracks for $segment_count Segments\n";
+    
+
+}
+
+#############################################################################
 # Add a list of street segments into streets-DB
+# 
 sub segments_add($){
     my $data = shift;
+
     my $segment4db = {};
+
     my @columns = column_names("streets");
     map { 
 	$segment4db->{"streets.$_"} = 
@@ -594,36 +805,53 @@ sub segments_add($){
 	} @columns;
 
     # ---------------------- ADDRESS
-    $segment4db->{'streets.address_id'}    ||= 0;
+    $segment4db->{'streets.address_id'}        ||= 0;
 
-    # ---------------------- TYPE
-    $segment4db->{'streets.streets_type_id'}       ||= 0;
+    if ( ! $segment4db->{'streets.streets_type_id'} ) {
+	print "ERROR: segments_add: Error streets.streets_type_id missing:\n";
+	print Dumper(\$data);
+	return;
+    }
 
     # ---------------------- STREETS
-    $segment4db->{'streets.last_modified'} ||= time();
-    $segment4db->{'streets.scale_min'}         ||= 0;
-    $segment4db->{'streets.scale_max'}         ||= 0;
+    $segment4db->{'streets.last_modified'}     ||= time();
+    $segment4db->{'streets.scale_min'}         ||= 1;
+    $segment4db->{'streets.scale_max'}         ||= 10000;
+
+    $segment4db->{'streets.lat1'}=0;
+
     my $count = scalar @{$data->{segments}};
     debug("Writing $count Segments") if $count ;
-    $segment4db->{'streets.lat2'}=0;
+
+    my ($lat2,$lon2,$alt2) = (0,0,0);
     for my $segment ( @{$data->{segments}} ){
 	$segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
-	$segment4db->{'streets.alt2'} = $segment4db->{'streets.alt2'};
+	$segment4db->{'streets.alt1'} = $segment4db->{'streets.alt2'};
 
-	$segment4db->{'streets.lat2'} = $segment->{lat};
-	$segment4db->{'streets.lon2'} = $segment->{lon};
-	$segment4db->{'streets.alt1'} = $segment->{alt1};
+	if ( ref($segment) eq "ARRAY" ) {
+	    $lat2 = $segment->[0];
+	    $lon2 = $segment->[1];
+	    $alt2 = $segment->[2];
+	} else {
+	    $lat2 = $segment->{'lat'};
+	    $lon2 = $segment->{'lon'};
+	    $alt2 = $segment->{'alt'};
+	};
+
+	$segment4db->{'streets.lat2'} = $lat2;
+	$segment4db->{'streets.lon2'} = $lon2;
+	$segment4db->{'streets.alt2'} = $alt2;
 
 	next unless $segment4db->{'streets.lat1'}; # skip first entry
 
-	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
-	$segment4db->{'streets.streets_type_id'} = $data->{streets_type_id} || $segment->{streets_type_id};
-	$segment4db->{'streets.source_id'}       = $data->{source_id}       || $segment->{source_id};
-	$segment4db->{'streets.scale_min'}       = $data->{scale_min}       || $segment->{scale_min}||1;
-	$segment4db->{'streets.scale_max'}       = $data->{scale_max}       || $segment->{scale_max}||10000000000;
+#	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
+#	$segment4db->{'streets.streets_type_id'} = $data->{streets.streets_type_id} || $segment->{streets_type_id};
+#	$segment4db->{'streets.source_id'}       = $data->{source_id}       || $segment->{source_id};
+#	$segment4db->{'streets.scale_min'}       = $data->{scale_min}       || $segment->{scale_min}||1;
+#	$segment4db->{'streets.scale_max'}       = $data->{scale_max}       || $segment->{scale_max}||10000000000;
 
-	#print Dumper(\$segment4db);
+	#print "segment4db:".Dumper(\$segment4db);
 	insert_hash("streets",$segment4db);
     }
 }

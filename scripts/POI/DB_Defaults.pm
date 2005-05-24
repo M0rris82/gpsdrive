@@ -1,6 +1,15 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.3  2005/05/24 08:35:25  tweety
+# move track splitting to its own function +sub track_add($)
+# a little bit more error handling
+# earth_distance somtimes had complex inumbers as result
+# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+# this way i can re-read all currently displayed streets from the DB
+# fix minor array iindex counting bugs
+# add some content to the comment column
+#
 # Revision 1.2  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -2066,12 +2075,10 @@ sub defaults(){
 	   [ 48.171970,   11.753199 ],
 	   ],
 	 [ 'Heimstetter-Moosweg',
-	   [                       48.134942,   11.557519 ],
-	   [                       48.135925,   11.562666 ],
-	   [                       48.174259,   11.741632 ],
-	   [                       48.170410,   11.744640 ],
-	   [                       48.162607,   11.751690 ],
-	   [                       48.161132,   11.753052 ],
+	   [ 48.174259,   11.741632 ],
+	   [ 48.170410,   11.744640 ],
+	   [ 48.162607,   11.751690 ],
+	   [ 48.161132,   11.753052 ],
 	   ],
 	 [ 'Emmeran-Strasse',  
 	   [ 48.174345,   11.753617 ],
@@ -2092,18 +2099,18 @@ sub defaults(){
 	   [ 48.173391,   11.752862 ],
 	   ],
 	 [ 'Hess-Strasse',
-	   [                       48.150036,   11.572727 ],
-	   [                       48.153446,   11.560933 ],
-	   [                       48.154166,   11.558156 ],
-	   [                       48.155452,   11.555999 ],
-	   [                       48.160552,   11.549717 ],
-	   [                       48.160516,   11.549838 ],
+	   [ 48.150036,   11.572727 ],
+	   [ 48.153446,   11.560933 ],
+	   [ 48.154166,   11.558156 ],
+	   [ 48.155452,   11.555999 ],
+	   [ 48.160552,   11.549717 ],
+	   [ 48.160516,   11.549838 ],
 	   ],
 	 [ 'Goerres-Strasse',
-	   [                       48.156774,   11.558615 ],
-	   [                       48.155982,   11.561837 ],
-	   [                       48.154695,   11.566609 ],
-	   [                       48.153068,   11.565867 ],
+	   [ 48.156774,   11.558615 ],
+	   [ 48.155982,   11.561837 ],
+	   [ 48.154695,   11.566609 ],
+	   [ 48.153068,   11.565867 ],
 	   ],	 
 	 [ 'x-Strasse',
 	   ],
@@ -2116,43 +2123,31 @@ sub defaults(){
 
     delete_all_from_source($source_name);
 
-    for my $street ( @{$street_samples} ) {	
-	my $name = splice(@{$street},0,1);
-	my $s4db;
-	#print Dumper($street);
+    for my $segments ( @{$street_samples} ) {	
+	my $name = splice(@{$segments},0,1);
+	my $multi_segment;
+	#print Dumper($segments);
 	
-	$s4db->{'streets.source_id'} = $source_id;
-	$s4db->{'streets.streets_type_id'} = '';
+	$multi_segment->{'source_id'} = $source_id;
+	$multi_segment->{'streets_type_id'} = '';
 	if ( $name =~ m/^A/ ) {
-	    $s4db->{'streets.streets_type_id'} = streets_type_name2id('Strassen.Autobahn');
+	    $multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Autobahn');
 	} elsif ( $name =~ m/^ST/ ) {
-	    $s4db->{'streets.streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
+	    $multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
 	} elsif ( $name =~ m/^B/ ) {
-	    $s4db->{'streets.streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
+	    $multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
 	}   else {
-	    $s4db->{'streets.streets_type_id'} = streets_type_name2id('Strassen.Allgemein');
+	    $multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Allgemein');
 	}
 
-	$s4db->{'streets.scale_min'}       = 1;
-	$s4db->{'streets.scale_max'}       = 50000000;
-	$s4db->{'streets.last_modified'}   = localtime(time());
+	$multi_segment->{'name'}            = $name;
+	$multi_segment->{'scale_min'}       = 1;
+	$multi_segment->{'scale_max'}       = 50000000;
 
+	$multi_segment->{'segments'} = $segments;
 
-	my $street0 = splice(@{$street},0,1);
-	$s4db->{'streets.lat2'} = $street0->[0];
-	$s4db->{'streets.lon2'} = $street0->[1];
-
-	for my $segment ( @{$street} ) {
-	    $s4db->{'streets.lat1'} = $s4db->{'streets.lat2'};
-	    $s4db->{'streets.lon1'} = $s4db->{'streets.lon2'};
-	    $s4db->{'streets.lat2'} = $segment->[0];
-	    $s4db->{'streets.lon2'} = $segment->[1];
-
-	    $s4db->{'streets.name'} = $name;
-
-	    #print Dumper(\$s4db);
-	    POI::DBFuncs::insert_hash("streets",$s4db);
-	}
+#	POI::DBFuncs::segments_add_from_segment_array($multi_segment);
+	POI::DBFuncs::segments_add($multi_segment);
     }
 }
 

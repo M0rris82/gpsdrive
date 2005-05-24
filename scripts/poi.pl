@@ -5,6 +5,15 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.13  2005/05/24 08:35:25  tweety
+# move track splitting to its own function +sub track_add($)
+# a little bit more error handling
+# earth_distance somtimes had complex inumbers as result
+# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
+# this way i can re-read all currently displayed streets from the DB
+# fix minor array iindex counting bugs
+# add some content to the comment column
+#
 # Revision 1.12  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -171,7 +180,8 @@ GetOptions (
 	     'no-mirror'           => \$no_mirror,
 	     'proxy=s'             => \$PROXY,
 	     'MAN'                 => \$man, 
-	     'help|x'              => \$help, 
+	     'man'                 => \$man, 
+	     'h|help|x'            => \$help, 
 	     )
     or pod2usage(1);
 

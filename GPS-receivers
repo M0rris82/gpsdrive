@@ -23,3 +23,4 @@ Haicom GPS HI204e
 Magellan Nav 6500 
 BendixKing KLX 100
 Motorola i58sr Cellular Phone w/built-in NMEA-compatible GPS
+Rikaline GPS-6010 USB (needs USB to serial support in kernel, pl2303)
