@@ -2,6 +2,10 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.10  2005/07/03 20:05:52  tweety
+# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=11
+# Additional Map Download Source (ENIRO)
+#
 # Revision 1.9  2005/05/16 19:37:29  tweety
 # added patch from Olli Salonen <olli@cabbala.net>
 # downloading all maps along track, between waypoints
@@ -347,8 +351,6 @@ sub mirror_file($$){
     my $ok=1;
 
     debug("mirror_file($url --> $local_filename)");
-    print "mirror_file($url) " if $debug;
-    print "\n" if $debug;
     my $response = $ua->mirror($url,$local_filename);
 #    debug(sprintf("success = %d <%s>",$response->is_success,$response->status_line));
     
@@ -363,9 +365,9 @@ sub mirror_file($$){
 	    $ok=0;
 	}
     } else {
-	print "\tOK" if $debug;	
+#	print "\tOK" if $debug;	
     }    
-    print "\n" if $debug;
+#    print "\n" if $debug;
     return $ok;
 }
 
@@ -450,7 +452,7 @@ sub map_filename($$$){
     
     my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
 	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
-    print"Filename: $filename\n"
+    printf("Filename(%.0f,%.5f,%.5f): $filename\n",$scale,$lati,$long)
 	if $debug;
     return $filename;
 }
@@ -479,10 +481,14 @@ sub wget_map($$$){
     
     if ( $mapserver eq 'expedia') {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
-    } else { # of if expedia
+    } elsif ( $mapserver eq 'eniro') {
+	($url,$mapscale)=eniro_url($lati,$long,$scale);
+    } else {
 	print "Unknown map sever :", $mapserver, "\n"; 
 	return "E";
     }
+
+    return "E" unless $url;
     
     print "$url\n" if $debug;
 
@@ -499,7 +505,7 @@ sub wget_map($$$){
 	    $result="S";
 	    $newcount++;
 	} else {
-	    print "wget $url\n" if ($debug);
+	    #print "wget $url\n" if $debug;
 	    if ( mirror_map($url,$filename) ) {
 		append_koords($filename, $lati, $long, $mapscale);
 		$result= "+";
@@ -618,6 +624,71 @@ sub expedia_url($$$){
     }
     $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
 	."CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000";
+    return ($url,$mapscale);
+}
+
+#############################################################################
+sub eniro_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    my $mapscale = $scale;
+
+	
+    my $zoom = undef;
+    my $url='';
+
+    my %factor = ( 1 => 18000000, # 480     Km
+		   2 => 3200000,  #  80     Km
+		   3 => 400000,   #  10     Km
+		   4 => 200000,   #   4     Km
+		   5 => 100000,   #   1.1   Km
+		   6 => 20000,    #     400 m
+		   7 => 5000,     #     160 m
+		   );
+    for my $f ( sort keys %factor ) {
+	my $test_scale =  $factor{$f};
+	if ( $debug) {
+#	    print "testing $f: against	$test_scale\n";
+	}
+	if ( $test_scale <= $scale ) {
+	    $zoom = $f;
+	    $mapscale = $test_scale;
+	    last;
+	}
+    }
+    unless ( $zoom ) {
+	print "Error calculating Zommlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    if ($debug) {
+	printf "Eniro : lat: %.4f lon: %.4f\t",$lati,$long;
+	print "using zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
+    }
+    
+    if (  # Add real restriction for Denmark
+	  ( $lati > 54.67694 ) && ( $lati < 56.71874 ) &&
+	  ( $long >  7.77864 ) && ( $long < 13.40111 )
+	  ) {
+	print "Daenmark ($lati,$long)\n" if $debug;
+	$url  = "http://maps.eniro.com/servlets/dk_MapImageLocator?profile=Main";
+#	$url .= "&center=-73539.0000;139543.0000";
+	$url .= sprintf("&center=%10.4f;%10.4f",($lati*10000),($long*10000));
+	$url .= "&zoomlevel=$zoom";
+	$url .= "&size=1280x1024";
+	$url .= "&symbols=";
+    } else { # Add here restriction for Norway
+	print "Norway ($lati,$long)\n" if $debug;
+	$url  = "http://maps.eniro.com/servlets/no_MapImageLocator?profile=Main";
+	#                &center=8.5632;60.5998
+	$url .= sprintf("&center=%.4f;%.4f",$long,$lati);
+	$url .= "&zoomlevel=$zoom";
+	$url .= "&size=1280x1024";
+	$url .= "&symbols";
+    } 
+    
     return ($url,$mapscale);
 }
 
@@ -1109,7 +1180,7 @@ sub update_file_in_map_koords(){
 #    debug("Check File: $short_filename");
     if ( $MAP_FILES->{$filename} ||
 	 $MAP_FILES->{$short_filename} ) {
-	print "OK       $filename\n";
+#	print "OK       $filename\n";
     } else {
 	#mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
 	if ( $filename =~ m/map_(\d+)-(\d+\.\d+)-(\d+\.\d+)\.gif/ ) {
