@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.6  2005/07/04 04:47:03  tweety
+http://bugzilla.gpsdrive.cc/show_bug.cgi?id=25
+"J.D. Schmidt" <jdsmobile@gmail.com>
+Fixed Wrong SQL Escapes
+
 Revision 1.5  2005/05/15 06:51:27  tweety
 all speech strings are now represented as arrays of strings
 author: Rob Stewart <rob@groupboard.com>
@@ -298,12 +303,14 @@ readkismet (void)
 					for (i = 0; i <= (int) strlen (name);
 					     i++)
 					{
-						if (name[i] != '\'')
+						if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
 							tname[j++] = name[i];
 						else
 						{
 							tname[j++] = '\\';
-							tname[j++] = '\'';
+							tname[j++] = name[i];
+						if (debug)
+						    g_print ("Orig SSID: %s\nEscaped SSID: %s\n",name,tname);
 						}
 					}
 
