@@ -2,6 +2,10 @@
 # gpsfetchmap
 #
 # $Log$
+# Revision 1.11  2005/07/04 05:25:32  tweety
+# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=26
+# Prototype for incrementp as mapserver
+#
 # Revision 1.10  2005/07/03 20:05:52  tweety
 # http://bugzilla.gpsdrive.cc/show_bug.cgi?id=11
 # Additional Map Download Source (ENIRO)
@@ -483,6 +487,8 @@ sub wget_map($$$){
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
     } elsif ( $mapserver eq 'eniro') {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
+    } elsif ( $mapserver eq 'incrementp') {
+	($url,$mapscale)=incrementp_url($lati,$long,$scale);
     } else {
 	print "Unknown map sever :", $mapserver, "\n"; 
 	return "E";
@@ -627,6 +633,7 @@ sub expedia_url($$$){
     return ($url,$mapscale);
 }
 
+
 #############################################################################
 sub eniro_url($$$){
     my $lati = shift;
@@ -693,6 +700,74 @@ sub eniro_url($$$){
 }
 
 #############################################################################
+sub incrementp_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    my $mapscale = $scale;
+
+	
+    my $zoom = undef;
+    my $url='';
+
+    my %factor = (  1 => 12500000,# 250     Km
+		    2 => 5000000, # 100     Km
+		    3 => 2500000, #  50     Km
+		    4 => 1250000, #  25     Km
+		    5 => 500000,  #  10     Km
+		    6 => 250000,  #   5     Km
+		    7 => 125000,  #   2.5   Km
+		    8 => 50000,   #   1.0   Km
+		    9 => 25000,   #     500 m
+		   10 => 12500,   #     250 m
+		   11 => 5000,    #     100 m
+		   12 => 2500,    #      50 m
+		   );
+    for my $f ( sort keys %factor ) {
+	my $test_scale =  $factor{$f};
+	if ( $debug) {
+#	    print "testing $f: against	$test_scale\n";
+	}
+	if ( $test_scale <= $scale ) {
+	    $zoom = $f;
+	    $mapscale = $test_scale;
+	    last;
+	}
+    }
+    unless ( $zoom ) {
+	print "Error calculating Zommlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    if ($debug) {
+	printf "Incrementp : lat: %.4f lon: %.4f\t",$lati,$long;
+	print "using zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
+    }
+    
+    $url  = "http://mapserv.incrementp.co.jp/cgi-bin/map/mapserv.cgi?";
+
+    {
+	my $lat1 = ($lati>0 ? "E" :"W" );
+	$lat1 .= int($lati);
+	$lat1 .= sprintf(".%.0f",($lati-int($lati))/60);
+	
+	my $lon1 = ($lati>0 ? "N" :"S" );
+	$lon1 .= int($long);
+	$lon1 .= sprintf(".%.0f",($long-int($long))/60);
+	#                    MAP=E127.48.26.8N26.19.49.3
+	$url .= sprintf("MAP=%s%s",$lat1,$lon1);
+    }
+
+    $url .= "&OPT=e0000011";
+    $url .= "&ZM=$zoom";
+    $url .= "&SZ=1200,1200";
+    $url .= "&COL=1";
+    
+    return ($url,$mapscale);
+}
+
+#############################################################################
 # This function only once calculates
 # which lat/lon/scale Combinations are desired to download
 # Args:
@@ -708,10 +783,10 @@ sub desired_locations {
 
     my $local_debug = 0 && $debug;
 
-    my $min_lat=-180;
-    my $max_lat= 180;
-    my $min_lon=-90;
-    my $max_lon= 90;
+    my $min_lat=-90;
+    my $max_lat= 90;
+    my $min_lon=-180;
+    my $max_lon= 180;
     if ( $slat < $min_lat ) { warn ("Starting Latitude  ($slat) set to $min_lat\n"); $slat=$min_lat; };
     if ( $elat > $max_lat ) { warn ("End      Latitude  ($elat) set to $max_lat\n"); $elat=$max_lat; };
     if ( $slon < $min_lon ) { warn ("Starting Longitude ($slon) set to $min_lon\n"); $slon=$min_lon; };
