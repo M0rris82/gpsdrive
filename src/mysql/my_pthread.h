@@ -1,19 +1,18 @@
-/* Copyright (C) 2000 MySQL AB & MySQL Finland AB & TCX DataKonsult AB
-   
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License as published by the Free Software Foundation; either
-   version 2 of the License, or (at your option) any later version.
-   
-   This library is distributed in the hope that it will be useful,
+/* Copyright (C) 2000 MySQL AB
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-   
-   You should have received a copy of the GNU Library General Public
-   License along with this library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-   MA 02111-1307, USA */
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 
 /* Defines to make different thread packages compatible */
 
@@ -100,6 +99,8 @@ int pthread_attr_setstacksize(pthread_attr_t *connect_att,DWORD stack);
 int pthread_attr_setprio(pthread_attr_t *connect_att,int priority);
 int pthread_attr_destroy(pthread_attr_t *connect_att);
 struct tm *localtime_r(const time_t *timep,struct tm *tmp);
+struct tm *gmtime_r(const time_t *timep,struct tm *tmp);
+
 
 void pthread_exit(void *a);	 /* was #define pthread_exit(A) ExitThread(A)*/
 
@@ -116,6 +117,7 @@ void pthread_exit(void *a);	 /* was #define pthread_exit(A) ExitThread(A)*/
 #undef SAFE_MUTEX				/* This will cause conflicts */
 #define pthread_key(T,V)  DWORD V
 #define pthread_key_create(A,B) ((*A=TlsAlloc())==0xFFFFFFFF)
+#define pthread_key_delete(A) TlsFree(A)
 #define pthread_getspecific(A) (TlsGetValue(A))
 #define my_pthread_getspecific(T,A) ((T) TlsGetValue(A))
 #define my_pthread_getspecific_ptr(T,V) ((T) TlsGetValue(V))
@@ -124,6 +126,7 @@ void pthread_exit(void *a);	 /* was #define pthread_exit(A) ExitThread(A)*/
 #else
 #define pthread_key(T,V) __declspec(thread) T V
 #define pthread_key_create(A,B) pthread_dummy(0)
+#define pthread_key_delete(A) pthread_dummy(0)
 #define pthread_getspecific(A) (&(A))
 #define my_pthread_getspecific(T,A) (&(A))
 #define my_pthread_getspecific_ptr(T,V) (V)
@@ -133,16 +136,17 @@ void pthread_exit(void *a);	 /* was #define pthread_exit(A) ExitThread(A)*/
 
 #define pthread_equal(A,B) ((A) == (B))
 #ifdef OS2
-int pthread_mutex_init (pthread_mutex_t *, const pthread_mutexattr_t *);
-int pthread_mutex_lock (pthread_mutex_t *);
-int pthread_mutex_unlock (pthread_mutex_t *);
-int pthread_mutex_destroy (pthread_mutex_t *);
+extern int pthread_mutex_init (pthread_mutex_t *, const pthread_mutexattr_t *);
+extern int pthread_mutex_lock (pthread_mutex_t *);
+extern int pthread_mutex_unlock (pthread_mutex_t *);
+extern int pthread_mutex_destroy (pthread_mutex_t *);
 #define my_pthread_setprio(A,B)  DosSetPriority(PRTYS_THREAD,PRTYC_NOCHANGE, B, A)
 #define pthread_kill(A,B) raise(B)
 #define pthread_exit(A) pthread_dummy()
 #else
 #define pthread_mutex_init(A,B)  InitializeCriticalSection(A)
 #define pthread_mutex_lock(A)	 (EnterCriticalSection(A),0)
+#define pthread_mutex_trylock(A) (WaitForSingleObject((A), 0) == WAIT_TIMEOUT)
 #define pthread_mutex_unlock(A)  LeaveCriticalSection(A)
 #define pthread_mutex_destroy(A) DeleteCriticalSection(A)
 #define my_pthread_setprio(A,B)  SetThreadPriority(GetCurrentThread(), (B))
@@ -178,6 +182,7 @@ int pthread_mutex_destroy (pthread_mutex_t *);
 typedef int pthread_attr_t;			/* Needed by Unixware 7.0.0 */
 
 #define pthread_key_create(A,B) thr_keycreate((A),(B))
+#define pthread_key_delete(A) thr_keydelete(A)
 
 #define pthread_handler_decl(A,B) void *A(void *B)
 #define pthread_key(T,V) pthread_key_t V
@@ -229,7 +234,6 @@ extern int my_sigwait(const sigset_t *set,int *sig);
 #include <signal.h>
 #undef sigwait
 #endif
-#undef _REENTRANT			/* Fix if _REENTRANT is in pthread.h */
 #include <pthread.h>
 #ifndef _REENTRANT
 #define _REENTRANT
@@ -245,6 +249,11 @@ extern int my_sigwait(const sigset_t *set,int *sig);
 #endif
 #if defined(__EMX__) && (!defined(EMX_PTHREAD_REV) || (EMX_PTHREAD_REV < 2))
 #error Requires at least rev 2 of EMX pthreads library.
+#endif
+
+#ifdef __NETWARE__
+void my_pthread_exit(void *status);
+#define pthread_exit(A) my_pthread_exit(A)
 #endif
 
 extern int my_pthread_getprio(pthread_t thread_id);
@@ -270,6 +279,8 @@ extern int my_pthread_create_detached;
 #define USE_ALARM_THREAD
 #undef	HAVE_LOCALTIME_R
 #define HAVE_LOCALTIME_R
+#undef	HAVE_GMTIME_R
+#define HAVE_GMTIME_R
 #undef	HAVE_PTHREAD_ATTR_SETSCOPE
 #define HAVE_PTHREAD_ATTR_SETSCOPE
 #undef HAVE_GETHOSTBYNAME_R_GLIBC2_STYLE	/* If we are running linux */
@@ -370,10 +381,19 @@ void *my_pthread_getspecific_imp(pthread_key_t key);
 struct tm *localtime_r(const time_t *clock, struct tm *res);
 #endif
 
+#ifndef HAVE_GMTIME_R
+struct tm *gmtime_r(const time_t *clock, struct tm *res);
+#endif
+
 #ifdef HAVE_PTHREAD_CONDATTR_CREATE
 /* DCE threads on HPUX 10.20 */
 #define pthread_condattr_init pthread_condattr_create
 #define pthread_condattr_destroy pthread_condattr_delete
+#endif
+
+/* FSU THREADS */
+#if !defined(HAVE_PTHREAD_KEY_DELETE) && !defined(pthread_key_delete)
+#define pthread_key_delete(A) pthread_dummy(0)
 #endif
 
 #ifdef HAVE_CTHREADS_WRAPPER			/* For MacOSX */
@@ -422,33 +442,65 @@ struct tm *localtime_r(const time_t *clock, struct tm *res);
 #define pthread_kill(A,B) pthread_dummy(0)
 #undef	pthread_detach_this_thread
 #define pthread_detach_this_thread() { pthread_t tmp=pthread_self() ; pthread_detach(&tmp); }
-#else /* HAVE_PTHREAD_ATTR_CREATE && !HAVE_SIGWAIT */
+#elif !defined(__NETWARE__) /* HAVE_PTHREAD_ATTR_CREATE && !HAVE_SIGWAIT */
 #define HAVE_PTHREAD_KILL
 #endif
 
 #endif /* defined(__WIN__) */
 
-#if defined(HPUX) && !defined(DONT_REMAP_PTHREAD_FUNCTIONS)
+#if defined(HPUX10) && !defined(DONT_REMAP_PTHREAD_FUNCTIONS)
 #undef pthread_cond_timedwait
-#undef pthread_mutex_trylock
 #define pthread_cond_timedwait(a,b,c) my_pthread_cond_timedwait((a),(b),(c))
-#define pthread_mutex_trylock(a) my_pthread_mutex_trylock((a))
 int my_pthread_cond_timedwait(pthread_cond_t *cond, pthread_mutex_t *mutex,
 			      struct timespec *abstime);
+#endif
+
+#if defined(HPUX10)
+#define pthread_attr_getstacksize(A,B) my_pthread_attr_getstacksize(A,B)
+void my_pthread_attr_getstacksize(pthread_attr_t *attrib, size_t *size);
+#endif
+
+#if defined(HAVE_POSIX1003_4a_MUTEX) && !defined(DONT_REMAP_PTHREAD_FUNCTIONS)
+#undef pthread_mutex_trylock
+#define pthread_mutex_trylock(a) my_pthread_mutex_trylock((a))
 int my_pthread_mutex_trylock(pthread_mutex_t *mutex);
 #endif
 
 	/* safe_mutex adds checking to mutex for easier debugging */
 
+#if defined(__NETWARE__) && !defined(SAFE_MUTEX_DETECT_DESTROY)
+#define SAFE_MUTEX_DETECT_DESTROY
+#endif
+
 typedef struct st_safe_mutex_t
 {
   pthread_mutex_t global,mutex;
-  char *file;
+  const char *file;
   uint line,count;
   pthread_t thread;
+#ifdef SAFE_MUTEX_DETECT_DESTROY
+  struct st_safe_mutex_info_t *info;	/* to track destroying of mutexes */
+#endif
 } safe_mutex_t;
 
-int safe_mutex_init(safe_mutex_t *mp, const pthread_mutexattr_t *attr);
+#ifdef SAFE_MUTEX_DETECT_DESTROY
+/*
+  Used to track the destroying of mutexes. This needs to be a seperate
+  structure because the safe_mutex_t structure could be freed before
+  the mutexes are destroyed.
+*/
+
+typedef struct st_safe_mutex_info_t
+{
+  struct st_safe_mutex_info_t *next;
+  struct st_safe_mutex_info_t *prev;
+  const char *init_file;
+  uint32 init_line;
+} safe_mutex_info_t;
+#endif /* SAFE_MUTEX_DETECT_DESTROY */
+
+int safe_mutex_init(safe_mutex_t *mp, const pthread_mutexattr_t *attr,
+                    const char *file, uint line);
 int safe_mutex_lock(safe_mutex_t *mp,const char *file, uint line);
 int safe_mutex_unlock(safe_mutex_t *mp,const char *file, uint line);
 int safe_mutex_destroy(safe_mutex_t *mp,const char *file, uint line);
@@ -456,6 +508,8 @@ int safe_cond_wait(pthread_cond_t *cond, safe_mutex_t *mp,const char *file,
 		   uint line);
 int safe_cond_timedwait(pthread_cond_t *cond, safe_mutex_t *mp,
 			struct timespec *abstime, const char *file, uint line);
+void safe_mutex_global_init(void);
+void safe_mutex_end(FILE *file);
 
 	/* Wrappers if safe mutex is actually used */
 #ifdef SAFE_MUTEX
@@ -468,7 +522,8 @@ int safe_cond_timedwait(pthread_cond_t *cond, safe_mutex_t *mp,
 #undef pthread_mutex_t
 #undef pthread_cond_wait
 #undef pthread_cond_timedwait
-#define pthread_mutex_init(A,B) safe_mutex_init((A),(B))
+#undef pthread_mutex_trylock
+#define pthread_mutex_init(A,B) safe_mutex_init((A),(B),__FILE__,__LINE__)
 #define pthread_mutex_lock(A) safe_mutex_lock((A),__FILE__,__LINE__)
 #define pthread_mutex_unlock(A) safe_mutex_unlock((A),__FILE__,__LINE__)
 #define pthread_mutex_destroy(A) safe_mutex_destroy((A),__FILE__,__LINE__)
@@ -476,9 +531,18 @@ int safe_cond_timedwait(pthread_cond_t *cond, safe_mutex_t *mp,
 #define pthread_cond_timedwait(A,B,C) safe_cond_timedwait((A),(B),(C),__FILE__,__LINE__)
 #define pthread_mutex_trylock(A) pthread_mutex_lock(A)
 #define pthread_mutex_t safe_mutex_t
+#define safe_mutex_assert_owner(mp) DBUG_ASSERT((mp)->count > 0 && pthread_equal(pthread_self(),(mp)->thread))
+#else
+#define safe_mutex_assert_owner(mp)
 #endif /* SAFE_MUTEX */
 
 	/* READ-WRITE thread locking */
+
+#ifdef HAVE_BROKEN_RWLOCK			/* For OpenUnix */
+#undef HAVE_PTHREAD_RWLOCK_RDLOCK
+#undef HAVE_RWLOCK_INIT
+#undef HAVE_RWLOCK_T
+#endif
 
 #if defined(USE_MUTEX_INSTEAD_OF_RW_LOCKS)
 /* use these defs for simple mutex locking */
@@ -486,6 +550,8 @@ int safe_cond_timedwait(pthread_cond_t *cond, safe_mutex_t *mp,
 #define my_rwlock_init(A,B) pthread_mutex_init((A),(B))
 #define rw_rdlock(A) pthread_mutex_lock((A))
 #define rw_wrlock(A) pthread_mutex_lock((A))
+#define rw_tryrdlock(A) pthread_mutex_trylock((A))
+#define rw_trywrlock(A) pthread_mutex_trylock((A))
 #define rw_unlock(A) pthread_mutex_unlock((A))
 #define rwlock_destroy(A) pthread_mutex_destroy((A))
 #elif defined(HAVE_PTHREAD_RWLOCK_RDLOCK)
@@ -493,6 +559,8 @@ int safe_cond_timedwait(pthread_cond_t *cond, safe_mutex_t *mp,
 #define my_rwlock_init(A,B) pthread_rwlock_init((A),(B))
 #define rw_rdlock(A) pthread_rwlock_rdlock(A)
 #define rw_wrlock(A) pthread_rwlock_wrlock(A)
+#define rw_tryrdlock(A) pthread_rwlock_tryrdlock((A))
+#define rw_trywrlock(A) pthread_rwlock_trywrlock((A))
 #define rw_unlock(A) pthread_rwlock_unlock(A)
 #define rwlock_destroy(A) pthread_rwlock_destroy(A)
 #elif defined(HAVE_RWLOCK_INIT)
@@ -513,14 +581,18 @@ typedef struct _my_rw_lock_t {
 #define rw_lock_t my_rw_lock_t
 #define rw_rdlock(A) my_rw_rdlock((A))
 #define rw_wrlock(A) my_rw_wrlock((A))
+#define rw_tryrdlock(A) my_rw_tryrdlock((A))
+#define rw_trywrlock(A) my_rw_trywrlock((A))
 #define rw_unlock(A) my_rw_unlock((A))
 #define rwlock_destroy(A) my_rwlock_destroy((A))
 
-extern	int	my_rwlock_init( my_rw_lock_t *, void * );
-extern	int	my_rwlock_destroy( my_rw_lock_t * );
-extern	int	my_rw_rdlock( my_rw_lock_t * );
-extern	int	my_rw_wrlock( my_rw_lock_t * );
-extern	int	my_rw_unlock( my_rw_lock_t * );
+extern int my_rwlock_init(my_rw_lock_t *, void *);
+extern int my_rwlock_destroy(my_rw_lock_t *);
+extern int my_rw_rdlock(my_rw_lock_t *);
+extern int my_rw_wrlock(my_rw_lock_t *);
+extern int my_rw_unlock(my_rw_lock_t *);
+extern int my_rw_tryrdlock(my_rw_lock_t *);
+extern int my_rw_trywrlock(my_rw_lock_t *);
 #endif /* USE_MUTEX_INSTEAD_OF_RW_LOCKS */
 
 #define GETHOSTBYADDR_BUFF_SIZE 2048
@@ -559,10 +631,16 @@ extern int pthread_dummy(int);
 /* All thread specific variables are in the following struct */
 
 #define THREAD_NAME_SIZE 10
+#ifndef DEFAULT_THREAD_STACK
 #if defined(__ia64__)
-#define DEFAULT_THREAD_STACK	(128*1024)
+/*
+  MySQL can survive with 32K, but some glibc libraries require > 128K stack
+  To resolve hostnames
+*/
+#define DEFAULT_THREAD_STACK	(256*1024L)
 #else
-#define DEFAULT_THREAD_STACK	(64*1024)
+#define DEFAULT_THREAD_STACK	(192*1024)
+#endif
 #endif
 
 struct st_my_thread_var
@@ -576,6 +654,9 @@ struct st_my_thread_var
   long id;
   int cmp_length;
   int volatile abort;
+  my_bool init;
+  struct st_my_thread_var *next,**prev;
+  void *opt_info;
 #ifndef DBUG_OFF
   gptr dbug;
   char name[THREAD_NAME_SIZE+1];
@@ -585,6 +666,11 @@ struct st_my_thread_var
 extern struct st_my_thread_var *_my_thread_var(void) __attribute__ ((const));
 #define my_thread_var (_my_thread_var())
 #define my_errno my_thread_var->thr_errno
+/*
+  Keep track of shutdown,signal, and main threads so that my_end() will not
+  report errors with them
+*/
+extern pthread_t shutdown_th, main_th, signal_th;
 
 	/* statistics_xxx functions are for not essential statistic */
 
@@ -593,8 +679,6 @@ extern struct st_my_thread_var *_my_thread_var(void) __attribute__ ((const));
 #define thread_safe_increment(V,L) atomic_add(1,(atomic_t*) &V);
 #define thread_safe_add(V,C,L)     atomic_add((C),(atomic_t*) &V);
 #define thread_safe_sub(V,C,L)     atomic_sub((C),(atomic_t*) &V);
-#define statistic_increment(V,L)   thread_safe_increment((V),(L))
-#define statistic_add(V,C,L)       thread_safe_add((V),(C),(L))
 #else
 #define thread_safe_increment(V,L) \
 	pthread_mutex_lock((L)); (V)++; pthread_mutex_unlock((L));
@@ -602,6 +686,7 @@ extern struct st_my_thread_var *_my_thread_var(void) __attribute__ ((const));
 	pthread_mutex_lock((L)); (V)+=(C); pthread_mutex_unlock((L));
 #define thread_safe_sub(V,C,L) \
 	pthread_mutex_lock((L)); (V)-=(C); pthread_mutex_unlock((L));
+#endif /* HAVE_ATOMIC_ADD */
 #ifdef SAFE_STATISTICS
 #define statistic_increment(V,L)   thread_safe_increment((V),(L))
 #define statistic_add(V,C,L)       thread_safe_add((V),(C),(L))
@@ -609,11 +694,9 @@ extern struct st_my_thread_var *_my_thread_var(void) __attribute__ ((const));
 #define statistic_increment(V,L) (V)++
 #define statistic_add(V,C,L)     (V)+=(C)
 #endif /* SAFE_STATISTICS */
-#endif /* HAVE_ATOMIC_ADD */
 #endif /* thread_safe_increment */
 
 #ifdef  __cplusplus
 }
 #endif
-
 #endif /* _my_ptread_h */
