@@ -2,6 +2,13 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.6  2005/07/07 06:45:23  tweety
+# Autor: Blake Swadling <blake@swadling.com>
+# Autor: John Hay <jhay@icomtek.csir.co.za>
+# Honor Makefile src
+# honor +- in import track
+# update TODO
+#
 # Revision 1.5  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -71,7 +78,7 @@ sub import_GpsDrive_track_file($$){
 
 	( $lat2,$lon2,$alt2,$time2 ) = (0,0,0,0);
 
-        if ($line =~ m/^\s*(\d{1,3}\.\d+)\s+(\d{1,3}\.\d+)\s+([\d\.]+)\s+(\S+\s+\S+\s+\d+\s+[\d\:]+\s+\d+)/ ) {
+        if ($line =~ m/^\s*(-?\d{1,3}\.\d+)\s+(-?\d{1,3}\.\d+)\s+(-?[\d\.]+)\s+(\S+\s+\S+\s+\d+\s+[\d\:]+\s+\d+)/ ) {
             $lat2  = $1;
             $lon2  = $2;
             $alt2  = $3;

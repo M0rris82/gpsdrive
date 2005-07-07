@@ -15,8 +15,12 @@ glade-2. So if you want to make changes inside the userinterface code you
 might want to wait another 3-4 weeks until these changes have made it into the CVS. 
 
 The easiest for me/us to get patches is:
+
+ cvs co gpsdrive
+ cd gpsdrive
  cvs up
- cvs diff -u
+ cvs diff -u >name_of_patch.patch
+
 and send the output to the mailinglist.
 
 
@@ -290,6 +294,14 @@ remove gpsd sources
 Joerg:
 ------
 
+Fix line width glitch when displaying grid.
+
+Split a seperate track database off
+
+update opengeodb support to import the New Datasets. 
+ Problem is the Database Format completely changed
+
+
 Trying to import gpsdrive into eclipse. Any help appreciated.
 
 Staighten the naming of variables and functions
@@ -361,9 +373,7 @@ Old (has to be checked):
 
 Command line switch to set gpsd hostname and port for remote control.
 
-Add additional server: expedia.com
-
-Add  load of trackings (i.e. stored in the GPS and
+Add load of trackings (i.e. stored in the GPS and
 converted with a nice perl script anyone will write).
 
 Servermode to display different positions provided over Internet

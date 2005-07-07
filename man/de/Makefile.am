@@ -6,7 +6,7 @@ EXTRA_DIST = gpsdrive.1
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/de/man1/
-	$(INSTALL_DATA) gpsdrive.1 $(DESTDIR)$(mandir)/de/man1/gpsdrive.1
+	$(INSTALL_DATA) $(srcdir)/gpsdrive.1 $(DESTDIR)$(mandir)/de/man1/gpsdrive.1
 
 
 
