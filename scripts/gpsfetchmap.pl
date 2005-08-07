@@ -9,6 +9,11 @@
 #
 #
 # $Log$
+# Revision 1.13  2005/08/07 22:38:59  tweety
+# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=33
+# Autor: cej@intech.com
+# make $KOORD_FILE relative to $mapdir
+#
 # Revision 1.12  2005/08/07 22:27:10  tweety
 # retrieve Google Maps
 # Author: Konstantin Naumov <piterpen@gmail.com>
@@ -199,7 +204,6 @@ my $scale               = '100000-200000';
 my $CONFIG_DIR          = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 my $CONFIG_FILE         = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE          = "$CONFIG_DIR/way.txt";
-my $KOORD_FILE          = "$CONFIG_DIR/map_koord.txt"; # Should we allow config of this?
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
 my $FILEPREFIX          = 'map_';
 my $mapserver           = 'expedia';
@@ -237,6 +241,7 @@ GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon,
 	     'help|x'         => \$help,       'version' => \$version
 	     )
     or pod2usage(1);
+
 
 if ( $mapserver eq 'googlesat') {
     $MIN_MAP_BYTES = 1000; # Small Tiles
@@ -287,6 +292,7 @@ $unit ||= $CFG->{units};
 $mapdir ||= $CFG->{mapdir};
 $mapdir ||= $CONFIG_DIR;
 
+my $KOORD_FILE  = "$mapdir/map_koord.txt";
 
 
 #############################################################################
