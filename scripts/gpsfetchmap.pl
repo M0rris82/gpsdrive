@@ -9,6 +9,11 @@
 #
 #
 # $Log$
+# Revision 1.14  2005/08/07 22:43:23  tweety
+# The script changes to the config directory instead to the map directory
+# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=32
+# Autor: cej@intech.com
+#
 # Revision 1.13  2005/08/07 22:38:59  tweety
 # http://bugzilla.gpsdrive.cc/show_bug.cgi?id=33
 # Autor: cej@intech.com
@@ -313,7 +318,7 @@ if ($version) {
 pod2usage(1) if (&error_check);
 
 # Change into the gpsdrive maps directory 
-chdir($CONFIG_DIR);
+chdir($mapdir);
 
 ############################################
 if ( $check_koord_file ) {
