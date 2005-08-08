@@ -605,10 +605,13 @@ Please have also a look on
 
 .SH User defined waypoint icons
 
-If you are using SQL (see below) for your waypoints, you can define your own
-waypoint icons.
+You may define the waypoint-type and the full path to the related image
+in $HOME/.gpsdrive/icons.txt. The file doesn't support commenting and is
+parsed line by line. The waypoint-types are case insensitive. 
+Please follow the the given icons.txt ...
 .br
-Do the following steps:
+If you are using SQL (see below) for your waypoints, you can define your own
+waypoint icons like this:
 .br
 Create the directory: $HOME/.gpsdrive/icons and 
 place your icons (image type must be PNG) into this directory, with the name of
