@@ -2,6 +2,11 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.6  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.5  2005/05/24 08:35:25  tweety
 # move track splitting to its own function +sub track_add($)
 # a little bit more error handling
@@ -21,7 +26,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::Kismet;
+package Geo::Gpsdrive::POI::Kismet;
 
 use strict;
 use warnings;
@@ -31,9 +36,9 @@ use File::Basename;
 use File::Path;
 use Data::Dumper;
 
-use POI::DBFuncs;
-use POI::Utils;
-use POI::Gps;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
+use Geo::Gpsdrive::POI::Gps;
 
 use Date::Manip;
 use Time::Local;
@@ -61,7 +66,7 @@ sub import_Kismet_track_file($$){
     my $fh = IO::File->new("<$full_filename");
 
 
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -70,8 +75,8 @@ sub import_Kismet_track_file($$){
 	    'source.comment' => 'My own Tracks' ,
 	    'source.licence' => "It's up to myself"
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
     
     my $track = { 
@@ -119,7 +124,7 @@ sub import_Kismet_track_file($$){
 		 
     }
     my $segment_count = @{$track->{segments}};
-    POI::DBFuncs::track_add( $track );
+    Geo::Gpsdrive::POI::DBFuncs::track_add( $track );
     print "read $line_count lines with $segment_count segments from $full_filename\n";
 }
 
@@ -138,11 +143,11 @@ sub import_Data($){
 
     my @files = glob($kismet_file_pattern);
     printf "Importing (%d) files from $kismet_file_pattern/*.gps\n",scalar @files;
-    POI::DBFuncs::disable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::disable_keys('streets');
     foreach  my $full_filename ( @files ) {
 	import_Kismet_track_file($full_filename,$source);
     }
-    POI::DBFuncs::enable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::enable_keys('streets');
 }
 
 1;

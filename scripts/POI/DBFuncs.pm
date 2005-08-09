@@ -1,6 +1,11 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.20  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.19  2005/05/24 08:35:25  tweety
 # move track splitting to its own function +sub track_add($)
 # a little bit more error handling
@@ -48,7 +53,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::DBFuncs;
+package Geo::Gpsdrive::POI::DBFuncs;
 
 use strict;
 use warnings;
@@ -56,7 +61,7 @@ use warnings;
 use POSIX qw(strftime);
 use Time::Local;
 use DBI;
-use POI::Utils;
+use Geo::Gpsdrive::POI::Utils;
 use Data::Dumper;
 use IO::File;
 
@@ -660,7 +665,7 @@ sub track_add($){
 	
 	if ( $valid ) {
 	    my $split="";
-	    my $dist = POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);
+	    my $dist = Geo::Gpsdrive::POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);
 	    my $time_delta = $time2 - $time1;
 	    my $speed      = $segment->{speed};
 	    my $calc_speed = ( $time_delta ? ($dist / $time_delta * 3.600) : -1);

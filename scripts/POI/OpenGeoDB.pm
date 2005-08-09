@@ -1,6 +1,11 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.12  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.11  2005/05/10 05:28:49  tweety
 # type in disable_keys
 #
@@ -24,14 +29,14 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::OpenGeoDB;
+package Geo::Gpsdrive::POI::OpenGeoDB;
 
 use strict;
 use warnings;
 
 use IO::File;
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 use File::Path;
 
 #############################################################################
@@ -47,7 +52,7 @@ sub read_open_geo_db($){
 
     my $source = "open geo db";
     delete_all_from_source($source);
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -57,8 +62,8 @@ sub read_open_geo_db($){
 		'source.comment' => '' ,
 		'source.licence' => ""
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
 
     my @columns;
@@ -148,7 +153,7 @@ sub read_open_geo_db($){
 		$values->{'poi.source_id'}=$source_id;
 		
 		correct_lat_lon($values);
-		POI::DBFuncs::add_poi($values);
+		Geo::Gpsdrive::POI::DBFuncs::add_poi($values);
 		#print "Values:".Dumper(\$values);
 	    }
 	}
@@ -179,14 +184,14 @@ sub import_Data() {
     # Unpack it 
     `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
 
-    POI::DBFuncs::disable_keys('poi');
+    Geo::Gpsdrive::POI::DBFuncs::disable_keys('poi');
 
     for my $file_name ( glob("$unpack_dir/opengeodb*.txt") ) {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	read_open_geo_db($file_name);
     }
 
-    POI::DBFuncs::enable_keys('poi');
+    Geo::Gpsdrive::POI::DBFuncs::enable_keys('poi');
 
 }
 

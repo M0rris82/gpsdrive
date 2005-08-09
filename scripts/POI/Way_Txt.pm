@@ -1,6 +1,11 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.3  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.2  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -11,7 +16,7 @@
 # Add new Icon
 #
 
-package POI::Way_Txt;
+package Geo::Gpsdrive::POI::Way_Txt;
 
 use strict;
 use warnings;
@@ -19,10 +24,10 @@ use warnings;
 use POSIX qw(strftime);
 use Time::Local;
 use DBI;
-use POI::Utils;
+use Geo::Gpsdrive::POI::Utils;
 use Data::Dumper;
 use IO::File;
-use POI::DBFuncs;
+use Geo::Gpsdrive::POI::DBFuncs;
 
 $|= 1;                          # Autoflush
 
@@ -47,7 +52,7 @@ BEGIN {
 # *****************************************************************************
 sub import_Data(){
     
-    POI::DBFuncs::disable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::disable_keys('streets');
 
 
     # Import Points from way*.txt into DB
@@ -132,12 +137,12 @@ sub import_Data(){
 			   "$t.wep"             => $wep,
 		       };
 		
-		POI::DBFuncs::db_exec("DELETE FROM $t ".
+		Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM $t ".
 			"WHERE $t.name = '$columns[0]' ".
 			"AND   $t.lat  = '$columns[1]' ".
 			"AND   $t.lon  = '$columns[2]' ");
 		
-		POI::DBFuncs::insert_hash($t,	$wp );
+		Geo::Gpsdrive::POI::DBFuncs::insert_hash($t,	$wp );
 	    }
 	    $count++;
 	}
@@ -145,7 +150,7 @@ sub import_Data(){
 	print "Inserted $count Entries from $file_name\n";
     }
 
-    POI::DBFuncs::enable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::enable_keys('streets');
 }
 
 

@@ -1,6 +1,11 @@
 # Read Data from US Census Bureau and import into geoinfo DB
 #
 # $Log$
+# Revision 1.3  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.2  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -8,14 +13,14 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::census;
+package Geo::Gpsdrive::POI::census;
 
 use strict;
 use warnings;
 
 use IO::File;
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 
 ########################################################################################
 # Get and Unpack Census Data

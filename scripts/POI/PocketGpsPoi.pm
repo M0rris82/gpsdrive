@@ -1,6 +1,11 @@
 # Import Speedtrap Data into geoinfo.poi
 #
 # $Log$
+# Revision 1.4  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.3  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -11,7 +16,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::PocketGpsPoi;
+package Geo::Gpsdrive::POI::PocketGpsPoi;
 
 use strict;
 use warnings;
@@ -19,8 +24,8 @@ use warnings;
 use IO::File;
 use LWP::Debug qw(- -conns -trace);
 use LWP::UserAgent;
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 
 #############################################################################
 # Args: 

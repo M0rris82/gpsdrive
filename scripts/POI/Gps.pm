@@ -1,6 +1,11 @@
 # Some Gps related Functions
 #
 # $Log$
+# Revision 1.6  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.5  2005/05/24 08:35:25  tweety
 # move track splitting to its own function +sub track_add($)
 # a little bit more error handling
@@ -23,7 +28,7 @@
 use strict;
 use warnings;
 
-package POI::Gps;
+package Geo::Gpsdrive::POI::Gps;
 
 use IO::File;
 use File::Basename;

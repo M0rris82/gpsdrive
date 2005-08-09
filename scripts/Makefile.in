@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -45,11 +46,19 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(poidir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+poiDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(poi_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -195,18 +204,18 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-
-#scriptsdir = $(datadir)/gpsdrive/scripts
 bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl \
-		poi.pl 	POI/census.pm POI/Kismet.pm POI/DBFuncs.pm POI/mapsource.pm \
-		       	POI/Defaults_Cities.pm POI/NGA.pm POI/gpsdrive.pm \
-			POI/OpenGeoDB.pm POI/GpsDrive.pm POI/PocketGpsPoi.pm \
-			POI/Gps.pm POI/Utils.pm POI/JiGLE.pm POI/WDB.pm
+		poi.pl 	
 
-EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch poi.pl POI/census.pm POI/Kismet.pm POI/DBFuncs.pm POI/mapsource.pm POI/Defaults_Cities.pm POI/NGA.pm POI/gpsdrive.pm POI/OpenGeoDB.pm POI/GpsDrive.pm POI/PocketGpsPoi.pm POI/Gps.pm POI/Utils.pm POI/JiGLE.pm POI/WDB.pm
+EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way \
+	geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch \
+	poi.pl
+
 gpsdrivedir = $(datadir)/gpsdrive
+poidir = /usr/share/perl5/Geo/Gpsdrive/POI
+poi_DATA = POI/*.pm
 all: all-am
 
 .SUFFIXES:
@@ -268,6 +277,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-poiDATA: $(poi_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(poidir)" || $(mkdir_p) "$(DESTDIR)$(poidir)"
+	@list='$(poi_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(poiDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(poidir)/$$f'"; \
+	  $(poiDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(poidir)/$$f"; \
+	done
+
+uninstall-poiDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(poi_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(poidir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(poidir)/$$f"; \
+	done
 tags: TAGS
 TAGS:
 
@@ -276,7 +302,6 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/POI
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -305,9 +330,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(SCRIPTS)
+all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(poidir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -352,7 +377,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-poiDATA
 
 install-exec-am: install-binSCRIPTS
 
@@ -378,17 +403,18 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-info-am
+uninstall-am: uninstall-binSCRIPTS uninstall-info-am uninstall-poiDATA
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-binSCRIPTS install-data install-data-am install-exec \
 	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-binSCRIPTS uninstall-info-am
+	install-poiDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am uninstall uninstall-am uninstall-binSCRIPTS \
+	uninstall-info-am uninstall-poiDATA
 
 
 poi:

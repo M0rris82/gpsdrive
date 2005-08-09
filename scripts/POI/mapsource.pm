@@ -2,6 +2,11 @@
 # and import into geoinfo.poi
 #
 # $Log$
+# Revision 1.4  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.3  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -10,14 +15,14 @@
 # update configure and po Files
 #
 
-package POI::mapsource;
+package Geo::Gpsdrive::POI::mapsource;
 
 use strict;
 use warnings;
 
 use IO::File;
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 
 #############################################################################
 # Args: 
@@ -82,7 +87,7 @@ sub read_mapsource_waypoints($){
     return $waypoints;
 }
 
-sub POI::mapsource::import_DB
+sub Geo::Gpsdrive::POI::mapsource::import_DB
 {
     my $waypoints = read_mapsource_waypoints($do_mapsource_points);
     db_add_waypoints($waypoints);

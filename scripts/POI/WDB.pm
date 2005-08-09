@@ -2,6 +2,11 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.10  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.9  2005/05/01 13:49:36  tweety
 # Added more Icons
 # Moved filling with defaults to DB_Defaults.pm
@@ -22,7 +27,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::WDB;
+package Geo::Gpsdrive::POI::WDB;
 
 use strict;
 use warnings;
@@ -32,8 +37,8 @@ use File::Basename;
 use File::Path;
 use Data::Dumper;
 
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 
 $|=1;
 
@@ -77,7 +82,7 @@ sub import_wdb($){
 
     my $source = "WDB $sub_source";
     delete_all_from_source($source);
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -86,8 +91,8 @@ sub import_wdb($){
 	    'source.comment' => '' ,
 	    'source.licence' => ""
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
     
 
@@ -116,7 +121,7 @@ sub import_wdb($){
 	    $scale_max = 1000000    if  $rank >2;
 	    $scale_max = 10000000   if  $rank >3;
 	    $scale_max = 100000000  if  $rank >4;
-	    POI::DBFuncs::segments_add(
+	    Geo::Gpsdrive::POI::DBFuncs::segments_add(
 				   { scale_min       => 1,
 				     scale_max       => $scale_max,
 				     streets_type_id => $streets_type_id, 
@@ -138,7 +143,7 @@ sub import_wdb($){
 		my $type_hash= {
 		    'streets_type.name' => $type_name
 		    };
-		POI::DBFuncs::insert_hash("streets_type",$type_hash);
+		Geo::Gpsdrive::POI::DBFuncs::insert_hash("streets_type",$type_hash);
 		$streets_type_id = streets_type_name2id($type_name);
 	    }	
 	} elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
@@ -163,7 +168,7 @@ sub import_wdb($){
 	    print "Unrecognized Line '$line'\n";
 	}
     }
-    POI::DBFuncs::segments_add( {
+    Geo::Gpsdrive::POI::DBFuncs::segments_add( {
 	scale_min       => 1,
 	scale_max       => $scale_max,
 	streets_type_id => $streets_type_id, 
@@ -199,14 +204,14 @@ sub import_Data(){
 	print "unpack: $dst_file up to date\n" unless $verbose;
     }
     
-    POI::DBFuncs::disable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::disable_keys('streets');
     debug("$unpack_dir/WDB/*.txt");
     foreach  my $full_filename ( glob("$unpack_dir/WDB/euro*.txt") ) {
 	# print "Mirror: $mirror\n";
 	
 	import_wdb($full_filename);
     }
-    POI::DBFuncs::enable_keys('streets');
+    Geo::Gpsdrive::POI::DBFuncs::enable_keys('streets');
 }
 
 1;

@@ -1,6 +1,11 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.10  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.9  2005/05/14 21:21:23  tweety
 # Update Index createion
 # Update default Streets
@@ -26,15 +31,15 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::NGA;
+package Geo::Gpsdrive::POI::NGA;
 
 use strict;
 use warnings;
 
 use IO::File;
 use File::Path;
-use POI::DBFuncs;
-use POI::Utils;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
 use Data::Dumper;
 
 
@@ -342,7 +347,7 @@ sub add_earthinfo_nga_mil_to_db($$){
     $fh or die ("add_earthinfo_nga_mil_to_db: Cannot open $full_filename:$!\n");
     
     delete_all_from_source($source);
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -363,8 +368,8 @@ sub add_earthinfo_nga_mil_to_db($$){
 		"Agency name, initials, and seal are protected by ".
 		"10 United States Code Section xxx445."
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
     
 
@@ -501,7 +506,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    
 	{   # DIM Dimension.  
 	    #     Usually used to display elevation or population data.
-	    #     ÃƒÃ¯Â¿Å“Â± 10 Digits
+	    #     ÃƒÃ¯Â¿Å“Â± 10 Digits
 	    my $proximity = $values->{'dim'} ;
 	    $proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
 	    $proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
@@ -521,17 +526,17 @@ sub add_earthinfo_nga_mil_to_db($$){
 
 	    # UFI
 	    # Unique Feature Identifier.  A number which uniquely identifies the feature. 
-	    # number ÃƒÃ¯Â¿Å“Â± 10 Digits
+	    # number ÃƒÃ¯Â¿Å“Â± 10 Digits
 
 	    # UNI
 	    # Unique Name Identifier.  A number which uniquely identifies a name.
-	    # number ÃƒÃ¯Â¿Å“Â± 10 Digits
+	    # number ÃƒÃ¯Â¿Å“Â± 10 Digits
 
 
-	    # LAT      Latitude of the feature in ÃƒÃ¯Â¿Å“Â± decimal degrees (WGS84):                ÃƒÃ¯Â¿Å“Â± 2.7 Digits
-	    # LONG     Longitude of the feature in ÃƒÃ¯Â¿Å“Â± decimal degrees (WGS84):               ÃƒÃ¯Â¿Å“Â± 3.7 Digits
-	    # DMS_LAT  Latitude of the feature in ÃƒÃ¯Â¿Å“Â± degrees, minutes, and seconds (WGS84):  ÃƒÃ¯Â¿Å“Â± 6 Digits
-	    # DMS_LONG Longitude of the feature in ÃƒÃ¯Â¿Å“Â± degrees, minutes, and seconds (WGS84): ÃƒÃ¯Â¿Å“Â± 7 Digits
+	    # LAT      Latitude of the feature in ÃƒÃ¯Â¿Å“Â± decimal degrees (WGS84):                ÃƒÃ¯Â¿Å“Â± 2.7 Digits
+	    # LONG     Longitude of the feature in ÃƒÃ¯Â¿Å“Â± decimal degrees (WGS84):               ÃƒÃ¯Â¿Å“Â± 3.7 Digits
+	    # DMS_LAT  Latitude of the feature in ÃƒÃ¯Â¿Å“Â± degrees, minutes, and seconds (WGS84):  ÃƒÃ¯Â¿Å“Â± 6 Digits
+	    # DMS_LONG Longitude of the feature in ÃƒÃ¯Â¿Å“Â± degrees, minutes, and seconds (WGS84): ÃƒÃ¯Â¿Å“Â± 7 Digits
 	    # UTM      Universal Transverse Mercator coordinate grid reference.               4 Characters
 	    # JOG      Joint Operations Graphic reference.                                    7 Characters
 

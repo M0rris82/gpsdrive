@@ -1,6 +1,11 @@
 # Some small ungrouped Utility functions
 #
 # $Log$
+# Revision 1.4  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.3  2005/04/10 00:15:58  tweety
 # changed primary language for poi-type generation to english
 # added translation for POI-types
@@ -8,7 +13,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::Utils;
+package Geo::Gpsdrive::POI::Utils;
 
 use strict;
 use warnings;

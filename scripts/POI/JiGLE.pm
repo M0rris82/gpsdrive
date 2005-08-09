@@ -3,6 +3,11 @@
 # schreiben in die POI Datenbank
 #
 # $Log$
+# Revision 1.5  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.4  2005/05/10 05:28:49  tweety
 # type in disable_keys
 #
@@ -13,7 +18,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::JiGLE;
+package Geo::Gpsdrive::POI::JiGLE;
 
 use strict;
 use warnings;
@@ -23,9 +28,9 @@ use File::Basename;
 use File::Path;
 use Data::Dumper;
 
-use POI::DBFuncs;
-use POI::Utils;
-use POI::Gps;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
+use Geo::Gpsdrive::POI::Gps;
 
 use Date::Manip;
 use Time::Local;
@@ -98,7 +103,7 @@ sub import_Jigle_file($$){
 
 	    $point->{source_id} = $source_id;
 	    correct_lat_lon($point);
-	    POI::DBFuncs::add_poi($point);
+	    Geo::Gpsdrive::POI::DBFuncs::add_poi($point);
 	    #print "Point:".Dumper(\$point);
 	    
 	}	    
@@ -114,7 +119,7 @@ sub import_Data($){
     my $source = "JiGLE WLAN";
 
 
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -123,8 +128,8 @@ sub import_Data($){
 	    'source.comment' => 'JiGLE Wlan' ,
 	    'source.licence' => "JiGLE"
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
 
     $wlan_wep    = poi_type_name2id("W-LAN.WEP");
@@ -132,7 +137,7 @@ sub import_Data($){
     $wlan_public = poi_type_name2id("W-LAN.Oeffentlich");
 
 
-    POI::DBFuncs::disable_keys('poi');
+    Geo::Gpsdrive::POI::DBFuncs::disable_keys('poi');
 
     delete_all_from_source($source);
 
@@ -141,7 +146,7 @@ sub import_Data($){
 	import_Jigle_file($full_filename,$source_id)
 	    if ( -s $full_filename > 110 );
     }
-    POI::DBFuncs::enable_keys('poi');
+    Geo::Gpsdrive::POI::DBFuncs::enable_keys('poi');
 }
 
 1;

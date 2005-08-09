@@ -1,6 +1,11 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.4  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.3  2005/05/24 08:35:25  tweety
 # move track splitting to its own function +sub track_add($)
 # a little bit more error handling
@@ -20,7 +25,7 @@
 # Add new Icon
 #
 
-package POI::DB_Defaults;
+package Geo::Gpsdrive::POI::DB_Defaults;
 
 use strict;
 use warnings;
@@ -28,10 +33,10 @@ use warnings;
 use POSIX qw(strftime);
 use Time::Local;
 use DBI;
-use POI::Utils;
+use Geo::Gpsdrive::POI::Utils;
 use Data::Dumper;
 use IO::File;
-use POI::DBFuncs;
+use Geo::Gpsdrive::POI::DBFuncs;
 
 $|= 1;                          # Autoflush
 
@@ -551,7 +556,7 @@ sub defaults(){
     my $unknown_translations;
     
     # for debug purpose
-    POI::DBFuncs::db_exec("TRUNCATE TABLE `poi_type`;");
+    Geo::Gpsdrive::POI::DBFuncs::db_exec("TRUNCATE TABLE `poi_type`;");
 
 
     # Icon
@@ -742,8 +747,8 @@ sub defaults(){
 	}
 	
 	# Insert to Database
-	POI::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
-	POI::DBFuncs::db_exec("INSERT INTO `poi_type` ".
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("INSERT INTO `poi_type` ".
 			      "       (poi_type_id, name,name_de, symbol, description,description_de ) ".
 			      "VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de');") 
 	    or die;
@@ -797,21 +802,21 @@ sub defaults(){
 # -----------------------------------------------------------------------------
 {   # Just some Default Sources
     my $coutry2name;
-    for my $k ( keys %{$POI::NGA::name2country} ) {
-	$coutry2name->{$POI::NGA::name2country->{$k}} =$k;
+    for my $k ( keys %{$Geo::Gpsdrive::POI::NGA::name2country} ) {
+	$coutry2name->{$Geo::Gpsdrive::POI::NGA::name2country->{$k}} =$k;
     }
 
-    for my $country  ( @POI::NGA::countries ) {    
+    for my $country  ( @Geo::Gpsdrive::POI::NGA::countries ) {    
 	my $name ="earth-info.nga.mil $country";
 
-	POI::DBFuncs::db_exec("DELETE FROM `source` WHERE source.name = '$name';");
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM `source` WHERE source.name = '$name';");
 	my $source_hash = {
 	    'source.url'     => "http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz",
 	    'source.name'    => $name,
 	    'source.comment' => "GeoData for $coutry2name->{$country}($country)",
 	    'source.licence' => ""
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
     }
 
     for my $source  ( qw( import_way.txt
@@ -820,14 +825,14 @@ sub defaults(){
 	my $name ="$source";
 	$name =~ s/_/ /g;
 
-	POI::DBFuncs::db_exec("DELETE FROM `source` WHERE source.name = '$name';");
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM `source` WHERE source.name = '$name';");
 	my $source_hash = {
 	    'source.url'     => "",
 	    'source.name'    => $name,
 	    'source.comment' => "$name",
 	    'source.licence' => ""
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
     }
 
 }
@@ -864,8 +869,8 @@ sub defaults(){
 	    my $delete_query=sprintf("DELETE FROM $t ".
 				     "WHERE name = '%s' AND $type_query",
 				     $loc->{"$t.name"});
-	    POI::DBFuncs::db_exec( $delete_query);
-	    POI::DBFuncs::insert_hash($t, $wp_defaults, $loc );
+	    Geo::Gpsdrive::POI::DBFuncs::db_exec( $delete_query);
+	    Geo::Gpsdrive::POI::DBFuncs::insert_hash($t, $wp_defaults, $loc );
 	}
     }
 }
@@ -1416,8 +1421,8 @@ sub defaults(){
 	    my $delete_query=sprintf("DELETE FROM $t ".
 				     "WHERE name = '%s' AND $type_query",
 				     $loc->{"$t.name"});
-	    POI::DBFuncs::db_exec( $delete_query);
-	    POI::DBFuncs::insert_hash($t, $wp_defaults, $loc );
+	    Geo::Gpsdrive::POI::DBFuncs::db_exec( $delete_query);
+	    Geo::Gpsdrive::POI::DBFuncs::insert_hash($t, $wp_defaults, $loc );
 	}
     }
 }
@@ -1441,8 +1446,8 @@ sub defaults(){
 	    $name = "WDB $kind rank ${rank}";
 	    my $linetype='';
 	    $streets_type_id++;
-	    POI::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id' ;");
-	    POI::DBFuncs::db_exec("INSERT INTO `streets_type` ".
+	    Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id' ;");
+	    Geo::Gpsdrive::POI::DBFuncs::db_exec("INSERT INTO `streets_type` ".
 				  "        (streets_type_id, name, description , description_de , color , linetype )".
 				  " VALUES ($i,'$name','$name','$name','$color','$linetype');");
 	    
@@ -1487,8 +1492,8 @@ sub defaults(){
 	my $linetype='';
 
 	$streets_type_id++;
-	POI::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
-	POI::DBFuncs::db_exec("INSERT INTO `streets_type` ".
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
+	Geo::Gpsdrive::POI::DBFuncs::db_exec("INSERT INTO `streets_type` ".
 			      "        (streets_type_id,  name, description , color , linetype )".
 			      " VALUES ($i,'$name','$name','$color','$linetype');");
 	
@@ -2146,8 +2151,8 @@ sub defaults(){
 
 	$multi_segment->{'segments'} = $segments;
 
-#	POI::DBFuncs::segments_add_from_segment_array($multi_segment);
-	POI::DBFuncs::segments_add($multi_segment);
+#	Geo::Gpsdrive::POI::DBFuncs::segments_add_from_segment_array($multi_segment);
+	Geo::Gpsdrive::POI::DBFuncs::segments_add($multi_segment);
     }
 }
 

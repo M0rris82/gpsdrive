@@ -2,6 +2,11 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.7  2005/08/09 01:08:30  tweety
+# Twist and bend in the Makefiles to install the DataDirectory more apropriate
+# move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
+# adapt icons.txt loading according to these directories
+#
 # Revision 1.6  2005/07/07 06:45:23  tweety
 # Autor: Blake Swadling <blake@swadling.com>
 # Autor: John Hay <jhay@icomtek.csir.co.za>
@@ -19,7 +24,7 @@
 # added LOG: Entry for CVS to some *.pm Files
 #
 
-package POI::GpsDrive;
+package Geo::Gpsdrive::POI::GpsDrive;
 
 use strict;
 use warnings;
@@ -29,9 +34,9 @@ use File::Basename;
 use File::Path;
 use Data::Dumper;
 
-use POI::DBFuncs;
-use POI::Utils;
-use POI::Gps;
+use Geo::Gpsdrive::POI::DBFuncs;
+use Geo::Gpsdrive::POI::Utils;
+use Geo::Gpsdrive::POI::Gps;
 
 use Date::Manip;
 use Time::Local;
@@ -50,7 +55,7 @@ sub import_GpsDrive_track_file($$){
     my ($lat1,$lon1,$alt1,$time1) = (0,0,0,0);
     my ($lat2,$lon2,$alt2,$time2) = (0,0,0,0);
 
-    my $source_id = POI::DBFuncs::source_name2id($source);
+    my $source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
 	my $source_hash = {
@@ -59,8 +64,8 @@ sub import_GpsDrive_track_file($$){
 	    'source.comment' => 'My own Tracks' ,
 	    'source.licence' => "It's up to myself"
 	    };
-	POI::DBFuncs::insert_hash("source", $source_hash);
-	$source_id = POI::DBFuncs::source_name2id($source);
+	Geo::Gpsdrive::POI::DBFuncs::insert_hash("source", $source_hash);
+	$source_id = Geo::Gpsdrive::POI::DBFuncs::source_name2id($source);
     }
     
 
@@ -96,7 +101,7 @@ sub import_GpsDrive_track_file($$){
 	next unless $valid;
 
 
-	my $dist = POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);;
+	my $dist = Geo::Gpsdrive::POI::Gps::earth_distance($lat1,$lon1,$lat2,$lon2);;
 	my $time_delta = $time2 - $time1;
 	my $speed      = $valid&&$time_delta ? $dist / $time_delta * 3.600 : -1;
 	#printf "Dist: %.4f/%.2f =>  %.2f\n",$dist,$time_delta,$speed;
@@ -135,7 +140,7 @@ sub import_GpsDrive_track_file($$){
 	}
 	
 	if ( $valid ) {
-	    POI::DBFuncs::streets_add(
+	    Geo::Gpsdrive::POI::DBFuncs::streets_add(
 				  { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
 				    lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
 				    level_min => 0, level_max => 99,
