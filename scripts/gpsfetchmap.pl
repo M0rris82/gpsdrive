@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.15  2005/08/10 06:09:43  tweety
+# increase Version for google download
+#
 # Revision 1.14  2005/08/07 22:43:23  tweety
 # The script changes to the config directory instead to the map directory
 # http://bugzilla.gpsdrive.cc/show_bug.cgi?id=32
@@ -1594,7 +1597,7 @@ sub google_stitch($$$$$$) {
 	    print "google_stitch: $lat($hpos), $lon($vpos), $scale\n" if $debug;
 	    my $googlename = xy2goog($hpos, $vpos, $zoom);
 	    my $filename = "$google_mirror_dir/$googlename.jpg";
-	    my $url = "http://kh.google.com/kh?v=2&t=$googlename";
+	    my $url = "http://kh.google.com/kh?v=3&t=$googlename";
 	    
 	    if ( ! is_map_file($filename) ) {
 		if ( mirror_map($url,$filename) ) {
