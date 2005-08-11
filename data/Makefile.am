@@ -12,3 +12,6 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif
+
+mapsdir   = $(datadir)/gpsdrive/maps
+maps_DATA = maps/top_GPSWORLD.jpg

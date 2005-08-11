@@ -54,11 +54,12 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" \
-	"$(DESTDIR)$(pixmapdir)"
+	"$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"
 cfg_filesDATA_INSTALL = $(INSTALL_DATA)
 iconsDATA_INSTALL = $(INSTALL_DATA)
+mapsDATA_INSTALL = $(INSTALL_DATA)
 pixmapDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(cfg_files_DATA) $(icons_DATA) $(pixmap_DATA)
+DATA = $(cfg_files_DATA) $(icons_DATA) $(maps_DATA) $(pixmap_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -214,6 +215,8 @@ pixmapdir = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 iconsdir = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif
+mapsdir = $(datadir)/gpsdrive/maps
+maps_DATA = maps/top_GPSWORLD.jpg
 all: all-am
 
 .SUFFIXES:
@@ -290,6 +293,23 @@ uninstall-iconsDATA:
 	  echo " rm -f '$(DESTDIR)$(iconsdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(iconsdir)/$$f"; \
 	done
+install-mapsDATA: $(maps_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(mapsdir)" || $(mkdir_p) "$(DESTDIR)$(mapsdir)"
+	@list='$(maps_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(mapsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(mapsdir)/$$f'"; \
+	  $(mapsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(mapsdir)/$$f"; \
+	done
+
+uninstall-mapsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(maps_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(mapsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(mapsdir)/$$f"; \
+	done
 install-pixmapDATA: $(pixmap_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(pixmapdir)" || $(mkdir_p) "$(DESTDIR)$(pixmapdir)"
@@ -345,7 +365,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(pixmapdir)"; do \
+	for dir in "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -391,7 +411,7 @@ info: info-am
 info-am:
 
 install-data-am: install-cfg_filesDATA install-iconsDATA \
-	install-pixmapDATA
+	install-mapsDATA install-pixmapDATA
 
 install-exec-am:
 
@@ -418,18 +438,19 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-cfg_filesDATA uninstall-iconsDATA \
-	uninstall-info-am uninstall-pixmapDATA
+	uninstall-info-am uninstall-mapsDATA uninstall-pixmapDATA
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
 	install-cfg_filesDATA install-data install-data-am \
 	install-exec install-exec-am install-iconsDATA install-info \
-	install-info-am install-man install-pixmapDATA install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-cfg_filesDATA uninstall-iconsDATA uninstall-info-am \
+	install-info-am install-man install-mapsDATA \
+	install-pixmapDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am uninstall uninstall-am uninstall-cfg_filesDATA \
+	uninstall-iconsDATA uninstall-info-am uninstall-mapsDATA \
 	uninstall-pixmapDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
