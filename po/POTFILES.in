@@ -1,9 +1,7 @@
 src/battery.c
-src/em.c
 src/fly.c
 src/friends.c
 src/friendsd.c
-src/gpsd.c
 src/gpsdrive.c
 src/gpskismet.c
 src/gpsmisc.c
@@ -15,13 +13,9 @@ src/import_map.c
 src/LatLong-UTMconversion.c
 src/nautic.c
 src/navigation.c
-src/netlib.c
-src/nmea_parse.c
 src/poi.c
-src/serial.c
 src/settings.c
 src/speech_out.c
 src/splash.c
 src/streets.c
-src/tm.c
 src/track.c
