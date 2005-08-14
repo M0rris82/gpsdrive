@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.5  2005/08/14 09:47:17  tweety
+seperate tracks into it own table in geoinfo database
+move Info's from TODO abaout geoinfo DB to Man Page
+rename poi.pl to geoinfo.pl
+
 Revision 1.4  2005/05/24 08:35:25  tweety
 move track splitting to its own function +sub track_add($)
 a little bit more error handling
@@ -82,5 +87,6 @@ void streets_rebuild_list (void);
 void streets_draw_list (void);
 gint streets_draw_cb (GtkWidget * widget, guint datum);
 void streets_check_if_moved_reset (void);
+void streets_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 
 #endif /* GPSDRIVE_STREETS_H */

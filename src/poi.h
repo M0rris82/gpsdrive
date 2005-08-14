@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.5  2005/08/14 09:47:17  tweety
+seperate tracks into it own table in geoinfo database
+move Info's from TODO abaout geoinfo DB to Man Page
+rename poi.pl to geoinfo.pl
+
 Revision 1.4  2005/03/27 00:44:42  tweety
 eperated poi_type_list and streets_type_list
 and therefor renaming the fields
@@ -93,6 +98,7 @@ void poi_init (void);
 void poi_rebuild_list (void);
 void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
+void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 
 
 #endif /* GPSDRIVE_POI_H */

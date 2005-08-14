@@ -2,6 +2,11 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.8  2005/08/14 09:47:17  tweety
+# seperate tracks into it own table in geoinfo database
+# move Info's from TODO abaout geoinfo DB to Man Page
+# rename poi.pl to geoinfo.pl
+#
 # Revision 1.7  2005/08/09 01:08:30  tweety
 # Twist and bend in the Makefiles to install the DataDirectory more apropriate
 # move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
@@ -140,7 +145,7 @@ sub import_GpsDrive_track_file($$){
 	}
 	
 	if ( $valid ) {
-	    Geo::Gpsdrive::POI::DBFuncs::streets_add(
+	    Geo::Gpsdrive::POI::DBFuncs::track_add(
 				  { lat1 => $lat1, lon1 => $lon1, alt1 => $alt1,
 				    lat2 => $lat2, lon2 => $lon2, alt2 => $alt2,
 				    level_min => 0, level_max => 99,
