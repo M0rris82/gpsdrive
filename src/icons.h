@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.9  2005/08/14 18:46:42  tweety
+remove unnedded xpm Files; read pixmaps with read_icons,
+separate more pixmaps from icons
+
 Revision 1.8  2005/04/06 19:38:17  tweety
 use disable/enable keys to improove spee in database creation
 add draw_small_plus_sign, which is used if we would have too many waypoints to display
@@ -62,6 +66,7 @@ void load_icons(void);
 void load_user_icon(  char icon_name[200] );
 void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
 void draw_small_plus_sign ( gdouble posxdest,   gdouble posydest );
+GdkPixbuf * read_icon(char * icon_name);
 
 typedef struct
 {
