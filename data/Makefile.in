@@ -14,6 +14,8 @@
 
 @SET_MAKE@
 
+# Makefile.am for data
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -53,13 +55,16 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" \
-	"$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"
+am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
+	"$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" \
+	"$(DESTDIR)$(pixmapdir)"
+appsDATA_INSTALL = $(INSTALL_DATA)
 cfg_filesDATA_INSTALL = $(INSTALL_DATA)
 iconsDATA_INSTALL = $(INSTALL_DATA)
 mapsDATA_INSTALL = $(INSTALL_DATA)
 pixmapDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(cfg_files_DATA) $(icons_DATA) $(maps_DATA) $(pixmap_DATA)
+DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_DATA) $(maps_DATA) \
+	$(pixmap_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -85,7 +90,7 @@ CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
-DEFS = @DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
+DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@
@@ -217,6 +222,8 @@ iconsdir = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif
 mapsdir = $(datadir)/gpsdrive/maps
 maps_DATA = maps/top_GPSWORLD.jpg
+appsdir = $(datadir)/applications
+apps_DATA = gpsdrive.desktop
 all: all-am
 
 .SUFFIXES:
@@ -259,6 +266,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-appsDATA: $(apps_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(appsdir)" || $(mkdir_p) "$(DESTDIR)$(appsdir)"
+	@list='$(apps_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(appsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(appsdir)/$$f'"; \
+	  $(appsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(appsdir)/$$f"; \
+	done
+
+uninstall-appsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(apps_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(appsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(appsdir)/$$f"; \
+	done
 install-cfg_filesDATA: $(cfg_files_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(cfg_filesdir)" || $(mkdir_p) "$(DESTDIR)$(cfg_filesdir)"
@@ -365,7 +389,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"; do \
+	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -410,8 +434,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-cfg_filesDATA install-iconsDATA \
-	install-mapsDATA install-pixmapDATA
+install-data-am: install-appsDATA install-cfg_filesDATA \
+	install-iconsDATA install-mapsDATA install-pixmapDATA
 
 install-exec-am:
 
@@ -437,21 +461,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-cfg_filesDATA uninstall-iconsDATA \
-	uninstall-info-am uninstall-mapsDATA uninstall-pixmapDATA
+uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
+	uninstall-iconsDATA uninstall-info-am uninstall-mapsDATA \
+	uninstall-pixmapDATA
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-cfg_filesDATA install-data install-data-am \
-	install-exec install-exec-am install-iconsDATA install-info \
-	install-info-am install-man install-mapsDATA \
+	install-appsDATA install-cfg_filesDATA install-data \
+	install-data-am install-exec install-exec-am install-iconsDATA \
+	install-info install-info-am install-man install-mapsDATA \
 	install-pixmapDATA install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-cfg_filesDATA \
-	uninstall-iconsDATA uninstall-info-am uninstall-mapsDATA \
-	uninstall-pixmapDATA
+	ps ps-am uninstall uninstall-am uninstall-appsDATA \
+	uninstall-cfg_filesDATA uninstall-iconsDATA uninstall-info-am \
+	uninstall-mapsDATA uninstall-pixmapDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

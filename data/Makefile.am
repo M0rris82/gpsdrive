@@ -1,4 +1,4 @@
-DEFS=@DEFS@ -I. -I$(srcdir) -I.. -DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" -DLIBDIR=\"${libdir}\" -DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" ${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS}
+# Makefile.am for data
 
 EXTRA_DIST=	\
 	icons.txt \
@@ -15,3 +15,6 @@ icons_DATA = icons/*.png icons/*.gif
 
 mapsdir   = $(datadir)/gpsdrive/maps
 maps_DATA = maps/top_GPSWORLD.jpg
+
+appsdir = $(datadir)/applications
+apps_DATA = gpsdrive.desktop
