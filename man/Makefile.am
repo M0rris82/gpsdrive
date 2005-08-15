@@ -1,8 +1,8 @@
 SUBDIRS = de es 
 
-man: gpsdrive.1
+man: gpsdrive.1 garble.1
 
-EXTRA_DIST = gpsdrive.1
+EXTRA_DIST = gpsdrive.1 garble.1
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man1/

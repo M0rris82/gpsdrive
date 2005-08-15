@@ -1,11 +1,7 @@
 # Makefile.am for data
 
-EXTRA_DIST=	\
-	icons.txt \
-	map_koord.txt
-
 cfg_filesdir   = $(datadir)/gpsdrive/
-cfg_files_DATA = $(EXTRA_DIST)
+cfg_files_DATA = icons.txt map_koord.txt
 
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
@@ -18,3 +14,6 @@ maps_DATA = maps/top_GPSWORLD.jpg
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
+
+EXTRA_DIST=	\
+	$(cfg_files_DATA) $(pixmap_DATA) $(icons_DATA) $(maps_DATA) $(apps_DATA)
