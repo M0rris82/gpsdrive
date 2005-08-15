@@ -1,6 +1,9 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.22  2005/08/15 07:58:25  tweety
+# add prototypes
+#
 # Revision 1.21  2005/08/14 09:47:17  tweety
 # seperate tracks into it own table in geoinfo database
 # move Info's from TODO abaout geoinfo DB to Man Page
@@ -101,6 +104,12 @@ our @EXPORT_OK;
 
 
 END { } 
+
+
+sub segments_add($);
+sub track_add($);
+sub tracks_add($);
+
 
 # -----------------------------------------------------------------------------
 # switch off updating of index
@@ -909,7 +918,7 @@ sub tracks_add($){
 #############################################################################
 # Add a list of street segments into track-DB
 # 
-sub segments_add($){
+sub duplicate_segments_add($){
     my $data = shift;
 
     my $segment4db = {};
