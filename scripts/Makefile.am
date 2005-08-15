@@ -5,8 +5,8 @@ bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		gpssmswatch gpsfetchmap.pl \
 		geoinfo.pl 	
 
-poi:
-	PERLLIB=./POI PATH=./POI:$$PATH ./geoinfo.pl --help
+geoinfo:
+	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help
 
 EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocache2way \
 	geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay gpssmswatch \
@@ -15,5 +15,5 @@ EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocach
 gpsdrivedir = $(datadir)/gpsdrive
 
 
-poidir   = /usr/share/perl5/Geo/Gpsdrive/POI
-poi_DATA =  POI/*.pm
+poidir   = /usr/share/perl5/Geo/Gpsdrive
+poi_DATA =  Geo/Gpsdrive/*.pm

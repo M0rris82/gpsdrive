@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.2  2005/08/15 13:54:22  tweety
+# move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
+#
 # Revision 1.1  2005/08/14 09:47:17  tweety
 # seperate tracks into it own table in geoinfo database
 # move Info's from TODO abaout geoinfo DB to Man Page
@@ -84,7 +87,7 @@
 #
 # Revision 1.0  2005/01/12 22:08:13  tweety
 
-my $VERSION ="poi.pl (c) Joerg Ostertag
+my $VERSION ="geoinfo.pl (c) Joerg Ostertag
 Initial Version (Jan,2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 Version 1.17
 ";
@@ -109,19 +112,19 @@ use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 
-use Geo::Gpsdrive::POI::DBFuncs;
-use Geo::Gpsdrive::POI::DB_Defaults;
-use Geo::Gpsdrive::POI::Gps;
-use Geo::Gpsdrive::POI::GpsDrive;
-use Geo::Gpsdrive::POI::JiGLE;
-use Geo::Gpsdrive::POI::Kismet;
-use Geo::Gpsdrive::POI::NGA;
-use Geo::Gpsdrive::POI::OpenGeoDB;
-use Geo::Gpsdrive::POI::PocketGpsPoi;
-use Geo::Gpsdrive::POI::Utils;
-use Geo::Gpsdrive::POI::WDB;
-use Geo::Gpsdrive::POI::Way_Txt;
-use Geo::Gpsdrive::POI::census;
+use Geo::Gpsdrive::DBFuncs;
+use Geo::Gpsdrive::DB_Defaults;
+use Geo::Gpsdrive::Gps;
+use Geo::Gpsdrive::GpsDrive;
+use Geo::Gpsdrive::JiGLE;
+use Geo::Gpsdrive::Kismet;
+use Geo::Gpsdrive::NGA;
+use Geo::Gpsdrive::OpenGeoDB;
+use Geo::Gpsdrive::PocketGpsPoi;
+use Geo::Gpsdrive::Utils;
+use Geo::Gpsdrive::WDB;
+use Geo::Gpsdrive::Way_Txt;
+use Geo::Gpsdrive::census;
 
 my ($man,$help);
 
@@ -222,52 +225,52 @@ pod2usage(-verbose=>2) if $man;
 ########################################################################################
 
 
-Geo::Gpsdrive::POI::DBFuncs::create_db()
+Geo::Gpsdrive::DBFuncs::create_db()
     if $do_create_db;
 
-Geo::Gpsdrive::POI::DB_Defaults::defaults()
+Geo::Gpsdrive::DB_Defaults::defaults()
     if $do_import_defaults;
 
-Geo::Gpsdrive::POI::Way_Txt::import_Data()
+Geo::Gpsdrive::Way_Txt::import_Data()
     if $do_import_way_txt;
 
 
 # Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
-Geo::Gpsdrive::POI::census::import_Data()
+Geo::Gpsdrive::census::import_Data()
     if ( $do_census );
 
 # Get and Unpack POCKETGPS_DIR      http://www.pocketgpspoi.com
-Geo::Gpsdrive::POI::PocketGpsPoi::import_Data()
+Geo::Gpsdrive::PocketGpsPoi::import_Data()
     if ( $do_cameras );
 
 # Convert MapSource Waypoints to gpsdrive POI
-Geo::Gpsdrive::POI::mapsource::import_Data()
+Geo::Gpsdrive::mapsource::import_Data()
     if ( $do_mapsource_points );
 
 
 # Get and Unpack earth-info.nga.mil     http://earth-info.nga.mil/gns/html/cntyfile/gm.zip
-Geo::Gpsdrive::POI::NGA::import_Data($do_earthinfo_nga_mil)
+Geo::Gpsdrive::NGA::import_Data($do_earthinfo_nga_mil)
     if ( $do_earthinfo_nga_mil );
 
 
 # Get and Unpack opengeodb  http://www.opengeodb.de/download/
-Geo::Gpsdrive::POI::OpenGeoDB::import_Data() 
+Geo::Gpsdrive::OpenGeoDB::import_Data() 
     if ( $do_opengeodb );
 
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
-Geo::Gpsdrive::POI::WDB::import_Data() 
+Geo::Gpsdrive::WDB::import_Data() 
     if ( $do_wdb );
 
 # extract street Data from all tracks
-Geo::Gpsdrive::POI::GpsDrive::import_Data() 
+Geo::Gpsdrive::GpsDrive::import_Data() 
     if ( $do_gpsdrive_tracks );
 
 # extract street Data from all tracks
-Geo::Gpsdrive::POI::Kismet::import_Data($do_kismet_tracks) 
+Geo::Gpsdrive::Kismet::import_Data($do_kismet_tracks) 
     if ( $do_kismet_tracks );
 
 # extract WLAN Points from JiGLE Data
-Geo::Gpsdrive::POI::JiGLE::import_Data($do_jigle) 
+Geo::Gpsdrive::JiGLE::import_Data($do_jigle) 
     if ( $do_jigle );
 
 

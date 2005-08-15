@@ -214,8 +214,8 @@ EXTRA_DIST = wpcvt wpget gpsfetchmap.pl gpspoint2gpsdrive.pl geo-nearest geocach
 	geoinfo.pl
 
 gpsdrivedir = $(datadir)/gpsdrive
-poidir = /usr/share/perl5/Geo/Gpsdrive/POI
-poi_DATA = POI/*.pm
+poidir = /usr/share/perl5/Geo/Gpsdrive
+poi_DATA = Geo/Gpsdrive/*.pm
 all: all-am
 
 .SUFFIXES:
@@ -417,8 +417,8 @@ uninstall-am: uninstall-binSCRIPTS uninstall-info-am uninstall-poiDATA
 	uninstall-info-am uninstall-poiDATA
 
 
-poi:
-	PERLLIB=./POI PATH=./POI:$$PATH ./geoinfo.pl --help
+geoinfo:
+	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
