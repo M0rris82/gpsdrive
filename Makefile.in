@@ -68,9 +68,11 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(pkgdatadir)"
+am__installdirs = "$(DESTDIR)$(documentation1dir)" \
+	"$(DESTDIR)$(pkgdatadir)"
+documentation1DATA_INSTALL = $(INSTALL_DATA)
 pkgdataDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(pkgdata_DATA)
+DATA = $(documentation1_DATA) $(pkgdata_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -228,14 +230,14 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = src po man intl scripts data
-# Documentation
-# debian
-DIST_SUBDIRS = src po man intl scripts data
-# Documentation
-# debian
-EXTRA_DIST = depcomp
+SUBDIRS = src po man intl scripts data Documentation debian
+DIST_SUBDIRS = src po man intl scripts data Documentation debian
+
+# I'm not shure if this is needed
+#EXTRA_DIST = depcomp
 pkgdata_DATA = depcomp
+documentation1dir = $(datadir)/gpsdrive/Documentation
+documentation1_DATA = AUTHORS COPYING INSTALL README NEWS
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -302,6 +304,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-documentation1DATA: $(documentation1_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(documentation1dir)" || $(mkdir_p) "$(DESTDIR)$(documentation1dir)"
+	@list='$(documentation1_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(documentation1DATA_INSTALL) '$$d$$p' '$(DESTDIR)$(documentation1dir)/$$f'"; \
+	  $(documentation1DATA_INSTALL) "$$d$$p" "$(DESTDIR)$(documentation1dir)/$$f"; \
+	done
+
+uninstall-documentation1DATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(documentation1_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(documentation1dir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(documentation1dir)/$$f"; \
+	done
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgdatadir)" || $(mkdir_p) "$(DESTDIR)$(pkgdatadir)"
@@ -600,7 +619,7 @@ check: check-recursive
 all-am: Makefile $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(pkgdatadir)"; do \
+	for dir in "$(DESTDIR)$(documentation1dir)" "$(DESTDIR)$(pkgdatadir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -647,7 +666,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-pkgdataDATA
+install-data-am: install-documentation1DATA install-pkgdataDATA
 
 install-exec-am:
 
@@ -675,7 +694,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-pkgdataDATA
+uninstall-am: uninstall-documentation1DATA uninstall-info-am \
+	uninstall-pkgdataDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -686,14 +706,16 @@ uninstall-info: uninstall-info-recursive
 	distclean-generic distclean-hdr distclean-libtool \
 	distclean-recursive distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-pkgdataDATA install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-info-am uninstall-pkgdataDATA
+	install install-am install-data install-data-am \
+	install-documentation1DATA install-exec install-exec-am \
+	install-info install-info-am install-man install-pkgdataDATA \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-documentation1DATA uninstall-info-am \
+	uninstall-pkgdataDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
