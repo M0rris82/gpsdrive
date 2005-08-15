@@ -5,5 +5,5 @@ SUBDIRS = src po man intl scripts data
 
 DIST_SUBDIRS = src po man intl scripts data Documentation debian
 
-EXTRA_DIST = depcomp gpsdrive.desktop 
+EXTRA_DIST = depcomp
 
