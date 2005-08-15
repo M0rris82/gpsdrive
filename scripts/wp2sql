@@ -1,0 +1,13 @@
+echo put waypoints into database
+
+echo "use geoinfo;" > wp.sql
+cat ~/.gpsdrive/way-*.txt|awk '{print "insert into waypoints \
+(name,lat,lon,type) values (\"" $1 "\",\"" $2  "\",\"" $3  "\",\"Own\");" }' >>wp.sql
+
+# if you have other files (i.e. WLAN Access points in way_*) use
+# the line below.
+cat ~/.gpsdrive/way*.txt|awk '{print "insert into waypoints \
+(name,lat,lon,type) values (\"" $1 "\",\"" $2  "\",\"" $3  "\",\"WLAN\");" }' >>wp.sql
+
+
+mysql -u gast -pgast <wp.sql
