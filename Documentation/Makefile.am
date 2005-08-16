@@ -2,7 +2,8 @@
 
 documentationdir   = $(datadir)/gpsdrive/Documentation
 documentation_DATA = TODO GPS-receivers LEEME CREDITS \
-	LISEZMOI README.FreeBSD   README.gpspoint2gspdrive \
+	LISEZMOI LISEZMOI.FreeBSD LISEZMOI.kismet LISEZMOI.SQL \
+	README.FreeBSD   README.gpspoint2gspdrive \
 	FAQ.gpsdrive FAQ.gpsdrive.fr README.SQL \
 	NMEA.txt README.kismet README.nasamaps
 

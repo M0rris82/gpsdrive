@@ -201,7 +201,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = de es 
-EXTRA_DIST = gpsdrive.1 garble.1
+EXTRA_DIST = gpsdrive.1 garble.1 geo-code.1 geoinfo.1 geo-nearest.1
 all: all-recursive
 
 .SUFFIXES:
