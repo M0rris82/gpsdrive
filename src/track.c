@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.7  2005/08/18 06:59:10  tweety
+  save tracks periodically 1st part
+  Autor: Russell MIrov <russell.mirov@sun.com>
+
   Revision 1.6  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -90,7 +94,7 @@ extern gint maploaded;
 extern gint trackflag;
 extern gint importactive;
 extern glong tracknr, tracklimit, trackcoordlimit;
-extern glong trackcoordnr;
+glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 extern trackcoordstruct *trackcoord;
 extern gint zoom;
 extern GdkSegment *track;
@@ -358,6 +362,50 @@ savetrackfile (gint mode)
 	}
 	fclose (st);
 
+}
+
+/* *****************************************************************************
+ * this routine is called whenever a new position is processed.  Every
+ * 30 seconds it writes the accumulated positions to a file "incremental.sav"
+ * so that a pretty recent track is available even if the application or
+ * system crashes.  It is expected that the user will manually delete the
+ * file prior to a trip/hike.   It will only write to the file if the
+ * "save_track" option is selected.  If gpsdrive has been running for
+ * quite a while without "save_track" selected, this routine will capture
+ * the entire track up to that point.
+*/
+
+void do_incremental_save() {
+    gint i;
+    gchar mappath[400], lat[30], alt[30], longi[30];
+    FILE *st;
+    
+    if ((trackcoordnr % 30) == 29) { /* RNM: append to existing incremental file every 30 seconds */
+	g_strlcpy (mappath, homedir, sizeof (mappath));
+	g_strlcat (mappath, "incremental.sav", sizeof(mappath));
+	st = fopen (mappath, "a");
+                if (st == NULL) {
+		    st = fopen (mappath, "w");
+		    if (st == NULL) {
+			perror (mappath);
+			printf("Can't open or create incremental.sav\n");
+			return;
+                        }
+		    else printf("Creating incremental.sav\n");
+                }
+		
+                for (i = old_trackcoordnr; i < trackcoordnr; i++) {
+		    g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
+		    g_strdelimit (lat, ",", '.');
+		    g_snprintf (longi, sizeof (longi), "%10.6f", (trackcoord + i)->longi);
+		    g_strdelimit (longi, ",", '.');
+		    g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
+		    
+		    fprintf (st, "%s %s %s %s\n", lat, longi, alt, (trackcoord + i)->postime);
+                }
+                fclose (st);
+                old_trackcoordnr = trackcoordnr ;
+    }
 }
 
 
