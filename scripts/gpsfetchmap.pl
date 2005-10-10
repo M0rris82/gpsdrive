@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.16  2005/10/10 13:07:05  tweety
+# change some Debug Output, change recursion for find
+#
 # Revision 1.15  2005/08/10 06:09:43  tweety
 # increase Version for google download
 #
@@ -472,7 +475,9 @@ sub mirror_file($$){
 sub is_map_file($){
     my $filename = shift;
     $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
-#    print "is_map_file($filename)\n" if $debug;
+    if (  $debug ) {
+#	printf "is_map_file($filename) -> %d Bytes\n",-s $filename;
+    }
 
     return 0 unless ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
 
@@ -1193,8 +1198,11 @@ sub append_koords($$$$) {
 
     if ( is_map_file($filename) ) {
 	# print "$filename $lati $long $mapscale\n";
+    } elsif ( ! -s "$mapdir/$filename" ) {
+	print "Fehler $filename leer/existiert nicht\n";
+	return 'E';
     } else {
-	print "Fehler $filename exitiert nicht\n";
+	print "Fehler $filename ist kein mapfile\n";
 	return 'E';
     }
 
@@ -1338,8 +1346,9 @@ sub update_gpsdrive_map_koord_file(){
 
     debug("Searching for Files in '$mapdir'");
     find(
-     { wanted => \&update_file_in_map_koords,
-       follow_skip=>2
+     { wanted       => \&update_file_in_map_koords,
+       follow_skip  => 2,
+       follow       => 1 
        },
 	 $mapdir, );
 }
@@ -1347,7 +1356,7 @@ sub update_gpsdrive_map_koord_file(){
 sub update_file_in_map_koords(){
     my $filename = $File::Find::name;
     return if -d $filename;
-    return unless  $filename =~ m/\.gif/;
+    return unless  $filename =~ m/\.gif$/;
     my $short_filename = $filename;
     $short_filename =~ s,$mapdir,,;
 #    debug("Check File: $short_filename");
