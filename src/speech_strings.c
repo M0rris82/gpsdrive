@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
 $Log$
+Revision 1.3  2005/10/10 22:00:41  robstewart
+Updated to attempt fix on bug reported by Andreas.
+
 Revision 1.2  2005/05/15 06:51:27  tweety
 all speech strings are now represented as arrays of strings
 author: Rob Stewart <rob@groupboard.com>
@@ -304,16 +307,16 @@ gchar* speech_miles[] =
 
 gchar* speech_meters[] =
 {
-  "%.0f meters.",
-  "%.0f meter.",
-  "%.0f metros."
+  "%d meters.",
+  "%d meter.",
+  "%d metros."
 };
 
 gchar* speech_kilometers[] =
 {
-  "%.0f kilometers.",
+  "%d kilometers.",
   "%d kilometer.",
-  "%.0f kilometros."
+  "%d kilometros."
 };
 
 // **** TODO ****
