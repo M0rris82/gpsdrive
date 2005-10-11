@@ -1,6 +1,29 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.2  2005/10/11 08:28:35  tweety
+# gpsdrive:
+# - add Tracks(MySql) displaying
+# - reindent files modified
+# - Fix setting of Color for Grid
+# - poi Text is different in size depending on Number of POIs shown on
+#   screen
+#
+# geoinfo:
+#  - get Proxy settings from Environment
+#  - create tracks Table in Database and fill it
+#    this separates Street Data from Track Data
+#  - make geoinfo.pl download also Opengeodb Version 2
+#  - add some poi-types
+#  - Split off Filling DB with example Data
+#  - extract some more Funtionality to Procedures
+#  - Add some Example POI for Kirchheim(Munich) Area
+#  - Adjust some Output for what is done at the moment
+#  - Add more delayed index generations 'disable/enable key'
+#  - If LANG=*de_DE* then only impert europe with --all option
+#  - WDB will import more than one country if you wish
+#  - add more things to be done with the --all option
+#
 # Revision 1.1  2005/08/15 13:54:22  tweety
 # move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
 #
@@ -38,9 +61,11 @@ use strict;
 use warnings;
 
 use IO::File;
+use File::Path;
+
 use Geo::Gpsdrive::DBFuncs;
 use Geo::Gpsdrive::Utils;
-use File::Path;
+use Geo::Gpsdrive::Gps;
 
 #############################################################################
 # Args: 
@@ -171,6 +196,8 @@ sub import_Data() {
     my $mirror_dir="$main::MIRROR_DIR/opengeodb";
     my $unpack_dir="$main::UNPACK_DIR/opengeodb";
 
+    print "\nDownload an import OpenGeoDB Data\n";
+
     -d $mirror_dir or mkpath $mirror_dir
 	or die "Cannot create Directory $mirror_dir:$!\n";
     
@@ -178,24 +205,25 @@ sub import_Data() {
 	or die "Cannot create Directory $unpack_dir:$!\n";
     
     # download
-    my $mirror = mirror_file("http://ovh.dl.sourceforge.net/".
-			     "sourceforge/geoclassphp/opengeodb-0.1.3-txt.tar.gz",
-			     "$mirror_dir/opengeodb-0.1.3-txt.tar.gz");
-
+    my $file_name ="opengeodb-0.1.3-txt.tar.gz";
+    my $url = "http://dl.sourceforge.net/sourceforge/geoclassphp/$file_name";
+    print "Mirror $url\n";
+    my $mirror = mirror_file($url,"$mirror_dir/$file_name");
     print "Mirror: $mirror\n";
 
     # Unpack it 
     `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
 
-    Geo::Gpsdrive::DBFuncs::disable_keys('poi');
+    disable_keys('poi');
 
     for my $file_name ( glob("$unpack_dir/opengeodb*.txt") ) {
 	my $out_file_name = "$main::CONFIG_DIR/way_opengeodb.txt";
 	read_open_geo_db($file_name);
     }
 
-    Geo::Gpsdrive::DBFuncs::enable_keys('poi');
+    enable_keys('poi');
 
+    print "Download an import OpenGeoDB Data FINISHED\n";
 }
 
 1;

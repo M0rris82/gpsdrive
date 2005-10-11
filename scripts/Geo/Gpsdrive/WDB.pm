@@ -2,6 +2,29 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.2  2005/10/11 08:28:35  tweety
+# gpsdrive:
+# - add Tracks(MySql) displaying
+# - reindent files modified
+# - Fix setting of Color for Grid
+# - poi Text is different in size depending on Number of POIs shown on
+#   screen
+#
+# geoinfo:
+#  - get Proxy settings from Environment
+#  - create tracks Table in Database and fill it
+#    this separates Street Data from Track Data
+#  - make geoinfo.pl download also Opengeodb Version 2
+#  - add some poi-types
+#  - Split off Filling DB with example Data
+#  - extract some more Funtionality to Procedures
+#  - Add some Example POI for Kirchheim(Munich) Area
+#  - Adjust some Output for what is done at the moment
+#  - Add more delayed index generations 'disable/enable key'
+#  - If LANG=*de_DE* then only impert europe with --all option
+#  - WDB will import more than one country if you wish
+#  - add more things to be done with the --all option
+#
 # Revision 1.1  2005/08/15 13:54:22  tweety
 # move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
 #
@@ -84,7 +107,7 @@ sub import_wdb($){
     my ( $country,$type_string) = ( $base_filename =~ m/(.*)-(.*).txt/);
 
     my $source = "WDB $sub_source";
-    delete_all_from_source($source);
+    Geo::Gpsdrive::DBFuncs::delete_all_from_source($source);
     my $source_id = Geo::Gpsdrive::DBFuncs::source_name2id($source);
 
     unless ( $source_id ) {
@@ -119,22 +142,24 @@ sub import_wdb($){
 	#print "line: $line\n";
 	if ( $line =~ m/^\s*$/)  {
 	} elsif ( $line =~ m/^segment\s+(\d+)\s+rank\s+(\d+)\s+points\s+(\d+)/ ) {
+	    if ( @segments ) {
+		street_segments_add(
+				{ scale_min       => 1,
+				  scale_max       => $scale_max,
+				  streets_type_id => $streets_type_id, 
+				  source_id       => $source_id,
+				  segments        => \@segments
+				  }
+				    ); 
+	    };
+	    # Segment: segment 27  rank 1  points 1131
+	    ($segment,$rank,$points) = ( $1,$2,$3) ;
 	    $scale_max = 10000;
 	    $scale_max = 100000	    if  $rank >1;
 	    $scale_max = 1000000    if  $rank >2;
 	    $scale_max = 10000000   if  $rank >3;
 	    $scale_max = 100000000  if  $rank >4;
-	    Geo::Gpsdrive::DBFuncs::segments_add(
-				   { scale_min       => 1,
-				     scale_max       => $scale_max,
-				     streets_type_id => $streets_type_id, 
-				     source_id       => $source_id,
-				     segments        => \@segments
-				     }
-				       );
 	    @segments=();
-	    # Segment: segment 27  rank 1  points 1131
-	    ($segment,$rank,$points) = ( $1,$2,$3) ;
 	    print "Segment: $segment, rank: $rank  points:$points\r";
 	    print "\n" if $verbose;
 	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 ) = (0,0);
@@ -142,13 +167,7 @@ sub import_wdb($){
 	    # ---------------------- Type    
 	    my $type_name = "WDB $type_string rank $rank";
 	    $streets_type_id = streets_type_name2id($type_name);
-	    unless ( $streets_type_id ) {
-		my $type_hash= {
-		    'streets_type.name' => $type_name
-		    };
-		Geo::Gpsdrive::DBFuncs::insert_hash("streets_type",$type_hash);
-		$streets_type_id = streets_type_name2id($type_name);
-	    }	
+	    die "Missing Street Type $type_name\n" unless $streets_type_id;
 	} elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
 	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 );
 	    ( $lat2,$lon2 ) = ($1,$2);
@@ -171,7 +190,7 @@ sub import_wdb($){
 	    print "Unrecognized Line '$line'\n";
 	}
     }
-    Geo::Gpsdrive::DBFuncs::segments_add( {
+    street_segments_add( {
 	scale_min       => 1,
 	scale_max       => $scale_max,
 	streets_type_id => $streets_type_id, 
@@ -185,8 +204,12 @@ sub import_wdb($){
 
 # *****************************************************************************
 sub import_Data(){
+    my $what = shift;
+
     my $mirror_dir="$main::MIRROR_DIR/wdb";
     my $unpack_dir="$main::UNPACK_DIR/wdb";
+
+    print "\nDownload an import WDB Data\n";
 
     -d $mirror_dir or mkpath $mirror_dir
 	or die "Cannot create Directory $mirror_dir:$!\n";
@@ -196,7 +219,12 @@ sub import_Data(){
     
     my $url = "http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz";
     my $tar_file = "$mirror_dir/WDB-text.tar.gz";
+    print "Mirror $url\n";
     my $mirror = mirror_file($url,$tar_file);
+
+    if ( $what =~  m/^\d/ ) {
+	$what ="europe,africa,asia,namer,samer";
+    }
 
     my $dst_file="$unpack_dir/WDB/europe-bdy.txt";
     if ( (!-s $dst_file) ||
@@ -207,14 +235,20 @@ sub import_Data(){
 	print "unpack: $dst_file up to date\n" unless $verbose;
     }
     
-    Geo::Gpsdrive::DBFuncs::disable_keys('streets');
-    debug("$unpack_dir/WDB/*.txt");
-    foreach  my $full_filename ( glob("$unpack_dir/WDB/euro*.txt") ) {
-	# print "Mirror: $mirror\n";
-	
-	import_wdb($full_filename);
+    
+    for my $country ( split(",",$what) ) {
+
+	Geo::Gpsdrive::DBFuncs::disable_keys('streets');
+	debug("$unpack_dir/WDB/*.txt");
+	foreach  my $full_filename ( glob("$unpack_dir/WDB/$country*.txt") ) {
+	    # print "Mirror: $mirror\n";
+	    
+	    import_wdb($full_filename);
+	}
+	Geo::Gpsdrive::DBFuncs::enable_keys('streets');
+
     }
-    Geo::Gpsdrive::DBFuncs::enable_keys('streets');
+    print "Download an import WDB Data FINISHED\n";
 }
 
 1;

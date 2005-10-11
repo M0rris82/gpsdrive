@@ -1,6 +1,29 @@
 # Some small ungrouped Utility functions
 #
 # $Log$
+# Revision 1.2  2005/10/11 08:28:35  tweety
+# gpsdrive:
+# - add Tracks(MySql) displaying
+# - reindent files modified
+# - Fix setting of Color for Grid
+# - poi Text is different in size depending on Number of POIs shown on
+#   screen
+#
+# geoinfo:
+#  - get Proxy settings from Environment
+#  - create tracks Table in Database and fill it
+#    this separates Street Data from Track Data
+#  - make geoinfo.pl download also Opengeodb Version 2
+#  - add some poi-types
+#  - Split off Filling DB with example Data
+#  - extract some more Funtionality to Procedures
+#  - Add some Example POI for Kirchheim(Munich) Area
+#  - Adjust some Output for what is done at the moment
+#  - Add more delayed index generations 'disable/enable key'
+#  - If LANG=*de_DE* then only impert europe with --all option
+#  - WDB will import more than one country if you wish
+#  - add more things to be done with the --all option
+#
 # Revision 1.1  2005/08/15 13:54:22  tweety
 # move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
 #
@@ -129,7 +152,18 @@ sub mirror_file($$){
 
     # LPW::UserAgent initialisieren
     my $ua = LWP::UserAgent->new;
-    $ua->proxy(['http','ftp'],"http://$PROXY/") if $PROXY;
+
+    # Set Proxy from Environment
+    if (!$PROXY) {
+	$PROXY ||= $ENV{'PROXY'};
+	$PROXY ||= $ENV{'http_proxy'};
+	print "Set Proxy to $PROXY\n" if $PROXY;
+    }
+    if ( $PROXY ){
+	$PROXY = "http://$PROXY" unless $PROXY =~ m,^.?.tp://,;
+	$PROXY = "$PROXY/"       unless $PROXY =~ m,/$,;
+	$ua->proxy(['http','ftp'],$PROXY);
+    }
     
     #$ua->level("+trace") if $debug;
 

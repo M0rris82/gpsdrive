@@ -5,6 +5,29 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.3  2005/10/11 08:28:35  tweety
+# gpsdrive:
+# - add Tracks(MySql) displaying
+# - reindent files modified
+# - Fix setting of Color for Grid
+# - poi Text is different in size depending on Number of POIs shown on
+#   screen
+#
+# geoinfo:
+#  - get Proxy settings from Environment
+#  - create tracks Table in Database and fill it
+#    this separates Street Data from Track Data
+#  - make geoinfo.pl download also Opengeodb Version 2
+#  - add some poi-types
+#  - Split off Filling DB with example Data
+#  - extract some more Funtionality to Procedures
+#  - Add some Example POI for Kirchheim(Munich) Area
+#  - Adjust some Output for what is done at the moment
+#  - Add more delayed index generations 'disable/enable key'
+#  - If LANG=*de_DE* then only impert europe with --all option
+#  - WDB will import more than one country if you wish
+#  - add more things to be done with the --all option
+#
 # Revision 1.2  2005/08/15 13:54:22  tweety
 # move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
 #
@@ -113,15 +136,19 @@ use IO::File;
 use Pod::Usage;
 
 use Geo::Gpsdrive::DBFuncs;
-use Geo::Gpsdrive::DB_Defaults;
+use Geo::Gpsdrive::Utils;
 use Geo::Gpsdrive::Gps;
+
+use Geo::Gpsdrive::DB_Defaults;
+use Geo::Gpsdrive::DB_Examples;
+
 use Geo::Gpsdrive::GpsDrive;
 use Geo::Gpsdrive::JiGLE;
 use Geo::Gpsdrive::Kismet;
 use Geo::Gpsdrive::NGA;
 use Geo::Gpsdrive::OpenGeoDB;
+use Geo::Gpsdrive::OpenGeoDB2;
 use Geo::Gpsdrive::PocketGpsPoi;
-use Geo::Gpsdrive::Utils;
 use Geo::Gpsdrive::WDB;
 use Geo::Gpsdrive::Way_Txt;
 use Geo::Gpsdrive::census;
@@ -136,6 +163,7 @@ our $UNPACK_DIR   = "$CONFIG_DIR/UNPACK";
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = 0;
 my $do_opengeodb         = 0;
+my $do_opengeodb2        = 0;
 my $do_wdb               = 0;
 my $do_mapsource_points  = 0; 
 my $do_cameras           = 0;
@@ -145,9 +173,12 @@ my $do_gpsdrive_tracks   = 0;
 my $do_kismet_tracks     = 0;
 my $do_jigle             = 0;
 my $do_import_defaults   = 0;
+my $do_import_examples   = 0;
 my $do_import_way_txt    = 0;
 our $do_delete_db_content = 0;
 our $do_collect_init_data = 0;
+my $do_generate_poi_type_html_page = 0;
+
 
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
@@ -159,18 +190,20 @@ Getopt::Long::Configure('no_ignore_case');
 pod2usage(1)
     unless @ARGV;
 GetOptions ( 
+	     'create-db'           => \$do_create_db,
+	     'fill-defaults'       => \$do_import_defaults,
+	     'fill-examples'       => \$do_import_examples,
 	     'census'              => \$do_census,
 	     'earthinfo_nga_mil=s' => \$do_earthinfo_nga_mil,
 	     'opengeodb'           => \$do_opengeodb,
-	     'wdb'                 => \$do_wdb,
+	     'opengeodb2'          => \$do_opengeodb2,
+	     'wdb=s'               => \$do_wdb,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
 	     'kismet-tracks=s'     => \$do_kismet_tracks,
 	     'jigle=s'     	   => \$do_jigle,
 	     'import-way-txt'      => \$do_import_way_txt,
-	     'create-db'           => \$do_create_db,
-	     'fill-defaults'       => \$do_import_defaults,
 	     'all'                 => \$do_all,
 	     'debug'               => \$debug,      
 	     'u=s'                 => \$db_user,
@@ -179,6 +212,7 @@ GetOptions (
 	     'db-password=s'       => \$db_password,
 	     'delete-db-content'   => \$do_delete_db_content,
 	     'collect-init-data'   => \$do_collect_init_data,
+	     'generate-poi-type-html-page' => \$do_generate_poi_type_html_page,
 	     'lat_min=s'           => \$lat_min,      
 	     'lat_max=s'           => \$lat_max,
 	     'lon_min=s'           => \$lon_min,      
@@ -201,14 +235,28 @@ GetOptions (
 if ( $do_all ) {
     $do_create_db
 	= $do_census
-	= $do_earthinfo_nga_mil
 	= $do_opengeodb
-	= $do_wdb
+	= $do_opengeodb2
 	= $do_gpsdrive_tracks
 	= $do_cameras
 	= $do_jigle
 	= $do_import_defaults
+	= $do_import_examples
 	= 1;
+    if ( $ENV{'LANG'} =~ /de_DE/ ) {
+	print "\n";
+	print "=============================================================================\n";
+	print "I assume i'm in Germany (LANG='$ENV{'LANG'}')\n";
+	$do_earthinfo_nga_mil = 'gm,sz,be,au,bu,ez,da,fi,fr,gr,hu,lu,mt,mn';
+	print "    --> loading only $do_earthinfo_nga_mil for NGA\n";
+	$do_wdb ="europe";
+	print "    --> loading only $do_wdb for WDB\n";
+	print "=============================================================================\n";
+	print "\n";
+    } else {
+	$do_earthinfo_nga_mil = 1;
+	$do_wdb =1;
+    };
 }
 
 pod2usage(1) if $help;
@@ -228,25 +276,18 @@ pod2usage(-verbose=>2) if $man;
 Geo::Gpsdrive::DBFuncs::create_db()
     if $do_create_db;
 
-Geo::Gpsdrive::DB_Defaults::defaults()
+Geo::Gpsdrive::DB_Defaults::fill_defaults()
     if $do_import_defaults;
 
-Geo::Gpsdrive::Way_Txt::import_Data()
-    if $do_import_way_txt;
+Geo::Gpsdrive::DB_Examples::fill_examples()
+    if $do_import_examples;
 
-
-# Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
-Geo::Gpsdrive::census::import_Data()
-    if ( $do_census );
-
-# Get and Unpack POCKETGPS_DIR      http://www.pocketgpspoi.com
-Geo::Gpsdrive::PocketGpsPoi::import_Data()
-    if ( $do_cameras );
+Geo::Gpsdrive::DB_Defaults::generate_poi_type_html_page()
+    if $do_generate_poi_type_html_page;
 
 # Convert MapSource Waypoints to gpsdrive POI
 Geo::Gpsdrive::mapsource::import_Data()
     if ( $do_mapsource_points );
-
 
 # Get and Unpack earth-info.nga.mil     http://earth-info.nga.mil/gns/html/cntyfile/gm.zip
 Geo::Gpsdrive::NGA::import_Data($do_earthinfo_nga_mil)
@@ -257,9 +298,26 @@ Geo::Gpsdrive::NGA::import_Data($do_earthinfo_nga_mil)
 Geo::Gpsdrive::OpenGeoDB::import_Data() 
     if ( $do_opengeodb );
 
+# Get and Unpack opengeodb2  http://www.opengeodb.de/download/
+Geo::Gpsdrive::OpenGeoDB2::import_Data() 
+    if ( $do_opengeodb2 );
+
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
 Geo::Gpsdrive::WDB::import_Data() 
     if ( $do_wdb );
+
+# Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
+Geo::Gpsdrive::census::import_Data()
+    if ( $do_census );
+
+# Get and Unpack POCKETGPS_DIR      http://www.pocketgpspoi.com
+Geo::Gpsdrive::PocketGpsPoi::import_Data()
+    if ( $do_cameras );
+
+
+# Import Waypoints from Way.txt
+Geo::Gpsdrive::Way_Txt::import_Data()
+    if $do_import_way_txt;
 
 # extract street Data from all tracks
 Geo::Gpsdrive::GpsDrive::import_Data() 
@@ -307,6 +365,20 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb] [--mapsource_po
 
 =over 8
 
+=item B<--create-db>
+
+Try creating the tables inside the geoinfo database. 
+This also fills the database with some predefined types.
+and imports wour way*.txt Files.
+This also creates and modified the old waypoints table.
+
+
+=item B<--fill-defaults>
+
+Fill the Databases with usefull defaults. This option is 
+needed before you can import any of the other importers.
+
+
 =item B<--earthinfo_nga_mil=xx[,yy][,zz]...>
 
 Download from earthinfo.nga.mil and import into 
@@ -335,6 +407,17 @@ Download and import opengeodb to Point of interrests
 This Database has about 20003 entries from German Towns
 
 
+=item B<--opengeodb2>
+
+Download and import opengeodb-2.4a
+
+This Database has about 20003 entries from German Towns
+
+In the current release only the sql File is downloaded and
+executed. This imports the Data from opengeodb into a 
+Database named opengeodb. This Database is not yet used in the 
+current gpsdrive Version.
+
 =item B<--wdb>
 
 World Database
@@ -356,21 +439,24 @@ Available regions would be:
 
 ******** NO function yet *********
 
+
 =item B<--cameras>
 
 ******** NO function yet *********
 
-=item B<--create-db>
 
-Try creating the tables inside the geoinfo database. 
-This also fills the database with some predefined types.
-and imports wour way*.txt Files.
-This also creates and modified the old waypoints table.
 
-=item B<--fill-defaults>
 
-Fill the Databases with usefull defaults. This option is 
-needed before you can import any of the other importers.
+=item B<--fill-examples>
+
+Fill the Databases with usefull examples. This is usefull for 
+testing without a large Database included.
+
+
+=item B<--all>
+
+Triggers all of the above
+
 
 =item B<--collect-init-data>
 
@@ -378,11 +464,11 @@ Collects default data and writes them into the default Files.
 This option is normally used by the maintainer to create the 
 Defaults for filling the DB.
 
-=item B<--all>
 
+=item B<--generate-poi-type-html-page>
 
-Triggers all of the above
-
+Generate a html page containing all POI Icons created as default
+and there descriptions.
 
 =item B<--gpsdrive-tracks>
 
@@ -394,6 +480,7 @@ and insert into  streets DB
 
 Read all gpsdrive way*.txt 
 and insert into  poi DB
+
 
 =item B<--kismet-tracks=Directory>
 
@@ -420,14 +507,17 @@ This feature is not implemented on all insert statements yet.
 
 username to connect to mySQL database
 
+
 =item B<--db-password>
 
 password for user to connect to mySQL database
 
+
 =item B<--no-mirror>
 
 do not try mirroring the files from the original Server. Only use
-files found on local ilesystem.
+files found on local Filesystem.
+
 
 =item B<--proxy>
 
