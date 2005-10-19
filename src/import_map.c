@@ -23,6 +23,11 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  2005/10/19 07:22:21  tweety
+  Its now possible to choose units for displaying coordinates also in
+  Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+  Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
   Revision 1.8  2005/04/20 23:33:49  tweety
   reformatted source code with anjuta
   So now we have new indentations
@@ -385,15 +390,11 @@ import1_cb (GtkWidget * widget, guint datum)
 	gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
 	dltext1 = gtk_entry_new ();
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
-	g_snprintf (buff, sizeof (buff), "%.5f", current_lat);
-	if (minsecmode)
-		decimaltomin (buff, 1);
+        coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
 	gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
 	dltext2 = gtk_entry_new ();
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
-	g_snprintf (buff, sizeof (buff), "%.5f", current_long);
-	if (minsecmode)
-		decimaltomin (buff, 0);
+        coordinate2gchar(buff, sizeof(buff), current_long, FALSE, minsecmode);
 	gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
 
 	dltext5 = gtk_entry_new ();
@@ -680,14 +681,10 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	{
 		if (downloadwindowactive)
 		{
-			g_snprintf (s, sizeof (s), "%.5f", lat);
-			if (minsecmode)
-				decimaltomin (s, 1);
+                        coordinate2gchar(s, sizeof(s), lat, TRUE, minsecmode);
 			gtk_entry_set_text (GTK_ENTRY (dltext1), s);
 			g_snprintf (s, sizeof (s), "%.5f", lon);
-			if (minsecmode)
-				decimaltomin (s, 0);
-			gtk_entry_set_text (GTK_ENTRY (dltext2), s);
+                        coordinate2gchar(s, sizeof(s), lon, FALSE, minsecmode);
 			downloadsetparm (NULL, 0);
 		}
 		else

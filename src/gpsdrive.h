@@ -22,6 +22,11 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.7  2005/10/19 07:22:21  tweety
+Its now possible to choose units for displaying coordinates also in
+Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
+Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
+
 Revision 1.6  2005/03/27 21:25:46  tweety
 separating map_import from gpsdrive.c
 
@@ -129,7 +134,16 @@ translations
  *
  * Set this to 1 to prefer MinDec vs. DMS
  */
+
+  
 #define PREFER_MinDec	0
+
+ /*
+  * Aditional mod by Oddgeir Kvien to adopt for 3-way selection
+  */
+#define LATLON_DEGDEC	0
+#define LATLON_DMS 	1
+#define LATLON_MINDEC	2
 
 /*  size of the bearing pointer, default is 50 */
 #define PSIZE real_psize

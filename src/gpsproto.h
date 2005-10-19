@@ -54,7 +54,7 @@ gint mapdir_cb (GtkWidget * widget, guint datum);
 gint simfollow_cb (GtkWidget * widget, guint datum);
 void saytargettext (gchar * filename, gchar * target);
 void display_dsc (void);
-void decimaltomin (gchar * text, gint islat);
+void coordinate2gchar (gchar * text, gint buff_size, gdouble pos, gint islat, gint mode);
 gint minsec_cb (GtkWidget * widget, guint datum);
 void checkinput (gchar * text);
 void mintodecimal (gchar * text);
@@ -119,5 +119,3 @@ void calcxytopos (int , int , gdouble *, gdouble *, int );
 gint navi_cb (GtkWidget * widget, guint datum);
 GtkWidget* create_pixmap(GtkWidget *widget, const gchar *filename);
 gint speech_out_cb (GtkWidget * widget, guint * datum);
-
-
