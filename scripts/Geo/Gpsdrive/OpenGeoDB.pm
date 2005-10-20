@@ -1,6 +1,9 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.3  2005/10/20 20:53:38  tweety
+# change min scale to 1
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -168,7 +171,7 @@ sub read_open_geo_db($){
 		    $values->{'poi.scale_max'} = 100000;
 		    $values->{'poi.proximity'} = "300m";
 		}
-		$values->{'poi.scale_min'} = 0;
+		$values->{'poi.scale_min'} = 1;
 		
 		$values->{'poi.name'}.=$values->{'poi.scale_max'};
 		unless ( defined($values->{'poi.lat'}) ) {
