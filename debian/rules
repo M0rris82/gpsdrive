@@ -47,13 +47,14 @@ install: build
 	$(MAKE) install prefix=$(destdir)
 
 	# replace non-free script with a wrapper
-	cp $(CURDIR)/debian/gpsfetchmap $(destdir)/bin/
-	chmod +x $(destdir)/bin/gpsfetchmap
+	# cp $(CURDIR)/debian/gpsfetchmap $(destdir)/bin/
+	# chmod +x $(destdir)/bin/gpsfetchmap
 
 	# Remove gpsd, since debian has an own gpsd package
-	rm $(destdir)/bin/gpsd
+	# rm $(destdir)/bin/gpsd
+
 	# add old manpages
-	#cp -r $(CURDIR)/debian/man/ $(destdir)/share/
+	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
 
 
 # Build architecture-independent files here.
