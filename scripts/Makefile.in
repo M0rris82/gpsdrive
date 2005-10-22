@@ -218,7 +218,8 @@ bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geoinfo.pl create.sql wp2sql
 
 gpsdrivedir = $(datadir)/gpsdrive
-poidir = /usr/share/perl5/Geo/Gpsdrive
+poidir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
+#poidir   = /usr/share/perl5/Geo/Gpsdrive
 poi_DATA = Geo/Gpsdrive/*.pm
 EXTRA_DIST = $(bin_SCRIPTS) $(poi_DATA)
 all: all-am

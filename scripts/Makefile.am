@@ -12,7 +12,8 @@ geoinfo:
 gpsdrivedir = $(datadir)/gpsdrive
 
 
-poidir   = /usr/share/perl5/Geo/Gpsdrive
+poidir   = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
+#poidir   = /usr/share/perl5/Geo/Gpsdrive
 poi_DATA =  Geo/Gpsdrive/*.pm
 
 EXTRA_DIST = $(bin_SCRIPTS) $(poi_DATA)
