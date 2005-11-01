@@ -21,6 +21,9 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.5  2005/11/01 14:46:12  tweety
+ eliminate duplicate include socket.h
+
  Revision 1.4  2005/04/20 23:33:49  tweety
  reformatted source code with anjuta
  So now we have new indentations
@@ -158,7 +161,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
