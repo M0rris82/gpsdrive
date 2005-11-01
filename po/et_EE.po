@@ -349,8 +349,8 @@ msgstr "Kiirus"
 
 #: src/gpsdrive.c:7697
 #, c-format
-msgid "distance jump is more then 1000km/h speed, ignoring\n"
-msgstr "Ignoreerin rohkem kui 1000km/h kiirusega tehtud distantsinihet\n"
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
+msgstr "Ignoreerin rohkem kui 2000km/h kiirusega tehtud distantsinihet\n"
 
 #: src/gpsdrive.c:7996
 msgid "Sending message to friends server..."
