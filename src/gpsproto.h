@@ -78,6 +78,7 @@ void friendssetup (void);
 char *getexpediaurl ();
 gint reminder_cb (GtkWidget * widget, guint datum);
 gint quit_program (GtkWidget * widget, gpointer datum);
+gint reinitgps_cb (GtkWidget * widget, gpointer datum);
 gint loadtrack_cb (GtkWidget * widget, gpointer datum);
 gint about_cb (GtkWidget * widget, guint datum);
 gint sel_message_cb (GtkWidget * widget, guint datum);
