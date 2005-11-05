@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.10  2005/11/05 18:30:40  tweety
+  fix sigseg in import_map Code
+  VS: ----------------------------------------------------------------------
+
   Revision 1.9  2005/10/19 07:22:21  tweety
   Its now possible to choose units for displaying coordinates also in
   Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
@@ -117,7 +121,7 @@ extern GdkColor grey;
 extern gdouble current_long, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-	*drawing_miniimage;
+  *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
@@ -128,7 +132,7 @@ extern GTimer *timer, *disttimer;
 extern gint gcount, milesflag, downloadwindowactive;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern GtkWidget *mainwindow, *status, *messagestatusbar, *pixmapwidget,
-	*gotowindow;
+  *gotowindow;
 extern GtkWidget *messagewindow, *routewindow, *downloadbt;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern GtkWidget *mylist, *myroutelist, *destframe;
@@ -150,10 +154,10 @@ extern gchar targetname[40];
 
 typedef struct
 {
-	gdouble lon;
-	gdouble lat;
-	gint x;
-	gint y;
+  gdouble lon;
+  gdouble lat;
+  gint x;
+  gint y;
 }
 impstruct;
 impstruct imports[3];
@@ -168,18 +172,18 @@ gchar importfilename[1024];
 gint
 setrefpoint_cb (GtkWidget * widget, guint datum)
 {
-	gchar b[100];
-	gchar *p;
-	p = b;
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
-	gtk_entry_set_text (GTK_ENTRY (dltext4), p);
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 2, &p);
-	gtk_entry_set_text (GTK_ENTRY (dltext1), p);
+  gchar b[100];
+  gchar *p;
+  p = b;
+  gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
+  gtk_entry_set_text (GTK_ENTRY (dltext4), p);
+  gtk_clist_get_text (GTK_CLIST (mylist), datum, 2, &p);
+  gtk_entry_set_text (GTK_ENTRY (dltext1), p);
 
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
-	gtk_entry_set_text (GTK_ENTRY (dltext2), p);
+  gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
+  gtk_entry_set_text (GTK_ENTRY (dltext2), p);
 
-	return TRUE;
+  return TRUE;
 }
 
 /* *****************************************************************************
@@ -187,15 +191,15 @@ setrefpoint_cb (GtkWidget * widget, guint datum)
 gint
 nimmfile (GtkWidget * widget, gpointer datum)
 {
-	G_CONST_RETURN gchar *buf;
+  G_CONST_RETURN gchar *buf;
 
-	buf = gtk_file_selection_get_filename (datum);
-	gtk_entry_set_text (GTK_ENTRY (dltext7), g_basename (buf));
-	g_strlcpy (importfilename, g_basename (buf), sizeof (importfilename));
+  buf = gtk_file_selection_get_filename (datum);
+  gtk_entry_set_text (GTK_ENTRY (dltext7), g_basename (buf));
+  g_strlcpy (importfilename, g_basename (buf), sizeof (importfilename));
 
-	gtk_widget_destroy (datum);
-	loadmap ((char *) g_basename (buf));
-	return (TRUE);
+  gtk_widget_destroy (datum);
+  loadmap ((char *) g_basename (buf));
+  return (TRUE);
 }
 
 /* *****************************************************************************
@@ -203,34 +207,34 @@ nimmfile (GtkWidget * widget, gpointer datum)
 gint
 importfb_cb (GtkWidget * widget, guint datum)
 {
-	GtkWidget *fdialog;
-	gchar buf[1000];
-	fdialog = gtk_file_selection_new (_("Select a map file"));
-	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
-	gtk_window_set_transient_for (GTK_WINDOW (fdialog),
-				      GTK_WINDOW (mainwindow));
+  GtkWidget *fdialog;
+  gchar buf[1000];
+  fdialog = gtk_file_selection_new (_("Select a map file"));
+  gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
+  gtk_window_set_transient_for (GTK_WINDOW (fdialog),
+				GTK_WINDOW (mainwindow));
 
-	gtk_signal_connect (GTK_OBJECT
-			    (GTK_FILE_SELECTION (fdialog)->ok_button),
-			    "clicked", GTK_SIGNAL_FUNC (nimmfile),
-			    GTK_OBJECT (fdialog));
-	gtk_signal_connect_object (GTK_OBJECT
-				   (GTK_FILE_SELECTION (fdialog)->
-				    cancel_button), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (fdialog));
+  gtk_signal_connect (GTK_OBJECT
+		      (GTK_FILE_SELECTION (fdialog)->ok_button),
+		      "clicked", GTK_SIGNAL_FUNC (nimmfile),
+		      GTK_OBJECT (fdialog));
+  gtk_signal_connect_object (GTK_OBJECT
+			     (GTK_FILE_SELECTION (fdialog)->
+			      cancel_button), "clicked",
+			     GTK_SIGNAL_FUNC (gtk_widget_destroy),
+			     GTK_OBJECT (fdialog));
 
 
-	g_strlcpy (buf, homedir, sizeof (buf));
+  g_strlcpy (buf, homedir, sizeof (buf));
 
-	gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
-	gtk_widget_show (fdialog);
-	xoff = 0;
-	yoff = 0;
-	zoom = 1;
-	iszoomed = FALSE;
+  gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
+  gtk_widget_show (fdialog);
+  xoff = 0;
+  yoff = 0;
+  zoom = 1;
+  iszoomed = FALSE;
 
-	return TRUE;
+  return TRUE;
 }
 
 
@@ -239,26 +243,26 @@ importfb_cb (GtkWidget * widget, guint datum)
 gint
 importshift_cb (GtkWidget * widget, guint datum)
 {
-	switch (datum)
-	{
-	case 1:
-		yoff -= SCREEN_Y_2;
-		break;
-	case 4:
-		yoff += SCREEN_Y_2;
-		break;
-	case 2:
-		xoff -= SCREEN_X_2;
-		break;
-	case 3:
-		xoff += SCREEN_X_2;
-		break;
-	}
-	iszoomed = FALSE;
-	expose_cb (NULL, 0);
-	expose_mini_cb (NULL, 0);
+  switch (datum)
+    {
+    case 1:
+      yoff -= SCREEN_Y_2;
+      break;
+    case 4:
+      yoff += SCREEN_Y_2;
+      break;
+    case 2:
+      xoff -= SCREEN_X_2;
+      break;
+    case 3:
+      xoff += SCREEN_X_2;
+      break;
+    }
+  iszoomed = FALSE;
+  expose_cb (NULL, 0);
+  expose_mini_cb (NULL, 0);
 
-	return TRUE;
+  return TRUE;
 }
 
 
@@ -267,207 +271,203 @@ importshift_cb (GtkWidget * widget, guint datum)
 gint
 import1_cb (GtkWidget * widget, guint datum)
 {
-	GtkWidget *mainbox, *window;
-	GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf6,
-		*knopf_scale_finish, *scale_txt;
-	GtkWidget *table, *knopf9, *knopf10, *knopf11, *s1, *s2, *s3, *s4;
-	GtkWidget *s5, *s6;
-	gchar buff[1300];
-	GtkWidget *text;
-	GtkWidget *hbox;
-	gchar *thetext1 = _("How to calibrate your own maps? "
-			    "First, the map file\nmust be copied into the");
-	gchar *thetext1a = _("\ndirectory as .gif, .jpg or .png file "
-			     "and must have\nthe size 1280x1024. The file names must be\n"
-			     "map_* for street maps or top_* for topographical maps!\n"
-			     "Load the file, select coordinates "
-			     "from waypoint list or\ntype them in. "
-			     "Then click on the accept button.");
-	gchar *thetext2 =
-		_("Now do the same for your second point and click on the\n"
-		  "finish button. The map can be used now.");
-
-	window = gtk_dialog_new ();
-	if (datum == 1)
-		gtk_window_set_title (GTK_WINDOW (window),
-				      _("Import Assistant. Step 1"));
-	else
-		gtk_window_set_title (GTK_WINDOW (window),
-				      _("Import Assistant. Step 2"));
-
-	gtk_container_set_border_width (GTK_CONTAINER (window), 5);
-	mainbox = gtk_vbox_new (TRUE, 2);
-
-	if (datum == 1)
-	{
-		knopf = gtk_button_new_with_label (_("Accept first point"));
-		gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
-					   GTK_SIGNAL_FUNC (import2_cb),
-					   GTK_OBJECT (window));
-
-		knopf_scale_finish =
-			gtk_button_new_with_label (_
-						   ("Accept Scale and Finish"));
-		gtk_signal_connect_object (GTK_OBJECT (knopf_scale_finish),
-					   "clicked",
-					   GTK_SIGNAL_FUNC (import_scale_cb),
-					   GTK_OBJECT (window));
-	}
-	else
-	{
-		knopf = gtk_button_new_with_label (_("Finish"));
-		gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
-					   GTK_SIGNAL_FUNC (import3_cb),
-					   GTK_OBJECT (window));
-	}
-
-	knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (importaway_cb), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window),
-				   "delete_event",
-				   GTK_SIGNAL_FUNC
-				   (importaway_cb), GTK_OBJECT (window));
-
-	s1 = gtk_button_new_with_label (_("Go up"));
-	gtk_signal_connect (GTK_OBJECT (s1), "clicked",
-			    GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 1);
-	s2 = gtk_button_new_with_label (_("Go left"));
-	gtk_signal_connect (GTK_OBJECT (s2), "clicked",
-			    GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 2);
-	s3 = gtk_button_new_with_label (_("Go right"));
-	gtk_signal_connect (GTK_OBJECT (s3), "clicked",
-			    GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 3);
-	s4 = gtk_button_new_with_label (_("Go down"));
-	gtk_signal_connect (GTK_OBJECT (s4), "clicked",
-			    GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 4);
-	s5 = gtk_button_new_with_label (_("Zoom in"));
-	gtk_signal_connect (GTK_OBJECT (s5), "clicked",
-			    GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 1);
-	s6 = gtk_button_new_with_label (_("Zoom out"));
-	gtk_signal_connect (GTK_OBJECT (s6), "clicked",
-			    GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 2);
-
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->
-			     action_area), knopf_scale_finish, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->
-			     action_area), knopf, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->
-			     action_area), knopf2, TRUE, TRUE, 2);
-	GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
-	GTK_WIDGET_SET_FLAGS (knopf2, GTK_CAN_DEFAULT);
-	table = gtk_table_new (7, 4, TRUE);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->vbox), table, TRUE, TRUE,
-			    2);
-	knopf3 = gtk_label_new (_("Latitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf3, 0, 1, 0, 1);
-	knopf4 = gtk_label_new (_("Longitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf4, 0, 1, 1, 2);
-	knopf9 = gtk_label_new (_("Screen X"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf9, 2, 3, 0, 1);
-	knopf10 = gtk_label_new (_("Screen Y"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf10, 2, 3, 1, 2);
-
-	if (datum == 1)
-	{
-		scale_txt = gtk_label_new (_("Scale"));
-		gtk_table_attach_defaults (GTK_TABLE (table), scale_txt, 0, 1,
-					   2, 3);
-		scale_input = gtk_entry_new ();
-		gtk_table_attach_defaults (GTK_TABLE (table), scale_input, 1,
-					   2, 2, 3);
-	}
-
-	knopf6 = gtk_button_new_with_label (_("Browse waypoint"));
-	gtk_signal_connect (GTK_OBJECT (knopf6), "clicked",
-			    GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 1);
-
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
-	dltext1 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
-        coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
-	dltext2 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
-        coordinate2gchar(buff, sizeof(buff), current_long, FALSE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
-
-	dltext5 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext5, 3, 4, 0, 1);
-
-	dltext6 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext6, 3, 4, 1, 2);
-
-	dltext4 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 3, 4);
-	dltext7 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext7, 3, 4, 3, 4);
-
-	if (datum == 1)
-	{
-		knopf11 = gtk_button_new_with_label (_("Browse filename"));
-		gtk_signal_connect_object (GTK_OBJECT (knopf11), "clicked",
-					   GTK_SIGNAL_FUNC (importfb_cb), 0);
-		gtk_table_attach_defaults (GTK_TABLE (table), knopf11, 2, 3,
-					   3, 4);
-	}
-	else
-		gtk_entry_set_text (GTK_ENTRY (dltext7), importfilename);
+  GtkWidget *mainbox, *window;
+  GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf6,
+    *knopf_scale_finish, *scale_txt;
+  GtkWidget *table, *knopf9, *knopf10, *knopf11, *s1, *s2, *s3, *s4;
+  GtkWidget *s5, *s6;
+  gchar buff[1300];
+  GtkWidget *text;
+  GtkWidget *hbox;
+  gchar *thetext1 = _("How to calibrate your own maps? "
+		      "First, the map file\nmust be copied into the");
+  gchar *thetext1a = _("\ndirectory as .gif, .jpg or .png file "
+		       "and must have\nthe size 1280x1024. The file names must be\n"
+		       "map_* for street maps or top_* for topographical maps!\n"
+		       "Load the file, select coordinates "
+		       "from waypoint list or\ntype them in. "
+		       "Then click on the accept button.");
+  gchar *thetext2 =
+    _("Now do the same for your second point and click on the\n"
+      "finish button. The map can be used now.");
 
 
-	gtk_entry_set_editable (GTK_ENTRY (dltext7), FALSE);
-	gtk_entry_set_editable (GTK_ENTRY (dltext4), FALSE);
-	/*
-	 * gtk_entry_set_editable (GTK_ENTRY (dltext5), FALSE);
-	 * gtk_entry_set_editable (GTK_ENTRY (dltext6), FALSE);
-	 */
+  window = gtk_dialog_new ();
 
-	text = gtk_label_new ("");
+  if (datum == 1)
+    gtk_window_set_title (GTK_WINDOW (window), _("Import Assistant. Step 1"));
+  else
+    gtk_window_set_title (GTK_WINDOW (window), _("Import Assistant. Step 2"));
+
+  gtk_container_set_border_width (GTK_CONTAINER (window), 5);
+  mainbox = gtk_vbox_new (TRUE, 2);
+
+  if (datum == 1)
+    {
+      knopf = gtk_button_new_with_label (_("Accept first point"));
+      gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
+				 GTK_SIGNAL_FUNC (import2_cb),
+				 GTK_OBJECT (window));
+
+      knopf_scale_finish =
+	gtk_button_new_with_label (_("Accept Scale and Finish"));
+      gtk_signal_connect_object (GTK_OBJECT (knopf_scale_finish), "clicked",
+				 GTK_SIGNAL_FUNC (import_scale_cb),
+				 GTK_OBJECT (window));
+    }
+  else
+    {
+      knopf = gtk_button_new_with_label (_("Finish"));
+      gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
+				 GTK_SIGNAL_FUNC (import3_cb),
+				 GTK_OBJECT (window));
+    }
+
+  knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+  gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
+			     GTK_SIGNAL_FUNC
+			     (importaway_cb), GTK_OBJECT (window));
+  gtk_signal_connect_object (GTK_OBJECT (window),
+			     "delete_event",
+			     GTK_SIGNAL_FUNC
+			     (importaway_cb), GTK_OBJECT (window));
+
+  s1 = gtk_button_new_with_label (_("Go up"));
+  gtk_signal_connect (GTK_OBJECT (s1), "clicked",
+		      GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 1);
+  s2 = gtk_button_new_with_label (_("Go left"));
+  gtk_signal_connect (GTK_OBJECT (s2), "clicked",
+		      GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 2);
+  s3 = gtk_button_new_with_label (_("Go right"));
+  gtk_signal_connect (GTK_OBJECT (s3), "clicked",
+		      GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 3);
+  s4 = gtk_button_new_with_label (_("Go down"));
+  gtk_signal_connect (GTK_OBJECT (s4), "clicked",
+		      GTK_SIGNAL_FUNC (importshift_cb), (gpointer) 4);
+  s5 = gtk_button_new_with_label (_("Zoom in"));
+  gtk_signal_connect (GTK_OBJECT (s5), "clicked", GTK_SIGNAL_FUNC (zoom_cb),
+		      (gpointer) 1);
+  s6 = gtk_button_new_with_label (_("Zoom out"));
+  gtk_signal_connect (GTK_OBJECT (s6), "clicked", GTK_SIGNAL_FUNC (zoom_cb),
+		      (gpointer) 2);
+
+  if (datum == 1)
+    {
+      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+			  knopf_scale_finish, TRUE, TRUE, 2);
+    }
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), knopf, TRUE,
+		      TRUE, 2);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), knopf2,
+		      TRUE, TRUE, 2);
+  GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
+  GTK_WIDGET_SET_FLAGS (knopf2, GTK_CAN_DEFAULT);
+  table = gtk_table_new (7, 4, TRUE);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), table, TRUE, TRUE,
+		      2);
+  knopf3 = gtk_label_new (_("Latitude"));
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf3, 0, 1, 0, 1);
+  knopf4 = gtk_label_new (_("Longitude"));
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf4, 0, 1, 1, 2);
+  knopf9 = gtk_label_new (_("Screen X"));
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf9, 2, 3, 0, 1);
+  knopf10 = gtk_label_new (_("Screen Y"));
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf10, 2, 3, 1, 2);
 
 
-	if (datum == 1)
-		g_snprintf (buff, sizeof (buff),
-			    "<span font_family=\"Arial\" size=\"10000\">%s <span color=\"red\"> %s</span> %s</span>",
-			    thetext1, mapdir, thetext1a);
-	else
-		g_snprintf (buff, sizeof (buff),
-			    "<span font_family=\"Arial\" size=\"10000\">%s</span>",
-			    thetext2);
+  if (datum == 1)
+    {
+      scale_txt = gtk_label_new (_("Scale"));
+      gtk_table_attach_defaults (GTK_TABLE (table), scale_txt, 0, 1, 2, 3);
+      scale_input = gtk_entry_new ();
+      gtk_table_attach_defaults (GTK_TABLE (table), scale_input, 1, 2, 2, 3);
+    }
 
-	gtk_label_set_text (GTK_LABEL (text), buff);
-	gtk_label_set_use_markup (GTK_LABEL (text), TRUE);
+  knopf6 = gtk_button_new_with_label (_("Browse waypoint"));
+  gtk_signal_connect (GTK_OBJECT (knopf6), "clicked",
+		      GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 1);
 
-	hbox = gtk_hbox_new (FALSE, 3);
-	gtk_box_pack_start (GTK_BOX (hbox), text, TRUE, TRUE, 0);
-	/*   gtk_box_pack_start (GTK_BOX (hbox), scrollbar, FALSE, FALSE, 0); */
 
-	gtk_table_attach_defaults (GTK_TABLE (table), hbox, 2, 4, 4, 7);
-	gtk_table_attach_defaults (GTK_TABLE (table), s1, 0, 1, 4, 5);
-	gtk_table_attach_defaults (GTK_TABLE (table), s5, 1, 2, 4, 5);
-	gtk_table_attach_defaults (GTK_TABLE (table), s2, 0, 1, 5, 6);
-	gtk_table_attach_defaults (GTK_TABLE (table), s3, 1, 2, 5, 6);
-	gtk_table_attach_defaults (GTK_TABLE (table), s4, 0, 1, 6, 7);
-	gtk_table_attach_defaults (GTK_TABLE (table), s6, 1, 2, 6, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
+  dltext1 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
+  coordinate2gchar (buff, sizeof (buff), current_lat, TRUE, minsecmode);
+  gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
+  dltext2 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
+  coordinate2gchar (buff, sizeof (buff), current_long, FALSE, minsecmode);
+  gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
 
-	gtk_table_set_row_spacings (GTK_TABLE (table), 3);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 3);
-	/*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
-	/*    gtk_label_set_justify (GTK_LABEL (knopf3), GTK_JUSTIFY_RIGHT); */
-	/*    gtk_label_set_justify (GTK_LABEL (knopf4), GTK_JUSTIFY_RIGHT); */
-	/*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
-	gtk_window_set_default (GTK_WINDOW (window), knopf);
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_widget_show_all (window);
-	importactive = TRUE;
 
-	return TRUE;
+  dltext5 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext5, 3, 4, 0, 1);
+
+  dltext6 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext6, 3, 4, 1, 2);
+
+  dltext4 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 3, 4);
+  dltext7 = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dltext7, 3, 4, 3, 4);
+
+  if (datum == 1)
+    {
+      knopf11 = gtk_button_new_with_label (_("Browse filename"));
+      gtk_signal_connect_object (GTK_OBJECT (knopf11), "clicked",
+				 GTK_SIGNAL_FUNC (importfb_cb), 0);
+      gtk_table_attach_defaults (GTK_TABLE (table), knopf11, 2, 3, 3, 4);
+    }
+  else
+    gtk_entry_set_text (GTK_ENTRY (dltext7), importfilename);
+
+
+  gtk_entry_set_editable (GTK_ENTRY (dltext7), FALSE);
+  gtk_entry_set_editable (GTK_ENTRY (dltext4), FALSE);
+  /*
+   * gtk_entry_set_editable (GTK_ENTRY (dltext5), FALSE);
+   * gtk_entry_set_editable (GTK_ENTRY (dltext6), FALSE);
+   */
+
+  text = gtk_label_new ("");
+
+
+  if (datum == 1)
+    g_snprintf (buff, sizeof (buff),
+		"<span font_family=\"Arial\" size=\"10000\">%s <span color=\"red\"> %s</span> %s</span>",
+		thetext1, mapdir, thetext1a);
+  else
+    g_snprintf (buff, sizeof (buff),
+		"<span font_family=\"Arial\" size=\"10000\">%s</span>",
+		thetext2);
+
+  gtk_label_set_text (GTK_LABEL (text), buff);
+  gtk_label_set_use_markup (GTK_LABEL (text), TRUE);
+
+  hbox = gtk_hbox_new (FALSE, 3);
+  gtk_box_pack_start (GTK_BOX (hbox), text, TRUE, TRUE, 0);
+  /*   gtk_box_pack_start (GTK_BOX (hbox), scrollbar, FALSE, FALSE, 0); */
+
+  gtk_table_attach_defaults (GTK_TABLE (table), hbox, 2, 4, 4, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), s1, 0, 1, 4, 5);
+  gtk_table_attach_defaults (GTK_TABLE (table), s5, 1, 2, 4, 5);
+  gtk_table_attach_defaults (GTK_TABLE (table), s2, 0, 1, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), s3, 1, 2, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), s4, 0, 1, 6, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), s6, 1, 2, 6, 7);
+
+  gtk_table_set_row_spacings (GTK_TABLE (table), 3);
+  gtk_table_set_col_spacings (GTK_TABLE (table), 3);
+  /*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
+  /*    gtk_label_set_justify (GTK_LABEL (knopf3), GTK_JUSTIFY_RIGHT); */
+  /*    gtk_label_set_justify (GTK_LABEL (knopf4), GTK_JUSTIFY_RIGHT); */
+  /*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
+  gtk_window_set_default (GTK_WINDOW (window), knopf);
+  gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (mainwindow));
+  gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+  gtk_widget_show_all (window);
+  importactive = TRUE;
+
+  return TRUE;
 }
 
 
@@ -477,317 +477,318 @@ import1_cb (GtkWidget * widget, guint datum)
 gint
 import_scale_cb (GtkWidget * widget, gpointer datum)
 {
-	G_CONST_RETURN gchar *s;
-	gdouble dx_pix, dy_pix, x, y, maxx, maxy, dx_m, dy_m, m_pr_pix, lat,
-		lon;
-	gdouble dlat, dlon, lat_pr_m, lon_pr_m, scale, latcenter, longcenter;
-	maxx = 1280;
-	maxy = 1024;
+  G_CONST_RETURN gchar *s;
+  gdouble dx_pix, dy_pix, x, y, maxx, maxy, dx_m, dy_m, m_pr_pix, lat, lon;
+  gdouble dlat, dlon, lat_pr_m, lon_pr_m, scale, latcenter, longcenter;
+  maxx = 1280;
+  maxy = 1024;
 
-	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
-	checkinput ((gchar *) s);
-	lat = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-	checkinput ((gchar *) s);
-	lon = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext5));
-	x = strtol (s, NULL, 0);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext6));
-	y = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  coordinate_string2gdouble (s, &lat);
 
-	s = gtk_entry_get_text (GTK_ENTRY (scale_input));
-	checkinput ((gchar *) s);
-	scale = (gdouble) strtol (s, NULL, 0);
-	// g_print ("Import: scale: %g, lat: %g, lon: %g, x: %g, y: %g\n", scale, lat, lon, x, y);  
+  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  coordinate_string2gdouble (s, &lon);
 
-	gtk_widget_destroy (widget);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));
+  x = strtol (s, NULL, 0);
 
-	/*  Calc coordinates  */
-	// distance from selected point on map to center in pixels
-	dx_pix = maxx / 2 - x;
-	dy_pix = y - maxy / 2;
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));
+  y = strtol (s, NULL, 0);
 
-	// calculate meter pr pixel of map
-	m_pr_pix = scale / PIXELFACT;
-	// g_print ("dx_pix %g, dy_pix %g, m_pr_pix %g\n", dx_pix, dy_pix, m_pr_pix);  
+  s = gtk_entry_get_text (GTK_ENTRY (scale_input));
+  coordinate_string2gdouble (s, &scale);
 
-	// distance from selected point on map to center in meters
-	dx_m = dx_pix * m_pr_pix;
-	dy_m = dy_pix * m_pr_pix;
-	//   g_print ("dx_m %g, dy_m %g\n", dx_m, dy_m);  
+  if (debug)
+    {
+      g_print ("Import: scale: %g\n", scale);
+      g_print ("Import: scale: lat: %g, lon: %g\n", lat, lon);
+      g_print ("Import: scale: x: %g, y: %g\n", x, y);
+    }
 
-	// length of 1 deg lat and lon i meters
-	// lat_pr_m = 360.0/(2.0*M_PI*R); 
-	/* This should be the correct length, but using this formulas gives me 
-	 * a nautical mile that are 1857.85 m which are wrong. Therefore I am 
-	 * hardcoding it to a nautical mile that are 1851.85 m 
-	 */
-	lat_pr_m = 1.0 / (1851.85 * 60.0);
-	lon_pr_m = lat_pr_m / cos (M_PI * lat / 180.0);
-	/*
-	 * g_print ("R %g, M_PI %g lat_pr_m %g, lon_pr_m %g, meter pr deg lat %g\n",R, M_PI, lat_pr_m, lon_pr_m, 1.0/lat_pr_m);  
-	 */
+  gtk_widget_destroy (widget);
 
-	// dinstance in deg from selected point on map to center
-	dlat = dy_m * lat_pr_m;
-	dlon = dx_m * lon_pr_m;
-	//   g_print ("dlat %g, dlon %g\n", dlat, dlon);  
+  /*  Calc coordinates  */
+  // distance from selected point on map to center in pixels
+  dx_pix = maxx / 2 - x;
+  dy_pix = y - maxy / 2;
 
-	// map mid point in deg
-	latcenter = lat + dlat;
-	longcenter = lon + dlon;
-	//   g_print ("Import: scale: %g, latcenter: %g, loncenter: %g\n", scale, latcenter, longcenter);  
+  // calculate meter pr pixel of map
+  m_pr_pix = scale / PIXELFACT;
+  // g_print ("dx_pix %g, dy_pix %g, m_pr_pix %g\n", dx_pix, dy_pix, m_pr_pix);  
 
-	if (strlen (importfilename) > 4)
-	{
-		maps = g_renew (mapsstruct, maps, (nrmaps + 2));
-		g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
-		(maps + nrmaps)->lat = latcenter;
-		(maps + nrmaps)->lon = longcenter;
-		(maps + nrmaps)->scale = scale;
-		nrmaps++;
-		havenasa = -1;
+  // distance from selected point on map to center in meters
+  dx_m = dx_pix * m_pr_pix;
+  dy_m = dy_pix * m_pr_pix;
+  //   g_print ("dx_m %g, dy_m %g\n", dx_m, dy_m);  
 
-		savemapconfig ();
-	}
+  // length of 1 deg lat and lon i meters
+  // lat_pr_m = 360.0/(2.0*M_PI*R); 
+  /* This should be the correct length, but using this formulas gives me 
+   * a nautical mile that are 1857.85 m which are wrong. Therefore I am 
+   * hardcoding it to a nautical mile that are 1851.85 m 
+   */
+  lat_pr_m = 1.0 / (1851.85 * 60.0);
+  lon_pr_m = lat_pr_m / cos (M_PI * lat / 180.0);
+  /*
+   * g_print ("R %g, M_PI %g lat_pr_m %g, lon_pr_m %g, meter pr deg lat %g\n",R, M_PI, lat_pr_m, lon_pr_m, 1.0/lat_pr_m);  
+   */
 
-	importactive = FALSE;
-	g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
-	return TRUE;
+  // dinstance in deg from selected point on map to center
+  dlat = dy_m * lat_pr_m;
+  dlon = dx_m * lon_pr_m;
+  //   g_print ("dlat %g, dlon %g\n", dlat, dlon);  
+
+  // map mid point in deg
+  latcenter = lat + dlat;
+  longcenter = lon + dlon;
+  //   g_print ("Import: scale: %g, latcenter: %g, loncenter: %g\n", scale, latcenter, longcenter);  
+
+  if (strlen (importfilename) > 4)
+    {
+      maps = g_renew (mapsstruct, maps, (nrmaps + 2));
+      g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
+      (maps + nrmaps)->lat = latcenter;
+      (maps + nrmaps)->lon = longcenter;
+      (maps + nrmaps)->scale = scale;
+      nrmaps++;
+      havenasa = -1;
+
+      savemapconfig ();
+    }
+
+  importactive = FALSE;
+  g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
+  return TRUE;
 }
 
 
 gint
 import2_cb (GtkWidget * widget, gpointer datum)
 {
-	G_CONST_RETURN gchar *s;
+  G_CONST_RETURN gchar *s;
 
-	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
-	checkinput ((gchar *) s);
-	imports[0].lat = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-	checkinput ((gchar *) s);
-	imports[0].lon = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext5));
-	imports[0].x = strtol (s, NULL, 0);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext6));
-	imports[0].y = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  coordinate_string2gdouble (s, &imports[0].lat);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  coordinate_string2gdouble (s, &imports[0].lon);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));
+  imports[0].x = strtol (s, NULL, 0);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));
+  imports[0].y = strtol (s, NULL, 0);
 
-	gtk_widget_destroy (widget);
-	import1_cb (NULL, 2);
 
-	return TRUE;
+  if (debug)
+    {
+      fprintf (stderr, "Import: lat:%g,lon:%g x:%d,y:%d\n",
+	       imports[0].lat, imports[0].lon, imports[0].x, imports[0].y);
+    }
+
+  gtk_widget_destroy (widget);
+
+  import1_cb (NULL, 2);
+
+  return TRUE;
 }
 
 gint
 import3_cb (GtkWidget * widget, gpointer datum)
 {
-	G_CONST_RETURN gchar *s;
-	gdouble tx, ty, scale, latmax, latmin, latcenter, longmax, longmin;
-	gdouble longcenter;
-	gdouble px, py;
+  G_CONST_RETURN gchar *s;
+  gdouble tx, ty, scale, latmax, latmin, latcenter, longmax, longmin;
+  gdouble longcenter;
+  gdouble px, py;
 
-	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
-	checkinput ((gchar *) s);
-	imports[1].lat = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-	checkinput ((gchar *) s);
-	imports[1].lon = g_strtod (s, NULL);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext5));
-	imports[1].x = strtol (s, NULL, 0);
-	s = gtk_entry_get_text (GTK_ENTRY (dltext6));
-	imports[1].y = strtol (s, NULL, 0);
-	gtk_widget_destroy (widget);
+  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  coordinate_string2gdouble (s, &imports[1].lat);
 
-	/*  Calc coordinates and scale */
+  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  coordinate_string2gdouble (s, &imports[1].lon);
 
-	tx = (2 * R * M_PI / 360) * cos (M_PI * imports[0].lat / 180.0) *
-		(imports[0].lon - imports[1].lon);
-	ty = (2 * R * M_PI / 360) * (imports[0].lat - imports[1].lat);
-	/*  ty is meter */
-	px = abs (imports[0].x - imports[1].x);
-	py = abs (imports[0].y - imports[1].y);
-	if (px > py)
-		scale = fabs (tx) * PIXELFACT / px;
-	else
-		scale = fabs (ty) * PIXELFACT / py;
-	px = imports[0].x - imports[1].x;
-	py = imports[0].y - imports[1].y;
-	py = -py;
+  s = gtk_entry_get_text (GTK_ENTRY (dltext5));
+  imports[1].x = strtol (s, NULL, 0);
 
-	latmin = imports[0].lat - (imports[0].lat - imports[1].lat) * (1024 -
-								       imports
-								       [0].
-								       y) /
-		py;
-	latmax = latmin + (imports[0].lat - imports[1].lat) * 1024.0 / py;
-	latcenter = (latmax + latmin) / 2.0;
+  s = gtk_entry_get_text (GTK_ENTRY (dltext6));
+  imports[1].y = strtol (s, NULL, 0);
 
-	longmin =
-		imports[0].lon - imports[0].x * (imports[0].lon -
-						 imports[1].lon) / px;
+  gtk_widget_destroy (widget);
 
-	longmax = longmin + 1280.0 * (imports[0].lon - imports[1].lon) / px;
-	longcenter = (longmax + longmin) / 2.0;
+  /*  Calc coordinates and scale */
 
-	if (debug)
-		g_print ("Import: scale: %g, latmitte: %g, latmin: %g, "
-			 "latmax: %g\n longmin: %g, longmax: %g, longmitte: %g\n",
-			 scale, latcenter, latmin, latmax, longmin, longmax,
-			 longcenter);
+  tx = (2 * R * M_PI / 360) * cos (M_PI * imports[0].lat / 180.0) *
+    (imports[0].lon - imports[1].lon);
+  ty = (2 * R * M_PI / 360) * (imports[0].lat - imports[1].lat);
+  /*  ty is meter */
+  px = abs (imports[0].x - imports[1].x);
+  py = abs (imports[0].y - imports[1].y);
+  if (px > py)
+    scale = fabs (tx) * PIXELFACT / px;
+  else
+    scale = fabs (ty) * PIXELFACT / py;
+  px = imports[0].x - imports[1].x;
+  py = imports[0].y - imports[1].y;
+  py = -py;
 
-	if (strlen (importfilename) > 4)
-	{
-		maps = g_renew (mapsstruct, maps, (nrmaps + 2));
-		g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
-		(maps + nrmaps)->lat = latcenter;
-		(maps + nrmaps)->lon = longcenter;
-		(maps + nrmaps)->scale = scale;
-		nrmaps++;
-		havenasa = -1;
+  latmin = imports[0].lat - (imports[0].lat - imports[1].lat) * (1024 -
+								 imports
+								 [0].y) / py;
+  latmax = latmin + (imports[0].lat - imports[1].lat) * 1024.0 / py;
+  latcenter = (latmax + latmin) / 2.0;
 
-		savemapconfig ();
-	}
+  longmin =
+    imports[0].lon - imports[0].x * (imports[0].lon - imports[1].lon) / px;
 
-	importactive = FALSE;
-	g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
+  longmax = longmin + 1280.0 * (imports[0].lon - imports[1].lon) / px;
+  longcenter = (longmax + longmin) / 2.0;
 
-	return TRUE;
+  if (debug)
+    g_print ("Import: scale: %g, latmitte: %g, latmin: %g, "
+	     "latmax: %g\n longmin: %g, longmax: %g, longmitte: %g\n",
+	     scale, latcenter, latmin, latmax, longmin, longmax, longcenter);
+
+  if (strlen (importfilename) > 4)
+    {
+      maps = g_renew (mapsstruct, maps, (nrmaps + 2));
+      g_strlcpy ((maps + nrmaps)->filename, importfilename, 200);
+      (maps + nrmaps)->lat = latcenter;
+      (maps + nrmaps)->lon = longcenter;
+      (maps + nrmaps)->scale = scale;
+      nrmaps++;
+      havenasa = -1;
+
+      savemapconfig ();
+    }
+
+  importactive = FALSE;
+  g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
+
+  return TRUE;
 }
 
 gint
 mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 {
-	gint x, y;
-	gdouble lon, lat, vali;
-	GdkModifierType state;
-	gchar s[200];
+  gint x, y;
+  gdouble lon, lat, vali;
+  GdkModifierType state;
+  gchar s[200];
 
-	/*   printf("bin in mapclick\n"); */
+  /*   printf("bin in mapclick\n"); */
 
-	if (event->button)
-		gdk_window_get_pointer (event->window, &x, &y, &state);
-	else
+  if (event->button)
+    gdk_window_get_pointer (event->window, &x, &y, &state);
+  else
+    {
+      x = event->x;
+      y = event->y;
+      state = event->state;
+    }
+  if (state == 0)
+    return 0;
+  calcxytopos (x, y, &lat, &lon, zoom);
+
+  if (downloadwindowactive || importactive)
+    {
+      if (downloadwindowactive)
 	{
-		x = event->x;
-		y = event->y;
-		state = event->state;
+	  coordinate2gchar (s, sizeof (s), lat, TRUE, minsecmode);
+	  gtk_entry_set_text (GTK_ENTRY (dltext1), s);
+	  g_snprintf (s, sizeof (s), "%.5f", lon);
+	  coordinate2gchar (s, sizeof (s), lon, FALSE, minsecmode);
+	  downloadsetparm (NULL, 0);
 	}
-	if (state == 0)
-		return 0;
-	calcxytopos (x, y, &lat, &lon, zoom);
-
-	if (downloadwindowactive || importactive)
+      else
 	{
-		if (downloadwindowactive)
-		{
-                        coordinate2gchar(s, sizeof(s), lat, TRUE, minsecmode);
-			gtk_entry_set_text (GTK_ENTRY (dltext1), s);
-			g_snprintf (s, sizeof (s), "%.5f", lon);
-                        coordinate2gchar(s, sizeof(s), lon, FALSE, minsecmode);
-			downloadsetparm (NULL, 0);
-		}
-		else
-		{
-			g_snprintf (s, sizeof (s), "%d",
-				    x / zoom + (640 - SCREEN_X_2 / zoom) +
-				    xoff / zoom);
-			gtk_entry_set_text (GTK_ENTRY (dltext5), s);
-			g_snprintf (s, sizeof (s), "%d",
-				    y / zoom + (512 - SCREEN_Y_2 / zoom) +
-				    yoff / zoom);
-			gtk_entry_set_text (GTK_ENTRY (dltext6), s);
-
-		}
-		if (mydebug)
-		{
-			fprintf (stderr, "Mouse click at x:%d,y:%d \n", x, y);
-		}
+	  g_snprintf (s, sizeof (s), "%d",
+		      x / zoom + (640 - SCREEN_X_2 / zoom) + xoff / zoom);
+	  gtk_entry_set_text (GTK_ENTRY (dltext5), s);
+	  g_snprintf (s, sizeof (s), "%d",
+		      y / zoom + (512 - SCREEN_Y_2 / zoom) + yoff / zoom);
+	  gtk_entry_set_text (GTK_ENTRY (dltext6), s);
 
 	}
-	else
+      if (mydebug)
 	{
-		/*        g_print("\nstate: %x x:%d y:%d", state, x, y); */
-		vali = (GTK_ADJUSTMENT (adj)->value);
-		/*  Left mouse button + shift key */
-		if ((state & (GDK_BUTTON1_MASK | GDK_SHIFT_MASK)) ==
-		    (GDK_BUTTON1_MASK | GDK_SHIFT_MASK))
-		{
-			scalerbt_cb (NULL, 2);
-			return TRUE;
-		}
-		/*  Add mouse position as waypoint */
-		/*  Left mouse button + control key */
-		if ((state & (GDK_BUTTON1_MASK | GDK_CONTROL_MASK)) ==
-		    (GDK_BUTTON1_MASK | GDK_CONTROL_MASK))
-		{
-			wplat = lat;
-			wplon = lon;
-			addwaypoint_cb (NULL, 0);
-			return TRUE;
-		}
-		/*  Add current position as waypoint */
-		/*  Right mouse button + control key */
-		if ((state & (GDK_BUTTON3_MASK | GDK_CONTROL_MASK)) ==
-		    (GDK_BUTTON3_MASK | GDK_CONTROL_MASK))
-		{
-			wplat = current_lat;
-			wplon = current_long;
-
-			addwaypoint_cb (NULL, 0);
-			return TRUE;
-		}
-		/*  Right mouse button + shift key */
-		if ((state & (GDK_BUTTON3_MASK | GDK_SHIFT_MASK)) ==
-		    (GDK_BUTTON3_MASK | GDK_SHIFT_MASK))
-		{
-			scalerbt_cb (NULL, 1);
-			return TRUE;
-		}
-
-		/*  Left mouse button */
-		if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
-		{
-			if (posmode)
-			{
-				posmode_x = lon;
-				posmode_y = lat;
-				rebuildtracklist ();
-				if (onemousebutton)
-					gtk_timeout_add (10000,
-							 (GtkFunction)
-							 posmodeoff_cb, 0);
-			}
-		}
-		/*  Middle mouse button */
-		if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
-		{
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-						      (posbt), FALSE);
-
-			rebuildtracklist ();
-		}
-		/*  Right mouse button */
-		if ((state & GDK_BUTTON3_MASK) == GDK_BUTTON3_MASK)
-		{
-			/* set  as target */
-			/* only if RIGHT mouse button clicked */
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-						      (posbt), FALSE);
-			rebuildtracklist ();
-			g_strlcpy (targetname, _("SELECTED"),
-				   sizeof (targetname));
-			g_snprintf (s, sizeof (s), "%s: %s", _("To"),
-				    targetname);
-			gtk_frame_set_label (GTK_FRAME (destframe), s);
-			target_lat = lat;
-			target_long = lon;
-			g_timer_stop (disttimer);
-			g_timer_start (disttimer);
-			olddist = dist;
-		}
+	  fprintf (stderr, "Mouse click at x:%d,y:%d \n", x, y);
 	}
 
-	/*    g_print("\nx: %d, y: %d", x, y); */
-	return TRUE;
+    }
+  else
+    {
+      /*        g_print("\nstate: %x x:%d y:%d", state, x, y); */
+      vali = (GTK_ADJUSTMENT (adj)->value);
+      /*  Left mouse button + shift key */
+      if ((state & (GDK_BUTTON1_MASK | GDK_SHIFT_MASK)) ==
+	  (GDK_BUTTON1_MASK | GDK_SHIFT_MASK))
+	{
+	  scalerbt_cb (NULL, 2);
+	  return TRUE;
+	}
+      /*  Add mouse position as waypoint */
+      /*  Left mouse button + control key */
+      if ((state & (GDK_BUTTON1_MASK | GDK_CONTROL_MASK)) ==
+	  (GDK_BUTTON1_MASK | GDK_CONTROL_MASK))
+	{
+	  wplat = lat;
+	  wplon = lon;
+	  addwaypoint_cb (NULL, 0);
+	  return TRUE;
+	}
+      /*  Add current position as waypoint */
+      /*  Right mouse button + control key */
+      if ((state & (GDK_BUTTON3_MASK | GDK_CONTROL_MASK)) ==
+	  (GDK_BUTTON3_MASK | GDK_CONTROL_MASK))
+	{
+	  wplat = current_lat;
+	  wplon = current_long;
+
+	  addwaypoint_cb (NULL, 0);
+	  return TRUE;
+	}
+      /*  Right mouse button + shift key */
+      if ((state & (GDK_BUTTON3_MASK | GDK_SHIFT_MASK)) ==
+	  (GDK_BUTTON3_MASK | GDK_SHIFT_MASK))
+	{
+	  scalerbt_cb (NULL, 1);
+	  return TRUE;
+	}
+
+      /*  Left mouse button */
+      if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
+	{
+	  if (posmode)
+	    {
+	      posmode_x = lon;
+	      posmode_y = lat;
+	      rebuildtracklist ();
+	      if (onemousebutton)
+		gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
+	    }
+	}
+      /*  Middle mouse button */
+      if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
+	{
+	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
+
+	  rebuildtracklist ();
+	}
+      /*  Right mouse button */
+      if ((state & GDK_BUTTON3_MASK) == GDK_BUTTON3_MASK)
+	{
+	  /* set  as target */
+	  /* only if RIGHT mouse button clicked */
+	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
+	  rebuildtracklist ();
+	  g_strlcpy (targetname, _("SELECTED"), sizeof (targetname));
+	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), targetname);
+	  gtk_frame_set_label (GTK_FRAME (destframe), s);
+	  target_lat = lat;
+	  target_long = lon;
+	  g_timer_stop (disttimer);
+	  g_timer_start (disttimer);
+	  olddist = dist;
+	}
+    }
+
+  /*    g_print("\nx: %d, y: %d", x, y); */
+  return TRUE;
 }
