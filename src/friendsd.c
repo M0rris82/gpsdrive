@@ -22,6 +22,10 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.5  2005/11/05 19:52:17  tweety
+ Fix Bufferoverflow
+ http://seclists.org/lists/fulldisclosure/2005/Nov/0129.html
+
  Revision 1.4  2005/04/20 23:33:49  tweety
  reformatted source code with anjuta
  So now we have new indentations
@@ -426,7 +430,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 					 "%d clients, last: %s[%s]:\n",
 					 listnum, hname, fromaddr);
 
-			fprintf (stderr, txt);
+			fprintf (stderr, "%s",txt);
 			/*       printf ("sende\n%s, Laenge %d, clilen %d", txt, l,clilen);  */
 			if ((nosent =
 			     sendto (sockfd, txt, l, 0, pcli_addr,
