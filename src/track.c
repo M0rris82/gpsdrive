@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  2005/11/06 18:33:41  tweety
+  shortened map selection code
+  coordinate_string2gdouble:
+   - fixed missing format
+    - changed interface to return gdouble
+    change -D option to reflect debuglevels
+    Added more debug Statements for Level>50
+    move map handling to to seperate file
+    speedup memory reservation for map-structure
+    Add code for automatic loading of maps from system
+    DATA/maps/.. Directory
+    changed length of mappath from 400 to 2048 chars
+
   Revision 1.8  2005/10/11 08:28:35  tweety
   gpsdrive:
   - add Tracks(MySql) displaying
@@ -125,17 +138,6 @@ extern GdkSegment *track;
 extern GdkSegment *trackshadow;
 
 extern gint showroute, routeitems;
-typedef struct
-{
-  gchar name[40];
-  gdouble lat;
-  gdouble longitude;
-  gdouble dist;
-  gchar typ[40];
-  gint wlan;
-  gint action;
-  gint sqlnr;
-} wpstruct;
 
 extern wpstruct *routelist;
 extern GdkColor blue;
@@ -245,7 +247,7 @@ drawtracks (void)
 	  for (j = 0; j <= routeitems; j++)
 	    {
 	      calcxy (&posxdest, &posydest,
-		      (routelist + j)->longitude, (routelist + j)->lat, zoom);
+		      (routelist + j)->lon, (routelist + j)->lat, zoom);
 
 	      if (j > 0)
 		{
