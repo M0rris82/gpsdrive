@@ -22,6 +22,18 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.8  2005/11/06 17:24:26  tweety
+shortened map selection code
+coordinate_string2gdouble:
+ - fixed missing format
+ - changed interface to return gdouble
+change -D option to reflect debuglevels
+Added more debug Statements for Level>50
+move map handling to to seperate file
+speedup memory reservation for map-structure
+Add code for automatic loading of maps from system DATA/maps/.. Directory
+changed length of mappath from 400 to 2048 chars
+
 Revision 1.7  2005/10/19 07:22:21  tweety
 Its now possible to choose units for displaying coordinates also in
 Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
@@ -294,6 +306,15 @@ gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 
+void testnewmap ();
+void map_koord_check_and_reload();
+void coordinate_string2gdouble (gchar * text,gdouble * dec);
+void do_incremental_save();
+void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
+		  gdouble wp_lon);
+gdouble lat2radius (gdouble lat);
+void draw_text_with_box (gdouble posx, gdouble posy, gchar * name);
+int posxy_on_screen (gdouble posx, gdouble posy);
 
 typedef struct
 {
@@ -303,14 +324,6 @@ typedef struct
   char timesec[40], speed[10], heading[10];
 }
 friendsstruct;
-
-/* typedef struct
- * {
- * 	  char id[30], name[40], lat[40], longi[40], timesec[40], speed[10],
- *     heading[10];
- * }
- * friendsstruct;
- */
 
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -329,5 +342,19 @@ typedef struct
   glong scale;
 }
 mapsstruct;
+
+typedef struct
+{
+	gchar name[40];
+	gdouble lat;
+	gdouble lon;
+	gdouble dist;
+	gchar typ[40];
+	gint wlan;
+	gint action;
+	gint sqlnr;
+	gint proximity;
+}
+wpstruct;
 
 #endif /* GPSDRIVE_GPSDRIVE_H */
