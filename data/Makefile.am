@@ -10,7 +10,9 @@ iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif
 
 mapsdir   = $(datadir)/gpsdrive/maps
-maps_DATA = maps/top_GPSWORLD.jpg
+maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  maps/top_Germany.jpg   maps/top_NorthAmerica.jpg  maps/top_WorldEast.jpg \
+	    maps/top_America.jpg  maps/top_Europe.jpg     maps/top_GPSWORLD.jpg  maps/top_SouthAmerica.jpg
+
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
