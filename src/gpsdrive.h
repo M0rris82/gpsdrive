@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.9  2005/11/09 21:26:02  tweety
+corrected conversion KM2NAUTIC
+
 Revision 1.8  2005/11/06 17:24:26  tweety
 shortened map selection code
 coordinate_string2gdouble:
@@ -200,7 +203,7 @@ translations
 /* Mapscale / pixelfact is meter / pixel */
 #define PIXELFACT 2817.947378
 #define KM2MILES 0.62137119
-#define KM2NAUTIC  0.54
+#define KM2NAUTIC  0.5399568
 
 #define MAXMESG 8192
 
