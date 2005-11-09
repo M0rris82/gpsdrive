@@ -3,7 +3,7 @@ top_America.jpg       10.0    -90.0     40000000
 top_Australia.jpg    -37.8167 144.9667   8000000
 top_Europe.jpg        50.0     12.0     10000000
 top_Germany.jpg       50.0     10.0     10000000
-top_GPSWORLD.jpg       0.0      0.0     88226037
+top_GPSWORLD.jpg       0.0      0.0     88067900
 top_NorthAmerica.jpg  37.8167 144.9667  20000000
 top_SouthAmerica.jpg -20.0    -80.0     20000000
 top_WorldEast.jpg     30.0   -100.0     40000000

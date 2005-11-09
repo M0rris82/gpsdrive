@@ -2,7 +2,7 @@
 bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl \
-		geoinfo.pl create.sql wp2sql
+		geoinfo.pl create.sql wp2sql gpsd_nmea.sh
 
 
 geoinfo:
