@@ -3,6 +3,14 @@ There is support for satellite images from the NASA now!
 You need GpsDrive version >=2.08
 
 To get the maps you have 2 choices:
+
+The new maps can be found at:
+21600x21600 East Hemisphere
+ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+21600x21600 West Hemisphere
+ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
+  
+
 ======================================================================
 1) From the original site (only gzip compressed)
 
