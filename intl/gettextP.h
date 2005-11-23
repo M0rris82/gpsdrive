@@ -1,5 +1,5 @@
 /* Header describing internals of libintl library.
-   Copyright (C) 1995-1999, 2000-2003 Free Software Foundation, Inc.
+   Copyright (C) 1995-1999, 2000, 2001 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@cygnus.com>, 1995.
 
    This program is free software; you can redistribute it and/or modify it
@@ -32,16 +32,20 @@
 
 #include "loadinfo.h"
 
-#include "gmo.h"		/* Get nls_uint32.  */
+#include "gettext.h"		/* Get nls_uint32.  */
 
 /* @@ end of prolog @@ */
 
-#ifndef internal_function
-# define internal_function
+#ifndef PARAMS
+# if __STDC__
+#  define PARAMS(args) args
+# else
+#  define PARAMS(args) ()
+# endif
 #endif
 
-#ifndef attribute_hidden
-# define attribute_hidden
+#ifndef internal_function
+# define internal_function
 #endif
 
 /* Tell the compiler when a conditional or integer expression is
@@ -68,50 +72,63 @@ SWAP (i)
 #endif
 
 
-/* In-memory representation of system dependent string.  */
-struct sysdep_string_desc
+/* This is the representation of the expressions to determine the
+   plural form.  */
+struct expression
 {
-  /* Length of addressed string, including the trailing NUL.  */
-  size_t length;
-  /* Pointer to addressed string.  */
-  const char *pointer;
+  int nargs;			/* Number of arguments.  */
+  enum operator
+  {
+    /* Without arguments:  */
+    var,			/* The variable "n".  */
+    num,			/* Decimal number.  */
+    /* Unary operators:  */
+    lnot,			/* Logical NOT.  */
+    /* Binary operators:  */
+    mult,			/* Multiplication.  */
+    divide,			/* Division.  */
+    module,			/* Module operation.  */
+    plus,			/* Addition.  */
+    minus,			/* Subtraction.  */
+    less_than,			/* Comparison.  */
+    greater_than,		/* Comparison.  */
+    less_or_equal,		/* Comparison.  */
+    greater_or_equal,		/* Comparison.  */
+    equal,			/* Comparision for equality.  */
+    not_equal,			/* Comparision for inequality.  */
+    land,			/* Logical AND.  */
+    lor,			/* Logical OR.  */
+    /* Ternary operators:  */
+    qmop			/* Question mark operator.  */
+  } operation;
+  union
+  {
+    unsigned long int num;	/* Number value for `num'.  */
+    struct expression *args[3];	/* Up to three arguments.  */
+  } val;
 };
+
+/* This is the data structure to pass information to the parser and get
+   the result in a thread-safe way.  */
+struct parse_args
+{
+  const char *cp;
+  struct expression *res;
+};
+
 
 /* The representation of an opened message catalog.  */
 struct loaded_domain
 {
-  /* Pointer to memory containing the .mo file.  */
   const char *data;
-  /* 1 if the memory is mmap()ed, 0 if the memory is malloc()ed.  */
   int use_mmap;
-  /* Size of mmap()ed memory.  */
   size_t mmap_size;
-  /* 1 if the .mo file uses a different endianness than this machine.  */
   int must_swap;
-  /* Pointer to additional malloc()ed memory.  */
-  void *malloced;
-
-  /* Number of static strings pairs.  */
   nls_uint32 nstrings;
-  /* Pointer to descriptors of original strings in the file.  */
-  const struct string_desc *orig_tab;
-  /* Pointer to descriptors of translated strings in the file.  */
-  const struct string_desc *trans_tab;
-
-  /* Number of system dependent strings pairs.  */
-  nls_uint32 n_sysdep_strings;
-  /* Pointer to descriptors of original sysdep strings.  */
-  const struct sysdep_string_desc *orig_sysdep_tab;
-  /* Pointer to descriptors of translated sysdep strings.  */
-  const struct sysdep_string_desc *trans_sysdep_tab;
-
-  /* Size of hash table.  */
+  struct string_desc *orig_tab;
+  struct string_desc *trans_tab;
   nls_uint32 hash_size;
-  /* Pointer to hash table.  */
-  const nls_uint32 *hash_tab;
-  /* 1 if the hash table uses a different endianness than this machine.  */
-  int must_swap_hash_tab;
-
+  nls_uint32 *hash_tab;
   int codeset_cntr;
 #ifdef _LIBC
   __gconv_t conv;
@@ -150,64 +167,84 @@ struct binding
    This variable is part of the external ABI of the GNU libintl.  */
 extern int _nl_msg_cat_cntr;
 
-#ifndef _LIBC
-const char *_nl_locale_name (int category, const char *categoryname);
-#endif
-
-struct loaded_l10nfile *_nl_find_domain (const char *__dirname, char *__locale,
-					 const char *__domainname,
-					 struct binding *__domainbinding)
+struct loaded_l10nfile *_nl_find_domain PARAMS ((const char *__dirname,
+						 char *__locale,
+						 const char *__domainname,
+					      struct binding *__domainbinding))
      internal_function;
-void _nl_load_domain (struct loaded_l10nfile *__domain,
-		      struct binding *__domainbinding)
+void _nl_load_domain PARAMS ((struct loaded_l10nfile *__domain,
+			      struct binding *__domainbinding))
      internal_function;
-void _nl_unload_domain (struct loaded_domain *__domain)
+void _nl_unload_domain PARAMS ((struct loaded_domain *__domain))
      internal_function;
-const char *_nl_init_domain_conv (struct loaded_l10nfile *__domain_file,
-				  struct loaded_domain *__domain,
-				  struct binding *__domainbinding)
+const char *_nl_init_domain_conv PARAMS ((struct loaded_l10nfile *__domain_file,
+					  struct loaded_domain *__domain,
+					  struct binding *__domainbinding))
      internal_function;
-void _nl_free_domain_conv (struct loaded_domain *__domain)
+void _nl_free_domain_conv PARAMS ((struct loaded_domain *__domain))
      internal_function;
 
-char *_nl_find_msg (struct loaded_l10nfile *domain_file,
-		    struct binding *domainbinding, const char *msgid,
-		    size_t *lengthp)
+char *_nl_find_msg PARAMS ((struct loaded_l10nfile *domain_file,
+			    struct binding *domainbinding,
+			    const char *msgid, size_t *lengthp))
      internal_function;
 
 #ifdef _LIBC
-extern char *__gettext (const char *__msgid);
-extern char *__dgettext (const char *__domainname, const char *__msgid);
-extern char *__dcgettext (const char *__domainname, const char *__msgid,
-			  int __category);
-extern char *__ngettext (const char *__msgid1, const char *__msgid2,
-			 unsigned long int __n);
-extern char *__dngettext (const char *__domainname,
-			  const char *__msgid1, const char *__msgid2,
-			  unsigned long int n);
-extern char *__dcngettext (const char *__domainname,
-			   const char *__msgid1, const char *__msgid2,
-			   unsigned long int __n, int __category);
-extern char *__dcigettext (const char *__domainname,
-			   const char *__msgid1, const char *__msgid2,
-			   int __plural, unsigned long int __n,
-			   int __category);
-extern char *__textdomain (const char *__domainname);
-extern char *__bindtextdomain (const char *__domainname,
-			       const char *__dirname);
-extern char *__bind_textdomain_codeset (const char *__domainname,
-					const char *__codeset);
+extern char *__gettext PARAMS ((const char *__msgid));
+extern char *__dgettext PARAMS ((const char *__domainname,
+				 const char *__msgid));
+extern char *__dcgettext PARAMS ((const char *__domainname,
+				  const char *__msgid, int __category));
+extern char *__ngettext PARAMS ((const char *__msgid1, const char *__msgid2,
+				 unsigned long int __n));
+extern char *__dngettext PARAMS ((const char *__domainname,
+				  const char *__msgid1, const char *__msgid2,
+				  unsigned long int n));
+extern char *__dcngettext PARAMS ((const char *__domainname,
+				   const char *__msgid1, const char *__msgid2,
+				   unsigned long int __n, int __category));
+extern char *__dcigettext PARAMS ((const char *__domainname,
+				   const char *__msgid1, const char *__msgid2,
+				   int __plural, unsigned long int __n,
+				   int __category));
+extern char *__textdomain PARAMS ((const char *__domainname));
+extern char *__bindtextdomain PARAMS ((const char *__domainname,
+				       const char *__dirname));
+extern char *__bind_textdomain_codeset PARAMS ((const char *__domainname,
+						const char *__codeset));
 #else
-/* Declare the exported libintl_* functions, in a way that allows us to
-   call them under their real name.  */
-# undef _INTL_REDIRECT_INLINE
-# undef _INTL_REDIRECT_MACROS
-# define _INTL_REDIRECT_MACROS
-# include "libgnuintl.h"
-extern char *libintl_dcigettext (const char *__domainname,
-				 const char *__msgid1, const char *__msgid2,
-				 int __plural, unsigned long int __n,
-				 int __category);
+extern char *gettext__ PARAMS ((const char *__msgid));
+extern char *dgettext__ PARAMS ((const char *__domainname,
+				 const char *__msgid));
+extern char *dcgettext__ PARAMS ((const char *__domainname,
+				  const char *__msgid, int __category));
+extern char *ngettext__ PARAMS ((const char *__msgid1, const char *__msgid2,
+				 unsigned long int __n));
+extern char *dngettext__ PARAMS ((const char *__domainname,
+				  const char *__msgid1, const char *__msgid2,
+				  unsigned long int __n));
+extern char *dcngettext__ PARAMS ((const char *__domainname,
+				   const char *__msgid1, const char *__msgid2,
+				   unsigned long int __n, int __category));
+extern char *dcigettext__ PARAMS ((const char *__domainname,
+				   const char *__msgid1, const char *__msgid2,
+				   int __plural, unsigned long int __n,
+				   int __category));
+extern char *textdomain__ PARAMS ((const char *__domainname));
+extern char *bindtextdomain__ PARAMS ((const char *__domainname,
+				       const char *__dirname));
+extern char *bind_textdomain_codeset__ PARAMS ((const char *__domainname,
+						const char *__codeset));
+#endif
+
+#ifdef _LIBC
+extern void __gettext_free_exp PARAMS ((struct expression *exp))
+     internal_function;
+extern int __gettextparse PARAMS ((void *arg));
+#else
+extern void gettext_free_exp__ PARAMS ((struct expression *exp))
+     internal_function;
+extern int gettextparse__ PARAMS ((void *arg));
 #endif
 
 /* @@ begin of epilog @@ */

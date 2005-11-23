@@ -1,5 +1,5 @@
 /* Implementation of gettext(3) function.
-   Copyright (C) 1995, 1997, 2000-2003 Free Software Foundation, Inc.
+   Copyright (C) 1995, 1997, 2000, 2001 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify it
    under the terms of the GNU Library General Public License as published
@@ -42,19 +42,20 @@
    prefix.  So we have to make a difference here.  */
 #ifdef _LIBC
 # define GETTEXT __gettext
-# define DCGETTEXT INTUSE(__dcgettext)
+# define DCGETTEXT __dcgettext
 #else
-# define GETTEXT libintl_gettext
-# define DCGETTEXT libintl_dcgettext
+# define GETTEXT gettext__
+# define DCGETTEXT dcgettext__
 #endif
 
 /* Look up MSGID in the current default message catalog for the current
    LC_MESSAGES locale.  If not found, returns MSGID itself (the default
    text).  */
 char *
-GETTEXT (const char *msgid)
+GETTEXT (msgid)
+     const char *msgid;
 {
-    return DCGETTEXT (NULL, msgid, LC_MESSAGES);
+  return DCGETTEXT (NULL, msgid, LC_MESSAGES);
 }
 
 #ifdef _LIBC
