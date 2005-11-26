@@ -8,7 +8,7 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif \
-	     icons/icons.html icons/index.html
+	     icons/index.html
 
 mapsdir   = $(datadir)/gpsdrive/maps
 maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  maps/top_Germany.jpg   maps/top_NorthAmerica.jpg  maps/top_WorldEast.jpg \
