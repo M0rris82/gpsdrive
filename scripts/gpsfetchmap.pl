@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.18  2005/11/28 21:37:03  tweety
+# Update google map fetching
+#
 # Revision 1.17  2005/10/20 23:51:46  tweety
 # Zoomlevels for incrementp
 # Autor: webmaster@psphacks.net  Aaron Anderson
@@ -154,7 +157,6 @@ use Switch;
 use POSIX qw(ceil floor);
 use Image::Magick;
 
-
 # For Expedia
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
               100000,150000,200000,300000,500000,750000,1000000,1500000,2000000,3000000,
@@ -176,6 +178,7 @@ my $Scale2Zoom = {
 	13352   => 16,
 	6676    => 17,
 	3338    => 18,
+	1669    => 19,
     },
     eniro => {
 	18000000 => 1, # 480     Km
@@ -267,6 +270,14 @@ if ( $mapserver eq 'googlesat') {
 if ( $mapserver ne 'expedia') {
     @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
 }
+
+# for google stitch
+my %font_description = (font=> "Arial-Bold", pointsize=>12, fill=>"yellow");
+my @quadChars = qw/t q s r/;
+my $PI = 3.14159265358979323846;
+my $MERCATOR_TOP = 85.051125;
+my $MERCATOR_BOTTOM = -85.051125;
+
 
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
@@ -444,7 +455,10 @@ sub mirror_file($$){
     my $url            = shift;
     my $local_filename = shift;
 
-    debug("mirror_file($url --> $local_filename)");
+    my $file_existed = -s $local_filename;
+
+    my $exist_string = $file_existed?"exists":"getting";
+    debug("mirror_file($url --> $local_filename) $exist_string");
 
     my $ok=1;
 
@@ -455,7 +469,6 @@ sub mirror_file($$){
 	    or warn "Could not create '$dir':$!\n";;
     }
 
-    my $file_existed = -s $local_filename;
     my $response = $ua->mirror($url,$local_filename);
 #    debug(sprintf("success = %d <%s>",$response->is_success,$response->status_line));
     
@@ -470,6 +483,8 @@ sub mirror_file($$){
 	    $ok=0;
 	}
     }    
+    debug("mirror_file($url --> $local_filename) error ")
+	unless $ok;
     return $ok;
 }
 
@@ -1496,72 +1511,88 @@ sub check_coverage($){
 # google_stitch.pl 39.346970 72.879140 15 3 4
 # Stitch the satellite image with zoom level 15, 3 kh.google.com images width,
 # 4 height and centered in 39.346970N and 72.879140E
+sub lat2y1($){
+    my $lat = shift;
 
-sub xy2goog($$$) {
-    my $hval = shift;
-    my $vval = shift;
-    my $zoom  = shift;
-
-    my $i;
-    my $format = "%0$zoom"."b";
-
-    $hval = sprintf($format,$hval);
-    $vval = sprintf($format,$vval);
-
-
-    my @hstr=split(//,$hval);
-    my @vstr=split(//,$vval);
-
-    my $load = "";
-    for(my $i=0;$i<$zoom;$i++){
-        $_ = 2*$vstr[$i] + $hstr[$i];
-        s/0/q/g;
-        s/1/r/g;
-        s/2/t/g;
-        s/3/s/g;
-        $load .= "$_";
-    }
-    #debug("xy2goog($hval,$vval,$zoom)-> $load");
-    return($load);
-}
-
-sub xy2latlon($$$$) {
-    my $hval = shift;
-    my $vval = shift;
-    my $zoom  = shift;
-    my $format = shift;
-
-    my $divx = 2**($zoom-1);
-    my $divy = 2**$zoom;
-
-    $vval -= $divy/2;
-
-    my $stepx = 360 / $divx;
-    my $stepy = 720 / $divy;
-
-    my $x = $hval*$stepx - 180;
-    my $y = $vval*$stepy - 180;
-
-    my $res = sprintf($format, -$y, $x);
+    my $sinLat = sin(($lat*$PI)/180);
+    my $res = log(
+		  (1 + $sinLat) /
+		  (1 - $sinLat)
+		  )/2;
+#    debug("lat2y1($lat) --> $res");
     return $res;
 }
 
-sub latlon2xy($$$) {
-    my $x   = shift;
-    my $y   = shift;
-    my $zoom = shift;
 
-    my $divx = 2**($zoom-1);
-    my $divy = 2**$zoom;
 
-    my $stepx = 360 / $divx;
-    my $stepy = 720 / $divy;
 
-    my $vx = (180 - $x)/$stepx + $divy/2;
-    my $vy = (180 + $y)/$stepy;
+sub xy2goog($$$){
+    my ($x, $y, $zoom) = @_;
 
-    return sprintf("%.0f", $vy), sprintf("%.0f", $vx);
+    $y = 2**($zoom-1) - 1 - $y;
+    
+    my $format = '%0'.$zoom.'b';
+
+    my @xBits = split(//, sprintf($format, $x));
+    my @yBits = split(//, sprintf($format, $y));
+
+    #debug("xy2goog($x,$y,$zoom)-> $format '".sprintf($format, $x)."'");
+    #debug("xy2goog($x,$y,$zoom)-> $format '".sprintf($format, $y)."'");
+
+    my $res = '';
+    for(my $i = 0; $i < $zoom; $i++) {
+	my $qc = ($xBits[$i] << 1) + $yBits[$i];
+        $res .= $quadChars[$qc];
+    }
+    #debug("xy2goog($x,$y,$zoom)-> $res");
+
+    return $res;
 }
+
+sub xy2latlon($$$$){
+    my ($x, $y, $zoom, $format) = @_;
+
+    my $width = 2**($zoom-1);
+    my $height = 2**($zoom-1);
+    
+    my $tileWidth = 360 / $width;
+
+    my $lon = $x*$tileWidth - 180;
+    
+    my $yTop = lat2y1($MERCATOR_TOP);
+    my $yBottom = lat2y1($MERCATOR_BOTTOM);
+
+    $y = (($yBottom - $yTop)*$y)/$height + $yTop;
+    
+    my $lat = (360*atan2(exp($y), 1))/$PI - 90;
+
+    my $res = sprintf($format, $lat, $lon);
+
+    #debug("xy2latlon($x,$y,$zoom,$format)-> $res");
+    return $res;
+}
+
+sub latlon2xy($$$){
+    my ($lat, $lon, $zoom) = @_;
+
+    my $width = 2**($zoom-1);
+    my $height = 2**($zoom-1);
+
+    my $tileWidth = 360 / $width;
+
+    my $x = ($lon + 180)/$tileWidth;
+    
+    my $y = lat2y1($lat);
+
+    my $yTop = lat2y1($MERCATOR_TOP);
+    my $yBottom = lat2y1($MERCATOR_BOTTOM);
+
+    $y = ($height*($y - $yTop))/($yBottom - $yTop);
+
+    #debug("latlon2xy($lat,$lon,$zoom) = $x,$y");
+    return int($x), int($y);
+}
+
 
 ######################################################################
 # Check if $filename is a valid map image
@@ -1592,12 +1623,14 @@ sub google_stitch($$$$$$) {
     # Directory for mirroring Google tiles
     my $google_mirror_dir = "${mapdir}google_mirror/$zoom";
 
-    my $hwidth  = int($width/2);
-    my $hheight = int($height/2);
+    my $hwidth  = $width/2;
+    my $hheight = $height/2;
 
     my ($hval, $vval) = latlon2xy ($lat, $lon, $zoom);
+    $hval -= int($hwidth);
+    $vval -= int($hheight);
 
-    print "google_stitch($lat($hval), $lon($vval), $scale, $width, $height )\n" if $debug;
+    debug("google_stitch($lat($hval), $lon($vval), $scale, $width, $height )");
 
     my $image=Image::Magick->new();    
     my $anz_found=0;
@@ -1606,9 +1639,9 @@ sub google_stitch($$$$$$) {
 	my $images=Image::Magick->new();    
 
 	for(my $xd = 0; $xd < $width; $xd++) {
-	    my $hpos = $hval + $xd - $hwidth;
-	    my $vpos = $vval + $yd - $hheight;
-	    print "google_stitch: $lat($hpos), $lon($vpos), $scale\n" if $debug;
+	    my $hpos = $hval + $xd;
+	    my $vpos = $vval + $yd;
+#	    print "google_stitch: $lat($hpos), $lon($vpos), $scale\n" if $debug;
 	    my $googlename = xy2goog($hpos, $vpos, $zoom);
 	    my $filename = "$google_mirror_dir/$googlename.jpg";
 	    my $url = "http://kh.google.com/kh?v=3&t=$googlename";
@@ -1625,6 +1658,24 @@ sub google_stitch($$$$$$) {
 	    if ( is_usefull_map_file($filename) ) {
 		$anz_found++;
 		$model->ReadImage($filename);
+		if ($debug) { # Annotate position and coordinate
+		    $model->Draw(fill => 'blue',
+				 primitive => 'line',   
+				 points => '0,0 0,150');
+		    $model->Draw(fill => 'green',
+				 primitive => 'line',   
+				 points => '0,0 150,0');
+		    my $gwp = IO::File->new(">>way_google_stitch.txt");
+		    my ($lat,$lon)=split(",",xy2latlon($hpos, $vpos, $zoom, "%.4f,%.4f"));
+		    printf $gwp "%d_%d_%d %f %f Map\n",$hpos,$vpos,$zoom,$lat,$lon;
+		    $gwp->close();
+		    $model->Annotate( %font_description, 
+				      text => sprintf("%s\n%s\n%d, %d, %d",
+						      xy2latlon($hpos, $vpos, $zoom, "(%.3f,%.3f)"),
+						      $hpos,$vpos,$zoom),
+				      geometry => '+1+12' );
+		}
+
 	    }
 	    push @$images, $model;
 	}
@@ -1634,11 +1685,11 @@ sub google_stitch($$$$$$) {
 	push @$image, $montage;
     }
 
-    my $ulh = $hval-$hwidth;
-    my $ulv = $vval-$hheight;
+    my $ulh = $hval;
+    my $ulv = $vval;
 
-    my $lrh  = $hval-$hwidth +$width;
-    my $lrv  = $vval-$hheight+$height;
+    my $lrh  = $hval+$width;
+    my $lrv  = $vval+$height;
 
 
     my $fname =  
@@ -1650,19 +1701,18 @@ sub google_stitch($$$$$$) {
     if (  (!$include_empty_tiles) && $anz_found  < ($width* $height) ) {
 	return "O";
     } elsif ( $anz_found ) {
-	print " Stitching result image... ($anz_found) " if $debug;
+	print " Stitching result image... (w:$width * h:$height found:$anz_found) " if $debug;
 	$image = $image->Montage(geometry=>(256*$width)."x256", tile=>" 1x$height");
 	print "done.\n" if $debug;
 	
 	if ( $debug ) {
 	    my $ulm   =  xy2latlon($ulh, $ulv, $zoom, "%.6f\n%.6f");
 	    my $lrm   =  xy2latlon($lrh, $lrv, $zoom, "%.6f\n%.6f");
-	    my $mmm   =  xy2latlon($hval, $vval, $zoom, "%.6f\n%.6f");
+	    my $mmm   =  xy2latlon($hval+$hwidth, $vval+$hheight, $zoom, "%.6f\n%.6f");
 	    print "Annotating result image...\n";
-	    my $fill_color = "yellow";
 	    $image->Draw(fill=>'red',    primitive=>'rectangle',   points=>'635,507 645,517');
 	    $image->Draw(fill=>'yellow', primitive=>'rectangle',   points=>'638,510 642,514');
-	    $image->Annotate(font=> "Arial-Bold", pointsize=>12, fill=>$fill_color, text=>"$mmm", geometry=>'+640+512' );
+	    $image->Annotate(%font_description, text=>"$mmm", geometry=>'+640+512' );
 	    my $way_txt = IO::File->new(">>/home/gpsdrive/way-test.txt");
 	    #Muenchen                48.129281   11.573221 area.city
 	    my $mm1 = $mmm;
@@ -1670,8 +1720,15 @@ sub google_stitch($$$$$$) {
 	    $mmm =~ s/\s+/ /g;
 	    $way_txt->print("$mm1 $mmm\n");
 	    $way_txt->close();
-	    $image->Annotate(font=> "Arial-Bold", pointsize=>12, fill=>$fill_color, text=>"$ulm", geometry=>'+22+24' );
-	    $image->Annotate(font=> "Arial-Bold", pointsize=>12, fill=>$fill_color, text=>"$lrm", geometry=>'+22+24',gravity=>"SouthEast" );
+	    $image->Annotate(%font_description, text=>"$ulm", geometry=>'+2+54' );
+	    $image->Annotate(%font_description, text=>"$lrm", geometry=>'+2-54',gravity=>"SouthEast" );
+	    for my $x ([$ulh,$lrh]){
+		for my $y ([$ulv,$lrv]){
+		    my $pos_txt   =  xy2latlon($x, $y, $zoom, "%.6f\n%.6f");
+		    #$image->Draw(fill=>'red',    primitive=>'rectangle',   points=>'635,507 645,517');
+		    #$image->Annotate(%font_description, text=>"$lrm", geometry=>'+22+24',gravity=>"SouthEast" );
+		}
+	    }
 	    print "done.\n";
 	}
 
@@ -1679,16 +1736,16 @@ sub google_stitch($$$$$$) {
 	$image->Write($destination_file);
 
 	# TODO: $lat,$lon is not the real map center --> This has to be fixed!!!!
-	my ($la,$lo) = split(' ',xy2latlon(int($hval), int($vval), $zoom, "%.6f %.6f"));
+	my ($la,$lo) = split(' ',xy2latlon($hval+$hwidth, $vval+$hheight, $zoom, "%.6f %.6f"));
 	# TODO: $lat,$lon This is the really  really bad hack to see what the maps look like for Munich
 	#$lo += 0.0014;
 	#$la += 0.0002;
 	append_koords($destination_file, $la, $lo, $scale);
 
 	if ( $anz_new ) {
-	    return ( $anz_found < ($width* $height) ) ? "d":"D"; # incomplete ?
-	} else {
 	    return ( $anz_found < ($width* $height) ) ? "x":"+"; # incomplete ?
+	} else {
+	    return ( $anz_found < ($width* $height) ) ? "c":"C"; # incomplete ?
 	}
     } else {
 	return "O";
@@ -1895,6 +1952,21 @@ Prints the usage page and exits.
 =item B<--MAN -M>
 
 Prints the manual page and exits.
+
+=item B<Download>
+
+When downloading Maps the output reads as folows:
+
+
+ _ Map already exists in Filesystem
+ E Error while downloading Map
+ + Map got downloaded 
+ C googlestich map from Cache
+ c incomplete googlestich map from Cache
+ x Downloaded maps for googlestich but incomplete image
+ O Not all tiles where found for stitching
+ u updated map_koords.txt File
+ S Simulate only 
 
 =back
 
