@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.19  2005/12/09 07:58:04  tweety
+# improve proxy handling
+#
 # Revision 1.18  2005/11/28 21:37:03  tweety
 # Update google map fetching
 #
@@ -147,6 +150,7 @@ use LWP::Debug qw(- -conns -trace);
 #use LWP::Debug qw(+ +conns +trace);
 use HTTP::Request;
 use HTTP::Request::Common;
+use HTML::Parser;
 use Getopt::Long;
 use Pod::Usage;
 use File::Basename;
@@ -235,7 +239,7 @@ our $MAP_KOORDS         = {};
 our $MAP_FILES          = {};
 our $GPSTOOL_MAP_KOORDS = {};
 our $GPSTOOL_MAP_FILES  = {};
-my $PROXY='';
+my $PROXY=$ENV{'http_proxy'};
 
 
 GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon, 
@@ -325,7 +329,13 @@ my $KOORD_FILE  = "$mapdir/map_koord.txt";
 #############################################################################
 # LPW::UserAgent initialisieren
 my $ua = LWP::UserAgent->new;
-$ua->proxy(['http','ftp'],"http://$PROXY/") if $PROXY;
+if ( $PROXY ) {
+    $PROXY =~ s,^(http|ftp)://,,;
+    $PROXY =~ s,/$,,;
+    $PROXY = "http://$PROXY/";
+    debug("Using Proxy '$PROXY'");
+    $ua->proxy(['http','ftp'],$PROXY);
+}
 #$ua->level("+trace") if $debug;
 
 
