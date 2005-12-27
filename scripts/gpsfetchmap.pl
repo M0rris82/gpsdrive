@@ -9,6 +9,11 @@
 #
 #
 # $Log$
+# Revision 1.20  2005/12/27 12:02:34  tweety
+# Author: David Pollard
+# Added geoscience server section for map downloads in Australia
+# Added Resize section to convermaps from 1000x800 to 1280x1024
+#
 # Revision 1.19  2005/12/09 07:58:04  tweety
 # improve proxy handling
 #
@@ -125,7 +130,14 @@
 #       make sorting of keys numerocal sort  {$a <=> $b} keys
 #       add desiredDistance, minDistance - maxDistance to --check-coverage
 #       add gap/overlap recognition to --check-coverage
-
+# DEC 2006 David Pollard
+#       Added geoscience server section for map downloads in Australia
+#       Added Resize section to convermaps from 1000x800 to 1280x1024
+#       Updated copyright message
+#       I'm not sure I have the scale correct
+#       I Figured out that 1 pixel = 176.47m  
+#       I found a calculation to convert this to a relative scale
+#       176.47 / 0.000265  (No idea if this is correct)
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -136,7 +148,8 @@ modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
 modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 15, 2005) by Olli Salonen <olli\@cabbala.net>
 modified (July 1, 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
-Version 1.18
+modified (Dec 27, 2005) by David Pollard <david dot pollard\@optusnet.com.au>
+Version 1.19
 ";
 
 sub redirect_ok { return 1; }
@@ -168,7 +181,44 @@ my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
 
 my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
 
+# Translates Scale to zoom factor used by Mapserver
+# This Variable also is used to see if the required mapserver
+# is a valid Mapserver source
 my $Scale2Zoom = { 
+    expedia => {
+	# Right Values have to be filled later this is a placeholder for now
+	# The values are stored in @SCALES and @EXPEDIAALTS
+	1000     => 0,
+	1500     => 0,
+	2000     => 0,
+	3000     => 0,
+	5000     => 0,
+	7500     => 0,
+	10000    => 0,
+	15000    => 0,
+	20000    => 0,
+	30000    => 0,
+	50000    => 0,
+	75000    => 0,
+	100000   => 0,
+	150000   => 0,
+	200000   => 0,
+	300000   => 0,
+	500000   => 0,
+	750000   => 0,
+	1000000  => 0,
+	1500000  => 0,
+	2000000  => 0,
+	3000000  => 0,
+	5000000  => 0,
+	7500000  => 0,
+	10000000 => 0,
+	15000000 => 0,
+	20000000 => 0,
+	30000000 => 0,
+	50000000 => 0,
+	75000000 => 0,
+    },
     googlesat => {
 	6836224 =>  7,
 	3418112 =>  8,
@@ -209,6 +259,9 @@ my $Scale2Zoom = {
 	3125    => 11, #     100 m
 	1562    => 12, #      50 m
     },
+    geoscience => {
+   	665924 => 0,  # God knows what this should be
+    },
 };
 
 # Set defaults and get options from command line
@@ -242,7 +295,7 @@ our $GPSTOOL_MAP_FILES  = {};
 my $PROXY=$ENV{'http_proxy'};
 
 
-GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon, 
+GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon, 
 	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
 	     'start-lon=f'    => \$slon,       'end-lon=f'   => \$endlon, 
 	     'sla=f'          => \$slat,       'ela=f'       => \$endlat, 
@@ -266,6 +319,16 @@ GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon,
     or pod2usage(1);
 
 
+if ($mapserver eq 'geoscience'){
+    $scale = 665924;
+}
+
+if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
+    print "Invalid Mapserver: $mapserver\n";
+    print "Valid Mapserver: ".join(",",keys %{$Scale2Zoom} )."\n";
+    exit;
+}
+
 if ( $mapserver eq 'googlesat') {
     $MIN_MAP_BYTES = 1000; # Small Tiles
     $FILEPREFIX          = 'top_';
@@ -286,22 +349,24 @@ my $MERCATOR_BOTTOM = -85.051125;
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
-sub append_koords($$$$); # {}
-sub check_coverage($);   # {}
-sub check_koord_file($); # {}
-sub debug($);            # {}
-sub expedia_url($$$);    # {}
-sub expedia_url($$$);    # {}
-sub file_count($);       # {}
-sub file_count($);       # {}
-sub get_coords_for_route; # {}
+sub append_koords($$$$);   # {}
+sub check_coverage($);     # {}
+sub check_koord_file($);   # {}
+sub debug($);              # {}
+sub expedia_url($$$);      # {}
+sub expedia_url($$$);      # {}
+sub geoscience_url($$$);   # {}
+sub resize($$); #{}
+sub file_count($);         # {}
+sub file_count($);         # {}
+sub get_coords_for_route;  # {}
 sub get_coords_for_track($); # {}
-sub get_waypoint($);     # {}
-sub is_map_file($);      # {}
+sub get_waypoint($);       # {}
+sub is_map_file($);        # {}
 sub read_gpstool_map_file(); # {}
-sub read_koord_file($);  # {}
+sub read_koord_file($);    # {}
 sub update_gpsdrive_map_koord_file(); # {}
-sub wget_map($$$);       # {}
+sub wget_map($$$);         # {}
 
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
@@ -415,11 +480,19 @@ if ($TRACK_FILE) { # download maps along a saved track
 my ($existing,$wanted) = file_count($desired_locations);
 print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
 
-unless ($force) {
+if ($mapserver eq 'geoscience'){
+    $scale = 665924;
+    print "+-----------------------------------------------------------+\n";
+    print "| Geoscience Maps are Copyright, Commonwealth of Australia  |\n";
+    print "| They are free for non commercial use.                     |\n";
+    print "| Full Copyright information can be found at                |\n";
+    print "| http://www.ga.gov.au/about/copyright.jsp                  |\n";
+    print "+-----------------------------------------------------------+\n";
+} elsif ( ! $force) {
     print "You are violating the map servers copyright!\n";
     print "Are you sure you want to continue? [y|n] ";
     my $answer = <STDIN>;
-    exit if ($answer !~ /^[yY]/);    
+    exit if ($answer !~ /^[yY]/);
 }
 
 if ( $update_koord  ) {
@@ -604,20 +677,33 @@ sub wget_map($$$){
 	    or warn "Could not create $dir:$!\n";;
     }
     
-    if ( $mapserver eq 'expedia') {
+    if ( $mapserver eq 'expedia') 
+    {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
-    } elsif ( $mapserver eq 'eniro') {
+    } 
+    elsif ( $mapserver eq 'eniro') 
+    {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
-    } elsif ( $mapserver eq 'incrementp') {
+    	} 
+    elsif ( $mapserver eq 'incrementp') 
+    {
 	($url,$mapscale)=incrementp_url($lati,$long,$scale);
-    } elsif ( $mapserver eq 'googlesat') {
+    } 
+    elsif ( $mapserver eq 'googlesat') 
+    {
 	$mapscale=$scale;
 	$url = "google-sat-maps";
-    } else {
+    }
+    elsif ( $mapserver eq 'geoscience') 
+    {
+	($url,$mapscale)=geoscience_url($lati,$long,$scale);
+    } 
+    else 
+    {
 	print "Unknown map sever :", $mapserver, "\n"; 
 	return "E";
     }
-
+    
     return "E" unless $url;
     
     if ( is_map_file( $filename ) ) {
@@ -634,23 +720,28 @@ sub wget_map($$$){
 	    $newcount++;
 	} else {
 	    #print "wget $url\n" if $debug;
-	    if ( $mapserver eq 'googlesat') {
-		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
-	    } elsif ( mirror_map($url,$filename) ) {
-		append_koords($filename, $lati, $long, $mapscale);
-		$result= "+";
-		print "\nWrote $filename\n" if $debug;
-		$newcount++;
-	    } else {
-		$failcount++;
-		$result= "E";
+	    if ( $mapserver eq 'googlesat') 
+	    {
+		    $result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
+	    } 
+	    elsif ( mirror_map($url,$filename) ){
+     	    if ( $mapserver eq 'geoscience'){
+	           $result = resize("$mapdir","$filename");
+	       } 
+		    append_koords($filename, $lati, $long, $mapscale);
+		    $result= "+";
+		    print "\nWrote $filename\n" if $debug;
+		    $newcount++;
 	    }
-	    
-	}
-	
-    }
+	    else 
+	    {
+		    $failcount++;
+		    $result= "E";
+	    }
+     }
+   }
     
-    return $result;
+   return $result;
 }
 
 ######################################################################
@@ -895,6 +986,78 @@ $url .= "&SZ=1200,1200";
 $url .= "&COL=1";
 
 return ($url,$mapscale);
+}
+
+#############################################################################
+sub geoscience_url($$$){
+    my $gs_lati = shift;
+    my $gs_long = shift;
+    my $gs_scale = shift;
+ 
+    debug( "geoscience_url(LATI=$lati,LONG=$long,SCALE=$scale)");
+
+    my $url='';
+    my $longoffset = 0.8;
+    my $latioffset = 0.6;
+    my $lati1 = $gs_lati + $latioffset;
+    my $lati2 = $gs_lati - $latioffset;
+    my $long1 = $gs_long - $longoffset;
+    my $long2 = $gs_long + $longoffset;
+	 if ($debug){
+       debug( "Calculated Lat1  $lati1");
+       debug( "Calculated Lat2  $lati2");
+       debug( "Calculated Long1 $long1");
+       debug( "Calculated Long2 $long2");
+    }
+    # Build the URL
+    $url = "http://www.ga.gov.au/bin/mapserv36?map=/public/http/www/docs/map/globalmap/global_36.map\&mode=map\&mapext=";
+    # Add the 4 Coordinates.
+    $url .= sprintf("%.5f",$long1)."+";
+    $url .= sprintf("%.5f",$lati1)."+";
+    $url .= sprintf("%.5f",$long2)."+";
+    $url .= sprintf("%.5f",$lati2);
+    # Add all the different layers
+    $url .= "\&layer=outline\&layer=waterbodies\&layer=capitals\&layer=statenames\&layer=permanentriverslargescale\&layer=fluctuatingrivers\&layer=streams\&layer=builtup\&layer=dualcarriage\&layer=PrimaryPavedRoad\&layer=PrimaryUnpavedRoad\&layer=roadsecpav\&layer=roadsecnotpav\&layer=roadotherpav\&layer=roadothernotpav\&layer=bridge\&layer=railways\&layer=railyard\&layer=airports\&layer=localities\&layer=index250k";
+    # Add the map size
+    $url .= "\&mapsize=1000+800";	
+
+    return ($url,$gs_scale);
+}
+#############################################################################
+# Note: The resize will only work if the image you want to resize has
+# the same aspect ratio as 1280x1024 
+# i.e. 1280/1024=1.25
+#      1000/800=1.25
+#############################################################################
+sub resize($$){
+    my $resizedir = shift;
+    my $resizefilename = shift;
+    my $x='';
+    my $image='';
+    
+    debug( "File name to resize $resizedir$resizefilename" );
+    my $DN_in = "$resizedir$resizefilename";
+    my $DN_out = "$resizedir$resizefilename";
+    $image = Image::Magick->new;
+    $x = $image->Read($DN_in);
+    if( $x ) {
+        undef $image;
+        warn "\npic_resize($DN_in)_open: $x\n" ;
+        return 0;
+    }
+    $x = $image->Sample(geometry => "1280x1024+10+10");
+    if( $x ) {
+        undef $image;
+        warn "\npic_resize($DN_in)_resize: $x\n" ;
+        return 0;
+    }
+    $x = $image->Write($DN_out);
+    if( $x ) {
+        undef $image;
+        warn "\npic_resize($DN_in)_write: $x\n" ;
+        return 0;
+  }
+  undef $image;
 }
 
 #############################################################################
