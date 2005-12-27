@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.22  2005/12/27 12:16:42  tweety
+# fix type in debug message
+#
 # Revision 1.21  2005/12/27 12:10:53  tweety
 # elimiated ^M
 #
@@ -997,7 +1000,7 @@ sub geoscience_url($$$){
     my $gs_long = shift;
     my $gs_scale = shift;
  
-    debug( "geoscience_url(LATI=$lati,LONG=$long,SCALE=$scale)");
+    debug( "geoscience_url(LATI=$gs_lati,LONG=$gs_long,SCALE=$gs_scale)");
 
     my $url='';
     my $longoffset = 0.8;
@@ -1039,8 +1042,8 @@ sub resize($$){
     my $image='';
     
     debug( "File name to resize $resizedir$resizefilename" );
-    my $DN_in = "$resizedir$resizefilename";
-    my $DN_out = "$resizedir$resizefilename";
+    my $DN_in  = "$resizedir$resizefilename";
+    my $DN_out = "$resizedir$resizefilename.jpg";
     $image = Image::Magick->new;
     $x = $image->Read($DN_in);
     if( $x ) {
