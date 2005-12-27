@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.21  2005/12/27 12:10:53  tweety
+# elimiated ^M
+#
 # Revision 1.20  2005/12/27 12:02:34  tweety
 # Author: David Pollard
 # Added geoscience server section for map downloads in Australia
