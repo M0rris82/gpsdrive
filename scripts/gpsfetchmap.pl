@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.23  2005/12/27 12:17:39  tweety
+# *** empty log message ***
+#
 # Revision 1.22  2005/12/27 12:16:42  tweety
 # fix type in debug message
 #
@@ -1043,7 +1046,7 @@ sub resize($$){
     
     debug( "File name to resize $resizedir$resizefilename" );
     my $DN_in  = "$resizedir$resizefilename";
-    my $DN_out = "$resizedir$resizefilename.jpg";
+    my $DN_out = "$resizedir$resizefilename";
     $image = Image::Magick->new;
     $x = $image->Read($DN_in);
     if( $x ) {
