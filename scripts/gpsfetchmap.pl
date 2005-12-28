@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.24  2005/12/28 11:12:41  tweety
+# added more scales for geoscience Server
+#
 # Revision 1.23  2005/12/27 12:17:39  tweety
 # *** empty log message ***
 #
@@ -269,7 +272,10 @@ my $Scale2Zoom = {
 	1562    => 12, #      50 m
     },
     geoscience => {
-   	665924 => 0,  # God knows what this should be
+   	665924*8 => 8,
+   	665924*4 => 4,
+   	665924*2 => 2,
+   	665924*1 => 1,
     },
 };
 
@@ -285,7 +291,7 @@ my $newcount            = 0;
 my $existcount          = 0;
 my $polite              = 1;
 my $MIN_MAP_BYTES       = 4000;   # Minimum Bytes for a map to be accepted as downloaded
-my $scale               = '100000-200000';
+my $scale;
 my $CONFIG_DIR          = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 my $CONFIG_FILE         = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE          = "$CONFIG_DIR/way.txt";
@@ -302,7 +308,6 @@ our $MAP_FILES          = {};
 our $GPSTOOL_MAP_KOORDS = {};
 our $GPSTOOL_MAP_FILES  = {};
 my $PROXY=$ENV{'http_proxy'};
-
 
 GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon, 
 	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
@@ -327,9 +332,10 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     )
     or pod2usage(1);
 
-
 if ($mapserver eq 'geoscience'){
-    $scale = 665924;
+    $scale ||= join(",",keys %{$Scale2Zoom->{'geoscience'}});
+} else {
+    $scale ||= '100000-2000000';
 }
 
 if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
@@ -489,8 +495,7 @@ if ($TRACK_FILE) { # download maps along a saved track
 my ($existing,$wanted) = file_count($desired_locations);
 print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
 
-if ($mapserver eq 'geoscience'){
-    $scale = 665924;
+if ( $mapserver eq 'geoscience' ){
     print "+-----------------------------------------------------------+\n";
     print "| Geoscience Maps are Copyright, Commonwealth of Australia  |\n";
     print "| They are free for non commercial use.                     |\n";
@@ -610,7 +615,7 @@ sub mirror_map($$){
     my $url = shift;
     my $filename = shift;
 
-    my $ok = mirror_file("$url",$filename);
+    my $ok = mirror_file($url,$filename);
     if ( ! is_map_file($filename) ) {
 	# unlink($filename) if -s $filename;
 	#warn "no map downloaded ($filename)\n";
@@ -657,8 +662,11 @@ sub mirror2_map($$){
 sub map_filename($$$){
     my ($scale,$lati,$long) = @_;
     
-    my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
-	"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+    my $filename = "$mapserver/$scale"
+	."/".int($lati)
+#	."/".sprintf("%3.1f",$lati)
+	."/".int($long)
+	."/$FILEPREFIX$scale-$lati-$long.gif";
     printf("Filename(%.0f,%.5f,%.5f): $filename\n",$scale,$lati,$long)
 	if $debug;
     return $filename;
@@ -678,13 +686,6 @@ sub wget_map($$$){
     #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
     my $filename = map_filename($scale,$lati,$long);
-    
-    my $dir =  dirname("$mapdir$filename");
-    unless ( -s $dir || -l $dir ) {
-	debug("Create Directory '$dir'");
-	mkpath($dir)
-	    or warn "Could not create $dir:$!\n";;
-    }
     
     if ( $mapserver eq 'expedia') 
     {
@@ -714,6 +715,23 @@ sub wget_map($$$){
     }
     
     return "E" unless $url;
+
+    my $mirror_filename=$filename;
+    if ( $mapserver eq 'geoscience'){
+	$mirror_filename="MIRROR/$mirror_filename";
+	debug("mirror_filename=$mirror_filename");
+    };
+    
+    # create directories if not existent
+    for my $file ( ($filename , $mirror_filename ) ) {
+	my $dir = dirname("$mapdir$file");
+	unless ( -s $dir || -l $dir ) {
+	    debug("Create Directory '$dir'");
+	    mkpath($dir)
+		or warn "Could not create $dir:$!\n";;
+	}
+    }
+
     
     if ( is_map_file( $filename ) ) {
 	$result= "_";
@@ -728,26 +746,26 @@ sub wget_map($$$){
 	    $result="S";
 	    $newcount++;
 	} else {
-	    #print "wget $url\n" if $debug;
+	    debug("mirror $url");	    
 	    if ( $mapserver eq 'googlesat') 
 	    {
-		    $result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
+		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
 	    } 
-	    elsif ( mirror_map($url,$filename) ){
-     	    if ( $mapserver eq 'geoscience'){
-	           $result = resize("$mapdir","$filename");
-	       } 
-		    append_koords($filename, $lati, $long, $mapscale);
-		    $result= "+";
-		    print "\nWrote $filename\n" if $debug;
-		    $newcount++;
+	    elsif (  mirror_map($url,$mirror_filename) ){
+		if ( $mapserver eq 'geoscience'){
+		    $result = resize($mapdir.$mirror_filename,$mapdir.$filename);
+		} 
+		append_koords($filename, $lati, $long, $mapscale);
+		$result= "+";
+		print "\nWrote $filename\n" if $debug;
+		$newcount++;
 	    }
 	    else 
 	    {
-		    $failcount++;
-		    $result= "E";
+		$failcount++;
+		$result= "E";
 	    }
-     }
+	}
    }
     
    return $result;
@@ -1006,29 +1024,54 @@ sub geoscience_url($$$){
     debug( "geoscience_url(LATI=$gs_lati,LONG=$gs_long,SCALE=$gs_scale)");
 
     my $url='';
-    my $longoffset = 0.8;
-    my $latioffset = 0.6;
+    my $factor = $Scale2Zoom->{'geoscience'}->{$gs_scale};
+    my $latioffset = 0.6*$factor;
+    my $longoffset = 0.8*$factor;
     my $lati1 = $gs_lati + $latioffset;
     my $lati2 = $gs_lati - $latioffset;
     my $long1 = $gs_long - $longoffset;
     my $long2 = $gs_long + $longoffset;
-	 if ($debug){
-       debug( "Calculated Lat1  $lati1");
-       debug( "Calculated Lat2  $lati2");
-       debug( "Calculated Long1 $long1");
-       debug( "Calculated Long2 $long2");
-    }
+    debug( "Calculated Lat1  $lati1");
+    debug( "Calculated Lat2  $lati2");
+    debug( "Calculated Long1 $long1");
+    debug( "Calculated Long2 $long2");
+
     # Build the URL
-    $url = "http://www.ga.gov.au/bin/mapserv36?map=/public/http/www/docs/map/globalmap/global_36.map\&mode=map\&mapext=";
+    $url = "http://www.ga.gov.au/bin/mapserv36"
+	."?map=/public/http/www/docs/map/globalmap/global_36.map";
+    $url .= '&mode=map';
     # Add the 4 Coordinates.
+    $url .= '&mapext=';
     $url .= sprintf("%.5f",$long1)."+";
     $url .= sprintf("%.5f",$lati1)."+";
     $url .= sprintf("%.5f",$long2)."+";
     $url .= sprintf("%.5f",$lati2);
+
     # Add all the different layers
-    $url .= "\&layer=outline\&layer=waterbodies\&layer=capitals\&layer=statenames\&layer=permanentriverslargescale\&layer=fluctuatingrivers\&layer=streams\&layer=builtup\&layer=dualcarriage\&layer=PrimaryPavedRoad\&layer=PrimaryUnpavedRoad\&layer=roadsecpav\&layer=roadsecnotpav\&layer=roadotherpav\&layer=roadothernotpav\&layer=bridge\&layer=railways\&layer=railyard\&layer=airports\&layer=localities\&layer=index250k";
+    $url .= '&layer=outline';
+    $url .= '&layer=waterbodies';
+    $url .= '&layer=capitals';
+    $url .= '&layer=statenames';
+    $url .= '&layer=permanentriverslargescale';
+    $url .= '&layer=fluctuatingrivers';
+    $url .= '&layer=streams';
+    $url .= '&layer=builtup';
+    $url .= '&layer=dualcarriage';
+    $url .= '&layer=PrimaryPavedRoad';
+    $url .= '&layer=PrimaryUnpavedRoad' unless $scale >665924;
+    $url .= '&layer=roadsecpav'         unless $scale >665924;
+    $url .= '&layer=roadsecnotpav'      unless $scale >665924;
+    $url .= '&layer=roadotherpav'       unless $scale >665924;
+    $url .= '&layer=roadothernotpav'    unless $scale >665924;
+    $url .= '&layer=bridge'             unless $scale >665924;
+    $url .= '&layer=railways';
+    $url .= '&layer=railyard'           unless $scale >665924;
+    $url .= '&layer=airports';
+    $url .= '&layer=localities';
+    $url .= '&layer=index250k'          if $debug;       # 250K MapSheet Outlines
     # Add the map size
     $url .= "\&mapsize=1000+800";	
+#    $url .= "\&mapsize=1024+820";	
 
     return ($url,$gs_scale);
 }
@@ -1039,31 +1082,31 @@ sub geoscience_url($$$){
 #      1000/800=1.25
 #############################################################################
 sub resize($$){
-    my $resizedir = shift;
-    my $resizefilename = shift;
+    my $src_filename = shift;
+    my $dst_filename = shift;
+
     my $x='';
     my $image='';
     
-    debug( "File name to resize $resizedir$resizefilename" );
-    my $DN_in  = "$resizedir$resizefilename";
-    my $DN_out = "$resizedir$resizefilename";
+    debug( "resize( $src_filename --> $dst_filename)" );
+
     $image = Image::Magick->new;
-    $x = $image->Read($DN_in);
+    $x = $image->Read($src_filename);
     if( $x ) {
         undef $image;
-        warn "\npic_resize($DN_in)_open: $x\n" ;
+        warn "\npic_resize($src_filename,$dst_filename) open: $x\n" ;
         return 0;
     }
     $x = $image->Sample(geometry => "1280x1024+10+10");
     if( $x ) {
         undef $image;
-        warn "\npic_resize($DN_in)_resize: $x\n" ;
+        warn "\npic_resize($src_filename,$dst_filename) _resize: $x\n" ;
         return 0;
     }
-    $x = $image->Write($DN_out);
+    $x = $image->Write($dst_filename);
     if( $x ) {
         undef $image;
-        warn "\npic_resize($DN_in)_write: $x\n" ;
+        warn "\npic_resize($src_filename,$dst_filename)_write: $x\n" ;
         return 0;
   }
   undef $image;
