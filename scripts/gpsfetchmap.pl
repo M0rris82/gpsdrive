@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.26  2005/12/28 22:16:37  tweety
+# allow negative coordinates for -w gpsd
+#
 # Revision 1.25  2005/12/28 22:14:17  tweety
 # ask local gpsd for position if you use gpsfetchmap.pl -w gpsd
 #
@@ -569,7 +572,7 @@ sub get_gpsd_position(){
 	$gpsd->print("p\n");
 	while ( my $line = <$gpsd> ) {
 	    print "GPSD Line: $line";
-	    if ( $line =~ m/P=(\d+\.\d+)\s+(\d+\.\d+)/){
+	    if ( $line =~ m/P=(-?\d+\.\d+)\s+(-?\d+\.\d+)/){
 		($lat,$lon) =($1,$2);
 		return ($lat,$lon);
 	    }
