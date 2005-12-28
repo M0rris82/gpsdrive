@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.25  2005/12/28 22:14:17  tweety
+# ask local gpsd for position if you use gpsfetchmap.pl -w gpsd
+#
 # Revision 1.24  2005/12/28 11:12:41  tweety
 # added more scales for geoscience Server
 #
@@ -167,6 +170,7 @@ Version 1.19
 sub redirect_ok { return 1; }
 
 
+use IO::Socket;
 use Data::Dumper;
 use strict;
 use warnings;
@@ -382,6 +386,7 @@ sub read_gpstool_map_file(); # {}
 sub read_koord_file($);    # {}
 sub update_gpsdrive_map_koord_file(); # {}
 sub wget_map($$$);         # {}
+sub get_gpsd_position();       # {}
 
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
@@ -450,8 +455,12 @@ my $SCALES_TO_GET_ref = get_scales(\$scale);
 debug( "Scale to download: ". join(",",sort {$a <=> $b} @{$SCALES_TO_GET_ref}));
 
 # Get the center waypoint if they want one
-if ($waypoint) {
-    ($lat,$lon) = get_waypoint($waypoint);
+if ( $waypoint ) {
+    if ( $waypoint eq "gpsd" ) {
+	($lat,$lon) = get_gpsd_position();
+    } else {
+	($lat,$lon) = get_waypoint($waypoint);
+    }
     debug("Centerpoint: $lat,$lon");
 }
 
@@ -544,6 +553,30 @@ print "New:   $newcount\n";
 # Subroutines
 #
 ################################################################################
+
+#############################################################################
+#############################################################################
+sub get_gpsd_position(){
+    # Connect to local gpsd
+    my $GPSD = "localhost:2947";
+    my $gpsd = IO::Socket::INET->new($GPSD);
+    my ($lat,$lon) =(0,0);
+    if ( !$gpsd ) {
+	warn "No local gpsd foundat $GPSD: $!\n";
+    } else {
+	# Tell gpsd we want position, altitude, date, and status.
+#	$gpsd->print("pads\n");
+	$gpsd->print("p\n");
+	while ( my $line = <$gpsd> ) {
+	    print "GPSD Line: $line";
+	    if ( $line =~ m/P=(\d+\.\d+)\s+(\d+\.\d+)/){
+		($lat,$lon) =($1,$2);
+		return ($lat,$lon);
+	    }
+	}
+    }
+    $gpsd->close();
+}
 
 #############################################################################
 # get File with lwp-mirror
@@ -2030,7 +2063,10 @@ gpsfetchmap [-w <WAYPOINT NAME>]
    
 Takes a waypoint name and uses the latitude and longitude for that waypoint as
 the centerpoint of the area to be covered. Waypoints are read from 'way.txt', 
-or file defined by '-W'. This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
+or file defined by '-W'. 
+the special name gpsd asks your local gpsd where your gps thinks you are and uses 
+this point as center.
+This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
 
 =item B<-la,  --lat <latitude DD.MMMM>>
 
