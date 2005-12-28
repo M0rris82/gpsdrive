@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.20  2005/12/28 22:59:46  tweety
+  eliminate unecessary debug message
+
   Revision 1.19  1994/06/08 13:02:31  tweety
   adjust debug levels
 
@@ -1451,7 +1454,7 @@ readconfig ()
 			if ((strcmp (par1, "drawgrid")) == 0)
 			{
 				drawgrid = atoi (par2);
-				printf ("DrawGrid set to %d\n", drawgrid);
+				//printf ("DrawGrid set to %d\n", drawgrid);
 			};
 			if ((strcmp (par1, "drawpoi")) == 0)
 				poi_draw = atoi (par2);
