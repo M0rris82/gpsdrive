@@ -2,6 +2,10 @@
 # gpsdrive
 #
 # $Log$
+# Revision 1.3  2006/01/01 17:07:01  tweety
+# improve speed a little bit
+# update --help infos
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -97,9 +101,9 @@ sub import_wdb($){
     print "Reading $full_filename                   \n";
     my $base_filename = basename($full_filename);
     my $fh = IO::File->new("<$full_filename");
-    my $segment=0;
-    my $rank =0;
-    my $points =0;
+    my $segment = 0;
+    my $rank    = 0;
+    my $points  = 0;
     my ($lat1,$lon1) = (0,0);
     my ($lat2,$lon2) = (0,0);
 
@@ -137,9 +141,12 @@ sub import_wdb($){
     my $streets_type_id=0;
     my $scale_max;
     my @segments;
+    my $line_number = 0;
+    my $sum_points  = 0;
     while ( my $line = $fh->getline() ) {
 	chomp $line;
 	#print "line: $line\n";
+	$line_number++;
 	if ( $line =~ m/^\s*$/)  {
 	} elsif ( $line =~ m/^segment\s+(\d+)\s+rank\s+(\d+)\s+points\s+(\d+)/ ) {
 	    if ( @segments ) {
@@ -160,8 +167,9 @@ sub import_wdb($){
 	    $scale_max = 10000000   if  $rank >3;
 	    $scale_max = 100000000  if  $rank >4;
 	    @segments=();
-	    print "Segment: $segment, rank: $rank  points:$points\r";
-	    print "\n" if $verbose;
+	    $sum_points += $points;
+	    print "Segment: $segment, rank: $rank  points: $points        \r";
+	    print "\n" if $verbose>1;
 	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 ) = (0,0);
 
 	    # ---------------------- Type    
@@ -187,7 +195,7 @@ sub import_wdb($){
 		name => "$rank : $segment : $points"
 		});
 	} else {
-	    print "Unrecognized Line '$line'\n";
+	    warn "WDB import: Unrecognized Line  $line_number:'$line'\n";
 	}
     }
     street_segments_add( {
@@ -197,19 +205,22 @@ sub import_wdb($){
 	source_id       => $source_id,
 	segments        => \@segments
 	} );
+
+    print "Read $line_number lines and inserted $sum_points Points\n" 
+	if $verbose;
 }
 
 
 
 
 # *****************************************************************************
-sub import_Data(){
-    my $what = shift;
+sub import_Data($){
+    my $what = shift || "europe,africa,asia,namer,samer";
 
     my $mirror_dir="$main::MIRROR_DIR/wdb";
     my $unpack_dir="$main::UNPACK_DIR/wdb";
 
-    print "\nDownload an import WDB Data\n";
+    print "\nDownload and import CIA World DataBank II for $what\n";
 
     -d $mirror_dir or mkpath $mirror_dir
 	or die "Cannot create Directory $mirror_dir:$!\n";
@@ -222,10 +233,6 @@ sub import_Data(){
     print "Mirror $url\n";
     my $mirror = mirror_file($url,$tar_file);
 
-    if ( $what =~  m/^\d/ ) {
-	$what ="europe,africa,asia,namer,samer";
-    }
-
     my $dst_file="$unpack_dir/WDB/europe-bdy.txt";
     if ( (!-s $dst_file) ||
 	 file_newer($tar_file,$unpack_dir ) ) {
@@ -235,19 +242,23 @@ sub import_Data(){
 	print "unpack: $dst_file up to date\n" unless $verbose;
     }
     
+
+    # extract to desired data from the files
+    if ( $what =~  m/^\d/ ) {
+	$what ="europe,africa,asia,namer,samer";
+    }
+
+    disable_keys('streets');
     
     for my $country ( split(",",$what) ) {
-
-	Geo::Gpsdrive::DBFuncs::disable_keys('streets');
 	debug("$unpack_dir/WDB/*.txt");
 	foreach  my $full_filename ( glob("$unpack_dir/WDB/$country*.txt") ) {
 	    # print "Mirror: $mirror\n";
-	    
 	    import_wdb($full_filename);
-	}
-	Geo::Gpsdrive::DBFuncs::enable_keys('streets');
-
-    }
+	};
+    };
+    enable_keys('streets');
+      
     print "Download an import WDB Data FINISHED\n";
 }
 

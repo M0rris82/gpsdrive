@@ -5,6 +5,10 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.4  2006/01/01 17:07:01  tweety
+# improve speed a little bit
+# update --help infos
+#
 # Revision 1.3  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -194,10 +198,10 @@ GetOptions (
 	     'fill-defaults'       => \$do_import_defaults,
 	     'fill-examples'       => \$do_import_examples,
 	     'census'              => \$do_census,
-	     'earthinfo_nga_mil=s' => \$do_earthinfo_nga_mil,
+	     'earthinfo_nga_mil:s' => \$do_earthinfo_nga_mil,
 	     'opengeodb'           => \$do_opengeodb,
 	     'opengeodb2'          => \$do_opengeodb2,
-	     'wdb=s'               => \$do_wdb,
+	     'wdb:s'               => \$do_wdb,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
@@ -222,7 +226,7 @@ GetOptions (
 	     'lon-min=s'           => \$lon_min,      
 	     'lon-max=s'           => \$lon_max,
 	     'd'                   => \$debug,      
-	     'v'                   => \$verbose,      
+	     'verbose+'            => \$verbose,
 	     'debug_range=s'       => \$debug_range,      
 	     'no-mirror'           => \$no_mirror,
 	     'proxy=s'             => \$PROXY,
@@ -247,10 +251,13 @@ if ( $do_all ) {
 	print "\n";
 	print "=============================================================================\n";
 	print "I assume i'm in Germany (LANG='$ENV{'LANG'}')\n";
-	$do_earthinfo_nga_mil = 'gm,sz,be,au,bu,ez,da,fi,fr,gr,hu,lu,mt,mn';
+
+	$do_earthinfo_nga_mil ||= 'gm,sz,be,au,bu,ez,da,fi,fr,gr,hu,lu,mt,mn';
 	print "    --> loading only $do_earthinfo_nga_mil for NGA\n";
-	$do_wdb ="europe";
+
+	$do_wdb ||="europe";
 	print "    --> loading only $do_wdb for WDB\n";
+
 	print "=============================================================================\n";
 	print "\n";
     } else {
@@ -303,7 +310,7 @@ Geo::Gpsdrive::OpenGeoDB2::import_Data()
     if ( $do_opengeodb2 );
 
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
-Geo::Gpsdrive::WDB::import_Data() 
+Geo::Gpsdrive::WDB::import_Data($do_wdb)
     if ( $do_wdb );
 
 # Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
@@ -336,12 +343,13 @@ __END__
 
 =head1 NAME
 
-B<convert_wp> Version 0.000001
+B<geoinfo.pl> Version 0.00001
 
 =head1 DESCRIPTION
 
-B<poi.pl> is a program to download and convert waypoints 
-for use with the new gpsdrive POI Database. 
+B<geoinfo.pl> is a program to download and convert waypoints 
+and other geospacial data for use with the new gpsdrive 
+POI Database. 
 You need to have mySQL Support.
 
 This Programm is completely experimental, but some Data 
@@ -365,6 +373,11 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb] [--mapsource_po
 
 =over 8
 
+=item B<--man>
+
+Complete documentation
+
+
 =item B<--create-db>
 
 Try creating the tables inside the geoinfo database. 
@@ -382,8 +395,9 @@ needed before you can import any of the other importers.
 =item B<--earthinfo_nga_mil=xx[,yy][,zz]...>
 
 Download from earthinfo.nga.mil and import into 
-mysql DB. These are ~2.500.000 City Names around 
-the world
+mysql DB. 
+These are ~2.500.000 City Names around the world delivered in
+249 single Files.
 
 
 Download Country File from
@@ -396,8 +410,7 @@ where xx is one or more countries.
 For more info on Countries have a look at
  http://earth-info.nga.mil/gns/html/cntry_files.html
 
-
-The complete download is about ~180 MB
+The complete download is about ~900 MB
 
 
 =item B<--opengeodb>
@@ -405,6 +418,8 @@ The complete download is about ~180 MB
 Download and import opengeodb to Point of interrests
 
 This Database has about 20003 entries from German Towns
+
+opengeodb-0.1.3-txt.tar.gz has 442K
 
 
 =item B<--opengeodb2>
@@ -418,9 +433,12 @@ executed. This imports the Data from opengeodb into a
 Database named opengeodb. This Database is not yet used in the 
 current gpsdrive Version.
 
+Download size opengeodb-0.2.4a-UTF8-mysql.zip 1.8MB
+
+
 =item B<--wdb>
 
-World Database
+CIA World DataBank II
 
 Download and import WDB Data into geoinfo.streets Table
 
@@ -433,6 +451,7 @@ At the moment it only import europe Data for testing.
 Available regions would be: 
 	africa  asia  europe 
 	namer(North America) samer(South America)
+
 
 
 =item B<--mapsource_points='Filename'>
@@ -505,17 +524,17 @@ This feature is not implemented on all insert statements yet.
 
 =item B<--db-user>
 
-username to connect to mySQL database
+username to connect to mySQL database. Default is gast
 
 
 =item B<--db-password>
 
-password for user to connect to mySQL database
+password for user to connect to mySQL database. Default is gast
 
 
 =item B<--no-mirror>
 
-do not try mirroring the files from the original Server. Only use
+Do not try mirroring the files from the original Server. Only use
 files found on local Filesystem.
 
 

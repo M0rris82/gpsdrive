@@ -1,6 +1,10 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.3  2006/01/01 17:07:01  tweety
+# improve speed a little bit
+# update --help infos
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -140,6 +144,7 @@ sub street_segments_add($);
 # switch off updating of index
 sub disable_keys($){    
     my $table = shift;
+    print "disable_keys($table)\n" if $verbose;
     db_exec("ALTER TABLE  $table DISABLE KEYS;");
 }
 
@@ -147,14 +152,21 @@ sub disable_keys($){
 # switch on updating of index
 sub enable_keys($){
     my $table = shift;
+    print "enable_keys($table)\n" if $verbose;
     db_exec("ALTER TABLE  $table ENABLE KEYS;");
 }
 
 # -----------------------------------------------------------------------------
 # retrieve Column Names for desired table
+my %COLUMN_NAMES;
 sub column_names($){
     my $table = shift;
     my @col;
+
+    # look for cached result
+    if ( defined($COLUMN_NAMES{$table} ) ){
+	return @{$COLUMN_NAMES{$table}};
+    }
 
     my $dbh = db_connect();
     my $query = "SHOW COLUMNS FROM geoinfo.$table;";
@@ -165,6 +177,7 @@ sub column_names($){
     while ( my $array_ref = $sth->fetchrow_arrayref() ) {
 	push ( @col ,$array_ref->[0] );
     }
+    $COLUMN_NAMES{$table}=\@col;
     return @col;
 }
 
@@ -207,32 +220,50 @@ sub show_index($) {
 }
 
 # -----------------------------------------------------------------------------
-sub insert_hash {
+# insert hash into database
+my $last_insert_table_name='';
+my @fields;
+my $insert_hash_sth;
+sub insert_hash($$;$) {
     my $table = shift;
     my $field_values = shift;
 
+    # read  multiple hashreference and override Hash Values
+    # of field_values
     while ( my $h = shift ) {
-	#print "Adding ".Dumper($h);
-	map { $field_values->{$_} = $h->{$_} } keys %{$h};
+	print "Adding ".Dumper($h);
+	map { $field_values->{$_} = $h->{$_} } sort keys %{$h};
     }
-#    my @fields = sort keys %$field_values; # sort required
+
     $field_values->{"$table.last_update"} ||= time();
-    my @fields = map { "$table.$_" } column_names($table);
+
+    # get Table info and create sql query if 
+    # the table differs from the last insert Statement
+    if ( $last_insert_table_name ne $table ) {
+	# get column names of table
+	@fields = map { "$table.$_" } column_names($table);
+	
+	my $sql = sprintf ( "insert into %s (%s) values (%s)",
+			    $table, 
+			    join(',', @fields),
+			    join(",", ("?") x scalar(@fields))
+			    );
+	
+	my $dbh = db_connect();
+	#print "insert_hash($table, ".Dumper(\$field_values).")\n";
+	#print "$sql\n";
+	#print "insert_hash($table, ".join(",",map { $_ || '' } @values).")\n";
+	$insert_hash_sth = $dbh->prepare_cached($sql);
+	$last_insert_table_name = $table;
+    }
+
+    # get the values into the right order
     my @values = @{$field_values}{@fields};
-    my $sql = sprintf ( "insert into %s (%s) values (%s)",
-			$table, 
-			join(',', @fields),
-			join(",", ("?") x scalar(@fields))
-			);
-    my $dbh = db_connect();
-    #print "insert_hash($table, ".Dumper(\$field_values).")\n";
-    #print "$sql\n";
-    #print "insert_hash($table, ".join(",",map { $_ || '' } @values).")\n";
-    my $sth = $dbh->prepare_cached($sql);
-    my $res = $sth->execute(@values);
+
+    my $res = $insert_hash_sth->execute(@values);
     if ( ! $res ) {
 	warn "Error while inserting Hash ".Dumper($field_values)." into table '$table'\n";
-	$sth->errstr;
+	$insert_hash_sth->errstr;
     }
     
     return $res;
@@ -270,6 +301,7 @@ sub db_disconnect(){
 # Delete all entries matching source with name
 sub delete_all_from_source($){
     my $source_name = shift;
+    print "Delete all from '$source_name'\n" if $verbose;
     debug("delete_all_from_source($source_name)");
     return unless $source_name;
     my $source_id = source_name2id( $source_name);
@@ -285,6 +317,7 @@ sub delete_all_from_source($){
     $sth->execute()            or die $sth->errstr;
 
     $sth->finish;
+    print "Deleted all from '$source_name'\n" if $verbose>3;
 }
 
 # -----------------------------------------------------------------------------
@@ -670,6 +703,8 @@ sub street_segments_add($){
     debug("Writing $count Segments") if $count ;
 
     my ($lat2,$lon2,$alt2) = (0,0,0);
+    #my $sql ="insert into streets (streets.streets_id,streets.name,streets.streets_type_id,streets.lat1,streets.lon1,streets.alt1,streets.lat2,streets.lon2,streets.alt2,streets.proximity,streets.comment,streets.scale_min,streets.scale_max,streets.last_modified,streets.source_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    #my $sth = $dbh->prepare_cached($sql);
     for my $segment ( @{$data->{segments}} ){
 	$segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
