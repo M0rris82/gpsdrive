@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.11  2006/01/01 20:11:42  tweety
+  add option -P for Posmode on start
+
   Revision 1.10  2005/11/05 18:30:40  tweety
   fix sigseg in import_map Code
   VS: ----------------------------------------------------------------------
@@ -760,8 +763,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	      posmode_x = lon;
 	      posmode_y = lat;
 	      rebuildtracklist ();
-	      if (onemousebutton)
-		gtk_timeout_add (10000, (GtkFunction) posmodeoff_cb, 0);
 	    }
 	}
       /*  Middle mouse button */

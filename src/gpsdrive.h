@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.10  2006/01/01 20:11:42  tweety
+add option -P for Posmode on start
+
 Revision 1.9  2005/11/09 21:26:02  tweety
 corrected conversion KM2NAUTIC
 
@@ -304,7 +307,6 @@ void        (*dl_mysql_free_result)(MYSQL_RES *result);
 my_bool (*dl_mysql_eof)(MYSQL_RES *res);
 gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
 gint importaway_cb (GtkWidget * widget, guint datum);
-gint posmodeoff_cb (GtkWidget * widget, guint * datum);
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);

@@ -21,9 +21,7 @@ void savemapconfig ();
 gint loadmapconfig ();
 void loadwaypoints ();
 void savewaypoints ();
-#ifdef DBUS_ENABLE
 void storepoint();
-#endif
 gint speech_out_speek (char *text);
 gint speech_out_init ();
 gdouble calcdist (gdouble longi, gdouble lati);

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.75  2006/01/01 20:11:42  tweety
+add option -P for Posmode on start
+
 Revision 1.74  1994/06/10 02:11:00  tweety
 move nmea handling to it's own file Part 1
 
@@ -2778,15 +2781,6 @@ setroutetarget (GtkWidget * widget, gint datum)
 /* *****************************************************************************
  */
 gint
-posmodeoff_cb (GtkWidget * widget, guint * datum)
-{
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
-	return FALSE;
-}
-
-/* *****************************************************************************
- */
-gint
 lightoff (GtkWidget * widget, guint * datum)
 {
 	disableisnight = FALSE;
@@ -3371,43 +3365,31 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
 {
-    if ( mydebug >50 ) fprintf(stderr , "storetrack_cb()\n");
+    if ( mydebug >50 ) 
+	fprintf(stderr , "storetrack_cb()\n");
 
-#ifndef DBUS_ENABLE
-	gint /*i,*/ so;
-	gchar buf3[35];
-	time_t t;
-	struct tm *ts;
-#endif
-
-	/*    if (posmode) */
-	/*      return TRUE; */
-	/* What the hell is this for? i isn't used anymore onwards...
-	if (posmode)
-		i = 1;
-	else
-		i = 2;
-	*/
+    if (posmode) 
+	return TRUE;
 	
 #ifdef DBUS_ENABLE
 	/* If we use DBUS track points are usually stored by the DBUS signal handler */
 	/* Only store them by timer if we are in position mode */
-	if (useDBUS) {
-		if (posmode)
-			storepoint();
-	} else
-		storepoint();
+	if ( useDBUS && !simmode )
+	    return TRUE;
+#endif
+
+	storepoint();
+
 	return TRUE;
 }
 
 void
 storepoint ()
 {
-	gint /*i,*/ so;
+	gint so;
 	gchar buf3[35];
 	time_t t;
 	struct tm *ts;
-#endif
 	/*    g_print("Havepos: %d\n", havepos); */
 	if ((!simmode && !havepos) || posmode /*  ||((!simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
@@ -4563,7 +4545,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (posmode)
 	{
-		blink = TRUE;
+	    blink = TRUE;
 	}
 
 #define PFSIZE 55
@@ -7189,31 +7171,47 @@ wp_cb (GtkWidget * widget, guint datum)
 {
 	wpflag = !wpflag;
 	if (wpflag)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt),
-					      FALSE);
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), FALSE);
 	needtosave = TRUE;
 	return TRUE;
 }
 
 /* *****************************************************************************
+ * Update the checkbox for Pos-Mode
+ */
+void
+update_posbt()
+{
+    if ( mydebug > 1 )
+	g_print ("posmode=%d\n", posmode);
+
+    if (posmode)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   TRUE);
+    else
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   FALSE);
+}
+
+/* *****************************************************************************
+ * toggle checkbox for Pos-Mode
  */
 gint
 pos_cb (GtkWidget * widget, guint datum)
 {
-	posmode = !posmode;
-	if (posmode)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
-					      TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
-					      FALSE);
-	posmode_x = current_long;
-	posmode_y = current_lat;
-
-	return TRUE;
+    if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
+    	posmode = TRUE;
+    else 
+    	posmode = FALSE;
+    
+    update_posbt();
+    
+    posmode_x = current_long;
+    posmode_y = current_lat;
+    
+    return TRUE;
 }
+
 
 /* *****************************************************************************
  * if a waypoint is selected set the target_* variables 
@@ -7254,8 +7252,6 @@ setwp_cb (GtkWidget * widget, guint datum)
 	g_timer_stop (disttimer);
 	g_timer_start (disttimer);
 	olddist = dist;
-	/*   posmode = FALSE; */
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 
 	tn = g_strdelimit (targetname, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
@@ -7730,15 +7726,11 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	/*  Left mouse button */
 	if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	{
-		if (posmode)
+	    if (posmode)
 		{
-			posmode_x = lon;
-			posmode_y = lat;
-			rebuildtracklist ();
-			if (onemousebutton)
-				gtk_timeout_add (10000,
-						 (GtkFunction) posmodeoff_cb,
-						 0);
+		    posmode_x = lon;
+		    posmode_y = lat;
+		    rebuildtracklist ();
 		}
 	}
 	/*  Middle mouse button */
@@ -8686,38 +8678,39 @@ usage ()
 #endif
 	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
-	     "\n              Website: http://www.gpsdrive.de\n\n",
-	     _("-v    show version\n"),
-	     _("-h    print this help\n"),
-	     _("-d    turn on debug info\n"),
-	     _("-D X  set debug Level to X\n"),
-	     _("-e    use Festival-Lite (flite) for speech output\n"),
-	     _("-t    set serial device for GPS i.e. /dev/ttyS1\n"),
-	     _("-o    serial device, pty master, or file for NMEA *output*\n"),
-	     _("-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"),
-	     _("-n    Disable use of direct serial connection\n"),
+	     "\n         Website: http://www.gpsdrive.de\n\n",
+	     _("-v        show version\n"),
+	     _("-h        print this help\n"),
+	     _("-d        turn on debug info\n"),
+	     _("-D X      set debug Level to X\n"),
+	     _("-e        use Festival-Lite (flite) for speech output\n"),
+	     _("-t        set serial device for GPS i.e. /dev/ttyS1\n"),
+	     _("-o        serial device, pty master, or file for NMEA *output*\n"),
+	     _("-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"),
+	     _("-n        Disable use of direct serial connection\n"),
 #ifdef DBUS_ENABLE
-	     _("-X    Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
+	     _("-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
 #endif
-	     _("-l X  Select language of the voice,\n"
-	       "      X may be english, spanish or german\n"),
-	     _("-s X  set height of the screen, if autodetection\n"
-	       "      don't satisfy you, X is i.e. 768,600,480,200\n"),
-	     _("-r X  set width of the screen, only with -s\n"),
-	     _("-1    have only 1 button mouse, for example using touchscreen\n"),
-	     _("-a    don't display battery status (i.e. broken APM)\n"),
-	     _("-b X  Servername for NMEA server (if gpsd runs on another host)\n"),
-	     _("-c X  set start position in simulation mode to waypoint name X\n"),
-	     _("-x    create separate window for menu\n"),
-	     _("-p    set settings for PDA (iPAQ, Yopy...)\n"),
-	     _("-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"),
-	     _("-q    disable SQL support\n"),
-	     _("-F    force display of position even it is invalid\n"),
-	     _("-S    don't show splash screen\n"),
-	     _("-E    print out data received from direct serial connection\n"),
-	     _("-W x  set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
-	     _("-H X  correct altitude, adding this value to altitude\n"),
-	     _("-z    don't display zoom factor and scale\n\n"));
+	     _("-l LANG   Select language of the voice,\n"
+	       "          LANG may be english, spanish or german\n"),
+	     _("-s HEIGHT set height of the screen, if autodetection\n"
+	       "          don't satisfy you, X is i.e. 768,600,480,200\n"),
+	     _("-r WIDTH  set width of the screen, only with -s\n"),
+	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
+	     _("-a        don't display battery status (i.e. broken APM)\n"),
+	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
+	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
+	     _("-x        create separate window for menu\n"),
+	     _("-p        set settings for PDA (iPAQ, Yopy...)\n"),
+	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
+	     _("-q        disable SQL support\n"),
+	     _("-F        force display of position even it is invalid\n"),
+	     _("-S        don't show splash screen\n"),
+	     _("-P        start in Pos Mode\n"),
+	     _("-E        print out data received from direct serial connection\n"),
+	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
+	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
+	     _("-z        don't display zoom factor and scale\n\n"));
 
 }
 
@@ -9344,7 +9337,7 @@ main (int argc, char *argv[])
 	do
 	{
 		i = getopt (argc, argv,
-			    "W:ESA:ab:c:zXx1qivdD:FepH:hnf:l:t:s:o:r:?");
+			    "W:ESA:ab:c:zXx1qivPdD:FepH:hnf:l:t:s:o:r:?");
 		switch (i)
 		{
 		case 'a':
@@ -9462,6 +9455,9 @@ main (int argc, char *argv[])
 			break;
 		case 'F':
 			forcehavepos = TRUE;
+			break;
+		case 'P':
+			posmode = TRUE;
 			break;
 
 		}
@@ -11107,6 +11103,8 @@ main (int argc, char *argv[])
 	poi_init ();
 	streets_init ();
 	tracks_init ();
+
+	update_posbt();
 
 	/*
 	 * setup TERM signal handler so that we can save evrything nicely when the
