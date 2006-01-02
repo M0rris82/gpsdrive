@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.16  2006/01/02 13:21:14  tweety
+Start sorting out the menu
+Move some of the Buttons to the Pulldown Menu
+make display size 50 smaller than screen max for Desktop Menu
+remove unused code parts
+add more error/warnings to lat2radius calcxytopos and calcxy
+read draw_streets draw_poi draw_grid draw_tracks from config file
+add error check for not recognized config file options
+
 Revision 1.15  1994/06/10 02:11:00  tweety
 move nmea handling to it's own file Part 1
 
@@ -145,27 +154,30 @@ gdouble
 lat2radius (gdouble lat)
 {
   // the known undef values
-  if (lat < 1000 && lat > -1000)
+  if ( -1000 < lat && lat < 1000 )
     {
       if (lat > 180)
 	{
-	  if (mydebug > 1)
+	  if (mydebug > 0)
 	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 	};
       if (lat < -180)
 	{
-	  if (mydebug > 1)
+	  if (mydebug > 0)
 	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 	};
     }
+
   while (lat > 90.0)
     {
       lat = lat - 90;
     }
+
   while (lat < -90.0)
     {
       lat = lat + 90;
     }
+
   return lat2RadiusArray[(int) (100 + lat)];
 }
 
@@ -173,7 +185,7 @@ lat2radius (gdouble lat)
  * calculates lat and lon for the given position on the screen 
  */
 void
-calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
+calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
 {
   int x, y, px, py;
   gdouble dif, lat, lon;
@@ -189,21 +201,24 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
       lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
       lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
 
-      if (lat > 360)
-	lat = lat - 360.0;
-      if (lat < -360)
-	lat = lat + 360.0;
-
+      while (lat > 360)
+	  {
+	      if (mydebug > 0)
+		  fprintf (stderr, "ERROR: calcxytopos(lat %f) >360\n", lat);
+	      lat = lat - 360.0;
+	  }
+      while (lat < -360)
+	  {
+	      if (mydebug > 0)
+		  fprintf (stderr, "ERROR: calcxytopos(lat %f) <-360\n", lat);
+	      lat = lat + 360.0;
+	  }
+      
       lon = zero_long - px / ((lat2radius (lat) * M_PI / 180.0) *
 			      cos (M_PI * lat / 180.0));
 
       dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
       lat = lat - dif / 1.5;
-
-      if (lat > 360)
-	lat = 360.0;
-      if (lat < -360)
-	lat = -360.0;
 
       lon = zero_long -
 	px / ((lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
@@ -211,34 +226,71 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
   else
     {
       lat = zero_lat - py / (lat2radius (0) * M_PI / 180.0);
-      if (lat > 360)
-	lat = 360.0;
-      if (lat < -360)
-	lat = -360.0;
       lon = zero_long - px / ((lat2radius (0) * M_PI / 180.0));
     }
-
-  if (lat > 360)
-    lat = 360.0;
-  if (lat < -360)
-    lat = -360.0;
-  if (lon > 180)
-    lon = 180.0;
-  if (lon < -180)
-    lon = -180.0;
+  
+  // Error check
+  if ( lat > 360 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+	  //	  lat = 360.0;
+      };
+  if ( lat < -360 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+	  //	  lat = -360.0;
+      };
+  if ( lon > 180 )
+      {
+	  if (mydebug > 0)
+		fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+	  // lon -= 180.0;
+      };
+  if ( lon < -180 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+	  // lon += 180.0;
+      };
 
   *mylat = lat;
   *mylon = lon;
-
+  
 }
 
 /* ******************************************************************
  * calculate xy pos of given lon/lat 
  */
 void
-calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
+calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 {
   gdouble dif;
+
+  // Error check
+  if ( lat > 360 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+      };
+  if ( lat < -360 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+      };
+  if ( lon > 180 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
+	  lon=180;
+      };
+  if ( lon < -180 )
+      {
+	  if (mydebug > 0)
+	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
+	  lon=-180;
+      };
 
   if (mapistopo == FALSE)
     *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /

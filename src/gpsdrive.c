@@ -23,6 +23,15 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.76  2006/01/02 13:21:14  tweety
+Start sorting out the menu
+Move some of the Buttons to the Pulldown Menu
+make display size 50 smaller than screen max for Desktop Menu
+remove unused code parts
+add more error/warnings to lat2radius calcxytopos and calcxy
+read draw_streets draw_poi draw_grid draw_tracks from config file
+add error check for not recognized config file options
+
 Revision 1.75  2006/01/01 20:11:42  tweety
 add option -P for Posmode on start
 
@@ -2215,7 +2224,7 @@ gpsdrive started
 gint statusid, messagestatusbarid, timeoutcount;
 GtkWidget *mainwindow, *status, *messagestatusbar;
 GtkWidget *pixmapwidget, *gotowindow;
-GtkWidget *messagewindow, *routewindow, *downloadbt;
+GtkWidget *messagewindow, *routewindow;
 extern GtkWidget *splash_window;
 gint dlsock = -1;
 gint debug = 0;
@@ -2542,36 +2551,26 @@ extern int nmeaverbose;
 extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
-static GtkItemFactoryEntry main_menu[] = {
-	{N_("/_Misc. Menu"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Misc. Menu/Maps"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Misc. Menu/Maps/_Import map"), NULL,
-	 (gpointer) import1_cb,
-	 1,
-	 NULL},
-	{N_("/_Misc. Menu/Maps/_Map Manager"), NULL,
-	 (gpointer) about_cb, 0, NULL},
-	{N_("/_Misc. Menu/_Waypoint Manager"), NULL,
-	 (gpointer) sel_target_cb, 0, NULL},
-	{N_("/_Misc. Menu/_Reinitialize GPS"), NULL,
-	 (gpointer) reinitgps_cb, 0, NULL},
-	{N_("/_Misc. Menu/_Load track file"), NULL,
-	 (gpointer) loadtrack_cb, 0,
-	 "<StockItem>", GTK_STOCK_OPEN},
+gint download_cb (GtkWidget * widget, guint datum);
 
-	{N_("/_Misc. Menu/Messages"), NULL, NULL, 0, "<Branch>"},
-	{N_("/_Misc. Menu/Messages/Send message to mobile target"),
-	 NULL,
-	 (gpointer) sel_message_cb,
-	 0,
-	 NULL},
-	{N_("/_Misc. Menu/Help"), NULL, NULL, 0, "<LastBranch>"},
-	{N_("/_Misc. Menu/Help/About"), NULL, (gpointer) about_cb, 0,
-	 "<StockItem>", GTK_STOCK_DIALOG_INFO},
-	{N_("/_Misc. Menu/Help/Topics"), NULL, (gpointer) help_cb, 0,
-	 "<StockItem>",
-	 GTK_STOCK_HELP}
+static GtkItemFactoryEntry main_menu[] = {
+    {N_("/_Misc. Menu"),                    NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Misc. Menu/Maps"),               NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Misc. Menu/Maps/_Import map"),   NULL, (gpointer) import1_cb,    1, NULL},
+    {N_("/_Misc. Menu/Maps/_Download map"), NULL, (gpointer) download_cb,   0, NULL},
+    {N_("/_Misc. Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
+    {N_("/_Misc. Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
+    {N_("/_Misc. Menu/_Start gpsd"),        NULL, (gpointer) startgpsd,     0, NULL},
+    {N_("/_Misc. Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
+    {N_("/_Misc. Menu/Messages"),           NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Misc. Menu/Messages/Send message to mobile target"), 
+                                            NULL, (gpointer) sel_message_cb,0,     NULL},
+    {N_("/_Misc. Menu/Help"),               NULL, NULL,                     0, "<LastBranch>"},
+    {N_("/_Misc. Menu/Help/About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_DIALOG_INFO},
+    {N_("/_Misc. Menu/Help/Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP}
 };
+
+void drawdownloadrectangle (gint big);
 
 
 
@@ -4068,7 +4067,7 @@ draw_grid (GtkWidget * widget)
 	lat_min = floor (lat_min / step) * step;
 	lon_min = floor (lon_min / step) * step;
 
-	if ( mydebug > 30 )
+	if ( mydebug > 20 )
 		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f)\n", lat_min,
 			lon_min, lat_max, lon_max);
 
@@ -5615,10 +5614,10 @@ gint
 dlstatusaway_cb (GtkWidget * widget, guint datum)
 {
 	downloadwindowactive = downloadactive = FALSE;
-	gtk_widget_set_sensitive (downloadbt, TRUE);
 
 	return FALSE;
 }
+
 
 /* *****************************************************************************
  */
@@ -5640,7 +5639,6 @@ downloadaway_cb (GtkWidget * widget, guint datum)
 	downloadwindowactive = downloadactive = FALSE;
 	gtk_widget_destroy (widget);
 	expose_mini_cb (NULL, 0);
-	gtk_widget_set_sensitive (downloadbt, TRUE);
 
 	/*    gdk_window_set_cursor (drawing_area->window, 0); */
 	/*    gdk_cursor_destroy (cursor); */
@@ -5737,8 +5735,6 @@ download_cb (GtkWidget * widget, guint datum)
 	struct stat buf;
 	gchar scalewanted_str[100];
 	GtkTooltips *tooltips;
-
-	gtk_widget_set_sensitive (downloadbt, FALSE);
 
 	for (i = 0; i < slistsize; i++)
 		list = g_list_append (list, slist[i]);
@@ -6517,10 +6513,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 				if (fd < 1)
 				{
 					perror (downloadfilename);
-					gtk_timeout_add (3000,
-							 (GtkFunction)
-							 dlstatusaway_cb,
-							 widget);
+					gtk_timeout_add (3000,(GtkFunction) dlstatusaway_cb, widget);
 
 					return FALSE;
 				}
@@ -6542,10 +6535,8 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 				savemapconfig ();
 			}
 			downloadwindowactive = FALSE;
-			gtk_widget_set_sensitive (downloadbt, TRUE);
 			gtk_widget_destroy (downloadwindow);
-			gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb,
-					 widget);
+			gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 
 			return FALSE;
 		}
@@ -8676,7 +8667,7 @@ usage ()
 #ifdef DBUS_ENABLE
 	     "%s"
 #endif
-	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
 	     "\n         Website: http://www.gpsdrive.de\n\n",
 	     _("-v        show version\n"),
@@ -8915,7 +8906,7 @@ main (int argc, char *argv[])
 {
 	GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox3, *vbox4, *hbig, *hbox2,
 		*hbox2a, *hbox2b, *vmenubig;
-	GtkWidget *quit, *zoomin, *hbox3, *vboxlow, *hboxlow;
+	GtkWidget  *zoomin, *hbox3, *vboxlow, *hboxlow;
 	GtkWidget *menuwin = NULL, *menuwin2 = NULL;
 	GtkWidget *zoomout, *sel_target, *vtable, *wplabeltable, *alignment1;
 	GtkWidget *alignment2, *alignment3, *alignment4;
@@ -8928,7 +8919,7 @@ main (int argc, char *argv[])
 	gchar buf[500];
 
     /*** Mod by Arms */
-	gint i, h, w;
+	gint i, screen_height, screen_width;
 	GtkWidget *table1, *wi;
 	GtkTooltips *tooltips;
 	gchar s1[100], s2[100], *p, *localestring, **lstr, lstr2[200];
@@ -8950,8 +8941,6 @@ main (int argc, char *argv[])
 	gdouble f;
 #ifdef USETELEATLAS
 	GtkWidget *navibt;
-#else
-	GtkWidget *helpbt;
 #endif
 
 	tzset ();
@@ -9330,8 +9319,8 @@ main (int argc, char *argv[])
 
 	/* Needed 4 hours to find out that this is IMPORTANT!!!! */
 	gdk_rgb_init ();
-	h = gdk_screen_height ();
-	w = gdk_screen_width ();
+	screen_height = gdk_screen_height ()-50;
+	screen_width = gdk_screen_width ();
 
 	/* parse cmd args */
 	do
@@ -9405,7 +9394,7 @@ main (int argc, char *argv[])
 			disableserialcl = TRUE;
 			break;
 		case 's':
-			h = strtol (optarg, NULL, 0);
+			screen_height = strtol (optarg, NULL, 0);
 			break;
 		case 'W':
 			switch (strtol (optarg, NULL, 0))
@@ -9448,7 +9437,7 @@ main (int argc, char *argv[])
 			exit (0);
 			break;
 		case 'r':
-			w = strtol (optarg, NULL, 0);
+			screen_width = strtol (optarg, NULL, 0);
 			break;
 		case 'z':
 			zoomscale = FALSE;
@@ -9531,59 +9520,59 @@ main (int argc, char *argv[])
 	PSIZE = 50;
 	SMALLMENU = 0;
 	PADDING = 1;
-	if (h >= 1024)		 /* > 1280x1024 */
+	if (screen_height >= 1024)		 /* > 1280x1024 */
 	{
-		real_screen_x = min(1280,w-300);
-		real_screen_y = min(1024,h-200);
+		real_screen_x = min(1280,screen_width-300);
+		real_screen_y = min(1024,screen_height-200);
 		if ( mydebug > 0 )
 		    g_print ("Set real Screen size to %d,%d\n", 
 			     real_screen_x,real_screen_y);
 		
 	}
-	else if (h >= 768)	/* 1024x768 */
+	else if (screen_height >= 768)	/* 1024x768 */
 	{
 		real_screen_x = 800;
 		real_screen_y = 540;
 	}
-	else if (h >= 600)	/* 800x600 */
+	else if (screen_height >= 600)	/* 800x600 */
 	{
 		real_screen_x = 690;
 		real_screen_y = 455;
 		PADDING = 0;
 	}
-	else if (h >= 480)	/* 640x480 */
+	else if (screen_height >= 480)	/* 640x480 */
 	{
-		if (w == 0)
-			real_screen_x = 630;
+		if (screen_width == 0)
+		    real_screen_x = 630;
 		else
-			real_screen_x = w - XMINUS;
-		real_screen_y = h - YMINUS;
+		    real_screen_x = screen_width - XMINUS;
+		real_screen_y = screen_height - YMINUS;
 	}
-	else if (h < 480)
+	else if (screen_height < 480)
 	{
-		if (w == 0)
+		if (screen_width == 0)
 			real_screen_x = 220;
 		else
-			real_screen_x = w - XMINUS;
-		real_screen_y = h - YMINUS;
+			real_screen_x = screen_width - XMINUS;
+		real_screen_y = screen_height - YMINUS;
 		PSIZE = 25;
 		SMALLMENU = 1;
 		PADDING = 0;
 	}
 
-	if ((extrawinmenu) && (w != 0))
+	if ((extrawinmenu) && (screen_width != 0))
 	{
 		real_screen_x += XMINUS - 10;
 		real_screen_y += YMINUS - 30;
 	}
 
-	/*   g_print ("\nx: %d, y:%d", h, w); */
-	if (((w == 240) && (h == 320)) || ((h == 240) && (w == 320)))
-	{
+	if (   ((screen_width  == 240) && (screen_height == 320)) 
+	    || ((screen_height == 240) && (screen_width  == 320)) )
+	    {
 		pdamode = TRUE;
 		/* SMALLMENU = 1; */
-		real_screen_x = w - 8;
-		real_screen_y = h - 70;
+		real_screen_x = screen_width - 8;
+		real_screen_y = screen_height - 70;
 	}
 	if (pdamode)
 	{
@@ -9721,7 +9710,6 @@ main (int argc, char *argv[])
 	vbig = gtk_vbox_new (FALSE, 0 * PADDING);
 	vmenubig = gtk_vbox_new (FALSE, 0 * PADDING);
 	hbig = gtk_hbox_new (FALSE, 0 * PADDING);
-	/*   accel_group = gtk_accel_group_new (); */
 	item_factory =
 		gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", NULL);
 	/*  Uebersetzen laut Bluefish Code */
@@ -9729,39 +9717,14 @@ main (int argc, char *argv[])
 					     "<main>", NULL);
 	gtk_item_factory_create_items (item_factory, nmenu_items, main_menu,
 				       NULL);
-	/*   gtk_accel_group_attach (accel_group, GTK_OBJECT (hauptfenster)); */
-	//gtk_accel_group_attach (accel_group, GTK_OBJECT (mainwindow));
-	//HRM: above must be new in GTK 2.0!
 
 	menubar = gtk_item_factory_get_widget (item_factory, "<main>");
 
 	wi = gtk_item_factory_get_item (item_factory,
-					N_("/Misc. Menu/Maps/Map Manager"));
-	gtk_widget_set_sensitive (wi, FALSE);
-	wi = gtk_item_factory_get_item (item_factory,
 					N_("/Misc. Menu/Waypoint Manager"));
 	if (!debug)
-		gtk_widget_set_sensitive (wi, FALSE);
+	    gtk_widget_set_sensitive (wi, FALSE);
 
-	/*  download map button */
-	downloadbt = gtk_button_new_with_mnemonic (_("_Download map"));
-	/*   gtk_button_set_use_underline (GTK_BUTTON(downloadbt),TRUE); */
-	/*   gtk_label_set_text_with_mnemonic(GTK_LABEL(downloadbt),_("Karte __Download")); */
-	/*    gtk_label_set_mnemonic_widget(GTK_LABEL(GTK_BUTTON(downloadbt)),GTK_WIDGET (downloadbt));    */
-
-	gtk_signal_connect (GTK_OBJECT (downloadbt),
-			    "clicked", G_CALLBACK (download_cb),
-			    (gpointer) 1);
-
-	/*  Quit button */
-	/* PORTING */
-	/*   quit = gtk_button_new_with_label (_("Quit")); */
-	quit = gtk_button_new_from_stock (GTK_STOCK_QUIT);
-	gtk_button_set_use_underline (GTK_BUTTON (quit), TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (quit),
-			    "clicked", GTK_SIGNAL_FUNC (quit_program), 0);
-	/*    GTK_WIDGET_SET_FLAGS (quit, GTK_CAN_DEFAULT); */
 
 	if (havespeechout)
 	{
@@ -9896,12 +9859,7 @@ main (int argc, char *argv[])
 	/*                (gpointer) 1); */
 	/*    GTK_WIDGET_SET_FLAGS (loadtrackbt, GTK_CAN_DEFAULT); */
 
-#ifndef USETELEATLAS
-	helpbt = gtk_button_new_from_stock (GTK_STOCK_HELP);
-	gtk_signal_connect (GTK_OBJECT (helpbt),
-			    "clicked", GTK_SIGNAL_FUNC (help_cb),
-			    (gpointer) 1);
-#else
+#ifdef USETELEATLAS
 	{
 		GtkWidget *image3, *hbox3, *alignment3, *label;
 
@@ -9937,12 +9895,6 @@ main (int argc, char *argv[])
 
 	gtk_signal_connect (GTK_OBJECT (setupbt),
 			    "clicked", GTK_SIGNAL_FUNC (setup_cb),
-			    (gpointer) 0);
-
-	// Checkbox ---- Start GPSD
-	startgpsbt = gtk_button_new_with_label (_("Start GPSD"));
-	gtk_signal_connect (GTK_OBJECT (startgpsbt),
-			    "clicked", GTK_SIGNAL_FUNC (startgpsd),
 			    (gpointer) 0);
 
 	// Checkbox ---- Best Map
@@ -10434,22 +10386,16 @@ main (int argc, char *argv[])
 	/*    if (maxwp > 0) */
 	gtk_box_pack_start (GTK_BOX (vbox), sel_target, FALSE, FALSE,
 			    1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (vbox), downloadbt, FALSE, FALSE,
-			    1 * PADDING);
 	/*   gtk_box_pack_start (GTK_BOX (vbox), importbt, FALSE, FALSE, 1 * PADDING);  */
 	/*   gtk_box_pack_start (GTK_BOX (vbox), loadtrackbt, FALSE, FALSE, 1 * PADDING); */
 	gtk_box_pack_start (GTK_BOX (vbox), startgpsbt, FALSE, FALSE,
 			    1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (vbox), setupbt, FALSE, FALSE,
 			    1 * PADDING);
-#ifndef USETELEATLAS
-	gtk_box_pack_start (GTK_BOX (vbox), helpbt, FALSE, FALSE,
-			    1 * PADDING);
-#else
+#ifdef USETELEATLAS
 	gtk_box_pack_start (GTK_BOX (vbox), navibt, FALSE, FALSE,
 			    1 * PADDING);
 #endif
-	gtk_box_pack_start (GTK_BOX (vbox), quit, FALSE, FALSE, 1 * PADDING);
 	hboxlow = vbox2 = NULL;
 	if (!extrawinmenu)
 	{
@@ -10940,10 +10886,6 @@ main (int argc, char *argv[])
 			      ("Here you find extra functions for maps, tracks and messages"),
 			      NULL);
 
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), downloadbt,
-			      _("Download map from Internet"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), quit,
-			      _("Leave the program"), NULL);
 	if (havespeechout)
 		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mutebt,
 				      _("Disable output of speech"), NULL);
@@ -10962,10 +10904,7 @@ main (int argc, char *argv[])
 			      _("Show tracking on the map"), NULL);
 	/*   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), importbt, */
 	/*                  _("Let you import and calibrate your own map"), NULL); */
-#ifndef USETELEATLAS
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), helpbt,
-			      _("Opens the help window"), NULL);
-#else
+#ifdef USETELEATLAS
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
 			      _
 			      ("Navigation menu. Enter here your destination."),
