@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.10  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.9  2005/11/06 18:33:41  tweety
   shortened map selection code
   coordinate_string2gdouble:
@@ -172,10 +182,10 @@ rebuildtracklist (void)
   tracknr = 0;
   for (i = 0; i < trackcoordnr; i++)
     {
-      calcxy (&posxdest, &posydest, (trackcoord + i)->longi,
+      calcxy (&posxdest, &posydest, (trackcoord + i)->lon,
 	      (trackcoord + i)->lat, zoom);
 
-      if ((trackcoord + i)->longi > 1000.0)	/* Track Break ? */
+      if ((trackcoord + i)->lon > 1000.0)	/* Track Break ? */
 	{
 	  posxsource = posysource = -1000;
 	}
@@ -197,7 +207,7 @@ rebuildtracklist (void)
 		   * posxsource,posxdest,
 		   * posysource,posydest);
 		   * printf("%.6f, %.6f (%.6f)\n",
-		   * (trackcoord + i)->longi,
+		   * (trackcoord + i)->lon,
 		   * (trackcoord + i)->lat, zoom);
 		   */
 		  (track + tracknr)->x1 = posxsource;
@@ -304,7 +314,7 @@ savetrackfile (gint mode)
   struct stat sbuf;
   gchar buff[1024];
   gint e, i;
-  gchar mappath[400], lat[30], alt[30], longi[30];
+  gchar mappath[400], lat[30], alt[30], lon[30];
   FILE *st;
 
   if (mode == 0)
@@ -334,11 +344,11 @@ savetrackfile (gint mode)
     {
       g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (longi, sizeof (longi), "%10.6f", (trackcoord + i)->longi);
-      g_strdelimit (longi, ",", '.');
+      g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+      g_strdelimit (lon, ",", '.');
       g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s\n", lat, longi, alt,
+      fprintf (st, "%s %s %s %s\n", lat, lon, alt,
 	       (trackcoord + i)->postime);
     }
   fclose (st);
@@ -360,11 +370,11 @@ savetrackfile (gint mode)
     {
       g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (longi, sizeof (longi), "%10.6f", (trackcoord + i)->longi);
-      g_strdelimit (longi, ",", '.');
+      g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+      g_strdelimit (lon, ",", '.');
       g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s\n", lat, longi, alt,
+      fprintf (st, "%s %s %s %s\n", lat, lon, alt,
 	       (trackcoord + i)->postime);
     }
   fclose (st);
@@ -384,7 +394,7 @@ savetrackfile (gint mode)
 
 void do_incremental_save() {
     gint i;
-    gchar mappath[400], lat[30], alt[30], longi[30];
+    gchar mappath[400], lat[30], alt[30], lon[30];
     FILE *st;
     
     if ((trackcoordnr % 30) == 29) { /* RNM: append to existing incremental file every 30 seconds */
@@ -404,11 +414,11 @@ void do_incremental_save() {
                 for (i = old_trackcoordnr; i < trackcoordnr; i++) {
 		    g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
 		    g_strdelimit (lat, ",", '.');
-		    g_snprintf (longi, sizeof (longi), "%10.6f", (trackcoord + i)->longi);
-		    g_strdelimit (longi, ",", '.');
+		    g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+		    g_strdelimit (lon, ",", '.');
 		    g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
 		    
-		    fprintf (st, "%s %s %s %s\n", lat, longi, alt, (trackcoord + i)->postime);
+		    fprintf (st, "%s %s %s %s\n", lat, lon, alt, (trackcoord + i)->postime);
                 }
                 fclose (st);
                 old_trackcoordnr = trackcoordnr ;
@@ -421,7 +431,8 @@ void do_incremental_save() {
 gint
 gettrackfile (GtkWidget * widget, gpointer datum)
 {
-  gchar *fn, buf[520], lat[30], longi[30], alt[30], str[30];
+  G_CONST_RETURN gchar *fn;
+  gchar buf[520], lat[30], lon[30], alt[30], str[30];
   FILE *st;
   gint i;
 
@@ -445,10 +456,10 @@ gettrackfile (GtkWidget * widget, gpointer datum)
   i = 0;
   while (fgets (buf, 512, st))
     {
-      sscanf (buf, "%s %s %s %[^\n]", lat, longi, alt, str);
+      sscanf (buf, "%s %s %s %[^\n]", lat, lon, alt, str);
       g_strlcpy ((trackcoord + i)->postime, str, 30);
       (trackcoord + i)->lat = g_strtod (lat, NULL);
-      (trackcoord + i)->longi = g_strtod (longi, NULL);
+      (trackcoord + i)->lon = g_strtod (lon, NULL);
       (trackcoord + i)->alt = g_strtod (alt, NULL);
       i++;
       trackcoordnr++;
@@ -467,7 +478,7 @@ gettrackfile (GtkWidget * widget, gpointer datum)
 
     }
   (trackcoord + i)->lat = 1001.0;
-  (trackcoord + i)->longi = 1001.0;
+  (trackcoord + i)->lon = 1001.0;
 
   trackcoordnr++;
 

@@ -22,6 +22,16 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.6  2006/01/03 14:24:10  tweety
+ eliminate compiler Warnings
+ try to change all occurences of longi -->lon, lati-->lat, ...i
+ use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+ rename drawgrid --> do_draw_grid
+ give the display frames usefull names frame_lat, ...
+ change handling of WP-types to lowercase
+ change order for directories reading icons
+ always read inconfile
+
  Revision 1.5  2005/11/05 19:52:17  tweety
  Fix Bufferoverflow
  http://seclists.org/lists/fulldisclosure/2005/Nov/0129.html
@@ -176,7 +186,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 	socklen_t clilen;
 	struct hostent *hostname;
 	struct sockaddr_in sin;
-	char id[31], name[41], lat[41], longi[41], timesec[41], speed[11],
+	char id[31], name[41], lat[41], lon[41], timesec[41], speed[11],
 		heading[11];
 	char msgname[40], msgtext[1024], ackid[40];
 
@@ -246,7 +256,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 
 				e = sscanf (mesg,
 					    "POS: %30s %40s %40s %40s %40s %10s %10s",
-					    id, name, lat, longi, timesec,
+					    id, name, lat, lon, timesec,
 					    speed, heading);
 				/*              printf("\nGot %d arguments\n",e);  */
 				if ((e == 7)

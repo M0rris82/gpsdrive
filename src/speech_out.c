@@ -24,6 +24,16 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.11  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.10  1994/06/08 13:02:31  tweety
   adjust debug levels
 
@@ -284,53 +294,47 @@ speech_out_init ()
 
 /* *****************************************************************************
  */
-gint
+void
 speech_out_speek (char *text)
 {
-	gint e;
-	gchar out[2000];
-
-	if (!havespeechout)
-		return 0;
-	if (posmode)
-		return 0;
-
-	if ( mydebug > 0 )
-		g_print (text);
-	if (!useflite)
+    gchar out[2000];
+    
+    if (!havespeechout)
+	return;
+    if (posmode)
+	return;
+    
+    if ( mydebug > 0 )
+	g_print (text);
+    if (!useflite)
 	{
-		g_snprintf (out, sizeof (out), "(SayText \"%s\")\n", text);
-		e = write (speechsock, out, strlen (out));
+	    g_snprintf (out, sizeof (out), "(SayText \"%s\")\n", text);
+	    write (speechsock, out, strlen (out));
 	}
-	else
+    else
 	{
-		g_strlcat (text, ".\n", sizeof (text));
-		g_snprintf (out, sizeof (out), "flite -t '%s'&", text);
-		if ( mydebug > 0 )
-			printf ("speech with flite: %s\n", out);
-		system (out);
+	    g_strlcat (text, ".\n", sizeof (text));
+	    g_snprintf (out, sizeof (out), "flite -t '%s'&", text);
+	    if ( mydebug > 0 )
+		printf ("speech with flite: %s\n", out);
+	    system (out);
 	}
-	return e;
 }
 
 /* *****************************************************************************
  */
-gint
+void
 speech_out_speek_raw (char *text)
 {
-	gint e;
-
-	if (!havespeechout)
-		return 0;
-	if (posmode)
-		return 0;
-
-	if ( mydebug > 0 )
-		g_print (text);
-
-	e = write (speechsock, text, strlen (text));
-
-	return e;
+    if (!havespeechout)
+	return;
+    if (posmode)
+	return;
+    
+    if ( mydebug > 0 )
+	g_print (text);
+    
+    write (speechsock, text, strlen (text));
 }
 
 /* *****************************************************************************

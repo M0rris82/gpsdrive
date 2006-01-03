@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.2  1994/06/10 02:43:13  tweety
 move gps_mea handling
 
@@ -71,7 +81,7 @@ extern gint forcehavepos;
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff, crosstoogle;
 extern gint zone;
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint oldsatfix, oldsatsanz, havealtitude;
 extern gdouble altitude, precision, gsaprecision;
 extern gchar localedecimal;
@@ -89,9 +99,7 @@ extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
 extern gchar serialdev[80];
-extern unsigned char serialdata[4096];
 extern int newdata;
-extern unsigned char serialdata[4096];
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
 extern int messagenumber, actualfriends, didrootcheck, haveserial;
@@ -114,14 +122,14 @@ static gchar gradsym[] = "\xc2\xb0";
 /* variables */
 extern gint ignorechecksum, mydebug, mapistopo;
 extern gdouble lat2RadiusArray[201];
-extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
+extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
   bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed,
   milesconv;
 extern FILE *nmeaout;
 // ---------------------- NMEA
@@ -227,12 +235,12 @@ write_nmea_line (const char *line)
 void
 gen_nmea_coord (char *out)
 {
-	gdouble lat = fabs (current_lat), lon = fabs (current_long);
+	gdouble lat = fabs (current_lat), lon = fabs (current_lon);
 	g_snprintf (out, sizeof (out), ",%02d%07.5f,%c,%03d%07.5f,%c",
 		    (int) floor (lat), 60 * (lat - floor (lat)),
 		    (current_lat < 0 ? 'S' : 'N'),
 		    (int) floor (lon), 60 * (lon - floor (lon)),
-		    (current_long < 0 ? 'W' : 'E'));
+		    (current_lon < 0 ? 'W' : 'E'));
 }
 
 /* *****************************************************************************
@@ -463,10 +471,10 @@ convertRMC (char *f)
       if (field[6][0] == 'W')
 	cl = cl * -1;
       if ((cl >= -180.0) && (cl <= 180.0))
-	current_long = cl;
+	current_lon = cl;
 
       langri = field[6][0];
-      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_long, gradsym, langri);
+      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lon, gradsym, langri);
     }
 
   /*  speed */
@@ -768,14 +776,14 @@ convertGGA (char *f)
 	  if (field[5][0] == 'W')
 	    cl = cl * -1;
 	  if ((cl >= -180.0) && (cl <= 180.0))
-	    current_long = cl;
+	    current_lon = cl;
 
 	  langri = field[5][0];
-	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_long, gradsym, langri,cl); */
+	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lon, gradsym, langri,cl); */
 	}
 
       if ( mydebug > 80 )
-	g_print ("gpsd: GGA pos: %f %f\n", current_lat, current_long);
+	g_print ("gpsd: GGA pos: %f %f\n", current_lat, current_lon);
     }
 
   satfix = g_strtod (field[6], 0);

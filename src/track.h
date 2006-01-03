@@ -23,8 +23,18 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
-Revision 1.1  2004/12/23 16:03:24  commiter
-Initial revision
+Revision 1.2  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
+Revision 1.1.1.1  2004/12/23 16:03:24  commiter
+Initial import, straight from 2.10pre2 tar.gz archive
 
 Revision 1.3  2003/05/31 20:12:35  ganter
 new UDP friendsserver build in, needs some work
@@ -45,7 +55,7 @@ new UDP friendsserver build in, needs some work
 
 typedef struct
 {
-  gdouble longi;
+  gdouble lon;
   gdouble lat;
   gdouble alt;
   gchar postime[30];

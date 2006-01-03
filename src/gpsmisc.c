@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.17  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.16  2006/01/02 13:21:14  tweety
 Start sorting out the menu
 Move some of the Buttons to the Pulldown Menu
@@ -136,14 +146,14 @@ code cleanup
 /* variables */
 extern gint ignorechecksum, mydebug, mapistopo;
 extern gdouble lat2RadiusArray[201];
-extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
+extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
   bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed,
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed,
   milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 
@@ -214,19 +224,19 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
 	      lat = lat + 360.0;
 	  }
       
-      lon = zero_long - px / ((lat2radius (lat) * M_PI / 180.0) *
+      lon = zero_lon - px / ((lat2radius (lat) * M_PI / 180.0) *
 			      cos (M_PI * lat / 180.0));
 
-      dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_long)) / 180.0)));
+      dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_lon)) / 180.0)));
       lat = lat - dif / 1.5;
 
-      lon = zero_long -
+      lon = zero_lon -
 	px / ((lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
     }
   else
     {
       lat = zero_lat - py / (lat2radius (0) * M_PI / 180.0);
-      lon = zero_long - px / ((lat2radius (0) * M_PI / 180.0));
+      lon = zero_lon - px / ((lat2radius (0) * M_PI / 180.0));
     }
   
   // Error check
@@ -295,9 +305,9 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
   if (mapistopo == FALSE)
     *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
 						     180.0) *
-      (lon - zero_long);
+      (lon - zero_lon);
   else
-    *posx = (lat2radius (0.0) * M_PI / 180.0) * (lon - zero_long);
+    *posx = (lat2radius (0.0) * M_PI / 180.0) * (lon - zero_lon);
 
   *posx = SCREEN_X_2 + *posx * zoom / pixelfact;
   *posx = *posx - xoff;
@@ -307,7 +317,7 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
     {
       *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
       dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_long)) / 180.0)));
+				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
       *posy = *posy + dif / 1.85;
     }
   else
@@ -329,9 +339,9 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
   if (mapistopo == FALSE)
     *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
 						     180.0) *
-      (lon - zero_long);
+      (lon - zero_lon);
   else
-    *posx = (lat2radius (0) * M_PI / 180.0) * (lon - zero_long);
+    *posx = (lat2radius (0) * M_PI / 180.0) * (lon - zero_lon);
 
   *posx = 64 + *posx * zoom / (10 * pixelfact);
   *posx = *posx;
@@ -340,7 +350,7 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
   if (mapistopo == FALSE)
     {
       dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_long)) / 180.0)));
+				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
       *posy = *posy + dif / 1.85;
     }
   *posy = 51 - *posy * zoom / (10 * pixelfact);
@@ -385,16 +395,16 @@ calcR (gdouble lat)
 
 
 /* ******************************************************************
- * calculate distance from (lati/longi) to current position (current_lat/current_longi)
+ * calculate distance from (lat/lon) to current position (current_lat/current_lon)
  */
 gdouble
-calcdist2 (gdouble longi, gdouble lati)
+calcdist2 (gdouble lon, gdouble lat)
 {
   double a, a1, a2, c, d, dlon, dlat, sa, radiant = M_PI / 180;
 
 
-  dlon = radiant * (current_long - longi);
-  dlat = radiant * (current_lat - lati);
+  dlon = radiant * (current_lon - lon);
+  dlat = radiant * (current_lat - lat);
 
   if ((dlon == 0.0) && (dlat == 0.0))
     return 0.0;
@@ -402,13 +412,13 @@ calcdist2 (gdouble longi, gdouble lati)
   a1 = sin (dlat / 2);
   a2 = sin (dlon / 2);
   a = (a1 * a1) +
-    cos (lati * radiant) * cos (current_lat * radiant) * a2 * a2;
+    cos (lat * radiant) * cos (current_lat * radiant) * a2 * a2;
   sa = sqrt (a);
   if (sa <= 1.0)
     c = 2 * asin (sa);
   else
     c = 2 * asin (1.0);
-  d = (lat2radius (current_lat) + lat2radius (lati)) * c / 2.0;
+  d = (lat2radius (current_lat) + lat2radius (lat)) * c / 2.0;
   return milesconv * d / 1000.0;
 }
 
@@ -416,7 +426,7 @@ calcdist2 (gdouble longi, gdouble lati)
  * same as calcdist2, but much more precise 
  */
 gdouble
-calcdist (gdouble longi, gdouble lati)
+calcdist (gdouble lon, gdouble lat)
 {
   gdouble a = 6378137.0;
   gdouble f = 1.0 / 298.25722210088;
@@ -428,17 +438,17 @@ calcdist (gdouble longi, gdouble lati)
 
   /*   if (cpuload<10)
    *     {
-   *       r = calcdist2 (longi, lati);
+   *       r = calcdist2 (lon, lat);
    *       return r;
    *     }
    */
-  if (((lati - current_lat) == 0.0) && ((longi - current_long) == 0.0))
+  if (((lat - current_lat) == 0.0) && ((lon - current_lon) == 0.0))
     return 0.0;
 
   glat1 = radiant * current_lat;
-  glat2 = radiant * lati;
-  glon1 = radiant * current_long;
-  glon2 = radiant * longi;
+  glat2 = radiant * lat;
+  glon1 = radiant * current_lon;
+  glon2 = radiant * lon;
 
   r = 1.0 - f;
   tu1 = r * sin (glat1) / cos (glat1);
@@ -614,7 +624,7 @@ coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat,
  * Sideeffect inside text all , are replaced by .
  */
 void
-coordinate_string2gdouble (gchar * text, gdouble * dec)
+coordinate_string2gdouble (const gchar * intext, gdouble * dec)
 {
   gint grad;
   gdouble sec;
@@ -622,6 +632,9 @@ coordinate_string2gdouble (gchar * text, gdouble * dec)
   //    gdouble dec = -1002.0;
   gchar s2;
   gdouble fmin;
+  gchar text[100];
+
+  g_strlcpy(text,intext,sizeof(text));
 
   *dec = -1002.0;
 

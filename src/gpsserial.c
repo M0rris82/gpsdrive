@@ -31,6 +31,16 @@ routines to read GPS data from serial device
 
     /*
      * $Log$
+     * Revision 1.5  2006/01/03 14:24:10  tweety
+     * eliminate compiler Warnings
+     * try to change all occurences of longi -->lon, lati-->lat, ...i
+     * use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+     * rename drawgrid --> do_draw_grid
+     * give the display frames usefull names frame_lat, ...
+     * change handling of WP-types to lowercase
+     * change order for directories reading icons
+     * always read inconfile
+     *
      * Revision 1.4  2005/04/20 23:33:49  tweety
      * reformatted source code with anjuta
      * So now we have new indentations
@@ -158,7 +168,7 @@ pthread_t threadid = 0;
 extern char serialdev[80];
 static int fd, didinit = 0;
 int newdata = FALSE;
-unsigned char serialdata[4096];
+char serialdata[4096];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static struct termios oldtio, newtio;
 extern int timeoutcount, debug, haveserial, serialspeed, nmeaverbose;

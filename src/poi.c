@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.28  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.27  1994/06/07 11:25:45  tweety
   set debug levels more detailed
 
@@ -890,7 +900,7 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 	  ((poi_list + i)->lat <= lat2) &&
 	  (lon1 <= (poi_list + i)->lon) && ((poi_list + i)->lon <= lon2))
 	{
-	  printf ("Query POI: %ld: %f %f :%s\n",
+	  printf ("Query POI: %d: %f %f :%s\n",
 		  i, (poi_list + i)->lat, (poi_list + i)->lon,
 		  (poi_list + i)->name);
 	}

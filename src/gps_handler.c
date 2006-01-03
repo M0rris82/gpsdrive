@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.8  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.7  1994/06/10 02:43:13  tweety
   move gps_mea handling
 
@@ -104,7 +114,7 @@ extern gint zoom;
 extern gint showroute, routeitems;
 extern gint nightmode, isnight, disableisnight;
 
-extern gdouble current_long, current_lat;
+extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 
 extern gint posmode;
@@ -113,11 +123,10 @@ extern gint forcehavepos;
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff, crosstoogle;
 extern gint zone;
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint oldsatfix, oldsatsanz, havealtitude;
 extern gdouble altitude, precision, gsaprecision;
 extern gchar localedecimal;
-static gchar gradsym[] = "\xc2\xb0";
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
 extern gdouble pixelfact, posx, posy;
@@ -132,9 +141,8 @@ extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
 extern gchar serialdev[80];
-extern unsigned char serialdata[4096];
+extern char serialdata[4096];
 extern int newdata;
-extern unsigned char serialdata[4096];
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
 extern int messagenumber, actualfriends, didrootcheck, haveserial;
@@ -194,6 +202,7 @@ gint bigp = 0, bigpGGA = 0, bigpRME = 0, bigpGSA = 0, bigpGSV = 0;
 gint lastp = 0, lastpGGA = 0, lastpRME = 0, lastpGSA = 0, lastpGSV = 0;
 gint sock = -1;
 
+gint convertGSV (char *f);
 
 
 /* *****************************************************************************
@@ -289,7 +298,7 @@ void init_dbus(){
 
 /* ******************************************************************
  */
-gint
+void
 init_nmea_socket ()
 {
   struct sockaddr_in server;
@@ -319,7 +328,7 @@ init_nmea_socket ()
 	  g_object_unref (satsimage);
 	satsimage = NULL;
 	gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
-	return 0;
+	return;
       }
     server.sin_family = AF_INET;
     /*  We retrieve the IP address of the server from its name: */
@@ -363,8 +372,6 @@ init_nmea_socket ()
 	haveNMEA = TRUE;
 	simmode = FALSE;
       }
-
-
   }
 }
 
@@ -628,7 +635,7 @@ dbus_process_fix(gint early)
 		current_lat = dbus_current_fix.latitude;
 	/* Handle longitude */
 	if (!posmode)
-		current_long = dbus_current_fix.longitude;
+		current_lon = dbus_current_fix.longitude;
 	/* Handle speed */
 	if (__finite(dbus_current_fix.speed))
 		groundspeed = dbus_current_fix.speed * 3.6;	// Convert m/s to km/h
@@ -640,7 +647,7 @@ dbus_process_fix(gint early)
 	if (__finite(dbus_current_fix.track))
 		direction = dbus_current_fix.track * M_PI / 180;	// Convert to radians
 	else if (dbus_old_fix.mode>1) {
-		gdouble lon2 = current_long * M_PI / 180;
+		gdouble lon2 = current_lon * M_PI / 180;
 		gdouble lon1 = dbus_old_fix.longitude * M_PI / 180;
 		gdouble lat2 = current_lat * M_PI /180;
 		gdouble lat1 = dbus_old_fix.latitude * M_PI / 180;
@@ -936,7 +943,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    }
 	  if (!posmode)
 	    {
-	      current_long = glang;
+	      current_lon = glang;
 	      current_lat = gbreit;
 	    }
 
@@ -950,7 +957,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	{
 	  tx = (2 * earthr * M_PI / 360) * cos (M_PI * current_lat /
 						180.0) *
-	    (current_long - old_long);
+	    (current_lon - old_lon);
 	  ty = (2 * earthr * M_PI / 360) * (current_lat - old_lat);
 #define MINMOVE 4.0
 	  if (((fabs (tx)) > MINMOVE) || (((fabs (ty)) > MINMOVE)))
@@ -977,7 +984,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 	      groundspeed = milesconv * sqrt (tx * tx + ty * ty) * 3.6 / secs;
 	      old_lat = current_lat;
-	      old_long = current_long;
+	      old_lon = current_lon;
 	    }
 	  else if (secs > 4.0)
 	    groundspeed = 0.0;

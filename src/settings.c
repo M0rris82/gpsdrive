@@ -22,6 +22,16 @@
 /* ******************************************************************** 
 	 
 $Log$
+Revision 1.12  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.11  1994/06/07 11:25:45  tweety
 set debug levels more detailed
 
@@ -405,7 +415,7 @@ extern gint metricflag, nauticflag;
 extern gint defaultserver, disableapm;
 extern GtkWidget *mainwindow, *status, *pixmapwidget, *gotowindow;
 extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 static gdouble hour, sunrise, sunset, suntransit;
 static gdouble duskastro, dawnastro, dusknaut, dawnnaut, duskciv, dawnciv;
 extern gchar utctime[20], loctime[20];
@@ -435,7 +445,7 @@ extern char dbwherestring[5000];
 extern char dbtypelist[100][40];
 extern int dbtypelistcount;
 extern double dbdistance;
-extern int dbusedist, havefriends, etch, drawgrid, serialspeed, disableserial;
+extern int dbusedist, havefriends, etch, do_draw_grid, serialspeed, disableserial;
 GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[100], sqlandmode = TRUE;
 static int sqldontquery = FALSE;
@@ -906,7 +916,7 @@ mainsetup (void)
 		      GTK_SIGNAL_FUNC (etch_cb), (gpointer) 1);
 
   drawgridbt = gtk_check_button_new_with_label (_("Draw grid"));
-  if (drawgrid)
+  if (do_draw_grid)
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (drawgridbt), TRUE);
     }
@@ -1479,7 +1489,7 @@ daylights (void)
   struct tm *st = localtime (&now);
 
   lat = M_PI * current_lat / 180.0;
-  lon = M_PI * current_long / 180.0;
+  lon = M_PI * current_lon / 180.0;
   Rank = st->tm_yday + 1;
   D = st->tm_mday;
   MA = 357 + 0.9856 * Rank;
@@ -1495,9 +1505,9 @@ daylights (void)
 
   TZ = zone;
 
-  sunrise = 12.0 - Ho + ET / 60.0 - current_long / 15 + TZ;
-  suntransit = 12 + ET / 60.0 - current_long / 15 + TZ;
-  sunset = 12.0 + Ho + ET / 60.0 - current_long / 15 + TZ;
+  sunrise = 12.0 - Ho + ET / 60.0 - current_lon / 15 + TZ;
+  suntransit = 12 + ET / 60.0 - current_lon / 15 + TZ;
+  sunset = 12.0 + Ho + ET / 60.0 - current_lon / 15 + TZ;
 
   fixHour (sunrise);
   fixHour (suntransit);
@@ -1506,20 +1516,20 @@ daylights (void)
   Ho = acos (((-0.309 - sin (Dec) * sin (lat)) / (cos (Dec) * cos (lat))));
   Ho = 180.0 * Ho / M_PI;
   Ho = Ho / 15;
-  dawnastro = 12.0 - Ho + ET / 60.0 - current_long / 15 + TZ;
-  duskastro = 12.0 + Ho + ET / 60.0 - current_long / 15 + TZ;
+  dawnastro = 12.0 - Ho + ET / 60.0 - current_lon / 15 + TZ;
+  duskastro = 12.0 + Ho + ET / 60.0 - current_lon / 15 + TZ;
 
   Ho = acos (((-0.208 - sin (Dec) * sin (lat)) / (cos (Dec) * cos (lat))));
   Ho = 180.0 * Ho / M_PI;
   Ho = Ho / 15;
-  dawnnaut = 12.0 - Ho + ET / 60.0 - current_long / 15 + TZ;
-  dusknaut = 12.0 + Ho + ET / 60.0 - current_long / 15 + TZ;
+  dawnnaut = 12.0 - Ho + ET / 60.0 - current_lon / 15 + TZ;
+  dusknaut = 12.0 + Ho + ET / 60.0 - current_lon / 15 + TZ;
 
   Ho = acos (((-0.105 - sin (Dec) * sin (lat)) / (cos (Dec) * cos (lat))));
   Ho = 180.0 * Ho / M_PI;
   Ho = Ho / 15;
-  dawnciv = 12.0 - Ho + ET / 60.0 - current_long / 15 + TZ;
-  duskciv = 12.0 + Ho + ET / 60.0 - current_long / 15 + TZ;
+  dawnciv = 12.0 - Ho + ET / 60.0 - current_lon / 15 + TZ;
+  duskciv = 12.0 + Ho + ET / 60.0 - current_lon / 15 + TZ;
 
   fixHour (dawnastro);
   fixHour (dawnnaut);

@@ -22,6 +22,16 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.11  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.10  2006/01/01 20:11:42  tweety
 add option -P for Posmode on start
 
@@ -313,7 +323,7 @@ gint scalerbt_cb (GtkWidget * widget, guint datum);
 
 void testnewmap ();
 void map_koord_check_and_reload();
-void coordinate_string2gdouble (gchar * text,gdouble * dec);
+void coordinate_string2gdouble (const gchar * text,gdouble * dec);
 void do_incremental_save();
 void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
 		  gdouble wp_lon);
@@ -325,7 +335,7 @@ typedef struct
 {
   char id[30];
   char name[40];
-  char lat[40], longi[40];
+  char lat[40], lon[40];
   char timesec[40], speed[10], heading[10];
 }
 friendsstruct;

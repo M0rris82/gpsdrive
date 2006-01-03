@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.3  1994/06/08 08:37:47  tweety
 fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
 instead of atof and strtod
@@ -63,20 +73,20 @@ changed length of mappath from 400 to 2048 chars
 /* variables */
 extern gint ignorechecksum, mydebug, debug, mapistopo;
 extern gdouble lat2RadiusArray[201];
-extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
+extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination;
 extern gdouble direction, bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_long, current_lat, old_long, old_lat;
+extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gdouble groundspeed, milesconv;
 extern gint nrmaps;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gdouble current_long, current_lat;
+extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern gint pdamode;
 extern gint usesql;
@@ -86,7 +96,7 @@ extern gint posmode;
 extern gdouble posmode_x, posmode_y;
 extern gchar targetname[40];
 extern gint iszoomed;
-extern gchar newmaplat[100], newmaplongi[100], newmapsc[100], oldangle[100];
+extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
 
 extern gint showroute, routeitems;
 extern gdouble routenearest;
@@ -284,7 +294,7 @@ loadmapconfig ()
       e = sscanf (buf, "%s %s %s %s", filename, s1, s2, s3);
       if ((mydebug > 50) && !(nrmaps % 1000))
 	{
-	  fprintf (stderr, "loadmapconfig(%ld)\r", nrmaps);
+	  fprintf (stderr, "loadmapconfig(%d)\r", nrmaps);
 	}
 
 
@@ -332,7 +342,7 @@ route_next_target ()
 	d = calcdist ((routelist + routepointer)->lon,
 		      (routelist + routepointer)->lat);
       else
-	d = calcdist (target_long, target_lat);
+	d = calcdist (target_lon, target_lat);
 
       if (d < routenearest)
 	{
@@ -411,16 +421,16 @@ create_nasa ()
 
       /* Try creating a nasamap and add it to the map list */
       havenasa =
-	create_nasa_mapfile (current_lat, current_long, TRUE, nasaname);
+	create_nasa_mapfile (current_lat, current_lon, TRUE, nasaname);
       if (havenasa > 0)
 	{
 	  i = nrmaps;
 	  nrmaps++;
 	  maps = g_renew (mapsstruct, maps, (nrmaps + 2));
 	  havenasa =
-	    create_nasa_mapfile (current_lat, current_long, FALSE, nasaname);
+	    create_nasa_mapfile (current_lat, current_lon, FALSE, nasaname);
 	  (maps + i)->lat = current_lat;
-	  (maps + i)->lon = current_long;
+	  (maps + i)->lon = current_lon;
 	  (maps + i)->scale = havenasa;
 	  g_strlcpy ((maps + i)->filename, nasaname, 200);
 	  if ((strcmp (oldfilename, "top_NASA_IMAGE.ppm")) == 0)
@@ -448,7 +458,7 @@ load_best_map (long long bestmap)
 	  if (debug)
 	    g_print ("New map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
-	  zero_long = (maps + bestmap)->lon;
+	  zero_lon = (maps + bestmap)->lon;
 	  zero_lat = (maps + bestmap)->lat;
 	  mapscale = (maps + bestmap)->scale;
 	  xoff = yoff = 0;
@@ -463,7 +473,7 @@ load_best_map (long long bestmap)
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	  g_strlcpy (mapfilename, "top_GPSWORLD.jpg", sizeof (mapfilename));
 	  pixelfact = 88067900.43 / PIXELFACT;
-	  zero_long = 0;
+	  zero_lon = 0;
 	  zero_lat = 0;
 	  mapscale = 88067900.43;
 	  xoff = yoff = 0;
@@ -616,7 +626,7 @@ testnewmap ()
 
   if (posmode)
     {
-      current_long = posmode_x;
+      current_lon = posmode_x;
       current_lat = posmode_y;
     }
   else
@@ -674,10 +684,10 @@ testnewmap ()
       if (istopo == FALSE)
 	posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	  * cos (M_PI * (maps + i)->lat / 180.0)
-	  * (current_long - (maps + i)->lon);
+	  * (current_lon - (maps + i)->lon);
       else
 	posx = (lat2radius (0) * M_PI / 180)
-	  * (current_long - (maps + i)->lon);
+	  * (current_lon - (maps + i)->lon);
 
 
       /*  latitude */
@@ -686,7 +696,7 @@ testnewmap ()
 	  posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	    * (current_lat - (maps + i)->lat);
 	  dif = lat2radius ((maps + i)->lat)
-	    * (1 - (cos ((M_PI * (current_long - (maps + i)->lon)) / 180.0)));
+	    * (1 - (cos ((M_PI * (current_lon - (maps + i)->lon)) / 180.0)));
 	  posy = posy + dif / 2.0;
 	}
       else
@@ -778,7 +788,7 @@ drawloadedmaps ()
 
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
-	  //printf("Selected map at long %lf lat %lf\n",maps[i].lat,maps[i].lon);
+	  //printf("Selected map at lon %lf lat %lf\n",maps[i].lat,maps[i].lon);
 	  la = maps[i].lat;
 	  lo = maps[i].lon;
 	  //              scale=maps[i].scale;
@@ -818,11 +828,11 @@ drawdownloadrectangle (gint big)
   if (downloadwindowactive)
     {
       gdouble x, y, la, lo;
-      gchar longi[100], lat[100], sc[20];
+      gchar sc[20];
       gint scale, xo, yo;
 
       coordinate_string2gdouble(newmaplat, &la);
-      coordinate_string2gdouble(newmaplongi, &lo);
+      coordinate_string2gdouble(newmaplon, &lo);
 
       g_strlcpy (sc, newmapsc, sizeof (sc));
       g_strdelimit (sc, ",", '.');

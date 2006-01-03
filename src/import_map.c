@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.12  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.11  2006/01/01 20:11:42  tweety
   add option -P for Posmode on start
 
@@ -121,7 +131,7 @@ extern GdkColor mygray;
 extern GdkColor textback;
 extern GdkColor textbacknew;
 extern GdkColor grey;
-extern gdouble current_long, current_lat;
+extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
@@ -129,7 +139,7 @@ extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 extern GtkWidget *dltext1, *dltext2, *dltext3, *dltext4, *wptext1, *wptext2;
-extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
+extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern GTimer *timer, *disttimer;
 extern gint gcount, milesflag, downloadwindowactive;
@@ -176,7 +186,7 @@ gint
 setrefpoint_cb (GtkWidget * widget, guint datum)
 {
   gchar b[100];
-  gchar *p;
+  gchar *p = NULL;
   p = b;
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
   gtk_entry_set_text (GTK_ENTRY (dltext4), p);
@@ -194,7 +204,7 @@ setrefpoint_cb (GtkWidget * widget, guint datum)
 gint
 nimmfile (GtkWidget * widget, gpointer datum)
 {
-  G_CONST_RETURN gchar *buf;
+  G_CONST_RETURN gchar *buf = NULL;
 
   buf = gtk_file_selection_get_filename (datum);
   gtk_entry_set_text (GTK_ENTRY (dltext7), g_basename (buf));
@@ -398,7 +408,7 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
   dltext2 = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
-  coordinate2gchar (buff, sizeof (buff), current_long, FALSE, minsecmode);
+  coordinate2gchar (buff, sizeof (buff), current_lon, FALSE, minsecmode);
   gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
 
 
@@ -480,7 +490,7 @@ import1_cb (GtkWidget * widget, guint datum)
 gint
 import_scale_cb (GtkWidget * widget, gpointer datum)
 {
-  G_CONST_RETURN gchar *s;
+  G_CONST_RETURN gchar *s = NULL;
   gdouble dx_pix, dy_pix, x, y, maxx, maxy, dx_m, dy_m, m_pr_pix, lat, lon;
   gdouble dlat, dlon, lat_pr_m, lon_pr_m, scale, latcenter, longcenter;
   maxx = 1280;
@@ -568,7 +578,7 @@ import_scale_cb (GtkWidget * widget, gpointer datum)
 gint
 import2_cb (GtkWidget * widget, gpointer datum)
 {
-  G_CONST_RETURN gchar *s;
+  G_CONST_RETURN gchar *s = NULL;
 
   s = gtk_entry_get_text (GTK_ENTRY (dltext1));
   coordinate_string2gdouble (s, &imports[0].lat);
@@ -596,7 +606,7 @@ import2_cb (GtkWidget * widget, gpointer datum)
 gint
 import3_cb (GtkWidget * widget, gpointer datum)
 {
-  G_CONST_RETURN gchar *s;
+  G_CONST_RETURN gchar *s = NULL;
   gdouble tx, ty, scale, latmax, latmin, latcenter, longmax, longmin;
   gdouble longcenter;
   gdouble px, py;
@@ -742,7 +752,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  (GDK_BUTTON3_MASK | GDK_CONTROL_MASK))
 	{
 	  wplat = current_lat;
-	  wplon = current_long;
+	  wplon = current_lon;
 
 	  addwaypoint_cb (NULL, 0);
 	  return TRUE;
@@ -783,7 +793,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), targetname);
 	  gtk_frame_set_label (GTK_FRAME (destframe), s);
 	  target_lat = lat;
-	  target_long = lon;
+	  target_lon = lon;
 	  g_timer_stop (disttimer);
 	  g_timer_start (disttimer);
 	  olddist = dist;

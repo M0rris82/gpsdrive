@@ -24,6 +24,16 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.22  2006/01/03 14:24:10  tweety
+  eliminate compiler Warnings
+  try to change all occurences of longi -->lon, lati-->lat, ...i
+  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+  rename drawgrid --> do_draw_grid
+  give the display frames usefull names frame_lat, ...
+  change handling of WP-types to lowercase
+  change order for directories reading icons
+  always read inconfile
+
   Revision 1.21  2006/01/02 13:21:14  tweety
   Start sorting out the menu
   Move some of the Buttons to the Pulldown Menu
@@ -522,9 +532,9 @@ extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag, sqlflag;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint setdefaultpos, shadow, etch;
-extern gint drawgrid, streets_draw, tracks_draw, poi_draw, testgarmin;
+extern gint do_draw_grid, streets_draw, tracks_draw, poi_draw, testgarmin;
 extern gint needtosave, usedgps, simfollow;
 extern gchar activewpfile[200];
 extern gdouble milesconv;
@@ -552,7 +562,6 @@ extern int sockfd, serialspeed, disableserial, showsid, storetz;
 extern int sound_direction, sound_distance, sound_speed, sound_gps;
 
 #define KM2MILES 0.62137119
-#define KM2NAUTIC  0.54
 #define PADDING int_padding
 
 
@@ -1160,7 +1169,7 @@ writeconfig ()
 
 	fprintf (fp, "serialdevice = %s\n", serialdev);
 
-	g_snprintf (str, sizeof (str), "%.6f", current_long);
+	g_snprintf (str, sizeof (str), "%.6f", current_lon);
 	g_strdelimit (str, ",", '.');
 	fprintf (fp, "lastlong = %s\n", str);
 
@@ -1280,7 +1289,7 @@ writeconfig ()
 	fprintf (fp, "sound_speed = %d\n", sound_speed);
 	fprintf (fp, "sound_gps = %d\n", sound_gps);
 
-	fprintf (fp, "draw_grid = %d\n", drawgrid);
+	fprintf (fp, "draw_grid = %d\n", do_draw_grid);
 	fprintf (fp, "draw_streets = %d\n", streets_draw);
 	fprintf (fp, "draw_poi = %d\n", poi_draw);
 	fprintf (fp, "draw_tracks = %d\n", tracks_draw);
@@ -1364,7 +1373,7 @@ readconfig ()
 			g_strlcpy (serialdev, par2,
 				   sizeof (serialdev));
 		    else if ( (strcmp(par1, "lastlong")) == 0)
-			coordinate_string2gdouble(par2, &current_long);
+			coordinate_string2gdouble(par2, &current_lon);
 		    else if ( (strcmp(par1, "lastlat")) == 0)
 			coordinate_string2gdouble(par2, &current_lat);
 		    /* 
@@ -1490,7 +1499,7 @@ readconfig ()
 		    else if ( (strcmp(par1, "sound_gps")) == 0)
 			sound_gps = atoi (par2);
 		    else if ( (strcmp(par1, "draw_grid")) == 0)
-			drawgrid = atoi (par2);
+			do_draw_grid = atoi (par2);
 		    else if ( (strcmp(par1, "draw_streets")) == 0)
 			streets_draw = atoi (par2);
 		    else if ( (strcmp(par1, "draw_poi")) == 0)
@@ -1727,6 +1736,6 @@ signalposreq ()
 	time (&t);
 	ts = localtime (&t);
 	fprintf (f, asctime (ts));
-	fprintf (f, "POS %f %f\n", current_lat, current_long);
+	fprintf (f, "POS %f %f\n", current_lat, current_lon);
 	fclose (f);
 }

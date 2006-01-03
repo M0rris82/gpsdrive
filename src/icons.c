@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.18  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.17  1994/06/07 11:25:45  tweety
 set debug levels more detailed
 
@@ -158,7 +168,7 @@ extern GdkColor white;
 extern GdkColor blue;
 
 GdkPixbuf *friendsimage = NULL, *friendspixbuf = NULL;
-GdkPixbuf *kismetpixbuf, *openwlanpixbuf, *closedwlanpixbuf;
+GdkPixbuf *kismetpixbuf;
 GdkPixbuf *iconpixbuf[MAX_ICONS];
 
 
@@ -240,17 +250,18 @@ draw_small_plus_sign (gdouble posxdest, gdouble posydest)
 
 
 /* -----------------------------------------------------------------------------
+ * 
 */
 int
-drawicon (gint posxdest, gint posydest, char *ic)
+drawicon (gint posxdest, gint posydest, char *icon_name)
 {
   int symbol = 0, aux = -1, i, x, y, counter;
   gchar icon[80];
   GdkPixbuf *current_icon;
 
-  //printf("draw_icon %d %d %s\n", posxdest,  posydest,ic);
+  //printf("draw_icon %d %d %s\n", posxdest,  posydest,icon_name);
 
-  g_strlcpy (icon, ic, sizeof (icon));
+  g_strlcpy (icon, icon_name, sizeof (icon));
   if (!sqlflag)
     g_strup (icon);
 
@@ -259,7 +270,7 @@ drawicon (gint posxdest, gint posydest, char *ic)
     {
       if (0 == strcmp (icon, auxicons[counter].name))
 	{
-	  if ( mydebug > 10 )
+	  if (mydebug > 10)
 	    printf ("Found icon %d \"%s\" (%dx%d)...\n", counter, icon,
 		    gdk_pixbuf_get_width (auxicons[counter].icon),
 		    gdk_pixbuf_get_height (auxicons[counter].icon));
@@ -296,7 +307,7 @@ drawicon (gint posxdest, gint posydest, char *ic)
   if ((posxdest >= 0) && (posxdest < SCREEN_X)
       && (posydest >= 0) && (posydest < SCREEN_Y))
     {
-      if ( mydebug > 20 )
+      if (mydebug > 20)
 	printf ("Drawing icon %d loaded from icons.txt...\n", symbol);
       gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol],
 		       0, 0,
@@ -322,8 +333,8 @@ read_icon (gchar * icon_name)
 {
   gchar filename[255];
   GdkPixbuf *iconpixbuf;
-  if ( mydebug > 5 )
-    printf ("read_icon(%s)\n", icon_name);
+  if (mydebug > 50)
+    printf ("read_icon(%s)", icon_name);
 
   // Try complete Path
   iconpixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
@@ -335,6 +346,13 @@ read_icon (gchar * icon_name)
 		  homedir, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
     }
+  if (!iconpixbuf)		// Try in homedir/icons
+    {
+      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
+		  homedir, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
+
 
   if (!iconpixbuf)		// Try in DATADIR/pixmaps
     {
@@ -342,14 +360,6 @@ read_icon (gchar * icon_name)
 		  DATADIR, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
     }
-
-  if (!iconpixbuf)		// Try in Homedir/icons
-    {
-      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
-		  homedir, icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-    }
-
   if (!iconpixbuf)		// Try in DATADIR/icons
     {
       g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
@@ -359,14 +369,14 @@ read_icon (gchar * icon_name)
 
   if (!iconpixbuf)		// None Found
     {
-      printf ("** Failed to open \"%s\"\n", icon_name);
-      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/unknown.png",
-		  DATADIR, icon_name);
+      fprintf (stderr, "** Failed to open \"%s\"\n", icon_name);
+      g_snprintf (filename, sizeof (filename),
+		  "%s/gpsdrive/icons/unknown.png", DATADIR);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
     }
   else
     {
-      if ( mydebug >3)
+      if (mydebug > 5)
 	printf ("read_icon(%s) --> %s OK\n", icon_name, filename);
     }
 
@@ -382,61 +392,53 @@ load_icons (void)
 {
   /* icons.txt */
   FILE *iconfile;
-  char filename[255], wptype[64], iconpath[1024];
+  char filename[255], wptype[64], icon_name[1024];
   int iconcounter;
 
   /* hardcoded kismet-stuff */
   kismetpixbuf = read_icon ("kismet.png");
-  openwlanpixbuf = read_icon ("wlan.png");
-  closedwlanpixbuf = read_icon ("wlan-wep.png");
 
-  if (!sqlflag)
+  /* load icons defined in icons.txt */
+  snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", homedir);
+  iconfile = fopen (filename, "r");
+  /* if there is no icons.txt, try to open it  from datadir */
+  if (!iconfile)
     {
-      /* load icons defined in icons.txt */
-      snprintf ((char *) &filename, 255, "%s/icons.txt", homedir);
+      snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
+      if (mydebug > 3)
+	{
+	  printf ("Trying default icons.txt: \"%s\"\n", filename);
+	}
       iconfile = fopen (filename, "r");
-      /* if there is no icons.txt, try to copy it from datadir */
-      if (!iconfile)
-	{
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt",
-		    DATADIR);
-	  if ( mydebug > 3 )
-	    {
-	      printf ("Trying default icons.txt: \"%s\"\n", filename);
-	    }
-	  iconfile = fopen (filename, "r");
-	}
-      if (iconfile)
-	{
-	  if ( mydebug > 3)
-	    printf ("Icons will be read from: \"%s\"\n", filename);
+    }
+  if (iconfile)
+    {
+      if (mydebug > 3)
+	printf ("Icons will be read from: \"%s\"\n", filename);
 
-	  for (iconcounter = 0; iconcounter < MAX_ICONS; iconcounter++)
+      for (iconcounter = 0; iconcounter < MAX_ICONS; iconcounter++)
+	{
+	  fscanf (iconfile, "%s %s\n", (char *) &wptype, (char *) &icon_name);
+	  if (mydebug > 3)
+	    printf ("Waypoint-type %d \"%s\" gets \"%s\"\n", iconcounter,
+		    wptype, (char *) &icon_name);
+	  iconpixbuf[iconcounter] = read_icon (icon_name);
+	  if (!iconpixbuf[iconcounter])	// None Found
 	    {
-	      fscanf (iconfile, "%s %s\n", (char *) &wptype,
-		      (char *) &iconpath);
-	      if (  mydebug > 3 )
-		printf ("Waypoint-type %d \"%s\" gets \"%s\"\n", iconcounter,
-			g_strup ((gchar *) & wptype), (char *) &iconpath);
-	      iconpixbuf[iconcounter] = read_icon (iconpath);
-	      if (!iconpixbuf[iconcounter])	// None Found
-		{
-		  printf ("** Failed to open \"%s\"\n", (char *) &iconpath);
-		  auxicons[iconcounter].icon = NULL;
-		  auxicons[iconcounter].name[0] = 0;
-		}
-	      else
-		{
-		  strncpy ((char *) &auxicons[iconcounter].name,
-			   g_strup ((gchar *) & wptype),
-			   sizeof (auxicons[iconcounter].name));
-		  auxicons[iconcounter].icon = iconpixbuf[iconcounter];
-		}
-	      if (feof (iconfile))
-		break;
+	      printf ("** Failed to open \"%s\"\n", (char *) &icon_name);
+	      auxicons[iconcounter].icon = NULL;
+	      auxicons[iconcounter].name[0] = 0;
 	    }
-	  fclose (iconfile);
+	  else
+	    {
+	      strncpy ((char *) &auxicons[iconcounter].name, wptype,
+		       sizeof (auxicons[iconcounter].name));
+	      auxicons[iconcounter].icon = iconpixbuf[iconcounter];
+	    }
+	  if (feof (iconfile))
+	    break;
 	}
+      fclose (iconfile);
     }
 }
 
@@ -476,7 +478,8 @@ load_friends_icon (void)
 }
 
 /* ----------------------------------------------------------------------------- */
-/* warning: still modifies icon_name */
+/* warning: still modifies icon_name 
+ */
 void
 load_user_icon (char icon_name[200])
 {
@@ -498,14 +501,10 @@ load_user_icon (char icon_name[200])
   if ((auxicons + lastauxicon)->icon != NULL)
     {
       for (i = 0; i < (int) strlen (icon_name); i++)
-	icon_name[i] = toupper (icon_name[i]);
-      if ((strcmp (icon_name, "WLAN") == 0)
-	  || (strcmp (icon_name, "WLAN-WEP") == 0))
+	icon_name[i] = tolower (icon_name[i]);
+      if ((strcmp (icon_name, "wlan") == 0)
+	  || (strcmp (icon_name, "wlan-wep") == 0))
 	{
-	  if (strcmp (icon_name, "WLAN") == 0)
-	    openwlanpixbuf = (auxicons + lastauxicon)->icon;
-	  if (strcmp (icon_name, "WLAN-WEP") == 0)
-	    closedwlanpixbuf = (auxicons + lastauxicon)->icon;
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 	}
       else
@@ -515,12 +514,12 @@ load_user_icon (char icon_name[200])
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 	  lastauxicon++;
 	}
-      if ( mydebug > 3 )
+      if (mydebug > 3)
 	printf ("Icon for %s loaded:%s\n", icon_name, path);
     }
   else
     {
-      if ( mydebug > 3 )
+      if (mydebug > 3)
 	printf ("No Icon for %s loaded\n", icon_name);
     }
 }

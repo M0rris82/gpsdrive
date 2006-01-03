@@ -21,6 +21,16 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.7  2006/01/03 14:24:10  tweety
+ eliminate compiler Warnings
+ try to change all occurences of longi -->lon, lati-->lat, ...i
+ use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+ rename drawgrid --> do_draw_grid
+ give the display frames usefull names frame_lat, ...
+ change handling of WP-types to lowercase
+ change order for directories reading icons
+ always read inconfile
+
  Revision 1.6  2005/11/07 09:11:54  tweety
  Fix Buffer overflow in printf
 
@@ -316,7 +326,7 @@ friends_sendmsg (char *serverip, char *message)
   do
     {
       n = recvfrom (sockfd, recvline, MAXLINE, 0 /* MSG_WAITALL */ ,
-		    (struct sockaddr *) 0, (int *) 0);
+		    (struct sockaddr *) 0, (socklen_t *) 0);
       if (n < 0)
 	{
 	  i++;
@@ -339,7 +349,7 @@ friends_sendmsg (char *serverip, char *message)
 	      e = sscanf (recvline,
 			  "POS: %s %s %s %s %s %s %s",
 			  (f + fc)->id, (f + fc)->name,
-			  (f + fc)->lat, (f + fc)->longi,
+			  (f + fc)->lat, (f + fc)->lon,
 			  (f + fc)->timesec,
 			  (f + fc)->speed, (f + fc)->heading);
 	      /*              printf("\nreceived %d arguments\n",e);  */
@@ -350,7 +360,7 @@ friends_sendmsg (char *serverip, char *message)
 	      e = sscanf (recvline,
 			  "SRV: %s %s %s %s %s %s %s",
 			  fserver->id, fserver->name,
-			  fserver->lat, fserver->longi,
+			  fserver->lat, fserver->lon,
 			  fserver->timesec, fserver->speed, fserver->heading);
 	      /*              printf("\nreceived %d arguments\n",e);  */
 	    }

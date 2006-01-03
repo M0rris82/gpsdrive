@@ -23,6 +23,16 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.18  2006/01/03 14:24:10  tweety
+eliminate compiler Warnings
+try to change all occurences of longi -->lon, lati-->lat, ...i
+use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
+rename drawgrid --> do_draw_grid
+give the display frames usefull names frame_lat, ...
+change handling of WP-types to lowercase
+change order for directories reading icons
+always read inconfile
+
 Revision 1.17  1994/06/08 13:02:31  tweety
 adjust debug levels
 
@@ -221,7 +231,7 @@ added SQL support
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern gdouble current_long, current_lat;
+extern gdouble current_lon, current_lat;
 extern char dbwherestring[5000];
 extern char dbtypelist[100][40];
 extern double dbdistance;
@@ -230,7 +240,6 @@ extern int usesql;
 extern int mydebug, dbusedist;
 extern gchar homedir[500], mapdir[500];
 extern GtkWidget *trackbt, *wpbt;
-extern GdkPixbuf *openwlanpixbuf, *closedwlanpixbuf;
 extern gint maxauxicons, lastauxicon;
 extern auxiconsstruct auxicons[];
 extern GdkPixbuf *friendsimage, *friendspixbuf;
@@ -425,11 +434,11 @@ get_sql_type_list (void)
 		return -1;
 	}
 	r = 0;
-	while ( row = dl_mysql_fetch_row (res) )
+	while ( ( row = dl_mysql_fetch_row (res) ) )
 	{
 		g_strlcpy (temp, row[0], sizeof (temp));
 		for (i = 0; i < (int) strlen (temp); i++)
-			temp[i] = toupper (temp[i]);
+			temp[i] = tolower (temp[i]);
 		g_strlcpy (dbtypelist[r++], temp, sizeof (dbtypelist[0]));
 		if (r >= MAXWPTYPES)
 		{
@@ -477,7 +486,7 @@ getsqldata ()
 
 	g_snprintf (sql_order, sizeof (sql_order),
 		    "order by \(abs(%.6f - lat)+abs(%.6f - lon))",
-		    current_lat, current_long);
+		    current_lat, current_lon);
 	g_strdelimit (sql_order, ",", '.');
 	if ( mydebug > 50 )
 		printf ("mysql order: %s\n", sql_order);
