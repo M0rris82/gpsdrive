@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.18  2006/01/04 19:19:31  tweety
+more unit tests
+search for icons in the local directory data/icons and data/pixmaps first
+
 Revision 1.17  2006/01/03 14:24:10  tweety
 eliminate compiler Warnings
 try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -200,10 +204,15 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
   int x, y, px, py;
   gdouble dif, lat, lon;
 
+  if ( mydebug > 99 )
+      fprintf(stderr,"calcxytopos(%d,%d,__,%d)\n",
+	      posx,posy, zoom);
+
   x = posx;
   y = posy;
   px = (SCREEN_X_2 - x - xoff) * pixelfact / zoom;
   py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
+
 
 
   if (mapistopo == FALSE)
@@ -267,7 +276,10 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
 
   *mylat = lat;
   *mylon = lon;
-  
+
+  if ( mydebug > 90 )
+      fprintf(stderr,"calcxytopos(%d,%d,_,_,%d) ---> %g,%g\n",
+	      posx,posy, zoom,lat,lon);
 }
 
 /* ******************************************************************
@@ -277,6 +289,10 @@ void
 calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 {
   gdouble dif;
+
+  if ( mydebug > 99 )
+      fprintf(stderr,"calcxy(_,_,%g,%g,%d)\n",
+	      posx,posy, zoom);
 
   // Error check
   if ( lat > 360 )
@@ -325,6 +341,12 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 
   *posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
   *posy = *posy - yoff;
+
+  if ( mydebug > 90 )
+      fprintf(stderr,"calcxy(_,_,%g,%g,%d) ---> %g,%g\n",
+	      posx,posy, zoom,lat,lon);
+
+
 }
 
 /* ******************************************************************
@@ -672,6 +694,7 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
     *dec *= -1.0;
   if (s2 == 'S')
     *dec *= -1.0;
+
   if (mydebug > 50)
     fprintf (stderr, "coordinate_string2gdouble(%s)-->%f\n", text, *dec);
 }

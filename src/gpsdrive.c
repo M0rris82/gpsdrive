@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.79  2006/01/04 19:19:31  tweety
+more unit tests
+search for icons in the local directory data/icons and data/pixmaps first
+
 Revision 1.78  2006/01/04 16:32:30  tweety
 Add the first unit test
 
@@ -2241,6 +2245,7 @@ GtkWidget *messagewindow, *routewindow;
 extern GtkWidget *splash_window;
 gint dlsock = -1;
 gint debug = 0;
+gint do_unit_test = FALSE;
 gchar *buffer = NULL, *big = NULL;
 fd_set readmask;
 struct timeval timeout;
@@ -8676,13 +8681,14 @@ usage ()
 #ifdef DBUS_ENABLE
 	     "%s"
 #endif
-	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
 	     "\n         Website: http://www.gpsdrive.de\n\n",
 	     _("-v        show version\n"),
 	     _("-h        print this help\n"),
 	     _("-d        turn on debug info\n"),
 	     _("-D X      set debug Level to X\n"),
+	     _("-T        do some internal unit Tests(don't start gpsdrive)\n"),
 	     _("-e        use Festival-Lite (flite) for speech output\n"),
 	     _("-t        set serial device for GPS i.e. /dev/ttyS1\n"),
 	     _("-o        serial device, pty master, or file for NMEA *output*\n"),
@@ -9334,137 +9340,137 @@ main (int argc, char *argv[])
 	/* parse cmd args */
 	do
 	{
-		i = getopt (argc, argv,
-			    "W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:?");
-		switch (i)
+	    i = getopt (argc, argv,
+			"W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:?");
+	    switch (i)
 		{
 		case 'a':
-			disableapm = TRUE;
-			break;
+		    disableapm = TRUE;
+		    break;
 		case 'S':
-			nosplash = TRUE;
-			break;
+		    nosplash = TRUE;
+		    break;
 		case 'E':
-			nmeaverbose = TRUE;
-			break;
+		    nmeaverbose = TRUE;
+		    break;
 		case 'q':
-			usesql = FALSE;
-			break;
+		    usesql = FALSE;
+		    break;
 		case 'd':
-			debug = TRUE;
-			break;
+		    debug = TRUE;
+		    break;
 		case 'D':
-			mydebug = strtol (optarg, NULL, 0);
-			debug = TRUE;
-			break;
+		    mydebug = strtol (optarg, NULL, 0);
+		    debug = TRUE;
+		    break;
 		case 'T':
-		    unit_test();
+		    do_unit_test = TRUE;
 		    break;
 		case 'e':
-			useflite = TRUE;
-			break;
+		    useflite = TRUE;
+		    break;
 		case 'i':
-			ignorechecksum = TRUE;
-			g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
-			break;
+		    ignorechecksum = TRUE;
+		    g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
+		    break;
 		case 'x':
-			extrawinmenu = TRUE;
-			break;
+		    extrawinmenu = TRUE;
+		    break;
 		case 'X':
 #ifdef DBUS_ENABLE
-			useDBUS = TRUE;
+		    useDBUS = TRUE;
 #else
-			g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
+		    g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
 #endif
-			break;
+		    break;
 		case 'p':
-			pdamode = TRUE;
-			break;
+		    pdamode = TRUE;
+		    break;
 		case '1':
-			onemousebutton = TRUE;
-			break;
+		    onemousebutton = TRUE;
+		    break;
 		case 'v':
-			printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
-			exit (0);
-			break;
+		    printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
+		    exit (0);
+		    break;
 		case 't':
-			g_strlcpy (serialdev, optarg, sizeof (serialdev));
-			break;
+		    g_strlcpy (serialdev, optarg, sizeof (serialdev));
+		    break;
 		case 'A':
-			alarm_dist = strtod (optarg, NULL);
-			break;
+		    alarm_dist = strtod (optarg, NULL);
+		    break;
 		case 'b':
-			g_strlcpy (gpsdservername, optarg,
-				   sizeof (gpsdservername));
-			break;
+		    g_strlcpy (gpsdservername, optarg,
+			       sizeof (gpsdservername));
+		    break;
 		case 'c':
-			g_strlcpy (setpositionname, optarg,
-				   sizeof (setpositionname));
-			break;
+		    g_strlcpy (setpositionname, optarg,
+			       sizeof (setpositionname));
+		    break;
 		case 'f':
 		case 'n':
-			disableserialcl = TRUE;
-			break;
+		    disableserialcl = TRUE;
+		    break;
 		case 's':
-			screen_height = strtol (optarg, NULL, 0);
-			break;
+		    screen_height = strtol (optarg, NULL, 0);
+		    break;
 		case 'W':
-			switch (strtol (optarg, NULL, 0))
+		    switch (strtol (optarg, NULL, 0))
 			{
 			case 0:
-				egnosoff = TRUE;
-				break;
+			    egnosoff = TRUE;
+			    break;
 			case 1:
-				egnoson = TRUE;
-				break;
+			    egnoson = TRUE;
+			    break;
 			}
-			break;
+		    break;
 		case 'l':
-			if (!strcmp (optarg, "english"))
-				voicelang = english;
-			else if (!strcmp (optarg, "german"))
-				voicelang = german;
-			else if (!strcmp (optarg, "spanish"))
-				voicelang = spanish;
-			else
+		    if (!strcmp (optarg, "english"))
+			voicelang = english;
+		    else if (!strcmp (optarg, "german"))
+			voicelang = german;
+		    else if (!strcmp (optarg, "spanish"))
+			voicelang = spanish;
+		    else
 			{
-				usage ();
-				g_print (_
-					 ("\nYou can only choose between english, spanish and german\n\n"));
-				exit (0);
+			    usage ();
+			    g_print (_
+				     ("\nYou can only choose between english, spanish and german\n\n"));
+			    exit (0);
 			}
-			break;
+		    break;
 		case 'o':
-			nmeaout = opennmea (optarg);
-			break;
+		    nmeaout = opennmea (optarg);
+		    break;
 		case 'h':
-			usage ();
-			exit (0);
-			break;
+		    usage ();
+		    exit (0);
+		    break;
 		case 'H':
-			normalnull = strtol (optarg, NULL, 0);
-			break;
+		    normalnull = strtol (optarg, NULL, 0);
+		    break;
 		case '?':
-			usage ();
-			exit (0);
-			break;
+		    usage ();
+		    exit (0);
+		    break;
 		case 'r':
-			screen_width = strtol (optarg, NULL, 0);
-			break;
+		    screen_width = strtol (optarg, NULL, 0);
+		    break;
 		case 'z':
-			zoomscale = FALSE;
-			break;
+		    zoomscale = FALSE;
+		    break;
 		case 'F':
-			forcehavepos = TRUE;
-			break;
+		    forcehavepos = TRUE;
+		    break;
 		case 'P':
-			posmode = TRUE;
-			break;
-
+		    posmode = TRUE;
+		    break;
+		    
 		}
 	}
 	while (i != -1);
-
+	
 	if ((strlen (friendsname) == 0))
 		g_strlcpy (friendsname, _("EnterYourName"),
 			   sizeof (friendsname));
@@ -9674,6 +9680,16 @@ main (int argc, char *argv[])
 	}
 #endif
 	fprintf (stderr, "\n");
+
+
+
+	// ==================================================================
+	// Unit Tests
+	if ( do_unit_test ) {
+	    unit_test();
+	    exit -1;
+	}
+
 
 	mainwindow = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	if (!nosplash)

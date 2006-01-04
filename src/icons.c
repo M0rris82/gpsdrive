@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.19  2006/01/04 19:19:31  tweety
+more unit tests
+search for icons in the local directory data/icons and data/pixmaps first
+
 Revision 1.18  2006/01/03 14:24:10  tweety
 eliminate compiler Warnings
 try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -334,12 +338,30 @@ read_icon (gchar * icon_name)
   gchar filename[255];
   GdkPixbuf *iconpixbuf;
   if (mydebug > 50)
-    printf ("read_icon(%s)", icon_name);
+    printf ("read_icon(%s)\n", icon_name);
 
   // Try complete Path
   iconpixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
 
 
+  if (!iconpixbuf)		// Try in ./data/pixmaps
+    {
+      g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
+		  icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
+  if (!iconpixbuf)		// Try in ./data/icons
+    {
+      g_snprintf (filename, sizeof (filename), "./data/icons/%s",
+		  icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
+  if (!iconpixbuf)		// Try in ./data/pixmaps
+    {
+      g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
+		  homedir, icon_name);
+      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+    }
   if (!iconpixbuf)		// Try in Homedir/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "%s/.gpsdrive/pixmaps/%s",
