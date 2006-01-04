@@ -47,7 +47,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
 	import_map.c import_map.h speech_strings.c speech_strings.h \
-	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h
+	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
+	unit_test.c
 
 if DISABLEGARMIN
 else 

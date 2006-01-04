@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.78  2006/01/04 16:32:30  tweety
+Add the first unit test
+
 Revision 1.77  2006/01/03 14:24:10  tweety
 eliminate compiler Warnings
 try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -2578,6 +2581,7 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu/Help/Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP}
 };
 
+void unit_test(void);
 void drawdownloadrectangle (gint big);
 
 
@@ -9331,7 +9335,7 @@ main (int argc, char *argv[])
 	do
 	{
 		i = getopt (argc, argv,
-			    "W:ESA:ab:c:zXx1qivPdD:FepH:hnf:l:t:s:o:r:?");
+			    "W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:?");
 		switch (i)
 		{
 		case 'a':
@@ -9353,6 +9357,9 @@ main (int argc, char *argv[])
 			mydebug = strtol (optarg, NULL, 0);
 			debug = TRUE;
 			break;
+		case 'T':
+		    unit_test();
+		    break;
 		case 'e':
 			useflite = TRUE;
 			break;
