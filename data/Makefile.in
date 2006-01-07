@@ -227,8 +227,13 @@ icons_DATA = icons/*.png icons/*.gif \
 	     icons/index.html
 
 mapsdir = $(datadir)/gpsdrive/maps
-maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  maps/top_Germany.jpg   maps/top_NorthAmerica.jpg  maps/top_WorldEast.jpg \
-	    maps/top_America.jpg  maps/top_Europe.jpg     maps/top_GPSWORLD.jpg  maps/top_SouthAmerica.jpg
+maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
+	    maps/top_Germany.jpg   maps/top_NorthAmerica.jpg \
+	    maps/top_WorldEast.jpg \
+	    maps/top_America.jpg  maps/top_Europe.jpg \
+	    maps/top_GPSWORLD.jpg  maps/top_SouthAmerica.jpg \
+	    maps/map_BlueBall.png   maps/map_White.png      maps/top_WhiteBall.png \
+	    maps/map_WhiteBall.png  maps/top_GreenBall.png  maps/top_White.png
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop

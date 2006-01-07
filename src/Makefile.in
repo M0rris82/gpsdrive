@@ -100,7 +100,7 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
 	map_handler.c gpsproto.h talogo.h import_map.c import_map.h \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h garmin_data.cpp \
+	nmea_handler.c nmea_handler.h unit_test.c garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
 	garmin_link.h garmin_serial_unix.h garmin_application.h \
@@ -122,7 +122,8 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
 	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) map_handler.$(OBJEXT) \
 	import_map.$(OBJEXT) speech_strings.$(OBJEXT) \
-	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) $(am__objects_1)
+	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
+	unit_test.$(OBJEXT) $(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -332,7 +333,7 @@ PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h \
 	talogo.h import_map.c import_map.h speech_strings.c \
 	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
-	nmea_handler.h $(am__append_1)
+	nmea_handler.h unit_test.c $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -482,6 +483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splash.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/track.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_test.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

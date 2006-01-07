@@ -1,14 +1,14 @@
 Source: gpsdrive
 Section: utils
 Priority: optional
-Maintainer: Frank Kirschner <kirfrank@debian.org>
+Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@ostertag.name>
 Build-Depends: debhelper (>> 3.0.0), pkg-config, libpcre3-dev, libgtk2.0-dev, libmysqlclient-dev, xutils
 Standards-Version: 3.6.1
 
 Package: gpsdrive
 Architecture: any
 Depends: ${shlibs:Depends}, perl, gdal-bin, grass
-Recommends: gpsd, perl, libmysqlclient10, imagemagick, gdal-bin, gpsbabel, perl-base, perlmagic, zlib1g, festival
+Recommends: gpsd, perl, libmysqlclient10, imagemagick, gdal-bin, gpsbabel, perl-base, perlmagick, zlib1g, festival
 Suggests: grass libarchive-zip-perl libdate-manip-perl libdbi-perl libexpat1 libfile-find-rule-perl libglib2.0-0 libgtk2.0-0 libpango1.0-0 libwww-perl gpsbabel
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
