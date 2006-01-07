@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.5  2006/01/07 23:18:38  tweety
+# insert local path for debug
+#
 # Revision 1.4  2006/01/01 17:07:01  tweety
 # improve speed a little bit
 # update --help infos
@@ -121,7 +124,9 @@ Version 1.17
 
 
 BEGIN {
+    # For Debug Purpose in the build Directory
     unshift(@INC,"./");
+    unshift(@INC,"./scripts/");
 };
 
 use strict;
