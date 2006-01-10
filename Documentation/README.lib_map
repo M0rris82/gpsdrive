@@ -1,0 +1,28 @@
+
+top_* world files use the following world file format:
+
+5.000000000000  (size of pixel in x direction)
+0.000000000000  (rotation term for row)
+0.000000000000  (rotation term for column)
+-5.000000000000  (size of pixel in y direction)
+492169.690845528910  (x coordinate of upper left of upper left pixel)
+5426523.318065105000  (y coordinate of upper left of upper left pixel)
+
+Projection is direct polar relative to lat/lon 0;0 but unit is meters.
+This gives sensible results if the map is used in e.g. qgis.
+
+circumference of the Earth at the equator = 40 075.017 km
+circumference of the Earth through the poles = 40 007.863 km
+
+map_* world files use the following world file format:
+
+5000.000000000  (scale)
+0.000000000000  (ignored)
+0.000000000000  (ignored)
+-5000.00000000  (-scale)
+49.690845528910  (longitude)
+26.318065105000  (latitude)
+
+latitude, longitude and scale taken from map_koord.txt
+The above world file does not give sensible results in other GDAL applications
+it uses a special hard coded case.
