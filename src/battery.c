@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.10  2006/01/12 15:01:19  tweety
+  check if number of parameters in batteryfile is ok
+
   Revision 1.9  1994/06/07 11:25:45  tweety
   set debug levels more detailed
 
@@ -265,10 +268,14 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
   battery = fopen ("/proc/apm", "r");
   if (battery != NULL)
     {
-      fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
+      int count=0;
+      count = fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
 	      b, b, b, bloading, b, &i, blevel, b, b);
       /*     1.16 1.2 0x03 0x01      0x00 0x01 99%      -1  ?    */
       fclose (battery);
+
+      if ( 9 != count ) 
+	  return FALSE;
 
       /*
        * Bit 7 is set if we have a battery (laptop). If it isn't set,
