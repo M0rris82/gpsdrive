@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.27  2006/01/16 07:28:41  tweety
+# for checks if map exists; also use System Directories
+#
 # Revision 1.26  2005/12/28 22:16:37  tweety
 # allow negative coordinates for -w gpsd
 #
@@ -627,14 +630,24 @@ sub mirror_file($$){
 ######################################################################
 sub is_map_file($){
     my $filename = shift;
-    $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
+    my $full_filename = $filename;
+    $full_filename = "$mapdir/$filename" unless $filename =~ m,^/,;
     if (  $debug ) {
-#	printf "is_map_file($filename) -> %d Bytes\n",-s $filename;
+#	printf "is_map_file($full_filename) -> %d Bytes\n",-s $full_filename;
     }
 
-    return 0 unless ( -s $filename || 0  ) > $MIN_MAP_BYTES ;
+    return 1 if ( -s $full_filename || 0  ) > $MIN_MAP_BYTES ;
 
-    return 1;
+    return 0 if -s $full_filename;
+
+    # Search in System 
+    $full_filename = "/usr/local/share/gpsdrive/maps/$filename" unless $filename =~ m,^/,;
+    return 1 if ( -s $full_filename || 0  ) > $MIN_MAP_BYTES ;
+
+    $full_filename = "/usr/share/gpsdrive/maps/$filename" unless $filename =~ m,^/,;
+    return 1 if ( -s $full_filename || 0  ) > $MIN_MAP_BYTES ;
+    
+    return 0;
 }
 
 
