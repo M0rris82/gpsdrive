@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.80  2006/01/18 08:29:01  tweety
+display position in posmode ind position Fielddisplay position in posmode ind position Fieldss
+
 Revision 1.79  2006/01/04 19:19:31  tweety
 more unit tests
 search for icons in the local directory data/icons and data/pixmaps first
@@ -2372,7 +2375,8 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 };
 #endif
 
-GtkWidget *l1, *l2, *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
+GtkWidget *label_lat, *label_lon;
+GtkWidget *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
 GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt, *maptogglebt,
 	*topotogglebt, *savetrackbt;
@@ -3046,10 +3050,39 @@ display_status2 ()
 	}
 
 	/* shows the current position on the bottom of the window */
-	coordinate2gchar(s2, sizeof(s2), current_lat, TRUE, minsecmode);
-	gtk_label_set_text (GTK_LABEL (l1), s2);
-	coordinate2gchar(s2, sizeof(s2), current_lon, FALSE, minsecmode);
-	gtk_label_set_text (GTK_LABEL (l2), s2);
+	if (  posmode )
+	    {		// Print out actual position of Mouse
+		gdouble lat, lon;
+		GdkModifierType state;
+		gint x, y;
+		
+		gdk_window_get_pointer (drawing_area->window, &x, &y,&state);
+		calcxytopos (x, y, &lat, &lon, zoom);
+		if ( mydebug > 10 )
+		    printf ("Actual mouse position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
+		// display position of Mouse in lat/lon Fields
+		coordinate2gchar(s2, sizeof(s2), lat, TRUE, minsecmode);
+		gtk_label_set_text (GTK_LABEL (label_lat), s2);
+		coordinate2gchar(s2, sizeof(s2), lon, FALSE, minsecmode);
+		gtk_label_set_text (GTK_LABEL (label_lon), s2);
+	    }
+	else 
+	    {
+		coordinate2gchar(s2, sizeof(s2), current_lat, TRUE, minsecmode);
+		gtk_label_set_text (GTK_LABEL (label_lat), s2);
+		coordinate2gchar(s2, sizeof(s2), current_lon, FALSE, minsecmode);
+		gtk_label_set_text (GTK_LABEL (label_lon), s2);
+	    }
+
+	if ( mydebug > 10 )
+	    {
+		if (havepos)
+		    g_print ("***Position: %f %f***\n", current_lat,
+			     current_lon);
+		else
+		    g_print ("***no valid Position:\n");
+	    }
+
 
 	strncpy (mf, g_basename (mapfilename), 59);
 	mf[59] = 0;
@@ -3071,27 +3104,6 @@ display_status2 ()
 	else
 		g_snprintf (s2, sizeof (s2), _("Auto"));
 	gtk_label_set_text (GTK_LABEL (l8), s2);
-
-	// TODO: move this code to different location
-	if (mydebug >10 )
-	{
-		if (havepos)
-			g_print ("***Position: %f %f***\n", current_lat,
-				 current_lon);
-		else
-			g_print ("***no valid Position:\n");
-
-		{		// Print out actual position of Mouse
-			gdouble lat, lon;
-			GdkModifierType state;
-			gint x, y;
-
-			gdk_window_get_pointer (drawing_area->window, &x, &y,
-						&state);
-			calcxytopos (x, y, &lat, &lon, zoom);
-			printf ("Actual mouse position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
-		}
-	}
 }
 
 
@@ -10519,10 +10531,10 @@ main (int argc, char *argv[])
 
 	etch = !etch;
 	etch_cb (NULL, 0);
-	l1 = gtk_label_new (_("000,00000N"));
-	gtk_container_add (GTK_CONTAINER (frame_lat), l1);
-	l2 = gtk_label_new (_("000,00000E"));
-	gtk_container_add (GTK_CONTAINER (frame_lon), l2);
+	label_lat = gtk_label_new (_("000,00000N"));
+	gtk_container_add (GTK_CONTAINER (frame_lat), label_lat);
+	label_lon = gtk_label_new (_("000,00000E"));
+	gtk_container_add (GTK_CONTAINER (frame_lon), label_lon);
 	l3 = gtk_label_new (_("---"));
 	gtk_container_add (GTK_CONTAINER (frame_mapfile), l3);
 	l4 = gtk_label_new (_("---"));
