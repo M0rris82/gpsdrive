@@ -206,3 +206,25 @@ A: If you click on pos-mode. You can set your Car-Position in Gpsdrive to
    any location on the map. If your car-position is in the outer ~10% of 
    the map gpsdrive tries to see if there is a map available which 
    would fit better for your Position.
+
+Q: What is the map projection GPSDrive uses?
+A: To be picky, as it is critical to be picky in order to get this stuff
+   working correctly:  (especially with gdalwarp & PROJ4 parameters)
+   WGS84 defines both a datum & an ellipsoid, but not a projection. The
+   projection is lat/lon (well, it's unprojected I guess).
+
+   Here are some links to primers on Geodesy (Projections and Datums):
+   http://grass.gdf-hannover.de/twiki/bin/view/GRASS/GisConcepts
+
+   To answer your question though,
+
+   If you title the image "map_*" the projection is assumed to be UTM-like
+   (preserves equal area); if the map is named "top_*" it is assumed to be
+   "Plate Carrée"*, ie equi-rectangular 1:1 lat to lon.
+
+   UTM-like will be scaled 1:cos(lat) in the x and y dir. If you can draw
+   grid or add test points to the image, you can check against grid lines
+   or self-entered waypoints in gpsdrive to make sure everything is
+   matching. (grid lines are only in the development version)
+
+   [*]  http://en.wikipedia.org/wiki/Plate_carr%C3%A9e_projection
