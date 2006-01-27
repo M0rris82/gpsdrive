@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.28  2006/01/27 13:42:09  tweety
+# make get_gpsd_position() wait until we have a position
+#
 # Revision 1.27  2006/01/16 07:28:41  tweety
 # for checks if map exists; also use System Directories
 #
@@ -571,13 +574,18 @@ sub get_gpsd_position(){
 	warn "No local gpsd foundat $GPSD: $!\n";
     } else {
 	# Tell gpsd we want position, altitude, date, and status.
-#	$gpsd->print("pads\n");
+	$gpsd->print("pads\n");
 	$gpsd->print("p\n");
 	while ( my $line = <$gpsd> ) {
-	    print "GPSD Line: $line";
+	    debug("GPSD Line: $line");
 	    if ( $line =~ m/P=(-?\d+\.\d+)\s+(-?\d+\.\d+)/){
 		($lat,$lon) =($1,$2);
+		debug("gpsd reports: lat/lon ($lat,$lon)");
 		return ($lat,$lon);
+	    } else {
+		print "GPSD Line: $line";
+		$gpsd->print("pads\n");
+		sleep 1;
 	    }
 	}
     }
