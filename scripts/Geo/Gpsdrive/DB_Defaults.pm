@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.8  2006/01/29 21:58:43  tweety
+# small fixes
+#
 # Revision 1.7  1994/06/08 13:02:31  tweety
 # adjust debug levels
 #
@@ -489,7 +492,6 @@ my $translate_de = {
     'HypoVereinsbank' 	=> 'HypoVereinsbank',
     'Postbank'              => 'Postbank',
     'Reifeisenbank'         => 'Reifeisenbank',
-    'software'              => 'Software',
     'Sparda'                => 'Sparda',
     'Sparkasse'             => "Sparkasse",
     'WC'                    => 'WC',
@@ -615,6 +617,7 @@ my $translate_de = {
     'import_way'            => 'import_way',
     'indian'                => "Indisch",
     'information'           => 'Information',
+    'internet'              => 'internet',
     'interurban_train_station' => 'S-Bahn-Haltestelle',
     'italian'               => "Italienisch",
     'japanese'              => "japanisch",
@@ -700,6 +703,7 @@ my $translate_de = {
     'snakeboard'            => "Snakeboard",
     'soccer_field'          => 'Fussballplatz',
     'soccer_stadion'        => 'Fussball_Stadion',
+    'software'              => 'Software',
     'speedtrap'             => 'Radarfalle',
     'sport'                 => "Sport",
     'sports'                => 'Sport',
@@ -762,8 +766,9 @@ sub translate_icon($){
 	if ( ! defined( $translate_de->{$part}) ) {
 	    $unknown_translations .= 
 		sprintf("	%-23s => \"".lc($part)."\",\n","'".$part."'");
+	} else {
+	    $name_de .= ".$translate_de->{$part}";
 	}
-	$name_de .= ".$translate_de->{$part}";
     }
     $name_de    =~ s/^\.//;
     $name_de    =~ s/_/ /g;
@@ -941,8 +946,8 @@ sub fill_default_poi_types() {
 	# Insert to Database
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
 	Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `poi_type` ".
-					"       (poi_type_id, name,name_de, symbol, description,description_de ) ".
-					"VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de');") 
+					"       (poi_type_id, name,name_de, symbol, description,description_de ) \n".
+					"	VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de');") 
 	    or die;
 	$i++;
     } # of for @poi_type_names
@@ -1070,13 +1075,12 @@ sub fill_example_street_types() {   # Fill streets_type database
 	$i++;
     }
 
-    
     # Reserve Type 1000 so users pace there id's behind it
     $streets_type_id =1000;
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
     Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `streets_type` ".
 				    "        (streets_type_id,  name, description , color , linetype )".
-				    " VALUES ($i,'Reserved','Reserved','0x000000','');");
+				    " VALUES ($streets_type_id,'Reserved','Reserved','0x000000','');");
     
 } # of fill_example_street_types()
 
