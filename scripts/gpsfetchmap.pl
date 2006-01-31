@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.29  2006/01/31 23:46:48  tweety
+# initial Version for download gov.au Maps
+#
 # Revision 1.28  2006/01/27 13:42:09  tweety
 # make get_gpsd_position() wait until we have a position
 #
@@ -267,6 +270,23 @@ my $Scale2Zoom = {
 	100000   => 5, #   1.1   Km
 	20000    => 6, #     400 m
 	5000     => 7, #     160 m
+    },
+    gov_au => {
+	10000000000 => 1, # 
+	5000000000  => 2, # 
+	1000000000  => 3, # 
+	500000000   => 4, # 
+	100000000   => 5, # 
+	50000000    => 6, #
+	10000000    => 7, # 
+	5000000     => 8, # 
+	1000000     => 9, # 
+	500000      => 10, # 
+	100000      => 11, # 
+	50000       => 12, #  
+	10000       => 13, #  
+	5000        => 14, # 
+	1000        => 15, # 
     },
 
     incrementp => {
@@ -751,12 +771,15 @@ sub wget_map($$$){
     elsif ( $mapserver eq 'eniro') 
     {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
-    	} 
+    } 
     elsif ( $mapserver eq 'incrementp') 
     {
 	($url,$mapscale)=incrementp_url($lati,$long,$scale);
     } 
-    elsif ( $mapserver eq 'googlesat') 
+    elsif ( $mapserver eq 'gov_au') 
+    {
+	($url,$mapscale)=gov_au_url($lati,$long,$scale);
+    } elsif ( $mapserver eq 'googlesat') 
     {
 	$mapscale=$scale;
 	$url = "google-sat-maps";
@@ -807,8 +830,15 @@ sub wget_map($$$){
 	    if ( $mapserver eq 'googlesat') 
 	    {
 		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
-	    } 
-	    elsif (  mirror_map($url,$mirror_filename) ){
+	    } elsif ( $mapserver eq 'gov_au') {
+		if ( mirror_map($url,$filename) ) {
+		    $result = gov_au_resize($lati,$long,$scale,5,4,"$mapdir$filename");
+		    append_koords($filename, $lati, $long, $mapscale);
+		    $result= "+";
+		    print "\nWrote $filename\n" if $debug;
+		    $newcount++;
+		}
+	    } elsif ( mirror_map($url,$filename) ) {
 		if ( $mapserver eq 'geoscience'){
 		    $result = resize($mapdir.$mirror_filename,$mapdir.$filename);
 		} 
@@ -1012,34 +1042,15 @@ sub incrementp_url($$$){
 
     my $mapscale = $scale;
 
-    
     my $zoom = undef;
     my $url='';
-    my %factor = (  1 => 12500000,# 250     Km
-		    2 => 5000000, # 100     Km
-		    3 => 2500000, #  50     Km
-		    4 => 1250000, #  25     Km
-		    5 => 500000,  #  10     Km
-		    6 => 250000,  #   5     Km
-		    7 => 125000,  #   2.5   Km
-		    8 => 50000,   #   1.0   Km
-		    9 => 25000,   #     500 m
-		    10 => 12500,   #     250 m
-		    11 => 5000,    #     100 m
-		    12 => 2500,    #      50 m
-		    );
-
-    for my $f ( sort keys %factor ) {
-	my $test_scale =  $factor{$f};
-	if ( $debug) {
-#	    print "testing $f: against	$test_scale\n";
-	}
-	if ( $test_scale <= $scale ) {
-	    $zoom = $f;
-	    $mapscale = $test_scale;
-	    last;
-	}
+    for my $s ( sort keys %{$Scale2Zoom->{incrementp}} ) {
+	next unless $s > $scale;
+	$zoom = $Scale2Zoom->{incrementp}->{$s};
+	$mapscale = $s;
+	last;
     }
+
     unless ( $zoom ) {
 	print "Error calculating Zommlevel for Scale: $scale\n";
 	return (undef,undef);
@@ -1070,6 +1081,59 @@ $url .= "&SZ=1200,1200";
 $url .= "&COL=1";
 
 return ($url,$mapscale);
+}
+
+#############################################################################
+sub gov_au_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    my $mapscale = $scale;
+    my $zoom     = undef;
+    my $url      = '';
+    for my $s ( sort keys %{$Scale2Zoom->{incrementp}} ) {
+	next unless $s > $scale;
+	$zoom = $Scale2Zoom->{incrementp}->{$s};
+	$mapscale = $s;
+	last;
+    }
+    unless ( $zoom ) {
+	print "Error calculating Zommlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    $url = "http://www.ga.gov.au/bin/mapserv36?".
+	"map=/public/http/www/docs/map/globalmap/global_36.map".
+	"\&mode=map".
+	"\&layer=outline".
+	"\&layer=waterbodies".
+	"\&layer=capitals".
+	"\&layer=permanentriverslargescale".
+	"\&layer=fluctuatingrivers".
+	"\&layer=dualcarriage".
+	"\&layer=PrimaryPavedRoad".
+	"\&layer=roadsecpav".
+	"\&layer=roadotherpav".
+	"\&mapsize=1000+800";
+
+    # OK I'm too lazy to calculate the real start and end
+    my $fac = 1000000000;
+    my $scale_fac =  ($scale/$fac);
+    my $lat1= $lati - $scale_fac;
+    my $lat2= $lati + $scale_fac;
+    my $lon1= $long - $scale_fac;
+    my $lon2= $long + $scale_fac;
+    $url .= "\&mapext=$lon1+$lat2+$lon2+$lat1";
+	
+	if ($debug) {
+	    printf "Gov_Au : lat: %.4f lon: %.4f\t",$lati,$long;
+	    print "using zoom $zoom for requested scale $scale\n";
+	    print "actual scale $mapscale with scalefac: $scale_fac\n";
+	    print "URL: \n$url\n";
+	};
+    
+    return ($url,$mapscale);
 }
 
 #############################################################################
@@ -2154,9 +2218,9 @@ Takes an optional value of number of seconds to sleep.
 
 =item B<-m, --mapserver <MAPSERVER>>
 
-Mapserver to download from. Currently can use: 'googlesat' or 'expedia'. Default: 'expedia'. 
+Mapserver to download from. Currently can use: 'googlesat' or 'expedia'. Default: 'expedia'.
 
-incrementp and eniro have download stubs, but they are !!!NOT!!!! in the right scale.
+gov_au, incrementp and eniro have download stubs, but they are !!!NOT!!!! in the right scale.
 
 
 =item B<-u, --unit <UNIT>>
