@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.6  2006/02/01 18:08:01  tweety
+# 2 new features by  Stefan Wolf
+#
 # Revision 1.5  2006/01/07 23:18:38  tweety
 # insert local path for debug
 #
@@ -161,6 +164,8 @@ use Geo::Gpsdrive::PocketGpsPoi;
 use Geo::Gpsdrive::WDB;
 use Geo::Gpsdrive::Way_Txt;
 use Geo::Gpsdrive::census;
+use Geo::Gpsdrive::getstreet;
+use Geo::Gpsdrive::gettraffic;
 
 my ($man,$help);
 
@@ -184,8 +189,15 @@ my $do_jigle             = 0;
 my $do_import_defaults   = 0;
 my $do_import_examples   = 0;
 my $do_import_way_txt    = 0;
+my $do_traffic;
+my $show_traffic;
 our $do_delete_db_content = 0;
 our $do_collect_init_data = 0;
+our $street;
+our $ort;
+our $plz;
+our $sql;
+our $file;
 my $do_generate_poi_type_html_page = 0;
 
 
@@ -237,6 +249,13 @@ GetOptions (
 	     'proxy=s'             => \$PROXY,
 	     'MAN'                 => \$man, 
 	     'man'                 => \$man, 
+	     'street=s'		   => \$street, #need for getstreet
+	     'ort=s'		   => \$ort,
+	     'plz=s'		   => \$plz,
+	     'sql'		   => \$sql,
+	     'file'		   => \$file,
+	     'get-traffic'	   => \$do_traffic,
+	     'show-traffic'	   => \$show_traffic,
 	     'h|help|x'            => \$help, 
 	     )
     or pod2usage(1);
@@ -283,6 +302,16 @@ pod2usage(-verbose=>2) if $man;
 ########################################################################################
 ########################################################################################
 ########################################################################################
+
+Geo::Gpsdrive::getstreet::streets()
+	if $street;
+
+
+Geo::Gpsdrive::gettraffic::gettraffic()
+	if $do_traffic;
+
+Geo::Gpsdrive::gettraffic::showtraffic()
+	if $show_traffic;
 
 
 Geo::Gpsdrive::DBFuncs::create_db()
@@ -376,9 +405,9 @@ poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb] [--mapsource_po
 
 =head1 OPTIONS
 
-=over 8
+=over 2
 
-=item B<--man>
+=item B<--man> Complete documentation
 
 Complete documentation
 
@@ -519,6 +548,30 @@ and insert them into POI DB
 
 See http://www.wigle.net/ for the jiggle client
 
+=item B<--get-traffic>
+
+use for get traffic information from http://www.freiefahrt.info/rdstmc.do and write it in mysql
+
+This feature is not completels implemented yet.
+
+=item B<--show-traffic>
+
+show traffic from mysql database
+
+This feature is not completels implemented yet.
+
+=item B<--street --ort [--plz] [--sql]>
+
+use this for download street coordinates at the moment only germany is supported
+
+Example: ./geoinfo.pl --street "Straﬂe des Friedens" --ort Teutschenthal --plz 06179 --sql
+
+--street is needed for the streetname, if the name has more then one word you have to use ""
+
+--ort is for the name of the city
+
+--plz is not evertime necessary only in a big city or if the there are more citys with the same name or a similarly name
+whitout --sql the result will be write in ~/.gpsdrive/way.txt
 
 =item B<--lat_min --lat_max --lon_min --lon_max>
 
@@ -546,3 +599,5 @@ files found on local Filesystem.
 =item B<--proxy>
 
 use proxy for download
+
+=back
