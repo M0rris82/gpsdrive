@@ -1,6 +1,10 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.3  2006/02/03 18:31:58  tweety
+# Update ASCII Form of Street/POI Defaults. Some minor Bugs fixing.
+# More Street Examples
+#
 # Revision 1.2  2006/02/03 12:03:31  tweety
 # move the Examples to Text Files for better Code visibility
 # and easier editing the Examples Data by others
@@ -214,7 +218,7 @@ sub fill_example_streets($) { # Insert Street Sample
 	chomp $line;
 	if ( $line =~ m/^\S+/ || $fh->eof() ) {
 	    if ( $street_name ) { # Es ist eine Strasse gespeichert
-		#print Dumper($multi_segment);
+		print Dumper($multi_segment);
 		debug("Importing Street: $street_name");
 		# street_segments_add_from_segment_array($multi_segment);
 		street_segments_add($multi_segment);
@@ -231,8 +235,6 @@ sub fill_example_streets($) { # Insert Street Sample
 	    $multi_segment->{'streets_type_id'} = '';
 	    if ( $street_name =~ m/^\#/ ) { # Komments
 		next;
-	    } elsif ( $street_name =~ m/^\s*$/ ) { # Empty Line
-		next;
 	    } elsif ( $street_name =~ m/^A/ ) {
 		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Autobahn');
 	    } elsif ( $street_name =~ m/^ST/ ) {
@@ -247,9 +249,14 @@ sub fill_example_streets($) { # Insert Street Sample
 	    $multi_segment->{'scale_min'}       = 1;
 	    $multi_segment->{'scale_max'}       = 50000000;
 	    
+	} elsif ( $line =~ m/^\s*$/ ) { # Empty Line
+	    next;
 	} else {
+#	} elsif ( $line =~ m/^[\t\s]+[\d\+\-\.\,]+[\t\s]+[\d\+\-\.\,]+[\t\s]+$/) {
 	    my ($indent,$lat,$lon) = split(/\s+/,$line);
 	    push(@{$multi_segment->{'segments'}},[$lat,$lon]);
+#	} else {
+#	    warn "Error in File: $file_name Line: '$line'";
 	}
     }
 }; # of fill_example_streets()
@@ -268,6 +275,7 @@ sub fill_examples(){
     fill_example_waypoints("poi/germany.txt");
     fill_example_streets("streets/Autobahnen.txt");
     fill_example_streets("streets/Streets.txt");
+#    fill_example_streets("streets/Streets1.txt");
     print "Create Examples completed\n";
 }
 
