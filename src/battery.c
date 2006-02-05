@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.11  2006/02/05 13:54:39  tweety
+  split map downloading to its own file download_map.c
+
   Revision 1.10  2006/01/12 15:01:19  tweety
   check if number of parameters in batteryfile is ok
 
@@ -269,13 +272,20 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
   if (battery != NULL)
     {
       int count=0;
+      if (mydebug>99)
+	  fprintf (stderr, "APM\n");
+
       count = fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
 	      b, b, b, bloading, b, &i, blevel, b, b);
       /*     1.16 1.2 0x03 0x01      0x00 0x01 99%      -1  ?    */
       fclose (battery);
 
       if ( 9 != count ) 
-	  return FALSE;
+	  {
+	      if (mydebug>99)
+		  fprintf (stderr, "Wrong Number (%d) of values in /proc/apm\n",count);
+	      return FALSE;
+	  }
 
       /*
        * Bit 7 is set if we have a battery (laptop). If it isn't set,
@@ -294,6 +304,9 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
       battery = fopen ("/proc/acpi/battery/0/info", "r");
       if (battery == NULL)
 	{
+	  if (mydebug>99)
+	      fprintf (stderr, "ACPI\n");
+
 	  /* search for info file */
 	  dir = opendir ("/proc/acpi/battery/");
 	  if (dir == NULL)
@@ -308,6 +321,8 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		  g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
 		  g_strlcat (fn, ent->d_name, sizeof (fn));
 		  g_strlcat (fn, "/info", sizeof (fn));
+		  if (mydebug>99)
+		      fprintf (stderr, "ACPI: File %s\n",fn);
 		  stat (fn, &buf);
 		  if (S_ISREG (buf.st_mode) == TRUE)
 		    {

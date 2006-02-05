@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.19  2006/02/05 13:54:39  tweety
+split map downloading to its own file download_map.c
+
 Revision 1.18  2006/01/04 19:19:31  tweety
 more unit tests
 search for icons in the local directory data/icons and data/pixmaps first
@@ -292,7 +295,7 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 
   if ( mydebug > 99 )
       fprintf(stderr,"calcxy(_,_,%g,%g,%d)\n",
-	      posx,posy, zoom);
+	      *posx,*posy, zoom);
 
   // Error check
   if ( lat > 360 )
@@ -344,7 +347,7 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 
   if ( mydebug > 90 )
       fprintf(stderr,"calcxy(_,_,%g,%g,%d) ---> %g,%g\n",
-	      posx,posy, zoom,lat,lon);
+	      *posx,*posy, zoom,lat,lon);
 
 
 }

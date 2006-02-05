@@ -21,6 +21,9 @@
  * 
  *     *********************************************************************
  $Log$
+ Revision 1.8  2006/02/05 13:54:39  tweety
+ split map downloading to its own file download_map.c
+
  Revision 1.7  2006/01/03 14:24:10  tweety
  eliminate compiler Warnings
  try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -213,7 +216,7 @@ int sockfd = -1;
 int pleasepollme = 0;
 extern GtkItemFactory *item_factory;
 extern int debug, statuslock;
-extern GtkWidget *status;
+extern GtkWidget *frame_status;
 extern int errno;
 extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
@@ -376,7 +379,7 @@ friends_sendmsg (char *serverip, char *message)
 		  wi = gtk_item_factory_get_item
 		    (item_factory, N_("/Misc. Menu/Messages"));
 		  gtk_widget_set_sensitive (wi, TRUE);
-		  gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
+		  gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
 		  statuslock = FALSE;
 		}
 	      else

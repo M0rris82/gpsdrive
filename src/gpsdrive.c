@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.82  2006/02/05 13:54:39  tweety
+split map downloading to its own file download_map.c
+
 Revision 1.81  2006/02/05 11:57:22  tweety
 rename some variables to better names
 make map_filename invisible if debug less than 10
@@ -2217,6 +2220,7 @@ gpsdrive started
 #include <speech_out.h>
 
 #include "import_map.h"
+#include "download_map.h"
 #include "icons.h"
 
 #ifndef NOPLUGINS
@@ -2246,15 +2250,13 @@ gpsdrive started
 
 /*  global variables */
 gint statusid, messagestatusbarid, timeoutcount;
-GtkWidget *mainwindow, *status, *messagestatusbar;
+GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 GtkWidget *pixmapwidget, *gotowindow;
 GtkWidget *messagewindow, *routewindow;
 extern GtkWidget *splash_window;
-gint dlsock = -1;
 gint debug = 0;
 gint do_unit_test = FALSE;
 gchar *buffer = NULL, *big = NULL;
-fd_set readmask;
 struct timeval timeout;
 gchar targetname[40];
 gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
@@ -2305,10 +2307,8 @@ char friendsserverip[20], friendsname[40], friendsidstring[40],
 	friendsserverfqn[255];
 
 
-gchar *dlpstart;
 gchar oldfilename[2048];
 GString *tempmapfile;
-gint nrmaps = 0, dldiff;
 gdouble earthr;
 /*Earth radius calibrated with GARMIN III */
 /*  gdouble R = 6383254.445; */
@@ -2320,7 +2320,8 @@ gdouble earthr;
 gint maploaded = FALSE;
 gint simmode, zoom;
 gint iszoomed;
-gchar homedir[500], mapdir[500];
+gchar homedir[500];
+gchar mapdir[500];
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
@@ -2333,21 +2334,24 @@ GtkWidget *destframe;
 
 extern gchar mapfilename[2048];
 
-gdouble gbreit, glang, milesconv, olddist = 99999.0;
+gint milesflag, metricflag, nauticflag;
+gdouble milesconv;
+gdouble gbreit, glang, olddist = 99999.0;
 GTimer *timer, *disttimer;
-gint gcount, milesflag, downloadwindowactive;
-gint metricflag, nauticflag;
+gint gcount;
 struct lconv *mylocale;
-gchar *dlbuff, downloadfilename[512], localedecimal;
+gchar localedecimal;
 gint scaleprefered = 1, scalewanted = 100000;
-gint dlcount, downloadactive, importactive, downloadfilelen;
+
+gint importactive;
+extern gint downloadwindowactive;
+extern gint downloadactive;
+
 glong mapscale;
-GtkWidget *dltext1, *dltext2, *dltext3, *dltext4, *add_wp_name_text, *wptext2;
+GtkWidget *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
-GtkWidget *myprogress;
-GtkWidget *scaler, *downloadwindow;
-gchar writebuff[2000];
-gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
+GtkWidget *scaler;
+gchar oldangle[100];
 GdkCursor *cursor;
 
 // Uncomment this (or add a make flag?) to only have scales for expedia maps
@@ -2384,7 +2388,8 @@ GtkWidget *label_map_filename, *label_map_scale, *label_heading, *label_baering,
 GtkWidget *trackbt, *wpbt;
 GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt, *maptogglebt,
 	*topotogglebt, *savetrackbt;
-GtkWidget *loadtrackbt, *radio1, *radio2, *scalerlbt, *scalerrbt;
+GtkWidget *loadtrackbt;
+GtkWidget *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0, sqlflag = 0, trackflag = 1, wpflag = TRUE;
@@ -2401,7 +2406,7 @@ GdkSegment *track, *trackshadow;
 glong tracknr;
 trackcoordstruct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
-gint extrawinmenu = FALSE, expedia = TRUE;
+gint extrawinmenu = FALSE;
 gdouble lat2RadiusArray[201];
 gint haveproxy, proxyport;
 gchar proxy[256], hostname[256], savetrackfn[256];
@@ -2435,7 +2440,7 @@ gint markwaypoint = FALSE;
 GtkWidget *addwaypointwindow, *setupfn[30];
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading, havebattery, havetemperature = FALSE;	/* Battery level and loading flag */
-gint defaultserver = 0, disableapm = FALSE;
+gint disableapm = FALSE;
 typedef struct
 {
 	gchar n[200];
@@ -2443,7 +2448,8 @@ typedef struct
 namesstruct;
 namesstruct *names;
 gchar activewpfile[200], gpsdservername[200], setpositionname[80];
-gint newsatslevel = TRUE, testgarmin = TRUE, needtosave = FALSE;
+gint newsatslevel = TRUE, testgarmin = TRUE;
+gint needtosave = FALSE;
 GtkWidget *serialbt, *mapdirbt, *frame_speed, *frame_sats, *slowcpubt;
 GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 
@@ -2451,7 +2457,8 @@ gdouble altitude = 0.0, precision = (-1.0), gsaprecision = (-1.0);
 gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint wpsize = 1000, satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
-GtkWidget *posbt, *cover;
+GtkWidget *posbt;
+GtkWidget *cover;
 extern gint needreloadmapconfig;
 gint simfollow = TRUE;
 GdkPixbuf *batimage = NULL;
@@ -2520,7 +2527,6 @@ extern int sockfd;
 extern long int maxfriendssecs;
 
 gint forcehavepos = FALSE, needreminder = TRUE;
-char actualhostname[200];
 gdouble alarm_lat = 53.583033, alarm_lon = 9.969533, alarm_dist = 9999999.0;
 extern gchar cputempstring[20], batstring[20];
 GtkTooltips *temptooltips = NULL;
@@ -2556,7 +2562,6 @@ int storetz = FALSE;
 int egnoson = 0, egnosoff = 0;
 extern char actualstreetname[200];
 int sound_direction = 1, sound_distance = 1, sound_speed = 1, sound_gps = 1;
-int expedia_de = 0;
 
 #define DEG2RAD M_PI/180.0
 
@@ -2575,8 +2580,6 @@ extern gint useDBUS;
 extern int nmeaverbose;
 extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
-
-gint download_cb (GtkWidget * widget, guint datum);
 
 static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu"),                    NULL, NULL,                     0, "<Branch>"},
@@ -2708,19 +2711,19 @@ error_popup (gpointer datum)
 void
 display_status (char *message)
 {
-	gchar tok[200];
-
-	if ( mydebug >50 ) fprintf(stderr , "display_status(%s)\n",message);
-
-	if (downloadactive == TRUE)
-		return;
-	if (importactive == TRUE)
-		return;
-	if (statuslock)
-		return;
-	g_snprintf (tok, sizeof (tok), "%s", message);
-	gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-	gtk_statusbar_push (GTK_STATUSBAR (status), statusid, tok);
+    gchar tok[200];
+    
+    if ( mydebug >50 ) fprintf(stderr , "display_status(%s)\n",message);
+    
+    if (downloadactive == TRUE)
+	return;
+    if (importactive == TRUE)
+	return;
+    if (statuslock)
+	return;
+    g_snprintf (tok, sizeof (tok), "%s", message);
+    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
+    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, tok);
 }
 
 
@@ -5637,16 +5640,6 @@ do_route_cb (GtkWidget * widget, guint datum)
 	return FALSE;
 }
 
-/* *****************************************************************************
- */
-gint
-dlstatusaway_cb (GtkWidget * widget, guint datum)
-{
-	downloadwindowactive = downloadactive = FALSE;
-
-	return FALSE;
-}
-
 
 /* *****************************************************************************
  */
@@ -5657,927 +5650,6 @@ importaway_cb (GtkWidget * widget, guint datum)
 	gtk_widget_destroy (widget);
 	g_strlcpy (oldfilename, "XXXXXXXXXXXXXXXXXX", sizeof (oldfilename));
 	return FALSE;
-}
-
-/* *****************************************************************************
- * cancel button pressed or widget destroy in download_cb 
- */
-gint
-downloadaway_cb (GtkWidget * widget, guint datum)
-{
-	downloadwindowactive = downloadactive = FALSE;
-	gtk_widget_destroy (widget);
-	expose_mini_cb (NULL, 0);
-
-	/*    gdk_window_set_cursor (drawing_area->window, 0); */
-	/*    gdk_cursor_destroy (cursor); */
-	return FALSE;
-}
-
-#ifdef DONTKNOWWHATTHISSHITWAS
-/* *****************************************************************************
- */
-gint
-testnewwp_cb (GtkWidget * widget, guint datum)
-{
-	gint e;
-	e = kill (datum, 0);
-	if (e != 0)
-	{
-		loadwaypoints ();
-		return FALSE;
-	}
-	return TRUE;
-}
-
-#endif
-
-/* *****************************************************************************
- */
-gint
-other_select_cb (GtkWidget * widget, guint datum)
-{
-	gint i, e;
-	gchar buff[300], mappath[2048];
-	struct stat buf;
-
-	i = 0;
-	do
-	{
-		if (mapdir[strlen (mapdir) - 1] != '/')
-			g_strlcat (mapdir, "/", sizeof (mapdir));
-
-		g_strlcpy (mappath, mapdir, sizeof (mappath));
-
-		g_snprintf (downloadfilename, sizeof (downloadfilename),
-			    "%smap_file%04d.gif", mappath, i++);
-		e = stat (downloadfilename, &buf);
-	}
-	while (e == 0);
-	g_snprintf (buff, sizeof (buff), "map_file%04d.gif", i - 1);
-	gtk_entry_set_text (GTK_ENTRY (dltext4), buff);
-
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-dlscale_cb (GtkWidget * widget, guint datum)
-{
-	G_CONST_RETURN gchar *sc;
-	gchar t[100], t2[10];
-	gdouble f;
-	/* PORTING */
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry));
-
-	f = g_strtod (sc, NULL);
-
-	g_strlcpy (t2, "km", sizeof (t2));
-
-	if (milesflag)
-		g_strlcpy (t2, "mi", sizeof (t2));
-	if (nauticflag)
-		g_strlcpy (t2, "nmi", sizeof (t2));
-
-	g_snprintf (t, sizeof (t), "%.3f x %.3f %s",
-		    milesconv * 1.280 * f / PIXELFACT,
-		    milesconv * 1.024 * f / PIXELFACT, t2);
-	gtk_entry_set_text (GTK_ENTRY (cover), t);
-	return TRUE;
-}
-
-
-/* *****************************************************************************
- */
-gint
-download_cb (GtkWidget * widget, guint datum)
-{
-	GtkWidget *mainbox;
-	GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf5, *knopf6,
-		*knopf7;
-	GtkWidget *table, *table2, *knopf8;
-	gchar buff[300], mappath[2048];
-	GList *list = NULL;
-	GSList *gr;
-	gint i, e;
-	struct stat buf;
-	gchar scalewanted_str[100];
-	GtkTooltips *tooltips;
-
-	for (i = 0; i < slistsize; i++)
-		list = g_list_append (list, slist[i]);
-
-	downloadwindow = gtk_dialog_new ();
-	gtk_window_set_title (GTK_WINDOW (downloadwindow),
-			      _("Select coordinates and scale"));
-	gtk_container_set_border_width (GTK_CONTAINER (downloadwindow), 5);
-	mainbox = gtk_vbox_new (TRUE, 2);
-	knopf = gtk_button_new_with_label (_("Download map"));
-	gtk_signal_connect (GTK_OBJECT (knopf), "clicked",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 1);
-	knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (downloadaway_cb),
-				   GTK_OBJECT (downloadwindow));
-	gtk_signal_connect_object (GTK_OBJECT (downloadwindow),
-				   "delete_event",
-				   GTK_SIGNAL_FUNC (downloadaway_cb),
-				   GTK_OBJECT (downloadwindow));
-	cover = gtk_entry_new ();
-	gtk_editable_set_editable (GTK_EDITABLE (cover), FALSE);
-	gtk_signal_connect (GTK_OBJECT (cover), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->
-			     action_area), knopf, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->
-			     action_area), knopf2, TRUE, TRUE, 2);
-	GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
-	GTK_WIDGET_SET_FLAGS (knopf2, GTK_CAN_DEFAULT);
-	table = gtk_table_new (8, 2, FALSE);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->vbox),
-			    table, TRUE, TRUE, 2);
-	knopf3 = gtk_label_new (_("Latitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf3, 0, 1, 0, 1);
-	knopf4 = gtk_label_new (_("Longitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf4, 0, 1, 1, 2);
-	knopf8 = gtk_label_new (_("Map covers"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf8, 0, 1, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (table), cover, 1, 2, 2, 3);
-
-	knopf5 = gtk_label_new (_("Scale"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf5, 0, 1, 3, 4);
-	knopf6 = gtk_label_new (_("Map file name"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 4, 5);
-	dltext1 = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dltext1), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
-	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
-	dltext2 = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dltext2), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
-	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
-	dltext3 = gtk_combo_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext3, 1, 2, 3, 4);
-	gtk_combo_set_popdown_strings (GTK_COMBO (dltext3), (GList *) list);
-	g_snprintf (scalewanted_str, sizeof (scalewanted_str), "%d",
-		    scalewanted);
-	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry),
-			    scalewanted_str);
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dltext3)->entry),
-			    "changed", GTK_SIGNAL_FUNC (downloadsetparm),
-			    (gpointer) 0);
-
-	dltext4 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 4, 5);
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dltext3)->entry),
-			    "changed", GTK_SIGNAL_FUNC (dlscale_cb), 0);
-	gtk_signal_connect (GTK_OBJECT (dltext4), "changed",
-			    GTK_SIGNAL_FUNC (dlscale_cb), 0);
-
-	table2 = gtk_table_new (2, 1, FALSE);	//nested table w/ three columns
-	gtk_table_attach_defaults (GTK_TABLE (table), table2, 0, 3, 5, 6);
-	gtk_widget_show (table2);
-
-	radio1 = gtk_radio_button_new_with_label (NULL, _("Expedia Germany"));
-	gtk_table_attach_defaults (GTK_TABLE (table2), radio1, 0, 1, 0, 1);
-	gr = gtk_radio_button_group (GTK_RADIO_BUTTON (radio1));
-	gtk_signal_connect (GTK_OBJECT (radio1), "clicked",
-			    GTK_SIGNAL_FUNC (other_select_cb), 0);
-
-	radio2 = gtk_radio_button_new_with_label (gr, _("Expedia USA"));
-	gtk_table_attach_defaults (GTK_TABLE (table2), radio2, 1, 2, 0, 1);
-	gr = gtk_radio_button_group (GTK_RADIO_BUTTON (radio2));
-	gtk_signal_connect (GTK_OBJECT (radio2), "clicked",
-			    GTK_SIGNAL_FUNC (other_select_cb), 0);
-
-
-
-	tooltips = gtk_tooltips_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), radio1,
-			      _
-			      ("If selected, you download the map from the german expedia server (expedia.de)"),
-			      NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), radio2,
-			      _
-			      ("If selected, you download the map from the U.S. expedia server (expedia.com)"),
-			      NULL);
-
-	/* disable mapblast */
-	/*   gtk_widget_set_sensitive (radio1, FALSE); */
-	/*   defaultserver = 1; */
-
-	/*   gtk_table_attach_defaults (GTK_TABLE (table), radio2, 1, 2, 5, 6); */
-	if ((defaultserver < 0) && (defaultserver > 1))
-		defaultserver = 0;
-	switch (defaultserver)
-	{
-	case 0:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio1),
-					      TRUE);
-		other_select_cb (NULL, 0);
-		break;
-	case 1:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio2),
-					      TRUE);
-		other_select_cb (NULL, 0);
-		break;
-	}
-
-	if (!haveproxy)
-		g_snprintf (buff, sizeof (buff), "%s",
-			    _("You can also select the position\n"
-			      "with a mouse click on the map."));
-	else
-		g_snprintf (buff, sizeof (buff), "%s\n\n%s    %s %d",
-			    _("You can also select the position\n"
-			      "with a mouse click on the map."),
-			    _("Using Proxy and port:"), proxy, proxyport);
-	knopf7 = gtk_label_new (buff);
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf7, 0, 2, 6, 7);
-	myprogress = gtk_progress_bar_new ();
-	gtk_progress_set_format_string (GTK_PROGRESS (myprogress), "%p%%");
-	gtk_progress_set_show_text (GTK_PROGRESS (myprogress), TRUE);
-	gtk_progress_bar_update (GTK_PROGRESS_BAR (myprogress), 0.0);
-	gtk_table_attach_defaults (GTK_TABLE (table), myprogress, 0, 2, 7, 8);
-	gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf3), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf4), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf5), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT);
-	i = 0;
-	do
-	{
-		if (mapdir[strlen (mapdir) - 1] != '/')
-			g_strlcat (mapdir, "/", sizeof (mapdir));
-
-		g_strlcpy (mappath, mapdir, sizeof (mappath));
-
-		g_snprintf (downloadfilename, sizeof (downloadfilename),
-			    "%smap_file%04d.gif", mappath, i++);
-		e = stat (downloadfilename, &buf);
-	}
-	while (e == 0);
-	g_snprintf (buff, sizeof (buff), "map_file%04d.gif", i - 1);
-	gtk_entry_set_text (GTK_ENTRY (dltext4), buff);
-	gtk_window_set_default (GTK_WINDOW (downloadwindow), knopf);
-	gtk_window_set_transient_for (GTK_WINDOW (downloadwindow),
-				      GTK_WINDOW (mainwindow));
-	gtk_window_set_position (GTK_WINDOW (downloadwindow),
-				 GTK_WIN_POS_CENTER);
-	gtk_widget_show_all (downloadwindow);
-	downloadwindowactive = TRUE;
-	downloadsetparm (NULL, 0);
-
-	/*    cursor = gdk_cursor_new (GDK_CROSS); */
-	/*    gdk_window_set_cursor (drawing_area->window, cursor); */
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-downloadsetparm (GtkWidget * widget, guint datum)
-{
-	G_CONST_RETURN gchar *s, *sc;
-	gchar lon[100], lat[100], hostname[100], region[10];
-	gdouble f, nlon, nlat;
-	gint ns;
-
-	char sctext[40];
-
-	if (!downloadwindowactive)
-		return TRUE;
-
-	expedia_de = FALSE;
-
-	if (GTK_TOGGLE_BUTTON (radio2)->active)
-		expedia = TRUE;
-	else
-		expedia = FALSE;
-	if (GTK_TOGGLE_BUTTON (radio1)->active)
-	{
-		expedia = TRUE;
-		expedia_de = TRUE;
-	}
-
-
-
-	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
-	g_strlcpy (lat, s, sizeof (lat));
-	g_strdelimit (lat, ",", '.');
-	g_strlcpy (newmaplat, lat, sizeof (newmaplat));
-	coordinate_string2gdouble(lat, &nlat);
-	
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
-	g_strlcpy (lon, s, sizeof (lon));
-	g_strdelimit (lon, ",", '.');
-	g_strlcpy (newmaplon, lon, sizeof (newmaplon));
-	coordinate_string2gdouble(lon,&nlon);
-
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry));
-	g_strlcpy (sctext, sc, sizeof (sctext));
-	g_strlcpy (newmapsc, sctext, sizeof (newmapsc));
-
-	/*   g_print("newmaplat: %s, newmaplon: %s newmapsc: %s\n", newmaplat, */
-	/*     newmaplon, newmapsc); */
-
-	if (datum == 0)
-		return TRUE;
-	if (expedia)
-	{
-		if (expedia_de)
-			g_snprintf (hostname, sizeof (hostname), "%s",
-				    WEBSERVER4);
-		else
-			g_snprintf (hostname, sizeof (hostname), "%s",
-				    WEBSERVER2);
-	}
-
-	if (!expedia)
-		g_snprintf (hostname, sizeof (hostname), "%s", WEBSERVER);
-
-	/*   if (expedia) */
-	/*     { */
-	/*       f = g_strtod (sc, NULL); */
-	/*       ns = f / EXPEDIAFACT; */
-	/*       g_snprintf ((char *) sc, "%d", ns); */
-	/*       g_snprintf (newmapsc, "%d", (int) (ns * EXPEDIAFACT)); */
-	/*     } */
-	if (expedia)
-	{
-		int scales[11] =
-			{ 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000 };
-		int i, found = 5;
-		double di = 999999;
-		f = g_strtod (sctext, NULL);
-		ns = f / EXPEDIAFACT;
-		for (i = 0; i < 11; i++)
-			if (abs (ns - scales[i]) < di)
-			{
-				di = abs (ns - scales[i]);
-				found = i;
-			}
-		ns = scales[found];
-		g_snprintf (sctext, sizeof (sctext), "%d", ns);
-		g_snprintf (newmapsc, sizeof (newmapsc), "%d",
-			    (int) (ns * EXPEDIAFACT));
-	}
-	if ( mydebug > 0 )
-		printf ("sctext: %s,newmapsc: %s\n", sctext, newmapsc);
-
-	/*   new URL (08/28/2002) */
-	/* http://www.mapblast.com/myblastd/MakeMap.d?&CT=48.0:12.2:100000&IC=&W=1280&H=1024&FAM=myblast&LB= */
-	/*   new URL (April 2003)
-	 *   http://www.vicinity.com/gif?&CT=45:-93:10000&IC=&W=1024&H=800&FAM=myblast&LB=
-	 */
-
-	if (!expedia)
-		g_snprintf (writebuff, sizeof (writebuff),
-			    "GET http://%s/gif?&CT=%s:%s:%s&IC=&W=1280&H=1024&FAM=myblast&LB= HTTP/1.0\r\nUser-Agent: Wget/1.6\r\nHost: %s\r\nAccept: */*\r\nConnection: Keep-Alive\r\n\r\n",
-			    WEBSERVER, lat, lon, sctext, hostname);
-	if (expedia)
-	{
-		if (nlon > (-30))
-			g_strlcpy (region, "EUR0809", sizeof (region));
-		else
-			g_strlcpy (region, "USA0409", sizeof (region));
-
-		if (expedia_de)
-			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER4, nlat, nlon, region, sctext,
-				    hostname);
-		else
-			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER2, nlat, nlon, region, sctext,
-				    hostname);
-	}
-
-	if ( mydebug > 0 )
-		g_print ("Download URL: %s\n", writebuff);
-
-	if (!expedia)
-		downloadstart_cb (widget, 0);
-	else
-	{
-		char url[2000], url2[2000], hn[200], *p;
-
-		p = getexpediaurl (widget);
-		if (p == NULL)
-		{
-			return FALSE;
-		}
-
-		g_strlcpy (url, p, sizeof (url));
-		if ( mydebug > 3 )
-			printf ("%s\n", url);
-		p = strstr (url, "Location: ");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http data error, could not find 'Location:' sub string\n");
-			return FALSE;
-		}
-		g_strlcpy (url2, (p + 10), sizeof (url2));
-		p = strstr (url2, "\n");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http data error, could not find new line\n");
-			return FALSE;
-		}
-
-		url2[p - url2] = 0;
-		if ( mydebug > 3 )
-			printf ("**********\n%s\n", url2);
-		g_strlcpy (hn, (url2 + 7), sizeof (hn));
-		p = strstr (hn, "/");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http request error, could not find forward slash\n");
-			return FALSE;
-		}
-
-		hn[p - hn] = 0;
-		g_strlcpy (url, (url2 + strlen (hn) + 7), sizeof (url));
-		url[strlen (url) - 1] = 0;
-		g_strlcpy (actualhostname, hn, sizeof (actualhostname));
-		if ( mydebug > 3 )
-			printf ("hn: %s, url: %s\n", hn, url);
-
-		if (haveproxy == TRUE)
-		{
-			// Format the GET request correctly for the proxy server
-			g_snprintf (url2, sizeof (url2),
-				    "GET http://%s/%s HTTP/1.1\r\n", hn, url);
-		}
-		else
-		{
-			g_snprintf (url2, sizeof (url2),
-				    "GET %s HTTP/1.1\r\n", url);
-		}
-
-		g_strlcat (url2, "Host: ", sizeof (url2));
-		g_strlcat (url2, hn, sizeof (url2));
-		g_strlcat (url2, "\r\n", sizeof (url2));
-		g_strlcat (url2,
-			   "User-Agent: Mozilla/5.0 Galeon/1.2.8 (X11; Linux i686; U;) Gecko/20030317\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,text/css,*/*;q=0.1\r\n",
-			   sizeof (url2));
-		g_strlcat (url2, "Accept-Language: de, en;q=0.50\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept-Encoding: gzip, deflate, compress;q=0.9\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept-Charset: ISO-8859-15, utf-8;q=0.66, *;q=0.66\r\n",
-			   sizeof (url2));
-		g_strlcat (url2, "Keep-Alive: 300\r\n", sizeof (url2));
-		g_strlcat (url2, "Connection: keep-alive\r\n\r\n",
-			   sizeof (url2));
-
-		g_strlcpy (writebuff, url2, sizeof (writebuff));
-		if ( mydebug > 3 )
-			printf ("\nurl2:\n%s\n**********\n\n%s\n-----------------\n", url2, writebuff);
-
-		downloadstart_cb (widget, 0);
-
-		/*       exit (1); */
-	}
-	return TRUE;
-}
-
-
-/* *****************************************************************************
- */
-char *
-getexpediaurl (GtkWidget * widget)
-{
-	struct sockaddr_in server;
-	struct hostent *server_data;
-	gchar str[100], sn[1000];
-	gchar tmpbuff[9000];
-	gint e;
-	static char url[8000];
-
-	/*  open socket to port80 */
-	if ((dlsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-	{
-		perror (_("can't open socket for port 80"));
-		if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER4 : WEBSERVER);
-		else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER2 : WEBSERVER);
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-		return (NULL);
-	}
-
-	server.sin_family = AF_INET;
-	/*  We retrieve the IP address of the server from its name: */
-	if (haveproxy)
-		g_strlcpy (sn, proxy, sizeof (sn));
-	else
-	{
-		if (expedia_de)
-			g_strlcpy (sn, (expedia) ? WEBSERVER4 : WEBSERVER,
-				   sizeof (sn));
-		else
-			g_strlcpy (sn, (expedia) ? WEBSERVER2 : WEBSERVER,
-				   sizeof (sn));
-	}
-	if ((server_data = gethostbyname (sn)) == NULL)
-	{
-		perror (_("Can't resolve webserver address"));
-		if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER4 : WEBSERVER);
-		else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER2 : WEBSERVER);
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-		return (NULL);
-	}
-	memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-	server.sin_port = htons (proxyport);
-	/*  We initiate the connection  */
-	if (connect (dlsock, (struct sockaddr *) &server, sizeof server) < 0)
-	{
-		perror (_("unable to connect to Website"));
-		if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER4 : WEBSERVER);
-		else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    (expedia) ? WEBSERVER2 : WEBSERVER);
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-		return (NULL);
-	}
-
-	write (dlsock, writebuff, strlen (writebuff));
-
-	FD_ZERO (&readmask);
-	FD_SET (dlsock, &readmask);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 100000;
-	if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-	{
-		perror ("select() call");
-	}
-
-	g_strlcpy (url, "Fehler!!!!", sizeof (url));
-	memset (tmpbuff, 0, 8192);
-	if ((e = read (dlsock, tmpbuff, 8000)) < 0)
-		perror (_("read from Webserver"));
-	if ( mydebug > 3 )
-		g_print ("Loaded %d Bytes\n", e);
-	if (e > 0)
-		g_strlcpy (url, tmpbuff, sizeof (url));
-	else
-	{
-		perror ("getexpediaurl");
-		fprintf (stderr, "error while reading from exedia\n");
-		exit (1);
-	}
-	close (dlsock);
-	return url;
-
-}
-
-/* *****************************************************************************
- */
-gint
-downloadstart_cb (GtkWidget * widget, guint datum)
-{
-	struct sockaddr_in server;
-	struct hostent *server_data;
-	gchar str[100], sn[1000];
-
-
-	downloadfilelen = 0;
-	downloadactive = TRUE;
-	if (!expedia)
-		g_snprintf (str, sizeof (str), _("Connecting to %s"),
-			    WEBSERVER);
-	if (expedia)
-	{
-		if (expedia_de)
-			g_snprintf (str, sizeof (str), _("Connecting to %s"),
-				    WEBSERVER4);
-		else
-			g_snprintf (str, sizeof (str), _("Connecting to %s"),
-				    WEBSERVER2);
-	}
-
-	gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-	gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-	while (gtk_events_pending ())
-		gtk_main_iteration ();
-	/*  open socket to port80 */
-	if ((dlsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-	{
-		perror (_("can't open socket for port 80"));
-		if (!expedia)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"), WEBSERVER);
-		if (expedia)
-		{
-			if (expedia_de)
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER4);
-			else
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER2);
-		}
-
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (6000, (GtkFunction) dlstatusaway_cb, widget);
-		return (FALSE);
-	}
-
-	server.sin_family = AF_INET;
-	/*  We retrieve the IP address of the server from its name: */
-	if (haveproxy)
-		g_strlcpy (sn, proxy, sizeof (sn));
-	else
-	{
-		if (expedia)
-		{
-			if (expedia_de)
-				g_strlcpy (sn, WEBSERVER4, sizeof (sn));
-			else
-				g_strlcpy (sn, WEBSERVER2, sizeof (sn));
-		}
-
-		if (!expedia)
-			g_strlcpy (sn, WEBSERVER, sizeof (sn));
-	}
-
-	if (expedia == TRUE && haveproxy == FALSE)
-		g_strlcpy (sn, actualhostname, sizeof (sn));
-
-	if ((server_data = gethostbyname (sn)) == NULL)
-	{
-		perror (_("Can't resolve webserver address"));
-		if (!expedia)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"), WEBSERVER);
-		if (expedia)
-		{
-			if (expedia_de)
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER4);
-			else
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER2);
-		}
-
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-		return (FALSE);
-	}
-	memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-	server.sin_port = htons (proxyport);
-	/*  We initiate the connection  */
-	if (connect (dlsock, (struct sockaddr *) &server, sizeof server) < 0)
-	{
-		perror (_("unable to connect to Website"));
-		if (!expedia)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"), WEBSERVER);
-		if (expedia)
-		{
-			if (expedia_de)
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER4);
-			else
-				g_snprintf (str, sizeof (str),
-					    _("Connecting to %s FAILED!"),
-					    WEBSERVER2);
-		}
-
-		gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-		gtk_widget_destroy (downloadwindow);
-		gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-		return (FALSE);
-	}
-
-	write (dlsock, writebuff, strlen (writebuff));
-	dlbuff = g_new0 (gchar, 8192);
-	dlpstart = NULL;
-	dldiff = dlcount = 0;
-	if (!expedia)
-		g_snprintf (str, sizeof (str), _("Now connected to %s"),
-			    WEBSERVER);
-	if (expedia)
-	{
-		if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Now connected to %s"), WEBSERVER4);
-		else
-			g_snprintf (str, sizeof (str),
-				    _("Now connected to %s"), WEBSERVER2);
-	}
-
-	gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-	gtk_statusbar_push (GTK_STATUSBAR (status), statusid, str);
-	gtk_timeout_add (100, (GtkFunction) downloadslave_cb, widget);
-	return TRUE;
-}
-
-gint
-downloadslave_cb (GtkWidget * widget, guint datum)
-{
-	gchar tmpbuff[9000], str[100], *p;
-	gint e, fd;
-	gchar nn[] = "\r\n\r\n";
-	gdouble f;
-	G_CONST_RETURN gchar *s;
-
-	if (!downloadwindowactive)
-		return FALSE;
-
-
-	FD_ZERO (&readmask);
-	FD_SET (dlsock, &readmask);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 100000;
-	if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-	{
-		perror ("select() call");
-	}
-
-	if (FD_ISSET (dlsock, &readmask))
-	{
-
-		memset (tmpbuff, 0, 8192);
-		if ((e = read (dlsock, tmpbuff, 8000)) < 0)
-			perror (_("read from Webserver"));
-		if ( mydebug > 3 )
-			g_print ("Loaded %d Bytes\n", e);
-		if (e > 0)
-		{
-			/*  in dlbuff we have all download data */
-			memcpy ((dlbuff + dlcount), tmpbuff, e);
-			/*  in dlcount we have the number of download bytes */
-			dlcount += e;
-			/* now we try to get the filelength and begin of the gif image data */
-			if (dlpstart == NULL)
-			{
-				/*  CONTENT-LENGTH string should hopefully be in the first 4kB */
-				memcpy (tmpbuff, dlbuff, 4096);
-				/*  We make of this a null terminated string */
-				tmpbuff[4096] = 0;
-				g_strup (tmpbuff);
-				p = strstr (tmpbuff, "CONTENT-LENGTH:");
-				if (p != NULL)
-				{
-					sscanf (p, "%s %d", str,
-						&downloadfilelen);
-					/*  now we look for 2 cr/lf which is the end of the header */
-					dlpstart = strstr (tmpbuff, nn);
-					dldiff = dlpstart - tmpbuff + 4;
-					/*            g_print("content-length: %d\n", downloadfilelen); */
-				}
-				else if (dlcount > 1000)
-				{
-					/*  Seems there is no CONTENT-LENGTH field in expedia.com */
-					dlpstart = strstr (tmpbuff, nn);
-					dldiff = dlpstart - tmpbuff + 4;
-					downloadfilelen = 200000;
-					/*            g_print("\ncontent-length: %d", downloadfilelen); */
-				}
-			}
-			/*  Now we have the length and begin of the gif image data */
-			if ((downloadfilelen != 0) && (dlpstart != NULL))
-			{
-				dlbuff = g_renew (gchar, dlbuff,
-						  dlcount + 8192);
-				f = (dlcount -
-				     dldiff) / (gdouble) downloadfilelen;
-				if (f > 1.0)
-					f = 1.0;
-				gtk_progress_bar_update (GTK_PROGRESS_BAR
-							 (myprogress), f);
-				g_snprintf (str, sizeof (str),
-					    _("Downloaded %d kBytes"),
-					    (dlcount - dldiff) / 1024);
-				gtk_statusbar_pop (GTK_STATUSBAR (status),
-						   statusid);
-				gtk_statusbar_push (GTK_STATUSBAR (status),
-						    statusid, str);
-				while (gtk_events_pending ())
-					gtk_main_iteration ();
-			}
-
-		}
-		if ((e == 0) || ((downloadfilelen + dldiff) == dlcount))
-		{
-
-			if (downloadfilelen == 0)
-				g_snprintf (str, sizeof (str),
-					    _("Download FAILED!"));
-			else
-				g_snprintf (str, sizeof (str),
-					    _("Download finished, got %dkB"),
-					    dlcount / 1024);
-			gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-			gtk_statusbar_push (GTK_STATUSBAR (status), statusid,
-					    str);
-			close (dlsock);
-			if (downloadfilelen != 0)
-			{
-				s = gtk_entry_get_text (GTK_ENTRY (dltext4));
-				if (mapdir[strlen (mapdir) - 1] != '/')
-					g_strlcat (mapdir, "/",
-						   sizeof (mapdir));
-
-				g_strlcpy (downloadfilename, mapdir,
-					   sizeof (downloadfilename));
-
-				g_strlcat (downloadfilename, s,
-					   sizeof (downloadfilename));
-				fd = open (downloadfilename,
-					   O_RDWR | O_TRUNC | O_CREAT, 0644);
-				if (fd < 1)
-				{
-					perror (downloadfilename);
-					gtk_timeout_add (3000,(GtkFunction) dlstatusaway_cb, widget);
-
-					return FALSE;
-				}
-				write (fd, dlbuff + dldiff, dlcount - dldiff);
-				close (fd);
-				/* g_free (maps); */
-				loadmapconfig ();
-				maps = g_renew (mapsstruct, maps,
-						(nrmaps + 2));
-				g_strlcpy ((maps + nrmaps)->filename,
-					   g_basename (downloadfilename),
-					   200);
-				coordinate_string2gdouble (newmaplat, &((maps + nrmaps)->lat));
-				coordinate_string2gdouble (newmaplon, &((maps + nrmaps)->lon));
-				(maps + nrmaps)->scale =
-					strtol (newmapsc, NULL, 0);
-				nrmaps++;
-				havenasa = -1;
-				savemapconfig ();
-			}
-			downloadwindowactive = FALSE;
-			gtk_widget_destroy (downloadwindow);
-			gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-
-			return FALSE;
-		}
-	}
-	else
-	{
-
-		return TRUE;
-	}
-
-
-	return TRUE;
 }
 
 /* *****************************************************************************
@@ -6775,27 +5847,6 @@ night_cb (GtkWidget * widget, guint datum)
 
 	}
 
-	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-defaultserver_cb (GtkWidget * widget, guint datum)
-{
-
-	expedia_de = FALSE;
-	switch (datum)
-	{
-	case 1:
-		expedia_de = TRUE;
-		defaultserver = 0;
-		break;
-	case 2:
-		defaultserver = 1;
-		break;
-	}
 	needtosave = TRUE;
 	return TRUE;
 }
@@ -7317,7 +6368,7 @@ accepttext (GtkWidget * widget, gpointer data)
 	wi = gtk_item_factory_get_item (item_factory,
 					N_("/Misc. Menu/Messages"));
 	statuslock = TRUE;
-	gtk_statusbar_push (GTK_STATUSBAR (status), statusid,
+	gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
 			    _("Sending message to friends server..."));
 	gtk_widget_set_sensitive (wi, FALSE);
 	return TRUE;
@@ -7428,7 +6479,7 @@ setmessage_cb (GtkWidget * widget, guint datum)
 
 	getmessagebuffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view1));
 	g_signal_connect (GTK_TEXT_BUFFER (getmessagebuffer),
-			  "changed", G_CALLBACK (textstatus), status);
+			  "changed", G_CALLBACK (textstatus), frame_status);
 
 	gtk_text_buffer_get_iter_at_offset (getmessagebuffer, &iter, 0);
 
@@ -9042,7 +8093,7 @@ main (int argc, char *argv[])
 	timeoutcount = lastp = bigp = bigpRME = bigpGSA = bigpGSV = bigpGGA =
 		0;
 	lastp = lastpGGA = lastpGSV = lastpRME = lastpGSA = 0;
-	downloadfilelen = gcount = xoff = yoff = 0;
+	gcount = xoff = yoff = 0;
 	hours = minutes = 99;
 	milesconv = 1.0;
 	/* set default color to navyblue */
@@ -9311,7 +8362,6 @@ main (int argc, char *argv[])
 
 	/*   we have to set expedia to false, because its not working anymore */
 	/*   expedia=FALSE; */
-	/*   defaultserver=0; */
 
 	real_screen_x = 640;
 	real_screen_y = 512;
@@ -9732,11 +8782,11 @@ main (int argc, char *argv[])
 	gtk_signal_connect (GTK_OBJECT (mainwindow), "key_press_event",
 			    GTK_SIGNAL_FUNC (key_cb), NULL);
 
-	status = gtk_statusbar_new ();
+	frame_status = gtk_statusbar_new ();
 	statusid =
-		gtk_statusbar_get_context_id (GTK_STATUSBAR (status), "main");
+		gtk_statusbar_get_context_id (GTK_STATUSBAR (frame_status), "main");
 
-	gtk_statusbar_push (GTK_STATUSBAR (status), statusid,
+	gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
 			    _("Gpsdrive-2 (c)2001-2004 F.Ganter"));
 	if (!useflite)
 		havespeechout = speech_out_init ();
@@ -9744,7 +8794,7 @@ main (int argc, char *argv[])
 		havespeechout = TRUE;
 
 	if (havespeechout)
-		gtk_statusbar_push (GTK_STATUSBAR (status), statusid,
+		gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
 				    _("Using speech output"));
 	if (!useflite)
 		switch (voicelang)
@@ -10584,7 +9634,7 @@ main (int argc, char *argv[])
 	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 3, 2, 3);
 	    //KCFX
 	    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 3, 3, 4);
-	    gtk_table_attach_defaults (GTK_TABLE (table1), status, 0, 3, 4, 5);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 3, 4, 5);
 	}
 	else
 	{
@@ -10599,7 +9649,7 @@ main (int argc, char *argv[])
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 2, 1, 2);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 1, 2);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 3, 4, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), status, 0, 4, 3, 4);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 4, 3, 4);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 4, 2, 3);
 		}
 	    else
@@ -10613,7 +9663,7 @@ main (int argc, char *argv[])
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 5,  6, 0, 1);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 6,  7, 0, 1);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 7, 8, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), status,	   0, 4, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status,	   0, 4, 1, 2);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler,   4, 8, 1, 2);
 		}
 	}

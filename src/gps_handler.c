@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  2006/02/05 13:54:39  tweety
+  split map downloading to its own file download_map.c
+
   Revision 1.8  2006/01/03 14:24:10  tweety
   eliminate compiler Warnings
   try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -155,7 +158,7 @@ extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
 extern gchar activewpfile[200], gpsdservername[200], setpositionname[80];
-extern GtkWidget *mainwindow, *status, *messagestatusbar;
+extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
@@ -795,8 +798,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
   if (timeoutcount > tilimit)
     {
-      gtk_statusbar_pop (GTK_STATUSBAR (status), statusid);
-      gtk_statusbar_push (GTK_STATUSBAR (status), statusid,
+      gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
+      gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
 			  _("Timeout getting data from GPS-Receiver!"));
       havepos = FALSE;
       haveposcount = 0;
