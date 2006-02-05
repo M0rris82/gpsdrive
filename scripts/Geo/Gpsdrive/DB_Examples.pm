@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.4  2006/02/05 10:36:50  tweety
+# more cities
+#
 # Revision 1.3  2006/02/03 18:31:58  tweety
 # Update ASCII Form of Street/POI Defaults. Some minor Bugs fixing.
 # More Street Examples
@@ -272,6 +275,7 @@ sub fill_examples(){
     print "\nCreate Examples ...(source_id=$example_source_id)\n";
 
     fill_example_cities("poi/cities.txt");
+    fill_example_cities("poi/cities_germany.txt");
     fill_example_waypoints("poi/germany.txt");
     fill_example_streets("streets/Autobahnen.txt");
     fill_example_streets("streets/Streets.txt");
