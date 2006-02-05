@@ -7,7 +7,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = gpsdrive
-VERSION = 2.10pre3-cvs-20060112
+VERSION = 2.10pre3-cvs-20060205
 
 # These two variables depend on the location of this directory.
 subdir = po

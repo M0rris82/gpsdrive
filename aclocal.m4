@@ -1785,7 +1785,7 @@ AC_DEFUN([AC_LIB_WITH_FINAL_PREFIX],
 
 # libtool.m4 - Configure libtool for the host system. -*-Autoconf-*-
 
-# serial 48 Debian 1.5.22-1 AC_PROG_LIBTOOL
+# serial 48 Debian 1.5.22-2 AC_PROG_LIBTOOL
 
 
 # AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)

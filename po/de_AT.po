@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-05 12:01+0100\n"
+"POT-Creation-Date: 2006-02-05 17:54+0100\n"
 "PO-Revision-Date: 2002-05-02 22:28+0200\n"
 "Last-Translator: Fritz Ganter <ganter@ganter.at>\n"
 "Language-Team: german <de@li.org>\n"
@@ -49,12 +49,12 @@ msgstr ""
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr ""
 
-#: src/friends.c:377 src/gpsdrive.c:7310
+#: src/friends.c:380 src/gpsdrive.c:4597
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/friends.c:391
+#: src/friends.c:394
 #, fuzzy
 msgid "unknown"
 msgstr "Unbekannt"
@@ -73,107 +73,107 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:2577
+#: src/gpsdrive.c:812
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:2578
+#: src/gpsdrive.c:813
 msgid "/_Misc. Menu/Maps"
 msgstr ""
 
-#: src/gpsdrive.c:2579
+#: src/gpsdrive.c:814
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr ""
 
-#: src/gpsdrive.c:2580
+#: src/gpsdrive.c:815
 #, fuzzy
 msgid "/_Misc. Menu/Maps/_Download map"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:2581
+#: src/gpsdrive.c:816
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:2582
+#: src/gpsdrive.c:817
 #, fuzzy
 msgid "/_Misc. Menu/_Reinitialize GPS"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:2583
+#: src/gpsdrive.c:818
 #, fuzzy
 msgid "/_Misc. Menu/_Start gpsd"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:2584
+#: src/gpsdrive.c:819
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:2585
+#: src/gpsdrive.c:820
 #, fuzzy
 msgid "/_Misc. Menu/Messages"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:2586
+#: src/gpsdrive.c:821
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:2588
+#: src/gpsdrive.c:823
 msgid "/_Misc. Menu/Help"
 msgstr ""
 
-#: src/gpsdrive.c:2589
+#: src/gpsdrive.c:824
 msgid "/_Misc. Menu/Help/About"
 msgstr ""
 
-#: src/gpsdrive.c:2590
+#: src/gpsdrive.c:825
 msgid "/_Misc. Menu/Help/Topics"
 msgstr ""
 
-#: src/gpsdrive.c:2673
+#: src/gpsdrive.c:909
 msgid "  Message  "
 msgstr "  Mödung  "
 
-#: src/gpsdrive.c:2739
+#: src/gpsdrive.c:975
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr ""
 
-#: src/gpsdrive.c:2779 src/gpsdrive.c:5600 src/gpsdrive.c:7257
-#: src/import_map.c:793
+#: src/gpsdrive.c:1015 src/gpsdrive.c:3838 src/gpsdrive.c:4544
+#: src/import_map.c:794
 msgid "To"
 msgstr ""
 
-#: src/gpsdrive.c:3106
+#: src/gpsdrive.c:1344
 msgid "Auto"
 msgstr "Sölba"
 
-#: src/gpsdrive.c:3359
+#: src/gpsdrive.c:1597
 #, fuzzy
 msgid "Warning!"
 msgstr "Bearing"
 
-#: src/gpsdrive.c:3361
+#: src/gpsdrive.c:1599
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:3644 src/gpsdrive.c:6727 src/gpsdrive.c:6737
-#: src/gpsdrive.c:10358 src/gpsdrive.c:10368
+#: src/gpsdrive.c:1882 src/gpsdrive.c:4034 src/gpsdrive.c:4044
+#: src/gpsdrive.c:7443 src/gpsdrive.c:7453
 #, fuzzy
 msgid "mi/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:3647 src/gpsdrive.c:6729 src/gpsdrive.c:6740
-#: src/gpsdrive.c:10360 src/gpsdrive.c:10371
+#: src/gpsdrive.c:1885 src/gpsdrive.c:4036 src/gpsdrive.c:4047
+#: src/gpsdrive.c:7445 src/gpsdrive.c:7456
 msgid "knots"
 msgstr "Knoten"
 
-#: src/gpsdrive.c:3650 src/gpsdrive.c:6731 src/gpsdrive.c:6743
-#: src/gpsdrive.c:10362 src/gpsdrive.c:10374
+#: src/gpsdrive.c:1888 src/gpsdrive.c:4038 src/gpsdrive.c:4050
+#: src/gpsdrive.c:7447 src/gpsdrive.c:7459
 msgid "km/h"
 msgstr "km/h"
 
-#: src/gpsdrive.c:3987
+#: src/gpsdrive.c:2225
 #, c-format
 msgid ""
 "\n"
@@ -184,253 +184,151 @@ msgid ""
 msgstr ""
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:5021
+#: src/gpsdrive.c:3259
 msgid "NESW"
 msgstr ""
 
-#: src/gpsdrive.c:5204
+#: src/gpsdrive.c:3442
 msgid "No map available for this position!"
 msgstr "Ka Kortn fir de Position do!"
 
-#: src/gpsdrive.c:5386
+#: src/gpsdrive.c:3624
 msgid "unused"
 msgstr ""
 
 #. displays zoom factor of map
-#: src/gpsdrive.c:5392 src/gpsdrive.c:5402 src/gpsdrive.c:10169
-#: src/gpsdrive.c:10176 src/gpsdrive.c:10183 src/gpsdrive.c:10249
-#: src/gpsdrive.c:10254 src/gpsdrive.c:10260 src/gpsdrive.c:10296
-#: src/gpsdrive.c:10303 src/settings.c:495
+#: src/gpsdrive.c:3630 src/gpsdrive.c:3640 src/gpsdrive.c:7270
+#: src/gpsdrive.c:7276 src/gpsdrive.c:7282 src/gpsdrive.c:7342
+#: src/gpsdrive.c:7347 src/gpsdrive.c:7353 src/gpsdrive.c:7389
+#: src/gpsdrive.c:7396 src/settings.c:496
 msgid "n/a"
 msgstr "n/a"
 
-#: src/gpsdrive.c:5766
-msgid "Select coordinates and scale"
-msgstr "Wöl a Koordinaten und an Moßstob aus"
-
-#: src/gpsdrive.c:5769
-msgid "Download map"
-msgstr "Karte obaloadn"
-
-#: src/gpsdrive.c:5797 src/gpsdrive.c:7974 src/gpsdrive.c:8265
-#: src/gpsdrive.c:8349 src/gpsdrive.c:8524 src/gpsdrive.c:10524
-#: src/import_map.c:381
-msgid "Latitude"
-msgstr "Breitn"
-
-#: src/gpsdrive.c:5799 src/gpsdrive.c:7956 src/gpsdrive.c:8265
-#: src/gpsdrive.c:8349 src/gpsdrive.c:8524 src/gpsdrive.c:10525
-#: src/import_map.c:383
-msgid "Longitude"
-msgstr "Längn"
-
-#: src/gpsdrive.c:5801
-#, fuzzy
-msgid "Map covers"
-msgstr "Maßstab"
-
-#: src/gpsdrive.c:5805 src/import_map.c:393
-msgid "Scale"
-msgstr "Moßstob"
-
-#: src/gpsdrive.c:5807
-msgid "Map file name"
-msgstr "Kortndateinoman"
-
-#: src/gpsdrive.c:5844 src/settings.c:1192
-msgid "Expedia Germany"
-msgstr ""
-
-#: src/gpsdrive.c:5850 src/settings.c:1199
-msgid "Expedia USA"
-msgstr ""
-
-#: src/gpsdrive.c:5861
-msgid ""
-"If selected, you download the map from the german expedia server (expedia.de)"
-msgstr ""
-
-#: src/gpsdrive.c:5865
-msgid ""
-"If selected, you download the map from the U.S. expedia server (expedia.com)"
-msgstr ""
-
-#: src/gpsdrive.c:5891 src/gpsdrive.c:5895
-msgid ""
-"You can also select the position\n"
-"with a mouse click on the map."
-msgstr ""
-"Du konnst a Stell auf da Kortn\n"
-"a durch an Mausklick auswöhln."
-
-#: src/gpsdrive.c:5897
-msgid "Using Proxy and port:"
-msgstr "Nimm Proxy und Port:"
-
-#: src/gpsdrive.c:6173 src/gpsdrive.c:6302
-msgid "can't open socket for port 80"
-msgstr "Kon Socket firn Port 80 net aufmochn"
-
-#: src/gpsdrive.c:6176 src/gpsdrive.c:6180 src/gpsdrive.c:6207
-#: src/gpsdrive.c:6211 src/gpsdrive.c:6227 src/gpsdrive.c:6231
-#: src/gpsdrive.c:6305 src/gpsdrive.c:6310 src/gpsdrive.c:6314
-#: src/gpsdrive.c:6351 src/gpsdrive.c:6356 src/gpsdrive.c:6360
-#: src/gpsdrive.c:6378 src/gpsdrive.c:6383 src/gpsdrive.c:6387
-#, c-format
-msgid "Connecting to %s FAILED!"
-msgstr "Da Dreck %s geht net!"
-
-#: src/gpsdrive.c:6204 src/gpsdrive.c:6348
-msgid "Can't resolve webserver address"
-msgstr "Kon den Noman net aufläsn"
-
-#: src/gpsdrive.c:6224 src/gpsdrive.c:6375
-msgid "unable to connect to Website"
-msgstr "kumm net zur Webseitn zuawe"
-
-#: src/gpsdrive.c:6254 src/gpsdrive.c:6448
-msgid "read from Webserver"
-msgstr "lesn vom Webserver"
-
-#: src/gpsdrive.c:6283 src/gpsdrive.c:6288 src/gpsdrive.c:6291
-#, c-format
-msgid "Connecting to %s"
-msgstr "Verbind mit %s"
-
-#: src/gpsdrive.c:6403 src/gpsdrive.c:6409 src/gpsdrive.c:6412
-#, c-format
-msgid "Now connected to %s"
-msgstr "vabundn mit %s"
-
-#: src/gpsdrive.c:6496
-#, c-format
-msgid "Downloaded %d kBytes"
-msgstr "I hob scho %d kBytes"
-
-#: src/gpsdrive.c:6512
-msgid "Download FAILED!"
-msgstr "Obalodn danebngongan!"
-
-#: src/gpsdrive.c:6515
-#, c-format
-msgid "Download finished, got %dkB"
-msgstr "Abaloadn is fertig, %dkB kriagt."
-
-#: src/gpsdrive.c:6621
+#: src/gpsdrive.c:3928
 #, fuzzy
 msgid "GpsDrive Control"
 msgstr "GpsDrive Menü"
 
-#: src/gpsdrive.c:6736 src/gpsdrive.c:6739 src/gpsdrive.c:6742
-#: src/gpsdrive.c:10367 src/gpsdrive.c:10370 src/gpsdrive.c:10373
-#: src/settings.c:1262
+#: src/gpsdrive.c:4043 src/gpsdrive.c:4046 src/gpsdrive.c:4049
+#: src/gpsdrive.c:7452 src/gpsdrive.c:7455 src/gpsdrive.c:7458
+#: src/settings.c:1263
 msgid "Speed"
 msgstr "Geschwindigkeit"
 
-#: src/gpsdrive.c:7002
+#: src/gpsdrive.c:4289
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:7313
+#: src/gpsdrive.c:4600
 msgid "Sending message to friends server..."
 msgstr ""
 
-#: src/gpsdrive.c:7392
+#: src/gpsdrive.c:4679
 #, fuzzy
 msgid "Message for:"
 msgstr "  Mödung  "
 
-#: src/gpsdrive.c:7434
+#: src/gpsdrive.c:4721
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:7447
+#: src/gpsdrive.c:4734
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:7883
+#: src/gpsdrive.c:5170
 msgid "Add waypoint name"
 msgstr "Wegpunkt Bezeichnung hinzufügen"
 
-#: src/gpsdrive.c:7893
+#: src/gpsdrive.c:5180
 msgid " Waypoint name: "
 msgstr " Wegpunkt Bezeichnung: "
 
-#: src/gpsdrive.c:7939
+#: src/gpsdrive.c:5226
 #, fuzzy
 msgid " Waypoint type: "
 msgstr " Wegpunkt Bezeichnung: "
 
-#: src/gpsdrive.c:8265
+#: src/gpsdrive.c:5243 src/gpsdrive.c:5552 src/gpsdrive.c:5636
+#: src/gpsdrive.c:5811 src/gpsdrive.c:7580 src/import_map.c:384
+msgid "Longitude"
+msgstr "Längn"
+
+#: src/gpsdrive.c:5261 src/gpsdrive.c:5552 src/gpsdrive.c:5636
+#: src/gpsdrive.c:5811 src/gpsdrive.c:7579 src/import_map.c:382
+msgid "Latitude"
+msgstr "Breitn"
+
+#: src/gpsdrive.c:5552
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:8265 src/gpsdrive.c:8349 src/gpsdrive.c:8524
-#: src/gpsdrive.c:10344 src/settings.c:1254
+#: src/gpsdrive.c:5552 src/gpsdrive.c:5636 src/gpsdrive.c:5811
+#: src/gpsdrive.c:7437 src/settings.c:1255
 msgid "Distance"
 msgstr "Entfernung"
 
-#: src/gpsdrive.c:8276
+#: src/gpsdrive.c:5563
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Bitte wählen Sie ihr Ziel"
 
-#: src/gpsdrive.c:8349 src/gpsdrive.c:8524
+#: src/gpsdrive.c:5636 src/gpsdrive.c:5811
 msgid "Waypoint"
 msgstr "Wegpunkt"
 
-#: src/gpsdrive.c:8370
+#: src/gpsdrive.c:5657
 msgid "Select reference point"
 msgstr "Setze Referenzpunkt"
 
-#: src/gpsdrive.c:8374
+#: src/gpsdrive.c:5661
 msgid "Please select your destination"
 msgstr "Bitte wählen Sie ihr Ziel"
 
-#: src/gpsdrive.c:8406
+#: src/gpsdrive.c:5693
 msgid "Edit route"
 msgstr "Bearbeite Route"
 
-#: src/gpsdrive.c:8409
+#: src/gpsdrive.c:5696
 msgid "Create route"
 msgstr "Erzeuge Route"
 
-#: src/gpsdrive.c:8501
+#: src/gpsdrive.c:5788
 #, fuzzy
 msgid "Create a route using some waypoints from this list"
 msgstr "Auswahl eines Ziels aus der Wegpunkt Liste"
 
-#: src/gpsdrive.c:8506
+#: src/gpsdrive.c:5793
 #, fuzzy
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Auswahl eines Ziels aus der Wegpunkt Liste"
 
-#: src/gpsdrive.c:8510
+#: src/gpsdrive.c:5797
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
 "Klicken Sie auf einen Eintrag\n"
 "um den nächsten Wegpunkt auszuwählen"
 
-#: src/gpsdrive.c:8539
+#: src/gpsdrive.c:5826
 msgid "Define route"
 msgstr "Route festlegen"
 
-#: src/gpsdrive.c:8547
+#: src/gpsdrive.c:5834
 msgid "Start route"
 msgstr "Starte Route"
 
-#: src/gpsdrive.c:8556
+#: src/gpsdrive.c:5843
 msgid "Take all WP as route"
 msgstr ""
 
-#: src/gpsdrive.c:8561
+#: src/gpsdrive.c:5848
 msgid "Abort route"
 msgstr "Abbruch Route"
 
-#: src/gpsdrive.c:8621
+#: src/gpsdrive.c:5908
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -438,7 +336,7 @@ msgstr ""
 "Klicken Sie auf die Wegpunktliste\n"
 "um Wegpunkte hinzuzufügen"
 
-#: src/gpsdrive.c:8624
+#: src/gpsdrive.c:5911
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -446,76 +344,76 @@ msgstr ""
 "Klicken Sie auf einen Eintrag\n"
 "um den nächsten Wegpunkt auszuwählen"
 
-#: src/gpsdrive.c:8672
+#: src/gpsdrive.c:5959
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 
-#: src/gpsdrive.c:8676
+#: src/gpsdrive.c:5963
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
 msgstr ""
 
-#: src/gpsdrive.c:8679
+#: src/gpsdrive.c:5966
 #, fuzzy
 msgid "Abort your journey"
 msgstr "Abbruch Route"
 
-#: src/gpsdrive.c:8700
+#: src/gpsdrive.c:5987
 #, fuzzy
 msgid "-v        show version\n"
 msgstr "-v    zeige Version\n"
 
-#: src/gpsdrive.c:8701
+#: src/gpsdrive.c:5988
 #, fuzzy
 msgid "-h        print this help\n"
 msgstr "-h    zeige diese Hilfe\n"
 
-#: src/gpsdrive.c:8702
+#: src/gpsdrive.c:5989
 #, fuzzy
 msgid "-d        turn on debug info\n"
 msgstr "-d    gebe debugging Info aus\n"
 
-#: src/gpsdrive.c:8703
+#: src/gpsdrive.c:5990
 msgid "-D X      set debug Level to X\n"
 msgstr ""
 
-#: src/gpsdrive.c:8704
+#: src/gpsdrive.c:5991
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
 msgstr ""
 
-#: src/gpsdrive.c:8705
+#: src/gpsdrive.c:5992
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr ""
 
-#: src/gpsdrive.c:8706
+#: src/gpsdrive.c:5993
 #, fuzzy
 msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    setze das serielle Gerät für GPS, z.B. /dev/ttyS1\n"
 
-#: src/gpsdrive.c:8707
+#: src/gpsdrive.c:5994
 #, fuzzy
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    Serielles Gerät, PTY Master oder Datei für NMEA *Ausgabe*\n"
 
-#: src/gpsdrive.c:8708
+#: src/gpsdrive.c:5995
 #, fuzzy
 msgid "-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Wählen sie den Friendsserver aus, X ist z.B. linux.quant-x.at\n"
 
-#: src/gpsdrive.c:8709
+#: src/gpsdrive.c:5996
 #, fuzzy
 msgid "-n        Disable use of direct serial connection\n"
 msgstr "Verbind mit %s"
 
-#: src/gpsdrive.c:8711
+#: src/gpsdrive.c:5998
 msgid ""
 "-X        Use DBUS for communication with gpsd. This disables serial and "
 "socket communication\n"
 msgstr ""
 
-#: src/gpsdrive.c:8713
+#: src/gpsdrive.c:6000
 #, fuzzy
 msgid ""
 "-l LANG   Select language of the voice,\n"
@@ -524,7 +422,7 @@ msgstr ""
 "-l X  Auswahl der Sprache für die Sprachausgabe,\n"
 "        X kann english, spanish oder german sein\n"
 
-#: src/gpsdrive.c:8715
+#: src/gpsdrive.c:6002
 #, fuzzy
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
@@ -533,98 +431,84 @@ msgstr ""
 "-s    Setze Höhe des Bildschirms falls die Erkennung\n"
 "      nicht ihren Wünschen entspricht, X ist z.B. 768,600,480,200\n"
 
-#: src/gpsdrive.c:8717
+#: src/gpsdrive.c:6004
 #, fuzzy
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr "-r X  setze Breite des Schirmes, nur mit -s\n"
 
-#: src/gpsdrive.c:8718
+#: src/gpsdrive.c:6005
 #, fuzzy
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    habe nur 1 Maustaste, z.B. bei Touchscreen\n"
 
-#: src/gpsdrive.c:8719
+#: src/gpsdrive.c:6006
 #, fuzzy
 msgid "-a        don't display battery status (i.e. broken APM)\n"
 msgstr "-a    keine Anzeige vom Batteriestatus (z.B. kaputtes APM)\n"
 
-#: src/gpsdrive.c:8720
+#: src/gpsdrive.c:6007
 #, fuzzy
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr ""
 "-b X  Servername für NMEA Server (falls gpsd auf einem anderen Host läuft)\n"
 
-#: src/gpsdrive.c:8721
+#: src/gpsdrive.c:6008
 #, fuzzy
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr "-c X  setze die Startposition im Simulationsmodus auf den Wegpunkt X\n"
 
-#: src/gpsdrive.c:8722
+#: src/gpsdrive.c:6009
 #, fuzzy
 msgid "-x        create separate window for menu\n"
 msgstr "-x    erzeuge eigenes Fenster für das Menü\n"
 
-#: src/gpsdrive.c:8723
+#: src/gpsdrive.c:6010
 msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
 msgstr ""
 
-#: src/gpsdrive.c:8724
+#: src/gpsdrive.c:6011
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 
-#: src/gpsdrive.c:8725
+#: src/gpsdrive.c:6012
 msgid "-q        disable SQL support\n"
 msgstr ""
 
-#: src/gpsdrive.c:8726
+#: src/gpsdrive.c:6013
 msgid "-F        force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:8727
+#: src/gpsdrive.c:6014
 msgid "-S        don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:8728
+#: src/gpsdrive.c:6015
 msgid "-P        start in Pos Mode\n"
 msgstr ""
 
-#: src/gpsdrive.c:8729
+#: src/gpsdrive.c:6016
 msgid "-E        print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:8730
+#: src/gpsdrive.c:6017
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:8731
+#: src/gpsdrive.c:6018
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:8732
+#: src/gpsdrive.c:6019
 msgid ""
 "-z        don't display zoom factor and scale\n"
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:8744
+#: src/gpsdrive.c:6031
 msgid "Select a track file"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:9255
-#, c-format
-msgid ""
-"\n"
-"libmysqlclient.so not found.\n"
-msgstr ""
-
-#: src/gpsdrive.c:9261
-#, c-format
-msgid ""
-"\n"
-"MySQL support disabled.\n"
-msgstr ""
-
-#: src/gpsdrive.c:9452
+#: src/gpsdrive.c:6555
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -634,12 +518,12 @@ msgstr ""
 "Sie können nur zwischen english, spanish und german wählen\n"
 "\n"
 
-#: src/gpsdrive.c:9488 src/settings.c:1972
+#: src/gpsdrive.c:6591 src/settings.c:1973
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Indafaiss"
 
-#: src/gpsdrive.c:9519
+#: src/gpsdrive.c:6622
 #, c-format
 msgid ""
 "\n"
@@ -648,7 +532,7 @@ msgstr ""
 "\n"
 "Verwende proxy: %s auf Port %d"
 
-#: src/gpsdrive.c:9525
+#: src/gpsdrive.c:6628
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
@@ -658,35 +542,35 @@ msgstr ""
 "Ungültige Umgebungsvariable HTTP_PROXY. Sie muss im Format http://proxy."
 "provider.de:3128 sein."
 
-#: src/gpsdrive.c:9732
+#: src/gpsdrive.c:6835
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
 msgstr "(c)2001,2002 F.Ganter"
 
-#: src/gpsdrive.c:9740
+#: src/gpsdrive.c:6843
 msgid "Using speech output"
 msgstr "Verwende Sprachausgabe"
 
-#: src/gpsdrive.c:9769
+#: src/gpsdrive.c:6872
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:9776
+#: src/gpsdrive.c:6879
 #, fuzzy
 msgid "M_ute"
 msgstr "Stumm"
 
 #. Checkbox ---- POI Draw
-#: src/gpsdrive.c:9788
+#: src/gpsdrive.c:6891
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:9803
+#: src/gpsdrive.c:6906
 msgid "draw _Streets"
 msgstr ""
 
-#: src/gpsdrive.c:9818
+#: src/gpsdrive.c:6921
 #, fuzzy
 msgid "draw _Track"
 msgstr "Zeige Spur"
@@ -697,102 +581,102 @@ msgstr "Zeige Spur"
 #. * NULL);
 #.
 #. Checkbox ----   Use SQL
-#: src/gpsdrive.c:9833
+#: src/gpsdrive.c:6936
 msgid "Use SQ_L"
 msgstr ""
 
 #. Checkbox ---- Show WP
-#: src/gpsdrive.c:9846
+#: src/gpsdrive.c:6949
 #, fuzzy
 msgid "Show _WP"
 msgstr "Zeige WP"
 
-#: src/gpsdrive.c:9873
+#: src/gpsdrive.c:6976
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:9881
+#: src/gpsdrive.c:6984
 #, fuzzy
 msgid "Pos. _mode"
 msgstr "Pos. Modus"
 
-#: src/gpsdrive.c:9888
+#: src/gpsdrive.c:6991
 #, fuzzy
 msgid "Show _Track"
 msgstr "Zeige Spur"
 
-#: src/gpsdrive.c:9929
+#: src/gpsdrive.c:7032
 msgid "_Navigation"
 msgstr ""
 
 #. Checkbox ---- Best Map
-#: src/gpsdrive.c:9946
+#: src/gpsdrive.c:7049
 #, fuzzy
 msgid "Auto _best map"
 msgstr "Beste Karte"
 
-#: src/gpsdrive.c:9958
+#: src/gpsdrive.c:7061
 msgid "Save track"
 msgstr "Speichere Spur"
 
 #. Checkbox ---- Show Map
-#: src/gpsdrive.c:9970
+#: src/gpsdrive.c:7073
 msgid "Shown map type"
 msgstr "Zeige Kartenart"
 
 #. Checkbox ---- Show Map: map_
-#: src/gpsdrive.c:9980
+#: src/gpsdrive.c:7083
 msgid "Street map"
 msgstr "Strassenkarte"
 
 #. Checkbox ---- Show Map: top_
-#: src/gpsdrive.c:9989
+#: src/gpsdrive.c:7092
 msgid "Topo map"
 msgstr "Topografisch"
 
-#: src/gpsdrive.c:10076
+#: src/gpsdrive.c:7179
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
 
-#: src/gpsdrive.c:10129 src/gpsdrive.c:10529
+#: src/gpsdrive.c:7232 src/gpsdrive.c:7585
 msgid "Bearing"
 msgstr "Bearing"
 
-#: src/gpsdrive.c:10153
+#: src/gpsdrive.c:7256
 msgid "GPS Info"
 msgstr ""
 
-#: src/gpsdrive.c:10206
+#: src/gpsdrive.c:7303
 msgid "Bat."
 msgstr "Bat."
 
-#: src/gpsdrive.c:10223
+#: src/gpsdrive.c:7318
 #, fuzzy
 msgid "TC"
 msgstr "UTC"
 
 #. displays speed over ground
-#: src/gpsdrive.c:10245 src/gpsdrive.c:10539 src/gpsdrive.c:10541
-#: src/gpsdrive.c:10547 src/gpsdrive.c:10549
+#: src/gpsdrive.c:7338 src/gpsdrive.c:7600 src/gpsdrive.c:7604
+#: src/gpsdrive.c:7613 src/gpsdrive.c:7616
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:10326 src/gpsdrive.c:10333
+#: src/gpsdrive.c:7419 src/gpsdrive.c:7426
 #, fuzzy
 msgid "Selected:"
 msgstr "Wähle Ziel"
 
-#: src/gpsdrive.c:10327 src/gpsdrive.c:10334
+#: src/gpsdrive.c:7420 src/gpsdrive.c:7427
 msgid "within"
 msgstr ""
 
-#: src/gpsdrive.c:10342
+#: src/gpsdrive.c:7435
 msgid "Distance to target"
 msgstr "Entfernung zum Ziel"
 
-#: src/gpsdrive.c:10384
+#: src/gpsdrive.c:7469
 msgid "Altitude"
 msgstr "Höhe"
 
@@ -800,105 +684,105 @@ msgstr "Höhe"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:10392 src/settings.c:858
+#: src/gpsdrive.c:7477 src/settings.c:859
 #, fuzzy
 msgid "Waypoints"
 msgstr "Wegpunkt"
 
-#: src/gpsdrive.c:10526
+#: src/gpsdrive.c:7582
 msgid "Map file"
 msgstr "Kartendatei"
 
-#: src/gpsdrive.c:10527
+#: src/gpsdrive.c:7583
 msgid "Map scale"
 msgstr "Maßstab"
 
-#: src/gpsdrive.c:10528
+#: src/gpsdrive.c:7584
 msgid "Heading"
 msgstr "Kurs"
 
-#: src/gpsdrive.c:10530
+#: src/gpsdrive.c:7586
 msgid "Time at Dest."
 msgstr "Zeit zum Ziel"
 
-#: src/gpsdrive.c:10531
+#: src/gpsdrive.c:7587
 msgid "Pref. scale"
 msgstr "Wahlm."
 
-#: src/gpsdrive.c:10535
+#: src/gpsdrive.c:7592
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:10537
+#: src/gpsdrive.c:7595
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:10543 src/gpsdrive.c:10545
+#: src/gpsdrive.c:7607 src/gpsdrive.c:7610
 msgid "0000"
 msgstr ""
 
-#: src/gpsdrive.c:10652 src/gpsdrive.c:10728 src/gpsdrive.c:10741
+#: src/gpsdrive.c:7692 src/gpsdrive.c:7768 src/gpsdrive.c:7781
 msgid "Menu"
 msgstr ""
 
-#: src/gpsdrive.c:10665 src/gpsdrive.c:10732 src/gpsdrive.c:10742
+#: src/gpsdrive.c:7705 src/gpsdrive.c:7772 src/gpsdrive.c:7782
 #, fuzzy
 msgid "Status"
 msgstr "GpsDrive Status"
 
-#: src/gpsdrive.c:10724 src/gpsdrive.c:10740
+#: src/gpsdrive.c:7764 src/gpsdrive.c:7780
 msgid "Map"
 msgstr "Kortn"
 
-#: src/gpsdrive.c:10907
+#: src/gpsdrive.c:7947
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:10912
+#: src/gpsdrive.c:7952
 msgid "Number of used satellites/satellites in view"
 msgstr ""
 
-#: src/gpsdrive.c:10916
+#: src/gpsdrive.c:7956
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:10920
+#: src/gpsdrive.c:7960
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:10925
+#: src/gpsdrive.c:7965
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:10928
+#: src/gpsdrive.c:7968
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "Wählen Sie eine Spur Datei"
 
-#: src/gpsdrive.c:10931
+#: src/gpsdrive.c:7971
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:10936
+#: src/gpsdrive.c:7976
 msgid "Disable output of speech"
 msgstr "Schaltet die Sprachausgabe stumm"
 
-#: src/gpsdrive.c:10939
+#: src/gpsdrive.c:7979
 msgid "Use SQL server for waypoints"
 msgstr ""
 
-#: src/gpsdrive.c:10943
+#: src/gpsdrive.c:7983
 msgid "Show waypoints on the map"
 msgstr "Zeige Wegpunkte auf der Karte"
 
-#: src/gpsdrive.c:10946
+#: src/gpsdrive.c:7986
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
@@ -907,97 +791,97 @@ msgstr ""
 "der Karte bewegen. Wenn sie am Rand klicken bewegen sie sich zur "
 "benachbarten Karte."
 
-#: src/gpsdrive.c:10949
+#: src/gpsdrive.c:7989
 msgid "Show tracking on the map"
 msgstr "Zeige Tracking auf der Karte"
 
-#: src/gpsdrive.c:10955
+#: src/gpsdrive.c:7995
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:10961
+#: src/gpsdrive.c:8001
 #, fuzzy
 msgid "Stop GPSD"
 msgstr "Starte GPSD"
 
-#: src/gpsdrive.c:10964
+#: src/gpsdrive.c:8004
 msgid "Stop GPSD and switch to simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:10970
+#: src/gpsdrive.c:8010
 msgid "Starts GPSD for NMEA mode"
 msgstr "Startet GPSD für den NMEA Modus"
 
-#: src/gpsdrive.c:10973
+#: src/gpsdrive.c:8013
 msgid "Settings for GpsDrive"
 msgstr "Einstellungen für GpsDrive"
 
-#: src/gpsdrive.c:10975
+#: src/gpsdrive.c:8015
 msgid "Zoom into the current map"
 msgstr "Momentane Karte vergrössern"
 
-#: src/gpsdrive.c:10977
+#: src/gpsdrive.c:8017
 msgid "Zooms out off the current map"
 msgstr "Momentane Karte verkleinern"
 
-#: src/gpsdrive.c:10979
+#: src/gpsdrive.c:8019
 msgid "Select the next more detailed map"
 msgstr "Die nächste mehr detailierte Karte auswählen"
 
-#: src/gpsdrive.c:10981
+#: src/gpsdrive.c:8021
 msgid "Select the next less detailed map"
 msgstr "Die nächste weniger detailierte Karte auswählen"
 
-#: src/gpsdrive.c:10986
+#: src/gpsdrive.c:8026
 msgid "Select here a destination from the waypoint list"
 msgstr "Auswahl eines Ziels aus der Wegpunkt Liste"
 
-#: src/gpsdrive.c:10991
+#: src/gpsdrive.c:8031
 msgid "Select the map scale of avail. maps."
 msgstr "Maßstab aus den vorhandenen Karten auswählen."
 
-#: src/gpsdrive.c:10998
+#: src/gpsdrive.c:8038
 msgid "Always select the most detailed map available"
 msgstr "Automatisch die meist detailierte Karte auswählen"
 
-#: src/gpsdrive.c:11001
+#: src/gpsdrive.c:8041
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11004
+#: src/gpsdrive.c:8044
 msgid "Draw Streets found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11006
+#: src/gpsdrive.c:8046
 msgid "Draw Tracks found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:11009
+#: src/gpsdrive.c:8049
 msgid "Save the track to given filename at program exit"
 msgstr "Speicher Spur in Datei bei Programmende"
 
-#: src/gpsdrive.c:11015
+#: src/gpsdrive.c:8055
 msgid "Number of waypoints selected from SQL server"
 msgstr ""
 
-#: src/gpsdrive.c:11019
+#: src/gpsdrive.c:8059
 msgid "Number of selected waypoints, which are in range"
 msgstr ""
 
-#: src/gpsdrive.c:11023
+#: src/gpsdrive.c:8063
 msgid "Range for waypoint selection in kilometers"
 msgstr ""
 
-#: src/gpsdrive.c:11026
+#: src/gpsdrive.c:8066
 msgid "This shows the time from your GPS receiver"
 msgstr ""
 
-#: src/gpsdrive.c:11030
+#: src/gpsdrive.c:8070
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr ""
 
-#: src/gpsdrive.c:11130
+#: src/gpsdrive.c:8170
 #, c-format
 msgid ""
 "\n"
@@ -1010,7 +894,7 @@ msgstr ""
 msgid "can't open socket for port "
 msgstr "Kann Socket für Port nicht öffnen"
 
-#: src/gpsmisc.c:546 src/gpsmisc.c:548 src/gpsmisc.c:581 src/gpsmisc.c:583
+#: src/gpsmisc.c:561 src/gpsmisc.c:563 src/gpsmisc.c:596 src/gpsmisc.c:598
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr ""
@@ -1069,36 +953,50 @@ msgid "switching WAAS/EGNOS off\n"
 msgstr ""
 
 #. if ( mydebug > 50 )
-#: src/gpssql.c:298
+#: src/gpssql.c:310
 #, c-format
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 
-#: src/gpssql.c:365
+#: src/gpssql.c:380
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr ""
 
-#: src/gpssql.c:385
+#: src/gpssql.c:402
 #, c-format
 msgid "last index: %d\n"
 msgstr ""
 
-#: src/gpssql.c:407
+#: src/gpssql.c:425
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr ""
 
-#: src/gpssql.c:558
+#: src/gpssql.c:580
 #, c-format
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/icons.c:488
+#: src/gpssql.c:741
+#, c-format
+msgid ""
+"\n"
+"libmysqlclient.so not found.\n"
+msgstr ""
+
+#: src/gpssql.c:747
+#, c-format
+msgid ""
+"\n"
+"MySQL support disabled.\n"
+msgstr ""
+
+#: src/icons.c:489
 msgid " Friendsicon could not be loaded:"
 msgstr "Friendsicon hob i net lodn kenna:"
 
-#: src/icons.c:491
+#: src/icons.c:492
 #, c-format
 msgid ""
 "\n"
@@ -1108,22 +1006,22 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:530 src/icons.c:536
+#: src/icons.c:531 src/icons.c:537
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
 
-#: src/import_map.c:225
+#: src/import_map.c:226
 msgid "Select a map file"
 msgstr "Wöhl Kortn Datei"
 
-#: src/import_map.c:295
+#: src/import_map.c:296
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
 msgstr ""
 
-#: src/import_map.c:297
+#: src/import_map.c:298
 #, fuzzy
 msgid ""
 "\n"
@@ -1143,7 +1041,7 @@ msgstr ""
 "oder geben Sie sie einfach ein.\n"
 "Klicken sie dann auf Akzeptieren."
 
-#: src/import_map.c:304
+#: src/import_map.c:305
 #, fuzzy
 msgid ""
 "Now do the same for your second point and click on the\n"
@@ -1152,67 +1050,71 @@ msgstr ""
 "Machen Sie das selbe für den zweiten Punkt und klicken dann auf den "
 "Fertigstellen-Knopf. Die Karte kann dann benutzt werden. "
 
-#: src/import_map.c:311
+#: src/import_map.c:312
 msgid "Import Assistant. Step 1"
 msgstr "Import Druide. Schritt 1"
 
-#: src/import_map.c:313
+#: src/import_map.c:314
 msgid "Import Assistant. Step 2"
 msgstr "Import Druide. Schritt 2"
 
-#: src/import_map.c:320
+#: src/import_map.c:321
 msgid "Accept first point"
 msgstr "Akzeptiere ersten Punkt"
 
-#: src/import_map.c:326
+#: src/import_map.c:327
 msgid "Accept Scale and Finish"
 msgstr ""
 
-#: src/import_map.c:333
+#: src/import_map.c:334
 msgid "Finish"
 msgstr "Fertigmochn"
 
-#: src/import_map.c:348
+#: src/import_map.c:349
 msgid "Go up"
 msgstr "Aufi"
 
-#: src/import_map.c:351
+#: src/import_map.c:352
 msgid "Go left"
 msgstr "Links ume"
 
-#: src/import_map.c:354
+#: src/import_map.c:355
 msgid "Go right"
 msgstr "Rechts ume"
 
-#: src/import_map.c:357
+#: src/import_map.c:358
 msgid "Go down"
 msgstr "Obe"
 
-#: src/import_map.c:360
+#: src/import_map.c:361
 msgid "Zoom in"
 msgstr "Grässa"
 
-#: src/import_map.c:363
+#: src/import_map.c:364
 msgid "Zoom out"
 msgstr "Klana"
 
-#: src/import_map.c:385
+#: src/import_map.c:386
 msgid "Screen X"
 msgstr "Schirm X"
 
-#: src/import_map.c:387
+#: src/import_map.c:388
 msgid "Screen Y"
 msgstr "Schirm Y"
 
-#: src/import_map.c:399
+#: src/import_map.c:394
+msgid "Scale"
+msgstr "Moßstob"
+
+#: src/import_map.c:400
 msgid "Browse waypoint"
 msgstr "Wähle Wegpunkt"
 
-#: src/import_map.c:428
+#: src/import_map.c:429
 msgid "Browse filename"
 msgstr "Wähle Kartendatei"
 
-#: src/import_map.c:792
+#: src/import_map.c:793
 msgid "SELECTED"
 msgstr "AUSGEWÄHLT"
 
@@ -1221,36 +1123,36 @@ msgstr "AUSGEWÄHLT"
 msgid "Nautic settings"
 msgstr "Irgendwölche Sochn"
 
-#: src/nautic.c:122 src/settings.c:1118
+#: src/nautic.c:122 src/settings.c:1119
 msgid "Nautic"
 msgstr "Nautisch"
 
-#: src/poi.c:742 src/streets.c:635
+#: src/poi.c:743 src/streets.c:636
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""
 
-#: src/settings.c:535
+#: src/settings.c:536
 msgid "Setting WP label font"
 msgstr ""
 
-#: src/settings.c:540
+#: src/settings.c:541
 msgid "Setting big display font"
 msgstr ""
 
-#: src/settings.c:624
+#: src/settings.c:625
 msgid "Setting big display color"
 msgstr ""
 
-#: src/settings.c:663
+#: src/settings.c:664
 msgid "Setting track color"
 msgstr ""
 
-#: src/settings.c:707
+#: src/settings.c:708
 msgid "Setting friends label color"
 msgstr ""
 
-#: src/settings.c:844
+#: src/settings.c:845
 #, fuzzy
 msgid ""
 "Don't use more than\n"
@@ -1259,130 +1161,138 @@ msgstr ""
 "Bidde net mehr ols dreisg\n"
 "Wegpunkt(way*.txt) Datein!"
 
-#: src/settings.c:856
+#: src/settings.c:857
 #, fuzzy
 msgid "Waypoint files to use"
 msgstr "Nimm de Wegpunktdatei"
 
-#: src/settings.c:888 src/settings.c:893
+#: src/settings.c:889 src/settings.c:894
 #, fuzzy
 msgid "Settings"
 msgstr "GPS Sochn"
 
 #. misc area
-#: src/settings.c:899
+#: src/settings.c:900
 msgid "Misc settings"
 msgstr "Irgendwölche Sochn"
 
-#: src/settings.c:902
+#: src/settings.c:903
 msgid "Show Shadows"
 msgstr "Zag an Schottn"
 
-#: src/settings.c:910
+#: src/settings.c:911
 msgid "Etched frames"
 msgstr ""
 
-#: src/settings.c:918
+#: src/settings.c:919
 msgid "Draw grid"
 msgstr "Zeichne Raster"
 
-#: src/settings.c:927
+#: src/settings.c:928
 msgid "Simulation: Follow target"
 msgstr "Simulator: Züh nachhirschn"
 
-#: src/settings.c:935
+#: src/settings.c:936
 msgid "Maximum CPU load"
 msgstr ""
 
-#: src/settings.c:944
+#: src/settings.c:945
 #, fuzzy
 msgid "Track"
 msgstr "Zeige Spur"
 
-#: src/settings.c:959
+#: src/settings.c:960
 msgid "Maps directory"
 msgstr "Kortnverzeichnis"
 
-#: src/settings.c:964
+#: src/settings.c:965
 #, fuzzy
 msgid "Automatic"
 msgstr "Sölba"
 
-#: src/settings.c:971
+#: src/settings.c:972
 msgid "On"
 msgstr ""
 
-#: src/settings.c:978
+#: src/settings.c:979
 msgid "Off"
 msgstr ""
 
 #. GPS settings area
-#: src/settings.c:1011
+#: src/settings.c:1012
 msgid "GPS settings"
 msgstr "GPS Sochn"
 
-#: src/settings.c:1022
+#: src/settings.c:1023
 msgid "Test for GARMIN"
 msgstr "GARMIN nochschaun"
 
-#: src/settings.c:1031
+#: src/settings.c:1032
 msgid "Use DGPS-IP"
 msgstr "Moch a DGPS-IP"
 
-#: src/settings.c:1040
+#: src/settings.c:1041
 msgid "GPS is Earthmate"
 msgstr ""
 
-#: src/settings.c:1049
+#: src/settings.c:1050
 msgid "Use serial conn."
 msgstr ""
 
-#: src/settings.c:1063
+#: src/settings.c:1064
 msgid "Interface"
 msgstr "Indafaiss"
 
-#: src/settings.c:1064
+#: src/settings.c:1065
 msgid "Baudrate"
 msgstr ""
 
 #. units area
-#: src/settings.c:1100
+#: src/settings.c:1101
 msgid "Units"
 msgstr "Wos fia Moss"
 
-#: src/settings.c:1106
+#: src/settings.c:1107
 msgid "Miles"
 msgstr "Meilen"
 
-#: src/settings.c:1112
+#: src/settings.c:1113
 msgid "Metric"
 msgstr "Unsrigs"
 
-#: src/settings.c:1139
+#: src/settings.c:1140
 msgid "Deg.decimal"
 msgstr ""
 
-#: src/settings.c:1146
+#: src/settings.c:1147
 msgid "Deg Min Sec"
 msgstr ""
 
-#: src/settings.c:1154
+#: src/settings.c:1155
 msgid "Deg Min.dec"
 msgstr ""
 
 #. default download server
-#: src/settings.c:1181
+#: src/settings.c:1182
 msgid "Default map server"
 msgstr "Wöchana Kortensörva"
 
+#: src/settings.c:1193
+msgid "Expedia Germany"
+msgstr ""
+
+#: src/settings.c:1200
+msgid "Expedia USA"
+msgstr ""
+
 #. Night light mode
-#: src/settings.c:1217
+#: src/settings.c:1218
 #, fuzzy
 msgid "Night light mode"
 msgstr "Scholtet de Schottn auf da Kortn ou oder aus"
 
 #. Sound settings
-#: src/settings.c:1234
+#: src/settings.c:1235
 #, fuzzy
 msgid "Speech output settings"
 msgstr "Irgendwölche Sochn"
@@ -1395,101 +1305,101 @@ msgstr "Irgendwölche Sochn"
 #. * sound_gps       ... say GPS status
 #. *
 #.
-#: src/settings.c:1246
+#: src/settings.c:1247
 msgid "Direction"
 msgstr ""
 
-#: src/settings.c:1270
+#: src/settings.c:1271
 #, fuzzy
 msgid "GPS Status"
 msgstr "GpsDrive Status"
 
-#: src/settings.c:1286
+#: src/settings.c:1287
 msgid "Switch on for speech output of the direction to the target"
 msgstr ""
 
-#: src/settings.c:1291
+#: src/settings.c:1292
 msgid "Switch on for speech output of the distance to the target"
 msgstr ""
 
-#: src/settings.c:1296
+#: src/settings.c:1297
 msgid "Switch on for speech output of your current speed"
 msgstr ""
 
-#: src/settings.c:1300
+#: src/settings.c:1301
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr ""
 
 #. Font settings
-#: src/settings.c:1304
+#: src/settings.c:1305
 #, fuzzy
 msgid "Font and color settings"
 msgstr "GPS Sochn"
 
-#: src/settings.c:1308
+#: src/settings.c:1309
 msgid "WP Label"
 msgstr ""
 
-#: src/settings.c:1309
+#: src/settings.c:1310
 msgid "Big display"
 msgstr ""
 
-#: src/settings.c:1310
+#: src/settings.c:1311
 msgid "Display color"
 msgstr ""
 
-#: src/settings.c:1331
+#: src/settings.c:1332
 msgid "Switch units to statute miles"
 msgstr "Scholt auf Meilen um"
 
-#: src/settings.c:1334
+#: src/settings.c:1335
 msgid "Switch units to nautical miles"
 msgstr "Scholt auf nautische Meilen um"
 
-#: src/settings.c:1337
+#: src/settings.c:1338
 msgid "Switch units to metric system (Kilometers)"
 msgstr "Scholtet auf unsriges System (Kilometa) um"
 
-#: src/settings.c:1341
+#: src/settings.c:1342
 msgid ""
 "If selected display latitude and longitude in degree, minutes and seconds "
 "notation"
 msgstr ""
 
-#: src/settings.c:1345
+#: src/settings.c:1346
 msgid ""
 "If selected display latitude and longitude in degrees and decimal minutes "
 "notation"
 msgstr ""
 
-#: src/settings.c:1349
+#: src/settings.c:1350
 msgid "If selected display latitude and longitude in decimal degrees notation"
 msgstr ""
 
-#: src/settings.c:1353
+#: src/settings.c:1354
 #, fuzzy
 msgid ""
 "Set the german expedia server(expedia.de) as default download server. Use "
 "this if you are in Europe"
 msgstr "Nimmt den Expedia als Standardserver"
 
-#: src/settings.c:1358
+#: src/settings.c:1359
 msgid "Set Expedia as default download server"
 msgstr "Nimmt den Expedia als Standardserver"
 
-#: src/settings.c:1361
+#: src/settings.c:1362
 msgid "Switches shadows on map on or off"
 msgstr "Scholtet de Schottn auf da Kortn ou oder aus"
 
-#: src/settings.c:1364
+#: src/settings.c:1365
 msgid "Switches between different type of frame ornaments"
 msgstr ""
 
-#: src/settings.c:1368
+#: src/settings.c:1369
 msgid "This will show a grid over the map"
 msgstr ""
 
-#: src/settings.c:1372
+#: src/settings.c:1373
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load, use 20-30% on notebooks while on "
@@ -1497,15 +1407,15 @@ msgid ""
 "screen"
 msgstr ""
 
-#: src/settings.c:1378
+#: src/settings.c:1379
 msgid "If activated, pointer moves to target in simulation mode"
 msgstr "Wenst onkreizelst geht da Zaga im Simulationsmodus zum Züh zuawe"
 
-#: src/settings.c:1382
+#: src/settings.c:1383
 msgid "Set here the color of the drawn track"
 msgstr ""
 
-#: src/settings.c:1386
+#: src/settings.c:1387
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
@@ -1513,7 +1423,7 @@ msgstr ""
 "Pfad für die Kartendateien. Im angegebenen Verzeichnis muss auch die "
 "Indexdatei map_koord.txt vorhanden sein."
 
-#: src/settings.c:1391
+#: src/settings.c:1392
 msgid ""
 "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 "only have a NMEA device."
@@ -1521,13 +1431,13 @@ msgstr ""
 "Falls ausgewählt versucht gpsdrive wenn möglich den GARMIN-Modus zu "
 "verwenden. Wählen sie es ab wenn sie nur ein NMEA Gerät haben."
 
-#: src/settings.c:1396
+#: src/settings.c:1397
 msgid ""
 "Set here the baud rate of your GPS device, NMEA devices usually have a speed "
 "of 4800 baud"
 msgstr ""
 
-#: src/settings.c:1400
+#: src/settings.c:1401
 msgid ""
 "If selected, gpsdrive try to use differential GPS over IP. You must have an "
 "internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
@@ -1536,13 +1446,13 @@ msgstr ""
 "müssen eine Internetverbindung und einen DGPS fähigen GPS Empfänger haben. "
 "Arbeitet nur im NMEA Modus!"
 
-#: src/settings.c:1406
+#: src/settings.c:1407
 msgid ""
 "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 "button will provide gpsd with the needed additional parameters"
 msgstr ""
 
-#: src/settings.c:1412
+#: src/settings.c:1413
 msgid ""
 "Select this if you want to use of the direct serial connection. If disabled, "
 "you can use the receiver only through gpsd. On the other hand, the direct "
@@ -1550,309 +1460,309 @@ msgid ""
 "startup"
 msgstr ""
 
-#: src/settings.c:1419
+#: src/settings.c:1420
 msgid "Specify the serial interface where the GPS is connected"
 msgstr ""
 "Geben sie die serielle Schnittstelle an, an der das GPS angeschlossen ist"
 
-#: src/settings.c:1424
+#: src/settings.c:1425
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
 "turn off nightmode."
 msgstr ""
 
-#: src/settings.c:1429
+#: src/settings.c:1430
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr ""
 
-#: src/settings.c:1433
+#: src/settings.c:1434
 #, fuzzy
 msgid "Switches night mode off"
 msgstr "Scholtet de Schottn auf da Kortn ou oder aus"
 
-#: src/settings.c:1437
+#: src/settings.c:1438
 #, fuzzy
 msgid "Here you can set the font for the waypoint labels"
 msgstr "Auswahl eines Ziels aus der Wegpunkt Liste"
 
-#: src/settings.c:1441
+#: src/settings.c:1442
 msgid "Here you can set the font for the big display for Speed and Distance"
 msgstr ""
 
-#: src/settings.c:1446
+#: src/settings.c:1447
 #, fuzzy
 msgid ""
 "Here you can set the color for the big display for speed, distance and "
 "altitude"
 msgstr "Auswahl eines Ziels aus der Wegpunkt Liste"
 
-#: src/settings.c:1619
+#: src/settings.c:1620
 msgid "Geo information"
 msgstr ""
 
-#: src/settings.c:1621
+#: src/settings.c:1622
 msgid "Geo info"
 msgstr ""
 
-#: src/settings.c:1631
+#: src/settings.c:1632
 msgid "Sunrise"
 msgstr ""
 
-#: src/settings.c:1634
+#: src/settings.c:1635
 msgid "Sunset"
 msgstr ""
 
-#: src/settings.c:1637
+#: src/settings.c:1638
 msgid "Standard"
 msgstr ""
 
-#: src/settings.c:1640
+#: src/settings.c:1641
 msgid "Transit"
 msgstr ""
 
-#: src/settings.c:1643
+#: src/settings.c:1644
 msgid "GPS-Time"
 msgstr ""
 
-#: src/settings.c:1646
+#: src/settings.c:1647
 #, fuzzy
 msgid "Astro."
 msgstr "Sölba"
 
-#: src/settings.c:1649
+#: src/settings.c:1650
 #, fuzzy
 msgid "Naut."
 msgstr "Nautisch"
 
-#: src/settings.c:1652
+#: src/settings.c:1653
 msgid "Civil"
 msgstr ""
 
-#: src/settings.c:1655
+#: src/settings.c:1656
 msgid "Timezone"
 msgstr ""
 
-#: src/settings.c:1658
+#: src/settings.c:1659
 msgid "Store TZ"
 msgstr ""
 
-#: src/settings.c:1672
+#: src/settings.c:1673
 msgid ""
 "If selected, the timezone is stored, otherwise your actual timezone will "
 "automatically used"
 msgstr ""
 
-#: src/settings.c:1693
+#: src/settings.c:1694
 #, fuzzy
 msgid "Night"
 msgstr "Rechts ume"
 
-#: src/settings.c:1697
+#: src/settings.c:1698
 msgid "Day"
 msgstr ""
 
-#: src/settings.c:1816 src/settings.c:1821 src/settings.c:1825
+#: src/settings.c:1817 src/settings.c:1822 src/settings.c:1826
 #, fuzzy
 msgid "Unit:"
 msgstr "Wos fia Moss"
 
-#: src/settings.c:1816
+#: src/settings.c:1817
 #, fuzzy
 msgid "miles"
 msgstr "Meilen"
 
-#: src/settings.c:1821
+#: src/settings.c:1822
 msgid "nautic miles/knots"
 msgstr ""
 
-#: src/settings.c:1825
+#: src/settings.c:1826
 msgid "kilometers"
 msgstr ""
 
-#: src/settings.c:1841
+#: src/settings.c:1842
 msgid "Trip information"
 msgstr ""
 
-#: src/settings.c:1843
+#: src/settings.c:1844
 msgid "Trip info"
 msgstr ""
 
-#: src/settings.c:1854
+#: src/settings.c:1855
 msgid "Odometer"
 msgstr ""
 
-#: src/settings.c:1856
+#: src/settings.c:1857
 msgid "Total time"
 msgstr ""
 
-#: src/settings.c:1858
+#: src/settings.c:1859
 msgid "Av. speed"
 msgstr ""
 
-#: src/settings.c:1860
+#: src/settings.c:1861
 msgid "Max. speed"
 msgstr ""
 
-#: src/settings.c:1880
+#: src/settings.c:1881
 msgid "Reset"
 msgstr ""
 
-#: src/settings.c:1886
+#: src/settings.c:1887
 msgid "Resets the trip values to zero"
 msgstr ""
 
-#: src/settings.c:1974
+#: src/settings.c:1975
 msgid "You should change your name in the first field!"
 msgstr ""
 
-#: src/settings.c:2205
+#: src/settings.c:2206
 #, fuzzy
 msgid "Show position newer as"
 msgstr "Zeige Wegpunkte auf der Karte"
 
-#: src/settings.c:2207
+#: src/settings.c:2208
 msgid "Friends server setup"
 msgstr ""
 
-#: src/settings.c:2208
+#: src/settings.c:2209
 #, fuzzy
 msgid "Friends"
 msgstr "Fertigmochn"
 
-#: src/settings.c:2219
+#: src/settings.c:2220
 msgid "Days"
 msgstr ""
 
-#: src/settings.c:2220
+#: src/settings.c:2221
 msgid "Hours"
 msgstr ""
 
-#: src/settings.c:2221
+#: src/settings.c:2222
 #, fuzzy
 msgid "Minutes"
 msgstr "Meilen"
 
-#: src/settings.c:2226
+#: src/settings.c:2227
 msgid "Your name"
 msgstr ""
 
-#: src/settings.c:2231
+#: src/settings.c:2232
 msgid ""
 "Set here your name which should be shown near your vehicle. You may use "
 "spaces here!"
 msgstr ""
 
-#: src/settings.c:2238
+#: src/settings.c:2239
 msgid "Server name"
 msgstr ""
 
-#: src/settings.c:2242
+#: src/settings.c:2243
 msgid ""
 "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends "
 "server, then you have to press the \"Lookup\" button!"
 msgstr ""
 
-#: src/settings.c:2250
+#: src/settings.c:2251
 msgid "Lookup"
 msgstr ""
 
-#: src/settings.c:2256
+#: src/settings.c:2257
 msgid ""
 "You have to press the \"Lookup\" button to resolve the friends server name!"
 msgstr ""
 
-#: src/settings.c:2264
+#: src/settings.c:2265
 msgid "Set here the color of the label displayed at friends position"
 msgstr ""
 
-#: src/settings.c:2271
+#: src/settings.c:2272
 msgid "Friends server IP"
 msgstr ""
 
-#: src/settings.c:2275
+#: src/settings.c:2276
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
 
-#: src/settings.c:2279 src/settings.c:2284 src/settings.c:2288
+#: src/settings.c:2280 src/settings.c:2285 src/settings.c:2289
 msgid ""
 "Set here the time limit in which the friends position is shown. Older "
 "positions are not shown."
 msgstr ""
 
-#: src/settings.c:2297
+#: src/settings.c:2298
 msgid "Use friends server"
 msgstr ""
 
-#: src/settings.c:2307
+#: src/settings.c:2308
 msgid ""
 "Enable/disable use of friends server. You must enter a Username, don't use "
 "the default name!"
 msgstr ""
 
-#: src/settings.c:2311
+#: src/settings.c:2312
 msgid ""
 "If you enable the friends server mode,\n"
 "<span color=\"red\">everyone</span> using the same server\n"
 "can see your position!"
 msgstr ""
 
-#: src/settings.c:2381
+#: src/settings.c:2382
 msgid "SQL selection criterias"
 msgstr ""
 
-#: src/settings.c:2382
+#: src/settings.c:2383
 msgid "SQL"
 msgstr ""
 
-#: src/settings.c:2409
+#: src/settings.c:2410
 msgid "Dist. limit[km] "
 msgstr ""
 
-#: src/settings.c:2413
+#: src/settings.c:2414
 msgid "If enabled, show waypoints only within this distance"
 msgstr ""
 
-#: src/settings.c:2430
+#: src/settings.c:2431
 msgid "Enable/disable distance selection"
 msgstr ""
 
-#: src/settings.c:2437
+#: src/settings.c:2438
 #, fuzzy
 msgid "Show no_ssid "
 msgstr "Zeige WP"
 
-#: src/settings.c:2450
+#: src/settings.c:2451
 msgid ""
 "If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
 "you can disable it here"
 msgstr ""
 
-#: src/settings.c:2456
+#: src/settings.c:2457
 #, fuzzy
 msgid "Selection mode"
 msgstr "Tua so ols ob Modus"
 
-#: src/settings.c:2458
+#: src/settings.c:2459
 msgid "include"
 msgstr ""
 
-#: src/settings.c:2461
+#: src/settings.c:2462
 msgid "exclude"
 msgstr ""
 
-#: src/settings.c:2464
+#: src/settings.c:2465
 msgid ""
 "Show only waypoints where the type field contains one of the selected words"
 msgstr ""
 
-#: src/settings.c:2467
+#: src/settings.c:2468
 msgid ""
 "Show only waypoints where the type field doesn't contain any the selected "
 "words"
 msgstr ""
 
-#: src/splash.c:626
+#: src/splash.c:630
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1864,7 +1774,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:634
+#: src/splash.c:638
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1878,7 +1788,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:644
+#: src/splash.c:648
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1891,58 +1801,58 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:654
+#: src/splash.c:658
 #, fuzzy
 msgid "GpsDrive v"
 msgstr "GpsDrive Hilfe"
 
-#: src/splash.c:660
+#: src/splash.c:664
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.cc\n"
 msgstr ""
 
-#: src/splash.c:664
+#: src/splash.c:668
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
 msgstr ""
 
-#: src/splash.c:669
+#: src/splash.c:673
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 
-#: src/splash.c:674
+#: src/splash.c:678
 #, fuzzy
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Zeige Tracking auf der Karte"
 
-#: src/splash.c:682
+#: src/splash.c:686
 msgid "Short cuts:\n"
 msgstr ""
 
-#: src/splash.c:689
+#: src/splash.c:693
 msgid "The other key shortcuts are marked as "
 msgstr ""
 
-#: src/splash.c:692
+#: src/splash.c:696
 msgid "underlined"
 msgstr ""
 
-#: src/splash.c:695
+#: src/splash.c:699
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:698
+#: src/splash.c:702
 msgid "Have a lot of fun!"
 msgstr ""
 
-#: src/splash.c:834
+#: src/splash.c:838
 msgid "Please donate to GpsDrive"
 msgstr ""
 
-#: src/splash.c:840
+#: src/splash.c:844
 msgid ""
 "\n"
 "\n"
@@ -1954,11 +1864,11 @@ msgid ""
 "To do so, just go to"
 msgstr ""
 
-#: src/splash.c:845
+#: src/splash.c:849
 msgid " http://www.gpsdrive.cc "
 msgstr ""
 
-#: src/splash.c:848
+#: src/splash.c:852
 msgid ""
 "and click on the PayPal button.\n"
 "\n"
@@ -1969,36 +1879,36 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:884
+#: src/splash.c:888
 #, fuzzy
 msgid "About GpsDrive donation"
 msgstr "GpsDrive Menü"
 
-#: src/splash.c:967
+#: src/splash.c:971
 msgid "From:"
 msgstr ""
 
-#: src/splash.c:1038
+#: src/splash.c:1042
 #, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr ""
 
-#: src/splash.c:1050
+#: src/splash.c:1054
 msgid "You received a message through the friends server from:\n"
 msgstr ""
 
-#: src/splash.c:1061
+#: src/splash.c:1065
 #, fuzzy
 msgid "Message text:\n"
 msgstr "  Mödung  "
 
-#: src/splash.c:1112
+#: src/splash.c:1116
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr "Fehler beim Speichern der Konfigurationsdatei ~/.gpsdrive/gpsdriverc"
 
-#: src/splash.c:1611 src/splash.c:1672
+#: src/splash.c:1615 src/splash.c:1676
 #, c-format
 msgid ""
 "\n"
@@ -2008,10 +1918,63 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:1655
+#: src/splash.c:1659
 #, fuzzy
 msgid "About GpsDrive"
 msgstr "GpsDrive Menü"
+
+#~ msgid "Select coordinates and scale"
+#~ msgstr "Wöl a Koordinaten und an Moßstob aus"
+
+#~ msgid "Download map"
+#~ msgstr "Karte obaloadn"
+
+#, fuzzy
+#~ msgid "Map covers"
+#~ msgstr "Maßstab"
+
+#~ msgid "Map file name"
+#~ msgstr "Kortndateinoman"
+
+#~ msgid ""
+#~ "You can also select the position\n"
+#~ "with a mouse click on the map."
+#~ msgstr ""
+#~ "Du konnst a Stell auf da Kortn\n"
+#~ "a durch an Mausklick auswöhln."
+
+#~ msgid "Using Proxy and port:"
+#~ msgstr "Nimm Proxy und Port:"
+
+#~ msgid "can't open socket for port 80"
+#~ msgstr "Kon Socket firn Port 80 net aufmochn"
+
+#~ msgid "Connecting to %s FAILED!"
+#~ msgstr "Da Dreck %s geht net!"
+
+#~ msgid "Can't resolve webserver address"
+#~ msgstr "Kon den Noman net aufläsn"
+
+#~ msgid "unable to connect to Website"
+#~ msgstr "kumm net zur Webseitn zuawe"
+
+#~ msgid "read from Webserver"
+#~ msgstr "lesn vom Webserver"
+
+#~ msgid "Connecting to %s"
+#~ msgstr "Verbind mit %s"
+
+#~ msgid "Now connected to %s"
+#~ msgstr "vabundn mit %s"
+
+#~ msgid "Downloaded %d kBytes"
+#~ msgstr "I hob scho %d kBytes"
+
+#~ msgid "Download FAILED!"
+#~ msgstr "Obalodn danebngongan!"
+
+#~ msgid "Download finished, got %dkB"
+#~ msgstr "Abaloadn is fertig, %dkB kriagt."
 
 #, fuzzy
 #~ msgid "_Download map"
