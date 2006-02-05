@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.20  2006/02/05 16:38:05  tweety
+reading floats with scanf looks at the locale LANG=
+so if you have a locale de_DE set reading way.txt results in clearing the
+digits after the '.'
+For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
 Revision 1.19  2006/02/05 13:54:39  tweety
 split map downloading to its own file download_map.c
 
@@ -127,7 +133,6 @@ Revision 1.1  2004/02/02 03:38:32  ganter
 code cleanup
 
  */
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -139,6 +144,13 @@ code cleanup
 #include <gpsdrive.h>
 #include <config.h>
 #include <math.h>
+
+#if HAVE_LOCALE_H
+#include <locale.h>
+#else
+# define setlocale(Category, Locale)
+#endif
+
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -662,6 +674,8 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
   g_strlcpy(text,intext,sizeof(text));
 
   *dec = -1002.0;
+
+  setlocale(LC_NUMERIC, "en_US");
 
   // HACK: Fix usage of , and . inside Float-strings
   g_strdelimit (text, ",", '.');

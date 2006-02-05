@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.2  2006/02/05 16:38:05  tweety
+  reading floats with scanf looks at the locale LANG=
+  so if you have a locale de_DE set reading way.txt results in clearing the
+  digits after the '.'
+  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
   Revision 1.1  2006/02/05 15:01:59  tweety
   extract map downloading
 
@@ -54,11 +60,6 @@ Disclaimer: Please do not use for navigation.
 #include <pthread.h>
 #include <semaphore.h>
 
-#if HAVE_LOCALE_H
-#include <locale.h>
-#else
-# define setlocale(Category, Locale)
-#endif
 #include "gettext.h"
 
 #include <dirent.h>

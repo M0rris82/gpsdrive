@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2006/02/05 16:38:06  tweety
+reading floats with scanf looks at the locale LANG=
+so if you have a locale de_DE set reading way.txt results in clearing the
+digits after the '.'
+For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
 Revision 1.3  2006/01/03 14:24:10  tweety
 eliminate compiler Warnings
 try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -82,6 +88,7 @@ extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff, crosstoogle;
 extern gint zone;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
+extern gdouble milesconv;
 extern gint oldsatfix, oldsatsanz, havealtitude;
 extern gdouble altitude, precision, gsaprecision;
 extern gchar localedecimal;
@@ -129,8 +136,6 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
   bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed,
-  milesconv;
 extern FILE *nmeaout;
 // ---------------------- NMEA
 gint haveRMCsentence = FALSE;

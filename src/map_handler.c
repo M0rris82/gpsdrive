@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2006/02/05 16:38:06  tweety
+reading floats with scanf looks at the locale LANG=
+so if you have a locale de_DE set reading way.txt results in clearing the
+digits after the '.'
+For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
 Revision 1.4  2006/01/03 14:24:10  tweety
 eliminate compiler Warnings
 try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -123,14 +129,6 @@ extern GtkWidget *destframe;
 extern gint createroute;
 extern gint displaymap_top, displaymap_map;
 extern GdkPixbuf *image, *tempimage, *miniimage;
-
-
-
-#if HAVE_LOCALE_H
-#include <locale.h>
-#else
-# define setlocale(Category, Locale)
-#endif
 
 #include "gettext.h"
 

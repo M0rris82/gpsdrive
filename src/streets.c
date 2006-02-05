@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.22  2006/02/05 16:38:06  tweety
+  reading floats with scanf looks at the locale LANG=
+  so if you have a locale de_DE set reading way.txt results in clearing the
+  digits after the '.'
+  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
   Revision 1.21  1994/06/08 13:02:31  tweety
   adjust debug levels
 
@@ -168,11 +174,6 @@ Disclaimer: Please do not use for navigation.
 #include <sys/time.h>
 #include "icons.h"
 
-#if HAVE_LOCALE_H
-#include <locale.h>
-#else
-# define setlocale(Category, Locale)
-#endif
 #include "gettext.h"
 
 /*  Defines for gettext I18n */

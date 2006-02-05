@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.4  2006/02/05 16:38:05  tweety
+reading floats with scanf looks at the locale LANG=
+so if you have a locale de_DE set reading way.txt results in clearing the
+digits after the '.'
+For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
+
 Revision 1.3  1994/06/10 02:11:00  tweety
 move nmea handling to it's own file Part 1
 
@@ -51,11 +57,5 @@ gint reinitgps_cb (GtkWidget * widget, gpointer datum);
 
 int garblemain (int argc, char **argv);
 
-#ifdef DBUS_ENABLE
-#include <dbus/dbus.h>
-static DBusHandlerResult dbus_signal_handler (
-		DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
-#endif
 
 #endif /* GPS_HANDLER_H */
