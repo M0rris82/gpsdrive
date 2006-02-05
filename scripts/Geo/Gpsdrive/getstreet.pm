@@ -3,52 +3,46 @@ package Geo::Gpsdrive::getstreet;
 use LWP::UserAgent;
 use WWW::Mechanize;
 use Text::Query;
-use Getopt::Long;
+use Getopt::Long; #maybe not needed any more
 use Pod::Usage;
 use DBI;
 use strict;
-
+#use Thread;
+use threads;
+    my %hash;
+    my @header;
+    my @lines;
+    my @rows;
+    my $x; #counter
+    my $use_street;
+    my $use_city;
+    our  $street = $main::street;  #not needed
+    our  $use_zip = $main::plz;
+    our  $ort = $main::ort;		#not needed
+    our  $mysql =$main::sql;
+    our  $file = $main::file;
+    our  $country;
+    our  $version;
+    our  $area;		# dont work at the moment not changed since moved form .pl to .pm
+    our  $scale;		# dont work
+    our  $name;
+    our  @street;
+    our  $type="STREET";
+    our  $comment="";
+    our $help;
+    our  $VER="getstreet (c) SHB\nInitial Version (Mar,2005) by SHB\n";
 sub streets(){
-    my $street =$main::street;
-    my $plz = $main::plz;
-    my $ort = $main::ort;
-    my $mysql =$main::sql;
-    my $country;
-    my $help;
-    my $version;
-    my $area;		# dont work at the moment not changed since moved form .pl to .pm
-    my $scale;		# dont work
-    my $name;
-    my $count=0;
-    my $type="STREET";
-    my $comment="";
-    my $file = $main::file;
-    my $xx=0;
-    my $VER="getstreet (c) SHB\nInitial Version (Mar,2005) by SHB\n";
-#	GetOptions( 	'street=s'	=> 	\$street,
-#			's=s'		=>	\$street,
-#			'plz=s'		=>	\$plz,
-#			'p=s'		=>	\$plz,
-#			'ort=s'		=>	\$ort,
-#			'o=s'		=>	\$ort,
-#			'nname=s'	=>	\$name,
-#			'n=s'		=>	\$name,
-#			'country=s'	=>	\$country,
-#			'c=s'		=>	\$country,
-#			'f=s'		=>	\$file,
-#			'file=s'	=>	\$file,
-#			'version'	=>	\$version,
-#			'v'		=>	\$version,
-#			'scale=s'	=>	\$scale,
-#			'a=s'		=>	\$area,
-#			'type=s'	=>	\$type,
-#			't=s'		=>	\$type,
-#			'sql'		=>	\$mysql,
-#			'comment=s'	=>	\$comment,
-#			'help'		=>	\$help,
-#			'h'			=>	\$help);
-
-#pod2usages();
+#	'nname=s'	=>	\$name,
+#	'n=s'		=>	\$name,
+#	'country=s'	=>	\$country,
+#	'c=s'		=>	\$country,
+#	'f=s'		=>	\$file,
+#	'file=s'	=>	\$file,
+#	'scale=s'	=>	\$scale,
+#	'a=s'		=>	\$area,
+#	'type=s'	=>	\$type,
+#	't=s'		=>	\$type,
+#	'comment=s'	=>	\$comment,
 
     if($help){
 	print "\n\nHelp\n\n";
@@ -71,7 +65,6 @@ sub streets(){
 	print "-v, --version show the version\n ";
 	print "At the moment only germany is supportet\n\n";
 	print "note these script is beta\n\n";
-	$count++;
     }
     if($country eq "help"){
     	#needed for other country than germany, not working at the moment
@@ -97,18 +90,121 @@ sub streets(){
 	print "Spanien : 9\n";
 	print "Vereinigte Staaten : 12\n";
 	print "\n\n";
-	$count++;
     }
     if($version){ 
 	print "$VER\n";
-	$count++;
     }
-    if($street && $ort){
+if($main::street && $main::ort){
+	$use_street = $main::street;
+	$use_city = $main::ort;
+	if($main::thread){
+		print "using threads\n";
+		my $thread = threads->new( \&getstreet );
+		$thread->join;
+	}else{
+		print "no threads\n";
+		&getstreet;
+	}
+}
+    if($main::file){	
+	open(FILE, "< file");
+	while( <FILE>){
+	    $_ =~ s/\n//g;		#maybe delete if errors in the array, but i dont think so
+	    push(@street,$_);
+	}
+	close(FILE);
+	my $sum_str =@street;
+	if($street[0] =~ /^<.*>$/){
+		$street[0] =~ s/\<//g; 		# remove this <
+		$street[0] =~ s/\>//g; 		#remove this >
+		#$street[0] =~ s/\n//g; 	#not need if $_ =~ s/\n//g; work
+		@header = split(/;/,$street[0]);
+		my $a=0;
+		my $sum_header = @header;
+		for(@header){
+			my $y=0;
+			$x = 1;
+				while($y<$sum_str){
+				@lines = split(/;/,$street[$x]);
+	#			print "$lines[$a]\n";
+				if( $street[$x] !~ /^#/){
+					$rows[$y] = $lines[$a];
+				}
+				$x++;
+				$y++;
+				}
+			$a++;
+	#		print "Hash $_ Erstellt\n";  #can remove only for showing which hashs are createt
+			$hash{$_} = [@rows];	
+			
+		}
+		if(!$hash{street}){
+			print STDERR "a <street> section is needed in the \$file \n";  #\$file must be changed in $main::file
+			exit 2;
+		}
+		if(!$hash{city}){ 
+			print STDERR "a <city> section is needet in the \$file \n";
+			exit 3;
+		}
+		if(!$hash{zip}){
+			print STDERR "<zip> don't exitsts, this doesent matter, but maybe you will need it\n";
+		}
+#	print "@header\n"; #not needed remove, only for testing
+	#print "test hash print: $hash{city}[1]\n";
+	}
+	else
+	{
+		print " file has wrong format\n"; #\$file musst be changed in main::file #give an example for the file
+		exit 4;
+	}
+
+	$x=0;
+	my @Threads;
+	my $hash_length=@{$hash{street}};
+#	print $hash_length;
+	my $time =0;
+	for(0..$hash_length){
+	    $use_street=$hash{street}[$x];
+	    $use_city=$hash{city}[$x];
+	    $use_zip=$hash{zip}[$x];
+	    if($use_city eq ""){
+		$use_city = $hash{city}[$x-1];
+		$hash{city}[$x]=$hash{city}[$x-1];
+	    }
+	    if($use_zip eq ""){
+		$use_zip = $hash{zip}[$x-1];
+		$hash{zip}[$x]=$hash{zip}[$x-1];
+	    }
+	    
+	    if($main::thread){
+	    push(@Threads,threads->new(\&getstreet));
+	  $time++;
+	  if($time>=9){
+	  	sleep 30;
+		$time=0;
+	  }
+	  }else{
+		&getstreet;
+	  }
+	    $x++;
+	}
+	if($main::thread){
+		foreach(@Threads)
+		{
+		  $_->join();
+		 # $_->detach();
+		}
+	}
+    }
+    return 1;
+}
+sub getstreet {
+	print "$use_street|$use_city|$use_zip\n";	#needed for testing ;)
 	my $url="http://mappoint.msn.de";
 	my $val = "MapForm:POIText";
-	my $v_ort = $ort;
-	my $v_plz = $plz;
-	my $v_str = $street;
+	my $v_ort = $use_city;
+	my $v_plz = $use_zip;
+	my $v_str = $use_street	;	# erinerung
 	$v_str =~ s/ü/u/g;
 	$v_str =~ s/ö/o/g;
 	$v_str =~ s/ä/a/g;
@@ -129,14 +225,6 @@ sub streets(){
 	$mech->field($ort,$v_ort);
 	$mech->field($plz,$v_plz);
 	$mech->field($str,$v_str);
-	##
-	# $mech->set_fields( 
-	# $ort => $v_ort,
-	# $plz => $v_plz,
-	# $str => $v_str);		#this will all filds faster, if it woud work ;(
-	# if($countery){
-	#    $mech->field($cou,$country);
-	# }
 	$mech->submit();
 	if($mech->form_name('MCForm')){
 	    $mech->form_name('MCForm');
@@ -146,8 +234,8 @@ sub streets(){
 	    my @addr=split("%2c",$split[3]);
 	    my $str=$addr[0];
 	    my @ort_plz=split(/\+/,$addr[1]);
-	    $ort=$ort_plz[2];
-	    $plz=$ort_plz[1];
+	    $ort=$ort_plz[2];		#unused
+	    $plz=$ort_plz[1];		#unused
 	    $str =~ s/%c3%9f/ss/g;
 	    $str =~ s/%c3%bc/ue/g;
 	    $str =~ s/\+/\_/g;
@@ -162,7 +250,9 @@ sub streets(){
 		}
 		my $ausgabe= "$str\t$cord[0]\t$cord[1]\t$type\n";
 		my $datei = "$ENV{'HOME'}/.gpsdrive/way.txt";
-		if($mysql){
+		if($main::sql){
+		$comment = $split[3];
+		print "comment: $comment\n";
 		    my $dbh = DBI->connect( 'dbi:mysql:geoinfo', $main::db_user, $main::db_password ) || die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
 		    my $query ="insert into waypoints(name,lat,lon,type,comment) values('$str','$cord[0]','$cord[1]','$type','$comment')";
 		    $dbh->prepare($query)->execute;
@@ -177,114 +267,11 @@ sub streets(){
 	    }
 	}elsif($mech->form_name('FindForm')){
 	   #this will happen, if you get a multiple choice answer
-	    print $mech->value('FndControl:AmbiguousSelect');
-	    print "\n";
+	    #print $mech->value('FndControl:AmbiguousSelect');
+	  #  print "\n";
 	    print "Multiplie choice \nstill in development\n";
 	   
 	}
-	$count++;
     }
-    if($ort && $file){			#this is for reading a file instat of a singel streetname, not tested since moved from .pl to .pm
-    					#an other problem is in big city with more than one zipcode, sometimes the streets where not found, because the zipcode is missing und you get a multiple choice as answer
-	open(FILE, "<$file");
-	our @street;
-	while( <FILE>){
-	    push(@street,$_);
-	}
-	close(FILE);
-	our $x=0;
-	for(@street){
-	    print "Try to get @street[$x]";
-	    my $url="http://mappoint.msn.de";
-	    my $val = "MapForm:POIText";
-	    my $v_ort = $ort;
-	    my $v_plz = $plz;
-	    my $v_str = @street[$x];
-	    $v_str =~ s/ü/u/g;
-	    $v_str =~ s/ö/o/g;
-	    $v_str =~ s/ä/a/g;
-	    $v_str =~ s/Ü/U/g;
-	    $v_str =~ s/Ö/O/g;
-	    $v_str =~ s/Ä/Ä/g;
-	    $v_str =~ s/ß/ss/g;
-	    my $ort = "FndControl:CityText";
-	    my $plz = "FndControl:ZipText";
-	    my $str = "FndControl:StreetText";
-	    my $cou = "FndControl:ARegionSelect";
-	    my $form = "FindForm";
-	    my $mech= WWW::Mechanize->new();
-	    $mech->agent_alias( 'Windows IE 6' );
-	    $mech->get($url);
-	    $mech->form_name($form);
-	    ##
-	    $mech->field($ort,$v_ort);
-	    $mech->field($plz,$v_plz);
-	    $mech->field($str,$v_str);
-	    ##
-	    #$mech->set_fields(
-	    #						$ort => $v_ort,
-#							$plz => $v_plz,
-#							$str => $v_str)
-	    #if($countery){
-	    #	$mech->field($cou,$country);
-	    #}
-	    $mech->submit();
-	    if($mech->form_name('MCForm')){
-		$mech->form_name('MCForm');
-		my $out= $mech->value($val);
-		my @split=split(/\|/,$out);
-		my @cord=split("%2c",$split[1]);
-		my @addr=split("%2c",$split[3]);
-		my $str=$addr[0];
-		my @ort_plz=split(/\+/,$addr[1]);
-		$ort=$ort_plz[2];
-		$plz=$ort_plz[1];
-		$str =~ s/%c3%9f/ss/g;
-		$str =~ s/%c3%bc/ue/g;
-		$str =~ s/\+/\_/g;
-		if($str eq ""){
-		    print "$str\n";
-		    print "$out\n";
-		    print "Strasse nicht gefunden\n";
-		}else{
-		    print STDERR "$out\n";
-		    if($name ne ""){
-			$str=$name;
-		    }
-		    my $ausgabe= "$str\t$cord[0]\t$cord[1]\t$type\n";
-		    my $datei = "$ENV{'HOME'}/.gpsdrive/way.txt";
-		    if($mysql){
-			my $dbh = DBI->connect( 'dbi:mysql:geoinfo', $main::db_user, $main::db_password ) || die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
-			my $query ="insert into waypoints(name,lat,lon,type,comment) values('$str','$cord[0]','$cord[1]','$type','$comment')";
-			$dbh->prepare($query)->execute;
-		    }else{
-			open(FILE,">>$datei")||die "Error: File not found\n";
-		    }
-		    print FILE $ausgabe;
-		    close(FILE);
-		    if($area && $scale){
-			system("gpsfetchmap.pl -w $str -a $area --scale $scale");
-		    }
-		}
-	    }elsif($mech->form_name('FindForm')){
-		print $mech->value('FndControl:AmbiguousSelect');
-		#		print "\n";
-		#		print "Multiplie choice \nstill in development\n";
-		open(FILE_OUT, ">>errors");
-		$xx++;
-		print FILE_OUT "@street[$x]" ;
-		close(FILE_OUT);
-		print "$xx errors\n";
-	    }
-	    $count++;
-	    $x++;
-	}
-    }
-    if($count==0){
-	#print 'Usage getstreet.pl <-p PLZ -o ORT> -s "Straßen"> [<-a Umkreis --scale Scala>] ';
-	print "Use getstreet.pl -h for help\n";
-	print "\n";
-    }
-    return 1;
-}
+
 1;
