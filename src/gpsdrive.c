@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.81  2006/02/05 11:57:22  tweety
+rename some variables to better names
+make map_filename invisible if debug less than 10
+
 Revision 1.80  2006/01/18 08:29:01  tweety
 display position in posmode ind position Fielddisplay position in posmode ind position Fieldss
 
@@ -2376,7 +2380,7 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 #endif
 
 GtkWidget *label_lat, *label_lon;
-GtkWidget *l3, *l4, *l5, *l6, *l7, *l8, *mutebt, *sqlbt;
+GtkWidget *label_map_filename, *label_map_scale, *label_heading, *label_baering, *label_timedest, *label_prefscale, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
 GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt, *maptogglebt,
 	*topotogglebt, *savetrackbt;
@@ -2527,7 +2531,8 @@ GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox,
 	*wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox,
 	*satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
-GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale, *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
+GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
+GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *dframe, *frame_bearing, *frame_target, *frame_altitude,
 	*frame_wp, *frame_maptype, *frame_toogles, *lab1, *fbat, *ftem;
 GtkWidget *menubar;
@@ -2986,7 +2991,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 void
 display_status2 ()
 {
-	gchar s2[100], buf[200], mf[60];
+	gchar s2[100], buf[200], mfmap_filename[60];
 	gint h, m;
 	gdouble secs, v;
 
@@ -3084,26 +3089,29 @@ display_status2 ()
 	    }
 
 
-	strncpy (mf, g_basename (mapfilename), 59);
-	mf[59] = 0;
-	gtk_label_set_text (GTK_LABEL (l3), mf);
+	strncpy (mfmap_filename, g_basename (mapfilename), 59);
+	mfmap_filename[59] = 0;
+	gtk_label_set_text (GTK_LABEL (label_map_filename), mfmap_filename);
+
 	g_snprintf (s2, sizeof (s2), "1:%ld", mapscale);
-	gtk_label_set_text (GTK_LABEL (l4), s2);
+	gtk_label_set_text (GTK_LABEL (label_map_scale), s2);
+
 	g_snprintf (s2, sizeof (s2), "%3.0f%s", direction * 180.0 / M_PI,
 		    gradsym);
+	gtk_label_set_text (GTK_LABEL (label_heading), s2);
 
-	gtk_label_set_text (GTK_LABEL (l5), s2);
 	g_snprintf (s2, sizeof (s2), "%3.0f%s", bearing * 180.0 / M_PI,
 		    gradsym);
+	gtk_label_set_text (GTK_LABEL (label_baering), s2);
 
-	gtk_label_set_text (GTK_LABEL (l6), s2);
 	g_snprintf (s2, sizeof (s2), "%2d:%02dh", h, m);
-	gtk_label_set_text (GTK_LABEL (l7), s2);
+	gtk_label_set_text (GTK_LABEL (label_timedest), s2);
+
 	if (scaleprefered)
 		g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
 	else
 		g_snprintf (s2, sizeof (s2), _("Auto"));
-	gtk_label_set_text (GTK_LABEL (l8), s2);
+	gtk_label_set_text (GTK_LABEL (label_prefscale), s2);
 }
 
 
@@ -6824,7 +6832,8 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_sats), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_lat), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_lon), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapfile), stype);
+	if ( mydebug >10 )
+	    gtk_frame_set_shadow_type (GTK_FRAME (frame_mapfile), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapscale), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_heading), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_bearing), stype);
@@ -7524,7 +7533,7 @@ scaler_cb (GtkAdjustment * adj, gdouble * datum)
 	gchar s2[100];
 	scalewanted = nlist[(gint) rint (adj->value)];
 	g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
-	gtk_label_set_text (GTK_LABEL (l8), s2);
+	gtk_label_set_text (GTK_LABEL (label_prefscale), s2);
 	if ( mydebug > 0 )
 		g_print ("Scaler: %d\n", scalewanted);
 	needtosave = TRUE;
@@ -10522,7 +10531,8 @@ main (int argc, char *argv[])
 	}
 	frame_lat = gtk_frame_new (_("Latitude"));
 	frame_lon = gtk_frame_new (_("Longitude"));
-	frame_mapfile = gtk_frame_new (_("Map file"));
+	if ( mydebug >10 )
+	    frame_mapfile = gtk_frame_new (_("Map file"));
 	frame_mapscale = gtk_frame_new (_("Map scale"));
 	frame_heading = gtk_frame_new (_("Heading"));
 	frame_bearing = gtk_frame_new (_("Bearing"));
@@ -10531,96 +10541,80 @@ main (int argc, char *argv[])
 
 	etch = !etch;
 	etch_cb (NULL, 0);
+
 	label_lat = gtk_label_new (_("000,00000N"));
 	gtk_container_add (GTK_CONTAINER (frame_lat), label_lat);
+
 	label_lon = gtk_label_new (_("000,00000E"));
 	gtk_container_add (GTK_CONTAINER (frame_lon), label_lon);
-	l3 = gtk_label_new (_("---"));
-	gtk_container_add (GTK_CONTAINER (frame_mapfile), l3);
-	l4 = gtk_label_new (_("---"));
-	gtk_container_add (GTK_CONTAINER (frame_mapscale), l4);
-	l5 = gtk_label_new (_("0000"));
-	gtk_container_add (GTK_CONTAINER (frame_heading), l5);
-	l6 = gtk_label_new (_("0000"));
-	gtk_container_add (GTK_CONTAINER (frame_bearing), l6);
-	l7 = gtk_label_new (_("---"));
-	gtk_container_add (GTK_CONTAINER (frame_timedest), l7);
-	l8 = gtk_label_new (_("---"));
-	gtk_container_add (GTK_CONTAINER (frame_prefscale), l8);
+
+	if ( mydebug >10 )
+	    {
+		label_map_filename = gtk_label_new (_("---"));
+		gtk_container_add (GTK_CONTAINER (frame_mapfile), label_map_filename);
+	    }
+
+	label_map_scale = gtk_label_new (_("---"));
+	gtk_container_add (GTK_CONTAINER (frame_mapscale), label_map_scale);
+
+	label_heading = gtk_label_new (_("0000"));
+	gtk_container_add (GTK_CONTAINER (frame_heading), label_heading);
+
+	label_baering = gtk_label_new (_("0000"));
+	gtk_container_add (GTK_CONTAINER (frame_bearing), label_baering);
+
+	label_timedest = gtk_label_new (_("---"));
+	gtk_container_add (GTK_CONTAINER (frame_timedest), label_timedest);
+
+	label_prefscale = gtk_label_new (_("---"));
+	gtk_container_add (GTK_CONTAINER (frame_prefscale), label_prefscale);
 
 	if (pdamode)
 	{
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0,
-					   1);
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0,
-					   1);
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 0,
-					   1);
-
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 0, 1, 1,
-					   2);
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 1, 2, 1,
-					   2);
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 2, 3, 1,
-					   2);
-
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0, 1, 2,
-					   3);
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 3, 2,
-					   3);
-		//KCFX
-		gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 3,
-					   3, 4);
-		gtk_table_attach_defaults (GTK_TABLE (table1), status, 0, 3,
-					   4, 5);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0, 1);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 0, 1);
+	    
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 0, 1, 1, 2);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 1, 2, 1, 2);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 2, 3, 1, 2);
+	    
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0, 1, 2, 3);
+	if ( mydebug >10 )
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 3, 2, 3);
+	    //KCFX
+	    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 3, 3, 4);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), status, 0, 3, 4, 5);
 	}
 	else
 	{
-		if (SMALLMENU)
+	    if (SMALLMENU)
 		{
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0,
-						   1, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1,
-						   2, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,
-						   3, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,
-						   4, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0,
-						   1, 1, 2);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1,
-						   2, 1, 2);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2,
-						   3, 1, 2);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 3,
-						   4, 1, 2);
-			gtk_table_attach_defaults (GTK_TABLE (table1), status,
-						   0, 4, 3, 4);
-			gtk_table_attach_defaults (GTK_TABLE (table1), scaler,
-						   0, 4, 2, 3);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,  3, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,  4, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0, 1, 1, 2);
+	if ( mydebug >10 )
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 2, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 3, 4, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), status, 0, 4, 3, 4);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 4, 2, 3);
 		}
-		else
+	    else
 		{
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0,
-						   1, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1,
-						   2, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,
-						   3, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,
-						   4, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 4,
-						   5, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 5,
-						   6, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 6,
-						   7, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 7,
-						   8, 0, 1);
-			gtk_table_attach_defaults (GTK_TABLE (table1), status,
-						   0, 4, 1, 2);
-			gtk_table_attach_defaults (GTK_TABLE (table1), scaler,
-						   4, 8, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0,    1, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1,    2, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,      3, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,  4, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 4,  5, 0, 1);
+	if ( mydebug >10 )
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 5,  6, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 6,  7, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 7, 8, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), status,	   0, 4, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler,   4, 8, 1, 2);
 		}
 	}
 	/*    gtk_box_pack_start (GTK_BOX (vbig), table1, FALSE, FALSE, 1); */
@@ -10703,42 +10697,42 @@ main (int argc, char *argv[])
 	mainnotebook = NULL;
 	if (pdamode)
 	{
-		GtkWidget *l1, *l2, *l3;
+		GtkWidget *l1, *l2, *label_status;
 		l1 = gtk_label_new (NULL);
 		l2 = gtk_label_new (NULL);
-		l3 = gtk_label_new (NULL);
+		label_status = gtk_label_new (NULL);
 		/* for a better usability in onemousebutton mode */
 		if (onemousebutton)
 		{
-			/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
-			gtk_misc_set_padding (GTK_MISC (l1), 20, 1);
-			gtk_misc_set_padding (GTK_MISC (l2), 20, 1);
-			gtk_misc_set_padding (GTK_MISC (l3), 20, 1);
-
-			/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
-
-			char *markup;
-			markup = g_markup_printf_escaped
+		    /* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
+		    gtk_misc_set_padding (GTK_MISC (l1), 20, 1);
+		    gtk_misc_set_padding (GTK_MISC (l2), 20, 1);
+		    gtk_misc_set_padding (GTK_MISC (label_status), 20, 1);
+		    
+		    /* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
+		    
+		    char *markup;
+		    markup = g_markup_printf_escaped
 				("<span font_desc='10'>%s</span>",
 				 _("Map"));
-			gtk_label_set_markup (GTK_LABEL (l1), markup);
-			markup = g_markup_printf_escaped
-				("<span font_desc='10'>%s</span>",
-				 _("Menu"));
-			gtk_label_set_markup (GTK_LABEL (l2), markup);
-			markup = g_markup_printf_escaped
-				("<span font_desc='10'>%s</span>",
-				 _("Status"));
-			gtk_label_set_markup (GTK_LABEL (l3), markup);
-
-			g_free (markup);
-
+		    gtk_label_set_markup (GTK_LABEL (l1), markup);
+		    markup = g_markup_printf_escaped
+			("<span font_desc='10'>%s</span>",
+			 _("Menu"));
+		    gtk_label_set_markup (GTK_LABEL (l2), markup);
+		    markup = g_markup_printf_escaped
+			("<span font_desc='10'>%s</span>",
+			 _("Status"));
+		    gtk_label_set_markup (GTK_LABEL (label_status), markup);
+		    
+		    g_free (markup);
+		    
 		}
 		else
 		{
-			gtk_label_set_text (GTK_LABEL (l1), _("Map"));
-			gtk_label_set_text (GTK_LABEL (l2), _("Menu"));
-			gtk_label_set_text (GTK_LABEL (l3), _("Status"));
+		    gtk_label_set_text (GTK_LABEL (l1), _("Map"));
+		    gtk_label_set_text (GTK_LABEL (l2), _("Menu"));
+		    gtk_label_set_text (GTK_LABEL (label_status), _("Status"));
 		}
 		//KCFX
 		vbig1 = gtk_vbox_new (FALSE, 2);
@@ -10776,7 +10770,7 @@ main (int argc, char *argv[])
 		gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook),
 					  hboxlow, l2);
 		gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig1,
-					  l3);
+					  label_status);
 		gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
 		gtk_widget_show_all (mainnotebook);
 	}

@@ -24,6 +24,10 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.23  2006/02/05 11:57:23  tweety
+  rename some variables to better names
+  make map_filename invisible if debug less than 10
+
   Revision 1.22  2006/01/03 14:24:10  tweety
   eliminate compiler Warnings
   try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -638,6 +642,7 @@ insert_text (GtkTextBuffer * buffer)
 		      "g    : Toggle grid\n"
 		      "f    : Toggle friends display\n"
 		      "w    : Set Waypoint at current location without asking\n"
+		      "p    : Set Waypoint at current cursor position without asking\n"
 		      "+    : Zoom in \n" "-    : Zoom out\n");
 	gchar *t3 =
 		_("Press the underlined key together with the ALT-key.\n\n"
