@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.12  2006/02/07 07:06:51  tweety
+  split apart the battery and temperature handling a little bit
+
   Revision 1.11  2006/02/05 13:54:39  tweety
   split map downloading to its own file download_map.c
 
@@ -236,12 +239,16 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern gint debug;
 
-extern gint havebattery, havetemperature;
+gint havebattery = FALSE;	/* Battery level and loading flag */
+gint havetemperature = FALSE;
+
 gint batlevel, batlevel_old = 125;	/* battery level, range 0..100 */
 gint batloading, batloading_old = FALSE;	/* is the battery charging? */
 gint batcharge = FALSE;
 gint cputemp;
-gchar cputempstring[20], batstring[20];
+
+gchar cputempstring[20], batstring[20]; // Global
+
 static gchar gradsym[] = "\xc2\xb0";
 extern GtkWidget *tempeventbox, *batteventbox;
 extern GtkTooltips *temptooltips;
@@ -253,12 +260,12 @@ static GdkPixbuf *img_powercharges = NULL, *img_powercord =
  * Return TRUE on success, FALSE on error.
  */
 static int
-battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
-			  int *temper)
+battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 {
   FILE *battery = NULL;
-  FILE *temperature = NULL;
-  gint i, e, e1, ret, v1, v2, vtemp;
+  gint i, e, e1;
+  gint ret = FALSE;
+  gint v1, v2, vtemp;
   gchar b[200], t[200], t2[200], t3[200];
   DIR *dir;
   struct dirent *ent;
@@ -271,21 +278,22 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
   battery = fopen ("/proc/apm", "r");
   if (battery != NULL)
     {
-      int count=0;
-      if (mydebug>99)
-	  fprintf (stderr, "APM\n");
+      int count = 0;
+      if (mydebug > 99)
+	fprintf (stderr, "APM\n");
 
       count = fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
-	      b, b, b, bloading, b, &i, blevel, b, b);
+		      b, b, b, bloading, b, &i, blevel, b, b);
       /*     1.16 1.2 0x03 0x01      0x00 0x01 99%      -1  ?    */
       fclose (battery);
 
-      if ( 9 != count ) 
-	  {
-	      if (mydebug>99)
-		  fprintf (stderr, "Wrong Number (%d) of values in /proc/apm\n",count);
-	      return FALSE;
-	  }
+      if (9 != count)
+	{
+	  if (mydebug > 99)
+	    fprintf (stderr, "Wrong Number (%d) of values in /proc/apm\n",
+		     count);
+	  return FALSE;
+	}
 
       /*
        * Bit 7 is set if we have a battery (laptop). If it isn't set,
@@ -304,8 +312,8 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
       battery = fopen ("/proc/acpi/battery/0/info", "r");
       if (battery == NULL)
 	{
-	  if (mydebug>99)
-	      fprintf (stderr, "ACPI\n");
+	  if (mydebug > 99)
+	    fprintf (stderr, "ACPI\n");
 
 	  /* search for info file */
 	  dir = opendir ("/proc/acpi/battery/");
@@ -321,12 +329,12 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		  g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
 		  g_strlcat (fn, ent->d_name, sizeof (fn));
 		  g_strlcat (fn, "/info", sizeof (fn));
-		  if (mydebug>99)
-		      fprintf (stderr, "ACPI: File %s\n",fn);
+		  if (mydebug > 99)
+		    fprintf (stderr, "ACPI: File %s\n", fn);
 		  stat (fn, &buf);
 		  if (S_ISREG (buf.st_mode) == TRUE)
 		    {
-		      if (mydebug>30)
+		      if (mydebug > 30)
 			fprintf (stderr, "\nfound file %s\n", fn);
 		      battery = fopen (fn, "r");
 		      if (battery != NULL)
@@ -379,7 +387,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		  stat (fn, &buf);
 		  if (S_ISREG (buf.st_mode) == TRUE)
 		    {
-		      if (mydebug>30)
+		      if (mydebug > 30)
 			fprintf (stderr, "\nfound file %s\n", fn);
 		      battery = fopen (fn, "r");
 		      if (battery == NULL)
@@ -413,7 +421,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 		      do
 			{
 			  e = fscanf (battery, "%s%[^\n]", t, t2);
-			  if (mydebug>30)
+			  if (mydebug > 30)
 			    fprintf (stderr, "t: %s, t2: %s\n", t, t2);
 			  if ((strstr (t, "Status:")) != NULL)
 			    {
@@ -449,19 +457,32 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 
 	}
 
-      if (mydebug>60)
+      if (mydebug > 60)
 	fprintf (stderr, "v1: %d, v2:%d\n", v1, v2);
       if (v2 != 0)
 	*blevel = (int) (((double) v2 / v1) * 100.0);
       /*       fprintf(stderr,"blevel: %d\n",*blevel); */
     }
+  return ret;
+}
 
-
-  /*  JH Added temperature readout code here  */
+/* ******************************************************************
+ * JH Added temperature readout code here
+ */
+static int
+temperature_get_values_linux (int *temper)
+{
+  FILE *temperature = NULL;
+  DIR *dir;
+  struct dirent *ent;
+  struct stat buf;
+  char fn[200];
+  gchar b[200];
 
   /* search for temperature file */
   temperature = NULL;
   dir = opendir ("/proc/acpi/thermal_zone/");
+  havetemperature = FALSE;
   if (dir != NULL)
     {
       while ((ent = readdir (dir)) != NULL)
@@ -474,7 +495,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 	      stat (fn, &buf);
 	      if (S_ISREG (buf.st_mode) == TRUE)
 		{
-		  if (mydebug>30)
+		  if (mydebug > 30)
 		    fprintf (stderr, "\nfound file %s\n", fn);
 		  temperature = fopen (fn, "r");
 		  if (temperature != NULL)
@@ -483,15 +504,15 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge,
 	    }
 	}
       closedir (dir);
-      if (havetemperature)
-	{
-	  fscanf (temperature, "%s %d %s", b, temper, b);
-	  fclose (temperature);
-	}
     }
-
-
-  return ret;
+  if (havetemperature)
+    {
+      // ############### SigSeg HERE ??!!
+      fscanf (temperature, "%s %d %s", b, temper, b);
+      fclose (temperature);
+      return TRUE;
+    }
+  return FALSE;
 }
 #endif /* Linux */
 
@@ -511,13 +532,13 @@ battery_get_values_fbsd (int *blevel, int *bloading)
 
   if ((fd = open ("/dev/apm", O_RDONLY)) == -1)
     {
-      if (mydebug>30)
+      if (mydebug > 30)
 	fprintf (stderr, "gpsdrive: open(/dev/apm): %s\n", strerror (errno));
       return FALSE;
     }
   if (ioctl (fd, APMIO_GETINFO, &ai) == -1)
     {
-      if (mydebug>30)
+      if (mydebug > 30)
 	fprintf (stderr,
 		 "gpsdrive: ioctl(APMIO_GETINFO): %s\n", strerror (errno));
       close (fd);
@@ -591,13 +612,13 @@ battery_get_values_nbsd (int *blevel, int *bloading)
 
   if ((fd = open ("/dev/apm", O_RDONLY)) == -1)
     {
-      if (mydebug>30)
+      if (mydebug > 30)
 	fprintf (stderr, "gpsdrive: open(/dev/apm): %s\n", strerror (errno));
       return FALSE;
     }
   if (ioctl (fd, APM_IOC_GETPOWER, &ai) == -1)
     {
-      if ( mydebug > 30 )
+      if (mydebug > 30)
 	fprintf (stderr,
 		 "gpsdrive: ioctl(APM_IOC_GETPOWER): %s\n", strerror (errno));
       close (fd);
@@ -661,13 +682,34 @@ int
 battery_get_values (void)
 {
   int ret;
+ 
   if (disableapm)
     {
       return FALSE;
     }
 #if defined(__linux__)
-  ret = battery_get_values_linux (&batlevel, &batloading, &batcharge,
-				  &cputemp);
+  ret = battery_get_values_linux (&batlevel, &batloading, &batcharge);
+#elif defined(__FreeBSD__) && defined(__i386__)
+  ret = battery_get_values_fbsd (&batlevel, &batloading);
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
+  ret = battery_get_values_nbsd (&batlevel, &batloading);
+#else
+  /* add support for your favourite OS here */
+  return FALSE;
+#endif
+
+  if (havebattery)
+    {
+      g_snprintf (batstring, sizeof (batstring), "%s %d%%", "Batt", batlevel);
+      if (temptooltips != NULL)
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
+			      batteventbox, batstring, NULL);
+      if (mydebug > 30)
+	fprintf (stderr, "batstring %s\n", batstring);
+    }
+
+#if defined(__linux__)
+  ret = ret && temperature_get_values_linux (&cputemp);
   if (havetemperature)
     {
       g_snprintf (cputempstring, sizeof (cputempstring), "%s %d%sC",
@@ -675,28 +717,13 @@ battery_get_values (void)
       if (temptooltips != NULL)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
 			      tempeventbox, cputempstring, NULL);
-      if ( mydebug > 30 )
+      if (mydebug > 30)
 	fprintf (stderr, "cputempstring %s\n", cputempstring);
     }
-  if (havebattery)
-    {
-      g_snprintf (batstring, sizeof (batstring), "%s %d%%", "Batt", batlevel);
-      if (temptooltips != NULL)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
-			      batteventbox, batstring, NULL);
-      if ( mydebug > 30 )
-	fprintf (stderr, "batstring %s\n", batstring);
-    }
+#endif
+
   return ret;
 
-#elif defined(__FreeBSD__) && defined(__i386__)
-  return battery_get_values_fbsd (&batlevel, &batloading);
-#elif defined(__NetBSD__) || defined(__OpenBSD__)
-  return battery_get_values_nbsd (&batlevel, &batloading);
-#else
-  /* add support for your favourite OS here */
-  return FALSE;
-#endif
 }
 
 
@@ -808,7 +835,7 @@ expose_display_battery ()
 
   if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
     {
-      if ( mydebug > 30 )
+      if (mydebug > 30)
 	g_print ("\nBattery: %d%%\n", batlevel);
 
       /* This is for Festival, so we cannot use gettext() for i18n */

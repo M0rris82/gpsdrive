@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.85  2006/02/07 07:06:51  tweety
+split apart the battery and temperature handling a little bit
+
 Revision 1.84  2006/02/05 16:38:05  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -512,6 +515,7 @@ GdkColor orange2 = { 0, 0xff00, 0x8000, 0x0000 };
 GdkColor darkgrey = { 0, SHADOWGREY, SHADOWGREY, SHADOWGREY };
 GdkColor defaultcolor;
 
+
 GtkWidget *drawing_area, *drawing_bearing;
 GtkWidget *drawing_sats, *drawing_miniimage;
 GtkWidget *drawing_battery, *drawing_temp;
@@ -526,6 +530,8 @@ extern auxiconsstruct *auxicons;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 extern mapsstruct *maps;
+
+extern havebattery, havetemperature;	/* Battery level and loading flag */
 
 /* action=1: radar (speedtrap) */
 wpstruct *wayp;
@@ -666,7 +672,7 @@ gint setdefaultpos = TRUE;
 gint markwaypoint = FALSE;
 GtkWidget *addwaypointwindow, *setupfn[30];
 gint oldbat = 125, oldloading = FALSE;
-gint bat, loading, havebattery, havetemperature = FALSE;	/* Battery level and loading flag */
+gint bat, loading;
 gint disableapm = FALSE;
 typedef struct
 {
