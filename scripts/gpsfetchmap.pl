@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.30  2006/02/07 23:18:05  tweety
+# correct help for mapserver option
+#
 # Revision 1.29  2006/01/31 23:46:48  tweety
 # initial Version for download gov.au Maps
 #
@@ -2216,7 +2219,7 @@ file (-C) or as defined by (-u).
 This causes the program to sleep one second between downloads to be polite to the mapserver. 
 Takes an optional value of number of seconds to sleep.
 
-=item B<-m, --mapserver <MAPSERVER>>
+=item B<--mapserver <MAPSERVER>>
 
 Mapserver to download from. Currently can use: 'googlesat' or 'expedia'. Default: 'expedia'.
 
@@ -2228,7 +2231,7 @@ gov_au, incrementp and eniro have download stubs, but they are !!!NOT!!!! in the
 The measurement system to use. Default is read from configuration file <-C>. Possibles are: 
 miles, nautical, kilometers.
 
-=item B<-md --mapdir <DIR>>
+=item B<--mapdir <DIR>>
 
 Override the configfiles mapdir with this value.
 
