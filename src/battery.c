@@ -23,63 +23,17 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.13  2006/02/07 22:28:13  tweety
+  more moving anf separating of battery and temperature code
+
   Revision 1.12  2006/02/07 07:06:51  tweety
   split apart the battery and temperature handling a little bit
-
-  Revision 1.11  2006/02/05 13:54:39  tweety
-  split map downloading to its own file download_map.c
 
   Revision 1.10  2006/01/12 15:01:19  tweety
   check if number of parameters in batteryfile is ok
 
-  Revision 1.9  1994/06/07 11:25:45  tweety
-  set debug levels more detailed
-
-  Revision 1.8  2005/11/05 01:46:33  tweety
-  increase debuglevel for output
-
-  Revision 1.7  2005/08/14 18:46:42  tweety
-  remove unnedded xpm Files; read pixmaps with read_icons,
-  separate more pixmaps from icons
-
-  Revision 1.6  2005/05/15 06:51:27  tweety
-  all speech strings are now represented as arrays of strings
-  author: Rob Stewart <rob@groupboard.com>
-
-  Revision 1.5  2005/04/20 23:33:49  tweety
-  reformatted source code with anjuta
-  So now we have new indentations
-
-  Revision 1.4  2005/04/13 19:58:31  tweety
-  renew indentation to 4 spaces + tabstop=8
-
-  Revision 1.3  2005/04/10 21:50:49  tweety
-  reformatting c-sources
-	
-  Revision 1.2  2005/02/06 17:52:44  tweety
-  extract icon handling to icons.c
-
-  Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-  Initial import, straight from 2.10pre2 tar.gz archive
-
-  Revision 1.37  2004/02/08 18:37:39  ganter
-  autsch, fn string in battery.c was too short
-  still 2.08pre12
-
-  Revision 1.36  2004/02/08 17:16:25  ganter
-  replacing all strcat with g_strlcat to avoid buffer overflows
-
-  Revision 1.35  2004/02/02 03:38:31  ganter
-  code cleanup
-
-  Revision 1.34  2004/01/18 20:01:23  ganter
-  fixed bug for GTK<2.2.x
-
   Revision 1.33  2004/01/18 16:09:37  ganter
   fixed last memleak in battery.c (I hope)
-
-  Revision 1.32  2004/01/17 18:12:17  ganter
-  fixed some memory leaks
 
   Revision 1.31  2004/01/17 17:49:38  ganter
   no need to create batimage always new, made it static
@@ -91,44 +45,11 @@ Disclaimer: Please do not use for navigation.
   added openbsd patches
   real 2.07pre9
 
-  Revision 1.28  2004/01/01 09:07:31  ganter
-  v2.06
-  trip info is now live updated
-  added cpu temperature display for acpi
-  added tooltips for battery and temperature
-
-  Revision 1.27  2003/12/28 23:33:48  ganter
-  ...
-
-  Revision 1.26  2003/12/28 23:29:15  ganter
-  added battery tooltip
-
-  Revision 1.25  2003/12/28 23:19:45  ganter
-  tooltip for temperature
-
-  Revision 1.24  2003/12/28 22:58:05  ganter
-  ...
-
-  Revision 1.23  2003/12/28 22:53:49  ganter
-  ...
-
-  Revision 1.22  2003/12/28 22:29:26  ganter
-  ...
-
-  Revision 1.21  2003/12/28 21:19:28  ganter
-  working on temperature
-
-  Revision 1.20  2003/12/28 20:18:51  ganter
-  ...
-
   Revision 1.19  2003/12/28 20:12:29  ganter
   better acpi-temperature support
 
   Revision 1.18  2003/12/28 19:48:01  ganter
   added patch from Jaap Hogenberg for temperature display
-
-  Revision 1.17  2003/12/27 23:22:24  ganter
-  ...
 
   Revision 1.16  2003/12/27 23:11:36  ganter
   battery.c now reads all batteries
@@ -136,55 +57,12 @@ Disclaimer: Please do not use for navigation.
   Revision 1.15  2003/12/17 21:30:02  ganter
   acpi battery status works now again (tested with 2.4.22ac4)
 
-  Revision 1.14  2003/06/08 13:31:49  ganter
-  release 2.0pre9
-  Added setting of timeperiod in friends mode (see settings menu)
-
-  Revision 1.13  2003/01/15 19:09:07  ganter
-  v1.32pre4
-
-  Revision 1.12  2003/01/15 15:30:28  ganter
-  before dynamically loading mysql
-
   Revision 1.11  2002/12/30 17:58:06  molter
   APM is i386 only, allow compilation on FreeBSD alpha too
-
-  Revision 1.10  2002/11/02 12:38:55  ganter
-  changed website to www.gpsdrive.de
-
-  Revision 1.9  2002/09/01 18:30:06  ganter
-  fixed segfault on no apm computers
-
-  Revision 1.8  2002/08/31 13:10:51  ganter
-  v1.26 release
-
-  Mapblast server works again (they changed the URL).
-  Bugfix for -a option.
-  Added -i option to ignore NMEA checksum (for broken GPS receivers).
-  Added "j" key to switch to next waypoint on route mode.
-  Added support for festival lite (flite) speech output.
-
-  Revision 1.7  2002/07/30 20:49:54  ganter
-  1.26pre3
-  added support for festival lite (flite)
-  changed http request to HTTP1.1 and added correct servername
 
   Revision 1.6  2002/07/01 00:45:00  ganter
   added trip info (in settings menu)
   ACPI fixes (close battery fd)
-
-  Revision 1.5  2002/06/29 21:47:38  ganter
-  v1.23
-
-  Revision 1.4  2002/06/29 00:23:17  ganter
-  added ACPI support for battery meter
-
-  Revision 1.3  2002/06/23 17:09:34  ganter
-  v1.23pre9
-  now PDA mode looks good.
-
-  Revision 1.2  2002/05/23 09:12:13  ganter
-  added  Marco Molteni
 
 */
 
@@ -239,15 +117,16 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern gint debug;
 
-gint havebattery = FALSE;	/* Battery level and loading flag */
-gint havetemperature = FALSE;
+/* Global Values */
+gchar cputempstring[20], batstring[20];
 
+
+/* --------------------*/
 gint batlevel, batlevel_old = 125;	/* battery level, range 0..100 */
 gint batloading, batloading_old = FALSE;	/* is the battery charging? */
 gint batcharge = FALSE;
 gint cputemp;
 
-gchar cputempstring[20], batstring[20]; // Global
 
 static gchar gradsym[] = "\xc2\xb0";
 extern GtkWidget *tempeventbox, *batteventbox;
@@ -256,7 +135,7 @@ static GdkPixbuf *img_powercharges = NULL, *img_powercord =
   NULL, *img_battery = NULL;
 
 #ifdef __linux__
-/*
+/*  ******************************************************************
  * Return TRUE on success, FALSE on error.
  */
 static int
@@ -473,6 +352,7 @@ static int
 temperature_get_values_linux (int *temper)
 {
   FILE *temperature = NULL;
+  gint havetemperature = FALSE;
   DIR *dir;
   struct dirent *ent;
   struct stat buf;
@@ -482,7 +362,6 @@ temperature_get_values_linux (int *temper)
   /* search for temperature file */
   temperature = NULL;
   dir = opendir ("/proc/acpi/thermal_zone/");
-  havetemperature = FALSE;
   if (dir != NULL)
     {
       while ((ent = readdir (dir)) != NULL)
@@ -510,17 +389,16 @@ temperature_get_values_linux (int *temper)
       // ############### SigSeg HERE ??!!
       fscanf (temperature, "%s %d %s", b, temper, b);
       fclose (temperature);
-      return TRUE;
     }
-  return FALSE;
+  return havetemperature;
 }
 #endif /* Linux */
 
 
-#if defined(__FreeBSD__) && defined(__i386__)
-/*
+/* ******************************************************************
  * Return TRUE on success, FALSE on error.
  */
+#if defined(__FreeBSD__) && defined(__i386__)
 static int
 battery_get_values_fbsd (int *blevel, int *bloading)
 {
@@ -595,10 +473,10 @@ battery_get_values_fbsd (int *blevel, int *bloading)
 }
 #endif /* __FreeBSD__ && __i386__ */
 
-#if defined( __NetBSD__ ) || defined (__OpenBSD__)
-/*
+/* ******************************************************************
  * Return TRUE on success, FALSE on error.
  */
+#if defined( __NetBSD__ ) || defined (__OpenBSD__)
 static int
 battery_get_values_nbsd (int *blevel, int *bloading)
 {
@@ -675,24 +553,162 @@ battery_get_values_nbsd (int *blevel, int *bloading)
 }
 #endif /* __NetBSD__ */
 
-/*
+
+/* ******************************************************************
+ * code to display temperature meter (JH)
+ */
+int
+expose_display_temperature ()
+{
+  static GdkGC *temkontext = NULL;
+  GdkDrawable *mydrawable;
+
+  extern GtkWidget *drawing_temp;
+  extern GdkColor mygray;
+
+  extern GdkPixbuf *temimage;
+  gint havetemperature = temperature_get_values ();
+  if (! havetemperature)
+      return FALSE;
+
+  mydrawable = drawing_temp->window;
+  if (temkontext == NULL)
+      temkontext = gdk_gc_new (mydrawable);
+  gdk_gc_set_foreground (temkontext, &mygray);
+  gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
+  if (temimage == NULL)
+      temimage = read_icon ("gauge.png");
+  gdk_gc_set_function (temkontext, GDK_AND);
+  gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0, 0, 0, 0,
+		   17, 50, GDK_RGB_DITHER_NONE, 0, 0);
+  gdk_gc_set_function (temkontext, GDK_COPY);
+  /*       gdk_pixbuf_unref (temimage); */
+  gdk_gc_set_foreground (temkontext, &mygray);
+  /* We want to limit cputemp (79<cputemp< 40)    */
+  if (cputemp > 79)
+	cputemp = 79;
+  if (cputemp < 40)
+      cputemp = 40;
+  gdk_draw_rectangle (mydrawable, temkontext, 1, 6, 1, 5, 79 - cputemp);
+
+  return TRUE;
+}
+
+/* ******************************************************************
+ * display battery meter
+ */
+int
+expose_display_battery ()
+{
+  static GdkGC *battkontext = NULL;
+  GdkDrawable *mydrawable;
+  gchar bbuf[200];
+
+  extern GtkWidget *drawing_battery, *drawing_temp;
+  extern GdkColor mygray;
+  extern GdkColor black;
+  extern GdkColor green;
+  extern GdkColor yellow;
+  extern GdkColor orange;
+  extern GdkColor red;
+  extern GdkPixbuf *batimage;
+
+  extern GdkPixbuf *temimage;
+
+  gint havebattery = battery_get_values ();
+
+  if (!havebattery)
+    return FALSE;
+
+  mydrawable = drawing_battery->window;
+  if (battkontext == NULL)
+    battkontext = gdk_gc_new (mydrawable);
+
+  gdk_gc_set_foreground (battkontext, &mygray);
+  gdk_draw_rectangle (mydrawable, battkontext, 1, 0, 0, 25, 50);
+  gdk_gc_set_foreground (battkontext, &black);
+  gdk_draw_rectangle (mydrawable, battkontext, 0, 19, 0, 6, 50);
+
+  /* JH added limit to batlevel  */
+  if (batlevel > 99)
+    batlevel = 99;
+  if (batlevel > 40)
+    gdk_gc_set_foreground (battkontext, &green);
+  else
+    {
+      if (batlevel > 25)
+	gdk_gc_set_foreground (battkontext, &yellow);
+      else
+	{
+	  if (batlevel > 15)
+	    gdk_gc_set_foreground (battkontext, &orange);
+	  else
+	    gdk_gc_set_foreground (battkontext, &red);
+	}
+    }
+  gdk_draw_rectangle (mydrawable, battkontext, 1, 20,
+		      50 - batlevel / 2, 5, batlevel / 2);
+
+  if (img_powercharges == NULL)
+    {
+      img_powercharges = read_icon ("powercharges.png");
+      img_powercord = read_icon ("powercord.png");
+      img_battery = read_icon ("battery.png");
+    }
+
+  if (batcharge)
+    batimage = img_powercharges;
+  else
+    {
+      if (batloading)
+	batimage = img_powercord;
+      else
+	batimage = img_battery;
+    }
+
+
+  gdk_gc_set_function (battkontext, GDK_AND);
+  gdk_draw_pixbuf (mydrawable, battkontext, batimage, 0, 0, 0,
+		   0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
+  gdk_gc_set_function (battkontext, GDK_COPY);
+
+  /*       gdk_pixbuf_unref (batimage); */
+
+  if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
+  {
+    if (mydebug > 30)
+      g_print ("\nBattery: %d%%\n", batlevel);
+
+    /* This is for Festival, so we cannot use gettext() for i18n */
+    g_snprintf (bbuf, sizeof (bbuf), speech_remaining_battery[voicelang],
+		batlevel);
+    speech_out_speek (bbuf);
+
+    batlevel_old = batlevel;
+  }
+return TRUE;
+}
+
+
+/* ******************************************************************
  * Return TRUE on success, FALSE on error.
  */
 int
 battery_get_values (void)
 {
   int ret;
- 
+  gint havebattery = FALSE;	/* Battery level and loading flag */
+
   if (disableapm)
     {
       return FALSE;
     }
 #if defined(__linux__)
-  ret = battery_get_values_linux (&batlevel, &batloading, &batcharge);
+  havebattery = battery_get_values_linux (&batlevel, &batloading, &batcharge);
 #elif defined(__FreeBSD__) && defined(__i386__)
-  ret = battery_get_values_fbsd (&batlevel, &batloading);
+ havebattery = battery_get_values_fbsd (&batlevel, &batloading);
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
-  ret = battery_get_values_nbsd (&batlevel, &batloading);
+ havebattery = battery_get_values_nbsd (&batlevel, &batloading);
 #else
   /* add support for your favourite OS here */
   return FALSE;
@@ -708,8 +724,32 @@ battery_get_values (void)
 	fprintf (stderr, "batstring %s\n", batstring);
     }
 
+  if (mydebug > 20)
+    fprintf (stderr, "batt: %d\n", havebattery);
+
+  return havebattery;
+}
+
+/* ******************************************************************
+ * Return TRUE on success, FALSE on error.
+ */
+int
+temperature_get_values (void)
+{
+  gint havetemperature = FALSE;
+
+  if (disableapm)
+    {
+      return FALSE;
+    }
+
 #if defined(__linux__)
-  ret = ret && temperature_get_values_linux (&cputemp);
+  havetemperature = temperature_get_values_linux (&cputemp);
+#else
+  /* add support for your favourite OS here */
+  return FALSE;
+#endif
+
   if (havetemperature)
     {
       g_snprintf (cputempstring, sizeof (cputempstring), "%s %d%sC",
@@ -720,130 +760,10 @@ battery_get_values (void)
       if (mydebug > 30)
 	fprintf (stderr, "cputempstring %s\n", cputempstring);
     }
-#endif
 
-  return ret;
+  if (mydebug > 20)
+    fprintf (stderr, "temp: %d\n", havetemperature);
 
-}
+  return havetemperature;
 
-
-/*
- * display battery meter
- */
-int
-expose_display_battery ()
-{
-  gchar bbuf[200];
-  static GdkGC *battkontext = NULL, *temkontext = NULL;
-  GdkDrawable *mydrawable;
-
-  extern GtkWidget *drawing_battery, *drawing_temp;
-  extern GdkColor mygray;
-  extern GdkColor black;
-  extern GdkColor green;
-  extern GdkColor yellow;
-  extern GdkColor orange;
-  extern GdkColor red;
-  extern GdkPixbuf *batimage;
-
-  extern GdkPixbuf *temimage;
-
-  if (!(havebattery || havetemperature))
-    return FALSE;
-  /* XXX What to do if the reading fails? */
-  battery_get_values ();
-
-  if (havebattery)
-    {
-      mydrawable = drawing_battery->window;
-      if (battkontext == NULL)
-	battkontext = gdk_gc_new (mydrawable);
-
-      gdk_gc_set_foreground (battkontext, &mygray);
-      gdk_draw_rectangle (mydrawable, battkontext, 1, 0, 0, 25, 50);
-      gdk_gc_set_foreground (battkontext, &black);
-      gdk_draw_rectangle (mydrawable, battkontext, 0, 19, 0, 6, 50);
-
-      /* JH added limit to batlevel  */
-      if (batlevel > 99)
-	batlevel = 99;
-      if (batlevel > 40)
-	gdk_gc_set_foreground (battkontext, &green);
-      else
-	{
-	  if (batlevel > 25)
-	    gdk_gc_set_foreground (battkontext, &yellow);
-	  else
-	    {
-	      if (batlevel > 15)
-		gdk_gc_set_foreground (battkontext, &orange);
-	      else
-		gdk_gc_set_foreground (battkontext, &red);
-	    }
-	}
-      gdk_draw_rectangle (mydrawable, battkontext, 1, 20,
-			  50 - batlevel / 2, 5, batlevel / 2);
-
-      if (img_powercharges == NULL)
-	{
-	  img_powercharges = read_icon ("powercharges.png");
-	  img_powercord = read_icon ("powercord.png");
-	  img_battery = read_icon ("battery.png");
-	}
-
-      if (batcharge)
-	batimage = img_powercharges;
-      else
-	{
-	  if (batloading)
-	    batimage = img_powercord;
-	  else
-	    batimage = img_battery;
-	}
-
-
-      gdk_gc_set_function (battkontext, GDK_AND);
-      gdk_draw_pixbuf (mydrawable, battkontext, batimage, 0, 0, 0,
-		       0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
-      gdk_gc_set_function (battkontext, GDK_COPY);
-
-      /*       gdk_pixbuf_unref (batimage); */
-    }
-  /*  JH  code to display temperature meter   */
-  if (havetemperature)
-    {
-      mydrawable = drawing_temp->window;
-      if (temkontext == NULL)
-	temkontext = gdk_gc_new (mydrawable);
-      gdk_gc_set_foreground (temkontext, &mygray);
-      gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
-      if (temimage == NULL)
-	temimage = read_icon ("gauge.png");
-      gdk_gc_set_function (temkontext, GDK_AND);
-      gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0, 0, 0, 0,
-		       17, 50, GDK_RGB_DITHER_NONE, 0, 0);
-      gdk_gc_set_function (temkontext, GDK_COPY);
-      /*       gdk_pixbuf_unref (temimage); */
-      gdk_gc_set_foreground (temkontext, &mygray);
-      /* We want to limit cputemp (79<cputemp< 40)    */
-      if (cputemp > 79)
-	cputemp = 79;
-      if (cputemp < 40)
-	cputemp = 40;
-      gdk_draw_rectangle (mydrawable, temkontext, 1, 6, 1, 5, 79 - cputemp);
-    }
-
-  if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
-    {
-      if (mydebug > 30)
-	g_print ("\nBattery: %d%%\n", batlevel);
-
-      /* This is for Festival, so we cannot use gettext() for i18n */
-      g_snprintf (bbuf, sizeof (bbuf), speech_remaining_battery[voicelang],
-		  batlevel);
-      speech_out_speek (bbuf);
-
-      batlevel_old = batlevel;
-    }
-  return TRUE;
 }

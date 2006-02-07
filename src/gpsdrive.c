@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.86  2006/02/07 22:28:12  tweety
+more moving anf separating of battery and temperature code
+
 Revision 1.85  2006/02/07 07:06:51  tweety
 split apart the battery and temperature handling a little bit
 
@@ -531,7 +534,6 @@ extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 extern mapsstruct *maps;
 
-extern havebattery, havetemperature;	/* Battery level and loading flag */
 
 /* action=1: radar (speedtrap) */
 wpstruct *wayp;
@@ -763,17 +765,19 @@ gint forcehavepos = FALSE, needreminder = TRUE;
 gdouble alarm_lat = 53.583033, alarm_lon = 9.969533, alarm_dist = 9999999.0;
 extern gchar cputempstring[20], batstring[20];
 GtkTooltips *temptooltips = NULL;
-GtkWidget *tempeventbox = NULL, *batteventbox = NULL, *sateventbox =
-	NULL, *compasseventbox = NULL;
+GtkWidget *tempeventbox = NULL, *batteventbox = NULL;
+GtkWidget *sateventbox = NULL, *compasseventbox = NULL;
 GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
-GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox,
-	*wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox,
-	*satslabel2eventbox, *satslabel3eventbox;
+GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
+GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
+GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
 GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
-GtkWidget *dframe, *frame_bearing, *frame_target, *frame_altitude,
-	*frame_wp, *frame_maptype, *frame_toogles, *lab1, *fbat, *ftem;
+GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
+GtkWidget *frame_wp, *frame_maptype, *frame_toogles, *lab1;
+GtkWidget *frame_battery = NULL;
+GtkWidget *frame_temperature = NULL;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -4127,10 +4131,10 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_toogles), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
 
-	if (havebattery)
-		gtk_frame_set_shadow_type (GTK_FRAME (fbat), stype);
-	if (havetemperature)
-		gtk_frame_set_shadow_type (GTK_FRAME (ftem), stype);
+	if (frame_battery)
+		gtk_frame_set_shadow_type (GTK_FRAME (frame_battery), stype);
+	if (frame_temperature)
+		gtk_frame_set_shadow_type (GTK_FRAME (frame_temperature), stype);
 
 	needtosave = TRUE;
 	return TRUE;
@@ -7190,14 +7194,14 @@ main (int argc, char *argv[])
     load_friends_icon ();
 
     /*  Area for map */
-    dframe = gtk_frame_new (NULL);
-    gtk_frame_set_shadow_type (GTK_FRAME (dframe), GTK_SHADOW_IN);
+    frame_map_area = gtk_frame_new (NULL);
+    gtk_frame_set_shadow_type (GTK_FRAME (frame_map_area), GTK_SHADOW_IN);
     drawing_area = gtk_drawing_area_new ();
     gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_area), SCREEN_X,
 			   SCREEN_Y);
-    gtk_container_add (GTK_CONTAINER (dframe), drawing_area);
+    gtk_container_add (GTK_CONTAINER (frame_map_area), drawing_area);
 
-    gtk_box_pack_start (GTK_BOX (vbig), dframe, TRUE, TRUE, 0 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbig), frame_map_area, TRUE, TRUE, 0 * PADDING);
     gtk_widget_add_events (GTK_WIDGET (drawing_area),
 			   GDK_BUTTON_PRESS_MASK);
     gtk_signal_connect_object (GTK_OBJECT (drawing_area),
@@ -7297,37 +7301,34 @@ main (int argc, char *argv[])
 
 	    gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE, 1 * PADDING);
 	}
-    havebattery = battery_get_values ();
-    if (mydebug >20)
-	fprintf (stderr, "batt: %d, temp: %d\n", havebattery,
-		 havetemperature);
-    if (havebattery)
+
+    if ( battery_get_values () )
 	{
 	    drawing_battery = gtk_drawing_area_new ();
 	    gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_battery), 27,
 				   52);
-	    fbat = gtk_frame_new (_("Bat."));
+	    frame_battery = gtk_frame_new (_("Bat."));
 	    batteventbox = gtk_event_box_new ();
 	    gtk_container_add (GTK_CONTAINER (batteventbox),
 			       drawing_battery);
 	    alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
 	    gtk_container_add (GTK_CONTAINER (alignment3), batteventbox);
-	    gtk_container_add (GTK_CONTAINER (fbat), alignment3);
-	    gtk_box_pack_start (GTK_BOX (hbox2), fbat, FALSE, FALSE, 1 * PADDING);
+	    gtk_container_add (GTK_CONTAINER (frame_battery), alignment3);
+	    gtk_box_pack_start (GTK_BOX (hbox2), frame_battery, FALSE, FALSE, 1 * PADDING);
 	}
 
     /* drawing area for cpu temp meter */
-    if (havetemperature)
+    if ( temperature_get_values () )
 	{
 	    drawing_temp = gtk_drawing_area_new ();
 	    gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_temp), 15,   52);
-	    ftem = gtk_frame_new (_("TC"));
+	    frame_temperature = gtk_frame_new (_("TC"));
 	    tempeventbox = gtk_event_box_new ();
 	    gtk_container_add (GTK_CONTAINER (tempeventbox), drawing_temp);
 	    alignment4 = gtk_alignment_new (0.5, 0.5, 0, 0);
 	    gtk_container_add (GTK_CONTAINER (alignment4), tempeventbox);
-	    gtk_container_add (GTK_CONTAINER (ftem), alignment4);
-	    gtk_box_pack_start (GTK_BOX (hbox2), ftem, FALSE, FALSE, 1 * PADDING);
+	    gtk_container_add (GTK_CONTAINER (frame_temperature), alignment4);
+	    gtk_box_pack_start (GTK_BOX (hbox2), frame_temperature, FALSE, FALSE, 1 * PADDING);
 	}
 
 
@@ -7676,15 +7677,17 @@ main (int argc, char *argv[])
     gtk_signal_connect (GTK_OBJECT (drawing_area),
 			"expose_event", GTK_SIGNAL_FUNC (expose_cb),
 			NULL);
-    if (havebattery)
+
+    if ( battery_get_values () )
 	gtk_signal_connect (GTK_OBJECT (drawing_battery),
 			    "expose_event",
 			    GTK_SIGNAL_FUNC (expose_display_battery),
 			    NULL);
-    if (havetemperature)
+
+    if (temperature_get_values () )
 	gtk_signal_connect (GTK_OBJECT (drawing_temp),
 			    "expose_event",
-			    GTK_SIGNAL_FUNC (expose_display_battery),
+			    GTK_SIGNAL_FUNC (expose_display_temperature),
 			    NULL);
 
     if (!pdamode)
@@ -7941,12 +7944,13 @@ main (int argc, char *argv[])
     /*  Tooltips */
     temptooltips = tooltips = gtk_tooltips_new ();
 
-    if (havetemperature)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tempeventbox,
-			      cputempstring, NULL);
-    if (havebattery)
+    if (battery_get_values () )
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), batteventbox,
 			      batstring, NULL);
+
+    if (temperature_get_values () )
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tempeventbox,
+			      cputempstring, NULL);
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
 			  _
@@ -8109,8 +8113,12 @@ main (int argc, char *argv[])
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
     gtk_timeout_add (15000, (GtkFunction) getsqldata, 0);
     gtk_timeout_add (2000, (GtkFunction) nav_doit, NULL);
-    if (havebattery)
+    if ( battery_get_values () )
 	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
+			 NULL);
+
+    if ( temperature_get_values () )
+	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
 			 NULL);
 
     gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
