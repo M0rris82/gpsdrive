@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.31  2006/02/08 06:53:25  tweety
+# make download Error Messages more verbose
+#
 # Revision 1.30  2006/02/07 23:18:05  tweety
 # correct help for mapserver option
 #
@@ -643,9 +646,11 @@ sub mirror_file($$){
 	if ( $response->status_line =~ /^304/ ) {
 	    print "$url --> $local_filename\tNOT MOD" if $debug ;
 	} else {
-	    print "COULD NOT GET\t$url --> $local_filename\n";
 	    print sprintf("ERROR: %s\n",$response->message)
 		if $debug;
+	    print sprintf("STATUS LINE: %s\n",$response->status_line)
+		if $debug;
+	    print "COULD NOT GET\t$url\n\t\tfor --> $local_filename\n";
 	    unlink $local_filename unless $file_existed;
 	    $ok=0;
 	}
@@ -1950,7 +1955,7 @@ sub latlon2xy($$$){
 sub is_usefull_map_file($){
     my $filename = shift;
     $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
-    if ( -s $filename == 2085 ) {
+    if ( ((-s $filename)||0) == 2085 ) {
 	# For GoogleSat Maps
 	my ($checksum) = split(/\s+/,`md5sum $filename`);
 	if ( $checksum eq "c2b3a15d665ba8d2c5aed77025c41a6e" ) {
@@ -2018,8 +2023,9 @@ sub google_stitch($$$$$$) {
 		    my ($lat,$lon)=split(",",xy2latlon($hpos, $vpos, $zoom, "%.4f,%.4f"));
 		    printf $gwp "%d_%d_%d %f %f Map\n",$hpos,$vpos,$zoom,$lat,$lon;
 		    $gwp->close();
+
 		    $model->Annotate( %font_description, 
-				      text => sprintf("%s\n%s\n%d, %d, %d",
+				      text => sprintf("%s\n%d, %d, %d",
 						      xy2latlon($hpos, $vpos, $zoom, "(%.3f,%.3f)"),
 						      $hpos,$vpos,$zoom),
 				      geometry => '+1+12' );
