@@ -1,6 +1,10 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.5  2006/02/08 11:03:44  tweety
+# improve Quality of Example Streets
+# update icoins
+#
 # Revision 1.4  2006/02/05 10:36:50  tweety
 # more cities
 #
@@ -216,16 +220,26 @@ sub fill_example_streets($) { # Insert Street Sample
     my $fh = data_open($file_name);
     my $street_name='';
     my $multi_segment={};
+    my $lat1=1003;
+    my $lat2=1003;
+    my $lon1=1003;
+    my $lon2=1003;
+    my $max_allowed_dist; # Distance to warn for more precise Data
+    my $max_dist =0;
+    my $line_number=0;
     while ( 1 ) {
 	my $line = $fh->getline();
+	$line_number++;
 	chomp $line;
 	if ( $line =~ m/^\S+/ || $fh->eof() ) {
 	    if ( $street_name ) { # Es ist eine Strasse gespeichert
-		print Dumper($multi_segment);
+		#print Dumper($multi_segment);
 		debug("Importing Street: $street_name");
 		# street_segments_add_from_segment_array($multi_segment);
+		print "Max Dist: $max_dist	$street_name\n" 
+		    if $debug;
+		$max_dist=0;
 		street_segments_add($multi_segment);
-
 	    }
 
 	    last 
@@ -240,24 +254,48 @@ sub fill_example_streets($) { # Insert Street Sample
 		next;
 	    } elsif ( $street_name =~ m/^A/ ) {
 		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Autobahn');
+		$max_allowed_dist = 0.4;
 	    } elsif ( $street_name =~ m/^ST/ ) {
 		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
+		$max_allowed_dist = 0.05;
 	    } elsif ( $street_name =~ m/^B/ ) {
 		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
+		$max_allowed_dist = 0.05;
 	    }   else {
 		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Allgemein');
+		$max_allowed_dist = 0.05;
 	    }
 	    
 	    $multi_segment->{'name'}            = $street_name;
 	    $multi_segment->{'scale_min'}       = 1;
 	    $multi_segment->{'scale_max'}       = 50000000;
+	    $multi_segment->{'segments'} =[];
 	    
 	} elsif ( $line =~ m/^\s*$/ ) { # Empty Line
 	    next;
 	} else {
 #	} elsif ( $line =~ m/^[\t\s]+[\d\+\-\.\,]+[\t\s]+[\d\+\-\.\,]+[\t\s]+$/) {
-	    my ($indent,$lat,$lon) = split(/\s+/,$line);
-	    push(@{$multi_segment->{'segments'}},[$lat,$lon]);
+	    my $indent;
+	    ($indent,$lat2,$lon2) = split(/\s+/,$line);
+	    if ( @{$multi_segment->{'segments'}}>0 ) {
+		my $d_lat=abs($lat1-$lat2);
+		my $d_lon=abs($lon1-$lon2);
+		my $dist = $d_lat+$d_lon;
+		$max_dist = $dist if $dist>$max_dist;
+		if ( 
+		     $street_name !~ m/grober Verlauf/ && 
+		     $dist > $max_allowed_dist 
+		     ) {
+		    print "Splitting Track $street_name\n";
+		    printf( "Dist: %.4f	($lat1,$lon1) -> ($lat2,lon2) $street_name [$file_name:$line_number]\n",$dist);
+		    street_segments_add($multi_segment);
+		    $multi_segment->{'segments'} =[];
+		    
+		}
+	    }
+	    $lat1 = $lat2;
+	    $lon1 = $lon2;
+	    push(@{$multi_segment->{'segments'}},[$lat2,$lon2]);
 #	} else {
 #	    warn "Error in File: $file_name Line: '$line'";
 	}

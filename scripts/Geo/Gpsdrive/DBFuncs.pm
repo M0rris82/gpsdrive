@@ -1,6 +1,10 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.4  2006/02/08 11:03:44  tweety
+# improve Quality of Example Streets
+# update icoins
+#
 # Revision 1.3  2006/01/01 17:07:01  tweety
 # improve speed a little bit
 # update --help infos
@@ -231,7 +235,7 @@ sub insert_hash($$;$) {
     # read  multiple hashreference and override Hash Values
     # of field_values
     while ( my $h = shift ) {
-	print "Adding ".Dumper($h);
+#	print "Adding ".Dumper($h);
 	map { $field_values->{$_} = $h->{$_} } sort keys %{$h};
     }
 
@@ -706,9 +710,9 @@ sub street_segments_add($){
     #my $sql ="insert into streets (streets.streets_id,streets.name,streets.streets_type_id,streets.lat1,streets.lon1,streets.alt1,streets.lat2,streets.lon2,streets.alt2,streets.proximity,streets.comment,streets.scale_min,streets.scale_max,streets.last_modified,streets.source_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     #my $sth = $dbh->prepare_cached($sql);
     for my $segment ( @{$data->{segments}} ){
-	$segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
-	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
-	$segment4db->{'streets.alt1'} = $segment4db->{'streets.alt2'};
+	my $lat1 = $segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
+	my $lon1 = 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
+	my $alt1 = 	$segment4db->{'streets.alt1'} = $segment4db->{'streets.alt2'};
 
 	if ( ref($segment) eq "ARRAY" ) {
 	    $lat2 = $segment->[0];
@@ -726,6 +730,11 @@ sub street_segments_add($){
 
 	next unless $segment4db->{'streets.lat1'}; # skip first entry
 
+#	my $d_lat=abs($lat1-$lat2);
+#	my $d_lon=abs($lon1-$lon2);
+#	my $dist = $d_lat+$d_lon;
+#	print "Dist: $dist	($lat1,$lon1),($lat2,lon2) $segment4db->{'streets.name'}\n"
+#	    if $dist > 0.05;;
 #	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
 #	$segment4db->{'streets.streets_type_id'} = $data->{streets.streets_type_id} || $segment->{streets_type_id};
 #	$segment4db->{'streets.source_id'}       = $data->{source_id}       || $segment->{source_id};
