@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.20  2006/02/08 08:34:04  tweety
+e sql was hardecoded off
+
 Revision 1.19  2006/02/05 16:38:05  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -601,7 +604,7 @@ sql_load_lib ()
   void *handle;
   char *error;
 
-  // usesql = TRUE;
+  usesql = TRUE;
   // It seems like this doesn't work on cygwin unless the dlopen comes first..-jc
   if (usesql)
     {
