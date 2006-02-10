@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2006/02/10 17:36:04  tweety
+rearrange ACPI handling
+
 Revision 1.4  2006/02/05 16:38:06  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -199,7 +202,8 @@ opennmea (const char *name)
 {
 	struct termios tios;
 
-	if (mydebug >50) printf ("opennmea()\n");
+	if (mydebug >50) 
+	    printf ("opennmea()\n");
 
 	FILE *const out = fopen (name, "w");
 	if (out == NULL)
@@ -567,8 +571,8 @@ convertGSV (char *f)
   b[0] = field[1][0];
   b[1] = 0;
   i2 = atof (b);
-  if (mydebug)
-    g_print ("gpsd: bits should be:%d  is: %d\n", i2, satbit);
+  if (mydebug && ( i2 != satbit))
+      g_print ("gpsd: convertGSV(): bits should be: %d is: %d\n", i2, satbit);
   g_snprintf (b, sizeof (b), "Satellites: %d\n", anz);
   if (anz != oldsatsanz)
     newsatslevel = TRUE;
@@ -661,7 +665,7 @@ convertGGA (char *f)
       gint mysecs;
 
       if ( mydebug > 80 )
-	g_print ("got no RMC data, using GGA data\n");
+	g_print ("gpsd: got no RMC data, using GGA data\n");
       g_snprintf (b, sizeof (b), "%c%c", field[1][4], field[1][5]);
       sscanf (b, "%d", &mysecs);
       if (mysecs != NMEAoldsecs)
@@ -727,7 +731,7 @@ convertGGA (char *f)
       b[5] = field[2][7];
       b[6] = 0;
       if ( mydebug > 80 )
-	fprintf (stderr, "posmode: %d\n", posmode);
+	fprintf (stderr, "gpsd: posmode: %d\n", posmode);
       if (!posmode)
 	{
 	  gdouble cl;

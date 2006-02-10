@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.21  2006/02/10 17:36:04  tweety
+rearrange ACPI handling
+
 Revision 1.20  2006/02/05 16:38:06  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -164,6 +167,7 @@ icons.c is ectracted from gpsdrive.c
 
 #define	MAX_ICONS	MAXWPTYPES
 
+extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
 extern gint muteflag, sqlflag, trackflag;
@@ -396,6 +400,9 @@ read_icon (gchar * icon_name)
       g_snprintf (filename, sizeof (filename),
 		  "%s/gpsdrive/icons/unknown.png", DATADIR);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if ( do_unit_test ) {
+	  exit(-1);
+      }
     }
   else
     {
@@ -414,7 +421,7 @@ void
 load_icons (void)
 {
   /* icons.txt */
-  FILE *iconfile;
+  FILE *iconfile = NULL;
   char filename[255], wptype[64], icon_name[1024];
   int iconcounter;
 
@@ -422,8 +429,24 @@ load_icons (void)
   kismetpixbuf = read_icon ("kismet.png");
 
   /* load icons defined in icons.txt */
-  snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", homedir);
-  iconfile = fopen (filename, "r");
+  if (!iconfile)
+    {
+	snprintf ((char *) &filename, sizeof (filename), "./data//icons.txt");
+	iconfile = fopen (filename, "r");
+	if (mydebug > 3)
+	    {
+		printf ("Trying icons.txt: \"%s\"\n", filename);
+	    }
+    }
+  if (!iconfile)
+    {
+	snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", homedir);
+	iconfile = fopen (filename, "r");
+	if (mydebug > 3)
+	    {
+		printf ("Trying icons.txt: \"%s\"\n", filename);
+	    }
+    }
   /* if there is no icons.txt, try to open it  from datadir */
   if (!iconfile)
     {
@@ -451,6 +474,9 @@ load_icons (void)
 	      printf ("** Failed to open \"%s\"\n", (char *) &icon_name);
 	      auxicons[iconcounter].icon = NULL;
 	      auxicons[iconcounter].name[0] = 0;
+	      if ( do_unit_test ) {
+		  exit (-1);
+	      }
 	    }
 	  else
 	    {

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.14  2006/02/10 17:36:04  tweety
+  rearrange ACPI handling
+
   Revision 1.13  2006/02/07 22:28:13  tweety
   more moving anf separating of battery and temperature code
 
@@ -122,11 +125,12 @@ gchar cputempstring[20], batstring[20];
 
 
 /* --------------------*/
-gint batlevel, batlevel_old = 125;	/* battery level, range 0..100 */
-gint batloading, batloading_old = FALSE;	/* is the battery charging? */
+gint batlevel = 125;
+gint batlevel_old = 125;	/* battery level, range 0..100 */
+gint batloading = FALSE;
+gint bnatloading_old = FALSE;	/* is the battery charging? */
 gint batcharge = FALSE;
-gint cputemp;
-
+gint cputemp = -99;
 
 static gchar gradsym[] = "\xc2\xb0";
 extern GtkWidget *tempeventbox, *batteventbox;
@@ -144,7 +148,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
   FILE *battery = NULL;
   gint i, e, e1;
   gint ret = FALSE;
-  gint v1, v2, vtemp;
+  gint v1 = 0, v2 = 0, vtemp;
   gchar b[200], t[200], t2[200], t3[200];
   DIR *dir;
   struct dirent *ent;
@@ -153,13 +157,16 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
   *bcharge = FALSE;
   *bloading = FALSE;
 
-  ret = FALSE;
+  if (mydebug > 99)
+    fprintf (stderr, "battery_get_values_linux()\n");
+
+  // -------------------------------------------- apm
   battery = fopen ("/proc/apm", "r");
   if (battery != NULL)
     {
       int count = 0;
       if (mydebug > 99)
-	fprintf (stderr, "APM\n");
+	fprintf (stderr, "battery_get_values_linux(): APM\n");
 
       count = fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
 		      b, b, b, bloading, b, &i, blevel, b, b);
@@ -168,10 +175,14 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 
       if (9 != count)
 	{
-	  if (mydebug > 99)
+	  if (mydebug > 9)
 	    fprintf (stderr, "Wrong Number (%d) of values in /proc/apm\n",
 		     count);
-	  return FALSE;
+	  ret = FALSE;
+	}
+      else
+	{
+	  ret = TRUE;
 	}
 
       /*
@@ -181,167 +192,151 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
       if ((i & 0x80) != 0)
 	ret = FALSE;
 
-      return ret;
-    }
-  else
+    };
+
+  // -------------------------------------------- acpi
+  /* we try if we have acpi */
+
+  /* search for info file */
+  if (!ret)
+    dir = opendir ("/proc/acpi/battery/");
+  if (!ret && dir != NULL)
     {
-      /* we try if we have acpi */
-      v1 = v2 = 0;
-
-      battery = fopen ("/proc/acpi/battery/0/info", "r");
-      if (battery == NULL)
+      if (mydebug > 99)
+	fprintf (stderr, "ACPI\n");
+      while ((ent = readdir (dir)) != NULL)
 	{
-	  if (mydebug > 99)
-	    fprintf (stderr, "ACPI\n");
-
-	  /* search for info file */
-	  dir = opendir ("/proc/acpi/battery/");
-	  if (dir == NULL)
+	  if (ent->d_name[0] != '.')
 	    {
-	      ret = FALSE;
-	      return ret;
-	    }
-	  while ((ent = readdir (dir)) != NULL)
-	    {
-	      if (ent->d_name[0] != '.')
+	      g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
+	      g_strlcat (fn, ent->d_name, sizeof (fn));
+	      g_strlcat (fn, "/info", sizeof (fn));
+	      if (mydebug > 99)
+		fprintf (stderr, "ACPI: File %s\n", fn);
+	      stat (fn, &buf);
+	      if (S_ISREG (buf.st_mode) == TRUE)
 		{
-		  g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
-		  g_strlcat (fn, ent->d_name, sizeof (fn));
-		  g_strlcat (fn, "/info", sizeof (fn));
-		  if (mydebug > 99)
-		    fprintf (stderr, "ACPI: File %s\n", fn);
-		  stat (fn, &buf);
-		  if (S_ISREG (buf.st_mode) == TRUE)
-		    {
-		      if (mydebug > 30)
-			fprintf (stderr, "\nfound file %s\n", fn);
-		      battery = fopen (fn, "r");
-		      if (battery != NULL)
-			do
+		  if (mydebug > 30)
+		    fprintf (stderr, "\nfound file %s\n", fn);
+		  battery = fopen (fn, "r");
+		  if (battery != NULL)
+		    do
+		      {
+			e = fscanf
+			  (battery, "%s %s %s %s %[^\n]", t, t2, b, t3, b);
+			if (e != EOF)
 			  {
-			    e = fscanf
-			      (battery,
-			       "%s %s %s %s %[^\n]", t, t2, b, t3, b);
-			    if (e != EOF)
+			    if (((strstr (t, "ast")) != NULL)
+				&& ((strstr (t2, "ull")) != NULL))
 			      {
-				if (((strstr (t, "ast")) != NULL)
-				    && ((strstr (t2, "ull")) != NULL))
-				  {
-				    e1 = sscanf (t3, "\n%d\n", &vtemp);
-				    if (e1 == 1)
-				      v1 += vtemp;
-				    ret = TRUE;
-				  }
+				e1 = sscanf (t3, "\n%d\n", &vtemp);
+				if (e1 == 1)
+				  v1 += vtemp;
+				ret = TRUE;
 			      }
 			  }
-			while (e != EOF);
-		      if (battery != NULL)
-			fclose (battery);
+		      }
+		    while (e != EOF);
+		  if (battery != NULL)
+		    fclose (battery);
 
-		    }
 		}
 	    }
-	  closedir (dir);
 	}
+      closedir (dir);
 
-      /*       v1 = 3400; */
-
-      battery = fopen ("/proc/acpi/battery/0/status", "r");
-      if (battery == NULL)
-	{
-	  /* search for info file */
-	  dir = opendir ("/proc/acpi/battery/");
-	  if (dir == NULL)
-	    {
-	      ret = FALSE;
-	      return ret;
-	    }
-	  while ((ent = readdir (dir)) != NULL)
-	    {
-	      if (ent->d_name[0] != '.')
-		{
-		  g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
-		  g_strlcat (fn, ent->d_name, sizeof (fn));
-		  g_strlcat (fn, "/state", sizeof (fn));
-		  stat (fn, &buf);
-		  if (S_ISREG (buf.st_mode) == TRUE)
-		    {
-		      if (mydebug > 30)
-			fprintf (stderr, "\nfound file %s\n", fn);
-		      battery = fopen (fn, "r");
-		      if (battery == NULL)
-			{
-			  closedir (dir);
-			  ret = FALSE;
-			  return ret;
-			}
-
-		      do
-			{
-			  e = fscanf (battery,
-				      "%s %s %s %s %[^\n]", t, t2, t3, b, b);
-			  if (e != EOF)
-			    {
-			      if (((strstr
-				    (t,
-				     "emaining"))
-				   != NULL)
-				  && ((strstr (t2, "apacity")) != NULL))
-				{
-				  e1 = sscanf (t3, "\n%d\n", &vtemp);
-				  if (e1 == 1)
-				    v2 += vtemp;
-				  ret = TRUE;
-				}
-			    }
-			}
-		      while (e != EOF);
-		      fseek (battery, 0, SEEK_SET);
-		      do
-			{
-			  e = fscanf (battery, "%s%[^\n]", t, t2);
-			  if (mydebug > 30)
-			    fprintf (stderr, "t: %s, t2: %s\n", t, t2);
-			  if ((strstr (t, "Status:")) != NULL)
-			    {
-			      if ((strstr (t2, "on-line")) != NULL)
-				*bloading = TRUE;
-			      else
-				*bloading = FALSE;
-			      ret = TRUE;
-			    }
-			  if ((strstr (t, "charging")) != NULL)
-			    {
-			      /*  assume we are charging, unless
-			       * discharging or unknown. */
-			      *bloading = TRUE;
-			      *bcharge = TRUE;
-			      if ((strstr (t2, "discharging")) != NULL)
-				{
-				  *bcharge = FALSE;
-				  *bloading = FALSE;
-				}
-			      if ((strstr (t2, "unknown")) != NULL)
-				*bcharge = FALSE;
-			      ret = TRUE;
-			    }
-			}
-		      while (e != EOF);
-		      fclose (battery);
-
-		    }
-		}
-	    }
-	  closedir (dir);
-
-	}
-
-      if (mydebug > 60)
-	fprintf (stderr, "v1: %d, v2:%d\n", v1, v2);
-      if (v2 != 0)
-	*blevel = (int) (((double) v2 / v1) * 100.0);
-      /*       fprintf(stderr,"blevel: %d\n",*blevel); */
     }
+
+  /* search for status file */
+  if (!ret)
+    dir = opendir ("/proc/acpi/battery/");
+  if (!ret && dir != NULL)
+    {
+      while ((ent = readdir (dir)) != NULL)
+	{
+	  if (ent->d_name[0] != '.')
+	    {
+	      g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
+	      g_strlcat (fn, ent->d_name, sizeof (fn));
+	      g_strlcat (fn, "/status", sizeof (fn));
+	      stat (fn, &buf);
+	      if (S_ISREG (buf.st_mode) == TRUE)
+		{
+		  if (mydebug > 30)
+		    fprintf (stderr, "\nfound file %s\n", fn);
+		  battery = fopen (fn, "r");
+		  if (battery == NULL)
+		    {
+		      closedir (dir);
+		      ret = FALSE;
+		      return ret;
+		    }
+
+		  do
+		    {
+		      e = fscanf (battery,
+				  "%s %s %s %s %[^\n]", t, t2, t3, b, b);
+		      if (e != EOF)
+			{
+			  if (((strstr
+				(t,
+				 "emaining"))
+			       != NULL) && ((strstr (t2, "apacity")) != NULL))
+			    {
+			      e1 = sscanf (t3, "\n%d\n", &vtemp);
+			      if (e1 == 1)
+				v2 += vtemp;
+			      ret = TRUE;
+			    }
+			}
+		    }
+		  while (e != EOF);
+		  fseek (battery, 0, SEEK_SET);
+		  do
+		    {
+		      e = fscanf (battery, "%s%[^\n]", t, t2);
+		      if (mydebug > 30)
+			fprintf (stderr, "t: %s, t2: %s\n", t, t2);
+		      if ((strstr (t, "Status:")) != NULL)
+			{
+			  if ((strstr (t2, "on-line")) != NULL)
+			    *bloading = TRUE;
+			  else
+			    *bloading = FALSE;
+			  ret = TRUE;
+			}
+		      if ((strstr (t, "charging")) != NULL)
+			{
+			  /*  assume we are charging, unless
+			   * discharging or unknown. */
+			  *bloading = TRUE;
+			  *bcharge = TRUE;
+			  if ((strstr (t2, "discharging")) != NULL)
+			    {
+			      *bcharge = FALSE;
+			      *bloading = FALSE;
+			    }
+			  if ((strstr (t2, "unknown")) != NULL)
+			    *bcharge = FALSE;
+			  ret = TRUE;
+			}
+		    }
+		  while (e != EOF);
+		  fclose (battery);
+
+		}
+	    }
+	}
+      closedir (dir);
+
+    }
+
+  if (mydebug > 60)
+    fprintf (stderr, "v1: %d, v2:%d\n", v1, v2);
+  if (v2 != 0)
+    *blevel = (int) (((double) v2 / v1) * 100.0);
+  /*       fprintf(stderr,"blevel: %d\n",*blevel); */
+
   return ret;
 }
 
@@ -364,7 +359,7 @@ temperature_get_values_linux (int *temper)
   dir = opendir ("/proc/acpi/thermal_zone/");
   if (dir != NULL)
     {
-      while ((ent = readdir (dir)) != NULL)
+      while (!havetemperature && (ent = readdir (dir)) != NULL)
 	{
 	  if (ent->d_name[0] != '.')
 	    {
@@ -568,16 +563,16 @@ expose_display_temperature ()
 
   extern GdkPixbuf *temimage;
   gint havetemperature = temperature_get_values ();
-  if (! havetemperature)
-      return FALSE;
+  if (!havetemperature)
+    return FALSE;
 
   mydrawable = drawing_temp->window;
   if (temkontext == NULL)
-      temkontext = gdk_gc_new (mydrawable);
+    temkontext = gdk_gc_new (mydrawable);
   gdk_gc_set_foreground (temkontext, &mygray);
   gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
   if (temimage == NULL)
-      temimage = read_icon ("gauge.png");
+    temimage = read_icon ("gauge.png");
   gdk_gc_set_function (temkontext, GDK_AND);
   gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0, 0, 0, 0,
 		   17, 50, GDK_RGB_DITHER_NONE, 0, 0);
@@ -586,9 +581,9 @@ expose_display_temperature ()
   gdk_gc_set_foreground (temkontext, &mygray);
   /* We want to limit cputemp (79<cputemp< 40)    */
   if (cputemp > 79)
-	cputemp = 79;
+    cputemp = 79;
   if (cputemp < 40)
-      cputemp = 40;
+    cputemp = 40;
   gdk_draw_rectangle (mydrawable, temkontext, 1, 6, 1, 5, 79 - cputemp);
 
   return TRUE;
@@ -675,18 +670,18 @@ expose_display_battery ()
   /*       gdk_pixbuf_unref (batimage); */
 
   if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
-  {
-    if (mydebug > 30)
-      g_print ("\nBattery: %d%%\n", batlevel);
+    {
+      if (mydebug > 30)
+	g_print ("\nBattery: %d%%\n", batlevel);
 
-    /* This is for Festival, so we cannot use gettext() for i18n */
-    g_snprintf (bbuf, sizeof (bbuf), speech_remaining_battery[voicelang],
-		batlevel);
-    speech_out_speek (bbuf);
+      /* This is for Festival, so we cannot use gettext() for i18n */
+      g_snprintf (bbuf, sizeof (bbuf), speech_remaining_battery[voicelang],
+		  batlevel);
+      speech_out_speek (bbuf);
 
-    batlevel_old = batlevel;
-  }
-return TRUE;
+      batlevel_old = batlevel;
+    }
+  return TRUE;
 }
 
 
@@ -706,9 +701,9 @@ battery_get_values (void)
 #if defined(__linux__)
   havebattery = battery_get_values_linux (&batlevel, &batloading, &batcharge);
 #elif defined(__FreeBSD__) && defined(__i386__)
- havebattery = battery_get_values_fbsd (&batlevel, &batloading);
+  havebattery = battery_get_values_fbsd (&batlevel, &batloading);
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
- havebattery = battery_get_values_nbsd (&batlevel, &batloading);
+  havebattery = battery_get_values_nbsd (&batlevel, &batloading);
 #else
   /* add support for your favourite OS here */
   return FALSE;

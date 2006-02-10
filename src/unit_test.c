@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.3  2006/02/10 17:36:04  tweety
+rearrange ACPI handling
+
 Revision 1.2  2006/01/04 19:19:31  tweety
 more unit tests
 search for icons in the local directory data/icons and data/pixmaps first
@@ -53,6 +56,7 @@ extern gdouble current_lon, current_lat;
 extern gint mapistopo;
 extern glong mapscale;
 extern gdouble pixelfact;
+extern int usesql;
 
 /* ******************************************************************
  * This Function tests internal routines of gpsdrive
@@ -295,6 +299,12 @@ unit_test (void)
     if (abs (gx - x) >= 1 || abs (gy - y) >= 1)
       exit (-1);
   }
+
+  if ( ! usesql )
+      {
+	  printf("Problem with SQL Support\n");
+	  exit(-1);
+      }
 
   // ------------------------------------------------------------------
   printf ("All Tests successfull\n");
