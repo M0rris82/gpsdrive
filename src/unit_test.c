@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.4  2006/02/10 22:33:26  tweety
+fix more in the ACPI/APM handling. write unti tests for this part of Code
+
 Revision 1.3  2006/02/10 17:36:04  tweety
 rearrange ACPI handling
 
@@ -50,6 +53,7 @@ Revision 1.0  2006/01/03 14:24:10  tweety
 #include <math.h>
 #include "speech_out.h"
 #include "speech_strings.h"
+#include "battery.h"
 
 extern gint zoom;
 extern gdouble current_lon, current_lat;
@@ -57,11 +61,40 @@ extern gint mapistopo;
 extern glong mapscale;
 extern gdouble pixelfact;
 extern int usesql;
+extern gchar dir_proc[200];
+extern gchar cputempstring[20], batstring[20];
 
 /* ******************************************************************
  * This Function tests internal routines of gpsdrive
  */
 
+/* ******************************************************************
+ * write a file with content in one function call
+ */
+void write_file(gchar *filename, gchar *content)
+{
+    FILE *fp;
+    fp = fopen (filename, "w");
+    if (fp == NULL)
+	{
+	    fprintf (stderr,"Error opening %s\n",filename);
+	    perror("ERROR");
+	    exit(-1);
+	}
+
+    fprintf (fp, "%s",content);
+    fclose ( fp );
+}
+
+/* ******************************************************************
+ * Unit Tests
+ * in this function some of the internal functions of gpsdrive are called
+ * with known parameters. The results then are checked to what is expected.
+ * If a non expected/wrong result is detected we exit with -1
+ *
+ * This way I hope we can reduce the number of errors comming back after
+ * already having been fixed.
+ */
 void
 unit_test (void)
 {
@@ -261,7 +294,7 @@ unit_test (void)
     // pixelfact = 1;
 
     printf ("pixelfact: %g\n", pixelfact);
-    printf ("mapscale: %d\n", mapscale);
+    printf ("mapscale: %ld\n", mapscale);
 
     x = 0;
     y = 0;
@@ -300,11 +333,138 @@ unit_test (void)
       exit (-1);
   }
 
-  if ( ! usesql )
-      {
-	  printf("Problem with SQL Support\n");
+  // ------------------------------------------------------------------
+  {
+      printf("Testing if SQL Support is on\n");
+      if ( ! usesql )
+	  {
+	      printf("Problem with SQL Support\n");
+	      exit(-1);
+	  }
+  }
+
+  // ------------------------------------------------------------------
+  {
+      gchar fn[500];
+      gint response;
+
+      printf("Testing if acpi/apm is parsing correct\n");
+
+      g_snprintf( dir_proc, sizeof(dir_proc) , "/tmp/gpsdrive-unit-test");
+      mkdir (dir_proc, 0777);
+      g_snprintf( dir_proc, sizeof(dir_proc) , "/tmp/gpsdrive-unit-test/proc");
+      mkdir (dir_proc, 0777);
+
+      printf("	--------> remove maybe old Files\n");
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/state",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/state",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/info",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/info",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/apm",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/thermal_zone/ATF00/temperature",dir_proc);
+      unlink(fn);
+
+
+      printf("	-------> Check if we get positive answers even if no files should be there\n");
+      if ( battery_get_values () ) {
+	  printf("battery reporting Problem: battery status without file\n");
 	  exit(-1);
       }
+
+      if ( temperature_get_values () ) {
+	  printf("temperature reporting Problemtem: temperature without file\n");
+	  exit(-1);
+      }
+
+      printf("	-------> Create Dummy Files/dirs for ACPI\n");
+      g_snprintf (fn, sizeof (fn), dir_proc);
+      g_strlcat (fn, "/acpi", sizeof (fn));
+      mkdir (fn, 0777);
+      g_strlcat (fn, "/battery", sizeof (fn));
+      mkdir (fn, 0777);
+
+      printf("	-------> one Battery\n");
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1",dir_proc);
+      mkdir (fn, 0777);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/state",dir_proc);
+      write_file(fn,"present:                 yes\n"
+		 "capacity state:          ok\n"
+		 "charging state:          charging\n"
+		 "present rate:            50 mW\n"
+		 "remaining capacity:      55710 mWh\n"
+		 "present voltage:         16764 mV\n");
+      
+      if ( ! battery_get_values () ) {
+	  printf("battery reporting Problem: no battery status for 1 Bat\n");
+	  exit(-1);
+      }
+
+      printf("	-------> and another Battery\n");
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2",dir_proc);
+      mkdir (fn, 0777);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/state",dir_proc);
+      write_file(fn,"present:                 yes\n"
+		 "capacity state:          ok\n"
+		 "charging state:          charging\n"
+		 "present rate:            50 mW\n"
+		 "remaining capacity:      55710 mWh\n"
+		 "present voltage:         16764 mV\n");
+      
+      
+      response = battery_get_values ();
+      printf("batstring: %s\n",batstring);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/state",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/state",dir_proc);
+      unlink(fn);
+      if ( ! response  ) {
+	  printf("battery reporting Problem: no battery status for 1 Bat\n");
+	  exit(-1);
+      }
+
+      printf("	-------> Check with apm\n");
+      g_snprintf (fn, sizeof (fn), "%s/apm", dir_proc);
+      //      write_file(fn,"test test test 0x03 test 0x01 99% test test\n");
+
+      gchar battery_string[200];
+      sprintf (battery_string, "%s %s %s %x %s %x %d%% %s %s\ntest1\n",
+	       "test1","test2","test3",3,"test4",3,99,"test5","test6");
+      write_file(fn,battery_string);
+      write_file(fn,"test test test 03 test 01 99% test test\n");
+      write_file(fn,"1 2 3 03 4 01 99% 5 6\n");
+      response = battery_get_values ();
+      printf("batstring: %s\n",batstring);
+      //      unlink(fn);
+      if ( ! response  ) {
+	  printf("battery reporting Problem: no bat reported\n");
+	  exit(-1);
+      }
+
+
+
+
+      printf("	-------> Check acpi thermal zone\n");
+      g_snprintf (fn, sizeof (fn), "%s/acpi/thermal_zone",dir_proc);
+      mkdir (fn, 0777);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/thermal_zone/ATF00",dir_proc);
+      mkdir (fn, 0777);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/thermal_zone/ATF00/temperature",dir_proc);
+      write_file(fn,"temperature:             59 C\n");
+
+      response = temperature_get_values ();
+      printf("tempstring: %s\n",cputempstring);
+      //      unlink(fn);
+      if ( ! response  ) {
+	  printf("temperature reporting Problem: no temp reported\n");
+	  exit(-1);
+      }
+
+  }
 
   // ------------------------------------------------------------------
   printf ("All Tests successfull\n");

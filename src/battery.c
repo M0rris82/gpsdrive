@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.15  2006/02/10 22:33:26  tweety
+  fix more in the ACPI/APM handling. write unti tests for this part of Code
+
   Revision 1.14  2006/02/10 17:36:04  tweety
   rearrange ACPI handling
 
@@ -122,6 +125,7 @@ extern gint debug;
 
 /* Global Values */
 gchar cputempstring[20], batstring[20];
+gchar dir_proc[200] = "/proc"; // make it flexible for unit -tests
 
 
 /* --------------------*/
@@ -161,7 +165,9 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
     fprintf (stderr, "battery_get_values_linux()\n");
 
   // -------------------------------------------- apm
-  battery = fopen ("/proc/apm", "r");
+  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_strlcat (fn, "/apm", sizeof (fn));
+  battery = fopen (fn, "r");
   if (battery != NULL)
     {
       int count = 0;
@@ -176,8 +182,8 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
       if (9 != count)
 	{
 	  if (mydebug > 9)
-	    fprintf (stderr, "Wrong Number (%d) of values in /proc/apm\n",
-		     count);
+	    fprintf (stderr, "Wrong Number (%d) of values in %s\n",
+		     count,fn);
 	  ret = FALSE;
 	}
       else
@@ -198,17 +204,20 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
   /* we try if we have acpi */
 
   /* search for info file */
+  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_strlcat (fn, "/acpi/battery/", sizeof (fn));
   if (!ret)
-    dir = opendir ("/proc/acpi/battery/");
+      dir = opendir (fn);
   if (!ret && dir != NULL)
     {
       if (mydebug > 99)
-	fprintf (stderr, "ACPI\n");
+	fprintf (stderr, "battery_get_values_linux(): ACPI\n");
       while ((ent = readdir (dir)) != NULL)
 	{
 	  if (ent->d_name[0] != '.')
 	    {
-	      g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
+  g_snprintf (fn, sizeof (fn), dir_proc);
+		g_strlcat (fn, "/acpi/battery/",sizeof (fn));
 	      g_strlcat (fn, ent->d_name, sizeof (fn));
 	      g_strlcat (fn, "/info", sizeof (fn));
 	      if (mydebug > 99)
@@ -217,7 +226,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 	      if (S_ISREG (buf.st_mode) == TRUE)
 		{
 		  if (mydebug > 30)
-		    fprintf (stderr, "\nfound file %s\n", fn);
+		    fprintf (stderr, "battery_get_values_linux(): found file %s\n", fn);
 		  battery = fopen (fn, "r");
 		  if (battery != NULL)
 		    do
@@ -248,41 +257,34 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
     }
 
   /* search for status file */
+  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_strlcat (fn, "/acpi/battery/", sizeof (fn));
   if (!ret)
-    dir = opendir ("/proc/acpi/battery/");
+    dir = opendir (fn);
   if (!ret && dir != NULL)
     {
-      while ((ent = readdir (dir)) != NULL)
+	while ((ent = readdir (dir)) != NULL)
 	{
 	  if (ent->d_name[0] != '.')
 	    {
-	      g_snprintf (fn, sizeof (fn), "/proc/acpi/battery/");
+		g_snprintf (fn, sizeof (fn), dir_proc);
+		g_strlcat (fn, "/acpi/battery/", sizeof (fn));
 	      g_strlcat (fn, ent->d_name, sizeof (fn));
-	      g_strlcat (fn, "/status", sizeof (fn));
-	      stat (fn, &buf);
-	      if (S_ISREG (buf.st_mode) == TRUE)
+	      g_strlcat (fn, "/state", sizeof (fn));
+	      battery = fopen (fn, "r");
+	      if ( NULL != battery )
 		{
-		  if (mydebug > 30)
-		    fprintf (stderr, "\nfound file %s\n", fn);
-		  battery = fopen (fn, "r");
-		  if (battery == NULL)
-		    {
-		      closedir (dir);
-		      ret = FALSE;
-		      return ret;
-		    }
-
+		    if (mydebug > 30)
+			fprintf (stderr, "battery_get_values_linux(): found file %s\n", fn);
 		  do
 		    {
 		      e = fscanf (battery,
 				  "%s %s %s %s %[^\n]", t, t2, t3, b, b);
 		      if (e != EOF)
 			{
-			  if (((strstr
-				(t,
-				 "emaining"))
-			       != NULL) && ((strstr (t2, "apacity")) != NULL))
-			    {
+			    if (    ( (strstr(t,"emaining")) != NULL) 
+				    && ((strstr (t2, "apacity")) != NULL))
+				{
 			      e1 = sscanf (t3, "\n%d\n", &vtemp);
 			      if (e1 == 1)
 				v2 += vtemp;
@@ -291,12 +293,14 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 			}
 		    }
 		  while (e != EOF);
+
 		  fseek (battery, 0, SEEK_SET);
+
 		  do
 		    {
 		      e = fscanf (battery, "%s%[^\n]", t, t2);
 		      if (mydebug > 30)
-			fprintf (stderr, "t: %s, t2: %s\n", t, t2);
+			fprintf (stderr, "battery_get_values_linux(): t: %s, t2: %s\n", t, t2);
 		      if ((strstr (t, "Status:")) != NULL)
 			{
 			  if ((strstr (t2, "on-line")) != NULL)
@@ -332,7 +336,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
     }
 
   if (mydebug > 60)
-    fprintf (stderr, "v1: %d, v2:%d\n", v1, v2);
+    fprintf (stderr, "battery_get_values_linux(): v1: %d, v2:%d\n", v1, v2);
   if (v2 != 0)
     *blevel = (int) (((double) v2 / v1) * 100.0);
   /*       fprintf(stderr,"blevel: %d\n",*blevel); */
@@ -356,34 +360,37 @@ temperature_get_values_linux (int *temper)
 
   /* search for temperature file */
   temperature = NULL;
-  dir = opendir ("/proc/acpi/thermal_zone/");
+  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
+  dir = opendir (fn);
   if (dir != NULL)
     {
       while (!havetemperature && (ent = readdir (dir)) != NULL)
 	{
 	  if (ent->d_name[0] != '.')
 	    {
-	      g_snprintf (fn, sizeof (fn), "/proc/acpi/thermal_zone/");
-	      g_strlcat (fn, ent->d_name, sizeof (fn));
-	      g_strlcat (fn, "/temperature", sizeof (fn));
-	      stat (fn, &buf);
-	      if (S_ISREG (buf.st_mode) == TRUE)
-		{
-		  if (mydebug > 30)
-		    fprintf (stderr, "\nfound file %s\n", fn);
-		  temperature = fopen (fn, "r");
-		  if (temperature != NULL)
+		g_snprintf (fn, sizeof (fn), dir_proc);
+		g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
+		g_strlcat (fn, ent->d_name, sizeof (fn));
+		g_strlcat (fn, "/temperature", sizeof (fn));
+		if (mydebug > 30)
+		    fprintf (stderr, "checking File %s\n", fn);
+		temperature = fopen (fn, "r");
+		if (temperature != NULL) {
 		    havetemperature = TRUE;
+		    // ############### SigSeg Was HERE ??!!
+		    int count = fscanf (temperature, "%s %d %s", b, temper, b);
+		    if ( 3 != count ) {
+			if (mydebug > 9)
+			    fprintf (stderr, "Wrong Number (%d) of values in %s\n",
+				     count,fn);
+			havetemperature = FALSE;
+		    }
+		    fclose (temperature);
 		}
 	    }
 	}
       closedir (dir);
-    }
-  if (havetemperature)
-    {
-      // ############### SigSeg HERE ??!!
-      fscanf (temperature, "%s %d %s", b, temper, b);
-      fclose (temperature);
     }
   return havetemperature;
 }
@@ -735,8 +742,10 @@ temperature_get_values (void)
 
   if (disableapm)
     {
-      return FALSE;
+      return havetemperature;
     }
+
+  //  g_snprintf (dir_proc,sizeof(dir_proc),"/proc");
 
 #if defined(__linux__)
   havetemperature = temperature_get_values_linux (&cputemp);
