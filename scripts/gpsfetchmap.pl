@@ -9,23 +9,12 @@
 #
 #
 # $Log$
-# Revision 1.31  2006/02/08 06:53:25  tweety
-# make download Error Messages more verbose
+# Revision 1.32  2006/02/11 11:06:01  tweety
+# insert inew Version numbers
 #
-# Revision 1.30  2006/02/07 23:18:05  tweety
-# correct help for mapserver option
-#
-# Revision 1.29  2006/01/31 23:46:48  tweety
-# initial Version for download gov.au Maps
-#
-# Revision 1.28  2006/01/27 13:42:09  tweety
-# make get_gpsd_position() wait until we have a position
 #
 # Revision 1.27  2006/01/16 07:28:41  tweety
 # for checks if map exists; also use System Directories
-#
-# Revision 1.26  2005/12/28 22:16:37  tweety
-# allow negative coordinates for -w gpsd
 #
 # Revision 1.25  2005/12/28 22:14:17  tweety
 # ask local gpsd for position if you use gpsfetchmap.pl -w gpsd
@@ -33,22 +22,10 @@
 # Revision 1.24  2005/12/28 11:12:41  tweety
 # added more scales for geoscience Server
 #
-# Revision 1.23  2005/12/27 12:17:39  tweety
-# *** empty log message ***
-#
-# Revision 1.22  2005/12/27 12:16:42  tweety
-# fix type in debug message
-#
-# Revision 1.21  2005/12/27 12:10:53  tweety
-# elimiated ^M
-#
 # Revision 1.20  2005/12/27 12:02:34  tweety
 # Author: David Pollard
 # Added geoscience server section for map downloads in Australia
 # Added Resize section to convermaps from 1000x800 to 1280x1024
-#
-# Revision 1.19  2005/12/09 07:58:04  tweety
-# improve proxy handling
 #
 # Revision 1.18  2005/11/28 21:37:03  tweety
 # Update google map fetching
@@ -56,12 +33,6 @@
 # Revision 1.17  2005/10/20 23:51:46  tweety
 # Zoomlevels for incrementp
 # Autor: webmaster@psphacks.net  Aaron Anderson
-#
-# Revision 1.16  2005/10/10 13:07:05  tweety
-# change some Debug Output, change recursion for find
-#
-# Revision 1.15  2005/08/10 06:09:43  tweety
-# increase Version for google download
 #
 # Revision 1.14  2005/08/07 22:43:23  tweety
 # The script changes to the config directory instead to the map directory
@@ -74,13 +45,9 @@
 # make $KOORD_FILE relative to $mapdir
 #
 # Revision 1.12  2005/08/07 22:27:10  tweety
-# retrieve Google Maps
 # Author: Konstantin Naumov <piterpen@gmail.com>
-# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=26
-#
-# Revision 1.11  2005/07/04 05:25:32  tweety
-# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=26
-# Prototype for incrementp as mapserver
+# retrieve Google Maps
+# Tweety: Prototype for incrementp as mapserver
 #
 # Revision 1.10  2005/07/03 20:05:52  tweety
 # http://bugzilla.gpsdrive.cc/show_bug.cgi?id=11
@@ -90,13 +57,8 @@
 # added patch from Olli Salonen <olli@cabbala.net>
 # downloading all maps along track, between waypoints
 #
-# Revision 1.8  2005/05/14 21:21:23  tweety
-# Update Index createion
-# Update default Streets
-# Eliminate some undefined Value
-#
 # Revision 1.7  2005/05/13 07:33:41  tweety
-# remove som unnecessary indirections
+# remove some unnecessary indirections
 # replace get_unit and get_mapdir with read_config
 #
 # Revision 1.6  2005/05/13 06:30:50  tweety
@@ -107,13 +69,6 @@
 # extracted lat2raidus into it's own function and added plausibility checks
 # sorted addwaypoint function and added comments
 # while downloading new maps the already existing maps are always displayed
-#
-# Revision 1.4  2005/04/13 19:58:30  tweety
-# renew indentation to 4 spaces + tabstop=8
-#
-# Revision 1.3  2005/01/12 22:08:13  tweety
-# trying to get automated change log
-#
 #
 # Kevin Stephens
 # Based on shell script by: Fritz Ganter and Manfred Carus
@@ -173,16 +128,15 @@
 #       176.47 / 0.000265  (No idea if this is correct)
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
-modified (Sept 06, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Sept 18, 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
-modified (Nov 21, 2002) by Magnus Månsson <ganja\@0x63.nu>
-modified (Nov 29, 2003) by camel <camel\@insecure.at>
-modified (Feb 27,2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
-modified (Dec/Jan,2004/2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
-modified (May 15, 2005) by Olli Salonen <olli\@cabbala.net>
-modified (July 1, 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
-modified (Dec 27, 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19
+modified (Sep 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
+modified (Nov 2002) by Magnus Månsson <ganja\@0x63.nu>
+modified (Nov 2003) by camel <camel\@insecure.at>
+modified (Feb 2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
+modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
+modified (May 2005) by Olli Salonen <olli\@cabbala.net>
+modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
+modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
+Version 1.19 (gpsdrive-2.10pre3-cvs-20060211)
 ";
 
 sub redirect_ok { return 1; }
@@ -446,6 +400,7 @@ $mapdir ||= $CONFIG_DIR;
 my $KOORD_FILE  = "$mapdir/map_koord.txt";
 
 
+debug( $VERSION);
 #############################################################################
 # LPW::UserAgent initialisieren
 my $ua = LWP::UserAgent->new;
