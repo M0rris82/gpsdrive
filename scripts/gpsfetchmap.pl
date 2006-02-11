@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.33  2006/02/11 11:14:06  tweety
+# uncommet debug Stuff
+#
 # Revision 1.32  2006/02/11 11:06:01  tweety
 # insert inew Version numbers
 #
@@ -2023,13 +2026,15 @@ sub google_stitch($$$$$$) {
 	    $image->Draw(fill=>'red',    primitive=>'rectangle',   points=>'635,507 645,517');
 	    $image->Draw(fill=>'yellow', primitive=>'rectangle',   points=>'638,510 642,514');
 	    $image->Annotate(%font_description, text=>"$mmm", geometry=>'+640+512' );
-	    my $way_txt = IO::File->new(">>/home/gpsdrive/way-test.txt");
-	    #Muenchen                48.129281   11.573221 area.city
-	    my $mm1 = $mmm;
-	    $mm1 =~ s/\s+/_/g;
-	    $mmm =~ s/\s+/ /g;
-	    $way_txt->print("$mm1 $mmm\n");
-	    $way_txt->close();
+	    if (0){
+		my $way_txt = IO::File->new(">>/home/gpsdrive/way-test.txt");
+		#Muenchen                48.129281   11.573221 area.city
+		my $mm1 = $mmm;
+		$mm1 =~ s/\s+/_/g;
+		$mmm =~ s/\s+/ /g;
+		$way_txt->print("$mm1 $mmm\n");
+		$way_txt->close();
+	    }
 	    $image->Annotate(%font_description, text=>"$ulm", geometry=>'+2+54' );
 	    $image->Annotate(%font_description, text=>"$lrm", geometry=>'+2-54',gravity=>"SouthEast" );
 	    for my $x ([$ulh,$lrh]){
