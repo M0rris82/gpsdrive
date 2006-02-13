@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.34  2006/02/13 19:55:05  tweety
+# Stub for writing wld Files
+#
 # Revision 1.33  2006/02/11 11:14:06  tweety
 # uncommet debug Stuff
 #
@@ -139,7 +142,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-cvs-20060211)
+Version 1.19 (gpsdrive-2.10pre3-lib-map-version)
 ";
 
 sub redirect_ok { return 1; }
@@ -1585,7 +1588,7 @@ sub read_koord_file($) {
 	    $MAP_FILES->{$filename} = "$lati, $long, $mapscale";
 	    $anz_files ++;
 	} else {
-	    warn "ERROR: read_koord_file is missing File $filename";
+	    warn "ERROR: read_koord_file is missing File $filename\n";
 	};
     }
     close KOORD;
@@ -1924,6 +1927,25 @@ sub is_usefull_map_file($){
     return 1;
 }
 
+sub write_wld($$$$){
+    my $filename = shift;
+    my $lat      = shift;
+    my $lon      = shift;
+    my $zoom     = shift;
+
+    my $wld_filename = $filename;
+    die "wrong Filename $filename for making wld file\n"
+	unless $wld_filename =~ s/\.(jpg|gif)$/.wld/;
+#    print "$wld_filename,$lat,$lon,$zoom\n";
+    my $fw =IO::File->new(">$wld_filename");
+    print $fw "$zoom\n";
+    print $fw "0.0\n";
+    print $fw "0.0\n";
+    print $fw "$zoom\n";
+    print $fw "$lat\n";
+    print $fw "$lon\n";
+    $fw->close();
+}
 
 sub google_stitch($$$$$$) {
     my ($lat, $lon, $scale, $width, $height , $destination_file )= @_;
@@ -1962,9 +1984,11 @@ sub google_stitch($$$$$$) {
 		if ( mirror_map($url,$filename) ) {
 		    if ( is_usefull_map_file($filename) ) {
 			$anz_new++;
+			write_wld($filename,$lat,$lon,$zoom)
 		    }
 		}
 	    }
+	    write_wld($filename,$lat,$lon,$zoom);
 
 	    my $model=Image::Magick->new();
 	    if ( is_usefull_map_file($filename) ) {
@@ -2052,10 +2076,10 @@ sub google_stitch($$$$$$) {
 
 	# TODO: $lat,$lon is not the real map center --> This has to be fixed!!!!
 	my ($la,$lo) = split(' ',xy2latlon($hval+$hwidth, $vval+$hheight, $zoom, "%.6f %.6f"));
-	# TODO: $lat,$lon This is the really  really bad hack to see what the maps look like for Munich
-	#$lo += 0.0014;
-	#$la += 0.0002;
 	append_koords($destination_file, $la, $lo, $scale);
+
+	($la,$lo) = split(' ',xy2latlon($hval, $vval, $zoom, "%.6f %.6f"));
+	write_wld($destination_file,$la,$lo,$scale);
 
 	if ( $anz_new ) {
 	    return ( $anz_found < ($width* $height) ) ? "x":"+"; # incomplete ?
