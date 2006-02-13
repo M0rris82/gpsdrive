@@ -1,6 +1,9 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.2  2006/02/13 23:29:45  tweety
+# get actual Version of OpenGeodb
+#
 # Revision 1.1  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -205,7 +208,7 @@ sub import_Data() {
 	or die "Cannot create Directory $unpack_dir:$!\n";
     
     # download
-    my $file_name = "opengeodb-0.2.4a-UTF8-mysql.zip";
+    my $file_name = "opengeodb-0.2.4c-UTF8-mysql.zip";
     my $url = "http://dl.sourceforge.net/sourceforge/opengeodb/$file_name";
     print "Mirror $url\n";
     my $mirror = mirror_file($url,"$mirror_dir/$file_name");
@@ -213,7 +216,7 @@ sub import_Data() {
 
     # Unpack it
     print "Unpack\n";
-    `(cd $unpack_dir/; unzip -u $mirror_dir/$file_name)`;
+    `(cd $unpack_dir/; unzip -o $mirror_dir/$file_name)`;
 
     print "Drop DB\n";
     `echo "drop database opengeodb;"|mysql -u$main::db_user -p$main::db_password`;
