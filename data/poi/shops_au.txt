@@ -1,0 +1,1 @@
+Shop_xy_Example     -48.140544   -11.557022 transport.public.railway

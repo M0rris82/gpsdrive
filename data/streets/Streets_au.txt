@@ -1,0 +1,9 @@
+A12 this is an example for Autobahn/Highway
+  -34.020  151.020
+  -34.021  151.021
+  -34.022  151.022
+
+A14 this is another example for Autobahn/Highway
+  -34.120  151.020
+  -34.121  151.021
+  -34.122  151.022
