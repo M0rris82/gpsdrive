@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.31  2006/02/13 23:12:35  tweety
+  add unit test checks for not loading maps
+
   Revision 1.30  2006/02/13 19:27:18  tweety
   Fix icon reading in poi.c
 
@@ -220,6 +223,7 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 
+extern gint do_unit_test;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
@@ -489,6 +493,9 @@ get_poi_type_list (void)
 		      printf
 			("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\tnot found\n",
 			 index, icon_name, poi_type_list[index].name);
+		    if ( do_unit_test ) {
+			exit(-1);
+		    }
 		  }
 		else
 		  {
