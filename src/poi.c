@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.30  2006/02/13 19:27:18  tweety
+  Fix icon reading in poi.c
+
   Revision 1.29  2006/02/05 16:38:06  tweety
   reading floats with scanf looks at the locale LANG=
   so if you have a locale de_DE set reading way.txt results in clearing the
@@ -478,25 +481,7 @@ get_poi_type_list (void)
 		gchar path[1024];
 		g_strlcpy (icon_name, row[2], sizeof (icon_name));
 
-		// User config Directory
-		g_snprintf (path, sizeof (path),
-			    "%sicons/%s", homedir, icon_name);
-		poi_type_list[index].icon =
-		  gdk_pixbuf_new_from_file (path, NULL);
-
-		if (poi_type_list[index].icon == NULL)
-		  {		// In System Directory
-		    g_snprintf (path,
-				sizeof (path),
-				"%s/gpsdrive/icons/%s", DATADIR, icon_name);
-		    poi_type_list[index].icon =
-		      gdk_pixbuf_new_from_file (path, NULL);
-		  }
-		if (poi_type_list[index].icon == NULL)
-		  {		// Full Path
-		    poi_type_list[index].icon =
-		      gdk_pixbuf_new_from_file (icon_name, NULL);
-		  }
+		poi_type_list[index].icon = read_icon (icon_name);
 
 		if (poi_type_list[index].icon == NULL)
 		  {

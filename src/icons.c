@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.22  2006/02/13 19:27:18  tweety
+Fix icon reading in poi.c
+
 Revision 1.21  2006/02/10 17:36:04  tweety
 rearrange ACPI handling
 
@@ -349,35 +352,59 @@ read_icon (gchar * icon_name)
   iconpixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
 
 
+  if ( ! strcasestr(icon_name,".") ) 
+      {
+	  if ( !iconpixbuf ) // Try as .png
+	      {
+		  g_snprintf (filename, sizeof (filename), "%s.png",icon_name);
+		  iconpixbuf = read_icon (filename);
+	      }
+	  if ( !iconpixbuf ) // Try as .gif
+	      {
+		  g_snprintf (filename, sizeof (filename), "%s.gif",icon_name);
+		  iconpixbuf = read_icon (filename);
+	      }
+      }  
+  
   if (!iconpixbuf)		// Try in ./data/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
 		  icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
   if (!iconpixbuf)		// Try in ./data/icons
     {
       g_snprintf (filename, sizeof (filename), "./data/icons/%s",
 		  icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
   if (!iconpixbuf)		// Try in ./data/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
-		  homedir, icon_name);
+		   icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
   if (!iconpixbuf)		// Try in Homedir/pixmaps
     {
-      g_snprintf (filename, sizeof (filename), "%s/.gpsdrive/pixmaps/%s",
+      g_snprintf (filename, sizeof (filename), "%spixmaps/%s",
 		  homedir, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
   if (!iconpixbuf)		// Try in homedir/icons
     {
-      g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
+      g_snprintf (filename, sizeof (filename), "%sicons/%s",
 		  homedir, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
 
 
@@ -386,12 +413,16 @@ read_icon (gchar * icon_name)
       g_snprintf (filename, sizeof (filename), "%s/gpsdrive/pixmaps/%s",
 		  DATADIR, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
   if (!iconpixbuf)		// Try in DATADIR/icons
     {
       g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
 		  DATADIR, icon_name);
       iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      if (mydebug > 98)
+	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
 
   if (!iconpixbuf)		// None Found
