@@ -2,7 +2,7 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
-AC_INIT(gpsdrive, 2.10pre3-cvs-20060205, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3-cvs-20060213, ganter@ganter.at)
 AC_CONFIG_SRCDIR(foo.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -396,7 +396,11 @@ AC_LTDL_DLSYM_USCORE
 #    AC_SUBST(DLSYM_CFLAGS,'-Ddlsym=dlsym_prepend_underscore') 
 #fi
 
-CFLAGS="$CFLAGS -I\$(srcdir)/mysql"
+if test -f /usr/include/mysql/mysql.h; then
+ CFLAGS="$CFLAGS -I/usr/include/mysql"
+else
+ CFLAGS="$CFLAGS -Imysql"
+fi
 
 CFLAGS="$CFLAGS $OPT_CFLAGS"
 CXXFLAGS="$CXXFLAGS $OPT_CFLAGS"
