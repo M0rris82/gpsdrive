@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.87  2006/02/13 22:57:05  tweety
+Fix Max Speed Problem concerning Miles Display
+
 Revision 1.86  2006/02/07 22:28:12  tweety
 more moving anf separating of battery and temperature code
 
@@ -4302,7 +4305,7 @@ dotripmeter (GtkWidget * widget, guint datum)
 	/* we want always have metric system stored */
 	d /= milesconv;
 	tripodometer += d;
-	if (groundspeed * milesconv > tripmaxspeed)
+	if (groundspeed / milesconv > tripmaxspeed)
 		tripmaxspeed = groundspeed / milesconv;
 	tripavspeedcount++;
 	tripavspeed += groundspeed / milesconv;
