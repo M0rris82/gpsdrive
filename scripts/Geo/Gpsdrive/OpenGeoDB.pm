@@ -1,6 +1,9 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.4  2006/02/13 18:56:23  tweety
+# Update to new Version of Database
+#
 # Revision 1.3  2005/10/20 20:53:38  tweety
 # change min scale to 1
 #
@@ -87,8 +90,7 @@ sub read_open_geo_db($){
 
     unless ( $source_id ) {
 	my $source_hash = {
-	    'source.url'     => "http://ovh.dl.sourceforge.net/".
-		"sourceforge/geoclassphp/opengeodb-0.1.3-txt.tar.gz",
+	    'source.url'     => $full_filename,
 		'source.name'    => $source ,
 		'source.comment' => '' ,
 		'source.licence' => ""
@@ -136,16 +138,16 @@ sub read_open_geo_db($){
 	    for my $plz ( split(',',$values->{'address.plz'})) {
 		#	    print Dumper($values);
 		my $wp_name = '';
-		$wp_name .= "$values->{'address.state'}-";
-		$wp_name .= $plz;
+		$wp_name .= "$values->{'address.state'} ";
+#		$wp_name .= $plz;
 		#	    $wp_name .= "_$values->{'poi.primarykey'}";
 		#	    $wp_name .= "_$values->{'address.regierungsbezirk'}";
 		#	    $wp_name .= "_$values->{'address.landkreis'}";
 		#	    $wp_name .= "_$values->{'address.verwaltungszusammenschluss'}";
 		$wp_name .= " $values->{'address.ort'}\n";
-		$wp_name .= " $values->{'address.bundesland'}";
 		$wp_name .= " $values->{'address.ortsteil'}";
 		$wp_name .= " $values->{'address.gemeindeteil'}";
+#		$wp_name .= " ($values->{'address.bundesland'})";
 		$values->{'poi.name'}=$wp_name;
 		if (  $plz =~ m/000$/ ) {
 		    print "$values->{'address.state'}-$plz $values->{'address.ort'}\n";
@@ -208,14 +210,14 @@ sub import_Data() {
 	or die "Cannot create Directory $unpack_dir:$!\n";
     
     # download
-    my $file_name ="opengeodb-0.1.3-txt.tar.gz";
-    my $url = "http://dl.sourceforge.net/sourceforge/geoclassphp/$file_name";
+    my $file_name ="opengeodb-0.2.4c-UTF8-text-orte.zip";
+    my $url = "http://dl.sourceforge.net/sourceforge/opengeodb/$file_name";
     print "Mirror $url\n";
     my $mirror = mirror_file($url,"$mirror_dir/$file_name");
     print "Mirror: $mirror\n";
 
     # Unpack it 
-    `(cd $unpack_dir/; tar -xvzf $mirror_dir/opengeodb-0.1.3-txt.tar.gz)`;
+    `(cd $unpack_dir/; unzip -o $mirror_dir/$file_name)`;
 
     disable_keys('poi');
 
