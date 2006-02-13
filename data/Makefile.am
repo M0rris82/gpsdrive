@@ -10,6 +10,16 @@ iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif \
 	     icons/index.html
 
+streetsdir   = $(datadir)/gpsdrive/streets
+streets_DATA = streets/Autobahnen.txt \
+	  streets/Streets_au.txt  streets/Streets.txt
+
+poidir   = $(datadir)/gpsdrive/poi
+poi_DATA = \
+	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
+	poi/cities_au.txt poi/shops_au.txt
+
+
 mapsdir   = $(datadir)/gpsdrive/maps
 maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
 	    maps/top_Germany.jpg   maps/top_NorthAmerica.jpg \
