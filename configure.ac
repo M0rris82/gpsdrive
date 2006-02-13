@@ -2,12 +2,11 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
-AC_INIT(gpsdrive, 2.10pre3-cvs-20060213, ganter@ganter.at)
-AC_CONFIG_SRCDIR(foo.c)
+AC_INIT(gpsdrive, 2.10pre3-lib-map-version, ganter@ganter.at)
+AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
 
-AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AC_CONFIG_HEADER(config.h)
 
 ALL_LINGUAS="de es fr it da nl tr de_AT hu sk sv no pt_BR gr ja"
@@ -24,6 +23,8 @@ AC_CONFIG_FILES([man/es/Makefile])
 AC_CONFIG_FILES([po/Makefile.in])
 AC_CONFIG_FILES([scripts/Makefile])
 AC_CONFIG_FILES([src/Makefile])
+AC_CONFIG_FILES([src/lib_map/Makefile])
+AC_CONFIG_FILES([src/util/Makefile])
 AC_CONFIG_FILES([Documentation/Makefile])
 
 
@@ -97,11 +98,19 @@ AC_HEADER_DIRENT
 AC_HEADER_STDBOOL
 
 AC_PROG_GCC_TRADITIONAL
+AC_PROG_RANLIB
 AC_PROG_YACC
 
 AC_STRUCT_TM
 
 AC_TYPE_SIGNAL
+
+dnl ---------------------------------------------------------------------------
+dnl GDAL/OGR
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_GDAL
+AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
+
 
 dnl ************************
 dnl Compiler options
@@ -230,9 +239,25 @@ dnl ************************
 dnl Checks for libraries
 dnl ************************
 
+PKG_CHECK_MODULES(GTK, gtk+-2.0, HAVE_GTK=yes, HAVE_GTK=no)
+AC_SUBST(GTK_LIBS)
+AC_SUBST(GTK_CFLAGS)
+if test "$HAVE_GTK" = "no"; then
+  AC_MSG_WARN([cannot find GTK+-2.0, that's not good])
+fi
+AM_CONDITIONAL(HAVE_GTK,[test "$HAVE_GTK" != "no"])
+CFLAGS="$CFLAGS -DHAVE_GTK   `pkg-config gtk+-2.0 --cflags`"
+
 PKG_CHECK_MODULES(PKGCONFIG, gtk+-2.0 >= 2.0.6  gthread-2.0  libart-2.0)
 LIBS="$LIBS $PKGCONFIG_LIBS"
 CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
+# We do have GK since we just tested on it
+#AM_CONDITIONAL(HAVE_GTK, true)
+
+
+CFLAGS="$CFLAGS -DHAVE_CAIRO `pkg-config cairo --cflags`"
+
+
 
 AC_PATH_PROG(PCRE_CONFIG, pcre-config, no)
 if test "x$PCRE_CONFIG" = "xno" ; then
@@ -339,8 +364,11 @@ AC_HELP_STRING([--enable-teleatlas],[enable street navigation using Teleatlas ma
 ])
 AM_CONDITIONAL(ENABLETELEATLAS, test x$enableteleatlas = xtrue)
 
+
+dnl ********************************************
 dnl Manually configure DBUS until we figure out a 
 dnl distro-independent was to check for both libraries and headers
+dnl ********************************************
 AC_ARG_ENABLE(dbus,
     AC_HELP_STRING([--enable-dbus],
                 [enable DBUS support. No checks are performed, you are responsible for having it installed =)]),
@@ -363,6 +391,9 @@ fi
 
 AM_CONDITIONAL([HAVE_DBUS], [test x"$ac_dbus" = x"yes"])
 
+
+dnl ********************************************
+dnl Perl Path
 dnl Setup install path root for perl.
 dnl Yep, its ebil, but I don't know better...
 #PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`

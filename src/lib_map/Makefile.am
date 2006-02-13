@@ -4,7 +4,7 @@ lib_map_a_SOURCES= \
 	map_port_cpp.cpp  map_render_cpp.cpp
 
 if HAVE_GDAL
-MAPDIR = ../maps
+MAPDIR = ../../data/maps
 
 lib_map_a_LIBRARIES=lib_map.a
 lib_map_adir=lib_map
