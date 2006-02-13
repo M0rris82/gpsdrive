@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.88  2006/02/13 23:15:39  tweety
+error check for missin icon Files (unit_test)
+
 Revision 1.87  2006/02/13 22:57:05  tweety
 Fix Max Speed Problem concerning Miles Display
 
@@ -3277,6 +3280,9 @@ expose_compass (GtkWidget * widget, guint * datum)
 		compasskontext = gdk_gc_new (drawable_bearing);
 	if (compassimage == NULL)
 		compassimage = read_icon("compass.png");
+	if (compassimage == NULL && do_unit_test ) {
+	    exit (-1);
+	}
 
 	gdk_draw_pixbuf (drawable_bearing, compasskontext, compassimage, 0, 0,
 			 0, 0, PSIZE, PSIZE, GDK_RGB_DITHER_NONE, 0, 0);
