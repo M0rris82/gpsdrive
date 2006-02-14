@@ -293,8 +293,8 @@ int main(int argc, char **argv)
 
   GtkWidget *windows[16];
   GtkWidget *paned;
-  GtkWidget *box1;
-  GtkWidget *box2;
+  GtkWidget *box1 = NULL;
+  GtkWidget *box2 = NULL;
 
   gboolean windowed = FALSE;
   gboolean latSet = FALSE;

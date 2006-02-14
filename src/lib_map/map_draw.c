@@ -43,7 +43,7 @@ draw_zoom_scale2 (MapGC *mgc, int width, int height,
   //m = mapscale / (20 * zoom);
 
   //m = scale2zoom(dataset, path, 1, pixelsize);
-  double xmpp, ympp, mpp;
+  double xmpp, ympp;
   metersperpixel(dataset, path, 0, &xmpp, &ympp);
   m = pixels * (xmpp + ympp) / 2 / zoom;
 
@@ -325,8 +325,6 @@ draw_grid2 (MapGC *mgc, int width, int height,
 
 	double lat_min, lon_min;
 	double lat_max, lon_max;
-
-	double mapscale = 10000;
 
 	// calculate the start and stop for lat/lon according to the displayed section
 	screen2wgs(state, 0, 0, &lat_ul, &lon_ul);
@@ -882,9 +880,6 @@ drawmarkers (MapGC *mgc, int width, int height,
 	     double angle_to_destination, double direction)
 // guint * datum)
 {
-  double posxdest, posydest, posxmarker, posymarker;
-  char s2[100], s3[200], s2a[20];
-  int k;
   int posx;
   int posy;
 
