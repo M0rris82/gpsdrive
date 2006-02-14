@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.16  2006/02/14 08:29:39  tweety
+  eliminate warnings
+
   Revision 1.15  2006/02/10 22:33:26  tweety
   fix more in the ACPI/APM handling. write unti tests for this part of Code
 
@@ -354,7 +357,6 @@ temperature_get_values_linux (int *temper)
   gint havetemperature = FALSE;
   DIR *dir;
   struct dirent *ent;
-  struct stat buf;
   char fn[200];
   gchar b[200];
 
@@ -698,7 +700,6 @@ expose_display_battery ()
 int
 battery_get_values (void)
 {
-  int ret;
   gint havebattery = FALSE;	/* Battery level and loading flag */
 
   if (disableapm)
