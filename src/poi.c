@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.32  2006/02/14 09:37:01  tweety
+  eliminate unused Variable
+
   Revision 1.31  2006/02/13 23:12:35  tweety
   add unit test checks for not loading maps
 
@@ -482,7 +485,6 @@ get_poi_type_list (void)
 	    else
 	      {
 		gchar icon_name[80];
-		gchar path[1024];
 		g_strlcpy (icon_name, row[2], sizeof (icon_name));
 
 		poi_type_list[index].icon = read_icon (icon_name);
@@ -501,8 +503,8 @@ get_poi_type_list (void)
 		  {
 		    if (mydebug>30)
 		      printf
-			("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\tloaded from %s \n",
-			 index, icon_name, poi_type_list[index].name, path);
+			("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\n",
+			 index, icon_name, poi_type_list[index].name);
 		    counter++;
 		  }
 	      }
