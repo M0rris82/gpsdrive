@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.23  2006/02/15 08:32:16  tweety
+update icon handling
+
 Revision 1.22  2006/02/13 19:27:18  tweety
 Fix icon reading in poi.c
 
@@ -132,23 +135,23 @@ icons.c is ectracted from gpsdrive.c
 #include <ctype.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <dirent.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 #include "gettext.h"
 
-
 #include "LatLong-UTMconversion.h"
 #include "gpsdrive.h"
-#include <dirent.h>
 #include "battery.h"
 #include "track.h"
 #include "poi.h"
 #include "icons.h"
-#include <pthread.h>
-#include <semaphore.h>
 
 #ifndef NOPLUGINS
 #include "gmodule.h"
 #endif
+
 #ifdef USETELEATLAS
 #include "gpsnavlib.h"
 #endif
