@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.35  2006/02/16 10:25:15  tweety
+# update Version Numbers in different Meta files
+#
 # Revision 1.34  2006/02/13 19:55:05  tweety
 # Stub for writing wld Files
 #
@@ -142,7 +145,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-lib-map-version)
+Version 1.19 (gpsdrive-2.10pre3-cvs-20060216)
 ";
 
 sub redirect_ok { return 1; }
