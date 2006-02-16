@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.21  2006/02/16 09:52:44  tweety
+rearrange acpi handling and displaying of battery and temperature display
+
 Revision 1.20  2006/02/05 16:38:05  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -712,7 +715,7 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
   if (s2 == 'S')
     *dec *= -1.0;
 
-  if (mydebug > 50)
+  if (mydebug > 95)
     fprintf (stderr, "coordinate_string2gdouble(%s)-->%f\n", text, *dec);
 }
 

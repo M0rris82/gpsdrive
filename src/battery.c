@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.17  2006/02/16 09:52:44  tweety
+  rearrange acpi handling and displaying of battery and temperature display
+
   Revision 1.16  2006/02/14 08:29:39  tweety
   eliminate warnings
 
@@ -97,6 +100,9 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <icons.h>
 #include <config.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 /* APM is i386-specific. */
 #if defined(__FreeBSD__) && defined(__i386__)
@@ -112,9 +118,16 @@ Disclaimer: Please do not use for navigation.
 
 
 #include "battery.h"
-#include <sys/types.h>
-#include <dirent.h>
-#include <sys/stat.h>
+
+
+/*  Defines for gettext I18n */
+# include <libintl.h>
+# define _(String) gettext(String)
+# ifdef gettext_noop
+#  define N_(String) gettext_noop(String)
+# else
+#  define N_(String) (String)
+# endif
 
 #if GTK_MINOR_VERSION < 2
 #define gdk_draw_pixbuf _gdk_draw_pixbuf
@@ -126,13 +139,19 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern gint debug;
 
-/* Global Values */
-gchar cputempstring[20], batstring[20];
-gchar dir_proc[200] = "/proc"; // make it flexible for unit -tests
+extern gint int_padding;
 
+/* Global Values */
+gchar cputempstring[20] = "??";
+gchar batstring[20] = "??";
+gchar dir_proc[200] = "/proc";	// make it flexible for unit -tests
+GtkWidget *tempeventbox = NULL, *batteventbox = NULL;
+GtkTooltips *tooltip_temperature = NULL;
+GtkTooltips *tooltip_battery = NULL;
 
 /* --------------------*/
 gint batlevel = 125;
+gint battime = 0;
 gint batlevel_old = 125;	/* battery level, range 0..100 */
 gint batloading = FALSE;
 gint bnatloading_old = FALSE;	/* is the battery charging? */
@@ -141,31 +160,32 @@ gint cputemp = -99;
 
 static gchar gradsym[] = "\xc2\xb0";
 extern GtkWidget *tempeventbox, *batteventbox;
-extern GtkTooltips *temptooltips;
+extern GtkTooltips *tooltip_temperature;
 static GdkPixbuf *img_powercharges = NULL, *img_powercord =
   NULL, *img_battery = NULL;
+GtkWidget *frame_battery = NULL;
+GtkWidget *frame_temperature = NULL;
+GtkWidget *drawing_battery = NULL, *drawing_temp = NULL;
 
 #ifdef __linux__
 /*  ******************************************************************
  * Return TRUE on success, FALSE on error.
  */
 static int
-battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
+battery_get_values_linux_apm (int *blevel, int *bloading, int *bcharge)
 {
   FILE *battery = NULL;
-  gint i, e, e1;
+  gint i;
   gint ret = FALSE;
-  gint v1 = 0, v2 = 0, vtemp;
-  gchar b[200], t[200], t2[200], t3[200];
-  DIR *dir;
-  struct dirent *ent;
-  struct stat buf;
+  gint p_bat_full = 0;
+  gint p_bat_current = 0;
+  gchar b[200];
   char fn[200];
   *bcharge = FALSE;
   *bloading = FALSE;
 
   if (mydebug > 99)
-    fprintf (stderr, "battery_get_values_linux()\n");
+    fprintf (stderr, "battery_get_values_linux_apm()\n");
 
   // -------------------------------------------- apm
   g_snprintf (fn, sizeof (fn), dir_proc);
@@ -175,7 +195,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
     {
       int count = 0;
       if (mydebug > 99)
-	fprintf (stderr, "battery_get_values_linux(): APM\n");
+	fprintf (stderr, "battery_get_values_linux_apm(): APM\n");
 
       count = fscanf (battery, "%s %s %s %x %s %x %d%% %s %s",
 		      b, b, b, bloading, b, &i, blevel, b, b);
@@ -186,7 +206,7 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 	{
 	  if (mydebug > 9)
 	    fprintf (stderr, "Wrong Number (%d) of values in %s\n",
-		     count,fn);
+		     count, fn);
 	  ret = FALSE;
 	}
       else
@@ -203,15 +223,46 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 
     };
 
-  // -------------------------------------------- acpi
-  /* we try if we have acpi */
+  if (mydebug > 60)
+    fprintf (stderr,
+	     "battery_get_values_linux_apm(): p_bat_full: %d, "
+	     "p_bat_current:%d\n", p_bat_full, p_bat_current);
+  if (p_bat_current != 0)
+    *blevel = (int) (((double) p_bat_current / p_bat_full) * 100.0);
+  /*       fprintf(stderr,"blevel: %d\n",*blevel); */
 
-  /* search for info file */
+  return ret;
+
+}
+
+
+
+/* ******************************************************************
+ * we try if we have acpi 
+ */
+static int
+battery_get_values_linux_acpi (int *blevel, int *bloading, int *bcharge,
+			       int *btime)
+{
+  FILE *battery = NULL;
+  gint e, e1;
+  gint ret = FALSE;
+  gint p_bat_full = 0;
+  gint p_bat_current = 0;
+  gint p_bat_rate = 0;
+  gint vtemp;
+  gchar b[200], t[200], t2[200], t3[200];
+  DIR *dir;
+  struct dirent *ent;
+  char fn[200];
+  *bcharge = FALSE;
+  *bloading = FALSE;
+  gchar line[200];
+
   g_snprintf (fn, sizeof (fn), dir_proc);
   g_strlcat (fn, "/acpi/battery/", sizeof (fn));
-  if (!ret)
-      dir = opendir (fn);
-  if (!ret && dir != NULL)
+  dir = opendir (fn);
+  if (dir != NULL)
     {
       if (mydebug > 99)
 	fprintf (stderr, "battery_get_values_linux(): ACPI\n");
@@ -219,100 +270,82 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 	{
 	  if (ent->d_name[0] != '.')
 	    {
-  g_snprintf (fn, sizeof (fn), dir_proc);
-		g_strlcat (fn, "/acpi/battery/",sizeof (fn));
-	      g_strlcat (fn, ent->d_name, sizeof (fn));
-	      g_strlcat (fn, "/info", sizeof (fn));
-	      if (mydebug > 99)
-		fprintf (stderr, "ACPI: File %s\n", fn);
-	      stat (fn, &buf);
-	      if (S_ISREG (buf.st_mode) == TRUE)
-		{
-		  if (mydebug > 30)
-		    fprintf (stderr, "battery_get_values_linux(): found file %s\n", fn);
-		  battery = fopen (fn, "r");
-		  if (battery != NULL)
-		    do
-		      {
-			e = fscanf
-			  (battery, "%s %s %s %s %[^\n]", t, t2, b, t3, b);
-			if (e != EOF)
-			  {
-			    if (((strstr (t, "ast")) != NULL)
-				&& ((strstr (t2, "ull")) != NULL))
-			      {
-				e1 = sscanf (t3, "\n%d\n", &vtemp);
-				if (e1 == 1)
-				  v1 += vtemp;
-				ret = TRUE;
-			      }
-			  }
-		      }
-		    while (e != EOF);
-		  if (battery != NULL)
-		    fclose (battery);
-
-		}
-	    }
-	}
-      closedir (dir);
-
-    }
-
-  /* search for status file */
-  g_snprintf (fn, sizeof (fn), dir_proc);
-  g_strlcat (fn, "/acpi/battery/", sizeof (fn));
-  if (!ret)
-    dir = opendir (fn);
-  if (!ret && dir != NULL)
-    {
-	while ((ent = readdir (dir)) != NULL)
-	{
-	  if (ent->d_name[0] != '.')
-	    {
-		g_snprintf (fn, sizeof (fn), dir_proc);
-		g_strlcat (fn, "/acpi/battery/", sizeof (fn));
-	      g_strlcat (fn, ent->d_name, sizeof (fn));
-	      g_strlcat (fn, "/state", sizeof (fn));
+	      // ---------------------- /acpi/.../info
+	      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/%s/info",
+			  dir_proc, ent->d_name);
 	      battery = fopen (fn, "r");
-	      if ( NULL != battery )
+	      if (battery != NULL)
 		{
-		    if (mydebug > 30)
-			fprintf (stderr, "battery_get_values_linux(): found file %s\n", fn);
-		  do
+		  if (mydebug > 99)
+		    fprintf (stderr,
+			     "battery_get_values_linux(): found file %s\n",
+			     fn);
+		  while (fgets (line, sizeof (line), battery))
 		    {
-		      e = fscanf (battery,
-				  "%s %s %s %s %[^\n]", t, t2, t3, b, b);
-		      if (e != EOF)
+		      if (strcasestr (line, "last full"))
 			{
-			    if (    ( (strstr(t,"emaining")) != NULL) 
-				    && ((strstr (t2, "apacity")) != NULL))
-				{
-			      e1 = sscanf (t3, "\n%d\n", &vtemp);
-			      if (e1 == 1)
-				v2 += vtemp;
-			      ret = TRUE;
-			    }
+			  sscanf (line, "%s %s %s %s %[^\n]", t, t2, b, t3,
+				  b);
+			  e1 = sscanf (t3, "\n%d\n", &vtemp);
+			  if (e1 == 1)
+			    p_bat_full += vtemp;
+			  ret = TRUE;
 			}
 		    }
-		  while (e != EOF);
+		  fclose (battery);
+		}
+	      else
+		{
+		  if (mydebug > 99)
+		    fprintf (stderr,
+			     "battery_get_values_linux(): missing File: '%s'\n",
+			     fn);
+		}
 
-		  fseek (battery, 0, SEEK_SET);
 
-		  do
+	      // ---------------------- /acpi/.../state
+	      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/%s/state",
+			  dir_proc, ent->d_name);
+	      battery = fopen (fn, "r");
+	      if (NULL != battery)
+		{
+		  if (mydebug > 30)
+		    fprintf (stderr,
+			     "battery_get_values_linux(): found file %s\n",
+			     fn);
+		  while (fgets (line, sizeof (line), battery))
 		    {
-		      e = fscanf (battery, "%s%[^\n]", t, t2);
-		      if (mydebug > 30)
-			fprintf (stderr, "battery_get_values_linux(): t: %s, t2: %s\n", t, t2);
-		      if ((strstr (t, "Status:")) != NULL)
+		      if (strcasestr (line, "remaining capacity"))
 			{
-			  if ((strstr (t2, "on-line")) != NULL)
+			  e = sscanf (line,
+				      "%s %s %s %s %[^\n]", t, t2, t3, b, b);
+
+			  e1 = sscanf (t3, "\n%d\n", &vtemp);
+			  if (e1 == 1)
+			    p_bat_current += vtemp;
+			  ret = TRUE;
+			}
+
+		      if (strcasestr (line, "present rate"))
+			{
+			  e = sscanf (line, "%s %s %d %s", t, t2, &vtemp, b);
+			  p_bat_rate += vtemp;
+			}
+
+		      sscanf (line, "%s%[^\n]", t, t2);
+		      if (mydebug > 30)
+			fprintf (stderr,
+				 "battery_get_values_linux(): line: %s",
+				 line);
+		      if (strstr (t, "Status:"))
+			{
+			  if (strstr (t2, "on-line"))
 			    *bloading = TRUE;
 			  else
 			    *bloading = FALSE;
 			  ret = TRUE;
 			}
-		      if ((strstr (t, "charging")) != NULL)
+		      if (strstr (t, "charging"))
 			{
 			  /*  assume we are charging, unless
 			   * discharging or unknown. */
@@ -328,21 +361,31 @@ battery_get_values_linux (int *blevel, int *bloading, int *bcharge)
 			  ret = TRUE;
 			}
 		    }
-		  while (e != EOF);
-		  fclose (battery);
-
+		}		// if open(...state)
+	      else
+		{
+		  if (mydebug > 99)
+		    fprintf (stderr,
+			     "battery_get_values_linux(): missing File: '%s'\n",
+			     fn);
 		}
-	    }
-	}
+	    };			// if ent->d_name[0] != '.'
+	};
       closedir (dir);
 
     }
 
   if (mydebug > 60)
-    fprintf (stderr, "battery_get_values_linux(): v1: %d, v2:%d\n", v1, v2);
-  if (v2 != 0)
-    *blevel = (int) (((double) v2 / v1) * 100.0);
-  /*       fprintf(stderr,"blevel: %d\n",*blevel); */
+    fprintf (stderr, "battery_get_values_linux(): "
+	     "p_bat_full: %d, p_bat_current:%d p_bat_rate: %d\n",
+	     p_bat_full, p_bat_current, p_bat_rate);
+  if (p_bat_current != 0)
+    *blevel = (int) (((double) p_bat_current / p_bat_full) * 100.0);
+
+  if (p_bat_rate != 0)
+    {
+      *btime = (int) (((double) p_bat_current / p_bat_rate * 60));
+    }
 
   return ret;
 }
@@ -369,26 +412,31 @@ temperature_get_values_linux (int *temper)
     {
       while (!havetemperature && (ent = readdir (dir)) != NULL)
 	{
-	  if (ent->d_name[0] != '.')
+	  if (ent->d_name[0] != '.'
+	      && strcmp(ent->d_name,"THRS"))
 	    {
-		g_snprintf (fn, sizeof (fn), dir_proc);
-		g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
-		g_strlcat (fn, ent->d_name, sizeof (fn));
-		g_strlcat (fn, "/temperature", sizeof (fn));
-		if (mydebug > 30)
-		    fprintf (stderr, "checking File %s\n", fn);
-		temperature = fopen (fn, "r");
-		if (temperature != NULL) {
-		    havetemperature = TRUE;
-		    // ############### SigSeg Was HERE ??!!
-		    int count = fscanf (temperature, "%s %d %s", b, temper, b);
-		    if ( 3 != count ) {
-			if (mydebug > 9)
-			    fprintf (stderr, "Wrong Number (%d) of values in %s\n",
-				     count,fn);
-			havetemperature = FALSE;
+	      g_snprintf (fn, sizeof (fn), dir_proc);
+	      g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
+	      g_strlcat (fn, ent->d_name, sizeof (fn));
+	      g_strlcat (fn, "/temperature", sizeof (fn));
+	      if (mydebug > 30)
+		fprintf (stderr, "checking File %s\n", fn);
+	      temperature = fopen (fn, "r");
+	      if (temperature != NULL)
+		{
+		  havetemperature = TRUE;
+		  // ############### SigSeg Was HERE ??!!
+		  int count = fscanf (temperature, "%s %d %s", b,
+				      temper, b);
+		  if (3 != count)
+		    {
+		      if (mydebug > 9)
+			fprintf (stderr,
+				 "Wrong Number (%d) of values in %s\n",
+				 count, fn);
+		      havetemperature = FALSE;
 		    }
-		    fclose (temperature);
+		  fclose (temperature);
 		}
 	    }
 	}
@@ -583,8 +631,8 @@ expose_display_temperature ()
   if (temimage == NULL)
     temimage = read_icon ("gauge.png");
   gdk_gc_set_function (temkontext, GDK_AND);
-  gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0, 0, 0, 0,
-		   17, 50, GDK_RGB_DITHER_NONE, 0, 0);
+  gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0,
+		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_function (temkontext, GDK_COPY);
   /*       gdk_pixbuf_unref (temimage); */
   gdk_gc_set_foreground (temkontext, &mygray);
@@ -608,7 +656,6 @@ expose_display_battery ()
   GdkDrawable *mydrawable;
   gchar bbuf[200];
 
-  extern GtkWidget *drawing_battery, *drawing_temp;
   extern GdkColor mygray;
   extern GdkColor black;
   extern GdkColor green;
@@ -672,8 +719,8 @@ expose_display_battery ()
 
 
   gdk_gc_set_function (battkontext, GDK_AND);
-  gdk_draw_pixbuf (mydrawable, battkontext, batimage, 0, 0, 0,
-		   0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
+  gdk_draw_pixbuf (mydrawable, battkontext, batimage, 0,
+		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_function (battkontext, GDK_COPY);
 
   /*       gdk_pixbuf_unref (batimage); */
@@ -684,8 +731,8 @@ expose_display_battery ()
 	g_print ("\nBattery: %d%%\n", batlevel);
 
       /* This is for Festival, so we cannot use gettext() for i18n */
-      g_snprintf (bbuf, sizeof (bbuf), speech_remaining_battery[voicelang],
-		  batlevel);
+      g_snprintf (bbuf, sizeof (bbuf),
+		  speech_remaining_battery[voicelang], batlevel);
       speech_out_speek (bbuf);
 
       batlevel_old = batlevel;
@@ -707,7 +754,12 @@ battery_get_values (void)
       return FALSE;
     }
 #if defined(__linux__)
-  havebattery = battery_get_values_linux (&batlevel, &batloading, &batcharge);
+  havebattery =
+    battery_get_values_linux_acpi (&batlevel, &batloading, &batcharge,
+				   &battime);
+  if (!havebattery)
+    havebattery =
+      battery_get_values_linux_apm (&batlevel, &batloading, &batcharge);
 #elif defined(__FreeBSD__) && defined(__i386__)
   havebattery = battery_get_values_fbsd (&batlevel, &batloading);
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
@@ -720,18 +772,31 @@ battery_get_values (void)
   if (havebattery)
     {
       g_snprintf (batstring, sizeof (batstring), "%s %d%%", "Batt", batlevel);
-      if (temptooltips != NULL)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
+      if (battime)
+	g_snprintf (batstring, sizeof (batstring), "%s %d%%, %d min",
+		    "Batt", batlevel, battime);
+
+      if (NULL == tooltip_battery)
+	tooltip_battery = gtk_tooltips_new ();
+
+      if (tooltip_battery != NULL && batteventbox != NULL)
+	gtk_tooltips_set_tip (GTK_TOOLTIPS
+			      (tooltip_battery),
 			      batteventbox, batstring, NULL);
-      if (mydebug > 30)
-	fprintf (stderr, "batstring %s\n", batstring);
+    }
+  else
+    {
+      g_snprintf (batstring, sizeof (batstring), "no Battery");
     }
 
   if (mydebug > 20)
-    fprintf (stderr, "batt: %d\n", havebattery);
+    fprintf (stderr, "battery_get_values() Have battery: %d\n", havebattery);
+  if (mydebug > 30)
+    fprintf (stderr, "battery_get_values(): batstring %s\n", batstring);
 
   return havebattery;
 }
+
 
 /* ******************************************************************
  * Return TRUE on success, FALSE on error.
@@ -757,18 +822,98 @@ temperature_get_values (void)
 
   if (havetemperature)
     {
-      g_snprintf (cputempstring, sizeof (cputempstring), "%s %d%sC",
-		  "CPU-Temp", cputemp, gradsym);
-      if (temptooltips != NULL)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips),
-			      tempeventbox, cputempstring, NULL);
+      g_snprintf (cputempstring, sizeof (cputempstring),
+		  "%s %d%sC", "CPU-Temp", cputemp, gradsym);
       if (mydebug > 30)
 	fprintf (stderr, "cputempstring %s\n", cputempstring);
-    }
 
+
+
+      if (NULL == tooltip_temperature)
+	tooltip_temperature = gtk_tooltips_new ();
+
+      if (tooltip_temperature != NULL && tempeventbox != NULL)
+	gtk_tooltips_set_tip (GTK_TOOLTIPS
+			      (tooltip_temperature),
+			      tempeventbox, cputempstring, NULL);
+    }
+  else
+    {
+      g_snprintf (cputempstring, sizeof (batstring),
+		  "no CPU Temperature available");
+    }
   if (mydebug > 20)
     fprintf (stderr, "temp: %d\n", havetemperature);
 
   return havetemperature;
+
+}
+
+
+/* ******************************************************************
+ */
+void
+create_battery_widget (GtkWidget * hbox2)
+{
+  if (!battery_get_values ())
+    return;
+
+  if (NULL == drawing_battery)
+    {
+      GtkWidget *alignment3;
+
+      drawing_battery = gtk_drawing_area_new ();
+      gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_battery), 27, 52);
+      frame_battery = gtk_frame_new (_("Bat."));
+      batteventbox = gtk_event_box_new ();
+      gtk_container_add (GTK_CONTAINER (batteventbox), drawing_battery);
+      alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
+      gtk_container_add (GTK_CONTAINER (alignment3), batteventbox);
+      gtk_container_add (GTK_CONTAINER (frame_battery), alignment3);
+      gtk_box_pack_start (GTK_BOX (hbox2),
+			  frame_battery, FALSE, FALSE, 1 * PADDING);
+      if (battery_get_values ())
+	gtk_signal_connect (GTK_OBJECT
+			    (drawing_battery),
+			    "expose_event",
+			    GTK_SIGNAL_FUNC (expose_display_battery), NULL);
+
+    }
+}
+
+/* ******************************************************************
+ */
+void
+create_temperature_widget (GtkWidget * hbox2)
+{
+  if (!temperature_get_values ())
+    return;
+
+  if (mydebug > 20)
+    fprintf (stderr, "create_temperature_widget:\n");
+
+  /* drawing area for cpu temp meter */
+  if (NULL == drawing_temp)
+    {
+      GtkWidget *alignment4;
+
+      drawing_temp = gtk_drawing_area_new ();
+      gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_temp), 15, 52);
+      frame_temperature = gtk_frame_new (_("TC"));
+      tempeventbox = gtk_event_box_new ();
+      gtk_container_add (GTK_CONTAINER (tempeventbox), drawing_temp);
+      alignment4 = gtk_alignment_new (0.5, 0.5, 0, 0);
+      gtk_container_add (GTK_CONTAINER (alignment4), tempeventbox);
+      gtk_container_add (GTK_CONTAINER (frame_temperature), alignment4);
+      gtk_box_pack_start (GTK_BOX (hbox2),
+			  frame_temperature, FALSE, FALSE, 1 * PADDING);
+      if (temperature_get_values ())
+	gtk_signal_connect (GTK_OBJECT (drawing_temp),
+			    "expose_event",
+			    GTK_SIGNAL_FUNC
+			    (expose_display_temperature), NULL);
+
+
+    };
 
 }

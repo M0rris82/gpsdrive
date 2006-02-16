@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2006/02/16 09:52:44  tweety
+rearrange acpi handling and displaying of battery and temperature display
+
 Revision 1.4  2006/02/10 22:33:26  tweety
 fix more in the ACPI/APM handling. write unti tests for this part of Code
 
@@ -395,14 +398,29 @@ unit_test (void)
       write_file(fn,"present:                 yes\n"
 		 "capacity state:          ok\n"
 		 "charging state:          charging\n"
-		 "present rate:            50 mW\n"
-		 "remaining capacity:      55710 mWh\n"
+		 "present rate:            5000 mW\n"
+		 "remaining capacity:      20000 mWh\n"
 		 "present voltage:         16764 mV\n");
       
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/info",dir_proc);
+      write_file(fn,"present:                 yes\n"
+		 "design capacity:         59200 mWh\n"
+		 "last full capacity:      40000 mWh\n"
+		 "battery technology:      non-rechargeable\n"
+		 "design voltage:          14800 mV\n"
+		 "design capacity warning: 0 mWh\n"
+		 "design capacity low:     120 mWh\n"
+		 "capacity granularity 1:  0 mWh\n"
+		 "capacity granularity 2:  10 mWh\n"
+		 "model number:            \n");
       if ( ! battery_get_values () ) {
 	  printf("battery reporting Problem: no battery status for 1 Bat\n");
 	  exit(-1);
       }
+      printf("batstring: %s\n",batstring);
+      if ( strcmp (batstring, "Batt 50%, 240 min")) 
+	  exit (-1);
+
 
       printf("	-------> and another Battery\n");
       g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2",dir_proc);
@@ -411,21 +429,37 @@ unit_test (void)
       write_file(fn,"present:                 yes\n"
 		 "capacity state:          ok\n"
 		 "charging state:          charging\n"
-		 "present rate:            50 mW\n"
-		 "remaining capacity:      55710 mWh\n"
+		 "present rate:            500 mW\n"
+		 "remaining capacity:      1000 mWh\n"
 		 "present voltage:         16764 mV\n");
       
-      
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/info",dir_proc);
+      write_file(fn,"present:                 yes\n"
+		 "design capacity:         59200 mWh\n"
+		 "last full capacity:      10000 mWh\n"
+		 "battery technology:      non-rechargeable\n"
+		 "design voltage:          14800 mV\n"
+		 "design capacity warning: 0 mWh\n"
+		 "design capacity low:     120 mWh\n"
+		 "capacity granularity 1:  0 mWh\n"
+		 "capacity granularity 2:  10 mWh\n"
+		 "model number:            \n");
       response = battery_get_values ();
-      printf("batstring: %s\n",batstring);
       g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/state",dir_proc);
       unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT1/info",dir_proc);
+      unlink(fn);
       g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/state",dir_proc);
+      unlink(fn);
+      g_snprintf (fn, sizeof (fn), "%s/acpi/battery/BAT2/info",dir_proc);
       unlink(fn);
       if ( ! response  ) {
 	  printf("battery reporting Problem: no battery status for 1 Bat\n");
 	  exit(-1);
       }
+      printf("batstring: %s\n",batstring);
+      if ( strcmp (batstring, "Batt 42%, 229 min")) 
+	  exit (-1);
 
       printf("	-------> Check with apm\n");
       g_snprintf (fn, sizeof (fn), "%s/apm", dir_proc);
@@ -435,15 +469,16 @@ unit_test (void)
       sprintf (battery_string, "%s %s %s %x %s %x %d%% %s %s\ntest1\n",
 	       "test1","test2","test3",3,"test4",3,99,"test5","test6");
       write_file(fn,battery_string);
-      write_file(fn,"test test test 03 test 01 99% test test\n");
-      write_file(fn,"1 2 3 03 4 01 99% 5 6\n");
+      write_file(fn,"1 2 3 04 4 06 71% 7 8\n");
       response = battery_get_values ();
       printf("batstring: %s\n",batstring);
-      //      unlink(fn);
+      unlink(fn);
       if ( ! response  ) {
 	  printf("battery reporting Problem: no bat reported\n");
 	  exit(-1);
       }
+      if ( !strcmp (batstring, "Batt 71%")) 
+	  exit (-1);
 
 
 

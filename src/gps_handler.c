@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.11  2006/02/16 09:52:44  tweety
+  rearrange acpi handling and displaying of battery and temperature display
+
   Revision 1.10  2006/02/05 16:38:05  tweety
   reading floats with scanf looks at the locale LANG=
   so if you have a locale de_DE set reading way.txt results in clearing the
@@ -157,7 +160,6 @@ extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
 extern int gotneverserial, timerto, serialspeed;
 extern GtkWidget *drawing_sats;
-extern GtkTooltips *temptooltips;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
@@ -517,7 +519,10 @@ startgpsd (guint datum)
 	g_strlcat (s, " -T e -s 9600", sizeof (s));
       system (s);
       gtk_button_set_label (GTK_BUTTON (startgpsbt), _("Stop GPSD"));
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips), startgpsbt,
+
+      GtkTooltips *tooltips;
+      tooltips = gtk_tooltips_new ();
+      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgpsbt,
 			    _
 			    ("Stop GPSD and switch to simulation mode"),
 			    NULL);
@@ -542,7 +547,9 @@ startgpsd (guint datum)
       system ("killall gpsd");
       gpson = FALSE;
       gtk_button_set_label (GTK_BUTTON (startgpsbt), _("Start GPSD"));
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips), startgpsbt,
+      GtkTooltips *tooltips;
+      tooltips = gtk_tooltips_new ();
+      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgpsbt,
 			    _("Starts GPSD for NMEA mode"), NULL);
       simmode = TRUE;
       haveNMEA = FALSE;

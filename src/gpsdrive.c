@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.89  2006/02/16 09:52:44  tweety
+rearrange acpi handling and displaying of battery and temperature display
+
 Revision 1.88  2006/02/13 23:15:39  tweety
 error check for missin icon Files (unit_test)
 
@@ -527,7 +530,7 @@ GdkColor defaultcolor;
 
 GtkWidget *drawing_area, *drawing_bearing;
 GtkWidget *drawing_sats, *drawing_miniimage;
-GtkWidget *drawing_battery, *drawing_temp;
+
 GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
@@ -539,6 +542,8 @@ extern auxiconsstruct *auxicons;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 extern mapsstruct *maps;
+
+extern GtkWidget *drawing_battery, *drawing_temp;
 
 
 /* action=1: radar (speedtrap) */
@@ -770,8 +775,7 @@ extern long int maxfriendssecs;
 gint forcehavepos = FALSE, needreminder = TRUE;
 gdouble alarm_lat = 53.583033, alarm_lon = 9.969533, alarm_dist = 9999999.0;
 extern gchar cputempstring[20], batstring[20];
-GtkTooltips *temptooltips = NULL;
-GtkWidget *tempeventbox = NULL, *batteventbox = NULL;
+extern GtkWidget *tempeventbox, *batteventbox;
 GtkWidget *sateventbox = NULL, *compasseventbox = NULL;
 GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
 GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
@@ -782,8 +786,6 @@ GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
 GtkWidget *frame_wp, *frame_maptype, *frame_toogles, *lab1;
-GtkWidget *frame_battery = NULL;
-GtkWidget *frame_temperature = NULL;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -4117,6 +4119,10 @@ gint
 etch_cb (GtkWidget * widget, guint datum)
 {
 	int stype;
+	extern GtkWidget *frame_battery;
+	extern GtkWidget *frame_temperature;
+
+
 	etch = !etch;
 	if (etch)
 		stype = GTK_SHADOW_IN;
@@ -4141,9 +4147,9 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
 
 	if (frame_battery)
-		gtk_frame_set_shadow_type (GTK_FRAME (frame_battery), stype);
+	    gtk_frame_set_shadow_type (GTK_FRAME (frame_battery), stype);
 	if (frame_temperature)
-		gtk_frame_set_shadow_type (GTK_FRAME (frame_temperature), stype);
+	    gtk_frame_set_shadow_type (GTK_FRAME (frame_temperature), stype);
 
 	needtosave = TRUE;
 	return TRUE;
@@ -6296,7 +6302,6 @@ main (int argc, char *argv[])
     /*    zero_lat and zero_lon are overwritten by gpsdriverc,  */
     tripreset ();
     
-    g_strlcpy (cputempstring, "??", sizeof (cputempstring));
     g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
     g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
@@ -7311,34 +7316,8 @@ main (int argc, char *argv[])
 	    gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE, 1 * PADDING);
 	}
 
-    if ( battery_get_values () )
-	{
-	    drawing_battery = gtk_drawing_area_new ();
-	    gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_battery), 27,
-				   52);
-	    frame_battery = gtk_frame_new (_("Bat."));
-	    batteventbox = gtk_event_box_new ();
-	    gtk_container_add (GTK_CONTAINER (batteventbox),
-			       drawing_battery);
-	    alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
-	    gtk_container_add (GTK_CONTAINER (alignment3), batteventbox);
-	    gtk_container_add (GTK_CONTAINER (frame_battery), alignment3);
-	    gtk_box_pack_start (GTK_BOX (hbox2), frame_battery, FALSE, FALSE, 1 * PADDING);
-	}
-
-    /* drawing area for cpu temp meter */
-    if ( temperature_get_values () )
-	{
-	    drawing_temp = gtk_drawing_area_new ();
-	    gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_temp), 15,   52);
-	    frame_temperature = gtk_frame_new (_("TC"));
-	    tempeventbox = gtk_event_box_new ();
-	    gtk_container_add (GTK_CONTAINER (tempeventbox), drawing_temp);
-	    alignment4 = gtk_alignment_new (0.5, 0.5, 0, 0);
-	    gtk_container_add (GTK_CONTAINER (alignment4), tempeventbox);
-	    gtk_container_add (GTK_CONTAINER (frame_temperature), alignment4);
-	    gtk_box_pack_start (GTK_BOX (hbox2), frame_temperature, FALSE, FALSE, 1 * PADDING);
-	}
+    create_temperature_widget(hbox2);
+    create_battery_widget(hbox2);
 
 
     if (pdamode)
@@ -7687,18 +7666,6 @@ main (int argc, char *argv[])
 			"expose_event", GTK_SIGNAL_FUNC (expose_cb),
 			NULL);
 
-    if ( battery_get_values () )
-	gtk_signal_connect (GTK_OBJECT (drawing_battery),
-			    "expose_event",
-			    GTK_SIGNAL_FUNC (expose_display_battery),
-			    NULL);
-
-    if (temperature_get_values () )
-	gtk_signal_connect (GTK_OBJECT (drawing_temp),
-			    "expose_event",
-			    GTK_SIGNAL_FUNC (expose_display_temperature),
-			    NULL);
-
     if (!pdamode)
 	{
 	    if (extrawinmenu)
@@ -7951,15 +7918,11 @@ main (int argc, char *argv[])
     gdk_window_set_cursor (drawing_area->window, cursor);
 
     /*  Tooltips */
-    temptooltips = tooltips = gtk_tooltips_new ();
+    tooltips = gtk_tooltips_new ();
 
-    if (battery_get_values () )
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), batteventbox,
-			      batstring, NULL);
 
-    if (temperature_get_values () )
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tempeventbox,
-			      cputempstring, NULL);
+    temperature_get_values ();
+    battery_get_values ();
 
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
 			  _
@@ -8001,8 +7964,7 @@ main (int argc, char *argv[])
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wpbt,
 			  _("Show waypoints on the map"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
-			  _
-			  ("Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."),
+			  _("Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."),
 			  NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), trackbt,
 			  _("Show tracking on the map"), NULL);
@@ -8010,17 +7972,15 @@ main (int argc, char *argv[])
     /*                  _("Let you import and calibrate your own map"), NULL); */
 #ifdef USETELEATLAS
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
-			  _
-			  ("Navigation menu. Enter here your destination."),
+			  _("Navigation menu. Enter here your destination."),
 			  NULL);
 #endif
     if (haveNMEA)
 	{
 	    gtk_button_set_label (GTK_BUTTON (startgpsbt),
 				  _("Stop GPSD"));
-	    gtk_tooltips_set_tip (GTK_TOOLTIPS (temptooltips), startgpsbt,
-				  _
-				  ("Stop GPSD and switch to simulation mode"),
+	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgpsbt,
+				  _("Stop GPSD and switch to simulation mode"),
 				  NULL);
 	    gpson = TRUE;
 	}
