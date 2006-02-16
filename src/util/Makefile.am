@@ -1,6 +1,8 @@
 LIB_MAP=../lib_map/map_gpsdrive.c  ../lib_map/map_load.c \
 	../lib_map/map_transform.c ../lib_map/map_gpsmisc.c \
-	../lib_map/map_render.c
+	../lib_map/map_render.c \
+	../lib_map/map.h  ../lib_map/map_priv.h
+
 
 LIB_MAP_O=../lib_map/map_gpsdrive.o  ../lib_map/map_load.o \
 	../lib_map/map_transform.o ../lib_map/map_gpsmisc.o \
