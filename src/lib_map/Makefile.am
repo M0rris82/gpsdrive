@@ -1,7 +1,9 @@
 lib_map_a_SOURCES= \
 	map_draw.c  map_gpsmisc.c  map_load.c  map_port.c  map_render.c  \
 	map_transform.c \
-	map_port_cpp.cpp  map_render_cpp.cpp
+	map_port_cpp.cpp  map_render_cpp.cpp \
+	map.h  map_priv.h
+
 
 if HAVE_GDAL
 MAPDIR = ../../data/maps
