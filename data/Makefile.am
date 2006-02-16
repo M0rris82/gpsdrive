@@ -34,4 +34,7 @@ appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
 
 EXTRA_DIST=	\
-	$(cfg_files_DATA) $(pixmap_DATA) $(icons_DATA) $(maps_DATA) $(apps_DATA)
+	$(cfg_files_DATA) \
+	$(pixmap_DATA) $(icons_DATA) \
+	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
+	$(apps_DATA)
