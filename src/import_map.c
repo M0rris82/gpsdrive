@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.14  2006/02/17 20:54:34  tweety
+  http://bugzilla.gpsdrive.cc/show_bug.cgi?id=73
+  Downloading maps doesn't allow Longitude select by mouse
+
   Revision 1.13  2006/02/05 16:38:06  tweety
   reading floats with scanf looks at the locale LANG=
   so if you have a locale de_DE set reading way.txt results in clearing the
@@ -139,7 +143,7 @@ extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
-extern GtkWidget *dltext1, *dltext2, *dltext3, *dltext4, *wptext1, *wptext2;
+extern GtkWidget *dl_text_lat, *dl_text_lon, *dltext3, *dltext4, *wptext1, *wptext2;
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern GTimer *timer, *disttimer;
@@ -192,10 +196,10 @@ setrefpoint_cb (GtkWidget * widget, guint datum)
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
   gtk_entry_set_text (GTK_ENTRY (dltext4), p);
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 2, &p);
-  gtk_entry_set_text (GTK_ENTRY (dltext1), p);
+  gtk_entry_set_text (GTK_ENTRY (dl_text_lat), p);
 
   gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
-  gtk_entry_set_text (GTK_ENTRY (dltext2), p);
+  gtk_entry_set_text (GTK_ENTRY (dl_text_lon), p);
 
   return TRUE;
 }
@@ -403,14 +407,14 @@ import1_cb (GtkWidget * widget, guint datum)
 
 
   gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
-  dltext1 = gtk_entry_new ();
-  gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
+  dl_text_lat = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
   coordinate2gchar (buff, sizeof (buff), current_lat, TRUE, minsecmode);
-  gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
-  dltext2 = gtk_entry_new ();
-  gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
+  gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
+  dl_text_lon = gtk_entry_new ();
+  gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
   coordinate2gchar (buff, sizeof (buff), current_lon, FALSE, minsecmode);
-  gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
+  gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 
 
   dltext5 = gtk_entry_new ();
@@ -497,10 +501,10 @@ import_scale_cb (GtkWidget * widget, gpointer datum)
   maxx = 1280;
   maxy = 1024;
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
   coordinate_string2gdouble (s, &lat);
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
   coordinate_string2gdouble (s, &lon);
 
   s = gtk_entry_get_text (GTK_ENTRY (dltext5));
@@ -581,9 +585,9 @@ import2_cb (GtkWidget * widget, gpointer datum)
 {
   G_CONST_RETURN gchar *s = NULL;
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
   coordinate_string2gdouble (s, &imports[0].lat);
-  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
   coordinate_string2gdouble (s, &imports[0].lon);
   s = gtk_entry_get_text (GTK_ENTRY (dltext5));
   imports[0].x = strtol (s, NULL, 0);
@@ -612,10 +616,10 @@ import3_cb (GtkWidget * widget, gpointer datum)
   gdouble longcenter;
   gdouble px, py;
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
   coordinate_string2gdouble (s, &imports[1].lat);
 
-  s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+  s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
   coordinate_string2gdouble (s, &imports[1].lon);
 
   s = gtk_entry_get_text (GTK_ENTRY (dltext5));
@@ -699,15 +703,19 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
   if (state == 0)
     return 0;
   calcxytopos (x, y, &lat, &lon, zoom);
+  if (mydebug)
+      {
+	  fprintf (stderr, "Mouse click at x:%d,y:%d -->lat:%f,lon:%f  \n", x, y,lat,lon);
+      }
 
   if (downloadwindowactive || importactive)
     {
       if (downloadwindowactive)
 	{
 	  coordinate2gchar (s, sizeof (s), lat, TRUE, minsecmode);
-	  gtk_entry_set_text (GTK_ENTRY (dltext1), s);
-	  g_snprintf (s, sizeof (s), "%.5f", lon);
+	  gtk_entry_set_text (GTK_ENTRY (dl_text_lat), s);
 	  coordinate2gchar (s, sizeof (s), lon, FALSE, minsecmode);
+	  gtk_entry_set_text (GTK_ENTRY (dl_text_lon), s);
 	  downloadsetparm (NULL, 0);
 	}
       else
@@ -719,10 +727,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 		      y / zoom + (512 - SCREEN_Y_2 / zoom) + yoff / zoom);
 	  gtk_entry_set_text (GTK_ENTRY (dltext6), s);
 
-	}
-      if (mydebug)
-	{
-	  fprintf (stderr, "Mouse click at x:%d,y:%d \n", x, y);
 	}
 
     }

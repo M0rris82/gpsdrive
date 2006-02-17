@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.3  2006/02/17 20:54:34  tweety
+  http://bugzilla.gpsdrive.cc/show_bug.cgi?id=73
+  Downloading maps doesn't allow Longitude select by mouse
+
   Revision 1.2  2006/02/05 16:38:05  tweety
   reading floats with scanf looks at the locale LANG=
   so if you have a locale de_DE set reading way.txt results in clearing the
@@ -124,7 +128,7 @@ gchar writebuff[2000];
 fd_set readmask;
 gchar *dlbuff, downloadfilename[512];
 gint downloadfilelen=0;
-GtkWidget *dltext1, *dltext2, *dltext3, *dltext4;
+GtkWidget *dl_text_lat, *dl_text_lon, *dltext3, *dltext4;
 gchar *dlpstart;
 gint nrmaps = 0, dldiff;
 gint dlcount;
@@ -593,13 +597,13 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
 
 
-	s = gtk_entry_get_text (GTK_ENTRY (dltext1));
+	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
 	g_strlcpy (lat, s, sizeof (lat));
 	g_strdelimit (lat, ",", '.');
 	g_strlcpy (newmaplat, lat, sizeof (newmaplat));
 	coordinate_string2gdouble(lat, &nlat);
 	
-	s = gtk_entry_get_text (GTK_ENTRY (dltext2));
+	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
 	g_strlcpy (lon, s, sizeof (lon));
 	g_strdelimit (lon, ",", '.');
 	g_strlcpy (newmaplon, lon, sizeof (newmaplon));
@@ -814,8 +818,8 @@ gint
 download_cb (GtkWidget * widget, guint datum)
 {
 	GtkWidget *mainbox;
-	GtkWidget *knopf2, *knopf, *knopf3, *knopf4, *knopf5, *knopf6,
-		*knopf7;
+	GtkWidget *knopf2, *knopf, *knopf_lat, *knopf_lon, *knopf_scale, *knopf_map_filename,
+		*knopf_help_text;
 	GtkWidget *table, *table2, *knopf8;
 	gchar buff[300], mappath[2048];
 	GList *list = NULL;
@@ -861,31 +865,31 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_box_pack_start (GTK_BOX
 			    (GTK_DIALOG (downloadwindow)->vbox),
 			    table, TRUE, TRUE, 2);
-	knopf3 = gtk_label_new (_("Latitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf3, 0, 1, 0, 1);
-	knopf4 = gtk_label_new (_("Longitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf4, 0, 1, 1, 2);
+	knopf_lat = gtk_label_new (_("Latitude"));
+	gtk_table_attach_defaults (GTK_TABLE (table), knopf_lat, 0, 1, 0, 1);
+	knopf_lon = gtk_label_new (_("Longitude"));
+	gtk_table_attach_defaults (GTK_TABLE (table), knopf_lon, 0, 1, 1, 2);
 	knopf8 = gtk_label_new (_("Map covers"));
 	gtk_table_attach_defaults (GTK_TABLE (table), knopf8, 0, 1, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (table), cover, 1, 2, 2, 3);
 
-	knopf5 = gtk_label_new (_("Scale"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf5, 0, 1, 3, 4);
-	knopf6 = gtk_label_new (_("Map file name"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 4, 5);
-	dltext1 = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dltext1), "changed",
+	knopf_scale = gtk_label_new (_("Scale"));
+	gtk_table_attach_defaults (GTK_TABLE (table), knopf_scale, 0, 1, 3, 4);
+	knopf_map_filename = gtk_label_new (_("Map file name"));
+	gtk_table_attach_defaults (GTK_TABLE (table), knopf_map_filename, 0, 1, 4, 5);
+	dl_text_lat = gtk_entry_new ();
+	gtk_signal_connect (GTK_OBJECT (dl_text_lat), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext1, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
 	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext1), buff);
-	dltext2 = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dltext2), "changed",
+	gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
+	dl_text_lon = gtk_entry_new ();
+	gtk_signal_connect (GTK_OBJECT (dl_text_lon), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext2, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
 	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE, minsecmode);
-	gtk_entry_set_text (GTK_ENTRY (dltext2), buff);
+	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 	dltext3 = gtk_combo_new ();
 	gtk_table_attach_defaults (GTK_TABLE (table), dltext3, 1, 2, 3, 4);
 	gtk_combo_set_popdown_strings (GTK_COMBO (dltext3), (GList *) list);
@@ -962,18 +966,19 @@ download_cb (GtkWidget * widget, guint datum)
 			    _("You can also select the position\n"
 			      "with a mouse click on the map."),
 			    _("Using Proxy and port:"), proxy, proxyport);
-	knopf7 = gtk_label_new (buff);
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf7, 0, 2, 6, 7);
+	knopf_help_text = gtk_label_new (buff);
+	gtk_table_attach_defaults (GTK_TABLE (table), knopf_help_text, 0, 2, 6, 7);
+
 	myprogress = gtk_progress_bar_new ();
 	gtk_progress_set_format_string (GTK_PROGRESS (myprogress), "%p%%");
 	gtk_progress_set_show_text (GTK_PROGRESS (myprogress), TRUE);
 	gtk_progress_bar_update (GTK_PROGRESS_BAR (myprogress), 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), myprogress, 0, 2, 7, 8);
-	gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf3), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf4), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf5), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify (GTK_LABEL (knopf_map_filename), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify (GTK_LABEL (knopf_lat), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify (GTK_LABEL (knopf_lon), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify (GTK_LABEL (knopf_scale), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_justify (GTK_LABEL (knopf_map_filename), GTK_JUSTIFY_RIGHT);
 	i = 0;
 	do
 	{
