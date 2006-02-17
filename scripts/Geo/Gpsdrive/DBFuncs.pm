@@ -1,6 +1,9 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.5  2006/02/17 08:11:06  tweety
+# generate traffic table too
+#
 # Revision 1.4  2006/02/08 11:03:44  tweety
 # improve Quality of Example Streets
 # update icoins
@@ -989,6 +992,19 @@ sub create_db(){
                     ) TYPE=MyISAM;') or die;
     add_index('waypoints');
 
+    # For trafficinformation
+    db_exec('CREATE TABLE IF NOT EXISTS traffic (
+      			`id` int(11) NOT NULL auto_increment ,
+			`status` int(11) default NULL ,
+			`street` varchar(40) default NULL ,
+			`descshort` varchar(100) default NULL ,
+			`desclong` text NOT NULL ,
+			`future` int(11) NOT NULL default \'0\',
+			`time` time default \'00:00:00\',
+			`timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+		        PRIMARY KEY  (`id`)
+		      ) ENGINE=MyISAM DEFAULT CHARSET=latin1;') or die;
+    add_index('traffic');
 
 
     # -----------------------------------------------------------------------------
