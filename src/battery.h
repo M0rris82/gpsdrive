@@ -37,5 +37,8 @@ int battery_get_values(void);
 int temperature_get_values(void);
 int expose_display_battery();
 int expose_display_temperature();
+void create_battery_widget (GtkWidget * hbox2);
+void create_temperature_widget (GtkWidget * hbox2);
+
 
 #endif /* GPSDRIVE_BATTERY_H */
