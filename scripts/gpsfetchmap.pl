@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.36  2006/02/19 21:09:27  tweety
+# add download stug for landsat satelite maps
+#
 # Revision 1.35  2006/02/16 10:25:15  tweety
 # update Version Numbers in different Meta files
 #
@@ -281,6 +284,12 @@ my $Scale2Zoom = {
     },
 };
 
+my $factor = 1;
+for my $i ( 1 .. 10 ) { 
+    $Scale2Zoom->{'landsat'}->{200*$factor} = $factor;
+    $factor = $factor * 2;
+}
+
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
 my ($lat,$lon);
@@ -334,7 +343,8 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     )
     or pod2usage(1);
 
-if ($mapserver eq 'geoscience'){
+if ( $mapserver eq 'geoscience' )
+{
     $scale ||= join(",",keys %{$Scale2Zoom->{'geoscience'}});
 } else {
     $scale ||= '100000-2000000';
@@ -348,6 +358,10 @@ if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
 
 if ( $mapserver eq 'googlesat') {
     $MIN_MAP_BYTES = 1000; # Small Tiles
+    $FILEPREFIX          = 'top_';
+}
+
+if ( $mapserver eq 'landsat') {
     $FILEPREFIX          = 'top_';
 }
 
@@ -373,6 +387,7 @@ sub debug($);              # {}
 sub expedia_url($$$);      # {}
 sub expedia_url($$$);      # {}
 sub geoscience_url($$$);   # {}
+sub landsat_url($$$);   # {}
 sub resize($$); #{}
 sub file_count($);         # {}
 sub file_count($);         # {}
@@ -510,6 +525,10 @@ if ( $mapserver eq 'geoscience' ){
     print "| Full Copyright information can be found at                |\n";
     print "| http://www.ga.gov.au/about/copyright.jsp                  |\n";
     print "+-----------------------------------------------------------+\n";
+}elsif ( $mapserver eq 'landsat' ){
+    print "+-----------------------------------------------------------+\n";
+    print "| Landsat Maps are Copyright, .....   |\n";
+    print "| They are free for non commercial use.                     |\n";
 } elsif ( ! $force) {
     print "You are violating the map servers copyright!\n";
     print "Are you sure you want to continue? [y|n] ";
@@ -759,6 +778,10 @@ sub wget_map($$$){
     elsif ( $mapserver eq 'geoscience') 
     {
 	($url,$mapscale)=geoscience_url($lati,$long,$scale);
+    } 
+    elsif ( $mapserver eq 'landsat') 
+    {
+	($url,$mapscale)=landsat_url($lati,$long,$scale);
     } 
     else 
     {
@@ -1107,6 +1130,53 @@ sub gov_au_url($$$){
     
     return ($url,$mapscale);
 }
+
+#############################################################################
+sub landsat_url($$$){
+    my $lat   = shift;
+    my $lon   = shift;
+    my $scale = shift;
+ 
+    my $factor = $Scale2Zoom->{'landsat'}->{$scale};
+
+    my $deltalat = 0.0005;
+    my $deltalon = 0.001;   # Gives ratio 1.2 in meter
+
+    my $lon1 = $lon-$deltalon*$factor/2;
+    my $lat1 = $lat-$deltalat*$factor/2;
+    my $lon2 = $lon+$deltalon*$factor/2;
+    my $lat2 = $lat+$deltalat*$factor/2;
+
+    debug( "landsat_url(LAT=$lat,LON=$lon,SCALE=$scale,FACTOR=$factor)");
+
+    debug( "Calculated Lat1  $lat1");
+    debug( "Calculated Lat2  $lat2");
+    debug( "Calculated Lon1 $lon1");
+    debug( "Calculated Lon2 $lon2");
+
+    # Build the URL
+    my $url='';
+    $url .= "http://onearth.jpl.nasa.gov/wms.cgi";
+    $url .= '?request=GetMap';
+    $url .= '&width=1280';
+    $url .= '&height=1024';
+    $url .= '&layers=global_mosaic';
+    $url .= '&styles=';
+    $url .= '&srs=EPSG:4326';
+#    $url .= '&format=image/gif';
+    $url .= '&format=image/jpeg';
+
+    # Add the 4 Coordinates.
+    $url .= '&bbox='; # '15.3,58.35,15.5,58.45';
+    $url .= "$lon1,$lat1,$lon2,$lat2";
+#    $url .= sprintf("%.5f",$lon1).",";
+#    $url .= sprintf("%.5f",$lat1).",";
+#    $url .= sprintf("%.5f",$lon2).",";
+#    $url .= sprintf("%.5f",$lat2);
+
+    return ($url,$scale);
+}
+
 
 #############################################################################
 sub geoscience_url($$$){
@@ -2216,7 +2286,8 @@ Takes an optional value of number of seconds to sleep.
 
 Mapserver to download from. Currently can use: 'googlesat' or 'expedia'. Default: 'expedia'.
 
-gov_au, incrementp and eniro have download stubs, but they are !!!NOT!!!! in the right scale.
+geoscience, landsat, gov_au, incrementp and eniro have download stubs, 
+but they are !!!NOT!!!! in the right scale.
 
 
 =item B<-u, --unit <UNIT>>
