@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2006/02/20 09:14:20  tweety
+reconnect kismet socket if connection lost
+Author: Mike Nix <mnix@wanm.com.au>
+
 Revision 1.7  2005/08/09 13:14:14  tweety
 fix indentation
 
@@ -151,6 +155,8 @@ reads info from kismet server and insert waypoints into database
 #include <gpsdrive.h>
 #include <speech_out.h>
 #include <speech_strings.h>
+#include <time.h>
+#include <errno.h>
 
 
 #define MAXDBNAME 30
@@ -192,6 +198,8 @@ static char lat[30], lon[30], bestlat[30], bestlon[30];
 
 #define KISMETSERVERNAME "localhost"
 
+time_t last_initkismet=0;
+
 
 int
 readkismet (void)
@@ -200,25 +208,39 @@ readkismet (void)
   char q[1200], buf[300], tname[80], sqllat[30], sqllon[30];
   int e, r, have, i, j, sqlid = 0;
 
-  e = 0;
-  FD_ZERO (&kismetreadmask);
-  FD_SET (kismetsock, &kismetreadmask);
-  kismettimeout.tv_sec = 0;
-  kismettimeout.tv_usec = 10000;
+  // If Kismet server connection failed, Try to reconnect
+  //    after at least 30 seconds
+  if ((kismetsock<0) && ((time(NULL) - last_initkismet) > 30)) {
+     if (debug) g_print(_("trying to re-connect to kismet server\n"));
+     initkismet();
+     if (kismetsock>=0) g_print(_("Kismet server connection re-established\n"));
+     if (debug) g_print(_("done trying to re-connect: socket=%d\n"), kismetsock);
+     }
+
+  if (kismetsock < 0) return FALSE;
 
   do
     {
+      e = 0;
+      FD_ZERO (&kismetreadmask);
+      FD_SET (kismetsock, &kismetreadmask);
+      kismettimeout.tv_sec = 0;
+      kismettimeout.tv_usec = 10000;
+
       if (select
 	  (FD_SETSIZE, &kismetreadmask, NULL, NULL, &kismettimeout) < 0)
 	{
-	  perror ("select() call");
+	  perror ("readkismet: select() call");
 	  return FALSE;
 	}
 
       if ((have = FD_ISSET (kismetsock, &kismetreadmask)))
 	{
+	  int bytesread;
+	  bytesread=0;
 	  while ((e = read (kismetsock, &c, 1)) > 0)
 	    {
+	      bytesread++;
 	      if (c != '\n')
 		*(kbuffer + bc++) = c;
 	      else
@@ -235,9 +257,17 @@ readkismet (void)
 		}
 
 	    }
+	    
+	  // the file descriptor was ready for read but no data available...
+	  // this means the connection was lost.
+	  if (bytesread==0) {
+		g_print(_("Kismet server connection lost\n"));
+		close(kismetsock);
+		kismetsock=-1;
+		return FALSE;
+	     }
 	}
-
-
+      
       if (c == -1)
 	{
 	  /* have read a line */
@@ -400,6 +430,10 @@ initkismet (void)
   struct hostent *server_data;
   char buf[180];
 
+  last_initkismet=time(NULL);
+
+  if (debug) g_print(_("Trying Kismet server\n"));
+
   g_strlcpy (lastmacaddr, "", sizeof (lastmacaddr));
   /*  open socket to port */
   if ((kismetsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
@@ -413,6 +447,7 @@ initkismet (void)
     {
       fprintf (stderr, "%s: unknown host", KISMETSERVERNAME);
       close (kismetsock);
+      kismetsock=-1;
       return -1;
     }
   memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
@@ -421,7 +456,7 @@ initkismet (void)
   if (connect (kismetsock, (struct sockaddr *) &server, sizeof server) < 0)
     {
       close (kismetsock);
-
+      kismetsock=-1;
       return -1;
     }
   else

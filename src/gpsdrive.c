@@ -2720,7 +2720,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (zoomscale)
 		draw_zoom_scale ();
 
-	if (havekismet)
+	if (havekismet && (kismetsock>=0))
 	    gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
 			     10, SCREEN_Y - 42,
 			     36, 20, GDK_RGB_DITHER_NONE, 0, 0);
