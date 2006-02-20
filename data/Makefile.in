@@ -57,14 +57,17 @@ am__vpath_adj = case $$p in \
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
 	"$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" \
-	"$(DESTDIR)$(pixmapdir)"
+	"$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)" \
+	"$(DESTDIR)$(streetsdir)"
 appsDATA_INSTALL = $(INSTALL_DATA)
 cfg_filesDATA_INSTALL = $(INSTALL_DATA)
 iconsDATA_INSTALL = $(INSTALL_DATA)
 mapsDATA_INSTALL = $(INSTALL_DATA)
 pixmapDATA_INSTALL = $(INSTALL_DATA)
+poiDATA_INSTALL = $(INSTALL_DATA)
+streetsDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_DATA) $(maps_DATA) \
-	$(pixmap_DATA)
+	$(pixmap_DATA) $(poi_DATA) $(streets_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -110,14 +113,23 @@ EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
 FRIENDSSERVERVERSION = @FRIENDSSERVERVERSION@
+GDAL_CFLAGS = @GDAL_CFLAGS@
+GDAL_CONFIG = @GDAL_CONFIG@
+GDAL_LDADD = @GDAL_LDADD@
 GENCAT = @GENCAT@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIBC2 = @GLIBC2@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
+GTK_CFLAGS = @GTK_CFLAGS@
+GTK_LIBS = @GTK_LIBS@
 HAVE_ASPRINTF = @HAVE_ASPRINTF@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
+HAVE_GDAL_FALSE = @HAVE_GDAL_FALSE@
+HAVE_GDAL_TRUE = @HAVE_GDAL_TRUE@
+HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
+HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
 HAVE_POSIX_PRINTF = @HAVE_POSIX_PRINTF@
 HAVE_SNPRINTF = @HAVE_SNPRINTF@
 HAVE_WPRINTF = @HAVE_WPRINTF@
@@ -226,6 +238,15 @@ iconsdir = $(datadir)/gpsdrive/icons
 icons_DATA = icons/*.png icons/*.gif \
 	     icons/index.html
 
+streetsdir = $(datadir)/gpsdrive/streets
+streets_DATA = streets/Autobahnen.txt \
+	  streets/Streets_au.txt  streets/Streets.txt
+
+poidir = $(datadir)/gpsdrive/poi
+poi_DATA = \
+	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
+	poi/cities_au.txt poi/shops_au.txt
+
 mapsdir = $(datadir)/gpsdrive/maps
 maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
 	    maps/top_Germany.jpg   maps/top_NorthAmerica.jpg \
@@ -238,7 +259,10 @@ maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
 EXTRA_DIST = \
-	$(cfg_files_DATA) $(pixmap_DATA) $(icons_DATA) $(maps_DATA) $(apps_DATA)
+	$(cfg_files_DATA) \
+	$(pixmap_DATA) $(icons_DATA) \
+	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
+	$(apps_DATA)
 
 all: all-am
 
@@ -367,6 +391,40 @@ uninstall-pixmapDATA:
 	  echo " rm -f '$(DESTDIR)$(pixmapdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(pixmapdir)/$$f"; \
 	done
+install-poiDATA: $(poi_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(poidir)" || $(mkdir_p) "$(DESTDIR)$(poidir)"
+	@list='$(poi_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(poiDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(poidir)/$$f'"; \
+	  $(poiDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(poidir)/$$f"; \
+	done
+
+uninstall-poiDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(poi_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(poidir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(poidir)/$$f"; \
+	done
+install-streetsDATA: $(streets_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(streetsdir)" || $(mkdir_p) "$(DESTDIR)$(streetsdir)"
+	@list='$(streets_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(streetsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(streetsdir)/$$f'"; \
+	  $(streetsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(streetsdir)/$$f"; \
+	done
+
+uninstall-streetsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(streets_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(streetsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(streetsdir)/$$f"; \
+	done
 tags: TAGS
 TAGS:
 
@@ -375,7 +433,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/maps $(distdir)/pixmaps
+	$(mkdir_p) $(distdir)/icons $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -406,7 +464,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"; do \
+	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)" "$(DESTDIR)$(streetsdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -452,7 +510,8 @@ info: info-am
 info-am:
 
 install-data-am: install-appsDATA install-cfg_filesDATA \
-	install-iconsDATA install-mapsDATA install-pixmapDATA
+	install-iconsDATA install-mapsDATA install-pixmapDATA \
+	install-poiDATA install-streetsDATA
 
 install-exec-am:
 
@@ -480,7 +539,7 @@ ps-am:
 
 uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-iconsDATA uninstall-info-am uninstall-mapsDATA \
-	uninstall-pixmapDATA
+	uninstall-pixmapDATA uninstall-poiDATA uninstall-streetsDATA
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
@@ -488,12 +547,14 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	install-appsDATA install-cfg_filesDATA install-data \
 	install-data-am install-exec install-exec-am install-iconsDATA \
 	install-info install-info-am install-man install-mapsDATA \
-	install-pixmapDATA install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-appsDATA \
+	install-pixmapDATA install-poiDATA install-streetsDATA \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-appsDATA \
 	uninstall-cfg_filesDATA uninstall-iconsDATA uninstall-info-am \
-	uninstall-mapsDATA uninstall-pixmapDATA
+	uninstall-mapsDATA uninstall-pixmapDATA uninstall-poiDATA \
+	uninstall-streetsDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
