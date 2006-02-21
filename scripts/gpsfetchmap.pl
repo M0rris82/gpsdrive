@@ -9,6 +9,10 @@
 #
 #
 # $Log$
+# Revision 1.37  2006/02/21 07:40:59  tweety
+# correct map projection of landsat maps to streetmapstyle.
+# adjust scla settings for landsat maps to fit for better than 10% accuracy
+#
 # Revision 1.36  2006/02/19 21:09:27  tweety
 # add download stug for landsat satelite maps
 #
@@ -148,7 +152,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-cvs-20060216)
+Version 1.19 (gpsdrive-2.10pre3-cvs-20060220)
 ";
 
 sub redirect_ok { return 1; }
@@ -282,13 +286,19 @@ my $Scale2Zoom = {
    	665924*2 => 2,
    	665924*1 => 1,
     },
+    landsat => {
+   	  2000 =>    2*6.4,
+   	  5000 =>    5*6.4,
+   	 10000 =>   10*6.4,
+   	 50000 =>   50*6.4,
+   	100000 =>  100*6.4,
+   	500000 =>  500*6.4,
+       1000000 => 1000*6.4,
+       5000000 => 5000*6.4,
+      10000000 =>10000*6.4,
+      50000000 =>50000*6.4,
+    }
 };
-
-my $factor = 1;
-for my $i ( 1 .. 10 ) { 
-    $Scale2Zoom->{'landsat'}->{200*$factor} = $factor;
-    $factor = $factor * 2;
-}
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
@@ -363,6 +373,7 @@ if ( $mapserver eq 'googlesat') {
 
 if ( $mapserver eq 'landsat') {
     $FILEPREFIX          = 'top_';
+    $FILEPREFIX          = 'map_';
 }
 
 if ( $mapserver ne 'expedia') {
