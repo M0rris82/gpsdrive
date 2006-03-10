@@ -1,6 +1,45 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.9  2006/03/10 08:37:09  tweety
+# - Replace Street/Track find algorithmus in Query Funktion
+#   against real Distance Algorithm (distance_line_point).
+# - Query only reports Track/poi/Streets if currently displaying
+#   on map is selected for these
+# - replace old top/map Selection by a MapServer based selection
+# - Draw White map if no Mapserver is selected
+# - Remove some useless Street Data from Examples
+# - Take the real colors defined in Database to draw Streets
+# - Add a frame to the Streets to make them look nicer
+# - Added Highlight Option for Tracks/Streets to see which streets are
+#   displayed for a Query output
+# - displaymap_top und displaymap_map removed and replaced by a
+#   Mapserver centric approach.
+# - Treaked a little bit with Font Sizes
+# - Added a very simple clipping to the lat of the draw_grid
+#   Either the draw_drid or the projection routines still have a slight
+#   problem if acting on negative values
+# - draw_grid with XOR: This way you can see it much better.
+# - move the default map dir to ~/.gpsdrive/maps
+# - new enum map_projections to be able to easily add more projections
+#   later
+# - remove history from gpsmisc.c
+# - try to reduce compiler warnings
+# - search maps also in ./data/maps/ for debugging purpose
+# - cleanup and expand unit_test.c a little bit
+# - add some more rules to the Makefiles so more files get into the
+#   tar.gz
+# - DB_Examples.pm test also for ../data and data directory to
+#   read files from
+# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
+# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
+# - gpsfetchmap.pl:
+#   - adapt zoom levels for landsat maps
+#   - correct eniro File Download. Not working yet, but gets closer
+#   - add/correct some of the Help Text
+# - Update makefiles with a more recent automake Version
+# - update po files
+#
 # Revision 1.8  2006/01/29 21:58:43  tweety
 # small fixes
 #
@@ -1001,7 +1040,7 @@ sub fill_default_sources() {   # Just some Default Sources
 }
 
 # -----------------------------------------------------------------------------
-sub fill_example_street_types() {   # Fill streets_type database
+sub fill_default_street_types() {   # Fill streets_type database
     my $i=1;
 
     my $lang;
@@ -1013,10 +1052,10 @@ sub fill_example_street_types() {   # Fill streets_type database
     # Entries for WDB
     for my $kind ( qw(bdy cil riv) ) {
 	for my $rank ( 1.. 20 ) {
-	    $color = "000000";
-	    $color = "0000FF" if $kind eq"riv"; # Water
-	    $color = "001010" if $kind eq"bdy"; # 
-	    $color = "004400" if $kind eq"cil"; # 
+	    $color = "#000000";
+	    $color = "#0000FF" if $kind eq"riv"; # Water
+	    $color = "#001010" if $kind eq"bdy"; # 
+	    $color = "#004400" if $kind eq"cil"; # 
 	    $lang = "de";
 	    $name = "WDB $kind rank ${rank}";
 	    my $linetype='';
@@ -1033,23 +1072,23 @@ sub fill_example_street_types() {   # Fill streets_type database
     # Just some Default types
     # TODO: make english primary language
     my @streets_types = qw( de.unbekannt_xFFFFFF
-			    de.Strassen.Allgemein_x111111
-			    de.Strassen.Wanderweg_x111111
-			    de.Strassen.Fussweg_x111111
+			    de.Strassen.Allgemein_x222222
+			    de.Strassen.Wanderweg_x222222
+			    de.Strassen.Fussweg_x222222
 			    de.Strassen.30_Zohne_x00FFFF
-			    de.Strassen.Autobahn_xFF0000
+			    de.Strassen.Autobahn_xFFFF00
 			    de.Strassen.Bundesstrasse_xFFFF00
 			    de.Strassen.Innerorts_x00FFFF
 			    de.Strassen.Landstrasse_xFFFF00
 			    de.Strassen.Highway_x00FFFF
-			    de.Schiene.ICE_Trasse_x000000
-			    de.Schiene.Zug_Trasse_x000000
-			    de.Schiene.S_Bahn_Trasse_x000000
-			    de.Schiene.U_Bahn_Trasse_x000000
+			    de.Schiene.ICE_Trasse_x444444
+			    de.Schiene.Zug_Trasse_x444444
+			    de.Schiene.S_Bahn_Trasse_x002222
+			    de.Schiene.U_Bahn_Trasse_x000022
 			    de.Schiene.Bus_Trasse_x000000
-			    de.Grenzen.Landesgrenze_x000000
-			    de.Grenzen.Bundesland_Grenze_x000000
-			    de.Grenzen.Stand_Grenze_x000000
+			    de.Grenzen.Landesgrenze_x444444
+			    de.Grenzen.Bundesland_Grenze_x444444
+			    de.Grenzen.Stand_Grenze_x444444
 			    de.Wasser.Fluss_x0000FF
 			    de.Wasser.Kueste_x000FFF
 			    );
@@ -1058,7 +1097,7 @@ sub fill_example_street_types() {   # Fill streets_type database
 	$entry =~ m/^(..)\.(.*)_x(......)$/;
 	$lang  = $1;
 	$name  = $2;
-	$color = $3;
+	$color = "#$3";
 	if ( ! $lang ) {
 	    die "Error in street type entry '$entry'\n";
 	}
@@ -1080,9 +1119,9 @@ sub fill_example_street_types() {   # Fill streets_type database
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
     Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `streets_type` ".
 				    "        (streets_type_id,  name, description , color , linetype )".
-				    " VALUES ($streets_type_id,'Reserved','Reserved','0x000000','');");
+				    " VALUES ($streets_type_id,'Reserved','Reserved','#000000','');");
     
-} # of fill_example_street_types()
+} # of fill_default_street_types()
 
 # -----------------------------------------------------------------------------
 
@@ -1090,7 +1129,7 @@ sub fill_defaults(){
     print "Create Defaults ...\n";
     fill_default_poi_types();
     fill_default_sources();
-    fill_example_street_types();
+    fill_default_street_types();
     print "Create Defaults completed\n";
 }
 

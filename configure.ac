@@ -2,20 +2,23 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
-AC_INIT(gpsdrive, 2.10pre3-lib-map-version, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
 
 AC_CONFIG_HEADER(config.h)
 
-ALL_LINGUAS="de es fr it da nl tr de_AT hu sk sv no pt_BR gr ja"
+ALL_LINGUAS="de es fr it da nl tr de_AT et_EE hu sk sv no pt_BR gr ja"
 
 
 
+AC_CONFIG_FILES([DSL/Makefile])
+AC_CONFIG_FILES([Documentation/Makefile])
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([data/Makefile])
 AC_CONFIG_FILES([debian/Makefile])
+AC_CONFIG_FILES([gentoo/Makefile])
 AC_CONFIG_FILES([intl/Makefile])
 AC_CONFIG_FILES([man/Makefile])
 AC_CONFIG_FILES([man/de/Makefile])
@@ -25,7 +28,6 @@ AC_CONFIG_FILES([scripts/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/lib_map/Makefile])
 AC_CONFIG_FILES([src/util/Makefile])
-AC_CONFIG_FILES([Documentation/Makefile])
 
 
 

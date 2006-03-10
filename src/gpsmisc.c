@@ -22,119 +22,6 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 
-$Log$
-Revision 1.21  2006/02/16 09:52:44  tweety
-rearrange acpi handling and displaying of battery and temperature display
-
-Revision 1.20  2006/02/05 16:38:05  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.19  2006/02/05 13:54:39  tweety
-split map downloading to its own file download_map.c
-
-Revision 1.18  2006/01/04 19:19:31  tweety
-more unit tests
-search for icons in the local directory data/icons and data/pixmaps first
-
-Revision 1.17  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.16  2006/01/02 13:21:14  tweety
-Start sorting out the menu
-Move some of the Buttons to the Pulldown Menu
-make display size 50 smaller than screen max for Desktop Menu
-remove unused code parts
-add more error/warnings to lat2radius calcxytopos and calcxy
-read draw_streets draw_poi draw_grid draw_tracks from config file
-add error check for not recognized config file options
-
-Revision 1.15  1994/06/10 02:11:00  tweety
-move nmea handling to it's own file Part 1
-
-Revision 1.14  1994/06/09 01:20:23  tweety
-ndent, change error messages for lat2radius
-
-Revision 1.13  1994/06/08 13:02:31  tweety
-adjust debug levels
-
-Revision 1.12  2005/11/05 18:43:45  tweety
-coordinate_string2gdouble:
- - fixed missing format
-  - changed interface to return gdouble
-
-Revision 1.11  2005/10/25 20:37:58  tweety
-moved a few of the functions
-Autor: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-Revision 1.10  2005/10/19 07:22:21  tweety
-Its now possible to choose units for displaying coordinates also in
-Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
-Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-Revision 1.9  2005/05/15 07:00:51  tweety
-new Keystroke p adds an instant waypoint at cursor position
-new Keystroke q querys information for thenearest waypoints and street endpoints
-
-Revision 1.8  2005/04/20 23:33:49  tweety
-reformatted source code with anjuta
-So now we have new indentations
-
-Revision 1.7  2005/04/15 07:18:54  tweety
-extracted lat2raidus into it's own function and added plausibility checks
-sorted addwaypoint function and added comments
-while downloading new maps the already existing maps are always displayed
-
-Revision 1.6  2005/04/13 19:58:31  tweety
-renew indentation to 4 spaces + tabstop=8
-
-Revision 1.5  2005/04/10 21:50:50  tweety
-reformatting c-sources
-
-Revision 1.4  2005/04/10 00:10:32  tweety
-added gpsd: to gpsd related debug output
-changed plus to a small + in streets.c
-
-Revision 1.3  2005/04/02 12:10:12  tweety
-2005.03.30 by Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-Canges made to import a map with one point and enter the scale
-
-Revision 1.2  2005/03/27 00:44:42  tweety
-eperated poi_type_list and streets_type_list
-and therefor renaming the fields
-added drop index before adding one
-poi.*: a little bit more error handling
-disabling poi and streets if sql is disabled
-changed som print statements from \n.... to ...\n
-changed some debug statements from debug to mydebug
-
-Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-Initial import, straight from 2.10pre2 tar.gz archive
-
-Revision 1.5  2004/02/18 13:24:19  ganter
-navigation
-
-Revision 1.4  2004/02/07 15:53:38  ganter
-replacing strcpy with g_strlcpy to avoid bufferoverflows
-
-Revision 1.3  2004/02/02 09:03:42  ganter
-2.08pre10
-
-Revision 1.2  2004/02/02 07:12:57  ganter
-inserted function calcxytopos, key x,y and right mouseclick are now correct in topomaps
-
-Revision 1.1  2004/02/02 03:38:32  ganter
-code cleanup
-
  */
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -166,7 +53,8 @@ code cleanup
 
 
 /* variables */
-extern gint ignorechecksum, mydebug, mapistopo;
+extern gint ignorechecksum, mydebug;
+// , mapistopo;
 extern gdouble lat2RadiusArray[201];
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
@@ -178,6 +66,7 @@ extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed,
   milesconv;
 static gchar gradsym[] = "\xc2\xb0";
+extern gchar mapdir[500];
 
 /* **********************************************************************
  * Estimate the earth radius for given latitude
@@ -233,7 +122,8 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
 
 
 
-  if (mapistopo == FALSE)
+  //if (mapistopo == FALSE)
+  if ( proj_map == map_proj )
     {
       lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
       lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
@@ -336,7 +226,8 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
 	  lon=-180;
       };
 
-  if (mapistopo == FALSE)
+  //if (mapistopo == FALSE)
+  if ( proj_map == map_proj )
     *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
 						     180.0) *
       (lon - zero_lon);
@@ -347,7 +238,8 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
   *posx = *posx - xoff;
 
 
-  if (mapistopo == FALSE)
+  //  if (mapistopo == FALSE)
+  if ( proj_map == map_proj )
     {
       *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
       dif = lat2radius (lat) * (1 -
@@ -376,7 +268,8 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
 {
   gdouble dif;
 
-  if (mapistopo == FALSE)
+  //  if (mapistopo == FALSE)
+  if ( proj_map == map_proj )
     *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
 						     180.0) *
       (lon - zero_lon);
@@ -387,7 +280,8 @@ calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
   *posx = *posx;
 
   *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-  if (mapistopo == FALSE)
+  // if (mapistopo == FALSE)
+  if ( proj_map == map_proj )
     {
       dif = lat2radius (lat) * (1 -
 				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
@@ -731,4 +625,26 @@ checkinput (gchar * text)
   g_snprintf (text, 20, "%.6f", dec);
   if (mydebug > 50)
     fprintf (stderr, "checkinput -->'%s'\n", text);
+}
+
+
+/* ******************************************************************
+ * Find File in the local directories, User Directories or System Directories
+ */
+gint
+file_location(gchar * filename, gchar *file_location){
+    struct stat buf;
+    gchar mappath[2048];
+
+    g_snprintf (mappath, sizeof (mappath), "%s%s",  mapdir, filename);
+    g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
+    g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR, filename);
+    g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s", filename);
+
+    g_strlcpy (mappath, homedir, sizeof (mappath));
+    if ( stat (mappath, &buf) ) {
+	printf("Success\n");
+	//if (buf.st_mtime != waytxtstamp)
+    }
+    return TRUE;
 }

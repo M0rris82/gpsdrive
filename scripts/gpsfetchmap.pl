@@ -9,6 +9,45 @@
 #
 #
 # $Log$
+# Revision 1.38  2006/03/10 08:37:09  tweety
+# - Replace Street/Track find algorithmus in Query Funktion
+#   against real Distance Algorithm (distance_line_point).
+# - Query only reports Track/poi/Streets if currently displaying
+#   on map is selected for these
+# - replace old top/map Selection by a MapServer based selection
+# - Draw White map if no Mapserver is selected
+# - Remove some useless Street Data from Examples
+# - Take the real colors defined in Database to draw Streets
+# - Add a frame to the Streets to make them look nicer
+# - Added Highlight Option for Tracks/Streets to see which streets are
+#   displayed for a Query output
+# - displaymap_top und displaymap_map removed and replaced by a
+#   Mapserver centric approach.
+# - Treaked a little bit with Font Sizes
+# - Added a very simple clipping to the lat of the draw_grid
+#   Either the draw_drid or the projection routines still have a slight
+#   problem if acting on negative values
+# - draw_grid with XOR: This way you can see it much better.
+# - move the default map dir to ~/.gpsdrive/maps
+# - new enum map_projections to be able to easily add more projections
+#   later
+# - remove history from gpsmisc.c
+# - try to reduce compiler warnings
+# - search maps also in ./data/maps/ for debugging purpose
+# - cleanup and expand unit_test.c a little bit
+# - add some more rules to the Makefiles so more files get into the
+#   tar.gz
+# - DB_Examples.pm test also for ../data and data directory to
+#   read files from
+# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
+# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
+# - gpsfetchmap.pl:
+#   - adapt zoom levels for landsat maps
+#   - correct eniro File Download. Not working yet, but gets closer
+#   - add/correct some of the Help Text
+# - Update makefiles with a more recent automake Version
+# - update po files
+#
 # Revision 1.37  2006/02/21 07:40:59  tweety
 # correct map projection of landsat maps to streetmapstyle.
 # adjust scla settings for landsat maps to fit for better than 10% accuracy
@@ -152,7 +191,11 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-cvs-20060220)
+<<<<<<< gpsfetchmap.pl
+Version 1.19 (gpsdrive-2.10pre3-work)
+=======
+Version 1.19 (gpsdrive-2.10pre3-work)
+>>>>>>> 1.37
 ";
 
 sub redirect_ok { return 1; }
@@ -591,7 +634,7 @@ sub get_gpsd_position(){
     my $gpsd = IO::Socket::INET->new($GPSD);
     my ($lat,$lon) =(0,0);
     if ( !$gpsd ) {
-	warn "No local gpsd foundat $GPSD: $!\n";
+	warn "No local gpsd found at $GPSD: $!\n";
     } else {
 	# Tell gpsd we want position, altitude, date, and status.
 	$gpsd->print("pads\n");
@@ -709,7 +752,7 @@ sub mirror_map($$){
 }
 
 ######################################################################
-# get a single map
+# get a single map (Old Version with wget)
 # Args:
 #     $url
 #     $local_filename
@@ -770,7 +813,7 @@ sub wget_map($$$){
     {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
     } 
-    elsif ( $mapserver eq 'eniro') 
+    elsif ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/) 
     {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
     } 
@@ -1016,21 +1059,23 @@ sub eniro_url($$$){
 	print "using zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
     }
     
-    if (  # Add real restriction for Denmark
+    my ( $eniro_country ) = ($mapserver =~ m/^eniro_(se|dk|no|fi)$/);
+
+
+    if ( $eniro_country eq "dk"
+	 || # Add real restriction for Denmark
 	  ( $lati > 54.67694 ) && ( $lati < 56.71874 ) &&
 	  ( $long >  7.77864 ) && ( $long < 13.40111 )
 	  ) {
 	print "Daenmark ($lati,$long)\n" if $debug;
-	$url  = "http://maps.eniro.com/servlets/dk_MapImageLocator?profile=Main";
-#	$url .= "&center=-73539.0000;139543.0000";
+	$url  = "http://maps.eniro.$eniro_country/servlets/${eniro_country}_MapImageLocator?profile=Main";
 	$url .= sprintf("&center=%10.4f;%10.4f",($lati*10000),($long*10000));
 	$url .= "&zoomlevel=$zoom";
 	$url .= "&size=1280x1024";
 	$url .= "&symbols=";
     } else { # Add here restriction for Norway
 	print "Norway ($lati,$long)\n" if $debug;
-	$url  = "http://maps.eniro.com/servlets/no_MapImageLocator?profile=Main";
-	#                &center=8.5632;60.5998
+	$url  = "http://maps.eniro.$eniro_country/servlets/${eniro_country}_MapImageLocator?profile=Main";
 	$url .= sprintf("&center=%.4f;%.4f",$long,$lati);
 	$url .= "&zoomlevel=$zoom";
 	$url .= "&size=1280x1024";
@@ -1744,8 +1789,8 @@ sub check_koord_file($) {
     if ( $missing_files ) {
 	print "Missing Files: $missing_files\n";
 	open(KOORD,">$koord_file.new") || die "Can't open: $koord_file.new: $!\n"; 
-	foreach my $filename ( keys  %$MAP_FILES )  {
-	    printf KOORD "$filename	%s\n", $MAP_FILES->{$filename};
+	foreach my $map_filename ( keys  %$MAP_FILES )  {
+	    printf KOORD "$map_filename	%s\n", $MAP_FILES->{$map_filename};
 	}
 	close KOORD;
 	print "wrote $koord_file.new\n";
@@ -2295,10 +2340,33 @@ Takes an optional value of number of seconds to sleep.
 
 =item B<--mapserver <MAPSERVER>>
 
-Mapserver to download from. Currently can use: 'googlesat' or 'expedia'. Default: 'expedia'.
+Mapserver to download from. Default: 'expedia'.
+Currently can use: landsat or expedia.
 
-geoscience, landsat, gov_au, incrementp and eniro have download stubs, 
+geoscience, gov_au, incrementp, googlesat and eniro have download stubs, 
 but they are !!!NOT!!!! in the right scale.
+
+
+geoscience
+
+landsat covers the whole world with satelite Photos
+
+gov_au is for Australia
+
+incrementp for japanese Maps
+
+googlesat: Google Satelite Maps
+
+expedia
+
+eniro covers:
+ eniro_se Sweden
+ eniro_dk Denmark
+ eniro_no Norway 
+ eniro_fi Finnland
+
+Overview of Area covered by eniro_fi:
+ http://maps.eniro.com/servlets/fi_MapImageLocator?profile=Main&center=26.;62.&zoomlevel=1&size=800x600
 
 
 =item B<-u, --unit <UNIT>>

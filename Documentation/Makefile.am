@@ -5,6 +5,7 @@ documentation_DATA = TODO GPS-receivers LEEME CREDITS \
 	LISEZMOI LISEZMOI.FreeBSD LISEZMOI.kismet LISEZMOI.SQL \
 	README.FreeBSD   README.gpspoint2gspdrive \
 	FAQ.gpsdrive FAQ.gpsdrive.fr README.SQL \
-	NMEA.txt README.kismet README.nasamaps
+	NMEA.txt README.kismet README.nasamaps \
+	README.lib_map
 
 EXTRA_DIST= $(documentation_DATA)

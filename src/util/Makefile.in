@@ -38,7 +38,7 @@ host_triplet = @host@
 @HAVE_GDAL_TRUE@worldgen_PROGRAMS = worldgen$(EXEEXT)
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@gmapview_PROGRAMS = gmapview$(EXEEXT)
 subdir = src/util
-DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
@@ -272,7 +272,9 @@ LIB_MAP_L = map_gpsdrive.c  map_load.c \
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	$(PKGDATAPATH) $(GDAL_CFLAGS) $(CXXFLAGS) $(EXTRA_CXXFLAGS) \
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	-DHAVE_CAIRO -DHAVE_GTK
 
-EXTRA_DIST = $(gmapview_SOURCES) $(worldgen_SOURCES)
+EXTRA_DIST = $(gmapview_SOURCES) $(worldgen_SOURCES) \
+	gps.c mmapview.c qmapview.cpp wmapview.c
+
 all: all-am
 
 .SUFFIXES:

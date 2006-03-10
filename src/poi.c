@@ -23,6 +23,45 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.33  2006/03/10 08:37:09  tweety
+  - Replace Street/Track find algorithmus in Query Funktion
+    against real Distance Algorithm (distance_line_point).
+  - Query only reports Track/poi/Streets if currently displaying
+    on map is selected for these
+  - replace old top/map Selection by a MapServer based selection
+  - Draw White map if no Mapserver is selected
+  - Remove some useless Street Data from Examples
+  - Take the real colors defined in Database to draw Streets
+  - Add a frame to the Streets to make them look nicer
+  - Added Highlight Option for Tracks/Streets to see which streets are
+    displayed for a Query output
+  - displaymap_top und displaymap_map removed and replaced by a
+    Mapserver centric approach.
+  - Treaked a little bit with Font Sizes
+  - Added a very simple clipping to the lat of the draw_grid
+    Either the draw_drid or the projection routines still have a slight
+    problem if acting on negative values
+  - draw_grid with XOR: This way you can see it much better.
+  - move the default map dir to ~/.gpsdrive/maps
+  - new enum map_projections to be able to easily add more projections
+    later
+  - remove history from gpsmisc.c
+  - try to reduce compiler warnings
+  - search maps also in ./data/maps/ for debugging purpose
+  - cleanup and expand unit_test.c a little bit
+  - add some more rules to the Makefiles so more files get into the
+    tar.gz
+  - DB_Examples.pm test also for ../data and data directory to
+    read files from
+  - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
+  - geoinfo.pl NGA.pm: Output Bounding Box for read Data
+  - gpsfetchmap.pl:
+    - adapt zoom levels for landsat maps
+    - correct eniro File Download. Not working yet, but gets closer
+    - add/correct some of the Help Text
+  - Update makefiles with a more recent automake Version
+  - update po files
+
   Revision 1.32  2006/02/14 09:37:01  tweety
   eliminate unused Variable
 
@@ -203,6 +242,7 @@ Disclaimer: Please do not use for navigation.
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
@@ -302,12 +342,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   gdk_gc_set_foreground (kontext, &textback);
 
   poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
-  if (poi_max > 30)
-    pfd = pango_font_description_from_string ("Sans 8");
-  else if (pdamode)
-    pfd = pango_font_description_from_string ("Sans 8");
-  else
-    pfd = pango_font_description_from_string ("Sans 11");
+  pfd = pango_font_description_from_string ("Sans 8");
   if (poi_max > 200)
     pfd = pango_font_description_from_string ("Sans 6");
 
@@ -614,7 +649,7 @@ poi_rebuild_list (void)
 
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,name,poi_type_id " "FROM poi "
+	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM poi "
 	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
 	      "%s LIMIT 40000", sql_where);
 
@@ -686,10 +721,14 @@ poi_rebuild_list (void)
 	  if ( mydebug > 20 )
 	    {
 	      g_snprintf ((poi_list + poi_nr)->name,
-			  sizeof ((poi_list +
-				   poi_nr)->name), "%s\n(%.4f ,%.4f)",
+			  sizeof ((poi_list + poi_nr)->name), 
+			  "%s %s"
+			  //"\n(%.4f ,%.4f)",
 			  //                  (poi_list + poi_nr)->poi_type_id,
-			  row[2], lat, lon);
+			  ,row[2]
+			  ,row[4]
+			  // , lat, lon
+			  );
 	      /*
 	       * `type_id` int(11) NOT NULL default \'0\',
 	       * `alt` double default \'0\',

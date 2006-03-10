@@ -98,8 +98,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	streets.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
 	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
-	map_handler.c gpsproto.h talogo.h import_map.c import_map.h \
-	routes.c routes.h download_map.c download_map.h \
+	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
+	import_map.h routes.c routes.h download_map.c download_map.h \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
 	nmea_handler.c nmea_handler.h unit_test.c lib_map/lib_map.a \
 	garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp \
@@ -121,10 +121,11 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	streets.$(OBJEXT) draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
 	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
-	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) map_handler.$(OBJEXT) \
-	import_map.$(OBJEXT) routes.$(OBJEXT) download_map.$(OBJEXT) \
-	speech_strings.$(OBJEXT) gps_handler.$(OBJEXT) \
-	nmea_handler.$(OBJEXT) unit_test.$(OBJEXT) $(am__objects_1)
+	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) geometry.$(OBJEXT) \
+	map_handler.$(OBJEXT) import_map.$(OBJEXT) routes.$(OBJEXT) \
+	download_map.$(OBJEXT) speech_strings.$(OBJEXT) \
+	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
+	unit_test.$(OBJEXT) $(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -348,9 +349,9 @@ PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
 	settings.c battery.h track.h poi.h streets.h draw_tracks.h \
 	gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h \
 	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h \
-	talogo.h import_map.c import_map.h routes.c routes.h \
-	download_map.c download_map.h speech_strings.c \
+	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c map_handler.c \
+	gpsproto.h talogo.h import_map.c import_map.h routes.c \
+	routes.h download_map.c download_map.h speech_strings.c \
 	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
 	nmea_handler.h unit_test.c lib_map/lib_map.a $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
@@ -482,6 +483,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_link.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_serial_unix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_util.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geometry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gps_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrivegarble.Po@am__quote@

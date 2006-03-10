@@ -1,6 +1,45 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.3  2006/03/10 08:37:09  tweety
+# - Replace Street/Track find algorithmus in Query Funktion
+#   against real Distance Algorithm (distance_line_point).
+# - Query only reports Track/poi/Streets if currently displaying
+#   on map is selected for these
+# - replace old top/map Selection by a MapServer based selection
+# - Draw White map if no Mapserver is selected
+# - Remove some useless Street Data from Examples
+# - Take the real colors defined in Database to draw Streets
+# - Add a frame to the Streets to make them look nicer
+# - Added Highlight Option for Tracks/Streets to see which streets are
+#   displayed for a Query output
+# - displaymap_top und displaymap_map removed and replaced by a
+#   Mapserver centric approach.
+# - Treaked a little bit with Font Sizes
+# - Added a very simple clipping to the lat of the draw_grid
+#   Either the draw_drid or the projection routines still have a slight
+#   problem if acting on negative values
+# - draw_grid with XOR: This way you can see it much better.
+# - move the default map dir to ~/.gpsdrive/maps
+# - new enum map_projections to be able to easily add more projections
+#   later
+# - remove history from gpsmisc.c
+# - try to reduce compiler warnings
+# - search maps also in ./data/maps/ for debugging purpose
+# - cleanup and expand unit_test.c a little bit
+# - add some more rules to the Makefiles so more files get into the
+#   tar.gz
+# - DB_Examples.pm test also for ../data and data directory to
+#   read files from
+# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
+# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
+# - gpsfetchmap.pl:
+#   - adapt zoom levels for landsat maps
+#   - correct eniro File Download. Not working yet, but gets closer
+#   - add/correct some of the Help Text
+# - Update makefiles with a more recent automake Version
+# - update po files
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -58,6 +97,17 @@
 #
 
 package Geo::Gpsdrive::NGA;
+
+sub min($$){
+    my $a=shift;
+    my $b=shift;
+    return $a<$b?$a:$b;
+}
+sub max($$){
+    my $a=shift;
+    my $b=shift;
+    return $a>$b?$a:$b;
+}
 
 use strict;
 use warnings;
@@ -369,6 +419,11 @@ sub add_earthinfo_nga_mil_to_db($$){
     
     print "Reading earthinfo_nga_mil ($full_filename) [$country2name->{$country}] and writing to db\n";
 
+    my $lat_min= 1000;
+    my $lat_max=-1000;
+    my $lon_min= 1000;
+    my $lon_max=-1000;
+
     my $fh = IO::File->new("<$full_filename");
     $fh or die ("add_earthinfo_nga_mil_to_db: Cannot open $full_filename:$!\n");
     
@@ -418,7 +473,7 @@ sub add_earthinfo_nga_mil_to_db($$){
     my $count_entries = {}; # Count the entries for special types
     while ( $line = $fh->getline() ) {
 	$lines_count_file ++;
-	print "$lines_count_file\r" if $verbose && ! ($lines_count_file % 100);
+	print "$lines_count_file\r" if $verbose &&  ! ($lines_count_file % 100);
 	$line =~ s/[\t\r\n\s]*$//g;
 #	 print "line: '$line'\n";
 	if ( $line =~ m/^$/ ) {
@@ -433,7 +488,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    for my $i ( 0 .. scalar @columns -1 ) {
 #		next unless $columns[$i] =~ m/\./;
 		$values->{$columns[$i]} = ($values[$i]||'');
-##		print $columns[$i].": \t".($values[$i]||'-')."\n";
+#		print $columns[$i].": \t".($values[$i]||'-')."\n" if $debug;
 	    }
 
 
@@ -532,7 +587,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    
 	{   # DIM Dimension.  
 	    #     Usually used to display elevation or population data.
-	    #     ± 10 Digits
+	    #     +-10 Digits
 	    my $proximity = $values->{'dim'} ;
 	    $proximity ||= 1   if  $values->{'fc'} eq 'R'; # Roads
 	    $proximity ||= 800 if  $values->{'fc'} eq 'P'; # Populated Place
@@ -552,17 +607,17 @@ sub add_earthinfo_nga_mil_to_db($$){
 
 	    # UFI
 	    # Unique Feature Identifier.  A number which uniquely identifies the feature. 
-	    # number ¯Â¿Å“Â± 10 Digits
+	    # number +- 10 Digits
 
 	    # UNI
 	    # Unique Name Identifier.  A number which uniquely identifies a name.
-	    # number ± 10 Digits
+	    # number +- 10 Digits
 
 
-	    # LAT      Latitude of the feature in ¯± decimal degrees (WGS84):                ¯± 2.7 Digits
-	    # LONG     Longitude of the feature in ¯± decimal degrees (WGS84):               ¯± 3.7 Digits
-	    # DMS_LAT  Latitude of the feature in ¯± degrees, minutes, and seconds (WGS84):  ¯± 6 Digits
-	    # DMS_LONG Longitude of the feature in ¯± degrees, minutes, and seconds (WGS84): ¯± 7 Digits
+	    # LAT      Latitude of the feature in +- decimal degrees (WGS84):                +- 2.7 Digits
+	    # LONG     Longitude of the feature in +- decimal degrees (WGS84):               +- 3.7 Digits
+	    # DMS_LAT  Latitude of the feature in +- degrees, minutes, and seconds (WGS84):  +- 6 Digits
+	    # DMS_LONG Longitude of the feature in +- degrees, minutes, and seconds (WGS84): +- 7 Digits
 	    # UTM      Universal Transverse Mercator coordinate grid reference.               4 Characters
 	    # JOG      Joint Operations Graphic reference.                                    7 Characters
 
@@ -631,6 +686,17 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    # MOD_DATE
 	    # The date a new feature was added or any part of an existing feature was modified (YYYY-MM-DD).
 
+
+	    my $lat = $values->{'poi.lat'};
+	    my $lon = $values->{'poi.lon'};
+	    #print substr($line,10,30)."\n" 	    if ( $lon < 10 );
+	    $lat_min= min($lat_min,$lat);
+	    $lat_max= max($lat_max,$lat);
+	    $lon_min= min($lon_min,$lon);
+	    $lon_max= max($lon_max,$lon);
+
+#	    printf "lat,lon %.2f,%.2f	(%.2f,%.2f) - (%.2f,%.2f)\n",$lat,$lon,$lat_min,$lon_min,$lat_max,$lon_max if $verbose;
+
 	    if ($main::do_collect_init_data ) { # Collect Major Cities
 		for my $type ( qw(pc) ) {
 		    $count_entries->{$type}->{$values->{$type}}++;
@@ -661,6 +727,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	}
     }
     print "$lines_count_file read\n" if $verbose;
+    print "lat($lat_min , $lat_max)	lon($lon_min , $lon_max)\n" if $verbose;
     if ( $debug && $verbose ) {
 	for my $type ( keys %{$count_entries} ) {
 	    for my $sub_type ( keys %{$count_entries->{$type}} ) {
@@ -697,7 +764,7 @@ sub import_Data($){
     my @do_countries;
     my $country;
     if ($what eq "??" ) {
-	print "Available counties:\n\n";
+	print "Available counties:\n\n	";
 	print join("\n	",map { "$_ ($name2country->{$_})" } sort keys %{$name2country} );
 	print "\n";
 	print "\n";

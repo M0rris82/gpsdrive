@@ -11,6 +11,7 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 
 #	-I/usr/include/dbus-1.0/ 
 
+
 includedir = mysql lib_map
 
 if DISABLEGARMIN
@@ -48,7 +49,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c map_handler.c gpsproto.h talogo.h \
+	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
+	map_handler.c gpsproto.h talogo.h \
 	import_map.c import_map.h\
 	routes.c routes.h \
         download_map.c download_map.h \

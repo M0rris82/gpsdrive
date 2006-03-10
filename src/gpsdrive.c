@@ -493,7 +493,8 @@ gpsdrive started
 
 /*  global variables */
 gint statusid, messagestatusbarid, timeoutcount;
-GtkWidget *mainwindow, *frame_status, *messagestatusbar;
+GtkWidget *mainwindow;
+GtkWidget *messagestatusbar;
 GtkWidget *pixmapwidget, *gotowindow;
 GtkWidget *messagewindow;
 extern GtkWidget *splash_window;
@@ -590,13 +591,15 @@ gdouble gbreit, glang, olddist = 99999.0;
 GTimer *timer, *disttimer;
 gint gcount;
 gchar localedecimal;
-gint scaleprefered = 1, scalewanted = 100000;
+
+glong mapscale = 1000;
+gint scaleprefered = 1;
+gint scalewanted = 100000;
 
 gint importactive;
 extern gint downloadwindowactive;
 extern gint downloadactive;
 
-glong mapscale;
 GtkWidget *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
 GtkWidget *scaler;
@@ -633,16 +636,19 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 #endif
 
 GtkWidget *label_lat, *label_lon;
-GtkWidget *label_map_filename, *label_map_scale, *label_heading, *label_baering, *label_timedest, *label_prefscale, *mutebt, *sqlbt;
+GtkWidget *label_map_filename, *label_map_scale;
+GtkWidget *label_heading, *label_baering, *label_timedest;
+GtkWidget *label_prefscale, *mutebt, *sqlbt;
 GtkWidget *trackbt, *wpbt;
-GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt, *maptogglebt,
-	*topotogglebt, *savetrackbt;
+GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt;
+
+
+GtkWidget *savetrackbt;
 GtkWidget *loadtrackbt;
 GtkWidget *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0, sqlflag = 0, trackflag = 1, wpflag = TRUE;
-gint displaymap_top = TRUE, displaymap_map = TRUE;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
 GtkObject *adj;
@@ -691,7 +697,8 @@ namesstruct *names;
 gchar activewpfile[200], gpsdservername[200], setpositionname[80];
 gint newsatslevel = TRUE, testgarmin = TRUE;
 gint needtosave = FALSE;
-GtkWidget *serialbt, *mapdirbt, *frame_speed, *frame_sats, *slowcpubt;
+GtkWidget *serialbt, *mapdirbt;
+GtkWidget *slowcpubt;
 GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 
 gdouble altitude = 0.0, precision = (-1.0), gsaprecision = (-1.0);
@@ -774,10 +781,15 @@ GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
 GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
 GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
+GtkWidget *frame_maptype;
+GtkWidget *frame_status;
+GtkWidget *frame_speed;
+GtkWidget *frame_sats;
 GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
-GtkWidget *frame_wp, *frame_maptype, *frame_toogles, *lab1;
+GtkWidget *frame_wp;
+GtkWidget *frame_toogles, *lab1;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -790,7 +802,7 @@ GtkTextBuffer *getmessagebuffer;
 GdkColormap *cmap;
 extern int newdata;
 extern pthread_mutex_t mutex;
-int mapistopo = FALSE;
+//int mapistopo = FALSE;
 extern int havenasa;
 int nosplash = FALSE;
 int sortcolumn = 4, sortflag = 0;
@@ -839,6 +851,7 @@ static GtkItemFactoryEntry main_menu[] = {
 void sql_load_lib();
 void unit_test(void);
 void drawdownloadrectangle (gint big);
+GtkWidget * make_display_map_checkboxes();
 
 
 
@@ -1293,7 +1306,8 @@ display_status2 ()
 
 	strncpy (mfmap_filename, g_basename (mapfilename), 59);
 	mfmap_filename[59] = 0;
-	gtk_label_set_text (GTK_LABEL (label_map_filename), mfmap_filename);
+	if ( mydebug >10 )
+	    gtk_label_set_text (GTK_LABEL (label_map_filename), mfmap_filename);
 
 	g_snprintf (s2, sizeof (s2), "1:%ld", mapscale);
 	gtk_label_set_text (GTK_LABEL (label_map_scale), s2);
@@ -1526,10 +1540,6 @@ void check_and_reload_way_txt()
 	{
 	    loadwaypoints ();
 	    iszoomed = FALSE;
-	    if (!sqlflag)
-		g_print ("%s reloaded\n", activewpfile);
-	    else
-		g_print ("%s reloaded\n", "way-SQLRESULT.txt");
 	}
 }
 
@@ -2230,10 +2240,12 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 
 	grid_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
 
-	pfd = pango_font_description_from_string ("Sans 8");
+	pfd = pango_font_description_from_string ("Sans 6");
 
 	pango_layout_set_font_description (grid_label_layout, pfd);
 	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
+	gdk_gc_set_function (kontext, GDK_XOR);
+	gdk_gc_set_background (kontext, &white);
 	gdk_gc_set_foreground (kontext, &mygray);
 	
 	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
@@ -2302,9 +2314,6 @@ draw_grid (GtkWidget * widget)
 		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f)\n", lat_min,
 			lon_min, lat_max, lon_max);
 
-	// Set Drawing Colors
-	gdk_gc_set_function (kontext, GDK_AND);
-
 
 	// Loop over desired lat/lon  
 	count = 0;
@@ -2320,13 +2329,10 @@ draw_grid (GtkWidget * widget)
 			gchar str[200];
 
 			count++;
-			calcxy (&posxdest11, &posydest11, lon, lat, zoom);
-			calcxy (&posxdest12, &posydest12, lon, lat + step,
-				zoom);
-			calcxy (&posxdest21, &posydest21, lon + step, lat,
-				zoom);
-			calcxy (&posxdest22, &posydest22, lon + step,
-				lat + step, zoom);
+			calcxy (&posxdest11, &posydest11, lon,        max(-90,lat)       , zoom);
+			calcxy (&posxdest12, &posydest12, lon,        min( 90,lat + step), zoom);
+			calcxy (&posxdest21, &posydest21, lon + step, max(-90,lat),        zoom);
+			calcxy (&posxdest22, &posydest22, lon + step, min( 90,lat + step), zoom);
 
 			if (((posxdest11 >= 0) && (posxdest11 < SCREEN_X) &&
 			     (posydest11 >= 0) && (posydest11 < SCREEN_Y))
@@ -2341,8 +2347,10 @@ draw_grid (GtkWidget * widget)
 			     (posydest12 >= 0) && (posydest12 < SCREEN_Y)))
 			    {
 				// TODO: add linethikness 2 for Mayor Lines
+				// Set Drawing Mode
+				gdk_gc_set_function (kontext, GDK_XOR);
 				gdk_gc_set_foreground (kontext, &darkgrey);
-				gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+				gdk_gc_set_line_attributes (kontext, 1, GDK_LINE_SOLID, 0, 0);
 
 				gdk_draw_line (drawable, kontext, posxdest11,
 					       posydest11, posxdest21,
@@ -2693,7 +2701,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	/*    g_print("simmode: %d, nmea %d garmin %d\n",simmode,haveNMEA,haveGARMIN); */
 
 	if (importactive)
-		return TRUE;
+	    return TRUE;
 
 	drawtracks ();
 
@@ -3504,7 +3512,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 				ok = FALSE;
 			if (y > (SCREEN_Y - borderlimit))
 				ok = FALSE;
-			if (okcount > 20000)
+			if (okcount > 2000)
 			{
 				g_print ("\nloop detected, please report!\n");
 				ok = TRUE;
@@ -4190,21 +4198,6 @@ mapdir_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-maptoggle_cb (GtkWidget * widget, guint datum)
-{
-	displaymap_map = !displaymap_map;
-	if (displaymap_map)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-					      TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-					      FALSE);
-	needtosave = TRUE;
-	return TRUE;
-}
 
 /* *****************************************************************************
  */
@@ -4279,23 +4272,6 @@ savetrack_cb (GtkWidget * widget, guint datum)
 		savetrackfile (1);
 	return TRUE;
 }
-
-/* *****************************************************************************
- */
-gint
-topotoggle_cb (GtkWidget * widget, guint datum)
-{
-	displaymap_top = !displaymap_top;
-	if (displaymap_top)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (topotogglebt), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (topotogglebt), FALSE);
-	needtosave = TRUE;
-	return TRUE;
-}
-
 
 /* *****************************************************************************
  */
@@ -4855,13 +4831,21 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	{
 	    gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
 	    gdouble lat1,lon1,lat2,lon2;
-	    gint delta = 20;
+	    gint delta = 10;
 	    calcxytopos (x-delta, y-delta, &lat1, &lon1, zoom);
 	    calcxytopos (x+delta, y+delta, &lat2, &lon2, zoom);
 	    printf ("---------------------------------------------\n");
-	    poi_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
-	    streets_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
-	    tracks_query_area ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
+	    if ( poi_draw )
+		poi_query_area     ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
+
+	    gdouble lat,lon;
+	    calcxytopos (x, y, &lat, &lon, zoom);
+	    gdouble dist=lat2-lat1;
+	    dist = dist>0?dist:-dist;
+	    if ( tracks_draw )
+		tracks_query_point  ( lat,lon, dist );
+	    if ( streets_draw )
+		streets_query_point ( lat,lon, dist );
 	}
 
 	// In Route mode Force next Route Point
@@ -4941,7 +4925,8 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 		px / ((lat2radius (lat) * M_PI / 180.0) *
 		      cos (M_PI * lat / 180.0));
 
-	if (mapistopo == FALSE)
+	if ( proj_top == map_proj )
+	    //if (mapistopo == FALSE)
 	{
 		dif = lat * (1 -
 			     (cos ((M_PI * fabs (lon - zero_lon)) / 180.0)));
@@ -5673,106 +5658,105 @@ savewaypoints ()
 }
 
 /* *****************************************************************************
- * load the waypoint from way.txt, if success we display the sel target window 
+ * load the waypoint from way.txt
  */
 void
 loadwaypoints ()
 {
-	gchar mappath[2048];
-	FILE *st;
-	gint i, e, p, wlan, action, sqlnr, proximity;
-	gchar buf[512], slat[80], slong[80], typ[40];
-	struct stat buf2;
-
-	if (waytxtstamp == 0)
-		wayp = g_new (wpstruct, wpsize);
-
-	g_strlcpy (mappath, homedir, sizeof (mappath));
-	if (!sqlflag)
-		g_strlcat (mappath, activewpfile, sizeof (mappath));
-	else
-		g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
-
-	maxwp = 0;
-	sqlnr = -1;
-	st = fopen (mappath, "r");
-	if (st == NULL)
+    gchar mappath[2048];
+    FILE *st;
+    gint i, e, p, wlan, action, sqlnr, proximity;
+    gchar buf[512], slat[80], slong[80], typ[40];
+    struct stat buf2;
+    
+    if (waytxtstamp == 0)
+	wayp = g_new (wpstruct, wpsize);
+    
+    g_strlcpy (mappath, homedir, sizeof (mappath));
+    if (!sqlflag)
+	g_strlcat (mappath, activewpfile, sizeof (mappath));
+    else
+	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
+    
+    maxwp = 0;
+    sqlnr = -1;
+    st = fopen (mappath, "r");
+    if (st == NULL)
 	{
-		perror (mappath);
+	    perror (mappath);
 	}
-	else
+    else
 	{
-		if ( mydebug > 0 )
-			g_print ("\nsqlflag: %d\nload waypoint file %s\n",
-				 sqlflag, mappath);
-
-		i = 0;
-		while ((p = fgets (buf, 512, st) != 0))
+	    if ( mydebug > 0 )
 		{
-			e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
-				    (wayp + i)->name, slat, slong, typ,
-				    &wlan, &action, &sqlnr, &proximity);
-			coordinate_string2gdouble(slat, &((wayp + i)->lat));
-			coordinate_string2gdouble(slong,&((wayp + i)->lon));
-			/*  limit waypoint name to 20 chars */
-			(wayp + i)->name[20] = 0;
-			g_strlcpy ((wayp + i)->typ, "", 40);
-			(wayp + i)->wlan = 0;
-			(wayp + i)->action = 0;
-			(wayp + i)->sqlnr = -1;
-			(wayp + i)->proximity = 0;
+		    g_print ("\nsqlflag: %d\n",sqlflag);
+		    g_print ("load waypoint file %s\n",mappath);
+		}
 
-			if (e >= 3)
-			{
+	    i = 0;
+	    while ((p = fgets (buf, 512, st) != 0))
+		{
+		    e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
+				(wayp + i)->name, slat, slong, typ,
+				&wlan, &action, &sqlnr, &proximity);
+		    coordinate_string2gdouble(slat, &((wayp + i)->lat));
+		    coordinate_string2gdouble(slong,&((wayp + i)->lon));
+		    /*  limit waypoint name to 20 chars */
+		    (wayp + i)->name[20] = 0;
+		    g_strlcpy ((wayp + i)->typ, "", 40);
+		    (wayp + i)->wlan = 0;
+		    (wayp + i)->action = 0;
+		    (wayp + i)->sqlnr = -1;
+		    (wayp + i)->proximity = 0;
+		    
+		    if (e >= 3)
+			    {
 				(wayp + i)->dist = 0;
-
+				
 				if (e >= 4)
-					g_strlcpy ((wayp + i)->typ, typ, 40);
-
+				    g_strlcpy ((wayp + i)->typ, typ, 40);
+				
 				if (e >= 5)
-					(wayp + i)->wlan = wlan;
+				    (wayp + i)->wlan = wlan;
 				if (e >= 6)
-					(wayp + i)->action = action;
+				    (wayp + i)->action = action;
 				if (e >= 7)
-					(wayp + i)->sqlnr = sqlnr;
+				    (wayp + i)->sqlnr = sqlnr;
 				if (e >= 8)
-					(wayp + i)->proximity = proximity;
+				    (wayp + i)->proximity = proximity;
 
 				if (!sqlflag)
-				{
+				    {
 					if ((strncmp
 					     ((wayp + i)->name, "R-",
 					      2)) == 0)
-						(wayp + i)->action = 1;
-				}
+					    (wayp + i)->action = 1;
+				    }
 
 				i++;
 				maxwp = i;
-				/*
-				 * if (!sqlflag)
-				 * {
-				 * g_snprintf (s, sizeof(s), "%s %d", _("Show _WP"), maxwp);
-				 * if (GTK_IS_BUTTON (GTK_BUTTON (wpbt)))
-				 * gtk_button_set_label (GTK_BUTTON (wpbt), s);
-				 * else
-				 * g_print ("kein button!\n");
-				 * }
-				 */
+
 				if (maxwp >= wpsize)
-				{
+				    {
 					wpsize += 1000;
 					wayp = g_renew (wpstruct, wayp,
 							wpsize);
-				}
+				    }
 
-			}
+			    }
 		}
-		fclose (st);
 
-		/* Check for changed way.txt file */
-		stat (mappath, &buf2);
-		waytxtstamp = buf2.st_mtime;
+	    /* Save m_time of way.txt file */
+	    fstat ((int)st, &buf2);
+	    waytxtstamp = buf2.st_mtime;
 
+	    fclose (st);
+
+
+	    if (!sqlflag)
+		g_print ("%s reloaded\n", activewpfile);
+	    else
+		g_print ("%s reloaded\n", "way-SQLRESULT.txt");
 	}
 
 }
@@ -5798,7 +5782,7 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox3, *vbox4;
+    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox4;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
     GtkWidget *zoomin, *hbox3, *vboxlow, *hboxlow;
@@ -5933,7 +5917,7 @@ main (int argc, char *argv[])
     hd = g_get_home_dir ();
     g_strlcpy (homedir, hd, sizeof (homedir));
     g_strlcat (homedir, "/.gpsdrive/", sizeof (homedir));
-    g_strlcpy (mapdir, homedir, sizeof (mapdir));
+    g_snprintf (mapdir, sizeof (mapdir),"%s%s",homedir,"maps");
 
     /*  all default values must be set BEFORE readconfig! */
     g_strlcpy (setpositionname, "", sizeof (setpositionname));
@@ -6381,7 +6365,6 @@ main (int argc, char *argv[])
     // Unit Tests
     if ( do_unit_test ) {
 	unit_test();
-	exit -1;
     }
 
 
@@ -6647,40 +6630,12 @@ main (int argc, char *argv[])
     g_snprintf (s1, sizeof (s1), "%s", savetrackfn);
     lab1 = gtk_label_new (s1);
 
-    // Checkbox ---- Show Map
-    frame_maptype = gtk_frame_new (_("Shown map type"));
-    vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
-    gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
     frame_toogles = gtk_frame_new (NULL);
     vbox4 = gtk_vbox_new (TRUE, 1 * PADDING);
     gtk_container_add (GTK_CONTAINER (frame_toogles), vbox4);
 
-
-    // Checkbox ---- Show Map: map_
-    maptogglebt = gtk_check_button_new_with_label (_("Street map"));
-    if (displaymap_map)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-				      TRUE);
-
-    gtk_signal_connect (GTK_OBJECT (maptogglebt),
-			"clicked", GTK_SIGNAL_FUNC (maptoggle_cb),
-			(gpointer) 1);
-    // Checkbox ---- Show Map: top_
-    topotogglebt = gtk_check_button_new_with_label (_("Topo map"));
-    if (displaymap_top)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				      (topotogglebt), TRUE);
-
-    gtk_signal_connect (GTK_OBJECT (topotogglebt),
-			"clicked", GTK_SIGNAL_FUNC (topotoggle_cb),
-			(gpointer) 1);
-    gtk_box_pack_start (GTK_BOX (vbox3), maptogglebt, FALSE, FALSE,
-			0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox3), topotogglebt, FALSE, FALSE,
-			0 * PADDING);
-
-
+    frame_maptype = make_display_map_checkboxes();
 
     /*  Zoom in button */
     zoomin = gtk_button_new_from_stock (GTK_STOCK_ZOOM_IN);
@@ -7466,9 +7421,9 @@ main (int argc, char *argv[])
     if (SMALLMENU == 0)
 	gdk_window_set_cursor (drawing_miniimage->window, cursor);
 
-    cursor = gdk_cursor_new (GDK_CROSS);
     if (pdamode)
 	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
+    cursor = gdk_cursor_new (GDK_CROSS);
     gdk_window_set_cursor (drawing_area->window, cursor);
 
     /*  Tooltips */

@@ -40,4 +40,6 @@ endif
 
 endif
 
-EXTRA_DIST = $(gmapview_SOURCES) $(worldgen_SOURCES)
+EXTRA_DIST = $(gmapview_SOURCES) $(worldgen_SOURCES) \
+	gps.c mmapview.c qmapview.cpp wmapview.c
+

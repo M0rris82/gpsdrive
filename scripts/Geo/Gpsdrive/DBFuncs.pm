@@ -1,6 +1,45 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.6  2006/03/10 08:37:09  tweety
+# - Replace Street/Track find algorithmus in Query Funktion
+#   against real Distance Algorithm (distance_line_point).
+# - Query only reports Track/poi/Streets if currently displaying
+#   on map is selected for these
+# - replace old top/map Selection by a MapServer based selection
+# - Draw White map if no Mapserver is selected
+# - Remove some useless Street Data from Examples
+# - Take the real colors defined in Database to draw Streets
+# - Add a frame to the Streets to make them look nicer
+# - Added Highlight Option for Tracks/Streets to see which streets are
+#   displayed for a Query output
+# - displaymap_top und displaymap_map removed and replaced by a
+#   Mapserver centric approach.
+# - Treaked a little bit with Font Sizes
+# - Added a very simple clipping to the lat of the draw_grid
+#   Either the draw_drid or the projection routines still have a slight
+#   problem if acting on negative values
+# - draw_grid with XOR: This way you can see it much better.
+# - move the default map dir to ~/.gpsdrive/maps
+# - new enum map_projections to be able to easily add more projections
+#   later
+# - remove history from gpsmisc.c
+# - try to reduce compiler warnings
+# - search maps also in ./data/maps/ for debugging purpose
+# - cleanup and expand unit_test.c a little bit
+# - add some more rules to the Makefiles so more files get into the
+#   tar.gz
+# - DB_Examples.pm test also for ../data and data directory to
+#   read files from
+# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
+# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
+# - gpsfetchmap.pl:
+#   - adapt zoom levels for landsat maps
+#   - correct eniro File Download. Not working yet, but gets closer
+#   - add/correct some of the Help Text
+# - Update makefiles with a more recent automake Version
+# - update po files
+#
 # Revision 1.5  2006/02/17 08:11:06  tweety
 # generate traffic table too
 #
@@ -712,6 +751,7 @@ sub street_segments_add($){
     my ($lat2,$lon2,$alt2) = (0,0,0);
     #my $sql ="insert into streets (streets.streets_id,streets.name,streets.streets_type_id,streets.lat1,streets.lon1,streets.alt1,streets.lat2,streets.lon2,streets.alt2,streets.proximity,streets.comment,streets.scale_min,streets.scale_max,streets.last_modified,streets.source_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     #my $sth = $dbh->prepare_cached($sql);
+    my $segment_nr=0;
     for my $segment ( @{$data->{segments}} ){
 	my $lat1 = $segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
 	my $lon1 = 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
@@ -730,6 +770,7 @@ sub street_segments_add($){
 	$segment4db->{'streets.lat2'} = $lat2;
 	$segment4db->{'streets.lon2'} = $lon2;
 	$segment4db->{'streets.alt2'} = $alt2;
+	$segment4db->{'streets.comment'} = "Segment: $segment_nr";
 
 	next unless $segment4db->{'streets.lat1'}; # skip first entry
 
@@ -746,6 +787,7 @@ sub street_segments_add($){
 
 	#print "segment4db:".Dumper(\$segment4db);
 	insert_hash("streets",$segment4db);
+	$segment_nr++;
     }
 }
 

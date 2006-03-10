@@ -1,3 +1,5 @@
+lib_map_dir = $(datadir)/gpsdrive
+lib_mapdir = $(datadir)/gpsdrive
 lib_map_a_SOURCES= \
 	map_draw.c  map_gpsmisc.c  map_load.c  map_port.c  map_render.c  \
 	map_transform.c \
