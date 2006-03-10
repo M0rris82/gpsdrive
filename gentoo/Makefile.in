@@ -222,9 +222,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 gentoodir = $(datadir)/gpsdrive/gentoo
 gentoo_DATA = gpsdrive-version.ebuild
-EXTRA_DIST = $(gentoo_DATA) gpsdrive-version.ebuild \
-	Makefile.am Makefile.in
-
+EXTRA_DIST = $(gentoo_DATA) gpsdrive-version.ebuild
 all: all-am
 
 .SUFFIXES:

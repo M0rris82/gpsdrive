@@ -1,7 +1,7 @@
 # Makefile.am in main dir
 #AUTOMAKE_OPTIONS=dist-bzip2
 
-SUBDIRS =      src po man intl scripts data Documentation debian DSL
+SUBDIRS =      src po man intl scripts data Documentation debian DSL gentoo
 DIST_SUBDIRS = $(SUBDIRS)
 
 
