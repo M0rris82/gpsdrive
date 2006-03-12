@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.39  2006/03/12 14:48:34  tweety
+# delete merge conflict
+#
 # Revision 1.38  2006/03/10 08:37:09  tweety
 # - Replace Street/Track find algorithmus in Query Funktion
 #   against real Distance Algorithm (distance_line_point).
@@ -191,11 +194,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-<<<<<<< gpsfetchmap.pl
 Version 1.19 (gpsdrive-2.10pre3-work)
-=======
-Version 1.19 (gpsdrive-2.10pre3-work)
->>>>>>> 1.37
 ";
 
 sub redirect_ok { return 1; }
