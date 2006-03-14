@@ -37,6 +37,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
+#	lib_map/lib_map.a
 @DISABLEGARMIN_FALSE@am__append_1 = garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
@@ -101,13 +102,13 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
 	import_map.h routes.c routes.h download_map.c download_map.h \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c lib_map/lib_map.a \
-	garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp \
-	garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp \
-	garmin_legacy.cpp garmin_link.h garmin_serial_unix.h \
-	garmin_application.h garmin_packet.h garmin_types.h \
-	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h \
-	garmin_serial.h garmin_legacy.h garmin_data.h
+	nmea_handler.c nmea_handler.h unit_test.c garmin_data.cpp \
+	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
+	garmin_link.h garmin_serial_unix.h garmin_application.h \
+	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
+	garmin_util.h garmin_error.h garmin_serial.h garmin_legacy.h \
+	garmin_data.h
 @DISABLEGARMIN_FALSE@am__objects_1 = garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
@@ -353,7 +354,7 @@ PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
 	gpsproto.h talogo.h import_map.c import_map.h routes.c \
 	routes.h download_map.c download_map.h speech_strings.c \
 	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
-	nmea_handler.h unit_test.c lib_map/lib_map.a $(am__append_1)
+	nmea_handler.h unit_test.c $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp

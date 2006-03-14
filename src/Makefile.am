@@ -56,8 +56,8 @@ PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
         download_map.c download_map.h \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	unit_test.c \
-	lib_map/lib_map.a
+	unit_test.c 
+#	lib_map/lib_map.a
 
 if DISABLEGARMIN
 else 
