@@ -1,11 +1,9 @@
-LOGDIR=/build
-PKGNAME=gpsdrive
 DEST=/opt/gpsdrive
-SOURCE=/build/source/gpsdrive
+SOURCE=..
 ##############################################################
 	echo "    Configure"
 	cd $SOURCE
-	./configure --prefix=$DEST >> $LOGDIR/$PKGNAME.configure.log
+	./configure --prefix=$DEST
         if [ "$?" != "0" ]
         then
            	echo "    status " $?
@@ -15,7 +13,7 @@ SOURCE=/build/source/gpsdrive
         fi
 	###########################################
 	echo "    Make Clean"
-	make clean >> $LOGDIR/$PKGNAME.makeclean.log
+	make clean 
 	if [ "$?" != "0" ]
 	then
 		echo "    status " $?
@@ -25,7 +23,7 @@ SOURCE=/build/source/gpsdrive
 	fi
 	###########################################
 	echo "    Make "
-	make >> $LOGDIR/$PKGNAME.make.log
+	make 
 	if [ "$?" != "0" ]
 		then
 	        echo "    status " $?
@@ -35,7 +33,7 @@ SOURCE=/build/source/gpsdrive
 	fi
 	#############################################
 	echo "    Install"
-	make install >> $LOGDIR/$PKGNAME.makeinstall.log
+	make install 
         if [ "$?" != "0" ]
         then
                 echo "    status " $?
