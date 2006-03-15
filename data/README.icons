@@ -1,0 +1,80 @@
+# README.icons
+#
+# :Id:
+#
+
+After drawing a lot of new icons, I decided to add a new dicrectory structure
+for the icons based on the categories. Furthermore the feature of themeability
+will be added, to have the possibility of easy custom designs and to allow an
+easier transition to the new scheme.
+
+The structure:
+
+icons/theme.big
+		the icons belonging to theme "theme", in PNG 32x32
+icons/theme.small
+		the icons belonging to theme "theme", in PNG 16x16
+icons/classic
+		this will hold the currently used icons in the future
+
+Each of these directories has to contain at least one icon for the
+(currently 19) base categories.
+e.g. shopping.png for the category "Shopping"
+Furthermore each theme can contain subfolders with the names of the base
+category to allow a more precise classification of the related POI.
+
+If it's really necessary, one can add other sub-subfolders.
+
+An Example:
+
+icons/theme.big/
+|
+|_ food.png
+|
+|_ food
+  |
+  |_ restaurant.png
+  |
+  |_ restaurant/
+  |  |_ italian.png
+  |  |_ greek.png
+  |  |_ bavarian.png
+  |
+  |_ fastfood.png
+  |
+  |_ fastfood/
+  |  |_ burgerking.png
+  |  |_ mcdonalds.png
+  |
+  |_ icecream.png
+  |_ beergarden.png
+
+
+The (current) base categories are:
+- accomodation
+- custom
+- education
+- food
+- geocache
+- health
+- historic
+- money
+- nautical
+- people
+- places
+- public
+- recreation
+- religion
+- shopping
+- sports
+- transport
+- vehicle
+- wlan
+
+
+According to this, there will also be a slight change in the database structure.
+But don't worry, as long as there is no finished icon theme yet, no changes in
+the program code or database will take place, to prevent any problems. ;-)
+
+d.s.e
+
