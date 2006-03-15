@@ -49,19 +49,12 @@ About MySQL support please read README.SQL!
 How to install the program:
 ----------------------
 
-To compile gpsdrive you need to development packages of:
+To compile gpsdrive you need quite a few development packages.
+These requirements are detailed in the DEVPACKAGES text file. 
 
-GTK-+2.x (better >=2.2.x)
-pango
-atk
-pcre
-xdevel (X11 development)
-gettext
-libcrypt
-glibc
-
-also the compiler gcc >=3.x
-make
+Also 
+compiler gcc >=3.x
+and make
 
 
 To compile from the tarball:
