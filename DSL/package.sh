@@ -1,11 +1,35 @@
-################################################################
+###########################################################################################
 # Create the Package for DSL
-#################################################################
+###########################################################################################
+# Note:
+# This script should be run from the current directory (./package.sh)
+# Don't forget to create the package directory two levels up from DSL
+#
+############################################################################################
+# Update Log
+# Date		Name	Description
+# 07/03/06	DP	Made the pagkage directory a relative path
+#                       Added some error checking. (you gota love rm -rf in a scipt. ;)
+############################################################################################
 	LOGFILE=package.log
 	LIBDIR=opt/gpsdrive/lib
-	cd /build/package
-	echo "Current working direcory..." 
-	pwd
+	ICONDIR=`pwd`
+	
+	cd ../../package
+	if [ "$?" != "0" ]
+	then
+	        echo
+		echo "--------------------------------------------------------"
+		echo "You will need to create the package staging area"
+		echo "The default is a folder called package up two levels"
+		echo "Next to the gpsdrive cvs folder"
+		echo "i.e.  Up two levels from DSL"
+		echo "--------------------------------------------------------"
+		exit 1
+	else
+		echo "Current Working Directory"
+		pwd
+	fi
 
 	# Remove old package staging area
 	   rm -rf opt
@@ -25,8 +49,8 @@
 	  
 	# Copy the Icon and the .lnk desktop icon file
 	# 
-		cp /build/icon/Gpsdrive.lnk home/dsl/.xtdesktop/Gpsdrive.lnk
-	 	cp /build/icon/Gpsdrive.gif home/dsl/.xtdesktop/Gpsdrive.gif
+		cp $ICONDIR/Gpsdrive.lnk home/dsl/.xtdesktop/Gpsdrive.lnk
+	 	cp $ICONDIR/Gpsdrive.gif home/dsl/.xtdesktop/Gpsdrive.gif
 	  
 	# Add other missing files required to run the program
 		# Files for libpcre3
@@ -90,7 +114,7 @@
 	   tar -cvf gpsdrive.tar --no-recursion --numeric-owner -T includedfiles.txt >> $LOGFILE
 	   echo " Create Archive Status " $?
 
-	   echo " Compressing the Archive  (please wait) "
+	   echo " Compressing the Archive....  please wait "
 	   gzip -9 gpsdrive.tar
 	   echo " Compress Archive Status " $?
 
@@ -103,5 +127,6 @@
 	#
 	# Finished
 	echo Finished
-	echo The built files can be found in /build/package/
+	echo The built files can be found in..... 
+	pwd
 ################################################################
