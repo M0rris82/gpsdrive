@@ -16,14 +16,15 @@ if HAVE_GDAL
 worldgendir=$(bindir)
 worldgen_PROGRAMS = worldgen
 worldgen_SOURCES= worldgen.c ../lib_map/lib_map.a
-worldgen_LDFLAGS = -lgdal
+worldgen_LDFLAGS = -lgdal1.3.1
 
 if HAVE_GTK
 #CFLAGS += -DHAVE_CAIRO
 #CFLAGS += -DHAVE_GTK
 
-lib_map_lflags = -lgdal `pkg-config cairo --libs` \
-		  `pkg-config gtk+-2.0 --libs`
+lib_map_lflags = -lgdal1.3.1 \
+	`pkg-config cairo --libs` \
+	`pkg-config gtk+-2.0 --libs`
 
 
 gmapviewdir=$(bindir)
