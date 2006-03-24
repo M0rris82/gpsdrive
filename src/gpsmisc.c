@@ -572,7 +572,7 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
 
   *dec = -1002.0;
 
-  setlocale(LC_NUMERIC, "en_US");
+  setlocale(LC_NUMERIC, "C");
 
   // HACK: Fix usage of , and . inside Float-strings
   g_strdelimit (text, ",", '.');
