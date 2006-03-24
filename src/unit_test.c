@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2006/03/24 08:37:28  tweety
+accept rounding errors for distance_line_point
+
 Revision 1.6  2006/03/10 08:37:09  tweety
 - Replace Street/Track find algorithmus in Query Funktion
   against real Distance Algorithm (distance_line_point).
@@ -260,7 +263,7 @@ unit_test (void)
 	d = distance_line_point (test_array[i].x1, test_array[i].y1,
 				 test_array[i].x2, test_array[i].y2,
 				 test_array[i].xp, test_array[i].yp);
-	if (d == test_array[i].dist)
+	if ( (d -test_array[i].dist) <0.00000001 )
 	    {
 		if ( mydebug >0 ) 
 		    fprintf( stderr,
