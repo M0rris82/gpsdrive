@@ -2,6 +2,14 @@ dnl configure.ac for Gpsdrive
 dnl Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 dnl $Id$
 
+dnl #########################################################
+dnl Update Log
+dnl ===========
+dnl Date    	Name	Description
+dnl ---------------------------------------------------------
+dnl 25/03/2006  DP	Updated detection for GTK
+dnl #########################################################
+
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -240,6 +248,9 @@ AC_CHECK_SOCKLEN_T
 dnl ************************
 dnl Checks for libraries
 dnl ************************
+
+dnl 25/03/2006 DP Added the following line
+AM_PATH_GTK_2_0(2.0.6,,AC_ERROR(need at least Gtk+ version 2.0.6))
 
 PKG_CHECK_MODULES(GTK, gtk+-2.0, HAVE_GTK=yes, HAVE_GTK=no)
 AC_SUBST(GTK_LIBS)
