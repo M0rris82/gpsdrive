@@ -1,60 +1,69 @@
 Packages required to build Gpsdrive
 =====================================
 
-Following is a list of packages are required for Gpsdrive to compile.
+Following is a list of packages required for Gpsdrive to compile.
 
 Many packages also have prerequesits and your package management tool should indicate what is required.
 
+Note:
+The Configure scripts are currently being updated to detect the presence of these packsges.
+
+Package Name (version)		Tested for by configure		How Tested?
+----------------------------------------------------------------------------------- 
+libart-2.0-2			Yes				PKG_CHECK_MODULES
+libatk1.0-0			No
+libc6 (2.3.5-1)			No
+libcario2 (1.0.2-3)		No
+libexpat1			No
+libfontconfig1			No
+libfreetype6			No
+libgcc1				No
+libglib2.0-0			No
+libgtk2.0-0			No
+libpango1.0-0			No
+libpcre3			Yes				AC_PATH_PROG
+libpng12-0			No
+libstdc++6			No
+libx11-6			No
+libxcursor1			No
+libxext6			No
+libxi6				No
+libxinerama1 (1:0.9.0-1)	No
+zlib1g				No
+libltdl3-dev (1.5.6-6)		No (commented out?)
+libgdal-grass (1.2.6-1+b1) 	No
+libsrces26-dev (2.6.0-6)	No
+libmysqlclient14-dev (4.1.15-1)	No
+libtiff4-dev (3.7.4-1)		No
+libjasper-1.701-dev		No
+libgeos-dev (2.1.4-2)		No
+libgdal1-dev (1.2.6-1.3)	No
+gdal-bin (1.2.6-1.3)		No
+libgrass (6.0.1-3)		No
+libgdal1-1.3.1-grass (1.3.1-1)  No
+libhdf4g-dev (4.1r4-18.1)	No
+libungif4-dev (4.1.4-2)		No
+netcdfg-dev (3.5.0-7.1)		No
+libcfitsio-dev (2.510-1)	No                       
+libpqxx-dev (2.5.5-2)		No
 ----------------------------------------------------------------- 
-libwww-mechanize-perl
-libarchive-zip-perl
-libart-2.0-2
-libatk1.0-0
-libc6 (2.3.5-1)
-libcario2 (1.0.2-3)
-libdate-manip-perl
-libdbi-perl
-libexpat1
-libfontconfig1
-libfreetype6
-libgcc1
-libglib2.0-0
-libgtk2.0-0
-libhtml-parser-perl
-libpango1.0-0
-libpcre3
-libpng12-0
-libstdc++6
-libtext-query-perl
-libwww-mechanize-perl
-libwww-perl
-libx11-6
-libxcursor1
-libxext6
-libxi6
-libxinerama1 (1:0.9.0-1)
-perl
-perl-base
-perlmagic
-perl-modules
-zlib1g
-libltdl3-dev (1.5.6-6) ?
-libgdal-grass (1.2.6-1+b1) ?
-libsrces26-dev (2.6.0-6)
-libmysqlclient14-dev (4.1.15-1)
-libtiff4-dev (3.7.4-1)
-libjasper-1.701-dev
-libgeos-dev (2.1.4-2)
-libgdal1-dev (1.2.6-1.3)
-gdal-bin (1.2.6-1.3)
-grass (6.0.0-1)
-libgrass-dev (6.0.0-1)
-libhdf4g-dev (4.1r4-18.1)
-libungif4-dev (4.1.4-2)
-netcdfg-dev (3.5.0-7.1)
-libcfitsio-dev (2.510-1)
-libpqxx-dev (2.5.5-2)
------------------------------------------------------------------ 
+
+Perl packages required at run time
+===================================
+
+libwww-mechanize-perl           No
+libarchive-zip-perl             No
+bdate-manip-perl		No
+libdbi-perl                     No
+libhtml-parser-perl             No
+btext-query-perl		No
+libwww-mechanize-perl		No
+libwww-perl			No
+perl                            No
+perl-base                       No
+perlmagic                       No
+perl-modules                    No
+
 
 Advanced
 ============
