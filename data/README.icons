@@ -1,12 +1,13 @@
 # README.icons
 #
-# :Id:
+# $Id$
 #
 
 After drawing a lot of new icons, I decided to add a new dicrectory structure
 for the icons based on the categories. Furthermore the feature of themeability
 will be added, to have the possibility of easy custom designs and to allow an
 easier transition to the new scheme.
+
 
 The structure:
 
@@ -17,15 +18,18 @@ icons/theme.small
 icons/classic
 		this will hold the currently used icons in the future
 
+
+Gudelines:
+
 Each of these directories has to contain at least one icon for the
 (currently 19) base categories.
 e.g. shopping.png for the category "Shopping"
 Furthermore each theme can contain subfolders with the names of the base
 category to allow a more precise classification of the related POI.
 
-If it's really necessary, one can add other sub-subfolders.
+If it's necessary, one can add other sub-subfolders.
 
-An Example:
+Example:
 
 icons/theme.big/
 |
@@ -51,30 +55,32 @@ icons/theme.big/
 
 
 The (current) base categories are:
-- accomodation
-- custom
-- education
-- food
-- geocache
-- health
-- historic
-- money
-- nautical
-- people
-- places
-- public
-- recreation
-- religion
-- shopping
-- sports
-- transport
-- vehicle
-- wlan
+
+- 00 unknown/unsorted	(white)
+- 02 accomodation	(light-blue)
+- 03 custom		(white)
+- 04 education		(orange-white)
+- 05 food		(orange)
+- 06 geocache		(multicolour)
+- 07 health		(red-white)
+- 08 historic		(green-white)
+- 09 money		(yellow-white)
+- 10 nautical		(black-white)
+- 11 people		(yellow)
+- 12 places		(white)
+- 13 public		(light red)
+- 14 recreation		(light-green)
+- 15 religion		(violet)
+- 16 shopping		(dark red)
+- 17 sports		(dark green)
+- 18 transport		(blue-white)
+- 19 vehicle		(blue)
+- 20 wlan		(black)
 
 
 According to this, there will also be a slight change in the database structure.
 But don't worry, as long as there is no finished icon theme yet, no changes in
-the program code or database will take place, to prevent any problems. ;-)
+the program code or database will take place, to prevent further problems. ;-)
 
 d.s.e
 
