@@ -8,6 +8,7 @@ dnl ===========
 dnl Date    	Name	Description
 dnl ---------------------------------------------------------
 dnl 25/03/2006  DP	Updated detection for GTK
+dnl 26/03/2006  DP      Added detection for libglib2.0 (2.8.6-1)
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -267,10 +268,16 @@ CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 # We do have GK since we just tested on it
 #AM_CONDITIONAL(HAVE_GTK, true)
 
+dnl --------------------------
+dnl Check for package libglib2.0-0
+dnl 26/03/2006 DP  Added
+dnl --------------------------
+dnl AM_PATH_GLIB_2_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl MODULES  gmodule, gobject or gthread
+AM_PATH_GLIB_2_0(2.8.6, , AC_ERROR(need libglib2.0 at least version 2.8.6-1))
+dnl--------------------------
 
 CFLAGS="$CFLAGS -DHAVE_CAIRO `pkg-config cairo --cflags`"
-
-
 
 AC_PATH_PROG(PCRE_CONFIG, pcre-config, no)
 if test "x$PCRE_CONFIG" = "xno" ; then
