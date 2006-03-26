@@ -18,8 +18,8 @@ libexpat1			No
 libfontconfig1			No
 libfreetype6			No
 libgcc1				No
-libglib2.0-0			No
-libgtk2.0-0			No
+libglib2.0-0			Yes (26/03/2006)		AM_PATH_GLIB_2_0
+libgtk2.0-0			Yes (25/03/2006)		AM_PATH_GTK_2_0
 libpango1.0-0			No
 libpcre3			Yes				AC_PATH_PROG
 libpng12-0			No
