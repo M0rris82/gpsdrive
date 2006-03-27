@@ -10,8 +10,8 @@ The Configure scripts are currently being updated to detect the presence of thes
 
 Package Name (version)		Tested for by configure		How Tested?
 ----------------------------------------------------------------------------------- 
-libart-2.0-2			Yes				PKG_CHECK_MODULES
-libatk1.0-0			No
+libart-2.0-2 (2.3.17)		Yes				PKG_CHECK_MODULES
+libatk1.0-0 (1.10.3)		Yes (27/03/2006)		PKG_CONFIG
 libc6 (2.3.5-1)			No
 libcario2 (1.0.2-3)		No
 libexpat1			No
