@@ -275,8 +275,19 @@ dnl --------------------------
 dnl AM_PATH_GLIB_2_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl MODULES  gmodule, gobject or gthread
 AM_PATH_GLIB_2_0(2.8.6, , AC_ERROR(need libglib2.0 at least version 2.8.6-1))
-dnl--------------------------
 
+dnl --------------------------
+echo Check for package libatk1.0-0...
+dnl 27/03/2006 DP Added
+dnl --------------------------
+if $PKG_CONFIG atk --atleast-version=1.10.3
+then
+   AC_MSG_RESULT([yes])
+   dnl AC_CHECK_LIB(atk,main)
+else
+   AC_MSG_ERROR([libatk is missing or your version is to old.])
+fi
+dnl ---------------------------
 CFLAGS="$CFLAGS -DHAVE_CAIRO `pkg-config cairo --cflags`"
 
 AC_PATH_PROG(PCRE_CONFIG, pcre-config, no)
