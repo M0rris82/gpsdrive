@@ -10,6 +10,7 @@ dnl ---------------------------------------------------------
 dnl 25/03/2006  DP	Updated detection for GTK
 dnl 26/03/2006  DP      Added detection for libglib2.0 (2.8.6-1)
 dnl 27/03/2006  DP      Added detection for ATK
+dnl 29/03/2006  DP      Added detction for Cairo
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -278,19 +279,37 @@ dnl MODULES  gmodule, gobject or gthread
 AM_PATH_GLIB_2_0(2.8.6, , AC_ERROR(need libglib2.0 at least version 2.8.6-1))
 
 dnl --------------------------
-echo checking for package libatk1.0-0...
+echo -n checking for package libatk1.0-0...
 dnl 27/03/2006 DP Added
 dnl --------------------------
 if $PKG_CONFIG atk --atleast-version=1.10.3
 then
    AC_MSG_RESULT([yes])
-   dnl AC_CHECK_LIB(atk,main) TODO Need to find a function name within atk libraries (i.e. not main)
+   dnl AC_CHECK_LIB(atk, main, [], [     dnl TODO need to find a sutibable function name to test for
+   dnl echo "Error with test of ATK library not found"
+   dnl exit -1
+   dnl ])
 else
    AC_MSG_ERROR([libatk is missing or your version is to old. Min Version 1.10.3])
 fi
+
 dnl ---------------------------
 dnl TODO checking for package libc6 (2.3.5-1)...                
-dnl TODO checking for package libcario2 (1.0.2-3)...           
+dnl ---------------------------
+dnl ---------------------------
+echo -n checking for package libcario2 1.0.2-3...
+dnl ---------------------------
+if $PKG_CONFIG cairo --atleast-version=1.0.2
+then
+   AC_MSG_RESULT([yes])
+   AC_CHECK_LIB(cairo, cairo_create, [], [
+   echo "Error with test of Cairo library not found" 
+   exit -1
+   ])
+else
+   AC_MSG_ERROR([libcairo is missing or your version is to old. Min Version 1.0.2])
+fi
+dnl ---------------------------
 dnl TODO checking for package libexpat1...                    
 dnl TODO checking for package libfontconfig1...             
 dnl TODO checking for package libfreetype6...              
