@@ -16,7 +16,26 @@ your distribution.
 
 o Start the server, mostly with: /etc/init.d/mysql start
 
-o To create a initial database use to included SQL file 'create.sql'.
+UPDATE:
+-------------------------------------------------------------------------------
+There is now a new way to create the initial database but you do 
+need to have perl installed.  The new script is gpsdrive/bin/geoinfo.pl and
+the requierd command line is discussed below. Check out geoinfo --help to see all
+of its options.  If you can't get it to run you may still have success with create.sql.
+-------------------------------------------------------------------------------
+
+o To create a initial database with included Perl file 'geoinfo.pl'.
+  If this is a new database and you haven't created a root user yet something
+  like the following should do the trick.  Otherwise use the MYSQL Administrator.
+
+  /usr/bin/mysqladmin -u root password 'enter-your-good-new-password-here'
+
+  Once you have done that run the perl script like this.
+  geoinfo.pl --db-user=root --db-password='enter-your-good-new-password-here'
+
+OR
+
+o To create a initial database with included SQL file 'create.sql'.
   Make sure, that the user  have enough permissions to create this table
   and grant the permissions! 
 
@@ -36,7 +55,7 @@ o To create a initial database use to included SQL file 'create.sql'.
 
 Update:
 -------
-If you have already the database and you update GpsDrive, make sure
+If you already have the database and you update GpsDrive, make sure
 your table structure is the same like in create.sql.
 
 Managing the SQL server:
