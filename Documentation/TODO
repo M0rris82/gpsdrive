@@ -6,10 +6,10 @@ us(gpsdrive@warbase.selwerd.nl)/me(Joerg Ostertag <joerg.ostertag@rechengilde.de
 a note on the things you want to start programming. 
 Not only to synchronize work and circumventing two people trying to solve the 
 same problem. But also to check if this feature really fits into the actual plans
-and to find out which would be the best way to solcve it in relation to other 
+and to find out which would be the best way to solve it in relation to other 
 features and plans.
 
-One small comment: We are just planing a major userinterface change/rewrite. 
+One small comment: We are just planning a major userinterface change/rewrite. 
 The plan is, that this change will enable userinterface changes with anjuta and 
 glade-2. So if you want to make changes inside the userinterface code you  
 might want to wait another 3-4 weeks until these changes have made it into the CVS. 
@@ -28,7 +28,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 -----------------------------------------------------
 
 - Documentation:
-    - writing lots of usefull comments to the existing code.
+    - writing lots of useful comments to the existing code.
 	- Writing/improving man Pages
 	- Translate man Pages
 	- Translate in Programm Text (translate in the po/*.po Files)
@@ -38,18 +38,9 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
       documentation on the size and shape of custom icons, etc.).
 	- Help translate the gettext strings (po-Files) in to your native language
 
-- Icons:
-	- Draw Icons for different Waypoint Types
-	- Finding apropriate Waypoint Icons with 
-	  an apropriate Licence so we can use them freely
-	- Have a close look over the POI-Types and add categories/new types 
-	  including descriptions and icons
-
-
 - Investigations:
 	- have a look at gdal and get an idea if we could combine gdal 
 	  development and gpsdrive development
-	- find POI/Waypoint icons (see above)
 	- Find new Map/Waypoint Sources
 	- find Data for importing into the new Datastructure POI/streets which 
 	  have an acceptable public licence. The second step would then be to 
@@ -65,8 +56,8 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	  to import them into the local mySQL Database 
 	
 - Central POI Server:
-	We want to set up an central POI(Point of interrest) Server. 
-	Idea is: to populate this Server from all the point of interrests
+	We want to set up an central POI(Point of interest) Server. 
+	Idea is: to populate this Server from all the point of interests
 		 you have. 
 		Then give the Server a Web-interface(first step) to download alle 
 		these POIs and import them into your local DB.
@@ -78,7 +69,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	- Put every drawing layer into a seperate sourcefile.
 	- moving configuration Data into a structure
 	- moving actual settings into another structure
-	- move more stuff from gpsdrive.c into meaningfull standalone Files
+	- move more stuff from gpsdrive.c into meaningful standalone Files
 		examples:
 		- waypoint.{c,h}
 		- gps_handling.{c.h}
@@ -103,7 +94,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 - writing code for the handling the POI(Point Of Interest) Data 
   inside the Database.
-     - this would be searching an point of interrest in 
+     - this would be searching an point of interest in 
        the Database and displaying it on the map
      - having an interface to select what kind of POIs to 
        display at the moment
@@ -302,8 +293,8 @@ update opengeodb support to import the New Datasets.
 
 Trying to import gpsdrive into eclipse. Any help appreciated.
 
-Staighten the naming of variables and functions
-   -first step done, but stil a long way to go
+Straighten the naming of variables and functions
+   -first step done, but still a long way to go
 	still open:
 		longi --> lon
 		xy_draw --> draw_xy
@@ -317,7 +308,7 @@ Database (SQL):
 make gpsdrive read directly from mysql without first writing a file.
    -first step done
 
-Vertor map Data:
+Vector map Data:
 	Add code for showing Vectormap Data. (Already started)
 	Decide about internal representation and structure vektor map data.
 
@@ -349,7 +340,19 @@ make a change for the better there. However, the biggest thing I would
 suggest is setting a good coding standard, I think what currently exists 
 is a little scary! Here's my top suggestions...
 
+
 -----------------------------------------------------------------------------
+Guenther Meyer <d.s.e@metal-online.net>
+
+- Draw Icons for different POI Types
+
+- Have a close look over the POI-Types and add categories/new types
+  including descriptions and icons
+
+- adapt database structure according to the new POI categories
+
+
+----------------------------------------------------------------------------
 
 DONE:
 -----
