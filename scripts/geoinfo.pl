@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.7  2006/04/03 07:10:03  tweety
+# add OSM Support Basic (Very slow, but the first results can be seen)
+#
 # Revision 1.6  2006/02/01 18:08:01  tweety
 # 2 new features by  Stefan Wolf
 #
@@ -158,6 +161,7 @@ use Geo::Gpsdrive::GpsDrive;
 use Geo::Gpsdrive::JiGLE;
 use Geo::Gpsdrive::Kismet;
 use Geo::Gpsdrive::NGA;
+use Geo::Gpsdrive::OSM;
 use Geo::Gpsdrive::OpenGeoDB;
 use Geo::Gpsdrive::OpenGeoDB2;
 use Geo::Gpsdrive::PocketGpsPoi;
@@ -176,6 +180,7 @@ our $UNPACK_DIR   = "$CONFIG_DIR/UNPACK";
 
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = 0;
+my $do_osm               = 0;
 my $do_opengeodb         = 0;
 my $do_opengeodb2        = 0;
 my $do_wdb               = 0;
@@ -216,6 +221,8 @@ GetOptions (
 	     'fill-examples'       => \$do_import_examples,
 	     'census'              => \$do_census,
 	     'earthinfo_nga_mil:s' => \$do_earthinfo_nga_mil,
+	     'openstreetmap'       => \$do_osm,
+	     'osm'                 => \$do_osm,
 	     'opengeodb'           => \$do_opengeodb,
 	     'opengeodb2'          => \$do_opengeodb2,
 	     'wdb:s'               => \$do_wdb,
@@ -265,6 +272,7 @@ if ( $do_all ) {
 	= $do_census
 	= $do_opengeodb
 	= $do_opengeodb2
+	= $do_osm
 	= $do_gpsdrive_tracks
 	= $do_cameras
 	= $do_jigle
@@ -343,6 +351,10 @@ Geo::Gpsdrive::OpenGeoDB::import_Data()
 Geo::Gpsdrive::OpenGeoDB2::import_Data() 
     if ( $do_opengeodb2 );
 
+# Get and Unpack openstreetmap  http://www.openstreetmap.org/
+Geo::Gpsdrive::OSM::import_Data() 
+    if ( $do_osm );
+
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
 Geo::Gpsdrive::WDB::import_Data($do_wdb)
     if ( $do_wdb );
@@ -401,7 +413,7 @@ WARNING:
 
 B<Common usages:>
 
-poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb] [--mapsource_points='Filename']
+poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb=??] [--mapsource_points='Filename']
 
 =head1 OPTIONS
 
@@ -447,6 +459,12 @@ For more info on Countries have a look at
 The complete download is about ~900 MB
 
 
+=item B<--openstreetmap> B<--osm>
+
+
+Download and import openstreetmap Data
+
+
 =item B<--opengeodb>
 
 Download and import opengeodb to Point of interrests
@@ -470,7 +488,7 @@ current gpsdrive Version.
 Download size opengeodb-0.2.4a-UTF8-mysql.zip 1.8MB
 
 
-=item B<--wdb>
+=item B<--wdb=??>
 
 CIA World DataBank II
 
