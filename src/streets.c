@@ -21,182 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-  $Log$
-  Revision 1.23  2006/03/10 08:37:09  tweety
-  - Replace Street/Track find algorithmus in Query Funktion
-    against real Distance Algorithm (distance_line_point).
-  - Query only reports Track/poi/Streets if currently displaying
-    on map is selected for these
-  - replace old top/map Selection by a MapServer based selection
-  - Draw White map if no Mapserver is selected
-  - Remove some useless Street Data from Examples
-  - Take the real colors defined in Database to draw Streets
-  - Add a frame to the Streets to make them look nicer
-  - Added Highlight Option for Tracks/Streets to see which streets are
-    displayed for a Query output
-  - displaymap_top und displaymap_map removed and replaced by a
-    Mapserver centric approach.
-  - Treaked a little bit with Font Sizes
-  - Added a very simple clipping to the lat of the draw_grid
-    Either the draw_drid or the projection routines still have a slight
-    problem if acting on negative values
-  - draw_grid with XOR: This way you can see it much better.
-  - move the default map dir to ~/.gpsdrive/maps
-  - new enum map_projections to be able to easily add more projections
-    later
-  - remove history from gpsmisc.c
-  - try to reduce compiler warnings
-  - search maps also in ./data/maps/ for debugging purpose
-  - cleanup and expand unit_test.c a little bit
-  - add some more rules to the Makefiles so more files get into the
-    tar.gz
-  - DB_Examples.pm test also for ../data and data directory to
-    read files from
-  - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-  - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-  - gpsfetchmap.pl:
-    - adapt zoom levels for landsat maps
-    - correct eniro File Download. Not working yet, but gets closer
-    - add/correct some of the Help Text
-  - Update makefiles with a more recent automake Version
-  - update po files
-
-  Revision 1.22  2006/02/05 16:38:06  tweety
-  reading floats with scanf looks at the locale LANG=
-  so if you have a locale de_DE set reading way.txt results in clearing the
-  digits after the '.'
-  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-  Revision 1.21  1994/06/08 13:02:31  tweety
-  adjust debug levels
-
-  Revision 1.20  1994/06/07 11:25:45  tweety
-  set debug levels more detailed
-
-  Revision 1.19  2005/11/06 17:24:26  tweety
-  shortened map selection code
-  coordinate_string2gdouble:
-   - fixed missing format
-   - changed interface to return gdouble
-  change -D option to reflect debuglevels
-  Added more debug Statements for Level>50
-  move map handling to to seperate file
-  speedup memory reservation for map-structure
-  Add code for automatic loading of maps from system DATA/maps/.. Directory
-  changed length of mappath from 400 to 2048 chars
-
-  Revision 1.18  2005/10/11 08:28:35  tweety
-  gpsdrive:
-  - add Tracks(MySql) displaying
-  - reindent files modified
-  - Fix setting of Color for Grid
-  - poi Text is different in size depending on Number of POIs shown on
-    screen
-
-  geoinfo:
-   - get Proxy settings from Environment
-   - create tracks Table in Database and fill it
-     this separates Street Data from Track Data
-   - make geoinfo.pl download also Opengeodb Version 2
-   - add some poi-types
-   - Split off Filling DB with example Data
-   - extract some more Funtionality to Procedures
-   - Add some Example POI for Kirchheim(Munich) Area
-   - Adjust some Output for what is done at the moment
-   - Add more delayed index generations 'disable/enable key'
-   - If LANG=*de_DE* then only impert europe with --all option
-   - WDB will import more than one country if you wish
-   - add more things to be done with the --all option
-
-  Revision 1.17  2005/08/14 09:47:17  tweety
-  seperate tracks into it own table in geoinfo database
-  move Info's from TODO abaout geoinfo DB to Man Page
-  rename poi.pl to geoinfo.pl
-
-  Revision 1.16  2005/05/24 08:35:25  tweety
-  move track splitting to its own function +sub track_add($)
-  a little bit more error handling
-  earth_distance somtimes had complex inumbers as result
-  implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-  this way i can re-read all currently displayed streets from the DB
-  fix minor array iindex counting bugs
-  add some content to the comment column
-
-  Revision 1.15  2005/05/15 07:00:51  tweety
-  new Keystroke p adds an instant waypoint at cursor position
-  new Keystroke q querys information for thenearest waypoints and street endpoints
-
-  Revision 1.14  2005/05/13 21:27:48  tweety
-  delete order by to speed up database actions
-
-  Revision 1.13  2005/04/20 23:33:49  tweety
-  reformatted source code with anjuta
-  So now we have new indentations
-
-  Revision 1.12  2005/04/13 19:58:31  tweety
-  renew indentation to 4 spaces + tabstop=8
-
-  Revision 1.11  2005/04/12 06:14:20  tweety
-  poi.c:
-  Added Full Path Search for Icons
-  streets.c:
-  implement basic colors for streets
-  added text to streets in debug mode
-
-  Revision 1.10  2005/04/10 21:50:50  tweety
-  reformatting c-sources
-
-  Revision 1.9  2005/04/10 00:10:32  tweety
-  added gpsd: to gpsd related debug output
-  changed plus to a small + in streets.c
-
-  Revision 1.8  2005/04/07 06:35:01  tweety
-  Error handling for g_renew
-  correct to extern MYSQL mysql;
-  start getting color from streets_type
-
-  Revision 1.7  2005/03/29 01:59:01  tweety
-  another set of minor Bugfixes
-
-  Revision 1.6  2005/03/27 21:25:46  tweety
-  separating map_import from gpsdrive.c
-
-  Revision 1.5  2005/03/27 00:44:42  tweety
-  separated poi_type_list and streets_type_list
-  and therefor renaming the fields
-  added drop index before adding one
-  poi.*: a little bit more error handling
-  disabling poi and streets if sql is disabled
-  changed som print statements from \n.... to ...\n
-  changed some debug statements from debug to mydebug
-
-  Revision 1.4  2005/02/22 08:18:51  tweety
-  change leveling system to simpler scale marking for decission what to show on display
-  column_names(DBFuncs.pm get data from Database
-  added functions add_index drop_index
-  added language to type Database
-  for some Data split unpack and mirror Directories
-  for some add lat/lon min/max to get faster import for testing
-  added POI::DBFuncs::segments_add; this will later be the point to do 
-  some excerptions and combinations on the street data
-
-  Revision 1.3  2005/02/17 09:46:34  tweety
-  minor changes
-
-  Revision 1.2  2005/02/13 22:57:00  tweety
-  WDB Support
-
-  Revision 1.1  2005/02/13 14:06:54  tweety
-  start street randering functions. reading from the database streets
-  and displaying it on the screen
-  improve a little bit in the sql-queries
-  fixed linewidth settings in draw_cross
-
-  Revision 0.0  2005/02/12 20:14:14  tweety
-
-*/
-
 
 /*
  * streets_ support module: display
@@ -495,9 +319,9 @@ streets_rebuild_list (void)
     }
 
   { // calculate the start and stop for lat/lon according to the displayed section
-    calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-    calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-    calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
+    calcxytopos (0, 0,               &lat_ul, &lon_ul, zoom);
+    calcxytopos (0, SCREEN_Y,        &lat_ll, &lon_ll, zoom);
+    calcxytopos (SCREEN_X, 0,        &lat_ur, &lon_ur, zoom);
     calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
 
     lat_min = min (lat_ll, lat_ul);
@@ -525,9 +349,9 @@ streets_rebuild_list (void)
     g_snprintf (sql_where, sizeof (sql_where),
 		"WHERE \n"
 		"\t\t ( \n"
-		"\t\t   ( ( lat1 BETWEEN %.6f AND %.6f ) AND ( lon1 BETWEEN %.6f AND %.6f ) ) \n"
+		"\t\t   ( ( lat1 BETWEEN %f AND %f ) AND ( lon1 BETWEEN %f AND %f ) ) \n"
 		"\t\t   OR \n"
-		"\t\t   ( ( lat2 BETWEEN %.6f AND %.6f ) AND ( lon2 BETWEEN %.6f AND %.6f ) ) \n"
+		"\t\t   ( ( lat2 BETWEEN %f AND %f ) AND ( lon2 BETWEEN %f AND %f ) ) \n"
 		"\t\t ) \n"
 		"\t\t AND \n"
 		"\t\t ( %ld BETWEEN scale_min AND scale_max) \n",
@@ -548,7 +372,7 @@ streets_rebuild_list (void)
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,streets_type_id,proximity "
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
-	      "FROM streets " "%s LIMIT 200000", sql_where);
+	      "FROM streets " "%s LIMIT 2000000", sql_where);
 
   if ( mydebug > 50 )
     printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
@@ -993,14 +817,14 @@ streets_query_point (gdouble lat, gdouble lon, gdouble distance)
 				    (streets_list + i)->lat2,(streets_list + i)->lon2,
 				    lat,  lon) )
 	    {
-		printf ("Streets: %d: %f,%f --> %f,%f :%s\t",
+		printf ("Streets: %3d: %f,%f --> %f,%f	Name:%s\t",
 			i,
 			(streets_list + i)->lat1, (streets_list + i)->lon1,
 			(streets_list + i)->lat2, (streets_list + i)->lon2,
 			(streets_list + i)->name);
 		printf ("Type: %s\t", streets_type_list[streets_type_id].name);
 		//printf ("Comment: %s\t", streets_type_list[streets_type_id].comment);
-		printf ("%s\n", (streets_list + i)->comment);
+		printf ("Comment: %s\n", (streets_list + i)->comment);
 		(streets_list + i)->highlight =TRUE;
 	    }
 	else 

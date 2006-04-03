@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2006/04/03 23:43:45  tweety
+rename adj --> scaler_adj
+rearrange code for some of the _cb
+ streets_draw_cb
+ poi_draw_cb
+move map_dir_struct definition to src/gpsdrive.h
+remove some of the history parts in the Files
+save and read settings for display_map like "display_map_<name> = 1"
+increase limit for displayed streets
+change color of de.Strassen.Allgemein to x555555
+OSM.pm make non way segments to Strassen.Allgemein
+WDB check if yountryname is valid
+
 Revision 1.6  2006/03/10 08:37:09  tweety
 - Replace Street/Track find algorithmus in Query Funktion
   against real Distance Algorithm (distance_line_point).
@@ -127,6 +140,7 @@ extern gdouble pixelfact, posx, posy, angle_to_destination;
 extern gdouble direction, bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat;
+extern gdouble trip_lat,trip_lon;
 extern gdouble groundspeed, milesconv;
 extern gint nrmaps;
 extern gint maploaded;
@@ -191,15 +205,7 @@ int havenasa = -1;
 GtkWidget *maptogglebt,	*topotogglebt;
 
 
-typedef struct
-{
-    gchar name[200];
-    GtkWidget *checkbox;
-    int to_be_displayed;
-    int count;
-}
-map_dir_struct;
-int max_display_map=0;
+gint max_display_map=0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 gint displaymap_map = TRUE;
@@ -879,8 +885,8 @@ testnewmap ()
 
   if (posmode)
     {
-      current_lon = posmode_x;
-      current_lat = posmode_y;
+	trip_lat = current_lon = posmode_x;
+	trip_lon = current_lat = posmode_y;
     }
   else
     route_next_target ();

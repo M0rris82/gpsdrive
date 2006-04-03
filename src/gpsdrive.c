@@ -651,7 +651,7 @@ gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0, sqlflag = 0, trackflag = 1, wpflag = TRUE;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
-GtkObject *adj;
+GtkObject *scaler_adj;
 gchar lastradar[40], lastradar2[40]; 
 gint foundradar;
 gdouble radarbearing;
@@ -3760,7 +3760,7 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 	gchar oldfilename[2048];
 
 	g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-	val = (GTK_ADJUSTMENT (adj)->value);
+	val = (GTK_ADJUSTMENT (scaler_adj)->value);
 	old2val = val;
 
 	do
@@ -3768,15 +3768,15 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 	    oldval = val;
 	    if (datum == 1)
 		{
-		    gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
+		    gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj),
 					      val + 1);
 		}
 	    else
 		{
-		    gtk_adjustment_set_value (GTK_ADJUSTMENT (adj),
+		    gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj),
 					      val - 1);
 		}
-	    val = (GTK_ADJUSTMENT (adj)->value);
+	    val = (GTK_ADJUSTMENT (scaler_adj)->value);
 
 	    testnewmap ();
 	}
@@ -3785,7 +3785,7 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 
 	if ((strcmp (oldfilename, mapfilename)) == 0)
 		val = old2val;
-	gtk_adjustment_set_value (GTK_ADJUSTMENT (adj), val);
+	gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj), val);
 	expose_cb (NULL, 0);
 	expose_mini_cb (NULL, 0);
 
@@ -4078,10 +4078,10 @@ etch_cb (GtkWidget * widget, guint datum)
 gint
 drawgrid_cb (GtkWidget * widget, guint datum)
 {
-	if (datum == 1)
+	if ( datum )
 	{
-		do_draw_grid = !do_draw_grid;
-		needtosave = TRUE;
+	    do_draw_grid = !do_draw_grid;
+	    needtosave = TRUE;
 	}
 	return TRUE;
 }
@@ -4295,12 +4295,21 @@ mute_cb (GtkWidget * widget, guint datum)
 gint
 poi_draw_cb (GtkWidget * widget, guint datum)
 {
-	poi_draw = !poi_draw;
-	if (poi_draw)
-		poi_draw_list ();
+    if ( NULL == widget ) 
+	widget = poi_draw_bt;
 
-	needtosave = TRUE;
-	return TRUE;
+    if ( datum)
+	poi_draw = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),poi_draw );
+    
+    
+
+    if (poi_draw)
+	poi_draw_list ();
+    
+    needtosave = TRUE;
+    return TRUE;
 }
 
 /* *****************************************************************************
@@ -4309,12 +4318,22 @@ poi_draw_cb (GtkWidget * widget, guint datum)
 gint
 streets_draw_cb (GtkWidget * widget, guint datum)
 {
-	if ( ! streets_draw ) 
-	    streets_check_if_moved_reset();
-	streets_draw = !streets_draw;
-	streets_draw_list ();
-	needtosave = TRUE;
-	return TRUE;
+
+    if ( ! streets_draw ) 
+	streets_check_if_moved_reset();
+
+    if ( NULL == widget ) 
+	widget = streets_draw_bt;
+
+    if ( datum)
+	streets_draw = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),streets_draw );
+    
+
+    streets_draw_list ();
+    needtosave = TRUE;
+    return TRUE;
 }
 
 /* *****************************************************************************
@@ -4413,8 +4432,6 @@ pos_cb (GtkWidget * widget, guint datum)
     	posmode = TRUE;
     else 
     	posmode = FALSE;
-    
-    update_posbt();
     
     posmode_x = current_lon;
     posmode_y = current_lat;
@@ -4717,10 +4734,10 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 /* *****************************************************************************
  */
 gint
-scaler_cb (GtkAdjustment * adj, gdouble * datum)
+scaler_cb (GtkAdjustment * scaler_adj, gdouble * datum)
 {
 	gchar s2[100];
-	scalewanted = nlist[(gint) rint (adj->value)];
+	scalewanted = nlist[(gint) rint (scaler_adj->value)];
 	g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
 	gtk_label_set_text (GTK_LABEL (label_prefscale), s2);
 	if ( mydebug > 0 )
@@ -7063,10 +7080,10 @@ main (int argc, char *argv[])
     //KCFX
     /*   if (!pdamode) */
     {
-	adj = gtk_adjustment_new (slistsize / 2, 0, slistsize - 1, 1,
+	scaler_adj = gtk_adjustment_new (slistsize / 2, 0, slistsize - 1, 1,
 				  slistsize / 4, 1 / slistsize);
-	scaler = gtk_hscale_new (GTK_ADJUSTMENT (adj));
-	gtk_signal_connect (GTK_OBJECT (adj), "value_changed",
+	scaler = gtk_hscale_new (GTK_ADJUSTMENT (scaler_adj));
+	gtk_signal_connect (GTK_OBJECT (scaler_adj), "value_changed",
 			    GTK_SIGNAL_FUNC (scaler_cb), NULL);
 	gtk_scale_set_draw_value (GTK_SCALE (scaler), FALSE);
     }
@@ -7611,8 +7628,8 @@ main (int argc, char *argv[])
     /*  To set the checkboxes to the right values */
     bestmap_cb (NULL, 0);
     drawgrid_cb (NULL, 0);
-    poi_draw_cb (NULL, 0);
-    streets_draw_cb (NULL, 0);
+    poi_draw_cb (poi_draw_bt, 0);
+    streets_draw_cb (streets_draw_bt, 0);
     tracks_draw_cb (NULL, 0);
     needtosave = FALSE;
 

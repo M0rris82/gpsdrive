@@ -22,491 +22,6 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
-/*
-  $Log$
-  Revision 1.23  2006/02/05 11:57:23  tweety
-  rename some variables to better names
-  make map_filename invisible if debug less than 10
-
-  Revision 1.22  2006/01/03 14:24:10  tweety
-  eliminate compiler Warnings
-  try to change all occurences of longi -->lon, lati-->lat, ...i
-  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-  rename drawgrid --> do_draw_grid
-  give the display frames usefull names frame_lat, ...
-  change handling of WP-types to lowercase
-  change order for directories reading icons
-  always read inconfile
-
-  Revision 1.21  2006/01/02 13:21:14  tweety
-  Start sorting out the menu
-  Move some of the Buttons to the Pulldown Menu
-  make display size 50 smaller than screen max for Desktop Menu
-  remove unused code parts
-  add more error/warnings to lat2radius calcxytopos and calcxy
-  read draw_streets draw_poi draw_grid draw_tracks from config file
-  add error check for not recognized config file options
-
-  Revision 1.20  2005/12/28 22:59:46  tweety
-  eliminate unecessary debug message
-
-  Revision 1.19  1994/06/08 13:02:31  tweety
-  adjust debug levels
-
-  Revision 1.18  1994/06/08 08:37:47  tweety
-  fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
-  instead of atof and strtod
-
-  Revision 1.17  2005/10/19 07:22:21  tweety
-  Its now possible to choose units for displaying coordinates also in
-  Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
-  Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-  Revision 1.16  2005/08/14 18:46:42  tweety
-  remove unnedded xpm Files; read pixmaps with read_icons,
-  separate more pixmaps from icons
-
-  Revision 1.15  2005/08/09 01:08:31  tweety
-  Twist and bend in the Makefiles to install the DataDirectory more apropriate
-  move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
-  adapt icons.txt loading according to these directories
-
-  Revision 1.14  2005/05/15 06:51:27  tweety
-  all speech strings are now represented as arrays of strings
-  author: Rob Stewart <rob@groupboard.com>
-
-  Revision 1.13  2005/04/29 17:41:57  tweety
-  Moved the speech string to a seperate File
-
-  Revision 1.12  2005/04/21 19:33:40  tweety
-  include header files for speech_out
-
-  Revision 1.11  2005/04/20 23:33:49  tweety
-  reformatted source code with anjuta
-  So now we have new indentations
-
-  Revision 1.10  2005/04/13 19:58:31  tweety
-  renew indentation to 4 spaces + tabstop=8
-
-  Revision 1.9  2005/04/10 21:50:50  tweety
-  reformatting c-sources
-
-  Revision 1.8  2005/04/01 21:17:08  tweety
-  Fix grid config bug. The grid was alway on after start
-  reformatted reading of parameters
-
-  Revision 1.7  2005/02/06 17:52:44  tweety
-  extract icon handling to icons.c
-
-  Revision 1.6  2005/02/02 17:42:54  tweety
-  Add some comments
-  extract some code into funktions
-  added POI mySQL Support
-
-  Revision 1.5  2005/01/22 11:38:06  tweety
-  added more Help for keys
-
-  Revision 1.4  2005/01/20 00:54:07  tweety
-  added Help for more Keys
-
-  Revision 1.3  2005/01/20 00:11:38  tweety
-  add debug output if config is written
-
-  Revision 1.2  2005/01/15 23:46:46  tweety
-  Added config option to disable/enable drawing of grid
-
-  Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-  Initial import, straight from 2.10pre2 tar.gz archive
-
-  Revision 1.110  2004/03/02 03:07:17  ganter
-  added speech output for received messages
-
-  Revision 1.109  2004/03/02 00:53:35  ganter
-  v2.09pre1
-  added new gpsfetchmap.pl (works again with Expedia)
-  added sound settings in settings menu
-  max serial device string is now 40 char
-
-  Revision 1.108  2004/02/19 18:00:27  ganter
-  added Tele Atlas logo in about window
-
-  Revision 1.107  2004/02/18 13:24:19  ganter
-  navigation
-
-  Revision 1.106  2004/02/11 11:25:46  ganter
-  added patch from Johnny Cache <johnycsh@hick.org>, dbname is now configurable
-  in gpsdriverc
-  additional search path for libmysql for cygwin
-
-  Revision 1.105  2004/02/08 17:39:46  ganter
-  v2.08pre12
-
-  Revision 1.104  2004/02/08 17:16:25  ganter
-  replacing all strcat with g_strlcat to avoid buffer overflows
-
-  Revision 1.103  2004/02/08 12:44:11  ganter
-  replacing all sprintf with g_snprintf to avoid buffer overflows
-
-  Revision 1.102  2004/02/07 00:02:16  ganter
-  added "store timezone" button in settings menu
-
-  Revision 1.101  2004/02/05 19:47:31  ganter
-  replacing strcpy with g_strlcpy to avoid bufferoverflows
-  USB receiver does not send sentences in direct serial mode,
-  so I first send a "\n" to it
-
-  Revision 1.100  2004/02/02 03:38:32  ganter
-  code cleanup
-
-  Revision 1.99  2004/02/01 04:51:22  ganter
-  added "no_ssid" button in the SQL settings
-
-  Revision 1.98  2004/02/01 02:25:56  ganter
-  use dbhostname (the hostname of the SQL server) now works
-  dbhostname may be edited in gpsdriverc
-
-  Revision 1.97  2004/01/31 13:43:57  ganter
-  nasamaps are working better, but still bugs
-
-  Revision 1.96  2004/01/28 15:31:43  ganter
-  initialize FDs to -1
-
-  Revision 1.95  2004/01/28 09:32:57  ganter
-  tested for memory leaks with valgrind, looks good :-)
-
-  Revision 1.94  2004/01/27 22:51:59  ganter
-  added "direct serial connection" button in settings menu
-
-  Revision 1.93  2004/01/27 06:59:14  ganter
-  The baudrate is now selectable in settings menu
-  GpsDrive now connects to the GPS receiver in following order:
-  Try to connect to gpsd
-  Try to find Garble-mode Garmin
-  Try to read data directly from serial port
-
-  If this all fails, it falls back into simulation mode
-
-  Revision 1.92  2004/01/26 11:55:19  ganter
-  just indented some files
-
-  Revision 1.91  2004/01/24 03:27:51  ganter
-  friends label color is now changeable in settings menu
-
-  Revision 1.90  2004/01/22 07:13:27  ganter
-  ...
-
-  Revision 1.89  2004/01/18 19:37:24  ganter
-  this is the nice 2.07 release
-
-  Revision 1.88  2004/01/18 06:34:54  ganter
-  button for reminder window
-
-  Revision 1.87  2004/01/18 05:53:35  ganter
-  try to find the problem that x-server eats cpu after 5 hours
-
-  Revision 1.86  2004/01/18 05:28:02  ganter
-  changed all popups to gtk_dialog instead of a toplevel window
-  cosmetic changes in settings menu
-
-  Revision 1.85  2004/01/17 06:11:04  ganter
-  added color setting for track color
-
-  Revision 1.84  2004/01/17 00:58:09  ganter
-  randomize the startposition and set it the hamburg cementry :-)
-
-  Revision 1.83  2004/01/16 19:49:30  ganter
-  added new icon
-
-  Revision 1.82  2004/01/15 16:00:21  ganter
-  added gpssmswatch
-
-  Revision 1.81  2004/01/14 00:48:49  ganter
-  fixed bug if no crypt is avail.
-
-  Revision 1.80  2004/01/13 23:38:30  ganter
-  added new field in waypoints display for number of friends received
-
-  Revision 1.79  2004/01/13 19:57:48  ganter
-  added GNU license to about-popup
-
-  Revision 1.78  2004/01/12 23:52:15  ganter
-  grrr
-
-  Revision 1.77  2004/01/12 22:38:36  ganter
-  v2.07pre8
-
-  Revision 1.76  2004/01/12 22:09:59  ganter
-  some text changes for messages
-
-  Revision 1.75  2004/01/12 21:52:02  ganter
-  added friends message service
-
-  Revision 1.74  2004/01/11 13:48:28  ganter
-  added about screen
-  added menubar
-
-  Revision 1.73  2004/01/03 03:39:52  ganter
-  added settings switch for etched frames
-
-  Revision 1.72  2004/01/01 09:07:33  ganter
-  v2.06
-  trip info is now live updated
-  added cpu temperature display for acpi
-  added tooltips for battery and temperature
-
-  Revision 1.71  2003/12/22 19:33:37  ganter
-  better test if image has alpha
-
-  Revision 1.70  2003/12/21 17:31:32  ganter
-  error handling for not installed program
-  real v2.05 :-)
-
-  Revision 1.69  2003/12/21 17:08:07  ganter
-  release v2.05
-
-  Revision 1.68  2003/12/21 16:59:05  ganter
-  fixed bug in timezone setting
-  timezone will be stored now
-
-  Revision 1.67  2003/12/17 02:17:56  ganter
-  added donation window
-  waypoint describtion (.dsc files) works again
-  added dist_alarm ...
-
-  Revision 1.66  2003/08/12 12:21:20  ganter
-  fixed bugs of PDA patch
-
-  Revision 1.65  2003/06/08 13:31:50  ganter
-  release 2.0pre9
-  Added setting of timeperiod in friends mode (see settings menu)
-
-  Revision 1.64  2003/06/01 17:27:34  ganter
-  v2.0pre8
-  friendsmode works fine and can be set in settings menu
-
-  Revision 1.63  2003/05/31 20:32:01  ganter
-  friendsd2 works fine with sven's server
-
-  Revision 1.62  2003/05/31 20:12:35  ganter
-  new UDP friendsserver build in, needs some work
-
-  Revision 1.61  2003/05/28 22:20:12  ganter
-  added load balancer
-
-  Revision 1.60  2003/05/11 21:15:46  ganter
-  v2.0pre7
-  added script convgiftopng
-  This script converts .gif into .png files, which reduces CPU load
-  run this script in your maps directory, you need "convert" from ImageMagick
-
-  Friends mode runs fine now
-  Added parameter -H to correct the alitude
-
-  Revision 1.59  2003/05/08 21:18:05  ganter
-  added settings menu entry for fonts setting
-  made a new cool splash screen
-  updated da and it translations
-  v2.0-pre6
-
-  Revision 1.58  2003/05/07 10:52:23  ganter
-  ...
-
-  Revision 1.57  2003/05/06 17:49:11  ganter
-  wp label text is now pango
-
-  Revision 1.56  2003/05/03 18:59:47  ganter
-  shortcuts are now working
-
-  Revision 1.55  2003/05/03 03:03:30  ganter
-  added help window
-
-  Revision 1.54  2003/05/02 19:40:43  ganter
-  changed location of datadir files
-
-  Revision 1.53  2003/05/02 18:27:18  ganter
-  porting to GTK+-2.2
-  GpsDrive Version 2.0pre3
-
-  Revision 1.52  2003/01/15 15:30:28  ganter
-  before dynamically loading mysql
-
-  Revision 1.51  2002/12/24 01:46:00  ganter
-  FAQ
-
-  Revision 1.50  2002/11/25 01:15:17  ganter
-  ...
-
-  Revision 1.49  2002/11/24 23:36:18  ganter
-  added icon
-
-  Revision 1.48  2002/11/02 12:38:55  ganter
-  changed website to www.gpsdrive.de
-
-  Revision 1.47  2002/10/27 10:51:30  ganter
-  1.28pre8
-
-  Revision 1.46  2002/10/24 08:44:09  ganter
-  ...
-
-  Revision 1.45  2002/10/16 14:16:13  ganter
-  working on SQL gui
-
-  Revision 1.44  2002/10/15 07:44:11  ganter
-  ...
-
-  Revision 1.43  2002/10/14 08:38:59  ganter
-  v1.29pre3
-  added SQL support
-
-  Revision 1.42  2002/09/24 08:51:55  ganter
-  updated translations
-  changed gpsdrive.spec
-
-  Revision 1.41  2002/09/23 07:51:35  ganter
-  splited help text in more strings
-  v1.28pre2
-
-  Revision 1.40  2002/07/30 21:33:53  ganter
-  added "J" key to switch to next waypoint
-
-  Revision 1.39  2002/06/29 00:23:18  ganter
-  added ACPI support for battery meter
-
-  Revision 1.38  2002/06/23 17:09:35  ganter
-  v1.23pre9
-  now PDA mode looks good.
-
-  Revision 1.37  2002/06/02 20:54:10  ganter
-  added navigation.c and copyrights
-
-  Revision 1.36  2002/05/23 09:07:37  ganter
-  v1.23pre1
-  added new BSD battery stuff
-
-  Revision 1.35  2002/05/20 20:40:23  ganter
-  v1.22
-
-  Revision 1.34  2002/05/20 10:02:48  ganter
-  v1.22pre7
-
-  Revision 1.33  2002/05/12 23:14:53  ganter
-  new 1.21
-  changed B to N key.
-
-  Revision 1.32  2002/05/12 20:54:08  ganter
-  v1.21
-
-  Revision 1.31  2002/05/11 15:45:31  ganter
-  v1.21pre1
-  degree,minutes,seconds should work now
-
-  Revision 1.30  2002/05/02 01:34:11  ganter
-  added speech output of waypoint description
-
-  Revision 1.29  2002/04/29 02:52:18  ganter
-  v1.20pre1
-  added display of sat position
-
-  Revision 1.28  2002/04/28 11:53:43  ganter
-  v1.19pre2
-  button to delete waypoint
-  fixed miles distance on startup in miles mode
-  new sat level display colors
-
-  Revision 1.27  2002/04/14 15:25:56  ganter
-  v1.17pre3
-  added simulaton follow switch in setup menu
-
-  Revision 1.26  2002/04/13 17:30:35  ganter
-  v1.17pre2
-
-  Revision 1.25  2002/04/06 17:08:56  ganter
-  v1.16pre8
-  cleanup of gpsd files
-
-  Revision 1.24  2002/04/02 19:46:15  ganter
-  v1.16pre4
-  you can type in coordinates in the "Add waypoint" window (x-key)
-  Autosave of configuration
-  update spanish translation (translater had holiday)
-
-  Revision 1.23  2002/04/01 22:32:04  ganter
-  added garmin and serialdevice in setup
-
-  Revision 1.22  2002/03/31 18:11:07  ganter
-  v1.15-pre5
-  you can select your "way*.txt" file in setup menu
-  The DEFAUL entry in way.txt is now obsolet
-  The "setdefaultpos" entry in gpsdricerc in now obsolet
-
-  Revision 1.21  2002/03/30 20:07:33  ganter
-  2nd pre 1.15
-
-  Revision 1.20  2002/03/30 10:37:43  ganter
-  pre 1.15
-
-  Revision 1.19  2002/03/24 17:45:26  ganter
-  v1.14 some cosmetic changes
-
-  Revision 1.18  2002/03/22 00:36:40  ganter
-  bugfix for late gpsd start
-  remembering last position if setdefaultpos = 0 in gpsdriverc
-
-  Revision 1.17  2002/03/21 21:49:08  ganter
-  added question if gpsd should be started.
-  Thanks to daZwerg(gEb-Dude) for suggestion.
-
-  Revision 1.16  2002/03/16 20:21:07  ganter
-  fixed segfault if no gpsdriverc exists. New v1.11
-
-  Revision 1.15  2002/03/16 19:17:59  ganter
-  v1.11
-
-  Revision 1.14  2002/02/26 15:34:17  ganter
-  added x key for set waypoint on actual position
-
-  Revision 1.13  2002/02/24 22:26:41  ganter
-  new v1.9, added shortcuts
-
-  Revision 1.12  2002/02/24 16:40:37  ganter
-  v1.9
-
-  Revision 1.11  2002/02/18 01:50:39  ganter
-  changed help text
-
-  Revision 1.10  2001/10/14 10:41:59  ganter
-  v0.32 correct path for prefix other than /usr/local
-
-  Revision 1.9  2001/10/13 23:04:56  ganter
-  corrected paths for locale and pixmap, ./configure --prefix= works now as
-  expected
-
-  Revision 1.8  2001/09/30 18:45:27  ganter
-  v0.29
-  added choice of map type
-
-  Revision 1.7  2001/09/30 15:54:32  ganter
-  added minimap, removed gpsdrivelogo
-
-  Revision 1.6  2001/09/28 15:43:56  ganter
-  v0.28 changed layout, some bugfixes
-
-  Revision 1.5  2001/08/29 19:05:20  ganter
-  trying splashfile also in current dir
-
-  Revision 1.4  2001/08/29 13:59:56  ganter
-  removed large xpm file, load png instead
-
-  Revision 1.3  2001/08/26 15:49:09  ganter
-  indent
-
-  Revision 1.2  2001/08/26 15:47:19  ganter
-  works fine
-
-  Revision 1.1  2001/08/26 15:03:15  ganter
-  added splash.c
-
-*/
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
@@ -528,6 +43,8 @@ Disclaimer: Please do not use for navigation.
 #  define N_(String) (String)
 # endif
 
+extern gint max_display_map;
+extern map_dir_struct *display_map;
 
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
@@ -1101,6 +618,7 @@ writeconfig ()
 {
 	FILE *fp;
 	gchar fname[220], str[40];
+	gint i;
 
 	g_strlcpy (fname, homedir, sizeof (fname));
 	g_strlcat (fname, "gpsdriverc", sizeof (fname));
@@ -1298,6 +816,12 @@ writeconfig ()
 	fprintf (fp, "draw_streets = %d\n", streets_draw);
 	fprintf (fp, "draw_poi = %d\n", poi_draw);
 	fprintf (fp, "draw_tracks = %d\n", tracks_draw);
+	for ( i = 0; i < max_display_map; i++)
+	    {
+		fprintf (fp, "display_map_%s = %d\n",
+			 display_map[i].name,
+			 display_map[i].to_be_displayed);
+	    }
 
 
 	fclose (fp);
@@ -1511,6 +1035,16 @@ readconfig ()
 			poi_draw = atoi (par2);
 		    else if ( (strcmp(par1, "draw_tracks")) == 0)
 			tracks_draw = atoi (par2);
+		    else if ( ! strncmp(par1, "display_map_",12) )
+			{
+			    printf ("display_map: %s %s\n",par1,par2);
+			    max_display_map += 1;
+			    display_map = g_renew(map_dir_struct, display_map, max_display_map);
+			    g_strlcpy (display_map[max_display_map-1].name,
+				       (par1+12),
+				       sizeof (display_map[max_display_map-1].name));
+			    display_map[max_display_map-1].to_be_displayed = atoi (par2);
+			}
 		    else
 			fprintf (stderr, "ERROR: Unknown Config Parameter '%s=%s'\n",par1,par2);
 		}		/* if e==2 */

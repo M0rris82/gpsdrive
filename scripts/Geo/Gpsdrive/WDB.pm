@@ -1,61 +1,6 @@
 # Einlesen der WDB Daten und schreiben in die geodb Datenbank von 
 # gpsdrive
 #
-# $Log$
-# Revision 1.3  2006/01/01 17:07:01  tweety
-# improve speed a little bit
-# update --help infos
-#
-# Revision 1.2  2005/10/11 08:28:35  tweety
-# gpsdrive:
-# - add Tracks(MySql) displaying
-# - reindent files modified
-# - Fix setting of Color for Grid
-# - poi Text is different in size depending on Number of POIs shown on
-#   screen
-#
-# geoinfo:
-#  - get Proxy settings from Environment
-#  - create tracks Table in Database and fill it
-#    this separates Street Data from Track Data
-#  - make geoinfo.pl download also Opengeodb Version 2
-#  - add some poi-types
-#  - Split off Filling DB with example Data
-#  - extract some more Funtionality to Procedures
-#  - Add some Example POI for Kirchheim(Munich) Area
-#  - Adjust some Output for what is done at the moment
-#  - Add more delayed index generations 'disable/enable key'
-#  - If LANG=*de_DE* then only impert europe with --all option
-#  - WDB will import more than one country if you wish
-#  - add more things to be done with the --all option
-#
-# Revision 1.1  2005/08/15 13:54:22  tweety
-# move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
-#
-# Revision 1.10  2005/08/09 01:08:30  tweety
-# Twist and bend in the Makefiles to install the DataDirectory more apropriate
-# move the perl Functions to Geo::Gpsdrive in /usr/share/perl5/Geo/Gpsdrive/POI
-# adapt icons.txt loading according to these directories
-#
-# Revision 1.9  2005/05/01 13:49:36  tweety
-# Added more Icons
-# Moved filling with defaults to DB_Defaults.pm
-# Added some more default POI Types
-# Added icons.html to see which icons are used
-# Added more Comments
-# Reformating Makefiles
-# Added new options for importing from way*.txt and adding defaults
-# Added more source_id and type_id
-#
-# Revision 1.8  2005/04/13 19:58:30  tweety
-# renew indentation to 4 spaces + tabstop=8
-#
-# Revision 1.7  2005/04/10 00:15:58  tweety
-# changed primary language for poi-type generation to english
-# added translation for POI-types
-# added some icons classifications to poi-types
-# added LOG: Entry for CVS to some *.pm Files
-#
 
 package Geo::Gpsdrive::WDB;
 
@@ -251,6 +196,9 @@ sub import_Data($){
     disable_keys('streets');
     
     for my $country ( split(",",$what) ) {
+	if ( $country !~ m/europe|africa|asia|namer|samer/ ) {
+	    die ("$country for WDB not supported\n");
+	}
 	debug("$unpack_dir/WDB/*.txt");
 	foreach  my $full_filename ( glob("$unpack_dir/WDB/$country*.txt") ) {
 	    # print "Mirror: $mirror\n";

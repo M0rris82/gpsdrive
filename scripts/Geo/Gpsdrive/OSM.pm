@@ -294,14 +294,16 @@ sub fill_osm_streets() { # Insert Streets from osm variables into mysql-db for g
 	if $debug;
 
     $segment_count=0;
+    my $streets_type_id = streets_type_name2id('Strassen.Allgemein');
     for my $seg_id ( keys %{$osm_segments} ) {
 	next 
 	    if defined($osm_segments->{$seg_id}->{connections})
 	    && $osm_segments->{$seg_id}->{connections} > 0;
 	$segment_count++;
-	my $percent = $segment_count/$rest_segments*100;
-	print "importing Segment $segment_count ( $percent %)\r" 
-	    if $verbose && !($segment_count %100);
+	if ( $verbose && !($segment_count %1000)) {
+	    my $percent = $segment_count/$rest_segments*100;
+	    printf "importing Segment $segment_count ( %d%%)\r",$percent;
+	    }
 
 	my $node_from = $osm_segments->{$seg_id}->{from};
 	my $node_to   = $osm_segments->{$seg_id}->{to};
@@ -314,9 +316,9 @@ sub fill_osm_streets() { # Insert Streets from osm variables into mysql-db for g
 	my $segment4db = {
 	    'streets.lat1' => $lat1, 'streets.lon1' => $lon1, 'streets.alt1' =>-99,
 	    'streets.lat2' => $lat2, 'streets.lon2' => $lon2, 'streets.alt2' =>-99,
-	    'streets.streets_type_id' => $multi_segment->{'streets_type_id'},
+	    'streets.streets_type_id' => $streets_type_id,
 	    'streets.scale_min' => 1,
-	    'streets.scale_max' => 1000000,
+	    'streets.scale_max' => 500000,
 	    'streets.last_modified'  => time(),
 	    'streets.source_id' => $osm_source_id,
 	    'streets.name' => $street_name

@@ -1,6 +1,19 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.10  2006/04/03 23:43:45  tweety
+# rename adj --> scaler_adj
+# rearrange code for some of the _cb
+#  streets_draw_cb
+#  poi_draw_cb
+# move map_dir_struct definition to src/gpsdrive.h
+# remove some of the history parts in the Files
+# save and read settings for display_map like "display_map_<name> = 1"
+# increase limit for displayed streets
+# change color of de.Strassen.Allgemein to x555555
+# OSM.pm make non way segments to Strassen.Allgemein
+# WDB check if yountryname is valid
+#
 # Revision 1.9  2006/03/10 08:37:09  tweety
 # - Replace Street/Track find algorithmus in Query Funktion
 #   against real Distance Algorithm (distance_line_point).
@@ -1072,7 +1085,7 @@ sub fill_default_street_types() {   # Fill streets_type database
     # Just some Default types
     # TODO: make english primary language
     my @streets_types = qw( de.unbekannt_xFFFFFF
-			    de.Strassen.Allgemein_x222222
+			    de.Strassen.Allgemein_x555555
 			    de.Strassen.Wanderweg_x222222
 			    de.Strassen.Fussweg_x222222
 			    de.Strassen.30_Zohne_x00FFFF

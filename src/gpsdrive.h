@@ -22,6 +22,19 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.13  2006/04/03 23:43:45  tweety
+rename adj --> scaler_adj
+rearrange code for some of the _cb
+ streets_draw_cb
+ poi_draw_cb
+move map_dir_struct definition to src/gpsdrive.h
+remove some of the history parts in the Files
+save and read settings for display_map like "display_map_<name> = 1"
+increase limit for displayed streets
+change color of de.Strassen.Allgemein to x555555
+OSM.pm make non way segments to Strassen.Allgemein
+WDB check if yountryname is valid
+
 Revision 1.12  2006/03/10 08:37:09  tweety
 - Replace Street/Track find algorithmus in Query Funktion
   against real Distance Algorithm (distance_line_point).
@@ -419,5 +432,15 @@ wpstruct;
 
 enum map_projections { proj_undef, proj_top, proj_map };
 extern enum map_projections map_proj;
+
+
+typedef struct
+{
+    gchar name[200];
+    GtkWidget *checkbox;
+    int to_be_displayed;
+    int count;
+}
+map_dir_struct;
 
 #endif /* GPSDRIVE_GPSDRIVE_H */

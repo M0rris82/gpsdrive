@@ -1,6 +1,19 @@
 # Database Functions for poi.pl
 #
 # $Log$
+# Revision 1.7  2006/04/03 23:43:45  tweety
+# rename adj --> scaler_adj
+# rearrange code for some of the _cb
+#  streets_draw_cb
+#  poi_draw_cb
+# move map_dir_struct definition to src/gpsdrive.h
+# remove some of the history parts in the Files
+# save and read settings for display_map like "display_map_<name> = 1"
+# increase limit for displayed streets
+# change color of de.Strassen.Allgemein to x555555
+# OSM.pm make non way segments to Strassen.Allgemein
+# WDB check if yountryname is valid
+#
 # Revision 1.6  2006/03/10 08:37:09  tweety
 # - Replace Street/Track find algorithmus in Query Funktion
 #   against real Distance Algorithm (distance_line_point).
@@ -710,7 +723,7 @@ sub streets_add($){
     # ---------------------- STREETS
     $segment4db->{'streets.last_modified'}   ||= time();
     $segment4db->{'streets.scale_min'}       ||= 0;
-    $segment4db->{'streets.scale_max'}       ||= 99999999999999;
+    $segment4db->{'streets.scale_max'}       ||= 9999999999999999;
     insert_hash("streets",$segment4db);
 }
 
@@ -741,7 +754,7 @@ sub street_segments_add($){
     # ---------------------- STREETS
     $segment4db->{'streets.last_modified'}     ||= time();
     $segment4db->{'streets.scale_min'}         ||= 1;
-    $segment4db->{'streets.scale_max'}         ||= 10000;
+    $segment4db->{'streets.scale_max'}         ||= 100000000000;
 
     $segment4db->{'streets.lat1'}=0;
 
@@ -754,13 +767,22 @@ sub street_segments_add($){
     my $segment_nr=0;
     for my $segment ( @{$data->{segments}} ){
 	my $lat1 = $segment4db->{'streets.lat1'} = $segment4db->{'streets.lat2'};
-	my $lon1 = 	$segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
-	my $alt1 = 	$segment4db->{'streets.alt1'} = $segment4db->{'streets.alt2'};
+	my $lon1 = $segment4db->{'streets.lon1'} = $segment4db->{'streets.lon2'};
+	my $alt1 = $segment4db->{'streets.alt1'} = $segment4db->{'streets.alt2'};
 
 	if ( ref($segment) eq "ARRAY" ) {
 	    $lat2 = $segment->[0];
 	    $lon2 = $segment->[1];
 	    $alt2 = $segment->[2];
+	} elsif ( defined($segment->{'lat1'} ))  {
+	    $segment4db->{'streets.lat1'} = $lat1 = $segment->{'lat1'};
+	    $segment4db->{'streets.lon1'} = $lon1 = $segment->{'lon1'};
+	    $segment4db->{'streets.alt1'} = $alt1 = $segment->{'alt1'};
+
+	    $lat2 = $segment->{'lat2'};
+	    $lon2 = $segment->{'lon2'};
+	    $alt2 = $segment->{'alt2'};
+
 	} else {
 	    $lat2 = $segment->{'lat'};
 	    $lon2 = $segment->{'lon'};
@@ -770,7 +792,6 @@ sub street_segments_add($){
 	$segment4db->{'streets.lat2'} = $lat2;
 	$segment4db->{'streets.lon2'} = $lon2;
 	$segment4db->{'streets.alt2'} = $alt2;
-	$segment4db->{'streets.comment'} = "Segment: $segment_nr";
 
 	next unless $segment4db->{'streets.lat1'}; # skip first entry
 
@@ -779,8 +800,11 @@ sub street_segments_add($){
 #	my $dist = $d_lat+$d_lon;
 #	print "Dist: $dist	($lat1,$lon1),($lat2,lon2) $segment4db->{'streets.name'}\n"
 #	    if $dist > 0.05;;
-#	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
-#	$segment4db->{'streets.streets_type_id'} = $data->{streets.streets_type_id} || $segment->{streets_type_id};
+	$segment4db->{'streets.comment'}         = "Segment: $segment_nr";
+	$segment4db->{'streets.comment'}         = $segment->{'comment'}    if defined $segment->{'comment'};
+#	$segment4db->{'streets.name'}          ||= $segment->{'name'}       if defined $segment->{'name'};
+	$segment4db->{'streets.name'}            = $data->{name}            || $segment->{name};
+	$segment4db->{'streets.streets_type_id'} = $data->{'streets.streets_type_id'} || $data->{'streets_type_id'} || $segment->{streets_type_id};
 #	$segment4db->{'streets.source_id'}       = $data->{source_id}       || $segment->{source_id};
 #	$segment4db->{'streets.scale_min'}       = $data->{scale_min}       || $segment->{scale_min}||1;
 #	$segment4db->{'streets.scale_max'}       = $data->{scale_max}       || $segment->{scale_max}||10000000000;

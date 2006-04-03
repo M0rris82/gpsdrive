@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.15  2006/04/03 23:43:45  tweety
+  rename adj --> scaler_adj
+  rearrange code for some of the _cb
+   streets_draw_cb
+   poi_draw_cb
+  move map_dir_struct definition to src/gpsdrive.h
+  remove some of the history parts in the Files
+  save and read settings for display_map like "display_map_<name> = 1"
+  increase limit for displayed streets
+  change color of de.Strassen.Allgemein to x555555
+  OSM.pm make non way segments to Strassen.Allgemein
+  WDB check if yountryname is valid
+
   Revision 1.14  2006/02/17 20:54:34  tweety
   http://bugzilla.gpsdrive.cc/show_bug.cgi?id=73
   Downloading maps doesn't allow Longitude select by mouse
@@ -154,7 +167,7 @@ extern GtkWidget *mainwindow, *status, *messagestatusbar, *pixmapwidget,
 extern GtkWidget *messagewindow, *routewindow, *downloadbt;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern GtkWidget *mylist, *myroutelist, *destframe;
-extern GtkObject *adj;
+extern GtkObject *scaler_adj;
 extern gdouble wplat, wplon;
 extern gint posmode;
 extern gdouble posmode_x, posmode_y;
@@ -733,7 +746,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
   else
     {
       /*        g_print("\nstate: %x x:%d y:%d", state, x, y); */
-      vali = (GTK_ADJUSTMENT (adj)->value);
+      vali = (GTK_ADJUSTMENT (scaler_adj)->value);
       /*  Left mouse button + shift key */
       if ((state & (GDK_BUTTON1_MASK | GDK_SHIFT_MASK)) ==
 	  (GDK_BUTTON1_MASK | GDK_SHIFT_MASK))

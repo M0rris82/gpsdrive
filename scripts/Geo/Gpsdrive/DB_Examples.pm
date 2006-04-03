@@ -1,109 +1,4 @@
 # Database Defaults for poi/streets Table for poi.pl
-#
-# $Log$
-# Revision 1.6  2006/03/10 08:37:09  tweety
-# - Replace Street/Track find algorithmus in Query Funktion
-#   against real Distance Algorithm (distance_line_point).
-# - Query only reports Track/poi/Streets if currently displaying
-#   on map is selected for these
-# - replace old top/map Selection by a MapServer based selection
-# - Draw White map if no Mapserver is selected
-# - Remove some useless Street Data from Examples
-# - Take the real colors defined in Database to draw Streets
-# - Add a frame to the Streets to make them look nicer
-# - Added Highlight Option for Tracks/Streets to see which streets are
-#   displayed for a Query output
-# - displaymap_top und displaymap_map removed and replaced by a
-#   Mapserver centric approach.
-# - Treaked a little bit with Font Sizes
-# - Added a very simple clipping to the lat of the draw_grid
-#   Either the draw_drid or the projection routines still have a slight
-#   problem if acting on negative values
-# - draw_grid with XOR: This way you can see it much better.
-# - move the default map dir to ~/.gpsdrive/maps
-# - new enum map_projections to be able to easily add more projections
-#   later
-# - remove history from gpsmisc.c
-# - try to reduce compiler warnings
-# - search maps also in ./data/maps/ for debugging purpose
-# - cleanup and expand unit_test.c a little bit
-# - add some more rules to the Makefiles so more files get into the
-#   tar.gz
-# - DB_Examples.pm test also for ../data and data directory to
-#   read files from
-# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-# - gpsfetchmap.pl:
-#   - adapt zoom levels for landsat maps
-#   - correct eniro File Download. Not working yet, but gets closer
-#   - add/correct some of the Help Text
-# - Update makefiles with a more recent automake Version
-# - update po files
-#
-# Revision 1.5  2006/02/08 11:03:44  tweety
-# improve Quality of Example Streets
-# update icoins
-#
-# Revision 1.4  2006/02/05 10:36:50  tweety
-# more cities
-#
-# Revision 1.3  2006/02/03 18:31:58  tweety
-# Update ASCII Form of Street/POI Defaults. Some minor Bugs fixing.
-# More Street Examples
-#
-# Revision 1.2  2006/02/03 12:03:31  tweety
-# move the Examples to Text Files for better Code visibility
-# and easier editing the Examples Data by others
-#
-# Revision 1.1  2005/10/11 08:28:35  tweety
-# gpsdrive:
-# - add Tracks(MySql) displaying
-# - reindent files modified
-# - Fix setting of Color for Grid
-# - poi Text is different in size depending on Number of POIs shown on
-#   screen
-#
-# geoinfo:
-#  - get Proxy settings from Environment
-#  - create tracks Table in Database and fill it
-#    this separates Street Data from Track Data
-#  - make geoinfo.pl download also Opengeodb Version 2
-#  - add some poi-types
-#  - Split off Filling DB with example Data
-#  - extract some more Funtionality to Procedures
-#  - Add some Example POI for Kirchheim(Munich) Area
-#  - Adjust some Output for what is done at the moment
-#  - Add more delayed index generations 'disable/enable key'
-#  - If LANG=*de_DE* then only impert europe with --all option
-#  - WDB will import more than one country if you wish
-#  - add more things to be done with the --all option
-#
-# Revision 1.1  2005/08/15 13:54:22  tweety
-# move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
-#
-# Revision 1.4  2005/08/09 01:08:30  tweety
-# Twist and bend in the Makefiles to install the DataDirectory more apropriate
-# move the perl Functions to Geo::Gpsdrive in /usr/share/perl5/Geo/Gpsdrive/POI
-# adapt icons.txt loading according to these directories
-#
-# Revision 1.3  2005/05/24 08:35:25  tweety
-# move track splitting to its own function +sub track_add($)
-# a little bit more error handling
-# earth_distance somtimes had complex inumbers as result
-# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-# this way i can re-read all currently displayed streets from the DB
-# fix minor array iindex counting bugs
-# add some content to the comment column
-#
-# Revision 1.2  2005/05/14 21:21:23  tweety
-# Update Index createion
-# Update default Streets
-# Eliminate some undefined Value
-#
-# Revision 1.1  2005/05/09 19:35:12  tweety
-# Split Default Values into seperate File
-# Add new Icon
-#
 
 package Geo::Gpsdrive::DB_Examples;
 
@@ -141,6 +36,35 @@ BEGIN {
 }
 #our @EXPORT_OK;
 
+
+sub min($$){
+    my $a=shift;
+    my $b=shift;
+    return $a<$b?$a:$b;
+}
+sub max($$){
+    my $a=shift;
+    my $b=shift;
+    return $a>$b?$a:$b;
+}
+
+# ------------------------------------------------------------------
+# Guess the Street Type if we got a Streetname
+sub street_name_2_id($) {
+    my $street_name = shift;
+    my $streets_type_id =0;
+    if ( $street_name =~ m/^A/ ) {
+	$streets_type_id = streets_type_name2id('Strassen.Autobahn');
+    } elsif ( $street_name =~ m/^ST/ ) {
+	$streets_type_id = streets_type_name2id('Strassen.Bundesstrasse');
+    } elsif ( $street_name =~ m/^B/ ) {
+	$streets_type_id = streets_type_name2id('Strassen.Bundesstrasse');
+    }   else {
+	$streets_type_id = streets_type_name2id('Strassen.Allgemein');
+    };
+    return $streets_type_id;
+}
+
 # -----------------------------------------------------------------------------
 # Open Data File in predefined Directories
 sub data_open($){
@@ -154,8 +78,14 @@ sub data_open($){
 	my $file_with_path=$path.$file_name;
 	if ( -s $file_with_path ) {
 	    debug("Opening $file_with_path");
-	    my $fh = IO::File->new("<$file_with_path")
-		or die("cannot open $file_with_path: $!");;
+	    my $fh;
+	    if ( $file_with_path =~ m/\.gz$/ ) {
+		$fh = IO::File->new("gzip -dc $file_with_path|")
+		    or die("cannot open $file_with_path: $!");
+	    } else {
+		$fh = IO::File->new("<$file_with_path")
+		    or die("cannot open $file_with_path: $!");
+	    }
 	    return $fh;
 	}
     }
@@ -264,7 +194,7 @@ sub fill_example_streets($) { # Insert Street Sample
     my $lat2=1003;
     my $lon1=1003;
     my $lon2=1003;
-    my $max_allowed_dist; # Distance to warn for more precise Data
+    my $max_allowed_dist=10; # Distance in degrees to warn for more precise Data
     my $max_dist =0;
     my $line_number=0;
     while ( 1 ) {
@@ -292,20 +222,18 @@ sub fill_example_streets($) { # Insert Street Sample
 	    $multi_segment->{'streets_type_id'} = '';
 	    if ( $street_name =~ m/^\#/ ) { # Komments
 		next;
-	    } elsif ( $street_name =~ m/^A/ ) {
-		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Autobahn');
+	    }
+
+	    $multi_segment->{'streets_type_id'} = street_name_2_id($street_name);
+	    if ( $street_name =~ m/^A/ ) {
 		$max_allowed_dist = 0.4;
 	    } elsif ( $street_name =~ m/^ST/ ) {
-		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
 		$max_allowed_dist = 0.05;
 	    } elsif ( $street_name =~ m/^B/ ) {
-		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Bundesstrasse');
 		$max_allowed_dist = 0.05;
 	    }   else {
-		$multi_segment->{'streets_type_id'} = streets_type_name2id('Strassen.Allgemein');
 		$max_allowed_dist = 0.05;
 	    }
-	    
 	    $multi_segment->{'name'}            = $street_name;
 	    $multi_segment->{'scale_min'}       = 1;
 	    $multi_segment->{'scale_max'}       = 50000000;
@@ -358,6 +286,7 @@ sub fill_examples(){
     fill_example_streets("streets/Autobahnen.txt");
     fill_example_streets("streets/Streets.txt");
     fill_example_streets("streets/Streets_au.txt");
+
     print "Create Examples completed\n";
 }
 
