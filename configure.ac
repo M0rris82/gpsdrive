@@ -94,6 +94,9 @@ AC_CHECK_HEADERS([wchar.h])
 AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_CHECK_TYPES([ptrdiff_t])
 
+dnl AM_PATH_GTK_2_0(2.0.6,,AC_ERROR(need at least Gtk+ version 2.0.6))
+AM_PATH_GLIB_2_0(2.0.6,, AC_ERROR(need libglib2.0 at least version 2.0.6),gmodule-2.0)
+
 AC_C_VOLATILE
 
 AC_FUNC_CLOSEDIR_VOID
