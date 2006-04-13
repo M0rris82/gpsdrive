@@ -209,6 +209,7 @@ sub check_osm_streets() { # Insert Streets from osm variables into mysql-db for 
 	my $delta_lon=abs($lon1-$lon2);
 	my $dist_deg = sqrt($delta_lat*$delta_lat+$delta_lon*$delta_lon);
 	my $dist = sqrt($delta_lat*$delta_lat+$delta_lon*$delta_lon)*40000/360;
+	$osm_segments->{$seg_id}->{distance}=$dist;
 	if ( $dist > 10 ) {
 	    printf "Segment %10d has long Distance %f Km\n",$seg_id,$dist;
 	    printf "\tfrom:%6d(%14.11f,%14.11f)\n",$node_from, $lat1,$lon1;
@@ -269,6 +270,35 @@ sub check_osm_streets() { # Insert Streets from osm variables into mysql-db for 
     }
     for my $connections ( sort { $a <=> $b } keys %{$con_counter} ) {
 	printf "%8d Nodes with %2d Segments connected\n",$con_counter->{$connections},$connections;
+    }
+
+
+    # ----------- Ways
+    my $segments_per_way={};
+    my $distance_per_way={};
+    for my $way_id (  keys %{$osm_ways} ) {
+	my $way = $osm_ways->{$way_id};
+	my $count = scalar @{$way->{seg}};
+	$count = int($count/10)*10;
+	#$count = "$count - ".($count+9);
+	$segments_per_way->{$count} ++;
+
+	my $distance=0;
+	for my $seg_id ( @{$way->{seg}} ) {
+	    $distance +=  $osm_segments->{$seg_id}->{distance};
+	}
+	
+	$distance = int($distance/10)*10;
+	#$distance = "$distance - ".($distance+9);
+	$distance_per_way->{$distance}++;
+    }
+    for my $number_of_segments ( sort { $a <=> $b }  keys %{$segments_per_way} ) {
+	my $number_of_ways = $segments_per_way->{$number_of_segments};
+	printf"%4d ways with %4d - %4d Segments\n",$number_of_ways,$number_of_segments,$number_of_segments+9;
+    }
+    for my $distance_of_segments ( sort { $a <=> $b }  keys %{$distance_per_way} ) {
+	my $number_of_ways = $distance_per_way->{$distance_of_segments};
+	printf"%4d ways with %4d Km  - %4d Km Distance\n",$number_of_ways,$distance_of_segments,$distance_of_segments+9;
     }
 
     # ------------
