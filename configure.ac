@@ -11,6 +11,10 @@ dnl 25/03/2006  DP	Updated detection for GTK
 dnl 26/03/2006  DP      Added detection for libglib2.0 (2.8.6-1)
 dnl 27/03/2006  DP      Added detection for ATK
 dnl 29/03/2006  DP      Added detction for Cairo
+dnl 30/03/2006  DP      Added detection for fonfconfig
+dnl 04/04/2006  DP      Added detection for libpqxx
+dnl 04/04/2004  DP      Added detection for libpng12
+
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -297,8 +301,9 @@ else
 fi
 
 dnl ---------------------------
-dnl TODO checking for package libc6 (2.3.5-1)...                
+echo -n checking for package libc6 2.3.5-1... TODO
 dnl ---------------------------
+
 dnl ---------------------------
 echo -n checking for package libcario2 1.0.2-3...
 dnl ---------------------------
@@ -313,35 +318,133 @@ else
    AC_MSG_ERROR([libcairo is missing or your version is to old. Min Version 1.0.2])
 fi
 dnl ---------------------------
-dnl TODO checking for package libexpat1...                    
-dnl TODO checking for package libfontconfig1...             
-dnl TODO checking for package libfreetype6...              
-dnl TODO checking for package libgcc1...                 
-dnl TODO checking for package libpango1.0-0...         
-dnl TODO checking for package libpng12-0...           
-dnl TODO checking for package libstdc++6...         
-dnl TODO checking for package libx11-6...          
-dnl TODO checking for package libxcursor1...                     
-dnl TODO checking for package libxext6...                      
-dnl TODO checking for package libxi6...                       
-dnl TODO checking for package libxinerama1 (1:0.9.0-1)...    
-dnl TODO checking for package zlib1g...                     
-dnl TODO checking for package libgdal-grass (1.2.6-1+b1)...      
-dnl TODO checking for package libsrces26-dev (2.6.0-6)...        
-dnl TODO checking for package libmysqlclient14-dev (4.1.15-1)...
-dnl TODO checking for package libtiff4-dev (3.7.4-1)...          
-dnl TODO checking for package libjasper-1.701-dev...             
-dnl TODO checking for package libgeos-dev (2.1.4-2)...          
-dnl TODO checking for package libgdal1-dev (1.2.6-1.3)...        
-dnl TODO checking for package gdal-bin (1.2.6-1.3)...            
-dnl TODO checking for package libgrass (6.0.1-3)...              
-dnl TODO checking for package libgdal1-1.3.1-grass (1.3.1-1)...  
-dnl TODO checking for package libhdf4g-dev (4.1r4-18.1)...       
-dnl TODO checking for package libungif4-dev (4.1.4-2)...        
-dnl TODO checking for package netcdfg-dev (3.5.0-7.1)...         
-dnl TODO checking for package libcfitsio-dev (2.510-1)...        
-dnl TODO checking for package libpqxx-dev (2.5.5-2)...
+echo checking for package libexpat1... TODO                    
 dnl ---------------------------
+
+dnl ---------------------------
+echo -n checking for package libfontconfig1...
+dnl ---------------------------
+if $PKG_CONFIG fontconfig --atleast-version=2.3.1
+then
+   AC_MSG_RESULT([yes])
+   AC_CHECK_LIB(fontconfig, FcConfigFilename, [], [
+   echo "Error with test of fontconfig library not found"
+   exit -1
+   ])
+else
+   AC_MSG_ERROR([libfontconfig is missing or your version is to old. Min Version 2.3.1])
+fi		  
+
+dnl ---------------------------
+echo checking for package libfreetype6... TODO
+dnl ---------------------------
+echo TODO checking for package libgcc1... TODO        
+dnl ---------------------------
+
+dnl ---------------------------
+echo -n checking for package libpango1 1.0...
+dnl ---------------------------
+if $PKG_CONFIG pango --atleast-version=1.10.4
+then
+    AC_MSG_RESULT([yes])
+    dnl AC_CHECK_LIB(pango,  main, [], [    dnl TODO Need to find a suitable function name to check for
+    dnl echo "Error with test of libpango1. library not found"
+    dnl exit -1
+    dnl ])
+else
+    AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.4])
+fi
+
+dnl ---------------------------
+echo -n checking for package libpng12-0...
+dnl ---------------------------
+if $PKG_CONFIG libpng12 --atleast-version=1.2.8
+then
+    AC_MSG_RESULT([yes])
+    dnl AC_CHECK_LIB(libpng12, main, [], [   dnl  TODO Need to find a suitable function name to check for
+    dnl echo "Error with test of libpng, library not found"
+    dnl exit -1
+    dnl ])
+else
+    AC_MSG_ERROR([libpng12 is missing or your version is to old. Min Version 1.2.8])
+fi
+dnl ---------------------------
+
+dnl ---------------------------
+echo checking for package libstdc++6... TODO
+dnl ---------------------------
+echo checking for package libx11-6...   TODO
+dnl ---------------------------
+echo checking for package libxcursor1... TODO
+dnl ---------------------------
+
+dnl ---------------------------
+echo -n checking for package libxcursor1...
+dnl ---------------------------
+if $PKG_CONFIG xcursor --atleast-version=1.1.3
+then
+    AC_MSG_RESULT([yes])
+    AC_CHECK_LIB(fontconfig, XcursorImageCreate, [], [
+    echo "Error with test of xcursor library not found"
+    exit -1
+    ])
+else
+    AC_MSG_ERROR([libxcursor1 is missing or your version is to old. Min Version 1.1.3])
+fi
+dnl ----------------------------			
+
+dnl ---------------------------
+echo checking for package libxext6... TODO 
+dnl ---------------------------
+echo checking for package libxi6...   TODO
+dnl ---------------------------
+echo checking for package libxinerama1 1:0.9.0-1... TODO
+dnl ---------------------------
+echo checking for package zlib1g...  TODO
+dnl ---------------------------
+echo checking for package libgdal-grass 1.2.6-1+b1...  TODO
+dnl ---------------------------
+echo checking for package libsrces26-dev 2.6.0-6...   TODO
+dnl ---------------------------
+echo checking for package libmysqlclient14-dev 4.1.15-1... TODO
+dnl ---------------------------
+echo checking for package libtiff4-dev 3.7.4-1...  TODO
+dnl ---------------------------
+echo checking for package libjasper-1.701-dev...  TODO
+dnl ---------------------------
+echo checking for package libgeos-dev 2.1.4-2...  TODO
+dnl ---------------------------
+echo checking for package libgdal1-dev 1.2.6-1.3...  TODO
+dnl ---------------------------
+echo checking for package gdal-bin 1.2.6-1.3...  TODO
+dnl ---------------------------
+echo checking for package libgrass 6.0.1-3...  TODO
+dnl ---------------------------
+echo checking for package libgdal1-1.3.1-grass 1.3.1-1...  TODO
+dnl ---------------------------
+echo checking for package libhdf4g-dev 4.1r4-18.1... TODO
+dnl ---------------------------
+echo checking for package libungif4-dev 4.1.4-2...  TODO
+dnl ---------------------------
+echo checking for package netcdfg-dev 3.5.0-7.1...  TODO
+dnl ---------------------------
+echo checking for package libcfitsio-dev 2.510-1... TODO
+dnl ---------------------------
+
+dnl ---------------------------
+dnl echo -n checking for package libpqxx 2.5.5-2...
+dnl --------------------------
+dnl if $PKG_CONFIG libpqxx --atleast-version=2.5.5
+dnl then
+dnl    AC_MSG_RESULT([yes])
+dnl     dnl TODO AC_CHECK_LIB(libpqxx, main, [], [ dnl TODO Need to find a suitable function name to test for
+dnl     dnl echo "Error with test of libpqxx library not found"
+dnl     dnl exit -1
+dnl     dnl ])
+dnl else
+dnl    AC_MSG_ERROR([libpqxx is missing or your version is to old. Min Version 2.5.5])
+dnl fi
+dnl --------------------------------------------------------------------------------------
 
 CFLAGS="$CFLAGS -DHAVE_CAIRO `pkg-config cairo --cflags`"
 
