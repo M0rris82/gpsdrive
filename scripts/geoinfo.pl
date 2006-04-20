@@ -5,6 +5,11 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.8  2006/04/20 22:41:05  tweety
+# make database name variable
+# import osm POI too
+# add colog_bg, width, width_bg to db layout
+#
 # Revision 1.7  2006/04/03 07:10:03  tweety
 # add OSM Support Basic (Very slow, but the first results can be seen)
 #
@@ -177,6 +182,7 @@ our $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
 our $CONFIG_FILE   = "$CONFIG_DIR/gpsdriverc";
 our $MIRROR_DIR   = "$CONFIG_DIR/MIRROR";
 our $UNPACK_DIR   = "$CONFIG_DIR/UNPACK";
+our $GPSDRIVE_DB_NAME = "geoinfo";
 
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = 0;
@@ -236,6 +242,7 @@ GetOptions (
 	     'debug'               => \$debug,      
 	     'u=s'                 => \$db_user,
 	     'p=s'                 => \$db_password,
+	     'db-name'             => \$GPSDRIVE_DB_NAME,
 	     'db-user=s'           => \$db_user,
 	     'db-password=s'       => \$db_password,
 	     'delete-db-content'   => \$do_delete_db_content,
@@ -413,7 +420,7 @@ WARNING:
 
 B<Common usages:>
 
-poi.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb=??] [--mapsource_points='Filename']
+geoinfo.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb=??] [--mapsource_points='Filename']
 
 =head1 OPTIONS
 
@@ -597,6 +604,10 @@ For example for debug reasons for some inserts limit to the
 given rectangle.
 This feature is not implemented on all insert statements yet.
 
+
+=item B<--db-name>
+
+Name of Database to use; default is geoinfo
 
 =item B<--db-user>
 

@@ -1,154 +1,4 @@
 # Database Functions for poi.pl
-#
-# $Log$
-# Revision 1.7  2006/04/03 23:43:45  tweety
-# rename adj --> scaler_adj
-# rearrange code for some of the _cb
-#  streets_draw_cb
-#  poi_draw_cb
-# move map_dir_struct definition to src/gpsdrive.h
-# remove some of the history parts in the Files
-# save and read settings for display_map like "display_map_<name> = 1"
-# increase limit for displayed streets
-# change color of de.Strassen.Allgemein to x555555
-# OSM.pm make non way segments to Strassen.Allgemein
-# WDB check if yountryname is valid
-#
-# Revision 1.6  2006/03/10 08:37:09  tweety
-# - Replace Street/Track find algorithmus in Query Funktion
-#   against real Distance Algorithm (distance_line_point).
-# - Query only reports Track/poi/Streets if currently displaying
-#   on map is selected for these
-# - replace old top/map Selection by a MapServer based selection
-# - Draw White map if no Mapserver is selected
-# - Remove some useless Street Data from Examples
-# - Take the real colors defined in Database to draw Streets
-# - Add a frame to the Streets to make them look nicer
-# - Added Highlight Option for Tracks/Streets to see which streets are
-#   displayed for a Query output
-# - displaymap_top und displaymap_map removed and replaced by a
-#   Mapserver centric approach.
-# - Treaked a little bit with Font Sizes
-# - Added a very simple clipping to the lat of the draw_grid
-#   Either the draw_drid or the projection routines still have a slight
-#   problem if acting on negative values
-# - draw_grid with XOR: This way you can see it much better.
-# - move the default map dir to ~/.gpsdrive/maps
-# - new enum map_projections to be able to easily add more projections
-#   later
-# - remove history from gpsmisc.c
-# - try to reduce compiler warnings
-# - search maps also in ./data/maps/ for debugging purpose
-# - cleanup and expand unit_test.c a little bit
-# - add some more rules to the Makefiles so more files get into the
-#   tar.gz
-# - DB_Examples.pm test also for ../data and data directory to
-#   read files from
-# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-# - gpsfetchmap.pl:
-#   - adapt zoom levels for landsat maps
-#   - correct eniro File Download. Not working yet, but gets closer
-#   - add/correct some of the Help Text
-# - Update makefiles with a more recent automake Version
-# - update po files
-#
-# Revision 1.5  2006/02/17 08:11:06  tweety
-# generate traffic table too
-#
-# Revision 1.4  2006/02/08 11:03:44  tweety
-# improve Quality of Example Streets
-# update icoins
-#
-# Revision 1.3  2006/01/01 17:07:01  tweety
-# improve speed a little bit
-# update --help infos
-#
-# Revision 1.2  2005/10/11 08:28:35  tweety
-# gpsdrive:
-# - add Tracks(MySql) displaying
-# - reindent files modified
-# - Fix setting of Color for Grid
-# - poi Text is different in size depending on Number of POIs shown on
-#   screen
-#
-# geoinfo:
-#  - get Proxy settings from Environment
-#  - create tracks Table in Database and fill it
-#    this separates Street Data from Track Data
-#  - make geoinfo.pl download also Opengeodb Version 2
-#  - add some poi-types
-#  - Split off Filling DB with example Data
-#  - extract some more Funtionality to Procedures
-#  - Add some Example POI for Kirchheim(Munich) Area
-#  - Adjust some Output for what is done at the moment
-#  - Add more delayed index generations 'disable/enable key'
-#  - If LANG=*de_DE* then only impert europe with --all option
-#  - WDB will import more than one country if you wish
-#  - add more things to be done with the --all option
-#
-# Revision 1.1  2005/08/15 13:54:22  tweety
-# move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
-#
-# Revision 1.22  2005/08/15 07:58:25  tweety
-# add prototypes
-#
-# Revision 1.21  2005/08/14 09:47:17  tweety
-# seperate tracks into it own table in geoinfo database
-# move Info's from TODO abaout geoinfo DB to Man Page
-# rename poi.pl to geoinfo.pl
-#
-# Revision 1.20  2005/08/09 01:08:30  tweety
-# Twist and bend in the Makefiles to install the DataDirectory more apropriate
-# move the perl Functions to Geo::Gpsdrive in /usr/share/perl5/Geo/Gpsdrive/POI
-# adapt icons.txt loading according to these directories
-#
-# Revision 1.19  2005/05/24 08:35:25  tweety
-# move track splitting to its own function +sub track_add($)
-# a little bit more error handling
-# earth_distance somtimes had complex inumbers as result
-# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-# this way i can re-read all currently displayed streets from the DB
-# fix minor array iindex counting bugs
-# add some content to the comment column
-#
-# Revision 1.18  2005/05/14 21:21:23  tweety
-# Update Index createion
-# Update default Streets
-# Eliminate some undefined Value
-#
-# Revision 1.17  2005/05/10 05:28:49  tweety
-# type in disable_keys
-#
-# Revision 1.16  2005/05/01 13:49:36  tweety
-# Added more Icons
-# Moved filling with defaults to DB_Defaults.pm
-# Added some more default POI Types
-# Added icons.html to see which icons are used
-# Added more Comments
-# Reformating Makefiles
-# Added new options for importing from way*.txt and adding defaults
-# Added more source_id and type_id
-#
-# Revision 1.15  2005/04/12 06:12:58  tweety
-# DBFuncs:
-#  delete_all_from_source($source_name) now deletes streets and poi
-#  more poi_type_names
-#  adjusted some of the allocations old Waypoint-Type --> POI_type
-#  read waypoint files with an \t seperator
-#  Insert Street Samples
-# poi.c:
-#  Added Full Path Search for Icons
-# streets.c:
-#  implement basic colors for streets
-#  added text to streets in debug mode
-#
-# Revision 1.14  2005/04/10 00:15:58  tweety
-# changed primary language for poi-type generation to english
-# added translation for POI-types
-# added some icons classifications to poi-types
-# added LOG: Entry for CVS to some *.pm Files
-#
 
 package Geo::Gpsdrive::DBFuncs;
 
@@ -228,7 +78,7 @@ sub column_names($){
     }
 
     my $dbh = db_connect();
-    my $query = "SHOW COLUMNS FROM geoinfo.$table;";
+    my $query = "SHOW COLUMNS FROM $main::GPSDRIVE_DB_NAME.$table;";
 
     my $sth=$dbh->prepare($query) or die $dbh->errstr;
     $sth->execute()               or die $sth->errstr;
@@ -331,10 +181,10 @@ sub insert_hash($$;$) {
 
 #############################################################################
 # All necessary information for connecting the DB
-# these are:  host,  user and passwort; the db is always geoinfo
+# these are:  host,  user and passwort; the db is always $main::GPSDRIVE_DB_NAME
 my $dbh;
 sub db_connect() {
-    my $db           = 'geoinfo';
+    my $db           = $main::GPSDRIVE_DB_NAME;
     my $opt_user     = $main::db_user;
     my $opt_password = $main::db_password;
     my $host         = 'localhost';
@@ -501,9 +351,10 @@ sub poi_type_list(){
 my $streets_type_id_cache;
 sub streets_type_name2id($){
     my $type_name = shift ||'';
-    my $streets_type_id;
 
     return 0 unless $type_name;
+
+    my $streets_type_id;
 
     if ( defined $streets_type_id_cache->{$type_name} ) {
 	$streets_type_id = $streets_type_id_cache->{$type_name};
@@ -908,9 +759,9 @@ sub create_db(){
     my $dbh;
     my $sth; 
 
-    $create_statement='CREATE DATABASE IF NOT EXISTS geoinfo;';
+    $create_statement="CREATE DATABASE IF NOT EXISTS $main::GPSDRIVE_DB_NAME;";
     my $drh = DBI->install_driver("mysql");
-    my $rc = $drh->func('createdb', 'geoinfo', 'localhost', 
+    my $rc = $drh->func('createdb', $main::GPSDRIVE_DB_NAME, 'localhost', 
 			$main::db_user,$main::db_password, 'admin');
     $dbh = db_connect();
     $sth = $dbh->prepare($create_statement);
@@ -978,9 +829,16 @@ sub create_db(){
                       `name_de`         varchar(80)      NULL default \'en\',
                       `description`     varchar(160)     NULL default \'\',
                       `description_de`  varchar(160)     NULL default \'\',
-                      `color`           varchar(80)      NULL default \'\',
+                      `color`           varchar(20)      NULL default \'\',
+                      `color_bg`        varchar(20)      NULL default \'\',
+                      `width`           int(2)           NULL default \'1\',
+                      `width_bg`        int(2)           NULL default \'2\',
                       `linetype`        varchar(80)      NULL default \'\',
-                      PRIMARY KEY  (`streets_type_id`)
+'. #                  vvvvvvvvvvv For later use
+'                     `scale_min`     int(12)      NOT NULL default \'0\',
+                      `scale_max`     int(12)      NOT NULL default \'0\',
+'. #                  ^^^^^^^^^^^ For later use
+'                     PRIMARY KEY  (`streets_type_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('streets_type');
 
@@ -1012,9 +870,16 @@ sub create_db(){
                       `symbol`      varchar(160)     NULL default \'\',
                       `description` varchar(160)     NULL default \'\',
                       `description_de` varchar(160)     NULL default \'\',
-                      `color`           varchar(80)      NULL default \'\',
+                      `color`           varchar(20)      NULL default \'\',
+                      `color_bg`        varchar(20)      NULL default \'\',
+                      `width`           int(2)           NULL default \'1\',
+                      `width_bg`        int(2)           NULL default \'2\',
                       `linetype`        varchar(80)      NULL default \'\',
-                      PRIMARY KEY  (`track_type_id`)
+'. #                  vvvvvvvvvvv For later use
+'                     `scale_min`     int(12)      NOT NULL default \'0\',
+                      `scale_max`     int(12)      NOT NULL default \'0\',
+'. #                  ^^^^^^^^^^^ For later use
+'                     PRIMARY KEY  (`track_type_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('tracks_type');
 
@@ -1037,7 +902,11 @@ sub create_db(){
                       `symbol`      varchar(160)     NULL default \'\',
                       `description` varchar(160)     NULL default \'\',
                       `description_de` varchar(160)     NULL default \'\',
-                      PRIMARY KEY  (`poi_type_id`)
+'. #                  vvvvvvvvvvv For later use
+'                     `scale_min`     int(12)      NOT NULL default \'0\',
+                      `scale_max`     int(12)      NOT NULL default \'0\',
+'. #                  ^^^^^^^^^^^ For later use
+'                      PRIMARY KEY  (`poi_type_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('poi_type');
 
@@ -1076,7 +945,7 @@ sub create_db(){
     # -----------------------------------------------------------------------------
     # Set Privileges
     # TODO: Split priviledges
-    db_exec('grant select,insert,update,delete on geoinfo.* to gast@localhost identified by \'gast\'');
+    db_exec("grant select,insert,update,delete on $main::GPSDRIVE_DB_NAME.* to gast\@localhost identified by \'gast\'");
     db_exec('flush privileges;');
 
     print "Creation completed\n";

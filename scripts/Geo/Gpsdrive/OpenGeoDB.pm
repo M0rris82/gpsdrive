@@ -1,6 +1,11 @@
 # Import Data from Open GEO DB to geoinfo.poi
 #
 # $Log$
+# Revision 1.5  2006/04/20 22:41:05  tweety
+# make database name variable
+# import osm POI too
+# add colog_bg, width, width_bg to db layout
+#
 # Revision 1.4  2006/02/13 18:56:23  tweety
 # Update to new Version of Database
 #
@@ -210,7 +215,7 @@ sub import_Data() {
 	or die "Cannot create Directory $unpack_dir:$!\n";
     
     # download
-    my $file_name ="opengeodb-0.2.4c-UTF8-text-orte.zip";
+    my $file_name ="opengeodb-0.2.4d-UTF8-text-orte.zip";
     my $url = "http://dl.sourceforge.net/sourceforge/opengeodb/$file_name";
     print "Mirror $url\n";
     my $mirror = mirror_file($url,"$mirror_dir/$file_name");

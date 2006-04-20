@@ -253,7 +253,7 @@ sub getstreet {
 		if($main::sql){
 		$comment = $split[3];
 		print "comment: $comment\n";
-		    my $dbh = DBI->connect( 'dbi:mysql:geoinfo', $main::db_user, $main::db_password ) || die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
+		    my $dbh = DBI->connect( "dbi:mysql:$main::GPSDRIVE_DB_NAME", $main::db_user, $main::db_password ) || die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
 		    my $query ="insert into waypoints(name,lat,lon,type,comment) values('$str','$cord[0]','$cord[1]','$type','$comment')";
 		    $dbh->prepare($query)->execute;
 		}else{

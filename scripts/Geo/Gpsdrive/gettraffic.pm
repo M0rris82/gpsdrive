@@ -1,6 +1,11 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.2  2006/04/20 22:41:05  tweety
+# make database name variable
+# import osm POI too
+# add colog_bg, width, width_bg to db layout
+#
 # Revision 1.1  2006/02/01 18:08:01  tweety
 # 2 new features by  Stefan Wolf
 #
@@ -42,7 +47,7 @@ sub gettraffic(){
     system("rm -f $datei");
     my $x =0;
     my @data;
-    my $dbh = DBI->connect( 'dbi:mysql:geoinfo', $main::db_user, $main::db_password ) 
+    my $dbh = DBI->connect( "dbi:mysql:$main::GPSDRIVE_DB_NAME", $main::db_user, $main::db_password ) 
 	|| die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
 
     #clear table
@@ -63,7 +68,7 @@ sub showtraffic(){
     #nur Autobahnen und Bundesstraßen raussuchen
     my $query = "select status,street,descshort,desclong from traffic where street like 'A%' or street like 'B%'";
     
-    my $dbh = DBI->connect( 'dbi:mysql:geoinfo', $main::db_user, $main::db_password ) 
+    my $dbh = DBI->connect( "dbi:mysql:$main::GPSDRIVE_DB_NAME", $main::db_user, $main::db_password ) 
 	|| die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
     my $sth = $dbh->prepare( $query );
     $sth->execute();
