@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.8  2006/04/22 00:36:12  tweety
+Backgroud map for Vectordata is now light Yellow
+
 Revision 1.7  2006/04/03 23:43:45  tweety
 rename adj --> scaler_adj
 rearrange code for some of the _cb
@@ -904,7 +907,7 @@ testnewmap ()
       if ( show_white_background )
 	  {
 	      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-	      g_strlcpy (mapfilename, "map_White.png", sizeof (mapfilename));
+	      g_strlcpy (mapfilename, "map_LightYellow.png", sizeof (mapfilename));
 	      mapscale = (glong)scalewanted;
 	      pixelfact = mapscale / PIXELFACT;
 	      zero_lat = current_lat;
