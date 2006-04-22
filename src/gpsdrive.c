@@ -2371,7 +2371,8 @@ draw_grid (GtkWidget * widget)
 						lon);
 				posxdist = (posxdest12 - posxdest11) / 4;
 				posydist = (posydest12 - posydest11) / 4;
-				draw_grid_text (widget, posxdest11 + posxdist,
+				draw_grid_text (widget, 
+						posxdest11 + posxdist,
 						posydest11 + posydist, str);
 				
 				// Text lat
@@ -2386,8 +2387,9 @@ draw_grid (GtkWidget * widget)
 						lat);
 				posxdist = (posxdest21 - posxdest11) / 4;
 				posydist = (posydest21 - posydest11) / 4;
-				draw_grid_text (widget, posxdest11 + posxdist,
-						posydest11 + posydist, str);
+				draw_grid_text (widget, 
+						posxdest11 + posxdist,
+						posydest11 + posydist-5, str);
 			    }
 		    }
 	    }
@@ -2710,8 +2712,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (usesql)
 	{
-		poi_draw_list ();
 		streets_draw_list ();
+		poi_draw_list ();
 		tracks_draw_list ();
 	}
 
