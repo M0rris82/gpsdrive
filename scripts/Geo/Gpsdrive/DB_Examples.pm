@@ -283,9 +283,9 @@ sub fill_examples(){
     fill_example_cities("poi/cities.txt");
     fill_example_cities("poi/cities_germany.txt");
     fill_example_waypoints("poi/germany.txt");
-    fill_example_streets("streets/Autobahnen.txt");
-    fill_example_streets("streets/Streets.txt");
-    fill_example_streets("streets/Streets_au.txt");
+#    fill_example_streets("streets/Autobahnen.txt");
+#    fill_example_streets("streets/Streets.txt");
+#    fill_example_streets("streets/Streets_au.txt");
 
     print "Create Examples completed\n";
 }
