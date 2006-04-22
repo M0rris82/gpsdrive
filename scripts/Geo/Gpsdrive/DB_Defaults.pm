@@ -1,6 +1,9 @@
 # Database Defaults for poi/streets Table for poi.pl
 #
 # $Log$
+# Revision 1.12  2006/04/22 00:39:22  tweety
+# add Backgroudcolor as coloumn to DB
+#
 # Revision 1.11  2006/04/20 22:41:05  tweety
 # make database name variable
 # import osm POI too
@@ -358,6 +361,7 @@ my @poi_type_names
 	  area.pedestrian_zone
 	  area.state
 	  area.tunnel
+	  area.railway-crossing
 	  bank
 	  bank.ATM
 	  bank.ATM.EC
@@ -580,6 +584,7 @@ my @poi_type_names
 	  transport.public.ferry.car
 	  transport.public.interurban_train_station
 	  transport.public.railway
+	  transport.public.station.lift
 	  transport.public.station.bus
 	  transport.public.station.railroad
 	  transport.public.station.subway_city
@@ -778,6 +783,7 @@ my $translate_de = {
     'large'                 => "Gross",
     'letter-box'            => 'Briefkasten',
     'lidl'                  => "Lidl",
+    'lift'                  => "Lift",
     'literature'            => 'Literatur',
     'marker-1'              => "Marke_1",
     'marker-2'              => "Marke_2",
@@ -839,6 +845,7 @@ my $translate_de = {
     'racing'                => "Rennen",
     'railroad'              => "Eisenbahn",
     'railway'               => "Eisenbahn",
+    'railway-crossing'      => "Bahnuebergang",
     'recreation'            => 'Freizeit',
     'recycling'             => 'Recycling',
     'recycling_centre'      => 'Wertstoffhof',
@@ -1106,6 +1113,8 @@ sub fill_default_poi_types() {
 
     my $poi_type_id=0;
     for my $name  ( @poi_type_names ) {
+	my $scale_min=1;
+	my $scale_max=100000;
 	$poi_type_id++;
 
 	# Translate the entries
@@ -1123,8 +1132,8 @@ sub fill_default_poi_types() {
 	# Insert to Database
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
 	Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `poi_type` ".
-					"       (poi_type_id, name,name_de, symbol, description,description_de ) \n".
-					"	VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de');") 
+					"       (poi_type_id, name,name_de, symbol, description,description_de,scale_min,scale_max ) \n".
+					"	VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de','$scale_min','$scale_max');") 
 	    or die;
 	$i++;
     } # of for @poi_type_names
@@ -1194,11 +1203,11 @@ sub fill_default_street_types() {   # Fill streets_type database
 
     # Entries for WDB
     for my $kind ( qw(bdy cil riv) ) {
-	for my $rank ( 1.. 20 ) {
+	for my $rank ( 1.. 15 ) {
 	    $color = "#000000";
-	    $color = "#0000FF" if $kind eq"riv"; # Water
-	    $color = "#001010" if $kind eq"bdy"; # 
-	    $color = "#004400" if $kind eq"cil"; # 
+	    $color = "#0000FF" if $kind eq "riv"; # Water
+	    $color = "#001010" if $kind eq "bdy"; # 
+	    $color = "#004400" if $kind eq "cil"; # 
 	    $lang = "de";
 	    $name = "WDB $kind rank ${rank}";
 	    my $linetype='';
@@ -1217,30 +1226,35 @@ sub fill_default_street_types() {   # Fill streets_type database
     # TODO: make english primary language
     my @streets_types = qw( xFFFFFF_x000000_w1_4_z00001000_de.unbekannt
 			    x555555_x000000_w2_4_z00010000_de.Strassen.Allgemein
-			    x555555_x000000_w2_4_z00010000_de.Strassen.minor
-			    x558866_x000000_w2_4_z00010000_de.Strassen.residential
-			    x557777_x000000_w2_4_z00010000_de.Strassen.primary
-			    x557766_x000000_w2_4_z00010000_de.Strassen.secondary
+			    x557777_x000000_w2_4_z00100000_de.Strassen.primary
 			    x557766_x000000_w2_4_z00100000_de.Strassen.mayor
-			    x222222_x000000_w2_4_z00010000_de.Strassen.Wanderweg
-			    x222222_x000000_w2_4_z00010000_de.Strassen.Fahrrad
-			    x222222_x000000_w2_4_z00010000_de.Strassen.Fussweg
-			    x222222_x000000_w2_4_z00010000_de.Strassen.Reitweg
-			    x222222_x000000_w2_4_z00010000_de.Strassen.Trampelpfad
-			    x00FFFF_x000000_w2_4_z00010000_de.Strassen.30_4_zohne
-			    xFFFF00_x000000_w2_4_z10000000_de.Strassen.Autobahn
-			    xFFFF00_x000000_w2_4_z00100000_de.Strassen.Bundesstrasse
+			    x557766_x555555_w2_4_z00010000_de.Strassen.secondary
+			    x558866_x000000_w2_4_z00010000_de.Strassen.residential
+			    x555555_x000000_w1_2_z00001000_de.Strassen.minor
+
+			    x00FFFF_xAA0000_w2_4_z10000000_de.Strassen.Highway
+			    xFFFF00_xAA0000_w2_4_z10000000_de.Strassen.Autobahn
+			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Bundesstrasse
+			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Landstrasse
 			    x00FFFF_x000000_w2_4_z00010000_de.Strassen.Innerorts
-			    xFFFF00_x000000_w2_4_z00100000_de.Strassen.Landstrasse
-			    x00FFFF_x000000_w2_4_z01000000_de.Strassen.Highway
+			    x00FFFF_x55555_w1_2_z00010000_de.Strassen.30_Zohne
+
+			    x222222_x555555_w2_4_z00010000_de.Strassen.Wanderweg
+			    x222222_x555555_w2_4_z00010000_de.Strassen.Fahrrad
+			    x222222_x555555_w2_4_z00010000_de.Strassen.Fussweg
+			    x222222_x557755_w2_4_z00010000_de.Strassen.Reitweg
+			    x222222_x555555_w2_4_z00010000_de.Strassen.Trampelpfad
+
 			    x444444_x000000_w2_4_z01000000_de.Schiene.ICE_Trasse
 			    x444444_x000000_w2_4_z00100000_de.Schiene.Zug_Trasse
 			    x002222_x000000_w2_4_z00010000_de.Schiene.S_Bahn_Trasse
 			    x000022_x000000_w2_4_z00010000_de.Schiene.U_Bahn_Trasse
 			    x000000_x000000_w2_4_z00010000_de.Schiene.Bus_Trasse
-			    x444444_x000000_w2_4_z01000000_de.Grenzen.Landesgrenze
+
+			    x444444_x000000_w2_4_z10000000_de.Grenzen.Landesgrenze
 			    x444444_x000000_w2_4_z01000000_de.Grenzen.Bundesland_Grenze
-			    x444444_x000000_w2_4_z01000000_de.Grenzen.Stand_Grenze
+			    x444444_x000000_w2_4_z01000000_de.Grenzen.Stadt_Grenze
+
 			    x0000FF_x000000_w2_4_z01000000_de.Wasser.Fluss
 			    x000FFF_x000000_w2_4_z01000000_de.Wasser.Kueste
 			    );
