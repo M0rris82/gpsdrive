@@ -822,6 +822,7 @@ writeconfig ()
 			 display_map[i].name,
 			 display_map[i].to_be_displayed);
 	    }
+	
 
 
 	fclose (fp);
@@ -1037,7 +1038,7 @@ readconfig ()
 			tracks_draw = atoi (par2);
 		    else if ( ! strncmp(par1, "display_map_",12) )
 			{
-			    printf ("display_map: %s %s\n",par1,par2);
+			    // printf ("display_map: %s %s\n",par1,par2);
 			    max_display_map += 1;
 			    display_map = g_renew(map_dir_struct, display_map, max_display_map);
 			    g_strlcpy (display_map[max_display_map-1].name,
