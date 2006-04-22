@@ -376,6 +376,9 @@ sub streets_type_name2id($){
 	$sth->finish;
     }
 
+    if ( ! $streets_type_id ) {
+	warn "No Type named '$type_name' found in streets_type\n";
+    }
 #    debug("Type: $type_name -> $streets_type_id");
 
     return $streets_type_id;
