@@ -612,26 +612,28 @@ GdkCursor *cursor;
 #ifdef EXPEDIA_SCALES_ONLY
 gint slistsize = 10;
 gchar *slist[] = { "5000", "15000", "20000", "50000", "100000", "200000",
-	"750000", "3000000", "7500000", "75000000"
+		   "750000", "3000000", "7500000", "75000000"
 };
 gint nlist[] = { 5000, 15000, 20000, 50000, 100000, 200000,
-	750000, 3000000, 7500000, 75000000
+		 750000, 3000000, 7500000, 75000000
 };
 #else
 gint slistsize = 30;
-gchar *slist[] = { "1000", "1500", "2000", "3000", "5000", "7500", "10000",
-	"15000", "20000", "30000", "50000", "75000", "100000", "150000",
-	"200000",
-	"300000", "500000", "750000", "1000000", "1500000", "2000000",
-	"3000000",
-	"5000000", "7500000", "10000000", "15000000", "20000000", "30000000",
-	"50000000", "75000000"
+gchar *slist[] = { "100", "500", 
+		   "1000", "1500", "2000", "3000", "5000", "7500", "10000",
+		   "15000", "20000", "30000", "50000", "75000", "100000", "150000",
+		   "200000",
+		   "300000", "500000", "750000", "1000000", "1500000", "2000000",
+		   "3000000",
+		   "5000000", "7500000", "10000000", "15000000", "20000000", "30000000",
+		   "50000000", "75000000"
 };
-gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
-	10000, 15000, 20000, 30000, 50000, 75000,
-	100000, 150000, 200000, 300000, 500000, 750000,
-	1000000, 1500000, 2000000, 3000000, 5000000, 7500000,
-	10000000, 15000000, 20000000, 30000000, 50000000, 75000000
+gint nlist[] = { 100, 150, 200, 300, 500, 750,
+		 1000, 1500, 2000, 3000, 5000, 7500,
+		 10000, 15000, 20000, 30000, 50000, 75000,
+		 100000, 150000, 200000, 300000, 500000, 750000,
+		 1000000, 1500000, 2000000, 3000000, 5000000, 7500000,
+		 10000000, 15000000, 20000000, 30000000, 50000000, 75000000
 };
 #endif
 
@@ -2292,7 +2294,14 @@ draw_grid (GtkWidget * widget)
 
 	// Calculate distance between grid lines
 	step = (gdouble) mapscale / 2000000.0 / zoom;
- 
+	gchar precission[10];
+	if (step >= 1)	            g_snprintf (precission, sizeof (precission), "%%.0f");
+	else if (step >= .1)	    g_snprintf (precission, sizeof (precission), "%%.1f");
+	else if (step >= .01)	    g_snprintf (precission, sizeof (precission), "%%.2f");
+	else if (step >= .001)	    g_snprintf (precission, sizeof (precission), "%%.3f");
+	else if (step >= .0001)	    g_snprintf (precission, sizeof (precission), "%%.4f");
+	else           		    g_snprintf (precission, sizeof (precission), "%%.5f");
+
 	if (mapscale < 5000000)
 	{
 		lat_min = min (lat_ll, lat_ul) - step;
@@ -2360,15 +2369,8 @@ draw_grid (GtkWidget * widget)
 					       posydest12);
 			    
 				// Text lon
-				if (step >= 1)
-				    g_snprintf (str, sizeof (str), "%.0f",
-						lon);
-				else if (step >= .1)
-				    g_snprintf (str, sizeof (str), "%.1f",
-						lon);
-				else
-				    g_snprintf (str, sizeof (str), "%.2f",
-						lon);
+				g_snprintf (str, sizeof (str), precission,lon);
+
 				posxdist = (posxdest12 - posxdest11) / 4;
 				posydist = (posydest12 - posydest11) / 4;
 				draw_grid_text (widget, 
@@ -2376,15 +2378,8 @@ draw_grid (GtkWidget * widget)
 						posydest11 + posydist, str);
 				
 				// Text lat
-				if (step >= 1)
-				    g_snprintf (str, sizeof (str), "%.0f",
-						lat);
-				else if (step >= .1)
-				    g_snprintf (str, sizeof (str), "%.1f",
-						lat);
-				else
-				    g_snprintf (str, sizeof (str), "%.2f",
-						lat);
+				g_snprintf (str, sizeof (str), precission,lat);
+					    
 				posxdist = (posxdest21 - posxdest11) / 4;
 				posydist = (posydest21 - posydest11) / 4;
 				draw_grid_text (widget, 
