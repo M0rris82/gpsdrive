@@ -26,17 +26,21 @@ Disclaimer: Please do not use for navigation.
  * streets_ support module: display
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include "gpsdrive.h"
-#include "streets.h"
 #include "config.h"
 #include "gettext.h"
-#include <time.h>
-#include <sys/time.h>
+#include "gpsdrive.h"
 #include "icons.h"
+#include "streets.h"
+#include <fcntl.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "gettext.h"
 
@@ -98,9 +102,12 @@ typedef struct
   gchar name[80];
   gchar icon_name[80];
   GdkColor color;
+  GdkColor color_bg;
+  gint width;
+  gint width_bg;
   GdkPixbuf *icon;
 } streets_type_struct;
-#define streets_type_list_max 500
+#define streets_type_list_max 1500
 streets_type_struct streets_type_list[streets_type_list_max];
 int streets_type_list_count = 0;
 
@@ -128,7 +135,7 @@ posxy_on_screen (gdouble posx, gdouble posy)
 void
 streets_init (void)
 {
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("Streets init\n");
 
   get_streets_type_list ();
@@ -175,7 +182,7 @@ streets_check_if_moved (void)
   if (streets_lat_lr == lat_lr && streets_lon_lr == lon_lr &&
       streets_lat_ul == lat_ul && streets_lon_ul == lon_ul)
     return 0;
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_check_if_moved: Streets Display moved\n");
   return 1;
 }
@@ -191,14 +198,15 @@ get_streets_type_list (void)
   if (!usesql)
     return;
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("get_streets_type_list ()\n");
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT streets_type_id,name,color FROM streets_type ORDER BY streets_type_id");
+	      "SELECT streets_type_id,name,color,color_bg,width,width_bg "
+	      "FROM streets_type ORDER BY streets_type_id");
 
-  if ( mydebug > 20)
-    printf ("QUERY:%s\n",sql_query);
+  if (mydebug > 20)
+    printf ("QUERY:%s\n", sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
     {
@@ -218,48 +226,84 @@ get_streets_type_list (void)
 
   while ((row = dl_mysql_fetch_row (res)))
     {
-	if ( mydebug > 25 )
-	    printf ("got ROW %s,	%s,	%s\n",
-		    row[0],row[1],row[2]);
+      if (mydebug > 25)
+	printf ("got ROW %s,	%s,	%s\n", row[0], row[1], row[2]);
 
       streets_type_list_count = (gint) g_strtod (row[0], NULL);
-      if (streets_type_list_count < streets_type_list_max)
+      if (streets_type_list_count >= streets_type_list_max)
 	{
-	  streets_type_list[streets_type_list_count].streets_type_id
-	      = streets_type_list_count;
+	  printf
+	    ("------------------------------------------------------------\n");
+	  printf ("ERROR: streets_type_list_count exeeded limit\n");
 
-	  // -------- street.name
-	  if ( NULL == row[1] )
-	    {
-	      streets_type_list[streets_type_list_count].name[0] = '\0';
-	    }
-	  else
-	    {
-	      // memorize name
-	      g_strlcpy (streets_type_list
-			 [streets_type_list_count].name,
-			 row[1],
-			 sizeof (streets_type_list
-				 [streets_type_list_count].name));
-	    }
-
-	  // read and convert Color Settings for this Street Type
-	  if ( ! gdk_color_parse ( (gchar *)row[2] , &streets_type_list[streets_type_list_count].color ) ) {
-	      printf( "------------------------------------------------------------\n");
-	      printf ("ERROR: Invalid Color: %s\n",row[2]);
-	      streets_type_list[streets_type_list_count].color = red;
-	  }
-	  if (!gdk_colormap_alloc_color(gdk_colormap_get_system(),
-					&streets_type_list[streets_type_list_count].color, 
-					FALSE, TRUE))
-	      {
-		  printf( "------------------------------------------------------------\n");
-		  printf("ERROR: Error in alloc: %s\n",row[2]);
-		  streets_type_list[streets_type_list_count].color = red;
-	      }
-	  
-	  ;
+	  exit (-1);
 	}
+
+
+      streets_type_list[streets_type_list_count].streets_type_id
+	= streets_type_list_count;
+
+      // -------- street.name
+      if (NULL == row[1])
+	{
+	  streets_type_list[streets_type_list_count].name[0] = '\0';
+	}
+      else
+	{
+	  // memorize name
+	  g_strlcpy (streets_type_list
+		     [streets_type_list_count].name,
+		     row[1],
+		     sizeof (streets_type_list
+			     [streets_type_list_count].name));
+	}
+
+      // read and convert Color Settings for this Street Type
+      if (!gdk_color_parse ((gchar *) row[2],
+			    &streets_type_list[streets_type_list_count].
+			    color))
+	{
+	  printf ("-----------------------------------------\n");
+	  printf ("ERROR: Invalid Street Color: %s for ID=%d\n", row[2],
+		  streets_type_list_count);
+	  streets_type_list[streets_type_list_count].color = red;
+	}
+      if (!gdk_colormap_alloc_color (gdk_colormap_get_system (),
+				     &streets_type_list
+				     [streets_type_list_count].color,
+				     FALSE, TRUE))
+	{
+	  printf ("------------------------------------------\n");
+	  printf ("ERROR: Error in alloc: %s\n", row[2]);
+	  streets_type_list[streets_type_list_count].color = red;
+	};
+
+      // --------------------------------------------
+      // read and convert bg Color Settings for this Street Type
+      if (!gdk_color_parse ((gchar *) row[3],
+			    &streets_type_list[streets_type_list_count].
+			    color_bg))
+	{
+	  printf ("------------------------------------------\n");
+	  printf ("ERROR: Invalid BG Street Color: %s for ID=%d\n", row[3],
+		  streets_type_list_count);
+	  streets_type_list[streets_type_list_count].color_bg = black;
+	}
+      if (!gdk_colormap_alloc_color (gdk_colormap_get_system (),
+				     &streets_type_list
+				     [streets_type_list_count].color_bg,
+				     FALSE, TRUE))
+	{
+	  printf ("-----------------------------------------\n");
+	  printf ("ERROR: Error in alloc: %s\n", row[3]);
+	  streets_type_list[streets_type_list_count].color_bg = black;
+	};
+
+      streets_type_list[streets_type_list_count].width =
+	(gint) g_strtod (row[4], NULL);
+      streets_type_list[streets_type_list_count].width_bg =
+	(gint) g_strtod (row[5], NULL);
+
     }
 
   if (!dl_mysql_eof (res))
@@ -307,21 +351,21 @@ streets_rebuild_list (void)
   if (importactive)
     return;
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf
       ("streets_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvv\n");
 
   if (!streets_draw)
     {
-      if ( mydebug > 50 )
+      if (mydebug > 50)
 	printf ("streets_rebuild_list: streets_draw is off\n");
       return;
     }
 
-  { // calculate the start and stop for lat/lon according to the displayed section
-    calcxytopos (0, 0,               &lat_ul, &lon_ul, zoom);
-    calcxytopos (0, SCREEN_Y,        &lat_ll, &lon_ll, zoom);
-    calcxytopos (SCREEN_X, 0,        &lat_ur, &lon_ur, zoom);
+  {				// calculate the start and stop for lat/lon according to the displayed section
+    calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+    calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
+    calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
     calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
 
     lat_min = min (lat_ll, lat_ul);
@@ -341,7 +385,7 @@ streets_rebuild_list (void)
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
 
-  { // TODO: change the selection against real LINE crosses visible RECTANGLE
+  {				// TODO: change the selection against real LINE crosses visible RECTANGLE
     // TODO: not only start or endpoint are in rectangle
     // TODO: This will hopefully be easy as soon as we use the geometric extentions 
     // TODO: with the geometric objects of mysql
@@ -358,7 +402,7 @@ streets_rebuild_list (void)
 		lat_min, lat_max, lon_min, lon_max,
 		lat_min, lat_max, lon_min, lon_max, mapscale);
     g_strdelimit (sql_where, ",", '.');	// For different LANG
-    if ( mydebug > 50 )
+    if (mydebug > 50)
       {
 	// printf ("STREETS mysql where: %s\n", sql_where );
 	printf ("streets_rebuild_list: STREETS mapscale: %ld\n", mapscale);
@@ -374,7 +418,7 @@ streets_rebuild_list (void)
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
 	      "FROM streets " "%s LIMIT 2000000", sql_where);
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
@@ -393,7 +437,7 @@ streets_rebuild_list (void)
       return;
     }
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_rebuild_list: processing rows\n");
   rges = r = 0;
   streets_list_count = -1;
@@ -419,7 +463,7 @@ streets_rebuild_list (void)
 	  if (streets_list_count >= streets_list_limit)
 	    {
 	      streets_list_limit = streets_list_count + 1000;
-	      if ( mydebug > 50 )
+	      if (mydebug > 50)
 		printf
 		  ("streets_rebuild_list: renew memory for street list: %ld\n",
 		   streets_list_limit);
@@ -434,10 +478,12 @@ streets_rebuild_list (void)
 		  return;
 		}
 	    }
-	  if ( mydebug > 90)
+	  if (mydebug > 90)
 	    {
-		printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count, streets_list_limit);
-		printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2, lon2);
+	      printf ("streets_rebuild_list: %ld(%ld)\t", streets_list_count,
+		      streets_list_limit);
+	      printf ("pos: (%.4f ,%.4f) (%.4f ,%.4f)\n", lat1, lon1, lat2,
+		      lon2);
 	    }
 
 	  // Save retrieved streets information into structure
@@ -453,14 +499,14 @@ streets_rebuild_list (void)
 	    (gint) g_strtod (row[5], NULL);
 	  (streets_list + streets_list_count)->highlight = FALSE;
 
-	  if ( NULL == row[4] )
+	  if (NULL == row[4])
 	    (streets_list + streets_list_count)->name[0] = '\0';
 	  else
 	    g_strlcpy ((streets_list + streets_list_count)->name,
 		       row[4],
 		       sizeof ((streets_list + streets_list_count)->name));
 
-	  if ( NULL == row[6] )
+	  if (NULL == row[6])
 	    (streets_list + streets_list_count)->comment[0] = '\0';
 	  else
 	    g_strlcpy ((streets_list + streets_list_count)->comment,
@@ -468,23 +514,25 @@ streets_rebuild_list (void)
 		       sizeof ((streets_list + streets_list_count)->comment));
 	}
       else
-	  {
-	  
-	      if ( ! posxy_on_screen (streets_posx1, streets_posy1) )
-		  {
-		      if ( mydebug > 10 ) 
-			  printf("pos1 of Street not on screen:(%g,%g)\n",streets_posx1, streets_posy1);
-		  }
-	      if ( ! posxy_on_screen (streets_posx2, streets_posy2))
-		  {
-		      if ( mydebug > 10 ) 
-			  printf("pos2 of Street not on screen:(%g,%g)\n",streets_posx2, streets_posy2);
-		  }
-	  }
+	{
+
+	  if (!posxy_on_screen (streets_posx1, streets_posy1))
+	    {
+	      if (mydebug > 10)
+		printf ("pos1 of Street not on screen:(%g,%g)\n",
+			streets_posx1, streets_posy1);
+	    }
+	  if (!posxy_on_screen (streets_posx2, streets_posy2))
+	    {
+	      if (mydebug > 10)
+		printf ("pos2 of Street not on screen:(%g,%g)\n",
+			streets_posx2, streets_posy2);
+	    }
+	}
     }
 
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     {				// print time for getting Data
       gettimeofday (&t, NULL);
       ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
@@ -510,7 +558,7 @@ streets_rebuild_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
@@ -546,7 +594,7 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
 
   gdk_gc_set_function (kontext, GDK_AND);
 
-  { // Draw rectangle arround Text
+  {				// Draw rectangle arround Text
     //gdk_gc_set_foreground (kontext, &textbacknew);
     gdk_draw_rectangle (drawable, kontext, 1,
 			posx + 13, posy - k2 / 2, k + 1, k2);
@@ -597,12 +645,12 @@ streets_draw_list (void)
   if (!(streets_draw))
     {
       streets_check_if_moved_reset ();
-      if ( mydebug > 50 )
+      if (mydebug > 50)
 	printf ("streets_draw is off\n");
       return;
     }
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_draw\n");
 
   if (streets_check_if_moved ())
@@ -610,10 +658,10 @@ streets_draw_list (void)
 
   gdks_streets_max = streets_list_count + 1;
 
-  if ( 0 >= gdks_streets_max )
-      return;
+  if (0 >= gdks_streets_max)
+    return;
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("streets_draw %ld segments\n", streets_list_count);
 
   gdks_streets = g_new0 (GdkSegment, gdks_streets_max);
@@ -625,7 +673,7 @@ streets_draw_list (void)
       return;
     }
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf ("created gdk struct for %d segments\n", gdks_streets_max);
 
   /* ------------------------------------------------------------------ */
@@ -652,8 +700,7 @@ streets_draw_list (void)
        * );
        * }
        */
-      if (posxy_on_screen (posx1, posy1) || 
-	  posxy_on_screen (posx2, posy2))
+      if (posxy_on_screen (posx1, posy1) || posxy_on_screen (posx2, posy2))
 	{
 	  /*
 	   * if ( mydebug > 50 ) {
@@ -685,7 +732,7 @@ streets_draw_list (void)
 	  (gdks_streets + gdks_streets_count)->x2 = posx2;
 	  (gdks_streets + gdks_streets_count)->y2 = posy2;
 
-	  if (mydebug >90)
+	  if (mydebug > 90)
 	    {
 	      char beschrift[120];
 	      g_snprintf (beschrift, sizeof (beschrift),
@@ -716,83 +763,88 @@ streets_draw_list (void)
 
 	    }
 
-	  if ( mydebug > 50 )
+	  if (mydebug > 50)
 	    {
 	      //          printf("    1 %f,%f\n",  posx1,posy1);
 	      //          printf("    2 %f,%f\n",  posx2,posy2);
 	    }
 	}
 
-      // draw it if last or streets_type_id changes 
-      if (
-	  (i == streets_list_count - 1)
+      // draw it if last Element or (streets_type_id/highlight) changes 
+      if ((i == streets_list_count - 1)
 	  ||
-	  ( (streets_list + i)->streets_type_id !=
-	    (streets_list + i + 1)->streets_type_id
-	    )
-	  || 
-	  (
-	   (streets_list + i )->highlight  !=
-	   (streets_list + i + 1)->highlight
-	   )
-	  )
-	  {
-	  /*
-	   * if ( mydebug > 50 )
-	   * printf("Drawing %d segments\n",gdks_streets_count);
-	   */
-
-	  if(1){
-	      // Black background for framing of Street
+	  ((streets_list + i)->streets_type_id !=
+	   (streets_list + i + 1)->streets_type_id)
+	  ||
+	  ((streets_list + i)->highlight !=
+	   (streets_list + i + 1)->highlight))
+	{
+	  int streets_id = (streets_list + i)->streets_type_id;
+	  if (!streets_id)
+	    {
+	      printf ("No Street ID\n");
+	    }
+	  else if (streets_id >= streets_type_list_max)
+	    {
+	      printf ("Street ID=%d >=  %d (streets_type_list_max)\n",
+		      streets_id, streets_type_list_max);
+	    }
+	  else if (!
+		   (streets_id ==
+		    streets_type_list[streets_id].streets_type_id))
+	    {
+	      printf ("Undefined values in Street ID=%d\n", streets_id);
+	    }
+	  else
+	    {
+	      // --------------------------------- Background/Framing/Highlighting Line
 	      gdk_gc_set_function (kontext, GDK_COPY);
-	      gdk_gc_set_foreground (kontext,&black);
 
-	      if ( (streets_list + i )->highlight) {
-		  gdk_gc_set_background (kontext,&yellow);
-		  gdk_gc_set_foreground (kontext,&red);
-		  gdk_gc_set_line_attributes (kontext, 6,   GDK_LINE_DOUBLE_DASH, 0, 0);
+	      gint width_factor=1;
+	      if ( ( mapscale/zoom ) < 10000 ) {
+		  width_factor=3;
 	      }
-	      else 
-		  gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_SOLID, 0, 0);
-	      
+
+	      if ((streets_list + i)->highlight)
+		{
+		  gdk_gc_set_background (kontext, &yellow);
+		  gdk_gc_set_foreground (kontext, &red);
+		  gdk_gc_set_line_attributes (kontext, 6*width_factor,
+					      GDK_LINE_DOUBLE_DASH, 0, 0);
+		}
+	      else
+		{
+		  gdk_gc_set_foreground (kontext,
+					 &streets_type_list[streets_id].
+					 color_bg);
+		  gdk_gc_set_line_attributes (kontext,
+					      streets_type_list[streets_id].
+					      width_bg*width_factor, GDK_LINE_SOLID, 0, 0);
+		}
+
 	      gdk_draw_segments (drawable, kontext,
 				 (GdkSegment *) gdks_streets,
 				 gdks_streets_count + 1);
-	  }
-	  
-	  int streets_id = (streets_list + i)->streets_type_id;
-	  if ( ! streets_id )
-	      printf( "No Street ID\n");
-	  if ( streets_id >= streets_type_list_max)
-	      printf( "Street ID=%d >=  %d\n",streets_id,streets_type_list_max);
 
-	  if ( streets_id 
-	       && streets_id < streets_type_list_max
-	       ) // Street ID is Valid
-	      {
-		  gdk_gc_set_foreground (kontext, 
-					 &streets_type_list[streets_id].color);
-		  gdk_gc_set_line_attributes (kontext, 2, GDK_LINE_SOLID, 0, 0);
-	      }
-	  else
-	      {
-		  printf("Set default Color to red\n");
-		  gdk_gc_set_foreground (kontext, &red);
-		  gdk_gc_set_line_attributes (kontext, 1, GDK_LINE_SOLID, 0, 0);
-	      }
-	  
-	  // Colored inner part of Streets
-	  gdk_draw_segments (drawable, kontext,
-			     (GdkSegment *) gdks_streets,
-			     gdks_streets_count + 1);
-	  
+	      // --------------------------------- Foreground Line
+	      gdk_gc_set_foreground (kontext,
+				     &streets_type_list[streets_id].color);
+	      gdk_gc_set_line_attributes (kontext,
+					  streets_type_list[streets_id].width*width_factor,
+					  GDK_LINE_SOLID, 0, 0);
+
+	      // Colored inner part of Streets
+	      gdk_draw_segments (drawable, kontext,
+				 (GdkSegment *) gdks_streets,
+				 gdks_streets_count + 1);
+	    }
 	  gdks_streets_count = -1;
 	}
     }
 
   g_free (gdks_streets);
 
-  if ( mydebug > 50 )
+  if (mydebug > 50)
     printf
       ("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
@@ -806,30 +858,30 @@ streets_query_point (gdouble lat, gdouble lon, gdouble distance)
 {
   gint i;
   printf ("Query Streets: %f,%f ( %f )\n", lat, lon, distance);
-  
+
   for (i = 0; i < streets_list_count; i++)
     {
-	  gint streets_type_id = (streets_list + i)->streets_type_id;
+      gint streets_type_id = (streets_list + i)->streets_type_id;
 
-	  if ( 
-	      distance >= 
-	      distance_line_point(  (streets_list + i)->lat1,(streets_list + i)->lon1,
-				    (streets_list + i)->lat2,(streets_list + i)->lon2,
-				    lat,  lon) )
-	    {
-		printf ("Streets: %3d: %f,%f --> %f,%f	Name:%s\t",
-			i,
-			(streets_list + i)->lat1, (streets_list + i)->lon1,
-			(streets_list + i)->lat2, (streets_list + i)->lon2,
-			(streets_list + i)->name);
-		printf ("Type: %s\t", streets_type_list[streets_type_id].name);
-		//printf ("Comment: %s\t", streets_type_list[streets_type_id].comment);
-		printf ("Comment: %s\n", (streets_list + i)->comment);
-		(streets_list + i)->highlight =TRUE;
-	    }
-	else 
-	    (streets_list + i)->highlight =FALSE;
-	
+      if (distance_line_point ((streets_list + i)->lat1,
+			       (streets_list + i)->lon1,
+			       (streets_list + i)->lat2,
+			       (streets_list + i)->lon2, lat, lon)
+	  <= distance)
+	{
+	  printf ("Streets: %5d: %f,%f --> %f,%f	Name: %25s ",
+		  i,
+		  (streets_list + i)->lat1, (streets_list + i)->lon1,
+		  (streets_list + i)->lat2, (streets_list + i)->lon2,
+		  (streets_list + i)->name);
+	  printf ("Type(%d): %s\t", streets_type_id,
+		  streets_type_list[streets_type_id].name);
+	  printf ("Comment: %s\n", (streets_list + i)->comment);
+	  (streets_list + i)->highlight = TRUE;
+	}
+      else
+	(streets_list + i)->highlight = FALSE;
+
     }
 
 }
