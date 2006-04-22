@@ -5,6 +5,9 @@
 # And import them into mySQL for use with gpsdrive
 #
 # $Log$
+# Revision 1.9  2006/04/22 00:41:11  tweety
+# make db-name really configurable vie commandline
+#
 # Revision 1.8  2006/04/20 22:41:05  tweety
 # make database name variable
 # import osm POI too
@@ -242,7 +245,7 @@ GetOptions (
 	     'debug'               => \$debug,      
 	     'u=s'                 => \$db_user,
 	     'p=s'                 => \$db_password,
-	     'db-name'             => \$GPSDRIVE_DB_NAME,
+	     'db-name=s'           => \$GPSDRIVE_DB_NAME,
 	     'db-user=s'           => \$db_user,
 	     'db-password=s'       => \$db_password,
 	     'delete-db-content'   => \$do_delete_db_content,
