@@ -8,8 +8,15 @@
 ############################################################################################
 # Update Log
 # Date		Name	Description
+#
 # 07/03/06	DP	Made the pagkage directory a relative path
 #                       Added some error checking. (you gota love rm -rf in a scipt. ;)
+#
+# 24/04/06      DP      The required lib's have changed a bit.
+#			Added libpangocairo 
+#			Added libcairo 
+#			Modified libpcre and libpcreposix
+#			Added libXinerama
 ############################################################################################
 	LOGFILE=package.log
 	LIBDIR=opt/gpsdrive/lib
@@ -53,21 +60,42 @@
 	 	cp $ICONDIR/Gpsdrive.gif home/dsl/.xtdesktop/Gpsdrive.gif
 	  
 	# Add other missing files required to run the program
+		
 		# Files for libpcre3
 		cp /usr/lib/libpcre.a $LIBDIR
+		cp /usr/lib/libpcre.so.3.10.0 $LIBDIR
+		cp -d /usr/lib/libpcre.so $LIBDIR
+		cp -d /usr/lib/libpcre.so.3 $LIBDIR
+		
 		cp /usr/lib/libpcreposix.a $LIBDIR
-		cp /usr/lib/libpcreposix.so.3.10.0 $LIBDIR/libpcreposix.so
-		# ln -s $LIBDIR/libpcreposix.so $LIBDIR/libpcreposix.so.3.10.0
-		# ln -s $LIBDIR/libpcreposix.so.$LIBDIR/libpcreposix.so.3.10.0
-		cp /usr/lib/libpcre.so.3.10.0 $LIBDIR/libpcre.so
-		# ln -s $LIBDIR/libpcre.so $LIBDIR/libpcre.so.3.10.0
-		# ln -s $LIBDIR/libpcre.so.3 $LIBDIR/libpcre.so.3.10.0
-
-	# Files for Pixbuf
+		cp /usr/lib/libpcreposix.so.3.10.0 $LIBDIR
+		cp -d /usr/lib/libpcreposix.so $LIBDIR
+		cp -d /usr/lib/libpcreposix.so.3 $LIBDIR
+	        
+	        # Files for Pixbuf
 		cp /usr/lib/gtk-2.0/2.4.0/engines/libpixmap.la $LIBDIR
 		cp /usr/lib/gtk-2.0/2.4.0/engines/libpixmap.a $LIBDIR
 		cp /usr/lib/gtk-2.0/2.4.0/engines/libpixmap.so $LIBDIR
 
+		# Files for libpangocairo
+		cp /usr/lib/libpangocairo-1.0.a $LIBDIR
+		cp /usr/lib/libpangocairo-1.0.la $LIBDIR
+		cp /usr/lib/libpangocairo-1.0.so.0 $LIBDIR
+		
+		#  libcairo
+		cp /usr/lib/libcairo.a $LIBDIR
+		cp /usr/lib/libcairo.la $LIBDIR
+		cp /usr/lib/libcairo.so.2.2.3 $LIBDIR
+		cp -d /usr/lib/libcairo.so $LIBDIR
+		cp -d /usr/lib/libcairo.so.2 $LIBDIR
+
+		# libXinerama
+		cp /usr/X11R6/lib/libXinerama.a $LIBDIR
+		cp /usr/X11R6/lib/libXinerama.so.1.0 $LIBDIR
+		cp -d /usr/X11R6/lib/libXinerama.so.1 $LIBDIR
+		cp -d /usr/X11R6/lib/libXinerama.so.1 $LIBDIR
+		
+		
 	# Add other missing files required to run the program
 	# that don't live in the gpsdrive/lib directory
 	  mkdir etc
