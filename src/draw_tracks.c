@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.9  2006/05/05 22:08:05  tweety
+  remove warning
+
   Revision 1.8  2006/03/10 08:37:09  tweety
   - Replace Street/Track find algorithmus in Query Funktion
     against real Distance Algorithm (distance_line_point).
@@ -503,7 +506,7 @@ tracks_rebuild_list (void)
 		   tracks_list_limit);
 
 	      tracks_list =
-		g_renew (tracks_struct, tracks_list, tracks_list_limit);
+		  g_renew (tracks_struct, tracks_list, tracks_list_limit);
 	      if (NULL == tracks_list)
 		{
 		  g_print ("Error: Cannot allocate Memory for %ld tracks\n",
@@ -672,7 +675,7 @@ tracks_draw_list (void)
 	  if (gdks_tracks_count >= gdks_tracks_max)
 	    {
 	      gdks_tracks_max = gdks_tracks_count + 1000;
-	      g_renew (GdkSegment, gdks_tracks, gdks_tracks_max);
+	      gdks_tracks = g_renew (GdkSegment, gdks_tracks, gdks_tracks_max);
 	      if (NULL == tracks_list)
 		{
 		  g_print
