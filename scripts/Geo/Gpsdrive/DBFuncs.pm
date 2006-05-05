@@ -210,6 +210,11 @@ sub db_disconnect(){
 # Delete all entries matching source with name
 sub delete_all_from_source($){
     my $source_name = shift;
+    if ( $main::no_delete ){
+	print "Keeping old entries for '$source_name'\n" if $verbose;
+	return;
+    }
+
     print "Delete all from '$source_name'\n" if $verbose;
     debug("delete_all_from_source($source_name)");
     return unless $source_name;
@@ -264,6 +269,7 @@ sub source_name2id($){
 # convert poi_type.name to poi_type_id and cache it locally
 # TODO: if we get a Hash; create the source entry if not already existent
 my $poi_type_id_cache;
+my $poi_type_id_2_name_cache;
 sub poi_type_name2id($){
     my $type_name = shift ||'';
     my $poi_type_id;
@@ -283,6 +289,7 @@ sub poi_type_name2id($){
 	if ( $array_ref ) {
 	    $poi_type_id = $array_ref->[0];
 	    $poi_type_id_cache->{$type_name} = $poi_type_id;
+	    $poi_type_id_2_name_cache->{$poi_type_id} = $type_name;
 	} else {
 	    # Nicht gefunden
 	    $poi_type_id=0;
@@ -290,9 +297,43 @@ sub poi_type_name2id($){
 	$sth->finish;
     }
 
-    debug("Type: $type_name -> $poi_type_id");
+    debug("Type: $type_name -> $poi_type_id")
+	if $verbose;
 
     return $poi_type_id;
+}
+
+# ------------------------------------------------------------------
+sub poi_type_id2name($){
+    my $poi_type_id=shift;
+    
+    my $poi_type_name='';
+    return '' unless $poi_type_id;
+    
+    if ( defined $poi_type_id_2_name_cache->{$poi_type_id} ) {
+	$poi_type_name = $poi_type_id_2_name_cache->{$poi_type_id};
+    } else {
+	my $dbh = db_connect();
+	my $query = "SELECT poi_type.name FROM poi_type WHERE poi_type.pi_type_id = '$poi_type_id' LIMIT 1";
+
+	my $sth=$dbh->prepare($query) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+
+	my $array_ref = $sth->fetchrow_arrayref();
+	if ( $array_ref ) {
+	    $poi_type_name = $array_ref->[0];
+	    $poi_type_id_cache->{$poi_type_name} = $poi_type_id;
+	    $poi_type_id_2_name_cache->{$poi_type_id} = $poi_type_name;
+	} else {
+	    # Nicht gefunden
+	    $poi_type_name='';
+	}
+	$sth->finish;
+    }
+
+    debug("Type: $poi_type_id --> $poi_type_name");
+
+    return $poi_type_name;
 }
 
 # -----------------------------------------------------------------------------
@@ -526,8 +567,6 @@ sub add_poi($){
 
     # ---------------------- POI
     $point->{'poi.last_modified'} ||= time();
-    $point->{'poi.scale_min'}         ||= 0;
-    $point->{'poi.scale_max'}         ||= 9999999999999;
     insert_hash("poi",$point);
 
 }
@@ -576,7 +615,7 @@ sub streets_add($){
 
     # ---------------------- STREETS
     $segment4db->{'streets.last_modified'}   ||= time();
-    $segment4db->{'streets.scale_min'}       ||= 0;
+    $segment4db->{'streets.scale_min'}       ||= 1;
     $segment4db->{'streets.scale_max'}       ||= 9999999999999999;
     insert_hash("streets",$segment4db);
 }
@@ -728,7 +767,7 @@ sub add_index($){
 	for my $key ( qw( last_modified name lat lon ) ){
 	    add_if_not_exist_index($table,$key);
 	}
-	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`scale_min`,`scale_max');
+	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id`');
     } elsif ( $table eq "streets" ){
 	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
 	    add_if_not_exist_index($table,$key);
@@ -795,8 +834,6 @@ sub create_db(){
                       `alt`           double                default \'0\',
                       `proximity`     float                 default \'0\',
                       `comment`       varchar(255)          default NULL,
-                      `scale_min`     int(12)      NOT NULL default \'0\',
-                      `scale_max`     int(12)      NOT NULL default \'0\',
                       `last_modified` date         NOT NULL default \'0000-00-00\',
                       `url`           varchar(160)     NULL ,
                       `address_id`    int(11)               default \'0\',
@@ -818,7 +855,7 @@ sub create_db(){
                       `alt2`            double                default \'0\',
                       `proximity`       float                 default \'0\',
                       `comment`         varchar(255)          default NULL,
-                      `scale_min`       int(12)      NOT NULL default \'0\',
+                      `scale_min`       int(12)      NOT NULL default \'1\',
                       `scale_max`       int(12)      NOT NULL default \'0\',
                       `last_modified`   date         NOT NULL default \'0000-00-00\',
                       `source_id`       int(11)      NOT NULL default \'0\',
@@ -838,7 +875,7 @@ sub create_db(){
                       `width_bg`        int(2)           NULL default \'2\',
                       `linetype`        varchar(80)      NULL default \'\',
 '. #                  vvvvvvvvvvv For later use
-'                     `scale_min`     int(12)      NOT NULL default \'0\',
+'                     `scale_min`     int(12)      NOT NULL default \'1\',
                       `scale_max`     int(12)      NOT NULL default \'0\',
 '. #                  ^^^^^^^^^^^ For later use
 '                     PRIMARY KEY  (`streets_type_id`)
@@ -846,40 +883,40 @@ sub create_db(){
     add_index('streets_type');
 
     db_exec('CREATE TABLE IF NOT EXISTS `tracks` (
-                      `track_id`       int(11)      NOT NULL auto_increment,
-                      `name`           varchar(80)           default NULL,
-                      `track_type_id`  int(11)      NOT NULL default \'0\',
+                      `track_id`       int(11)      NOT NULL  auto_increment,
+                      `name`           varchar(80)            default NULL,
+                      `track_type_id`  int(11)      NOT NULL  default \'0\',
                       `lat1`            double                default \'0\',
                       `lon1`            double                default \'0\',
                       `alt1`            double                default \'0\',
-                      `time1`           date                 default \'0000-00-00\',
+                      `time1`           date                  default \'0000-00-00\',
                       `lat2`            double                default \'0\',
                       `lon2`            double                default \'0\',
                       `alt2`            double                default \'0\',
-                      `time2`           date                 default \'0000-00-00\',
-                      `speed`          double                default \'0\',
-                      `direction`      double                default \'0\',
-                      `acuracy`        float                 default \'0\',
-                      `time_delta`     float                 default \'0\',
-                      `source_id`      int(11)      NOT NULL default \'0\',
+                      `time2`           date                  default \'0000-00-00\',
+                      `speed`          double                 default \'0\',
+                      `direction`      double                 default \'0\',
+                      `acuracy`        float                  default \'0\',
+                      `time_delta`     float                  default \'0\',
+                      `source_id`      int(11)      NOT NULL  default \'0\',
                       PRIMARY KEY  (`track_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('track');
 
     db_exec('CREATE TABLE IF NOT EXISTS `tracks_type` (
-                      `track_type_id` int(11)      NOT NULL auto_increment,
+                      `track_type_id` int(11)    NOT NULL auto_increment,
                       `name`        varchar(80)  NOT NULL default \'\',
-                      `name_de`     varchar(80)       NULL default \'en\',
+                      `name_de`     varchar(80)      NULL default \'en\',
                       `symbol`      varchar(160)     NULL default \'\',
                       `description` varchar(160)     NULL default \'\',
-                      `description_de` varchar(160)     NULL default \'\',
-                      `color`           varchar(20)      NULL default \'\',
-                      `color_bg`        varchar(20)      NULL default \'\',
-                      `width`           int(2)           NULL default \'1\',
-                      `width_bg`        int(2)           NULL default \'2\',
-                      `linetype`        varchar(80)      NULL default \'\',
+                      `description_de` varchar(160)  NULL default \'\',
+                      `color`           varchar(20)  NULL default \'\',
+                      `color_bg`        varchar(20)  NULL default \'\',
+                      `width`           int(2)       NULL default \'1\',
+                      `width_bg`        int(2)       NULL default \'2\',
+                      `linetype`        varchar(80)  NULL default \'\',
 '. #                  vvvvvvvvvvv For later use
-'                     `scale_min`     int(12)      NOT NULL default \'0\',
+'                     `scale_min`     int(12)      NOT NULL default \'1\',
                       `scale_max`     int(12)      NOT NULL default \'0\',
 '. #                  ^^^^^^^^^^^ For later use
 '                     PRIMARY KEY  (`track_type_id`)
@@ -901,15 +938,13 @@ sub create_db(){
     db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
                       `poi_type_id` int(11)      NOT NULL auto_increment,
                       `name`        varchar(80)  NOT NULL default \'\',
-                      `name_de`     varchar(80)       NULL default \'en\',
+                      `name_de`     varchar(80)      NULL default \'en\',
                       `symbol`      varchar(160)     NULL default \'\',
                       `description` varchar(160)     NULL default \'\',
-                      `description_de` varchar(160)     NULL default \'\',
-'. #                  vvvvvvvvvvv For later use
-'                     `scale_min`     int(12)      NOT NULL default \'0\',
-                      `scale_max`     int(12)      NOT NULL default \'0\',
-'. #                  ^^^^^^^^^^^ For later use
-'                      PRIMARY KEY  (`poi_type_id`)
+                      `description_de` varchar(160)  NULL default \'\',
+                      `scale_min`     int(12)    NOT NULL default \'1\',
+                      `scale_max`     int(12)    NOT NULL default \'0\',
+                      PRIMARY KEY  (`poi_type_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('poi_type');
 

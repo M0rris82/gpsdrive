@@ -1,130 +1,4 @@
 # Database Defaults for poi/streets Table for poi.pl
-#
-# $Log$
-# Revision 1.12  2006/04/22 00:39:22  tweety
-# add Backgroudcolor as coloumn to DB
-#
-# Revision 1.11  2006/04/20 22:41:05  tweety
-# make database name variable
-# import osm POI too
-# add colog_bg, width, width_bg to db layout
-#
-# Revision 1.10  2006/04/03 23:43:45  tweety
-# rename adj --> scaler_adj
-# rearrange code for some of the _cb
-#  streets_draw_cb
-#  poi_draw_cb
-# move map_dir_struct definition to src/gpsdrive.h
-# remove some of the history parts in the Files
-# save and read settings for display_map like "display_map_<name> = 1"
-# increase limit for displayed streets
-# change color of de.Strassen.Allgemein to x555555
-# OSM.pm make non way segments to Strassen.Allgemein
-# WDB check if yountryname is valid
-#
-# Revision 1.9  2006/03/10 08:37:09  tweety
-# - Replace Street/Track find algorithmus in Query Funktion
-#   against real Distance Algorithm (distance_line_point).
-# - Query only reports Track/poi/Streets if currently displaying
-#   on map is selected for these
-# - replace old top/map Selection by a MapServer based selection
-# - Draw White map if no Mapserver is selected
-# - Remove some useless Street Data from Examples
-# - Take the real colors defined in Database to draw Streets
-# - Add a frame to the Streets to make them look nicer
-# - Added Highlight Option for Tracks/Streets to see which streets are
-#   displayed for a Query output
-# - displaymap_top und displaymap_map removed and replaced by a
-#   Mapserver centric approach.
-# - Treaked a little bit with Font Sizes
-# - Added a very simple clipping to the lat of the draw_grid
-#   Either the draw_drid or the projection routines still have a slight
-#   problem if acting on negative values
-# - draw_grid with XOR: This way you can see it much better.
-# - move the default map dir to ~/.gpsdrive/maps
-# - new enum map_projections to be able to easily add more projections
-#   later
-# - remove history from gpsmisc.c
-# - try to reduce compiler warnings
-# - search maps also in ./data/maps/ for debugging purpose
-# - cleanup and expand unit_test.c a little bit
-# - add some more rules to the Makefiles so more files get into the
-#   tar.gz
-# - DB_Examples.pm test also for ../data and data directory to
-#   read files from
-# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-# - gpsfetchmap.pl:
-#   - adapt zoom levels for landsat maps
-#   - correct eniro File Download. Not working yet, but gets closer
-#   - add/correct some of the Help Text
-# - Update makefiles with a more recent automake Version
-# - update po files
-#
-# Revision 1.8  2006/01/29 21:58:43  tweety
-# small fixes
-#
-# Revision 1.7  1994/06/08 13:02:31  tweety
-# adjust debug levels
-#
-# Revision 1.6  2005/11/26 18:16:45  tweety
-# insert horse icon
-#
-# Revision 1.5  2005/11/21 07:35:14  tweety
-# *** empty log message ***
-#
-# Revision 1.3  2005/11/21 06:57:18  tweety
-# Update icons.txt and DB_Defaults to reflect new icons
-#
-# Revision 1.2  2005/10/11 08:28:35  tweety
-# gpsdrive:
-# - add Tracks(MySql) displaying
-# - reindent files modified
-# - Fix setting of Color for Grid
-# - poi Text is different in size depending on Number of POIs shown on
-#   screen
-#
-# geoinfo:
-#  - get Proxy settings from Environment
-#  - create tracks Table in Database and fill it
-#    this separates Street Data from Track Data
-#  - make geoinfo.pl download also Opengeodb Version 2
-#  - add some poi-types
-#  - Split off Filling DB with example Data
-#  - extract some more Funtionality to Procedures
-#  - Add some Example POI for Kirchheim(Munich) Area
-#  - Adjust some Output for what is done at the moment
-#  - Add more delayed index generations 'disable/enable key'
-#  - If LANG=*de_DE* then only impert europe with --all option
-#  - WDB will import more than one country if you wish
-#  - add more things to be done with the --all option
-#
-# Revision 1.1  2005/08/15 13:54:22  tweety
-# move scripts/POI --> scripts/Geo/Gpsdrive to reflect final Structure and make debugging easier
-#
-# Revision 1.4  2005/08/09 01:08:30  tweety
-# Twist and bend in the Makefiles to install the DataDirectory more apropriate
-# move the perl Functions to Geo::Gpsdrive in /usr/share/perl5/Geo/Gpsdrive/POI
-# adapt icons.txt loading according to these directories
-#
-# Revision 1.3  2005/05/24 08:35:25  tweety
-# move track splitting to its own function +sub track_add($)
-# a little bit more error handling
-# earth_distance somtimes had complex inumbers as result
-# implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-# this way i can re-read all currently displayed streets from the DB
-# fix minor array iindex counting bugs
-# add some content to the comment column
-#
-# Revision 1.2  2005/05/14 21:21:23  tweety
-# Update Index createion
-# Update default Streets
-# Eliminate some undefined Value
-#
-# Revision 1.1  2005/05/09 19:35:12  tweety
-# Split Default Values into seperate File
-# Add new Icon
-#
 
 package Geo::Gpsdrive::DB_Defaults;
 
@@ -339,7 +213,7 @@ my @poi_type_names
 	  area.area.hill.large
 	  area.area.hill.medium
 	  area.area.hill.small
-	  area.area.industial_area
+	  area.area.industial-area
 	  area.area.lake
 	  area.area.hill.mountain
 	  area.area.play_street
@@ -352,11 +226,11 @@ my @poi_type_names
 	  area.building.barn
 	  area.building.farmhouse
 	  area.city
-	  area.city.capital
+	  area.city.capital:-3000000000
 	  area.city.hamlet
-	  area.city.large
-	  area.city.mayor
-	  area.city.medium
+	  area.city.large:-3000000000
+	  area.city.mayor:-300000000
+	  area.city.medium:-30000000
 	  area.city.small
 	  area.pedestrian_zone
 	  area.state
@@ -365,6 +239,7 @@ my @poi_type_names
 	  bank
 	  bank.ATM
 	  bank.ATM.EC
+	  bank.agency
 	  bank.agency.HypoVereinsbank
 	  bank.agency.Postbank
 	  bank.agency.Reifeisenbank
@@ -424,7 +299,7 @@ my @poi_type_names
 	  general.marker-5
 	  general.viewpoint
 	  general.waypoint
-	  general.point_of_interest
+	  general.point-of-interest
 	  general.memorial
 	  health
 	  health.ambulance
@@ -770,7 +645,7 @@ my $translate_de = {
     'ice_scating'           => "Eislaufen",
     'import_way'            => 'import_way',
     'indian'                => "Indisch",
-    'industial_area'        => "Industrie_Gebiet",
+    'industial-area'        => "Industrie_Gebiet",
     'information'           => 'Information',
     'internet'              => 'internet',
     'interurban_train_station' => 'S-Bahn-Haltestelle',
@@ -834,7 +709,7 @@ my $translate_de = {
     'playground'            => 'Spielplatz',
     'plus'                  => "Plus",
     'plus'                  => "Plus",
-    'point_of_interest'     => "Interesanter Punkt",
+    'point-of-interest'     => "Interesanter Punkt",
     'police'                => 'Polizei',
     'postal'                => 'Post',
     'postoffice'            => 'Post',
@@ -1114,8 +989,11 @@ sub fill_default_poi_types() {
     my $poi_type_id=0;
     for my $name  ( @poi_type_names ) {
 	my $scale_min=1;
-	my $scale_max=100000;
+	my $scale_max=3000;
 	$poi_type_id++;
+
+	$name =~ s/:(.*)//;
+	my $addition=$1||'';
 
 	# Translate the entries
 	my $name_de = translate_icon($name);
@@ -1129,6 +1007,26 @@ sub fill_default_poi_types() {
 	my $description     = $name;    $description    =~ s/\./ /g;
 	my $description_de  = $name_de; $description_de =~ s/\./ /g;
 
+	if ( $name =~ m/area/ ) {
+	    $scale_min=5000;
+	    $scale_max=30000000;
+	}
+	if ( $name =~ m/health/ ) {
+	    $scale_min=1;
+	    $scale_max=30000;
+	}
+	if ( $name =~ m/shopping/ ) {
+	    $scale_min=1;
+	    $scale_max=2000;
+	}
+
+	if ( $addition =~ m/-(\d+)/ ) {
+	    $scale_max=$1;
+	}
+	if ( $addition =~ m/(\d+)-/ ) {
+	    $scale_min=$1;
+	}
+    
 	# Insert to Database
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
 	Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `poi_type` ".
@@ -1237,7 +1135,7 @@ sub fill_default_street_types() {   # Fill streets_type database
 			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Bundesstrasse
 			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Landstrasse
 			    x00FFFF_x000000_w2_4_z00010000_de.Strassen.Innerorts
-			    x00FFFF_x55555_w1_2_z00010000_de.Strassen.30_Zohne
+			    x00FFFF_x555555_w1_2_z00010000_de.Strassen.30_Zohne
 
 			    x222222_x555555_w2_4_z00010000_de.Strassen.Wanderweg
 			    x222222_x555555_w2_4_z00010000_de.Strassen.Fahrrad
@@ -1278,6 +1176,15 @@ sub fill_default_street_types() {   # Fill streets_type database
 	$name =~ s/_/ /g;
 	my $linetype='';
 
+	if(0){	# For testing and displaying all streets in every scale
+	    $scale_max = 1000000000000;
+	    if ( $name =~ m/strasse/i ) {
+		$color     = "#FFFF00";
+		$color_bg  = "#AA0000";
+		$width_bg=1;
+	    }
+	}
+		
 	$streets_type_id++;
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
 	Geo::Gpsdrive::DBFuncs::db_exec
