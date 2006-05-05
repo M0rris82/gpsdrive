@@ -21,209 +21,8 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
     *********************************************************************
-
-$Log$
-Revision 1.20  2006/02/08 08:34:04  tweety
-e sql was hardecoded off
-
-Revision 1.19  2006/02/05 16:38:05  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.18  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.17  1994/06/08 13:02:31  tweety
-adjust debug levels
-
-Revision 1.16  1994/06/08 08:37:47  tweety
-fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
-instead of atof and strtod
-
-Revision 1.15  2005/07/04 04:47:03  tweety
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=25
-"J.D. Schmidt" <jdsmobile@gmail.com>
-Fixed Wrong SQL Escapes
-
-Revision 1.14  2005/05/24 08:35:25  tweety
-move track splitting to its own function +sub track_add($)
-a little bit more error handling
-earth_distance somtimes had complex inumbers as result
-implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-this way i can re-read all currently displayed streets from the DB
-fix minor array iindex counting bugs
-add some content to the comment column
-
-Revision 1.13  2005/04/20 23:33:49  tweety
-reformatted source code with anjuta
-So now we have new indentations
-
-Revision 1.12  2005/04/13 19:58:31  tweety
-renew indentation to 4 spaces + tabstop=8
-
-Revision 1.11  2005/04/10 21:50:50  tweety
-reformatting c-sources
-
-Revision 1.10  2005/03/29 01:59:01  tweety
-another set of minor Bugfixes
-
-Revision 1.9  2005/03/27 00:44:42  tweety
-eperated poi_type_list and streets_type_list
-and therefor renaming the fields
-added drop index before adding one
-poi.*: a little bit more error handling
-disabling poi and streets if sql is disabled
-changed som print statements from \n.... to ...\n
-changed some debug statements from debug to mydebug
-
-Revision 1.8  2005/02/08 09:01:48  tweety
-move loading of usericons to icons.c
-
-Revision 1.7  2005/02/08 08:43:46  tweety
-wrong dfinition for auxicons array
-
-Revision 1.6  2005/02/08 07:58:22  tweety
-load icons from system directory of .../gpsdrive/icons if exists too
-
-Revision 1.5  2005/02/07 07:53:39  tweety
-added check_if_moved inti function poi_rebuild_list
-
-Revision 1.4  2005/02/06 21:18:05  tweety
-more cleanup: extracted more functionality to functions
-
-Revision 1.3  2005/01/20 00:12:14  tweety
-don't abort gpsdrive completely on sql query errors
-
-Revision 1.2  2005/01/11 07:13:27  tweety
-added "order by \(abs(%.6f - lat)+abs(%.6f - lon)),name LIMIT 10000"
-to get the nearest wp first and to have a limit on hov many are retrieved
-
-Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-Initial import, straight from 2.10pre2 tar.gz archive
-
-Revision 1.33  2004/02/08 20:37:49  ganter
-handle user-defined icons for open and closed wlans
-the filename should be:
-for open wlan:  wlan.png
-for crypted wlan: wlan-wep.png
-
-Revision 1.32  2004/02/08 17:16:25  ganter
-replacing all strcat with g_strlcat to avoid buffer overflows
-
-Revision 1.31  2004/02/08 16:35:10  ganter
-replacing all sprintf with g_snprintf to avoid buffer overflows
-
-Revision 1.30  2004/02/07 00:02:16  ganter
-added "store timezone" button in settings menu
-
-Revision 1.29  2004/02/06 15:13:15  ganter
-...
-
-Revision 1.28  2004/02/06 15:11:21  ganter
-updated translation
-
-Revision 1.27  2004/02/06 14:55:54  ganter
-added support for user-defined icons
-create the directory: $HOME/.gpsdrive/icons
-place your icons (type must be png) into this directory, with the name of
-the waypoint type, filename must be lowercase
-i.e. for waypoint type "HOTEL" the file must have the name "hotel.png"
-
-Revision 1.26  2004/02/02 03:38:32  ganter
-code cleanup
-
-Revision 1.25  2004/01/05 05:52:58  ganter
-changed all frames to respect setting
-
-Revision 1.24  2004/01/01 09:07:33  ganter
-v2.06
-trip info is now live updated
-added cpu temperature display for acpi
-added tooltips for battery and temperature
-
-Revision 1.23  2003/05/07 19:27:13  ganter
-replaced degree symbol with unicode string
-gpsdrive should now be unicode clean
-
-Revision 1.22  2003/05/03 18:59:47  ganter
-shortcuts are now working
-
-Revision 1.21  2003/05/02 18:27:18  ganter
-porting to GTK+-2.2
-GpsDrive Version 2.0pre3
-
-Revision 1.20  2003/01/15 17:03:17  ganter
-MySQL is now loaded dynamically on runtime, no mysql needed for compile.
-Needs only libmysqlclient.so now.
-
-Revision 1.19  2003/01/15 15:30:28  ganter
-before dynamically loading mysql
-
-Revision 1.18  2002/12/08 03:18:26  ganter
-shortly before 1.31
-
-Revision 1.17  2002/11/27 00:02:27  ganter
-1.31pre2
-
-Revision 1.16  2002/11/24 16:56:30  ganter
-speedtrap works now with sql
-
-Revision 1.15  2002/11/24 16:01:32  ganter
-added speedtrap icon, thanks to Sven Fichtner
-
-Revision 1.14  2002/11/13 18:20:42  ganter
-fixed buffer overflow in gpssql.c
-
-Revision 1.13  2002/11/13 17:31:57  ganter
-added display of number of waypoints
-
-Revision 1.12  2002/11/09 00:09:57  ganter
-bugfix in gpssql.c
-
-Revision 1.11  2002/11/08 23:35:20  ganter
-v1.30pre3
-
-Revision 1.10  2002/11/08 22:08:11  ganter
-...
-
-Revision 1.9  2002/11/06 05:29:15  ganter
-fixed most warnings
-
-Revision 1.8  2002/11/06 01:44:15  ganter
-v1.30pre2
-
-Revision 1.7  2002/11/02 12:38:55  ganter
-changed website to www.gpsdrive.de
-
-Revision 1.6  2002/10/27 10:51:30  ganter
-1.28pre8
-
-Revision 1.5  2002/10/24 08:44:09  ganter
-...
-
-Revision 1.4  2002/10/17 15:55:45  ganter
-wp2sql added
-
-Revision 1.3  2002/10/16 14:16:13  ganter
-working on SQL gui
-
-Revision 1.2  2002/10/15 07:44:11  ganter
-...
-
-Revision 1.1  2002/10/14 08:38:59  ganter
-v1.29pre3
-added SQL support
-
 */
+
 #include "../config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -244,15 +43,13 @@ extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern gdouble current_lon, current_lat;
 extern char dbwherestring[5000];
-extern char dbtypelist[100][40];
+extern char wp_typelist[100][40];
+extern int  wp_typelistcount;
 extern double dbdistance;
-extern int dbtypelistcount;
 extern int usesql;
 extern int mydebug, dbusedist;
 extern gchar homedir[500], mapdir[500];
 extern GtkWidget *trackbt, *wpbt;
-extern gint maxauxicons, lastauxicon;
-extern auxiconsstruct auxicons[];
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 gint wptotal = 0, wpselected = 0;
@@ -463,7 +260,7 @@ get_sql_type_list (void)
       g_strlcpy (temp, row[0], sizeof (temp));
       for (i = 0; i < (int) strlen (temp); i++)
 	temp[i] = tolower (temp[i]);
-      g_strlcpy (dbtypelist[r++], temp, sizeof (dbtypelist[0]));
+      g_strlcpy (wp_typelist[r++], temp, sizeof (wp_typelist[0]));
       if (r >= MAXWPTYPES)
 	{
 	  printf ("\nSQL: too many waypoint types!\n");
@@ -477,7 +274,7 @@ get_sql_type_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  dbtypelistcount = r;
+  wp_typelistcount = r;
   usericonsloaded = TRUE;
 
   if (mydebug > 50)

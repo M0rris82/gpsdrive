@@ -22,6 +22,19 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.14  2006/05/05 22:18:08  tweety
+move icons stred in memory to one array
+fix size of icons drawn at poi.c
+change list of default scales
+don't calculate map offset if we only have vectormaps
+remove some of the cvs logs in the source files. The can be retrieved from the cvs and
+blow up the files so we have troubles using eclipse or something similar
+move scale_min,scale_max to the streets_type and poi_type database
+increase the LIMIT for the streets sql query
+increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
+Thieck_osm.pl more independent from gpsdrive datastructure
+way we can get some of the lines where both endpoint are out of the viewing Window
+
 Revision 1.13  2006/04/03 23:43:45  tweety
 rename adj --> scaler_adj
 rearrange code for some of the _cb
@@ -387,6 +400,8 @@ void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
 gdouble lat2radius (gdouble lat);
 void draw_text_with_box (gdouble posx, gdouble posy, gchar * name);
 int posxy_on_screen (gdouble posx, gdouble posy);
+
+int display_background_map ();
 
 typedef struct
 {

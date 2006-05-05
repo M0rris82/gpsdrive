@@ -397,8 +397,10 @@ gpsdrive started
      Dan Egnor <egnor@ofb.net>
      Daniel Hiepler <rigid@akatash.de>
      Darazs Attila <zumi@freestart.hu>
+     Fritz Ganter <ganter@ganter.at>
      J.D. Schmidt <jdsmobile@gmail.com>
      Jan-Benedict Glaw <jbglaw@lug-owl.de>
+     Joerg Ostertag <gpsdrive@ostertag.name>
      John Hay <jhay@icomtek.csir.co.za>
      Johnny Cache <johnycsh@hick.org>
      Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>
@@ -538,8 +540,6 @@ gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
 GdkPixbuf *image = NULL, *tempimage = NULL, *miniimage = NULL;
 
-extern gint maxauxicons, lastauxicon;
-extern auxiconsstruct *auxicons;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 extern mapsstruct *maps;
@@ -610,30 +610,32 @@ GdkCursor *cursor;
 //#define EXPEDIA_SCALES_ONLY
 
 #ifdef EXPEDIA_SCALES_ONLY
-gint slistsize = 10;
-gchar *slist[] = { "5000", "15000", "20000", "50000", "100000", "200000",
-		   "750000", "3000000", "7500000", "75000000"
+gint slistsize = 13;
+gchar *slist[] = { "5000", "15000", "20000", "50000", 
+		   "100000", "200000", "750000", "3000000", "7500000", "75000000",
+		   "88067900","90000000"
 };
-gint nlist[] = { 5000, 15000, 20000, 50000, 100000, 200000,
-		 750000, 3000000, 7500000, 75000000
+gint nlist[] = { 5000, 15000, 20000, 50000, 
+		 100000, 200000, 750000, 3000000, 7500000, 75000000,
+		 88067900,90000000,
 };
 #else
-gint slistsize = 30;
-gchar *slist[] = { "100", "500", 
-		   "1000", "1500", "2000", "3000", "5000", "7500", "10000",
-		   "15000", "20000", "30000", "50000", "75000", "100000", "150000",
-		   "200000",
-		   "300000", "500000", "750000", "1000000", "1500000", "2000000",
-		   "3000000",
-		   "5000000", "7500000", "10000000", "15000000", "20000000", "30000000",
-		   "50000000", "75000000"
+gint slistsize = 34;
+gchar *slist[] = { "300", "500", 
+		   "1000", "1500", "2000", "3000", "5000", "7500", 
+		   "10000", "15000", "20000", "30000", "50000", "75000",
+		   "100000", "150000", "200000", "300000", "500000", "750000", 
+		   "1000000", "1500000", "2000000", "3000000", "5000000", "7500000", 
+		   "10000000", "15000000", "20000000", "30000000", "50000000", "75000000",
+		   "88067900","90000000"
 };
-gint nlist[] = { 100, 150, 200, 300, 500, 750,
+gint nlist[] = { 300, 500,
 		 1000, 1500, 2000, 3000, 5000, 7500,
 		 10000, 15000, 20000, 30000, 50000, 75000,
 		 100000, 150000, 200000, 300000, 500000, 750000,
 		 1000000, 1500000, 2000000, 3000000, 5000000, 7500000,
-		 10000000, 15000000, 20000000, 30000000, 50000000, 75000000
+		 10000000, 15000000, 20000000, 30000000, 50000000, 75000000,
+		 88067900,90000000
 };
 #endif
 
@@ -748,8 +750,8 @@ gint mydebug = 0;
 #define MAXDBNAME 30
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-char dbtypelist[100][40];
-int dbtypelistcount;
+char wp_typelist[100][40];
+int wp_typelistcount;
 char dbwherestring[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
@@ -3478,67 +3480,70 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 		/*  Calculate distance to destination */
 		dist = calcdist (target_lon, target_lat);
-		/*  correct the shift of the map */
-		oldxoff = xoff;
-		oldyoff = yoff;
-		/* now we test if the marker fits into the map and set the shift of the 
-		 * little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map 
-		 */
-		okcount = 0;
-		do
-		{
-			ok = TRUE;
-			okcount++;
-			x = posx - xoff;
-			y = posy - yoff;
 
-			if (x < borderlimit)
-				xoff -= 2 * borderlimit;
-			if (x > (SCREEN_X - borderlimit))
-				xoff += 2 * borderlimit;
-			if (y < borderlimit)
-				yoff -= 2 * borderlimit;
-			if (y > (SCREEN_Y - borderlimit))
-				yoff += 2 * borderlimit;
-
-			if (x < borderlimit)
-				ok = FALSE;
-			if (x > (SCREEN_X - borderlimit))
-				ok = FALSE;
-			if (y < borderlimit)
-				ok = FALSE;
-			if (y > (SCREEN_Y - borderlimit))
-				ok = FALSE;
-			if (okcount > 2000)
-			{
-				g_print ("\nloop detected, please report!\n");
+		if ( display_background_map() ) 
+		    {
+			/*  correct the shift of the map */
+			oldxoff = xoff;
+			oldyoff = yoff;
+			/* now we test if the marker fits into the map and set the shift of the 
+			 * little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map 
+			 */
+			okcount = 0;
+			do
+			    {
 				ok = TRUE;
-			}
-		}
-		while (!ok);
+				okcount++;
+				x = posx - xoff;
+				y = posy - yoff;
+				
+				if (x < borderlimit)
+				    xoff -= 2 * borderlimit;
+				if (x > (SCREEN_X - borderlimit))
+				    xoff += 2 * borderlimit;
+				if (y < borderlimit)
+				    yoff -= 2 * borderlimit;
+				if (y > (SCREEN_Y - borderlimit))
+				    yoff += 2 * borderlimit;
 
-		xoffmax = (640 * zoom) - SCREEN_X_2;
-		yoffmax = (512 * zoom) - SCREEN_Y_2;
-		if (xoff > xoffmax)
-			xoff = xoffmax;
-		if (xoff < -xoffmax)
-			xoff = -xoffmax;
-		if (yoff > yoffmax)
-			yoff = yoffmax;
-		if (yoff < -yoffmax)
-			yoff = -yoffmax;
+				if (x < borderlimit)
+				    ok = FALSE;
+				if (x > (SCREEN_X - borderlimit))
+				    ok = FALSE;
+				if (y < borderlimit)
+				    ok = FALSE;
+				if (y > (SCREEN_Y - borderlimit))
+				    ok = FALSE;
+				if (okcount > 2000)
+				    {
+					g_print ("\nloop detected, please report!\n");
+					ok = TRUE;
+				    }
+			    }
+			while (!ok);
 
-		/*  we only need to create a new region if the shift is not changed */
-		if ((oldxoff != xoff) || (oldyoff != yoff))
-			iszoomed = FALSE;
+			xoffmax = (640 * zoom) - SCREEN_X_2;
+			yoffmax = (512 * zoom) - SCREEN_Y_2;
+			if (xoff > xoffmax)
+			    xoff = xoffmax;
+			if (xoff < -xoffmax)
+			    xoff = -xoffmax;
+			if (yoff > yoffmax)
+			    yoff = yoffmax;
+			if (yoff < -yoffmax)
+			    yoff = -yoffmax;
 
-		if ( mydebug>30 )
-		{
-			g_print ("x: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x, xoff, oldxoff, zoom, xoffmax);
-			g_print ("y: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y, yoff, oldyoff, zoom, yoffmax);
-		}
-		posx = posx - xoff;
-		posy = posy - yoff;
+			/*  we only need to create a new region if the shift is not changed */
+			if ((oldxoff != xoff) || (oldyoff != yoff))
+			    iszoomed = FALSE;
+			if ( mydebug>30 )
+			    {
+				g_print ("x: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x, xoff, oldxoff, zoom, xoffmax);
+				g_print ("y: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y, yoff, oldyoff, zoom, yoffmax);
+			    }
+			posx = posx - xoff;
+			posy = posy - yoff;
+		    }
 	}
 
 
@@ -5126,10 +5131,10 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		if (sqlflag)
 		{
 			get_sql_type_list ();
-			for (i = 0; i < dbtypelistcount; i++)
+			for (i = 0; i < wp_typelistcount; i++)
 				wp_types =
 					g_list_append (wp_types,
-						       dbtypelist[i]);
+						       wp_typelist[i]);
 		}
 		else
 		{

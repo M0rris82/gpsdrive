@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.10  2006/05/05 22:18:08  tweety
+move icons stred in memory to one array
+fix size of icons drawn at poi.c
+change list of default scales
+don't calculate map offset if we only have vectormaps
+remove some of the cvs logs in the source files. The can be retrieved from the cvs and
+blow up the files so we have troubles using eclipse or something similar
+move scale_min,scale_max to the streets_type and poi_type database
+increase the LIMIT for the streets sql query
+increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
+Thieck_osm.pl more independent from gpsdrive datastructure
+way we can get some of the lines where both endpoint are out of the viewing Window
+
 Revision 1.9  2005/08/14 18:46:42  tweety
 remove unnedded xpm Files; read pixmaps with read_icons,
 separate more pixmaps from icons
@@ -73,6 +86,6 @@ typedef struct
   GdkPixbuf *icon;
   char name[40];
 }
-auxiconsstruct;
+icons_buffer_struct;
 
 #endif /* GPSDRIVE_ICONS_H */

@@ -20,138 +20,6 @@ Disclaimer: Please do not use for navigation.
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    *********************************************************************
-
-$Log$
-Revision 1.24  2006/03/10 08:37:09  tweety
-- Replace Street/Track find algorithmus in Query Funktion
-  against real Distance Algorithm (distance_line_point).
-- Query only reports Track/poi/Streets if currently displaying
-  on map is selected for these
-- replace old top/map Selection by a MapServer based selection
-- Draw White map if no Mapserver is selected
-- Remove some useless Street Data from Examples
-- Take the real colors defined in Database to draw Streets
-- Add a frame to the Streets to make them look nicer
-- Added Highlight Option for Tracks/Streets to see which streets are
-  displayed for a Query output
-- displaymap_top und displaymap_map removed and replaced by a
-  Mapserver centric approach.
-- Treaked a little bit with Font Sizes
-- Added a very simple clipping to the lat of the draw_grid
-  Either the draw_drid or the projection routines still have a slight
-  problem if acting on negative values
-- draw_grid with XOR: This way you can see it much better.
-- move the default map dir to ~/.gpsdrive/maps
-- new enum map_projections to be able to easily add more projections
-  later
-- remove history from gpsmisc.c
-- try to reduce compiler warnings
-- search maps also in ./data/maps/ for debugging purpose
-- cleanup and expand unit_test.c a little bit
-- add some more rules to the Makefiles so more files get into the
-  tar.gz
-- DB_Examples.pm test also for ../data and data directory to
-  read files from
-- geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-- geoinfo.pl NGA.pm: Output Bounding Box for read Data
-- gpsfetchmap.pl:
-  - adapt zoom levels for landsat maps
-  - correct eniro File Download. Not working yet, but gets closer
-  - add/correct some of the Help Text
-- Update makefiles with a more recent automake Version
-- update po files
-
-Revision 1.23  2006/02/15 08:32:16  tweety
-update icon handling
-
-Revision 1.22  2006/02/13 19:27:18  tweety
-Fix icon reading in poi.c
-
-Revision 1.21  2006/02/10 17:36:04  tweety
-rearrange ACPI handling
-
-Revision 1.20  2006/02/05 16:38:06  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.19  2006/01/04 19:19:31  tweety
-more unit tests
-search for icons in the local directory data/icons and data/pixmaps first
-
-Revision 1.18  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.17  1994/06/07 11:25:45  tweety
-set debug levels more detailed
-
-Revision 1.16  2005/08/15 13:10:31  tweety
-*** empty log message ***
-
-Revision 1.15  2005/08/15 12:59:34  tweety
-use gchar/g_sprintf for filename
-
-Revision 1.14  2005/08/14 18:46:42  tweety
-remove unnedded xpm Files; read pixmaps with read_icon,
-separate more pixmaps from icons
-
-Revision 1.13  2005/08/09 01:08:31  tweety
-Twist and bend in the Makefiles to install the DataDirectory more apropriate
-move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
-adapt icons.txt loading according to these directories
-
-Revision 1.12  2005/08/08 20:46:50  tweety
-icons.txt support for non sql use
-Autor:Daniel Hiepler <rigid@akatash.de>
-
-Revision 1.11  2005/08/08 20:25:32  tweety
-new indentation for src/icons.c
-
-Revision 1.10  2005/04/20 23:33:49  tweety
-reformatted source code with anjuta
-So now we have new indentations
-
-Revision 1.9  2005/04/13 19:58:31  tweety
-renew indentation to 4 spaces + tabstop=8
-
-Revision 1.8  2005/04/10 21:50:50  tweety
-reformatting c-sources
-
-Revision 1.7  2005/04/06 19:38:17  tweety
-use disable/enable keys to improove spee in database creation
-add draw_small_plus_sign, which is used if we would have too many waypoints to display
-extract draw_text from draw_poi loop
-
-Revision 1.6  2005/03/27 21:25:46  tweety
-separating map_import from gpsdrive.c
-
-Revision 1.5  2005/02/13 14:06:54  tweety
-start street randering functions. reading from the database streets and
-displaying it on the screen
-improve a little bit in the sql-queries
-fixed linewidth settings in draw_cross
-
-Revision 1.4  2005/02/08 09:01:48  tweety
-move loading of usericons to icons.c
-
-Revision 1.3  2005/02/08 08:43:46  tweety
-wrong dfinition for auxicons array
-
-Revision 1.2  2005/02/06 21:18:05  tweety
-more cleanup: extracted more functionality to functions
-
-Revision 1.1  2005/02/06 17:56:18  tweety
-icons.c is ectracted from gpsdrive.c
-
 
 ***********************************************************************/
 
@@ -221,14 +89,17 @@ extern GdkColor red;
 extern GdkColor black;
 extern GdkColor white;
 extern GdkColor blue;
+extern poi_type_struct poi_type_list[poi_type_list_max];
+extern int poi_type_list_count ;
 
-GdkPixbuf *friendsimage = NULL, *friendspixbuf = NULL;
+
+GdkPixbuf *friendsimage = NULL;
+GdkPixbuf *friendspixbuf = NULL;
 GdkPixbuf *kismetpixbuf;
-GdkPixbuf *iconpixbuf[MAX_ICONS];
 
-
-gint maxauxicons = MAXWPTYPES, lastauxicon = 0;
-auxiconsstruct auxicons[MAXWPTYPES];
+icons_buffer_struct icons_buffer[MAX_ICONS];
+gint icons_buffer_max = MAX_ICONS;
+gint icons_buffer_last = 0;
 
 /***************************************************************************/
 /***************************************************************************/
@@ -310,44 +181,30 @@ draw_small_plus_sign (gdouble posxdest, gdouble posydest)
 int
 drawicon (gint posxdest, gint posydest, char *icon_name)
 {
-  int symbol = 0, aux = -1, i, x, y, counter;
+  int symbol = 0, aux = -1, i;
+  int  wx, wy;
   gchar icon[80];
-  GdkPixbuf *current_icon;
 
-  //printf("draw_icon %d %d %s\n", posxdest,  posydest,icon_name);
+  //printf("drawicon %d %d %s\n", posxdest,  posydest,icon_name);
 
   g_strlcpy (icon, icon_name, sizeof (icon));
   if (!sqlflag)
     g_strup (icon);
 
   /* sweep through all icons and look for icon */
-  for (counter = 0; counter < MAX_ICONS; counter++)
-    {
-      if (0 == strcmp (icon, auxicons[counter].name))
-	{
-	  if (mydebug > 10)
-	    printf ("Found icon %d \"%s\" (%dx%d)...\n", counter, icon,
-		    gdk_pixbuf_get_width (auxicons[counter].icon),
-		    gdk_pixbuf_get_height (auxicons[counter].icon));
-	  current_icon = auxicons[counter].icon;
-	  symbol = counter;
-	  break;
-	}
-    }
-
-  for (i = 0; i < lastauxicon; i++)
-    if ((strcmp (icon, (auxicons + i)->name)) == 0)
+  for (i = 0; i < icons_buffer_last; i++)
+    if ((strcmp (icon, icons_buffer[i].name)) == 0)
       {
 	if ((posxdest >= 0) && (posxdest < SCREEN_X)
 	    && (posydest >= 0) && (posydest < SCREEN_Y))
 	  {
-	    x = gdk_pixbuf_get_width ((auxicons + i)->icon);
-	    y = gdk_pixbuf_get_width ((auxicons + i)->icon);
-	    gdk_draw_pixbuf (drawable, kontext,
-			     (auxicons + i)->icon, 0, 0,
-			     posxdest - x / 2,
-			     posydest - y / 2, x, y,
-			     GDK_RGB_DITHER_NONE, 0, 0);
+	      wx = gdk_pixbuf_get_width  (icons_buffer[i].icon);
+	      wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
+	      gdk_draw_pixbuf (drawable, kontext,
+			       (icons_buffer + i)->icon, 0, 0,
+			       posxdest - wx / 2, posydest - wy / 2, 
+			       wx, wy,
+			       GDK_RGB_DITHER_NONE, 0, 0);
 	    aux = i;
 	  }
 	return 99999;
@@ -359,24 +216,6 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
       return 0;
     }
 
-  if ((posxdest >= 0) && (posxdest < SCREEN_X)
-      && (posydest >= 0) && (posydest < SCREEN_Y))
-    {
-      if (mydebug > 20)
-	printf ("Drawing icon %d loaded from icons.txt...\n", symbol);
-      gdk_draw_pixbuf (drawable, kontext, iconpixbuf[symbol],
-		       0, 0,
-		       posxdest -
-		       (gdk_pixbuf_get_width (GDK_PIXBUF (iconpixbuf[symbol]))
-			/ 2),
-		       posydest -
-		       (gdk_pixbuf_get_height
-			(GDK_PIXBUF (iconpixbuf[symbol])) / 2),
-		       gdk_pixbuf_get_width (GDK_PIXBUF (iconpixbuf[symbol])),
-		       gdk_pixbuf_get_height (GDK_PIXBUF
-					      (iconpixbuf[symbol])),
-		       GDK_RGB_DITHER_NONE, 0, 0);
-    }
   return symbol;
 }
 
@@ -387,93 +226,93 @@ GdkPixbuf *
 read_icon (gchar * icon_name)
 {
   gchar filename[255];
-  GdkPixbuf *iconpixbuf;
+  GdkPixbuf *icons_buffer;
   if (mydebug > 50)
     printf ("read_icon(%s)\n", icon_name);
 
   // Try complete Path
-  iconpixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
+  icons_buffer = gdk_pixbuf_new_from_file (icon_name, NULL);
 
 
   if ( ! ( strcasestr(icon_name,".gif") || strcasestr(icon_name,".png") ) ) 
       {
-	  if ( !iconpixbuf ) // Try as .png
+	  if ( !icons_buffer ) // Try as .png
 	      {
 		  g_snprintf (filename, sizeof (filename), "%s.png",icon_name);
-		  iconpixbuf = read_icon (filename);
+		  icons_buffer = read_icon (filename);
 	      }
-	  if ( !iconpixbuf ) // Try as .gif
+	  if ( !icons_buffer ) // Try as .gif
 	      {
 		  g_snprintf (filename, sizeof (filename), "%s.gif",icon_name);
-		  iconpixbuf = read_icon (filename);
+		  icons_buffer = read_icon (filename);
 	      }
       }  
   
-  if (!iconpixbuf)		// Try in ./data/pixmaps
+  if (!icons_buffer)		// Try in ./data/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
 		  icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
-  if (!iconpixbuf)		// Try in ./data/icons
+  if (!icons_buffer)		// Try in ./data/icons
     {
       g_snprintf (filename, sizeof (filename), "./data/icons/%s",
 		  icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
-  if (!iconpixbuf)		// Try in ./data/pixmaps
+  if (!icons_buffer)		// Try in ./data/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s",
 		   icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
-  if (!iconpixbuf)		// Try in Homedir/pixmaps
+  if (!icons_buffer)		// Try in Homedir/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "%spixmaps/%s",
 		  homedir, icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
-  if (!iconpixbuf)		// Try in homedir/icons
+  if (!icons_buffer)		// Try in homedir/icons
     {
       g_snprintf (filename, sizeof (filename), "%sicons/%s",
 		  homedir, icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
 
 
-  if (!iconpixbuf)		// Try in DATADIR/pixmaps
+  if (!icons_buffer)		// Try in DATADIR/pixmaps
     {
       g_snprintf (filename, sizeof (filename), "%s/gpsdrive/pixmaps/%s",
 		  DATADIR, icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
-  if (!iconpixbuf)		// Try in DATADIR/icons
+  if (!icons_buffer)		// Try in DATADIR/icons
     {
       g_snprintf (filename, sizeof (filename), "%s/gpsdrive/icons/%s",
 		  DATADIR, icon_name);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if (mydebug > 98)
 	  printf ("read_icon(%s): try in %s\n", icon_name,filename);
     }
 
-  if (!iconpixbuf)		// None Found
+  if (!icons_buffer)		// None Found
     {
       fprintf (stderr, "** Failed to open \"%s\"\n", icon_name);
       g_snprintf (filename, sizeof (filename),
 		  "%s/gpsdrive/icons/unknown.png", DATADIR);
-      iconpixbuf = gdk_pixbuf_new_from_file (filename, NULL);
+      icons_buffer = gdk_pixbuf_new_from_file (filename, NULL);
       if ( do_unit_test ) {
 	  exit(-1);
       }
@@ -481,10 +320,10 @@ read_icon (gchar * icon_name)
   else
     {
       if (mydebug > 5)
-	printf ("read_icon(%s) --> %s OK\n", icon_name, filename);
+	printf ("read_icon(%s)\t --> %s OK\n", icon_name, filename);
     }
 
-  return iconpixbuf;
+  return icons_buffer;
 }
 
 
@@ -495,7 +334,7 @@ void
 load_icons (void)
 {
   /* icons.txt */
-  FILE *iconfile = NULL;
+  FILE *fh_icons_txt = NULL;
   char filename[255], wptype[64], icon_name[1024];
   int iconcounter;
 
@@ -503,65 +342,71 @@ load_icons (void)
   kismetpixbuf = read_icon ("kismet.png");
 
   /* load icons defined in icons.txt */
-  if (!iconfile)
+  if (!fh_icons_txt)
     {
 	snprintf ((char *) &filename, sizeof (filename), "./data//icons.txt");
-	iconfile = fopen (filename, "r");
+	fh_icons_txt = fopen (filename, "r");
 	if (mydebug > 3)
 	    {
 		printf ("Trying icons.txt: \"%s\"\n", filename);
 	    }
     }
-  if (!iconfile)
+  if (!fh_icons_txt)
     {
 	snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", homedir);
-	iconfile = fopen (filename, "r");
+	fh_icons_txt = fopen (filename, "r");
 	if (mydebug > 3)
 	    {
 		printf ("Trying icons.txt: \"%s\"\n", filename);
 	    }
     }
   /* if there is no icons.txt, try to open it  from datadir */
-  if (!iconfile)
+  if (!fh_icons_txt)
     {
       snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
       if (mydebug > 3)
 	{
 	  printf ("Trying default icons.txt: \"%s\"\n", filename);
 	}
-      iconfile = fopen (filename, "r");
+      fh_icons_txt = fopen (filename, "r");
     }
-  if (iconfile)
+  if (fh_icons_txt)
     {
       if (mydebug > 3)
 	printf ("Icons will be read from: \"%s\"\n", filename);
 
       for (iconcounter = 0; iconcounter < MAX_ICONS; iconcounter++)
 	{
-	  fscanf (iconfile, "%s %s\n", (char *) &wptype, (char *) &icon_name);
+	  fscanf (fh_icons_txt, "%s %s\n", (char *) &wptype, (char *) &icon_name);
 	  if (mydebug > 3)
 	    printf ("Waypoint-type %d \"%s\" gets \"%s\"\n", iconcounter,
 		    wptype, (char *) &icon_name);
-	  iconpixbuf[iconcounter] = read_icon (icon_name);
-	  if (!iconpixbuf[iconcounter])	// None Found
+	  icons_buffer[iconcounter].icon = read_icon (icon_name);
+	  if ( ! icons_buffer[iconcounter].icon )	// None Found
 	    {
 	      printf ("** Failed to open \"%s\"\n", (char *) &icon_name);
-	      auxicons[iconcounter].icon = NULL;
-	      auxicons[iconcounter].name[0] = 0;
+	      icons_buffer[iconcounter].icon = NULL;
+	      icons_buffer[iconcounter].name[0] = 0;
 	      if ( do_unit_test ) {
 		  exit (-1);
 	      }
 	    }
 	  else
 	    {
-	      strncpy ((char *) &auxicons[iconcounter].name, wptype,
-		       sizeof (auxicons[iconcounter].name));
-	      auxicons[iconcounter].icon = iconpixbuf[iconcounter];
+		if(  poi_type_list_count < poi_type_list_max ) {
+		    poi_type_list_count++;
+		    strncpy ((char *) &poi_type_list[poi_type_list_count].name, wptype,
+			     sizeof (poi_type_list[poi_type_list_count].name));
+		    strncpy ((char *) &poi_type_list[poi_type_list_count].icon_name, icon_name,
+			     sizeof (poi_type_list[poi_type_list_count].icon_name));
+		    poi_type_list[poi_type_list_count].icon = icons_buffer[iconcounter].icon;
+		    poi_type_list[poi_type_list_count].poi_type_id = iconcounter;
+		}
 	    }
-	  if (feof (iconfile))
+	  if (feof (fh_icons_txt))
 	    break;
 	}
-      fclose (iconfile);
+      fclose (fh_icons_txt);
     }
 }
 
@@ -612,16 +457,16 @@ load_user_icon (char icon_name[200])
     icon_name[i] = tolower (icon_name[i]);
 
   g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
-  auxicons[lastauxicon].icon = gdk_pixbuf_new_from_file (path, NULL);
+  icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
 
-  if (auxicons[lastauxicon].icon == NULL)
+  if (icons_buffer[icons_buffer_last].icon == NULL)
     {
       g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png",
 		  DATADIR, icon_name);
-      auxicons[lastauxicon].icon = gdk_pixbuf_new_from_file (path, NULL);
+      icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
     }
 
-  if ((auxicons + lastauxicon)->icon != NULL)
+  if ((icons_buffer + icons_buffer_last)->icon != NULL)
     {
       for (i = 0; i < (int) strlen (icon_name); i++)
 	icon_name[i] = tolower (icon_name[i]);
@@ -632,10 +477,10 @@ load_user_icon (char icon_name[200])
 	}
       else
 	{
-	  g_strlcpy ((auxicons + lastauxicon)->name, icon_name,
-		     sizeof (auxicons->name));
+	  g_strlcpy ((icons_buffer + icons_buffer_last)->name, icon_name,
+		     sizeof (icons_buffer->name));
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
-	  lastauxicon++;
+	  icons_buffer_last++;
 	}
       if (mydebug > 3)
 	printf ("Icon for %s loaded:%s\n", icon_name, path);

@@ -21,45 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-$Log$
-Revision 1.5  2005/08/14 09:47:17  tweety
-seperate tracks into it own table in geoinfo database
-move Info's from TODO abaout geoinfo DB to Man Page
-rename poi.pl to geoinfo.pl
-
-Revision 1.4  2005/03/27 00:44:42  tweety
-eperated poi_type_list and streets_type_list
-and therefor renaming the fields
-added drop index before adding one
-poi.*: a little bit more error handling
-disabling poi and streets if sql is disabled
-changed som print statements from \n.... to ...\n
-changed some debug statements from debug to mydebug
-
-Revision 1.3  2005/02/22 08:18:51  tweety
-change leveing system to simpler scale marking for decission what to show on display
-column_names(DBFuncs.pm get data from Database
-added functions add_index drop_index
-added language to type Database
-for some Data split unpack and mirror Directories
-for some add lat/lon min/max to get faster import for testing
-added POI::DBFuncs::segments_add; this will later be the point to do some excerptions and combinations
-on the street data
-
-Revision 1.2  2005/02/07 07:53:39  tweety
-added check_if_moved inti function poi_rebuild_list
-
-Revision 1.1  2005/02/02 18:11:02  tweety
-Add Point Of Interrest Support with mySQL
-
-Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-Initial import, straight from 2.10pre2 tar.gz archive
-
-Revision 1.3  2003/05/31 20:12:35  ganter
-new UDP friendsserver build in, needs some work
-
-*/
 
 
 #ifndef GPSDRIVE_POI_H
@@ -70,8 +31,6 @@ new UDP friendsserver build in, needs some work
  */
 
 #include <gtk/gtk.h>
-
-
 
 typedef struct
 {
@@ -99,6 +58,18 @@ void poi_rebuild_list (void);
 void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
+
+#define poi_type_list_string_length 80
+typedef struct
+{
+  gint poi_type_id;
+  gchar name[poi_type_list_string_length];
+  gchar icon_name[poi_type_list_string_length];
+  GdkPixbuf *icon;
+  gint scale_min;
+  gint scale_max;
+} poi_type_struct;
+#define poi_type_list_max 4000
 
 
 #endif /* GPSDRIVE_POI_H */

@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.9  2006/05/05 22:18:08  tweety
+move icons stred in memory to one array
+fix size of icons drawn at poi.c
+change list of default scales
+don't calculate map offset if we only have vectormaps
+remove some of the cvs logs in the source files. The can be retrieved from the cvs and
+blow up the files so we have troubles using eclipse or something similar
+move scale_min,scale_max to the streets_type and poi_type database
+increase the LIMIT for the streets sql query
+increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
+Thieck_osm.pl more independent from gpsdrive datastructure
+way we can get some of the lines where both endpoint are out of the viewing Window
+
 Revision 1.8  2006/02/20 09:14:20  tweety
 reconnect kismet socket if connection lost
 Author: Mike Nix <mnix@wanm.com.au>
@@ -163,9 +176,9 @@ reads info from kismet server and insert waypoints into database
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
-extern char dbtypelist[100][40];
+extern char wp_typelist[100][40];
 extern double dbdistance;
-extern int dbtypelistcount;
+extern int wp_typelistcount;
 extern int usesql;
 extern int debug, dbusedist;
 extern gchar homedir[500], mapdir[500];

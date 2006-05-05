@@ -23,6 +23,19 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.9  2006/05/05 22:18:08  tweety
+move icons stred in memory to one array
+fix size of icons drawn at poi.c
+change list of default scales
+don't calculate map offset if we only have vectormaps
+remove some of the cvs logs in the source files. The can be retrieved from the cvs and
+blow up the files so we have troubles using eclipse or something similar
+move scale_min,scale_max to the streets_type and poi_type database
+increase the LIMIT for the streets sql query
+increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
+Thieck_osm.pl more independent from gpsdrive datastructure
+way we can get some of the lines where both endpoint are out of the viewing Window
+
 Revision 1.8  2006/04/22 00:36:12  tweety
 Backgroud map for Vectordata is now light Yellow
 
@@ -866,6 +879,23 @@ loadmap (char *filename)
 }
 
 
+/* ******************************************************************
+ * test if any of the "Display_backgroud_map"-Checkboxes are on
+ */
+int
+display_background_map ()
+{
+    gint i;
+    gint show__background_map=FALSE;
+    
+    for ( i = 0; i < max_display_map; i++)
+	{
+	    if ( display_map[i].to_be_displayed ) 
+		show__background_map=TRUE;
+	}
+    return show__background_map;
+}
+
 
 /* ******************************************************************
  * test if we need to load another map 
@@ -895,18 +925,11 @@ testnewmap ()
     route_next_target ();
 
 
-  { // Test if we want White Background as Map
-      gint show_white_background=TRUE;
-      
-      for ( i = 0; i < max_display_map; i++)
-	  {
-	      if ( display_map[i].to_be_displayed ) 
-		  show_white_background=FALSE;
-	  }
-      
-      if ( show_white_background )
-	  {
-	      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
+  // Test if we want White Background as Map
+  
+  if ( !display_background_map() )
+      {
+	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	      g_strlcpy (mapfilename, "map_LightYellow.png", sizeof (mapfilename));
 	      mapscale = (glong)scalewanted;
 	      pixelfact = mapscale / PIXELFACT;
@@ -916,8 +939,7 @@ testnewmap ()
 	      map_proj = proj_map;
 	      loadmap (mapfilename);
 	      return;
-	  }
-  }
+      }
 
 
   /* search for suitable maps */

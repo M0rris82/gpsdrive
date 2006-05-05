@@ -105,6 +105,8 @@ typedef struct
   GdkColor color_bg;
   gint width;
   gint width_bg;
+  gint scale_min;
+  gint scale_max;
   GdkPixbuf *icon;
 } streets_type_struct;
 #define streets_type_list_max 1500
@@ -202,7 +204,7 @@ get_streets_type_list (void)
     printf ("get_streets_type_list ()\n");
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT streets_type_id,name,color,color_bg,width,width_bg "
+	      "SELECT streets_type_id,name,color,color_bg,width,width_bg,scale_min,scale_max "
 	      "FROM streets_type ORDER BY streets_type_id");
 
   if (mydebug > 20)
@@ -299,10 +301,11 @@ get_streets_type_list (void)
 	  streets_type_list[streets_type_list_count].color_bg = black;
 	};
 
-      streets_type_list[streets_type_list_count].width =
-	(gint) g_strtod (row[4], NULL);
-      streets_type_list[streets_type_list_count].width_bg =
-	(gint) g_strtod (row[5], NULL);
+      streets_type_list[streets_type_list_count].width     = (gint) g_strtod (row[4], NULL);
+      streets_type_list[streets_type_list_count].width_bg  = (gint) g_strtod (row[5], NULL);
+      streets_type_list[streets_type_list_count].scale_min = (gint) g_strtod (row[6], NULL);
+      streets_type_list[streets_type_list_count].scale_max = (gint) g_strtod (row[7], NULL);
+
 
     }
 
@@ -330,6 +333,7 @@ streets_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_where[5000];
+  char sql_in[5000];
   struct timeval t;
   int r, rges;
   time_t ti;
@@ -368,10 +372,10 @@ streets_rebuild_list (void)
     calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
     calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
 
-    lat_min = min (lat_ll, lat_ul);
-    lat_max = max (lat_lr, lat_ur);
-    lon_min = min (lon_ll, lon_ul);
-    lon_max = max (lon_lr, lon_ur);
+    lat_min = min (lat_ll, lat_ul)-0.01;
+    lat_max = max (lat_lr, lat_ur)+0.01;
+    lon_min = min (lon_ll, lon_ul)-0.01;
+    lon_max = max (lon_lr, lon_ur)+0.01;
 
     lat_mid = (lat_min + lat_max) / 2;
     lon_mid = (lon_min + lon_max) / 2;
@@ -383,6 +387,27 @@ streets_rebuild_list (void)
 
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
+
+  { // Limit the displayed streets_types
+      g_snprintf (sql_in, sizeof (sql_in),"\t AND streets_type_id IN ( ");
+    int i;
+    for (i = 0; i < streets_type_list_max; i++)
+      {
+	  if ( streets_type_list[i].scale_min <= mapscale   &&
+	       streets_type_list[i].scale_max >= mapscale 
+	       ) {
+	      gchar id_string[20];
+	      g_snprintf (id_string, sizeof (id_string)," %d,",
+			  streets_type_list[i].streets_type_id);
+	      g_strlcat (sql_in, id_string, sizeof (sql_in));
+	  }
+      }
+    g_strlcat (sql_in, " 0)" , sizeof (sql_in));
+    if ( mydebug > 20 )
+      {
+	printf ("STREET mysql in: %s\n", sql_in );
+      }
+  }
 
 
   {				// TODO: change the selection against real LINE crosses visible RECTANGLE
@@ -396,11 +421,10 @@ streets_rebuild_list (void)
 		"\t\t   ( ( lat1 BETWEEN %f AND %f ) AND ( lon1 BETWEEN %f AND %f ) ) \n"
 		"\t\t   OR \n"
 		"\t\t   ( ( lat2 BETWEEN %f AND %f ) AND ( lon2 BETWEEN %f AND %f ) ) \n"
-		"\t\t ) \n"
-		"\t\t AND \n"
-		"\t\t ( %ld BETWEEN scale_min AND scale_max) \n",
+		"\t\t ) \n",
 		lat_min, lat_max, lon_min, lon_max,
-		lat_min, lat_max, lon_min, lon_max, mapscale);
+		lat_min, lat_max, lon_min, lon_max
+		);
     g_strdelimit (sql_where, ",", '.');	// For different LANG
     if (mydebug > 50)
       {
@@ -416,7 +440,9 @@ streets_rebuild_list (void)
   g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,streets_type_id,proximity "
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
-	      "FROM streets " "%s LIMIT 2000000", sql_where);
+	      "FROM streets " "%s %s "
+	      //"LIMIT 20000000000"
+	      , sql_where,sql_in);
 
   if (mydebug > 50)
     printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
@@ -716,7 +742,7 @@ streets_draw_list (void)
 	  if (gdks_streets_count >= gdks_streets_max)
 	    {
 	      gdks_streets_max = gdks_streets_count + 1000;
-	      g_renew (GdkSegment, gdks_streets, gdks_streets_max);
+	      gdks_streets = g_renew (GdkSegment, gdks_streets, gdks_streets_max);
 	      if (NULL == streets_list)
 		{
 		  g_print
@@ -802,7 +828,7 @@ streets_draw_list (void)
 
 	      gint width_factor=1;
 	      if ( ( mapscale/zoom ) < 10000 ) {
-		  width_factor=3;
+		  width_factor=10000/( mapscale/zoom );
 	      }
 
 	      if ((streets_list + i)->highlight)

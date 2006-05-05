@@ -79,12 +79,12 @@ lat2radius (gdouble lat)
     {
       if (lat > 180)
 	{
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 	};
       if (lat < -180)
 	{
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
 	};
     }
@@ -119,8 +119,6 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
   y = posy;
   px = (SCREEN_X_2 - x - xoff) * pixelfact / zoom;
   py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
-
-
 
   //if (mapistopo == FALSE)
   if ( proj_map == map_proj )
@@ -159,25 +157,25 @@ calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
   // Error check
   if ( lat > 360 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
 	  //	  lat = 360.0;
       };
   if ( lat < -360 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
 	  //	  lat = -360.0;
       };
   if ( lon > 180 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 		fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
 	  // lon -= 180.0;
       };
   if ( lon < -180 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
 	  // lon += 180.0;
       };
@@ -205,23 +203,23 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
   // Error check
   if ( lat > 360 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
       };
   if ( lat < -360 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
       };
   if ( lon > 180 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
 	  lon=180;
       };
   if ( lon < -180 )
       {
-	  if (mydebug > 0)
+	  if (mydebug > 20)
 	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
 	  lon=-180;
       };

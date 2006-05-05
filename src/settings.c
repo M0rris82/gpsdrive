@@ -22,6 +22,19 @@
 /* ******************************************************************** 
 	 
 $Log$
+Revision 1.14  2006/05/05 22:18:08  tweety
+move icons stred in memory to one array
+fix size of icons drawn at poi.c
+change list of default scales
+don't calculate map offset if we only have vectormaps
+remove some of the cvs logs in the source files. The can be retrieved from the cvs and
+blow up the files so we have troubles using eclipse or something similar
+move scale_min,scale_max to the streets_type and poi_type database
+increase the LIMIT for the streets sql query
+increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
+Thieck_osm.pl more independent from gpsdrive datastructure
+way we can get some of the lines where both endpoint are out of the viewing Window
+
 Revision 1.13  2006/02/05 16:38:06  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -443,8 +456,8 @@ gint zone;
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
-extern char dbtypelist[100][40];
-extern int dbtypelistcount;
+extern char wp_typelist[100][40];
+extern int wp_typelistcount;
 extern double dbdistance;
 extern int dbusedist, havefriends, etch, do_draw_grid, serialspeed, disableserial;
 GtkWidget *sqlfn[100], *ipbt;
@@ -2085,7 +2098,7 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
     }
 
   g_strlcpy (dbwherestring, "WHERE (", sizeof (dbwherestring));
-  for (i = 0; i < dbtypelistcount; i++)
+  for (i = 0; i < wp_typelistcount; i++)
     {
       sel = sqlselects[i];
       if (sel)
@@ -2093,12 +2106,12 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
 	  flag = TRUE;
 	  if (sqlandmode)
 	    {
-	      g_snprintf (s, sizeof (s), "type  = '%s' OR  ", dbtypelist[i]);
+	      g_snprintf (s, sizeof (s), "type  = '%s' OR  ", wp_typelist[i]);
 	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
 	    }
 	  else
 	    {
-	      g_snprintf (s, sizeof (s), "type != '%s' AND ", dbtypelist[i]);
+	      g_snprintf (s, sizeof (s), "type != '%s' AND ", wp_typelist[i]);
 	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
 	    }
 	}
@@ -2388,7 +2401,7 @@ sqlsetup (void)
 
   get_sql_type_list ();
 
-  for (i = 0; i < dbtypelistcount; i++)
+  for (i = 0; i < wp_typelistcount; i++)
     {
       sqlselects[i] = 0;
     }
@@ -2401,7 +2414,7 @@ sqlsetup (void)
 				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   table = gtk_table_new (4, 2, FALSE);
-  table2 = gtk_table_new (dbtypelistcount, 2, FALSE);
+  table2 = gtk_table_new (wp_typelistcount, 2, FALSE);
 
   gtk_container_add (GTK_CONTAINER (frame), mainbox);
 
@@ -2485,10 +2498,10 @@ sqlsetup (void)
 
   gtk_box_pack_start (GTK_BOX (mainbox), scroll, TRUE, TRUE, 3 * PADDING);
 
-  for (i = 0; i < dbtypelistcount; i++)
+  for (i = 0; i < wp_typelistcount; i++)
     {
       l[i] = gtk_entry_new ();
-      gtk_entry_set_text (GTK_ENTRY (l[i]), dbtypelist[i]);
+      gtk_entry_set_text (GTK_ENTRY (l[i]), wp_typelist[i]);
       gtk_entry_set_editable (GTK_ENTRY (l[i]), FALSE);
       gtk_widget_set_usize (l[i], USIZE_X, USIZE_Y);
       gtk_table_attach_defaults (GTK_TABLE (table2), l[i], 0, 1, i, i + 1);
@@ -2496,7 +2509,7 @@ sqlsetup (void)
       sqlfn[i] = gtk_check_button_new ();
       gtk_signal_connect (GTK_OBJECT (sqlfn[i]), "clicked",
 			  GTK_SIGNAL_FUNC (dbbuildquery_cb), (gpointer) i);
-      g_snprintf (temp, sizeof (temp), "= '%s'", dbtypelist[i]);
+      g_snprintf (temp, sizeof (temp), "= '%s'", wp_typelist[i]);
 
       if (NULL != (strstr (wheretemp, temp)))
 	{

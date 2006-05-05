@@ -21,220 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-  $Log$
-  Revision 1.33  2006/03/10 08:37:09  tweety
-  - Replace Street/Track find algorithmus in Query Funktion
-    against real Distance Algorithm (distance_line_point).
-  - Query only reports Track/poi/Streets if currently displaying
-    on map is selected for these
-  - replace old top/map Selection by a MapServer based selection
-  - Draw White map if no Mapserver is selected
-  - Remove some useless Street Data from Examples
-  - Take the real colors defined in Database to draw Streets
-  - Add a frame to the Streets to make them look nicer
-  - Added Highlight Option for Tracks/Streets to see which streets are
-    displayed for a Query output
-  - displaymap_top und displaymap_map removed and replaced by a
-    Mapserver centric approach.
-  - Treaked a little bit with Font Sizes
-  - Added a very simple clipping to the lat of the draw_grid
-    Either the draw_drid or the projection routines still have a slight
-    problem if acting on negative values
-  - draw_grid with XOR: This way you can see it much better.
-  - move the default map dir to ~/.gpsdrive/maps
-  - new enum map_projections to be able to easily add more projections
-    later
-  - remove history from gpsmisc.c
-  - try to reduce compiler warnings
-  - search maps also in ./data/maps/ for debugging purpose
-  - cleanup and expand unit_test.c a little bit
-  - add some more rules to the Makefiles so more files get into the
-    tar.gz
-  - DB_Examples.pm test also for ../data and data directory to
-    read files from
-  - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-  - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-  - gpsfetchmap.pl:
-    - adapt zoom levels for landsat maps
-    - correct eniro File Download. Not working yet, but gets closer
-    - add/correct some of the Help Text
-  - Update makefiles with a more recent automake Version
-  - update po files
-
-  Revision 1.32  2006/02/14 09:37:01  tweety
-  eliminate unused Variable
-
-  Revision 1.31  2006/02/13 23:12:35  tweety
-  add unit test checks for not loading maps
-
-  Revision 1.30  2006/02/13 19:27:18  tweety
-  Fix icon reading in poi.c
-
-  Revision 1.29  2006/02/05 16:38:06  tweety
-  reading floats with scanf looks at the locale LANG=
-  so if you have a locale de_DE set reading way.txt results in clearing the
-  digits after the '.'
-  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-  Revision 1.28  2006/01/03 14:24:10  tweety
-  eliminate compiler Warnings
-  try to change all occurences of longi -->lon, lati-->lat, ...i
-  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-  rename drawgrid --> do_draw_grid
-  give the display frames usefull names frame_lat, ...
-  change handling of WP-types to lowercase
-  change order for directories reading icons
-  always read inconfile
-
-  Revision 1.27  1994/06/07 11:25:45  tweety
-  set debug levels more detailed
-
-  Revision 1.26  2005/11/06 17:24:26  tweety
-  shortened map selection code
-  coordinate_string2gdouble:
-   - fixed missing format
-   - changed interface to return gdouble
-  change -D option to reflect debuglevels
-  Added more debug Statements for Level>50
-  move map handling to to seperate file
-  speedup memory reservation for map-structure
-  Add code for automatic loading of maps from system DATA/maps/.. Directory
-  changed length of mappath from 400 to 2048 chars
-
-  Revision 1.25  2005/10/20 20:53:14  tweety
-  change in Text Size
-
-  Revision 1.24  2005/10/11 08:28:35  tweety
-  gpsdrive:
-  - add Tracks(MySql) displaying
-  - reindent files modified
-  - Fix setting of Color for Grid
-  - poi Text is different in size depending on Number of POIs shown on
-    screen
-
-  geoinfo:
-   - get Proxy settings from Environment
-   - create tracks Table in Database and fill it
-     this separates Street Data from Track Data
-   - make geoinfo.pl download also Opengeodb Version 2
-   - add some poi-types
-   - Split off Filling DB with example Data
-   - extract some more Funtionality to Procedures
-   - Add some Example POI for Kirchheim(Munich) Area
-   - Adjust some Output for what is done at the moment
-   - Add more delayed index generations 'disable/enable key'
-   - If LANG=*de_DE* then only impert europe with --all option
-   - WDB will import more than one country if you wish
-   - add more things to be done with the --all option
-
-  Revision 1.23  2005/05/24 08:35:25  tweety
-  move track splitting to its own function +sub track_add($)
-  a little bit more error handling
-  earth_distance somtimes had complex inumbers as result
-  implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-  this way i can re-read all currently displayed streets from the DB
-  fix minor array iindex counting bugs
-  add some content to the comment column
-
-  Revision 1.22  2005/05/15 07:00:51  tweety
-  new Keystroke p adds an instant waypoint at cursor position
-  new Keystroke q querys information for thenearest waypoints and street endpoints
-
-  Revision 1.21  2005/05/13 21:27:48  tweety
-  delete order by to speed up database actions
-
-  Revision 1.20  2005/04/29 17:41:57  tweety
-  Moved the speech string to a seperate File
-
-  Revision 1.19  2005/04/20 23:33:49  tweety
-  reformatted source code with anjuta
-  So now we have new indentations
-
-  Revision 1.18  2005/04/13 19:58:31  tweety
-  renew indentation to 4 spaces + tabstop=8
-
-  Revision 1.17  2005/04/12 06:14:20  tweety
-  poi.c:
-  Added Full Path Search for Icons
-  streets.c:
-  implement basic colors for streets
-  added text to streets in debug mode
-	
-  Revision 1.16  2005/04/10 21:50:50  tweety
-  reformatting c-sources
-	
-  Revision 1.15  2005/04/07 06:35:01  tweety
-  Error handling for g_renew
-  correct to extern MYSQL mysql;
-  start getting color from streets_type
-
-  Revision 1.14  2005/04/06 19:38:17  tweety
-  use disable/enable keys to improove spee in database creation
-  add draw_small_plus_sign, which is used if we would have too many waypoints to display
-  extract draw_text from draw_poi loop
-
-  Revision 1.13  2005/03/30 10:03:38  tweety
-  corrected problem with sigSEG if sqlmode is off
-  Added another bunch of comments
-
-  Revision 1.12  2005/03/29 01:59:01  tweety
-  another set of minor Bugfixes
-
-  Revision 1.11  2005/03/27 18:22:50  tweety
-  only draw cross if less than 5000 poi found
-
-  Revision 1.10  2005/03/27 00:44:42  tweety
-  eperated poi_type_list and streets_type_list
-  and therefor renaming the fields
-  added drop index before adding one
-  poi.*: a little bit more error handling
-  disabling poi and streets if sql is disabled
-  changed som print statements from \n.... to ...\n
-  changed some debug statements from debug to mydebug
-
-  Revision 1.9  2005/03/15 08:40:13  tweety
-  eliminate doublicate pfd description
-
-  Revision 1.8  2005/02/22 08:18:51  tweety
-  change leveling system to simpler scale marking for decission 
-  what to show on display
-  column_names(DBFuncs.pm get data from Database
-  added functions add_index drop_index
-  added language to type Database
-  for some Data split unpack and mirror Directories
-  for some add lat/lon min/max to get faster import for testing
-  added POI::DBFuncs::segments_add; this will later be the point 
-  to do some excerptions and combinations
-  on the street data
-
-  Revision 1.7  2005/02/17 09:46:34  tweety
-  minor changes
-
-  Revision 1.6  2005/02/13 22:57:00  tweety
-  WDB Support
-
-  Revision 1.5  2005/02/13 14:06:54  tweety
-  start street randering functions. reading from the database streets 
-  and displaying it on the screen
-  improve a little bit in the sql-queries
-  fixed linewidth settings in draw_cross
-
-  Revision 1.4  2005/02/10 06:22:25  tweety
-  added primitive drawing of icons to POI
-
-  Revision 1.3  2005/02/08 20:18:39  tweety
-  small fixes in poi.c
-
-  Revision 1.2  2005/02/07 07:53:39  tweety
-  added check_if_moved inti function poi_rebuild_list
-
-  Revision 1.1  2005/02/02 18:11:02  tweety
-  Add Point Of Interrest Support with mySQL
-
-  Revision 0.0  2005/01/11 20:14:14  tweety
-
-*/
 
 
 /*
@@ -310,15 +96,6 @@ GdkColor poi_colorv;
 PangoFontDescription *pfd;
 PangoLayout *poi_label_layout;
 
-#define poi_type_list_string_length 80
-typedef struct
-{
-  gint poi_type_id;
-  gchar name[poi_type_list_string_length];
-  gchar icon_name[poi_type_list_string_length];
-  GdkPixbuf *icon;
-} poi_type_struct;
-#define poi_type_list_max 4000
 poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
 
@@ -443,7 +220,7 @@ get_poi_type_list (void)
   }
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,symbol,description FROM poi_type ORDER BY poi_type_id");
+	      "SELECT poi_type_id,name,symbol,description,scale_min,scale_max FROM poi_type ORDER BY poi_type_id");
 
   if (mydebug>25)
     fprintf (stderr, "get_poi_type_list: query: %s\n", sql_query);
@@ -544,6 +321,9 @@ get_poi_type_list (void)
 		  }
 	      }
 	  }
+	  poi_type_list[index].scale_min = (gint) g_strtod (row[4], NULL);
+	  poi_type_list[index].scale_max = (gint) g_strtod (row[5], NULL);
+
 	}
     }
 
@@ -577,6 +357,7 @@ poi_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_where[5000];
+  char sql_in[5000];
   struct timeval t;
   int r, rges;
   time_t ti;
@@ -632,17 +413,41 @@ poi_rebuild_list (void)
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-  {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
+  {	// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
 		"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
 		"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
-		"\tAND   ( %ld  BETWEEN scale_min AND scale_max) \n",
-		lat_min, lat_max, lon_min, lon_max, mapscale);
+		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
+		"\n",
+		lat_min, lat_max, lon_min, lon_max
+		// , mapscale
+		);
     g_strdelimit (sql_where, ",", '.');	// For different LANG
     if ( mydebug > 20 )
       {
-	//printf ("POI mysql where: %s\n", sql_where );
-	printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
+	  printf ("poi_rebuild_list: POI mysql where: %s\n", sql_where );
+	  printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
+      }
+  }
+
+  { // Limit the displayed poi_types
+      g_snprintf (sql_in, sizeof (sql_in),"\t AND poi_type_id IN ( ");
+    int i;
+    for (i = 0; i < poi_type_list_max; i++)
+      {
+	  if ( poi_type_list[i].scale_min <= mapscale   &&
+	       poi_type_list[i].scale_max >= mapscale 
+	       ) {
+	      gchar id_string[20];
+	      g_snprintf (id_string, sizeof (id_string)," %d,",
+			  poi_type_list[i].poi_type_id);
+	      g_strlcat (sql_in, id_string, sizeof (sql_in));
+	  }
+      }
+    g_strlcat (sql_in, " 0)" , sizeof (sql_in));
+    if ( mydebug > 20 )
+      {
+	printf ("POI mysql in: %s\n", sql_in );
       }
   }
 
@@ -651,7 +456,7 @@ poi_rebuild_list (void)
 	      // "SELECT lat,lon,alt,type_id,proximity "
 	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM poi "
 	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s LIMIT 40000", sql_where);
+	      "%s %s LIMIT 40000", sql_where,sql_in);
 
   if ( mydebug > 20 )
     printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
@@ -881,13 +686,18 @@ poi_draw_list (void)
 
 	    if (icon != NULL && icon_index > 0)
 	      {
-		if (poi_max < 2000)
-		  gdk_draw_pixbuf (drawable,
-				   kontext,
-				   icon, 0, 0,
-				   posx - 12,
-				   posy - 12,
-				   24, 24, GDK_RGB_DITHER_NONE, 0, 0);
+		  if (poi_max < 2000)
+		      {
+			  int wx = gdk_pixbuf_get_width (icon);
+			  int wy = gdk_pixbuf_get_height (icon);
+			  
+			  gdk_draw_pixbuf (drawable,  kontext, icon,
+					   0, 0,
+					   posx - wx/2,
+					   posy - wy/2,
+					   wx, wy,
+					   GDK_RGB_DITHER_NONE, 0, 0);
+		      }
 	      }
 	    else
 	      {
