@@ -84,7 +84,7 @@ Disclaimer: Please do not use for navigation.
 extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
-extern gint muteflag, sqlflag, trackflag;
+extern gint muteflag, wp_from_sql, trackflag;
 extern GdkColor red;
 extern GdkColor black;
 extern GdkColor white;
@@ -188,7 +188,7 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
   //printf("drawicon %d %d %s\n", posxdest,  posydest,icon_name);
 
   g_strlcpy (icon, icon_name, sizeof (icon));
-  if (!sqlflag)
+  if (!wp_from_sql)
     g_strup (icon);
 
   /* sweep through all icons and look for icon */

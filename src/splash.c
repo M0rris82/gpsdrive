@@ -50,7 +50,7 @@ extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
 extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered, milesflag, nauticflag, metricflag, sqlflag;
+extern gint scaleprefered, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
@@ -770,8 +770,8 @@ writeconfig ()
 	else
 		fprintf (fp, "1\n");
 
-	fprintf (fp, "sqlflag = ");
-	if (sqlflag == 0)
+	fprintf (fp, "wp_from_sql = ");
+	if (wp_from_sql == 0)
 		fprintf (fp, "0\n");
 	else
 		fprintf (fp, "1\n");
@@ -941,8 +941,8 @@ readconfig ()
 			vfr = atoi (par2);
 		    else if ( (strcmp(par1, "disdevwarn")) == 0)
 			disdevwarn = atoi (par2);
-		    else if ( (strcmp(par1, "sqlflag")) == 0)
-			sqlflag = atoi (par2);
+		    else if ( (strcmp(par1, "wp_from_sql")) == 0)
+			wp_from_sql = atoi (par2);
 		    else if ( (strcmp(par1, "lastnotebook")) == 0)
 			lastnotebook = atoi (par2);
 		    else if ( (strcmp(par1, "dbhostname")) == 0)

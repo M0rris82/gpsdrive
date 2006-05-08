@@ -22,6 +22,9 @@
 /* ******************************************************************** 
 	 
 $Log$
+Revision 1.15  2006/05/08 19:08:22  tweety
+rename usesql to wp_from_sql
+
 Revision 1.14  2006/05/05 22:18:08  tweety
 move icons stred in memory to one array
 fix size of icons drawn at poi.c
@@ -402,7 +405,7 @@ created settings.c
 gchar homedir[500];
 gchar mapdir[500];
 
-extern gint statusid, mydebug, havespeechout, posmode, muteflag, sqlflag;
+extern gint statusid, mydebug, havespeechout, posmode, muteflag;
 
 typedef struct
 {

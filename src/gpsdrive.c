@@ -652,7 +652,7 @@ GtkWidget *loadtrackbt;
 GtkWidget *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
-gint muteflag = 0, sqlflag = 0, trackflag = 1, wpflag = TRUE;
+gint muteflag = 0, wp_from_sql = 0, trackflag = 1, wpflag = TRUE;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
 GtkObject *scaler_adj;
@@ -1534,7 +1534,7 @@ void check_and_reload_way_txt()
     gchar mappath[2048];
     g_strlcpy (mappath, homedir, sizeof (mappath));
 
-    if (!sqlflag)
+    if (!wp_from_sql)
 	g_strlcat (mappath, activewpfile, sizeof (mappath));
     else
 	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
@@ -3596,7 +3596,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 		}
 	}
 
-	if (sqlflag)
+	if (wp_from_sql)
 	{
 		g_snprintf (s1, sizeof (s1), "%d", wptotal);
 		gtk_entry_set_text (GTK_ENTRY (wplabel1), s1);
@@ -4358,8 +4358,8 @@ tracks_draw_cb (GtkWidget * widget, guint datum)
 gint
 sql_cb (GtkWidget * widget, guint datum)
 {
-	sqlflag = !sqlflag;
-	if (sqlflag)
+	wp_from_sql = !wp_from_sql;
+	if (wp_from_sql)
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
 					      TRUE);
@@ -5014,7 +5014,7 @@ void
 addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 {
 	gint i;
-	if (sqlflag)
+	if (wp_from_sql)
 	{
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
 			       (char *) wp_type);
@@ -5128,7 +5128,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	{			// Types
 		GtkWidget *add_wp_type_label;
-		if (sqlflag)
+		if (wp_from_sql)
 		{
 			get_sql_type_list ();
 			for (i = 0; i < wp_typelistcount; i++)
@@ -5692,7 +5692,7 @@ loadwaypoints ()
 	wayp = g_new (wpstruct, wpsize);
     
     g_strlcpy (mappath, homedir, sizeof (mappath));
-    if (!sqlflag)
+    if (!wp_from_sql)
 	g_strlcat (mappath, activewpfile, sizeof (mappath));
     else
 	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
@@ -5708,7 +5708,7 @@ loadwaypoints ()
 	{
 	    if ( mydebug > 0 )
 		{
-		    g_print ("\nsqlflag: %d\n",sqlflag);
+		    g_print ("\nwp_from_sql: %d\n",wp_from_sql);
 		    g_print ("load waypoint file %s\n",mappath);
 		}
 
@@ -5744,7 +5744,7 @@ loadwaypoints ()
 				if (e >= 8)
 				    (wayp + i)->proximity = proximity;
 
-				if (!sqlflag)
+				if (!wp_from_sql)
 				    {
 					if ((strncmp
 					     ((wayp + i)->name, "R-",
@@ -5772,7 +5772,7 @@ loadwaypoints ()
 	    fclose (st);
 
 
-	    if (!sqlflag)
+	    if (!wp_from_sql)
 		g_print ("%s reloaded\n", activewpfile);
 	    else
 		g_print ("%s reloaded\n", "way-SQLRESULT.txt");
@@ -6228,7 +6228,7 @@ main (int argc, char *argv[])
 	usesql = sqlinit ();
 
     if (!usesql)
-	sqlflag = FALSE;
+	wp_from_sql = FALSE;
 
     /* Create toplevel window */
 
@@ -6515,7 +6515,7 @@ main (int argc, char *argv[])
     // Checkbox ----   Use SQL
     sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
     gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
-    if (sqlflag)
+    if (wp_from_sql)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
 				      TRUE);
 
@@ -6534,7 +6534,7 @@ main (int argc, char *argv[])
 			"clicked", GTK_SIGNAL_FUNC (wp_cb), (gpointer) 1);
 
 
-    if (sqlflag)
+    if (wp_from_sql)
 	{
 	    get_sql_type_list ();
 	    getsqldata ();
