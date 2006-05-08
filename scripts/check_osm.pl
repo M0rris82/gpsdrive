@@ -19,6 +19,8 @@ use IO::File;
 use Pod::Usage;
 use Storable ();
 
+my $current_file ="planet-2006-05-01.osm.bz2";
+
 my ($man,$help);
 
 our $CONFIG_DIR    = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
@@ -161,7 +163,7 @@ sub read_osm_file($) { # Insert Streets from osm File
     print("Reading $file_name\n") if $verbose || $debug;
     print "$file_name:	".(-s $file_name)." Bytes\n" if $debug;
 
-    if ( $file_name eq "planet.osm" &&
+    if ( $file_name =~ m/planet.*osm/ &&
 	 -s "$file_name.storable.node" &&
          -s "$file_name.storable.segment" &&
          -s "$file_name.storable.way" 
@@ -187,9 +189,9 @@ sub read_osm_file($) { # Insert Streets from osm File
 	    printf "Read and parsed $file_name in %.0f sec\n",time()-$start_time;
 	}
 	if ( $file_name eq "planet.osm" ) {
-	    Storable::store($osm_nodes   ,"$file_name.storable.node");
-		Storable::store($osm_segments,"$file_name.storable.segment");
-		Storable::store($osm_ways    ,"$file_name.storable.way");
+	        Storable::store($osm_nodes   ,"$file_name.node.storable");
+		Storable::store($osm_segments,"$file_name.segment.storable");
+		Storable::store($osm_ways    ,"$file_name.way.storable");
 		if ( $verbose) {
 		    printf "Read and parsed and stored $file_name in %.0f sec\n",time()-$start_time;
 		}
@@ -216,9 +218,10 @@ sub html_out($$){
 	print $fh "</head>\n";
 	print $fh "<BODY BGCOLOR=\"#000066\" LINK=\"#6699FF\" ALINK=\"#7799FF\" VLINK=\"#FFFF66\" \n";
 	print $fh "text=white marginwidth=\"0\" marginheight=\"0\" leftmargin=\"0\" topmargin=\"0\" >\n";
-	print $fh "<title>Open Street Map $type</title>\n";
+	print $fh "<title>Open Street Map $type for  $current_file</title>\n";
 
-	print $fh "<A href=\"index.html\">Index</a><br/>\n\n";
+	print $fh "<h3>Type for $current_file</h3>\n";
+	print $fh "<A href=\"index.html\">Back to the Index</a><br/>\n\n";
 	if ( defined($html_files->{$type}->{header}) ){
 	    print $fh $html_files->{$type}->{header};
 	}
@@ -276,23 +279,22 @@ sub street_name_2_id($) {
 sub data_open($){
     my $file_name = shift;
 
-    my $file_with_path="$file_name";
-    if ( -s $file_with_path ) {
-	debug("Opening $file_with_path");
+    if ( -s $file_name ) {
+	debug("Opening $file_name");
 	my $fh;
-	if ( $file_with_path =~ m/\.gz$/ ) {
-	    $fh = IO::File->new("gzip -dc $file_with_path|")
-		or die("cannot open $file_with_path: $!");
-	} elsif ( $file_with_path =~ m/\.bz2$/ ) {
-	    $fh = IO::File->new("bzip2 -dc $file_with_path|")
-		or die("cannot open $file_with_path: $!");
+	if ( $file_name =~ m/\.gz$/ ) {
+	    $fh = IO::File->new("gzip -dc $file_name|")
+		or die("cannot open $file_name: $!");
+	} elsif ( $file_name =~ m/\.bz2$/ ) {
+	    $fh = IO::File->new("bzip2 -dc $file_name|")
+		or die("cannot open $file_name: $!");
 	} else {
-	    $fh = IO::File->new("<$file_with_path")
-		or die("cannot open $file_with_path: $!");
+	    $fh = IO::File->new("<$file_name")
+		or die("cannot open $file_name: $!");
 	}
 	return $fh;
     }
-    die "cannot Find $file_name";
+    die "cannot Find $file_name\n";
 }
 
 
@@ -918,19 +920,15 @@ sub check_Data(){
     -d $mirror_dir or mkpath $mirror_dir
 	or die "Cannot create Directory $mirror_dir:$!\n";
     
-    my $url = "http://www.ostertag.name/osm/planet.osm.bz2";
-    my $tar_file = "$mirror_dir/planet.osm.bz2";
+    my $url = "http://www.ostertag.name/osm/$current_file";
+    my $tar_file = "$mirror_dir/$current_file";
 
     print "Mirror $url\n";
     my $mirror = mirror_file($url,$tar_file);
 
     print "Read OSM Data\n";
-    if ( -s "planet.osm" ) {
-	read_osm_file("planet.osm");
-    } else {
-	read_osm_file( $tar_file );
-    }
-
+    read_osm_file( $tar_file );
+    
     # Checks and statistics
     html_out("statistics-nodes"   ,"OSM Nodes:    " . scalar keys( %$osm_nodes)."<br>\n");
     html_out("statistics-segments","OSM Segments: " . scalar keys( %$osm_segments)."<br>\n");
@@ -989,6 +987,7 @@ pod2usage(-verbose=>2) if $man;
 # Get and Unpack and check openstreetmap  planet.osm from http://www.openstreetmap.org/
 check_Data();
 
+print "Check Complete\n";
 ##################################################################
 # Usage/manual
 
