@@ -13,8 +13,9 @@ dnl 27/03/2006  DP      Added detection for ATK
 dnl 29/03/2006  DP      Added detction for Cairo
 dnl 30/03/2006  DP      Added detection for fonfconfig
 dnl 04/04/2006  DP      Added detection for libpqxx
-dnl 04/04/2004  DP      Added detection for libpng12
-
+dnl 04/04/2006  DP      Added detection for libpng12
+dnl 24/04/2006  DP      Send TODO output to Std Error
+dnl 08/05/2005  DP	Avoid uname -p error on Debian
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -160,9 +161,17 @@ exit
 fi
 
 fi
+dnl ----------------------------------------------------
+dnl DP 08/05/2006 Debian doesn't support uname -p 
+dnl ----------------------------------------------------
+OSNAME=`uname -n`
+if test "$OSNAME" = "debian"; then
+	UNAMEP=unknown
+else
+	UNAMEP=`uname -p`
+fi
+dnl -----------------------------------------------------
 
-
-UNAMEP=`uname -p`
 ARCHP=`arch`
 CFLAGS="$CFLAGS"
 
@@ -301,11 +310,11 @@ else
 fi
 
 dnl ---------------------------
-echo -n checking for package libc6 2.3.5-1... TODO
+echo checking for package libc6 2.3.5-1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
-echo -n checking for package libcario2 1.0.2-3...
+echo checking for package libcario2 1.0.2-3...
 dnl ---------------------------
 if $PKG_CONFIG cairo --atleast-version=1.0.2
 then
@@ -318,7 +327,7 @@ else
    AC_MSG_ERROR([libcairo is missing or your version is to old. Min Version 1.0.2])
 fi
 dnl ---------------------------
-echo checking for package libexpat1... TODO                    
+echo checking for package libexpat1... TODO >&2                   
 dnl ---------------------------
 
 dnl ---------------------------
@@ -336,9 +345,9 @@ else
 fi		  
 
 dnl ---------------------------
-echo checking for package libfreetype6... TODO
+echo checking for package libfreetype6... TODO >&2
 dnl ---------------------------
-echo TODO checking for package libgcc1... TODO        
+echo TODO checking for package libgcc1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
@@ -371,11 +380,11 @@ fi
 dnl ---------------------------
 
 dnl ---------------------------
-echo checking for package libstdc++6... TODO
+echo checking for package libstdc++6... TODO >&2
 dnl ---------------------------
-echo checking for package libx11-6...   TODO
+echo checking for package libx11-6...   TODO >&2
 dnl ---------------------------
-echo checking for package libxcursor1... TODO
+echo checking for package libxcursor1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
@@ -394,41 +403,41 @@ fi
 dnl ----------------------------			
 
 dnl ---------------------------
-echo checking for package libxext6... TODO 
+echo checking for package libxext6... TODO >&2
 dnl ---------------------------
-echo checking for package libxi6...   TODO
+echo checking for package libxi6...   TODO >&2
 dnl ---------------------------
-echo checking for package libxinerama1 1:0.9.0-1... TODO
+echo checking for package libxinerama1 1:0.9.0-1... TODO >&2
 dnl ---------------------------
-echo checking for package zlib1g...  TODO
+echo checking for package zlib1g...  TODO >&2
 dnl ---------------------------
-echo checking for package libgdal-grass 1.2.6-1+b1...  TODO
+echo checking for package libgdal-grass 1.2.6-1+b1...  TODO >&2
 dnl ---------------------------
-echo checking for package libsrces26-dev 2.6.0-6...   TODO
+echo checking for package libsrces26-dev 2.6.0-6...   TODO >&2
 dnl ---------------------------
-echo checking for package libmysqlclient14-dev 4.1.15-1... TODO
+echo checking for package libmysqlclient14-dev 4.1.15-1... TODO >&2
 dnl ---------------------------
-echo checking for package libtiff4-dev 3.7.4-1...  TODO
+echo checking for package libtiff4-dev 3.7.4-1...  TODO >&2
 dnl ---------------------------
-echo checking for package libjasper-1.701-dev...  TODO
+echo checking for package libjasper-1.701-dev...  TODO >&2
 dnl ---------------------------
-echo checking for package libgeos-dev 2.1.4-2...  TODO
+echo checking for package libgeos-dev 2.1.4-2...  TODO >&2
 dnl ---------------------------
-echo checking for package libgdal1-dev 1.2.6-1.3...  TODO
+echo checking for package libgdal1-dev 1.2.6-1.3...  TODO >&2
 dnl ---------------------------
-echo checking for package gdal-bin 1.2.6-1.3...  TODO
+echo checking for package gdal-bin 1.2.6-1.3...  TODO >&2
 dnl ---------------------------
-echo checking for package libgrass 6.0.1-3...  TODO
+echo checking for package libgrass 6.0.1-3...  TODO >&2
 dnl ---------------------------
-echo checking for package libgdal1-1.3.1-grass 1.3.1-1...  TODO
+echo checking for package libgdal1-1.3.1-grass 1.3.1-1...  TODO >&2
 dnl ---------------------------
-echo checking for package libhdf4g-dev 4.1r4-18.1... TODO
+echo checking for package libhdf4g-dev 4.1r4-18.1... TODO >&2
 dnl ---------------------------
-echo checking for package libungif4-dev 4.1.4-2...  TODO
+echo checking for package libungif4-dev 4.1.4-2...  TODO >&2
 dnl ---------------------------
-echo checking for package netcdfg-dev 3.5.0-7.1...  TODO
+echo checking for package netcdfg-dev 3.5.0-7.1...  TODO >&2
 dnl ---------------------------
-echo checking for package libcfitsio-dev 2.510-1... TODO
+echo checking for package libcfitsio-dev 2.510-1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
