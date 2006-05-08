@@ -1530,7 +1530,6 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 
 void check_and_reload_way_txt()
 {
-    struct stat buf;
     gchar mappath[2048];
     g_strlcpy (mappath, homedir, sizeof (mappath));
 
@@ -1539,12 +1538,7 @@ void check_and_reload_way_txt()
     else
 	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
 
-    stat (mappath, &buf);
-    if (buf.st_mtime != waytxtstamp)
-	{
-	    loadwaypoints ();
-	    iszoomed = FALSE;
-	}
+    loadwaypoints ();
 }
 
 
@@ -5682,102 +5676,106 @@ savewaypoints ()
 void
 loadwaypoints ()
 {
-    gchar mappath[2048];
+    gchar fn_way_txt[2048];
     FILE *st;
     gint i, e, p, wlan, action, sqlnr, proximity;
     gchar buf[512], slat[80], slong[80], typ[40];
-    struct stat buf2;
+    struct stat stat_buf;
     
-    if (waytxtstamp == 0)
+    if ( 0 == waytxtstamp )
 	wayp = g_new (wpstruct, wpsize);
     
-    g_strlcpy (mappath, homedir, sizeof (mappath));
+    g_strlcpy (fn_way_txt, homedir, sizeof (fn_way_txt));
     if (!wp_from_sql)
-	g_strlcat (mappath, activewpfile, sizeof (mappath));
+	g_strlcat (fn_way_txt, activewpfile, sizeof (fn_way_txt));
     else
-	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
+	g_strlcat (fn_way_txt, "way-SQLRESULT.txt", sizeof (fn_way_txt));
+
+
+    /* Check m_time of way.txt file */
+    stat(fn_way_txt, &stat_buf);
+    if ( stat_buf.st_mtime == waytxtstamp )
+	return;
+    waytxtstamp = stat_buf.st_mtime;
+
+
     
     maxwp = 0;
     sqlnr = -1;
-    st = fopen (mappath, "r");
+    st = fopen (fn_way_txt, "r");
     if (st == NULL)
 	{
-	    perror (mappath);
+	    perror (fn_way_txt);
+	    return;
 	}
-    else
+
+    if ( mydebug > 0 )
 	{
-	    if ( mydebug > 0 )
-		{
-		    g_print ("\nwp_from_sql: %d\n",wp_from_sql);
-		    g_print ("load waypoint file %s\n",mappath);
-		}
-
-	    i = 0;
-	    while ((p = fgets (buf, 512, st) != 0))
-		{
-		    e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
-				(wayp + i)->name, slat, slong, typ,
-				&wlan, &action, &sqlnr, &proximity);
-		    coordinate_string2gdouble(slat, &((wayp + i)->lat));
-		    coordinate_string2gdouble(slong,&((wayp + i)->lon));
-		    /*  limit waypoint name to 20 chars */
-		    (wayp + i)->name[20] = 0;
-		    g_strlcpy ((wayp + i)->typ, "", 40);
-		    (wayp + i)->wlan = 0;
-		    (wayp + i)->action = 0;
-		    (wayp + i)->sqlnr = -1;
-		    (wayp + i)->proximity = 0;
-		    
-		    if (e >= 3)
-			    {
-				(wayp + i)->dist = 0;
-				
-				if (e >= 4)
-				    g_strlcpy ((wayp + i)->typ, typ, 40);
-				
-				if (e >= 5)
-				    (wayp + i)->wlan = wlan;
-				if (e >= 6)
-				    (wayp + i)->action = action;
-				if (e >= 7)
-				    (wayp + i)->sqlnr = sqlnr;
-				if (e >= 8)
-				    (wayp + i)->proximity = proximity;
-
-				if (!wp_from_sql)
-				    {
-					if ((strncmp
-					     ((wayp + i)->name, "R-",
-					      2)) == 0)
-					    (wayp + i)->action = 1;
-				    }
-
-				i++;
-				maxwp = i;
-
-				if (maxwp >= wpsize)
-				    {
-					wpsize += 1000;
-					wayp = g_renew (wpstruct, wayp,
-							wpsize);
-				    }
-
-			    }
-		}
-
-	    /* Save m_time of way.txt file */
-	    fstat ((int)st, &buf2);
-	    waytxtstamp = buf2.st_mtime;
-
-	    fclose (st);
-
-
-	    if (!wp_from_sql)
-		g_print ("%s reloaded\n", activewpfile);
-	    else
-		g_print ("%s reloaded\n", "way-SQLRESULT.txt");
+	    g_print ("\nwp_from_sql: %d\n",wp_from_sql);
+	    g_print ("load waypoint file %s\n",fn_way_txt);
 	}
 
+    i = 0;
+    while ((p = fgets (buf, 512, st) != 0))
+	{
+	    e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
+			(wayp + i)->name, slat, slong, typ,
+			&wlan, &action, &sqlnr, &proximity);
+	    coordinate_string2gdouble(slat, &((wayp + i)->lat));
+	    coordinate_string2gdouble(slong,&((wayp + i)->lon));
+	    /*  limit waypoint name to 20 chars */
+	    (wayp + i)->name[20] = 0;
+	    g_strlcpy ((wayp + i)->typ, "", 40);
+	    (wayp + i)->wlan = 0;
+	    (wayp + i)->action = 0;
+	    (wayp + i)->sqlnr = -1;
+	    (wayp + i)->proximity = 0;
+		    
+	    if (e >= 3)
+		{
+		    (wayp + i)->dist = 0;
+				
+		    if (e >= 4)
+			g_strlcpy ((wayp + i)->typ, typ, 40);
+				
+		    if (e >= 5)
+			(wayp + i)->wlan = wlan;
+		    if (e >= 6)
+			(wayp + i)->action = action;
+		    if (e >= 7)
+			(wayp + i)->sqlnr = sqlnr;
+		    if (e >= 8)
+			(wayp + i)->proximity = proximity;
+
+		    if (!wp_from_sql)
+			{
+			    if ((strncmp
+				 ((wayp + i)->name, "R-",
+				  2)) == 0)
+				(wayp + i)->action = 1;
+			}
+
+		    i++;
+		    maxwp = i;
+
+		    if (maxwp >= wpsize)
+			{
+			    wpsize += 1000;
+			    wayp = g_renew (wpstruct, wayp,
+					    wpsize);
+			}
+
+		}
+	}
+
+
+    fclose (st);
+
+
+    if (!wp_from_sql)
+	g_print ("%s reloaded\n", activewpfile);
+    else
+	g_print ("%s reloaded\n", "way-SQLRESULT.txt");
 }
 
 
