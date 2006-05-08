@@ -40,6 +40,7 @@ area.city.mayor area_city.png
 area.city.medium area_city.png
 area.city.small area_city.png
 area.pedestrian_zone pedestrian.png
+area.railway-crossing area.png
 area.state area.png
 area.tunnel area.png
 bank Dollar.png
@@ -265,6 +266,7 @@ transport.public.ferry.car ferry-car.png
 transport.public.interurban_train_station unknown.png
 transport.public.railway train.png
 transport.public.station.bus bus_stop.png
+transport.public.station.lift unknown.png
 transport.public.station.railroad train.png
 transport.public.station.subway_city U-Bahn.png
 transport.public.station.subway_regional S-Bahn.png
