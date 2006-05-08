@@ -198,14 +198,15 @@ sub download_osm_streets($) { # Insert Streets from osm File
 	$lon_min=$main::lon_min;
 	$lon_max=$main::lon_max;
     } else {
+	($lat_min,$lon_min,     $lat_max,$lon_max) = (-90,-180, 85,180);
 	# Europa
-	#($lat_min,$lon_min,     $lat_max,$lon_max) = (-10,10, 10,60);
+	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (-10,10, 10,60);
 	# Deutschland
-	($lat_min,$lon_min,     $lat_max,$lon_max) = (0,10, 50,60);
+	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (0,10, 50,60);
 	# Muenchen
 	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (10,44, 14,48);
     }
-    my $step = 2;
+    my $step = 5;
     for ( my $lat = $lat_min; $lat< $lat_max; $lat += $step ) {
 	for ( my $lon = $lon_min; $lon < $lon_max; $lon += $step ) {
 	    my $lap  = $lat + $step;
@@ -221,25 +222,34 @@ sub download_osm_streets($) { # Insert Streets from osm File
 		print "mirror: $bbox\n";
 	    }
 	    
-	    my $size = (-s $abs_filename)||0;
-	    if ( $size == 538 || $size < 76 ) {
-		my $get_cmd ='';
-		# $get_cmd .= "time " if $debug;
-		$get_cmd .= "curl --netrc ";
-		$get_cmd .= " -o  $abs_filename ";
-		# $get_cmd .= "wget -O $abs_filename $osm_auth ";
-		#$get_cmd .= " -q " unless $debug || $verbose;
-		$get_cmd .= " -v " if $debug && $verbose;
-		$get_cmd .= " -s " unless $debug || $verbose;
-		$get_cmd .= "    '$osm_base_url$bbox'"; 
-		print "$get_cmd\n";
-		`$get_cmd`;
-	    }
-	    $size = (-s $abs_filename)||0;
-	    print "Got $lat,$lon	$size Bytes\n";
-	    if ( $size == 538 ) {
-		`cat $abs_filename`;
-		next;
+	    my $rest_tries=10;
+	    while ($rest_tries){
+		my $size = (-s $abs_filename)||0;
+		if ( $size == 538 || $size < 76 ) {
+		    my $get_cmd ='';
+		    # $get_cmd .= "time " if $debug;
+		    $get_cmd .= "curl --netrc ";
+		    $get_cmd .= " -o  $abs_filename ";
+		    # $get_cmd .= "wget -O $abs_filename $osm_auth ";
+		    #$get_cmd .= " -q " unless $debug || $verbose;
+		    $get_cmd .= " -v " if $debug && $verbose;
+		    $get_cmd .= " -s " unless $debug || $verbose;
+		    $get_cmd .= "    '$osm_base_url$bbox'"; 
+		    print "$get_cmd\n";
+		    `$get_cmd`;
+		}
+		$size = (-s $abs_filename)||0;
+		if ( $size == 538 ) {
+		    `cat $abs_filename`;
+		    $rest_tries --;
+		    print "	ERROR in downloading\n";
+		    print "   $rest_tries retries\n";
+		    print "	Got $lat,$lon	$size Bytes\n";
+		} else {
+		    print "Got $lat,$lon	$size Bytes\n"
+			unless $size == 76;
+		    $rest_tries=0;
+		}
 	    }
 	}
     }
@@ -271,9 +281,18 @@ sub read_osm_file($) { # Insert Streets from osm File
 				  );
 	
 	my $fh = data_open($file_name);
-	my $content = $p->parse($fh);
+	my $content;
+	eval {
+	    $content = $p->parse($fh);
+	};
+	
+	if ($@) {
+	    print STDERR "WARNING: Could not parse osm data $file_name\n";
+	    print STDERR "ERROR: $@\n";
+	    return;
+	}
 	if (not $p) {
-	    print STDERR "WARNING: Could not parse osm data\n";
+	    print STDERR "WARNING: Could not parse osm data $file_name\n";
 	    return;
 	}
 	if ( $verbose) {
@@ -301,10 +320,11 @@ sub read_osm_dir($) { # read all OSM Files in Diorectory
     # http://www.openstreetmap.org/api/0.3/map?bbox=11.0,48.0,12.0,49.0
 
     for my $abs_filename ( 
-			   glob("$osm_dir/planet.osm"),
-			   glob("$osm_dir/*.xml"),
-			   glob("$osm_dir/*.gz"),
-			   glob("$osm_dir/*.bz2"),
+			   #glob("$osm_dir/planet.osm"),
+			   glob("$osm_dir/Streets*.osm"),
+			   glob("$osm_dir/Streets*.xml"),
+			   glob("$osm_dir/Streets*.gz"),
+			   glob("$osm_dir/Streets*.bz2"),
 			   ) {
 	$abs_filename .= ".gz"	if  -s "$abs_filename.gz" && ! -s $abs_filename;
 	my $size = (-s $abs_filename)||0;
@@ -742,20 +762,28 @@ sub fill_osm_rest_segments() {
     my $start_time=time();
 
     my $segment_count=0;
+    my $new_segment_count=0;
     my $streets_type_id = streets_type_name2id('Strassen.minor');
 
+    my $estimate_timer=time();
     for my $seg_id ( keys %{$osm_segments} ) {
 	my $segment = $osm_segments->{$seg_id};
-	next 
-	    if defined($segment->{way_element})
-	    && $segment->{way_element} > 0;
 	$segment_count++;
 	# For DEBUGGING:
 	# last if $segment_count>1000;
-	if ( $verbose && !($segment_count %1000)) {
+	if ( !($segment_count % 1000)) {
 	    my $percent = $segment_count/$rest_segments*100;
-	    printf "Writing Segment $segment_count to DB ( %d%%) \r",$percent;
+	    my $time_diff=time()-$estimate_timer;
+	    my $segments_missing=$rest_segments-$segment_count;
+	    my $rest_estimate = $time_diff/1000*$segments_missing;
+	    $estimate_timer=time();
+	    printf "Writing Segment $segment_count to DB ( %d%%) %d Segments missing; estimating %4.2f min\r"
+		,$percent,$segments_missing,$rest_estimate/60;
 	}
+	next 
+	    if defined($segment->{way_element})
+	    && $segment->{way_element} > 0;
+	$new_segment_count++;
 	my $tags = $segment->{tag};
 	my $street_name=$tags->{name} || $tags->{ref} || "Segment=$seg_id";
 
@@ -763,8 +791,8 @@ sub fill_osm_rest_segments() {
 	my $node_to   = $segment->{to}||0;
 	#	print Dumper( $segment);
 	unless ( $node_from && $node_to ) {
-	    print "Missing node '$node_from' or '$node_to' for Segment # $seg_id\n";
-		next;
+	    #print "Missing node '$node_from' or '$node_to' for Segment # $seg_id\n";
+	    next;
 	}
 	my $lat1 = $osm_nodes->{$node_from}->{lat};
 	my $lon1 = $osm_nodes->{$node_from}->{lon};
@@ -793,7 +821,8 @@ sub fill_osm_rest_segments() {
 	insert_hash("streets",$segment4db);
     }
     if ( $debug) {
-	debug("Imported another $segment_count Segments non way for  ".scalar(keys(%{$osm_segments}))." osm Segments".
+	debug("Imported another $new_segment_count Segments not in ways for  ".
+	      scalar(keys(%{$osm_segments}))." osm Segments".
 	      sprintf(" in %.0f sec\n",time()-$start_time));
     }
 }
@@ -851,15 +880,16 @@ sub import_Data($){
 	read_osm_dir($filename);
     } elsif ( -s $filename ) {
 	read_osm_file( $filename);
-#    } elsif (  $main::development_version ) {
-#	download_osm_streets($mirror_dir);
-#	read_osm_dir($mirror_dir);
+    } elsif (  $main::development_version ) {
+	download_osm_streets($mirror_dir);
+	read_osm_dir($mirror_dir);
     } elsif ( $filename ) {
 	warn "OSM::import_Data: Cannot find $filename\n";
     } else {
 	print "Download planet.osm\n";
 	my $url = "http://www.ostertag.name/osm/planet.osm.bz2";
-	my @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
+	#my @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
+	my @file_list =qw( planet-2006-05-01.osm.bz2 );
 	for my $file ( @file_list ) {
 	    my $planet_file = "$mirror_dir/$file";
 	    
