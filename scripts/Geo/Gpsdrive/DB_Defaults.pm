@@ -173,7 +173,6 @@ my $icons = {
     'w-lan.public' 	                => "tower",		
     'w-lan.wep' 	                => "wlan-wep",
     'entrance'				=> 'door',
-#
 };
 # Some suggestions for pictures
 #  education.nursery ==> Schnuller
@@ -1176,11 +1175,13 @@ sub fill_default_street_types() {   # Fill streets_type database
 	$name =~ s/_/ /g;
 	my $linetype='';
 
-	if(0){	# For testing and displaying all streets in every scale
+	if( 0 && $debug ){	# For testing and displaying all streets in every scale
 	    $scale_max = 1000000000000;
 	    if ( $name =~ m/strasse/i ) {
 		$color     = "#FFFF00";
 		$color_bg  = "#AA0000";
+		$color_bg  = "#000000";
+		$width=1;
 		$width_bg=1;
 	    }
 	}
