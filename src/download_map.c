@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.4  2006/05/09 08:29:52  tweety
+  move proxy fetching from environment to download_map.c
+
   Revision 1.3  2006/02/17 20:54:34  tweety
   http://bugzilla.gpsdrive.cc/show_bug.cgi?id=73
   Downloading maps doesn't allow Longitude select by mouse
@@ -1078,3 +1081,40 @@ dlscale_cb (GtkWidget * widget, guint datum)
 	gtk_entry_set_text (GTK_ENTRY (cover), t);
 	return TRUE;
 }
+
+/* *****************************************************************************
+ * Get http_proxy  Variable from envirenment
+ */
+void get_proxy_from_env()
+{ // Set http_proxy
+    gint i;
+    gchar s1[100], s2[100];
+    const gchar *http_proxy;
+    gchar *p;
+    http_proxy = g_getenv ("HTTP_PROXY");
+    if (http_proxy == NULL)
+	http_proxy = g_getenv ("http_proxy");
+
+    if (http_proxy)
+	{
+	    p = (char *) http_proxy;
+	    g_strdelimit (p, ":/", ' ');
+
+	    i = sscanf (p, "%s %s %d", s1, s2, &proxyport);
+	    if (i == 3)
+		{
+		    haveproxy = TRUE;
+		    g_strlcpy (proxy, s2, sizeof (proxy));
+		    if ( mydebug > 0 )
+			g_print (_("\nUsing proxy: %s on port %d"),
+				 proxy, proxyport);
+		}
+	    else
+		{
+		    g_print (_
+			     ("\nInvalid enviroment variable HTTP_PROXY, "
+			      "must be in format: http://proxy.provider.de:3128"));
+		}
+	}
+}
+

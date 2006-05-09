@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.2  2006/05/09 08:29:52  tweety
+move proxy fetching from environment to download_map.c
+
 Revision 1.1  2006/02/05 15:01:59  tweety
 extract map downloading
 
@@ -52,6 +55,7 @@ gint downloadslave_cb (GtkWidget * widget, guint datum);
 gint downloadsetparm (GtkWidget * widget, guint datum);
 gint defaultserver_cb (GtkWidget * widget, guint datum);
 gint download_cb (GtkWidget * widget, guint datum);
+void get_proxy_from_env();
 
 
 #endif /* GPSDRIVE_DOWNLOAD_MAP_H */

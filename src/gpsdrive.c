@@ -5451,14 +5451,14 @@ main (int argc, char *argv[])
     GdkRectangle rectangle = {
 	0, 0, SCREEN_X, SCREEN_Y
     };
-    const gchar *hd, *http_proxy;
+    const gchar *hd;
     gchar buf[500];
 
     /*** Mod by Arms */
     gint i, screen_height, screen_width;
     GtkWidget *table1, *wi;
     GtkTooltips *tooltips;
-    gchar s1[100], s2[100], *p;
+    gchar s1[100], s2[100];
     /*** Mod by Arms */
     GtkRequisition requ, *reqptr;
     GtkWidget *mainnotebook;
@@ -5656,14 +5656,17 @@ main (int argc, char *argv[])
     loadmapconfig ();
 
     /* PORTING */
-    p = bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "utf8");
-    p = textdomain (GETTEXT_PACKAGE);
-    p = textdomain (NULL);
+    {
+	gchar *p;
+	p = bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+	bind_textdomain_codeset (PACKAGE, "utf8");
+	p = textdomain (GETTEXT_PACKAGE);
+	p = textdomain (NULL);
+    }
 
     /*    Setting locale for correct Umlauts */
     gtk_set_locale ();
-
+    
     /*  initialization for GTK+ */
     gtk_init (&argc, &argv);
 
@@ -5820,35 +5823,12 @@ main (int argc, char *argv[])
     proxyport = 80;
     haveproxy = FALSE;
 
-    http_proxy = g_getenv ("HTTP_PROXY");
-    if (http_proxy == NULL)
-	http_proxy = g_getenv ("http_proxy");
-
     if ( mydebug > 0 )
-	printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
+	printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n"
+		"\nVersion %s\n%s\n\n", VERSION, rcsid);
+    
 
-    if (http_proxy)
-	{
-	    p = (char *) http_proxy;
-	    g_strdelimit (p, ":/", ' ');
-
-	    i = sscanf (p, "%s %s %d", s1, s2, &proxyport);
-	    if (i == 3)
-		{
-		    haveproxy = TRUE;
-		    g_strlcpy (proxy, s2, sizeof (proxy));
-		    if ( mydebug > 0 )
-			g_print (_("\nUsing proxy: %s on port %d"),
-				 proxy, proxyport);
-		}
-	    else
-		{
-		    g_print (_
-			     ("\nInvalid enviroment variable HTTP_PROXY, "
-			      "must be in format: http://proxy.provider.de:3128"));
-		}
-	}
-
+    get_proxy_from_env();
     if ( mydebug > 0 )
 	g_print ("\nGpsDrive version %s\n%s\n", VERSION, rcsid);
 
