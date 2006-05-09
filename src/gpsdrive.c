@@ -5458,7 +5458,7 @@ main (int argc, char *argv[])
     gint i, screen_height, screen_width;
     GtkWidget *table1, *wi;
     GtkTooltips *tooltips;
-    gchar s1[100], s2[100];
+    gchar s1[100];
     /*** Mod by Arms */
     GtkRequisition requ, *reqptr;
     GtkWidget *mainnotebook;
@@ -5829,6 +5829,7 @@ main (int argc, char *argv[])
     
 
     get_proxy_from_env();
+
     if ( mydebug > 0 )
 	g_print ("\nGpsDrive version %s\n%s\n", VERSION, rcsid);
 
