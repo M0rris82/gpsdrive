@@ -22,368 +22,6 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 
-Revision 1.89  2006/02/16 09:52:44  tweety
-rearrange acpi handling and displaying of battery and temperature display
-
-Revision 1.88  2006/02/13 23:15:39  tweety
-error check for missin icon Files (unit_test)
-
-Revision 1.87  2006/02/13 22:57:05  tweety
-Fix Max Speed Problem concerning Miles Display
-
-Revision 1.86  2006/02/07 22:28:12  tweety
-more moving anf separating of battery and temperature code
-
-Revision 1.85  2006/02/07 07:06:51  tweety
-split apart the battery and temperature handling a little bit
-
-Revision 1.84  2006/02/05 16:38:05  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.83  2006/02/05 14:34:37  tweety
-remove old log entries from main to make it smaller. This might increase the chance of once compiling it inside eclipse
-
-Revision 1.82  2006/02/05 13:54:39  tweety
-split map downloading to its own file download_map.c
-
-Revision 1.81  2006/02/05 11:57:22  tweety
-rename some variables to better names
-make map_filename invisible if debug less than 10
-
-Revision 1.80  2006/01/18 08:29:01  tweety
-display position in posmode ind position Fielddisplay position in posmode ind position Fieldss
-
-Revision 1.79  2006/01/04 19:19:31  tweety
-more unit tests
-search for icons in the local directory data/icons and data/pixmaps first
-
-Revision 1.78  2006/01/04 16:32:30  tweety
-Add the first unit test
-
-Revision 1.77  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.76  2006/01/02 13:21:14  tweety
-Start sorting out the menu
-Move some of the Buttons to the Pulldown Menu
-make display size 50 smaller than screen max for Desktop Menu
-remove unused code parts
-add more error/warnings to lat2radius calcxytopos and calcxy
-read draw_streets draw_poi draw_grid draw_tracks from config file
-add error check for not recognized config file options
-
-Revision 1.75  2006/01/01 20:11:42  tweety
-add option -P for Posmode on start
-
-Revision 1.74  1994/06/10 02:11:00  tweety
-move nmea handling to it's own file Part 1
-
-Revision 1.73  1994/06/08 08:37:47  tweety
-fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
-instead of atof and strtod
-
-Revision 1.72  1994/06/07 11:25:45  tweety
-set debug levels more detailed
-
-Revision 1.71  2005/11/14 06:51:57  tweety
-nlat has to be double
-Autor: Mike Auty
-
-Revision 1.70  2005/11/14 06:47:01  tweety
-strtod --> coordinate_string2gdouble
-
-Revision 1.69  2005/11/06 17:24:26  tweety
-shortened map selection code
-coordinate_string2gdouble:
- - fixed missing format
- - changed interface to return gdouble
-change -D option to reflect debuglevels
-Added more debug Statements for Level>50
-move map handling to to seperate file
-speedup memory reservation for map-structure
-Add code for automatic loading of maps from system DATA/maps/.. Directory
-changed length of mappath from 400 to 2048 chars
-
-Revision 1.68  2005/11/01 15:06:10  cjastram
-Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
-
-Revision 1.67  2005/11/01 14:38:28  tweety
-set distance jump to 2000Km/h
-
-Revision 1.66  2005/10/25 20:37:58  tweety
-moved a few of the functions
-Autor: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-Revision 1.65  2005/10/19 07:22:21  tweety
-Its now possible to choose units for displaying coordinates also in
-Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
-Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-Revision 1.64  2005/10/11 08:28:35  tweety
-gpsdrive:
-- add Tracks(MySql) displaying
-- reindent files modified
-- Fix setting of Color for Grid
-- poi Text is different in size depending on Number of POIs shown on
-  screen
-
-geoinfo:
- - get Proxy settings from Environment
- - create tracks Table in Database and fill it
-   this separates Street Data from Track Data
- - make geoinfo.pl download also Opengeodb Version 2
- - add some poi-types
- - Split off Filling DB with example Data
- - extract some more Funtionality to Procedures
- - Add some Example POI for Kirchheim(Munich) Area
- - Adjust some Output for what is done at the moment
- - Add more delayed index generations 'disable/enable key'
- - If LANG=*de_DE* then only impert europe with --all option
- - WDB will import more than one country if you wish
- - add more things to be done with the --all option
-
-Revision 1.63  2005/10/10 13:17:52  tweety
-DBUS Support for connecting to gpsd
-you need to use ./configure --enable-dbus to enable it during compile
-Author: "Belgabor" <belgabor@gmx.de>
-
-Revision 1.62  2005/08/19 07:12:36  tweety
-Autor:Russell MIrov <russell.mirov@sun.com>
-save tracks immedeately
-
-Revision 1.61  2005/08/18 06:59:09  tweety
-save tracks periodically 1st part
-Autor: Russell MIrov <russell.mirov@sun.com>
-
-Revision 1.60  2005/08/14 18:46:42  tweety
-remove unnedded xpm Files; read pixmaps with read_icons,
-separate more pixmaps from icons
-
-Revision 1.59  2005/08/14 10:18:14  tweety
-*** empty log message ***
-
-Revision 1.58  2005/08/14 09:47:17  tweety
-seperate tracks into it own table in geoinfo database
-move Info's from TODO abaout geoinfo DB to Man Page
-rename poi.pl to geoinfo.pl
-
-Revision 1.57  2005/08/13 10:16:02  tweety
-extract all/some gps_handling parts to File src/gps_handler.c
-
-Revision 1.56  2005/08/11 19:28:19  tweety
-Support displaying gpsdrive larger on screens larger than 1280
-
-Revision 1.55  2005/08/11 07:20:27  tweety
-moved top_GPSWORLD.jpg to data/maps/
-
-Revision 1.54  2005/08/09 01:08:30  tweety
-Twist and bend in the Makefiles to install the DataDirectory more apropriate
-move the perl Functions to Geo::Gpsdrive::POI in /usr/share/perl5/Geo/Gpsdrive/POI
-adapt icons.txt loading according to these directories
-
-Revision 1.53  2005/08/07 23:10:33  tweety
-PDA mode UI has to big tabs and status window is cluttered
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=28
-Autor:  Philippe De Swert
-
-Revision 1.52  2005/07/08 05:56:33  tweety
-get the right position with Garmin GPS II.
-Autor: Aart Koelewijn <aart@mtack.xs4all.nl>
-
-Revision 1.51  2005/07/07 06:45:23  tweety
-Autor: Blake Swadling <blake@swadling.com>
-Autor: John Hay <jhay@icomtek.csir.co.za>
-Honor Makefile src
-honor +- in import track
-update TODO
-
-Revision 1.50  2005/07/05 23:12:36  ganter
-anyone has destroyed the GPS-Time display, fixed
-
-Revision 1.49  2005/07/05 19:44:28  ganter
-fix for locale problem
-
-Revision 1.48  2005/07/05 19:19:56  ganter
-got include files from mysql 4.1.x, now no segfault at program end.
-May break older libmysqlclient
-Testet with  mysql-4.1.10a
-
-Revision 1.47  2005/05/31 20:58:03  tweety
-Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=16
-Formula for number of gridlines
-
-Revision 1.46  2005/05/30 21:16:46  tweety
-Grid drawing is wrong on zoomed cards.
-Autor: Jan-Benedict Glaw <jbglaw@lug-owl.de>
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=15
-
-Revision 1.45  2005/05/30 00:03:14  tweety
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=7
-Von: Olli Salonen <olli@cabbala.net>
-GPSdrive does not work at all, unless -F parameter is specified.
-
-Revision 1.44  2005/05/24 08:35:25  tweety
-move track splitting to its own function +sub track_add($)
-a little bit more error handling
-earth_distance somtimes had complex inumbers as result
-implemented streets_check_if_moved_reset which is called when you toggle the draw streets button
-this way i can re-read all currently displayed streets from the DB
-fix minor array iindex counting bugs
-add some content to the comment column
-
-Revision 1.43  2005/05/24 08:11:45  tweety
-Fix Forcehavepos
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=7
-Parameter -F is not working
-
-Revision 1.42  2005/05/15 07:00:51  tweety
-new Keystroke p adds an instant waypoint at cursor position
-new Keystroke q querys information for thenearest waypoints and street endpoints
-
-Revision 1.41  2005/05/15 06:51:27  tweety
-all speech strings are now represented as arrays of strings
-author: Rob Stewart <rob@groupboard.com>
-
-Revision 1.40  2005/04/29 17:41:57  tweety
-Moved the speech string to a seperate File
-
-Revision 1.39  2005/04/21 19:33:40  tweety
-include header files for speech_out
-
-Revision 1.38  2005/04/20 23:33:49  tweety
-reformatted source code with anjuta
-So now we have new indentations
-
-Revision 1.37  2005/04/15 07:18:54  tweety
-extracted lat2raidus into it's own function and added plausibility checks
-sorted addwaypoint function and added comments
-while downloading new maps the already existing maps are always displayed
-
-Revision 1.36  2005/04/13 19:58:31  tweety
-renew indentation to 4 spaces + tabstop=8
-
-Revision 1.35  2005/04/10 21:50:49  tweety
-reformatting c-sources
-
-Revision 1.34  2005/04/10 10:10:38  tweety
-autor: Rob Stewart <rob@groupboard.com>
-I only use expedia maps, so I've suggested a change for only using
-expedia scales. Currently it's a #define, but it could be made into a
-GUI or makefile thing.
-I've also made it so that you have a choice of the default waypoint
-types for non-SQL users when you add a waypoint. A bit better than a
-blank drop-down list.
-
-Revision 1.33  2005/04/10 09:52:14  tweety
-autor:  Olli Salonen <olli@cabbala.net>
-- GPGGA information is now parsed, even if there are 16 fields
-- Latitude and longitude information in RMC and GGA sentences can now
-include the zeroes or not, but GpsDrive will be able cope with it
-- Only the basename of the map filename is displayed in order to avoid
-the problem I described in the chain
-http://s2.selwerd.nl/~dirk-jan/gpsdrive/archive/msg04442.html (this does
-not completely solve the problem, since some of the map filenames are
-still longer than the space we have for them).
-
-Revision 1.32  2005/04/10 00:10:32  tweety
-added gpsd: to gpsd related debug output
-changed plus to a small + in streets.c
-
-Revision 1.31  2005/04/01 21:17:07  tweety
-Fix grid config bug. The grid was alway on after start
-reformatted reading of parameters
-
-Revision 1.30  2005/03/30 10:03:38  tweety
-corrected problem with sigSEG if sqlmode is off
-Added another bunch of comments
-
-Revision 1.29  2005/03/28 18:20:17  tweety
-eliminated includefiles src/f_*.c
-for now I put them all into src/gpsdrive.c
-
-separated poi_type_list and streets_type_list
-and therefor renaming the fields
-added drop index before adding one
-poi.*: a little bit more error handling
-disabling poi and streets if sql is disabled
-changed som print statements from \n.... to ...\n
-changed some debug statements from debug to mydebug
-
-Revision 1.25  2005/03/14 23:29:41  tweety
-increase font Size by Wilfried Hemp <Wilfried.Hemp@t-online.de>
-
-Revision 1.21  2005/02/06 21:18:05  tweety
-more cleanup: extracted more functionality to functions
-
-Revision 1.20  2005/02/06 17:52:44  tweety
-extract icon handling to icons.c
-
-Revision 1.16  2005/01/22 10:52:45  tweety
-Added Key W for adding Waypoint without additional Questtions at current location
-Added Key F to toggle Friends Display
-
-Revision 1.15  2005/01/20 00:31:24  tweety
-Added Keyboard events +/- for zooming in/out
-
-Revision 1.8  2005/01/11 01:37:06  tweety
-implement first part of drawgrid
-
-Revision 1.7  2005/01/11 00:47:05  tweety
-added an 8th column to way.txt which means proximity
-if this filed is filled a circle arround the
-waypoint is displayed with radius proximity Meters
-
-Revision 1.6  2004/12/27 10:21:26  tweety
-Change map filename checks. After this change you can use directoryname and filename to
-specify you map-files in map_koord.txt. So you can use subdirecories in you gpsdrive dir.
-
-Revision 1.524  2004/03/02 01:52:47  ganter
-yes, this is the real 2.09pre1 :-)
-
-Revision 1.519  2004/02/16 23:15:20  ganter
-activated navigation.c for teleatlas street maps, need some months of work to
-get it functional.
-
-Revision 1.503  2004/02/06 14:55:54  ganter
-added support for user-defined icons
-create the directory: $HOME/.gpsdrive/icons
-place your icons (type must be png) into this directory, with the name of
-the waypoint type, filename must be lowercase
-i.e. for waypoint type "HOTEL" the file must have the name "hotel.png"
-
-Revision 1.480  2004/01/29 05:11:33  ganter
-v2.08pre6
-
-Revision 1.436  2004/01/15 21:57:43  ganter
-v2.07pre9
-
-Revision 1.372  2003/12/23 23:33:51  ganter
-release 2.06pre2
-
-Revision 1.362  2003/10/04 17:43:58  ganter
-translations don't need to be utf-8, but the .po files must specify the
-correct coding (ie, UTF-8, iso8859-15)
-
-Revision 1.346  2003/05/11 21:15:46  ganter
-v2.0pre7
-added script convgiftopng
-This script converts .gif into .png files, which reduces CPU load
-run this script in your maps directory, you need "convert" from ImageMagick
-
-Revision 1.1.1.1  2001/08/14 13:52:20  ganter
-gpsdrive started
-
 ***********************************************************************/
 
 /* *****************************************************************************
@@ -404,9 +42,11 @@ gpsdrive started
      John Hay <jhay@icomtek.csir.co.za>
      Johnny Cache <johnycsh@hick.org>
      Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>
+     Mike Auty
      Oddgeir Kvien <oddgeir@oddgeirkvien.com>
      Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>!
      Olli Salonen <olli@cabbala.net>
+     Philippe De Swert
      Richard Scheffenegger <rscheff@chello.at>
      Rob Stewart <rob@groupboard.com>
      Russell Harding <hardingr@billingside.com>
@@ -5811,7 +5451,7 @@ main (int argc, char *argv[])
     GdkRectangle rectangle = {
 	0, 0, SCREEN_X, SCREEN_Y
     };
-    const gchar *hd, *pro;
+    const gchar *hd, *http_proxy;
     gchar buf[500];
 
     /*** Mod by Arms */
@@ -6180,16 +5820,16 @@ main (int argc, char *argv[])
     proxyport = 80;
     haveproxy = FALSE;
 
-    pro = g_getenv ("HTTP_PROXY");
-    if (pro == NULL)
-	pro = g_getenv ("http_proxy");
+    http_proxy = g_getenv ("HTTP_PROXY");
+    if (http_proxy == NULL)
+	http_proxy = g_getenv ("http_proxy");
 
     if ( mydebug > 0 )
 	printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
 
-    if (pro)
+    if (http_proxy)
 	{
-	    p = (char *) pro;
+	    p = (char *) http_proxy;
 	    g_strdelimit (p, ":/", ' ');
 
 	    i = sscanf (p, "%s %s %d", s1, s2, &proxyport);
