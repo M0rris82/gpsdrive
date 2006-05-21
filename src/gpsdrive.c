@@ -293,7 +293,7 @@ GtkWidget *loadtrackbt;
 GtkWidget *scalerlbt, *scalerrbt;
 GtkWidget *setupbt;
 gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
-gint muteflag = 0, wp_from_sql = 0, trackflag = 1, wpflag = TRUE;
+gint muteflag = 0, wp_from_sql = 0, trackflag = 1;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
 GtkObject *scaler_adj;
@@ -2349,7 +2349,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		tracks_draw_list ();
 	}
 
-	if (wpflag)
+	if (local_config.showwaypoints)
 		draw_waypoints ();
 
 	if (havefriends)
@@ -4035,8 +4035,8 @@ track_cb (GtkWidget * widget, guint datum)
 gint
 wp_cb (GtkWidget * widget, guint datum)
 {
-	wpflag = !wpflag;
-	if (wpflag)
+	local_config.showwaypoints = !local_config.showwaypoints;
+	if (local_config.showwaypoints)
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
 	else
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), FALSE);
@@ -6148,7 +6148,7 @@ main (int argc, char *argv[])
     // Checkbox ---- Show WP
     wpbt = gtk_check_button_new_with_label (_("Show _WP"));
     gtk_button_set_use_underline (GTK_BUTTON (wpbt), TRUE);
-    if (wpflag)
+    if (local_config.showwaypoints)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
     gtk_signal_connect (GTK_OBJECT (wpbt),
 			"clicked", GTK_SIGNAL_FUNC (wp_cb), (gpointer) 1);

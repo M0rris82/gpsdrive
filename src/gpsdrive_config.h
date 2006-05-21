@@ -24,6 +24,17 @@ Disclaimer: Please do not use for navigation.
 #ifndef GPSDRIVE_CONFIG_H
 #define GPSDRIVE_CONFIG_H
 
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <config.h>
+#include <gmodule.h>
+#include <gdk/gdktypes.h>
+#include "gtk/gtk.h"
+#include "mysql.h"
+#include "gpsproto.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -32,7 +43,8 @@ void readconfig ();
 
 typedef struct
 {
-  char icon_theme[500];
+    char icon_theme[500];
+    gint showwaypoints;
 }
 local_gpsdrive_config;
 

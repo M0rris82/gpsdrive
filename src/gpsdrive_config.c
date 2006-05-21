@@ -52,7 +52,7 @@ extern map_dir_struct *display_map;
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
 extern gchar homedir[500], mapdir[500];
-extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
+extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
@@ -115,7 +115,7 @@ writeconfig ()
 	}
 
 	fprintf (fp, "showwaypoints = ");
-	if (wpflag)
+	if (local_config.showwaypoints)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
@@ -317,6 +317,10 @@ readconfig ()
     gchar fname[220], par1[40], par2[1000], buf[1000];
     gint e;
 
+    /* Defaults */
+    local_config.showwaypoints = TRUE;
+
+    // open Config File
     g_strlcpy (fname, homedir, sizeof (fname));
     g_strlcat (fname, "gpsdriverc", sizeof (fname));
     fp = fopen (fname, "r");
@@ -340,7 +344,7 @@ readconfig ()
 	    if (e == 2)
 		{
 		    if ( (strcmp(par1, "showwaypoints")) == 0)
-			wpflag = atoi (par2);
+			local_config.showwaypoints = atoi (par2);
 		    else if ( (strcmp(par1, "showtrack")) == 0)
 			trackflag = atoi (par2);
 		    else if ( (strcmp(par1, "mutespeechoutput")) == 0)

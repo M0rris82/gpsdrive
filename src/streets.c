@@ -348,7 +348,6 @@ streets_rebuild_list (void)
   char sql_query[5000];
   char sql_area[5000];
   char sql_in[5000];
-  struct timeval t;
   int r, rges;
   time_t t0;
 
@@ -610,7 +609,7 @@ streets_rebuild_list (void)
   if (mydebug > 5)
     {				// print time for getting Data
 	g_print_time(t0,"%ld(%d) rows read after %.2f seconds\n");
-	g_printf("%ld(%d) rows",streets_list_count, rges);
+	g_print("%ld(%d) rows",streets_list_count, rges);
     }
 
   if (mydebug > 50)
