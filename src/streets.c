@@ -118,6 +118,20 @@ int streets_type_list_count = 0;
 void streets_rebuild_list (void);
 void get_streets_type_list (void);
 
+/* **********************************************************************
+ * Stopwatch
+ */
+time_t g_print_time( time_t t0, gchar *msg ){
+    time_t ti;
+    struct timeval t;
+
+    gettimeofday (&t, NULL);
+    ti = (t.tv_sec + t.tv_usec / 1000000.0);
+    if ( t0 ) {
+	g_print (msg, (gdouble) ti-t0);
+    }
+    return ti;
+}
 
 /* ****************************************************************** 
    check if the given position is inside the screen
@@ -332,11 +346,11 @@ void
 streets_rebuild_list (void)
 {
   char sql_query[5000];
-  char sql_where[5000];
+  char sql_area[5000];
   char sql_in[5000];
   struct timeval t;
   int r, rges;
-  time_t ti;
+  time_t t0;
 
   gdouble lat_ul, lon_ul;
   gdouble lat_ll, lon_ll;
@@ -385,11 +399,13 @@ streets_rebuild_list (void)
   gdouble streets_posx2, streets_posy2;
 
 
-  gettimeofday (&t, NULL);
-  ti = t.tv_sec + t.tv_usec / 1000000.0;
+  // ----------------- JMO
+  // gettimeofday (&t, NULL);
+  t0 = g_print_time(0,"");
+  // t.tv_sec + t.tv_usec / 1000000.0;
 
   { // Limit the displayed streets_types
-      g_snprintf (sql_in, sizeof (sql_in),"\t AND streets_type_id IN ( ");
+      g_snprintf (sql_in, sizeof (sql_in),"\t streets_type_id IN ( ");
     int i;
     for (i = 0; i < streets_type_list_max; i++)
       {
@@ -410,13 +426,12 @@ streets_rebuild_list (void)
   }
 
 
-  {				// TODO: change the selection against real LINE crosses visible RECTANGLE
+  { // TODO: change the selection against real LINE crosses visible RECTANGLE
     // TODO: not only start or endpoint are in rectangle
     // TODO: This will hopefully be easy as soon as we use the geometric extentions 
     // TODO: with the geometric objects of mysql
     // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
-    g_snprintf (sql_where, sizeof (sql_where),
-		"WHERE \n"
+    g_snprintf (sql_area, sizeof (sql_area),
 		"\t\t ( \n"
 		"\t\t   ( ( lat1 BETWEEN %f AND %f ) AND ( lon1 BETWEEN %f AND %f ) ) \n"
 		"\t\t   OR \n"
@@ -425,10 +440,10 @@ streets_rebuild_list (void)
 		lat_min, lat_max, lon_min, lon_max,
 		lat_min, lat_max, lon_min, lon_max
 		);
-    g_strdelimit (sql_where, ",", '.');	// For different LANG
+    g_strdelimit (sql_area, ",", '.');	// For different LANG
     if (mydebug > 50)
       {
-	// printf ("STREETS mysql where: %s\n", sql_where );
+	// printf ("STREETS mysql where: %s\n", sql_area );
 	printf ("streets_rebuild_list: STREETS mapscale: %ld\n", mapscale);
       }
   }
@@ -438,14 +453,17 @@ streets_rebuild_list (void)
 
   // Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
   g_snprintf (sql_query, sizeof (sql_query),
-	      // "SELECT lat,lon,alt,streets_type_id,proximity "
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
-	      "FROM streets " "%s %s "
-	      //"LIMIT 20000000000"
-	      , sql_where,sql_in);
+	      "FROM streets "		"WHERE \n"
+	      "%s AND %s ",
+	      sql_in,
+	      sql_area
+	      );
 
-  if (mydebug > 50)
+  if (mydebug > 5)
     printf ("streets_rebuild_list: STREETS mysql query: %s\n", sql_query);
+
+  t0 = g_print_time(0,"");
 
   if (dl_mysql_query (&mysql, sql_query))
     {
@@ -453,6 +471,14 @@ streets_rebuild_list (void)
 	       dl_mysql_error (&mysql));
       return;
     }
+
+  // --------------------- JMO
+  if (mydebug > 5)
+    {
+	g_print_time(t0,"query after %.6f seconds\n");
+    }
+
+
 
   if (!(res = dl_mysql_store_result (&mysql)))
     {
@@ -558,12 +584,9 @@ streets_rebuild_list (void)
     }
 
 
-  if (mydebug > 50)
+  if (mydebug > 5)
     {				// print time for getting Data
-      gettimeofday (&t, NULL);
-      ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-      g_print (_("%ld(%d) rows read in %.2f seconds\n"),
-	       streets_list_count, rges, (gdouble) ti);
+	g_print_time(t0,"rows read nach %.6f seconds\n");
     }
 
   {				/* remember where the data belongs to */
@@ -583,6 +606,12 @@ streets_rebuild_list (void)
 
   dl_mysql_free_result (res);
   res = NULL;
+
+  if (mydebug > 5)
+    {				// print time for getting Data
+	g_print_time(t0,"%ld(%d) rows read after %.2f seconds\n");
+	g_printf("%ld(%d) rows",streets_list_count, rges);
+    }
 
   if (mydebug > 50)
     printf ("streets_rebuild_list: End\t\t\t\t\t\t^^^^^^^^^^^^^^^^^^^^^^\n");

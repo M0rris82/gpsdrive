@@ -93,11 +93,12 @@ am__garble_SOURCES_DIST = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT)
 garble_OBJECTS = $(am_garble_OBJECTS)
 garble_LDADD = $(LDADD)
-am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
-	speech_out.c speech_out.h friends.c battery.c track.c poi.c \
-	streets.c draw_tracks.c settings.c battery.h track.h poi.h \
-	streets.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
-	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
+am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
+	gpsdrive_config.c gpsdrive_config.h navigation.c speech_out.c \
+	speech_out.h friends.c battery.c track.c poi.c streets.c \
+	draw_tracks.c settings.c battery.h track.h poi.h streets.h \
+	draw_tracks.h gpsdrive.h gpssql.c gpskismet.c ../config.h \
+	icons.c icons.h gettext.h LatLong-UTMconversion.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
 	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
 	import_map.h routes.c routes.h download_map.c download_map.h \
@@ -117,10 +118,11 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c navigation.c \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
 am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
-	navigation.$(OBJEXT) speech_out.$(OBJEXT) friends.$(OBJEXT) \
-	battery.$(OBJEXT) track.$(OBJEXT) poi.$(OBJEXT) \
-	streets.$(OBJEXT) draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
-	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
+	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
+	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
+	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) \
+	draw_tracks.$(OBJEXT) settings.$(OBJEXT) gpssql.$(OBJEXT) \
+	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
 	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) geometry.$(OBJEXT) \
 	map_handler.$(OBJEXT) import_map.$(OBJEXT) routes.$(OBJEXT) \
@@ -350,7 +352,8 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEPLUGINS_FALSE@libfly_la_LDFLAGS = -version-info 2:0:0
 @DISABLEPLUGINS_FALSE@libnautic_la_SOURCES = nautic.c
 @DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
-PRGS = gpsdrive.c splash.c navigation.c speech_out.c speech_out.h \
+PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
+	gpsdrive_config.h navigation.c speech_out.c speech_out.h \
 	friends.c battery.c track.c poi.c streets.c draw_tracks.c \
 	settings.c battery.h track.h poi.h streets.h draw_tracks.h \
 	gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h \
@@ -492,6 +495,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geometry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gps_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive_config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrivegarble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpskismet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsmisc.Po@am__quote@

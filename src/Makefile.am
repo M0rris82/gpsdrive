@@ -43,7 +43,9 @@ libnautic_la_SOURCES=nautic.c
 libnautic_la_LDFLAGS = -version-info 2:0:0
 endif
 
-PRGS = 	gpsdrive.c splash.c navigation.c speech_out.c speech_out.h\
+PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
+	navigation.c \
+	 speech_out.c speech_out.h\
 	friends.c \
 	battery.c track.c poi.c streets.c draw_tracks.c settings.c \
 	battery.h track.h poi.h streets.h draw_tracks.h gpsdrive.h \
