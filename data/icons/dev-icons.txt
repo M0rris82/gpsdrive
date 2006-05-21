@@ -1,0 +1,284 @@
+####################
+# Places / Mapping (white)
+ Hamlet
+ Village
+ Town
+ * City			city.png
+ * Capital		capital.png
+
+ mine
+ mountain peak
+ lake
+ forest
+
+####################
+# Historic (green-white)
+ Burg/Schloss
+ Ruine
+ Monument
+ Gedenkstätte
+
+####################
+# Accomodation (light blue)
+ 
+ * Accommodation	accomodation.png
+
+ * Hotel		hotel.png
+ * Campingground	camping.png
+ Youth Hostel		hostel.png
+
+####################
+# Money (yellow-white)
+ - Bank
+    Sparkasse
+    Postbank
+    HypoVereinsbank
+    Deutsche Bank
+    Raiffeisenbank
+
+ - Geldautomat
+    Cashgroup
+    Sparkasse
+
+ Geldwechsel
+
+####################
+# Religion (violet)
+ - Kirche
+    catholic
+    protestant
+    synagoge
+    mosque
+ cemetary
+
+####################
+# Education (orange-white)
+ * day-nursery
+ * kindergarden
+ * primary school
+ secondary school
+ highschool
+ university
+ adult education
+
+###################
+# Health (red-white)
+ * hospital
+ * pharmacy
+ Doctor
+ Dentist
+ Veterinary
+
+####################
+# Public (light red)
+ police
+ firedepartment
+ postal office
+ * letterbox
+ * telephone
+ Rathaus
+ * toilet
+ * recycling
+    Glascontainer
+    Papiercontainer
+    Wertstoffhof
+    
+####################
+# Transport public (blue-white)
+ 
+ * Airport	airport.png
+ * Railway	railway.png
+ * Taxistation	taxi.png
+ * Bus station	bus.png
+ * Harbour	harbour.png
+ Ferry
+ Rapid Train
+ Underground
+ Tram
+ Park and Ride
+
+####################
+# WLAN (black)
+ * WLAN WEP
+ * WLAN closed
+ * WLAN open
+ * WLAN pay
+
+####################
+# Transport vehicle (blue)
+ - Fuel Station
+    Agip
+    Aral
+    DEA
+    Esso
+    Jet
+    OMV
+    Shell
+    Texaco
+ repair shop
+ emergency telephone
+ resting place
+ * Parking place	parking.png
+ * Parking garage	parking_garage.png
+ Park and Ride
+ * Car Rental		car_rental.png
+    Avis
+    Hertz
+    Sixt
+ toll station
+ road works
+ speed trap
+ Autobahnausfahrt
+    
+####################
+# Shopping (dark red)
+ - supermarket
+    Aldi
+    Lidl
+    Tengelmann
+    Pennymarkt
+    Norma
+    Plus
+    Minimal
+    Edeka
+    Kaufland
+    Marktkauf
+    Metro
+ - hardware store
+    OBI
+    Praktiker
+    Hagebaumarkt
+    Hornbach
+ - electronics store
+    MediaMarkt
+    Saturn
+    Conrad
+    electronic parts
+    - computers
+       hardware
+       software
+       games
+ - Sportgeschäft
+    diving
+    ski
+    tennis
+    weaponry
+ - food
+    bakery
+    butcher
+    fruits
+    vegetables
+    beverages
+    grocery
+ flea market
+ dry cleaner
+ perfumery
+ toys
+ music store
+ furniture store
+ bookshop
+ shopping centre   
+
+####################
+# Food (orange)
+
+ * Food		food.png
+ 
+ * Restaurant	restaurant.png
+ * deutsch	restaurant_d.png
+ * italienisch	restaurant_i.png
+ * griechisch	restaurant_gr.png
+ * indisch	restaurant_ind.png
+ * chinesisch	restaurant_cn.png
+ * japanisch	restaurant_j.png
+ * mexikanisch	restaurant_mex.png
+ * Biergarten	beergarden.png
+ * Bar		bar.png
+ * Kneipe	pub.png
+ * Cafe		cafe.png
+ * Eisdiele	icecream.png
+ * Fast Food	fastfood.png
+ * Burger King	burgerking.png
+ * McDonalds	mcdonalds.png
+ * KFC		kfc.png
+ * Pizza Hut	pizzahut.png
+ Subway
+ snack stand
+
+####################
+# Recreation (light-green)
+ park
+ disco/club
+ night club
+ Kneipe
+ concert hall
+ cinema
+ opera
+ theater
+ exhibition
+ museum
+ fairground
+ amusement park
+ zoo
+ playground
+
+####################
+# Sports (dark green)
+ dart
+ swimming
+ climbing
+ Rodeln
+ diving
+ fitness
+ bowling
+ golf
+ riding
+ ice skating
+ minigolf
+ ski.crosscountry
+ ski.downhill
+ fishing
+ tennis
+ football
+ 
+ stadium
+ sports field
+
+####################
+# Geocache (multicolor)
+
+ * Geocache	geocache.png
+ 
+ * Drive-In	geocache_drivein.png
+ * Earthcache	geocache_earth.png
+ * Eventcache	geocache_event.png
+ * Mathcache	geocache_math.png
+ * Multicache	geocache_multi.png
+ * Mystery	geocache_mystery.png
+ * Traditional	geocache_traditional.png
+ * Virtual	geocache_virtual.png
+ * Webcamcache	geocache_webcam.png
+ * Nightcache	geocache_night.png 
+
+###################
+# nautical (black-white)
+
+
+###################
+# people (yellow)
+
+ * people	people.png
+
+ * home		home.png
+ * friends	friends.png
+ * work		work.png
+ * friendsd	friendsicon.png
+ * developer	gpsdrive.png
+ 
+####################
+# custom (white)
+
+ * unknown	unknown.png
+
+
+
