@@ -1,0 +1,7 @@
+Converting Old Maps
+  If you have old expedia maps on your system and want 
+  to reuse them you should move them to a 
+  subdirectory ~/.gpsdrive/maps/expedia/ 
+  and add expedia/ before every map entry in map_koords.txt
+
+  Any other map should be moved in a similar way.
