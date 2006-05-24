@@ -7,7 +7,7 @@ pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
-icons_DATA = icons/*.png \
+icons_DATA = icons/classic/*.png \
 	     icons/index.html
 
 streetsdir   = $(datadir)/gpsdrive/streets
@@ -21,20 +21,31 @@ poi_DATA = \
 
 
 mapsdir   = $(datadir)/gpsdrive/maps
-maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
-	    maps/top_Germany.jpg   maps/top_NorthAmerica.jpg \
-	    maps/top_WorldEast.jpg \
-	    maps/top_America.jpg  maps/top_Europe.jpg \
-	    maps/top_GPSWORLD.jpg  maps/top_SouthAmerica.jpg \
-	    maps/map_BlueBall.png   maps/map_White.png      maps/top_WhiteBall.png \
-	    maps/map_WhiteBall.png  maps/top_GreenBall.png  maps/top_White.png
+maps_DATA = \
+           maps/map_BlueBall.png \
+           maps/map_LightYellow.png \
+           maps/map_White.png \
+           maps/map_WhiteBall.png \
+           maps/top_Africa.jpg \
+           maps/top_America.jpg  \
+           maps/top_Australia.jpg \
+           maps/top_Europe.jpg \
+           maps/top_GPSWORLD.jpg \
+           maps/top_Germany.jpg \
+           maps/top_GreenBall.png \
+           maps/top_LightYellow.png \
+           maps/top_NorthAmerica.jpg \
+           maps/top_SouthAmerica.jpg \
+           maps/top_White.png \
+           maps/top_WhiteBall.png \
+           maps/top_WorldEast.jpg
 
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
 
-EXTRA_DIST=	\
-	$(cfg_files_DATA) \
-	$(pixmap_DATA) $(icons_DATA) \
-	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
-	$(apps_DATA)
+EXTRA_DIST=        \
+        $(cfg_files_DATA) \
+        $(pixmap_DATA) $(icons_DATA) \
+        $(maps_DATA) $(poi_DATA) $(streets_DATA) \
+        $(apps_DATA)
