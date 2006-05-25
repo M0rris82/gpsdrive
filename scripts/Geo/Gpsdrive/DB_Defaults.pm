@@ -1121,32 +1121,32 @@ sub fill_default_street_types() {   # Fill streets_type database
 
     # Just some Default types
     # TODO: make english primary language
-    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00001000_de.unbekannt
-			    x555555_x000000_w2_4_z00010000_de.Strassen.Allgemein
+    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00075000_de.unbekannt
+			    x555555_x000000_w2_4_z00075000_de.Strassen.Allgemein
 			    x557777_x000000_w2_4_z00100000_de.Strassen.primary
 			    x557766_x000000_w2_4_z00100000_de.Strassen.mayor
-			    x557766_x555555_w2_4_z00010000_de.Strassen.secondary
-			    x558866_x000000_w2_4_z00010000_de.Strassen.residential
-			    x555555_x000000_w1_2_z00001000_de.Strassen.minor
+			    x557766_x555555_w2_4_z00075000_de.Strassen.secondary
+			    x558866_x000000_w2_4_z00075000_de.Strassen.residential
+			    x555555_x000000_w1_2_z00075000_de.Strassen.minor
 
 			    x00FFFF_xAA0000_w2_4_z10000000_de.Strassen.Highway
 			    xFFFF00_xAA0000_w2_4_z10000000_de.Strassen.Autobahn
 			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Bundesstrasse
 			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Landstrasse
-			    x00FFFF_x000000_w2_4_z00010000_de.Strassen.Innerorts
-			    x00FFFF_x555555_w1_2_z00010000_de.Strassen.30_Zohne
+			    x00FFFF_x000000_w2_4_z00075000_de.Strassen.Innerorts
+			    x00FFFF_x555555_w1_2_z00075000_de.Strassen.30_Zohne
 
-			    x222222_x555555_w2_4_z00010000_de.Strassen.Wanderweg
-			    x222222_x555555_w2_4_z00010000_de.Strassen.Fahrrad
-			    x222222_x555555_w2_4_z00010000_de.Strassen.Fussweg
-			    x222222_x557755_w2_4_z00010000_de.Strassen.Reitweg
-			    x222222_x555555_w2_4_z00010000_de.Strassen.Trampelpfad
+			    x222222_x555555_w2_4_z00075000_de.Strassen.Wanderweg
+			    x222222_x555555_w2_4_z00075000_de.Strassen.Fahrrad
+			    x222222_x555555_w2_4_z00075000_de.Strassen.Fussweg
+			    x222222_x557755_w2_4_z00075000_de.Strassen.Reitweg
+			    x222222_x555555_w2_4_z00075000_de.Strassen.Trampelpfad
 
 			    x444444_x000000_w2_4_z01000000_de.Schiene.ICE_Trasse
 			    x444444_x000000_w2_4_z00100000_de.Schiene.Zug_Trasse
-			    x002222_x000000_w2_4_z00010000_de.Schiene.S_Bahn_Trasse
-			    x000022_x000000_w2_4_z00010000_de.Schiene.U_Bahn_Trasse
-			    x000000_x000000_w2_4_z00010000_de.Schiene.Bus_Trasse
+			    x002222_x000000_w2_4_z00075000_de.Schiene.S_Bahn_Trasse
+			    x000022_x000000_w2_4_z00075000_de.Schiene.U_Bahn_Trasse
+			    x000000_x000000_w2_4_z00075000_de.Schiene.Bus_Trasse
 
 			    x444444_x000000_w2_4_z10000000_de.Grenzen.Landesgrenze
 			    x444444_x000000_w2_4_z01000000_de.Grenzen.Bundesland_Grenze
