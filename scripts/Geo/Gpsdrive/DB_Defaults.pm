@@ -861,113 +861,6 @@ sub find_icon($$){
     return $icon;
 }
 
-# -----------------------------------------------------------------------------
-# Fill generate_poi_type_html_page
-sub generate_poi_type_html_page() {
-    $used_icons ={};
-    
-    my $generate_poi_type_html_page= (-d '../data/icons/');
-
-    if ( ! $generate_poi_type_html_page ) {
-	die "Icon directory was not found\n";
-    }
-
-    my $poi_type_html_page = IO::File->new(">../data/icons/index.html")
-	or warn "Cannot open html Page for writing: $!";;
-    my $poi_type_txt_file = IO::File->new(">../data/icons.txt")
-	or warn "Cannot open txt file for writing: $!";;
-    print $poi_type_html_page "<html>\n";
-    print $poi_type_html_page "<body bgcolor=\"#AAAAFF\">\n";
-    print $poi_type_html_page "<table border>\n";
-    print $poi_type_html_page "<th>icon</th>	<th>filename</th>\n";
-    print $poi_type_html_page "<th>name</th>	<th>description</th>\n";
-#   print $poi_type_html_page "<th>name_de</th>	";
-    print $poi_type_html_page "<th>description_de</th>\n";
-
-    for my $icon ( glob("../data/icons/*.{png,gif}" ) ) {
-	next unless -f $icon;
-	$used_icons->{$icon}=0;
-    }
-
-    my $poi_type_id=0;
-    for my $name_raw  ( sort @poi_type_names ) {
-	$poi_type_id++;
-	
-	my $name =$name_raw;
-
-	# Translate the entries
-	my $name_de =translate_icon($name);
-
-	$name =~ s/_/ /g;
-	
-	# Find Icon
-	my $icon = find_icon($name,1);
-
-	# create description
-	my $description     = $name;    $description    =~ s/\./ /g;
-	my $description_de  = $name_de; $description_de =~ s/\./ /g;
-
-	# create html page for icons
-	print $poi_type_html_page "<tr> ";
-	if ( $icon =~ m/unknown/ ) {
-	    print $poi_type_html_page "<td align=RIGHT ><img src=\"$icon\"></td>";
-	} else {
-	    print $poi_type_html_page "<td valign=TOP ><img src=\"$icon\"></td>";
-	}
-	print $poi_type_html_page "<td valign=TOP >$icon</td>";
-	
-	print $poi_type_html_page "<td valign=TOP >$name</td>";
-	    print $poi_type_html_page "<td valign=TOP >$description</td>";
-#	    print $poi_type_html_page "<td>$name_de</td>";
-	print $poi_type_html_page "<td valign=TOP >$description_de</td>";
-	print $poi_type_html_page "</tr> \n";
-	
-	print $poi_type_txt_file "$name_raw $icon\n";
-	debug(sprintf("%3d %-20s %-45s %-45s %-45s %-45s ",
-		      $poi_type_id,$icon,$name,$name_de,$description,$description_de));
-    } # of for @poi_type_names
-    
-    print $poi_type_html_page "</table>\n";
-    for my $type ( qw(used system unused ) ){
-	print $poi_type_html_page "<H2>$type</h2>\n";
-	my $col_count=0;
-	print $poi_type_html_page "<table border=1>\n";
-	for my $icon ( sort keys %{$used_icons} ) {
-	    my $system_icon =0;
-	    $system_icon = 1 if $icon =~ m/\/(battery|compass|friendsicon|gauge|gpsicon|gpsiconbt|kismet|powercharges|powercord|talogo|)\.(png|gif)$/;
-	    next if $icon =~ m/gpsdrivesplash|gpsdrivemini/;
-		next if $type eq "used"   && ! $used_icons->{$icon};
-	    next if $type eq "system" && ! $system_icon;
-	    next if $type eq "unused" &&  ($used_icons->{$icon} || $system_icon);
-	    print $poi_type_html_page "<tr>" 
-		if $col_count ==0;
-	    if ( $used_icons->{$icon} || $icon =~ m,/unknown\....,) {
-		printf $poi_type_html_page "<td>%d *</td>",$used_icons->{$icon};
-	    }
-	    my $icon_name = $icon ;
-	    $icon_name =~ s,.*/,,;
-	    print $poi_type_html_page "<td><img src=\"$icon_name\"></td>";
-	    print $poi_type_html_page "<td>$icon_name</td>";
-	    
-	    $col_count++;
-		if ( $col_count>4 ) {
-		    $col_count=0;
-		    print $poi_type_html_page "</tr>";
-		}
-	}
-	print $poi_type_html_page "</table>\n";
-    }
-
-    print $poi_type_html_page "</html> ";
-    $poi_type_html_page->close();
-    $poi_type_txt_file->close();    
-
-    if ( $unknown_translations ) {
-	print "# Missing poi_type Translations:\n";
-	print "$unknown_translations\n";
-	print "\n";
-    }
-}
 
 
 # -----------------------------------------------------------------------------
@@ -979,67 +872,45 @@ sub fill_default_poi_types() {
     # for debug purpose
     Geo::Gpsdrive::DBFuncs::db_exec("TRUNCATE TABLE `poi_type`;");
 
-    my $used_icons ={};
-    for my $icon ( glob("../data/icons/*.{png,gif}" ) ) {
-	next unless -f $icon;
-	$used_icons->{$icon}=0;
+    my $unused_icon ={};
+    my $existing_icon ={};
+    for my $icon ( `find ../data/icons/ -name "*.png"` ) {
+	chomp $icon;
+	next if $icon =~ m,icons/classic/,;
+	next unless -s $icon;
+	$icon =~s,([^/]+/){4},,;
+	$unused_icon->{$icon}++;
+	$existing_icon->{$icon}++;
+	print "icon: $icon\n" if $debug;
     }
 
+    my $fh = IO::File->new("<../data/icons.txt");
     my $poi_type_id=0;
-    for my $name  ( @poi_type_names ) {
-	my $scale_min=1;
-	my $scale_max=3000;
+    while ( my $line = $fh->getline() ) {
+	chomp $line;
+	my ($name,$scale_min,$scale_max) = split(/\s+/,$line);
+	#print "($name,$scale_min,$scale_max)\n";
+	my $icon = $name;
+	$icon =~ s,\.,\/,g;
+	$icon = "$icon.png";
+	warn "Icon $icon missing\n"
+	    unless $existing_icon->{$icon};
+	delete $unused_icon->{$icon};
+
 	$poi_type_id++;
 
-	$name =~ s/:(.*)//;
-	my $addition=$1||'';
-
-	# Translate the entries
-	my $name_de = translate_icon($name);
-
-	$name =~ s/_/ /g;
-	
-	# Find Icon
-	my $icon = find_icon($name,0);
-
-	# create description
-	my $description     = $name;    $description    =~ s/\./ /g;
-	my $description_de  = $name_de; $description_de =~ s/\./ /g;
-
-	if ( $name =~ m/area/ ) {
-	    $scale_min=5000;
-	    $scale_max=30000000;
-	}
-	if ( $name =~ m/health/ ) {
-	    $scale_min=1;
-	    $scale_max=30000;
-	}
-	if ( $name =~ m/shopping/ ) {
-	    $scale_min=1;
-	    $scale_max=2000;
-	}
-
-	if ( $addition =~ m/-(\d+)/ ) {
-	    $scale_max=$1;
-	}
-	if ( $addition =~ m/(\d+)-/ ) {
-	    $scale_min=$1;
-	}
-    
 	# Insert to Database
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
 	Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `poi_type` ".
-					"       (poi_type_id, name,name_de, symbol, description,description_de,scale_min,scale_max ) \n".
-					"	VALUES ($poi_type_id,'$name','$name_de','$icon','$description','$description_de','$scale_min','$scale_max');") 
+					"              (poi_type_id,  name,   scale_min,   scale_max ) \n".
+					"	VALUES ($poi_type_id,'$name','$scale_min','$scale_max');") 
 	    or die;
 	$i++;
-    } # of for @poi_type_names
-    
-    if ( $unknown_translations ) {
-	print "# Missing poi_type Translations:\n";
-	print "$unknown_translations\n";
-	print "\n";
     }
+    warn "unused Icons:\n\t".join("\n\t",keys %{$unused_icon})."\n"
+	if keys %{$unused_icon} ;
+
+    $fh->close();
 }
 
 # -----------------------------------------------------------------------------
@@ -1086,92 +957,94 @@ sub fill_default_sources() {   # Just some Default Sources
 # -----------------------------------------------------------------------------
 sub fill_default_street_types() {   # Fill streets_type database
     my $i=1;
-
-    my $lang;
-    my $name;
-    my $color;
-    my $color_bg="#000000";
-    my $width=2;
-    my $width_bg=4;
-    my $scale_min=1;
-    my $scale_max=100000000000;
-    
     my $streets_type_id=0;
 
-    # Entries for WDB
-    for my $kind ( qw(bdy cil riv) ) {
-	for my $rank ( 1.. 15 ) {
-	    $color = "#000000";
-	    $color = "#0000FF" if $kind eq "riv"; # Water
-	    $color = "#001010" if $kind eq "bdy"; # 
-	    $color = "#004400" if $kind eq "cil"; # 
-	    $lang = "de";
-	    $name = "WDB $kind rank ${rank}";
-	    my $linetype='';
-	    $streets_type_id++;
-	    Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id' ;");
-	    Geo::Gpsdrive::DBFuncs::db_exec
-		("INSERT INTO `streets_type` ".
-		 "        (streets_type_id, name, description , description_de , color , color_bg, width , width_bg , linetype , scale_min , scale_max )".
-		 " VALUES ($i,'$name','$name','$name','$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
-	    
-	    $i++;
+    # ------------ Entries for WDB
+    for my $area ( qw(africa asia europe namer samer ) ) {
+	for my $kind ( qw(bdy cil riv pby) ) {
+	    for my $rank ( 1 .. 15 ) {
+		my $name;
+		my $color;
+		my $color_bg  = "#000000";
+		my $width     = 2;
+		my $width_bg  = 0;
+		my $scale_min =                             1;
+		my $scale_max =                        100000;
+		if ( $rank == 1 ) { $scale_max    = 100000000; $width=2 };
+		if ( $rank == 2 ) { $scale_max    =   1000000; $width=2};
+		if ( $rank == 3	) { $scale_max    =    100000; $width=3};
+		if ( $rank == 4 ) { $scale_max    =    100000; $width=2};
+		if ( $rank == 5 ) { $scale_max    =    100000; $width=1};
+		$color = "#000000";
+		if ( $kind eq "riv" ) { $color = "#0000FF"; $width=4; }; # riv  rivers
+		if ( $kind eq "cil" ) { $color = "#0044FF";           }; # cil  coastlines, islands, and lakes
+		if ( $kind eq "bdy" ) {	$color = "#001010";           }; # bdy  national boundaries
+		if ( $kind eq "pby" ) {	$color = "#001010";           }; # bdy  national boundaries
+		$name = "WDB $area $kind rank ${rank}";
+		my $linetype='';
+		$streets_type_id++;
+		Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id' ;");
+		Geo::Gpsdrive::DBFuncs::db_exec
+		    ("INSERT INTO `streets_type` ".
+		     "        (streets_type_id, name,  color ,   color_bg,   width ,  width_bg ,  linetype ,  scale_min ,  scale_max )".
+		     " VALUES ($i,            '$name','$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
+		
+		$i++;
+	    }
 	}
     }
 
-    # Just some Default types
+    # ------------ Street Types
     # TODO: make english primary language
-    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00075000_de.unbekannt
-			    x555555_x000000_w2_4_z00075000_de.Strassen.Allgemein
-			    x557777_x000000_w2_4_z00100000_de.Strassen.primary
-			    x557766_x000000_w2_4_z00100000_de.Strassen.mayor
-			    x557766_x555555_w2_4_z00075000_de.Strassen.secondary
-			    x558866_x000000_w2_4_z00075000_de.Strassen.residential
-			    x555555_x000000_w1_2_z00075000_de.Strassen.minor
+    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00075000_unbekannt
+			    x555555_x000000_w2_4_z00075000_Strassen.Allgemein
+			    x557777_x000000_w2_4_z00100000_Strassen.primary
+			    x557766_x000000_w2_4_z00100000_Strassen.mayor
+			    x557766_x555555_w2_4_z00075000_Strassen.secondary
+			    x558866_x000000_w2_4_z00075000_Strassen.residential
+			    x555555_x000000_w1_2_z00075000_Strassen.minor
 
-			    x00FFFF_xAA0000_w2_4_z10000000_de.Strassen.Highway
-			    xFFFF00_xAA0000_w2_4_z10000000_de.Strassen.Autobahn
-			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Bundesstrasse
-			    xFFFF00_x550000_w2_4_z00100000_de.Strassen.Landstrasse
-			    x00FFFF_x000000_w2_4_z00075000_de.Strassen.Innerorts
-			    x00FFFF_x555555_w1_2_z00075000_de.Strassen.30_Zohne
+			    x00FFFF_xAA0000_w2_4_z10000000_Strassen.Highway
+			    xFFFF00_xAA0000_w2_4_z10000000_Strassen.Autobahn
+			    xFFFF00_x550000_w2_4_z00100000_Strassen.Bundesstrasse
+			    xFFFF00_x550000_w2_4_z00100000_Strassen.Landstrasse
+			    x00FFFF_x000000_w2_4_z00075000_Strassen.Innerorts
+			    x00FFFF_x555555_w1_2_z00075000_Strassen.30_Zohne
 
-			    x222222_x555555_w2_4_z00075000_de.Strassen.Wanderweg
-			    x222222_x555555_w2_4_z00075000_de.Strassen.Fahrrad
-			    x222222_x555555_w2_4_z00075000_de.Strassen.Fussweg
-			    x222222_x557755_w2_4_z00075000_de.Strassen.Reitweg
-			    x222222_x555555_w2_4_z00075000_de.Strassen.Trampelpfad
+			    x222222_x555555_w2_4_z00075000_Strassen.Wanderweg
+			    x222222_x555555_w2_4_z00075000_Strassen.Fahrrad
+			    x222222_x555555_w2_4_z00075000_Strassen.Fussweg
+			    x222222_x557755_w2_4_z00075000_Strassen.Reitweg
+			    x222222_x555555_w2_4_z00075000_Strassen.Trampelpfad
 
-			    x444444_x000000_w2_4_z01000000_de.Schiene.ICE_Trasse
-			    x444444_x000000_w2_4_z00100000_de.Schiene.Zug_Trasse
-			    x002222_x000000_w2_4_z00075000_de.Schiene.S_Bahn_Trasse
-			    x000022_x000000_w2_4_z00075000_de.Schiene.U_Bahn_Trasse
-			    x000000_x000000_w2_4_z00075000_de.Schiene.Bus_Trasse
+			    x444444_x000000_w2_4_z01000000_Schiene.ICE_Trasse
+			    x444444_x000000_w2_4_z00100000_Schiene.Zug_Trasse
+			    x002222_x000000_w2_4_z00075000_Schiene.S_Bahn_Trasse
+			    x000022_x000000_w2_4_z00075000_Schiene.U_Bahn_Trasse
+			    x000000_x000000_w2_4_z00075000_Schiene.Bus_Trasse
 
-			    x444444_x000000_w2_4_z10000000_de.Grenzen.Landesgrenze
-			    x444444_x000000_w2_4_z01000000_de.Grenzen.Bundesland_Grenze
-			    x444444_x000000_w2_4_z01000000_de.Grenzen.Stadt_Grenze
+			    x444444_x000000_w2_4_z10000000_Grenzen.Landesgrenze
+			    x444444_x000000_w2_4_z01000000_Grenzen.Bundesland_Grenze
+			    x444444_x000000_w2_4_z01000000_Grenzen.Stadt_Grenze
 
-			    x0000FF_x000000_w2_4_z01000000_de.Wasser.Fluss
-			    x000FFF_x000000_w2_4_z01000000_de.Wasser.Kueste
+			    x0000FF_x000000_w2_4_z01000000_Wasser.Fluss
+			    x000FFF_x000000_w2_4_z01000000_Wasser.Kueste
 			    );
 
     for my $entry  ( @streets_types ) {    
-	$entry =~ m/^x(......)_x(......)_w(\d+)_(\d+)_z(\d+)_(..)\.(.*)$/;
-	$color     = "#$1";
-	$color_bg  = "#$2";
-	$width     = $3;
-	$width_bg  = $4;
-	$scale_max = $5;
-	$lang      = $6;
-	$name      = $7;
-	unless ( $color && $color_bg && $width && $width_bg && $scale_max && $lang && $name ) {
+	warn "could not split $entry\n" 
+	    
+unless $entry =~ m/^x(......)_x(......)_w(\d+)_(\d+)_z(\d+)_(.*)$/;
+	my $color     = "#$1";
+	my $color_bg  = "#$2";
+	my $width     = $3;
+	my $width_bg  = $4;
+	my $scale_max = $5;
+	my $name      = $6;
+	my $scale_min =  1;
+	unless ( $color && $color_bg && $width && $width_bg && $scale_max && $name ) {
 	    print "Error spliting $entry \n";
 	}	    
-	if ( ! $lang ) {
-	    die "Error in street type entry '$entry'\n";
-	}
-	$lang ||= 'en';
 	$name =~ s/_/ /g;
 	my $linetype='';
 
@@ -1181,8 +1054,8 @@ sub fill_default_street_types() {   # Fill streets_type database
 		$color     = "#FFFF00";
 		$color_bg  = "#AA0000";
 		$color_bg  = "#000000";
-		$width=1;
-		$width_bg=1;
+		$width     = 1;
+		$width_bg  = 1;
 	    }
 	}
 		
@@ -1190,18 +1063,18 @@ sub fill_default_street_types() {   # Fill streets_type database
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
 	Geo::Gpsdrive::DBFuncs::db_exec
 	    ("INSERT INTO `streets_type` ".
-	     "        (streets_type_id,  name, description , color , color_bg   , width , width_bg   , linetype  , scale_min , scale_max )".
-	     " VALUES ($i             ,'$name','$name'     ,'$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
+	     "        (streets_type_id,  name,   color ,  color_bg  , width ,  width_bg  , linetype  , scale_min , scale_max )".
+	     " VALUES ($i             ,'$name','$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
 	
 	$i++;
     }
 
-    # Reserve Type 1000 so users pace there id's behind it
-    $streets_type_id =1000;
+    # Reserve Type 200 so users place there id's behind it
+    $streets_type_id =500;
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
     Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `streets_type` ".
-				    "        (streets_type_id,  name, description , color , linetype )".
-				    " VALUES ($streets_type_id,'Reserved','Reserved','#000000','');");
+				    "        (streets_type_id,  name     ,  color  ,  color_bg , linetype )".
+				    " VALUES ($streets_type_id,'Reserved','#000000','#000000'  , '');");
     
 } # of fill_default_street_types()
 

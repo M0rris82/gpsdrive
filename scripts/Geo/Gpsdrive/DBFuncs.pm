@@ -742,7 +742,7 @@ sub add_if_not_exist_index($$;$){
 	    if ( $ist eq $keys ) { # exists and correct
 		return;
 	    } else {
-		print "Droping Index: $table.$name\n";
+		print "Dropping Index: $table.$name\n";
 		db_exec("ALTER TABLE `$table` DROP INDEX `$name`;");
 	    }
 	}
@@ -767,12 +767,12 @@ sub add_index($){
 	for my $key ( qw( last_modified name lat lon ) ){
 	    add_if_not_exist_index($table,$key);
 	}
-	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id`');
+	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id');
     } elsif ( $table eq "streets" ){
 	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
 	    add_if_not_exist_index($table,$key);
 	}
-	add_if_not_exist_index($table,'combi1','lat1`,`lon1`,`lat2`,`lon2`,`scale_min`,`scale_max');
+	add_if_not_exist_index($table,'combi1','lat1`,`lon1`,`lat2`,`lon2`,`streets_type_id');
     } elsif ( $table eq "waypoints" ){
 	for my $key ( qw( macaddr type name typenr ) ){
 	    add_if_not_exist_index($table,$key);
@@ -810,6 +810,7 @@ sub create_db(){
     $sth->execute()
 	or die $sth->errstr;
     
+    # ------- Address
     db_exec('CREATE TABLE IF NOT EXISTS `address` (
                       `address_id`     int(11)      NOT NULL auto_increment,
                       `country`        varchar(40)  NOT NULL default \'\',
@@ -824,6 +825,18 @@ sub create_db(){
                       PRIMARY KEY  (`address_id`)
                     ) TYPE=MyISAM;') or die;
     add_index('address');
+
+    # ------- POI
+    db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
+                      `poi_type_id` int(11)      NOT NULL auto_increment,
+                      `name`        varchar(80)  NOT NULL default \'\',
+                      `scale_min`   int(12)      NOT NULL default \'1\',
+                      `scale_max`   int(12)      NOT NULL default \'0\',
+                      `description` varchar(160)     NULL default \'\',
+                      PRIMARY KEY  (`poi_type_id`)
+                    ) TYPE=MyISAM;') or die;
+    add_index('poi_type');
+
 
     db_exec('CREATE TABLE IF NOT EXISTS `poi` (
                       `poi_id`        int(11)      NOT NULL auto_increment,
@@ -843,15 +856,16 @@ sub create_db(){
     add_index('poi');
 
 
+    # ------- Streets
     db_exec('CREATE TABLE IF NOT EXISTS `streets` (
                       `streets_id`      int(11)      NOT NULL auto_increment,
                       `name`            varchar(80)           default NULL,
                       `streets_type_id` int(11)      NOT NULL default \'0\',
-                      `lat1`            double                default \'0\',
-                      `lon1`            double                default \'0\',
+                      `lat1`            double       NOT NULL default \'0\',
+                      `lon1`            double       NOT NULL default \'0\',
                       `alt1`            double                default \'0\',
-                      `lat2`            double                default \'0\',
-                      `lon2`            double                default \'0\',
+                      `lat2`            double       NOT NULL default \'0\',
+                      `lon2`            double       NOT NULL default \'0\',
                       `alt2`            double                default \'0\',
                       `proximity`       float                 default \'0\',
                       `comment`         varchar(255)          default NULL,
@@ -866,21 +880,36 @@ sub create_db(){
     db_exec('CREATE TABLE IF NOT EXISTS `streets_type` (
                       `streets_type_id` int(11)      NOT NULL auto_increment,
                       `name`            varchar(80)  NOT NULL default \'\',
-                      `name_de`         varchar(80)      NULL default \'en\',
+                      `scale_min`       int(12)      NOT NULL default \'1\',
+                      `scale_max`       int(12)      NOT NULL default \'0\',
                       `description`     varchar(160)     NULL default \'\',
-                      `description_de`  varchar(160)     NULL default \'\',
                       `color`           varchar(20)      NULL default \'\',
                       `color_bg`        varchar(20)      NULL default \'\',
                       `width`           int(2)           NULL default \'1\',
                       `width_bg`        int(2)           NULL default \'2\',
                       `linetype`        varchar(80)      NULL default \'\',
+                      PRIMARY KEY  (`streets_type_id`)
+                    ) TYPE=MyISAM;') or die;
+    add_index('streets_type');
+
+    # ------- Tracks
+    db_exec('CREATE TABLE IF NOT EXISTS `tracks_type` (
+                      `track_type_id` int(11)    NOT NULL auto_increment,
+                      `name`        varchar(80)  NOT NULL default \'\',
+                      `symbol`      varchar(160)     NULL default \'\',
+                      `description` varchar(160)     NULL default \'\',
+                      `color`           varchar(20)  NULL default \'\',
+                      `color_bg`        varchar(20)  NULL default \'\',
+                      `width`           int(2)       NULL default \'1\',
+                      `width_bg`        int(2)       NULL default \'2\',
+                      `linetype`        varchar(80)  NULL default \'\',
 '. #                  vvvvvvvvvvv For later use
 '                     `scale_min`     int(12)      NOT NULL default \'1\',
                       `scale_max`     int(12)      NOT NULL default \'0\',
 '. #                  ^^^^^^^^^^^ For later use
-'                     PRIMARY KEY  (`streets_type_id`)
+'                     PRIMARY KEY  (`track_type_id`)
                     ) TYPE=MyISAM;') or die;
-    add_index('streets_type');
+    add_index('tracks_type');
 
     db_exec('CREATE TABLE IF NOT EXISTS `tracks` (
                       `track_id`       int(11)      NOT NULL  auto_increment,
@@ -903,27 +932,7 @@ sub create_db(){
                     ) TYPE=MyISAM;') or die;
     add_index('track');
 
-    db_exec('CREATE TABLE IF NOT EXISTS `tracks_type` (
-                      `track_type_id` int(11)    NOT NULL auto_increment,
-                      `name`        varchar(80)  NOT NULL default \'\',
-                      `name_de`     varchar(80)      NULL default \'en\',
-                      `symbol`      varchar(160)     NULL default \'\',
-                      `description` varchar(160)     NULL default \'\',
-                      `description_de` varchar(160)  NULL default \'\',
-                      `color`           varchar(20)  NULL default \'\',
-                      `color_bg`        varchar(20)  NULL default \'\',
-                      `width`           int(2)       NULL default \'1\',
-                      `width_bg`        int(2)       NULL default \'2\',
-                      `linetype`        varchar(80)  NULL default \'\',
-'. #                  vvvvvvvvvvv For later use
-'                     `scale_min`     int(12)      NOT NULL default \'1\',
-                      `scale_max`     int(12)      NOT NULL default \'0\',
-'. #                  ^^^^^^^^^^^ For later use
-'                     PRIMARY KEY  (`track_type_id`)
-                    ) TYPE=MyISAM;') or die;
-    add_index('tracks_type');
-
-
+    # ------- Source
     db_exec('CREATE TABLE IF NOT EXISTS `source` (
                       `source_id`      int(11)      NOT NULL auto_increment,
                       `name`           varchar(80)  NOT NULL default \'\',
@@ -935,29 +944,15 @@ sub create_db(){
                     ) TYPE=MyISAM;') or die;
     add_index('source');
 
-    db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
-                      `poi_type_id` int(11)      NOT NULL auto_increment,
-                      `name`        varchar(80)  NOT NULL default \'\',
-                      `name_de`     varchar(80)      NULL default \'en\',
-                      `symbol`      varchar(160)     NULL default \'\',
-                      `description` varchar(160)     NULL default \'\',
-                      `description_de` varchar(160)  NULL default \'\',
-                      `scale_min`     int(12)    NOT NULL default \'1\',
-                      `scale_max`     int(12)    NOT NULL default \'0\',
-                      PRIMARY KEY  (`poi_type_id`)
-                    ) TYPE=MyISAM;') or die;
-    add_index('poi_type');
-
-
-    # For compatibility to old DB Structure
+    # --------- Waypoints: For compatibility to old DB Structure
     db_exec('CREATE TABLE  IF NOT EXISTS waypoints (
                       `name`       char(40)          default \'\',
                       `type`	   char(40)          default \'\',
-                      `id`	       int(11)  NOT NULL auto_increment,
-                      `lat`	       double 	         default \'0\',
-                      `lon`	       double            default \'0\',
+                      `id`	   int(11)  NOT NULL auto_increment,
+                      `lat`	   double 	     default \'0\',
+                      `lon`	   double            default \'0\',
                       `comment`    char(160)         default \'\',
-                      `wep`	   	   int(11)  NOT NULL default \'0\',
+                      `wep`	   int(11)  NOT NULL default \'0\',
                       `macaddr`	   char(20)          default \'0\',
                       `nettype`	   int(11)  NOT NULL default \'0\',
                       `typenr`	   int(11) 	         default NULL,
@@ -965,16 +960,16 @@ sub create_db(){
                     ) TYPE=MyISAM;') or die;
     add_index('waypoints');
 
-    # For trafficinformation
+    # -------- traffic: For Traffic Information
     db_exec('CREATE TABLE IF NOT EXISTS traffic (
-      			`id` int(11) NOT NULL auto_increment ,
-			`status` int(11) default NULL ,
-			`street` varchar(40) default NULL ,
-			`descshort` varchar(100) default NULL ,
-			`desclong` text NOT NULL ,
-			`future` int(11) NOT NULL default \'0\',
-			`time` time default \'00:00:00\',
-			`timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+      			`id`        int(11)      NOT NULL auto_increment ,
+			`status`    int(11)               default NULL ,
+			`street`    varchar(40)           default NULL ,
+			`descshort` varchar(100)          default NULL ,
+			`desclong`  text         NOT NULL ,
+			`future`    int(11)      NOT NULL default \'0\',
+			`time`      time                  default \'00:00:00\',
+			`timestamp` timestamp    NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 		        PRIMARY KEY  (`id`)
 		      ) ENGINE=MyISAM DEFAULT CHARSET=latin1;') or die;
     add_index('traffic');
