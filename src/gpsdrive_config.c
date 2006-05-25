@@ -319,6 +319,7 @@ readconfig ()
 
     /* Defaults */
     local_config.showwaypoints = TRUE;
+    g_strlcpy (local_config.icon_theme, "classic", sizeof (local_config.icon_theme));
 
     // open Config File
     g_strlcpy (fname, homedir, sizeof (fname));
