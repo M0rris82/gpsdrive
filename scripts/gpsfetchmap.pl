@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.40  2006/05/27 21:56:47  tweety
+# be more verbose about -w=gpsd in the --help
+#
 # Revision 1.39  2006/03/12 14:48:34  tweety
 # delete merge conflict
 #
@@ -2276,6 +2279,7 @@ or file defined by '-W'.
 the special name gpsd asks your local gpsd where your gps thinks you are and uses 
 this point as center.
 This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
+A special name is gpsd this waypoint asks your gps where you currently are.
 
 =item B<-la,  --lat <latitude DD.MMMM>>
 
