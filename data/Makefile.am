@@ -8,7 +8,11 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/classic/*.png \
+	     icons/square.big/*.png \
+	     icons/square.big/*/*.png \
 	     icons/index.html
+#	     icons/square.small/*/*.png 
+#	     icons/square.small/*.png 
 
 streetsdir   = $(datadir)/gpsdrive/streets
 streets_DATA = streets/Autobahnen.txt \

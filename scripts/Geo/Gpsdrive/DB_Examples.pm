@@ -143,7 +143,7 @@ sub fill_example_cities($){
     my $fh = data_open($file_name);
 
     # Insert Example Cities
-    my $type_name = "area.city";
+    my $type_name = "places.city";
     my $type_id = poi_type_name2id($type_name);
     die "Type for '$type_name' not found \n" unless $type_id;
 

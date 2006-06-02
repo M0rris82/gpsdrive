@@ -888,6 +888,7 @@ sub fill_default_poi_types() {
     my $poi_type_id=0;
     while ( my $line = $fh->getline() ) {
 	chomp $line;
+	next if $line =~  m/^\#/;
 	my ($name,$scale_min,$scale_max) = split(/\s+/,$line);
 	#print "($name,$scale_min,$scale_max)\n";
 	my $icon = $name;
@@ -996,32 +997,32 @@ sub fill_default_street_types() {   # Fill streets_type database
 
     # ------------ Street Types
     # TODO: make english primary language
-    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00075000_unbekannt
-			    x555555_x000000_w2_4_z00075000_Strassen.Allgemein
+    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00100000_unbekannt
+			    x555555_x000000_w2_4_z00100000_Strassen.Allgemein
 			    x557777_x000000_w2_4_z00100000_Strassen.primary
 			    x557766_x000000_w2_4_z00100000_Strassen.mayor
-			    x557766_x555555_w2_4_z00075000_Strassen.secondary
-			    x558866_x000000_w2_4_z00075000_Strassen.residential
-			    x555555_x000000_w1_2_z00075000_Strassen.minor
+			    x557766_x555555_w2_4_z00100000_Strassen.secondary
+			    x558866_x000000_w2_4_z00100000_Strassen.residential
+			    x555555_x000000_w1_2_z00100000_Strassen.minor
 
 			    x00FFFF_xAA0000_w2_4_z10000000_Strassen.Highway
 			    xFFFF00_xAA0000_w2_4_z10000000_Strassen.Autobahn
 			    xFFFF00_x550000_w2_4_z00100000_Strassen.Bundesstrasse
 			    xFFFF00_x550000_w2_4_z00100000_Strassen.Landstrasse
-			    x00FFFF_x000000_w2_4_z00075000_Strassen.Innerorts
-			    x00FFFF_x555555_w1_2_z00075000_Strassen.30_Zohne
+			    x00FFFF_x000000_w2_4_z00100000_Strassen.Innerorts
+			    x00FFFF_x555555_w1_2_z00100000_Strassen.30_Zohne
 
-			    x222222_x555555_w2_4_z00075000_Strassen.Wanderweg
-			    x222222_x555555_w2_4_z00075000_Strassen.Fahrrad
-			    x222222_x555555_w2_4_z00075000_Strassen.Fussweg
-			    x222222_x557755_w2_4_z00075000_Strassen.Reitweg
-			    x222222_x555555_w2_4_z00075000_Strassen.Trampelpfad
+			    x222222_x555555_w2_4_z00100000_Strassen.Wanderweg
+			    x222222_x555555_w2_4_z00100000_Strassen.Fahrrad
+			    x222222_x555555_w2_4_z00100000_Strassen.Fussweg
+			    x222222_x557755_w2_4_z00100000_Strassen.Reitweg
+			    x222222_x555555_w2_4_z00100000_Strassen.Trampelpfad
 
 			    x444444_x000000_w2_4_z01000000_Schiene.ICE_Trasse
 			    x444444_x000000_w2_4_z00100000_Schiene.Zug_Trasse
-			    x002222_x000000_w2_4_z00075000_Schiene.S_Bahn_Trasse
-			    x000022_x000000_w2_4_z00075000_Schiene.U_Bahn_Trasse
-			    x000000_x000000_w2_4_z00075000_Schiene.Bus_Trasse
+			    x002222_x000000_w2_4_z00100000_Schiene.S_Bahn_Trasse
+			    x000022_x000000_w2_4_z00100000_Schiene.U_Bahn_Trasse
+			    x000000_x000000_w2_4_z00100000_Schiene.Bus_Trasse
 
 			    x444444_x000000_w2_4_z10000000_Grenzen.Landesgrenze
 			    x444444_x000000_w2_4_z01000000_Grenzen.Bundesland_Grenze

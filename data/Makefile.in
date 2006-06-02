@@ -126,6 +126,7 @@ GLIB_LIBS = @GLIB_LIBS@
 GLIB_MKENUMS = @GLIB_MKENUMS@
 GMSGFMT = @GMSGFMT@
 GOBJECT_QUERY = @GOBJECT_QUERY@
+GREP = @GREP@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
 HAVE_ASPRINTF = @HAVE_ASPRINTF@
@@ -190,13 +191,10 @@ USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
 YACC = @YACC@
-ac_ct_AR = @ac_ct_AR@
+YFLAGS = @YFLAGS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
-ac_pt_PKG_CONFIG = @ac_pt_PKG_CONFIG@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -213,12 +211,16 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
@@ -229,8 +231,10 @@ localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
@@ -240,9 +244,13 @@ cfg_files_DATA = icons.txt map_koord.txt
 pixmapdir = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 iconsdir = $(datadir)/gpsdrive/icons
-icons_DATA = icons/*.png \
+icons_DATA = icons/classic/*.png \
+	     icons/square.big/*.png \
+	     icons/square.big/*/*.png \
 	     icons/index.html
 
+#	     icons/square.small/*/*.png 
+#	     icons/square.small/*.png 
 streetsdir = $(datadir)/gpsdrive/streets
 streets_DATA = streets/Autobahnen.txt \
 	  streets/Streets_au.txt  streets/Streets.txt
@@ -253,21 +261,32 @@ poi_DATA = \
 	poi/cities_au.txt poi/shops_au.txt
 
 mapsdir = $(datadir)/gpsdrive/maps
-maps_DATA = maps/top_Africa.jpg   maps/top_Australia.jpg  \
-	    maps/top_Germany.jpg   maps/top_NorthAmerica.jpg \
-	    maps/top_WorldEast.jpg \
-	    maps/top_America.jpg  maps/top_Europe.jpg \
-	    maps/top_GPSWORLD.jpg  maps/top_SouthAmerica.jpg \
-	    maps/map_BlueBall.png   maps/map_White.png      maps/top_WhiteBall.png \
-	    maps/map_WhiteBall.png  maps/top_GreenBall.png  maps/top_White.png
+maps_DATA = \
+           maps/map_BlueBall.png \
+           maps/map_LightYellow.png \
+           maps/map_White.png \
+           maps/map_WhiteBall.png \
+           maps/top_Africa.jpg \
+           maps/top_America.jpg  \
+           maps/top_Australia.jpg \
+           maps/top_Europe.jpg \
+           maps/top_GPSWORLD.jpg \
+           maps/top_Germany.jpg \
+           maps/top_GreenBall.png \
+           maps/top_LightYellow.png \
+           maps/top_NorthAmerica.jpg \
+           maps/top_SouthAmerica.jpg \
+           maps/top_White.png \
+           maps/top_WhiteBall.png \
+           maps/top_WorldEast.jpg
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
 EXTRA_DIST = \
-	$(cfg_files_DATA) \
-	$(pixmap_DATA) $(icons_DATA) \
-	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
-	$(apps_DATA)
+        $(cfg_files_DATA) \
+        $(pixmap_DATA) $(icons_DATA) \
+        $(maps_DATA) $(poi_DATA) $(streets_DATA) \
+        $(apps_DATA)
 
 all: all-am
 
@@ -438,7 +457,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/square.big $(distdir)/icons/square.big/* $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

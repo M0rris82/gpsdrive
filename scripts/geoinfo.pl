@@ -165,7 +165,7 @@ if ( $do_all ) {
 	= $do_cameras
 	= $do_jigle
 	= $do_import_defaults
-	= $do_import_examples
+#	= $do_import_examples
 	= 1;
     if ( $ENV{'LANG'} =~ /de_DE/ ) {
 	print "\n";
@@ -174,6 +174,11 @@ if ( $do_all ) {
 
 	$do_earthinfo_nga_mil ||= 'gm,sz,be,au,bu,ez,da,fi,fr,gr,hu,lu,mt,mn';
 	print "    --> loading only $do_earthinfo_nga_mil for NGA\n";
+    }
+    if ( $ENV{'LANG'} =~ /de_/ ) {
+	print "\n";
+	print "=============================================================================\n";
+	print "I assume i'm in Europe (LANG='$ENV{'LANG'}')\n";
 
 	$do_wdb ||="europe";
 	print "    --> loading only $do_wdb for WDB\n";
@@ -199,16 +204,6 @@ pod2usage(-verbose=>2) if $man;
 ########################################################################################
 ########################################################################################
 
-Geo::Gpsdrive::getstreet::streets()
-	if $street;
-
-
-Geo::Gpsdrive::gettraffic::gettraffic()
-	if $do_traffic;
-
-Geo::Gpsdrive::gettraffic::showtraffic()
-	if $show_traffic;
-
 
 Geo::Gpsdrive::DBFuncs::create_db()
     if $do_create_db;
@@ -218,6 +213,24 @@ Geo::Gpsdrive::DB_Defaults::fill_defaults()
 
 Geo::Gpsdrive::DB_Examples::fill_examples()
     if $do_import_examples;
+
+# Get and Unpack openstreetmap  http://www.openstreetmap.org/
+Geo::Gpsdrive::OSM::import_Data($do_osm) 
+    if ( defined $do_osm );
+
+# Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
+Geo::Gpsdrive::WDB::import_Data($do_wdb)
+    if ( $do_wdb );
+
+Geo::Gpsdrive::getstreet::streets()
+	if $street;
+
+Geo::Gpsdrive::gettraffic::gettraffic()
+	if $do_traffic;
+
+Geo::Gpsdrive::gettraffic::showtraffic()
+	if $show_traffic;
+
 
 Geo::Gpsdrive::DB_Defaults::generate_poi_type_html_page()
     if $do_generate_poi_type_html_page;
@@ -238,14 +251,6 @@ Geo::Gpsdrive::OpenGeoDB::import_Data()
 # Get and Unpack opengeodb2  http://www.opengeodb.de/download/
 Geo::Gpsdrive::OpenGeoDB2::import_Data() 
     if ( $do_opengeodb2 );
-
-# Get and Unpack openstreetmap  http://www.openstreetmap.org/
-Geo::Gpsdrive::OSM::import_Data($do_osm) 
-    if ( defined $do_osm );
-
-# Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
-Geo::Gpsdrive::WDB::import_Data($do_wdb)
-    if ( $do_wdb );
 
 # Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
 Geo::Gpsdrive::census::import_Data()

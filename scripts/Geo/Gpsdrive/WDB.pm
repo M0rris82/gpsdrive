@@ -45,6 +45,7 @@ sub import_wdb($){
 
     print "Reading $full_filename                   \n";
     my $base_filename = basename($full_filename);
+    my ( $area ) = ($base_filename =~ m/^([^-]+)/ );
     my $fh = IO::File->new("<$full_filename");
     my $segment = 0;
     my $rank    = 0;
@@ -84,7 +85,6 @@ sub import_wdb($){
 
 
     my $streets_type_id=0;
-    my $scale_max;
     my @segments;
     my $line_number = 0;
     my $sum_points  = 0;
@@ -96,9 +96,7 @@ sub import_wdb($){
 	} elsif ( $line =~ m/^segment\s+(\d+)\s+rank\s+(\d+)\s+points\s+(\d+)/ ) {
 	    if ( @segments ) {
 		street_segments_add(
-				{ scale_min       => 1,
-				  scale_max       => $scale_max,
-				  streets_type_id => $streets_type_id, 
+				{ streets_type_id => $streets_type_id, 
 				  source_id       => $source_id,
 				  segments        => \@segments
 				  }
@@ -106,11 +104,6 @@ sub import_wdb($){
 	    };
 	    # Segment: segment 27  rank 1  points 1131
 	    ($segment,$rank,$points) = ( $1,$2,$3) ;
-	    $scale_max = 10000;
-	    $scale_max = 100000	    if  $rank >1;
-	    $scale_max = 1000000    if  $rank >2;
-	    $scale_max = 10000000   if  $rank >3;
-	    $scale_max = 100000000  if  $rank >4;
 	    @segments=();
 	    $sum_points += $points;
 	    print "Segment: $segment, rank: $rank  points: $points        \r";
@@ -118,7 +111,7 @@ sub import_wdb($){
 	    ( $lat1,$lon1 ) = ( $lat2 , $lon2 ) = (0,0);
 
 	    # ---------------------- Type    
-	    my $type_name = "WDB $type_string rank $rank";
+	    my $type_name = "WDB $area $type_string rank $rank";
 	    $streets_type_id = streets_type_name2id($type_name);
 	    die "Missing Street Type $type_name\n" unless $streets_type_id;
 	} elsif ( $line =~ m/^\s*([\d\.\-]+)\s+([\d\.\-]+)\s*$/ ) {
@@ -144,8 +137,6 @@ sub import_wdb($){
 	}
     }
     street_segments_add( {
-	scale_min       => 1,
-	scale_max       => $scale_max,
 	streets_type_id => $streets_type_id, 
 	source_id       => $source_id,
 	segments        => \@segments

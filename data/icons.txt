@@ -1,304 +1,619 @@
-WC unknown.png
-accomodation hotel.png
-accomodation.campground camping.png
-accomodation.campground.campground camping.png
-accomodation.campground.car camping.png
-accomodation.campground.shower camping.png
-accomodation.campground.tent camping.png
-accomodation.campground.trailer camping.png
-accomodation.hotel hotel.png
-accomodation.motel hotel.png
-accomodation.nursing_home hotel.png
-accomodation.youth_hostel hotel.png
-administration unknown.png
-administration.car_registration unknown.png
-area.area area.png
-area.area.country area.png
-area.area.farm area.png
-area.area.forest trees.png
-area.area.hill summit.png
-area.area.hill.large summit-3.png
-area.area.hill.medium summit-2.png
-area.area.hill.mountain summit-4.png
-area.area.hill.small summit-1.png
-area.area.industial_area area.png
-area.area.lake area-blue.png
-area.area.play_street area.png
-area.area.river area.png
-area.bridge bridge.png
-area.bridge.car bridge_car.png
-area.bridge.pedestrian bridge_pedestrian.png
-area.bridge.train bridge_train.png
-area.building area.png
-area.building.barn area.png
-area.building.farmhouse area.png
-area.city area_city.png
-area.city.capital area_city.png
-area.city.hamlet area_city.png
-area.city.large area_city.png
-area.city.mayor area_city.png
-area.city.medium area_city.png
-area.city.small area_city.png
-area.pedestrian_zone pedestrian.png
-area.railway-crossing area.png
-area.state area.png
-area.tunnel area.png
-bank Dollar.png
-bank.ATM Dollar.png
-bank.ATM.EC ec.png
-bank.agency.HypoVereinsbank bank-agency.png
-bank.agency.Postbank post.png
-bank.agency.Reifeisenbank VR.png
-bank.agency.Sparda bank-agency.png
-bank.agency.Sparkasse bank-agency.png
-bank.money_exchange Dollar.png
-camping.dumpstation unknown.png
-camping.water tap.png
-church church.png
-church.catholic church.png
-church.cemetary cemetary.png
-church.protestant church.png
-church.synagoge church.png
-custom unknown.png
-custom.friends unknown.png
-custom.friends.home home.png
-custom.friends.work work.png
-custom.my.home home.png
-custom.my.work work.png
-developer unknown.png
-education unknown.png
-education.adult_education unknown.png
-education.kindergarden unknown.png
-education.nursery unknown.png
-education.school unknown.png
-education.school.highschool unknown.png
-education.school.primary_school ABC.png
-education.school.secondary_school unknown.png
-education.school.university emc2.png
-entrance door.png
-food food.png
-food.beergarden beergarden.png
-food.cafe cafe.png
-food.cafe.internet cafe.png
-food.delivery_service food.png
-food.drinking_water tap_drinking.png
-food.restaurant food.png
-food.restaurant.asia japanese.png
-food.restaurant.bavarian beergarden.png
-food.restaurant.chinese japanese.png
-food.restaurant.fastfood food.png
-food.restaurant.fastfood.burger_king burgerking.png
-food.restaurant.fastfood.mc_donalds mcdonalds.png
-food.restaurant.fastfood.pizza_hut food.png
-food.restaurant.greek food.png
-food.restaurant.ice_cream_parlor ice_cream.png
-food.restaurant.indian food.png
-food.restaurant.italian food.png
-food.restaurant.japanese japanese.png
-food.restaurant.pizza pizza.png
-general unknown.png
-general.caution warning.png
-general.marker-1 ppl1.png
-general.marker-2 ppl2.png
-general.marker-3 ppl3.png
-general.marker-4 ppl4.png
-general.marker-5 ppl5.png
-general.memorial unknown.png
-general.point_of_interest unknown.png
-general.viewpoint unknown.png
-general.waypoint unknown.png
-health red_cross.png
-health.ambulance red_cross.png
-health.doctor aesculab.png
-health.emergency emergency.png
-health.hospital hospital.png
-health.pharmacy pharmacy.png
-import_way.txt unknown.png
-information info.png
-mine mine.png
-office unknown.png
-office.fire_department unknown.png
-office.police unknown.png
-office.town_hall unknown.png
-postal.letter-box letter.png
-postal.office letter1.png
-recreation balloon.png
-recreation.cinema movies.png
-recreation.event_location balloon.png
-recreation.exhibitions balloon.png
-recreation.exhibitions.exibition balloon.png
-recreation.exhibitions.museum balloon.png
-recreation.exhibitions.trade_show balloon.png
-recreation.fairground balloon.png
-recreation.geocache geocache.png
-recreation.gift_shop balloon.png
-recreation.landmark monument.png
-recreation.landmark.monument monument.png
-recreation.model_aircrafts balloon.png
-recreation.music music.png
-recreation.music.concert_hall music.png
-recreation.music.dance_floor music.png
-recreation.music.disco music.png
-recreation.music.opera masks.png
-recreation.music.theater masks.png
-recreation.national_park balloon.png
-recreation.night_club girls.png
-recreation.park balloon.png
-recreation.park.amusement balloon.png
-recreation.park.aquarium balloon.png
-recreation.park.zoo balloon.png
-recreation.picnic_area balloon.png
-recreation.playground swing.png
-recreation.pub beer.png
-recreation.pub.dart dart.png
-recreation.sport balloon.png
-recreation.sports.bicycling bicycling.png
-recreation.sports.boat boat.png
-recreation.sports.bob balloon.png
-recreation.sports.bowling balloon.png
-recreation.sports.climbing balloon.png
-recreation.sports.climbing.area balloon.png
-recreation.sports.climbing.hall balloon.png
-recreation.sports.climbing.rocks balloon.png
-recreation.sports.coast balloon.png
-recreation.sports.diving alpha_flag.png
-recreation.sports.fishing balloon.png
-recreation.sports.fittness balloon.png
-recreation.sports.golf_place golf.png
-recreation.sports.horse.racing horse.png
-recreation.sports.horse.riding horse.png
-recreation.sports.hunt balloon.png
-recreation.sports.ice_scating balloon.png
-recreation.sports.minigolf_place balloon.png
-recreation.sports.motorbike motorbike.png
-recreation.sports.parachute balloon.png
-recreation.sports.rock_climbing balloon.png
-recreation.sports.rollerblades balloon.png
-recreation.sports.rollerscates balloon.png
-recreation.sports.skiing skiing.png
-recreation.sports.skiing.cross-country skiing.png
-recreation.sports.skiing.down-hill skiing.png
-recreation.sports.snakeboard balloon.png
-recreation.sports.soccer_field balloon.png
-recreation.sports.soccer_stadion balloon.png
-recreation.sports.swimming balloon.png
-recreation.sports.swimming_area balloon.png
-recreation.sports.tennis_place balloon.png
-recreation.sports.water_ski balloon.png
-recreation.zoo balloon.png
-recycling unknown.png
-recycling.glass unknown.png
-recycling.paper unknown.png
-recycling.recycling_centre unknown.png
-shopping shop.png
-shopping.beverages shop.png
-shopping.books shop.png
-shopping.computer shop-computer.png
-shopping.computer.games shop-computer.png
-shopping.computer.hardware shop-computer.png
-shopping.computer.software shop-computer.png
-shopping.dry_cleaner shop.png
-shopping.electronics shop.png
-shopping.flea_market shop.png
-shopping.food.bakery prezel.png
-shopping.food.butcher shop.png
-shopping.food.fruit shop.png
-shopping.food.market shop.png
-shopping.food.tea shop.png
-shopping.food.vegetables shop.png
-shopping.furnishing_house shop.png
-shopping.furniture shop.png
-shopping.hardware_store shop.png
-shopping.literature shop.png
-shopping.shopping_center shop.png
-shopping.sport shop.png
-shopping.sport.diving shop.png
-shopping.sport.ski shop.png
-shopping.sport.tennis shop.png
-shopping.supermarket shop.png
-shopping.supermarket.aldi shop.png
-shopping.supermarket.groceries shop.png
-shopping.supermarket.lidl lidl_logo.png
-shopping.supermarket.penny shop.png
-shopping.supermarket.plus shop.png
-shopping.supermarket.tengelmann shop.png
-telephone phone.png
-town_hall unknown.png
-toys unknown.png
-traffic.emergency_call unknown.png
-transport unknown.png
-transport.car car.png
-transport.car.garage car_repair.png
-transport.car.gas_station fuel.png
-transport.car.gas_station.agip fuel.agip.png
-transport.car.gas_station.aral fuel.png
-transport.car.gas_station.dea fuel.png
-transport.car.gas_station.esso fuel.png
-transport.car.gas_station.jet fuel.png
-transport.car.gas_station.omv fuel.png
-transport.car.gas_station.shell fuel.png
-transport.car.gas_station.texaco fuel.png
-transport.car.parking car-parking.png
-transport.car.parking.handicapped parking-handicapped.png
-transport.car.parking.park_and_ride car-parking.png
-transport.car.parkinglot car-parking.png
-transport.car.phototrap_traffic_light speed_trap.png
-transport.car.rental car_rental.png
-transport.car.rental.avis car_rental.png
-transport.car.rental.herz car_rental.png
-transport.car.rental.sixt sixt.png
-transport.car.rest_area rest_area.png
-transport.car.toll_station car.png
-transport.car.wrecking_service towing.png
-transport.car_loading_terminal unknown.png
-transport.coach unknown.png
-transport.container_loading_terminal unknown.png
-transport.driver-guide_service unknown.png
-transport.nautical.alpha_flag alpha_flag.png
-transport.nautical.dive_flag dive_flag.png
-transport.park_and_ride P+R.png
-transport.public.airport airport.png
-transport.public.airport.aeroplane airport.png
-transport.public.airport.glider airport.png
-transport.public.airport.helicopter airport.png
-transport.public.ferry ferry.png
-transport.public.ferry.car ferry-car.png
-transport.public.interurban_train_station unknown.png
-transport.public.railway train.png
-transport.public.station.bus bus_stop.png
-transport.public.station.lift unknown.png
-transport.public.station.railroad train.png
-transport.public.station.subway_city U-Bahn.png
-transport.public.station.subway_regional S-Bahn.png
-transport.public.station.taxi unknown.png
-transport.public.station.tram bus_stop.png
-transport.public.station.underground unknown.png
-transport.scale unknown.png
-transport.ship boat.png
-transport.ship.anker anker.png
-transport.ship.dam boat.png
-transport.ship.harbor boat.png
-transport.traffic.construction warning.png
-transport.traffic.signs unknown.png
-transport.traffic.signs.dead_end dead_end.png
-transport.traffic.signs.oneway unknown.png
-transport.traffic.signs.play_street play_street.png
-transport.traffic.signs.right_of_way right_of_way.png
-transport.traffic.signs.speedlimit unknown.png
-transport.traffic.signs.speedlimit.100_kmh unknown.png
-transport.traffic.signs.speedlimit.120_kmh unknown.png
-transport.traffic.signs.speedlimit.30_kmh unknown.png
-transport.traffic.signs.speedlimit.50_kmh unknown.png
-transport.traffic.signs.speedlimit.60_kmh unknown.png
-transport.traffic.signs.speedlimit.80_kmh unknown.png
-transport.traffic.signs.speedlimit.end 30-end.png
-transport.traffic.signs.stop stop.png
-transport.traffic.signs.trafficlight traffic-light.png
-transport.traffic.speedtrap speed_trap.png
-transport.traffic.traffic_jam warning.png
-transport.travel-agency unknown.png
-transport.truck truck.png
-unknown unknown.png
-w-lan.open wlan.png
-w-lan.public tower.png
-w-lan.wep wlan-wep.png
+Old.accomodation                                     1 10000
+Old.accomodation.campground                          1 10000
+Old.accomodation.campground.campground               1 10000
+Old.accomodation.campground.car                      1 10000
+Old.accomodation.campground.shower                   1 10000
+Old.accomodation.campground.tent                     1 10000
+Old.accomodation.campground.trailer                  1 10000
+Old.administration                                   1 10000
+Old.administration.car_registration                  1 10000
+Old.area.area                                        1 10000
+Old.area.area.country                                1 10000
+Old.area.area.farm                                   1 10000
+Old.area.area.forest                                 1 10000
+Old.area.area.hill                                   1 10000
+Old.area.area.hill.large                             1 10000
+Old.area.area.hill.medium                            1 10000
+Old.area.area.hill.mountain                          1 10000
+Old.area.area.hill.small                             1 10000
+Old.area.area.industial-area                         1 10000
+Old.area.area.lake                                   1 10000
+Old.area.area.play_street                            1 10000
+Old.area.area.river                                  1 10000
+Old.area.bridge                                      1 10000
+Old.area.bridge.car                                  1 10000
+Old.area.bridge.pedestrian                           1 10000
+Old.area.bridge.train                                1 10000
+Old.area.building                                    1 10000
+Old.area.building.barn                               1 10000
+Old.area.building.farmhouse                          1 10000
+Old.area.pedestrian_zone                             1 10000
+Old.area.railway-crossing                            1 10000
+Old.area.state                                       1 10000
+Old.area.tunnel                                      1 10000
+Old.bank                                             1 10000
+Old.bank.ATM                                         1 10000
+Old.bank.ATM.EC                                      1 10000
+Old.bank.agency                                      1 10000
+Old.bank.agency.HypoVereinsbank                      1 10000
+Old.bank.agency.Postbank                             1 10000
+Old.bank.agency.Reifeisenbank                        1 10000
+Old.bank.agency.Sparda                               1 10000
+Old.bank.agency.Sparkasse                            1 10000
+Old.bank.money_exchange                              1 10000
+Old.camping.dumpstation                              1 10000
+Old.camping.water                                    1 10000
+Old.church                                           1 10000
+Old.church.catholic                                  1 10000
+Old.church.cemetary                                  1 10000
+Old.church.protestant                                1 10000
+Old.church.synagoge                                  1 10000
+Old.custom                                           1 10000
+Old.custom.friends                                   1 10000
+Old.custom.friends.home                              1 10000
+Old.custom.friends.work                              1 10000
+Old.custom.my.home                                   1 10000
+Old.custom.my.work                                   1 10000
+Old.developer                                        1 10000
+Old.education                                        1 10000
+Old.education.adult_education                        1 10000
+Old.education.kindergarden                           1 10000
+Old.education.nursery                                1 10000
+Old.education.school                                 1 10000
+Old.education.school.highschool                      1 10000
+Old.education.school.primary_school                  1 10000
+Old.education.school.secondary_school                1 10000
+Old.education.school.university                      1 10000
+Old.entrance                                         1 10000
+Old.food                                             1 10000
+Old.food.beergarden                                  1 10000
+Old.food.cafe                                        1 10000
+Old.food.cafe.internet                               1 10000
+Old.food.delivery_service                            1 10000
+Old.food.drinking_water                              1 10000
+Old.food.restaurant                                  1 10000
+Old.food.restaurant.asia                             1 10000
+Old.food.restaurant.bavarian                         1 10000
+Old.food.restaurant.chinese                          1 10000
+Old.food.restaurant.fastfood                         1 10000
+Old.food.restaurant.fastfood.burger_king             1 10000
+Old.food.restaurant.fastfood.mc_donalds              1 10000
+Old.food.restaurant.fastfood.pizza_hut               1 10000
+Old.food.restaurant.greek                            1 10000
+Old.food.restaurant.ice_cream_parlor                 1 10000
+Old.food.restaurant.indian                           1 10000
+Old.food.restaurant.italian                          1 10000
+Old.food.restaurant.japanese                         1 10000
+Old.food.restaurant.pizza                            1 10000
+Old.general                                          1 10000
+Old.general.caution                                  1 10000
+Old.general.marker-1                                 1 10000
+Old.general.marker-2                                 1 10000
+Old.general.marker-3                                 1 10000
+Old.general.marker-4                                 1 10000
+Old.general.marker-5                                 1 10000
+Old.general.memorial                                 1 10000
+Old.general.point-of-interest                        1 10000
+Old.general.viewpoint                                1 10000
+Old.general.waypoint                                 1 10000
+Old.import_way.txt                                   1 10000
+Old.information                                      1 10000
+Old.mine                                             1 10000
+Old.postal.letter-box                                1 10000
+Old.postal.office                                    1 10000
+Old.recreation                                       1 10000
+Old.recreation.cinema                                1 10000
+Old.recreation.event_location                        1 10000
+Old.recreation.exhibitions                           1 10000
+Old.recreation.exhibitions.exibition                 1 10000
+Old.recreation.exhibitions.museum                    1 10000
+Old.recreation.exhibitions.trade_show                1 10000
+Old.recreation.fairground                            1 10000
+Old.recreation.geocache                              1 10000
+Old.recreation.gift_shop                             1 10000
+Old.recreation.landmark                              1 10000
+Old.recreation.landmark.monument                     1 10000
+Old.recreation.model_aircrafts                       1 10000
+Old.recreation.music                                 1 10000
+Old.recreation.music.concert_hall                    1 10000
+Old.recreation.music.dance_floor                     1 10000
+Old.recreation.music.disco                           1 10000
+Old.recreation.music.opera                           1 10000
+Old.recreation.music.theater                         1 10000
+Old.recreation.national_park                            1 10000
+Old.recreation.night_club                              1 10000
+Old.recreation.park                                    1 10000
+Old.recreation.park.amusement                           1 10000
+Old.recreation.park.aquarium                          1 10000
+Old.recreation.park.zoo                               1 10000
+Old.recreation.picnic_area                            1 10000
+Old.recreation.playground                            1 10000
+Old.recreation.pub                                   1 10000
+Old.recreation.pub.dart                              1 10000
+Old.recreation.zoo                                   1 10000
+Old.recycling                                        1 10000
+Old.recycling.glass                                  1 10000
+Old.recycling.paper                                     1 10000
+Old.recycling.recycling_centre                         1 10000
+Old.shopping                                         1 10000
+Old.shopping.beverages                                1 10000
+Old.shopping.books                                     1 10000
+Old.shopping.computer                                 1 10000
+Old.shopping.computer.games                           1 10000
+Old.shopping.computer.hardware                       1 10000
+Old.shopping.computer.software                        1 10000
+Old.shopping.dry_cleaner                                1 10000
+Old.shopping.electronics                            1 10000
+Old.shopping.flea_market                             1 10000
+Old.shopping.food.bakery                               1 10000
+Old.shopping.food.butcher                              1 10000
+Old.shopping.food.fruit                             1 10000
+Old.shopping.food.market                              1 10000
+Old.shopping.food.tea                               1 10000
+Old.shopping.food.vegetables                            1 10000
+Old.shopping.furnishing_house                           1 10000
+Old.shopping.furniture                                 1 10000
+Old.shopping.hardware_store                           1 10000
+Old.shopping.literature                              1 10000
+Old.shopping.shopping_center                          1 10000
+Old.shopping.sport                                    1 10000
+Old.town_hall                                          1 10000
+Old.toys                                             1 10000
+Old.traffic.emergency_call                          1 10000
+Old.transport                                         1 10000
+Old.transport.coach                                     1 10000
+Old.transport.container_loading_terminal                                     1 10000
+Old.transport.driver-guide_service                                     1 10000
+Old.transport.nautical.alpha_flag                                     1 10000
+Old.transport.nautical.dive_flag                                     1 10000
+Old.transport.park_and_ride                                     1 10000
+Old.transport.scale                                     1 10000
+Old.transport.ship                                     1 10000
+Old.transport.ship.anker                                     1 10000
+Old.transport.ship.dam                                     1 10000
+Old.transport.ship.harbor                                     1 10000
+Old.transport.traffic.construction                                     1 10000
+Old.transport.traffic.signs                                     1 10000
+Old.transport.traffic.signs.dead_end                                     1 10000
+Old.transport.traffic.signs.oneway                                     1 10000
+Old.transport.traffic.signs.play_street                                     1 10000
+Old.transport.traffic.signs.right_of_way                                     1 10000
+Old.transport.traffic.signs.speedlimit                                     1 10000
+Old.transport.traffic.signs.speedlimit.100_kmh                                     1 10000
+Old.transport.traffic.signs.speedlimit.120_kmh                                     1 10000
+Old.transport.traffic.signs.speedlimit.30_kmh                                     1 10000
+Old.transport.traffic.signs.speedlimit.50_kmh                                     1 10000
+Old.transport.traffic.signs.speedlimit.60_kmh                                     1 10000
+Old.transport.traffic.signs.speedlimit.80_kmh     1 10000
+Old.transport.traffic.signs.speedlimit.end        1 10000
+Old.transport.traffic.signs.stop                  1 10000
+Old.transport.traffic.signs.trafficlight          1 10000
+Old.transport.traffic.speedtrap                   1 10000
+Old.transport.traffic.traffic_jam                 1 10000
+Old.transport.travel-agency                       1 10000
+Old.transport.truck                               1 10000
+Old.unknown                                       1 10000
+Old.w-lan.open                                    1 10000
+Old.w-lan.public                                  1 10000
+Old.w-lan.wep                                     1 10000
+accomodation                                 1 10000
+accomodation.camping                         1 10000
+accomodation.hostel                          1 10000
+accomodation.hotel                           1 10000
+accomodation.motel                           1 10000
+accomodation.nursing_home                    1 10000
+accomodation.youth_hostel                    1 10000
+aviation                                     1              10000
+aviation.aerodrome.beacon.green-white           1 10000
+aviation.aerodrome.beacon.white                        1 10000
+aviation.aerodrome.civil                        1 10000
+aviation.aerodrome.closed                        1 10000
+aviation.aerodrome.entry                        1 10000
+aviation.aerodrome.military                        1 10000
+aviation.aerodrome.mountain                        1 10000
+aviation.aerodrome.water                        1 10000
+aviation.aerodrome.winter                        1 10000
+aviation.airport                                1 10000
+aviation.airport.grass                                1 10000
+aviation.airport.military                        1 10000
+aviation.airport.paved                                1 10000
+aviation.airport.unpaved                        1 10000
+aviation.airspace.alpha                                1 10000
+aviation.airspace.bravo                                1 10000
+aviation.airspace.charlie                        1 10000
+aviation.airspace.charlie.inner                        1 10000
+aviation.airspace.delta                                1 10000
+aviation.airspace.delta.ctr                        1 10000
+aviation.airspace.delta.hx                        1 10000
+aviation.airspace.echo                                1 10000
+aviation.airspace.echo.1000ft                        1 10000
+aviation.airspace.echo.1700ft                        1 10000
+aviation.airspace.foxtrot.hx                        1 10000
+aviation.airspace.golf                                1 10000
+aviation.area.danger                                1 10000
+aviation.area.fis                                1 10000
+aviation.area.low-flying-250ft                        1 10000
+aviation.area.nature.bird-sanctuary                1 10000
+aviation.area.nature.reserve                        1 10000
+aviation.area.restricted                        1 10000
+aviation.area.transponder.mandatory                1 10000
+aviation.area.transponder.recommended                1 10000
+aviation.glidersite.tow                                1 10000
+aviation.glidersite.winch                        1 10000
+aviation.heliport.civil                                1 10000
+aviation.heliport.medical                        1 10000
+aviation.heliport.military                        1 10000
+aviation.landmark.buildings                        1 10000
+aviation.landmark.castle                        1 10000
+aviation.landmark.church                        1 10000
+aviation.landmark.cooling-tower                        1 10000
+aviation.landmark.factory                        1 10000
+aviation.landmark.flare-stack                        1 10000
+aviation.landmark.lighthouse                        1 10000
+aviation.landmark.mine                                1 10000
+aviation.landmark.monument                        1 10000
+aviation.landmark.oilfield                        1 10000
+aviation.landmark.oiltank                        1 10000
+aviation.landmark.plant                                1 10000
+aviation.landmark.quarry                        1 10000
+aviation.landmark.radar-station                        1 10000
+aviation.landmark.radio-tower                        1 10000
+aviation.landmark.ruin                       1 10000
+aviation.landmark.stockpile                  1 10000
+aviation.landmark.water-tower                1 10000
+aviation.landmark.wind-power-plant           1 10000
+aviation.navaid.dme                          1 10000
+aviation.navaid.ndb                          1 10000
+aviation.navaid.tacan                        1 10000
+aviation.navaid.vor                          1 10000
+aviation.navaid.vortac                       1 10000
+aviation.obstacle.hirta                      1 10000
+aviation.obstacle.lighted                    1 10000
+aviation.obstacle.man-made                   1 10000
+aviation.obstacle.man-made.group             1 10000
+aviation.obstacle.natural                    1 10000
+aviation.obstacle.pass                       1 10000
+aviation.point.reporting.compulsory          1 10000
+aviation.point.reporting.non-compulsory      1 10000
+aviation.runway.paved                        1 10000
+aviation.runway.unpaved                      1 10000
+aviation.site.balloon                        1 10000
+aviation.site.hangglider                     1 10000
+aviation.site.parachute                      1 10000
+aviation.site.ultralight                     1 10000
+custom                                       1 10000
+custom.unknown                               1 10000
+education                                    1 10000
+education.adult-education                    1 10000
+education.day-nursery                        1 10000
+education.highschool                         1 10000
+education.kindergarden                       1 10000
+education.primary-school                     1 10000
+education.secondary-school                   1 10000
+education.university                         1 10000
+food                                         1 10000
+food.bar                                     1 10000
+food.biergarten                              1 10000
+food.cafe                                    1 10000
+food.chinesisch                              1 10000
+food.deutsch                                 1 10000
+food.eisdiele                                1 10000
+food.fastfood                                1 10000
+food.fastfood.burger-king                    1 10000
+food.fastfood.mc-donalds                     1 10000
+food.fastfood.pizza-hut                      1 10000
+food.ice-cream                               1 10000
+food.kfc                                     1 10000
+food.kneipe                                  1 10000
+food.mexikanisch                             1 10000
+food.pub                                     1 10000
+food.restaurant                              1 10000
+food.restaurant.asian                        1 10000
+food.restaurant.ch                           1 10000
+food.restaurant.cn                           1 10000
+food.restaurant.d                            1 10000
+food.restaurant.gr                           1 10000
+food.restaurant.ind                          1 10000
+food.restaurant.it                           1 10000
+food.restaurant.ja                           1 10000
+food.restaurant.mex                          1 10000
+food.snack-stand                             1 10000
+food.subway                                  1 10000
+geocache                                     1 10000
+geocache.drive-in                            1 10000
+geocache.earthcache                          1 10000
+geocache.eventcache                          1 10000
+geocache.geocache_drivein                    1 10000
+geocache.geocache_earth                      1 10000
+geocache.geocache_event                      1 10000
+geocache.geocache_math                       1 10000
+geocache.geocache_multi                      1 10000
+geocache.geocache_mystery                    1 10000
+geocache.geocache_night                      1 10000
+geocache.geocache_traditional                1 10000
+geocache.geocache_virtual                    1 10000
+geocache.geocache_webcam                     1 10000
+geocache.mathcache                           1 10000
+geocache.multicache                          1 10000
+geocache.mystery                             1 10000
+geocache.nightcache                          1 10000
+geocache.traditional                         1 10000
+geocache.virtual                             1 10000
+geocache.webcamcache                         1 10000
+health                                       1 10000
+health.ambulance                             1 10000
+health.dentist                               1 10000
+health.doctor                                1 10000
+health.emergency                             1 10000
+health.hospital                              1 10000
+health.pharmacy                              1 10000
+health.veterinary                            1 10000
+historic                                     1 10000
+historic.burg/schloss                        1 10000
+historic.gedenkstätte                        1 10000
+historic.monument                            1 10000
+historic.ruine                               1 10000
+money                                        1 10000
+money.bank                                   1 10000
+money.bank.atm                               1 10000
+money.bank.atm.EC                            1 10000
+money.bank.atm.cashgroup                     1 10000
+money.bank.atm.sparkasse                     1 10000
+money.bank.deutsche-bank                     1 10000
+money.bank.geldwechsel                       1 10000
+money.bank.hypovereinsbank                   1 10000
+money.bank.postbank                          1 10000
+money.bank.raifeisenbank                     1 10000
+money.bank.sparkasse                         1 10000
+nautical                                     1 10000
+office                                       1 10000
+office.fire-department                       1 10000
+office.police                                1 10000
+office.town-hall                             1 10000
+people                                       1 10000
+people.developer                             1 10000
+people.friends                               1 10000
+people.friendsd                              1 10000
+people.friendsicon                           1 10000
+people.gpsdrive                              1 10000
+people.home                                  1 10000
+people.people                                1 10000
+people.people_a                              1 10000
+people.people_b                              1 10000
+people.people_c                              1 10000
+people.people_d                              1 10000
+people.people_e                              1 10000
+people.people_f                              1 10000
+people.people_g                              1 10000
+people.people_h                              1 10000
+people.people_i                              1 10000
+people.people_j                              1 10000
+people.people_k                              1 10000
+people.people_l                              1 10000
+people.people_m                              1 10000
+people.people_n                              1 10000
+people.people_o                              1 10000
+people.people_p                              1 10000
+people.people_q                              1 10000
+people.people_r                              1 10000
+people.people_s                              1 10000
+people.people_t                              1 10000
+people.people_u                              1 10000
+people.people_v                              1 10000
+people.people_w                              1 10000
+people.people_x                              1 10000
+people.people_y                              1 10000
+people.people_z                              1 10000
+people.work                                  1 10000
+places                                       1 10000
+places.city.capital                          1 3000000000
+places.city.city                             1 10000
+places.city.hamlet                           1 10000
+places.city.large                            1 3000000000
+places.city.mayor                            1 300000000
+places.city.medium                           1 30000000
+places.city.small                            1 10000
+places.city.town                             1 10000
+places.city.village                          1 10000
+places.forest                                1 10000
+places.lake                                  1 10000
+places.mine                                  1 10000
+places.mountain                              1 10000
+public                                       1 10000
+public.firedepartment                        1 10000
+public.letterbox                             1 10000
+public.police                                1 10000
+public.postal.letter-box                     1 10000
+public.postal.office                         1 10000
+public.rathaus                               1 10000
+public.recycling                             1 10000
+public.recycling.glascontainer               1 10000
+public.recycling.papiercontainer             1 10000
+public.recycling.wertstoffhof                1 10000
+public.telephone                             1 10000
+public.toilet                                1 10000
+recreation                                   1 10000
+recreation.amusement-park                    1 10000
+recreation.cinema                            1 10000
+recreation.club                              1 10000
+recreation.concert-hall                      1 10000
+recreation.disco                             1 10000
+recreation.exhibition                        1 10000
+recreation.fairground                        1 10000
+recreation.kneipe                            1 10000
+recreation.museum                            1 10000
+recreation.night-club                        1 10000
+recreation.opera                             1 10000
+recreation.park                              1 10000
+recreation.playground                        1 10000
+recreation.theater                           1 10000
+recreation.zoo                               1 10000
+religion                                     1 10000
+religion.church                              1 10000
+religion.church.catholic                     1 10000
+religion.church.cemetary                     1 10000
+religion.church.mosque                       1 10000
+religion.church.protestant                   1 10000
+religion.church.synagoge                     1 10000
+shopping                                     1 10000
+shopping.bookshop                            1 10000
+shopping.computers                           1 10000
+shopping.computers.games                     1 10000
+shopping.computers.hardware                  1 10000
+shopping.computers.software                  1 10000
+shopping.dry-cleaner                         1 10000
+shopping.electronics                         1 10000
+shopping.electronics.conrad                  1 10000
+shopping.electronics.mediamarkt              1 10000
+shopping.electronics.parts                   1 10000
+shopping.electronics.saturn                  1 10000
+shopping.flea-market                         1 10000
+shopping.food                                1 10000
+shopping.food.bakery                         1 10000
+shopping.food.beverages                      1 10000
+shopping.food.butcher                        1 10000
+shopping.food.fruits                         1 10000
+shopping.food.grocery                        1 10000
+shopping.food.market                         1 10000
+shopping.food.vegetables                     1 10000
+shopping.furniture                           1 10000
+shopping.hardware                            1 10000
+shopping.hardware.hagebaumarkt               1 10000
+shopping.hardware.hornbach                   1 10000
+shopping.hardware.obi                        1 10000
+shopping.hardware.praktiker                  1 10000
+shopping.music                               1 10000
+shopping.perfumery                           1 10000
+shopping.shopping-centre                     1 10000
+shopping.sport                               1 10000
+shopping.sport.diving                        1 10000
+shopping.sport.ski                           1 10000
+shopping.sport.tennis                        1 10000
+shopping.sport.weaponry                      1 10000
+shopping.supermarket                         1 10000
+shopping.supermarket.aldi                    1 10000
+shopping.supermarket.edeka                   1 10000
+shopping.supermarket.groceries               1 10000
+shopping.supermarket.kaufland                1 10000
+shopping.supermarket.lidl                    1 10000
+shopping.supermarket.marktkauf               1 10000
+shopping.supermarket.metro                   1 10000
+shopping.supermarket.minimal                 1 10000
+shopping.supermarket.norma                   1 10000
+shopping.supermarket.penny                   1 10000
+shopping.supermarket.plus                    1 10000
+shopping.supermarket.tengelmann              1 10000
+shopping.toys                                1 10000
+sports                                       1 10000
+sports.bicycling                             1 10000
+sports.boat                                  1 10000
+sports.bob                                   1 10000
+sports.bowling                               1 10000
+sports.climbing                              1 10000
+sports.climbing.area                         1 10000
+sports.climbing.hall                         1 10000
+sports.climbing.rocks                        1 10000
+sports.coast                                 1 10000
+sports.dart                                  1 10000
+sports.diving                                1 10000
+sports.field                                 1 10000
+sports.fishing                               1 10000
+sports.fitness                               1 10000
+sports.fittness                              1 10000
+sports.football                              1 10000
+sports.golf                                  1 10000
+sports.horse                                 1 10000
+sports.horse.coach                           1 10000
+sports.horse.racing                          1 10000
+sports.horse.riding                          1 10000
+sports.hunt                                  1 10000
+sports.ice_scating                           1 10000
+sports.minigolf                              1 10000
+sports.motorbike                             1 10000
+sports.parachute                             1 10000
+sports.riding                                1 10000
+sports.rodeln                                1 10000
+sports.rollerblades                          1 10000
+sports.rollerscates                          1 10000
+sports.skiing                                1 10000
+sports.skiing.cross-country                  1 10000
+sports.skiing.down-hill                      1 10000
+sports.snakeboard                            1 10000
+sports.soccer                                1 10000
+sports.soccer.field                          1 10000
+sports.soccer.stadion                        1 10000
+sports.squash                                1 10000
+sports.stadium                               1 10000
+sports.swimming                              1 10000
+sports.tennis                                1 10000
+sports.water-ski                             1 10000
+transport-public                             1 10000
+transport-public.airport                     1 10000
+transport-public.airport                     1 10000
+transport-public.airport.aeroplane           1 10000
+transport-public.airport.glider              1 10000
+transport-public.airport.helicopter          1 10000
+transport-public.bus                         1 10000
+transport-public.ferry                       1 10000
+transport-public.ferry.car                   1 10000
+transport-public.harbour                     1 10000
+transport-public.interurban_train_station    1 10000
+transport-public.park-and-ride               1 10000
+transport-public.railway                     1 10000
+transport-public.rapid-train                 1 10000
+transport-public.station.bus                 1 10000
+transport-public.station.lift                1 10000
+transport-public.station.railroad            1 10000
+transport-public.station.subway              1 10000
+transport-public.station.subway.city         1 10000
+transport-public.station.subway.regional     1 10000
+transport-public.station.subway_city         1 10000
+transport-public.station.subway_regional     1 10000
+transport-public.station.taxi                1 10000
+transport-public.station.tram                1 10000
+transport-public.station.underground         1 10000
+transport-public.taxistation                 1 10000
+transport-public.tram                        1 10000
+transport-public.underground                 1 10000
+transport-vehicle                            1 10000
+transport-vehicle.car-rental                 1 10000
+transport-vehicle.car-rental.avis            1 10000
+transport-vehicle.car-rental.hertz           1 10000
+transport-vehicle.car-rental.sixt            1 10000
+transport-vehicle.emergency-telephone        1 10000
+transport-vehicle.exit.highway               1 10000
+transport-vehicle.garage                     1 10000
+transport-vehicle.gas-station                1 10000
+transport-vehicle.gas-station.agip           1 10000
+transport-vehicle.gas-station.aral           1 10000
+transport-vehicle.gas-station.dea            1 10000
+transport-vehicle.gas-station.esso           1 10000
+transport-vehicle.gas-station.jet            1 10000
+transport-vehicle.gas-station.omv            1 10000
+transport-vehicle.gas-station.shell          1 10000
+transport-vehicle.gas-station.texaco         1 10000
+transport-vehicle.loading-terminal           1 10000
+transport-vehicle.park-and-ride              1 10000
+transport-vehicle.parking                    1 10000
+transport-vehicle.parking-garage             1 10000
+transport-vehicle.parking-place              1 10000
+transport-vehicle.parking.handicapped        1 10000
+transport-vehicle.parking.park_and_ride      1 10000
+transport-vehicle.repair-shop                1 10000
+transport-vehicle.rest-area                  1 10000
+transport-vehicle.resting-place              1 10000
+transport-vehicle.road-works                 1 10000
+transport-vehicle.speed-trap                 1 10000
+transport-vehicle.toll-station               1 10000
+transport-vehicle.toll-station               1 10000
+transport-vehicle.traffic-light              1 10000
+transport-vehicle.traffic-light.photo        1 10000
+transport-vehicle.wrecking-service           1 10000
+transportation                               1 10000
+unknown                                      1 10000
+vehicle                                      1 10000
+wlan                                         1 10000
+wlan.closed                                  1 10000
+wlan.open                                    1 10000
+wlan.pay                                     1 10000
+wlan.wep                                     1 10000

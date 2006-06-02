@@ -34,11 +34,16 @@ Disclaimer: Please do not use for navigation.
 #include <time.h>
 #include <sys/time.h>
 
+#include <gmodule.h>
+#include <gdk/gdktypes.h>
+#include "gtk/gtk.h"
+
 #include "gpsdrive.h"
 #include "poi.h"
 #include "config.h"
 #include "gettext.h"
 #include "icons.h"
+#include <gpsdrive_config.h>
 
 #include "gettext.h"
 
@@ -104,6 +109,8 @@ int poi_type_list_count = 0;
 void poi_rebuild_list (void);
 void get_poi_type_list (void);
 
+
+
 /* *******************************************************
  */
 void
@@ -113,8 +120,8 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   gint k, k2;
 
 
-  if (mydebug>30)
-    fprintf (stderr, "draw_text(%s,%g,%g)\n", txt,posx,posy);
+  if (mydebug > 30)
+    fprintf (stderr, "draw_text(%s,%g,%g)\n", txt, posx, posy);
 
   gdk_gc_set_foreground (kontext, &textback);
 
@@ -132,7 +139,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 
   gdk_gc_set_function (kontext, GDK_AND);
 
-  { // Draw rectangle arround Text
+  {				// Draw rectangle arround Text
     // gdk_gc_set_foreground (kontext, &textbacknew);
     gdk_gc_set_foreground (kontext, &grey);
     gdk_draw_rectangle (drawable, kontext, 1,
@@ -150,8 +157,8 @@ draw_text (char *txt, gdouble posx, gdouble posy)
     g_object_unref (G_OBJECT (poi_label_layout));
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
   pango_font_description_free (pfd);
-  if (mydebug>30)
-    fprintf (stderr, " .... draw_text(%s,%g,%g)\n", txt,posx,posy);
+  if (mydebug > 30)
+    fprintf (stderr, " .... draw_text(%s,%g,%g)\n", txt, posx, posy);
 }
 
 /* *******************************************************
@@ -197,6 +204,7 @@ poi_check_if_moved (void)
   return 1;
 }
 
+
 /* ****************************************************************** */
 /* get a list of all possible types and load there icons */
 void
@@ -208,7 +216,7 @@ get_poi_type_list (void)
   if (!usesql)
     return;
 
-  if (mydebug>25)
+  if (mydebug > 25)
     printf ("get_poi_type_list()\n");
 
   {				// Delete poi_type_list
@@ -216,13 +224,14 @@ get_poi_type_list (void)
     for (i = 0; i < poi_type_list_max; i++)
       {
 	poi_type_list[i].icon = NULL;
+	poi_type_list[i].name[0] = '\0';
       }
   }
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,symbol,description,scale_min,scale_max FROM poi_type ORDER BY poi_type_id");
+	      "SELECT poi_type_id,name,scale_min,scale_max FROM poi_type ORDER BY poi_type_id");
 
-  if (mydebug>25)
+  if (mydebug > 25)
     fprintf (stderr, "get_poi_type_list: query: %s\n", sql_query);
 
 
@@ -246,86 +255,57 @@ get_poi_type_list (void)
   int counter = 0;
   while ((row = dl_mysql_fetch_row (res)))
     {
+      // --------- 0: poi_type_id
       int index = (gint) g_strtod (row[0], NULL);
       if (index >= poi_type_list_max)
 	{
 	  fprintf (stderr,
 		   "Typet_list: index(%d) > poi_type_list_max(%d)\n",
 		   index, poi_type_list_max);
-	}
-      else
+	  break;
+	};
+
+      if (poi_type_list_count < index)
+	poi_type_list_count = index;
+
+      poi_type_list[index].poi_type_id = index;
+
+      // --------- 1: name
+      if ( row[1] != NULL )
 	{
-	  if (poi_type_list_count < index)
-	    poi_type_list_count = index;
+	  g_strlcpy (poi_type_list[index].name, row[1],
+		     sizeof (poi_type_list[index].name));
 
-	  poi_type_list[index].poi_type_id = index;
+	  poi_type_list[index].icon =
+	    read_themed_icon (poi_type_list[index].name);
 
-	  if (row[1] == NULL)
+	  if (poi_type_list[index].icon == NULL)
 	    {
-	      poi_type_list[index].name[0] = '\0';
+	      if (mydebug > 10)
+		printf ("get_poi_type_list: %3d:Icon for '%s'\tnot found\n",
+			index, poi_type_list[index].name);
+	      if (do_unit_test)
+		{
+		  exit (-1);
+		}
 	    }
 	  else
 	    {
-	      g_strlcpy (poi_type_list[index].name, row[1],
-			 sizeof (poi_type_list[index].name));
+	      if (mydebug > 30)
+		printf
+		  ("get_poi_type_list: %3d\tfor '%s'\n",
+		   index, poi_type_list[index].name);
+	      counter++;
 	    }
-
-
-	  if (row[2] == NULL)
-	    {
-	      poi_type_list[index].icon_name[0] = '\0';
-	      fprintf (stderr, "poi_type %d: No Icon Name returned\n", index);
-	    }
-	  else
-	    {
-
-	      /* This results in an SigSeg later */
-	      /*
-	       * fprintf(stderr,"get_poi_type_list:%d -> '%s'\n",index,row[2]);
-	       * g_strlcpy ( poi_type_list[index].icon_name, 
-	       * row[2],
-	       * poi_type_list_string_length-1
-	       * );
-	       */
-	    }
-
-	  {			// load icon
-	    if (row[2] == NULL)
-	      {
-		poi_type_list[index].icon = NULL;
-	      }
-	    else
-	      {
-		gchar icon_name[80];
-		g_strlcpy (icon_name, row[2], sizeof (icon_name));
-
-		poi_type_list[index].icon = read_icon (icon_name);
-
-		if (poi_type_list[index].icon == NULL)
-		  {
-		    if (mydebug>10)
-		      printf
-			("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\tnot found\n",
-			 index, icon_name, poi_type_list[index].name);
-		    if ( do_unit_test ) {
-			exit(-1);
-		    }
-		  }
-		else
-		  {
-		    if (mydebug>30)
-		      printf
-			("get_poi_type_list: %3d:Icon '%s' \tfor '%s'\n",
-			 index, icon_name, poi_type_list[index].name);
-		    counter++;
-		  }
-	      }
-	  }
-	  poi_type_list[index].scale_min = (gint) g_strtod (row[4], NULL);
-	  poi_type_list[index].scale_max = (gint) g_strtod (row[5], NULL);
-
 	}
+
+      // --------- 2: cale_min
+      poi_type_list[index].scale_min = (gint) g_strtod (row[2], NULL);
+
+      // --------- 3: scale_max 
+      poi_type_list[index].scale_max = (gint) g_strtod (row[3], NULL);
     }
+
 
 
   if (!dl_mysql_eof (res))
@@ -341,7 +321,7 @@ get_poi_type_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  if (mydebug>20)
+  if (mydebug > 20)
     fprintf (stderr,
 	     "get_poi_type_list: Loaded %d Icons for poi_types 0 - %d\n",
 	     counter, poi_type_list_count);
@@ -376,12 +356,12 @@ poi_rebuild_list (void)
 
   if (!poi_draw)
     {
-      if ( mydebug > 20 )
+      if (mydebug > 20)
 	printf ("poi_rebuild_list: POI_draw is off\n");
       return;
     }
 
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     {
       printf
 	("poi_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
@@ -413,41 +393,40 @@ poi_rebuild_list (void)
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-  {	// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
+  {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
 		"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
 		"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
 		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
-		"\n",
-		lat_min, lat_max, lon_min, lon_max
+		"\n", lat_min, lat_max, lon_min, lon_max
 		// , mapscale
-		);
+      );
     g_strdelimit (sql_where, ",", '.');	// For different LANG
-    if ( mydebug > 20 )
+    if (mydebug > 20)
       {
-	  printf ("poi_rebuild_list: POI mysql where: %s\n", sql_where );
-	  printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
+	printf ("poi_rebuild_list: POI mysql where: %s\n", sql_where);
+	printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
       }
   }
 
-  { // Limit the displayed poi_types
-      g_snprintf (sql_in, sizeof (sql_in),"\t AND poi_type_id IN ( ");
+  {				// Limit the displayed poi_types
+    g_snprintf (sql_in, sizeof (sql_in), "\t AND poi_type_id IN ( ");
     int i;
     for (i = 0; i < poi_type_list_max; i++)
       {
-	  if ( poi_type_list[i].scale_min <= mapscale   &&
-	       poi_type_list[i].scale_max >= mapscale 
-	       ) {
-	      gchar id_string[20];
-	      g_snprintf (id_string, sizeof (id_string)," %d,",
-			  poi_type_list[i].poi_type_id);
-	      g_strlcat (sql_in, id_string, sizeof (sql_in));
+	if (poi_type_list[i].scale_min <= mapscale &&
+	    poi_type_list[i].scale_max >= mapscale)
+	  {
+	    gchar id_string[20];
+	    g_snprintf (id_string, sizeof (id_string), " %d,",
+			poi_type_list[i].poi_type_id);
+	    g_strlcat (sql_in, id_string, sizeof (sql_in));
 	  }
       }
-    g_strlcat (sql_in, " 0)" , sizeof (sql_in));
-    if ( mydebug > 20 )
+    g_strlcat (sql_in, " 0)", sizeof (sql_in));
+    if (mydebug > 20)
       {
-	printf ("POI mysql in: %s\n", sql_in );
+	printf ("POI mysql in: %s\n", sql_in);
       }
   }
 
@@ -456,9 +435,9 @@ poi_rebuild_list (void)
 	      // "SELECT lat,lon,alt,type_id,proximity "
 	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM poi "
 	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s %s LIMIT 40000", sql_where,sql_in);
+	      "%s %s LIMIT 40000", sql_where, sql_in);
 
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
 
   if (dl_mysql_query (&mysql, sql_query))
@@ -486,7 +465,7 @@ poi_rebuild_list (void)
       gdouble lat, lon;
 
 
-      if ( mydebug > 20 )
+      if (mydebug > 20)
 	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
 		 row[0], row[1], row[2], row[3]);
 
@@ -502,7 +481,7 @@ poi_rebuild_list (void)
 	  if (poi_nr > poi_limit)
 	    {
 	      poi_limit = poi_nr + 10000;
-	      if ( mydebug > 20 )
+	      if (mydebug > 20)
 		g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
 
 	      poi_list = g_renew (poi_struct, poi_list, poi_limit);
@@ -523,17 +502,15 @@ poi_rebuild_list (void)
 	  g_strlcpy ((poi_list + poi_nr)->name, row[2],
 		     sizeof ((poi_list + poi_nr)->name));
 	  (poi_list + poi_nr)->poi_type_id = (gint) g_strtod (row[3], NULL);
-	  if ( mydebug > 20 )
+	  if (mydebug > 20)
 	    {
 	      g_snprintf ((poi_list + poi_nr)->name,
-			  sizeof ((poi_list + poi_nr)->name), 
-			  "%s %s"
+			  sizeof ((poi_list + poi_nr)->name), "%s %s"
 			  //"\n(%.4f ,%.4f)",
 			  //                  (poi_list + poi_nr)->poi_type_id,
-			  ,row[2]
-			  ,row[4]
+			  , row[2], row[4]
 			  // , lat, lon
-			  );
+		);
 	      /*
 	       * `type_id` int(11) NOT NULL default \'0\',
 	       * `alt` double default \'0\',
@@ -577,7 +554,7 @@ poi_rebuild_list (void)
   // print time for getting Data
   gettimeofday (&t, NULL);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_max,
 	    rges, (gdouble) ti);
 
@@ -600,7 +577,7 @@ poi_rebuild_list (void)
   dl_mysql_free_result (res);
   res = NULL;
 
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     {
       printf ("poi_rebuild_list: End \t\t\t\t\t\t");
       printf ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
@@ -634,13 +611,13 @@ poi_draw_list (void)
 
   if (!(poi_draw))
     {
-      if ( mydebug > 20 )
+      if (mydebug > 20)
 	printf ("poi_draw_list: POI_draw is off\n");
       return;
     }
 
 
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     printf
       ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
@@ -650,7 +627,7 @@ poi_draw_list (void)
 
   /* ------------------------------------------------------------------ */
   /*  draw poi_list points */
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     printf ("poi_draw_list: drawing %ld points\n", poi_max);
 
   for (i = 0; i < poi_max; i++)
@@ -686,18 +663,17 @@ poi_draw_list (void)
 
 	    if (icon != NULL && icon_index > 0)
 	      {
-		  if (poi_max < 2000)
-		      {
-			  int wx = gdk_pixbuf_get_width (icon);
-			  int wy = gdk_pixbuf_get_height (icon);
-			  
-			  gdk_draw_pixbuf (drawable,  kontext, icon,
-					   0, 0,
-					   posx - wx/2,
-					   posy - wy/2,
-					   wx, wy,
-					   GDK_RGB_DITHER_NONE, 0, 0);
-		      }
+		if (poi_max < 2000)
+		  {
+		    int wx = gdk_pixbuf_get_width (icon);
+		    int wy = gdk_pixbuf_get_height (icon);
+
+		    gdk_draw_pixbuf (drawable, kontext, icon,
+				     0, 0,
+				     posx - wx / 2,
+				     posy - wy / 2,
+				     wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
+		  }
 	      }
 	    else
 	      {
@@ -722,7 +698,7 @@ poi_draw_list (void)
 
 
     }
-  if ( mydebug > 20 )
+  if (mydebug > 20)
     printf
       ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }

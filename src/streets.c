@@ -121,12 +121,12 @@ void get_streets_type_list (void);
 /* **********************************************************************
  * Stopwatch
  */
-time_t g_print_time( time_t t0, gchar *msg ){
-    time_t ti;
+double g_print_time( double t0, gchar *msg ){
+    double ti;
     struct timeval t;
 
     gettimeofday (&t, NULL);
-    ti = (t.tv_sec + t.tv_usec / 1000000.0);
+    ti = ( t.tv_sec + t.tv_usec / 1000000.0 );
     if ( t0 ) {
 	g_print (msg, (gdouble) ti-t0);
     }
@@ -349,7 +349,7 @@ streets_rebuild_list (void)
   char sql_area[5000];
   char sql_in[5000];
   int r, rges;
-  time_t t0;
+  double t0;
 
   gdouble lat_ul, lon_ul;
   gdouble lat_ll, lon_ll;
@@ -412,7 +412,7 @@ streets_rebuild_list (void)
 	       streets_type_list[i].scale_max >= mapscale 
 	       ) {
 	      gchar id_string[20];
-	      g_snprintf (id_string, sizeof (id_string)," %d,",
+	      g_snprintf (id_string, sizeof (id_string),"%d,",
 			  streets_type_list[i].streets_type_id);
 	      g_strlcat (sql_in, id_string, sizeof (sql_in));
 	  }
@@ -447,16 +447,14 @@ streets_rebuild_list (void)
       }
   }
 
-
-
-
-  // Diplay ONLY those STREETS which are streets.scale_min <= level <=streets.scale_max for actual scale
+  // Combine the Query
   g_snprintf (sql_query, sizeof (sql_query),
 	      "SELECT lat1,lon1,lat2,lon2,name,streets_type_id,comment "
 	      "FROM streets "		"WHERE \n"
-	      "%s AND %s ",
-	      sql_in,
-	      sql_area
+	      "%s\n"
+	      "AND %s "
+	      ,sql_area
+	      ,sql_in
 	      );
 
   if (mydebug > 5)
@@ -474,7 +472,7 @@ streets_rebuild_list (void)
   // --------------------- JMO
   if (mydebug > 5)
     {
-	g_print_time(t0,"query after %.6f seconds\n");
+	g_print_time(t0,"query finished after %.4f seconds\n");
     }
 
 
@@ -569,13 +567,13 @@ streets_rebuild_list (void)
 
 	  if (!posxy_on_screen (streets_posx1, streets_posy1))
 	    {
-	      if (mydebug > 10)
+	      if (mydebug > 50)
 		printf ("pos1 of Street not on screen:(%g,%g)\n",
 			streets_posx1, streets_posy1);
 	    }
 	  if (!posxy_on_screen (streets_posx2, streets_posy2))
 	    {
-	      if (mydebug > 10)
+	      if (mydebug > 50)
 		printf ("pos2 of Street not on screen:(%g,%g)\n",
 			streets_posx2, streets_posy2);
 	    }
@@ -585,7 +583,7 @@ streets_rebuild_list (void)
 
   if (mydebug > 5)
     {				// print time for getting Data
-	g_print_time(t0,"rows read nach %.6f seconds\n");
+	g_print_time(t0,"rows read after %.4f seconds\n");
     }
 
   {				/* remember where the data belongs to */
@@ -608,8 +606,8 @@ streets_rebuild_list (void)
 
   if (mydebug > 5)
     {				// print time for getting Data
-	g_print_time(t0,"%ld(%d) rows read after %.2f seconds\n");
-	g_print("%ld(%d) rows",streets_list_count, rges);
+	g_print_time(t0,"rows read after %.4f seconds\n");
+	g_print("%ld(%d) rows\n",streets_list_count, rges);
     }
 
   if (mydebug > 50)
