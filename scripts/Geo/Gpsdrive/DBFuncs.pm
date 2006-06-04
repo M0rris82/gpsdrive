@@ -24,7 +24,7 @@ BEGIN {
     $VERSION = sprintf "%d.%03d", q$Revision$ =~ /(\d+)/g;
 
     @ISA         = qw(Exporter);
-    @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id
+    @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id &poi_type_id2name
 		  &streets_type_names &streets_type_list  &streets_type_name2id
 		  &db_disconnect 
 		  &add_poi &add_poi_multi
