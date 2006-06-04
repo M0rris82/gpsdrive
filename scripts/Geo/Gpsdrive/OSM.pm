@@ -178,41 +178,55 @@ sub street_name_2_id($) {
 }
 
 # -----------------------------------------------------------------------------
-sub download_osm_streets($) { # Insert Streets from osm File  
+my $step = 5;
+my $download_area = {
+    #world     => [-90,-180,  90-$step,180-$step],
+    #europ     => [-10,  10,  10,60],
+    #germany   => [  0,  10,  50,60],
+    muenchen  => [ 10,  44,  14,48],
+};
+
+sub download_osm_streets($;$) { # Insert Streets from osm File  
+    my $osm_dir = shift;
+    my $area    = shift;
+
     return 
 	if $main::no_mirror;
 
     print "Download OSM Data\n";
 
 
-    my $osm_dir = shift;
 
     my $osm_auth = " --http-user=$ENV{OSMUSER} --http-passwd=$ENV{OSMPASSWD} ";
     my $osm_base_url="http://www.openstreetmap.org/api/0.3/map?bbox=";
     #$osm_base_url="http://www.openstreetmap.org/api/0.3/map?bbox=11.0,48.0,12.0,49.0
 
     my ($lat_min,$lon_min,     $lat_max,$lon_max);
-    if ( $main::lat_min && $main::lat_max && $main::lon_min && $main::lon_max ){
+    if ( defined $area ) {
+	if ( defined ( $download_area->{$area} ) ) {
+	    ($lat_min,$lon_min,     $lat_max,$lon_max) = @{$download_area->{$area}};
+	} else {
+	    warn "Download Area '$area' not registered\n";
+	    warn "Existing Areas:\n\t".join("\n\t",keys %{$download_area})."\n";
+	    die "\n";	    
+	};
+	print "Download OSM Area $area ($lat_min,$lon_min,     $lat_max,$lon_max)\n";
+	
+    } elsif ( $main::lat_min && $main::lat_max && $main::lon_min && $main::lon_max ){
 	$lat_min=$main::lat_min;
 	$lat_max=$main::lat_max;
 	$lon_min=$main::lon_min;
 	$lon_max=$main::lon_max;
     } else {
-	($lat_min,$lon_min,     $lat_max,$lon_max) = (-90,-180, 85,180);
-	# Europa
-	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (-10,10, 10,60);
-	# Deutschland
-	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (0,10, 50,60);
-	# Muenchen
-	# ($lat_min,$lon_min,     $lat_max,$lon_max) = (10,44, 14,48);
+	die "Undefined OSM-Area for Download\n";
     }
-    my $step = 5;
+
     for ( my $lat = $lat_min; $lat< $lat_max; $lat += $step ) {
 	for ( my $lon = $lon_min; $lon < $lon_max; $lon += $step ) {
 	    my $lap  = $lat + $step;
 	    my $lop  = $lon + $step;
 	    print "Get $lat,$lon\r";
-	    my $abs_filename= sprintf("$osm_dir/Streets_osm_%03d,%04d,%03d,%04d.xml",
+	    my $abs_filename= sprintf("$osm_dir/Streets_osm_%03d,%04d,%03d,%04d.osm",
 				      $lon,$lat, $lop,$lap  );
 	    my $bbox = sprintf("%.1f,%.1f,%.1f,%.1f",$lat,$lon,$lap,$lop);
 
@@ -239,12 +253,16 @@ sub download_osm_streets($) { # Insert Streets from osm File
 		    `$get_cmd`;
 		}
 		$size = (-s $abs_filename)||0;
-		if ( $size == 538 ) {
+		my $count_error = `grep -e '<H1>ERROR</H1>' -e '<h1>Internal Server Error</h1>' $abs_filename | wc -l`;
+		if ( $count_error >0 ) {
 		    `cat $abs_filename`;
 		    $rest_tries --;
 		    print "	ERROR in downloading\n";
 		    print "   $rest_tries retries\n";
 		    print "	Got $lat,$lon	$size Bytes\n";
+		    my $err_filename = $abs_filename;
+		    $err_filename =~ s/\.osm$/.error/;
+		    rename($abs_filename,$err_filename);
 		} else {
 		    print "Got $lat,$lon	$size Bytes\n"
 			unless $size == 76;
@@ -391,35 +409,35 @@ my $class2type = {
     "barn"		=> "area.building.barn",
     "bridge"		=> "area.bridge",
     "campsite"		=> "accomodation.campground",
-    "car park"		=> "transport.car.parkinglot",
+    "car park"		=> "transportation.car.parkinglot",
     "caution"		=> "general.caution",
     "church"		=> "church",
-    "city"		=> "area.city",
+    "city"		=> "places.city.small",
     "country park"	=> "recreation.park",
     "farm"		=> "area.area.farm",
-    "hamlet"		=> "area.city.hamlet",
+    "hamlet"		=> "places.city.hamlet",
     "hill"		=> "area.area.hill",
     "historic-name"	=> "general.point-of-interest",
     "industrial area"	=> "area.area.industial-area",
-    "large town"	=> "area.city.large",
-    "lift"		=> "transport.public.station.lift",
+    "large town"	=> "places.city.large",
+    "lift"		=> "transportation.public.station.lift",
     "locality"		=> "general",
-    "parking"		=> "transport.car.parkinglot",
+    "parking"		=> "transportation.car.parkinglot",
     "point of interest"	=> "general.point-of-interest",
     "pub"		=> "recreation.pub",
     "railway crossing"	=> "area.railway-crossing",
-    "railway station"	=> "transport.public.station.railroad",
+    "railway station"	=> "transport-public.station.railroad",
     "restaurant"	=> "food.restaurant",
     "school"		=> "education.school",
-    "small town"	=> "area.city.small",
-    "suburb"		=> "area.city.small",
+    "small town"	=> "places.city.small",
+    "suburb"		=> "places.city.small",
     "tea shop"		=> "shopping.food.tea",
-    "town"		=> "area.city",
-    "trafficlight"	=> "transport.traffic.signs.trafficlight",
+    "town"		=> "places.city.small",
+    "trafficlight"	=> "transport-vehicle.traffic-light",
     "tunnel"		=> "area.tunnel",
     "viewpoint"		=> "general.viewpoint",
-    "village"		=> "area.city",
-    "Village"		=> "area.city",
+    "village"		=> "places.city.small",
+    "Village"		=> "places.city.small",
     "waypoint"		=> "general.waypoint",
 };
 
@@ -866,6 +884,7 @@ sub get_source_id($){
 
 
 # *****************************************************************************
+
 sub import_Data($){
     my $filename = shift;
 
@@ -876,14 +895,13 @@ sub import_Data($){
     -d $mirror_dir or mkpath $mirror_dir
 	or die "Cannot create Directory $mirror_dir:$!\n";
     
-    if ( -d $filename ) {
-	read_osm_dir($filename);
+    if ( $filename =~ m/^download:(.+)/ ) {
+	my $area = $1;
+	download_osm_streets($mirror_dir,$area);
+	read_osm_dir($mirror_dir);
     } elsif ( -s $filename ) {
 	read_osm_file( $filename);
-    } elsif (  $main::development_version ) {
-	download_osm_streets($mirror_dir);
-	read_osm_dir($mirror_dir);
-    } elsif ( $filename ) {
+    } elsif ( $filename !~ m/^1$/ ) {
 	warn "OSM::import_Data: Cannot find $filename\n";
     } else {
 	print "Download planet.osm\n";
@@ -919,7 +937,7 @@ sub import_Data($){
     enable_keys('streets');
 
 
-    print "Download and import of OSM Data FINISHED\n";
+    print "\nDownload and import of OSM Data FINISHED\n";
 }
 
 1;
