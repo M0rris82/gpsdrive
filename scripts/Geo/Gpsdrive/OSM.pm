@@ -901,8 +901,8 @@ sub import_Data($){
 	read_osm_dir($mirror_dir);
     } elsif ( -s $filename ) {
 	read_osm_file( $filename);
-    } elsif ( $filename !~ m/^1$/ ) {
-	warn "OSM::import_Data: Cannot find $filename\n";
+    } elsif ( $filename !~ m/^(1)?$/ ) {
+	die "OSM::import_Data: Cannot find File '$filename'\n";
     } else {
 	print "Download planet.osm\n";
 	my $url = "http://www.ostertag.name/osm/planet.osm.bz2";
