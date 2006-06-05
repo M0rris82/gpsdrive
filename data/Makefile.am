@@ -31,8 +31,8 @@ maps_DATA = \
            maps/map_White.png \
            maps/map_WhiteBall.png \
            maps/top_Africa.jpg \
-           maps/top_America.jpg  \
            maps/top_Australia.jpg \
+	   maps/top_Americas.jpg  \
            maps/top_Europe.jpg \
            maps/top_GPSWORLD.jpg \
            maps/top_Germany.jpg \
