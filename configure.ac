@@ -16,18 +16,18 @@ dnl 04/04/2006  DP      Added detection for libpqxx
 dnl 04/04/2006  DP      Added detection for libpng12
 dnl 24/04/2006  DP      Send TODO output to Std Error
 dnl 08/05/2005  DP	Avoid uname -p error on Debian
+dnl 06/06/2006  DP      Lower libpango required min version from 1.10.4 to 1.10.2
+dnl 06/06/2006  DP      Lower libglib required min version from 2.8.6 to 2.8.5
+dnl 06/06/2006  DP      Remove Requirement for libglib 2.0
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
-
 AC_CONFIG_HEADER(config.h)
 
 ALL_LINGUAS="de es fr it da nl tr de_AT et_EE hu sk sv no pt_BR gr ja"
-
-
 
 AC_CONFIG_FILES([DSL/Makefile])
 AC_CONFIG_FILES([Documentation/Makefile])
@@ -100,7 +100,9 @@ AC_CHECK_MEMBERS([struct stat.st_rdev])
 AC_CHECK_TYPES([ptrdiff_t])
 
 dnl AM_PATH_GTK_2_0(2.0.6,,AC_ERROR(need at least Gtk+ version 2.0.6))
-AM_PATH_GLIB_2_0(2.0.6,, AC_ERROR(need libglib2.0 at least version 2.0.6),gmodule-2.0)
+
+dnl Following line remvoed 06/06/2006
+dnl AM_PATH_GLIB_2_0(2.0.6,, AC_ERROR(need libglib2.0 at least version 2.0.6),gmodule-2.0)
 
 AC_C_VOLATILE
 
@@ -289,10 +291,11 @@ CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 dnl --------------------------
 dnl Check for package libglib2.0-0
 dnl 26/03/2006 DP  Added
+dnl 06/06/2006 DP  Reduced from version 2.8.6 yo 2.8.5
 dnl --------------------------
 dnl AM_PATH_GLIB_2_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl MODULES  gmodule, gobject or gthread
-AM_PATH_GLIB_2_0(2.8.6, , AC_ERROR(need libglib2.0 at least version 2.8.6-1))
+AM_PATH_GLIB_2_0(2.8.5, , AC_ERROR(need libglib2.0 at least version 2.8.5))
 
 dnl --------------------------
 echo -n checking for package libatk1.0-0...
@@ -353,7 +356,7 @@ dnl ---------------------------
 dnl ---------------------------
 echo -n checking for package libpango1 1.0...
 dnl ---------------------------
-if $PKG_CONFIG pango --atleast-version=1.10.4
+if $PKG_CONFIG pango --atleast-version=1.10.2
 then
     AC_MSG_RESULT([yes])
     dnl AC_CHECK_LIB(pango,  main, [], [    dnl TODO Need to find a suitable function name to check for
@@ -361,7 +364,7 @@ then
     dnl exit -1
     dnl ])
 else
-    AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.4])
+    AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.2])
 fi
 
 dnl ---------------------------
