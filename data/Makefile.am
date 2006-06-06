@@ -33,12 +33,14 @@ maps_DATA = \
            maps/top_Africa.jpg \
            maps/top_Australia.jpg \
 	   maps/top_Americas.jpg  \
-           maps/top_Europe.jpg \
+	   maps/top_BritishIsles.jpg \
+	   maps/top_Europe.jpg \
            maps/top_GPSWORLD.jpg \
            maps/top_Germany.jpg \
            maps/top_GreenBall.png \
            maps/top_LightYellow.png \
-           maps/top_NorthAmerica.jpg \
+	   maps/top_NewZealand.jpg \
+	   maps/top_NorthAmerica.jpg \
            maps/top_SouthAmerica.jpg \
            maps/top_White.png \
            maps/top_WhiteBall.png \

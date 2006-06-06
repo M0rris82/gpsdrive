@@ -1,6 +1,7 @@
 top_Africa.jpg         1.825000  26.579167 24167707
 top_Americas.jpg       4.250000 -91.500000 38529708
 top_Australia.jpg    -26.966667 134.125000 10990784
+top_BritishIsles.jpg  54.541667  -4.208333  3135892
 top_Europe.jpg        52.916667  12.416667 11823932
 top_Germany.jpg       51.508333  11.050000  3909032
 top_GPSWORLD.jpg       0.0        0.0      88067900
