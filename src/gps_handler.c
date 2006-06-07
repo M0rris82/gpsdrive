@@ -21,54 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-  $Log$
-  Revision 1.11  2006/02/16 09:52:44  tweety
-  rearrange acpi handling and displaying of battery and temperature display
-
-  Revision 1.10  2006/02/05 16:38:05  tweety
-  reading floats with scanf looks at the locale LANG=
-  so if you have a locale de_DE set reading way.txt results in clearing the
-  digits after the '.'
-  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-  Revision 1.9  2006/02/05 13:54:39  tweety
-  split map downloading to its own file download_map.c
-
-  Revision 1.8  2006/01/03 14:24:10  tweety
-  eliminate compiler Warnings
-  try to change all occurences of longi -->lon, lati-->lat, ...i
-  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-  rename drawgrid --> do_draw_grid
-  give the display frames usefull names frame_lat, ...
-  change handling of WP-types to lowercase
-  change order for directories reading icons
-  always read inconfile
-
-  Revision 1.7  1994/06/10 02:43:13  tweety
-  move gps_mea handling
-
-  Revision 1.6  1994/06/10 02:11:00  tweety
-  move nmea handling to it's own file Part 1
-
-  Revision 1.5  1994/06/07 11:25:45  tweety
-  set debug levels more detailed
-
-  Revision 1.4  2005/11/01 15:06:10  cjastram
-  Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
-
-  Revision 1.3  2005/10/31 09:48:50  tweety
-  correct includefile for BSD Systems
-
-  Revision 1.2  2005/10/10 13:17:52  tweety
-  DBUS Support for connecting to gpsd
-  you need to use ./configure --enable-dbus to enable it during compile
-  Author: "Belgabor" <belgabor@gmx.de>
-
-  Revision 1.1  2005/08/13 10:16:02  tweety
-  extract all/some gps_handling parts to File src/gps_handler.c
-
-*/
 
 #include "../config.h"
 
@@ -117,6 +69,10 @@ static DBusHandlerResult dbus_signal_handler (
 static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
 #endif
 
+extern gint mydebug;
+gint gps_handler_debug = 80;
+
+
 extern gint simmode, zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
@@ -125,7 +81,6 @@ extern gint showroute, routeitems;
 extern gint nightmode, isnight, disableisnight;
 
 extern gdouble current_lon, current_lat;
-extern gint debug, mydebug;
 
 extern gint posmode;
 extern gchar utctime[20], loctime[20];
@@ -669,8 +624,8 @@ dbus_process_fix(gint early)
 			direction = atan2(sin(lon2-lon1)*cos(lat2),
 				cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon2-lon1));
 	}
-	if ( mydebug > 80 )
-		g_print("DBUS fix: %6.0f %10.6f/%10.6f sp:%5.2f(%5.2f) crs:%5.1f(%5.2f)\n", dbus_current_fix.time, 
+	if ( mydebug + gps_handler_debug > 80 )
+		g_print("gps_handler: DBUS fix: %6.0f %10.6f/%10.6f sp:%5.2f(%5.2f) crs:%5.1f(%5.2f)\n", dbus_current_fix.time, 
 			dbus_current_fix.latitude, dbus_current_fix.longitude, dbus_current_fix.speed, groundspeed, 
 			dbus_current_fix.track, direction * 180 / M_PI);
 	/* Handle altitude */
@@ -730,8 +685,8 @@ static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message) {
 	dbus_message_iter_next (&iter);
 	fix.epc		= dbus_message_iter_get_double (&iter);
 
-	if ( mydebug > 80 ) {
-		g_print("DBUS raw: ti:%6.0f mode:%d ept:%f %10.6f/%10.6f eph:%f\n", fix.time, fix.mode, fix.ept, fix.latitude, fix.longitude, fix.eph);
+	if ( mydebug + gps_handler_debug > 80 ) {
+		g_print("gps_handler: DBUS raw: ti:%6.0f mode:%d ept:%f %10.6f/%10.6f eph:%f\n", fix.time, fix.mode, fix.ept, fix.latitude, fix.longitude, fix.eph);
 		g_print("          alt:%6.2f epv:%f crs:%5.1f edp:%f sp:%5.2f eps:%f cl:%f epc:%f\n", fix.altitude, fix.epv, fix.track, fix.epd, fix.speed, fix.eps, fix.climb, fix.epc);
 	}
 		
@@ -798,7 +753,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
     return TRUE;
 
 
-  if ((timeoutcount > 3) && (debug))
+  if ((timeoutcount > 3) && (mydebug + gps_handler_debug))
     g_print ("*** %d. timeout getting data from GPS-Receiver!\n",
 	     timeoutcount);
 
@@ -852,7 +807,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	{
 	  pthread_mutex_lock (&mutex);
 	  g_strlcpy (data, serialdata, sizeof (data));
-	  /*    fprintf (stderr, "#########:%s\n", data); */
+	  if (mydebug + gps_handler_debug >50 )
+	      fprintf (stderr, "gps_handler: newdata: #########:%s\n", data); 
 	  newdata = FALSE;
 	  pthread_mutex_unlock (&mutex);
 	  timeoutcount = 0;
@@ -922,8 +878,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	    {
 	      timeoutcount++;
 	      serialtimeoutcount = 0;
-	      if ( mydebug > 0 )
-		fprintf (stderr, "timeout: %d\n", timeoutcount);
+	      if ( mydebug + gps_handler_debug > 0 )
+		fprintf (stderr, "gps_handler: timeout: %d\n", timeoutcount);
 	    }
 	}
 
@@ -1008,8 +964,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  if (groundspeed < 3.6)
 	    groundspeed = 0;
 
-	  if ( mydebug > 80 )
-	    g_print ("Time: %f\n", secs);
+	  if ( mydebug + gps_handler_debug > 80 )
+	    g_print ("gps_handler: Time: %f\n", secs);
 	}
 
       /*  display status line */
@@ -1077,11 +1033,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       buffer[e] = 0;
       if ((bigp + e) < MAXBIG)
 	{
-	  if (mydebug>30)
-	    g_print ("gpsd: !!bigp:%d, e: %d!! ", bigp, e);
+	  if (mydebug + gps_handler_debug>30)
+	      g_print ("gps_handler: gpsd: !!bigp:%d, e: %d!! , strlen big:%d\n"
+		       , bigp, e, strlen (big));
 	  g_strlcat (big, buffer, MAXBIG);
-	  if ( mydebug > 80 )
-	    g_print (", strlen big:%d", strlen (big));
 	  bigp += e;
 	  bigpGSA = bigpRME = bigpGSV = bigpGGA = bigp;
 
@@ -1094,8 +1049,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'M') && (big[i + 5] == 'C'))
 		    {
 		      found = 0;
-		      if ( mydebug > 80 )
-			g_print ("gpsd: found #RMC#\n");
+		      if ( mydebug + gps_handler_debug > 80 )
+			g_print ("gps_handler: gpsd: found #RMC#\n");
 		      for (j = i; j <= bigp; j++)
 			if (big[j] == 13)
 			  {
@@ -1141,7 +1096,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'S') && (big[i + 5] == 'V'))
 		    {
 		      foundGSV = 0;
-		      if ( mydebug > 80 )
+		      if ( mydebug + gps_handler_debug > 80 )
 			g_print ("gpsd: found #GSV#, bigpGSV: %d\n", bigpGSV);
 		      for (j = i; j <= bigpGSV; j++)
 			if (big[j] == 13)
@@ -1201,8 +1156,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'G') && (big[i + 5] == 'A'))
 		    {
 		      foundGGA = 0;
-		      if ( mydebug > 80 )
-			g_print ("gpsd: found #GGA#\n");
+		      if ( mydebug + gps_handler_debug > 80 )
+			g_print ("gps_handler: gpsd: found #GGA#\n");
 		      timeoutcount = 0;
 
 		      for (j = i; j <= bigpGGA; j++)
@@ -1268,8 +1223,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'M') && (big[i + 5] == 'E'))
 		    {
 		      foundRME = 0;
-		      if ( mydebug > 80 )
-			g_print ("gpsd: found #RME#\n");
+		      if ( mydebug + gps_handler_debug > 80 )
+			g_print ("gps_handler: gpsd: found #RME#\n");
 		      for (j = i; j <= bigpRME; j++)
 			if (big[j] == 13)
 			  {
@@ -1320,8 +1275,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		      && (big[i + 4] == 'S') && (big[i + 5] == 'A'))
 		    {
 		      foundGSA = 0;
-		      if ( mydebug > 80 )
-			g_print ("gpsd: found #GSA#\n");
+		      if ( mydebug + gps_handler_debug > 80 )
+			g_print ("gps_handler: gpsd: found #GSA#\n");
 		      for (j = i; j <= bigpGSA; j++)
 			if (big[j] == 13)
 			  {
@@ -1362,10 +1317,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 
 
-	  if ( mydebug > 80 )
+	  if ( mydebug + gps_handler_debug > 80 )
 	    {
-	      g_print ("gpsd: size:%d lastp: %d \n", e, lastp);
-	      g_print ("gpsd: %s\n", buffer);
+	      g_print ("gps_handler: gpsd: size:%d lastp: %d \n", e, lastp);
+	      g_print ("gps_handler: gpsd: buffer: %s\n", buffer);
 	    }
 
 	}

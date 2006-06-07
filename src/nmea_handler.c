@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.7  2006/06/07 06:46:30  tweety
+change debugging for gpsd/nmea parsing
+
 Revision 1.6  2006/03/10 08:37:09  tweety
 - Replace Street/Track find algorithmus in Query Funktion
   against real Distance Algorithm (distance_line_point).
@@ -121,7 +124,8 @@ extern gint zoom;
 extern gint showroute, routeitems;
 extern gint nightmode, isnight, disableisnight;
 
-extern gint debug, mydebug;
+extern gint mydebug;
+gint nmea_handler_debug = 80;
 
 extern gint posmode;
 extern gchar utctime[20], loctime[20];
@@ -169,7 +173,7 @@ extern int disableserial, disableserialcl;
 static gchar gradsym[] = "\xc2\xb0";
 
 /* variables */
-extern gint ignorechecksum, mydebug;
+extern gint ignorechecksum;
 //, mapistopo;
 extern gdouble lat2RadiusArray[201];
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
@@ -213,10 +217,10 @@ checksum (gchar * text)
     checksum = checksum ^ t[i++];
   g_strlcpy (t2, (t + j + 1), sizeof (t2));
   sscanf (t2, "%X", &orig);
-  if (mydebug > 50)
+  if (mydebug + nmea_handler_debug > 50)
     {
-      g_print ("gpsd: %s\n", t);
-      g_print ("gpsd: origchecksum: %X, my:%X\n", orig, checksum);
+      g_print ("nmea_handler: gpsd: %s\n", t);
+      g_print ("nmea_handler: gpsd: origchecksum: %X, my:%X\n", orig, checksum);
     }
 
   if (orig == checksum)
@@ -242,8 +246,8 @@ opennmea (const char *name)
 {
 	struct termios tios;
 
-	if (mydebug >50) 
-	    printf ("opennmea()\n");
+	if (mydebug + nmea_handler_debug >50) 
+	    printf ("nmea_handler: opennmea()\n");
 
 	FILE *const out = fopen (name, "w");
 	if (out == NULL)
@@ -350,19 +354,21 @@ convertGSA (char *f)
 	  j++;
 	}
     }
-  if ( mydebug > 80 )
+  if ( mydebug + nmea_handler_debug > 80 )
     {
-      g_print ("gpsd: GSA Fields: ");
+      g_print ("nmea_handler: gpsd: GSA Fields: ");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	  {
+	      g_print ("%d:%s$", i, field[i]);
+	  }
       g_print ("\n");
     }
   if (havepos)
     {
 
       gsaprecision = g_strtod (field[15], 0);
-      if ( mydebug > 80 )
-	g_print ("gpsd: GSA PDOP: %.1f\n", gsaprecision);
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: GSA PDOP: %.1f\n", gsaprecision);
     }
 }
 
@@ -404,24 +410,24 @@ convertRMC (char *f)
     }
   if (!haveRMCsentence)
     {
-      if ( mydebug > 80 )
-	g_print (_("gpsd: got RMC data, using it\n"));
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: got RMC data, using it\n");
       haveRMCsentence = TRUE;
     }
 
-  if ( mydebug > 80 )
+  if ( mydebug + nmea_handler_debug > 80 )
     {
-      g_print ("gpsd: RMC Fields: \n");
+      g_print ("nmea_handler: gpsd: RMC Fields: \n");
       for (i = 0; i < j; i++)
-	g_print ("gpsd: RMC Field %d:%s\n", (int) i, field[i]);
+	g_print ("nmea_handler: gpsd: RMC Field %d:%s\n", (int) i, field[i]);
       g_print ("\n");
     }
   g_snprintf (b, sizeof (b), "%c%c:%c%c.%c%c ", field[1][0],
 	      field[1][1], field[1][2], field[1][3], field[1][4],
 	      field[1][5]);
   g_strlcpy (utctime, b, sizeof (utctime));
-  if ( mydebug > 80 )
-    g_print ("gpsd: utctime: %s\n", utctime);
+  if ( mydebug + nmea_handler_debug > 80 )
+    g_print ("nmea_handler: gpsd: utctime: %s\n", utctime);
   if ((field[2][0] != 'A') && !forcehavepos)
     {
       havepos = FALSE;
@@ -442,9 +448,9 @@ convertRMC (char *f)
   /* if field[3] is shorter than 9 characters, add zeroes in the beginning */
   if (strlen (field[3]) < 8)
     {
-      if ( mydebug > 0 )
+      if ( mydebug + nmea_handler_debug > 0 )
 	{
-	  g_print ("Latitude field %s is shorter than 9 characters. (%d)\n",
+	  g_print ("nmea_handler: Latitude field %s is shorter than 9 characters. (%d)\n",
 		   field[3], strlen (field[3]));
 	}
       for (i = 0; i < 9; i++)
@@ -479,6 +485,10 @@ convertRMC (char *f)
 	current_lat = cl;
       breitri = field[4][0];
       g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lat, gradsym, breitri);
+      if ( mydebug + nmea_handler_debug > 0 )
+	  {
+	      g_print ("nmea_handler: lat: %8.5f\n", current_lat);
+	  }
     }
 
   /*  Longitude East / West */
@@ -486,9 +496,9 @@ convertRMC (char *f)
   /* if field[5] is shorter than 10 characters, add zeroes in the beginning */
   if (strlen (field[5]) < 9)
     {
-      if ( mydebug > 0 )
+      if ( mydebug + nmea_handler_debug > 0 )
 	{
-	  g_print ("Longitude field %s is shorter than 10 characters. (%d)\n",
+	  g_print ("nmea_handler: Longitude field %s is shorter than 10 characters. (%d)\n",
 		   field[5], strlen (field[5]));
 	}
       for (i = 0; i < 10; i++)
@@ -521,9 +531,12 @@ convertRMC (char *f)
 	cl = cl * -1;
       if ((cl >= -180.0) && (cl <= 180.0))
 	current_lon = cl;
-
       langri = field[6][0];
       g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lon, gradsym, langri);
+      if ( mydebug + nmea_handler_debug > 0 )
+	  {
+	      g_print ("nmea_handler: lon: %8.5f\n", current_lon);
+	  }
     }
 
   /*  speed */
@@ -586,17 +599,19 @@ convertGSV (char *f)
 	  j++;
 	}
     }
-  if ( mydebug > 80 )
+  if ( mydebug + nmea_handler_debug > 80 )
     {
-      g_print ("gpsd: GSV Fields:\n");
-      g_print ("gpsd: ");
+      g_print ("nmea_handler: gpsd: GSV Fields:\n");
+      g_print ("nmea_handler: gpsd: ");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	  {
+	      g_print ("%d:%s$", i, field[i]);
+	  }
       g_print ("\n");
     }
   if (j > 40)
     {
-      g_print ("gpsd: GPGSV: wrong number of fields (%d)\n", j);
+      g_print ("nmea_handler: gpsd: GPGSV: wrong number of fields (%d)\n", j);
       return FALSE;
     }
 
@@ -611,8 +626,8 @@ convertGSV (char *f)
   b[0] = field[1][0];
   b[1] = 0;
   i2 = atof (b);
-  if (mydebug && ( i2 != satbit))
-      g_print ("gpsd: convertGSV(): bits should be: %d is: %d\n", i2, satbit);
+  if (mydebug + nmea_handler_debug && ( i2 != satbit))
+      g_print ("nmea_handler: gpsd: convertGSV(): bits should be: %d is: %d\n", i2, satbit);
   g_snprintf (b, sizeof (b), "Satellites: %d\n", anz);
   if (anz != oldsatsanz)
     newsatslevel = TRUE;
@@ -630,9 +645,9 @@ convertGSV (char *f)
       db = atoi (field[i + 3]);
       el = atoi (field[i + 1]);
       az = atoi (field[i + 2]);
-      if ( mydebug > 80 )
+      if ( mydebug + nmea_handler_debug > 80 )
 	fprintf (stderr,
-		 "gpsd: satnumber: %2d elev: %3d azimut: %3d signal %3ddb\n",
+		 "nmea_handler: gpsd: satnumber: %2d elev: %3d azimut: %3d signal %3ddb\n",
 		 n, el, az, db);
 
       satlist[n][0] = n;
@@ -685,11 +700,13 @@ convertGGA (char *f)
 	  j++;
 	}
     }
-  if ( mydebug > 80 )
+  if ( mydebug + nmea_handler_debug > 80 )
     {
-      g_print ("gpsd: GGA Fields: ");
+      g_print ("nmea_handler: gpsd: GGA Fields: ");
       for (i = 0; i < j; i++)
-	g_print ("%d:%s$", i, field[i]);
+	  {
+	      g_print ("%d:%s$", i, field[i]);
+	  }
       g_print ("\n");
     }
 
@@ -704,8 +721,8 @@ convertGGA (char *f)
     {
       gint mysecs;
 
-      if ( mydebug > 80 )
-	g_print ("gpsd: got no RMC data, using GGA data\n");
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: got no RMC data, using GGA data\n");
       g_snprintf (b, sizeof (b), "%c%c", field[1][4], field[1][5]);
       sscanf (b, "%d", &mysecs);
       if (mysecs != NMEAoldsecs)
@@ -742,10 +759,10 @@ convertGGA (char *f)
       /* if field[2] is shorter than 9 characters, add zeroes in beginning */
       if (strlen (field[2]) < 9)
 	{
-	  if ( mydebug > 0 )
+	  if ( mydebug + nmea_handler_debug > 0 )
 	    {
 	      g_print
-		("Latitude field %s is shorter than 9 characters. (%d)\n",
+		("nmea_handler: Latitude field %s is shorter than 9 characters. (%d)\n",
 		 field[2], strlen (field[2]));
 	    }
 	  for (i = 0; i < 9; i++)
@@ -770,8 +787,8 @@ convertGGA (char *f)
       b[4] = field[2][6];
       b[5] = field[2][7];
       b[6] = 0;
-      if ( mydebug > 80 )
-	fprintf (stderr, "gpsd: posmode: %d\n", posmode);
+      if ( mydebug + nmea_handler_debug > 80 )
+	fprintf (stderr, "nmea_handler: gpsd: posmode: %d\n", posmode);
       if (!posmode)
 	{
 	  gdouble cl;
@@ -783,16 +800,20 @@ convertGGA (char *f)
 
 	  breitri = field[3][0];
 	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lat, gradsym, breitri,cl); */
+	  if ( mydebug + nmea_handler_debug > 0 )
+	      {
+		  g_print ("nmea_handler: lat: %8.5f\n", current_lat);
+	      }
 	}
 
       /*  Longitude East / West */
       /* if field[4] is shorter than 10 chars, add zeroes in the beginning */
       if (strlen (field[4]) < 10)
 	{
-	  if ( mydebug > 0 )
+	  if ( mydebug + nmea_handler_debug > 0 )
 	    {
 	      g_print
-		("Longitude field %s is shorter than 10 characters. (%d)\n",
+		("nmea_handler: Longitude field %s is shorter than 10 characters. (%d)\n",
 		 field[4], strlen (field[4]));
 	    }
 	  for (i = 0; i < 10; i++)
@@ -829,10 +850,14 @@ convertGGA (char *f)
 
 	  langri = field[5][0];
 	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lon, gradsym, langri,cl); */
+	  if ( mydebug + nmea_handler_debug > 0 )
+	      {
+		  g_print ("nmea_handler: lon: %8.5f\n", current_lon);
+	      }
 	}
 
-      if ( mydebug > 80 )
-	g_print ("gpsd: GGA pos: %f %f\n", current_lat, current_lon);
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: GGA pos: %f %f\n", current_lat, current_lon);
     }
 
   satfix = g_strtod (field[6], 0);
@@ -841,8 +866,8 @@ convertGGA (char *f)
     {
       havealtitude = TRUE;
       altitude = g_strtod (field[9], 0);
-      if ( mydebug > 80 )
-	g_print ("gpsd: Altitude: %.1f, Fix: %d\n", altitude, satfix);
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: Altitude: %.1f, Fix: %d\n", altitude, satfix);
     }
   else
     {
@@ -889,9 +914,9 @@ convertRME (char *f)
 	  j++;
 	}
     }
-  if ( mydebug > 80 )
+  if ( mydebug + nmea_handler_debug > 80 )
     {
-      g_print ("gpsd: RME Fields: ");
+      g_print ("nmea_handler: gpsd: RME Fields: ");
       for (i = 0; i < j; i++)
 	g_print ("%d:%s$", i, field[i]);
       g_print ("\n");
@@ -899,7 +924,7 @@ convertRME (char *f)
   if (havepos)
     {
       precision = g_strtod (field[1], 0);
-      if ( mydebug > 80 )
-	g_print ("gpsd: RME precision: %.1f\n", precision);
+      if ( mydebug + nmea_handler_debug > 80 )
+	g_print ("nmea_handler: gpsd: RME precision: %.1f\n", precision);
     }
 }

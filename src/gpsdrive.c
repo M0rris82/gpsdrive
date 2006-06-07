@@ -610,7 +610,8 @@ display_status (char *message)
 {
     gchar tok[200];
     
-    if ( mydebug >50 ) fprintf(stderr , "display_status(%s)\n",message);
+    if ( mydebug >20 ) 
+	fprintf(stderr , "display_status(%s)\n",message);
     
     if (downloadactive == TRUE)
 	return;
