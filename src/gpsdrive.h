@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.15  2006/06/08 05:28:00  hamish
+increase MAXSATS as WAAS/EGNOS sats use higher PRN numbers
+
 Revision 1.14  2006/05/05 22:18:08  tweety
 move icons stred in memory to one array
 fix size of icons drawn at poi.c
@@ -321,8 +324,13 @@ $PSRF108,0*32            WAAS/EGNOS off
 #define EGNOSOFF "$PSRF108,0*32\r\n"
 
 
-/* highest satellite number */
-#define MAXSATS 80
+/* highest satellite number
+ * WAAS/EGNOS sats are higher than the others.
+ * Current highest known is "Anik" PRN=138
+ * GPGSV (should) reports PRN number, so MAXSATS refers to PRN as well.
+ * note SatID = PRN-87.
+ */
+#define MAXSATS 160
 
 
 /* Maximum number of waypoint types and also userdefined icons  */
