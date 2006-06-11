@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.41  2006/06/11 15:57:16  tweety
+# fix directory handling for map checking
+#
 # Revision 1.40  2006/05/27 21:56:47  tweety
 # be more verbose about -w=gpsd in the --help
 #
@@ -1768,7 +1771,7 @@ sub check_koord_file($) {
 	while ( my $line = <KOORD> ) {
 	    my ($filename ,$lati, $long, $mapscale);
 	    ($filename ,$lati, $long, $mapscale) = split( /\s+/ , $line );
-	    my $full_filename = "$CONFIG_DIR/$filename";
+	    my $full_filename = "$CONFIG_DIR/maps/$filename";
 
 #	debug("Checking ($filename ,$lati, $long, $mapscale)");
 
