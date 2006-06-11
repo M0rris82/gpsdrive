@@ -2185,58 +2185,106 @@ draw_waypoints ()
 	}
 }
 
-/* *****************************************************************************
+/*
+ * Draw the scale bar ( |-------------| ) into the map. Also add a textual
+ * description of the currently used scale.
  */
 void
 draw_zoom_scale (void)
 {
-	gint pixels;
-	gint m, l;
+	gdouble factor[] = { 1.0, 2.5, 5.0, };
+	gint exponent = 0;
+	gdouble remains = 0.0;
+	gint used_factor = 0;
+	gint i;
+	gint min_bar_length = SCREEN_X / 8; /* 1/8 of the display width */
+	const gint dist_x = 20; /* distance to the right */
+	const gint dist_y = 20; /* distance to bottom */
+	const gint frame_width = 5; /* grey pixles around the scale bar */
+	gint bar_length;
 	gchar txt[100];
+	gchar *format;
+	gchar *symbol;
+	gdouble approx_diaplayed_value;
+	gdouble conversion;
+	gint l;
 
-	if (mydebug >50) printf ("draw_zoom_scale()\n");
-
-	pixels = 141 / milesconv;
-	m = mapscale / (20 * zoom);
-	if (m < 1000)
-	{
-		if (!nauticflag)
-			g_snprintf (txt, sizeof (txt), "%d%s", m,
-				    (milesflag) ? "yrds" : "m");
-		else
-			g_snprintf (txt, sizeof (txt), "%.3f%s", m / 1000.0,
-				    (milesflag) ? "mi" : ((metricflag) ? "km"
-							  : "nmi"));
-
-		if (!metricflag)
-			pixels = pixels * milesconv * 0.9144;
-	}
-	else
-		g_snprintf (txt, sizeof (txt), "%.1f%s", m / 1000.0,
-			    (milesflag) ? "mi" : ((metricflag) ? "km" :
-						  "nmi"));
-	/*       l =
-	 *  (SCREEN_X - 20) - pixels + (pixels -
-	 *                              gdk_text_width (smalltextfont, txt,
-	 *                                              strlen (txt))) / 2;
+	/*
+	 * We want a bar with at least (min_bar_length) pixles in
+	 * length.  Calculate the displayed value of this bar is whatever
+	 * metric is requested. 
+	 *
+	 * The bar length' value l (in m), divided by "conversion", will
+	 * result in what to display to the user, in terms of "symbol".
 	 */
-	l = (SCREEN_X - 40) - pixels + (pixels - strlen (txt) * 15);
+	approx_diaplayed_value /* m */ = min_bar_length * mapscale
+					 / PIXELFACT / zoom;
 
-	/*       if ( mydebug > 10 ) */
-	/*  g_print("%d\n", m); */
+	if (nauticflag) {
+		conversion /* m/nmi */ = 1000.0 /* m/km */ / KM2NAUTIC /* nmi/km */;
+		symbol = "nmi";
+		format = "%.2lf %s";
+	} else if (metricflag) {
+		conversion /* m/m */ = 1.0 /* m/m */;
+		symbol = "m";
+		format = "%.0lf %s";
+		if (approx_diaplayed_value / conversion > 1000) {
+			conversion /* m/km */ = 1000.0;
+			symbol = "km";
+			format = "%.0lf %s";
+		}
+	} else if (milesflag) {
+		conversion /* m/yd */ = 1000.0 /* m/km */
+					/ 1760.0 /* yd/mi */
+					/ KM2MILES /* mi/km */;
+		symbol = "yd";
+		format = "%.0lf %s";
+		if (approx_diaplayed_value / conversion > 1760.0) {
+			conversion /* m/mi */ = 1000.0 /* m/km */
+						/ KM2MILES /* mi/km */;
+			symbol = "mi";
+			format = "%.0lf %s";
+		}
+	} else
+		return;
 
+	/*
+	 * Now find a well-formed value that is about the expected size
+	 * of the scale bar, or a bit longer.
+	 */
+	for (i = 0; i < ARRAY_SIZE (factor); i++) {
+		gdouble rest;
+		gdouble log_value;
+
+		log_value = log10 (min_bar_length * mapscale / PIXELFACT
+				   / conversion / zoom / factor[i]);
+
+		if ((rest = log_value - floor (log_value)) >= remains) {
+			remains = rest;
+			used_factor = i;
+			exponent = (gint) floor (log_value) + 1;
+		}
+	}
+	bar_length = factor[used_factor] * pow (10.0, exponent)
+		     * conversion / (mapscale / PIXELFACT) * zoom;
+
+	g_snprintf (txt, sizeof (txt), format, factor[used_factor]
+					       * pow (10.0, exponent),
+					       symbol);
+
+	l = (SCREEN_X - 40) - bar_length + (bar_length - strlen (txt) * 15);
+
+	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext, GDK_OR);
 	gdk_gc_set_foreground (kontext, &textback);
 	gdk_draw_rectangle (drawable, kontext, 1,
-			    (SCREEN_X - 20) - pixels - 5, SCREEN_Y - 35,
-			    pixels + 10, 30);
+			    SCREEN_X - dist_x - bar_length - frame_width,
+			    SCREEN_Y - dist_y - 2 * frame_width,
+			    bar_length + 2 * frame_width, 2 * frame_width);
 	gdk_gc_set_function (kontext, GDK_COPY);
-
 	gdk_gc_set_foreground (kontext, &black);
 
-	/*    gdk_draw_text (drawable, smalltextfont, kontext, l, SCREEN_Y - 20, txt,
-	 *               strlen (txt));
-	 */
+	/* Print the meaning of the scale bar ("10 km") */
 	{
 		/* prints in pango */
 		PangoFontDescription *pfd;
@@ -2252,7 +2300,7 @@ draw_zoom_scale (void)
 		pango_layout_set_font_description (wplabellayout, pfd);
 
 		gdk_draw_layout_with_colors (drawable, kontext,
-					     l, SCREEN_Y - 33,
+					     l, SCREEN_Y - dist_y + frame_width,
 					     wplabellayout, &black, NULL);
 		if (wplabellayout != NULL)
 			g_object_unref (G_OBJECT (wplabellayout));
@@ -2261,16 +2309,20 @@ draw_zoom_scale (void)
 
 	}
 
+	/* Print the actual scale bar */
 	gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	/* horizonthal */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - 20) - pixels, SCREEN_Y - 20 + 5,
-		       (SCREEN_X - 20), SCREEN_Y - 20 + 5);
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + frame_width,
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + frame_width);
+	/* left */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - 20) - pixels, SCREEN_Y - 20,
-		       (SCREEN_X - 20) - pixels, SCREEN_Y - 20 + 10);
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y,
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + 10);
+	/* right */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - 20), SCREEN_Y - 20,
-		       (SCREEN_X - 20), SCREEN_Y - 20 + 10);
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y,
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10);
 
 #ifdef USETELEATLAS
 	/* display the streetname */
@@ -3574,7 +3626,7 @@ setup_cb (GtkWidget * widget, guint datum)
 
 
 /* *****************************************************************************
- * switching between kilometers and miles 
+ * switching between kilometers and metric/nautic miles 
  */
 gint
 miles_cb (GtkWidget * widget, guint datum)

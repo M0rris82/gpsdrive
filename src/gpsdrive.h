@@ -22,6 +22,9 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 $Log$
+Revision 1.16  2006/06/11 09:47:30  tweety
+new variable scalebar
+
 Revision 1.15  2006/06/08 05:28:00  hamish
 increase MAXSATS as WAAS/EGNOS sats use higher PRN numbers
 
@@ -219,6 +222,9 @@ translations
 /*** Mod by Arms (move) */
 #define YMINUS 67
 
+/*** Number of elements in an array */
+#define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
+
 /*
  * Mod by Rick Richardson:
  *
@@ -282,9 +288,9 @@ translations
 
 #define MAPSCALE 20000
 /* Mapscale / pixelfact is meter / pixel */
-#define PIXELFACT 2817.947378
-#define KM2MILES 0.62137119
-#define KM2NAUTIC  0.5399568
+#define PIXELFACT  2817.947378
+#define KM2MILES   0.62137119 /* international_mile / km */
+#define KM2NAUTIC  0.5399568 /* nautic_mile / km */
 
 #define MAXMESG 8192
 
