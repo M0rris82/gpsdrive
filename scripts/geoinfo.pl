@@ -86,6 +86,8 @@ our $do_collect_init_data = 0;
 our $street;
 our $ort;
 our $plz;
+our $thread;
+our $type;
 our $sql;
 our $file;
 my $do_generate_poi_type_html_page = 0;
@@ -144,9 +146,10 @@ GetOptions (
 	     'MAN'                 => \$man, 
 	     'man'                 => \$man, 
 	     'street=s'		   => \$street, #need for getstreet
-	     'ort=s'		   => \$ort,
-	     'plz=s'		   => \$plz,
+	     'city=s'		   => \$ort,
+	     'zip=s'		   => \$plz,
 	     'sql'		   => \$sql,
+	     'thread'		   => \$thread,
 	     'file'		   => \$file,
 	     'get-traffic'	   => \$do_traffic,
 	     'show-traffic'	   => \$show_traffic,
@@ -223,7 +226,7 @@ Geo::Gpsdrive::WDB::import_Data($do_wdb)
     if ( $do_wdb );
 
 Geo::Gpsdrive::getstreet::streets()
-	if $street;
+	if $street && $ort|| $file;
 
 Geo::Gpsdrive::gettraffic::gettraffic()
 	if $do_traffic;
