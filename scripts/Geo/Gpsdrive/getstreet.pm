@@ -91,18 +91,15 @@ sub streets(){
 	print "Vereinigte Staaten : 12\n";
 	print "\n\n";
     }
-    if($version){ 
-	print "$VER\n";
-    }
 if($main::street && $main::ort){
 	$use_street = $main::street;
 	$use_city = $main::ort;
+	$use_zip = $main::plz;
 	if($main::thread){
 		print "using threads\n";
 		my $thread = threads->new( \&getstreet );
 		$thread->join;
 	}else{
-		print "no threads\n";
 		&getstreet;
 	}
 }
@@ -126,15 +123,15 @@ if($main::street && $main::ort){
 			$x = 1;
 				while($y<$sum_str){
 				@lines = split(/;/,$street[$x]);
-	#			print "$lines[$a]\n";
-				if( $street[$x] !~ /^#/){
+		##		print "$lines[$a]";##
+	#			if( $street[$x] !~ /^#/){
 					$rows[$y] = $lines[$a];
-				}
+	#			}
 				$x++;
 				$y++;
 				}
 			$a++;
-	#		print "Hash $_ Erstellt\n";  #can remove only for showing which hashs are createt
+		#	print "Hash $_ Erstellt\n";  #can remove, only for showing which hashs are createt###
 			$hash{$_} = [@rows];	
 			
 		}
@@ -177,6 +174,7 @@ if($main::street && $main::ort){
 	    }
 	    
 	    if($main::thread){
+#	    print "using threads\n";
 	    push(@Threads,threads->new(\&getstreet));
 	  $time++;
 	  if($time>=9){
@@ -248,12 +246,13 @@ sub getstreet {
 		if($name ne ""){
 		    $str=$name;
 		}
-		my $ausgabe= "$str\t$cord[0]\t$cord[1]\t$type\n";
+		my $ausgabe= "$str\t$cord[0]\t$cord[1]\t$main::type\n";
 		my $datei = "$ENV{'HOME'}/.gpsdrive/way.txt";
 		if($main::sql){
 		$comment = $split[3];
 		print "comment: $comment\n";
-		    my $dbh = DBI->connect( "dbi:mysql:$main::GPSDRIVE_DB_NAME", $main::db_user, $main::db_password ) || die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
+		    my $dbh = DBI->connect( "dbi:mysql:$main::GPSDRIVE_DB_NAME", $main::db_user, $main::db_password )
+			|| die "Kann keine Verbindung zum MySQL-Server aufbauen: $DBI::errstr\n";
 		    my $query ="insert into waypoints(name,lat,lon,type,comment) values('$str','$cord[0]','$cord[1]','$type','$comment')";
 		    $dbh->prepare($query)->execute;
 		}else{
