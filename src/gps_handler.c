@@ -466,12 +466,12 @@ startgpsd (guint datum)
       g_snprintf (s2, sizeof (s2), "%d", t[serialspeed]);
       if (usedgps)
 	g_snprintf (s, sizeof (s),
-		    "gpsd -p %s -c -d %s -s %s -r %s",
-		    serialdev, dgpsserver, s2, dgpsport);
+		    "gpsd -p %s -c -d %s  -r %s",
+		    serialdev, dgpsserver, dgpsport);
       else
-	g_snprintf (s, sizeof (s), "gpsd -p %s -s %s", serialdev, s2);
+	g_snprintf (s, sizeof (s), "gpsd -p %s ", serialdev);
       if (earthmate)
-	g_strlcat (s, " -T e -s 9600", sizeof (s));
+	g_strlcat (s, " -T e ", sizeof (s));
       system (s);
       gtk_button_set_label (GTK_BUTTON (startgpsbt), _("Stop GPSD"));
 
