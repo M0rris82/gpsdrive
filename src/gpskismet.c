@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.10  2006/06/16 20:16:10  tweety
+correct speech strings
+
 Revision 1.9  2006/05/05 22:18:08  tweety
 move icons stred in memory to one array
 fix size of icons drawn at poi.c
@@ -417,7 +420,7 @@ readkismet (void)
 		    g_snprintf (buf, sizeof (buf),
 				speech_found_access_point[voicelang],
 				(wep) ? speech_access_closed[voicelang] :
-				speech_access_open[voicelang], name);
+				speech_access_open[voicelang], name, channel);
 		    speech_out_speek (buf);
 		    /* if (debug) */
 		    /*                  printf (_("rows inserted: %d\n"), r); */

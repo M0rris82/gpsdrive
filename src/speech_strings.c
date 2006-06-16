@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 /*
 $Log$
+Revision 1.4  2006/06/16 20:16:10  tweety
+correct speech strings
+
 Revision 1.3  2005/10/10 22:00:41  robstewart
 Updated to attempt fix on bug reported by Andreas.
 
@@ -150,7 +153,7 @@ gchar* speech_gps_good[] =
 gchar* speech_kismet_found[] =
 {
   "Found kismet. Happy wardriving.",
-  "Kismet gefunden. Viel Spass beim wordreifing.",
+  "Kismet gefunden. Viel Spass beim woardreifing.",
   "Found kismet. Happy wardriving."
 };
 
@@ -187,14 +190,14 @@ gchar* speech_evening[] =
 gchar* speech_time_mins[] =
 {
   "It is one %d.",
-  "Es ist ein Uhr %d.",
+  "Es ist ein Uhr %d",
   "Es la una y %d minutos."
 };
 
 gchar* speech_time_hrs_mins[] =
 {
   "It is %d %d.",
-  "Es ist %d Uhr %d.",
+  "Es ist %d Uhr %d",
   "Son las %d horas y %d minutos."
 };
 
@@ -279,7 +282,7 @@ gchar* speech_speed_mph[] =
 gchar* speech_speed_kph[] =
 {
   "The current speed is %d kilometers per hour.",
-  "Die momentane Geschwindigkeit ist %d kmh.",
+  "Die momentane Geschwindigkeit ist %d K M H",
   "La velocidad actual es %d kilometros por hora."
 };
 
@@ -340,7 +343,7 @@ gchar* speech_remaining_battery[] =
 gchar* speech_found_access_point[] =
 {
   "Found new %s access point: %s",
-  "Es wurde ein neuer %s exses point gefunden: %s",
+  "Es wurde ein neuer %s ei pi gefunden. name ,.,.,  %s ,.,., tschännel %d",
   "Found new %s access point: %s"
 };
 
@@ -349,7 +352,7 @@ gchar* speech_found_access_point[] =
 gchar* speech_access_closed[] =
 {
   "closed",
-  "verschlÃƒÅ’sselter",
+  "verschlüsselter",
   "closed"
 };
 
