@@ -4860,6 +4860,25 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	}
 
+        {                       // Lat
+                GtkWidget *add_wp_lat_label;
+                GtkWidget *add_wp_lat_hbox;
+                add_wp_lat_text = gtk_entry_new_with_max_length (20);
+                coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
+                gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
+                add_wp_lat_label = gtk_label_new (_("Latitude"));
+                gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
+                                    GTK_SIGNAL_FUNC (addwaypointchange_cb),
+                                    (gpointer) 2);
+                add_wp_lat_hbox = gtk_hbox_new (TRUE, 2);
+                gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
+                                    add_wp_lat_label, TRUE, TRUE, 2);
+                gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
+                                    add_wp_lat_text, TRUE, TRUE, 2);
+                gtk_box_pack_start (GTK_BOX (vbox), add_wp_lat_hbox, TRUE,
+                                    TRUE, 2);
+        }
+
 	{			// Lon
 		GtkWidget *add_wp_lon_label;
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
@@ -4876,26 +4895,6 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 				    TRUE, 2);
 		gtk_box_pack_start (GTK_BOX (vbox), hbox4, TRUE, TRUE, 2);
 	}
-
-	{			// Lat
-		GtkWidget *add_wp_lat_label;
-		GtkWidget *add_wp_lat_hbox;
-		add_wp_lat_text = gtk_entry_new_with_max_length (20);
-		coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
-		gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
-		add_wp_lat_label = gtk_label_new (_("Latitude"));
-		gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
-				    GTK_SIGNAL_FUNC (addwaypointchange_cb),
-				    (gpointer) 2);
-		add_wp_lat_hbox = gtk_hbox_new (TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
-				    add_wp_lat_label, TRUE, TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
-				    add_wp_lat_text, TRUE, TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (vbox), add_wp_lat_hbox, TRUE,
-				    TRUE, 2);
-	}
-
 
 	{			// Buttons
 		GtkWidget *add_wp_button_hbox;
