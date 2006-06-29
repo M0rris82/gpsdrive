@@ -53,7 +53,7 @@ extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
 extern gchar homedir[500], mapdir[500];
 extern gint trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered, milesflag, nauticflag, metricflag, wp_from_sql;
+extern gint scaleprefered_not_bestmap, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
@@ -145,7 +145,7 @@ writeconfig ()
 		fprintf (fp, "0\n");
 
 	fprintf (fp, "autobestmap = ");
-	if (!scaleprefered)
+	if (!scaleprefered_not_bestmap)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
@@ -356,7 +356,7 @@ readconfig ()
 			displaymap_map = atoi (par2);
 		    /*  To set the right sensitive flags bestmap_cb is called later */
 		    else if ( (strcmp(par1, "autobestmap")) == 0)
-			scaleprefered = !(atoi (par2));
+			scaleprefered_not_bestmap = !(atoi (par2));
 		    else if ( (strcmp(par1, "units")) == 0)
 			{
 			    milesflag = metricflag = nauticflag = FALSE;

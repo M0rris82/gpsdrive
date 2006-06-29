@@ -79,7 +79,6 @@ extern gint earthmate, havefriends, zone;
 extern gchar wplabelfont[100], bigfont[100];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
 	friendsserverfqn[255];
-extern long int maxfriendssecs;
 extern gchar bluecolor[40], trackcolor[40], friendscolor[40];
 extern int messagenumber;
 extern int sockfd, serialspeed, disableserial, showsid, storetz;

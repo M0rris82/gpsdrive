@@ -106,7 +106,9 @@ lat2radius (gdouble lat)
  * calculates lat and lon for the given position on the screen 
  */
 void
-calcxytopos (int posx, int posy, gdouble *mylat, gdouble *mylon, gint zoom)
+calcxytopos (int posx, int posy, 
+	     gdouble *mylat, gdouble *mylon, 
+	     gint zoom)
 {
   int x, y, px, py;
   gdouble dif, lat, lon;

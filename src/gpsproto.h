@@ -8,7 +8,7 @@ int insertsqldata (double lat, double lon, char *name, char *typ);
 int sqlinit (void);
 void sqlend (void);
 int getsqldata ();
-void loadmap (char *filename);
+int loadmap (char *filename);
 gint zoom_cb (GtkWidget * widget, guint datum);
 void splash (void);
 int garblemain (int argc, char **argv);

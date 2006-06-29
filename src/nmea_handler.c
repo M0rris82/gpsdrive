@@ -1,95 +1,26 @@
 /***********************************************************************
-
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
-
-Website: www.gpsdrive.de
-
-Disclaimer: Please do not use for navigation. 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    *********************************************************************
-
-$Log$
-Revision 1.7  2006/06/07 06:46:30  tweety
-change debugging for gpsd/nmea parsing
-
-Revision 1.6  2006/03/10 08:37:09  tweety
-- Replace Street/Track find algorithmus in Query Funktion
-  against real Distance Algorithm (distance_line_point).
-- Query only reports Track/poi/Streets if currently displaying
-  on map is selected for these
-- replace old top/map Selection by a MapServer based selection
-- Draw White map if no Mapserver is selected
-- Remove some useless Street Data from Examples
-- Take the real colors defined in Database to draw Streets
-- Add a frame to the Streets to make them look nicer
-- Added Highlight Option for Tracks/Streets to see which streets are
-  displayed for a Query output
-- displaymap_top und displaymap_map removed and replaced by a
-  Mapserver centric approach.
-- Treaked a little bit with Font Sizes
-- Added a very simple clipping to the lat of the draw_grid
-  Either the draw_drid or the projection routines still have a slight
-  problem if acting on negative values
-- draw_grid with XOR: This way you can see it much better.
-- move the default map dir to ~/.gpsdrive/maps
-- new enum map_projections to be able to easily add more projections
-  later
-- remove history from gpsmisc.c
-- try to reduce compiler warnings
-- search maps also in ./data/maps/ for debugging purpose
-- cleanup and expand unit_test.c a little bit
-- add some more rules to the Makefiles so more files get into the
-  tar.gz
-- DB_Examples.pm test also for ../data and data directory to
-  read files from
-- geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-- geoinfo.pl NGA.pm: Output Bounding Box for read Data
-- gpsfetchmap.pl:
-  - adapt zoom levels for landsat maps
-  - correct eniro File Download. Not working yet, but gets closer
-  - add/correct some of the Help Text
-- Update makefiles with a more recent automake Version
-- update po files
-
-Revision 1.5  2006/02/10 17:36:04  tweety
-rearrange ACPI handling
-
-Revision 1.4  2006/02/05 16:38:06  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.3  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.2  1994/06/10 02:43:13  tweety
-move gps_mea handling
-
-Revision 1.1  1994/06/10 02:11:00  tweety
-move nmea handling to it's own file Part 1
-
+ *
+ * Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+ *
+ * Website: www.gpsdrive.de
+ * 
+ * Disclaimer: Please do not use for navigation. 
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ **********************************************************************
  */
 
 #include <sys/types.h>
@@ -125,7 +56,7 @@ extern gint showroute, routeitems;
 extern gint nightmode, isnight, disableisnight;
 
 extern gint mydebug;
-gint nmea_handler_debug = 80;
+gint nmea_handler_debug = 0;
 
 extern gint posmode;
 extern gchar utctime[20], loctime[20];
@@ -155,7 +86,7 @@ extern gchar serialdev[80];
 extern int newdata;
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
-extern int messagenumber, actualfriends, didrootcheck, haveserial;
+extern int messagenumber,  didrootcheck, haveserial;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
 extern int gotneverserial, timerto, serialspeed;

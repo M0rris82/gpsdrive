@@ -29,6 +29,8 @@ Disclaimer: Please do not use for navigation.
  * See icons.c for details.
  */
 
+
+void drawwlan (gint posxdest, gint posydest, gint wlan);
 int drawicon (gint posxdest, gint posydest, char *ic);
 void load_friends_icon (void);
 void load_icons(void);

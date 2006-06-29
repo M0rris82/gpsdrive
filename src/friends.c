@@ -20,148 +20,7 @@
  *     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  *     *********************************************************************
- $Log$
- Revision 1.8  2006/02/05 13:54:39  tweety
- split map downloading to its own file download_map.c
-
- Revision 1.7  2006/01/03 14:24:10  tweety
- eliminate compiler Warnings
- try to change all occurences of longi -->lon, lati-->lat, ...i
- use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
- rename drawgrid --> do_draw_grid
- give the display frames usefull names frame_lat, ...
- change handling of WP-types to lowercase
- change order for directories reading icons
- always read inconfile
-
- Revision 1.6  2005/11/07 09:11:54  tweety
- Fix Buffer overflow in printf
-
- Revision 1.5  2005/11/01 14:46:12  tweety
- eliminate duplicate include socket.h
-
- Revision 1.4  2005/04/20 23:33:49  tweety
- reformatted source code with anjuta
- So now we have new indentations
-
- Revision 1.3  2005/04/13 19:58:31  tweety
- renew indentation to 4 spaces + tabstop=8
-
- Revision 1.2  2005/04/10 21:50:49  tweety
- reformatting c-sources
-
- Revision 1.1.1.1  2004/12/23 16:03:24  commiter
- Initial import, straight from 2.10pre2 tar.gz archive
-
- Revision 1.37  2004/02/08 16:35:10  ganter
- replacing all sprintf with g_snprintf to avoid buffer overflows
-
- Revision 1.36  2004/02/07 15:53:38  ganter
- replacing strcpy with g_strlcpy to avoid bufferoverflows
-
- Revision 1.35  2004/02/02 03:38:31  ganter
- code cleanup
-
- Revision 1.34  2004/01/28 15:31:43  ganter
- initialize FDs to -1
-
- Revision 1.33  2004/01/28 09:32:57  ganter
- tested for memory leaks with valgrind, looks good :-)
-
- Revision 1.32  2004/01/26 11:55:19  ganter
- just indented some files
-
- Revision 1.31  2004/01/22 07:13:27  ganter
- ...
-
- Revision 1.30  2004/01/22 06:44:12  ganter
- ...
-
- Revision 1.29  2004/01/22 06:38:02  ganter
- working on friendsd
-
- Revision 1.28  2004/01/15 22:02:40  ganter
- added openbsd patches
- real 2.07pre9
-
- Revision 1.27  2004/01/14 03:47:36  ganter
- removed some debug output
-
- Revision 1.26  2004/01/14 03:31:37  ganter
- now message acknoledge is done to and from friendsserver
-
- Revision 1.25  2004/01/14 00:48:49  ganter
- fixed bug if no crypt is avail.
-
- Revision 1.24  2004/01/14 00:06:27  ganter
- ...
-
- Revision 1.23  2004/01/13 23:38:30  ganter
- added new field in waypoints display for number of friends received
-
- Revision 1.22  2004/01/13 19:30:41  ganter
- changed "operations menu" do "Misc. menu"
-
- Revision 1.21  2004/01/13 14:31:31  ganter
- status bar
-
- Revision 1.20  2004/01/13 14:09:43  ganter
- ...
-
- Revision 1.19  2004/01/13 00:31:41  ganter
- fixed multiline message bug
-
- Revision 1.18  2004/01/12 23:53:08  ganter
- grrrrrrrrrrrr
-
- Revision 1.17  2004/01/12 23:52:15  ganter
- grrr
-
- Revision 1.16  2004/01/12 23:41:34  ganter
- fixed name bug again, upload tar and cvs again
-
- Revision 1.15  2004/01/12 23:22:34  ganter
- fixed wrong sender name in message
-
- Revision 1.14  2004/01/12 22:22:06  ganter
- make message menu entry insensitive if message is not yet send
-
- Revision 1.13  2004/01/12 21:52:02  ganter
- added friends message service
-
- Revision 1.12  2004/01/01 09:07:31  ganter
- v2.06
- trip info is now live updated
- added cpu temperature display for acpi
- added tooltips for battery and temperature
-
- Revision 1.11  2003/10/04 17:43:58  ganter
- translations don't need to be utf-8, but the .po files must specify the
- correct coding (ie, UTF-8, iso8859-15)
-
- Revision 1.10  2003/08/12 12:47:15  ganter
- v2.03 workaround for missing crypt()
-
- Revision 1.9  2003/07/25 12:17:14  ganter
- 2.00
-
- Revision 1.8  2003/06/08 13:31:49  ganter
- release 2.0pre9
- Added setting of timeperiod in friends mode (see settings menu)
-
- Revision 1.7  2003/05/31 20:32:01  ganter
- friendsd2 works fine with sven's server
-
- Revision 1.4  2003/05/31 18:25:57  ganter
- starting buildin new server and client
-
- Revision 1.3  2003/05/30 18:59:15  ganter
- client server working, but not perfectly
-
- Revision 1.2  2003/05/30 15:35:16  ganter
- testing
-
-*/
+ */
 
 
 /*
@@ -192,6 +51,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <gpsdrive.h>
+#include <math.h>
 
 #define	SERV_UDP_PORT	50123
 /*  Defines for gettext I18n */
@@ -209,6 +69,16 @@
 extern char friendsidstring[40], friendsname[40];
 extern int needtosave, maxfriends, statusid;
 extern friendsstruct *friends, *fserver;
+int actualfriends = 0;
+extern long int maxfriendssecs;
+extern gint zone;
+extern gdouble milesconv;
+extern gint milesflag, metricflag, nauticflag;
+extern GtkWidget *drawing_area, *drawing_bearing;
+extern gint pdamode;
+extern gint zoom;
+extern GdkPixbuf *friendsimage, *friendspixbuf;
+
 /*
  * conn.c
  */
@@ -482,4 +352,161 @@ friendsinit ()
   fserver = malloc (1 * sizeof (friendsstruct));
 
   return (0);
+}
+
+
+/* *****************************************************************************
+ */
+void
+drawfriends (void)
+{
+  gint i;
+  gdouble posxdest, posydest, clong, clat, direction;
+  gint width, height;
+  gdouble w;
+  GdkPoint poly[16];
+  struct tm *t;
+  time_t ti, tif;
+#define PFSIZE 55
+
+  actualfriends = 0;
+  /*   g_print("Maxfriends: %d\n",maxfriends); */
+  for (i = 0; i < maxfriends; i++)
+    {
+
+      /* return if too old  */
+      ti = time (NULL);
+      tif = atol ((friends + i)->timesec);
+      if (!(tif > 1000000000))
+	fprintf (stderr,
+		 "Format error! timesec: %s, Name: %s, i: %d\n",
+		 (friends + i)->timesec, (friends + i)->name, i);
+      if ((ti - maxfriendssecs) > tif)
+	continue;
+      actualfriends++;
+      coordinate_string2gdouble ((friends + i)->lon, &clong);
+      coordinate_string2gdouble ((friends + i)->lat, &clat);
+
+      calcxy (&posxdest, &posydest, clong, clat, zoom);
+
+      /* If Friend is visible inside SCREEN display him/her */
+      if ((posxdest >= 0) && (posxdest < SCREEN_X))
+	{
+
+	  if ((posydest >= 0) && (posydest < SCREEN_Y))
+	    {
+
+	      gdk_draw_pixbuf (drawable, kontext,
+			       friendspixbuf, 0, 0,
+			       posxdest - 18, posydest - 12,
+			       39, 24, GDK_RGB_DITHER_NONE, 0, 0);
+	      gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
+
+	      /*  draw pointer to direction */
+	      direction =
+		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
+	      w = direction + M_PI;
+	      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	      poly[0].x = posxdest + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
+	      poly[0].y = posydest + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
+	      poly[1].x = posxdest + (PFSIZE) / 9 * (cos (w + M_PI));
+	      poly[1].y = posydest + (PFSIZE) / 9 * (sin (w + M_PI));
+	      poly[2].x = posxdest + PFSIZE / 10 * (cos (w + M_PI_2));
+	      poly[2].y = posydest + PFSIZE / 10 * (sin (w + M_PI_2));
+	      poly[3].x = posxdest - (PFSIZE) / 9 * (cos (w + M_PI));
+	      poly[3].y = posydest - (PFSIZE) / 9 * (sin (w + M_PI));
+	      poly[4].x = poly[0].x;
+	      poly[4].y = poly[0].y;
+	      gdk_gc_set_foreground (kontext, &blue);
+	      gdk_draw_polygon (drawable, kontext, 0, (GdkPoint *) poly, 5);
+	      gdk_draw_arc (drawable, kontext, 0,
+			    posxdest + 2 - 7,
+			    posydest + 2 - 7, 10, 10, 0, 360 * 64);
+
+	      /*   draw + sign at destination   */
+	      gdk_gc_set_foreground (kontext, &red);
+	      gdk_draw_line (drawable, kontext,
+			     posxdest + 1, posydest + 1 - 5,
+			     posxdest + 1, posydest + 1 + 5);
+	      gdk_draw_line (drawable, kontext,
+			     posxdest + 1 + 5, posydest + 1,
+			     posxdest + 1 - 5, posydest + 1);
+
+	      {			/* print friends name / speed on map */
+		PangoFontDescription *pfd;
+		PangoLayout *wplabellayout;
+		gchar txt[200], txt2[100], s1[10];
+		time_t sec;
+		char *as, day[20], dispname[40];
+		int speed, ii;
+
+		sec = atol ((friends + i)->timesec);
+		sec += 3600 * zone;
+		t = gmtime (&sec);
+
+		as = asctime (t);
+		sscanf (as, "%s", day);
+		sscanf ((friends + i)->speed, "%d", &speed);
+
+		/* replace _ with  spaces in name */
+		g_strlcpy (dispname, (friends + i)->name, sizeof (dispname));
+		for (ii = 0; (size_t) ii < strlen (dispname); ii++)
+		  if (dispname[ii] == '_')
+		    dispname[ii] = ' ';
+
+		g_snprintf (txt, sizeof (txt),
+			    "%s,%d", dispname, (int) (speed * milesconv));
+		if (milesflag)
+		  g_snprintf (s1, sizeof (s1), "%s", _("mi/h"));
+		else if (nauticflag)
+		  g_snprintf (s1, sizeof (s1), "%s", _("knots"));
+		else
+		  g_snprintf (s1, sizeof (s1), "%s", _("km/h"));
+		g_strlcat (txt, s1, sizeof (txt));
+		g_snprintf (txt2, sizeof (txt2),
+			    "%s, %2d:%02d\n", day, t->tm_hour, t->tm_min);
+		g_strlcat (txt, txt2, sizeof (txt));
+		wplabellayout =
+		  gtk_widget_create_pango_layout (drawing_area, txt);
+		if (pdamode)
+		  pfd = pango_font_description_from_string ("Sans 8");
+		else
+		  pfd = pango_font_description_from_string ("Sans bold 11");
+		pango_layout_set_font_description (wplabellayout, pfd);
+		pango_layout_get_pixel_size (wplabellayout, &width, &height);
+		gdk_gc_set_foreground (kontext, &textbacknew);
+		/*              gdk_draw_rectangle (drawable, kontext, 1, posxdest + 18,
+		 *                                  posydest - height/2 , width + 2,
+		 *                                  height + 2);
+		 */
+
+		gdk_draw_layout_with_colors (drawable,
+					     kontext,
+					     posxdest
+					     + 21,
+					     posydest
+					     -
+					     height /
+					     2 + 1,
+					     wplabellayout, &black, NULL);
+		gdk_draw_layout_with_colors (drawable,
+					     kontext,
+					     posxdest
+					     + 20,
+					     posydest
+					     -
+					     height /
+					     2, wplabellayout, &orange, NULL);
+
+		if (wplabellayout != NULL)
+		  g_object_unref (G_OBJECT (wplabellayout));
+		/* freeing PangoFontDescription, cause it has been copied by prev. call */
+		pango_font_description_free (pfd);
+
+	      }
+
+
+	    }
+	}
+    }
 }

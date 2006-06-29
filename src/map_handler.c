@@ -1,133 +1,26 @@
 /***********************************************************************
-
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
-
-Website: www.gpsdrive.de
-
-Disclaimer: Please do not use for navigation. 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-    *********************************************************************
-
-$Log$
-Revision 1.9  2006/05/05 22:18:08  tweety
-move icons stred in memory to one array
-fix size of icons drawn at poi.c
-change list of default scales
-don't calculate map offset if we only have vectormaps
-remove some of the cvs logs in the source files. The can be retrieved from the cvs and
-blow up the files so we have troubles using eclipse or something similar
-move scale_min,scale_max to the streets_type and poi_type database
-increase the LIMIT for the streets sql query
-increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
-Thieck_osm.pl more independent from gpsdrive datastructure
-way we can get some of the lines where both endpoint are out of the viewing Window
-
-Revision 1.8  2006/04/22 00:36:12  tweety
-Backgroud map for Vectordata is now light Yellow
-
-Revision 1.7  2006/04/03 23:43:45  tweety
-rename adj --> scaler_adj
-rearrange code for some of the _cb
- streets_draw_cb
- poi_draw_cb
-move map_dir_struct definition to src/gpsdrive.h
-remove some of the history parts in the Files
-save and read settings for display_map like "display_map_<name> = 1"
-increase limit for displayed streets
-change color of de.Strassen.Allgemein to x555555
-OSM.pm make non way segments to Strassen.Allgemein
-WDB check if yountryname is valid
-
-Revision 1.6  2006/03/10 08:37:09  tweety
-- Replace Street/Track find algorithmus in Query Funktion
-  against real Distance Algorithm (distance_line_point).
-- Query only reports Track/poi/Streets if currently displaying
-  on map is selected for these
-- replace old top/map Selection by a MapServer based selection
-- Draw White map if no Mapserver is selected
-- Remove some useless Street Data from Examples
-- Take the real colors defined in Database to draw Streets
-- Add a frame to the Streets to make them look nicer
-- Added Highlight Option for Tracks/Streets to see which streets are
-  displayed for a Query output
-- displaymap_top und displaymap_map removed and replaced by a
-  Mapserver centric approach.
-- Treaked a little bit with Font Sizes
-- Added a very simple clipping to the lat of the draw_grid
-  Either the draw_drid or the projection routines still have a slight
-  problem if acting on negative values
-- draw_grid with XOR: This way you can see it much better.
-- move the default map dir to ~/.gpsdrive/maps
-- new enum map_projections to be able to easily add more projections
-  later
-- remove history from gpsmisc.c
-- try to reduce compiler warnings
-- search maps also in ./data/maps/ for debugging purpose
-- cleanup and expand unit_test.c a little bit
-- add some more rules to the Makefiles so more files get into the
-  tar.gz
-- DB_Examples.pm test also for ../data and data directory to
-  read files from
-- geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-- geoinfo.pl NGA.pm: Output Bounding Box for read Data
-- gpsfetchmap.pl:
-  - adapt zoom levels for landsat maps
-  - correct eniro File Download. Not working yet, but gets closer
-  - add/correct some of the Help Text
-- Update makefiles with a more recent automake Version
-- update po files
-
-Revision 1.5  2006/02/05 16:38:06  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.4  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.3  1994/06/08 08:37:47  tweety
-fix some ocurences of +- handling with coordinates by using coordinate_string2gdouble
-instead of atof and strtod
-
-Revision 1.2  2005/11/09 16:29:55  tweety
-changed pixelfac for top_GPSWORLD
-added comment to gpsd_nmea.sh
-
-Revision 1.1  2005/11/06 17:24:26  tweety
-shortened map selection code
-coordinate_string2gdouble:
- - fixed missing format
- - changed interface to return gdouble
-change -D option to reflect debuglevels
-Added more debug Statements for Level>50
-move map handling to to seperate file
-speedup memory reservation for map-structure
-Add code for automatic loading of maps from system DATA/maps/.. Directory
-changed length of mappath from 400 to 2048 chars
-
-
+ *
+ * Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+ *
+ * Website: www.gpsdrive.de
+ *
+ * Disclaimer: Please do not use for navigation. 
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ **********************************************************************
  */
 
 #include <sys/types.h>
@@ -156,7 +49,7 @@ extern gdouble pixelfact, posx, posy, angle_to_destination;
 extern gdouble direction, bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat;
-extern gdouble trip_lat,trip_lon;
+extern gdouble trip_lat, trip_lon;
 extern gdouble groundspeed, milesconv;
 extern gint nrmaps;
 extern gint maploaded;
@@ -187,7 +80,7 @@ extern GtkWidget *drawing_sats, *drawing_miniimage;
 
 extern gchar oldfilename[2048];
 
-extern gint scaleprefered, scalewanted;
+extern gint scaleprefered_not_bestmap, scalewanted;
 extern gint borderlimit;
 
 gchar mapfilename[2048];
@@ -218,10 +111,10 @@ time_t maptxtstamp = 0;
 gint needreloadmapconfig = FALSE;
 int havenasa = -1;
 
-GtkWidget *maptogglebt,	*topotogglebt;
+GtkWidget *maptogglebt, *topotogglebt;
 
 
-gint max_display_map=0;
+gint max_display_map = 0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 gint displaymap_map = TRUE;
@@ -233,39 +126,39 @@ enum map_projections map_proj;
  * Find the maptype for a given Filename
  */
 enum map_projections
-map_projection(char *filename)
+map_projection (char *filename)
 {
-    enum map_projections proj = proj_undef;
+  enum map_projections proj = proj_undef;
 
-    if (      ! strncmp ( filename, "expedia/",   8 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "landsat/",   8 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "geoscience/",11 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "incrementp/",11 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "gov_au/",    7 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "_map/",      5 ) )
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "map_",       4 ) ) // For Compatibility
-	proj = proj_map;
-    else if ( ! strncmp ( filename, "googlesat/", 10 ) )
-	proj = proj_top;
-    else if ( ! strncmp ( filename, "NASAMAPS/",  9 ) )
-	proj = proj_top;
-    else if ( ! strncmp ( filename, "eniro/",     6 ) )
-	proj = proj_top;
-    else if ( ! strncmp ( filename, "_top/",      5 ) )
-	proj = proj_top;
-    else if ( ! strncmp ( filename, "top_",      4 ) ) // For Compatibility
-	proj = proj_top;
-    else
-	{
-	    proj = proj_undef;
-	}
-    return proj;
+  if (!strncmp (filename, "expedia/", 8))
+    proj = proj_map;
+  else if (!strncmp (filename, "landsat/", 8))
+    proj = proj_map;
+  else if (!strncmp (filename, "geoscience/", 11))
+    proj = proj_map;
+  else if (!strncmp (filename, "incrementp/", 11))
+    proj = proj_map;
+  else if (!strncmp (filename, "gov_au/", 7))
+    proj = proj_map;
+  else if (!strncmp (filename, "_map/", 5))
+    proj = proj_map;
+  else if (!strncmp (filename, "map_", 4))	// For Compatibility
+    proj = proj_map;
+  else if (!strncmp (filename, "googlesat/", 10))
+    proj = proj_top;
+  else if (!strncmp (filename, "NASAMAPS/", 9))
+    proj = proj_top;
+  else if (!strncmp (filename, "eniro/", 6))
+    proj = proj_top;
+  else if (!strncmp (filename, "_top/", 5))
+    proj = proj_top;
+  else if (!strncmp (filename, "top_", 4))	// For Compatibility
+    proj = proj_top;
+  else
+    {
+      proj = proj_undef;
+    }
+  return proj;
 }
 
 
@@ -274,15 +167,13 @@ map_projection(char *filename)
 gint
 maptoggle_cb (GtkWidget * widget, guint datum)
 {
-	displaymap_map = !displaymap_map;
-	if (displaymap_map)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-					      TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-					      FALSE);
-	needtosave = TRUE;
-	return TRUE;
+  displaymap_map = !displaymap_map;
+  if (displaymap_map)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
+  else
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), FALSE);
+  needtosave = TRUE;
+  return TRUE;
 }
 
 /* *****************************************************************************
@@ -290,15 +181,13 @@ maptoggle_cb (GtkWidget * widget, guint datum)
 gint
 topotoggle_cb (GtkWidget * widget, guint datum)
 {
-	displaymap_top = !displaymap_top;
-	if (displaymap_top)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (topotogglebt), TRUE);
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (topotogglebt), FALSE);
-	needtosave = TRUE;
-	return TRUE;
+  displaymap_top = !displaymap_top;
+  if (displaymap_top)
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
+  else
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), FALSE);
+  needtosave = TRUE;
+  return TRUE;
 }
 
 /* *****************************************************************************
@@ -306,95 +195,95 @@ topotoggle_cb (GtkWidget * widget, guint datum)
 gint
 display_maps_cb (GtkWidget * widget, guint datum)
 {
-    if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (display_map[datum].checkbox)) )
-    	display_map[datum].to_be_displayed = TRUE;
-    else 
-    	display_map[datum].to_be_displayed = FALSE;
+  if (gtk_toggle_button_get_active
+      (GTK_TOGGLE_BUTTON (display_map[datum].checkbox)))
+    display_map[datum].to_be_displayed = TRUE;
+  else
+    display_map[datum].to_be_displayed = FALSE;
 
-    int i;
-    for ( i = 0; i < max_display_map; i++)
-	{
-	    char tbd = display_map[i].to_be_displayed ? 'D' :'_';
-	    printf("Found %s,%c\n",display_map[i].name,tbd);
-	}
+  int i;
+  for (i = 0; i < max_display_map; i++)
+    {
+      char tbd = display_map[i].to_be_displayed ? 'D' : '_';
+      printf ("Found %s,%c\n", display_map[i].name, tbd);
+    }
 
-    needtosave = TRUE;
-    return TRUE;
+  needtosave = TRUE;
+  return TRUE;
 }
 
 /* ******************************************************************
  */
 GtkWidget *
-make_display_map_checkboxes(){
-    GtkWidget *frame_maptype;
-    GtkWidget *vbox3;
+make_display_map_checkboxes ()
+{
+  GtkWidget *frame_maptype;
+  GtkWidget *vbox3;
 
-    // Checkbox ---- Show Map
-    frame_maptype = gtk_frame_new (_("Shown map type"));
-    vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
-    gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
-    
-    if (0){
-    // Checkbox ---- Show Map: map_
-    maptogglebt = gtk_check_button_new_with_label (_("Street map"));
-    if (displaymap_map)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt),
-				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (maptogglebt),
-			"clicked", GTK_SIGNAL_FUNC (maptoggle_cb),
-			(gpointer) 1);
-    gtk_box_pack_start (GTK_BOX (vbox3), maptogglebt, FALSE, FALSE,
-			0 * PADDING);
+  // Checkbox ---- Show Map
+  frame_maptype = gtk_frame_new (_("Shown map type"));
+  vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
+  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
-    // Checkbox ---- Show Map: top_
-    topotogglebt = gtk_check_button_new_with_label (_("Topo map"));
-    if (displaymap_top)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				      (topotogglebt), TRUE);
+  if (0)
+    {
+      // Checkbox ---- Show Map: map_
+      maptogglebt = gtk_check_button_new_with_label (_("Street map"));
+      if (displaymap_map)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
+      gtk_signal_connect (GTK_OBJECT (maptogglebt),
+			  "clicked", GTK_SIGNAL_FUNC (maptoggle_cb),
+			  (gpointer) 1);
+      gtk_box_pack_start (GTK_BOX (vbox3), maptogglebt, FALSE, FALSE,
+			  0 * PADDING);
 
-    gtk_signal_connect (GTK_OBJECT (topotogglebt),
-			"clicked", GTK_SIGNAL_FUNC (topotoggle_cb),
-			(gpointer) 1);
+      // Checkbox ---- Show Map: top_
+      topotogglebt = gtk_check_button_new_with_label (_("Topo map"));
+      if (displaymap_top)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
 
-    gtk_box_pack_start (GTK_BOX (vbox3), topotogglebt, FALSE, FALSE,
-			0 * PADDING);
+      gtk_signal_connect (GTK_OBJECT (topotogglebt),
+			  "clicked", GTK_SIGNAL_FUNC (topotoggle_cb),
+			  (gpointer) 1);
+
+      gtk_box_pack_start (GTK_BOX (vbox3), topotogglebt, FALSE, FALSE,
+			  0 * PADDING);
 
     }
 
-    gint i;
-    for ( i = 0; i < max_display_map; i++)
-	{
-	    // Checkbox ---- Show Map: name xy
-	    gchar display_name[100];
-	    
-	    
-	    if (mydebug > 1)
-		g_snprintf (display_name, sizeof (display_name),"%s (%d)",
-			    _( display_map[i].name),
-			    display_map[i].count);
-	    else
-		g_snprintf (display_name, sizeof (display_name),"%s",
-			    _( display_map[i].name));
+  gint i;
+  for (i = 0; i < max_display_map; i++)
+    {
+      // Checkbox ---- Show Map: name xy
+      gchar display_name[100];
 
 
-	    display_map[i].count ++;
+      if (mydebug > 1)
+	g_snprintf (display_name, sizeof (display_name), "%s (%d)",
+		    _(display_map[i].name), display_map[i].count);
+      else
+	g_snprintf (display_name, sizeof (display_name), "%s",
+		    _(display_map[i].name));
 
-	    display_map[i].checkbox 
-		= gtk_check_button_new_with_label (display_name);
 
-	    if (display_map[i].to_be_displayed)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (display_map[i].checkbox), TRUE);
-	    
-	    gtk_signal_connect (GTK_OBJECT (display_map[i].checkbox),
-				"clicked", GTK_SIGNAL_FUNC (display_maps_cb),
-				(gpointer) i);
-	    
-	    gtk_box_pack_start (GTK_BOX (vbox3), display_map[i].checkbox, FALSE, FALSE,
-				0 * PADDING);
-	}
-    
-    return frame_maptype;
+      display_map[i].count++;
+
+      display_map[i].checkbox
+	= gtk_check_button_new_with_label (display_name);
+
+      if (display_map[i].to_be_displayed)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
+				      (display_map[i].checkbox), TRUE);
+
+      gtk_signal_connect (GTK_OBJECT (display_map[i].checkbox),
+			  "clicked", GTK_SIGNAL_FUNC (display_maps_cb),
+			  (gpointer) i);
+
+      gtk_box_pack_start (GTK_BOX (vbox3), display_map[i].checkbox, FALSE,
+			  FALSE, 0 * PADDING);
+    }
+
+  return frame_maptype;
 }
 
 /* ******************************************************************
@@ -403,40 +292,42 @@ make_display_map_checkboxes(){
  * returns the index of the display_map[] structure
  */
 int
-add_map_dir(gchar *filename) {
+add_map_dir (gchar * filename)
+{
 
-    gint i;
+  gint i;
 
-    /* memorize map dir names */
-    if (mydebug > 99)
-	fprintf (stderr, "add_map_dir(%s)\n",filename);
+  /* memorize map dir names */
+  if (mydebug > 99)
+    fprintf (stderr, "add_map_dir(%s)\n", filename);
 
-    gchar map_dir[200];
-    
-    g_strlcpy (map_dir, filename, sizeof(map_dir));
-    char *slash_pos = strstr(map_dir,"/");
-    if ( slash_pos )
-	slash_pos[0]='\0';
-    else 
-	g_strlcpy (map_dir, "no_dir", sizeof(map_dir));
+  gchar map_dir[200];
 
-    for ( i = 0; i < max_display_map; i++)
+  g_strlcpy (map_dir, filename, sizeof (map_dir));
+  char *slash_pos = strstr (map_dir, "/");
+  if (slash_pos)
+    slash_pos[0] = '\0';
+  else
+    g_strlcpy (map_dir, "no_dir", sizeof (map_dir));
+
+  for (i = 0; i < max_display_map; i++)
+    {
+      if (!strcmp (display_map[i].name, map_dir))
 	{
-	    if ( ! strcmp(display_map[i].name,map_dir ) ){
-		display_map[i].count ++;
-		//printf("Found %s,%s\n",display_map[i].name,map_dir);
-		return i;
-	    }
+	  display_map[i].count++;
+	  //printf("Found %s,%s\n",display_map[i].name,map_dir);
+	  return i;
 	}
-    if (i >= max_display_map)
-	{
-	    max_display_map += 1;
-	    display_map = g_renew(map_dir_struct, display_map, max_display_map);
-	}
-    g_strlcpy (display_map[i].name, map_dir, sizeof (display_map[i].name));
-    display_map[i].to_be_displayed = TRUE;
-    display_map[i].count ++;
-    return i;
+    }
+  if (i >= max_display_map)
+    {
+      max_display_map += 1;
+      display_map = g_renew (map_dir_struct, display_map, max_display_map);
+    }
+  g_strlcpy (display_map[i].name, map_dir, sizeof (display_map[i].name));
+  display_map[i].to_be_displayed = TRUE;
+  display_map[i].count++;
+  return i;
 }
 
 /* *****************************************************************************
@@ -447,22 +338,22 @@ test_loaded_map_names ()
 {
   gint i;
   for (i = 0; i < nrmaps; i++)
-  {
-     if ( proj_undef == map_projection((maps +i )->filename) )
-     {
-	GString *error;
-	error = g_string_new (NULL);
-        g_string_printf (error, "%s%d\n%s\n",
-		     _("Error in line "), i + 1,
-		     _
-		     ("I have found filenames in map_koord.txt which are\n"
-		      "not map_* or top_* files. Please rename them and change the entries in\n"
-		      "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-		      "maps.  Otherwise, the maps will not be displayed!"));
-	error_popup ((gpointer *) error->str);
-	g_string_free (error, TRUE);
-	message_wrong_maps_shown = TRUE;
-      }
+    {
+      if (proj_undef == map_projection ((maps + i)->filename))
+	{
+	  GString *error;
+	  error = g_string_new (NULL);
+	  g_string_printf (error, "%s%d\n%s\n",
+			   _("Error in line "), i + 1,
+			   _
+			   ("I have found filenames in map_koord.txt which are\n"
+			    "not map_* or top_* files. Please rename them and change the entries in\n"
+			    "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
+			    "maps.  Otherwise, the maps will not be displayed!"));
+	  error_popup ((gpointer *) error->str);
+	  g_string_free (error, TRUE);
+	  message_wrong_maps_shown = TRUE;
+	}
     }
 }
 
@@ -490,9 +381,9 @@ map_koord_check_and_reload ()
 
   if (needreloadmapconfig)
     {
-	loadmapconfig ();
-	g_print ("%s reloaded\n", "map_koord.txt");
-	maptxtstamp = buf.st_mtime;
+      loadmapconfig ();
+      g_print ("%s reloaded\n", "map_koord.txt");
+      maptxtstamp = buf.st_mtime;
     };
 }
 
@@ -594,9 +485,9 @@ loadmapconfig ()
 	  g_strdelimit (s3, ",", '.');
 
 	  g_strlcpy ((maps + i)->filename, filename, 200);
-	  (maps + i)->map_dir = add_map_dir(filename);
-	  coordinate_string2gdouble(s1, &((maps + i)->lat));
-	  coordinate_string2gdouble(s2, &((maps + i)->lon));
+	  (maps + i)->map_dir = add_map_dir (filename);
+	  coordinate_string2gdouble (s1, &((maps + i)->lat));
+	  coordinate_string2gdouble (s2, &((maps + i)->lon));
 	  (maps + i)->scale = strtol (s3, NULL, 0);
 	  i++;
 	  nrmaps = i;
@@ -774,63 +665,66 @@ load_best_map (long long bestmap)
 }
 
 /* *****************************************************************************
- *  We load the map 
+ * We load the map 
+ * return TRUE on success
  */
-void
+int
 loadmap (char *filename)
 {
-    gchar mappath[2048];
-    GdkPixbuf *limage;
-    guchar *lpixels, *pixels;
-    int i, j, k;
+  gchar mappath[2048];
+  GdkPixbuf *limage;
+  guchar *lpixels, *pixels;
+  int i, j, k;
 
-    if (mydebug > 10)
-	fprintf (stderr, "loadmap(%s)\n", filename);
+  if (mydebug > 10)
+    fprintf (stderr, "loadmap(%s)\n", filename);
 
-    if (maploaded)
-	gdk_pixbuf_unref (image);
-
-    map_proj = map_projection(filename);
-
-    limage = gdk_pixbuf_new_from_file (filename, NULL);
-    if (limage == NULL)
-	{
-	    g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
-	    limage = gdk_pixbuf_new_from_file (mappath, NULL);
-	}
-    if (limage == NULL)
-	{
-	    g_snprintf (mappath, sizeof (mappath), "%s%s",  mapdir, filename);
-	    limage = gdk_pixbuf_new_from_file (mappath, NULL);
-	}
-    if (limage == NULL)
-	{
-	    g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR, filename);
-	    limage = gdk_pixbuf_new_from_file (mappath, NULL);
-	}
-
-    if (limage == NULL)
-	havedefaultmap = FALSE;
-
-    if (limage == NULL)
-	{
-	    GString *error;
-	    error = g_string_new (NULL);
-	    g_string_sprintf (error, "%s\n%s\n",
-			      _(" Mapfile could not be loaded:"), filename);
-	    error_popup ((gpointer *) error->str);
-	    g_string_free (error, TRUE);
-	    maploaded = FALSE;
-	    return;
-	}
+  if (maploaded)
+    gdk_pixbuf_unref (image);
 
 
-    if (!gdk_pixbuf_get_has_alpha (limage))
-	image = limage;
-    else
-	{
-	    image = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 1280, 1024);
-	    if (image == NULL)
+  limage = gdk_pixbuf_new_from_file (filename, NULL);
+  if (limage == NULL)
+    {
+      g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
+      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+    }
+  if (limage == NULL)
+    {
+      g_snprintf (mappath, sizeof (mappath), "%s%s", mapdir, filename);
+      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+    }
+  if (limage == NULL)
+    {
+      g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR,
+		  filename);
+      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+    }
+
+  map_proj = map_projection (filename);
+
+  if (limage == NULL)
+    havedefaultmap = FALSE;
+
+  if (limage == NULL)
+    {
+      GString *error;
+      error = g_string_new (NULL);
+      g_string_sprintf (error, "%s\n%s\n",
+			_(" Mapfile could not be loaded:"), filename);
+      error_popup ((gpointer *) error->str);
+      g_string_free (error, TRUE);
+      maploaded = FALSE;
+      return FALSE;
+    }
+
+
+  if (!gdk_pixbuf_get_has_alpha (limage))
+    image = limage;
+  else
+    {
+      image = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 1280, 1024);
+      if (image == NULL)
 	{
 	  fprintf (stderr,
 		   "can't get image  gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 1280, 1024)\n");
@@ -876,6 +770,8 @@ loadmap (char *filename)
   gdk_pixbuf_scale (image, miniimage, 0, 0, 128, 103,
 		    0, 0, 0.1, 0.10, GDK_INTERP_TILES);
   expose_mini_cb (NULL, 0);
+
+  return TRUE;
 }
 
 
@@ -885,15 +781,15 @@ loadmap (char *filename)
 int
 display_background_map ()
 {
-    gint i;
-    gint show__background_map=FALSE;
-    
-    for ( i = 0; i < max_display_map; i++)
-	{
-	    if ( display_map[i].to_be_displayed ) 
-		show__background_map=TRUE;
-	}
-    return show__background_map;
+  gint i;
+  gint show__background_map = FALSE;
+
+  for (i = 0; i < max_display_map; i++)
+    {
+      if (display_map[i].to_be_displayed)
+	show__background_map = TRUE;
+    }
+  return show__background_map;
 }
 
 
@@ -901,12 +797,14 @@ display_background_map ()
  * test if we need to load another map 
  */
 void
-testnewmap ()
+test_and_load_newmap ()
 {
   long long best = 1000000000LL;
   gdouble posx, posy;
   long long bestmap = 9999999999LL;
-  gdouble pixelfactloc, bestscale = 1000000000.0, fact;
+  gdouble pixelfactloc;
+  gdouble bestscale = 1000000000.0;
+  gdouble fact;
   gint i, ncount = 0;
 
   //    gchar str[100], buf[200];
@@ -918,28 +816,27 @@ testnewmap ()
 
   if (posmode)
     {
-	trip_lat = current_lon = posmode_x;
-	trip_lon = current_lat = posmode_y;
+      trip_lat = current_lon = posmode_x;
+      trip_lon = current_lat = posmode_y;
     }
   else
     route_next_target ();
 
 
   // Test if we want White Background as Map
-  
-  if ( !display_background_map() )
-      {
-	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-	      g_strlcpy (mapfilename, "map_LightYellow.png", sizeof (mapfilename));
-	      mapscale = (glong)scalewanted;
-	      pixelfact = mapscale / PIXELFACT;
-	      zero_lat = current_lat;
-	      zero_lon = current_lon;
-	      xoff = yoff = 0;
-	      map_proj = proj_map;
-	      loadmap (mapfilename);
-	      return;
-      }
+  if (!display_background_map ())
+    {
+      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
+      g_strlcpy (mapfilename, "map_LightYellow.png", sizeof (mapfilename));
+      mapscale = (glong) scalewanted;
+      pixelfact = mapscale / PIXELFACT;
+      zero_lat = current_lat;
+      zero_lon = current_lon;
+      xoff = yoff = 0;
+      map_proj = proj_map;
+      loadmap (mapfilename);
+      return;
+    }
 
 
   /* search for suitable maps */
@@ -953,20 +850,15 @@ testnewmap ()
    */
   for (i = 0; i < nrmaps; i++)
     {
-      /* check if map is topo or street map 
-       * Result: istopo = TRUE/FALSE
-       */
-	
-	if ( ! display_map[(maps + i)->map_dir].to_be_displayed)
-	    {
-		continue;
-	    }
+      if (!display_map[(maps + i)->map_dir].to_be_displayed)
+	{
+	  continue;
+	}
 
-      enum map_projections proj = map_projection((maps + i)->filename);
-      /*  calcxy (&posx, &posy, (maps + i)->lon, (maps + i)->lat,1); */
+      enum map_projections proj = map_projection ((maps + i)->filename);
 
       /*  Longitude */
-      if ( proj_map == proj )
+      if (proj_map == proj)
 	posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	  * cos (M_PI * (maps + i)->lat / 180.0)
 	  * (current_lon - (maps + i)->lon);
@@ -976,7 +868,7 @@ testnewmap ()
 
 
       /*  latitude */
-      if ( proj_map == proj )
+      if (proj_map == proj)
 	{
 	  posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	    * (current_lat - (maps + i)->lat);
@@ -987,12 +879,9 @@ testnewmap ()
       else
 	posy = (lat2radius (0) * M_PI / 180)
 	  * (current_lat - (maps + i)->lat);
-
-
       pixelfactloc = (maps + i)->scale / PIXELFACT;
       posx = posx / pixelfactloc;
       posy = posy / pixelfactloc;
-
       /* */
       if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
 	{
@@ -1012,13 +901,12 @@ testnewmap ()
 		nasaisvalid = TRUE;
 	      }
 
-	  if (scaleprefered)
+	  if (scaleprefered_not_bestmap)
 	    {
 	      if (scalewanted > (maps + i)->scale)
 		fact = (gdouble) scalewanted / (maps + i)->scale;
 	      else
 		fact = (maps + i)->scale / (gdouble) scalewanted;
-
 	      if (fact < bestscale)
 		{
 		  bestscale = fact;
@@ -1040,7 +928,6 @@ testnewmap ()
   // RESULT: bestmap [index in (maps + i) for the choosen map]
 
   load_best_map (bestmap);
-
 }
 
 /* *****************************************************************************
@@ -1061,16 +948,13 @@ drawloadedmaps ()
   gdouble x, y, la, lo;
   gint scale, xo, yo;
   gchar sc[20];
-
   if (mydebug > 50)
     fprintf (stderr, "drawloadedmaps()\n");
-
   for (i = 0; i < nrmaps; i++)
     {
       g_strlcpy (sc, newmapsc, sizeof (sc));
       g_strdelimit (sc, ",", '.');
       scale = g_strtod (sc, NULL);
-
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
 	  //printf("Selected map at lon %lf lat %lf\n",maps[i].lat,maps[i].lon);
@@ -1092,7 +976,6 @@ drawloadedmaps ()
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	  gdk_draw_rectangle (drawable, kontext, 0, x - xo / 2,
 			      y - yo / 2, xo, yo);
-
 	}
     }
 }
@@ -1107,22 +990,17 @@ drawdownloadrectangle (gint big)
 
   if (mydebug > 50)
     fprintf (stderr, "drawdownloadrectangle()\n");
-
   drawloadedmaps ();
-
   if (downloadwindowactive)
     {
       gdouble x, y, la, lo;
       gchar sc[20];
       gint scale, xo, yo;
-
-      coordinate_string2gdouble(newmaplat, &la);
-      coordinate_string2gdouble(newmaplon, &lo);
-
+      coordinate_string2gdouble (newmaplat, &la);
+      coordinate_string2gdouble (newmaplon, &lo);
       g_strlcpy (sc, newmapsc, sizeof (sc));
       g_strdelimit (sc, ",", '.');
       scale = g_strtod (sc, NULL);
-
       gdk_gc_set_foreground (kontext, &green2);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
@@ -1147,4 +1025,3 @@ drawdownloadrectangle (gint big)
     }
 
 }
-

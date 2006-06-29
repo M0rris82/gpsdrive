@@ -20,181 +20,6 @@ Disclaimer: Please do not use for navigation.
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    *********************************************************************
-$Log$
-Revision 1.16  2006/06/11 09:47:30  tweety
-new variable scalebar
-
-Revision 1.15  2006/06/08 05:28:00  hamish
-increase MAXSATS as WAAS/EGNOS sats use higher PRN numbers
-
-Revision 1.14  2006/05/05 22:18:08  tweety
-move icons stred in memory to one array
-fix size of icons drawn at poi.c
-change list of default scales
-don't calculate map offset if we only have vectormaps
-remove some of the cvs logs in the source files. The can be retrieved from the cvs and
-blow up the files so we have troubles using eclipse or something similar
-move scale_min,scale_max to the streets_type and poi_type database
-increase the LIMIT for the streets sql query
-increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
-Thieck_osm.pl more independent from gpsdrive datastructure
-way we can get some of the lines where both endpoint are out of the viewing Window
-
-Revision 1.13  2006/04/03 23:43:45  tweety
-rename adj --> scaler_adj
-rearrange code for some of the _cb
- streets_draw_cb
- poi_draw_cb
-move map_dir_struct definition to src/gpsdrive.h
-remove some of the history parts in the Files
-save and read settings for display_map like "display_map_<name> = 1"
-increase limit for displayed streets
-change color of de.Strassen.Allgemein to x555555
-OSM.pm make non way segments to Strassen.Allgemein
-WDB check if yountryname is valid
-
-Revision 1.12  2006/03/10 08:37:09  tweety
-- Replace Street/Track find algorithmus in Query Funktion
-  against real Distance Algorithm (distance_line_point).
-- Query only reports Track/poi/Streets if currently displaying
-  on map is selected for these
-- replace old top/map Selection by a MapServer based selection
-- Draw White map if no Mapserver is selected
-- Remove some useless Street Data from Examples
-- Take the real colors defined in Database to draw Streets
-- Add a frame to the Streets to make them look nicer
-- Added Highlight Option for Tracks/Streets to see which streets are
-  displayed for a Query output
-- displaymap_top und displaymap_map removed and replaced by a
-  Mapserver centric approach.
-- Treaked a little bit with Font Sizes
-- Added a very simple clipping to the lat of the draw_grid
-  Either the draw_drid or the projection routines still have a slight
-  problem if acting on negative values
-- draw_grid with XOR: This way you can see it much better.
-- move the default map dir to ~/.gpsdrive/maps
-- new enum map_projections to be able to easily add more projections
-  later
-- remove history from gpsmisc.c
-- try to reduce compiler warnings
-- search maps also in ./data/maps/ for debugging purpose
-- cleanup and expand unit_test.c a little bit
-- add some more rules to the Makefiles so more files get into the
-  tar.gz
-- DB_Examples.pm test also for ../data and data directory to
-  read files from
-- geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-- geoinfo.pl NGA.pm: Output Bounding Box for read Data
-- gpsfetchmap.pl:
-  - adapt zoom levels for landsat maps
-  - correct eniro File Download. Not working yet, but gets closer
-  - add/correct some of the Help Text
-- Update makefiles with a more recent automake Version
-- update po files
-
-Revision 1.11  2006/01/03 14:24:10  tweety
-eliminate compiler Warnings
-try to change all occurences of longi -->lon, lati-->lat, ...i
-use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-rename drawgrid --> do_draw_grid
-give the display frames usefull names frame_lat, ...
-change handling of WP-types to lowercase
-change order for directories reading icons
-always read inconfile
-
-Revision 1.10  2006/01/01 20:11:42  tweety
-add option -P for Posmode on start
-
-Revision 1.9  2005/11/09 21:26:02  tweety
-corrected conversion KM2NAUTIC
-
-Revision 1.8  2005/11/06 17:24:26  tweety
-shortened map selection code
-coordinate_string2gdouble:
- - fixed missing format
- - changed interface to return gdouble
-change -D option to reflect debuglevels
-Added more debug Statements for Level>50
-move map handling to to seperate file
-speedup memory reservation for map-structure
-Add code for automatic loading of maps from system DATA/maps/.. Directory
-changed length of mappath from 400 to 2048 chars
-
-Revision 1.7  2005/10/19 07:22:21  tweety
-Its now possible to choose units for displaying coordinates also in
-Deg.decimal, "Deg Min Sec" and "Deg Min.dec"
-Author: Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-
-Revision 1.6  2005/03/27 21:25:46  tweety
-separating map_import from gpsdrive.c
-
-Revision 1.5  2005/02/17 09:46:34  tweety
-minor changes
-
-Revision 1.4  2005/02/06 21:18:05  tweety
-more cleanup: extracted more functionality to functions
-
-Revision 1.3  2005/02/06 17:52:44  tweety
-extract icon handling to icons.c
-
-Revision 1.2  2005/02/02 17:42:54  tweety
-Add some comments
-extract some code into funktions
-added POI mySQL Support
-
-Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-Initial import, straight from 2.10pre2 tar.gz archive
-
-Revision 1.29  2004/03/02 01:36:04  ganter
-added German Expedia map server (expedia.de),
-this should be used for european users
-this is the real 2.09pre1 beta
-
-Revision 1.28  2004/02/12 17:42:53  ganter
-added -W switch for enable/disable WAAS/EGNOS (for SiRF II only?)
-
-Revision 1.27  2004/02/11 21:59:22  ganter
-max. number of sats is now MAXSATS
-
-Revision 1.26  2004/02/06 14:55:54  ganter
-added support for user-defined icons
-create the directory: $HOME/.gpsdrive/icons
-place your icons (type must be png) into this directory, with the name of
-the waypoint type, filename must be lowercase
-i.e. for waypoint type "HOTEL" the file must have the name "hotel.png"
-
-Revision 1.25  2004/02/05 19:47:31  ganter
-replacing strcpy with g_strlcpy to avoid bufferoverflows
-USB receiver does not send sentences in direct serial mode,
-so I first send a "\n" to it
-
-Revision 1.24  2004/02/04 14:47:10  ganter
-added GPGSA sentence for PDOP (Position Dilution Of Precision).
-
-Revision 1.23  2004/02/03 23:19:27  ganter
-fixed wrong string size
-
-Revision 1.22  2004/02/02 03:38:32  ganter
-code cleanup
-
-Revision 1.21  2004/01/27 05:25:59  ganter
-added gpsserial.c
-
-gpsdrive now detects a running gps receiver
-You don't need to start gpsd now, serial connection is handled by GpsDrive directly
-
-Revision 1.20  2004/01/12 21:52:02  ganter
-added friends message service
-
-Revision 1.19  2004/01/09 00:00:43  ganter
-added topomap download patch from Russell Harding <hardingr@billingside.com>
-Thanks for the lot of work!
-
-Revision 1.18  2004/01/03 04:32:18  ganter
-translations
-
-
 ***********************************************************************/
 
 #ifndef GPSDRIVE_GPSDRIVE_H
@@ -405,7 +230,12 @@ gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 
-void testnewmap ();
+/* I didn't want to start a friends.h ;-) */
+void drawfriends (void);
+extern int actualfriends;
+/* End of friends.h stuff */
+
+void test_and_load_newmap ();
 void map_koord_check_and_reload();
 void coordinate_string2gdouble (const gchar * text,gdouble * dec);
 void do_incremental_save();

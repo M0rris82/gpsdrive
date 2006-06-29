@@ -95,10 +95,10 @@ Disclaimer: Please do not use for navigation.
 #include "LatLong-UTMconversion.h"
 #include "gpsdrive.h"
 #include "battery.h"
-#include "track.h"
 #include "poi.h"
 #include "streets.h"
 #include "draw_tracks.h"
+#include "track.h"
 #include "routes.h"
 #include "gps_handler.h"
 #include "nmea_handler.h"
@@ -196,7 +196,6 @@ char friendsserverip[20], friendsname[40];
 char friendsidstring[40], friendsserverfqn[255];
 /* socket for friends  */
 extern int sockfd;
-extern long int maxfriendssecs;
 
 
 gchar oldfilename[2048];
@@ -234,7 +233,7 @@ gint gcount;
 gchar localedecimal;
 
 glong mapscale = 1000;
-gint scaleprefered = 1;
+gint scaleprefered_not_bestmap = 1;
 gint scalewanted = 100000;
 
 gint importactive;
@@ -243,7 +242,6 @@ extern gint downloadactive;
 
 GtkWidget *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
-GtkWidget *scaler;
 gchar oldangle[100];
 GdkCursor *cursor;
 
@@ -284,32 +282,40 @@ GtkWidget *label_lat, *label_lon;
 GtkWidget *label_map_filename, *label_map_scale;
 GtkWidget *label_heading, *label_baering, *label_timedest;
 GtkWidget *label_prefscale, *mutebt, *sqlbt;
-GtkWidget *trackbt, *wpbt;
-GtkWidget *bestmapbt, *poi_draw_bt, *streets_draw_bt, *tracks_draw_bt;
+GtkWidget *wpbt;
+GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 
-
+GtkWidget *trackbt, *tracks_draw_bt;
 GtkWidget *savetrackbt;
 GtkWidget *loadtrackbt;
-GtkWidget *scalerlbt, *scalerrbt;
+gint savetrack = 0;
+gint trackflag = 1;
+GdkSegment *track, *trackshadow;
+glong tracknr;
+trackcoordstruct *trackcoord;
+extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
+GdkColor trackcolorv;
+gchar savetrackfn[256];
+extern gint tracks_draw;
+
+GtkWidget *scaler_widget;
+GtkWidget *scaler_left_bt, *scaler_right_bt;
+GtkObject *scaler_adj;
+
 GtkWidget *setupbt;
-gint savetrack = 0, havespeechout, hours, minutes, speechcount = 0;
-gint muteflag = 0, wp_from_sql = 0, trackflag = 1;
+gint havespeechout, hours, minutes, speechcount = 0;
+gint muteflag = 0, wp_from_sql = 0;
 gint posmode = 0;
 gdouble posmode_x, posmode_y;
-GtkObject *scaler_adj;
 gchar lastradar[40], lastradar2[40]; 
 gint foundradar;
 gdouble radarbearing;
 gint errortextmode = TRUE;
 gchar serialdev[80];
-GdkSegment *track, *trackshadow;
-glong tracknr;
-trackcoordstruct *trackcoord;
-extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gint extrawinmenu = FALSE;
 gdouble lat2RadiusArray[201];
 gint haveproxy, proxyport;
-gchar proxy[256], hostname[256], savetrackfn[256];
+gchar proxy[256], hostname[256];
 
 /*** Mod by Arms */
 gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
@@ -384,7 +390,6 @@ GtkWidget *settingsnotebook;
 gint useflite = FALSE;
 extern gint zone;
 gint ignorechecksum = FALSE;
-GdkColor trackcolorv;
 
 /* Give more debug informations */
 gint mydebug = 0;
@@ -404,14 +409,12 @@ gint earthmate = FALSE;
 extern gint wptotal, wpselected;
 gchar wplabelfont[100], bigfont[100];
 
-extern gint zone;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
 gint etch = 1;
 gint do_draw_grid = FALSE;
 extern gint poi_draw;
 extern gint streets_draw;
-extern gint tracks_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
@@ -440,7 +443,7 @@ gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
 GtkItemFactory *item_factory;
 gint statuslock = 0, gpson = FALSE;
-int messagenumber = 0, actualfriends = 0, didrootcheck = 0, haveserial = 0;
+int messagenumber = 0, didrootcheck = 0, haveserial = 0;
 int gotneverserial = TRUE, timerto = 0, serialspeed = 1;
 int disableserial = 1, disableserialcl = 0;
 GtkTextBuffer *getmessagebuffer;
@@ -969,7 +972,7 @@ display_status2 ()
 	g_snprintf (s2, sizeof (s2), "%2d:%02dh", h, m);
 	gtk_label_set_text (GTK_LABEL (label_timedest), s2);
 
-	if (scaleprefered)
+	if (scaleprefered_not_bestmap)
 		g_snprintf (s2, sizeof (s2), "1:%d", scalewanted);
 	else
 		g_snprintf (s2, sizeof (s2), _("Auto"));
@@ -1030,7 +1033,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	/* we test if we have to load a new map because we are outside 
 	 * the currently loaded map 
 	 */
-	testnewmap ();
+	test_and_load_newmap ();
 
 	/*   g_print("drawmarker_cb %d\n",drawmarkercounter++); */
 	exposed = FALSE;
@@ -1341,233 +1344,6 @@ storepoint ()
 	g_strlcpy ((trackcoord + trackcoordnr)->postime, buf3, 30);
 	trackcoordnr++;
 }
-
-/* *****************************************************************************
- * draw wlan Waypoints
- */
-void
-drawwlan (gint posxdest, gint posydest, gint wlan)
-{
-    /*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
-    
-    if (wlan == 0)
-	return;
-    
-    if ((posxdest >= 0) && (posxdest < SCREEN_X))
-	{
-	    if ((posydest >= 0) && (posydest < SCREEN_Y))
-		{
-		    if (wlan == 1)
-			drawicon(posxdest,posydest,"w-lan.open");
-		    else 
-			drawicon(posxdest,posydest,"w-lan.wep");
-		}
-	}
-}
-
-/* *****************************************************************************
- */
-void
-drawfriends (void)
-{
-	gint i;
-	gdouble posxdest, posydest, clong, clat, direction;
-	gint width, height;
-	gdouble w;
-	GdkPoint poly[16];
-	struct tm *t;
-	time_t ti, tif;
-#define PFSIZE 55
-
-	actualfriends = 0;
-	/*   g_print("Maxfriends: %d\n",maxfriends); */
-	for (i = 0; i < maxfriends; i++)
-	{
-
-		/* return if too old  */
-		ti = time (NULL);
-		tif = atol ((friends + i)->timesec);
-		if (!(tif > 1000000000))
-			fprintf (stderr,
-				 "Format error! timesec: %s, Name: %s, i: %d\n",
-				 (friends + i)->timesec, (friends + i)->name,
-				 i);
-		if ((ti - maxfriendssecs) > tif)
-			continue;
-		actualfriends++;
-		coordinate_string2gdouble( (friends + i)->lon, &clong );
-		coordinate_string2gdouble( (friends + i)->lat,   &clat  );
-
-		calcxy (&posxdest, &posydest, clong, clat, zoom);
-
-		/* If Friend is visible inside SCREEN display him/her */
-		if ((posxdest >= 0) && (posxdest < SCREEN_X))
-		{
-
-			if ((posydest >= 0) && (posydest < SCREEN_Y))
-			{
-
-				gdk_draw_pixbuf (drawable, kontext,
-						 friendspixbuf, 0, 0,
-						 posxdest - 18, posydest - 12,
-						 39, 24, GDK_RGB_DITHER_NONE,
-						 0, 0);
-				gdk_gc_set_line_attributes (kontext, 4, 0, 0,
-							    0);
-
-				/*  draw pointer to direction */
-				direction =
-					strtod ((friends + i)->heading,
-						NULL) * M_PI / 180.0;
-				w = direction + M_PI;
-				gdk_gc_set_line_attributes (kontext, 2, 0, 0,
-							    0);
-				poly[0].x =
-					posxdest +
-					(PFSIZE) / 2.3 * (cos (w + M_PI_2));
-				poly[0].y =
-					posydest +
-					(PFSIZE) / 2.3 * (sin (w + M_PI_2));
-				poly[1].x =
-					posxdest +
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[1].y =
-					posydest +
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[2].x =
-					posxdest +
-					PFSIZE / 10 * (cos (w + M_PI_2));
-				poly[2].y =
-					posydest +
-					PFSIZE / 10 * (sin (w + M_PI_2));
-				poly[3].x =
-					posxdest -
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[3].y =
-					posydest -
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[4].x = poly[0].x;
-				poly[4].y = poly[0].y;
-				gdk_gc_set_foreground (kontext, &blue);
-				gdk_draw_polygon (drawable, kontext, 0,
-						  (GdkPoint *) poly, 5);
-				gdk_draw_arc (drawable, kontext, 0,
-					      posxdest + 2 - 7,
-					      posydest + 2 - 7, 10, 10, 0,
-					      360 * 64);
-
-				/*   draw + sign at destination   */
-				gdk_gc_set_foreground (kontext, &red);
-				gdk_draw_line (drawable, kontext,
-					       posxdest + 1, posydest + 1 - 5,
-					       posxdest + 1,
-					       posydest + 1 + 5);
-				gdk_draw_line (drawable, kontext,
-					       posxdest + 1 + 5, posydest + 1,
-					       posxdest + 1 - 5,
-					       posydest + 1);
-
-				{	/* print friends name / speed on map */
-					PangoFontDescription *pfd;
-					PangoLayout *wplabellayout;
-					gchar txt[200], txt2[100], s1[10];
-					time_t sec;
-					char *as, day[20], dispname[40];
-					int speed, ii;
-
-					sec = atol ((friends + i)->timesec);
-					sec += 3600 * zone;
-					t = gmtime (&sec);
-
-					as = asctime (t);
-					sscanf (as, "%s", day);
-					sscanf ((friends + i)->speed, "%d",
-						&speed);
-
-					/* replace _ with  spaces in name */
-					g_strlcpy (dispname,
-						   (friends + i)->name,
-						   sizeof (dispname));
-					for (ii = 0;
-					     (size_t) ii < strlen (dispname);
-					     ii++)
-						if (dispname[ii] == '_')
-							dispname[ii] = ' ';
-
-					g_snprintf (txt, sizeof (txt),
-						    "%s,%d", dispname,
-						    (int) (speed *
-							   milesconv));
-					if (milesflag)
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("mi/h"));
-					else if (nauticflag)
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("knots"));
-					else
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("km/h"));
-					g_strlcat (txt, s1, sizeof (txt));
-					g_snprintf (txt2, sizeof (txt2),
-						    "%s, %2d:%02d\n", day,
-						    t->tm_hour, t->tm_min);
-					g_strlcat (txt, txt2, sizeof (txt));
-					wplabellayout =
-						gtk_widget_create_pango_layout
-						(drawing_area, txt);
-					if (pdamode)
-						pfd = pango_font_description_from_string ("Sans 8");
-					else
-						pfd = pango_font_description_from_string ("Sans bold 11");
-					pango_layout_set_font_description
-						(wplabellayout, pfd);
-					pango_layout_get_pixel_size
-						(wplabellayout, &width,
-						 &height);
-					gdk_gc_set_foreground (kontext,
-							       &textbacknew);
-					/*              gdk_draw_rectangle (drawable, kontext, 1, posxdest + 18,
-					 *                                  posydest - height/2 , width + 2,
-					 *                                  height + 2);
-					 */
-
-					gdk_draw_layout_with_colors (drawable,
-								     kontext,
-								     posxdest
-								     + 21,
-								     posydest
-								     -
-								     height /
-								     2 + 1,
-								     wplabellayout,
-								     &black,
-								     NULL);
-					gdk_draw_layout_with_colors (drawable,
-								     kontext,
-								     posxdest
-								     + 20,
-								     posydest
-								     -
-								     height /
-								     2,
-								     wplabellayout,
-								     &orange,
-								     NULL);
-
-					if (wplabellayout != NULL)
-						g_object_unref (G_OBJECT
-								(wplabellayout));
-					/* freeing PangoFontDescription, cause it has been copied by prev. call */
-					pango_font_description_free (pfd);
-
-				}
-
-
-			}
-		}
-	}
-}
-
 
 /* *****************************************************************************
  * show satelite information
@@ -3438,43 +3214,56 @@ zoom_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
+void
+scaler_init()
+{ // Search which scaler_pos is fitting scalewanted 
+    gint scaler_pos=0;
+    gint scale =0;
+    while ( (scalewanted > scale ) && (scaler_pos <= slistsize ) ) 
+	{
+	    scaler_pos++;
+	    scale = nlist[(gint) rint (scaler_pos)];
+	};
+    // set scale slider
+    scaler_adj = gtk_adjustment_new ( scaler_pos,
+				      // Low, upper, step
+				      0, slistsize - 1, 1,
+				      // page inc , page-size
+				      slistsize / 4,	 1 / slistsize );
+    scaler_widget = gtk_hscale_new (GTK_ADJUSTMENT (scaler_adj));
+    gtk_signal_connect (GTK_OBJECT (scaler_adj), "value_changed",
+			GTK_SIGNAL_FUNC (scaler_cb), NULL);
+    gtk_scale_set_draw_value (GTK_SCALE (scaler_widget), FALSE);
+}
+
 
 /* *****************************************************************************
  * Increase/decrease displayed map scale
  * TODO: Improve finding of next apropriate map
+ * datum:
+ *    1 Zoom out
+ *    2 Zoom in 
  */
 gint
 scalerbt_cb (GtkWidget * widget, guint datum)
 {
-	gint val, oldval, old2val;
+	gint val;
 	gchar oldfilename[2048];
 
 	g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-	val = (GTK_ADJUSTMENT (scaler_adj)->value);
-	old2val = val;
+	val = GTK_ADJUSTMENT (scaler_adj)->value;
+	if (datum == 1 && val < slistsize )
+	    {
+		val +=1;
+	    }
+	if (datum == 2 && val > 0 )
+	    {
+		val -= 1;
+	    }
+	scalewanted = nlist[(gint) rint (val)];
+	
+	test_and_load_newmap ();
 
-	do
-	{
-	    oldval = val;
-	    if (datum == 1)
-		{
-		    gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj),
-					      val + 1);
-		}
-	    else
-		{
-		    gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj),
-					      val - 1);
-		}
-	    val = (GTK_ADJUSTMENT (scaler_adj)->value);
-
-	    testnewmap ();
-	}
-	while ( ( (strcmp (oldfilename, mapfilename)) == 0) 
-		&& (val != oldval));
-
-	if ((strcmp (oldfilename, mapfilename)) == 0)
-		val = old2val;
 	gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj), val);
 	expose_cb (NULL, 0);
 	expose_mini_cb (NULL, 0);
@@ -3922,24 +3711,24 @@ gint
 bestmap_cb (GtkWidget * widget, guint datum)
 {
 	if (datum == 1)
-		scaleprefered = !scaleprefered;
-	if (!scaleprefered)
+		scaleprefered_not_bestmap = !scaleprefered_not_bestmap;
+	if (!scaleprefered_not_bestmap)
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmapbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
 					      TRUE);
-		gtk_widget_set_sensitive (scalerrbt, FALSE);
-		gtk_widget_set_sensitive (scalerlbt, FALSE);
-		if (scaler)
-			gtk_widget_set_sensitive (scaler, FALSE);
+		gtk_widget_set_sensitive (scaler_right_bt, FALSE);
+		gtk_widget_set_sensitive (scaler_left_bt, FALSE);
+		if (scaler_widget)
+			gtk_widget_set_sensitive (scaler_widget, FALSE);
 	}
 	else
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmapbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
 					      FALSE);
-		gtk_widget_set_sensitive (scalerrbt, TRUE);
-		gtk_widget_set_sensitive (scalerlbt, TRUE);
-		if (scaler)
-			gtk_widget_set_sensitive (scaler, TRUE);
+		gtk_widget_set_sensitive (scaler_right_bt, TRUE);
+		gtk_widget_set_sensitive (scaler_left_bt, TRUE);
+		if (scaler_widget)
+			gtk_widget_set_sensitive (scaler_widget, TRUE);
 	}
 	needtosave = TRUE;
 	return TRUE;
@@ -4579,26 +4368,26 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 
 	// Zoom in/out
 	{
-		/*   From Russell Mirov: */
-		if (pdamode)
+	    /*   From Russell Mirov: */
+	    if (pdamode)
 		{
-			if (event->keyval == 0xFF52)
-				scalerbt_cb (NULL, 1);	/* RNM */
-			if (event->keyval == 0xFF54)
-				scalerbt_cb (NULL, 2);	/* RNM */
+		    if (event->keyval == 0xFF52)
+			scalerbt_cb (NULL, 1);	/* RNM */
+		    if (event->keyval == 0xFF54)
+			scalerbt_cb (NULL, 2);	/* RNM */
 		}
-
-		if ((toupper (event->keyval)) == '+' || (event->keyval == 0xFFab))	// Zoom in
+	    
+	    if ((toupper (event->keyval)) == '-' || (event->keyval == 0xFFad))	// Zoom out
 		{
-			scalerbt_cb (NULL, 2);
+		    scalerbt_cb (NULL, 1);
 		}
-
-		if ((toupper (event->keyval)) == '-' || (event->keyval == 0xFFad))	// Zoom out
+	    if ((toupper (event->keyval)) == '+' || (event->keyval == 0xFFab))	// Zoom in
 		{
-			scalerbt_cb (NULL, 1);
+		    scalerbt_cb (NULL, 2);
 		}
+	    
 	}
-
+	
 
 	return 0;
 }
@@ -6298,13 +6087,13 @@ main (int argc, char *argv[])
 			(gpointer) 0);
 
     // Checkbox ---- Best Map
-    bestmapbt = gtk_check_button_new_with_label (_("Auto _best map"));
-    gtk_button_set_use_underline (GTK_BUTTON (bestmapbt), TRUE);
+    bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
+    gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
 
-    if (!scaleprefered)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmapbt),
+    if (!scaleprefered_not_bestmap)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
 				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (bestmapbt), "clicked",
+    gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
 			GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
 
 
@@ -6342,16 +6131,16 @@ main (int argc, char *argv[])
     /*    GTK_WIDGET_SET_FLAGS (zoomout, GTK_CAN_DEFAULT); */
 
 
-    scalerrbt = gtk_button_new_with_label (">>");
-    gtk_signal_connect (GTK_OBJECT (scalerrbt),
+    scaler_right_bt = gtk_button_new_with_label (">>");
+    gtk_signal_connect (GTK_OBJECT (scaler_right_bt),
 			"clicked", GTK_SIGNAL_FUNC (scalerbt_cb),
 			(gpointer) 1);
-    /*    GTK_WIDGET_SET_FLAGS (scalerrbt, GTK_CAN_DEFAULT); */
-    scalerlbt = gtk_button_new_with_label ("<<");
-    gtk_signal_connect (GTK_OBJECT (scalerlbt),
+    /*    GTK_WIDGET_SET_FLAGS (scaler_right_bt, GTK_CAN_DEFAULT); */
+    scaler_left_bt = gtk_button_new_with_label ("<<");
+    gtk_signal_connect (GTK_OBJECT (scaler_left_bt),
 			"clicked", GTK_SIGNAL_FUNC (scalerbt_cb),
 			(gpointer) 2);
-    /*    GTK_WIDGET_SET_FLAGS (scalerlbt, GTK_CAN_DEFAULT); */
+    /*    GTK_WIDGET_SET_FLAGS (scaler_left_bt, GTK_CAN_DEFAULT); */
 
     /*  Select target button */
     /*    if (maxwp > 0) */
@@ -6696,8 +6485,8 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (vbox), zoomin, FALSE, FALSE,  1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), zoomout, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), hbox3, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (hbox3), scalerlbt, TRUE, TRUE,	1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (hbox3), scalerrbt, TRUE, TRUE,	1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox3), scaler_left_bt, TRUE, TRUE,	1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox3), scaler_right_bt, TRUE, TRUE,	1 * PADDING);
     /*  only if we have read in waypoints we have the select target button */
     /*    if (maxwp > 0) */
     gtk_box_pack_start (GTK_BOX (vbox), sel_target, FALSE, FALSE, 1 * PADDING);
@@ -6749,18 +6538,10 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (vbox4), wpbt, FALSE, FALSE, 0 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox4), posbt, FALSE, FALSE,0 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox4), trackbt, FALSE, FALSE,	0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox4), bestmapbt, FALSE, FALSE,0 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox4), bestmap_bt, FALSE, FALSE,0 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox4), savetrackbt, FALSE, FALSE,0 * PADDING);
-    //KCFX
-    /*   if (!pdamode) */
-    {
-	scaler_adj = gtk_adjustment_new (slistsize / 2, 0, slistsize - 1, 1,
-				  slistsize / 4, 1 / slistsize);
-	scaler = gtk_hscale_new (GTK_ADJUSTMENT (scaler_adj));
-	gtk_signal_connect (GTK_OBJECT (scaler_adj), "value_changed",
-			    GTK_SIGNAL_FUNC (scaler_cb), NULL);
-	gtk_scale_set_draw_value (GTK_SCALE (scaler), FALSE);
-    }
+
+    scaler_init();
 
     if (pdamode)
 	table1 = gtk_table_new (5, 3, FALSE);
@@ -6825,7 +6606,7 @@ main (int argc, char *argv[])
 	    if ( mydebug >10 )
 		gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 3, 2, 3);
 	    //KCFX
-	    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 3, 3, 4);
+	    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget, 0, 3, 3, 4);
 	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 3, 4, 5);
 	}
     else
@@ -6842,7 +6623,7 @@ main (int argc, char *argv[])
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 1, 2);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 3, 4, 1, 2);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 4, 3, 4);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler, 0, 4, 2, 3);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget, 0, 4, 2, 3);
 		}
 	    else
 		{
@@ -6856,7 +6637,7 @@ main (int argc, char *argv[])
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 6,  7, 0, 1);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 7, 8, 0, 1);
 		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status,	   0, 4, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler,   4, 8, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget,   4, 8, 1, 2);
 		}
 	}
     /*    gtk_box_pack_start (GTK_BOX (vbig), table1, FALSE, FALSE, 1); */
@@ -7194,9 +6975,9 @@ main (int argc, char *argv[])
 			  _("Zoom into the current map"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout,
 			  _("Zooms out off the current map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scalerlbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_left_bt,
 			  _("Select the next more detailed map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scalerrbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_right_bt,
 			  _("Select the next less detailed map"), NULL);
     /*    if (maxwp > 0) */
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
@@ -7204,15 +6985,15 @@ main (int argc, char *argv[])
 			  _
 			  ("Select here a destination from the waypoint list"),
 			  NULL);
-    if (scaler)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler,
+    if (scaler_widget)
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
 			      _
 			      ("Select the map scale of avail. maps."),
 			      NULL);
     /*   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), loadtrackbt, */
     /*                  _("Load and display a previous stored track file"), */
     /*                  NULL); */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmapbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
 			  _
 			  ("Always select the most detailed map available"),
 			  NULL);

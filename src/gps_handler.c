@@ -70,7 +70,7 @@ static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
 #endif
 
 extern gint mydebug;
-gint gps_handler_debug = 80;
+gint gps_handler_debug = 0;
 
 
 extern gint simmode, zoom, iszoomed;
@@ -110,7 +110,7 @@ extern char serialdata[4096];
 extern int newdata;
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
-extern int messagenumber, actualfriends, didrootcheck, haveserial;
+extern int messagenumber, didrootcheck, haveserial;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
 extern int gotneverserial, timerto, serialspeed;

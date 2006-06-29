@@ -91,7 +91,7 @@ extern GdkColor black;
 extern GdkColor white;
 extern GdkColor blue;
 extern poi_type_struct poi_type_list[poi_type_list_max];
-extern int poi_type_list_count ;
+extern int poi_type_list_count;
 
 
 GdkPixbuf *friendsimage = NULL;
@@ -183,7 +183,7 @@ int
 drawicon (gint posxdest, gint posydest, char *icon_name)
 {
   int symbol = 0, aux = -1, i;
-  int  wx, wy;
+  int wx, wy;
   gchar icon[80];
 
   //printf("drawicon %d %d %s\n", posxdest,  posydest,icon_name);
@@ -199,13 +199,12 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
 	if ((posxdest >= 0) && (posxdest < SCREEN_X)
 	    && (posydest >= 0) && (posydest < SCREEN_Y))
 	  {
-	      wx = gdk_pixbuf_get_width  (icons_buffer[i].icon);
-	      wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
-	      gdk_draw_pixbuf (drawable, kontext,
-			       (icons_buffer + i)->icon, 0, 0,
-			       posxdest - wx / 2, posydest - wy / 2, 
-			       wx, wy,
-			       GDK_RGB_DITHER_NONE, 0, 0);
+	    wx = gdk_pixbuf_get_width (icons_buffer[i].icon);
+	    wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
+	    gdk_draw_pixbuf (drawable, kontext,
+			     (icons_buffer + i)->icon, 0, 0,
+			     posxdest - wx / 2, posydest - wy / 2,
+			     wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
 	    aux = i;
 	  }
 	return 99999;
@@ -228,68 +227,70 @@ read_icon (gchar * icon_name)
 {
   gchar filename[1024];
   gchar icon_filename[1024];
-  GdkPixbuf *icons_buffer =NULL;
+  GdkPixbuf *icons_buffer = NULL;
   if (mydebug > 50)
     printf ("read_icon(%s)\n", icon_name);
 
   // Try as .png/.gif
-  if ( ! strcasestr(icon_name,".gif") && ! strcasestr(icon_name,".png") ) 
-      {
-	  if ( !icons_buffer ) // Try as .png
-	      {
-		  g_snprintf (filename, sizeof (filename), "%s.png",icon_name);
-		  icons_buffer = read_icon (filename);
-		  return icons_buffer;
-	      }
-	  /*
-	    if ( !icons_buffer ) // Try as .gif
-	      {
-		  g_snprintf (filename, sizeof (filename), "%s.gif",icon_name);
-		  icons_buffer = read_icon (filename);
-	      }
-	  */
-      } 
-  if (icons_buffer)
-      {
+  if (!strcasestr (icon_name, ".gif") && !strcasestr (icon_name, ".png"))
+    {
+      if (!icons_buffer)	// Try as .png
+	{
+	  g_snprintf (filename, sizeof (filename), "%s.png", icon_name);
+	  icons_buffer = read_icon (filename);
 	  return icons_buffer;
-      }
-  
-  
-  typedef struct {
-      gchar *path;
-      gchar *option;
+	}
+      /*
+         if ( !icons_buffer ) // Try as .gif
+         {
+         g_snprintf (filename, sizeof (filename), "%s.gif",icon_name);
+         icons_buffer = read_icon (filename);
+         }
+       */
+    }
+  if (icons_buffer)
+    {
+      return icons_buffer;
+    }
+
+
+  typedef struct
+  {
+    gchar *path;
+    gchar *option;
   } path_definition;
   path_definition available_path[] = {
-      { "",NULL},
-      { "./data/icons/",NULL},
-      { "./data/pixmaps/",NULL},
-      { "%spixmaps/", (gchar *)homedir },
-      { "%sicons/",  (gchar *)homedir },
-      { "%s/gpsdrive/icons/", (gchar *)DATADIR },
-      { "%s/gpsdrive/pixmaps/", (gchar *)DATADIR },
-      { "END",NULL }
+    {"", NULL},
+    {"./data/icons/", NULL},
+    {"./data/pixmaps/", NULL},
+    {"%spixmaps/", (gchar *) homedir},
+    {"%sicons/", (gchar *) homedir},
+    {"%s/gpsdrive/icons/", (gchar *) DATADIR},
+    {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
+    {"END", NULL}
   };
 
   gint i;
   for (i = 0;
-       strncmp (available_path[i].path, "END", 
-		sizeof (available_path[i].path));
-       i++)
-      {
-	  g_snprintf (filename, sizeof (filename), available_path[i].path,available_path[i].option);
-	  g_snprintf (icon_filename, sizeof (icon_filename), "%s%s",filename,  icon_name);
-	  icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
-	  if (mydebug > 75)
-	      printf ("read_icon(%s): Try\t%s\n", icon_name,icon_filename);
-	  if (icons_buffer)
-	      {
-		  if (mydebug > 20)
-		      printf ("read_icon(%s): FOUND\t%s\n", icon_name, icon_filename);
-		  return icons_buffer;
-	      }
-      }
+       strncmp (available_path[i].path, "END",
+		sizeof (available_path[i].path)); i++)
+    {
+      g_snprintf (filename, sizeof (filename), available_path[i].path,
+		  available_path[i].option);
+      g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename,
+		  icon_name);
+      icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
+      if (mydebug > 75)
+	printf ("read_icon(%s): Try\t%s\n", icon_name, icon_filename);
+      if (icons_buffer)
+	{
+	  if (mydebug > 20)
+	    printf ("read_icon(%s): FOUND\t%s\n", icon_name, icon_filename);
+	  return icons_buffer;
+	}
+    }
 
-  
+
   return icons_buffer;
 }
 
@@ -311,23 +312,27 @@ read_themed_icon (gchar * icon_name)
   g_strdelimit (icon_file_name, ".", '/');
 
   char *p_pos;
-  do {
-      g_snprintf (themed_icon_filename, sizeof (themed_icon_filename), "%s/%s"
-		  , local_config.icon_theme,icon_file_name);
+  do
+    {
+      g_snprintf (themed_icon_filename, sizeof (themed_icon_filename),
+		  "%s/%s", local_config.icon_theme, icon_file_name);
       if (mydebug > 90)
-	  fprintf (stderr, "read_themed_icon(%s) => Themed File %s\n", icon_name,themed_icon_filename );
+	fprintf (stderr, "read_themed_icon(%s) => Themed File %s\n",
+		 icon_name, themed_icon_filename);
       icon = read_icon (themed_icon_filename);
-      if ( icon != NULL )
-	  return icon;
-      
+      if (icon != NULL)
+	return icon;
+
       p_pos = rindex (icon_file_name, '/');
-      if ( p_pos) {
+      if (p_pos)
+	{
 	  p_pos[0] = '\0';
 	  if (mydebug > 3)
-	      fprintf (stderr, "read_themed_icon(%s) reduced to => %s\n", 
-		       icon_name, icon_file_name);
-      }
-  }  while ( p_pos != NULL );
+	    fprintf (stderr, "read_themed_icon(%s) reduced to => %s\n",
+		     icon_name, icon_file_name);
+	}
+    }
+  while (p_pos != NULL);
   return NULL;
 }
 
@@ -348,90 +353,106 @@ load_icons (void)
 
   /* load icons defined in icons.txt */
   if (!fh_icons_txt)
-      {
-	  snprintf ((char *) &filename, sizeof (filename), "./data/icons.txt");
-	  fh_icons_txt = fopen (filename, "r");
-	  if (mydebug > 3)
-	      {
-		  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
-	      }
-      }
+    {
+      snprintf ((char *) &filename, sizeof (filename), "./data/icons.txt");
+      fh_icons_txt = fopen (filename, "r");
+      if (mydebug > 3)
+	{
+	  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
+	}
+    }
   if (!fh_icons_txt)
-      {
-	  snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", homedir);
-	  fh_icons_txt = fopen (filename, "r");
-	  if (mydebug > 3)
-	      {
-		  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
-	      }
-      }
+    {
+      snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt",
+		homedir);
+      fh_icons_txt = fopen (filename, "r");
+      if (mydebug > 3)
+	{
+	  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
+	}
+    }
   /* if there is no icons.txt, try to open it  from datadir */
   if (!fh_icons_txt)
-      {
-	  snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
-	  if (mydebug > 3)
-	      {
-		  printf ("load_icons(): Trying default icons.txt: \"%s\"\n", filename);
-	      }
-	  fh_icons_txt = fopen (filename, "r");
-      }
+    {
+      snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
+      if (mydebug > 3)
+	{
+	  printf ("load_icons(): Trying default icons.txt: \"%s\"\n",
+		  filename);
+	}
+      fh_icons_txt = fopen (filename, "r");
+    }
   if (fh_icons_txt)
-      {
+    {
+      if (mydebug > 3)
+	printf ("load_icons(): Icons will be read from: \"%s\"\n", filename);
+
+      int index = 0;
+      int errors = 0;
+      while (fscanf (fh_icons_txt, "%s %d %d\n",
+		     (char *) &poi_type_list[index].name,
+		     &poi_type_list[index].scale_min,
+		     &poi_type_list[index].scale_max))
+	{
+
+	  if (index >= MAX_ICONS)
+	    {
+	      break;
+	    }
+
+	  if (poi_type_list_count < poi_type_list_max)
+	    {
+	      poi_type_list_count++;
+	      poi_type_list[poi_type_list_count].poi_type_id = index;
+	      poi_type_list[poi_type_list_count].icon =
+		read_themed_icon (poi_type_list[index].name);
+	    }
+
+
 	  if (mydebug > 3)
-	      printf ("load_icons(): Icons will be read from: \"%s\"\n", filename);
+	    printf ("load_icons(): Waypoint-type %d gets \"%s\"\n", index,
+		    poi_type_list[index].name);
+	  icons_buffer[index].icon =
+	    read_themed_icon (poi_type_list[index].name);
+	  if (!icons_buffer[index].icon)	// None Found
+	    {
+	      if (do_unit_test)
+		{
+		  if (!strncmp ((char *) icons_buffer[index].name, "Old.", 4))
+		    {
+		      printf ("load_icons(): ** Failed to open \"%s\"\n",
+			      (char *) &poi_type_list[index].name);
+		      errors++;
+		    }
+		  else
+		    {
+		      printf ("load_icons(): Not opening \"%s\"\n",
+			      (char *) &poi_type_list[index].name);
+		      icons_buffer[index].icon = read_icon ("unknown.png");
+		    }
+		}
+	      else
+		{
+		  printf ("load_icons(): ** Failed to open \"%s\"\n",
+			  (char *) &poi_type_list[index].name);
+		  icons_buffer[index].icon = read_icon ("unknown.png");
+		}
+	    }
+	  if (!icons_buffer[index].icon)	// None Found
+	    {
+	      icons_buffer[index].icon = NULL;
+	      icons_buffer[index].name[0] = 0;
+	    }
+	  if (feof (fh_icons_txt))
+	    break;
+	  index++;
 
-	  int index = 0;
-	  int errors = 0;
-	  while ( fscanf (fh_icons_txt, "%s %d %d\n",
-			  (char *)&poi_type_list[index].name,
-			  &poi_type_list[index].scale_min,
-			  &poi_type_list[index].scale_max ) ) {
-
-		  if ( index >= MAX_ICONS) {
-		      break;
-		  }
-
-		  if(  poi_type_list_count < poi_type_list_max ) {
-		      poi_type_list_count++;
-		      poi_type_list[poi_type_list_count].poi_type_id = index;
-		      poi_type_list[poi_type_list_count].icon = read_themed_icon(poi_type_list[index].name);
-		  }
-      
-      
-		  if (mydebug > 3)
-		      printf ("load_icons(): Waypoint-type %d gets \"%s\"\n", index,
-			      poi_type_list[index].name);
-		  icons_buffer[index].icon = read_themed_icon (poi_type_list[index].name);
-		  if ( ! icons_buffer[index].icon )	// None Found
-		      {
-			  if ( do_unit_test ) {
-			      if ( ! strncmp((char *)icons_buffer[index].name,"Old.",4) 
-			       ) {
-				  printf ("load_icons(): ** Failed to open \"%s\"\n", (char *) &poi_type_list[index].name);			  
-				  errors++;
-			      } else {
-				  printf ("load_icons(): Not opening \"%s\"\n", (char *) &poi_type_list[index].name);			  
-				  icons_buffer[index].icon = read_icon ("unknown.png");
-			      }
-			  } else {
-			      printf ("load_icons(): ** Failed to open \"%s\"\n", (char *) &poi_type_list[index].name);			  
-			      icons_buffer[index].icon = read_icon ("unknown.png");
-			  }
-		      }
-		  if ( ! icons_buffer[index].icon )	// None Found
-		      {
-			  icons_buffer[index].icon = NULL;
-			  icons_buffer[index].name[0] = 0;
-		      }
-		  if (feof (fh_icons_txt))
-		      break;
-		  index++;
-
-	      }
-	  if ( errors ) {
-	      exit (-1);
-	  }
-      }
+	}
+      if (errors)
+	{
+	  exit (-1);
+	}
+    }
   fclose (fh_icons_txt);
 }
 
@@ -483,13 +504,15 @@ load_user_icon (char icon_name[200])
     icon_name[i] = tolower (icon_name[i]);
 
   g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
-  icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
+  icons_buffer[icons_buffer_last].icon =
+    gdk_pixbuf_new_from_file (path, NULL);
 
   if (icons_buffer[icons_buffer_last].icon == NULL)
     {
       g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png",
 		  DATADIR, icon_name);
-      icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
+      icons_buffer[icons_buffer_last].icon =
+	gdk_pixbuf_new_from_file (path, NULL);
     }
 
   if ((icons_buffer + icons_buffer_last)->icon != NULL)
@@ -515,5 +538,29 @@ load_user_icon (char icon_name[200])
     {
       if (mydebug > 3)
 	printf ("No Icon for %s loaded\n", icon_name);
+    }
+}
+
+
+/* *****************************************************************************
+ * draw wlan Waypoints
+ */
+void
+drawwlan (gint posxdest, gint posydest, gint wlan)
+{
+  /*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
+
+  if (wlan == 0)
+    return;
+
+  if ((posxdest >= 0) && (posxdest < SCREEN_X))
+    {
+      if ((posydest >= 0) && (posydest < SCREEN_Y))
+	{
+	  if (wlan == 1)
+	    drawicon (posxdest, posydest, "w-lan.open");
+	  else
+	    drawicon (posxdest, posydest, "w-lan.wep");
+	}
     }
 }
