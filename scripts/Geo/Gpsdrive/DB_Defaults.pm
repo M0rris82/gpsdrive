@@ -878,6 +878,7 @@ sub fill_default_poi_types() {
     $icon_directory = '../share/gpsdrive/icons'  unless -d $icon_directory;
     $icon_directory = '/usr/local/share/gpsdrive'  unless -d $icon_directory;
     $icon_directory = '/usr/share/gpsdrive/icons'  unless -d $icon_directory;
+    $icon_directory = '/opt/gpsdrive/icons'  unless -d $icon_directory;
     die "no Icon Directory found" unless -d $icon_directory;
     for my $icon ( `find $icon_directory -name "*.png"` ) {
 	chomp $icon;
@@ -893,6 +894,7 @@ sub fill_default_poi_types() {
     $icon_file = '../share/gpsdrive/icons.txt'  unless -d $icon_file;
     $icon_file = '/usr/local/share/gpsdrive'  unless -d $icon_file;
     $icon_file = '/usr/share/gpsdrive/icons.txt'  unless -d $icon_file;
+    $icon_file = '/opt/gpsdrive/icons.txt'  unless -d $icon_file;
     die "no Icon Directory found" unless -d $icon_file;
     my $fh = IO::File->new("<$icon_file");
     my $poi_type_id=0;
