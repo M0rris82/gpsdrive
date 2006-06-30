@@ -9,6 +9,10 @@
 #
 #
 # $Log$
+# Revision 1.42  2006/06/30 12:16:20  tweety
+# add (/opt/gpsdrive to the search path
+# add osm-polite as option to geoinfo.pl
+#
 # Revision 1.41  2006/06/11 15:57:16  tweety
 # fix directory handling for map checking
 #
@@ -190,6 +194,10 @@
 #       I Figured out that 1 pixel = 176.47m  
 #       I found a calculation to convert this to a relative scale
 #       176.47 / 0.000265  (No idea if this is correct)
+
+BEGIN {
+    unshift(@INC,"/opt/gpsdrive");
+}
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sep 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -405,7 +413,7 @@ if ( $mapserver eq 'geoscience' )
 {
     $scale ||= join(",",keys %{$Scale2Zoom->{'geoscience'}});
 } else {
-    $scale ||= '100000-2000000';
+    $scale ||= '100000-5000000';
 }
 
 if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){

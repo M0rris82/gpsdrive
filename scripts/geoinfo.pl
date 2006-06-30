@@ -14,6 +14,7 @@ BEGIN {
     # For Debug Purpose in the build Directory
     unshift(@INC,"./");
     unshift(@INC,"./scripts/");
+    unshift(@INC,"/opt/gpsdrive");
 };
 
 use strict;
@@ -110,6 +111,7 @@ GetOptions (
 	     'earthinfo_nga_mil:s' => \$do_earthinfo_nga_mil,
 	     'openstreetmap:s'     => \$do_osm,
 	     'osm:s'               => \$do_osm,
+	     'osm_polite=s'        => \$Geo::Gpsdrive::OSM::OSM_polite,
 	     'opengeodb'           => \$do_opengeodb,
 	     'opengeodb2'          => \$do_opengeodb2,
 	     'wdb:s'               => \$do_wdb,
