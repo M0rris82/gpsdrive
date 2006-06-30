@@ -874,7 +874,12 @@ sub fill_default_poi_types() {
 
     my $unused_icon ={};
     my $existing_icon ={};
-    for my $icon ( `find ../data/icons/ -name "*.png"` ) {
+    my $icon_directory='../data/icons';
+    $icon_directory = '../share/gpsdrive/icons'  unless -d $icon_directory;
+    $icon_directory = '/usr/local/share/gpsdrive'  unless -d $icon_directory;
+    $icon_directory = '/usr/share/gpsdrive/icons'  unless -d $icon_directory;
+    die "no Icon Directory found" unless -d $icon_directory;
+    for my $icon ( `find $icon_directory -name "*.png"` ) {
 	chomp $icon;
 	next if $icon =~ m,icons/classic/,;
 	next unless -s $icon;
@@ -884,7 +889,12 @@ sub fill_default_poi_types() {
 	print "icon: $icon\n" if $debug;
     }
 
-    my $fh = IO::File->new("<../data/icons.txt");
+    my $icon_file='../data/icons.txt';
+    $icon_file = '../share/gpsdrive/icons.txt'  unless -d $icon_file;
+    $icon_file = '/usr/local/share/gpsdrive'  unless -d $icon_file;
+    $icon_file = '/usr/share/gpsdrive/icons.txt'  unless -d $icon_file;
+    die "no Icon Directory found" unless -d $icon_file;
+    my $fh = IO::File->new("<$icon_file");
     my $poi_type_id=0;
     while ( my $line = $fh->getline() ) {
 	chomp $line;

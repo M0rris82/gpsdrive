@@ -30,6 +30,7 @@ use Geo::Gpsdrive::Utils;
 use Data::Dumper;
 use XML::Parser;
 
+our $OSM_polite  = 10; # Wait n times as long as the request lasted
 my $osm_nodes    = {};
 my $osm_segments = {};
 my $osm_ways     = {};
@@ -178,12 +179,22 @@ sub street_name_2_id($) {
 }
 
 # -----------------------------------------------------------------------------
-my $step = 5;
+#my $step = 5;
+my $step = .1;
 my $download_area = {
-    #world     => [-90,-180,  90-$step,180-$step],
-    #europ     => [-10,  10,  10,60],
-    #germany   => [  0,  10,  50,60],
-    muenchen  => [ 10,  44,  14,48],
+    #world      => [-90,-180,  90-$step,180-$step],
+    #europe     => [-10,  10,  10,60],
+    #usa        => [-xx,  xx,  xx,xx],
+    ireland     => [-11,  51,  -4,56],
+    uk          => [ -6,  51,   2,60],
+    germany     => [  0,  10,  50,60],
+    bayern      => [  9,  47,  12,50],
+    muenchen    => [ 10,  44,  12,49],
+    schweiz     => [  5,  45,  11,48],
+    oesterreich => [  9,  46,  17,49],
+    italy       => [  6,  36,  20,47.5],
+    italyN     => [  6,  44,  14,47.5],
+    italyS     => [  9,  36,  20,44],
 };
 
 sub download_osm_streets($;$) { # Insert Streets from osm File  
@@ -221,19 +232,19 @@ sub download_osm_streets($;$) { # Insert Streets from osm File
 	die "Undefined OSM-Area for Download\n";
     }
 
-    for ( my $lat = $lat_min; $lat< $lat_max; $lat += $step ) {
-	for ( my $lon = $lon_min; $lon < $lon_max; $lon += $step ) {
+    for ( my $lon = $lon_min; $lon < $lon_max; $lon += $step ) {
+	for ( my $lat = $lat_min; $lat< $lat_max; $lat += $step ) {
 	    my $lap  = $lat + $step;
 	    my $lop  = $lon + $step;
-	    print "Get $lat,$lon\r";
-	    my $abs_filename= sprintf("$osm_dir/Streets_osm_%03d,%04d,%03d,%04d.osm",
+	    print "Get $lat,$lon                       \r";
+	    my $abs_filename= sprintf("$osm_dir/Streets_osm_%05.2f,%06.2f,%05.2f,%06.2f.osm",
 				      $lon,$lat, $lop,$lap  );
 	    my $bbox = sprintf("%.1f,%.1f,%.1f,%.1f",$lat,$lon,$lap,$lop);
 
 	    #my $mirror = mirror_file("$osm_base_url$bbox",$abs_filename);
 	    
 	    if ( $debug ) {
-		print "mirror: $bbox\n";
+		print "mirror: $bbox                                       \n";
 	    }
 	    
 	    my $rest_tries=10;
@@ -250,21 +261,26 @@ sub download_osm_streets($;$) { # Insert Streets from osm File
 		    $get_cmd .= " -s " unless $debug || $verbose;
 		    $get_cmd .= "    '$osm_base_url$bbox'"; 
 		    print "$get_cmd\n";
-		    `$get_cmd`;
+		    my $start_time=time();
+		    `$get_cmd`;		    $size = (-s $abs_filename)||0;
+		    my $diff_time = time()-$start_time;
+		    my $sleep_time= $OSM_polite*$diff_time;
+		    print "sleep ".($sleep_time)." seconds\n";
+		    sleep $sleep_time;
 		}
-		$size = (-s $abs_filename)||0;
-		my $count_error = `grep -e '<H1>ERROR</H1>' -e '<h1>Internal Server Error</h1>' $abs_filename | wc -l`;
+
+		my $count_error = `grep -e '400 Bad Request' -e '<H1>ERROR</H1>' -e '<h1>Internal Server Error</h1>' $abs_filename | wc -l`;
 		if ( $count_error >0 ) {
 		    `cat $abs_filename`;
 		    $rest_tries --;
 		    print "	ERROR in downloading\n";
 		    print "   $rest_tries retries\n";
-		    print "	Got $lat,$lon	$size Bytes\n";
+		    print "	Got $lat,$lon          $size Bytes\n";
 		    my $err_filename = $abs_filename;
 		    $err_filename =~ s/\.osm$/.error/;
 		    rename($abs_filename,$err_filename);
 		} else {
-		    print "Got $lat,$lon	$size Bytes\n"
+		    print "Got $lat,$lon             $size Bytes\n"
 			unless $size == 76;
 		    $rest_tries=0;
 		}
