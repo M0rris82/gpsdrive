@@ -922,7 +922,7 @@ sub import_Data($){
     } else {
 	print "Download planet.osm\n";
 	my $filename="planet-2006-07-a.osm";
-	$filename="planet-2006-07-a.osm.bz2
+	$filename="planet-2006-07-a.osm.bz2";
 	my $url = "http://www.ostertag.name/osm/planet";
 	$url = "http://www.ostertag.name/osm/planet";
 	$url .=$filename;
