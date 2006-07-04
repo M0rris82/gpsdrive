@@ -921,9 +921,13 @@ sub import_Data($){
 	die "OSM::import_Data: Cannot find File '$filename'\n";
     } else {
 	print "Download planet.osm\n";
-	my $url = "http://www.ostertag.name/osm/planet.osm.bz2";
-	#my @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
-	my @file_list =qw( planet-2006-05-01.osm.bz2 );
+	my $filename="planet-2006-07-a.osm";
+	$filename="planet-2006-07-a.osm.bz2
+	my $url = "http://www.ostertag.name/osm/planet";
+	$url = "http://www.ostertag.name/osm/planet";
+	$url .=$filename;
+	my @file_list =( $filename );
+	# @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
 	for my $file ( @file_list ) {
 	    my $planet_file = "$mirror_dir/$file";
 	    
