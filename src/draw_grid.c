@@ -114,6 +114,37 @@ extern gint int_padding;
 extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 extern gchar oldfilename[2048];
 
+/* *****************************************************************************
+ * Draw Text (lat/lon) into Grid
+ */
+void
+draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
+{
+	/* prints in pango */
+	PangoFontDescription *pfd;
+	PangoLayout *grid_label_layout;
+	gint width, height;
+
+	grid_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+
+	pfd = pango_font_description_from_string ("Sans 6");
+
+	pango_layout_set_font_description (grid_label_layout, pfd);
+	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
+	gdk_gc_set_function (kontext, GDK_XOR);
+	gdk_gc_set_background (kontext, &white);
+	gdk_gc_set_foreground (kontext, &mygray);
+	
+	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
+				     posy - height / 2, grid_label_layout, &black,
+				     NULL);
+
+	if (grid_label_layout != NULL)
+		g_object_unref (G_OBJECT (grid_label_layout));
+	/* freeing PangoFontDescription, cause it has been copied by prev. call */
+	pango_font_description_free (pfd);
+
+}
 
 /* *****************************************************************************
  */
@@ -257,35 +288,4 @@ draw_grid (GtkWidget * widget)
 	    }
 	if ( mydebug > 30 )
 	    printf ("draw_grid loops: %d\n", count);
-}
-/* *****************************************************************************
- * Draw Text (lat/lon) into Grid
- */
-void
-draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
-{
-	/* prints in pango */
-	PangoFontDescription *pfd;
-	PangoLayout *grid_label_layout;
-	gint width, height;
-
-	grid_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
-
-	pfd = pango_font_description_from_string ("Sans 6");
-
-	pango_layout_set_font_description (grid_label_layout, pfd);
-	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
-	gdk_gc_set_function (kontext, GDK_XOR);
-	gdk_gc_set_background (kontext, &white);
-	gdk_gc_set_foreground (kontext, &mygray);
-	
-	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
-				     posy - height / 2, grid_label_layout, &black,
-				     NULL);
-
-	if (grid_label_layout != NULL)
-		g_object_unref (G_OBJECT (grid_label_layout));
-	/* freeing PangoFontDescription, cause it has been copied by prev. call */
-	pango_font_description_free (pfd);
-
 }
