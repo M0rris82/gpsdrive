@@ -287,7 +287,6 @@ void check_and_reload_way_txt()
 /* *****************************************************************************
  * Draw waypoints on map
  */
-// TODO: Put this in its own file
 void
 draw_waypoints ()
 {
@@ -882,6 +881,61 @@ setwp_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
+
+
+/* *****************************************************************************
+ * save waypoints to way.txt 
+ */
+void
+savewaypoints ()
+{
+	gchar mappath[2048], la[20], lo[20];
+	FILE *st;
+	gint i, e;
+
+
+	g_strlcpy (mappath, homedir, sizeof (mappath));
+	g_strlcat (mappath, activewpfile, sizeof (mappath));
+
+	st = fopen (mappath, "w+");
+	if (st == NULL)
+	{
+		perror (mappath);
+	}
+	else
+	{
+		for (i = 0; i < maxwp; i++)
+		{
+			g_snprintf (la, sizeof (la), "%10.6f",
+				    (wayp + i)->lat);
+			g_snprintf (lo, sizeof (lo), "%10.6f",
+				    (wayp + i)->lon);
+			g_strdelimit (la, ",", '.');
+			g_strdelimit (lo, ",", '.');
+
+			if ( (wayp + i)->typ[0] == '\0' ) {
+			    g_strlcpy ( (wayp + i)->typ, "unknown", 
+					sizeof ((wayp + i)->typ));
+			}
+
+
+			// TODO/ERROR: if ->typ is empty 
+			// All colums get shifted one to the left
+			e = fprintf (st, "%-22s %10s %11s "
+				     "%s"
+				     " %d %d %d %d"
+				     "\n",
+				     (wayp + i)->name, la, lo,
+				     (wayp + i)->typ,
+				     (wayp + i)->wlan, (wayp + i)->action,
+				     (wayp + i)->sqlnr,
+				     (wayp + i)->proximity);
+		}
+		fclose (st);
+	}
+
+}
+
 /* *****************************************************************************
  * load the waypoint from way.txt
  */
@@ -937,7 +991,7 @@ loadwaypoints ()
 	    coordinate_string2gdouble(slong,&((wayp + i)->lon));
 	    /*  limit waypoint name to 20 chars */
 	    (wayp + i)->name[20] = 0;
-	    g_strlcpy ((wayp + i)->typ, "", 40);
+	    g_strlcpy ((wayp + i)->typ, "unknown", 40);
 	    (wayp + i)->wlan = 0;
 	    (wayp + i)->action = 0;
 	    (wayp + i)->sqlnr = -1;
