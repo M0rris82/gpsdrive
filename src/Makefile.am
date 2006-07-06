@@ -47,7 +47,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	navigation.c \
 	 speech_out.c speech_out.h\
 	friends.c \
-	battery.c track.c poi.c streets.c waypoint.c draw_tracks.c settings.c \
+	battery.c track.c poi.c streets.c waypoint.c draw_tracks.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h waypoint.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
