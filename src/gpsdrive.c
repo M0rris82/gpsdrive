@@ -1712,10 +1712,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (importactive)
 	    return TRUE;
 
-	drawtracks ();
-
 	if (do_draw_grid)
 		draw_grid (widget);
+
 
 	if (usesql)
 	{
@@ -1724,8 +1723,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 		tracks_draw_list ();
 	}
 
+
 	if (local_config.showwaypoints)
 		draw_waypoints ();
+
+	drawtracks ();
 
 	if (havefriends)
 		drawfriends ();
@@ -1733,7 +1735,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (havekismet)
 		readkismet ();
 
-	/*  draw scale */
 	if (zoomscale)
 		draw_zoom_scale ();
 
@@ -6002,7 +6003,7 @@ main (int argc, char *argv[])
 
 
     redrawtimeout =
-	gtk_timeout_add (100, (GtkFunction) calldrawmarker_cb, NULL);
+	gtk_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
 
     /*  if we started in simulator mode we have a little move roboter */
     if (simmode)
