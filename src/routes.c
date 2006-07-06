@@ -61,7 +61,7 @@ extern gint maxwp, maxfriends;
 extern friendsstruct *friends, *fserver;
 extern long int maxfriendssecs;
 extern int sortcolumn, sortflag;
-extern gint thisline;
+extern gint selected_wp_list_line;
 extern GtkWidget *mylist;
 extern gint onemousebutton;
 extern gint pdamode;
@@ -354,7 +354,7 @@ reinsertwp_cb (GtkWidget * widget, guint datum)
 	{
 		gtk_clist_get_text (GTK_CLIST (mylist), i, 0, &p);
 		j = atol (p);
-		if (thisline == j)
+		if (selected_wp_list_line == j)
 		{
 			k = i;
 			break;

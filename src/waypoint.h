@@ -22,35 +22,30 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
-#ifndef GPSDRIVE_STREETS_H
-#define GPSDRIVE_STREETS_H
+#ifndef GPSDRIVE_WAYPOINT_H
+#define GPSDRIVE_WAYPOINT_H
 
 /*
- * See streets.c for details.
+ * See waypoint.c for details.
  */
 
-typedef struct
-{
-  gint    wp_id;
-  gdouble lon1;
-  gdouble lat1;
-  gdouble lon2;
-  gdouble lat2;
-  gdouble x1;    // x position on screen start
-  gdouble y1;    // y position on screen
-  gdouble x2;    // x position on screen end
-  gdouble y2;    // y position on screen
-  gchar   name[80];
-  gchar   comment[256];
-  gdouble streets_type_id;    // type of street
-  gint highlight; // Draw Highlighted
-}
-streets_struct;
+gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
+gint addwaypoint_gtk_cb (GtkWidget * widget, guint datum);
+gint addwaypointchange_cb (GtkWidget * widget, guint datum);
+gint addwaypointdestroy_cb (GtkWidget * widget, guint datum);
+gint delwp_cb (GtkWidget * widget, guint datum);
+gint jumpwp_cb (GtkWidget * widget, guint datum);
+gint watchwp_cb (GtkWidget * widget, guint * datum);
+void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon);
+void check_and_reload_way_txt();
+void draw_waypoints();
+void loadwaypoints();
+void mark_waypoint();
+void set_position_to_waypoint();
+void set_waypoint_pos(gdouble lat, gdouble lon);
+gint setwp_cb (GtkWidget * widget, guint datum);
+gint sel_targetweg_cb (GtkWidget * widget, guint datum);
+void draw_radar();
+gint setsortcolumn (GtkWidget * w, gpointer datum);
 
-void streets_init (void);
-void streets_rebuild_list (void);
-void streets_draw_list (void);
-gint streets_draw_cb (GtkWidget * widget, guint datum);
-void streets_check_if_moved_reset (void);
-void streets_query_point ( gdouble lat, gdouble lon , gdouble dist );
-#endif /* GPSDRIVE_STREETS_H */
+#endif /* GPSDRIVE_WAYPOINT_H */

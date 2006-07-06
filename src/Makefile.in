@@ -96,14 +96,15 @@ garble_LDADD = $(LDADD)
 am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	gpsdrive_config.c gpsdrive_config.h navigation.c speech_out.c \
 	speech_out.h friends.c battery.c track.c poi.c streets.c \
-	draw_tracks.c settings.c battery.h track.h poi.h streets.h \
-	draw_tracks.h gpsdrive.h gpssql.c gpskismet.c ../config.h \
-	icons.c icons.h gettext.h LatLong-UTMconversion.c \
-	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
-	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
-	import_map.h routes.c routes.h download_map.c download_map.h \
-	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c garmin_data.cpp \
+	waypoint.c draw_tracks.c settings.c battery.h track.h poi.h \
+	streets.h waypoint.h draw_tracks.h gpsdrive.h gpssql.c \
+	gpskismet.c ../config.h icons.c icons.h gettext.h \
+	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
+	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
+	talogo.h import_map.c import_map.h routes.c routes.h \
+	download_map.c download_map.h speech_strings.c \
+	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
+	nmea_handler.h unit_test.c garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
 	garmin_link.h garmin_serial_unix.h garmin_application.h \
@@ -121,8 +122,8 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
 	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) \
-	draw_tracks.$(OBJEXT) settings.$(OBJEXT) gpssql.$(OBJEXT) \
-	gpskismet.$(OBJEXT) icons.$(OBJEXT) \
+	waypoint.$(OBJEXT) draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
+	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
 	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) geometry.$(OBJEXT) \
 	map_handler.$(OBJEXT) import_map.$(OBJEXT) routes.$(OBJEXT) \
@@ -358,15 +359,15 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 @DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
 PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	gpsdrive_config.h navigation.c speech_out.c speech_out.h \
-	friends.c battery.c track.c poi.c streets.c draw_tracks.c \
-	settings.c battery.h track.h poi.h streets.h draw_tracks.h \
-	gpsdrive.h gpssql.c gpskismet.c ../config.h icons.c icons.h \
-	gettext.h LatLong-UTMconversion.c LatLong-UTMconversion.h \
-	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c map_handler.c \
-	gpsproto.h talogo.h import_map.c import_map.h routes.c \
-	routes.h download_map.c download_map.h speech_strings.c \
-	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
-	nmea_handler.h unit_test.c $(am__append_1)
+	friends.c battery.c track.c poi.c streets.c waypoint.c \
+	draw_tracks.c settings.c battery.h track.h poi.h streets.h \
+	waypoint.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
+	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
+	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
+	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
+	import_map.h routes.c routes.h download_map.c download_map.h \
+	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
+	nmea_handler.c nmea_handler.h unit_test.c $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -521,6 +522,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/track.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/waypoint.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
