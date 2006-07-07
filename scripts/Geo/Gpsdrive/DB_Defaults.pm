@@ -891,11 +891,11 @@ sub fill_default_poi_types() {
     }
 
     my $icon_file='../data/icons.txt';
-    $icon_file = '../share/gpsdrive/icons.txt'  unless -d $icon_file;
-    $icon_file = '/usr/local/share/gpsdrive'  unless -d $icon_file;
-    $icon_file = '/usr/share/gpsdrive/icons.txt'  unless -d $icon_file;
-    $icon_file = '/opt/gpsdrive/icons.txt'  unless -d $icon_file;
-    die "no Icon Directory found" unless -d $icon_file;
+    $icon_file = '../share/gpsdrive/icons.txt'    unless -s $icon_file;
+    $icon_file = '/usr/local/share/gpsdrive'      unless -s $icon_file;
+    $icon_file = '/usr/share/gpsdrive/icons.txt'  unless -s $icon_file;
+    $icon_file = '/opt/gpsdrive/icons.txt'        unless -s $icon_file;
+    die "no Icon File found" unless -s $icon_file;
     my $fh = IO::File->new("<$icon_file");
     my $poi_type_id=0;
     while ( my $line = $fh->getline() ) {
