@@ -8,9 +8,9 @@ Standards-Version: 3.6.1
 Package: gpsdrive
 Architecture: any
 Depends: ${shlibs:Depends}, gdal-bin, grass
-Recommends: gpsd, perl, libmysqlclient10, imagemagick, gpsbabel, perl-base, perlmagick, festival, libgeos, libgdal
-Suggests: grass, libarchive-zip-perl, libdate-manip-perl, libdbi-perl, libexpat1, libfile-find-rule-perl, libgtk2.0-0, libwww-perl
-Description: Car navigation system
+Recommends: gpsd, perl, libmysqlclient10, imagemagick, gpsbabel, perl-base, perlmagick, festival, libgeos, libgdal, libwww-perl, libtext-query-perl, libwww-mechanize-perl
+Suggests: grass, libarchive-zip-perl, libdate-manip-perl, libdbi-perl, libexpat1, libfile-find-rule-perl, libgtk2.0-0
+Description: Car/Bike navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
  GpsDrive displays your position provided from gpsd which gets it
  from your NMEA or Garmin capable GPS receiver on a zoomable map, 
