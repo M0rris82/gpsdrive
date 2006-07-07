@@ -925,7 +925,7 @@ sub import_Data($){
 	$filename="planet-2006-07-a.osm.bz2";
 	my $url = "http://www.ostertag.name/osm/planet";
 	$url = "http://www.ostertag.name/osm/planet";
-	$url .=$filename;
+	$url .="/$filename";
 	my @file_list =( $filename );
 	# @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
 	for my $file ( @file_list ) {
