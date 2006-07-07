@@ -918,9 +918,6 @@ savewaypoints ()
 					sizeof ((wayp + i)->typ));
 			}
 
-
-			// TODO/ERROR: if ->typ is empty 
-			// All colums get shifted one to the left
 			e = fprintf (st, "%-22s %10s %11s "
 				     "%s"
 				     " %d %d %d %d"

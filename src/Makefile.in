@@ -96,9 +96,9 @@ garble_LDADD = $(LDADD)
 am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	gpsdrive_config.c gpsdrive_config.h navigation.c speech_out.c \
 	speech_out.h friends.c battery.c track.c poi.c streets.c \
-	waypoint.c draw_tracks.c settings.c battery.h track.h poi.h \
-	streets.h waypoint.h draw_tracks.h gpsdrive.h gpssql.c \
-	gpskismet.c ../config.h icons.c icons.h gettext.h \
+	waypoint.c draw_tracks.c draw_grid.c settings.c battery.h \
+	track.h poi.h streets.h waypoint.h draw_tracks.h gpsdrive.h \
+	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
 	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
 	talogo.h import_map.c import_map.h routes.c routes.h \
@@ -122,14 +122,14 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
 	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) \
-	waypoint.$(OBJEXT) draw_tracks.$(OBJEXT) settings.$(OBJEXT) \
-	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
-	LatLong-UTMconversion.$(OBJEXT) gpsserial.$(OBJEXT) \
-	gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) geometry.$(OBJEXT) \
-	map_handler.$(OBJEXT) import_map.$(OBJEXT) routes.$(OBJEXT) \
-	download_map.$(OBJEXT) speech_strings.$(OBJEXT) \
-	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	unit_test.$(OBJEXT) $(am__objects_1)
+	waypoint.$(OBJEXT) draw_tracks.$(OBJEXT) draw_grid.$(OBJEXT) \
+	settings.$(OBJEXT) gpssql.$(OBJEXT) gpskismet.$(OBJEXT) \
+	icons.$(OBJEXT) LatLong-UTMconversion.$(OBJEXT) \
+	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) \
+	geometry.$(OBJEXT) map_handler.$(OBJEXT) import_map.$(OBJEXT) \
+	routes.$(OBJEXT) download_map.$(OBJEXT) \
+	speech_strings.$(OBJEXT) gps_handler.$(OBJEXT) \
+	nmea_handler.$(OBJEXT) unit_test.$(OBJEXT) $(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -360,14 +360,15 @@ gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
 PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	gpsdrive_config.h navigation.c speech_out.c speech_out.h \
 	friends.c battery.c track.c poi.c streets.c waypoint.c \
-	draw_tracks.c settings.c battery.h track.h poi.h streets.h \
-	waypoint.h draw_tracks.h gpsdrive.h gpssql.c gpskismet.c \
-	../config.h icons.c icons.h gettext.h LatLong-UTMconversion.c \
-	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
-	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
-	import_map.h routes.c routes.h download_map.c download_map.h \
-	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c $(am__append_1)
+	draw_tracks.c draw_grid.c settings.c battery.h track.h poi.h \
+	streets.h waypoint.h draw_tracks.h gpsdrive.h gpssql.c \
+	gpskismet.c ../config.h icons.c icons.h gettext.h \
+	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
+	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
+	talogo.h import_map.c import_map.h routes.c routes.h \
+	download_map.c download_map.h speech_strings.c \
+	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
+	nmea_handler.h unit_test.c $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -486,6 +487,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LatLong-UTMconversion.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw_grid.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw_tracks.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/friends.Po@am__quote@
