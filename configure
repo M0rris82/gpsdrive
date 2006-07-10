@@ -31029,7 +31029,7 @@ fi
 
 echo checking for package libc6 2.3.5-1... TODO >&2
 
-echo checking for package libcario2 1.0.2-3...
+echo checking for package libcairo 1.0.2-3...
 if $PKG_CONFIG cairo --atleast-version=1.0.2
 then
    echo "$as_me:$LINENO: result: yes" >&5

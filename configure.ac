@@ -20,6 +20,7 @@ dnl 06/06/2006  DP      Lower libpango required min version from 1.10.4 to 1.10.
 dnl 06/06/2006  DP      Lower libglib required min version from 2.8.6 to 2.8.5
 dnl 06/06/2006  DP      Remove Requirement for libglib 2.0
 dnl 08/06/2006  DP      Fixed typo in error message libcario libcairo.
+dnl 10/07/2006  DP      Changed the echo text from libcairo2 to libcairo.
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -318,7 +319,7 @@ echo checking for package libc6 2.3.5-1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
-echo checking for package libcairo2 1.0.2-3...
+echo checking for package libcairo 1.0.2-3...
 dnl ---------------------------
 if $PKG_CONFIG cairo --atleast-version=1.0.2
 then
