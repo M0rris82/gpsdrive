@@ -135,6 +135,9 @@ dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
 AQ_CHECK_GDAL
 AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
+dnl the $(GDAL_LIBS) part is a quick hack. So please could 
+dnl someone knowing autoconf reconsidder if there is a better solution
+GDAL_LIBS=`gdal-config --libs`
 
 
 dnl ************************

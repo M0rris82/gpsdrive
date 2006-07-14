@@ -16,13 +16,16 @@ if HAVE_GDAL
 worldgendir=$(bindir)
 worldgen_PROGRAMS = worldgen
 worldgen_SOURCES= worldgen.c ../lib_map/lib_map.a
-worldgen_LDFLAGS = -lgdal1.3.1
+worldgen_LDFLAGS = $(GDAL_LIBS)
 
 if HAVE_GTK
 #CFLAGS += -DHAVE_CAIRO
 #CFLAGS += -DHAVE_GTK
 
-lib_map_lflags = -lgdal1.3.1 \
+# the $(GDAL_LIBS) part is a quick hack. So please could 
+# someone knowing autoconf reconsidder if there is a better solution
+lib_map_lflags = \
+	$(GDAL_LIBS) \
 	`pkg-config cairo --libs` \
 	`pkg-config gtk+-2.0 --libs`
 
