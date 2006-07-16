@@ -15,17 +15,17 @@ libatk1.0-0 (1.10.3)		Yes (27/03/2006)		PKG_CONFIG
 libc6 (2.3.5-1)			No
 libcario2 (1.0.2-3)		Yes (29/03/2006)		PKG_CONFIG, AC_CHECK_LIB
 libexpat1			No
-libfontconfig1			No
+libfontconfig1(2.2.3)		Yes
 libfreetype6			No
 libgcc1				No
 libglib2.0-0			Yes (26/03/2006)		AM_PATH_GLIB_2_0
 libgtk2.0-0			Yes (25/03/2006)		AM_PATH_GTK_2_0
-libpango1.0-0			No
+libpango1.0-0 (1.10.1)		Yes
 libpcre3			Yes				AC_PATH_PROG
 libpng12-0			No
 libstdc++6			No
 libx11-6			No
-libxcursor1			No
+libxcursor1 (1.1.2)		Yes
 libxext6			No
 libxi6				No
 libxinerama1 (1:0.9.0-1)	No

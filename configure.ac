@@ -21,6 +21,10 @@ dnl 06/06/2006  DP      Lower libglib required min version from 2.8.6 to 2.8.5
 dnl 06/06/2006  DP      Remove Requirement for libglib 2.0
 dnl 08/06/2006  DP      Fixed typo in error message libcario libcairo.
 dnl 10/07/2006  DP      Changed the echo text from libcairo2 to libcairo.
+dnl 16/07/2006  DP	Reduced required versions numbers as follows
+dnl			libfontconfig 2.3.1 -> 2.2.3
+dnl                     libpango 1.10.2 -> 1.10.1
+dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
 AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
@@ -341,7 +345,8 @@ dnl ---------------------------
 dnl ---------------------------
 echo -n checking for package libfontconfig1...
 dnl ---------------------------
-if $PKG_CONFIG fontconfig --atleast-version=2.3.1
+dnl DP changed from 2.3.1 to 2.2.3
+if $PKG_CONFIG fontconfig --atleast-version=2.2.3
 then
    AC_MSG_RESULT([yes])
    AC_CHECK_LIB(fontconfig, FcConfigFilename, [], [
@@ -349,7 +354,7 @@ then
    exit -1
    ])
 else
-   AC_MSG_ERROR([libfontconfig is missing or your version is to old. Min Version 2.3.1])
+   AC_MSG_ERROR([libfontconfig is missing or your version is to old. Min Version 2.2.3])
 fi		  
 
 dnl ---------------------------
@@ -359,9 +364,9 @@ echo TODO checking for package libgcc1... TODO >&2
 dnl ---------------------------
 
 dnl ---------------------------
-echo -n checking for package libpango1 1.0...
+echo -n checking for package libpango1 1.10...
 dnl ---------------------------
-if $PKG_CONFIG pango --atleast-version=1.10.2
+if $PKG_CONFIG pango --atleast-version=1.10.1
 then
     AC_MSG_RESULT([yes])
     dnl AC_CHECK_LIB(pango,  main, [], [    dnl TODO Need to find a suitable function name to check for
@@ -369,7 +374,7 @@ then
     dnl exit -1
     dnl ])
 else
-    AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.2])
+    AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.1])
 fi
 
 dnl ---------------------------
@@ -392,13 +397,9 @@ echo checking for package libstdc++6... TODO >&2
 dnl ---------------------------
 echo checking for package libx11-6...   TODO >&2
 dnl ---------------------------
-echo checking for package libxcursor1... TODO >&2
-dnl ---------------------------
-
-dnl ---------------------------
 echo -n checking for package libxcursor1...
 dnl ---------------------------
-if $PKG_CONFIG xcursor --atleast-version=1.1.3
+if $PKG_CONFIG xcursor --atleast-version=1.1.2
 then
     AC_MSG_RESULT([yes])
     AC_CHECK_LIB(fontconfig, XcursorImageCreate, [], [
@@ -406,7 +407,7 @@ then
     exit -1
     ])
 else
-    AC_MSG_ERROR([libxcursor1 is missing or your version is to old. Min Version 1.1.3])
+    AC_MSG_ERROR([libxcursor1 is missing or your version is to old. Min Version 1.1.2])
 fi
 dnl ----------------------------			
 
