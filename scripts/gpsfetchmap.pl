@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.43  2006/07/17 06:42:56  tweety
+# reading track info for map downloading gets (hopefully) more flexible
+#
 # Revision 1.42  2006/06/30 12:16:20  tweety
 # add (/opt/gpsdrive to the search path
 # add osm-polite as option to geoinfo.pl
@@ -1569,8 +1572,17 @@ sub get_coords_for_track($) {
     # loop through each line of the track file
     while ($line = $fh->getline()) {
         $line =~ s/^\s+//;
-        ($la,$lo,$rest) = split(/\s+/, $line);
-	debug("($la,$lo,$rest)");
+        ($la,$lo,$rest) = split(/\s+/, $line, 3);
+	debug("pre-regex:  ($la|$lo|$rest)");
+	# Now a regex (applied to both lat & long) to drop cruft like
+	# leading text or trailing commas. Skip over anything that is
+	# not a digit, minus sign or decimal point. Then extract
+	# either an optional minus sign, one or more digits, a decimal
+	# point, 0 or more digits, or an optional minus sign, a
+	# decimal point and one or more digits. Ignore the rest.
+	$la =~ s/([^\d-.]*)(-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+	$lo =~ s/([^\d-.]*)(-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+	debug("post-regex: ($la|$lo|$rest)");
 	next if ( $la == 1001 ) && ( $lo == 1001) ;
         if ((($la != $oldla) || ($lo != $oldlo)) && ($la < $max_lat) && ($lo < $max_lon)) {
             $delta_la = abs($la - $oldla);
