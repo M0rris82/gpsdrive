@@ -738,7 +738,7 @@ about_cb (GtkWidget * widget, guint datum)
 
 
 	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR,
-		    "gpsdrivemini.png");
+		    "pixmaps/gpsdrivemini.png");
 
 
 	window = gtk_dialog_new ();

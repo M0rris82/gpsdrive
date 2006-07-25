@@ -56,7 +56,7 @@ extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered_not_bestmap, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gint setdefaultpos, shadow, etch;
 extern gint do_draw_grid, streets_draw, tracks_draw, poi_draw, testgarmin;
 extern gint needtosave, usedgps, simfollow;

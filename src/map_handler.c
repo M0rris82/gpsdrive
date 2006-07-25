@@ -823,17 +823,22 @@ test_and_load_newmap ()
     route_next_target ();
 
 
-  // Test if we want White Background as Map
+  // Test if we want Background image as Map
   if (!display_background_map ())
     {
-      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-      g_strlcpy (mapfilename, "map_LightYellow.png", sizeof (mapfilename));
       mapscale = (glong) scalewanted;
       pixelfact = mapscale / PIXELFACT;
       zero_lat = current_lat;
       zero_lon = current_lon;
       xoff = yoff = 0;
       map_proj = proj_map;
+
+      // extra variable; so we can later make it configurable
+      gchar bg_mapfilename[2048];
+      g_strlcpy (bg_mapfilename, "map_LightYellow.png", sizeof (bg_mapfilename));
+
+      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
+      g_strlcpy (mapfilename, bg_mapfilename, sizeof (mapfilename));
       loadmap (mapfilename);
       return;
     }

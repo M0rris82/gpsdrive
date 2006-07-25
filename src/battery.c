@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.19  2006/07/25 06:29:11  tweety
+  eliminate some no longer needed definitions
+  add fclose where needed
+  add complete path to a pixmap
+  correct some debug levels
+
   Revision 1.18  2006/03/10 08:37:09  tweety
   - Replace Street/Track find algorithmus in Query Funktion
     against real Distance Algorithm (distance_line_point).
@@ -401,6 +407,7 @@ battery_get_values_linux_acpi (int *blevel, int *bloading, int *bcharge,
 			  ret = TRUE;
 			}
 		    }
+		  fclose (battery);
 		}		// if open(...state)
 	      else
 		{
@@ -412,7 +419,6 @@ battery_get_values_linux_acpi (int *blevel, int *bloading, int *bcharge,
 	    };			// if ent->d_name[0] != '.'
 	};
       closedir (dir);
-
     }
 
   if (mydebug > 60)

@@ -63,8 +63,7 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
   bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed,
-  milesconv;
+extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 extern gchar mapdir[500];
 
@@ -564,9 +563,9 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
   gdouble sec;
   gint min;
   //    gdouble dec = -1002.0;
-  gchar s2;
+  gchar s2=' ';
   gdouble fmin;
-  gchar text[100];
+  gchar text[50];
 
   g_strlcpy(text,intext,sizeof(text));
 
@@ -609,8 +608,8 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
   if (s2 == 'S')
     *dec *= -1.0;
 
-  if (mydebug > 95)
-    fprintf (stderr, "coordinate_string2gdouble(%s)-->%f\n", text, *dec);
+  if (mydebug > 99)
+    fprintf (stderr, "coordinate_string2gdouble('%s')-->%f\n", text, *dec);
 }
 
 /* *****************************************************************************

@@ -23,6 +23,12 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.11  2006/07/25 06:29:11  tweety
+eliminate some no longer needed definitions
+add fclose where needed
+add complete path to a pixmap
+correct some debug levels
+
 Revision 1.10  2006/06/16 20:16:10  tweety
 correct speech strings
 
@@ -203,8 +209,6 @@ static int nettype, channel, wep;
 # endif
 
 /* variables */
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
-extern gdouble zero_long, zero_lat, target_long, target_lat, dist;
 int kismetsock = -1, havekismet;
 static char kbuffer[20010];
 static int bc = 0;

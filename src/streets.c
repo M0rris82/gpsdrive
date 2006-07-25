@@ -784,7 +784,7 @@ streets_draw_list (void)
 	  (gdks_streets + gdks_streets_count)->x2 = posx2;
 	  (gdks_streets + gdks_streets_count)->y2 = posy2;
 
-	  if (mydebug > 90)
+	  if (0 && mydebug > 90)
 	    {
 	      char beschrift[120];
 	      g_snprintf (beschrift, sizeof (beschrift),
