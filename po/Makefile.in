@@ -7,7 +7,7 @@
 # Please note that the actual code is *not* freely available.
 
 PACKAGE = gpsdrive
-VERSION = 2.10pre3-work
+VERSION = 2.10pre3-cvs-20060727
 
 # These two variables depend on the location of this directory.
 subdir = po
@@ -38,7 +38,7 @@ XGETTEXT = /usr/bin/xgettext
 MSGMERGE = msgmerge
 
 DEFS = -DHAVE_CONFIG_H
-CFLAGS =  -g -Wall -Wno-format-y2k -pipe  -DHAVE_GTK   -DXTHREADS -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/X11R6/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -DXTHREADS -pthread -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/X11R6/include -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libart-2.0   -DHAVE_CAIRO -I/usr/include/cairo    -I/usr/include/mysql 
+CFLAGS =  -g -Wall -Wno-format-y2k -pipe  -DHAVE_GTK   -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include   -pthread -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libart-2.0   -DHAVE_CAIRO -I/usr/include/cairo    -I/usr/include/mysql 
 CPPFLAGS = 
 
 INCLUDES = -I.. -I$(top_srcdir)/intl
