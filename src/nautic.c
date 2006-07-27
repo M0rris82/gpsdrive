@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.6  2006/07/27 06:40:38  tweety
+delete unused extern declaration
+
 Revision 1.5  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -100,7 +103,6 @@ extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag;
 extern gint debug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
 extern gint setdefaultpos, shadow, testgarmin, needtosave, usedgps;
 extern gchar activewpfile[200];
 extern gint mod_setupcounter;
