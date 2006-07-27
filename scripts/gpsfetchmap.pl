@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.44  2006/07/27 06:01:25  tweety
+# track grabbing regex expanded
+#
 # Revision 1.43  2006/07/17 06:42:56  tweety
 # reading track info for map downloading gets (hopefully) more flexible
 #
@@ -1580,8 +1583,8 @@ sub get_coords_for_track($) {
 	# either an optional minus sign, one or more digits, a decimal
 	# point, 0 or more digits, or an optional minus sign, a
 	# decimal point and one or more digits. Ignore the rest.
-	$la =~ s/([^\d-.]*)(-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
-	$lo =~ s/([^\d-.]*)(-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+	$la =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+	$lo =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
 	debug("post-regex: ($la|$lo|$rest)");
 	next if ( $la == 1001 ) && ( $lo == 1001) ;
         if ((($la != $oldla) || ($lo != $oldlo)) && ($la < $max_lat) && ($lo < $max_lon)) {
