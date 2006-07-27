@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.45  2006/07/27 13:17:06  tweety
+# Update Configure Versions
+#
 # Revision 1.44  2006/07/27 06:01:25  tweety
 # track grabbing regex expanded
 #
@@ -214,7 +217,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-work)
+Version 1.19 (gpsdrive-2.10pre3-cvs-20060727)
 ";
 
 sub redirect_ok { return 1; }

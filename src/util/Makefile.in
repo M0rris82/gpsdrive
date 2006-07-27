@@ -263,11 +263,15 @@ LIB_MAP_L = map_gpsdrive.c  map_load.c \
 
 @HAVE_GDAL_TRUE@worldgendir = $(bindir)
 @HAVE_GDAL_TRUE@worldgen_SOURCES = worldgen.c ../lib_map/lib_map.a
-@HAVE_GDAL_TRUE@worldgen_LDFLAGS = -lgdal1.3.1
+@HAVE_GDAL_TRUE@worldgen_LDFLAGS = $(GDAL_LIBS)
 
 #CFLAGS += -DHAVE_CAIRO
 #CFLAGS += -DHAVE_GTK
-@HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@lib_map_lflags = -lgdal1.3.1 \
+
+# the $(GDAL_LIBS) part is a quick hack. So please could 
+# someone knowing autoconf reconsidder if there is a better solution
+@HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@lib_map_lflags = \
+@HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	$(GDAL_LIBS) \
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	`pkg-config cairo --libs` \
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	`pkg-config gtk+-2.0 --libs`
 
