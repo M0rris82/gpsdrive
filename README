@@ -81,6 +81,26 @@ After compiling and installing (install is needed for localisation)
 read the manpage of gpsdrive or start the program if you are to lazy
 to read manuals. ;-)
 
+Quick Guide to get started:
+
+  # Compile and install
+  configure
+  make
+  make install
+ 
+  # create database
+  geoinfo.pl  --create-db --fill-defaults --openstreetmap \
+               --db-user=root --db-password=<our mysql root password>
+ 
+  # make directory
+  mkdir ~/.gpsdrive
+ 
+  # fetch additional maps
+  gpsfetchmap.pl -w gpsd -a 1
+ 
+  # start gpsdrive
+  gpsdrive
+ 
 You can also download the RPM file and install it:
 
 rpm -Uvh gpsdrive*.rpm
