@@ -22,19 +22,13 @@ votre distribution.
 
 o Démarrez le serveur, habituellement en tapant: /etc/init.d/mysql start
 
-o Pour créer une base de données initiale utilisez le fichier "create.sql" 
+o Pour créer une base de données initiale utilisez le fichier "geoinfo.pl" 
   fourni. Assurez-vous que l'utilisateur choisi dispose des droits nécessaires
   pour créer cette table.
 
-  mysql < create.sql
+  geoinfo.pl  --create-db --fill-defaults --openstreetmap \
+              --db-user=root --db-password=<our mysql root password>
   (ajoutez un nom d'utilisateur si besoin est)
-  Par exemple:
-  mysql -u root -p <create.sql
-
-  Si le compte root de MySQL est sans mot de passe (c'est le cas si vous venez
-  d'installer mysql) entrez cette commande:
-
-  mysql -u root <create.sql
 
   Vous pouvez remplacer gast@localhost par gast@'%' si vous voulez utiliser
   la base de données avec d'autres noms d'hôtes.
@@ -44,7 +38,8 @@ Mise à jour:
 ------------
 Si vous avez déjà la base de données et que vous mettez GpsDrive à jour,
 assurez-vous que la structure de votre table est bien comme celle du fichier
-create.sql.
+create.sql (old). Now use 
+geoinfo.pl
 
 Gestion du serveur SQL:
 -----------------------

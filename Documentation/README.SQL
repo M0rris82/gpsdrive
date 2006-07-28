@@ -21,7 +21,7 @@ UPDATE:
 There is now a new way to create the initial database but you do 
 need to have perl installed.  The new script is gpsdrive/bin/geoinfo.pl and
 the requierd command line is discussed below. Check out geoinfo --help to see all
-of its options.  If you can't get it to run you may still have success with create.sql.
+of its options.  
 -------------------------------------------------------------------------------
 
 o To create a initial database with included Perl file 'geoinfo.pl'.
@@ -33,30 +33,11 @@ o To create a initial database with included Perl file 'geoinfo.pl'.
   Once you have done that run the perl script like this.
   geoinfo.pl --db-user=root --db-password='enter-your-good-new-password-here'
 
-OR
-
-o To create a initial database with included SQL file 'create.sql'.
-  Make sure, that the user  have enough permissions to create this table
-  and grant the permissions! 
-
-  mysql < create.sql
-  (add username and login options if needed)
-  i.e.:
-  mysql -u root -p <create.sql
-
-  If you have no password for root (this is the case if you newly
-  installed mysql) so use this command:
-
-  mysql -u root <create.sql
-
-  You may change the string gast@localhost to gast@'%' if you want to
-  use the database from other hosts.
-
 
 Update:
 -------
 If you already have the database and you update GpsDrive, make sure
-your table structure is the same like in create.sql.
+your table structure is updated with the above geoinfo.pl script.
 
 Managing the SQL server:
 ------------------------

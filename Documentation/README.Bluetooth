@@ -1,0 +1,19 @@
+maybe you have to pair the devices first
+
+moby:~# hcitool scan
+Scanning ...
+        00:15:7F:00:51:08       Bluetooth GPS
+
+moby:~# hcitool cc      00:15:7F:00:51:08
+moby:~# hcitool con
+Connections:
+        < ACL 00:15:7F:00:51:08 handle 41 state 1 lm MASTER 
+
+moby:~# rfcomm bind /dev/rfcomm0 00:15:7F:00:51:08
+
+moby:~# cat /dev/rfcomm0 count=10
+
+moby:~# killall -9 gpsd
+
+moby:~# gpsd -p /dev/rfcomm0
+

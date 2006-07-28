@@ -235,7 +235,7 @@ documentation_DATA = TODO GPS-receivers LEEME CREDITS \
 	README.FreeBSD   README.gpspoint2gspdrive \
 	FAQ.gpsdrive FAQ.gpsdrive.fr README.SQL \
 	NMEA.txt README.kismet README.nasamaps \
-	README.lib_map
+	README.lib_map README.Bluetooth
 
 EXTRA_DIST = $(documentation_DATA)
 all: all-am
