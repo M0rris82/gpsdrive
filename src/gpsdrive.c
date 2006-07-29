@@ -492,7 +492,8 @@ static GtkItemFactoryEntry main_menu[] = {
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
     {N_("/_Misc. Menu/Help"),               NULL, NULL,                     0, "<LastBranch>"},
     {N_("/_Misc. Menu/Help/About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_DIALOG_INFO},
-    {N_("/_Misc. Menu/Help/Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP}
+    {N_("/_Misc. Menu/Help/Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
+    {N_("/_Misc. Menu/Quit"),               NULL, (gpointer) quit_program,  0, NULL }
 };
 
 void sql_load_lib();
