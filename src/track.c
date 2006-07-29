@@ -23,6 +23,10 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.11  2006/07/29 14:06:51  tweety
+  group the checkboxes in the Menu
+  rename some variables to more clearly show it's a button _bt
+
   Revision 1.10  2006/01/03 14:24:10  tweety
   eliminate compiler Warnings
   try to change all occurences of longi -->lon, lati-->lat, ...i
@@ -485,7 +489,7 @@ gettrackfile (GtkWidget * widget, gpointer datum)
   rebuildtracklist ();
   fclose (st);
   gtk_widget_destroy (datum);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (trackbt), TRUE);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt), TRUE);
 
   return TRUE;
 }

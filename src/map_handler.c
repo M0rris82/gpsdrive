@@ -77,6 +77,9 @@ extern gint thisrouteline, routeitems, routepointer;
 extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;
+extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
+extern GtkWidget *posbt;
+extern gint streets_draw;
 
 extern gchar oldfilename[2048];
 
@@ -92,6 +95,9 @@ extern int havedefaultmap;
 extern GtkWidget *destframe;
 extern gint createroute;
 extern GdkPixbuf *image, *tempimage, *miniimage;
+extern GtkWidget *scaler_widget;
+extern GtkWidget *scaler_left_bt, *scaler_right_bt;
+extern GtkObject *scaler_adj;
 
 #include "gettext.h"
 
@@ -161,6 +167,34 @@ map_projection (char *filename)
   return proj;
 }
 
+/* *****************************************************************************
+ */
+gint
+bestmap_cb (GtkWidget * widget, guint datum)
+{
+    if (datum == 1)
+	scaleprefered_not_bestmap = !scaleprefered_not_bestmap;
+    if (!scaleprefered_not_bestmap)
+	{
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
+					  TRUE);
+	    gtk_widget_set_sensitive (scaler_right_bt, FALSE);
+	    gtk_widget_set_sensitive (scaler_left_bt, FALSE);
+	    if (scaler_widget)
+		gtk_widget_set_sensitive (scaler_widget, FALSE);
+	}
+    else
+	{
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
+					  FALSE);
+	    gtk_widget_set_sensitive (scaler_right_bt, TRUE);
+	    gtk_widget_set_sensitive (scaler_left_bt, TRUE);
+	    if (scaler_widget)
+		gtk_widget_set_sensitive (scaler_widget, TRUE);
+	}
+    needtosave = TRUE;
+    return TRUE;
+}
 
 /* *****************************************************************************
  */
@@ -215,12 +249,67 @@ display_maps_cb (GtkWidget * widget, guint datum)
 /* ******************************************************************
  */
 GtkWidget *
-make_display_map_checkboxes ()
+make_display_map_controlls ()
+{
+  GtkWidget *frame_maptype;
+  GtkWidget *vbox_map_controlls;
+  GtkTooltips *tooltips;
+  tooltips = gtk_tooltips_new ();
+
+  // Frame
+  frame_maptype = gtk_frame_new (_("Map Controlls"));
+  vbox_map_controlls = gtk_vbox_new (TRUE, 1 * PADDING);
+  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controlls);
+
+  // Checkbox ---- STREETS Draw
+  streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
+  gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+  if (!streets_draw)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
+				    (streets_draw_bt), TRUE);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+			_("Draw Streets found in mySQL"), NULL);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
+  
+
+  // Checkbox ---- Best Map
+  bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
+  gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), bestmap_bt, FALSE, FALSE,0 * PADDING);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
+			_("Always select the most detailed map available"),
+			NULL);
+  
+  if (!scaleprefered_not_bestmap)
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
+  gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
+		      GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
+  
+  // Checkbox ---- Pos Mode
+  posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
+  gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
+  gtk_signal_connect (GTK_OBJECT (posbt),     "clicked", GTK_SIGNAL_FUNC (pos_cb),    (gpointer) 1);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), posbt, FALSE, FALSE,0 * PADDING);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
+			_("Turn position mode on. "
+			  "You can move on the map with the left mouse button click."
+			  " Clicking near the border switches to the proximate map."),
+			NULL);
+  
+  
+  return frame_maptype;
+}
+  
+/* ******************************************************************
+ */
+GtkWidget *
+make_display_map_checkboxes()
 {
   GtkWidget *frame_maptype;
   GtkWidget *vbox3;
+  GtkTooltips *tooltips;
 
-  // Checkbox ---- Show Map
+  // Frame
   frame_maptype = gtk_frame_new (_("Shown map type"));
   vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
@@ -251,6 +340,7 @@ make_display_map_checkboxes ()
 
     }
 
+  tooltips = gtk_tooltips_new ();
   gint i;
   for (i = 0; i < max_display_map; i++)
     {
@@ -270,7 +360,7 @@ make_display_map_checkboxes ()
 
       display_map[i].checkbox
 	= gtk_check_button_new_with_label (display_name);
-
+      
       if (display_map[i].to_be_displayed)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
 				      (display_map[i].checkbox), TRUE);

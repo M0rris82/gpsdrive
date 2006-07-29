@@ -180,7 +180,7 @@ extern gint shadow;
 
 extern GdkGC *kontext;
 extern GdkDrawable *drawable;
-extern GtkWidget *trackbt;
+extern GtkWidget *track_bt;
 
 extern GdkColor red;
 extern GdkColor black;
@@ -229,6 +229,7 @@ gint importaway_cb (GtkWidget * widget, guint datum);
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
+gint pos_cb (GtkWidget * widget, guint datum);
 
 /* I didn't want to start a friends.h ;-) */
 void drawfriends (void);

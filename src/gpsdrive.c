@@ -176,7 +176,7 @@ GdkColor defaultcolor;
 GtkWidget *drawing_area, *drawing_bearing;
 GtkWidget *drawing_sats, *drawing_miniimage;
 
-GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt;
+GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgps_bt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
@@ -282,13 +282,13 @@ gint nlist[] = { 500,
 GtkWidget *label_lat, *label_lon;
 GtkWidget *label_map_filename, *label_map_scale;
 GtkWidget *label_heading, *label_baering, *label_timedest;
-GtkWidget *label_prefscale, *mutebt, *sqlbt;
-GtkWidget *wpbt;
+GtkWidget *label_prefscale, *mute_bt, *sqlbt;
+GtkWidget *wp_bt;
 GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 
-GtkWidget *trackbt, *tracks_draw_bt;
-GtkWidget *savetrackbt;
-GtkWidget *loadtrackbt;
+GtkWidget *track_bt, *tracks_draw_bt;
+GtkWidget *savetrack_bt;
+GtkWidget *loadtrack_bt;
 gint savetrack = 0;
 gint trackflag = 1;
 GdkSegment *track, *trackshadow;
@@ -303,7 +303,7 @@ GtkWidget *scaler_widget;
 GtkWidget *scaler_left_bt, *scaler_right_bt;
 GtkObject *scaler_adj;
 
-GtkWidget *setupbt;
+GtkWidget *setup_bt;
 gint havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0, wp_from_sql = 0;
 gint posmode = 0;
@@ -347,7 +347,7 @@ namesstruct *names;
 gchar activewpfile[200], gpsdservername[200], setpositionname[80];
 gint newsatslevel = TRUE, testgarmin = TRUE;
 gint needtosave = FALSE;
-GtkWidget *serialbt, *mapdirbt;
+GtkWidget *serial_bt, *mapdirbt;
 GtkWidget *slowcpubt;
 GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 
@@ -429,6 +429,7 @@ GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
 GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
 GtkWidget *frame_maptype;
+GtkWidget *frame_mapcontrol;
 GtkWidget *frame_status;
 GtkWidget *frame_speed;
 GtkWidget *frame_sats;
@@ -436,7 +437,7 @@ GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
 GtkWidget *frame_wp;
-GtkWidget *frame_toogles, *lab1;
+GtkWidget *frame_poi,*frame_track, *lab1;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -498,7 +499,9 @@ void sql_load_lib();
 void unit_test(void);
 void drawdownloadrectangle (gint big);
 GtkWidget * make_display_map_checkboxes();
+GtkWidget * make_display_map_controlls();
 void draw_grid (GtkWidget * widget);
+gint bestmap_cb (GtkWidget * widget, guint datum);
 
 
 
@@ -2092,14 +2095,13 @@ drawmarker (GtkWidget * widget, guint * datum)
 		}
 	}
 	/*    display distance, speed and zoom */
-	/*   g_snprintf (s3, */
-	/*     "<span color=\"%s\" font_desc=\"%s\">%s</span><span color=\"%s\" font_desc=\"%s\">%s</span>", */
-	/*     bluecolor, bigfont, s2, bluecolor, "sans bold 18", s2a); */
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
 		    bluecolor, bigfont, s2, s2a);
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
+	if ( mydebug > 5 ) 
+	    fprintf(stderr, "groundspeed=%f\n", groundspeed);
 	if (milesflag)
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
 	if (metricflag)
@@ -2857,7 +2859,7 @@ setup_cb (GtkWidget * widget, guint datum)
 	GtkWidget *window = NULL;
 	gint i;
 
-	gtk_widget_set_sensitive (setupbt, FALSE);
+	gtk_widget_set_sensitive (setup_bt, FALSE);
 
 	mainsetup ();
 	infos ();
@@ -3061,8 +3063,9 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_bearing), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_timedest), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_prefscale), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_toogles), stype);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame_poi), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
+	//	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapcontrol), stype);
 
 	if (frame_battery)
 	    gtk_frame_set_shadow_type (GTK_FRAME (frame_battery), stype);
@@ -3178,7 +3181,7 @@ serialdev_cb (GtkWidget * widget, guint datum)
 {
 	G_CONST_RETURN gchar *s;
 
-	s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (serialbt)));
+	s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (serial_bt)));
 	g_strlcpy (serialdev, s, sizeof (serialdev));
 	needtosave = TRUE;
 	return TRUE;
@@ -3227,34 +3230,6 @@ dotripmeter (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-bestmap_cb (GtkWidget * widget, guint datum)
-{
-	if (datum == 1)
-		scaleprefered_not_bestmap = !scaleprefered_not_bestmap;
-	if (!scaleprefered_not_bestmap)
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
-					      TRUE);
-		gtk_widget_set_sensitive (scaler_right_bt, FALSE);
-		gtk_widget_set_sensitive (scaler_left_bt, FALSE);
-		if (scaler_widget)
-			gtk_widget_set_sensitive (scaler_widget, FALSE);
-	}
-	else
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
-					      FALSE);
-		gtk_widget_set_sensitive (scaler_right_bt, TRUE);
-		gtk_widget_set_sensitive (scaler_left_bt, TRUE);
-		if (scaler_widget)
-			gtk_widget_set_sensitive (scaler_widget, TRUE);
-	}
-	needtosave = TRUE;
-	return TRUE;
-}
 
 /* *****************************************************************************
  */
@@ -3263,10 +3238,10 @@ savetrack_cb (GtkWidget * widget, guint datum)
 {
 	savetrack = !savetrack;
 	if (savetrack)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrackbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt),
 					      TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrackbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt),
 					      FALSE);
 	needtosave = TRUE;
 	if (savetrack)
@@ -3281,10 +3256,10 @@ mute_cb (GtkWidget * widget, guint datum)
 {
 	muteflag = !muteflag;
 	if (muteflag)
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mutebt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mute_bt),
 					      TRUE);
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mutebt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mute_bt),
 					      FALSE);
 	needtosave = TRUE;
 	return TRUE;
@@ -3382,12 +3357,12 @@ track_cb (GtkWidget * widget, guint datum)
 	trackflag = !trackflag;
 	if (trackflag)
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (trackbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt),
 					      TRUE);
 		rebuildtracklist ();
 	}
 	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (trackbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt),
 					      FALSE);
 	needtosave = TRUE;
 	return TRUE;
@@ -3401,9 +3376,9 @@ wp_cb (GtkWidget * widget, guint datum)
 {
 	local_config.showwaypoints = !local_config.showwaypoints;
 	if (local_config.showwaypoints)
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wp_bt), TRUE);
 	else
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), FALSE);
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wp_bt), FALSE);
 	needtosave = TRUE;
 	return TRUE;
 }
@@ -4235,12 +4210,12 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox4;
+    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi, *vbox_track;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
-    GtkWidget *zoomin, *hbox3, *vboxlow, *hboxlow;
+    GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;
     GtkWidget *menuwin = NULL, *menuwin2 = NULL;
-    GtkWidget *zoomout, *sel_target, *vtable, *wplabeltable, *alignment1;
+    GtkWidget *zoomout_bt, *sel_target, *vtable, *wplabeltable, *alignment1;
     GtkWidget *alignment2;
     gchar maintitle[100];
     /*   GdkColor farbe;   */
@@ -4871,84 +4846,16 @@ main (int argc, char *argv[])
 
     if (havespeechout)
 	{
-	    mutebt = gtk_check_button_new_with_label (_("M_ute"));
-	    gtk_button_set_use_underline (GTK_BUTTON (mutebt), TRUE);
+	    mute_bt = gtk_check_button_new_with_label (_("M_ute"));
+	    gtk_button_set_use_underline (GTK_BUTTON (mute_bt), TRUE);
 	    if (muteflag)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-					      (mutebt), TRUE);
+					      (mute_bt), TRUE);
 
-	    gtk_signal_connect (GTK_OBJECT (mutebt),
+	    gtk_signal_connect (GTK_OBJECT (mute_bt),
 				"clicked", GTK_SIGNAL_FUNC (mute_cb),
 				(gpointer) 1);
 	}
-
-    // Checkbox ---- POI Draw
-    poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
-    gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
-    if (!poi_draw)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt),
-				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (poi_draw_bt), "clicked",
-			GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
-    /*
-     * gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
-     * _("This will show Point of interrest located in mySQL Database"),
-     * NULL);
-     */
-
-    // Checkbox ---- STREETS Draw
-    streets_draw_bt =
-	gtk_check_button_new_with_label (_("draw _Streets"));
-    gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-    if (!streets_draw)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				      (streets_draw_bt), TRUE);
-    gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
-			GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-    /*
-     * gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-     * _("This will show Streets Data located in mySQL Database"),
-     * NULL);
-     */
-
-    // Checkbox ---- TRACK Draw
-    tracks_draw_bt =
-	gtk_check_button_new_with_label (_("draw _Track"));
-    gtk_button_set_use_underline (GTK_BUTTON (tracks_draw_bt), TRUE);
-    if (!tracks_draw)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				      (tracks_draw_bt), TRUE);
-    gtk_signal_connect (GTK_OBJECT (tracks_draw_bt), "clicked",
-			GTK_SIGNAL_FUNC (tracks_draw_cb), (gpointer) 1);
-    /*
-     * gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
-     * _("This will show Track Data located in mySQL Database"),
-     * NULL);
-     */
-
-
-    // Checkbox ----   Use SQL
-    sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
-    gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
-    if (wp_from_sql)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
-				      TRUE);
-
-    gtk_signal_connect (GTK_OBJECT (sqlbt),
-			"clicked", GTK_SIGNAL_FUNC (sql_cb),
-			(gpointer) 1);
-
-
-
-    // Checkbox ---- Show WP
-    wpbt = gtk_check_button_new_with_label (_("Show _WP"));
-    gtk_button_set_use_underline (GTK_BUTTON (wpbt), TRUE);
-    if (local_config.showwaypoints)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wpbt), TRUE);
-    gtk_signal_connect (GTK_OBJECT (wpbt),
-			"clicked", GTK_SIGNAL_FUNC (wp_cb), (gpointer) 1);
-
-
     if (wp_from_sql)
 	{
 	    get_sql_type_list ();
@@ -4957,6 +4864,8 @@ main (int argc, char *argv[])
     else
 	loadwaypoints ();
 
+
+    // alarm_lat auf HomeBase setzen
     for (i = 0; i < maxwp; i++)
 	{
 	    if (strlen (setpositionname) > 0)
@@ -4976,31 +4885,49 @@ main (int argc, char *argv[])
 		}
 	}
 
-    posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
-    gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
 
-    gtk_signal_connect (GTK_OBJECT (posbt),
-			"clicked", GTK_SIGNAL_FUNC (pos_cb),
-			(gpointer) 1);
+    {	// Frame POI
+	GtkTooltips *tooltips;
+	tooltips = gtk_tooltips_new ();
+	frame_poi = gtk_frame_new (_("POI"));
+	vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
 
-    trackbt = gtk_check_button_new_with_label (_("Show _Track"));
-    gtk_button_set_use_underline (GTK_BUTTON (trackbt), TRUE);
-    if (trackflag)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (trackbt),
-				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (trackbt), "clicked",
-			GTK_SIGNAL_FUNC (track_cb), (gpointer) 1);
+	// Checkbox ---- POI Draw
+	poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
+	gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
+			      _("Draw Point Of Interrests found in mySQL"),
+			      NULL);
+	if (!poi_draw)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (poi_draw_bt), "clicked",
+			    GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
+	if (usesql)
+	    gtk_box_pack_start (GTK_BOX (vbox_poi),   poi_draw_bt,    FALSE, FALSE, 0 * PADDING);
 
-    /*   importbt = gtk_button_new_with_label (_("Import")); */
-    /*   gtk_signal_connect (GTK_OBJECT (importbt), */
-    /*                "clicked", GTK_SIGNAL_FUNC (import1_cb), (gpointer) 1); */
-    /*    GTK_WIDGET_SET_FLAGS (importbt, GTK_CAN_DEFAULT); */
+	// Checkbox ---- Show WP
+	wp_bt = gtk_check_button_new_with_label (_("Show _WP"));
+	gtk_button_set_use_underline (GTK_BUTTON (wp_bt), TRUE);
+	if (local_config.showwaypoints)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wp_bt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (wp_bt),
+			    "clicked", GTK_SIGNAL_FUNC (wp_cb), (gpointer) 1);
+	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_bt, FALSE, FALSE, 0 * PADDING);
 
-    /*   loadtrackbt = gtk_button_new_from_stock (GTK_STOCK_OPEN); */
-    /*   gtk_signal_connect (GTK_OBJECT (loadtrackbt), */
-    /*                "clicked", GTK_SIGNAL_FUNC (loadtrack_cb), */
-    /*                (gpointer) 1); */
-    /*    GTK_WIDGET_SET_FLAGS (loadtrackbt, GTK_CAN_DEFAULT); */
+	// Checkbox ----   Use SQL
+	sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
+	gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
+	if (wp_from_sql)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt), TRUE);
+
+	gtk_signal_connect (GTK_OBJECT (sqlbt),
+			    "clicked", GTK_SIGNAL_FUNC (sql_cb), (gpointer) 1);
+
+	if (usesql)
+	    gtk_box_pack_start (GTK_BOX (vbox_poi),   sqlbt,          FALSE, FALSE, 0 * PADDING);
+    }
+
 
 #ifdef USETELEATLAS
     {
@@ -5033,68 +4960,73 @@ main (int argc, char *argv[])
 #endif
 
     /* PORTING */
-    /*   setupbt = gtk_button_new_with_label (_("Setup")); */
-    setupbt = gtk_button_new_from_stock (GTK_STOCK_PREFERENCES);
+    /*   setup_bt = gtk_button_new_with_label (_("Setup")); */
+    setup_bt = gtk_button_new_from_stock (GTK_STOCK_PREFERENCES);
 
-    gtk_signal_connect (GTK_OBJECT (setupbt),
+    gtk_signal_connect (GTK_OBJECT (setup_bt),
 			"clicked", GTK_SIGNAL_FUNC (setup_cb),
 			(gpointer) 0);
 
-    // Checkbox ---- Best Map
-    bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
-    gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
+    { // Frame Track
+	frame_track = gtk_frame_new (_("Track"));
+	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
 
-    if (!scaleprefered_not_bestmap)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
-				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
-			GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
+	// Checkbox ---- TRACK Draw
+	tracks_draw_bt =
+	    gtk_check_button_new_with_label (_("draw _Track"));
+	gtk_button_set_use_underline (GTK_BUTTON (tracks_draw_bt), TRUE);
+	if (!tracks_draw)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tracks_draw_bt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (tracks_draw_bt), "clicked",
+			    GTK_SIGNAL_FUNC (tracks_draw_cb), (gpointer) 1);
 
+	// Checkbox ---- Show Track
+	track_bt = gtk_check_button_new_with_label (_("Show _Track"));
+	gtk_button_set_use_underline (GTK_BUTTON (track_bt), TRUE);
+	if (trackflag)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt),
+					  TRUE);
+	gtk_signal_connect (GTK_OBJECT (track_bt), "clicked",
+			    GTK_SIGNAL_FUNC (track_cb), (gpointer) 1);
+	
+	// Checkbox ---- Save Track
+	savetrackfile (0);
+	g_snprintf (s1, sizeof (s1), "%s", _("Save track"));
+	savetrack_bt = gtk_check_button_new_with_label (s1);
+	if (savetrack)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt),
+					  TRUE);
+	gtk_signal_connect (GTK_OBJECT (savetrack_bt), "clicked",
+			    GTK_SIGNAL_FUNC (savetrack_cb), (gpointer) 1);
 
-    // Checkbox ---- Save Track
-    savetrackfile (0);
-    g_snprintf (s1, sizeof (s1), "%s", _("Save track"));
-    savetrackbt = gtk_check_button_new_with_label (s1);
-    if (savetrack)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrackbt),
-				      TRUE);
-    gtk_signal_connect (GTK_OBJECT (savetrackbt), "clicked",
-			GTK_SIGNAL_FUNC (savetrack_cb), (gpointer) 1);
-
-    g_snprintf (s1, sizeof (s1), "%s", savetrackfn);
-    lab1 = gtk_label_new (s1);
-
-
-    frame_toogles = gtk_frame_new (NULL);
-    vbox4 = gtk_vbox_new (TRUE, 1 * PADDING);
-    gtk_container_add (GTK_CONTAINER (frame_toogles), vbox4);
-
-    frame_maptype = make_display_map_checkboxes();
+	g_snprintf (s1, sizeof (s1), "%s", savetrackfn);
+	lab1 = gtk_label_new (s1);
+    }
 
     /*  Zoom in button */
-    zoomin = gtk_button_new_from_stock (GTK_STOCK_ZOOM_IN);
-    gtk_signal_connect (GTK_OBJECT (zoomin),
+    zoomin_bt = gtk_button_new_from_stock (GTK_STOCK_ZOOM_IN);
+    gtk_signal_connect (GTK_OBJECT (zoomin_bt),
 			"clicked", GTK_SIGNAL_FUNC (zoom_cb),
 			(gpointer) 1);
-    /*    GTK_WIDGET_SET_FLAGS (zoomin, GTK_CAN_DEFAULT); */
+
     /*  Zoom out button */
-    zoomout = gtk_button_new_from_stock (GTK_STOCK_ZOOM_OUT);
-    gtk_signal_connect (GTK_OBJECT (zoomout),
+    zoomout_bt = gtk_button_new_from_stock (GTK_STOCK_ZOOM_OUT);
+    gtk_signal_connect (GTK_OBJECT (zoomout_bt),
 			"clicked", GTK_SIGNAL_FUNC (zoom_cb),
 			(gpointer) 2);
-    /*    GTK_WIDGET_SET_FLAGS (zoomout, GTK_CAN_DEFAULT); */
 
-
+    /* Scaler right */
     scaler_right_bt = gtk_button_new_with_label (">>");
     gtk_signal_connect (GTK_OBJECT (scaler_right_bt),
 			"clicked", GTK_SIGNAL_FUNC (scalerbt_cb),
 			(gpointer) 1);
-    /*    GTK_WIDGET_SET_FLAGS (scaler_right_bt, GTK_CAN_DEFAULT); */
+
+    /* Scaler left */
     scaler_left_bt = gtk_button_new_with_label ("<<");
     gtk_signal_connect (GTK_OBJECT (scaler_left_bt),
 			"clicked", GTK_SIGNAL_FUNC (scalerbt_cb),
 			(gpointer) 2);
-    /*    GTK_WIDGET_SET_FLAGS (scaler_left_bt, GTK_CAN_DEFAULT); */
 
     /*  Select target button */
     /*    if (maxwp > 0) */
@@ -5113,27 +5045,14 @@ main (int argc, char *argv[])
 
 
 
-    /*    gtk_window_set_default (GTK_WINDOW (mainwindow), zoomin); */
+    /*    gtk_window_set_default (GTK_WINDOW (mainwindow), zoomin_bt); */
     /*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
     /*    An alternate gpsd server may be on 2947, we try it also */
 
     initgps ();
-    /*if (simmode)
-      {
-      if ((!disableserial) && (!disableserialcl))
-      {
-      haveserial = gpsserialinit ();
-      if (haveserial)
-      {
-      simmode = FALSE;
-      haveNMEA = TRUE;
-      gtk_widget_set_sensitive (startgpsbt, FALSE);
-      }
-      }
-      }*/
 
     if (haveGARMIN)
-	gtk_widget_set_sensitive (startgpsbt, FALSE);
+	gtk_widget_set_sensitive (startgps_bt, FALSE);
 
     friendsinit ();
 
@@ -5174,7 +5093,7 @@ main (int argc, char *argv[])
 			"expose_event", GTK_SIGNAL_FUNC (expose_compass),
 			NULL);
 
-    /* Area for mini map */
+    // Frame --- Area for mini map
     /* With small displays, this isn't really necessary! */
     if (SMALLMENU == 0)
 	{
@@ -5191,13 +5110,13 @@ main (int argc, char *argv[])
 				       GTK_SIGNAL_FUNC (minimapclick_cb),
 				       GTK_OBJECT (drawing_miniimage));
 	}
-    hbox2 = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox2  = gtk_hbox_new (FALSE, 1 * PADDING);
     hbox2a = gtk_hbox_new (FALSE, 1 * PADDING);
     hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
-    hbox3 = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox3  = gtk_hbox_new (FALSE, 1 * PADDING);
 
+    // Frame --- Baering
     frame_bearing = gtk_frame_new (_("Bearing"));
-    /*   gtk_container_add (GTK_CONTAINER (frame_bearing), drawing_bearing); */
     compasseventbox = gtk_event_box_new ();
     gtk_container_add (GTK_CONTAINER (compasseventbox), drawing_bearing);
     alignment1 = gtk_alignment_new (0.6, 0.5, 0, 0);
@@ -5207,6 +5126,7 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (hbox2), frame_bearing, FALSE, FALSE,
 			1 * PADDING);
 
+    // Frame --- Sat levels
     /* Area for field strength, we have data only in NMEA mode */
     drawing_sats = gtk_drawing_area_new ();
     gtk_drawing_area_size (GTK_DRAWING_AREA (drawing_sats), PSIZE + 10,
@@ -5259,24 +5179,24 @@ main (int argc, char *argv[])
 	    gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE, 1 * PADDING);
 	}
 
+    // Frame --- ACPI / Temperature / Battery
     create_temperature_widget(hbox2);
     create_battery_widget(hbox2);
 
 
     if (pdamode)
-	gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE,
-			    1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
 
-    /*  displays distance to destination */
+    // Frame --- distance to destination 
     distlabel = gtk_label_new ("---");
     gtk_label_set_use_markup (GTK_LABEL (distlabel), TRUE);
     gtk_label_set_justify (GTK_LABEL (distlabel), GTK_JUSTIFY_RIGHT);
 
-    /*  displays speed over ground */
+    // Frame --- speed over ground 
     speedlabel = gtk_label_new (_("---"));
     gtk_label_set_justify (GTK_LABEL (speedlabel), GTK_JUSTIFY_RIGHT);
 
-    /*  displays zoom factor of map */
+    // Frame ---   displays zoom factor of map
     altilabel = gtk_label_new (_("n/a"));
     if (pdamode)
 	{
@@ -5290,9 +5210,11 @@ main (int argc, char *argv[])
 			"<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
 			bluecolor, _("n/a"));
 	}
+    // Frame --- Altitude
     gtk_label_set_markup (GTK_LABEL (altilabel), s3);
     gtk_label_set_justify (GTK_LABEL (altilabel), GTK_JUSTIFY_RIGHT);
 
+    // Frame --- 
     /*  displays waypoints number */
     wplabeltable = gtk_table_new (2, 6, TRUE);
 
@@ -5429,34 +5351,31 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (hbox2), vtable, TRUE, TRUE, 2 * PADDING);
     gtk_container_add (GTK_CONTAINER (frame_wp), wplabeltable);
 
-
-
-
-    /*    gtk_box_pack_start (GTK_BOX (vbig), hbox2, TRUE, TRUE, 2); */
-    /*** Lots of Mods by Arms */
     vbox = gtk_vbox_new (TRUE, 3 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), menubar, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), zoomin, FALSE, FALSE,  1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), zoomout, FALSE, FALSE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox), zoomin_bt, FALSE, FALSE,  1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox), zoomout_bt, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), hbox3, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (hbox3), scaler_left_bt, TRUE, TRUE,	1 * PADDING);
     gtk_box_pack_start (GTK_BOX (hbox3), scaler_right_bt, TRUE, TRUE,	1 * PADDING);
-    /*  only if we have read in waypoints we have the select target button */
-    /*    if (maxwp > 0) */
     gtk_box_pack_start (GTK_BOX (vbox), sel_target, FALSE, FALSE, 1 * PADDING);
-    /*   gtk_box_pack_start (GTK_BOX (vbox), importbt, FALSE, FALSE, 1 * PADDING);  */
-    /*   gtk_box_pack_start (GTK_BOX (vbox), loadtrackbt, FALSE, FALSE, 1 * PADDING); */
-    gtk_box_pack_start (GTK_BOX (vbox), startgpsbt, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), setupbt, FALSE, FALSE,    1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox), startgps_bt, FALSE, FALSE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
 #ifdef USETELEATLAS
     gtk_box_pack_start (GTK_BOX (vbox), navibt, FALSE, FALSE,     1 * PADDING);
 #endif
     hboxlow = vbox2 = NULL;
+
+    frame_maptype = make_display_map_checkboxes();
+    frame_mapcontrol = make_display_map_controlls();
+
     if (!extrawinmenu)
 	{
 	    vbox2 = gtk_vbox_new (FALSE, 0 * PADDING);
 	    gtk_box_pack_start (GTK_BOX (vbox2), vbox, TRUE, TRUE,	1 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), frame_toogles, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox2), frame_poi, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox2), frame_track, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox2), frame_mapcontrol, TRUE,	TRUE, 1 * PADDING);
 	    gtk_box_pack_start (GTK_BOX (vbox2), frame_maptype, TRUE,	TRUE, 1 * PADDING);
 	    if (SMALLMENU == 0)
 		gtk_box_pack_start (GTK_BOX (vbox2),
@@ -5466,7 +5385,9 @@ main (int argc, char *argv[])
 	{
 	    vboxlow = gtk_vbox_new (FALSE, 0 * PADDING);
 	    hboxlow = gtk_hbox_new (FALSE, 0 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vboxlow), frame_toogles, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vboxlow), frame_poi, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vboxlow), frame_track, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vboxlow), frame_mapcontrol, TRUE,	TRUE, 1 * PADDING);
 	    gtk_box_pack_start (GTK_BOX (vboxlow), frame_maptype, TRUE,	TRUE, 1 * PADDING);
 	    if (SMALLMENU == 0)
 		gtk_box_pack_start (GTK_BOX (vboxlow),
@@ -5478,22 +5399,16 @@ main (int argc, char *argv[])
 
 
     if (havespeechout)
-	gtk_box_pack_start (GTK_BOX (vbox4), mutebt, FALSE, FALSE,    0 * PADDING);
+	gtk_box_pack_start (GTK_BOX (vbox_poi), mute_bt, FALSE, FALSE,    0 * PADDING);
+
     if (usesql)
 	{
-	    gtk_box_pack_start (GTK_BOX (vbox4), poi_draw_bt, FALSE,	FALSE, 0 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox4), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox4), tracks_draw_bt, FALSE,	FALSE, 0 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_track), tracks_draw_bt, FALSE, FALSE, 0 * PADDING);
 	}
-    if (usesql)
-	gtk_box_pack_start (GTK_BOX (vbox4), sqlbt, FALSE, FALSE,
-			    0 * PADDING);
+
     /*    if (maxwp > 0) */
-    gtk_box_pack_start (GTK_BOX (vbox4), wpbt, FALSE, FALSE, 0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox4), posbt, FALSE, FALSE,0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox4), trackbt, FALSE, FALSE,	0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox4), bestmap_bt, FALSE, FALSE,0 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox4), savetrackbt, FALSE, FALSE,0 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox_track), track_bt, FALSE, FALSE,	0 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox_track), savetrack_bt, FALSE, FALSE,0 * PADDING);
 
     scaler_init();
 
@@ -5704,12 +5619,9 @@ main (int argc, char *argv[])
 	    //KCFX
 	    vbig1 = gtk_vbox_new (FALSE, 2);
 	    //      gtk_container_add (GTK_CONTAINER (menuwin2), vbig1);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE, TRUE,
-				2 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2a, TRUE, TRUE,
-				2 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE,
-				2 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE, TRUE,  2 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2a, TRUE, TRUE, 2 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE, 2 * PADDING);
 	    /*
 	      gtk_box_pack_start (GTK_BOX (hbox2b), frame_speed, TRUE, TRUE,
 	      1 * PADDING);
@@ -5884,27 +5796,22 @@ main (int argc, char *argv[])
     wi = NULL;
     wi = gtk_item_factory_get_item (item_factory, N_("/Misc. Menu"));
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wi,
-			  _
-			  ("Here you find extra functions for maps, tracks and messages"),
+			  _("Here you find extra functions for maps, tracks and messages"),
 			  NULL);
 
     if (havespeechout)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mutebt,
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mute_bt,
 			      _("Disable output of speech"), NULL);
     if (usesql)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sqlbt,
 			      _("Use SQL server for waypoints"),
 			      NULL);
     /*    if (maxwp > 0) */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wpbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
 			  _("Show waypoints on the map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
-			  _("Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), trackbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), track_bt,
 			  _("Show tracking on the map"), NULL);
-    /*   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), importbt, */
-    /*                  _("Let you import and calibrate your own map"), NULL); */
+
 #ifdef USETELEATLAS
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
 			  _("Navigation menu. Enter here your destination."),
@@ -5912,22 +5819,22 @@ main (int argc, char *argv[])
 #endif
     if (haveNMEA)
 	{
-	    gtk_button_set_label (GTK_BUTTON (startgpsbt),
+	    gtk_button_set_label (GTK_BUTTON (startgps_bt),
 				  _("Stop GPSD"));
-	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgpsbt,
+	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
 				  _("Stop GPSD and switch to simulation mode"),
 				  NULL);
 	    gpson = TRUE;
 	}
     else
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgpsbt,
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
 			      _("Starts GPSD for NMEA mode"), NULL);
 
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setupbt,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
 			  _("Settings for GpsDrive"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin_bt,
 			  _("Zoom into the current map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout,
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout_bt,
 			  _("Zooms out off the current map"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_left_bt,
 			  _("Select the next more detailed map"), NULL);
@@ -5936,31 +5843,16 @@ main (int argc, char *argv[])
     /*    if (maxwp > 0) */
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
 			  sel_target,
-			  _
-			  ("Select here a destination from the waypoint list"),
+			  _("Select here a destination from the waypoint list"),
 			  NULL);
     if (scaler_widget)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
-			      _
-			      ("Select the map scale of avail. maps."),
+			      _("Select the map scale of avail. maps."),
 			      NULL);
-    /*   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), loadtrackbt, */
-    /*                  _("Load and display a previous stored track file"), */
-    /*                  NULL); */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
-			  _
-			  ("Always select the most detailed map available"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
-			  _("Draw Point Of Interrests found in mySQL"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-			  _("Draw Streets found in mySQL"), NULL);
     gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
 			  _("Draw Tracks found in mySQL"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrackbt,
-			  _
-			  ("Save the track to given filename at program exit"),
+    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrack_bt,
+			  _("Save the track to given filename at program exit"),
 			  NULL);
 
 

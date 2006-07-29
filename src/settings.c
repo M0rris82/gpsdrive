@@ -70,7 +70,7 @@ extern GtkWidget *addwaypointwindow, *setupfn[30];
 extern gchar activewpfile[200], gpsdservername[200], setpositionname[80];
 extern gint shadow, createroute, routemode;
 extern gint needreloadmapconfig, simfollow;
-extern GtkWidget *serialbt, *mapdirbt, *addwaypoint1, *addwaypoint2,
+extern GtkWidget *serial_bt, *mapdirbt, *addwaypoint1, *addwaypoint2,
   *frame_speed, *frame_sats;
 extern gint minsecmode, nightmode, isnight, disableisnight;
 extern gint nighttimer;
@@ -78,7 +78,7 @@ extern gint newsatslevel, testgarmin, needtosave;
 extern gint wpsize, satfix, usedgps, earthmate, disableserial;
 extern gchar serialdev[80];
 extern GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt,
-  *setupbt;
+  *setup_bt;
 extern gint gcount, milesflag, downloadwindowactive;
 extern gint metricflag, nauticflag;
 extern gint defaultserver, disableapm;
@@ -447,7 +447,7 @@ mainsetup (void)
   GtkWidget *nightModeOff;
   GtkWidget *nightModeOn;
   GtkWidget *nighttable;
-  GtkWidget *noserialbt;
+  GtkWidget *noserial_bt;
   GtkWidget *option_menu;
   GtkWidget *s1;
   GtkWidget *s2;
@@ -715,29 +715,29 @@ mainsetup (void)
 		      GTK_SIGNAL_FUNC (earthmate_cb), (gpointer) 1);
   gtk_table_attach_defaults (GTK_TABLE (gpstable), earthmatebt, 1, 2, 0, 1);
 
-  noserialbt = gtk_check_button_new_with_label (_("Use serial conn."));
+  noserial_bt = gtk_check_button_new_with_label (_("Use serial conn."));
   if (!disableserial)
     {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (noserialbt), TRUE);
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (noserial_bt), TRUE);
     }
-  gtk_signal_connect (GTK_OBJECT (noserialbt), "clicked",
+  gtk_signal_connect (GTK_OBJECT (noserial_bt), "clicked",
 		      GTK_SIGNAL_FUNC (noserial_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), noserialbt, 1, 2, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (gpstable), noserial_bt, 1, 2, 1, 2);
 
-  serialbt = gtk_entry_new_with_max_length (20);
-  gtk_widget_set_size_request (serialbt, 20, 26);
+  serial_bt = gtk_entry_new_with_max_length (20);
+  gtk_widget_set_size_request (serial_bt, 20, 26);
 
-  gtk_entry_set_text (GTK_ENTRY (serialbt), serialdev);
-  gtk_entry_set_max_length (GTK_ENTRY (serialbt), 40);
+  gtk_entry_set_text (GTK_ENTRY (serial_bt), serialdev);
+  gtk_entry_set_max_length (GTK_ENTRY (serial_bt), 40);
   label1 = gtk_label_new (_("Interface"));
   label1a = gtk_label_new (_("Baudrate"));
 
-  gtk_signal_connect (GTK_OBJECT (serialbt), "changed",
+  gtk_signal_connect (GTK_OBJECT (serial_bt), "changed",
 		      GTK_SIGNAL_FUNC (serialdev_cb), (gpointer) 1);
 
   gtk_table_attach_defaults (GTK_TABLE (gpstable), label1, 0, 1, 2, 3);
   gtk_table_attach_defaults (GTK_TABLE (gpstable), label1a, 1, 2, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), serialbt, 0, 1, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (gpstable), serial_bt, 0, 1, 3, 4);
 
   menu = gtk_menu_new ();
   for (i = 0; i < 5; i++)
@@ -1076,7 +1076,7 @@ mainsetup (void)
 			  "receiver. The StartGPSD button will provide gpsd "
 			  "with the needed additional parameters"), NULL);
 
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), noserialbt,
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), noserial_bt,
 			_
 			("Select this if you want to use of the direct serial "
 			 "connection. If disabled, you can use the receiver "
@@ -1084,7 +1084,7 @@ mainsetup (void)
 			 "serial connection needs no gpsd running and detects "
 			 "the working receiver on startup"), NULL);
 
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), serialbt,
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), serial_bt,
 			_("Specify the serial interface where the GPS is "
 			  "connected"), NULL);
 
@@ -2217,7 +2217,7 @@ removesetutc (GtkWidget * widget, guint datum)
       triptimer = 0;
     }
 
-  gtk_widget_set_sensitive (setupbt, TRUE);
+  gtk_widget_set_sensitive (setup_bt, TRUE);
 
   return TRUE;
 }
