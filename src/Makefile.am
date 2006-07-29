@@ -12,7 +12,7 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 #	-I/usr/include/dbus-1.0/ 
 
 
-includedir = mysql lib_map
+includedir = lib_map
 
 if DISABLEGARMIN
 PRG1=
@@ -82,4 +82,4 @@ endif
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
 
-EXTRA_DIST = 	mysql/*.h gpsdrive.spec gpsdrive-nosql.spec
+EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec

@@ -326,7 +326,7 @@ host_vendor = @host_vendor@
 htmldir = @htmldir@
 
 #	-I/usr/include/dbus-1.0/ 
-includedir = mysql lib_map
+includedir = lib_map
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
@@ -375,7 +375,7 @@ gpsdrive_SOURCES = $(PRGS)
 
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = mysql/*.h gpsdrive.spec gpsdrive-nosql.spec
+EXTRA_DIST = gpsdrive.spec gpsdrive-nosql.spec
 all: all-recursive
 
 .SUFFIXES:
@@ -711,7 +711,6 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/mysql
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
