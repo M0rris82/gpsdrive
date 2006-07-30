@@ -17,7 +17,9 @@
 #			Added libcairo 
 #			Modified libpcre and libpcreposix
 #			Added libXinerama
+# 19/07/06	DP	Added gpsdrive sub directory to package directory
 ############################################################################################
+	PACKAGENAME=gpsdrive
 	LOGFILE=package.log
 	LIBDIR=opt/gpsdrive/lib
 	ICONDIR=`pwd`
@@ -36,6 +38,14 @@
 	else
 		echo "Current Working Directory"
 		pwd
+		mkdir $PACKAGENAME
+		if [ "$?" != "0" ]
+		then
+			echo " Could not create package sub dir"
+			exit 1
+		else
+			cd $PACKAGENAME
+		fi
 	fi
 
 	# Remove old package staging area
