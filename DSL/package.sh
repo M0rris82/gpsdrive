@@ -36,16 +36,20 @@
 		echo "--------------------------------------------------------"
 		exit 1
 	else
-		echo "Current Working Directory"
-		pwd
-		mkdir $PACKAGENAME
-		if [ "$?" != "0" ]
+		if [ -d $PACKAGENAME ]
 		then
-			echo " Could not create package sub dir"
-			exit 1
+			echo Package sub folder exists.
 		else
-			cd $PACKAGENAME
+			mkdir $PACKAGENAME
+			if [ "$?" != "0" ]
+			then
+				echo " Could not create package sub dir"
+				exit 1
+			fi
 		fi
+		cd $PACKAGENAME
+		echo Current Working Directory
+		pwd
 	fi
 
 	# Remove old package staging area
