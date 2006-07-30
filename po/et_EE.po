@@ -1,29 +1,30 @@
-# GpsDrive translation of et.po to estonian
+# translation of et_EE.po to Estonian
+# GpsDrive translation of et_EE.po to estonian
 # This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
-# Hans <herringfish@hot.ee>, 2005.
 # for gpsdrive2.10pre3
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Hans <herringfish@hot.ee>, 2005, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive_cvs\n"
+"Project-Id-Version: et_EE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-09 12:20+0100\n"
-"PO-Revision-Date: 2005-10-20 21:24+0300\n"
+"POT-Creation-Date: 2006-07-30 11:31+0300\n"
+"PO-Revision-Date: 2006-07-25 13:10+0300\n"
 "Last-Translator: Hans <herringfish@hot.ee>\n"
-"Language-Team: estonian\n"
+"Language-Team: Estonian <et@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: \n"
+"X-Generator: KBabel 1.10.2\n"
 
-#: src/battery.c:868
+#: src/battery.c:913
 msgid "Bat."
 msgstr "Aku"
 
-#: src/battery.c:903
+#: src/battery.c:948
 msgid "TC"
-msgstr ""
+msgstr "AV"
 
 #: src/fly.c:163
 msgid "Aeronautical settings"
@@ -57,13 +58,28 @@ msgstr "max. vertikaalne hälve "
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr "Ära hoiata vert. hälbest kõrgusel üle 5000 jala"
 
-#: src/friends.c:380 src/gpsdrive.c:4507
+#: src/friends.c:250 src/gpsdrive.c:3442
 msgid "/Misc. Menu/Messages"
 msgstr "/Muu. Menüü/Sõnumid"
 
-#: src/friends.c:394
+#: src/friends.c:264
 msgid "unknown"
 msgstr "tundmatu"
+
+#: src/friends.c:460 src/gpsdrive.c:2976 src/gpsdrive.c:2986
+#: src/gpsdrive.c:5304 src/gpsdrive.c:5314
+msgid "mi/h"
+msgstr "mi/h"
+
+#: src/friends.c:462 src/gpsdrive.c:2978 src/gpsdrive.c:2989
+#: src/gpsdrive.c:5306 src/gpsdrive.c:5317
+msgid "knots"
+msgstr "sõlme"
+
+#: src/friends.c:464 src/gpsdrive.c:2980 src/gpsdrive.c:2992
+#: src/gpsdrive.c:5308 src/gpsdrive.c:5320
+msgid "km/h"
+msgstr "km/h"
 
 #: src/friendsd.c:550
 #, c-format
@@ -83,98 +99,84 @@ msgstr ""
 "   %s -n serverinimi\n"
 "annab nime sinu serverile\n"
 
-#: src/gpsdrive.c:835
+#: src/gpsdrive.c:482
 msgid "/_Misc. Menu"
 msgstr "/_Muu. Menüü"
 
-#: src/gpsdrive.c:836
+#: src/gpsdrive.c:483
 msgid "/_Misc. Menu/Maps"
 msgstr "/_Muu. Menüü/Kaardid"
 
-#: src/gpsdrive.c:837
+#: src/gpsdrive.c:484
 msgid "/_Misc. Menu/Maps/_Import map"
 msgstr "/_Muu. Menüü/Kaardid/_Impordi kaart"
 
-#: src/gpsdrive.c:838
-#, fuzzy
+#: src/gpsdrive.c:485
 msgid "/_Misc. Menu/Maps/_Download map"
-msgstr "/_Muu. Menüü/Kaardid/_Impordi kaart"
+msgstr "/_Muu. Menüü/Kaardid/Tõmba kaart"
 
-#: src/gpsdrive.c:839
+#: src/gpsdrive.c:486
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr "/_Muu. Menüü/Teekonna punktide haldus"
 
-#: src/gpsdrive.c:840
-#, fuzzy
+#: src/gpsdrive.c:487
 msgid "/_Misc. Menu/_Reinitialize GPS"
-msgstr "/_Muu. Menüü/Abi"
+msgstr "/_Muu. Menüü/GPS Taaskäivitamine"
 
-#: src/gpsdrive.c:841
-#, fuzzy
+#: src/gpsdrive.c:488
 msgid "/_Misc. Menu/_Start gpsd"
-msgstr "/_Muu. Menüü/Kaardid"
+msgstr "/_Muu. Menüü/_Stardi gpsd"
 
-#: src/gpsdrive.c:842
+#: src/gpsdrive.c:489
 msgid "/_Misc. Menu/_Load track file"
 msgstr "/_Muu. Menüü/_Laadi jäljefail"
 
-#: src/gpsdrive.c:843
+#: src/gpsdrive.c:490
 msgid "/_Misc. Menu/Messages"
-msgstr "/_Muu. Menüü/Teated"
+msgstr "/_Muu. Menüü/Sõnumid"
 
-#: src/gpsdrive.c:844
+#: src/gpsdrive.c:491
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
-msgstr "/_Muu. Menüü/Teated/Saada sõnum mobiilsele seadmele"
+msgstr "/_Muu. Menüü/Sõnumid/Saada sõnum mobiilsele seadmele"
 
-#: src/gpsdrive.c:846
+#: src/gpsdrive.c:493
 msgid "/_Misc. Menu/Help"
 msgstr "/_Muu. Menüü/Abi"
 
-#: src/gpsdrive.c:847
+#: src/gpsdrive.c:494
 msgid "/_Misc. Menu/Help/About"
 msgstr "/_Muu. Menüü/Abi/Mis see on"
 
-#: src/gpsdrive.c:848
+#: src/gpsdrive.c:495
 msgid "/_Misc. Menu/Help/Topics"
 msgstr "/_Muu. Menüü/Abi/Üldine"
 
-#: src/gpsdrive.c:933
+#: src/gpsdrive.c:496
+msgid "/_Misc. Menu/Quit"
+msgstr "/_Muu. Menüü/Lahku"
+
+#: src/gpsdrive.c:584
 msgid "  Message  "
 msgstr "  Sõnum  "
 
-#: src/gpsdrive.c:999
+#: src/gpsdrive.c:651
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr "Kaugus kodubaasi: %.1fkm, max. lubatud: %.1fkm\n"
 
-#: src/gpsdrive.c:1329
+#: src/gpsdrive.c:857
 msgid "Auto"
-msgstr ""
+msgstr "Auto"
 
-#: src/gpsdrive.c:1578
+#: src/gpsdrive.c:1088
 msgid "Warning!"
 msgstr "Hoiatus!"
 
-#: src/gpsdrive.c:1580
+#: src/gpsdrive.c:1090
 msgid "You should not start GpsDrive as user root!!!"
-msgstr "GpsDrive ei tohiks käivitada rooduna!!!!"
+msgstr "GpsDrive ei tohiks käivitada root kasutaja õigustes!!!!"
 
-#: src/gpsdrive.c:1863 src/gpsdrive.c:3972 src/gpsdrive.c:3982
-#: src/gpsdrive.c:6947 src/gpsdrive.c:6957
-msgid "mi/h"
-msgstr ""
-
-#: src/gpsdrive.c:1866 src/gpsdrive.c:3974 src/gpsdrive.c:3985
-#: src/gpsdrive.c:6949 src/gpsdrive.c:6960
-msgid "knots"
-msgstr "sõlme"
-
-#: src/gpsdrive.c:1869 src/gpsdrive.c:3976 src/gpsdrive.c:3988
-#: src/gpsdrive.c:6951 src/gpsdrive.c:6963
-msgid "km/h"
-msgstr ""
-
-#: src/gpsdrive.c:2206
+#: src/gpsdrive.c:1489
 #, c-format
 msgid ""
 "\n"
@@ -190,295 +192,254 @@ msgstr ""
 "\n"
 
 #. This string means North,East,South,West -- please translate the letters
-#: src/gpsdrive.c:3238
+#: src/gpsdrive.c:2251
 msgid "NESW"
-msgstr ""
+msgstr "NESW"
 
-#: src/gpsdrive.c:3424
+#: src/gpsdrive.c:2437
 msgid "No map available for this position!"
 msgstr "Kaart selle asukoha jaoks puudub!"
 
-#: src/gpsdrive.c:3606
+#: src/gpsdrive.c:2622
 msgid "unused"
 msgstr "kasutamata"
 
-#. displays zoom factor of map
-#: src/gpsdrive.c:3612 src/gpsdrive.c:3622 src/gpsdrive.c:6803
-#: src/gpsdrive.c:6809 src/gpsdrive.c:6815 src/gpsdrive.c:6846
-#: src/gpsdrive.c:6851 src/gpsdrive.c:6857 src/gpsdrive.c:6893
-#: src/gpsdrive.c:6900 src/settings.c:496
+#. Frame ---   displays zoom factor of map
+#: src/gpsdrive.c:2628 src/gpsdrive.c:2638 src/gpsdrive.c:5158
+#: src/gpsdrive.c:5164 src/gpsdrive.c:5170 src/gpsdrive.c:5201
+#: src/gpsdrive.c:5206 src/gpsdrive.c:5212 src/gpsdrive.c:5250
+#: src/gpsdrive.c:5257 src/settings.c:164
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
-#: src/gpsdrive.c:3866
+#: src/gpsdrive.c:2870
 msgid "GpsDrive Control"
 msgstr "GpsDrive Kontroll"
 
-#: src/gpsdrive.c:3981 src/gpsdrive.c:3984 src/gpsdrive.c:3987
-#: src/gpsdrive.c:6956 src/gpsdrive.c:6959 src/gpsdrive.c:6962
-#: src/settings.c:1263
+#: src/gpsdrive.c:2985 src/gpsdrive.c:2988 src/gpsdrive.c:2991
+#: src/gpsdrive.c:5313 src/gpsdrive.c:5316 src/gpsdrive.c:5319
+#: src/settings.c:931
 msgid "Speed"
 msgstr "Kiirus"
 
-#: src/gpsdrive.c:4216
+#: src/gpsdrive.c:3221
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr "Ignoreerin rohkem kui 2000km/h kiirusega tehtud distantsinihet\n"
 
-#: src/gpsdrive.c:4454 src/import_map.c:798
-msgid "To"
-msgstr "Kuni"
-
-#: src/gpsdrive.c:4510
+#: src/gpsdrive.c:3445
 msgid "Sending message to friends server..."
 msgstr "Saadan sõnumit sõbraserverile..."
 
-#: src/gpsdrive.c:4589
+#: src/gpsdrive.c:3524
 msgid "Message for:"
 msgstr "Sõnum:"
 
-#: src/gpsdrive.c:4631
+#: src/gpsdrive.c:3566
 #, c-format
 msgid "Date: %s"
 msgstr "Kuupäev: %s"
 
-#: src/gpsdrive.c:4644
+#: src/gpsdrive.c:3579
 msgid "Sends your text to to selected computer using the friends server"
 msgstr "Saadab sinu teksti valitud arvutile kasutades sõbraserverit"
 
-#: src/gpsdrive.c:5088
-msgid "Add waypoint name"
-msgstr "Lisa teekonnapunkti nimi"
-
-#: src/gpsdrive.c:5098
-msgid " Waypoint name: "
-msgstr " Teekonnapunkti nimi: "
-
-#: src/gpsdrive.c:5144
-msgid " Waypoint type: "
-msgstr " Teekonnapunkti tüüp: "
-
-#: src/gpsdrive.c:5161 src/gpsdrive.c:5283 src/gpsdrive.c:5367
-#: src/gpsdrive.c:7084 src/import_map.c:388
-msgid "Longitude"
-msgstr "Pikkuskraad"
-
-#: src/gpsdrive.c:5179 src/gpsdrive.c:5283 src/gpsdrive.c:5367
-#: src/gpsdrive.c:7083 src/import_map.c:386
-msgid "Latitude"
-msgstr "Laiuskraad"
-
-#: src/gpsdrive.c:5283
+#: src/gpsdrive.c:3859
 msgid "Name"
 msgstr "Nimi"
 
-#: src/gpsdrive.c:5283 src/gpsdrive.c:5367 src/gpsdrive.c:6941
-#: src/settings.c:1255
+#: src/gpsdrive.c:3859 src/gpsdrive.c:3943 src/gpsdrive.c:5425
+#: src/import_map.c:399
+msgid "Latitude"
+msgstr "Laiuskraad"
+
+#: src/gpsdrive.c:3859 src/gpsdrive.c:3943 src/gpsdrive.c:5426
+#: src/import_map.c:401
+msgid "Longitude"
+msgstr "Pikkuskraad"
+
+#: src/gpsdrive.c:3859 src/gpsdrive.c:3943 src/gpsdrive.c:5298
+#: src/settings.c:923
 msgid "Distance"
 msgstr "Kaugus"
 
-#: src/gpsdrive.c:5294
+#: src/gpsdrive.c:3870
 msgid "Please select message recipient"
 msgstr "Palun vali sõnumi saaja"
 
-#: src/gpsdrive.c:5367
+#: src/gpsdrive.c:3943
 msgid "Waypoint"
 msgstr "Teekonnapunkt"
 
-#: src/gpsdrive.c:5388
+#: src/gpsdrive.c:3964
 msgid "Select reference point"
 msgstr "Vali võrdluspunkt"
 
-#: src/gpsdrive.c:5392
+#: src/gpsdrive.c:3968
 msgid "Please select your destination"
 msgstr "Palun vali oma sihtpunkt"
 
-#: src/gpsdrive.c:5424
+#: src/gpsdrive.c:4000
 msgid "Edit route"
 msgstr "Muuda teekonda"
 
-#: src/gpsdrive.c:5427
+#: src/gpsdrive.c:4003
 msgid "Create route"
 msgstr "Loo teekond"
 
-#: src/gpsdrive.c:5519
+#: src/gpsdrive.c:4095
 msgid "Create a route using some waypoints from this list"
-msgstr "Loo teekond, kasutades loetelust mõnda teekonnapunkti"
+msgstr "Loo teekond, kasutades sellest loetelust mõnda teekonnapunkti"
 
-#: src/gpsdrive.c:5524
+#: src/gpsdrive.c:4100
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Kustuta valitud teekonnapunkt loetelust"
 
-#: src/gpsdrive.c:5528
+#: src/gpsdrive.c:4104
 msgid "Jump to the selected waypoint"
 msgstr "Hüppa valitud teekonnapunkti"
 
-#: src/gpsdrive.c:5551
-#, fuzzy
+#: src/gpsdrive.c:4127
 msgid "-v        show version\n"
-msgstr "-v    näita versiooni\n"
+msgstr "-v       näita versiooni\n"
 
-#: src/gpsdrive.c:5552
-#, fuzzy
+#: src/gpsdrive.c:4128
 msgid "-h        print this help\n"
-msgstr "-h    trüki see abimees\n"
+msgstr "-h        trüki see abimees\n"
 
-#: src/gpsdrive.c:5553
-#, fuzzy
+#: src/gpsdrive.c:4129
 msgid "-d        turn on debug info\n"
-msgstr "-d    veajälitusinfo sisselülitamiseks\n"
+msgstr "-d        veajälitusinfo sisselülitamiseks\n"
 
-#: src/gpsdrive.c:5554
+#: src/gpsdrive.c:4130
 msgid "-D X      set debug Level to X\n"
-msgstr ""
+msgstr "-D X      määra veajälituse tasemeks X\n"
 
-#: src/gpsdrive.c:5555
+#: src/gpsdrive.c:4131
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
-msgstr ""
+msgstr "-T        tee mõned sisemised seadme testid (gpsdrive ei käivitata)\n"
 
-#: src/gpsdrive.c:5556
-#, fuzzy
+#: src/gpsdrive.c:4132
 msgid "-e        use Festival-Lite (flite) for speech output\n"
-msgstr "-e    kasuta kõneväljundiks Festival-Lite (flite)\n"
+msgstr "-e        kasuta kõneväljundiks Festival-Lite (flite)\n"
 
-#: src/gpsdrive.c:5557
-#, fuzzy
+#: src/gpsdrive.c:4133
 msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
-msgstr "-t    kasuta GPS-i serialpordist ... Näit. /dev/ttyS1\n"
+msgstr "-t        kasuta GPS-i serialpordist ... Näit. /dev/ttyS1\n"
 
-#: src/gpsdrive.c:5558
-#, fuzzy
+#: src/gpsdrive.c:4134
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
-msgstr "-o    serialseade, ülemterminal või fail NMEA *väljundiks*\n"
+msgstr "-o        serialseade, ülemterminal või fail NMEA *väljundiks*\n"
 
-#: src/gpsdrive.c:5559
-#, fuzzy
+#: src/gpsdrive.c:4135
 msgid "-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"
-msgstr "-f X  Vali sõbraserver, X on näiteks www.gpsdrive.cc\n"
+msgstr "-f X      Vali sõbraserver, X on näiteks www.gpsdrive.cc\n"
 
-#: src/gpsdrive.c:5560
-#, fuzzy
+#: src/gpsdrive.c:4136
 msgid "-n        Disable use of direct serial connection\n"
-msgstr "-n    Keela otse serialpordi kasutamine\n"
+msgstr "-n        Keela otse serialpordi kasutamine\n"
 
-#: src/gpsdrive.c:5562
-#, fuzzy
+#: src/gpsdrive.c:4138
 msgid ""
 "-X        Use DBUS for communication with gpsd. This disables serial and "
 "socket communication\n"
 msgstr ""
-"-X    Kasuta gpsd suhtlemiseks DBUS. See valik keelab serialpordi ja socket "
-"kasutamise\n"
+"-X        Kasuta gpsd suhtlemiseks DBUS. See valik keelab serialpordi ja "
+"socket kasutamise\n"
 
-#: src/gpsdrive.c:5564
-#, fuzzy
+#: src/gpsdrive.c:4140
 msgid ""
 "-l LANG   Select language of the voice,\n"
 "          LANG may be english, spanish or german\n"
 msgstr ""
-"-l X  Vali keel, milles räägitakse,\n"
-"      X võib olla kas english, spanish või german\n"
+"-l LANG   Vali keel, milles räägitakse,\n"
+"          LANG võib olla kas english, spanish või german\n"
 
-#: src/gpsdrive.c:5566
-#, fuzzy
+#: src/gpsdrive.c:4142
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
 "          don't satisfy you, X is i.e. 768,600,480,200\n"
 msgstr ""
-"-s X  määra ekraani kõrgus, kui automaatne tuvastus\n"
-"      ei sobi Sulle. X võiks olla ntx. 768,600,480,200\n"
+"-s HEIGHT määra ekraani kõrgus, kui automaatne tuvastus\n"
+"          ei sobi Sulle. X võiks olla ntx. 768,600,480,200\n"
 
-#: src/gpsdrive.c:5568
-#, fuzzy
+#: src/gpsdrive.c:4144
 msgid "-r WIDTH  set width of the screen, only with -s\n"
-msgstr "-r X  määra ekraani laius. Ainult koos -s'ga\n"
+msgstr "-r WITDH  määra ekraani laius. Ainult koos -s'ga\n"
 
-#: src/gpsdrive.c:5569
-#, fuzzy
+#: src/gpsdrive.c:4145
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1    meil on ainult ühe nupuga hiir. Näiteks touchscreen\n"
+msgstr "-1        meil on ainult ühe nupuga hiir. Näiteks touchscreen\n"
 
-#: src/gpsdrive.c:5570
-#, fuzzy
+#: src/gpsdrive.c:4146
 msgid "-a        don't display battery status (i.e. broken APM)\n"
-msgstr "-a    ära näita patarei seisu (ntx. vigane APM)\n"
+msgstr "-a        ära näita patarei seisu (ntx. vigane APM)\n"
 
-#: src/gpsdrive.c:5571
-#, fuzzy
+#: src/gpsdrive.c:4147
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b X  NMEA serveri nimi (kui gpsd käib teises arvutis)\n"
+msgstr "-b Server NMEA serveri nimi (kui gpsd käib teises arvutis)\n"
 
-#: src/gpsdrive.c:5572
-#, fuzzy
+#: src/gpsdrive.c:4148
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
-msgstr "-c X  määra stardipositsiooniks TKP nimega X (simulatsioonireziimis)\n"
+msgstr ""
+"-c WP     määra stardipositsiooniks TKP nimega WP (simulatsioonireziimis)\n"
 
-#: src/gpsdrive.c:5573
-#, fuzzy
+#: src/gpsdrive.c:4149
 msgid "-x        create separate window for menu\n"
-msgstr "-x    loo menüü jaoks eraldi aken\n"
+msgstr "-x        loo menüü jaoks eraldi aken\n"
 
-#: src/gpsdrive.c:5574
-#, fuzzy
+#: src/gpsdrive.c:4150
 msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
-msgstr "-p    sätted PDA jaoks (iPAQ, Yopy...)\n"
+msgstr "-p        sätted PDA jaoks (iPAQ, Yopy...)\n"
 
-#: src/gpsdrive.c:5575
-#, fuzzy
+#: src/gpsdrive.c:4151
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
-"-i    ignoreeri NMEA kontrollsummasid (riskantne, kasuta ainult mittekorras "
-"GPS seadmega)\n"
+"-i        ignoreeri NMEA kontrollsummasid (riskantne, kasuta ainult "
+"mittekorras GPS seadmega)\n"
 
-#: src/gpsdrive.c:5576
-#, fuzzy
+#: src/gpsdrive.c:4152
 msgid "-q        disable SQL support\n"
-msgstr "-q    eemalda SQL tugi\n"
+msgstr "-q        eemalda SQL tugi\n"
 
-#: src/gpsdrive.c:5577
-#, fuzzy
+#: src/gpsdrive.c:4153
 msgid "-F        force display of position even it is invalid\n"
-msgstr "-F    käsib näidata asukohta, isegi kui see on vigane\n"
+msgstr "-F        käsib näidata asukohta, isegi kui see on vigane\n"
 
-#: src/gpsdrive.c:5578
-#, fuzzy
+#: src/gpsdrive.c:4154
 msgid "-S        don't show splash screen\n"
-msgstr "-S    ära näita algset infoakent(splash screen)\n"
+msgstr "-S        ära näita algset infoakent (splash screen)\n"
 
-#: src/gpsdrive.c:5579
+#: src/gpsdrive.c:4155
 msgid "-P        start in Pos Mode\n"
-msgstr ""
+msgstr "-P        käivita Pos reshiimis\n"
 
-#: src/gpsdrive.c:5580
-#, fuzzy
+#: src/gpsdrive.c:4156
 msgid "-E        print out data received from direct serial connection\n"
-msgstr "-E    näita serialpordist saadud andmeid\n"
+msgstr "-E        näita serialpordist saadud andmeid\n"
 
-#: src/gpsdrive.c:5581
-#, fuzzy
+#: src/gpsdrive.c:4157
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
-"-W x  kas kasutada WAAS/EGNOS infot. x==1 - kasutada; x==0 ignoreerida\n"
+"-W x      kas kasutada WAAS/EGNOS infot. x==1 - kasutada; x==0 ignoreerida\n"
 
-#: src/gpsdrive.c:5582
-#, fuzzy
+#: src/gpsdrive.c:4158
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
-msgstr "-H X  korrigeeri kõrgust, lisades X väärtuse\n"
+msgstr "-H ALT    korrigeeri kõrgust, lisades ALT väärtuse\n"
 
-#: src/gpsdrive.c:5583
-#, fuzzy
+#: src/gpsdrive.c:4159
 msgid ""
 "-z        don't display zoom factor and scale\n"
 "\n"
 msgstr ""
-"-z    ära näita suurenduskoefitsenti ja skaalat\n"
+"-z        ära näita suurenduskoefitsenti ja skaalat\n"
 "\n"
 
-#: src/gpsdrive.c:5595
+#: src/gpsdrive.c:4171
 msgid "Select a track file"
 msgstr "Vali jäljefail"
 
-#: src/gpsdrive.c:6117
+#: src/gpsdrive.c:4549
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -488,98 +449,76 @@ msgstr ""
 "Saad valida ainult english, spanish või german vahel\n"
 "\n"
 
-#: src/gpsdrive.c:6153 src/settings.c:1973
+#: src/gpsdrive.c:4585 src/settings.c:1641
 msgid "EnterYourName"
 msgstr "Sisesta Oma Nimi"
 
-#: src/gpsdrive.c:6184
-#, c-format
-msgid ""
-"\n"
-"Using proxy: %s on port %d"
-msgstr ""
-"\n"
-"Kasutades proxyt: %s pordis %d"
-
-#: src/gpsdrive.c:6190
-msgid ""
-"\n"
-"Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
-"provider.de:3128"
-msgstr ""
-"\n"
-"HTTP_PROXY keskkonnamuutuja peab olema kujul http://proxy.server:port"
-
-#: src/gpsdrive.c:6396
+#: src/gpsdrive.c:4806
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
-msgstr ""
+msgstr "Gpsdrive-2 (c)2001-2004 F.Ganter"
 
-#: src/gpsdrive.c:6404
+#: src/gpsdrive.c:4814
 msgid "Using speech output"
 msgstr "Kasutan kõneväljundit"
 
-#: src/gpsdrive.c:6433
+#: src/gpsdrive.c:4843
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "/Muu. Menüü/TKP haldus"
 
-#: src/gpsdrive.c:6440
+#: src/gpsdrive.c:4850
 msgid "M_ute"
 msgstr "_u Vaigista"
 
-#. Checkbox ---- POI Draw
-#: src/gpsdrive.c:6452
-msgid "draw PO_I"
-msgstr "joon_Ista POI"
-
-#: src/gpsdrive.c:6467
-msgid "draw _Streets"
-msgstr "jooni_Sta tänavad"
-
-#: src/gpsdrive.c:6482
-msgid "draw _Track"
-msgstr "joonis_Ta Jälg"
-
-#.
-#. * gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
-#. * _("This will show Track Data located in mySQL Database"),
-#. * NULL);
-#.
-#. Checkbox ----   Use SQL
-#: src/gpsdrive.c:6497
-msgid "Use SQ_L"
-msgstr "Kasuta SQ_L"
-
-#. Checkbox ---- Show WP
-#: src/gpsdrive.c:6510
-msgid "Show _WP"
-msgstr "Näita TKP"
-
-#: src/gpsdrive.c:6537
+#: src/gpsdrive.c:4881
 msgid "HomeBase"
 msgstr "Kodubaas"
 
-#: src/gpsdrive.c:6545
-msgid "Pos. _mode"
-msgstr ""
+#: src/gpsdrive.c:4893
+msgid "POI"
+msgstr "Huvipunkt"
 
-#: src/gpsdrive.c:6552
-msgid "Show _Track"
-msgstr "Näita Jälge"
+#. Checkbox ---- POI Draw
+#: src/gpsdrive.c:4898
+msgid "draw PO_I"
+msgstr "joonista Huv_ipunkt"
 
-#: src/gpsdrive.c:6593
+#: src/gpsdrive.c:4901
+msgid "Draw Point Of Interrests found in mySQL"
+msgstr "Joonista mySQL leitud Huvipunkt"
+
+#. Checkbox ---- Show WP
+#: src/gpsdrive.c:4911
+msgid "Show _WP"
+msgstr "Näita TKP"
+
+#. Checkbox ----   Use SQL
+#: src/gpsdrive.c:4920
+msgid "Use SQ_L"
+msgstr "Kasuta SQ_L"
+
+#: src/gpsdrive.c:4955
 msgid "_Navigation"
 msgstr "_Navigeerimine"
 
-#. Checkbox ---- Best Map
-#: src/gpsdrive.c:6610
-msgid "Auto _best map"
-msgstr "Parim kaart autom."
+#. Frame Track
+#: src/gpsdrive.c:4972 src/settings.c:613
+msgid "Track"
+msgstr "Jälg"
 
-#: src/gpsdrive.c:6622
+#: src/gpsdrive.c:4978
+msgid "draw _Track"
+msgstr "joonis_Ta Jälg"
+
+#. Checkbox ---- Show Track
+#: src/gpsdrive.c:4986
+msgid "Show _Track"
+msgstr "Näi_Ta Jälge"
+
+#: src/gpsdrive.c:4996
 msgid "Save track"
 msgstr "Salvesta jälg"
 
-#: src/gpsdrive.c:6712
+#: src/gpsdrive.c:5066
 msgid ""
 "\n"
 "kismet server found\n"
@@ -587,33 +526,34 @@ msgstr ""
 "\n"
 "leidsin kismet serveri\n"
 
-#: src/gpsdrive.c:6765 src/gpsdrive.c:7089
+#. Frame --- Baering
+#: src/gpsdrive.c:5120 src/gpsdrive.c:5431
 msgid "Bearing"
 msgstr "Asimuut"
 
-#: src/gpsdrive.c:6789
+#: src/gpsdrive.c:5144
 msgid "GPS Info"
-msgstr ""
+msgstr "GPS Info"
 
-#. displays speed over ground
-#: src/gpsdrive.c:6842 src/gpsdrive.c:7104 src/gpsdrive.c:7108
-#: src/gpsdrive.c:7117 src/gpsdrive.c:7120
+#. Frame --- speed over ground
+#: src/gpsdrive.c:5197 src/gpsdrive.c:5446 src/gpsdrive.c:5450
+#: src/gpsdrive.c:5459 src/gpsdrive.c:5462
 msgid "---"
-msgstr ""
+msgstr "---"
 
-#: src/gpsdrive.c:6923 src/gpsdrive.c:6930
+#: src/gpsdrive.c:5280 src/gpsdrive.c:5287
 msgid "Selected:"
 msgstr "Valitud:"
 
-#: src/gpsdrive.c:6924 src/gpsdrive.c:6931
+#: src/gpsdrive.c:5281 src/gpsdrive.c:5288
 msgid "within"
-msgstr ""
+msgstr "ulatuses"
 
-#: src/gpsdrive.c:6939
+#: src/gpsdrive.c:5296
 msgid "Distance to target"
 msgstr "Kaugus sihtpunktini"
 
-#: src/gpsdrive.c:6973
+#: src/gpsdrive.c:5330
 msgid "Altitude"
 msgstr "Merepinnast"
 
@@ -621,55 +561,55 @@ msgstr "Merepinnast"
 #. if (!pdamode)
 #. gtk_box_pack_start (GTK_BOX (hbox2), frame_altitude, FALSE, TRUE,
 #. 1 * PADDING);
-#: src/gpsdrive.c:6981 src/settings.c:859
+#: src/gpsdrive.c:5338 src/settings.c:527
 msgid "Waypoints"
-msgstr "Teepunktid"
+msgstr "Teekonnapunktid"
 
-#: src/gpsdrive.c:7086
+#: src/gpsdrive.c:5428
 msgid "Map file"
 msgstr "Kaardifail"
 
-#: src/gpsdrive.c:7087
+#: src/gpsdrive.c:5429
 msgid "Map scale"
 msgstr "Mõõtkava"
 
-#: src/gpsdrive.c:7088
+#: src/gpsdrive.c:5430
 msgid "Heading"
 msgstr "Suund"
 
-#: src/gpsdrive.c:7090
+#: src/gpsdrive.c:5432
 msgid "Time at Dest."
 msgstr "Sihtpunkti aeg"
 
-#: src/gpsdrive.c:7091
+#: src/gpsdrive.c:5433
 msgid "Pref. scale"
 msgstr "Eelistatud mõõtkava"
 
-#: src/gpsdrive.c:7096
+#: src/gpsdrive.c:5438
 msgid "000,00000N"
-msgstr ""
+msgstr "000,00000N"
 
-#: src/gpsdrive.c:7099
+#: src/gpsdrive.c:5441
 msgid "000,00000E"
-msgstr ""
+msgstr "000,00000E"
 
-#: src/gpsdrive.c:7111 src/gpsdrive.c:7114
+#: src/gpsdrive.c:5453 src/gpsdrive.c:5456
 msgid "0000"
-msgstr ""
+msgstr "0000"
 
-#: src/gpsdrive.c:7186 src/gpsdrive.c:7262 src/gpsdrive.c:7275
+#: src/gpsdrive.c:5528 src/gpsdrive.c:5604 src/gpsdrive.c:5617
 msgid "Menu"
 msgstr "Menüü"
 
-#: src/gpsdrive.c:7199 src/gpsdrive.c:7266 src/gpsdrive.c:7276
+#: src/gpsdrive.c:5541 src/gpsdrive.c:5608 src/gpsdrive.c:5618
 msgid "Status"
 msgstr "Olek"
 
-#: src/gpsdrive.c:7258 src/gpsdrive.c:7274
+#: src/gpsdrive.c:5600 src/gpsdrive.c:5616
 msgid "Map"
 msgstr "Kaart"
 
-#: src/gpsdrive.c:7438
+#: src/gpsdrive.c:5777
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
@@ -678,17 +618,17 @@ msgstr ""
 "satelliitide asukoha kuvamise vahel. Simulatsioonil näidatakse pöörlevat "
 "maakera."
 
-#: src/gpsdrive.c:7443
+#: src/gpsdrive.c:5782
 msgid "Number of used satellites/satellites in view"
 msgstr "Satelliite kasutuses/satelliite nähtaval"
 
-#: src/gpsdrive.c:7447
+#: src/gpsdrive.c:5786
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 "EPE (Estimated Precision Error),\n"
 " Eeldatav TäpsusKlass, kui on infot mille järgi eeldada"
 
-#: src/gpsdrive.c:7451
+#: src/gpsdrive.c:5790
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
@@ -698,7 +638,7 @@ msgstr ""
 "täpsuse, väärtus vahemikus 4 kuni 8 annab vastuvõetava täpsuse ja väärtus "
 "suurem kui 8 annab vastuvõtmatult nigela täpsuse."
 
-#: src/gpsdrive.c:7456
+#: src/gpsdrive.c:5795
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
@@ -706,125 +646,104 @@ msgstr ""
 "Kompass näitab sulle sinu liikumise suunda. Kompassiosuti näitab sihtkoha "
 "suunda."
 
-#: src/gpsdrive.c:7459
+#: src/gpsdrive.c:5798
 msgid "/Misc. Menu"
 msgstr "/Muu. Menüü"
 
-#: src/gpsdrive.c:7462
+#: src/gpsdrive.c:5800
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr "Siit leiad lisafunktsioone kaartide, teekondade ja teadete haldamiseks"
 
-#: src/gpsdrive.c:7467
+#: src/gpsdrive.c:5805
 msgid "Disable output of speech"
 msgstr "Ära kasuta kõneväljundit"
 
-#: src/gpsdrive.c:7470
+#: src/gpsdrive.c:5808
 msgid "Use SQL server for waypoints"
 msgstr "Kasuta SQL serverit teekonnapunktide (TKP) jaoks"
 
-#: src/gpsdrive.c:7474
+#: src/gpsdrive.c:5812
 msgid "Show waypoints on the map"
 msgstr "Näita kaardil teekonnapunkte (TKP)"
 
-#: src/gpsdrive.c:7476
-msgid ""
-"Turn position mode on. You can move on the map with the left mouse button "
-"click. Clicking near the border switches to the proximate map."
-msgstr ""
-"Lülitab sisse positsioneerimisreziimi. Vasaku hiireklikiga saad kaardil "
-"liikuda\n"
-"Klikk kaardi ääre lähedal valib sobivama kaardi"
-
-#: src/gpsdrive.c:7479
+#: src/gpsdrive.c:5814
 msgid "Show tracking on the map"
 msgstr "Vaata kaardil teekonda "
 
-#: src/gpsdrive.c:7484
+#: src/gpsdrive.c:5818
 msgid "Navigation menu. Enter here your destination."
 msgstr "Navigeerimis menüü. Sisesta siia oma sihtpunkt."
 
-#: src/gpsdrive.c:7490
+#: src/gpsdrive.c:5824
 msgid "Stop GPSD"
 msgstr "Seiska GPSD"
 
-#: src/gpsdrive.c:7492
+#: src/gpsdrive.c:5826
 msgid "Stop GPSD and switch to simulation mode"
 msgstr "Seiska GPSD ja lülitu simulatsioonile"
 
-#: src/gpsdrive.c:7498
+#: src/gpsdrive.c:5832
 msgid "Starts GPSD for NMEA mode"
 msgstr "Käivitab GPSD NMEA reziimil"
 
-#: src/gpsdrive.c:7501
+#: src/gpsdrive.c:5835
 msgid "Settings for GpsDrive"
 msgstr "GpsDrive seaded"
 
-#: src/gpsdrive.c:7503
+#: src/gpsdrive.c:5837
 msgid "Zoom into the current map"
 msgstr "Suurenda käesolevat kaarti"
 
-#: src/gpsdrive.c:7505
+#: src/gpsdrive.c:5839
 msgid "Zooms out off the current map"
 msgstr "Vähenda käesolevat kaarti"
 
-#: src/gpsdrive.c:7507
+#: src/gpsdrive.c:5841
 msgid "Select the next more detailed map"
 msgstr "Vali järgmine, rohkema detailisusega kaart"
 
-#: src/gpsdrive.c:7509
+#: src/gpsdrive.c:5843
 msgid "Select the next less detailed map"
 msgstr "Vali järgmine, vähema detailsusega kaart"
 
-#: src/gpsdrive.c:7514
+#: src/gpsdrive.c:5847
 msgid "Select here a destination from the waypoint list"
 msgstr "Vali sihtpunkt teekonnapunktide loetelust"
 
-#: src/gpsdrive.c:7519
+#: src/gpsdrive.c:5851
 msgid "Select the map scale of avail. maps."
-msgstr "Vali kaardi mõõtkava võimalike kaartide seast"
+msgstr "Vali kaardi mõõtkava saadaolevate kaartide seast"
 
-#: src/gpsdrive.c:7526
-msgid "Always select the most detailed map available"
-msgstr "Vali alati parima detailsusega kaart"
-
-#: src/gpsdrive.c:7529
-msgid "Draw Point Of Interrests found in mySQL"
-msgstr "Joonista mySQL leitud Huvipunkt (POI)"
-
-#: src/gpsdrive.c:7532
-msgid "Draw Streets found in mySQL"
-msgstr "Joonista mySQL leitud Tänav"
-
-#: src/gpsdrive.c:7534
+#: src/gpsdrive.c:5854
 msgid "Draw Tracks found in mySQL"
 msgstr "Joonista mysSQL leitud Rada"
 
-#: src/gpsdrive.c:7537
+#: src/gpsdrive.c:5856
 msgid "Save the track to given filename at program exit"
 msgstr "Salvesta programmist lahkudes jälg antud failinimega faili"
 
-#: src/gpsdrive.c:7543
+#: src/gpsdrive.c:5862
 msgid "Number of waypoints selected from SQL server"
 msgstr "Valikukriteeriumile vastavate teekonnapunktide (TKP) arv SQL serverist"
 
-#: src/gpsdrive.c:7547
+#: src/gpsdrive.c:5866
 msgid "Number of selected waypoints, which are in range"
 msgstr "Piirkonnas olevate valitud teekonnapunktide (TKP) arv"
 
-#: src/gpsdrive.c:7551
+#: src/gpsdrive.c:5870
 msgid "Range for waypoint selection in kilometers"
 msgstr "Valitud TKP ulatus kilomeetrites"
 
-#: src/gpsdrive.c:7554
+#: src/gpsdrive.c:5873
 msgid "This shows the time from your GPS receiver"
 msgstr "Näitab GPS vastuvõtja aega"
 
-#: src/gpsdrive.c:7558
+#: src/gpsdrive.c:5877
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr "Mobiilseid sihtmärke antud ajaaknas/kokku, sõbraserveri info alusel"
 
-#: src/gpsdrive.c:7662
+#: src/gpsdrive.c:5981
 #, c-format
 msgid ""
 "\n"
@@ -837,37 +756,32 @@ msgstr ""
 "Tänan, et kasutasid GpsDrive!\n"
 "\n"
 
-#: src/gpskismet.c:214
+#: src/gpskismet.c:234
 msgid "trying to re-connect to kismet server\n"
-msgstr ""
+msgstr "proovin kismet serveriga uuesti ühenduda\n"
 
-#: src/gpskismet.c:216
-#, fuzzy
+#: src/gpskismet.c:236
 msgid "Kismet server connection re-established\n"
-msgstr "Otsene serialhendus %s"
+msgstr "Kismet serveri ühendus taasloodud\n"
 
-#: src/gpskismet.c:217
+#: src/gpskismet.c:237
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
-msgstr ""
+msgstr "taasühendumine tehtud:soket = %d\n"
 
-#: src/gpskismet.c:264
-#, fuzzy
+#: src/gpskismet.c:284
 msgid "Kismet server connection lost\n"
-msgstr "Otsene serialhendus %s"
+msgstr "Kismet serveri ühendus kadunud\n"
 
-#: src/gpskismet.c:435
-#, fuzzy
+#: src/gpskismet.c:455
 msgid "Trying Kismet server\n"
-msgstr ""
-"\n"
-"leidsin kismet serveri\n"
+msgstr "Proovin Kismet serverit\n"
 
-#: src/gpskismet.c:441
+#: src/gpskismet.c:461
 msgid "can't open socket for port "
 msgstr "ei saa avada soketit pordile "
 
-#: src/gpsmisc.c:458 src/gpsmisc.c:460 src/gpsmisc.c:493 src/gpsmisc.c:495
+#: src/gpsmisc.c:457 src/gpsmisc.c:459 src/gpsmisc.c:492 src/gpsmisc.c:494
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "ei suuda leida väljundkaardi (pixmap) faili %s!"
@@ -899,14 +813,14 @@ msgid ""
 msgstr ""
 "\n"
 "Saad selle kaardi püsivalt lisada, lisades oma map_koord.txt faili (nimeta "
-"see ümber!) järgmise rea:\n"
+"see fail ümber!) järgmise rea:\n"
 
-#: src/gpsserial.c:275
+#: src/gpsserial.c:314
 #, c-format
 msgid "waiting for thread to stop\n"
 msgstr "ootan lõime seiskumist\n"
 
-#: src/gpsserial.c:298
+#: src/gpsserial.c:337
 #, c-format
 msgid ""
 "\n"
@@ -915,48 +829,48 @@ msgstr ""
 "\n"
 "viga %s(%d) avamisel\n"
 
-#: src/gpsserial.c:301
+#: src/gpsserial.c:340
 #, c-format
 msgid "successfull opened %s\n"
 msgstr "edukalt avatud %s\n"
 
-#: src/gpsserial.c:307
+#: src/gpsserial.c:346
 #, c-format
 msgid "switching WAAS/EGNOS on\n"
 msgstr "lülitan WAAS/EGNOS sisse\n"
 
-#: src/gpsserial.c:313
+#: src/gpsserial.c:352
 #, c-format
 msgid "switching WAAS/EGNOS off\n"
 msgstr "lülitan WAAS/EGNOS välja\n"
 
 #. if ( mydebug > 50 )
-#: src/gpssql.c:313
+#: src/gpssql.c:110
 #, c-format
 msgid "SQL: connected to %s as %s using %s\n"
-msgstr "SQL: server %s ühendatud, kasutaja %s , baas %s\n"
+msgstr "SQL: server: '%s' ühendatud, kasutaja: '%s' , andmebaas: '%s'\n"
 
-#: src/gpssql.c:383
+#: src/gpssql.c:180
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr "%d rida lisatud\n"
 
-#: src/gpssql.c:405
+#: src/gpssql.c:202
 #, c-format
 msgid "last index: %d\n"
 msgstr "viimane indeks: %d\n"
 
-#: src/gpssql.c:428
+#: src/gpssql.c:225
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr "%d rida kustutatud\n"
 
-#: src/gpssql.c:583
+#: src/gpssql.c:380
 #, c-format
 msgid "%d(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) rida loetud %.2f sekundiga\n"
 
-#: src/gpssql.c:744
+#: src/gpssql.c:541
 #, c-format
 msgid ""
 "\n"
@@ -965,7 +879,7 @@ msgstr ""
 "\n"
 "ei leidnud faili libmysqlclient.so .\n"
 
-#: src/gpssql.c:750
+#: src/gpssql.c:547
 #, c-format
 msgid ""
 "\n"
@@ -974,11 +888,11 @@ msgstr ""
 "\n"
 "Ei kasuta MySQL tuge.\n"
 
-#: src/icons.c:550
+#: src/icons.c:481
 msgid " Friendsicon could not be loaded:"
 msgstr " Sõbraikooni ei saa laadida:"
 
-#: src/icons.c:553
+#: src/icons.c:484
 #, c-format
 msgid ""
 "\n"
@@ -993,16 +907,16 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:592 src/icons.c:598
+#: src/icons.c:525 src/icons.c:531
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Laetud kasutaja poolt määratud ikoon %s\n"
 
-#: src/import_map.c:230
+#: src/import_map.c:243
 msgid "Select a map file"
 msgstr "Vali kaardifail"
 
-#: src/import_map.c:300
+#: src/import_map.c:313
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
@@ -1010,7 +924,7 @@ msgstr ""
 "Kuidas kalibreerida omi kaarte? Esiteks, pead kaardi\n"
 "kopeerima"
 
-#: src/import_map.c:302
+#: src/import_map.c:315
 msgid ""
 "\n"
 "directory as .gif, .jpg or .png file and must have\n"
@@ -1021,121 +935,125 @@ msgid ""
 msgstr ""
 "\n"
 "kataloogi kas .gif, .jpg või .png failina, mille suurus\n"
-"on 1280x1024. Failinimi peab olema map_* tänavakaardi ja\n"
+"on 1280x1024. Failinimi peab algama map_* tänavakaardi ja\n"
 "top_* topograafilise kaardi jaoks!\n"
 "Lae kaart, vali koordinaadid või loetelust teekonnapunktid\n"
-"või sisesta käsitsi. Seejärel klikka nuppu \"Kinnita esimene punkt\"."
+"või sisesta need käsitsi. Seejärel klikka nuppu \"Kinnita esimene punkt\"."
 
-#: src/import_map.c:309
+#: src/import_map.c:322
 msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
 msgstr ""
 "Tee sama teise punkti jaoks ja klikka \"Lõpeta\" nuppu.\n"
-"Nüüd on kaart kasutatav."
+"Kaart on nüüd kasutatav."
 
-#: src/import_map.c:316
+#: src/import_map.c:329
 msgid "Import Assistant. Step 1"
 msgstr "Importija Abimees. Samm 1"
 
-#: src/import_map.c:318
+#: src/import_map.c:331
 msgid "Import Assistant. Step 2"
 msgstr "Importija Abimees. Samm 2"
 
-#: src/import_map.c:325
+#: src/import_map.c:338
 msgid "Accept first point"
 msgstr "Kinnita esimene punkt"
 
-#: src/import_map.c:331
+#: src/import_map.c:344
 msgid "Accept Scale and Finish"
 msgstr "Kinnita Skaala ja Lõpeta"
 
-#: src/import_map.c:338
+#: src/import_map.c:351
 msgid "Finish"
 msgstr "Lõpeta"
 
-#: src/import_map.c:353
+#: src/import_map.c:366
 msgid "Go up"
 msgstr "Mine üles"
 
-#: src/import_map.c:356
+#: src/import_map.c:369
 msgid "Go left"
 msgstr "Mine vasakule"
 
-#: src/import_map.c:359
+#: src/import_map.c:372
 msgid "Go right"
 msgstr "Mine paremale"
 
-#: src/import_map.c:362
+#: src/import_map.c:375
 msgid "Go down"
 msgstr "Mine alla"
 
-#: src/import_map.c:365
+#: src/import_map.c:378
 msgid "Zoom in"
 msgstr "Suuremaks"
 
-#: src/import_map.c:368
+#: src/import_map.c:381
 msgid "Zoom out"
 msgstr "Väiksemaks"
 
-#: src/import_map.c:390
+#: src/import_map.c:403
 msgid "Screen X"
 msgstr "Ekraanilt X"
 
-#: src/import_map.c:392
+#: src/import_map.c:405
 msgid "Screen Y"
 msgstr "Ekraanilt Y"
 
-#: src/import_map.c:398
+#: src/import_map.c:411
 msgid "Scale"
 msgstr "Skaala"
 
-#: src/import_map.c:404
+#: src/import_map.c:417
 msgid "Browse waypoint"
 msgstr "Lehitse teekonnapunkte"
 
-#: src/import_map.c:433
+#: src/import_map.c:446
 msgid "Browse filename"
 msgstr "Lehitse failinime"
 
-#: src/import_map.c:797
+#: src/import_map.c:810
 msgid "SELECTED"
 msgstr "VALITUD"
 
-#: src/nautic.c:119
+#: src/import_map.c:811
+msgid "To"
+msgstr "Kuni"
+
+#: src/nautic.c:121
 msgid "Nautic settings"
 msgstr "Mereseaded"
 
-#: src/nautic.c:122 src/settings.c:1119
+#: src/nautic.c:124 src/settings.c:787
 msgid "Nautic"
 msgstr "Meremiilid"
 
-#: src/poi.c:737 src/streets.c:628
+#: src/poi.c:558
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%ld(%d) rida loetud %.2f sekundiga\n"
 
-#: src/settings.c:536
+#: src/settings.c:204
 msgid "Setting WP label font"
 msgstr "Määra TKP märgi font"
 
-#: src/settings.c:541
+#: src/settings.c:209
 msgid "Setting big display font"
 msgstr "Määra suure ekraani font"
 
-#: src/settings.c:625
+#: src/settings.c:293
 msgid "Setting big display color"
 msgstr "Määra suure ekraani värv"
 
-#: src/settings.c:664
+#: src/settings.c:332
 msgid "Setting track color"
 msgstr "Määra jälje värv"
 
-#: src/settings.c:708
+#: src/settings.c:376
 msgid "Setting friends label color"
 msgstr "Määra sõbra märgi värv"
 
-#: src/settings.c:845
+#: src/settings.c:513
 msgid ""
 "Don't use more than\n"
 "100 waypoint(way*.txt) files!"
@@ -1143,133 +1061,129 @@ msgstr ""
 "Ära kasuta rohkem kui\n"
 "100 teekonnapunkti(way*.txt) faili!"
 
-#: src/settings.c:857
+#: src/settings.c:525
 msgid "Waypoint files to use"
-msgstr "Teekonnapunktide (TKP) kasutatavad failid"
+msgstr "Kasutatavad Teekonnapunktide (TKP) failid"
 
-#: src/settings.c:889 src/settings.c:894
+#: src/settings.c:557 src/settings.c:562
 msgid "Settings"
-msgstr "Seaded"
+msgstr "Seadistused"
 
 #. misc area
-#: src/settings.c:900
+#: src/settings.c:568
 msgid "Misc settings"
-msgstr "Muud seaded"
+msgstr "Muud seadistused"
 
-#: src/settings.c:903
+#: src/settings.c:571
 msgid "Show Shadows"
 msgstr "Näita varju"
 
-#: src/settings.c:911
+#: src/settings.c:579
 msgid "Etched frames"
-msgstr ""
+msgstr "Kleepuvad raamid"
 
-#: src/settings.c:919
+#: src/settings.c:587
 msgid "Draw grid"
 msgstr "Joonista võrgustik"
 
-#: src/settings.c:928
+#: src/settings.c:596
 msgid "Simulation: Follow target"
 msgstr "Simulatsioon: Jälgi sihtpunkti"
 
-#: src/settings.c:936
+#: src/settings.c:604
 msgid "Maximum CPU load"
 msgstr "Suurim protsessori koormus"
 
-#: src/settings.c:945
-msgid "Track"
-msgstr "Jälg"
-
-#: src/settings.c:960
+#: src/settings.c:628
 msgid "Maps directory"
 msgstr "Kaartide kataloog"
 
-#: src/settings.c:965
+#: src/settings.c:633
 msgid "Automatic"
 msgstr "Automaatne"
 
-#: src/settings.c:972
+#: src/settings.c:640
 msgid "On"
-msgstr "Sisse"
+msgstr "Sees"
 
-#: src/settings.c:979
+#: src/settings.c:647
 msgid "Off"
-msgstr "Välja"
+msgstr "Väljas"
 
 #. GPS settings area
-#: src/settings.c:1012
+#: src/settings.c:680
 msgid "GPS settings"
 msgstr "GPS seaded"
 
-#: src/settings.c:1023
+#: src/settings.c:691
 msgid "Test for GARMIN"
 msgstr "GARMIN test"
 
-#: src/settings.c:1032
+#: src/settings.c:700
 msgid "Use DGPS-IP"
 msgstr "Kasuta DGPS-IP"
 
-#: src/settings.c:1041
+#: src/settings.c:709
 msgid "GPS is Earthmate"
 msgstr "GPS-iks on Earthmate"
 
-#: src/settings.c:1050
+#: src/settings.c:718
 msgid "Use serial conn."
 msgstr "Kasuta serial ühendust"
 
-#: src/settings.c:1064
+#: src/settings.c:732
 msgid "Interface"
-msgstr "Interfeis"
+msgstr "Liides"
 
-#: src/settings.c:1065
+#: src/settings.c:733
 msgid "Baudrate"
-msgstr ""
+msgstr "Ühenduskiirus (baud)"
 
 #. units area
-#: src/settings.c:1101
+#: src/settings.c:769
 msgid "Units"
 msgstr "Ühikud"
 
-#: src/settings.c:1107
+#: src/settings.c:775
 msgid "Miles"
 msgstr "Miilid"
 
-#: src/settings.c:1113
+#: src/settings.c:781
 msgid "Metric"
 msgstr "Meetrid"
 
-#: src/settings.c:1140
+#: src/settings.c:808
 msgid "Deg.decimal"
-msgstr ""
+msgstr "Kraadid kümnendsüsteemis"
 
-#: src/settings.c:1147
+#: src/settings.c:815
 msgid "Deg Min Sec"
-msgstr ""
+msgstr "Kraadid Minut Sekund"
 
-#: src/settings.c:1155
+#: src/settings.c:823
 msgid "Deg Min.dec"
-msgstr ""
+msgstr "Kraadid Minutid kümnendsüsteemis"
 
 #. default download server
-#: src/settings.c:1182
+#: src/settings.c:850
 msgid "Default map server"
 msgstr "Kaardiserver, vaikimisi"
 
-#: src/settings.c:1193
+#: src/settings.c:861
 msgid "Expedia Germany"
 msgstr "Expedia Saksamaa"
 
-#: src/settings.c:1200
+#: src/settings.c:868
 msgid "Expedia USA"
-msgstr ""
+msgstr "Expedia USA"
 
 #. Night light mode
-#: src/settings.c:1218
+#: src/settings.c:886
 msgid "Night light mode"
 msgstr "Öövalguse reziim"
 
 #. Sound settings
-#: src/settings.c:1235
+#: src/settings.c:903
 msgid "Speech output settings"
 msgstr "Heliväljundi seaded"
 
@@ -1281,82 +1195,78 @@ msgstr "Heliväljundi seaded"
 #. * sound_gps       ... say GPS status
 #. *
 #.
-#: src/settings.c:1247
+#: src/settings.c:915
 msgid "Direction"
 msgstr "Suund"
 
-#: src/settings.c:1271
+#: src/settings.c:939
 msgid "GPS Status"
 msgstr "GPS Olek"
 
-#: src/settings.c:1287
+#: src/settings.c:955
 msgid "Switch on for speech output of the direction to the target"
 msgstr "Lülita sisse kõneväljund sihtpunkti suuna kohta"
 
-#: src/settings.c:1292
+#: src/settings.c:960
 msgid "Switch on for speech output of the distance to the target"
 msgstr "Lüllita sisse kõneväljund sihtpunkti kauguse kohta"
 
-#: src/settings.c:1297
+#: src/settings.c:965
 msgid "Switch on for speech output of your current speed"
 msgstr "Lülita sisse kõneväljund hetkekiiruse kohta"
 
-#: src/settings.c:1301
+#: src/settings.c:969
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr "Lülita sisse kõneväljund GPS-i signaali kohta"
 
 #. Font settings
-#: src/settings.c:1305
+#: src/settings.c:973
 msgid "Font and color settings"
 msgstr "Fondi ja värvide seaded"
 
-#: src/settings.c:1309
+#: src/settings.c:977
 msgid "WP Label"
 msgstr "TKP Märk"
 
-#: src/settings.c:1310
+#: src/settings.c:978
 msgid "Big display"
 msgstr "Suur ekraan"
 
-#: src/settings.c:1311
+#: src/settings.c:979
 msgid "Display color"
 msgstr "Näita värvi"
 
-#: src/settings.c:1332
+#: src/settings.c:1000
 msgid "Switch units to statute miles"
 msgstr "Lülita ühikud maamiilideks (statute miles)"
 
-#: src/settings.c:1335
+#: src/settings.c:1003
 msgid "Switch units to nautical miles"
 msgstr "Lülita ühikud meremiilideks"
 
-#: src/settings.c:1338
+#: src/settings.c:1006
 msgid "Switch units to metric system (Kilometers)"
-msgstr "Lülita ühikud meetersüsteemi (Kilomeetrit)"
+msgstr "Lülita ühikud meetersüsteemi (Kilomeetrid)"
 
-#: src/settings.c:1342
+#: src/settings.c:1010
 msgid ""
 "If selected display latitude and longitude in degree, minutes and seconds "
 "notation"
-msgstr ""
-"Kui on valitud, siis näita laius- ja pikkuskraade kümnendsüsteemi kraadides, "
-"muidu kraad, minut, ja sekund"
+msgstr "Valituna näita laius- ja pikkuskraade kraad, minut, ja sekund"
 
-#: src/settings.c:1346
+#: src/settings.c:1014
 msgid ""
 "If selected display latitude and longitude in degrees and decimal minutes "
 "notation"
 msgstr ""
-"Kui on valitud, siis näita laius- ja pikkuskraade kümnendsüsteemi kraadides, "
-"muidu kraad, minut, ja sekund"
+"Valituna näita laius- ja pikkuskraade kraadides ja minuteid kümnendsüsteemi "
+"kraadides"
 
-#: src/settings.c:1350
+#: src/settings.c:1018
 msgid "If selected display latitude and longitude in decimal degrees notation"
-msgstr ""
-"Kui on valitud, siis näita laius- ja pikkuskraade kümnendsüsteemi kraadides, "
-"muidu kraad, minut, ja sekund"
+msgstr "Valituna näita laius- ja pikkuskraade kümnendsüsteemi kraadides"
 
-#: src/settings.c:1354
+#: src/settings.c:1022
 msgid ""
 "Set the german expedia server(expedia.de) as default download server. Use "
 "this if you are in Europe"
@@ -1364,23 +1274,23 @@ msgstr ""
 "Määra Saksa expedia (expedia.de) server kaartide tõmbamise vaikeserveriks."
 "Soovitatav kasutada kui asud Euroopas"
 
-#: src/settings.c:1359
+#: src/settings.c:1027
 msgid "Set Expedia as default download server"
 msgstr "Määra Expedia vaikimisi serveriks"
 
-#: src/settings.c:1362
+#: src/settings.c:1030
 msgid "Switches shadows on map on or off"
 msgstr "Lülitab kaardi varjud sisse või välja"
 
-#: src/settings.c:1365
+#: src/settings.c:1033
 msgid "Switches between different type of frame ornaments"
 msgstr "Lülitab erinevate raami ornamentide vahel"
 
-#: src/settings.c:1369
+#: src/settings.c:1037
 msgid "This will show a grid over the map"
 msgstr "Näitab kaardi võrgustikku"
 
-#: src/settings.c:1373
+#: src/settings.c:1041
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load, use 20-30% on notebooks while on "
@@ -1391,15 +1301,15 @@ msgstr ""
 "jaoks, selleks et aku võimalikult kaua kestaks. Mõjutab kaardiakna "
 "värskendamise kiirust."
 
-#: src/settings.c:1379
+#: src/settings.c:1047
 msgid "If activated, pointer moves to target in simulation mode"
-msgstr "Valituna liigub simulatsioonil kursor sihtkohta"
+msgstr "Valituna liigub kursor simulatsioonil sihtkohta"
 
-#: src/settings.c:1383
+#: src/settings.c:1051
 msgid "Set here the color of the drawn track"
 msgstr "Määra joonistatava jälje värv"
 
-#: src/settings.c:1387
+#: src/settings.c:1055
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
@@ -1407,7 +1317,7 @@ msgstr ""
 "Sinu kaardifailide asukoht. Selles kataloogis peab asuma ka indeksfail "
 "map_koord.txt."
 
-#: src/settings.c:1392
+#: src/settings.c:1060
 msgid ""
 "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 "only have a NMEA device."
@@ -1415,15 +1325,15 @@ msgstr ""
 "Valituna proovib gpsdrive kasutada ainult GARMIN moodi. Lülita välja kui Sul "
 "on ainult NMEA seade."
 
-#: src/settings.c:1397
+#: src/settings.c:1065
 msgid ""
 "Set here the baud rate of your GPS device, NMEA devices usually have a speed "
 "of 4800 baud"
 msgstr ""
-"Pane siin paika oma GPS seadme baud rate, NMEA seadmed töötavad tavaliselt "
-"4800 baud'iga"
+"Pane siin paika oma GPS seadme ühenduskiirus, NMEA seadmed töötavad "
+"tavaliselt 4800 baud'iga"
 
-#: src/settings.c:1401
+#: src/settings.c:1069
 msgid ""
 "If selected, gpsdrive try to use differential GPS over IP. You must have an "
 "internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
@@ -1431,7 +1341,7 @@ msgstr ""
 "Valituna proovib gpsdrive kasutada differential GPS-i üle IP. Sul peab olema "
 "kasutada IP-ühendus ja DGPS võimeline seade. Töötab ainult NMEA moodis!"
 
-#: src/settings.c:1407
+#: src/settings.c:1075
 msgid ""
 "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 "button will provide gpsd with the needed additional parameters"
@@ -1439,22 +1349,22 @@ msgstr ""
 "Vali see, kui Sul on DeLorme Earthmate GPS vastuvõtja. \"Käivita GPSD\" nupp "
 "annab võimaluse sisestada vajalikud lisaparameetrid"
 
-#: src/settings.c:1413
+#: src/settings.c:1081
 msgid ""
 "Select this if you want to use of the direct serial connection. If disabled, "
 "you can use the receiver only through gpsd. On the other hand, the direct "
 "serial connection needs no gpsd running and detects the working receiver on "
 "startup"
 msgstr ""
-"Vali see, kui tahad kasutada otsest serialhendust. Valimata saad oma GPS "
+"Vali see, kui tahad kasutada otsest serialühendust. Valimata saad oma GPS "
 "seadet kasutada ainult gpsd vahendusel. Teisalt, otsene ühendus ei vaja gpsd "
 "ja avastab töötava GPS seadme käivitumisel"
 
-#: src/settings.c:1420
+#: src/settings.c:1088
 msgid "Specify the serial interface where the GPS is connected"
-msgstr "Määra serialinterface, kuhu on ühendatud GPS"
+msgstr "Määra serialliides, kuhu GPS on ühendatud"
 
-#: src/settings.c:1425
+#: src/settings.c:1093
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
 "turn off nightmode."
@@ -1462,23 +1372,23 @@ msgstr ""
 "Lülitub automaatselt öörezhiimile kui väljas on pime. Selle omaduse "
 "väljalülitamiseks pressi 'N'"
 
-#: src/settings.c:1430
+#: src/settings.c:1098
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr "Lülitab ööreziimi sisse. Väljalülitamiseks vajuta 'N'."
 
-#: src/settings.c:1434
+#: src/settings.c:1102
 msgid "Switches night mode off"
 msgstr "Lülitab ööreziimi välja"
 
-#: src/settings.c:1438
+#: src/settings.c:1106
 msgid "Here you can set the font for the waypoint labels"
 msgstr "Siin saad määrata teekonnapunkti (TKP) märgi fondi"
 
-#: src/settings.c:1442
+#: src/settings.c:1110
 msgid "Here you can set the font for the big display for Speed and Distance"
 msgstr "Siin saad määrata suurel ekraanil kasutatava kiiruse ja kauguse fondi"
 
-#: src/settings.c:1447
+#: src/settings.c:1115
 msgid ""
 "Here you can set the color for the big display for speed, distance and "
 "altitude"
@@ -1486,55 +1396,55 @@ msgstr ""
 "Siin saad määrata suurel ekraanil kasutatava kiiruse, vahemaa ja kõrguse "
 "värvi"
 
-#: src/settings.c:1620
+#: src/settings.c:1288
 msgid "Geo information"
 msgstr "Geo informatsioon"
 
-#: src/settings.c:1622
+#: src/settings.c:1290
 msgid "Geo info"
-msgstr ""
+msgstr "Geo info"
 
-#: src/settings.c:1632
+#: src/settings.c:1300
 msgid "Sunrise"
 msgstr "Päikesetõus"
 
-#: src/settings.c:1635
+#: src/settings.c:1303
 msgid "Sunset"
 msgstr "Päikeseloojang"
 
-#: src/settings.c:1638
+#: src/settings.c:1306
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
-#: src/settings.c:1641
+#: src/settings.c:1309
 msgid "Transit"
-msgstr ""
+msgstr "Teel"
 
-#: src/settings.c:1644
+#: src/settings.c:1312
 msgid "GPS-Time"
 msgstr "GPS-Aeg"
 
-#: src/settings.c:1647
+#: src/settings.c:1315
 msgid "Astro."
-msgstr ""
+msgstr "Astro."
 
-#: src/settings.c:1650
+#: src/settings.c:1318
 msgid "Naut."
-msgstr ""
+msgstr "Meri."
 
-#: src/settings.c:1653
+#: src/settings.c:1321
 msgid "Civil"
-msgstr ""
+msgstr "Tsiviil"
 
-#: src/settings.c:1656
+#: src/settings.c:1324
 msgid "Timezone"
 msgstr "Ajavöönd"
 
-#: src/settings.c:1659
+#: src/settings.c:1327
 msgid "Store TZ"
 msgstr "Salvesta AjaVöönd"
 
-#: src/settings.c:1673
+#: src/settings.c:1341
 msgid ""
 "If selected, the timezone is stored, otherwise your actual timezone will "
 "automatically used"
@@ -1542,107 +1452,107 @@ msgstr ""
 "Valitud ajavöönd salvestatakse, muidu kasutatakse automaatselt tegelikku "
 "ajavööndit"
 
-#: src/settings.c:1694
+#: src/settings.c:1362
 msgid "Night"
 msgstr "Öö"
 
-#: src/settings.c:1698
+#: src/settings.c:1366
 msgid "Day"
 msgstr "Päev"
 
-#: src/settings.c:1817 src/settings.c:1822 src/settings.c:1826
+#: src/settings.c:1485 src/settings.c:1490 src/settings.c:1494
 msgid "Unit:"
 msgstr "Ühik:"
 
-#: src/settings.c:1817
+#: src/settings.c:1485
 msgid "miles"
-msgstr "miili"
+msgstr "miilid"
 
-#: src/settings.c:1822
+#: src/settings.c:1490
 msgid "nautic miles/knots"
-msgstr "meremiili/sõlme"
+msgstr "meremiilid/sõlmed"
 
-#: src/settings.c:1826
+#: src/settings.c:1494
 msgid "kilometers"
-msgstr "kilomeetrit"
+msgstr "kilomeetrid"
 
-#: src/settings.c:1842
+#: src/settings.c:1510
 msgid "Trip information"
 msgstr "Reisi informatsioon"
 
-#: src/settings.c:1844
+#: src/settings.c:1512
 msgid "Trip info"
 msgstr "Reisi info"
 
-#: src/settings.c:1855
+#: src/settings.c:1523
 msgid "Odometer"
 msgstr "Odomeeter"
 
-#: src/settings.c:1857
+#: src/settings.c:1525
 msgid "Total time"
 msgstr "Aeg kokku"
 
-#: src/settings.c:1859
+#: src/settings.c:1527
 msgid "Av. speed"
 msgstr "Keskmine kiirus"
 
-#: src/settings.c:1861
+#: src/settings.c:1529
 msgid "Max. speed"
 msgstr "Suurim kiirus"
 
-#: src/settings.c:1881
+#: src/settings.c:1549
 msgid "Reset"
 msgstr "Nulli"
 
-#: src/settings.c:1887
+#: src/settings.c:1555
 msgid "Resets the trip values to zero"
 msgstr "Nullib teekonna väärtused"
 
-#: src/settings.c:1975
+#: src/settings.c:1643
 msgid "You should change your name in the first field!"
 msgstr "Sa peaksid esimesel väljal oma nime ära muutma!"
 
-#: src/settings.c:2206
+#: src/settings.c:1874
 msgid "Show position newer as"
 msgstr "Näita asukohta, mis on uuem kui"
 
-#: src/settings.c:2208
+#: src/settings.c:1876
 msgid "Friends server setup"
 msgstr "Sõbraserveri seadistus"
 
-#: src/settings.c:2209
+#: src/settings.c:1877
 msgid "Friends"
 msgstr "Sõbrad"
 
-#: src/settings.c:2220
+#: src/settings.c:1888
 msgid "Days"
 msgstr "Päeva"
 
-#: src/settings.c:2221
+#: src/settings.c:1889
 msgid "Hours"
 msgstr "Tundi"
 
-#: src/settings.c:2222
+#: src/settings.c:1890
 msgid "Minutes"
 msgstr "Minutit"
 
-#: src/settings.c:2227
+#: src/settings.c:1895
 msgid "Your name"
 msgstr "Sinu nimi"
 
-#: src/settings.c:2232
+#: src/settings.c:1900
 msgid ""
 "Set here your name which should be shown near your vehicle. You may use "
 "spaces here!"
 msgstr ""
-"Siin saad määrata oma \"liikuri\" juures kuvatavat nime, võid kasutada "
+"Siin saad määrata oma \"liikuri\" juures kuvatava nime, võid kasutada "
 "tühikuid"
 
-#: src/settings.c:2239
+#: src/settings.c:1907
 msgid "Server name"
 msgstr "Serveri nimi"
 
-#: src/settings.c:2243
+#: src/settings.c:1911
 msgid ""
 "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends "
 "server, then you have to press the \"Lookup\" button!"
@@ -1650,32 +1560,32 @@ msgstr ""
 "Siia sisesta täielik sõbraserveri nimi (näit. www.gpsdrive.cc) ja vajuta "
 "nuppu \"Kontrolli/lahenda\""
 
-#: src/settings.c:2251
+#: src/settings.c:1919
 msgid "Lookup"
 msgstr "Kontrolli/lahenda"
 
-#: src/settings.c:2257
+#: src/settings.c:1925
 msgid ""
 "You have to press the \"Lookup\" button to resolve the friends server name!"
 msgstr ""
 "Sõbraserveri nime lahendamiseks pead vajutama nuppu \"Kontrolli/lahenda\"!"
 
-#: src/settings.c:2265
+#: src/settings.c:1933
 msgid "Set here the color of the label displayed at friends position"
 msgstr "Määra siin sõbra asukohta näitava märgi värv"
 
-#: src/settings.c:2272
+#: src/settings.c:1940
 msgid "Friends server IP"
 msgstr "Sõbraserveri IP"
 
-#: src/settings.c:2276
+#: src/settings.c:1944
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
 "Määra siin IP aadress (näit. 127.0.0.1) kui sa pole ülal masinanime "
 "sisestanud"
 
-#: src/settings.c:2280 src/settings.c:2285 src/settings.c:2289
+#: src/settings.c:1948 src/settings.c:1953 src/settings.c:1957
 msgid ""
 "Set here the time limit in which the friends position is shown. Older "
 "positions are not shown."
@@ -1683,11 +1593,11 @@ msgstr ""
 "Määra siin sõbra asukohta näitava märgi ajaline/vanuseline limiit. Vanemaid "
 "asukohti ei näidata."
 
-#: src/settings.c:2298
+#: src/settings.c:1966
 msgid "Use friends server"
 msgstr "Kasuta sõbraserverit"
 
-#: src/settings.c:2308
+#: src/settings.c:1976
 msgid ""
 "Enable/disable use of friends server. You must enter a Username, don't use "
 "the default name!"
@@ -1695,7 +1605,7 @@ msgstr ""
 "Kasuta/ära kasuta sõbraserverit. Pead sisestama oma kasutajanime, ära kasuta "
 "vaikimisi nime!"
 
-#: src/settings.c:2312
+#: src/settings.c:1980
 msgid ""
 "If you enable the friends server mode,\n"
 "<span color=\"red\">everyone</span> using the same server\n"
@@ -1705,31 +1615,31 @@ msgstr ""
 "<span color=\"red\">igaüks</span> kes kasutab sama serverit\n"
 "näeb sinu asukohta!"
 
-#: src/settings.c:2382
+#: src/settings.c:2050
 msgid "SQL selection criterias"
 msgstr "SQL valiku kriteeriumid"
 
-#: src/settings.c:2383
+#: src/settings.c:2051
 msgid "SQL"
-msgstr ""
+msgstr "SQL"
 
-#: src/settings.c:2410
+#: src/settings.c:2078
 msgid "Dist. limit[km] "
 msgstr "Kauguse piir[km] "
 
-#: src/settings.c:2414
+#: src/settings.c:2082
 msgid "If enabled, show waypoints only within this distance"
 msgstr "Valituna näita ainult selle vahemaa teekonnapunkte"
 
-#: src/settings.c:2431
+#: src/settings.c:2099
 msgid "Enable/disable distance selection"
 msgstr "Luba/keela teepikkuse valimine"
 
-#: src/settings.c:2438
+#: src/settings.c:2106
 msgid "Show no_ssid "
 msgstr "Näita no_ssid"
 
-#: src/settings.c:2451
+#: src/settings.c:2119
 msgid ""
 "If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
 "you can disable it here"
@@ -1737,32 +1647,32 @@ msgstr ""
 "Valituna näidatakse WLANe ilma SSID-ta, kuna nad on enamasti Sulle kasutud "
 "Sa saad selle näitamise keelata siit"
 
-#: src/settings.c:2457
+#: src/settings.c:2125
 msgid "Selection mode"
 msgstr "Valikuviis"
 
-#: src/settings.c:2459
+#: src/settings.c:2127
 msgid "include"
 msgstr "arvesta"
 
-#: src/settings.c:2462
+#: src/settings.c:2130
 msgid "exclude"
 msgstr "välista"
 
-#: src/settings.c:2465
+#: src/settings.c:2133
 msgid ""
 "Show only waypoints where the type field contains one of the selected words"
 msgstr ""
 "Näita ainult neid teekonnapunkte mille tüübi väljal on mõni valitud sõnadest"
 
-#: src/settings.c:2468
+#: src/settings.c:2136
 msgid ""
 "Show only waypoints where the type field doesn't contain any the selected "
 "words"
 msgstr ""
 "Näita ainult teekonnapunkte mille tüübi väljal ei ole ühtegi valitud sõna"
 
-#: src/splash.c:630
+#: src/splash.c:149
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1774,18 +1684,17 @@ msgid ""
 "\n"
 msgstr ""
 "Vasak hiire nupp\t\t\t: Määra asukoht (kasulik simulatsioonil)\n"
-"Parem hiire nupp\t\t: Määra sihtpunkt otse kaardil\n"
+"Parem hiire nupp\t\t\t: Määra sihtpunkt otse kaardil\n"
 "Keskmine hiire nupp\t\t: Näita uuesti asukohta\n"
 "Shift+vasak hiire nupp\t\t: väiksem kaart\n"
-"Shift+parem hiire nupp\t: suurem kaart\n"
+"Shift+parem hiire nupp\t\t: suurem kaart\n"
 "Control+vasak hiire nupp\t: Määra kaardil TeeKonnaPunktiks TKP (hiire "
 "asukoht)\n"
 "Control+parem hiire nupp\t: Määra kaardil TeeKonnaPunktiks TKP praegune "
 "asukoht\n"
 "\n"
 
-#: src/splash.c:638
-#, fuzzy
+#: src/splash.c:157
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1808,7 +1717,7 @@ msgstr ""
 "+\t: Suurendab\n"
 "-\t: Vähendab\n"
 
-#: src/splash.c:648
+#: src/splash.c:167
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1830,11 +1739,11 @@ msgstr ""
 "Ettepanekud on teretulnud nii programmi- kui ka käesoleva tõlke kohta.\n"
 "\n"
 
-#: src/splash.c:658
+#: src/splash.c:177
 msgid "GpsDrive v"
-msgstr ""
+msgstr "GpsDrive v"
 
-#: src/splash.c:664
+#: src/splash.c:183
 msgid ""
 "\n"
 "\n"
@@ -1844,7 +1753,7 @@ msgstr ""
 "\n"
 "Uuema, värskema versiooni võid leida aadressilt http://www.gpsdrive.cc\n"
 
-#: src/splash.c:668
+#: src/splash.c:187
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1852,41 +1761,41 @@ msgstr ""
 "HOIATUS: Palun ära kasuta navigeerimiseks. \n"
 "\n"
 
-#: src/splash.c:673
+#: src/splash.c:192
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 "Rohkema info saamiseks või programmi detailidega tutvumiseks palun loe man "
 "(man gpsdrive)!"
 
-#: src/splash.c:678
+#: src/splash.c:197
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Kontrollimine kasutades hiirt (klikates kaardil):\n"
 
-#: src/splash.c:686
+#: src/splash.c:205
 msgid "Short cuts:\n"
 msgstr "Lühivalikud:\n"
 
-#: src/splash.c:693
+#: src/splash.c:212
 msgid "The other key shortcuts are marked as "
 msgstr "Muud lühivalikud on märgistatud "
 
-#: src/splash.c:696
+#: src/splash.c:215
 msgid "underlined"
 msgstr "allajoonitud"
 
-#: src/splash.c:699
+#: src/splash.c:218
 msgid " letters in the button text.\n"
 msgstr " tähtedega nupu tekstis.\n"
 
-#: src/splash.c:702
+#: src/splash.c:221
 msgid "Have a lot of fun!"
 msgstr "Ole mõnus ja naudi!!"
 
-#: src/splash.c:838
+#: src/splash.c:357
 msgid "Please donate to GpsDrive"
 msgstr "Palun tee annetus GpsDrive hüvanguks"
 
-#: src/splash.c:844
+#: src/splash.c:363
 msgid ""
 "\n"
 "\n"
@@ -1906,11 +1815,11 @@ msgstr ""
 "\n"
 "Seda tegema mine"
 
-#: src/splash.c:849
+#: src/splash.c:368
 msgid " http://www.gpsdrive.cc "
-msgstr ""
+msgstr " http://www.gpsdrive.cc "
 
-#: src/splash.c:852
+#: src/splash.c:371
 msgid ""
 "and click on the PayPal button.\n"
 "\n"
@@ -1928,34 +1837,30 @@ msgstr ""
 "versiooni.\n"
 "\n"
 
-#: src/splash.c:888
+#: src/splash.c:407
 msgid "About GpsDrive donation"
 msgstr "GpsDrive annetamisest"
 
-#: src/splash.c:971
+#: src/splash.c:490
 msgid "From:"
 msgstr "Kellelt:"
 
-#: src/splash.c:1042
+#: src/splash.c:561
 #, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr "Said sõbraserverilt (%s) teate\n"
 
-#: src/splash.c:1054
+#: src/splash.c:573
 msgid "You received a message through the friends server from:\n"
 msgstr "Said läbi sõbraserveri teate kasutajalt:\n"
 
-#: src/splash.c:1065
+#: src/splash.c:584
 msgid "Message text:\n"
 msgstr "Teate tekst:\n"
 
-#: src/splash.c:1116
-msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-msgstr "Viga konfiguratsioonifaili ~/.gpsdrive/gpsdriverc salvestamisel"
-
-#: src/splash.c:1615 src/splash.c:1676
+#: src/splash.c:708 src/splash.c:769
 #, c-format
 msgid ""
 "\n"
@@ -1970,220 +1875,38 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:1659
+#: src/splash.c:752
 msgid "About GpsDrive"
 msgstr "MisSeeOn"
 
-#~ msgid "/_Misc. Menu/Maps/_Map Manager"
-#~ msgstr "/_Muu. Menüü/Kaardid/Kaartide haldus"
+#~ msgid "draw _Streets"
+#~ msgstr "jooni_Sta tänavad"
 
-#~ msgid "Error in line "
-#~ msgstr "Viga real "
+#~ msgid "Pos. _mode"
+#~ msgstr "Pos. resii_m"
+
+#~ msgid "Auto _best map"
+#~ msgstr "Parim kaart autom."
 
 #~ msgid ""
-#~ "I have found filenames in map_koord.txt which are\n"
-#~ "not map_* or top_* files. Please rename them and change the entries in\n"
-#~ "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-#~ "maps.  Otherwise, the maps will not be displayed!"
+#~ "Turn position mode on. You can move on the map with the left mouse button "
+#~ "click. Clicking near the border switches to the proximate map."
 #~ msgstr ""
-#~ "Leidsin failinimed map_koord.txt failist, mis pole\n"
-#~ "ei map_* ega top_* failid. Palun nimeta nad ringi ja muuda kirjed\n"
-#~ "map_koord.txt failis vastavaks. Kasuta map_* tänavakaardiks ja top_*\n"
-#~ "topograafiliseks kaardiks. Vastasel juhul neid kaarte lihtsalt ei kuvata!"
+#~ "Lülitab sisse positsioneerimisreziimi. Vasaku hiireklikiga saad kaardil "
+#~ "liikuda\n"
+#~ "Klikk kaardi ääre lähedal valib sobivama kaardi"
 
-#~ msgid "can't open NMEA output file"
-#~ msgstr "ei suuda avada NMEA väljundfaili"
+#~ msgid "Always select the most detailed map available"
+#~ msgstr "Vali alati parima detailsusega kaart"
 
-#~ msgid " Mapfile could not be loaded:"
-#~ msgstr " Kaardifaili ei saa laadida:"
+#~ msgid "Draw Streets found in mySQL"
+#~ msgstr "Joonista mySQL leitud Tänav"
 
-#~ msgid "Map found!"
-#~ msgstr "Leidsin kaardi!"
+#~ msgid "Add waypoint name"
+#~ msgstr "Lisa teekonnapunkti nimi"
 
-#~ msgid "Select coordinates and scale"
-#~ msgstr "Vali koordinaadid ja skaala"
+#~ msgid " Waypoint name: "
+#~ msgstr " Teekonnapunkti nimi: "
 
-#~ msgid "Download map"
-#~ msgstr "Tõmba kaart"
-
-#~ msgid "Map covers"
-#~ msgstr "Kart katab"
-
-#~ msgid "Map file name"
-#~ msgstr "Kaardifaili nimi"
-
-#~ msgid ""
-#~ "If selected, you download the map from the german expedia server (expedia."
-#~ "de)"
-#~ msgstr "Valituna, tõmbad kaardid Saksamaa expedia serverist (expedia.de)"
-
-#~ msgid ""
-#~ "If selected, you download the map from the U.S. expedia server (expedia."
-#~ "com)"
-#~ msgstr "Valituna, tõmbad kaardid U.S. expedia serverist (expedia.com)"
-
-#~ msgid ""
-#~ "You can also select the position\n"
-#~ "with a mouse click on the map."
-#~ msgstr ""
-#~ "Võid valida asukoha kaardil sellel\n"
-#~ "kohal hiirega klikates."
-
-#~ msgid "Using Proxy and port:"
-#~ msgstr "Kasutades Proxy ja porti:"
-
-#~ msgid "can't open socket for port 80"
-#~ msgstr "ei saa avatud soketit pordile 80"
-
-#~ msgid "Connecting to %s FAILED!"
-#~ msgstr "Ühendus %s EBAÕNNESTUS!"
-
-#~ msgid "Can't resolve webserver address"
-#~ msgstr "Ei suuda lahendada webserveri aadressi"
-
-#~ msgid "unable to connect to Website"
-#~ msgstr "ei saa ühendust WEB"
-
-#~ msgid "read from Webserver"
-#~ msgstr "loe web serverist"
-
-#~ msgid "Connecting to %s"
-#~ msgstr "Ühendun %s"
-
-#~ msgid "Now connected to %s"
-#~ msgstr "Oled %s ühenduses"
-
-#~ msgid "Downloaded %d kBytes"
-#~ msgstr "Tõmmatud %d kBaiti"
-
-#~ msgid "Download FAILED!"
-#~ msgstr "Tõmbamine EBAÕNNESTUS!"
-
-#~ msgid "Download finished, got %dkB"
-#~ msgstr "Tõmbamine lõpetatud, sain %dkB"
-
-#~ msgid "Define route"
-#~ msgstr "Kirjelda teekond"
-
-#~ msgid "Start route"
-#~ msgstr "Alusta teekonda"
-
-#~ msgid "Take all WP as route"
-#~ msgstr "Kasuta kõiki TKP teekonnana"
-
-#~ msgid "Abort route"
-#~ msgstr "Katkesta teekond"
-
-#~ msgid ""
-#~ "Click on waypoints list\n"
-#~ "to add waypoints"
-#~ msgstr ""
-#~ "Teekonnapunktide lisamiseks\n"
-#~ "klikka TKP loetelule"
-
-#~ msgid ""
-#~ "Click on list item\n"
-#~ "to select next waypoint"
-#~ msgstr ""
-#~ "Klikka loetelus järgmise\n"
-#~ "teekonnapunkti valikuks"
-
-#~ msgid ""
-#~ "Create a route from all waypoints. Sorted with order in file, not "
-#~ "distance."
-#~ msgstr ""
-#~ "Loo teekond üle kõigi teepunktide. Sorteeritud esinemisjärjekorra järgi "
-#~ "failis, mitte teekonnal."
-
-#~ msgid ""
-#~ "Click here to start your journey. GpsDrive guides you through the "
-#~ "waypoints in this list."
-#~ msgstr ""
-#~ "Klikka siia oma reisi/teekonna alustamiseks. GpsDrive juhatab su läbi "
-#~ "loetelus olevate teekonnapunktide."
-
-#~ msgid "Abort your journey"
-#~ msgstr "Katkesta oma teekond"
-
-#~ msgid "-D    turn on lot of debug info\n"
-#~ msgstr "-D    ohtra veajälitusinfo saamiseks\n"
-
-#~ msgid "/Misc. Menu/Maps/Map Manager"
-#~ msgstr "/Muu. Menüü/Kaardid/Kaartide haldus"
-
-#~ msgid "_Download map"
-#~ msgstr "_D Tõmba kaart"
-
-#~ msgid "Start GPSD"
-#~ msgstr "Käivita GPSD"
-
-#~ msgid "Shown map type"
-#~ msgstr ""
-#~ "Näidatav kaardi\n"
-#~ "tüüp."
-
-#~ msgid "Street map"
-#~ msgstr "Tänavakaart"
-
-#~ msgid "Topo map"
-#~ msgstr "Topogr. kaart"
-
-#~ msgid "Download map from Internet"
-#~ msgstr "Tõmba kaart Internetist"
-
-#~ msgid "Leave the program"
-#~ msgstr "Lahku programmist"
-
-#~ msgid "Opens the help window"
-#~ msgstr "Avab abitekstide akna"
-
-#~ msgid "unable to add match for signals %s: %s"
-#~ msgstr "ei suuda lisada signaalide %s: %s sobivust"
-
-#~ msgid ""
-#~ "\n"
-#~ "Cannot connect to %s: unknown host\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Ei suuda henduda %s: tundamatu masin\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "no garmin support compiled in\n"
-#~ msgstr ""
-#~ "\n"
-#~ "garmin tuge pole sisse kompileeritud\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Garmin protocol detection disabled!\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Garmini protokolli tuvastus keelatud!\n"
-
-#~ msgid "Simulation mode"
-#~ msgstr "Simulatsioon"
-
-#~ msgid "gpsd: got RMC data, using it\n"
-#~ msgstr "gpsd: sain RMC info, kasutan seda\n"
-
-#~ msgid "Timeout getting data from GPS-Receiver!"
-#~ msgstr "GPS vastuvõtja timeout"
-
-#~ msgid "Press middle mouse button for navigation"
-#~ msgstr "Navigeerimiseks vajuta keskmist hiire nuppu"
-
-#~ msgid "Not enough satellites in view!"
-#~ msgstr "Nägemisulatuses pole piisavalt satelliite!"
-
-#~ msgid "No GPS used"
-#~ msgstr "GPS pole kasutuses"
-
-#~ msgid "Press middle mouse button for sim mode"
-#~ msgstr "Simulatsiooniks vajuta hiire keskmist nuppu"
-
-#~ msgid "Decimal position"
-#~ msgstr "kümnendsüsteemis, komakohaga"
-
-#~ msgid "got no RMC data, using GGA data\n"
-#~ msgstr "ei saanud RMC infot, kasutan GGA infot\n"
+#~ msgid " Waypoint type: "
+#~ msgstr " Teekonnapunkti tüüp: "
