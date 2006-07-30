@@ -1,0 +1,76 @@
+                          GpsDrive MySQL README
+                          =====================
+Contents
+========
+* Introduction
+* Install
+* Initialise the Database
+* Insert Openstreetmap Data (Optional)
+* About Openstreetmap
+* MySQL Options in GpsDrive <TODO>
+* Compile MySQL (if you must)     <TODO>
+
+<TODO> There is still some useful information in README.SQL but lots of it is out of date.
+       The relevant parts should be added to this file and README.SQL should be removed
+       to avoid confusion.
+
+Introduction
+============
+Firstly you don't absolutely need MySQL to use GpsDrive.  It will happily store the basic  information it needs in flat files.  However if you want to use some of the more advanced features then you will need MySQL.  Other databases may be supported in the future but at the moment they aren't.  One of the notable features of GpsDrive is the ability to store vector based street information from the Open Street Map Project and MySQL is the only way to do this.  GpsDrive automatically detects if MySQL is running and if it is it running it will use it.  
+
+
+Install
+=======
+The best way to install MySQL is to use the package manager that comes with your flavor of Linux.  If for some reason this isn't possible then the next best thing is to download a ready made package file from the following location http://dev.mysql.com/downloads/mysql/5.0.html.  
+
+Don't forget your copy of Linux may have come with MySQL pre-installed.
+
+If you still can't find what you need then download the source tar ball (at the bottom of the page) and check out the compile instructions below. (not for the faint hearted)
+
+<TODO> Minimum required version of MySQL.
+
+Initialise the Database
+=======================
+Once you have MySQL up and running you can use these scripts to initialise the database for GpsDrive.  This task was previously performed by a script called create.sql and it is out of date and no longer being maintained.
+
+Change directory to GpsDrive's bin folder then run the following command.
+
+./geoinfo.pl -create-db -fill-defaults -openstreetmap \
+	-db-user=root -db-password=<yourpassword> 
+
+If you have installed GpsDrive into a directory other than the default you may need to update the perl library path before running the command.  Change the path depending on your installation.
+
+export PERL5LIB=/<your path>/gpsdrive/share/perl5
+
+
+Insert Openstreetmap Data (Optional)
+====================================
+The following command downloads and inserts the openstreetmap street info for Earth! from Joerg's mirror of the openstreetmap db.  The mirror is only updated once per month (or so).
+
+./geoinfo.pl --db-user=root --db-password=<yourpassword> --no-delete --osm
+
+If you want to download a particular section directly from the openstreetmap database and insert it into your MySQL database then use a URL in your browser like this. 
+
+http://www.openstreetmap.org/api/0.3/map?bbox=151.0,-34.1,151.1,-34.0
+
+Where the numbers define a square (bottom left longitude, bottom left latitude, top right longitude, top right latitude).  Currently only a .1 deg box is allowed is allowed but this will increase in the future.
+
+This may take a little time if the server is busy. When it is done you may be presented with a empty browser screen.  This is because the server returns information in XML format and your browser doesn't know how to display it.  Just choose Save As and save the data as a file and it can be used as input in the next command. The file extension will probably be .osm
+
+To insert the downloaded information into your database use the following command
+
+./geoinfo.pl --db-user=root -db-password=<yourpassword> --no-delete -osm=<full path to the file>
+
+Now that you have MySQL up and running and have some data in there you should see extra options in the menu on the left hand side when you start up GpsDrive.
+
+About Openstreetmap
+===================
+<TODO>
+
+MySQL Options in Gpsdrive
+=========================
+<TODO>
+
+Compile MySQL (if you must)
+=====================
+<TODO>
