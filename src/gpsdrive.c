@@ -3301,6 +3301,9 @@ streets_draw_cb (GtkWidget * widget, guint datum)
     if ( NULL == widget ) 
 	widget = streets_draw_bt;
 
+    if ( mydebug > 1 )
+	g_print ("streets_draw_cb=%d\n", datum);
+
     if ( datum )
 	streets_draw = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 

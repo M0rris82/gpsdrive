@@ -269,6 +269,8 @@ make_display_map_controlls ()
 				    (streets_draw_bt), TRUE);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
 			_("Draw Streets found in mySQL"), NULL);
+  gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
+		      GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
   gtk_box_pack_start (GTK_BOX (vbox_map_controlls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
   
 

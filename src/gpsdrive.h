@@ -230,6 +230,7 @@ gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 gint pos_cb (GtkWidget * widget, guint datum);
+gint streets_draw_cb (GtkWidget * widget, guint datum);
 
 /* I didn't want to start a friends.h ;-) */
 void drawfriends (void);
@@ -245,6 +246,7 @@ void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
 gdouble lat2radius (gdouble lat);
 void draw_text_with_box (gdouble posx, gdouble posy, gchar * name);
 int posxy_on_screen (gdouble posx, gdouble posy);
+
 
 void init_lat2RadiusArray();
 int display_background_map ();
