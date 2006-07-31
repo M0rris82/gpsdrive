@@ -266,7 +266,7 @@ lib_map_a_SOURCES = \
 
 @HAVE_GDAL_TRUE@MAPDIR = ../../data/maps
 @HAVE_GDAL_TRUE@lib_map_a_LIBRARIES = lib_map.a
-@HAVE_GDAL_TRUE@lib_map_adir = lib_map
+@HAVE_GDAL_TRUE@lib_map_adir = $(datadir)/gpsdrive
 @HAVE_GDAL_TRUE@lib_map_a_CXXFLAGS = \
 @HAVE_GDAL_TRUE@	$(lib_map_cflags)\
 @HAVE_GDAL_TRUE@	$(PREFIX) $(PLUGINPATH) \
