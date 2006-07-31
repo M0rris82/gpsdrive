@@ -28,6 +28,10 @@
 # S.Merrony       0.0.3        Fix case where no altitude, add version number to help
 #
 # $Log$
+# Revision 1.4  2006/07/31 08:20:08  tweety
+# lat/long space problem fix
+# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=78
+#
 # Revision 1.3  2005/04/13 19:58:30  tweety
 # renew indentation to 4 spaces + tabstop=8
 #
@@ -74,7 +78,7 @@ if ($opts{h} ) {
 
 	Version 0.0.3 (August 2002)
 
-	ENDOFHELP
+ENDOFHELP
 	print $help;
     exit;
 }
@@ -122,7 +126,7 @@ while (<$infile>) {
 	
 	my (@pairs, $pair);
 
-	@pairs = split( ' ', $thisline );
+	@pairs = split( /\s+/, $thisline );
 	foreach $pair ( @pairs ) {
 	    my $name = "";
 	    my $value = "";
@@ -188,7 +192,9 @@ while (<$infile>) {
 		    $timestamp = localtime( $value );
 		}
 	    }
-	    
+	    $latitude  = $1 if $thisline =~ m/latitude=\"\s*([\+\-\d\.\,]+)\"/;
+	    $longitude = $1 if $thisline =~ m/longitude=\"\s*([\+\-\d\.\,]+)\"/;
+	    $altitude  = $1 if $thisline =~ m/altitude=\"\s*([\+\-\d\.\,]+)\"/;
 	} # end of name-value pair loop
 	#print $thisline;
     } #end if
