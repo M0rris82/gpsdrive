@@ -3774,8 +3774,39 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		}
 	    
 	}
+	if ( mydebug>10 ) 
+	    fprintf(stderr,"Key pressed: %0x\n",event->keyval);
 	
+	
+	if (posmode)
+	    {
+		gdouble x, y;
 
+		if ( (event->keyval == 0xff52))	// Up
+		    {
+			calcxy (&x, &y, current_lon, current_lat, zoom);
+			calcxytopos (x, 0, &current_lat, &current_lon, zoom);
+		    }
+		
+		if ( (event->keyval == 0xff54 )) // Down
+		    {
+			calcxy (&x, &y, current_lon, current_lat, zoom);
+			calcxytopos (x, SCREEN_Y, &current_lat, &current_lon, zoom);
+		    }
+		if ( (event->keyval == 0xff51 )) // Left
+		    {
+			calcxy (&x, &y, current_lon, current_lat, zoom);
+			calcxytopos (0, y, &current_lat, &current_lon, zoom);
+		    }
+		if ( (event->keyval == 0xff53 )) //  Right
+			    
+		    {
+			calcxy (&x, &y, current_lon, current_lat, zoom);
+			calcxytopos (SCREEN_X, y, &current_lat, &current_lon, zoom);
+		    }
+		posmode_x = current_lon;
+		posmode_y = current_lat;
+	    }
 	return 0;
 }
 
