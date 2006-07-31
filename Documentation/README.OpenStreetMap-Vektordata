@@ -1,0 +1,74 @@
+Download and import Vektormaps from OSM:
+----------------------------------------
+The Vectormaps have to be downloaded from osm (www.openstreetmap.org) or 
+better one of the mirrors. 
+Normally you would do this by starting:
+
+ geoinfo.pl --db-user=root --db-password=<mysql-root-pwd> --create-db    --fill-defaults
+
+ geoinfo.pl --db-user=root --db-password=<mysql-root-pwd> --osm   
+
+The second would download the monthly snapshot 
+    Currently planet-2006-07-a.osm.bz2
+from my mirror http://www.ostertag.name/osm/index.html
+unpack it and import it to the mysql Database. 
+
+After installing the monthly snapshot you can just switch off all 
+other mapsources in the GUI. Then switch on Streets and POI.
+If there is Data available for your Area you should see the 
+Streets in the normal map Area.
+
+This should normally work for any region in the world, BUT ...
+
+Lets start with the OSM Servers:
+--------------------------------
+The OSM Servers have limited resources, so please DON'T USE the following 
+method for larger areas. 
+
+Planet.osm problem:
+-------------------
+Currently the extracting script has problems in parts of the US, so they 
+currently only include the western Hemisphere into the monthly planet.osm
+snapshots. 
+
+OSM Account:
+------------
+For all of the following methods you need an direct account to the 
+openstreetmap.org (osm) Servers. (It's easy to get; Only a valid e-mail 
+address is needed). After this you can normally download and edit the 
+Vectordata of your area. 
+
+Working with JOSM:
+------------------
+For editing and downloading Data from/to osm I normally use josm. 
+It's a java Program for editing the Vectordata on osm. josm also allows 
+to save the downloaded/edited area into a file. If you now save the 
+Vektordata to a local File (mypath/myplace.osm for example); you can 
+add this Data to the mysql database 
+with the following command:
+  geoinfo.pl -db-user=root --db-password=<mysql-root-pwd> --osm=mypath/myplace.osm  --no-delete
+
+
+Automatic Download (please use with care and small Areas):
+----------------------------------------------------------
+And then you can use another Method to add more details to your Area.
+The following command would do this:
+  geoinfo.pl -db-user=root --db-password=<mysql-root-pwd> --osm=download:myplace --no-delete
+If you don't want to download munich, you'd have to add a corresponding 
+myplace to the list of valid places in scripts/Geo/Gpsdrive/OSM.pm:
+	my $download_area = {
+	    #             lat1,lon1  lat2,lon2
+	    muenchen  => [ 10,  44,  14,48],
+	};
+
+--------------------------------------------
+
+> Also I'd love to use the vector maps for Canada and US as mentioned on
+> the list.  What directories are required for these?
+
+As already mentioned above the planet.osm don't include the US-Tiger data. So the 
+only possibility would be to either use a direct download of your area and then import it 
+with 
+  geoinfo.pl -db-user=root --db-password=<mysql-root-pwd> --osm=mypath/myplace.osm  --no-delete
+or use 
+  geoinfo.pl -db-user=root --db-password=<mysql-root-pwd> --osm=download:myplace --no-delete
