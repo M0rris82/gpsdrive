@@ -11,7 +11,7 @@ if HAVE_GDAL
 MAPDIR = ../../data/maps
 
 lib_map_a_LIBRARIES=lib_map.a
-lib_map_adir=lib_map
+lib_map_adir=$(datadir)/gpsdrive
 lib_map_a_CXXFLAGS = \
 	$(lib_map_cflags)\
 	$(PREFIX) $(PLUGINPATH) \
