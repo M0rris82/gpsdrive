@@ -1,14 +1,44 @@
-GPSDrive for DSL
-========================
+GPSDrive for DSL (Damn Small Linux)
+===================================
 
-This package is intended to be installed on Damn Small Linux (DSL)
-it was constructed from the CVS files downloaded from CVS and compiled
-on Debian linux.
+Contents
+-----------
+ * Introduction
+ * Compile
+ * Package
+ * Install
+ * Gpsd
+ * MySQL
 
+Introduction
+------------
+These instructions will help you to create a  package that can be installed on DSL.
+It has been tested on Debian and gpsdrive appears to compile and be binary compatible
+with DSL.  DSL grew out of Knoppix which grew out of Debian.
+
+Compile
+--------
+Have a look through the DEVPACKAGES file and install ALL of the required packages.
+Change to the DSL directory and run the build.sh file.  If this completes with a 
+"success" message you should have a runable gpsdrive program that you can execute 
+happily on debian.  It is installed to /opt/gpsdrive.
+
+Package
+--------
+Next you need to turn gpsdrive into an installable package for DSL.
+Create a folder named "package" two levels up from the DSL source folder.
+cd to the DSL folder and run the package.sh script.  This will build 
+all the required files in to an archive file named gpsdrive.tar.gz and 
+stick it in a folder named ../../package/gpsdrive.  This is what the DSL
+installer uses.  You don't need to unpack it manually
+
+Install
+-------
 To install on DSL First download and install the package named gtk2-0705.dsl
 using the mydsl package installer normally found on the desktop.  
 
 Then install gpsdrive.tar.gz using the mydsl button in the Emelfm file manager.
+Check out the DSL home page for all the different install options.
 
 Note:
 I have noticed that sometimes after installing Gpsdrive the desktop icon doesn't 
@@ -34,6 +64,19 @@ LD_LIBRARY_PATH=/opt/gpsdrive/lib /opt/gpsdrive/bin/gpsdrive
 
 I haven't done extensive testing but the program seems to be fully operational.
 If you find problems please post details on the GPSDrive Mailing list.
+
+GPSD
+-----
+As it appears that direct serial support is soon to be no longer supported in gpsdrive 
+gpsd will be needed to make the connection to your gps.  I'm currently working on creating 
+package scripts for gpsd.  They are working but arn't in the gpsdrive source tree yet.
+
+MYSQL
+-----
+I'm also working on getting Mysql into DSL and it is looking like being bigger
+than getting gpsdrive in there.  At the moment it is a work in progress.
+i.e. Not working
+
 
 David
 
