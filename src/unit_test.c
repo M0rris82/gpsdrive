@@ -724,6 +724,5 @@ unit_test (void)
     }
 
   // ------------------------------------------------------------------
-  printf ("\n\nAll Tests successfull\n\n");
-  exit (0);
+  printf ("\n\nAll Unit Tests successfull\n\n");
 }

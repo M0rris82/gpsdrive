@@ -246,6 +246,7 @@ gdouble lat2radius (gdouble lat);
 void draw_text_with_box (gdouble posx, gdouble posy, gchar * name);
 int posxy_on_screen (gdouble posx, gdouble posy);
 
+void init_lat2RadiusArray();
 int display_background_map ();
 
 typedef struct

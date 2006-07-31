@@ -21,113 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-  $Log$
-  Revision 1.11  2006/07/29 14:06:51  tweety
-  group the checkboxes in the Menu
-  rename some variables to more clearly show it's a button _bt
-
-  Revision 1.10  2006/01/03 14:24:10  tweety
-  eliminate compiler Warnings
-  try to change all occurences of longi -->lon, lati-->lat, ...i
-  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
-  rename drawgrid --> do_draw_grid
-  give the display frames usefull names frame_lat, ...
-  change handling of WP-types to lowercase
-  change order for directories reading icons
-  always read inconfile
-
-  Revision 1.9  2005/11/06 18:33:41  tweety
-  shortened map selection code
-  coordinate_string2gdouble:
-   - fixed missing format
-    - changed interface to return gdouble
-    change -D option to reflect debuglevels
-    Added more debug Statements for Level>50
-    move map handling to to seperate file
-    speedup memory reservation for map-structure
-    Add code for automatic loading of maps from system
-    DATA/maps/.. Directory
-    changed length of mappath from 400 to 2048 chars
-
-  Revision 1.8  2005/10/11 08:28:35  tweety
-  gpsdrive:
-  - add Tracks(MySql) displaying
-  - reindent files modified
-  - Fix setting of Color for Grid
-  - poi Text is different in size depending on Number of POIs shown on
-    screen
-
-  geoinfo:
-   - get Proxy settings from Environment
-   - create tracks Table in Database and fill it
-     this separates Street Data from Track Data
-   - make geoinfo.pl download also Opengeodb Version 2
-   - add some poi-types
-   - Split off Filling DB with example Data
-   - extract some more Funtionality to Procedures
-   - Add some Example POI for Kirchheim(Munich) Area
-   - Adjust some Output for what is done at the moment
-   - Add more delayed index generations 'disable/enable key'
-   - If LANG=*de_DE* then only impert europe with --all option
-   - WDB will import more than one country if you wish
-   - add more things to be done with the --all option
-
-  Revision 1.7  2005/08/18 06:59:10  tweety
-  save tracks periodically 1st part
-  Autor: Russell MIrov <russell.mirov@sun.com>
-
-  Revision 1.6  2005/04/20 23:33:49  tweety
-  reformatted source code with anjuta
-  So now we have new indentations
-
-  Revision 1.5  2005/04/13 19:58:31  tweety
-  renew indentation to 4 spaces + tabstop=8
-
-  Revision 1.4  2005/04/10 21:50:50  tweety
-  reformatting c-sources
-	
-  Revision 1.3  2005/02/08 20:12:59  tweety
-  savetrackfile got 3 modi
-
-  Revision 1.2  2005/01/11 20:14:14  tweety
-  rearanges track handling a little bit
-  added suport for interupted tracks
-
-  Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-  Initial import, straight from 2.10pre2 tar.gz archive
-
-  Revision 1.18  2004/02/08 17:16:25  ganter
-  replacing all strcat with g_strlcat to avoid buffer overflows
-
-  Revision 1.17  2004/02/07 17:46:10  ganter
-  ...
-
-  Revision 1.16  2004/02/05 19:47:31  ganter
-  replacing strcpy with g_strlcpy to avoid bufferoverflows
-  USB receiver does not send sentences in direct serial mode,
-  so I first send a "\n" to it
-
-  Revision 1.15  2004/02/02 03:38:32  ganter
-  code cleanup
-
-  Revision 1.14  2004/01/20 17:39:19  ganter
-  working on import function
-
-  Revision 1.13  2004/01/17 06:11:04  ganter
-  added color setting for track color
-
-  Revision 1.12  2004/01/01 09:07:33  ganter
-  v2.06
-  trip info is now live updated
-  added cpu temperature display for acpi
-  added tooltips for battery and temperature
-
-  Revision 1.11  2003/05/31 20:12:35  ganter
-  new UDP friendsserver build in, needs some work
-
-*/
-
 
 /*
  * Track support module: display, disk loading/saving.
@@ -141,6 +34,7 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "config.h"
 
+extern gint mydebug;
 extern gint maploaded;
 extern gint trackflag;
 extern gint importactive;
@@ -320,6 +214,9 @@ savetrackfile (gint mode)
   gint e, i;
   gchar mappath[400], lat[30], alt[30], lon[30];
   FILE *st;
+
+  if ( mydebug > 11 )
+      g_print ("savetrack(%d)\n", mode);
 
   if (mode == 0)
     {

@@ -96,7 +96,7 @@ Old.general.memorial                                 1 10000
 Old.general.point-of-interest                        1 10000
 Old.general.viewpoint                                1 10000
 Old.general.waypoint                                 1 10000
-Old.import_way.txt                                   1 10000
+Old.import_way_txt                                   1 10000
 Old.information                                      1 10000
 Old.mine                                             1 10000
 Old.postal.letter-box                                1 10000

@@ -219,7 +219,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = control changelog copyright dirs rules
+EXTRA_DIST = control changelog copyright dirs rules files
 all: all-am
 
 .SUFFIXES:

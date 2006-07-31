@@ -177,19 +177,6 @@ reinitgps_cb (GtkWidget * widget, gpointer datum)
 {
 	g_print ("\nReinitializing GPS connection...\n");
 	initgps ();
-	/*if (simmode)
-	{
-		if ((!disableserial) && (!disableserialcl))
-		{
-			haveserial = gpsserialinit ();
-			if (haveserial)
-			{
-				simmode = FALSE;
-				haveNMEA = TRUE;
-				gtk_widget_set_sensitive (startgps_bt, FALSE);
-			}
-		}
-	} */
 	return TRUE;
 }
 

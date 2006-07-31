@@ -54,8 +54,6 @@ Disclaimer: Please do not use for navigation.
 
 /* variables */
 extern gint ignorechecksum, mydebug;
-// , mapistopo;
-extern gdouble lat2RadiusArray[201];
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
@@ -67,38 +65,49 @@ extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 extern gchar mapdir[500];
 
+gdouble lat2RadiusArray[91];
+
+/* **********************************************************************
+ * Build array for earth radii 
+ */
+void 
+init_lat2RadiusArray(){
+    int i;
+    for (i = 0; i <= 100; i++)
+	lat2RadiusArray[i] = calcR (i);
+}
+
 /* **********************************************************************
  * Estimate the earth radius for given latitude
  */
 gdouble
 lat2radius (gdouble lat)
 {
+    lat = fabs(lat);
+
   // the known undef values
-  if ( -1000 < lat && lat < 1000 )
-    {
-      if (lat > 180)
-	{
+  if ( lat > 999 )
+      return 1;
+
+  if (lat > 180)
+      {
 	  if (mydebug > 20)
-	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
-	};
-      if (lat < -180)
-	{
+	      fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
+      };
+
+  if (lat > 90  && lat < 180.0)
+      {
+	  lat = 180 - lat;
+      }
+
+  if (lat > 90)
+      {
 	  if (mydebug > 20)
-	    fprintf (stderr, "ERROR: lat2radius(lat %f) out of bound\n", lat);
-	};
-    }
+	      fprintf (stderr, "ERROR: lat2radius(lat %f) still out of bound\n", lat);
+	  return 1;
+      };
 
-  while (lat > 90.0)
-    {
-      lat = lat - 90;
-    }
-
-  while (lat < -90.0)
-    {
-      lat = lat + 90;
-    }
-
-  return lat2RadiusArray[(int) (100 + lat)];
+  return lat2RadiusArray[(int) (lat)];
 }
 
 /*  **********************************************************************

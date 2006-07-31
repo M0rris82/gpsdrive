@@ -231,29 +231,6 @@ read_icon (gchar * icon_name)
   if (mydebug > 50)
     printf ("read_icon(%s)\n", icon_name);
 
-  // Try as .png/.gif
-  if (!strcasestr (icon_name, ".gif") && !strcasestr (icon_name, ".png"))
-    {
-      if (!icons_buffer)	// Try as .png
-	{
-	  g_snprintf (filename, sizeof (filename), "%s.png", icon_name);
-	  icons_buffer = read_icon (filename);
-	  return icons_buffer;
-	}
-      /*
-         if ( !icons_buffer ) // Try as .gif
-         {
-         g_snprintf (filename, sizeof (filename), "%s.gif",icon_name);
-         icons_buffer = read_icon (filename);
-         }
-       */
-    }
-  if (icons_buffer)
-    {
-      return icons_buffer;
-    }
-
-
   typedef struct
   {
     gchar *path;
@@ -262,7 +239,9 @@ read_icon (gchar * icon_name)
   path_definition available_path[] = {
     {"", NULL},
     {"./data/icons/", NULL},
+    {"../data/icons/", NULL},
     {"./data/pixmaps/", NULL},
+    {"../data/pixmaps/", NULL},
     {"%spixmaps/", (gchar *) homedir},
     {"%sicons/", (gchar *) homedir},
     {"%s/gpsdrive/icons/", (gchar *) DATADIR},
@@ -282,7 +261,7 @@ read_icon (gchar * icon_name)
       icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
       if (mydebug > 75)
 	printf ("read_icon(%s): Try\t%s\n", icon_name, icon_filename);
-      if (icons_buffer)
+      if (NULL != icons_buffer)
 	{
 	  if (mydebug > 20)
 	    printf ("read_icon(%s): FOUND\t%s\n", icon_name, icon_filename);
@@ -290,6 +269,28 @@ read_icon (gchar * icon_name)
 	}
     }
 
+  if ( NULL == icons_buffer ) {
+      fprintf (stderr,"read_icon: No Icon '%s' found\n", icon_name);
+      if ( strstr (icon_name, "Old") == NULL ) {
+	  fprintf (stderr,
+		   _("Please install the program as root with:\n"
+		     "make install\n\n"));
+      
+	  fprintf(stderr,"I searched in :\n");
+	  for (i = 0;
+	       strncmp (available_path[i].path, "END",
+			sizeof (available_path[i].path)); i++)
+	      {
+		  g_snprintf (filename, sizeof (filename), available_path[i].path,
+			      available_path[i].option);
+		  g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename,
+			      icon_name);
+		  fprintf(stderr,"\t%s\n",icon_filename);
+	      }
+
+	  exit (-1);
+      }
+  }
 
   return icons_buffer;
 }
@@ -457,35 +458,14 @@ load_icons (void)
 }
 
 
-/* -----------------------------------------------------------------------------
 
+/* -----------------------------------------------------------------------------
 */
 void
 load_friends_icon (void)
 {
-  gchar mappath[400];
 
-  g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/%s", DATADIR,
-	      "pixmaps/friendsicon.png");
-  friendsimage = gdk_pixbuf_new_from_file (mappath, NULL);
-  if (friendsimage == NULL)
-    {
-      friendsimage =
-	gdk_pixbuf_new_from_file ("pixmaps/friendsicon.png", NULL);
-    }
-  if (friendsimage == NULL)
-    {
-      GString *error;
-      error = g_string_new (NULL);
-      g_string_sprintf (error, "\n%s\n%s\n",
-			_(" Friendsicon could not be loaded:"), mappath);
-      fprintf (stderr,
-	       _
-	       ("\nWarning: unable to load friendsicon!\nPlease install the program as root with:\nmake install\n\n"));
-
-      error_popup ((gpointer *) error->str);
-      g_string_free (error, TRUE);
-    }
+  friendsimage =  read_icon("friendsicon.png");
   friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
   gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
 		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
