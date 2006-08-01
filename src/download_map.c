@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.5  2006/08/01 06:06:50  tweety
+  try to reduce errors while downloading maps from expedia
+
   Revision 1.4  2006/05/09 08:29:52  tweety
   move proxy fetching from environment to download_map.c
 
@@ -182,6 +185,7 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
+	    close (dlsock);
 	    return (NULL);
 	}
 
@@ -213,6 +217,7 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
+	    close (dlsock);
 	    return (NULL);
 	}
     memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
@@ -233,10 +238,14 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
+	    close (dlsock);
 	    return (NULL);
 	}
 
-    write (dlsock, writebuff, strlen (writebuff));
+    if ( write (dlsock, writebuff, strlen (writebuff))<0){
+	close (dlsock);
+	return (NULL);
+    };
 
     FD_ZERO (&readmask);
     FD_SET (dlsock, &readmask);
@@ -259,7 +268,9 @@ getexpediaurl (GtkWidget * widget)
 	{
 	    perror ("getexpediaurl");
 	    fprintf (stderr, "error while reading from exedia\n");
-	    exit (1);
+	    close (dlsock);
+	    return (NULL);
+	    // exit (1);
 	}
     close (dlsock);
     return url;
@@ -682,12 +693,19 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
 		if (expedia_de)
 			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
+				    "GET http://%s/pub/agent.dll?"
+				    "qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s"
+				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
+				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
+				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
 				    WEBSERVER4, nlat, nlon, region, sctext,
 				    hostname);
 		else
 			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\nHost: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
+				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s"
+				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
+				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
+				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
 				    WEBSERVER2, nlat, nlon, region, sctext,
 				    hostname);
 	}
