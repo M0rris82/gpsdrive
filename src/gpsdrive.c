@@ -3836,25 +3836,8 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 #define MINISCREEN_Y_2 51
 	px = (MINISCREEN_X_2 - x) * 10 * pixelfact;
 	py = (-MINISCREEN_Y_2 + y) * 10 * pixelfact;
-	lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
-	lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
-	lon = zero_lon -
-		px / ((lat2radius (lat) * M_PI / 180.0) *
-		      cos (M_PI * lat / 180.0));
 
-	//if (mapistopo == FALSE)
-	if ( proj_top == map_proj )
-	{
-		dif = lat * (1 -
-			     (cos ((M_PI * fabs (lon - zero_lon)) / 180.0)));
-		lat = lat - dif / 1.5;
-	}
-	else
-		dif = 0;
-	lon = zero_lon -
-		px / ((lat2radius (lat) * M_PI / 180.0) *
-		      cos (M_PI * lat / 180.0));
-
+	minimap_xy2latlon(px, py, &lon, &lat, &dif);
 
 	/*        g_print("\nstate: %x x:%d y:%d\n", state, x, y); */
 

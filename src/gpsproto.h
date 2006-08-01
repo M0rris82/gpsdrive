@@ -109,6 +109,7 @@ void exiterr (int exitcode);
 void *getserialdata (void *);
 int gpsserialinit (void);
 void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom);
+void minimap_xy2latlon(gint x, gint y, gdouble *lon, gdouble *lat, gdouble *dif);
 void rebuildtracklist (void);
 gint error_popup (gpointer datum);
 void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
