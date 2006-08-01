@@ -4412,7 +4412,8 @@ main (int argc, char *argv[])
 	    voicelang = english;
 
 	/*    needed for right decimal delimiter ('.' or ',') */
-	setlocale(LC_NUMERIC, "en_US");
+	// setlocale(LC_NUMERIC, "en_US");
+	setlocale(LC_NUMERIC, "C");
     }
 
     g_strlcpy (friendsname, "", sizeof (friendsname));
@@ -4789,12 +4790,6 @@ main (int argc, char *argv[])
     fprintf (stderr, "\n");
 
 
-
-    // ==================================================================
-    // Unit Tests
-    if ( do_unit_test ) {
-	unit_test();
-    }
 
     if ( mydebug >99 ) fprintf(stderr , "create Main Window\n");
 
@@ -5950,7 +5945,11 @@ main (int argc, char *argv[])
 	}
     signal (SIGTERM, termhandler);
 
+
+    // ==================================================================
+    // Unit Tests
     if ( do_unit_test ) {
+	unit_test();
 	exit (0);
     }
 

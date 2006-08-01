@@ -162,7 +162,10 @@ checksum (gchar * text)
   else
     {
       g_print
-	("\n*** NMEA checksum error!\nNMEA: %s\n is: %X, should be: %X\n", t,
+	("\n"
+	 "*** nmea_handler: NMEA checksum error!\n"
+	 "*** nmea_handler: NMEA: %s\n"
+	 "*** nmea_handler: Checksum is: %X, should be: %X\n", t,
 	 orig, checksum);
       return FALSE;
     }
@@ -397,28 +400,38 @@ convertRMC (char *f)
   b[1] = field[3][1];
   b[2] = 0;
   latdegree = atoi (b);
+  if ( mydebug + nmea_handler_debug > 80 )
+    g_print ("nmea_handler: gpsd: lat part1: %s\n", b);
 
 
   b[0] = field[3][2];
   b[1] = field[3][3];
-  b[2] = localedecimal;
+  b[2] = '.';
   b[3] = field[3][5];
   b[4] = field[3][6];
   b[5] = field[3][7];
-  b[6] = 0;
+  b[6] = field[3][8];
+  b[7] = 0;
+  if ( mydebug + nmea_handler_debug > 80 )
+    g_print ("nmea_handler: gpsd: lat part2: %s\n", b);
   if (!posmode)
     {
       gdouble cl;
+      if ( mydebug + nmea_handler_debug > 80 )
+	  g_print ("nmea_handler: gpsd: lat atof(%s):%f \n", b,atof(b));
       cl = latdegree + atof (b) / 60.0;
+      if ( mydebug + nmea_handler_debug > 80 )
+	  g_print ("nmea_handler: gpsd: cl: %f\n", cl);
+
       if (field[4][0] == 'S')
 	cl = cl * -1;
       if ((cl >= -90.0) && (cl <= 90.0))
 	current_lat = cl;
       breitri = field[4][0];
       g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lat, gradsym, breitri);
-      if ( mydebug + nmea_handler_debug > 0 )
+      if ( mydebug + nmea_handler_debug > 60 )
 	  {
-	      g_print ("nmea_handler: lat: %8.5f\n", current_lat);
+	      g_print ("nmea_handler: RMC lat: %8.5f\n", current_lat);
 	  }
     }
 
@@ -449,24 +462,27 @@ convertRMC (char *f)
 
   b[0] = field[5][3];
   b[1] = field[5][4];
-  b[2] = localedecimal;
+  b[2] = '.';
   b[3] = field[5][6];
   b[4] = field[5][7];
   b[5] = field[5][8];
-  b[6] = 0;
+  b[6] = field[5][9];
+  b[7] = 0;
   if (!posmode)
     {
       gdouble cl;
       cl = longdegree + atof (b) / 60.0;
+      if ( mydebug + nmea_handler_debug > 60 )
+	  g_print ("nmea_handler: RMC dir: %c\n", field[6][0]);
       if (field[6][0] == 'W')
 	cl = cl * -1;
       if ((cl >= -180.0) && (cl <= 180.0))
 	current_lon = cl;
       langri = field[6][0];
       g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lon, gradsym, langri);
-      if ( mydebug + nmea_handler_debug > 0 )
+      if ( mydebug + nmea_handler_debug > 60 )
 	  {
-	      g_print ("nmea_handler: lon: %8.5f\n", current_lon);
+	      g_print ("nmea_handler: RMC lon: %8.5f\n", current_lon);
 	  }
     }
 
@@ -474,16 +490,19 @@ convertRMC (char *f)
   b[0] = field[7][0];
   b[1] = field[7][1];
   b[2] = field[7][2];
-  b[3] = localedecimal;
+  b[3] = '.';
   b[4] = field[7][4];
   b[5] = 0;
   groundspeed = atof (b) * 1.852 * milesconv;
+
+  // What hapens here with b or mapfilename?
   g_snprintf (b, sizeof (b), " %s: %s", _("Map"), mapfilename);
+
   /*    g_print("Field %s\n",field[8]); */
   b[0] = field[8][0];
   b[1] = field[8][1];
   b[2] = field[8][2];
-  b[3] = localedecimal;
+  b[3] = '.';
   b[4] = field[8][4];
   b[5] = 0;
   /*  direction is the course we are driving */
@@ -713,11 +732,12 @@ convertGGA (char *f)
 
       b[0] = field[2][2];
       b[1] = field[2][3];
-      b[2] = localedecimal;
+      b[2] = '.';
       b[3] = field[2][5];
       b[4] = field[2][6];
       b[5] = field[2][7];
-      b[6] = 0;
+      b[6] = field[2][8];
+      b[7] = 0;
       if ( mydebug + nmea_handler_debug > 80 )
 	fprintf (stderr, "nmea_handler: gpsd: posmode: %d\n", posmode);
       if (!posmode)
@@ -764,11 +784,12 @@ convertGGA (char *f)
 
       b[0] = field[4][3];
       b[1] = field[4][4];
-      b[2] = localedecimal;
+      b[2] = '.';
       b[3] = field[4][6];
       b[4] = field[4][7];
       b[5] = field[4][8];
-      b[6] = 0;
+      b[6] = field[4][9];
+      b[7] = 0;
 
       if (!posmode)
 	{
