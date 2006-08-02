@@ -27,7 +27,8 @@ if HAVE_GTK
 lib_map_lflags = \
 	$(GDAL_LIBS) \
 	`pkg-config cairo --libs` \
-	`pkg-config gtk+-2.0 --libs`
+	`pkg-config gtk+-2.0 --libs`\
+	`gdal-config --libs`
 
 
 gmapviewdir=$(bindir)

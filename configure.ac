@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10pre3-cvs-20060727, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -133,16 +133,6 @@ AC_PROG_YACC
 AC_STRUCT_TM
 
 AC_TYPE_SIGNAL
-
-dnl ---------------------------------------------------------------------------
-dnl GDAL/OGR
-dnl ---------------------------------------------------------------------------
-AQ_CHECK_GDAL
-AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
-dnl the $(GDAL_LIBS) part is a quick hack. So please could 
-dnl someone knowing autoconf reconsidder if there is a better solution
-GDAL_LIBS=`gdal-config --libs`
-
 
 dnl ************************
 dnl Compiler options
@@ -267,6 +257,17 @@ AC_ARG_ENABLE(gcc2-optimization,
 AC_PROG_INSTALL
 
 CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
+
+dnl ---------------------------------------------------------------------------
+dnl GDAL/OGR
+dnl ---------------------------------------------------------------------------
+AQ_CHECK_GDAL
+AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
+dnl the $(GDAL_LIBS) part is a quick hack. So please could 
+dnl someone knowing autoconf reconsidder if there is a better solution
+GDAL_LIBS=`gdal-config --libs`
+GDAL_CFLAGS=`$GDAL_CONFIG --cflags`
+CFLAGS="$CFLAGS $GDAL_CFLAGS"
 
 dnl ************************
 dnl Check for standard headers
