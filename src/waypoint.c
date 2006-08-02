@@ -273,6 +273,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 void check_and_reload_way_txt()
 {
     gchar mappath[2048];
+
     g_strlcpy (mappath, homedir, sizeof (mappath));
 
     if (!wp_from_sql)

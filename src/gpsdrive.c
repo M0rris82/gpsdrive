@@ -212,8 +212,8 @@ gdouble earthr;
 gint maploaded = FALSE;
 gint simmode, zoom;
 gint iszoomed;
-gchar homedir[500];
-gchar mapdir[500];
+gchar local_config_homedir[500];
+gchar local_config_mapdir[500];
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
@@ -538,6 +538,62 @@ menu_translate (const gchar * path, gpointer data)
 	return retval;
 }
 
+/* ******************************************************************
+ * Check dirs and files
+ */
+void check_and_create_files(){
+    gchar file_path[2048];
+    struct stat buf;
+
+    // Create .gpsdrive dir if not exist
+    g_snprintf (file_path, sizeof (file_path),
+		"%s",
+		local_config_homedir);
+    if(stat(file_path,&buf))
+	{
+	    if ( mkdir (file_path, 0700) )
+		{
+		    printf("Error creating %s\n",file_path);
+		} else {
+		    printf("created %s\n",file_path);
+		}
+	}
+
+    // Create maps/ Directory if not exist
+    g_strlcpy (file_path, local_config_mapdir, sizeof (file_path)); 
+    if(stat(file_path,&buf))
+	{
+	    if ( mkdir (file_path, 0700) )
+		{
+		    printf("Error creating %s\n",file_path);
+		} else {
+		    printf("created %s\n",file_path);
+		}
+	}
+  
+    // map_koord.txt
+    // Copy from system if not exist
+    g_snprintf (file_path, sizeof (file_path),
+		"%s/map_koord.txt",
+		local_config_mapdir);
+    if ( stat (file_path, &buf) ) {
+	gchar copy_command[2048];
+	g_snprintf (copy_command, sizeof (copy_command),
+		    "cp %s/gpsdrive/map_koord.txt %s",
+		    (gchar *) DATADIR,
+		    file_path);
+	if ( system (copy_command))
+	    {
+		fprintf(stderr,"Error Creating %s\nwith command: '%s'\n",
+			file_path,copy_command);
+		exit(-1);
+	    }
+	else 
+	    fprintf(stderr,"Created map_koord.txt %s\n",file_path);
+    };
+
+
+}
 
 /* *****************************************************************************
  * quit the program 
@@ -545,8 +601,8 @@ menu_translate (const gchar * path, gpointer data)
 gint
 quit_program (GtkWidget * widget, gpointer datum)
 {
-	gtk_main_quit ();
-	return (TRUE);
+    gtk_main_quit ();
+    return (TRUE);
 }
 
 
@@ -3195,7 +3251,7 @@ mapdir_cb (GtkWidget * widget, guint datum)
 	G_CONST_RETURN gchar *s;
 
 	s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (mapdirbt)));
-	g_strlcpy (mapdir, s, sizeof (mapdir));
+	g_strlcpy (local_config_mapdir, s, sizeof (local_config_mapdir));
 	needtosave = TRUE;
 	needreloadmapconfig = TRUE;
 	gtk_timeout_add (2000, (GtkFunction) loadmapconfig, 0);
@@ -4200,7 +4256,7 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 				   GTK_OBJECT (fdialog));
 
 
-	g_strlcpy (buf, homedir, sizeof (buf));
+	g_strlcpy (buf, local_config_homedir, sizeof (buf));
 	g_strlcat (buf, "track*.sav", sizeof (buf));
 	gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
 	gtk_widget_show (fdialog);
@@ -4274,6 +4330,7 @@ main (int argc, char *argv[])
     zone = lt->tm_isdst + (gmt_time - local_time) / 3600;
     /*   fprintf(stderr,"\n zeitzone: %d\n",zone); */
     
+
     /*   zone = st->tm_gmtoff / 3600; */
     /*  initialize variables */
     /*  Hamburg */
@@ -4357,16 +4414,18 @@ main (int argc, char *argv[])
 
     earthr = calcR (current_lat);
 
-    /* homedir is the directory where the maps and other  */
+    /* local_config_homedir is the directory where the maps and other  */
     /* files are stored (~/.gpsdrive) */
     hd = g_get_home_dir ();
-    g_strlcpy (homedir, hd, sizeof (homedir));
-    g_strlcat (homedir, "/.gpsdrive/", sizeof (homedir));
-    g_snprintf (mapdir, sizeof (mapdir),"%s%s",homedir,"maps");
+    g_strlcpy (local_config_homedir, hd, sizeof (local_config_homedir));
+    g_strlcat (local_config_homedir, "/.gpsdrive/", sizeof (local_config_homedir));
+    g_snprintf (local_config_mapdir, sizeof (local_config_mapdir),"%s%s",local_config_homedir,"maps");
 
     /*  all default values must be set BEFORE readconfig! */
     g_strlcpy (setpositionname, "", sizeof (setpositionname));
     g_strlcpy (serialdev, "/dev/ttyS3", sizeof (serialdev));
+
+    check_and_create_files();
 
     /* setup signal handler */
     signal (SIGUSR1, signalposreq);

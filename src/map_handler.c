@@ -462,7 +462,7 @@ map_koord_check_and_reload ()
     fprintf (stderr, "map_koord_check_and_reload()\n");
 
   /* Check for changed map_koord.txt and reload if changed */
-  g_strlcpy (mappath, mapdir, sizeof (mappath));
+  g_strlcpy (mappath, mapdir, sizeof (mappath)); 
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
 
   stat (mappath, &buf);
