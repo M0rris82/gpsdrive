@@ -106,7 +106,6 @@ static gchar gradsym[] = "\xc2\xb0";
 /* variables */
 extern gint ignorechecksum;
 //, mapistopo;
-extern gdouble lat2RadiusArray[201];
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
