@@ -539,7 +539,7 @@ loadmapconfig ()
   st = fopen (mappath, "r");
   if (st == NULL)
     {
-      mkdir (homedir, 0777);
+      mkdir (local_config_homedir, 0777);
       st = fopen (mappath, "w+");
       if (st == NULL)
 	{
@@ -635,7 +635,7 @@ route_next_target ()
 	      routepointer++;
 
 	      /* let's say the waypoint description */
-	      g_strlcpy (mappath, homedir, sizeof (mappath));
+	      g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
 	      g_strlcat (mappath, activewpfile, sizeof (mappath));
 	      saytargettext (mappath, targetname);
 
@@ -659,7 +659,7 @@ route_next_target ()
 		  speech_out_speek (buf);
 
 		  /* let's say the waypoint description */
-		  g_strlcpy (mappath, homedir, sizeof (mappath));
+		  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
 		  g_strlcat (mappath, activewpfile, sizeof (mappath));
 		  saytargettext (mappath, targetname);
 		}
@@ -790,6 +790,11 @@ loadmap (char *filename)
     {
       g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR,
 		  filename);
+      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+    }
+  if (limage == NULL)
+    {
+      g_snprintf (mappath, sizeof (mappath), "/usr/share/gpsdrive/maps/%s",  filename);
       limage = gdk_pixbuf_new_from_file (mappath, NULL);
     }
 

@@ -223,7 +223,7 @@ savetrackfile (gint mode)
       i = 0;
       do
 	{
-	  g_snprintf (buff, sizeof (buff), "%strack%04d.sav", homedir, i++);
+	  g_snprintf (buff, sizeof (buff), "%strack%04d.sav", local_config_homedir, i++);
 	  e = stat (buff, &sbuf);
 	}
       while (e == 0);
@@ -232,7 +232,7 @@ savetrackfile (gint mode)
     }
 
   /* save in new file */
-  g_strlcpy (mappath, homedir, sizeof (mappath));
+  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
   g_strlcat (mappath, savetrackfn, sizeof (mappath));
   st = fopen (mappath, "w");
   if (st == NULL)
@@ -258,7 +258,7 @@ savetrackfile (gint mode)
     return;
 
   /* append to existing backup file */
-  g_strlcpy (mappath, homedir, sizeof (mappath));
+  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
   g_strlcat (mappath, "track-ALL.sav", sizeof (mappath));
   st = fopen (mappath, "a");
   if (st == NULL)
@@ -299,7 +299,7 @@ void do_incremental_save() {
     FILE *st;
     
     if ((trackcoordnr % 30) == 29) { /* RNM: append to existing incremental file every 30 seconds */
-	g_strlcpy (mappath, homedir, sizeof (mappath));
+	g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
 	g_strlcat (mappath, "incremental.sav", sizeof(mappath));
 	st = fopen (mappath, "a");
                 if (st == NULL) {

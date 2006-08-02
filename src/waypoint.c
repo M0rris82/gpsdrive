@@ -274,7 +274,7 @@ void check_and_reload_way_txt()
 {
     gchar mappath[2048];
 
-    g_strlcpy (mappath, homedir, sizeof (mappath));
+    g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
 
     if (!wp_from_sql)
 	g_strlcat (mappath, activewpfile, sizeof (mappath));
@@ -895,7 +895,7 @@ savewaypoints ()
 	gint i, e;
 
 
-	g_strlcpy (mappath, homedir, sizeof (mappath));
+	g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
 	g_strlcat (mappath, activewpfile, sizeof (mappath));
 
 	st = fopen (mappath, "w+");
@@ -949,7 +949,7 @@ loadwaypoints ()
     if ( 0 == waytxtstamp )
 	wayp = g_new (wpstruct, wpsize);
     
-    g_strlcpy (fn_way_txt, homedir, sizeof (fn_way_txt));
+    g_strlcpy (fn_way_txt, local_config_homedir, sizeof (fn_way_txt));
     if (!wp_from_sql)
 	g_strlcat (fn_way_txt, activewpfile, sizeof (fn_way_txt));
     else

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.6  2006/08/02 12:18:36  tweety
+forgot one sed for homedir and mapdir
+
 Revision 1.5  2006/08/02 07:48:24  tweety
 rename variable mapdir --> local_config_mapdir
 
@@ -112,7 +115,7 @@ convnasamap creates mapfiles from the big nasa map files
 # endif
 
 static char mybuffer[10000];
-extern char homedir[500], local_config_mapdir[500];
+extern char local_config_homedir[500], local_config_mapdir[500];
 extern GtkWidget *mainwindow;
 static GtkWidget *nasawindow = NULL;
 extern int debug;
@@ -133,10 +136,10 @@ init_nasa_mapfile ()
 		    local_config_mapdir);
 
 	g_snprintf (inputfilename_e, sizeof (inputfilename_e),
-		    "%snasamaps/top_nasamap_east.raw", homedir);
+		    "%snasamaps/top_nasamap_east.raw", local_config_homedir);
 
 	g_snprintf (inputfilename_w, sizeof (inputfilename_w),
-		    "%snasamaps/top_nasamap_west.raw", homedir);
+		    "%snasamaps/top_nasamap_west.raw", local_config_homedir);
 
 	fdin_e = open (inputfilename_e, O_RDONLY);
 	if (fdin_e >= 0)

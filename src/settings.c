@@ -54,8 +54,8 @@
 
 #define PADDING int_padding
 
-gchar homedir[500];
-gchar mapdir[500];
+gchar local_config_homedir[500];
+gchar local_config_mapdir[500];
 
 extern gint statusid, mydebug, havespeechout, posmode, muteflag;
 
@@ -488,7 +488,7 @@ mainsetup (void)
     {
       list = g_list_append (list, speedlist[i]);
     }
-  g_strlcpy (path2, homedir, sizeof (path2));
+  g_strlcpy (path2, local_config_homedir, sizeof (path2));
   names = g_new (namesstruct, 102);
 
   d = opendir (path2);
@@ -624,7 +624,7 @@ mainsetup (void)
   mapdirbt = gtk_entry_new_with_max_length (490);
 
   gtk_widget_set_size_request (mapdirbt, 20, 26);
-  gtk_entry_set_text (GTK_ENTRY (mapdirbt), mapdir);
+  gtk_entry_set_text (GTK_ENTRY (mapdirbt), local_config_mapdir);
   label2 = gtk_label_new (_("Maps directory"));
 
   gtk_signal_connect (GTK_OBJECT (mapdirbt), "changed",

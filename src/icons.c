@@ -242,10 +242,12 @@ read_icon (gchar * icon_name)
     {"../data/icons/", NULL},
     {"./data/pixmaps/", NULL},
     {"../data/pixmaps/", NULL},
-    {"%spixmaps/", (gchar *) homedir},
-    {"%sicons/", (gchar *) homedir},
+    {"%spixmaps/", (gchar *) local_config_homedir},
+    {"%sicons/", (gchar *) local_config_homedir},
     {"%s/gpsdrive/icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
+    {"%s/gpsdrive/icons/", "/usr/share"},
+    {"%s/gpsdrive/pixmaps/", "/usr/share"},
     {"END", NULL}
   };
 
@@ -365,7 +367,7 @@ load_icons (void)
   if (!fh_icons_txt)
     {
       snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt",
-		homedir);
+		local_config_homedir);
       fh_icons_txt = fopen (filename, "r");
       if (mydebug > 3)
 	{
@@ -453,8 +455,8 @@ load_icons (void)
 	{
 	  exit (-1);
 	}
+      fclose (fh_icons_txt);
     }
-  fclose (fh_icons_txt);
 }
 
 
@@ -483,7 +485,7 @@ load_user_icon (char icon_name[200])
   for (i = 0; i < (int) strlen (icon_name); i++)
     icon_name[i] = tolower (icon_name[i]);
 
-  g_snprintf (path, sizeof (path), "%sicons/%s.png", homedir, icon_name);
+  g_snprintf (path, sizeof (path), "%sicons/%s.png", local_config_homedir, icon_name);
   icons_buffer[icons_buffer_last].icon =
     gdk_pixbuf_new_from_file (path, NULL);
 

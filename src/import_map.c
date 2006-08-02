@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.17  2006/08/02 12:18:36  tweety
+  forgot one sed for homedir and mapdir
+
   Revision 1.16  2006/08/02 07:48:24  tweety
   rename variable mapdir --> local_config_mapdir
 
@@ -177,7 +180,7 @@ extern gdouble posmode_x, posmode_y;
 extern mapsstruct *maps;
 extern gint simmode, zoom, iszoomed;
 extern gint minsecmode, nightmode, isnight, disableisnight;
-extern gchar homedir[500], local_config_mapdir[500];
+extern gchar local_config_homedir[500], local_config_mapdir[500];
 extern gint nrmaps, dldiff;
 extern int havenasa, nosplash, sortcolumn, sortflag;
 extern gint onemousebutton;
@@ -259,7 +262,7 @@ importfb_cb (GtkWidget * widget, guint datum)
 			     GTK_OBJECT (fdialog));
 
 
-  g_strlcpy (buf, homedir, sizeof (buf));
+  g_strlcpy (buf, local_config_homedir, sizeof (buf));
 
   gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
   gtk_widget_show (fdialog);

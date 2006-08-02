@@ -171,7 +171,7 @@ $PSRF108,0*32            WAAS/EGNOS off
  * Declarations.
  */
 
-extern gchar homedir[500];
+extern gchar local_config_homedir[500];
 extern gchar savetrackfn[256];
 
 extern gint real_screen_x;

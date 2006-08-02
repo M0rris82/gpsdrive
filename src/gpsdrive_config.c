@@ -51,7 +51,7 @@ extern map_dir_struct *display_map;
 
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
-extern gchar homedir[500], local_config_mapdir[500];
+extern gchar local_config_homedir[500], local_config_mapdir[500];
 extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered_not_bestmap, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
@@ -99,7 +99,7 @@ writeconfig ()
 	gchar fname[220], str[40];
 	gint i;
 
-	g_strlcpy (fname, homedir, sizeof (fname));
+	g_strlcpy (fname, local_config_homedir, sizeof (fname));
 	g_strlcat (fname, "gpsdriverc", sizeof (fname));
 
 	if ( mydebug > 0 )
@@ -322,7 +322,7 @@ readconfig ()
     g_strlcpy (local_config.icon_theme, "classic", sizeof (local_config.icon_theme));
 
     // open Config File
-    g_strlcpy (fname, homedir, sizeof (fname));
+    g_strlcpy (fname, local_config_homedir, sizeof (fname));
     g_strlcat (fname, "gpsdriverc", sizeof (fname));
     fp = fopen (fname, "r");
     if (fp == NULL)

@@ -48,7 +48,7 @@ extern int  wp_typelistcount;
 extern double dbdistance;
 extern int usesql;
 extern int mydebug, dbusedist;
-extern gchar homedir[500];
+extern gchar local_config_homedir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
@@ -299,7 +299,7 @@ getsqldata ()
     return FALSE;
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
-  g_strlcpy (file_path, homedir, sizeof (file_path));
+  g_strlcpy (file_path, local_config_homedir, sizeof (file_path));
   g_strlcat (file_path, "way-SQLRESULT.txt", sizeof (file_path));
   st = fopen (file_path, "w+");
   if (st == NULL)

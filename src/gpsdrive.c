@@ -212,8 +212,8 @@ gdouble earthr;
 gint maploaded = FALSE;
 gint simmode, zoom;
 gint iszoomed;
-gchar local_config_homedir[500];
-gchar local_config_mapdir[500];
+extern gchar local_config_homedir[500];
+extern gchar local_config_mapdir[500];
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
@@ -544,6 +544,8 @@ menu_translate (const gchar * path, gpointer data)
 void check_and_create_files(){
     gchar file_path[2048];
     struct stat buf;
+
+    if ( mydebug >5 ) fprintf(stderr , " check_and_create_files()\n");
 
     // Create .gpsdrive dir if not exist
     g_snprintf (file_path, sizeof (file_path),

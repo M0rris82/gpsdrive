@@ -677,7 +677,7 @@ file_location(gchar * filename, gchar *file_location){
     g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR, filename);
     g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s", filename);
 
-    g_strlcpy (mappath, homedir, sizeof (mappath));
+    g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
     if ( stat (mappath, &buf) ) {
 	printf("Success\n");
 	//if (buf.st_mtime != waytxtstamp)
