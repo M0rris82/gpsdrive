@@ -51,7 +51,7 @@ extern map_dir_struct *display_map;
 
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
-extern gchar homedir[500], mapdir[500];
+extern gchar homedir[500], local_config_mapdir[500];
 extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered_not_bestmap, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
@@ -207,7 +207,7 @@ writeconfig ()
 		fprintf (fp, "1\n");
 
 	fprintf (fp, "mapdir = ");
-	fprintf (fp, "%s\n", mapdir);
+	fprintf (fp, "%s\n", local_config_mapdir);
 
 	fprintf (fp, "simfollow = ");
 	if (simfollow == 0)
@@ -407,7 +407,7 @@ readconfig ()
 		    else if ( (strcmp(par1, "usedgps")) == 0)
 			usedgps = atoi (par2);
 		    else if ( (strcmp(par1, "mapdir")) == 0)
-			g_strlcpy (mapdir, par2, sizeof (mapdir));
+			g_strlcpy (local_config_mapdir, par2, sizeof (local_config_mapdir));
 		    else if ( (strcmp(par1, "simfollow")) == 0)
 			simfollow = atoi (par2);
 		    else if ( (strcmp(par1, "satposmode")) == 0)

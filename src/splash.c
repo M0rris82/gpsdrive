@@ -51,7 +51,6 @@ extern map_dir_struct *display_map;
 
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
-extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag, wp_from_sql;
 extern gint mydebug, scalewanted, savetrack, defaultserver;

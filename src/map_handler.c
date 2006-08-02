@@ -60,7 +60,7 @@ extern gint debug, mydebug;
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
-extern gchar mapdir[500];
+extern gchar local_config_mapdir[500];
 extern gint posmode;
 extern gdouble posmode_x, posmode_y;
 extern gchar targetname[40];
@@ -462,7 +462,7 @@ map_koord_check_and_reload ()
     fprintf (stderr, "map_koord_check_and_reload()\n");
 
   /* Check for changed map_koord.txt and reload if changed */
-  g_strlcpy (mappath, mapdir, sizeof (mappath)); 
+  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath)); 
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
 
   stat (mappath, &buf);
@@ -493,10 +493,10 @@ savemapconfig ()
   FILE *st;
   gint i;
 
-  if (mapdir[strlen (mapdir) - 1] != '/')
-    g_strlcat (mapdir, "/", sizeof (mapdir));
+  if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+    g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
-  g_strlcpy (mappath, mapdir, sizeof (mappath));
+  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
   st = fopen (mappath, "w");
   if (st == NULL)
@@ -531,10 +531,10 @@ loadmapconfig ()
     fprintf (stderr, "loadmapconfig()\n");
 
   init_nasa_mapfile ();
-  if (mapdir[strlen (mapdir) - 1] != '/')
-    g_strlcat (mapdir, "/", sizeof (mapdir));
+  if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+    g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
-  g_strlcpy (mappath, mapdir, sizeof (mappath));
+  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
   st = fopen (mappath, "r");
   if (st == NULL)
@@ -783,7 +783,7 @@ loadmap (char *filename)
     }
   if (limage == NULL)
     {
-      g_snprintf (mappath, sizeof (mappath), "%s%s", mapdir, filename);
+      g_snprintf (mappath, sizeof (mappath), "%s%s", local_config_mapdir, filename);
       limage = gdk_pixbuf_new_from_file (mappath, NULL);
     }
   if (limage == NULL)

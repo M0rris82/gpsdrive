@@ -48,7 +48,7 @@ extern int  wp_typelistcount;
 extern double dbdistance;
 extern int usesql;
 extern int mydebug, dbusedist;
-extern gchar homedir[500], mapdir[500];
+extern gchar homedir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
@@ -290,7 +290,7 @@ getsqldata ()
   char q[5000];
   char sql_order[5000];
   int r, rges, wlan, action, sqlnr;
-  gchar mappath[400];
+  gchar file_path[400];
   FILE *st;
   double lat, lon, l, ti;
   struct timeval t;
@@ -299,12 +299,12 @@ getsqldata ()
     return FALSE;
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
-  g_strlcpy (mappath, homedir, sizeof (mappath));
-  g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
-  st = fopen (mappath, "w+");
+  g_strlcpy (file_path, homedir, sizeof (file_path));
+  g_strlcat (file_path, "way-SQLRESULT.txt", sizeof (file_path));
+  st = fopen (file_path, "w+");
   if (st == NULL)
     {
-      perror (mappath);
+      perror (file_path);
       return 1;
     }
 

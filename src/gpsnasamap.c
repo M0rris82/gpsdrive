@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.5  2006/08/02 07:48:24  tweety
+rename variable mapdir --> local_config_mapdir
+
 Revision 1.4  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -109,7 +112,7 @@ convnasamap creates mapfiles from the big nasa map files
 # endif
 
 static char mybuffer[10000];
-extern char homedir[500], mapdir[500];
+extern char homedir[500], local_config_mapdir[500];
 extern GtkWidget *mainwindow;
 static GtkWidget *nasawindow = NULL;
 extern int debug;
@@ -122,12 +125,12 @@ init_nasa_mapfile ()
 
 	havenasamaps = FALSE;
 
-	if (mapdir[strlen (mapdir) - 1] != '/')
-		g_strlcat (mapdir, "/", sizeof (mapdir));
+	if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+		g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
 
 	g_snprintf (outfilename, sizeof (outfilename), "%stop_NASA_IMAGE.ppm",
-		    mapdir);
+		    local_config_mapdir);
 
 	g_snprintf (inputfilename_e, sizeof (inputfilename_e),
 		    "%snasamaps/top_nasamap_east.raw", homedir);

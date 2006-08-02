@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
 $Log$
+Revision 1.12  2006/08/02 07:48:24  tweety
+rename variable mapdir --> local_config_mapdir
+
 Revision 1.11  2006/07/25 06:29:11  tweety
 eliminate some no longer needed definitions
 add fclose where needed
@@ -190,7 +193,6 @@ extern double dbdistance;
 extern int wp_typelistcount;
 extern int usesql;
 extern int debug, dbusedist;
-extern gchar homedir[500], mapdir[500];
 
 extern MYSQL mysql;
 MYSQL_RES *res;

@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.16  2006/08/02 07:48:24  tweety
+  rename variable mapdir --> local_config_mapdir
+
   Revision 1.15  2006/04/03 23:43:45  tweety
   rename adj --> scaler_adj
   rearrange code for some of the _cb
@@ -174,7 +177,7 @@ extern gdouble posmode_x, posmode_y;
 extern mapsstruct *maps;
 extern gint simmode, zoom, iszoomed;
 extern gint minsecmode, nightmode, isnight, disableisnight;
-extern gchar homedir[500], mapdir[500];
+extern gchar homedir[500], local_config_mapdir[500];
 extern gint nrmaps, dldiff;
 extern int havenasa, nosplash, sortcolumn, sortflag;
 extern gint onemousebutton;
@@ -465,7 +468,7 @@ import1_cb (GtkWidget * widget, guint datum)
   if (datum == 1)
     g_snprintf (buff, sizeof (buff),
 		"<span font_family=\"Arial\" size=\"10000\">%s <span color=\"red\"> %s</span> %s</span>",
-		thetext1, mapdir, thetext1a);
+		thetext1, local_config_mapdir, thetext1a);
   else
     g_snprintf (buff, sizeof (buff),
 		"<span font_family=\"Arial\" size=\"10000\">%s</span>",

@@ -63,7 +63,7 @@ extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
-extern gchar mapdir[500];
+extern gchar local_config_mapdir[500];
 
 gdouble lat2RadiusArray[91];
 
@@ -672,7 +672,7 @@ file_location(gchar * filename, gchar *file_location){
     struct stat buf;
     gchar mappath[2048];
 
-    g_snprintf (mappath, sizeof (mappath), "%s%s",  mapdir, filename);
+    g_snprintf (mappath, sizeof (mappath), "%s%s",  local_config_mapdir, filename);
     g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
     g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR, filename);
     g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s", filename);

@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.5  2006/08/02 07:48:24  tweety
+rename variable mapdir --> local_config_mapdir
+
 Revision 1.4  2005/04/20 23:33:49  tweety
 reformatted source code with anjuta
 So now we have new indentations
@@ -133,7 +136,6 @@ menu entry
 
 extern GtkWidget *hauptfenster;
 GtkWidget *splash_window;
-extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag;
 extern gint debug, scalewanted, savetrack, defaultserver;

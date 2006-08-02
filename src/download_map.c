@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.6  2006/08/02 07:48:24  tweety
+  rename variable mapdir --> local_config_mapdir
+
   Revision 1.5  2006/08/01 06:06:50  tweety
   try to reduce errors while downloading maps from expedia
 
@@ -104,7 +107,7 @@ extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint haveproxy, proxyport;
 extern gchar proxy[256];
 extern gint mydebug;
-extern gchar mapdir[500];
+extern gchar local_config_mapdir[500];
 extern mapsstruct *maps;
 extern struct timeval timeout;
 extern int havenasa;
@@ -530,11 +533,11 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		    if (downloadfilelen != 0)
 			{
 			    s = gtk_entry_get_text (GTK_ENTRY (dltext4));
-			    if (mapdir[strlen (mapdir) - 1] != '/')
-				g_strlcat (mapdir, "/",
-					   sizeof (mapdir));
+			    if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+				g_strlcat (local_config_mapdir, "/",
+					   sizeof (local_config_mapdir));
 
-			    g_strlcpy (downloadfilename, mapdir,
+			    g_strlcpy (downloadfilename, local_config_mapdir,
 				       sizeof (downloadfilename));
 
 			    g_strlcat (downloadfilename, s,
@@ -1003,10 +1006,10 @@ download_cb (GtkWidget * widget, guint datum)
 	i = 0;
 	do
 	{
-		if (mapdir[strlen (mapdir) - 1] != '/')
-			g_strlcat (mapdir, "/", sizeof (mapdir));
+		if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+			g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
-		g_strlcpy (mappath, mapdir, sizeof (mappath));
+		g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
 
 		g_snprintf (downloadfilename, sizeof (downloadfilename),
 			    "%smap_file%04d.gif", mappath, i++);
@@ -1057,10 +1060,10 @@ other_select_cb (GtkWidget * widget, guint datum)
 	i = 0;
 	do
 	{
-		if (mapdir[strlen (mapdir) - 1] != '/')
-			g_strlcat (mapdir, "/", sizeof (mapdir));
+		if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
+			g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
-		g_strlcpy (mappath, mapdir, sizeof (mappath));
+		g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
 
 		g_snprintf (downloadfilename, sizeof (downloadfilename),
 			    "%smap_file%04d.gif", mappath, i++);

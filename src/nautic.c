@@ -24,6 +24,9 @@ Disclaimer: Please do not use for navigation.
 
 
 $Log$
+Revision 1.7  2006/08/02 07:48:24  tweety
+rename variable mapdir --> local_config_mapdir
+
 Revision 1.6  2006/07/27 06:40:38  tweety
 delete unused extern declaration
 
@@ -98,7 +101,6 @@ nautic.c -- routines specific for nautic usage
 
 extern GtkWidget *hauptfenster;
 extern GtkWidget *splash_window;
-extern gchar homedir[500], mapdir[500];
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered, milesflag, nauticflag, metricflag;
 extern gint debug, scalewanted, savetrack, defaultserver;
