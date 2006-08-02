@@ -56,6 +56,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	import_map.c import_map.h\
 	routes.c routes.h \
         download_map.c download_map.h \
+	map_projection.c \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c 

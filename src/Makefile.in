@@ -102,9 +102,9 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
 	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
 	talogo.h import_map.c import_map.h routes.c routes.h \
-	download_map.c download_map.h speech_strings.c \
-	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
-	nmea_handler.h unit_test.c garmin_data.cpp \
+	download_map.c download_map.h map_projection.c \
+	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
+	nmea_handler.c nmea_handler.h unit_test.c garmin_data.cpp \
 	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
 	garmin_link.h garmin_serial_unix.h garmin_application.h \
@@ -128,8 +128,9 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) \
 	geometry.$(OBJEXT) map_handler.$(OBJEXT) import_map.$(OBJEXT) \
 	routes.$(OBJEXT) download_map.$(OBJEXT) \
-	speech_strings.$(OBJEXT) gps_handler.$(OBJEXT) \
-	nmea_handler.$(OBJEXT) unit_test.$(OBJEXT) $(am__objects_1)
+	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
+	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
+	unit_test.$(OBJEXT) $(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -366,9 +367,9 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
 	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
 	talogo.h import_map.c import_map.h routes.c routes.h \
-	download_map.c download_map.h speech_strings.c \
-	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
-	nmea_handler.h unit_test.c $(am__append_1)
+	download_map.c download_map.h map_projection.c \
+	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
+	nmea_handler.c nmea_handler.h unit_test.c $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -512,6 +513,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_projection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmea_handler.Po@am__quote@

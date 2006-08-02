@@ -293,7 +293,12 @@ typedef struct
 }
 wpstruct;
 
-enum map_projections { proj_undef, proj_top, proj_map };
+enum map_projections { 
+    proj_undef, 
+    proj_top, 
+    proj_map,
+    proj_google 
+};
 extern enum map_projections map_proj;
 
 

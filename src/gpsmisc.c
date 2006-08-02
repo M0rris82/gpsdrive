@@ -64,7 +64,6 @@ extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 extern gchar local_config_mapdir[500];
-
 gdouble lat2RadiusArray[91];
 
 /* **********************************************************************
@@ -109,224 +108,6 @@ lat2radius (gdouble lat)
 
   return lat2RadiusArray[(int) (lat)];
 }
-
-/*  **********************************************************************
- * calculates lat and lon for the given position on the screen 
- */
-void
-calcxytopos (int posx, int posy, 
-	     gdouble *mylat, gdouble *mylon, 
-	     gint zoom)
-{
-  int x, y, px, py;
-  gdouble dif, lat, lon;
-
-  if ( mydebug > 99 )
-      fprintf(stderr,"calcxytopos(%d,%d,__,%d)\n",
-	      posx,posy, zoom);
-
-  x = posx;
-  y = posy;
-  px = (SCREEN_X_2 - x - xoff) * pixelfact / zoom;
-  py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
-
-  //if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    {
-      lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
-      lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
-
-      while (lat > 360)
-	  {
-	      if (mydebug > 0)
-		  fprintf (stderr, "ERROR: calcxytopos(lat %f) >360\n", lat);
-	      lat = lat - 360.0;
-	  }
-      while (lat < -360)
-	  {
-	      if (mydebug > 0)
-		  fprintf (stderr, "ERROR: calcxytopos(lat %f) <-360\n", lat);
-	      lat = lat + 360.0;
-	  }
-      
-      lon = zero_lon - px / ((lat2radius (lat) * M_PI / 180.0) *
-			      cos (M_PI * lat / 180.0));
-
-      dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_lon)) / 180.0)));
-      lat = lat - dif / 1.5;
-
-      lon = zero_lon -
-	px / ((lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
-    }
-  else
-    {
-      lat = zero_lat - py / (lat2radius (0) * M_PI / 180.0);
-      lon = zero_lon - px / ((lat2radius (0) * M_PI / 180.0));
-    }
-  
-  // Error check
-  if ( lat > 360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-	  //	  lat = 360.0;
-      };
-  if ( lat < -360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-	  //	  lat = -360.0;
-      };
-  if ( lon > 180 )
-      {
-	  if (mydebug > 20)
-		fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-	  // lon -= 180.0;
-      };
-  if ( lon < -180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-	  // lon += 180.0;
-      };
-
-  *mylat = lat;
-  *mylon = lon;
-
-  if ( mydebug > 90 )
-      fprintf(stderr,"calcxytopos(%d,%d,_,_,%d) ---> %g,%g\n",
-	      posx,posy, zoom,lat,lon);
-}
-
-/* ******************************************************************
- */
-void
-minimap_xy2latlon(gint px, gint py, 	
-		  gdouble *lon, gdouble *lat,
-		  gdouble *dif)
-{
-    *lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
-    *lat = zero_lat - py / (lat2radius (*lat) * M_PI / 180.0);
-    *lon = zero_lon -
-	px / ((lat2radius (*lat) * M_PI / 180.0) *
-	      cos (M_PI * *lat / 180.0));
-
-    if ( proj_top == map_proj )	// mapistopo == FALSE
-	{
-	    *dif = (*lat) * (1 -
-			 (cos ((M_PI * fabs ((*lon) - zero_lon)) / 180.0)));
-	    *lat = (*lat) - (*dif) / 1.5;
-	}
-    else
-	*dif = 0;
-
-    *lon = zero_lon -
-	px / ((lat2radius (*lat) * M_PI / 180.0) *
-	      cos (M_PI * (*lat) / 180.0));
-	    
-}
-
-/* ******************************************************************
- * calculate xy pos of given lon/lat 
- */
-void
-calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
-{
-  gdouble dif;
-
-  if ( mydebug > 99 )
-      fprintf(stderr,"calcxy(_,_,%g,%g,%d)\n",
-	      *posx,*posy, zoom);
-
-  // Error check
-  if ( lat > 360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-      };
-  if ( lat < -360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-      };
-  if ( lon > 180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-	  lon=180;
-      };
-  if ( lon < -180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-	  lon=-180;
-      };
-
-  //if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
-						     180.0) *
-      (lon - zero_lon);
-  else
-    *posx = (lat2radius (0.0) * M_PI / 180.0) * (lon - zero_lon);
-
-  *posx = SCREEN_X_2 + *posx * zoom / pixelfact;
-  *posx = *posx - xoff;
-
-
-  //  if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    {
-      *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-      dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
-      *posy = *posy + dif / 1.85;
-    }
-  else
-    *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-
-  *posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
-  *posy = *posy - yoff;
-
-  if ( mydebug > 90 )
-      fprintf(stderr,"calcxy(_,_,%g,%g,%d) ---> %g,%g\n",
-	      *posx,*posy, zoom,lat,lon);
-
-
-}
-
-/* ******************************************************************
- * calculate xy position in mini map window from given lat/lon
- */
-void
-calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
-	    gint zoom)
-{
-  gdouble dif;
-
-  //  if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
-						     180.0) *
-      (lon - zero_lon);
-  else
-    *posx = (lat2radius (0) * M_PI / 180.0) * (lon - zero_lon);
-
-  *posx = 64 + *posx * zoom / (10 * pixelfact);
-  *posx = *posx;
-
-  *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-  // if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    {
-      dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
-      *posy = *posy + dif / 1.85;
-    }
-  *posy = 51 - *posy * zoom / (10 * pixelfact);
-  *posy = *posy;
-}
-
 
 /* ******************************************************************
  * calculate Earth radius for given lat 
@@ -506,34 +287,6 @@ create_pixbuf (const gchar * filename)
   return pixbuf;
 }
 
-/* ******************************************************************
- * This is an internally used function to create pixmaps. 
- */
-GtkWidget *
-create_pixmap (GtkWidget * widget, const gchar * filename)
-{
-  gchar pathname[200];
-  GtkWidget *pixmap = NULL;
-
-  if (!filename || !filename[0])
-    return gtk_image_new ();
-
-  g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
-	      filename);
-
-
-  pixmap = gtk_image_new_from_file (pathname);
-  if (!pixmap)
-    {
-      if (mydebug > 5)
-	fprintf (stderr, _("Couldn't find pixmap file: %s"), pathname);
-      else
-	g_warning (_("Couldn't find pixmap file: %s"), pathname);
-      return gtk_image_new ();
-    }
-
-  return pixmap;
-}
 
 
 /* *****************************************************************************
@@ -683,4 +436,33 @@ file_location(gchar * filename, gchar *file_location){
 	//if (buf.st_mtime != waytxtstamp)
     }
     return TRUE;
+}
+
+/* ******************************************************************
+ * This is an internally used function to create pixmaps. 
+ */
+GtkWidget *
+create_pixmap (GtkWidget * widget, const gchar * filename)
+{
+  gchar pathname[200];
+  GtkWidget *pixmap = NULL;
+
+  if (!filename || !filename[0])
+    return gtk_image_new ();
+
+  g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
+	      filename);
+
+
+  pixmap = gtk_image_new_from_file (pathname);
+  if (!pixmap)
+    {
+      if (mydebug > 5)
+	fprintf (stderr, _("Couldn't find pixmap file: %s"), pathname);
+      else
+	g_warning (_("Couldn't find pixmap file: %s"), pathname);
+      return gtk_image_new ();
+    }
+
+  return pixmap;
 }

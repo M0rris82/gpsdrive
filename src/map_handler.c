@@ -40,7 +40,6 @@
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gdouble lat2RadiusArray[201];
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
@@ -124,48 +123,6 @@ gint max_display_map = 0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 gint displaymap_map = TRUE;
-
-//enum map_projections { proj_undef, proj_top, proj_map };
-enum map_projections map_proj;
-
-/* ******************************************************************
- * Find the maptype for a given Filename
- */
-enum map_projections
-map_projection (char *filename)
-{
-  enum map_projections proj = proj_undef;
-
-  if (!strncmp (filename, "expedia/", 8))
-    proj = proj_map;
-  else if (!strncmp (filename, "landsat/", 8))
-    proj = proj_map;
-  else if (!strncmp (filename, "geoscience/", 11))
-    proj = proj_map;
-  else if (!strncmp (filename, "incrementp/", 11))
-    proj = proj_map;
-  else if (!strncmp (filename, "gov_au/", 7))
-    proj = proj_map;
-  else if (!strncmp (filename, "_map/", 5))
-    proj = proj_map;
-  else if (!strncmp (filename, "map_", 4))	// For Compatibility
-    proj = proj_map;
-  else if (!strncmp (filename, "googlesat/", 10))
-    proj = proj_top;
-  else if (!strncmp (filename, "NASAMAPS/", 9))
-    proj = proj_top;
-  else if (!strncmp (filename, "eniro/", 6))
-    proj = proj_top;
-  else if (!strncmp (filename, "_top/", 5))
-    proj = proj_top;
-  else if (!strncmp (filename, "top_", 4))	// For Compatibility
-    proj = proj_top;
-  else
-    {
-      proj = proj_undef;
-    }
-  return proj;
-}
 
 /* *****************************************************************************
  */
@@ -964,10 +921,11 @@ test_and_load_newmap ()
 	posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	  * cos (M_PI * (maps + i)->lat / 180.0)
 	  * (current_lon - (maps + i)->lon);
-      else
+      else if (proj_top == proj)
 	posx = (lat2radius (0) * M_PI / 180)
 	  * (current_lon - (maps + i)->lon);
-
+      else 
+	  printf("Error: unknown Projection\n");
 
       /*  latitude */
       if (proj_map == proj)
@@ -978,9 +936,14 @@ test_and_load_newmap ()
 	    * (1 - (cos ((M_PI * (current_lon - (maps + i)->lon)) / 180.0)));
 	  posy = posy + dif / 2.0;
 	}
-      else
-	posy = (lat2radius (0) * M_PI / 180)
-	  * (current_lat - (maps + i)->lat);
+      else if (proj_top == proj)
+	  {
+	      posy = (lat2radius (0) * M_PI / 180)
+		  * (current_lat - (maps + i)->lat);
+	  }
+      else 
+	  printf("Error: unknown Projection\n");
+
       pixelfactloc = (maps + i)->scale / PIXELFACT;
       posx = posx / pixelfactloc;
       posy = posy / pixelfactloc;
