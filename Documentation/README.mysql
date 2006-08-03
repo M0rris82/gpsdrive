@@ -29,6 +29,7 @@ If you still can't find what you need then download the source tar ball (at the 
 
 <TODO> Minimum required version of MySQL.
 
+
 Initialise the Database
 =======================
 Once you have MySQL up and running you can use these scripts to initialise the database for GpsDrive.  This task was previously performed by a script called create.sql and it is out of date and no longer being maintained.
@@ -74,3 +75,20 @@ MySQL Options in Gpsdrive
 Compile MySQL (if you must)
 =====================
 <TODO>
+
+
+MySQL Password
+==============
+
+If you forgot or never set your mysql root password, try
+ mysqladmin -u root password "mynewpassword"
+
+
+Uninstall geoinfo in MySQL
+==========================
+
+Warning: This will really delete all modifications you 
+locally made to the geoinfo database.
+
+ echo "drop database geoinfo;"| mysql -uroot -pyour_mysql_roor_password
+
