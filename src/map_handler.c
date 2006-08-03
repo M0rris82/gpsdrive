@@ -109,6 +109,8 @@ extern GtkObject *scaler_adj;
 #  define N_(String) (String)
 # endif
 
+enum map_projections map_projection (char *filename);
+
 
 mapsstruct *maps = NULL;
 gint message_wrong_maps_shown = FALSE;
