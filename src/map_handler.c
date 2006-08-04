@@ -109,6 +109,8 @@ extern GtkObject *scaler_adj;
 #  define N_(String) (String)
 # endif
 
+#define Deg2Rad(x) (x*M_PI/180.0)
+
 enum map_projections map_projection (char *filename);
 
 
@@ -921,8 +923,8 @@ test_and_load_newmap ()
       /*  Longitude */
       if (proj_map == proj)
 	posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
-	  * cos (M_PI * (maps + i)->lat / 180.0)
-	  * (current_lon - (maps + i)->lon);
+	    * cos (Deg2Rad( (maps + i)->lat))
+	    * (current_lon - (maps + i)->lon);
       else if (proj_top == proj)
 	posx = (lat2radius (0) * M_PI / 180)
 	  * (current_lon - (maps + i)->lon);
@@ -935,7 +937,7 @@ test_and_load_newmap ()
 	  posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
 	    * (current_lat - (maps + i)->lat);
 	  dif = lat2radius ((maps + i)->lat)
-	    * (1 - (cos ((M_PI * (current_lon - (maps + i)->lon)) / 180.0)));
+	    * (1 - (cos (Deg2Rad((current_lon - (maps + i)->lon)) )));
 	  posy = posy + dif / 2.0;
 	}
       else if (proj_top == proj)
