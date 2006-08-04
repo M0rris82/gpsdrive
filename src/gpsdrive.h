@@ -298,7 +298,7 @@ enum map_projections {
     proj_undef, 
     proj_top, 
     proj_map,
-    proj_google 
+    proj_googlesat
 };
 extern enum map_projections map_proj;
 

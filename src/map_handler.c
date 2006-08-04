@@ -926,8 +926,9 @@ test_and_load_newmap ()
 	    * cos (Deg2Rad( (maps + i)->lat))
 	    * (current_lon - (maps + i)->lon);
       else if (proj_top == proj)
-	posx = (lat2radius (0) * M_PI / 180)
-	  * (current_lon - (maps + i)->lon);
+	posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
+      else if (proj_googlesat == proj)
+	posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
       else 
 	  printf("Error: unknown Projection\n");
 
@@ -942,8 +943,11 @@ test_and_load_newmap ()
 	}
       else if (proj_top == proj)
 	  {
-	      posy = (lat2radius (0) * M_PI / 180)
-		  * (current_lat - (maps + i)->lat);
+	      posy = (lat2radius (0) * M_PI / 180) * (current_lat - (maps + i)->lat);
+	  }
+      else if (proj_googlesat == proj)
+	  {
+	      posy = 1.5* (lat2radius (0) * M_PI / 180)  * (current_lat - (maps + i)->lat);
 	  }
       else 
 	  printf("Error: unknown Projection\n");

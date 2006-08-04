@@ -133,7 +133,7 @@ map_projection (char *filename)
   else if (!strncmp (filename, "map_", 4))	// For Compatibility
     proj = proj_map;
   else if (!strncmp (filename, "googlesat/", 10))
-    proj = proj_top;
+    proj = proj_googlesat;
   else if (!strncmp (filename, "NASAMAPS/", 9))
     proj = proj_top;
   else if (!strncmp (filename, "eniro/", 6))
@@ -180,6 +180,11 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
   else if (proj_top == map_proj)
     {
       lat = zero_lat - py / lat2radius_pi_180 (0);
+      lon = zero_lon - px / lat2radius_pi_180 (0);
+    }
+  else if (proj_googlesat == map_proj)
+    {
+      lat = ( zero_lat - (py/1.5) / lat2radius_pi_180 (0));
       lon = zero_lon - px / lat2radius_pi_180 (0);
     }
   else
@@ -231,8 +236,11 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
     *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
   else if (proj_top == map_proj)
     *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
+  else if (proj_googlesat == map_proj)
+    *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
   else
     printf ("ERROR: calcxy: unknown map Projection\n");
+
   if (proj_map == map_proj)
     {
       *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
@@ -241,6 +249,8 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
     }
   else if (proj_top == map_proj)
     *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+  else if (proj_googlesat == map_proj)
+    *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - zero_lat);
   else
     printf ("ERROR: calcxy: unknown map Projection\n");
 
@@ -268,6 +278,11 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
     }
   else if (proj_map == map_proj)
     *dif = 0;
+  else if (proj_googlesat == map_proj)
+    {
+      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - zero_lon)))));
+      *lat = (*lat) - (*dif) / 1.5;
+    }
   else
     printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
   *lon = zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
@@ -283,8 +298,11 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
     *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
   else if (proj_top == map_proj)
     *posx = lat2radius_pi_180 (0) * (lon - zero_lon);
+  else if (proj_googlesat == map_proj)
+    *posx = lat2radius_pi_180 (0) * (lon - zero_lon);
   else
     printf ("Eroor: calcxymini: unknown Projection\n");
+
   *posx = 64 + *posx * zoom / (10 * pixelfact);
   *posx = *posx;
   if (proj_map == map_proj)
@@ -295,8 +313,11 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
     }
   else if (proj_top == map_proj)
     *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+  else if (proj_googlesat == map_proj)
+    *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
   else
     printf ("Eroor: calcxymini: unknown Projection\n");
+
   *posy = 51 - *posy * zoom / (10 * pixelfact);
   *posy = *posy;
 }
