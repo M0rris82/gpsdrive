@@ -171,20 +171,6 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     {
       lat = zero_lat - py / lat2radius_pi_180 (current_lat);
       lat = zero_lat - py / lat2radius_pi_180 (lat);
-
-      while (lat > 360)
-	{
-	  if (mydebug > 0)
-	    fprintf (stderr, "ERROR: calcxytopos(lat %f) >360\n", lat);
-	  lat = lat - 360.0;
-	}
-      while (lat < -360)
-	{
-	  if (mydebug > 0)
-	    fprintf (stderr, "ERROR: calcxytopos(lat %f) <-360\n", lat);
-	  lat = lat + 360.0;
-	}
-
       lon = zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
 
       dif = lat * (1 - (cos (Deg2Rad (fabs (lon - zero_lon)))));

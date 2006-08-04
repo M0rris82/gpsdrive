@@ -86,7 +86,13 @@ lat2radius (gdouble lat)
 
   // the known undef values
   if ( lat > 999 )
-      return 1;
+      lat=0;
+  
+  while (lat > 360)
+      {
+	  lat = lat - 360.0;
+      };
+  
 
   if (lat > 180)
       {
