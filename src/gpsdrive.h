@@ -241,9 +241,10 @@ void test_and_load_newmap ();
 void map_koord_check_and_reload();
 void coordinate_string2gdouble (const gchar * text,gdouble * dec);
 void do_incremental_save();
-void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat,
-		  gdouble wp_lon);
+void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon);
 gdouble lat2radius (gdouble lat);
+gdouble lat2radius_pi_180 (gdouble lat);
+
 void draw_text_with_box (gdouble posx, gdouble posy, gchar * name);
 int posxy_on_screen (gdouble posx, gdouble posy);
 

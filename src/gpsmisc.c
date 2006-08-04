@@ -77,7 +77,7 @@ init_lat2RadiusArray(){
 }
 
 /* **********************************************************************
- * Estimate the earth radius for given latitude
+ * Estimate the Earth radius in meter for given lat in Degrees
  */
 gdouble
 lat2radius (gdouble lat)
@@ -96,7 +96,7 @@ lat2radius (gdouble lat)
 
   if (lat > 90  && lat < 180.0)
       {
-	  lat = 180 - lat;
+	  lat = 180.0 - lat;
       }
 
   if (lat > 90)
@@ -109,14 +109,25 @@ lat2radius (gdouble lat)
   return lat2RadiusArray[(int) (lat)];
 }
 
+
+/* **********************************************************************
+ * Estimate the Earth radius in (meter * PI/180 ) for given lat in Degrees
+ */
+gdouble
+lat2radius_pi_180 (gdouble lat)
+{
+    return ( lat2radius  (lat) * M_PI / 180.0);
+}
+
 /* ******************************************************************
- * calculate Earth radius for given lat 
+ * calculate Earth radius in meter for given lat in Degrees
  */
 gdouble
 calcR (gdouble lat)
 {
   gdouble a = 6378.137, r, sc, x, y, z;
   gdouble e2 = 0.08182 * 0.08182;
+  gdouble lat_pi;
   /* the radius of curvature of an ellipsoidal Earth in the plane of 
    * the meridian is given by 
    *
@@ -132,15 +143,15 @@ calcR (gdouble lat)
    * e = 0.08182 Eccentricity
    */
 
-  lat = lat * M_PI / 180.0;
-  sc = sin (lat);
+  lat_pi = lat * M_PI / 180.0;
+  sc = sin (lat_pi);
   x = a * (1.0 - e2);
   z = 1.0 - e2 * sc * sc;
   y = pow (z, 1.5);
   r = x / y;
 
   r = r * 1000.0;
-  /*      g_print("\nR=%f",r); */
+  // g_print("R(%f)=%f\n",lat,r); 
   return r;
 }
 

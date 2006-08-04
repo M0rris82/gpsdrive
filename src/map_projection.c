@@ -107,7 +107,7 @@ extern GtkObject *scaler_adj;
 #  define N_(String) (String)
 # endif
 
-enum map_projections map_proj=proj_top;
+enum map_projections map_proj = proj_top;
 
 /* ******************************************************************
  * Find the maptype for a given Filename
@@ -153,16 +153,13 @@ map_projection (char *filename)
  * calculates lat and lon for the given position on the screen 
  */
 void
-calcxytopos (int posx, int posy, 
-	     gdouble *mylat, gdouble *mylon, 
-	     gint zoom)
+calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 {
   int x, y, px, py;
   gdouble dif, lat, lon;
 
-  if ( mydebug > 99 )
-      fprintf(stderr,"calcxytopos(%d,%d,__,%d)\n",
-	      posx,posy, zoom);
+  if (mydebug > 99)
+    fprintf (stderr, "calcxytopos(%d,%d,__,%d)\n", posx, posy, zoom);
 
   x = posx;
   y = posy;
@@ -170,174 +167,157 @@ calcxytopos (int posx, int posy,
   py = (-SCREEN_Y_2 + y + yoff) * pixelfact / zoom;
 
   //if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
+  if (proj_map == map_proj)
     {
-      lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
-      lat = zero_lat - py / (lat2radius (lat) * M_PI / 180.0);
+      lat = zero_lat - py / lat2radius_pi_180 (current_lat);
+      lat = zero_lat - py / lat2radius_pi_180 (lat);
 
       while (lat > 360)
-	  {
-	      if (mydebug > 0)
-		  fprintf (stderr, "ERROR: calcxytopos(lat %f) >360\n", lat);
-	      lat = lat - 360.0;
-	  }
+	{
+	  if (mydebug > 0)
+	    fprintf (stderr, "ERROR: calcxytopos(lat %f) >360\n", lat);
+	  lat = lat - 360.0;
+	}
       while (lat < -360)
-	  {
-	      if (mydebug > 0)
-		  fprintf (stderr, "ERROR: calcxytopos(lat %f) <-360\n", lat);
-	      lat = lat + 360.0;
-	  }
-      
-      lon = zero_lon - px / ((lat2radius (lat) * M_PI / 180.0) *
-			      cos (M_PI * lat / 180.0));
+	{
+	  if (mydebug > 0)
+	    fprintf (stderr, "ERROR: calcxytopos(lat %f) <-360\n", lat);
+	  lat = lat + 360.0;
+	}
+
+      lon = zero_lon - px / (lat2radius_pi_180 (lat)  * cos (M_PI * lat / 180.0));
 
       dif = lat * (1 - (cos ((M_PI * fabs (lon - zero_lon)) / 180.0)));
       lat = lat - dif / 1.5;
 
-      lon = zero_lon -
-	px / ((lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat / 180.0));
+      lon = zero_lon - px / (lat2radius_pi_180 (lat)  * cos (M_PI * lat / 180.0));
     }
-  else if ( proj_top == map_proj )
+  else if (proj_top == map_proj)
     {
-      lat = zero_lat - py / (lat2radius (0) * M_PI / 180.0);
-      lon = zero_lon - px / ((lat2radius (0) * M_PI / 180.0));
+      lat = zero_lat - py / lat2radius_pi_180 (0);
+      lon = zero_lon - px / lat2radius_pi_180 (0) ;
     }
-  else 
-      printf("ERROR: calcxytopos: unknown map Projection\n");
+  else
+    printf ("ERROR: calcxytopos: unknown map Projection\n");
 
   // Error check
-  if ( lat > 360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-	  //	  lat = 360.0;
-      };
-  if ( lat < -360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-	  //	  lat = -360.0;
-      };
-  if ( lon > 180 )
-      {
-	  if (mydebug > 20)
-		fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-	  // lon -= 180.0;
-      };
-  if ( lon < -180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-	  // lon += 180.0;
-      };
+  if (lat > 360)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+      //      lat = 360.0;
+    };
+  if (lat < -360)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+      //      lat = -360.0;
+    };
+  if (lon > 180)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+      // lon -= 180.0;
+    };
+  if (lon < -180)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+      // lon += 180.0;
+    };
 
   *mylat = lat;
   *mylon = lon;
 
-  if ( mydebug > 90 )
-      fprintf(stderr,"calcxytopos(%d,%d,_,_,%d) ---> %g,%g\n",
-	      posx,posy, zoom,lat,lon);
+  if (mydebug > 90)
+    fprintf (stderr, "calcxytopos(%d,%d,_,_,%d) ---> %g,%g\n", posx, posy, zoom, lat, lon);
 }
 
 /* ******************************************************************
  */
 void
-minimap_xy2latlon(gint px, gint py, 	
-		  gdouble *lon, gdouble *lat,
-		  gdouble *dif)
+minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif)
 {
-    *lat = zero_lat - py / (lat2radius (current_lat) * M_PI / 180.0);
-    *lat = zero_lat - py / (lat2radius (*lat) * M_PI / 180.0);
-    *lon = zero_lon -
-	px / ((lat2radius (*lat) * M_PI / 180.0) *
-	      cos (M_PI * *lat / 180.0));
+  *lat = zero_lat - py / lat2radius_pi_180 (current_lat);
+  *lat = zero_lat - py / lat2radius_pi_180 (*lat);
+  *lon = zero_lon - px / (lat2radius (*lat) * cos (M_PI * *lat / 180.0));
 
-    if ( proj_top == map_proj )
-	{
-	    *dif = (*lat) * (1 -
-			 (cos ((M_PI * fabs ((*lon) - zero_lon)) / 180.0)));
-	    *lat = (*lat) - (*dif) / 1.5;
-	}
-    else if ( proj_map == map_proj )	
-	*dif = 0;
-    else 
-	printf("ERROR: minimap_xy2latlon: unknown map Projection\n");
+  if (proj_top == map_proj)
+    {
+      *dif = (*lat) * (1 - (cos ((M_PI * fabs ((*lon) - zero_lon)) / 180.0)));
+      *lat = (*lat) - (*dif) / 1.5;
+    }
+  else if (proj_map == map_proj)
+    *dif = 0;
+  else
+    printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
 
-    *lon = zero_lon -
-	px / ((lat2radius (*lat) * M_PI / 180.0) *
-	      cos (M_PI * (*lat) / 180.0));
-	    
+  *lon = zero_lon - px / (lat2radius_pi_180 (*lat) * cos (M_PI * (*lat) / 180.0));
+
 }
 
 /* ******************************************************************
  * calculate xy pos of given lon/lat 
  */
 void
-calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
+calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
   gdouble dif;
 
-  if ( mydebug > 99 )
-      fprintf(stderr,"calcxy(_,_,%g,%g,%d)\n",
-	      *posx,*posy, zoom);
+  if (mydebug > 99)
+    fprintf (stderr, "calcxy(_,_,%g,%g,%d)\n", *posx, *posy, zoom);
 
   // Error check
-  if ( lat > 360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-      };
-  if ( lat < -360 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-      };
-  if ( lon > 180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-	  lon=180;
-      };
-  if ( lon < -180 )
-      {
-	  if (mydebug > 20)
-	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-	  lon=-180;
-      };
+  if (lat > 360)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+    };
+  if (lat < -360)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+    };
+  if (lon > 180)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
+      lon = 180;
+    };
+  if (lon < -180)
+    {
+      if (mydebug > 20)
+	fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
+      lon = -180;
+    };
 
-  //if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
-    *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
-						     180.0) *
-      (lon - zero_lon);
-  else  if ( proj_top == map_proj )
-      *posx = (lat2radius (0.0) * M_PI / 180.0) * (lon - zero_lon);
-  else 
-      printf("ERROR: calcxy: unknown map Projection\n");
-  
+  if (proj_map == map_proj)
+    *posx = lat2radius_pi_180 (lat) * cos (M_PI * lat / 180.0) * (lon - zero_lon);
+  else if (proj_top == map_proj)
+    *posx = lat2radius_pi_180 (0.0)  * (lon - zero_lon);
+  else
+    printf ("ERROR: calcxy: unknown map Projection\n");
+
   *posx = SCREEN_X_2 + *posx * zoom / pixelfact;
   *posx = *posx - xoff;
 
 
-  //  if (mapistopo == FALSE)
-  if ( proj_map == map_proj )
+  if (proj_map == map_proj)
     {
-      *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-      dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
+      *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+      dif = lat2radius (lat) * (1 - (cos ((M_PI * (lon - zero_lon)) / 180.0)));
       *posy = *posy + dif / 1.85;
     }
-  else if ( proj_top == map_proj )
-    *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-  else 
-      printf("ERROR: calcxy: unknown map Projection\n");
+  else if (proj_top == map_proj)
+    *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+  else
+    printf ("ERROR: calcxy: unknown map Projection\n");
 
   *posy = SCREEN_Y_2 - *posy * zoom / pixelfact;
   *posy = *posy - yoff;
 
-  if ( mydebug > 90 )
-      fprintf(stderr,"calcxy(_,_,%g,%g,%d) ---> %g,%g\n",
-	      *posx,*posy, zoom,lat,lon);
+  if (mydebug > 90)
+    fprintf (stderr, "calcxy(_,_,%g,%g,%d) ---> %g,%g\n", *posx, *posy, zoom, lat, lon);
 
 
 }
@@ -346,38 +326,32 @@ calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom)
  * calculate xy position in mini map window from given lat/lon
  */
 void
-calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
-	    gint zoom)
+calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
   gdouble dif;
 
 
-  if ( proj_map == map_proj )  //  if (mapistopo == FALSE)
-    *posx = (lat2radius (lat) * M_PI / 180.0) * cos (M_PI * lat /
-						     180.0) *
-      (lon - zero_lon);
-  else if ( proj_top == map_proj )  
-    *posx = (lat2radius (0) * M_PI / 180.0) * (lon - zero_lon);
-  else 
-      printf("Eroor: calcxymini: unknown Projection\n");
+  if (proj_map == map_proj)	//  if (mapistopo == FALSE)
+    *posx = lat2radius_pi_180 (lat)  * cos (M_PI * lat / 180.0) * (lon - zero_lon);
+  else if (proj_top == map_proj)
+    *posx = lat2radius_pi_180 (0)  * (lon - zero_lon);
+  else
+    printf ("Eroor: calcxymini: unknown Projection\n");
 
   *posx = 64 + *posx * zoom / (10 * pixelfact);
   *posx = *posx;
 
-  if ( proj_map == map_proj )  // if (mapistopo == FALSE)
+  if (proj_map == map_proj)	// if (mapistopo == FALSE)
     {
-      dif = lat2radius (lat) * (1 -
-				(cos ((M_PI * (lon - zero_lon)) / 180.0)));
-      *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
+      dif = lat2radius (lat) * (1 - (cos ((M_PI * (lon - zero_lon)) / 180.0)));
+      *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
       *posy = *posy + dif / 1.85;
     }
-  else if ( proj_top == map_proj )  
-      *posy = (lat2radius (lat) * M_PI / 180.0) * (lat - zero_lat);
-  else 
-      printf("Eroor: calcxymini: unknown Projection\n");
+  else if (proj_top == map_proj)
+    *posy = lat2radius_pi_180 (lat)  * (lat - zero_lat);
+  else
+    printf ("Eroor: calcxymini: unknown Projection\n");
 
   *posy = 51 - *posy * zoom / (10 * pixelfact);
   *posy = *posy;
 }
-
-
