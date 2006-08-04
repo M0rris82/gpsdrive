@@ -201,30 +201,17 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     printf ("ERROR: calcxytopos: unknown map Projection\n");
 
   // Error check
-  if (lat > 360)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-      //      lat = 360.0;
-    };
-  if (lat < -360)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
-      //      lat = -360.0;
-    };
-  if (lon > 180)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-      // lon -= 180.0;
-    };
-  if (lon < -180)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
-      // lon += 180.0;
-    };
+  if (mydebug > 20) 
+      {
+	  if (lat > 360)
+	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+	  if (lat < -360)
+	      fprintf (stderr, "ERROR: calcxytopos(lat %f) out of bound\n", lat);
+	  if (lon > 180)
+	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+	  if (lon < -180)
+	      fprintf (stderr, "ERROR: calcxytopos(lon %f) out of bound\n", lon);
+      };
 
   *mylat = lat;
   *mylon = lon;
@@ -263,27 +250,16 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
   if (mydebug > 99)
     fprintf (stderr, "calcxy(_,_,%g,%g,%d)\n", *posx, *posy, zoom);
   // Error check
-  if (lat > 360)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-    };
-  if (lat < -360)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
-    };
-  if (lon > 180)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-      lon = 180;
-    };
-  if (lon < -180)
-    {
-      if (mydebug > 20)
-	fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
-      lon = -180;
+  if (mydebug > 20)
+      {
+	  if (lat > 360)
+	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+	  if (lat < -360)
+	      fprintf (stderr, "WARNING: calcxy(lat %f) out of bound\n", lat);
+	  if (lon > 180)
+	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
+	  if (lon < -180)
+	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
     };
   if (proj_map == map_proj)
     *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
