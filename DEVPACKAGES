@@ -10,36 +10,36 @@ The Configure scripts are currently being updated to detect the presence of thes
 
 Package Name (version)		Tested for by configure		How Tested?
 ----------------------------------------------------------------------------------- 
-libart-2.0-2 (2.3.17)		Yes				PKG_CHECK_MODULES
-libatk1.0-0 (1.10.3)		Yes (27/03/2006)		PKG_CONFIG
-libc6 (2.3.5-1)			No
-libcario2 (1.0.2-3)		Yes (29/03/2006)		PKG_CONFIG, AC_CHECK_LIB
-libexpat1			No
-libfontconfig1(2.2.3)		Yes
-libfreetype6			No
-libgcc1				No
-libglib2.0-0			Yes (26/03/2006)		AM_PATH_GLIB_2_0
-libgtk2.0-0			Yes (25/03/2006)		AM_PATH_GTK_2_0
-libpango1.0-0 (1.10.1)		Yes
-libpcre3			Yes				AC_PATH_PROG
-libpng12-0			No
-libstdc++6			No
-libx11-6			No
-libxcursor1 (1.1.2)		Yes
-libxext6			No
-libxi6				No
-libxinerama1 (1:0.9.0-1)	No
-zlib1g				No
+libart-2.0-dev (2.3.17)		Yes				PKG_CHECK_MODULES
+libatk1.0-dev (1.10.3)		Yes (27/03/2006)		PKG_CONFIG
+libc6-dev (2.3.5-1)		No
+libcairo2-dev (1.0.2-3)		Yes (29/03/2006)		PKG_CONFIG, AC_CHECK_LIB
+libexpat1-dev (1.95.8.3)	No
+libfontconfig1-dev (2.2.3)	Yes
+libfreetype6-dev (2.1.7-2.5)	No
+libgcc1 (1:3.4.3-13)		No
+libglib2.0-dev (2.8.5)		Yes (26/03/2006)		AM_PATH_GLIB_2_0
+libgtk2.0--dev (2.6.4-3.1)	Yes (25/03/2006)		AM_PATH_GTK_2_0
+libpango1.0-dev (1.10.1)	Yes
+libpcre3-dev (4.5-1.2)		Yes				AC_PATH_PROG
+libpng12-dev (1.2.8rel-1)	No
+libstdc++6-dev (3.4.3-13)	No
+libx11-6 (4.3.0.dfsg.1-14)	No
+libxcursor-dev (1.1.2)		Yes
+libxext-dev 			No
+libxi-dev			No
+libxinerama-dev (1:0.9.0-1)	No
+zlib1g-dev (1:1.2.2-4)		No
 libltdl3-dev (1.5.6-6)		No (commented out?)
-libgdal-grass (1.2.6-1+b1) 	No
-libsrces26-dev (2.6.0-6)	No
+
+libxerces27-dev			No
 libmysqlclient14-dev (4.1.15-1)	No
 libtiff4-dev (3.7.4-1)		No
 libjasper-1.701-dev		No
 libgeos-dev (2.1.4-2)		No
 libgdal1-dev (1.2.6-1.3)	No
 gdal-bin (1.2.6-1.3)		No
-libgrass (6.0.1-3)		No
+libgrass-dev (6.0.1-3)		No
 libgdal1-1.3.1-grass (1.3.1-1)  No
 libhdf4g-dev (4.1r4-18.1)	No
 libungif4-dev (4.1.4-2)		No
@@ -51,20 +51,21 @@ libpqxx-dev (2.5.5-2)		No
 Perl packages required at run time
 ===================================
 
-libwww-mechanize-perl           No
-libarchive-zip-perl             No
-bdate-manip-perl		No
-libdbi-perl                     No
-libhtml-parser-perl             No
-libxml-parser-perl		No
-btext-query-perl		No
-libwww-mechanize-perl		No
-libwww-perl			No
-perl                            No
-perl-base                       No
-perlmagic                       No
-perl-modules                    No
+libwww-mechanize-perl           NA
+libarchive-zip-perl             NA
+libdate-manip-perl		NA
+libdbi-perl                     NA
+libhtml-parser-perl             NA
+libxml-parser-perl		NA
+libtext-query-perl		NA
+libwww-mechanize-perl		NA
+libwww-perl			NA
+perl                            NA
+perl-base                       NA
+perlmagick                      NA
+perl-modules                    NA
 
+imagemagick			NA
 
 Advanced
 ============
