@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.47  2006/08/08 08:07:58  tweety
+# imore error checking for downloading
+#
 # Revision 1.46  2006/08/08 00:05:58  tweety
 # initial map directory
 #
@@ -245,6 +248,8 @@ use IO::File;
 use Switch;
 use POSIX qw(ceil floor);
 use Image::Magick;
+
+my $long_sleep_time=600;
 
 # For Expedia
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
@@ -652,6 +657,12 @@ print "New:   $newcount\n";
 ################################################################################
 
 #############################################################################
+sub slurp($){
+    my $fh=IO::File->new(shift);
+    return "" unless $fh;
+    return join("",$fh->getlines());
+}
+
 #############################################################################
 sub get_gpsd_position(){
     # Connect to local gpsd
@@ -762,12 +773,29 @@ sub mirror_map($$){
     my $url = shift;
     my $filename = shift;
 
+    my $content = slurp($filename);
+    if ( $content =~ m,<title>403 Forbidden</title>,){
+	unlink "$filename";
+	sleep 10;
+    };
     my $ok = mirror_file($url,$filename);
     if ( ! is_map_file($filename) ) {
 	# unlink($filename) if -s $filename;
 	#warn "no map downloaded ($filename)\n";
 	$ok=0;
     }
+
+    my $content = slurp($filename);
+    if ( $content =~ m,<title>(403 .*)</title>,){
+	my $message = $1;
+	$content =~ s,.*<blockquote>,,s;
+	$content =~ s,</blockquote>.*,,s;
+	warn "Found $filename $message Message\n";
+	warn $content;
+	warn "Sleeping very long $long_sleep_time seconds\n";
+	sleep $long_sleep_time;
+	$long_sleep_time*=2;
+    };
 
 
     # sleep if polite is turned on to be nice to the webserver of the mapserver
@@ -2079,8 +2107,13 @@ sub latlon2xy($$$){
 sub is_usefull_map_file($){
     my $filename = shift;
     $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
-    if ( ((-s $filename)||0) == 2085 ) {
+    my $size = (-s $filename)||0;
+    return 0 if $size < 1000;
+    if ( ( $size == 2085 ) ||
+	 ( $size == 1755 ) ) {
 	# For GoogleSat Maps
+	my $content = slurp($filename);
+	return 0 if $content =~ m,<title>403 Forbidden</title>,;
 	my ($checksum) = split(/\s+/,`md5sum $filename`);
 	if ( $checksum eq "c2b3a15d665ba8d2c5aed77025c41a6e" ) {
 #	    print "checksumm sees no content \n";
