@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.46  2006/08/08 00:05:58  tweety
+# initial map directory
+#
 # Revision 1.45  2006/07/27 13:17:06  tweety
 # Update Configure Versions
 #
@@ -217,7 +220,7 @@ modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-cvs-20060727)
+Version 1.19 (gpsdrive-2.10pre3-work)
 ";
 
 sub redirect_ok { return 1; }
@@ -495,7 +498,7 @@ $unit ||= $CFG->{units};
 
 # Get mapdir from config file, unless they override with command line
 $mapdir ||= $CFG->{mapdir};
-$mapdir ||= $CONFIG_DIR;
+$mapdir ||= "$CONFIG_DIR/maps";
 
 my $KOORD_FILE  = "$mapdir/map_koord.txt";
 
