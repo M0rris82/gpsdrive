@@ -1,6 +1,9 @@
 # Import Data from http://earth-info.nga.mil/
 #
 # $Log$
+# Revision 1.4  2006/08/08 08:18:51  tweety
+# nsert points too
+#
 # Revision 1.3  2006/03/10 08:37:09  tweety
 # - Replace Street/Track find algorithmus in Query Funktion
 #   against real Distance Algorithm (distance_line_point).
@@ -723,7 +726,7 @@ sub add_earthinfo_nga_mil_to_db($$){
 	    }
 
 # DEBUG
-#	    add_poi($values);
+	    add_poi($values);
 	}
     }
     print "$lines_count_file read\n" if $verbose;
