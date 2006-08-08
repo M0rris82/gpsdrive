@@ -176,7 +176,8 @@ GdkColor defaultcolor;
 GtkWidget *drawing_area, *drawing_bearing;
 GtkWidget *drawing_sats, *drawing_miniimage;
 
-GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgps_bt;
+GtkWidget *distlabel, *speedlabel, *altilabel, *miles;
+//GtkWidget *startgps_bt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
@@ -484,7 +485,7 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu/Maps/_Download map"), NULL, (gpointer) download_cb,   0, NULL},
     {N_("/_Misc. Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
     {N_("/_Misc. Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
-    {N_("/_Misc. Menu/_Start gpsd"),        NULL, (gpointer) startgpsd,     0, NULL},
+    //    {N_("/_Misc. Menu/_Start gpsd"),        NULL, (gpointer) startgpsd_cb,  0, NULL},
     {N_("/_Misc. Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
     {N_("/_Misc. Menu/Messages"),           NULL, NULL,                     0, "<Branch>"},
     {N_("/_Misc. Menu/Messages/Send message to mobile target"), 
@@ -863,7 +864,7 @@ display_status2 ()
 		
 		gdk_window_get_pointer (drawing_area->window, &x, &y,&state);
 		calcxytopos (x, y, &lat, &lon, zoom);
-		if ( mydebug > 10 )
+		if ( mydebug > 20 )
 		    printf ("Actual mouse position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
 		// display position of Mouse in lat/lon Fields
 		coordinate2gchar(s2, sizeof(s2), lat, TRUE, minsecmode);
@@ -5139,8 +5140,8 @@ main (int argc, char *argv[])
 
     initgps ();
 
-    if (haveGARMIN)
-	gtk_widget_set_sensitive (startgps_bt, FALSE);
+    //if (haveGARMIN)
+    //	gtk_widget_set_sensitive (startgps_bt, FALSE);
 
     friendsinit ();
 
