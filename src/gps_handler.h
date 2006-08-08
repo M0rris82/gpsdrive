@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
 $Log$
+Revision 1.5  2006/08/08 08:19:32  tweety
+rename callback startgpsd_cb
+
 Revision 1.4  2006/02/05 16:38:05  tweety
 reading floats with scanf looks at the locale LANG=
 so if you have a locale de_DE set reading way.txt results in clearing the
@@ -51,7 +54,7 @@ extract all/some gps_handling parts to File src/gps_handler.c
 #include <gtk/gtk.h>
 
 gint initgps ();
-void startgpsd (guint datum);
+void startgpsd_cb (GtkWidget * widget, guint datum);
 void gpsd_close();
 gint reinitgps_cb (GtkWidget * widget, gpointer datum);
 

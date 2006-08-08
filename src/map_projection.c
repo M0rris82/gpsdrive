@@ -184,8 +184,8 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     }
   else if (proj_googlesat == map_proj)
     {
-      lat = ( zero_lat - (py/1.5) / lat2radius_pi_180 (0));
-      lon = zero_lon - px / lat2radius_pi_180 (0);
+      lat = zero_lat - (py/1.5) / lat2radius_pi_180 (0);
+      lon = zero_lon - (px*1.0) / lat2radius_pi_180 (0);
     }
   else
     printf ("ERROR: calcxytopos: unknown map Projection\n");
@@ -232,25 +232,24 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 	  if (lon < -180)
 	      fprintf (stderr, "WARNING: calcxy(lon %f) out of bound\n", lon);
     };
-  if (proj_map == map_proj)
-    *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
-  else if (proj_top == map_proj)
-    *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
-  else if (proj_googlesat == map_proj)
-    *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
-  else
-    printf ("ERROR: calcxy: unknown map Projection\n");
 
   if (proj_map == map_proj)
-    {
-      *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
-      dif = lat2radius (lat) * (1 - (cos (Deg2Rad ((lon - zero_lon)))));
-      *posy = *posy + dif / 1.85;
-    }
+      {
+	  *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
+	  *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+	  dif = lat2radius (lat) * (1 - (cos (Deg2Rad ((lon - zero_lon)))));
+	  *posy = *posy + dif / 1.85;
+      }
   else if (proj_top == map_proj)
-    *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+      {
+	  *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
+	  *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+      }
   else if (proj_googlesat == map_proj)
-    *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - zero_lat);
+      {
+	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - zero_lon);
+	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - zero_lat);
+      }
   else
     printf ("ERROR: calcxy: unknown map Projection\n");
 

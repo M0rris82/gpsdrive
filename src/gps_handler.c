@@ -109,7 +109,7 @@ extern gchar serialdev[80];
 extern char serialdata[4096];
 extern int newdata;
 extern pthread_mutex_t mutex;
-extern GtkWidget *startgps_bt;
+//extern GtkWidget *startgps_bt;
 extern int messagenumber, didrootcheck, haveserial;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
@@ -431,7 +431,7 @@ initgps ()
             {
               simmode = FALSE;
               haveNMEA = TRUE;
-              gtk_widget_set_sensitive (startgps_bt, FALSE);
+	      //              gtk_widget_set_sensitive (startgps_bt, FALSE);
             }
         }
     }
@@ -443,7 +443,7 @@ initgps ()
 /* *****************************************************************************
  */
 void
-startgpsd (guint datum)
+startgpsd_cb (GtkWidget * widget, guint datum)
 {
   gchar s[200], s2[10];
   int t[] = { 2400, 4800, 9600, 19200, 38400 };
@@ -460,13 +460,12 @@ startgpsd (guint datum)
       if (earthmate)
 	g_strlcat (s, " -T e ", sizeof (s));
       system (s);
-      gtk_button_set_label (GTK_BUTTON (startgps_bt), _("Stop GPSD"));
+      gtk_button_set_label (GTK_BUTTON (widget), _("Stop GPSD"));
 
       GtkTooltips *tooltips;
       tooltips = gtk_tooltips_new ();
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
-			    _
-			    ("Stop GPSD and switch to simulation mode"),
+      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), widget,
+			    _("Stop GPSD and switch to simulation mode"),
 			    NULL);
       g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
       if (sock != -1)
@@ -488,10 +487,10 @@ startgpsd (guint datum)
       /* stop gpsd and go to simulation mode */
       system ("killall gpsd");
       gpson = FALSE;
-      gtk_button_set_label (GTK_BUTTON (startgps_bt), _("Start GPSD"));
+      gtk_button_set_label (GTK_BUTTON (widget), _("Start GPSD"));
       GtkTooltips *tooltips;
       tooltips = gtk_tooltips_new ();
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
+      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), widget,
 			    _("Starts GPSD for NMEA mode"), NULL);
       simmode = TRUE;
       haveNMEA = FALSE;
@@ -740,7 +739,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
     return TRUE;
 
 
-  if ((timeoutcount > 3) && (mydebug + gps_handler_debug))
+  if ((timeoutcount > 30 - mydebug - gps_handler_debug))
     g_print ("*** %d. timeout getting data from GPS-Receiver!\n",
 	     timeoutcount);
 
@@ -782,7 +781,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  timerto =
 	    gtk_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
 
-	  gtk_widget_set_sensitive (startgps_bt, TRUE);
+	  //gtk_widget_set_sensitive (startgps_bt, TRUE);
 	  gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
 	  /*    expose_sats_cb (NULL, 0); */
 
