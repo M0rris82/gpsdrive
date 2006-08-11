@@ -9,6 +9,9 @@
 #
 #
 # $Log$
+# Revision 1.48  2006/08/11 16:28:00  tweety
+# eliminate duplicate variable declaration
+#
 # Revision 1.47  2006/08/08 08:07:58  tweety
 # imore error checking for downloading
 #
@@ -785,7 +788,7 @@ sub mirror_map($$){
 	$ok=0;
     }
 
-    my $content = slurp($filename);
+    $content = slurp($filename);
     if ( $content =~ m,<title>(403 .*)</title>,){
 	my $message = $1;
 	$content =~ s,.*<blockquote>,,s;
