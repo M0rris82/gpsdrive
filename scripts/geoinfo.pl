@@ -14,7 +14,7 @@ BEGIN {
     # For Debug Purpose in the build Directory
     unshift(@INC,"./");
     unshift(@INC,"./scripts/");
-    unshift(@INC,"/opt/gpsdrive");
+    unshift(@INC,"/opt/gpsdrive/share/perl5");
 };
 
 use strict;
