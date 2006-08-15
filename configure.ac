@@ -33,7 +33,7 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
 AC_CONFIG_HEADER(config.h)
 
-ALL_LINGUAS="da de de_AT es et_EE fr gr hu it ja nl no po pt_BR ru sk sv tr"
+ALL_LINGUAS="da de de_AT es et_EE fr gr hu it ja nl no pt_BR ru sk sv tr"
 
 AC_CONFIG_FILES([DSL/Makefile])
 AC_CONFIG_FILES([Documentation/Makefile])
