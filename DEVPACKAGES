@@ -5,7 +5,13 @@ Following is a list of packages required for Gpsdrive to compile.
 
 Many packages also have prerequesits and your package management tool should indicate what is required.
 
-Note:
+Note 1:
+A script to install all of these packages has been created in the gpsdrive/script directory.
+Use the script that matches your distro.
+Currently supported.
+debian		gpsdrive/scripts/devpackages-debian.sh
+
+Note 2:
 The Configure scripts are currently being updated to detect the presence of these packsges.
 
 Package Name (version)		Tested for by configure		How Tested?
@@ -47,6 +53,19 @@ netcdfg-dev (3.5.0-7.1)		No
 libcfitsio-dev (2.510-1)	No                       
 libpqxx-dev (2.5.5-2)		No
 ----------------------------------------------------------------- 
+
+Fedora Core
+===========
+It has been reported that the following packages are also required
+when building on Fedora Core.  
+(These may be dependancies of other packages and therefor
+already installed on some distro's)
+
+gettext-0.14.5-3
+gettext-devel-0.14.5-3
+libtool-1.5.22-2.3
+libtool-ltdl-1.5.22-2.3
+libtool-ltdl-devel-1.5.22-2.3
 
 Perl packages required at run time
 ===================================
