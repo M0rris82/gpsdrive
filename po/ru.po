@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: 2.10pre3-work\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-03 05:46+0300\n"
-"PO-Revision-Date: 2006-08-13 01:29+0300\n"
+"PO-Revision-Date: 2006-08-14 12:00+0300\n"
 "Last-Translator: max vakulenko <mv@umanaged.com>\n"
 "Language-Team: RUSSIAN <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -361,7 +361,7 @@ msgstr "_Прочее/Карты/_Загрузить карту"
 
 #: src/gpsdrive.c:485
 msgid "/_Misc. Menu/_Waypoint Manager"
-msgstr "_Прочее/Карты/_Менеджер путевых точек (waypoint)"
+msgstr "_Прочее/Карты/_Менеджер ориентиров"
 
 #: src/gpsdrive.c:486
 msgid "/_Misc. Menu/_Reinitialize GPS"
@@ -467,7 +467,7 @@ msgstr "Skorost' pri izmenenii polozheniya bolee 2000km/ch, ignoriruetsya\n"
 
 #: src/gpsdrive.c:3505
 msgid "Sending message to friends server..."
-msgstr "Отправка сообщения на сервер друзей (friends server)..."
+msgstr "Отправка сообщения на сервер друзей..."
 
 #: src/gpsdrive.c:3584
 msgid "Message for:"
@@ -493,7 +493,7 @@ msgstr "Расстояние"
 
 #: src/gpsdrive.c:3944
 msgid "Please select message recipient"
-msgstr "Пожалуйста выберите получателя сообщения"
+msgstr "Пожалуйста, выберите получателя сообщения"
 
 #: src/gpsdrive.c:4017 src/routes.c:379
 msgid "Waypoint"
@@ -518,19 +518,19 @@ msgstr "Создать маршрут"
 
 #: src/gpsdrive.c:4169
 msgid "Create a route using some waypoints from this list"
-msgstr "Создать маршрут используя точки из списка"
+msgstr "Создать маршрут используя ориентиры из списка"
 
 #: src/gpsdrive.c:4174
 msgid "Delete the selected waypoint from the waypoint list"
-msgstr "Удалить выбранные точки из списка точек"
+msgstr "Удалить выбранные ориентиры из списка ориентиров"
 
 #: src/gpsdrive.c:4178
 msgid "Jump to the selected waypoint"
-msgstr "Перейти к выбранной точке"
+msgstr "Перейти к выбранному ориентиру"
 
 #: src/gpsdrive.c:4201
 msgid "-v        show version\n"
-msgstr "-v        отобразить версию\n"
+msgstr "-v        показать версию\n"
 
 #: src/gpsdrive.c:4202
 msgid "-h        print this help\n"
@@ -561,14 +561,13 @@ msgstr ""
 #: src/gpsdrive.c:4208
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr ""
-"-o        последовательное устройство, файл pty master, или файл для "
+"-o        последовательное устройство, файл pty master, или файл "
 "*вывода* NMEA\n"
 
 #: src/gpsdrive.c:4209
 msgid "-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr ""
-"-f X      Выбрать сервер друзей (friends server), X это, например, www."
-"gpsdrive.cc\n"
+"-f X      Выбрать сервер друзей, где X это, например, www.gpsdrive.cc\n"
 
 #: src/gpsdrive.c:4210
 msgid "-n        Disable use of direct serial connection\n"
@@ -603,7 +602,7 @@ msgstr ""
 #: src/gpsdrive.c:4218
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr ""
-"-r ШИРИНА  устанавливает число точек экрана по горизонтали, только если "
+"-r ШИРИНА устанавливает число точек экрана по горизонтали, только если "
 "задан -s\n"
 
 #: src/gpsdrive.c:4219
@@ -622,8 +621,7 @@ msgstr "-b сервер Имя NMEA сервера (если gpsd запускается на другом хосте)\n"
 #: src/gpsdrive.c:4222
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr ""
-"-c WP     установить в точку с именем WP начальное положение в режиме "
-"симуляции\n"
+"-c WP     выбрать ориентир WP как стартовое положение в режиме симуляции\n"
 
 #: src/gpsdrive.c:4223
 msgid "-x        create separate window for menu\n"
@@ -709,7 +707,7 @@ msgstr "Используется вывод речи"
 
 #: src/gpsdrive.c:4920
 msgid "/Misc. Menu/Waypoint Manager"
-msgstr "/Прочее. Меню/Менеджер точек "
+msgstr "/Прочее/Менеджер ориентиров"
 
 #: src/gpsdrive.c:4927
 msgid "M_ute"
@@ -983,7 +981,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Спасибо за использование GpsDrive!\n"
+"Spasibo za ispolzovanije GpsDrive!\n"
 "\n"
 
 #: src/gpskismet.c:236
@@ -1359,7 +1357,7 @@ msgstr  ""
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
-"Создать маршрут используя точки из списка. Сортировка как в файле, не по расстоянию"
+"Создать маршрут используя ориентиры из списка, в порядке нахождения в файле, не по расстоянию"
 
 #: src/routes.c:531
 msgid ""
@@ -2072,7 +2070,7 @@ msgstr ""
 
 #: src/splash.c:176
 msgid "GpsDrive v"
-msgstr "GpsDrive версия"
+msgstr "GpsDrive версии "
 
 #: src/splash.c:182
 msgid ""
@@ -2102,7 +2100,7 @@ msgstr "Управление мышью (щелчками по карте):\n"
 
 #: src/splash.c:204
 msgid "Short cuts:\n"
-msgstr "Короткие комбинации:\n"
+msgstr "Управление клавиатурой:\n"
 
 #: src/splash.c:211
 msgid "The other key shortcuts are marked as "
