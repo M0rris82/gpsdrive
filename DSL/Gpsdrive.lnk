@@ -1,10 +1,9 @@
 table Icon
   Type: Program
-  Caption: Gps Drive 
+  Caption: Gps Drive
   Command: LD_LIBRARY_PATH=/opt/gpsdrive/lib /opt/gpsdrive/bin/gpsdrive
   Icon: .xtdesktop/Gpsdrive.gif
   X: 200
   Y: 82
   Status: anchor
 end
-
