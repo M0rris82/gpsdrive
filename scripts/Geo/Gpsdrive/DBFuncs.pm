@@ -978,7 +978,7 @@ sub create_db(){
     # -----------------------------------------------------------------------------
     # Set Privileges
     # TODO: Split priviledges
-    db_exec("grant select,insert,update,delete on $main::GPSDRIVE_DB_NAME.* to gast\@localhost identified by \'gast\'");
+    db_exec("grant select,insert,update,delete,lock tables on $main::GPSDRIVE_DB_NAME.* to gast\@localhost identified by \'gast\'");
     db_exec('flush privileges;');
 
     print "Creation completed\n";
