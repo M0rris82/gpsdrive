@@ -7,8 +7,9 @@ Contents
 * Initialise the Database
 * Insert Openstreetmap Data (Optional)
 * About Openstreetmap
+* Converting a track log ready for upload to Openstreetmap <TODO>
 * MySQL Options in GpsDrive <TODO>
-* Compile MySQL (if you must)     <TODO>
+* Compile MySQL (if you must)
 
 <TODO> There is still some useful information in README.SQL but lots of it is out of date.
        The relevant parts should be added to this file and README.SQL should be removed
@@ -18,17 +19,16 @@ Introduction
 ============
 Firstly you don't absolutely need MySQL to use GpsDrive.  It will happily store the basic  information it needs in flat files.  However if you want to use some of the more advanced features then you will need MySQL.  Other databases may be supported in the future but at the moment they aren't.  One of the notable features of GpsDrive is the ability to store vector based street information from the Open Street Map Project and MySQL is the only way to do this.  GpsDrive automatically detects if MySQL is running and if it is it running it will use it.  
 
-
 Install
 =======
-The best way to install MySQL is to use the package manager that comes with your flavor of Linux.  If for some reason this isn't possible then the next best thing is to download a ready made package file from the following location http://dev.mysql.com/downloads/mysql/5.0.html.  
+The best way to install MySQL is to use the package manager that comes with your flavour of Linux.  If for some reason this isn't possible then the next best thing is to download a ready made package file from the following location http://dev.mysql.com/downloads/mysql/5.0.html.  
 
 Don't forget your copy of Linux may have come with MySQL pre-installed.
 
 If you still can't find what you need then download the source tar ball (at the bottom of the page) and check out the compile instructions below. (not for the faint hearted)
 
 <TODO> Minimum required version of MySQL.
-
+(I'm not sure of the minimum but I'm using 5.0.22)
 
 Initialise the Database
 =======================
@@ -66,29 +66,61 @@ Now that you have MySQL up and running and have some data in there you should se
 
 About Openstreetmap
 ===================
+Rather than me describe it here you are better off to go check it out here.
+http://openstreetmap.org.  In a line (or two), it is a free to use, user updatable database containing vector bassed street maps covering the whole world.  Users like you and me upload their gps track information and then draw the streets in over top of the tracks.  It is fun once you start seeing results.
+
+Converting a track log ready for upload to Openstreetmap
+=======================================================
 <TODO>
+
 
 MySQL Options in Gpsdrive
 =========================
 <TODO>
 
+
 Compile MySQL (if you must)
 =====================
-<TODO>
+There seems to be tons of options to compile mysql.
+I found a recommended set of options and then modified them until I
+managed a clean compile.  I just googled the errors and modified the options.
 
+I'd certainly recommend doing a 'make test' to ensure everything is ok.  The built in 
+tests are quite comprehensive.
+
+The only additional package you will need if you are compiling gpsdrive on the same system is.
+
+libcurses5-dev
+
+Below is the command I used to configure mysql on both debian and DSL.
+For the full script I used see  DSL/build-mysql.sh which worked on mysql version 5.0.22
+
+Set $DEST to what ever you want or leave --prefix out for a default install.
+
+CFLAGS="-O3 -DPIC -fPIC -DUNDEF_HAVE_INITGROUPS -fno-strict-aliasing" \
+CXXFLAGS="-O3 -fno-strict-aliasing -felide-constructors -fno-exceptions -fno-rtti -fPIC -DPIC -DUNDEF_HAVE_INITGROUPS" \
+    ./configure --prefix=$DEST \
+    --enable-thread-safe-client \
+    --enable-assembler \
+    --enable-local-infile \
+    --with-unix-socket-path=/var/run/mysql/mysql.sock \
+    --without-debug \
+    --without-yassl \
+    --without-bench \
+    --with-extra-charsets=complex 
 
 MySQL Password
 ==============
-
 If you forgot or never set your mysql root password, try
  mysqladmin -u root password "mynewpassword"
 
+If you compile it your self the password may be blank.
 
 Uninstall geoinfo in MySQL
 ==========================
 
 Warning: This will really delete all modifications you 
-locally made to the geoinfo database.
+have made to the local geoinfo database.
 
- echo "drop database geoinfo;"| mysql -uroot -pyour_mysql_roor_password
+ echo "drop database geoinfo;"| mysql -uroot -pyour_mysql_root_password
 
