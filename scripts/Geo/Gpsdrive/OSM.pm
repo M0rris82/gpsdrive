@@ -59,6 +59,8 @@ sub node {
     $osm_obj->{lat} = delete $attrs{lat};
     $osm_obj->{lon} = delete $attrs{lon};
 
+    delete $attrs{timestamp}; # ignore for now
+
     if ( keys %attrs ) {
 	warn "node $id has extra attrs: ".Dumper(\%attrs);
     }
@@ -312,6 +314,7 @@ sub read_osm_file($) { # Insert Streets from osm File
     } else {
 	print STDERR "Parsing file: $file_name\n" if $debug;
 	my $p = XML::Parser->new( Style => 'Subs' ,
+				  ErrorContext => 10,
 				  );
 	
 	my $fh = data_open($file_name);
@@ -321,13 +324,11 @@ sub read_osm_file($) { # Insert Streets from osm File
 	};
 	
 	if ($@) {
-	    print STDERR "WARNING: Could not parse osm data $file_name\n";
-	    print STDERR "ERROR: $@\n";
-	    return;
+	    die "ERROR: Could not parse osm data $file_name\n".
+		"$@\n";
 	}
 	if (not $p) {
-	    print STDERR "WARNING: Could not parse osm data $file_name\n";
-	    return;
+	    die "ERROR: Could not parse osm data $file_name\n";
 	}
 	if ( $verbose) {
 	    printf "Read and parsed $file_name in %.0f sec\n",time()-$start_time;
@@ -901,52 +902,57 @@ sub get_source_id($){
 
 # *****************************************************************************
 
-sub import_Data($){
-    my $filename = shift;
+sub import_Data(@){
+    my @filenames = @_;
 
     print "\nImport OSM Data\n";
-
-    my $mirror_dir="$main::MIRROR_DIR/osm";
 	
+    my $mirror_dir="$main::MIRROR_DIR/osm";
+    
     -d $mirror_dir or mkpath $mirror_dir
-	or die "Cannot create Directory $mirror_dir:$!\n";
+	    or die "Cannot create Directory $mirror_dir:$!\n";
     
-    if ( $filename =~ m/^download:(.+)/ ) {
-	my $area = $1;
-	download_osm_streets($mirror_dir,$area);
-	read_osm_dir($mirror_dir);
-    } elsif ( -s $filename ) {
-	read_osm_file( $filename);
-    } elsif ( $filename !~ m/^(1)?$/ ) {
-	die "OSM::import_Data: Cannot find File '$filename'\n";
-    } else {
-	print "Download planet.osm\n";
-	my $filename="planet-2006-07-a.osm";
-	$filename="planet-2006-07-a.osm.bz2";
-	my $url = "http://www.ostertag.name/osm/planet";
-	$url = "http://www.ostertag.name/osm/planet";
-	$url .="/$filename";
-	my @file_list =( $filename );
-	# @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
-	for my $file ( @file_list ) {
-	    my $planet_file = "$mirror_dir/$file";
-	    
-	    print "Mirror $url\n";
-	    my $mirror = mirror_file($url,$planet_file);
-	    read_osm_file($planet_file);
-	}
-	print "Read OSM Data\n";
-    };
-    
-    
+    for my $filename ( @filenames ) {
+	print "Import OSM Data '$filename'\n";
+	
+	if ( $filename =~ m/^download:(.+)/ ) {
+	    my $area = $1;
+	    download_osm_streets($mirror_dir,$area);
+	    read_osm_dir($mirror_dir);
+	} elsif ( -s $filename ) {
+	    read_osm_file( $filename);
+	} elsif ( $filename eq '' ) {
+	    print "Download planet.osm\n";
+	    my $filename="planet-2006-08-a.osm";
+	    #$filename="planet-2006-08-a.osm.bz2";
+	    $filename="planet-060814.osm.bz2";
+	    my $url = "http://www.ostertag.name/osm/planet";
+	    $url = "http://www.ostertag.name/osm/planet";
+	    $url .="/$filename";
+	    my @file_list =( $filename );
+	    # @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
+	    for my $file ( @file_list ) {
+		my $planet_file = "$mirror_dir/$file";
+		
+		print "Mirror $url ...\n";
+		my $mirror = mirror_file($url,$planet_file);
+		print "Mirror $url complete\n";
+		read_osm_file($planet_file);
+	    }
+	} else {
+	    die "OSM::import_Data: Cannot find File '$filename'\n";
+	    print "Read OSM Data\n";
+	};
+    }	
+	
     # Update Counters and references
     create_internal_stats_osm();
     
-    
+	
     print "OSM Nodes:    " . scalar keys( %$osm_nodes)."\n";
     print "OSM Segments: " . scalar keys( %$osm_segments)."\n";
     print "OSM Ways:     " . scalar keys( %$osm_ways)."\n";
-
+    
     disable_keys('poi');
     fill_osm_nodes();
     enable_keys('poi');
