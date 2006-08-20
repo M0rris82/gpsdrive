@@ -66,7 +66,7 @@ our $no_delete;
 
 my $do_census            = 0;
 my $do_earthinfo_nga_mil = undef;
-my $do_osm               = undef;
+my @osm_files               = ();
 my $do_opengeodb         = 0;
 my $do_opengeodb2        = 0;
 my $do_wdb               = 0;
@@ -98,6 +98,8 @@ our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
 our $db_user             = 'gast';
 our $db_password         = 'gast';
+our $db_host             = 'localhost';
+ #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
@@ -109,8 +111,8 @@ GetOptions (
 	     'fill-examples'       => \$do_import_examples,
 	     'census'              => \$do_census,
 	     'earthinfo_nga_mil:s' => \$do_earthinfo_nga_mil,
-	     'openstreetmap:s'     => \$do_osm,
-	     'osm:s'               => \$do_osm,
+	     'openstreetmap:s@'     => \@osm_files,
+	     'osm:s@'               => \@osm_files,
 	     'osm_polite=s'        => \$Geo::Gpsdrive::OSM::OSM_polite,
 	     'opengeodb'           => \$do_opengeodb,
 	     'opengeodb2'          => \$do_opengeodb2,
@@ -128,6 +130,7 @@ GetOptions (
 	     'db-name=s'           => \$GPSDRIVE_DB_NAME,
 	     'db-user=s'           => \$db_user,
 	     'db-password=s'       => \$db_password,
+	     'db-host=s'           => \$db_host,
 	     'delete-db-content'   => \$do_delete_db_content,
 	     'collect-init-data'   => \$do_collect_init_data,
 	     'generate-poi-type-html-page' => \$do_generate_poi_type_html_page,
@@ -165,7 +168,7 @@ if ( $do_all ) {
 	= $do_census
 	= $do_opengeodb
 	= $do_opengeodb2
-	= $do_osm
+	= @osm_files
 	= $do_gpsdrive_tracks
 	= $do_cameras
 	= $do_jigle
@@ -220,8 +223,8 @@ Geo::Gpsdrive::DB_Examples::fill_examples()
     if $do_import_examples;
 
 # Get and Unpack openstreetmap  http://www.openstreetmap.org/
-Geo::Gpsdrive::OSM::import_Data($do_osm) 
-    if ( defined $do_osm );
+Geo::Gpsdrive::OSM::import_Data(@osm_files) 
+    if ( @osm_files );
 
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
 Geo::Gpsdrive::WDB::import_Data($do_wdb)
@@ -518,6 +521,9 @@ username to connect to mySQL database. Default is gast
 
 password for user to connect to mySQL database. Default is gast
 
+=item B<--db-host>
+
+hostname for  connecting to your mySQL database. Default is localhost
 
 =item B<--no-mirror>
 
@@ -525,7 +531,7 @@ Do not try mirroring the files from the original Server. Only use
 files found on local Filesystem.
 
 
-=item B<--proxy>
+=item B<--proxy="hostname:port">
 
 use proxy for download
 
