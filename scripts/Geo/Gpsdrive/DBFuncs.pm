@@ -187,8 +187,8 @@ sub db_connect() {
     my $db           = $main::GPSDRIVE_DB_NAME;
     my $opt_user     = $main::db_user;
     my $opt_password = $main::db_password;
-    my $host         = 'localhost';
-
+    my $host         = $main::db_host;
+    #$host         = 'mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.sock';
 
     # First connect to Database
     unless ( $dbh ) {
@@ -803,8 +803,10 @@ sub create_db(){
 
     $create_statement="CREATE DATABASE IF NOT EXISTS $main::GPSDRIVE_DB_NAME;";
     my $drh = DBI->install_driver("mysql");
-    my $rc = $drh->func('createdb', $main::GPSDRIVE_DB_NAME, 'localhost', 
+    my $rc = $drh->func('createdb', $main::GPSDRIVE_DB_NAME, $main::db_host, 
 			$main::db_user,$main::db_password, 'admin');
+    die "$@" if $rc;
+
     $dbh = db_connect();
     $sth = $dbh->prepare($create_statement);
     $sth->execute()
@@ -980,6 +982,11 @@ sub create_db(){
     # TODO: Split priviledges
     db_exec("grant select,insert,update,delete,lock tables on $main::GPSDRIVE_DB_NAME.* to gast\@localhost identified by \'gast\'");
     db_exec('flush privileges;');
+
+    print "!!! WARNING: Created a user gast with password gast\n";
+    print "!!! WARNING: this might be a security issue if you have your mysql \n";
+    print "!!! WARNING: database accessible from outside of your computer\n";
+    print "\n";
 
     print "Creation completed\n";
 
