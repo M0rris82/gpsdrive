@@ -127,7 +127,7 @@ extern gchar oldfilename[2048];
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
 gint foundradar;
-gchar wplabelfont[100];
+gchar font_wplabel[100];
 GtkWidget *addwaypointwindow;
 gdouble wplat, wplon;
 wpstruct *wayp;
@@ -356,7 +356,7 @@ draw_waypoints ()
 					gtk_widget_create_pango_layout
 					(drawing_area, tn);
 				pfd = pango_font_description_from_string
-					(wplabelfont);
+					(font_wplabel);
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
 				pango_layout_get_pixel_size (wplabellayout,
@@ -412,7 +412,7 @@ draw_waypoints ()
 					gtk_widget_create_pango_layout
 					(drawing_area, txt);
 				pfd = pango_font_description_from_string
-					(wplabelfont);
+					(font_wplabel);
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
 
@@ -430,11 +430,6 @@ draw_waypoints ()
 				pango_font_description_free (pfd);
 
 			}
-
-			/*              gdk_draw_text (drawable, smalltextfont, kontext,
-			 *                           posxdest + 13, posydest + 6, txt,
-			 *                           strlen (txt));
-			 */
 		}
 	}
 }

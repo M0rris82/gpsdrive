@@ -157,8 +157,9 @@ gint  unit_test_nmea()
 			);
 		errors++;
 	    } else {
-		printf ("nmea: correct is %f,%f\t"
-			"       nmea: %s\n",
+		if ( mydebug>1 ) 
+		    printf ("parsing OK; values: %f,%f\t"
+			" nmea: %s\n",
 			current_lat,current_lon,
 			test_array[i].nmea_string
 			);
@@ -605,15 +606,27 @@ unit_test (void)
 
   // ------------------------------------------------------------------
   {
+    int res;
+
     if (mydebug > 0)
       printf ("\n");
     printf ("Testing if SQL Support is on\n");
 
     if (!usesql)
       {
+	printf ("ERROR !!!!!!!!\n");
 	printf ("Problem with SQL Support\n");
 	errors++;
       }
+    
+    res = insertsqldata(999.9,999.9,"Testpoint","test");
+    if (1>res)
+      {
+	printf ("ERROR !!!!!!!!\n");
+	printf ("Problem inserting waypoint into mySQL Table waypoints\n");
+	errors++;
+      }
+    
   }
 
   // ------------------------------------------------------------------

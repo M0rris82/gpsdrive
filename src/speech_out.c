@@ -24,6 +24,15 @@ Disclaimer: Please do not use for navigation.
 
 /*
   $Log$
+  Revision 1.13  2006/08/20 12:41:55  tweety
+  ifox rectangle position behind scaler display in map
+  rename font variables to meaningfull names
+  this also renames the config parameters of font strings in config file
+  they now are :font_s_text, font_s_verysmalltext, font_s_smalltext, font_s_bigtext, font_s_wplabel
+  move ta_displaystreetname to main loop
+  start centralizing font selection. More has to be done here
+  add simple insertsqldata test to unit tests
+
   Revision 1.12  2006/02/05 16:38:06  tweety
   reading floats with scanf looks at the locale LANG=
   so if you have a locale de_DE set reading way.txt results in clearing the
@@ -245,7 +254,6 @@ extern gint statusid, havespeechout, posmode, muteflag;
 extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
-extern GdkFont *textfont, *smalltextfont, *bigtextfont;
 extern GdkColor white, red, mygray, blue;
 extern GdkDrawable *drawable;
 extern gint real_screen_y, real_screen_x;
@@ -478,8 +486,6 @@ display_dsc (void)
 			    40);
 	gdk_gc_set_function (kontext, GDK_COPY);
 	/*   gdk_gc_set_foreground (kontext, &blue); */
-	/*   gdk_draw_text (drawable, bigtextfont, kontext, */
-	/*           11, SCREEN_Y - 30, text, len); */
 
 	/* prints in pango */
 

@@ -406,7 +406,10 @@ extern GdkPixbuf *kismetpixbuf,	*iconpixbuf[50];
 gint earthmate = FALSE;
 
 extern gint wptotal, wpselected;
-gchar wplabelfont[100], bigfont[100];
+
+GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
+PangoFontDescription *pfd_text, *pfd_verysmalltext, *pfd_smalltext, *pfd_bigtext, *pfd_wplabel;
+gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
 
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
@@ -1387,7 +1390,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 
 			}
 
-			/*    gdk_draw_text (drawable_sats, verysmalltextfont, kontext,
+			/*    gdk_draw_text (drawable_sats, font_verysmalltext, kontext,
 			 *                   2 + (PSIZE) / 2, 9, "N", 1);
 			 */
 			gdk_gc_set_foreground (kontext, &lcd2);
@@ -1586,12 +1589,13 @@ draw_zoom_scale (void)
 	const gint dist_y = 20; /* distance to bottom */
 	const gint frame_width = 5; /* grey pixles around the scale bar */
 	gint bar_length;
-	gchar txt[100];
+	gchar zoom_scale_txt[100];
 	gchar *format;
 	gchar *symbol;
-	gdouble approx_diaplayed_value;
+	gdouble approx_displayed_value;
 	gdouble conversion;
 	gint l;
+	gint text_length_pixel;
 
 	/*
 	 * We want a bar with at least (min_bar_length) pixles in
@@ -1601,7 +1605,7 @@ draw_zoom_scale (void)
 	 * The bar length' value l (in m), divided by "conversion", will
 	 * result in what to display to the user, in terms of "symbol".
 	 */
-	approx_diaplayed_value /* m */ = min_bar_length * mapscale
+	approx_displayed_value /* m */ = min_bar_length * mapscale
 					 / PIXELFACT / zoom;
 
 	if (nauticflag) {
@@ -1612,7 +1616,7 @@ draw_zoom_scale (void)
 		conversion /* m/m */ = 1.0 /* m/m */;
 		symbol = "m";
 		format = "%.0lf %s";
-		if (approx_diaplayed_value / conversion > 1000) {
+		if (approx_displayed_value / conversion > 1000) {
 			conversion /* m/km */ = 1000.0;
 			symbol = "km";
 			format = "%.0lf %s";
@@ -1623,7 +1627,7 @@ draw_zoom_scale (void)
 					/ KM2MILES /* mi/km */;
 		symbol = "yd";
 		format = "%.0lf %s";
-		if (approx_diaplayed_value / conversion > 1760.0) {
+		if (approx_displayed_value / conversion > 1760.0) {
 			conversion /* m/mi */ = 1000.0 /* m/km */
 						/ KM2MILES /* mi/km */;
 			symbol = "mi";
@@ -1652,73 +1656,63 @@ draw_zoom_scale (void)
 	bar_length = factor[used_factor] * pow (10.0, exponent)
 		     * conversion / (mapscale / PIXELFACT) * zoom;
 
-	g_snprintf (txt, sizeof (txt), format, factor[used_factor]
+	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt), format, factor[used_factor]
 					       * pow (10.0, exponent),
 					       symbol);
 
-	l = (SCREEN_X - 40) - bar_length + (bar_length - strlen (txt) * 15);
+	/* Now bar_length is the length of the scaler-bar in pixel
+	 * and zoom_scale_txt is the text for the scaler Bar. For example "10 Km"
+	 */
+
+	l = (SCREEN_X - 40) - (strlen (zoom_scale_txt) * 15);
 
 	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext, GDK_OR);
-	gdk_gc_set_foreground (kontext, &textback);
+	gdk_gc_set_foreground (kontext, &mygray);
+	//gdk_gc_set_foreground (kontext, &textback);
 	gdk_draw_rectangle (drawable, kontext, 1,
 			    SCREEN_X - dist_x - bar_length - frame_width,
 			    SCREEN_Y - dist_y - 2 * frame_width,
-			    bar_length + 2 * frame_width, 2 * frame_width);
+			    bar_length + 2 * frame_width, 
+			    dist_y + 1 * frame_width);
 	gdk_gc_set_function (kontext, GDK_COPY);
 	gdk_gc_set_foreground (kontext, &black);
 
 	/* Print the meaning of the scale bar ("10 km") */
 	{
-		/* prints in pango */
-		PangoFontDescription *pfd;
-		PangoLayout *wplabellayout;
+	    /* prints in pango */
+	    PangoLayout *wplabellayout;
+	    
+	    wplabellayout = gtk_widget_create_pango_layout (drawing_area, zoom_scale_txt);
+	    pango_layout_set_font_description (wplabellayout, pfd_text);
 
-		wplabellayout =
-			gtk_widget_create_pango_layout (drawing_area, txt);
-		//KCFX  
-		if (pdamode)
-			pfd = pango_font_description_from_string ("Sans 8");
-		else
-			pfd = pango_font_description_from_string ("Sans 11");
-		pango_layout_set_font_description (wplabellayout, pfd);
-
-		gdk_draw_layout_with_colors (drawable, kontext,
-					     l, SCREEN_Y - dist_y + frame_width,
-					     wplabellayout, &black, NULL);
-		if (wplabellayout != NULL)
-			g_object_unref (G_OBJECT (wplabellayout));
-		/* freeing PangoFontDescription, cause it has been copied by prev. call */
-		pango_font_description_free (pfd);
-
+	    gdk_draw_layout_with_colors (drawable, kontext, 
+					 l, SCREEN_Y - dist_y -1 ,
+					 wplabellayout, &black, NULL);
+	    if (wplabellayout != NULL)
+		g_object_unref (G_OBJECT (wplabellayout));
 	}
 
-	/* Print the actual scale bar */
+	/* Print the actual scale bar lines */
 	gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	/* horizonthal */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + frame_width,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + frame_width);
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y,
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y );
 	/* left */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + 10);
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y - frame_width,
+		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + 10- frame_width);
 	/* right */
 	gdk_draw_line (drawable, kontext,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10);
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y - frame_width,
+		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10 - frame_width);
 
-#ifdef USETELEATLAS
-	/* display the streetname */
-	ta_displaystreetname (actualstreetname);
-#endif
+	/* Scale Bar Text */
+	/* draw zoom factor */
+	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt), "%dx", zoom);
 
-
-	/*  draw zoom factor */
-	g_snprintf (txt, sizeof (txt), "%dx", zoom);
-	/*       l = (SCREEN_X - 15) - gdk_text_width (textfont, txt, strlen (txt)) / 2;  */
-
-	l = (SCREEN_X - 15) - 14 - strlen (txt) * 2;
+	l = (SCREEN_X - 15) - 14 - strlen (zoom_scale_txt) * 2;
 
 	gdk_gc_set_function (kontext, GDK_OR);
 
@@ -1728,29 +1722,22 @@ draw_zoom_scale (void)
 
 	gdk_gc_set_foreground (kontext, &blue);
 
-	/*       gdk_draw_text (drawable, textfont, kontext, l, 22, txt, strlen (txt));  */
 	{
-		/* prints in pango */
-		PangoFontDescription *pfd;
-		PangoLayout *wplabellayout;
-
-		wplabellayout =
-			gtk_widget_create_pango_layout (drawing_area, txt);
-		//KCFX  
-		if (pdamode)
-			pfd = pango_font_description_from_string ("Sans 9");
-		else
-			pfd = pango_font_description_from_string ("Sans 14");
-		pango_layout_set_font_description (wplabellayout, pfd);
-
-		gdk_draw_layout_with_colors (drawable, kontext,
-					     l, 2, wplabellayout, &blue,
-					     NULL);
-		if (wplabellayout != NULL)
-			g_object_unref (G_OBJECT (wplabellayout));
-		/* freeing PangoFontDescription, cause it has been copied by prev. call */
-		pango_font_description_free (pfd);
-
+	    /* prints in pango */
+	    PangoFontDescription *pfd;
+	    PangoLayout *wplabellayout;
+	    
+	    wplabellayout = gtk_widget_create_pango_layout (drawing_area, zoom_scale_txt);
+	    pfd = pango_font_description_from_string ("Sans 9");
+	    pango_layout_set_font_description (wplabellayout, pfd);
+	    
+	    gdk_draw_layout_with_colors (drawable, kontext,
+					 l, 2, wplabellayout, &blue,
+					 NULL);
+	    if (wplabellayout != NULL)
+		g_object_unref (G_OBJECT (wplabellayout));
+	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
+	    pango_font_description_free (pfd);
 	}
 }
 
@@ -1800,6 +1787,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (zoomscale)
 		draw_zoom_scale ();
 
+#ifdef USETELEATLAS
+	/* display the streetname */
+	ta_displaystreetname (actualstreetname);
+#endif
+
+
 	if (havekismet && (kismetsock>=0))
 	    gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
 			     10, SCREEN_Y - 42,
@@ -1807,8 +1800,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	
 	if (savetrack)
 	{
-		/*  k = gdk_text_width (smalltextfont, savetrackfn, strlen (savetrackfn));
-		 */
 		k = 100;
 		gdk_gc_set_foreground (kontext, &white);
 		gdk_draw_rectangle (drawable, kontext, 1, 10,
@@ -1844,12 +1835,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 		}
 
 
-		/*    gdk_draw_text (drawable, smalltextfont, kontext,
+		/*    gdk_draw_text (drawable, smallfont_s_text, kontext,
 		 *                   11, SCREEN_Y - 10, savetrackfn,
 		 *                   strlen (savetrackfn));
 		 */
 
-		/*      gdk_draw_text (drawable, textfont, kontext, 10, */
+		/*      gdk_draw_text (drawable, font_s_text, kontext, 10, */
 		/*                     SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
 	}
 
@@ -2156,7 +2147,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	/*    display distance, speed and zoom */
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
-		    bluecolor, bigfont, s2, s2a);
+		    bluecolor, font_s_bigtext, s2, s2a);
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
 	if ( mydebug > 5 ) 
@@ -2169,7 +2160,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
-		    bluecolor, bigfont, s2);
+		    bluecolor, font_s_bigtext, s2);
 	gtk_label_set_markup (GTK_LABEL (speedlabel), s3);
 
 	/* gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
@@ -4107,17 +4098,14 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	/* Font aendern falls PDA-Mode und Touchscreen */
 	if (pdamode)
 	{
-		if (onemousebutton)
-		{
-
-			/* Change default font throughout the widget */
-			PangoFontDescription *font_desc;
-			font_desc =
-				pango_font_description_from_string
-				("Sans 20");
-			gtk_widget_modify_font (mylist, font_desc);
-			pango_font_description_free (font_desc);
-		}
+	    if (onemousebutton)
+	    {
+		/* Change default font throughout the widget */
+		PangoFontDescription *font_desc;
+		font_desc = pango_font_description_from_string ("Sans 20");
+		gtk_widget_modify_font (mylist, font_desc);
+		pango_font_description_free (font_desc);
+	    }
 	}
 
 	insertwaypoints (FALSE);
@@ -4364,8 +4352,32 @@ main (int argc, char *argv[])
 #ifdef DBUS_ENABLE
     useDBUS = FALSE;
 #endif
-    g_strlcpy (wplabelfont, "Sans 11", sizeof (wplabelfont));
-    g_strlcpy (bigfont, "Sans bold 26", sizeof (bigfont));
+
+    { /* Set fonts */
+	// GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
+	// font_s_text, font_s_verysmalltext, font_s_smalltext, font_s_bigtext, font_s_wplabel;
+	if (pdamode)
+	    {
+		g_strlcpy (font_s_bigtext, "Sans bold 16", sizeof (font_s_bigtext));
+		g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
+		g_strlcpy (font_s_text, "Sans 8", sizeof (font_s_text));
+		g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+		g_strlcpy (font_s_wplabel, "Sans 8", sizeof (font_s_wplabel));
+	    } else {
+		g_strlcpy (font_s_bigtext, "Sans bold 26", sizeof (font_s_bigtext));
+		g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
+		g_strlcpy (font_s_text, "Sans 11", sizeof (font_s_text));
+		g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+		g_strlcpy (font_s_wplabel, "Sans 11", sizeof (font_s_wplabel));
+	    }
+	pfd_text = pango_font_description_from_string (font_s_text);
+	pfd_verysmalltext = pango_font_description_from_string (font_s_verysmalltext);
+	pfd_smalltext = pango_font_description_from_string (font_s_smalltext);
+	pfd_bigtext = pango_font_description_from_string (font_s_bigtext);
+	pfd_wplabel = pango_font_description_from_string (font_s_wplabel);
+    }
+
+
     g_strlcpy (friendsserverip, "127.0.0.1", sizeof (friendsserverip));
     g_strlcpy (friendsserverfqn, "www.gpsdrive.cc",
 	       sizeof (friendsserverfqn));
@@ -4764,8 +4776,6 @@ main (int argc, char *argv[])
 	{
 	    extrawinmenu = TRUE;
 	    PADDING = 0;
-	    g_strlcpy (wplabelfont, "Sans 8", sizeof (wplabelfont));
-	    g_strlcpy (bigfont, "Sans bold 16", sizeof (bigfont));
 	    g_print ("\nPDA mode\n");
 	}
 

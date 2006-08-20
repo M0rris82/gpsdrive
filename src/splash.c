@@ -75,7 +75,6 @@ extern char wp_typelist[100][40];
 extern double dbdistance;
 extern int dbusedist, needreminder;
 extern gint earthmate, havefriends, zone;
-extern gchar wplabelfont[100], bigfont[100];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
 	friendsserverfqn[255];
 extern gchar bluecolor[40], trackcolor[40], friendscolor[40];

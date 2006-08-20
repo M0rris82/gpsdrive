@@ -76,7 +76,7 @@ extern char wp_typelist[100][40];
 extern double dbdistance;
 extern int dbusedist, needreminder;
 extern gint earthmate, havefriends, zone;
-extern gchar wplabelfont[100], bigfont[100];
+extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
 	friendsserverfqn[255];
 extern long int maxfriendssecs;
@@ -266,8 +266,13 @@ writeconfig ()
 	fprintf (fp, "dbusedist = %d\n", dbusedist);
 	fprintf (fp, "dbwherestring = %s\n", dbwherestring);
 	fprintf (fp, "earthmate = %d\n", earthmate);
-	fprintf (fp, "wplabelfont = %s\n", wplabelfont);
-	fprintf (fp, "bigfont = %s\n", bigfont);
+
+	fprintf (fp, "font_text = %s\n", font_s_text);
+	fprintf (fp, "font_verysmalltext = %s\n", font_s_verysmalltext);
+	fprintf (fp, "font_smalltext = %s\n", font_s_smalltext);
+	fprintf (fp, "font_bigtext = %s\n", font_s_bigtext);
+	fprintf (fp, "font_wplabel = %s\n", font_s_wplabel);
+
 	fprintf (fp, "friendsserverip = %s\n", friendsserverip);
 	fprintf (fp, "friendsserverfqn = %s\n", friendsserverfqn);
 	fprintf (fp, "friendsname = %s\n", friendsname);
@@ -319,7 +324,7 @@ readconfig ()
 
     /* Defaults */
     local_config.showwaypoints = TRUE;
-    g_strlcpy (local_config.icon_theme, "classic", sizeof (local_config.icon_theme));
+    g_strlcpy (local_config.icon_theme, "square.big", sizeof (local_config.icon_theme));
 
     // open Config File
     g_strlcpy (fname, local_config_homedir, sizeof (fname));
@@ -385,8 +390,7 @@ readconfig ()
 		    else if ( (strcmp(par1, "scalewanted")) == 0)
 			scalewanted = atoi (par2);
 		    else if ( (strcmp(par1, "serialdevice")) == 0)
-			g_strlcpy (serialdev, par2,
-				   sizeof (serialdev));
+			g_strlcpy (serialdev, par2, sizeof (serialdev));
 		    else if ( (strcmp(par1, "lastlong")) == 0)
 			coordinate_string2gdouble(par2, &current_lon);
 		    else if ( (strcmp(par1, "lastlat")) == 0)
@@ -400,8 +404,7 @@ readconfig ()
 		    else if ( (strcmp(par1, "defaultserver")) == 0)
 			defaultserver = atoi (par2);
 		    else if ( (strcmp(par1, "waypointfile")) == 0)
-			g_strlcpy (activewpfile, par2,
-				   sizeof (activewpfile));
+			g_strlcpy (activewpfile, par2, sizeof (activewpfile));
 		    else if ( (strcmp(par1, "testgarminmode")) == 0)
 			testgarmin = atoi (par2);
 		    else if ( (strcmp(par1, "usedgps")) == 0)
@@ -450,27 +453,29 @@ readconfig ()
 		    else if ( (strcmp(par1, "dbusedist")) == 0)
 			dbusedist = atoi (par2);
 		    else if ( (strcmp(par1, "dbwherestring")) == 0)
-			g_strlcpy (dbwherestring, par2,
-				   sizeof (dbwherestring));
+			g_strlcpy (dbwherestring, par2, sizeof (dbwherestring));
 		    else if ( (strcmp(par1, "earthmate")) == 0)
 			earthmate = atoi (par2);
-		    else if ( (strcmp(par1, "wplabelfont")) == 0)
-			g_strlcpy (wplabelfont, par2,
-				   sizeof (wplabelfont));
-		    else if ( (strcmp(par1, "bigfont")) == 0)
-			g_strlcpy (bigfont, par2, sizeof (bigfont));
+
+		    else if ( (strcmp(par1, "font_text")) == 0)
+			g_strlcpy (font_s_text, par2, sizeof (font_s_text));
+		    else if ( (strcmp(par1, "font_verysmalltext")) == 0)
+			g_strlcpy (font_s_verysmalltext, par2, sizeof (font_s_verysmalltext));
+		    else if ( (strcmp(par1, "font_smalltext")) == 0)
+			g_strlcpy (font_s_smalltext, par2, sizeof (font_s_smalltext));
+		    else if ( (strcmp(par1, "font_bigtext")) == 0)
+			g_strlcpy (font_s_bigtext, par2, sizeof (font_s_bigtext));
+		    else if ( (strcmp(par1, "font_wplabel")) == 0)
+			g_strlcpy (font_s_wplabel, par2, sizeof (font_s_wplabel));
+
 		    else if ( (strcmp(par1, "friendsserverip")) == 0)
-			g_strlcpy (friendsserverip, par2,
-				   sizeof (friendsserverip));
+			g_strlcpy (friendsserverip, par2, sizeof (friendsserverip));
 		    else if ( (strcmp(par1, "friendsserverfqn")) == 0)
-			g_strlcpy (friendsserverfqn, par2,
-				   sizeof (friendsserverfqn));
+			g_strlcpy (friendsserverfqn, par2, sizeof (friendsserverfqn));
 		    else if ( (strcmp(par1, "friendsname")) == 0)
-			g_strlcpy (friendsname, par2,
-				   sizeof (friendsname));
+			g_strlcpy (friendsname, par2, sizeof (friendsname));
 		    else if ( (strcmp(par1, "friendsidstring")) == 0)
-			g_strlcpy (friendsidstring, par2,
-				   sizeof (friendsidstring));
+			g_strlcpy (friendsidstring, par2, sizeof (friendsidstring));
 		    else if ( (strcmp(par1, "usefriendsserver")) == 0)
 			havefriends = atoi (par2);
 		    else if ( (strcmp(par1, "maxfriendssecs")) == 0)
@@ -490,11 +495,9 @@ readconfig ()
 		    else if ( (strcmp(par1, "etch")) == 0)
 			etch = atoi (par2);
 		    else if ( (strcmp(par1, "bigcolor")) == 0)
-			g_strlcpy (bluecolor, par2,
-				   sizeof (bluecolor));
+			g_strlcpy (bluecolor, par2, sizeof (bluecolor));
 		    else if ( (strcmp(par1, "trackcolor")) == 0)
-			g_strlcpy (trackcolor, par2,
-				   sizeof (trackcolor));
+			g_strlcpy (trackcolor, par2, sizeof (trackcolor));
 		    else if ( (strcmp(par1, "friendscolor")) == 0)
 			g_strlcpy (friendscolor, par2, sizeof (friendscolor));
 		    else if ( (strcmp(par1, "messagenumber")) == 0)
@@ -514,8 +517,7 @@ readconfig ()
 		    else if ( (strcmp(par1, "sound_gps")) == 0)
 			sound_gps = atoi (par2);
 		    else if ( (strcmp(par1, "icon_theme")) == 0)
-			g_strlcpy (local_config.icon_theme, par2,
-				   sizeof (local_config.icon_theme));
+			g_strlcpy (local_config.icon_theme, par2, sizeof (local_config.icon_theme));
 		    else if ( (strcmp(par1, "draw_grid")) == 0)
 			do_draw_grid = atoi (par2);
 		    else if ( (strcmp(par1, "draw_streets")) == 0)

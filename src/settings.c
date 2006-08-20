@@ -125,7 +125,8 @@ extern gint mod_setupcounter, storetz;
 static gint iplock = FALSE;
 static GtkWidget *spinner1, *spinner2, *spinner3;
 long int maxfriendssecs = 86400;
-extern gchar wplabelfont[100], bigfont[100];
+extern GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
+extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
 extern char friendserverip[20];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
   friendsserverfqn[255];
@@ -214,13 +215,13 @@ change_font_callback (GtkWidget * button, gint data)
   if (1 == data)
     {
       gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					       (dialog), wplabelfont);
+					       (dialog), font_wplabel);
     }
 
   if (2 == data)
     {
       gtk_font_selection_dialog_set_font_name (GTK_FONT_SELECTION_DIALOG
-					       (dialog), bigfont);
+					       (dialog), font_bigtext);
     }
 
   response = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -237,12 +238,12 @@ change_font_callback (GtkWidget * button, gint data)
 
       if (1 == data)
 	{
-	  g_strlcpy (wplabelfont, fn, sizeof (wplabelfont));
+	  g_strlcpy (font_wplabel, fn, sizeof (font_wplabel));
 	}
 
       if (2 == data)
 	{
-	  g_strlcpy (bigfont, fn, sizeof (bigfont));
+	  g_strlcpy (font_bigtext, fn, sizeof (font_bigtext));
 	}
 
       needtosave = TRUE;
