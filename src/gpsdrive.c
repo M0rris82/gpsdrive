@@ -1,6 +1,6 @@
 /***********************************************************************
 
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>
 
 Website: www.gpsdrive.de
 
@@ -44,7 +44,7 @@ Disclaimer: Please do not use for navigation.
      Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>
      Mike Auty
      Oddgeir Kvien <oddgeir@oddgeirkvien.com>
-     Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>!
+     Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>
      Olli Salonen <olli@cabbala.net>
      Philippe De Swert
      Richard Scheffenegger <rscheff@chello.at>
@@ -3371,12 +3371,14 @@ streets_draw_cb (GtkWidget * widget, guint datum)
 gint
 tracks_draw_cb (GtkWidget * widget, guint datum)
 {
-	if ( ! tracks_draw ) 
-	    tracks_check_if_moved_reset();
+    if ( ! tracks_draw ) 
+	tracks_check_if_moved_reset();
+    if ( datum ) {
 	tracks_draw = !tracks_draw;
-	tracks_draw_list ();
 	needtosave = TRUE;
-	return TRUE;
+    }
+    tracks_draw_list ();
+    return TRUE;
 }
 
 /* *****************************************************************************
@@ -4185,7 +4187,7 @@ usage ()
 	     "%s"
 #endif
 	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-	     "\nCopyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>"
+	     "\nCopyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>"
 	     "\n         Website: http://www.gpsdrive.de\n\n",
 	     _("-v        show version\n"),
 	     _("-h        print this help\n"),
@@ -4591,7 +4593,7 @@ main (int argc, char *argv[])
 		    onemousebutton = TRUE;
 		    break;
 		case 'v':
-		    printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
+		    printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
 		    exit (0);
 		    break;
 		case 't':
@@ -4688,7 +4690,7 @@ main (int argc, char *argv[])
     haveproxy = FALSE;
 
     if ( mydebug > 0 )
-	printf ("\ngpsdrive (c) 2001-2004 Fritz Ganter <ganter@ganter.at>\n"
+	printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
 		"\nVersion %s\n%s\n\n", VERSION, rcsid);
     
 
@@ -4873,7 +4875,7 @@ main (int argc, char *argv[])
 
 
     g_snprintf (maintitle, sizeof (maintitle),
-		"%s v%s  \xc2\xa9 2001-2004 Fritz Ganter", "GpsDrive",
+		"%s v%s  \xc2\xa9 2001-2006 Fritz Ganter", "GpsDrive",
 		VERSION);
 
     gtk_window_set_title (GTK_WINDOW (mainwindow), maintitle);
@@ -4890,7 +4892,7 @@ main (int argc, char *argv[])
 	gtk_statusbar_get_context_id (GTK_STATUSBAR (frame_status), "main");
 
     gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
-			_("Gpsdrive-2 (c)2001-2004 F.Ganter"));
+			_("Gpsdrive-2 (c)2001-2006 F.Ganter"));
     if (!useflite)
 	havespeechout = speech_out_init ();
     else
