@@ -24,7 +24,7 @@ DEST=/opt/mysql
 
 # User to create the geoinfo database
 USER=root
-PASSWORD=<your-root-mysql-password>
+PASSWORD=your-mysql-root-password
 
 # Installed Location of gpsdrive
 GPSDRIVEHOME=/opt/gpsdrive
@@ -42,14 +42,14 @@ then
 	echo "Couldnt cd to the gpsdrive bin dir"
 	exit 10
 fi
-./geoinfo.pl --create-db --fill-defaults --db-user=root --db-password=peppipeppi1
+./geoinfo.pl --create-db --fill-defaults --db-user=$USER --db-password=$PASSWORD
 if [ "$?" != "0" ]
 then
 	echo "error from geoinfo.pl  initialising the DB "
 	exit 11
 fi
 # Add the open street map data
-#./geoinfo.pl --create-db --db-user=root --osm
+# ./geoinfo.pl --create-db --osm --db-user=$USER --db-password=$PASSWORD
 if [ "$?" != "0" ]
 then
 	echo "error adding the Open Street Map data"
