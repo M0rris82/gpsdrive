@@ -17,28 +17,22 @@
 # Once this script finishes without error see the notes in the package script
 # ---------------------------------------------------------------
 #
-#Change these if you feel the need.
-#
+#Change these as required.
+
+# Installed Location of Mysql
 DEST=/opt/mysql
-#USER=dsl
-USER=david
-#GROUP=staff
-GROUP=david
+
+# User to create the geoinfo database
+USER=root
+PASSWORD=<your-root-mysql-password>
+
+# Installed Location of gpsdrive
 GPSDRIVEHOME=/opt/gpsdrive
 
 ######################################################################
 
 # Initialise the Database for gpsdrive
 # ------------------------------------
-
-# Start the database running
-$DEST/bin/mysqld_safe &
-if [ "$?" != "0" ]
-then
-	echo "Couldn't start Mysql to initialise DB"
-	echo "Could mean it is already running"
-fi
-echo $?
 
 echo "Initialising the database for gpsdrive "
 PERL5LIB=$GPSDRIVEHOME/share/perl5 
@@ -48,14 +42,14 @@ then
 	echo "Couldnt cd to the gpsdrive bin dir"
 	exit 10
 fi
-./geoinfo.pl --create-db --fill-defaults --db-user=root --db-password=password
+./geoinfo.pl --create-db --fill-defaults --db-user=root --db-password=peppipeppi1
 if [ "$?" != "0" ]
 then
 	echo "error from geoinfo.pl  initialising the DB "
 	exit 11
 fi
 # Add the open street map data
-#./geoinfo.pl --create-db --db-user=root --db-password=password  --osm
+#./geoinfo.pl --create-db --db-user=root --osm
 if [ "$?" != "0" ]
 then
 	echo "error adding the Open Street Map data"
@@ -78,6 +72,5 @@ then
 fi
 
 echo "Script Completed Successfully"
-echo "Now run the package script"
 exit 0
 
