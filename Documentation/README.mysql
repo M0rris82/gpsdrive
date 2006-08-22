@@ -80,7 +80,7 @@ MySQL Options in Gpsdrive
 
 
 Compile MySQL (if you must)
-=====================
+===========================
 There seems to be tons of options to compile mysql.
 I found a recommended set of options and then modified them until I
 managed a clean compile.  I just googled the errors and modified the options.
@@ -103,11 +103,13 @@ CXXFLAGS="-O3 -fno-strict-aliasing -felide-constructors -fno-exceptions -fno-rtt
     --enable-thread-safe-client \
     --enable-assembler \
     --enable-local-infile \
-    --with-unix-socket-path=/var/run/mysql/mysql.sock \
+    --with-unix-socket-path=/var/run/mysqld/mysqld.sock \
     --without-debug \
     --without-yassl \
     --without-bench \
     --with-extra-charsets=complex 
+
+Don't be afraid to read the documentation on mysql.org.  It is quite extensive and will save you heaps of time trying to figure it all out your self.
 
 MySQL Password
 ==============
