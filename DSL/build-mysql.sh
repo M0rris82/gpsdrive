@@ -15,7 +15,9 @@
 #
 # Run the command using a normal user but you will need permission 
 # to use the sudo command.
-#
+# (I have been having trouble getting sudo to work on debian.  You may just
+# neet to run the commands individually from the command line)
+
 # You will need the following DSL packages from the SYSTEM group
 # libcurses5.dsl
 # libcurses5-dev.dsl
@@ -33,21 +35,27 @@
 # builing for debian you won't be able to package for DSL, you will
 # need to compile on DSL to package for DSL.
 #
-# Once it finishes without error see the notes in the package script
+# You will need to initialise the database by following the instructions here
+# (or it won't work)
+# http://dev.mysql.com/doc/refman/5.0/en/unix-post-installation.html
+#
 #
 # This script creates an empty data base.  You will need to create
 # the gpsdrive specific data on debin.  I couldn't get the perl
 # script (gpsinfo.pl) to run on DSL.  It looked like there were
-# version problems. You should be able to package the data base 
-# only and install that on DSL.
+# version problems.
+#
+# I couldn't get geoinfo.pl to run on DSL.  The build-gpdriveDB.sh
+# script will create a database and back it up for you so you can 
+# restore that on DSL.  Read the notes in the top of that script too.
 # ---------------------------------------------------------------
 #
 # *** Change these *****
 #
 DEST=/opt/mysql
 SOURCE=..
-USER=david
-GROUP=david
+USER=mysql
+GROUP=mysql
 GPSDRIVEHOME=/opt/gpsdrive
 
 ######################################################################
@@ -70,6 +78,7 @@ GPSDRIVEHOME=/opt/gpsdrive
 #         Added
 #         --without-yassl       (caused error during "make test")
 #         I don't think we need SSL encryption
+#
 ######################################################################
 echo " Configure"
 cd $SOURCE
@@ -80,10 +89,10 @@ CXXFLAGS="-O3 -fno-strict-aliasing -felide-constructors -fno-exceptions -fno-rtt
     --enable-thread-safe-client \
     --enable-assembler \
     --enable-local-infile \
-    --with-unix-socket-path=/var/run/mysql/mysql.sock \
     --without-debug \
     --without-yassl \
     --without-bench \
+    --with-unix-socket-path=/var/run/mysqld/mysqld.sock \
     --with-extra-charsets=complex 
 
 if [ "$?" != "0" ]
@@ -165,17 +174,24 @@ fi
 # ---------------------------
 #
 cd $DEST/bin
-./mysql_install_db
+./mysql_install_db --user=$USER
 if [ "$?" != "0" ]
 then
 	echo "error creating the default database"
 	exit 9
 fi
 
-echo "Now run the package script"
-echo
-echo The default root password is set to 'password'
-echo On some systems this may be blank
+echo Now follow the steps detailed in....
+echo  http://dev.mysql.com/doc/refman/5.0/en/unix-post-installation.html
 
+# Initialise the database
+# -----------------------
+
+# start the database
+./mysqld_safe --user=$user &
+
+echo The database should have also just started
+
+ 
 exit 0
 
