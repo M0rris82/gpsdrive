@@ -6,212 +6,6 @@
 # or remove the polite feature.
 #
 # NO WARRANTY.
-#
-#
-# $Log$
-# Revision 1.48  2006/08/11 16:28:00  tweety
-# eliminate duplicate variable declaration
-#
-# Revision 1.47  2006/08/08 08:07:58  tweety
-# imore error checking for downloading
-#
-# Revision 1.46  2006/08/08 00:05:58  tweety
-# initial map directory
-#
-# Revision 1.45  2006/07/27 13:17:06  tweety
-# Update Configure Versions
-#
-# Revision 1.44  2006/07/27 06:01:25  tweety
-# track grabbing regex expanded
-#
-# Revision 1.43  2006/07/17 06:42:56  tweety
-# reading track info for map downloading gets (hopefully) more flexible
-#
-# Revision 1.42  2006/06/30 12:16:20  tweety
-# add (/opt/gpsdrive to the search path
-# add osm-polite as option to geoinfo.pl
-#
-# Revision 1.41  2006/06/11 15:57:16  tweety
-# fix directory handling for map checking
-#
-# Revision 1.40  2006/05/27 21:56:47  tweety
-# be more verbose about -w=gpsd in the --help
-#
-# Revision 1.39  2006/03/12 14:48:34  tweety
-# delete merge conflict
-#
-# Revision 1.38  2006/03/10 08:37:09  tweety
-# - Replace Street/Track find algorithmus in Query Funktion
-#   against real Distance Algorithm (distance_line_point).
-# - Query only reports Track/poi/Streets if currently displaying
-#   on map is selected for these
-# - replace old top/map Selection by a MapServer based selection
-# - Draw White map if no Mapserver is selected
-# - Remove some useless Street Data from Examples
-# - Take the real colors defined in Database to draw Streets
-# - Add a frame to the Streets to make them look nicer
-# - Added Highlight Option for Tracks/Streets to see which streets are
-#   displayed for a Query output
-# - displaymap_top und displaymap_map removed and replaced by a
-#   Mapserver centric approach.
-# - Treaked a little bit with Font Sizes
-# - Added a very simple clipping to the lat of the draw_grid
-#   Either the draw_drid or the projection routines still have a slight
-#   problem if acting on negative values
-# - draw_grid with XOR: This way you can see it much better.
-# - move the default map dir to ~/.gpsdrive/maps
-# - new enum map_projections to be able to easily add more projections
-#   later
-# - remove history from gpsmisc.c
-# - try to reduce compiler warnings
-# - search maps also in ./data/maps/ for debugging purpose
-# - cleanup and expand unit_test.c a little bit
-# - add some more rules to the Makefiles so more files get into the
-#   tar.gz
-# - DB_Examples.pm test also for ../data and data directory to
-#   read files from
-# - geoinfo.pl: limit visibility of Simple POI data to a zoom level of 1-20000
-# - geoinfo.pl NGA.pm: Output Bounding Box for read Data
-# - gpsfetchmap.pl:
-#   - adapt zoom levels for landsat maps
-#   - correct eniro File Download. Not working yet, but gets closer
-#   - add/correct some of the Help Text
-# - Update makefiles with a more recent automake Version
-# - update po files
-#
-# Revision 1.37  2006/02/21 07:40:59  tweety
-# correct map projection of landsat maps to streetmapstyle.
-# adjust scla settings for landsat maps to fit for better than 10% accuracy
-#
-# Revision 1.36  2006/02/19 21:09:27  tweety
-# add download stug for landsat satelite maps
-#
-# Revision 1.35  2006/02/16 10:25:15  tweety
-# update Version Numbers in different Meta files
-#
-# Revision 1.34  2006/02/13 19:55:05  tweety
-# Stub for writing wld Files
-#
-# Revision 1.33  2006/02/11 11:14:06  tweety
-# uncommet debug Stuff
-#
-# Revision 1.32  2006/02/11 11:06:01  tweety
-# insert inew Version numbers
-#
-#
-# Revision 1.27  2006/01/16 07:28:41  tweety
-# for checks if map exists; also use System Directories
-#
-# Revision 1.25  2005/12/28 22:14:17  tweety
-# ask local gpsd for position if you use gpsfetchmap.pl -w gpsd
-#
-# Revision 1.24  2005/12/28 11:12:41  tweety
-# added more scales for geoscience Server
-#
-# Revision 1.20  2005/12/27 12:02:34  tweety
-# Author: David Pollard
-# Added geoscience server section for map downloads in Australia
-# Added Resize section to convermaps from 1000x800 to 1280x1024
-#
-# Revision 1.18  2005/11/28 21:37:03  tweety
-# Update google map fetching
-#
-# Revision 1.17  2005/10/20 23:51:46  tweety
-# Zoomlevels for incrementp
-# Autor: webmaster@psphacks.net  Aaron Anderson
-#
-# Revision 1.14  2005/08/07 22:43:23  tweety
-# The script changes to the config directory instead to the map directory
-# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=32
-# Autor: cej@intech.com
-#
-# Revision 1.13  2005/08/07 22:38:59  tweety
-# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=33
-# Autor: cej@intech.com
-# make $KOORD_FILE relative to $mapdir
-#
-# Revision 1.12  2005/08/07 22:27:10  tweety
-# Author: Konstantin Naumov <piterpen@gmail.com>
-# retrieve Google Maps
-# Tweety: Prototype for incrementp as mapserver
-#
-# Revision 1.10  2005/07/03 20:05:52  tweety
-# http://bugzilla.gpsdrive.cc/show_bug.cgi?id=11
-# Additional Map Download Source (ENIRO)
-#
-# Revision 1.9  2005/05/16 19:37:29  tweety
-# added patch from Olli Salonen <olli@cabbala.net>
-# downloading all maps along track, between waypoints
-#
-# Revision 1.7  2005/05/13 07:33:41  tweety
-# remove some unnecessary indirections
-# replace get_unit and get_mapdir with read_config
-#
-# Revision 1.6  2005/05/13 06:30:50  tweety
-# Modified desired_locations(...) so you can call it multiple times
-# and it adds up all the maps for the locations
-#
-# Revision 1.5  2005/04/15 07:18:54  tweety
-# extracted lat2raidus into it's own function and added plausibility checks
-# sorted addwaypoint function and added comments
-# while downloading new maps the already existing maps are always displayed
-#
-# Kevin Stephens
-# Based on shell script by: Fritz Ganter and Manfred Carus
-#
-# Nov 29, 2003 <camel\@insecure.at>:
-# ive "fixed" the following issues ...
-#
-# .) previous authors forgot to reset "$long = $slon;" after each "$lat" loop
-#    resulting in a non rectangular area of map pieces because after each row
-#    the column doesnt get reset to the starting-value $slon and so the $lon
-#    variable is only increased but never reset ...
-#  .) russian style fix so the map pieces of an area do actually overlap
-#     vertically. This fix results in ugly after-comma numbers but 
-#     hey ... at least i do get a real area and not "interlaced" maps with
-#     gaps ...
-# 
-# Feb 27, 2004 Sorted out expedia downloading (Robin Cornelius)
-#
-# Dec 2004 Joerg Ostertag
-#   check for bad/existing maps:
-#      - The check if a map exists is modified in check if the mapsize is lagrer 
-#        than 4K. This detects some files where Error messages have been saved.
-#      - check consistency of map_koord.txt File: (Option -c)
-#        Read actual map_koords.txt file and check if all files it references
-#        are existing
-#      - update map_koord.txt File  (Option -U)
-#        if a file exists in your map dir and is not found in map_koords.txt file 
-#        it is added to the map_koords.txt File
-#      - Simulate Only Option. Only tells what would be done. (Option -n)
-#      - Formated output of progress bar
-#      - count the Files retrieved, existing
-#      - moved writing to map_koords.txt to append_koords to be able to 
-#        easy add Files already existing in the Filesystem to the File
-#      - Update Maps found in Filesystem which cannot be found in map_koords.txt
-#      - Added Map Coverage checks
-#   Added new Symbols to Progress Bar:
-#       S Simulated
-#       E Error
-#       + retrieved new file
-#       _ file already exists localy
-#       u file exists but not found in map_koords.txt file (added)
-#   LWP::Mirror:
-#       moved from wget to LWP::Mirror to eliminate the dependency of the 
-#       wget package and configuration. This also enables PROXY use
-#   Minor Bugfixes, ...
-#       eliminated ref for calc_lon_dist($$lat_ref
-#       make sorting of keys numerocal sort  {$a <=> $b} keys
-#       add desiredDistance, minDistance - maxDistance to --check-coverage
-#       add gap/overlap recognition to --check-coverage
-# DEC 2006 David Pollard
-#       Added geoscience server section for map downloads in Australia
-#       Added Resize section to convermaps from 1000x800 to 1280x1024
-#       Updated copyright message
-#       I'm not sure I have the scale correct
-#       I Figured out that 1 pixel = 176.47m  
-#       I found a calculation to convert this to a relative scale
-#       176.47 / 0.000265  (No idea if this is correct)
 
 BEGIN {
     unshift(@INC,"/opt/gpsdrive");
@@ -418,7 +212,8 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
 	     'PREFIX=s'       => \$FILEPREFIX,
 	     'n'              => \$simulate_only,
-	     'track=s'        => \$TRACK_FILE, 'route'       => \$cover_route,
+	     'track=s'        => \$TRACK_FILE,
+	     'route'          => \$cover_route,
 	     'check-koordfile'=> \$check_koord_file,
 	     'check-coverage' => \$check_coverage,
 	     'U'              => \$update_koord,
@@ -578,6 +373,7 @@ if ($TRACK_FILE) { # download maps along a saved track
     print "Inserting $number points to the list.\n" if $debug;
     for ($i = 0; $i < $number; $i++) {
 	($sla,$slo,$ela,$elo) = get_coords($latsref->[$i],$lonsref->[$i],$area,$unit);
+	debug("");
 	desired_locations($desired_locations,$sla,$slo,$ela,$elo);
     }
 } elsif ($cover_route) { # download maps between a set of waypoints
@@ -1612,6 +1408,7 @@ sub get_coords_for_track($) {
     # loop through each line of the track file
     while ($line = $fh->getline()) {
         $line =~ s/^\s+//;
+	chomp $line;
         ($la,$lo,$rest) = split(/\s+/, $line, 3);
 	debug("pre-regex:  ($la|$lo|$rest)");
 	# Now a regex (applied to both lat & long) to drop cruft like
