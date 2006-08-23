@@ -298,12 +298,13 @@ init_nmea_socket ()
 	server.sin_port = htons (SERVERPORT);	/* We try second port */
 	/*  We initiate the connection  */
 	if (connect (sock, (struct sockaddr *) &server, sizeof server) < 0)
-	  {
+	{
 	    haveNMEA = FALSE;
 	    simmode = TRUE;
-	  }
+	}
 	else
-	  {
+	{
+	    timeoutcount = 0;
 	    haveNMEA = TRUE;
 	    simmode = FALSE;
 	    g_strlcpy (nmeamodeandport,
@@ -320,6 +321,7 @@ init_nmea_socket ()
 	g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
 	g_strlcat (nmeamodeandport, gpsdservername, sizeof (nmeamodeandport));
 	write (sock, "R\n", 2);
+	timeoutcount = 0;
 	haveNMEA = TRUE;
 	simmode = FALSE;
       }
@@ -748,6 +750,8 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   else
     tilimit = 10;
 
+  if (timeoutcount > tilimit) initgps();
+ 
   if (timeoutcount > tilimit)
     {
       gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
@@ -1009,13 +1013,16 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   timeout.tv_sec = 0;
   timeout.tv_usec = 100000;
   if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-    {
+  {
+      timeoutcount++;
       perror ("select() call");
-    }
+  }
   if (FD_ISSET (sock, &readmask))
     {
-      if ((e = read (sock, buffer, 2000)) < 0)
+      if ((e = read (sock, buffer, 2000)) <= 0) {
 	perror ("read from gpsd connection");
+	timeoutcount ++;
+      }
       buffer[e] = 0;
       if ((bigp + e) < MAXBIG)
 	{
