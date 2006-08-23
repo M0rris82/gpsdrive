@@ -6,11 +6,13 @@ Supported databases (September 2003): MySQL
 
 Compiling:
 ----------
+
 There is no MySQL needed for compiling, the needed library
 libmysqlclient.so.10 will be loaded at runtime, if found.
 
 Running and first initialization:
 ---------------------------------
+
 If you have not already done, install the mysql server package for
 your distribution.
 
@@ -18,15 +20,18 @@ o Start the server, mostly with: /etc/init.d/mysql start
 
 UPDATE:
 -------------------------------------------------------------------------------
-There is now a new way to create the initial database but you do 
-need to have perl installed.  The new script is gpsdrive/bin/geoinfo.pl and
-the requierd command line is discussed below. Check out geoinfo --help to see all
-of its options.  
+
+There is now a new way to create the initial database but you do need
+to have perl installed.  The new script is gpsdrive/bin/geoinfo.pl and
+the requierd command line is discussed below. Check out geoinfo --help
+to see all of its options.
+
 -------------------------------------------------------------------------------
 
 o To create a initial database with included Perl file 'geoinfo.pl'.
-  If this is a new database and you haven't created a root user yet something
-  like the following should do the trick.  Otherwise use the MYSQL Administrator.
+  If this is a new database and you haven't created a root user yet
+  something like the following should do the trick.  Otherwise use the
+  MYSQL Administrator.
 
   /usr/bin/mysqladmin -u root password 'enter-your-good-new-password-here'
 
@@ -36,26 +41,20 @@ o To create a initial database with included Perl file 'geoinfo.pl'.
 
 Update:
 -------
+
 If you already have the database and you update GpsDrive, make sure
 your table structure is updated with the above geoinfo.pl script.
 
-Managing the SQL server:
-------------------------
-
-A good tool is mysqlcc, download it from:
-
-http://www.mysql.com/downloads/gui-mycc.html
-
 Security:
 ---------
+
 GpsDrive uses the username 'gast' and the password 'gast' as default
-to access the table 'waypoints' in the database 'geoinfo'. If you want to
-change this in the SQL database, so change this in GpsDrive also. For
-this, edit the file $HOME/.gpsdrive/gpsdriverc (dbuser,dbpass).
+to access the table 'waypoints' in the database 'geoinfo'. If you want
+to change this in the SQL database, change this in GpsDrive also. Edit
+the file $HOME/.gpsdrive/gpsdriverc lines for dbuser and dbpass.
 
 Be aware that the MySQL password for this database is stored in
 cleartext in gpsdriverc!!!
-
 
 Importing existing waypoint files:
 ----------------------------------
@@ -106,30 +105,31 @@ You can also use your own icons, see man page for details.
 
 Backing up and restoring your database
 --------------------------------------
-Sven added the two shell scripts gpssql_backup.sh and gpssql_restore.sh for
-very simple use. Just read the comments within those scripts for usage
-information.
 
+Sven added the two shell scripts gpssql_backup.sh and
+gpssql_restore.sh for very simple use. Just read the comments within
+those scripts for usage information.
 
 
 Editing your waypoints:
 -----------------------
 
-You can either use "mysqlcc", "phpmyadmin" or OpenOffice to edit the waypoints.
+You can use "mysqlcc" (http://www.mysql.com/downloads/gui-mycc.html),
+"phpmyadmin" or OpenOffice to edit the waypoints.
 
 Here is a little HowTo from Charles Curley <charlescurley@charlescurley.com>
 
 One of the really nice things about OpenOffice.org
 (http://OpenOffice.org/) is that you can use databases as data sources
 for documents and spreadsheets, rather like MS Access and MS Office. I
-just set up the GpsDrive waypoints MySQL database as a data source,
-and thought I'd annotate how I did it -- if for no other reason than
-so I have a note on how to do it.
+just set up the GpsDrive waypoints MySQL database as a data source.
 
 I did it on Fedora Core Linux. This should work on other Linux disties
 as well.
 
-First, you get John McCreesh's "OpenOffice.org 1.0, ODBC, and MySQL
+For Openoffice 1.x:
+
+First, get John McCreesh's "OpenOffice.org 1.0, ODBC, and MySQL
 'How-to'" (http://www.unixodbc.org/doc/OOoMySQL9.pdf), read it through
 page 7, then and do exactly what the man says, step by step. His
 instructions are for Red Hat 9, and I had no problems. His
@@ -151,6 +151,26 @@ USER     = gast
 PASSWORD = gast
 PORT     = 3306
 
+Third, in the ODBC tab of the Data Source Administration window, check
+"password required" and enter a user name of "gast".
+
+For OpenOffice.org 2.0.2:
+
+Follow this writeup:
+
+http://www.linuxgangster.org/modules.php?name=Content&file=viewarticle&id=10
+
+Then add the following to your odbc.ini:
+
+[MySQL-geoinfo]
+Description = MySQL geoinfo database
+Driver = MySQL
+Server = localhost
+Database = geoinfo
+Port = 3306
+
+Testing:
+
 To test the ODBC connection to MySQL, you run isql like so:
 
 isql <dbname> <user> <password>
@@ -159,9 +179,5 @@ isql geoinfo gast gast
 and in isql, run:
 
 select * on waypoints
-
-The only other change is that in the ODBC tab of the Data Source
-Administration window, check "password required" and enter a user name
-of "gast".
 
 The result is a nice GUI tool for editing one's waypoints.
