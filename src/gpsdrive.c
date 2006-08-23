@@ -483,20 +483,20 @@ extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
 static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu"),                    NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/Maps"),               NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/Maps/_Import map"),   NULL, (gpointer) import1_cb,    1, NULL},
-    {N_("/_Misc. Menu/Maps/_Download map"), NULL, (gpointer) download_cb,   0, NULL},
+    {N_("/_Misc. Menu/_Maps"),               NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Misc. Menu/_Maps/_Import map"),   NULL, (gpointer) import1_cb,    1, NULL},
+    {N_("/_Misc. Menu/_Maps/_Download map"), NULL, (gpointer) download_cb,   0, NULL},
     {N_("/_Misc. Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
     {N_("/_Misc. Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
     //    {N_("/_Misc. Menu/_Start gpsd"),        NULL, (gpointer) startgpsd_cb,  0, NULL},
     {N_("/_Misc. Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
-    {N_("/_Misc. Menu/Messages"),           NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/Messages/Send message to mobile target"), 
+    {N_("/_Misc. Menu/M_essages"),           NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Misc. Menu/M_essages/_Send message to mobile target"), 
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
-    {N_("/_Misc. Menu/Help"),               NULL, NULL,                     0, "<LastBranch>"},
-    {N_("/_Misc. Menu/Help/About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_DIALOG_INFO},
-    {N_("/_Misc. Menu/Help/Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
-    {N_("/_Misc. Menu/Quit"),               NULL, (gpointer) quit_program,  0, NULL }
+    {N_("/_Misc. Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
+    {N_("/_Misc. Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_DIALOG_INFO},
+    {N_("/_Misc. Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
+    {N_("/_Misc. Menu/_Quit"),               NULL, (gpointer) quit_program,  0, NULL }
 };
 
 void sql_load_lib();
