@@ -272,7 +272,6 @@ sub geoscience_url($$$);   # {}
 sub landsat_url($$$);   # {}
 sub resize($$); #{}
 sub file_count($);         # {}
-sub file_count($);         # {}
 sub get_coords_for_route;  # {}
 sub get_coords_for_track($); # {}
 sub get_waypoint($);       # {}
@@ -778,13 +777,13 @@ sub error_check {
 
     # Check for a centerpoint
     unless (($waypoint) || ($lat && $lon) || ($slat && $endlat && $slon && $endlon)) {
-	print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longiture\n\n";
+	print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longitude\n\n";
 	$status++;
     }
     
     # Check for area
     unless ($area || ($slat && $endlat && $slon && $endlon)) {
-	print "ERROR: You must define an area to cover or starting and ending coordinates for both latitude and longiture\n\n";
+	print "ERROR: You must define an area to cover or starting and ending coordinates for both latitude and longitude\n\n";
 	$status++;
     }
     
@@ -1410,28 +1409,37 @@ sub get_coords_for_track($) {
         $line =~ s/^\s+//;
 	chomp $line;
         ($la,$lo,$rest) = split(/\s+/, $line, 3);
-	debug("pre-regex:  ($la|$lo|$rest)");
-	# Now a regex (applied to both lat & long) to drop cruft like
-	# leading text or trailing commas. Skip over anything that is
-	# not a digit, minus sign or decimal point. Then extract
-	# either an optional minus sign, one or more digits, a decimal
-	# point, 0 or more digits, or an optional minus sign, a
-	# decimal point and one or more digits. Ignore the rest.
-	$la =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
-	$lo =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
-	debug("post-regex: ($la|$lo|$rest)");
-	next if ( $la == 1001 ) && ( $lo == 1001) ;
-        if ((($la != $oldla) || ($lo != $oldlo)) && ($la < $max_lat) && ($lo < $max_lon)) {
-            $delta_la = abs($la - $oldla);
-            $delta_lo = abs($lo - $oldlo);
-            if (($delta_la > $step_la) || ($delta_lo > $step_lo)) {
-		push(@lats, $la);
-		push(@lons, $lo);
-                $oldla = $la;
-                $oldlo = $lo;
-            }
-        }
-    }
+
+		# Disallow blank lines, as gpsreplay uses them. Also disallow
+		# blank (undefined) fields in case of other possible
+		# wierdnesses.
+
+		next if (!defined($lo));
+		next if (!defined($la));
+
+		debug("pre-regex:  ($la|$lo|$rest)");
+		# Now a regex (applied to both lat & long) to drop cruft like
+		# leading text or trailing commas. Skip over anything that is
+		# not a digit, minus sign or decimal point. Then extract
+		# either an optional minus sign, one or more digits, a decimal
+		# point, 0 or more digits, or an optional minus sign, a
+		# decimal point and one or more digits. Ignore the rest.
+		$la =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+		$lo =~ s/([^\d\-\.]*)(\-?\d+\.?\d*|-?\.\d+)(.*)/$2/o;
+		debug("post-regex: ($la|$lo|$rest)");
+		next if ( $la == 1001 ) && ( $lo == 1001) ;
+		if ((($la != $oldla) || ($lo != $oldlo)) && ($la < $max_lat) && ($lo < $max_lon)) {
+			$delta_la = abs($la - $oldla);
+			$delta_lo = abs($lo - $oldlo);
+			if (($delta_la > $step_la) || ($delta_lo > $step_lo)) {
+				push(@lats, $la);
+				push(@lons, $lo);
+				$oldla = $la;
+				$oldlo = $lo;
+			}
+		}
+	}
+
     # Close the file and release lock or die.
     $fh->close() or die("Error: $!");    
     return (\@lats, \@lons);
