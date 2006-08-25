@@ -10,6 +10,6 @@ cd icons
 find . -name *.png |\
 sed 's/.\///' |\
 sed 's/.png//' |\
-sed 's/\//./' |\
+sed 's/\//./g' |\
 sed 's/$/\t1\t10000/' \
 > ../icons.txt
