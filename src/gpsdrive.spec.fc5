@@ -1,0 +1,131 @@
+# -*- rpm-spec -*-
+
+# gpsdrive RPM spec file for Fedora Core 5. This is in the tarball
+# distribution and CVS as gpsdrive.spec.fc5. Copy it into place as
+# gpsdrive.spec. Then run "make dist-bzip2" and copy/move the result
+# to your SOURCES directory. You will need to set up a %packager macro
+# for yourself, as well as signature data if you want to sign your
+# RPMs.
+
+# This spec file may well work on older versions of Fedora; I haven't
+# tried it. You will probably have to adjust the minimum version
+# requirements below for both building and running.
+
+Summary: Gpsdrive is a GPS based navigation tool 
+Name: gpsdrive
+Version: 2.10.pre3.20060828
+Release: 1
+License: GPL
+Group: Amusements/Graphics
+Source: %{name}-%{version}.tar.bz2
+Url: http://www.gpsdrive.cc
+BuildRoot: %{_tmppath}/%{name}-buildroot
+Vendor: The gpsdrive team
+
+
+# The version numbers are those for Fedora Core 5 as distributed. You
+# may be able to use older versions.
+
+PreReq: libgcc >= 4.1.0-3
+PreReq: gdal >= 1.3.1-2
+PreReq: gtk2 >= 2.8.15-1
+PreReq: ImageMagick >= 6.2.5.4-4.2.1
+PreReq: libart_lgpl >= 2.3.17-2.2.1
+# PreReq: mysql >= 5.0.22-1.FC5.1
+PreReq: pcre >= 6.3-1.2.1
+
+# These version numbers are as found on Fedora Core 5 as updated when
+# I worked on this, say early August 2006. Again, earlier versions may
+# work.
+
+BuildPreReq: autoconf >= 2.59-7
+BuildPreReq: gcc >= 4.1.1-1.fc5
+BuildPreReq: gcc-c++ >= 4.1.1-1.fc5
+BuildPreReq: gdal-devel >= 1.3.1-2
+BuildPreReq: gettext >= 0.14.5-3
+BuildPreReq: gettext-devel >= 0.14.5-3
+BuildPreReq: gtk2-devel >= 2.8.20-1
+# BuildPreReq: ImageMagick-devel >= 6.2.5.4-4.2.1.fc5.3
+BuildPreReq: libart_lgpl-devel >= 2.3.17-2.2.1
+# BuildPreReq: libgcc-devel >= 4.1.1-1.fc5
+BuildPreReq: libtool >= 1.5.22-2.3
+BuildPreReq: libtool-ltdl >= 1.5.22-2.3
+BuildPreReq: libtool-ltdl-devel >= 1.5.22-2.3
+BuildPreReq: mysql-devel >= 5.0.22-1.FC5.1
+BuildPreReq: pcre-devel >= 6.3-1.2.1
+
+%define _prefix /usr
+%description
+
+Gpsdrive is a map-based navigation system. It displays on a zoomable
+map your position, as provided by a NMEA-capable GPS receiver or by
+gpsd (http://gpsd.berlios.de/). The maps are autoselected for the best
+resolution, depending of your position. Maps can be downloaded from
+the Internet. The program provides information about speed, direction,
+bearing, arrival time, actual position, and target position. Speech
+output from Festival (http://www.cstr.ed.ac.uk/projects/festival/) is
+also available. MySQL and Kismet (http://www.kismetwireless.net/) are
+supported.
+
+There is more setup to do. Please read the man page and the README
+files in /usr/share/doc/gpsdrive.
+
+%prep
+%setup
+
+
+%build
+export CFLAGS="$RPM_OPT_FLAGS"
+export CXXFLAGS="$RPM_OPT_FLAGS"
+#./configure --prefix=%{_prefix} --mandir=%{_mandir}
+%configure --mandir=%{_mandir}
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make DESTDIR=$RPM_BUILD_ROOT install-strip
+
+%clean
+if [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ]; then
+rm -rf $RPM_BUILD_ROOT
+fi
+rm -rf %{_builddir}/%{name}-%{version}
+
+%files
+%defattr (-,root,root)
+%doc Documentation/CREDITS Documentation/LEEME Documentation/README.Fedora Documentation/README.mysql Documentation/TODO Documentation/LISEZMOI Documentation/README.FreeBSD Documentation/README.nasamaps Documentation/FAQ.gpsdrive Documentation/LISEZMOI.FreeBSD Documentation/README.gpspoint2gspdrive Documentation/FAQ.gpsdrive.fr Documentation/LISEZMOI.kismet Documentation/NMEA.txt Documentation/README.kismet Documentation/README.SQL Documentation/GPS-receivers Documentation/LISEZMOI.SQL Documentation/README.Bluetooth Documentation/README.lib_map
+
+# Documentation/README.Upgrade Documentation/README.OpenStreetMap-Vektordata 
+
+%doc %{_mandir}/de/man1/gpsdrive.1.gz
+%doc %{_mandir}/es/man1/gpsdrive.1.gz
+%doc %{_mandir}/man1/gpsdrive.1.gz
+%doc %{_mandir}/man1/geo-code.1.gz
+%doc %{_mandir}/man1/geo-nearest.1.gz
+%doc %{_mandir}/man1/garble.1.gz
+%doc %{_mandir}/man1/geoinfo.1.gz
+
+%{_libdir}/*
+%{_bindir}/*
+
+%dir %{_prefix}/share/gpsdrive
+%{_datadir}/applications/gpsdrive.desktop
+%{_prefix}/share/gpsdrive/depcomp
+%{_prefix}/share/gpsdrive/Documentation/*
+%{_prefix}/share/gpsdrive/DSL/*
+%{_prefix}/share/gpsdrive/gentoo/*
+%{_prefix}/share/gpsdrive/icons.txt
+%{_prefix}/share/gpsdrive/icons/*
+%{_prefix}/share/gpsdrive/lib_map.a
+%{_prefix}/share/gpsdrive/map_koord.txt
+%{_prefix}/share/gpsdrive/maps/*
+%{_prefix}/share/gpsdrive/pixmaps/*
+%{_prefix}/share/gpsdrive/poi/*
+%{_prefix}/share/gpsdrive/streets/*
+%{_prefix}/share/locale/*/LC_MESSAGES/*
+
+%changelog
+* Sat Aug 26 2006 Charles Curley <ccurley@charlesc.localdomain> - 2.10pre3.20060826-1
+- First changelog entry. Massive updates since Fritz Ganter's
+  versions, mostly to bring it up to modern RPM (v 4.4 or so)
+  standards.
