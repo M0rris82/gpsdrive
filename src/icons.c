@@ -260,9 +260,9 @@ read_icon (gchar * icon_name)
 		  available_path[i].option);
       g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename,
 		  icon_name);
-      icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
       if (mydebug > 75)
 	printf ("read_icon(%s): Try\t%s\n", icon_name, icon_filename);
+      icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
       if (NULL != icons_buffer)
 	{
 	  if (mydebug > 20)
@@ -318,7 +318,7 @@ read_themed_icon (gchar * icon_name)
   do
     {
       g_snprintf (themed_icon_filename, sizeof (themed_icon_filename),
-		  "%s/%s", local_config.icon_theme, icon_file_name);
+		  "%s/%s.png", local_config.icon_theme, icon_file_name);
       if (mydebug > 90)
 	fprintf (stderr, "read_themed_icon(%s) => Themed File %s\n",
 		 icon_name, themed_icon_filename);
