@@ -7,9 +7,34 @@ pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
-icons_DATA = icons/*/*.png \
-	     icons/*/*/*.png \
-	     icons/index.html
+icons_DATA = \
+	     	icons/square.big/*.png \
+		icons/square.big/food/*.png \
+		icons/square.big/food/fastfood/*.png \
+		icons/square.big/food/restaurant/*.png \
+		icons/square.big/geocache/*.png \
+		icons/square.big/people/*.png \
+		icons/square.big/sightseeing/*.png \
+		icons/square.small/*.png \
+		icons/square.small/accomodation/*.png \
+		icons/square.small/people/*.png \
+		icons/classic/*.png \
+		icons/classic/accomodation/*.png \
+		icons/classic/food/*.png \
+		icons/classic/health/*.png \
+		icons/classic/money/*.png \
+		icons/classic/nautical/*.png \
+		icons/classic/other/*.png \
+		icons/classic/people/*.png \
+		icons/classic/places/*.png \
+		icons/classic/recreation/*.png \
+		icons/classic/religion/*.png \
+		icons/classic/shopping/*.png \
+		icons/classic/sports/*.png \
+		icons/classic/transport/*.png \
+		icons/classic/vehicle/*.png \
+		icons/classic/wlan/*.png \
+		icons/index.html
 
 streetsdir   = $(datadir)/gpsdrive/streets
 streets_DATA = streets/Autobahnen.txt \
