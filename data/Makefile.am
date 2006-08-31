@@ -10,7 +10,6 @@ iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = \
 	     	icons/square.big/*.png \
 		icons/square.big/food/*.png \
-		icons/square.big/food/fastfood/*.png \
 		icons/square.big/food/restaurant/*.png \
 		icons/square.big/geocache/*.png \
 		icons/square.big/people/*.png \

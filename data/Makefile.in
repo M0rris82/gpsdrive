@@ -247,7 +247,6 @@ iconsdir = $(datadir)/gpsdrive/icons
 icons_DATA = \
 	     	icons/square.big/*.png \
 		icons/square.big/food/*.png \
-		icons/square.big/food/fastfood/*.png \
 		icons/square.big/food/restaurant/*.png \
 		icons/square.big/geocache/*.png \
 		icons/square.big/people/*.png \
@@ -464,7 +463,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/food $(distdir)/icons/classic/health $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/other $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/fastfood $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/people $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/people $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/food $(distdir)/icons/classic/health $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/other $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/people $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/people $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
