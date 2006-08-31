@@ -244,13 +244,10 @@ cfg_files_DATA = icons.txt map_koord.txt
 pixmapdir = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 iconsdir = $(datadir)/gpsdrive/icons
-icons_DATA = icons/classic/*.png \
-	     icons/square.big/*.png \
-	     icons/square.big/*/*.png \
+icons_DATA = icons/*/*.png \
+	     icons/*/*/*.png \
 	     icons/index.html
 
-#	     icons/square.small/*/*.png 
-#	     icons/square.small/*.png 
 streetsdir = $(datadir)/gpsdrive/streets
 streets_DATA = streets/Autobahnen.txt \
 	  streets/Streets_au.txt  streets/Streets.txt
@@ -442,7 +439,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/square.big $(distdir)/icons/square.big/* $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/* $(distdir)/icons/*/* $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

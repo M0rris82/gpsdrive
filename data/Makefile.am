@@ -7,12 +7,8 @@ pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
-icons_DATA = icons/classic/*.png \
-	     icons/square.big/*.png \
-	     icons/square.big/*/*.png \
-	     icons/square.big/*/*/*.png \
-	     icons/square.small/*.png  \
-	     icons/square.small/*/*.png \
+icons_DATA = icons/*/*.png \
+	     icons/*/*/*.png \
 	     icons/index.html
 
 streetsdir   = $(datadir)/gpsdrive/streets

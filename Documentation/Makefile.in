@@ -230,14 +230,27 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 documentationdir = $(datadir)/gpsdrive/Documentation
-documentation_DATA = TODO GPS-receivers LEEME CREDITS \
-	LISEZMOI LISEZMOI.FreeBSD LISEZMOI.kismet LISEZMOI.SQL \
-	README.FreeBSD   README.Fedora \
-	README.gpspoint2gspdrive \
+documentation_DATA = \
+	CREDITS \
 	FAQ.gpsdrive FAQ.gpsdrive.fr \
+	GPS-receivers \
+	LEEME \
+	LISEZMOI.FreeBSD\
+	LISEZMOI.SQL \
+	LISEZMOI.kismet \
+	LISEZMOI \
+	NMEA.txt \
+	README.Bluetooth \
+	README.Fedora \
+	README.FreeBSD \
+	README.OpenStreetMap-Vektordata \
 	README.SQL README.mysql \
-	NMEA.txt README.kismet README.nasamaps \
-	README.lib_map README.Bluetooth
+	README.Upgrade \
+	README.gpspoint2gspdrive \
+	README.kismet \
+	README.lib_map \
+	README.nasamaps \
+	TODO
 
 EXTRA_DIST = $(documentation_DATA)
 all: all-am
