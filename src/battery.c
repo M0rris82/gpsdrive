@@ -574,7 +574,7 @@ expose_display_temperature ()
   gdk_gc_set_foreground (temkontext, &mygray);
   gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
   if (temimage == NULL)
-    temimage = read_icon ("gauge.png");
+    temimage = read_icon ("gauge.png",1);
   gdk_gc_set_function (temkontext, GDK_AND);
   gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0,
 		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
@@ -647,9 +647,9 @@ expose_display_battery ()
 
   if (img_powercharges == NULL)
     {
-      img_powercharges = read_icon ("powercharges.png");
-      img_powercord = read_icon ("powercord.png");
-      img_battery = read_icon ("battery.png");
+      img_powercharges = read_icon ("powercharges.png",1);
+      img_powercord = read_icon ("powercord.png",1);
+      img_battery = read_icon ("battery.png",1);
     }
 
   if (batcharge)

@@ -2304,7 +2304,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 	if (compasskontext == NULL)
 		compasskontext = gdk_gc_new (drawable_bearing);
 	if (compassimage == NULL)
-		compassimage = read_icon("compass.png");
+		compassimage = read_icon("compass.png",1);
 	if (compassimage == NULL && do_unit_test ) {
 	    exit (-1);
 	}
@@ -5763,7 +5763,7 @@ main (int argc, char *argv[])
     gtk_widget_show_all (mainwindow);
 
 
-    mainwindow_icon_pixbuf = read_icon ("gpsicon.png");
+    mainwindow_icon_pixbuf = read_icon ("gpsicon.png",1);
     if (mainwindow_icon_pixbuf)
 	{
 	    gtk_window_set_icon (GTK_WINDOW (mainwindow),

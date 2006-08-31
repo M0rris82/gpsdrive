@@ -221,15 +221,16 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
 
 /* -----------------------------------------------------------------------------
  * load icon into pixbuff from either system directory or user directory
+ * if force is set we exit on non success
 */
 GdkPixbuf *
-read_icon (gchar * icon_name)
+read_icon (gchar * icon_name, int force)
 {
   gchar filename[1024];
   gchar icon_filename[1024];
   GdkPixbuf *icons_buffer = NULL;
   if (mydebug > 50)
-    printf ("read_icon(%s)\n", icon_name);
+    printf ("read_icon(%s,%d)\n", icon_name,force);
 
   typedef struct
   {
@@ -271,7 +272,7 @@ read_icon (gchar * icon_name)
 	}
     }
 
-  if ( NULL == icons_buffer ) {
+  if ( NULL == icons_buffer && force ) {
       fprintf (stderr,"read_icon: No Icon '%s' found\n", icon_name);
       if ( strstr (icon_name, "Old") == NULL ) {
 	  fprintf (stderr,
@@ -322,7 +323,7 @@ read_themed_icon (gchar * icon_name)
       if (mydebug > 90)
 	fprintf (stderr, "read_themed_icon(%s) => Themed File %s\n",
 		 icon_name, themed_icon_filename);
-      icon = read_icon (themed_icon_filename);
+      icon = read_icon (themed_icon_filename,0);
       if (icon != NULL)
 	return icon;
 
@@ -336,6 +337,12 @@ read_themed_icon (gchar * icon_name)
 	}
     }
   while (p_pos != NULL);
+
+  if ( NULL == icon ) {
+      fprintf (stderr,"read_themed_icon: No Icon '%s' found fot theme %s\n", 
+	       icon_name,local_config.icon_theme);
+      exit (-1);
+  }
   return NULL;
 }
 
@@ -352,7 +359,7 @@ load_icons (void)
   char filename[255];
 
   /* hardcoded kismet-stuff */
-  kismetpixbuf = read_icon ("kismet.png");
+  kismetpixbuf = read_icon ("kismet.png",1);
 
   /* load icons defined in icons.txt */
   if (!fh_icons_txt)
@@ -431,14 +438,14 @@ load_icons (void)
 		    {
 		      printf ("load_icons(): Not opening \"%s\"\n",
 			      (char *) &poi_type_list[index].name);
-		      icons_buffer[index].icon = read_icon ("unknown.png");
+		      icons_buffer[index].icon = read_icon ("unknown.png",1);
 		    }
 		}
 	      else
 		{
 		  printf ("load_icons(): ** Failed to open \"%s\"\n",
 			  (char *) &poi_type_list[index].name);
-		  icons_buffer[index].icon = read_icon ("unknown.png");
+		  icons_buffer[index].icon = read_icon ("unknown.png",1);
 		}
 	    }
 	  if (!icons_buffer[index].icon)	// None Found
@@ -467,7 +474,7 @@ void
 load_friends_icon (void)
 {
 
-  friendsimage =  read_icon("friendsicon.png");
+  friendsimage =  read_icon("friendsicon.png",1);
   friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
   gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
 		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
