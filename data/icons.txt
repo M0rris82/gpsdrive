@@ -1,7 +1,6 @@
 accomodation                             1	10000
 accomodation.camping                     1	10000
 accomodation.hotel                       1	10000
-custom                                   1	10000
 education                                1	10000
 food                                     1	10000
 food.bacon_and_eggs                      1	10000
@@ -64,6 +63,7 @@ nautical.alpha_flag                      1	10000
 nautical.anchor                          1	10000
 nautical.boat                            1	10000
 nautical.dive_flag                       1	10000
+other                                    1	10000
 other.30-end                             1	10000
 other.ABC                                1	10000
 other.aesculab                           1	10000
