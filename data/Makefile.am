@@ -7,24 +7,24 @@ pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 iconsdir   = $(datadir)/gpsdrive/icons
-icons_DATA =		icons/index.html
+icons_DATA = icons/index.html
 
-icons_square.big_DATA =		icons/square.big/*.png
+icons_square.big_DATA =	icons/square.big/*.png
 icons_square.bigdir= $(datadir)/gpsdrive/icons/square.big
 
-icons_square.big_food_DATA =icons/square.big/food/*.png
+icons_square.big_food_DATA = icons/square.big/food/*.png
 icons_square.big_fooddir= $(datadir)/gpsdrive/icons/square.big/food
 
-icons_square.big_restaurant_DATA =icons/square.big/food/restaurant/*.png
+icons_square.big_restaurant_DATA = icons/square.big/food/restaurant/*.png
 icons_square.big_restaurantdir= $(datadir)/gpsdrive/icons/square.big/restaurant
 
-icons_square.big_geocache_DATA =icons/square.big/geocache/*.png
+icons_square.big_geocache_DATA = icons/square.big/geocache/*.png
 icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big
 
-icons_square.big_people_DATA =icons/square.big/people/*.png
+icons_square.big_people_DATA = icons/square.big/people/*.png
 icons_square.big_peopledir= $(datadir)/gpsdrive/icons/square.big/people
 
-icons_square.big_sightseeing_DATA =icons/square.big/sightseeing/*.png 
+icons_square.big_sightseeing_DATA = icons/square.big/sightseeing/*.png 
 icons_square.big_sightseeingdir= $(datadir)/gpsdrive/icons/square.big/sightseeing
 
 
@@ -108,6 +108,31 @@ apps_DATA = gpsdrive.desktop
 EXTRA_DIST=        \
         $(cfg_files_DATA) \
         $(pixmap_DATA) $(icons_DATA) \
+	$(icons_square.big_DATA) \
+	$(icons_square.big_food_DATA) \
+	$(icons_square.big_restaurant_DATA) \
+	$(icons_square.big_geocache_DATA) \
+	$(icons_square.big_people_DATA) \
+	$(icons_square.big_sightseeing_DATA) \
+	$(icons_square.small_DATA) \
+	$(icons_square.small_accomodation_DATA) \
+	$(icons_square.small_people_DATA) \
+	$(icons_classic_DATA) \
+	$(icons_classic_accomodation_DATA) \
+	$(icons_classic_food_DATA) \
+	$(icons_classic_health_DATA) \
+	$(icons_classic_money_DATA) \
+	$(icons_classic_nautical_DATA) \
+	$(icons_classic_other_DATA) \
+	$(icons_classic_people_DATA) \
+	$(icons_classic_places_DATA) \
+	$(icons_classic_recreation_DATA) \
+	$(icons_classic_religion_DATA) \
+	$(icons_classic_shopping_DATA) \
+	$(icons_classic_sports_DATA) \
+	$(icons_classic_transport_DATA) \
+	$(icons_classic_vehicle_DATA) \
+	$(icons_classic_wlan_DATA) \
         $(maps_DATA) $(poi_DATA) $(streets_DATA) \
         $(apps_DATA)
 

@@ -379,6 +379,31 @@ apps_DATA = gpsdrive.desktop
 EXTRA_DIST = \
         $(cfg_files_DATA) \
         $(pixmap_DATA) $(icons_DATA) \
+	$(icons_square.big_DATA) \
+	$(icons_square.big_food_DATA) \
+	$(icons_square.big_restaurant_DATA) \
+	$(icons_square.big_geocache_DATA) \
+	$(icons_square.big_people_DATA) \
+	$(icons_square.big_sightseeing_DATA) \
+	$(icons_square.small_DATA) \
+	$(icons_square.small_accomodation_DATA) \
+	$(icons_square.small_people_DATA) \
+	$(icons_classic_DATA) \
+	$(icons_classic_accomodation_DATA) \
+	$(icons_classic_food_DATA) \
+	$(icons_classic_health_DATA) \
+	$(icons_classic_money_DATA) \
+	$(icons_classic_nautical_DATA) \
+	$(icons_classic_other_DATA) \
+	$(icons_classic_people_DATA) \
+	$(icons_classic_places_DATA) \
+	$(icons_classic_recreation_DATA) \
+	$(icons_classic_religion_DATA) \
+	$(icons_classic_shopping_DATA) \
+	$(icons_classic_sports_DATA) \
+	$(icons_classic_transport_DATA) \
+	$(icons_classic_vehicle_DATA) \
+	$(icons_classic_wlan_DATA) \
         $(maps_DATA) $(poi_DATA) $(streets_DATA) \
         $(apps_DATA)
 
@@ -976,7 +1001,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/food $(distdir)/icons/classic/health $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/other $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/people $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/people $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
