@@ -82,7 +82,7 @@ am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
 	"$(DESTDIR)$(icons_square.small_accomodationdir)" \
 	"$(DESTDIR)$(icons_square.small_peopledir)" \
 	"$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" \
-	"$(DESTDIR)$(poidir)" "$(DESTDIR)$(streetsdir)"
+	"$(DESTDIR)$(poidir)"
 appsDATA_INSTALL = $(INSTALL_DATA)
 cfg_filesDATA_INSTALL = $(INSTALL_DATA)
 iconsDATA_INSTALL = $(INSTALL_DATA)
@@ -114,7 +114,6 @@ icons_square.small_peopleDATA_INSTALL = $(INSTALL_DATA)
 mapsDATA_INSTALL = $(INSTALL_DATA)
 pixmapDATA_INSTALL = $(INSTALL_DATA)
 poiDATA_INSTALL = $(INSTALL_DATA)
-streetsDATA_INSTALL = $(INSTALL_DATA)
 DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_DATA) \
 	$(icons_classic_DATA) $(icons_classic_accomodation_DATA) \
 	$(icons_classic_food_DATA) $(icons_classic_health_DATA) \
@@ -132,7 +131,7 @@ DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_DATA) \
 	$(icons_square.small_DATA) \
 	$(icons_square.small_accomodation_DATA) \
 	$(icons_square.small_people_DATA) $(maps_DATA) $(pixmap_DATA) \
-	$(poi_DATA) $(streets_DATA)
+	$(poi_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -360,10 +359,6 @@ icons_classic_vehicle_DATA = icons/classic/vehicle/*.png
 icons_classic_vehicledir = $(datadir)/gpsdrive/icons/classic/vehicle
 icons_classic_wlan_DATA = icons/classic/wlan/*.png 
 icons_classic_wlandir = $(datadir)/gpsdrive/icons/classic/wlan
-streetsdir = $(datadir)/gpsdrive/streets
-streets_DATA = streets/Autobahnen.txt \
-	  streets/Streets_au.txt  streets/Streets.txt
-
 poidir = $(datadir)/gpsdrive/poi
 poi_DATA = \
 	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
@@ -976,23 +971,6 @@ uninstall-poiDATA:
 	  echo " rm -f '$(DESTDIR)$(poidir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(poidir)/$$f"; \
 	done
-install-streetsDATA: $(streets_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(streetsdir)" || $(mkdir_p) "$(DESTDIR)$(streetsdir)"
-	@list='$(streets_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(streetsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(streetsdir)/$$f'"; \
-	  $(streetsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(streetsdir)/$$f"; \
-	done
-
-uninstall-streetsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(streets_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(streetsdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(streetsdir)/$$f"; \
-	done
 tags: TAGS
 TAGS:
 
@@ -1001,7 +979,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/food $(distdir)/icons/classic/health $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/other $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/people $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/people $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi $(distdir)/streets
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/food $(distdir)/icons/classic/health $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/other $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/people $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/people $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -1032,7 +1010,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(icons_classicdir)" "$(DESTDIR)$(icons_classic_accomodationdir)" "$(DESTDIR)$(icons_classic_fooddir)" "$(DESTDIR)$(icons_classic_healthdir)" "$(DESTDIR)$(icons_classic_moneydir)" "$(DESTDIR)$(icons_classic_nauticaldir)" "$(DESTDIR)$(icons_classic_otherdir)" "$(DESTDIR)$(icons_classic_peopledir)" "$(DESTDIR)$(icons_classic_placesdir)" "$(DESTDIR)$(icons_classic_recreationdir)" "$(DESTDIR)$(icons_classic_religiondir)" "$(DESTDIR)$(icons_classic_shoppingdir)" "$(DESTDIR)$(icons_classic_sportsdir)" "$(DESTDIR)$(icons_classic_transportdir)" "$(DESTDIR)$(icons_classic_vehicledir)" "$(DESTDIR)$(icons_classic_wlandir)" "$(DESTDIR)$(icons_square.bigdir)" "$(DESTDIR)$(icons_square.big_fooddir)" "$(DESTDIR)$(icons_square.big_geocachedir)" "$(DESTDIR)$(icons_square.big_peopledir)" "$(DESTDIR)$(icons_square.big_restaurantdir)" "$(DESTDIR)$(icons_square.big_sightseeingdir)" "$(DESTDIR)$(icons_square.smalldir)" "$(DESTDIR)$(icons_square.small_accomodationdir)" "$(DESTDIR)$(icons_square.small_peopledir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)" "$(DESTDIR)$(streetsdir)"; do \
+	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(iconsdir)" "$(DESTDIR)$(icons_classicdir)" "$(DESTDIR)$(icons_classic_accomodationdir)" "$(DESTDIR)$(icons_classic_fooddir)" "$(DESTDIR)$(icons_classic_healthdir)" "$(DESTDIR)$(icons_classic_moneydir)" "$(DESTDIR)$(icons_classic_nauticaldir)" "$(DESTDIR)$(icons_classic_otherdir)" "$(DESTDIR)$(icons_classic_peopledir)" "$(DESTDIR)$(icons_classic_placesdir)" "$(DESTDIR)$(icons_classic_recreationdir)" "$(DESTDIR)$(icons_classic_religiondir)" "$(DESTDIR)$(icons_classic_shoppingdir)" "$(DESTDIR)$(icons_classic_sportsdir)" "$(DESTDIR)$(icons_classic_transportdir)" "$(DESTDIR)$(icons_classic_vehicledir)" "$(DESTDIR)$(icons_classic_wlandir)" "$(DESTDIR)$(icons_square.bigdir)" "$(DESTDIR)$(icons_square.big_fooddir)" "$(DESTDIR)$(icons_square.big_geocachedir)" "$(DESTDIR)$(icons_square.big_peopledir)" "$(DESTDIR)$(icons_square.big_restaurantdir)" "$(DESTDIR)$(icons_square.big_sightseeingdir)" "$(DESTDIR)$(icons_square.smalldir)" "$(DESTDIR)$(icons_square.small_accomodationdir)" "$(DESTDIR)$(icons_square.small_peopledir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -1102,7 +1080,7 @@ install-data-am: install-appsDATA install-cfg_filesDATA \
 	install-icons_square.smallDATA \
 	install-icons_square.small_accomodationDATA \
 	install-icons_square.small_peopleDATA install-mapsDATA \
-	install-pixmapDATA install-poiDATA install-streetsDATA
+	install-pixmapDATA install-poiDATA
 
 install-exec-am:
 
@@ -1154,8 +1132,7 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.smallDATA \
 	uninstall-icons_square.small_accomodationDATA \
 	uninstall-icons_square.small_peopleDATA uninstall-info-am \
-	uninstall-mapsDATA uninstall-pixmapDATA uninstall-poiDATA \
-	uninstall-streetsDATA
+	uninstall-mapsDATA uninstall-pixmapDATA uninstall-poiDATA
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
@@ -1187,12 +1164,11 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	install-icons_square.small_accomodationDATA \
 	install-icons_square.small_peopleDATA install-info \
 	install-info-am install-man install-mapsDATA \
-	install-pixmapDATA install-poiDATA install-streetsDATA \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-appsDATA \
-	uninstall-cfg_filesDATA uninstall-iconsDATA \
+	install-pixmapDATA install-poiDATA install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-appsDATA uninstall-cfg_filesDATA uninstall-iconsDATA \
 	uninstall-icons_classicDATA \
 	uninstall-icons_classic_accomodationDATA \
 	uninstall-icons_classic_foodDATA \
@@ -1218,8 +1194,7 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.smallDATA \
 	uninstall-icons_square.small_accomodationDATA \
 	uninstall-icons_square.small_peopleDATA uninstall-info-am \
-	uninstall-mapsDATA uninstall-pixmapDATA uninstall-poiDATA \
-	uninstall-streetsDATA
+	uninstall-mapsDATA uninstall-pixmapDATA uninstall-poiDATA
 
 
 rebuild-icons:

@@ -86,10 +86,6 @@ icons_classic_vehicledir= $(datadir)/gpsdrive/icons/classic/vehicle
 icons_classic_wlan_DATA = icons/classic/wlan/*.png 
 icons_classic_wlandir= $(datadir)/gpsdrive/icons/classic/wlan
 
-streetsdir   = $(datadir)/gpsdrive/streets
-streets_DATA = streets/Autobahnen.txt \
-	  streets/Streets_au.txt  streets/Streets.txt
-
 poidir   = $(datadir)/gpsdrive/poi
 poi_DATA = \
 	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
