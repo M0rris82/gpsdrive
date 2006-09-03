@@ -27,7 +27,6 @@ icons_square.big_peopledir= $(datadir)/gpsdrive/icons/square.big/people
 icons_square.big_sightseeing_DATA = icons/square.big/sightseeing/*.png 
 icons_square.big_sightseeingdir= $(datadir)/gpsdrive/icons/square.big/sightseeing
 
-
 icons_square.small_DATA = icons/square.small/*.png
 icons_square.smalldir= $(datadir)/gpsdrive/icons/square.small
 
@@ -37,18 +36,26 @@ icons_square.small_accomodationdir= $(datadir)/gpsdrive/icons/square.small/accom
 icons_square.small_people_DATA = icons/square.small/people/*.png
 icons_square.small_peopledir= $(datadir)/gpsdrive/icons/square.small/people
 
-
 icons_classic_DATA = icons/classic/*.png
 icons_classicdir= $(datadir)/gpsdrive/icons/classic
 
 icons_classic_accomodation_DATA = icons/classic/accomodation/*.png
 icons_classic_accomodationdir= $(datadir)/gpsdrive/icons/classic/accomodation
 
+icons_classic_education_DATA = icons/classic/education/*.png
+icons_classic_educationdir= $(datadir)/gpsdrive/icons/classic/education
+
 icons_classic_food_DATA = icons/classic/food/*.png
-icons_classic_fooddir= $(datadir)/gpsdrive/icons/classic
+icons_classic_fooddir= $(datadir)/gpsdrive/icons/classic/food
+
+icons_classic_geocache_DATA = icons/classic/geocache/*.png
+icons_classic_geocachedir = $(datadir)/gpsdrive/icons/geocache
 
 icons_classic_health_DATA = icons/classic/health/*.png
 icons_classic_healthdir= $(datadir)/gpsdrive/icons/classic/health
+
+icons_classic_historic_DATA = icons/classic/historic/*.png
+icons_classic_historicdir = $(datadir)/gpsdrive/icons/classic/historic
 
 icons_classic_money_DATA = icons/classic/money/*.png
 icons_classic_moneydir= $(datadir)/gpsdrive/icons/classic/money
@@ -64,6 +71,9 @@ icons_classic_peopledir= $(datadir)/gpsdrive/icons/classic/people
 
 icons_classic_places_DATA = icons/classic/places/*.png
 icons_classic_placesdir= $(datadir)/gpsdrive/icons/classic/places
+
+icons_classic_public_DATA = icons/classic/public/*.png
+icons_classic_publicdir = $(datadir)/gpsdrive/icons/classic/public
 
 icons_classic_recreation_DATA = icons/classic/recreation/*.png
 icons_classic_recreationdir= $(datadir)/gpsdrive/icons/classic/recreation
@@ -115,8 +125,11 @@ EXTRA_DIST=        \
 	$(icons_square.small_people_DATA) \
 	$(icons_classic_DATA) \
 	$(icons_classic_accomodation_DATA) \
+	$(icons_classic_education_DATA) \
 	$(icons_classic_food_DATA) \
+	$(icons_classic_geocache_DATA) \
 	$(icons_classic_health_DATA) \
+	$(icons_classic_historic_DATA) \
 	$(icons_classic_money_DATA) \
 	$(icons_classic_nautical_DATA) \
 	$(icons_classic_other_DATA) \
