@@ -9,10 +9,11 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 iconsdir   = $(datadir)/gpsdrive/icons
 icons_DATA = icons/index.html
 
+#######################################################################################
 icons_square.big_DATA =	icons/square.big/*.png
 icons_square.bigdir= $(datadir)/gpsdrive/icons/square.big
 
-icons_square.big_accomodation_DATA = icons/square.big/accomdation/*.png
+icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
 icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 
 icons_square.big_custom_DATA = icons/square.big/custom/*.png
@@ -48,10 +49,10 @@ icons_square.big_peopledir= $(datadir)/gpsdrive/icons/square.big/people
 icons_square.big_places_DATA = icons/square.big/places/*.png
 icons_square.big_placesdir= $(datadir)/gpsdrive/icons/square.big/places
 
-cons_square.big_public_DATA = icons/square.big/public/*.png
+icons_square.big_public_DATA = icons/square.big/public/*.png
 icons_square.big_publicdir= $(datadir)/gpsdrive/icons/square.big/public
 
-cons_square.big_recreation_DATA = icons/square.big/recreation/*.png
+icons_square.big_recreation_DATA = icons/square.big/recreation/*.png
 icons_square.big_recreationdir= $(datadir)/gpsdrive/icons/square.big/recreation
 
 icons_square.big_shopping_DATA = icons/square.big/shopping/*.png
@@ -72,15 +73,68 @@ icons_square.big_vehicledir= $(datadir)/gpsdrive/icons/square.big/vehicle
 icons_square.big_wlan_DATA = icons/square.big/wlan/*.png
 icons_square.big_wlandir= $(datadir)/gpsdrive/icons/square.big/wlan
 
+########################################################################################
 icons_square.small_DATA = icons/square.small/*.png
 icons_square.smalldir= $(datadir)/gpsdrive/icons/square.small
 
 icons_square.small_accomodation_DATA = icons/square.small/accomodation/*.png
 icons_square.small_accomodationdir= $(datadir)/gpsdrive/icons/square.small/accomodation
 
+icons_square.small_custom_DATA = icons/square.small/custom/*.png
+icons_square.small_customdir=$(datadir)/gpsdrive/icons/square.small/custom
+
+icons_square.small_education_DATA = icons/square.small/education/*.png
+icons_square.small_educationdir=$(datadir)/gpsdrive/icons/square.small/education
+
+icons_square.small_food_DATA = icons/square.small/food/*.png
+icons_square.small_fooddir=$(datadir)/gpsdrive/icons/square.small/food
+
+icons_square.small_geocache_DATA = icons/square.small/geocache/*.png
+icons_square.small_geocachedir=$(datadir)/gpsdrive/icons/square.small/geocache
+
+icons_square.small_health_DATA = icons/square.small/health/*.png
+icons_square.small_healthdir=$(datadir)/gpsdrive/icons/square.small/health
+
+icons_square.small_historic_DATA = icons/square.small/historic/*.png
+icons_square.small_historicdir=$(datadir)/gpsdrive/icons/square.small/historic
+
+icons_square.small_money_DATA = icons/square.small/money/*.png
+icons_square.small_moneydir=$(datadir)/gpsdrive/icons/square.small/money
+
+icons_square.small_nautical_DATA = icons/square.small/nautical/*.png
+icons_square.small_nauticaldir=$(datadir)/gpsdrive/icons/square.small/nautical
+
 icons_square.small_people_DATA = icons/square.small/people/*.png
 icons_square.small_peopledir= $(datadir)/gpsdrive/icons/square.small/people
 
+icons_square.small_places_DATA = icons/square.small/places/*.png
+icons_square.small_placesdir=$(datadir)/gpsdrive/icons/square.small/places
+
+icons_square.small_public_DATA = icons/square.small/public/*.png
+icons_square.small_publicdir=$(datadir)/gpsdrive/icons/square.small/public
+
+icons_square.small_recreation_DATA = icons/square.small/recreation/*.png
+icons_square.small_recreationdir=$(datadir)/gpsdrive/icons/square.small/recreation
+
+icons_square.small_religion_DATA = icons/square.small/religion/*.png
+icons_square.small_religiondir=$(datadir)/gpsdrive/icons/square.small/religion
+
+icons_square.small_shopping_DATA = icons/square.small/shopping/*.png
+icons_square.small_shoppingdir=$(datadir)/gpsdrive/icons/square.small/shopping
+
+icons_square.small_sports_DATA = icons/square.small/sports/*.png
+icons_square.small_sportsdir=$(datadir)/gpsdrive/icons/square.small/sports
+
+icons_square.small_transport_DATA = icons/square.small/transport/*.png
+icons_square.small_transportdir=$(datadir)/gpsdrive/icons/square.small/transport
+
+icons_square.small_vehicle_DATA = icons/square.small/vehicle/*.png
+icons_square.small_vehicledir=$(datadir)/gpsdrive/icons/square.small/vehicle
+
+icons_square.small_wlan_DATA = icons/square.small/wlan/*.png
+icons_square.small_wlandir=$(datadir)/gpsdrive/icons/square.small/wlan
+
+#######################################################################################
 icons_classic_DATA = icons/classic/*.png
 icons_classicdir= $(datadir)/gpsdrive/icons/classic
 
@@ -141,6 +195,7 @@ icons_classic_vehicledir= $(datadir)/gpsdrive/icons/classic/vehicle
 icons_classic_wlan_DATA = icons/classic/wlan/*.png 
 icons_classic_wlandir= $(datadir)/gpsdrive/icons/classic/wlan
 
+####################################################################################
 poidir   = $(datadir)/gpsdrive/poi
 poi_DATA = \
 	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
@@ -149,25 +204,56 @@ poi_DATA = \
 
 mapsdir   = $(datadir)/gpsdrive/maps
 maps_DATA = \
-           maps/*.png \
-           maps/*.jpg
+	maps/*.png \
+	maps/*.jpg
 
 
 appsdir = $(datadir)/applications
 apps_DATA = gpsdrive.desktop
 
-EXTRA_DIST=        \
-        $(cfg_files_DATA) \
-        $(pixmap_DATA) $(icons_DATA) \
+EXTRA_DIST= \
+	$(cfg_files_DATA) \
+	$(pixmap_DATA) $(icons_DATA) \
 	$(icons_square.big_DATA) \
+	$(icons_square.big_accomodation_DATA) 
+	$(icons_square.big_custom_DATA) \
+	$(icons_square.big_education_DATA) \
 	$(icons_square.big_food_DATA) \
-	$(icons_square.big_restaurant_DATA) \
 	$(icons_square.big_geocache_DATA) \
+	$(icons_square.big_health_DATA) \
+	$(icons_square.big_money_DATA) \
+	$(icons_square.big_nautical_DATA) \
 	$(icons_square.big_people_DATA) \
+	$(icons_square.big_places_DATA) \
+	$(icons_square.big_public_DATA) \
+	$(icons_square.big_recreation_DATA) \
+	$(icons_square.big_restaurant_DATA) \
+	$(icons_square.big_shopping_DATA) \
 	$(icons_square.big_sightseeing_DATA) \
+	$(icons_square.big_sports_DATA) \
+	$(icons_square.big_transport_DATA) \
+	$(icons_square.big_vehicle_DATA) \
+	$(icons_square.big_wlan_DATA) \
 	$(icons_square.small_DATA) \
 	$(icons_square.small_accomodation_DATA) \
+	$(icons_square.small_custom_DATA) \
+	$(icons_square.small_education_DATA) \
+	$(icons_square.small_food_DATA) \
+	$(icons_square.small_geocache_DATA) \
+	$(icons_square.small_health_DATA) \
+	$(icons_square.small_historic_DATA) \
+	$(icons_square.small_money_DATA) \
+	$(icons_square.small_nautical_DATA) \
 	$(icons_square.small_people_DATA) \
+	$(icons_square.small_places_DATA) \
+	$(icons_square.small_public_DATA) \
+	$(icons_square.small_recreation_DATA) \
+	$(icons_square.small_religion_DATA) \
+	$(icons_square.small_shopping_DATA) \
+	$(icons_square.small_sports_DATA) \
+	$(icons_square.small_transport_DATA) \
+	$(icons_square.small_vehicle_DATA) \
+	$(icons_square.small_wlan_DATA) \
 	$(icons_classic_DATA) \
 	$(icons_classic_accomodation_DATA) \
 	$(icons_classic_education_DATA) \
@@ -187,8 +273,8 @@ EXTRA_DIST=        \
 	$(icons_classic_transport_DATA) \
 	$(icons_classic_vehicle_DATA) \
 	$(icons_classic_wlan_DATA) \
-        $(maps_DATA) $(poi_DATA) $(streets_DATA) \
-        $(apps_DATA)
+	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
+	$(apps_DATA)
 
 rebuild-icons:
 	sh ./rebuild-icons.txt.sh
