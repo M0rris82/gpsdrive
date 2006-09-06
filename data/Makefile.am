@@ -6,12 +6,12 @@ cfg_files_DATA = icons.txt map_koord.txt gpsdrive.desktop
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
-iconsdir   = $(datadir)/gpsdrive/icons
-icons_DATA = icons/index.html
+#iconsdir   = $(datadir)/gpsdrive/icons
+#icons_DATA = icons/index.html
 
 #######################################################################################
-icons_square.big_DATA =	icons/square.big/*.png
 icons_square.bigdir= $(datadir)/gpsdrive/icons/square.big
+icons_square.big_DATA =	icons/square.big/*.png
 
 icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
 icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
@@ -218,10 +218,11 @@ EXTRA_DIST= \
 	$(cfg_files_DATA) \
 	$(pixmap_DATA) $(icons_DATA) \
 	$(icons_square.big_DATA) \
-	$(icons_square.big_accomodation_DATA) 
+	$(icons_square.big_accomodation_DATA) \
 	$(icons_square.big_custom_DATA) \
 	$(icons_square.big_education_DATA) \
 	$(icons_square.big_food_DATA) \
+	$(icons_square.big_food_fastfoodDATA) \
 	$(icons_square.big_geocache_DATA) \
 	$(icons_square.big_health_DATA) \
 	$(icons_square.big_money_DATA) \
@@ -269,6 +270,7 @@ EXTRA_DIST= \
 	$(icons_classic_other_DATA) \
 	$(icons_classic_people_DATA) \
 	$(icons_classic_places_DATA) \
+	$(icons_classic_public_DATA) \
 	$(icons_classic_recreation_DATA) \
 	$(icons_classic_religion_DATA) \
 	$(icons_classic_shopping_DATA) \
