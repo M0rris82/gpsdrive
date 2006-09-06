@@ -1,7 +1,7 @@
 # Makefile.am for data
 
 cfg_filesdir   = $(datadir)/gpsdrive/
-cfg_files_DATA = icons.txt map_koord.txt
+cfg_files_DATA = icons.txt map_koord.txt gpsdrive.desktop
 
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
@@ -24,6 +24,9 @@ icons_square.big_educationdir= $(datadir)/gpsdrive/icons/square.big/education
 
 icons_square.big_food_DATA = icons/square.big/food/*.png
 icons_square.big_fooddir= $(datadir)/gpsdrive/icons/square.big/food
+
+icons_square.big_food_fastfoodDATA = icons/square.big/food/fastfood/*.png
+icons_square.big_food_fastfooddir= $(datadir)/gpsdrive/icons/square.big/food/fastfood
 
 icons_square.big_restaurant_DATA = icons/square.big/food/restaurant/*.png
 icons_square.big_restaurantdir= $(datadir)/gpsdrive/icons/square.big/restaurant
