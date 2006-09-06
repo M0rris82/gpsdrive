@@ -882,9 +882,10 @@ sub fill_default_poi_types() {
     die "no Icon Directory found" unless -d $icon_directory;
     for my $icon ( `find $icon_directory -name "*.png"` ) {
 	chomp $icon;
-	next if $icon =~ m,icons/classic/,;
-	next unless -s $icon;
+#	next if $icon =~ m,icons/classic/,;
+#	next unless -s $icon;
 	$icon =~s,([^/]+/){4},,;
+	$icon =~s,.*(classic|square\.big|square\.small),,;
 	$unused_icon->{$icon}++;
 	$existing_icon->{$icon}++;
 	print "icon: $icon\n" if $debug;
@@ -906,7 +907,7 @@ sub fill_default_poi_types() {
 	my $icon = $name;
 	$icon =~ s,\.,\/,g;
 	$icon = "$icon.png";
-	warn "Icon $icon missing\n"
+	warn "Icon $icon missing in Filesystem\n for Line:\n$line\n"
 	    unless $existing_icon->{$icon};
 	delete $unused_icon->{$icon};
 
