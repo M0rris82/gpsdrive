@@ -25,7 +25,7 @@
 
  * Hotel		hotel.png
  * Campingground	camping.png
- Youth Hostel		hostel.png
+ * Youth Hostel		youth-hostel.png
 
 ####################
 # Money (yellow-white)
@@ -106,7 +106,7 @@
 
 ####################
 # Transport vehicle (blue)
- - Fuel Station
+ * Fuel Station		fuel_station.png
     Agip
     Aral
     DEA
@@ -120,15 +120,16 @@
  resting place
  * Parking place	parking.png
  * Parking garage	parking_garage.png
- Park and Ride
+ * Park and Ride	park_ride.png
  * Car Rental		car_rental.png
     Avis
     Hertz
     Sixt
+    Europcar
  toll station
  road works
  speed trap
- Autobahnausfahrt
+ *  Autobahnausfahrt	exit.png
     
 ####################
 # Shopping (dark red)
@@ -185,28 +186,35 @@
  * Food		food.png
  
  * Restaurant	restaurant.png
- * deutsch	restaurant_d.png
- * italienisch	restaurant_i.png
- * griechisch	restaurant_gr.png
- * indisch	restaurant_ind.png
- * chinesisch	restaurant_cn.png
- * japanisch	restaurant_j.png
- * mexikanisch	restaurant_mex.png
+ 	* deutsch	d.png
+	* italienisch	i.png
+ 	* griechisch	gr.png
+ 	* indisch	ind.png
+ 	* chinesisch	cn.png
+ 	* japanisch	j.png
+ 	* mexikanisch	mex.png
+ 
+ * Fast Food    fastfood.png
+ 	* Burger King  burger-king.png
+ 	* McDonalds    mc-donalds.png
+ 	* KFC          kfc.png
+ 	* Pizza Hut    pizza-hut.png
+
+ 
  * Biergarten	beergarden.png
  * Bar		bar.png
  * Kneipe	pub.png
  * Cafe		cafe.png
  * Eisdiele	icecream.png
- * Fast Food	fastfood.png
- * Burger King	burgerking.png
- * McDonalds	mcdonalds.png
- * KFC		kfc.png
- * Pizza Hut	pizzahut.png
+ 
  Subway
  snack stand
 
 ####################
 # Recreation (light-green)
+ 
+ * Recreation	recreation.png
+ 
  park
  disco/club
  night club
@@ -224,6 +232,11 @@
 
 ####################
 # Sports (dark green)
+ 
+ * Sports	sports.png
+
+ * Soccer	soccer.png
+ 
  dart
  swimming
  climbing
