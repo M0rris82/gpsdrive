@@ -116,20 +116,21 @@
  	* OMV		omv.png
  	* Shell		shell.png
  	* Texaco	texaco.png
- repair shop
- emergency telephone
- resting place
+ * Repair Shop		repair_shop.png
+ * Emergency Phone	emergency_phone.png
  * Parking place	parking.png
- * Parking garage	parking_garage.png
- * Park and Ride	park_ride.png
+ 	* Garage	garage.png
+ 	* Park and Ride	park_ride.png
+	* Hiking	hiking.png
+ 	* with Toilet	restarea_toilet.png
  * Car Rental		car_rental.png
  	* Avis		avis.png
  	* Hertz		hertz.png
  	* Sixt		sixt.png
  	* Europcar	europcar.png
- toll station
+ * Toll Station		toll-station.png
  * road works		road_works.png
- speed trap
+ * Speed Trap		speed_trap.png
  *  Autobahnausfahrt	exit.png
     
 ####################
