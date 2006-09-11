@@ -88,15 +88,15 @@
 ####################
 # Transport public (blue-white)
  
- * Airport	airport.png
- * Railway	railway.png
- * Taxistation	taxi.png
- * Bus station	bus.png
- * Harbour	harbour.png
- Ferry
- Rapid Train
- Underground
- Tram
+ * Airport		airport.png
+ * Railway		railway.png
+ * Taxistation		taxi.png
+ * Bus station		bus.png
+ * Harbour		harbour.png
+ * Ferry		ferry.png
+ * Rapid Train		rapid_train.png
+ * Underground		underground.png
+ * Tram			tram.png
  * Park and Ride	park_ride.png
 
 ####################
