@@ -128,7 +128,7 @@
  	* Hertz		hertz.png
  	* Sixt		sixt.png
  	* Europcar	europcar.png
- * Toll Station		toll-station.png
+ * Toll Station		toll_station.png
  * road works		road_works.png
  * Speed Trap		speed_trap.png
  *  Autobahnausfahrt	exit.png
