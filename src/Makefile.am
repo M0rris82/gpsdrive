@@ -83,4 +83,4 @@ endif
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
 
-EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec
+EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc*
