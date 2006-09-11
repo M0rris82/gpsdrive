@@ -1,0 +1,8 @@
+PROJECT(poi)
+
+FILE(GLOB _poi ${CMAKE_CURRENT_SOURCE_DIR}/*.txt)
+
+IF (_poi)
+	INSTALL(FILES ${_poi} DESTINATION ${DATA_INSTALL_DIR}/poi)
+ENDIF (_poi)
+

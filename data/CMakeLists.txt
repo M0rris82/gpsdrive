@@ -1,0 +1,12 @@
+PROJECT(data)
+
+SUBDIRS(
+  icons
+  maps
+  pixmaps
+  poi
+)
+
+INSTALL(FILES gpsdrive.desktop DESTINATION ${XDG_APPS_DIR})
+INSTALL(FILES icons.txt map_koord.txt DESTINATION ${DATA_INSTALL_DIR})
+
