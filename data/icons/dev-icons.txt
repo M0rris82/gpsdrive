@@ -44,6 +44,8 @@
 
 ####################
 # Religion (violet)
+ 
+ * Religion		religion.png
  - Kirche
     catholic
     protestant
@@ -95,7 +97,7 @@
  Rapid Train
  Underground
  Tram
- Park and Ride
+ * Park and Ride	park_ride.png
 
 ####################
 # WLAN (black)
@@ -107,14 +109,13 @@
 ####################
 # Transport vehicle (blue)
  * Fuel Station		fuel_station.png
-    Agip
-    Aral
-    DEA
-    Esso
-    Jet
-    OMV
-    Shell
-    Texaco
+ 	* Agip		agip.png
+ 	* Aral		aral.png
+ 	* Esso		esso.png
+ 	* Jet		jet.png
+ 	* OMV		omv.png
+ 	* Shell		shell.png
+ 	* Texaco	texaco.png
  repair shop
  emergency telephone
  resting place
@@ -122,12 +123,12 @@
  * Parking garage	parking_garage.png
  * Park and Ride	park_ride.png
  * Car Rental		car_rental.png
-    Avis
-    Hertz
-    Sixt
-    Europcar
+ 	* Avis		avis.png
+ 	* Hertz		hertz.png
+ 	* Sixt		sixt.png
+ 	* Europcar	europcar.png
  toll station
- road works
+ * road works		road_works.png
  speed trap
  *  Autobahnausfahrt	exit.png
     
