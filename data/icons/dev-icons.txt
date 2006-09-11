@@ -1,8 +1,11 @@
 ####################
 # Places / Mapping (white)
- Hamlet
- Village
- Town
+ 
+ * places		places.png
+ 
+ * Hamlet		hamlet.png
+ * Village		village.png
+ * Town			town.png
  * City			city.png
  * Capital		capital.png
 
@@ -29,6 +32,9 @@
 
 ####################
 # Money (yellow-white)
+ 
+ * Money		money.png
+ 
  - Bank
     Sparkasse
     Postbank
@@ -101,10 +107,10 @@
 
 ####################
 # WLAN (black)
- * WLAN WEP
- * WLAN closed
- * WLAN open
- * WLAN pay
+ * WLAN WEP		wep.png
+ * WLAN closed		closed.png
+ * WLAN open		open.png
+ * WLAN pay		pay.png
 
 ####################
 # Transport vehicle (blue)
@@ -195,21 +201,18 @@
  	* chinesisch	cn.png
  	* japanisch	j.png
  	* mexikanisch	mex.png
- 
  * Fast Food    fastfood.png
- 	* Burger King  burger-king.png
- 	* McDonalds    mc-donalds.png
- 	* KFC          kfc.png
- 	* Pizza Hut    pizza-hut.png
-
- 
+ 	* Burger King	burger-king.png
+ 	* McDonalds	mc-donalds.png
+ 	* KFC		kfc.png
+ 	* Pizza Hut	pizza-hut.png
+ 	* Subway	subway.png
  * Biergarten	beergarden.png
  * Bar		bar.png
  * Kneipe	pub.png
  * Cafe		cafe.png
  * Eisdiele	icecream.png
  
- Subway
  snack stand
 
 ####################
@@ -255,7 +258,6 @@
  fishing
  tennis
  football
- 
  stadium
  sports field
 
