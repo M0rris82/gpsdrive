@@ -18,6 +18,9 @@
 #			Modified libpcre and libpcreposix
 #			Added libXinerama
 # 19/07/06	DP	Added gpsdrive sub directory to package directory
+#
+# 10/09/06	DP	Updated additional package version numbers and directories
+#			following move to debian testing (etch)
 ############################################################################################
 	PACKAGENAME=gpsdrive
 	LOGFILE=package.log
@@ -77,12 +80,12 @@
 		
 		# Files for libpcre3
 		cp /usr/lib/libpcre.a $LIBDIR
-		cp /usr/lib/libpcre.so.3.10.0 $LIBDIR
+		cp /usr/lib/libpcre.so.3.12.0 $LIBDIR
 		cp -d /usr/lib/libpcre.so $LIBDIR
 		cp -d /usr/lib/libpcre.so.3 $LIBDIR
 		
 		cp /usr/lib/libpcreposix.a $LIBDIR
-		cp /usr/lib/libpcreposix.so.3.10.0 $LIBDIR
+		cp /usr/lib/libpcreposix.so.3.12.0 $LIBDIR
 		cp -d /usr/lib/libpcreposix.so $LIBDIR
 		cp -d /usr/lib/libpcreposix.so.3 $LIBDIR
 	        
@@ -99,15 +102,14 @@
 		#  libcairo
 		cp /usr/lib/libcairo.a $LIBDIR
 		cp /usr/lib/libcairo.la $LIBDIR
-		cp /usr/lib/libcairo.so.2.2.3 $LIBDIR
+		cp /usr/lib/libcairo.so.2.9.0 $LIBDIR
 		cp -d /usr/lib/libcairo.so $LIBDIR
 		cp -d /usr/lib/libcairo.so.2 $LIBDIR
 
 		# libXinerama
-		cp /usr/X11R6/lib/libXinerama.a $LIBDIR
-		cp /usr/X11R6/lib/libXinerama.so.1.0 $LIBDIR
-		cp -d /usr/X11R6/lib/libXinerama.so.1 $LIBDIR
-		cp -d /usr/X11R6/lib/libXinerama.so.1 $LIBDIR
+		cp /usr/lib/libXinerama.a $LIBDIR
+		cp /usr/lib/libXinerama.so.1.0.0 $LIBDIR
+		cp -d /usr/lib/libXinerama.so.1 $LIBDIR
 		
 		
 	# Add other missing files required to run the program
