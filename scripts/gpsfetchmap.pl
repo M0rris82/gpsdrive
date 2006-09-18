@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # gpsfetchmap
 #
-# You are allowed to modify the source code in any way you want
+# You are allowed to modify the source code in any way you want 
 # except you cannot modify this copyright details
 # or remove the polite feature.
 #
@@ -58,7 +58,7 @@ my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
 # Translates Scale to zoom factor used by Mapserver
 # This Variable also is used to see if the required mapserver
 # is a valid Mapserver source
-my $Scale2Zoom = {
+my $Scale2Zoom = { 
     expedia => {
 	# Right Values have to be filled later this is a placeholder for now
 	# The values are stored in @SCALES and @EXPEDIAALTS
@@ -94,19 +94,19 @@ my $Scale2Zoom = {
 	75000000 => 0,
     },
     googlesat => {
-	6836224 =>  7,
-	3418112 =>  8,
-	1709056 =>  9,
-	854528  => 10,
-	427264  => 11,
-	213632  => 12,
-	106816  => 13,
-	53408   => 14,
-	26704   => 15,
-	13352   => 16,
-	6676    => 17,
-	3338    => 18,
-	1669    => 19,
+	5708800 =>  7,  #Modified Scale values
+	2854400 =>  8,
+	1427200 =>  9,
+	713600  => 10,
+	356800  => 11,
+	178400  => 12,
+	89200   => 13,
+	44600   => 14,
+	22300   => 15,
+	11200   => 16,
+	5600    => 17,
+	2825    => 18,
+	1412    => 19,
     },
     eniro => {
 	18000000 => 1, # 480     Km
@@ -118,21 +118,21 @@ my $Scale2Zoom = {
 	5000     => 7, #     160 m
     },
     gov_au => {
-	10000000000 => 1, #
-	5000000000  => 2, #
-	1000000000  => 3, #
-	500000000   => 4, #
-	100000000   => 5, #
+	10000000000 => 1, # 
+	5000000000  => 2, # 
+	1000000000  => 3, # 
+	500000000   => 4, # 
+	100000000   => 5, # 
 	50000000    => 6, #
-	10000000    => 7, #
-	5000000     => 8, #
-	1000000     => 9, #
-	500000      => 10, #
-	100000      => 11, #
-	50000       => 12, #
-	10000       => 13, #
-	5000        => 14, #
-	1000        => 15, #
+	10000000    => 7, # 
+	5000000     => 8, # 
+	1000000     => 9, # 
+	500000      => 10, # 
+	100000      => 11, # 
+	50000       => 12, #  
+	10000       => 13, #  
+	5000        => 14, # 
+	1000        => 15, # 
     },
 
     incrementp => {
@@ -143,7 +143,7 @@ my $Scale2Zoom = {
 	400000  => 4,  #  25     Km
 	200000  => 5,  #  10     Km
 	100000  => 6,  #   5     Km
-	50000   => 7,  #   2.5   Km
+	50000   => 7,  #   2.5   Km 
 	25000   => 8,  #   1.0   Km
 	2500    => 9,  #     500 m
 	6250    => 10, #     250 m
@@ -158,11 +158,11 @@ my $Scale2Zoom = {
     },
     landsat => {
    	  2000 =>    2*6.4,
-   	  5000 =>    5*6.4,
+   	  5000 =>    5*6.4,	
    	 10000 =>   10*6.4,
-   	 50000 =>   50*6.4,
+   	 50000 =>   50*6.4, 
    	100000 =>  100*6.4,
-   	500000 =>  500*6.4,
+   	500000 =>  500*6.4,   
        1000000 => 1000*6.4,
        5000000 => 5000*6.4,
       10000000 =>10000*6.4,
@@ -200,16 +200,16 @@ our $GPSTOOL_MAP_KOORDS = {};
 our $GPSTOOL_MAP_FILES  = {};
 my $PROXY=$ENV{'http_proxy'};
 
-GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
-	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat,
-	     'start-lon=f'    => \$slon,       'end-lon=f'   => \$endlon,
-	     'sla=f'          => \$slat,       'ela=f'       => \$endlat,
-	     'slo=f'          => \$slon,       'elo=f'       => \$endlon,
-	     'scale=s'        => \$scale,      'mapserver=s' => \$mapserver,
-	     'waypoint=s'     => \$waypoint,   'area=s'      => \$area,
-	     'unit=s'         => \$unit,       'mapdir=s'    => \$mapdir,
+GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon, 
+	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
+	     'start-lon=f'    => \$slon,       'end-lon=f'   => \$endlon, 
+	     'sla=f'          => \$slat,       'ela=f'       => \$endlat, 
+	     'slo=f'          => \$slon,       'elo=f'       => \$endlon, 
+	     'scale=s'        => \$scale,      'mapserver=s' => \$mapserver, 
+	     'waypoint=s'     => \$waypoint,   'area=s'      => \$area, 
+	     'unit=s'         => \$unit,       'mapdir=s'    => \$mapdir, 
 	     'polite:i'       => \$polite,
-	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE,
+	     'WAYPOINT=s'     => \$WAYPT_FILE, 'CONFIG=s'    => \$CONFIG_FILE, 
 	     'PREFIX=s'       => \$FILEPREFIX,
 	     'n'              => \$simulate_only,
 	     'track=s'        => \$TRACK_FILE,
@@ -217,9 +217,9 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     'check-koordfile'=> \$check_koord_file,
 	     'check-coverage' => \$check_coverage,
 	     'U'              => \$update_koord,
-	     'FORCE'          => \$force,
+	     'FORCE'          => \$force,     
 	     'PROXY=s'        => \$PROXY,
-	     'debug'          => \$debug,      'MAN' => \$man,
+	     'debug'          => \$debug,      'MAN' => \$man, 
 	     'help|x'         => \$help,       'version' => \$version
 	     )
     or pod2usage(1);
@@ -326,10 +326,10 @@ if ($version) {
 }
 
 
-# Verify that we have the options that we need
+# Verify that we have the options that we need 
 pod2usage(1) if (&error_check);
 
-# Change into the gpsdrive maps directory
+# Change into the gpsdrive maps directory 
 chdir($mapdir);
 
 ############################################
@@ -340,7 +340,7 @@ if ( $check_koord_file ) {
 }
 
 if ( $check_coverage ) {
-    check_coverage($KOORD_FILE);
+    check_coverage($KOORD_FILE); 
     exit();
 }
 
@@ -389,7 +389,7 @@ if ($TRACK_FILE) { # download maps along a saved track
 } else { # we are not downloading maps a saved track or between waypoints
     # Now get the start and end coordinates
     unless ($slat && $slon && $endlat && $endlon) {
-        ($slat,$slon,$endlat,$endlon) = get_coords($lat,$lon,$area,$unit);
+        ($slat,$slon,$endlat,$endlon) = get_coords($lat,$lon,$area,$unit); 
     }
     print "Upper left:  $slat, $slon\n" if $debug;
     print "Lower right: $endlat, $endlon\n" if ($debug);
@@ -512,7 +512,7 @@ sub mirror_file($$){
 
     my $response = $ua->mirror($url,$local_filename);
 #    debug(sprintf("success = %d <%s>",$response->is_success,$response->status_line));
-
+    
     if ( ! $response->is_success ) {
 	if ( $response->status_line =~ /^304/ ) {
 	    print "$url --> $local_filename\tNOT MOD" if $debug ;
@@ -525,7 +525,7 @@ sub mirror_file($$){
 	    unlink $local_filename unless $file_existed;
 	    $ok=0;
 	}
-    }
+    }    
     debug("mirror_file($url --> $local_filename) error ")
 	unless $ok;
     return $ok;
@@ -547,13 +547,13 @@ sub is_map_file($){
 
     return 0 if -s $full_filename;
 
-    # Search in System
+    # Search in System 
     $full_filename = "/usr/local/share/gpsdrive/maps/$filename" unless $filename =~ m,^/,;
     return 1 if ( -s $full_filename || 0  ) > $MIN_MAP_BYTES ;
 
     $full_filename = "/usr/share/gpsdrive/maps/$filename" unless $filename =~ m,^/,;
     return 1 if ( -s $full_filename || 0  ) > $MIN_MAP_BYTES ;
-
+    
     return 0;
 }
 
@@ -634,7 +634,7 @@ sub mirror2_map($$){
 ######################################################################
 sub map_filename($$$){
     my ($scale,$lati,$long) = @_;
-
+    
     my $filename = "$mapserver/$scale"
 	."/".int($lati)
 #	."/".sprintf("%3.1f",$lati)
@@ -659,41 +659,41 @@ sub wget_map($$$){
     #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
     my $filename = map_filename($scale,$lati,$long);
-
-    if ( $mapserver eq 'expedia')
+    
+    if ( $mapserver eq 'expedia') 
     {
 	($url,$mapscale)=expedia_url($lati,$long,$scale);
-    }
-    elsif ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/)
+    } 
+    elsif ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/) 
     {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
-    }
-    elsif ( $mapserver eq 'incrementp')
+    } 
+    elsif ( $mapserver eq 'incrementp') 
     {
 	($url,$mapscale)=incrementp_url($lati,$long,$scale);
-    }
-    elsif ( $mapserver eq 'gov_au')
+    } 
+    elsif ( $mapserver eq 'gov_au') 
     {
 	($url,$mapscale)=gov_au_url($lati,$long,$scale);
-    } elsif ( $mapserver eq 'googlesat')
+    } elsif ( $mapserver eq 'googlesat') 
     {
 	$mapscale=$scale;
 	$url = "google-sat-maps";
     }
-    elsif ( $mapserver eq 'geoscience')
+    elsif ( $mapserver eq 'geoscience') 
     {
 	($url,$mapscale)=geoscience_url($lati,$long,$scale);
-    }
-    elsif ( $mapserver eq 'landsat')
+    } 
+    elsif ( $mapserver eq 'landsat') 
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
-    }
-    else
+    } 
+    else 
     {
-	print "Unknown map sever :", $mapserver, "\n";
+	print "Unknown map sever :", $mapserver, "\n"; 
 	return "E";
     }
-
+    
     return "E" unless $url;
 
     my $mirror_filename=$filename;
@@ -701,7 +701,7 @@ sub wget_map($$$){
 	$mirror_filename="MIRROR/$mirror_filename";
 	debug("mirror_filename=$mirror_filename");
     };
-
+    
     # create directories if not existent
     for my $file ( ($filename , $mirror_filename ) ) {
 	my $dir = dirname("$mapdir$file");
@@ -712,7 +712,7 @@ sub wget_map($$$){
 	}
     }
 
-
+    
     if ( is_map_file( $filename ) ) {
 	$result= "_";
 	if ( $update_koord
@@ -726,8 +726,8 @@ sub wget_map($$$){
 	    $result="S";
 	    $newcount++;
 	} else {
-	    debug("mirror $url");
-	    if ( $mapserver eq 'googlesat')
+	    debug("mirror $url");	    
+	    if ( $mapserver eq 'googlesat') 
 	    {
 		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
 	    } elsif ( $mapserver eq 'gov_au') {
@@ -741,20 +741,20 @@ sub wget_map($$$){
 	    } elsif ( mirror_map($url,$filename) ) {
 		if ( $mapserver eq 'geoscience'){
 		    $result = resize($mapdir.$mirror_filename,$mapdir.$filename);
-		}
+		} 
 		append_koords($filename, $lati, $long, $mapscale);
 		$result= "+";
 		print "\nWrote $filename\n" if $debug;
 		$newcount++;
 	    }
-	    else
+	    else 
 	    {
 		$failcount++;
 		$result= "E";
 	    }
 	}
    }
-
+    
    return $result;
 }
 
@@ -780,13 +780,13 @@ sub error_check {
 	print "ERROR: You must supply a waypoint, latitude and longitude coordinates or starting and ending coordinates for both latitude and longitude\n\n";
 	$status++;
     }
-
+    
     # Check for area
     unless ($area || ($slat && $endlat && $slon && $endlon)) {
 	print "ERROR: You must define an area to cover or starting and ending coordinates for both latitude and longitude\n\n";
 	$status++;
     }
-
+    
     return $status;
 }
 
@@ -800,7 +800,7 @@ sub get_scales {
     # '<####' - scales below and including the number given
     # '####,####,####' - a list of scales to download
     # '####-####' - scales from first to last
-    #
+    # 
     my @scales_to_get;
     for my $temp_scale (split /,/, $$scale_ref) {
 	if ($temp_scale =~ /^\d+$/) {
@@ -814,10 +814,10 @@ sub get_scales {
 	    push(@scales_to_get,$temp_scale);
 	} elsif ($temp_scale =~ /^>\d+$/) {
 	    $temp_scale =~ s/>//;
-	    push(@scales_to_get, grep ($_ >= $temp_scale, @SCALES));
+	    push(@scales_to_get, grep ($_ >= $temp_scale, @SCALES)); 
 	} elsif ($temp_scale =~ /^<\d+$/) {
 	    $temp_scale =~ s/<//;
-	    push(@scales_to_get, grep ($_ <= $temp_scale, @SCALES));
+	    push(@scales_to_get, grep ($_ <= $temp_scale, @SCALES)); 
 	} elsif ($temp_scale =~  /-/) {
 	    my(@NUMS) = split(/-/,$temp_scale);
 	    @NUMS = sort {$a <=> $b} @NUMS;
@@ -838,10 +838,10 @@ sub expedia_url($$$){
     my $url='';
     my $ns = $scale/$EXPEDIAFACT;
     my $di = 999999;
-    my $found=0;
+    my $found=0;			
     my $i=0;
 
-    for($i=0;$i<11;$i=$i+1){
+    for($i=0;$i<11;$i=$i+1){              
 	if(abs($ns-$EXPEDIAALTS[$i]) < $di) {
 	    $di=$ns-$EXPEDIAALTS[$i];
 	    $found=$i;
@@ -849,14 +849,14 @@ sub expedia_url($$$){
     }
     my $alti=0;
     $alti=$EXPEDIAALTS[$found];
-    my $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);
+    my $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);		  		  
     if ($debug) {
 	print "\n";
 	print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
 	print "lat: $lati\n";
 	print "lon: $long\n";
     }
-
+    
     my $where;
     if ($long < -30) {
 	$where = 'USA0409';
@@ -877,7 +877,7 @@ sub eniro_url($$$){
 
     my $mapscale = $scale;
 
-
+    
     my $zoom = undef;
     my $url='';
 
@@ -909,7 +909,7 @@ sub eniro_url($$$){
 	printf "Eniro : lat: %.4f lon: %.4f\t",$lati,$long;
 	print "using zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
     }
-
+    
     my ( $eniro_country ) = ($mapserver =~ m/^eniro_(se|dk|no|fi)$/);
 
 
@@ -931,8 +931,8 @@ sub eniro_url($$$){
 	$url .= "&zoomlevel=$zoom";
 	$url .= "&size=1280x1024";
 	$url .= "&symbols";
-    }
-
+    } 
+    
     return ($url,$mapscale);
 }
 
@@ -962,14 +962,14 @@ sub incrementp_url($$$){
 	printf "Incrementp : lat: %.4f lon: %.4f\t",$lati,$long;
 	print "using zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
     }
-
+    
     $url  = "http://mapserv.incrementp.co.jp/cgi-bin/map/mapserv.cgi?";
 
 {
     my $lat1 = ($lati>0 ? "E" :"W" );
     $lat1 .= int($lati);
     $lat1 .= sprintf(".%.0f",($lati-int($lati))/60);
-
+    
     my $lon1 = ($lati>0 ? "N" :"S" );
     $lon1 .= int($long);
     $lon1 .= sprintf(".%.0f",($long-int($long))/60);
@@ -1027,14 +1027,14 @@ sub gov_au_url($$$){
     my $lon1= $long - $scale_fac;
     my $lon2= $long + $scale_fac;
     $url .= "\&mapext=$lon1+$lat2+$lon2+$lat1";
-
+	
 	if ($debug) {
 	    printf "Gov_Au : lat: %.4f lon: %.4f\t",$lati,$long;
 	    print "using zoom $zoom for requested scale $scale\n";
 	    print "actual scale $mapscale with scalefac: $scale_fac\n";
 	    print "URL: \n$url\n";
 	};
-
+    
     return ($url,$mapscale);
 }
 
@@ -1043,7 +1043,7 @@ sub landsat_url($$$){
     my $lat   = shift;
     my $lon   = shift;
     my $scale = shift;
-
+ 
     my $factor = $Scale2Zoom->{'landsat'}->{$scale};
 
     my $deltalat = 0.0005;
@@ -1090,7 +1090,7 @@ sub geoscience_url($$$){
     my $gs_lati = shift;
     my $gs_long = shift;
     my $gs_scale = shift;
-
+ 
     debug( "geoscience_url(LATI=$gs_lati,LONG=$gs_long,SCALE=$gs_scale)");
 
     my $url='';
@@ -1140,14 +1140,14 @@ sub geoscience_url($$$){
     $url .= '&layer=localities';
     $url .= '&layer=index250k'          if $debug;       # 250K MapSheet Outlines
     # Add the map size
-    $url .= "\&mapsize=1000+800";
-#    $url .= "\&mapsize=1024+820";
+    $url .= "\&mapsize=1000+800";	
+#    $url .= "\&mapsize=1024+820";	
 
     return ($url,$gs_scale);
 }
 #############################################################################
 # Note: The resize will only work if the image you want to resize has
-# the same aspect ratio as 1280x1024
+# the same aspect ratio as 1280x1024 
 # i.e. 1280/1024=1.25
 #      1000/800=1.25
 #############################################################################
@@ -1157,7 +1157,7 @@ sub resize($$){
 
     my $x='';
     my $image='';
-
+    
     debug( "resize( $src_filename --> $dst_filename)" );
 
     $image = Image::Magick->new;
@@ -1194,7 +1194,7 @@ sub resize($$){
 sub desired_locations {
     my $desired_locations = shift;
     my ($slat,$slon,$elat,$elon) = @_;
-    my $count;
+    my $count;   
 
     my $local_debug = 0 && $debug;
 
@@ -1214,13 +1214,13 @@ sub desired_locations {
 	my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
 	#TODO: $delta_lon sollte von lat abhaengen
 
-	# make the starting points for the loop $slat and $slon
+	# make the starting points for the loop $slat and $slon 
 	# snap into a grid with a Size depending on the scale.
 	# The result is $snapped_start_lat and $snapped_start_lon
-	# The grid allows maps in each direction to
+	# The grid allows maps in each direction to 
 	# overlapp by 1/$overlap of the size of one map
 	# With snap to grid we would have to download the exact same maps
-	# for slightly different starting points. This way we can
+	# for slightly different starting points. This way we can 
 	# circumvent downloads of almost completely overlaping maps
 	my $overlap = 1;
 	my $flat =  $delta_lat / $overlap;
@@ -1240,7 +1240,7 @@ sub desired_locations {
 		printf "        %5.5f:",$lati;
 		printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
 		    ,$snapped_start_lon,$slon,$delta_lon,$elon;
-		printf "\t\t";
+		printf "\t\t";	
 	    }
 	    while (($long <= $elon) || (!$count)) {
 		$desired_locations->{$scale}->{$lati}->{$long} ||='?';
@@ -1289,10 +1289,10 @@ sub file_count($){
 ######################################################################
 sub get_waypoint($) {
     my $waypoint = shift;
-
+    
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $WAYPT_FILE = "$CONFIG_DIR/$WAYPT_FILE" unless ($WAYPT_FILE =~ /\//);
-
+    
     open(WAYPT,"$WAYPT_FILE") || die "ERROR: get_waypoint Can't open: $WAYPT_FILE: $!\n";
     my ($name,$lat,$lon);
     while (<WAYPT>) {
@@ -1310,12 +1310,12 @@ sub get_waypoint($) {
 
 
 ######################################################################
-# Read the config File (~/.gpsdrive/gpsdriverc)
+# Read the config File (~/.gpsdrive/gpsdriverc) 
 # and return all Config Keys as a Hash reference
 sub read_config {
     # If they give just a filename, we should assume they meant the CONFIG_DIR
     $CONFIG_FILE = "$CONFIG_DIR/$CONFIG_FILE" unless ($CONFIG_FILE =~ /\//);
-
+    
     # If not specified on the command line, we read from the config file
     open(CONFIG,"$CONFIG_FILE") || die "ERROR: get_unit Can't open $CONFIG_FILE: $!\n";
 
@@ -1325,7 +1325,7 @@ sub read_config {
 	my ($key,$val) = split(/\s*=\s*/,$line);
 	$cfg->{lc($key)} = $val
 	    if $key;
-    }
+    }   
     close(CONFIG);
     return $cfg;
 } #End read_config
@@ -1333,7 +1333,7 @@ sub read_config {
 ######################################################################
 sub get_coords {
     my ($lat,$lon,$area,$unit) = @_;
-
+    
     # Figure out if we are doing square area or a rectangle
     my ($lat_dist,$lon_dist);
     if ($area =~ /x/i) {
@@ -1342,22 +1342,22 @@ sub get_coords {
 	$lat_dist = $area;
 	$lon_dist = $area;
     }
-    print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug);
-
+    print "Latitude distance: $lat_dist, Longitude distance: $lon_dist\n" if ($debug); 
+    
     my $lon_dist_km = calc_lon_dist($lat);
     my $lat_offset  = calc_offset($unit,$lat_dist,\$LAT_DIST_KM);
-    my $lon_offset  = calc_offset($unit,$lon_dist,\$lon_dist_km);
-
+    my $lon_offset  = calc_offset($unit,$lon_dist,\$lon_dist_km);   
+    
 #    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
-
+    
     # Ok subtract the offset for the start point
     my $slat = $lat - $lat_offset;
     my $slon = $lon - $lon_offset;
 
     # Ok add the offset for the start point
-    my $elat = $lat + $lat_offset;
-    my $elon = $lon + $lon_offset;
-
+    my $elat = $lat + $lat_offset;   
+    my $elon = $lon + $lon_offset;   
+    
     return ($slat,$slon,$elat,$elon);
 } #End get_coords
 
@@ -1366,15 +1366,15 @@ sub calc_offset {
     my($unit,$area,$dist_per_degree) = @_;
     # Adjust the dist_per_degree for the unit chosen by the user
     if ($unit =~ /miles/) {
-	$$dist_per_degree *= $KM2MILES;
+	$$dist_per_degree *= $KM2MILES;   
     } elsif ($unit =~ /nautic/) {
 	$$dist_per_degree *= $KM2NAUTICAL;
     }
-
-    # The offset for the coordinate is the distance to travel divided by
-    # the dist per degree
+    
+    # The offset for the coordinate is the distance to travel divided by 
+    # the dist per degree   
     my $offset = sprintf("%.7f", ($area / 2) / $$dist_per_degree);
-
+    
     #print "-\n".Dumper($area,\$dist_per_degree,$offset);
     return($offset);
 } #End calc_offset
@@ -1441,13 +1441,13 @@ sub get_coords_for_track($) {
 	}
 
     # Close the file and release lock or die.
-    $fh->close() or die("Error: $!");
+    $fh->close() or die("Error: $!");    
     return (\@lats, \@lons);
 } # end get_coords_for_track
 
 ######################################################################
-# Creates a track between given waypoints. Returns two identically
-# sized arrays, one that contains the latitudes and other that
+# Creates a track between given waypoints. Returns two identically 
+# sized arrays, one that contains the latitudes and other that 
 # contains the longitudes.
 ######################################################################
 sub get_coords_for_route {
@@ -1457,7 +1457,7 @@ sub get_coords_for_route {
     foreach $waypoint (@waypoints) {
         # check if all given waypoints exist
         &get_waypoint($waypoint);
-    }
+    }    
 
     my (@start, @end, @delta, @steps);
     my ($la, $lo, $i, $j);
@@ -1500,14 +1500,14 @@ sub calc_lon_dist {
 
     my $PI  = 3.141592654;
     my $dr = $PI / 180;
-
-    # calculate the circumference of the small circle at latitude
+    
+    # calculate the circumference of the small circle at latitude 
     my $cos = cos($lat * $dr); # convert degrees to radians
     my $circ_km = sprintf("%.2f",($PI * 2 * $RADIUS_KM * $cos));
-
+    
     # divide that by 360 and you have kilometers per degree
     my $km_deg = sprintf("%.2f",($circ_km / 360));
-
+    
     return ($km_deg);
 } #End calc_longitude_dist
 
@@ -1542,7 +1542,7 @@ sub append_koords($$$$) {
 
     if ( ! defined $MAP_FILES->{$filename} ) {
 	debug("Appending $filename,$lati, $long, $mapscale to $KOORD_FILE");
-	open(KOORD,">>$KOORD_FILE") || die "ERROR: append_koords can't open: $KOORD_FILE: $!\n";
+	open(KOORD,">>$KOORD_FILE") || die "ERROR: append_koords can't open: $KOORD_FILE: $!\n"; 
 	printf KOORD "$filename %17.13f %17.13f %17d\n",$lati, $long, $mapscale;
 	close KOORD;
 	$MAP_FILES->{$filename} = "$lati, $long, $mapscale";
@@ -1551,15 +1551,15 @@ sub append_koords($$$$) {
 
     if ( -s $GPSTOOL_MAP_FILE ) {
 	if ( ! defined $GPSTOOL_MAP_FILES->{$filename} ) {
-	    open(KOORD,">>$GPSTOOL_MAP_FILE") ||
-		die "ERROR: append_koords can't open: $GPSTOOL_MAP_FILE: $!\n";
+	    open(KOORD,">>$GPSTOOL_MAP_FILE") || 
+		die "ERROR: append_koords can't open: $GPSTOOL_MAP_FILE: $!\n"; 
 	    printf KOORD "$mapdir/$filename %17.13f %17.13f %4d 1280 1024\n",$lati, $long, $mapscale;
 	    close KOORD;
 	    $GPSTOOL_MAP_FILES->{$filename} = "$lati, $long, $mapscale";
 	    $GPSTOOL_MAP_KOORDS->{$mapscale}->{$lati}->{$long} = 1;
 	}
     }
-
+    
     return 'A';
 } # End  append_koords
 
@@ -1577,7 +1577,7 @@ sub read_koord_file($) {
 	return;
     };
     print "reading $koord_file\n";
-    open(KOORD,"<$koord_file") || die "ERROR: read_kooord_file can't open: $koord_file: $!\n";
+    open(KOORD,"<$koord_file") || die "ERROR: read_kooord_file can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
@@ -1593,7 +1593,7 @@ sub read_koord_file($) {
     close KOORD;
     my $r_time = time()-$s_time;
     print "$koord_file read $anz_files in $r_time sec.\n";
-
+    
 }
 
 #############################################################################
@@ -1603,7 +1603,7 @@ sub read_gpstool_map_file() {
     my $s_time=time();
     return unless -s $koord_file;
     print "reading $koord_file\n";
-    open(KOORD,"<$koord_file") || die "ERROR: read_gpstool_map_file can't open: $koord_file: $!\n";
+    open(KOORD,"<$koord_file") || die "ERROR: read_gpstool_map_file can't open: $koord_file: $!\n"; 
     my $anz_files = 0;
     while ( my $line = <KOORD> ) {
 	my ($filename ,$lati, $long, $mapscale);
@@ -1617,7 +1617,7 @@ sub read_gpstool_map_file() {
     close KOORD;
     my $r_time = time()-$s_time;
     print "$koord_file read $anz_files in $r_time sec.\n";
-
+    
 }
 
 #############################################################################
@@ -1625,7 +1625,7 @@ sub read_gpstool_map_file() {
 # and check if all Files it references are existing
 sub check_koord_file($) {
     my $koord_file = shift;
-    # Change into the gpsdrive maps directory
+    # Change into the gpsdrive maps directory 
 
     print "Checking all entries in $koord_file\n" if $debug;
     $MAP_FILES={};
@@ -1658,7 +1658,7 @@ sub check_koord_file($) {
     }
     if ( $missing_files ) {
 	print "Missing Files: $missing_files\n";
-	open(KOORD,">$koord_file.new") || die "Can't open: $koord_file.new: $!\n";
+	open(KOORD,">$koord_file.new") || die "Can't open: $koord_file.new: $!\n"; 
 	foreach my $map_filename ( keys  %$MAP_FILES )  {
 	    printf KOORD "$map_filename	%s\n", $MAP_FILES->{$map_filename};
 	}
@@ -1669,10 +1669,10 @@ sub check_koord_file($) {
 
 
 ###########################################################################
-# Update Maps found in Filesystem which cannot be found in map_koord.txt
+# Update Maps found in Filesystem which cannot be found in map_koords.txt
 ###########################################################################
 use File::Find;
-sub update_file_in_map_koords(); # {}
+sub update_file_in_map_koords(); # {} 
 sub update_gpsdrive_map_koord_file(){
     print "\n";
     print "\n";
@@ -1682,7 +1682,7 @@ sub update_gpsdrive_map_koord_file(){
     find(
      { wanted       => \&update_file_in_map_koords,
        follow_skip  => 2,
-       follow       => 1
+       follow       => 1 
        },
 	 $mapdir, );
 }
@@ -1704,7 +1704,7 @@ sub update_file_in_map_koords(){
 	    my $lati=$2;
 	    my $long=$3;
 	    my ($url,$mapscale)=expedia_url($lati,$long,$scale);
-
+	    
 #	    print "Appending File: $filename\n";
 	    append_koords($short_filename, $lati, $long, $mapscale);
 	    debug("File:$filename lat:$lati lon:$long");
@@ -1724,7 +1724,7 @@ sub check_coverage($){
 
     for my $scale ( @scales ) {
 	print "$scale:\n";;
-
+	
 	my @all_lons;
 	my %all_lons;
 	my @lats = sort {$a <=> $b} keys %{$MAP_KOORDS->{$scale}};
@@ -1751,10 +1751,10 @@ sub check_coverage($){
 
 	    # Find out which is the desired Distance
 	    my $lon_dist_km = calc_lon_dist($lat);
-	    my $k = $DIFF * $scale;
+	    my $k = $DIFF * $scale;    
 	    my $delta_lat = $k - ($k / 2); my $dlat = $delta_lat * $LAT_DIST_KM;
 	    my $delta_lon = $k - ($k / 6); my $dlon = $delta_lon * $lon_dist_km;
-
+	    
 	    # Find Min and Max Distance between 2 Maps
 	    my $min_dist= $RADIUS_KM;
 	    my $max_dist=0;
@@ -1777,11 +1777,11 @@ sub check_coverage($){
 		#print "Dist: ( $min_dist - $max_dist) Km ($prev_lon => $lon = ".($prev_lon -$lon).")\n";
 		$prev_lon = $lon;
 	    };
-
+	    
 	    printf " (%.2f,%.2f - %.2f) Km\t",$dlon,$min_dist,$max_dist;
 	    printf " %d Overlaps\t",$count_overlaps if $count_overlaps;
 	    #*= $LAT_DIST_KM;
-
+	    
 
 
 	    # Print +/- for existing/non-existing Map
@@ -1808,7 +1808,7 @@ sub check_coverage($){
 }
 
 # =============================================================================
-# This part downloads a bunch of Google satellite images
+# This part downloads a bunch of Google satellite images 
 # for coordinates given and stitches them together
 # ver 0.99
 #
@@ -1817,8 +1817,8 @@ sub check_coverage($){
 # Copyright (c) 2005 Piter Pen <code\@piterpen.net>
 # http://www.piterpen.net
 #
-# I was too lazy to write a function converts number of the map to 'tqrs'-like string
-# so I took one (xy2goog) from http://web.media.mit.edu/~nvawter/projects/googlemaps/sa01.pl
+# I was too lazy to write a function converts number of the map to 'tqrs'-like string 
+# so I took one (xy2goog) from http://web.media.mit.edu/~nvawter/projects/googlemaps/sa01.pl 
 # without permission - I assume it's ok but I promise to remove if not.
 #
 # SYNOPSIS:
@@ -1844,7 +1844,7 @@ sub xy2goog($$$){
     my ($x, $y, $zoom) = @_;
 
     $y = 2**($zoom-1) - 1 - $y;
-
+    
     my $format = '%0'.$zoom.'b';
 
     my @xBits = split(//, sprintf($format, $x));
@@ -1868,16 +1868,16 @@ sub xy2latlon($$$$){
 
     my $width = 2**($zoom-1);
     my $height = 2**($zoom-1);
-
+    
     my $tileWidth = 360 / $width;
 
     my $lon = $x*$tileWidth - 180;
-
+    
     my $yTop = lat2y1($MERCATOR_TOP);
     my $yBottom = lat2y1($MERCATOR_BOTTOM);
 
     $y = (($yBottom - $yTop)*$y)/$height + $yTop;
-
+    
     my $lat = (360*atan2(exp($y), 1))/$PI - 90;
 
     my $res = sprintf($format, $lat, $lon);
@@ -1895,7 +1895,7 @@ sub latlon2xy($$$){
     my $tileWidth = 360 / $width;
 
     my $x = ($lon + 180)/$tileWidth;
-
+    
     my $y = lat2y1($lat);
 
     my $yTop = lat2y1($MERCATOR_TOP);
@@ -1954,7 +1954,7 @@ sub write_wld($$$$){
 sub google_stitch($$$$$$) {
     my ($lat, $lon, $scale, $width, $height , $destination_file )= @_;
     my $gpsdrivehome = "$ENV{'HOME'}/.gpsdrive";
-
+    
 
     my $zoom  = $Scale2Zoom->{$mapserver}->{$scale};
 
@@ -1970,11 +1970,11 @@ sub google_stitch($$$$$$) {
 
     debug("google_stitch($lat($hval), $lon($vval), $scale, $width, $height )");
 
-    my $image=Image::Magick->new();
+    my $image=Image::Magick->new();    
     my $anz_found=0;
     my $anz_new=0;
     for(my $yd = 0; $yd < $height; $yd++) {
-	my $images=Image::Magick->new();
+	my $images=Image::Magick->new();    
 
 	for(my $xd = 0; $xd < $width; $xd++) {
 	    my $hpos = $hval + $xd;
@@ -1983,7 +1983,7 @@ sub google_stitch($$$$$$) {
 	    my $googlename = xy2goog($hpos, $vpos, $zoom);
 	    my $filename = "$google_mirror_dir/$googlename.jpg";
 	    my $url = "http://kh.google.com/kh?v=3&t=$googlename";
-
+	    
 	    if ( ! is_map_file($filename) ) {
 		if ( mirror_map($url,$filename) ) {
 		    if ( is_usefull_map_file($filename) ) {
@@ -2000,17 +2000,17 @@ sub google_stitch($$$$$$) {
 		$model->ReadImage($filename);
 		if ($debug) { # Annotate position and coordinate
 		    $model->Draw(fill => 'blue',
-				 primitive => 'line',
+				 primitive => 'line',   
 				 points => '0,0 0,150');
 		    $model->Draw(fill => 'green',
-				 primitive => 'line',
+				 primitive => 'line',   
 				 points => '0,0 150,0');
 		    my $gwp = IO::File->new(">>way_google_stitch.txt");
 		    my ($lat,$lon)=split(",",xy2latlon($hpos, $vpos, $zoom, "%.4f,%.4f"));
 		    printf $gwp "%d_%d_%d %f %f Map\n",$hpos,$vpos,$zoom,$lat,$lon;
 		    $gwp->close();
 
-		    $model->Annotate( %font_description,
+		    $model->Annotate( %font_description, 
 				      text => sprintf("%s\n%d, %d, %d",
 						      xy2latlon($hpos, $vpos, $zoom, "(%.3f,%.3f)"),
 						      $hpos,$vpos,$zoom),
@@ -2033,7 +2033,7 @@ sub google_stitch($$$$$$) {
     my $lrv  = $vval+$height;
 
 
-    my $fname =
+    my $fname =  
 	xy2latlon($ulh, $ulv, $zoom, "(%.6f)(%.6f)").
 	xy2latlon($lrh, $lrv, $zoom, "(%.6f)(%.6f)").
 	".jpeg";
@@ -2045,7 +2045,7 @@ sub google_stitch($$$$$$) {
 	print " Stitching result image... (w:$width * h:$height found:$anz_found) " if $debug;
 	$image = $image->Montage(geometry=>(256*$width)."x256", tile=>" 1x$height");
 	print "done.\n" if $debug;
-
+	
 	if ( $debug ) {
 	    my $ulm   =  xy2latlon($ulh, $ulv, $zoom, "%.6f\n%.6f");
 	    my $lrm   =  xy2latlon($lrh, $lrv, $zoom, "%.6f\n%.6f");
@@ -2116,7 +2116,7 @@ B<gpsfetchmap> Version 1.04
 
 =head1 DESCRIPTION
 
-B<gpsfetchmap> is a program to download maps from a map server for use with gpsdrive.
+B<gpsfetchmap> is a program to download maps from a mapserver for use with gpsdrive. 
 
 =head1 SYNOPSIS
 
@@ -2124,16 +2124,16 @@ B<Common usages:>
 
 gpsfetchmap -w <WAYPOINT NAME> -sc <SCALE> -a <#> -p
 
-gpsfetchmap -la <latitude DD.MMMM> -lo <latitude DD.MMMM> -sc <SCALE> -a <#> -p
+gpsfetchmap -la <latitude MM.DDDD> -lo <latitude MM.DDDD> -sc <SCALE> -a <#> -p
 
-gpsfetchmap -sla <start latitude DD.MMMM> -endla <end latitude DD.MMMM> -slo <start longitude DD.MMMM> -endlo <end longitude DD.MMMM> -sc <SCALE> -a <#> -p
+gpsfetchmap -sla <start latitude MM.DDDD> -endla <end latitude MM.DDDD> -slo <start longitude MM.DDDD> -endlo <end longitude MM.DDDD> -sc <SCALE> -a <#> -p
 
 gpsfetchmap -sc <SCALE> -a <#> -r <WAYPOINT 1> <WAYPOINT 2> ... <WAYPOINT n> -p
 
 B<All options:>
 
 gpsfetchmap [-w <WAYPOINT NAME>]
-            [-la <latitude DD.MMMM>] [-lo <longitude DD.MMMM>]
+            [-la <latitude DD.MMMM>] [-lo <longitude DD.MMMM>] 
             [-sla <start latitude DD.MMMM>] [-endla <end latitude DD.MMMM>]
             [-slo <start longitude DD.MMMM>] [-endlo <end longitude DD.MMMM>]
             [-sc <SCALE>] [-a <#>] [-p] [-m <MAPSERVER>]
@@ -2145,100 +2145,101 @@ gpsfetchmap [-w <WAYPOINT NAME>]
 =over 8
 
 =item B<-w, --waypoint <WAYPOINT NAME>>
-
+   
 Takes a waypoint name and uses the latitude and longitude for that waypoint as
-the center point of the area to be covered. Waypoints are read from 'way.txt',
-or file defined by '-W'.
-This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' are required.
-A special name, 'gpsd' asks your gps where you currently are.
+the centerpoint of the area to be covered. Waypoints are read from 'way.txt', 
+or file defined by '-W'. 
+the special name gpsd asks your local gpsd where your gps thinks you are and uses 
+this point as center.
+This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
+A special name is gpsd this waypoint asks your gps where you currently are.
 
 =item B<-la,  --lat <latitude DD.MMMM>>
 
-Takes a latitude in format DD.MMMM and uses that as the latitude for the center point of the area
-to be covered. Will be overridden by the latitude of waypoint if '-w' is used. This and '-lo', '-w' or '-sla', '-ela', '-slo', '-elo' are required.
+Takes a latitude in format DD.MMMM and uses that as the latitude for the centerpoint of the area
+to be covered. Will be overriden by the latitude of waypoint if '-w' is used. This and '-lo', '-w' or '-sla', '-ela', '-slo', '-elo' is required.
 
 =item B<-lo, --lon <longitude DD.MMMM>>
 
-Takes a longitude in format DD.MMMM and uses that as the longitude for the center point of the area
-to be covered. Will be overridden by the longitude of waypoint if '-w' is used. This and '-la', '-w' or '-sla', '-ela', '-slo', '-elo' are required.
+Takes a longitude in format DD.MMMM and uses that as the longitude for the centerpoint of the area
+to be covered. Will be overriden by the longitude of waypoint if '-w' is used. This and '-la', '-w' or '-sla', '-ela', '-slo', '-elo' is required.
 
 =item B<-sla --start-lat <start latitude DD.MMMM>>
 
-Takes a latitude in format DD.MMMM and uses that as the start latitude for the area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'. This, '-ela', '-slo' and '-elo' or '-w' or '-la' and '-lo' are required.
+Takes a latitude in format DD.MMMM and uses that as the start latitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-ela', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-ela --end-lat <end latitude DD.MMMM>>
 
-Takes a latitude in format DD.MMMM and uses that as the end latitude for the area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'.
-This, '-sla', '-slo' and '-elo' or '-w' or '-la' and '-lo' are required.
+Takes a latitude in format DD.MMMM and uses that as the end latitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. 
+This, '-sla', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-slo --start-lon <start longitude DD.MMMM>>
 
-Takes a longitude in format DD.MMMM and uses that as the start longitude for the area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'. This, '-sla', '-ela' and '-elo' or '-w' or '-la' and '-lo' are required.
+Takes a longitude in format DD.MMMM and uses that as the start longitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-sla', '-ela' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-elo --end-lon <end longitude DD.MMMM>>
 
-Takes a longitude in format DD.MMMM and uses that as the end longitude for the area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'. This, '-sla', '-ela' and '-slo' or '-w' or '-la' and '-lo' are required.
+Takes a longitude in format DD.MMMM and uses that as the end longitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-sla', '-ela' and '-slo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-sc, --scale <SCALE>>
 
-Scales of map(s) to download. Default: 50000. This may be adjusted to fit some map servers.
+Scales of map(s) to download. Default: 50000.
 
 Formats:
 
    '####'
-   - Just this scale.
+   - Just this scale.   
 
-   '####,####,####'
+   '####,####,####'  
    - All scales in the list. May be combined with other formats.
 
-   '>####'
+   '>####'          
    - All scales above and including the number given.
 
-   '<####'
+   '<####'           
    - All scales below and including the number given.
 
-   '####-####'
+   '####-####'       
    - All scales from first to last number given.
 
 =item B<-a, --area <#>>
 
-Area to cover. # of 'units' size square around the center point. You
-can use a single number for square area. Or you can use '#x#' to do a
-rectangle, where the first number is distance latitude and the second
-number is distance of longitude. 'units' is read from the
-configuration file (-C) or as defined by (-u). If 'units' is metric,
-the unit is one kilometer; miles, one mile, nautical, one nautical
-mile.
+Area to cover. # of 'units' size square around the centerpoint. You can use a single number
+for square area. Or you can use '#x#' to do a rectangle, where the first number is distance
+latitude and the second number is distance of longitude. 'units' is read from the configuration 
+file (-C) or as defined by (-u).
 
 =item B<-p, --polite>
 
-This causes the program to sleep one second between downloads to be polite to the map server.
+This causes the program to sleep one second between downloads to be polite to the mapserver. 
 Takes an optional value of number of seconds to sleep.
 
 =item B<--mapserver <MAPSERVER>>
 
-Map server to download from. Default: 'expedia'.  Currently you can
-use landsat or expedia ad expect good results. googlesat is working
-reasonably well. geoscience, gov_au, incrementp, and eniro have
-download stubs, but they are !!!NOT!!!! in the right scales.
+Mapserver to download from. Default: 'expedia'.
+Currently can use: landsat or expedia.
+
+geoscience, gov_au, incrementp, googlesat and eniro have download stubs, 
+but they are !!!NOT!!!! in the right scale.
+
 
 geoscience
 
-landsat covers the whole world with satellite Photos
+landsat covers the whole world with satelite Photos
 
 gov_au is for Australia
 
-incrementp for Japanese Maps
+incrementp for japanese Maps
 
-googlesat: Google Satellite Maps
+googlesat: Google Satelite Maps
 
 expedia
 
 eniro covers:
  eniro_se Sweden
  eniro_dk Denmark
- eniro_no Norway
- eniro_fi Finland
+ eniro_no Norway 
+ eniro_fi Finnland
 
 Overview of Area covered by eniro_fi:
  http://maps.eniro.com/servlets/fi_MapImageLocator?profile=Main&center=26.;62.&zoomlevel=1&size=800x600
@@ -2246,21 +2247,20 @@ Overview of Area covered by eniro_fi:
 
 =item B<-u, --unit <UNIT>>
 
-The measurement system to use. The default is read from the
-configuration file <-C>. Possible values are: miles, nautical,
-kilometers.
+The measurement system to use. Default is read from configuration file <-C>. Possibles are: 
+miles, nautical, kilometers.
 
 =item B<--mapdir <DIR>>
 
-Override the config file's mapdir with this value.
+Override the configfiles mapdir with this value.
 
 =item B<-W, --WAYPOINT <FILE>>
 
-File to read waypoints from. Default: '~/.gpsdrive/way.txt'.
+File to read waypoints from. Default: '~/.gpsdrive/way.txt'. 
 
 =item B<-t, --track <FILE>>
 
-Download maps that are along a saved track. File is a standard track filed saved from gpsdrive. Other waypoint files in lat, long format where lat and log are DD.MMMM may work. This is still buggy for the western hemisphere.
+Download maps that are along a saved track. File is a standard track filed saved from GpsDrive.
 
 =item B<-r, --route>
 
@@ -2268,7 +2268,7 @@ Download maps that are along a route defined by waypoints. You must give a list 
 
 =item B<-C, --CONFIG>
 
-File to read for gpsdrive configuration information. Default: '~/.gpsdrive/gpsdriverc'.
+File to read for GPSDrive configuration information. Default: '~/.gpsdrive/gpsdriverc'.
 
 =item B<-P, --PREFIX <PREFIX>>
 
@@ -2280,23 +2280,24 @@ Force program to download maps without asking you to confirm the download.
 
 =item B<-n>
 
-Don't download anything only tell which maps are missing
+Dont download anything only tell which maps are missing
 
 =item B<-U>
 
-Read map_koord.txt file at start. Then check for not downloaded map_*.gif files
-if they need to be appended to map_koord.txt.
+read map_koord.txt file at Start. Then also check for not downloaded map_*.gif Files 
+if they need to be appended to map_koords.txt. 
 
 =item B<--check-koordfile>
 
-Update map_koord.txt: search the map tree. This option reads the
-map_koord.txt file and checks that every Map in the file system is
+Update map_koord.txt: search map Tree if map_*.gif file exist, but cannot
+be found in map_koords.txt file. This option first reads the 
+map_koord.txt file and checks every Map in the filesystem if it also is 
 found in the map_koord.txt file.
-If a map is not found it is appended to the map_koord.txt file.
+If not found it is appended into the map_koord.txt file.
 
-Check map_koord.txt File. This option checks whether every Map also exists.
-If any Map-File is missing, a file map_koord.txt.new will be created.
-You can then check this file and copy it to the original file.
+Check map_koord.txt File. This option checks, if every Map also exist
+If any Map-File is missing, a file map_koord.txt.new will be created. 
+This file can be copied to the original file if checked.
 
 =item B<--check-coverage>
 
@@ -2325,18 +2326,18 @@ Prints the manual page and exits.
 
 =item B<Download>
 
-When downloading Maps the output reads as follows:
+When downloading Maps the output reads as folows:
 
 
- _ Map already exists in filesystem
- E Error while downloading map
- + Map sucessfully downloaded
- C googlestitch map from Cache
- c incomplete googlestitch map from Cache
- x Downloaded maps for googlestitch but incomplete image
+ _ Map already exists in Filesystem
+ E Error while downloading Map
+ + Map got downloaded 
+ C googlestich map from Cache
+ c incomplete googlestich map from Cache
+ x Downloaded maps for googlestich but incomplete image
  O Not all tiles where found for stitching
- u updated map_koord.txt File
- S Simulate only
+ u updated map_koords.txt File
+ S Simulate only 
 
 =back
 
