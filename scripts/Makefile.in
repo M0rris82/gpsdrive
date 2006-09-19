@@ -46,8 +46,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" \
-	"$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
@@ -59,9 +58,7 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 Geo_GpsdriveDATA_INSTALL = $(INSTALL_DATA)
-UtilsDATA_INSTALL = $(INSTALL_DATA)
-Utils_LWPDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(Geo_Gpsdrive_DATA) $(Utils_DATA) $(Utils_LWP_DATA)
+DATA = $(Geo_Gpsdrive_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -247,12 +244,13 @@ gpsdrivedir = $(datadir)/gpsdrive
 #Geo_OSM_DATA =  Geo/OSM/*.pm
 Geo_Gpsdrivedir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
 Geo_Gpsdrive_DATA = Geo/Gpsdrive/*.pm
-Utilsdir = $(PERL_PACKAGE_DIR)/Utils
-Utils_DATA = Utils/*.pm
-Utils_LWPdir = $(PERL_PACKAGE_DIR)/Utils/LWP
-Utils_LWP_DATA = Utils/LWP/*.pm
+
+#Utilsdir   = $(PERL_PACKAGE_DIR)/Utils
+#Utils_DATA =  Utils/*.pm
+
+#Utils_LWPdir   = $(PERL_PACKAGE_DIR)/Utils/LWP
+#Utils_LWP_DATA =  Utils/LWP/*.pm
 EXTRA_DIST = $(bin_SCRIPTS)\
-	$(Utils_DATA) $(Utils_LWP_DATA)\
 	$(Geo_Gpsdrive_DATA)
 
 all: all-am
@@ -333,40 +331,6 @@ uninstall-Geo_GpsdriveDATA:
 	  echo " rm -f '$(DESTDIR)$(Geo_Gpsdrivedir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(Geo_Gpsdrivedir)/$$f"; \
 	done
-install-UtilsDATA: $(Utils_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(Utilsdir)" || $(mkdir_p) "$(DESTDIR)$(Utilsdir)"
-	@list='$(Utils_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(UtilsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Utilsdir)/$$f'"; \
-	  $(UtilsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Utilsdir)/$$f"; \
-	done
-
-uninstall-UtilsDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(Utils_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(Utilsdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(Utilsdir)/$$f"; \
-	done
-install-Utils_LWPDATA: $(Utils_LWP_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(Utils_LWPdir)" || $(mkdir_p) "$(DESTDIR)$(Utils_LWPdir)"
-	@list='$(Utils_LWP_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(Utils_LWPDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Utils_LWPdir)/$$f'"; \
-	  $(Utils_LWPDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Utils_LWPdir)/$$f"; \
-	done
-
-uninstall-Utils_LWPDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(Utils_LWP_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(Utils_LWPdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(Utils_LWPdir)/$$f"; \
-	done
 tags: TAGS
 TAGS:
 
@@ -375,7 +339,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/Geo/Gpsdrive $(distdir)/Utils $(distdir)/Utils/LWP
+	$(mkdir_p) $(distdir)/Geo/Gpsdrive
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -406,7 +370,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -451,8 +415,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-Geo_GpsdriveDATA install-UtilsDATA \
-	install-Utils_LWPDATA
+install-data-am: install-Geo_GpsdriveDATA
 
 install-exec-am: install-binSCRIPTS
 
@@ -478,26 +441,26 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-Geo_GpsdriveDATA uninstall-UtilsDATA \
-	uninstall-Utils_LWPDATA uninstall-binSCRIPTS uninstall-info-am
+uninstall-am: uninstall-Geo_GpsdriveDATA uninstall-binSCRIPTS \
+	uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install \
-	install-Geo_GpsdriveDATA install-UtilsDATA \
-	install-Utils_LWPDATA install-am install-binSCRIPTS \
+	install-Geo_GpsdriveDATA install-am install-binSCRIPTS \
 	install-data install-data-am install-exec install-exec-am \
 	install-info install-info-am install-man install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall \
-	uninstall-Geo_GpsdriveDATA uninstall-UtilsDATA \
-	uninstall-Utils_LWPDATA uninstall-am uninstall-binSCRIPTS \
+	uninstall-Geo_GpsdriveDATA uninstall-am uninstall-binSCRIPTS \
 	uninstall-info-am
 
 
 geoinfo:
 	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help
+#	$(Utils_DATA)\
+#	$(Utils_LWP_DATA)\
 #	$(Geo_OSM_DATA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
