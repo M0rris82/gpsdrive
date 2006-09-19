@@ -13,8 +13,8 @@ geoinfo:
 gpsdrivedir = $(datadir)/gpsdrive
 
 
-Geo_OSMdir   = $(PERL_PACKAGE_DIR)/Geo/OSM
-Geo_OSM_DATA =  Geo/OSM/*.pm
+#Geo_OSMdir   = $(PERL_PACKAGE_DIR)/Geo/OSM
+#Geo_OSM_DATA =  Geo/OSM/*.pm
 
 Geo_Gpsdrivedir   = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
 Geo_Gpsdrive_DATA =  Geo/Gpsdrive/*.pm
@@ -27,5 +27,6 @@ Utils_LWP_DATA =  Utils/LWP/*.pm
 
 EXTRA_DIST = $(bin_SCRIPTS)\
 	$(Utils_DATA) $(Utils_LWP_DATA)\
-	$(Geo_OSM_DATA) $(Geo_Gpsdrive_DATA)
+	$(Geo_Gpsdrive_DATA)
+#	$(Geo_OSM_DATA)
 

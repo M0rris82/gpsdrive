@@ -47,8 +47,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" \
-	"$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" \
-	"$(DESTDIR)$(Utils_LWPdir)"
+	"$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
@@ -60,11 +59,9 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 Geo_GpsdriveDATA_INSTALL = $(INSTALL_DATA)
-Geo_OSMDATA_INSTALL = $(INSTALL_DATA)
 UtilsDATA_INSTALL = $(INSTALL_DATA)
 Utils_LWPDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA) $(Utils_DATA) \
-	$(Utils_LWP_DATA)
+DATA = $(Geo_Gpsdrive_DATA) $(Utils_DATA) $(Utils_LWP_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -245,8 +242,9 @@ bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		nasaconv.sh
 
 gpsdrivedir = $(datadir)/gpsdrive
-Geo_OSMdir = $(PERL_PACKAGE_DIR)/Geo/OSM
-Geo_OSM_DATA = Geo/OSM/*.pm
+
+#Geo_OSMdir   = $(PERL_PACKAGE_DIR)/Geo/OSM
+#Geo_OSM_DATA =  Geo/OSM/*.pm
 Geo_Gpsdrivedir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
 Geo_Gpsdrive_DATA = Geo/Gpsdrive/*.pm
 Utilsdir = $(PERL_PACKAGE_DIR)/Utils
@@ -255,7 +253,7 @@ Utils_LWPdir = $(PERL_PACKAGE_DIR)/Utils/LWP
 Utils_LWP_DATA = Utils/LWP/*.pm
 EXTRA_DIST = $(bin_SCRIPTS)\
 	$(Utils_DATA) $(Utils_LWP_DATA)\
-	$(Geo_OSM_DATA) $(Geo_Gpsdrive_DATA)
+	$(Geo_Gpsdrive_DATA)
 
 all: all-am
 
@@ -335,23 +333,6 @@ uninstall-Geo_GpsdriveDATA:
 	  echo " rm -f '$(DESTDIR)$(Geo_Gpsdrivedir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(Geo_Gpsdrivedir)/$$f"; \
 	done
-install-Geo_OSMDATA: $(Geo_OSM_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(Geo_OSMdir)" || $(mkdir_p) "$(DESTDIR)$(Geo_OSMdir)"
-	@list='$(Geo_OSM_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(Geo_OSMDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Geo_OSMdir)/$$f'"; \
-	  $(Geo_OSMDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Geo_OSMdir)/$$f"; \
-	done
-
-uninstall-Geo_OSMDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(Geo_OSM_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(Geo_OSMdir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(Geo_OSMdir)/$$f"; \
-	done
 install-UtilsDATA: $(Utils_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(Utilsdir)" || $(mkdir_p) "$(DESTDIR)$(Utilsdir)"
@@ -394,7 +375,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/Geo/Gpsdrive $(distdir)/Geo/OSM $(distdir)/Utils $(distdir)/Utils/LWP
+	$(mkdir_p) $(distdir)/Geo/Gpsdrive $(distdir)/Utils $(distdir)/Utils/LWP
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -425,7 +406,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -470,8 +451,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-Geo_GpsdriveDATA install-Geo_OSMDATA \
-	install-UtilsDATA install-Utils_LWPDATA
+install-data-am: install-Geo_GpsdriveDATA install-UtilsDATA \
+	install-Utils_LWPDATA
 
 install-exec-am: install-binSCRIPTS
 
@@ -497,27 +478,27 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
-	uninstall-UtilsDATA uninstall-Utils_LWPDATA \
-	uninstall-binSCRIPTS uninstall-info-am
+uninstall-am: uninstall-Geo_GpsdriveDATA uninstall-UtilsDATA \
+	uninstall-Utils_LWPDATA uninstall-binSCRIPTS uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
 	dvi-am html html-am info info-am install \
-	install-Geo_GpsdriveDATA install-Geo_OSMDATA install-UtilsDATA \
+	install-Geo_GpsdriveDATA install-UtilsDATA \
 	install-Utils_LWPDATA install-am install-binSCRIPTS \
 	install-data install-data-am install-exec install-exec-am \
 	install-info install-info-am install-man install-strip \
 	installcheck installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am uninstall \
-	uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
-	uninstall-UtilsDATA uninstall-Utils_LWPDATA uninstall-am \
-	uninstall-binSCRIPTS uninstall-info-am
+	uninstall-Geo_GpsdriveDATA uninstall-UtilsDATA \
+	uninstall-Utils_LWPDATA uninstall-am uninstall-binSCRIPTS \
+	uninstall-info-am
 
 
 geoinfo:
 	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help
+#	$(Geo_OSM_DATA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
