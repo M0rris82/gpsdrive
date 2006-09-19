@@ -13,6 +13,15 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 icons_square.bigdir= $(datadir)/gpsdrive/icons/square.big
 icons_square.big_DATA =	icons/square.big/*.png
 
+icons_square.big_vehicle_car_rental_DATA =  icons/square.big/vehicle/car_rental/*.png
+icons_square.big_vehicle_car_rentaldir= $(datadir)/icons/square.big/vehicle/car_rental
+icons_square.big_vehicle_fuel_station_DATA =  icons/square.big/vehicle/fuel_station/*.png
+icons_square.big_vehicle_fuel_stationdir= $(datadir)/icons/square.big/vehicle/fuel_station
+icons_square.big_vehicle_parking_DATA =  icons/square.big/vehicle/parking/*.png
+icons_square.big_vehicle_parkingdir= $(datadir)/icons/square.big/vehicle/parking
+icons_square.small_sightseeing_DATA =  icons/square.small/sightseeing/*.png
+icons_square.small_sightseeingdir= $(datadir)/icons/square.small/sightseeing
+
 icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
 icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 
@@ -217,47 +226,6 @@ apps_DATA = gpsdrive.desktop
 EXTRA_DIST= \
 	$(cfg_files_DATA) \
 	$(pixmap_DATA) $(icons_DATA) \
-	$(icons_square.big_DATA) \
-	$(icons_square.big_accomodation_DATA) \
-	$(icons_square.big_custom_DATA) \
-	$(icons_square.big_education_DATA) \
-	$(icons_square.big_food_DATA) \
-	$(icons_square.big_food_fastfoodDATA) \
-	$(icons_square.big_geocache_DATA) \
-	$(icons_square.big_health_DATA) \
-	$(icons_square.big_money_DATA) \
-	$(icons_square.big_nautical_DATA) \
-	$(icons_square.big_people_DATA) \
-	$(icons_square.big_places_DATA) \
-	$(icons_square.big_public_DATA) \
-	$(icons_square.big_recreation_DATA) \
-	$(icons_square.big_restaurant_DATA) \
-	$(icons_square.big_shopping_DATA) \
-	$(icons_square.big_sightseeing_DATA) \
-	$(icons_square.big_sports_DATA) \
-	$(icons_square.big_transport_DATA) \
-	$(icons_square.big_vehicle_DATA) \
-	$(icons_square.big_wlan_DATA) \
-	$(icons_square.small_DATA) \
-	$(icons_square.small_accomodation_DATA) \
-	$(icons_square.small_custom_DATA) \
-	$(icons_square.small_education_DATA) \
-	$(icons_square.small_food_DATA) \
-	$(icons_square.small_geocache_DATA) \
-	$(icons_square.small_health_DATA) \
-	$(icons_square.small_historic_DATA) \
-	$(icons_square.small_money_DATA) \
-	$(icons_square.small_nautical_DATA) \
-	$(icons_square.small_people_DATA) \
-	$(icons_square.small_places_DATA) \
-	$(icons_square.small_public_DATA) \
-	$(icons_square.small_recreation_DATA) \
-	$(icons_square.small_religion_DATA) \
-	$(icons_square.small_shopping_DATA) \
-	$(icons_square.small_sports_DATA) \
-	$(icons_square.small_transport_DATA) \
-	$(icons_square.small_vehicle_DATA) \
-	$(icons_square.small_wlan_DATA) \
 	$(icons_classic_DATA) \
 	$(icons_classic_accomodation_DATA) \
 	$(icons_classic_education_DATA) \
@@ -278,6 +246,51 @@ EXTRA_DIST= \
 	$(icons_classic_transport_DATA) \
 	$(icons_classic_vehicle_DATA) \
 	$(icons_classic_wlan_DATA) \
+	$(icons_square.big_DATA) \
+	$(icons_square.big_accomodation_DATA) \
+	$(icons_square.big_custom_DATA) \
+	$(icons_square.big_education_DATA) \
+	$(icons_square.big_food_DATA) \
+	$(icons_square.big_food_fastfoodDATA) \
+	$(icons_square.big_geocache_DATA) \
+	$(icons_square.big_health_DATA) \
+	$(icons_square.big_money_DATA) \
+	$(icons_square.big_nautical_DATA) \
+	$(icons_square.big_people_DATA) \
+	$(icons_square.big_places_DATA) \
+	$(icons_square.big_public_DATA) \
+	$(icons_square.big_recreation_DATA) \
+	$(icons_square.big_restaurant_DATA) \
+	$(icons_square.big_shopping_DATA) \
+	$(icons_square.big_sightseeing_DATA) \
+	$(icons_square.big_sports_DATA) \
+	$(icons_square.big_transport_DATA) \
+	$(icons_square.big_vehicle_DATA) \
+	$(icons_square.big_vehicle_car_rental_DATA) \
+	$(icons_square.big_vehicle_fuel_station_DATA) \
+	$(icons_square.big_vehicle_parking_DATA) \
+	$(icons_square.big_wlan_DATA) \
+	$(icons_square.small_DATA) \
+	$(icons_square.small_accomodation_DATA) \
+	$(icons_square.small_custom_DATA) \
+	$(icons_square.small_education_DATA) \
+	$(icons_square.small_food_DATA) \
+	$(icons_square.small_geocache_DATA) \
+	$(icons_square.small_health_DATA) \
+	$(icons_square.small_historic_DATA) \
+	$(icons_square.small_money_DATA) \
+	$(icons_square.small_nautical_DATA) \
+	$(icons_square.small_people_DATA) \
+	$(icons_square.small_places_DATA) \
+	$(icons_square.small_public_DATA) \
+	$(icons_square.small_recreation_DATA) \
+	$(icons_square.small_religion_DATA) \
+	$(icons_square.small_shopping_DATA) \
+	$(icons_square.small_sightseeing_DATA) \
+	$(icons_square.small_sports_DATA) \
+	$(icons_square.small_transport_DATA) \
+	$(icons_square.small_vehicle_DATA) \
+	$(icons_square.small_wlan_DATA) \
 	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
 	$(apps_DATA)
 

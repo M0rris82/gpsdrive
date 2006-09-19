@@ -46,7 +46,9 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(poidir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" \
+	"$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" \
+	"$(DESTDIR)$(Utils_LWPdir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
@@ -57,8 +59,12 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-poiDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(poi_DATA)
+Geo_GpsdriveDATA_INSTALL = $(INSTALL_DATA)
+Geo_OSMDATA_INSTALL = $(INSTALL_DATA)
+UtilsDATA_INSTALL = $(INSTALL_DATA)
+Utils_LWPDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA) $(Utils_DATA) \
+	$(Utils_LWP_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -239,10 +245,18 @@ bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		nasaconv.sh
 
 gpsdrivedir = $(datadir)/gpsdrive
-poidir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
-#poidir   = /usr/share/perl5/Geo/Gpsdrive
-poi_DATA = Geo/Gpsdrive/*.pm
-EXTRA_DIST = $(bin_SCRIPTS) $(poi_DATA)
+Geo_OSMdir = $(PERL_PACKAGE_DIR)/Geo/OSM
+Geo_OSM_DATA = Geo/OSM/*.pm
+Geo_Gpsdrivedir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
+Geo_Gpsdrive_DATA = Geo/Gpsdrive/*.pm
+Utilsdir = $(PERL_PACKAGE_DIR)/Utils
+Utils_DATA = Utils/*.pm
+Utils_LWPdir = $(PERL_PACKAGE_DIR)/Utils/LWP
+Utils_LWP_DATA = Utils/LWP/*.pm
+EXTRA_DIST = $(bin_SCRIPTS)\
+	$(Utils_DATA) $(Utils_LWP_DATA)\
+	$(Geo_OSM_DATA) $(Geo_Gpsdrive_DATA)
+
 all: all-am
 
 .SUFFIXES:
@@ -304,22 +318,73 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-install-poiDATA: $(poi_DATA)
+install-Geo_GpsdriveDATA: $(Geo_Gpsdrive_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(poidir)" || $(mkdir_p) "$(DESTDIR)$(poidir)"
-	@list='$(poi_DATA)'; for p in $$list; do \
+	test -z "$(Geo_Gpsdrivedir)" || $(mkdir_p) "$(DESTDIR)$(Geo_Gpsdrivedir)"
+	@list='$(Geo_Gpsdrive_DATA)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  f=$(am__strip_dir) \
-	  echo " $(poiDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(poidir)/$$f'"; \
-	  $(poiDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(poidir)/$$f"; \
+	  echo " $(Geo_GpsdriveDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Geo_Gpsdrivedir)/$$f'"; \
+	  $(Geo_GpsdriveDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Geo_Gpsdrivedir)/$$f"; \
 	done
 
-uninstall-poiDATA:
+uninstall-Geo_GpsdriveDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(poi_DATA)'; for p in $$list; do \
+	@list='$(Geo_Gpsdrive_DATA)'; for p in $$list; do \
 	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(poidir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(poidir)/$$f"; \
+	  echo " rm -f '$(DESTDIR)$(Geo_Gpsdrivedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(Geo_Gpsdrivedir)/$$f"; \
+	done
+install-Geo_OSMDATA: $(Geo_OSM_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(Geo_OSMdir)" || $(mkdir_p) "$(DESTDIR)$(Geo_OSMdir)"
+	@list='$(Geo_OSM_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(Geo_OSMDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Geo_OSMdir)/$$f'"; \
+	  $(Geo_OSMDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Geo_OSMdir)/$$f"; \
+	done
+
+uninstall-Geo_OSMDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(Geo_OSM_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(Geo_OSMdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(Geo_OSMdir)/$$f"; \
+	done
+install-UtilsDATA: $(Utils_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(Utilsdir)" || $(mkdir_p) "$(DESTDIR)$(Utilsdir)"
+	@list='$(Utils_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(UtilsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Utilsdir)/$$f'"; \
+	  $(UtilsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Utilsdir)/$$f"; \
+	done
+
+uninstall-UtilsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(Utils_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(Utilsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(Utilsdir)/$$f"; \
+	done
+install-Utils_LWPDATA: $(Utils_LWP_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(Utils_LWPdir)" || $(mkdir_p) "$(DESTDIR)$(Utils_LWPdir)"
+	@list='$(Utils_LWP_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(Utils_LWPDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Utils_LWPdir)/$$f'"; \
+	  $(Utils_LWPDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Utils_LWPdir)/$$f"; \
+	done
+
+uninstall-Utils_LWPDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(Utils_LWP_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(Utils_LWPdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(Utils_LWPdir)/$$f"; \
 	done
 tags: TAGS
 TAGS:
@@ -329,7 +394,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/Geo/Gpsdrive
+	$(mkdir_p) $(distdir)/Geo/Gpsdrive $(distdir)/Geo/OSM $(distdir)/Utils $(distdir)/Utils/LWP
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -360,7 +425,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(poidir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -405,7 +470,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-poiDATA
+install-data-am: install-Geo_GpsdriveDATA install-Geo_OSMDATA \
+	install-UtilsDATA install-Utils_LWPDATA
 
 install-exec-am: install-binSCRIPTS
 
@@ -431,18 +497,23 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-info-am uninstall-poiDATA
+uninstall-am: uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
+	uninstall-UtilsDATA uninstall-Utils_LWPDATA \
+	uninstall-binSCRIPTS uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binSCRIPTS install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-poiDATA install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
-	ps ps-am uninstall uninstall-am uninstall-binSCRIPTS \
-	uninstall-info-am uninstall-poiDATA
+	dvi-am html html-am info info-am install \
+	install-Geo_GpsdriveDATA install-Geo_OSMDATA install-UtilsDATA \
+	install-Utils_LWPDATA install-am install-binSCRIPTS \
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am uninstall \
+	uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
+	uninstall-UtilsDATA uninstall-Utils_LWPDATA uninstall-am \
+	uninstall-binSCRIPTS uninstall-info-am
 
 
 geoinfo:
