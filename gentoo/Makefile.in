@@ -230,8 +230,8 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 gentoodir = $(datadir)/gpsdrive/gentoo
-gentoo_DATA = gpsdrive-version.ebuild
-EXTRA_DIST = $(gentoo_DATA) gpsdrive-version.ebuild
+gentoo_DATA = gpsdrive-cvs-2.10.ebuild
+EXTRA_DIST = $(gentoo_DATA)
 all: all-am
 
 .SUFFIXES:
