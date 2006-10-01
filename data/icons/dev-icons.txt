@@ -1,4 +1,14 @@
-####################
+#
+# This file is just an overview for me, to keep track, which icons I have
+# alreadz drawn, or which should mnazbe be done in the future. This also
+# reflects possible subcategories.
+#
+#  d.s.e
+# 
+# $Id$
+#
+
+#####################
 # Places / Mapping (white)
  
  * places		places.png

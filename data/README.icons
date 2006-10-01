@@ -11,22 +11,18 @@ easier transition to the new scheme.
 
 The structure:
 
-icons/theme.big
-		the icons belonging to theme "theme", in PNG 32x32
-icons/theme.small
-		the icons belonging to theme "theme", in PNG 16x16
-icons/classic
-		this will hold the currently used icons in the future
+icons/theme	the icons belonging to theme "theme"
+
+icons/classic	this will hold the currently used icons in the future
 
 
 Guidelines:
 
 Each of these directories has to contain at least one icon for the
-(currently 19) base categories.
-e.g. shopping.png for the category "Shopping"
-Furthermore each theme can contain subfolders with the names of the base
-category to allow a more precise classification of the related POI.
-
+(currently 19) base categories, e.g. shopping.png for the category "Shopping"
+and a corresponding subfolder with the same name, containing at least one icon
+called unknown.png. So each category can contain optional sub icons to allow a
+more precise classification of the related POI.
 If it's necessary, one can add other sub-subfolders.
 
 Example:
@@ -57,30 +53,29 @@ icons/theme.big/
 The (current) base categories are:
 
 - 00 unknown/unsorted	(white)
-- 02 accomodation	(light-blue)
-- 03 custom		(white)
-- 04 education		(orange-white)
-- 05 food		(orange)
-- 06 geocache		(multicolour)
-- 07 health		(red-white)
-- 08 historic		(green-white)
-- 09 money		(yellow-white)
-- 10 nautical		(black-white)
-- 11 people		(yellow)
-- 12 places		(white)
-- 13 public		(light red)
-- 14 recreation		(light-green)
-- 15 religion		(violet)
-- 16 shopping		(dark red)
-- 17 sports		(dark green)
-- 18 transport		(blue-white)
-- 19 vehicle		(blue)
-- 20 wlan		(black)
+- 01 accomodation	(light-blue)
+- 02 custom		(white)
+- 03 education		(orange-white)
+- 04 food		(orange)
+- 05 geocache		(multicolour)
+- 06 health		(red-white)
+- 07 money		(yellow-white)
+- 08 nautical		(black-white)
+- 09 people		(yellow)
+- 10 places		(white)
+- 11 public		(light red)
+- 12 recreation		(light-green)
+- 13 religion		(violet)
+- 14 shopping		(dark red)
+- 15 sightseeing	(green-white)
+- 16 sports		(dark green)
+- 17 transport		(blue-white)
+- 18 vehicle		(blue)
+- 19 wlan		(black)
 
 
-According to this, there will also be a slight change in the database structure.
-But don't worry, as long as there is no finished icon theme yet, no changes in
-the program code or database will take place, to prevent further problems. ;-)
+The recommended file format for the icons is PNG, transparency allowed.
+The size should be between 16x16 and 24x24 pixels, but can be anz size,
+if that is suitalbe for your icon theme.
 
-d.s.e
-
+PNG
