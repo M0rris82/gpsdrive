@@ -1,46 +1,51 @@
 project(scripts)
 
-set(bin_SCRIPTS
-  wpcvt
-  wpget
-  gpspoint2gpsdrive.pl
-  geo-nearest
-  geocache2way
-  geo-code
-  gpssql_backup.sh
-  gpssql_restore.sh
-  gpsreplay
-  gpssmswatch
-  gpsfetchmap.pl
-  geoinfo.pl
-  wp2sql
-  gpsd_nmea.sh
-  nasaconv.sh
-)
+option(WITH_SCRIPTS "Install perl scripts and modules" ON)
 
-install(FILES
-    ${bin_SCRIPTS}
-  PERMISSIONS
-    OWNER_EXECUTE
-    GROUP_EXECUTE
-    WORLD_EXECUTE
-  DESTINATION
-    ${BIN_INSTALL_DIR})
+if (WITH_SCRIPTS)
+  set(bin_SCRIPTS
+    wpcvt
+    wpget
+    gpspoint2gpsdrive.pl
+    geo-nearest
+    geocache2way
+    geo-code
+    gpssql_backup.sh
+    gpssql_restore.sh
+    gpsreplay
+    gpssmswatch
+    gpsfetchmap.pl
+    geoinfo.pl
+    wp2sql
+    gpsd_nmea.sh
+    nasaconv.sh
+  )
 
-MACRO_OPTIONAL_FIND_PACKAGE(Perl)
+  install(FILES
+      ${bin_SCRIPTS}
+    PERMISSIONS
+      OWNER_EXECUTE
+      GROUP_EXECUTE
+      WORLD_EXECUTE
+    DESTINATION
+      ${BIN_INSTALL_DIR})
 
-if (PERL_FOUND)
-  MACRO_OPTIONAL_FIND_PACKAGE(PerlLibs)
-  #MESSAGE("DEBUG: > PERL_SITELIB: ${PERL_SITELIB}")
+  MACRO_OPTIONAL_FIND_PACKAGE(Perl)
 
-  file(GLOB_RECURSE perl_modules ${CMAKE_CURRENT_SOURCE_DIR} *.pm)
+  if (PERL_FOUND)
+    MACRO_OPTIONAL_FIND_PACKAGE(PerlLibs)
+    #MESSAGE("DEBUG: > PERL_SITELIB: ${PERL_SITELIB}")
 
-    if (perl_modules)
-      foreach(perl_module ${perl_modules})
-        file(RELATIVE_PATH relative_module_path ${CMAKE_CURRENT_SOURCE_DIR} ${perl_module})
+    file(GLOB_RECURSE perl_modules ${CMAKE_CURRENT_SOURCE_DIR} *.pm)
 
-        install(FILES ${perl_module} DESTINATION ${PERL_SITELIB}/${relative_module_path})
-        #MESSAGE("DEBUG: install ${perl_module} to ${PERL_SITELIB}/${relative_module_path}")
-      endforeach(perl_module ${perl_modules})
-    endif (perl_modules)
-endif (PERL_FOUND)
+      if (perl_modules)
+        foreach(perl_module ${perl_modules})
+          file(RELATIVE_PATH relative_module_path ${CMAKE_CURRENT_SOURCE_DIR} ${perl_module})
+
+          install(FILES ${perl_module} DESTINATION ${PERL_SITELIB}/${relative_module_path})
+          #MESSAGE("DEBUG: install ${perl_module} to ${PERL_SITELIB}/${relative_module_path}")
+        endforeach(perl_module ${perl_modules})
+      endif (perl_modules)
+  endif (PERL_FOUND)
+endif (WITH_SCRIPTS)
+
