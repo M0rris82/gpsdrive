@@ -10,5 +10,5 @@
 #cmakedefine PACKAGE "${APPLICATION_NAME}"
 #cmakedefine VERSION "${APPLICATION_VERSION}"
 #cmakedefine LOCALEDIR "${LOCALE_INSTALL_DIR}"
-#cmakedefine DATADIR "${SHARE_INSTALL_DIR}"
+#cmakedefine DATADIR "${SHARE_INSTALL_PREFIX}"
 #cmakedefine LIBDIR "${LIB_INSTALL_DIR}"
