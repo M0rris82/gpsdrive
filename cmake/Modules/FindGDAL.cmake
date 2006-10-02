@@ -28,9 +28,13 @@ else (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
       /sw/include
   )
 
+  # debian uses version suffixes
+  # add suffix evey new release
   find_library(GDAL_LIBRARY
     NAMES
       gdal
+      gdal1.3.1
+      gdal1.3.2
     PATHS
       /usr/lib
       /usr/local/lib
