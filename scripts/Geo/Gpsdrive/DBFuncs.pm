@@ -572,6 +572,47 @@ sub add_poi($){
 }
 
 #############################################################################
+# Add a single wlan into DB
+sub add_wlan($){
+    my $wlan = shift;
+    my $point = {};
+    my @columns = column_names("wlan");
+    map { $point->{"wlan.$_"} = ( $wlan->{"wlan.$_"} || $wlan->{$_} || $wlan->{lc($_)}) } @columns;
+
+    # ---------------------- SOURCE
+    #print Dumper(\$point);
+    if ( $point->{"source.name"} && ! $point->{'wlan.source_id'}) {
+	my $source_id = source_name2id($point->{"source.name"});
+	# print "Source: $point->{'source.name'} -> $source_id\n";
+	
+	$point->{'source.source_id'} = $source_id;
+	$point->{'wlan.source_id'}    = $source_id;
+    }
+
+    # ---------------------- Poi_Type
+    my $type_name = $wlan->{'poi_type.name'};
+    if ( $type_name && ! $point->{'wlan.poi_type_id'}) {
+	my $poi_type_id = type_name2id($type_name);
+	unless ( $poi_type_id ) {
+	    my $type_hash= {
+		'poi_type.name' => $type_name
+		};
+	    insert_hash("poi_type",$type_hash);
+	    $poi_type_id = type_name2id($point->{"type.name"});
+	}
+	$point->{'wlan.poi_type_id'}    = $poi_type_id;
+    }
+
+    # ---------------------- TYPE
+    $point->{'wlan.poi_type_id'}       ||= 0;
+
+    # ---------------------- WLAN
+    $point->{'wlan.last_modified'} ||= time();
+    insert_hash("wlan",$point);
+
+}
+
+#############################################################################
 # Add a single streets into DB
 sub streets_add($){
     my $segment = shift;
@@ -768,6 +809,11 @@ sub add_index($){
 	    add_if_not_exist_index($table,$key);
 	}
 	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id');
+    } elsif ( $table eq "wlan" ){
+	for my $key ( qw( last_modified name lat lon ) ){
+	    add_if_not_exist_index($table,$key);
+	}
+	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id');
     } elsif ( $table eq "streets" ){
 	for my $key ( qw( last_modified name lat1 lon1 lat2 lon2 ) ){
 	    add_if_not_exist_index($table,$key);
@@ -801,11 +847,12 @@ sub create_db(){
     my $dbh;
     my $sth; 
 
-    $create_statement="CREATE DATABASE IF NOT EXISTS $main::GPSDRIVE_DB_NAME;";
+    $create_statement="CREATE DATABASE IF NOT EXISTS $main::GPSDRIVE_DB_NAME "
+	." CHARACTER SET utf8;";
     my $drh = DBI->install_driver("mysql");
     my $rc = $drh->func('createdb', $main::GPSDRIVE_DB_NAME, $main::db_host, 
 			$main::db_user,$main::db_password, 'admin');
-    die "$@" if $rc;
+    die "Cannot create Database: $@" if $@;
 
     $dbh = db_connect();
     $sth = $dbh->prepare($create_statement);
@@ -825,7 +872,7 @@ sub create_db(){
                       `phone`          varchar(160) NOT NULL default \'\',
                       `comment`        varchar(160) NOT NULL default \'\',
                       PRIMARY KEY  (`address_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('address');
 
     # ------- POI
@@ -836,7 +883,7 @@ sub create_db(){
                       `scale_max`   int(12)      NOT NULL default \'0\',
                       `description` varchar(160)     NULL default \'\',
                       PRIMARY KEY  (`poi_type_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi_type');
 
 
@@ -854,8 +901,24 @@ sub create_db(){
                       `address_id`    int(11)               default \'0\',
                       `source_id`     int(11)      NOT NULL default \'0\',
                       PRIMARY KEY  (`poi_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi');
+
+    db_exec('CREATE TABLE IF NOT EXISTS `wlan` (
+                      `wlan_id`        int(11)      NOT NULL auto_increment,
+                      `name`          varchar(80)           default NULL,
+                      `poi_type_id`   int(11)      NOT NULL default \'0\',
+                      `lat`           double                default \'0\',
+                      `lon`           double                default \'0\',
+                      `alt`           double                default \'0\',
+                      `proximity`     float                 default \'0\',
+                      `comment`       varchar(255)          default NULL,
+                      `last_modified` date         NOT NULL default \'0000-00-00\',
+                      `url`           varchar(160)     NULL ,
+                      `source_id`     int(11)      NOT NULL default \'0\',
+                      PRIMARY KEY  (`wlan_id`)
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
+    add_index('wlan');
 
 
     # ------- Streets
@@ -876,7 +939,7 @@ sub create_db(){
                       `last_modified`   date         NOT NULL default \'0000-00-00\',
                       `source_id`       int(11)      NOT NULL default \'0\',
                       PRIMARY KEY  (`streets_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('streets');
 
     db_exec('CREATE TABLE IF NOT EXISTS `streets_type` (
@@ -891,7 +954,7 @@ sub create_db(){
                       `width_bg`        int(2)           NULL default \'2\',
                       `linetype`        varchar(80)      NULL default \'\',
                       PRIMARY KEY  (`streets_type_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('streets_type');
 
     # ------- Tracks
@@ -910,7 +973,7 @@ sub create_db(){
                       `scale_max`     int(12)      NOT NULL default \'0\',
 '. #                  ^^^^^^^^^^^ For later use
 '                     PRIMARY KEY  (`track_type_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('tracks_type');
 
     db_exec('CREATE TABLE IF NOT EXISTS `tracks` (
@@ -931,7 +994,7 @@ sub create_db(){
                       `time_delta`     float                  default \'0\',
                       `source_id`      int(11)      NOT NULL  default \'0\',
                       PRIMARY KEY  (`track_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('track');
 
     # ------- Source
@@ -943,7 +1006,7 @@ sub create_db(){
                       `url`            varchar(160) NOT NULL default \'\',
                       `licence`        varchar(160) NOT NULL default \'\',
                       PRIMARY KEY  (`source_id`)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('source');
 
     # --------- Waypoints: For compatibility to old DB Structure
@@ -959,7 +1022,7 @@ sub create_db(){
                       `nettype`	   int(11)  NOT NULL default \'0\',
                       `typenr`	   int(11) 	         default NULL,
                       PRIMARY KEY  (id)
-                    ) TYPE=MyISAM;') or die;
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('waypoints');
 
     # -------- traffic: For Traffic Information
@@ -973,7 +1036,7 @@ sub create_db(){
 			`time`      time                  default \'00:00:00\',
 			`timestamp` timestamp    NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
 		        PRIMARY KEY  (`id`)
-		      ) ENGINE=MyISAM DEFAULT CHARSET=latin1;') or die;
+		      ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('traffic');
 
 

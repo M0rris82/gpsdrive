@@ -1,6 +1,10 @@
 # Some small ungrouped Utility functions
 #
 # $Log$
+# Revision 1.3  2006/10/02 23:28:07  tweety
+# add own wlan database. This is kind of a template to eliminate the problems with the SSIDs with strange charset.
+# make all Tables UTF8
+#
 # Revision 1.2  2005/10/11 08:28:35  tweety
 # gpsdrive:
 # - add Tracks(MySql) displaying
@@ -215,7 +219,7 @@ sub correct_lat_lon($){
 
     #print "correct_lat_lon(".Dumper($point);
 
-    for my $type ( qw(poi.lat poi.lon) ) {
+    for my $type ( qw(poi.lat poi.lon wlan.lat wlan.lon) ) {
 	next unless defined $point->{$type};
 	#                               N123 12.34
 	if ( $point->{$type} =~ m/^\s*([NSWE]\d{1,3})\s+(\d+\.\d+)\s*$/ ) {
@@ -237,18 +241,20 @@ sub correct_lat_lon($){
     unless (  defined($point->{Position}) && $point->{Position} ){
 	my $lat = $point->{'poi.lat'};
 	my $lon = $point->{'poi.lon'};
-	if ( $lat =~ s/^-// ) {
-	    $lat ="S$lat";
-	} else {
-	    $lat ="N$lat";
+	if ( $lat && $lon ) {
+	    if ( $lat =~ s/^-// ) {
+		$lat ="S$lat";
+	    } else {
+		$lat ="N$lat";
+	    }
+	    if ( $lon =~ s/^-// ) {
+		$lon ="W$lon";
+	    } else {
+		$lon ="E$lon";
+	    }
+	    
+	    $point->{Position} = "$lat $lon";
 	}
-	if ( $lon =~ s/^-// ) {
-	    $lon ="W$lon";
-	} else {
-	    $lon ="E$lon";
-	}
-	
-	$point->{Position} = "$lat $lon";
     }
 }
 1;

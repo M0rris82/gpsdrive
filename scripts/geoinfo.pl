@@ -99,7 +99,7 @@ our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 our $db_user             = 'gast';
 our $db_password         = 'gast';
 our $db_host             = 'localhost';
- #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
+#$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');

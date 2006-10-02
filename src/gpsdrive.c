@@ -97,6 +97,7 @@ Disclaimer: Please do not use for navigation.
 #include "battery.h"
 #include "poi.h"
 #include "streets.h"
+#include "wlan.h"
 #include "draw_tracks.h"
 #include "track.h"
 #include "waypoint.h"
@@ -285,7 +286,7 @@ GtkWidget *label_map_filename, *label_map_scale;
 GtkWidget *label_heading, *label_baering, *label_timedest;
 GtkWidget *label_prefscale, *mute_bt, *sqlbt;
 GtkWidget *wp_bt;
-GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
+GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt, *wlan_draw_bt;
 
 GtkWidget *track_bt, *tracks_draw_bt;
 GtkWidget *savetrack_bt;
@@ -417,6 +418,7 @@ gint etch = 1;
 gint do_draw_grid = FALSE;
 extern gint poi_draw;
 extern gint streets_draw;
+extern gint wlan_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
@@ -440,7 +442,7 @@ GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
 GtkWidget *frame_wp;
-GtkWidget *frame_poi,*frame_track, *lab1;
+GtkWidget *frame_poi,*frame_track, *frame_wlan,*lab1;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -1769,6 +1771,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	{
 	    streets_draw_list ();
 	    poi_draw_list ();
+	    wlan_draw_list ();
 	    tracks_draw_list ();
 	}
 
@@ -3114,6 +3117,7 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_timedest), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_prefscale), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_poi), stype);
+	gtk_frame_set_shadow_type (GTK_FRAME (frame_wlan), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
 	//	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapcontrol), stype);
 
@@ -3333,6 +3337,29 @@ poi_draw_cb (GtkWidget * widget, guint datum)
 
     if (poi_draw)
 	poi_draw_list ();
+    
+    needtosave = TRUE;
+    return TRUE;
+}
+
+/* *****************************************************************************
+ *  switching WLAN on/off 
+ */
+gint
+wlan_draw_cb (GtkWidget * widget, guint datum)
+{
+    if ( NULL == widget ) 
+	widget = wlan_draw_bt;
+
+    if ( datum)
+	wlan_draw = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),wlan_draw );
+    
+    
+
+    if (wlan_draw)
+	wlan_draw_list ();
     
     needtosave = TRUE;
     return TRUE;
@@ -3775,6 +3802,9 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	    printf ("---------------------------------------------\n");
 	    if ( poi_draw )
 		poi_query_area     ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
+
+	    if ( wlan_draw )
+		wlan_query_area     ( min(lat1,lat2), min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
 
 	    gdouble lat,lon;
 	    calcxytopos (x, y, &lat, &lon, zoom);
@@ -4276,7 +4306,7 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi, *vbox_track;
+    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_wlan, *vbox_track;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
     GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;
@@ -4996,6 +5026,26 @@ main (int argc, char *argv[])
 			    GTK_SIGNAL_FUNC (poi_draw_cb), (gpointer) 1);
 	if (usesql)
 	    gtk_box_pack_start (GTK_BOX (vbox_poi),   poi_draw_bt,    FALSE, FALSE, 0 * PADDING);
+
+	// Checkbox ---- WLAN Draw
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	wlan_draw_bt = gtk_check_button_new_with_label (_("draw _WLAN"));
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	gtk_button_set_use_underline (GTK_BUTTON (wlan_draw_bt), TRUE);
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wlan_draw_bt,
+			      _("Draw Wlan"),
+			      NULL);
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	if (!wlan_draw)
+	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wlan_draw_bt), TRUE);
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	gtk_signal_connect (GTK_OBJECT (wlan_draw_bt), "clicked",
+			    GTK_SIGNAL_FUNC (wlan_draw_cb), (gpointer) 1);
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
+	if (usesql)
+	    gtk_box_pack_start (GTK_BOX (vbox_poi),   wlan_draw_bt,    FALSE, FALSE, 0 * PADDING);
+	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
 
 	// Checkbox ---- Show WP
 	wp_bt = gtk_check_button_new_with_label (_("Show _WP"));
@@ -6000,10 +6050,12 @@ main (int argc, char *argv[])
     drawgrid_cb (NULL, 0);
     streets_draw_cb (streets_draw_bt, 0);
     poi_draw_cb (poi_draw_bt, 0);
+    wlan_draw_cb (wlan_draw_bt, 0);
     tracks_draw_cb (NULL, 0);
     needtosave = FALSE;
 
     poi_init ();
+    wlan_init ();
     streets_init ();
     tracks_init ();
 
