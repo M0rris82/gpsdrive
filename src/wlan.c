@@ -39,6 +39,7 @@ Disclaimer: Please do not use for navigation.
 #include "gtk/gtk.h"
 
 #include "gpsdrive.h"
+#include "poi.h"
 #include "wlan.h"
 #include "config.h"
 #include "gettext.h"
@@ -56,6 +57,7 @@ Disclaimer: Please do not use for navigation.
 #  define N_(String) (String)
 # endif
 
+extern poi_type_struct poi_type_list[poi_type_list_max];
 
 extern gint do_unit_test;
 extern gint maploaded;
@@ -101,15 +103,9 @@ GdkColor wlan_colorv;
 PangoFontDescription *pfd;
 PangoLayout *wlan_label_layout;
 
-wlan_type_struct wlan_type_list[wlan_type_list_max];
-int wlan_type_list_count = 0;
-
 /* ******************************************************************   */
 
 void wlan_rebuild_list (void);
-void get_wlan_type_list (void);
-
-
 
 
 /* *******************************************************
@@ -126,7 +122,6 @@ wlan_init (void)
       return;
     }
 
-  get_wlan_type_list ();
   //wlan_rebuild_list ();
 }
 
@@ -153,129 +148,6 @@ wlan_check_if_moved (void)
       wlan_lat_ul == lat_ul && wlan_lon_ul == lon_ul)
     return 0;
   return 1;
-}
-
-
-/* ****************************************************************** */
-/* get a list of all possible types and load there icons */
-void
-get_wlan_type_list (void)
-{
-  char sql_query[3000];
-
-
-  if (!usesql)
-    return;
-
-  if (mydebug > 25)
-    printf ("get_wlan_type_list()\n");
-
-  {				// Delete wlan_type_list
-    int i;
-    for (i = 0; i < wlan_type_list_max; i++)
-      {
-	wlan_type_list[i].icon = NULL;
-	wlan_type_list[i].name[0] = '\0';
-      }
-  }
-
-  g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,scale_min,scale_max FROM wlan_type ORDER BY poi_type_id");
-
-  if (mydebug > 25)
-    fprintf (stderr, "get_wlan_type_list: query: %s\n", sql_query);
-
-
-  if (dl_mysql_query (&mysql, sql_query))
-    {
-      fprintf (stderr, "get_wlan_type_list: Error in query: %s\n",
-	       dl_mysql_error (&mysql));
-      return;
-    }
-
-
-  if (!(res = dl_mysql_store_result (&mysql)))
-    {
-      fprintf (stderr, "get_wlan_type_list: Error in store results: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return;
-    }
-
-  int counter = 0;
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      // --------- 0: poi_type_id
-      int index = (gint) g_strtod (row[0], NULL);
-      if (index >= wlan_type_list_max)
-	{
-	  fprintf (stderr,
-		   "Typet_list: index(%d) > wlan_type_list_max(%d)\n",
-		   index, wlan_type_list_max);
-	  break;
-	};
-
-      if (wlan_type_list_count < index)
-	wlan_type_list_count = index;
-
-      wlan_type_list[index].poi_type_id = index;
-
-      // --------- 1: name
-      if ( row[1] != NULL )
-	{
-	  g_strlcpy (wlan_type_list[index].name, row[1],
-		     sizeof (wlan_type_list[index].name));
-
-	  wlan_type_list[index].icon =
-	    read_themed_icon (wlan_type_list[index].name);
-
-	  if (wlan_type_list[index].icon == NULL)
-	    {
-	      if (mydebug > 10)
-		printf ("get_wlan_type_list: %3d:Icon for '%s'\tnot found\n",
-			index, wlan_type_list[index].name);
-	      if (do_unit_test)
-		{
-		  exit (-1);
-		}
-	    }
-	  else
-	    {
-	      if (mydebug > 30)
-		printf
-		  ("get_wlan_type_list: %3d\tfor '%s'\n",
-		   index, wlan_type_list[index].name);
-	      counter++;
-	    }
-	}
-
-      // --------- 2: cale_min
-      wlan_type_list[index].scale_min = (gint) g_strtod (row[2], NULL);
-
-      // --------- 3: scale_max 
-      wlan_type_list[index].scale_max = (gint) g_strtod (row[3], NULL);
-    }
-
-
-
-  if (!dl_mysql_eof (res))
-    {
-      fprintf (stderr, "get_wlan_type_list: Error in dl_mysql_eof: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return;
-    }
-
-
-  dl_mysql_free_result (res);
-  res = NULL;
-
-  if (mydebug > 20)
-    fprintf (stderr,
-	     "get_wlan_type_list: Loaded %d Icons for wlan_types 0 - %d\n",
-	     counter, wlan_type_list_count);
 }
 
 /* *******************************************************
@@ -363,14 +235,14 @@ wlan_rebuild_list (void)
   {				// Limit the displayed wlan_types
     g_snprintf (sql_in, sizeof (sql_in), "\t AND poi_type_id IN ( ");
     int i;
-    for (i = 0; i < wlan_type_list_max; i++)
+    for (i = 0; i < poi_type_list_max; i++)
       {
-	if (wlan_type_list[i].scale_min <= mapscale &&
-	    wlan_type_list[i].scale_max >= mapscale)
+	if (poi_type_list[i].scale_min <= mapscale &&
+	    poi_type_list[i].scale_max >= mapscale)
 	  {
 	    gchar id_string[20];
 	    g_snprintf (id_string, sizeof (id_string), " %d,",
-			wlan_type_list[i].poi_type_id);
+			poi_type_list[i].poi_type_id);
 	    g_strlcat (sql_in, id_string, sizeof (sql_in));
 	  }
       }
@@ -610,7 +482,7 @@ wlan_draw_list (void)
 	  {
 	    GdkPixbuf *icon;
 	    int icon_index = (wlan_list + i)->poi_type_id;
-	    icon = wlan_type_list[icon_index].icon;
+	    icon = poi_type_list[icon_index].icon;
 
 	    if (icon != NULL && icon_index > 0)
 	      {
