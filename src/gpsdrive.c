@@ -442,7 +442,7 @@ GtkWidget *frame_lat, *frame_lon, *frame_mapfile, *frame_mapscale;
 GtkWidget *frame_heading, *frame_bearing, *frame_timedest, *frame_prefscale;
 GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
 GtkWidget *frame_wp;
-GtkWidget *frame_poi,*frame_track, *frame_wlan,*lab1;
+GtkWidget *frame_poi,*frame_track, *lab1;
 GtkWidget *menubar;
 gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
@@ -3117,7 +3117,6 @@ etch_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_timedest), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_prefscale), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_poi), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_wlan), stype);
 	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
 	//	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapcontrol), stype);
 
@@ -5559,7 +5558,7 @@ main (int argc, char *argv[])
 	    gtk_box_pack_start (GTK_BOX (vbox_track), tracks_draw_bt, FALSE, FALSE, 0 * PADDING);
 	}
 
-
+    if ( mydebug >99 ) fprintf(stderr , "scaler init\n");
     scaler_init();
 
     if (pdamode)
@@ -5581,9 +5580,11 @@ main (int argc, char *argv[])
     frame_timedest = gtk_frame_new (_("Time at Dest."));
     frame_prefscale = gtk_frame_new (_("Pref. scale"));
 
+
     etch = !etch;
     etch_cb (NULL, 0);
 
+    if ( mydebug >99 ) fprintf(stderr , "Frame lat/lon\n");
     label_lat = gtk_label_new (_("000,00000N"));
     gtk_container_add (GTK_CONTAINER (frame_lat), label_lat);
 
@@ -5596,6 +5597,7 @@ main (int argc, char *argv[])
 	    gtk_container_add (GTK_CONTAINER (frame_mapfile), label_map_filename);
 	}
 
+    if ( mydebug >99 ) fprintf(stderr , "Frame MapScale\n");
     label_map_scale = gtk_label_new (_("---"));
     gtk_container_add (GTK_CONTAINER (frame_mapscale), label_map_scale);
 
@@ -5665,6 +5667,7 @@ main (int argc, char *argv[])
     gtk_signal_connect (GTK_OBJECT (drawing_area),
 			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
+    if ( mydebug >99 ) fprintf(stderr , "Menu\n");
     if (!pdamode)
 	{
 	    if (extrawinmenu)
