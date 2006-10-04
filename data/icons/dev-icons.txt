@@ -1,6 +1,6 @@
 #
 # This file is just an overview for me, to keep track, which icons I have
-# alreadz drawn, or which should mnazbe be done in the future. This also
+# already drawn, or which should maybe be done in the future. This also
 # reflects possible subcategories.
 #
 #  d.s.e
@@ -13,11 +13,12 @@
  
  * places		places.png
  
- * Hamlet		hamlet.png
- * Village		village.png
- * Town			town.png
- * City			city.png
- * Capital		capital.png
+ * Settlement		settlement.png
+ 	* Hamlet	hamlet.png
+ 	* Village	village.png
+ 	* Town		town.png
+ 	* City		city.png
+ 	* Capital	capital.png
 
  mine
  mountain peak
@@ -121,6 +122,10 @@
  * WLAN closed		closed.png
  * WLAN open		open.png
  * WLAN pay		pay.png
+ 	Swisscom
+	T-Mobile
+
+	Fonero
 
 ####################
 # Transport vehicle (blue)

@@ -4,78 +4,90 @@
 #
 
 After drawing a lot of new icons, I decided to add a new dicrectory structure
-for the icons based on the categories. Furthermore the feature of themeability
+for the icons based on categories. Furthermore the feature of themeability
 will be added, to have the possibility of easy custom designs and to allow an
 easier transition to the new scheme.
 
 
-The structure:
+The Structure:
 
-icons/theme	the icons belonging to theme "theme"
+	icons/theme
+		the icons belonging to theme "theme"
 
-icons/classic	this will hold the currently used icons in the future
+	icons/classic
+		this will hold the `old` gpsdrive icons from tweety
+
+	icons/square.big
+	icons/square.small
+		the first icon themes designed for the new structure
 
 
 Guidelines:
 
-Each of these directories has to contain at least one icon for the
-(currently 19) base categories, e.g. shopping.png for the category "Shopping"
-and a corresponding subfolder with the same name, containing at least one icon
-called unknown.png. So each category can contain optional sub icons to allow a
-more precise classification of the related POI.
-If it's necessary, one can add other sub-subfolders.
+Each of these directories has to contain at least one icon for each of the
+twenty base categories, e.g. shopping.png for the category "Shopping" and a
+corresponding subfolder with the same name, containing at least one icon called
+"empty.png". Optionally you can place additional sub icons into those folders,
+to allow a more precise classification of the related POI.
+If it should be necessary, one can add other sub-subfolders.
 
 Example:
 
-icons/theme.big/
-|
-|_ food.png
-|
-|_ food
-  |
-  |_ restaurant.png
-  |
-  |_ restaurant/
-  |  |_ italian.png
-  |  |_ greek.png
-  |  |_ bavarian.png
-  |
-  |_ fastfood.png
-  |
-  |_ fastfood/
-  |  |_ burgerking.png
-  |  |_ mcdonalds.png
-  |
-  |_ icecream.png
-  |_ beergarden.png
+	icons/themename/
+	|
+	|_ food.png
+	|
+	|_ food
+	  |
+	  |_ restaurant.png
+	  |
+	  |_ restaurant/
+	  |  |_ italian.png
+	  |  |_ greek.png
+	  |  |_ bavarian.png
+	  |
+	  |_ fastfood.png
+	  |
+	  |_ fastfood/
+	  |  |_ burgerking.png
+	  |  |_ mcdonalds.png
+	  |
+	  |_ icecream.png
+	  |_ beergarden.png
 
 
-The (current) base categories are:
+The base categories are:
 
-- 00 unknown/unsorted	(white)
-- 01 accomodation	(light-blue)
-- 02 custom		(white)
-- 03 education		(orange-white)
-- 04 food		(orange)
-- 05 geocache		(multicolour)
-- 06 health		(red-white)
-- 07 money		(yellow-white)
-- 08 nautical		(black-white)
-- 09 people		(yellow)
-- 10 places		(white)
-- 11 public		(light red)
-- 12 recreation		(light-green)
-- 13 religion		(violet)
-- 14 shopping		(dark red)
-- 15 sightseeing	(green-white)
-- 16 sports		(dark green)
-- 17 transport		(blue-white)
-- 18 vehicle		(blue)
-- 19 wlan		(black)
+	- 00 unknown/unsorted	(white)
+	- 01 accomodation	(light blue)
+	- 02 custom		(white)
+	- 03 education		(orange/white)
+	- 04 food		(orange)
+	- 05 geocache		(gc-colours)
+	- 06 health		(red/white)
+	- 07 money		(yellow/white)
+	- 08 nautical		(black/white)
+	- 09 people		(yellow)
+	- 10 places		(transparent)
+	- 11 public		(light red)
+	- 12 recreation		(light green)
+	- 13 religion		(violet)
+	- 14 shopping		(dark red)
+	- 15 sightseeing	(green/white)
+	- 16 sports		(dark green)
+	- 17 transport		(blue/white)
+	- 18 vehicle		(blue)
+	- 19 wlan		(black)
+
+The colouring scheme shown here is specific for the themes "square.big" and
+"square.small". You may choose your own style of distinguishing the categories
+for your theme as you like.
 
 
-The recommended file format for the icons is PNG, transparency allowed.
-The size should be between 16x16 and 24x24 pixels, but can be anz size,
-if that is suitalbe for your icon theme.
+The Icon Files:
 
-PNG
+The file format for the icons has to be PNG, transparency allowed.
+The image size should be 16x16, 24x24 or 32x32 pixels, but can be any size,
+that is suitable for your icon theme.
+
+
