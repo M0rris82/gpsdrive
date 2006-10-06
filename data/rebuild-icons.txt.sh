@@ -1,6 +1,6 @@
 ############################################################################
 # This script will rebuild the icons.txt file from the files
-# found in the icons directory and set the visable scales to the defaults
+# found in the icons directory and set the visible scales to the defaults
 ############################################################################
 #
 # Notes:

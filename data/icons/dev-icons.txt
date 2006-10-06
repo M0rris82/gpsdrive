@@ -9,7 +9,7 @@
 #
 
 #####################
-# Places / Mapping (white)
+# Places / Mapping (transparent)
  
  * places		places.png
  
@@ -308,7 +308,26 @@
  * developer	gpsdrive.png
  
 ####################
-# custom (white)
+# misc (white)
+
+ *waypoint		waypoint.png
+ 	* wpt green	wpt_gn.png
+	* wpt red	wpt_rd.png
+	* wpt yellow	wpt_yellow.png
+	* wpt_blue	wpt_bl.png
+	* wpt orange	wpt_or.png
+	* wpt one	wpt_1.png
+	* wpt two	wpt_2.png
+	* wpt three	wpt_3.png
+	* wpt four	wpt_4.png
+	* wpt five	wpt_5.png
+	* wpt six	wpt_6.png
+	* wpt seven	wpt_7.png
+	* wpt eight	wpt_8.png
+	* wpt nine	wpt_9.png
+
+###################
+# unknown (white)
 
  * unknown	unknown.png
 
