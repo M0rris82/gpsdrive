@@ -69,6 +69,8 @@ typedef struct
   GdkPixbuf *icon;
   gint scale_min;
   gint scale_max;
+  gint parent;
+  gchar description[poi_type_list_string_length];
 } poi_type_struct;
 #define poi_type_list_max 4000
 

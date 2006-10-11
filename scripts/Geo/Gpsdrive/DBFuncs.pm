@@ -879,9 +879,11 @@ sub create_db(){
     db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
                       `poi_type_id` int(11)      NOT NULL auto_increment,
                       `name`        varchar(80)  NOT NULL default \'\',
+		      `symbol`      varchar(160) NOT NULL default \'unknown\',
                       `scale_min`   int(12)      NOT NULL default \'1\',
-                      `scale_max`   int(12)      NOT NULL default \'0\',
+                      `scale_max`   int(12)      NOT NULL default \'20000\',
                       `description` varchar(160)     NULL default \'\',
+		      `parent`      int(11)      NOT NULL default \'1\',
                       PRIMARY KEY  (`poi_type_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi_type');

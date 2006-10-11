@@ -4703,7 +4703,7 @@ main (int argc, char *argv[])
 	}
     while (i != -1);
 
-    if ( mydebug >99 ) fprintf(stderr , "options paarsed\n");
+    if ( mydebug >99 ) fprintf(stderr , "options parsed\n");
 
 	
     if ((strlen (friendsname) == 0))
@@ -5268,7 +5268,7 @@ main (int argc, char *argv[])
     hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
     hbox3  = gtk_hbox_new (FALSE, 1 * PADDING);
 
-    // Frame --- Baering
+    // Frame --- Bearing
     if ( mydebug >99 ) fprintf(stderr , "create Bearing Frame\n");
     frame_bearing = gtk_frame_new (_("Bearing"));
     compasseventbox = gtk_event_box_new ();

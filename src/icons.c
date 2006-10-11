@@ -337,11 +337,10 @@ read_themed_icon (gchar * icon_name)
 	}
     }
   while (p_pos != NULL);
-
   if ( NULL == icon ) {
-      fprintf (stderr,"read_themed_icon: No Icon '%s' found fot theme %s\n", 
+      fprintf (stderr,"read_themed_icon: No Icon '%s' found for theme %s\n", 
 	       icon_name,local_config.icon_theme);
-      exit (-1);
+      //exit (-1);
   }
   return NULL;
 }
@@ -349,7 +348,7 @@ read_themed_icon (gchar * icon_name)
 
 
 /* -----------------------------------------------------------------------------
- * load icons specified in icons.txt for non sql useers
+ * load icons specified in icons.txt for non sql users
 */
 void
 load_icons (void)
@@ -415,7 +414,7 @@ load_icons (void)
 	      poi_type_list_count++;
 	      poi_type_list[poi_type_list_count].poi_type_id = index;
 	      poi_type_list[poi_type_list_count].icon =
-		read_themed_icon (poi_type_list[index].name);
+		read_themed_icon (poi_type_list[index].icon_name);
 	    }
 
 
@@ -423,7 +422,7 @@ load_icons (void)
 	    printf ("load_icons(): Waypoint-type %d gets \"%s\"\n", index,
 		    poi_type_list[index].name);
 	  icons_buffer[index].icon =
-	    read_themed_icon (poi_type_list[index].name);
+	    read_themed_icon (poi_type_list[index].icon_name);
 	  if (!icons_buffer[index].icon)	// None Found
 	    {
 	      if (do_unit_test)

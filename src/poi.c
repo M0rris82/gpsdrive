@@ -206,7 +206,7 @@ poi_check_if_moved (void)
 
 
 /* ****************************************************************** */
-/* get a list of all possible types and load there icons */
+/* get a list of all possible types and load their icons */
 void
 get_poi_type_list (void)
 {
@@ -229,7 +229,7 @@ get_poi_type_list (void)
   }
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,scale_min,scale_max FROM poi_type ORDER BY poi_type_id");
+	      "SELECT poi_type_id,name,symbol,scale_min,scale_max,description,parent FROM poi_type ORDER BY poi_type_id;");
 
   if (mydebug > 25)
     fprintf (stderr, "get_poi_type_list: query: %s\n", sql_query);
@@ -270,20 +270,27 @@ get_poi_type_list (void)
 
       poi_type_list[index].poi_type_id = index;
 
-      // --------- 1: name
-      if ( row[1] != NULL )
+	 // ----------1: name
+	  if ( row[1]!= NULL )
 	{
 	  g_strlcpy (poi_type_list[index].name, row[1],
 		     sizeof (poi_type_list[index].name));
+	}
+  	    
+      // --------- 2: symbol
+      if ( row[2] != NULL )
+	{
+	  g_strlcpy (poi_type_list[index].icon_name, row[2],
+		     sizeof (poi_type_list[index].icon_name));
 
 	  poi_type_list[index].icon =
-	    read_themed_icon (poi_type_list[index].name);
+	    read_themed_icon (poi_type_list[index].icon_name);
 
 	  if (poi_type_list[index].icon == NULL)
 	    {
 	      if (mydebug > 10)
-		printf ("get_poi_type_list: %3d:Icon for '%s'\tnot found\n",
-			index, poi_type_list[index].name);
+		printf ("get_poi_type_list: %3d:Icon '%s' for '%s'\tnot found\n",
+			index, poi_type_list[index].icon_name, poi_type_list[index].name);
 	      if (do_unit_test)
 		{
 		  exit (-1);
@@ -299,14 +306,22 @@ get_poi_type_list (void)
 	    }
 	}
 
-      // --------- 2: cale_min
-      poi_type_list[index].scale_min = (gint) g_strtod (row[2], NULL);
+      // --------- 3: scale_min
+      poi_type_list[index].scale_min = (gint) g_strtod (row[3], NULL);
 
-      // --------- 3: scale_max 
-      poi_type_list[index].scale_max = (gint) g_strtod (row[3], NULL);
-    }
+      // --------- 4: scale_max 
+      poi_type_list[index].scale_max = (gint) g_strtod (row[4], NULL);
+    
 
-
+      // --------- 5: description
+	  g_strlcpy (poi_type_list[index].description, row[5],
+	 	     sizeof (poi_type_list[index].description));
+	
+      // --------- 6: parent
+      poi_type_list[index].parent = (gint) g_strtod (row[6], NULL);
+	
+	}	
+		
 
   if (!dl_mysql_eof (res))
     {
@@ -395,10 +410,10 @@ poi_rebuild_list (void)
 
   {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
-		"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
-		"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
+		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
+		"AND   ( lon BETWEEN %.6f AND %.6f ) "
 		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
-		"\n", lat_min, lat_max, lon_min, lon_max
+		" ", lat_min, lat_max, lon_min, lon_max
 		// , mapscale
       );
     g_strdelimit (sql_where, ",", '.');	// For different LANG
@@ -410,7 +425,7 @@ poi_rebuild_list (void)
   }
 
   {				// Limit the displayed poi_types
-    g_snprintf (sql_in, sizeof (sql_in), "\t AND poi_type_id IN ( ");
+    g_snprintf (sql_in, sizeof (sql_in), " AND poi_type_id IN ( ");
     int i;
     for (i = 0; i < poi_type_list_max; i++)
       {

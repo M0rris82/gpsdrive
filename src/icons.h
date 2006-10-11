@@ -37,7 +37,7 @@ void load_icons(void);
 void load_user_icon(  char icon_name[200] );
 void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
 void draw_small_plus_sign ( gdouble posxdest,   gdouble posydest );
-GdkPixbuf *read_themed_icon (gchar * icon_name);
+GdkPixbuf *read_themed_icon (gchar * icon_symbol);
 GdkPixbuf * read_icon(char * icon_name,int force);
 
 typedef struct
