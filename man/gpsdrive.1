@@ -429,7 +429,8 @@ provided to download multiple maps for a bigger area.
 www.expedia.com if you want to use their maps!
 .br
 .B Don't missuse this service by downloading more maps as you need! 
-You will risc that you will be blocked by this servers.
+You will risk being blocked by thier servers, and possibly cause
+trouble for the gpsdrive project.
 
 File formats:
 
@@ -447,9 +448,10 @@ recognized by the gdk-pixbuf library).  The lat/long coordinates you
 write into the "map_koord.txt" file must be the center of the map. The
 map must have a size of 1280x1024 pixels! 
 
-Important! The maps must now be named map_* for streetmaps
-and top_* for topographical maps. If not, gpsdrive won't
-display the maps.
+Important! The maps must be named map_* for UTM-like projections
+(lat:lon = 1:cos(lat)) and top_* for lat/lon Plate carrée projection
+(lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
+scale the maps correctly.
 
 There is an "import assistant" build in. Use this to import your maps.
 
