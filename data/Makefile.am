@@ -1,4 +1,4 @@
-# Makefile.am for data
+## Makefile.am for data
 
 cfg_filesdir   = $(datadir)/gpsdrive/
 cfg_files_DATA = icons.txt map_koord.txt gpsdrive.desktop
@@ -102,9 +102,6 @@ icons_square.small_geocachedir=$(datadir)/gpsdrive/icons/square.small/geocache
 icons_square.small_health_DATA = icons/square.small/health/*.png
 icons_square.small_healthdir=$(datadir)/gpsdrive/icons/square.small/health
 
-#icons_square.small_historic_DATA = icons/square.small/historic/*.png
-#icons_square.small_historicdir=$(datadir)/gpsdrive/icons/square.small/historic
-
 icons_square.small_money_DATA = icons/square.small/money/*.png
 icons_square.small_moneydir=$(datadir)/gpsdrive/icons/square.small/money
 
@@ -159,9 +156,6 @@ icons_classic_geocachedir = $(datadir)/gpsdrive/icons/geocache
 
 icons_classic_health_DATA = icons/classic/health/*.png
 icons_classic_healthdir= $(datadir)/gpsdrive/icons/classic/health
-
-icons_classic_historic_DATA = icons/classic/historic/*.png
-icons_classic_historicdir = $(datadir)/gpsdrive/icons/classic/historic
 
 icons_classic_money_DATA = icons/classic/money/*.png
 icons_classic_moneydir= $(datadir)/gpsdrive/icons/classic/money
@@ -227,7 +221,6 @@ EXTRA_DIST= \
 	$(icons_classic_food_DATA) \
 	$(icons_classic_geocache_DATA) \
 	$(icons_classic_health_DATA) \
-	$(icons_classic_historic_DATA) \
 	$(icons_classic_money_DATA) \
 	$(icons_classic_nautical_DATA) \
 	$(icons_classic_other_DATA) \
@@ -270,7 +263,6 @@ EXTRA_DIST= \
 	$(icons_square.small_food_DATA) \
 	$(icons_square.small_geocache_DATA) \
 	$(icons_square.small_health_DATA) \
-	$(icons_square.small_historic_DATA) \
 	$(icons_square.small_money_DATA) \
 	$(icons_square.small_nautical_DATA) \
 	$(icons_square.small_people_DATA) \
