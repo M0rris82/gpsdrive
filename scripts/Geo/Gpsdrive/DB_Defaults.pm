@@ -875,28 +875,6 @@ sub fill_default_poi_types() {
 
     # insert base poi-types into database
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id < $poi_type_id ;");
-    Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO poi_type VALUES".
-      "('1','Unknown Type','unknown','1','10000','Unassigned POI','0'),".
-      "('2','Accomodation','accomodation','1','10000','Places to stay','0'),".
-      "('3','Education','education','1','10000','Schools and other educational facilities','0'),".
-      "('4','Food','food','1','10000','Restaurants, Bars, and so on...','0'),".
-      "('5','Geocache','geocache','1','10000','Geocaches','0'),".
-      "('6','Health','health','1','10000','Hospital, Doctor, Pharmacy, etc.','0'),".
-      "('7','Money','money','1','10000','Bank, ATMs, and other money-related places','0'),".
-      "('8','Nautical','nautical','1','10000','Special Aeronautical Points','0'),".
-      "('9','People','people','1','10000','You, work, your friends, and other people','0'),".
-      "('10','Places','places','1','10000','Settlements, Mountains, and other geographical stuff','0'),".
-      "('11','Public','public','1','10000','Public facilities','0'),".
-      "('12','Recreation','recreation','1','10000','Places used for recreation (no sports)','0'),".
-      "('13','Religion','religion','1','10000','Places and facilities related to religion','0'),".
-      "('14','Shopping','shopping','1','10000','All the places, where you can buy something','0'),".
-      "('15','Sightseeing','sightseeing','1','10000','Historic places and other interesting buildings','0'),".
-      "('16','Sports','sports','1','10000','Sports clubs, stadiums, and other sports facilities','0'),".
-      "('17','Transport','transport','1','10000','Public transportation','0'),".
-      "('18','Vehicle','vehicle','1','10000','Facilites for drivers, like gas stations or parking places','0'),".
-      "('19','Wlan','wlan','1','10000','WiFi-related points (Kismet)','0'),".
-      "('20','Miscellaneous','misc','1','10000','POIs not suitable for another category, and custom types','0');")
-      or die;
 
     my $unused_icon ={};
     my $existing_icon ={};
