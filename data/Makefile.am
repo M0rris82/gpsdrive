@@ -25,8 +25,6 @@ icons_square.small_sightseeingdir= $(datadir)/icons/square.small/sightseeing
 icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
 icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 
-icons_square.big_custom_DATA = icons/square.big/custom/*.png
-icons_square.big_customdir= $(datadir)/gpsdrive/icons/square.big/custom
 
 icons_square.big_education_DATA = icons/square.big/education/*.png
 icons_square.big_educationdir= $(datadir)/gpsdrive/icons/square.big/education
@@ -91,9 +89,6 @@ icons_square.smalldir= $(datadir)/gpsdrive/icons/square.small
 
 icons_square.small_accomodation_DATA = icons/square.small/accomodation/*.png
 icons_square.small_accomodationdir= $(datadir)/gpsdrive/icons/square.small/accomodation
-
-icons_square.small_custom_DATA = icons/square.small/custom/*.png
-icons_square.small_customdir=$(datadir)/gpsdrive/icons/square.small/custom
 
 icons_square.small_education_DATA = icons/square.small/education/*.png
 icons_square.small_educationdir=$(datadir)/gpsdrive/icons/square.small/education
@@ -248,7 +243,6 @@ EXTRA_DIST= \
 	$(icons_classic_wlan_DATA) \
 	$(icons_square.big_DATA) \
 	$(icons_square.big_accomodation_DATA) \
-	$(icons_square.big_custom_DATA) \
 	$(icons_square.big_education_DATA) \
 	$(icons_square.big_food_DATA) \
 	$(icons_square.big_food_fastfoodDATA) \
@@ -272,7 +266,6 @@ EXTRA_DIST= \
 	$(icons_square.big_wlan_DATA) \
 	$(icons_square.small_DATA) \
 	$(icons_square.small_accomodation_DATA) \
-	$(icons_square.small_custom_DATA) \
 	$(icons_square.small_education_DATA) \
 	$(icons_square.small_food_DATA) \
 	$(icons_square.small_geocache_DATA) \

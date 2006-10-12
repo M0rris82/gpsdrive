@@ -39,4 +39,4 @@ while read file ; do
     fi
 done
 diff -u -b icons.txt icons.new 
-echo "New icons list can be found in icons.new"
+mv icons.new icons.txt
