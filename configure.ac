@@ -439,7 +439,7 @@ echo checking for package gdal-bin 1.2.6-1.3...  TODO >&2
 dnl ---------------------------
 echo checking for package libgrass 6.0.1-3...  TODO >&2
 dnl ---------------------------
-echo checking for package libgdal1-1.3.1-grass 1.3.1-1...  TODO >&2
+echo checking for package libgdal1-1.3.2-grass 1.3.2-1...  TODO >&2
 dnl ---------------------------
 echo checking for package libhdf4g-dev 4.1r4-18.1... TODO >&2
 dnl ---------------------------
