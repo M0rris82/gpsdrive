@@ -66,8 +66,6 @@ health.empty                             1	10000
 health.eye_chart                         1	10000
 health.hospital                          1	10000
 health.pharmacy                          1	10000
-historic                                 1	10000
-historic.building                        1	10000
 misc                                     1	10000
 misc.empty                               1	10000
 misc.waypoint                            1	10000
@@ -257,6 +255,7 @@ people.people_x                          1	10000
 people.people_y                          1	10000
 people.people_z                          1	10000
 people.work                              1	10000
+places                                   1	10000
 places.capital                           1	10000
 places.city                              1	10000
 places.empty                             1	10000
@@ -287,6 +286,7 @@ places.village                           1	10000
 places.work                              1	10000
 public                                   1	10000
 public.empty                             1	10000
+public.placeholder                       1	10000
 recreation                               1	10000
 recreation.beer                          1	10000
 recreation.beergarden                    1	10000
