@@ -119,25 +119,17 @@ draw_plus_sign (gdouble posxdest, gdouble posydest)
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 - 5 + SHADOWOFFSET,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 + 5 + SHADOWOFFSET);
+		     posydest + 1 - 5 + SHADOWOFFSET, posxdest + 1 + SHADOWOFFSET, posydest + 1 + 5 + SHADOWOFFSET);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET,
-		     posxdest + 1 - 5 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET);
+		     posydest + 1 + SHADOWOFFSET, posxdest + 1 - 5 + SHADOWOFFSET, posydest + 1 + SHADOWOFFSET);
       gdk_gc_set_function (kontext, GDK_COPY);
     }
 
   /*  draw + sign at destination */
   gdk_gc_set_foreground (kontext, &red);
-  gdk_draw_line (drawable, kontext,
-		 posxdest + 1, posydest + 1 - 5,
-		 posxdest + 1, posydest + 1 + 5);
-  gdk_draw_line (drawable, kontext,
-		 posxdest + 1 + 5, posydest + 1,
-		 posxdest + 1 - 5, posydest + 1);
+  gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 5, posxdest + 1, posydest + 1 + 5);
+  gdk_draw_line (drawable, kontext, posxdest + 1 + 5, posydest + 1, posxdest + 1 - 5, posydest + 1);
 
 }
 
@@ -153,25 +145,17 @@ draw_small_plus_sign (gdouble posxdest, gdouble posydest)
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 - 2 + SHADOWOFFSET,
-		     posxdest + 1 + SHADOWOFFSET,
-		     posydest + 1 + 2 + SHADOWOFFSET);
+		     posydest + 1 - 2 + SHADOWOFFSET, posxdest + 1 + SHADOWOFFSET, posydest + 1 + 2 + SHADOWOFFSET);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + 2 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET,
-		     posxdest + 1 - 2 + SHADOWOFFSET,
-		     posydest + 1 + SHADOWOFFSET);
+		     posydest + 1 + SHADOWOFFSET, posxdest + 1 - 2 + SHADOWOFFSET, posydest + 1 + SHADOWOFFSET);
       gdk_gc_set_function (kontext, GDK_COPY);
     }
 
   /*  draw + sign at destination */
   gdk_gc_set_foreground (kontext, &red);
-  gdk_draw_line (drawable, kontext,
-		 posxdest + 1, posydest + 1 - 2,
-		 posxdest + 1, posydest + 1 + 2);
-  gdk_draw_line (drawable, kontext,
-		 posxdest + 1 + 2, posydest + 1,
-		 posxdest + 1 - 2, posydest + 1);
+  gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 2, posxdest + 1, posydest + 1 + 2);
+  gdk_draw_line (drawable, kontext, posxdest + 1 + 2, posydest + 1, posxdest + 1 - 2, posydest + 1);
 
 }
 
@@ -196,15 +180,13 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
   for (i = 0; i < icons_buffer_last; i++)
     if ((strcmp (icon, icons_buffer[i].name)) == 0)
       {
-	if ((posxdest >= 0) && (posxdest < SCREEN_X)
-	    && (posydest >= 0) && (posydest < SCREEN_Y))
+	if ((posxdest >= 0) && (posxdest < SCREEN_X) && (posydest >= 0) && (posydest < SCREEN_Y))
 	  {
 	    wx = gdk_pixbuf_get_width (icons_buffer[i].icon);
 	    wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
 	    gdk_draw_pixbuf (drawable, kontext,
 			     (icons_buffer + i)->icon, 0, 0,
-			     posxdest - wx / 2, posydest - wy / 2,
-			     wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
+			     posxdest - wx / 2, posydest - wy / 2, wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
 	    aux = i;
 	  }
 	return 99999;
@@ -230,7 +212,7 @@ read_icon (gchar * icon_name, int force)
   gchar icon_filename[1024];
   GdkPixbuf *icons_buffer = NULL;
   if (mydebug > 50)
-    printf ("read_icon(%s,%d)\n", icon_name,force);
+    fprintf (stderr, "read_icon(%s,%d)\n", icon_name, force);
 
   typedef struct
   {
@@ -253,47 +235,39 @@ read_icon (gchar * icon_name, int force)
   };
 
   gint i;
-  for (i = 0;
-       strncmp (available_path[i].path, "END",
-		sizeof (available_path[i].path)); i++)
+  for (i = 0; strncmp (available_path[i].path, "END", sizeof (available_path[i].path)); i++)
     {
-      g_snprintf (filename, sizeof (filename), available_path[i].path,
-		  available_path[i].option);
-      g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename,
-		  icon_name);
+      g_snprintf (filename, sizeof (filename), available_path[i].path, available_path[i].option);
+      g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename, icon_name);
       if (mydebug > 75)
-	printf ("read_icon(%s): Try\t%s\n", icon_name, icon_filename);
+	fprintf (stderr, "read_icon(%s): Try\t%s\n", icon_name, icon_filename);
       icons_buffer = gdk_pixbuf_new_from_file (icon_filename, NULL);
       if (NULL != icons_buffer)
 	{
 	  if (mydebug > 20)
-	    printf ("read_icon(%s): FOUND\t%s\n", icon_name, icon_filename);
+	    fprintf (stderr, "read_icon(%s): FOUND\t%s\n", icon_name, icon_filename);
 	  return icons_buffer;
 	}
     }
 
-  if ( NULL == icons_buffer && force ) {
-      fprintf (stderr,"read_icon: No Icon '%s' found\n", icon_name);
-      if ( strstr (icon_name, "Old") == NULL ) {
-	  fprintf (stderr,
-		   _("Please install the program as root with:\n"
-		     "make install\n\n"));
-      
-	  fprintf(stderr,"I searched in :\n");
-	  for (i = 0;
-	       strncmp (available_path[i].path, "END",
-			sizeof (available_path[i].path)); i++)
-	      {
-		  g_snprintf (filename, sizeof (filename), available_path[i].path,
-			      available_path[i].option);
-		  g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename,
-			      icon_name);
-		  fprintf(stderr,"\t%s\n",icon_filename);
-	      }
+  if (NULL == icons_buffer && force)
+    {
+      fprintf (stderr, "read_icon: No Icon '%s' found\n", icon_name);
+      if (strstr (icon_name, "Old") == NULL)
+	{
+	  fprintf (stderr, _("Please install the program as root with:\n" "make install\n\n"));
+
+	  fprintf (stderr, "I searched in :\n");
+	  for (i = 0; strncmp (available_path[i].path, "END", sizeof (available_path[i].path)); i++)
+	    {
+	      g_snprintf (filename, sizeof (filename), available_path[i].path, available_path[i].option);
+	      g_snprintf (icon_filename, sizeof (icon_filename), "%s%s", filename, icon_name);
+	      fprintf (stderr, "\t%s\n", icon_filename);
+	    }
 
 	  exit (-1);
-      }
-  }
+	}
+    }
 
   return icons_buffer;
 }
@@ -312,6 +286,12 @@ read_themed_icon (gchar * icon_name)
   gchar icon_file_name[2048];
   GdkPixbuf *icon = NULL;
 
+  if (0 >= (int) strlen (icon_name))
+    {
+      fprintf (stderr, "read_themed_icon([%s] '%s') => Empy Icon name requested\n", local_config.icon_theme, icon_name);
+      return NULL;
+    }
+
   g_strlcpy (icon_file_name, icon_name, sizeof (icon_file_name));
   g_strdelimit (icon_file_name, ".", '/');
 
@@ -321,9 +301,9 @@ read_themed_icon (gchar * icon_name)
       g_snprintf (themed_icon_filename, sizeof (themed_icon_filename),
 		  "%s/%s.png", local_config.icon_theme, icon_file_name);
       if (mydebug > 90)
-	fprintf (stderr, "read_themed_icon(%s) => Themed File %s\n",
-		 icon_name, themed_icon_filename);
-      icon = read_icon (themed_icon_filename,0);
+	fprintf (stderr, "read_themed_icon([%s] %s) => Themed File %s\n",
+		 local_config.icon_theme, icon_name, themed_icon_filename);
+      icon = read_icon (themed_icon_filename, 0);
       if (icon != NULL)
 	return icon;
 
@@ -332,16 +312,17 @@ read_themed_icon (gchar * icon_name)
 	{
 	  p_pos[0] = '\0';
 	  if (mydebug > 3)
-	    fprintf (stderr, "read_themed_icon(%s) reduced to => %s\n",
-		     icon_name, icon_file_name);
+	    fprintf (stderr, "read_themed_icon([%s] %s) reduced to => %s\n",
+		     local_config.icon_theme, icon_name, icon_file_name);
 	}
     }
   while (p_pos != NULL);
-  if ( NULL == icon ) {
-      fprintf (stderr,"read_themed_icon: No Icon '%s' found for theme %s\n", 
-	       icon_name,local_config.icon_theme);
+  if (NULL == icon)
+    {
+      fprintf (stderr, "read_themed_icon([%s] %s): No Icon '%s' found for theme %s\n",
+	       local_config.icon_theme, icon_name, icon_name, local_config.icon_theme);
       //exit (-1);
-  }
+    }
   return NULL;
 }
 
@@ -356,9 +337,10 @@ load_icons (void)
   /* icons.txt */
   FILE *fh_icons_txt = NULL;
   char filename[255];
+  GdkPixbuf *icon = NULL;
 
   /* hardcoded kismet-stuff */
-  kismetpixbuf = read_icon ("kismet.png",1);
+  kismetpixbuf = read_icon ("kismet.png", 1);
 
   /* load icons defined in icons.txt */
   if (!fh_icons_txt)
@@ -367,17 +349,16 @@ load_icons (void)
       fh_icons_txt = fopen (filename, "r");
       if (mydebug > 3)
 	{
-	  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
+	  fprintf (stderr, "load_icons(): Trying icons.txt: \"%s\"\n", filename);
 	}
     }
   if (!fh_icons_txt)
     {
-      snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt",
-		local_config_homedir);
+      snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", local_config_homedir);
       fh_icons_txt = fopen (filename, "r");
       if (mydebug > 3)
 	{
-	  printf ("load_icons(): Trying icons.txt: \"%s\"\n", filename);
+	  fprintf (stderr, "load_icons(): Trying icons.txt: \"%s\"\n", filename);
 	}
     }
   /* if there is no icons.txt, try to open it  from datadir */
@@ -386,76 +367,79 @@ load_icons (void)
       snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
       if (mydebug > 3)
 	{
-	  printf ("load_icons(): Trying default icons.txt: \"%s\"\n",
-		  filename);
+	  fprintf (stderr, "load_icons(): Trying default icons.txt: \"%s\"\n", filename);
 	}
       fh_icons_txt = fopen (filename, "r");
     }
   if (fh_icons_txt)
     {
       if (mydebug > 3)
-	printf ("load_icons(): Icons will be read from: \"%s\"\n", filename);
+	fprintf (stderr, "load_icons(): Icons will be read from: \"%s\"\n", filename);
 
       int index = 0;
       int errors = 0;
-      while (fscanf (fh_icons_txt, "%s %d %d\n",
-		     (char *) &poi_type_list[index].name,
-		     &poi_type_list[index].scale_min,
-		     &poi_type_list[index].scale_max))
+      int line_args = 0;
+      gchar line[200];
+      gchar name[200];
+      while (fgets (line, sizeof (line), fh_icons_txt))
 	{
-
-	  if (index >= MAX_ICONS)
+	  if (mydebug > 98)
+	    fprintf (stderr, "\nload_icon(): Line:%s\n", line);
+	  line_args = sscanf (line, "%s %d %d\n",
+			      (char *) name,
+			      &poi_type_list[index].scale_min, &poi_type_list[index].scale_max);
+	  if (mydebug > 75)
+	    fprintf (stderr, "load_icon(): Try %s\n", name);
+	  if (3 != line_args)
 	    {
-	      break;
+	      fprintf (stderr, "load_icons(): %d args in line\n%s\n", line_args, line);
+	      continue;
 	    }
 
+	  if (0 >= (int) strlen (name))
+	    {
+	      fprintf (stderr, "load_icons(): Empty icon requested\n%s\n", line);
+	      continue;
+	    }
+
+
+	  if (mydebug > 55)
+	    fprintf (stderr, "load_icons(): Waypoint-type[%d] %d read_themed_icon \"%s\"\n",
+		     poi_type_list_count, index, name);
+	  icon = read_themed_icon ( name );
+
+	  if (do_unit_test && !icon)	// None Found in Unit Test
+	    {
+	      fprintf (stderr, "load_icons(): ** Failed to open \"%s\"\n", name);
+	      errors++;
+	    }
+	  if (!icon)	// None Found
+	    {
+	      icon = read_themed_icon ((gchar *) "unknown");
+	    }
+	  if (!icon)	// Even unknown not found
+	    {
+	      fprintf (stderr, "load_icons(): ** Failed to open \"%s\" even replacement 'unknown' cannot be opened\n",
+		       name);
+	      exit (-1);
+	    }
+	  icons_buffer[index].icon = icon;
 	  if (poi_type_list_count < poi_type_list_max)
 	    {
 	      poi_type_list_count++;
 	      poi_type_list[poi_type_list_count].poi_type_id = index;
-	      poi_type_list[poi_type_list_count].icon =
-		read_themed_icon (poi_type_list[index].icon_name);
+	      poi_type_list[poi_type_list_count].icon = icon;
+	      g_strlcpy (poi_type_list[index].name,name,sizeof(poi_type_list[index].name));
+	    }
+	  if (index < MAX_ICONS)
+	    {
+	      icons_buffer[index].icon = icon;
+	      g_strlcpy (icons_buffer[index].name,name,sizeof(icons_buffer[index].name));
 	    }
 
-
-	  if (mydebug > 3)
-	    printf ("load_icons(): Waypoint-type %d gets \"%s\"\n", index,
-		    poi_type_list[index].name);
-	  icons_buffer[index].icon =
-	    read_themed_icon (poi_type_list[index].icon_name);
-	  if (!icons_buffer[index].icon)	// None Found
-	    {
-	      if (do_unit_test)
-		{
-		  if (!strncmp ((char *) icons_buffer[index].name, "Old.", 4))
-		    {
-		      printf ("load_icons(): ** Failed to open \"%s\"\n",
-			      (char *) &poi_type_list[index].name);
-		      errors++;
-		    }
-		  else
-		    {
-		      printf ("load_icons(): Not opening \"%s\"\n",
-			      (char *) &poi_type_list[index].name);
-		      icons_buffer[index].icon = read_icon ("unknown.png",1);
-		    }
-		}
-	      else
-		{
-		  printf ("load_icons(): ** Failed to open \"%s\"\n",
-			  (char *) &poi_type_list[index].name);
-		  icons_buffer[index].icon = read_icon ("unknown.png",1);
-		}
-	    }
-	  if (!icons_buffer[index].icon)	// None Found
-	    {
-	      icons_buffer[index].icon = NULL;
-	      icons_buffer[index].name[0] = 0;
-	    }
 	  if (feof (fh_icons_txt))
 	    break;
 	  index++;
-
 	}
       if (errors)
 	{
@@ -473,10 +457,9 @@ void
 load_friends_icon (void)
 {
 
-  friendsimage =  read_icon("friendsicon.png",1);
+  friendsimage = read_icon ("friendsicon.png", 1);
   friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
-  gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24,
-		    0, 0, 1, 1, GDK_INTERP_BILINEAR);
+  gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24, 0, 0, 1, 1, GDK_INTERP_BILINEAR);
 
 }
 
@@ -492,40 +475,35 @@ load_user_icon (char icon_name[200])
     icon_name[i] = tolower (icon_name[i]);
 
   g_snprintf (path, sizeof (path), "%sicons/%s.png", local_config_homedir, icon_name);
-  icons_buffer[icons_buffer_last].icon =
-    gdk_pixbuf_new_from_file (path, NULL);
+  icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
 
   if (icons_buffer[icons_buffer_last].icon == NULL)
     {
-      g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png",
-		  DATADIR, icon_name);
-      icons_buffer[icons_buffer_last].icon =
-	gdk_pixbuf_new_from_file (path, NULL);
+      g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR, icon_name);
+      icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
     }
 
   if ((icons_buffer + icons_buffer_last)->icon != NULL)
     {
       for (i = 0; i < (int) strlen (icon_name); i++)
 	icon_name[i] = tolower (icon_name[i]);
-      if ((strcmp (icon_name, "wlan") == 0)
-	  || (strcmp (icon_name, "wlan-wep") == 0))
+      if ((strcmp (icon_name, "wlan") == 0) || (strcmp (icon_name, "wlan-wep") == 0))
 	{
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 	}
       else
 	{
-	  g_strlcpy ((icons_buffer + icons_buffer_last)->name, icon_name,
-		     sizeof (icons_buffer->name));
+	  g_strlcpy ((icons_buffer + icons_buffer_last)->name, icon_name, sizeof (icons_buffer->name));
 	  fprintf (stderr, _("Loaded user defined icon %s\n"), path);
 	  icons_buffer_last++;
 	}
       if (mydebug > 3)
-	printf ("Icon for %s loaded:%s\n", icon_name, path);
+	fprintf (stderr, "Icon for %s loaded:%s\n", icon_name, path);
     }
   else
     {
       if (mydebug > 3)
-	printf ("No Icon for %s loaded\n", icon_name);
+	fprintf (stderr, "No Icon for %s loaded\n", icon_name);
     }
 }
 
