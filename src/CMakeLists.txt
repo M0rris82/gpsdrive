@@ -84,6 +84,8 @@ SET(gpsdrive_SRCS
   nmea_handler.c
   nmea_handler.h
   unit_test.c
+  wlan.c
+  wlan.h
 )
 
 SET(garmin_SRCS
