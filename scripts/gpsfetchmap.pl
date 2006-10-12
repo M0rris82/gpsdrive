@@ -16,7 +16,7 @@ modified (Sep 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 2002) by Magnus Månsson <ganja\@0x63.nu>
 modified (Nov 2003) by camel <camel\@insecure.at>
 modified (Feb 2004) by Robin Cornelius <robin\@cornelius.demon.co.uk>
-modified (Jan 2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
+modified (Jan 2005) by Joerg Ostertag <gpsdrive\@ostertag.name>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
@@ -219,7 +219,7 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     'U'              => \$update_koord,
 	     'FORCE'          => \$force,     
 	     'PROXY=s'        => \$PROXY,
-	     'debug'          => \$debug,      'MAN' => \$man, 
+	     'debug+'          => \$debug,      'MAN' => \$man, 
 	     'help|x'         => \$help,       'version' => \$version
 	     )
     or pod2usage(1);
@@ -574,7 +574,9 @@ sub mirror_map($$){
     my $content = slurp($filename);
     if ( $content =~ m,<title>403 Forbidden</title>,){
 	unlink "$filename";
-	sleep 10;
+	sleep 10; # Yes this is on purpose. SInce you cannot download for the next hours anyway
+	debug($content);
+	die ("Access to the Site $url is denied\n");
     };
     my $ok = mirror_file($url,$filename);
     if ( ! is_map_file($filename) ) {
