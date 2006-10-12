@@ -229,7 +229,7 @@ get_poi_type_list (void)
   }
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,symbol,scale_min,scale_max,description,parent FROM poi_type ORDER BY poi_type_id;");
+	      "SELECT poi_type_id,name,scale_min,scale_max,description FROM poi_type ORDER BY poi_type_id;");
 
   if (mydebug > 25)
     fprintf (stderr, "get_poi_type_list: query: %s\n", sql_query);
@@ -262,7 +262,7 @@ get_poi_type_list (void)
 	  fprintf (stderr,
 		   "Typet_list: index(%d) > poi_type_list_max(%d)\n",
 		   index, poi_type_list_max);
-	  break;
+	  continue;
 	};
 
       if (poi_type_list_count < index)
@@ -270,19 +270,18 @@ get_poi_type_list (void)
 
       poi_type_list[index].poi_type_id = index;
 
-	 // ----------1: name
-	  if ( row[1]!= NULL )
-	{
-	  g_strlcpy (poi_type_list[index].name, row[1],
-		     sizeof (poi_type_list[index].name));
-	}
-  	    
-      // --------- 2: symbol
-      if ( row[2] != NULL )
-	{
-	  g_strlcpy (poi_type_list[index].icon_name, row[2],
+
+      // --------- 1: symbol name
+      if ( row[1] != NULL ) 
+	  {
+	      g_strlcpy (poi_type_list[index].name, row[1],
+			 sizeof (poi_type_list[index].name));
+	      g_strlcpy (poi_type_list[index].icon_name, row[1],
 		     sizeof (poi_type_list[index].icon_name));
 
+	  if (mydebug > 98)
+	      printf ("get_poi_type_list: %3d:Icon '%s' for '%s'\n",
+		      index, poi_type_list[index].icon_name, poi_type_list[index].name);
 	  poi_type_list[index].icon =
 	    read_themed_icon (poi_type_list[index].icon_name);
 
@@ -306,21 +305,18 @@ get_poi_type_list (void)
 	    }
 	}
 
-      // --------- 3: scale_min
-      poi_type_list[index].scale_min = (gint) g_strtod (row[3], NULL);
+      // --------- 2: scale_min
+      poi_type_list[index].scale_min = (gint) g_strtod (row[2], NULL);
 
-      // --------- 4: scale_max 
-      poi_type_list[index].scale_max = (gint) g_strtod (row[4], NULL);
+      // --------- 3: scale_max 
+      poi_type_list[index].scale_max = (gint) g_strtod (row[3], NULL);
     
 
-      // --------- 5: description
-	  g_strlcpy (poi_type_list[index].description, row[5],
+      // --------- 4: description
+	  g_strlcpy (poi_type_list[index].description, row[4],
 	 	     sizeof (poi_type_list[index].description));
 	
-      // --------- 6: parent
-      poi_type_list[index].parent = (gint) g_strtod (row[6], NULL);
-	
-	}	
+    }	
 		
 
   if (!dl_mysql_eof (res))
