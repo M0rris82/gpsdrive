@@ -4,7 +4,6 @@ accomodation.empty                       1	10000
 accomodation.hotel                       1	10000
 accomodation.youth-hostel                1	10000
 custom                                   1	10000
-custom.empty                             1	10000
 education                                1	10000
 education.empty                          1	10000
 education.school                         1	10000
@@ -217,7 +216,6 @@ other.train                              1	10000
 other.trees                              1	10000
 other.truck                              1	10000
 other.U-Bahn                             1	10000
-other.unknown                            1	10000
 other.VR                                 1	10000
 other.warning                            1	10000
 other.wlan-wep                           1	10000
