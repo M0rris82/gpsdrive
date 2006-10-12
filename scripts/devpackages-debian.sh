@@ -58,9 +58,9 @@ apt-get install \
 	zlib1g \
 	zlib1g-dev \
 	libltdl3-dev \
-	libgdal1-1.3.1 \
-	libgdal1-1.3.1-grass \
-	libgdal1-1.3.1-dev \
+	libgdal1-1.3.2 \
+	libgdal1-1.3.2-grass \
+	libgdal1-1.3.2-dev \
 	gdal-bin \
 	libxerces27 \
 	libxerces27-dev \
