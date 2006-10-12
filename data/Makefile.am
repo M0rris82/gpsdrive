@@ -107,8 +107,8 @@ icons_square.small_geocachedir=$(datadir)/gpsdrive/icons/square.small/geocache
 icons_square.small_health_DATA = icons/square.small/health/*.png
 icons_square.small_healthdir=$(datadir)/gpsdrive/icons/square.small/health
 
-icons_square.small_historic_DATA = icons/square.small/historic/*.png
-icons_square.small_historicdir=$(datadir)/gpsdrive/icons/square.small/historic
+#icons_square.small_historic_DATA = icons/square.small/historic/*.png
+#icons_square.small_historicdir=$(datadir)/gpsdrive/icons/square.small/historic
 
 icons_square.small_money_DATA = icons/square.small/money/*.png
 icons_square.small_moneydir=$(datadir)/gpsdrive/icons/square.small/money
