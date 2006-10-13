@@ -163,8 +163,8 @@ icons_classic_moneydir= $(datadir)/gpsdrive/icons/classic/money
 icons_classic_nautical_DATA = icons/classic/nautical/*.png
 icons_classic_nauticaldir= $(datadir)/gpsdrive/icons/classic/nautical
 
-icons_classic_other_DATA = icons/classic/other/*.png
-icons_classic_otherdir= $(datadir)/gpsdrive/icons/classic/other
+icons_classic_misc_DATA = icons/classic/misc/*.png
+icons_classic_miscdir= $(datadir)/gpsdrive/icons/classic/misc
 
 icons_classic_people_DATA = icons/classic/people/*.png
 icons_classic_peopledir= $(datadir)/gpsdrive/icons/classic/people
@@ -223,7 +223,7 @@ EXTRA_DIST= \
 	$(icons_classic_health_DATA) \
 	$(icons_classic_money_DATA) \
 	$(icons_classic_nautical_DATA) \
-	$(icons_classic_other_DATA) \
+	$(icons_classic_misc_DATA) \
 	$(icons_classic_people_DATA) \
 	$(icons_classic_places_DATA) \
 	$(icons_classic_public_DATA) \
