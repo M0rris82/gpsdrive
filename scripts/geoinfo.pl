@@ -91,14 +91,13 @@ our $thread;
 our $type;
 our $sql;
 our $file;
-my $do_generate_poi_type_html_page = 0;
 
 
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
-our $db_user             = 'gast';
-our $db_password         = 'gast';
-our $db_host             = 'localhost';
+our $db_user             = $ENV{DBUSER} || 'gast';
+our $db_password         = $ENV{DBPASS} || 'gast';
+our $db_host             = $ENV{DBHOST} || 'localhost';
 #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
 
 # Set defaults and get options from command line
@@ -133,7 +132,6 @@ GetOptions (
 	     'db-host=s'           => \$db_host,
 	     'delete-db-content'   => \$do_delete_db_content,
 	     'collect-init-data'   => \$do_collect_init_data,
-	     'generate-poi-type-html-page' => \$do_generate_poi_type_html_page,
 	     'lat_min=s'           => \$lat_min,      
 	     'lat_max=s'           => \$lat_max,
 	     'lon_min=s'           => \$lon_min,      
@@ -217,7 +215,7 @@ Geo::Gpsdrive::DBFuncs::create_db()
     if $do_create_db;
 
 Geo::Gpsdrive::DB_Defaults::fill_defaults()
-    if $do_import_defaults;
+    if $do_import_defaults || $do_create_db;
 
 Geo::Gpsdrive::DB_Examples::fill_examples()
     if $do_import_examples;
@@ -238,10 +236,6 @@ Geo::Gpsdrive::gettraffic::gettraffic()
 
 Geo::Gpsdrive::gettraffic::showtraffic()
 	if $show_traffic;
-
-
-Geo::Gpsdrive::DB_Defaults::generate_poi_type_html_page()
-    if $do_generate_poi_type_html_page;
 
 # Convert MapSource Waypoints to gpsdrive POI
 Geo::Gpsdrive::mapsource::import_Data()
@@ -331,7 +325,7 @@ Try creating the tables inside the geoinfo database.
 This also fills the database with some predefined types.
 and imports wour way*.txt Files.
 This also creates and modified the old waypoints table.
-
+This implies --fill-defaults
 
 =item B<--fill-defaults>
 
@@ -441,11 +435,6 @@ Collects default data and writes them into the default Files.
 This option is normally used by the maintainer to create the 
 Defaults for filling the DB.
 
-
-=item B<--generate-poi-type-html-page>
-
-Generate a html page containing all POI Icons created as default
-and there descriptions.
 
 =item B<--gpsdrive-tracks>
 
