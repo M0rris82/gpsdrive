@@ -39,11 +39,15 @@ icons_classic_religion_DATA = icons/classic/religion/*.png
 icons_classic_religiondir= $(datadir)/gpsdrive/icons/classic/religion
 icons_classic_shopping_DATA = icons/classic/shopping/*.png
 icons_classic_shoppingdir= $(datadir)/gpsdrive/icons/classic/shopping
+icons_classic_sightseeing_DATA =  icons/classic/sightseeing/*.png
+icons_classic_sightseeingdir= $(datadir)/icons/classic/sightseeing
 icons_classic_sports_DATA = icons/classic/sports/*.png
 icons_classic_sportsdir= $(datadir)/gpsdrive/icons/classic/sports
 icons_classic_transport_DATA = icons/classic/transport/*.png
 icons_classic_transportdir= $(datadir)/gpsdrive/icons/classic/transport
 icons_classic_vehicle_DATA = icons/classic/vehicle/*.png
+icons_classic_vehicle_fuel_station_DATA = icons/classic/vehicle/fuel_station/*.png
+icons_classic_vehicle_fuel_stationdir= $(datadir)/gpsdrive/icons/classic/vehicle/fuel_station
 icons_classic_vehicledir= $(datadir)/gpsdrive/icons/classic/vehicle
 icons_classic_wlan_DATA = icons/classic/wlan/*.png 
 icons_classic_wlandir= $(datadir)/gpsdrive/icons/classic/wlan
@@ -64,9 +68,9 @@ icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big
 icons_square.big_health_DATA = icons/square.big/health/*.png
 icons_square.big_healthdir= $(datadir)/gpsdrive/icons/square.big/health
 icons_square.big_misc_DATA = icons/square.big/misc/*.png
-icons_square.big_miscdir= $(datadir)/gpsdrive/icons/square.big/misc
 icons_square.big_misc_waypoint_DATA = icons/square.big/misc/waypoint/*.png
 icons_square.big_misc_waypointdir= $(datadir)/gpsdrive/icons/square.big/waypoint/misc
+icons_square.big_miscdir= $(datadir)/gpsdrive/icons/square.big/misc
 icons_square.big_money_DATA = icons/square.big/money/*.png
 icons_square.big_moneydir= $(datadir)/gpsdrive/icons/square.big/money
 icons_square.big_nautical_DATA = icons/square.big/nautical/*.png
@@ -74,6 +78,8 @@ icons_square.big_nauticaldir= $(datadir)/gpsdrive/icons/square.big/nautical
 icons_square.big_people_DATA = icons/square.big/people/*.png
 icons_square.big_peopledir= $(datadir)/gpsdrive/icons/square.big/people
 icons_square.big_places_DATA = icons/square.big/places/*.png
+icons_square.big_places_settlement_DATA = icons/square.big/places/settlement/*.png
+icons_square.big_places_settlementdir= $(datadir)/gpsdrive/icons/square.big/places/settlement
 icons_square.big_placesdir= $(datadir)/gpsdrive/icons/square.big/places
 icons_square.big_public_DATA = icons/square.big/public/*.png
 icons_square.big_publicdir= $(datadir)/gpsdrive/icons/square.big/public
@@ -111,6 +117,8 @@ icons_square.small_geocache_DATA = icons/square.small/geocache/*.png
 icons_square.small_geocachedir=$(datadir)/gpsdrive/icons/square.small/geocache
 icons_square.small_health_DATA = icons/square.small/health/*.png
 icons_square.small_healthdir=$(datadir)/gpsdrive/icons/square.small/health
+icons_square.small_misc_DATA = icons/square.small/misc/*.png
+icons_square.small_miscdir= $(datadir)/gpsdrive/icons/square.small/misc
 icons_square.small_money_DATA = icons/square.small/money/*.png
 icons_square.small_moneydir=$(datadir)/gpsdrive/icons/square.small/money
 icons_square.small_nautical_DATA = icons/square.small/nautical/*.png
@@ -174,9 +182,11 @@ EXTRA_DIST= \
 	$(icons_classic_recreation_DATA) \
 	$(icons_classic_religion_DATA) \
 	$(icons_classic_shopping_DATA) \
+	$(icons_classic_sightseeing_DATA) \
 	$(icons_classic_sports_DATA) \
 	$(icons_classic_transport_DATA) \
 	$(icons_classic_vehicle_DATA) \
+	$(icons_classic_vehicle_fuel_station_DATA) \
 	$(icons_classic_wlan_DATA) \
 	$(icons_square.big_DATA) \
 	$(icons_square.big_accomodation_DATA) \
@@ -191,6 +201,7 @@ EXTRA_DIST= \
 	$(icons_square.big_nautical_DATA) \
 	$(icons_square.big_people_DATA) \
 	$(icons_square.big_places_DATA) \
+	$(icons_square.big_places_settlement_DATA) \
 	$(icons_square.big_public_DATA) \
 	$(icons_square.big_recreation_DATA) \
 	$(icons_square.big_restaurant_DATA) \
@@ -209,6 +220,7 @@ EXTRA_DIST= \
 	$(icons_square.small_food_DATA) \
 	$(icons_square.small_geocache_DATA) \
 	$(icons_square.small_health_DATA) \
+	$(icons_square.small_misc_DATA) \
 	$(icons_square.small_money_DATA) \
 	$(icons_square.small_nautical_DATA) \
 	$(icons_square.small_people_DATA) \
