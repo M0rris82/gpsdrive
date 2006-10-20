@@ -44,10 +44,10 @@ while ( my @poi = $sth->fetchrow_array )
   for (@icon) { $name .= '&nbsp;&nbsp;&nbsp;&nbsp;&rsaquo;&nbsp;'; }
   $name .= pop(@icon);
    
-  #  my $name = substr($space,0,scalar(@icon)).pop(@icon)."\n";
-   
   if ( index($poi[1],'.')=='-1' )
-      { $base = 'background-color:#6666ff; color:white; font-weight:bold;' }
+      { $html .= "<tr><td>&nbsp;</td></tr>\n";
+        $base = 'background-color:#6666ff; color:white; font-weight:bold;';
+      }
 
   $html .= "<tr style=\"$base\"><td class=\"id\">$poi[0]</td><td>&nbsp;$name</td>\n";
 
@@ -66,4 +66,6 @@ $dbh->disconnect;
 open( POIFILE, ">./poi_types.html" ) or die "Can't open file poi_type.html: $!";
 print POIFILE "$html</table>\n</html>";
 close(POIFILE);
+
+
 

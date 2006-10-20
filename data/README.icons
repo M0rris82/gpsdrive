@@ -14,7 +14,8 @@ easier transition to the new scheme.
 The file format for the icons has to be PNG, transparency allowed.
 The image size should be 16x16, 24x24 or 32x32 pixels, but can be any size,
 that is suitable for your icon theme.
-
+The icon name should be english, lowercase and must not contain dots or
+whitespaces.
 
 *** The Structure: ***
 

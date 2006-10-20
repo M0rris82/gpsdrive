@@ -35,7 +35,7 @@ while read file ; do
 	grep -E -e "$file_search" icons.txt >>icons.new
     else 
 	echo "------- create new entry for '$file'"
-	printf "%-40s 1\t10000\n" "${file}" >> icons.new
+	printf "%-40s 1\t25000\n" "${file}" >> icons.new
     fi
 done
 diff -u -b icons.txt icons.new 
