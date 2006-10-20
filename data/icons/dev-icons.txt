@@ -11,8 +11,6 @@
 #####################
 # Places / Mapping (transparent)
  
- * places		places.png
- 
  * Settlement		settlement.png
  	* Hamlet	hamlet.png
  	* Village	village.png
@@ -26,16 +24,15 @@
  forest
 
 ####################
-# Historic (green-white)
- Burg/Schloss
- Ruine
- Monument
- Gedenkstätte
+# Sightseeing (green-white)
+
+ * Castle		castle.png
+ Ruin			ruin.png
+ Monument		monument.png
+ Memorial Place		memorial.png
 
 ####################
 # Accomodation (light blue)
- 
- * Accommodation	accomodation.png
 
  * Hotel		hotel.png
  * Campingground	camping.png
@@ -44,63 +41,68 @@
 ####################
 # Money (yellow-white)
  
- * Money		money.png
- 
- - Bank
-    Sparkasse
-    Postbank
-    HypoVereinsbank
-    Deutsche Bank
-    Raiffeisenbank
+ Bank			bank.png
+ 	Sparkasse	sparkasse.png
+	Postbank	postbank.png
+	HypoVereinsbank	hvb.png
+	Deutsche Bank	deutsche_bank.png
+	Raiffeisenbank	raiffeisen.png
 
- - Geldautomat
-    Cashgroup
-    Sparkasse
+ ATM			atm.png
+ 	Cashgroup	cashgroup.png
+	Sparkasse	sparkasse.png
 
- Geldwechsel
+ Exchange Office	exchange.png
 
 ####################
 # Religion (violet)
  
- * Religion		religion.png
- - Kirche
-    catholic
-    protestant
-    synagoge
-    mosque
- cemetary
+ Church			church.png
+ 	Catholic	catholic.png
+	Protestant	protestant.png
+	Synagoge	synagoge.png
+	Mosque		mosque.png
+ Cemetary		cemetary.png
 
 ####################
 # Education (orange-white)
- * day-nursery
- * kindergarden
- * primary school
- secondary school
- highschool
- university
- adult education
+
+ * Day-Nursery		day_nursery.png
+ * Kindergarden		kindergarden.png
+ 
+ School			school.png
+ 	Primary		primary.png
+	Secondary	secondary.png
+ 	Highschool	highschool.png
+	Vocational	vocational.png
+ University		university.png
+ Adult Education	adult.png
 
 ###################
 # Health (red-white)
- * hospital
- * pharmacy
- Doctor
- Dentist
- Veterinary
+
+ Hospital		hospital.png
+ Pharmacy		pharmacy.png
+ Chemist		chemist.png
+ Doctor			doctor.png
+ Dentist		dentist.png
+ Veterinary		veterinary.png
+ Physiotherapist	physiotherapist.png
 
 ####################
 # Public (light red)
- police
- firedepartment
- postal office
- * letterbox
- * telephone
- Rathaus
- * toilet
- * recycling
-    Glascontainer
-    Papiercontainer
-    Wertstoffhof
+
+ Police			police.png
+ Firebrigade		firebrigade.png
+ Post Office		post_office.png
+ Post Box		post_box.png
+ Telephone		telephone.png
+ Toilet			toilet.png
+ Recycling		recycling.png
+ Administration		administration.png
+ 	Townhall	townhall.png
+	Registration Office	registration_office.png
+	Tax Office	tax_office.png
     
 ####################
 # Transport public (blue-white)
@@ -122,8 +124,7 @@
  * WLAN closed		closed.png
  * WLAN open		open.png
  * WLAN pay		pay.png
- 	Swisscom
-	T-Mobile
+	Swisscom	eurospot.png
 
 	Fonero
 
@@ -137,7 +138,10 @@
  	* OMV		omv.png
  	* Shell		shell.png
  	* Texaco	texaco.png
+	Total		total.png
+
  * Repair Shop		repair_shop.png
+ Towing Service		towing.png
  * Emergency Phone	emergency_phone.png
  * Parking place	parking.png
  	* Garage	garage.png
@@ -150,63 +154,59 @@
  	* Sixt		sixt.png
  	* Europcar	europcar.png
  * Toll Station		toll_station.png
- * road works		road_works.png
+ * Road Works		road_works.png
  * Speed Trap		speed_trap.png
- *  Autobahnausfahrt	exit.png
+ * Autobahnausfahrt	exit.png
     
 ####################
 # Shopping (dark red)
- - supermarket
-    Aldi
-    Lidl
-    Tengelmann
-    Pennymarkt
-    Norma
-    Plus
-    Minimal
-    Edeka
-    Kaufland
-    Marktkauf
-    Metro
- - hardware store
-    OBI
-    Praktiker
-    Hagebaumarkt
-    Hornbach
- - electronics store
-    MediaMarkt
-    Saturn
-    Conrad
-    electronic parts
-    - computers
-       hardware
-       software
-       games
- - Sportgeschäft
-    diving
-    ski
-    tennis
-    weaponry
- - food
-    bakery
-    butcher
-    fruits
-    vegetables
-    beverages
-    grocery
- flea market
- dry cleaner
- perfumery
- toys
- music store
- furniture store
- bookshop
- shopping centre   
+ Supermarket		supermarket.png
+ 	Aldi Sued	aldi.png
+ 	Lidl		lidl.png
+ 	Tengelmann	tengelmann.png
+ 	Pennymarkt	penny.png
+ 	Norma		norma.png
+ 	Plus		plus.png
+ 	Minimal		minimal.png
+ 	Edeka		edeka.png
+ 	Kaufland	kaufland.png
+ 	Marktkauf	marktkauf.png
+ 	Metro		metro.png
+ DIY Store		diy_store.png
+ 	OBI		obi.png
+ 	Praktiker	praktiker.png
+	Hagebaumarkt	hagebau.png
+	Hornbach	hornbach.png
+ Electronics Store	electronics.png
+	MediaMarkt	mediamarkt.png
+	Saturn		saturn.png
+	Conrad		conrad.png
+ Computer Store		computers.png
+ Sports Store		sports.png
+    Diving		diving.png
+    Ski			skiing.png
+    Tennis		tennis.png
+    Weaponry		weaponry.png
+    Fishing		fishing.png
+    Outdoor		outdoor.png
+ Groceries		groceries.png
+	Bakery		bakery.png
+	Butcher		butcher.png
+	Fruits		fruits.png
+	Vegetables	vegetables.png
+	Beverages	beverages.png
+ Flea Market		flea_market.png
+ Dry Cleaner		dry_cleaner.png
+ Perfumery		perfumery.png
+ Toy Store		toys.png
+ Music Store		music.png
+ Furniture Store	furniture.png
+ 	Ikea		ikea.png
+ Bookshop		books.png
+ Shopping Centre	centre.png
 
 ####################
 # Food (orange)
-
- * Food		food.png
  
  * Restaurant	restaurant.png
  	* deutsch	d.png
@@ -216,24 +216,21 @@
  	* chinesisch	cn.png
  	* japanisch	j.png
  	* mexikanisch	mex.png
- * Fast Food    fastfood.png
+ * Fast Food    	fastfood.png
  	* Burger King	burger-king.png
  	* McDonalds	mc-donalds.png
  	* KFC		kfc.png
  	* Pizza Hut	pizza-hut.png
  	* Subway	subway.png
- * Biergarten	beergarden.png
- * Bar		bar.png
- * Kneipe	pub.png
- * Cafe		cafe.png
- * Eisdiele	icecream.png
- 
- snack stand
+ * Biergarten		beergarden.png
+ * Bar			bar.png
+ * Kneipe		pub.png
+ * Cafe			cafe.png
+ * Eisdiele		icecream.png
+ Snack stall		snacks.png
 
 ####################
 # Recreation (light-green)
- 
- * Recreation	recreation.png
  
  park
  disco/club
@@ -252,8 +249,6 @@
 
 ####################
 # Sports (dark green)
- 
- * Sports	sports.png
 
  * Soccer	soccer.png
  
@@ -278,8 +273,6 @@
 
 ####################
 # Geocache (multicolor)
-
- * Geocache	geocache.png
  
  * Drive-In	geocache_drivein.png
  * Earthcache	geocache_earth.png
@@ -295,11 +288,8 @@
 ###################
 # nautical (black-white)
 
-
 ###################
 # people (yellow)
-
- * people	people.png
 
  * home		home.png
  * friends	friends.png
@@ -309,27 +299,20 @@
  
 ####################
 # misc (white)
-
- *waypoint		waypoint.png
- 	* wpt green	wpt_gn.png
-	* wpt red	wpt_rd.png
-	* wpt yellow	wpt_yellow.png
-	* wpt_blue	wpt_bl.png
-	* wpt orange	wpt_or.png
-	* wpt one	wpt_1.png
-	* wpt two	wpt_2.png
-	* wpt three	wpt_3.png
-	* wpt four	wpt_4.png
-	* wpt five	wpt_5.png
-	* wpt six	wpt_6.png
-	* wpt seven	wpt_7.png
-	* wpt eight	wpt_8.png
-	* wpt nine	wpt_9.png
-
-###################
-# unknown (white)
-
- * unknown	unknown.png
-
-
+ 
+ * waypoint		waypoint.png
+ 	* wpt green	wptgreen.png
+	* wpt red	wptred.png
+	* wpt yellow	wptyellow.png
+	* wpt_blue	wptblue.png
+	* wpt orange	wptorange.png
+	* wpt one	wpt1.png
+	* wpt two	wpt2.png
+	* wpt three	wpt3.png
+	* wpt four	wpt4.png
+	* wpt five	wpt5.png
+	* wpt six	wpt6.png
+	* wpt seven	wpt7.png
+	* wpt eight	wpt8.png
+	* wpt nine	wpt9.png
 
