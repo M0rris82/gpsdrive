@@ -395,7 +395,7 @@ gint ignorechecksum = FALSE;
 gint mydebug = 0;
 #define MAXDBNAME 30
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-char dbtable[MAXDBNAME], dbname[MAXDBNAME];
+char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char wp_typelist[100][40];
 int wp_typelistcount;
 char dbwherestring[5000];
@@ -1597,7 +1597,7 @@ draw_zoom_scale (void)
 	gdouble approx_displayed_value;
 	gdouble conversion;
 	gint l;
-	gint text_length_pixel;
+	// gint text_length_pixel;
 
 	/*
 	 * We want a bar with at least (min_bar_length) pixles in
@@ -4446,6 +4446,7 @@ main (int argc, char *argv[])
     g_strlcpy (dbpass, "gast", sizeof (dbpass));
     g_strlcpy (dbname, "geoinfo", sizeof (dbname));
     g_strlcpy (dbtable, "waypoints", sizeof (dbtable));
+    g_strlcpy (wlantable, "wlan", sizeof (wlantable));
     dbdistance = 2000.0;
     dbusedist = TRUE;
     g_strlcpy (loctime, "n/a", sizeof (loctime));
@@ -5207,8 +5208,11 @@ main (int argc, char *argv[])
     friendsinit ();
 
 
-    if (usesql)
-	initkismet ();
+    if (usesql) 
+	{
+	    initkismet ();
+	    get_poi_type_id_for_wlan();
+	};
 
 
     if( havekismet )

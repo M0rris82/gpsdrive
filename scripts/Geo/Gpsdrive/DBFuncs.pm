@@ -918,6 +918,12 @@ sub create_db(){
                       `last_modified` date         NOT NULL default \'0000-00-00\',
                       `url`           varchar(160)     NULL ,
                       `source_id`     int(11)      NOT NULL default \'0\',
+                      `macaddr`       char(17)     NOT NULL default \'0\',
+                      `bssid`         char(17)     NOT NULL default \'0\',
+                      `essid`         varchar(40)  NOT NULL default \'0\',
+                      `wep`           int(1)       NOT NULL default \'0\',
+                      `nettype`       int(1)       NOT NULL default \'0\',
+                      `decrypted`     int(1)       NOT NULL default \'0\',
                       PRIMARY KEY  (`wlan_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('wlan');

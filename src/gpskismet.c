@@ -22,144 +22,6 @@ Disclaimer: Please do not use for navigation.
 
     *********************************************************************
 
-$Log$
-Revision 1.12  2006/08/02 07:48:24  tweety
-rename variable mapdir --> local_config_mapdir
-
-Revision 1.11  2006/07/25 06:29:11  tweety
-eliminate some no longer needed definitions
-add fclose where needed
-add complete path to a pixmap
-correct some debug levels
-
-Revision 1.10  2006/06/16 20:16:10  tweety
-correct speech strings
-
-Revision 1.9  2006/05/05 22:18:08  tweety
-move icons stred in memory to one array
-fix size of icons drawn at poi.c
-change list of default scales
-don't calculate map offset if we only have vectormaps
-remove some of the cvs logs in the source files. The can be retrieved from the cvs and
-blow up the files so we have troubles using eclipse or something similar
-move scale_min,scale_max to the streets_type and poi_type database
-increase the LIMIT for the streets sql query
-increase the rectangle for retreving streets from mysql for 0.01 degreees in each direction
-Thieck_osm.pl more independent from gpsdrive datastructure
-way we can get some of the lines where both endpoint are out of the viewing Window
-
-Revision 1.8  2006/02/20 09:14:20  tweety
-reconnect kismet socket if connection lost
-Author: Mike Nix <mnix@wanm.com.au>
-
-Revision 1.7  2005/08/09 13:14:14  tweety
-fix indentation
-
-Revision 1.6  2005/07/04 04:47:03  tweety
-http://bugzilla.gpsdrive.cc/show_bug.cgi?id=25
-"J.D. Schmidt" <jdsmobile@gmail.com>
-Fixed Wrong SQL Escapes
-
-Revision 1.5  2005/05/15 06:51:27  tweety
-all speech strings are now represented as arrays of strings
-author: Rob Stewart <rob@groupboard.com>
-
-Revision 1.4  2005/04/20 23:33:49  tweety
-reformatted source code with anjuta
-So now we have new indentations
-
-Revision 1.3  2005/04/13 19:58:31  tweety
-renew indentation to 4 spaces + tabstop=8
-
-Revision 1.2  2005/04/10 21:50:50  tweety
-reformatting c-sources
-
-Revision 1.1.1.1  2004/12/23 16:03:24  commiter
-Initial import, straight from 2.10pre2 tar.gz archive
-
-Revision 1.24  2004/04/05 18:45:41  ganter
-added patch for kismet hangs and Mac-OS mouse
-patches provided by Ulrich Hecht from SUSE.
-
-Revision 1.23  2004/02/08 17:16:25  ganter
-replacing all strcat with g_strlcat to avoid buffer overflows
-
-Revision 1.22  2004/02/08 16:35:10  ganter
-replacing all sprintf with g_snprintf to avoid buffer overflows
-
-Revision 1.21  2004/02/07 15:53:38  ganter
-replacing strcpy with g_strlcpy to avoid bufferoverflows
-
-Revision 1.20  2004/02/02 03:38:32  ganter
-code cleanup
-
-Revision 1.19  2004/01/28 15:31:43  ganter
-initialize FDs to -1
-
-Revision 1.18  2004/01/28 09:32:57  ganter
-tested for memory leaks with valgrind, looks good :-)
-
-Revision 1.17  2004/01/05 05:52:58  ganter
-changed all frames to respect setting
-
-Revision 1.16  2004/01/01 09:07:33  ganter
-v2.06
-trip info is now live updated
-added cpu temperature display for acpi
-added tooltips for battery and temperature
-
-Revision 1.15  2003/08/31 17:37:58  ganter
-v 2.04: better Kismet support, read end of README.kismet
-
-Revision 1.14  2003/08/12 14:21:18  ganter
-v2.03
-fixed kismet bug (wrong GPS position)
-compiles also on SuSE 8.1
-compiles on GTK+ >= 2.0.6
-fixed wrong font (Sans 10 Bold 10 message)
-
-Revision 1.13  2003/01/15 17:03:17  ganter
-MySQL is now loaded dynamically on runtime, no mysql needed for compile.
-Needs only libmysqlclient.so now.
-
-Revision 1.12  2003/01/15 15:30:28  ganter
-before dynamically loading mysql
-
-Revision 1.11  2002/12/08 03:18:26  ganter
-shortly before 1.31
-
-Revision 1.10  2002/11/27 00:02:27  ganter
-1.31pre2
-
-Revision 1.9  2002/11/14 00:05:55  ganter
-added README.kismet
-v 1.30pre5
-
-Revision 1.8  2002/11/12 20:37:15  ganter
-v30pre4
-added more icons, fix for kismet w/o mysql
-
-Revision 1.7  2002/11/06 05:29:15  ganter
-fixed most warnings
-
-Revision 1.6  2002/11/06 01:44:15  ganter
-v1.30pre2
-
-Revision 1.5  2002/11/05 17:04:04  ganter
-...
-
-Revision 1.4  2002/11/05 02:29:59  ganter
-bugfixes for kismet mode
-
-Revision 1.3  2002/11/05 00:02:42  ganter
-...
-
-Revision 1.2  2002/11/05 00:00:14  ganter
-gpskismet seems to work
-
-Revision 1.1  2002/11/04 18:01:53  ganter
-added gpskismet.c
-
 
 reads info from kismet server and insert waypoints into database
 
@@ -177,22 +39,24 @@ reads info from kismet server and insert waypoints into database
 #include <fcntl.h>
 #include <string.h>
 #include <sys/time.h>
+
 #include <gpsdrive.h>
+#include <poi.h>
 #include <speech_out.h>
 #include <speech_strings.h>
 #include <time.h>
 #include <errno.h>
 
-
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
+extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
 extern char wp_typelist[100][40];
 extern double dbdistance;
 extern int wp_typelistcount;
 extern int usesql;
 extern int debug, dbusedist;
+extern poi_type_struct poi_type_list[poi_type_list_max];
 
 extern MYSQL mysql;
 MYSQL_RES *res;
@@ -217,6 +81,9 @@ static int bc = 0;
 fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
+
+int wlan_closed=0;
+int wlan_open=0;
 
 #define KISMETSERVERNAME "localhost"
 
@@ -319,7 +186,7 @@ readkismet (void)
 		/*                g_strlcpy (lastmacaddr, macaddr); */
 		g_snprintf (q, sizeof (q),
 			    "select id,lat,lon from %s where macaddr='%s'",
-			    dbtable, macaddr);
+			    wlantable, macaddr);
 		if (debug)
 		  g_print ("\nquery: %s\n", q);
 		if (dl_mysql_query (&mysql, q))
@@ -384,14 +251,14 @@ readkismet (void)
 			      (q,
 			       sizeof
 			       (q),
-			       "UPDATE %s SET name='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',type='%s',wep='%d' WHERE id='%d'",
-			       dbtable,
+			       "UPDATE %s SET name='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',poi_type_id='%d',wep='%d' WHERE id='%d'",
+			       wlantable,
 			       tname,
 			       macaddr,
 			       nettype,
 			       bestlat,
 			       bestlon,
-			       (wep) ? "WLAN-WEP" : "WLAN", wep, sqlid);
+			       (wep) ? wlan_closed : wlan_open , wep, sqlid);
 			    if (debug)
 			      printf ("\nquery: %s\n", q);
 			    if (dl_mysql_query (&mysql, q))
@@ -410,12 +277,14 @@ readkismet (void)
 		      g_print ("*** This is a new waypoint: %s [%s]\n", name,
 			       macaddr);
 
+		    
 		    g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (name,macaddr,nettype,lat,lon,type,wep)"
-				" VALUES ('%s','%s','%d','%s','%s','%s','%d')",
-				dbtable, tname,
+				"INSERT INTO %s (essid,macaddr,nettype,lat,lon,poi_type_id,wep)"
+				" VALUES ('%s','%s','%d','%s','%s','%d','%d')",
+				wlantable, tname,
 				macaddr, nettype,
-				lat, lon, (wep) ? "WLAN-WEP" : "WLAN", wep);
+				lat, lon, 
+				(wep) ? wlan_closed : wlan_open, wep);
 		    if (debug)
 		      printf ("\nquery: %s\n", q);
 		    if (dl_mysql_query (&mysql, q))
@@ -492,3 +361,18 @@ initkismet (void)
 
   return TRUE;
 }
+
+
+void get_poi_type_id_for_wlan(){
+    int i;
+    for (i = 0; i < poi_type_list_max; i++)
+      {
+	poi_type_list[i].icon = NULL;
+	if (strcmp (poi_type_list[i].name,"wlan.closed") != 0){
+	    wlan_closed=i;
+	}
+	if (strcmp (poi_type_list[i].name,"wlan.open") != 0){
+	    wlan_open=i;
+	}
+      }
+};
