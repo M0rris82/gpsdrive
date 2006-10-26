@@ -409,6 +409,12 @@ sql_load_lib ()
       if (!handle)
 	handle = dlopen ("libmysqlclient.so", RTLD_LAZY);
       if (!handle)
+	handle = dlopen ("libmysqlclient.so.17", RTLD_LAZY);
+      if (!handle)
+	handle = dlopen ("libmysqlclient.so.16", RTLD_LAZY);
+      if (!handle)
+	handle = dlopen ("libmysqlclient.so.15", RTLD_LAZY);
+      if (!handle)
 	handle = dlopen ("libmysqlclient.so.14", RTLD_LAZY);
       if (!handle)
 	handle = dlopen ("libmysqlclient.so.12", RTLD_LAZY);
