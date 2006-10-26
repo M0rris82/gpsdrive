@@ -673,7 +673,7 @@ sub wget_map($$$){
 
     my $mirror_filename=$filename;
     if ( $mapserver eq 'geoscience'){
-	$mirror_filename="MIRROR/$mirror_filename";
+	$mirror_filename="MIRROR/$filename";
 	debug("mirror_filename=$mirror_filename");
     };
     
@@ -713,7 +713,7 @@ sub wget_map($$$){
 		    print "\nWrote $filename\n" if $debug;
 		    $newcount++;
 		}
-	    } elsif ( mirror_map($url,$filename) ) {
+	    } elsif ( mirror_map($url,$mirror_filename) ) {
 		if ( $mapserver eq 'geoscience'){
 		    $result = resize($mapdir.$mirror_filename,$mapdir.$filename);
 		} 
