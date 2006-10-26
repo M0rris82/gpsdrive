@@ -53,45 +53,22 @@ my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
               100000,150000,200000,300000,500000,750000,1000000,1500000,2000000,3000000,
               5000000,7500000,10000000,15000000,20000000,30000000,50000000,75000000);
 
-my @EXPEDIAALTS = ( 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000);
-
 # Translates Scale to zoom factor used by Mapserver
 # This Variable also is used to see if the required mapserver
 # is a valid Mapserver source
 my $Scale2Zoom = { 
     expedia => {
-	# Right Values have to be filled later this is a placeholder for now
-	# The values are stored in @SCALES and @EXPEDIAALTS
-	1000     => 0,
-	1500     => 0,
-	2000     => 0,
-	3000     => 0,
-	5000     => 0,
-	7500     => 0,
-	10000    => 0,
-	15000    => 0,
-	20000    => 0,
-	30000    => 0,
-	50000    => 0,
-	75000    => 0,
-	100000   => 0,
-	150000   => 0,
-	200000   => 0,
-	300000   => 0,
-	500000   => 0,
-	750000   => 0,
-	1000000  => 0,
-	1500000  => 0,
-	2000000  => 0,
-	3000000  => 0,
-	5000000  => 0,
-	7500000  => 0,
-	10000000 => 0,
-	15000000 => 0,
-	20000000 => 0,
-	30000000 => 0,
-	50000000 => 0,
-	75000000 => 0,
+	12000*3950 => 12000,
+	 7000*3950 =>  7000,
+	 2000*3950 =>  2000,
+	  800*3950 =>   800,
+	  150*3950 =>   150,
+	   50*3950 =>	 50,
+	   25*3950 =>	 25,
+	   12*3950 =>	 12,
+	    6*3950 =>     6,
+	    3*3950 =>	  3,
+	    1*3950 =>	  1,
     },
     googlesat => {
 	5708800 =>  7,  #Modified Scale values
@@ -247,9 +224,7 @@ if ( $mapserver eq 'landsat') {
     $FILEPREFIX          = 'map_';
 }
 
-if ( $mapserver ne 'expedia') {
-    @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
-}
+@SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
 
 # for google stitch
 my %font_description = (font=> "Arial-Bold", pointsize=>12, fill=>"yellow");
@@ -266,7 +241,6 @@ sub append_koords($$$$);   # {}
 sub check_coverage($);     # {}
 sub check_koord_file($);   # {}
 sub debug($);              # {}
-sub expedia_url($$$);      # {}
 sub expedia_url($$$);      # {}
 sub geoscience_url($$$);   # {}
 sub landsat_url($$$);   # {}
@@ -286,7 +260,6 @@ STDERR->autoflush(1);
 STDOUT->autoflush(1);
 
 # Setup up some constants
-my $EXPEDIAFACT   = 3950;
 my $DIFF          = 0.0000028;
 my $RADIUS_KM     = 6371.01;
 my $LAT_DIST_KM   = 110.87;
@@ -837,35 +810,38 @@ sub expedia_url($$$){
     my $long = shift;
     my $scale = shift;
 
-    my $url='';
-    my $ns = $scale/$EXPEDIAFACT;
-    my $di = 999999;
-    my $found=0;			
-    my $i=0;
-
-    for($i=0;$i<11;$i=$i+1){              
-	if(abs($ns-$EXPEDIAALTS[$i]) < $di) {
-	    $di=$ns-$EXPEDIAALTS[$i];
-	    $found=$i;
-	}
+    # get altimeter setting for given scale
+    my $mapscale = $scale;
+    my $alti = undef;
+    for my $s ( sort keys %{$Scale2Zoom->{expedia}} ) {
+	next unless $s == $scale;
+	$alti = $Scale2Zoom->{expedia}->{$s};
+	$mapscale = $s;
+	last;
     }
-    my $alti=0;
-    $alti=$EXPEDIAALTS[$found];
-    my $mapscale= sprintf("%d",$alti * $EXPEDIAFACT);		  		  
+
+    # error if not found
+    unless ( $alti ) {
+	print "Error calculating Zoomlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    # debug output
     if ($debug) {
 	print "\n";
 	print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
 	print "lat: $lati\n";
 	print "lon: $long\n";
     }
-    
+
+    # generate url
     my $where;
     if ($long < -30) {
 	$where = 'USA0409';
     } else {
 	$where = 'EUR0809';
     }
-    $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
+    my $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
 	."CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000";
     return ($url,$mapscale);
 }
@@ -956,7 +932,7 @@ sub incrementp_url($$$){
     }
 
     unless ( $zoom ) {
-	print "Error calculating Zommlevel for Scale: $scale\n";
+	print "Error calculating Zoomlevel for Scale: $scale\n";
 	return (undef,undef);
     }
 
