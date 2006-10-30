@@ -23,6 +23,9 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 /*
   $Log$
+  Revision 1.18  2006/10/30 12:01:49  hamish
+  spelling and conversion notes in comments
+
   Revision 1.17  2006/08/02 12:18:36  tweety
   forgot one sed for homedir and mapdir
 
@@ -558,19 +561,21 @@ import_scale_cb (GtkWidget * widget, gpointer datum)
   dy_m = dy_pix * m_pr_pix;
   //   g_print ("dx_m %g, dy_m %g\n", dx_m, dy_m);  
 
-  // length of 1 deg lat and lon i meters
+  // length of 1 deg lat and lon in meters
   // lat_pr_m = 360.0/(2.0*M_PI*R); 
   /* This should be the correct length, but using this formulas gives me 
    * a nautical mile that are 1857.85 m which are wrong. Therefore I am 
    * hardcoding it to a nautical mile that are 1851.85 m 
+   * HB: shouldn't this be 1852.0 ?!?
    */
   lat_pr_m = 1.0 / (1851.85 * 60.0);
   lon_pr_m = lat_pr_m / cos (M_PI * lat / 180.0);
   /*
-   * g_print ("R %g, M_PI %g lat_pr_m %g, lon_pr_m %g, meter pr deg lat %g\n",R, M_PI, lat_pr_m, lon_pr_m, 1.0/lat_pr_m);  
+   * g_print ("R %g, M_PI %g lat_pr_m %g, lon_pr_m %g, meter pr deg lat %g\n",
+   *     R, M_PI, lat_pr_m, lon_pr_m, 1.0/lat_pr_m);  
    */
 
-  // dinstance in deg from selected point on map to center
+  // distance in deg from selected point on map to center
   dlat = dy_m * lat_pr_m;
   dlon = dx_m * lon_pr_m;
   //   g_print ("dlat %g, dlon %g\n", dlat, dlon);  
