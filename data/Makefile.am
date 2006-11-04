@@ -235,7 +235,7 @@ EXTRA_DIST= \
 	$(icons_square.small_vehicle_DATA) \
 	$(icons_square.small_wlan_DATA) \
 	\
-	$(maps_DATA) $(poi_DATA) $(streets_DATA) \
+	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA)
 
 rebuild-icons:
