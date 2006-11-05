@@ -17,6 +17,12 @@ that is suitable for your icon theme.
 The icon name should be english, lowercase and must not contain dots or
 whitespaces.
 
+The file poi_types.html gives you an overview of the currently availabe icons
+and poi-types.
+POI-Types with no corresponding icon are represented by an empty icon file
+mainly in square.big
+
+
 *** The Structure: ***
 
 	icons/theme
@@ -110,4 +116,14 @@ Example:
 The colouring scheme shown here is specific for the themes "square.big" and
 "square.small". You may choose your own style of distinguishing the categories
 for your theme as you like.
+
+
+*** Scripts ***
+
+rebuild-icons.txt.sh		rebuilds the icons.txt from the available icons
+rebuild-poi_types.html.pl	rebuilds the file poi_types.html from icons.txt
+
+rebuild-all.sh			calls the other two scripts and additionally
+				modifies the poi-type database
+
 
