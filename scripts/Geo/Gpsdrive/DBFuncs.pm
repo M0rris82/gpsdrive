@@ -878,12 +878,10 @@ sub create_db(){
     # ------- POI
     db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
                       `poi_type_id` int(11)      NOT NULL auto_increment,
-                      `name`        varchar(80)  NOT NULL default \'\',
-		      `symbol`      varchar(160) NOT NULL default \'unknown\',
+                      `name`        varchar(160)  NOT NULL default \'\',
                       `scale_min`   int(12)      NOT NULL default \'1\',
                       `scale_max`   int(12)      NOT NULL default \'20000\',
                       `description` varchar(160)     NULL default \'\',
-		      `parent`      int(11)      NOT NULL default \'1\',
                       PRIMARY KEY  (`poi_type_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi_type');
@@ -892,9 +890,9 @@ sub create_db(){
     db_exec('CREATE TABLE IF NOT EXISTS `poi` (
                       `poi_id`        int(11)      NOT NULL auto_increment,
                       `name`          varchar(80)           default NULL,
-                      `poi_type_id`   int(11)      NOT NULL default \'0\',
-                      `lat`           double                default \'0\',
-                      `lon`           double                default \'0\',
+                      `poi_type_id`   int(11)      NOT NULL default \'1\',
+                      `lat`           double       NOT NULL default \'0\',
+                      `lon`           double       NOT NULL default \'0\',
                       `alt`           double                default \'0\',
                       `proximity`     float                 default \'0\',
                       `comment`       varchar(255)          default NULL,
@@ -918,12 +916,6 @@ sub create_db(){
                       `last_modified` date         NOT NULL default \'0000-00-00\',
                       `url`           varchar(160)     NULL ,
                       `source_id`     int(11)      NOT NULL default \'0\',
-                      `macaddr`       char(17)     NOT NULL default \'0\',
-                      `bssid`         char(17)     NOT NULL default \'0\',
-                      `essid`         varchar(40)  NOT NULL default \'0\',
-                      `wep`           int(1)       NOT NULL default \'0\',
-                      `nettype`       int(1)       NOT NULL default \'0\',
-                      `decrypted`     int(1)       NOT NULL default \'0\',
                       PRIMARY KEY  (`wlan_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('wlan');

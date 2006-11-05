@@ -350,6 +350,7 @@ poi_rebuild_list (void)
   char sql_where[5000];
   char sql_in[5000];
   struct timeval t;
+  struct timeval t2;
   int r, rges;
   time_t ti;
 
@@ -404,53 +405,78 @@ poi_rebuild_list (void)
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-  {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
-    g_snprintf (sql_where, sizeof (sql_where),
-		"WHERE ( lat BETWEEN %.6f AND %.6f ) "
-		"AND   ( lon BETWEEN %.6f AND %.6f ) "
-		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
-		" ", lat_min, lat_max, lon_min, lon_max
-		// , mapscale
-      );
-    g_strdelimit (sql_where, ",", '.');	// For different LANG
-    if (mydebug > 20)
-      {
-	printf ("poi_rebuild_list: POI mysql where: %s\n", sql_where);
-	printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
-      }
+// Selection of POIs in the old way:
+//
+// BEGIN Code old
+//
+  {
+  //~ {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
+    //~ g_snprintf (sql_where, sizeof (sql_where),
+		//~ "WHERE ( lat BETWEEN %.6f AND %.6f ) "
+		//~ "AND   ( lon BETWEEN %.6f AND %.6f ) "
+		//~ // "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
+		//~ " ", lat_min, lat_max, lon_min, lon_max
+		//~ // , mapscale
+      //~ );
+    //~ g_strdelimit (sql_where, ",", '.');	// For different LANG
+    //~ if (mydebug > 20)
+      //~ {
+	//~ printf ("poi_rebuild_list: POI mysql where: %s\n", sql_where);
+	//~ printf ("poi_rebuild_list: POI mapscale: %ld\n", mapscale);
+      //~ }
+  //~ }
+
+  //~ {				// Limit the displayed poi_types
+    //~ g_snprintf (sql_in, sizeof (sql_in), " AND poi_type_id IN ( ");
+    //~ int i;
+    //~ for (i = 0; i < poi_type_list_max; i++)
+      //~ {
+	//~ if (poi_type_list[i].scale_min <= mapscale &&
+	    //~ poi_type_list[i].scale_max >= mapscale)
+	  //~ {
+	    //~ gchar id_string[20];
+	    //~ g_snprintf (id_string, sizeof (id_string), " %d,",
+			//~ poi_type_list[i].poi_type_id);
+	    //~ g_strlcat (sql_in, id_string, sizeof (sql_in));
+	  //~ }
+      //~ }
+    //~ g_strlcat (sql_in, " 0)", sizeof (sql_in));
+    //~ if (mydebug > 20)
+      //~ {
+	//~ printf ("POI mysql in: %s\n", sql_in);
+      //~ }
+  //~ }
+
+
+  //~ g_snprintf (sql_query, sizeof (sql_query),
+	      //~ // "SELECT lat,lon,alt,type_id,proximity "
+	      //~ "SELECT lat,lon,name,poi_type_id,source_id " "FROM poi "
+	      //~ //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
+	      //~ "%s %s LIMIT 40000", sql_where, sql_in);
   }
-
-  {				// Limit the displayed poi_types
-    g_snprintf (sql_in, sizeof (sql_in), " AND poi_type_id IN ( ");
-    int i;
-    for (i = 0; i < poi_type_list_max; i++)
-      {
-	if (poi_type_list[i].scale_min <= mapscale &&
-	    poi_type_list[i].scale_max >= mapscale)
-	  {
-	    gchar id_string[20];
-	    g_snprintf (id_string, sizeof (id_string), " %d,",
-			poi_type_list[i].poi_type_id);
-	    g_strlcat (sql_in, id_string, sizeof (sql_in));
-	  }
-      }
-    g_strlcat (sql_in, " 0)", sizeof (sql_in));
-    if (mydebug > 20)
-      {
-	printf ("POI mysql in: %s\n", sql_in);
-      }
+  //
+  // END Code old
+  
+  
+  // this query leaves selection to sql database:
+  //
+  // BEGIN Code d.s.e
+  // 
+  {
+    g_snprintf (sql_query, sizeof (sql_query),
+        "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi INNER JOIN "
+        "poi_type ON poi.poi_type_id=poi_type.poi_type_id "
+        "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
+        "AND ( %ld BETWEEN scale_min AND scale_max ) LIMIT 40000;",
+        lat_min, lat_max, lon_min, lon_max, mapscale);
   }
-
-
-  g_snprintf (sql_query, sizeof (sql_query),
-	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM poi "
-	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s %s LIMIT 40000", sql_where, sql_in);
-
+  // 
+  // END Code d.s.e
+  
   if (mydebug > 20)
     printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
-
+   
+  
   if (dl_mysql_query (&mysql, sql_query))
     {
       printf ("poi_rebuild_list: Error in query: \n");
@@ -468,6 +494,13 @@ poi_rebuild_list (void)
       return;
     }
 
+	if (mydebug > 20)
+	{
+		gettimeofday(&t2, NULL);
+		fprintf(stderr,"poi_rebuild_list: time for poi-selection: %d usec\n",(gint) (t2.tv_usec-t.tv_usec));
+	}
+	
+	
   rges = r = 0;
   poi_nr = 0;
   while ((row = dl_mysql_fetch_row (res)))
@@ -641,27 +674,29 @@ poi_draw_list (void)
   if (mydebug > 20)
     printf ("poi_draw_list: drawing %ld points\n", poi_max);
 
-  for (i = 0; i < poi_max; i++)
+  for (i = 1; i <= poi_max; i++)
     {
       gdouble posx, posy;
 
       posx = (poi_list + i)->x;
       posy = (poi_list + i)->y;
-
+		
       if ((posx >= 0) && (posx < SCREEN_X) &&
 	  (posy >= 0) && (posy < SCREEN_Y))
 	{
 
 
-	  /*
-	   * if ( mydebug ) 
-	   * printf ("POI Draw: %f %f \t( x:%f, y:%f )\t%s\n",
-	   * (poi_list + poi_nr)->lat, (poi_list + poi_nr)->lon, 
-	   * (poi_list + poi_nr)->x, (poi_list + poi_nr)->y, 
-	   * (poi_list + poi_nr)->name
-	   * );
-	   */
-
+/*	  
+ * 	    if ( mydebug ) 
+ * 	    { printf ("POI Draw: %f %f \t( x:%f, y:%f )\t%s\n",
+ * 	       (poi_list + i)->lat, (poi_list + i)->lon, 
+ * 	       (poi_list + i)->x, (poi_list + i)->y, 
+ * 	       (poi_list + i)->name
+ * 	       );
+ * 		   printf("poi_nr: %ld : i: %d\n",poi_nr,i);
+ *		    }
+ */
+	   
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
