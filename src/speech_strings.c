@@ -282,7 +282,7 @@ gchar* speech_speed_mph[] =
 gchar* speech_speed_kph[] =
 {
   "The current speed is %d kilometers per hour.",
-  "Die momentane Geschwindigkeit ist %d K M H",
+  "Die momentane Geschwindigkeit ist %d kmh",
   "La velocidad actual es %d kilometros por hora."
 };
 
