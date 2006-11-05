@@ -13,7 +13,7 @@
 
 Summary: Gpsdrive is a GPS based navigation tool 
 Name: gpsdrive
-Version: 2.10.pre3.20060828
+Version: 2.10.pre3.20061105
 Release: 1
 License: GPL
 Group: Amusements/Graphics
@@ -108,24 +108,21 @@ rm -rf %{_builddir}/%{name}-%{version}
 %{_libdir}/*
 %{_bindir}/*
 
-%dir %{_prefix}/share/gpsdrive
 %{_datadir}/applications/gpsdrive.desktop
-%{_prefix}/share/gpsdrive/depcomp
-%{_prefix}/share/gpsdrive/Documentation/*
-%{_prefix}/share/gpsdrive/DSL/*
-%{_prefix}/share/gpsdrive/gentoo/*
-%{_prefix}/share/gpsdrive/icons.txt
-%{_prefix}/share/gpsdrive/icons/*
-%{_prefix}/share/gpsdrive/lib_map.a
-%{_prefix}/share/gpsdrive/map_koord.txt
-%{_prefix}/share/gpsdrive/maps/*
-%{_prefix}/share/gpsdrive/pixmaps/*
-%{_prefix}/share/gpsdrive/poi/*
-%{_prefix}/share/gpsdrive/streets/*
+
+%{_prefix}/share/gpsdrive
+%{_prefix}/share/icons/classic
+%{_prefix}/share/icons/square.big
+%{_prefix}/share/icons/square.small
+
 %{_prefix}/share/locale/*/LC_MESSAGES/*
 
 %changelog
+* Sun Nov 5 2006 Charles Curley <ccurley@charlesc.localdomain> - 2.10pre3.20061105-1
+- Greatly simplified the %files section by using the %dir macro.
+
 * Sat Aug 26 2006 Charles Curley <ccurley@charlesc.localdomain> - 2.10pre3.20060826-1
 - First changelog entry. Massive updates since Fritz Ganter's
   versions, mostly to bring it up to modern RPM (v 4.4 or so)
   standards.
+
