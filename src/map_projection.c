@@ -118,30 +118,33 @@ map_projection (char *filename)
 {
   enum map_projections proj = proj_undef;
 
-  if (!strstr (filename, "expedia/"))
+  if (strstr (filename, "expedia/"))
     proj = proj_map;
-  else if (!strstr (filename, "landsat/"))
+  else if (strstr (filename, "landsat/"))
     proj = proj_map;
-  else if (!strstr (filename, "geoscience/"))
+  else if (strstr (filename, "geoscience/"))
     proj = proj_map;
-  else if (!strstr (filename, "incrementp/"))
+  else if (strstr (filename, "incrementp/"))
     proj = proj_map;
-  else if (!strstr (filename, "gov_au/"))
+  else if (strstr (filename, "gov_au/"))
     proj = proj_map;
-  else if (!strstr (filename, "_map/"))
+  else if (strstr (filename, "_map/"))
     proj = proj_map;
-  else if (!strstr (filename, "map_"))	// For Compatibility
+  else if (!strncmp(filename, "map_", 4)) /* For Compatibility */
     proj = proj_map;
-  else if (!strstr (filename, "googlesat/"))
+
+  else if (strstr (filename, "googlesat/"))
     proj = proj_googlesat;
-  else if (!strstr (filename, "NASAMAPS/"))
+
+  else if (strstr (filename, "NASAMAPS/"))
     proj = proj_top;
-  else if (!strstr (filename, "eniro/"))
+  else if (strstr (filename, "eniro/"))
     proj = proj_top;
-  else if (!strstr (filename, "_top/"))
+  else if (strstr (filename, "_top/"))
     proj = proj_top;
-  else if (!strstr (filename, "top_"))	// For Compatibility
+  else if (!strncmp(filename, "top_", 4)) /* For Compatibility */
     proj = proj_top;
+
   else
     {
       proj = proj_undef;
