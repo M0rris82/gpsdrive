@@ -9,7 +9,8 @@ will be added, to have the possibility of easy custom designs and to allow an
 easier transition to the new scheme.
 
 
-*** The Icon Files: ***
+THE ICON FILES: 
+----------------
 
 The file format for the icons has to be PNG, transparency allowed.
 The image size should be 16x16, 24x24 or 32x32 pixels, but can be any size,
@@ -17,13 +18,9 @@ that is suitable for your icon theme.
 The icon name should be english, lowercase and must not contain dots or
 whitespaces.
 
-The file poi_types.html gives you an overview of the currently availabe icons
-and poi-types.
-POI-Types with no corresponding icon are represented by an empty icon file
-mainly in square.big
 
-
-*** The Structure: ***
+THE STRUCTURE:
+---------------
 
 	icons/theme
 		the icons belonging to theme "theme"
@@ -36,7 +33,8 @@ mainly in square.big
 		the first icon themes designed for the new structure
 
 
-*** Guidelines: ***
+GUIDELINES:
+------------
 
 Each of these directories has to contain at least one icon for each of the
 twenty base categories, e.g. shopping.png for the category "Shopping" and a
@@ -70,60 +68,80 @@ Example:
 	  |_ beergarden.png
 
 
-*** The base POI categories: ***
+THE BASE POI CATEGORIES:
+-------------------------
 
-	- 1	UNKNOWN						(white)
-		 Unassigned POI
-	- 2	ACCOMODATION					(light blue)
-		 Places to stay
-	- 3	EDUCATION					(orange/white)
-		 Schools and other educational facilities
-	- 4	FOOD						(orange)
-		 Restaurants, Bars, and so on...
-	- 5	GEOCACHE					(gc-colours)
-		 Geocaches
-	- 6	HEALTH						(red/white)
-		 Hospital, Doctor, Pharmacy, etc.
-	- 7	MONEY						(yellow/white)
-		 Banks, ATMs, and other money-related places
-	- 8	NAUTICAL					(black/white)
-		 Special Aeronautical Points
-	- 9	PEOPLE						(yellow)
-		 You, work, your friends, and other people
-	- 10	PLACES						(transparent)
-		 Settlements, Mountains, and other geographical stuff
-	- 11	PUBLIC						(light red)
-		 Public facilities
-	- 12	RECREATION					(light green)
-		 Places used for recreation (no sports!)
-	- 13	RELIGION					(violet)
-		 Places iof worship and other facilities related to religion
-	- 14	SHOPPING				(dark red)
-		 All the places, where you can buy something
-	- 15	SIGHTSEEING					(green/white)
-		 Historic places and other interesting buildings
-	- 16	SPORTS						(dark green)
-		 Sports clubs, stadiums, and other sports facilities
-	- 17	TRANSPORT					(blue/white)
-		 Public transportation
-	- 18	VEHICLE						(blue)
-		 Facilites for drivers, like gas stations or parking places
-	- 19	WLAN						(black)
-		 WiFi-related points (Kismet)
-	- 20	MISC						(white)
-		 POIs which don't fit in another category, and custom types
+  - 1	UNKNOWN						(white)
+	 Unassigned POI
+  - 2	ACCOMODATION					(light blue)
+	 Places to stay
+  - 3	EDUCATION					(orange/white)
+	 Schools and other educational facilities
+  - 4	FOOD						(orange)
+	 Restaurants, Bars, and so on...
+  - 5	GEOCACHE					(gc-colours)
+	 Geocaches
+  - 6	HEALTH						(red/white)
+	 Hospital, Doctor, Pharmacy, etc.
+  - 7	MONEY						(yellow/white)
+	 Banks, ATMs, and other money-related places
+  - 8	NAUTICAL					(black/white)
+	 Special Aeronautical Points
+  - 9	PEOPLE						(yellow)
+	 You, work, your friends, and other people
+  - 10	PLACES						(transparent)
+	 Settlements, Mountains, and other geographical stuff
+  - 11	PUBLIC						(light red)
+	 Public facilities
+  - 12	RECREATION					(light green)
+	 Places used for recreation (no sports!)
+  - 13	RELIGION					(violet)
+	 Places iof worship and other facilities related to religion
+  - 14	SHOPPING				(dark red)
+	 All the places, where you can buy something
+  - 15	SIGHTSEEING					(green/white)
+	 Historic places and other interesting buildings
+  - 16	SPORTS						(dark green)
+	 Sports clubs, stadiums, and other sports facilities
+  - 17	TRANSPORT					(blue/white)
+	 Public transportation
+  - 18	VEHICLE						(blue)
+	 Facilites for drivers, like gas stations or parking places
+  - 19	WLAN						(black)
+	 WiFi-related points (Kismet)
+  - 20	MISC						(white)
+	 POIs which don't fit in another category, and custom types
 
 The colouring scheme shown here is specific for the themes "square.big" and
 "square.small". You may choose your own style of distinguishing the categories
 for your theme as you like.
 
 
-*** Scripts ***
+SCRIPTS:
+---------
 
 rebuild-icons.txt.sh		rebuilds the icons.txt from the available icons
 rebuild-poi_types.html.pl	rebuilds the file poi_types.html from icons.txt
 
 rebuild-all.sh			calls the other two scripts and additionally
 				modifies the poi-type database
+
+rebuild-icons.xml.pl		This will replace rebuild-icons.txt.sh in the
+				future, and rebuilds the icons.xml from the
+				available icons.
+
+FILES:
+-------
+
+icons.txt	holds available information of the available icons/poi-types
+		and is used to fill the poi_type database.
+		This file will be replaced by icons.xml in the future.
+
+poi_types.html	gives you a nice overview of the currently availabe icons and
+		POI-Types. POI-Types with no corresponding icon are represented
+		by an empty icon file mainly in the theme folder 'square.big'.
+
+icons.xml	holds all available icon and poi-type information.
+		This file will replace icons.txt in the future.
 
 

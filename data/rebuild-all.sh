@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# 
+# $Id$
+# 
+
 echo
 echo --------------- Rebuilding icons.txt ---------------
 echo

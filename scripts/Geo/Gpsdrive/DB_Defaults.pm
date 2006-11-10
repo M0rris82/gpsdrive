@@ -220,7 +220,7 @@ sub fill_default_street_types() {   # Fill streets_type database
 			    xFFFF00_x550000_w2_4_z00100000_Strassen.Bundesstrasse
 			    xFFFF00_x550000_w2_4_z00100000_Strassen.Landstrasse
 			    x00FFFF_x000000_w2_4_z00100000_Strassen.Innerorts
-			    x00FFFF_x555555_w1_2_z00100000_Strassen.30_Zohne
+			    x00FFFF_x555555_w1_2_z00100000_Strassen.30_Zone
 
 			    x222222_x555555_w2_4_z00100000_Strassen.Wanderweg
 			    x222222_x555555_w2_4_z00100000_Strassen.Fahrrad
@@ -313,7 +313,6 @@ sub fill_defaults(){
 #  recreation.fairground    ==> Riessenrad
 #  gift_shop         ==> Geschenk Paeckchen
 #  model.airplanes   ==> Airplane + Fernsteuerung
-#  recreation.playground   => Schaukel
 #  Bei Sportarten evtl. die Olympischen Symbole verwenden
 #  Zoo               ==> Giraffe+ Voegel
 #  WC                ==> WC oder 00
@@ -377,7 +376,6 @@ my $translate_de = {
     'car_registration'      => 'Zulassungsstelle',
     'catholic'              => 'Katholisch',
     'caution'               => "Achtung",
-    'cemetary'              => 'Friedhof',
     'cemetery'              => "Friedhof",
     'chinese'               => "Chinesisch",
     'church'                => 'Kirche',

@@ -88,6 +88,8 @@
  Dentist		dentist.png
  Veterinary		veterinary.png
  Physiotherapist	physiotherapist.png
+ Optician		optician.png
+ Eye Specialist		eye_specialist.png
 
 ####################
 # Public (light red)
@@ -125,7 +127,7 @@
  * WLAN open		open.png
  * WLAN pay		pay.png
 	Swisscom	eurospot.png
-
+	T-Mobile	t-mobile.png
 	Fonero
 
 ####################
