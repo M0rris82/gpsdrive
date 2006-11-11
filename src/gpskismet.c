@@ -41,6 +41,7 @@ reads info from kismet server and insert waypoints into database
 #include <sys/time.h>
 
 #include <gpsdrive.h>
+#include <gpskismet.h>
 #include <poi.h>
 #include <speech_out.h>
 #include <speech_strings.h>
@@ -363,7 +364,7 @@ initkismet (void)
 }
 
 
-void get_poi_type_id_for_wlan(){
+void get_poi_type_id_for_wlan() {
     int i;
     for (i = 0; i < poi_type_list_max; i++)
       {
@@ -375,4 +376,5 @@ void get_poi_type_id_for_wlan(){
 	    wlan_open=i;
 	}
       }
-};
+}
+
