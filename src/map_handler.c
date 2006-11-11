@@ -304,7 +304,7 @@ make_display_map_checkboxes()
     }
 
   tooltips = gtk_tooltips_new ();
-  gint i;
+  glong i;
   for (i = 0; i < max_display_map; i++)
     {
       // Checkbox ---- Show Map: name xy

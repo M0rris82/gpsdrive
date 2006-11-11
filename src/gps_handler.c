@@ -1027,7 +1027,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       if ((bigp + e) < MAXBIG)
 	{
 	  if (mydebug + gps_handler_debug>30)
-	      g_print ("gps_handler: gpsd: !!bigp:%d, e: %d!! , strlen big:%d\n"
+	      g_print ("gps_handler: gpsd: !!bigp:%d, e: %d!! , strlen big:%Zu\n"
 		       , bigp, e, strlen (big));
 	  g_strlcat (big, buffer, MAXBIG);
 	  bigp += e;

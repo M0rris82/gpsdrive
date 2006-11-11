@@ -383,7 +383,7 @@ convertRMC (char *f)
     {
       if ( mydebug + nmea_handler_debug > 0 )
 	{
-	  g_print ("nmea_handler: Latitude field %s is shorter than 9 characters. (%d)\n",
+	  g_print ("nmea_handler: Latitude field %s is shorter than 9 characters. (%Zu)\n",
 		   field[3], strlen (field[3]));
 	}
       for (i = 0; i < 9; i++)
@@ -441,7 +441,7 @@ convertRMC (char *f)
     {
       if ( mydebug + nmea_handler_debug > 0 )
 	{
-	  g_print ("nmea_handler: Longitude field %s is shorter than 10 characters. (%d)\n",
+	  g_print ("nmea_handler: Longitude field %s is shorter than 10 characters. (%Zu)\n",
 		   field[5], strlen (field[5]));
 	}
       for (i = 0; i < 10; i++)
@@ -711,7 +711,7 @@ convertGGA (char *f)
 	  if ( mydebug + nmea_handler_debug > 0 )
 	    {
 	      g_print
-		("nmea_handler: Latitude field %s is shorter than 9 characters. (%d)\n",
+		("nmea_handler: Latitude field %s is shorter than 9 characters. (%Zu)\n",
 		 field[2], strlen (field[2]));
 	    }
 	  for (i = 0; i < 9; i++)
@@ -763,7 +763,7 @@ convertGGA (char *f)
 	  if ( mydebug + nmea_handler_debug > 0 )
 	    {
 	      g_print
-		("nmea_handler: Longitude field %s is shorter than 10 characters. (%d)\n",
+		("nmea_handler: Longitude field %s is shorter than 10 characters. (%Zu)\n",
 		 field[4], strlen (field[4]));
 	    }
 	  for (i = 0; i < 10; i++)
