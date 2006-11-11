@@ -344,7 +344,7 @@ friendsinit ()
       g_snprintf (friendsidstring, sizeof (friendsidstring),
 		  "nocrypt%015ld", labs (r));
 #endif
-      printf ("\nKey: %s,id: %s %d bytes, time: %ld\n", key,
+      printf ("\nKey: %s,id: %s %Zu bytes, time: %ld\n", key,
 	      friendsidstring, strlen (friendsidstring), ti);
       needtosave = 1;
     }
