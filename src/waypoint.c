@@ -143,7 +143,7 @@ gchar lastradar[40], lastradar2[40];
 gdouble radarbearing;
 /* action=1: radar (speedtrap) */
 GtkWidget *add_wp_name_text, *wptext2;
-int sortcolumn = 4, sortflag = 0;
+long sortcolumn = 4, sortflag = 0;
 
 
 /* *****************************************************************************
@@ -592,7 +592,7 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 
 	addwaypoint (wp_name, wp_type, wplat, wplon);
 
-	gtk_widget_destroy (GTK_WIDGET (datum));
+	gtk_widget_destroy (GTK_WIDGET (widget));
 	markwaypoint = FALSE;
 
 	return TRUE;
@@ -780,7 +780,7 @@ gint
 setsortcolumn (GtkWidget * w, gpointer datum)
 {
 	sortflag = !sortflag;
-	sortcolumn = (gint) datum;
+	sortcolumn = (long) datum;
 
 	if (sortflag)
 		gtk_clist_set_sort_type (GTK_CLIST (mylist),
@@ -794,7 +794,7 @@ setsortcolumn (GtkWidget * w, gpointer datum)
 	else
 	{
 		gtk_clist_set_sort_column (GTK_CLIST (mylist),
-					   (gint) sortcolumn);
+					   sortcolumn);
 		gtk_clist_sort (GTK_CLIST (mylist));
 	}
 	return TRUE;
