@@ -125,7 +125,7 @@ extern gint mod_setupcounter, storetz;
 static gint iplock = FALSE;
 static GtkWidget *spinner1, *spinner2, *spinner3;
 long int maxfriendssecs = 86400;
-extern GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
+extern gchar *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
 extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
 extern char friendserverip[20];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
@@ -476,7 +476,7 @@ mainsetup (void)
 
   int br = 2400;
   gint dircount = 0;
-  gint i;
+  glong i;
 
   struct dirent *dat;
   GList *list = NULL;
@@ -2046,7 +2046,7 @@ sqlsetup (void)
   gchar temp[80];
   gchar text[30];
   gchar wheretemp[5000];
-  gint i;
+  glong i;
 
   setupentry[sqlplace] = frame = gtk_frame_new (_("SQL selection criterias"));
   setupentrylabel[sqlplace] = gtk_label_new (_("SQL"));
