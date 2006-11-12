@@ -53,6 +53,7 @@ typedef struct
 }
 poi_struct;
 
+void draw_text (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);
 void poi_draw_list (void);

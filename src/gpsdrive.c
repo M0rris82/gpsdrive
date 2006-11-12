@@ -2880,7 +2880,7 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 gint
 setup2_cb (GtkWidget * widget, guint datum)
 {
-	gtk_widget_destroy (GTK_WIDGET (datum));
+	gtk_widget_destroy (GTK_WIDGET (widget));
 	return TRUE;
 }
 
