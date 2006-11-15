@@ -191,7 +191,11 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
       lon = zero_lon - (px*1.0) / lat2radius_pi_180 (0);
     }
   else
-    printf ("ERROR: calcxytopos: unknown map Projection\n");
+    {
+      fprintf (stderr, "ERROR: calcxytopos: unknown map Projection\n");
+      lat = 0.0; /* dummy value */
+      lon = 0.0;
+    }
 
   // Error check
   if (mydebug > 20) 
@@ -254,7 +258,7 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - zero_lat);
       }
   else
-    printf ("ERROR: calcxy: unknown map Projection\n");
+	fprintf (stderr, "ERROR: calcxy: unknown map Projection\n");
 
   // pixmap xy --> Screen xy
   *posx = (SCREEN_X_2 + *posx * zoom / pixelfact) - xoff;
