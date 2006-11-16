@@ -64,7 +64,7 @@ extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 extern gchar local_config_mapdir[500];
-gdouble lat2RadiusArray[91];
+gdouble lat2RadiusArray[101];
 
 /* **********************************************************************
  * Build array for earth radii 
