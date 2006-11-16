@@ -41,7 +41,7 @@ reads info from kismet server and insert waypoints into database
 #include <sys/time.h>
 
 #include <gpsdrive.h>
-#include <gpskismet.h>
+/* #include <gpskismet.h> */
 #include <poi.h>
 #include <speech_out.h>
 #include <speech_strings.h>
