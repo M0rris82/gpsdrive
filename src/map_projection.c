@@ -130,6 +130,8 @@ map_projection (char *filename)
     proj = proj_map;
   else if (strstr (filename, "_map/"))
     proj = proj_map;
+  else if (!strncmp(filename, "map_", 4)) /* For Compatibility */
+    proj = proj_map;
   else if (strstr(filename, "/map_")) /* For Compatibility */
     proj = proj_map;
 
@@ -142,7 +144,9 @@ map_projection (char *filename)
     proj = proj_top;
   else if (strstr (filename, "_top/"))
     proj = proj_top;
-  else if (strstr(filename, "/top_")) /* For Compatibility */
+  else if (!strncmp(filename, "map_", 4)) /* For Compatibility */
+    proj = proj_top;
+  else if (strstr(filename, "/map_")) /* For Compatibility */
     proj = proj_top;
 
   else
