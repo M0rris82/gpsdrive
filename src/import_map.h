@@ -49,6 +49,7 @@ gint import1_cb (GtkWidget * widget, guint datum);
 gint import2_cb (GtkWidget * widget, gpointer datum);
 gint import3_cb (GtkWidget * widget, gpointer datum);
 gint setrefpoint_cb (GtkWidget * widget, guint datum);
+gint mapscroll_cb (GtkWidget * widget, GdkEventScroll * event);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint importshift_cb (GtkWidget * widget, guint datum);
 gint importshift_cb (GtkWidget * widget, guint datum);

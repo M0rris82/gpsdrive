@@ -706,6 +706,27 @@ import3_cb (GtkWidget * widget, gpointer datum)
   return TRUE;
 }
 
+/* 
+ * handle map scrolling event
+ * ie zoom in / out
+ */
+gint
+mapscroll_cb (GtkWidget *widget, GdkEventScroll *event) {
+	switch(event->direction) {
+		case(GDK_SCROLL_UP): /* zoom in */
+			scalerbt_cb (NULL, 2);
+			break;
+		case(GDK_SCROLL_DOWN): /* zoom out */
+			scalerbt_cb (NULL, 1);
+			break;
+		case(GDK_SCROLL_LEFT): /* blank */
+			break;
+		case(GDK_SCROLL_RIGHT): /* blank */
+			break;
+	}
+	return TRUE;
+}
+
 gint
 mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 {
