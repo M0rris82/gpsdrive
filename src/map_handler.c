@@ -728,6 +728,7 @@ loadmap (char *filename)
   GdkPixbuf *limage;
   guchar *lpixels, *pixels;
   int i, j, k;
+  static int print_loadmap_error = FALSE;
 
   if (mydebug > 10)
     fprintf (stderr, "loadmap(%s)\n", filename);
@@ -764,8 +765,8 @@ loadmap (char *filename)
   if (limage == NULL)
     havedefaultmap = FALSE;
 
-  if (limage == NULL)
-    {
+  if (limage == NULL) {
+  	if (!print_loadmap_error) {
       GString *error;
       error = g_string_new (NULL);
       g_string_sprintf (error, "%s\n%s\n",
@@ -773,8 +774,12 @@ loadmap (char *filename)
       error_popup ((gpointer *) error->str);
       g_string_free (error, TRUE);
       maploaded = FALSE;
-      return FALSE;
-    }
+      print_loadmap_error = TRUE;
+  	}
+    return FALSE;
+  } else {
+  	print_loadmap_error = FALSE;
+  }
 
 
   if (!gdk_pixbuf_get_has_alpha (limage))
