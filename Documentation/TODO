@@ -344,12 +344,11 @@ is a little scary! Here's my top suggestions...
 -----------------------------------------------------------------------------
 Guenther Meyer <d.s.e@metal-online.net>
 
-- Draw Icons for different POI Types
+- drawing icons for different POI-Types
 
-- Have a close look over the POI-Types and add categories/new types
-  including descriptions and icons
+- adapt databases and handling according to the new poi-type schemens
 
-- adapt database structure according to the new POI categories
+- change poi-type handling to xml ( for better inclusion of osm)
 
 
 ----------------------------------------------------------------------------
