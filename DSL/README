@@ -9,7 +9,8 @@ Contents
  * Install
  * Gpsd
  * MySQL
-
+ * Current Status
+ 
 Introduction
 ------------
 These instructions will help you to create a  package that can be installed on DSL.
@@ -77,6 +78,27 @@ I'm also working on getting Mysql into DSL and it is looking like being bigger
 than getting gpsdrive in there.  At the moment it is a work in progress.
 i.e. Not working
 
+STATUS
+------
+21/11/2006
+I have run into problems and decided to change my aproach a bit.  I have not been
+able to successfully create a DSL package since I moved my development environment to 
+to Debian Etch (Testing).  This is because the GTK libs currently available on DSL are
+now to old and don't match the libs used when compiling.  There are a few ways
+to go from here and none of them appear easy.
 
-David
+1) Create a full build environment on DSL.
+2) Compile all of the required run time libs on DSL. (Still build on Debian)
+3) Wait until newer libs become available either on DSL or DSL-n
+
+I have decided to give this a rest for now,  I may come back to it later.
+Feel free to pick up where I have left off if you like and also feel free to let 
+me know you are workng on it if you want.
+
+I have decided to install Debian on my Car computer as well as my development machine.
+It has swallowed about 3 gig of my CF card instead of about 60mb for DSL :(
+I will also need to make sure that it doesn't burn a hole on my CF by swapping or 
+writing temp files.  Oh well like a chalenge :)
+
+David P
 
