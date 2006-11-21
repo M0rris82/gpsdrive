@@ -253,7 +253,7 @@ GdkCursor *cursor;
 //#define EXPEDIA_SCALES_ONLY
 
 #ifdef EXPEDIA_SCALES_ONLY
-gint slistsize = 13;
+gint slistsize = 12;
 gchar *slist[] = { "5000", "15000", "20000", "50000", 
 		   "100000", "200000", "750000", "3000000", "7500000", "75000000",
 		   "88067900","90000000"
@@ -2855,14 +2855,14 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 
 	g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	val = GTK_ADJUSTMENT (scaler_adj)->value;
-	if (datum == 1 && val < slistsize )
-	    {
+	if (datum == 1 && val < slistsize - 1 ) {
 		val +=1;
-	    }
-	if (datum == 2 && val > 0 )
-	    {
+	} else if (datum == 2 && val > 0 ) {
 		val -= 1;
-	    }
+	} else {
+		/* nothing scaled -> return */
+		return TRUE;
+	}
 	scalewanted = nlist[(gint) rint (val)];
 	
 	test_and_load_newmap ();
@@ -2931,25 +2931,20 @@ setup_cb (GtkWidget * widget, guint datum)
 	/*   GTK_WIDGET_SET_FLAGS (cancel, GTK_HAS_FOCUS); */
 
 
-	gtk_signal_connect ((GTK_OBJECT (window)), "delete_event",
-			    GTK_SIGNAL_FUNC (removesetutc), 0);
+	/* settings close event */
 	gtk_signal_connect_object ((GTK_OBJECT (window)), "delete_event",
 				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
 				   GTK_OBJECT (window));
-	gtk_signal_connect ((GTK_OBJECT (window)), "destroy",
-			    GTK_SIGNAL_FUNC (removesetutc), 0);
-	gtk_signal_connect_object ((GTK_OBJECT (window)), "destroy",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (window));
-
-
-
-	gtk_signal_connect ((GTK_OBJECT (cancel)), "clicked",
-			    GTK_SIGNAL_FUNC (removesetutc), 0);
-
+	
+	/* cancel button event */
 	gtk_signal_connect_object ((GTK_OBJECT (cancel)), "clicked",
 				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
 				   GTK_OBJECT (window));
+				   
+	/* destroy window -> destroy timers */
+	gtk_signal_connect ((GTK_OBJECT (window)), "destroy",
+				   GTK_SIGNAL_FUNC (removesetutc), 0);
+
 
 	gtk_container_border_width (GTK_CONTAINER (window), 2 * PADDING);
 	vbox = gtk_vbox_new (FALSE, 2 * PADDING);
@@ -5240,6 +5235,10 @@ main (int argc, char *argv[])
     gtk_signal_connect_object (GTK_OBJECT (drawing_area),
 			       "button-press-event",
 			       GTK_SIGNAL_FUNC (mapclick_cb),
+			       GTK_OBJECT (drawing_area));
+	gtk_signal_connect_object (GTK_OBJECT (drawing_area),
+			       "scroll_event",
+			       GTK_SIGNAL_FUNC (mapscroll_cb),
 			       GTK_OBJECT (drawing_area));
 
     /* Area for navigation pointer */
