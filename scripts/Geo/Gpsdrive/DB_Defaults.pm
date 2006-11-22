@@ -82,7 +82,7 @@ sub fill_default_poi_types() {
 #	next if $icon =~ m,icons/classic/,;
 #	next unless -s $icon;
 	$icon =~s,([^/]+/){4},,;
-	$icon =~s,.*(classic|square\.big|square\.small),,;
+	$icon =~s,.*(classic|square\.big|square\.small)/?,,;
 	$unused_icon->{$icon}++;
 	$existing_icon->{$icon}++;
 	print "icon: $icon\n" if $debug;
