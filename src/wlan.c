@@ -254,9 +254,15 @@ wlan_rebuild_list (void)
   }
 
 
-  g_snprintf (sql_query, sizeof (sql_query),
+  /*g_snprintf (sql_query, sizeof (sql_query),
 	      // "SELECT lat,lon,alt,type_id,proximity "
 	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM wlan "
+	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
+	      "%s %s LIMIT 40000", sql_where, sql_in); */
+
+  g_snprintf (sql_query, sizeof (sql_query),
+	      // "SELECT lat,lon,alt,type_id,proximity "
+	      "SELECT lat,lon,macaddr,essid,poi_type_id " "FROM wlan "
 	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
 	      "%s %s LIMIT 40000", sql_where, sql_in);
 
@@ -289,8 +295,8 @@ wlan_rebuild_list (void)
 
 
       if (mydebug > 20)
-	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
-		 row[0], row[1], row[2], row[3]);
+	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\t%s\n",
+		 row[0], row[1], row[2], row[3], row[4]);
 
       lat = g_strtod (row[0], NULL);
       lon = g_strtod (row[1], NULL);
@@ -322,16 +328,16 @@ wlan_rebuild_list (void)
 	  (wlan_list + wlan_nr)->lon = lon;
 	  (wlan_list + wlan_nr)->x = wlan_posx;
 	  (wlan_list + wlan_nr)->y = wlan_posy;
-	  g_strlcpy ((wlan_list + wlan_nr)->name, row[2],
-		     sizeof ((wlan_list + wlan_nr)->name));
-	  (wlan_list + wlan_nr)->poi_type_id = (gint) g_strtod (row[3], NULL);
-	  if (mydebug > 20)
-	    {
+/*	  g_strlcpy ((wlan_list + wlan_nr)->name, row[2],
+		     sizeof ((wlan_list + wlan_nr)->name)); */
+	  (wlan_list + wlan_nr)->poi_type_id = (gint) g_strtod (row[4], NULL);
+	  //if (mydebug > 20)
+	    //{
 	      g_snprintf ((wlan_list + wlan_nr)->name,
-			  sizeof ((wlan_list + wlan_nr)->name), "%s %s"
+			  sizeof ((wlan_list + wlan_nr)->name), "%s ( %s )"
 			  //"\n(%.4f ,%.4f)",
 			  //                  (wlan_list + wlan_nr)->poi_type_id,
-			  , row[2], row[4]
+			  , row[2], row[3]
 			  // , lat, lon
 		);
 	      /*
@@ -346,7 +352,7 @@ wlan_rebuild_list (void)
 	       * `address_id` int(11) default \'0\',
 	       * `source_id` int(11) NOT NULL default \'0\',
 	       */
-	    }
+	    //}
 	  //(wlan_list + wlan_nr)->wp_id      = g_strtol (row[0], NULL);
 	  //      (wlan_list + wlan_nr)->alt        = g_strtod(row[2], NULL);
 	  //(wlan_list + wlan_nr)->name[80] = row[4];

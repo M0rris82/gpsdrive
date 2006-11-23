@@ -4301,7 +4301,7 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi, /* *vbox_wlan, */ *vbox_track;
+    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_wlan, *vbox_track;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
     GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;

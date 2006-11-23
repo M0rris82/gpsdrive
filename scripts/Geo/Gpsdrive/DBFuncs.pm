@@ -810,7 +810,7 @@ sub add_index($){
 	}
 	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id');
     } elsif ( $table eq "wlan" ){
-	for my $key ( qw( last_modified name lat lon ) ){
+	for my $key ( qw( last_modified macaddr lat lon ) ){
 	    add_if_not_exist_index($table,$key);
 	}
 	add_if_not_exist_index( $table,'combi1','lat`,`lon`,`poi_type_id');
@@ -904,22 +904,22 @@ sub create_db(){
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi');
 
+    # ------- WLAN
     db_exec('CREATE TABLE IF NOT EXISTS `wlan` (
-                      `wlan_id`        int(11)      NOT NULL auto_increment,
-                      `name`          varchar(80)           default NULL,
-                      `poi_type_id`   int(11)      NOT NULL default \'0\',
-                      `lat`           double                default \'0\',
-                      `lon`           double                default \'0\',
-                      `alt`           double                default \'0\',
-                      `proximity`     float                 default \'0\',
-                      `comment`       varchar(255)          default NULL,
-                      `last_modified` date         NOT NULL default \'0000-00-00\',
-                      `url`           varchar(160)     NULL ,
-                      `source_id`     int(11)      NOT NULL default \'0\',
-                      PRIMARY KEY  (`wlan_id`)
-                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
-    add_index('wlan');
-
+			`id`		int(11) 	NOT NULL	auto_increment,
+			`macaddr`	varchar(30) 	NOT NULL,
+			`essid`		varchar(255) 	NOT NULL,
+			`nettype	int(11) 	NOT NULL	default '0',
+			`poi_type_id`	int(11) 	NOT NULL	default '0',
+			`lat`		double		NOT NULL	default '0',
+			`lon`		double		NOT NULL	default '0',
+			`alt`		double				default '0',
+			`comment`	varchar(255)			default NULL,
+			`last_modified`	date		NOT NULL	default '0000-00-00',
+			`wep`		int(11)		NOT NULL	default '0',
+			`cloaked`	int(11)		NOT NULL	default '0',
+			PRIMARY KEY  (`id`),
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
 
     # ------- Streets
     db_exec('CREATE TABLE IF NOT EXISTS `streets` (

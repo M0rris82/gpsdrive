@@ -64,7 +64,7 @@ MYSQL_RES *res;
 MYSQL_ROW row;
 
 static char macaddr[30], name[80], tbuf[500], lastmacaddr[30];
-static int nettype, channel, wep;
+static int nettype, channel, wep, cloaked;
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -168,18 +168,18 @@ readkismet (void)
 		g_print ("\nkbuffer:%s\n", kbuffer);
 	      e = sscanf (kbuffer,
 			  "%s %s %d \001%255[^\001]\001 %d"
-			  " %d  %s %s %s %s %[^\n]", tbuf,
+			  " %d  %s %s %s %s %d %[^\n]", tbuf,
 			  macaddr, &nettype, name, &channel,
-			  &wep, lat, lon, bestlat, bestlon, tbuf);
+			  &wep, lat, lon, bestlat, bestlon, &cloaked, tbuf);
 
 	    }
-	  if (e == 10)
+	  if (e == 11)
 	    {
 	      if (debug)
 		g_print
 		  ("\ne: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
-		   "lat: %s lon: %s bestlat: %s bestlon: %s\n", e, macaddr,
-		   nettype, name, channel, wep, lat, lon, bestlat, bestlon);
+		   "lat: %s lon: %s bestlat: %s bestlon: %s cloaked: %d\n", e, macaddr,
+		   nettype, name, channel, wep, lat, lon, bestlat, bestlon, cloaked);
 
 	      /* insert waypoint only if we had not just inserted it */
 	      /*        if ((strcmp (lastmacaddr, macaddr)) != 0) */
@@ -252,14 +252,14 @@ readkismet (void)
 			      (q,
 			       sizeof
 			       (q),
-			       "UPDATE %s SET name='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',poi_type_id='%d',wep='%d' WHERE id='%d'",
+			       "UPDATE %s SET essid='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',poi_type_id='%d',wep='%d,cloaked=%d' WHERE id='%d'",
 			       wlantable,
 			       tname,
 			       macaddr,
 			       nettype,
 			       bestlat,
 			       bestlon,
-			       (wep) ? wlan_closed : wlan_open , wep, sqlid);
+			       (wep) ? wlan_closed : wlan_open , wep, cloaked, sqlid);
 			    if (debug)
 			      printf ("\nquery: %s\n", q);
 			    if (dl_mysql_query (&mysql, q))
@@ -280,12 +280,12 @@ readkismet (void)
 
 		    
 		    g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (essid,macaddr,nettype,lat,lon,poi_type_id,wep)"
-				" VALUES ('%s','%s','%d','%s','%s','%d','%d')",
+				"INSERT INTO %s (essid,macaddr,nettype,lat,lon,poi_type_id,wep,cloaked)"
+				" VALUES ('%s','%s','%d','%s','%s','%d','%d','%d')",
 				wlantable, tname,
 				macaddr, nettype,
 				lat, lon, 
-				(wep) ? wlan_closed : wlan_open, wep);
+				(wep) ? wlan_closed : wlan_open, wep, cloaked);
 		    if (debug)
 		      printf ("\nquery: %s\n", q);
 		    if (dl_mysql_query (&mysql, q))
@@ -355,7 +355,7 @@ initkismet (void)
     {
       havekismet = TRUE;
       g_strlcpy (buf,
-		 "!0 ENABLE NETWORK bssid,type,ssid,channel,wep,minlat,minlon,bestlat,bestlon\n",
+		 "!0 ENABLE NETWORK bssid,type,ssid,channel,wep,minlat,minlon,bestlat,bestlon,cloaked\n",
 		 sizeof (buf));
       write (kismetsock, buf, strlen (buf));
     }
@@ -369,10 +369,9 @@ void get_poi_type_id_for_wlan() {
     for (i = 0; i < poi_type_list_max; i++)
       {
 	poi_type_list[i].icon = NULL;
-	if (strcmp (poi_type_list[i].name,"wlan.closed") != 0){
+	if (strcmp (poi_type_list[i].name,"wlan.closed") == 0){
 	    wlan_closed=i;
-	}
-	if (strcmp (poi_type_list[i].name,"wlan.open") != 0){
+	} else if (strcmp (poi_type_list[i].name,"wlan.open") == 0){
 	    wlan_open=i;
 	}
       }
