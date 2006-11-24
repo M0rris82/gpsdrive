@@ -4,7 +4,7 @@ Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 
 Website: www.gpsdrive.de
 
-Disclaimer: Please do not use for navigation. 
+Disclaimer: Please do not use for navigation.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -147,7 +147,7 @@ readkismet (void)
 		}
 
 	    }
-	    
+
 	  // the file descriptor was ready for read but no data available...
 	  // this means the connection was lost.
 	  if (bytesread==0) {
@@ -157,7 +157,7 @@ readkismet (void)
 		return FALSE;
 	     }
 	}
-      
+
       if (c == -1)
 	{
 	  /* have read a line */
@@ -186,7 +186,7 @@ readkismet (void)
 	      {
 		/*                g_strlcpy (lastmacaddr, macaddr); */
 		g_snprintf (q, sizeof (q),
-			    "select id,lat,lon from %s where macaddr='%s'",
+			    "select wlan_id,lat,lon from %s where macaddr='%s'",
 			    wlantable, macaddr);
 		if (debug)
 		  g_print ("\nquery: %s\n", q);
@@ -252,7 +252,7 @@ readkismet (void)
 			      (q,
 			       sizeof
 			       (q),
-			       "UPDATE %s SET essid='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',poi_type_id='%d',wep='%d,cloaked=%d' WHERE id='%d'",
+			       "UPDATE %s SET essid='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',poi_type_id='%d',wep='%d,cloaked=%d' WHERE wlan_id='%d'",
 			       wlantable,
 			       tname,
 			       macaddr,
@@ -278,13 +278,13 @@ readkismet (void)
 		      g_print ("*** This is a new waypoint: %s [%s]\n", name,
 			       macaddr);
 
-		    
+
 		    g_snprintf (q, sizeof (q),
 				"INSERT INTO %s (essid,macaddr,nettype,lat,lon,poi_type_id,wep,cloaked)"
 				" VALUES ('%s','%s','%d','%s','%s','%d','%d','%d')",
 				wlantable, tname,
 				macaddr, nettype,
-				lat, lon, 
+				lat, lon,
 				(wep) ? wlan_closed : wlan_open, wep, cloaked);
 		    if (debug)
 		      printf ("\nquery: %s\n", q);
@@ -376,4 +376,3 @@ void get_poi_type_id_for_wlan() {
 	}
       }
 }
-

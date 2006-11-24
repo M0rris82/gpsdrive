@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 
 Package: gpsdrive
 Architecture: any
-Depends: ${shlibs:Depends}, gdal-bin, grass
+Depends: ${misc:Depends}, gdal-bin, grass
 Recommends: gpsd, perl, libmysqlclient10, imagemagick, gpsbabel, perl-base, perlmagick, festival, libgeos, libgdal
 Suggests: grass, libarchive-zip-perl, libdate-manip-perl, libdbi-perl, libexpat1, libfile-find-rule-perl, libgtk2.0-0, libwww-perl
 Description: Car navigation system
