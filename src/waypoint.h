@@ -45,6 +45,7 @@ void set_position_to_waypoint();
 void set_waypoint_pos(gdouble lat, gdouble lon);
 gint setwp_cb (GtkWidget * widget, guint datum);
 gint sel_targetweg_cb (GtkWidget * widget, guint datum);
+gint sel_target_destroy_cb (GtkWidget *widget, guint datum);
 void draw_radar();
 gint setsortcolumn (GtkWidget * w, gpointer datum);
 

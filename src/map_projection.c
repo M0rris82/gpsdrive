@@ -60,7 +60,7 @@ extern gint usesql;
 extern glong mapscale;
 extern gchar local_config_mapdir[500];
 extern gint posmode;
-extern gdouble posmode_x, posmode_y;
+extern gdouble posmode_lon, posmode_lat;
 extern gchar targetname[40];
 extern gint iszoomed;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];

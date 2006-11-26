@@ -152,6 +152,8 @@ gchar targetname[40];
 gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 gdouble zero_lon, zero_lat;
 gdouble target_lon, target_lat;
+extern gdouble wp_saved_target_lat;
+extern gdouble wp_saved_target_lon;
 gdouble dist;
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext;
@@ -310,7 +312,7 @@ GtkWidget *setup_bt;
 gint havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0, wp_from_sql = 0;
 gint posmode = 0;
-gdouble posmode_x, posmode_y;
+gdouble posmode_lon, posmode_lat;
 gchar lastradar[40], lastradar2[40]; 
 gint foundradar;
 gdouble radarbearing;
@@ -327,6 +329,7 @@ gint havefriends = 0;
 gint showallmaps = TRUE;
 /* guint selwptimeout; */
 extern gint setwpactive;
+gint selected_wp_mode = FALSE;
 gint onemousebutton = FALSE;
 gint shadow = TRUE;
 
@@ -2493,8 +2496,8 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 		if (posmode)
 		{
-			current_lon = posmode_x;
-			current_lat = posmode_y;
+			current_lon = posmode_lon;
+			current_lat = posmode_lat;
 		}
 
 
@@ -3485,9 +3488,13 @@ pos_cb (GtkWidget * widget, guint datum)
     	posmode = TRUE;
     else 
     	posmode = FALSE;
-    
-    posmode_x = current_lon;
-    posmode_y = current_lat;
+    	
+    /* change only posmode_lon/lat
+     * when not in search waypoint mode */
+    if (!setwpactive) {
+    	posmode_lon = current_lon;
+    	posmode_lat = current_lat;
+    }
     
     return TRUE;
 }
@@ -3884,8 +3891,8 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 			calcxy (&x, &y, current_lon, current_lat, zoom);
 			calcxytopos (SCREEN_X, y, &current_lat, &current_lon, zoom);
 		    }
-		posmode_x = current_lon;
-		posmode_y = current_lat;
+		posmode_lon = current_lon;
+		posmode_lat = current_lat;
 	    }
 	return 0;
 }
@@ -3923,8 +3930,8 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	{
 	    if (posmode)
 		{
-		    posmode_x = lon;
-		    posmode_y = lat;
+		    posmode_lon = lon;
+		    posmode_lat = lat;
 		    rebuildtracklist ();
 		}
 	}
@@ -4042,6 +4049,9 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	if (setwpactive)
 		return TRUE;
 
+	/* save old target for cancel event */
+	wp_saved_target_lat = target_lat;
+	wp_saved_target_lon = target_lon;
 
 	setwpactive = TRUE;
 	window = gtk_dialog_new ();
@@ -4121,6 +4131,11 @@ sel_target_cb (GtkWidget * widget, guint datum)
 				   "delete_event",
 				   GTK_SIGNAL_FUNC
 				   (sel_targetweg_cb), GTK_OBJECT (window));
+	/* sel_target_destroy event */
+	gtk_signal_connect (GTK_OBJECT(window),
+					"destroy",
+					GTK_SIGNAL_FUNC(sel_target_destroy_cb),
+					0);
 
 	/* Font aendern falls PDA-Mode und Touchscreen */
 	if (pdamode)

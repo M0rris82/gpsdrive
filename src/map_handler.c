@@ -61,7 +61,8 @@ extern gint usesql;
 extern glong mapscale;
 extern gchar local_config_mapdir[500];
 extern gint posmode;
-extern gdouble posmode_x, posmode_y;
+extern gint selected_wp_mode;
+extern gdouble posmode_lon, posmode_lat;
 extern gchar targetname[40];
 extern gint iszoomed;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
@@ -879,11 +880,15 @@ test_and_load_newmap ()
 
   if (posmode)
     {
-      trip_lat = current_lon = posmode_x;
-      trip_lon = current_lat = posmode_y;
-    }
-  else
-    route_next_target ();
+    	if (selected_wp_mode) {
+    		trip_lat = current_lon = target_lon;
+      		trip_lon = current_lat = target_lat;
+    	} else {	
+      		trip_lat = current_lon = posmode_lon;
+      		trip_lon = current_lat = posmode_lat;
+    	}
+  	} else
+  	route_next_target ();
 
 
   // Test if we want Background image as Map

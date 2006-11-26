@@ -179,7 +179,7 @@ extern GtkWidget *mylist, *myroutelist, *destframe;
 extern GtkObject *scaler_adj;
 extern gdouble wplat, wplon;
 extern gint posmode;
-extern gdouble posmode_x, posmode_y;
+extern gdouble posmode_lon, posmode_lat;
 extern mapsstruct *maps;
 extern gint simmode, zoom, iszoomed;
 extern gint minsecmode, nightmode, isnight, disableisnight;
@@ -820,8 +820,8 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	{
 	  if (posmode)
 	    {
-	      posmode_x = lon;
-	      posmode_y = lat;
+	      posmode_lon = lon;
+	      posmode_lat = lat;
 	      rebuildtracklist ();
 	    }
 	}

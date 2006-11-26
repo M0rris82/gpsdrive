@@ -93,11 +93,12 @@ extern MYSQL_ROW row;
 extern gint muteflag, wp_from_sql;
 extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
+extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed, posmode_lon, posmode_lat;
 extern gint posmode;
 extern gint simmode;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
+extern selected_wp_mode;
 extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern char wp_typelist[100][40];
 extern int wp_typelistcount;
@@ -144,6 +145,8 @@ gdouble radarbearing;
 /* action=1: radar (speedtrap) */
 GtkWidget *add_wp_name_text, *wptext2;
 long sortcolumn = 4, sortflag = 0;
+gdouble wp_saved_target_lat = 0;
+gdouble wp_saved_target_lon = 0;
 
 
 /* *****************************************************************************
@@ -483,6 +486,11 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 {
 	/*   gtk_timeout_remove (selwptimeout); */
 	gtk_widget_destroy (GTK_WIDGET (gotowindow));
+	/* restore old target */
+	if (widget!=NULL) {
+		target_lat = wp_saved_target_lat;
+		target_lon = wp_saved_target_lon;
+	}
 	setwpactive = FALSE;
 
 	return FALSE;
@@ -490,6 +498,16 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 
 /* *****************************************************************************
  */
+ 
+/*
+ * destroy sel_target window event:
+ */
+ gint
+ sel_target_destroy_cb (GtkWidget *widget, guint datum) {
+ 	selected_wp_mode = FALSE;
+ 	return TRUE;
+ }
+ 
 gint
 jumpwp_cb (GtkWidget * widget, guint datum)
 {
@@ -497,14 +515,16 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 	gchar *p;
 
 	i = deleteline;
-	gtk_clist_get_text (GTK_CLIST (mylist), i, 2, &p);
-	coordinate_string2gdouble(p, &current_lat);
-	gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
-	coordinate_string2gdouble(p, &current_lon);
+	if (posmode) {
+		gtk_clist_get_text (GTK_CLIST (mylist), i, 2, &p);
+		coordinate_string2gdouble(p, &posmode_lat);
+		gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
+		coordinate_string2gdouble(p, &posmode_lon);
+	}
 
-	if ((!posmode) && (!simmode))
+	/*if ((!posmode) && (!simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
-					      TRUE);
+					      TRUE);*/
 	getsqldata ();
 	reinsertwp_cb (NULL, 0);
 	sel_targetweg_cb (NULL, 0);
@@ -831,6 +851,10 @@ setwp_cb (GtkWidget * widget, guint datum)
 	deleteline = datum;
 	if (dontsetwp)
 		return TRUE;
+		
+	/* enter selected_wp_mode -> 
+	 * enables map jumping to target_lat/lon */
+	selected_wp_mode = TRUE;
 
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 0, &p);
 	if (createroute)
