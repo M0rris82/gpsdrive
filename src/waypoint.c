@@ -744,7 +744,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
 		GTK_WIDGET_SET_FLAGS (button2, GTK_CAN_DEFAULT);
-		gtk_signal_connect (GTK_OBJECT (button), "clicked",
+		gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
 				    GTK_SIGNAL_FUNC (addwaypoint_gtk_cb),
 				    GTK_OBJECT (window));
 		gtk_signal_connect (GTK_OBJECT (button2), "clicked",
