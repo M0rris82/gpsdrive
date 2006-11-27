@@ -39,9 +39,11 @@ extern gint maploaded;
 extern gint trackflag;
 extern gint importactive;
 extern glong tracknr, tracklimit, trackcoordlimit;
+extern gdouble current_lat, current_lon;
 glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 extern trackcoordstruct *trackcoord;
 extern gint zoom;
+extern gint routepointer;
 extern GdkSegment *track;
 extern GdkSegment *trackshadow;
 
@@ -133,69 +135,64 @@ rebuildtracklist (void)
 void
 drawtracks (void)
 {
-  gint t;
-  GdkSegment *routes;
+	gint t;
+	GdkSegment *routes;
 
-  gdouble posxdest, posydest;
-  gint i, j;
+	gdouble posxdest, posydest, curpos_x, curpos_y;
+	gint i, j;
 
-  /*    if (!maploaded) */
-  /*      return; */
-  if (!trackflag)
-    return;
-  if (importactive)
-    return;
-  if (showroute)
-    {
-      if (routeitems > 0)
-	{
-	  i = (routeitems + 5);
-	  routes = g_new0 (GdkSegment, i);
+	/*    if (!maploaded) */
+	/*      return; */
+	if (!trackflag)
+		return;
+	if (importactive)
+		return;
+	if (showroute) {
+		if (routeitems > 0) {
+			i = (routeitems + 5);
+			routes = g_new0 (GdkSegment, i);
+			/* start beginning with actual routepointer */
+			for (j = routepointer; j < routeitems; j++) {
+				/* start drawing with current_pos */
+				if (j == routepointer) {
+					calcxy (&curpos_x, &curpos_y, current_lon, current_lat, zoom);
+					(routes + t)->x1 = curpos_x;
+					(routes + t)->y1 = curpos_y;
+				} else {
+					(routes + t)->x1 = (routes + t - 1)->x2;
+					(routes + t)->y1 = (routes + t - 1)->y2;
+				}
+				calcxy (&posxdest, &posydest, (routelist + j)->lon, (routelist + j)->lat, zoom);
+				(routes + t)->x2 = posxdest;
+				(routes + t)->y2 = posydest;
+				t++;
+			}
+			gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
+			gdk_gc_set_foreground (kontext, &blue);
+			gdk_draw_segments (drawable, kontext, (GdkSegment *) routes, t);
+			g_free (routes);
+	  	}
+    }
+    t = 2 * (tracknr >> 1) - 1;
+	/*     t=tracknr; */
+	if (t < 0)
+    	return;
 
-	  for (j = 0; j <= routeitems; j++)
-	    {
-	      calcxy (&posxdest, &posydest,
-		      (routelist + j)->lon, (routelist + j)->lat, zoom);
-
-	      if (j > 0)
-		{
-		  (routes + j - 1)->x2 = posxdest;
-		  (routes + j - 1)->y2 = posydest;
-		}
-	      (routes + j)->x1 = posxdest;
-	      (routes + j)->y1 = posydest;
-	    }
-	  t = routeitems - 1;
-	  gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
-
-	  gdk_gc_set_foreground (kontext, &blue);
-	  gdk_draw_segments (drawable, kontext, (GdkSegment *) routes, t);
-	  g_free (routes);
+    gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
+	if (shadow) {
+ 		gdk_gc_set_foreground (kontext, &darkgrey);
+		gdk_gc_set_function (kontext, GDK_AND);
+		gdk_draw_segments (drawable, kontext, (GdkSegment *) trackshadow, t);
+		gdk_gc_set_function (kontext, GDK_COPY);
 	}
-    }
-  t = 2 * (tracknr >> 1) - 1;
-  /*     t=tracknr;  */
-  if (t < 1)
-    return;
+	if ((!disableisnight) && ((nightmode == 1) || ((nightmode == 2) && isnight)))
+		gdk_gc_set_foreground (kontext, &red);
+	else
+		gdk_gc_set_foreground (kontext, &trackcolorv);
 
+	gdk_draw_segments (drawable, kontext, (GdkSegment *) track, t);
 
-  gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-  if (shadow)
-    {
-      gdk_gc_set_foreground (kontext, &darkgrey);
-      gdk_gc_set_function (kontext, GDK_AND);
-      gdk_draw_segments (drawable, kontext, (GdkSegment *) trackshadow, t);
-      gdk_gc_set_function (kontext, GDK_COPY);
-    }
-  if ((!disableisnight)
-      && ((nightmode == 1) || ((nightmode == 2) && isnight)))
-    gdk_gc_set_foreground (kontext, &red);
-  else
-    gdk_gc_set_foreground (kontext, &trackcolorv);
-
-  gdk_draw_segments (drawable, kontext, (GdkSegment *) track, t);
-
-  return;
+	return;
 }
 
 
