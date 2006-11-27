@@ -175,7 +175,7 @@ drawtracks (void)
     }
     t = 2 * (tracknr >> 1) - 1;
 	/*     t=tracknr; */
-	if (t < 0)
+	if (t < 1)
     	return;
 
     gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
