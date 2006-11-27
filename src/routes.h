@@ -35,6 +35,7 @@ extern gint thisrouteline, routeitems, routepointer;
 extern GtkWidget *create_route_button;
 extern GtkWidget *create_route2_button;
 extern GtkWidget *select_route_button;
+extern GtkWidget *gotobt;
 
 void init_route_list ();
 void free_route_list ();

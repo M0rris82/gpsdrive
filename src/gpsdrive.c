@@ -3484,6 +3484,7 @@ update_posbt()
 gint
 pos_cb (GtkWidget * widget, guint datum)
 {
+static gint is_posmode_init = FALSE;
     if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
     	posmode = TRUE;
     else 
@@ -3491,7 +3492,7 @@ pos_cb (GtkWidget * widget, guint datum)
     	
     /* change only posmode_lon/lat
      * when not in search waypoint mode */
-    if (!setwpactive) {
+    if (!setwpactive || !is_posmode_init) {
     	posmode_lon = current_lon;
     	posmode_lat = current_lat;
     }
@@ -4043,7 +4044,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 		_("Waypoint"), _("Latitude"), _("Longitude"), _("Distance"),
 		NULL
 	};
-	GtkWidget *scrwindow, *vbox, *button, *hbox, *deletebt, *gotobt;
+	GtkWidget *scrwindow, *vbox, *button, *hbox, *deletebt;
 	GtkTooltips *tooltips;
 
 	if (setwpactive)
@@ -4119,6 +4120,8 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	GTK_WIDGET_SET_FLAGS (gotobt, GTK_CAN_DEFAULT);
 	gtk_signal_connect (GTK_OBJECT (gotobt), "clicked",
 			    GTK_SIGNAL_FUNC (jumpwp_cb), 0);
+	/* disable jump button when in routingmode */
+	if (routemode) gtk_widget_set_sensitive (gotobt, FALSE);
 
 	/*   button = gtk_button_new_with_label (_("Close")); */
 	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);

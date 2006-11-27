@@ -75,7 +75,7 @@ gint thisrouteline = 0, routeitems = 0, routepointer = 0;
 gint createroute = FALSE;
 gint routemode = FALSE;
 gdouble routenearest = 9999999999.0;
-GtkWidget *create_route_button, *create_route2_button, *select_route_button;
+GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 gint forcenextroutepoint = FALSE;
 gint showroute = TRUE;
 
@@ -153,6 +153,8 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 	routemode = FALSE;
 	routepointer = routeitems = 0;
 	gtk_widget_set_sensitive (create_route_button, TRUE);
+	/* enable jump button */
+	gtk_widget_set_sensitive (gotobt, TRUE);
 	return FALSE;
 }
 
@@ -162,6 +164,7 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 gint
 sel_routeclose_cb (GtkWidget * widget, guint datum)
 {
+	createroute = FALSE;
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 	gtk_widget_set_sensitive (create_route_button, TRUE);
 	return FALSE;
@@ -174,6 +177,8 @@ do_route_cb (GtkWidget * widget, guint datum)
 {
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 	gtk_widget_set_sensitive (create_route_button, TRUE);
+	/* disable waypoint jump button */
+	gtk_widget_set_sensitive (gotobt, FALSE);
 	createroute = FALSE;
 	routemode = TRUE;
 	setroutetarget (NULL, -1);

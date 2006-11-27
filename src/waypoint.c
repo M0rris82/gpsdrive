@@ -98,7 +98,7 @@ extern gint posmode;
 extern gint simmode;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
-extern selected_wp_mode;
+extern gint selected_wp_mode;
 extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern char wp_typelist[100][40];
 extern int wp_typelistcount;
@@ -124,6 +124,7 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 extern gchar oldfilename[2048];
+extern gint routemode;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
@@ -487,7 +488,7 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 	/*   gtk_timeout_remove (selwptimeout); */
 	gtk_widget_destroy (GTK_WIDGET (gotowindow));
 	/* restore old target */
-	if (widget!=NULL) {
+	if (widget != NULL && !routemode) {
 		target_lat = wp_saved_target_lat;
 		target_lon = wp_saved_target_lon;
 	}
@@ -862,6 +863,10 @@ setwp_cb (GtkWidget * widget, guint datum)
 		/*        g_print("route: %s\n", p); */
 		thisrouteline = atol (p) - 1;
 		insertroutepoints ();
+		return TRUE;
+	}
+	if (routemode) {
+		/* in routingmode do nothing further */
 		return TRUE;
 	}
 	selected_wp_list_line = atol (p);
