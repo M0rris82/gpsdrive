@@ -705,6 +705,11 @@ sub wget_map($$$){
 	    if ( $mapserver eq 'googlesat') 
 	    {
 		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
+		if ($result eq '+') {
+		  $newcount++;
+		} else {
+		  $failcount++;
+		}
 	    } elsif ( $mapserver eq 'gov_au') {
 		if ( mirror_map($url,$filename) ) {
 		    $result = gov_au_resize($lati,$long,$scale,5,4,"$mapdir$filename");
