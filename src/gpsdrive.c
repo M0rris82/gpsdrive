@@ -76,7 +76,7 @@ Disclaimer: Please do not use for navigation.
 #include <sys/time.h>
 #include <errno.h>
 #include <gpsdrive_config.h>
-#include <gpskismet.h>
+/* #include <gpskismet.h> <-- prototypes are declared also in gpsproto.h */
 
 #include <dlfcn.h>
 #include <pthread.h>

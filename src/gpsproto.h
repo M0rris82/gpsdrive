@@ -1,6 +1,7 @@
 /* ***********************************************************************  */
 /*  Prototypes */
 int initkismet (void);
+void get_poi_type_id_for_wlan();
 int readkismet (void);
 int get_sql_type_list (void);
 int deletesqldata (int index);
