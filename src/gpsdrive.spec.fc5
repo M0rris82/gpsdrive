@@ -13,7 +13,7 @@
 
 Summary: Gpsdrive is a GPS based navigation tool 
 Name: gpsdrive
-Version: 2.10.pre3.20061105
+Version: 2.10.pre3.20061202
 Release: 1
 License: GPL
 Group: Amusements/Graphics
@@ -67,6 +67,8 @@ output from Festival (http://www.cstr.ed.ac.uk/projects/festival/) is
 also available. MySQL and Kismet (http://www.kismetwireless.net/) are
 supported.
 
+This RPM package represents subversion version 1114.
+
 There is more setup to do. Please read the man page and the README
 files in /usr/share/doc/gpsdrive.
 
@@ -83,7 +85,7 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make DESTDIR=$RPM_BUILD_ROOT install-strip
+make DESTDIR=$RPM_BUILD_ROOT install
 
 %clean
 if [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ]; then
