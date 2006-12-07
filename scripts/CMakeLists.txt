@@ -40,11 +40,12 @@ if (WITH_SCRIPTS)
     MACRO_OPTIONAL_FIND_PACKAGE(PerlLibs)
     #MESSAGE("DEBUG: > PERL_SITELIB: ${PERL_SITELIB}")
 
-    file(GLOB_RECURSE perl_modules ${CMAKE_CURRENT_SOURCE_DIR} *.pm)
+    file(GLOB_RECURSE perl_modules ${CMAKE_CURRENT_SOURCE_DIR}/*.pm)
 
       if (perl_modules)
         foreach(perl_module ${perl_modules})
           file(RELATIVE_PATH relative_module_path ${CMAKE_CURRENT_SOURCE_DIR} ${perl_module})
+          get_filename_component(relative_module_path ${relative_module_path} PATH)
 
           install(FILES ${perl_module} DESTINATION ${PERL_SITELIB}/${relative_module_path})
           #MESSAGE("DEBUG: install ${perl_module} to ${PERL_SITELIB}/${relative_module_path}")
