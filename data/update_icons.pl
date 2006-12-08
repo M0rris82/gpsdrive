@@ -4,14 +4,15 @@
 #  This script handles the XML-Files for the POI-Types in gpsdrive.
 #  It has to be run from the data directory.
 #  
-#  If there is no XML-File available, a new file containing the basic
-#  POI-Types will be created.
-#  Then the icons directories are searched for PNG files, which are
-#  added as new POI-Types if they are not yet available in the file.
+#  Default actions, when no options are given:
+#  - Create basic XML-File if none is available
+#  - Search icons directories for PNG files
+#  - Add those files as new POI-Types if they are not yet existent
+#  - Update the poi_type table in the database
 #  
 #  $Id:$
 #
-#  Possible Usages (Work in Progress):
+#  Development work in progress:
 #
 #  - Rebuild the poi_type database from the xml file
 #
@@ -49,21 +50,29 @@ use File::Find;
 use File::Copy;
 use XML::Twig;
 use Getopt::Std;
+use Pod::Usage;
 
-our ($opt_v, $opt_f) = 0;
-getopts('vf:');
+our ($opt_v, $opt_f, $opt_l, $opt_h, $opt_d) = 0;
+getopts('hdvf:l:') or $opt_h = 1;
+pod2usage( -exitval => '1',  
+           -verbose => '1') if $opt_h;
 
-my $VERBOSE = $opt_v;
-my $i = 0;
 my $file_xml = './icons.xml';
 my $file_html = './index.html';
 my %icons = ('','');
+my %h_icons = ('', '');
+my $i = 0;
 my $poi_type_id_base = 30;
 my $default_scale_min = 1;
 my $default_scale_max = 20000;
 my $default_title_en = 't i t l e';
 my $default_desc_en = 'd e s c r i p t i o n';
+my $lang = 'de';
 
+# parsing options
+#
+my $VERBOSE = $opt_v;
+$lang = $opt_l if $opt_l;
 
 
 #####################################################################
@@ -71,12 +80,18 @@ my $default_desc_en = 'd e s c r i p t i o n';
 #  M A I N
 #
 #
+unless ($opt_d)
+{
+  unless (-e $file_xml)
+  {
+    create_xml($file_xml);	# Create a new XML-File if none exists
+  }
+  get_icons();			# read available icons from dirs
+  update_xml($file_xml);	# parse and update contents  of XML-File
+  update_overview($file_html);	# update html overview from XML-File
+}
 
-unless (-e $file_xml)
-   { create_xml($file_xml); }	# Create a new XML-File if none exists
-
-get_icons();			# read available icons from dirs
-update_xml($file_xml);		# parse and update contents  of XML-File 
+update_db($file_xml,$lang);			# update databse from XML-File
 
 
 exit (0);
@@ -84,13 +99,47 @@ exit (0);
 
 #####################################################################
 #
+#  Update HTML Overview of available Icons and POI-Types
+#
+#
+sub update_overview
+{
+  my $file = shift(@_);
+  print STDOUT "\n----- Updating HTML Overview '$file' -----\n";
+  
+  print STDOUT "  NOT YET IMPLEMENTED !\n";
+
+  return;  
+}
+
+
+#####################################################################
+#
+#  Update poi_type Table in geoinfo Database from XML-File
+#
+#
+sub update_db
+{
+  my $file = shift(@_);
+  my $lang = shift(@_);
+  
+  print STDOUT "\n----- Updating database using local language '$lang' -----\n";
+  
+  print STDOUT "  NOT YET IMPLEMENTED !\n";
+
+  return;
+}
+
+
+#####################################################################
+#
 #  Parse available XML-File aund update with contents from icons dirs
-#  #
+#
 #
 sub update_xml
 {
   my $file = shift(@_);
-  print STDOUT "\n----- Parsing and updating \"$file\" -----\n";
+  print STDOUT "\n----- Parsing and updating '$file' -----\n";
   
   # Parse XML-File and look for already existing POI-Type entries
   #
@@ -107,20 +156,53 @@ sub update_xml
   # Insert new POI-Type entries from hash of available icons
   #
   $i = 0;
-  while ( my $new_one = each %icons )
+  my @tmp_icons = sort(keys(%icons));
+  
+  foreach (@tmp_icons)
   {
-     insert_poi_type($new_one,\$rules);
+     insert_poi_type($_,\$rules);
      $i++;
   }
-  print STDOUT " $i new POI-Types added.\n";
+  print STDOUT "  New POI-Types added:\t$i\n";
+
+  # Print Status for poi_type_ids
+  #
+  my @rule= $rules->children;	# get the updated rule list
+
+  my @a_id = '';
+  $i = 0;
+  foreach my $entry (@rule)
+  {
+    if  (my $id =
+         $entry->first_child('geoinfo')->first_child('poi_type_id')->text)
+    {
+      $i++;
+      $a_id[$i] = $id;
+    }
+  }
+  my $id_max = pop(@a_id);
+  my %unused = ('','');
+  for ( my $j = 1; $j<$id_max; $j++ ) { $unused{$j}=$j; } 
+  print STDOUT "  POI-Types defined:\t$i\n";
+  print STDOUT "  Max. poi_type_id:\t$id_max\n";
+  print STDOUT "  Unused IDs:\n  \t\t";
+  foreach (@a_id)
+  { 
+    if (exists $unused{$_}) { delete $unused{$_}; }
+  }
+  foreach (sort(keys(%unused))) { print STDOUT "$_  "; }
+  print STDOUT "\n  \t\t( IDs <31 are reserved )\n\n";
 
   # Write XML-File containing modified contents
   #
-  my @rule= $rules->children;	# get the rule list
   open TMPFILE,">:utf8","./icons.tmp";
     select TMPFILE;
     print "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     print "<rules>\n";
+    
+    my $j=1;
+
+
     foreach my $entry (@rule)
      {
        $entry->print; 
@@ -206,22 +288,21 @@ sub get_icons
   print STDOUT "\n----- Looking for available icons -----\n";
   chdir('./icons');
   $i = 0;
-  my @a_icons;
-    
   find( \&format_icons, ('square.big', 'square.small', 'classic') );
   sub format_icons()
   { 
     if (m/\.png$/ && !m/empty.png$/)
-    { my $icon_file = $File::Find::name;
+    { 
+      $i++;
+      my $icon_file = $File::Find::name;
+      print STDOUT "  Found icon:\t$i\t$icon_file\n" if $VERBOSE;
       $icon_file =~ s#(^(classic/|square\.big/|square\.small/))|\.png##g;
       $icon_file =~ s#/#.#g;
       $icons{"$icon_file"} = '1';
-      $i++;
     }
   }
-  delete $icons{""};
-  @a_icons = keys %icons;
-  print STDOUT " $i icons for ". @a_icons." POI-Types found in data/icons\n";
+  delete $icons{''} if (exists $icons{''});
+  print STDOUT " $i icons for ".keys(%icons)." POI-Types found in data/icons\n";
   chdir('..');
   
   return;
@@ -457,8 +538,49 @@ sub create_xml
    return;
  }
 
-#
-#  End of script
-#
-#####################################################################
-#####################################################################
+
+__END__
+
+
+=head1 SYNOPSIS
+ 
+update_icons.pl [-h] [-v] [-d] [-l LANGUAGE] [-f XML-FILE]
+ 
+=head1 OPTIONS
+ 
+=over 2
+ 
+=item B<--h>
+
+ Show this help
+
+=item B<-d>
+
+ When this option is given, only the database will be updated from the
+ xml-file. The xml-file itself will not be changed.
+ This option should be used together with the '-l' option in the (user)
+ install scripts.
+
+=item B<-f> XML-FILE
+
+ Set file, that holds all the necessary icon and poi_type information.
+ The default file is 'icons.xml'.
+
+=item B<-l> LANGUAGE
+
+ Set local language, which is used for the database entries:
+ The poi_type database can only hold 'title' and 'description' entries
+ for english and one additional language. When setting this option, you
+ can choose the language, which is used for these entries. If there
+ don't exist any entries for the chosen language in the xml file, the
+ English values will be used.
+ The default language is 'de' for German, if this option is omitted.
+
+=item B<-v>
+
+ Enable verbose output
+
+
+
+
+=back

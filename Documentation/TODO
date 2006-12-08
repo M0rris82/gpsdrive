@@ -342,11 +342,11 @@ is a little scary! Here's my top suggestions...
 
 
 -----------------------------------------------------------------------------
-Guenther Meyer <d.s.e@metal-online.net>
+Guenther Meyer <d.s.e@sordidmusic.com>
 
 - drawing icons for different POI-Types
 
-- adapt databases and handling according to the new poi-type schemens
+- adapt (poi-)databases and handling according to the new poi-type scheme
 
 - change poi-type handling to xml ( for better inclusion of osm)
 

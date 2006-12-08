@@ -877,11 +877,14 @@ sub create_db(){
 
     # ------- POI
     db_exec('CREATE TABLE IF NOT EXISTS `poi_type` (
-                      `poi_type_id` int(11)      NOT NULL auto_increment,
+                      `poi_type_id` int(11)       NOT NULL auto_increment,
                       `name`        varchar(160)  NOT NULL default \'\',
-                      `scale_min`   int(12)      NOT NULL default \'1\',
-                      `scale_max`   int(12)      NOT NULL default \'20000\',
-                      `description` varchar(160)     NULL default \'\',
+                      `scale_min`   int(12)       NOT NULL default \'1\',
+                      `scale_max`   int(12)       NOT NULL default \'25000\',
+                      `title` varchar(160)        NULL default \'\',
+                      `title_en` varchar(160)     NULL default \'\',
+                      `description` varchar(160)    NULL default \'\',
+                      `description_en` varchar(160) NULL default \'\',
                       PRIMARY KEY  (`poi_type_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi_type');
