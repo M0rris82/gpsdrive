@@ -864,7 +864,7 @@ void
 test_and_load_newmap ()
 {
   long long best = 1000000000LL;
-  gdouble posx, posy;
+  gdouble posx = 0, posy =0; 
   long long bestmap = 9999999999LL;
   gdouble pixelfactloc;
   gdouble bestscale = 1000000000.0;
