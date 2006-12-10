@@ -135,7 +135,7 @@ rebuildtracklist (void)
 void
 drawtracks (void)
 {
-	gint t;
+	gint t=0;
 	GdkSegment *routes;
 
 	gdouble posxdest, posydest, curpos_x, curpos_y;
