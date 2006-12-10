@@ -347,8 +347,8 @@ void
 poi_rebuild_list (void)
 {
   char sql_query[5000];
-  char sql_where[5000];
-  char sql_in[5000];
+  //Unused Variable char sql_where[5000];
+  //Unused Variable char sql_in[5000];
   struct timeval t;
   struct timeval t2;
   int r, rges;
