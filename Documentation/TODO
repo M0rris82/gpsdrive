@@ -92,13 +92,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 		Download Map
 	- rewrite the UI using glade-2 (see above)
 
-- writing code for the handling the POI(Point Of Interest) Data 
-  inside the Database.
-     - this would be searching an point of interest in 
-       the Database and displaying it on the map
-     - having an interface to select what kind of POIs to 
-       display at the moment
-
 - Point and measure Mode: Show the lat/lon of a point you clicked on. 
   Click an another point and then show the distance between those two points.
 
@@ -130,24 +123,22 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 - Correct/complete/add-new translations in the po Files
 
-- Add some fields to the waypoints table:  
-	- altitude
-	- region ("state" in the U.S., "Province" in Canada, 
-	  "County" in Ireland, "Island" in Japan, etc.), 
-	- subregion ("County" in the US, "Prefecture" in Japan, etc.), 
-	- country  
-	(GPSDrive wouldn't necessarily use all of these, but external 
-	programs might.  I know I do occasionally.  The extra fields don't affect GPSDrive
-	but having them created in advance makes it easier to add features.  Silly
-	example - perhaps GPSDrive could vary the shade of the line segments that 
-	make up a displayed track based on the altitude?...)
+- Writing code for the handling the POI(Point Of Interest) Data 
+  inside the Database.
+     - this would be searching an point of interest in 
+       the Database and displaying it on the map
+     - having an interface to select what kind of POIs to 
+       display at the moment
 
-- Move waypoint-type-specific information out of "waypoints" and into
-  separate tables (e.g. macaddr, wep, etc. into a "WLAN" table.  GEOCACHE
-  information in a GEOCACHE table, etc.)  GPSDrive would only need to access
-  the basic data in the core waypoints table (except for the WLAN table to add
-  information), but external programs can make more use of the extra data in
-  the additional tables (mentioned further down this list...)
+- Merge waypoints table into poi table and treat waypoints like a poi-type 
+
+- Store poi-type-specific information in a separate poi_extra table
+  (e.g. macaddr, wep, etc. for wlan entries; classification, features, pricing,
+  rooms, etc. for hotels, etc.).
+  GPSDrive would only need to access the basic data in the core poi table for
+  search and display of pois, but when a poi is clicked, the additional data
+  can be displayed formatted in a (pop-up) window.
+  Also external programs could make use of the extra data.
 
 - Make it work with MySQL 4.1 (aforementioned "select(): bad file descriptor" 
   problem, plus see below).
@@ -213,22 +204,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   issue, I just keep running into placenames that get cut off because they're
   too long).
 
-- Similar to the maps, allow "fetch external data" programs to generate output
-  from the aforementioned "waypoint-type-specific" tables when the waypoint is
-  clicked (I have no idea how hard this would be to actually implement in GTK+).
-  E.G. clicking on a geocache waypoint on the map would call up a program that
-  fetches data out of the "geocache" table, formats it (plain text?  HTML?), and
-  passes it back to GPSDrive to display in a pop-up window.  Clicking on a 
-  "restaurant" would do the same thing with the "restaurant" table, and so 
-  forth.  The reason I suggest external programs for this is so that people
-  can set up their own custom waypoint types and table data.
-
-- Add a configurable per-waypoint-type display "scale range" option - for
-  example, when you're looking at a 1:5512 scale map, it's not really helpful
-  to have waypoints representing large cities displayed on the map.  At the
-  other extreme, WLAN's aren't very helpful at satellite-view scales, and just
-  clutter things up.  Being able to set them to "display only below THIS scale"
-  or "display only above THIS scale" would take care of that.
 
 - Make it easier to find waypoints that are not currently within the range
   specified in preferences (i.e. if one is travelling a long way and wants to 
@@ -253,6 +228,10 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   maybe I could have GPSDrive draw the weather activity atop the current
   map, so I can tell if I'm going to outrun the storm...
 
+- Implement direct GPX support
+  - replace way.txt by way.gpx (or remove this file completely)
+  - support import of POIs/Waypoints in gpx format
+  - support also import/export of tracks and routes in gpx format
 
 -----------------------------------------------------------------------------
 

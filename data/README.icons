@@ -126,9 +126,9 @@ rebuild-poi_types.html.pl	rebuilds the file poi_types.html from icons.txt
 rebuild-all.sh			calls the other two scripts and additionally
 				modifies the poi-type database
 
-rebuild-icons.xml.pl		This will replace rebuild-icons.txt.sh in the
-				future, and rebuilds the icons.xml from the
-				available icons.
+update_icons.pl			This file will handle all the icon and poi-type
+                                issues, and will replace the other scripts
+				mentioned above in the future
 
 FILES:
 -------
