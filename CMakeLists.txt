@@ -28,9 +28,10 @@ MACRO_OPTIONAL_FIND_PACKAGE(DBUS)
 include(DefineInstallationPaths)
 include(DefineGPSDriveDefaults)
 include(DefineCompilerFlags)
+include(DefineCPackDefaults)
 include(ConfigureChecks.cmake)
 
-CONFIGURE_FILE (config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 SUBDIRS(
   cmake
