@@ -10,6 +10,9 @@
 # - project_SRCS:     The name of the variable to add the .mo files,
 #                     to get them generated
 #
+#  Redistribution and use is allowed according to the terms of the New
+#  BSD license.
+#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 MACRO(MACRO_GENERATE_PO_FILES _podir _applicationname _sources)
 	FIND_PACKAGE(Msgfmt REQUIRED)

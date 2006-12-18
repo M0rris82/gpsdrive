@@ -3,8 +3,9 @@
 #
 # Copyright (C) 2006  Andreas Schneider <mail@cynapses.org>
 #
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING file.
+#  Redistribution and use is allowed according to the terms of the New
+#  BSD license.
+#  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 macro (MACRO_GET_SUBVERSION_REVISION revision)
 
@@ -34,7 +35,7 @@ macro (MACRO_GET_SUBVERSION_REVISION revision)
     )
 
     if (SVN_REVISION_RESULT_VARIABLE EQUAL 0)
-      set(${revision} ${SVN_REVISION_OUTPUT_VARIABLE})
+      string(REGEX MATCH "^[0-9]+" ${revision} ${SVN_REVISION_OUTPUT_VARIABLE})
     else (SVN_REVISION_RESULT_VARIABLE EQUAL 0)
       set(${revision} 0)
     endif (SVN_REVISION_RESULT_VARIABLE EQUAL 0)
