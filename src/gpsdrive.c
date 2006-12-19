@@ -82,11 +82,7 @@ Disclaimer: Please do not use for navigation.
 #include <pthread.h>
 #include <semaphore.h>
 
-#if HAVE_LOCALE_H
 #include <locale.h>
-#else
-# define setlocale(Category, Locale)
-#endif
 
 #include "gettext.h"
 
