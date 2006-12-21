@@ -9,11 +9,12 @@
 #  - export/backup poi-data from the database into gpx file
 #  - convert old way.txt files into new gpx format
 #
-#  currently supported gpx styles
-#  - geoinfo
+#  currently supported file formats
+#  - geoinfo gpx export
 #
-#  gpx styles that could be supported
-#  - groundspeak
+#  files that could be supported
+#  - groundspeak gpx import
+#  - groundspeak loc import
 #  - ...
 #  
 #  other optional functionality
@@ -132,6 +133,7 @@ sub export_gpx_geoinfo
     {
       print"\n<wpt lat=\"$$row{lat}\" lon=\"$$row{lon}\">\n";
       print"  <name>$$row{name}</name>\n";
+      print"  <desc>$$row{name}</desc>\n";
       print"  <cmt>$$row{comment}</cmt>\n" if ($$row{comment});
       print"  <src>$$row{source_id}</src>\n" if($$row{source_id});
       print"  <time>$$row{last_modified}</time>\n" if ($$row{last_modified});
