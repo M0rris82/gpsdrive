@@ -150,6 +150,8 @@ gdouble zero_lon, zero_lat;
 gdouble target_lon, target_lat;
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
+extern gdouble wp_saved_posmode_lat;
+extern gdouble wp_saved_posmode_lon;
 gdouble dist;
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext;
@@ -3480,18 +3482,25 @@ update_posbt()
 gint
 pos_cb (GtkWidget * widget, guint datum)
 {
-static gint is_posmode_init = FALSE;
+	
     if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
     	posmode = TRUE;
     else 
     	posmode = FALSE;
     	
-    /* change only posmode_lon/lat
-     * when not in search waypoint mode */
-    if (!setwpactive || !is_posmode_init) {
+    /* if waypoint select mode is enabled and waypoint 
+     * selected then take target_lat/lon
+     * and save current_lon/lat for cancel */
+    if (setwpactive && selected_wp_mode) {
+    	posmode_lon = target_lon;
+    	posmode_lat = target_lat;
+    	wp_saved_posmode_lon = current_lon;
+    	wp_saved_posmode_lat = current_lat;
+    } else {
     	posmode_lon = current_lon;
     	posmode_lat = current_lat;
     }
+    
     
     return TRUE;
 }
@@ -4046,9 +4055,14 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	if (setwpactive)
 		return TRUE;
 
-	/* save old target for cancel event */
+	/* save old target/posmode for cancel event */
 	wp_saved_target_lat = target_lat;
 	wp_saved_target_lon = target_lon;
+	if (posmode) {
+		wp_saved_posmode_lat = posmode_lat;
+		wp_saved_posmode_lon = posmode_lon;
+	}
+	
 
 	setwpactive = TRUE;
 	window = gtk_dialog_new ();

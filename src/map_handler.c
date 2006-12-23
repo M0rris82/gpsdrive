@@ -880,13 +880,8 @@ test_and_load_newmap ()
 
   if (posmode)
     {
-    	if (selected_wp_mode) {
-    		trip_lat = current_lon = target_lon;
-      		trip_lon = current_lat = target_lat;
-    	} else {	
-      		trip_lat = current_lon = posmode_lon;
-      		trip_lon = current_lat = posmode_lat;
-    	}
+  		trip_lat = current_lon = posmode_lon;
+  		trip_lon = current_lat = posmode_lat;
   	} else
   	route_next_target ();
 

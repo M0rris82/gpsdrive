@@ -148,6 +148,8 @@ GtkWidget *add_wp_name_text, *wptext2;
 long sortcolumn = 4, sortflag = 0;
 gdouble wp_saved_target_lat = 0;
 gdouble wp_saved_target_lon = 0;
+gdouble wp_saved_posmode_lat = 0;
+gdouble wp_saved_posmode_lon = 0;
 
 
 /* *****************************************************************************
@@ -491,6 +493,11 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 	if (widget != NULL && !routemode) {
 		target_lat = wp_saved_target_lat;
 		target_lon = wp_saved_target_lon;
+	}
+	/* restore old posmode */
+	if (widget != NULL && posmode) {
+		posmode_lat = wp_saved_posmode_lat;
+		posmode_lon = wp_saved_posmode_lon;
 	}
 	setwpactive = FALSE;
 
@@ -882,6 +889,11 @@ setwp_cb (GtkWidget * widget, guint datum)
 	coordinate_string2gdouble(p, &target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
 	coordinate_string2gdouble(p, &target_lon);
+	/* if posmode enabled set posmode_lat/lon */
+	if (posmode) {
+		posmode_lat = target_lat;
+		posmode_lon = target_lon;
+	}
 	/*    gtk_timeout_add (5000, (GtkFunction) sel_targetweg_cb, widget); */
 	g_timer_stop (disttimer);
 	g_timer_start (disttimer);
