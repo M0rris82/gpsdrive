@@ -27,7 +27,7 @@
 #    And import them into mySQL for use with gpsdrive
 #
 #
-#  $Id:$
+#  $Id$
 #
 #####################################################################
 
@@ -48,8 +48,8 @@ use Geo::Gpsdrive::DBFuncs;
 use Getopt::Std;
 use Pod::Usage;
 
-our ($opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b, $opt_w) = 0;
-getopts('vf:heibw:');
+our ($opt_p, $opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b, $opt_w) = 0;
+getopts('pvf:heibw:');
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -59,6 +59,7 @@ unless ($opt_f)
 my $VERBOSE = $opt_v;
 my $file = $opt_f;
 my $basic = $opt_b;
+my $privacy = $opt_p;
 
 our $db_user     = $ENV{DBUSER} || 'gast';
 our $db_password = $ENV{DBPASS} || 'gast';
@@ -68,7 +69,7 @@ our $GPSDRIVE_DB_NAME = "geoinfo";
 my $progress_char = '.';
 my $progress_offset = 20;
 my $progress_counter = 0;
-
+my $count = 0;
 my %poi_types;
 
 
@@ -76,11 +77,7 @@ my %poi_types;
 #
 #  M A I N
 # 
-#   
-#
-
 export_gpx_geoinfo($file) if ($opt_e);
-
 import_gpx_geoinfo($file) if ($opt_i);
 
 print STDOUT "\n";
@@ -95,9 +92,10 @@ sub export_gpx_geoinfo
 {
   my $file = shift;
   die ("File '$file' already existing!\n") if (-e $file);
-  
+   
   print STDOUT "\n Exporting POI data from database into file '$file'\n";
 
+  $count = 0;
   get_poi_types();
 
   open NEWFILE,">:utf8","./$file";
@@ -124,12 +122,20 @@ sub export_gpx_geoinfo
   my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
   my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
   $sth->execute()               or die $sth->errstr;
-
+  
   # write entries into gpx file
   #
   while (my $row = $sth->fetchrow_hashref)
   {
-    if ( $$row{name} || $$row{lat} || $$row{lon} )
+    unless ( $$row{name} || $$row{lat} || $$row{lon} )
+    {
+      print STDOUT " Skipping invalid POI-Database Entry Nr. $$row{poi_id}!\n"
+    }
+    elsif ( $$row{private} || $privacy )
+    {
+      print STDOUT " Skipping private POI-Database Entry Nr. $$row{poi_id}!\n"
+    }
+    else
     {
       print"\n<wpt lat=\"$$row{lat}\" lon=\"$$row{lon}\">\n";
       print"  <name>$$row{name}</name>\n";
@@ -140,33 +146,33 @@ sub export_gpx_geoinfo
       print"  <url>$$row{url}</url>\n" if ($$row{url});
       if ($$row{poi_type_id})
       {
-        print"  <sym>$$row{poi_type_id}</sym>\n";
+        my $sym = $poi_types{$$row{poi_type_id}};
+        $sym =~ s#\..*##;
+	print"  <sym>$sym</sym>\n";
         print"  <type>$poi_types{$$row{poi_type_id}}</type>\n";
       }
       else
       {
-        print"  <sym>1</sym>\n";
+        print"  <sym>unknown</sym>\n";
         print"  <type>unknown</type>\n";
       }
       print"  <ele>$$row{alt}</ele>\n" if ($$row{alt});
       print"  <proximity>$$row{proximity}</proximity>\n" if ($$row{proximity});
-      print"  <poi_extra>";
-      print"\n    <address_id>$$row{address_id}</address_id>\n"
+      print"  <poi_extra>\n";
+      print"    <address_id>$$row{address_id}</address_id>\n"
         if ($$row{address_id});
+      print"    <private>1</private>\n" if ($$row{private});
       print"  </poi_extra>\n";
       print"</wpt>\n";
+      $count++;
 #     progress_bar();
-    }
-    else
-    {
-      print STDOUT " Skipping invalid POI-Database Entry Nr. $$row{poi_id}!\n"
     }
   }
   print"\n</gpx>\n";
 
   close NEWFILE;
-
   $sth->finish;
+  print STDOUT "  $count Database Entries written.\n";
 }
 
 
@@ -427,5 +433,11 @@ poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-f GPX-FILE]
  Use this option, if you don't need the info stored in the poi_extra table
  Default is to use all available data if possible.
  
+=item B<-p>
+
+ Export only data from table which are not flagged as private.
+ You may Use this option, if you are generating files, that you will give away
+ to foreign people or services.
+
 
 =back
