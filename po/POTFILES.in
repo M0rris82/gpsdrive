@@ -43,3 +43,4 @@ src/util/mmapview.c
 src/util/wmapview.c
 src/util/worldgen.c
 src/waypoint.c
+src/wlan.c
