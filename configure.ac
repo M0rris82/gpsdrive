@@ -27,11 +27,12 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10pre3-work, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10pre3-svn-1146, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
 AC_CONFIG_HEADER(config.h)
+AC_USE_SYSTEM_EXTENSIONS()
 
 ALL_LINGUAS="da de de_AT es et_EE fr gr hu it ja nl no pt_BR ru sk sv tr"
 
@@ -41,7 +42,6 @@ AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([data/Makefile])
 AC_CONFIG_FILES([debian/Makefile])
 AC_CONFIG_FILES([gentoo/Makefile])
-AC_CONFIG_FILES([intl/Makefile])
 AC_CONFIG_FILES([man/Makefile])
 AC_CONFIG_FILES([man/de/Makefile])
 AC_CONFIG_FILES([man/es/Makefile])
@@ -514,8 +514,9 @@ dnl *******************************
 dnl   GETTEXT
 dnl *******************************
 
-AM_GNU_GETTEXT_VERSION(0.10.40)
-AM_GNU_GETTEXT
+AM_GNU_GETTEXT([external]) 
+#AM_GNU_GETTEXT_VERSION([0.16.1])
+#AM_GNU_GETTEXT
                                                                                 
 GETTEXT_PACKAGE=gpsdrive
 AC_SUBST(GETTEXT_PACKAGE)
@@ -531,8 +532,6 @@ fi
 if test "$USE_NLS" = "yes" ; then
         AC_DEFINE(ENABLE_NLS)
 fi
-                                                                                
-
 
 AC_ARG_ENABLE(garmin,
 [  --disable-garmin        compiles without GARMIN protocol support],[
