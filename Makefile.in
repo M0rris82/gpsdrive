@@ -247,7 +247,6 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = src man scripts data Documentation debian DSL gentoo po
-#SUBDIRS =      src po man scripts data Documentation debian DSL gentoo
 DIST_SUBDIRS = $(SUBDIRS)
 
 # I'm not shure if this is needed

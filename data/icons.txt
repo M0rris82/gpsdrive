@@ -187,8 +187,8 @@ recreation.camera                        1	25000
 recreation.cinema                        1	25000
 recreation.dart                          1	25000
 recreation.empty                         1	25000
-recreation.girls                         1	25000
 recreation.music                         1	25000
+recreation.nightclub                     1	25000
 recreation.playground                    1	25000
 recreation.theater                       1	25000
 religion                                 1	25000
