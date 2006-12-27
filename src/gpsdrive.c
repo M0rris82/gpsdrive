@@ -4508,7 +4508,7 @@ main (int argc, char *argv[])
     {
 	gchar **lstr, lstr2[200];
 	gchar *localestring;
-	    
+
 	localestring = setlocale (LC_ALL, "");
 	if (localestring == NULL)
 	    localestring = setlocale (LC_MESSAGES, "");

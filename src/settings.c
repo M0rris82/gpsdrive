@@ -1039,7 +1039,7 @@ mainsetup (void)
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), GTK_COMBO (slowcpubt)->entry,
 			_
-			("Select the approx. maximum CPU load, use 20-30% on "
+			("Select the approx. maximum CPU load, use 20-30%% on "
 			 "notebooks while on battery to save battery power. "
 			 "This effects the refresh rate of the map screen"),
 			NULL);
