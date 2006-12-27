@@ -1,5 +1,5 @@
 /* Formatted output to strings, using POSIX/XSI format strings with positions.
-   Copyright (C) 2003 Free Software Foundation, Inc.
+   Copyright (C) 2003, 2006 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2003.
 
    This program is free software; you can redistribute it and/or modify it
@@ -14,7 +14,7 @@
 
    You should have received a copy of the GNU Library General Public
    License along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
    USA.  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@
 #   include <alloca.h>
 #  else
 #   ifdef _AIX
-#pragma alloca
+ #pragma alloca
 #   else
 #    ifndef alloca
 char *alloca ();
@@ -47,8 +47,15 @@ char *alloca ();
 
 #if !HAVE_POSIX_PRINTF
 
+#include <errno.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Some systems, like OSF/1 4.0 and Woe32, don't have EOVERFLOW.  */
+#ifndef EOVERFLOW
+# define EOVERFLOW E2BIG
+#endif
 
 /* When building a DLL, we must export some functions.  Note that because
    the functions are only defined for binary backward compatibility, we
@@ -60,6 +67,14 @@ char *alloca ();
 #endif
 
 #define STATIC static
+
+/* This needs to be consistent with libgnuintl.h.in.  */
+#if defined __NetBSD__ || defined __CYGWIN__ || defined __MINGW32__
+/* Don't break __attribute__((format(printf,M,N))).
+   This redefinition is only possible because the libc in NetBSD, Cygwin,
+   mingw does not have a function __printf__.  */
+# define libintl_printf __printf__
+#endif
 
 /* Define auxiliary functions declared in "printf-args.h".  */
 #include "printf-args.c"
@@ -79,96 +94,107 @@ DLL_EXPORTED
 int
 libintl_vfprintf (FILE *stream, const char *format, va_list args)
 {
-    if (strchr (format, '$') == NULL)
-	return vfprintf (stream, format, args);
-    else
+  if (strchr (format, '$') == NULL)
+    return vfprintf (stream, format, args);
+  else
+    {
+      size_t length;
+      char *result = libintl_vasnprintf (NULL, &length, format, args);
+      int retval = -1;
+      if (result != NULL)
 	{
-	    size_t length;
-	    char *result = libintl_vasnprintf (NULL, &length, format, args);
-	    int retval = -1;
-	    if (result != NULL)
-		{
-		    if (fwrite (result, 1, length, stream) == length)
-			retval = length;
-		    free (result);
-		}
-	    return retval;
+	  size_t written = fwrite (result, 1, length, stream);
+	  free (result);
+	  if (written == length)
+	    {
+	      if (length > INT_MAX)
+		errno = EOVERFLOW;
+	      else
+		retval = length;
+	    }
 	}
+      return retval;
+    }
 }
 
 DLL_EXPORTED
 int
 libintl_fprintf (FILE *stream, const char *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vfprintf (stream, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vfprintf (stream, format, args);
+  va_end (args);
+  return retval;
 }
 
 DLL_EXPORTED
 int
 libintl_vprintf (const char *format, va_list args)
 {
-    return libintl_vfprintf (stdout, format, args);
+  return libintl_vfprintf (stdout, format, args);
 }
 
 DLL_EXPORTED
 int
 libintl_printf (const char *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vprintf (format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vprintf (format, args);
+  va_end (args);
+  return retval;
 }
 
 DLL_EXPORTED
 int
 libintl_vsprintf (char *resultbuf, const char *format, va_list args)
 {
-    if (strchr (format, '$') == NULL)
-	return vsprintf (resultbuf, format, args);
-    else
+  if (strchr (format, '$') == NULL)
+    return vsprintf (resultbuf, format, args);
+  else
+    {
+      size_t length = (size_t) ~0 / (4 * sizeof (char));
+      char *result = libintl_vasnprintf (resultbuf, &length, format, args);
+      if (result != resultbuf)
 	{
-	    size_t length = (size_t) ~0 / (4 * sizeof (char));
-	    char *result = libintl_vasnprintf (resultbuf, &length, format, args);
-	    if (result != resultbuf)
-		{
-		    free (result);
-		    return -1;
-		}
-	    else
-		return length;
+	  free (result);
+	  return -1;
 	}
+      if (length > INT_MAX)
+	{
+	  errno = EOVERFLOW;
+	  return -1;
+	}
+      else
+	return length;
+    }
 }
 
 DLL_EXPORTED
 int
 libintl_sprintf (char *resultbuf, const char *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vsprintf (resultbuf, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vsprintf (resultbuf, format, args);
+  va_end (args);
+  return retval;
 }
 
 #if HAVE_SNPRINTF
 
 # if HAVE_DECL__SNPRINTF
-/* Windows.  */
+   /* Windows.  */
 #  define system_vsnprintf _vsnprintf
 # else
-/* Unix.  */
+   /* Unix.  */
 #  define system_vsnprintf vsnprintf
 # endif
 
@@ -176,40 +202,44 @@ DLL_EXPORTED
 int
 libintl_vsnprintf (char *resultbuf, size_t length, const char *format, va_list args)
 {
-    if (strchr (format, '$') == NULL)
-	return system_vsnprintf (resultbuf, length, format, args);
-    else
+  if (strchr (format, '$') == NULL)
+    return system_vsnprintf (resultbuf, length, format, args);
+  else
+    {
+      size_t maxlength = length;
+      char *result = libintl_vasnprintf (resultbuf, &length, format, args);
+      if (result != resultbuf)
 	{
-	    size_t maxlength = length;
-	    char *result = libintl_vasnprintf (resultbuf, &length, format, args);
-	    if (result != resultbuf)
-		{
-		    if (maxlength > 0)
-			{
-			    if (length < maxlength)
-				abort ();
-			    memcpy (resultbuf, result, maxlength - 1);
-			    resultbuf[maxlength - 1] = '\0';
-			}
-		    free (result);
-		    return -1;
-		}
-	    else
-		return length;
+	  if (maxlength > 0)
+	    {
+	      size_t pruned_length =
+		(length < maxlength ? length : maxlength - 1);
+	      memcpy (resultbuf, result, pruned_length);
+	      resultbuf[pruned_length] = '\0';
+	    }
+	  free (result);
 	}
+      if (length > INT_MAX)
+	{
+	  errno = EOVERFLOW;
+	  return -1;
+	}
+      else
+	return length;
+    }
 }
 
 DLL_EXPORTED
 int
 libintl_snprintf (char *resultbuf, size_t length, const char *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vsnprintf (resultbuf, length, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vsnprintf (resultbuf, length, format, args);
+  va_end (args);
+  return retval;
 }
 
 #endif
@@ -220,25 +250,31 @@ DLL_EXPORTED
 int
 libintl_vasprintf (char **resultp, const char *format, va_list args)
 {
-    size_t length;
-    char *result = libintl_vasnprintf (NULL, &length, format, args);
-    if (result == NULL)
-	return -1;
-    *resultp = result;
-    return length;
+  size_t length;
+  char *result = libintl_vasnprintf (NULL, &length, format, args);
+  if (result == NULL)
+    return -1;
+  if (length > INT_MAX)
+    {
+      free (result);
+      errno = EOVERFLOW;
+      return -1;
+    }
+  *resultp = result;
+  return length;
 }
 
 DLL_EXPORTED
 int
 libintl_asprintf (char **resultp, const char *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vasprintf (resultp, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vasprintf (resultp, format, args);
+  va_end (args);
+  return retval;
 }
 
 #endif
@@ -261,10 +297,10 @@ libintl_asprintf (char **resultp, const char *format, ...)
 #endif
 
 # if HAVE_DECL__SNWPRINTF
-/* Windows.  */
+   /* Windows.  */
 #  define system_vswprintf _vsnwprintf
 # else
-/* Unix.  */
+   /* Unix.  */
 #  define system_vswprintf vswprintf
 # endif
 
@@ -272,98 +308,113 @@ DLL_EXPORTED
 int
 libintl_vfwprintf (FILE *stream, const wchar_t *format, va_list args)
 {
-    if (wcschr (format, '$') == NULL)
-	return vfwprintf (stream, format, args);
-    else
+  if (wcschr (format, '$') == NULL)
+    return vfwprintf (stream, format, args);
+  else
+    {
+      size_t length;
+      wchar_t *result = libintl_vasnwprintf (NULL, &length, format, args);
+      int retval = -1;
+      if (result != NULL)
 	{
-	    size_t length;
-	    wchar_t *result = libintl_vasnwprintf (NULL, &length, format, args);
-	    int retval = -1;
-	    if (result != NULL)
-		{
-		    size_t i;
-		    for (i = 0; i < length; i++)
-			if (fputwc (result[i], stream) == WEOF)
-			    break;
-		    if (i == length)
-			retval = length;
-		    free (result);
-		}
-	    return retval;
+	  size_t i;
+	  for (i = 0; i < length; i++)
+	    if (fputwc (result[i], stream) == WEOF)
+	      break;
+	  free (result);
+	  if (i == length)
+	    {
+	      if (length > INT_MAX)
+		errno = EOVERFLOW;
+	      else
+		retval = length;
+	    }
 	}
+      return retval;
+    }
 }
 
 DLL_EXPORTED
 int
 libintl_fwprintf (FILE *stream, const wchar_t *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vfwprintf (stream, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vfwprintf (stream, format, args);
+  va_end (args);
+  return retval;
 }
 
 DLL_EXPORTED
 int
 libintl_vwprintf (const wchar_t *format, va_list args)
 {
-    return libintl_vfwprintf (stdout, format, args);
+  return libintl_vfwprintf (stdout, format, args);
 }
 
 DLL_EXPORTED
 int
 libintl_wprintf (const wchar_t *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vwprintf (format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vwprintf (format, args);
+  va_end (args);
+  return retval;
 }
 
 DLL_EXPORTED
 int
 libintl_vswprintf (wchar_t *resultbuf, size_t length, const wchar_t *format, va_list args)
 {
-    if (wcschr (format, '$') == NULL)
-	return system_vswprintf (resultbuf, length, format, args);
-    else
+  if (wcschr (format, '$') == NULL)
+    return system_vswprintf (resultbuf, length, format, args);
+  else
+    {
+      size_t maxlength = length;
+      wchar_t *result = libintl_vasnwprintf (resultbuf, &length, format, args);
+      if (result != resultbuf)
 	{
-	    size_t maxlength = length;
-	    wchar_t *result = libintl_vasnwprintf (resultbuf, &length, format, args);
-	    if (result != resultbuf)
-		{
-		    if (maxlength > 0)
-			{
-			    if (length < maxlength)
-				abort ();
-			    memcpy (resultbuf, result, (maxlength - 1) * sizeof (wchar_t));
-			    resultbuf[maxlength - 1] = 0;
-			}
-		    free (result);
-		    return -1;
-		}
-	    else
-		return length;
+	  if (maxlength > 0)
+	    {
+	      size_t pruned_length =
+		(length < maxlength ? length : maxlength - 1);
+	      memcpy (resultbuf, result, pruned_length * sizeof (wchar_t));
+	      resultbuf[pruned_length] = 0;
+	    }
+	  free (result);
+	  /* Unlike vsnprintf, which has to return the number of character that
+	     would have been produced if the resultbuf had been sufficiently
+	     large, the vswprintf function has to return a negative value if
+	     the resultbuf was not sufficiently large.  */
+	  if (length >= maxlength)
+	    return -1;
 	}
+      if (length > INT_MAX)
+	{
+	  errno = EOVERFLOW;
+	  return -1;
+	}
+      else
+	return length;
+    }
 }
 
 DLL_EXPORTED
 int
 libintl_swprintf (wchar_t *resultbuf, size_t length, const wchar_t *format, ...)
 {
-    va_list args;
-    int retval;
+  va_list args;
+  int retval;
 
-    va_start (args, format);
-    retval = libintl_vswprintf (resultbuf, length, format, args);
-    va_end (args);
-    return retval;
+  va_start (args, format);
+  retval = libintl_vswprintf (resultbuf, length, format, args);
+  va_end (args);
+  return retval;
 }
 
 #endif
