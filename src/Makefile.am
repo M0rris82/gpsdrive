@@ -49,7 +49,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	friends.c \
 	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_tracks.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h wlan.h waypoint.h draw_tracks.h gpsdrive.h \
-	gpssql.c gpskismet.c ../config.h icons.c icons.h gettext.h \
+	gpssql.c gpskismet.c gpskismet.h ../config.h icons.c icons.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
 	map_handler.c gpsproto.h talogo.h \
@@ -83,4 +83,4 @@ endif
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
 
-EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc*
+EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc* CMakeLists.txt

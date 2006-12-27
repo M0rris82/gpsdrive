@@ -20,4 +20,4 @@ lib_map_a_CXXFLAGS = \
 endif
 
 
-EXTRA_DIST = $(lib_map_la_SOURCES) map.h
+EXTRA_DIST = $(lib_map_la_SOURCES) map.h CMakeLists.txt
