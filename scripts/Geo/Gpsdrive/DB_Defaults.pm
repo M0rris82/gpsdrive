@@ -46,28 +46,35 @@ sub fill_default_poi_types() {
 
     # insert base poi-types into database
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id < $poi_type_id ;");
-    Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO poi_type VALUES".
-      "('1','unknown','1','25000','Unassigned POI'),".
-      "('2','accomodation','1','25000','Places to stay'),".
-      "('3','education','1','25000','Schools and other educational facilities'),".
-      "('4','food','1','25000','Restaurants, Bars, and so on...'),".
-      "('5','geocache','1','25000','Geocaches'),".
-      "('6','health','1','25000','Hospital, Doctor, Pharmacy, etc.'),".
-      "('7','money','1','25000','Bank, ATMs, and other money-related places'),".
-      "('8','nautical','1','25000','Special Aeronautical Points'),".
-      "('9','people','1','25000','You, work, your friends, and other people'),".
-      "('10','places','1','25000','Settlements, Mountains, and other geographical stuff'),".
-      "('11','public','1','25000','Public facilities'),".
-      "('12','recreation','1','25000','Places used for recreation (no sports)'),".
-      "('13','religion','1','25000','Places and facilities related to religion'),".
-      "('14','shopping','1','25000','All the places, where you can buy something'),".
-      "('15','sightseeing','1','25000','Historic places and other interesting buildings'),".
-      "('16','sports','1','25000','Sports clubs, stadiums, and other sports facilities'),".
-      "('17','transport','1','25000','Public transportation'),".
-      "('18','vehicle','1','25000','Facilites for drivers, like gas stations or parking places'),".
-      "('19','wlan','1','25000','WiFi-related points (Kismet)'),".
-      "('20','misc','1','25000','POIs not suitable for another category, and custom types');")
-    or die;
+    for my $val (
+		 (
+		  "1,'unknown','1','25000','Unassigned POI'",
+		  "2,'accomodation','1','25000','Places to stay'",
+		  "3,'education','1','25000','Schools and other educational facilities'",
+		  "4,'food','1','25000','Restaurants, Bars, and so on...'",
+		  "5,'geocache','1','25000','Geocaches'",
+		  "6,'health','1','25000','Hospital, Doctor, Pharmacy, etc.'",
+		  "7,'money','1','25000','Bank, ATMs, and other money-related places'",
+		  "8,'nautical','1','25000','Special Aeronautical Points'",
+		  "9,'people','1','25000','You, work, your friends, and other people'",
+		  "10,'places','1','25000','Settlements, Mountains, and other geographical stuff'",
+		  "11,'public','1','25000','Public facilities'",
+		  "12,'recreation','1','25000','Places used for recreation (no sports)'",
+		  "13,'religion','1','25000','Places and facilities related to religion'",
+		  "14,'shopping','1','25000','All the places, where you can buy something'",
+		  "15,'sightseeing','1','25000','Historic places and other interesting buildings'",
+		  "16,'sports','1','25000','Sports clubs, stadiums, and other sports facilities'",
+		  "17,'transport','1','25000','Public transportation'",
+		  "18,'vehicle','1','25000','Facilites for drivers, like gas stations or parking places'",
+		  "19,'wlan','1','25000','WiFi-related points (Kismet)'",
+		  "20,'misc','1','25000','POIs not suitable for another category, and custom types'")
+		 ){
+	my $insert="INSERT INTO poi_type ".
+	    "(poi_type_id,name,scale_min,scale_max,title) ".
+	    "VALUES ($val);";
+	Geo::Gpsdrive::DBFuncs::db_exec($insert)
+	    or die "Error in Database Insert: $val\n$insert";
+    }
 
     my $unused_icon ={};
     my $existing_icon ={};
