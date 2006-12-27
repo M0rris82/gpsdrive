@@ -750,7 +750,7 @@ convertGGA (char *f)
 
 	  breitri = field[3][0];
 	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lat, gradsym, breitri,cl); */
-	  if ( mydebug + nmea_handler_debug > 0 )
+	  if ( mydebug + nmea_handler_debug > 10 )
 	      {
 		  g_print ("nmea_handler: lat: %8.5f\n", current_lat);
 	      }
@@ -760,7 +760,7 @@ convertGGA (char *f)
       /* if field[4] is shorter than 10 chars, add zeroes in the beginning */
       if (strlen (field[4]) < 10)
 	{
-	  if ( mydebug + nmea_handler_debug > 0 )
+	  if ( mydebug + nmea_handler_debug > 10 )
 	    {
 	      g_print
 		("nmea_handler: Longitude field %s is shorter than 10 characters. (%Zu)\n",
