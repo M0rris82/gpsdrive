@@ -35,12 +35,7 @@ Disclaimer: Please do not use for navigation.
 #include <config.h>
 #include <math.h>
 
-#if HAVE_LOCALE_H
 #include <locale.h>
-#else
-# define setlocale(Category, Locale)
-#endif
-
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
