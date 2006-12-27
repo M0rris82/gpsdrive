@@ -20,7 +20,7 @@ modified (Jan 2005) by Joerg Ostertag <gpsdrive\@ostertag.name>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-work)
+Version 1.19 (gpsdrive-2.10pre3-svn-1146)
 ";
 
 sub redirect_ok { return 1; }

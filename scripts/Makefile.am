@@ -3,7 +3,9 @@ bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl \
 		geoinfo.pl wp2sql gpsd_nmea.sh \
-		nasaconv.sh
+		nasaconv.sh \
+		start_mysql_as_user.sh poi-manager.pl \
+		gpsdrive_test.sh devpackages-debian.sh  convert-waypoints.pl
 
 
 geoinfo:
@@ -25,9 +27,8 @@ Geo_Gpsdrive_DATA =  Geo/Gpsdrive/*.pm
 #Utils_LWPdir   = $(PERL_PACKAGE_DIR)/Utils/LWP
 #Utils_LWP_DATA =  Utils/LWP/*.pm
 
-EXTRA_DIST = $(bin_SCRIPTS)\
+EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt \
 	$(Geo_Gpsdrive_DATA)
 #	$(Utils_DATA)\
 #	$(Utils_LWP_DATA)\
 #	$(Geo_OSM_DATA)
-

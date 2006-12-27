@@ -1,3 +1,4 @@
+#!/bin/bash
 # Packages required to build Gpsdrive`
 # =====================================
 # Notes:

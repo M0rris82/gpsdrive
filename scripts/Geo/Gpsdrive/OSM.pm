@@ -101,6 +101,8 @@ sub segment {
     $osm_obj->{from} = delete $attrs{from};
     $osm_obj->{to}   = delete $attrs{to};
 
+    delete $attrs{timestamp}; # ignore for now
+
     if ( keys %attrs ) {
 	warn "segment $id has extra attrs: ".Dumper(\%attrs);
     }
