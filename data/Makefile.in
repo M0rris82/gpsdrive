@@ -38,7 +38,11 @@ host_triplet = @host@
 subdir = data
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -77,7 +81,9 @@ am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
 	"$(DESTDIR)$(icons_classic_wlandir)" \
 	"$(DESTDIR)$(icons_square.bigdir)" \
 	"$(DESTDIR)$(icons_square.big_accomodationdir)" \
+	"$(DESTDIR)$(icons_square.big_accomodation_hoteldir)" \
 	"$(DESTDIR)$(icons_square.big_educationdir)" \
+	"$(DESTDIR)$(icons_square.big_education_schooldir)" \
 	"$(DESTDIR)$(icons_square.big_fastfooddir)" \
 	"$(DESTDIR)$(icons_square.big_fooddir)" \
 	"$(DESTDIR)$(icons_square.big_geocachedir)" \
@@ -85,14 +91,23 @@ am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
 	"$(DESTDIR)$(icons_square.big_miscdir)" \
 	"$(DESTDIR)$(icons_square.big_misc_waypointdir)" \
 	"$(DESTDIR)$(icons_square.big_moneydir)" \
+	"$(DESTDIR)$(icons_square.big_money_atmdir)" \
+	"$(DESTDIR)$(icons_square.big_money_bankdir)" \
 	"$(DESTDIR)$(icons_square.big_nauticaldir)" \
 	"$(DESTDIR)$(icons_square.big_peopledir)" \
 	"$(DESTDIR)$(icons_square.big_placesdir)" \
 	"$(DESTDIR)$(icons_square.big_places_settlementdir)" \
 	"$(DESTDIR)$(icons_square.big_publicdir)" \
+	"$(DESTDIR)$(icons_square.big_public_administrationdir)" \
 	"$(DESTDIR)$(icons_square.big_recreationdir)" \
+	"$(DESTDIR)$(icons_square.big_religiondir)" \
+	"$(DESTDIR)$(icons_square.big_religion_churchdir)" \
 	"$(DESTDIR)$(icons_square.big_restaurantdir)" \
 	"$(DESTDIR)$(icons_square.big_shoppingdir)" \
+	"$(DESTDIR)$(icons_square.big_shopping_diy_storedir)" \
+	"$(DESTDIR)$(icons_square.big_shopping_groceriesdir)" \
+	"$(DESTDIR)$(icons_square.big_shopping_sportsdir)" \
+	"$(DESTDIR)$(icons_square.big_shopping_supermarketdir)" \
 	"$(DESTDIR)$(icons_square.big_sightseeingdir)" \
 	"$(DESTDIR)$(icons_square.big_sportsdir)" \
 	"$(DESTDIR)$(icons_square.big_transportdir)" \
@@ -101,6 +116,7 @@ am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
 	"$(DESTDIR)$(icons_square.big_vehicle_fuel_stationdir)" \
 	"$(DESTDIR)$(icons_square.big_vehicle_parkingdir)" \
 	"$(DESTDIR)$(icons_square.big_wlandir)" \
+	"$(DESTDIR)$(icons_square.big_wlan_paydir)" \
 	"$(DESTDIR)$(icons_square.smalldir)" \
 	"$(DESTDIR)$(icons_square.small_accomodationdir)" \
 	"$(DESTDIR)$(icons_square.small_educationdir)" \
@@ -148,7 +164,9 @@ icons_classic_vehicle_fuel_stationDATA_INSTALL = $(INSTALL_DATA)
 icons_classic_wlanDATA_INSTALL = $(INSTALL_DATA)
 icons_square.bigDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_accomodationDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_accomodation_hotelDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_educationDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_education_schoolDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_fastfoodDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_foodDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_geocacheDATA_INSTALL = $(INSTALL_DATA)
@@ -156,14 +174,23 @@ icons_square.big_healthDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_miscDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_misc_waypointDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_moneyDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_money_atmDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_money_bankDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_nauticalDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_peopleDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_placesDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_places_settlementDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_publicDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_public_administrationDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_recreationDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_religionDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_religion_churchDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_restaurantDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_shoppingDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_shopping_diy_storeDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_shopping_groceriesDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_shopping_sportsDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_shopping_supermarketDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_sightseeingDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_sportsDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_transportDATA_INSTALL = $(INSTALL_DATA)
@@ -172,6 +199,7 @@ icons_square.big_vehicle_car_rentalDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_vehicle_fuel_stationDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_vehicle_parkingDATA_INSTALL = $(INSTALL_DATA)
 icons_square.big_wlanDATA_INSTALL = $(INSTALL_DATA)
+icons_square.big_wlan_payDATA_INSTALL = $(INSTALL_DATA)
 icons_square.smallDATA_INSTALL = $(INSTALL_DATA)
 icons_square.small_accomodationDATA_INSTALL = $(INSTALL_DATA)
 icons_square.small_educationDATA_INSTALL = $(INSTALL_DATA)
@@ -209,21 +237,32 @@ DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_classic_DATA) \
 	$(icons_classic_vehicle_fuel_station_DATA) \
 	$(icons_classic_wlan_DATA) $(icons_square.big_DATA) \
 	$(icons_square.big_accomodation_DATA) \
+	$(icons_square.big_accomodation_hotel_DATA) \
 	$(icons_square.big_education_DATA) \
+	$(icons_square.big_education_school_DATA) \
 	$(icons_square.big_fastfood_DATA) \
 	$(icons_square.big_food_DATA) \
 	$(icons_square.big_geocache_DATA) \
 	$(icons_square.big_health_DATA) $(icons_square.big_misc_DATA) \
 	$(icons_square.big_misc_waypoint_DATA) \
 	$(icons_square.big_money_DATA) \
+	$(icons_square.big_money_atm_DATA) \
+	$(icons_square.big_money_bank_DATA) \
 	$(icons_square.big_nautical_DATA) \
 	$(icons_square.big_people_DATA) \
 	$(icons_square.big_places_DATA) \
 	$(icons_square.big_places_settlement_DATA) \
 	$(icons_square.big_public_DATA) \
+	$(icons_square.big_public_administration_DATA) \
 	$(icons_square.big_recreation_DATA) \
+	$(icons_square.big_religion_DATA) \
+	$(icons_square.big_religion_church_DATA) \
 	$(icons_square.big_restaurant_DATA) \
 	$(icons_square.big_shopping_DATA) \
+	$(icons_square.big_shopping_diy_store_DATA) \
+	$(icons_square.big_shopping_groceries_DATA) \
+	$(icons_square.big_shopping_sports_DATA) \
+	$(icons_square.big_shopping_supermarket_DATA) \
 	$(icons_square.big_sightseeing_DATA) \
 	$(icons_square.big_sports_DATA) \
 	$(icons_square.big_transport_DATA) \
@@ -231,7 +270,8 @@ DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_classic_DATA) \
 	$(icons_square.big_vehicle_car_rental_DATA) \
 	$(icons_square.big_vehicle_fuel_station_DATA) \
 	$(icons_square.big_vehicle_parking_DATA) \
-	$(icons_square.big_wlan_DATA) $(icons_square.small_DATA) \
+	$(icons_square.big_wlan_DATA) \
+	$(icons_square.big_wlan_pay_DATA) $(icons_square.small_DATA) \
 	$(icons_square.small_accomodation_DATA) \
 	$(icons_square.small_education_DATA) \
 	$(icons_square.small_food_DATA) \
@@ -255,7 +295,6 @@ DATA = $(apps_DATA) $(cfg_files_DATA) $(icons_classic_DATA) \
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
-ALLOCA = @ALLOCA@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -264,12 +303,9 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BUILD_INCLUDED_LIBINTL = @BUILD_INCLUDED_LIBINTL@
-CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
-CFLAG_VISIBILITY = @CFLAG_VISIBILITY@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
@@ -277,7 +313,6 @@ CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
-DATADIRNAME = @DATADIRNAME@
 DBUS_CFLAGS = @DBUS_CFLAGS@
 DBUS_GLIB_LIBS = @DBUS_GLIB_LIBS@
 DBUS_LIBS = @DBUS_LIBS@
@@ -301,10 +336,7 @@ FRIENDSSERVERVERSION = @FRIENDSSERVERVERSION@
 GDAL_CFLAGS = @GDAL_CFLAGS@
 GDAL_CONFIG = @GDAL_CONFIG@
 GDAL_LDADD = @GDAL_LDADD@
-GENCAT = @GENCAT@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
-GLIBC2 = @GLIBC2@
-GLIBC21 = @GLIBC21@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GLIB_LIBS = @GLIB_LIBS@
@@ -315,44 +347,29 @@ GOBJECT_QUERY = @GOBJECT_QUERY@
 GREP = @GREP@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
-HAVE_ASPRINTF = @HAVE_ASPRINTF@
 HAVE_DBUS_FALSE = @HAVE_DBUS_FALSE@
 HAVE_DBUS_TRUE = @HAVE_DBUS_TRUE@
 HAVE_GDAL_FALSE = @HAVE_GDAL_FALSE@
 HAVE_GDAL_TRUE = @HAVE_GDAL_TRUE@
 HAVE_GTK_FALSE = @HAVE_GTK_FALSE@
 HAVE_GTK_TRUE = @HAVE_GTK_TRUE@
-HAVE_POSIX_PRINTF = @HAVE_POSIX_PRINTF@
-HAVE_SNPRINTF = @HAVE_SNPRINTF@
-HAVE_VISIBILITY = @HAVE_VISIBILITY@
-HAVE_WPRINTF = @HAVE_WPRINTF@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-INSTOBJEXT = @INSTOBJEXT@
-INTLBISON = @INTLBISON@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
-INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 INTL_MACOSX_LIBS = @INTL_MACOSX_LIBS@
 LDFLAGS = @LDFLAGS@
 LIBADD_DL = @LIBADD_DL@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
-LIBMULTITHREAD = @LIBMULTITHREAD@
 LIBOBJS = @LIBOBJS@
-LIBPTH = @LIBPTH@
 LIBS = @LIBS@
-LIBTHREAD = @LIBTHREAD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
-LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
 LTLIBOBJS = @LTLIBOBJS@
-LTLIBPTH = @LTLIBPTH@
-LTLIBTHREAD = @LTLIBTHREAD@
 MAKEINFO = @MAKEINFO@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
@@ -374,16 +391,13 @@ PKGCONFIG_LIBS = @PKGCONFIG_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 POW_LIB = @POW_LIB@
-PRI_MACROS_BROKEN = @PRI_MACROS_BROKEN@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 USETELEATLAS = @USETELEATLAS@
-USE_INCLUDED_LIBINTL = @USE_INCLUDED_LIBINTL@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
-WOE32DLL = @WOE32DLL@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 YACC = @YACC@
@@ -489,7 +503,11 @@ icons_classicdir = $(datadir)/gpsdrive/icons/classic
 icons_square.big_DATA = icons/square.big/*.png
 icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
 icons_square.big_accomodationdir = $(datadir)/gpsdrive/icons/square.big/accomodation
+icons_square.big_accomodation_hotel_DATA = icons/square.big/accomodation/hotel/*.png
+icons_square.big_accomodation_hoteldir = $(datadir)/gpsdrive/icons/square.big/accomodation/hotel
 icons_square.big_education_DATA = icons/square.big/education/*.png
+icons_square.big_education_school_DATA = icons/square.big/education/school/*.png
+icons_square.big_education_schooldir = $(datadir)/gpsdrive/icons/square.big/education/school
 icons_square.big_educationdir = $(datadir)/gpsdrive/icons/square.big/education
 icons_square.big_fastfood_DATA = icons/square.big/food/fastfood/*.png
 icons_square.big_fastfooddir = $(datadir)/gpsdrive/icons/square.big/food/fastfood
@@ -506,6 +524,10 @@ icons_square.big_misc_waypoint_DATA = icons/square.big/misc/waypoint/*.png
 icons_square.big_misc_waypointdir = $(datadir)/gpsdrive/icons/square.big/waypoint/misc
 icons_square.big_miscdir = $(datadir)/gpsdrive/icons/square.big/misc
 icons_square.big_money_DATA = icons/square.big/money/*.png
+icons_square.big_money_atm_DATA = icons/square.big/money/atm/*.png
+icons_square.big_money_atmdir = $(datadir)/gpsdrive/icons/square.big/money/atm
+icons_square.big_money_bank_DATA = icons/square.big/money/bank/*.png
+icons_square.big_money_bankdir = $(datadir)/gpsdrive/icons/square.big/money/bank
 icons_square.big_moneydir = $(datadir)/gpsdrive/icons/square.big/money
 icons_square.big_nautical_DATA = icons/square.big/nautical/*.png
 icons_square.big_nauticaldir = $(datadir)/gpsdrive/icons/square.big/nautical
@@ -516,12 +538,26 @@ icons_square.big_places_settlement_DATA = icons/square.big/places/settlement/*.p
 icons_square.big_places_settlementdir = $(datadir)/gpsdrive/icons/square.big/places/settlement
 icons_square.big_placesdir = $(datadir)/gpsdrive/icons/square.big/places
 icons_square.big_public_DATA = icons/square.big/public/*.png
+icons_square.big_public_administration_DATA = icons/square.big/public/administration/*.png
+icons_square.big_public_administrationdir = $(datadir)/gpsdrive/icons/square.big/public/administration
 icons_square.big_publicdir = $(datadir)/gpsdrive/icons/square.big/public
 icons_square.big_recreation_DATA = icons/square.big/recreation/*.png
 icons_square.big_recreationdir = $(datadir)/gpsdrive/icons/square.big/recreation
+icons_square.big_religion_DATA = icons/square.big/religion/*.png
+icons_square.big_religion_church_DATA = icons/square.big/religion/church/*.png
+icons_square.big_religion_churchdir = $(datadir)/gpsdrive/icons/square.big/religion/church
+icons_square.big_religiondir = $(datadir)/gpsdrive/icons/square.big/religion
 icons_square.big_restaurant_DATA = icons/square.big/food/restaurant/*.png
 icons_square.big_restaurantdir = $(datadir)/gpsdrive/icons/square.big/restaurant
 icons_square.big_shopping_DATA = icons/square.big/shopping/*.png
+icons_square.big_shopping_diy_store_DATA = icons/square.big/shopping/diy_store/*.png
+icons_square.big_shopping_diy_storedir = $(datadir)/gpsdrive/icons/square.big/shopping/diy_store
+icons_square.big_shopping_groceries_DATA = icons/square.big/shopping/groceries/*.png
+icons_square.big_shopping_groceriesdir = $(datadir)/gpsdrive/icons/square.big/shopping/groceries
+icons_square.big_shopping_sports_DATA = icons/square.big/shopping/sports/*.png
+icons_square.big_shopping_sportsdir = $(datadir)/gpsdrive/icons/square.big/shopping/sports
+icons_square.big_shopping_supermarket_DATA = icons/square.big/shopping/supermarket/*.png
+icons_square.big_shopping_supermarketdir = $(datadir)/gpsdrive/icons/square.big/shopping/supermarket
 icons_square.big_shoppingdir = $(datadir)/gpsdrive/icons/square.big/shopping
 icons_square.big_sightseeing_DATA = icons/square.big/sightseeing/*.png 
 icons_square.big_sightseeingdir = $(datadir)/gpsdrive/icons/square.big/sightseeing
@@ -538,6 +574,8 @@ icons_square.big_vehicle_parking_DATA = icons/square.big/vehicle/parking/*.png
 icons_square.big_vehicle_parkingdir = $(datadir)/gpsdrive/icons/square.big/vehicle/parking
 icons_square.big_vehicledir = $(datadir)/gpsdrive/icons/square.big/vehicle
 icons_square.big_wlan_DATA = icons/square.big/wlan/*.png
+icons_square.big_wlan_pay_DATA = icons/square.big/wlan/pay/*.png
+icons_square.big_wlan_paydir = $(datadir)/gpsdrive/icons/square.big/wlan/pay
 icons_square.big_wlandir = $(datadir)/gpsdrive/icons/square.big/wlan
 icons_square.bigdir = $(datadir)/gpsdrive/icons/square.big
 icons_square.small_DATA = icons/square.small/*.png
@@ -621,7 +659,9 @@ EXTRA_DIST = \
 	$(icons_classic_wlan_DATA) \
 	$(icons_square.big_DATA) \
 	$(icons_square.big_accomodation_DATA) \
+	$(icons_square.big_accomodation_hotel_DATA) \
 	$(icons_square.big_education_DATA) \
+	$(icons_square.big_education_school_DATA) \
 	$(icons_square.big_food_DATA) \
 	$(icons_square.big_food_fastfoodDATA) \
 	$(icons_square.big_geocache_DATA) \
@@ -629,14 +669,24 @@ EXTRA_DIST = \
 	$(icons_square.big_misc_DATA) \
 	$(icons_square.big_misc_waypoint_DATA) \
 	$(icons_square.big_money_DATA) \
+	$(icons_square.big_money_DATA) \
+	$(icons_square.big_money_atm_DATA) \
+	$(icons_square.big_money_bank_DATA) \
 	$(icons_square.big_nautical_DATA) \
 	$(icons_square.big_people_DATA) \
 	$(icons_square.big_places_DATA) \
 	$(icons_square.big_places_settlement_DATA) \
 	$(icons_square.big_public_DATA) \
+	$(icons_square.big_public_administration_DATA) \
 	$(icons_square.big_recreation_DATA) \
+	$(icons_square.big_religion_DATA) \
+	$(icons_square.big_religion_church_DATA) \
 	$(icons_square.big_restaurant_DATA) \
 	$(icons_square.big_shopping_DATA) \
+	$(icons_square.big_shopping_diy_store_DATA) \
+	$(icons_square.big_shopping_groceries_DATA) \
+	$(icons_square.big_shopping_sports_DATA) \
+	$(icons_square.big_shopping_supermarket_DATA) \
 	$(icons_square.big_sightseeing_DATA) \
 	$(icons_square.big_sports_DATA) \
 	$(icons_square.big_transport_DATA) \
@@ -645,6 +695,7 @@ EXTRA_DIST = \
 	$(icons_square.big_vehicle_fuel_station_DATA) \
 	$(icons_square.big_vehicle_parking_DATA) \
 	$(icons_square.big_wlan_DATA) \
+	$(icons_square.big_wlan_pay_DATA) \
 	$(icons_square.small_DATA) \
 	$(icons_square.small_accomodation_DATA) \
 	$(icons_square.small_education_DATA) \
@@ -667,7 +718,10 @@ EXTRA_DIST = \
 	$(icons_square.small_wlan_DATA) \
 	\
 	$(maps_DATA) $(poi_DATA)  \
-	$(apps_DATA)
+	$(apps_DATA) \
+	CMakeLists.txt poi/CMakeLists.txt \
+	maps/CMakeLists.txt icons/CMakeLists.txt \
+	pixmaps/CMakeLists.txt
 
 all: all-am
 
@@ -1136,6 +1190,23 @@ uninstall-icons_square.big_accomodationDATA:
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_accomodationdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_accomodationdir)/$$f"; \
 	done
+install-icons_square.big_accomodation_hotelDATA: $(icons_square.big_accomodation_hotel_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_accomodation_hoteldir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_accomodation_hoteldir)"
+	@list='$(icons_square.big_accomodation_hotel_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_accomodation_hotelDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_accomodation_hoteldir)/$$f'"; \
+	  $(icons_square.big_accomodation_hotelDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_accomodation_hoteldir)/$$f"; \
+	done
+
+uninstall-icons_square.big_accomodation_hotelDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_accomodation_hotel_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_accomodation_hoteldir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_accomodation_hoteldir)/$$f"; \
+	done
 install-icons_square.big_educationDATA: $(icons_square.big_education_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(icons_square.big_educationdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_educationdir)"
@@ -1152,6 +1223,23 @@ uninstall-icons_square.big_educationDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_educationdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_educationdir)/$$f"; \
+	done
+install-icons_square.big_education_schoolDATA: $(icons_square.big_education_school_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_education_schooldir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_education_schooldir)"
+	@list='$(icons_square.big_education_school_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_education_schoolDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_education_schooldir)/$$f'"; \
+	  $(icons_square.big_education_schoolDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_education_schooldir)/$$f"; \
+	done
+
+uninstall-icons_square.big_education_schoolDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_education_school_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_education_schooldir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_education_schooldir)/$$f"; \
 	done
 install-icons_square.big_fastfoodDATA: $(icons_square.big_fastfood_DATA)
 	@$(NORMAL_INSTALL)
@@ -1272,6 +1360,40 @@ uninstall-icons_square.big_moneyDATA:
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_moneydir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_moneydir)/$$f"; \
 	done
+install-icons_square.big_money_atmDATA: $(icons_square.big_money_atm_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_money_atmdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_money_atmdir)"
+	@list='$(icons_square.big_money_atm_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_money_atmDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_money_atmdir)/$$f'"; \
+	  $(icons_square.big_money_atmDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_money_atmdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_money_atmDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_money_atm_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_money_atmdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_money_atmdir)/$$f"; \
+	done
+install-icons_square.big_money_bankDATA: $(icons_square.big_money_bank_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_money_bankdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_money_bankdir)"
+	@list='$(icons_square.big_money_bank_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_money_bankDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_money_bankdir)/$$f'"; \
+	  $(icons_square.big_money_bankDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_money_bankdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_money_bankDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_money_bank_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_money_bankdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_money_bankdir)/$$f"; \
+	done
 install-icons_square.big_nauticalDATA: $(icons_square.big_nautical_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(icons_square.big_nauticaldir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_nauticaldir)"
@@ -1357,6 +1479,23 @@ uninstall-icons_square.big_publicDATA:
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_publicdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_publicdir)/$$f"; \
 	done
+install-icons_square.big_public_administrationDATA: $(icons_square.big_public_administration_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_public_administrationdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_public_administrationdir)"
+	@list='$(icons_square.big_public_administration_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_public_administrationDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_public_administrationdir)/$$f'"; \
+	  $(icons_square.big_public_administrationDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_public_administrationdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_public_administrationDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_public_administration_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_public_administrationdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_public_administrationdir)/$$f"; \
+	done
 install-icons_square.big_recreationDATA: $(icons_square.big_recreation_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(icons_square.big_recreationdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_recreationdir)"
@@ -1373,6 +1512,40 @@ uninstall-icons_square.big_recreationDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_recreationdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_recreationdir)/$$f"; \
+	done
+install-icons_square.big_religionDATA: $(icons_square.big_religion_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_religiondir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_religiondir)"
+	@list='$(icons_square.big_religion_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_religionDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_religiondir)/$$f'"; \
+	  $(icons_square.big_religionDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_religiondir)/$$f"; \
+	done
+
+uninstall-icons_square.big_religionDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_religion_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_religiondir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_religiondir)/$$f"; \
+	done
+install-icons_square.big_religion_churchDATA: $(icons_square.big_religion_church_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_religion_churchdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_religion_churchdir)"
+	@list='$(icons_square.big_religion_church_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_religion_churchDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_religion_churchdir)/$$f'"; \
+	  $(icons_square.big_religion_churchDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_religion_churchdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_religion_churchDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_religion_church_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_religion_churchdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_religion_churchdir)/$$f"; \
 	done
 install-icons_square.big_restaurantDATA: $(icons_square.big_restaurant_DATA)
 	@$(NORMAL_INSTALL)
@@ -1407,6 +1580,74 @@ uninstall-icons_square.big_shoppingDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_shoppingdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_shoppingdir)/$$f"; \
+	done
+install-icons_square.big_shopping_diy_storeDATA: $(icons_square.big_shopping_diy_store_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_shopping_diy_storedir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_shopping_diy_storedir)"
+	@list='$(icons_square.big_shopping_diy_store_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_shopping_diy_storeDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_shopping_diy_storedir)/$$f'"; \
+	  $(icons_square.big_shopping_diy_storeDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_shopping_diy_storedir)/$$f"; \
+	done
+
+uninstall-icons_square.big_shopping_diy_storeDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_shopping_diy_store_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_shopping_diy_storedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_shopping_diy_storedir)/$$f"; \
+	done
+install-icons_square.big_shopping_groceriesDATA: $(icons_square.big_shopping_groceries_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_shopping_groceriesdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_shopping_groceriesdir)"
+	@list='$(icons_square.big_shopping_groceries_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_shopping_groceriesDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_shopping_groceriesdir)/$$f'"; \
+	  $(icons_square.big_shopping_groceriesDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_shopping_groceriesdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_shopping_groceriesDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_shopping_groceries_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_shopping_groceriesdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_shopping_groceriesdir)/$$f"; \
+	done
+install-icons_square.big_shopping_sportsDATA: $(icons_square.big_shopping_sports_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_shopping_sportsdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_shopping_sportsdir)"
+	@list='$(icons_square.big_shopping_sports_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_shopping_sportsDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_shopping_sportsdir)/$$f'"; \
+	  $(icons_square.big_shopping_sportsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_shopping_sportsdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_shopping_sportsDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_shopping_sports_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_shopping_sportsdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_shopping_sportsdir)/$$f"; \
+	done
+install-icons_square.big_shopping_supermarketDATA: $(icons_square.big_shopping_supermarket_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_shopping_supermarketdir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_shopping_supermarketdir)"
+	@list='$(icons_square.big_shopping_supermarket_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_shopping_supermarketDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_shopping_supermarketdir)/$$f'"; \
+	  $(icons_square.big_shopping_supermarketDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_shopping_supermarketdir)/$$f"; \
+	done
+
+uninstall-icons_square.big_shopping_supermarketDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_shopping_supermarket_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_shopping_supermarketdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_shopping_supermarketdir)/$$f"; \
 	done
 install-icons_square.big_sightseeingDATA: $(icons_square.big_sightseeing_DATA)
 	@$(NORMAL_INSTALL)
@@ -1543,6 +1784,23 @@ uninstall-icons_square.big_wlanDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(icons_square.big_wlandir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(icons_square.big_wlandir)/$$f"; \
+	done
+install-icons_square.big_wlan_payDATA: $(icons_square.big_wlan_pay_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(icons_square.big_wlan_paydir)" || $(mkdir_p) "$(DESTDIR)$(icons_square.big_wlan_paydir)"
+	@list='$(icons_square.big_wlan_pay_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(icons_square.big_wlan_payDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(icons_square.big_wlan_paydir)/$$f'"; \
+	  $(icons_square.big_wlan_payDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(icons_square.big_wlan_paydir)/$$f"; \
+	done
+
+uninstall-icons_square.big_wlan_payDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(icons_square.big_wlan_pay_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(icons_square.big_wlan_paydir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(icons_square.big_wlan_paydir)/$$f"; \
 	done
 install-icons_square.smallDATA: $(icons_square.small_DATA)
 	@$(NORMAL_INSTALL)
@@ -1943,7 +2201,7 @@ CTAGS:
 
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/education $(distdir)/icons/classic/food $(distdir)/icons/classic/geocache $(distdir)/icons/classic/health $(distdir)/icons/classic/misc $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/public $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sightseeing $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/vehicle/fuel_station $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/accomodation $(distdir)/icons/square.big/education $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/fastfood $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/health $(distdir)/icons/square.big/misc $(distdir)/icons/square.big/misc/waypoint $(distdir)/icons/square.big/money $(distdir)/icons/square.big/nautical $(distdir)/icons/square.big/people $(distdir)/icons/square.big/places $(distdir)/icons/square.big/places/settlement $(distdir)/icons/square.big/public $(distdir)/icons/square.big/recreation $(distdir)/icons/square.big/shopping $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.big/sports $(distdir)/icons/square.big/transport $(distdir)/icons/square.big/vehicle $(distdir)/icons/square.big/vehicle/car_rental $(distdir)/icons/square.big/vehicle/fuel_station $(distdir)/icons/square.big/vehicle/parking $(distdir)/icons/square.big/wlan $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/education $(distdir)/icons/square.small/food $(distdir)/icons/square.small/geocache $(distdir)/icons/square.small/health $(distdir)/icons/square.small/misc $(distdir)/icons/square.small/money $(distdir)/icons/square.small/nautical $(distdir)/icons/square.small/people $(distdir)/icons/square.small/places $(distdir)/icons/square.small/public $(distdir)/icons/square.small/recreation $(distdir)/icons/square.small/religion $(distdir)/icons/square.small/shopping $(distdir)/icons/square.small/sightseeing $(distdir)/icons/square.small/sports $(distdir)/icons/square.small/transport $(distdir)/icons/square.small/vehicle $(distdir)/icons/square.small/wlan $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi
+	$(mkdir_p) $(distdir)/icons $(distdir)/icons/classic $(distdir)/icons/classic/accomodation $(distdir)/icons/classic/education $(distdir)/icons/classic/food $(distdir)/icons/classic/geocache $(distdir)/icons/classic/health $(distdir)/icons/classic/misc $(distdir)/icons/classic/money $(distdir)/icons/classic/nautical $(distdir)/icons/classic/people $(distdir)/icons/classic/places $(distdir)/icons/classic/public $(distdir)/icons/classic/recreation $(distdir)/icons/classic/religion $(distdir)/icons/classic/shopping $(distdir)/icons/classic/sightseeing $(distdir)/icons/classic/sports $(distdir)/icons/classic/transport $(distdir)/icons/classic/vehicle $(distdir)/icons/classic/vehicle/fuel_station $(distdir)/icons/classic/wlan $(distdir)/icons/square.big $(distdir)/icons/square.big/accomodation $(distdir)/icons/square.big/accomodation/hotel $(distdir)/icons/square.big/education $(distdir)/icons/square.big/education/school $(distdir)/icons/square.big/food $(distdir)/icons/square.big/food/fastfood $(distdir)/icons/square.big/food/restaurant $(distdir)/icons/square.big/geocache $(distdir)/icons/square.big/health $(distdir)/icons/square.big/misc $(distdir)/icons/square.big/misc/waypoint $(distdir)/icons/square.big/money $(distdir)/icons/square.big/money/atm $(distdir)/icons/square.big/money/bank $(distdir)/icons/square.big/nautical $(distdir)/icons/square.big/people $(distdir)/icons/square.big/places $(distdir)/icons/square.big/places/settlement $(distdir)/icons/square.big/public $(distdir)/icons/square.big/public/administration $(distdir)/icons/square.big/recreation $(distdir)/icons/square.big/religion $(distdir)/icons/square.big/religion/church $(distdir)/icons/square.big/shopping $(distdir)/icons/square.big/shopping/diy_store $(distdir)/icons/square.big/shopping/groceries $(distdir)/icons/square.big/shopping/sports $(distdir)/icons/square.big/shopping/supermarket $(distdir)/icons/square.big/sightseeing $(distdir)/icons/square.big/sports $(distdir)/icons/square.big/transport $(distdir)/icons/square.big/vehicle $(distdir)/icons/square.big/vehicle/car_rental $(distdir)/icons/square.big/vehicle/fuel_station $(distdir)/icons/square.big/vehicle/parking $(distdir)/icons/square.big/wlan $(distdir)/icons/square.big/wlan/pay $(distdir)/icons/square.small $(distdir)/icons/square.small/accomodation $(distdir)/icons/square.small/education $(distdir)/icons/square.small/food $(distdir)/icons/square.small/geocache $(distdir)/icons/square.small/health $(distdir)/icons/square.small/misc $(distdir)/icons/square.small/money $(distdir)/icons/square.small/nautical $(distdir)/icons/square.small/people $(distdir)/icons/square.small/places $(distdir)/icons/square.small/public $(distdir)/icons/square.small/recreation $(distdir)/icons/square.small/religion $(distdir)/icons/square.small/shopping $(distdir)/icons/square.small/sightseeing $(distdir)/icons/square.small/sports $(distdir)/icons/square.small/transport $(distdir)/icons/square.small/vehicle $(distdir)/icons/square.small/wlan $(distdir)/maps $(distdir)/pixmaps $(distdir)/poi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -1974,7 +2232,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(icons_classicdir)" "$(DESTDIR)$(icons_classic_accomodationdir)" "$(DESTDIR)$(icons_classic_educationdir)" "$(DESTDIR)$(icons_classic_fooddir)" "$(DESTDIR)$(icons_classic_geocachedir)" "$(DESTDIR)$(icons_classic_healthdir)" "$(DESTDIR)$(icons_classic_miscdir)" "$(DESTDIR)$(icons_classic_moneydir)" "$(DESTDIR)$(icons_classic_nauticaldir)" "$(DESTDIR)$(icons_classic_peopledir)" "$(DESTDIR)$(icons_classic_placesdir)" "$(DESTDIR)$(icons_classic_publicdir)" "$(DESTDIR)$(icons_classic_recreationdir)" "$(DESTDIR)$(icons_classic_religiondir)" "$(DESTDIR)$(icons_classic_shoppingdir)" "$(DESTDIR)$(icons_classic_sightseeingdir)" "$(DESTDIR)$(icons_classic_sportsdir)" "$(DESTDIR)$(icons_classic_transportdir)" "$(DESTDIR)$(icons_classic_vehicledir)" "$(DESTDIR)$(icons_classic_vehicle_fuel_stationdir)" "$(DESTDIR)$(icons_classic_wlandir)" "$(DESTDIR)$(icons_square.bigdir)" "$(DESTDIR)$(icons_square.big_accomodationdir)" "$(DESTDIR)$(icons_square.big_educationdir)" "$(DESTDIR)$(icons_square.big_fastfooddir)" "$(DESTDIR)$(icons_square.big_fooddir)" "$(DESTDIR)$(icons_square.big_geocachedir)" "$(DESTDIR)$(icons_square.big_healthdir)" "$(DESTDIR)$(icons_square.big_miscdir)" "$(DESTDIR)$(icons_square.big_misc_waypointdir)" "$(DESTDIR)$(icons_square.big_moneydir)" "$(DESTDIR)$(icons_square.big_nauticaldir)" "$(DESTDIR)$(icons_square.big_peopledir)" "$(DESTDIR)$(icons_square.big_placesdir)" "$(DESTDIR)$(icons_square.big_places_settlementdir)" "$(DESTDIR)$(icons_square.big_publicdir)" "$(DESTDIR)$(icons_square.big_recreationdir)" "$(DESTDIR)$(icons_square.big_restaurantdir)" "$(DESTDIR)$(icons_square.big_shoppingdir)" "$(DESTDIR)$(icons_square.big_sightseeingdir)" "$(DESTDIR)$(icons_square.big_sportsdir)" "$(DESTDIR)$(icons_square.big_transportdir)" "$(DESTDIR)$(icons_square.big_vehicledir)" "$(DESTDIR)$(icons_square.big_vehicle_car_rentaldir)" "$(DESTDIR)$(icons_square.big_vehicle_fuel_stationdir)" "$(DESTDIR)$(icons_square.big_vehicle_parkingdir)" "$(DESTDIR)$(icons_square.big_wlandir)" "$(DESTDIR)$(icons_square.smalldir)" "$(DESTDIR)$(icons_square.small_accomodationdir)" "$(DESTDIR)$(icons_square.small_educationdir)" "$(DESTDIR)$(icons_square.small_fooddir)" "$(DESTDIR)$(icons_square.small_geocachedir)" "$(DESTDIR)$(icons_square.small_healthdir)" "$(DESTDIR)$(icons_square.small_miscdir)" "$(DESTDIR)$(icons_square.small_moneydir)" "$(DESTDIR)$(icons_square.small_nauticaldir)" "$(DESTDIR)$(icons_square.small_peopledir)" "$(DESTDIR)$(icons_square.small_placesdir)" "$(DESTDIR)$(icons_square.small_publicdir)" "$(DESTDIR)$(icons_square.small_recreationdir)" "$(DESTDIR)$(icons_square.small_religiondir)" "$(DESTDIR)$(icons_square.small_shoppingdir)" "$(DESTDIR)$(icons_square.small_sightseeingdir)" "$(DESTDIR)$(icons_square.small_sportsdir)" "$(DESTDIR)$(icons_square.small_transportdir)" "$(DESTDIR)$(icons_square.small_vehicledir)" "$(DESTDIR)$(icons_square.small_wlandir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)"; do \
+	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(icons_classicdir)" "$(DESTDIR)$(icons_classic_accomodationdir)" "$(DESTDIR)$(icons_classic_educationdir)" "$(DESTDIR)$(icons_classic_fooddir)" "$(DESTDIR)$(icons_classic_geocachedir)" "$(DESTDIR)$(icons_classic_healthdir)" "$(DESTDIR)$(icons_classic_miscdir)" "$(DESTDIR)$(icons_classic_moneydir)" "$(DESTDIR)$(icons_classic_nauticaldir)" "$(DESTDIR)$(icons_classic_peopledir)" "$(DESTDIR)$(icons_classic_placesdir)" "$(DESTDIR)$(icons_classic_publicdir)" "$(DESTDIR)$(icons_classic_recreationdir)" "$(DESTDIR)$(icons_classic_religiondir)" "$(DESTDIR)$(icons_classic_shoppingdir)" "$(DESTDIR)$(icons_classic_sightseeingdir)" "$(DESTDIR)$(icons_classic_sportsdir)" "$(DESTDIR)$(icons_classic_transportdir)" "$(DESTDIR)$(icons_classic_vehicledir)" "$(DESTDIR)$(icons_classic_vehicle_fuel_stationdir)" "$(DESTDIR)$(icons_classic_wlandir)" "$(DESTDIR)$(icons_square.bigdir)" "$(DESTDIR)$(icons_square.big_accomodationdir)" "$(DESTDIR)$(icons_square.big_accomodation_hoteldir)" "$(DESTDIR)$(icons_square.big_educationdir)" "$(DESTDIR)$(icons_square.big_education_schooldir)" "$(DESTDIR)$(icons_square.big_fastfooddir)" "$(DESTDIR)$(icons_square.big_fooddir)" "$(DESTDIR)$(icons_square.big_geocachedir)" "$(DESTDIR)$(icons_square.big_healthdir)" "$(DESTDIR)$(icons_square.big_miscdir)" "$(DESTDIR)$(icons_square.big_misc_waypointdir)" "$(DESTDIR)$(icons_square.big_moneydir)" "$(DESTDIR)$(icons_square.big_money_atmdir)" "$(DESTDIR)$(icons_square.big_money_bankdir)" "$(DESTDIR)$(icons_square.big_nauticaldir)" "$(DESTDIR)$(icons_square.big_peopledir)" "$(DESTDIR)$(icons_square.big_placesdir)" "$(DESTDIR)$(icons_square.big_places_settlementdir)" "$(DESTDIR)$(icons_square.big_publicdir)" "$(DESTDIR)$(icons_square.big_public_administrationdir)" "$(DESTDIR)$(icons_square.big_recreationdir)" "$(DESTDIR)$(icons_square.big_religiondir)" "$(DESTDIR)$(icons_square.big_religion_churchdir)" "$(DESTDIR)$(icons_square.big_restaurantdir)" "$(DESTDIR)$(icons_square.big_shoppingdir)" "$(DESTDIR)$(icons_square.big_shopping_diy_storedir)" "$(DESTDIR)$(icons_square.big_shopping_groceriesdir)" "$(DESTDIR)$(icons_square.big_shopping_sportsdir)" "$(DESTDIR)$(icons_square.big_shopping_supermarketdir)" "$(DESTDIR)$(icons_square.big_sightseeingdir)" "$(DESTDIR)$(icons_square.big_sportsdir)" "$(DESTDIR)$(icons_square.big_transportdir)" "$(DESTDIR)$(icons_square.big_vehicledir)" "$(DESTDIR)$(icons_square.big_vehicle_car_rentaldir)" "$(DESTDIR)$(icons_square.big_vehicle_fuel_stationdir)" "$(DESTDIR)$(icons_square.big_vehicle_parkingdir)" "$(DESTDIR)$(icons_square.big_wlandir)" "$(DESTDIR)$(icons_square.big_wlan_paydir)" "$(DESTDIR)$(icons_square.smalldir)" "$(DESTDIR)$(icons_square.small_accomodationdir)" "$(DESTDIR)$(icons_square.small_educationdir)" "$(DESTDIR)$(icons_square.small_fooddir)" "$(DESTDIR)$(icons_square.small_geocachedir)" "$(DESTDIR)$(icons_square.small_healthdir)" "$(DESTDIR)$(icons_square.small_miscdir)" "$(DESTDIR)$(icons_square.small_moneydir)" "$(DESTDIR)$(icons_square.small_nauticaldir)" "$(DESTDIR)$(icons_square.small_peopledir)" "$(DESTDIR)$(icons_square.small_placesdir)" "$(DESTDIR)$(icons_square.small_publicdir)" "$(DESTDIR)$(icons_square.small_recreationdir)" "$(DESTDIR)$(icons_square.small_religiondir)" "$(DESTDIR)$(icons_square.small_shoppingdir)" "$(DESTDIR)$(icons_square.small_sightseeingdir)" "$(DESTDIR)$(icons_square.small_sportsdir)" "$(DESTDIR)$(icons_square.small_transportdir)" "$(DESTDIR)$(icons_square.small_vehicledir)" "$(DESTDIR)$(icons_square.small_wlandir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -2041,7 +2299,9 @@ install-data-am: install-appsDATA install-cfg_filesDATA \
 	install-icons_classic_vehicle_fuel_stationDATA \
 	install-icons_classic_wlanDATA install-icons_square.bigDATA \
 	install-icons_square.big_accomodationDATA \
+	install-icons_square.big_accomodation_hotelDATA \
 	install-icons_square.big_educationDATA \
+	install-icons_square.big_education_schoolDATA \
 	install-icons_square.big_fastfoodDATA \
 	install-icons_square.big_foodDATA \
 	install-icons_square.big_geocacheDATA \
@@ -2049,14 +2309,23 @@ install-data-am: install-appsDATA install-cfg_filesDATA \
 	install-icons_square.big_miscDATA \
 	install-icons_square.big_misc_waypointDATA \
 	install-icons_square.big_moneyDATA \
+	install-icons_square.big_money_atmDATA \
+	install-icons_square.big_money_bankDATA \
 	install-icons_square.big_nauticalDATA \
 	install-icons_square.big_peopleDATA \
 	install-icons_square.big_placesDATA \
 	install-icons_square.big_places_settlementDATA \
 	install-icons_square.big_publicDATA \
+	install-icons_square.big_public_administrationDATA \
 	install-icons_square.big_recreationDATA \
+	install-icons_square.big_religionDATA \
+	install-icons_square.big_religion_churchDATA \
 	install-icons_square.big_restaurantDATA \
 	install-icons_square.big_shoppingDATA \
+	install-icons_square.big_shopping_diy_storeDATA \
+	install-icons_square.big_shopping_groceriesDATA \
+	install-icons_square.big_shopping_sportsDATA \
+	install-icons_square.big_shopping_supermarketDATA \
 	install-icons_square.big_sightseeingDATA \
 	install-icons_square.big_sportsDATA \
 	install-icons_square.big_transportDATA \
@@ -2065,6 +2334,7 @@ install-data-am: install-appsDATA install-cfg_filesDATA \
 	install-icons_square.big_vehicle_fuel_stationDATA \
 	install-icons_square.big_vehicle_parkingDATA \
 	install-icons_square.big_wlanDATA \
+	install-icons_square.big_wlan_payDATA \
 	install-icons_square.smallDATA \
 	install-icons_square.small_accomodationDATA \
 	install-icons_square.small_educationDATA \
@@ -2135,7 +2405,9 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_classic_wlanDATA \
 	uninstall-icons_square.bigDATA \
 	uninstall-icons_square.big_accomodationDATA \
+	uninstall-icons_square.big_accomodation_hotelDATA \
 	uninstall-icons_square.big_educationDATA \
+	uninstall-icons_square.big_education_schoolDATA \
 	uninstall-icons_square.big_fastfoodDATA \
 	uninstall-icons_square.big_foodDATA \
 	uninstall-icons_square.big_geocacheDATA \
@@ -2143,14 +2415,23 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.big_miscDATA \
 	uninstall-icons_square.big_misc_waypointDATA \
 	uninstall-icons_square.big_moneyDATA \
+	uninstall-icons_square.big_money_atmDATA \
+	uninstall-icons_square.big_money_bankDATA \
 	uninstall-icons_square.big_nauticalDATA \
 	uninstall-icons_square.big_peopleDATA \
 	uninstall-icons_square.big_placesDATA \
 	uninstall-icons_square.big_places_settlementDATA \
 	uninstall-icons_square.big_publicDATA \
+	uninstall-icons_square.big_public_administrationDATA \
 	uninstall-icons_square.big_recreationDATA \
+	uninstall-icons_square.big_religionDATA \
+	uninstall-icons_square.big_religion_churchDATA \
 	uninstall-icons_square.big_restaurantDATA \
 	uninstall-icons_square.big_shoppingDATA \
+	uninstall-icons_square.big_shopping_diy_storeDATA \
+	uninstall-icons_square.big_shopping_groceriesDATA \
+	uninstall-icons_square.big_shopping_sportsDATA \
+	uninstall-icons_square.big_shopping_supermarketDATA \
 	uninstall-icons_square.big_sightseeingDATA \
 	uninstall-icons_square.big_sportsDATA \
 	uninstall-icons_square.big_transportDATA \
@@ -2159,6 +2440,7 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.big_vehicle_fuel_stationDATA \
 	uninstall-icons_square.big_vehicle_parkingDATA \
 	uninstall-icons_square.big_wlanDATA \
+	uninstall-icons_square.big_wlan_payDATA \
 	uninstall-icons_square.smallDATA \
 	uninstall-icons_square.small_accomodationDATA \
 	uninstall-icons_square.small_educationDATA \
@@ -2207,7 +2489,9 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	install-icons_classic_vehicle_fuel_stationDATA \
 	install-icons_classic_wlanDATA install-icons_square.bigDATA \
 	install-icons_square.big_accomodationDATA \
+	install-icons_square.big_accomodation_hotelDATA \
 	install-icons_square.big_educationDATA \
+	install-icons_square.big_education_schoolDATA \
 	install-icons_square.big_fastfoodDATA \
 	install-icons_square.big_foodDATA \
 	install-icons_square.big_geocacheDATA \
@@ -2215,14 +2499,23 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	install-icons_square.big_miscDATA \
 	install-icons_square.big_misc_waypointDATA \
 	install-icons_square.big_moneyDATA \
+	install-icons_square.big_money_atmDATA \
+	install-icons_square.big_money_bankDATA \
 	install-icons_square.big_nauticalDATA \
 	install-icons_square.big_peopleDATA \
 	install-icons_square.big_placesDATA \
 	install-icons_square.big_places_settlementDATA \
 	install-icons_square.big_publicDATA \
+	install-icons_square.big_public_administrationDATA \
 	install-icons_square.big_recreationDATA \
+	install-icons_square.big_religionDATA \
+	install-icons_square.big_religion_churchDATA \
 	install-icons_square.big_restaurantDATA \
 	install-icons_square.big_shoppingDATA \
+	install-icons_square.big_shopping_diy_storeDATA \
+	install-icons_square.big_shopping_groceriesDATA \
+	install-icons_square.big_shopping_sportsDATA \
+	install-icons_square.big_shopping_supermarketDATA \
 	install-icons_square.big_sightseeingDATA \
 	install-icons_square.big_sportsDATA \
 	install-icons_square.big_transportDATA \
@@ -2231,6 +2524,7 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	install-icons_square.big_vehicle_fuel_stationDATA \
 	install-icons_square.big_vehicle_parkingDATA \
 	install-icons_square.big_wlanDATA \
+	install-icons_square.big_wlan_payDATA \
 	install-icons_square.smallDATA \
 	install-icons_square.small_accomodationDATA \
 	install-icons_square.small_educationDATA \
@@ -2280,7 +2574,9 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_classic_wlanDATA \
 	uninstall-icons_square.bigDATA \
 	uninstall-icons_square.big_accomodationDATA \
+	uninstall-icons_square.big_accomodation_hotelDATA \
 	uninstall-icons_square.big_educationDATA \
+	uninstall-icons_square.big_education_schoolDATA \
 	uninstall-icons_square.big_fastfoodDATA \
 	uninstall-icons_square.big_foodDATA \
 	uninstall-icons_square.big_geocacheDATA \
@@ -2288,14 +2584,23 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.big_miscDATA \
 	uninstall-icons_square.big_misc_waypointDATA \
 	uninstall-icons_square.big_moneyDATA \
+	uninstall-icons_square.big_money_atmDATA \
+	uninstall-icons_square.big_money_bankDATA \
 	uninstall-icons_square.big_nauticalDATA \
 	uninstall-icons_square.big_peopleDATA \
 	uninstall-icons_square.big_placesDATA \
 	uninstall-icons_square.big_places_settlementDATA \
 	uninstall-icons_square.big_publicDATA \
+	uninstall-icons_square.big_public_administrationDATA \
 	uninstall-icons_square.big_recreationDATA \
+	uninstall-icons_square.big_religionDATA \
+	uninstall-icons_square.big_religion_churchDATA \
 	uninstall-icons_square.big_restaurantDATA \
 	uninstall-icons_square.big_shoppingDATA \
+	uninstall-icons_square.big_shopping_diy_storeDATA \
+	uninstall-icons_square.big_shopping_groceriesDATA \
+	uninstall-icons_square.big_shopping_sportsDATA \
+	uninstall-icons_square.big_shopping_supermarketDATA \
 	uninstall-icons_square.big_sightseeingDATA \
 	uninstall-icons_square.big_sportsDATA \
 	uninstall-icons_square.big_transportDATA \
@@ -2304,6 +2609,7 @@ uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
 	uninstall-icons_square.big_vehicle_fuel_stationDATA \
 	uninstall-icons_square.big_vehicle_parkingDATA \
 	uninstall-icons_square.big_wlanDATA \
+	uninstall-icons_square.big_wlan_payDATA \
 	uninstall-icons_square.smallDATA \
 	uninstall-icons_square.small_accomodationDATA \
 	uninstall-icons_square.small_educationDATA \
