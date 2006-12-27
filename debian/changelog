@@ -60,11 +60,11 @@ gpsdrive (2.0-0pre9-1) unstable; urgency=low
 
   * new upstream release.
 
- -- Frank Kirschner <kirfrank@ibmtux>  Tue,  1 Jul 2003 20:00:06 +0200
+ -- Frank Kirschner <kirfrank@debian.org>  Tue,  1 Jul 2003 20:00:06 +0200
 
 gpsdrive (1.32-1) unstable; urgency=low
 
-  * new upstram release. (closes: #183066)
+  * new upstream release. (closes: #183066)
 
  -- Frank Kirschner <kirfrank@debian.org>  Wed, 12 Mar 2003 17:14:37 +0100
 
