@@ -8,8 +8,19 @@
 # NO WARRANTY.
 
 BEGIN {
-    unshift(@INC,"/opt/gpsdrive");
-}
+    my $dir = $0;
+    $dir =~s,[^/]+/[^/]+$,,;
+    unshift(@INC,"$dir/perl_lib");
+
+    # For Debug Purpose in the build Directory
+    unshift(@INC,"./perl_lib");
+    unshift(@INC,"./scripts/perl_lib");
+    unshift(@INC,"../scripts/perl_lib");
+
+    # For DSL
+    unshift(@INC,"/opt/gpsdrive/share/perl5");
+    unshift(@INC,"/opt/gpsdrive"); # For DSL
+};
 
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sep 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
@@ -20,7 +31,7 @@ modified (Jan 2005) by Joerg Ostertag <gpsdrive\@ostertag.name>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-svn-1166)
+Version 1.19 (gpsdrive-2.10pre3-svn-1169)
 ";
 
 sub redirect_ok { return 1; }

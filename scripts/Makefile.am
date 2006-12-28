@@ -14,18 +14,5 @@ geoinfo:
 
 gpsdrivedir = $(datadir)/gpsdrive
 
-Geo_Gpsdrivedir   = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
-Geo_Gpsdrive_DATA =  Geo/Gpsdrive/*.pm
+EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
 
-Geo_OSMdir   = $(PERL_PACKAGE_DIR)/Geo/OSM
-Geo_OSM_DATA =  Geo/OSM/*.pm
-
-Utilsdir   = $(PERL_PACKAGE_DIR)/Utils
-Utils_DATA =  Utils/*.pm
-
-Utils_LWPdir   = $(PERL_PACKAGE_DIR)/Utils/LWP
-Utils_LWP_DATA =  Utils/LWP/*.pm
-
-EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt \
-	$(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA)\
-	$(Utils_LWP_DATA)  $(Utils_DATA)

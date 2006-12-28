@@ -5,6 +5,21 @@ Initial Version (Apr,2006) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
 Version 0.01
 ";
 
+BEGIN {
+    my $dir = $0;
+    $dir =~s,[^/]+/[^/]+$,,;
+    unshift(@INC,"$dir/perl_lib");
+
+    # For Debug Purpose in the build Directory
+    unshift(@INC,"./perl_lib");
+    unshift(@INC,"./scripts/perl_lib");
+    unshift(@INC,"../scripts/perl_lib");
+
+    # For DSL
+    unshift(@INC,"/opt/gpsdrive/share/perl5");
+    unshift(@INC,"/opt/gpsdrive"); # For DSL
+};
+
 use strict;
 use warnings;
 
