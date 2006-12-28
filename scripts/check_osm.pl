@@ -33,6 +33,7 @@ use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 use Storable ();
+use Utils::Debug;
 
 my $current_file ="planet-2006-05-01.osm.bz2";
 
@@ -45,7 +46,7 @@ our $UNPACK_DIR   = "$CONFIG_DIR/UNPACK";
 
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
-our ($debug,$verbose,$no_mirror,$PROXY);
+our ($no_mirror,$PROXY);
 
 sub min($$){
     my $a=shift;
@@ -175,8 +176,8 @@ sub read_osm_file($) { # Insert Streets from osm File
 
     my $start_time=time();
 
-    print("Reading $file_name\n") if $verbose || $debug;
-    print "$file_name:	".(-s $file_name)." Bytes\n" if $debug;
+    print("Reading $file_name\n") if $VERBOSE || $DEBUG;
+    print "$file_name:	".(-s $file_name)." Bytes\n" if $DEBUG;
 
     if ( $file_name =~ m/planet.*osm/ &&
 	 -s "$file_name.storable.node" &&
@@ -186,11 +187,11 @@ sub read_osm_file($) { # Insert Streets from osm File
         $osm_nodes    = Storable::retrieve("$file_name.storable.node");
         $osm_segments = Storable::retrieve("$file_name.storable.segment");
         $osm_ways     = Storable::retrieve("$file_name.storable.way");
-	if ( $verbose) {
+	if ( $VERBOSE) {
 	    printf "Read $file_name.storable.* in %.0f sec\n",time()-$start_time;
 	}
     } else {
-	print STDERR "Parsing file: $file_name\n" if $debug;
+	print STDERR "Parsing file: $file_name\n" if $DEBUG;
 	my $p = XML::Parser->new( Style => 'Subs' ,
 				  );
 	
@@ -200,14 +201,14 @@ sub read_osm_file($) { # Insert Streets from osm File
 	    print STDERR "WARNING: Could not parse osm data\n";
 	    return;
 	}
-	if ( $verbose) {
+	if ( $VERBOSE) {
 	    printf "Read and parsed $file_name in %.0f sec\n",time()-$start_time;
 	}
 	if ( $file_name eq "planet.osm" ) {
 	        Storable::store($osm_nodes   ,"$file_name.node.storable");
 		Storable::store($osm_segments,"$file_name.segment.storable");
 		Storable::store($osm_ways    ,"$file_name.way.storable");
-		if ( $verbose) {
+		if ( $VERBOSE) {
 		    printf "Read and parsed and stored $file_name in %.0f sec\n",time()-$start_time;
 		}
 	    }
@@ -585,7 +586,7 @@ sub check_osm_segments() { # Insert Streets from osm variables into mysql-db for
     html_out("statistics-segments","</table>");
 
 
-    if ( $verbose) {
+    if ( $VERBOSE) {
 	printf "Checked OSM Segments in %.0f sec\n",time()-$start_time;
     }
 }
@@ -795,7 +796,7 @@ sub check_osm_nodes() {
     html_out("statistics-nodes", "</table>");
 
     
-    if ( $verbose) {
+    if ( $VERBOSE) {
 	printf "Checked OSM Segments in %.0f sec\n",time()-$start_time;
     }
 }
@@ -919,7 +920,7 @@ sub check_osm_ways() {
     html_out("statistics-ways","</table>");
 
     # ------------
-    if ( $verbose) {
+    if ( $VERBOSE) {
 	printf "Checked OSM Ways  in %.0f sec\n",time()-$start_time;
     }
 
@@ -986,8 +987,8 @@ sub check_Data(){
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
 GetOptions ( 
-	     'debug'               => \$debug,      
-	     'verbose+'            => \$verbose,
+	     'debug'               => \$DEBUG,      
+	     'verbose+'            => \$VERBOSE,
 	     'no-mirror'           => \$no_mirror,
 	     'proxy=s'             => \$PROXY,
 	     'MAN'                 => \$man, 

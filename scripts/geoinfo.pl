@@ -39,6 +39,8 @@ use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 
+use Utils::Debug;
+
 use Geo::Gpsdrive::DBFuncs;
 use Geo::Gpsdrive::Utils;
 use Geo::Gpsdrive::Gps;
@@ -106,6 +108,8 @@ our $db_user             = $ENV{DBUSER} || 'gast';
 our $db_password         = $ENV{DBPASS} || 'gast';
 our $db_host             = $ENV{DBHOST} || 'localhost';
 #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
+my $areas_todo;
+my $do_list_areas=0;
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
@@ -130,7 +134,7 @@ GetOptions (
 	     'jigle=s'     	   => \$do_jigle,
 	     'import-way-txt'      => \$do_import_way_txt,
 	     'all'                 => \$do_all,
-	     'debug'               => \$debug,      
+	     'debug'               => \$DEBUG,      
 	     'u=s'                 => \$db_user,
 	     'p=s'                 => \$db_password,
 	     'db-name=s'           => \$GPSDRIVE_DB_NAME,
@@ -147,10 +151,12 @@ GetOptions (
 	     'lat-max=s'           => \$lat_max,
 	     'lon-min=s'           => \$lon_min,      
 	     'lon-max=s'           => \$lon_max,
+	     'area=s'              => \$areas_todo,
+	     'list-areas'          => \$do_list_areas,
 	     'no-delete'           => \$no_delete,
-	     'd'                   => \$debug,      
-	     'verbose+'            => \$verbose,
-	     'debug_range=s'       => \$debug_range,      
+	     'd'                   => \$DEBUG,      
+	     'verbose+'            => \$VERBOSE,
+	     'debug_range=s'       => \$DEBUG_range,      
 	     'no-mirror'           => \$no_mirror,
 	     'proxy=s'             => \$PROXY,
 	     'MAN'                 => \$man, 
@@ -204,6 +210,10 @@ if ( $do_all ) {
     };
 }
 
+if ( $do_list_areas ) {
+    print Geo::Filter::Area->list_areas()."\n";
+}
+
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
@@ -228,7 +238,7 @@ Geo::Gpsdrive::DB_Examples::fill_examples()
     if $do_import_examples;
 
 # Get and Unpack openstreetmap  http://www.openstreetmap.org/
-Geo::Gpsdrive::OSM::import_Data(@osm_files) 
+Geo::Gpsdrive::OSM::import_Data($areas_todo,@osm_files) 
     if ( @osm_files );
 
 # Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
@@ -530,5 +540,15 @@ files found on local Filesystem.
 =item B<--proxy="hostname:port">
 
 use proxy for download
+
+
+=item B<--area=germany> Area Filter
+
+Only read area for processing
+Currently only for osm imports
+
+=item B<--list-areas>
+
+print all areas possible
 
 =back

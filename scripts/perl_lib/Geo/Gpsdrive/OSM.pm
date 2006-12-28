@@ -44,7 +44,30 @@ my $osm_segments = {};
 my $osm_ways     = {};
 my $osm_stats    = {};
 my $osm_obj      = undef; # OSM Object currently read
+our $AREA_FILTER;
+our $PARSING_START_TIME=0;
+our $PARSING_DISPLAY_TIME=0;
+our (%Stats);
 
+
+# --------------------------------------------
+sub display_status($){
+    my $mode = shift;
+    return unless $VERBOSE || $DEBUG ;
+    return unless time()-$PARSING_DISPLAY_TIME >2;
+
+    $PARSING_DISPLAY_TIME= time();
+    print STDERR "\r";
+    #print STDERR "$mode(".$AREA_FILTER->name()."): ";
+
+    print STDERR time_estimate($PARSING_START_TIME,
+			       $Stats{"elem read"},
+			       estimated_max_count("elem"));
+    
+    print STDERR mem_usage();
+    print STDERR "\r";
+
+}
 ###########################################
 sub obj_compare($$){
     my $obj1 = shift;
@@ -73,10 +96,42 @@ sub node {
 	warn "node $id has extra attrs: ".Dumper(\%attrs);
     }
 
-    #obj_compare($osm_nodes->{$id},$osm_obj);
-    $osm_nodes->{$id} = $osm_obj;
-}
+    if ( $AREA_FILTER->inside($osm_obj) ) {
+	#obj_compare($osm_nodes->{$id},$osm_obj);
+	$osm_nodes->{$id} = $osm_obj;
+    }
 
+    $Stats{"elem read"}++;
+    $Stats{"nodes read"}++;
+    display_status("node");
+}
+# --------------------------------------------
+sub segment_ {
+    $osm_obj = undef
+}
+sub segment {
+    my($p, $tag, %attrs) = @_;  
+    my $id = delete $attrs{id};
+    $osm_obj = {};
+    $osm_obj->{id} = $id;
+
+    delete $attrs{action};
+    delete $attrs{timestamp}; # ignore for now
+
+    my $from = $osm_obj->{from} = delete $attrs{from};
+    my $to   = $osm_obj->{to}   = delete $attrs{to};
+
+    if ( keys %attrs ) {
+	warn "segment $id has extra attrs: ".Dumper(\%attrs);
+    }
+    if ( defined($osm_nodes->{$from}) && defined($osm_nodes->{$to}) ) {
+	$osm_segments->{$id} = $osm_obj;
+    }
+
+    $Stats{"elem read"}++;
+    $Stats{"segments read"}++;
+    display_status("node");
+}
 # --------------------------------------------
 sub way_ {
     $osm_obj = undef
@@ -94,27 +149,10 @@ sub way {
 	warn "way $id has extra attrs: ".Dumper(\%attrs);
     }
     $osm_ways->{$id} = $osm_obj;
-}
-# --------------------------------------------
-sub segment_ {
-    $osm_obj = undef
-}
-sub segment {
-    my($p, $tag, %attrs) = @_;  
-    my $id = delete $attrs{id};
-    $osm_obj = {};
-    $osm_obj->{id} = $id;
 
-    delete $attrs{action};
-    $osm_obj->{from} = delete $attrs{from};
-    $osm_obj->{to}   = delete $attrs{to};
-
-    delete $attrs{timestamp}; # ignore for now
-
-    if ( keys %attrs ) {
-	warn "segment $id has extra attrs: ".Dumper(\%attrs);
-    }
-    $osm_segments->{$id} = $osm_obj;
+    $Stats{"elem read"}++;
+    $Stats{"ways read"}++;
+    display_status("node");
 }
 # --------------------------------------------
 sub seg {
@@ -146,30 +184,6 @@ sub tag {
     if ( $k eq "alt" ) {
 	$osm_obj->{alt} = $v;
     }	    
-}
-
-# -----------------------------------------------------------------------------
-# Open Data File in predefined Directories
-sub data_open($){
-    my $file_name = shift;
-
-    my $file_with_path="$file_name";
-    if ( -s $file_with_path ) {
-	debug("Opening $file_with_path");
-	my $fh;
-	if ( $file_with_path =~ m/\.gz$/ ) {
-	    $fh = IO::File->new("gzip -dc $file_with_path|")
-		or die("cannot open $file_with_path: $!");
-	} elsif ( $file_with_path =~ m/\.bz2$/ ) {
-	    $fh = IO::File->new("bzip2 -dc $file_with_path|")
-		or die("cannot open $file_with_path: $!");
-	} else {
-	    $fh = IO::File->new("<$file_with_path")
-		or die("cannot open $file_with_path: $!");
-	}
-	return $fh;
-    }
-    die "cannot Find $file_name";
 }
 
 ###########################################
@@ -268,9 +282,9 @@ sub download_osm_streets($;$) { # Insert Streets from osm File
 		    $get_cmd .= "curl --netrc ";
 		    $get_cmd .= " -o  $abs_filename ";
 		    # $get_cmd .= "wget -O $abs_filename $osm_auth ";
-		    #$get_cmd .= " -q " unless $debug || $verbose;
-		    $get_cmd .= " -v " if $debug && $verbose;
-		    $get_cmd .= " -s " unless $debug || $verbose;
+		    #$get_cmd .= " -q " unless $debug || $VERBOSE;
+		    $get_cmd .= " -v " if $debug && $VERBOSE;
+		    $get_cmd .= " -s " unless $debug || $VERBOSE;
 		    $get_cmd .= "    '$osm_base_url$bbox'"; 
 		    print "$get_cmd\n";
 		    my $start_time=time();
@@ -304,25 +318,29 @@ sub download_osm_streets($;$) { # Insert Streets from osm File
 # -----------------------------------------------------------------------------
 sub read_osm_file($) { # Insert Streets from osm File
     my $file_name = shift;
+    my $area_name = shift;
 
     my $start_time=time();
 
-    print("\rReading $file_name\n") if $verbose || $debug;
+    $AREA_FILTER = Geo::Filter::Area->new( area => $area_name );
+
+    print("\rReading $file_name for $area_name\n") if $VERBOSE || $debug;
     print "$file_name:	".(-s $file_name)." Bytes\n" if $debug;
 
-    if ( $file_name eq "planet.osm" &&
-	 -s "$file_name.storable.node" &&
-         -s "$file_name.storable.segment" &&
-         -s "$file_name.storable.way" 
+    if ( $file_name =~ m/planet-\d+.osm/ &&
+	 -s "$file_name-$area_name.storable.node" &&
+         -s "$file_name-$area_name.storable.segment" &&
+         -s "$file_name-$area_name.storable.way" 
          ) {
-        $osm_nodes    = Storable::retrieve("$file_name.storable.node");
-        $osm_segments = Storable::retrieve("$file_name.storable.segment");
-        $osm_ways     = Storable::retrieve("$file_name.storable.way");
-	if ( $verbose) {
-	    printf "Read $file_name.storable.* in %.0f sec\n",time()-$start_time;
+        $osm_nodes    = Storable::retrieve("$file_name-$area_name.storable.node");
+        $osm_segments = Storable::retrieve("$file_name-$area_name.storable.segment");
+        $osm_ways     = Storable::retrieve("$file_name-$area_name.storable.way");
+	if ( $VERBOSE) {
+	    printf "Read $file_name-$area_name.storable.* in %.0f sec\n",time()-$start_time;
 	}
     } else {
 	print STDERR "Parsing file: $file_name\n" if $debug;
+	$PARSING_START_TIME=time();
 	my $p = XML::Parser->new( Style => 'Subs' ,
 				  ErrorContext => 10,
 				  );
@@ -340,15 +358,15 @@ sub read_osm_file($) { # Insert Streets from osm File
 	if (not $p) {
 	    die "ERROR: Could not parse osm data $file_name\n";
 	}
-	if ( $verbose) {
+	if ( $VERBOSE) {
 	    printf "Read and parsed $file_name in %.0f sec\n",time()-$start_time;
 	}
 	if ( $file_name eq "planet.osm" ) {
-	    Storable::store($osm_nodes   ,"$file_name.storable.node");
-		Storable::store($osm_segments,"$file_name.storable.segment");
-		Storable::store($osm_ways    ,"$file_name.storable.way");
-		if ( $verbose) {
-		    printf "Read and parsed and stored $file_name in %.0f sec\n",time()-$start_time;
+	    Storable::store($osm_nodes   ,"$file_name-$area_name.storable.node");
+		Storable::store($osm_segments,"$file_name-$area_name.storable.segment");
+		Storable::store($osm_ways    ,"$file_name-$area_name.storable.way");
+		if ( $VERBOSE) {
+		    printf "Read and parsed and stored $file_name for area $area_name in %.0f sec\n",time()-$start_time;
 		}
 	    }
     }
@@ -611,7 +629,7 @@ sub obj2street_id($){
 	print "Street Tags: $tags_string\n";
     }
     
-    if ( ! $streets_type_id &&( $debug || $verbose ) ) {
+    if ( ! $streets_type_id &&( $debug || $VERBOSE ) ) {
 	print "#---------------------------------\n";
 	print "Unknown Street Type for '$name' (id: $obj->{id}):\n";
 	print "class: $class\n";
@@ -783,7 +801,7 @@ sub fill_osm_ways() { # Insert Streets from osm variables into mysql-db for gpsd
 	street_segments_add($multi_segment);
 	$multi_segment->{'segments'}=[];
 	print "lat($lat_min , $lat_max)	lon($lon_min , $lon_max)\n" 
-	    if $verbose && $debug;
+	    if $VERBOSE && $debug;
 	
     }; # of for osm_ways
 
@@ -883,7 +901,7 @@ sub delete_existing_entries($){
     unless ( $main::no_delete ) {
 	print "Delete old 'OSM $type' Data\n";
 	Geo::Gpsdrive::DBFuncs::delete_all_from_source($source);
-	print "Deleted old '$source' Data\n" if $verbose || $debug;
+	print "Deleted old '$source' Data\n" if $VERBOSE || $debug;
     }
 
 }
@@ -912,8 +930,13 @@ sub get_source_id($){
 
 # *****************************************************************************
 
-sub import_Data(@){
+sub import_Data($@){
+    my $areas_todo = shift;
     my @filenames = @_;
+
+    #$areas_todo ||= 'germany';
+    $areas_todo ||= 'world';
+    $areas_todo=lc($areas_todo);
 
     print "\nImport OSM Data\n";
 	
@@ -932,23 +955,10 @@ sub import_Data(@){
 	} elsif ( -s $filename ) {
 	    read_osm_file( $filename);
 	} elsif ( $filename eq '' ) {
-	    print "Download planet.osm\n";
-	    my $filename="planet-2006-08-a.osm";
-	    #$filename="planet-2006-08-a.osm.bz2";
-	    $filename="planet-060814.osm.bz2";
-	    my $url = "http://www.ostertag.name/osm/planet";
-	    $url = "http://www.ostertag.name/osm/planet";
-	    $url .="/$filename";
-	    my @file_list =( $filename );
-	    # @file_list =qw( planet.osm.bz2 planet-2006-05-01.osm.bz2);
-	    for my $file ( @file_list ) {
-		my $planet_file = "$mirror_dir/$file";
-		
-		print "Mirror $url ...\n";
-		my $mirror = mirror_file($url,$planet_file);
-		print "Mirror $url complete\n";
-		read_osm_file($planet_file);
-	    }
+	    print "Download planet-xxxxxx.osm\n";
+	    $filename = mirror_planet();
+	    print "Mirror $filename complete\n";
+	    read_osm_file($filename);
 	} else {
 	    die "OSM::import_Data: Cannot find File '$filename'\n";
 	    print "Read OSM Data\n";
