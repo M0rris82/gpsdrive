@@ -49,7 +49,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	friends.c \
 	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_tracks.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h wlan.h waypoint.h draw_tracks.h gpsdrive.h \
-	gpssql.c gpskismet.c gpskismet.h ../config.h icons.c icons.h \
+	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
 	map_handler.c gpsproto.h talogo.h \
@@ -59,7 +59,8 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	map_projection.c \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	unit_test.c 
+	unit_test.c \
+	../config.h gettext.h
 #	lib_map/lib_map.a
 
 if DISABLEGARMIN

@@ -5,7 +5,7 @@ bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geoinfo.pl wp2sql gpsd_nmea.sh \
 		nasaconv.sh \
 		start_mysql_as_user.sh poi-manager.pl \
-		gpsdrive_test.sh devpackages-debian.sh  convert-waypoints.pl
+		devpackages-debian.sh  convert-waypoints.pl
 
 
 geoinfo:
