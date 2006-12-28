@@ -21,7 +21,7 @@ BEGIN {
     # set the version for version checking
     $VERSION     = 1.00;
     # if using RCS/CVS, this may be preferred
-    $VERSION = sprintf "%d.%03d", q$Revision$ =~ /(\d+)/g;
+    #$VERSION = sprintf "%d.%03d", q$Revision$ =~ /(\d+)/g;
 
     @ISA         = qw(Exporter);
     @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id &poi_type_id2name
