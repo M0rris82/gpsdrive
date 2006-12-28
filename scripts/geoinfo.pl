@@ -156,7 +156,7 @@ GetOptions (
 	     'no-delete'           => \$no_delete,
 	     'd'                   => \$DEBUG,      
 	     'verbose+'            => \$VERBOSE,
-	     'debug_range=s'       => \$DEBUG_range,      
+	     'debug_range=s'       => \$debug_range,      
 	     'no-mirror'           => \$no_mirror,
 	     'proxy=s'             => \$PROXY,
 	     'MAN'                 => \$man, 

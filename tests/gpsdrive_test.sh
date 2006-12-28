@@ -31,24 +31,6 @@ mkdir -p logs
     fi
 
 
-    echo "------------------> check geoinfo.pl --create-db"
-    echo "drop database geoinfotest " | mysql -u $DBUSER -p$DBPASS
-    ./geoinfo.pl  --db-name=geoinfotest --db-user=$DBUSER --db-password=$DBPASS \
-	--create-db --fill-defaults >../logs/geoinfo_test.txt 2>&1 
-    rc=$?
-    cat ../logs/geoinfo_test.txt
-    if [ $rc != 0 ] ; then
-	echo "Wrong Exit Code $rc for geoinfo.pl --create-db"
-	cat ../logs/geoinfo_test.txt
-	exit 1
-    fi
-
-    if grep -i -e 'Failed' -e 'ERROR' -e 'Unknown' -e 'DIE' ../logs/geoinfo_test.txt ; then
-	echo "Found (Error/Failed) in geoinfo output "
-	exit 1;
-    fi
-
-
     # ------------------------------------------------------------------ gpsfetchmap
     echo "------------------> check gpsfetchmap.pl -h"
     ./gpsfetchmap.pl  -h >/dev/null
@@ -72,16 +54,14 @@ for icon_theme in square.big square.small classic ; do
     for LANG in en_US de_DE ; do 
 	echo "------------------> check 'gpsdrive -T' LANG=$LANG icon_theme=$icon_theme"
 	perl -p -i.bak \
-	    -e "s/icon_theme = .*/icon_theme = $icon_theme/" /home/tweety/.gpsdrive/gpsdriverc
-	#grep icon_theme /home/tweety/.gpsdrive/gpsdriverc
+	    -e "s/icon_theme = .*/icon_theme = $icon_theme/" ${HOME}/.gpsdrive/gpsdriverc
+	#grep icon_theme ${HOME}/.gpsdrive/gpsdriverc
 	perl -p -i.bak \
-	    -e "s/dbname = geoinfo.*/dbname = geoinfotest/" /home/tweety/.gpsdrive/gpsdriverc
+	    -e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
 
 	./src/gpsdrive -S -T -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
 	rc=$?
 
-	perl -p -i.bak \
-	    -e "s/dbname = geoinfo.*/dbname = geoinfo/" /home/tweety/.gpsdrive/gpsdriverc
 	if [ $rc != 0 ] ; then
 	    tail logs/gpsdrive_test_$LANG.txt
 	    echo "Error starting gpsdrive -T (rc=$rc)"
@@ -94,5 +74,7 @@ for icon_theme in square.big square.small classic ; do
 	    echo "Found (Error/Failed) in gpsdrive -T output "
 	    exit 1;
 	fi
+	perl -p -i.bak \
+	    -e "s/dbname = geoinfo.*/dbname = geoinfo/" ${HOME}/.gpsdrive/gpsdriverc
     done || exit 1
 done || exit 1
