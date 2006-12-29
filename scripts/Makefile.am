@@ -1,4 +1,7 @@
 # Makefile.am for scripts
+SUBDIRS =      perl_lib
+DIST_SUBDIRS = $(SUBDIRS)
+
 bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl \
