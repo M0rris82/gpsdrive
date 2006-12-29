@@ -1,7 +1,9 @@
 # Makefile.am for tests
+bin_SCRIPTS= *.sh
 
-testsdir = $(datadir)/gpsdrive/tests
-tests_DATA= gpsdrive_test.sh
+tests:
+	PERLLIB=./ PATH=./:$$PATH ./gpsdrive_test.sh
 
-EXTRA_DIST = $(tests_DATA)
+gpsdrivedir = $(datadir)/gpsdrive
 
+EXTRA_DIST = $(bin_SCRIPTS)
