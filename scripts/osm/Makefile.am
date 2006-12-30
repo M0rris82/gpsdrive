@@ -7,25 +7,33 @@ bin_SCRIPTS= \
 	osmfilter/osmfilter.pl \
 	planet-mirror/planet-mirror.pl \
 	osm-subset/osm-subset.pl \
-	osm2csv/osm2csv.pl planet-osm/C/UTF8sanitizer
+	simplify/simplify.pl \
+	osm2csv/osm2csv.pl \
+	planet-osm/C/UTF8sanitizer
 
-#Osm_osmfilterdir   = $(PERL_PACKAGE_DIR)/osmfilter
-#Osm_osmfilterDATA =  osmfilter/*.pl
-
-#Osm_planet_mirrordir   = $(PERL_PACKAGE_DIR)/planet-mirror
-#Osm_planet_mirrorDATA =  planet-mirror/*.pl
-
-#Osm_osm_subsetdir   = $(PERL_PACKAGE_DIR)/osm-subset
-#Osm_osm_subsetDATA =  osm-subset/*.pl
-
-#Osm_osm2csvdir   = $(PERL_PACKAGE_DIR)/osm2csv
-#Osm_osm2csvDATA =  osm2csv/*.pl
-
-PRGS = planet.osm/C/UTF8sanitizer.c
+#PRGS = planet.osm/C/UTF8sanitizer.c
 
 EXTRA_DIST = $(bin_SCRIPTS) \
+	$(PRGS) \
+	osm2csv/create_all.sh \
+	osm-pdf-atlas/create.sh \
+	osm-pdf-atlas/Data/readme-shorelines.txt \
+	osm-pdf-atlas/Data/readme.txt \
+	osm-pdf-atlas/osm-pdf-atlas.pl \
+	planet-osm/C/UTF8sanitizer.c \
+	planet-osm/C/UTF8sanitizer.exe \
+	planet-osm/java/build-osm2csv.bat \
+	planet-osm/java/Osm2Csv.java \
+	planet-osm/java/test-osm2csv.bat \
+	planet-osm/perl/check_osm.pl \
+	planet-osm/perl/planetosm-excerpt-area.pl \
+	planet-osm/perl/planetosm-excerpt-tags.pl \
+	planet-osm/perl/planetosm-to-db.pl \
+	planet-osm/php/planet_to_mysql.phps \
+	planet-osm/planet2mysql.rb \
+	planet-osm/planet.rb \
+	planet-osm/planet.sh \
+	planet-osm/python/utf8osmchecker.py \
+	planet-osm/test-planet.osm \
+	simplify/simplify.pl \
 	osm-pdf-atlas/Config/*.txt
-#$(Osm_osmfilterDATA) \
-#$(Osm_planet_mirrorDATA) \
-#$(Osm_osm_subsetDATA) \
-#$(Osm_osm2csvDATA) 

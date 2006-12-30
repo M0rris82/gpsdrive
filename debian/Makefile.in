@@ -205,7 +205,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = control changelog copyright dirs rules files
+EXTRA_DIST = control changelog copyright dirs rules files rules.cmake
 all: all-am
 
 .SUFFIXES:

@@ -14,16 +14,28 @@ icons_classic_DATA = icons/classic/*.png
 icons_classic_accomodation_DATA = icons/classic/accomodation/*.png
 icons_classic_accomodationdir= $(datadir)/gpsdrive/icons/classic/accomodation
 icons_classic_education_DATA = icons/classic/education/*.png
+icons_classic_education_school_DATA = icons/classic/education/school/*.png
+icons_classic_education_schooldir= $(datadir)/gpsdrive/icons/classic/education/school
 icons_classic_educationdir= $(datadir)/gpsdrive/icons/classic/education
 icons_classic_food_DATA = icons/classic/food/*.png
+icons_classic_food_fastfood_DATA = icons/classic/food/fastfood/*.png
+icons_classic_food_fastfooddir = $(datadir)/icons/classic/food/fastfood
+icons_classic_food_restaurant_DATA = icons/classic/food/restaurant/*.png
+icons_classic_food_restaurantdir = $(datadir)/icons/classic/food/restaurant
+icons_classic_food_snacks_DATA = icons/classic/food/snacks/*.png
+icons_classic_food_snacksdir = $(datadir)/icons/classic/food/snacks
 icons_classic_fooddir= $(datadir)/gpsdrive/icons/classic/food
 icons_classic_geocache_DATA = icons/classic/geocache/*.png
 icons_classic_geocachedir = $(datadir)/gpsdrive/icons/geocache
 icons_classic_health_DATA = icons/classic/health/*.png
 icons_classic_healthdir= $(datadir)/gpsdrive/icons/classic/health
 icons_classic_misc_DATA = icons/classic/misc/*.png
+icons_classic_misc_waypoint_DATA = icons/classic/misc/waypoint/*.png
+icons_classic_misc_waypointdir = $(datadir)/icons/classic/misc/waypoint
 icons_classic_miscdir= $(datadir)/gpsdrive/icons/classic/misc
 icons_classic_money_DATA = icons/classic/money/*.png
+icons_classic_money_bank_DATA = icons/classic/money/bank/*.png
+icons_classic_money_bankdir = $(datadir)/icons/classic/money/bank
 icons_classic_moneydir= $(datadir)/gpsdrive/icons/classic/money
 icons_classic_nautical_DATA = icons/classic/nautical/*.png
 icons_classic_nauticaldir= $(datadir)/gpsdrive/icons/classic/nautical
@@ -38,6 +50,8 @@ icons_classic_recreationdir= $(datadir)/gpsdrive/icons/classic/recreation
 icons_classic_religion_DATA = icons/classic/religion/*.png
 icons_classic_religiondir= $(datadir)/gpsdrive/icons/classic/religion
 icons_classic_shopping_DATA = icons/classic/shopping/*.png
+icons_classic_shopping_supermarket_DATA = icons/classic/shopping/supermarket/*.png
+icons_classic_shopping_supermarketdir = $(datadir)/icons/classic/shopping/supermarket
 icons_classic_shoppingdir= $(datadir)/gpsdrive/icons/classic/shopping
 icons_classic_sightseeing_DATA =  icons/classic/sightseeing/*.png
 icons_classic_sightseeingdir= $(datadir)/gpsdrive/icons/classic/sightseeing
@@ -46,27 +60,29 @@ icons_classic_sportsdir= $(datadir)/gpsdrive/icons/classic/sports
 icons_classic_transport_DATA = icons/classic/transport/*.png
 icons_classic_transportdir= $(datadir)/gpsdrive/icons/classic/transport
 icons_classic_vehicle_DATA = icons/classic/vehicle/*.png
+icons_classic_vehicle_car_rental_DATA = icons/classic/vehicle/car_rental/*.png
+icons_classic_vehicle_car_rentaldir = $(datadir)/icons/classic/vehicle/car_rental
 icons_classic_vehicle_fuel_station_DATA = icons/classic/vehicle/fuel_station/*.png
 icons_classic_vehicle_fuel_stationdir= $(datadir)/gpsdrive/icons/classic/vehicle/fuel_station
+icons_classic_vehicle_parking_DATA = icons/classic/vehicle/parking/*.png
+icons_classic_vehicle_parkingdir = $(datadir)/icons/classic/vehicle/parking
 icons_classic_vehicledir= $(datadir)/gpsdrive/icons/classic/vehicle
 icons_classic_wlan_DATA = icons/classic/wlan/*.png 
 icons_classic_wlandir= $(datadir)/gpsdrive/icons/classic/wlan
 icons_classicdir= $(datadir)/gpsdrive/icons/classic
 icons_square.big_DATA =	icons/square.big/*.png
 icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
-icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 icons_square.big_accomodation_hotel_DATA = icons/square.big/accomodation/hotel/*.png
 icons_square.big_accomodation_hoteldir= $(datadir)/gpsdrive/icons/square.big/accomodation/hotel
+icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 icons_square.big_education_DATA = icons/square.big/education/*.png
 icons_square.big_education_school_DATA = icons/square.big/education/school/*.png
 icons_square.big_education_schooldir= $(datadir)/gpsdrive/icons/square.big/education/school
 icons_square.big_educationdir= $(datadir)/gpsdrive/icons/square.big/education
-icons_square.big_fastfood_DATA = icons/square.big/food/fastfood/*.png
-icons_square.big_fastfooddir= $(datadir)/gpsdrive/icons/square.big/food/fastfood
 icons_square.big_food_DATA = icons/square.big/food/*.png
-icons_square.big_food_fastfoodDATA = icons/square.big/food/fastfood/*.png
-icons_square.big_food_fastfooddir= $(datadir)/gpsdrive/icons/square.big/food/fastfood
-icons_square.big_fooddir= $(datadir)/gpsdrive/icons/square.big/food
+icons_square.big_food_fastfood_DATA = icons/square.big/food/fastfood/*.png
+icons_square.big_food_fastfooddir = $(datadir)/icons/square.big/food/fastfood
+icons_square.big_fooddir = $(datadir)/icons/square.big/food
 icons_square.big_geocache_DATA = icons/square.big/geocache/*.png
 icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big
 icons_square.big_health_DATA = icons/square.big/health/*.png
@@ -104,6 +120,8 @@ icons_square.big_restaurantdir= $(datadir)/gpsdrive/icons/square.big/restaurant
 icons_square.big_shopping_DATA = icons/square.big/shopping/*.png
 icons_square.big_shopping_diy_store_DATA = icons/square.big/shopping/diy_store/*.png
 icons_square.big_shopping_diy_storedir= $(datadir)/gpsdrive/icons/square.big/shopping/diy_store
+icons_square.big_shopping_furniture_DATA = icons/square.big/shopping/furniture/*.png
+icons_square.big_shopping_furnituredir = $(datadir)/icons/square.big/shopping/furniture
 icons_square.big_shopping_groceries_DATA = icons/square.big/shopping/groceries/*.png
 icons_square.big_shopping_groceriesdir= $(datadir)/gpsdrive/icons/square.big/shopping/groceries
 icons_square.big_shopping_sports_DATA = icons/square.big/shopping/sports/*.png
@@ -194,11 +212,21 @@ EXTRA_DIST= \
 	$(icons_classic_DATA) \
 	$(icons_classic_accomodation_DATA) \
 	$(icons_classic_education_DATA) \
+	$(icons_classic_education_school_DATA) \
 	$(icons_classic_food_DATA) \
+	$(icons_classic_food_fastfood_DATA) \
+	$(icons_classic_food_restaurant_DATA) \
+	$(icons_classic_food_restaurant_DATA) \
+	$(icons_classic_food_snacks_DATA) \
+	$(icons_classic_food_snacks_DATA) \
 	$(icons_classic_geocache_DATA) \
 	$(icons_classic_health_DATA) \
 	$(icons_classic_misc_DATA) \
+	$(icons_classic_misc_waypoint_DATA) \
+	$(icons_classic_misc_waypoint_DATA) \
 	$(icons_classic_money_DATA) \
+	$(icons_classic_money_bank_DATA) \
+	$(icons_classic_money_bank_DATA) \
 	$(icons_classic_nautical_DATA) \
 	$(icons_classic_people_DATA) \
 	$(icons_classic_places_DATA) \
@@ -206,11 +234,17 @@ EXTRA_DIST= \
 	$(icons_classic_recreation_DATA) \
 	$(icons_classic_religion_DATA) \
 	$(icons_classic_shopping_DATA) \
+	$(icons_classic_shopping_supermarket_DATA) \
+	$(icons_classic_shopping_supermarket_DATA) \
 	$(icons_classic_sightseeing_DATA) \
 	$(icons_classic_sports_DATA) \
 	$(icons_classic_transport_DATA) \
 	$(icons_classic_vehicle_DATA) \
+	$(icons_classic_vehicle_car_rental_DATA) \
+	$(icons_classic_vehicle_car_rental_DATA) \
 	$(icons_classic_vehicle_fuel_station_DATA) \
+	$(icons_classic_vehicle_parking_DATA) \
+	$(icons_classic_vehicle_parking_DATA) \
 	$(icons_classic_wlan_DATA) \
 	$(icons_square.big_DATA) \
 	$(icons_square.big_accomodation_DATA) \
@@ -218,7 +252,9 @@ EXTRA_DIST= \
 	$(icons_square.big_education_DATA) \
 	$(icons_square.big_education_school_DATA) \
 	$(icons_square.big_food_DATA) \
+	$(icons_square.big_food_DATA) \
 	$(icons_square.big_food_fastfoodDATA) \
+	$(icons_square.big_food_fastfood_DATA) \
 	$(icons_square.big_geocache_DATA) \
 	$(icons_square.big_health_DATA) \
 	$(icons_square.big_misc_DATA) \
@@ -239,6 +275,7 @@ EXTRA_DIST= \
 	$(icons_square.big_restaurant_DATA) \
 	$(icons_square.big_shopping_DATA) \
 	$(icons_square.big_shopping_diy_store_DATA) \
+	$(icons_square.big_shopping_furniture_DATA) \
 	$(icons_square.big_shopping_groceries_DATA) \
 	$(icons_square.big_shopping_sports_DATA) \
 	$(icons_square.big_shopping_supermarket_DATA) \
@@ -276,7 +313,17 @@ EXTRA_DIST= \
 	$(apps_DATA) \
 	CMakeLists.txt poi/CMakeLists.txt \
 	maps/CMakeLists.txt icons/CMakeLists.txt \
-	pixmaps/CMakeLists.txt
+	pixmaps/CMakeLists.txt \
+	icons/dev-icons.txt \
+	mysql/my.cnf \
+	poi_examples.gpx \
+	poi_types.html \
+	README.icons \
+	rebuild-all.sh \
+	rebuild-icons.txt.sh \
+	rebuild-poi_types.html.pl \
+	update_icons.pl
+
 
 
 rebuild-icons:
