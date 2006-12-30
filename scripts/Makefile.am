@@ -1,5 +1,5 @@
 # Makefile.am for scripts
-SUBDIRS =      perl_lib
+SUBDIRS =      perl_lib osm
 DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
@@ -9,7 +9,6 @@ bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		nasaconv.sh \
 		start_mysql_as_user.sh poi-manager.pl \
 		devpackages-debian.sh  convert-waypoints.pl
-
 
 geoinfo:
 	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help

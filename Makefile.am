@@ -6,7 +6,8 @@ DIST_SUBDIRS = $(SUBDIRS)
 
 
 # I'm not shure if this is needed
-EXTRA_DIST = config.rpath m4/ChangeLog po/Makefile.am po/Makefile.in po/POTFILES
+EXTRA_DIST = config.rpath m4/ChangeLog po/Makefile.am po/Makefile.in po/POTFILES \
+	m4/*.m4
 pkgdata_DATA = depcomp
 
 documentation1dir   = $(datadir)/gpsdrive/Documentation
