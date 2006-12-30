@@ -2,7 +2,6 @@
 
 gpsdrivedir = $(datadir)/gpsdrive
 
-
 bin_SCRIPTS= \
 	osmfilter/osmfilter.pl \
 	planet-mirror/planet-mirror.pl \
@@ -11,7 +10,10 @@ bin_SCRIPTS= \
 	osm2csv/osm2csv.pl \
 	planet-osm/C/UTF8sanitizer
 
-#PRGS = planet.osm/C/UTF8sanitizer.c
+UTF8sanitizerdir = $(bindir)
+UTF8sanitizer_PROGRAMS = UTF8sanitizer
+UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
+#PRGS = planet-osm/C/UTF8sanitizer.c
 
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \

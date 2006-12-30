@@ -16,6 +16,7 @@
 
 # Makefile.am for scripts/perl_lib
 
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -37,6 +38,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+UTF8sanitizer_PROGRAMS = UTF8sanitizer$(EXEEXT)
 subdir = scripts/osm
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -47,11 +49,30 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)"
+am__installdirs = "$(DESTDIR)$(UTF8sanitizerdir)" \
+	"$(DESTDIR)$(bindir)"
+UTF8sanitizerPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+PROGRAMS = $(UTF8sanitizer_PROGRAMS)
+am_UTF8sanitizer_OBJECTS = UTF8sanitizer.$(OBJEXT)
+UTF8sanitizer_OBJECTS = $(am_UTF8sanitizer_OBJECTS)
+UTF8sanitizer_LDADD = $(LDADD)
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 SCRIPTS = $(bin_SCRIPTS)
-SOURCES =
-DIST_SOURCES =
+DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --tag=CC --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --tag=CC --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+SOURCES = $(UTF8sanitizer_SOURCES)
+DIST_SOURCES = $(UTF8sanitizer_SOURCES)
+ETAGS = etags
+CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -218,8 +239,9 @@ bin_SCRIPTS = \
 	osm2csv/osm2csv.pl \
 	planet-osm/C/UTF8sanitizer
 
-
-#PRGS = planet.osm/C/UTF8sanitizer.c
+UTF8sanitizerdir = $(bindir)
+UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
+#PRGS = planet-osm/C/UTF8sanitizer.c
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
 	osm2csv/create_all.sh \
@@ -248,6 +270,7 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 all: all-am
 
 .SUFFIXES:
+.SUFFIXES: .c .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -277,6 +300,37 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+install-UTF8sanitizerPROGRAMS: $(UTF8sanitizer_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	test -z "$(UTF8sanitizerdir)" || $(mkdir_p) "$(DESTDIR)$(UTF8sanitizerdir)"
+	@list='$(UTF8sanitizer_PROGRAMS)'; for p in $$list; do \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(UTF8sanitizerPROGRAMS_INSTALL) '$$p' '$(DESTDIR)$(UTF8sanitizerdir)/$$f'"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(UTF8sanitizerPROGRAMS_INSTALL) "$$p" "$(DESTDIR)$(UTF8sanitizerdir)/$$f" || exit 1; \
+	  else :; fi; \
+	done
+
+uninstall-UTF8sanitizerPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(UTF8sanitizer_PROGRAMS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f '$(DESTDIR)$(UTF8sanitizerdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(UTF8sanitizerdir)/$$f"; \
+	done
+
+clean-UTF8sanitizerPROGRAMS:
+	@list='$(UTF8sanitizer_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  echo " rm -f $$p $$f"; \
+	  rm -f $$p $$f ; \
+	done
+UTF8sanitizer$(EXEEXT): $(UTF8sanitizer_OBJECTS) $(UTF8sanitizer_DEPENDENCIES) 
+	@rm -f UTF8sanitizer$(EXEEXT)
+	$(LINK) $(UTF8sanitizer_LDFLAGS) $(UTF8sanitizer_OBJECTS) $(UTF8sanitizer_LDADD) $(LIBS)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
@@ -297,6 +351,49 @@ uninstall-binSCRIPTS:
 	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
 	done
 
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT)
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/UTF8sanitizer.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+
+.c.lo:
+@am__fastdepCC_TRUE@	if $(LTCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Plo"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+UTF8sanitizer.o: planet-osm/C/UTF8sanitizer.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT UTF8sanitizer.o -MD -MP -MF "$(DEPDIR)/UTF8sanitizer.Tpo" -c -o UTF8sanitizer.o `test -f 'planet-osm/C/UTF8sanitizer.c' || echo '$(srcdir)/'`planet-osm/C/UTF8sanitizer.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/UTF8sanitizer.Tpo" "$(DEPDIR)/UTF8sanitizer.Po"; else rm -f "$(DEPDIR)/UTF8sanitizer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='planet-osm/C/UTF8sanitizer.c' object='UTF8sanitizer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o UTF8sanitizer.o `test -f 'planet-osm/C/UTF8sanitizer.c' || echo '$(srcdir)/'`planet-osm/C/UTF8sanitizer.c
+
+UTF8sanitizer.obj: planet-osm/C/UTF8sanitizer.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT UTF8sanitizer.obj -MD -MP -MF "$(DEPDIR)/UTF8sanitizer.Tpo" -c -o UTF8sanitizer.obj `if test -f 'planet-osm/C/UTF8sanitizer.c'; then $(CYGPATH_W) 'planet-osm/C/UTF8sanitizer.c'; else $(CYGPATH_W) '$(srcdir)/planet-osm/C/UTF8sanitizer.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/UTF8sanitizer.Tpo" "$(DEPDIR)/UTF8sanitizer.Po"; else rm -f "$(DEPDIR)/UTF8sanitizer.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='planet-osm/C/UTF8sanitizer.c' object='UTF8sanitizer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o UTF8sanitizer.obj `if test -f 'planet-osm/C/UTF8sanitizer.c'; then $(CYGPATH_W) 'planet-osm/C/UTF8sanitizer.c'; else $(CYGPATH_W) '$(srcdir)/planet-osm/C/UTF8sanitizer.c'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -306,12 +403,54 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique
 tags: TAGS
-TAGS:
 
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	if test -z "$(ETAGS_ARGS)$$tags$$unique"; then :; else \
+	  test -n "$$unique" || unique=$$empty_fix; \
+	  $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+	    $$tags $$unique; \
+	fi
 ctags: CTAGS
-CTAGS:
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(CTAGS_ARGS)$$tags$$unique" \
+	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
+	     $$tags $$unique
 
+GTAGS:
+	here=`$(am__cd) $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
 	$(mkdir_p) $(distdir)/osm-pdf-atlas $(distdir)/osm-pdf-atlas/Config $(distdir)/osm-pdf-atlas/Data $(distdir)/osm-subset $(distdir)/osm2csv $(distdir)/osmfilter $(distdir)/planet-mirror $(distdir)/planet-osm $(distdir)/planet-osm/C $(distdir)/planet-osm/java $(distdir)/planet-osm/perl $(distdir)/planet-osm/php $(distdir)/planet-osm/python $(distdir)/simplify
@@ -343,9 +482,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(SCRIPTS)
+all-am: Makefile $(PROGRAMS) $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(UTF8sanitizerdir)" "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -374,11 +513,14 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-UTF8sanitizerPROGRAMS clean-generic clean-libtool \
+	mostlyclean-am
 
 distclean: distclean-am
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-libtool
+distclean-am: clean-am distclean-compile distclean-generic \
+	distclean-libtool distclean-tags
 
 dvi: dvi-am
 
@@ -390,7 +532,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-UTF8sanitizerPROGRAMS
 
 install-exec-am: install-binSCRIPTS
 
@@ -401,12 +543,14 @@ install-man:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic mostlyclean-libtool
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
 
 pdf: pdf-am
 
@@ -416,17 +560,22 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-info-am
+uninstall-am: uninstall-UTF8sanitizerPROGRAMS uninstall-binSCRIPTS \
+	uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-binSCRIPTS install-data install-data-am install-exec \
-	install-exec-am install-info install-info-am install-man \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-binSCRIPTS uninstall-info-am
+.PHONY: CTAGS GTAGS all all-am check check-am clean \
+	clean-UTF8sanitizerPROGRAMS clean-generic clean-libtool ctags \
+	distclean distclean-compile distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-UTF8sanitizerPROGRAMS \
+	install-am install-binSCRIPTS install-data install-data-am \
+	install-exec install-exec-am install-info install-info-am \
+	install-man install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-UTF8sanitizerPROGRAMS uninstall-am \
+	uninstall-binSCRIPTS uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
