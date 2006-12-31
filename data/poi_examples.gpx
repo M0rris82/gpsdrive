@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<gpx
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xmlns="http://www.topografix.com/GPX/1/0" 
- xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd" creator="GPSDrive-Geoinfo - www.gpsdrive.cc">
+ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd"
+ version="1.0"
+ creator="GPSDrive-Geoinfo - www.gpsdrive.cc">
 
 <name>POI Examples</name>
-<desc>Example Point-of-Interests for GPSDrive</desc>
+<desc>Example Points-of-Interest for GPSDrive</desc>
 <author>Guenther Meyer</author>
 <email>d.s.e@sordidmusic.com</email>
 <url>www.gpsdrive.cc</url>
@@ -12,7 +16,7 @@
 <time>2006-12-13</time>
 
 
-<wpt lat="" lon="">
+<wpt lat="lat" lon="lon">
   <ele>altitude</ele>
   <name>name</name>
   <cmt>comment</cmt>

@@ -1,7 +1,7 @@
 ## Makefile.am for data
 
 cfg_filesdir   = $(datadir)/gpsdrive/
-cfg_files_DATA = icons.txt map_koord.txt gpsdrive.desktop
+cfg_files_DATA = icons.xml map_koord.txt gpsdrive.desktop
 
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
@@ -26,7 +26,7 @@ icons_classic_food_snacks_DATA = icons/classic/food/snacks/*.png
 icons_classic_food_snacksdir = $(datadir)/icons/classic/food/snacks
 icons_classic_fooddir= $(datadir)/gpsdrive/icons/classic/food
 icons_classic_geocache_DATA = icons/classic/geocache/*.png
-icons_classic_geocachedir = $(datadir)/gpsdrive/icons/geocache
+icons_classic_geocachedir = $(datadir)/gpsdrive/icons/classic/geocache
 icons_classic_health_DATA = icons/classic/health/*.png
 icons_classic_healthdir= $(datadir)/gpsdrive/icons/classic/health
 icons_classic_misc_DATA = icons/classic/misc/*.png
@@ -84,7 +84,7 @@ icons_square.big_food_fastfood_DATA = icons/square.big/food/fastfood/*.png
 icons_square.big_food_fastfooddir = $(datadir)/icons/square.big/food/fastfood
 icons_square.big_fooddir = $(datadir)/icons/square.big/food
 icons_square.big_geocache_DATA = icons/square.big/geocache/*.png
-icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big
+icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big/geocache
 icons_square.big_health_DATA = icons/square.big/health/*.png
 icons_square.big_healthdir= $(datadir)/gpsdrive/icons/square.big/health
 icons_square.big_misc_DATA = icons/square.big/misc/*.png

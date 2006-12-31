@@ -8,18 +8,13 @@
 #  - Create basic XML-File if none is available
 #  - Search icons directories for PNG files
 #  - Add those files as new POI-Types if they are not yet existent
-#  - Update the poi_type table in the database
 #  
-#  $Id:$
-#
-#  Development work in progress:
-#
-#  - Rebuild the poi_type database from the xml file
+#  Further ideas:
 #
 #  - Maybe provide an interface to enter easily new title and
 #    description fields to the xml file
 #   
-#  - Create overview index.html from the XML-File  using an XSLT to
+#  - Create overview index.html from the XML-File using an XSLT to
 #    show all available poi_types and icons.
 #
 #####################################################################
@@ -64,9 +59,9 @@ my %h_icons = ('', '');
 my $i = 0;
 my $poi_type_id_base = 30;
 my $default_scale_min = 1;
-my $default_scale_max = 20000;
-my $default_title_en = 't i t l e';
-my $default_desc_en = 'd e s c r i p t i o n';
+my $default_scale_max = 50000;
+my $default_title_en = '';
+my $default_desc_en = '';
 my $lang = 'de';
 
 # parsing options
@@ -91,7 +86,7 @@ unless ($opt_d)
   update_overview($file_html);	# update html overview from XML-File
 }
 
-update_db($file_xml,$lang);			# update databse from XML-File
+#update_db($file_xml,$lang);	# update databse from XML-File
 
 
 exit (0);
@@ -104,7 +99,7 @@ exit (0);
 #
 sub update_overview
 {
-  my $file = shift(@_);
+  my $file = shift;
   print STDOUT "\n----- Updating HTML Overview '$file' -----\n";
   
   print STDOUT "  NOT YET IMPLEMENTED !\n";
@@ -120,14 +115,12 @@ sub update_overview
 #
 sub update_db
 {
-  my $file = shift(@_);
-  my $lang = shift(@_);
+  my $file = shift;
+  my $lang = shift;
   
   print STDOUT "\n----- Updating database using local language '$lang' -----\n";
   
-  print STDOUT "  NOT YET IMPLEMENTED !\n";
-
-  return;
+  #Geo::Gpsdrive::DB_Defaults::update_poi_type_db($file,$lang);
 }
 
 
@@ -138,7 +131,7 @@ sub update_db
 #
 sub update_xml
 {
-  my $file = shift(@_);
+  my $file = shift;
   print STDOUT "\n----- Parsing and updating '$file' -----\n";
   
   # Parse XML-File and look for already existing POI-Type entries
@@ -255,8 +248,10 @@ sub insert_poi_type
   my $new_condition = new XML::Twig::Elt('condition');
   $new_condition->set_att(k=>'poi');
   $new_condition->set_att(v=>"$name");
-  my $new_title_en = new XML::Twig::Elt('title_en',$default_title_en);
-  my $new_desc_en = new XML::Twig::Elt('description_en',$default_desc_en);
+  my $new_title_en = new XML::Twig::Elt('title',$default_title_en);
+  $new_title_en->set_att(lang=>'en');
+  my $new_desc_en = new XML::Twig::Elt('description',$default_desc_en);
+  $new_desc_en->set_att(lang=>'en');
   my $new_scale_min = new XML::Twig::Elt('scale_min',$default_scale_min);
   my $new_scale_max = new XML::Twig::Elt('scale_max',$default_scale_max);
   my $new_poi_type_id = new XML::Twig::Elt('poi_type_id',$poi_type_id_base);
@@ -323,7 +318,7 @@ sub create_xml
      { name => 'unknown',
        poi_type_id => '1',
        scale_min => '1',
-       scale_max => '25000',
+       scale_max => '50000',
        description_en => 'Unassigned POI',
        description_de => 'Nicht zugewiesener POI',
        title_en => 'Unknown',
@@ -335,8 +330,8 @@ sub create_xml
        scale_max => '50000',
        description_en => 'Places to stay',
        description_de => 'Hotels, Jugendherbergen, Campingpl&#228;tze',
-       title_en => 'Accomodation',
-       title_de => '&#220;bernachtungsm&#246;glichkeit',
+       title_en => 'Accommodation',
+       title_de => 'Unterkunft',
      },
      { name => 'education',
        poi_type_id => '3',
@@ -359,7 +354,7 @@ sub create_xml
      { name => 'geocache',
        poi_type_id => '5',
        scale_min => '1',
-       scale_max => '25000',
+       scale_max => '50000',
        description_en => 'Geocaches',
        description_de => 'Geocaches',
        title_en => 'Geocache',
@@ -495,11 +490,20 @@ sub create_xml
      { name => 'misc',
        poi_type_id => '20',
        scale_min => '1',
-       scale_max => '20000',
+       scale_max => '25000',
        description_en => 'POIs not suitable for another category, and custom types',
        description_de => 'Eigenkreationen, und Punkte, die in keine der anderen Kategorien passen',
        title_en => 'Miscellaneous',
        title_de => 'Verschiedenes',
+     },
+     { name => 'waypoint',
+       poi_type_id => '21',
+       scale_min => '1',
+       scale_max => '50000',
+       description_en => 'Waypoints, for example  to temporarily mark several places',
+       description_de => 'Wegpunkte, um z.B. temporäre Punkte zu markieren',
+       title_en => 'Waypoint',
+       title_de => 'Wegpunkt',
      },
     
    );
@@ -574,7 +578,7 @@ update_icons.pl [-h] [-v] [-d] [-l LANGUAGE] [-f XML-FILE]
  can choose the language, which is used for these entries. If there
  don't exist any entries for the chosen language in the xml file, the
  English values will be used.
- The default language is 'de' for German, if this option is omitted.
+ The default language is 'de' for German.
 
 =item B<-v>
 
