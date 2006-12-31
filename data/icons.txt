@@ -2,10 +2,6 @@ accommodation                            1	25000
 accommodation.camping                    1	25000
 accommodation.empty                      1	25000
 accommodation.hotel                      1	25000
-accommodation.hotel.five_star            1	25000
-accommodation.hotel.four_star            1	25000
-accommodation.hotel.three_star           1	25000
-accommodation.hotel.two_star             1	25000
 accommodation.youth-hostel               1	25000
 education                                1	25000
 education.adult                          1	25000

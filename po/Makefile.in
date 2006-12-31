@@ -11,7 +11,7 @@
 # Origin: gettext-0.16
 
 PACKAGE = gpsdrive
-VERSION = 2.10pre3-svn-1181
+VERSION = 2.10pre3-svn-1183
 PACKAGE_BUGREPORT = ganter@ganter.at
 
 SHELL = /bin/sh

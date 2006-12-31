@@ -11,8 +11,20 @@ pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
 #######################################################################################
 icons_classic_DATA = icons/classic/*.png
-icons_classic_accomodation_DATA = icons/classic/accomodation/*.png
-icons_classic_accomodationdir= $(datadir)/gpsdrive/icons/classic/accomodation
+icons_classic_accommodation_DATA = icons/classic/accommodation/*.png
+icons_classic_accommodationdir = $(datadir)/icons/classic/accommodation
+icons_classic_misc_DATA = icons/classic/misc/*.png
+icons_classic_miscdir = $(datadir)/icons/classic/misc
+icons_classic_waypoint_DATA = icons/classic/waypoint/*.png
+icons_classic_waypointdir = $(datadir)/icons/classic/waypoint
+icons_square.big_accommodation_DATA = icons/square.big/accommodation/*.png
+icons_square.big_accommodationdir = $(datadir)/icons/square.big/accommodation
+icons_square.big_waypoint_DATA = icons/square.big/waypoint/*.png
+icons_square.big_waypointdir = $(datadir)/icons/square.big/waypoint
+icons_square.small_accommodation_DATA = icons/square.small/accommodation/*.png
+icons_square.small_accommodationdir = $(datadir)/icons/square.small/accommodation
+icons_square.small_waypoint_DATA = icons/square.small/waypoint/*.png
+icons_square.small_waypointdir = $(datadir)/icons/square.small/waypoint
 icons_classic_education_DATA = icons/classic/education/*.png
 icons_classic_education_school_DATA = icons/classic/education/school/*.png
 icons_classic_education_schooldir= $(datadir)/gpsdrive/icons/classic/education/school
@@ -29,10 +41,6 @@ icons_classic_geocache_DATA = icons/classic/geocache/*.png
 icons_classic_geocachedir = $(datadir)/gpsdrive/icons/classic/geocache
 icons_classic_health_DATA = icons/classic/health/*.png
 icons_classic_healthdir= $(datadir)/gpsdrive/icons/classic/health
-icons_classic_misc_DATA = icons/classic/misc/*.png
-icons_classic_misc_waypoint_DATA = icons/classic/misc/waypoint/*.png
-icons_classic_misc_waypointdir = $(datadir)/icons/classic/misc/waypoint
-icons_classic_miscdir= $(datadir)/gpsdrive/icons/classic/misc
 icons_classic_money_DATA = icons/classic/money/*.png
 icons_classic_money_bank_DATA = icons/classic/money/bank/*.png
 icons_classic_money_bankdir = $(datadir)/icons/classic/money/bank
@@ -71,10 +79,6 @@ icons_classic_wlan_DATA = icons/classic/wlan/*.png
 icons_classic_wlandir= $(datadir)/gpsdrive/icons/classic/wlan
 icons_classicdir= $(datadir)/gpsdrive/icons/classic
 icons_square.big_DATA =	icons/square.big/*.png
-icons_square.big_accomodation_DATA = icons/square.big/accomodation/*.png
-icons_square.big_accomodation_hotel_DATA = icons/square.big/accomodation/hotel/*.png
-icons_square.big_accomodation_hoteldir= $(datadir)/gpsdrive/icons/square.big/accomodation/hotel
-icons_square.big_accomodationdir= $(datadir)/gpsdrive/icons/square.big/accomodation
 icons_square.big_education_DATA = icons/square.big/education/*.png
 icons_square.big_education_school_DATA = icons/square.big/education/school/*.png
 icons_square.big_education_schooldir= $(datadir)/gpsdrive/icons/square.big/education/school
@@ -88,8 +92,6 @@ icons_square.big_geocachedir= $(datadir)/gpsdrive/icons/square.big/geocache
 icons_square.big_health_DATA = icons/square.big/health/*.png
 icons_square.big_healthdir= $(datadir)/gpsdrive/icons/square.big/health
 icons_square.big_misc_DATA = icons/square.big/misc/*.png
-icons_square.big_misc_waypoint_DATA = icons/square.big/misc/waypoint/*.png
-icons_square.big_misc_waypointdir= $(datadir)/gpsdrive/icons/square.big/waypoint/misc
 icons_square.big_miscdir= $(datadir)/gpsdrive/icons/square.big/misc
 icons_square.big_money_DATA = icons/square.big/money/*.png
 icons_square.big_money_atm_DATA = icons/square.big/money/atm/*.png
@@ -149,8 +151,6 @@ icons_square.big_wlan_paydir= $(datadir)/gpsdrive/icons/square.big/wlan/pay
 icons_square.big_wlandir= $(datadir)/gpsdrive/icons/square.big/wlan
 icons_square.bigdir= $(datadir)/gpsdrive/icons/square.big
 icons_square.small_DATA = icons/square.small/*.png
-icons_square.small_accomodation_DATA = icons/square.small/accomodation/*.png
-icons_square.small_accomodationdir= $(datadir)/gpsdrive/icons/square.small/accomodation
 icons_square.small_education_DATA = icons/square.small/education/*.png
 icons_square.small_educationdir=$(datadir)/gpsdrive/icons/square.small/education
 icons_square.small_food_DATA = icons/square.small/food/*.png
@@ -210,7 +210,6 @@ EXTRA_DIST= \
 	$(pixmap_DATA) $(icons_DATA) \
 	\
 	$(icons_classic_DATA) \
-	$(icons_classic_accomodation_DATA) \
 	$(icons_classic_education_DATA) \
 	$(icons_classic_education_school_DATA) \
 	$(icons_classic_food_DATA) \
@@ -221,9 +220,6 @@ EXTRA_DIST= \
 	$(icons_classic_food_snacks_DATA) \
 	$(icons_classic_geocache_DATA) \
 	$(icons_classic_health_DATA) \
-	$(icons_classic_misc_DATA) \
-	$(icons_classic_misc_waypoint_DATA) \
-	$(icons_classic_misc_waypoint_DATA) \
 	$(icons_classic_money_DATA) \
 	$(icons_classic_money_bank_DATA) \
 	$(icons_classic_money_bank_DATA) \
@@ -247,8 +243,6 @@ EXTRA_DIST= \
 	$(icons_classic_vehicle_parking_DATA) \
 	$(icons_classic_wlan_DATA) \
 	$(icons_square.big_DATA) \
-	$(icons_square.big_accomodation_DATA) \
-	$(icons_square.big_accomodation_hotel_DATA) \
 	$(icons_square.big_education_DATA) \
 	$(icons_square.big_education_school_DATA) \
 	$(icons_square.big_food_DATA) \
@@ -258,7 +252,6 @@ EXTRA_DIST= \
 	$(icons_square.big_geocache_DATA) \
 	$(icons_square.big_health_DATA) \
 	$(icons_square.big_misc_DATA) \
-	$(icons_square.big_misc_waypoint_DATA) \
 	$(icons_square.big_money_DATA) \
 	$(icons_square.big_money_DATA) \
 	$(icons_square.big_money_atm_DATA) \
@@ -289,7 +282,6 @@ EXTRA_DIST= \
 	$(icons_square.big_wlan_DATA) \
 	$(icons_square.big_wlan_pay_DATA) \
 	$(icons_square.small_DATA) \
-	$(icons_square.small_accomodation_DATA) \
 	$(icons_square.small_education_DATA) \
 	$(icons_square.small_food_DATA) \
 	$(icons_square.small_geocache_DATA) \
@@ -309,6 +301,14 @@ EXTRA_DIST= \
 	$(icons_square.small_vehicle_DATA) \
 	$(icons_square.small_wlan_DATA) \
 	\
+        $(icons_classic_accommodation_DATA) \
+        $(icons_classic_misc_DATA) \
+        $(icons_classic_waypoint_DATA) \
+        $(icons_square.big_accommodation_DATA) \
+        $(icons_square.big_waypoint_DATA) \
+        $(icons_square.small_accommodation_DATA) \
+        $(icons_square.small_waypoint_DATA) \
+        $(icons_square.small_waypoint_DATA) \
 	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA) \
 	CMakeLists.txt poi/CMakeLists.txt \
@@ -317,7 +317,6 @@ EXTRA_DIST= \
 	icons/dev-icons.txt \
 	mysql/my.cnf \
 	poi_examples.gpx \
-	poi_types.html \
 	README.icons \
 	rebuild-all.sh \
 	rebuild-icons.txt.sh \
