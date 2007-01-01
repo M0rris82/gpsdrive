@@ -91,7 +91,7 @@ sub import_Data(){
 	GASSTATION => "transport.car.gas station" ,
 	GEOCACHE   => "recreation.geocache" ,
 	GOLF       => "recreation.sports.golf place" ,
-	HOTEL      => "accomodation" ,
+	HOTEL      => "accommodation" ,
 	MCDONALDS  => "food.restaurant.fastfood.mc donalds" ,
 	MONU       => "recreation.landmark" ,
 	NIGHTCLUB  => "recreation.night club" ,

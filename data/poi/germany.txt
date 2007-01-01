@@ -6,7 +6,7 @@ Kirchheim_Zentrum       48.176746   11.754147 places.city
 Tankstelle              48.188241   11.779348 transport-vehicle.gas-station
 Tankstelle_Shell_Blechinger  48.171572   11.720981 transport-vehicle.gas-station
 Baywa                   48.170465   11.799288 shopping.hardware
-Raeter_Hotel            48.163887   11.756737 accomodation.hotel
+Raeter_Hotel            48.163887   11.756737 accommodation.hotel
 Raeter_Stuben           48.163833   11.756723 food.restaurant
 La_Piazza               48.162924   11.756845 food.restaurant.it
 Thai                    48.162133   11.756346 food.restaurant.ja

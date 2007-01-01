@@ -453,7 +453,7 @@ sub tag_string($){
 my $class2type = {
     "barn"		=> "area.building.barn",
     "bridge"		=> "area.bridge",
-    "campsite"		=> "accomodation.campground",
+    "campsite"		=> "accommodation.campground",
     "car park"		=> "transportation.car.parkinglot",
     "caution"		=> "general.caution",
     "church"		=> "church",
