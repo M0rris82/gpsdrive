@@ -49,7 +49,7 @@ sub fill_default_poi_types() {
     for my $val (
 		 (
 		  "1,'unknown','1','25000','Unassigned POI'",
-		  "2,'accomodation','1','25000','Places to stay'",
+		  "2,'accommodation','1','25000','Places to stay'",
 		  "3,'education','1','25000','Schools and other educational facilities'",
 		  "4,'food','1','25000','Restaurants, Bars, and so on...'",
 		  "5,'geocache','1','25000','Geocaches'",
