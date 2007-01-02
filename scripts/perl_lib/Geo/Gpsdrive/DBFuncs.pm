@@ -764,7 +764,6 @@ sub db_exec($){
     return 1;
 }
 
-
 # -----------------------------------------------------------------------------
 # create known indices for given table
 # if they dont exist already
@@ -881,14 +880,13 @@ sub create_db(){
                       `name`        varchar(160)  NOT NULL default \'\',
                       `scale_min`   int(12)       NOT NULL default \'1\',
                       `scale_max`   int(12)       NOT NULL default \'25000\',
-                      `title` varchar(160)        NULL default \'\',
-                      `title_en` varchar(160)     NULL default \'\',
-                      `description` varchar(160)    NULL default \'\',
+                      `title`          varchar(160) NULL default \'\',
+                      `title_en`       varchar(160) NULL default \'\',
+                      `description`    varchar(160) NULL default \'\',
                       `description_en` varchar(160) NULL default \'\',
                       PRIMARY KEY  (`poi_type_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi_type');
-
 
     db_exec('CREATE TABLE IF NOT EXISTS `poi` (
                       `poi_id`        int(11)      NOT NULL auto_increment,
@@ -897,15 +895,31 @@ sub create_db(){
                       `lat`           double       NOT NULL default \'0\',
                       `lon`           double       NOT NULL default \'0\',
                       `alt`           double                default \'0\',
-                      `proximity`     float                 default \'0\',
+		      `proximity`     float                 default \'10\',
                       `comment`       varchar(255)          default NULL,
-                      `last_modified` date         NOT NULL default \'0000-00-00\',
-                      `url`           varchar(160)     NULL ,
+                      `last_modified` date  NOT NULL default \'0000-00-00\',
                       `address_id`    int(11)               default \'0\',
                       `source_id`     int(11)      NOT NULL default \'0\',
+		      `private`       char(1)               default NULL,
                       PRIMARY KEY  (`poi_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('poi');
+
+    db_exec('CREATE TABLE IF NOT EXISTS `poi_extra` (
+                      `poi_id` int(11)            NOT NULL default \'0\',
+                      `field_id`  varchar(160)  NOT NULL default \'0\',
+                      `entry`   varchar(8192)     default NULL,
+                      PRIMARY KEY  (`poi_id`)
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
+    add_index('poi_extra');
+
+    db_exec('CREATE TABLE IF NOT EXISTS `poi_extra_fields` (
+                      `poi_type_id` int(11)       NOT NULL default \'0\',
+                      `field_id`  varchar(160)  NOT NULL default \'0\',
+                      `description_en` varchar(160) NULL default \'\',
+                      PRIMARY KEY  (`poi_type_id`)
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
+    add_index('poi_extra_fields');
 
     # ------- WLAN
     db_exec('CREATE TABLE IF NOT EXISTS `wlan` (
@@ -1013,17 +1027,18 @@ sub create_db(){
     add_index('source');
 
     # --------- Waypoints: For compatibility to old DB Structure
+    #   will be kicked soon (waypoints are then stored in poi table)
     db_exec('CREATE TABLE  IF NOT EXISTS waypoints (
-                      `name`       char(40)          default \'\',
-                      `type`	   char(40)          default \'\',
-                      `id`	   int(11)  NOT NULL auto_increment,
-                      `lat`	   double 	     default \'0\',
-                      `lon`	   double            default \'0\',
-                      `comment`    char(160)         default \'\',
-                      `wep`	   int(11)  NOT NULL default \'0\',
-                      `macaddr`	   char(20)          default \'0\',
-                      `nettype`	   int(11)  NOT NULL default \'0\',
-                      `typenr`	   int(11) 	         default NULL,
+                      `name`      char(40)          default \'\',
+                      `type`      char(40)          default \'\',
+                      `id`        int(11)  NOT NULL auto_increment,
+                      `lat`       double            default \'0\',
+                      `lon`       double            default \'0\',
+                      `comment`   char(160)         default \'\',
+                      `wep`       int(11)  NOT NULL default \'0\',
+                      `macaddr`   char(20)          default \'0\',
+                      `nettype`   int(11)  NOT NULL default \'0\',
+                      `typenr`    int(11)               default NULL,
                       PRIMARY KEY  (id)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('waypoints');

@@ -141,13 +141,13 @@ while (my $row = $sth->fetchrow_hashref)
       else
       {
         print"  <sym>$$row{type}</sym>\n";
-	print"  <type>waypoint</type>\n";
+	print"  <type>waypoint.wptred</type>\n";
       }
     }
     else
     {
       print"  <sym>waypoint</sym>\n";
-      print"  <type>waypoint</type>\n";
+      print"  <type>waypoint.wptorange</type>\n";
     }
     print"  <poi_extra>\n";
     print"    <wep>$$row{wep}</wep>\n" if ($$row{wep});

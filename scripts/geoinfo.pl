@@ -104,6 +104,7 @@ our $file;
 
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
+our $lang                = 'de';
 our $db_user             = $ENV{DBUSER} || 'gast';
 our $db_password         = $ENV{DBPASS} || 'gast';
 our $db_host             = $ENV{DBHOST} || 'localhost';
@@ -170,6 +171,7 @@ GetOptions (
 	     'get-traffic'	   => \$do_traffic,
 	     'show-traffic'	   => \$show_traffic,
 	     'h|help|x'            => \$help, 
+	     'lang=s'              => \$lang, 
 	     )
     or pod2usage(1);
 
@@ -536,11 +538,15 @@ hostname for  connecting to your mySQL database. Default is localhost
 Do not try mirroring the files from the original Server. Only use
 files found on local Filesystem.
 
-
 =item B<--proxy="hostname:port">
 
 use proxy for download
 
+=item B<--lang>
+
+language of the POI-Type descriptions that will be used in the database.
+At the moment the default is 'de' for german. If no entries are available
+for the specified language, the english ones will be used.
 
 =item B<--area=germany> Area Filter
 

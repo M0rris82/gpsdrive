@@ -221,7 +221,7 @@ SUBDIRS = perl_lib osm
 DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
-		gpssmswatch gpsfetchmap.pl \
+		gpssmswatch gpsfetchmap.pl convert-waypoints.pl \
 		geoinfo.pl wp2sql gpsd_nmea.sh \
 		nasaconv.sh \
 		start_mysql_as_user.sh poi-manager.pl \

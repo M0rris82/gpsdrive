@@ -12,6 +12,7 @@ use Geo::Gpsdrive::Utils;
 use Data::Dumper;
 use IO::File;
 use Geo::Gpsdrive::DBFuncs;
+use XML::Twig;
 
 $|= 1;                          # Autoflush
 
@@ -36,7 +37,8 @@ BEGIN {
 
 # -----------------------------------------------------------------------------
 # Fill poi_type database
-sub fill_default_poi_types() {
+sub fill_default_poi_types {
+    our $lang = $main::lang || 'de';
     my $i=1;
     my $used_icons ={};
     my $poi_type_id=20;
@@ -44,91 +46,76 @@ sub fill_default_poi_types() {
     # for debug purpose
     Geo::Gpsdrive::DBFuncs::db_exec("TRUNCATE TABLE `poi_type`;");
 
-    # insert base poi-types into database
-    Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id < $poi_type_id ;");
-    for my $val (
-		 (
-		  "1,'unknown','1','25000','Unassigned POI'",
-		  "2,'accommodation','1','25000','Places to stay'",
-		  "3,'education','1','25000','Schools and other educational facilities'",
-		  "4,'food','1','25000','Restaurants, Bars, and so on...'",
-		  "5,'geocache','1','25000','Geocaches'",
-		  "6,'health','1','25000','Hospital, Doctor, Pharmacy, etc.'",
-		  "7,'money','1','25000','Bank, ATMs, and other money-related places'",
-		  "8,'nautical','1','25000','Special Aeronautical Points'",
-		  "9,'people','1','25000','You, work, your friends, and other people'",
-		  "10,'places','1','25000','Settlements, Mountains, and other geographical stuff'",
-		  "11,'public','1','25000','Public facilities'",
-		  "12,'recreation','1','25000','Places used for recreation (no sports)'",
-		  "13,'religion','1','25000','Places and facilities related to religion'",
-		  "14,'shopping','1','25000','All the places, where you can buy something'",
-		  "15,'sightseeing','1','25000','Historic places and other interesting buildings'",
-		  "16,'sports','1','25000','Sports clubs, stadiums, and other sports facilities'",
-		  "17,'transport','1','25000','Public transportation'",
-		  "18,'vehicle','1','25000','Facilites for drivers, like gas stations or parking places'",
-		  "19,'wlan','1','25000','WiFi-related points (Kismet)'",
-		  "20,'misc','1','25000','POIs not suitable for another category, and custom types'")
-		 ){
-	my $insert="INSERT INTO poi_type ".
-	    "(poi_type_id,name,scale_min,scale_max,title) ".
-	    "VALUES ($val);";
-	Geo::Gpsdrive::DBFuncs::db_exec($insert)
-	    or die "Error in Database Insert: $val\n$insert";
-    }
-
     my $unused_icon ={};
     my $existing_icon ={};
-    my $icon_directory='../data/icons';
-    $icon_directory = '../share/gpsdrive/icons'  unless -d $icon_directory;
-    $icon_directory = '/usr/local/share/gpsdrive'  unless -d $icon_directory;
-    $icon_directory = '/usr/share/gpsdrive/icons'  unless -d $icon_directory;
-    $icon_directory = '/opt/gpsdrive/icons'  unless -d $icon_directory;
-    die "no Icon Directory found" unless -d $icon_directory;
-    for my $icon ( `find $icon_directory -name "*.png"` ) {
-	chomp $icon;
-#	next if $icon =~ m,icons/classic/,;
-#	next unless -s $icon;
-	$icon =~s,([^/]+/){4},,;
-	$icon =~s,.*(classic|square\.big|square\.small)/?,,;
-	$unused_icon->{$icon}++;
-	$existing_icon->{$icon}++;
-	print "icon: $icon\n" if $debug;
-    }
 
-    my $icon_file='../data/icons.txt';
-    $icon_file = '../share/gpsdrive/icons.txt'    unless -s $icon_file;
-    $icon_file = '/usr/local/share/gpsdrive'      unless -s $icon_file;
-    $icon_file = '/usr/share/gpsdrive/icons.txt'  unless -s $icon_file;
-    $icon_file = '/opt/gpsdrive/icons.txt'        unless -s $icon_file;
+    my $icon_file='../data/icons.xml';
+    $icon_file = '../share/gpsdrive/icons.xml'         unless -s $icon_file;
+    $icon_file = '/usr/local/share/gpsdrive/icons.xml' unless -s $icon_file;
+    $icon_file = '/usr/share/gpsdrive/icons.xml'       unless -s $icon_file;
+    $icon_file = '/opt/gpsdrive/icons.xml'             unless -s $icon_file;
     die "no Icon File found" unless -s $icon_file;
-    my $fh = IO::File->new("<$icon_file");
-    while ( my $line = $fh->getline() ) {
-	chomp $line;
-	next if $line =~  m/^\#/;
-	next if not $line =~ m/\./;	# skip base icons
-	my ($name,$scale_min,$scale_max) = split(/\s+/,$line);
-	#print "($name,$scale_min,$scale_max)\n";
-	my $icon = $name;
-	$icon =~ s,\.,\/,g;
-	$icon = "$icon.png";
-	warn "Icon $icon missing in Filesystem\n for Line:\n$line\n"
-	    unless $existing_icon->{$icon};
-	delete $unused_icon->{$icon};
 
-	$poi_type_id++;
+    our $title = ''; our $title_en = '';
+    our $description = ''; our $description_en = '';
 
-	# Insert to Database
-	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
-	Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `poi_type` ".
-					"              (poi_type_id,  name,   scale_min,   scale_max ) \n".
-					"	VALUES ($poi_type_id,'$name','$scale_min','$scale_max');") 
+    # parse icon file
+    #
+    my $twig= new XML::Twig
+    (
+       TwigHandlers => { rule        => \&sub_poi,
+                         title       => \&sub_title,
+                         description => \&sub_desc }
+    );
+    $twig->parsefile( "$icon_file");
+    my $rules= $twig->root;
+
+    $twig->purge;
+
+    sub sub_poi
+    {
+      my ($twig, $poi_elm) = @_;
+      if ($poi_elm->first_child('condition')->att('k') eq 'poi')
+      {
+        my $poi_type_id =
+          $poi_elm->first_child('geoinfo')->first_child('poi_type_id')->text;
+        my $name = $poi_elm->first_child('geoinfo')->first_child('name')->text;
+        my $scale_min = $poi_elm->first_child('scale_min')->text;
+        my $scale_max = $poi_elm->first_child('scale_max')->text;
+        $title = $title_en unless ($title);
+	$description = $description_en unless ($description);
+
+	Geo::Gpsdrive::DBFuncs::db_exec(
+	  "DELETE FROM `poi_type` WHERE poi_type_id = $poi_type_id ;");
+	Geo::Gpsdrive::DBFuncs::db_exec(
+	  "INSERT INTO `poi_type` ".
+          "(poi_type_id, name, scale_min, scale_max, title, title_en, ".
+	  "description, description_en) ".
+	  "VALUES ($poi_type_id,'$name','$scale_min','$scale_max','$title',".
+	  "'$title_en','$description','$description_en');") 
 	    or die;
-	$i++;
+      }
+      $title = ''; $title_en = '';
+      $description = ''; $description_en = '';
     }
-    warn "unused Icons:\n\t".join("\n\t",keys %{$unused_icon})."\n"
-	if keys %{$unused_icon} ;
 
-    $fh->close();
+    sub sub_title
+    {
+      my ($twig, $title_elm) = @_;
+      if ($title_elm->att('lang') eq 'en')
+        { $title_en = $title_elm->text; }
+      elsif ($title_elm->att('lang') eq $lang)
+        { $title = $title_elm->text; }
+    }
+
+    sub sub_desc
+    {
+      my ($twig, $desc_elm) = @_;
+      if ($desc_elm->att('lang') eq 'en')
+        { $description_en = $desc_elm->text; }
+      elsif ($desc_elm->att('lang') eq $lang)
+        { $description = $desc_elm->text; }
+    }
 }
 
 # -----------------------------------------------------------------------------

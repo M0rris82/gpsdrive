@@ -7,7 +7,6 @@
 #
 #  - import poi data in gpx format into the database
 #  - export/backup poi-data from the database into gpx file
-#  - convert old way.txt files into new gpx format
 #
 #  currently supported file formats
 #  - geoinfo gpx export
@@ -24,7 +23,7 @@
 #
 #  Functionality that should be transfered from geoinfo.pl
 #  - Retrieve POI Data from Different Sources
-#    And import them into mySQL for use with gpsdrive
+#    and import them into mySQL for use with gpsdrive
 #
 #
 #  $Id$
@@ -63,8 +62,8 @@ use Geo::Gpsdrive::DBFuncs;
 use Getopt::Std;
 use Pod::Usage;
 
-our ($opt_p, $opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b, $opt_w) = 0;
-getopts('pvf:heibw:');
+our ($opt_p, $opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b) = 0;
+getopts('pvf:heib');
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -76,6 +75,7 @@ my $file = $opt_f;
 my $basic = $opt_b;
 my $privacy = $opt_p;
 
+our $script_user = $ENV{USER};
 our $db_user     = $ENV{DBUSER} || 'gast';
 our $db_password = $ENV{DBPASS} || 'gast';
 our $db_host     = $ENV{DBHOST} || 'localhost';
@@ -85,15 +85,16 @@ my $progress_char = '.';
 my $progress_offset = 20;
 my $progress_counter = 0;
 my $count = 0;
-my %poi_types;
-
+my %poi_types;		# 0: poi_type_id => name
+			# 1: name => poi_type_id
+my %source_ids;		# name => source_id
 
 #####################################################################
 #
 #  M A I N
 # 
 export_gpx_geoinfo($file) if ($opt_e);
-import_gpx_geoinfo($file) if ($opt_i);
+import_gpx($file) if ($opt_i);
 
 print STDOUT "\n";
 exit (0);
@@ -116,20 +117,7 @@ sub export_gpx_geoinfo
   open NEWFILE,">:utf8","./$file";
   select NEWFILE;
      
-  # print gpx header
-  #
-  print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-  print"<gpx\n xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n";
-  print" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
-  print" xmlns=\"http://www.topografix.com/GPX/1/0\"\n";
-  print" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\"\n";
-  print" version=\"1.0\"\n creator=\"GPSDrive-Geoinfo - www.gpsdrive.cc\">\n\n";
-		  
-  print"<name>Geoinfo POI Dump</name>\n";
-  print"<desc>Dump from GPS-Drive Geoinfo Database</desc>\n";
-  print"<url>www.gpsdrive.cc</url>\n";
-  print"<urlname>GPS-Drive Geoinfo-Database</urlname>\n";
-  print"<time>".utc_time()."</time>\n";
+  write_gpx_header('Geoinfo POI Dump','Dump from GPS-Drive Geoinfo Database');
   
   # get poi data from database
   #
@@ -191,86 +179,49 @@ sub export_gpx_geoinfo
 }
 
 
-# export data from poi_extra table into gpx file
-#
-sub export_gpx_geoinfo_extra
-{
-}
-
-
-# import data from geoinfo gpx into poi table
-#
-sub import_gpx_geoinfo
-{
-}
-
-
-# import extra data from geoinfo gpx into poi_extra table
-#
-sub import_gpx_geoinfo_extra
-{
-}
-
-
-
-# get available poi_types from database
-#
-sub get_poi_types
-{
-
-   my $db_query = 'SELECT poi_type_id,name FROM poi_type;';
-   my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
-   my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
-   $sth->execute()               or die $sth->errstr;
- 
-   while (my @row = $sth->fetchrow_array)
-   { 
-     $poi_types{$row[0]} = $row[1];
-   }
-   $sth->finish;
-}
-
-
-# get current time formatted in ISO 8601 UTC
-#
-sub utc_time
-{
-  (my $sec, my $min, my $hour, my $mday, my $mon,
-   my $year, my $wday, my $yday, my $isdst) = gmtime(time);
-  my $t = sprintf "%4d-%02d-%02dT%02d:%02dZ",
-    1900+$year,$mon+1,$mday,$hour,$min;
-  return $t;
-}
-
-
-# draw some chars, so that the user won't get nervous when processing
-# bigger tables
-#
-sub progress_bar
-{
-  if ($progress_counter==20)
-    { $progress_counter = 0; print STDOUT $progress_char; }
-  else
-    { $progress_counter++; }
-}
-
-
-
-
-
-
 #####################################################################
 #
-#  Parse available XML-File aund update with contents from icons dirs
+#  import gpx file
 #
-#
-#sub update_xml
-#{
-#  my $file = shift(@_);
-#  print STDOUT "\n----- Parsing and updating '$file' -----\n";
-#  
-#  # Parse XML-File and look for already existing POI-Type entries
-#  #
+sub import_gpx
+{
+  $file = shift;
+  die ("File '$file' not found!\n") unless (-e $file);
+
+  print STDOUT "\n----- Getting file info -----\n";
+
+  my $twig= new XML::Twig
+    ( 
+      ignore_elts => { 'wpt' => 1, 'rte' => 1, 'trk' => 1 }
+    );
+  $twig->parsefile( "$file");	# build the twig
+  my $gpx= $twig->root;	# get the root of the twig (gpx)
+
+  print "  File        : $file";
+  print "\n  Name        : ".$gpx->first_child('name')->text
+    if ($gpx->first_child('name'));
+  print "\n  Description : ".$gpx->first_child('desc')->text
+    if ($gpx->first_child('desc'));
+  print "\n  Author      : ".$gpx->first_child('author')->text
+    if ($gpx->first_child('author'));
+  print "\n  Time        : ".$gpx->first_child('time')->text
+    if ($gpx->first_child('time'));
+  print "\n  created by  : ".$gpx->att('creator')."\n"
+    if ($gpx->att('creator'));
+  my $creator = $gpx->att('creator');
+
+  $twig->purge;
+
+  if ( $creator =~ /geoinfo/i )
+    { import_gpx_geoinfo($file); }
+  elsif ( $creator =~ /groundspeak/i )
+    { import_gpx_groundspeak($file); }
+  elsif ( $creator =~ /opencaching/i )
+    { import_gpx_opencaching($file); }
+  else
+    { die "Unknown GPX file detected!\n" }
+
+
 #  my $twig= new XML::Twig
 #    (
 #      pretty_print => 'indented',
@@ -279,8 +230,7 @@ sub progress_bar
 #      TwigHandlers => { geoinfo => \&sub_geoinfo }
 #    );
 #  $twig->parsefile( "$file");	# build the twig
-#  my $rules= $twig->root;	# get the root of the twig (rules)
-#
+#  my $gpx= $twig->root;	# get the root of the twig (gpx)
 #  # Insert new POI-Type entries from hash of available icons
 #  #
 #  $i = 0;
@@ -367,6 +317,227 @@ sub progress_bar
 #}
 
 
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+#####################################################################
+#
+# export data from poi_extra table into gpx file
+#
+sub export_gpx_geoinfo_extra
+{
+}
+
+
+# import data from geoinfo gpx into poi table
+#
+sub import_gpx_geoinfo
+{
+  print STDOUT "\n----- Parsing Geoinfo GPX -----\n";
+  get_poi_types('1');
+  get_source_ids();
+
+  my $twig= new XML::Twig
+    (
+      ignore_elts => { 'rte' => 1, 'trk' => 1 },
+      TwigHandlers => { wpt => \&sub_wpt }
+    );
+  $twig->parsefile( "$file");
+  my $gpx= $twig->root;
+  
+  sub sub_wpt
+  {
+    my( $twig, $wpt)= @_;
+
+    my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
+    my ($source_id,$source,$proximity) = (1,'unknown',0);
+    my ($poi_type_id,$poi_type,$last_modified) = (1,'unknown','2007-01-01');
+    
+    if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
+    {
+      $lat = $wpt->att('lat');
+      $lon = $wpt->att('lon');
+      $name = $wpt->first_child('name')->text;
+      $comment = $wpt->first_child('cmt')->text
+        if ($wpt->first_child('cmt'));
+      $source = $wpt->first_child('src')->text
+        if ($wpt->first_child('src'));
+      $last_modified = $wpt->first_child('time')->text
+        if ($wpt->first_child('time'));
+      $poi_type = $wpt->first_child('type')->text
+        if ($wpt->first_child('type'));
+      $alt = $wpt->first_child('ele')->text
+        if ($wpt->first_child('ele'));
+      $proximity = $wpt->first_child('proximity')->text
+        if ($wpt->first_child('proximity'));
+      $private = $wpt->first_child('private')->text
+        if ($wpt->first_child('private'));
+
+      #  poi_extra .....
+
+      $poi_type_id = $poi_types{$poi_type} if ($poi_types{$poi_type});
+      $source_id = $source_ids{$source} if ($source_ids{$source});
+
+      print STDOUT "\n$lat\t$lon\t$name\t$comment\n";
+      print STDOUT "    $source_id\t$source\n";
+      print STDOUT "    $poi_type_id\t$poi_type\n";
+      print STDOUT "    $alt\t$proximity\t$private\t$last_modified\n";
+
+# XXX
+
+    }
+
+
+
+  }
+
+  
+  $twig->purge;
+
+
+}
+
+
+#####################################################################
+#
+#  import extra data from geoinfo gpx into poi_extra table
+#
+sub import_gpx_geoinfo_extra
+{
+}
+
+
+#####################################################################
+#
+#  import groundspeak geocaching info
+#
+sub import_gpx_groundspeak
+{
+  print STDOUT "\n----- Parsing Groundspeak GPX -----\n";
+  die "Groundspeak files will be supported soon!\n";
+}
+
+
+#####################################################################
+#
+#  import opencaching.de geocaching info
+#
+sub import_gpx_opencaching
+{
+  print STDOUT "\n----- Parsing opencaching.de GPX -----\n";
+  die "Opencaching files will be supported soon!\n";
+}
+
+
+#####################################################################
+#
+#  get available poi_types from database
+#
+sub get_poi_types
+{
+   my $mode = shift;
+   my $db_query = 'SELECT poi_type_id,name FROM poi_type;';
+   my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+   my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+   $sth->execute()               or die $sth->errstr;
+ 
+   while (my @row = $sth->fetchrow_array)
+   { 
+     if ($mode=='1') { $poi_types{$row[1]} = $row[0]; }
+     else { $poi_types{$row[0]} = $row[1]; }
+   }
+   $sth->finish;
+}
+
+
+#####################################################################
+#
+#  get available source_ids from database
+#
+sub get_source_ids
+{
+
+   my $db_query = 'SELECT source_id,name FROM source;';
+   my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+   my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+   $sth->execute()               or die $sth->errstr;
+ 
+   while (my @row = $sth->fetchrow_array)
+   { 
+     $source_ids{$row[1]} = $row[0];
+   }
+   $sth->finish;
+}
+
+#####################################################################
+#
+#  get current time formatted in ISO 8601 UTC
+#
+sub utc_time
+{
+  (my $sec, my $min, my $hour, my $mday, my $mon,
+   my $year, my $wday, my $yday, my $isdst) = gmtime(time);
+  my $t = sprintf "%4d-%02d-%02dT%02d:%02dZ",
+    1900+$year,$mon+1,$mday,$hour,$min;
+  return $t;
+}
+
+
+#####################################################################
+#
+#  write some output on screen, so that the user won't get
+#  nervous while we are processing bigger tables/files
+#
+sub progress_bar
+{
+  if ($progress_counter==$progress_offset)
+    { $progress_counter = 0; print STDOUT $progress_char; }
+  else
+    { $progress_counter++; }
+}
+
+
+#####################################################################
+#
+#  write gpx header
+#     
+sub write_gpx_header
+{       
+  my $name = shift;
+  my $desc = shift; 
+  print"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+  print"<gpx\n xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n";
+  print" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
+  print" xmlns=\"http://www.topografix.com/GPX/1/0\"\n";
+  print" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\"\n";
+  print" version=\"1.0\"\n creator=\"GPSDrive-Geoinfo - www.gpsdrive.cc\">\n\n";
+  print"<name>$name</name>\n";
+  print"<desc>$desc</desc>\n";
+  print"<author>$script_user</author>\n" if ($script_user);
+  print"<url>www.gpsdrive.cc</url>\n";
+  print"<urlname>GPS-Drive Geoinfo-Database</urlname>\n";
+  print"<time>".utc_time()."</time>\n";
+}
+
+
+
+
+
 #####################################################################
 #
 #  Insert new POI-Type into the file
@@ -425,10 +596,6 @@ poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-f GPX-FILE]
 =item B<-f> GPX-FILE
 
  Set gpx-file, that should be used for import/export.
-
-=item B<-w> TXT-FILE
-
- Set file in old way.txt to convert
 
 =item B<-v>
 
