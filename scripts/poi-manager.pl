@@ -1,22 +1,19 @@
 #!/usr/bin/perl
 #####################################################################
 #
-#  This script handles all things regarding Poins of Interest
+#  This script handles all things regarding Points of Interest
 #  
-#  Currently planned:
-#
-#  - import poi data in gpx format into the database
-#  - export/backup poi-data from the database into gpx file
 #
 #  currently supported file formats
-#  - geoinfo gpx export
+#  - basic geoinfo gpx export
+#  - basic geoinfo gpx import
 #
 #  files that could be supported
 #  - groundspeak gpx import
 #  - groundspeak loc import
 #  - ...
 #  
-#  other optional functionality
+#  other optional functionality planned
 #  - update existing gpx file from database
 #  - export all POIs in a specific area
 #  - export only POIs with a specific poi_type
@@ -53,6 +50,7 @@ my $VERSION ="poi-manager.pl (c) Guenther Meyer
   Initial Version (Dec,2006) by Guenther Meyer <d.s.e (at) sordidmusic.com>
   Version 0.01 ";
 
+use encoding 'utf8';
 use utf8;
 use IO::File;
 use File::Find;
@@ -85,24 +83,26 @@ my $progress_char = '.';
 my $progress_offset = 20;
 my $progress_counter = 0;
 my $count = 0;
-my %poi_types;		# 0: poi_type_id => name
-			# 1: name => poi_type_id
-my %source_ids;		# name => source_id
+my %poi_types;		# 0: poi_type_id => name	1: name => poi_type_id
+my %source_ids;		# 0: source_id => name		1: name => source_id
 
 #####################################################################
 #
 #  M A I N
 # 
-export_gpx_geoinfo($file) if ($opt_e);
-import_gpx($file) if ($opt_i);
+if ($opt_i)	{ import_gpx($file) }
+elsif ($opt_e)	{ export_gpx_geoinfo($file) }
+
+else { pod2usage( -exitval => '1', -verbose => '1') }
 
 print STDOUT "\n";
 exit (0);
 
 
 
-
-# export data from poi table into gpx file
+#####################################################################
+#
+# export data from poi table into geoinfo gpx file
 #
 sub export_gpx_geoinfo
 {
@@ -113,7 +113,7 @@ sub export_gpx_geoinfo
 
   $count = 0;
   get_poi_types();
-
+  get_source_ids();
   open NEWFILE,">:utf8","./$file";
   select NEWFILE;
      
@@ -140,11 +140,14 @@ sub export_gpx_geoinfo
     }
     else
     {
+      my $source = 'unknown';
+      $source = $source_ids{$$row{source_id}} if ($source_ids{$$row{source_id}});
+      
       print"\n<wpt lat=\"$$row{lat}\" lon=\"$$row{lon}\">\n";
       print"  <name>$$row{name}</name>\n";
       print"  <desc>$$row{name}</desc>\n";
       print"  <cmt>$$row{comment}</cmt>\n" if ($$row{comment});
-      print"  <src>$$row{source_id}</src>\n" if($$row{source_id});
+      print"  <src>$source</src>\n";
       print"  <time>$$row{last_modified}</time>\n" if ($$row{last_modified});
       print"  <url>$$row{url}</url>\n" if ($$row{url});
       if ($$row{poi_type_id})
@@ -181,7 +184,7 @@ sub export_gpx_geoinfo
 
 #####################################################################
 #
-#  import gpx file
+#  check and import gpx file
 #
 sub import_gpx
 {
@@ -211,7 +214,8 @@ sub import_gpx
   my $creator = $gpx->att('creator');
 
   $twig->purge;
-
+  $count = '0';
+  
   if ( $creator =~ /geoinfo/i )
     { import_gpx_geoinfo($file); }
   elsif ( $creator =~ /groundspeak/i )
@@ -221,118 +225,8 @@ sub import_gpx
   else
     { die "Unknown GPX file detected!\n" }
 
-
-#  my $twig= new XML::Twig
-#    (
-#      pretty_print => 'indented',
-#      empty_tags => 'normal',
-#      comments => 'keep',
-#      TwigHandlers => { geoinfo => \&sub_geoinfo }
-#    );
-#  $twig->parsefile( "$file");	# build the twig
-#  my $gpx= $twig->root;	# get the root of the twig (gpx)
-#  # Insert new POI-Type entries from hash of available icons
-#  #
-#  $i = 0;
-#  my @tmp_icons = sort(keys(%icons));
-#  
-#  foreach (@tmp_icons)
-#  {
-#     insert_poi_type($_,\$rules);
-#     $i++;
-#  }
-#  print STDOUT "  New POI-Types added:\t$i\n";
-#
-#  # Print Status for poi_type_ids
-#  #
-#  my @rule= $rules->children;	# get the updated rule list
-#
-#  my @a_id = '';
-#  $i = 0;
-#  foreach my $entry (@rule)
-#  {
-#    if  (my $id =
-#         $entry->first_child('geoinfo')->first_child('poi_type_id')->text)
-#    {
-#      $i++;
-#      $a_id[$i] = $id;
-#    }
-#  }
-#  my $id_max = pop(@a_id);
-#  my %unused = ('','');
-#  for ( my $j = 1; $j<$id_max; $j++ ) { $unused{$j}=$j; } 
-#  print STDOUT "  POI-Types defined:\t$i\n";
-#  print STDOUT "  Max. poi_type_id:\t$id_max\n";
-#  print STDOUT "  Unused IDs:\n  \t\t";
-#  foreach (@a_id)
-#  { 
-#    if (exists $unused{$_}) { delete $unused{$_}; }
-#  }
-#  foreach (sort(keys(%unused))) { print STDOUT "$_  "; }
-#  print STDOUT "\n  \t\t( IDs <31 are reserved )\n\n";
-#
-#  # Write XML-File containing modified contents
-#  #
-#  open TMPFILE,">:utf8","./icons.tmp";
-#    select TMPFILE;
-#    print "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-#    print "<rules>\n";
-#    
-#    my $j=1;
-#
-#
-#    foreach my $entry (@rule)
-#     {
-#       $entry->print; 
-#       print "\n"; 
-#     }
-#    print "</rules>\n";
-#  close TMPFILE;
-#
-#  # Create backup copy of old XML-File
-#  #
-#  move("$file","$file.bak") or die (" Couldn't create backup file!");
-#  move("./icons.tmp","$file") or die (" Couldn't remove temp file!");
-#  print STDOUT " XML-File successfully updated!\n";
-#
-#  return;
-#
-#  # look, if POI-Type already exists in the file by checking for a
-#  # known name inside the geoinfo tag. If true, kick it from the icons
-#  # hash, because it's not needed anymore.
-#  sub sub_geoinfo
-#   {
-#     my( $twig, $geoinfo)= @_;
-#     my $poi_type_id = $geoinfo->first_child('poi_type_id')->text;
-#     my $name = $geoinfo->first_child('name')->text;
-#
-#     if (exists $icons{$name}) 
-#     {
-#       print STDOUT "  o  $poi_type_id\t\t$name\n" if $VERBOSE;
-#       $poi_type_id_base = $poi_type_id if ($poi_type_id > $poi_type_id_base);
-#       delete $icons{"$name"};
-#     }
-#     return;
-#   }
-#}
-
-
-
-
-
-
-
-
-
-
+  print STDOUT "  $count POI-Entries written to Database.\n";
 }
-
-
-
-
-
-
-
 
 
 #####################################################################
@@ -344,13 +238,15 @@ sub export_gpx_geoinfo_extra
 }
 
 
+#####################################################################
+#
 # import data from geoinfo gpx into poi table
 #
 sub import_gpx_geoinfo
 {
   print STDOUT "\n----- Parsing Geoinfo GPX -----\n";
   get_poi_types('1');
-  get_source_ids();
+  get_source_ids('1');
 
   my $twig= new XML::Twig
     (
@@ -388,28 +284,33 @@ sub import_gpx_geoinfo
       $private = $wpt->first_child('private')->text
         if ($wpt->first_child('private'));
 
-      #  poi_extra .....
+# TODO: add some handling for poi_extra data .....
 
       $poi_type_id = $poi_types{$poi_type} if ($poi_types{$poi_type});
       $source_id = $source_ids{$source} if ($source_ids{$source});
 
-      print STDOUT "\n$lat\t$lon\t$name\t$comment\n";
-      print STDOUT "    $source_id\t$source\n";
-      print STDOUT "    $poi_type_id\t$poi_type\n";
-      print STDOUT "    $alt\t$proximity\t$private\t$last_modified\n";
+# print STDOUT "\n$lat\t$lon\t$name\t$poi_type\n";
 
-# XXX
+      my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
 
+      # check, if entry already exists in poi table (by comparing name,lat,lon,poi_type_id)
+      my $db_query = sprintf("SELECT poi_id FROM poi WHERE lat='$lat' AND lon='$lon' AND name=%s AND poi_type_id='$poi_type_id';",$dbh->quote($name));
+      my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+      $sth->execute()               or die $sth->errstr;
+      my $row = $sth->fetchrow_hashref;
+
+      my $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
+      if ($$row{poi_id})
+        { $db_insert = sprintf("UPDATE poi SET alt='$alt', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id', private='$private' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment)); }
+
+      $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
+      $sth->execute()               or die $sth->errstr;
+
+      $count++;
     }
 
-
-
   }
-
-  
   $twig->purge;
-
-
 }
 
 
@@ -450,7 +351,7 @@ sub import_gpx_opencaching
 #
 sub get_poi_types
 {
-   my $mode = shift;
+   my $mode = shift || '0';
    my $db_query = 'SELECT poi_type_id,name FROM poi_type;';
    my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
    my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
@@ -471,7 +372,7 @@ sub get_poi_types
 #
 sub get_source_ids
 {
-
+   my $mode = shift || '0';
    my $db_query = 'SELECT source_id,name FROM source;';
    my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
    my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
@@ -479,7 +380,8 @@ sub get_source_ids
  
    while (my @row = $sth->fetchrow_array)
    { 
-     $source_ids{$row[1]} = $row[0];
+     if ($mode=='1') { $source_ids{$row[1]} = $row[0]; }
+     else { $source_ids{$row[0]} = $row[1]; }
    }
    $sth->finish;
 }

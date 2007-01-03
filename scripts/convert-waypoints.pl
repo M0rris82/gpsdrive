@@ -149,6 +149,7 @@ while (my $row = $sth->fetchrow_hashref)
       print"  <sym>waypoint</sym>\n";
       print"  <type>waypoint.wptorange</type>\n";
     }
+    print"  <src>way.txt</src>\n";
     print"  <poi_extra>\n";
     print"    <wep>$$row{wep}</wep>\n" if ($$row{wep});
     print"    <macaddr>$$row{macaddr}</macaddr>\n" if ($$row{macaddr});
@@ -223,6 +224,7 @@ sub export_waypoints_txt
         print"  <sym>waypoint</sym>\n";
         print"  <type>waypoint</type>\n";
       }
+      print"  <src>way.txt</src>\n";
       print"</wpt>\n";
       $count++;
     }

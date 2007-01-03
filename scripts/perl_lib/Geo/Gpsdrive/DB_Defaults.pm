@@ -121,7 +121,52 @@ sub fill_default_poi_types {
 # -----------------------------------------------------------------------------
 sub fill_default_sources() {   # Just some Default Sources
 
-    # -------------------------------------------- NGA
+    my $default_licence =
+      $main::default_licence || 'Creative Commons Attribution-ShareAlike 2.0';
+
+    my @sources = (
+      { source_id   => '1',
+        name        => 'unknown',
+        comment     => 'Unknown source or source not defined', 
+        last_update => '2007-01-03',
+        url         => 'http://www.gpsdrive.cc/',
+        licence     => 'unknown'
+      },
+      { source_id   => '2',
+        name        => 'way.txt',
+        comment     => 'Data imported from way.txt', 
+        last_update => '2007-01-03',
+        url         => 'http://www.gpsdrive.cc/',
+        licence     => 'unknown'
+      },
+      { source_id   => '3',
+        name        => 'user',
+	comment     => 'Data collected by the GPSDrive-User',
+	last_update => '2007-01-03',
+	url         => 'http://www.gpsdrive.cc/',
+	licence     => $default_licence
+      },
+      { source_id   => '4',
+        name        => 'osm',
+        comment     => 'Data imported from the OpenStreetMap Project', 
+        last_update => '2007-01-03',
+        url         => 'http://www.openstreetmap.org/',
+        licence     => 'Creative Commons Attribution-ShareAlike 2.0',
+      }
+    );
+
+    foreach (@sources) {
+      Geo::Gpsdrive::DBFuncs::db_exec(
+        "DELETE FROM `source` WHERE source_id = $$_{'source_id'};");
+      Geo::Gpsdrive::DBFuncs::db_exec(
+        "INSERT INTO `source` ".
+          "(source_id, name, comment, last_update, url, licence) ".
+	  "VALUES ($$_{'source_id'},'$$_{'name'}','$$_{'comment'}',".
+	  "'$$_{'last_update'}','$$_{'url'}','$$_{'licence'}');") or die;
+    }
+
+
+# -------------------------------------------- NGA
     my $coutry2name;
     for my $k ( keys %{$Geo::Gpsdrive::NGA::name2country} ) {
 	$coutry2name->{$Geo::Gpsdrive::NGA::name2country->{$k}} =$k;
@@ -140,23 +185,6 @@ sub fill_default_sources() {   # Just some Default Sources
 	Geo::Gpsdrive::DBFuncs::insert_hash("source", $source_hash);
     }
 
-    # -------------------------------------------- import_way.txt, Default, Example
-    for my $source  ( qw( import_way.txt
-			  Defaults
-			  Examples
-			  ) ) {    
-	my $name ="$source";
-	$name =~ s/_/ /g;
-
-	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `source` WHERE source.name = '$name';");
-	my $source_hash = {
-	    'source.url'     => "",
-	    'source.name'    => $name,
-	    'source.comment' => "$name",
-	    'source.licence' => ""
-	    };
-	Geo::Gpsdrive::DBFuncs::insert_hash("source", $source_hash);
-    }
 }
 
 # -----------------------------------------------------------------------------
@@ -294,9 +322,8 @@ sub fill_defaults(){
 }
 
 
-# Here comes some icon translation stuff that isn't used anymore, and can be
-# removed in the future, when we realized a way to implement the translation
-# of the icon names.
+# Here comes some icon translation stuff that isn't used anymore, and could be
+# removed. But we keep it, to memorize, what icons should be created.
 #
 #
 # Some suggestions for pictures
