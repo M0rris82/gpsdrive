@@ -288,7 +288,7 @@
     <title lang="de">Wegpunkt</title>
     <title lang="en">Waypoint</title>
     <description lang="de">Wegpunkte, um z.B. temporäre Punkte zu markieren</description>
-    <description lang="en">Waypoints, for example  to temporarily mark several places</description>
+    <description lang="en">Waypoints, for example  to temporarily mark places</description>
     <geoinfo>
       <poi_type_id>21</poi_type_id>
       <name>waypoint</name>
@@ -1028,30 +1028,6 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="misc.area-blue"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>92</poi_type_id>
-      <name>misc.area-blue</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="misc.area-green"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>93</poi_type_id>
-      <name>misc.area-green</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
     <condition k="poi" v="misc.bunny"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
@@ -1736,18 +1712,6 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="places.house-blue"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>151</poi_type_id>
-      <name>places.house-blue</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
     <condition k="poi" v="places.mine"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
@@ -1840,54 +1804,6 @@
     <geoinfo>
       <poi_type_id>159</poi_type_id>
       <name>places.summit</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="places.summit-1"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>160</poi_type_id>
-      <name>places.summit-1</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="places.summit-2"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>161</poi_type_id>
-      <name>places.summit-2</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="places.summit-3"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>162</poi_type_id>
-      <name>places.summit-3</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="places.summit-4"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>163</poi_type_id>
-      <name>places.summit-4</name>
     </geoinfo>
   </rule>
 
@@ -2084,14 +2000,14 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="recreation.dart"/>
+    <condition k="poi" v="sports.dart"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>180</poi_type_id>
-      <name>recreation.dart</name>
+      <name>sports.dart</name>
     </geoinfo>
   </rule>
 
@@ -2792,14 +2708,14 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="sports.horse"/>
+    <condition k="poi" v="sports.riding"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>239</poi_type_id>
-      <name>sports.horse</name>
+      <name>sports.riding</name>
     </geoinfo>
   </rule>
 
@@ -2828,14 +2744,14 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="transport.air_plane"/>
+    <condition k="poi" v="sports.flying"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>242</poi_type_id>
-      <name>transport.air_plane</name>
+      <name>sports.flying</name>
     </geoinfo>
   </rule>
 
@@ -2864,38 +2780,38 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="transport.bridge_car"/>
+    <condition k="poi" v="transport.bridge.bridge-car"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>245</poi_type_id>
-      <name>transport.bridge_car</name>
+      <name>transport.bridge.bridge-car</name>
     </geoinfo>
   </rule>
 
   <rule>
-    <condition k="poi" v="transport.bridge_pedestrian"/>
+    <condition k="poi" v="transport.bridge.bridge-pedestrian"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>246</poi_type_id>
-      <name>transport.bridge_pedestrian</name>
+      <name>transport.bridge.bridge-pedestrian</name>
     </geoinfo>
   </rule>
 
   <rule>
-    <condition k="poi" v="transport.bridge_train"/>
+    <condition k="poi" v="transport.bridge.bridge-train"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>247</poi_type_id>
-      <name>transport.bridge_train</name>
+      <name>transport.bridge.bridge-train</name>
     </geoinfo>
   </rule>
 
@@ -2936,14 +2852,14 @@
   </rule>
 
   <rule>
-    <condition k="poi" v="transport.ferry-car"/>
+    <condition k="poi" v="transport.ferry.ferry-car"/>
     <scale_min>1</scale_min>
     <scale_max>50000</scale_max>
     <title lang="en"></title>
     <description lang="en"></description>
     <geoinfo>
       <poi_type_id>251</poi_type_id>
-      <name>transport.ferry-car</name>
+      <name>transport.ferry.ferry-car</name>
     </geoinfo>
   </rule>
 
@@ -3280,18 +3196,6 @@
     <geoinfo>
       <poi_type_id>279</poi_type_id>
       <name>vehicle.fuel_station.total</name>
-    </geoinfo>
-  </rule>
-
-  <rule>
-    <condition k="poi" v="vehicle.gas_pump"/>
-    <scale_min>1</scale_min>
-    <scale_max>50000</scale_max>
-    <title lang="en"></title>
-    <description lang="en"></description>
-    <geoinfo>
-      <poi_type_id>280</poi_type_id>
-      <name>vehicle.gas_pump</name>
     </geoinfo>
   </rule>
 
@@ -3772,6 +3676,18 @@
     <geoinfo>
       <poi_type_id>320</poi_type_id>
       <name>wlan.wep</name>
+    </geoinfo>
+  </rule>
+
+  <rule>
+    <condition k="poi" v="transport.ferry.ferry-pedestrian"/>
+    <scale_min>1</scale_min>
+    <scale_max>50000</scale_max>
+    <title lang="en"></title>
+    <description lang="en"></description>
+    <geoinfo>
+      <poi_type_id>321</poi_type_id>
+      <name>transport.ferry.ferry-pedestrian</name>
     </geoinfo>
   </rule>
 </rules>

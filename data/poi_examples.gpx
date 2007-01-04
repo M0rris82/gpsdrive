@@ -9,28 +9,46 @@
 
 <name>POI Examples</name>
 <desc>Example Points-of-Interest for GPSDrive</desc>
-<author>Guenther Meyer</author>
-<email>d.s.e@sordidmusic.com</email>
+<author>d.s.e</author>
+<email>d.s.e (at) sordidmusic.com</email>
 <url>www.gpsdrive.cc</url>
 <urlname>GPSDrive Geoinfo-Database</urlname>
-<time>2006-12-13</time>
+<time>2006-12-30</time>
 
 
-<wpt lat="lat" lon="lon">
-  <ele>altitude</ele>
-  <name>name</name>
-  <cmt>comment</cmt>
-  <desc>description</desc>
-  <src>poi  data source</src>
-  <time>last_modified</time>
-  <url>url</url>
-  <sym>poi_type_id</sym>
-  <type>poi_type</type>
+<!-- General Structure: -->
+
+<wpt lat="LAT" lon="LON">
+  <ele>ALTITUDE</ele>
+  <name>NAME</name>
+  <desc>NAME</desc>
+  <cmt>COMMENT</cmt>
+  <src>SOURCE-NAME</src>
+  <time>LAST_MODIFIED</time>
+  <url>URL</url>
+  <sym>POI_TYPE_ID</sym>
+  <type>POI_TYPE</type>
+  <proximity>PROXIMITY</proximity>
+  <private>PRIVATE</private>
   <poi_extra>
-    additional info stored in table poi_extra in database
+    additional info stored in database table poi_extra
   </poi_extra>
 </wpt>
 
+
+<!-- Example-POI: -->
+
+<wpt lat="48.13698" lon="11.52">
+  <name>Test-POI</name>
+  <desc>Test-POI</desc>
+  <cmt>I am the Test-Point</cmt>
+  <src>Example</src>
+  <time>2006-10-20</time>
+  <sym>waypoint</sym>
+  <type>waypoint.wptgreen</type>
+  <poi_extra>
+  </poi_extra>
+</wpt>
 
 </gpx>
 

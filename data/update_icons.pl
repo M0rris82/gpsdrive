@@ -8,14 +8,8 @@
 #  - Create basic XML-File if none is available
 #  - Search icons directories for PNG files
 #  - Add those files as new POI-Types if they are not yet existent
-#  
-#  Further ideas:
-#
-#  - Maybe provide an interface to enter easily new title and
-#    description fields to the xml file
-#   
-#  - Create overview index.html from the XML-File using an XSLT to
-#    show all available poi_types and icons.
+#  - Create overview index.html from the XML-File to show all
+#    available poi_types and icons.
 #
 #####################################################################
 #
@@ -47,8 +41,8 @@ use XML::Twig;
 use Getopt::Std;
 use Pod::Usage;
 
-our ($opt_v, $opt_f, $opt_l, $opt_h, $opt_d) = 0;
-getopts('hdvf:l:') or $opt_h = 1;
+our ($opt_v, $opt_f, $opt_h ) = 0;
+getopts('hvf:') or $opt_h = 1;
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -57,17 +51,15 @@ my $file_html = './index.html';
 my %icons = ('','');
 my %h_icons = ('', '');
 my $i = 0;
-my $poi_type_id_base = 30;
+my $poi_reserved = 30;
+my $poi_type_id_base = $poi_reserved;
 my $default_scale_min = 1;
 my $default_scale_max = 50000;
 my $default_title_en = '';
 my $default_desc_en = '';
 my $lang = 'de';
 
-# parsing options
-#
 my $VERBOSE = $opt_v;
-$lang = $opt_l if $opt_l;
 
 
 #####################################################################
@@ -75,19 +67,13 @@ $lang = $opt_l if $opt_l;
 #  M A I N
 #
 #
-unless ($opt_d)
+unless (-e $file_xml)
 {
-  unless (-e $file_xml)
-  {
-    create_xml($file_xml);	# Create a new XML-File if none exists
-  }
-  get_icons();			# read available icons from dirs
-  update_xml($file_xml);	# parse and update contents  of XML-File
-  update_overview($file_html);	# update html overview from XML-File
+  create_xml();	# Create a new XML-File if none exists
 }
-
-#update_db($file_xml,$lang);	# update databse from XML-File
-
+get_icons();			# read available icons from dirs
+update_xml();	# parse and update contents  of XML-File
+update_overview();	# update html overview from XML-File
 
 exit (0);
 
@@ -99,28 +85,112 @@ exit (0);
 #
 sub update_overview
 {
-  my $file = shift;
-  print STDOUT "\n----- Updating HTML Overview '$file' -----\n";
-  
-  print STDOUT "  NOT YET IMPLEMENTED !\n";
+  print STDOUT "\n----- Updating HTML Overview '$file_html' -----\n";
 
-  return;  
-}
+  my $twig = new XML::Twig
+    (
+      TwigHandlers => { description => \&sub_desc },
+      ignore_elts => { 'scale_min' => 1, 'scale_max' => 1, 'title' => 1 }
+    );
+  $twig->parsefile( "$file_xml");
+  my $rules = $twig->root;
+  my @rule = $rules->children;
+   
+  # create backup of old index.html
+  move("$file_html","$file_html.bak") or die (" Couldn't create backup file!")
+    if (-e $file_html);
 
+  # html 'template'
+  my $html_head =
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n".
+    "  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n".
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" ".
+    "xml:lang=\"en\">\n<head>\n<meta http-equiv=\"Content-Type\" ".
+    "content=\"text/html; charset=utf-8\" />".
+    "<title>Available POI-Types in gpsdrive</title>\n".
+    "<style type=\"text/css\">\ntable { width:100%; }\n".
+    "tr { border-top:5px solid black; }\n".
+    "tr.id { background-color:#6666ff; color:white; font-weight:bold; }\n".
+    "td.id { text-align:right; }\ntd.icon { text-align:center; }\n".
+    "td.empty { text-align:center; height:32px; }\n".
+    "</style>\n</head>\n<body>\n<table>\n<tr><th>ID</th><th>Name</th>\n".
+    "<th colspan=\"3\">Icons</th><th>Description</th></tr>\n";
+  my $html_tdi = "<td class=\"icon\"><img src=\"";
+  my $html_td0 = "<td class=\"empty\">&mdash;</td>\n";
+  my %out;
 
-#####################################################################
-#
-#  Update poi_type Table in geoinfo Database from XML-File
-#
-#
-sub update_db
-{
-  my $file = shift;
-  my $lang = shift;
+  open HTMLFILE,">:utf8","$file_html";
+  select HTMLFILE;
+
+  print $html_head;
   
-  print STDOUT "\n----- Updating database using local language '$lang' -----\n";
+  foreach my $entry (@rule)
+  {
+    my $content = '';
+    my $id = $entry->first_child('geoinfo')->first_child('poi_type_id')->text;
+    my $nm = $entry->first_child('geoinfo')->first_child('name')->text;
+    my $de = $entry->first_child('description')->text;
+    my $icon = $nm;
+    my $ind = $nm;
+
+    # accentuate base categories
+    if ($id <= $poi_reserved)
+    {
+      $content .= "<tr><td>&nbsp;</td></tr>\n";
+      $content .= "<tr class=\"id\"><td class=\"id\">$id</td><td>&nbsp;$nm</td>";
+    }
+    else
+    {
+      my $level = ($icon =~ tr#\.#/#);
+      my $html_space = '';
+      while ($level)
+      { $html_space .='&nbsp;&nbsp;&nbsp;&nbsp;&rsaquo;&nbsp;'; $level--; }
+      $nm =~ s#.*\.##g;
+      $content .= "<tr><td class=\"id\">$id</td><td>&nbsp;$html_space$nm</td>";
+    }
+
+    # exchange empty or missing icon files with a char for faster display
+    my $icon_sb = "./icons/square.big/$icon.png";
+    my $icon_sm = "./icons/square.small/$icon.png";
+    my $icon_cl = "./icons/classic/$icon.png";
+
+    if ( -z $icon_sb or not -e $icon_sb )
+      { $content .= $html_td0; }
+    else 
+      { $content .= $html_tdi.$icon_sb."\" alt=\"$nm\" /></td>\n" }
+    if (-z $icon_sm or not -e $icon_sm )
+      { $content .= $html_td0; }
+    else 
+      { $content .= $html_tdi.$icon_sm."\" alt=\"$nm\" /></td>\n" }
+    if (-z $icon_cl or not -e $icon_cl )
+      { $content .= $html_td0; }
+    else 
+      { $content .= $html_tdi.$icon_cl."\" alt=\"$nm\" /></td>\n" }
+    $content .= "<td>&nbsp;$de</td></tr>\n";
+    $out{$ind} = $content;
+  }
   
-  #Geo::Gpsdrive::DB_Defaults::update_poi_type_db($file,$lang);
+  # sorted output
+  my @to_sort = keys(%out);
+  my @sorted = sort(@to_sort);
+  foreach (@sorted)
+  {
+    print $out{$_};
+  }
+
+  print "</table>\n</body>\n</html>";
+  close HTMLFILE;
+  $twig->purge;
+  return;
+
+  # use only english description, all other are removed
+  sub sub_desc
+    {
+      my( $twig, $desc)= @_;
+      unless ($desc->att('lang') eq 'en')
+        { $desc->delete; }
+    }
+
 }
 
 
@@ -131,8 +201,7 @@ sub update_db
 #
 sub update_xml
 {
-  my $file = shift;
-  print STDOUT "\n----- Parsing and updating '$file' -----\n";
+  print STDOUT "\n----- Parsing and updating '$file_xml' -----\n";
   
   # Parse XML-File and look for already existing POI-Type entries
   #
@@ -143,7 +212,7 @@ sub update_xml
       comments => 'keep',
       TwigHandlers => { geoinfo => \&sub_geoinfo }
     );
-  $twig->parsefile( "$file");	# build the twig
+  $twig->parsefile( "$file_xml");	# build the twig
   my $rules= $twig->root;	# get the root of the twig (rules)
 
   # Insert new POI-Type entries from hash of available icons
@@ -178,13 +247,14 @@ sub update_xml
   for ( my $j = 1; $j<$id_max; $j++ ) { $unused{$j}=$j; } 
   print STDOUT "  POI-Types defined:\t$i\n";
   print STDOUT "  Max. poi_type_id:\t$id_max\n";
-  print STDOUT "  Unused IDs:\n  \t\t";
+  print STDOUT "  Unused IDs:\n  \t";
   foreach (@a_id)
   { 
     if (exists $unused{$_}) { delete $unused{$_}; }
   }
-  foreach (sort(keys(%unused))) { print STDOUT "$_  "; }
-  print STDOUT "\n  \t\t( IDs <31 are reserved )\n\n";
+  foreach (sort(keys(%unused)))
+    { print STDOUT "$_  " if ($_ > $poi_reserved) }
+  print STDOUT "\n\n";
 
   # Write XML-File containing modified contents
   #
@@ -206,9 +276,11 @@ sub update_xml
 
   # Create backup copy of old XML-File
   #
-  move("$file","$file.bak") or die (" Couldn't create backup file!");
-  move("./icons.tmp","$file") or die (" Couldn't remove temp file!");
+  move("$file_xml","$file_xml.bak") or die (" Couldn't create backup file!");
+  move("./icons.tmp","$file_xml") or die (" Couldn't remove temp file!");
   print STDOUT " XML-File successfully updated!\n";
+
+  $twig->purge;
 
   return;
 
@@ -227,7 +299,6 @@ sub update_xml
        $poi_type_id_base = $poi_type_id if ($poi_type_id > $poi_type_id_base);
        delete $icons{"$name"};
      }
-     return;
    }
 }
 
@@ -269,7 +340,6 @@ sub insert_poi_type
   $new_rule->paste('last_child',$$twig_root); 
 
   print STDOUT "  +  $poi_type_id_base\t\t$name\n" if $VERBOSE;
-  return;
 }
 
 
@@ -300,7 +370,6 @@ sub get_icons
   print STDOUT " $i icons for ".keys(%icons)." POI-Types found in data/icons\n";
   chdir('..');
   
-  return;
 }
 
 
@@ -311,8 +380,9 @@ sub get_icons
 #
 sub create_xml
  { 
-   my $file = shift(@_);
-   print STDOUT "\n----- Creating new basic XML-File \"$file\" -----\n";
+   print STDOUT "\n----- Creating new basic XML-File \"$file_xml\" -----\n";
+   print STDOUT "\n  ATTENTION: It is possible, that the IDs will change,\n";
+   print STDOUT "\n  so it would be better, if you update an existing icons.xml!\n";
    my @poi_types = (
 
      { name => 'unknown',
@@ -508,7 +578,7 @@ sub create_xml
     
    );
 
-   open NEWFILE,">:utf8","./$file";
+   open NEWFILE,">:utf8","./$file_xml";
    select NEWFILE;
 
    print"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -534,12 +604,11 @@ sub create_xml
  
    close NEWFILE;
 
-   if (-e $file)
-     { print STDOUT " New XML-File \"$file\" successfully created!\n"; }
+   if (-e $file_xml)
+     { print STDOUT " New XML-File \"$file_xml\" successfully created!\n"; }
    else
-     { die " ERROR: Failed in creating new XML-File \"$file\" !\n"; }
+     { die " ERROR: Failed in creating new XML-File \"$file_xml\" !\n"; }
 
-   return;
  }
 
 
@@ -548,7 +617,7 @@ __END__
 
 =head1 SYNOPSIS
  
-update_icons.pl [-h] [-v] [-d] [-l LANGUAGE] [-f XML-FILE]
+update_icons.pl [-h] [-v] [-f XML-FILE]
  
 =head1 OPTIONS
  
@@ -558,27 +627,10 @@ update_icons.pl [-h] [-v] [-d] [-l LANGUAGE] [-f XML-FILE]
 
  Show this help
 
-=item B<-d>
-
- When this option is given, only the database will be updated from the
- xml-file. The xml-file itself will not be changed.
- This option should be used together with the '-l' option in the (user)
- install scripts.
-
 =item B<-f> XML-FILE
 
  Set file, that holds all the necessary icon and poi_type information.
  The default file is 'icons.xml'.
-
-=item B<-l> LANGUAGE
-
- Set local language, which is used for the database entries:
- The poi_type database can only hold 'title' and 'description' entries
- for english and one additional language. When setting this option, you
- can choose the language, which is used for these entries. If there
- don't exist any entries for the chosen language in the xml file, the
- English values will be used.
- The default language is 'de' for German.
 
 =item B<-v>
 
