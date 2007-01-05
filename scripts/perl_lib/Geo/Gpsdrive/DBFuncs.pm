@@ -300,8 +300,28 @@ sub poi_type_name2id($){
     debug("Type: $type_name -> $poi_type_id")
 	if $verbose;
 
-    return $poi_type_id;
+    return \$poi_type_id;
 }
+
+
+# ------------------------------------------------------------------
+# get assignment poi_type.name -> poi_type_id 
+sub get_poi_types()
+{       
+  my %poi_types;
+  my $db_query = 'SELECT poi_type_id,name FROM poi_type;';
+  my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+  my $sth=$dbh->prepare($db_query) or die $dbh->errstr; 
+  $sth->execute()               or die $sth->errstr;
+     
+  while (my @row = $sth->fetchrow_array)
+  {    
+    $poi_types{$row[1]} = $row[0];
+  }  
+  $sth->finish;
+  return \%poi_types; 
+}
+
 
 # ------------------------------------------------------------------
 sub poi_type_id2name($){

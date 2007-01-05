@@ -80,7 +80,7 @@ Disclaimer: Please do not use for navigation.
 #endif
 
 
-#define	MAX_ICONS	MAXWPTYPES
+#define	MAX_ICONS	MAXPOITYPES
 
 extern gint do_unit_test;
 extern gint debug;

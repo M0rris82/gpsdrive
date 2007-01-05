@@ -60,7 +60,7 @@ our $GPSDRIVE_DB_NAME = "geoinfo";
 
 my $count = 0;
 
-my %poi_types = (
+my %wpt_types = (
   'wlan'        =>  'wlan',
   'wlan-wep'    =>  'wlan.wep',
   'rest'        =>  'food.restaurant',
@@ -77,6 +77,8 @@ my %poi_types = (
   'cafe'        =>  'food.cafe',
   'geocache'    =>  'geocache'
   );
+
+my %poi_types = %{Geo::Gpsdrive::DBFuncs::get_poi_types()};
 
 if ($opt_d)
   { export_waypoints_sql() }
@@ -131,20 +133,27 @@ while (my $row = $sth->fetchrow_hashref)
     print"  <cmt>$$row{comment}</cmt>\n" if ($$row{comment});
     if ($$row{type})
     {
-      if ($poi_types{$$row{type}})
+      if ($wpt_types{lc($$row{type})})	# known old waypoint type
       {
-        my $sym = $poi_types{$$row{type}};
+        my $sym = $wpt_types{lc($$row{type})};
         $sym =~ s#\..*##;
         print"  <sym>$sym</sym>\n";
-        print"  <type>$poi_types{$$row{type}}</type>\n";
+        print"  <type>$wpt_types{lc($$row{type})}</type>\n";
       }
-      else
+      elsif ($poi_types{$$row{type}})	# known new style poi_type
+      {
+        my $sym = $$row{type};
+        $sym =~ s#\..*##;
+        print"  <sym>$sym</sym>\n";
+	print"  <type>$$row{type}</type>\n";
+      }
+      else				# unknown waypoint type entry
       {
         print"  <sym>$$row{type}</sym>\n";
 	print"  <type>waypoint.wptred</type>\n";
       }
     }
-    else
+    else				# no waypoint type present
     {
       print"  <sym>waypoint</sym>\n";
       print"  <type>waypoint.wptorange</type>\n";
@@ -206,12 +215,12 @@ sub export_waypoints_txt
       print"  <desc>$row[0]</desc>\n";
       if ($row[3])
       {
-	if ($poi_types{lc($row[3])})
+	if ($wpt_types{lc($row[3])})
         {
-          my $sym = $poi_types{lc($row[3])};
+          my $sym = $wpt_types{lc($row[3])};
           $sym =~ s#\..*##;
           print"  <sym>$sym</sym>\n";
-          print"  <type>$poi_types{lc($row[3])}</type>\n";
+          print"  <type>$wpt_types{lc($row[3])}</type>\n";
         }
         else
         {

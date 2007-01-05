@@ -398,7 +398,8 @@ gint mydebug = 0;
 #define MAXDBNAME 30
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
-char wp_typelist[100][40];
+char poitypetable[MAXDBNAME];
+char wp_typelist[MAXPOITYPES][40];
 int wp_typelistcount;
 char dbwherestring[5000];
 double dbdistance;
@@ -4471,6 +4472,7 @@ main (int argc, char *argv[])
     g_strlcpy (dbname, "geoinfo", sizeof (dbname));
     g_strlcpy (dbtable, "waypoints", sizeof (dbtable));
     g_strlcpy (wlantable, "wlan", sizeof (wlantable));
+	g_strlcpy (poitypetable, "poi_type", sizeof (poitypetable));
     dbdistance = 2000.0;
     dbusedist = TRUE;
     g_strlcpy (loctime, "n/a", sizeof (loctime));

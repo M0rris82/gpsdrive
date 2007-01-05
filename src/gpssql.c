@@ -40,10 +40,10 @@ Disclaimer: Please do not use for navigation.
 
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
+extern char dbtable[MAXDBNAME], dbname[MAXDBNAME], poitypetable[MAXDBNAME];
 extern gdouble current_lon, current_lat;
 extern char dbwherestring[5000];
-extern char wp_typelist[100][40];
+extern char wp_typelist[MAXPOITYPES][40];
 extern int  wp_typelistcount;
 extern double dbdistance;
 extern int usesql;
@@ -240,7 +240,7 @@ get_sql_type_list (void)
 
 
   /* make list of possible type entries */
-  g_snprintf (q, sizeof (q), "SELECT DISTINCT upper(type) FROM %s", dbtable);
+  g_snprintf (q, sizeof (q), "SELECT name FROM %s", poitypetable);
   if (mydebug > 50)
     printf ("get_sql_type_list: query: %s\n", q);
 
@@ -261,7 +261,7 @@ get_sql_type_list (void)
       for (i = 0; i < (int) strlen (temp); i++)
 	temp[i] = tolower (temp[i]);
       g_strlcpy (wp_typelist[r++], temp, sizeof (wp_typelist[0]));
-      if (r >= MAXWPTYPES)
+      if (r >= MAXPOITYPES)
 	{
 	  printf ("\nSQL: too many waypoint types!\n");
 	  break;

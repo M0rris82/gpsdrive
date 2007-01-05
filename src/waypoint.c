@@ -100,7 +100,7 @@ extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
 extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
-extern char wp_typelist[100][40];
+extern char wp_typelist[MAXPOITYPES][40];
 extern int wp_typelistcount;
 extern gint wptotal, wpselected;
 extern GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
@@ -1077,5 +1077,3 @@ loadwaypoints ()
     else
 	g_print ("%s reloaded\n", "way-SQLRESULT.txt");
 }
-
-
