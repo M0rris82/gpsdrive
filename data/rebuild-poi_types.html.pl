@@ -19,11 +19,14 @@ my $db_user = 'gast';
 my $db_pass = 'gast';
 
 my $html =
-    "<html>\n<head>\n<title>Available POI-Types in gpsdrive</title>\n".
+    "<html>\n".
+    "<head>\n".
+    "<title>Available POI-Types in gpsdrive</title>\n".
     "<style type=\"text/css\">\ntable { width:100%; }\n".
     "tr { border-top:5px solid black; }\n".
     "td.id { text-align:right; }\ntd.icon { text-align:center; }\n".
-    "</style>\n</head>\n<table>\n".
+    "</style>\n</head>\n".
+    "<table>\n".
     "<tr><th>ID</th><th>Name</th><th colspan=\"3\">Icons</th><th>Description</th></tr>\n";
 
 
@@ -53,17 +56,17 @@ while ( my @poi = $sth->fetchrow_array )
 
   $poi[1] =~ s#\.#/#g;
   
-  $html .=
-        "<td class=\"icon\"><img src=\"./icons/square.big/$poi[1].png\"></td>\n".
-        "<td class=\"icon\"><img src=\"./icons/square.small/$poi[1].png\"></td>\n".
-        "<td class=\"icon\"><img src=\"./icons/classic/$poi[1].png\"></td>\n".
-	"<td>&nbsp;$poi[2]</td></tr>\n";
-   }
+  $html .= "<td class=\"icon\"><img src=\"/square.big/$poi[1].png\"></td>\n";
+  $html .= "<td class=\"icon\"><img src=\"/square.small/$poi[1].png\"></td>\n";
+  $html .= "<td class=\"icon\"><img src=\"/classic/$poi[1].png\"></td>\n";
+  $html .= "<td>&nbsp;$poi[2]</td></tr>\n";
+ }
 
 
 $dbh->disconnect;
 
-open( POIFILE, ">./poi_types.html" ) or die "Can't open file poi_type.html: $!";
+my $filename=$ARGV[1] || "map-icons/index.html";
+open( POIFILE, ">$filename" ) or die "Can't open file $filename: $!";
 print POIFILE "$html</table>\n</html>";
 close(POIFILE);
 
