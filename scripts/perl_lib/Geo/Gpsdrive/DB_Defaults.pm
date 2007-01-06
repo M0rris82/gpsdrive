@@ -49,7 +49,7 @@ sub fill_default_poi_types {
     my $unused_icon ={};
     my $existing_icon ={};
 
-    my $icon_file='../data/icons.xml';
+    my $icon_file='../data/map-icons/icons.xml';
     $icon_file = '../share/gpsdrive/icons.xml'         unless -s $icon_file;
     $icon_file = '/usr/local/share/gpsdrive/icons.xml' unless -s $icon_file;
     $icon_file = '/usr/share/gpsdrive/icons.xml'       unless -s $icon_file;
