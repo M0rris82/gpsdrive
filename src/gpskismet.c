@@ -52,7 +52,7 @@ reads info from kismet server and insert waypoints into database
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
-extern char wp_typelist[MAXPOITYPES][40];
+extern char wp_typelist[MAXPOITYPES][50];
 extern double dbdistance;
 extern int wp_typelistcount;
 extern int usesql;

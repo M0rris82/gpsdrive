@@ -399,7 +399,7 @@ gint mydebug = 0;
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char poitypetable[MAXDBNAME];
-char wp_typelist[MAXPOITYPES][40];
+char wp_typelist[MAXPOITYPES][50];
 int wp_typelistcount;
 char dbwherestring[5000];
 double dbdistance;

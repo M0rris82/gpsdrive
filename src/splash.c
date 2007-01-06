@@ -71,7 +71,7 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
-extern char wp_typelist[MAXPOITYPES][40];
+extern char wp_typelist[MAXPOITYPES][50];
 extern double dbdistance;
 extern int dbusedist, needreminder;
 extern gint earthmate, havefriends, zone;

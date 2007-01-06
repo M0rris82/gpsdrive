@@ -43,7 +43,7 @@ extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME], poitypetable[MAXDBNAME];
 extern gdouble current_lon, current_lat;
 extern char dbwherestring[5000];
-extern char wp_typelist[MAXPOITYPES][40];
+extern char wp_typelist[MAXPOITYPES][50];
 extern int  wp_typelistcount;
 extern double dbdistance;
 extern int usesql;
