@@ -1,10 +1,10 @@
 ## Makefile.am for data
 
-SUBDIRS =      map-icons icons
+SUBDIRS =      map-icons 
 DIST_SUBDIRS = $(SUBDIRS)
 
 cfg_filesdir   = $(datadir)/gpsdrive/
-cfg_files_DATA = icons.xml map_koord.txt gpsdrive.desktop
+cfg_files_DATA = map-icons/icons.xml map_koord.txt gpsdrive.desktop
 
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif

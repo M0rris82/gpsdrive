@@ -221,15 +221,15 @@ read_icon (gchar * icon_name, int force)
   } path_definition;
   path_definition available_path[] = {
     {"", NULL},
-    {"./data/icons/", NULL},
-    {"../data/icons/", NULL},
+    {"./data/map-icons/", NULL},
+    {"../data/map-icons/", NULL},
     {"./data/pixmaps/", NULL},
     {"../data/pixmaps/", NULL},
     {"%spixmaps/", (gchar *) local_config_homedir},
-    {"%sicons/", (gchar *) local_config_homedir},
-    {"%s/gpsdrive/icons/", (gchar *) DATADIR},
+    {"%smap-icons/", (gchar *) local_config_homedir},
+    {"%s/gpsdrive/map-icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
-    {"%s/gpsdrive/icons/", "/usr/share"},
+    {"%s/gpsdrive/map-icons/", "/usr/share"},
     {"%s/gpsdrive/pixmaps/", "/usr/share"},
     {"END", NULL}
   };
@@ -345,7 +345,7 @@ load_icons (void)
   /* load icons defined in icons.txt */
   if (!fh_icons_txt)
     {
-      snprintf ((char *) &filename, sizeof (filename), "./data/icons.txt");
+      snprintf ((char *) &filename, sizeof (filename), "./data/map-icons.txt");
       fh_icons_txt = fopen (filename, "r");
       if (mydebug > 3)
 	{
@@ -354,7 +354,7 @@ load_icons (void)
     }
   if (!fh_icons_txt)
     {
-      snprintf ((char *) &filename, sizeof (filename), "%s/icons.txt", local_config_homedir);
+      snprintf ((char *) &filename, sizeof (filename), "%s/map-icons.txt", local_config_homedir);
       fh_icons_txt = fopen (filename, "r");
       if (mydebug > 3)
 	{
@@ -364,7 +364,7 @@ load_icons (void)
   /* if there is no icons.txt, try to open it  from datadir */
   if (!fh_icons_txt)
     {
-      snprintf ((char *) &filename, 255, "%s/gpsdrive/icons.txt", DATADIR);
+      snprintf ((char *) &filename, 255, "%s/gpsdrive/map-icons.txt", DATADIR);
       if (mydebug > 3)
 	{
 	  fprintf (stderr, "load_icons(): Trying default icons.txt: \"%s\"\n", filename);
@@ -479,7 +479,7 @@ load_user_icon (char icon_name[200])
 
   if (icons_buffer[icons_buffer_last].icon == NULL)
     {
-      g_snprintf (path, sizeof (path), "%s/gpsdrive/icons/%s.png", DATADIR, icon_name);
+      g_snprintf (path, sizeof (path), "%s/gpsdrive/map-icons/%s.png", DATADIR, icon_name);
       icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
     }
 

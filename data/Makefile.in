@@ -217,10 +217,10 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = map-icons icons
+SUBDIRS = map-icons 
 DIST_SUBDIRS = $(SUBDIRS)
 cfg_filesdir = $(datadir)/gpsdrive/
-cfg_files_DATA = icons.xml map_koord.txt gpsdrive.desktop
+cfg_files_DATA = map-icons/icons.xml map_koord.txt gpsdrive.desktop
 pixmapdir = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
@@ -504,7 +504,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
+	$(mkdir_p) $(distdir)/icons $(distdir)/map-icons $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
