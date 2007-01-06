@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive\n"
 "Report-Msgid-Bugs-To: ganter@ganter.at\n"
-"POT-Creation-Date: 2006-12-27 13:30+0100\n"
+"POT-Creation-Date: 2007-01-06 11:17+0100\n"
 "PO-Revision-Date: 2002-04-17 11:45 GMT+2\n"
 "Last-Translator: A. Burak Ilgicioglu <ilgici@ttnet.net.tr>\n"
 "Language-Team: LANGUAGE <tr@li.org>\n"
@@ -81,15 +81,15 @@ msgstr "Koordinatlar ve lei sein"
 msgid "Download map"
 msgstr "Harita indir"
 
-#: src/download_map.c:892 src/gpsdrive.c:3965 src/gpsdrive.c:4049
-#: src/gpsdrive.c:5605 src/import_map.c:408 src/routes.c:384
-#: src/waypoint.c:737
+#: src/download_map.c:892 src/gpsdrive.c:3966 src/gpsdrive.c:4050
+#: src/gpsdrive.c:5607 src/import_map.c:408 src/routes.c:384
+#: src/waypoint.c:756
 msgid "Latitude"
 msgstr "Enlem"
 
-#: src/download_map.c:894 src/gpsdrive.c:3965 src/gpsdrive.c:4049
-#: src/gpsdrive.c:5606 src/import_map.c:410 src/routes.c:384
-#: src/waypoint.c:755
+#: src/download_map.c:894 src/gpsdrive.c:3966 src/gpsdrive.c:4050
+#: src/gpsdrive.c:5608 src/import_map.c:410 src/routes.c:384
+#: src/waypoint.c:774
 msgid "Longitude"
 msgstr "Boylam"
 
@@ -194,7 +194,7 @@ msgstr ""
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr ""
 
-#: src/friends.c:250 src/gpsdrive.c:3531
+#: src/friends.c:250 src/gpsdrive.c:3532
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "Bir yol dosyas sein"
@@ -204,19 +204,19 @@ msgstr "Bir yol dosyas sein"
 msgid "unknown"
 msgstr "Bilinmeyen"
 
-#: src/friends.c:460 src/gpsdrive.c:3025 src/gpsdrive.c:3035
-#: src/gpsdrive.c:5494 src/gpsdrive.c:5504 src/lib_map/map_draw.c:647
+#: src/friends.c:460 src/gpsdrive.c:3026 src/gpsdrive.c:3036
+#: src/gpsdrive.c:5496 src/gpsdrive.c:5506 src/lib_map/map_draw.c:647
 #, fuzzy
 msgid "mi/h"
 msgstr "km/s"
 
-#: src/friends.c:462 src/gpsdrive.c:3027 src/gpsdrive.c:3038
-#: src/gpsdrive.c:5496 src/gpsdrive.c:5507 src/lib_map/map_draw.c:650
+#: src/friends.c:462 src/gpsdrive.c:3028 src/gpsdrive.c:3039
+#: src/gpsdrive.c:5498 src/gpsdrive.c:5509 src/lib_map/map_draw.c:650
 msgid "knots"
 msgstr "knots"
 
-#: src/friends.c:464 src/gpsdrive.c:3029 src/gpsdrive.c:3041
-#: src/gpsdrive.c:5498 src/gpsdrive.c:5510 src/lib_map/map_draw.c:653
+#: src/friends.c:464 src/gpsdrive.c:3030 src/gpsdrive.c:3042
+#: src/gpsdrive.c:5500 src/gpsdrive.c:5512 src/lib_map/map_draw.c:653
 msgid "km/h"
 msgstr "km/s"
 
@@ -234,91 +234,91 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:489
+#: src/gpsdrive.c:490
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:490
+#: src/gpsdrive.c:491
 #, fuzzy
 msgid "/_Misc. Menu/_Maps"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:491
+#: src/gpsdrive.c:492
 #, fuzzy
 msgid "/_Misc. Menu/_Maps/_Import map"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:492
+#: src/gpsdrive.c:493
 #, fuzzy
 msgid "/_Misc. Menu/_Maps/_Download map"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:493
+#: src/gpsdrive.c:494
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:494
+#: src/gpsdrive.c:495
 #, fuzzy
 msgid "/_Misc. Menu/_Reinitialize GPS"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:496
+#: src/gpsdrive.c:497
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:497
+#: src/gpsdrive.c:498
 #, fuzzy
 msgid "/_Misc. Menu/M_essages"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:498
+#: src/gpsdrive.c:499
 msgid "/_Misc. Menu/M_essages/_Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:500
+#: src/gpsdrive.c:501
 #, fuzzy
 msgid "/_Misc. Menu/_Help"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:501
+#: src/gpsdrive.c:502
 #, fuzzy
 msgid "/_Misc. Menu/_Help/_About"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:502
+#: src/gpsdrive.c:503
 #, fuzzy
 msgid "/_Misc. Menu/_Help/_Topics"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:503
+#: src/gpsdrive.c:504
 #, fuzzy
 msgid "/_Misc. Menu/_Quit"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:649
+#: src/gpsdrive.c:650
 msgid "  Message  "
 msgstr "  leti  "
 
-#: src/gpsdrive.c:716
+#: src/gpsdrive.c:717
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr ""
 
-#: src/gpsdrive.c:922
+#: src/gpsdrive.c:923
 msgid "Auto"
 msgstr "Otomatik"
 
-#: src/gpsdrive.c:1153
+#: src/gpsdrive.c:1154
 #, fuzzy
 msgid "Warning!"
 msgstr "Gsteren"
 
-#: src/gpsdrive.c:1155
+#: src/gpsdrive.c:1156
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:1554
+#: src/gpsdrive.c:1555
 #, c-format
 msgid ""
 "\n"
@@ -328,165 +328,165 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:2305
+#: src/gpsdrive.c:2306
 msgid "NESW"
 msgstr ""
 
-#: src/gpsdrive.c:2491
+#: src/gpsdrive.c:2492
 msgid "No map available for this position!"
 msgstr "Bu pozisyon iin uygun bir harita yok"
 
-#: src/gpsdrive.c:2676
+#: src/gpsdrive.c:2677
 msgid "unused"
 msgstr ""
 
-#: src/gpsdrive.c:2682 src/gpsdrive.c:2692 src/gpsdrive.c:5343
-#: src/gpsdrive.c:5349 src/gpsdrive.c:5355 src/gpsdrive.c:5388
-#: src/gpsdrive.c:5393 src/gpsdrive.c:5399 src/gpsdrive.c:5440
-#: src/gpsdrive.c:5447 src/gps_handler.c:509 src/gps_handler.c:510
+#: src/gpsdrive.c:2683 src/gpsdrive.c:2693 src/gpsdrive.c:5345
+#: src/gpsdrive.c:5351 src/gpsdrive.c:5357 src/gpsdrive.c:5390
+#: src/gpsdrive.c:5395 src/gpsdrive.c:5401 src/gpsdrive.c:5442
+#: src/gpsdrive.c:5449 src/gps_handler.c:509 src/gps_handler.c:510
 #: src/gps_handler.c:511 src/settings.c:165
 msgid "n/a"
 msgstr "n/a"
 
-#: src/gpsdrive.c:2924
+#: src/gpsdrive.c:2925
 #, fuzzy
 msgid "GpsDrive Control"
 msgstr "GpsDrive Mens"
 
-#: src/gpsdrive.c:3034 src/gpsdrive.c:3037 src/gpsdrive.c:3040
-#: src/gpsdrive.c:5503 src/gpsdrive.c:5506 src/gpsdrive.c:5509
+#: src/gpsdrive.c:3035 src/gpsdrive.c:3038 src/gpsdrive.c:3041
+#: src/gpsdrive.c:5505 src/gpsdrive.c:5508 src/gpsdrive.c:5511
 #: src/settings.c:932
 msgid "Speed"
 msgstr "Hz"
 
-#: src/gpsdrive.c:3270
+#: src/gpsdrive.c:3271
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:3534
+#: src/gpsdrive.c:3535
 msgid "Sending message to friends server..."
 msgstr ""
 
-#: src/gpsdrive.c:3613
+#: src/gpsdrive.c:3614
 #, fuzzy
 msgid "Message for:"
 msgstr "  leti  "
 
-#: src/gpsdrive.c:3655
+#: src/gpsdrive.c:3656
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:3668
+#: src/gpsdrive.c:3669
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:3965
+#: src/gpsdrive.c:3966
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:3965 src/gpsdrive.c:4049 src/gpsdrive.c:5488
+#: src/gpsdrive.c:3966 src/gpsdrive.c:4050 src/gpsdrive.c:5490
 #: src/routes.c:384 src/settings.c:924
 msgid "Distance"
 msgstr "Uzaklk"
 
-#: src/gpsdrive.c:3976
+#: src/gpsdrive.c:3977
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "Ltfen hedefinizi sein"
 
-#: src/gpsdrive.c:4049 src/routes.c:384
+#: src/gpsdrive.c:4050 src/routes.c:384
 msgid "Waypoint"
 msgstr "Yolnoktas"
 
-#: src/gpsdrive.c:4078
+#: src/gpsdrive.c:4079
 msgid "Select reference point"
 msgstr "Referans noktas sein"
 
-#: src/gpsdrive.c:4082
+#: src/gpsdrive.c:4083
 msgid "Please select your destination"
 msgstr "Ltfen hedefinizi sein"
 
-#: src/gpsdrive.c:4114
+#: src/gpsdrive.c:4115
 msgid "Edit route"
 msgstr "Rotay dzenle"
 
-#: src/gpsdrive.c:4117
+#: src/gpsdrive.c:4118
 msgid "Create route"
 msgstr "Rota yarat"
 
-#: src/gpsdrive.c:4213
+#: src/gpsdrive.c:4214
 #, fuzzy
 msgid "Create a route using some waypoints from this list"
 msgstr "Yolnoktas listesinden buray hedef olarak se"
 
-#: src/gpsdrive.c:4218
+#: src/gpsdrive.c:4219
 #, fuzzy
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Yolnoktas listesinden buray hedef olarak se"
 
-#: src/gpsdrive.c:4222
+#: src/gpsdrive.c:4223
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
 "Bir sonraki yolnoktasn semek iin\n"
 "listeye tklayn"
 
-#: src/gpsdrive.c:4245
+#: src/gpsdrive.c:4246
 #, fuzzy
 msgid "-v        show version\n"
 msgstr "-v    srm bilgisi\n"
 
-#: src/gpsdrive.c:4246
+#: src/gpsdrive.c:4247
 #, fuzzy
 msgid "-h        print this help\n"
 msgstr "-h    bu yardm gsterir\n"
 
-#: src/gpsdrive.c:4247
+#: src/gpsdrive.c:4248
 #, fuzzy
 msgid "-d        turn on debug info\n"
 msgstr "-d    hata ayklama etkin\n"
 
-#: src/gpsdrive.c:4248
+#: src/gpsdrive.c:4249
 msgid "-D X      set debug Level to X\n"
 msgstr ""
 
-#: src/gpsdrive.c:4249
+#: src/gpsdrive.c:4250
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
 msgstr ""
 
-#: src/gpsdrive.c:4250
+#: src/gpsdrive.c:4251
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr ""
 
-#: src/gpsdrive.c:4251
+#: src/gpsdrive.c:4252
 #, fuzzy
 msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    GPS iin seri aleti ayarla. rnein /dev/ttyS1\n"
 
-#: src/gpsdrive.c:4252
+#: src/gpsdrive.c:4253
 #, fuzzy
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    NMEA *kts* iin seri alet, pty master, veya dosya \n"
 
-#: src/gpsdrive.c:4253
+#: src/gpsdrive.c:4254
 #, fuzzy
 msgid "-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  Arkadalar sunucusunu se, X rnein linux.quant-x.at 'dir\n"
 
-#: src/gpsdrive.c:4254
+#: src/gpsdrive.c:4255
 #, fuzzy
 msgid "-n        Disable use of direct serial connection\n"
 msgstr "%s ile balant"
 
-#: src/gpsdrive.c:4256
+#: src/gpsdrive.c:4257
 msgid ""
 "-X        Use DBUS for communication with gpsd. This disables serial and "
 "socket communication\n"
 msgstr ""
 
-#: src/gpsdrive.c:4258
+#: src/gpsdrive.c:4259
 #, fuzzy
 msgid ""
 "-l LANG   Select language of the voice,\n"
@@ -495,7 +495,7 @@ msgstr ""
 "-l X  Sesin dilini sein,\n"
 "      X ingilizce, almanca veya ispanyolca olabilir\n"
 
-#: src/gpsdrive.c:4260
+#: src/gpsdrive.c:4261
 #, fuzzy
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
@@ -504,85 +504,85 @@ msgstr ""
 "-s X  ekrann yksekliini ayarlar, eer otomatik\n"
 "      tannandan memnun kalmazsanz, X rnein 768,600,480,200 olabilir\n"
 
-#: src/gpsdrive.c:4262
+#: src/gpsdrive.c:4263
 #, fuzzy
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr "-r X  ekrann geniliini ayarlar, sadece -s ile\n"
 
-#: src/gpsdrive.c:4263
+#: src/gpsdrive.c:4264
 #, fuzzy
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    sadece bir fare butonu, rnein touchscreen kullanrken\n"
 
-#: src/gpsdrive.c:4264
+#: src/gpsdrive.c:4265
 #, fuzzy
 msgid "-a        don't display battery status (i.e. broken APM)\n"
 msgstr "-a    pil durumunu gsterme (rnein APM almyorsa)\n"
 
-#: src/gpsdrive.c:4265
+#: src/gpsdrive.c:4266
 #, fuzzy
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr "-b X  NMEA sunucusu iin sunucu (eer gpsd baka bir makinada alyorsa)\n"
 
-#: src/gpsdrive.c:4266
+#: src/gpsdrive.c:4267
 #, fuzzy
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr "-c X  simulasyon modunda yolnoktas ismi iin balang noktasn ayarla X\n"
 
-#: src/gpsdrive.c:4267
+#: src/gpsdrive.c:4268
 #, fuzzy
 msgid "-x        create separate window for menu\n"
 msgstr ""
 "-x    men iin ayr bir pencere yarat\n"
 "\n"
 
-#: src/gpsdrive.c:4268
+#: src/gpsdrive.c:4269
 msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
 msgstr ""
 
-#: src/gpsdrive.c:4269
+#: src/gpsdrive.c:4270
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 
-#: src/gpsdrive.c:4270
+#: src/gpsdrive.c:4271
 msgid "-q        disable SQL support\n"
 msgstr ""
 
-#: src/gpsdrive.c:4271
+#: src/gpsdrive.c:4272
 msgid "-F        force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:4272
+#: src/gpsdrive.c:4273
 msgid "-S        don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:4273
+#: src/gpsdrive.c:4274
 msgid "-P        start in Pos Mode\n"
 msgstr ""
 
-#: src/gpsdrive.c:4274
+#: src/gpsdrive.c:4275
 msgid "-E        print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:4275
+#: src/gpsdrive.c:4276
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:4276
+#: src/gpsdrive.c:4277
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:4277
+#: src/gpsdrive.c:4278
 msgid ""
 "-z        don't display zoom factor and scale\n"
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:4289
+#: src/gpsdrive.c:4290
 msgid "Select a track file"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:4696
+#: src/gpsdrive.c:4698
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -592,286 +592,286 @@ msgstr ""
 "Sadece ingilizce, almanca veya ispanyolca arasndan seebilirsiniz\n"
 "\n"
 
-#: src/gpsdrive.c:4735 src/settings.c:1642
+#: src/gpsdrive.c:4737 src/settings.c:1642
 #, fuzzy
 msgid "EnterYourName"
 msgstr "Arayz"
 
-#: src/gpsdrive.c:4949
+#: src/gpsdrive.c:4951
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
 msgstr "(c)2001,2002 F.Ganter"
 
-#: src/gpsdrive.c:4957
+#: src/gpsdrive.c:4959
 msgid "Using speech output"
 msgstr "Konuma kts kullanlyor"
 
-#: src/gpsdrive.c:4987
+#: src/gpsdrive.c:4989
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:4994
+#: src/gpsdrive.c:4996
 #, fuzzy
 msgid "M_ute"
 msgstr "Mil"
 
-#: src/gpsdrive.c:5025
+#: src/gpsdrive.c:5027
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:5037
+#: src/gpsdrive.c:5039
 msgid "POI"
 msgstr ""
 
-#: src/gpsdrive.c:5042
+#: src/gpsdrive.c:5044
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:5045
+#: src/gpsdrive.c:5047
 msgid "Draw Point Of Interrests found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:5056
+#: src/gpsdrive.c:5058
 msgid "draw _WLAN"
 msgstr ""
 
-#: src/gpsdrive.c:5061
+#: src/gpsdrive.c:5063
 msgid "Draw Wlan"
 msgstr ""
 
-#: src/gpsdrive.c:5075
+#: src/gpsdrive.c:5077
 #, fuzzy
 msgid "Show _WP"
 msgstr "WP'yi gster"
 
-#: src/gpsdrive.c:5084
+#: src/gpsdrive.c:5086
 msgid "Use SQ_L"
 msgstr ""
 
-#: src/gpsdrive.c:5118
+#: src/gpsdrive.c:5120
 msgid "_Navigation"
 msgstr ""
 
-#: src/gpsdrive.c:5138 src/settings.c:614
+#: src/gpsdrive.c:5140 src/settings.c:614
 #, fuzzy
 msgid "Track"
 msgstr "Yolu gster"
 
-#: src/gpsdrive.c:5143
+#: src/gpsdrive.c:5145
 #, fuzzy
 msgid "draw _Track"
 msgstr "Yolu gster"
 
-#: src/gpsdrive.c:5151
+#: src/gpsdrive.c:5153
 #, fuzzy
 msgid "Show _Track"
 msgstr "Yolu gster"
 
-#: src/gpsdrive.c:5156
+#: src/gpsdrive.c:5158
 msgid "Show tracking on the map"
 msgstr "Haritada yollar gster"
 
-#: src/gpsdrive.c:5163
+#: src/gpsdrive.c:5165
 msgid "Save track"
 msgstr "Yolu kaydet"
 
-#: src/gpsdrive.c:5170
+#: src/gpsdrive.c:5172
 msgid "Save the track to given filename at program exit"
 msgstr "Yolu verilen dosya ad ile kaydet ve programdan k"
 
-#: src/gpsdrive.c:5244
+#: src/gpsdrive.c:5246
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
 
-#: src/gpsdrive.c:5305 src/gpsdrive.c:5611
+#: src/gpsdrive.c:5307 src/gpsdrive.c:5613
 msgid "Bearing"
 msgstr "Gsteren"
 
-#: src/gpsdrive.c:5329
+#: src/gpsdrive.c:5331
 msgid "GPS Info"
 msgstr ""
 
-#: src/gpsdrive.c:5384 src/gpsdrive.c:5628 src/gpsdrive.c:5633
-#: src/gpsdrive.c:5642 src/gpsdrive.c:5645
+#: src/gpsdrive.c:5386 src/gpsdrive.c:5630 src/gpsdrive.c:5635
+#: src/gpsdrive.c:5644 src/gpsdrive.c:5647
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:5470 src/gpsdrive.c:5477
+#: src/gpsdrive.c:5472 src/gpsdrive.c:5479
 #, fuzzy
 msgid "Selected:"
 msgstr "Hedefi sein"
 
-#: src/gpsdrive.c:5471 src/gpsdrive.c:5478
+#: src/gpsdrive.c:5473 src/gpsdrive.c:5480
 msgid "within"
 msgstr ""
 
-#: src/gpsdrive.c:5486
+#: src/gpsdrive.c:5488
 msgid "Distance to target"
 msgstr "Hedefe uzaklk"
 
-#: src/gpsdrive.c:5517
+#: src/gpsdrive.c:5519
 msgid "Altitude"
 msgstr "Ykseklik"
 
-#: src/gpsdrive.c:5521 src/settings.c:528
+#: src/gpsdrive.c:5523 src/settings.c:528
 #, fuzzy
 msgid "Waypoints"
 msgstr "Yolnoktas"
 
-#: src/gpsdrive.c:5608
+#: src/gpsdrive.c:5610
 msgid "Map file"
 msgstr "Harita dosyas"
 
-#: src/gpsdrive.c:5609
+#: src/gpsdrive.c:5611
 msgid "Map scale"
 msgstr "Harita lei"
 
-#: src/gpsdrive.c:5610
+#: src/gpsdrive.c:5612
 msgid "Heading"
 msgstr "Balk"
 
-#: src/gpsdrive.c:5612
+#: src/gpsdrive.c:5614
 msgid "Time at Dest."
 msgstr "Hedef noktadaki zaman"
 
-#: src/gpsdrive.c:5613
+#: src/gpsdrive.c:5615
 msgid "Pref. scale"
 msgstr "Pref. lek"
 
-#: src/gpsdrive.c:5620
+#: src/gpsdrive.c:5622
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:5623
+#: src/gpsdrive.c:5625
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:5636 src/gpsdrive.c:5639
+#: src/gpsdrive.c:5638 src/gpsdrive.c:5641
 msgid "0000"
 msgstr ""
 
-#: src/gpsdrive.c:5709 src/gpsdrive.c:5762 src/gpsdrive.c:5775
+#: src/gpsdrive.c:5711 src/gpsdrive.c:5764 src/gpsdrive.c:5777
 msgid "Menu"
 msgstr ""
 
-#: src/gpsdrive.c:5718 src/gpsdrive.c:5766 src/gpsdrive.c:5776
+#: src/gpsdrive.c:5720 src/gpsdrive.c:5768 src/gpsdrive.c:5778
 #, fuzzy
 msgid "Status"
 msgstr "GpsDrive Durumu"
 
-#: src/gpsdrive.c:5758 src/gpsdrive.c:5774 src/nmea_handler.c:498
+#: src/gpsdrive.c:5760 src/gpsdrive.c:5776 src/nmea_handler.c:498
 msgid "Map"
 msgstr "Harita"
 
-#: src/gpsdrive.c:5936
+#: src/gpsdrive.c:5938
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
 
-#: src/gpsdrive.c:5941
+#: src/gpsdrive.c:5943
 msgid "Number of used satellites/satellites in view"
 msgstr ""
 
-#: src/gpsdrive.c:5945
+#: src/gpsdrive.c:5947
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:5949
+#: src/gpsdrive.c:5951
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:5954
+#: src/gpsdrive.c:5956
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:5957
+#: src/gpsdrive.c:5959
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "Bir yol dosyas sein"
 
-#: src/gpsdrive.c:5959
+#: src/gpsdrive.c:5961
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:5963
+#: src/gpsdrive.c:5965
 msgid "Disable output of speech"
 msgstr "Ses ktsn iptal et"
 
-#: src/gpsdrive.c:5966
+#: src/gpsdrive.c:5968
 msgid "Use SQL server for waypoints"
 msgstr ""
 
-#: src/gpsdrive.c:5970
+#: src/gpsdrive.c:5972
 msgid "Show waypoints on the map"
 msgstr "Haritada yolnoktalarn gster"
 
-#: src/gpsdrive.c:5974
+#: src/gpsdrive.c:5976
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:5991
+#: src/gpsdrive.c:5993
 msgid "Settings for GpsDrive"
 msgstr "GpsDrive iin ayarlar"
 
-#: src/gpsdrive.c:5993
+#: src/gpsdrive.c:5995
 msgid "Zoom into the current map"
 msgstr "Aktif haritay yaknlatr"
 
-#: src/gpsdrive.c:5995
+#: src/gpsdrive.c:5997
 msgid "Zooms out off the current map"
 msgstr "Aktif haritay uzaklatr"
 
-#: src/gpsdrive.c:5997
+#: src/gpsdrive.c:5999
 msgid "Select the next more detailed map"
 msgstr "Bir sonraki daha detayl haritay se"
 
-#: src/gpsdrive.c:5999
+#: src/gpsdrive.c:6001
 msgid "Select the next less detailed map"
 msgstr "Bir sonraki daha az detayl makineyi se"
 
-#: src/gpsdrive.c:6003
+#: src/gpsdrive.c:6005
 msgid "Select here a destination from the waypoint list"
 msgstr "Yolnoktas listesinden buray hedef olarak se"
 
-#: src/gpsdrive.c:6007
+#: src/gpsdrive.c:6009
 msgid "Select the map scale of avail. maps."
 msgstr "Uygun haritalardan harita lei se"
 
-#: src/gpsdrive.c:6010
+#: src/gpsdrive.c:6012
 msgid "Draw Tracks found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:6015
+#: src/gpsdrive.c:6017
 msgid "Number of waypoints selected from SQL server"
 msgstr ""
 
-#: src/gpsdrive.c:6019
+#: src/gpsdrive.c:6021
 msgid "Number of selected waypoints, which are in range"
 msgstr ""
 
-#: src/gpsdrive.c:6023
+#: src/gpsdrive.c:6025
 msgid "Range for waypoint selection in kilometers"
 msgstr ""
 
-#: src/gpsdrive.c:6026
+#: src/gpsdrive.c:6028
 msgid "This shows the time from your GPS receiver"
 msgstr ""
 
-#: src/gpsdrive.c:6030
+#: src/gpsdrive.c:6032
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr ""
 
-#: src/gpsdrive.c:6143
+#: src/gpsdrive.c:6145
 #, c-format
 msgid ""
 "\n"
@@ -1219,7 +1219,7 @@ msgid "SELECTED"
 msgstr "SEL"
 
 #: src/import_map.c:843 src/map_handler.c:612 src/routes.c:119
-#: src/routes.c:150 src/waypoint.c:885
+#: src/routes.c:150 src/waypoint.c:904
 msgid "To"
 msgstr ""
 
@@ -2127,7 +2127,7 @@ msgstr "Yolnoktas ad ekle"
 msgid " Waypoint name: "
 msgstr "Yolnoktas ad:"
 
-#: src/waypoint.c:719
+#: src/waypoint.c:738
 #, fuzzy
 msgid " Waypoint type: "
 msgstr "Yolnoktas ad:"

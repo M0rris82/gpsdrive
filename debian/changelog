@@ -1,11 +1,16 @@
-gpsdrive (2.10-pre3-cvs-20060216) unstable; urgency=low
+gpsdrive (2.10-pre3-svn-1188) unstable; urgency=low
 
+  * More Map sources (geoscience, gov_au, incrementp, googlesat, eniro, expedia)
+  * More icons
   * Vector Support
-  * More Map sources
+  * Point Of Interest(POI) Support
+  * Some small UserInterface liftups
+  * Start of OSM Support
+  * Compile dependency to gdal 
+  * Minor/Major Bug Fixes
   * Code cleanup
-  * Minor Bug Fixes
-
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 21 Oct 2005 07:05:36 +0100
+  
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 1 Jan 2007 07:05:36 +0100
  
 gpsdrive (2.09-2) unstable; urgency=low
 
