@@ -33,13 +33,9 @@ EXTRA_DIST= \
 	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA) \
 	CMakeLists.txt poi/CMakeLists.txt \
-	maps/CMakeLists.txt icons/CMakeLists.txt \
+	maps/CMakeLists.txt  \
 	pixmaps/CMakeLists.txt \
-	icons/dev-icons.txt \
 	mysql/my.cnf \
 	poi_examples.gpx \
 	README.icons \
-	rebuild-all.sh \
-	rebuild-icons.txt.sh \
-	rebuild-poi_types.html.pl \
 	update_icons.pl

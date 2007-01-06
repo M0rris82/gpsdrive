@@ -244,15 +244,11 @@ EXTRA_DIST = \
 	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA) \
 	CMakeLists.txt poi/CMakeLists.txt \
-	maps/CMakeLists.txt icons/CMakeLists.txt \
+	maps/CMakeLists.txt  \
 	pixmaps/CMakeLists.txt \
-	icons/dev-icons.txt \
 	mysql/my.cnf \
 	poi_examples.gpx \
 	README.icons \
-	rebuild-all.sh \
-	rebuild-icons.txt.sh \
-	rebuild-poi_types.html.pl \
 	update_icons.pl
 
 all: all-recursive
@@ -504,7 +500,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/icons $(distdir)/map-icons $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
+	$(mkdir_p) $(distdir)/map-icons $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
