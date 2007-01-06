@@ -67,6 +67,7 @@ my $VERBOSE = $opt_v;
 #  M A I N
 #
 #
+chdir('./map-icons');
 unless (-e $file_xml)
 {
   create_xml();	# Create a new XML-File if none exists
@@ -74,7 +75,7 @@ unless (-e $file_xml)
 get_icons();			# read available icons from dirs
 update_xml();	# parse and update contents  of XML-File
 update_overview();	# update html overview from XML-File
-
+chdir('..');
 exit (0);
 
 
@@ -150,9 +151,9 @@ sub update_overview
     }
 
     # exchange empty or missing icon files with a char for faster display
-    my $icon_sb = "./icons/square.big/$icon.png";
-    my $icon_sm = "./icons/square.small/$icon.png";
-    my $icon_cl = "./icons/classic/$icon.png";
+    my $icon_sb = "./square.big/$icon.png";
+    my $icon_sm = "./square.small/$icon.png";
+    my $icon_cl = "./classic/$icon.png";
 
     if ( -z $icon_sb or not -e $icon_sb )
       { $content .= $html_td0; }
@@ -351,7 +352,6 @@ sub insert_poi_type
 sub get_icons
 {
   print STDOUT "\n----- Looking for available icons -----\n";
-  chdir('./icons');
   $i = 0;
   find( \&format_icons, ('square.big', 'square.small', 'classic') );
   sub format_icons()
@@ -367,8 +367,7 @@ sub get_icons
     }
   }
   delete $icons{''} if (exists $icons{''});
-  print STDOUT " $i icons for ".keys(%icons)." POI-Types found in data/icons\n";
-  chdir('..');
+  print STDOUT " $i icons for ".keys(%icons)." POI-Types found in data/map-icons\n";
   
 }
 
