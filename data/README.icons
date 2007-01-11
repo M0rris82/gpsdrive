@@ -3,12 +3,6 @@
 # $Id$
 #
 
-After drawing a lot of new icons, I decided to add a new dicrectory structure
-for the icons based on categories. Furthermore the feature of themeability
-will be added, to have the possibility of easy custom designs and to allow an
-easier transition to the new scheme.
-
-
 THE ICON FILES: 
 ----------------
 
@@ -73,7 +67,7 @@ THE BASE POI CATEGORIES:
 
   - 1	UNKNOWN						(white)
 	 Unassigned POI
-  - 2	ACCOMODATION					(light blue)
+  - 2	ACCOMMODATION					(light blue)
 	 Places to stay
   - 3	EDUCATION					(orange/white)
 	 Schools and other educational facilities
@@ -111,6 +105,8 @@ THE BASE POI CATEGORIES:
 	 WiFi-related points (Kismet)
   - 20	MISC						(white)
 	 POIs which don't fit in another category, and custom types
+  - 21  WAYPOINT					(white)
+  	 Wapoints, mostly for imported data from way.txt
 
 The colouring scheme shown here is specific for the themes "square.big" and
 "square.small". You may choose your own style of distinguishing the categories
@@ -120,28 +116,18 @@ for your theme as you like.
 SCRIPTS:
 ---------
 
-rebuild-icons.txt.sh		rebuilds the icons.txt from the available icons
-rebuild-poi_types.html.pl	rebuilds the file poi_types.html from icons.txt
-
-rebuild-all.sh			calls the other two scripts and additionally
-				modifies the poi-type database
-
-update_icons.pl			This file will handle all the icon and poi-type
-                                issues, and will replace the other scripts
-				mentioned above in the future
-
+update_icons.pl		This file creates not only the file icons.xml from
+			their available icons, it builds also a nice html-
+			overview of the icons and POI-Types.
+			This should be a maintainer-only script!
 FILES:
 -------
 
-icons.txt	holds available information of the available icons/poi-types
-		and is used to fill the poi_type database.
-		This file will be replaced by icons.xml in the future.
+icons.xml		holds all available icon and poi-type information,
+			including titles and description in various languages.
 
-poi_types.html	gives you a nice overview of the currently availabe icons and
-		POI-Types. POI-Types with no corresponding icon are represented
-		by an empty icon file mainly in the theme folder 'square.big'.
+overview.html		gives you a nice overview of the currently availabe
+			icons and POI-Types in english language.
 
-icons.xml	holds all available icon and poi-type information.
-		This file will replace icons.txt in the future.
-
+overview.de.html	same as above in german (if available)
 

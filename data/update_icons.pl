@@ -8,7 +8,7 @@
 #  - Create basic XML-File if none is available
 #  - Search icons directories for PNG files
 #  - Add those files as new POI-Types if they are not yet existent
-#  - Create overview index.html from the XML-File to show all
+#  - Create overview.html from the XML-File to show all
 #    available poi_types and icons.
 #
 #####################################################################
@@ -47,7 +47,6 @@ pod2usage( -exitval => '1',
            -verbose => '1') if $opt_h;
 
 my $file_xml = './icons.xml';
-my $file_html = './index.html';
 my %icons = ('','');
 my %h_icons = ('', '');
 my $i = 0;
@@ -57,8 +56,6 @@ my $default_scale_min = 1;
 my $default_scale_max = 50000;
 my $default_title_en = '';
 my $default_desc_en = '';
-my $lang = 'de';
-
 my $VERBOSE = $opt_v;
 
 
@@ -74,7 +71,8 @@ unless (-e $file_xml)
 }
 get_icons();			# read available icons from dirs
 update_xml();	# parse and update contents  of XML-File
-update_overview();	# update html overview from XML-File
+update_overview('en');	# update html overview from XML-File
+update_overview('de');
 chdir('..');
 exit (0);
 
@@ -86,18 +84,21 @@ exit (0);
 #
 sub update_overview
 {
+  my $lang = shift || 'en';
+  my $file_html = './overview.html';
+  unless ($lang eq 'en') { $file_html = "./overview.$lang.html" }
+
   print STDOUT "\n----- Updating HTML Overview '$file_html' -----\n";
 
   my $twig = new XML::Twig
     (
-      TwigHandlers => { description => \&sub_desc },
-      ignore_elts => { 'scale_min' => 1, 'scale_max' => 1, 'title' => 1 }
+      ignore_elts => { 'scale_min' => 1, 'scale_max' => 1 }
     );
   $twig->parsefile( "$file_xml");
   my $rules = $twig->root;
   my @rule = $rules->children;
    
-  # create backup of old index.html
+  # create backup of old overview.html
   move("$file_html","$file_html.bak") or die (" Couldn't create backup file!")
     if (-e $file_html);
 
@@ -114,6 +115,10 @@ sub update_overview
     "tr.id { background-color:#6666ff; color:white; font-weight:bold; }\n".
     "td.id { text-align:right; }\ntd.icon { text-align:center; }\n".
     "td.empty { text-align:center; height:32px; }\n".
+    "img.big { width:32px; height:32px; }\n".
+    "img.small { width:16px; height:16px; }\n".
+    "img.classic { max-height:32px; }\n".
+    "span.desc { font:x-small italic condensed }\n".
     "</style>\n</head>\n<body>\n<table>\n<tr><th>ID</th><th>Name</th>\n".
     "<th colspan=\"3\">Icons</th><th>Description</th></tr>\n";
   my $html_tdi = "<td class=\"icon\"><img src=\"";
@@ -130,7 +135,22 @@ sub update_overview
     my $content = '';
     my $id = $entry->first_child('geoinfo')->first_child('poi_type_id')->text;
     my $nm = $entry->first_child('geoinfo')->first_child('name')->text;
-    my $de = $entry->first_child('description')->text;
+
+    my $ti = $default_title_en;
+    my @a_ti = $entry->children('title');
+    foreach (@a_ti)
+    {
+      if ($_->att('lang') eq $lang) { $ti = $_->text;}
+    }
+
+    my $de = $default_desc_en;
+    my @a_de = $entry->children('description');
+    foreach (@a_de)
+    {
+      if ($_->att('lang') eq $lang)
+        { $de = '<span class="desc">&nbsp;&nbsp;'.$_->text.'</span>'; }
+    }
+
     my $icon = $nm;
     my $ind = $nm;
 
@@ -158,16 +178,16 @@ sub update_overview
     if ( -z $icon_sb or not -e $icon_sb )
       { $content .= $html_td0; }
     else 
-      { $content .= $html_tdi.$icon_sb."\" alt=\"$nm\" /></td>\n" }
+      { $content .= $html_tdi.$icon_sb."\" class=\"big\" alt=\"$nm\" /></td>\n" }
     if (-z $icon_sm or not -e $icon_sm )
       { $content .= $html_td0; }
     else 
-      { $content .= $html_tdi.$icon_sm."\" alt=\"$nm\" /></td>\n" }
+      { $content .= $html_tdi.$icon_sm."\" class=\"small\" alt=\"$nm\" /></td>\n" }
     if (-z $icon_cl or not -e $icon_cl )
       { $content .= $html_td0; }
     else 
-      { $content .= $html_tdi.$icon_cl."\" alt=\"$nm\" /></td>\n" }
-    $content .= "<td>&nbsp;$de</td></tr>\n";
+      { $content .= $html_tdi.$icon_cl."\" class=\"classic\" alt=\"$nm\" /></td>\n" }
+    $content .= "<td>$ti<br>$de</td></tr>\n";
     $out{$ind} = $content;
   }
   
@@ -183,14 +203,6 @@ sub update_overview
   close HTMLFILE;
   $twig->purge;
   return;
-
-  # use only english description, all other are removed
-  sub sub_desc
-    {
-      my( $twig, $desc)= @_;
-      unless ($desc->att('lang') eq 'en')
-        { $desc->delete; }
-    }
 
 }
 
@@ -245,7 +257,7 @@ sub update_xml
   }
   my $id_max = pop(@a_id);
   my %unused = ('','');
-  for ( my $j = 1; $j<$id_max; $j++ ) { $unused{$j}=$j; } 
+  for ( my $k = 1; $k<$id_max; $k++ ) { $unused{$k}=$k; } 
   print STDOUT "  POI-Types defined:\t$i\n";
   print STDOUT "  Max. poi_type_id:\t$id_max\n";
   print STDOUT "  Unused IDs:\n  \t";
