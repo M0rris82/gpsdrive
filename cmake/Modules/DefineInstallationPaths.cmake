@@ -64,8 +64,8 @@ if (UNIX)
     FORCE
   )
   SET(ICON_INSTALL_DIR
-    "${DATA_INSTALL_PREFIX}/icons"
-    CACHE PATH "The icon install dir (default data/icons/)"
+    "${DATA_INSTALL_PREFIX}/map-icons"
+    CACHE PATH "The icon install dir (default data/map-icons/)"
     FORCE
   )
   SET(SOUND_INSTALL_DIR
