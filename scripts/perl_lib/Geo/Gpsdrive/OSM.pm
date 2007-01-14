@@ -318,7 +318,7 @@ sub download_osm_streets($;$) { # Insert Streets from osm File
 # -----------------------------------------------------------------------------
 sub read_osm_file($) { # Insert Streets from osm File
     my $file_name = shift;
-    my $area_name = shift;
+    my $area_name = shift || "world";
 
     my $start_time=time();
 
