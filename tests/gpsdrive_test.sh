@@ -80,7 +80,7 @@ for icon_theme in square.big square.small classic ; do
 	rc=$?
 
 	if [ $rc != 0 ] ; then
-	    tail logs/gpsdrive_test_$LANG.txt
+	    cat logs/gpsdrive_test_$LANG.txt
 	    echo "Error starting gpsdrive -T (rc=$rc)"
 	    exit 1;
 	fi
