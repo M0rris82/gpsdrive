@@ -281,12 +281,8 @@ void check_and_reload_way_txt()
     gchar mappath[2048];
 
     g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
-
-    if (!wp_from_sql)
 	g_strlcat (mappath, activewpfile, sizeof (mappath));
-    else
-	g_strlcat (mappath, "way-SQLRESULT.txt", sizeof (mappath));
-
+ 
     loadwaypoints ();
 }
 
@@ -575,7 +571,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
 			       (char *) wp_type);
 		get_sql_type_list ();
-		getsqldata ();
+//		getsqldata ();
 	}
 	else
 	{
@@ -1005,11 +1001,7 @@ loadwaypoints ()
 	wayp = g_new (wpstruct, wpsize);
     
     g_strlcpy (fn_way_txt, local_config_homedir, sizeof (fn_way_txt));
-    if (!wp_from_sql)
 	g_strlcat (fn_way_txt, activewpfile, sizeof (fn_way_txt));
-    else
-	g_strlcat (fn_way_txt, "way-SQLRESULT.txt", sizeof (fn_way_txt));
-
 
     /* Check m_time of way.txt file */
     stat(fn_way_txt, &stat_buf);
@@ -1066,13 +1058,8 @@ loadwaypoints ()
 		    if (e >= 8)
 			(wayp + i)->proximity = proximity;
 
-		    if (!wp_from_sql)
-			{
-			    if ((strncmp
-				 ((wayp + i)->name, "R-",
-				  2)) == 0)
-				(wayp + i)->action = 1;
-			}
+		    if ((strncmp((wayp + i)->name, "R-",2)) == 0)
+	  		(wayp + i)->action = 1;
 
 		    i++;
 		    maxwp = i;
@@ -1087,12 +1074,8 @@ loadwaypoints ()
 		}
 	}
 
-
     fclose (st);
 
-
-    if (!wp_from_sql)
 	g_print ("%s reloaded\n", activewpfile);
-    else
-	g_print ("%s reloaded\n", "way-SQLRESULT.txt");
+
 }

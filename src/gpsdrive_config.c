@@ -447,7 +447,12 @@ readconfig ()
 		    else if ( (strcmp(par1, "dbpass")) == 0)
 			g_strlcpy (dbpass, par2, sizeof (dbpass));
 		    else if ( (strcmp(par1, "dbtable")) == 0)
-			g_strlcpy (dbtable, par2, sizeof (dbtable));
+			{
+				if ( (strcmp(par2, "waypoints")) == 0)
+					g_strlcpy (dbtable, "poi", sizeof (dbtable));
+				else
+					g_strlcpy (dbtable, par2, sizeof (dbtable));
+			}
 		    else if ( (strcmp(par1, "dbname")) == 0)
 			g_strlcpy (dbname, par2, sizeof (dbname));
 		    else if ( (strcmp(par1, "dbdistance")) == 0)

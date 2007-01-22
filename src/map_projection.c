@@ -165,7 +165,10 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 {
   int px, py;
   gdouble dif, lat, lon;
-
+	
+  // hack to avoid some strange errors caused by commas that shouldn't be there	
+  setlocale(LC_NUMERIC,"C");
+	
   if (mydebug > 99)
     fprintf (stderr, "calcxytopos(%d,%d,__,%d)\n", posx, posy, zoom);
 
@@ -331,4 +334,3 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
   *posy = 51 - *posy * zoom / (10 * pixelfact);
   *posy = *posy;
 }
-

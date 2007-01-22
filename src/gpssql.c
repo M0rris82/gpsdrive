@@ -37,6 +37,7 @@ Disclaimer: Please do not use for navigation.
 #include <semaphore.h>
 
 #include <icons.h>
+#include <poi.h>
 
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
@@ -128,7 +129,7 @@ int
 insertsqldata (double lat, double lon, char *name, char *typ)
 {
   char q[200], lats[20], lons[20], tname[500], ttyp[50];
-  int r, j, i;
+  int r, j, i, pt_id, src;
 
   if (!usesql)
     return 0;
@@ -168,9 +169,11 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 	}
     }
 
-  g_snprintf (q, sizeof (q),
-	      "INSERT INTO %s (name,lat,lon,type) VALUES ('%s','%s','%s','%s')",
-	      dbtable, tname, lats, lons, ttyp);
+  pt_id = poi_type_id_from_name(ttyp);
+  src = 3;	
+	g_snprintf (q, sizeof (q),
+	      "INSERT INTO %s (name,lat,lon,poi_type_id,source_id) VALUES ('%s','%s','%s','%d','%d')",
+	      dbtable, tname, lats, lons, pt_id, src);
   if (mydebug > 50)
     printf ("query: %s\n", q);
   if (dl_mysql_query (&mysql, q))
@@ -214,7 +217,7 @@ deletesqldata (int index)
 
   if (!usesql)
     return 0;
-  g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE id='%d'", dbtable, index);
+  g_snprintf (q, sizeof (q), "DELETE FROM %s  WHERE poi_id='%d'", dbtable, index);
   if (mydebug > 50)
     g_print ("query: %s\n", q);
 
@@ -287,108 +290,11 @@ get_sql_type_list (void)
 int
 getsqldata ()
 {
-  char q[5000];
-  char sql_order[5000];
-  int r, rges, wlan, action, sqlnr;
-  gchar file_path[400];
-  FILE *st;
-  double lat, lon, l, ti;
-  struct timeval t;
-
-  if (!usesql)
+   if (!usesql)
     return FALSE;
-  gettimeofday (&t, NULL);
-  ti = t.tv_sec + t.tv_usec / 1000000.0;
-  g_strlcpy (file_path, local_config_homedir, sizeof (file_path));
-  g_strlcat (file_path, "way-SQLRESULT.txt", sizeof (file_path));
-  st = fopen (file_path, "w+");
-  if (st == NULL)
-    {
-      perror (file_path);
-      return 1;
-    }
-
-  g_snprintf (sql_order, sizeof (sql_order),
-	      "order by \(abs(%.6f - lat)+abs(%.6f - lon))",
-	      current_lat, current_lon);
-  g_strdelimit (sql_order, ",", '.');
-  if (mydebug > 50)
-    printf ("mysql order: %s\n", sql_order);
-
-  g_snprintf (q, sizeof (q),
-	      "SELECT name,lat,lon,upper(type),id FROM %s %s %s,name LIMIT 10000",
-	      dbtable, dbwherestring, sql_order);
-  if (mydebug > 50)
-    printf ("waypoints: mysql query: %s\n", q);
-
-  if (dl_mysql_query (&mysql, q))
-    {
-      fprintf (stderr, "get_sql_type_list: Error in query: %s\n",
-	       dl_mysql_error (&mysql));
-      return (1);
-    }
-
-  if (!(res = dl_mysql_store_result (&mysql)))
-    {
-      fprintf (stderr, "Error in store results: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return (1);
-    }
-
-  rges = r = wlan = 0;
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      rges++;
-      /*  wlan=0: no wlan, 1:open wlan, 2:WEP crypted wlan */
-      if ((strcmp (row[3], "WLAN")) == 0)
-	wlan = 1;
-      else if ((strcmp (row[3], "WLAN-WEP")) == 0)
-	wlan = 2;
-      else
-	wlan = 0;
-      action = 0;
-      if ((strcmp (row[3], "SPEEDTRAP")) == 0)
-	action = 1;
-      sqlnr = atol (row[4]);
-      if (dbusedist)
-	{
-	  coordinate_string2gdouble (row[1], &lat);
-	  coordinate_string2gdouble (row[2], &lon);
-	  l = calcdist (lon, lat);
-	  if (l < dbdistance)
-	    {
-	      fprintf (st,
-		       "%-22s %10s %11s %20s %d %d %d\n",
-		       row[0], row[1], row[2], row[3], wlan, action, sqlnr);
-	      r++;
-	    }
-	}
-      else
-	{
-	  fprintf (st, "%-22s %10s %11s %20s %d %d %d\n",
-		   row[0], row[1], row[2], row[3], wlan, action, sqlnr);
-	  r++;
-	}
-    }
-  fclose (st);
-
-  gettimeofday (&t, NULL);
-  ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-  if (mydebug > 50)
-    printf (_("%d(%d) rows read in %.2f seconds\n"), r, rges, ti);
-  wptotal = rges;
-  wpselected = r;
-  loadwaypoints ();
-  if (!dl_mysql_eof (res))
-    {
-      dl_mysql_free_result (res);
-      res = NULL;
-      return FALSE;
-    }
-  dl_mysql_free_result (res);
-  res = NULL;
+  
+  poi_rebuild_list();
+  
   return TRUE;
 }
 

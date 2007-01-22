@@ -173,8 +173,6 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
   //printf("drawicon %d %d %s\n", posxdest,  posydest,icon_name);
 
   g_strlcpy (icon, icon_name, sizeof (icon));
-  if (!wp_from_sql)
-    g_strup (icon);
 
   /* sweep through all icons and look for icon */
   for (i = 0; i < icons_buffer_last; i++)

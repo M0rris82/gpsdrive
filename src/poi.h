@@ -53,27 +53,29 @@ typedef struct
 }
 poi_struct;
 
+#define POI_TYPE_LIST_STRING_LENGTH 80
+
 void draw_text (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);
+gint poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH]);
 void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
 
-#define poi_type_list_string_length 80
 typedef struct
 {
   gint poi_type_id;
-  gchar name[poi_type_list_string_length];
-  gchar icon_name[poi_type_list_string_length];
+  gchar name[POI_TYPE_LIST_STRING_LENGTH];
+  gchar icon_name[POI_TYPE_LIST_STRING_LENGTH];
   GdkPixbuf *icon;
   gint scale_min;
   gint scale_max;
   gint parent;
-  gchar description[poi_type_list_string_length];
+  gchar description[POI_TYPE_LIST_STRING_LENGTH];
 } poi_type_struct;
-#define poi_type_list_max 4000
+#define poi_type_list_max 1000
 
 
 #endif /* GPSDRIVE_POI_H */

@@ -404,7 +404,7 @@ int wp_typelistcount;
 char dbwherestring[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
-extern gint sqlselects[100], sqlplace, friendsplace, kismetsock, havekismet;
+extern gint sqlselects[MAXPOITYPES], sqlplace, friendsplace, kismetsock, havekismet;
 
 extern GdkPixbuf *kismetpixbuf,	*iconpixbuf[50];
 gint earthmate = FALSE;
@@ -4470,7 +4470,7 @@ main (int argc, char *argv[])
     g_strlcpy (dbuser, "gast", sizeof (dbuser));
     g_strlcpy (dbpass, "gast", sizeof (dbpass));
     g_strlcpy (dbname, "geoinfo", sizeof (dbname));
-    g_strlcpy (dbtable, "waypoints", sizeof (dbtable));
+    g_strlcpy (dbtable, "poi", sizeof (dbtable));
     g_strlcpy (wlantable, "wlan", sizeof (wlantable));
 	g_strlcpy (poitypetable, "poi_type", sizeof (poitypetable));
     dbdistance = 2000.0;
@@ -5044,7 +5044,7 @@ main (int argc, char *argv[])
 	poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
 	gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
-			      _("Draw Point Of Interrests found in mySQL"),
+			      _("Draw Points Of Interest found in mySQL"),
 			      NULL);
 	if (!poi_draw)
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);

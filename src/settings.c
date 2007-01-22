@@ -116,7 +116,7 @@ extern int wp_typelistcount;
 extern double dbdistance;
 extern int dbusedist, havefriends, etch, do_draw_grid, serialspeed, disableserial;
 GtkWidget *sqlfn[100], *ipbt;
-gint sqlselects[100], sqlandmode = TRUE;
+gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
 static int sqldontquery = FALSE;
 int sqlplace, friendsplace;
 extern GdkColormap *cmap;
@@ -2034,7 +2034,7 @@ sqlsetup (void)
   GtkWidget *d5;
   GtkWidget *frame;
   GtkWidget *hbox;
-  GtkWidget *l[100];
+  GtkWidget *l[MAXPOITYPES];
   GtkWidget *mainbox;
   GtkWidget *scroll;
   GtkWidget *t0;
@@ -2044,12 +2044,12 @@ sqlsetup (void)
   GtkWidget *table2;
 
   gchar temp[80];
-  gchar text[30];
+  gchar text[50];
   gchar wheretemp[5000];
   glong i;
 
-  setupentry[sqlplace] = frame = gtk_frame_new (_("SQL selection criterias"));
-  setupentrylabel[sqlplace] = gtk_label_new (_("SQL"));
+  setupentry[sqlplace] = frame = gtk_frame_new (_("POI selection criterias"));
+  setupentrylabel[sqlplace] = gtk_label_new (_("POI"));
 
   gtk_container_set_border_width (GTK_CONTAINER (frame), 5 * PADDING);
 
