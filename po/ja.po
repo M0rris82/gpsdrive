@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.32\n"
 "Report-Msgid-Bugs-To: ganter@ganter.at\n"
-"POT-Creation-Date: 2007-01-06 11:17+0100\n"
+"POT-Creation-Date: 2007-01-24 00:07+0100\n"
 "PO-Revision-Date: 2003-02-03 20:08+0900\n"
 "Last-Translator:  <maruyama@sh.rim.or.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -84,13 +84,13 @@ msgstr "地図ダウンロード"
 
 #: src/download_map.c:892 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5607 src/import_map.c:408 src/routes.c:384
-#: src/waypoint.c:756
+#: src/waypoint.c:752
 msgid "Latitude"
 msgstr "緯度"
 
 #: src/download_map.c:894 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5608 src/import_map.c:410 src/routes.c:384
-#: src/waypoint.c:774
+#: src/waypoint.c:770
 msgid "Longitude"
 msgstr "経度"
 
@@ -154,7 +154,7 @@ msgstr ""
 "\n"
 "環境変数 HTTP_PROXYは、次の形式にして下さい: http://proxy.provider.de:3128"
 
-#: src/draw_tracks.c:444 src/poi.c:602 src/wlan.c:387
+#: src/draw_tracks.c:444 src/poi.c:550 src/wlan.c:387
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) rows read in %.2f seconds\n"
@@ -634,7 +634,7 @@ msgstr "消音"
 msgid "HomeBase"
 msgstr "ホーム"
 
-#: src/gpsdrive.c:5039
+#: src/gpsdrive.c:5039 src/settings.c:2052
 msgid "POI"
 msgstr ""
 
@@ -643,7 +643,7 @@ msgid "draw PO_I"
 msgstr ""
 
 #: src/gpsdrive.c:5047
-msgid "Draw Point Of Interrests found in mySQL"
+msgid "Draw Points Of Interest found in mySQL"
 msgstr ""
 
 #: src/gpsdrive.c:5058
@@ -1100,35 +1100,30 @@ msgstr ""
 msgid "switching WAAS/EGNOS off\n"
 msgstr ""
 
-#: src/gpssql.c:110
+#: src/gpssql.c:111
 #, fuzzy, c-format
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 "\n"
 "SQL: connected to %s as %s using %s\n"
 
-#: src/gpssql.c:180
+#: src/gpssql.c:191
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr "rows inserted: %d\n"
 
-#: src/gpssql.c:202
+#: src/gpssql.c:213
 #, c-format
 msgid "last index: %d\n"
 msgstr "last index: %d\n"
 
-#: src/gpssql.c:225
+#: src/gpssql.c:236
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr "rows deleted: %d\n"
 
-#: src/gpssql.c:380
-#, c-format
-msgid "%d(%d) rows read in %.2f seconds\n"
-msgstr "%d(%d) rows read in %.2f seconds\n"
-
 # ##;;;english below
-#: src/gpssql.c:547
+#: src/gpssql.c:461
 #, c-format
 msgid ""
 "\n"
@@ -1137,7 +1132,7 @@ msgstr ""
 "\n"
 "libmysqlclient.so がありません\n"
 
-#: src/gpssql.c:553
+#: src/gpssql.c:467
 #, c-format
 msgid ""
 "\n"
@@ -1146,7 +1141,7 @@ msgstr ""
 "\n"
 "MySQL サポート機能が無効です\n"
 
-#: src/icons.c:258
+#: src/icons.c:256
 #, fuzzy, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -1159,7 +1154,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:492 src/icons.c:497
+#: src/icons.c:490 src/icons.c:495
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1270,7 +1265,7 @@ msgid "SELECTED"
 msgstr "選択"
 
 #: src/import_map.c:843 src/map_handler.c:612 src/routes.c:119
-#: src/routes.c:150 src/waypoint.c:904
+#: src/routes.c:150 src/waypoint.c:900
 msgid "To"
 msgstr "To"
 
@@ -1981,13 +1976,9 @@ msgstr ""
 "あなたの位置を知ることになります!"
 
 #: src/settings.c:2051
-msgid "SQL selection criterias"
+#, fuzzy
+msgid "POI selection criterias"
 msgstr "SQL選択基準"
-
-# ;;; ???
-#: src/settings.c:2052
-msgid "SQL"
-msgstr "SQL"
 
 #: src/settings.c:2079
 msgid "Dist. limit[km] "
@@ -2218,17 +2209,24 @@ msgstr ""
 msgid "About GpsDrive"
 msgstr "GpsDriveへの寄付について"
 
-#: src/waypoint.c:663
+#: src/waypoint.c:659
 msgid "Add waypoint name"
 msgstr "waypoint名追加"
 
-#: src/waypoint.c:673
+#: src/waypoint.c:669
 msgid " Waypoint name: "
 msgstr " Waypoint 名: "
 
-#: src/waypoint.c:738
+#: src/waypoint.c:734
 msgid " Waypoint type: "
 msgstr " Waypoint type: "
+
+#~ msgid "%d(%d) rows read in %.2f seconds\n"
+#~ msgstr "%d(%d) rows read in %.2f seconds\n"
+
+# ;;; ???
+#~ msgid "SQL"
+#~ msgstr "SQL"
 
 #, fuzzy
 #~ msgid "/_Misc. Menu/_Start gpsd"

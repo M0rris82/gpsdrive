@@ -31,6 +31,7 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	planet-osm/perl/planetosm-excerpt-area.pl \
 	planet-osm/perl/planetosm-excerpt-tags.pl \
 	planet-osm/perl/planetosm-to-db.pl \
+	planet-osm/perl/planetcount.pl \
 	planet-osm/php/planet_to_mysql.phps \
 	planet-osm/planet2mysql.rb \
 	planet-osm/planet.rb \

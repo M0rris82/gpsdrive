@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ganter@ganter.at\n"
-"POT-Creation-Date: 2007-01-06 11:17+0100\n"
+"POT-Creation-Date: 2007-01-24 00:07+0100\n"
 "PO-Revision-Date: 2002-05-02 22:28+0200\n"
 "Last-Translator: Fritz Ganter <ganter@ganter.at>\n"
 "Language-Team: german <de@li.org>\n"
@@ -83,13 +83,13 @@ msgstr "Karte obaloadn"
 
 #: src/download_map.c:892 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5607 src/import_map.c:408 src/routes.c:384
-#: src/waypoint.c:756
+#: src/waypoint.c:752
 msgid "Latitude"
 msgstr "Breitn"
 
 #: src/download_map.c:894 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5608 src/import_map.c:410 src/routes.c:384
-#: src/waypoint.c:774
+#: src/waypoint.c:770
 msgid "Longitude"
 msgstr "Längn"
 
@@ -155,7 +155,7 @@ msgstr ""
 "Ungültige Umgebungsvariable HTTP_PROXY. Sie muss im Format http://proxy."
 "provider.de:3128 sein."
 
-#: src/draw_tracks.c:444 src/poi.c:602 src/wlan.c:387
+#: src/draw_tracks.c:444 src/poi.c:550 src/wlan.c:387
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr ""
@@ -619,7 +619,7 @@ msgstr "Stumm"
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:5039
+#: src/gpsdrive.c:5039 src/settings.c:2052
 msgid "POI"
 msgstr ""
 
@@ -628,7 +628,7 @@ msgid "draw PO_I"
 msgstr ""
 
 #: src/gpsdrive.c:5047
-msgid "Draw Point Of Interrests found in mySQL"
+msgid "Draw Points Of Interest found in mySQL"
 msgstr ""
 
 #: src/gpsdrive.c:5058
@@ -1063,46 +1063,41 @@ msgstr ""
 msgid "switching WAAS/EGNOS off\n"
 msgstr ""
 
-#: src/gpssql.c:110
+#: src/gpssql.c:111
 #, c-format
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 
-#: src/gpssql.c:180
+#: src/gpssql.c:191
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr ""
 
-#: src/gpssql.c:202
+#: src/gpssql.c:213
 #, c-format
 msgid "last index: %d\n"
 msgstr ""
 
-#: src/gpssql.c:225
+#: src/gpssql.c:236
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr ""
 
-#: src/gpssql.c:380
-#, c-format
-msgid "%d(%d) rows read in %.2f seconds\n"
-msgstr ""
-
-#: src/gpssql.c:547
+#: src/gpssql.c:461
 #, c-format
 msgid ""
 "\n"
 "libmysqlclient.so not found.\n"
 msgstr ""
 
-#: src/gpssql.c:553
+#: src/gpssql.c:467
 #, c-format
 msgid ""
 "\n"
 "MySQL support disabled.\n"
 msgstr ""
 
-#: src/icons.c:258
+#: src/icons.c:256
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -1110,7 +1105,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:492 src/icons.c:497
+#: src/icons.c:490 src/icons.c:495
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1219,7 +1214,7 @@ msgid "SELECTED"
 msgstr "AUSGEWÄHLT"
 
 #: src/import_map.c:843 src/map_handler.c:612 src/routes.c:119
-#: src/routes.c:150 src/waypoint.c:904
+#: src/routes.c:150 src/waypoint.c:900
 msgid "To"
 msgstr ""
 
@@ -1910,11 +1905,7 @@ msgid ""
 msgstr ""
 
 #: src/settings.c:2051
-msgid "SQL selection criterias"
-msgstr ""
-
-#: src/settings.c:2052
-msgid "SQL"
+msgid "POI selection criterias"
 msgstr ""
 
 #: src/settings.c:2079
@@ -2121,15 +2112,15 @@ msgstr ""
 msgid "About GpsDrive"
 msgstr "GpsDrive Menü"
 
-#: src/waypoint.c:663
+#: src/waypoint.c:659
 msgid "Add waypoint name"
 msgstr "Wegpunkt Bezeichnung hinzufügen"
 
-#: src/waypoint.c:673
+#: src/waypoint.c:669
 msgid " Waypoint name: "
 msgstr " Wegpunkt Bezeichnung: "
 
-#: src/waypoint.c:738
+#: src/waypoint.c:734
 #, fuzzy
 msgid " Waypoint type: "
 msgstr " Wegpunkt Bezeichnung: "

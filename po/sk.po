@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.30pre5\n"
 "Report-Msgid-Bugs-To: ganter@ganter.at\n"
-"POT-Creation-Date: 2007-01-06 11:17+0100\n"
+"POT-Creation-Date: 2007-01-24 00:07+0100\n"
 "PO-Revision-Date: 2002-12-31 09:30+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -83,13 +83,13 @@ msgstr "Stiahnu» mapu"
 
 #: src/download_map.c:892 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5607 src/import_map.c:408 src/routes.c:384
-#: src/waypoint.c:756
+#: src/waypoint.c:752
 msgid "Latitude"
 msgstr "Zemepisná ¹írka"
 
 #: src/download_map.c:894 src/gpsdrive.c:3966 src/gpsdrive.c:4050
 #: src/gpsdrive.c:5608 src/import_map.c:410 src/routes.c:384
-#: src/waypoint.c:774
+#: src/waypoint.c:770
 msgid "Longitude"
 msgstr "Zemepisná då¾ka"
 
@@ -154,7 +154,7 @@ msgstr ""
 "Neplatná premenná prostredia HTTP_PROXY, musí by» vo formáte: http://proxy."
 "provider.de:3128"
 
-#: src/draw_tracks.c:444 src/poi.c:602 src/wlan.c:387
+#: src/draw_tracks.c:444 src/poi.c:550 src/wlan.c:387
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) preèítaných riadkov za %.2f sekúnd\n"
@@ -623,7 +623,7 @@ msgstr "Potichu"
 msgid "HomeBase"
 msgstr ""
 
-#: src/gpsdrive.c:5039
+#: src/gpsdrive.c:5039 src/settings.c:2052
 msgid "POI"
 msgstr ""
 
@@ -632,7 +632,7 @@ msgid "draw PO_I"
 msgstr ""
 
 #: src/gpsdrive.c:5047
-msgid "Draw Point Of Interrests found in mySQL"
+msgid "Draw Points Of Interest found in mySQL"
 msgstr ""
 
 #: src/gpsdrive.c:5058
@@ -1082,48 +1082,43 @@ msgstr ""
 msgid "switching WAAS/EGNOS off\n"
 msgstr ""
 
-#: src/gpssql.c:110
+#: src/gpssql.c:111
 #, fuzzy, c-format
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 "\n"
 "SQL: pripojené k %s ako %s s pou¾itím %s\n"
 
-#: src/gpssql.c:180
+#: src/gpssql.c:191
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr "vlo¾ené riadky: %d\n"
 
-#: src/gpssql.c:202
+#: src/gpssql.c:213
 #, c-format
 msgid "last index: %d\n"
 msgstr "posledný index: %d\n"
 
-#: src/gpssql.c:225
+#: src/gpssql.c:236
 #, fuzzy, c-format
 msgid "rows deleted: %d\n"
 msgstr "vlo¾ené riadky: %d\n"
 
-#: src/gpssql.c:380
-#, c-format
-msgid "%d(%d) rows read in %.2f seconds\n"
-msgstr "%d(%d) preèítaných riadkov za %.2f sekúnd\n"
-
-#: src/gpssql.c:547
+#: src/gpssql.c:461
 #, c-format
 msgid ""
 "\n"
 "libmysqlclient.so not found.\n"
 msgstr ""
 
-#: src/gpssql.c:553
+#: src/gpssql.c:467
 #, c-format
 msgid ""
 "\n"
 "MySQL support disabled.\n"
 msgstr ""
 
-#: src/icons.c:258
+#: src/icons.c:256
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -1131,7 +1126,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/icons.c:492 src/icons.c:497
+#: src/icons.c:490 src/icons.c:495
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1239,7 +1234,7 @@ msgid "SELECTED"
 msgstr "ZVOLENÉMU"
 
 #: src/import_map.c:843 src/map_handler.c:612 src/routes.c:119
-#: src/routes.c:150 src/waypoint.c:904
+#: src/routes.c:150 src/waypoint.c:900
 msgid "To"
 msgstr ""
 
@@ -1936,12 +1931,9 @@ msgid ""
 msgstr ""
 
 #: src/settings.c:2051
-msgid "SQL selection criterias"
+#, fuzzy
+msgid "POI selection criterias"
 msgstr "Kritéria výberu SQL"
-
-#: src/settings.c:2052
-msgid "SQL"
-msgstr "SQL"
 
 #: src/settings.c:2079
 msgid "Dist. limit[km] "
@@ -2158,17 +2150,23 @@ msgstr ""
 msgid "About GpsDrive"
 msgstr "Ovládanie GpsDrive"
 
-#: src/waypoint.c:663
+#: src/waypoint.c:659
 msgid "Add waypoint name"
 msgstr "Prida» názov bodu trasy"
 
-#: src/waypoint.c:673
+#: src/waypoint.c:669
 msgid " Waypoint name: "
 msgstr " Názov bodu trasy: "
 
-#: src/waypoint.c:738
+#: src/waypoint.c:734
 msgid " Waypoint type: "
 msgstr " Typ bodu trasy: "
+
+#~ msgid "%d(%d) rows read in %.2f seconds\n"
+#~ msgstr "%d(%d) preèítaných riadkov za %.2f sekúnd\n"
+
+#~ msgid "SQL"
+#~ msgstr "SQL"
 
 #, fuzzy
 #~ msgid "/_Misc. Menu/_Start gpsd"
