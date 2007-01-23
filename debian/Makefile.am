@@ -1,4 +1,6 @@
 # Makefile.am for Documentation
 
-EXTRA_DIST= control changelog copyright dirs rules files rules.cmake gpsdrive.postinst gpsdrive.templates
+EXTRA_DIST= control changelog compat copyright dirs \
+	rules files rules.cmake postinst templates\
+	po/output po/POTFILES.in po/templates.pot po/*.po
 
