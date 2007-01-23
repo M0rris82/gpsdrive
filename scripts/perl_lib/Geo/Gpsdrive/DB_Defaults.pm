@@ -141,8 +141,8 @@ sub fill_default_sources() {   # Just some Default Sources
       },
       { source_id   => '3',
         name        => 'user',
-	comment     => 'Data collected by the GPSDrive-User',
-	last_update => '2007-01-03',
+	comment     => 'Data entered by the GPSDrive-User',
+	last_update => '2007-01-23',
 	url         => 'http://www.gpsdrive.cc/',
 	licence     => $default_licence
       },

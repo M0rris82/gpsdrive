@@ -1046,23 +1046,6 @@ sub create_db(){
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('source');
 
-    # --------- Waypoints: For compatibility to old DB Structure
-    #   will be kicked soon (waypoints are then stored in poi table)
-    db_exec('CREATE TABLE  IF NOT EXISTS waypoints (
-                      `name`      char(40)          default \'\',
-                      `type`      char(40)          default \'\',
-                      `id`        int(11)  NOT NULL auto_increment,
-                      `lat`       double            default \'0\',
-                      `lon`       double            default \'0\',
-                      `comment`   char(160)         default \'\',
-                      `wep`       int(11)  NOT NULL default \'0\',
-                      `macaddr`   char(20)          default \'0\',
-                      `nettype`   int(11)  NOT NULL default \'0\',
-                      `typenr`    int(11)               default NULL,
-                      PRIMARY KEY  (id)
-                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
-    add_index('waypoints');
-
     # -------- traffic: For Traffic Information
     db_exec('CREATE TABLE IF NOT EXISTS traffic (
       			`id`        int(11)      NOT NULL auto_increment ,
