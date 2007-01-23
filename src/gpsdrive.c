@@ -116,7 +116,7 @@ Disclaimer: Please do not use for navigation.
 #endif
 
 /*  Defines for gettext I18n */
-# include <libintl.h>
+#include <libintl.h>
 # define _(String) gettext(String)
 # ifdef gettext_noop
 #  define N_(String) gettext_noop(String)
