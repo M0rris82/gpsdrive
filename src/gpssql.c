@@ -131,7 +131,7 @@ insertsqldata (double lat, double lon, char *name, char *typ)
   char q[200], lats[20], lons[20], tname[500], ttyp[50];
   int r, j, i, pt_id, src;
   gchar *db_time = "2007-01-01T00:00:00.000Z";
-  GTimeVal *current_time;
+  GTimeVal current_time;
 	
   if (!usesql)
     return 0;
@@ -176,8 +176,8 @@ insertsqldata (double lat, double lon, char *name, char *typ)
   // set source_id at value for 'user entered data'
     src = 3;
   // get current date and format it for use in database
-    g_get_current_time(current_time);
-    db_time = g_strndup(g_time_val_to_iso8601(current_time),10);
+    g_get_current_time(&current_time);
+    db_time = g_strndup(g_time_val_to_iso8601(&current_time),10);
 	
   g_snprintf (q, sizeof (q),
 	"INSERT INTO %s (name,lat,lon,poi_type_id,source_id,last_modified) VALUES ('%s','%s','%s','%d','%d','%s')",
