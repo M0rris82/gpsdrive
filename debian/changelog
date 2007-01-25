@@ -1,4 +1,4 @@
-gpsdrive (2.10-svn1188) unstable; urgency=low
+gpsdrive (2.10svn1220) unstable; urgency=low
 
   * More Map sources (geoscience, gov_au, incrementp, googlesat, eniro, expedia)
   * More icons

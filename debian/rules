@@ -46,13 +46,6 @@ install: build
 	# Add here commands to install the package into debian/gpsdrive.
 	$(MAKE) install prefix=$(destdir)
 
-	# replace non-free script with a wrapper
-	# cp $(CURDIR)/debian/gpsfetchmap $(destdir)/bin/
-	# chmod +x $(destdir)/bin/gpsfetchmap
-
-	# Remove gpsd, since debian has an own gpsd package
-	# rm $(destdir)/bin/gpsd
-
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
 

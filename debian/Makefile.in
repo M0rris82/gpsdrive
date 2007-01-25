@@ -206,8 +206,10 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-EXTRA_DIST = control changelog compat copyright dirs \
-	rules files rules.cmake postinst templates\
+EXTRA_DIST = control changelog compat copyright gpsdrive.dirs\
+	gpsdrive.pth gpsdrive.config\
+	gpsdrive.postinst gpsdrive.templates\
+	rules files rules.cmake \
 	po/output po/POTFILES.in po/templates.pot po/*.po
 
 all: all-am
