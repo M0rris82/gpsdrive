@@ -18,10 +18,10 @@ UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
 	osm2csv/create_all.sh \
-	osm-pdf-atlas/create.sh \
-	osm-pdf-atlas/Data/readme-shorelines.txt \
-	osm-pdf-atlas/Data/readme.txt \
-	osm-pdf-atlas/osm-pdf-atlas.pl \
+	pdf-atlas/create.sh \
+	pdf-atlas/Data/readme-shorelines.txt \
+	pdf-atlas/Data/readme.txt \
+	pdf-atlas/osm-pdf-atlas.pl \
 	planet-osm/C/UTF8sanitizer.c \
 	planet-osm/C/UTF8sanitizer.exe \
 	planet-osm/java/build-osm2csv.bat \
@@ -39,4 +39,4 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	planet-osm/python/utf8osmchecker.py \
 	planet-osm/test-planet.osm \
 	simplify/simplify.pl \
-	osm-pdf-atlas/Config/*.txt
+	pdf-atlas/Config/*.txt
