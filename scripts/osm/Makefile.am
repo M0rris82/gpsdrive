@@ -21,7 +21,7 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	pdf-atlas/create.sh \
 	pdf-atlas/Data/readme-shorelines.txt \
 	pdf-atlas/Data/readme.txt \
-	pdf-atlas/osm-pdf-atlas.pl \
+	pdf-atlas/pdf-atlas.pl \
 	planet-osm/C/UTF8sanitizer.c \
 	planet-osm/C/UTF8sanitizer.exe \
 	planet-osm/java/build-osm2csv.bat \

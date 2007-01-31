@@ -43,11 +43,7 @@ UTF8sanitizer_PROGRAMS = UTF8sanitizer$(EXEEXT)
 subdir = scripts/osm
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -248,10 +244,10 @@ UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
 	osm2csv/create_all.sh \
-	osm-pdf-atlas/create.sh \
-	osm-pdf-atlas/Data/readme-shorelines.txt \
-	osm-pdf-atlas/Data/readme.txt \
-	osm-pdf-atlas/osm-pdf-atlas.pl \
+	pdf-atlas/create.sh \
+	pdf-atlas/Data/readme-shorelines.txt \
+	pdf-atlas/Data/readme.txt \
+	pdf-atlas/pdf-atlas.pl \
 	planet-osm/C/UTF8sanitizer.c \
 	planet-osm/C/UTF8sanitizer.exe \
 	planet-osm/java/build-osm2csv.bat \
@@ -269,7 +265,7 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	planet-osm/python/utf8osmchecker.py \
 	planet-osm/test-planet.osm \
 	simplify/simplify.pl \
-	osm-pdf-atlas/Config/*.txt
+	pdf-atlas/Config/*.txt
 
 all: all-am
 
@@ -470,7 +466,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/osm-pdf-atlas $(distdir)/osm-pdf-atlas/Config $(distdir)/osm-pdf-atlas/Data $(distdir)/osm-subset $(distdir)/osm2csv $(distdir)/osmfilter $(distdir)/planet-mirror $(distdir)/planet-osm $(distdir)/planet-osm/C $(distdir)/planet-osm/java $(distdir)/planet-osm/perl $(distdir)/planet-osm/php $(distdir)/planet-osm/python $(distdir)/simplify
+	$(mkdir_p) $(distdir)/osm-subset $(distdir)/osm2csv $(distdir)/osmfilter $(distdir)/pdf-atlas $(distdir)/pdf-atlas/Config $(distdir)/pdf-atlas/Data $(distdir)/planet-mirror $(distdir)/planet-osm $(distdir)/planet-osm/C $(distdir)/planet-osm/java $(distdir)/planet-osm/perl $(distdir)/planet-osm/php $(distdir)/planet-osm/python $(distdir)/simplify
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
