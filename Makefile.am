@@ -8,7 +8,6 @@ DIST_SUBDIRS = $(SUBDIRS)
 # I'm not shure if this is needed
 EXTRA_DIST = config.rpath m4/ChangeLog \
 	po/Makefile.am po/Makefile.in po/POTFILES po/remove-potcdate.sed \
-	po/Makevars.template\
 	cmake/Modules/*.cmake cmake/Modules/CMakeLists.txt \
 	cmake/Modules/COPYING-CMAKE-SCRIPTS cmake/CMakeLists.txt \
 	config.h.cmake ConfigureChecks.cmake \
