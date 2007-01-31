@@ -4413,19 +4413,20 @@ main (int argc, char *argv[])
 	// GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
 	// font_s_text, font_s_verysmalltext, font_s_smalltext, font_s_bigtext, font_s_wplabel;
 	if (pdamode)
-	    {
-		g_strlcpy (font_s_bigtext, "Sans bold 16", sizeof (font_s_bigtext));
-		g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
-		g_strlcpy (font_s_text, "Sans 8", sizeof (font_s_text));
-		g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
-		g_strlcpy (font_s_wplabel, "Sans 8", sizeof (font_s_wplabel));
-	    } else {
-		g_strlcpy (font_s_bigtext, "Sans bold 26", sizeof (font_s_bigtext));
-		g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
-		g_strlcpy (font_s_text, "Sans 11", sizeof (font_s_text));
-		g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
-		g_strlcpy (font_s_wplabel, "Sans 11", sizeof (font_s_wplabel));
-	    }
+        {
+            g_strlcpy (font_s_bigtext, "Sans bold 12", sizeof (font_s_bigtext));
+            g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
+            g_strlcpy (font_s_text, "Sans 8", sizeof (font_s_text));
+            g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+            g_strlcpy (font_s_wplabel, "Sans 8", sizeof (font_s_wplabel));
+            printf("pdamode for fonts\n");
+        } else {
+            g_strlcpy (font_s_bigtext, "Sans bold 26", sizeof (font_s_bigtext));
+            g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
+            g_strlcpy (font_s_text, "Sans 11", sizeof (font_s_text));
+            g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+            g_strlcpy (font_s_wplabel, "Sans 11", sizeof (font_s_wplabel));
+        }
 	pfd_text = pango_font_description_from_string (font_s_text);
 	pfd_verysmalltext = pango_font_description_from_string (font_s_verysmalltext);
 	pfd_smalltext = pango_font_description_from_string (font_s_smalltext);
@@ -4593,8 +4594,12 @@ main (int argc, char *argv[])
 
     /* Needed 4 hours to find out that this is IMPORTANT!!!! */
     gdk_rgb_init ();
-    screen_height = gdk_screen_height ()-50;
+    screen_height = gdk_screen_height ();
+    if ( mydebug >5 ) 
+	fprintf(stderr , "gdk screen height : %d\n", screen_height);
     screen_width = gdk_screen_width ();
+    if ( mydebug >5 ) 
+	fprintf(stderr , "gdk screen width : %d\n", screen_width);
 
     /* parse cmd args */
     do
@@ -4814,6 +4819,10 @@ main (int argc, char *argv[])
 	    PSIZE = 25;
 	    SMALLMENU = 1;
 	    PADDING = 0;
+
+	    if ( mydebug >1 ) 
+		fprintf(stderr ,"Set real Screen size to %d,%d\n", 
+			real_screen_x,real_screen_y);
 	}
 
     if ((extrawinmenu) && (screen_width != 0))
@@ -4829,6 +4838,8 @@ main (int argc, char *argv[])
 	    /* SMALLMENU = 1; */
 	    real_screen_x = screen_width - 8;
 	    real_screen_y = screen_height - 70;
+	    if ( mydebug >5 ) 
+		fprintf(stderr ,"screen modifications for 240x320 : %d,%d\n", real_screen_x, real_screen_y);
 	}
     if (pdamode)
 	{
@@ -4844,6 +4855,8 @@ main (int argc, char *argv[])
 
     if (borderlimit < 30)
 	borderlimit = 30;
+    if ( mydebug >5 ) 
+	fprintf(stderr , "borderlimit set to :%d\n", borderlimit);
 
     SCREEN_X_2 = SCREEN_X / 2;
     SCREEN_Y_2 = SCREEN_Y / 2;
@@ -4851,7 +4864,8 @@ main (int argc, char *argv[])
     posx = SCREEN_X_2;
     posy = SCREEN_Y_2;
 
-    if ( mydebug >99 ) fprintf(stderr , "screen size %d,%d\n",SCREEN_X,SCREEN_Y);
+    if ( mydebug >19 )
+	fprintf(stderr , "screen size %d,%d\n",SCREEN_X,SCREEN_Y);
 
     // TODO: decide if this is needed
     //KCFX
@@ -5326,7 +5340,7 @@ main (int argc, char *argv[])
     gtk_signal_connect (GTK_OBJECT (drawing_sats), "button-press-event",
 			GTK_SIGNAL_FUNC (satpos_cb), NULL);
 
-    if(!pdamode)
+    //if(!pdamode)
 	{
 	    frame_sats = gtk_frame_new (_("GPS Info"));
 	    sateventbox = gtk_event_box_new ();
@@ -5373,8 +5387,8 @@ main (int argc, char *argv[])
     create_battery_widget(hbox2);
 
 
-    if (pdamode)
-	gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
+    // if (pdamode)
+    // gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
 
     if ( mydebug >99 ) fprintf(stderr , "create DISTANCE Frames\n");
     // Frame --- distance to destination 
@@ -5530,8 +5544,10 @@ main (int argc, char *argv[])
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_target,    0,  6, 0, 1);
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_speed,     6, 12, 0, 1);
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_altitude, 12, 15, 0, 1);
-    gtk_table_attach_defaults (GTK_TABLE (vtable), frame_wp,       15, 20, 0, 1);
-    gtk_box_pack_start (GTK_BOX (hbox2), vtable, TRUE, TRUE, 2 * PADDING);
+    if(!pdamode)
+        gtk_table_attach_defaults (GTK_TABLE (vtable), frame_wp,       15, 20, 0, 1);
+    gtk_box_pack_start (GTK_BOX (hbox2b), vtable, TRUE, TRUE, 2 * PADDING);         // target speed and altitude on trip table
+    
     gtk_container_add (GTK_CONTAINER (frame_wp), wplabeltable);
 
     vbox = gtk_vbox_new (TRUE, 3 * PADDING);
@@ -5649,7 +5665,8 @@ main (int argc, char *argv[])
 
     if (pdamode)
 	{
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);
+	    //status bottom table 5 x 3
+	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);	// (left,right,top,bottom) 
 	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0, 1);
 	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 0, 1);
 	    
@@ -5740,49 +5757,56 @@ main (int argc, char *argv[])
     mainnotebook = NULL;
     if (pdamode)
 	{
-	    GtkWidget *l1, *l2, *label_status;
+	    GtkWidget *l1, *l2, *label_status, *trip_label;     // tabs label for pda mode
 	    l1 = gtk_label_new (NULL);
 	    l2 = gtk_label_new (NULL);
 	    label_status = gtk_label_new (NULL);
+            trip_label = gtk_label_new (NULL);
 	    /* for a better usability in onemousebutton mode */
 	    if (onemousebutton)
 		{
-		    /* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
-		    gtk_misc_set_padding (GTK_MISC (l1), 20, 1);
-		    gtk_misc_set_padding (GTK_MISC (l2), 20, 1);
-		    gtk_misc_set_padding (GTK_MISC (label_status), 20, 1);
-		    
-		    /* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
-		    
-		    char *markup;
-		    markup = g_markup_printf_escaped
-			("<span font_desc='10'>%s</span>",
-			 _("Map"));
-		    gtk_label_set_markup (GTK_LABEL (l1), markup);
-		    markup = g_markup_printf_escaped
-			("<span font_desc='10'>%s</span>",
-			 _("Menu"));
-		    gtk_label_set_markup (GTK_LABEL (l2), markup);
-		    markup = g_markup_printf_escaped
-			("<span font_desc='10'>%s</span>",
-			 _("Status"));
-		    gtk_label_set_markup (GTK_LABEL (label_status), markup);
-		    
-		    g_free (markup);
-		    
+			/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
+			gtk_misc_set_padding (GTK_MISC (l1), 10, 1);
+			gtk_misc_set_padding (GTK_MISC (l2), 10, 1);
+			gtk_misc_set_padding (GTK_MISC (label_status), 10, 1);
+                        gtk_misc_set_padding (GTK_MISC (trip_label), 10, 1);
+			
+			/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
+			
+			char *markup;
+			markup = g_markup_printf_escaped
+			("<span font_desc='8'>%s</span>",
+				_("Map"));
+			gtk_label_set_markup (GTK_LABEL (l1), markup);
+			markup = g_markup_printf_escaped
+			("<span font_desc='8'>%s</span>",
+				_("Menu"));
+			gtk_label_set_markup (GTK_LABEL (l2), markup);
+			markup = g_markup_printf_escaped
+			("<span font_desc='8'>%s</span>",
+				_("Status"));
+			gtk_label_set_markup (GTK_LABEL (label_status), markup);
+                        markup = g_markup_printf_escaped
+			("<span font_desc='8'>%s</span>",
+				_("Trip"));
+			gtk_label_set_markup (GTK_LABEL (trip_label), markup);
+			
+			g_free (markup);
+			
 		}
 	    else
 		{
 		    gtk_label_set_text (GTK_LABEL (l1), _("Map"));
 		    gtk_label_set_text (GTK_LABEL (l2), _("Menu"));
 		    gtk_label_set_text (GTK_LABEL (label_status), _("Status"));
+                    gtk_label_set_text (GTK_LABEL (trip_label), _("Trip"));
 		}
 	    //KCFX
-	    vbig1 = gtk_vbox_new (FALSE, 2);
+	    vbig1 = gtk_vbox_new (FALSE, 2);	// box for status tab
 	    //      gtk_container_add (GTK_CONTAINER (menuwin2), vbig1);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE, TRUE,  2 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2a, TRUE, TRUE, 2 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE, 2 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE, TRUE,  2 * PADDING);     // bearing, satellites, temperature, battery on status tab
+	    gtk_box_pack_start (GTK_BOX (hbox2b), hbox2a, TRUE, TRUE, 2 * PADDING);    // wp on trip tab
+	    //gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE, 2 * PADDING);
 	    /*
 	      gtk_box_pack_start (GTK_BOX (hbox2b), frame_speed, TRUE, TRUE,
 	      1 * PADDING);
@@ -5795,9 +5819,9 @@ main (int argc, char *argv[])
 	    gtk_box_pack_start (GTK_BOX (vbig1), table1, TRUE, TRUE,
 				2 * PADDING);
 
-	    mainnotebook = gtk_notebook_new ();
+	    mainnotebook = gtk_notebook_new ();				// create the main notebook window
 	    gtk_notebook_set_tab_pos (GTK_NOTEBOOK (mainnotebook),
-				      GTK_POS_TOP);
+				      GTK_POS_TOP);			// tabs are on at the top edge
 	    gtk_box_pack_start (GTK_BOX (hbig), vbig, TRUE, TRUE,
 				1 * PADDING);
 	    gtk_container_add (GTK_CONTAINER (mainwindow), mainnotebook);
@@ -5805,14 +5829,19 @@ main (int argc, char *argv[])
 	    gtk_widget_show_all (vbig1);
 	    gtk_widget_show_all (hbig);
 	    gtk_widget_show_all (vbig);
+            gtk_widget_show_all (hbox2b);
+	    
 	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbig,
-				      l1);
+				      l1);				// add 1st tab to notebook : map
 	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook),
-				      hboxlow, l2);
+				      hboxlow, l2);			// add 2nd tab to notebook : menu
 	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig1,
-				      label_status);
-	    gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
-	    gtk_widget_show_all (mainnotebook);
+				      label_status);			// add 3rd tab to notebook : status
+            gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbox2b,
+				      trip_label);			// add 4th tab to notebook : trip
+	    
+	    gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);	// set map tab as selected one
+	    gtk_widget_show_all (mainnotebook);				// show notebook window
 	}
     else
 	{
@@ -5933,108 +5962,98 @@ main (int argc, char *argv[])
     temperature_get_values ();
     battery_get_values ();
 
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
-			  _
-			  ("Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"),
-			  NULL);
-
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel1eventbox,
-			  _
-			  ("Number of used satellites/satellites in view"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel2eventbox,
-			  _
-			  ("EPE (Estimated Precision Error), if available"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel3eventbox,
-			  _
-			  ("PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "),
-			  NULL);
-
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), compasseventbox,
-			  _
-			  ("On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."),
-			  NULL);
-    wi = NULL;
-    wi = gtk_item_factory_get_item (item_factory, N_("/Misc. Menu"));
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wi,
-			  _("Here you find extra functions for maps, tracks and messages"),
-			  NULL);
-    if (havespeechout)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mute_bt,
-			      _("Disable output of speech"), NULL);
-    if (usesql)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sqlbt,
-			      _("Use SQL server for waypoints"),
+    if(!pdamode) {
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
+			      _
+			      ("Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"),
 			      NULL);
-    /*    if (maxwp > 0) */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
-			  _("Show waypoints on the map"), NULL);
+
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel1eventbox,
+			      _
+			      ("Number of used satellites/satellites in view"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel2eventbox,
+			      _
+			      ("EPE (Estimated Precision Error), if available"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel3eventbox,
+			      _
+			      ("PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "),
+			      NULL);
+
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), compasseventbox,
+			      _
+			      ("On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."),
+			      NULL);
+	wi = NULL;
+	wi = gtk_item_factory_get_item (item_factory, N_("/Misc. Menu"));
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wi,
+			      _("Here you find extra functions for maps, tracks and messages"),
+			      NULL);
+	if (havespeechout)
+	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mute_bt,
+				  _("Disable output of speech"), NULL);
+	if (usesql)
+	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sqlbt,
+				  _("Use SQL server for waypoints"),
+				  NULL);
+    
+	/*    if (maxwp > 0) */
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
+			      _("Show waypoints on the map"), NULL);
 
 #ifdef USETELEATLAS
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
-			  _("Navigation menu. Enter here your destination."),
-			  NULL);
-#endif
-    /*
-    if ( haveNMEA)
-	{
-	    gtk_button_set_label (GTK_BUTTON (startgps_bt),  _("Stop GPSD"));
-	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
-				  _("Stop GPSD and switch to simulation mode"),
-				  NULL);
-	    gpson = TRUE;
-	}
-    else
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), startgps_bt,
-			      _("Starts GPSD for NMEA mode"), NULL);
-    */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
-			  _("Settings for GpsDrive"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin_bt,
-			  _("Zoom into the current map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout_bt,
-			  _("Zooms out off the current map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_left_bt,
-			  _("Select the next more detailed map"), NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_right_bt,
-			  _("Select the next less detailed map"), NULL);
-    /*    if (maxwp > 0) */
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
-			  sel_target,
-			  _("Select here a destination from the waypoint list"),
-			  NULL);
-    if (scaler_widget)
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
-			      _("Select the map scale of avail. maps."),
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
+			      _("Navigation menu. Enter here your destination."),
 			      NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
-			  _("Draw Tracks found in mySQL"), NULL);
+#endif
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
+			      _("Settings for GpsDrive"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin_bt,
+			      _("Zoom into the current map"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout_bt,
+			      _("Zooms out off the current map"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_left_bt,
+			      _("Select the next more detailed map"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_right_bt,
+			      _("Select the next less detailed map"), NULL);
+	/*    if (maxwp > 0) */
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
+			      sel_target,
+			      _("Select here a destination from the waypoint list"),
+			      NULL);
+	if (scaler_widget)
+	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
+				  _("Select the map scale of avail. maps."),
+				  NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
+			      _("Draw Tracks found in mySQL"), NULL);
 
 
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp1eventbox,
-			  _
-			  ("Number of waypoints selected from SQL server"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp2eventbox,
-			  _
-			  ("Number of selected waypoints, which are in range"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp3eventbox,
-			  _
-			  ("Range for waypoint selection in kilometers"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp4eventbox,
-			  _("This shows the time from your GPS receiver"),
-			  NULL);
-    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp5eventbox,
-			  _
-			  ("Number of mobile targets within timeframe/total received from friendsserver"),
-			  NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp1eventbox,
+			      _
+			      ("Number of waypoints selected from SQL server"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp2eventbox,
+			      _
+			      ("Number of selected waypoints, which are in range"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp3eventbox,
+			      _
+			      ("Range for waypoint selection in kilometers"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp4eventbox,
+			      _("This shows the time from your GPS receiver"),
+			      NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp5eventbox,
+			      _
+			      ("Number of mobile targets within timeframe/total received from friendsserver"),
+			      NULL);
 
 
-    /*    gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),,_(""),NULL); */
-    gtk_tooltips_set_delay (GTK_TOOLTIPS (tooltips), 1000);
+	/*    gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),,_(""),NULL); */
+	gtk_tooltips_set_delay (GTK_TOOLTIPS (tooltips), 1000);
+    }
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
     /*  set the timers */
     if (haveserial)
