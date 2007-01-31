@@ -107,6 +107,7 @@ Disclaimer: Please do not use for navigation.
 #include "import_map.h"
 #include "download_map.h"
 #include "icons.h"
+#include "gui.h"
 
 #ifndef NOPLUGINS
 #include "gmodule.h"
@@ -235,6 +236,7 @@ gdouble gbreit, glang, olddist = 99999.0;
 GTimer *timer, *disttimer;
 gint gcount;
 gchar localedecimal;
+gchar language[] = "en";
 
 glong mapscale = 1000;
 gint scaleprefered_not_bestmap = 1;
@@ -395,12 +397,11 @@ gint ignorechecksum = FALSE;
 
 /* Give more debug informations */
 gint mydebug = 0;
-#define MAXDBNAME 30
+
 char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char poitypetable[MAXDBNAME];
 char wp_typelist[MAXPOITYPES][50];
-int wp_typelistcount;
 char dbwherestring[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
@@ -3416,7 +3417,6 @@ sql_cb (GtkWidget * widget, guint datum)
 	{
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
 					      TRUE);
-		get_sql_type_list ();
 		getsqldata ();
 	}
 	else
@@ -4330,7 +4330,8 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_wlan, *vbox_track;
+    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_track;
+	// Unused variable: GtkWidget *vbox_wlan;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
     GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;
@@ -4543,7 +4544,11 @@ main (int argc, char *argv[])
 	    voicelang = spanish;
 	else
 	    voicelang = english;
-
+	
+	/* get language, used for POI titles and descriptions */
+	if (!g_strlcpy (language,lstr2,3))
+		g_strlcpy (language, "en", sizeof(language));
+	
 	/*    needed for right decimal delimiter ('.' or ',') */
 	// setlocale(LC_NUMERIC, "en_US");
 	setlocale(LC_NUMERIC, "C");
@@ -4741,8 +4746,6 @@ main (int argc, char *argv[])
     if ((strlen (friendsname) == 0))
 	g_strlcpy (friendsname, _("EnterYourName"),
 		   sizeof (friendsname));
-
-    load_icons ();
 
     init_lat2RadiusArray();
 
@@ -5019,7 +5022,6 @@ main (int argc, char *argv[])
 	}
     if (wp_from_sql)
 	{
-	    get_sql_type_list ();
 	    getsqldata ();
 	}
     else
@@ -6109,6 +6111,9 @@ main (int argc, char *argv[])
     wlan_draw_cb (wlan_draw_bt, 0);
     tracks_draw_cb (NULL, 0);
     needtosave = FALSE;
+
+	// this one will be used in future development...
+	//gui_init ();
 
     poi_init ();
     wlan_init ();

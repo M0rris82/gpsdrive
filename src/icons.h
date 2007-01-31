@@ -33,7 +33,6 @@ Disclaimer: Please do not use for navigation.
 void drawwlan (gint posxdest, gint posydest, gint wlan);
 int drawicon (gint posxdest, gint posydest, char *ic);
 void load_friends_icon (void);
-void load_icons(void);
 void load_user_icon(  char icon_name[200] );
 void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
 void draw_small_plus_sign ( gdouble posxdest,   gdouble posydest );

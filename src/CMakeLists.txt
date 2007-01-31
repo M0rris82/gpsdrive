@@ -88,6 +88,8 @@ SET(gpsdrive_SRCS
   unit_test.c
   wlan.c
   wlan.h
+  gui.h
+  gui.c
 )
 
 SET(garmin_SRCS

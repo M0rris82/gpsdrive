@@ -5,11 +5,11 @@
 #  
 #
 #  currently supported file formats
-#  - basic geoinfo gpx export
+#  - basic geoinfo gpx export (gpsdrive standard format)
 #  - basic geoinfo gpx import
+#  - basic groundspeak gpx import
 #
 #  files that could be supported
-#  - groundspeak gpx import
 #  - groundspeak loc import
 #  - ...
 #  
@@ -60,8 +60,8 @@ use Geo::Gpsdrive::DBFuncs;
 use Getopt::Std;
 use Pod::Usage;
 
-our ($opt_p, $opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b) = 0;
-getopts('pvf:heib');
+our ($opt_p, $opt_v, $opt_f, $opt_h, $opt_e, $opt_i, $opt_b, $opt_s) = 0;
+getopts('pvf:heibs');
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -72,6 +72,7 @@ my $VERBOSE = $opt_v;
 my $file = $opt_f;
 my $basic = $opt_b;
 my $privacy = $opt_p;
+my $safe = $opt_s;
 
 our $script_user = $ENV{USER};
 our $db_user     = $ENV{DBUSER} || 'gast';
@@ -80,9 +81,9 @@ our $db_host     = $ENV{DBHOST} || 'localhost';
 our $GPSDRIVE_DB_NAME = "geoinfo";
 
 my $progress_char = '.';
-my $progress_offset = 20;
+my $progress_offset = 10;
 my $progress_counter = 0;
-my $count = 0;
+my ($count,$updated,$inserted) =('0','0','0');
 my %poi_types;		# 0: poi_type_id => name	1: name => poi_type_id
 my %source_ids;		# 0: source_id => name		1: name => source_id
 
@@ -171,7 +172,7 @@ sub export_gpx_geoinfo
       print"  </poi_extra>\n";
       print"</wpt>\n";
       $count++;
-#     progress_bar();
+      progress_bar();
     }
   }
   print"\n</gpx>\n";
@@ -215,7 +216,11 @@ sub import_gpx
 
   $twig->purge;
   $count = '0';
-  
+  $updated = '0';
+  $inserted = '0';
+
+  print STDOUT "\n  SAFE MODE enabled !\n" if ($safe);
+
   if ( $creator =~ /geoinfo/i )
     { import_gpx_geoinfo($file); }
   elsif ( $creator =~ /groundspeak/i )
@@ -225,7 +230,9 @@ sub import_gpx
   else
     { die "Unknown GPX file detected!\n" }
 
-  print STDOUT "  $count POI-Entries written to Database.\n";
+  print STDOUT "\n  $count POI-Entries written to Database in total.\n";
+  print STDOUT "  - POIs updated   : $updated\n" if ($updated);
+  print STDOUT "  - New POIs added : $inserted\n" if ($inserted);
 }
 
 
@@ -263,7 +270,8 @@ sub import_gpx_geoinfo
     my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
     my ($source_id,$source,$proximity) = (1,'unknown',0);
     my ($poi_type_id,$poi_type,$last_modified) = (1,'unknown','2007-01-01');
-    
+    my $db_insert = '';
+
     if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
     {
       $lat = $wpt->att('lat');
@@ -299,14 +307,27 @@ sub import_gpx_geoinfo
       $sth->execute()               or die $sth->errstr;
       my $row = $sth->fetchrow_hashref;
 
-      my $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
       if ($$row{poi_id})
-        { $db_insert = sprintf("UPDATE poi SET alt='$alt', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id', private='$private' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment)); }
+      {
+        unless ($safe)
+	{
+	  $db_insert = sprintf("UPDATE poi SET alt='$alt', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id', private='$private' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment));
+	  $updated++;
+	}
+      }
+      else
+      {
+        $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
+	$inserted++;
+      }
 
-      $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
-      $sth->execute()               or die $sth->errstr;
-
-      $count++;
+      if ($db_insert)
+      {
+        $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+	$count++;
+      }
+      progress_bar();
     }
 
   }
@@ -330,7 +351,101 @@ sub import_gpx_geoinfo_extra
 sub import_gpx_groundspeak
 {
   print STDOUT "\n----- Parsing Groundspeak GPX -----\n";
-  die "Groundspeak files will be supported soon!\n";
+  get_poi_types('1');
+  get_source_ids('1');
+
+  my $twig= new XML::Twig
+    (
+      ignore_elts => { 'rte' => 1, 'trk' => 1 },
+      TwigHandlers => { wpt => \&sub_geocache }
+    );
+  $twig->parsefile( "$file");
+  my $gpx= $twig->root;
+  
+  sub sub_geocache
+  {
+    my( $twig, $wpt)= @_;
+
+    my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
+    my ($source_id,$source,$proximity) = (5,'groundspeak',0);
+    my ($poi_type_id,$poi_type,$last_modified) = (5,'geocache','2007-01-01');
+    my ($type,$found)  = ('Geocache|Unknown Cache','');
+    my $db_insert = '';
+
+    if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
+    {
+      $lat = $wpt->att('lat');
+      $lon = $wpt->att('lon');
+      $name = $wpt->first_child('name')->text;
+      $comment = $wpt->first_child('desc')->text
+        if ($wpt->first_child('desc'));
+      $last_modified = $wpt->first_child('time')->text
+        if ($wpt->first_child('time'));
+      
+      if ($wpt->first_child('type'))
+      {
+        $type = $wpt->first_child('type')->text;
+	if ($type =~ /traditional/i)
+	  { $poi_type = 'geocache.geocache_traditional' }
+	elsif ($type =~ /multi/i)
+          { $poi_type = 'geocache.geocache_multi' }
+	elsif ($type =~ /webcam/i)
+          { $poi_type = 'geocache.geocache_webcam' }
+	elsif ($type =~ /virtual/i)
+          { $poi_type = 'geocache.geocache_virtual' }
+	elsif ($type =~ /earth/i)
+          { $poi_type = 'geocache.geocache_earth' }
+	elsif ($type =~ /event/i)
+          { $poi_type = 'geocache.geocache_event' }
+	else { $poi_type = 'geocache' }
+      }
+
+      if ($wpt->first_child('sym'))
+      {
+        $found = $wpt->first_child('sym')->text;
+	if ( $found =~ /found/i )
+	  { $poi_type = 'geocache.geocache_found'; }
+      }
+
+# TODO: - add some handling for poi_extra data .....
+# 	- check for night/mystery/drivein-types
+
+      $poi_type_id = $poi_types{$poi_type} if ($poi_types{$poi_type});
+      $source_id = $source_ids{$source} if ($source_ids{$source});
+
+      my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+
+      # check, if entry already exists in poi table (by comparing name, which should be unique)
+      my $db_query = sprintf("SELECT poi_id FROM poi WHERE name=%s AND poi_type_id='$poi_type_id';",$dbh->quote($name));
+      my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+      $sth->execute()               or die $sth->errstr;
+      my $row = $sth->fetchrow_hashref;
+
+      if ($$row{poi_id})
+      {
+	unless ($safe)
+	{
+	  $db_insert = sprintf("UPDATE poi SET lat='$lat', lon='$lon', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment));
+	  $updated++;
+	}
+      }
+      else
+      {
+        $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
+	$inserted++;
+      }
+
+      if ($db_insert)
+      { 
+        $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+	$count++;
+      }
+      progress_bar();
+    }
+
+  }
+  $twig->purge;
 }
 
 
@@ -437,55 +552,12 @@ sub write_gpx_header
 }
 
 
-
-
-
-#####################################################################
-#
-#  Insert new POI-Type into the file
-#
-#
-#sub insert_poi_type
-#{
-#  my $name = shift(@_);
-#  my $twig_root = shift(@_);
-#
-#  my $new_rule = new XML::Twig::Elt( 'rule');
-#  $poi_type_id_base++;
-# 
-#  my $new_condition = new XML::Twig::Elt('condition');
-#  $new_condition->set_att(k=>'poi');
-#  $new_condition->set_att(v=>"$name");
-#  my $new_title_en = new XML::Twig::Elt('title_en',$default_title_en);
-#  my $new_desc_en = new XML::Twig::Elt('description_en',$default_desc_en);
-#  my $new_scale_min = new XML::Twig::Elt('scale_min',$default_scale_min);
-#  my $new_scale_max = new XML::Twig::Elt('scale_max',$default_scale_max);
-#  my $new_poi_type_id = new XML::Twig::Elt('poi_type_id',$poi_type_id_base);
-#  my $new_name = new XML::Twig::Elt('name',$name);
-#
-#  $new_poi_type_id->paste('last_child',$new_rule);
-#  $new_name->paste('last_child',$new_rule);
-#  $new_rule->insert('geoinfo');
-#  $new_desc_en->paste('first_child',$new_rule);
-#  $new_title_en->paste('first_child',$new_rule);
-#  $new_scale_max->paste('first_child',$new_rule);
-#  $new_scale_min->paste('first_child',$new_rule);
-#  $new_condition->paste('first_child',$new_rule);
-#
-#  $new_rule->paste('last_child',$$twig_root); 
-#
-#  print STDOUT "  +  $poi_type_id_base\t\t$name\n" if $VERBOSE;
-#  return;
-#}
-
-
-
 __END__
 
 
 =head1 SYNOPSIS
  
-poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-f GPX-FILE]
+poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-p] [-s] [-f GPX-FILE]
  
 =head1 OPTIONS
  
@@ -513,6 +585,7 @@ poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-f GPX-FILE]
  
 =item B<-b>
 
+ ( NOT YET IMPLEMENTED ! )
  Import/Export Data only from/to basic poi table.
  Use this option, if you don't need the info stored in the poi_extra table
  Default is to use all available data if possible.
@@ -520,8 +593,12 @@ poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-f GPX-FILE]
 =item B<-p>
 
  Export only data from table which are not flagged as private.
- You may Use this option, if you are generating files, that you will give away
- to foreign people or services.
+ You may use this option, if you are generating files, that you will give away
+ to foreign people or third party services.
+
+=item B<-s>
+
+ Safe Mode: Don't alter already existing entries in database while importing.
 
 
 =back

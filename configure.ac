@@ -303,6 +303,13 @@ CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 #AM_CONDITIONAL(HAVE_GTK, true)
 
 dnl --------------------------
+dnl check for package libxml-2.0
+dnl --------------------------
+PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.6.27)
+CFLAGS="$CFLAGS $XML_CFLAGS"
+LIBS="$LIBS $XML_LIBS"
+
+dnl --------------------------
 dnl Check for package libglib2.0-0
 dnl 26/03/2006 DP  Added
 dnl 06/06/2006 DP  Reduced from version 2.8.6 yo 2.8.5
@@ -395,7 +402,6 @@ then
 else
     AC_MSG_ERROR([libpng12 is missing or your version is to old. Min Version 1.2.8])
 fi
-dnl ---------------------------
 
 dnl ---------------------------
 echo checking for package libstdc++6... TODO >&2

@@ -44,8 +44,6 @@ extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME], poitypetable[MAXDBNAME];
 extern gdouble current_lon, current_lat;
 extern char dbwherestring[5000];
-extern char wp_typelist[MAXPOITYPES][50];
-extern int  wp_typelistcount;
 extern double dbdistance;
 extern int usesql;
 extern int mydebug, dbusedist;
@@ -237,61 +235,6 @@ deletesqldata (int index)
   return 0;
 }
 
-/* ******************************************************************
- */
-int
-get_sql_type_list (void)
-{
-  char q[200], temp[200];
-  int r, i;
-  static int usericonsloaded = FALSE;
-
-  if (!usesql)
-    return FALSE;
-
-
-  /* make list of possible type entries */
-  g_snprintf (q, sizeof (q), "SELECT name FROM %s", poitypetable);
-  if (mydebug > 50)
-    printf ("get_sql_type_list: query: %s\n", q);
-
-  if (dl_mysql_query (&mysql, q))
-    exiterr (3);
-  if (!(res = dl_mysql_store_result (&mysql)))
-    {
-      dl_mysql_free_result (res);
-      res = NULL;
-      fprintf (stderr, "get_sql_type_list: Error in store results: %s\n",
-	       dl_mysql_error (&mysql));
-      return -1;
-    }
-  r = 0;
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      g_strlcpy (temp, row[0], sizeof (temp));
-      for (i = 0; i < (int) strlen (temp); i++)
-	temp[i] = tolower (temp[i]);
-      g_strlcpy (wp_typelist[r++], temp, sizeof (wp_typelist[0]));
-      if (r >= MAXPOITYPES)
-	{
-	  printf ("\nSQL: too many waypoint types!\n");
-	  break;
-	}
-      /* load user defined icons */
-      if (FALSE == usericonsloaded)
-	load_user_icon (temp);
-    }
-
-  dl_mysql_free_result (res);
-  res = NULL;
-
-  wp_typelistcount = r;
-  usericonsloaded = TRUE;
-
-  if (mydebug > 50)
-    printf ("%d External Icons loaded\n", r);
-  return r;
-}
 
 /* ******************************************************************
  */

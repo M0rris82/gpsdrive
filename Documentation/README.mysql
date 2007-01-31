@@ -32,7 +32,7 @@ If you still can't find what you need then download the source tar ball (at the 
 
 Initialise the Database
 =======================
-Once you have MySQL up and running you can use these scripts to initialise the database for GpsDrive.  This task was previously performed by a script called create.sql and it is out of date and no longer being maintained.
+Once you have MySQL up and running you can use these scripts to initialise the database for GpsDrive.  This task was previously performed by a script called create.sql which is out of date and no longer being maintained.
 
 Change directory to GpsDrive's bin folder then run the following command.
 

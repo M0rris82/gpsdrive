@@ -74,6 +74,7 @@ typedef struct
   gint scale_max;
   gint parent;
   gchar description[POI_TYPE_LIST_STRING_LENGTH];
+  gchar title[POI_TYPE_LIST_STRING_LENGTH];
 } poi_type_struct;
 #define poi_type_list_max 1000
 

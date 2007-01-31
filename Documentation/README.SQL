@@ -58,50 +58,21 @@ cleartext in gpsdriverc!!!
 
 Importing existing waypoint files:
 ----------------------------------
-I also provided the script 'wp2sql', which creates the .sql input file
+I also provided the script 'convert-waypoints.pl', which creates a .gpx file
 from gpsdrive waypointfiles. 
 
-Change it for your needs first!!!!
+You then can import the created file into the database with:
+poi-manager.pl -i -f FILENAME
 
-Then do 
-
-mysql -u gast -pgast <wp.sql
-
-You can also import ASCII files with the 'mysqlimport' program.
 
 =======================================================================
 IMPORTANT:
 
-Select the 'Use SQL' button to use the SQL generated waypoints.
+The 'Use SQL' button currently selects only, if newly added waypoints
+are added to the database or to the waypointsfile.
 
 =======================================================================
 
-Waypoint types:
----------------
-
-You can define freely your waypoint type names. But there are special
-names, which results in special icons display in GpsDrive:
-
-WLAN	     : open WLAN accesspoint
-WLAN-WEP     : crypted WLAN accesspoint
-Rest	     : a restaurant
-McDonalds    : a kind of restaurant
-BurgerKing   : another kind of restaurant
-Hotel	     : A hotel
-Shop	     : Shop
-Monu	     : Monument, touristic attraction
-Speedtrap    : Speedtrap (Radar), gives warning if this is in front of
-	       you
-Nightclub    : Pssst...
-Airport	     : Airport
-Golf	     : Golf course
-Gasstation   : Gasstation
-Cafe	     : coffee bar
-Geocache     : Geocache point
-
-The names are case insensitive.
-
-You can also use your own icons, see man page for details.
 
 Backing up and restoring your database
 --------------------------------------
@@ -109,6 +80,9 @@ Backing up and restoring your database
 Sven added the two shell scripts gpssql_backup.sh and
 gpssql_restore.sh for very simple use. Just read the comments within
 those scripts for usage information.
+
+Another new way to do this, is to use the script poi-manager.pl, which
+reads and creates .gpx files.
 
 
 Editing your waypoints:

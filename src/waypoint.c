@@ -45,6 +45,7 @@ Disclaimer: Please do not use for navigation.
 #include "import_map.h"
 #include "download_map.h"
 #include "icons.h"
+#include "poi.h"
 
 #include "gettext.h"
 #include <speech_strings.h>
@@ -100,8 +101,6 @@ extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
 extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
-extern char wp_typelist[MAXPOITYPES][50];
-extern int wp_typelistcount;
 extern gint wptotal, wpselected;
 extern GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
 extern GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
@@ -125,6 +124,8 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
 extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 extern gchar oldfilename[2048];
 extern gint routemode;
+extern poi_type_struct poi_type_list[poi_type_list_max];
+extern int poi_type_list_count;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
@@ -570,8 +571,6 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 	{
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
 			       (char *) wp_type);
-		get_sql_type_list ();
-//		getsqldata ();
 	}
 	else
 	{
@@ -680,51 +679,13 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	{			// Types
 		GtkWidget *add_wp_type_label;
-		if (wp_from_sql)
+		wp_types = g_list_append (wp_types, "unknown");
+		for (i = 2; i <= poi_type_list_count; i++)
 		{
-			get_sql_type_list ();
-			for (i = 0; i < wp_typelistcount; i++)
-				wp_types =
-					g_list_append (wp_types,
-						       wp_typelist[i]);
-		}
-		else
-		{
-			wp_types = g_list_append (wp_types, "");
-			wp_types = g_list_append (wp_types, "accommodation");
-			wp_types = g_list_append (wp_types, "accommodation.hotel");
-			wp_types = g_list_append (wp_types, "education");
-			wp_types = g_list_append (wp_types, "food");
-			wp_types = g_list_append (wp_types, "food.cafe");
-			wp_types = g_list_append (wp_types, "food.fastfood.burger-king");
-			wp_types = g_list_append (wp_types, "food.fastfood.mc-donalds");
-			wp_types = g_list_append (wp_types, "food.restaurant");
-			wp_types = g_list_append (wp_types, "geocache");
-			wp_types = g_list_append (wp_types, "health");
-			wp_types = g_list_append (wp_types, "money");
-			wp_types = g_list_append (wp_types, "nautical");
-			wp_types = g_list_append (wp_types, "people");
-			wp_types = g_list_append (wp_types, "places");
-			wp_types = g_list_append (wp_types, "public");
-			wp_types = g_list_append (wp_types, "recreation");
-			wp_types = g_list_append (wp_types, "recreation.nightclub");
-			wp_types = g_list_append (wp_types, "religion");
-			wp_types = g_list_append (wp_types, "shopping");
-			wp_types = g_list_append (wp_types, "sightseeing");
-			wp_types = g_list_append (wp_types, "sports");
-			wp_types = g_list_append (wp_types, "sports.golf");
-			wp_types = g_list_append (wp_types, "transport");
-			wp_types = g_list_append (wp_types, "transport.airport");
-			wp_types = g_list_append (wp_types, "vehicle");
-			wp_types = g_list_append (wp_types, "vehicle.fuel_station");
-			wp_types = g_list_append (wp_types, "vehicle.speedtrap");
-			wp_types = g_list_append (wp_types, "waypoint");
-			wp_types = g_list_append (wp_types, "wlan");
-			wp_types = g_list_append (wp_types, "wlan.wep");
-			wp_types = g_list_append (wp_types, "misc");
- 			wp_types = g_list_append (wp_types, "unknown");
-		}
-
+			if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
+				wp_types = g_list_append (wp_types, poi_type_list[i].name);
+		}		
+		
 		GtkWidget *add_wp_type_hbox;
 		/*   wptext2 = gtk_entry_new (); */
 		wptext2 = gtk_combo_new ();

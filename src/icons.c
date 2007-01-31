@@ -25,7 +25,6 @@ Disclaimer: Please do not use for navigation.
 
 /*  Include Dateien */
 #include "../config.h"
-#define _GNU_SOURCE
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
@@ -309,7 +308,7 @@ read_themed_icon (gchar * icon_name)
       if (p_pos)
 	{
 	  p_pos[0] = '\0';
-	  if (mydebug > 3)
+	  if (mydebug > 6)
 	    fprintf (stderr, "read_themed_icon([%s] %s) reduced to => %s\n",
 		     local_config.icon_theme, icon_name, icon_file_name);
 	}
@@ -323,131 +322,6 @@ read_themed_icon (gchar * icon_name)
     }
   return NULL;
 }
-
-
-
-/* -----------------------------------------------------------------------------
- * load icons specified in icons.txt for non sql users
-*/
-void
-load_icons (void)
-{
-  /* icons.txt */
-  FILE *fh_icons_txt = NULL;
-  char filename[255];
-  GdkPixbuf *icon = NULL;
-
-  /* hardcoded kismet-stuff */
-  kismetpixbuf = read_icon ("kismet.png", 1);
-
-  /* load icons defined in icons.txt */
-  if (!fh_icons_txt)
-    {
-      snprintf ((char *) &filename, sizeof (filename), "./data/map-icons.txt");
-      fh_icons_txt = fopen (filename, "r");
-      if (mydebug > 3)
-	{
-	  fprintf (stderr, "load_icons(): Trying icons.txt: \"%s\"\n", filename);
-	}
-    }
-  if (!fh_icons_txt)
-    {
-      snprintf ((char *) &filename, sizeof (filename), "%s/map-icons.txt", local_config_homedir);
-      fh_icons_txt = fopen (filename, "r");
-      if (mydebug > 3)
-	{
-	  fprintf (stderr, "load_icons(): Trying icons.txt: \"%s\"\n", filename);
-	}
-    }
-  /* if there is no icons.txt, try to open it  from datadir */
-  if (!fh_icons_txt)
-    {
-      snprintf ((char *) &filename, 255, "%s/gpsdrive/map-icons.txt", DATADIR);
-      if (mydebug > 3)
-	{
-	  fprintf (stderr, "load_icons(): Trying default icons.txt: \"%s\"\n", filename);
-	}
-      fh_icons_txt = fopen (filename, "r");
-    }
-  if (fh_icons_txt)
-    {
-      if (mydebug > 3)
-	fprintf (stderr, "load_icons(): Icons will be read from: \"%s\"\n", filename);
-
-      int index = 0;
-      int errors = 0;
-      int line_args = 0;
-      gchar line[200];
-      gchar name[200];
-      while (fgets (line, sizeof (line), fh_icons_txt))
-	{
-	  if (mydebug > 98)
-	    fprintf (stderr, "\nload_icon(): Line:%s\n", line);
-	  line_args = sscanf (line, "%s %d %d\n",
-			      (char *) name,
-			      &poi_type_list[index].scale_min, &poi_type_list[index].scale_max);
-	  if (mydebug > 75)
-	    fprintf (stderr, "load_icon(): Try %s\n", name);
-	  if (3 != line_args)
-	    {
-	      fprintf (stderr, "load_icons(): %d args in line\n%s\n", line_args, line);
-	      continue;
-	    }
-
-	  if (0 >= (int) strlen (name))
-	    {
-	      fprintf (stderr, "load_icons(): Empty icon requested\n%s\n", line);
-	      continue;
-	    }
-
-
-	  if (mydebug > 55)
-	    fprintf (stderr, "load_icons(): Waypoint-type[%d] %d read_themed_icon \"%s\"\n",
-		     poi_type_list_count, index, name);
-	  icon = read_themed_icon ( name );
-
-	  if (do_unit_test && !icon)	// None Found in Unit Test
-	    {
-	      fprintf (stderr, "load_icons(): ** Failed to open \"%s\"\n", name);
-	      errors++;
-	    }
-	  if (!icon)	// None Found
-	    {
-	      icon = read_themed_icon ((gchar *) "unknown");
-	    }
-	  if (!icon)	// Even unknown not found
-	    {
-	      fprintf (stderr, "load_icons(): ** Failed to open \"%s\" even replacement 'unknown' cannot be opened\n",
-		       name);
-	      exit (-1);
-	    }
-	  icons_buffer[index].icon = icon;
-	  if (poi_type_list_count < poi_type_list_max)
-	    {
-	      poi_type_list_count++;
-	      poi_type_list[poi_type_list_count].poi_type_id = index;
-	      poi_type_list[poi_type_list_count].icon = icon;
-	      g_strlcpy (poi_type_list[index].name,name,sizeof(poi_type_list[index].name));
-	    }
-	  if (index < MAX_ICONS)
-	    {
-	      icons_buffer[index].icon = icon;
-	      g_strlcpy (icons_buffer[index].name,name,sizeof(icons_buffer[index].name));
-	    }
-
-	  if (feof (fh_icons_txt))
-	    break;
-	  index++;
-	}
-      if (errors)
-	{
-	  exit (-1);
-	}
-      fclose (fh_icons_txt);
-    }
-}
-
-
 
 /* -----------------------------------------------------------------------------
 */

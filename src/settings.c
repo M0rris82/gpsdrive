@@ -112,7 +112,7 @@ extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbwherestring[5000];
 extern char wp_typelist[MAXPOITYPES][50];
-extern int wp_typelistcount;
+extern int poi_type_list_count;
 extern double dbdistance;
 extern int dbusedist, havefriends, etch, do_draw_grid, serialspeed, disableserial;
 GtkWidget *sqlfn[100], *ipbt;
@@ -1754,7 +1754,7 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
     }
 
   g_strlcpy (dbwherestring, "WHERE (", sizeof (dbwherestring));
-  for (i = 0; i < wp_typelistcount; i++)
+  for (i = 0; i < poi_type_list_count; i++)
     {
       sel = sqlselects[i];
       if (sel)
@@ -2055,9 +2055,7 @@ sqlsetup (void)
 
   g_strlcpy (wheretemp, dbwherestring, sizeof (wheretemp));
 
-  get_sql_type_list ();
-
-  for (i = 0; i < wp_typelistcount; i++)
+  for (i = 0; i < poi_type_list_count; i++)
     {
       sqlselects[i] = 0;
     }
@@ -2070,7 +2068,7 @@ sqlsetup (void)
 				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   table = gtk_table_new (4, 2, FALSE);
-  table2 = gtk_table_new (wp_typelistcount, 2, FALSE);
+  table2 = gtk_table_new (poi_type_list_count, 2, FALSE);
 
   gtk_container_add (GTK_CONTAINER (frame), mainbox);
 
@@ -2154,7 +2152,7 @@ sqlsetup (void)
 
   gtk_box_pack_start (GTK_BOX (mainbox), scroll, TRUE, TRUE, 3 * PADDING);
 
-  for (i = 0; i < wp_typelistcount; i++)
+  for (i = 0; i < poi_type_list_count; i++)
     {
       l[i] = gtk_entry_new ();
       gtk_entry_set_text (GTK_ENTRY (l[i]), wp_typelist[i]);

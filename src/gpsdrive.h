@@ -167,6 +167,8 @@ $PSRF108,0*32            WAAS/EGNOS off
 /* Maximum number of waypoint types and also userdefined icons  */
 #define MAXPOITYPES 500
 
+#define MAXDBNAME 30
+
 /*
  * Declarations.
  */

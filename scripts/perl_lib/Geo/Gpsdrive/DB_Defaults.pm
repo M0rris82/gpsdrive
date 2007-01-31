@@ -151,7 +151,14 @@ sub fill_default_sources() {   # Just some Default Sources
         comment     => 'Data imported from the OpenStreetMap Project', 
         last_update => '2007-01-03',
         url         => 'http://www.openstreetmap.org/',
-        licence     => 'Creative Commons Attribution-ShareAlike 2.0',
+        licence     => 'Creative Commons Attribution-ShareAlike 2.0'
+      },
+      { source_id   => '5',
+        name        => 'groundspeak',
+        comment     => 'Geocache data from Groundspeak', 
+        last_update => '2007-01-30',
+        url         => 'http://www.groundspeak.com/',
+        licence     => 'unknown'
       }
     );
 

@@ -25,7 +25,7 @@ position on a map and a lot of other functions are implemented.
 
 GpsDrive displays your position provided from your NMEA capable GPS
 receiver on a zoomable map . The maps are autoselected depending on
-your position. You can set prefered scale, which the program tries to
+your position. You can set the preferred scale, which the program tries to
 get from available maps.
 
 GpsDrive was tested with a GARMIN GPS III, a Crux II GPS PCMCIA
@@ -128,7 +128,7 @@ are provided.
 .TP
 .B \-x
 Creates own window for the menu buttons, status and map. This is
-helpful on small displays as the Compaq iPaq or on Head Mounted
+helpful on small displays like the Compaq iPaq or on Head Mounted
 Displays, where the menu should be hidden.
 .TP
 .BI \-s "\| height\^"
@@ -170,7 +170,7 @@ Initial position for simulation mode. Specify a
 from your currently used waypoint list.
 .TP
 .B \-q 
-Disables SQL support. Only usefull if you have SQL support compiled in.
+Disables SQL support. Only useful if you have SQL support compiled in.
 .TP
 .B \-z
 Don't show zoom and scaling on the map.
@@ -341,7 +341,7 @@ altitude, you need at least 4 satellites.  The antenna of your GPS
 receiver must have free sight to the sky, so you cannot use it
 indoor. More satellites gives you a better accuracy.
 
-If your receiver have not enough satellites with usable signal, the
+If your receiver has not enough satellites with usable signal, the
 GPS Info window is red. If your signal is ok and gives a valid
 position, the GPS Info window is green.
 
@@ -371,8 +371,8 @@ selecting a waypoint from the FIND menu.
 This mode is activated by clicking on the "Pos. mode" button or if you
 "Jump" to a target in the FIND menu.
 
-At this mode, you can temporary change the position for looking around and
-jump to another positions (i.e. for downloading maps). In this mode this
+In this mode, you can temporarily change the position for looking around and
+jumping to other positions (i.e. for downloading maps). In this mode this
 is 
 .B not your real position
 and is marked as an rectangle.
@@ -391,7 +391,7 @@ You can easily download maps from internet with the
 .B Download
 button. GpsDrive stores an index of your maps in the file
 map_koord.txt in your  ~/.gpsdrive directory. You can also use any
-directory for your maps, but you have set the directory in the
+directory for your maps, but you have to set this in the
 settings menu.
 
 .SH About maps
@@ -425,10 +425,10 @@ There is also the programs
 .IR gpsfetchmap.pl
 provided to download multiple maps for a bigger area.
 .br
-.B Please consider the copyright information 
+.B Please consider the copyright information at 
 www.expedia.com if you want to use their maps!
 .br
-.B Don't missuse this service by downloading more maps as you need! 
+.B Don't misuse this service by downloading more maps as you need! 
 You will risk being blocked by thier servers, and possibly cause
 trouble for the gpsdrive project.
 
@@ -445,7 +445,7 @@ LC_NUMERIC setting.
 You can also use your own (self drawn, scanned...) maps. The maps must
 be gif, jpeg, png or other common file formats (the format must be
 recognized by the gdk-pixbuf library).  The lat/long coordinates you
-write into the "map_koord.txt" file must be the center of the map. The
+write into the "map_koord.txt" file has to be the center of the map. The
 map must have a size of 1280x1024 pixels! 
 
 Important! The maps must be named "map_*" for UTM-like projections
@@ -455,7 +455,7 @@ scale the maps correctly. Alternatively the maps can be stored without
 prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
 "_top".
 
-There is an "import assistant" build in. Use this to import your maps.
+There is an "import assistant" built in. Use this to import your maps.
 
 .SH Importing waypoints:
 
@@ -491,8 +491,8 @@ waypoints with GpsDrive using the "x" key. See help menu.
 
 
 
-.SH Route planing
-There is no route planing feature at the moment. Route planing would
+.SH Route planning
+There is no route planning feature at the moment. Route planning would
 need the use of commercial maps and a database license which costs
 more than EUR 10.000. 
 
@@ -511,17 +511,17 @@ You can switch on the
 .B Position mode
 by selecting this option in the menu.
 
-If you switched to "position mode" there a rectangle is the
+If you switched to "position mode" a rectangle is the
 cursor and no position is shown. If you zoom or select another map
 scale with the slider, this is done for the position of the
 rectangle-cursor in the same manner as it would be your actual
 position. If you click with the left button near the border, GpsDrive will
 scroll the map or load the next map if you are on the margin of the map.
 
-The middle mouse button switches back to normal mode, or select the
-"Pos. mode" menu entry. The same if you select a target with the right
+The middle mouse button or the "Pos. mode" menu entry switches back to
+normal mode. The same happens if you select a target with the right
 mouse button.  Shift-left-mouse-button and shift-right-mouse-button
-changes the map scale.
+or using the mouse wheel changes the map scale.
 
 Please have also a look into the
 .B Help
@@ -544,88 +544,15 @@ simply press CTRL and LEFT-mouse-click. You can also press the
 key.
 
 In the popup window add the waypoint name (spaces will be converted to
-underscores) and a waypoint type (see below for predefined
-waypoint types). You can create a new waypoint type by typing it into
-the text field or choose a existing waypoint type from the list.
-.B Important:
-The list (in SQL mode only) shows already used waypoint types, NOT the
-predefined. 
+underscores) and choose a waypoint type (see below for predefined
+waypoint types).
+ 
 .SH Icons for waypoints
-You can define freely your waypoint type names. But there are special
-names, which results in special icons display in GpsDrive:
-.TP
-.B WLAN
-open WLAN accesspoint
-.TP
-.B WLAN-WEP
-crypted WLAN accesspoint
-.TP
-.B Rest
-a restaurant
-.TP
-.B McDonalds
-a kind of restaurant
-.TP
-.B BurgerKing
-another kind of restaurant
-.TP
-.B Hotel
-A hotel
-.TP
-.B Shop
-Shop
-.TP
-.B Monu
-Monument, touristic attraction
-.TP
-.B Speedtrap
-Speedtrap (Radar), gives warning if this is in front of you
-.TP
-.B Nightclub
-Pssst...
-.TP
-.B Airport
-a Airport
-.TP
-.B Golf
-Golf course
-.TP
-.B Gasstation
-a gas station
-.TP
-.B Cafe
-coffee bar
-.TP
-.B Geocache
-Geocache point
-
-.PD
-.LP
-The names are case insensitive.
-
-Please have also a look on
-.IR README.SQL
-, for a actual list of waypoint types.
-
-.SH User defined waypoint icons
-
-You may define the waypoint-type and the full path to the related image
-in $HOME/.gpsdrive/icons.txt. The file doesn't support commenting and is
-parsed line by line. The waypoint-types are case insensitive. 
-Please follow the the given icons.txt ...
-.br
-If you are using SQL (see below) for your waypoints, you can define your own
-waypoint icons like this:
-.br
-Create the directory: $HOME/.gpsdrive/icons and 
-place your icons (image type must be PNG) into this directory, with the name of
-the waypoint type (the filename must be lowercase). 
-In example for waypoint type "HOTEL" the file must have the name "hotel.png".
-.br
-The PNG image can have transparency, and should have a size around
-16x16 until 32x32, bigger icons may result in a performance hit.
-
-Your user defined waypoints override the built-in waypoint icons.
+At the moment there a three different icon themes available, but not
+everone has distinct icons for every type. Currently you can choose the
+themes only by editing the entry "icon_theme" in the config file
+"~/.gpsdrive/gpsdriverc". The possible themes are:
+"square.big", "square.small" and "classic".
 
 .SH SQL support
 
@@ -633,16 +560,16 @@ For managing a larger number of waypoints you should use SQL
 support. This needs to install a SQL server on your machine. At the
 moment, only MySQL is supported.
 
-Don't be afraid, MySQL don't need much resources, is very fast, but makes the
+Don't be afraid, MySQL doesn't need much resources, is very fast, and makes the
 management (including selection of waypoint types) of the waypoints
-much easier. In SQL mode you can select the shown waypoints in the
+much easier. In SQL mode you can select the waypoints to display in the
 .B setup
 menu.
 
 GpsDrive use MySQL automatically if it finds the shared library 
 .I libmysqlclient.so.10 
 and the MySQL Server is running and a connection to the database is possible. For first use you have to run 
-.B create.sql
+.B geoinfo.pl --create-db --fill-defaults
 once.
 
 .B Please read README.SQL for information how to setup the SQL database.
@@ -685,9 +612,9 @@ Gpsdrive supports
 Kismet is a 802.11b wireless network (WLAN) sniffer. If you have
 kismet running, gpsdrive will detect it and program start and shows
 new WLAN accesspoints in realtime on the map. SQL mode is necessary to
-run Gpsdrive in Kismet mode. WLAN accesspoints which are already
+use Gpsdrive with Kismet. WLAN accesspoints which are already
 stored in the SQL database from prior wardrivings are ignored. If you
-have voice output in gpsdrive, you hear information about the new
+have voice output in gpsdrive, you hear information about the newly
 found accesspoint.
 
 Please see also the file
@@ -695,7 +622,7 @@ Please see also the file
 
 .SH LOCALISATION
 
-If you installed the program it will display messages in english,
+If you have installed the program it will display messages in english,
 german, french, italian, dutch, dansk, hungarian, slovak, swedish, turkish or
 spanish if your language is set either with LANG or LANGUAGE. LANGUAGE
 overrides all other settings. Call "locale" to see the settings and
@@ -776,8 +703,9 @@ it in the settings menu,
 then you can see the position of all gpsdrive connected with this
 server. 
 
-You see the position of your friends as a car symbol on the map, including the name, time, day of week
-and the speed of his last connection. The blue arrow shows the last reported direction of your friend.
+You will see the position of your friends as a car symbol on the map,
+including the name, time, day of week and the speed of his last connection.
+The blue arrow shows the last reported direction of your friend.
 
 The time is transmitted as UTC, but shown on the display as your local time, 
 so it is also correct if your friend lives in another time zone.

@@ -50,6 +50,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_tracks.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h wlan.h waypoint.h draw_tracks.h gpsdrive.h \
 	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
+	gui.c gui.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
 	map_handler.c gpsproto.h talogo.h \

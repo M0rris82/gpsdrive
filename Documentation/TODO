@@ -9,17 +9,19 @@ same problem. But also to check if this feature really fits into the actual plan
 and to find out which would be the best way to solve it in relation to other 
 features and plans.
 
-One small comment: We are just planning a major userinterface change/rewrite. 
+One small comment:
+We are currently working on a stable release, and after this is done, a major
+userinterface change/rewrite is planned.
 The plan is, that this change will enable userinterface changes with anjuta and 
 glade-2. So if you want to make changes inside the userinterface code you  
-might want to wait another 3-4 weeks until these changes have made it into the CVS. 
+might want to wait some time until these changes have made it into the SVN. 
 
 The easiest for me/us to get patches is:
 
- cvs co gpsdrive
+ svn co gpsdrive
  cd gpsdrive
- cvs up
- cvs diff -u >name_of_patch.patch
+ svn up
+ svn diff -u >name_of_patch.patch
 
 and send the output to the mailinglist.
 
@@ -71,13 +73,13 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	- moving actual settings into another structure
 	- move more stuff from gpsdrive.c into meaningful standalone Files
 		examples:
-		- waypoint.{c,h}
+		- poi.{c,h}
 		- gps_handling.{c.h}
 		- icons.{c.h}
 
 - Autosave Tracks periodically
 	- started: savetrack was seperated and got 
-			   option to save only aktuall Track an not track_ALL.sav
+			   option to save only aktual Track an not track_ALL.sav
 
 - Finding and correcting Bugs in the existing Code.
 
@@ -91,6 +93,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 		Start gpsd 
 		Download Map
 	- rewrite the UI using glade-2 (see above)
+	- include POI-Management
 
 - Point and measure Mode: Show the lat/lon of a point you clicked on. 
   Click an another point and then show the distance between those two points.
@@ -129,8 +132,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
        the Database and displaying it on the map
      - having an interface to select what kind of POIs to 
        display at the moment
-
-- Merge waypoints table into poi table and treat waypoints like a poi-type 
 
 - Store poi-type-specific information in a separate poi_extra table
   (e.g. macaddr, wep, etc. for wlan entries; classification, features, pricing,
@@ -283,18 +284,9 @@ Straighten the naming of variables and functions
 		load_xy		for loading Data for xy
 		save_xy		for saving Data for xy
 
-Database (SQL):
-make gpsdrive read directly from mysql without first writing a file.
-   -first step done
-
 Vector map Data:
 	Add code for showing Vectormap Data. (Already started)
 	Decide about internal representation and structure vektor map data.
-
-new POI(Point Of Interest) Database support:
-	- started. 
-		- It already shows points in database (lat/lon/name/Icon)
-		- Import of 2.500.000 Points seems to work
 
 
 -----------------------------------------------------------------------------
@@ -323,11 +315,9 @@ is a little scary! Here's my top suggestions...
 -----------------------------------------------------------------------------
 Guenther Meyer <d.s.e@sordidmusic.com>
 
-- drawing icons for different POI-Types
+- drawing icons for different POI-Types (any help appreciated)
 
-- adapt (poi-)databases and handling according to the new poi-type scheme
-
-- change poi-type handling to xml ( for better inclusion of osm)
+- extend (poi-)databases to handle additional information for POIs.
 
 
 ----------------------------------------------------------------------------

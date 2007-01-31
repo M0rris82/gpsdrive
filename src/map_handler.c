@@ -219,7 +219,7 @@ make_display_map_controlls ()
   tooltips = gtk_tooltips_new ();
 
   // Frame
-  frame_maptype = gtk_frame_new (_("Map Controlls"));
+  frame_maptype = gtk_frame_new (_("Map Controls"));
   vbox_map_controlls = gtk_vbox_new (TRUE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controlls);
 
