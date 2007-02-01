@@ -38,5 +38,4 @@ EXTRA_DIST= \
 	mysql/my.cnf \
 	poi_examples.gpx \
 	README.icons \
-	icons.txt \
 	update_icons.pl
