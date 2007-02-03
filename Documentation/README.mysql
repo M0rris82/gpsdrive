@@ -43,6 +43,9 @@ If you have installed GpsDrive into a directory other than the default you may n
 
 export PERL5LIB=/<your path>/gpsdrive/share/perl5
 
+if you have not set a root password for your mysql installation, you can reset it with the following command:
+   # echo " UPDATE user SET Password=PASSWORD('new_password') WHERE user='root'; FLUSH PRIVILEGES;" |mysql -u root mysql
+where new_password is the new password for root.
 
 Insert Openstreetmap Data (Optional)
 ====================================
