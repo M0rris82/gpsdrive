@@ -224,9 +224,9 @@ read_icon (gchar * icon_name, int force)
     {"../data/pixmaps/", NULL},
     {"%spixmaps/", (gchar *) local_config_homedir},
     {"%smap-icons/", (gchar *) local_config_homedir},
-    {"%s/gpsdrive/map-icons/", (gchar *) DATADIR},
+    {"%s/map-icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
-    {"%s/gpsdrive/map-icons/", "/usr/share"},
+    {"%s/map-icons/", "/usr/share"},
     {"%s/gpsdrive/pixmaps/", "/usr/share"},
     {"END", NULL}
   };
@@ -351,7 +351,7 @@ load_user_icon (char icon_name[200])
 
   if (icons_buffer[icons_buffer_last].icon == NULL)
     {
-      g_snprintf (path, sizeof (path), "%s/gpsdrive/map-icons/%s.png", DATADIR, icon_name);
+      g_snprintf (path, sizeof (path), "%s/map-icons/%s.png", DATADIR, icon_name);
       icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
     }
 
