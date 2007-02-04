@@ -1,20 +1,11 @@
 #!/bin/bash
+#
+# Script to build gpsdrive on UNIX.
+#
+# Copyright (c) 2006-2007 Andreas Schneider <mail@cynapses.org>
+#
 
-export TERM=xterm
-
-function configure() {
-	cmake "$@" .. || exit 1
-}
-
-function compile() {
-	CPUCOUNT=$(grep -c processor /proc/cpuinfo)
-	if [ "${CPUCOUNT}" -gt "1" ]; then
-		make -j${CPUCOUNT} $1
-	else
-		make $1
-	fi
-}
-
+SOURCE_DIR=".."
 
 SCRIPT="$0"
 COUNT=0
@@ -29,61 +20,123 @@ do
 done
 BUILDDIR=$(dirname ${SCRIPT})
 
+cleanup_and_exit () {
+	if test "$1" = 0 -o -z "$1" ; then
+		exit 0
+	else
+		exit $1
+	fi
+}
+
+function configure() {
+	cmake "$@" ${SOURCE_DIR} || cleanup_and_exit $?
+}
+
+function compile() {
+	CPUCOUNT=$(grep -c processor /proc/cpuinfo)
+	if [ "${CPUCOUNT}" -gt "1" ]; then
+		make -j${CPUCOUNT} $1 || cleanup_and_exit $?
+	else
+		make $1 || exit $?
+	fi
+}
+
+function clean_build_dir() {
+	find ! -path "*.svn*" ! -name "*.bat" ! -name "*.sh" ! -name "." -print0 | xargs -0 rm -rf
+}
+
+function usage () {
+echo "Usage: `basename $0` [--configure [debug|final]|--clean|--verbose|--help]"
+    cleanup_and_exit
+}
+
 cd ${BUILDDIR}
 
-CFLAGS="-Wall -W -Wstrict-aliasing"
 OPTIONS="-DCMAKE_INSTALL_PREFIX=/usr --graphviz=${BUILDDIR}/gpsdrive.dot"
-OPTIONS="${OPTIONS} -DCMAKE_C_FLAGS=${CFLAGS} -DCMAKE_CXX_FLAGS=${CFLAGS}"
+OPTIONS="${OPTIONS} -DPORTAUDIO_INTERNAL=OFF -DFFMPEG_INTERNAL=OFF -DSPEEX_INTERNAL=OFF -DSAMPLERATE_INTERNAL=OFF"
 
 if [ "$(uname -m)" == "x86_64" ]; then
 	OPTIONS="${OPTIONS} -DLIB_SUFFIX=64"
 fi
 
-case $1 in
-	configure)
-		shift
-		configure ${OPTIONS} "$@"
-	;;
-	final)
-		shift
-		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=0"
-		configure ${OPTIONS} "$@"
-		compile
+while test -n "$1"; do
+	PARAM="$1"
+	ARG="$2"
+	shift
+	case ${PARAM} in
+		*-*=*)
+		ARG=${PARAM#*=}
+		PARAM=${PARAM%%=*}
+		set -- "----noarg=${PARAM}" "$@"
+	esac
+	case ${PARAM} in
+		*-help|-h)
+			#echo_help
+			usage
+			cleanup_and_exit
+		;;
+		*-build)
+			DOMAKE="1"
+			BUILD_TYPE="${ARG}"
+			test -n "${BUILD_TYPE}" && shift
+		;;
+		*-clean)
+			clean_build_dir
+			cleanup_and_exit
+		;;
+		*-verbose)
+			DOVERBOSE="1"
+		;;
+		----noarg)
+			echo "$ARG does not take an argument"
+			cleanup_and_exit
+		;;
+		-*)
+			echo Unknown Option "$PARAM". Exit.
+			cleanup_and_exit 1
+		;;
+		*)
+			usage
+		;;
+	esac
+done
+
+case ${BUILD_TYPE} in
+	debug)
+		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Debug"
 	;;
 	release)
-		shift
-		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE=0"
-		configure ${OPTIONS} "$@"
-		compile
-	;;
-	debug)
-		shift
-		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=0"
-		configure ${OPTIONS} "$@"
-		compile
-	;;
-	verbose)
-		shift
-		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Debug -DCMAKE_VERBOSE_MAKEFILE=1"
-		configure ${OPTIONS} "$@"
-		compile VERBOSE=1
-	;;
-	*)
-	echo "Usage: $(basename $0) (configure|final|release|debug|verbose)"
-		echo
-		echo "  configure - run cmake configure"
-		echo "  final - run configure and build gpsdrive in release mode"
-		echo "  release - run configure and build gpsdrive in release with some debug info mode"
-		echo "  debug - run configure and build gpsdrive in debug mode"
-		echo "  verbose - run configure and make in verbose mode and build gpsdrive in debug mode"
-		echo
-		exit 0
+		OPTIONS="${OPTIONS} -DCMAKE_BUILD_TYPE=Release"
 	;;
 esac
+
+if [ -n "${DOVERBOSE}" ]; then
+	OPTIONS="${OPTIONS} -DCMAKE_VERBOSE_MAKEFILE=1"
+else
+	OPTIONS="${OPTIONS} -DCMAKE_VERBOSE_MAKEFILE=0"
+fi
+
+test -f "${BUILDDIR}/.build.log" && rm -f ${BUILDDIR}/.build.log
+touch ${BUILDDIR}/.build.log
+# log everything from here to .build.log
+exec 1> >(exec -a 'build logging tee' tee -a ${BUILDDIR}/.build.log) 2>&1
+echo "${HOST} started build at $(date)."
+echo
+
+configure ${OPTIONS} "$@"
+
+if [ -n "${DOMAKE}" ]; then
+	test -n "${DOVERBOSE}" && compile VERBOSE=1 || compile
+fi
 
 DOT=$(which dot 2>/dev/null)
 if [ -n "${DOT}" ]; then
 	${DOT} -Tpng -o${BUILDDIR}/gpsdrive.png ${BUILDDIR}/gpsdrive.dot
 	${DOT} -Tsvg -o${BUILDDIR}/gpsdrive.svg ${BUILDDIR}/gpsdrive.dot
 fi
+
+exec >&0 2>&0		# so that the logging tee finishes
+sleep 1			# wait till tee terminates
+
+cleanup_and_exit 0
 
