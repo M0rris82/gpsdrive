@@ -12,26 +12,34 @@ find_package(GDAL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Fontconfig REQUIRED)
 find_package(MySQL REQUIRED)
+find_package(XML2 REQUIRED)
 
-set(GPSDRIVE_SRC_INCLUDE_DIRS
+set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_BINARY_DIR}
+  CACHE INTERNAL "gpsdrive public include directories"
+)
+
+set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${GTK2_INCLUDE_DIRS}
-  ${PNG_INCLUDE_DIR}
+  ${PNG_INCLUDE_DIRS}
   ${MYSQL_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIRS}
+  ${XML2_INCLUDE_DIRS}
 )
 
-include_directories(${GPSDRIVE_SRC_INCLUDE_DIRS})
-
-STRING(REGEX REPLACE "\n" "" FONTCONFIG_DEFINITIONS "${FONTCONFIG_DEFINITIONS}")
-
-add_definitions(
-  -DHAVE_CONFIG_H
-  ${PNG_DEFINITIONS}
-  ${FONTCONFIG_DEFINITIONS}
+set(GPSDRIVE_LINK_LIBRARIES
+  gpsdrive
+  map
+  crypt
+  ${GDAL_LIBRARIES}
+  ${FONTCONFIG_LIBRARIES}
+  ${GETTEXT_LIBRARIES}
+  ${GTK2_LIBRARIES}
+  ${GDAL_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${XML2_LIBRARIES}
 )
-
 
 SET(gpsdrive_SRCS
   gpsdrive.c
@@ -130,20 +138,15 @@ SET(fly_SRCS
   fly.c
 )
 
+include_directories(
+  ${GPSDRIVE_PUBLIC_INCLUDE_DIRS}
+  ${GPSDRIVE_PRIVATE_INCLUDE_DIRS}
+)
+
 add_executable(gpsdrive ${gpsdrive_SRCS} ${garmin_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
 
-target_link_libraries(
-  gpsdrive
-  map
-  crypt
-  ${GDAL_LIBRARIES}
-  ${FONTCONFIG_LIBRARIES}
-  ${GETTEXT_LIBRARIES}
-  ${GTK2_LIBRARIES}
-  ${GDAL_LIBRARIES}
-  ${PNG_LIBRARIES}
-)
+target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
 if (DBUS_FOUND)
   target_link_libraries(gpsdrive ${DBUS_LIBRARIES})

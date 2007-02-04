@@ -1,6 +1,6 @@
-PROJECT(util)
+project(util)
 
-FIND_PACKAGE(GDAL REQUIRED)
+find_package(GDAL REQUIRED)
 
 set(UTIL_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -9,36 +9,36 @@ set(UTIL_INCLUDE_DIRS
 )
 
 #includes
-SET(util_INCLUDE_DIR
+set(util_INCLUDE_DIR
   ${util_SOURCE_DIR}/
   CACHE INTERNAL ""
 )
 
-ADD_DEFINITIONS(-DHAVE_GTK -DHAVE_CAIRO)
+add_definitions(-DHAVE_GTK -DHAVE_CAIRO)
 
-INCLUDE_DIRECTORIES(${UTIL_INCLUDE_DIRS})
+include_directories(${UTIL_INCLUDE_DIRS})
 
-SET(worldgen_SRCS
+set(worldgen_SRCS
   worldgen.c
 )
 
-SET(gmapview_SRCS
+set(gmapview_SRCS
   gmapview.c
 )
 
 if (GDAL_FOUND)
-  ADD_EXECUTABLE(worldgen ${worldgen_SRCS})
-  TARGET_LINK_LIBRARIES(worldgen ${GDAL_LIBRARIES})
-  INSTALL(TARGETS worldgen DESTINATION ${BIN_INSTALL_DIR})
+  add_executable(worldgen ${worldgen_SRCS})
+  target_link_libraries(worldgen ${GDAL_LIBRARIES})
+  install(TARGETS worldgen DESTINATION ${BIN_INSTALL_DIR})
 endif (GDAL_FOUND)
 
 if (GDAL_FOUND AND GTK2_FOUND)
-  ADD_EXECUTABLE(gmapview ${gmapview_SRCS})
-  TARGET_LINK_LIBRARIES(gmapview
+  add_executable(gmapview ${gmapview_SRCS})
+  target_link_libraries(gmapview
     map
     ${GDAL_LIBRARIES}
     ${GTK2_LIBRARIES}
   )
-  INSTALL(TARGETS gmapview DESTINATION ${BIN_INSTALL_DIR})
+  install(TARGETS gmapview DESTINATION ${BIN_INSTALL_DIR})
 endif (GDAL_FOUND AND GTK2_FOUND)
 

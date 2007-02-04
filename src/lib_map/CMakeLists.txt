@@ -2,12 +2,12 @@ PROJECT(libmap)
 
 # GTK
 if (GTK_FOUND)
-  INCLUDE_DIRECTORIES(${GTK_INCLUDE_DIR})
+  include_directories(${GTK_INCLUDE_DIR})
 endif (GTK_FOUND)
 
 # GDAL
 if (GDAL_FOUND)
-  INCLUDE_DIRECTORIES(${GDAL_INCLUDE_DIR})
+  include_directories(${GDAL_INCLUDE_DIR})
 endif (GDAL_FOUND)
 
 set(libmap_SRCS
