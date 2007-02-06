@@ -110,8 +110,8 @@ gint zone;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbwherestring[5000];
-extern char wp_typelist[MAXPOITYPES][50];
+extern char dbpoifilter[5000];
+extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern double dbdistance;
 extern int dbusedist, havefriends, etch, do_draw_grid, serialspeed, disableserial;
@@ -1753,7 +1753,7 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
 	}
     }
 
-  g_strlcpy (dbwherestring, "WHERE (", sizeof (dbwherestring));
+  g_strlcpy (dbpoifilter, "AND (", sizeof (dbpoifilter));
   for (i = 0; i < poi_type_list_count; i++)
     {
       sel = sqlselects[i];
@@ -1762,32 +1762,32 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
 	  flag = TRUE;
 	  if (sqlandmode)
 	    {
-	      g_snprintf (s, sizeof (s), "type  = '%s' OR  ", wp_typelist[i]);
-	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
+	      g_snprintf (s, sizeof (s), "poi_type.name  LIKE '%s%%' OR  ", poi_type_list[i].name);
+	      g_strlcat (dbpoifilter, s, sizeof (dbpoifilter));
 	    }
 	  else
 	    {
-	      g_snprintf (s, sizeof (s), "type != '%s' AND ", wp_typelist[i]);
-	      g_strlcat (dbwherestring, s, sizeof (dbwherestring));
+	      g_snprintf (s, sizeof (s), "poi_type.name NOT LIKE '%s%%' AND ", poi_type_list[i].name);
+	      g_strlcat (dbpoifilter, s, sizeof (dbpoifilter));
 	    }
 	}
     }
-  dbwherestring[strlen (dbwherestring) - 4] = 0;
-  g_strlcat (dbwherestring, ")", sizeof (dbwherestring));
-  if (!showsid)
-    {
-      g_strlcat (dbwherestring, " AND name != 'no_ssid'",
-		 sizeof (dbwherestring));
-    }
+  dbpoifilter[strlen (dbpoifilter) - 4] = 0;
+  g_strlcat (dbpoifilter, ")", sizeof (dbpoifilter));
+  //~ if (!showsid)
+    //~ {
+      //~ g_strlcat (dbpoifilter, " AND name != 'no_ssid'",
+		 //~ sizeof (dbpoifilter));
+    //~ }
 
   if (!flag)
     {
-      g_strlcpy (dbwherestring, "", sizeof (dbwherestring));
+      g_strlcpy (dbpoifilter, "", sizeof (dbpoifilter));
     }
 
   if ( mydebug > 20 )
     {
-      printf ("\n%s\n", dbwherestring);
+      printf ("\n%s\n", dbpoifilter);
     }
 
   if (!sqldontquery)
@@ -2024,7 +2024,7 @@ friendssetup (void)
 /* *****************************************************************************
  */
 void
-sqlsetup (void)
+setup_poi (void)
 {
   GtkTooltips *tooltips;
 
@@ -2045,17 +2045,19 @@ sqlsetup (void)
 
   gchar temp[80];
   gchar text[50];
-  gchar wheretemp[5000];
+  gchar filtertemp[5000];
   glong i;
+  
+  gint poi_type_entries = 30; // only show base types
 
   setupentry[sqlplace] = frame = gtk_frame_new (_("POI selection criterias"));
   setupentrylabel[sqlplace] = gtk_label_new (_("POI"));
 
   gtk_container_set_border_width (GTK_CONTAINER (frame), 5 * PADDING);
 
-  g_strlcpy (wheretemp, dbwherestring, sizeof (wheretemp));
+  g_strlcpy (filtertemp, dbpoifilter, sizeof (filtertemp));
 
-  for (i = 0; i < poi_type_list_count; i++)
+  for (i = 1; i < poi_type_entries; i++)
     {
       sqlselects[i] = 0;
     }
@@ -2068,7 +2070,7 @@ sqlsetup (void)
 				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   table = gtk_table_new (4, 2, FALSE);
-  table2 = gtk_table_new (poi_type_list_count, 2, FALSE);
+  table2 = gtk_table_new (poi_type_entries, 2, FALSE);
 
   gtk_container_add (GTK_CONTAINER (frame), mainbox);
 
@@ -2078,7 +2080,7 @@ sqlsetup (void)
   d2 = gtk_entry_new ();
   g_snprintf (text, sizeof (text), "%0.1f", dbdistance);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d2,
-			_("If enabled, show waypoints only within this "
+			_("If enabled, show POIs only within this "
 			  "distance"), NULL);
 
   gtk_entry_set_text (GTK_ENTRY (d2), text);
@@ -2129,16 +2131,16 @@ sqlsetup (void)
 				     (GTK_RADIO_BUTTON (t1)), _("exclude"));
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t1,
-			_("Show only waypoints where the type field contains "
+			_("Show only POIs where the type field contains "
 			  "one of the selected words"), NULL);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t2,
-			_("Show only waypoints where the type field doesn't "
+			_("Show only POIs where the type field doesn't "
 			  "contain any the selected words"), NULL);
 
   gtk_signal_connect (GTK_OBJECT (t1), "clicked",
 		      GTK_SIGNAL_FUNC (sqlselectmode_cb), (gpointer) 1);
 
-  if (NULL != (strstr (wheretemp, "type != ")))
+  if (NULL != (strstr (filtertemp, "type != ")))
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (t2), TRUE);
     }
@@ -2152,30 +2154,31 @@ sqlsetup (void)
 
   gtk_box_pack_start (GTK_BOX (mainbox), scroll, TRUE, TRUE, 3 * PADDING);
 
-  for (i = 0; i < poi_type_list_count; i++)
+  for (i = 1; i < poi_type_entries; i++)
     {
-      l[i] = gtk_entry_new ();
-      gtk_entry_set_text (GTK_ENTRY (l[i]), wp_typelist[i]);
-      gtk_entry_set_editable (GTK_ENTRY (l[i]), FALSE);
-      gtk_widget_set_usize (l[i], USIZE_X, USIZE_Y);
-      gtk_table_attach_defaults (GTK_TABLE (table2), l[i], 0, 1, i, i + 1);
-
-      sqlfn[i] = gtk_check_button_new ();
-      gtk_signal_connect (GTK_OBJECT (sqlfn[i]), "clicked",
+      if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
+	  {
+		  l[i] = gtk_entry_new ();
+		  gtk_entry_set_text (GTK_ENTRY (l[i]), poi_type_list[i].name);
+		  gtk_entry_set_editable (GTK_ENTRY (l[i]), FALSE);
+		  gtk_widget_set_usize (l[i], USIZE_X, USIZE_Y);
+		  gtk_table_attach_defaults (GTK_TABLE (table2), l[i], 0, 1, i, i + 1);
+		  
+		  sqlfn[i] = gtk_check_button_new ();
+		  gtk_signal_connect (GTK_OBJECT (sqlfn[i]), "clicked",
 			  GTK_SIGNAL_FUNC (dbbuildquery_cb), (gpointer) i);
-      g_snprintf (temp, sizeof (temp), "= '%s'", wp_typelist[i]);
-
-      if (NULL != (strstr (wheretemp, temp)))
-	{
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlfn[i]), TRUE);
-	}
-
-      gtk_table_attach_defaults (GTK_TABLE (table2), sqlfn[i], 1, 2, i,
-				 i + 1);
+		  g_snprintf (temp, sizeof (temp), "= '%s'", poi_type_list[i].name);
+		  
+		  if (NULL != (strstr (filtertemp, temp)))
+		  {
+			  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlfn[i]), TRUE);
+		  }
+		  
+		  gtk_table_attach_defaults (GTK_TABLE (table2), sqlfn[i], 1, 2, i,i + 1);
+	  }
     }
 
   sqldontquery = FALSE;
-  getsqldata ();
   gtk_table_set_row_spacings (GTK_TABLE (table), 2 * PADDING);
   gtk_table_set_col_spacings (GTK_TABLE (table), 2 * PADDING);
   gtk_table_set_row_spacings (GTK_TABLE (table2), 2 * PADDING);

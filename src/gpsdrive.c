@@ -402,7 +402,7 @@ char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char poitypetable[MAXDBNAME];
 char wp_typelist[MAXPOITYPES][50];
-char dbwherestring[5000];
+char dbpoifilter[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
 extern gint sqlselects[MAXPOITYPES], sqlplace, friendsplace, kismetsock, havekismet;
@@ -4047,7 +4047,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 {
 	GtkWidget *window;
 	gchar *tabeltitel1[] = { "#",
-		_("Waypoint"), _("Latitude"), _("Longitude"), _("Distance"),
+		_("Name"), _("Type"), _("Latitude"), _("Longitude"), _("Distance"),
 		NULL
 	};
 	GtkWidget *scrwindow, *vbox, *button, *hbox, *deletebt;
@@ -4087,7 +4087,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	else
 		gtk_window_set_default_size (GTK_WINDOW (window), 400, 360);
 
-	mylist = gtk_clist_new_with_titles (5, tabeltitel1);
+	mylist = gtk_clist_new_with_titles (6, tabeltitel1);
 	if (datum == 1)
 		gtk_signal_connect (GTK_OBJECT (GTK_CLIST (mylist)),
 				    "select-row",
@@ -4165,7 +4165,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	}
 
 	insertwaypoints (FALSE);
-	gtk_clist_set_column_justification (GTK_CLIST (mylist), 4,
+	gtk_clist_set_column_justification (GTK_CLIST (mylist), 5,
 					    GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_justification (GTK_CLIST (mylist), 0,
 					    GTK_JUSTIFY_RIGHT);
@@ -4173,6 +4173,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 1, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 2, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 3, TRUE);
+	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 4, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 4, TRUE);
 
 	scrwindow = gtk_scrolled_window_new (NULL, NULL);
@@ -4884,7 +4885,7 @@ main (int argc, char *argv[])
     if (usesql)
 	{
 	    mod_setupcounter++;
-	    setupfunction[mod_setupcounter] = &(sqlsetup);
+	    setupfunction[mod_setupcounter] = &(setup_poi);
 	    sqlplace = mod_setupcounter;
 	}
     mod_setupcounter++;

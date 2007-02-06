@@ -423,7 +423,7 @@ import1_cb (GtkWidget * widget, guint datum)
       gtk_table_attach_defaults (GTK_TABLE (table), scale_input, 1, 2, 2, 3);
     }
 
-  knopf6 = gtk_button_new_with_label (_("Browse waypoint"));
+  knopf6 = gtk_button_new_with_label (_("Browse POIs"));
   gtk_signal_connect (GTK_OBJECT (knopf6), "clicked",
 		      GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 1);
 

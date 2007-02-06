@@ -68,7 +68,7 @@ gint dotripmeter (GtkWidget * widget, guint datum);
 void trip (void);
 gint expose_mini_cb (GtkWidget * widget, guint * datum);
 void speech_out_speek_raw (char *text);
-void sqlsetup (void);
+void setup_poi (void);
 gint tripreset ();
 int friends_sendmsg (char *serverip, char *message);
 int friendsinit ();

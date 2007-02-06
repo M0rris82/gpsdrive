@@ -70,7 +70,7 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbwherestring[5000];
+extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist, needreminder;
 extern gint earthmate, havefriends, zone;

@@ -83,6 +83,7 @@ extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
+extern char dbpoifilter[5000];
 
 char txt[5000];
 PangoLayout *poi_label_layout;
@@ -97,7 +98,7 @@ extern char poitypetable[MAXDBNAME];
 // keep actual visible POIs in Memory
 poi_struct *poi_list;
 glong poi_nr;			// current number of poi to count
-glong poi_max;			// max index of POIs actually in memory
+glong poi_list_count;			// max index of POIs actually in memory
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
 gint poi_draw = FALSE;
 
@@ -132,7 +133,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 
   poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
   pfd = pango_font_description_from_string ("Sans 8");
-  if (poi_max > 200)
+  if (poi_list_count > 200)
     pfd = pango_font_description_from_string ("Sans 6");
 
   pango_layout_set_font_description (poi_label_layout, pfd);
@@ -609,6 +610,7 @@ get_poi_type_list (void)
  * if zoom, xoff, yoff or map are changed 
  * TODO: use the real datatype for reading from database
  * (don't convert string to double)
+ * TODO: call this only if the above mentioned events occur!
  */
 void
 poi_rebuild_list (void)
@@ -673,8 +675,8 @@ poi_rebuild_list (void)
      "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi INNER JOIN "
      "poi_type ON poi.poi_type_id=poi_type.poi_type_id "
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
-     "AND ( %ld BETWEEN scale_min AND scale_max ) LIMIT 40000;",
-     lat_min, lat_max, lon_min, lon_max, mapscale);
+     "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
+     lat_min, lat_max, lon_min, lon_max, mapscale, dbpoifilter);
   
   if (mydebug > 20)
   {
@@ -792,13 +794,13 @@ poi_rebuild_list (void)
     }
 
 
-  poi_max = poi_nr;
+  poi_list_count = poi_nr;
 
   // print time for getting Data
   gettimeofday (&t, NULL);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
   if (mydebug > 20)
-    printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_max,
+    printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_list_count,
 	    rges, (gdouble) ti);
 
 
@@ -870,9 +872,9 @@ poi_draw_list (void)
   /* ------------------------------------------------------------------ */
   /*  draw poi_list points */
   if (mydebug > 20)
-    printf ("poi_draw_list: drawing %ld points\n", poi_max);
+    printf ("poi_draw_list: drawing %ld points\n", poi_list_count);
 
-  for (i = 1; i <= poi_max; i++)
+  for (i = 1; i <= poi_list_count; i++)
     {
       gdouble posx, posy;
 
@@ -907,7 +909,7 @@ poi_draw_list (void)
 
 	    if (icon != NULL && icon_index > 0)
 	      {
-		if (poi_max < 2000)
+		if (poi_list_count < 2000)
 		  {
 		    int wx = gdk_pixbuf_get_width (icon);
 		    int wy = gdk_pixbuf_get_height (icon);
@@ -922,7 +924,7 @@ poi_draw_list (void)
 	    else
 	      {
 		gdk_gc_set_foreground (kontext, &red);
-		if (poi_max < 20000)
+		if (poi_list_count < 20000)
 		  {		// Only draw small + if more than ... Points 
 		    draw_plus_sign (posx, posy);
 		  }
@@ -933,7 +935,7 @@ poi_draw_list (void)
 	      }
 
 	    // Only draw Text if less than 1000 Points are to be displayed
-	    if (poi_max < 1000)
+	    if (poi_list_count < 1000)
 	      {
 		draw_text (txt, posx, posy);
 	      }
@@ -949,7 +951,7 @@ poi_draw_list (void)
 
 
 /* *******************************************************
- * query all Info for Points in area arround lat/lon
+ * query all Info for Points in area around lat/lon
 */
 void
 poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
@@ -957,7 +959,7 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
   gint i;
   printf ("Query: %f ... %f , %f ... %f\n", lat1, lat2, lon1, lon2);
 
-  for (i = 0; i < poi_max; i++)
+  for (i = 0; i < poi_list_count; i++)
     {
       //printf ("check POI: %ld: %f %f :%s\n",i,(poi_list + i)->lat, (poi_list + i)->lon,(poi_list + i)->name);
       if ((lat1 <= (poi_list + i)->lat) &&

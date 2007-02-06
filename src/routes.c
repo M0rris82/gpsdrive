@@ -67,6 +67,9 @@ extern gint onemousebutton;
 extern gint pdamode;
 extern GtkWidget *mainwindow;
 extern gint dontsetwp;
+extern gint usesql;
+extern poi_struct *poi_list;
+extern glong poi_list_count;	
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -257,35 +260,63 @@ void
 insertwaypoints (gint mobile)
 {
 	gint i, j;
-	gchar *text[5], text0[20], text1[20], text2[20], text3[20], name[40];
+	gchar *text[6], text0[20], text1[20], text2[20], text3[20], name[40];
 	gdouble la, lo, dist;
 	time_t ti, tif;
 
 	/*  insert waypoint into the clist */
 
 	if (!mobile)
-		for (i = 0; i < maxwp; i++)
+	{
+		if (usesql)
 		{
-			(wayp + i)->dist =
-				calcdist ((wayp + i)->lon, (wayp + i)->lat);
-
-			text[1] = (wayp + i)->name;
-
-			g_snprintf (text0, sizeof (text0), "%02d", i + 1);
-			coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
-			coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
-			g_snprintf (text3, sizeof (text3), "%9.3f",
-				    (wayp + i)->dist);
-			text[0] = text0;
-			text[2] = text1;
-			text[3] = text2;
-			text[4] = text3;
-			j = gtk_clist_append (GTK_CLIST (mylist),
-					      (gchar **) text);
-			gtk_clist_set_foreground (GTK_CLIST (mylist), j,
-						  &black);
+			//~ for (i = 1; i <= poi_list_count; i++)
+			//~ {
+				//~ dist = calcdist ((poi_list + i)->lon, (poi_list + i)->lat);
+				
+				//~ g_snprintf (text0, sizeof (text0), "%02d", i + 1);
+				//~ coordinate2gchar(text1, sizeof(text1), (poi_list+i)->lat, TRUE, minsecmode);
+				//~ coordinate2gchar(text2, sizeof(text2), (poi_list+i)->lon, FALSE, minsecmode);
+				//~ g_snprintf (text3, sizeof (text3), "%9.3f", dist);
+				//~ text[0] = text0;
+				//~ text[1] = (poi_list + i)->name;				
+				//~ g_snprintf (text[2], sizeof (text[2]), "%d", (poi_list + i)->poi_type_id);
+				//~ text[3] = text1;
+				//~ text[4] = text2;
+				//~ text[5] = text3;
+				//~ // text[6] = (poi_list + i)->comment;
+				//~ j = gtk_clist_append (GTK_CLIST (mylist),
+					      //~ (gchar **) text);
+				//~ gtk_clist_set_foreground (GTK_CLIST (mylist), j,
+						  //~ &black);
+			//~ }
 		}
-
+		else
+		{
+			for (i = 0; i < maxwp; i++)
+			{
+				(wayp + i)->dist =
+				  calcdist ((wayp + i)->lon, (wayp + i)->lat);
+				
+				text[1] = (wayp + i)->name;
+				
+				g_snprintf (text0, sizeof (text0), "%02d", i + 1);
+				coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
+				coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
+				g_snprintf (text3, sizeof (text3), "%9.3f",
+				          (wayp + i)->dist);
+				text[0] = text0;
+				text[2] = text1;
+				text[3] = text2;
+				text[4] = text3;
+				j = gtk_clist_append (GTK_CLIST (mylist),
+					      (gchar **) text);
+				gtk_clist_set_foreground (GTK_CLIST (mylist), j,
+						  &black);
+			}
+		}
+	}
+	
 	for (i = 0; i < maxfriends; i++)
 	{
 		ti = time (NULL);
