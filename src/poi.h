@@ -63,6 +63,8 @@ void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
+void
+get_poi_type_list (void);
 
 typedef struct
 {

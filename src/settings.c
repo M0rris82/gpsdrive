@@ -42,6 +42,7 @@
 #include <time.h>
 #include <dirent.h>
 #include <arpa/inet.h>
+#include "gpsdrive_config.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -2021,6 +2022,28 @@ friendssetup (void)
   gtk_widget_show_all (frame);
 }
 
+
+/* *****************************************************************************
+ * poi icon theme combobox callback
+ */
+gint
+setpoitheme_cb (GtkWidget *combo, guint datum)
+{
+  gchar *theme;
+
+  theme = (char *) gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+  g_strlcpy (local_config.icon_theme, theme, sizeof (local_config.icon_theme));
+  get_poi_type_list();
+
+  if ( mydebug > 1 )
+    {
+      g_print ("\nPoitheme changed to: %s", theme);
+    }
+
+  needtosave = TRUE;
+  return TRUE;
+}
+
 /* *****************************************************************************
  */
 void
@@ -2042,6 +2065,8 @@ setup_poi (void)
   GtkWidget *t2;
   GtkWidget *table;
   GtkWidget *table2;
+  GtkWidget *themelabel;
+  GtkWidget *themecombo;
 
   gchar temp[80];
   gchar text[50];
@@ -2069,7 +2094,7 @@ setup_poi (void)
   gtk_scrolled_window_set_policy ((GtkScrolledWindow *) scroll,
 				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-  table = gtk_table_new (4, 2, FALSE);
+  table = gtk_table_new (5, 2, FALSE);
   table2 = gtk_table_new (poi_type_entries, 2, FALSE);
 
   gtk_container_add (GTK_CONTAINER (frame), mainbox);
@@ -2114,7 +2139,7 @@ setup_poi (void)
   gtk_signal_connect (GTK_OBJECT (d5), "clicked",
 		      GTK_SIGNAL_FUNC (showsid_cb), d4);
 
-  gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 4, 5);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d5,
 			_("If enabled, WLANs with no SSID are shown, because "
@@ -2122,6 +2147,27 @@ setup_poi (void)
 			NULL);
 
   sqldontquery = TRUE;
+
+  /* poi icon theme combobox */
+  themelabel = gtk_label_new (_("POI-Theme"));
+  themecombo = gtk_combo_box_new_text();
+  gtk_combo_box_append_text (GTK_COMBO_BOX(themecombo), "square.big");
+  gtk_combo_box_append_text (GTK_COMBO_BOX(themecombo), "square.small");
+  gtk_combo_box_append_text (GTK_COMBO_BOX(themecombo), "classic");
+  
+  if (!strcmp (local_config.icon_theme, "square.big")) {
+  		gtk_combo_box_set_active( GTK_COMBO_BOX( themecombo ), 0 );
+  } else if (!strcmp (local_config.icon_theme, "square.small")) {
+  		gtk_combo_box_set_active( GTK_COMBO_BOX( themecombo ), 1 );
+  } else if (!strcmp (local_config.icon_theme, "classic")) {
+  		gtk_combo_box_set_active( GTK_COMBO_BOX( themecombo ), 2 );
+  }
+  
+  gtk_signal_connect (GTK_OBJECT(themecombo), "changed",
+		      GTK_SIGNAL_FUNC (setpoitheme_cb), (gpointer) 0);
+  
+  gtk_table_attach_defaults (GTK_TABLE (table), themelabel, 0, 1, 1, 2);	      
+  gtk_table_attach_defaults (GTK_TABLE (table), themecombo, 1, 2, 1, 2);
 
   t0 = gtk_label_new (_("Selection mode"));
 
@@ -2145,9 +2191,9 @@ setup_poi (void)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (t2), TRUE);
     }
 
-  gtk_table_attach_defaults (GTK_TABLE (table), t0, 0, 2, 1, 2);
-  gtk_table_attach_defaults (GTK_TABLE (table), t1, 0, 1, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (table), t2, 1, 2, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), t0, 0, 2, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), t1, 0, 1, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (table), t2, 1, 2, 3, 4);
 
   gtk_scrolled_window_add_with_viewport ((GtkScrolledWindow *) scroll,
 					 table2);
