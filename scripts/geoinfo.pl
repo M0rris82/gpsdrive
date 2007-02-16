@@ -4,9 +4,14 @@
 # Retrieve POI Data from Different Sources
 # And import them into mySQL for use with gpsdrive
 
+# Get version number from version-control system, as integer 
+   
+my $Version = '$Revision$'; 
+$Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
+
 my $VERSION ="geoinfo.pl (c) Joerg Ostertag
 Initial Version (Jan,2005) by Joerg Ostertag <joerg.ostertag\@rechengilde.de>
-Version 1.17
+Version 0.9-$Version
 ";
 
 BEGIN {
@@ -111,6 +116,7 @@ our $db_host             = $ENV{DBHOST} || 'localhost';
 #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
 my $areas_todo;
 my $do_list_areas=0;
+my $do_show_version=0;
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
@@ -172,9 +178,14 @@ GetOptions (
 	     'show-traffic'	   => \$show_traffic,
 	     'h|help|x'            => \$help, 
 	     'lang=s'              => \$lang, 
+	     'version'             => \$do_show_version, 
 	     )
     or pod2usage(1);
 
+
+if ( $do_show_version ) {
+    print "$VERSION\n";
+};
 
 if ( $do_all ) {
     $do_create_db
@@ -303,7 +314,7 @@ __END__
 
 =head1 NAME
 
-B<geoinfo.pl> Version 0.00001
+B<geoinfo.pl> Version 0.9
 
 =head1 DESCRIPTION
 
