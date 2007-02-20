@@ -46,9 +46,12 @@ BEGIN {
 use strict;
 use warnings;
 
+my $Version = '$Revision$'; 
+$Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
+
 my $VERSION ="poi-manager.pl (c) Guenther Meyer
   Initial Version (Dec,2006) by Guenther Meyer <d.s.e (at) sordidmusic.com>
-  Version 0.01 ";
+  Version 0.01 svn-$Version";
 
 use encoding 'utf8';
 use utf8;
