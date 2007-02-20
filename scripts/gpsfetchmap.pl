@@ -22,6 +22,9 @@ BEGIN {
     unshift(@INC,"/opt/gpsdrive"); # For DSL
 };
 
+my $Version = '$Revision$'; 
+$Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
+
 my $VERSION ="gpsfetchmap (c) 2002 Kevin Stephens <gps\@suburbialost.com>
 modified (Sep 2002) by Sven Fichtner <sven.fichtner\@flugfunk.de>
 modified (Nov 2002) by Magnus Månsson <ganja\@0x63.nu>
@@ -31,7 +34,7 @@ modified (Jan 2005) by Joerg Ostertag <gpsdrive\@ostertag.name>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
-Version 1.19 (gpsdrive-2.10pre3-svn-12111953)
+Version svn-$Version
 ";
 
 sub redirect_ok { return 1; }
