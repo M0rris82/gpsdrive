@@ -57,6 +57,9 @@ BEGIN {
     unshift(@INC,"/opt/gpsdrive"); # For DSL
 };
 
+my $Version = '$Revision$'; 
+$Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
+
 use strict;
 
 my %opts;
@@ -91,7 +94,7 @@ if ($opts{h} ) {
 	-w                     Extract waypoints and append to way.txt
 	-v                     Verbose mode - yada yada yada
 
-	Version 0.0.3 (August 2002)
+	Version $Version
 
 ENDOFHELP
 	print $help;
