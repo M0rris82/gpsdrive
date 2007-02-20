@@ -36,9 +36,12 @@ BEGIN {
 use strict;
 use warnings;
 
+my $Version = '$Revision$'; 
+$Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
+
 my $VERSION ="convert-waypoints.pl (c) Guenther Meyer
   Initial Version (Dec,2006) by Guenther Meyer <d.s.e (at) sordidmusic.com>
-  Version 0.1 ";
+  Version 0.1-$Version ";
 
 use utf8;
 use IO::File;
