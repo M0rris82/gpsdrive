@@ -234,82 +234,39 @@ sub fill_default_street_types() {   # Fill streets_type database
 	}
     }
 
-    # ------------ Street Types
-    # TODO: make english primary language
-    my @streets_types = qw( xFFFFFF_x000000_w1_4_z00100000_unbekannt
-			    x555555_x000000_w2_4_z00100000_Strassen.Allgemein
-			    x557777_x000000_w2_4_z00100000_Strassen.primary
-			    x557766_x000000_w2_4_z00100000_Strassen.mayor
-			    x557766_x555555_w2_4_z00100000_Strassen.secondary
-			    x558866_x000000_w2_4_z00100000_Strassen.residential
-			    x555555_x000000_w1_2_z00100000_Strassen.minor
 
-			    x00FFFF_xAA0000_w2_4_z10000000_Strassen.Highway
-			    xFFFF00_xAA0000_w2_4_z10000000_Strassen.Autobahn
-			    xFFFF00_x550000_w2_4_z00100000_Strassen.Bundesstrasse
-			    xFFFF00_x550000_w2_4_z00100000_Strassen.Landstrasse
-			    x00FFFF_x000000_w2_4_z00100000_Strassen.Innerorts
-			    x00FFFF_x555555_w1_2_z00100000_Strassen.30_Zone
-
-			    x222222_x555555_w2_4_z00100000_Strassen.Wanderweg
-			    x222222_x555555_w2_4_z00100000_Strassen.Fahrrad
-			    x222222_x555555_w2_4_z00100000_Strassen.Fussweg
-			    x222222_x557755_w2_4_z00100000_Strassen.Reitweg
-			    x222222_x555555_w2_4_z00100000_Strassen.Trampelpfad
-
-			    x444444_x000000_w2_4_z01000000_Schiene.ICE_Trasse
-			    x444444_x000000_w2_4_z00100000_Schiene.Zug_Trasse
-			    x002222_x000000_w2_4_z00100000_Schiene.S_Bahn_Trasse
-			    x000022_x000000_w2_4_z00100000_Schiene.U_Bahn_Trasse
-			    x000000_x000000_w2_4_z00100000_Schiene.Bus_Trasse
-
-			    x444444_x000000_w2_4_z10000000_Grenzen.Landesgrenze
-			    x444444_x000000_w2_4_z01000000_Grenzen.Bundesland_Grenze
-			    x444444_x000000_w2_4_z01000000_Grenzen.Stadt_Grenze
-
-			    x0000FF_x000000_w2_4_z01000000_Wasser.Fluss
-			    x000FFF_x000000_w2_4_z01000000_Wasser.Kueste
-			    );
-
-    for my $entry  ( @streets_types ) {    
-	warn "could not split $entry\n" 
-	    
-unless $entry =~ m/^x(......)_x(......)_w(\d+)_(\d+)_z(\d+)_(.*)$/;
-	my $color     = "#$1";
-	my $color_bg  = "#$2";
-	my $width     = $3;
-	my $width_bg  = $4;
-	my $scale_max = $5;
-	my $name      = $6;
-	my $scale_min =  1;
-	unless ( $color && $color_bg && $width && $width_bg && $scale_max && $name ) {
-	    print "Error spliting $entry \n";
-	}	    
+    Geo::Gpsdrive::OSM::load_elemstyles();
+    
+    for my $entry  ( @{$Geo::Gpsdrive::OSM::ELEMSTYLES_RULES} ) {    
+	next unless defined $entry->{line};
+	#print Dumper(\$entry);
+	$streets_type_id = $entry->{streets_type_id};
+	my $color     = $entry->{line}->{colour} || "#110000";
+	my $color_bg  = $entry->{line}->{colour_bg} || $color;
+	my $width     = $entry->{line}->{width} || 1;
+	my $width_bg  = $entry->{line}->{width_bg} || $width;
+	my $scale_max = $entry->{scale_max} || 50000;
+	my $name      = $entry->{condition}->{k}.":".$entry->{condition}->{v};
+	my $scale_min = $entry->{scale_min} || 1;
 	$name =~ s/_/ /g;
 	my $linetype='';
 
 	if( 0 && $debug ){	# For testing and displaying all streets in every scale
 	    $scale_max = 1000000000000;
-	    if ( $name =~ m/strasse/i ) {
-		$color     = "#FFFF00";
-		$color_bg  = "#AA0000";
-		$color_bg  = "#000000";
-		$width     = 1;
-		$width_bg  = 1;
-	    }
 	}
+
+	print "color($streets_type_id): '$color', name ='$name'\n";
 		
-	$streets_type_id++;
 	Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
 	Geo::Gpsdrive::DBFuncs::db_exec
 	    ("INSERT INTO `streets_type` ".
-	     "        (streets_type_id,  name,   color ,  color_bg  , width ,  width_bg  , linetype  , scale_min , scale_max )".
-	     " VALUES ($i             ,'$name','$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
+	     "        (streets_type_id,   name,   color ,  color_bg  , width ,  width_bg  , linetype  , scale_min , scale_max )".
+	     " VALUES ($streets_type_id,'$name','$color','$color_bg','$width','$width_bg','$linetype','$scale_min','$scale_max');");
 	
 	$i++;
     }
 
-    # Reserve Type 200 so users place there id's behind it
+    # Reserve Type 500 so users place there id's behind it
     $streets_type_id =500;
     Geo::Gpsdrive::DBFuncs::db_exec("DELETE FROM `streets_type` WHERE streets_type_id = '$streets_type_id';");
     Geo::Gpsdrive::DBFuncs::db_exec("INSERT INTO `streets_type` ".
