@@ -585,8 +585,8 @@ sub streets_type_id($$){
 # ------------------------------------------------------------------
 # load the complete MapFeatures Structure into memory
 sub load_elemstyles($){
-    my ($filename) = @_;
-
+    my $filename = shift;
+    return unless $filename && -s $filename;
     print("Loading Elemstyles $filename\n") if $VERBOSE || $DEBUG;
     print "$filename:	".(-s $filename)." Bytes\n" if $DEBUG;
     print STDERR "Parsing file: $filename\n" if $DEBUG;
@@ -634,11 +634,9 @@ sub poi_type_id($$){
 # in the end we have a hash structure where you get the poi_type_id 
 # by simply asking for 
 #     $ICON_RULES->{$k}->{$v};
-sub load_icons(;$){
-    my ($filename) = @_;
-    $filename ||= "$ENV{HOME}/.josm/icons.xml";
-    $filename = "../data/map-icons/icons.xml" unless -s $filename;
-    $filename = "data/map-icons/icons.xml" unless -s $filename;
+sub load_icons($){
+    my $filename = shift;
+    return unless $filename && -s $filename;
 
     print("Loading Icons $filename\n") if $VERBOSE || $DEBUG;
     print "$filename:	".(-s $filename)." Bytes\n" if $DEBUG;
@@ -690,12 +688,6 @@ sub read_osm_file($$) { # Insert Streets from osm File
 
     print("\rReading $file_name for $area_name\n") if $VERBOSE || $debug;
     print "$file_name:	".(-s $file_name)." Bytes\n" if $debug;
-
-    load_icons();
-    my $elemstyles_filename = "$ENV{HOME}/.josm/plugins/mappaint/elemstyles.xml";
-    $elemstyles_filename ="$ENV{HOME}/svn.openstreetmap.org/data/elemstyles.xml" unless -s  $elemstyles_filename;
-    $elemstyles_filename ="../data/elemstyles.xml" unless -s  $elemstyles_filename;
-    load_elemstyles($elemstyles_filename);
     
     print STDERR "Parsing file: $file_name\n" if $debug;
     $PARSING_START_TIME=time();
@@ -925,6 +917,15 @@ sub import_Data($@){
     
     -d $mirror_dir or mkpath $mirror_dir
 	    or die "Cannot create Directory $mirror_dir:$!\n";
+
+    my $icons_filename ||= "$ENV{HOME}/.josm/icons.xml";
+    $icons_filename = "../data/map-icons/icons.xml" unless -s $icons_filename;
+    $icons_filename = "data/map-icons/icons.xml" unless -s $icons_filename;
+    load_icons( $icons_filename );
+    my $elemstyles_filename = "$ENV{HOME}/.josm/plugins/mappaint/elemstyles.xml";
+    $elemstyles_filename ="$ENV{HOME}/svn.openstreetmap.org/data/elemstyles.xml" unless -s  $elemstyles_filename;
+    $elemstyles_filename ="../data/elemstyles.xml" unless -s  $elemstyles_filename;
+    load_elemstyles($elemstyles_filename);
 
     disable_keys('streets');
     disable_keys('poi');
