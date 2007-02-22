@@ -584,9 +584,8 @@ sub streets_type_id($$){
 
 # ------------------------------------------------------------------
 # load the complete MapFeatures Structure into memory
-sub load_elemstyles(;$){
+sub load_elemstyles($){
     my ($filename) = @_;
-    $filename ||= "$ENV{HOME}/.josm/plugins/mappaint/elemstyles.xml";
 
     print("Loading Elemstyles $filename\n") if $VERBOSE || $DEBUG;
     print "$filename:	".(-s $filename)." Bytes\n" if $DEBUG;
@@ -693,8 +692,11 @@ sub read_osm_file($$) { # Insert Streets from osm File
     print "$file_name:	".(-s $file_name)." Bytes\n" if $debug;
 
     load_icons();
-    load_elemstyles();
-
+    my $elemstyles_filename = "$ENV{HOME}/.josm/plugins/mappaint/elemstyles.xml";
+    $elemstyles_filename ="$ENV{HOME}/svn.openstreetmap.org/data/elemstyles.xml" unless -s  $elemstyles_filename;
+    $elemstyles_filename ="../data/elemstyles.xml" unless -s  $elemstyles_filename;
+    load_elemstyles($elemstyles_filename);
+    
     print STDERR "Parsing file: $file_name\n" if $debug;
     $PARSING_START_TIME=time();
     
