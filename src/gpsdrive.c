@@ -4292,25 +4292,35 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 {
 	GtkWidget *fdialog;
 	gchar buf[1000];
-	fdialog = gtk_file_selection_new (_("Select a track file"));
+	GtkWidget *ok_button;
+	GtkWidget *cancel_button;
+	
+	fdialog = gtk_file_chooser_dialog_new (_("Select a track file"),
+		      GTK_WINDOW (mainwindow),
+		      GTK_FILE_CHOOSER_ACTION_OPEN,
+		      NULL);
+	
 	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
-	gtk_window_set_transient_for (GTK_WINDOW (fdialog),
-				      GTK_WINDOW (mainwindow));
-
+	
+	cancel_button = gtk_dialog_add_button (fdialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	ok_button = gtk_dialog_add_button (fdialog, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
+		
 	gtk_signal_connect (GTK_OBJECT
-			    (GTK_FILE_SELECTION (fdialog)->ok_button),
+			    (ok_button),
 			    "clicked", GTK_SIGNAL_FUNC (gettrackfile),
 			    GTK_OBJECT (fdialog));
 	gtk_signal_connect_object (GTK_OBJECT
-				   (GTK_FILE_SELECTION (fdialog)->
-				    cancel_button), "clicked",
+				   (cancel_button), "clicked",
 				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
 				   GTK_OBJECT (fdialog));
 
 
 	g_strlcpy (buf, local_config_homedir, sizeof (buf));
+	g_strlcat (buf, "tracks/", sizeof (buf));          
 	g_strlcat (buf, "track*.sav", sizeof (buf));
-	gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
+
+	gtk_file_chooser_select_filename (GTK_FILE_CHOOSER (fdialog), buf);
+
 	gtk_widget_show (fdialog);
 
 	return TRUE;
