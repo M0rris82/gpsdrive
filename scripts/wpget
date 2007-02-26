@@ -53,8 +53,8 @@ TMPFILE=`mktemp -q /tmp/wpget.XXXXXX`
 
 case "$opt" in
 	" -r") garble -r -d $device ;;
-	" -w") garble -w -d $device $TMPFILE ; wpcvt $TMPFILE ;;
-	" -t") garble -t -d $device ;;
+	" -w") garble -w -d $device | wpcvt ;;
+	" -t") garble -t -d $device | wpcvt ;;
 	*) echo "Internal error !" >&2 ; exit 1 ;;
 esac
 
