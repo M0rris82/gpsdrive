@@ -334,7 +334,7 @@ gettrackfile (GtkWidget * widget, gpointer datum)
   FILE *st;
   gint i;
 
-  fn = gtk_file_selection_get_filename (datum);
+  fn = gtk_file_chooser_get_filename (datum);
   st = fopen (fn, "r");
   if (st == NULL)
     {
