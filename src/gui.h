@@ -1,10 +1,13 @@
 /***********************************************************************
 
-Copyright (c) 2001,2002 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>
 
-Website: www.kraftvoll.at/software
+Website: www.gpsdrive.de
 
-Disclaimer: Please do not use for navigation.
+Copyright (c) 2007 Ross Scanlon <ross@theinternethost.com.au>
+Website: www.4x4falcon.com
+
+Disclaimer: Please do not use for navigation. 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,12 +23,21 @@ Disclaimer: Please do not use for navigation.
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-*********************************************************************/
+    *********************************************************************
+
+***********************************************************************/
 
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
 
-void gui_init(void);
 
+int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
+
+/* this will be changed to following once -s command line option is dropped */
+//int create_main_window (gchar *geom, gint *usegeom);
+
+int resize_all (void);
+
+int gui_int (void);
 
 #endif /* GPSDRIVE_GUI_H */

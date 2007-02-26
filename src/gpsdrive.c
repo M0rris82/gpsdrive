@@ -88,6 +88,7 @@ Disclaimer: Please do not use for navigation.
 
 #include <dirent.h>
 
+#include <getopt.h>
 
 #include "LatLong-UTMconversion.h"
 #include "gpsdrive.h"
@@ -515,10 +516,13 @@ gint bestmap_cb (GtkWidget * widget, guint datum);
 
 
 
+gchar geometry[80];
+gint usegeometry = FALSE;
 
-/* *****************************************************************************
-*****************************************************************************
-*****************************************************************************
+/* 
+ * ****************************************************************************
+ * ****************************************************************************
+ * ****************************************************************************
 */
 
 
@@ -4608,10 +4612,19 @@ main (int argc, char *argv[])
 	fprintf(stderr , "gdk screen width : %d\n", screen_width);
 
     /* parse cmd args */
+    /* long options for use of --geometry and -g */
+     int option_index = 0;
+     static struct option long_options[] =
+             {
+              {"geometry", required_argument, 0, 'g'},
+              {0, 0, 0, 0}
+             };
     do
 	{
-	    i = getopt (argc, argv,
-			"W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:?");
+	    /* long options plus --geometry and -g */
+            i = getopt_long (argc, argv,
+			"W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:g:?",
+			long_options, &option_index);
 	    switch (i)
 		{
 		case 'a':
@@ -4736,7 +4749,11 @@ main (int argc, char *argv[])
 		case 'P':
 		    posmode = TRUE;
 		    break;
-		    
+                /* Allows command line declaration of -g or --geometry */
+		case 'g':
+		    g_strlcpy (geometry, optarg, sizeof (geometry));
+		    usegeometry = TRUE;
+		    break;
 		}
 	}
     while (i != -1);
@@ -4782,99 +4799,10 @@ main (int argc, char *argv[])
 
     /* Create toplevel window */
 
-    PSIZE = 50;
-    SMALLMENU = 0;
-    PADDING = 1;
-    if (screen_height >= 1024)		 /* > 1280x1024 */
-	{
-	    real_screen_x = min(1280,screen_width-300);
-	    real_screen_y = min(1024,screen_height-200);
-	    if ( mydebug > 0 )
-		g_print ("Set real Screen size to %d,%d\n", 
-			 real_screen_x,real_screen_y);
-		
-	}
-    else if (screen_height >= 768)	/* 1024x768 */
-	{
-	    real_screen_x = 800;
-	    real_screen_y = 540;
-	}
-    else if (screen_height >= 600)	/* 800x600 */
-	{
-	    real_screen_x = 690;
-	    real_screen_y = 455;
-	    PADDING = 0;
-	}
-    else if (screen_height >= 480)	/* 640x480 */
-	{
-	    if (screen_width == 0)
-		real_screen_x = 630;
-	    else
-		real_screen_x = screen_width - XMINUS;
-	    real_screen_y = screen_height - YMINUS;
-	}
-    else if (screen_height < 480)
-	{
-	    if (screen_width == 0)
-		real_screen_x = 220;
-	    else
-		real_screen_x = screen_width - XMINUS;
-	    real_screen_y = screen_height - YMINUS;
-	    PSIZE = 25;
-	    SMALLMENU = 1;
-	    PADDING = 0;
-
-	    if ( mydebug >1 ) 
-		fprintf(stderr ,"Set real Screen size to %d,%d\n", 
-			real_screen_x,real_screen_y);
-	}
-
-    if ((extrawinmenu) && (screen_width != 0))
-	{
-	    real_screen_x += XMINUS - 10;
-	    real_screen_y += YMINUS - 30;
-	}
-
-    if (   ((screen_width  == 240) && (screen_height == 320)) 
-	   || ((screen_height == 240) && (screen_width  == 320)) )
-	{
-	    pdamode = TRUE;
-	    /* SMALLMENU = 1; */
-	    real_screen_x = screen_width - 8;
-	    real_screen_y = screen_height - 70;
-	    if ( mydebug >5 ) 
-		fprintf(stderr ,"screen modifications for 240x320 : %d,%d\n", real_screen_x, real_screen_y);
-	}
-    if (pdamode)
-	{
-	    extrawinmenu = TRUE;
-	    PADDING = 0;
-	    g_print ("\nPDA mode\n");
-	}
-
-    if (real_screen_x < real_screen_y)
-	borderlimit = real_screen_x / 5;
-    else
-	borderlimit = real_screen_y / 5;
-
-    if (borderlimit < 30)
-	borderlimit = 30;
-    if ( mydebug >5 ) 
-	fprintf(stderr , "borderlimit set to :%d\n", borderlimit);
-
-    SCREEN_X_2 = SCREEN_X / 2;
-    SCREEN_Y_2 = SCREEN_Y / 2;
-    PSIZE = 50;
-    posx = SCREEN_X_2;
-    posy = SCREEN_Y_2;
+    get_window_sizing (geometry, usegeometry, screen_height, screen_width);
 
     if ( mydebug >19 )
 	fprintf(stderr , "screen size %d,%d\n",SCREEN_X,SCREEN_Y);
-
-    // TODO: decide if this is needed
-    //KCFX
-    /*   if (pdamode) mod_setupcounter++;  */
-    // Fritz commented out above line
 
 #ifndef NOPLUGINS
     useplugins = TRUE;
@@ -6139,6 +6067,20 @@ main (int argc, char *argv[])
     if ( do_unit_test ) {
 	unit_test();
 	exit (0);
+    }
+
+    /* gtk2 requires these functions in the order below do not change */
+    if (usegeometry) {
+	GdkGeometry size_hints = {200, 200, 0, 0, 200, 200, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST};
+
+	gtk_window_set_geometry_hints(GTK_WINDOW (mainwindow), mainwindow, &size_hints,
+                                  GDK_HINT_MIN_SIZE |
+                                  GDK_HINT_BASE_SIZE |
+                                  GDK_HINT_RESIZE_INC);
+
+	if (!gtk_window_parse_geometry(GTK_WINDOW (mainwindow), geometry)) {
+	    fprintf(stderr, "Failed to parse %s\n", geometry);
+	}
     }
 
     /*  Mainloop */
