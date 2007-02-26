@@ -14,6 +14,7 @@ src/gpsmisc.c
 src/gpsnasamap.c
 src/gpsserial.c
 src/gpssql.c
+src/gui.c
 src/icons.c
 src/import_map.c
 src/LatLong-UTMconversion.c

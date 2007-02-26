@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.32\n"
 "Report-Msgid-Bugs-To: ganter@ganter.at\n"
-"POT-Creation-Date: 2007-01-24 00:07+0100\n"
+"POT-Creation-Date: 2007-02-27 00:24+0100\n"
 "PO-Revision-Date: 2003-02-03 20:08+0900\n"
 "Last-Translator:  <maruyama@sh.rim.or.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -82,15 +82,15 @@ msgstr "座標と縮尺を選んでください"
 msgid "Download map"
 msgstr "地図ダウンロード"
 
-#: src/download_map.c:892 src/gpsdrive.c:3966 src/gpsdrive.c:4050
-#: src/gpsdrive.c:5607 src/import_map.c:408 src/routes.c:384
-#: src/waypoint.c:752
+#: src/download_map.c:892 src/gpsdrive.c:3970 src/gpsdrive.c:4054
+#: src/gpsdrive.c:5564 src/import_map.c:408 src/routes.c:415
+#: src/waypoint.c:713
 msgid "Latitude"
 msgstr "緯度"
 
-#: src/download_map.c:894 src/gpsdrive.c:3966 src/gpsdrive.c:4050
-#: src/gpsdrive.c:5608 src/import_map.c:410 src/routes.c:384
-#: src/waypoint.c:770
+#: src/download_map.c:894 src/gpsdrive.c:3970 src/gpsdrive.c:4054
+#: src/gpsdrive.c:5565 src/import_map.c:410 src/routes.c:415
+#: src/waypoint.c:731
 msgid "Longitude"
 msgstr "経度"
 
@@ -106,11 +106,11 @@ msgstr "縮尺"
 msgid "Map file name"
 msgstr "地図ファイル名"
 
-#: src/download_map.c:939 src/settings.c:862
+#: src/download_map.c:939 src/settings.c:863
 msgid "Expedia Germany"
 msgstr ""
 
-#: src/download_map.c:945 src/settings.c:869
+#: src/download_map.c:945 src/settings.c:870
 msgid "Expedia USA"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgstr ""
 "\n"
 "環境変数 HTTP_PROXYは、次の形式にして下さい: http://proxy.provider.de:3128"
 
-#: src/draw_tracks.c:444 src/poi.c:550 src/wlan.c:387
+#: src/draw_tracks.c:444 src/poi.c:803 src/wlan.c:387
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%d(%d) rows read in %.2f seconds\n"
@@ -191,7 +191,7 @@ msgstr "最大垂直偏差"
 msgid "disable vert. deviation warning above 5000ft MSL"
 msgstr "5000ft MSL以上では垂直偏差警告を行わない"
 
-#: src/friends.c:250 src/gpsdrive.c:3532
+#: src/friends.c:250 src/gpsdrive.c:3536
 #, fuzzy
 msgid "/Misc. Menu/Messages"
 msgstr "トラックファイルを選ぶ"
@@ -201,18 +201,18 @@ msgstr "トラックファイルを選ぶ"
 msgid "unknown"
 msgstr "Unknown"
 
-#: src/friends.c:460 src/gpsdrive.c:3026 src/gpsdrive.c:3036
-#: src/gpsdrive.c:5496 src/gpsdrive.c:5506 src/lib_map/map_draw.c:647
+#: src/friends.c:460 src/gpsdrive.c:3031 src/gpsdrive.c:3041
+#: src/gpsdrive.c:5451 src/gpsdrive.c:5461 src/lib_map/map_draw.c:647
 msgid "mi/h"
 msgstr "mi/h"
 
-#: src/friends.c:462 src/gpsdrive.c:3028 src/gpsdrive.c:3039
-#: src/gpsdrive.c:5498 src/gpsdrive.c:5509 src/lib_map/map_draw.c:650
+#: src/friends.c:462 src/gpsdrive.c:3033 src/gpsdrive.c:3044
+#: src/gpsdrive.c:5453 src/gpsdrive.c:5464 src/lib_map/map_draw.c:650
 msgid "knots"
 msgstr "knots"
 
-#: src/friends.c:464 src/gpsdrive.c:3030 src/gpsdrive.c:3042
-#: src/gpsdrive.c:5500 src/gpsdrive.c:5512 src/lib_map/map_draw.c:653
+#: src/friends.c:464 src/gpsdrive.c:3035 src/gpsdrive.c:3047
+#: src/gpsdrive.c:5455 src/gpsdrive.c:5467 src/lib_map/map_draw.c:653
 msgid "km/h"
 msgstr "km/h"
 
@@ -230,91 +230,91 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:490
+#: src/gpsdrive.c:492
 msgid "/_Misc. Menu"
 msgstr ""
 
-#: src/gpsdrive.c:491
+#: src/gpsdrive.c:493
 #, fuzzy
 msgid "/_Misc. Menu/_Maps"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:492
+#: src/gpsdrive.c:494
 #, fuzzy
 msgid "/_Misc. Menu/_Maps/_Import map"
 msgstr "i    : 地図インポート\n"
 
-#: src/gpsdrive.c:493
+#: src/gpsdrive.c:495
 #, fuzzy
 msgid "/_Misc. Menu/_Maps/_Download map"
 msgstr "i    : 地図インポート\n"
 
-#: src/gpsdrive.c:494
+#: src/gpsdrive.c:496
 msgid "/_Misc. Menu/_Waypoint Manager"
 msgstr ""
 
-#: src/gpsdrive.c:495
+#: src/gpsdrive.c:497
 #, fuzzy
 msgid "/_Misc. Menu/_Reinitialize GPS"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:497
+#: src/gpsdrive.c:499
 #, fuzzy
 msgid "/_Misc. Menu/_Load track file"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:498
+#: src/gpsdrive.c:500
 #, fuzzy
 msgid "/_Misc. Menu/M_essages"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:499
+#: src/gpsdrive.c:501
 msgid "/_Misc. Menu/M_essages/_Send message to mobile target"
 msgstr ""
 
-#: src/gpsdrive.c:501
+#: src/gpsdrive.c:503
 #, fuzzy
 msgid "/_Misc. Menu/_Help"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:502
+#: src/gpsdrive.c:504
 #, fuzzy
 msgid "/_Misc. Menu/_Help/_About"
 msgstr "i    : 地図インポート\n"
 
-#: src/gpsdrive.c:503
+#: src/gpsdrive.c:505
 #, fuzzy
 msgid "/_Misc. Menu/_Help/_Topics"
 msgstr "i    : 地図インポート\n"
 
-#: src/gpsdrive.c:504
+#: src/gpsdrive.c:506
 #, fuzzy
 msgid "/_Misc. Menu/_Quit"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:650
+#: src/gpsdrive.c:655
 msgid "  Message  "
 msgstr "  Message  "
 
-#: src/gpsdrive.c:717
+#: src/gpsdrive.c:722
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
 msgstr "ホームへの距離: %.1fkm, max. 最大許容誤差: %.1fkm\n"
 
-#: src/gpsdrive.c:923
+#: src/gpsdrive.c:928
 msgid "Auto"
 msgstr "自動"
 
-#: src/gpsdrive.c:1154
+#: src/gpsdrive.c:1159
 #, fuzzy
 msgid "Warning!"
 msgstr "方角"
 
-#: src/gpsdrive.c:1156
+#: src/gpsdrive.c:1161
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:1555
+#: src/gpsdrive.c:1560
 #, fuzzy, c-format
 msgid ""
 "\n"
@@ -329,37 +329,37 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/gpsdrive.c:2306
+#: src/gpsdrive.c:2311
 msgid "NESW"
 msgstr "NESW"
 
-#: src/gpsdrive.c:2492
+#: src/gpsdrive.c:2497
 msgid "No map available for this position!"
 msgstr "この地点の地図データがありません!"
 
-#: src/gpsdrive.c:2677
+#: src/gpsdrive.c:2682
 msgid "unused"
 msgstr "未使用"
 
-#: src/gpsdrive.c:2683 src/gpsdrive.c:2693 src/gpsdrive.c:5345
-#: src/gpsdrive.c:5351 src/gpsdrive.c:5357 src/gpsdrive.c:5390
-#: src/gpsdrive.c:5395 src/gpsdrive.c:5401 src/gpsdrive.c:5442
-#: src/gpsdrive.c:5449 src/gps_handler.c:509 src/gps_handler.c:510
-#: src/gps_handler.c:511 src/settings.c:165
+#: src/gpsdrive.c:2688 src/gpsdrive.c:2698 src/gpsdrive.c:5300
+#: src/gpsdrive.c:5306 src/gpsdrive.c:5312 src/gpsdrive.c:5345
+#: src/gpsdrive.c:5350 src/gpsdrive.c:5356 src/gpsdrive.c:5397
+#: src/gpsdrive.c:5404 src/gps_handler.c:509 src/gps_handler.c:510
+#: src/gps_handler.c:511 src/settings.c:166
 msgid "n/a"
 msgstr "n/a"
 
-#: src/gpsdrive.c:2925
+#: src/gpsdrive.c:2930
 msgid "GpsDrive Control"
 msgstr "GpsDrive Control"
 
-#: src/gpsdrive.c:3035 src/gpsdrive.c:3038 src/gpsdrive.c:3041
-#: src/gpsdrive.c:5505 src/gpsdrive.c:5508 src/gpsdrive.c:5511
-#: src/settings.c:932
+#: src/gpsdrive.c:3040 src/gpsdrive.c:3043 src/gpsdrive.c:3046
+#: src/gpsdrive.c:5460 src/gpsdrive.c:5463 src/gpsdrive.c:5466
+#: src/settings.c:933
 msgid "Speed"
 msgstr "速度"
 
-#: src/gpsdrive.c:3271
+#: src/gpsdrive.c:3276
 #, fuzzy, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
@@ -367,70 +367,70 @@ msgstr ""
 "2000km/h以上の移動速度が検出されました、無視します\n"
 
 # ;;; ???
-#: src/gpsdrive.c:3535
+#: src/gpsdrive.c:3539
 #, fuzzy
 msgid "Sending message to friends server..."
 msgstr "距離選択を有効/無効にする"
 
-#: src/gpsdrive.c:3614
+#: src/gpsdrive.c:3618
 #, fuzzy
 msgid "Message for:"
 msgstr "  Message  "
 
-#: src/gpsdrive.c:3656
+#: src/gpsdrive.c:3660
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:3669
+#: src/gpsdrive.c:3673
 msgid "Sends your text to to selected computer using the friends server"
 msgstr ""
 
-#: src/gpsdrive.c:3966
+#: src/gpsdrive.c:3970 src/gpsdrive.c:4054
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:3966 src/gpsdrive.c:4050 src/gpsdrive.c:5490
-#: src/routes.c:384 src/settings.c:924
+#: src/gpsdrive.c:3970 src/gpsdrive.c:4054 src/gpsdrive.c:5445
+#: src/routes.c:415 src/settings.c:925
 msgid "Distance"
 msgstr "距離"
 
 # ;;; ???
-#: src/gpsdrive.c:3977
+#: src/gpsdrive.c:3981
 #, fuzzy
 msgid "Please select message recipient"
 msgstr "目的地を選んでください"
 
-#: src/gpsdrive.c:4050 src/routes.c:384
-msgid "Waypoint"
-msgstr "Waypoint"
+#: src/gpsdrive.c:4054
+msgid "Type"
+msgstr ""
 
-#: src/gpsdrive.c:4079
+#: src/gpsdrive.c:4083
 msgid "Select reference point"
 msgstr "参照地点選択"
 
 # ;;; ???
-#: src/gpsdrive.c:4083
+#: src/gpsdrive.c:4087
 msgid "Please select your destination"
 msgstr "目的地を選んでください"
 
-#: src/gpsdrive.c:4115
+#: src/gpsdrive.c:4119
 msgid "Edit route"
 msgstr "ルート編集"
 
-#: src/gpsdrive.c:4118
+#: src/gpsdrive.c:4122
 msgid "Create route"
 msgstr "ルート作成"
 
-#: src/gpsdrive.c:4214
+#: src/gpsdrive.c:4219
 msgid "Create a route using some waypoints from this list"
 msgstr "一覧にあるwaypointを使ってルートを作成してください"
 
-#: src/gpsdrive.c:4219
+#: src/gpsdrive.c:4224
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "一覧から選択されたwaypointを削除します"
 
-#: src/gpsdrive.c:4223
+#: src/gpsdrive.c:4228
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
@@ -438,62 +438,62 @@ msgstr ""
 "次のwaypointを選んで下さい"
 
 # ;;; ???
-#: src/gpsdrive.c:4246
+#: src/gpsdrive.c:4251
 #, fuzzy
 msgid "-v        show version\n"
 msgstr "-v    バージョン表示\n"
 
-#: src/gpsdrive.c:4247
+#: src/gpsdrive.c:4252
 #, fuzzy
 msgid "-h        print this help\n"
 msgstr "-h    ヘルプ表示\n"
 
-#: src/gpsdrive.c:4248
+#: src/gpsdrive.c:4253
 #, fuzzy
 msgid "-d        turn on debug info\n"
 msgstr "-d    デバッグ情報表示\n"
 
-#: src/gpsdrive.c:4249
+#: src/gpsdrive.c:4254
 msgid "-D X      set debug Level to X\n"
 msgstr ""
 
-#: src/gpsdrive.c:4250
+#: src/gpsdrive.c:4255
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
 msgstr ""
 
-#: src/gpsdrive.c:4251
+#: src/gpsdrive.c:4256
 #, fuzzy
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr "-e    音声出力にFestival-Lite (flite)を使用する\n"
 
-#: src/gpsdrive.c:4252
+#: src/gpsdrive.c:4257
 #, fuzzy
 msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
 msgstr "-t    GPSのシリアルデバイスをセット 例)/dev/ttyS1\n"
 
-#: src/gpsdrive.c:4253
+#: src/gpsdrive.c:4258
 #, fuzzy
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o    NMEAを出力するシリアルデバイス、pty masterまたはファイル名\n"
 
-#: src/gpsdrive.c:4254
+#: src/gpsdrive.c:4259
 #, fuzzy
 msgid "-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"
 msgstr "-f X  フレンズサーバ選択、Xは例えば、 www.gpsdrive.cc\n"
 
-#: src/gpsdrive.c:4255
+#: src/gpsdrive.c:4260
 #, fuzzy
 msgid "-n        Disable use of direct serial connection\n"
 msgstr "%s に接続します"
 
-#: src/gpsdrive.c:4257
+#: src/gpsdrive.c:4262
 msgid ""
 "-X        Use DBUS for communication with gpsd. This disables serial and "
 "socket communication\n"
 msgstr ""
 
 # ;;; ???
-#: src/gpsdrive.c:4259
+#: src/gpsdrive.c:4264
 #, fuzzy
 msgid ""
 "-l LANG   Select language of the voice,\n"
@@ -502,7 +502,7 @@ msgstr ""
 "-l X  音声出力の言語を選択,\n"
 "        Xはenglish(英語)、spanish(スペイン語)、またはgerman(ドイツ語)\n"
 
-#: src/gpsdrive.c:4261
+#: src/gpsdrive.c:4266
 #, fuzzy
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
@@ -511,80 +511,80 @@ msgstr ""
 "-s X  画面の縦サイズを強制指定でセットする\n"
 "      X は例えば 768,600,480,200\n"
 
-#: src/gpsdrive.c:4263
+#: src/gpsdrive.c:4268
 #, fuzzy
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr "-r X  画面の横サイズをセットする。 -sと一緒でないと無効\n"
 
-#: src/gpsdrive.c:4264
+#: src/gpsdrive.c:4269
 #, fuzzy
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1    １ボタンマウスを使っている時指定する(タッチパネルなど)\n"
 
-#: src/gpsdrive.c:4265
+#: src/gpsdrive.c:4270
 #, fuzzy
 msgid "-a        don't display battery status (i.e. broken APM)\n"
 msgstr "-a    バッテリー状態を表示しない (APMが正しく動かない時など)\n"
 
-#: src/gpsdrive.c:4266
+#: src/gpsdrive.c:4271
 #, fuzzy
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr ""
 "-b X  NMEA サーバのサーバ名 (gpsdが別のリモートホストで動作している時)\n"
 
-#: src/gpsdrive.c:4267
+#: src/gpsdrive.c:4272
 #, fuzzy
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr "-c X  シミュレーションモードをwaypoint X から開始する\n"
 
-#: src/gpsdrive.c:4268
+#: src/gpsdrive.c:4273
 #, fuzzy
 msgid "-x        create separate window for menu\n"
 msgstr "-x    メニューを別ウィンドウに開く\n"
 
-#: src/gpsdrive.c:4269
+#: src/gpsdrive.c:4274
 #, fuzzy
 msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
 msgstr "-p    PDA使用の時指定する (iPAQ, Yopy...)\n"
 
-#: src/gpsdrive.c:4270
+#: src/gpsdrive.c:4275
 #, fuzzy
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 "-i    NMEAチェックサムを無視する (危険、GPS受信機が壊れた時のみ指定する)\n"
 
-#: src/gpsdrive.c:4271
+#: src/gpsdrive.c:4276
 #, fuzzy
 msgid "-q        disable SQL support\n"
 msgstr "-q    SQL機能を無効にする\n"
 
-#: src/gpsdrive.c:4272
+#: src/gpsdrive.c:4277
 #, fuzzy
 msgid "-F        force display of position even it is invalid\n"
 msgstr "-F    不正な位置でも位置表示を強行する\n"
 
-#: src/gpsdrive.c:4273
+#: src/gpsdrive.c:4278
 msgid "-S        don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:4274
+#: src/gpsdrive.c:4279
 msgid "-P        start in Pos Mode\n"
 msgstr ""
 
-#: src/gpsdrive.c:4275
+#: src/gpsdrive.c:4280
 msgid "-E        print out data received from direct serial connection\n"
 msgstr ""
 
-#: src/gpsdrive.c:4276
+#: src/gpsdrive.c:4281
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:4277
+#: src/gpsdrive.c:4282
 #, fuzzy
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
 msgstr "-H X  指定の値を高度に加算して高度を補正する\n"
 
-#: src/gpsdrive.c:4278
+#: src/gpsdrive.c:4283
 #, fuzzy
 msgid ""
 "-z        don't display zoom factor and scale\n"
@@ -593,11 +593,11 @@ msgstr ""
 "-z    ズームと縮尺を表示しない\n"
 "\n"
 
-#: src/gpsdrive.c:4290
+#: src/gpsdrive.c:4298
 msgid "Select a track file"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:4698
+#: src/gpsdrive.c:4732
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
@@ -608,91 +608,91 @@ msgstr ""
 "\n"
 
 # ;;; ???
-#: src/gpsdrive.c:4737 src/settings.c:1642
+#: src/gpsdrive.c:4775 src/settings.c:1643
 msgid "EnterYourName"
 msgstr "氏名入力"
 
-#: src/gpsdrive.c:4951
+#: src/gpsdrive.c:4907
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
 msgstr "Gpsdrive-2 (c)2001-2004 F.Ganter"
 
-#: src/gpsdrive.c:4959
+#: src/gpsdrive.c:4915
 msgid "Using speech output"
 msgstr "音声出力使用中"
 
-#: src/gpsdrive.c:4989
+#: src/gpsdrive.c:4945
 #, fuzzy
 msgid "/Misc. Menu/Waypoint Manager"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:4996
+#: src/gpsdrive.c:4952
 msgid "M_ute"
 msgstr "消音"
 
-#: src/gpsdrive.c:5027
+#: src/gpsdrive.c:4982
 msgid "HomeBase"
 msgstr "ホーム"
 
-#: src/gpsdrive.c:5039 src/settings.c:2052
+#: src/gpsdrive.c:4994 src/settings.c:2079
 msgid "POI"
 msgstr ""
 
-#: src/gpsdrive.c:5044
+#: src/gpsdrive.c:4999
 msgid "draw PO_I"
 msgstr ""
 
-#: src/gpsdrive.c:5047
+#: src/gpsdrive.c:5002
 msgid "Draw Points Of Interest found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:5058
+#: src/gpsdrive.c:5013
 msgid "draw _WLAN"
 msgstr ""
 
-#: src/gpsdrive.c:5063
+#: src/gpsdrive.c:5018
 msgid "Draw Wlan"
 msgstr ""
 
-#: src/gpsdrive.c:5077
+#: src/gpsdrive.c:5032
 msgid "Show _WP"
 msgstr "WP表示"
 
-#: src/gpsdrive.c:5086
+#: src/gpsdrive.c:5041
 msgid "Use SQ_L"
 msgstr "SQL利用"
 
-#: src/gpsdrive.c:5120
+#: src/gpsdrive.c:5075
 msgid "_Navigation"
 msgstr ""
 
-#: src/gpsdrive.c:5140 src/settings.c:614
+#: src/gpsdrive.c:5095 src/settings.c:615
 #, fuzzy
 msgid "Track"
 msgstr "軌跡表示"
 
-#: src/gpsdrive.c:5145
+#: src/gpsdrive.c:5100
 #, fuzzy
 msgid "draw _Track"
 msgstr "軌跡表示"
 
-#: src/gpsdrive.c:5153
+#: src/gpsdrive.c:5108
 msgid "Show _Track"
 msgstr "軌跡表示"
 
-#: src/gpsdrive.c:5158
+#: src/gpsdrive.c:5113
 msgid "Show tracking on the map"
 msgstr "地図上に軌跡を表示"
 
-#: src/gpsdrive.c:5165
+#: src/gpsdrive.c:5120
 msgid "Save track"
 msgstr "軌跡保存"
 
-#: src/gpsdrive.c:5172
+#: src/gpsdrive.c:5127
 msgid "Save the track to given filename at program exit"
 msgstr "プログラム終了時に軌跡を指定ファイルに保存する"
 
-#: src/gpsdrive.c:5246
+#: src/gpsdrive.c:5201
 msgid ""
 "\n"
 "kismet server found\n"
@@ -700,201 +700,206 @@ msgstr ""
 "\n"
 "kismet server found\n"
 
-#: src/gpsdrive.c:5307 src/gpsdrive.c:5613
+#: src/gpsdrive.c:5262 src/gpsdrive.c:5570
 msgid "Bearing"
 msgstr "方角"
 
 # ;;; ???
-#: src/gpsdrive.c:5331
+#: src/gpsdrive.c:5286
 #, fuzzy
 msgid "GPS Info"
 msgstr "Geo info"
 
 # ;;; ???
-#: src/gpsdrive.c:5386 src/gpsdrive.c:5630 src/gpsdrive.c:5635
-#: src/gpsdrive.c:5644 src/gpsdrive.c:5647
+#: src/gpsdrive.c:5341 src/gpsdrive.c:5587 src/gpsdrive.c:5592
+#: src/gpsdrive.c:5601 src/gpsdrive.c:5604
 msgid "---"
 msgstr "---"
 
-#: src/gpsdrive.c:5472 src/gpsdrive.c:5479
+#: src/gpsdrive.c:5427 src/gpsdrive.c:5434
 #, fuzzy
 msgid "Selected:"
 msgstr "目標選択"
 
-#: src/gpsdrive.c:5473 src/gpsdrive.c:5480
+#: src/gpsdrive.c:5428 src/gpsdrive.c:5435
 msgid "within"
 msgstr "within"
 
-#: src/gpsdrive.c:5488
+#: src/gpsdrive.c:5443
 msgid "Distance to target"
 msgstr "目標迄の距離"
 
-#: src/gpsdrive.c:5519
+#: src/gpsdrive.c:5474
 msgid "Altitude"
 msgstr "高度"
 
 # ;;; ???
-#: src/gpsdrive.c:5523 src/settings.c:528
+#: src/gpsdrive.c:5478 src/settings.c:529
 msgid "Waypoints"
 msgstr "Waypoints"
 
-#: src/gpsdrive.c:5610
+#: src/gpsdrive.c:5567
 msgid "Map file"
 msgstr "地図ファイル"
 
-#: src/gpsdrive.c:5611
+#: src/gpsdrive.c:5568
 msgid "Map scale"
 msgstr "地図縮尺"
 
-#: src/gpsdrive.c:5612
+#: src/gpsdrive.c:5569
 msgid "Heading"
 msgstr "進行方向"
 
-#: src/gpsdrive.c:5614
+#: src/gpsdrive.c:5571
 msgid "Time at Dest."
 msgstr "到達所要時間"
 
 # ;;; ???
-#: src/gpsdrive.c:5615
+#: src/gpsdrive.c:5572
 msgid "Pref. scale"
 msgstr "縮尺設定"
 
-#: src/gpsdrive.c:5622
+#: src/gpsdrive.c:5579
 msgid "000,00000N"
 msgstr ""
 
-#: src/gpsdrive.c:5625
+#: src/gpsdrive.c:5582
 msgid "000,00000E"
 msgstr ""
 
-#: src/gpsdrive.c:5638 src/gpsdrive.c:5641
+#: src/gpsdrive.c:5595 src/gpsdrive.c:5598
 msgid "0000"
 msgstr ""
 
 # ;;; ???
-#: src/gpsdrive.c:5711 src/gpsdrive.c:5764 src/gpsdrive.c:5777
+#: src/gpsdrive.c:5669 src/gpsdrive.c:5724 src/gpsdrive.c:5741
 msgid "Menu"
 msgstr "Menu"
 
 # ;;; ???
-#: src/gpsdrive.c:5720 src/gpsdrive.c:5768 src/gpsdrive.c:5778
+#: src/gpsdrive.c:5678 src/gpsdrive.c:5728 src/gpsdrive.c:5742
 msgid "Status"
 msgstr "Status"
 
-#: src/gpsdrive.c:5760 src/gpsdrive.c:5776 src/nmea_handler.c:498
+#: src/gpsdrive.c:5720 src/gpsdrive.c:5740 src/nmea_handler.c:498
 msgid "Map"
 msgstr "地図"
 
-#: src/gpsdrive.c:5938
+#: src/gpsdrive.c:5732 src/gpsdrive.c:5743
+#, fuzzy
+msgid "Trip"
+msgstr "Trip info"
+
+#: src/gpsdrive.c:5909
 #, fuzzy
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr "衛星レベル表示と衛星位置表示の切替えは、ここをクリックして下さい"
 
-#: src/gpsdrive.c:5943
+#: src/gpsdrive.c:5914
 #, fuzzy
 msgid "Number of used satellites/satellites in view"
 msgstr "視界に入る衛星の数が不足しています!"
 
-#: src/gpsdrive.c:5947
+#: src/gpsdrive.c:5918
 msgid "EPE (Estimated Precision Error), if available"
 msgstr ""
 
-#: src/gpsdrive.c:5951
+#: src/gpsdrive.c:5922
 msgid ""
 "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
 "accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
 "unacceptable poor accuracy. "
 msgstr ""
 
-#: src/gpsdrive.c:5956
+#: src/gpsdrive.c:5927
 msgid ""
 "On top of the compass you see the direction to which you move. The pointer "
 "shows the target direction on the compass."
 msgstr ""
 
-#: src/gpsdrive.c:5959
+#: src/gpsdrive.c:5930
 #, fuzzy
 msgid "/Misc. Menu"
 msgstr "トラックファイルを選ぶ"
 
-#: src/gpsdrive.c:5961
+#: src/gpsdrive.c:5932
 msgid "Here you find extra functions for maps, tracks and messages"
 msgstr ""
 
-#: src/gpsdrive.c:5965
+#: src/gpsdrive.c:5936
 msgid "Disable output of speech"
 msgstr "音声出力停止"
 
-#: src/gpsdrive.c:5968
+#: src/gpsdrive.c:5939
 msgid "Use SQL server for waypoints"
 msgstr "waypoint保存にをSQLサーバを利用"
 
-#: src/gpsdrive.c:5972
+#: src/gpsdrive.c:5944
 msgid "Show waypoints on the map"
 msgstr "地図上にwaypointを表示"
 
-#: src/gpsdrive.c:5976
+#: src/gpsdrive.c:5948
 msgid "Navigation menu. Enter here your destination."
 msgstr ""
 
-#: src/gpsdrive.c:5993
+#: src/gpsdrive.c:5952
 msgid "Settings for GpsDrive"
 msgstr "GpsDriveの設定"
 
 # ;;; ???
-#: src/gpsdrive.c:5995
+#: src/gpsdrive.c:5954
 msgid "Zoom into the current map"
 msgstr "地図を拡大する"
 
-#: src/gpsdrive.c:5997
+#: src/gpsdrive.c:5956
 msgid "Zooms out off the current map"
 msgstr "地図を縮小する"
 
-#: src/gpsdrive.c:5999
+#: src/gpsdrive.c:5958
 msgid "Select the next more detailed map"
 msgstr "1段階拡大した地図を表示する"
 
-#: src/gpsdrive.c:6001
+#: src/gpsdrive.c:5960
 msgid "Select the next less detailed map"
 msgstr "1段階縮小した地図を表示する"
 
-#: src/gpsdrive.c:6005
+#: src/gpsdrive.c:5964
 msgid "Select here a destination from the waypoint list"
 msgstr "waypoint一覧から目的地を選ぶ"
 
-#: src/gpsdrive.c:6009
+#: src/gpsdrive.c:5968
 msgid "Select the map scale of avail. maps."
 msgstr "利用可能な地図の縮尺を選ぶ"
 
-#: src/gpsdrive.c:6012
+#: src/gpsdrive.c:5971
 msgid "Draw Tracks found in mySQL"
 msgstr ""
 
-#: src/gpsdrive.c:6017
+#: src/gpsdrive.c:5976
 msgid "Number of waypoints selected from SQL server"
 msgstr "SQL serverで選択されているwaypointの数"
 
-#: src/gpsdrive.c:6021
+#: src/gpsdrive.c:5980
 msgid "Number of selected waypoints, which are in range"
 msgstr "領域範囲内にある選択されたwaypointの数"
 
-#: src/gpsdrive.c:6025
+#: src/gpsdrive.c:5984
 msgid "Range for waypoint selection in kilometers"
 msgstr "kilometers単位のwaypoint選択範囲半径"
 
-#: src/gpsdrive.c:6028
+#: src/gpsdrive.c:5987
 msgid "This shows the time from your GPS receiver"
 msgstr "GPS受信機からの時間がここに表示される"
 
-#: src/gpsdrive.c:6032
+#: src/gpsdrive.c:5991
 #, fuzzy
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr "SQL serverで選択されているwaypointの数"
 
-#: src/gpsdrive.c:6145
+#: src/gpsdrive.c:6122
 #, c-format
 msgid ""
 "\n"
@@ -908,7 +913,7 @@ msgstr ""
 "Thank you for using GpsDrive!\n"
 "\n"
 
-#: src/gpsdrive_config.c:114
+#: src/gpsdrive_config.c:113
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr "Error saving config file ~/.gpsdrive/gpsdriverc"
 
@@ -925,7 +930,7 @@ msgstr ""
 msgid "DBUS Mode"
 msgstr ""
 
-#: src/gps_handler.c:267 src/gpskismet.c:333
+#: src/gps_handler.c:267 src/gpskismet.c:331
 msgid "can't open socket for port "
 msgstr "can't open socket for port "
 
@@ -1015,27 +1020,27 @@ msgstr "シミュレーションモード"
 msgid "Press middle mouse button for sim mode"
 msgstr "中ボタンを押すとシミュレーションを開始します"
 
-#: src/gpskismet.c:104
+#: src/gpskismet.c:102
 msgid "trying to re-connect to kismet server\n"
 msgstr ""
 
-#: src/gpskismet.c:106
+#: src/gpskismet.c:104
 msgid "Kismet server connection re-established\n"
 msgstr ""
 
-#: src/gpskismet.c:107
+#: src/gpskismet.c:105
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
 msgstr ""
 
-#: src/gpskismet.c:154
+#: src/gpskismet.c:152
 #, fuzzy
 msgid "Kismet server connection lost\n"
 msgstr ""
 "\n"
 "kismet server found\n"
 
-#: src/gpskismet.c:327
+#: src/gpskismet.c:325
 #, fuzzy
 msgid "Trying Kismet server\n"
 msgstr ""
@@ -1100,30 +1105,30 @@ msgstr ""
 msgid "switching WAAS/EGNOS off\n"
 msgstr ""
 
-#: src/gpssql.c:111
+#: src/gpssql.c:109
 #, fuzzy, c-format
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 "\n"
 "SQL: connected to %s as %s using %s\n"
 
-#: src/gpssql.c:191
+#: src/gpssql.c:189
 #, c-format
 msgid "rows inserted: %d\n"
 msgstr "rows inserted: %d\n"
 
-#: src/gpssql.c:213
+#: src/gpssql.c:211
 #, c-format
 msgid "last index: %d\n"
 msgstr "last index: %d\n"
 
-#: src/gpssql.c:236
+#: src/gpssql.c:234
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr "rows deleted: %d\n"
 
 # ##;;;english below
-#: src/gpssql.c:461
+#: src/gpssql.c:404
 #, c-format
 msgid ""
 "\n"
@@ -1132,7 +1137,7 @@ msgstr ""
 "\n"
 "libmysqlclient.so がありません\n"
 
-#: src/gpssql.c:467
+#: src/gpssql.c:410
 #, c-format
 msgid ""
 "\n"
@@ -1141,7 +1146,7 @@ msgstr ""
 "\n"
 "MySQL サポート機能が無効です\n"
 
-#: src/icons.c:256
+#: src/icons.c:255
 #, fuzzy, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -1154,7 +1159,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:490 src/icons.c:495
+#: src/icons.c:364 src/icons.c:369
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr ""
@@ -1253,8 +1258,8 @@ msgid "Screen Y"
 msgstr "Screen Y"
 
 #: src/import_map.c:426
-msgid "Browse waypoint"
-msgstr "waypoint一覧"
+msgid "Browse POIs"
+msgstr ""
 
 #: src/import_map.c:455
 msgid "Browse filename"
@@ -1264,14 +1269,14 @@ msgstr "filename一覧"
 msgid "SELECTED"
 msgstr "選択"
 
-#: src/import_map.c:843 src/map_handler.c:612 src/routes.c:119
-#: src/routes.c:150 src/waypoint.c:900
+#: src/import_map.c:843 src/map_handler.c:612 src/routes.c:122
+#: src/routes.c:153 src/waypoint.c:861
 msgid "To"
 msgstr "To"
 
 #: src/map_handler.c:222
 #, fuzzy
-msgid "Map Controlls"
+msgid "Map Controls"
 msgstr "GpsDrive Control"
 
 #: src/map_handler.c:227
@@ -1343,7 +1348,7 @@ msgstr ""
 msgid "Nautic settings"
 msgstr "航海関連設定"
 
-#: src/nautic.c:126 src/settings.c:788
+#: src/nautic.c:126 src/settings.c:789
 msgid "Nautic"
 msgstr "Nautic"
 
@@ -1351,23 +1356,27 @@ msgstr "Nautic"
 msgid "can't open NMEA output file"
 msgstr "NMEA出力ファイルをオープンできません"
 
-#: src/routes.c:399
+#: src/routes.c:415
+msgid "Waypoint"
+msgstr "Waypoint"
+
+#: src/routes.c:430
 msgid "Define route"
 msgstr "ルート定義"
 
-#: src/routes.c:407
+#: src/routes.c:438
 msgid "Start route"
 msgstr "ルート開始"
 
-#: src/routes.c:416
+#: src/routes.c:447
 msgid "Take all WP as route"
 msgstr "全WPからルートを作る"
 
-#: src/routes.c:421
+#: src/routes.c:452
 msgid "Abort route"
 msgstr "ルート中止"
 
-#: src/routes.c:481
+#: src/routes.c:512
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1375,7 +1384,7 @@ msgstr ""
 "waypoint一覧をクリックして\n"
 "waypointを追加して下さい"
 
-#: src/routes.c:484
+#: src/routes.c:515
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1383,14 +1392,14 @@ msgstr ""
 "一覧をクリックして\n"
 "次のwaypointを選んで下さい"
 
-#: src/routes.c:532
+#: src/routes.c:563
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
 "全waypointからのルートを作成する。距離順でなく、ファイル順のルートになる"
 
 # ;;; ???
-#: src/routes.c:536
+#: src/routes.c:567
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
@@ -1398,34 +1407,34 @@ msgstr ""
 "ここをクリックして移動を開始してください。GpsDriveは一覧のwaypointを順番に案"
 "内します"
 
-#: src/routes.c:539
+#: src/routes.c:570
 msgid "Abort your journey"
 msgstr "ルート作成を中止する"
 
-#: src/settings.c:205
+#: src/settings.c:206
 msgid "Setting WP label font"
 msgstr "WPラベルのフォント設定"
 
-#: src/settings.c:210
+#: src/settings.c:211
 msgid "Setting big display font"
 msgstr "拡大文字フォント設定"
 
-#: src/settings.c:294
+#: src/settings.c:295
 #, fuzzy
 msgid "Setting big display color"
 msgstr "拡大文字フォント設定"
 
-#: src/settings.c:333
+#: src/settings.c:334
 #, fuzzy
 msgid "Setting track color"
 msgstr "拡大文字フォント設定"
 
-#: src/settings.c:377
+#: src/settings.c:378
 #, fuzzy
 msgid "Setting friends label color"
 msgstr "拡大文字フォント設定"
 
-#: src/settings.c:514
+#: src/settings.c:515
 msgid ""
 "Don't use more than\n"
 "100 waypoint(way*.txt) files!"
@@ -1433,181 +1442,181 @@ msgstr ""
 "waypointファイル(way*.txt)個数制限\n"
 "100個以上は使用できません!"
 
-#: src/settings.c:526
+#: src/settings.c:527
 msgid "Waypoint files to use"
 msgstr "使用するWaypointファイル"
 
-#: src/settings.c:558 src/settings.c:563
+#: src/settings.c:559 src/settings.c:564
 msgid "Settings"
 msgstr "設定"
 
-#: src/settings.c:569
+#: src/settings.c:570
 msgid "Misc settings"
 msgstr "その他各種設定"
 
-#: src/settings.c:572
+#: src/settings.c:573
 msgid "Show Shadows"
 msgstr "陰影付き表示"
 
-#: src/settings.c:580
+#: src/settings.c:581
 msgid "Etched frames"
 msgstr ""
 
-#: src/settings.c:588
+#: src/settings.c:589
 msgid "Draw grid"
 msgstr ""
 
 # ;;; ???
-#: src/settings.c:597
+#: src/settings.c:598
 msgid "Simulation: Follow target"
 msgstr "シミュレーション: 目標へ移動"
 
-#: src/settings.c:605
+#: src/settings.c:606
 msgid "Maximum CPU load"
 msgstr "最大CPUロード"
 
-#: src/settings.c:629
+#: src/settings.c:630
 msgid "Maps directory"
 msgstr "地図ディレクトリ"
 
-#: src/settings.c:634
+#: src/settings.c:635
 msgid "Automatic"
 msgstr "自動"
 
-#: src/settings.c:641
+#: src/settings.c:642
 msgid "On"
 msgstr "On"
 
-#: src/settings.c:648
+#: src/settings.c:649
 msgid "Off"
 msgstr "Off"
 
-#: src/settings.c:681
+#: src/settings.c:682
 msgid "GPS settings"
 msgstr "GPS 設定"
 
-#: src/settings.c:692
+#: src/settings.c:693
 msgid "Test for GARMIN"
 msgstr "GARMINテスト用"
 
 # ;;; ???
-#: src/settings.c:701
+#: src/settings.c:702
 msgid "Use DGPS-IP"
 msgstr "DGPS-IP利用"
 
-#: src/settings.c:710
+#: src/settings.c:711
 msgid "GPS is Earthmate"
 msgstr "GPSはEarthmate"
 
-#: src/settings.c:719
+#: src/settings.c:720
 msgid "Use serial conn."
 msgstr ""
 
 # ;;; ???
-#: src/settings.c:733
+#: src/settings.c:734
 msgid "Interface"
 msgstr "Interface"
 
-#: src/settings.c:734
+#: src/settings.c:735
 msgid "Baudrate"
 msgstr ""
 
-#: src/settings.c:770
+#: src/settings.c:771
 msgid "Units"
 msgstr "単位"
 
-#: src/settings.c:776
+#: src/settings.c:777
 msgid "Miles"
 msgstr "Miles"
 
-#: src/settings.c:782
+#: src/settings.c:783
 msgid "Metric"
 msgstr "Km"
 
-#: src/settings.c:809
+#: src/settings.c:810
 msgid "Deg.decimal"
 msgstr ""
 
-#: src/settings.c:816
+#: src/settings.c:817
 msgid "Deg Min Sec"
 msgstr ""
 
-#: src/settings.c:824
+#: src/settings.c:825
 msgid "Deg Min.dec"
 msgstr ""
 
 # ;;; ???
-#: src/settings.c:851
+#: src/settings.c:852
 msgid "Default map server"
 msgstr "Default地図サーバ"
 
-#: src/settings.c:887
+#: src/settings.c:888
 msgid "Night light mode"
 msgstr "夜間照明モード"
 
-#: src/settings.c:904
+#: src/settings.c:905
 #, fuzzy
 msgid "Speech output settings"
 msgstr "航空関連設定"
 
-#: src/settings.c:916
+#: src/settings.c:917
 msgid "Direction"
 msgstr ""
 
 # ;;; ???
-#: src/settings.c:940
+#: src/settings.c:941
 #, fuzzy
 msgid "GPS Status"
 msgstr "Status"
 
-#: src/settings.c:956
+#: src/settings.c:957
 msgid "Switch on for speech output of the direction to the target"
 msgstr ""
 
-#: src/settings.c:961
+#: src/settings.c:962
 msgid "Switch on for speech output of the distance to the target"
 msgstr ""
 
-#: src/settings.c:966
+#: src/settings.c:967
 msgid "Switch on for speech output of your current speed"
 msgstr ""
 
-#: src/settings.c:970
+#: src/settings.c:971
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr ""
 
-#: src/settings.c:974
+#: src/settings.c:975
 #, fuzzy
 msgid "Font and color settings"
 msgstr "GPS 設定"
 
-#: src/settings.c:978
+#: src/settings.c:979
 msgid "WP Label"
 msgstr "Waypointラベル"
 
-#: src/settings.c:979
+#: src/settings.c:980
 msgid "Big display"
 msgstr "拡大表示"
 
-#: src/settings.c:980
+#: src/settings.c:981
 msgid "Display color"
 msgstr ""
 
-#: src/settings.c:1001
+#: src/settings.c:1002
 msgid "Switch units to statute miles"
 msgstr "単位をstatute milesに切替"
 
 # ;;; ???
-#: src/settings.c:1004
+#: src/settings.c:1005
 msgid "Switch units to nautical miles"
 msgstr "単位をnautical milesに切替"
 
 # ;;; ???
-#: src/settings.c:1007
+#: src/settings.c:1008
 msgid "Switch units to metric system (Kilometers)"
 msgstr "単位をKm(キロメーター)に切替"
 
-#: src/settings.c:1011
+#: src/settings.c:1012
 #, fuzzy
 msgid ""
 "If selected display latitude and longitude in degree, minutes and seconds "
@@ -1616,7 +1625,7 @@ msgstr ""
 "選択すると、緯度経度を小数度数で表示する(例N45.50°)選択しないと、度、分、秒で"
 "表示する(例N45°30′00″)"
 
-#: src/settings.c:1015
+#: src/settings.c:1016
 #, fuzzy
 msgid ""
 "If selected display latitude and longitude in degrees and decimal minutes "
@@ -1625,37 +1634,37 @@ msgstr ""
 "選択すると、緯度経度を小数度数で表示する(例N45.50°)選択しないと、度、分、秒で"
 "表示する(例N45°30′00″)"
 
-#: src/settings.c:1019
+#: src/settings.c:1020
 #, fuzzy
 msgid "If selected display latitude and longitude in decimal degrees notation"
 msgstr ""
 "選択すると、緯度経度を小数度数で表示する(例N45.50°)選択しないと、度、分、秒で"
 "表示する(例N45°30′00″)"
 
-#: src/settings.c:1023
+#: src/settings.c:1024
 #, fuzzy
 msgid ""
 "Set the german expedia server(expedia.de) as default download server. Use "
 "this if you are in Europe"
 msgstr "地図ダウンロードサーバにExpediaを設定"
 
-#: src/settings.c:1028
+#: src/settings.c:1029
 msgid "Set Expedia as default download server"
 msgstr "地図ダウンロードサーバにExpediaを設定"
 
-#: src/settings.c:1031
+#: src/settings.c:1032
 msgid "Switches shadows on map on or off"
 msgstr "地図の陰影付き表示のON/OFF"
 
-#: src/settings.c:1034
+#: src/settings.c:1035
 msgid "Switches between different type of frame ornaments"
 msgstr "ウィンドウフレーム装飾の切替え"
 
-#: src/settings.c:1038
+#: src/settings.c:1039
 msgid "This will show a grid over the map"
 msgstr ""
 
-#: src/settings.c:1042
+#: src/settings.c:1043
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load, use 20-30%% on notebooks while on "
@@ -1665,15 +1674,15 @@ msgstr ""
 "概算最大CPUロードを選択して下さい。ノートPCの場合、バッテリーの節約のため20-"
 "30%%の値を使って下さい。 この設定は地図画面のリフレッシュレートに影響します"
 
-#: src/settings.c:1048
+#: src/settings.c:1049
 msgid "If activated, pointer moves to target in simulation mode"
 msgstr "設定すると、シミュレーションモードで現在位置が目標へ移動する"
 
-#: src/settings.c:1052
+#: src/settings.c:1053
 msgid "Set here the color of the drawn track"
 msgstr ""
 
-#: src/settings.c:1056
+#: src/settings.c:1057
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
@@ -1681,7 +1690,7 @@ msgstr ""
 "カスタム地図ファイルのあるディレクトリパス名。 指定ディレクトリにはインデック"
 "スファイルmap_koord.txtも必要"
 
-#: src/settings.c:1061
+#: src/settings.c:1062
 msgid ""
 "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 "only have a NMEA device."
@@ -1689,13 +1698,13 @@ msgstr ""
 "これが選択されると、gpsdriveはGARMINモードでの通信を試す。NMEA機器しかない時"
 "は選択しない"
 
-#: src/settings.c:1066
+#: src/settings.c:1067
 msgid ""
 "Set here the baud rate of your GPS device, NMEA devices usually have a speed "
 "of 4800 baud"
 msgstr ""
 
-#: src/settings.c:1070
+#: src/settings.c:1071
 msgid ""
 "If selected, gpsdrive try to use differential GPS over IP. You must have an "
 "internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
@@ -1703,7 +1712,7 @@ msgstr ""
 "選択されると、gpsdriveはdifferentialGpsOverIPを利用しようとする。インターネッ"
 "ト接続がありDGPSが利用可能なGPS受信機専用。NMEAモードだけ!"
 
-#: src/settings.c:1076
+#: src/settings.c:1077
 msgid ""
 "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 "button will provide gpsd with the needed additional parameters"
@@ -1711,7 +1720,7 @@ msgstr ""
 "DeLormeEarthmateGPS受信機を使用するときはこれを選択する。GPSD起動ボタンは、必"
 "要な付加パラメータを渡してgpsdを起動する"
 
-#: src/settings.c:1082
+#: src/settings.c:1083
 msgid ""
 "Select this if you want to use of the direct serial connection. If disabled, "
 "you can use the receiver only through gpsd. On the other hand, the direct "
@@ -1719,11 +1728,11 @@ msgid ""
 "startup"
 msgstr ""
 
-#: src/settings.c:1089
+#: src/settings.c:1090
 msgid "Specify the serial interface where the GPS is connected"
 msgstr "GPSが接続されているシリアルインターフェースを指定する"
 
-#: src/settings.c:1094
+#: src/settings.c:1095
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
 "turn off nightmode."
@@ -1731,176 +1740,176 @@ msgstr ""
 "周囲が暗くなったら、自動的に夜間照明モードになる。ライトを消すには'N'キーを押"
 "す。"
 
-#: src/settings.c:1099
+#: src/settings.c:1100
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr "夜間照明モードをONに切替。OFFに戻すには'N'キーを押す。"
 
-#: src/settings.c:1103
+#: src/settings.c:1104
 msgid "Switches night mode off"
 msgstr "夜間照明モードをOFFに切替"
 
-#: src/settings.c:1107
+#: src/settings.c:1108
 msgid "Here you can set the font for the waypoint labels"
 msgstr "一覧から選択されたwaypointを削除します"
 
-#: src/settings.c:1111
+#: src/settings.c:1112
 msgid "Here you can set the font for the big display for Speed and Distance"
 msgstr "ここで速度と距離の拡大表示用のフォントを設定できます"
 
-#: src/settings.c:1116
+#: src/settings.c:1117
 #, fuzzy
 msgid ""
 "Here you can set the color for the big display for speed, distance and "
 "altitude"
 msgstr "ここで速度と距離の拡大表示用のフォントを設定できます"
 
-#: src/settings.c:1289
+#: src/settings.c:1290
 msgid "Geo information"
 msgstr "Geo information"
 
 # ;;; ???
-#: src/settings.c:1291
+#: src/settings.c:1292
 msgid "Geo info"
 msgstr "Geo info"
 
 # ;;; ???
-#: src/settings.c:1301
+#: src/settings.c:1302
 msgid "Sunrise"
 msgstr "日の出"
 
-#: src/settings.c:1304
+#: src/settings.c:1305
 msgid "Sunset"
 msgstr "日没"
 
-#: src/settings.c:1307
+#: src/settings.c:1308
 msgid "Standard"
 msgstr "標準"
 
-#: src/settings.c:1310
+#: src/settings.c:1311
 msgid "Transit"
 msgstr "通過"
 
-#: src/settings.c:1313
+#: src/settings.c:1314
 msgid "GPS-Time"
 msgstr ""
 
-#: src/settings.c:1316
+#: src/settings.c:1317
 msgid "Astro."
 msgstr "Astro."
 
 # ;;; ???
-#: src/settings.c:1319
+#: src/settings.c:1320
 msgid "Naut."
 msgstr "Naut."
 
-#: src/settings.c:1322
+#: src/settings.c:1323
 msgid "Civil"
 msgstr "Civil"
 
-#: src/settings.c:1325
+#: src/settings.c:1326
 msgid "Timezone"
 msgstr "Timezone"
 
-#: src/settings.c:1328
+#: src/settings.c:1329
 msgid "Store TZ"
 msgstr ""
 
-#: src/settings.c:1342
+#: src/settings.c:1343
 msgid ""
 "If selected, the timezone is stored, otherwise your actual timezone will "
 "automatically used"
 msgstr ""
 
-#: src/settings.c:1363
+#: src/settings.c:1364
 msgid "Night"
 msgstr "夜間"
 
-#: src/settings.c:1367
+#: src/settings.c:1368
 msgid "Day"
 msgstr "日中"
 
-#: src/settings.c:1486 src/settings.c:1491 src/settings.c:1495
+#: src/settings.c:1487 src/settings.c:1492 src/settings.c:1496
 msgid "Unit:"
 msgstr "Unit:"
 
-#: src/settings.c:1486
+#: src/settings.c:1487
 msgid "miles"
 msgstr "miles"
 
-#: src/settings.c:1491
+#: src/settings.c:1492
 msgid "nautic miles/knots"
 msgstr "nautic miles/knots"
 
-#: src/settings.c:1495
+#: src/settings.c:1496
 msgid "kilometers"
 msgstr "Km(kilometers)"
 
-#: src/settings.c:1511
+#: src/settings.c:1512
 msgid "Trip information"
 msgstr "Trip information"
 
-#: src/settings.c:1513
+#: src/settings.c:1514
 msgid "Trip info"
 msgstr "Trip info"
 
-#: src/settings.c:1524
+#: src/settings.c:1525
 msgid "Odometer"
 msgstr "移動距離"
 
-#: src/settings.c:1526
+#: src/settings.c:1527
 msgid "Total time"
 msgstr "経過時間"
 
-#: src/settings.c:1528
+#: src/settings.c:1529
 msgid "Av. speed"
 msgstr "平均速度"
 
-#: src/settings.c:1530
+#: src/settings.c:1531
 msgid "Max. speed"
 msgstr "最高速度"
 
-#: src/settings.c:1550
+#: src/settings.c:1551
 msgid "Reset"
 msgstr "Reset"
 
-#: src/settings.c:1556
+#: src/settings.c:1557
 msgid "Resets the trip values to zero"
 msgstr "移動距離をゼロにリセットします"
 
-#: src/settings.c:1644
+#: src/settings.c:1645
 msgid "You should change your name in the first field!"
 msgstr "最初のフィールドの貴方の名前を変更して下さい"
 
-#: src/settings.c:1875
+#: src/settings.c:1876
 msgid "Show position newer as"
 msgstr "地図上にwaypointを表示"
 
-#: src/settings.c:1877
+#: src/settings.c:1878
 msgid "Friends server setup"
 msgstr "フレンズサーバの設定"
 
 # ;;; ???
-#: src/settings.c:1878
+#: src/settings.c:1879
 msgid "Friends"
 msgstr "フレンズ"
 
-#: src/settings.c:1889
+#: src/settings.c:1890
 msgid "Days"
 msgstr "日中"
 
-#: src/settings.c:1890
+#: src/settings.c:1891
 msgid "Hours"
 msgstr "時間"
 
-#: src/settings.c:1891
+#: src/settings.c:1892
 msgid "Minutes"
 msgstr "分"
 
-#: src/settings.c:1896
+#: src/settings.c:1897
 msgid "Your name"
 msgstr "氏名"
 
-#: src/settings.c:1901
+#: src/settings.c:1902
 msgid ""
 "Set here your name which should be shown near your vehicle. You may use "
 "spaces here!"
@@ -1908,11 +1917,11 @@ msgstr ""
 "貴方の車のそばに表示される名前をここにセットして下さい。空白を使うこともでき"
 "ます!"
 
-#: src/settings.c:1908
+#: src/settings.c:1909
 msgid "Server name"
 msgstr "サーバ名"
 
-#: src/settings.c:1912
+#: src/settings.c:1913
 msgid ""
 "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends "
 "server, then you have to press the \"Lookup\" button!"
@@ -1920,31 +1929,31 @@ msgstr ""
 "フレンズサーバの完全正規化ホスト名 (i.e. www.gpsdrive.cc) をここにセットして "
 "ください、その後 \"Lookup\" ボタンを押して下さい!"
 
-#: src/settings.c:1920
+#: src/settings.c:1921
 msgid "Lookup"
 msgstr "Lookup"
 
-#: src/settings.c:1926
+#: src/settings.c:1927
 msgid ""
 "You have to press the \"Lookup\" button to resolve the friends server name!"
 msgstr "フレンズサーバ名の解決には、\"Lookup\" ボタンを押す必要があります!"
 
-#: src/settings.c:1934
+#: src/settings.c:1935
 msgid "Set here the color of the label displayed at friends position"
 msgstr ""
 
-#: src/settings.c:1941
+#: src/settings.c:1942
 msgid "Friends server IP"
 msgstr "フレンズサーバのIP"
 
-#: src/settings.c:1945
+#: src/settings.c:1946
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
 "上のホスト名をセットしていない時は、ここにIPアドレス (例 127.0.0.1)をセットし"
 "て下さい"
 
-#: src/settings.c:1949 src/settings.c:1954 src/settings.c:1958
+#: src/settings.c:1950 src/settings.c:1955 src/settings.c:1959
 msgid ""
 "Set here the time limit in which the friends position is shown. Older "
 "positions are not shown."
@@ -1952,11 +1961,11 @@ msgstr ""
 "フレンズ位置表示のタイムリミットをセットして下さい。それより古い位置データは"
 "表示されません。"
 
-#: src/settings.c:1967
+#: src/settings.c:1968
 msgid "Use friends server"
 msgstr "フレンズサーバ使用"
 
-#: src/settings.c:1977
+#: src/settings.c:1978
 msgid ""
 "Enable/disable use of friends server. You must enter a Username, don't use "
 "the default name!"
@@ -1964,7 +1973,7 @@ msgstr ""
 "フレンズサーバの使用を有効/無効にする。 Usernameは入力して下さい、デフォルト"
 "の名前を使用しないように!"
 
-#: src/settings.c:1981
+#: src/settings.c:1982
 #, fuzzy
 msgid ""
 "If you enable the friends server mode,\n"
@@ -1975,61 +1984,66 @@ msgstr ""
 "その同じサーバを使っている<span color=\"red\">誰も</span> が\n"
 "あなたの位置を知ることになります!"
 
-#: src/settings.c:2051
+#: src/settings.c:2078
 #, fuzzy
 msgid "POI selection criterias"
 msgstr "SQL選択基準"
 
-#: src/settings.c:2079
+#: src/settings.c:2104
 msgid "Dist. limit[km] "
 msgstr "制限距離[Km]"
 
-#: src/settings.c:2083
-msgid "If enabled, show waypoints only within this distance"
+#: src/settings.c:2108
+#, fuzzy
+msgid "If enabled, show POIs only within this distance"
 msgstr "選択すると、指定距離以内のwaypointだけ表示する"
 
 # ;;; ???
-#: src/settings.c:2100
+#: src/settings.c:2125
 msgid "Enable/disable distance selection"
 msgstr "距離選択を有効/無効にする"
 
-#: src/settings.c:2107
+#: src/settings.c:2132
 #, fuzzy
 msgid "Show no_ssid "
 msgstr "WP表示"
 
-#: src/settings.c:2120
+#: src/settings.c:2145
 msgid ""
 "If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
 "you can disable it here"
 msgstr ""
 
-#: src/settings.c:2126
+#: src/settings.c:2152
+msgid "POI-Theme"
+msgstr ""
+
+#: src/settings.c:2172
 msgid "Selection mode"
 msgstr "選択モード"
 
-#: src/settings.c:2128
+#: src/settings.c:2174
 msgid "include"
 msgstr "include"
 
 # ;;; ???
-#: src/settings.c:2131
+#: src/settings.c:2177
 msgid "exclude"
 msgstr "exclude"
 
 # ;;; ???
-#: src/settings.c:2134
-msgid ""
-"Show only waypoints where the type field contains one of the selected words"
+#: src/settings.c:2180
+#, fuzzy
+msgid "Show only POIs where the type field contains one of the selected words"
 msgstr "型フィールドに指定ワードを含むwaypointだけ表示する"
 
-#: src/settings.c:2137
+#: src/settings.c:2183
+#, fuzzy
 msgid ""
-"Show only waypoints where the type field doesn't contain any the selected "
-"words"
+"Show only POIs where the type field doesn't contain any the selected words"
 msgstr "型フィールドに指定ワードを含まないwaypointだけ表示する"
 
-#: src/splash.c:147
+#: src/splash.c:146
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -2041,7 +2055,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:155
+#: src/splash.c:154
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -2055,7 +2069,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:165
+#: src/splash.c:164
 #, fuzzy
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
@@ -2072,19 +2086,19 @@ msgstr ""
 "上でクリックするとセットできます。 地図の端(外側の20%の場所)でクリックする"
 "と、 次の地図に切り替わります。"
 
-#: src/splash.c:175
+#: src/splash.c:174
 #, fuzzy
 msgid "GpsDrive v"
 msgstr "GpsDriveヘルプ"
 
-#: src/splash.c:181
+#: src/splash.c:180
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.cc\n"
 msgstr ""
 
-#: src/splash.c:185
+#: src/splash.c:184
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -2092,42 +2106,42 @@ msgstr ""
 "使用上の注意: 航海/航空ナビゲーションには使用しないで下さい \n"
 "\n"
 
-#: src/splash.c:190
+#: src/splash.c:189
 #, fuzzy
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 "機能詳細はマニュアルを参照してください\n"
 "\n"
 
-#: src/splash.c:195
+#: src/splash.c:194
 msgid "Mouse control (clicking on the map):\n"
 msgstr "マウスコントロール(地図をクリックする):\n"
 
-#: src/splash.c:203
+#: src/splash.c:202
 msgid "Short cuts:\n"
 msgstr "ショートカット\n"
 
-#: src/splash.c:210
+#: src/splash.c:209
 msgid "The other key shortcuts are marked as "
 msgstr "他のショートカットキーには"
 
-#: src/splash.c:213
+#: src/splash.c:212
 msgid "underlined"
 msgstr "下線付"
 
-#: src/splash.c:216
+#: src/splash.c:215
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:219
+#: src/splash.c:218
 msgid "Have a lot of fun!"
 msgstr "Have a lot of fun!"
 
-#: src/splash.c:355
+#: src/splash.c:354
 msgid "Please donate to GpsDrive"
 msgstr "GpsDriveにご寄付をお願いします"
 
-#: src/splash.c:361
+#: src/splash.c:360
 #, fuzzy
 msgid ""
 "\n"
@@ -2143,11 +2157,11 @@ msgstr ""
 "ると大変助かります。\n"
 "\n"
 
-#: src/splash.c:366
+#: src/splash.c:365
 msgid " http://www.gpsdrive.cc "
 msgstr ""
 
-#: src/splash.c:369
+#: src/splash.c:368
 #, fuzzy
 msgid ""
 "and click on the PayPal button.\n"
@@ -2162,16 +2176,16 @@ msgstr ""
 "す。\n"
 "\n"
 
-#: src/splash.c:405
+#: src/splash.c:404
 msgid "About GpsDrive donation"
 msgstr "GpsDriveへの寄付について"
 
-#: src/splash.c:488
+#: src/splash.c:487
 msgid "From:"
 msgstr ""
 
 # ;;; ???
-#: src/splash.c:559
+#: src/splash.c:558
 #, fuzzy, c-format
 msgid ""
 "You received a message from\n"
@@ -2179,17 +2193,17 @@ msgid ""
 msgstr "距離選択を有効/無効にする"
 
 # ;;; ???
-#: src/splash.c:571
+#: src/splash.c:570
 #, fuzzy
 msgid "You received a message through the friends server from:\n"
 msgstr "距離選択を有効/無効にする"
 
-#: src/splash.c:582
+#: src/splash.c:581
 #, fuzzy
 msgid "Message text:\n"
 msgstr "  Message  "
 
-#: src/splash.c:706 src/splash.c:767
+#: src/splash.c:705 src/splash.c:766
 #, c-format
 msgid ""
 "\n"
@@ -2204,22 +2218,25 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:750
+#: src/splash.c:749
 #, fuzzy
 msgid "About GpsDrive"
 msgstr "GpsDriveへの寄付について"
 
-#: src/waypoint.c:659
+#: src/waypoint.c:658
 msgid "Add waypoint name"
 msgstr "waypoint名追加"
 
-#: src/waypoint.c:669
+#: src/waypoint.c:668
 msgid " Waypoint name: "
 msgstr " Waypoint 名: "
 
-#: src/waypoint.c:734
+#: src/waypoint.c:695
 msgid " Waypoint type: "
 msgstr " Waypoint type: "
+
+#~ msgid "Browse waypoint"
+#~ msgstr "waypoint一覧"
 
 #~ msgid "%d(%d) rows read in %.2f seconds\n"
 #~ msgstr "%d(%d) rows read in %.2f seconds\n"
