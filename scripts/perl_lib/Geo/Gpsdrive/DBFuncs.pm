@@ -910,7 +910,7 @@ sub create_db(){
 
     db_exec('CREATE TABLE IF NOT EXISTS `poi` (
                       `poi_id`        int(11)      NOT NULL auto_increment,
-                      `name`          varchar(80)           default NULL,
+                      `name`          varchar(80)  NOT NULL default \'not specified\',
                       `poi_type_id`   int(11)      NOT NULL default \'1\',
                       `lat`           double       NOT NULL default \'0\',
                       `lon`           double       NOT NULL default \'0\',
@@ -919,7 +919,7 @@ sub create_db(){
                       `comment`       varchar(255)          default NULL,
                       `last_modified` date  NOT NULL default \'0000-00-00\',
                       `address_id`    int(11)               default \'0\',
-                      `source_id`     int(11)      NOT NULL default \'0\',
+                      `source_id`     int(11)      NOT NULL default \'1\',
 		      `private`       char(1)               default NULL,
                       PRIMARY KEY  (`poi_id`)
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;

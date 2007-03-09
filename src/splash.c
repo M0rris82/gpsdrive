@@ -46,6 +46,11 @@ Disclaimer: Please do not use for navigation.
 #  define N_(String) (String)
 # endif
 
+
+
+
+
+
 extern gint max_display_map;
 extern map_dir_struct *display_map;
 
@@ -725,96 +730,75 @@ splash (void)
 gint
 about_cb (GtkWidget * widget, guint datum)
 {
-	static GtkWidget *window = NULL;
-	GtkWidget *knopf, *vbox;
-	gchar xpmfile[400], s3[800];
-	GtkWidget *pixmap = NULL, *label1, *label2;
-#ifdef USETELEATLAS
-	GtkWidget *pixmap2 = NULL;
-#endif
-
-
-	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR,
-		    "pixmaps/gpsdrivemini.png");
-
-
-	window = gtk_dialog_new ();
-
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
-
-	g_signal_connect (window, "destroy",
-			  G_CALLBACK (gtk_widget_destroyed), &window);
-
-	gtk_window_set_title (GTK_WINDOW (window), _("About GpsDrive"));
-	gtk_container_set_border_width (GTK_CONTAINER (window), 5);
-	/*   gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER); */
-
-
-	pixmap = getPixmapFromFile (window, xpmfile);
-
-	if (pixmap != NULL)
+	GtkAboutDialog *about_window;
+	gchar xpmfile[400];
+	GdkPixbuf *pixmap = NULL;
+	
+	const gchar *authors[] = 
+		{
+			"Aart Koelewijn <aart@mtack.xs4all.nl>",
+			"Belgabor <belgabor@gmx.de>",
+			"Blake Swadling <blake@swadling.com>",
+			"Chuck Gantz <chuck.gantz@globalstar.com>",
+			"Dan Egnor <egnor@ofb.net>",
+			"Daniel Hiepler <rigid@akatash.de>",
+			"Darazs Attila <zumi@freestart.hu>",
+			"Fritz Ganter <ganter@ganter.at>",
+			"Guenther Meyer <d.s.e@sordidmusic.com>",
+ 			"J.D. Schmidt <jdsmobile@gmail.com>",
+			"Joerg Ostertag <gpsdrive@ostertag.name>"	,
+			"Jan-Benedict Glaw <jbglaw@lug-owl.de>",
+			"John Hay <jhay@icomtek.csir.co.za>",
+			"Johnny Cache <johnycsh@hick.org>",
+			"Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>",
+			"Mike Auty",
+			"Oddgeir Kvien <oddgeir@oddgeirkvien.com>",
+			"Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>",
+			"Olli Salonen <olli@cabbala.net>",
+			"Philippe De Swert",
+			"Richard Scheffenegger <rscheff@chello.at>",
+			"Rob Stewart <rob@groupboard.com>",
+			"Russell Harding <hardingr@billingside.com>",
+			"Russell Mirov <russell.mirov@sun.com>",
+			"Wilfried Hemp <Wilfried.Hemp@t-online.de>",
+			"<molter@gufi.org>",
+			"<pdana@mail.utexas.edu>",
+			"<timecop@japan.co.jp>",
+			"<wulf@netbsd.org>",
+			NULL
+		};
+	
+	about_window = GTK_ABOUT_DIALOG (gtk_about_dialog_new ());
+	gtk_window_set_position (GTK_WINDOW (about_window), GTK_WIN_POS_CENTER);
+	
+	gtk_about_dialog_set_version (about_window, VERSION);
+	gtk_about_dialog_set_copyright (about_window, "Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>");
+	gtk_about_dialog_set_website (about_window, "http://www.gpsdrive.de/");
+	gtk_about_dialog_set_authors (about_window, authors);
+	gtk_about_dialog_set_translator_credits (about_window, _("translator-credits"));
+	gtk_about_dialog_set_comments (about_window,
+				_("GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."));
+	
+	gtk_about_dialog_set_license (about_window,
+				_("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."));
+	gtk_about_dialog_set_wrap_license (about_window, TRUE);
+	
+	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR, "pixmaps/gpsdrivelogo.png");		
+	pixmap = gdk_pixbuf_new_from_file (xpmfile, NULL);
+	if (pixmap == NULL)
 	{
-		gtk_pixmap_set (GTK_PIXMAP (pixmap),
-				GTK_PIXMAP (pixmap)->pixmap,
-				GTK_PIXMAP (pixmap)->mask);
-	}
-	else
-	{
-		fprintf (stderr,
-			 _
-			 ("\nWarning: unable to open splash picture\nPlease install the program as root with:\nmake install\n\n"));
+		fprintf (stderr, _("\nWarning: unable to open splash picture\nPlease install the program as root with:\nmake install\n\n"));
 		return TRUE;
 	}
-
-
-	vbox = gtk_vbox_new (FALSE, 3);
-	/*   gtk_container_add (GTK_CONTAINER (window), vbox); */
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
-
-	gtk_box_pack_start (GTK_BOX (vbox), pixmap, TRUE, TRUE, 3);
-	label1 = gtk_label_new ("");
-	g_snprintf (s3, sizeof (s3),
-		    "<span color=\"NavyBlue\" font_desc=\"%s\">GpsDrive %s\n\n</span><span color=\"black\" font_desc=\"%s\">Copyright \xc2\xa9 2001-2004\nby Fritz Ganter (ganter@ganter.at)\n\nURL: http://www.gpsdrive.cc\n</span>",
-		    "sans bold 16", VERSION, "sans italic 10");
-	gtk_label_set_markup (GTK_LABEL (label1), s3);
-	gtk_box_pack_start (GTK_BOX (vbox), label1, TRUE, TRUE, 3);
-
-#ifdef USETELEATLAS
-	pixmap2 = getPixmapFromXpm (window, logo_teleatlas_xpm);
-
-	gtk_box_pack_start (GTK_BOX (vbox), pixmap2, TRUE, TRUE, 3);
-#endif
-
-
-	label2 = gtk_label_new ("");
-	g_snprintf (s3, sizeof (s3),
-		    "<span color=\"black\" font_desc=\"%s\">This program is free software; you can redistribute\nit and/or modify it under the terms of the\nGNU General Public License as published by\nthe Free Software Foundation; either version 2\nof the License, or (at your option) any later version.\n</span>",
-		    "sans normal 8");
-
-	gtk_label_set_markup (GTK_LABEL (label2), s3);
-	gtk_box_pack_start (GTK_BOX (vbox), label2, TRUE, TRUE, 3);
-
-
-	knopf = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
-	gtk_signal_connect_object (GTK_OBJECT (knopf), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (gtk_widget_destroy), GTK_OBJECT (window));
-	/*   gtk_box_pack_start (GTK_BOX (vbox), knopf, FALSE, FALSE, 3); */
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->action_area),
-			    knopf, TRUE, TRUE, 2);
-
-	gtk_widget_show_all (window);
-
+	gtk_about_dialog_set_logo (about_window, pixmap);
+	
+	gtk_widget_show_all (GTK_WIDGET (about_window));
+	
 	return TRUE;
-
 }
 
-/* writes time and position to /tmp/gpsdrivepos */
 
+/* writes time and position to /tmp/gpsdrivepos */
 void
 signalposreq ()
 {

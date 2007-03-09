@@ -51,17 +51,53 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
+#include <gdk/gdktypes.h>
+#include "gtk/gtk.h"
+#include "gettext.h"
+#include "gpsdrive.h"
+#include "gpsdrive_config.h"
 #include "gui.h"
+#include "poi.h"
 
+/*  Defines for gettext I18n */
+#include <libintl.h>
+# define _(String) gettext(String)
+# ifdef gettext_noop
+#  define N_(String) gettext_noop(String)
+# else
+#  define N_(String) (String)
+# endif
+
+extern gint do_unit_test;
 
     /* External Values */
 
-    extern gint mydebug;
+extern gint mydebug;
 extern gint debug;
+
+extern GtkTreeStore *poi_types_tree;
+extern GtkListStore *poi_result_tree;
+
+extern gdouble target_lat, target_lon;
+
+extern GdkColor textback;
+
+// Some of these shouldn't be necessary, when all the gui stuff is finally moved
+extern GtkWidget *find_poi_bt;
+
 
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
+
+struct pattern
+{
+	GtkEntry *text, *distance;
+	gint posflag;	/* 0: search at current position, 1: search at destination */
+	guint result_count;
+} criteria;
+
+static GtkWidget *statusbar_poilist;
+static gint statusbar_id;
 
 extern gint borderlimit;
 
@@ -254,12 +290,9 @@ int XParseGeometry (
 	*height = tempHeight;
     return (mask);
 }
+
+
 /* do not change the above */
-
-
-
-
-
 
 /****
      function get_window_sizing
@@ -270,8 +303,8 @@ int XParseGeometry (
 int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width) {
 
     int ret;
-    int width, height;
-    uint x, y;
+    uint width, height;
+    int x, y;
 
 
 
@@ -405,6 +438,683 @@ int resize_all (void) {
 
     return 0;
 }
+
+
+
+
+
+
+/* *****************************************************************************
+ * CALLBACKS
+ */
+static void
+evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
+{
+	gchar search_status[80];
+	
+	if (mydebug>5)
+	{
+		fprintf (stdout, "\npoi search criteria:\n  text: %s\n  distance: %s\t  posflag: %d\n",
+					gtk_entry_get_text (entries->text) ,
+					gtk_entry_get_text (entries->distance),
+					entries->posflag);
+	}
+	
+	entries->result_count = poi_get_results (gtk_entry_get_text (entries->text),
+						gtk_entry_get_text (entries->distance),
+						entries->posflag, "0");
+
+	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
+	if (entries->result_count == local_config.results_max)
+		g_snprintf (search_status, sizeof (search_status), _(" Found %d matching entries (Limit reached)."), entries->result_count);
+	else
+		g_snprintf (search_status, sizeof (search_status), _(" Found %d matching entries."), entries->result_count);
+	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, search_status);
+}
+
+void
+toggle_window_poi_info_cb (GtkToggleButton *togglebutton, gpointer user_data)
+{
+
+}
+
+static void
+searchpoitypemode_cb (GtkWidget *combobox, GtkToggleButton *button)
+{
+	if (gtk_toggle_button_get_active(button))
+	{
+		gtk_widget_set_sensitive (combobox, TRUE);
+		// ### switch to selection from selected poi-type
+	}
+	else
+	{
+		gtk_widget_set_sensitive (combobox, FALSE);
+		// ### switch to selection from all poi-types
+	}
+}
+
+static void
+searchdistancemode_cb (GtkToggleButton *button, gpointer user_data)
+{
+	if (gtk_toggle_button_get_active(button))
+	{
+		criteria.posflag = 0; /* search near current position */
+	}
+	else
+	{
+		criteria.posflag = 1; /* search near destination */
+	}
+}
+
+
+
+static void
+close_poi_lookup_window_cb (GtkWidget *window)
+{
+	gtk_widget_destroy (window);
+	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+}
+
+
+static void
+select_poi_cb (GtkTreeSelection *selection, gpointer data)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+		{
+			gtk_tree_model_get (model, &iter,
+						RESULT_LAT, &target_lat,
+						RESULT_LON, &target_lon,
+						-1);
+			
+			fprintf (stdout, " -> %f / %f\n", target_lat, target_lon);
+			
+        }
+		
+		
+//	coordinate_string2gdouble(p, &target_lat);
+//	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
+//	coordinate_string2gdouble(p, &target_lon);
+
+}
+
+
+
+
+
+/* *****************************************************************************
+ * Window: POI-Info
+ */
+void create_poi_info_window (void)
+{
+  GtkWidget *poi_info_window;
+  GtkWidget *vbox_poidata;
+  GtkWidget *frame_poi_basicdata;
+  GtkWidget *alignment_basic;
+  GtkWidget *table_basic;
+  GtkWidget *label_name;
+  GtkWidget *label_comment;
+  GtkWidget *checkbutton_private;
+  GtkWidget *entry_name;
+  GtkWidget *entry_comment;
+  GtkWidget *entry_lat;
+  GtkWidget *entry_lon;
+  GtkWidget *entry_alt;
+  GtkWidget *label_alt;
+  GtkWidget *label_lon;
+  GtkWidget *label_lat;
+  GtkWidget *hseparator_basic;
+  GtkWidget *label_type;
+  GtkWidget *combobox_type;
+  GtkWidget *entry_poitypeid;
+  GtkWidget *label_basic;
+  GtkWidget *expander_extra;
+  GtkWidget *frame_extra;
+  GtkWidget *alignment_extra;
+  GtkWidget *scrolledwindow_extra;
+  GtkWidget *treeview_extra;
+  GtkWidget *label_extradata;
+  GtkWidget *hbox_status;
+  GtkWidget *statusbar_poiinfo;
+  GtkWidget *button_save;
+  GtkWidget *button_close;
+
+  poi_info_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_title (GTK_WINDOW (poi_info_window), _("POI-Info"));
+  gtk_window_set_icon_name (GTK_WINDOW (poi_info_window), "gtk-info");
+  //gtk_window_set_decorated (GTK_WINDOW (poi_info_window), FALSE);
+  gtk_window_set_focus_on_map (GTK_WINDOW (poi_info_window), FALSE);
+
+  vbox_poidata = gtk_vbox_new (FALSE, 0);
+  gtk_widget_show (vbox_poidata);
+  gtk_container_add (GTK_CONTAINER (poi_info_window), vbox_poidata);
+
+  frame_poi_basicdata = gtk_frame_new (NULL);
+  gtk_widget_show (frame_poi_basicdata);
+  gtk_box_pack_start (GTK_BOX (vbox_poidata), frame_poi_basicdata, FALSE, FALSE, 0);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_poi_basicdata), 5);
+
+  alignment_basic = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment_basic);
+  gtk_container_add (GTK_CONTAINER (frame_poi_basicdata), alignment_basic);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_basic), 5, 5, 5, 5);
+
+  table_basic = gtk_table_new (6, 6, FALSE);
+  gtk_widget_show (table_basic);
+  gtk_container_add (GTK_CONTAINER (alignment_basic), table_basic);
+
+  label_name = gtk_label_new (_("Name"));
+  gtk_widget_show (label_name);
+  gtk_table_attach (GTK_TABLE (table_basic), label_name, 0, 1, 0, 1,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_name), 0, 0.5);
+
+  label_comment = gtk_label_new (_("Comment"));
+  gtk_widget_show (label_comment);
+  gtk_table_attach (GTK_TABLE (table_basic), label_comment, 0, 1, 1, 2,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_comment), 0, 0.5);
+
+  checkbutton_private = gtk_check_button_new_with_mnemonic (_("private"));
+  gtk_widget_show (checkbutton_private);
+  gtk_table_attach (GTK_TABLE (table_basic), checkbutton_private, 5, 6, 0, 1,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+
+  entry_name = gtk_entry_new ();
+  gtk_widget_show (entry_name);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_name, 1, 5, 0, 1,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_max_length (GTK_ENTRY (entry_name), 80);
+
+  entry_comment = gtk_entry_new ();
+  gtk_widget_show (entry_comment);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_comment, 1, 6, 1, 2,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_max_length (GTK_ENTRY (entry_comment), 255);
+
+  entry_lat = gtk_entry_new ();
+  gtk_widget_show (entry_lat);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_lat, 0, 2, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_width_chars (GTK_ENTRY (entry_lat), 12);
+
+  entry_lon = gtk_entry_new ();
+  gtk_widget_show (entry_lon);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_lon, 2, 4, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_width_chars (GTK_ENTRY (entry_lon), 12);
+
+  entry_alt = gtk_entry_new ();
+  gtk_widget_show (entry_alt);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_alt, 4, 6, 5, 6,
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_width_chars (GTK_ENTRY (entry_alt), 10);
+
+  label_alt = gtk_label_new (_("Altitude"));
+  gtk_widget_show (label_alt);
+  gtk_table_attach (GTK_TABLE (table_basic), label_alt, 4, 5, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_alt), 0, 0.5);
+
+  label_lon = gtk_label_new (_("Longitude"));
+  gtk_widget_show (label_lon);
+  gtk_table_attach (GTK_TABLE (table_basic), label_lon, 2, 3, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_lon), 0, 0.5);
+
+  label_lat = gtk_label_new (_("Latitude"));
+  gtk_widget_show (label_lat);
+  gtk_table_attach (GTK_TABLE (table_basic), label_lat, 0, 1, 4, 5,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_lat), 0, 0.5);
+
+  hseparator_basic = gtk_hseparator_new ();
+  gtk_widget_show (hseparator_basic);
+  gtk_table_attach (GTK_TABLE (table_basic), hseparator_basic, 0, 6, 3, 4,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 5);
+
+  label_type = gtk_label_new (_("Type"));
+  gtk_widget_show (label_type);
+  gtk_table_attach (GTK_TABLE (table_basic), label_type, 0, 1, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_misc_set_alignment (GTK_MISC (label_type), 0, 0.5);
+
+  combobox_type = gtk_combo_box_new_text ();
+  gtk_widget_show (combobox_type);
+  gtk_table_attach (GTK_TABLE (table_basic), combobox_type, 1, 5, 2, 3,
+                    (GtkAttachOptions) (GTK_FILL),
+                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  entry_poitypeid = gtk_entry_new ();
+  gtk_widget_show (entry_poitypeid);
+  gtk_table_attach (GTK_TABLE (table_basic), entry_poitypeid, 5, 6, 2, 3,
+                    (GtkAttachOptions) (0),
+                    (GtkAttachOptions) (0), 0, 0);
+  gtk_entry_set_max_length (GTK_ENTRY (entry_poitypeid), 5);
+  gtk_editable_set_editable (GTK_EDITABLE (entry_poitypeid), FALSE);
+  gtk_entry_set_has_frame (GTK_ENTRY (entry_poitypeid), FALSE);
+  gtk_entry_set_width_chars (GTK_ENTRY (entry_poitypeid), 5);
+
+  label_basic = gtk_label_new (_("Basic Data"));
+  gtk_widget_show (label_basic);
+  gtk_frame_set_label_widget (GTK_FRAME (frame_poi_basicdata), label_basic);
+
+  expander_extra = gtk_expander_new (NULL);
+  gtk_widget_show (expander_extra);
+  gtk_box_pack_start (GTK_BOX (vbox_poidata), expander_extra, TRUE, TRUE, 0);
+  gtk_expander_set_expanded (GTK_EXPANDER (expander_extra), TRUE);
+
+  frame_extra = gtk_frame_new (NULL);
+  gtk_widget_show (frame_extra);
+  gtk_container_add (GTK_CONTAINER (expander_extra), frame_extra);
+  gtk_container_set_border_width (GTK_CONTAINER (frame_extra), 5);
+  gtk_frame_set_label_align (GTK_FRAME (frame_extra), 0, 0);
+
+  alignment_extra = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_widget_show (alignment_extra);
+  gtk_container_add (GTK_CONTAINER (frame_extra), alignment_extra);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_extra), 0, 0, 12, 0);
+
+  scrolledwindow_extra = gtk_scrolled_window_new (NULL, NULL);
+  gtk_widget_show (scrolledwindow_extra);
+  gtk_container_add (GTK_CONTAINER (alignment_extra), scrolledwindow_extra);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_extra), GTK_SHADOW_IN);
+
+  treeview_extra = gtk_tree_view_new ();
+  gtk_widget_show (treeview_extra);
+  gtk_container_add (GTK_CONTAINER (scrolledwindow_extra), treeview_extra);
+
+  label_extradata = gtk_label_new (_("Extra Data"));
+  gtk_widget_show (label_extradata);
+  gtk_expander_set_label_widget (GTK_EXPANDER (expander_extra), label_extradata);
+
+  hbox_status = gtk_hbox_new (FALSE, 0);
+  gtk_widget_show (hbox_status);
+  gtk_box_pack_start (GTK_BOX (vbox_poidata), hbox_status, FALSE, TRUE, 0);
+
+  statusbar_poiinfo = gtk_statusbar_new ();
+  gtk_widget_show (statusbar_poiinfo);
+  gtk_box_pack_start (GTK_BOX (hbox_status), statusbar_poiinfo, TRUE, TRUE, 0);
+  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar_poiinfo), FALSE);
+
+  button_save = gtk_button_new_from_stock ("gtk-save");
+  gtk_widget_show (button_save);
+  gtk_box_pack_start (GTK_BOX (hbox_status), button_save, FALSE, FALSE, 0);
+
+  button_close = gtk_button_new_from_stock ("gtk-close");
+  gtk_widget_show (button_close);
+  gtk_box_pack_start (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
+
+  gtk_widget_show_all (poi_info_window);
+}
+
+
+
+
+
+
+
+
+
+
+/* *****************************************************************************
+ * Window: POI-Lookup
+ */
+void poi_lookup_cb (GtkWidget *calling_button)
+{
+	GtkWidget *poi_lookup_window;
+	GtkWidget *dialog_vbox_poisearch;
+	GtkWidget *vbox_searchbox;
+	GtkWidget *expander_poisearch;
+	GtkWidget *frame_search_criteria;
+	GtkWidget *alignment_criteria;
+	GtkWidget *vbox_criteria;
+	GtkWidget *hbox_text;
+	GtkWidget *label_text;
+	GtkWidget *entry_text;
+	GtkWidget *button_search;
+	GtkWidget *hbox_distance;
+	GtkWidget *label_distance;
+	GtkWidget *entry_distance;
+	GtkWidget *label_distfrom;
+	GtkWidget *radiobutton_distcurrent;
+	GSList *radiobutton_distance_group = NULL;
+	GtkWidget *radiobutton_distcursor;
+	GtkWidget *hbox_type;
+	GtkWidget *label_type;
+	GtkWidget *radiobutton_typeall;
+	GSList *radiobutton_type_group = NULL;
+	GtkWidget *radiobutton_typesel;
+	GtkWidget *comboboxentry_type;
+	GtkWidget *button_types;
+	GtkWidget *label_criteria;
+	GtkWidget *frame_poiresults;
+	GtkWidget *alignment_poiresults;
+	GtkWidget *vbox_poiresults;
+	GtkWidget *scrolledwindow_poilist;
+	GtkWidget *treeview_poilist;
+	GtkCellRenderer *renderer_poilist;
+	GtkTreeViewColumn *column_poilist;
+	GtkTreeSelection *poilist_select;
+	GtkWidget *hbox_poistatus;
+	GtkWidget *togglebutton_poiinfo;
+	GtkWidget *alignment_poiinfo;
+	GtkWidget *hbox11;
+	GtkWidget *image_poiinfo;
+	GtkWidget *label_poiinfo;
+	GtkWidget *label_results;
+	GtkWidget *dialog_action_area_poisearch;
+	GtkWidget *button_addtoroute;
+	GtkWidget *alignment_addtoroute;
+	GtkWidget *hbox_addtoroute;
+	GtkWidget *image_addtoroute;
+	GtkWidget *label_addtoroute;
+	GtkWidget *button_delete;
+	GtkWidget *button_jumpto;
+	GtkWidget *button_close;
+	GtkTooltips *tooltips_poilookup;
+	
+	criteria.posflag = 0;
+	criteria.result_count = 0;
+	
+	gtk_widget_set_sensitive (find_poi_bt, FALSE);
+	
+	tooltips_poilookup = gtk_tooltips_new();
+	gtk_tooltips_set_delay (tooltips_poilookup, TOOLTIP_DELAY);
+	if (local_config.showtooltips)
+		gtk_tooltips_enable (tooltips_poilookup);
+	else
+		gtk_tooltips_disable (tooltips_poilookup);
+	  
+	poi_lookup_window = gtk_dialog_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (poi_lookup_window), 2);
+	gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
+	gtk_window_set_position (GTK_WINDOW (poi_lookup_window), GTK_WIN_POS_CENTER);
+	gtk_window_set_type_hint (GTK_WINDOW (poi_lookup_window), GDK_WINDOW_TYPE_HINT_DIALOG);
+	
+	dialog_vbox_poisearch = GTK_DIALOG (poi_lookup_window)->vbox;
+	
+	vbox_searchbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (dialog_vbox_poisearch), vbox_searchbox, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_searchbox), 2);
+	
+	expander_poisearch = gtk_expander_new (NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_searchbox), expander_poisearch, FALSE, TRUE, 0);
+	gtk_expander_set_expanded (GTK_EXPANDER (expander_poisearch), TRUE);
+
+	/* Frame: POI Search Criteria */
+  {
+	frame_search_criteria = gtk_frame_new (NULL);
+	gtk_container_add (GTK_CONTAINER (expander_poisearch), frame_search_criteria);
+	gtk_frame_set_label_align (GTK_FRAME (frame_search_criteria), 0, 0);
+	
+	alignment_criteria = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_container_add (GTK_CONTAINER (frame_search_criteria), alignment_criteria);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_criteria), 5, 5, 12, 5);
+	
+	vbox_criteria = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (alignment_criteria), vbox_criteria);
+	
+	hbox_text = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_criteria), hbox_text, TRUE, TRUE, 0);
+	
+	label_text = gtk_label_new (_("<i>Search Text:</i>"));
+	gtk_box_pack_start (GTK_BOX (hbox_text), label_text, FALSE, FALSE, 0);
+	gtk_label_set_use_markup (GTK_LABEL (label_text), TRUE);
+	
+	entry_text = gtk_entry_new ();
+	criteria.text = GTK_ENTRY (entry_text);
+	gtk_box_pack_start (GTK_BOX (hbox_text), entry_text, TRUE, TRUE, 5);
+	gtk_entry_set_max_length (GTK_ENTRY (entry_text), 255);
+	g_signal_connect (entry_text, "activate",
+				GTK_SIGNAL_FUNC (evaluate_poi_search_cb), &criteria);
+	
+	/* Button to activate POI search */
+	button_search = gtk_button_new_from_stock ("gtk-find");
+	gtk_box_pack_start (GTK_BOX (hbox_text), button_search, FALSE, FALSE, 5);
+	g_signal_connect (button_search, "clicked",
+				GTK_SIGNAL_FUNC (evaluate_poi_search_cb), &criteria);
+	
+	/* Distance selection */
+	hbox_distance = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_criteria), hbox_distance, TRUE, TRUE, 0);
+	
+	label_distance = gtk_label_new (_("<i>max. Distance:</i>"));
+	gtk_box_pack_start (GTK_BOX (hbox_distance), label_distance, FALSE, FALSE, 10);
+	gtk_label_set_use_markup (GTK_LABEL (label_distance), TRUE);
+	gtk_label_set_single_line_mode (GTK_LABEL (label_distance), TRUE);
+	
+	entry_distance = gtk_entry_new ();
+	criteria.distance = GTK_ENTRY (entry_distance);
+	gtk_box_pack_start (GTK_BOX (hbox_distance), entry_distance, FALSE, TRUE, 0);
+	gtk_entry_set_max_length (GTK_ENTRY (entry_distance), 5);
+	gtk_entry_set_text (GTK_ENTRY (entry_distance), _("10"));
+	gtk_entry_set_width_chars (GTK_ENTRY (entry_distance), 5);
+	g_signal_connect (entry_distance, "activate",
+				GTK_SIGNAL_FUNC (evaluate_poi_search_cb), &criteria);
+	
+	label_distfrom = gtk_label_new (_("km from"));
+	gtk_box_pack_start (GTK_BOX (hbox_distance), label_distfrom, FALSE, FALSE, 0);
+	
+	radiobutton_distcurrent = gtk_radio_button_new_with_mnemonic (NULL, _("current position"));
+	gtk_box_pack_start (GTK_BOX (hbox_distance), radiobutton_distcurrent, FALSE, FALSE, 15);
+	gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_distcurrent), radiobutton_distance_group);
+	radiobutton_distance_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_distcurrent));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_distcurrent), TRUE);
+	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_distcurrent, 
+				_("Search near current Position"), NULL);
+	g_signal_connect (radiobutton_distcurrent, "toggled",
+				GTK_SIGNAL_FUNC (searchdistancemode_cb), NULL);
+	
+	radiobutton_distcursor = gtk_radio_button_new_with_mnemonic (NULL, _("Destination/Cursor"));
+	gtk_box_pack_start (GTK_BOX (hbox_distance), radiobutton_distcursor, FALSE, FALSE, 10);
+	gtk_container_set_border_width (GTK_CONTAINER (radiobutton_distcursor), 5);
+	gtk_button_set_focus_on_click (GTK_BUTTON (radiobutton_distcursor), FALSE);
+	gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_distcursor), radiobutton_distance_group);
+	radiobutton_distance_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_distcursor));
+	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_distcursor, 
+ 				_("Search near selected Destination (or Cursor-Position, when in Pos. Mode)"), NULL);
+	 
+	/* POI-Type Selection */
+	hbox_type = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_criteria), hbox_type, TRUE, TRUE, 0);
+
+	label_type = gtk_label_new (_("<i>POI-Types:</i>"));
+	gtk_box_pack_start (GTK_BOX (hbox_type), label_type, FALSE, FALSE, 10);
+	gtk_label_set_use_markup (GTK_LABEL (label_type), TRUE);
+	gtk_label_set_single_line_mode (GTK_LABEL (label_type), TRUE);
+	
+	button_types = gtk_button_new_with_mnemonic ("...");
+	gtk_box_pack_end (GTK_BOX (hbox_type), button_types, FALSE, FALSE, 0);
+	
+	comboboxentry_type = gtk_combo_box_entry_new ();
+	gtk_box_pack_end (GTK_BOX (hbox_type), comboboxentry_type, TRUE, TRUE, 5);
+	gtk_widget_set_sensitive ( comboboxentry_type, FALSE );
+  
+	radiobutton_typeall = gtk_radio_button_new_with_mnemonic (NULL, _("all"));
+	gtk_box_pack_start (GTK_BOX (hbox_type), radiobutton_typeall, FALSE, FALSE, 10);
+	gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_typeall), radiobutton_type_group);
+	radiobutton_type_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_typeall));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_typeall), TRUE);
+	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_typeall,
+				_("Search all POI-Categories"), NULL);
+	
+	radiobutton_typesel = gtk_radio_button_new_with_mnemonic (NULL, _("selected:"));
+	gtk_box_pack_start (GTK_BOX (hbox_type), radiobutton_typesel, FALSE, FALSE, 10);
+	gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_typesel), radiobutton_type_group);
+	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_typesel,
+				_("Search only in selected POI-Categories"), NULL);
+	
+	g_signal_connect_swapped (radiobutton_typesel, "toggled",
+				GTK_SIGNAL_FUNC (searchpoitypemode_cb), comboboxentry_type);
+
+	// ### disable POI-Type selection buttons, until the functionality is completely implemented:
+	gtk_widget_set_sensitive ( radiobutton_typesel, FALSE );
+	gtk_widget_set_sensitive ( button_types, FALSE );
+
+	label_criteria = gtk_label_new (_("Search Criteria"));
+	gtk_widget_show (label_criteria);
+	gtk_expander_set_label_widget (GTK_EXPANDER (expander_poisearch), label_criteria);
+  }
+	
+	/* Frame: POI-Results */
+  {
+  frame_poiresults = gtk_frame_new (NULL);
+  gtk_box_pack_start (GTK_BOX (vbox_searchbox), frame_poiresults, TRUE, TRUE, 5);
+  gtk_frame_set_label_align (GTK_FRAME (frame_poiresults), 0.02, 0.5);
+
+  alignment_poiresults = gtk_alignment_new (0.5, 0.5, 1, 1);
+  gtk_container_add (GTK_CONTAINER (frame_poiresults), alignment_poiresults);
+  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_poiresults), 2, 2, 2, 2);
+
+  vbox_poiresults = gtk_vbox_new (FALSE, 0);
+  gtk_container_add (GTK_CONTAINER (alignment_poiresults), vbox_poiresults);
+
+  scrolledwindow_poilist = gtk_scrolled_window_new (NULL, NULL);
+  gtk_box_pack_start (GTK_BOX (vbox_poiresults), scrolledwindow_poilist, TRUE, TRUE, 0);
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_SHADOW_IN);
+
+  treeview_poilist = gtk_tree_view_new_with_model (GTK_TREE_MODEL (poi_result_tree));
+
+  renderer_poilist = gtk_cell_renderer_pixbuf_new ();
+  column_poilist = gtk_tree_view_column_new_with_attributes ("_", renderer_poilist, "pixbuf", RESULT_TYPE_ICON, NULL);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+
+  renderer_poilist = gtk_cell_renderer_text_new ();
+  column_poilist = gtk_tree_view_column_new_with_attributes (
+  						_("Name"), renderer_poilist,
+						"text", RESULT_NAME,
+						NULL);
+  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_NAME);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+
+  renderer_poilist = gtk_cell_renderer_text_new ();
+  column_poilist = gtk_tree_view_column_new_with_attributes (
+  						_("Distance"), renderer_poilist,
+						"text", RESULT_DISTANCE,
+						NULL);
+  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_DIST_NUM);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+
+  renderer_poilist = gtk_cell_renderer_text_new ();
+  column_poilist = gtk_tree_view_column_new_with_attributes (
+  						_("Type"), renderer_poilist,
+  						"text", RESULT_TYPE_TITLE,
+						NULL);
+  g_object_set (G_OBJECT (renderer_poilist),
+						"foreground-gdk", textback,
+						NULL);
+  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_TYPE_TITLE);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+
+  renderer_poilist = gtk_cell_renderer_text_new ();
+  column_poilist = gtk_tree_view_column_new_with_attributes (
+  						_("Comment"), renderer_poilist,
+						"text", RESULT_COMMENT,
+						NULL);
+  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_COMMENT);
+  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+
+  gtk_container_add (GTK_CONTAINER (scrolledwindow_poilist), treeview_poilist);
+  gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_poilist), TRUE);
+  //gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (treeview_poilist), TRUE);
+
+	poilist_select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_poilist));
+	gtk_tree_selection_set_mode (poilist_select, GTK_SELECTION_SINGLE);
+	g_signal_connect (G_OBJECT (poilist_select), "changed",
+					G_CALLBACK (select_poi_cb), NULL);
+
+  hbox_poistatus = gtk_hbox_new (FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox_poiresults), hbox_poistatus, FALSE, TRUE, 0);
+
+	statusbar_poilist = gtk_statusbar_new ();
+	gtk_box_pack_start (GTK_BOX (hbox_poistatus), statusbar_poilist, TRUE, TRUE, 0);
+	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar_poilist), FALSE);
+	statusbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar_poilist), "poilist");
+	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, _(" Please enter your search criteria!"));
+	
+	 // button "POI-Info"
+  togglebutton_poiinfo = gtk_toggle_button_new ();
+  gtk_box_pack_start (GTK_BOX (hbox_poistatus), togglebutton_poiinfo, FALSE, FALSE, 0);
+  alignment_poiinfo = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_container_add (GTK_CONTAINER (togglebutton_poiinfo), alignment_poiinfo);
+  hbox11 = gtk_hbox_new (FALSE, 2);
+  gtk_container_add (GTK_CONTAINER (alignment_poiinfo), hbox11);
+  image_poiinfo = gtk_image_new_from_stock ("gtk-info", GTK_ICON_SIZE_BUTTON);
+  gtk_box_pack_start (GTK_BOX (hbox11), image_poiinfo, FALSE, FALSE, 0);
+  label_poiinfo = gtk_label_new_with_mnemonic (_("POI-Info"));
+  gtk_box_pack_start (GTK_BOX (hbox11), label_poiinfo, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip ( tooltips_poilookup, togglebutton_poiinfo, 
+  						_("Show detailed Information for selected Point of Interest"), NULL);
+
+  // disable POI-Info button, until the functionality is completed:
+  gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
+
+  label_results = gtk_label_new (_("Results"));
+  gtk_frame_set_label_widget (GTK_FRAME (frame_poiresults), label_results);
+  gtk_label_set_use_markup (GTK_LABEL (label_results), TRUE);
+  }
+  
+  dialog_action_area_poisearch = GTK_DIALOG (poi_lookup_window)->action_area;
+
+  // button "add to route"
+  button_addtoroute = gtk_button_new ();
+  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_addtoroute, 0);
+  GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
+  alignment_addtoroute = gtk_alignment_new (0.5, 0.5, 0, 0);
+  gtk_container_add (GTK_CONTAINER (button_addtoroute), alignment_addtoroute);
+  hbox_addtoroute = gtk_hbox_new (FALSE, 2);
+  gtk_container_add (GTK_CONTAINER (alignment_addtoroute), hbox_addtoroute);
+  image_addtoroute = gtk_image_new_from_stock ("gtk-add", GTK_ICON_SIZE_BUTTON);
+  gtk_box_pack_start (GTK_BOX (hbox_addtoroute), image_addtoroute, FALSE, FALSE, 0);
+  label_addtoroute = gtk_label_new_with_mnemonic (_("Add to Route"));
+  gtk_box_pack_start (GTK_BOX (hbox_addtoroute), label_addtoroute, FALSE, FALSE, 0);
+  gtk_tooltips_set_tip ( tooltips_poilookup, button_addtoroute, 
+  						_("Add selected entry to Route"), NULL);
+
+  // button "delete POI"
+  button_delete = gtk_button_new_from_stock ("gtk-delete");
+  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_delete, 0);
+  GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip ( tooltips_poilookup, button_delete, 
+  						_("Delete selected entry"), NULL);
+
+  // button "jump to"
+  button_jumpto = gtk_button_new_from_stock ("gtk-jump-to");
+  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_jumpto, 0);
+  GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
+  						_("Jump to selected entry"), NULL);
+
+  // button "close"
+  button_close = gtk_button_new_from_stock ("gtk-close");
+  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_close, GTK_RESPONSE_CLOSE);
+  GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
+  gtk_tooltips_set_tip ( tooltips_poilookup, button_close, 
+  						_("Close this window"), NULL);
+  g_signal_connect_swapped (button_close, "clicked",
+  					GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
+
+  gtk_widget_show_all (poi_lookup_window);
+}
+
+
 
 int gui_init (void) {
 

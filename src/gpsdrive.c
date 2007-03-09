@@ -54,6 +54,7 @@ Disclaimer: Please do not use for navigation.
      Wilfried Hemp <Wilfried.Hemp@t-online.de>
      pdana@mail.utexas.edu
      timecop@japan.co.jp
+	 Guenther Meyer <d.s.e@sordidmusic.com>
 */
 
 /*  Include Dateien */
@@ -112,9 +113,6 @@ Disclaimer: Please do not use for navigation.
 
 #ifndef NOPLUGINS
 #include "gmodule.h"
-#endif
-#ifdef USETELEATLAS
-#include "gpsnavlib.h"
 #endif
 
 /*  Defines for gettext I18n */
@@ -501,7 +499,7 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Misc. Menu/M_essages/_Send message to mobile target"), 
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
     {N_("/_Misc. Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
-    {N_("/_Misc. Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_DIALOG_INFO},
+    {N_("/_Misc. Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_ABOUT},
     {N_("/_Misc. Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
     {N_("/_Misc. Menu/_Quit"),               NULL, (gpointer) quit_program,  0, NULL }
 };
@@ -1797,11 +1795,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (zoomscale)
 		draw_zoom_scale ();
-
-#ifdef USETELEATLAS
-	/* display the streetname */
-	ta_displaystreetname (actualstreetname);
-#endif
 
 
 	if (havekismet && (kismetsock>=0))
@@ -3769,7 +3762,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		addwaypoint (wp_name, wp_type, current_lat, current_lon);
 	}
 
-	// Add waypoint a current mouse location
+	// Add waypoint at current mouse location
 	if ((toupper (event->keyval)) == 'Y')
 	{
 
@@ -4178,7 +4171,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 2, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 3, TRUE);
 	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 4, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 4, TRUE);
+	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 5, TRUE);
 
 	scrwindow = gtk_scrolled_window_new (NULL, NULL);
 	gtk_container_add (GTK_CONTAINER (scrwindow), mylist);
@@ -4351,7 +4344,7 @@ main (int argc, char *argv[])
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
     GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;
     GtkWidget *menuwin = NULL, *menuwin2 = NULL;
-    GtkWidget *zoomout_bt, *sel_target, *vtable, *wplabeltable, *alignment1;
+    GtkWidget *zoomout_bt, *vtable, *wplabeltable, *alignment1;
     GtkWidget *alignment2;
     gchar maintitle[100];
     /*   GdkColor farbe;   */
@@ -4381,9 +4374,6 @@ main (int argc, char *argv[])
     gint nmenu_items = sizeof (main_menu) / sizeof (main_menu[0]);
     GdkPixbuf *mainwindow_icon_pixbuf;
     gdouble f;
-#ifdef USETELEATLAS
-    GtkWidget *navibt;
-#endif
     
     tzset ();
     gmt_time = time (NULL);
@@ -4420,7 +4410,7 @@ main (int argc, char *argv[])
     haveposcount = haveGARMIN = debug = 0;
     zoom = 1;
     milesflag = iszoomed = FALSE;
-    sel_target = NULL;
+    find_poi_bt = NULL;
 #ifdef DBUS_ENABLE
     useDBUS = FALSE;
 #endif
@@ -4900,6 +4890,7 @@ main (int argc, char *argv[])
 			GTK_SIGNAL_FUNC (key_cb), NULL);
 
     frame_status = gtk_statusbar_new ();
+	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (frame_status), FALSE);
     statusid =
 	gtk_statusbar_get_context_id (GTK_STATUSBAR (frame_status), "main");
 
@@ -5050,36 +5041,6 @@ main (int argc, char *argv[])
 	    gtk_box_pack_start (GTK_BOX (vbox_poi),   sqlbt,          FALSE, FALSE, 0 * PADDING);
     }
 
-#ifdef USETELEATLAS
-    {
-	GtkWidget *image3, *hbox3, *alignment3, *label;
-
-	ta_init ();
-	navibt = gtk_button_new ();
-	gtk_signal_connect (GTK_OBJECT (navibt),
-			    "clicked", GTK_SIGNAL_FUNC (navi_cb),
-			    (gpointer) 1);
-	gtk_widget_show (navibt);
-	alignment3 = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
-	gtk_widget_show (alignment3);
-	gtk_container_add (GTK_CONTAINER (navibt), alignment3);
-
-
-	hbox3 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox3);
-	gtk_container_add (GTK_CONTAINER (alignment3), hbox3);
-
-	image3 = create_pixmap (mainwindow, "pixmaps/gpsiconbt.png");
-	gtk_widget_show (image3);
-	gtk_box_pack_start (GTK_BOX (hbox3), image3, FALSE, FALSE, 0);
-	label = gtk_label_new_with_mnemonic (_("_Navigation"));
-	gtk_box_pack_start (GTK_BOX (hbox3), label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
-
-
-    }
-#endif
-
     /* PORTING */
     /*   setup_bt = gtk_button_new_with_label (_("Setup")); */
     setup_bt = gtk_button_new_from_stock (GTK_STOCK_PREFERENCES);
@@ -5160,21 +5121,21 @@ main (int argc, char *argv[])
 			    (gpointer) 2);
     }
 
-    /*  Select target button */
+    /*  Find POI button */
     /*    if (maxwp > 0) */
     {
-	/* PORTING */
-	/*     sel_target = gtk_button_new_with_label (_("Select target")); */
-	sel_target = gtk_button_new_from_stock (GTK_STOCK_FIND);
-	/*     gtk_label_set_text(GTK_BUTTON(sel_target),_("Select target")); */
-	gtk_signal_connect (GTK_OBJECT (sel_target),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (sel_target_cb),
-			    (gpointer) 2);
-	/*        GTK_WIDGET_SET_FLAGS (sel_target, GTK_CAN_DEFAULT); */
+	find_poi_bt = gtk_button_new_from_stock (GTK_STOCK_FIND);
+	if (!usesql)
+	{
+		gtk_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
+				GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 2);
+	}
+	else
+	{
+		gtk_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
+				GTK_SIGNAL_FUNC (poi_lookup_cb), (gpointer) 2);
+	}
     }
-
-
 
 
     /*    gtk_window_set_default (GTK_WINDOW (mainwindow), zoomin_bt); */
@@ -5498,12 +5459,9 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (vbox), hbox3, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (hbox3), scaler_left_bt, TRUE, TRUE,	1 * PADDING);
     gtk_box_pack_start (GTK_BOX (hbox3), scaler_right_bt, TRUE, TRUE,	1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), sel_target, FALSE, FALSE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (vbox), find_poi_bt, FALSE, FALSE, 1 * PADDING);
     //gtk_box_pack_start (GTK_BOX (vbox), startgps_bt, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
-#ifdef USETELEATLAS
-    gtk_box_pack_start (GTK_BOX (vbox), navibt, FALSE, FALSE,     1 * PADDING);
-#endif
     hboxlow = vbox2 = NULL;
 
 
@@ -5788,7 +5746,7 @@ main (int argc, char *argv[])
 	{
 	    gtk_box_pack_start (GTK_BOX (hbig), vbig, TRUE, TRUE,
 				1 * PADDING);
-	    //      gtk_container_add (GTK_CONTAINER (mainwindow), vmenubig);
+	    //gtk_container_add (GTK_CONTAINER (mainwindow), vmenubig);
 	    gtk_container_add (GTK_CONTAINER (mainwindow), hbig);
 	}
 
@@ -5943,11 +5901,6 @@ main (int argc, char *argv[])
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
 			      _("Show waypoints on the map"), NULL);
 
-#ifdef USETELEATLAS
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), navibt,
-			      _("Navigation menu. Enter here your destination."),
-			      NULL);
-#endif
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
 			      _("Settings for GpsDrive"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin_bt,
@@ -5960,8 +5913,8 @@ main (int argc, char *argv[])
 			      _("Select the next less detailed map"), NULL);
 	/*    if (maxwp > 0) */
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
-			      sel_target,
-			      _("Select here a destination from the waypoint list"),
+			      find_poi_bt,
+			      _("Find Points of Interest and select as destination"),
 			      NULL);
 	if (scaler_widget)
 	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
@@ -5993,7 +5946,7 @@ main (int argc, char *argv[])
 
 
 	/*    gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),,_(""),NULL); */
-	gtk_tooltips_set_delay (GTK_TOOLTIPS (tooltips), 1000);
+	gtk_tooltips_set_delay (GTK_TOOLTIPS (tooltips), TOOLTIP_DELAY);
     }
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
     /*  set the timers */
@@ -6024,7 +5977,6 @@ main (int argc, char *argv[])
     gtk_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
     gtk_timeout_add (15000, (GtkFunction) getsqldata, 0);
-    gtk_timeout_add (2000, (GtkFunction) nav_doit, NULL);
     if ( battery_get_values () )
 	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
 			 NULL);

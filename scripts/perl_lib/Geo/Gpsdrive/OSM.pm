@@ -882,7 +882,7 @@ sub delete_existing_entries($){
 sub get_source_id($){
     my $type = shift;
 
-    my $source = "OpenStreetMap.org $type";
+    my $source = "osm.$type";
 
     my $source_id = Geo::Gpsdrive::DBFuncs::source_name2id($source);
 

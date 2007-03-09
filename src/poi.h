@@ -34,7 +34,7 @@ Disclaimer: Please do not use for navigation.
 
 typedef struct
 {
-  gint    wp_id;
+  gint    poi_id;
   gdouble lon;
   gdouble lat;
   gdouble alt;
@@ -63,8 +63,8 @@ void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
-void
-get_poi_type_list (void);
+void get_poi_type_list (void);
+guint poi_get_results (const gchar *text, const gchar *dist, const gint posflag, const gchar *type);
 
 typedef struct
 {
@@ -80,5 +80,17 @@ typedef struct
 } poi_type_struct;
 #define poi_type_list_max 1000
 
+enum {
+	RESULT_ID,
+	RESULT_NAME,
+	RESULT_COMMENT,
+	RESULT_TYPE_TITLE,
+	RESULT_TYPE_ICON,
+	RESULT_DISTANCE,
+	RESULT_DIST_NUM,
+	RESULT_LAT,
+	RESULT_LON,
+	RES_COLUMS
+	};
 
 #endif /* GPSDRIVE_POI_H */

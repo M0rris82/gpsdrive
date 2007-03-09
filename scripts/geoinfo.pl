@@ -162,7 +162,7 @@ GetOptions (
 	     'no-delete'           => \$no_delete,
 	     'd+'                  => \$DEBUG,
 	     'debug+'              => \$DEBUG,      
-	     'verbose+'            => \$VERBOSE,
+	     'verbose'            => \$VERBOSE,
 	     'v+'                  => \$VERBOSE,
 	     'debug_range=s'       => \$debug_range,      
 	     'no-mirror'           => \$no_mirror,

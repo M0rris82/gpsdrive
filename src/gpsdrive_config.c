@@ -325,6 +325,7 @@ readconfig ()
 
     /* Defaults */
     local_config.showwaypoints = TRUE;
+	local_config.showtooltips =TRUE;
     g_strlcpy (local_config.icon_theme, "square.big", sizeof (local_config.icon_theme));
 
     // open Config File

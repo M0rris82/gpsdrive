@@ -43,8 +43,10 @@ void readconfig ();
 
 typedef struct
 {
-    char icon_theme[500];
-    gint showwaypoints;
+	char icon_theme[500];
+	gint showwaypoints;
+	gint showtooltips;
+	gint results_max;
 }
 local_gpsdrive_config;
 

@@ -48,11 +48,7 @@ bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -105,8 +101,8 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	draw_tracks.h gpsdrive.h gpssql.c gpskismet.c gpskismet.h \
 	icons.c icons.h gui.c gui.h LatLong-UTMconversion.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
-	geometry.c map_handler.c gpsproto.h talogo.h import_map.c \
-	import_map.h routes.c routes.h download_map.c download_map.h \
+	geometry.c map_handler.c gpsproto.h import_map.c import_map.h \
+	routes.c routes.h download_map.c download_map.h \
 	map_projection.c speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c ../config.h gettext.h garmin_data.cpp \
@@ -359,11 +355,11 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	gpskismet.c gpskismet.h icons.c icons.h gui.c gui.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
 	gpsnasamap.c gpsmisc.c geometry.c map_handler.c gpsproto.h \
-	talogo.h import_map.c import_map.h routes.c routes.h \
-	download_map.c download_map.h map_projection.c \
-	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c ../config.h \
-	gettext.h $(am__append_1)
+	import_map.c import_map.h routes.c routes.h download_map.c \
+	download_map.h map_projection.c speech_strings.c \
+	speech_strings.h gps_handler.c gps_handler.h nmea_handler.c \
+	nmea_handler.h unit_test.c ../config.h gettext.h \
+	$(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp

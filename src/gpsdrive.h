@@ -50,27 +50,14 @@ Disclaimer: Please do not use for navigation.
 /*** Number of elements in an array */
 #define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
 
-/*
- * Mod by Rick Richardson:
- *
- * There ought to be a 3-way selection for lat/lon display:
- * 	DMS	DD MM SS.SS	(quaint, but is it useful?)
- * 	MinDec	DD MM.MMM	(e.g. Geocaching)
- * 	DegDec	DD.DDDDDD
- * But the current gpsdrive GUI has only a 2-way toggle.
- *
- * Set this to 1 to prefer MinDec vs. DMS
- */
 
-  
-#define PREFER_MinDec	0
-
- /*
-  * Aditional mod by Oddgeir Kvien to adopt for 3-way selection
-  */
-#define LATLON_DEGDEC	0
-#define LATLON_DMS 	1
-#define LATLON_MINDEC	2
+ /* Formats for coordinate display  */
+enum
+{
+	LATLON_DEGDEC,
+	LATLON_DMS,
+	LATLON_MINDEC,
+};
 
 /*  size of the bearing pointer, default is 50 */
 #define PSIZE real_psize
@@ -81,7 +68,7 @@ Disclaimer: Please do not use for navigation.
 
 #define MAXBIG 50000
 
-/*  How oft do we redraw the screen (in milliseconds) */
+/*  How often do we redraw the screen (in milliseconds) */
 #define REDRAWTIMER 300
 /*  How often do we ask for positioning data */
 #define TIMER 500
@@ -169,6 +156,8 @@ $PSRF108,0*32            WAAS/EGNOS off
 
 #define MAXDBNAME 30
 
+#define TOOLTIP_DELAY 1000
+
 /*
  * Declarations.
  */
@@ -233,6 +222,10 @@ gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 gint pos_cb (GtkWidget * widget, guint datum);
 gint streets_draw_cb (GtkWidget * widget, guint datum);
+
+// Some of these shouldn't be necessary, once all the gui stuff is finally moved
+GtkWidget *find_poi_bt;
+
 
 /* I didn't want to start a friends.h ;-) */
 void drawfriends (void);

@@ -60,10 +60,6 @@ Disclaimer: Please do not use for navigation.
 #include "gmodule.h"
 #endif
 
-#ifdef USETELEATLAS
-#include "gpsnavlib.h"
-#endif
-
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)

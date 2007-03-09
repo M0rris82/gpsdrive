@@ -79,7 +79,6 @@ SET(gpsdrive_SRCS
   geometry.c
   map_handler.c
   gpsproto.h
-  talogo.h
   import_map.c
   import_map.h
   routes.c

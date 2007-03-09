@@ -53,7 +53,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gui.c gui.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
-	map_handler.c gpsproto.h talogo.h \
+	map_handler.c gpsproto.h \
 	import_map.c import_map.h\
 	routes.c routes.h \
         download_map.c download_map.h \

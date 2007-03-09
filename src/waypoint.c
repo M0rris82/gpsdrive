@@ -126,6 +126,7 @@ extern gchar oldfilename[2048];
 extern gint routemode;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
+extern GList *poi_types_formatted;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
@@ -521,15 +522,15 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 
 	i = deleteline;
 	if (posmode) {
-		gtk_clist_get_text (GTK_CLIST (mylist), i, 2, &p);
-		coordinate_string2gdouble(p, &posmode_lat);
 		gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
+		coordinate_string2gdouble(p, &posmode_lat);
+		gtk_clist_get_text (GTK_CLIST (mylist), i, 4, &p);
 		coordinate_string2gdouble(p, &posmode_lon);
 	}
 
-	/*if ((!posmode) && (!simmode))
+	if ((!posmode) && (!simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
-					      TRUE);*/
+					      TRUE);
 	getsqldata ();
 	reinsertwp_cb (NULL, 0);
 	sel_targetweg_cb (NULL, 0);
@@ -861,9 +862,9 @@ setwp_cb (GtkWidget * widget, guint datum)
 	g_snprintf (str, sizeof (str), "%s: %s", _("To"), targetname);
 	tn = g_strdelimit (str, "_", ' ');
 	gtk_frame_set_label (GTK_FRAME (destframe), tn);
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 2, &p);
-	coordinate_string2gdouble(p, &target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
+	coordinate_string2gdouble(p, &target_lat);
+	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
 	coordinate_string2gdouble(p, &target_lon);
 	/* if posmode enabled set posmode_lat/lon */
 	if (posmode) {

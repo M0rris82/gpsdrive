@@ -33,7 +33,7 @@ Disclaimer: Please do not use for navigation.
 #include <sys/stat.h>
 #include <time.h>
 #include <sys/time.h>
-
+#include <math.h>
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
@@ -76,7 +76,7 @@ extern GdkColor textback;
 extern GdkColor textbacknew;
 extern GdkColor grey;
 
-extern gdouble current_long, current_lat;
+extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
@@ -97,8 +97,14 @@ extern char poitypetable[MAXDBNAME];
 
 // keep actual visible POIs in Memory
 poi_struct *poi_list;
+
+// keep POI info from last search result in Memory
+poi_struct *poi_result;
+GtkListStore *poi_result_tree;
+
 glong poi_nr;			// current number of poi to count
 glong poi_list_count;			// max index of POIs actually in memory
+guint poi_result_count;		// max index of POIs found in POI search
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
 gint poi_draw = FALSE;
 
@@ -109,12 +115,232 @@ PangoLayout *poi_label_layout;
 
 poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
+GtkTreeStore *poi_types_tree;
+
 
 /* ******************************************************************   */
 
 void poi_rebuild_list (void);
 void get_poi_type_list (void);
 
+
+/* *******************************************************
+ */
+void
+build_poi_types_tree (GtkTreeStore *tree)
+{
+	gint i, j;
+	GtkTreeIter *iter[poi_type_list_count];
+
+	for (iter[0] = NULL, j = 1; j <=poi_type_list_count; j++)
+	{
+		iter[j] = (GtkTreeIter *) g_malloc(sizeof(GtkTreeIter));
+	}
+	
+	tree = gtk_tree_store_new (1, G_TYPE_STRING);
+	
+	gtk_tree_store_append (tree, iter[1], NULL);
+	gtk_tree_store_set (tree, iter[1], 0, "Unknown", -1);
+	for (i = 2; i <= poi_type_list_count; i++)
+	{
+		if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
+		{
+			gtk_tree_store_append (tree, iter[i], NULL);
+			gtk_tree_store_set (tree, iter[i], 0, poi_type_list[i].name, -1);
+		}
+	}		
+
+}
+	
+
+
+
+/* *******************************************************
+ * search database for POIs filtered by data entered
+ * into the POI-Lookup window
+ */
+guint
+poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gchar *type)
+{
+	gdouble lat, lon, dist;
+	gdouble lat_min, lon_min;
+	gdouble lat_max, lon_max;
+	gdouble dist_lat, dist_lon;
+	gdouble temp_lon, temp_lat;
+	gdouble temp_dist_num;
+	
+	char sql_query[5000];
+	char type_filter[3000];
+	char tmp_text[255];
+	char temp_dist[15];
+	int r, rges;
+	int temp_id;
+	
+	GtkTreeIter iter;
+  
+	// ### set limit for testing purposes,
+	// TODO: should be done in setttings.
+	local_config.results_max = 500;
+
+	// clear results from last search	
+	gtk_list_store_clear (poi_result_tree);
+	
+	dist = g_strtod (pdist, NULL);
+	
+	if (posflag)
+	{
+		lat = 0;									 // TODO: insert destination here! ###
+		lon = 0;
+	}
+	else
+	{
+		lat = current_lat;
+		lon = current_lon;
+	}
+	
+ 	// calculate bbox around starting point derived from specified distance
+	//   latitude: 1 degree = 111,13 km
+	//   longitude: 1 degree = 111,13 km * cos(latitude)
+	// (this is not very accurate, but should be suitable for filtering pois)
+	dist_lat = fabs (dist/111.13);
+	if (lat==90.0 || lat ==-90.0)
+		dist_lon = 180;
+	else
+		dist_lon = fabs (dist/(111.13*cos(lat)));
+	
+	lat_min = lat-dist_lat;
+	lon_min = lon-dist_lon;
+	lat_max = lat+dist_lat;
+	lon_max = lon+dist_lon;
+	
+	if (mydebug > 25)
+	{
+		fprintf (stderr, "  --- lat: %f  lon: %f  dist: %f\n", lat, lon, dist);
+		fprintf (stderr, "  --- lat_min: %f  lat_max: %f  dist_lat: %f\n", lat_min, lat_max, dist_lat);
+		fprintf (stderr, "  --- lon_min: %f  lon_max: %f  dist_lon: %f\n", lon_min, lon_max, dist_lon);
+	}
+	
+	if (lon_min < -180.0) lon_min = -180.0;
+	if (lon_max > 180.0) lon_max = 180.0;
+	if (lat_min < -90.0) lat_min = -90.0;
+	if (lat_max > 90.0) lat_max = 90.0;
+	
+	// choose poi_type_ids to search
+	if (g_strcasecmp(type, "0") != 0)
+	{
+		g_snprintf (type_filter, sizeof (type_filter), "AND (poi_type_id IN (%s))",type);
+	}
+	else
+	{
+		g_snprintf (type_filter, sizeof (type_filter), " ");
+	}
+
+	// prepare search text for database query
+	g_strlcpy (tmp_text, text, sizeof (tmp_text));
+	g_strdelimit (tmp_text, "'", '_');
+	g_strdelimit (tmp_text, "*", '%');
+		
+ 	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT poi_id,name,comment,poi_type_id,lon,lat FROM poi "
+		"WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
+		"AND (name LIKE '%%%s%%') %s LIMIT %d;",
+		lat_min, lat_max, lon_min, lon_max, text, type_filter, local_config.results_max);
+  
+	if (mydebug > 20)
+		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
+
+	if (dl_mysql_query (&mysql, sql_query))
+	{
+		printf ("poi_get_results: Error in query: \n");
+		fprintf (stderr, "poi_get_results: Error in query: %s\n",
+				dl_mysql_error (&mysql));
+		return 0;
+	}
+
+	if (!(res = dl_mysql_store_result (&mysql)))
+	{
+		fprintf (stderr, "Error in store results: %s\n",
+				dl_mysql_error (&mysql));
+		dl_mysql_free_result (res);
+		res = NULL;
+		return 0;
+	}
+	
+	rges = r = 0;
+	poi_nr = 0;
+	while ((row = dl_mysql_fetch_row (res)))
+	{
+		rges++;
+		
+		if (mydebug > 20)
+			fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
+					row[0], row[1], row[2], row[3]);
+		// get next free mem for point
+		poi_nr++;
+		if (poi_nr > poi_limit)
+		{
+			poi_limit = poi_nr + 10000;
+			if (mydebug > 20)
+				g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
+			poi_result = g_renew (poi_struct, poi_result, poi_limit);
+			if (NULL == poi_result)
+			{
+				g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
+				poi_limit = -1;
+				return 0;
+			}
+	    }
+
+		// Save retrieved poi information into structure
+		(poi_result + poi_nr)->poi_id = (gint) g_strtod (row[0], NULL);
+				g_strlcpy ((poi_result + poi_nr)->name, row[1], sizeof ((poi_result + poi_nr)->name));
+		if (row[2] == NULL)
+			g_strlcpy ((poi_result + poi_nr)->comment, "n/a", sizeof ((poi_result + poi_nr)->comment));		
+		else
+			g_strlcpy ((poi_result + poi_nr)->comment, row[2], sizeof ((poi_result + poi_nr)->comment));		
+		(poi_result + poi_nr)->poi_type_id = (gint) g_strtod (row[3], NULL);
+		temp_id = (gint) g_strtod (row[3], NULL);
+		(poi_result + poi_nr)->lon = g_strtod (row[4], NULL);
+		temp_lon = g_strtod (row[4], NULL);
+		(poi_result + poi_nr)->lat = g_strtod (row[5], NULL);
+		temp_lat = g_strtod (row[5], NULL);
+		temp_dist_num = calcdist (temp_lon, temp_lat);
+		g_snprintf (temp_dist, sizeof (temp_dist), "%9.3f", temp_dist_num);
+		
+		gtk_list_store_append (poi_result_tree, &iter);
+		gtk_list_store_set (poi_result_tree, &iter,
+								RESULT_ID, (poi_result + poi_nr)->poi_id,
+								RESULT_NAME, (poi_result + poi_nr)->name,
+								RESULT_COMMENT,  (poi_result + poi_nr)->comment,
+								RESULT_TYPE_TITLE, poi_type_list[temp_id].title,
+								RESULT_TYPE_ICON, poi_type_list [temp_id].icon,
+								RESULT_DISTANCE, temp_dist,
+								RESULT_DIST_NUM, temp_dist_num,
+								RESULT_LAT, temp_lat,
+								RESULT_LON, temp_lon,
+								-1);
+	}
+
+	poi_result_count = poi_nr;
+
+	if (mydebug > 20)
+		printf (_("%ld(%d) rows read\n"), poi_list_count, rges);
+
+	if (!dl_mysql_eof (res))
+	{
+		fprintf (stderr, "poi_get_results: Error in dl_mysql_eof: %s\n",
+				dl_mysql_error (&mysql));
+		dl_mysql_free_result (res);
+		res = NULL;
+		return 0;
+	}
+
+	dl_mysql_free_result (res);
+	res = NULL;
+	
+	return poi_result_count;
+
+}
 
 
 /* *******************************************************
@@ -172,16 +398,31 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 void
 poi_init (void)
 {
-  poi_limit = 40000;
-  poi_list = g_new (poi_struct, poi_limit);
-  if (poi_list == NULL)
-    {
-      g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
-      poi_limit = -1;
-      return;
-    }
+	poi_limit = 40000;
+	poi_list = g_new (poi_struct, poi_limit);
+	poi_result = g_new (poi_struct, poi_limit);
+	if (poi_list == NULL || poi_result == NULL)
+	{
+		g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
+		poi_limit = -1;
+		return;
+	}
 
-  get_poi_type_list ();
+	poi_result_tree = gtk_list_store_new (RES_COLUMS,
+															G_TYPE_INT,				// poi.poi_id
+															G_TYPE_STRING,		// poi.name
+															G_TYPE_STRING,		// poi.comment
+															G_TYPE_STRING,		// poi_type.title
+															GDK_TYPE_PIXBUF,	// poi_type.icon
+															G_TYPE_STRING,		// formatted distance
+															G_TYPE_DOUBLE,		// numerical distance
+															G_TYPE_DOUBLE,		// numerical latitude
+															G_TYPE_DOUBLE		// numerical longitude
+															);
+	
+	get_poi_type_list ();
+	//build_poi_types_tree (poi_types_tree);
+	
 }
 
 
@@ -232,8 +473,6 @@ poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 void
 get_poi_type_list (void)
 {
-  char sql_query[3000];
-
   if (mydebug > 25)
     printf ("get_poi_type_list()\n");
 
@@ -248,7 +487,7 @@ get_poi_type_list (void)
 
   int counter = 0;
   
-  if (!usesql) // get poi_type info from icons.xml if no database is used
+  // get poi_type info from icons.xml
   {
 	  xmlTextReaderPtr xml_reader;
 	  gchar iconsxml_file[200];
@@ -494,110 +733,6 @@ get_poi_type_list (void)
 	  return;
 
   }
-  else  // get poi_type info from poi_type table, if in sql mode
-  {
-	    g_snprintf (sql_query, sizeof (sql_query),
-	      "SELECT poi_type_id,name,scale_min,scale_max,description FROM %s ORDER BY poi_type_id;",poitypetable);
-
-	  if (mydebug > 25)
-	    fprintf (stderr, "get_poi_type_list: query: %s\n", sql_query);
-
-  	if (dl_mysql_query (&mysql, sql_query))
-    {
-    	fprintf (stderr, "get_poi_type_list: Error in query: %s\n",
-	    dl_mysql_error (&mysql));
-      	return;
-    }
-
-  	if (!(res = dl_mysql_store_result (&mysql)))
-    {
-       fprintf (stderr, "get_poi_type_list: Error in store results: %s\n",
-	      dl_mysql_error (&mysql));
-       dl_mysql_free_result (res);
-       res = NULL;
-       return;
-    }
-
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      // --------- 0: poi_type_id
-      int index = (gint) g_strtod (row[0], NULL);
-      if (index >= poi_type_list_max)
-	{
-	  fprintf (stderr,
-		   "get_poi_type_list: index(%d) > poi_type_list_max(%d)\n",
-		   index, poi_type_list_max);
-	  continue;
-	};
-
-      if (poi_type_list_count < index)
-	poi_type_list_count = index;
-
-      poi_type_list[index].poi_type_id = index;
-
-
-      // --------- 1: symbol name
-      if ( row[1] != NULL ) 
-	  {
-	      g_strlcpy (poi_type_list[index].name, row[1],
-			 sizeof (poi_type_list[index].name));
-	      g_strlcpy (poi_type_list[index].icon_name, row[1],
-		     sizeof (poi_type_list[index].icon_name));
-
-	  if (mydebug > 98)
-	      printf ("get_poi_type_list: %3d:Icon '%s' for '%s'\n",
-		      index, poi_type_list[index].icon_name, poi_type_list[index].name);
-	  poi_type_list[index].icon =
-	    read_themed_icon (poi_type_list[index].icon_name);
-
-	  if (poi_type_list[index].icon == NULL)
-	    {
-	      if (mydebug > 10)
-		printf ("get_poi_type_list: %3d:Icon '%s' for '%s'\tnot found\n",
-			index, poi_type_list[index].icon_name, poi_type_list[index].name);
-	      if (do_unit_test)
-		{
-		  exit (-1);
-		}
-	    }
-	  else
-	    {
-	      if (mydebug > 30)
-		printf
-		  ("get_poi_type_list: %3d\tfor '%s'\n",
-		   index, poi_type_list[index].name);
-	      counter++;
-	    }
-	}
-
-      // --------- 2: scale_min
-      poi_type_list[index].scale_min = (gint) g_strtod (row[2], NULL);
-
-      // --------- 3: scale_max 
-      poi_type_list[index].scale_max = (gint) g_strtod (row[3], NULL);
-    
-
-      // --------- 4: description
-	  g_strlcpy (poi_type_list[index].description, row[4],
-	 	     sizeof (poi_type_list[index].description));
-	
-    }	
-		
-
-  if (!dl_mysql_eof (res))
-    {
-      fprintf (stderr, "get_poi_type_list: Error in dl_mysql_eof: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return;
-    }
-
-  dl_mysql_free_result (res);
-  res = NULL;
-
-  }
-	
 	
   if (mydebug > 20)
     fprintf (stderr,
@@ -680,8 +815,6 @@ poi_rebuild_list (void)
   
   if (mydebug > 20)
   {
-	printf ("MIN: Lat: %.6f   Lon: %.6f\n",lat_min,lon_min);
-	printf ("MAX: Lat: %.6f   Lon: %.6f\n",lat_max,lon_max);
     printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
   }
   

@@ -85,11 +85,6 @@ draw_zoom_scale2 (MapGC *mgc, int width, int height,
 	   (width - 20), height - 20,
 	   (width - 20), height - 20 + 10, 0);
 
-#ifdef USETELEATLAS
-  /* display the streetname */
-  ta_displaystreetname (actualstreetname);
-#endif
-
   /*  draw zoom factor */
   snprintf (txt, sizeof (txt), "%lfx", zoom);
 

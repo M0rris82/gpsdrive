@@ -81,9 +81,6 @@ Disclaimer: Please do not use for navigation.
 #ifndef NOPLUGINS
 #include "gmodule.h"
 #endif
-#ifdef USETELEATLAS
-#include "gpsnavlib.h"
-#endif
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -1138,4 +1135,3 @@ void get_proxy_from_env()
 		}
 	}
 }
-

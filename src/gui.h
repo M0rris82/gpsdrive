@@ -30,14 +30,17 @@ Disclaimer: Please do not use for navigation.
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
 
+void poi_lookup_cb (GtkWidget *calling_button);
+void poi_info_cb (void);
 
 int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
+
 
 /* this will be changed to following once -s command line option is dropped */
 //int create_main_window (gchar *geom, gint *usegeom);
 
 int resize_all (void);
 
-int gui_int (void);
+int gui_init (void);
 
 #endif /* GPSDRIVE_GUI_H */
