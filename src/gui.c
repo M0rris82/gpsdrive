@@ -529,7 +529,8 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 						RESULT_LON, &target_lon,
 						-1);
 			
-			fprintf (stdout, " -> %f / %f\n", target_lat, target_lon);
+			if (mydebug>50)
+				fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
 			
         }
 		
@@ -846,6 +847,10 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
 	gtk_window_set_position (GTK_WINDOW (poi_lookup_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_type_hint (GTK_WINDOW (poi_lookup_window), GDK_WINDOW_TYPE_HINT_DIALOG);
+	if (pdamode)
+		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window), real_screen_x, real_screen_y);
+	else
+		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window), -1, 400);
 	
 	dialog_vbox_poisearch = GTK_DIALOG (poi_lookup_window)->vbox;
 	
@@ -974,74 +979,73 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	
 	/* Frame: POI-Results */
   {
-  frame_poiresults = gtk_frame_new (NULL);
-  gtk_box_pack_start (GTK_BOX (vbox_searchbox), frame_poiresults, TRUE, TRUE, 5);
-  gtk_frame_set_label_align (GTK_FRAME (frame_poiresults), 0.02, 0.5);
+	frame_poiresults = gtk_frame_new (NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_searchbox), frame_poiresults, TRUE, TRUE, 5);
+	gtk_frame_set_label_align (GTK_FRAME (frame_poiresults), 0.02, 0.5);
 
-  alignment_poiresults = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_container_add (GTK_CONTAINER (frame_poiresults), alignment_poiresults);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_poiresults), 2, 2, 2, 2);
+	alignment_poiresults = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_container_add (GTK_CONTAINER (frame_poiresults), alignment_poiresults);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_poiresults), 2, 2, 2, 2);
 
-  vbox_poiresults = gtk_vbox_new (FALSE, 0);
-  gtk_container_add (GTK_CONTAINER (alignment_poiresults), vbox_poiresults);
+	vbox_poiresults = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (alignment_poiresults), vbox_poiresults);
 
-  scrolledwindow_poilist = gtk_scrolled_window_new (NULL, NULL);
-  gtk_box_pack_start (GTK_BOX (vbox_poiresults), scrolledwindow_poilist, TRUE, TRUE, 0);
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_SHADOW_IN);
+	scrolledwindow_poilist = gtk_scrolled_window_new (NULL, NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_poiresults), scrolledwindow_poilist, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_poilist), GTK_SHADOW_IN);
 
-  treeview_poilist = gtk_tree_view_new_with_model (GTK_TREE_MODEL (poi_result_tree));
+	treeview_poilist = gtk_tree_view_new_with_model (GTK_TREE_MODEL (poi_result_tree));
 
-  renderer_poilist = gtk_cell_renderer_pixbuf_new ();
-  column_poilist = gtk_tree_view_column_new_with_attributes ("_", renderer_poilist, "pixbuf", RESULT_TYPE_ICON, NULL);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+	renderer_poilist = gtk_cell_renderer_pixbuf_new ();
+	column_poilist = gtk_tree_view_column_new_with_attributes ("_", renderer_poilist, "pixbuf", RESULT_TYPE_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
 
-  renderer_poilist = gtk_cell_renderer_text_new ();
-  column_poilist = gtk_tree_view_column_new_with_attributes (
-  						_("Name"), renderer_poilist,
-						"text", RESULT_NAME,
-						NULL);
-  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_NAME);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+	renderer_poilist = gtk_cell_renderer_text_new ();
+	column_poilist = gtk_tree_view_column_new_with_attributes (
+				_("Name"), renderer_poilist,
+				"text", RESULT_NAME,
+				NULL);
+	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_NAME);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
 
-  renderer_poilist = gtk_cell_renderer_text_new ();
-  column_poilist = gtk_tree_view_column_new_with_attributes (
-  						_("Distance"), renderer_poilist,
-						"text", RESULT_DISTANCE,
-						NULL);
-  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_DIST_NUM);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+	renderer_poilist = gtk_cell_renderer_text_new ();
+	column_poilist = gtk_tree_view_column_new_with_attributes (
+				_("Distance"), renderer_poilist,
+				"text", RESULT_DISTANCE,
+				NULL);
+	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_DIST_NUM);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
 
-  renderer_poilist = gtk_cell_renderer_text_new ();
-  column_poilist = gtk_tree_view_column_new_with_attributes (
-  						_("Type"), renderer_poilist,
-  						"text", RESULT_TYPE_TITLE,
-						NULL);
-  g_object_set (G_OBJECT (renderer_poilist),
-						"foreground-gdk", textback,
-						NULL);
-  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_TYPE_TITLE);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+	renderer_poilist = gtk_cell_renderer_text_new ();
+	column_poilist = gtk_tree_view_column_new_with_attributes (
+				_("Type"), renderer_poilist,
+				"text", RESULT_TYPE_TITLE,
+			NULL);
+	g_object_set (G_OBJECT (renderer_poilist),
+				"foreground-gdk", textback,
+				NULL);
+	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_TYPE_TITLE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
 
-  renderer_poilist = gtk_cell_renderer_text_new ();
-  column_poilist = gtk_tree_view_column_new_with_attributes (
-  						_("Comment"), renderer_poilist,
-						"text", RESULT_COMMENT,
-						NULL);
-  gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_COMMENT);
-  gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
+	renderer_poilist = gtk_cell_renderer_text_new ();
+	column_poilist = gtk_tree_view_column_new_with_attributes (
+				_("Comment"), renderer_poilist,
+				"text", RESULT_COMMENT,
+				NULL);
+	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_COMMENT);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
 
-  gtk_container_add (GTK_CONTAINER (scrolledwindow_poilist), treeview_poilist);
-  gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_poilist), TRUE);
-  //gtk_tree_view_set_fixed_height_mode (GTK_TREE_VIEW (treeview_poilist), TRUE);
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_poilist), treeview_poilist);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_poilist), TRUE);
 
 	poilist_select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_poilist));
 	gtk_tree_selection_set_mode (poilist_select, GTK_SELECTION_SINGLE);
 	g_signal_connect (G_OBJECT (poilist_select), "changed",
 					G_CALLBACK (select_poi_cb), NULL);
 
-  hbox_poistatus = gtk_hbox_new (FALSE, 0);
-  gtk_box_pack_start (GTK_BOX (vbox_poiresults), hbox_poistatus, FALSE, TRUE, 0);
+	hbox_poistatus = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_poiresults), hbox_poistatus, FALSE, TRUE, 0);
 
 	statusbar_poilist = gtk_statusbar_new ();
 	gtk_box_pack_start (GTK_BOX (hbox_poistatus), statusbar_poilist, TRUE, TRUE, 0);
@@ -1049,69 +1053,75 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	statusbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar_poilist), "poilist");
 	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, _(" Please enter your search criteria!"));
 	
-	 // button "POI-Info"
-  togglebutton_poiinfo = gtk_toggle_button_new ();
-  gtk_box_pack_start (GTK_BOX (hbox_poistatus), togglebutton_poiinfo, FALSE, FALSE, 0);
-  alignment_poiinfo = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_container_add (GTK_CONTAINER (togglebutton_poiinfo), alignment_poiinfo);
-  hbox11 = gtk_hbox_new (FALSE, 2);
-  gtk_container_add (GTK_CONTAINER (alignment_poiinfo), hbox11);
-  image_poiinfo = gtk_image_new_from_stock ("gtk-info", GTK_ICON_SIZE_BUTTON);
-  gtk_box_pack_start (GTK_BOX (hbox11), image_poiinfo, FALSE, FALSE, 0);
-  label_poiinfo = gtk_label_new_with_mnemonic (_("POI-Info"));
-  gtk_box_pack_start (GTK_BOX (hbox11), label_poiinfo, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip ( tooltips_poilookup, togglebutton_poiinfo, 
-  						_("Show detailed Information for selected Point of Interest"), NULL);
+	// button "POI-Info"
+	togglebutton_poiinfo = gtk_toggle_button_new ();
+	gtk_box_pack_start (GTK_BOX (hbox_poistatus), togglebutton_poiinfo, FALSE, FALSE, 0);
+	alignment_poiinfo = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (togglebutton_poiinfo), alignment_poiinfo);
+	hbox11 = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_poiinfo), hbox11);
+	image_poiinfo = gtk_image_new_from_stock ("gtk-info", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox11), image_poiinfo, FALSE, FALSE, 0);
+	label_poiinfo = gtk_label_new_with_mnemonic (_("POI-Info"));
+	gtk_box_pack_start (GTK_BOX (hbox11), label_poiinfo, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip ( tooltips_poilookup, togglebutton_poiinfo, 
+				_("Show detailed Information for selected Point of Interest"), NULL);
 
-  // disable POI-Info button, until the functionality is completed:
-  gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
+	// disable POI-Info button, until the functionality is completed:
+	gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
 
-  label_results = gtk_label_new (_("Results"));
-  gtk_frame_set_label_widget (GTK_FRAME (frame_poiresults), label_results);
-  gtk_label_set_use_markup (GTK_LABEL (label_results), TRUE);
+	label_results = gtk_label_new (_("Results"));
+	gtk_frame_set_label_widget (GTK_FRAME (frame_poiresults), label_results);
+	gtk_label_set_use_markup (GTK_LABEL (label_results), TRUE);
   }
   
-  dialog_action_area_poisearch = GTK_DIALOG (poi_lookup_window)->action_area;
+	dialog_action_area_poisearch = GTK_DIALOG (poi_lookup_window)->action_area;
 
-  // button "add to route"
-  button_addtoroute = gtk_button_new ();
-  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_addtoroute, 0);
-  GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
-  alignment_addtoroute = gtk_alignment_new (0.5, 0.5, 0, 0);
-  gtk_container_add (GTK_CONTAINER (button_addtoroute), alignment_addtoroute);
-  hbox_addtoroute = gtk_hbox_new (FALSE, 2);
-  gtk_container_add (GTK_CONTAINER (alignment_addtoroute), hbox_addtoroute);
-  image_addtoroute = gtk_image_new_from_stock ("gtk-add", GTK_ICON_SIZE_BUTTON);
-  gtk_box_pack_start (GTK_BOX (hbox_addtoroute), image_addtoroute, FALSE, FALSE, 0);
-  label_addtoroute = gtk_label_new_with_mnemonic (_("Add to Route"));
-  gtk_box_pack_start (GTK_BOX (hbox_addtoroute), label_addtoroute, FALSE, FALSE, 0);
-  gtk_tooltips_set_tip ( tooltips_poilookup, button_addtoroute, 
-  						_("Add selected entry to Route"), NULL);
+	// button "add to route"
+	button_addtoroute = gtk_button_new ();
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_addtoroute, 0);
+	GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
+	alignment_addtoroute = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_addtoroute), alignment_addtoroute);
+	hbox_addtoroute = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_addtoroute), hbox_addtoroute);
+	image_addtoroute = gtk_image_new_from_stock ("gtk-add", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_addtoroute), image_addtoroute, FALSE, FALSE, 0);
+	label_addtoroute = gtk_label_new_with_mnemonic (_("Add to Route"));
+	gtk_box_pack_start (GTK_BOX (hbox_addtoroute), label_addtoroute, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_addtoroute, 
+	_("Add selected entry to Route"), NULL);
+	// ### disable button until functionality is implemented:
+		gtk_widget_set_sensitive (button_addtoroute, FALSE);
 
-  // button "delete POI"
-  button_delete = gtk_button_new_from_stock ("gtk-delete");
-  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_delete, 0);
-  GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip ( tooltips_poilookup, button_delete, 
-  						_("Delete selected entry"), NULL);
+	// button "delete POI"
+	button_delete = gtk_button_new_from_stock ("gtk-delete");
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_delete, 0);
+	GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_delete, 
+				_("Delete selected entry"), NULL);
+	// ### disable button until functionality is implemented:
+		gtk_widget_set_sensitive (button_delete, FALSE);
 
-  // button "jump to"
-  button_jumpto = gtk_button_new_from_stock ("gtk-jump-to");
-  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_jumpto, 0);
-  GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
-  						_("Jump to selected entry"), NULL);
+	// button "jump to"
+	button_jumpto = gtk_button_new_from_stock ("gtk-jump-to");
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_jumpto, 0);
+	GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
+				_("Jump to selected entry"), NULL);
+	// ### disable button until functionality is implemented:
+		gtk_widget_set_sensitive (button_jumpto, FALSE);
 
-  // button "close"
-  button_close = gtk_button_new_from_stock ("gtk-close");
-  gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_close, GTK_RESPONSE_CLOSE);
-  GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
-  gtk_tooltips_set_tip ( tooltips_poilookup, button_close, 
-  						_("Close this window"), NULL);
-  g_signal_connect_swapped (button_close, "clicked",
-  					GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
+	// button "close"
+	button_close = gtk_button_new_from_stock ("gtk-close");
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_close, GTK_RESPONSE_CLOSE);
+	GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_close, 
+				_("Close this window"), NULL);
+	g_signal_connect_swapped (button_close, "clicked",
+				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
 
-  gtk_widget_show_all (poi_lookup_window);
+	gtk_widget_show_all (poi_lookup_window);
 }
 
 

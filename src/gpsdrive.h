@@ -57,6 +57,7 @@ enum
 	LATLON_DEGDEC,
 	LATLON_DMS,
 	LATLON_MINDEC,
+	LATLON_N_FORMATS
 };
 
 /*  size of the bearing pointer, default is 50 */

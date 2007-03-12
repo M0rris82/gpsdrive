@@ -36,6 +36,7 @@ Disclaimer: Please do not use for navigation.
      Daniel Hiepler <rigid@akatash.de>
      Darazs Attila <zumi@freestart.hu>
      Fritz Ganter <ganter@ganter.at>
+	 Guenther Meyer <d.s.e@sordidmusic.com>
      J.D. Schmidt <jdsmobile@gmail.com>
      Jan-Benedict Glaw <jbglaw@lug-owl.de>
      Joerg Ostertag <gpsdrive@ostertag.name>
@@ -54,7 +55,6 @@ Disclaimer: Please do not use for navigation.
      Wilfried Hemp <Wilfried.Hemp@t-online.de>
      pdana@mail.utexas.edu
      timecop@japan.co.jp
-	 Guenther Meyer <d.s.e@sordidmusic.com>
 */
 
 /*  Include Dateien */
@@ -284,6 +284,7 @@ gint nlist[] = { 500,
 #endif
 
 GtkWidget *label_lat, *label_lon;
+GtkWidget *eventbox_lat, *eventbox_lon;
 GtkWidget *label_map_filename, *label_map_scale;
 GtkWidget *label_heading, *label_baering, *label_timedest;
 GtkWidget *label_prefscale, *mute_bt, *sqlbt;
@@ -3169,6 +3170,18 @@ minsec_cb (GtkWidget * widget, guint datum)
 }
 
 /* *****************************************************************************
+ *  toggle coordinate format mode 
+ */
+gint
+toggle_minsec_cb (GtkWidget *widget)
+{
+	minsecmode++;
+	if (minsecmode >= LATLON_N_FORMATS)
+		minsecmode = 0;
+	return TRUE;
+}
+
+/* *****************************************************************************
  *  switching sat level/sat position display 
  */
 gint
@@ -4289,14 +4302,14 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 	GtkWidget *cancel_button;
 	
 	fdialog = gtk_file_chooser_dialog_new (_("Select a track file"),
-		      GTK_WINDOW (mainwindow),
-		      GTK_FILE_CHOOSER_ACTION_OPEN,
-		      NULL);
+				GTK_WINDOW (mainwindow),
+				GTK_FILE_CHOOSER_ACTION_OPEN,
+				NULL, NULL);
 	
 	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
 	
-	cancel_button = gtk_dialog_add_button (fdialog, GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	ok_button = gtk_dialog_add_button (fdialog, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
+	cancel_button = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	ok_button = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
 		
 	gtk_signal_connect (GTK_OBJECT
 			    (ok_button),
@@ -5289,8 +5302,8 @@ main (int argc, char *argv[])
     create_battery_widget(hbox2);
 
 
-    // if (pdamode)
-    // gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
+    if (!pdamode)
+		gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
 
     if ( mydebug >99 ) fprintf(stderr , "create DISTANCE Frames\n");
     // Frame --- distance to destination 
@@ -5534,11 +5547,21 @@ main (int argc, char *argv[])
     etch_cb (NULL, 0);
 
     if ( mydebug >99 ) fprintf(stderr , "Frame lat/lon\n");
-    label_lat = gtk_label_new (_("000,00000N"));
-    gtk_container_add (GTK_CONTAINER (frame_lat), label_lat);
+	label_lat = gtk_label_new (_("000,00000N"));
+	eventbox_lat = gtk_event_box_new ();
+	gtk_widget_add_events (eventbox_lat, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect (eventbox_lat, "button_press_event",
+				GTK_SIGNAL_FUNC (toggle_minsec_cb), NULL);
+	gtk_container_add (GTK_CONTAINER (eventbox_lat), label_lat);
+	gtk_container_add (GTK_CONTAINER (frame_lat), eventbox_lat);
 
-    label_lon = gtk_label_new (_("000,00000E"));
-    gtk_container_add (GTK_CONTAINER (frame_lon), label_lon);
+	label_lon = gtk_label_new (_("000,00000E"));
+	eventbox_lon = gtk_event_box_new ();
+	gtk_widget_add_events (eventbox_lon, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect (eventbox_lon, "button_press_event",
+				GTK_SIGNAL_FUNC (toggle_minsec_cb), NULL);
+	gtk_container_add (GTK_CONTAINER (eventbox_lon), label_lon);
+	gtk_container_add (GTK_CONTAINER (frame_lon), eventbox_lon);
 
     if ( mydebug >10 )
 	{
@@ -5775,6 +5798,7 @@ main (int argc, char *argv[])
 
 	}
 
+	gtk_window_set_auto_startup_notification (TRUE);
     gtk_widget_show_all (mainwindow);
 
 

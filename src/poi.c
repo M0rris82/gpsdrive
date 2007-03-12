@@ -1034,8 +1034,6 @@ poi_draw_list (void)
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
 
-	  //    if ((drawicon (posx, posy, "HOTEL")) == 0)
-	  {
 	    GdkPixbuf *icon;
 	    int icon_index = (poi_list + i)->poi_type_id;
 	    icon = poi_type_list[icon_index].icon;
@@ -1072,7 +1070,6 @@ poi_draw_list (void)
 	      {
 		draw_text (txt, posx, posy);
 	      }
-	  }
 	}
 
 
