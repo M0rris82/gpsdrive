@@ -79,11 +79,18 @@ extern GtkTreeStore *poi_types_tree;
 extern GtkListStore *poi_result_tree;
 
 extern gdouble target_lat, target_lon;
+extern gdouble wp_saved_target_lat;
+extern gdouble wp_saved_target_lon;
+extern gdouble wp_saved_posmode_lat;
+extern gdouble wp_saved_posmode_lon;
+extern gint posmode;
+extern gdouble posmode_lon, posmode_lat;
 
 extern GdkColor textback;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
+extern GtkWidget *drawing_area;
 
 
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
@@ -105,6 +112,9 @@ extern gint extrawinmenu, pdamode;
 extern gdouble posx, posy;
 
 /* Global Values */
+GtkWidget *poi_lookup_window;
+GtkWidget *button_delete;
+GtkWidget *button_target;
 
 
 /* included from freedesktop.org source, copyright as below do not change anything in between here and function get_window_sizing */
@@ -511,8 +521,48 @@ searchdistancemode_cb (GtkToggleButton *button, gpointer user_data)
 static void
 close_poi_lookup_window_cb (GtkWidget *window)
 {
+	/* restore saved values */
+	target_lat = wp_saved_target_lat;
+	target_lon = wp_saved_target_lon;
+	if (posmode)
+	{
+		posmode_lat = wp_saved_posmode_lat;
+		posmode_lon = wp_saved_posmode_lon;
+	}
+
 	gtk_widget_destroy (window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+}
+
+
+static void
+select_target_poi_cb (GtkWidget *window)
+{
+	gtk_widget_destroy (window);
+	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+}
+
+
+static void
+delete_poi_cb (GtkTreeSelection *selection, gpointer data)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	gint selected_poi_id = 0;
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+	{
+		if (popup_yes_no(GTK_WINDOW (poi_lookup_window), NULL) == GTK_RESPONSE_YES)
+		{
+			gtk_tree_model_get (model, &iter,
+					RESULT_ID, &selected_poi_id,
+					-1);
+			if (mydebug>20)
+				fprintf (stderr, "deleting poi with id: %d\n", selected_poi_id);
+			deletesqldata (selected_poi_id);
+			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+		}
+	}
 }
 
 
@@ -523,26 +573,45 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 	GtkTreeModel *model;
 	
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-		{
-			gtk_tree_model_get (model, &iter,
-						RESULT_LAT, &target_lat,
-						RESULT_LON, &target_lon,
-						-1);
+	{
+		gtk_tree_model_get (model, &iter,
+					RESULT_LAT, &target_lat,
+					RESULT_LON, &target_lon,
+					-1);
 			
-			if (mydebug>50)
-				fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
-			
-        }
+		if (mydebug>50)
+			fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
 		
-		
-//	coordinate_string2gdouble(p, &target_lat);
-//	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
-//	coordinate_string2gdouble(p, &target_lon);
+		gtk_widget_set_sensitive (button_delete, TRUE);
+		gtk_widget_set_sensitive (button_target, TRUE);
+	}
 
+	/* if posmode enabled set posmode_lat/lon */
+	if (posmode) {
+		posmode_lat = target_lat;
+		posmode_lon = target_lon;
+	}
 }
 
 
-
+/* *****************************************************************************
+ * Popup: Are you sure, y/n
+ */
+gint popup_yes_no (GtkWindow *parent, gchar *message)
+{
+	GtkDialog *dialog_yesno;
+	gint response_id;
+	gchar *question = _("Are you sure?");
+	
+	dialog_yesno = gtk_message_dialog_new (parent,
+									GTK_DIALOG_MODAL,
+									GTK_MESSAGE_QUESTION,
+									GTK_BUTTONS_YES_NO,
+									"%s", question);
+	response_id = gtk_dialog_run (dialog_yesno);
+	gtk_widget_destroy (GTK_WIDGET (dialog_yesno));
+	return response_id;
+}
 
 
 /* *****************************************************************************
@@ -778,7 +847,6 @@ void create_poi_info_window (void)
  */
 void poi_lookup_cb (GtkWidget *calling_button)
 {
-	GtkWidget *poi_lookup_window;
 	GtkWidget *dialog_vbox_poisearch;
 	GtkWidget *vbox_searchbox;
 	GtkWidget *expander_poisearch;
@@ -825,15 +893,26 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *hbox_addtoroute;
 	GtkWidget *image_addtoroute;
 	GtkWidget *label_addtoroute;
-	GtkWidget *button_delete;
-	GtkWidget *button_jumpto;
+	GtkWidget *alignment_target;
+	GtkWidget *hbox_target;
+	GtkWidget *image_target;
+	GtkWidget *label_target;
 	GtkWidget *button_close;
 	GtkTooltips *tooltips_poilookup;
 	
 	criteria.posflag = 0;
 	criteria.result_count = 0;
-	
+
 	gtk_widget_set_sensitive (find_poi_bt, FALSE);
+
+	/* save old target/posmode for cancel event */
+	wp_saved_target_lat = target_lat;
+	wp_saved_target_lon = target_lon;
+	if (posmode)
+	{
+		wp_saved_posmode_lat = posmode_lat;
+		wp_saved_posmode_lon = posmode_lon;
+	}
 	
 	tooltips_poilookup = gtk_tooltips_new();
 	gtk_tooltips_set_delay (tooltips_poilookup, TOOLTIP_DELAY);
@@ -933,7 +1012,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_distcursor), radiobutton_distance_group);
 	radiobutton_distance_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_distcursor));
 	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_distcursor, 
- 				_("Search near selected Destination (or Cursor-Position, when in Pos. Mode)"), NULL);
+ 				_("Search near selected Destination"), NULL);
 	 
 	/* POI-Type Selection */
 	hbox_type = gtk_hbox_new (FALSE, 0);
@@ -1100,17 +1179,26 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_delete, 
 				_("Delete selected entry"), NULL);
-	// ### disable button until functionality is implemented:
-		gtk_widget_set_sensitive (button_delete, FALSE);
+	g_signal_connect_swapped (button_delete, "clicked",
+				GTK_SIGNAL_FUNC (delete_poi_cb), poilist_select);
 
-	// button "jump to"
-	button_jumpto = gtk_button_new_from_stock ("gtk-jump-to");
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_jumpto, 0);
-	GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
-	gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
-				_("Jump to selected entry"), NULL);
-	// ### disable button until functionality is implemented:
-		gtk_widget_set_sensitive (button_jumpto, FALSE);
+
+	// button "Select as Destination"
+	button_target = gtk_button_new ();
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_target, 0);
+	GTK_WIDGET_SET_FLAGS (button_target, GTK_CAN_DEFAULT);
+	alignment_target = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_target), alignment_target);
+	hbox_target = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_target), hbox_target);
+	image_target = gtk_image_new_from_stock ("gtk-jump-to", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_target), image_target, FALSE, FALSE, 0);
+	label_target = gtk_label_new_with_mnemonic (_("Select Destination"));
+	gtk_box_pack_start (GTK_BOX (hbox_target), label_target, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
+				_("Use selected entry as target destination"), NULL);
+	g_signal_connect_swapped (button_target, "clicked",
+				GTK_SIGNAL_FUNC (select_target_poi_cb), poi_lookup_window);
 
 	// button "close"
 	button_close = gtk_button_new_from_stock ("gtk-close");
@@ -1121,14 +1209,58 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (button_close, "clicked",
 				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
 
+	/*disable buttons until POI is selected from list */
+	gtk_widget_set_sensitive (button_delete, FALSE);
+	gtk_widget_set_sensitive (button_target, FALSE);
+
 	gtk_widget_show_all (poi_lookup_window);
 }
 
 
+/* *****************************************************************************
+ * Button: Add new Waypoint
+ */
+void create_button_add_wp (void)
+{
+	GtkWidget *add_wp_bt;
+	gchar imagefile[400];
+	GdkPixbuf *pixmap = NULL;
+	
+	local_config.showaddwpbutton = TRUE; // ###
+	
+	if (local_config.showaddwpbutton)
+	{
+		g_snprintf (imagefile, sizeof (imagefile), "%s/gpsdrive/%s", DATADIR, "pixmaps/add_waypoint.png");
+		pixmap = gdk_pixbuf_new_from_file (imagefile, NULL);
+		if (imagefile == NULL)
+		{
+			fprintf (stderr, _("\nWarning: unable to open 'add waypoint' picture\nPlease install the program as root with:\nmake install\n\n"));
+			return;
+		}
+		
+		add_wp_bt = gtk_button_new ();
+		gtk_button_set_relief (GTK_BUTTON (add_wp_bt), GTK_RELIEF_NONE);
+		gtk_button_set_image (GTK_BUTTON (add_wp_bt), GTK_WIDGET (pixmap));
+		gtk_container_add (GTK_CONTAINER (drawing_area), add_wp_bt);
+		gtk_widget_show_all (add_wp_bt);
+		return;
+	}
+	else
+	{
+		return;
+	}
+}
 
-int gui_init (void) {
+/* *****************************************************************************
+ * GUI Init:
+ * This will call all the necessary functions to init the graphical interface
+ */
+int gui_init (void)
+{
 
+	//create_mainwindow();
 
-
+	//create_button_add_wp();
+	
     return 0;
 }

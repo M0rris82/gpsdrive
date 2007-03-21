@@ -33,6 +33,8 @@ Disclaimer: Please do not use for navigation.
 void poi_lookup_cb (GtkWidget *calling_button);
 void poi_info_cb (void);
 
+gint popup_yes_no (GtkWindow *parent, gchar *message);
+
 int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
 
 

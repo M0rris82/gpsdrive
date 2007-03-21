@@ -397,7 +397,7 @@ sub write_named_point($) {
 	if ( $poi_type_id ) {
 	    my $values;
 	    $values->{'poi.source_id'} = $SOURCE_ID_NODE;
-	    $values->{'poi.name'}      = $node->{name}||$node->{name}||$node->{ref}||'';
+	    $values->{'poi.name'}      = $node->{name}||$node->{ref}||'Unknown OSM POI';
 	    $values->{'poi.lat'}       = $node->{lat};
 	    $values->{'poi.lon'}       = $node->{lon};
 	    $values->{'poi.poi_type_id'} = $poi_type_id;

@@ -788,7 +788,7 @@ about_cb (GtkWidget * widget, guint datum)
 	pixmap = gdk_pixbuf_new_from_file (xpmfile, NULL);
 	if (pixmap == NULL)
 	{
-		fprintf (stderr, _("\nWarning: unable to open splash picture\nPlease install the program as root with:\nmake install\n\n"));
+		fprintf (stderr, _("\nWarning: unable to open logo picture\nPlease install the program as root with:\nmake install\n\n"));
 		return TRUE;
 	}
 	gtk_about_dialog_set_logo (about_window, pixmap);

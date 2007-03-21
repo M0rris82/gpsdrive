@@ -1704,7 +1704,7 @@ draw_zoom_scale (void)
 
 	/* Print the actual scale bar lines */
 	gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	/* horizonthal */
+	/* horizontal */
 	gdk_draw_line (drawable, kontext,
 		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y,
 		       (SCREEN_X - dist_x), SCREEN_Y - dist_y );
@@ -5918,7 +5918,7 @@ main (int argc, char *argv[])
 				  _("Disable output of speech"), NULL);
 	if (usesql)
 	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sqlbt,
-				  _("Use SQL server for waypoints"),
+				  _("If this one is enabled, newly added waypoints are stored in the SQL Database; otherwise the selected way.txt file is used."),
 				  NULL);
     
 	/*    if (maxwp > 0) */
@@ -6028,7 +6028,9 @@ main (int argc, char *argv[])
     needtosave = FALSE;
 
 	// this one will be used in future development...
-	//gui_init ();
+	// When all the basic gui stuff is finally moved into gui.c, this will call the
+	// necessary functions for graphical initialization.
+	gui_init ();
 
     poi_init ();
     wlan_init ();

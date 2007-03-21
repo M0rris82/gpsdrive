@@ -77,12 +77,16 @@ extern GdkColor textbacknew;
 extern GdkColor grey;
 
 extern gdouble current_lon, current_lat;
+extern gdouble wp_saved_target_lat, wp_saved_target_lon;
+extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
+extern gint posmode;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
+extern gdouble dbdistance;
 extern char dbpoifilter[5000];
 
 char txt[5000];
@@ -151,8 +155,6 @@ build_poi_types_tree (GtkTreeStore *tree)
 	}		
 
 }
-	
-
 
 
 /* *******************************************************
@@ -179,23 +181,33 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	GtkTreeIter iter;
   
 	// ### set limit for testing purposes,
-	// TODO: should be done in setttings.
+	// TODO: should be editable in settings.
 	local_config.results_max = 500;
 
 	// clear results from last search	
 	gtk_list_store_clear (poi_result_tree);
 	
 	dist = g_strtod (pdist, NULL);
+	if (dist <= 0)
+		dist = dbdistance;
 	
 	if (posflag)
 	{
-		lat = 0;									 // TODO: insert destination here! ###
-		lon = 0;
+		lat = wp_saved_target_lat;
+		lon = wp_saved_target_lon;
 	}
 	else
 	{
-		lat = current_lat;
-		lon = current_lon;
+		if (posmode)
+		{
+			lat = wp_saved_posmode_lat;
+			lon = wp_saved_posmode_lon;
+		}
+		else
+		{
+			lat = current_lat;
+			lon = current_lon;
+		}
 	}
 	
  	// calculate bbox around starting point derived from specified distance
@@ -408,21 +420,32 @@ poi_init (void)
 		return;
 	}
 
+	/* init gtk-list for storage of results of poi-search */
 	poi_result_tree = gtk_list_store_new (RES_COLUMS,
-															G_TYPE_INT,				// poi.poi_id
-															G_TYPE_STRING,		// poi.name
-															G_TYPE_STRING,		// poi.comment
-															G_TYPE_STRING,		// poi_type.title
-															GDK_TYPE_PIXBUF,	// poi_type.icon
-															G_TYPE_STRING,		// formatted distance
-															G_TYPE_DOUBLE,		// numerical distance
-															G_TYPE_DOUBLE,		// numerical latitude
-															G_TYPE_DOUBLE		// numerical longitude
+															G_TYPE_INT,				/* poi.poi_id */
+															G_TYPE_STRING,		/* poi.name */
+															G_TYPE_STRING,		/* poi.comment */
+															G_TYPE_STRING,		/* poi_type.title */
+															GDK_TYPE_PIXBUF,	/* poi_type.icon */
+															G_TYPE_STRING,		/* formatted distance */
+															G_TYPE_DOUBLE,		/* numerical distance */
+															G_TYPE_DOUBLE,		/* numerical latitude */
+															G_TYPE_DOUBLE		/* numerical longitude */
 															);
 	
+	/* init gtk-tree for storage of poi-type data */
+	poi_types_tree = gtk_tree_store_new (POITYPE_COLUMS,
+															G_TYPE_INT,				/* id */
+															G_TYPE_STRING,		/* name */
+															GDK_TYPE_PIXBUF,	/* icon */
+															G_TYPE_INT,				/* scale_min */
+															G_TYPE_INT,				/* scale_max */
+															G_TYPE_STRING,		/* description */
+															G_TYPE_STRING		/* title */
+															);
+ 
+	/* read poi-type data and icons from icons.xml */
 	get_poi_type_list ();
-	//build_poi_types_tree (poi_types_tree);
-	
 }
 
 
@@ -451,8 +474,9 @@ poi_check_if_moved (void)
 }
 
 
-/* ****************************************************************** */
-/* get poi_type_id from given poi_type name */
+/* ******************************************************************
+ * get poi_type_id from given poi_type name
+*/
 gint
 poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 {
@@ -466,15 +490,31 @@ poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 }
 
 
+/* ******************************************************************
+ * seek parent for given poi-type
+*/
+gint
+seek_parent_cb (gchar *needle)
+{
 
 
-/* ****************************************************************** */
-/* get a list of all possible poi_types and load their icons */
+	if (TRUE)		// ###
+		return TRUE;	/* return TRUE if found */
+	
+	return FALSE;
+}
+
+
+/* ******************************************************************
+ * get a list of all possible poi_types and load their icons
+*/
 void
 get_poi_type_list (void)
 {
-  if (mydebug > 25)
-    printf ("get_poi_type_list()\n");
+	GtkTreeIter iter;
+	
+	if (mydebug > 25)
+    	printf ("get_poi_type_list()\n");
 
   {				// Delete poi_type_list
     int i;
@@ -483,6 +523,8 @@ get_poi_type_list (void)
 	poi_type_list[i].icon = NULL;
 	poi_type_list[i].name[0] = '\0';
       }
+	  
+	gtk_tree_store_clear (poi_types_tree);
   }
 
   int counter = 0;
@@ -505,6 +547,7 @@ get_poi_type_list (void)
 	  gchar t_desc_lang[POI_TYPE_LIST_STRING_LENGTH];
 	  gchar t_name[POI_TYPE_LIST_STRING_LENGTH];
 	  gchar t_poi_type_id[POI_TYPE_LIST_STRING_LENGTH];
+	  gchar *t_pname, *t_ppath;
 	  
 	  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "./data/map-icons/icons.xml" );
 	  xml_reader = xmlNewTextReaderFilename(iconsxml_file);
@@ -720,7 +763,38 @@ get_poi_type_list (void)
 						        index, poi_type_list[index].icon_name, poi_type_list[index].name);
 						  if (do_unit_test) exit (-1);
 					  }
-				  }
+	
+					  /* build poi-types tree */ 
+					  
+/*	###				  t_pname = g_strrstr (t_name, ".");
+					  
+					  if (t_pname == NULL)
+					  {
+						gtk_tree_store_append (poi_types_tree, &iter, NULL);
+					  }
+					  else
+					  {
+						 t_ppath = g_strndup (t_name, t_pname-t_name);
+						  
+						fprintf (stderr, "============== %s \t\t-----> \t\t%s\n", t_name, t_ppath);
+						  
+						  gtk_tree_model_foreach (poi_types_tree, seek_parent_cb, t_ppath);
+						  
+						  gtk_tree_store_append (poi_types_tree, &iter, NULL);
+					  }
+
+*/		gtk_tree_store_append (poi_types_tree, &iter, NULL);
+					  
+					  gtk_tree_store_set (poi_types_tree, &iter,
+								POITYPE_ID, (gint) g_strtod (t_poi_type_id, NULL),
+								POITYPE_NAME, t_name,
+								POITYPE_ICON, read_themed_icon (t_name),
+								POITYPE_SCALE_MIN, (gint) g_strtod (t_scale_min, NULL),
+								POITYPE_SCALE_MAX, (gint) g_strtod (t_scale_max, NULL),
+								POITYPE_DESCRIPTION, t_description,
+								POITYPE_TITLE, t_title,
+								-1);
+ 				  }
 			  }  /* END element rule */
 			  xml_status = xmlTextReaderRead(xml_reader);
 		  }
