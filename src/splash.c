@@ -57,7 +57,7 @@ extern map_dir_struct *display_map;
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered, milesflag, nauticflag, metricflag, wp_from_sql;
+extern gint scaleprefered, milesflag, nauticflag, metricflag;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;

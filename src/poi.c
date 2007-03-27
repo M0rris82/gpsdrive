@@ -130,31 +130,31 @@ void get_poi_type_list (void);
 
 /* *******************************************************
  */
-void
-build_poi_types_tree (GtkTreeStore *tree)
-{
-	gint i, j;
-	GtkTreeIter *iter[poi_type_list_count];
+//~ void
+//~ build_poi_types_tree (GtkTreeStore *tree)
+//~ {
+	//~ gint i, j;
+	//~ GtkTreeIter *iter[poi_type_list_count];
 
-	for (iter[0] = NULL, j = 1; j <=poi_type_list_count; j++)
-	{
-		iter[j] = (GtkTreeIter *) g_malloc(sizeof(GtkTreeIter));
-	}
+	//~ for (iter[0] = NULL, j = 1; j <=poi_type_list_count; j++)
+	//~ {
+		//~ iter[j] = (GtkTreeIter *) g_malloc(sizeof(GtkTreeIter));
+	//~ }
 	
-	tree = gtk_tree_store_new (1, G_TYPE_STRING);
+	//~ tree = gtk_tree_store_new (1, G_TYPE_STRING);
 	
-	gtk_tree_store_append (tree, iter[1], NULL);
-	gtk_tree_store_set (tree, iter[1], 0, "Unknown", -1);
-	for (i = 2; i <= poi_type_list_count; i++)
-	{
-		if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
-		{
-			gtk_tree_store_append (tree, iter[i], NULL);
-			gtk_tree_store_set (tree, iter[i], 0, poi_type_list[i].name, -1);
-		}
-	}		
+	//~ gtk_tree_store_append (tree, iter[1], NULL);
+	//~ gtk_tree_store_set (tree, iter[1], 0, "Unknown", -1);
+	//~ for (i = 2; i <= poi_type_list_count; i++)
+	//~ {
+		//~ if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
+		//~ {
+			//~ gtk_tree_store_append (tree, iter[i], NULL);
+			//~ gtk_tree_store_set (tree, iter[i], 0, poi_type_list[i].name, -1);
+		//~ }
+	//~ }		
 
-}
+//~ }
 
 
 /* *******************************************************
@@ -493,11 +493,11 @@ poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 /* ******************************************************************
  * seek parent for given poi-type
 */
-gint
-seek_parent_cb (gchar *needle)
+gboolean
+seek_parent_cb (gpointer *foo, GtkTreeIter *bar, gchar *needle)
 {
 
-
+	
 	if (TRUE)		// ###
 		return TRUE;	/* return TRUE if found */
 	
@@ -764,26 +764,13 @@ get_poi_type_list (void)
 						  if (do_unit_test) exit (-1);
 					  }
 	
-					  /* build poi-types tree */ 
+					  /* build poi-types base tree */ 
 					  
-/*	###				  t_pname = g_strrstr (t_name, ".");
+					  t_pname = g_strrstr (t_name, ".");
 					  
-					  if (t_pname == NULL)
+					  //if (t_pname == NULL)
 					  {
 						gtk_tree_store_append (poi_types_tree, &iter, NULL);
-					  }
-					  else
-					  {
-						 t_ppath = g_strndup (t_name, t_pname-t_name);
-						  
-						fprintf (stderr, "============== %s \t\t-----> \t\t%s\n", t_name, t_ppath);
-						  
-						  gtk_tree_model_foreach (poi_types_tree, seek_parent_cb, t_ppath);
-						  
-						  gtk_tree_store_append (poi_types_tree, &iter, NULL);
-					  }
-
-*/		gtk_tree_store_append (poi_types_tree, &iter, NULL);
 					  
 					  gtk_tree_store_set (poi_types_tree, &iter,
 								POITYPE_ID, (gint) g_strtod (t_poi_type_id, NULL),
@@ -794,6 +781,7 @@ get_poi_type_list (void)
 								POITYPE_DESCRIPTION, t_description,
 								POITYPE_TITLE, t_title,
 								-1);
+				  	  }
  				  }
 			  }  /* END element rule */
 			  xml_status = xmlTextReaderRead(xml_reader);
@@ -802,7 +790,7 @@ get_poi_type_list (void)
 	  if (xml_status != 0)
 		  fprintf(stderr, "get_poi_type_list: Failed to parse file: %s\n", iconsxml_file);
 	  else
-		  fprintf (stdout, "Found %d POI-Types in %s\n", counter, iconsxml_file);
+		  fprintf (stdout, "Read %d POI-Types from %s\n", counter, iconsxml_file);
 	  
 	  return;
 

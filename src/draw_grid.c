@@ -90,7 +90,7 @@ extern glong mapscale;
 extern MYSQL mysql;
 extern MYSQL_RES *res;
 extern MYSQL_ROW row;
-extern gint muteflag, wp_from_sql;
+extern gint muteflag;
 extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;

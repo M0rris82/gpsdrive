@@ -115,6 +115,7 @@ extern gdouble posx, posy;
 GtkWidget *poi_lookup_window;
 GtkWidget *button_delete;
 GtkWidget *button_target;
+GtkWidget *poi_types_window;
 
 
 /* included from freedesktop.org source, copyright as below do not change anything in between here and function get_window_sizing */
@@ -594,6 +595,42 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 }
 
 
+static void
+select_poitype_cb (GtkTreeSelection *selection, gpointer data)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+	{
+		gtk_tree_model_get (model, &iter,
+					RESULT_LAT, &target_lat,
+					RESULT_LON, &target_lon,
+					-1);
+			
+		if (mydebug>50)
+			fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
+		
+	}
+
+	/* if posmode enabled set posmode_lat/lon */
+	if (posmode) {
+		posmode_lat = target_lat;
+		posmode_lon = target_lon;
+	}
+}
+
+
+static void
+toggle_window_cb (GtkWidget *window)
+{
+	if (GTK_WIDGET_VISIBLE (window))
+		gtk_widget_hide_all (window);
+	else
+		gtk_widget_show_all (window);
+}
+
+
 /* *****************************************************************************
  * Popup: Are you sure, y/n
  */
@@ -601,7 +638,7 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 {
 	GtkDialog *dialog_yesno;
 	gint response_id;
-	gchar *question = _("Are you sure?");
+	gchar *question = "Are you sure?";
 	
 	dialog_yesno = gtk_message_dialog_new (parent,
 									GTK_DIALOG_MODAL,
@@ -1025,6 +1062,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	
 	button_types = gtk_button_new_with_mnemonic ("...");
 	gtk_box_pack_end (GTK_BOX (hbox_type), button_types, FALSE, FALSE, 0);
+	g_signal_connect_swapped (button_types, "clicked",
+				GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
 	
 	comboboxentry_type = gtk_combo_box_entry_new ();
 	gtk_box_pack_end (GTK_BOX (hbox_type), comboboxentry_type, TRUE, TRUE, 5);
@@ -1132,7 +1171,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	statusbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (statusbar_poilist), "poilist");
 	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, _(" Please enter your search criteria!"));
 	
-	// button "POI-Info"
+	/* button "POI-Info" */
 	togglebutton_poiinfo = gtk_toggle_button_new ();
 	gtk_box_pack_start (GTK_BOX (hbox_poistatus), togglebutton_poiinfo, FALSE, FALSE, 0);
 	alignment_poiinfo = gtk_alignment_new (0.5, 0.5, 0, 0);
@@ -1146,7 +1185,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_tooltips_set_tip ( tooltips_poilookup, togglebutton_poiinfo, 
 				_("Show detailed Information for selected Point of Interest"), NULL);
 
-	// disable POI-Info button, until the functionality is completed:
+	// ### disable POI-Info button, until the functionality is completed:
 	gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
 
 	label_results = gtk_label_new (_("Results"));
@@ -1156,7 +1195,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
   
 	dialog_action_area_poisearch = GTK_DIALOG (poi_lookup_window)->action_area;
 
-	// button "add to route"
+	/* button "add to route" */
 	button_addtoroute = gtk_button_new ();
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_addtoroute, 0);
 	GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
@@ -1173,7 +1212,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	// ### disable button until functionality is implemented:
 		gtk_widget_set_sensitive (button_addtoroute, FALSE);
 
-	// button "delete POI"
+	/* button "delete POI" */
 	button_delete = gtk_button_new_from_stock ("gtk-delete");
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_delete, 0);
 	GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
@@ -1182,8 +1221,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (button_delete, "clicked",
 				GTK_SIGNAL_FUNC (delete_poi_cb), poilist_select);
 
-
-	// button "Select as Destination"
+	/* button "Select as Destination" */
 	button_target = gtk_button_new ();
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_target, 0);
 	GTK_WIDGET_SET_FLAGS (button_target, GTK_CAN_DEFAULT);
@@ -1200,7 +1238,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (button_target, "clicked",
 				GTK_SIGNAL_FUNC (select_target_poi_cb), poi_lookup_window);
 
-	// button "close"
+	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_close, GTK_RESPONSE_CLOSE);
 	GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
@@ -1209,11 +1247,91 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (button_close, "clicked",
 				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
 
-	/*disable buttons until POI is selected from list */
+	/* disable buttons until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
 	gtk_widget_set_sensitive (button_target, FALSE);
 
 	gtk_widget_show_all (poi_lookup_window);
+}
+
+
+/* *****************************************************************************
+ * Window: POI-Types
+ */
+GtkWidget*
+create_poi_types_window (void)
+{
+	GtkWidget *poi_types_window;
+	GtkWidget *vbox_poi_types;
+	GtkWidget *scrolledwindow_poitypes;
+	GtkWidget *hbox_status;
+	GtkWidget *statusbar;
+	GtkWidget *button_close;
+	GtkWidget *poitypes_treeview;
+	GtkCellRenderer *renderer_poitypes;
+	GtkTreeViewColumn *column_poitypes;
+	GtkTreeSelection *poitypes_select;
+
+	poi_types_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (poi_types_window), _("POI-Type Selection"));
+	if (pdamode)
+		gtk_window_set_default_size (GTK_WINDOW (poi_types_window), real_screen_x, real_screen_y);
+	else
+		gtk_window_set_default_size (GTK_WINDOW (poi_types_window), 250, 300);
+
+	vbox_poi_types = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (poi_types_window), vbox_poi_types);
+ 
+	scrolledwindow_poitypes = gtk_scrolled_window_new (NULL, NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_poi_types), scrolledwindow_poitypes, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_poitypes), GTK_SHADOW_IN);
+
+	poitypes_treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL (poi_types_tree));
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes), poitypes_treeview);
+
+	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes ("_", renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_text_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (
+				_("Name"), renderer_poitypes,
+				"text", POITYPE_TITLE,
+				NULL);
+				
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_text_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (
+				_("ID"), renderer_poitypes,
+				"text", POITYPE_NAME,
+				NULL);
+	g_object_set (G_OBJECT (renderer_poitypes),
+				"foreground-gdk", textback,
+				NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
+
+	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (poitypes_treeview), TRUE);
+	gtk_tree_view_set_search_column (GTK_TREE_VIEW (poitypes_treeview), POITYPE_TITLE);
+	poitypes_select = gtk_tree_view_get_selection (GTK_TREE_VIEW (poitypes_treeview));
+	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
+	g_signal_connect (G_OBJECT (poitypes_select), "changed",
+					G_CALLBACK (select_poitype_cb), NULL);
+
+	hbox_status = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_poi_types), hbox_status, FALSE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox_status), 2);
+
+	statusbar = gtk_statusbar_new ();
+	gtk_box_pack_start (GTK_BOX (hbox_status), statusbar, TRUE, TRUE, 0);
+	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar), FALSE);
+
+	button_close = gtk_button_new_from_stock ("gtk-close");
+	gtk_box_pack_end (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
+	g_signal_connect_swapped (button_close, "clicked", 
+				GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
+
+	return poi_types_window;
 }
 
 
@@ -1261,6 +1379,8 @@ int gui_init (void)
 	//create_mainwindow();
 
 	//create_button_add_wp();
-	
-    return 0;
+
+	poi_types_window = create_poi_types_window ();
+
+	return 0;
 }

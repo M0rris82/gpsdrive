@@ -126,90 +126,88 @@ sqlend (void)
 int
 insertsqldata (double lat, double lon, char *name, char *typ)
 {
-  char q[200], lats[20], lons[20], tname[500], ttyp[50];
-  int r, j, i, pt_id, src;
-  gchar *db_time = "2007-01-01T00:00:00.000Z";
-  GTimeVal current_time;
-	
-  if (!usesql)
-    return 0;
-  g_snprintf (lats, sizeof (lats), "%.6f", lat);
-  g_strdelimit (lats, ",", '.');
-  g_snprintf (lons, sizeof (lons), "%.6f", lon);
-  g_strdelimit (lons, ",", '.');
-  g_strdelimit (name, " ", '_');
-  g_strdelimit (typ, " ", '_');
+	char q[200], lats[20], lons[20], tname[500], ttyp[50];
+	int r, j, i, pt_id, src;
+	gchar *db_time = "2007-01-01T00:00:00.000Z";
+	GTimeVal current_time;
 
-  /* escape ' */
-  j = 0;
-  for (i = 0; i <= (int) strlen (name); i++)
-    {
-      if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
-	tname[j++] = name[i];
-      else
+	if (!usesql)
+		return 0;
+	g_snprintf (lats, sizeof (lats), "%.6f", lat);
+	g_strdelimit (lats, ",", '.');
+	g_snprintf (lons, sizeof (lons), "%.6f", lon);
+	g_strdelimit (lons, ",", '.');
+
+	/* escape ' */
+	j = 0;
+	for (i = 0; i <= (int) strlen (name); i++)
 	{
-	  tname[j++] = '\\';
-	  tname[j++] = name[i];
-	  if (mydebug > 50)
-	    g_print ("Orig. name : %s\nEscaped name : %s\n", name, tname);
+		if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
+			tname[j++] = name[i];
+		else
+		{
+			tname[j++] = '\\';
+			tname[j++] = name[i];
+			if (mydebug > 50)
+				g_print ("Orig. name : %s\nEscaped name : %s\n", name, tname);
+		}
 	}
-    }
 
-  j = 0;
-  for (i = 0; i <= (int) strlen (typ); i++)
-    {
-      if (typ[i] != '\'' && typ[i] != '\\' && typ[i] != '\"')
-	ttyp[j++] = typ[i];
-      else
+	j = 0;
+	for (i = 0; i <= (int) strlen (typ); i++)
 	{
-	  ttyp[j++] = '\\';
-	  ttyp[j++] = typ[i];
-	  if (mydebug > 50)
-	    g_print ("\n Orig. typ : %s\nEscaped typ : %s\n", typ, ttyp);
+		if (typ[i] != '\'' && typ[i] != '\\' && typ[i] != '\"')
+			ttyp[j++] = typ[i];
+		else
+		{
+			ttyp[j++] = '\\';
+			ttyp[j++] = typ[i];
+			if (mydebug > 50)
+				g_print ("\n Orig. typ : %s\nEscaped typ : %s\n", typ, ttyp);
+		}
 	}
-    }
 
-  // get poi_type_id for chosen poi_type from poi_type table
-    pt_id = poi_type_id_from_name(ttyp);
-  // set source_id at value for 'user entered data'
-    src = 3;
-  // get current date and format it for use in database
-    g_get_current_time(&current_time);
-    db_time = g_strndup(g_time_val_to_iso8601(&current_time),10);
+	/* get poi_type_id for chosen poi_type from poi_type table */
+ 	pt_id = poi_type_id_from_name(ttyp);
+	/* set source_id at value for 'user entered data' */
+	src = 3;
+	/* get current date and format it for use in database */
+	g_get_current_time(&current_time);
+	db_time = g_strndup(g_time_val_to_iso8601(&current_time),10);
 	
-  g_snprintf (q, sizeof (q),
-	"INSERT INTO %s (name,lat,lon,poi_type_id,source_id,last_modified) VALUES ('%s','%s','%s','%d','%d','%s')",
-	dbtable, tname, lats, lons, pt_id, src, db_time);
-  if (mydebug > 50)
-    printf ("query: %s\n", q);
-  if (dl_mysql_query (&mysql, q))
-    exiterr (3);
-  r = dl_mysql_affected_rows (&mysql);
-  if (mydebug > 50)
-    printf (_("rows inserted: %d\n"), r);
+	g_snprintf (q, sizeof (q),
+				"INSERT INTO %s (name,lat,lon,poi_type_id,source_id,last_modified) VALUES ('%s','%s','%s','%d','%d','%s')",
+				dbtable, tname, lats, lons, pt_id, src, db_time);
+	if (mydebug > 50)
+		printf ("query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (mydebug > 50)
+		printf (_("rows inserted: %d\n"), r);
 
-  g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
-  if (mydebug > 50)
-    printf ("insertsqldata: query: %s\n", q);
-  if (dl_mysql_query (&mysql, q))
-    exiterr (3);
-  if (!(res = dl_mysql_store_result (&mysql)))
-    {
-      dl_mysql_free_result (res);
-      res = NULL;
-      fprintf (stderr, "insert_sql_data: Error in store results: %s\n",
-	       dl_mysql_error (&mysql));
-      return -1;
-    }
-  r = 0;
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      r = strtol (row[0], NULL, 10);	/* last index */
-    }
+	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
+	if (mydebug > 50)
+		printf ("insertsqldata: query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	if (!(res = dl_mysql_store_result (&mysql)))
+	{
+		dl_mysql_free_result (res);
+		res = NULL;
+		fprintf (stderr, "insert_sql_data: Error in store results: %s\n",
+		dl_mysql_error (&mysql));
+		return -1;
+	}
+	r = 0;
+	while ((row = dl_mysql_fetch_row (res)))
+	{
+		r = strtol (row[0], NULL, 10);	/* last index */
+	}
 
-  if (mydebug > 50)
-    printf (_("last index: %d\n"), r);
-  return r;
+	if (mydebug > 50)
+		printf (_("last index: %d\n"), r);
+	return r;
 }
 
 

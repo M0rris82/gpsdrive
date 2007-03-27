@@ -91,7 +91,7 @@ extern glong mapscale;
 extern MYSQL mysql;
 extern MYSQL_RES *res;
 extern MYSQL_ROW row;
-extern gint muteflag, wp_from_sql;
+extern gint muteflag;
 extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed, posmode_lon, posmode_lat;
@@ -568,7 +568,7 @@ void
 addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 {
 	gint i;
-	if (wp_from_sql)
+	if (usesql)
 	{
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
 			       (char *) wp_type);
@@ -656,17 +656,17 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	markwaypoint = TRUE;
 
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_title (GTK_WINDOW (window), _("Add waypoint name"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Add Point of Interest"));
 
 	vbox = gtk_vbox_new (TRUE, 2);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), vbox, TRUE,
 			    TRUE, 2);
 
-	{			// Name
+	{			/* Name */
 		GtkWidget *add_wp_name_hbox;
 		GtkWidget *add_wp_name_label;
 		add_wp_name_text = gtk_entry_new ();
-		add_wp_name_label = gtk_label_new (_(" Waypoint name: "));
+		add_wp_name_label = gtk_label_new (_(" Name: "));
 		gtk_window_set_focus (GTK_WINDOW (window), add_wp_name_text);
 
 		add_wp_name_hbox = gtk_hbox_new (TRUE, 2);
@@ -678,7 +678,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 				    TRUE, 2);
 	}
 
-	{			// Types
+	{			/* Types */
 		GtkWidget *add_wp_type_label;
 		wp_types = g_list_append (wp_types, "unknown");
 		for (i = 2; i <= poi_type_list_count; i++)
@@ -693,7 +693,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		gtk_combo_set_popdown_strings (GTK_COMBO (wptext2),
 					       (GList *) wp_types);
 
-		add_wp_type_label = gtk_label_new (_(" Waypoint type: "));
+		add_wp_type_label = gtk_label_new (_(" Type: "));
 
 		add_wp_type_hbox = gtk_hbox_new (TRUE, 2);
 		gtk_box_pack_start (GTK_BOX (add_wp_type_hbox),
@@ -705,7 +705,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	}
 
-        {                       // Lat
+        {                       /* Lat */
                 GtkWidget *add_wp_lat_label;
                 GtkWidget *add_wp_lat_hbox;
                 add_wp_lat_text = gtk_entry_new_with_max_length (20);
@@ -724,7 +724,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
                                     TRUE, 2);
         }
 
-	{			// Lon
+	{			/* Lon */
 		GtkWidget *add_wp_lon_label;
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
 		coordinate2gchar(buff, sizeof(buff), wplon, FALSE, minsecmode);
@@ -741,7 +741,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		gtk_box_pack_start (GTK_BOX (vbox), hbox4, TRUE, TRUE, 2);
 	}
 
-	{			// Buttons
+	{			/* Buttons */
 		GtkWidget *add_wp_button_hbox;
 		GtkWidget *button, *button2;
 		button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
@@ -984,7 +984,6 @@ loadwaypoints ()
 
     if ( mydebug > 0 )
 	{
-	    g_print ("\nwp_from_sql: %d\n",wp_from_sql);
 	    g_print ("load waypoint file %s\n",fn_way_txt);
 	}
 

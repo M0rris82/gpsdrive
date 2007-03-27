@@ -80,7 +80,7 @@ Disclaimer: Please do not use for navigation.
 extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
-extern gint muteflag, wp_from_sql, trackflag;
+extern gint muteflag, trackflag;
 extern GdkColor red;
 extern GdkColor black;
 extern GdkColor white;

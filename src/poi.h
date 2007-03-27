@@ -55,6 +55,7 @@ poi_struct;
 
 #define POI_TYPE_LIST_STRING_LENGTH 80
 
+/* poi related functions */
 void draw_text (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);

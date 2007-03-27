@@ -287,7 +287,7 @@ GtkWidget *label_lat, *label_lon;
 GtkWidget *eventbox_lat, *eventbox_lon;
 GtkWidget *label_map_filename, *label_map_scale;
 GtkWidget *label_heading, *label_baering, *label_timedest;
-GtkWidget *label_prefscale, *mute_bt, *sqlbt;
+GtkWidget *label_prefscale, *mute_bt;
 GtkWidget *wp_bt;
 GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt, *wlan_draw_bt;
 
@@ -310,7 +310,7 @@ GtkObject *scaler_adj;
 
 GtkWidget *setup_bt;
 gint havespeechout, hours, minutes, speechcount = 0;
-gint muteflag = 0, wp_from_sql = 0;
+gint muteflag = 0;
 gint posmode = 0;
 gdouble posmode_lon, posmode_lat;
 gchar lastradar[40], lastradar2[40]; 
@@ -918,7 +918,10 @@ display_status2 ()
 		    gradsym);
 	gtk_label_set_text (GTK_LABEL (label_baering), s2);
 
-	g_snprintf (s2, sizeof (s2), "%2d:%02dh", h, m);
+	if (h >= 99 && m>=99)
+		g_snprintf (s2, sizeof (s2), "%s", _("unknown"));
+	else
+		g_snprintf (s2, sizeof (s2), "%2d:%02dh", h, m);
 	gtk_label_set_text (GTK_LABEL (label_timedest), s2);
 
 	if (scaleprefered_not_bestmap)
@@ -2664,7 +2667,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 		}
 	}
 
-	if (wp_from_sql)
+	if (usesql)
 	{
 		g_snprintf (s1, sizeof (s1), "%d", wptotal);
 		gtk_entry_set_text (GTK_ENTRY (wplabel1), s1);
@@ -3416,26 +3419,6 @@ tracks_draw_cb (GtkWidget * widget, guint datum)
     return TRUE;
 }
 
-/* *****************************************************************************
- * switching SQL on/off 
- */
-gint
-sql_cb (GtkWidget * widget, guint datum)
-{
-	wp_from_sql = !wp_from_sql;
-	if (wp_from_sql)
-	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
-					      TRUE);
-		getsqldata ();
-	}
-	else
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt),
-					      FALSE);
-	needtosave = TRUE;
-	loadwaypoints ();
-	return TRUE;
-}
 
 /* *****************************************************************************
  * switching Track display on/off 
@@ -4807,9 +4790,6 @@ main (int argc, char *argv[])
     if (usesql)
 	usesql = sqlinit ();
 
-    if (!usesql)
-	wp_from_sql = FALSE;
-
     /* Create toplevel window */
 
     get_window_sizing (geometry, usegeometry, screen_height, screen_width);
@@ -4963,7 +4943,7 @@ main (int argc, char *argv[])
 				"clicked", GTK_SIGNAL_FUNC (mute_cb),
 				(gpointer) 1);
 	}
-    if (wp_from_sql)
+    if (usesql)
 	{
 	    getsqldata ();
 	}
@@ -5041,17 +5021,6 @@ main (int argc, char *argv[])
 			    "clicked", GTK_SIGNAL_FUNC (wp_cb), (gpointer) 1);
 	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_bt, FALSE, FALSE, 0 * PADDING);
 
-	// Checkbox ----   Use SQL
-	sqlbt = gtk_check_button_new_with_label (_("Use SQ_L"));
-	gtk_button_set_use_underline (GTK_BUTTON (sqlbt), TRUE);
-	if (wp_from_sql)
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlbt), TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (sqlbt),
-			    "clicked", GTK_SIGNAL_FUNC (sql_cb), (gpointer) 1);
-
-	if (usesql)
-	    gtk_box_pack_start (GTK_BOX (vbox_poi),   sqlbt,          FALSE, FALSE, 0 * PADDING);
     }
 
     /* PORTING */
@@ -5443,11 +5412,9 @@ main (int argc, char *argv[])
 
     frame_speed = gtk_frame_new (s1);
     gtk_container_add (GTK_CONTAINER (frame_speed), speedlabel);
-    if (!pdamode)
-	{
-	    frame_altitude = gtk_frame_new (_("Altitude"));
-	    gtk_container_add (GTK_CONTAINER (frame_altitude), altilabel);
-	}
+
+	frame_altitude = gtk_frame_new (_("Altitude"));
+    gtk_container_add (GTK_CONTAINER (frame_altitude), altilabel);
 
     frame_wp = gtk_frame_new (_("Waypoints"));
 
@@ -5539,7 +5506,7 @@ main (int argc, char *argv[])
     frame_mapscale = gtk_frame_new (_("Map scale"));
     frame_heading = gtk_frame_new (_("Heading"));
     frame_bearing = gtk_frame_new (_("Bearing"));
-    frame_timedest = gtk_frame_new (_("Time at Dest."));
+    frame_timedest = gtk_frame_new (_("Time to Dest."));
     frame_prefscale = gtk_frame_new (_("Pref. scale"));
 
 
@@ -5916,10 +5883,6 @@ main (int argc, char *argv[])
 	if (havespeechout)
 	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mute_bt,
 				  _("Disable output of speech"), NULL);
-	if (usesql)
-	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sqlbt,
-				  _("If this one is enabled, newly added waypoints are stored in the SQL Database; otherwise the selected way.txt file is used."),
-				  NULL);
     
 	/*    if (maxwp > 0) */
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
@@ -6027,16 +5990,15 @@ main (int argc, char *argv[])
     tracks_draw_cb (NULL, 0);
     needtosave = FALSE;
 
-	// this one will be used in future development...
-	// When all the basic gui stuff is finally moved into gui.c, this will call the
-	// necessary functions for graphical initialization.
-	gui_init ();
-
-    poi_init ();
+	poi_init ();
     wlan_init ();
     streets_init ();
     tracks_init ();
 
+	// When all the basic gui stuff is finally moved into gui.c, this will call the
+	// necessary functions for graphical initialization.
+    gui_init ();
+	
     update_posbt();
 
     /*
