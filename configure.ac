@@ -305,7 +305,7 @@ CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 dnl --------------------------
 dnl check for package libxml-2.0
 dnl --------------------------
-PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.6.27)
+PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.6.26)
 CFLAGS="$CFLAGS $XML_CFLAGS"
 LIBS="$LIBS $XML_LIBS"
 
