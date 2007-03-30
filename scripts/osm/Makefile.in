@@ -251,22 +251,28 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	pdf-atlas/Data/readme-shorelines.txt \
 	pdf-atlas/Data/readme.txt \
 	pdf-atlas/pdf-atlas.pl \
-	planet-osm/C/UTF8sanitizer.c \
-	planet-osm/C/UTF8sanitizer.exe \
-	planet-osm/java/build-osm2csv.bat \
-	planet-osm/java/Osm2Csv.java \
-	planet-osm/java/test-osm2csv.bat \
-	planet-osm/perl/check_osm.pl \
-	planet-osm/perl/planetosm-excerpt-area.pl \
-	planet-osm/perl/planetosm-excerpt-tags.pl \
-	planet-osm/perl/planetosm-to-db.pl \
-	planet-osm/perl/planetcount.pl \
-	planet-osm/php/planet_to_mysql.phps \
-	planet-osm/planet2mysql.rb \
-	planet-osm/planet.rb \
-	planet-osm/planet.sh \
-	planet-osm/python/utf8osmchecker.py \
-	planet-osm/test-planet.osm \
+	planet-osm/perl/planetosm-to-db.pl\
+	planet-osm/perl/reorder-ways.pl\
+	planet-osm/perl/planetosm-excerpt-area.pl\
+	planet-osm/perl/planetosm-excerpt-tags.pl\
+	planet-osm/perl/extract-germany.pl\
+	planet-osm/perl/check_osm.pl\
+	planet-osm/perl/planetcount.pl\
+	planet-osm/python/utf8osmchecker.py\
+	planet-osm/planet2mysql.rb\
+	planet-osm/planet.rb\
+	planet-osm/java/test-osm2csv.bat\
+	planet-osm/java/mysql/loadcsv.sql\
+	planet-osm/java/mysql/readme.txt\
+	planet-osm/java/src/org/openstreetmap/util/Osm2Csv.java\
+	planet-osm/java/build-osm2csv.bat\
+	planet-osm/test-planet.osm\
+	planet-osm/C/UTF8sanitizer\
+	planet-osm/C/Makefile\
+	planet-osm/C/UTF8sanitizer.exe\
+	planet-osm/C/UTF8sanitizer.c\
+	planet-osm/planet.sh\
+	planet-osm/php/planet_to_mysql.phps\
 	simplify/simplify.pl \
 	pdf-atlas/Config/*.txt
 
@@ -456,7 +462,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/osm-subset $(distdir)/osm2csv $(distdir)/osmfilter $(distdir)/pdf-atlas $(distdir)/pdf-atlas/Config $(distdir)/pdf-atlas/Data $(distdir)/planet-mirror $(distdir)/planet-osm $(distdir)/planet-osm/C $(distdir)/planet-osm/java $(distdir)/planet-osm/perl $(distdir)/planet-osm/php $(distdir)/planet-osm/python $(distdir)/simplify
+	$(mkdir_p) $(distdir)/osm-subset $(distdir)/osm2csv $(distdir)/osmfilter $(distdir)/pdf-atlas $(distdir)/pdf-atlas/Config $(distdir)/pdf-atlas/Data $(distdir)/planet-mirror $(distdir)/planet-osm $(distdir)/planet-osm/C $(distdir)/planet-osm/java $(distdir)/planet-osm/java/mysql $(distdir)/planet-osm/java/src/org/openstreetmap/util $(distdir)/planet-osm/perl $(distdir)/planet-osm/php $(distdir)/planet-osm/python $(distdir)/simplify
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
