@@ -1251,6 +1251,10 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_widget_set_sensitive (button_delete, FALSE);
 	gtk_widget_set_sensitive (button_target, FALSE);
 
+	/* destroy window -> destroy timers */
+	g_signal_connect (GTK_OBJECT (poi_lookup_window), "destroy",
+				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), 0);
+
 	gtk_widget_show_all (poi_lookup_window);
 }
 
