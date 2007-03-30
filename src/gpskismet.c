@@ -56,6 +56,8 @@ extern double dbdistance;
 extern int usesql;
 extern int debug, dbusedist;
 extern poi_type_struct poi_type_list[poi_type_list_max];
+extern void wlan_rebuild_list();
+extern void wlan_draw_list();
 
 extern MYSQL mysql;
 MYSQL_RES *res;
@@ -262,6 +264,9 @@ readkismet (void)
 			      printf ("\nquery: %s\n", q);
 			    if (dl_mysql_query (&mysql, q))
 			      exiterr (3);
+			   // Redraw all WLANs:
+			   wlan_rebuild_list ();
+			   wlan_draw_list ();
 			  }
 		    }
 
@@ -288,6 +293,10 @@ readkismet (void)
 		      printf ("\nquery: %s\n", q);
 		    if (dl_mysql_query (&mysql, q))
 		      exiterr (3);
+
+		    // Redraw all WLANs:
+		    wlan_rebuild_list ();
+		    wlan_draw_list ();
 
 		    g_strdelimit (name, "_", ' ');
 
