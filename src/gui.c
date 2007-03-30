@@ -1141,7 +1141,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 				"text", RESULT_TYPE_TITLE,
 			NULL);
 	g_object_set (G_OBJECT (renderer_poilist),
-				"foreground-gdk", textback,
+				"foreground-gdk", &textback,
 				NULL);
 	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_TYPE_TITLE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
@@ -1307,7 +1307,7 @@ create_poi_types_window (void)
 				"text", POITYPE_NAME,
 				NULL);
 	g_object_set (G_OBJECT (renderer_poitypes),
-				"foreground-gdk", textback,
+				"foreground-gdk", &textback,
 				NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
 
