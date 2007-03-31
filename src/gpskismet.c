@@ -54,7 +54,7 @@ extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int usesql;
-extern int debug, dbusedist;
+extern int mydebug, debug, dbusedist;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern void wlan_rebuild_list();
 extern void wlan_draw_list();
@@ -63,7 +63,7 @@ extern MYSQL mysql;
 MYSQL_RES *res;
 MYSQL_ROW row;
 
-static char macaddr[30], name[80], tbuf[500], lastmacaddr[30];
+static char macaddr[30], name[120], tbuf[1024], lastmacaddr[30];
 static int nettype, channel, wep, cloaked;
 
 /*  Defines for gettext I18n */
@@ -175,7 +175,7 @@ readkismet (void)
 	    }
 	  if (e == 11)
 	    {
-	      if (debug)
+	      if (mydebug >10)
 		g_print
 		  ("\ne: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
 		   "lat: %s lon: %s bestlat: %s bestlon: %s cloaked: %d\n", e, macaddr,

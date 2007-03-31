@@ -55,7 +55,7 @@ GtkWidget *splash_window;
 extern gchar local_config_homedir[500], local_config_mapdir[500];
 extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered_not_bestmap, milesflag, nauticflag, metricflag;
-extern gint mydebug, scalewanted, savetrack, defaultserver;
+extern gint mydebug, scalewanted, savetrack;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gint setdefaultpos, shadow, etch;
@@ -184,12 +184,6 @@ writeconfig ()
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
-
-	fprintf (fp, "defaultserver = ");
-	if (defaultserver == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
 
 	fprintf (fp, "testgarminmode = ");
 	if (testgarmin == 0)
@@ -398,8 +392,6 @@ readconfig ()
 		    */
 		    else if ( (strcmp(par1, "shadow")) == 0)
 			shadow = atoi (par2);
-		    else if ( (strcmp(par1, "defaultserver")) == 0)
-			defaultserver = atoi (par2);
 		    else if ( (strcmp(par1, "waypointfile")) == 0)
 			g_strlcpy (activewpfile, par2, sizeof (activewpfile));
 		    else if ( (strcmp(par1, "testgarminmode")) == 0)

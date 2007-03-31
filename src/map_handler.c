@@ -65,7 +65,9 @@ extern gint selected_wp_mode;
 extern gdouble posmode_lon, posmode_lat;
 extern gchar targetname[40];
 extern gint iszoomed;
-extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
+extern gchar  oldangle[100];
+extern gdouble new_dl_lat,new_dl_lon;
+extern gint new_dl_scale;
 extern gint needtosave;
 
 extern gint showroute, routeitems;
@@ -1025,14 +1027,11 @@ drawloadedmaps ()
   int i;
   gdouble x, y, la, lo;
   gint scale, xo, yo;
-  gchar sc[20];
   if (mydebug > 50)
     fprintf (stderr, "drawloadedmaps()\n");
   for (i = 0; i < nrmaps; i++)
     {
-      g_strlcpy (sc, newmapsc, sizeof (sc));
-      g_strdelimit (sc, ",", '.');
-      scale = g_strtod (sc, NULL);
+      scale = new_dl_scale;
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
 	  //printf("Selected map at lon %lf lat %lf\n",maps[i].lat,maps[i].lon);
@@ -1072,13 +1071,10 @@ drawdownloadrectangle (gint big)
   if (downloadwindowactive)
     {
       gdouble x, y, la, lo;
-      gchar sc[20];
       gint scale, xo, yo;
-      coordinate_string2gdouble (newmaplat, &la);
-      coordinate_string2gdouble (newmaplon, &lo);
-      g_strlcpy (sc, newmapsc, sizeof (sc));
-      g_strdelimit (sc, ",", '.');
-      scale = g_strtod (sc, NULL);
+      la = new_dl_lat;
+      lo = new_dl_lon;
+      scale = new_dl_scale;
       gdk_gc_set_foreground (kontext, &green2);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);

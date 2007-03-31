@@ -82,7 +82,7 @@ extern GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt,
   *setup_bt;
 extern gint gcount, milesflag, downloadwindowactive;
 extern gint metricflag, nauticflag;
-extern gint defaultserver, disableapm;
+extern gint disableapm;
 extern GtkWidget *mainwindow, *status, *pixmapwidget, *gotowindow;
 extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
@@ -855,30 +855,6 @@ mainsetup (void)
 
   gtk_container_add (GTK_CONTAINER (f3), v3);
   gtk_box_pack_start (GTK_BOX (v3), h1, TRUE, FALSE, 2 * PADDING);
-
-  s1 = gtk_radio_button_new_with_label (NULL, _("Expedia Germany"));
-  gtk_signal_connect (GTK_OBJECT (s1), "clicked",
-		      GTK_SIGNAL_FUNC (defaultserver_cb), (gpointer) 1);
-
-  s2 =
-    gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (s1)),
-				     _("Expedia USA"));
-  gtk_signal_connect (GTK_OBJECT (s2), "clicked",
-		      GTK_SIGNAL_FUNC (defaultserver_cb), (gpointer) 2);
-
-  /* disable mapblast */
-  if (0 == defaultserver)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (s1), TRUE);
-    }
-  else
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (s2), TRUE);
-    }
-
-  gtk_box_pack_start (GTK_BOX (h1), s1, TRUE, FALSE, 2 * PADDING);
-  gtk_box_pack_start (GTK_BOX (h1), s2, TRUE, FALSE, 2 * PADDING);
 
   /* Night light mode */
   f5 = gtk_frame_new (_("Night light mode"));

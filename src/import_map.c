@@ -165,7 +165,8 @@ extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
 extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
-extern GtkWidget *dl_text_lat, *dl_text_lon, *dltext3, *dltext4, *wptext1, *wptext2;
+extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
+GtkWidget *dltext4,*dltext3;
 extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern GTimer *timer, *disttimer;

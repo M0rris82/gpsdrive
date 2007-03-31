@@ -132,20 +132,18 @@ gint downloadwindowactive=0;
 gint downloadactive=0;
 gchar writebuff[2000];
 fd_set readmask;
-gchar *dlbuff, downloadfilename[512];
+gchar *dlbuff;
 gint downloadfilelen=0;
-GtkWidget *dl_text_lat, *dl_text_lon, *dltext3, *dltext4;
 gchar *dlpstart;
 gint nrmaps = 0, dldiff;
 gint dlcount;
 GtkWidget *myprogress;
-gint defaultserver = 0;
-gchar newmaplat[100], newmaplon[100], newmapsc[100];
+GtkWidget *dl_text_lat, *dl_text_lon, *dl_text_scale;
+gdouble new_dl_lon, new_dl_lat;
+gint new_dl_scale;
 
 gint downloadaway_cb (GtkWidget * widget, guint datum);
-gint defaultserver_cb (GtkWidget * widget, guint datum);
 gint dlscale_cb (GtkWidget * widget, guint datum);
-gint other_select_cb (GtkWidget * widget, guint datum);
 
 /* *****************************************************************************
  */
@@ -435,7 +433,6 @@ downloadslave_cb (GtkWidget * widget, guint datum)
     gint e, fd;
     gchar nn[] = "\r\n\r\n";
     gdouble f;
-    G_CONST_RETURN gchar *s;
 
     if (!downloadwindowactive)
 	return FALSE;
@@ -529,21 +526,43 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		    close (dlsock);
 		    if (downloadfilelen != 0)
 			{
-			    s = gtk_entry_get_text (GTK_ENTRY (dltext4));
-			    if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-				g_strlcat (local_config_mapdir, "/",
-					   sizeof (local_config_mapdir));
+			    gchar map_filename[1024];
+			    gchar map_file_w_path[1024];
 
-			    g_strlcpy (downloadfilename, local_config_mapdir,
-				       sizeof (downloadfilename));
+			    g_snprintf( map_filename, sizeof (map_filename),
+					"expedia/map_%d_%5.3f_%5.3f.gif",
+					new_dl_scale,new_dl_lat,new_dl_lon);
 
-			    g_strlcat (downloadfilename, s,
-				       sizeof (downloadfilename));
-			    fd = open (downloadfilename,
+			    if ( local_config_mapdir[strlen (local_config_mapdir) - 1] != '/' )
+				g_strlcat( local_config_mapdir, "/",sizeof (local_config_mapdir) );
+			    
+			    g_snprintf (map_file_w_path, sizeof (map_file_w_path), 
+					"%s%s",local_config_mapdir,map_filename);
+
+			    if ( mydebug > 1 ) {
+				g_print("Saving Map File to: '%s'\n",
+				       map_file_w_path);
+			    }
+
+			    // Create directory
+			    struct stat buf;
+			    gchar map_dir[1024];
+			    g_snprintf (map_dir, sizeof (map_dir), 
+					"%s%s",local_config_mapdir,"expedia");
+			    if ( stat(map_dir,&buf) )
+				{
+				    printf("Try creating %s\n",map_dir);
+				    if ( mkdir (map_dir, 0700) )
+					{
+					    printf("Error creating %s\n",map_dir);
+					}
+				}
+			    
+			    fd = open (map_file_w_path,
 				       O_RDWR | O_TRUNC | O_CREAT, 0644);
 			    if (fd < 1)
 				{
-				    perror (downloadfilename);
+				    perror (map_filename);
 				    gtk_timeout_add (3000,(GtkFunction) dlstatusaway_cb, widget);
 
 				    return FALSE;
@@ -554,13 +573,10 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    loadmapconfig ();
 			    maps = g_renew (mapsstruct, maps,
 					    (nrmaps + 2));
-			    g_strlcpy ((maps + nrmaps)->filename,
-				       g_basename (downloadfilename),
-				       200);
-			    coordinate_string2gdouble (newmaplat, &((maps + nrmaps)->lat));
-			    coordinate_string2gdouble (newmaplon, &((maps + nrmaps)->lon));
-			    (maps + nrmaps)->scale =
-				strtol (newmapsc, NULL, 0);
+			    g_strlcpy ((maps + nrmaps)->filename,map_filename, 200);
+			    (maps + nrmaps)->lat = new_dl_lat;
+			    (maps + nrmaps)->lon = new_dl_lon;
+			    (maps + nrmaps)->scale =new_dl_scale;
 			    nrmaps++;
 			    havenasa = -1;
 			    savemapconfig ();
@@ -587,9 +603,9 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 gint
 downloadsetparm (GtkWidget * widget, guint datum)
 {
-	G_CONST_RETURN gchar *s, *sc;
+	G_CONST_RETURN gchar *s;
 	gchar lon[100], lat[100], hostname[100], region[10];
-	gdouble f, nlon, nlat;
+	gdouble f;
 	gint ns;
 
 	char sctext[40];
@@ -597,39 +613,21 @@ downloadsetparm (GtkWidget * widget, guint datum)
 	if (!downloadwindowactive)
 		return TRUE;
 
-	expedia_de = FALSE;
-
-	if (GTK_TOGGLE_BUTTON (radio2)->active)
-		expedia = TRUE;
-	else
-		expedia = FALSE;
-	if (GTK_TOGGLE_BUTTON (radio1)->active)
-	{
-		expedia = TRUE;
-		expedia_de = TRUE;
-	}
-
-
-
 	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
-	g_strlcpy (lat, s, sizeof (lat));
-	g_strdelimit (lat, ",", '.');
-	g_strlcpy (newmaplat, lat, sizeof (newmaplat));
-	coordinate_string2gdouble(lat, &nlat);
+	coordinate_string2gdouble(s, &new_dl_lat);
+	if ( mydebug > 3 )
+	    g_print("new map lat: %s\n",s);
 	
 	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
-	g_strlcpy (lon, s, sizeof (lon));
-	g_strdelimit (lon, ",", '.');
-	g_strlcpy (newmaplon, lon, sizeof (newmaplon));
-	coordinate_string2gdouble(lon,&nlon);
+	coordinate_string2gdouble(s,&new_dl_lon);
+	if ( mydebug > 3 )
+	    g_print("new map lon: %s\n",s);
 
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry));
-	g_strlcpy (sctext, sc, sizeof (sctext));
-	g_strlcpy (newmapsc, sctext, sizeof (newmapsc));
-
-	/*   g_print("newmaplat: %s, newmaplon: %s newmapsc: %s\n", newmaplat, */
-	/*     newmaplon, newmapsc); */
-
+	s = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry));
+	new_dl_scale = strtol (s, NULL, 0);
+	if ( mydebug > 3 )
+	    g_print("new map scale: %d\n",new_dl_scale);
+	
 	if (datum == 0)
 		return TRUE;
 	if (expedia)
@@ -645,13 +643,6 @@ downloadsetparm (GtkWidget * widget, guint datum)
 	if (!expedia)
 		g_snprintf (hostname, sizeof (hostname), "%s", WEBSERVER);
 
-	/*   if (expedia) */
-	/*     { */
-	/*       f = g_strtod (sc, NULL); */
-	/*       ns = f / EXPEDIAFACT; */
-	/*       g_snprintf ((char *) sc, "%d", ns); */
-	/*       g_snprintf (newmapsc, "%d", (int) (ns * EXPEDIAFACT)); */
-	/*     } */
 	if (expedia)
 	{
 		int scales[11] =
@@ -668,29 +659,35 @@ downloadsetparm (GtkWidget * widget, guint datum)
 			}
 		ns = scales[found];
 		g_snprintf (sctext, sizeof (sctext), "%d", ns);
-		g_snprintf (newmapsc, sizeof (newmapsc), "%d",
-			    (int) (ns * EXPEDIAFACT));
+		new_dl_scale =     (int) (ns * EXPEDIAFACT);
 	}
 	if ( mydebug > 0 )
-		printf ("sctext: %s,newmapsc: %s\n", sctext, newmapsc);
-
-	/*   new URL (08/28/2002) */
-	/* http://www.mapblast.com/myblastd/MakeMap.d?&CT=48.0:12.2:100000&IC=&W=1280&H=1024&FAM=myblast&LB= */
-	/*   new URL (April 2003)
-	 *   http://www.vicinity.com/gif?&CT=45:-93:10000&IC=&W=1024&H=800&FAM=myblast&LB=
-	 */
+		printf ("sctext: %s,new map scale: %d\n", sctext, new_dl_scale);
 
 	if (!expedia)
 		g_snprintf (writebuff, sizeof (writebuff),
-			    "GET http://%s/gif?&CT=%s:%s:%s&IC=&W=1280&H=1024&FAM=myblast&LB= HTTP/1.0\r\nUser-Agent: Wget/1.6\r\nHost: %s\r\nAccept: */*\r\nConnection: Keep-Alive\r\n\r\n",
+			    "GET http://%s/gif?&CT=%s:%s:%s&IC=&W=1280&H=1024&FAM=myblast&LB="
+			    " HTTP/1.0\r\n"
+			    "User-Agent: Wget/1.6\r\n"
+			    "Host: %s\r\n"
+			    "Accept: */*\r\n"
+			    "Connection: Keep-Alive\r\n"
+			    "\r\n",
 			    WEBSERVER, lat, lon, sctext, hostname);
 	if (expedia)
 	{
-		if (nlon > (-30))
+		if (new_dl_lon > (-30))
+		    {
 			g_strlcpy (region, "EUR0809", sizeof (region));
+			expedia_de = TRUE;
+		    }	
 		else
+		    {
 			g_strlcpy (region, "USA0409", sizeof (region));
-
+			expedia_de = FALSE;
+		    }
+		
+		
 		if (expedia_de)
 			g_snprintf (writebuff, sizeof (writebuff),
 				    "GET http://%s/pub/agent.dll?"
@@ -698,7 +695,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
 				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
 				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER4, nlat, nlon, region, sctext,
+				    WEBSERVER4, new_dl_lat, new_dl_lon, region, sctext,
 				    hostname);
 		else
 			g_snprintf (writebuff, sizeof (writebuff),
@@ -706,7 +703,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
 				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
 				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER2, nlat, nlon, region, sctext,
+				    WEBSERVER2, new_dl_lat, new_dl_lon, region, sctext,
 				    hostname);
 	}
 
@@ -811,44 +808,16 @@ downloadsetparm (GtkWidget * widget, guint datum)
 /* *****************************************************************************
  */
 gint
-defaultserver_cb (GtkWidget * widget, guint datum)
-{
-
-	expedia_de = FALSE;
-	switch (datum)
-	{
-	case 1:
-		expedia_de = TRUE;
-		defaultserver = 0;
-		break;
-	case 2:
-		defaultserver = 1;
-		break;
-	}
-	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-
-
-/* *****************************************************************************
- */
-gint
 download_cb (GtkWidget * widget, guint datum)
 {
 	GtkWidget *mainbox;
-	GtkWidget *knopf2, *knopf, *knopf_lat, *knopf_lon, *knopf_scale, *knopf_map_filename,
+	GtkWidget *knopf2, *knopf, *knopf_lat, *knopf_lon, *knopf_scale, 
 		*knopf_help_text;
 	GtkWidget *table, *table2, *knopf8;
-	gchar buff[300], mappath[2048];
+	gchar buff[300];
 	GList *list = NULL;
-	GSList *gr;
-	gint i, e;
-	struct stat buf;
+	gint i;
 	gchar scalewanted_str[100];
-	GtkTooltips *tooltips;
 
 	for (i = 0; i < slistsize; i++)
 		list = g_list_append (list, slist[i]);
@@ -896,8 +865,6 @@ download_cb (GtkWidget * widget, guint datum)
 
 	knopf_scale = gtk_label_new (_("Scale"));
 	gtk_table_attach_defaults (GTK_TABLE (table), knopf_scale, 0, 1, 3, 4);
-	knopf_map_filename = gtk_label_new (_("Map file name"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf_map_filename, 0, 1, 4, 5);
 	dl_text_lat = gtk_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (dl_text_lat), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
@@ -911,72 +878,20 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
 	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE, minsecmode);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
-	dltext3 = gtk_combo_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext3, 1, 2, 3, 4);
-	gtk_combo_set_popdown_strings (GTK_COMBO (dltext3), (GList *) list);
+	dl_text_scale = gtk_combo_new ();
+	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_scale, 1, 2, 3, 4);
+	gtk_combo_set_popdown_strings (GTK_COMBO (dl_text_scale), (GList *) list);
 	g_snprintf (scalewanted_str, sizeof (scalewanted_str), "%d",
 		    scalewanted);
-	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry),
+	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry),
 			    scalewanted_str);
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dltext3)->entry),
+	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dl_text_scale)->entry),
 			    "changed", GTK_SIGNAL_FUNC (downloadsetparm),
 			    (gpointer) 0);
-
-	dltext4 = gtk_entry_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dltext4, 1, 2, 4, 5);
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dltext3)->entry),
-			    "changed", GTK_SIGNAL_FUNC (dlscale_cb), 0);
-	gtk_signal_connect (GTK_OBJECT (dltext4), "changed",
-			    GTK_SIGNAL_FUNC (dlscale_cb), 0);
 
 	table2 = gtk_table_new (2, 1, FALSE);	//nested table w/ three columns
 	gtk_table_attach_defaults (GTK_TABLE (table), table2, 0, 3, 5, 6);
 	gtk_widget_show (table2);
-
-	radio1 = gtk_radio_button_new_with_label (NULL, _("Expedia Germany"));
-	gtk_table_attach_defaults (GTK_TABLE (table2), radio1, 0, 1, 0, 1);
-	gr = gtk_radio_button_group (GTK_RADIO_BUTTON (radio1));
-	gtk_signal_connect (GTK_OBJECT (radio1), "clicked",
-			    GTK_SIGNAL_FUNC (other_select_cb), 0);
-
-	radio2 = gtk_radio_button_new_with_label (gr, _("Expedia USA"));
-	gtk_table_attach_defaults (GTK_TABLE (table2), radio2, 1, 2, 0, 1);
-	gr = gtk_radio_button_group (GTK_RADIO_BUTTON (radio2));
-	gtk_signal_connect (GTK_OBJECT (radio2), "clicked",
-			    GTK_SIGNAL_FUNC (other_select_cb), 0);
-
-
-
-	tooltips = gtk_tooltips_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), radio1,
-			      _
-			      ("If selected, you download the map from the german expedia server (expedia.de)"),
-			      NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), radio2,
-			      _
-			      ("If selected, you download the map from the U.S. expedia server (expedia.com)"),
-			      NULL);
-
-	/* disable mapblast */
-	/*   gtk_widget_set_sensitive (radio1, FALSE); */
-	/*   defaultserver = 1; */
-
-	/*   gtk_table_attach_defaults (GTK_TABLE (table), radio2, 1, 2, 5, 6); */
-	if ((defaultserver < 0) && (defaultserver > 1))
-		defaultserver = 0;
-	switch (defaultserver)
-	{
-	case 0:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio1),
-					      TRUE);
-		other_select_cb (NULL, 0);
-		break;
-	case 1:
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio2),
-					      TRUE);
-		other_select_cb (NULL, 0);
-		break;
-	}
 
 	if (!haveproxy)
 		g_snprintf (buff, sizeof (buff), "%s",
@@ -995,26 +910,10 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_progress_set_show_text (GTK_PROGRESS (myprogress), TRUE);
 	gtk_progress_bar_update (GTK_PROGRESS_BAR (myprogress), 0.0);
 	gtk_table_attach_defaults (GTK_TABLE (table), myprogress, 0, 2, 7, 8);
-	gtk_label_set_justify (GTK_LABEL (knopf_map_filename), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_justify (GTK_LABEL (knopf_lat), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_justify (GTK_LABEL (knopf_lon), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_justify (GTK_LABEL (knopf_scale), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf_map_filename), GTK_JUSTIFY_RIGHT);
-	i = 0;
-	do
-	{
-		if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-			g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
 
-		g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
-
-		g_snprintf (downloadfilename, sizeof (downloadfilename),
-			    "%smap_file%04d.gif", mappath, i++);
-		e = stat (downloadfilename, &buf);
-	}
-	while (e == 0);
-	g_snprintf (buff, sizeof (buff), "map_file%04d.gif", i - 1);
-	gtk_entry_set_text (GTK_ENTRY (dltext4), buff);
 	gtk_window_set_default (GTK_WINDOW (downloadwindow), knopf);
 	gtk_window_set_transient_for (GTK_WINDOW (downloadwindow),
 				      GTK_WINDOW (mainwindow));
@@ -1048,41 +947,13 @@ downloadaway_cb (GtkWidget * widget, guint datum)
 /* *****************************************************************************
  */
 gint
-other_select_cb (GtkWidget * widget, guint datum)
-{
-	gint i, e;
-	gchar buff[300], mappath[2048];
-	struct stat buf;
-
-	i = 0;
-	do
-	{
-		if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-			g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
-
-		g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
-
-		g_snprintf (downloadfilename, sizeof (downloadfilename),
-			    "%smap_file%04d.gif", mappath, i++);
-		e = stat (downloadfilename, &buf);
-	}
-	while (e == 0);
-	g_snprintf (buff, sizeof (buff), "map_file%04d.gif", i - 1);
-	gtk_entry_set_text (GTK_ENTRY (dltext4), buff);
-
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
 dlscale_cb (GtkWidget * widget, guint datum)
 {
 	G_CONST_RETURN gchar *sc;
 	gchar t[100], t2[10];
 	gdouble f;
 	/* PORTING */
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dltext3)->entry));
+	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry));
 
 	f = g_strtod (sc, NULL);
 
