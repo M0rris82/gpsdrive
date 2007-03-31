@@ -83,6 +83,7 @@ Disclaimer: Please do not use for navigation.
 #include <pthread.h>
 #include <semaphore.h>
 
+		
 #include <locale.h>
 
 #include "gettext.h"
@@ -248,7 +249,7 @@ extern gint downloadactive;
 GtkWidget *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
 gchar oldangle[100];
-GdkCursor *cursor;
+GdkCursor *cursor_cross, *cursor_arrow;
 
 // Uncomment this (or add a make flag?) to only have scales for expedia maps
 //#define EXPEDIA_SCALES_ONLY
@@ -304,8 +305,7 @@ GdkColor trackcolorv;
 gchar savetrackfn[256];
 extern gint tracks_draw;
 
-GtkWidget *scaler_widget;
-GtkWidget *scaler_left_bt, *scaler_right_bt;
+GtkWidget *scaler_left_bt, *scaler_right_bt, *scaler_widget;
 GtkObject *scaler_adj;
 
 GtkWidget *setup_bt;
@@ -3481,6 +3481,13 @@ pos_cb (GtkWidget * widget, guint datum)
     	posmode = TRUE;
     else 
     	posmode = FALSE;
+        
+    /* switch cursor in map area */
+    if (posmode == TRUE) {
+        gdk_window_set_cursor (drawing_area->window, cursor_cross);
+    } else {
+        gdk_window_set_cursor (drawing_area->window, cursor_arrow);
+    }
     	
     /* if waypoint select mode is enabled and waypoint 
      * selected then take target_lat/lon
@@ -4338,9 +4345,11 @@ main (int argc, char *argv[])
 	// Unused variable: GtkWidget *vbox_wlan;
     GtkWidget *hbig, *hbox2;
     GtkWidget *hbox2a, *hbox2b, *vmenubig;
-    GtkWidget *zoomin_bt, *hbox3, *vboxlow, *hboxlow;
+    GtkWidget *zoomin_bt, *zoomout_bt, *hbox_zoom;
+    GtkWidget *hbox_scaler;
+    GtkWidget *vboxlow, *hboxlow;
     GtkWidget *menuwin = NULL, *menuwin2 = NULL;
-    GtkWidget *zoomout_bt, *vtable, *wplabeltable, *alignment1;
+    GtkWidget *vtable, *wplabeltable, *alignment1;
     GtkWidget *alignment2;
     gchar maintitle[100];
     /*   GdkColor farbe;   */
@@ -5079,13 +5088,15 @@ main (int argc, char *argv[])
 	if ( mydebug >99 ) fprintf(stderr , "create Buttons at upper left side\n");
 
 	/*  Zoom in button */
-	zoomin_bt = gtk_button_new_from_stock (GTK_STOCK_ZOOM_IN);
+	zoomin_bt = gtk_button_new ();
+	gtk_button_set_image (GTK_BUTTON (zoomin_bt), gtk_image_new_from_stock (GTK_STOCK_ZOOM_IN, GTK_ICON_SIZE_BUTTON));
 	gtk_signal_connect (GTK_OBJECT (zoomin_bt),
 			    "clicked", GTK_SIGNAL_FUNC (zoom_cb),
 			    (gpointer) 1);
 
 	/*  Zoom out button */
-	zoomout_bt = gtk_button_new_from_stock (GTK_STOCK_ZOOM_OUT);
+	zoomout_bt = gtk_button_new ();
+	gtk_button_set_image (GTK_BUTTON (zoomout_bt), gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_BUTTON));
 	gtk_signal_connect (GTK_OBJECT (zoomout_bt),
 			    "clicked", GTK_SIGNAL_FUNC (zoom_cb),
 			    (gpointer) 2);
@@ -5198,7 +5209,8 @@ main (int argc, char *argv[])
     hbox2  = gtk_hbox_new (FALSE, 1 * PADDING);
     hbox2a = gtk_hbox_new (FALSE, 1 * PADDING);
     hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
-    hbox3  = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox_zoom = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
 
     // Frame --- Bearing
     if ( mydebug >99 ) fprintf(stderr , "create Bearing Frame\n");
@@ -5433,17 +5445,27 @@ main (int argc, char *argv[])
     gtk_container_add (GTK_CONTAINER (frame_wp), wplabeltable);
 
     vbox = gtk_vbox_new (TRUE, 3 * PADDING);
+    
+    /* menubar */
     gtk_box_pack_start (GTK_BOX (vbox), menubar, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), zoomin_bt, FALSE, FALSE,  1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), zoomout_bt, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox3, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (hbox3), scaler_left_bt, TRUE, TRUE,	1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (hbox3), scaler_right_bt, TRUE, TRUE,	1 * PADDING);
+    
+    
+    /* zoom in/out */
+    gtk_box_pack_start (GTK_BOX (vbox), hbox_zoom, FALSE, FALSE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox_zoom), zoomout_bt, TRUE, TRUE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox_zoom), zoomin_bt, TRUE, TRUE,  1 * PADDING);
+
+    /* scaler */
+    gtk_box_pack_start (GTK_BOX (vbox), hbox_scaler, FALSE, FALSE, 1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox_scaler), scaler_left_bt, TRUE, TRUE,	1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbox_scaler), scaler_right_bt, TRUE, TRUE,	1 * PADDING);
+
+    /* search poi */
     gtk_box_pack_start (GTK_BOX (vbox), find_poi_bt, FALSE, FALSE, 1 * PADDING);
     //gtk_box_pack_start (GTK_BOX (vbox), startgps_bt, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
     hboxlow = vbox2 = NULL;
-
+        
 
     if ( mydebug >99 ) fprintf(stderr , "create map-checkboxes Frames\n");
     frame_maptype = make_display_map_checkboxes();
@@ -5835,16 +5857,22 @@ main (int argc, char *argv[])
 	defaultcolor = style->bg[GTK_STATE_NORMAL];
     }
 
+    /* set default cursors */
+    cursor_arrow = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+    cursor_cross = gdk_cursor_new (GDK_TCROSS);
+    
+    gdk_window_set_cursor (drawing_area->window, cursor_arrow);
+    if (SMALLMENU == 0) 
+        gdk_window_set_cursor (drawing_miniimage->window, cursor_arrow);
+    
     if (pdamode)
-	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 1);
-    if (SMALLMENU == 0)
-	gdk_window_set_cursor (drawing_miniimage->window, cursor);
+	   gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 1);
+    
+    
 
     if (pdamode)
-	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
-    cursor = gdk_cursor_new (GDK_CROSS);
-    gdk_window_set_cursor (drawing_area->window, cursor);
-
+	   gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
+    
     /*  Tooltips */
     tooltips = gtk_tooltips_new ();
 
