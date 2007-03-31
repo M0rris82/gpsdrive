@@ -488,21 +488,21 @@ extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
 static GtkItemFactoryEntry main_menu[] = {
-    {N_("/_Misc. Menu"),                    NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/_Maps"),               NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/_Maps/_Import map"),   NULL, (gpointer) import1_cb,    1, NULL},
-    {N_("/_Misc. Menu/_Maps/_Download map"), NULL, (gpointer) download_cb,   0, NULL},
-    {N_("/_Misc. Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
-    {N_("/_Misc. Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
-    //    {N_("/_Misc. Menu/_Start gpsd"),        NULL, (gpointer) startgpsd_cb,  0, NULL},
-    {N_("/_Misc. Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
-    {N_("/_Misc. Menu/M_essages"),           NULL, NULL,                     0, "<Branch>"},
-    {N_("/_Misc. Menu/M_essages/_Send message to mobile target"), 
+    {N_("/_Menu"),                    NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Menu/_Maps"),               NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Menu/_Maps/_Import"),   NULL, (gpointer) import1_cb,    1, NULL},
+    {N_("/_Menu/_Maps/_Download"), NULL, (gpointer) download_cb,   0, NULL},
+    // removed not needed any more {N_("/_Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
+    {N_("/_Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
+    //    {N_("/_Menu/_Start gpsd"),        NULL, (gpointer) startgpsd_cb,  0, NULL},
+    {N_("/_Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
+    {N_("/_Menu/M_essages"),           NULL, NULL,                     0, "<Branch>"},
+    {N_("/_Menu/M_essages/_Send message to mobile target"), 
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
-    {N_("/_Misc. Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
-    {N_("/_Misc. Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_ABOUT},
-    {N_("/_Misc. Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
-    {N_("/_Misc. Menu/_Quit"),               NULL, (gpointer) quit_program,  0, NULL }
+    {N_("/_Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
+    {N_("/_Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_ABOUT},
+    {N_("/_Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
+    {N_("/_Menu/_Quit"),               NULL, (gpointer) quit_program,  0, NULL }
 };
 
 void sql_load_lib();
@@ -2868,8 +2868,6 @@ scalerbt_cb (GtkWidget * widget, guint datum)
 		return TRUE;
 	}
 	scalewanted = nlist[(gint) rint (val)];
-	
-	test_and_load_newmap ();
 
 	gtk_adjustment_set_value (GTK_ADJUSTMENT (scaler_adj), val);
 	expose_cb (NULL, 0);
@@ -3529,7 +3527,7 @@ accepttext (GtkWidget * widget, gpointer data)
 		fprintf (stderr, "friends: message:\n%s\n", messagesendtext);
 	gtk_widget_destroy (widget);
 	wi = gtk_item_factory_get_item (item_factory,
-					N_("/Misc. Menu/Messages"));
+					N_("/Menu/Messages"));
 	statuslock = TRUE;
 	gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
 			    _("Sending message to friends server..."));
@@ -4352,7 +4350,7 @@ main (int argc, char *argv[])
     GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_track;
 	// Unused variable: GtkWidget *vbox_wlan;
     GtkWidget *hbig, *hbox2;
-    GtkWidget *hbox2a, *hbox2b, *vmenubig;
+    GtkWidget *hbox2a, *hbox2b;
     GtkWidget *zoomin_bt, *zoomout_bt, *hbox_zoom;
     GtkWidget *hbox_scaler;
     GtkWidget *vboxlow, *hboxlow;
@@ -4930,7 +4928,6 @@ main (int argc, char *argv[])
 	    }
 
     vbig = gtk_vbox_new (FALSE, 0 * PADDING);
-    vmenubig = gtk_vbox_new (FALSE, 0 * PADDING);
     hbig = gtk_hbox_new (FALSE, 0 * PADDING);
     item_factory =
 	gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", NULL);
@@ -4942,10 +4939,12 @@ main (int argc, char *argv[])
 
     menubar = gtk_item_factory_get_widget (item_factory, "<main>");
 
+    /* disabled, not needed any more
     wi = gtk_item_factory_get_item (item_factory,
-				    N_("/Misc. Menu/Waypoint Manager"));
+				    N_("/Menu/Waypoint Manager"));
     if (!debug)
 	gtk_widget_set_sensitive (wi, FALSE);
+    */
 
 
     if (havespeechout)
@@ -5766,7 +5765,6 @@ main (int argc, char *argv[])
 	{
 	    gtk_box_pack_start (GTK_BOX (hbig), vbig, TRUE, TRUE,
 				1 * PADDING);
-	    //gtk_container_add (GTK_CONTAINER (mainwindow), vmenubig);
 	    gtk_container_add (GTK_CONTAINER (mainwindow), hbig);
 	}
 
@@ -5912,7 +5910,7 @@ main (int argc, char *argv[])
 			      ("On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."),
 			      NULL);
 	wi = NULL;
-	wi = gtk_item_factory_get_item (item_factory, N_("/Misc. Menu"));
+	wi = gtk_item_factory_get_item (item_factory, N_("/Menu"));
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wi,
 			      _("Here you find extra functions for maps, tracks and messages"),
 			      NULL);
