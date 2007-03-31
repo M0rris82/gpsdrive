@@ -421,11 +421,7 @@ mainsetup (void)
   GtkWidget *f3;
   GtkWidget *f4;
   GtkWidget *f5;
-  GtkWidget *font1;
-  GtkWidget *font2;
-  GtkWidget *font3;
   GtkWidget *fontbox;
-  GtkWidget *framefont;
   GtkWidget *framesound;
   GtkWidget *ftable;
   GtkWidget *garminbt;
@@ -971,11 +967,20 @@ mainsetup (void)
 			_("Switch on for speech output of the status of your "
 			  "GPS signal"), NULL);
 
+  /*
+   * Currently these settings are not really honored. 
+   * So we don't want anyone to configure them
+   */
   /* Font settings */
+  /*
+  GtkWidget *framefont;
   framefont = gtk_frame_new (_("Font and color settings"));
   fontbox = gtk_hbutton_box_new ();
   gtk_container_add (GTK_CONTAINER (framefont), fontbox);
 
+  GtkWidget *font1;
+  GtkWidget *font2;
+  GtkWidget *font3;
   font1 = gtk_button_new_with_label (_("WP Label"));
   font2 = gtk_button_new_with_label (_("Big display"));
   font3 = gtk_button_new_with_label (_("Display color"));
@@ -990,10 +995,25 @@ mainsetup (void)
   gtk_box_pack_start (GTK_BOX (fontbox), font1, TRUE, TRUE, 2);
   gtk_box_pack_start (GTK_BOX (fontbox), font2, TRUE, TRUE, 2);
   gtk_box_pack_start (GTK_BOX (fontbox), font3, TRUE, TRUE, 2);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font1,
+			_
+			("Here you can set the font for the waypoint labels"),
+			NULL);
+
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font2,
+			_("Here you can set the font for the big display for "
+			  "Speed and Distance"), NULL);
+
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font3,
+			_
+			("Here you can set the color for the big display for "
+			 "speed, distance and altitude"), NULL);
+
+  gtk_box_pack_start (GTK_BOX (mainbox), framefont, FALSE, TRUE, 1 * PADDING);
+  */
 
   gtk_box_pack_start (GTK_BOX (mainbox), framesound, FALSE, TRUE,
 		      1 * PADDING);
-  gtk_box_pack_start (GTK_BOX (mainbox), framefont, FALSE, TRUE, 1 * PADDING);
 
   gtk_table_set_row_spacings (GTK_TABLE (table2), 5 * PADDING);
   gtk_table_set_col_spacings (GTK_TABLE (table2), 5 * PADDING);
@@ -1102,20 +1122,6 @@ mainsetup (void)
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), nightModeOff,
 			_("Switches night mode off"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font1,
-			_
-			("Here you can set the font for the waypoint labels"),
-			NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font2,
-			_("Here you can set the font for the big display for "
-			  "Speed and Distance"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), font3,
-			_
-			("Here you can set the color for the big display for "
-			 "speed, distance and altitude"), NULL);
 
   gtk_widget_show_all (mainbox);
 }
