@@ -59,7 +59,7 @@ extern gint mydebug, scalewanted, savetrack;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gint setdefaultpos, shadow, etch;
-extern gint do_draw_grid, streets_draw, tracks_draw, poi_draw, wlan_draw, testgarmin;
+extern gint do_draw_grid, streets_draw, poi_draw, wlan_draw, testgarmin;
 extern gint needtosave, usedgps, simfollow;
 extern gchar activewpfile[200];
 extern gdouble milesconv;
@@ -290,7 +290,6 @@ writeconfig ()
 	fprintf (fp, "draw_streets = %d\n", streets_draw);
 	fprintf (fp, "draw_poi = %d\n", poi_draw);
 	fprintf (fp, "draw_wlan = %d\n", wlan_draw);
-	fprintf (fp, "draw_tracks = %d\n", tracks_draw);
 	for ( i = 0; i < max_display_map; i++)
 	    {
 		fprintf (fp, "display_map_%s = %d\n",
@@ -518,8 +517,6 @@ readconfig ()
 			poi_draw = atoi (par2);
 		    else if ( (strcmp(par1, "draw_wlan")) == 0)
 			wlan_draw = atoi (par2);
-		    else if ( (strcmp(par1, "draw_tracks")) == 0)
-			tracks_draw = atoi (par2);
 		    else if ( ! strncmp(par1, "display_map_",12) )
 			{
 			    // printf ("display_map: %s %s\n",par1,par2);

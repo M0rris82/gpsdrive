@@ -994,46 +994,6 @@ sub create_db(){
                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
     add_index('streets_type');
 
-    # ------- Tracks
-    db_exec('CREATE TABLE IF NOT EXISTS `tracks_type` (
-                      `track_type_id` int(11)    NOT NULL auto_increment,
-                      `name`        varchar(80)  NOT NULL default \'\',
-                      `symbol`      varchar(160)     NULL default \'\',
-                      `description` varchar(160)     NULL default \'\',
-                      `color`           varchar(20)  NULL default \'\',
-                      `color_bg`        varchar(20)  NULL default \'\',
-                      `width`           int(2)       NULL default \'1\',
-                      `width_bg`        int(2)       NULL default \'2\',
-                      `linetype`        varchar(80)  NULL default \'\',
-'. #                  vvvvvvvvvvv For later use
-'                     `scale_min`     int(12)      NOT NULL default \'1\',
-                      `scale_max`     int(12)      NOT NULL default \'0\',
-'. #                  ^^^^^^^^^^^ For later use
-'                     PRIMARY KEY  (`track_type_id`)
-                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
-    add_index('tracks_type');
-
-    db_exec('CREATE TABLE IF NOT EXISTS `tracks` (
-                      `track_id`       int(11)      NOT NULL  auto_increment,
-                      `name`           varchar(80)            default NULL,
-                      `track_type_id`  int(11)      NOT NULL  default \'0\',
-                      `lat1`            double                default \'0\',
-                      `lon1`            double                default \'0\',
-                      `alt1`            double                default \'0\',
-                      `time1`           date                  default \'0000-00-00\',
-                      `lat2`            double                default \'0\',
-                      `lon2`            double                default \'0\',
-                      `alt2`            double                default \'0\',
-                      `time2`           date                  default \'0000-00-00\',
-                      `speed`          double                 default \'0\',
-                      `direction`      double                 default \'0\',
-                      `acuracy`        float                  default \'0\',
-                      `time_delta`     float                  default \'0\',
-                      `source_id`      int(11)      NOT NULL  default \'0\',
-                      PRIMARY KEY  (`track_id`)
-                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;') or die;
-    add_index('track');
-
     # ------- Source
     db_exec('CREATE TABLE IF NOT EXISTS `source` (
                       `source_id`      int(11)      NOT NULL auto_increment,

@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 /***********************************************************************
 
 Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>
@@ -98,7 +106,6 @@ Disclaimer: Please do not use for navigation.
 #include "poi.h"
 #include "streets.h"
 #include "wlan.h"
-#include "draw_tracks.h"
 #include "track.h"
 #include "waypoint.h"
 #include "routes.h"
@@ -292,7 +299,7 @@ GtkWidget *label_prefscale, *mute_bt;
 GtkWidget *wp_bt;
 GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt, *wlan_draw_bt;
 
-GtkWidget *track_bt, *tracks_draw_bt;
+GtkWidget *track_bt;
 GtkWidget *savetrack_bt;
 GtkWidget *loadtrack_bt;
 gint savetrack = 0;
@@ -303,7 +310,6 @@ trackcoordstruct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 GdkColor trackcolorv;
 gchar savetrackfn[256];
-extern gint tracks_draw;
 
 GtkWidget *scaler_left_bt, *scaler_right_bt, *scaler_widget;
 GtkObject *scaler_adj;
@@ -1782,7 +1788,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	    streets_draw_list ();
 	    poi_draw_list ();
 	    wlan_draw_list ();
-	    tracks_draw_list ();
 	}
 
 
@@ -3401,22 +3406,6 @@ streets_draw_cb (GtkWidget * widget, guint datum)
     return TRUE;
 }
 
-/* *****************************************************************************
- * switching TRACK on/off 
- */
-gint
-tracks_draw_cb (GtkWidget * widget, guint datum)
-{
-    if ( ! tracks_draw ) 
-	tracks_check_if_moved_reset();
-    if ( datum ) {
-	tracks_draw = !tracks_draw;
-	needtosave = TRUE;
-    }
-    tracks_draw_list ();
-    return TRUE;
-}
-
 
 /* *****************************************************************************
  * switching Track display on/off 
@@ -3825,8 +3814,6 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	    calcxytopos (x, y, &lat, &lon, zoom);
 	    gdouble dist=lat2-lat1;
 	    dist = dist>0?dist:-dist;
-	    if ( tracks_draw )
-		tracks_query_point  ( lat,lon, dist );
 	    if ( streets_draw )
 		streets_query_point ( lat,lon, dist );
 	}
@@ -5055,14 +5042,6 @@ main (int argc, char *argv[])
 	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
 
-	// Checkbox ---- TRACK Draw
-	tracks_draw_bt = gtk_check_button_new_with_label (_("draw _Track"));
-	gtk_button_set_use_underline (GTK_BUTTON (tracks_draw_bt), TRUE);
-	if (!tracks_draw)
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tracks_draw_bt), TRUE);
-	gtk_signal_connect (GTK_OBJECT (tracks_draw_bt), "clicked",
-			    GTK_SIGNAL_FUNC (tracks_draw_cb), (gpointer) 1);
-
 	// Checkbox ---- Show Track
 	track_bt = gtk_check_button_new_with_label (_("Show _Track"));
 	gtk_button_set_use_underline (GTK_BUTTON (track_bt), TRUE);
@@ -5511,11 +5490,6 @@ main (int argc, char *argv[])
     if (havespeechout)
 	gtk_box_pack_start (GTK_BOX (vbox_poi), mute_bt, FALSE, FALSE,    0 * PADDING);
 
-    if (usesql)
-	{
-	    gtk_box_pack_start (GTK_BOX (vbox_track), tracks_draw_bt, FALSE, FALSE, 0 * PADDING);
-	}
-
     if ( mydebug >99 ) fprintf(stderr , "scaler init\n");
     scaler_init();
 
@@ -5941,8 +5915,6 @@ main (int argc, char *argv[])
 	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), scaler_widget,
 				  _("Select the map scale of avail. maps."),
 				  NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), tracks_draw_bt,
-			      _("Draw Tracks found in mySQL"), NULL);
 
 
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp1eventbox,
@@ -6021,13 +5993,11 @@ main (int argc, char *argv[])
     streets_draw_cb (streets_draw_bt, 0);
     poi_draw_cb (poi_draw_bt, 0);
     wlan_draw_cb (wlan_draw_bt, 0);
-    tracks_draw_cb (NULL, 0);
     needtosave = FALSE;
 
 	poi_init ();
     wlan_init ();
     streets_init ();
-    tracks_init ();
 
 	// When all the basic gui stuff is finally moved into gui.c, this will call the
 	// necessary functions for graphical initialization.

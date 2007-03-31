@@ -62,7 +62,7 @@ extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint setdefaultpos, shadow, etch;
-extern gint do_draw_grid, streets_draw, tracks_draw, poi_draw, testgarmin;
+extern gint do_draw_grid, streets_draw, poi_draw, testgarmin;
 extern gint needtosave, usedgps, simfollow;
 extern gchar activewpfile[200];
 extern gdouble milesconv;
