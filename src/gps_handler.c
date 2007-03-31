@@ -346,11 +346,13 @@ initgps ()
   haveGARMIN = FALSE;
 
 #ifdef NOGARMIN
-  g_print (_("\nno garmin support compiled in\n"));
+  if ( mydebug > 1 )
+      g_print (_("\nno garmin support compiled in\n"));
   testgarmin = FALSE;
 #else
   if (!testgarmin)
-    g_print (_("\nGarmin protocol detection disabled!\n"));
+      if ( mydebug > 1 )
+	  g_print (_("\nGarmin protocol detection disabled!\n"));
 #endif
 
   if ((!haveNMEA) && (testgarmin))
