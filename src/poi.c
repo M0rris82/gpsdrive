@@ -162,7 +162,7 @@ void get_poi_type_list (void);
  * into the POI-Lookup window
  */
 guint
-poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gchar *type)
+poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gchar *type)
 {
 	gdouble lat, lon, dist;
 	gdouble lat_min, lon_min;
@@ -237,8 +237,8 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	if (lat_min < -90.0) lat_min = -90.0;
 	if (lat_max > 90.0) lat_max = 90.0;
 	
-	// choose poi_type_ids to search
-	if (g_strcasecmp(type, "0") != 0)
+	/* choose poi_type_ids to search */
+	if (typeflag)
 	{
 		g_snprintf (type_filter, sizeof (type_filter), "AND (poi_type_id IN (%s))",type);
 	}
@@ -247,7 +247,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		g_snprintf (type_filter, sizeof (type_filter), " ");
 	}
 
-	// prepare search text for database query
+	/* prepare search text for database query */
 	g_strlcpy (tmp_text, text, sizeof (tmp_text));
 	g_strdelimit (tmp_text, "'", '_');
 	g_strdelimit (tmp_text, "*", '%');

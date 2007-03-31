@@ -619,7 +619,7 @@ unit_test (void)
 	errors++;
       }
     
-    res = insertsqldata(999.9,999.9,"Testpoint","test");
+    res = insertsqldata(999.9,999.9,"Testpoint","test","Test Description");
     if (1>res)
       {
 	printf ("ERROR !!!!!!!!\n");

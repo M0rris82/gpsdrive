@@ -147,12 +147,14 @@ gchar lastradar[40], lastradar2[40];
 gdouble radarbearing;
 /* action=1: radar (speedtrap) */
 GtkWidget *add_wp_name_text, *wptext2;
+GtkWidget *add_wp_comment_text;
 long sortcolumn = 4, sortflag = 0;
 gdouble wp_saved_target_lat = 0;
 gdouble wp_saved_target_lon = 0;
 gdouble wp_saved_posmode_lat = 0;
 gdouble wp_saved_posmode_lon = 0;
 
+gint save_in_db = TRUE;
 
 /* *****************************************************************************
  * check for Radar WP near me and warn me
@@ -565,13 +567,13 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
  * with Strings for Name and Type
  */
 void
-addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
+addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gint save_flag)
 {
 	gint i;
-	if (usesql)
+	if (usesql && save_in_db)
 	{
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
-			       (char *) wp_type);
+			       (char *) wp_type, (char *) wp_comment);
 	}
 	else
 	{
@@ -579,6 +581,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 		(wayp + i)->lat = wp_lat;
 		(wayp + i)->lon = wp_lon;
 		g_strdelimit ((char *) wp_name, " ", '_');
+		g_strdelimit ((char *) wp_comment, " ", '_');
 
 		/*  limit waypoint name to 20 chars */
 		g_strlcpy ((wayp + i)->name, wp_name, 40);
@@ -586,6 +589,11 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 
 		g_strlcpy ((wayp + i)->typ, wp_type, 40);
 		(wayp + i)->typ[40] = 0;
+		
+		/*  limit waypoint comment to 80 chars */
+		g_strlcpy ((wayp + i)->comment, wp_comment, 80);
+		(wayp + i)->comment[80] = 0;
+		
 
 		(wayp + i)->wlan = 0;
 
@@ -605,21 +613,35 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon)
 gint
 addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 {
-	G_CONST_RETURN gchar *s1, *s2;
+	G_CONST_RETURN gchar *s1, *s2, *s3;
 	gchar wp_name[80];
 	gchar wp_type[80];
+	gchar wp_comment[255];
 
 	s1 = gtk_entry_get_text (GTK_ENTRY (add_wp_name_text));
 	s2 = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (wptext2)->entry));
+	s3 = gtk_entry_get_text (GTK_ENTRY (add_wp_comment_text));
+	
+	if (!usesql)
+		save_in_db = FALSE;
+		
 	g_strlcpy(wp_name,s1,sizeof(wp_name));
 	g_strlcpy(wp_type,s2,sizeof(wp_type));
+	g_strlcpy(wp_comment,s3,sizeof(wp_comment));
 
-	addwaypoint (wp_name, wp_type, wplat, wplon);
+	addwaypoint (wp_name, wp_type, wp_comment, wplat, wplon, save_in_db);
 
 	gtk_widget_destroy (GTK_WIDGET (widget));
 	markwaypoint = FALSE;
 
 	return TRUE;
+}
+
+/* *****************************************************************************/
+void
+add_wp_change_save_in_cb (GtkWidget *widget, gint user_data)
+{
+	save_in_db = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 }
 
 /* *****************************************************************************
@@ -642,16 +664,29 @@ gint
 addwaypoint_cb (GtkWidget * widget, gpointer datum)
 {
 	GtkWidget *window;
-	GtkWidget *hbox4;
 	GtkWidget *vbox;
 	gchar buff[40];
 	GList *wp_types = NULL;
 	gint i;
 
+	GtkWidget *add_wp_name_label;
+	GtkWidget *add_wp_type_label;
+	GtkWidget *add_wp_comment_label;
+	GtkWidget *add_wp_lon_label;
+	GtkWidget *add_wp_lat_label;
+	GtkWidget *add_wp_button_hbox;
+	GtkWidget *button, *button2;
+	GtkWidget *table_add_wp;
+	GSList *radiobutton_savein_group = NULL;
+	GtkWidget *radiobutton_db;
+	GtkWidget *radiobutton_wp;
+	GtkWidget *add_wp_savein_label;
+	
 
 	addwaypointwindow = window = gtk_dialog_new ();
 	gtk_window_set_transient_for (GTK_WINDOW (window),
 				      GTK_WINDOW (mainwindow));
+	gtk_window_set_default_size (GTK_WINDOW (addwaypointwindow), 320, -1);
 	gotowindow = window;
 	markwaypoint = TRUE;
 
@@ -662,70 +697,59 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->vbox), vbox, TRUE,
 			    TRUE, 2);
 
+	table_add_wp = gtk_table_new (6, 3, FALSE);
+	gtk_box_pack_start (GTK_BOX (vbox), table_add_wp, TRUE, TRUE, 2);
+	
 	{			/* Name */
-		GtkWidget *add_wp_name_hbox;
-		GtkWidget *add_wp_name_label;
 		add_wp_name_text = gtk_entry_new ();
-		add_wp_name_label = gtk_label_new (_(" Name: "));
+		add_wp_name_label = gtk_label_new (_("Name:"));
+		gtk_entry_set_max_length (GTK_ENTRY (add_wp_name_text), 80);
 		gtk_window_set_focus (GTK_WINDOW (window), add_wp_name_text);
 
-		add_wp_name_hbox = gtk_hbox_new (TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_name_hbox),
-				    add_wp_name_label, TRUE, TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_name_hbox),
-				    add_wp_name_text, TRUE, TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (vbox), add_wp_name_hbox, TRUE,
-				    TRUE, 2);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_name_label, 0, 1, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_name_text, 1, 3, 0, 1);
 	}
 
 	{			/* Types */
-		GtkWidget *add_wp_type_label;
 		wp_types = g_list_append (wp_types, "unknown");
 		for (i = 2; i <= poi_type_list_count; i++)
 		{
 			if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
 				wp_types = g_list_append (wp_types, poi_type_list[i].name);
 		}		
-		
-		GtkWidget *add_wp_type_hbox;
-		/*   wptext2 = gtk_entry_new (); */
+
 		wptext2 = gtk_combo_new ();
 		gtk_combo_set_popdown_strings (GTK_COMBO (wptext2),
 					       (GList *) wp_types);
-
 		add_wp_type_label = gtk_label_new (_(" Type: "));
 
-		add_wp_type_hbox = gtk_hbox_new (TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_type_hbox),
-				    add_wp_type_label, TRUE, TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_type_hbox), wptext2, TRUE,
-				    TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (vbox), add_wp_type_hbox, TRUE,
-				    TRUE, 2);
-
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_type_label, 0, 1, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), wptext2, 1, 3, 1, 2);
 	}
 
-        {                       /* Lat */
-                GtkWidget *add_wp_lat_label;
-                GtkWidget *add_wp_lat_hbox;
-                add_wp_lat_text = gtk_entry_new_with_max_length (20);
-                coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
-                gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
-                add_wp_lat_label = gtk_label_new (_("Latitude"));
-                gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
-                                    GTK_SIGNAL_FUNC (addwaypointchange_cb),
-                                    (gpointer) 2);
-                add_wp_lat_hbox = gtk_hbox_new (TRUE, 2);
-                gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
-                                    add_wp_lat_label, TRUE, TRUE, 2);
-                gtk_box_pack_start (GTK_BOX (add_wp_lat_hbox),
-                                    add_wp_lat_text, TRUE, TRUE, 2);
-                gtk_box_pack_start (GTK_BOX (vbox), add_wp_lat_hbox, TRUE,
-                                    TRUE, 2);
-        }
+	{		/* Comment */
+		add_wp_comment_text = gtk_entry_new ();
+		add_wp_comment_label = gtk_label_new (_(" Comment: "));
+		gtk_entry_set_max_length (GTK_ENTRY (add_wp_comment_text), 255);
+
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_comment_label, 0, 1, 2, 3);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_comment_text, 1, 3, 2, 3);
+	}
+	
+	{		/* Lat */
+		add_wp_lat_text = gtk_entry_new_with_max_length (20);
+		coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
+		gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
+		add_wp_lat_label = gtk_label_new (_("Latitude"));
+		gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
+					GTK_SIGNAL_FUNC (addwaypointchange_cb),
+					(gpointer) 2);
+
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_lat_label, 0, 1, 3, 4);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_lat_text, 1, 3, 3, 4);
+	}
 
 	{			/* Lon */
-		GtkWidget *add_wp_lon_label;
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
 		coordinate2gchar(buff, sizeof(buff), wplon, FALSE, minsecmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lon_text), buff);
@@ -733,18 +757,35 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		gtk_signal_connect (GTK_OBJECT (add_wp_lon_text), "changed",
 				    GTK_SIGNAL_FUNC (addwaypointchange_cb),
 				    (gpointer) 1);
-		hbox4 = gtk_hbox_new (TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (hbox4), add_wp_lon_label, TRUE,
-				    TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (hbox4), add_wp_lon_text, TRUE,
-				    TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (vbox), hbox4, TRUE, TRUE, 2);
+
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_lon_label, 0, 1, 4, 5);
+		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_lon_text, 1, 3, 4, 5);
 	}
 
+	{		/* Save WP in... */
+		if (usesql)
+		{
+			add_wp_savein_label = gtk_label_new (_(" Save waypoint in: "));
+			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_savein_label, 0, 1, 5, 6);
+
+			radiobutton_db = gtk_radio_button_new_with_mnemonic (NULL, _("Database"));
+			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), radiobutton_db, 1, 2, 5, 6);
+			gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_db), radiobutton_savein_group);
+		
+			radiobutton_savein_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_db));
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_db), TRUE);
+	
+			radiobutton_wp = gtk_radio_button_new_with_mnemonic (NULL, _("way.txt File"));
+			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), radiobutton_wp, 2, 3, 5, 6);
+			gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_wp), radiobutton_savein_group);
+			
+			g_signal_connect (radiobutton_db, "toggled",
+						GTK_SIGNAL_FUNC (add_wp_change_save_in_cb), 0);
+		}
+	}
+	
 	{			/* Buttons */
-		GtkWidget *add_wp_button_hbox;
-		GtkWidget *button, *button2;
-		button = gtk_button_new_from_stock (GTK_STOCK_APPLY);
+		button = gtk_button_new_from_stock (GTK_STOCK_OK);
 		button2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
 
 		GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
@@ -759,25 +800,21 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 				    GTK_SIGNAL_FUNC (addwaypointdestroy_cb),
 				    0);
 
-
 		add_wp_button_hbox = gtk_hbox_new (TRUE, 2);
-		gtk_box_pack_start (GTK_BOX (add_wp_button_hbox), button,
-				    TRUE, TRUE, 2);
 		gtk_box_pack_start (GTK_BOX (add_wp_button_hbox), button2,
 				    TRUE, TRUE, 2);
+		gtk_box_pack_start (GTK_BOX (add_wp_button_hbox), button,
+				    TRUE, TRUE, 2);
 		gtk_window_set_default (GTK_WINDOW (window), button);
-		/*   gtk_box_pack_start (GTK_BOX (vbox), add_wp_button_hbox, TRUE, TRUE, 2); */
 		gtk_box_pack_start (GTK_BOX
 				    (GTK_DIALOG (window)->action_area),
 				    add_wp_button_hbox, TRUE, TRUE, 2);
 	}
 
-
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (window);
 	return TRUE;
 }
-
 
 /* *****************************************************************************
  */
@@ -934,13 +971,14 @@ savewaypoints ()
 
 			e = fprintf (st, "%-22s %10s %11s "
 				     "%s"
-				     " %d %d %d %d"
+				     " %d %d %d %d %s"
 				     "\n",
 				     (wayp + i)->name, la, lo,
 				     (wayp + i)->typ,
 				     (wayp + i)->wlan, (wayp + i)->action,
 				     (wayp + i)->sqlnr,
-				     (wayp + i)->proximity);
+				     (wayp + i)->proximity,
+					 (wayp + i)->comment);
 		}
 		fclose (st);
 	}

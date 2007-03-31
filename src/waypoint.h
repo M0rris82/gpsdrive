@@ -36,7 +36,7 @@ gint addwaypointdestroy_cb (GtkWidget * widget, guint datum);
 gint delwp_cb (GtkWidget * widget, guint datum);
 gint jumpwp_cb (GtkWidget * widget, guint datum);
 gint watchwp_cb (GtkWidget * widget, guint * datum);
-void addwaypoint (gchar * wp_name, gchar * wp_type, gdouble wp_lat, gdouble wp_lon);
+void addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gint save_in_db);
 void check_and_reload_way_txt();
 void draw_waypoints();
 void loadwaypoints();

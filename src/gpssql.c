@@ -124,9 +124,9 @@ sqlend (void)
 /* ******************************************************************
  */
 int
-insertsqldata (double lat, double lon, char *name, char *typ)
+insertsqldata (double lat, double lon, char *name, char *typ, char *comment)
 {
-	char q[200], lats[20], lons[20], tname[500], ttyp[50];
+	char q[200], lats[20], lons[20], tname[80], ttyp[50], tcomment[255];
 	int r, j, i, pt_id, src;
 	gchar *db_time = "2007-01-01T00:00:00.000Z";
 	GTimeVal current_time;
@@ -167,6 +167,20 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 		}
 	}
 
+	j = 0;
+	for (i = 0; i <= (int) strlen (comment); i++)
+	{
+		if (comment[i] != '\'' && comment[i] != '\\' && comment[i] != '\"')
+			tcomment[j++] = comment[i];
+		else
+		{
+			tcomment[j++] = '\\';
+			tcomment[j++] = comment[i];
+			if (mydebug > 50)
+				g_print ("Orig. comment : %s\nEscaped comment : %s\n", comment, tcomment);
+		}
+	}
+
 	/* get poi_type_id for chosen poi_type from poi_type table */
  	pt_id = poi_type_id_from_name(ttyp);
 	/* set source_id at value for 'user entered data' */
@@ -176,8 +190,8 @@ insertsqldata (double lat, double lon, char *name, char *typ)
 	db_time = g_strndup(g_time_val_to_iso8601(&current_time),10);
 	
 	g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (name,lat,lon,poi_type_id,source_id,last_modified) VALUES ('%s','%s','%s','%d','%d','%s')",
-				dbtable, tname, lats, lons, pt_id, src, db_time);
+				"INSERT INTO %s (name,lat,lon,poi_type_id,comment,source_id,last_modified) VALUES ('%s','%s','%s','%d','%s','%d','%s')",
+				dbtable, tname, lats, lons, pt_id, tcomment, src, db_time);
 	if (mydebug > 50)
 		printf ("query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))

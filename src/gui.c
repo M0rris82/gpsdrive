@@ -99,6 +99,9 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 struct pattern
 {
 	GtkEntry *text, *distance;
+	gchar *poitype_id;
+	gchar *poitype_name;
+	gint typeflag;	/* 0: search all types, 1: search only selected */
 	gint posflag;	/* 0: search at current position, 1: search at destination */
 	guint result_count;
 } criteria;
@@ -470,10 +473,10 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 					gtk_entry_get_text (entries->distance),
 					entries->posflag);
 	}
-	
+		
 	entries->result_count = poi_get_results (gtk_entry_get_text (entries->text),
 						gtk_entry_get_text (entries->distance),
-						entries->posflag, "0");
+						entries->posflag, entries->typeflag, entries->poitype_id);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
 	if (entries->result_count == local_config.results_max)
@@ -495,12 +498,14 @@ searchpoitypemode_cb (GtkWidget *combobox, GtkToggleButton *button)
 	if (gtk_toggle_button_get_active(button))
 	{
 		gtk_widget_set_sensitive (combobox, TRUE);
-		// ### switch to selection from selected poi-type
+		/* switch to selection from selected poi-type */
+		criteria.typeflag = TRUE;
 	}
 	else
 	{
 		gtk_widget_set_sensitive (combobox, FALSE);
-		// ### switch to selection from all poi-types
+		/* switch to selection from all poi-types */
+		criteria.typeflag = FALSE;
 	}
 }
 
@@ -516,7 +521,6 @@ searchdistancemode_cb (GtkToggleButton *button, gpointer user_data)
 		criteria.posflag = 1; /* search near destination */
 	}
 }
-
 
 
 static void
@@ -601,23 +605,25 @@ select_poitype_cb (GtkTreeSelection *selection, gpointer data)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	
+	// ### temporary:
+	gint ptid;
+	
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
 		gtk_tree_model_get (model, &iter,
-					RESULT_LAT, &target_lat,
-					RESULT_LON, &target_lon,
+					POITYPE_ID, &ptid,
+					POITYPE_NAME, &criteria.poitype_name,
 					-1);
-			
-		if (mydebug>50)
-			fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
+		
+		// ### temporary:
+		g_snprintf (criteria.poitype_id, sizeof (criteria.poitype_id), "%d", ptid);
+	
+		
+		//if (mydebug>50)
+			fprintf (stdout, " selected poi-type -> %d / %s / %s\n", ptid, criteria.poitype_id, criteria.poitype_name);
 		
 	}
 
-	/* if posmode enabled set posmode_lat/lon */
-	if (posmode) {
-		posmode_lat = target_lat;
-		posmode_lon = target_lon;
-	}
 }
 
 
@@ -1246,14 +1252,12 @@ void poi_lookup_cb (GtkWidget *calling_button)
 				_("Close this window"), NULL);
 	g_signal_connect_swapped (button_close, "clicked",
 				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
+	g_signal_connect (GTK_OBJECT (poi_lookup_window), "destroy",
+				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
 
 	/* disable buttons until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
 	gtk_widget_set_sensitive (button_target, FALSE);
-
-	/* destroy window -> destroy timers */
-	g_signal_connect (GTK_OBJECT (poi_lookup_window), "destroy",
-				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), 0);
 
 	gtk_widget_show_all (poi_lookup_window);
 }

@@ -3754,15 +3754,19 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add Waypoint at current gps location without asking
 	if ((toupper (event->keyval)) == 'W')
 	{
-		gchar wp_name[100], wp_type[100];
+		gchar wp_name[100], wp_type[100], wp_comment[100];
 		time_t t;
 		struct tm *ts;
 		time (&t);
 		ts = localtime (&t);
 		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
-		g_snprintf (wp_type, sizeof (wp_type), "Automatic_key");
+		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp");
+		g_snprintf (wp_comment, sizeof (wp_comment), _("Temporary Waypoint"));
 
-		addwaypoint (wp_name, wp_type, current_lat, current_lon);
+		if (usesql)
+			addwaypoint (wp_name, wp_type, wp_comment, current_lat, current_lon, TRUE);
+		else
+			addwaypoint (wp_name, wp_type, wp_comment, current_lat, current_lon, FALSE);
 	}
 
 	// Add waypoint at current mouse location
@@ -3784,19 +3788,23 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add instant waypoint a current mouse location
 	if ((toupper (event->keyval)) == 'P')
 	{
-		gchar wp_name[100], wp_type[100];
+		gchar wp_name[100], wp_type[100], wp_comment[100];
 		time_t t;
 		struct tm *ts;
 		time (&t);
 		ts = localtime (&t);
 		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
-		g_snprintf (wp_type, sizeof (wp_type), "Automatic_key");
+		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp");
+		g_snprintf (wp_comment, sizeof (wp_comment), _("Temporary Waypoint"));
 
 		gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
 		calcxytopos (x, y, &lat, &lon, zoom);
 		//		if ( mydebug > 0 )
 		printf ("Add Waypoint: %s lat:%f,lon:%f (x:%d,y:%d)\n", wp_name, lat, lon, x, y);
-		addwaypoint (wp_name, wp_type, lat, lon);
+		if (usesql)
+			addwaypoint (wp_name, wp_type, wp_comment, lat, lon, TRUE);
+		else
+			addwaypoint (wp_name, wp_type, wp_comment, lat, lon, FALSE);
 	}
 
 	// Query Info for next points and streets

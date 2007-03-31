@@ -4,7 +4,7 @@ int initkismet (void);
 void get_poi_type_id_for_wlan();
 int readkismet (void);
 int deletesqldata (int index);
-int insertsqldata (double lat, double lon, char *name, char *typ);
+int insertsqldata (double lat, double lon, char *name, char *typ, char *comment);
 int sqlinit (void);
 void sqlend (void);
 int getsqldata ();
