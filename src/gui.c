@@ -640,11 +640,11 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 	gint response_id;
 	gchar *question = "Are you sure?";
 	
-	dialog_yesno = gtk_message_dialog_new (parent,
+	dialog_yesno = GTK_DIALOG (gtk_message_dialog_new (parent,
 									GTK_DIALOG_MODAL,
 									GTK_MESSAGE_QUESTION,
 									GTK_BUTTONS_YES_NO,
-									"%s", question);
+									"%s", question));
 	response_id = gtk_dialog_run (dialog_yesno);
 	gtk_widget_destroy (GTK_WIDGET (dialog_yesno));
 	return response_id;
