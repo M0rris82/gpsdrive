@@ -649,7 +649,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 			{ 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000 };
 		int i, found = 5;
 		double di = 999999;
-		f = g_strtod (sctext, NULL);
+		f = new_dl_scale;
 		ns = f / EXPEDIAFACT;
 		for (i = 0; i < 11; i++)
 			if (abs (ns - scales[i]) < di)
