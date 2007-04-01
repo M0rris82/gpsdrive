@@ -90,6 +90,7 @@ extern GdkColor textback;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
+extern GtkWidget *posbt;
 extern GtkWidget *drawing_area;
 
 
@@ -537,6 +538,7 @@ close_poi_lookup_window_cb (GtkWidget *window)
 
 	gtk_widget_destroy (window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+	gtk_widget_set_sensitive (posbt, TRUE);
 }
 
 
@@ -557,6 +559,7 @@ select_target_poi_cb (GtkWidget *window)
 	target_lon = sel_target_lon;
 		
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+	gtk_widget_set_sensitive (posbt, TRUE);
 }
 
 
@@ -959,6 +962,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	criteria.result_count = 0;
 
 	gtk_widget_set_sensitive (find_poi_bt, FALSE);
+	gtk_widget_set_sensitive (posbt, FALSE);
 
 	/* save old target/posmode for cancel event */
 	wp_saved_target_lat = target_lat;
