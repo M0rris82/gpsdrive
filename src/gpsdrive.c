@@ -183,6 +183,8 @@ gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
 GdkPixbuf *image = NULL, *tempimage = NULL, *miniimage = NULL;
 
+gint setup_cb (GtkWidget * widget, guint datum);
+
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
 extern mapsstruct *maps;
@@ -495,6 +497,8 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Menu/M_essages"),           NULL, NULL,                     0, "<Branch>"},
     {N_("/_Menu/M_essages/_Send message to mobile target"), 
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
+    {N_("/_Menu/S_ettings"), 
+                                            NULL, (gpointer) setup_cb,0,     NULL},
     {N_("/_Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
     {N_("/_Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_ABOUT},
     {N_("/_Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
@@ -4975,12 +4979,12 @@ main (int argc, char *argv[])
 	if ( mydebug >99 ) fprintf(stderr , "create POI Frame\n");
 	GtkTooltips *tooltips;
 	tooltips = gtk_tooltips_new ();
-	frame_poi = gtk_frame_new (_("POI"));
+	frame_poi = gtk_frame_new (_("Points"));
 	vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
 
 	// Checkbox ---- POI Draw
-	poi_draw_bt = gtk_check_button_new_with_label (_("draw PO_I"));
+	poi_draw_bt = gtk_check_button_new_with_label (_("PO_I"));
 	gtk_button_set_use_underline (GTK_BUTTON (poi_draw_bt), TRUE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), poi_draw_bt,
 			      _("Draw Points Of Interest found in mySQL"),
@@ -4994,12 +4998,12 @@ main (int argc, char *argv[])
 
 	// Checkbox ---- WLAN Draw
 	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
-	wlan_draw_bt = gtk_check_button_new_with_label (_("draw _WLAN"));
+	wlan_draw_bt = gtk_check_button_new_with_label (_("_WLAN"));
 	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
 	gtk_button_set_use_underline (GTK_BUTTON (wlan_draw_bt), TRUE);
 	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wlan_draw_bt,
-			      _("Draw Wlan"),
+			      _("Wlan"),
 			      NULL);
 	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
 	if (!wlan_draw)
@@ -5013,7 +5017,7 @@ main (int argc, char *argv[])
 	if ( mydebug >99 ) fprintf(stderr , "create WLAN Frame \n");
 
 	// Checkbox ---- Show WP
-	wp_bt = gtk_check_button_new_with_label (_("Show _WP"));
+	wp_bt = gtk_check_button_new_with_label (_("_WP"));
 	gtk_button_set_use_underline (GTK_BUTTON (wp_bt), TRUE);
 	if (local_config.showwaypoints)
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wp_bt), TRUE);
@@ -5027,10 +5031,11 @@ main (int argc, char *argv[])
     /*   setup_bt = gtk_button_new_with_label (_("Setup")); */
     setup_bt = gtk_button_new_from_stock (GTK_STOCK_PREFERENCES);
 
+    /*
     gtk_signal_connect (GTK_OBJECT (setup_bt),
 			"clicked", GTK_SIGNAL_FUNC (setup_cb),
 			(gpointer) 0);
-
+    */
     { // Frame Track
 	GtkTooltips *tooltips;
 	tooltips = gtk_tooltips_new ();
@@ -5040,7 +5045,7 @@ main (int argc, char *argv[])
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
 
 	// Checkbox ---- Show Track
-	track_bt = gtk_check_button_new_with_label (_("Show _Track"));
+	track_bt = gtk_check_button_new_with_label (_("Show"));
 	gtk_button_set_use_underline (GTK_BUTTON (track_bt), TRUE);
 	if (trackflag)
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt),  TRUE);
@@ -5052,7 +5057,7 @@ main (int argc, char *argv[])
 
 	// Checkbox ---- Save Track
 	savetrackfile (0);
-	savetrack_bt = gtk_check_button_new_with_label (_("Save track"));
+	savetrack_bt = gtk_check_button_new_with_label (_("Save"));
 	if (savetrack)
 	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt),
 					  TRUE);
@@ -5451,7 +5456,7 @@ main (int argc, char *argv[])
     /* search poi */
     gtk_box_pack_start (GTK_BOX (vbox), find_poi_bt, FALSE, FALSE, 1 * PADDING);
     //gtk_box_pack_start (GTK_BOX (vbox), startgps_bt, FALSE, FALSE, 1 * PADDING);
-    gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
+    //    gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
     hboxlow = vbox_controls = NULL;
         
 
@@ -5879,8 +5884,8 @@ main (int argc, char *argv[])
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
 			      _("Show waypoints on the map"), NULL);
 
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
-			      _("Settings for GpsDrive"), NULL);
+	//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), setup_bt,
+	//_("Settings for GpsDrive"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomin_bt,
 			      _("Zoom into the current map"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), zoomout_bt,
