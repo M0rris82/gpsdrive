@@ -545,19 +545,8 @@ close_poi_lookup_window_cb (GtkWidget *window)
 static void
 select_target_poi_cb (GtkWidget *window)
 {
-	gdouble sel_target_lat, sel_target_lon;
-	
-	/* workaround to preserve the selected target coordinates:
-	 * the reason is, that the destroy event is also catched and resets
-	 * the target coords to the old, saved target coords. */
-	sel_target_lat = target_lat;
-	sel_target_lon = target_lon;
-	
 	gtk_widget_destroy (window);
 	
-	target_lat = sel_target_lat;
-	target_lon = sel_target_lon;
-		
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
 	gtk_widget_set_sensitive (posbt, TRUE);
 }
@@ -1253,10 +1242,19 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_container_add (GTK_CONTAINER (alignment_target), hbox_target);
 	image_target = gtk_image_new_from_stock ("gtk-jump-to", GTK_ICON_SIZE_BUTTON);
 	gtk_box_pack_start (GTK_BOX (hbox_target), image_target, FALSE, FALSE, 0);
-	label_target = gtk_label_new_with_mnemonic (_("Select Destination"));
+	if (posmode)
+	{
+		label_target = gtk_label_new (_("Jump to Target"));		
+		gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
+					_("Jump to selected entry"), NULL);
+	}
+	else
+	{
+		label_target = gtk_label_new (_("Select Target"));
+		gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
+					_("Use selected entry as target destination"), NULL);
+	}
 	gtk_box_pack_start (GTK_BOX (hbox_target), label_target, FALSE, FALSE, 0);
-	gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
-				_("Use selected entry as target destination"), NULL);
 	g_signal_connect_swapped (button_target, "clicked",
 				GTK_SIGNAL_FUNC (select_target_poi_cb), poi_lookup_window);
 
@@ -1268,7 +1266,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 				_("Close this window"), NULL);
 	g_signal_connect_swapped (button_close, "clicked",
 				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
-	g_signal_connect (GTK_OBJECT (poi_lookup_window), "destroy",
+	g_signal_connect (GTK_OBJECT (poi_lookup_window), "delete_event",
 				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
 
 	/* disable buttons until POI is selected from list */
