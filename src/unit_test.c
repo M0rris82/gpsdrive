@@ -62,6 +62,8 @@ extern gint haveRMCsentence;
  * This Function tests internal routines of gpsdrive
  */
 
+gint set_unittest_timer (void);
+
 /* ******************************************************************
  * write a file with content in one function call
  */
@@ -817,9 +819,11 @@ unit_test (void)
 
   }
 
+
   // ------------------------------------------------------------------
   errors += unit_test_nmea();
 
+  set_unittest_timer();
   if (errors > 0)
     {
       printf ("\n\n");
@@ -834,5 +838,44 @@ unit_test (void)
     }
 
   // ------------------------------------------------------------------
-  printf ("\n\nAll Unit Tests successfull\n\n");
+  printf ("\n\nUnit Tests ( Part 1 )  successfull\n\n");
+}
+
+
+
+
+/* *****************************************************************************
+ */
+gint
+unittest_settings_open (GtkWidget * widget, guint * datum)
+{
+    extern GtkWidget *setup_bt; 
+    
+    if (mydebug > 0)
+	    printf ("	-------> Open Settings\n");
+    gtk_button_clicked( setup_bt );
+    
+    return FALSE; // Only once
+}
+gint
+unittest_settings_close (GtkWidget * widget, guint * datum)
+{
+    extern GtkWidget *setup_bt; 
+    
+    if (mydebug > 0)
+	    printf ("	-------> Close Settings\n");
+    // gtk_button_clicked( settings_cancel );
+    
+    return FALSE; // Only once
+}
+
+/* *****************************************************************************
+ */
+gint
+set_unittest_timer (void)
+{
+    printf ("Testing Open and Close Settings\n");
+    gtk_timeout_add (2000, (GtkFunction) unittest_settings_open,NULL ); 
+    //gtk_timeout_add (4000, (GtkFunction) unittest_settings_close,NULL ); 
+    gtk_timeout_add (8000, (GtkFunction) quit_program,NULL);
 }

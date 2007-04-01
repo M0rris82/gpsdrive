@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 /***********************************************************************
 
 Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>
@@ -28,8 +20,6 @@ Disclaimer: Please do not use for navigation.
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    *********************************************************************
-
 ***********************************************************************/
 
 /* *****************************************************************************
@@ -44,7 +34,7 @@ Disclaimer: Please do not use for navigation.
      Daniel Hiepler <rigid@akatash.de>
      Darazs Attila <zumi@freestart.hu>
      Fritz Ganter <ganter@ganter.at>
-	 Guenther Meyer <d.s.e@sordidmusic.com>
+     Guenther Meyer <d.s.e@sordidmusic.com>
      J.D. Schmidt <jdsmobile@gmail.com>
      Jan-Benedict Glaw <jbglaw@lug-owl.de>
      Joerg Ostertag <gpsdrive@ostertag.name>
@@ -6016,13 +6006,6 @@ main (int argc, char *argv[])
     signal (SIGTERM, termhandler);
 
 
-    // ==================================================================
-    // Unit Tests
-    if ( do_unit_test ) {
-	unit_test();
-	exit (0);
-    }
-
     /* gtk2 requires these functions in the order below do not change */
     if (usegeometry) {
 	GdkGeometry size_hints = {200, 200, 0, 0, 200, 200, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST};
@@ -6035,6 +6018,12 @@ main (int argc, char *argv[])
 	if (!gtk_window_parse_geometry(GTK_WINDOW (mainwindow), geometry)) {
 	    fprintf(stderr, "Failed to parse %s\n", geometry);
 	}
+    }
+
+    // ==================================================================
+    // Unit Tests
+    if ( do_unit_test ) {
+	unit_test();
     }
 
     /*  Mainloop */
@@ -6064,5 +6053,11 @@ main (int argc, char *argv[])
     speech_out_close ();
     cleanup_nasa_mapfile ();
     fprintf (stderr, _("\n\nThank you for using GpsDrive!\n\n"));
+
+    if ( do_unit_test ) {
+	printf ("\n\nAll Unit Tests successfull\n\n");
+	exit(0);
+    }
+
     return 0;
 }
