@@ -543,7 +543,19 @@ close_poi_lookup_window_cb (GtkWidget *window)
 static void
 select_target_poi_cb (GtkWidget *window)
 {
+	gdouble sel_target_lat, sel_target_lon;
+	
+	/* workaround to preserve the selected target coordinates:
+	 * the reason is, that the destroy event is also catched and resets
+	 * the target coords to the old, saved target coords. */
+	sel_target_lat = target_lat;
+	sel_target_lon = target_lon;
+	
 	gtk_widget_destroy (window);
+	
+	target_lat = sel_target_lat;
+	target_lon = sel_target_lon;
+		
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
 }
 
