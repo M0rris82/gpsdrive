@@ -248,7 +248,7 @@ extern gint downloadactive;
 GtkWidget *add_wp_name_text, *wptext2;
 gdouble wplat, wplon;
 gchar oldangle[100];
-GdkCursor *cursor_cross, *cursor_arrow;
+GdkCursor *cursor_cross;
 
 // Uncomment this (or add a make flag?) to only have scales for expedia maps
 //#define EXPEDIA_SCALES_ONLY
@@ -3473,7 +3473,7 @@ pos_cb (GtkWidget * widget, guint datum)
     if (posmode == TRUE) {
         gdk_window_set_cursor (drawing_area->window, cursor_cross);
     } else {
-        gdk_window_set_cursor (drawing_area->window, cursor_arrow);
+        gdk_window_set_cursor (drawing_area->window, NULL);
     }
     	
     /* if waypoint select mode is enabled and waypoint 
@@ -5825,13 +5825,14 @@ main (int argc, char *argv[])
 	defaultcolor = style->bg[GTK_STATE_NORMAL];
     }
 
-    /* set default cursors */
-    cursor_arrow = gdk_cursor_new (GDK_TOP_LEFT_ARROW);
+    /* set cross cursor for map posmode */
     cursor_cross = gdk_cursor_new (GDK_TCROSS);
     
+    /* we use the normal cursor now
     gdk_window_set_cursor (drawing_area->window, cursor_arrow);
     if (SMALLMENU == 0) 
         gdk_window_set_cursor (drawing_miniimage->window, cursor_arrow);
+    */
     
     if (pdamode)
 	   gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 1);
