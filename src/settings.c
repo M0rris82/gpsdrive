@@ -448,7 +448,6 @@ mainsetup (void)
   GtkWidget *noserial_bt;
   GtkWidget *option_menu;
   GtkWidget *s1;
-  GtkWidget *s2;
   GtkWidget *shadowbt;
   GtkWidget *simfollowbt;
   GtkWidget *slowcpulabel;
@@ -1015,14 +1014,6 @@ mainsetup (void)
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), latlon_degdec,
 			_("If selected display latitude and longitude in "
 			  "decimal degrees notation"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), s1,
-			_("Set the german expedia server(expedia.de) as "
-			  "default download server. Use this if you are in "
-			  "Europe"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), s2,
-			_("Set Expedia as default download server"), NULL);
 
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), shadowbt,
 			_("Switches shadows on map on or off"), NULL);
