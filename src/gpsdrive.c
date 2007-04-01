@@ -3747,8 +3747,8 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		time (&t);
 		ts = localtime (&t);
 		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
-		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp");
-		g_snprintf (wp_comment, sizeof (wp_comment), _("Temporary Waypoint"));
+		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp.wpttemp-green");
+		g_snprintf (wp_comment, sizeof (wp_comment), _("Quicksaved Waypoint"));
 
 		if (usesql)
 			addwaypoint (wp_name, wp_type, wp_comment, current_lat, current_lon, TRUE);
@@ -3781,7 +3781,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		time (&t);
 		ts = localtime (&t);
 		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
-		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp");
+		g_snprintf (wp_type, sizeof (wp_type), "waypoint.wpttemp.wpttemp-yellow");
 		g_snprintf (wp_comment, sizeof (wp_comment), _("Temporary Waypoint"));
 
 		gdk_window_get_pointer (drawing_area->window, &x, &y, &state);
