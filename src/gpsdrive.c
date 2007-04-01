@@ -5229,7 +5229,8 @@ main (int argc, char *argv[])
 	    sateventbox = gtk_event_box_new ();
 	    gtk_container_add (GTK_CONTAINER (sateventbox), drawing_sats);
 	    alignment2 = gtk_alignment_new (0.5, 0.5, 0, 0);
-	    gtk_container_add (GTK_CONTAINER (alignment2), sateventbox);
+	    if (SMALLMENU == 0) 
+		gtk_container_add (GTK_CONTAINER (alignment2), sateventbox);
 	    satsvbox = gtk_vbox_new (FALSE, 1 * PADDING);
 	    satshbox = gtk_hbox_new (FALSE, 1 * PADDING);
 	    gtk_container_add (GTK_CONTAINER (frame_sats), satshbox);
