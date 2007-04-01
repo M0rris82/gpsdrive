@@ -505,7 +505,7 @@ void sql_load_lib();
 void unit_test(void);
 void drawdownloadrectangle (gint big);
 GtkWidget * make_display_map_checkboxes();
-GtkWidget * make_display_map_controlls();
+GtkWidget * make_display_map_controls();
 void draw_grid (GtkWidget * widget);
 gint bestmap_cb (GtkWidget * widget, guint datum);
 
@@ -4330,10 +4330,11 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GtkWidget *vbig, *vbig1, *vbox, *vbox2, *vbox_poi,*vbox_track;
-	// Unused variable: GtkWidget *vbox_wlan;
-    GtkWidget *hbig, *hbox2;
-    GtkWidget *hbox2a, *hbox2b;
+    GtkWidget *hbig_contr_map, *vbig1, *vbox;
+    GtkWidget *vbox_controls; // The vbox on the left side, which holds the menu and control buttons
+    GtkWidget *vbox_poi,*vbox_track;
+    GtkWidget *vbig, *hbox_displays;
+    GtkWidget *hbox_displays_a, *hbox_displays_b;
     GtkWidget *zoomin_bt, *zoomout_bt, *hbox_zoom;
     GtkWidget *hbox_scaler;
     GtkWidget *vboxlow, *hboxlow;
@@ -4350,7 +4351,7 @@ main (int argc, char *argv[])
 
     /*** Mod by Arms */
     gint i, screen_height, screen_width;
-    GtkWidget *table1, *wi;
+    GtkWidget *table1_displays, *wi;
     GtkTooltips *tooltips;
     gchar s1[100];
     /*** Mod by Arms */
@@ -4910,8 +4911,8 @@ main (int argc, char *argv[])
 		break;
 	    }
 
+    hbig_contr_map = gtk_hbox_new (FALSE, 0 * PADDING);
     vbig = gtk_vbox_new (FALSE, 0 * PADDING);
-    hbig = gtk_hbox_new (FALSE, 0 * PADDING);
     item_factory =
 	gtk_item_factory_new (GTK_TYPE_MENU_BAR, "<main>", NULL);
     /*  Uebersetzen laut Bluefish Code */
@@ -5150,7 +5151,6 @@ main (int argc, char *argv[])
 			   SCREEN_Y);
     gtk_container_add (GTK_CONTAINER (frame_map_area), drawing_area);
 
-    gtk_box_pack_start (GTK_BOX (vbig), frame_map_area, TRUE, TRUE, 0 * PADDING);
     gtk_widget_add_events (GTK_WIDGET (drawing_area),
 			   GDK_BUTTON_PRESS_MASK);
     gtk_signal_connect_object (GTK_OBJECT (drawing_area),
@@ -5188,11 +5188,16 @@ main (int argc, char *argv[])
 				       GTK_SIGNAL_FUNC (minimapclick_cb),
 				       GTK_OBJECT (drawing_miniimage));
 	}
-    hbox2  = gtk_hbox_new (FALSE, 1 * PADDING);
-    hbox2a = gtk_hbox_new (FALSE, 1 * PADDING);
-    hbox2b = gtk_vbox_new (FALSE, 1 * PADDING);
+    hbox_displays  = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox_displays_a = gtk_hbox_new (FALSE, 1 * PADDING);
+    hbox_displays_b = gtk_vbox_new (FALSE, 1 * PADDING);
     hbox_zoom = gtk_hbox_new (FALSE, 1 * PADDING);
     hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
+
+    if (!extrawinmenu)
+	    if (SMALLMENU == 0)
+		gtk_box_pack_start (GTK_BOX (hbox_displays),
+				    GTK_WIDGET (drawing_miniimage),    TRUE, FALSE, 0 * PADDING);
 
     // Frame --- Bearing
     if ( mydebug >99 ) fprintf(stderr , "create Bearing Frame\n");
@@ -5203,7 +5208,7 @@ main (int argc, char *argv[])
     gtk_container_add (GTK_CONTAINER (alignment1), compasseventbox);
     gtk_container_add (GTK_CONTAINER (frame_bearing), alignment1);
 
-    gtk_box_pack_start (GTK_BOX (hbox2), frame_bearing, FALSE, FALSE,
+    gtk_box_pack_start (GTK_BOX (hbox_displays), frame_bearing, FALSE, FALSE,
 			1 * PADDING);
 
     // Frame --- Sat levels
@@ -5256,17 +5261,17 @@ main (int argc, char *argv[])
 	    gtk_entry_set_editable (GTK_ENTRY (satslabel3), FALSE);
 	    gtk_widget_set_usize (satslabel3, 38, 20);
 
-	    gtk_box_pack_start (GTK_BOX (hbox2), frame_sats, FALSE, FALSE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (hbox_displays), frame_sats, FALSE, FALSE, 1 * PADDING);
 	}
 
     // Frame --- ACPI / Temperature / Battery
     if ( mydebug >99 ) fprintf(stderr , "create ACPI Frames\n");
-    create_temperature_widget(hbox2);
-    create_battery_widget(hbox2);
+    create_temperature_widget(hbox_displays);
+    create_battery_widget(hbox_displays);
 
 
     if (!pdamode)
-		gtk_box_pack_start (GTK_BOX (hbox2), hbox2b, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (hbox_displays), hbox_displays_b, TRUE, TRUE, 1 * PADDING);
 
     if ( mydebug >99 ) fprintf(stderr , "create DISTANCE Frames\n");
     // Frame --- distance to destination 
@@ -5422,7 +5427,7 @@ main (int argc, char *argv[])
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_altitude, 12, 15, 0, 1);
     if(!pdamode)
         gtk_table_attach_defaults (GTK_TABLE (vtable), frame_wp,       15, 20, 0, 1);
-    gtk_box_pack_start (GTK_BOX (hbox2b), vtable, TRUE, TRUE, 2 * PADDING);         // target speed and altitude on trip table
+    gtk_box_pack_start (GTK_BOX (hbox_displays_b), vtable, TRUE, TRUE, 2 * PADDING);         // target speed and altitude on trip table
     
     gtk_container_add (GTK_CONTAINER (frame_wp), wplabeltable);
 
@@ -5446,26 +5451,23 @@ main (int argc, char *argv[])
     gtk_box_pack_start (GTK_BOX (vbox), find_poi_bt, FALSE, FALSE, 1 * PADDING);
     //gtk_box_pack_start (GTK_BOX (vbox), startgps_bt, FALSE, FALSE, 1 * PADDING);
     gtk_box_pack_start (GTK_BOX (vbox), setup_bt, FALSE, FALSE,    1 * PADDING);
-    hboxlow = vbox2 = NULL;
+    hboxlow = vbox_controls = NULL;
         
 
     if ( mydebug >99 ) fprintf(stderr , "create map-checkboxes Frames\n");
     frame_maptype = make_display_map_checkboxes();
-    if ( mydebug >99 ) fprintf(stderr , "create map-controlls Frames\n");
-    frame_mapcontrol = make_display_map_controlls();
+    if ( mydebug >99 ) fprintf(stderr , "create map-controls Frames\n");
+    frame_mapcontrol = make_display_map_controls();
 
     if ( mydebug >99 ) fprintf(stderr , "create extra-win-menus\n");
     if (!extrawinmenu)
 	{
-	    vbox2 = gtk_vbox_new (FALSE, 0 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), vbox, TRUE, TRUE,	1 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), frame_poi, TRUE,	TRUE, 1 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), frame_track, TRUE,	TRUE, 1 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), frame_mapcontrol, TRUE,	TRUE, 1 * PADDING);
-	    gtk_box_pack_start (GTK_BOX (vbox2), frame_maptype, TRUE,	TRUE, 1 * PADDING);
-	    if (SMALLMENU == 0)
-		gtk_box_pack_start (GTK_BOX (vbox2),
-				    GTK_WIDGET (drawing_miniimage),    TRUE, FALSE, 0 * PADDING);
+	    vbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_controls), vbox, TRUE, TRUE,	1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_controls), frame_poi, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_controls), frame_track, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_controls), frame_mapcontrol, TRUE,	TRUE, 1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbox_controls), frame_maptype, TRUE,	TRUE, 1 * PADDING);
 	}
     else
 	{
@@ -5490,13 +5492,13 @@ main (int argc, char *argv[])
     scaler_init();
 
     if (pdamode)
-	table1 = gtk_table_new (5, 3, FALSE);
+	table1_displays = gtk_table_new (5, 3, FALSE);
     else
 	{
 	    if (SMALLMENU)
-		table1 = gtk_table_new (4, 3, FALSE);
+		table1_displays = gtk_table_new (4, 3, FALSE);
 	    else
-		table1 = gtk_table_new (8, 2, FALSE);
+		table1_displays = gtk_table_new (8, 2, FALSE);
 	}
     frame_lat = gtk_frame_new (_("Latitude"));
     frame_lon = gtk_frame_new (_("Longitude"));
@@ -5554,61 +5556,65 @@ main (int argc, char *argv[])
     if (pdamode)
 	{
 	    //status bottom table 5 x 3
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);	// (left,right,top,bottom) 
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0, 1);
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 0, 1);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_bearing, 0, 1, 0, 1);	// (left,right,top,bottom) 
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_heading, 1, 2, 0, 1);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapscale, 2, 3, 0, 1);
 	    
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 0, 1, 1, 2);
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 1, 2, 1, 2);
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 2, 3, 1, 2);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lat, 0, 1, 1, 2);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lon, 1, 2, 1, 2);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_prefscale, 2, 3, 1, 2);
 	    
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0, 1, 2, 3);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_timedest, 0, 1, 2, 3);
 	    if ( mydebug >10 )
-		gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 3, 2, 3);
+		gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapfile, 1, 3, 2, 3);
 	    //KCFX
-	    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget, 0, 3, 3, 4);
-	    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 3, 4, 5);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), scaler_widget, 0, 3, 3, 4);
+	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_status, 0, 3, 4, 5);
 	}
     else
 	{
 	    if (SMALLMENU)
 		{
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0, 1, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1, 2, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,  3, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,  4, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 0, 1, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_bearing, 0, 1, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_heading, 1, 2, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lat, 2,  3, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lon, 3,  4, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_timedest, 0, 1, 1, 2);
 		    if ( mydebug >10 )
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 1, 2, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 2, 3, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 3, 4, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status, 0, 4, 3, 4);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget, 0, 4, 2, 3);
+			gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapfile, 1, 2, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapscale, 2, 3, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_prefscale, 3, 4, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_status, 0, 4, 3, 4);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), scaler_widget, 0, 4, 2, 3);
 		}
 	    else
 		{
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_bearing, 0,    1, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_heading, 1,    2, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lat, 2,      3, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_lon, 3,  4, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_timedest, 4,  5, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_bearing, 0,    1, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_heading, 1,    2, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lat, 2,      3, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_lon, 3,  4, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_timedest, 4,  5, 0, 1);
 		    if ( mydebug >10 )
-			gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapfile, 5,  6, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_mapscale, 6,  7, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_prefscale, 7, 8, 0, 1);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), frame_status,	   0, 4, 1, 2);
-		    gtk_table_attach_defaults (GTK_TABLE (table1), scaler_widget,   4, 8, 1, 2);
+			gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapfile, 5,  6, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_mapscale, 6,  7, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_prefscale, 7, 8, 0, 1);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_status,	   0, 4, 1, 2);
+		    gtk_table_attach_defaults (GTK_TABLE (table1_displays), scaler_widget,   4, 8, 1, 2);
 		}
 	}
-    /*    gtk_box_pack_start (GTK_BOX (vbig), table1, FALSE, FALSE, 1); */
     /*  all position calculations are made in the expose callback */
-    /*   if (!pdamode) */
     gtk_signal_connect (GTK_OBJECT (drawing_area),
 			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
     if ( mydebug >99 ) fprintf(stderr , "Menu\n");
     if (!pdamode)
+	if ( !extrawinmenu)
+	    gtk_box_pack_start (GTK_BOX (hbig_contr_map), vbox_controls,  TRUE,  FALSE,  1 * PADDING);
+    gtk_box_pack_start (GTK_BOX (hbig_contr_map), frame_map_area, TRUE, TRUE, 0 * PADDING);
+
+    if (!pdamode)
 	{
+	    gtk_box_pack_start (GTK_BOX (vbig), hbig_contr_map, TRUE, TRUE,1 * PADDING);
 	    if (extrawinmenu)
 		{
 		    menuwin = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -5621,23 +5627,22 @@ main (int argc, char *argv[])
 					GTK_SIGNAL_FUNC (quit_program),
 					NULL);
 		    menuwin2 = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		    gtk_window_set_title (GTK_WINDOW (menuwin2),
-					  _("Status"));
+		    gtk_window_set_title (GTK_WINDOW (menuwin2),  _("Status"));
 		    gtk_container_set_border_width (GTK_CONTAINER (menuwin2), 2 * PADDING);
 		    vbig1 = gtk_vbox_new (FALSE, 2);
 		    gtk_container_add (GTK_CONTAINER (menuwin2), vbig1);
-		    gtk_box_pack_start (GTK_BOX (vbig1), hbox2,  TRUE,  TRUE, 2 * PADDING);
-		    gtk_box_pack_start (GTK_BOX (vbig1), table1, TRUE, TRUE, 2 * PADDING);
+		    gtk_box_pack_start (GTK_BOX (vbig1), hbox_displays,  TRUE,  FALSE, 2 * PADDING);
+		    gtk_box_pack_start (GTK_BOX (vbig1), table1_displays, TRUE, FALSE, 2 * PADDING);
 		    gtk_signal_connect (GTK_OBJECT (menuwin2),
 					"delete_event",
 					GTK_SIGNAL_FUNC (quit_program), NULL);
 		}
 	    else
 		{
-		    gtk_box_pack_start (GTK_BOX (hbig), vbox2,  TRUE,  TRUE,  1 * PADDING);
-		    gtk_box_pack_start (GTK_BOX (vbig), hbox2,  TRUE,  TRUE,  2 * PADDING);
-		    gtk_box_pack_start (GTK_BOX (vbig), table1, FALSE, FALSE, 1 * PADDING);
+		    gtk_box_pack_start (GTK_BOX (vbig), hbox_displays,  TRUE,  TRUE,  2 * PADDING);
+		    gtk_box_pack_start (GTK_BOX (vbig), table1_displays, FALSE, FALSE, 1 * PADDING);
 		}
+	    gtk_container_add (GTK_CONTAINER (mainwindow), vbig);
 	}
 
     /*   if pdamode is set, we use gtk-notebook add arrange the elements */
@@ -5689,53 +5694,34 @@ main (int argc, char *argv[])
 		    gtk_label_set_text (GTK_LABEL (label_status), _("Status"));
                     gtk_label_set_text (GTK_LABEL (trip_label), _("Trip"));
 		}
-	    //KCFX
 	    vbig1 = gtk_vbox_new (FALSE, 2);	// box for status tab
-	    //      gtk_container_add (GTK_CONTAINER (menuwin2), vbig1);
-	    gtk_box_pack_start (GTK_BOX (vbig1), hbox2, TRUE, TRUE,  2 * PADDING);     // bearing, satellites, temperature, battery on status tab
-	    gtk_box_pack_start (GTK_BOX (hbox2b), hbox2a, TRUE, TRUE, 2 * PADDING);    // wp on trip tab
-	    //gtk_box_pack_start (GTK_BOX (vbig1), hbox2b, TRUE, TRUE, 2 * PADDING);
-	    /*
-	      gtk_box_pack_start (GTK_BOX (hbox2b), frame_speed, TRUE, TRUE,
-	      1 * PADDING);
-	      gtk_box_pack_start (GTK_BOX (hbox2b), frame_altitude, TRUE,
-	      TRUE, 1 * PADDING);*/
-	    //KCFX          
-	    gtk_box_pack_start (GTK_BOX (hbox2a), frame_wp, TRUE, TRUE,
-				1 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), hbox_displays, TRUE, TRUE,  2 * PADDING);     // bearing, satellites, temperature, battery on status tab
+	    gtk_box_pack_start (GTK_BOX (hbox_displays_b), hbox_displays_a, TRUE, TRUE, 2 * PADDING);    // wp on trip tab
+	    gtk_box_pack_start (GTK_BOX (hbox_displays_a), frame_wp, TRUE, TRUE,1 * PADDING);
 
-	    gtk_box_pack_start (GTK_BOX (vbig1), table1, TRUE, TRUE,
-				2 * PADDING);
+	    gtk_box_pack_start (GTK_BOX (vbig1), table1_displays, TRUE, TRUE,2 * PADDING);
 
-	    mainnotebook = gtk_notebook_new ();				// create the main notebook window
-	    gtk_notebook_set_tab_pos (GTK_NOTEBOOK (mainnotebook),
-				      GTK_POS_TOP);			// tabs are on at the top edge
-	    gtk_box_pack_start (GTK_BOX (hbig), vbig, TRUE, TRUE,
-				1 * PADDING);
+	    mainnotebook = gtk_notebook_new ();					// create the main notebook window
+	    gtk_notebook_set_tab_pos (GTK_NOTEBOOK (mainnotebook),GTK_POS_TOP);	// tabs are on at the top edge
+	    gtk_box_pack_start (GTK_BOX (vbig), hbig_contr_map, TRUE, TRUE,1 * PADDING);
 	    gtk_container_add (GTK_CONTAINER (mainwindow), mainnotebook);
 	    gtk_widget_show_all (hboxlow);
 	    gtk_widget_show_all (vbig1);
-	    gtk_widget_show_all (hbig);
 	    gtk_widget_show_all (vbig);
-            gtk_widget_show_all (hbox2b);
+	    gtk_widget_show_all (hbig_contr_map);
+            gtk_widget_show_all (hbox_displays_b);
 	    
-	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbig,
+	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig,
 				      l1);				// add 1st tab to notebook : map
 	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook),
 				      hboxlow, l2);			// add 2nd tab to notebook : menu
 	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig1,
 				      label_status);			// add 3rd tab to notebook : status
-            gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbox2b,
+            gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbox_displays_b,
 				      trip_label);			// add 4th tab to notebook : trip
 	    
 	    gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);	// set map tab as selected one
 	    gtk_widget_show_all (mainnotebook);				// show notebook window
-	}
-    else
-	{
-	    gtk_box_pack_start (GTK_BOX (hbig), vbig, TRUE, TRUE,
-				1 * PADDING);
-	    gtk_container_add (GTK_CONTAINER (mainwindow), hbig);
 	}
 
     /*** Mod by Arms */

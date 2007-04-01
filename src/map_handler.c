@@ -213,17 +213,17 @@ display_maps_cb (GtkWidget * widget, guint datum)
 /* ******************************************************************
  */
 GtkWidget *
-make_display_map_controlls ()
+make_display_map_controls ()
 {
   GtkWidget *frame_maptype;
-  GtkWidget *vbox_map_controlls;
+  GtkWidget *vbox_map_controls;
   GtkTooltips *tooltips;
   tooltips = gtk_tooltips_new ();
 
   // Frame
   frame_maptype = gtk_frame_new (_("Map Controls"));
-  vbox_map_controlls = gtk_vbox_new (TRUE, 1 * PADDING);
-  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controlls);
+  vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
+  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
 
   // Checkbox ---- STREETS Draw
   streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
@@ -235,13 +235,13 @@ make_display_map_controlls ()
 			_("Draw Streets found in mySQL"), NULL);
   gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
 		      GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
   
 
   // Checkbox ---- Best Map
   bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
   gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), bestmap_bt, FALSE, FALSE,0 * PADDING);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controls), bestmap_bt, FALSE, FALSE,0 * PADDING);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
 			_("Always select the most detailed map available"),
 			NULL);
@@ -255,7 +255,7 @@ make_display_map_controlls ()
   posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
   gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
   gtk_signal_connect (GTK_OBJECT (posbt),     "clicked", GTK_SIGNAL_FUNC (pos_cb),    (gpointer) 1);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controlls), posbt, FALSE, FALSE,0 * PADDING);
+  gtk_box_pack_start (GTK_BOX (vbox_map_controls), posbt, FALSE, FALSE,0 * PADDING);
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
 			_("Turn position mode on. "
 			  "You can move on the map with the left mouse button click."

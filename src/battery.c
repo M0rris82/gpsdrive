@@ -798,7 +798,7 @@ temperature_get_values (void)
 /* ******************************************************************
  */
 void
-create_battery_widget (GtkWidget * hbox2)
+create_battery_widget (GtkWidget * hbox_displays)
 {
   if (!battery_get_values ())
     return;
@@ -815,7 +815,7 @@ create_battery_widget (GtkWidget * hbox2)
       alignment3 = gtk_alignment_new (0.5, 0.5, 0, 0);
       gtk_container_add (GTK_CONTAINER (alignment3), batteventbox);
       gtk_container_add (GTK_CONTAINER (frame_battery), alignment3);
-      gtk_box_pack_start (GTK_BOX (hbox2),
+      gtk_box_pack_start (GTK_BOX (hbox_displays),
 			  frame_battery, FALSE, FALSE, 1 * PADDING);
       if (battery_get_values ())
 	gtk_signal_connect (GTK_OBJECT
@@ -829,7 +829,7 @@ create_battery_widget (GtkWidget * hbox2)
 /* ******************************************************************
  */
 void
-create_temperature_widget (GtkWidget * hbox2)
+create_temperature_widget (GtkWidget * hbox_displays)
 {
   if (!temperature_get_values ())
     return;
@@ -850,7 +850,7 @@ create_temperature_widget (GtkWidget * hbox2)
       alignment4 = gtk_alignment_new (0.5, 0.5, 0, 0);
       gtk_container_add (GTK_CONTAINER (alignment4), tempeventbox);
       gtk_container_add (GTK_CONTAINER (frame_temperature), alignment4);
-      gtk_box_pack_start (GTK_BOX (hbox2),
+      gtk_box_pack_start (GTK_BOX (hbox_displays),
 			  frame_temperature, FALSE, FALSE, 1 * PADDING);
       if (temperature_get_values ())
 	gtk_signal_connect (GTK_OBJECT (drawing_temp),

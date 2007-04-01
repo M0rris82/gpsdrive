@@ -398,7 +398,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 		_("Waypoint"), _("Latitude"), _("Longitude"), _("Distance"),
 		NULL
 	};
-	GtkWidget *scrwindow, *vbox, *button, *button3, *hbox, *hbox2, *l1;
+	GtkWidget *scrwindow, *vbox, *button, *button3, *hbox, *hbox_displays, *l1;
 	gint i, j;
 	gchar *text[5], text0[20], text1[20], text2[20], text3[20];
 	GtkTooltips *tooltips;
@@ -489,7 +489,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 
 	gtk_box_pack_start (GTK_BOX (vbox), scrwindow, TRUE, TRUE, 2);
 	hbox = gtk_hbox_new (TRUE, 2);
-	hbox2 = gtk_hbox_new (TRUE, 2);
+	hbox_displays = gtk_hbox_new (TRUE, 2);
 	if (!routemode)
 		l1 = gtk_label_new (_
 				    ("Click on waypoints list\nto add waypoints"));
@@ -507,7 +507,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 	gtk_box_pack_start (GTK_BOX (hbox), create_route2_button, TRUE, TRUE,
 			    2);
 	gtk_box_pack_start (GTK_BOX (hbox), button, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox2, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox_displays, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (hbox), button3, TRUE, TRUE, 2);
 	gtk_widget_set_sensitive (create_route_button, FALSE);
 

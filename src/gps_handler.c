@@ -248,6 +248,15 @@ void init_dbus(){
 #endif
 
 /* ******************************************************************
+ * Initialize nmea socket to 
+ * look if we have an open socket "sock" and close it
+ * the try to reconnect to gpsd
+ * If we're successfull we set
+ *    nmeamodeandport = "Sting with description of connection"
+ *    sock = the open socket
+ * if we're not successfull we set
+ *       simmode = TRUE
+ *       haveNMEA = FALSE
  */
 void
 init_nmea_socket ()
@@ -340,7 +349,7 @@ initgps ()
   } else
 #endif
 
-      init_nmea_socket ();
+  init_nmea_socket ();
   /*  We test for gpsd serving */
 
   haveGARMIN = FALSE;
