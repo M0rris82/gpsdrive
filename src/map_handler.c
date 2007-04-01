@@ -226,8 +226,11 @@ make_display_map_controls ()
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
 
   // Checkbox ---- STREETS Draw
-  streets_draw_bt = gtk_check_button_new_with_label (_("draw _Streets"));
+  streets_draw_bt = gtk_check_button_new_with_label (_("direct draw sql _Streets"));
   gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+  if ( ! mydebug) {
+      streets_draw=0; // Switch off if not in Debug Mode
+  }
   if (!streets_draw)
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
 				    (streets_draw_bt), TRUE);
@@ -235,8 +238,9 @@ make_display_map_controls ()
 			_("Draw Streets found in mySQL"), NULL);
   gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
 		      GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
-  
+  if ( mydebug>0) {
+      gtk_box_pack_start (GTK_BOX (vbox_map_controls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
+  }
 
   // Checkbox ---- Best Map
   bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
