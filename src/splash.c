@@ -781,7 +781,7 @@ about_cb (GtkWidget * widget, guint datum)
 				_("GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."));
 	
 	gtk_about_dialog_set_license (about_window,
-				_("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."));
+				_("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nGpsDrive uses data from the OpenStreetMap Project (http://www.openstreetmap.org), which is freely available under the terms of the Creative Commons Attribution-ShareAlike 2.0 license."));
 	gtk_about_dialog_set_wrap_license (about_window, TRUE);
 	
 	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR, "pixmaps/gpsdrivelogo.png");		
