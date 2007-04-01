@@ -1548,10 +1548,16 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 			gchar mappath[2048];
 
 			g_snprintf (mappath, sizeof (mappath),
-				    "%s/gpsdrive/%s", DATADIR,
-				    "pixmaps/gpsdriveanim.gif");
+				    "data/pixmaps/gpsdriveanim.gif");
 			anim = gdk_pixbuf_animation_new_from_file (mappath,
 								   NULL);
+			if ( anim == NULL ) {
+			    g_snprintf (mappath, sizeof (mappath),
+					"%s/gpsdrive/%s", DATADIR,
+					"pixmaps/gpsdriveanim.gif");
+			    anim = gdk_pixbuf_animation_new_from_file (mappath,
+								       NULL);
+			}
 			if (anim == NULL)
 				fprintf (stderr,
 					 _
