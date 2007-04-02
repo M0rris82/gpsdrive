@@ -145,7 +145,10 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                     fh_mapkoord.write(tile_path + " ")
                     fh_mapkoord.write(str((p0[1] + p1[1]) / 2) + " ")
                     fh_mapkoord.write(str((p0[0] + p1[0]) / 2) + " ")
-                    fh_mapkoord.write(str(zoom2scale[z]) + "\n")
+                    fh_mapkoord.write(str(zoom2scale[z]))
+                    fh_mapkoord.write(" " + str(p0[1]) + " " + str(p0[0]))
+                    fh_mapkoord.write(" " + str(p1[1]) + " " + str(p1[0]))
+                    fh_mapkoord.write("\n")
 
 
                 bytes=os.stat(tile_uri)[6]

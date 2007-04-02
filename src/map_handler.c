@@ -492,7 +492,7 @@ loadmapconfig ()
   FILE *st;
   gint i;
   gint max_nrmaps = 1000;
-  gchar buf[1512], s1[40], s2[40], s3[40], filename[100];
+  gchar buf[1512], s1[40], s2[40], s3[40], filename[100], minlat[40], minlon[40], maxlat[40], maxlon[40];
   gint p, e;
 
   if (mydebug > 50)
@@ -531,23 +531,39 @@ loadmapconfig ()
   havenasa = -1;
   while ((p = fgets (buf, 1512, st) != 0))
     {
-      e = sscanf (buf, "%s %s %s %s", filename, s1, s2, s3);
+      e = sscanf (buf, "%s %s %s %s %s %s %s %s", filename, s1, s2, s3, minlat, minlon, maxlat, maxlon);
       if ((mydebug > 50) && !(nrmaps % 1000))
 	{
 	  fprintf (stderr, "loadmapconfig(%d)\r", nrmaps);
 	}
 
 
-      if (e == 4)
+      if (e == 4 || e == 8)
 	{
+      /* already done in coordinate_string2 double
 	  g_strdelimit (s1, ",", '.');
 	  g_strdelimit (s2, ",", '.');
 	  g_strdelimit (s3, ",", '.');
-
+      g_strdelimit (minlat, ",", ".")
+      g_strdelimit (minlon, ",", ".")
+      g_strdelimit (maxlat, ",", ".")
+      g_strdelimit (maxlon, ",", ".")
+      */
+      
 	  g_strlcpy ((maps + i)->filename, filename, 200);
 	  (maps + i)->map_dir = add_map_dir (filename);
 	  coordinate_string2gdouble (s1, &((maps + i)->lat));
 	  coordinate_string2gdouble (s2, &((maps + i)->lon));
+      
+      if (e == 8) {
+          (maps + i)->hasbbox = TRUE;
+          coordinate_string2gdouble(minlat, &((maps + i)->minlat));
+          coordinate_string2gdouble(minlon, &((maps + i)->minlon));
+          coordinate_string2gdouble(maxlat, &((maps + i)->maxlat));
+          coordinate_string2gdouble(maxlon, &((maps + i)->maxlon)); 
+      } else 
+          (maps + i)->hasbbox = FALSE;
+      
 	  (maps + i)->scale = strtol (s3, NULL, 0);
 	  i++;
 	  nrmaps = i;
@@ -869,149 +885,142 @@ display_background_map ()
 void
 test_and_load_newmap ()
 {
-  long long best = 1000000000LL;
-  gdouble posx = 0, posy =0; 
-  long long bestmap = 9999999999LL;
-  gdouble pixelfactloc;
-  gdouble bestscale = 1000000000.0;
-  gdouble fact;
-  gint i, ncount = 0;
+    long long best = 1000000000LL;
+    gdouble posx = 0, posy =0; 
+    long long bestmap = 9999999999LL;
+    gdouble pixelfactloc;
+    gdouble bestscale = 1000000000.0;
+    gdouble fact;
+    gint i, ncount = 0;
+    gdouble dif;
+    static int nasaisvalid = FALSE;
+    int takemap = FALSE;
 
-  //    gchar str[100], buf[200];
-  gdouble dif;
-  static int nasaisvalid = FALSE;
+    if (importactive)
+        return;
 
-  if (importactive)
-    return;
-
-  if (posmode)
-    {
+    if (posmode) {
   		trip_lat = current_lon = posmode_lon;
   		trip_lon = current_lat = posmode_lat;
-  	} else
-  	route_next_target ();
+  	} else route_next_target ();
 
 
-  // Test if we want Background image as Map
-  if (!display_background_map ())
-    {
-      mapscale = (glong) scalewanted;
-      pixelfact = mapscale / PIXELFACT;
-      zero_lat = current_lat;
-      zero_lon = current_lon;
-      xoff = yoff = 0;
-      map_proj = proj_map;
+    // Test if we want Background image as Map
+    if (!display_background_map ()) {
+        mapscale = (glong) scalewanted;
+        pixelfact = mapscale / PIXELFACT;
+        zero_lat = current_lat;
+        zero_lon = current_lon;
+        xoff = yoff = 0;
+        map_proj = proj_map;
 
-      // extra variable; so we can later make it configurable
-      gchar bg_mapfilename[2048];
-      g_strlcpy (bg_mapfilename, "map_LightYellow.png", sizeof (bg_mapfilename));
+        // extra variable; so we can later make it configurable
+        gchar bg_mapfilename[2048];
+        g_strlcpy (bg_mapfilename, "map_LightYellow.png", sizeof (bg_mapfilename));
 
-      g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-      g_strlcpy (mapfilename, bg_mapfilename, sizeof (mapfilename));
-      loadmap (mapfilename);
-      return;
+        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
+        g_strlcpy (mapfilename, bg_mapfilename, sizeof (mapfilename));
+        loadmap (mapfilename);
+        return;
     }
 
 
-  /* search for suitable maps */
-  if (displaymap_top)
-    nasaisvalid = create_nasa ();
-  nasaisvalid = FALSE;
+    /* search for suitable maps */
+    if (displaymap_top) nasaisvalid = create_nasa ();
+    nasaisvalid = FALSE;
 
-  /* have a look through all the maps and decide which map 
-   * is the best/apropriate
-   * RESULT: bestmap [index in (maps + i) for the choosen map]
-   */
-  for (i = 0; i < nrmaps; i++)
-    {
-      if (!display_map[(maps + i)->map_dir].to_be_displayed)
-	{
-	  continue;
-	}
+    /* have a look through all the maps and decide which map 
+     * is the best/apropriate
+     * RESULT: bestmap [index in (maps + i) for the choosen map]
+     */
+    for (i = 0; i < nrmaps; i++) {
+        if (!display_map[(maps + i)->map_dir].to_be_displayed) {
+           continue;
+        }
+        
+        takemap = FALSE;
+        if ((maps + i)->hasbbox) {
+            /* new system with boundarybox */
+            if ((maps + i)->minlat < current_lat &&
+                (maps + i)->minlon < current_lon &&
+                (maps + i)->maxlat > current_lat &&
+                (maps + i)->maxlon > current_lon) {
+                    takemap = TRUE;
+                } 
+        } else {
+            /* old system */
+            
+            enum map_projections proj = map_projection ((maps + i)->filename);
+    
+            /*  Longitude */
+            if (proj_map == proj)
+    	       posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
+                    * cos (Deg2Rad( (maps + i)->lat))
+    	            * (current_lon - (maps + i)->lon);
+            else if (proj_top == proj)
+    	       posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
+            else if (proj_googlesat == proj)
+    	       posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
+            else 
+    	       printf("Error: unknown Projection\n");
+    
+            /*  latitude */
+            if (proj_map == proj) {
+                posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
+    	           * (current_lat - (maps + i)->lat);
+                   dif = lat2radius ((maps + i)->lat)
+    	           * (1 - (cos (Deg2Rad((current_lon - (maps + i)->lon)) )));
+    	        posy = posy + dif / 2.0;
+            } else if (proj_top == proj) {
+                posy = (lat2radius (0) * M_PI / 180) * (current_lat - (maps + i)->lat);
+    	    } else if (proj_googlesat == proj) {
+                posy = 1.5* (lat2radius (0) * M_PI / 180)  * (current_lat - (maps + i)->lat);
+    	    } else 
+                printf("Error: unknown Projection\n");
+    
+            pixelfactloc = (maps + i)->scale / PIXELFACT;
+            posx = posx / pixelfactloc;
+            posy = posy / pixelfactloc;
+            /* */
+            if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0) {
+                ncount++;
+            }
+            /* takemap? */
+            if (((gint) posx > -(640 - borderlimit)) &&
+                ((gint) posx < (640 - borderlimit)) &&
+                ((gint) posy > -(512 - borderlimit)) &&
+                ((gint) posy < (512 - borderlimit))) {
+                    takemap = TRUE;
+            }
+        }
+        if (takemap) {
+	        if (displaymap_top)
+	            if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0) {
+		           /* nasa map is in range */
+		           nasaisvalid = TRUE;
+	            }
 
-      enum map_projections proj = map_projection ((maps + i)->filename);
+	            if (scaleprefered_not_bestmap) {
+	                if (scalewanted > (maps + i)->scale)
+		                fact = (gdouble) scalewanted / (maps + i)->scale;
+	                else
+		                fact = (maps + i)->scale / (gdouble) scalewanted;
+	                if (fact < bestscale) {
+		                bestscale = fact;
+		                bestmap = i;
+		                /* bestcentereddist = centereddist; */
+		            }
+	            } else {			/* autobestmap */
+	                if ((maps + i)->scale < best) {
+		                bestmap = i;
+		                best = (maps + i)->scale;
+		            }
+	            }
+	    }		/*  End of if posy> ... posx> ... */
+    }		/* End of for ... i < nrmaps */
+    // RESULT: bestmap [index in (maps + i) for the choosen map]
 
-      /*  Longitude */
-      if (proj_map == proj)
-	posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
-	    * cos (Deg2Rad( (maps + i)->lat))
-	    * (current_lon - (maps + i)->lon);
-      else if (proj_top == proj)
-	posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
-      else if (proj_googlesat == proj)
-	posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
-      else 
-	  printf("Error: unknown Projection\n");
-
-      /*  latitude */
-      if (proj_map == proj)
-	{
-	  posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
-	    * (current_lat - (maps + i)->lat);
-	  dif = lat2radius ((maps + i)->lat)
-	    * (1 - (cos (Deg2Rad((current_lon - (maps + i)->lon)) )));
-	  posy = posy + dif / 2.0;
-	}
-      else if (proj_top == proj)
-	  {
-	      posy = (lat2radius (0) * M_PI / 180) * (current_lat - (maps + i)->lat);
-	  }
-      else if (proj_googlesat == proj)
-	  {
-	      posy = 1.5* (lat2radius (0) * M_PI / 180)  * (current_lat - (maps + i)->lat);
-	  }
-      else 
-	  printf("Error: unknown Projection\n");
-
-      pixelfactloc = (maps + i)->scale / PIXELFACT;
-      posx = posx / pixelfactloc;
-      posy = posy / pixelfactloc;
-      /* */
-      if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
-	{
-	  ncount++;
-	}
-
-      /* */
-      if (((gint) posx > -(640 - borderlimit)) &&
-	  ((gint) posx < (640 - borderlimit)) &&
-	  ((gint) posy > -(512 - borderlimit)) &&
-	  ((gint) posy < (512 - borderlimit)))
-	{
-	  if (displaymap_top)
-	    if (strcmp ("top_NASA_IMAGE.ppm", (maps + i)->filename) == 0)
-	      {
-		/* nasa map is in range */
-		nasaisvalid = TRUE;
-	      }
-
-	  if (scaleprefered_not_bestmap)
-	    {
-	      if (scalewanted > (maps + i)->scale)
-		fact = (gdouble) scalewanted / (maps + i)->scale;
-	      else
-		fact = (maps + i)->scale / (gdouble) scalewanted;
-	      if (fact < bestscale)
-		{
-		  bestscale = fact;
-		  bestmap = i;
-		  /* bestcentereddist = centereddist; */
-		}
-	    }
-	  else			/* autobestmap */
-	    {
-	      if ((maps + i)->scale < best)
-		{
-		  bestmap = i;
-		  best = (maps + i)->scale;
-		}
-	    }
-	}			/*  End of if posy> ... posx> ... */
-    }				/* End of for ... i < nrmaps */
-
-  // RESULT: bestmap [index in (maps + i) for the choosen map]
-
-  load_best_map (bestmap);
+    load_best_map (bestmap);
 }
 
 /* *****************************************************************************

@@ -271,6 +271,11 @@ typedef struct
   gchar filename[200];
   gdouble lat;
   gdouble lon;
+  gint hasbbox;
+  gdouble minlat;
+  gdouble minlon;
+  gdouble maxlat;
+  gdouble maxlon;
   glong scale;
   gint map_dir;
 }
