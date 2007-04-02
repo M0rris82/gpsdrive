@@ -263,6 +263,7 @@ typedef struct
 	gint edit;
 	gint available;
 	gint show;
+	gint items;
 }
 status_struct;
 

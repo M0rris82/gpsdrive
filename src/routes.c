@@ -566,9 +566,9 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	GtkTreeIter iter_route;
 	
 	GdkPixbuf *t_icon;
-	gchar *t_name;
+	gchar *t_name, *t_dist;
 	gint t_id;
-	gdouble t_lon, t_lat;
+	gdouble t_lon, t_lat, t_distnum;
 	
 	gtk_tree_model_get (model, &iter,
 				RESULT_ID, &t_id,
@@ -576,22 +576,25 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 				RESULT_NAME, &t_name,
 				RESULT_LON, &t_lon,
 				RESULT_LAT, &t_lat,
+				RESULT_DISTANCE, &t_dist,
+				RESULT_DIST_NUM, &t_distnum,
 				-1);
 	
 	if (mydebug>25)
 		fprintf (stderr, "add_poi_to_route:  ID: %d  |  NAME: %s |  LON: %f  |  LAT: %f  |  ICON: %p\n", t_id, t_name, t_lon, t_lat, t_icon);
-/*	number
-	distance
+/*	
 	trip
 */		
+	route.items +=1;
+	
 	gtk_list_store_append (route_list_tree, &iter_route);
 	
 	gtk_list_store_set (route_list_tree, &iter_route,
 				ROUTE_ID, t_id,
-//				ROUTE_NUMBER, ///
+				ROUTE_NUMBER, route.items,
 				ROUTE_ICON, t_icon,
 				ROUTE_NAME, t_name,
-//				ROUTE_DISTANCE, ///
+				ROUTE_DISTANCE, t_dist,
 //				ROUTE_TRIP, ///
 				ROUTE_LON, t_lon,
 				ROUTE_LAT, t_lat,
@@ -599,6 +602,7 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	
 	g_object_unref (t_icon);
 	g_free (t_name);
+	g_free (t_dist);
 	
 	route.available = TRUE;
 	

@@ -697,6 +697,7 @@ route_cancel_cb ()
 	gtk_list_store_clear (route_list_tree);
 	close_route_window_cb ();
 	route.available = FALSE;
+	route.items = 0;
 }
 
 
@@ -1496,6 +1497,9 @@ void route_window_cb (GtkWidget *calling_button)
 	gtk_widget_set_sensitive (button_addtoroute, FALSE);
 	
 	route.edit = TRUE;
+	
+	if (!route.available)
+		route.items = 0;
 
 	tooltips_routewindow = gtk_tooltips_new();
 	gtk_tooltips_set_delay (tooltips_routewindow, TOOLTIP_DELAY);
