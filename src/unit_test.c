@@ -62,7 +62,7 @@ extern gint haveRMCsentence;
  * This Function tests internal routines of gpsdrive
  */
 
-gint set_unittest_timer (void);
+void set_unittest_timer (void);
 
 /* ******************************************************************
  * write a file with content in one function call
@@ -871,7 +871,7 @@ unittest_settings_close (GtkWidget * widget, guint * datum)
 
 /* *****************************************************************************
  */
-gint
+void
 set_unittest_timer (void)
 {
     printf ("Testing Open and Close Settings\n");
