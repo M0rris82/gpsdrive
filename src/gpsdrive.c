@@ -2821,7 +2821,7 @@ zoom_cb (GtkWidget * widget, guint datum)
 	if (importactive)
 	{
 		expose_cb (NULL, 0);
-		expose_mini_cb (NULL, 0);
+		/* expose_mini_cb (NULL, 0); <-- already done by expose_cb */
 	}
 	return TRUE;
 }
