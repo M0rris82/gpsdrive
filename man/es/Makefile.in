@@ -37,7 +37,11 @@ host_triplet = @host@
 subdir = man/es
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -74,6 +78,8 @@ DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@
+DISABLEGDAL_FALSE = @DISABLEGDAL_FALSE@
+DISABLEGDAL_TRUE = @DISABLEGDAL_TRUE@
 DISABLEPLUGINS_FALSE = @DISABLEPLUGINS_FALSE@
 DISABLEPLUGINS_TRUE = @DISABLEPLUGINS_TRUE@
 ECHO = @ECHO@
@@ -81,8 +87,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLETELEATLAS_FALSE = @ENABLETELEATLAS_FALSE@
-ENABLETELEATLAS_TRUE = @ENABLETELEATLAS_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -129,6 +133,7 @@ MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NOGARMIN = @NOGARMIN@
+NOGDAL = @NOGDAL@
 NOPLUGINS = @NOPLUGINS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -149,7 +154,6 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-USETELEATLAS = @USETELEATLAS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@

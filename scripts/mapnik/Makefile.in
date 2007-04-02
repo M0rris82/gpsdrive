@@ -13,12 +13,14 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 INSTALL = @INSTALL@
 install_sh_DATA = $(install_sh) -c -m 644
@@ -34,7 +36,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = man
+subdir = scripts/mapnik
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
@@ -48,6 +50,9 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(mapnikdir)"
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(bin_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -56,9 +61,16 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	install-recursive installcheck-recursive installdirs-recursive \
 	pdf-recursive ps-recursive uninstall-info-recursive \
 	uninstall-recursive
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+mapnikDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(mapnik_DATA)
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -218,8 +230,16 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = de es 
-EXTRA_DIST = gpsdrive.1 garble.1 geo-code.1 geoinfo.1 geo-nearest.1 CMakeLists.txt
+
+# Makefile.am for scripts
+SUBDIRS = symbols
+DIST_SUBDIRS = $(SUBDIRS)
+bin_SCRIPTS = gpsdrive_mapnik_gentiles.py
+mapnikdir = $(datadir)/gpsdrive/mapnik
+mapnik_DATA = osm.xml setup_z_order.sql
+EXTRA_DIST = setup_z_order.sql gpsdrive_mapnik_gentiles-in.py osm-in.xml 
+#CMakeLists.txt
+CLEANFILES = osm.xml gpsdrive_mapnik_gentiles.py
 all: all-recursive
 
 .SUFFIXES:
@@ -232,9 +252,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  man/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu  scripts/mapnik/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  man/Makefile
+	  $(AUTOMAKE) --gnu  scripts/mapnik/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -252,6 +272,25 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
+install-binSCRIPTS: $(bin_SCRIPTS)
+	@$(NORMAL_INSTALL)
+	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  if test -f $$d$$p; then \
+	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	    echo " $(binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	    $(binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
+	  else :; fi; \
+	done
+
+uninstall-binSCRIPTS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
+	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
+	done
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -262,6 +301,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-mapnikDATA: $(mapnik_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(mapnikdir)" || $(mkdir_p) "$(DESTDIR)$(mapnikdir)"
+	@list='$(mapnik_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(mapnikDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(mapnikdir)/$$f'"; \
+	  $(mapnikDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(mapnikdir)/$$f"; \
+	done
+
+uninstall-mapnikDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(mapnik_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(mapnikdir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(mapnikdir)/$$f"; \
+	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -439,9 +495,12 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile
+all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(mapnikdir)"; do \
+	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
+	done
 install: install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
@@ -459,6 +518,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -485,9 +545,9 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-data-local
+install-data-am: install-mapnikDATA
 
-install-exec-am:
+install-exec-am: install-binSCRIPTS
 
 install-info: install-info-recursive
 
@@ -511,7 +571,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-info-am
+uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
+	uninstall-mapnikDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -519,25 +580,24 @@ uninstall-info: uninstall-info-recursive
 	clean clean-generic clean-libtool clean-recursive ctags \
 	ctags-recursive distclean distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-data-local install-exec \
-	install-exec-am install-info install-info-am install-man \
+	html-am info info-am install install-am install-binSCRIPTS \
+	install-data install-data-am install-exec install-exec-am \
+	install-info install-info-am install-man install-mapnikDATA \
 	install-strip installcheck installcheck-am installdirs \
 	installdirs-am maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-generic \
 	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am uninstall-info-am
+	tags tags-recursive uninstall uninstall-am \
+	uninstall-binSCRIPTS uninstall-info-am uninstall-mapnikDATA
 
 
-man: gpsdrive.1 garble.1 geo-code.1 geoinfo.1 geo-nearest.1
+dummy:
 
-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(mandir)/man1/
-	$(INSTALL_DATA) $(srcdir)/gpsdrive.1 $(DESTDIR)$(mandir)/man1/gpsdrive.1
-	$(INSTALL_DATA) $(srcdir)/garble.1 $(DESTDIR)$(mandir)/man1/garble.1
-	$(INSTALL_DATA) $(srcdir)/geo-code.1 $(DESTDIR)$(mandir)/man1/geo-code.1
-	$(INSTALL_DATA) $(srcdir)/geoinfo.1 $(DESTDIR)$(mandir)/man1/geoinfo.1
-	$(INSTALL_DATA) $(srcdir)/geo-nearest.1 $(DESTDIR)$(mandir)/man1/geo-nearest.1
+gpsdrive_mapnik_gentiles.py: gpsdrive_mapnik_gentiles-in.py
+	sed 's,DATA_DIR,${datadir},' < gpsdrive_mapnik_gentiles-in.py > gpsdrive_mapnik_gentiles.py
+
+osm.xml: osm-in.xml
+	sed 's,DATA_DIR,${datadir},' < osm-in.xml > osm.xml
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
