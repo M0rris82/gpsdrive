@@ -2955,8 +2955,6 @@ setup_cb (GtkWidget * widget, guint datum)
 
 	gtk_container_border_width (GTK_CONTAINER (window), 2 * PADDING);
 	vbox = gtk_vbox_new (FALSE, 2 * PADDING);
-	/*     table = gtk_table_new(2,1,TRUE); */
-	/*   gtk_container_add (GTK_CONTAINER (window), vbox); */
 	gtk_box_pack_start (GTK_BOX
 			    (GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
 
@@ -2966,10 +2964,7 @@ setup_cb (GtkWidget * widget, guint datum)
 	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (notebook), GTK_POS_TOP);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), TRUE);
 	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
-	/*     gtk_table_attach_defaults(GTK_TABLE(table), notebook, 0,1,0,1); */
-	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE,
-			    2 * PADDING);
-	/*   gtk_box_pack_start (GTK_BOX (vbox), cancel, FALSE, FALSE, 2 * PADDING); */
+	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 2 * PADDING);
 	gtk_box_pack_start (GTK_BOX
 			    (GTK_DIALOG (window)->action_area),
 			    cancel, TRUE, TRUE, 2);
