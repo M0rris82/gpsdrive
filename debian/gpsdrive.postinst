@@ -14,10 +14,6 @@ case "$1" in
         db_get gpsdrive/initdb
 	INIT_DB=$RET
 	if [ "$INIT_DB" = "true" ] ; then
-	    db_get gpsdrive/mysqluser
-	    export DBUSER=$RET
-	    db_get gpsdrive/mysqlpwd
-	    export DBPASS=$RET
 
 	    echo "/usr/bin/geoinfo.pl --create-db --fill-defaults"
 	    /usr/bin/geoinfo.pl --create-db --fill-defaults
@@ -42,8 +38,6 @@ case "$1" in
         cat <<EOF > /etc/default/gpsdrive
 # Default settings for gpsdrive.
 INIT_DB="$INIT_DB"
-MYSQL_USER="$DBUSER"
-#MYSQL_PWD="If you really want to be insecure you can save the pwd here"
 IMPORT_OSM="$IMPORT_OSM"
 IMPORT_OSM_AREA="$IMPORT_OSM_AREA"
 EOF

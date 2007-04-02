@@ -1,35 +1,22 @@
 Template: gpsdrive/initdb
 Type: boolean
 Default: true
-Description: Do you wnat to create and initialize the mysql-table?
+Description: Create and initialize the mysql-table?
  Do you want to run 
- geoinfo.pl --create-defaults --create-defaults to 
- initialize your database and enter defaultsettings into it.
- WARNING: This will created a user gast with password gast
- WARNING: this might be a security issue if you have your mysql 
- WARNING: database accessible from outside of your computer
+       geoinfo.pl --create-db --create-defaults
+ to initialize your database and add defaults into it.
+       WARNING: This will created a user gast with password gast
+       WARNING: this might be a security issue if you have your mysql 
+       WARNING: database accessible from outside of your computer
 Description-de-UTF8: Wollen Sie die mysql Datenbank initialisieren?
  Es wird das Kommando 
- geoinfo.pl --create-defaults --create-defaults
- ausgeführt und damit die datenbanke für GpsDrive erstellt
- und die Notwendungen Defaulteinstellungen vorgenommen.
- ACHTUNG: Dies legt unter anderem auch einen 
- ACHTUNG:    Benutzer gast mit dem passwort gast
- ACHTUNG: an. Wenn ihre mysql Datenbank von aussen erreichbar ist
- ACHTUNG: ist dies ein ernsthaftes Sicherheitsrisiko
-
-Template: gpsdrive/mysqluser
-Type: string
-Default: root
-Description: Mysql admin name:
- Then name of the mysql admin.
- A user which has the mysql rights to create a database.
-
-Template: gpsdrive/mysqlpwd
-Type: string
-Default: toor
-Description: Mysql Password:
- The password for the mysql admin
+       geoinfo.pl --create-defaults --create-defaults
+ ausgeführt und damit die Datenbanke für GpsDrive erstellt
+ und die Notwendungen Defaults in die Datenbank geschrieben.
+       ACHTUNG: Dies legt unter anderem auch einen 
+       ACHTUNG: Benutzer gast mit dem passwort gast
+       ACHTUNG: an. Wenn ihre mysql Datenbank von aussen erreichbar ist
+       ACHTUNG: ist dies ein ernsthaftes Sicherheitsrisiko !!!!
 
 Template: gpsdrive/import_osm
 Type: boolean
