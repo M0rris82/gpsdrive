@@ -11,6 +11,7 @@ case "$1" in
         . /usr/share/debconf/confmodule
 
         # Create mysql database
+        echo "gpsdrive.postinst:  Create mysql database"
         db_get gpsdrive/initdb
 	INIT_DB=$RET
 	if [ "$INIT_DB" = "true" ] ; then
@@ -34,13 +35,6 @@ case "$1" in
 	#   - ask for an optional area of planet.osm to import
 	#   - Ask about installing current mapnik data: planet.sql, shapefiles
 	#   - Ask about downloading maps arround your current gps position
-
-        cat <<EOF > /etc/default/gpsdrive
-# Default settings for gpsdrive.
-INIT_DB="$INIT_DB"
-IMPORT_OSM="$IMPORT_OSM"
-IMPORT_OSM_AREA="$IMPORT_OSM_AREA"
-EOF
 
     ;;
 

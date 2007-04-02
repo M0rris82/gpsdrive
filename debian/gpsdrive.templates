@@ -8,15 +8,6 @@ Description: Create and initialize the mysql-table?
        WARNING: This will created a user gast with password gast
        WARNING: this might be a security issue if you have your mysql 
        WARNING: database accessible from outside of your computer
-Description-de-UTF8: Wollen Sie die mysql Datenbank initialisieren?
- Es wird das Kommando 
-       geoinfo.pl --create-defaults --create-defaults
- ausgeführt und damit die Datenbanke für GpsDrive erstellt
- und die Notwendungen Defaults in die Datenbank geschrieben.
-       ACHTUNG: Dies legt unter anderem auch einen 
-       ACHTUNG: Benutzer gast mit dem passwort gast
-       ACHTUNG: an. Wenn ihre mysql Datenbank von aussen erreichbar ist
-       ACHTUNG: ist dies ein ernsthaftes Sicherheitsrisiko !!!!
 
 Template: gpsdrive/import_osm
 Type: boolean
