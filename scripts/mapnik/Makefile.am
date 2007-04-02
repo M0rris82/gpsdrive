@@ -1,0 +1,21 @@
+# Makefile.am for scripts
+SUBDIRS =      symbols
+DIST_SUBDIRS = $(SUBDIRS)
+
+bin_SCRIPTS = gpsdrive_mapnik_gentiles.py
+
+mapnikdir = $(datadir)/gpsdrive/mapnik
+mapnik_DATA = osm.xml setup_z_order.sql
+
+EXTRA_DIST = setup_z_order.sql generate_mapnik_tiles.py-in osm-in.xml 
+#CMakeLists.txt
+
+CLEANFILES = osm.xml gpsdrive_mapnik_gentiles.py
+
+dummy:
+
+gpsdrive_mapnik_gentiles.py: gpsdrive_mapnik_gentiles-in.py
+	sed 's,DATA_DIR,${datadir},' < gpsdrive_mapnik_gentiles-in.py > gpsdrive_mapnik_gentiles.py
+
+osm.xml: osm-in.xml
+	sed 's,DATA_DIR,${datadir},' < osm-in.xml > osm.xml
