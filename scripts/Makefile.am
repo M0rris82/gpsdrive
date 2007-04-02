@@ -1,5 +1,5 @@
 # Makefile.am for scripts
-SUBDIRS =      perl_lib osm
+SUBDIRS =      perl_lib osm mapnik
 DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
