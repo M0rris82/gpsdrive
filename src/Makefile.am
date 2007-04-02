@@ -8,7 +8,7 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS} \
+	${NOGARMIN} ${NOPLUGINS}\
 	-I/usr/include/
 
 
@@ -29,13 +29,7 @@ if HAVE_DBUS
 INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
 endif
 
-if ENABLETELEATLAS
-GPSNAVLIB=-lgpsnavlib
-else
-GPSNAVLIB=
-endif
-
-gpsdrive_LDADD=@LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
+gpsdrive_LDADD=@LIBS@ $(LIBADD_DL) 
 
 if DISABLEPLUGINS
 else

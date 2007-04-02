@@ -581,20 +581,6 @@ AC_ARG_ENABLE(plugins,
 ])
 AM_CONDITIONAL(DISABLEPLUGINS, test x$disableplugins = xtrue)
 
-
-AC_ARG_ENABLE(teleatlas,
-AC_HELP_STRING([--enable-teleatlas],[enable street navigation using Teleatlas maps, needs gpsnavlib. Ignore this option until announced at www.gpsdrive.cc ]),[
-	case "${enableval}" in
-		no) echo "disable street navigation support" ;;
-		yes)  echo "enable street navigation using Teleatlas maps, needs gpsnavlib" 
-			AC_SUBST(USETELEATLAS,'-DUSETELEATLAS') 
-			enableteleatlas=true ;;
-		*) AC_MSG_ERROR(bad value ${enableval} for --enable-teleatlas) ;;
-	esac
-])
-AM_CONDITIONAL(ENABLETELEATLAS, test x$enableteleatlas = xtrue)
-
-
 dnl ********************************************
 dnl Manually configure DBUS until we figure out a 
 dnl distro-independent was to check for both libraries and headers

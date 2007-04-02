@@ -48,11 +48,7 @@ bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -137,7 +133,7 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	unit_test.$(OBJEXT) $(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
-gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -198,7 +194,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS} ${USETELEATLAS} \
+	${NOGARMIN} ${NOPLUGINS}\
 	-I/usr/include/
 
 DEPDIR = @DEPDIR@
@@ -213,8 +209,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
-ENABLETELEATLAS_FALSE = @ENABLETELEATLAS_FALSE@
-ENABLETELEATLAS_TRUE = @ENABLETELEATLAS_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -282,7 +276,6 @@ RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-USETELEATLAS = @USETELEATLAS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -345,9 +338,7 @@ target_alias = @target_alias@
 @DISABLEGARMIN_FALSE@PRG1 = garble
 @DISABLEGARMIN_TRUE@PRG1 = 
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
-@ENABLETELEATLAS_FALSE@GPSNAVLIB = 
-@ENABLETELEATLAS_TRUE@GPSNAVLIB = -lgpsnavlib
-gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) $(GPSNAVLIB)
+gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) 
 @DISABLEPLUGINS_FALSE@lib_LTLIBRARIES = libfly.la libnautic.la
 @DISABLEPLUGINS_FALSE@libfly_la_SOURCES = fly.c
 @DISABLEPLUGINS_FALSE@libfly_la_LDFLAGS = -version-info 2:0:0
