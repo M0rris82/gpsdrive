@@ -7,7 +7,7 @@ bin_SCRIPTS = gpsdrive_mapnik_gentiles.py
 mapnikdir = $(datadir)/gpsdrive/mapnik
 mapnik_DATA = osm.xml setup_z_order.sql
 
-EXTRA_DIST = setup_z_order.sql generate_mapnik_tiles.py-in osm-in.xml 
+EXTRA_DIST = setup_z_order.sql gpsdrive_mapnik_gentiles-in.py osm-in.xml 
 #CMakeLists.txt
 
 CLEANFILES = osm.xml gpsdrive_mapnik_gentiles.py
