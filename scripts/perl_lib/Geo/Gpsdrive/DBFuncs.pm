@@ -26,7 +26,7 @@ BEGIN {
     @ISA         = qw(Exporter);
     @EXPORT = qw( &poi_type_names &poi_type_list  &poi_type_name2id &poi_type_id2name
 		  &streets_type_names &streets_type_list  &streets_type_name2id
-		  &db_disconnect 
+		  &db_disconnect  &db_read_mysql_sys_pwd
 		  &add_poi &add_poi_multi
 		  &street_segments_add
 		  &poi_list
@@ -178,6 +178,23 @@ sub insert_hash($$;$) {
     return $res;
 }
 
+#############################################################################
+# Try to find and read the system user password and username
+sub db_read_mysql_sys_pwd(){
+    return unless $main::db_user eq "";
+    return unless $main::db_password eq "";
+    return unless -r "/etc/mysql/debian.cnf";
+    open(my $fh , "</etc/mysql/debian.cnf");
+    die "Cannot open /etc/mysql/debian.cnf:$!\n" unless $fh;
+    while (defined (my $line = <$fh> )
+	   && (!$main::db_user || !$main::db_password)
+	   ) {
+	$main::db_user = $1 if $line =~ m/user\s*=\s*(.*)/;
+	$main::db_password = $1 if $line =~ m/password\s*=\s*(.*)/;
+    }
+    #print "user: $main::db_user\n";
+    #print "PWD: $main::db_password\n";
+}
 
 #############################################################################
 # All necessary information for connecting the DB

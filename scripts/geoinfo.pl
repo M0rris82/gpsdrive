@@ -110,8 +110,14 @@ our $file;
 our ($lat_min,$lat_max,$lon_min,$lon_max) = (0,0,0,0);
 
 our $lang                = 'de';
-our $db_user             = $ENV{DBUSER} || 'gast';
-our $db_password         = $ENV{DBPASS} || 'gast';
+our $db_user             = $ENV{DBUSER} || '';
+our $db_password         = $ENV{DBPASS} || '';
+
+Geo::Gpsdrive::DBFuncs::db_read_mysql_sys_pwd();
+
+$db_user           ||= 'gast';
+$db_password       ||= 'gast';
+
 our $db_host             = $ENV{DBHOST} || 'localhost';
 #$db_host = 'host=localhost;mysql_socket=/home/tweety/.gpsdrive/mysql/mysqld.socket';
 my $areas_todo;
