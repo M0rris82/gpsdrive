@@ -1,7 +1,6 @@
 src/battery.c
 src/download_map.c
 src/draw_grid.c
-src/draw_tracks.c
 src/fly.c
 src/friends.c
 src/friendsd.c
