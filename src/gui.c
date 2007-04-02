@@ -58,6 +58,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "gpsdrive_config.h"
 #include "gui.h"
 #include "poi.h"
+#include "routes.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -77,6 +78,7 @@ extern gint debug;
 
 extern GtkTreeStore *poi_types_tree;
 extern GtkListStore *poi_result_tree;
+extern GtkListStore *route_list_tree;
 
 extern gdouble target_lat, target_lon;
 extern gdouble wp_saved_target_lat;
@@ -115,10 +117,19 @@ extern gint borderlimit;
 extern gint extrawinmenu, pdamode;
 extern gdouble posx, posy;
 
-/* Global Values */
+extern status_struct route;
+
+/* poi lookup window */
 GtkWidget *poi_lookup_window;
 GtkWidget *button_delete;
 GtkWidget *button_target;
+GtkWidget *button_addtoroute;
+
+/* route window */
+GtkWidget *route_window;
+GtkWidget *button_startroute;
+GtkWidget *button_remove;
+
 GtkWidget *poi_types_window;
 
 
@@ -583,22 +594,35 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 	
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
-		gtk_tree_model_get (model, &iter,
-					RESULT_LAT, &target_lat,
-					RESULT_LON, &target_lon,
-					-1);
-			
-		if (mydebug>50)
-			fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
+		if (route.edit)
+		{
+			add_poi_to_route (model, iter);
+			if (route.available)
+				gtk_widget_set_sensitive (button_startroute, TRUE);
+		}
+		else
+		{
+			if (!route.active)
+			{
+				gtk_tree_model_get (model, &iter,
+							RESULT_LAT, &target_lat,
+							RESULT_LON, &target_lon,
+							-1);
+				if (mydebug>50)
+					fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
+			}
+		}
 		
 		gtk_widget_set_sensitive (button_delete, TRUE);
-		gtk_widget_set_sensitive (button_target, TRUE);
-	}
 
-	/* if posmode enabled set posmode_lat/lon */
-	if (posmode) {
-		posmode_lat = target_lat;
-		posmode_lon = target_lon;
+		/* if posmode enabled set posmode_lat/lon */
+		if (posmode)
+		{
+			gtk_tree_model_get (model, &iter,
+						RESULT_LAT, &posmode_lat,
+						RESULT_LON, &posmode_lon,
+						-1);
+		}
 	}
 }
 
@@ -638,6 +662,61 @@ toggle_window_cb (GtkWidget *window)
 		gtk_widget_hide_all (window);
 	else
 		gtk_widget_show_all (window);
+}
+
+
+static void
+close_route_window_cb ()
+{
+	gtk_widget_destroy (route_window);
+	route.edit = FALSE;
+	
+	if (GTK_IS_WIDGET (button_addtoroute))
+		gtk_widget_set_sensitive (button_addtoroute, TRUE);
+}
+
+
+static void
+route_startstop_cb ()
+{
+	if (route.active)
+	{
+		// ### stop routing
+	}
+	else
+	{
+		// ### start routing
+	}
+	close_route_window_cb ();	
+}
+
+
+static void
+route_cancel_cb ()
+{
+	gtk_list_store_clear (route_list_tree);
+	close_route_window_cb ();
+	route.available = FALSE;
+}
+
+
+static void
+select_routepoint_cb ()
+{
+	gtk_widget_set_sensitive (button_remove, TRUE);
+}
+
+
+static void
+remove_routepoint_cb (GtkTreeSelection *selection, gpointer data)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	if (gtk_tree_selection_get_selected (selection, &model, &iter))
+	{
+		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+	}
 }
 
 
@@ -881,14 +960,6 @@ void create_poi_info_window (void)
 }
 
 
-
-
-
-
-
-
-
-
 /* *****************************************************************************
  * Window: POI-Lookup
  */
@@ -935,7 +1006,6 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *label_poiinfo;
 	GtkWidget *label_results;
 	GtkWidget *dialog_action_area_poisearch;
-	GtkWidget *button_addtoroute;
 	GtkWidget *alignment_addtoroute;
 	GtkWidget *hbox_addtoroute;
 	GtkWidget *image_addtoroute;
@@ -1206,7 +1276,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
   
 	dialog_action_area_poisearch = GTK_DIALOG (poi_lookup_window)->action_area;
 
-	/* button "add to route" */
+	/* button "edit route" */
 	button_addtoroute = gtk_button_new ();
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_addtoroute, 0);
 	GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
@@ -1216,12 +1286,11 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_container_add (GTK_CONTAINER (alignment_addtoroute), hbox_addtoroute);
 	image_addtoroute = gtk_image_new_from_stock ("gtk-add", GTK_ICON_SIZE_BUTTON);
 	gtk_box_pack_start (GTK_BOX (hbox_addtoroute), image_addtoroute, FALSE, FALSE, 0);
-	label_addtoroute = gtk_label_new_with_mnemonic (_("Add to Route"));
+	label_addtoroute = gtk_label_new_with_mnemonic (_("Edit _Route"));
 	gtk_box_pack_start (GTK_BOX (hbox_addtoroute), label_addtoroute, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_addtoroute, 
-	_("Add selected entry to Route"), NULL);
-	// ### disable button until functionality is implemented:
-		gtk_widget_set_sensitive (button_addtoroute, FALSE);
+	_("Switch to Add selected entry to Route"), NULL);
+	g_signal_connect (button_addtoroute, "clicked", GTK_SIGNAL_FUNC (route_window_cb), NULL);  
 
 	/* button "delete POI" */
 	button_delete = gtk_button_new_from_stock ("gtk-delete");
@@ -1269,10 +1338,15 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect (GTK_OBJECT (poi_lookup_window), "delete_event",
 				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
 
-	/* disable buttons until POI is selected from list */
+	/* disable delete button until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
-	gtk_widget_set_sensitive (button_target, FALSE);
+	
+	/* disable target selection in active routemode */
+	if (route.active)
+		gtk_widget_set_sensitive (button_target, FALSE);
 
+	gtk_widget_grab_focus (entry_text);
+	
 	gtk_widget_show_all (poi_lookup_window);
 }
 
@@ -1390,6 +1464,192 @@ void create_button_add_wp (void)
 		return;
 	}
 }
+
+
+/* *****************************************************************************
+ * Window: Edit Route
+ */
+void route_window_cb (GtkWidget *calling_button)
+{
+	GtkWidget *dialog_vbox_route;
+	GtkWidget *vbox_routedetails;
+	GtkWidget *frame_routedetails;
+	GtkWidget *scrolledwindow_routedetails;
+	GtkWidget *alignment_startroute;
+	GtkWidget *hbox_startroute;
+	GtkWidget *image_startroute;
+	GtkWidget *label_startroute;
+	GtkWidget *label_routedetails;
+	GtkWidget *treeview_routelist;
+	GtkCellRenderer *renderer_routelist;
+	GtkTreeViewColumn *column_routelist;
+	GtkTreeSelection *routelist_select;
+	GtkWidget *dialog_action_area_routedetails;
+	GtkWidget *button_close;
+	GtkWidget *button_cancel;
+	GtkWidget *alignment_cancel;
+	GtkWidget *hbox_cancel;
+	GtkWidget *image_cancel;
+	GtkWidget *label_cancel;
+	GtkTooltips *tooltips_routewindow;
+	
+	gtk_widget_set_sensitive (button_addtoroute, FALSE);
+	
+	route.edit = TRUE;
+
+	tooltips_routewindow = gtk_tooltips_new();
+	gtk_tooltips_set_delay (tooltips_routewindow, TOOLTIP_DELAY);
+	if (local_config.showtooltips)
+		gtk_tooltips_enable (tooltips_routewindow);
+	else
+		gtk_tooltips_disable (tooltips_routewindow);
+	  
+	route_window = gtk_dialog_new ();
+	gtk_container_set_border_width (GTK_CONTAINER (route_window), 2);
+	gtk_window_set_title (GTK_WINDOW (route_window), _("Edit Route"));
+	gtk_window_set_position (GTK_WINDOW (route_window), GTK_WIN_POS_NONE);
+	gtk_window_set_type_hint (GTK_WINDOW (route_window), GDK_WINDOW_TYPE_HINT_DIALOG);
+	if (pdamode)
+		gtk_window_set_default_size (GTK_WINDOW (route_window), real_screen_x, real_screen_y);
+	else
+		gtk_window_set_default_size (GTK_WINDOW (route_window), -1, 250);
+	
+	dialog_vbox_route = GTK_DIALOG (route_window)->vbox;
+	
+	vbox_routedetails = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (dialog_vbox_route), vbox_routedetails, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_routedetails), 2);
+	
+	/* Frame: Route-Details */
+  {
+	frame_routedetails = gtk_frame_new (NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_routedetails), frame_routedetails, TRUE, TRUE, 5);
+	gtk_frame_set_label_align (GTK_FRAME (frame_routedetails), 0.02, 0.5);
+
+	scrolledwindow_routedetails = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_routedetails), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_routedetails), GTK_SHADOW_IN);
+	gtk_container_add (GTK_CONTAINER (frame_routedetails), scrolledwindow_routedetails);
+
+	treeview_routelist = gtk_tree_view_new_with_model (GTK_TREE_MODEL (route_list_tree));
+
+	  	// ### show number of point in route list...
+	renderer_routelist = gtk_cell_renderer_text_new ();
+	column_routelist = gtk_tree_view_column_new_with_attributes (
+				"#", renderer_routelist,
+				"text", ROUTE_NUMBER,
+				NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_routelist), column_routelist);
+	  
+	renderer_routelist = gtk_cell_renderer_pixbuf_new ();
+	column_routelist = gtk_tree_view_column_new_with_attributes ("_", renderer_routelist, "pixbuf", ROUTE_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_routelist), column_routelist);
+
+	renderer_routelist = gtk_cell_renderer_text_new ();
+	column_routelist = gtk_tree_view_column_new_with_attributes (
+				_("Name"), renderer_routelist,
+				"text", ROUTE_NAME,
+				NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_routelist), column_routelist);
+
+	renderer_routelist = gtk_cell_renderer_text_new ();
+	column_routelist = gtk_tree_view_column_new_with_attributes (
+				_("Distance"), renderer_routelist,
+				"text", ROUTE_DISTANCE,
+				NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_routelist), column_routelist);
+	
+	renderer_routelist = gtk_cell_renderer_text_new ();
+	column_routelist = gtk_tree_view_column_new_with_attributes (
+				_("Trip"), renderer_routelist,
+				"text", ROUTE_TRIP,
+				NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_routelist), column_routelist);
+
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_routedetails), treeview_routelist);
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_routelist), TRUE);
+
+	routelist_select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_routelist));
+	gtk_tree_selection_set_mode (routelist_select, GTK_SELECTION_SINGLE);
+	g_signal_connect (G_OBJECT (routelist_select), "changed",
+					G_CALLBACK (select_routepoint_cb), NULL);
+
+	label_routedetails = gtk_label_new (_("Route List"));
+	gtk_frame_set_label_widget (GTK_FRAME (frame_routedetails), label_routedetails);
+	gtk_label_set_use_markup (GTK_LABEL (label_routedetails), TRUE);
+  }
+  
+	dialog_action_area_routedetails = GTK_DIALOG (route_window)->action_area;
+
+	/* button "start route" */
+	button_startroute = gtk_button_new ();
+	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_startroute, 0);
+	GTK_WIDGET_SET_FLAGS (button_startroute, GTK_CAN_DEFAULT);
+	alignment_startroute = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_startroute), alignment_startroute);
+	hbox_startroute = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_startroute), hbox_startroute);
+	if (route.active)
+	{
+		image_startroute = gtk_image_new_from_stock ("gtk-media-stop", GTK_ICON_SIZE_BUTTON);
+		label_startroute = gtk_label_new_with_mnemonic (_("Stop Route"));
+		gtk_tooltips_set_tip ( tooltips_routewindow, button_startroute,
+					_("Stop the Route Mode"), NULL);
+	}
+	else
+	{
+		image_startroute = gtk_image_new_from_stock ("gtk-media-play", GTK_ICON_SIZE_BUTTON);
+		label_startroute = gtk_label_new_with_mnemonic (_("Start Route"));
+		gtk_tooltips_set_tip ( tooltips_routewindow, button_startroute,
+					_("Start the Route Mode"), NULL);
+	}
+	if (!route.available)
+		gtk_widget_set_sensitive (button_startroute, FALSE);
+	gtk_box_pack_start (GTK_BOX (hbox_startroute), image_startroute, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_startroute), label_startroute, FALSE, FALSE, 0);
+	g_signal_connect (button_startroute, "clicked", GTK_SIGNAL_FUNC (route_startstop_cb), NULL);
+
+	/* button "remove point from route" */
+	button_remove = gtk_button_new_from_stock ("gtk-remove");
+	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_remove, 0);
+	GTK_WIDGET_SET_FLAGS (button_remove, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip ( tooltips_routewindow, button_remove, 
+				_("Remove selected Entry from Route"), NULL);
+	gtk_widget_set_sensitive (button_remove, FALSE);
+	g_signal_connect_swapped (button_remove, "clicked",
+				GTK_SIGNAL_FUNC (remove_routepoint_cb), routelist_select);
+
+	/* button "cancel route" */
+	button_cancel = gtk_button_new ();
+	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_cancel, 0);
+	GTK_WIDGET_SET_FLAGS (button_cancel, GTK_CAN_DEFAULT);
+	alignment_cancel = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_cancel), alignment_cancel);
+	hbox_cancel = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_cancel), hbox_cancel);
+	image_cancel = gtk_image_new_from_stock ("gtk-cancel", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_cancel), image_cancel, FALSE, FALSE, 0);
+	label_cancel = gtk_label_new (_("Cancel Route"));		
+	gtk_tooltips_set_tip ( tooltips_routewindow, button_cancel,
+				_("Discard Route"), NULL);
+	gtk_box_pack_start (GTK_BOX (hbox_cancel), label_cancel, FALSE, FALSE, 0);
+	g_signal_connect (button_cancel, "clicked",
+				GTK_SIGNAL_FUNC (route_cancel_cb), NULL);
+
+	/* button "close" */
+	button_close = gtk_button_new_from_stock ("gtk-close");
+	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_close, GTK_RESPONSE_CLOSE);
+	GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip (tooltips_routewindow, button_close, 
+				_("Close this window"), NULL);
+	g_signal_connect_swapped (button_close, "clicked",
+				GTK_SIGNAL_FUNC (close_route_window_cb), route_window);
+	g_signal_connect (GTK_OBJECT (route_window), "delete_event",
+				   GTK_SIGNAL_FUNC (close_route_window_cb), NULL);
+
+	gtk_widget_show_all (route_window);
+}
+
 
 /* *****************************************************************************
  * GUI Init:

@@ -853,7 +853,7 @@ unittest_settings_open (GtkWidget * widget, guint * datum)
     
     if (mydebug > 0)
 	    printf ("	-------> Open Settings\n");
-    gtk_button_clicked( setup_bt );
+    gtk_button_clicked( GTK_BUTTON (setup_bt) );
     
     return FALSE; // Only once
 }

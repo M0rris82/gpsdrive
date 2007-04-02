@@ -27,10 +27,8 @@ Disclaimer: Please do not use for navigation.
 
 #include <gtk/gtk.h>
 
-extern gint createroute;
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
-extern gint routemode;
 extern gint thisrouteline, routeitems, routepointer;
 extern GtkWidget *create_route_button;
 extern GtkWidget *create_route2_button;
@@ -40,5 +38,20 @@ extern GtkWidget *gotobt;
 void init_route_list ();
 void free_route_list ();
 void insertwaypoints (gint mobile);
+
+void route_init (void);
+void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
+
+enum {
+	ROUTE_ID,
+	ROUTE_NUMBER,
+	ROUTE_ICON,
+	ROUTE_NAME,
+	ROUTE_DISTANCE,
+	ROUTE_TRIP,
+	ROUTE_LON,
+	ROUTE_LAT,
+	ROUTE_COLUMS
+};
 
 #endif /* GPSDRIVE_ROUTE_H */

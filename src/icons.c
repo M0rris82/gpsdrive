@@ -324,11 +324,9 @@ read_themed_icon (gchar * icon_name)
 void
 load_friends_icon (void)
 {
-
-  friendsimage = read_icon ("friendsicon.png", 1);
-  friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
-  gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24, 0, 0, 1, 1, GDK_INTERP_BILINEAR);
-
+		friendsimage = read_icon ("friendsicon.png", 1);
+		friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
+		gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24, 0, 0, 1, 1, GDK_INTERP_BILINEAR);
 }
 
 /* ----------------------------------------------------------------------------- */

@@ -34,6 +34,7 @@ Disclaimer: Please do not use for navigation.
 #include "config.h"
 #include "gettext.h"
 #include "icons.h"
+#include "routes.h"
 #include <speech_out.h>
 #include <speech_strings.h>
 
@@ -73,15 +74,14 @@ extern glong poi_list_count;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
+GtkListStore *route_list_tree;
 GtkWidget *myroutelist;
 gint thisrouteline = 0, routeitems = 0, routepointer = 0;
-gint createroute = FALSE;
-gint routemode = FALSE;
 gdouble routenearest = 9999999999.0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 gint forcenextroutepoint = FALSE;
 gint showroute = TRUE;
-
+status_struct route;
 
 /* ******************************************************************
  */
@@ -152,8 +152,8 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 
 	g_snprintf (str, sizeof (str), "%s: %s", _("To"), targetname);
 	gtk_frame_set_label (GTK_FRAME (destframe), str);
-	createroute = FALSE;
-	routemode = FALSE;
+	route.edit = FALSE;
+	route.active = FALSE;
 	routepointer = routeitems = 0;
 	gtk_widget_set_sensitive (create_route_button, TRUE);
 	/* enable jump button */
@@ -167,7 +167,7 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 gint
 sel_routeclose_cb (GtkWidget * widget, guint datum)
 {
-	createroute = FALSE;
+	route.edit = FALSE;
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 	gtk_widget_set_sensitive (create_route_button, TRUE);
 	return FALSE;
@@ -182,8 +182,8 @@ do_route_cb (GtkWidget * widget, guint datum)
 	gtk_widget_set_sensitive (create_route_button, TRUE);
 	/* disable waypoint jump button */
 	gtk_widget_set_sensitive (gotobt, FALSE);
-	createroute = FALSE;
-	routemode = TRUE;
+	route.edit = FALSE;
+	route.active = TRUE;
 	setroutetarget (NULL, -1);
 	return FALSE;
 }
@@ -403,7 +403,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 	gchar *text[5], text0[20], text1[20], text2[20], text3[20];
 	GtkTooltips *tooltips;
 
-	createroute = TRUE;
+	route.edit = TRUE;
 	window = gtk_dialog_new ();
 	routewindow = window;
 	/*    gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE); */
@@ -490,7 +490,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 	gtk_box_pack_start (GTK_BOX (vbox), scrwindow, TRUE, TRUE, 2);
 	hbox = gtk_hbox_new (TRUE, 2);
 	hbox_displays = gtk_hbox_new (TRUE, 2);
-	if (!routemode)
+	if (!route.active)
 		l1 = gtk_label_new (_
 				    ("Click on waypoints list\nto add waypoints"));
 	else
@@ -511,7 +511,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 	gtk_box_pack_start (GTK_BOX (hbox), button3, TRUE, TRUE, 2);
 	gtk_widget_set_sensitive (create_route_button, FALSE);
 
-	if (routemode)
+	if (route.active)
 	{
 		gtk_widget_set_sensitive (select_route_button, FALSE);
 		gtk_clist_clear (GTK_CLIST (myroutelist));
@@ -555,4 +555,76 @@ create_route_cb (GtkWidget * widget, guint datum)
 	gtk_widget_show_all (window);
 
 	return TRUE;
+}
+
+
+/* *******************************************************
+ */
+void
+add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
+{
+	GtkTreeIter iter_route;
+	
+	GdkPixbuf *t_icon;
+	gchar *t_name;
+	gint t_id;
+	gdouble t_lon, t_lat;
+	
+	gtk_tree_model_get (model, &iter,
+				RESULT_ID, &t_id,
+				RESULT_TYPE_ICON, &t_icon,
+				RESULT_NAME, &t_name,
+				RESULT_LON, &t_lon,
+				RESULT_LAT, &t_lat,
+				-1);
+	
+	if (mydebug>25)
+		fprintf (stderr, "add_poi_to_route:  ID: %d  |  NAME: %s |  LON: %f  |  LAT: %f  |  ICON: %p\n", t_id, t_name, t_lon, t_lat, t_icon);
+/*	number
+	distance
+	trip
+*/		
+	gtk_list_store_append (route_list_tree, &iter_route);
+	
+	gtk_list_store_set (route_list_tree, &iter_route,
+				ROUTE_ID, t_id,
+//				ROUTE_NUMBER, ///
+				ROUTE_ICON, t_icon,
+				ROUTE_NAME, t_name,
+//				ROUTE_DISTANCE, ///
+//				ROUTE_TRIP, ///
+				ROUTE_LON, t_lon,
+				ROUTE_LAT, t_lat,
+				-1);
+	
+	g_object_unref (t_icon);
+	g_free (t_name);
+	
+	route.available = TRUE;
+	
+}
+
+
+/* *******************************************************
+ */
+void
+route_init (void)
+{
+
+	/* init gtk-list for storage of route data */
+	route_list_tree = gtk_list_store_new (ROUTE_COLUMS,
+				G_TYPE_INT,				/* ROUTE_ID */
+				G_TYPE_INT,				/* ROUTE_NUMBER */
+				GDK_TYPE_PIXBUF,	/* ROUTE_ICON */
+				G_TYPE_STRING,		/* ROUTE_NAME */
+				G_TYPE_STRING,		/* ROUTE_DISTANCE */
+				G_TYPE_STRING,		/* ROUTE_TRIP */
+				G_TYPE_DOUBLE,		/* ROUTE_LON */
+				G_TYPE_DOUBLE		/* ROUTE_LAT */
+				);
+ 
+	route.active = FALSE;
+	route.edit = FALSE;
+	route.available = FALSE;
+	route.show = FALSE;
 }

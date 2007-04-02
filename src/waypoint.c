@@ -123,7 +123,7 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 extern gchar oldfilename[2048];
-extern gint routemode;
+extern status_struct route;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern GList *poi_types_formatted;
@@ -490,7 +490,7 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 	/*   gtk_timeout_remove (selwptimeout); */
 	gtk_widget_destroy (GTK_WIDGET (gotowindow));
 	/* restore old target */
-	if (widget != NULL && !routemode) {
+	if (widget != NULL && !route.active) {
 		target_lat = wp_saved_target_lat;
 		target_lon = wp_saved_target_lon;
 	}
@@ -587,6 +587,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 		g_strlcpy ((wayp + i)->name, wp_name, 40);
 		(wayp + i)->name[20] = 0;
 
+		/* limit waypoint type to 40 chars */
 		g_strlcpy ((wayp + i)->typ, wp_type, 40);
 		(wayp + i)->typ[40] = 0;
 		
@@ -879,14 +880,14 @@ setwp_cb (GtkWidget * widget, guint datum)
 	selected_wp_mode = TRUE;
 
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 0, &p);
-	if (createroute)
+	if (route.edit)
 	{
 		/*        g_print("route: %s\n", p); */
 		thisrouteline = atol (p) - 1;
 		insertroutepoints ();
 		return TRUE;
 	}
-	if (routemode) {
+	if (route.active) {
 		/* in routingmode do nothing further */
 		return TRUE;
 	}

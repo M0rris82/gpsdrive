@@ -257,6 +257,15 @@ typedef struct
 }
 friendsstruct;
 
+typedef struct
+{
+ 	gint active;
+	gint edit;
+	gint available;
+	gint show;
+}
+status_struct;
+
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #endif

@@ -73,7 +73,7 @@ extern gint needtosave;
 extern gint showroute, routeitems;
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
-extern gint routemode;
+extern status_struct route;
 wpstruct *routelist;
 extern gint thisrouteline, routeitems, routepointer;
 extern gint gcount, milesflag, downloadwindowactive;
@@ -95,7 +95,6 @@ extern gint saytarget;
 extern int havedefaultmap;
 
 extern GtkWidget *destframe;
-extern gint createroute;
 extern GdkPixbuf *image, *tempimage, *miniimage;
 extern GtkWidget *scaler_widget;
 extern GtkWidget *scaler_left_bt, *scaler_right_bt;
@@ -596,7 +595,7 @@ route_next_target ()
   /*  test for new route point */
   if (strcmp (targetname, "     "))
     {
-      if (routemode)
+      if (route.active)
 	d = calcdist ((routelist + routepointer)->lon,
 		      (routelist + routepointer)->lat);
       else
@@ -613,7 +612,7 @@ route_next_target ()
 	  || (d > (ROUTEREACHFACT * routenearest)) || forcenextroutepoint)
 	{
 	  forcenextroutepoint = FALSE;
-	  if ((routepointer != (routeitems - 1)) && (routemode))
+	  if ((routepointer != (routeitems - 1)) && (route.active))
 	    {
 	      routenearest = 9999999999.0;
 	      routepointer++;
@@ -633,8 +632,8 @@ route_next_target ()
 		  g_snprintf (str, sizeof (str),
 			      "%s: %s", _("To"), targetname);
 		  gtk_frame_set_label (GTK_FRAME (destframe), str);
-		  createroute = FALSE;
-		  routemode = FALSE;
+		  route.edit	= FALSE;
+		  route.active = FALSE;
 		  saytarget = FALSE;
 		  routepointer = routeitems = 0;
 

@@ -410,6 +410,8 @@ gint earthmate = FALSE;
 
 extern gint wptotal, wpselected;
 
+extern status_struct route;
+
 GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
 PangoFontDescription *pfd_text, *pfd_verysmalltext, *pfd_smalltext, *pfd_bigtext, *pfd_wplabel;
 gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
@@ -425,7 +427,7 @@ gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
 
-gint forcehavepos = FALSE, needreminder = TRUE;
+gint forcehavepos = FALSE;
 gdouble alarm_lat = 53.583033, alarm_lon = 9.969533, alarm_dist = 9999999.0;
 extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
@@ -490,7 +492,6 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Menu/_Maps"),               NULL, NULL,                     0, "<Branch>"},
     {N_("/_Menu/_Maps/_Import"),   NULL, (gpointer) import1_cb,    1, NULL},
     {N_("/_Menu/_Maps/_Download"), NULL, (gpointer) download_cb,   0, NULL},
-    // removed not needed any more {N_("/_Menu/_Waypoint Manager"),  NULL, (gpointer) sel_target_cb, 0, NULL},
     {N_("/_Menu/_Reinitialize GPS"),  NULL, (gpointer) reinitgps_cb,  0, NULL},
     //    {N_("/_Menu/_Start gpsd"),        NULL, (gpointer) startgpsd_cb,  0, NULL},
     {N_("/_Menu/_Load track file"),   NULL, (gpointer) loadtrack_cb,  0, "<StockItem>", GTK_STOCK_OPEN},
@@ -1143,11 +1144,6 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 
 	map_koord_check_and_reload();
 
-	if (needreminder)
-	{
-		reminder_cb (NULL, 0);
-		needreminder = FALSE;
-	}
 	checkalarm ();
 
 	testifnight ();
@@ -3814,7 +3810,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	}
 
 	// In Route mode Force next Route Point
-	if (((toupper (event->keyval)) == 'J') && routemode)
+	if (((toupper (event->keyval)) == 'J') && route.active)
 	{
 		forcenextroutepoint = TRUE;
 	}
@@ -4098,7 +4094,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 
 	if (datum != 1)
 	{
-		if (routemode)
+		if (route.active)
 			create_route_button =
 				gtk_button_new_with_label (_("Edit route"));
 		else
@@ -4120,7 +4116,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	gtk_signal_connect (GTK_OBJECT (gotobt), "clicked",
 			    GTK_SIGNAL_FUNC (jumpwp_cb), 0);
 	/* disable jump button when in routingmode */
-	if (routemode) gtk_widget_set_sensitive (gotobt, FALSE);
+	if (route.active) gtk_widget_set_sensitive (gotobt, FALSE);
 
 	/*   button = gtk_button_new_with_label (_("Close")); */
 	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
@@ -4196,7 +4192,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	/*   I remove this, because you can sort by mouseclick now */
 	/*   selwptimeout = gtk_timeout_add (30000, (GtkFunction) reinsertwp_cb, 0); */
 	tooltips = gtk_tooltips_new ();
-	if (!createroute)
+	if (!route.edit)
 		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
 				      create_route_button,
 				      _
@@ -5980,6 +5976,7 @@ main (int argc, char *argv[])
     needtosave = FALSE;
 
 	poi_init ();
+	route_init ();
     wlan_init ();
     streets_init ();
 

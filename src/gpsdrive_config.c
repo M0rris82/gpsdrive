@@ -74,7 +74,7 @@ extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbpoifilter[5000];
 extern double dbdistance;
-extern int dbusedist, needreminder;
+extern int dbusedist;
 extern gint earthmate, havefriends, zone;
 extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
 extern char friendsserverip[20], friendsname[40], friendsidstring[40],
@@ -268,7 +268,6 @@ writeconfig ()
 	fprintf (fp, "friendsidstring = %s\n", friendsidstring);
 	fprintf (fp, "usefriendsserver = %d\n", havefriends);
 	fprintf (fp, "maxfriendssecs = %ld\n", maxfriendssecs);
-	fprintf (fp, "reminder = %s\n", VERSION);
 	fprintf (fp, "storetz = %d\n", storetz);
 	if (storetz)
 		fprintf (fp, "timezone = %d\n", zone);
@@ -471,13 +470,6 @@ readconfig ()
 			havefriends = atoi (par2);
 		    else if ( (strcmp(par1, "maxfriendssecs")) == 0)
 			maxfriendssecs = atoi (par2);
-		    else if (
-			     ( (strcmp(par1, "reminder")) == 0 ) &&
-			     ( (strcmp(par2, VERSION)) == 0) )
-			{
-			    needreminder = FALSE;
-			    /*                fprintf(stderr,"needreminder false\n"); */
-			}
 		    else if ( (strcmp(par1, "storetz")) == 0)
 			storetz = atoi (par2);
 		    else if ( storetz &&

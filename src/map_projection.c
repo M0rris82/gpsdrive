@@ -71,7 +71,7 @@ extern gint needtosave;
 extern gint showroute, routeitems;
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
-extern gint routemode;
+extern status_struct route;
 extern gint thisrouteline, routeitems, routepointer;
 extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
@@ -91,7 +91,6 @@ extern gint saytarget;
 extern int havedefaultmap;
 
 extern GtkWidget *destframe;
-extern gint createroute;
 extern GdkPixbuf *image, *tempimage, *miniimage;
 extern GtkWidget *scaler_widget;
 extern GtkWidget *scaler_left_bt, *scaler_right_bt;

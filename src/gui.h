@@ -32,6 +32,7 @@ Disclaimer: Please do not use for navigation.
 
 void poi_lookup_cb (GtkWidget *calling_button);
 void poi_info_cb (void);
+void route_window_cb (GtkWidget *calling_button);
 
 gint popup_yes_no (GtkWindow *parent, gchar *message);
 

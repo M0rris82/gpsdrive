@@ -69,7 +69,8 @@ namesstruct;
 extern namesstruct *names;
 extern GtkWidget *addwaypointwindow, *setupfn[30];
 extern gchar activewpfile[200], gpsdservername[200], setpositionname[80];
-extern gint shadow, createroute, routemode;
+extern gint shadow;
+extern status_struct route;
 extern gint needreloadmapconfig, simfollow;
 extern GtkWidget *serial_bt, *mapdirbt, *addwaypoint1, *addwaypoint2,
   *frame_speed, *frame_sats;
