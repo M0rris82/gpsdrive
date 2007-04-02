@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1220, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn12871288, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -555,6 +555,19 @@ AC_ARG_ENABLE(garmin,
 	esac
 ])
 AM_CONDITIONAL(DISABLEGARMIN, test x$disablegarmin = xtrue)
+
+AC_ARG_ENABLE(gdal,
+[  --disable-gdal          compiles without GDAL support. For now the main gpsdrive should still work without, but be prepared that future Versions wont work without. So better look out for a gdal/grass Package for your Distruibution],[
+	case "${enableval}" in
+		yes) echo "enable GDAL support" ;;
+		no)  echo "disable GDAL support" 
+			AC_SUBST(NOGDAL,'-DNOGDAL') 
+			disablegdal=true 
+			CXX=$CC ;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --enable-gdal) ;;
+	esac
+])
+AM_CONDITIONAL(DISABLEGDAL, test x$disablegdal = xtrue)
 
 AC_ARG_ENABLE(plugins,
 [  --disable-plugins       disable use of plugin modules],[

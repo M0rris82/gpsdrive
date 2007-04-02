@@ -1,5 +1,8 @@
+if DISABLEGDAL
+else
 SUBDIRS =      lib_map util
 DIST_SUBDIRS = $(SUBDIRS)
+endif
 
 DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
@@ -45,7 +48,7 @@ endif
 
 PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	navigation.c \
-	 speech_out.c speech_out.h\
+	speech_out.c speech_out.h\
 	friends.c \
 	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h wlan.h waypoint.h gpsdrive.h \
