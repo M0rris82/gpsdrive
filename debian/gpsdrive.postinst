@@ -13,24 +13,39 @@ case "$1" in
         # Create mysql database
         db_get gpsdrive/initdb
 	INIT_DB=$RET
-	if [ "$INIT_DB" = "y" \
-	     -o "$INIT_DB" = "yes" \] ; then
+	if [ "$INIT_DB" = "true" ] ; then
 	    db_get gpsdrive/mysqluser
-	    DBUSER=$RET
-	    db_get gpsd/device
-	    DBPASS=$RET
+	    export DBUSER=$RET
+	    db_get gpsdrive/mysqlpwd
+	    export DBPASS=$RET
 
-	    geoinfo.pl --create-defaults --fill-defaults
+	    echo "/usr/bin/geoinfo.pl --create-db --fill-defaults"
+	    /usr/bin/geoinfo.pl --create-db --fill-defaults
+
+	    db_get gpsdrive/import_osm
+	    IMPORT_OSM=$RET
+	    if [ "$IMPORT_OSM" = "true" ] ; then
+		db_get gpsdrive/import_osm_area
+		IMPORT_OSM_AREA=$RET
+		echo "/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA"
+		/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA
+	    fi 
 	fi
 
 	# More things we could add here:
 	#   - Ask about downloading planet.osm once
 	#   - Ask about a contab entry for regularly downloading planet.osm
 	#   - ask for an optional area of planet.osm to import
+	#   - Ask about installing current mapnik data: planet.sql, shapefiles
+	#   - Ask about downloading maps arround your current gps position
 
         cat <<EOF > /etc/default/gpsdrive
-# Default settings for gpsdrive. START_DAEMON="$START"
-# No global options yet
+# Default settings for gpsdrive.
+INIT_DB="$INIT_DB"
+MYSQL_USER="$DBUSER"
+#MYSQL_PWD="If you really want to be insecure you can save the pwd here"
+IMPORT_OSM="$IMPORT_OSM"
+IMPORT_OSM_AREA="$IMPORT_OSM_AREA"
 EOF
 
     ;;
