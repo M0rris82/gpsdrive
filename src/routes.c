@@ -326,7 +326,7 @@ insertwaypoints (gint mobile)
 			text[4] = text2;
 			dist = calcdist (lo, la);
 			g_snprintf (text3, sizeof (text3), "%9.3f", dist);
-			text[4] = text3;
+			text[5] = text3;
 		}
 		else
 		{
