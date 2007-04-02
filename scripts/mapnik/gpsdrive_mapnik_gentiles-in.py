@@ -156,9 +156,7 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                 print name,"[",minZoom,"-",maxZoom,"]: " ,z,x,y,"p:",p0,p1,exists, empty
     fh_mapkoord.close()
     
-def usage(error):
-    if len(error) > 0:
-        print error, "\n\n"
+def usage():
     print __doc__
 
 def main(argv):
@@ -177,8 +175,7 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hb:s:", ["help", "bbox=", "scale=", "test"])
     except getopt.GetoptError:
-        usage("Invalid option!")
-        sys.exit()
+        sys.exit("Invalid option!")
     
     for opt, arg in opts:
         if opt in ("-h", "--help"):
