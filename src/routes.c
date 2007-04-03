@@ -564,11 +564,15 @@ void
 add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 {
 	GtkTreeIter iter_route;
+	GtkTreePath *path_route;
 	
 	GdkPixbuf *t_icon;
 	gchar *t_name, *t_dist;
+	gchar t_trip[15];
 	gint t_id;
-	gdouble t_lon, t_lat, t_distnum;
+	gdouble t_lon, t_lat, t_distnum, last_lon, last_lat;
+
+	route.items +=1;
 	
 	gtk_tree_model_get (model, &iter,
 				RESULT_ID, &t_id,
@@ -580,14 +584,30 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 				RESULT_DIST_NUM, &t_distnum,
 				-1);
 	
-	if (mydebug>25)
-		fprintf (stderr, "add_poi_to_route:  ID: %d  |  NAME: %s |  LON: %f  |  LAT: %f  |  ICON: %p\n", t_id, t_name, t_lon, t_lat, t_icon);
-/*	
-	trip
-*/		
-	route.items +=1;
-	
 	gtk_list_store_append (route_list_tree, &iter_route);
+
+	/* calculate trip distance */
+	if (route.items > 1)
+	{
+		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL (route_list_tree), &iter_route);
+		gtk_tree_path_prev (path_route);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree), &iter_route, path_route);
+		gtk_tree_model_get (GTK_TREE_MODEL (route_list_tree), &iter_route,
+					ROUTE_LON, &last_lon,
+					ROUTE_LAT, &last_lat,
+					-1);
+		route.distance += calc_wpdist (last_lon, last_lat, t_lon, t_lat, FALSE);
+		gtk_tree_path_next (path_route);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree), &iter_route, path_route);
+	}
+	else if (route.items == 1)
+	{
+		route.distance =+ calcdist (t_lon, t_lat);
+	}
+	g_snprintf (t_trip, sizeof (t_trip), "%9.3f", route.distance);	
+		
+	if (mydebug>25)
+		fprintf (stderr, "add_poi_to_route: (%d)  ID: %d  |  NAME: %s |  LON: %f  |  LAT: %f  |  ICON: %p\n", route.items, t_id, t_name, t_lon, t_lat, t_icon);
 	
 	gtk_list_store_set (route_list_tree, &iter_route,
 				ROUTE_ID, t_id,
@@ -595,7 +615,7 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 				ROUTE_ICON, t_icon,
 				ROUTE_NAME, t_name,
 				ROUTE_DISTANCE, t_dist,
-//				ROUTE_TRIP, ///
+				ROUTE_TRIP, t_trip,
 				ROUTE_LON, t_lon,
 				ROUTE_LAT, t_lat,
 				-1);
@@ -605,7 +625,6 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	g_free (t_dist);
 	
 	route.available = TRUE;
-	
 }
 
 
@@ -630,5 +649,6 @@ route_init (void)
 	route.active = FALSE;
 	route.edit = FALSE;
 	route.available = FALSE;
+	route.distance = 0.0;
 	route.show = FALSE;
 }

@@ -698,6 +698,7 @@ route_cancel_cb ()
 	close_route_window_cb ();
 	route.available = FALSE;
 	route.items = 0;
+	route.distance = 0.0;
 }
 
 
@@ -1499,7 +1500,10 @@ void route_window_cb (GtkWidget *calling_button)
 	route.edit = TRUE;
 	
 	if (!route.available)
+	{
 		route.items = 0;
+		route.distance = 0.0;
+	}
 
 	tooltips_routewindow = gtk_tooltips_new();
 	gtk_tooltips_set_delay (tooltips_routewindow, TOOLTIP_DELAY);
