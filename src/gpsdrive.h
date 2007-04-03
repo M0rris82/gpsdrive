@@ -264,6 +264,7 @@ typedef struct
 	gint available;
 	gint show;
 	gint items;
+	gdouble distance;
 }
 status_struct;
 
