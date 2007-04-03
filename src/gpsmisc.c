@@ -189,15 +189,15 @@ calcdist2 (gdouble lon, gdouble lat)
  * same as calcdist2, but much more precise 
  */
 gdouble
-calcdist (gdouble lon, gdouble lat)
+calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current)
 {
-  gdouble a = 6378137.0;
-  gdouble f = 1.0 / 298.25722210088;
-  gdouble glat1, glat2, glon1, glon2;
-  gdouble radiant = M_PI / 180;
-  gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
-  gdouble sa, c2a, cz, e, c, d;
-  gdouble eps = 0.5e-13;
+	gdouble a = 6378137.0;
+	gdouble f = 1.0 / 298.25722210088;
+	gdouble glat1, glat2, glon1, glon2;
+	gdouble radiant = M_PI / 180;
+	gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
+	gdouble sa, c2a, cz, e, c, d;
+	gdouble eps = 0.5e-13;
 
   /*   if (cpuload<10)
    *     {
@@ -205,65 +205,83 @@ calcdist (gdouble lon, gdouble lat)
    *       return r;
    *     }
    */
-  if (((lat - current_lat) == 0.0) && ((lon - current_lon) == 0.0))
-    return 0.0;
+	
+	if (from_current)
+	{
+		lon2 = current_lon;
+		lat2 = current_lat;
+	}
 
-  glat1 = radiant * current_lat;
-  glat2 = radiant * lat;
-  glon1 = radiant * current_lon;
-  glon2 = radiant * lon;
+	if (((lat1 - lat2) == 0.0) && ((lon1 - lon2) == 0.0))
+		return 0.0;
 
-  r = 1.0 - f;
-  tu1 = r * sin (glat1) / cos (glat1);
-  tu2 = r * sin (glat2) / cos (glat2);
-  cu1 = 1.0 / sqrt (tu1 * tu1 + 1.0);
-  su1 = cu1 * tu1;
+	glat1 = radiant * lat2;
+	glat2 = radiant * lat1;
+	glon1 = radiant * lon2;
+	glon2 = radiant * lon1;
 
-  cu2 = 1.0 / sqrt (tu2 * tu2 + 1.0);
-  s = cu1 * cu2;
-  baz = s * tu2;
-  faz = baz * tu1;
-  x = glon2 - glon1;
+	r = 1.0 - f;
+	tu1 = r * sin (glat1) / cos (glat1);
+	tu2 = r * sin (glat2) / cos (glat2);
+	cu1 = 1.0 / sqrt (tu1 * tu1 + 1.0);
+	su1 = cu1 * tu1;
 
-  do
-    {
-      sx = sin (x);
-      cx = cos (x);
-      tu1 = cu2 * sx;
-      tu2 = baz - su1 * cu2 * cx;
-      sy = sqrt (tu1 * tu1 + tu2 * tu2);
+	cu2 = 1.0 / sqrt (tu2 * tu2 + 1.0);
+	s = cu1 * cu2;
+	baz = s * tu2;
+	faz = baz * tu1;
+	x = glon2 - glon1;
 
-      cy = s * cx + faz;
-      y = atan2 (sy, cy);
-      sa = s * sx / sy;
-      c2a = -sa * sa + 1.0;
-      cz = faz + faz;
+	do
+	{
+		sx = sin (x);
+		cx = cos (x);
+		tu1 = cu2 * sx;
+		tu2 = baz - su1 * cu2 * cx;
+		sy = sqrt (tu1 * tu1 + tu2 * tu2);
 
-      if (c2a > 0)
-	cz = -cz / c2a + cy;
-      e = cz * cz * 2.0 - 1.0;
-      c = ((-3.0 * c2a + 4.0) * f + 4.0) * c2a * f / 16.0;
-      d = x;
+		cy = s * cx + faz;
+		y = atan2 (sy, cy);
+		sa = s * sx / sy;
+		c2a = -sa * sa + 1.0;
+		cz = faz + faz;
 
-      x = ((e * cy * c + cz) * sy * c + y) * sa;
-      x = (1.0 - c) * x * f + glon2 - glon1;
-    }
-  while (fabs (d - x) > eps);
+		if (c2a > 0)
+			cz = -cz / c2a + cy;
+		e = cz * cz * 2.0 - 1.0;
+		c = ((-3.0 * c2a + 4.0) * f + 4.0) * c2a * f / 16.0;
+		d = x;
 
-  faz = atan2 (tu1, tu2);
-  baz = atan2 (cu1 * sx, baz * cx - su1 * cu2) + M_PI;
-  x = sqrt ((1.0 / r / r - 1.0) * c2a + 1.0) + 1.0;
-  x = (x - 2.0) / x;
-  c = 1.0 - x;
-  c = (x * x / 4.0 + 1.0) / c;
-  d = (0.375 * x * x - 1.0) * x;
-  x = e * cy;
-  s = 1.0 - e - e;
-  s = ((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
-	cz) * sy * d + y) * c * a * r;
+		x = ((e * cy * c + cz) * sy * c + y) * sa;
+		x = (1.0 - c) * x * f + glon2 - glon1;
+	}
+	while (fabs (d - x) > eps);
 
-  return milesconv * s / 1000.0;
+	faz = atan2 (tu1, tu2);
+	baz = atan2 (cu1 * sx, baz * cx - su1 * cu2) + M_PI;
+	x = sqrt ((1.0 / r / r - 1.0) * c2a + 1.0) + 1.0;
+	x = (x - 2.0) / x;
+	c = 1.0 - x;
+	c = (x * x / 4.0 + 1.0) / c;
+	d = (0.375 * x * x - 1.0) * x;
+	x = e * cy;
+	s = 1.0 - e - e;
+	s = ((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
+		cz) * sy * d + y) * c * a * r;
+
+	return milesconv * s / 1000.0;
 }
+
+
+/* ******************************************************************
+ * Convenience Replacement for calcdist (now in calc_wpdist)
+ */
+gdouble
+calcdist (gdouble lon, gdouble lat)
+{
+	return calc_wpdist (lon, lat, 0, 0, TRUE);
+}
+
 
 /* ******************************************************************
  * This is an internally used function to create pixmaps. 
