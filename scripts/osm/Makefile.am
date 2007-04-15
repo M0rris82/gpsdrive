@@ -18,10 +18,6 @@ UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
 	osm2csv/create_all.sh \
-	pdf-atlas/create.sh \
-	pdf-atlas/Data/readme-shorelines.txt \
-	pdf-atlas/Data/readme.txt \
-	pdf-atlas/pdf-atlas.pl \
 	planet-osm/perl/planetosm-to-db.pl\
 	planet-osm/perl/reorder-ways.pl\
 	planet-osm/perl/planetosm-excerpt-area.pl\
