@@ -76,7 +76,7 @@ for icon_theme in square.big square.small classic ; do
 	perl -p -i.bak \
 	    -e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
 
-	./src/gpsdrive -S -T -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
+	./src/gpsdrive --geometry 800x600 -S -T -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
 	rc=$?
 
 	if [ $rc != 0 ] ; then
