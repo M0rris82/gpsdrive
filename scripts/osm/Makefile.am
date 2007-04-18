@@ -8,12 +8,12 @@ bin_SCRIPTS= \
 	osm-extract/osm-subset.pl \
 	simplify/simplify.pl \
 	osm2csv/osm2csv.pl \
-	planet-osm/C/UTF8sanitizer
+	planet.osm/C/UTF8sanitizer
 
 UTF8sanitizerdir = $(bindir)
 UTF8sanitizer_PROGRAMS = UTF8sanitizer
-UTF8sanitizer_SOURCES = planet-osm/C/UTF8sanitizer.c
-#PRGS = planet-osm/C/UTF8sanitizer.c
+UTF8sanitizer_SOURCES = planet.osm/C/UTF8sanitizer.c
+#PRGS = planet.osm/C/UTF8sanitizer.c
 
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
@@ -45,4 +45,3 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	planet.osm/perl/check_osm.pl\
 	planet.osm/perl/planetcount.pl\
 	planet.osm/python/utf8osmchecker.py
-
