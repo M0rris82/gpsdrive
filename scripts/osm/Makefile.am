@@ -7,18 +7,18 @@ bin_SCRIPTS= \
 	planet-mirror/planet-mirror.pl \
 	utils/osm-extract/osm-subset.pl \
 	simplify/simplify.pl \
-	osm2csv/osm2csv.pl \
+	utils/export/osm2csv/osm2csv.pl \
 	utils/planet.osm/C/UTF8sanitizer
 
 UTF8sanitizerdir = $(bindir)
 UTF8sanitizer_PROGRAMS = UTF8sanitizer
 UTF8sanitizer_SOURCES = utils/planet.osm/C/UTF8sanitizer.c
-#PRGS = planet.osm/C/UTF8sanitizer.c
 
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
-	osm2csv/create_all.sh \
+	utils/export/osm2csv/create_all.sh \
 	utils/import/csv2osm/csv2osm.pl\
+	utils/import/coast_import/coast_upload.pl
 	utils/import/coast_utils/import/coast_upload.pl\
 	utils/import/coast_utils/import/osm.pm\
 	utils/import/srtm2osm/merge.pl\
