@@ -33,7 +33,6 @@ EXTRA_DIST = $(bin_SCRIPTS) \
 	export/osm2csv/osm2csv.pl\
 	export/osmgarminmap/feature-list-csv2xml.pl\
 	export/osm2kml/osm2kml.py\
-	osm-extract/planetosm-excerpt-area.pl\
 	osm-extract/planetosm-excerpt-tags.pl\
 	osm-extract/polygons/extract-germany.pl\
 	osm-extract/polygons/extract-polygon.pl\
