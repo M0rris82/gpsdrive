@@ -182,7 +182,7 @@ insert_text (GtkTextBuffer * buffer)
 						  "heading", NULL);
 	gtk_text_buffer_insert (buffer, &iter,
 				_
-				("\n\nYou find new versions on http://www.gpsdrive.cc\n"),
+				("\n\nYou find new versions on http://www.gpsdrive.de\n"),
 				-1);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
 						  _

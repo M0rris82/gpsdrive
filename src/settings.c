@@ -1885,7 +1885,7 @@ friendssetup (void)
   d4 = gtk_entry_new ();
   gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d4,
 			_("Set here the full qualified host name (i.e. "
-			  "www.gpsdrive.cc) of your friends server, then you "
+			  "www.gpsdrive.de) of your friends server, then you "
 			  "have to press the \"Lookup\" button!"), NULL);
   gtk_entry_set_text (GTK_ENTRY (d4), friendsserverfqn);
   gtk_widget_set_usize (d4, USIZE_X, USIZE_Y);

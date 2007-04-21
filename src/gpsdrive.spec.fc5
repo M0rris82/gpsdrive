@@ -18,7 +18,7 @@ Release: 1
 License: GPL
 Group: Amusements/Graphics
 Source: %{name}-%{version}.tar.bz2
-Url: http://www.gpsdrive.cc
+Url: http://www.gpsdrive.de
 BuildRoot: %{_tmppath}/%{name}-buildroot
 Vendor: The gpsdrive team
 

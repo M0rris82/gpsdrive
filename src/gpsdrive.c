@@ -4235,7 +4235,7 @@ usage ()
 	     _("-e        use Festival-Lite (flite) for speech output\n"),
 	     _("-t        set serial device for GPS i.e. /dev/ttyS1\n"),
 	     _("-o        serial device, pty master, or file for NMEA *output*\n"),
-	     _("-f X      Select friends server, X is i.e. www.gpsdrive.cc\n"),
+	     _("-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"),
 	     _("-n        Disable use of direct serial connection\n"),
 #ifdef DBUS_ENABLE
 	     _("-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
@@ -4431,7 +4431,7 @@ main (int argc, char *argv[])
 
 
     g_strlcpy (friendsserverip, "127.0.0.1", sizeof (friendsserverip));
-    g_strlcpy (friendsserverfqn, "www.gpsdrive.cc",
+    g_strlcpy (friendsserverfqn, "friendsd.gpsdrive.de",
 	       sizeof (friendsserverfqn));
     g_strlcpy (friendsidstring, "XXX", sizeof (friendsidstring));
     
