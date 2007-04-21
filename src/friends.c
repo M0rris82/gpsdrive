@@ -117,7 +117,7 @@ friends_sendmsg (char *serverip, char *message)
 {
   int n, nosent, endflag, e;
   char recvline[MAXLINE + 1];
-  int i, fc;
+  int i, fc, type;
   struct sockaddr_in cli_addr;
   struct sockaddr_in serv_addr;
   struct sockaddr *pserv_addr;
@@ -220,12 +220,25 @@ friends_sendmsg (char *serverip, char *message)
 	  if ((strncmp (recvline, "POS: ", 5)) == 0)
 	    {
 	      e = sscanf (recvline,
-			  "POS: %s %s %s %s %s %s %s",
+			  "POS: %s %s %s %s %s %s %s %d",
 			  (f + fc)->id, (f + fc)->name,
 			  (f + fc)->lat, (f + fc)->lon,
 			  (f + fc)->timesec,
-			  (f + fc)->speed, (f + fc)->heading);
+			  (f + fc)->speed, (f + fc)->heading,
+			  &type);
 	      /*              printf("\nreceived %d arguments\n",e);  */
+		if (type == TRAVEL_CAR)
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.car");
+		else if (type == TRAVEL_AIRPLANE)
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.airplane");
+		else if (type == TRAVEL_BIKE)
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.bike");
+		else if (type == TRAVEL_BOAT)
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.boat");
+		else if (type == TRAVEL_WALK)
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.walk");
+		else
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd");
 	      fc++;
 	    }
 	  if ((strncmp (recvline, "SRV: ", 5)) == 0)
@@ -313,7 +326,7 @@ friends_sendmsg (char *serverip, char *message)
 
 
 int
-friendsinit ()
+friends_init ()
 {
 
   char *key, buf2[20];

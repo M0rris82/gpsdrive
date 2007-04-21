@@ -51,7 +51,7 @@ Disclaimer: Please do not use for navigation.
 #define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
 
 
- /* Formats for coordinate display  */
+/* Formats for coordinate display  */
 enum
 {
 	LATLON_DEGDEC,
@@ -59,6 +59,19 @@ enum
 	LATLON_MINDEC,
 	LATLON_N_FORMATS
 };
+
+/* Definiton for travelmode used in local_config */
+enum
+{
+	TRAVEL_CAR,
+	TRAVEL_BIKE,
+	TRAVEL_WALK,
+	TRAVEL_BOAT,
+	TRAVEL_AIRPLANE,
+	TRAVEL_N_MODES
+};
+	
+	
 
 /*  size of the bearing pointer, default is 50 */
 #define PSIZE real_psize
@@ -250,10 +263,11 @@ int display_background_map ();
 
 typedef struct
 {
-  char id[30];
-  char name[40];
-  char lat[40], lon[40];
-  char timesec[40], speed[10], heading[10];
+	char id[30];
+	char name[40];
+	char type[40];
+	char lat[40], lon[40];
+	char timesec[40], speed[10], heading[10];
 }
 friendsstruct;
 
@@ -261,7 +275,7 @@ typedef struct
 {
  	gint active;
 	gint edit;
-	gint available;
+	gint pointer;
 	gint show;
 	gint items;
 	gdouble distance;

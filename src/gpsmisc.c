@@ -186,7 +186,9 @@ calcdist2 (gdouble lon, gdouble lat)
 }
 
 /* ******************************************************************
- * same as calcdist2, but much more precise 
+ * calculate distance between two given coordinates (lon1/lat1, lon2/lat2)
+ * (much more precise than calcdist2)
+ * if from_current is TRUE, lon2/lat2 ist replaced by the current position
  */
 gdouble
 calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current)
@@ -274,7 +276,8 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_c
 
 
 /* ******************************************************************
- * Convenience Replacement for calcdist (now in calc_wpdist)
+ * calculate distance from (lat/lon) to current position (current_lat/current_lon)
+ * (convenience replacement for calcdist, which is now in calc_wpdist)
  */
 gdouble
 calcdist (gdouble lon, gdouble lat)

@@ -29,7 +29,7 @@ Disclaimer: Please do not use for navigation.
 
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
-extern gint thisrouteline, routeitems, routepointer;
+extern gint thisrouteline;
 extern GtkWidget *create_route_button;
 extern GtkWidget *create_route2_button;
 extern GtkWidget *select_route_button;

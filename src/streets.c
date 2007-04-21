@@ -57,7 +57,7 @@ Disclaimer: Please do not use for navigation.
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gint showroute, routeitems;
+extern status_struct route;
 extern gint nightmode, isnight, disableisnight;
 extern GdkColor red;
 extern GdkColor black;

@@ -43,6 +43,7 @@ void readconfig ();
 
 typedef struct
 {
+	gint travelmode;
 	char icon_theme[500];
 	gint showwaypoints;
 	gint showtooltips;

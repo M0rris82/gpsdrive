@@ -495,7 +495,7 @@ setnonblocking (int sock)
 }
 
 int
-friendsinit ()
+friends_init ()
 {
 
 	char *key, buf2[20];
@@ -569,7 +569,7 @@ main (int argc, char *argv[])
 		 VERSION, SERV_UDP_PORT);
 	ignore_pipe ();
 
-	friendsinit ();
+	friends_init ();
 	list = malloc (MAXLISTENTRIES * sizeof (*list));
 
 	/* make the first entry */

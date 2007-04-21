@@ -1107,10 +1107,11 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 			g_strdelimit (lo, ",", '.');
 			tii = time (NULL);
 			g_snprintf (buf, sizeof (buf),
-				    "POS: %s %s %s %s %ld %.0f %.0f",
+				    "POS: %s %s %s %s %ld %.0f %.0f %d",
 				    friendsidstring, friendsname, la, lo, tii,
 				    groundspeed / milesconv,
-				    180.0 * direction / M_PI);
+				    180.0 * direction / M_PI,
+				    local_config.travelmode);
 			if ( mydebug > 3 )
 				fprintf (stderr,
 					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
@@ -2243,8 +2244,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	return (TRUE);
 }
-
-
 
 
 /* *****************************************************************************
@@ -5035,7 +5034,7 @@ main (int argc, char *argv[])
 	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
 
-	// Checkbox ---- Show Track
+	/* Checkbox ---- Show Track */
 	track_bt = gtk_check_button_new_with_label (_("Show"));
 	gtk_button_set_use_underline (GTK_BUTTON (track_bt), TRUE);
 	if (trackflag)
@@ -5046,17 +5045,16 @@ main (int argc, char *argv[])
 			    GTK_SIGNAL_FUNC (track_cb), (gpointer) 1);
 	gtk_box_pack_start (GTK_BOX (vbox_track), track_bt, FALSE, FALSE,	0 * PADDING);
 
-	// Checkbox ---- Save Track
+	/* Checkbox ---- Save Track */
 	savetrackfile (0);
 	savetrack_bt = gtk_check_button_new_with_label (_("Save"));
 	if (savetrack)
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt),
-					  TRUE);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt), TRUE);
 	gtk_signal_connect (GTK_OBJECT (savetrack_bt), "clicked",
-			    GTK_SIGNAL_FUNC (savetrack_cb), (gpointer) 1);
+		GTK_SIGNAL_FUNC (savetrack_cb), (gpointer) 1);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), savetrack_bt,
-			      _("Save the track to given filename at program exit"),
-			      NULL);
+		_("Save the track to given filename at program exit"),
+		NULL);
 	gtk_box_pack_start (GTK_BOX (vbox_track), savetrack_bt, FALSE, FALSE,0 * PADDING);
 	
 	g_snprintf (s1, sizeof (s1), "%s", savetrackfn);
@@ -5119,7 +5117,7 @@ main (int argc, char *argv[])
     //if (haveGARMIN)
     //	gtk_widget_set_sensitive (startgps_bt, FALSE);
 
-    friendsinit ();
+    friends_init ();
 
 
     if (usesql) 
@@ -5136,7 +5134,6 @@ main (int argc, char *argv[])
 	    speech_out_speek (buf);
 	}
 
-    load_friends_icon ();
     
     /*  Area for map */
     if ( mydebug >99 ) fprintf(stderr , "create Map Area\n");
@@ -5975,15 +5972,18 @@ main (int argc, char *argv[])
     wlan_draw_cb (wlan_draw_bt, 0);
     needtosave = FALSE;
 
+	/* do all the basic initalisation for the specific sections */
 	poi_init ();
 	route_init ();
     wlan_init ();
     streets_init ();
 
-	// When all the basic gui stuff is finally moved into gui.c, this will call the
-	// necessary functions for graphical initialization.
-    gui_init ();
-	
+	load_friends_icon ();
+
+	// When all the basic gui stuff is finally moved into the *gui.c files,
+	// this will call the necessary functions for graphical initialization.
+	gui_init ();
+
     update_posbt();
 
     /*

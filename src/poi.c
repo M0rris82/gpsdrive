@@ -63,7 +63,6 @@ extern gint do_unit_test;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gint showroute, routeitems;
 extern gint nightmode, isnight, disableisnight;
 extern gchar local_config_homedir[500];
 extern GdkColor red;
@@ -422,27 +421,27 @@ poi_init (void)
 
 	/* init gtk-list for storage of results of poi-search */
 	poi_result_tree = gtk_list_store_new (RES_COLUMS,
-															G_TYPE_INT,				/* poi.poi_id */
-															G_TYPE_STRING,		/* poi.name */
-															G_TYPE_STRING,		/* poi.comment */
-															G_TYPE_STRING,		/* poi_type.title */
-															GDK_TYPE_PIXBUF,	/* poi_type.icon */
-															G_TYPE_STRING,		/* formatted distance */
-															G_TYPE_DOUBLE,		/* numerical distance */
-															G_TYPE_DOUBLE,		/* numerical latitude */
-															G_TYPE_DOUBLE		/* numerical longitude */
-															);
+		G_TYPE_INT,				/* poi.poi_id */
+		G_TYPE_STRING,		/* poi.name */
+		G_TYPE_STRING,		/* poi.comment */
+		G_TYPE_STRING,		/* poi_type.title */
+		GDK_TYPE_PIXBUF,	/* poi_type.icon */
+		G_TYPE_STRING,		/* formatted distance */
+		G_TYPE_DOUBLE,		/* numerical distance */
+		G_TYPE_DOUBLE,		/* numerical latitude */
+		G_TYPE_DOUBLE		/* numerical longitude */
+		);
 	
 	/* init gtk-tree for storage of poi-type data */
 	poi_types_tree = gtk_tree_store_new (POITYPE_COLUMS,
-															G_TYPE_INT,				/* id */
-															G_TYPE_STRING,		/* name */
-															GDK_TYPE_PIXBUF,	/* icon */
-															G_TYPE_INT,				/* scale_min */
-															G_TYPE_INT,				/* scale_max */
-															G_TYPE_STRING,		/* description */
-															G_TYPE_STRING		/* title */
-															);
+		G_TYPE_INT,		/* id */
+		G_TYPE_STRING,		/* name */
+		GDK_TYPE_PIXBUF,	/* icon */
+		G_TYPE_INT,		/* scale_min */
+		G_TYPE_INT,		/* scale_max */
+		G_TYPE_STRING,		/* description */
+		G_TYPE_STRING		/* title */
+		);
  
 	/* read poi-type data and icons from icons.xml */
 	get_poi_type_list ();

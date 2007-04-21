@@ -43,11 +43,10 @@ extern gdouble current_lat, current_lon;
 glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 extern trackcoordstruct *trackcoord;
 extern gint zoom;
-extern gint routepointer;
 extern GdkSegment *track;
 extern GdkSegment *trackshadow;
 
-extern gint showroute, routeitems;
+extern status_struct route;
 
 extern wpstruct *routelist;
 extern GdkColor blue;
@@ -147,14 +146,14 @@ drawtracks (void)
 		return;
 	if (importactive)
 		return;
-	if (showroute) {
-		if (routeitems > 0) {
-			i = (routeitems + 5);
+	if (route.show) {
+		if (route.items > 0) {
+			i = (route.items + 5);
 			routes = g_new0 (GdkSegment, i);
-			/* start beginning with actual routepointer */
-			for (j = routepointer; j < routeitems; j++) {
+			/* start beginning with actual route.pointer */
+			for (j = route.pointer; j < route.items; j++) {
 				/* start drawing with current_pos */
-				if (j == routepointer) {
+				if (j == route.pointer) {
 					calcxy (&curpos_x, &curpos_y, current_lon, current_lat, zoom);
 					(routes + t)->x1 = curpos_x;
 					(routes + t)->y1 = curpos_y;

@@ -68,11 +68,10 @@ extern gint iszoomed;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
 extern gint needtosave;
 
-extern gint showroute, routeitems;
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
 extern status_struct route;
-extern gint thisrouteline, routeitems, routepointer;
+extern gint thisrouteline;
 extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;

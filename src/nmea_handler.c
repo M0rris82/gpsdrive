@@ -52,7 +52,7 @@ extern gint simmode, zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gint showroute, routeitems;
+extern status_struct route;
 extern gint nightmode, isnight, disableisnight;
 
 extern gint mydebug;

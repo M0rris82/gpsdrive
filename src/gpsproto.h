@@ -72,7 +72,7 @@ void speech_out_speek_raw (char *text);
 void setup_poi (void);
 gint tripreset ();
 int friends_sendmsg (char *serverip, char *message);
-int friendsinit ();
+int friends_init ();
 void friendssetup (void);
 char *getexpediaurl ();
 gint quit_program (GtkWidget * widget, gpointer datum);

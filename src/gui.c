@@ -597,7 +597,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 		if (route.edit)
 		{
 			add_poi_to_route (model, iter);
-			if (route.available)
+			if (route.items)
 				gtk_widget_set_sensitive (button_startroute, TRUE);
 		}
 		else
@@ -639,9 +639,9 @@ select_poitype_cb (GtkTreeSelection *selection, gpointer data)
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
 		gtk_tree_model_get (model, &iter,
-					POITYPE_ID, &ptid,
-					POITYPE_NAME, &criteria.poitype_name,
-					-1);
+			POITYPE_ID, &ptid,
+			POITYPE_NAME, &criteria.poitype_name,
+			-1);
 		
 		// ### temporary:
 		g_snprintf (criteria.poitype_id, sizeof (criteria.poitype_id), "%d", ptid);
@@ -681,11 +681,11 @@ route_startstop_cb ()
 {
 	if (route.active)
 	{
-		// ### stop routing
+		// TODO: stop routing
 	}
 	else
 	{
-		// ### start routing
+		// TODO: start routing
 	}
 	close_route_window_cb ();	
 }
@@ -696,7 +696,6 @@ route_cancel_cb ()
 {
 	gtk_list_store_clear (route_list_tree);
 	close_route_window_cb ();
-	route.available = FALSE;
 	route.items = 0;
 	route.distance = 0.0;
 }
@@ -1442,7 +1441,7 @@ void create_button_add_wp (void)
 	gchar imagefile[400];
 	GdkPixbuf *pixmap = NULL;
 	
-	local_config.showaddwpbutton = TRUE; // ###
+	local_config.showaddwpbutton = TRUE; // TODO: add this to settings
 	
 	if (local_config.showaddwpbutton)
 	{
@@ -1499,10 +1498,10 @@ void route_window_cb (GtkWidget *calling_button)
 	
 	route.edit = TRUE;
 	
-	if (!route.available)
+	if (!route.items)
 	{
-		route.items = 0;
 		route.distance = 0.0;
+		route.pointer = 0;
 	}
 
 	tooltips_routewindow = gtk_tooltips_new();
@@ -1611,8 +1610,9 @@ void route_window_cb (GtkWidget *calling_button)
 		gtk_tooltips_set_tip ( tooltips_routewindow, button_startroute,
 					_("Start the Route Mode"), NULL);
 	}
-	if (!route.available)
+	if (!route.items)
 		gtk_widget_set_sensitive (button_startroute, FALSE);
+	
 	gtk_box_pack_start (GTK_BOX (hbox_startroute), image_startroute, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_startroute), label_startroute, FALSE, FALSE, 0);
 	g_signal_connect (button_startroute, "clicked", GTK_SIGNAL_FUNC (route_startstop_cb), NULL);

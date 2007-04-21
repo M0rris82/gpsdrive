@@ -70,12 +70,11 @@ extern gdouble new_dl_lat,new_dl_lon;
 extern gint new_dl_scale;
 extern gint needtosave;
 
-extern gint showroute, routeitems;
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
 extern status_struct route;
 wpstruct *routelist;
-extern gint thisrouteline, routeitems, routepointer;
+extern gint thisrouteline;
 extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;
@@ -596,8 +595,8 @@ route_next_target ()
   if (strcmp (targetname, "     "))
     {
       if (route.active)
-	d = calcdist ((routelist + routepointer)->lon,
-		      (routelist + routepointer)->lat);
+	d = calcdist ((routelist + route.pointer)->lon,
+		      (routelist + route.pointer)->lat);
       else
 	d = calcdist (target_lon, target_lat);
 
@@ -606,16 +605,16 @@ route_next_target ()
 	  routenearest = d;
 	}
       /*    g_print */
-      /*      ("\nroutepointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
-      /*       routepointer, d, routenearest, ROUTEREACH); */
+      /*      ("\nroute.pointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
+      /*       route.pointer, d, routenearest, ROUTEREACH); */
       if ((d <= ROUTEREACH)
 	  || (d > (ROUTEREACHFACT * routenearest)) || forcenextroutepoint)
 	{
 	  forcenextroutepoint = FALSE;
-	  if ((routepointer != (routeitems - 1)) && (route.active))
+	  if ((route.pointer != (route.items - 1)) && (route.active))
 	    {
 	      routenearest = 9999999999.0;
-	      routepointer++;
+	      route.pointer++;
 
 	      /* let's say the waypoint description */
 	      g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
@@ -635,7 +634,7 @@ route_next_target ()
 		  route.edit	= FALSE;
 		  route.active = FALSE;
 		  saytarget = FALSE;
-		  routepointer = routeitems = 0;
+		  route.pointer = route.items = 0;
 
 		  g_snprintf (buf, sizeof (buf),
 			      speech_target_reached[voicelang], targetname);

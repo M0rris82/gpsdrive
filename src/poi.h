@@ -47,7 +47,7 @@ typedef struct
   //date  last_modified  
   gchar   url[160]; 
   gint    address_id;
-  gint    source_id; 
+  gint    source_id;
   gdouble    x;    // x position on screen
   gdouble    y;    // y position on screen
 }

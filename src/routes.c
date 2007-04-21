@@ -76,12 +76,12 @@ GtkWidget *routewindow;
 wpstruct *routelist;
 GtkListStore *route_list_tree;
 GtkWidget *myroutelist;
-gint thisrouteline = 0, routeitems = 0, routepointer = 0;
+gint thisrouteline = 0;
 gdouble routenearest = 9999999999.0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 gint forcenextroutepoint = FALSE;
-gint showroute = TRUE;
 status_struct route;
+extern GtkWidget *route_window;
 
 /* ******************************************************************
  */
@@ -112,15 +112,15 @@ setroutetarget (GtkWidget * widget, gint datum)
 	if ( mydebug >50 ) fprintf(stderr , "setroutetarget()\n");
 
 	if (datum != -1)
-		routepointer = datum;
+		route.pointer = datum;
 
 	routenearest = 9999999;
-	g_strlcpy (targetname, (routelist + routepointer)->name,
+	g_strlcpy (targetname, (routelist + route.pointer)->name,
 		   sizeof (targetname));
-	target_lat = (routelist + routepointer)->lat;
-	target_lon = (routelist + routepointer)->lon;
+	target_lat = (routelist + route.pointer)->lat;
+	target_lon = (routelist + route.pointer)->lon;
 	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), targetname,
-		    routepointer + 1, routeitems);
+		    route.pointer + 1, route.items);
 	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	tn = g_strdelimit (targetname, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
@@ -154,7 +154,7 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	route.edit = FALSE;
 	route.active = FALSE;
-	routepointer = routeitems = 0;
+	route.pointer = route.items = 0;
 	gtk_widget_set_sensitive (create_route_button, TRUE);
 	/* enable jump button */
 	gtk_widget_set_sensitive (gotobt, TRUE);
@@ -211,10 +211,10 @@ insertroutepoints ()
 	text[4] = text3;
 	j = gtk_clist_append (GTK_CLIST (myroutelist), (gchar **) text);
 	gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
-	g_strlcpy ((routelist + routeitems)->name, (wayp + i)->name, 40);
-	(routelist + routeitems)->lat = (wayp + i)->lat;
-	(routelist + routeitems)->lon = (wayp + i)->lon;
-	routeitems++;
+	g_strlcpy ((routelist + route.items)->name, (wayp + i)->name, 40);
+	(routelist + route.items)->lat = (wayp + i)->lat;
+	(routelist + route.items)->lon = (wayp + i)->lon;
+	route.items++;
 	gtk_widget_set_sensitive (select_route_button, TRUE);
 
 }
@@ -244,11 +244,11 @@ insertallroutepoints ()
 		j = gtk_clist_append (GTK_CLIST (myroutelist),
 				      (gchar **) text);
 		gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
-		g_strlcpy ((routelist + routeitems)->name, (wayp + i)->name,
+		g_strlcpy ((routelist + route.items)->name, (wayp + i)->name,
 			   40);
-		(routelist + routeitems)->lat = (wayp + i)->lat;
-		(routelist + routeitems)->lon = (wayp + i)->lon;
-		routeitems++;
+		(routelist + route.items)->lat = (wayp + i)->lat;
+		(routelist + route.items)->lon = (wayp + i)->lon;
+		route.items++;
 	}
 	gtk_widget_set_sensitive (select_route_button, TRUE);
 
@@ -321,7 +321,7 @@ insertwaypoints (gint mobile)
 		{
 			text[0] = text0;
 			text[1] = name;
-			text[2] = (wayp + i)->typ;
+			text[2] = (friends + i)->type;
 			text[3] = text1;
 			text[4] = text2;
 			dist = calcdist (lo, la);
@@ -515,7 +515,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 	{
 		gtk_widget_set_sensitive (select_route_button, FALSE);
 		gtk_clist_clear (GTK_CLIST (myroutelist));
-		for (i = 0; i < routeitems; i++)
+		for (i = 0; i < route.items; i++)
 		{
 			(routelist + i)->dist =
 				calcdist ((routelist + i)->lon,
@@ -539,7 +539,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 		}
 	}
 	else
-		routeitems = 0;
+		route.items = 0;
 	tooltips = gtk_tooltips_new ();
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), create_route2_button,
 			      _
@@ -559,6 +559,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 
 
 /* *******************************************************
+ * append selected poi  to the end of the route
  */
 void
 add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
@@ -624,7 +625,32 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	g_free (t_name);
 	g_free (t_dist);
 	
-	route.available = TRUE;
+}
+
+
+/* *******************************************************
+ * update route, if the current position has changed:
+ */
+void
+update_route (void)
+{
+	/* check if current target is reached, and select next */
+	if (route.active)
+	{
+		// TODO: add functionality...
+	}
+	
+	/* redraw route display if enabled */
+	if (route.items && route.show)
+	{
+		// TODO: add functionality...
+	}
+	
+	/* recalculate trip /distance data if values are displayed */
+	if (route.items && GTK_IS_WIDGET (route_window))
+	{
+		// TODO: add functionality...
+	}
 }
 
 
@@ -645,10 +671,12 @@ route_init (void)
 				G_TYPE_DOUBLE,		/* ROUTE_LON */
 				G_TYPE_DOUBLE		/* ROUTE_LAT */
 				);
- 
-	route.active = FALSE;
-	route.edit = FALSE;
-	route.available = FALSE;
-	route.distance = 0.0;
-	route.show = FALSE;
+	
+ 	/* init route status data */
+	route.active = FALSE;		/* routemode off */
+	route.edit = FALSE;			/* route editmode off */
+	route.items = 0;				/* route is empty/not available */
+	route.distance = 0.0;		/* route length is 0 */
+	route.pointer = 0;			/* reset next route target */
+	route.show = FALSE;		/* route display is off */
 }
