@@ -119,6 +119,8 @@ writeconfig ()
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
+	
+	fprintf (fp, "travelmode = %d\n", local_config.travelmode);
 
 	fprintf (fp, "showtrack = ");
 	if (trackflag)
@@ -343,6 +345,8 @@ readconfig ()
 				local_config.showwaypoints = atoi (par2);
 			else if ( (strcmp(par1, "showtrack")) == 0)
 				trackflag = atoi (par2);
+			else if ( (strcmp(par1, "travelmode")) == 0)
+				local_config.travelmode = atoi (par2);
 			else if ( (strcmp(par1, "mutespeechoutput")) == 0)
 				muteflag = atoi (par2);
 			else if ( (strcmp(par1, "showtopomaps")) == 0)

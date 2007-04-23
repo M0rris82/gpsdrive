@@ -140,6 +140,9 @@ int showsid = TRUE;
 extern int sound_direction, sound_distance, sound_speed, sound_gps;
 extern int expedia_de;
 
+gint
+settravelmode_cb (GtkWidget *combo, guint datum);
+
 /* *****************************************************************************
  */
 static void
@@ -1817,11 +1820,13 @@ friendssetup (void)
 {
   GtkWidget *mainbox, *frame, *friendscolorbt, *hbbox;
   GtkWidget *table, *spintable, *sl1, *sl2, *sl3;
-  GtkWidget *d1, *d2, *d3, *d4, *d5, *d6, *d7, *d8, *look, *label, *d9;
+  GtkWidget *d1, *d2, *d3, *d4, *d5, *d6, *d7, *d8, *look, *label, *d9, *d1a, *d2a;
   GtkTooltips *tooltips;
   GtkAdjustment *spinner1_adj, *spinner2_adj, *spinner3_adj;
   long int d, h, m;
-
+  int i;
+  gchar travelmodes[TRAVEL_N_MODES][20];
+  
   d = maxfriendssecs / 86400;
   spinner1_adj =
     (GtkAdjustment *) gtk_adjustment_new ((float) d, 0.0, 90.0, 1.0, 5.0,
@@ -1880,6 +1885,24 @@ friendssetup (void)
   gtk_signal_connect (GTK_OBJECT (d2), "changed",
 		      GTK_SIGNAL_FUNC (friendsname_cb), d2);
 
+  d1a = gtk_label_new (_("Travel Mode"));
+  d2a = gtk_combo_box_new_text ();
+
+  g_strlcpy (travelmodes[TRAVEL_CAR], _("Car"), sizeof(travelmodes[TRAVEL_CAR]));
+  g_strlcpy (travelmodes[TRAVEL_BIKE], _("Bike"), sizeof(travelmodes[TRAVEL_BIKE]));
+  g_strlcpy (travelmodes[TRAVEL_WALK], _("Walk"), sizeof(travelmodes[TRAVEL_WALK]));
+  g_strlcpy (travelmodes[TRAVEL_BOAT], _("Boat"), sizeof(travelmodes[TRAVEL_BOAT]));
+  g_strlcpy (travelmodes[TRAVEL_AIRPLANE], _("Airplane"), sizeof(travelmodes[TRAVEL_AIRPLANE]));
+
+  for (i=0; i<TRAVEL_N_MODES; i++)
+  {
+    gtk_combo_box_append_text (GTK_COMBO_BOX (d2a), travelmodes[i]);
+  }
+  gtk_combo_box_set_active (GTK_COMBO_BOX (d2a), local_config.travelmode);
+  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d2a,
+			_("Choose your travekl mode. This is used to determine "
+			  "which icon should be used to display your position."), NULL);
+  g_signal_connect (d2a, "changed", GTK_SIGNAL_FUNC (settravelmode_cb), 0);
   d3 = gtk_label_new (_("Server name"));
 
   d4 = gtk_entry_new ();
@@ -1941,6 +1964,7 @@ friendssetup (void)
 
   d7 = gtk_label_new (_("Use friends server"));
   d8 = gtk_check_button_new ();
+
   if (havefriends)
     {
       gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d8), TRUE);
@@ -1966,20 +1990,24 @@ friendssetup (void)
   gtk_table_attach_defaults (GTK_TABLE (spintable), spinner2, 1, 2, 1, 2);
   gtk_table_attach_defaults (GTK_TABLE (spintable), spinner3, 2, 3, 1, 2);
 
-  gtk_table_attach_defaults (GTK_TABLE (table), d1, 0, 1, 0, 1);
-  gtk_table_attach_defaults (GTK_TABLE (table), d2, 1, 2, 0, 1);
-  gtk_table_attach_defaults (GTK_TABLE (table), d3, 0, 1, 1, 2);
-  gtk_table_attach_defaults (GTK_TABLE (table), d4, 1, 2, 1, 2);
-  gtk_table_attach_defaults (GTK_TABLE (table), hbbox, 0, 2, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), d7, 0, 1, 0, 1);
+  gtk_table_attach_defaults (GTK_TABLE (table), d8, 1, 2, 0, 1);
 
-  gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (table), d6, 1, 2, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (table), d7, 0, 1, 4, 5);
-  gtk_table_attach_defaults (GTK_TABLE (table), d8, 1, 2, 4, 5);
-  gtk_table_attach_defaults (GTK_TABLE (table), d9, 0, 1, 5, 6);
-  gtk_table_attach_defaults (GTK_TABLE (table), spintable, 1, 2, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), d1, 0, 1, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (table), d2, 1, 2, 1, 2);
+  gtk_table_attach_defaults (GTK_TABLE (table), d1a, 0, 1, 2, 3);
+  gtk_table_attach_defaults (GTK_TABLE (table), d2a, 1, 2, 2, 3);
 
-  gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 2, 6, 9);
+  gtk_table_attach_defaults (GTK_TABLE (table), d3, 0, 1, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (table), d4, 1, 2, 3, 4);
+  gtk_table_attach_defaults (GTK_TABLE (table), hbbox, 0, 2, 4, 5);
+
+  gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), d6, 1, 2, 5, 6);
+  gtk_table_attach_defaults (GTK_TABLE (table), d9, 0, 1, 6, 7);
+  gtk_table_attach_defaults (GTK_TABLE (table), spintable, 1, 2, 6, 7);
+
+  gtk_table_attach_defaults (GTK_TABLE (table), label, 0, 2, 7, 10);
 
 #define XALIGN 0.1
 #define YALIGN 0.5
@@ -2017,6 +2045,25 @@ setpoitheme_cb (GtkWidget *combo, guint datum)
   needtosave = TRUE;
   return TRUE;
 }
+
+
+/* *****************************************************************************
+ * travelmode combobox callback
+ */
+gint
+settravelmode_cb (GtkWidget *combo, guint datum)
+{
+  local_config.travelmode = gtk_combo_box_get_active (GTK_COMBO_BOX(combo));
+
+  if ( mydebug > 10 )
+    {
+      g_print ("\nTravelmode changed to: %d\n", local_config.travelmode);
+    }
+
+  needtosave = TRUE;
+  return TRUE;
+}
+
 
 /* *****************************************************************************
  */
