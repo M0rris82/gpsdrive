@@ -2,6 +2,9 @@
 
 gpsdrivedir = $(datadir)/gpsdrive
 
+Geodir   = $(PERL_PACKAGE_DIR)/Geo
+Geo_DATA =  Geo/*.pm
+
 Geo_Gpsdrivedir   = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
 Geo_Gpsdrive_DATA =  Geo/Gpsdrive/*.pm
 
@@ -19,6 +22,6 @@ Utils_LWP_DATA =  Utils/LWP/*.pm
 
 
 EXTRA_DIST = \
-	$(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA)\
+	$(Geo_DATA)\	$(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA)\
 	$(Geo_Filter_DATA)  $(Utils_DATA) \
 	$(Utils_LWP_DATA)

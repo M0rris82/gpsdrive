@@ -55,16 +55,17 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(Geo_Filterdir)" \
+am__installdirs = "$(DESTDIR)$(Geodir)" "$(DESTDIR)$(Geo_Filterdir)" \
 	"$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Geo_OSMdir)" \
 	"$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"
+GeoDATA_INSTALL = $(INSTALL_DATA)
 Geo_FilterDATA_INSTALL = $(INSTALL_DATA)
 Geo_GpsdriveDATA_INSTALL = $(INSTALL_DATA)
 Geo_OSMDATA_INSTALL = $(INSTALL_DATA)
 UtilsDATA_INSTALL = $(INSTALL_DATA)
 Utils_LWPDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(Geo_Filter_DATA) $(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA) \
-	$(Utils_DATA) $(Utils_LWP_DATA)
+DATA = $(Geo_DATA) $(Geo_Filter_DATA) $(Geo_Gpsdrive_DATA) \
+	$(Geo_OSM_DATA) $(Utils_DATA) $(Utils_LWP_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -225,6 +226,8 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 gpsdrivedir = $(datadir)/gpsdrive
+Geodir = $(PERL_PACKAGE_DIR)/Geo
+Geo_DATA = Geo/*.pm
 Geo_Gpsdrivedir = $(PERL_PACKAGE_DIR)/Geo/Gpsdrive
 Geo_Gpsdrive_DATA = Geo/Gpsdrive/*.pm
 Geo_OSMdir = $(PERL_PACKAGE_DIR)/Geo/OSM
@@ -236,7 +239,7 @@ Utils_DATA = Utils/*.pm
 Utils_LWPdir = $(PERL_PACKAGE_DIR)/Utils/LWP
 Utils_LWP_DATA = Utils/LWP/*.pm
 EXTRA_DIST = \
-	$(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA)\
+	$(Geo_DATA)\	$(Geo_Gpsdrive_DATA) $(Geo_OSM_DATA)\
 	$(Geo_Filter_DATA)  $(Utils_DATA) \
 	$(Utils_LWP_DATA)
 
@@ -282,6 +285,23 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+install-GeoDATA: $(Geo_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(Geodir)" || $(mkdir_p) "$(DESTDIR)$(Geodir)"
+	@list='$(Geo_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(GeoDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(Geodir)/$$f'"; \
+	  $(GeoDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(Geodir)/$$f"; \
+	done
+
+uninstall-GeoDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(Geo_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(Geodir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(Geodir)/$$f"; \
+	done
 install-Geo_FilterDATA: $(Geo_Filter_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(Geo_Filterdir)" || $(mkdir_p) "$(DESTDIR)$(Geo_Filterdir)"
@@ -406,7 +426,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(Geo_Filterdir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
+	for dir in "$(DESTDIR)$(Geodir)" "$(DESTDIR)$(Geo_Filterdir)" "$(DESTDIR)$(Geo_Gpsdrivedir)" "$(DESTDIR)$(Geo_OSMdir)" "$(DESTDIR)$(Utilsdir)" "$(DESTDIR)$(Utils_LWPdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -451,8 +471,9 @@ info: info-am
 
 info-am:
 
-install-data-am: install-Geo_FilterDATA install-Geo_GpsdriveDATA \
-	install-Geo_OSMDATA install-UtilsDATA install-Utils_LWPDATA
+install-data-am: install-GeoDATA install-Geo_FilterDATA \
+	install-Geo_GpsdriveDATA install-Geo_OSMDATA install-UtilsDATA \
+	install-Utils_LWPDATA
 
 install-exec-am:
 
@@ -478,13 +499,13 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-Geo_FilterDATA uninstall-Geo_GpsdriveDATA \
-	uninstall-Geo_OSMDATA uninstall-UtilsDATA \
-	uninstall-Utils_LWPDATA uninstall-info-am
+uninstall-am: uninstall-GeoDATA uninstall-Geo_FilterDATA \
+	uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
+	uninstall-UtilsDATA uninstall-Utils_LWPDATA uninstall-info-am
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am html html-am info info-am install \
+	dvi-am html html-am info info-am install install-GeoDATA \
 	install-Geo_FilterDATA install-Geo_GpsdriveDATA \
 	install-Geo_OSMDATA install-UtilsDATA install-Utils_LWPDATA \
 	install-am install-data install-data-am install-exec \
@@ -492,9 +513,10 @@ uninstall-am: uninstall-Geo_FilterDATA uninstall-Geo_GpsdriveDATA \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-Geo_FilterDATA uninstall-Geo_GpsdriveDATA \
-	uninstall-Geo_OSMDATA uninstall-UtilsDATA \
-	uninstall-Utils_LWPDATA uninstall-am uninstall-info-am
+	uninstall uninstall-GeoDATA uninstall-Geo_FilterDATA \
+	uninstall-Geo_GpsdriveDATA uninstall-Geo_OSMDATA \
+	uninstall-UtilsDATA uninstall-Utils_LWPDATA uninstall-am \
+	uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
