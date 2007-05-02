@@ -219,7 +219,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # Makefile.am for scripts
-SUBDIRS = perl_lib osm mapnik
+SUBDIRS = osm osm/utils mapnik
 DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\

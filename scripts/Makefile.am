@@ -1,5 +1,5 @@
 # Makefile.am for scripts
-SUBDIRS =      perl_lib osm mapnik
+SUBDIRS =      osm osm/utils mapnik
 DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
@@ -17,4 +17,3 @@ geoinfo:
 gpsdrivedir = $(datadir)/gpsdrive
 
 EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
-
