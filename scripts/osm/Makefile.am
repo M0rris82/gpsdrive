@@ -1,6 +1,7 @@
 # Makefile.am for scripts/perl_lib
 
-gpsdrivedir = $(datadir)/gpsdrive
+SUBDIRS =      pdf-atlas planet.osm
+DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS= \
 	utils/import/osmtrackfilter/osmtrackfilter.pl
