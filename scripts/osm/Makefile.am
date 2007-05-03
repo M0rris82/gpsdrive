@@ -1,6 +1,6 @@
 # Makefile.am for scripts/perl_lib
 
-SUBDIRS =      pdf-atlas planet.osm
+SUBDIRS =      utils
 DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS= \

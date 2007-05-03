@@ -242,7 +242,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = pdf-atlas planet.osm
+SUBDIRS = utils
 DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = \
 	utils/import/osmtrackfilter/osmtrackfilter.pl
