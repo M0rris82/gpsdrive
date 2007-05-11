@@ -98,6 +98,7 @@ Disclaimer: Please do not use for navigation.
 
 
 #include <gpsdrive.h>
+#include <map_handler.h>
 
 extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 extern gint statusid, messagestatusbarid, timeoutcount;
@@ -574,6 +575,8 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    maps = g_renew (mapsstruct, maps,
 					    (nrmaps + 2));
 			    g_strlcpy ((maps + nrmaps)->filename,map_filename, 200);
+			    (maps + nrmaps)->map_dir = add_map_dir (map_filename);
+			    (maps + nrmaps)->hasbbox = FALSE;
 			    (maps + nrmaps)->lat = new_dl_lat;
 			    (maps + nrmaps)->lon = new_dl_lon;
 			    (maps + nrmaps)->scale =new_dl_scale;
