@@ -171,9 +171,9 @@ sub update_overview
     }
 
     # exchange empty or missing icon files with a char for faster display
-    my $icon_sb = "./square.big/$icon.png";
-    my $icon_sm = "./square.small/$icon.png";
-    my $icon_cl = "./classic/$icon.png";
+    my $icon_sb = "square.big/$icon.png";
+    my $icon_sm = "square.small/$icon.png";
+    my $icon_cl = "classic/$icon.png";
 
     if ( -z $icon_sb or not -e $icon_sb )
       { $content .= $html_td0; }
