@@ -678,5 +678,5 @@ route_init (void)
 	route.items = 0;				/* route is empty/not available */
 	route.distance = 0.0;		/* route length is 0 */
 	route.pointer = 0;			/* reset next route target */
-	route.show = FALSE;		/* route display is off */
+	route.show = TRUE;		/* default route display is on */
 }
