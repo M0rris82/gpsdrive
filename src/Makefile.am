@@ -50,13 +50,14 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gui.c gui.h \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
-	map_handler.c gpsproto.h \
+	map_handler.c map_handler.h gpsproto.h \
 	import_map.c import_map.h\
 	routes.c routes.h \
         download_map.c download_map.h \
 	map_projection.c \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
+	navigation_gui.c poi_gui.c settings_gui.c \
 	unit_test.c \
 	../config.h gettext.h
 #	lib_map/lib_map.a
