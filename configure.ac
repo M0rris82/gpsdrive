@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1362, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn13761381, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -61,6 +61,7 @@ AC_CONFIG_FILES([scripts/osm/utils/osm-extract/Makefile])
 AC_CONFIG_FILES([scripts/osm/utils/filter/Makefile])
 AC_CONFIG_FILES([scripts/osm/utils/perl_lib/Makefile])
 AC_CONFIG_FILES([scripts/osm/utils/planet.osm/Makefile])
+AC_CONFIG_FILES([scripts/osm/utils/planet.osm/C/Makefile])
 AC_CONFIG_FILES([scripts/osm/utils/xsltrans/Makefile])
 AC_CONFIG_FILES([src/Makefile])
 AC_CONFIG_FILES([src/lib_map/Makefile])
