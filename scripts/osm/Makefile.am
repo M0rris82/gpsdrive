@@ -3,18 +3,6 @@
 SUBDIRS =      utils
 DIST_SUBDIRS = $(SUBDIRS)
 
-bin_SCRIPTS= \
-	utils/import/osmtrackfilter/osmtrackfilter.pl
-	planet-mirror/planet-mirror.pl \
-	utils/osm-extract/osm-subset.pl \
-	simplify/simplify.pl \
-	utils/export/osm2csv/osm2csv.pl \
-	utils/planet.osm/C/UTF8sanitizer
-
-UTF8sanitizerdir = $(bindir)
-UTF8sanitizer_PROGRAMS = UTF8sanitizer
-UTF8sanitizer_SOURCES = utils/planet.osm/C/UTF8sanitizer.c
-
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS) \
 	utils/export/osm2csv/create_all.sh \
