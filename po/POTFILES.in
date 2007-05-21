@@ -27,10 +27,13 @@ src/map_handler.c
 src/map_projection.c
 src/nautic.c
 src/navigation.c
+src/navigation_gui.c
 src/nmea_handler.c
 src/poi.c
+src/poi_gui.c
 src/routes.c
 src/settings.c
+src/settings_gui.c
 src/speech_out.c
 src/speech_strings.c
 src/splash.c
