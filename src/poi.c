@@ -546,7 +546,7 @@ get_poi_type_list (void)
 	  gchar t_desc_lang[POI_TYPE_LIST_STRING_LENGTH];
 	  gchar t_name[POI_TYPE_LIST_STRING_LENGTH];
 	  gchar t_poi_type_id[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar *t_pname, *t_ppath;
+	  gchar *t_pname;
 	  
 	  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "./data/map-icons/icons.xml" );
 	  xml_reader = xmlNewTextReaderFilename(iconsxml_file);

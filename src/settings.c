@@ -425,7 +425,6 @@ mainsetup (void)
   GtkWidget *f3;
   GtkWidget *f4;
   GtkWidget *f5;
-  GtkWidget *fontbox;
   GtkWidget *framesound;
   GtkWidget *ftable;
   GtkWidget *garminbt;
@@ -451,7 +450,6 @@ mainsetup (void)
   GtkWidget *nighttable;
   GtkWidget *noserial_bt;
   GtkWidget *option_menu;
-  GtkWidget *s1;
   GtkWidget *shadowbt;
   GtkWidget *simfollowbt;
   GtkWidget *slowcpulabel;
