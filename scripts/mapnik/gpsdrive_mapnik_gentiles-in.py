@@ -23,7 +23,7 @@ Examples:
     gpsdrive_mapnik_gentiles.py -b  11.4,48.07,11.7,48.2 -s 10-16
   
   World:
-    gpsdrive_mapnik_gentiles.py -b "-180.0,-90.0, 180.0,90.0" -s 1-6
+    gpsdrive_mapnik_gentiles.py -b "-180.0,-90.0,180.0,90.0" -s 1-6
 """
 
 from math import pi,cos,sin,log,exp,atan
