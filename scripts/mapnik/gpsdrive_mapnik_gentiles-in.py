@@ -165,7 +165,7 @@ def usage():
 def main(argv):
 
     home = os.environ['HOME']
-    data = "DATA_DIR/gpsdrive/mapnik"
+    data = "DATA_DIR/mapnik"
     mapfile = data + "/osm.xml"
     tile_dir = home + "/.gpsdrive/maps/mapnik/"
     mapkoordfile = home + "/.gpsdrive/maps/map_koord.txt"

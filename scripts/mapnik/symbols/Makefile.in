@@ -217,7 +217,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-symbolsdir = $(datadir)/gpsdrive/mapnik/symbols
+symbolsdir = $(datadir)/mapnik/symbols
 symbols_DATA = *.png
 EXTRA_DIST = $(symbols_DATA)
 all: all-am

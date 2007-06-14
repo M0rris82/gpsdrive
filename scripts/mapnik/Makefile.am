@@ -4,8 +4,8 @@ DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS = gpsdrive_mapnik_gentiles.py
 
-mapnikdir = $(datadir)/gpsdrive/mapnik
-mapnik_DATA = osm.xml setup_z_order.sql
+mapnikdir = $(datadir)/mapnik
+mapnik_DATA = osm.xml
 
 EXTRA_DIST = setup_z_order.sql gpsdrive_mapnik_gentiles-in.py osm-in.xml 
 #CMakeLists.txt
