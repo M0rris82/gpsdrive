@@ -102,18 +102,30 @@
     </Rule>
     
     <Rule>
-      <MaxScaleDenominator>50000</MaxScaleDenominator>
+      <MaxScaleDenominator>250000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator> 
+      <Filter>[railway]='station'</Filter>
+      <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/station_small.png" type="png" width="5" height="5" />
+    </Rule>
+     <Rule>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
       <Filter>[railway]='station'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/station.png" type="png" width="9" height="9" />
     </Rule>
     <Rule>
+      <MaxScaleDenominator>50000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator> 
+      <Filter>[railway]='station'</Filter>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="9" fill="#000" dy="-8" halo_radius="1" wrap_width="0"/>
+    </Rule>
+    <Rule>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <Filter>[railway]='station'</Filter>
-      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="12" fill="#000" dy="-14" halo_radius="1" wrap_width="0"/>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="12" fill="#000" dy="-14" halo_radius="1" wrap_width="0"/>
     </Rule>
     
     <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='pub'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/pub.png" type="png" width="16" height="16" />
     </Rule>
@@ -128,27 +140,36 @@
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/tower.png" type="png" width="32" height="32" />
     </Rule>
     <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='recycling'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/recycling.png" type="png" width="20" height="20" />
     </Rule>
+    
+    <Rule>
+      <MaxScaleDenominator>10000</MaxScaleDenominator>
+      <Filter>[amenity]='hospital'</Filter>
+      <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/hospital.png" type="png" width="20" height="20" />
+    </Rule>
+    
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='bus_stop'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/bus_stop.png" type="png" width="30" height="12" />
     </Rule>
+    
     <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[amenity]='parking'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
     </Rule>
+    
     <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='place_of_worship'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/place_of_worship.png" type="png" width="16" height="16" allow_overlap="false"/>
      </Rule>
     <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
+      <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='airport'</Filter>
       <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/airport.png" type="png" width="16" height="16" allow_overlap="false"/>
      </Rule>
@@ -180,7 +201,7 @@
     </Rule>
     
      <Rule>
-      <MaxScaleDenominator>20000</MaxScaleDenominator>
+      <MaxScaleDenominator>50000</MaxScaleDenominator>
       <Filter>[landuse] = 'cemetery'</Filter>
       <PolygonPatternSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/grave_yard.png" type="png" width="16" height="16"/>
     </Rule>
@@ -196,7 +217,7 @@
       <Filter>[leisure] = 'park'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
       <PolygonSymbolizer>
-        <CssParameter name="fill">#aed1a0</CssParameter>
+        <CssParameter name="fill">#b6fdb6</CssParameter>
      </PolygonSymbolizer>
     </Rule>
 
@@ -221,13 +242,7 @@
         <CssParameter name="fill">#7ccd7c</CssParameter>
      </PolygonSymbolizer>
     </Rule>
-    <!--Rule>
-      <Filter>[leisure] = 'pitch'</Filter>
-      <MaxScaleDenominator>1000000</MaxScaleDenominator>
-      <PolygonSymbolizer>
-        <CssParameter name="fill">#7ccd7c</CssParameter>
-     </PolygonSymbolizer>
-    </Rule-->
+
     <Rule>
       <Filter>[landuse] = 'allotments'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -263,7 +278,23 @@
         <CssParameter name="fill">#f1dada</CssParameter>
      </PolygonSymbolizer>
     </Rule>
-  
+    
+    <Rule>
+      <Filter>[landuse] = 'industrial'</Filter>
+      <MaxScaleDenominator>1000000</MaxScaleDenominator>
+      <PolygonSymbolizer>
+        <CssParameter name="fill">#f1a0a0</CssParameter>
+     </PolygonSymbolizer>
+    </Rule>
+
+    <Rule>
+      <Filter>[landuse] = 'commercial'</Filter>
+      <MaxScaleDenominator>1000000</MaxScaleDenominator>
+      <PolygonSymbolizer>
+        <CssParameter name="fill">#efc8c8</CssParameter>
+     </PolygonSymbolizer>
+    </Rule>
+
      <Rule>
       <Filter>[natural] = 'wood'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -288,7 +319,7 @@
     </Rule>
     <Rule>
       <Filter>[amenity] = 'university' or [amenity] = 'school'</Filter>
-      <MaxScaleDenominator>20000</MaxScaleDenominator>
+      <MaxScaleDenominator>250000</MaxScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">brown</CssParameter>
 	<CssParameter name="stroke-width">0.3</CssParameter>
@@ -301,11 +332,6 @@
      <PolygonSymbolizer>
          <CssParameter name="fill">#f7efb7</CssParameter>
       </PolygonSymbolizer>
-    </Rule>
-    <Rule>
-      <MaxScaleDenominator>5000</MaxScaleDenominator>
-      <Filter>[amenity]='parking'</Filter>
-      <PointSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
     </Rule>
     
     <Rule>
@@ -364,7 +390,7 @@
     </Rule>
     <Rule>
       <Filter>[place] = 'town'</Filter>
-      <MaxScaleDenominator>1000000</MaxScaleDenominator>
+      <MaxScaleDenominator>2000000</MaxScaleDenominator>
       <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="10" fill="000" halo_radius="2" wrap_width="20"/>
     </Rule>
      <Rule>
@@ -377,10 +403,11 @@
       <MaxScaleDenominator>125000</MaxScaleDenominator>
       <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="8" fill="#000" halo_radius="1" wrap_width="0"/>
     </Rule>
+    
     <Rule>
       <Filter>[amenity] = 'pub'</Filter>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
-      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="10" fill="brown" dy="16" halo_radius="1" wrap_width="0"/>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="10" fill="brown" dy="16" halo_radius="1" wrap_width="0"/>
     </Rule>
     
     <Rule>
@@ -410,10 +437,21 @@
 
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
+      <MinScaleDenominator>250000</MinScaleDenominator>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#b5d0d0</CssParameter>
+        <CssParameter name="stroke-width">2</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+      </LineSymbolizer>
+    </Rule>
+    <Rule>
+      <Filter>[waterway]='river'</Filter>
+      <MaxScaleDenominator>250000</MaxScaleDenominator>
       <MinScaleDenominator>25000</MinScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">#b5d0d0</CssParameter>
-        <CssParameter name="stroke-width">1</CssParameter>
+        <CssParameter name="stroke-width">4</CssParameter>
         <CssParameter name="stroke-linejoin">round</CssParameter>
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
@@ -428,7 +466,19 @@
         <CssParameter name="stroke-linejoin">round</CssParameter>
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
-      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="9" fill="white" placement="line"/>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="9" fill="white" placement="line"/>
+    </Rule>
+    <Rule>
+      <Filter>[waterway]='canal'</Filter>
+      <MaxScaleDenominator>250000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#b5d0d0</CssParameter>
+        <CssParameter name="stroke-width">2</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+      </LineSymbolizer>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="9" fill="white" placement="line"/>
     </Rule>
     <Rule>
       <Filter>[waterway]='canal'</Filter>
@@ -436,11 +486,11 @@
       <MinScaleDenominator>1000</MinScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">#b5d0d0</CssParameter>
-        <CssParameter name="stroke-width">5</CssParameter>
+        <CssParameter name="stroke-width">7</CssParameter>
         <CssParameter name="stroke-linejoin">round</CssParameter>
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
-      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="9" fill="white" placement="line"/>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="9" fill="white" placement="line"/>
     </Rule>
     <Rule>
       <ElseFilter/> <!--[waterway]='stream'</Filter>-->
@@ -450,15 +500,14 @@
         <CssParameter name="stroke">#b5d0d0</CssParameter>
         <CssParameter name="stroke-width">2</CssParameter>
       </LineSymbolizer>
-      <TextSymbolizer name="name" face_name="DejaVu Sans Bold" size="9" fill="white" placement="line"/>
+      <TextSymbolizer name="name" face_name="DejaVu Sans Book" size="9" fill="white" placement="line"/>
     </Rule>
   </Style>
 
   <Style name="minor-roads-casing">
-
      <Rule>
       <Filter>[highway] = 'motorway' or [highway]='motorway_link'</Filter>
-      <MaxScaleDenominator>15000000</MaxScaleDenominator>
+      <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>75000</MinScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">#506077</CssParameter>
@@ -652,9 +701,21 @@
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
     </Rule>
+    
+    <Rule>
+      <Filter>[highway] = 'tertiary'</Filter>
+      <MaxScaleDenominator>100000</MaxScaleDenominator>
+      <MinScaleDenominator>50000</MinScaleDenominator>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#999</CssParameter>
+        <CssParameter name="stroke-width">7</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+      </LineSymbolizer>
+    </Rule>
 
     <Rule>
-      <Filter>[highway] = 'tertiary' or [highway] = 'residential' or [highway] = 'minor' or [highway] = 'unclassified'</Filter>
+      <Filter>[highway] = 'residential' or [highway] = 'minor' or [highway] = 'unclassified'</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>50000</MinScaleDenominator>
       <LineSymbolizer>
@@ -666,7 +727,19 @@
     </Rule>
 
     <Rule>
-      <Filter>[highway] = 'tertiary' or [highway] = 'residential' or [highway] = 'minor' or [highway] = 'unclassified'</Filter>
+      <Filter>[highway] = 'tertiary'</Filter>
+      <MaxScaleDenominator>50000</MaxScaleDenominator>
+      <MinScaleDenominator>25000</MinScaleDenominator>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#999</CssParameter>
+        <CssParameter name="stroke-width">9</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+      </LineSymbolizer>
+    </Rule>
+    
+    <Rule>
+      <Filter>[highway] = 'residential' or [highway] = 'minor' or [highway] = 'unclassified'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>25000</MinScaleDenominator>
       <LineSymbolizer>
@@ -899,17 +972,29 @@
       <Filter>[railway] = 'rail'</Filter>
       <LinePatternSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/rail.png" type="png" width="20" height="3" />
     </Rule>
+    
+     <Rule>
+      <MaxScaleDenominator>100000</MaxScaleDenominator>
+      <MinScaleDenominator>1000</MinScaleDenominator>
+      <Filter>[railway] = 'tram' or [railway] = 'light_rail'</Filter>
+      <LineSymbolizer>
+        <CssParameter name="stroke">#aaa</CssParameter>
+        <CssParameter name="stroke-width">2</CssParameter>
+      </LineSymbolizer>
+    </Rule>
+     
 
     <Rule>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>1000</MinScaleDenominator>
-      <Filter>[railway] = 'tram' or [railway] = 'light_rail' or [railway]='subway'</Filter>
+      <Filter>[railway]='subway'</Filter>
       <LineSymbolizer>
-        <CssParameter name="stroke">#555</CssParameter>
-        <CssParameter name="stroke-width">3</CssParameter>
+        <CssParameter name="stroke">#777</CssParameter>
+        <CssParameter name="stroke-width">1</CssParameter>
+	<CssParameter name="stroke-dasharray">8,8</CssParameter>
       </LineSymbolizer>
     </Rule>
-    
+
     <Rule>
       <Filter>[highway] = 'tertiary' or [highway] = 'residential' or [highway] = 'unclassified'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -975,7 +1060,7 @@
       <MinScaleDenominator>50000</MinScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">#ffffcc</CssParameter>
-        <CssParameter name="stroke-width">2</CssParameter>
+        <CssParameter name="stroke-width">5</CssParameter>
         <CssParameter name="stroke-linejoin">round</CssParameter>
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
@@ -987,7 +1072,7 @@
       <MinScaleDenominator>25000</MinScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">#ffffcc</CssParameter>
-        <CssParameter name="stroke-width">3</CssParameter>
+        <CssParameter name="stroke-width">7</CssParameter>
         <CssParameter name="stroke-linejoin">round</CssParameter>
         <CssParameter name="stroke-linecap">round</CssParameter>
       </LineSymbolizer>
@@ -1073,7 +1158,25 @@
       </LineSymbolizer>
     </Rule>
     <Rule>
-      <Filter>[highway] = 'cycleway' or [highway] = 'track'</Filter>
+      <Filter>[highway] = 'cycleway'</Filter>
+      <MaxScaleDenominator>50000</MaxScaleDenominator>
+      <LineSymbolizer>
+        <CssParameter name="stroke">white</CssParameter>
+        <CssParameter name="stroke-width">6</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+        <CssParameter name="stroke-opacity">0.4</CssParameter>
+      </LineSymbolizer>
+      <LineSymbolizer>
+        <CssParameter name="stroke">green</CssParameter>
+        <CssParameter name="stroke-width">2.0</CssParameter>
+        <CssParameter name="stroke-dasharray">4,4</CssParameter>
+        <CssParameter name="stroke-linejoin">round</CssParameter>
+        <CssParameter name="stroke-linecap">round</CssParameter>
+      </LineSymbolizer>
+    </Rule>
+    <Rule>
+      <Filter>[highway] = 'track'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <LineSymbolizer>
         <CssParameter name="stroke">white</CssParameter>
@@ -1094,11 +1197,11 @@
       <Filter>[highway] = 'pedestrian'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <LineSymbolizer>
-        <CssParameter name="stroke">white</CssParameter>
-        <CssParameter name="stroke-width">6</CssParameter>
+        <CssParameter name="stroke">grey</CssParameter>
+        <CssParameter name="stroke-width">5</CssParameter>
       </LineSymbolizer>
       <LineSymbolizer>
-        <CssParameter name="stroke">#c1ffc1</CssParameter>
+        <CssParameter name="stroke">#ededed</CssParameter>
         <CssParameter name="stroke-width">4</CssParameter>
       </LineSymbolizer>
     </Rule>
@@ -1130,13 +1233,14 @@
       </LineSymbolizer>
     </Rule>
     <Rule>
-      <Filter>[aeroway] = 'runway'</Filter>
-      <MaxScaleDenominator>50000</MaxScaleDenominator>
+      <Filter>[aeroway] = 'runway' or [aeroway] = 'taxiway'</Filter>
+      <MaxScaleDenominator>500000</MaxScaleDenominator>
       <LineSymbolizer>
-        <CssParameter name="stroke">lightgrey</CssParameter>
-        <CssParameter name="stroke-width">4</CssParameter>
+        <CssParameter name="stroke">#bbc</CssParameter>
+        <CssParameter name="stroke-width">3</CssParameter>
       </LineSymbolizer>
     </Rule>
+
     <!--Rule>
       <ElseFilter/>
       <MaxScaleDenominator>1500000</MaxScaleDenominator>
@@ -1276,7 +1380,7 @@
       <MinScaleDenominator>1000000</MinScaleDenominator>
       <Filter>[railway] = 'rail' or [railway] = 'tram' or [railway] = 'light_rail'</Filter>
        <LineSymbolizer>
-        <CssParameter name="stroke">#555</CssParameter>
+        <CssParameter name="stroke">#777</CssParameter>
         <CssParameter name="stroke-width">1</CssParameter>
       </LineSymbolizer>
     </Rule>
@@ -1285,10 +1389,11 @@
       <MinScaleDenominator>100000</MinScaleDenominator>
       <Filter>[railway] = 'rail' or [railway] = 'tram' or [railway] = 'light_rail'</Filter>
        <LineSymbolizer>
-        <CssParameter name="stroke">#555</CssParameter>
+        <CssParameter name="stroke">#777</CssParameter>
         <CssParameter name="stroke-width">2</CssParameter>
       </LineSymbolizer>
     </Rule>
+    
   </Style>
 
   
@@ -1298,13 +1403,19 @@
       <Filter>[highway] = 'motorway' and [length] = 2</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer name="name" face_name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="DATA_DIR/gpsdrive/mapnik/symbols/motorway_shield.png" type="png" width="24" height="17"/>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="DATA_DIR/gpsdrive/mapnik/symbols/motorway_shield.png" type="png" width="24" height="17"/>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 3</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer name="name" face_name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="DATA_DIR/gpsdrive/mapnik/symbols/motorway_shield2.png" type="png" width="31" height="17"/>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="DATA_DIR/gpsdrive/mapnik/symbols/motorway_shield2.png" type="png" width="31" height="17"/>
+    </Rule>
+    <Rule>
+      <Filter>[highway] = 'motorway' and [length] = 4</Filter>
+      <MaxScaleDenominator>500000</MaxScaleDenominator>
+      <MinScaleDenominator>100</MinScaleDenominator>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="DATA_DIR/gpsdrive/mapnik/symbols/motorway_shield3.png" type="png" width="38" height="17"/>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' or [highway] = 'primary' or [highway] = 'secondary'</Filter>
@@ -1335,6 +1446,20 @@
     </Rule>
    
   </Style>
+
+  
+  <Style name="directions">        
+    <Rule>
+      <Filter>[oneway] = 'yes' or [oneway] = 'true'</Filter>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <LinePatternSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/arrow.png" type="png" width="80" height="8" />
+    </Rule>
+    <Rule>
+      <Filter>[oneway] = '-1'</Filter>
+      <MaxScaleDenominator>25000</MaxScaleDenominator>
+      <LinePatternSymbolizer file="DATA_DIR/gpsdrive/mapnik/symbols/arrow_back.png" type="png" width="80" height="8" />
+    </Rule>
+ </Style>
 
   <Layer name="world-1" status="on" srs="+proj=merc +datum=WGS84 +over">
     <StyleName>world-1</StyleName>
@@ -1377,45 +1502,45 @@
     </Datasource>
   </Layer>
   
-  <Layer name="leisure" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="leisure" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>leisure</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
-      <Parameter name="host">/var/run/postgresql</Parameter>     
-      <Parameter name="dbname">mapnik</Parameter>
-      <Parameter name="table">(select * from planet_osm_polygon) as leisure</Parameter>
+      <Parameter name="host">/var/run/postgresql</Parameter>
+      <Parameter name="dbname">gis</Parameter>
+      <Parameter name="table">(select * from planet_osm_polygon order by z_order) as leisure</Parameter>
       <Parameter name="estimate_extent">true</Parameter>
     </Datasource>
   </Layer>
-  <Layer name="water" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="water" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>water</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="estimate_extent">true</Parameter>
-      <Parameter name="table">(select * from planet_osm_polygon where landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water') as water</Parameter>
+      <Parameter name="table">(select * from planet_osm_polygon where landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' order by z_order) as water</Parameter>
     </Datasource>
   </Layer>
   
-  <Layer name="waterway" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="waterway" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>water</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="estimate_extent">true</Parameter>
-      <Parameter name="table">(select * from planet_osm_line where waterway IS NOT NULL or landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water') as water</Parameter>
+      <Parameter name="table">(select * from planet_osm_line where waterway IS NOT NULL or landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' order by z_order) as water</Parameter>
     </Datasource>
   </Layer>
 
-  <Layer name="minor-roads" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="minor-roads" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>minor-roads-casing</StyleName>
     <StyleName>minor-roads</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line order by z_order) as roads
       </Parameter>
@@ -1423,13 +1548,13 @@
     </Datasource>
   </Layer>
   
-  <Layer name="roads" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="roads" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <!--StyleName>roads-casing</StyleName-->
     <StyleName>roads</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_roads order by z_order) as roads
       </Parameter>
@@ -1437,36 +1562,38 @@
     </Datasource>
    </Layer>
     
-   <Layer name="amenity" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+   <Layer name="amenity" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>amenity</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
-      <Parameter name="host">/var/run/postgresql</Parameter>   
-      <Parameter name="dbname">mapnik</Parameter>
-      <Parameter name="table">(select * from planet_osm_point where amenity IS NOT NULL or railway is NOT NULL) as amenity</Parameter>
+      <Parameter name="host">/var/run/postgresql</Parameter>
+      <Parameter name="user">tweety</Parameter>	   
+      <Parameter name="dbname">gis</Parameter>
+      <Parameter name="table">(select * from planet_osm_point where amenity IS NOT NULL or railway is NOT NULL or "natural" is NOT NULL or man_made is NOT NULL) as amenity</Parameter>
       <Parameter name="estimate_extent">true</Parameter>
     </Datasource>
    </Layer>
   
-   <Layer name="planet roads text osm" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+   <Layer name="planet roads text osm" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
+     <StyleName>directions</StyleName>
      <StyleName>roads-text</StyleName>
      <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
-      (select way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,char_length(name) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads
+      (select way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,ref,oneway,char_length(ref) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads
       </Parameter>
       <Parameter name="estimate_extent">true</Parameter>
     </Datasource>
   </Layer>
   
-  <Layer name="text" status="on" srs="+proj=latlong +ellps=GRS80 +no_defs">
+  <Layer name="text" status="on" srs="+proj=merc +datum=WGS84  +k=1.0 +units=m +over +no_defs">
     <StyleName>text</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="dbname">mapnik</Parameter>
+      <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">planet_osm_point</Parameter>
       <Parameter name="estimate_extent">true</Parameter>
     </Datasource>
