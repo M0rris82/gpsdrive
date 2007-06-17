@@ -2,8 +2,8 @@
 # Packages required to build Gpsdrive`
 # =====================================
 # Notes:
-# This script has been tested on Debian Testing (Etch) 
-# It is now considered that the Debian Stable (Sarge) packages are no longer
+# This script has been tested on Debian Stable (Etch) 
+# It is now considered that the Debian Sarge packages are no longer
 # sufficient to compile gpsdrive.
 # 
 # Minimum required versions are not checked for here. 
@@ -15,6 +15,7 @@
 # ===========================================================================
 # Date         Initials    Desc.
 # 06/08/2006   DP          Initial Release
+# 06/17/2007   d.s.e       Adaption to Debian Stable (Etch)
 #
 # ===========================================================================
 # Update the package information
@@ -65,7 +66,7 @@ apt-get install \
 	gdal-bin \
 	libxerces27 \
 	libxerces27-dev \
-	libmysqlclient14-dev \
+	libmysqlclient15-dev \
 	libtiff4-dev \
 	libjasper-1.701-dev \
 	libgeos-dev \
@@ -91,7 +92,9 @@ apt-get install \
 	imagemagick \
 	automake1.9 \
 	autoconf \
-	libtool 
+	libtool \
+	gcc \
+	g++
 	
 #  libdbi-perl (This one didn't like being in with the others.
 if [ "$?" != "0"  ]
