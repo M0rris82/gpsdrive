@@ -765,7 +765,6 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 gint popup_warning (GtkWindow *parent, gchar *message)
 {
 	GtkDialog *dialog_warning;
-	gint response_id;
 	gchar warning[80];
 
 	if (mydebug >10)
@@ -786,10 +785,10 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 		"%s", warning));
 
 	gdk_beep ();
-	
-	response_id = gtk_dialog_run (dialog_warning);
-	gtk_widget_destroy (GTK_WIDGET (dialog_warning));
-	return response_id;
+
+	g_signal_connect_swapped (dialog_warning, "response",
+		G_CALLBACK (gtk_widget_destroy), dialog_warning);
+	return TRUE;
 }
 
 /* *****************************************************************************
