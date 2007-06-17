@@ -1830,6 +1830,7 @@ settings_friends (GtkWidget *notebook)
 }
 
 /* ************************************************************************* */
+/* TODO: fill with content
 static void
 settings_fly (GtkWidget *notebook)
 {
@@ -1843,8 +1844,10 @@ settings_fly (GtkWidget *notebook)
 		(GTK_NOTEBOOK (notebook), fly_vbox, fly_label);
 
 }
+*/
 
 /* ************************************************************************* */
+/* TODO: fill with content
 static void
 settings_nautic (GtkWidget *notebook)
 {
@@ -1858,6 +1861,7 @@ settings_nautic (GtkWidget *notebook)
 		(GTK_NOTEBOOK (notebook), nautic_vbox, nautic_label);
 
 }
+*/
 
 /* *************************************************************************
  * main setup:
@@ -1928,43 +1932,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 
 
 
-/* ************************************************************************* */
-static void
-fixHour (gdouble hourToFix)
-{
-  // TODO - What happens if hourToFix is smaller than -24 or greater than 24?
-  if (hourToFix < 0)
-    {
-      hourToFix += 24;
-    }
 
-  if (hourToFix > 24)
-    {
-      hourToFix -= 24;
-    }
-}
-
-/* ************************************************************************* */
-static void
-getTimeTextHHMMSS (gdouble timeValue, gchar * timeText, int timeTextSize)
-{
-  if (timeValue > 24.0)
-    {
-      g_strlcpy (timeText, _("n/a"), timeTextSize);
-    }
-  else
-    {
-      g_snprintf (timeText, timeTextSize, "%02d:%02d:%02d",
-		  (int) timeValue,
-		  (int) ((timeValue - (int) timeValue) * 60),
-		  (int) ((timeValue * 60 - (int) (timeValue * 60)) * 60));
-    }
-
-  if ( mydebug > 20 )
-    {
-      printf ("\n timeTextHHMMSS: <%s>\n", timeText);
-    }
-}
 
 /* ************************************************************************* */
 static void

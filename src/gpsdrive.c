@@ -3964,7 +3964,6 @@ main (int argc, char *argv[])
     GdkRectangle rectangle = {
 	0, 0, SCREEN_X, SCREEN_Y
     };
-    const gchar *hd;
     gchar buf[500];
 
     /*** Mod by Arms */
