@@ -331,6 +331,7 @@ gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt;
+GtkWidget *mapnik_bt;
 GtkWidget *cover;
 extern gint needreloadmapconfig;
 GdkPixbuf *batimage = NULL;
@@ -1065,7 +1066,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 				    _("Warning!"),
 				    _
 				    ("You should not start GpsDrive as user root!!!"));
-			popup_error (NULL, buffer);
+			popup_warning (NULL, buffer);
 			didrootcheck = TRUE;
 		}
 
@@ -3107,6 +3108,28 @@ pos_cb (GtkWidget * widget, guint datum)
     return TRUE;
 }
 
+
+/* *****************************************************************************
+ * toggle checkbox for mapnik mode
+ */
+gint
+toggle_mapnik_cb (GtkWidget *widget, guint datum)
+{
+	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
+	{
+		gui_status.mapnik = TRUE;
+		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), FALSE);
+	}
+	else 
+	{
+		gui_status.mapnik = FALSE;
+		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), TRUE);
+	}
+	
+	// TODO: reload map.....
+
+    return TRUE;
+}
 
 /* *****************************************************************************
  */

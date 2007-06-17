@@ -1564,7 +1564,7 @@ settings_wp (GtkWidget *notebook)
 					dircount++;
 					if (dircount >= 100)
 					{
-						popup_error (NULL,
+						popup_warning (NULL,
 						_("Don't use more than\n100"
 						"waypoint(way*.txt) files!"));
 						g_free (names);

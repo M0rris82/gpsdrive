@@ -80,7 +80,7 @@ extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
-extern GtkWidget *posbt;
+extern GtkWidget *posbt, *mapnik_bt;
 extern gint streets_draw;
 
 extern gchar oldfilename[2048];
@@ -213,61 +213,82 @@ display_maps_cb (GtkWidget * widget, guint datum)
 GtkWidget *
 make_display_map_controls ()
 {
-  GtkWidget *frame_maptype;
-  GtkWidget *vbox_map_controls;
-  GtkTooltips *tooltips;
-  tooltips = gtk_tooltips_new ();
+	GtkWidget *frame_maptype;
+	GtkWidget *vbox_map_controls;
+	GtkTooltips *tooltips;
+	tooltips = gtk_tooltips_new ();
 
-  // Frame
-  frame_maptype = gtk_frame_new (_("Map Controls"));
-  vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
-  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
+	// Frame
+	frame_maptype = gtk_frame_new (_("Map Controls"));
+	vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
 
-  // Checkbox ---- STREETS Draw
-  streets_draw_bt = gtk_check_button_new_with_label (_("direct draw sql _Streets"));
-  gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-  if ( ! mydebug) {
-      streets_draw=0; // Switch off if not in Debug Mode
-  }
-  if (!streets_draw)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				    (streets_draw_bt), TRUE);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-			_("Draw Streets found in mySQL"), NULL);
-  gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
-		      GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-  if ( mydebug>0) {
-      gtk_box_pack_start (GTK_BOX (vbox_map_controls), streets_draw_bt, FALSE,FALSE, 0 * PADDING);
-  }
+	// Checkbox ---- STREETS Draw
+	streets_draw_bt = gtk_check_button_new_with_label
+		(_("direct draw sql _Streets"));
+	gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
+	if ( ! mydebug)
+	{
+		streets_draw=0; // Switch off if not in Debug Mode
+	}
+	if (!streets_draw)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
+	}
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
+		_("Draw Streets found in mySQL"), NULL);
+	gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
+		GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
+	if ( mydebug>0)
+	{
+		gtk_box_pack_start (GTK_BOX (vbox_map_controls),
+			streets_draw_bt, FALSE,FALSE, 0 * PADDING);
+	}
 
-  // Checkbox ---- Best Map
-  bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
-  gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controls), bestmap_bt, FALSE, FALSE,0 * PADDING);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
-			_("Always select the most detailed map available"),
-			NULL);
-  
-  if (!scaleprefered_not_bestmap)
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
-  gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
-		      GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
-  
-  // Checkbox ---- Pos Mode
-  posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
-  gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
-  gtk_signal_connect (GTK_OBJECT (posbt),     "clicked", GTK_SIGNAL_FUNC (pos_cb),    (gpointer) 1);
-  gtk_box_pack_start (GTK_BOX (vbox_map_controls), posbt, FALSE, FALSE,0 * PADDING);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
-			_("Turn position mode on. "
-			  "You can move on the map with the left mouse button click."
-			  " Clicking near the border switches to the proximate map."),
-			NULL);
-  
-  
-  return frame_maptype;
+	// Checkbox ---- Best Map
+	bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
+	gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox_map_controls),
+		bestmap_bt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
+		_("Always select the most detailed map available"), NULL);
+
+	if (!scaleprefered_not_bestmap)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
+	}
+	gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
+		GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
+
+	// Checkbox ---- Pos Mode
+	posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
+	gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (posbt),
+		"clicked", GTK_SIGNAL_FUNC (pos_cb), (gpointer) 1);
+	gtk_box_pack_start
+		(GTK_BOX (vbox_map_controls), posbt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
+		_("Turn position mode on. You can move on the map with the "
+		"left mouse button click. Clicking near the border switches "
+		"to the proximate map."), NULL);
+
+	// Checkbox ---- Mapnik Mode
+	mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
+	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
+	g_signal_connect (GTK_OBJECT (mapnik_bt),
+		"clicked", GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
+	gtk_box_pack_start
+		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
+		_("Turn mapnik mode on. In this mode vector maps rendered by "
+		"mapnik (e.g. OpenStreetMap Data) are used instead of the "
+		"other maps."), NULL);
+
+	return frame_maptype;
 }
-  
+
 /* ******************************************************************
  */
 GtkWidget *
@@ -408,7 +429,7 @@ test_loaded_map_names ()
 			    "not map_* or top_* files. Please rename them and change the entries in\n"
 			    "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
 			    "maps.  Otherwise, the maps will not be displayed!"));
-	  popup_error (NULL, error->str);
+	  popup_warning (NULL, error->str);
 	  g_string_free (error, TRUE);
 	  message_wrong_maps_shown = TRUE;
 	}
@@ -792,7 +813,7 @@ loadmap (char *filename)
       error = g_string_new (NULL);
       g_string_sprintf (error, "%s\n%s\n",
 			_(" Mapfile could not be loaded:"), filename);
-      popup_error (NULL, error->str);
+      popup_warning (NULL, error->str);
       g_string_free (error, TRUE);
       maploaded = FALSE;
       print_loadmap_error = TRUE;

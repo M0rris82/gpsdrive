@@ -245,6 +245,7 @@ gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 gint pos_cb (GtkWidget * widget, guint datum);
+gint toggle_mapnik_cb (GtkWidget * widget, guint datum);
 gint streets_draw_cb (GtkWidget * widget, guint datum);
 
 // Some of these shouldn't be necessary, once all the gui stuff is finally moved

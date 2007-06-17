@@ -745,7 +745,10 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 	GtkDialog *dialog_yesno;
 	gint response_id;
 	gchar *question = "Are you sure?";
-	
+
+	if (mydebug >10)
+		fprintf (stderr, "POPUP: Question\n");
+
 	dialog_yesno = GTK_DIALOG (gtk_message_dialog_new (parent,
 		GTK_DIALOG_MODAL,
 		GTK_MESSAGE_QUESTION,
@@ -765,6 +768,9 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 	gint response_id;
 	gchar warning[80];
 
+	if (mydebug >10)
+		fprintf (stderr, "POPUP: Warning\n");
+
 	if (!parent)
 		parent = GTK_WINDOW (mainwindow);
 	if (message)
@@ -774,7 +780,7 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 			sizeof (warning));
 
 	dialog_warning = GTK_DIALOG (gtk_message_dialog_new (parent,
-		GTK_DIALOG_MODAL,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_WARNING,
 		GTK_BUTTONS_OK,
 		"%s", warning));
@@ -795,6 +801,9 @@ gint popup_error (GtkWindow *parent, gchar *message)
 	gint response_id;
 	gchar error[80];
 
+	if (mydebug >10)
+		fprintf (stderr, "POPUP: Error\n");
+
 	if (!parent)
 		parent = GTK_WINDOW (mainwindow);
 	if (message)
@@ -806,7 +815,7 @@ gint popup_error (GtkWindow *parent, gchar *message)
 
 	dialog_error = GTK_DIALOG (gtk_message_dialog_new (parent,
 		GTK_DIALOG_MODAL,
-		GTK_MESSAGE_WARNING,
+		GTK_MESSAGE_ERROR,
 		GTK_BUTTONS_OK,
 		"%s", error));
 

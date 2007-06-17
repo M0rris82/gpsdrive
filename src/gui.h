@@ -93,6 +93,7 @@ typedef struct
 	guint width;
 	guint height;
 	gboolean nightmode;
+	gboolean mapnik;
 } guistatus_struct;
 
 extern guistatus_struct gui_status;
