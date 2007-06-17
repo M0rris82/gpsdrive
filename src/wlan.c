@@ -45,6 +45,7 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 #include "icons.h"
 #include <gpsdrive_config.h>
+#include "gui.h"
 
 #include "gettext.h"
 
@@ -64,22 +65,12 @@ extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor grey;
-
+extern gint isnight, disableisnight;
+extern color_struct colors;
 extern gdouble current_long, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 
@@ -506,7 +497,7 @@ wlan_draw_list (void)
 	      }
 	    else
 	      {
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 		if (wlan_max < 20000)
 		  {		// Only draw small + if more than ... Wlannts 
 		    draw_plus_sign (posx, posy);

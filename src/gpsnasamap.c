@@ -104,6 +104,7 @@ convnasamap creates mapfiles from the big nasa map files
 #include <stdlib.h>
 #include <string.h>
 #include <gpsdrive.h>
+#include "gpsdrive_config.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -115,7 +116,6 @@ convnasamap creates mapfiles from the big nasa map files
 # endif
 
 static char mybuffer[10000];
-extern char local_config_homedir[500], local_config_mapdir[500];
 extern GtkWidget *mainwindow;
 static GtkWidget *nasawindow = NULL;
 extern int debug;
@@ -128,18 +128,18 @@ init_nasa_mapfile ()
 
 	havenasamaps = FALSE;
 
-	if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-		g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
+	if (local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/')
+		g_strlcat (local_config.dir_maps, "/", sizeof (local_config.dir_maps));
 
 
 	g_snprintf (outfilename, sizeof (outfilename), "%stop_NASA_IMAGE.ppm",
-		    local_config_mapdir);
+		    local_config.dir_maps);
 
 	g_snprintf (inputfilename_e, sizeof (inputfilename_e),
-		    "%snasamaps/top_nasamap_east.raw", local_config_homedir);
+		    "%snasamaps/top_nasamap_east.raw", local_config.dir_home);
 
 	g_snprintf (inputfilename_w, sizeof (inputfilename_w),
-		    "%snasamaps/top_nasamap_west.raw", local_config_homedir);
+		    "%snasamaps/top_nasamap_west.raw", local_config.dir_home);
 
 	fdin_e = open (inputfilename_e, O_RDONLY);
 	if (fdin_e >= 0)

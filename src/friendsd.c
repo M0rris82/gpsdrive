@@ -502,7 +502,7 @@ friends_init ()
 	int f;
 	long int r;
 	time_t ti, tii;
-	char friendsidstring[31];
+	char t_friendsidstring[31];
 	r = 0x12345678;
 	f = open ("/dev/random", O_RDONLY);
 	if (f >= 0)
@@ -518,16 +518,16 @@ friends_init ()
 	key = "havenocrypt";
 #ifdef HAVE_CRYPT_H
 	key = crypt ("servr", buf2);
-	g_strlcpy (friendsidstring, (key + 12), sizeof (friendsidstring));
+	g_strlcpy (t_friendsidstring, (key + 12), sizeof (t_friendsidstring));
 #else
 	r = r * r;
-	g_snprintf (friendsidstring, sizeof (friendsidstring),
+	g_snprintf (t_friendsidstring, sizeof (t_friendsidstring),
 		    "nocrypt%015ld", labs (r));
 #endif
 	printf ("\nKey: %s,id: %s %Zu bytes, time: %ld\n", key,
-		friendsidstring, strlen (friendsidstring), ti);
+		t_friendsidstring, strlen (t_friendsidstring), ti);
 
-	g_strlcpy (serverid, friendsidstring, sizeof (serverid));
+	g_strlcpy (serverid, t_friendsidstring, sizeof (serverid));
 	return (0);
 }
 

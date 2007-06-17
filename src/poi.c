@@ -44,6 +44,7 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 #include "icons.h"
 #include <gpsdrive_config.h>
+#include "gui.h"
 
 #include "gettext.h"
 #include <libxml/xmlreader.h>
@@ -63,18 +64,8 @@ extern gint do_unit_test;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gint nightmode, isnight, disableisnight;
-extern gchar local_config_homedir[500];
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor grey;
-
+extern gint isnight, disableisnight;
+extern color_struct colors;
 extern gdouble current_lon, current_lat;
 extern gdouble wp_saved_target_lat, wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
@@ -82,7 +73,6 @@ extern gint posmode;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
@@ -172,17 +162,13 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	
 	char sql_query[5000];
 	char type_filter[3000];
-	char tmp_text[255];
+	gchar *temp_text;
 	char temp_dist[15];
 	int r, rges;
 	int temp_id;
 	
 	GtkTreeIter iter;
-  
-	// ### set limit for testing purposes,
-	// TODO: should be editable in settings.
-	local_config.results_max = 500;
-
+	
 	// clear results from last search	
 	gtk_list_store_clear (poi_result_tree);
 	
@@ -247,15 +233,14 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	}
 
 	/* prepare search text for database query */
-	g_strlcpy (tmp_text, text, sizeof (tmp_text));
-	g_strdelimit (tmp_text, "'", '_');
-	g_strdelimit (tmp_text, "*", '%');
+	temp_text = escape_sql_string (text);
+	g_strdelimit (temp_text, "*", '%');
 		
  	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT poi_id,name,comment,poi_type_id,lon,lat FROM poi "
 		"WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
-		"AND (name LIKE '%%%s%%') %s LIMIT %d;",
-		lat_min, lat_max, lon_min, lon_max, text, type_filter, local_config.results_max);
+		"AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%') %s LIMIT %d;",
+		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text, type_filter, local_config.poi_results_max);
   
 	if (mydebug > 20)
 		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
@@ -276,6 +261,8 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		res = NULL;
 		return 0;
 	}
+	
+	g_free (temp_text);
 	
 	rges = r = 0;
 	poi_nr = 0;
@@ -320,16 +307,21 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		
 		gtk_list_store_append (poi_result_tree, &iter);
 		gtk_list_store_set (poi_result_tree, &iter,
-								RESULT_ID, (poi_result + poi_nr)->poi_id,
-								RESULT_NAME, (poi_result + poi_nr)->name,
-								RESULT_COMMENT,  (poi_result + poi_nr)->comment,
-								RESULT_TYPE_TITLE, poi_type_list[temp_id].title,
-								RESULT_TYPE_ICON, poi_type_list [temp_id].icon,
-								RESULT_DISTANCE, temp_dist,
-								RESULT_DIST_NUM, temp_dist_num,
-								RESULT_LAT, temp_lat,
-								RESULT_LON, temp_lon,
-								-1);
+			RESULT_ID, (poi_result + poi_nr)->poi_id,
+			RESULT_NAME, (poi_result + poi_nr)->name,
+			RESULT_COMMENT,  (poi_result + poi_nr)->comment,
+			RESULT_TYPE_TITLE, poi_type_list[temp_id].title,
+			RESULT_TYPE_ICON, poi_type_list [temp_id].icon,
+			RESULT_DISTANCE, temp_dist,
+			RESULT_DIST_NUM, temp_dist_num,
+			RESULT_LAT, temp_lat,
+			RESULT_LON, temp_lon,
+			-1);
+
+		/* check for friendsd entry */
+		if (g_str_has_prefix(poi_type_list[temp_id].name, "people.friendsd"))
+			g_print ("\nfriend\n");
+
 	}
 
 	poi_result_count = poi_nr;
@@ -366,7 +358,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   if (mydebug > 30)
     fprintf (stderr, "draw_text(%s,%g,%g)\n", txt, posx, posy);
 
-  gdk_gc_set_foreground (kontext, &textback);
+  gdk_gc_set_foreground (kontext, &colors.textback);
 
   poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
   pfd = pango_font_description_from_string ("Sans 8");
@@ -383,8 +375,8 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   gdk_gc_set_function (kontext, GDK_AND);
 
   {				// Draw rectangle arround Text
-    // gdk_gc_set_foreground (kontext, &textbacknew);
-    gdk_gc_set_foreground (kontext, &grey);
+    // gdk_gc_set_foreground (kontext, &colors.textbacknew);
+    gdk_gc_set_foreground (kontext, &colors.grey);
     gdk_draw_rectangle (drawable, kontext, 1,
 			posx + 13, posy - k2 / 2, k + 1, k2);
 
@@ -395,7 +387,7 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 
   gdk_draw_layout_with_colors (drawable, kontext,
 			       posx + 15, posy - k2 / 2,
-			       poi_label_layout, &black, NULL);
+			       poi_label_layout, &colors.black, NULL);
   if (poi_label_layout != NULL)
     g_object_unref (G_OBJECT (poi_label_layout));
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -553,7 +545,7 @@ get_poi_type_list (void)
 	  
 	  if (xml_reader == NULL)
 	  {
-		  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "%s/icons.xml", local_config_homedir);
+		  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "%s/icons.xml", local_config.dir_home);
 		  xml_reader = xmlNewTextReaderFilename(iconsxml_file);
 	  }
 	  if (xml_reader == NULL)
@@ -1115,7 +1107,7 @@ poi_draw_list (void)
 	      }
 	    else
 	      {
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 		if (poi_list_count < 20000)
 		  {		// Only draw small + if more than ... Points 
 		    draw_plus_sign (posx, posy);

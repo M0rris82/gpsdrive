@@ -55,6 +55,7 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "poi.h"
 #include "icons.h"
+#include "gui.h"
 
 #ifndef NOPLUGINS
 #include "gmodule.h"
@@ -81,10 +82,7 @@ extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
 extern gint muteflag, trackflag;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
+extern color_struct colors;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 
@@ -108,9 +106,9 @@ void
 draw_plus_sign (gdouble posxdest, gdouble posydest)
 {
   gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-  if (shadow)
+  if (local_config.showshadow)
     {				/*  draw shadow of + sign */
-      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_foreground (kontext, &colors.darkgrey);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + SHADOWOFFSET,
@@ -122,7 +120,7 @@ draw_plus_sign (gdouble posxdest, gdouble posydest)
     }
 
   /*  draw + sign at destination */
-  gdk_gc_set_foreground (kontext, &red);
+  gdk_gc_set_foreground (kontext, &colors.red);
   gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 5, posxdest + 1, posydest + 1 + 5);
   gdk_draw_line (drawable, kontext, posxdest + 1 + 5, posydest + 1, posxdest + 1 - 5, posydest + 1);
 
@@ -134,9 +132,9 @@ void
 draw_small_plus_sign (gdouble posxdest, gdouble posydest)
 {
   gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-  if (shadow)
+  if (local_config.showshadow)
     {				/*  draw shadow of + sign */
-      gdk_gc_set_foreground (kontext, &darkgrey);
+      gdk_gc_set_foreground (kontext, &colors.darkgrey);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_draw_line (drawable, kontext,
 		     posxdest + 1 + SHADOWOFFSET,
@@ -148,7 +146,7 @@ draw_small_plus_sign (gdouble posxdest, gdouble posydest)
     }
 
   /*  draw + sign at destination */
-  gdk_gc_set_foreground (kontext, &red);
+  gdk_gc_set_foreground (kontext, &colors.red);
   gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 2, posxdest + 1, posydest + 1 + 2);
   gdk_draw_line (drawable, kontext, posxdest + 1 + 2, posydest + 1, posxdest + 1 - 2, posydest + 1);
 
@@ -218,8 +216,8 @@ read_icon (gchar * icon_name, int force)
     {"../data/map-icons/", NULL},
     {"./data/pixmaps/", NULL},
     {"../data/pixmaps/", NULL},
-    {"%spixmaps/", (gchar *) local_config_homedir},
-    {"%smap-icons/", (gchar *) local_config_homedir},
+    {"%spixmaps/", (gchar *) local_config.dir_home},
+    {"%smap-icons/", (gchar *) local_config.dir_home},
     {"%s/map-icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
     {"%s/map-icons/", "/usr/share"},
@@ -340,7 +338,7 @@ load_user_icon (char icon_name[200])
   for (i = 0; i < (int) strlen (icon_name); i++)
     icon_name[i] = tolower (icon_name[i]);
 
-  g_snprintf (path, sizeof (path), "%sicons/%s.png", local_config_homedir, icon_name);
+  g_snprintf (path, sizeof (path), "%sicons/%s.png", local_config.dir_home, icon_name);
   icons_buffer[icons_buffer_last].icon = gdk_pixbuf_new_from_file (path, NULL);
 
   if (icons_buffer[icons_buffer_last].icon == NULL)

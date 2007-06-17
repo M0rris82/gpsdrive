@@ -109,6 +109,7 @@ Disclaimer: Please do not use for navigation.
 #include "icons.h"
 #include "gui.h"
 
+
 #ifndef NOPLUGINS
 #include "gmodule.h"
 #endif
@@ -153,25 +154,6 @@ extern gdouble wp_saved_posmode_lon;
 gdouble dist;
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext;
-GdkColor red = { 0, 0xFF00, 0x0000, 0x0000 };
-GdkColor black = { 0, 0x0000, 0x0000, 0x0000 };
-GdkColor white = { 0, 0xFFFF, 0xFFFF, 0xFFFF };
-GdkColor blue = { 0, 0x0000, 0x0000, 0xff00 };
-GdkColor nightcolor = { 0, 0xa000, 0x0000, 0x0000 };
-GdkColor lcd = { 0, 0x8b00, 0x9500, 0x8b00 };
-GdkColor lcd2 = { 0, 0x7300, 0x7d00, 0x6a00 };
-GdkColor yellow = { 0, 0xff00, 0xff00, 0x0000 };
-GdkColor green = { 0, 0x0000, 0xb000, 0x0000 };
-GdkColor green2 = { 0, 0x0000, 0xff00, 0x0000 };
-GdkColor mygray = { 0, 0xd500, 0xd600, 0xd500 };
-GdkColor textback = { 0, 0xa500, 0xa600, 0xa500 };
-GdkColor textbacknew = { 0, 0x4000, 0x7600, 0xcf00 };
-GdkColor grey = { 0, 0xC000, 0xC000, 0xC000 };
-GdkColor orange = { 0, 0xf000, 0x6000, 0x0000 };
-GdkColor orange2 = { 0, 0xff00, 0x8000, 0x0000 };
-GdkColor darkgrey = { 0, SHADOWGREY, SHADOWGREY, SHADOWGREY };
-GdkColor defaultcolor;
-
 
 GtkWidget *drawing_area, *drawing_bearing;
 GtkWidget *drawing_sats, *drawing_miniimage;
@@ -182,8 +164,6 @@ GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
 gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
 GdkPixbuf *image = NULL, *tempimage = NULL, *miniimage = NULL;
-
-gint setup_cb (GtkWidget * widget, guint datum);
 
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
@@ -196,8 +176,7 @@ extern GtkWidget *drawing_battery, *drawing_temp;
 wpstruct *wayp;
 
 friendsstruct *friends, *fserver;
-char friendsserverip[20], friendsname[40];
-char friendsidstring[40], friendsserverfqn[255];
+
 /* socket for friends  */
 extern int sockfd;
 
@@ -213,10 +192,7 @@ gdouble earthr;
 
 
 gint maploaded = FALSE;
-gint simmode, zoom;
-gint iszoomed;
-extern gchar local_config_homedir[500];
-extern gchar local_config_mapdir[500];
+gint zoom, iszoomed;
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
@@ -229,7 +205,6 @@ GtkWidget *destframe;
 
 extern gchar mapfilename[2048];
 
-gint milesflag, metricflag, nauticflag;
 gdouble milesconv;
 gdouble gbreit, glang, olddist = 99999.0;
 GTimer *timer, *disttimer;
@@ -300,7 +275,6 @@ GdkSegment *track, *trackshadow;
 glong tracknr;
 trackcoordstruct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
-GdkColor trackcolorv;
 gchar savetrackfn[256];
 
 GtkWidget *scaler_left_bt, *scaler_right_bt, *scaler_widget;
@@ -323,13 +297,11 @@ gchar proxy[256], hostname[256];
 /*** Mod by Arms */
 gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
 gint SCREEN_X_2, SCREEN_Y_2;
-gint havefriends = 0;
 gint showallmaps = TRUE;
 /* guint selwptimeout; */
 extern gint setwpactive;
 gint selected_wp_mode = FALSE;
 gint onemousebutton = FALSE;
-gint shadow = TRUE;
 
 
 GtkWidget *askwindow;
@@ -337,7 +309,7 @@ extern time_t maptxtstamp;
 gint simpos_timeout = 0;
 gint setdefaultpos = TRUE;
 extern gint markwaypoint;
-GtkWidget *addwaypointwindow, *setupfn[30];
+GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
 gint disableapm = FALSE;
@@ -347,7 +319,7 @@ typedef struct
 }
 namesstruct;
 namesstruct *names;
-gchar activewpfile[200], gpsdservername[200], setpositionname[80];
+gchar gpsdservername[200], setpositionname[80];
 gint newsatslevel = TRUE, testgarmin = TRUE;
 gint needtosave = FALSE;
 GtkWidget *serial_bt, *mapdirbt;
@@ -361,7 +333,6 @@ gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt;
 GtkWidget *cover;
 extern gint needreloadmapconfig;
-gint simfollow = TRUE;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
@@ -371,14 +342,13 @@ gint satposmode = FALSE;
 gint printoutsats = FALSE;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
-gint minsecmode = LATLON_DEGDEC;
-gint nightmode = FALSE, isnight = FALSE, disableisnight;
+gint isnight = FALSE, disableisnight;
 gint nighttimer;
 GtkWidget *setupentry[50], *setupentrylabel[50];
 void (*setupfunction[50]) ();
 gchar utctime[20], loctime[20];
 gint mod_setupcounter = 4;
-gint cpuload = 40, redrawtimeout;
+gint redrawtimeout;
 gint borderlimit;
 gint zoomscale = TRUE;
 gint pdamode = FALSE;
@@ -411,15 +381,14 @@ gint earthmate = FALSE;
 extern gint wptotal, wpselected;
 
 extern status_struct route;
+extern color_struct colors;
 
 GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
 PangoFontDescription *pfd_text, *pfd_verysmalltext, *pfd_smalltext, *pfd_bigtext, *pfd_wplabel;
-gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100], font_s_bigtext[100], font_s_wplabel[100];
+gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
 
 static gchar gradsym[] = "\xc2\xb0";
 gdouble normalnull = 0;
-gint etch = 1;
-gint do_draw_grid = FALSE;
 extern gint poi_draw;
 extern gint streets_draw;
 extern gint wlan_draw;
@@ -448,7 +417,6 @@ GtkWidget *frame_map_area, *frame_bearing, *frame_target, *frame_altitude;
 GtkWidget *frame_wp;
 GtkWidget *frame_poi,*frame_track, *lab1;
 GtkWidget *menubar;
-gchar bluecolor[40], trackcolor[40], friendscolor[40];
 gchar messagename[40], messagesendtext[1024], messageack[100];
 GtkItemFactory *item_factory;
 gint statuslock = 0, gpson = FALSE;
@@ -456,18 +424,17 @@ int messagenumber = 0, didrootcheck = 0, haveserial = 0;
 int gotneverserial = TRUE, timerto = 0, serialspeed = 1;
 int disableserial = 1, disableserialcl = 0;
 GtkTextBuffer *getmessagebuffer;
-GdkColormap *cmap;
+
 extern int newdata;
 extern pthread_mutex_t mutex;
 //int mapistopo = FALSE;
 extern int havenasa;
 int nosplash = FALSE;
-int havedefaultmap = TRUE, alreadydaymode = FALSE, alreadynightmode = FALSE;
+int havedefaultmap = TRUE;
 
 int storetz = FALSE;
 int egnoson = 0, egnosoff = 0;
 extern char actualstreetname[200];
-int sound_direction = 1, sound_distance = 1, sound_speed = 1, sound_gps = 1;
 
 #define DEG2RAD M_PI/180.0
 
@@ -499,7 +466,7 @@ static GtkItemFactoryEntry main_menu[] = {
     {N_("/_Menu/M_essages/_Send message to mobile target"), 
                                             NULL, (gpointer) sel_message_cb,0,     NULL},
     {N_("/_Menu/S_ettings"), 
-                                            NULL, (gpointer) setup_cb,0,     NULL},
+                                            NULL, (gpointer) settings_main_cb,0,     NULL},
     {N_("/_Menu/_Help"),               NULL, NULL,                     0, "<LastBranch>"},
     {N_("/_Menu/_Help/_About"),         NULL, (gpointer) about_cb,      0, "<StockItem>", GTK_STOCK_ABOUT},
     {N_("/_Menu/_Help/_Topics"),        NULL, (gpointer) help_cb,       0, "<StockItem>", GTK_STOCK_HELP},
@@ -564,7 +531,7 @@ void check_and_create_files(){
     // Create .gpsdrive dir if not exist
     g_snprintf (file_path, sizeof (file_path),
 		"%s",
-		local_config_homedir);
+		local_config.dir_home);
     if(stat(file_path,&buf))
 	{
 	    if ( mkdir (file_path, 0700) )
@@ -576,7 +543,7 @@ void check_and_create_files(){
 	}
 
     // Create maps/ Directory if not exist
-    g_strlcpy (file_path, local_config_mapdir, sizeof (file_path)); 
+    g_strlcpy (file_path, local_config.dir_maps, sizeof (file_path)); 
     if(stat(file_path,&buf))
 	{
 	    if ( mkdir (file_path, 0700) )
@@ -591,7 +558,7 @@ void check_and_create_files(){
     // Copy from system if not exist
     g_snprintf (file_path, sizeof (file_path),
 		"%s/map_koord.txt",
-		local_config_mapdir);
+		local_config.dir_maps);
     if ( stat (file_path, &buf) ) {
 	gchar copy_command[2048];
 	g_snprintf (copy_command, sizeof (copy_command),
@@ -621,62 +588,6 @@ quit_program (GtkWidget * widget, gpointer datum)
     return (TRUE);
 }
 
-
-
-/* *****************************************************************************
- */
-gint
-error_popup (gpointer datum)
-{
-	GtkWidget *popup;
-	GtkWidget *knopf2;
-	GtkWidget *knopf3;
-	GtkWidget *image;
-
-
-	if ( mydebug >5 ) fprintf(stderr , "error_popup()\n");
-
-	if (errortextmode)
-	{
-		g_print ("\nError: %s\n", (char *) datum);
-		return (FALSE);
-	}
-	popup = gtk_dialog_new ();
-	gtk_window_set_transient_for (GTK_WINDOW (popup),
-				      GTK_WINDOW (mainwindow));
-
-	image = gtk_image_new_from_stock (GTK_STOCK_DIALOG_ERROR,
-					  GTK_ICON_SIZE_DIALOG);
-
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (popup)->vbox), image,
-			    FALSE, FALSE, 10);
-	gtk_container_set_border_width (GTK_CONTAINER (popup), 5);
-
-	gtk_window_set_title (GTK_WINDOW (popup), _("  Message  "));
-	knopf2 = gtk_button_new_from_stock (GTK_STOCK_OK);
-	GTK_WIDGET_SET_FLAGS (knopf2, GTK_HAS_FOCUS);
-
-	gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (popup));
-
-	gdk_beep ();
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (popup)->action_area), knopf2,
-			    TRUE, TRUE, 20);
-	knopf3 = gtk_label_new (datum);
-	gtk_label_set_use_markup (GTK_LABEL (knopf3), TRUE);
-
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (popup)->vbox), knopf3, FALSE,
-			    FALSE, 10);
-
-
-	gtk_window_set_position (GTK_WINDOW (popup), GTK_WIN_POS_CENTER);
-	gtk_widget_show (image);
-	gtk_widget_show_all (popup);
-
-	return (FALSE);
-
-}
 
 
 /* *****************************************************************************
@@ -747,7 +658,7 @@ gint
 lightoff (GtkWidget * widget, guint * datum)
 {
 	disableisnight = FALSE;
-	/* gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL, &nightcolor); */
+	/* gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL, &colors.nightmode); */
 	return FALSE;
 }
 
@@ -880,16 +791,20 @@ display_status2 ()
 		if ( mydebug > 20 )
 		    printf ("Actual mouse position: lat:%f,lon:%f (x:%d,y:%d)\n", lat, lon, x, y);
 		// display position of Mouse in lat/lon Fields
-		coordinate2gchar(s2, sizeof(s2), lat, TRUE, minsecmode);
+		coordinate2gchar(s2, sizeof(s2), lat, TRUE,
+			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lat), s2);
-		coordinate2gchar(s2, sizeof(s2), lon, FALSE, minsecmode);
+		coordinate2gchar(s2, sizeof(s2), lon, FALSE,
+			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lon), s2);
 	    }
 	else 
 	    {
-		coordinate2gchar(s2, sizeof(s2), current_lat, TRUE, minsecmode);
+		coordinate2gchar(s2, sizeof(s2), current_lat, TRUE,
+			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lat), s2);
-		coordinate2gchar(s2, sizeof(s2), current_lon, FALSE, minsecmode);
+		coordinate2gchar(s2, sizeof(s2), current_lon, FALSE,
+			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lon), s2);
 	    }
 
@@ -954,27 +869,19 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 
 	if ((!disableisnight) && (!downloadwindowactive))
 	{
-		if (((nightmode == 1) || ((nightmode == 2) && isnight))
-		    && (!alreadynightmode))
+		if (	(local_config.nightmode == NIGHT_ON) ||
+			(local_config.nightmode == NIGHT_AUTO && isnight)
+		   )
 		{
-			gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
-					      &nightcolor);
-			alreadydaymode = FALSE;
-			alreadynightmode = TRUE;
-			if (mydebug>1)
-				fprintf (stderr, "setting to night view\n");
+			switch_nightmode (TRUE);
 		}
 	}
 
-	if (((nightmode == 0) || disableisnight || downloadwindowactive)
-	    && (!alreadydaymode))
+	if (	local_config.nightmode == NIGHT_OFF
+		|| disableisnight || downloadwindowactive
+	   )
 	{
-		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
-				      &defaultcolor);
-		if ( mydebug > 10 )
-			fprintf (stderr, "setting to daylight view\n");
-		alreadydaymode = TRUE;
-		alreadynightmode = FALSE;
+		switch_nightmode (FALSE);
 	}
 
 
@@ -1020,10 +927,10 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 
 	if ( mydebug >50 ) fprintf(stderr , "calldrawmarker_cb()\n");
 
-	if (cpuload < 1)
-		cpuload = 1;
-	if (cpuload > 95)
-		cpuload = 95;
+	if (local_config.maxcpuload < 1)
+		local_config.maxcpuload = 1;
+	if (local_config.maxcpuload > 95)
+		local_config.maxcpuload = 95;
 	if (!haveNMEA)
 		expose_sats_cb (NULL, 0);
 	if (pleasepollme)
@@ -1032,10 +939,10 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 		if (pleasepollme > 10)
 		{
 			pleasepollme = 1;
-			friends_sendmsg (friendsserverip, NULL);
+			friends_sendmsg (local_config.friends_serverip, NULL);
 		}
 	}
-	period = 10 * globruntime / (10 * cpuload);
+	period = 10 * globruntime / (10 * local_config.maxcpuload);
 	drawmarkercounter++;
 	/*   g_print("period: %d, drawmarkercounter %d\n", period, drawmarkercounter);  */
 
@@ -1062,13 +969,13 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 	if ( mydebug >50 ) fprintf(stderr , "friendsagent_cb()\n");
 
 	/* Don't allow spaces in name */
-	for (i = 0; (size_t) i < strlen (friendsname); i++)
-		if (friendsname[i] == ' ')
-			friendsname[i] = '_';
+	for (i = 0; (size_t) i < strlen (local_config.friends_name); i++)
+		if (local_config.friends_name[i] == ' ')
+			local_config.friends_name[i] = '_';
 
 	/*  send position to friendsserver */
 
-	if (havefriends)
+	if (local_config.showfriends)
 	{
 		if (strlen (messagesendtext) > 0)
 		{
@@ -1079,7 +986,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 				messagenumber = 0;
 			needtosave = TRUE;
 			g_snprintf (num, sizeof (num), "%02d", messagenumber);
-			g_strlcpy (buf2, friendsidstring, sizeof (buf2));
+			g_strlcpy (buf2, local_config.friends_id, sizeof (buf2));
 			buf2[0] = 'M';
 			buf2[1] = 'S';
 			buf2[2] = 'G';
@@ -1090,11 +997,11 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 			if ( mydebug > 3 )
 				fprintf (stderr,
 					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
-					 friendsserverip, buf);
+					 local_config.friends_serverip, buf);
 			if (sockfd != -1)
 				close (sockfd);
 			sockfd = -1;
-			friends_sendmsg (friendsserverip, buf);
+			friends_sendmsg (local_config.friends_serverip, buf);
 			g_snprintf (messageack, sizeof (messageack),
 				    "SND: %s", buf2);
 		}
@@ -1108,18 +1015,18 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 			tii = time (NULL);
 			g_snprintf (buf, sizeof (buf),
 				    "POS: %s %s %s %s %ld %.0f %.0f %d",
-				    friendsidstring, friendsname, la, lo, tii,
+				    local_config.friends_id, local_config.friends_name, la, lo, tii,
 				    groundspeed / milesconv,
 				    180.0 * direction / M_PI,
 				    local_config.travelmode);
 			if ( mydebug > 3 )
 				fprintf (stderr,
 					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
-					 friendsserverip, buf);
+					 local_config.friends_serverip, buf);
 			if (sockfd != -1)
 				close (sockfd);
 			sockfd = -1;
-			friends_sendmsg (friendsserverip, buf);
+			friends_sendmsg (local_config.friends_serverip, buf);
 		}
 	}
 
@@ -1158,7 +1065,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 				    _("Warning!"),
 				    _
 				    ("You should not start GpsDrive as user root!!!"));
-			error_popup (buffer);
+			popup_error (NULL, buffer);
 			didrootcheck = TRUE;
 		}
 
@@ -1202,7 +1109,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
 #ifdef DBUS_ENABLE
 	/* If we use DBUS track points are usually stored by the DBUS signal handler */
 	/* Only store them by timer if we are in position mode */
-	if ( useDBUS && !simmode )
+	if ( useDBUS && !local_config.simmode )
 	    return TRUE;
 #endif
 
@@ -1219,7 +1126,7 @@ storepoint ()
 	time_t t;
 	struct tm *ts;
 	/*    g_print("Havepos: %d\n", havepos); */
-	if ((!simmode && !havepos) || posmode /*  ||((!simmode &&haveposcount<3)) */ )	/* we have no valid position */
+	if ((!local_config.simmode && !havepos) || posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
 		(trackcoord + trackcoordnr)->lon = 1001.0;
 		(trackcoord + trackcoordnr)->lat = 1001.0;
@@ -1303,30 +1210,30 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 
 	if (haveNMEA)
 	{
-		gdk_gc_set_foreground (kontext, &lcd);
+		gdk_gc_set_foreground (kontext, &colors.lcd);
 
 		gdk_draw_rectangle (drawable_sats, kontext, 1, 3, 0,
 				    PSIZE + 2, PSIZE + 5);
 		gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-		gdk_gc_set_foreground (kontext, &black);
+		gdk_gc_set_foreground (kontext, &colors.black);
 		gdk_draw_rectangle (drawable_sats, kontext, 0, 3, 0,
 				    PSIZE + 2, PSIZE + 5);
 
-		gdk_gc_set_foreground (kontext, &lcd);
+		gdk_gc_set_foreground (kontext, &colors.lcd);
 
 		if (!satposmode)
 		{
 			if (havepos)
-				gdk_gc_set_foreground (kontext, &green);
+				gdk_gc_set_foreground (kontext, &colors.green);
 			else
-				gdk_gc_set_foreground (kontext, &red);
+				gdk_gc_set_foreground (kontext, &colors.red);
 			gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 			for (i = 3; i < (PSIZE + 5); i += 3)
 				gdk_draw_line (drawable_sats, kontext, 4, i,
 					       PSIZE + 4, i);
 
 
-			gdk_gc_set_foreground (kontext, &lcd2);
+			gdk_gc_set_foreground (kontext, &colors.lcd2);
 			gdk_gc_set_line_attributes (kontext, 5, 0, 0, 0);
 			k = 0;
 			for (i = 0; i < 16; i++)
@@ -1345,26 +1252,26 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 			}
 		}
 		if (satfix == 1)	/* normal Fix */
-			gdk_gc_set_foreground (kontext, &black);
+			gdk_gc_set_foreground (kontext, &colors.black);
 		else
 		{
 			if (satfix == 0)	/* no Fix */
-				gdk_gc_set_foreground (kontext, &textback);
+				gdk_gc_set_foreground (kontext, &colors.textback);
 			else	/* Differntial Fix */
-				gdk_gc_set_foreground (kontext, &blue);
+				gdk_gc_set_foreground (kontext, &colors.blue);
 		}
 		j = k = 0;
 
 		if (satposmode)
 		{
 			gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-			gdk_gc_set_foreground (kontext, &lcd2);
+			gdk_gc_set_foreground (kontext, &colors.lcd2);
 			gdk_draw_arc (drawable_sats, kontext, 0, 4,
 				      4, PSIZE, PSIZE, 105 * 64, 330 * 64);
 			gdk_draw_arc (drawable_sats, kontext, 0,
 				      5 + PSIZE / 4, 4 + PSIZE / 4, PSIZE / 2,
 				      PSIZE / 2, 0, 360 * 64);
-			gdk_gc_set_foreground (kontext, &darkgrey);
+			gdk_gc_set_foreground (kontext, &colors.darkgrey);
 			{
 				/* prints in pango */
 				PangoFontDescription *pfd;
@@ -1375,7 +1282,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 					gtk_widget_create_pango_layout
 					(drawing_sats, "N");
 				//KCFX  
-				if (pdamode)
+				if (local_config.guimode == GUI_PDA)
 					pfd = pango_font_description_from_string ("Sans 7");
 				else
 					pfd = pango_font_description_from_string ("Sans bold 10");
@@ -1387,7 +1294,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 							     0 + (PSIZE) / 2,
 							     -2,
 							     wplabellayout,
-							     &grey, NULL);
+							     &colors.grey, NULL);
 				pango_layout_get_pixel_size (wplabellayout,
 							     &width, NULL);
 				/*          printf ("w: %d\n", width);  */
@@ -1402,7 +1309,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 			/*    gdk_draw_text (drawable_sats, font_verysmalltext, kontext,
 			 *                   2 + (PSIZE) / 2, 9, "N", 1);
 			 */
-			gdk_gc_set_foreground (kontext, &lcd2);
+			gdk_gc_set_foreground (kontext, &colors.lcd2);
 
 		}
 
@@ -1434,22 +1341,22 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 					case 0:
 					case 1:
 						gdk_gc_set_foreground
-							(kontext, &textback);
+							(kontext, &colors.textback);
 						break;
 					case 2:
 					case 3:
 						gdk_gc_set_foreground
-							(kontext, &red);
+							(kontext, &colors.red);
 						break;
 					case 4:
 					case 5:
 					case 6:
 						gdk_gc_set_foreground
-							(kontext, &yellow);
+							(kontext, &colors.yellow);
 						break;
 					case 7:
 						gdk_gc_set_foreground
-							(kontext, &green2);
+							(kontext, &colors.green2);
 						break;
 					}
 					gdk_draw_arc (drawable_sats, kontext,
@@ -1485,7 +1392,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 		gtk_entry_set_text (GTK_ENTRY (satslabel1), txt);
 		if ((precision > 0.0) && (satfix != 0))
 		{
-			if (milesflag || nauticflag)
+			if (local_config.distmode == DIST_MILES || local_config.distmode == DIST_NAUTIC)
 				g_snprintf (t1, sizeof (t1), "%.0fft",
 					    precision * 3.2808399);
 			else
@@ -1512,7 +1419,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 
     if (satfix != oldsatfix)
     {
-      if( !muteflag && sound_gps )
+      if( !muteflag && local_config.sound_gps )
       {
         if( 0 == satfix )
         {
@@ -1623,11 +1530,11 @@ draw_zoom_scale (void)
 	approx_displayed_value /* m */ = min_bar_length * mapscale
 					 / PIXELFACT / zoom;
 
-	if (nauticflag) {
+	if (local_config.distmode == DIST_NAUTIC) {
 		conversion /* m/nmi */ = 1000.0 /* m/km */ / KM2NAUTIC /* nmi/km */;
 		symbol = "nmi";
 		format = "%.2lf %s";
-	} else if (metricflag) {
+	} else if (local_config.distmode == DIST_METRIC) {
 		conversion /* m/m */ = 1.0 /* m/m */;
 		symbol = "m";
 		format = "%.0lf %s";
@@ -1636,7 +1543,7 @@ draw_zoom_scale (void)
 			symbol = "km";
 			format = "%.0lf %s";
 		}
-	} else if (milesflag) {
+	} else if (local_config.distmode == DIST_MILES) {
 		conversion /* m/yd */ = 1000.0 /* m/km */
 					/ 1760.0 /* yd/mi */
 					/ KM2MILES /* mi/km */;
@@ -1683,7 +1590,7 @@ draw_zoom_scale (void)
 
 	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext, GDK_OR);
-	gdk_gc_set_foreground (kontext, &mygray);
+	gdk_gc_set_foreground (kontext, &colors.mygray);
 	//gdk_gc_set_foreground (kontext, &textback);
 	gdk_draw_rectangle (drawable, kontext, 1,
 			    SCREEN_X - dist_x - bar_length - frame_width,
@@ -1691,7 +1598,7 @@ draw_zoom_scale (void)
 			    bar_length + 2 * frame_width, 
 			    dist_y + 1 * frame_width);
 	gdk_gc_set_function (kontext, GDK_COPY);
-	gdk_gc_set_foreground (kontext, &black);
+	gdk_gc_set_foreground (kontext, &colors.black);
 
 	/* Print the meaning of the scale bar ("10 km") */
 	{
@@ -1703,7 +1610,7 @@ draw_zoom_scale (void)
 
 	    gdk_draw_layout_with_colors (drawable, kontext, 
 					 l, SCREEN_Y - dist_y -1 ,
-					 wplabellayout, &black, NULL);
+					 wplabellayout, &colors.black, NULL);
 	    if (wplabellayout != NULL)
 		g_object_unref (G_OBJECT (wplabellayout));
 	}
@@ -1731,11 +1638,11 @@ draw_zoom_scale (void)
 
 	gdk_gc_set_function (kontext, GDK_OR);
 
-	gdk_gc_set_foreground (kontext, &mygray);
+	gdk_gc_set_foreground (kontext, &colors.mygray);
 	gdk_draw_rectangle (drawable, kontext, 1, (SCREEN_X - 30), 0, 30, 30);
 	gdk_gc_set_function (kontext, GDK_COPY);
 
-	gdk_gc_set_foreground (kontext, &blue);
+	gdk_gc_set_foreground (kontext, &colors.blue);
 
 	{
 	    /* prints in pango */
@@ -1747,7 +1654,7 @@ draw_zoom_scale (void)
 	    pango_layout_set_font_description (wplabellayout, pfd);
 	    
 	    gdk_draw_layout_with_colors (drawable, kontext,
-					 l, 2, wplabellayout, &blue,
+					 l, 2, wplabellayout, &colors.blue,
 					 NULL);
 	    if (wplabellayout != NULL)
 		g_object_unref (G_OBJECT (wplabellayout));
@@ -1771,12 +1678,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 	gint k;
 
 	gblink = !gblink;
-	/*    g_print("simmode: %d, nmea %d garmin %d\n",simmode,haveNMEA,haveGARMIN); */
+	/*    g_print("simmode: %d, nmea %d garmin %d\n",local_config.simmode,haveNMEA,haveGARMIN); */
 
 	if (importactive)
 	    return TRUE;
 
-	if (do_draw_grid)
+	if (local_config.showgrid)
 		draw_grid (widget);
 
 
@@ -1793,7 +1700,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	drawtracks ();
 
-	if (havefriends)
+	if (local_config.showfriends)
 		drawfriends ();
 
 	if (havekismet)
@@ -1811,10 +1718,10 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (savetrack)
 	{
 		k = 100;
-		gdk_gc_set_foreground (kontext, &white);
+		gdk_gc_set_foreground (kontext, &colors.white);
 		gdk_draw_rectangle (drawable, kontext, 1, 10,
 				    SCREEN_Y - 21, k + 3, 14);
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 		{
 			/* prints in pango */
 			PangoFontDescription *pfd;
@@ -1824,7 +1731,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 				gtk_widget_create_pango_layout (drawing_area,
 								savetrackfn);
 			//KCFX  
-			if (pdamode)
+			if (local_config.guimode == GUI_PDA)
 				pfd = pango_font_description_from_string
 					("Sans 7");
 			else
@@ -1835,7 +1742,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 			gdk_draw_layout_with_colors (drawable, kontext,
 						     14, SCREEN_Y - 22,
-						     wplabellayout, &red,
+						     wplabellayout, &colors.red,
 						     NULL);
 			if (wplabellayout != NULL)
 				g_object_unref (G_OBJECT (wplabellayout));
@@ -1867,17 +1774,17 @@ drawmarker (GtkWidget * widget, guint * datum)
 	{
 		if (posmode)
 		{
-			gdk_gc_set_foreground (kontext, &blue);
+			gdk_gc_set_foreground (kontext, &colors.blue);
 			gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
 			gdk_draw_rectangle (drawable, kontext, 0, posx - 10,
 					    posy - 10, 20, 20);
 		}
 		else
 		{
-			if (shadow)
+			if (local_config.showshadow)
 			{
 				/*  draw shadow of  position marker */
-				gdk_gc_set_foreground (kontext, &darkgrey);
+				gdk_gc_set_foreground (kontext, &colors.darkgrey);
 				gdk_gc_set_line_attributes (kontext, 3, 0, 0,
 							    0);
 				gdk_gc_set_function (kontext, GDK_AND);
@@ -1973,7 +1880,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			}
 			/*  draw real position marker */
 
-			gdk_gc_set_foreground (kontext, &black);
+			gdk_gc_set_foreground (kontext, &colors.black);
 			gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
 			gdk_draw_arc (drawable, kontext, 0, posx - 7,
 				      posy - 7, 14, 14, 0, 360 * 64);
@@ -1997,7 +1904,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 					  (GdkPoint *) poly, 5);
 
 			/*  draw pointer to direction */
-			gdk_gc_set_foreground (kontext, &red);
+			gdk_gc_set_foreground (kontext, &colors.red);
 			gdk_draw_arc (drawable, kontext, 0, posx + 2 - 7,
 				      posy + 2 - 7, 10, 10, 0, 360 * 64);
 			w = direction + M_PI;
@@ -2020,7 +1927,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		{
 			calcxy (&posxmarker, &posymarker, wplon, wplat, zoom);
 
-			gdk_gc_set_foreground (kontext, &green);
+			gdk_gc_set_foreground (kontext, &colors.green);
 			gdk_gc_set_line_attributes (kontext, 5, 0, 0, 0);
 			gdk_draw_arc (drawable, kontext, 0, posxmarker - 10,
 				      posymarker - 10, 20, 20, 0, 360 * 64);
@@ -2046,10 +1953,10 @@ drawmarker (GtkWidget * widget, guint * datum)
 	calcxy (&posxdest, &posydest, target_lon, target_lat, zoom);
 
 	gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-	if (shadow)
+	if (local_config.showshadow)
 	{
 		/*  draw + sign at destination */
-		gdk_gc_set_foreground (kontext, &darkgrey);
+		gdk_gc_set_foreground (kontext, &colors.darkgrey);
 		gdk_gc_set_function (kontext, GDK_AND);
 		gdk_draw_line (drawable, kontext, posxdest + 1 + SHADOWOFFSET,
 			       posydest + 1 - 10 + SHADOWOFFSET,
@@ -2073,9 +1980,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 	}
 
 	if (crosstoogle)
-		gdk_gc_set_foreground (kontext, &blue);
+		gdk_gc_set_foreground (kontext, &colors.blue);
 	else
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 	crosstoogle = !crosstoogle;
 	/*  draw + sign at destination */
 	gdk_draw_line (drawable, kontext, posxdest + 1,
@@ -2091,7 +1998,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	/* display messages on map */
 	display_dsc ();
 	/*  if distance is less then 1 km show meters */
-	if (milesflag)
+	if (local_config.distmode == DIST_MILES)
 	{
 		if (dist <= 1.0)
 		{
@@ -2112,7 +2019,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			}
 		}
 	}
-	if (metricflag)
+	if (local_config.distmode == DIST_METRIC)
 	{
 		if (dist <= 1.0)
 		{
@@ -2133,7 +2040,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			}
 		}
 	}
-	if (nauticflag)
+	if (local_config.distmode == DIST_NAUTIC)
 	{
 		if (dist <= 1.0)
 		{
@@ -2157,31 +2064,40 @@ drawmarker (GtkWidget * widget, guint * datum)
 	/*    display distance, speed and zoom */
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
-		    bluecolor, font_s_bigtext, s2, s2a);
+		    local_config.color_bigdisplay,
+		    local_config.font_bigdisplay, s2, s2a);
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
 	if ( mydebug > 5 ) 
 	    fprintf(stderr, "groundspeed=%f\n", groundspeed);
-	if (milesflag)
+	if (local_config.distmode == DIST_MILES)
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
-	if (metricflag)
+	if (local_config.distmode == DIST_METRIC)
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
-	if (nauticflag)
+	if (local_config.distmode == DIST_NAUTIC)
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
-		    bluecolor, font_s_bigtext, s2);
+		    local_config.color_bigdisplay,
+		    local_config.font_bigdisplay, s2);
 	gtk_label_set_markup (GTK_LABEL (speedlabel), s3);
 
 	/* gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
 
 	if (havealtitude)
 	{
-		if (milesflag || nauticflag)
+		if (local_config.altmode == ALT_FEET)
 		{
 			g_snprintf (s2, sizeof (s2), "%.0f",
 				    altitude * 3.2808399 + normalnull);
 			g_strlcpy (s2a, "ft", sizeof (s2a));
+		}
+		else if (local_config.altmode == ALT_YARDS)
+		{
+			g_snprintf (s2, sizeof (s2), "%.0f",
+				    altitude * 1.093613 + normalnull);
+			g_strlcpy (s2a, "yd", sizeof (s2a));
+		
 		}
 		else
 		{
@@ -2191,18 +2107,18 @@ drawmarker (GtkWidget * widget, guint * datum)
 		}
 		gtk_label_set_text (GTK_LABEL (altilabel), s2);
 
-		if (pdamode)
+		if (local_config.guimode == GUI_PDA)
 		{
 			if (normalnull == 0.0)
 
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>",
-					    bluecolor, s2, bluecolor, s2a);
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
 			else
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>"
 					    "<span color=\"red\" font_family=\"Arial\" size=\"5000\">\nNN %+.1f</span>",
-					    bluecolor, s2, bluecolor, s2a,
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a,
 					    normalnull);
 		}
 		else
@@ -2211,17 +2127,17 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"15000\">%s</span><span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
-					    bluecolor, s2, bluecolor, s2a);
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
 			else
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"15000\">%s</span><span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>"
 					    "<span color=\"red\" font_family=\"Arial\" weight=\"bold\" size=\"8000\">\nNN %+.1f</span>",
-					    bluecolor, s2, bluecolor, s2a,
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a,
 					    normalnull);
 		}
 		gtk_label_set_markup (GTK_LABEL (altilabel), s3);
 	}
-	if (simmode)
+	if (local_config.simmode)
 		blink = TRUE;
 	else
 	{
@@ -2265,15 +2181,15 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 				 kontext, miniimage, 0, 0, 0, 0, 128, 103,
 				 GDK_RGB_DITHER_NONE, 0, 0);
 
-		/*       if ((nightmode == 1) || ((nightmode == 2) && (isnight&& !disableisnight)) */
+		/*       if (local_config.nightmode && (isnight&& !disableisnight)) */
 		/*  { */
 		/*    gdk_gc_set_function (kontext, GDK_AND); */
-		/*    gdk_gc_set_foreground (kontext, &nightcolor); */
+		/*    gdk_gc_set_foreground (kontext, &colors.nightmode); */
 		/*    gdk_draw_rectangle (drawing_miniimage->window, kontext, 1, 0, 0, 128, */
 		/*                        103); */
 		/*    gdk_gc_set_function (kontext, GDK_COPY); */
 		/*  } */
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 		gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 
 		gdk_draw_rectangle (drawing_miniimage->window, kontext, 0,
@@ -2323,7 +2239,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 
 	if (foundradar)
 	{
-		gdk_gc_set_foreground (kontext, &red);
+		gdk_gc_set_foreground (kontext, &colors.red);
 		gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 		w = radarbearing + M_PI;
 		if (w < 0)
@@ -2355,7 +2271,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 				  (GdkPoint *) poly, 8);
 	}
 
-	gdk_gc_set_foreground (kontext, &black);
+	gdk_gc_set_foreground (kontext, &colors.black);
 
 	/* compass */
 	//      /* added by zwerg (Daniel Wernle)
@@ -2365,7 +2281,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 
 	for (line_count = 0; line_count < 12; line_count++)
 	{
-		gdk_gc_set_foreground (compasskontext, &red);
+		gdk_gc_set_foreground (compasskontext, &colors.red);
 
 		if (!(line_count % 3))
 		{
@@ -2384,7 +2300,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 				wplabellayout =
 					gtk_widget_create_pango_layout
 					(drawing_bearing, txt);
-				if (pdamode)
+				if (local_config.guimode == GUI_PDA)
 					pfd = pango_font_description_from_string ("Sans 7");
 				else
 					pfd = pango_font_description_from_string ("Sans 10");
@@ -2406,7 +2322,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 								M_PI_2))) +
 							     l2 / 2,
 							     wplabellayout,
-							     &black, NULL);
+							     &colors.black, NULL);
 				if (wplabellayout != NULL)
 					g_object_unref (G_OBJECT
 							(wplabellayout));
@@ -2414,11 +2330,11 @@ expose_compass (GtkWidget * widget, guint * datum)
 				pango_font_description_free (pfd);
 
 			}
-			gdk_gc_set_foreground (compasskontext, &red);
+			gdk_gc_set_foreground (compasskontext, &colors.red);
 		}
 		else
 		{
-			gdk_gc_set_foreground (compasskontext, &black);
+			gdk_gc_set_foreground (compasskontext, &colors.black);
 			gdk_gc_set_line_attributes (compasskontext, 1, 0, 0,
 						    0);
 		}
@@ -2436,7 +2352,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 	w = bearing + M_PI;
 
 #define TRIANGLEFACTOR 0.75
-	gdk_gc_set_foreground (compasskontext, &black);
+	gdk_gc_set_foreground (compasskontext, &colors.black);
 
 	gdk_gc_set_line_attributes (compasskontext, 1, 0, 0, 0);
 	/*   gdk_draw_arc (drawable_bearing, compasskontext, 0, 0, 0, PSIZE, PSIZE, */
@@ -2453,13 +2369,13 @@ expose_compass (GtkWidget * widget, guint * datum)
 	poly[4].x = poly[0].x;
 	poly[4].y = poly[0].y;
 
-	gdk_gc_set_foreground (compasskontext, &black);
+	gdk_gc_set_foreground (compasskontext, &colors.black);
 	gdk_gc_set_line_attributes (compasskontext, 2, 0, 0, 0);
 
 	gdk_draw_polygon (drawable_bearing, compasskontext, 1,
 			  (GdkPoint *) poly, 5);
 
-	gdk_gc_set_foreground (kontext, &black);
+	gdk_gc_set_foreground (kontext, &colors.black);
 
 	return TRUE;
 
@@ -2480,7 +2396,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 	/*    g_print("\nexpose_cb %d",exposecounter++);   */
 
 	/*   fprintf (stderr, "lat: %f long: %f\n", current_lat, current_lon); */
-	if (exposed && pdamode)
+	if (exposed && local_config.guimode == GUI_PDA)
 		return TRUE;
 
 
@@ -2534,7 +2450,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 			g_print ("Angle_To_Destination: %.1f �\n",
 				 angle_to_destination * 180 / M_PI);
 
-		if (havefriends && targetname[0] == '*')
+		if (local_config.showfriends && targetname[0] == '*')
 			for (i = 0; i < maxfriends; i++)
 			{
 				g_strlcpy (name, "*", sizeof (name));
@@ -2657,10 +2573,10 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 	if ((!disableisnight) && (!downloadwindowactive))
 	{
-		if ((nightmode == 1) || ((nightmode == 2) && isnight))
+		if (local_config.nightmode && isnight)
 		{
 			gdk_gc_set_function (kontext, GDK_AND);
-			gdk_gc_set_foreground (kontext, &nightcolor);
+			gdk_gc_set_foreground (kontext, &colors.nightmode);
 			gdk_draw_rectangle (drawable, kontext, 1, 0, 0,
 					    SCREEN_X, SCREEN_Y);
 			gdk_gc_set_function (kontext, GDK_COPY);
@@ -2688,7 +2604,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 		gtk_entry_set_text (GTK_ENTRY (wplabel3), s1);
 		gtk_entry_set_text (GTK_ENTRY (wplabel4), loctime);
 	}
-	if (havefriends)
+	if (local_config.showfriends)
 		g_snprintf (s1, sizeof (s1), "%d/%d", actualfriends,
 			    maxfriends);
 	else
@@ -2716,7 +2632,7 @@ simulated_pos (GtkWidget * widget, guint * datum)
 
 	if (mydebug >50) printf ("simulated_pos()\n");
 
-	if (!simfollow)
+	if (!local_config.simmode)
 		return TRUE;
 
 	ACCELMAX = 0.00002 + dist / 30000.0;
@@ -2886,294 +2802,17 @@ setup2_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-wpfileselect_cb (GtkWidget * widget, guint datum)
-{
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (setupfn[datum])))
-		if ((strcmp (activewpfile, (names + datum)->n)))
-		{
-			g_strlcpy (activewpfile, (names + datum)->n,
-				   sizeof (activewpfile));
-			if ( mydebug > 3 )
-				g_print ("activewpfile: %s\n", activewpfile);
-			loadwaypoints ();
-			iszoomed = FALSE;
-		}
-	needtosave = TRUE;
-	return TRUE;
-}
 
-
-/* *****************************************************************************
- */
-gint
-setup_cb (GtkWidget * widget, guint datum)
-{
-	GtkWidget *notebook, *vbox, *cancel;
-	GtkWidget *window = NULL;
-	gint i;
-
-	gtk_widget_set_sensitive (setup_bt, FALSE);
-
-	mainsetup ();
-	infos ();
-	trip ();
-
-	window = gtk_dialog_new ();
-	gtk_window_set_title (GTK_WINDOW (window), _("GpsDrive Control"));
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
-
-	cancel = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS (cancel, GTK_CAN_DEFAULT);
-	gtk_window_set_default (GTK_WINDOW (window), cancel);
-	/*   GTK_WIDGET_SET_FLAGS (cancel, GTK_HAS_FOCUS); */
-
-
-	/* settings close event */
-	gtk_signal_connect_object ((GTK_OBJECT (window)), "delete_event",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (window));
-	
-	/* cancel button event */
-	gtk_signal_connect_object ((GTK_OBJECT (cancel)), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (window));
-				   
-	/* destroy window -> destroy timers */
-	gtk_signal_connect ((GTK_OBJECT (window)), "destroy",
-				   GTK_SIGNAL_FUNC (removesetutc), 0);
-
-
-	gtk_container_border_width (GTK_CONTAINER (window), 2 * PADDING);
-	vbox = gtk_vbox_new (FALSE, 2 * PADDING);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
-
-	/* Create a new notebook, place the position of the tabs */
-	settingsnotebook = notebook = gtk_notebook_new ();
-	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
-	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (notebook), GTK_POS_TOP);
-	gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), TRUE);
-	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
-	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 2 * PADDING);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->action_area),
-			    cancel, TRUE, TRUE, 2);
-
-	gtk_widget_show (notebook);
-	/*   g_print("\nmod_setupcounter: %d",mod_setupcounter); */
-	//KCFX
-	for (i = 0; i <= mod_setupcounter; i++)
-	{
-		if (i > 4)
-			setupfunction[i] ();
-
-		gtk_widget_show_all (setupentry[i]);
-		gtk_notebook_append_page (GTK_NOTEBOOK (notebook),
-					  setupentry[i], setupentrylabel[i]);
-	}
-	gtk_notebook_set_page (GTK_NOTEBOOK (notebook), lastnotebook);
-	gtk_widget_show_all (window);
-
-	return TRUE;
-}
-
-
-
-/* *****************************************************************************
- * switching between kilometers and metric/nautic miles 
- */
-gint
-miles_cb (GtkWidget * widget, guint datum)
-{
-	gchar s1[80];
-	/*      1=miles, 2=metric, 3=nautic */
-	switch (datum)
-	{
-	case 1:
-		milesconv = KM2MILES;
-		milesflag = TRUE;
-		nauticflag = FALSE;
-		metricflag = FALSE;
-		break;
-	case 2:
-		milesconv = 1.0;
-		milesflag = FALSE;
-		nauticflag = FALSE;
-		metricflag = TRUE;
-		break;
-	case 3:
-		milesconv = KM2NAUTIC;
-		milesflag = FALSE;
-		nauticflag = TRUE;
-		metricflag = FALSE;
-		break;
-
-	}
-	needtosave = TRUE;
-	if (pdamode)
-	{
-		if (milesflag)
-			g_snprintf (s1, sizeof (s1), "[%s]", _("mi/h"));
-		else if (nauticflag)
-			g_snprintf (s1, sizeof (s1), "[%s]", _("knots"));
-		else
-			g_snprintf (s1, sizeof (s1), "[%s]", _("km/h"));
-	}
-	else
-	{
-		if (milesflag)
-			g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-				    _("mi/h"));
-		else if (nauticflag)
-			g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-				    _("knots"));
-		else
-			g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-				    _("km/h"));
-	}
-
-	gtk_frame_set_label (GTK_FRAME (frame_speed), s1);
-	return TRUE;
-}
-
-/* *****************************************************************************
- * switching nightmode 
- */
-gint
-night_cb (GtkWidget * widget, guint datum)
-{
-
-	switch (datum)
-	{
-	case 0:
-		nightmode = 0;
-		break;
-	case 1:
-		nightmode = 1;
-		break;
-	case 2:
-		nightmode = 2;
-		break;
-
-	}
-
-	needtosave = TRUE;
-	return TRUE;
-}
-
-
-/* *****************************************************************************
- *  switching shadow on/off 
- */
-gint
-shadow_cb (GtkWidget * widget, guint datum)
-{
-	shadow = !shadow;
-	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- *  switching etch on/off
- */
-gint
-etch_cb (GtkWidget * widget, guint datum)
-{
-	int stype;
-	extern GtkWidget *frame_battery;
-	extern GtkWidget *frame_temperature;
-
-
-	etch = !etch;
-	if (etch)
-		stype = GTK_SHADOW_IN;
-	else
-		stype = GTK_SHADOW_ETCHED_OUT;
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_bearing), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_target), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_speed), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_altitude), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_wp), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_sats), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_lat), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_lon), stype);
-	if ( mydebug >10 )
-	    gtk_frame_set_shadow_type (GTK_FRAME (frame_mapfile), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapscale), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_heading), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_bearing), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_timedest), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_prefscale), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_poi), stype);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame_maptype), stype);
-	//	gtk_frame_set_shadow_type (GTK_FRAME (frame_mapcontrol), stype);
-
-	if (frame_battery)
-	    gtk_frame_set_shadow_type (GTK_FRAME (frame_battery), stype);
-	if (frame_temperature)
-	    gtk_frame_set_shadow_type (GTK_FRAME (frame_temperature), stype);
-
-	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- * switching grid on/off 
- */
-gint
-drawgrid_cb (GtkWidget * widget, guint datum)
-{
-	if ( datum )
-	{
-	    do_draw_grid = !do_draw_grid;
-	    needtosave = TRUE;
-	}
-	return TRUE;
-}
-
-/* *****************************************************************************
- *  switching slow cpu on/off 
- */
-gint
-slowcpu_cb (GtkWidget * widget, guint datum)
-{
-	G_CONST_RETURN gchar *sc;
-	gchar dummy[100];
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (slowcpubt)->entry));
-	sscanf (sc, "%d%s", &cpuload, dummy);
-	if (cpuload == 0)
-		cpuload = 40;
-
-
-	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- *  switching decimal or degree, minutes, seconds mode 
- */
-gint
-minsec_cb (GtkWidget * widget, guint datum)
-{
-	minsecmode=datum;
-	needtosave = TRUE;
-	return TRUE;
-}
 
 /* *****************************************************************************
  *  toggle coordinate format mode 
  */
 gint
-toggle_minsec_cb (GtkWidget *widget)
+toggle_coords_cb (GtkWidget *widget)
 {
-	minsecmode++;
-	if (minsecmode >= LATLON_N_FORMATS)
-		minsecmode = 0;
+	local_config.coordmode++;
+	if (local_config.coordmode >= LATLON_N_FORMATS)
+		local_config.coordmode = 0;
 	return TRUE;
 }
 
@@ -3195,7 +2834,7 @@ satpos_cb (GtkWidget * widget, guint datum)
 gint
 simfollow_cb (GtkWidget * widget, guint datum)
 {
-	simfollow = !simfollow;
+	local_config.simmode = !local_config.simmode;
 	needtosave = TRUE;
 	return TRUE;
 }
@@ -3242,21 +2881,6 @@ serialdev_cb (GtkWidget * widget, guint datum)
 	s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (serial_bt)));
 	g_strlcpy (serialdev, s, sizeof (serialdev));
 	needtosave = TRUE;
-	return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-mapdir_cb (GtkWidget * widget, guint datum)
-{
-	G_CONST_RETURN gchar *s;
-
-	s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (mapdirbt)));
-	g_strlcpy (local_config_mapdir, s, sizeof (local_config_mapdir));
-	needtosave = TRUE;
-	needreloadmapconfig = TRUE;
-	gtk_timeout_add (2000, (GtkFunction) loadmapconfig, 0);
 	return TRUE;
 }
 
@@ -3698,7 +3322,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Toggle Grid Display
 	if ((toupper (event->keyval)) == 'G')
 	{
-		do_draw_grid = !do_draw_grid;
+		local_config.showgrid = !local_config.showgrid;
 		needtosave = TRUE;
 	}
 
@@ -3716,7 +3340,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Toggle Friends Server activities
 	if ((toupper (event->keyval)) == 'F')
 	{
-		havefriends = !havefriends;
+		local_config.showfriends = !local_config.showfriends;
 		needtosave = TRUE;
 	}
 
@@ -3817,7 +3441,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Switch Night Mode
 	if ((toupper (event->keyval)) == 'N')
 	{
-		if (nightmode != 0)
+		if (local_config.nightmode)
 		{
 			/*  light on for 30 seconds  */
 			if (disableisnight == TRUE)
@@ -3833,7 +3457,7 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Zoom in/out
 	{
 	    /*   From Russell Mirov: */
-	    if (pdamode)
+	    if (local_config.guimode == GUI_PDA)
 		{
 		    if (event->keyval == 0xFF52)
 			scalerbt_cb (NULL, 1);	/* RNM */
@@ -3961,7 +3585,7 @@ sel_message_cb (GtkWidget * widget, guint datum)
 
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (window),
 					     real_screen_x, real_screen_y);
 	else
@@ -4064,7 +3688,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 	else
 		gtk_window_set_title (GTK_WINDOW (window),
 				      _("Please select your destination"));
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (window),
 					     real_screen_x, real_screen_y);
 	else
@@ -4135,7 +3759,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 					0);
 
 	/* Font aendern falls PDA-Mode und Touchscreen */
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 	{
 	    if (onemousebutton)
 	    {
@@ -4294,7 +3918,7 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 				   GTK_OBJECT (fdialog));
 
 
-	g_strlcpy (buf, local_config_homedir, sizeof (buf));
+	g_strlcpy (buf, local_config.dir_home, sizeof (buf));
 	g_strlcat (buf, "tracks/", sizeof (buf));          
 	g_strlcat (buf, "track*.sav", sizeof (buf));
 
@@ -4393,48 +4017,44 @@ main (int argc, char *argv[])
     g_strlcpy (oldangle, "none", sizeof (oldangle));
     pixelfact = MAPSCALE / PIXELFACT;
     g_strlcpy (oldfilename, "", sizeof (oldfilename));
-    simmode = maploaded = FALSE;
+    maploaded = FALSE;
     haveNMEA = FALSE;
     havepos = gblink = blink = FALSE;
     haveposcount = haveGARMIN = debug = 0;
     zoom = 1;
-    milesflag = iszoomed = FALSE;
+    iszoomed = FALSE;
     find_poi_bt = NULL;
 #ifdef DBUS_ENABLE
     useDBUS = FALSE;
 #endif
 
     { /* Set fonts */
-	// GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
-	// font_s_text, font_s_verysmalltext, font_s_smalltext, font_s_bigtext, font_s_wplabel;
-	if (pdamode)
+	// GdkFont *font_text, *font_verysmalltext, *font_smalltext;
+	// font_s_text, font_s_verysmalltext, font_s_smalltext;
+	if (local_config.guimode == GUI_PDA)
         {
-            g_strlcpy (font_s_bigtext, "Sans bold 12", sizeof (font_s_bigtext));
+            g_strlcpy (local_config.font_bigdisplay, "Sans bold 12",
+            	sizeof (local_config.font_bigdisplay));
             g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
             g_strlcpy (font_s_text, "Sans 8", sizeof (font_s_text));
             g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
-            g_strlcpy (font_s_wplabel, "Sans 8", sizeof (font_s_wplabel));
+            g_strlcpy (local_config.font_wplabel, "Sans 8", sizeof (local_config.font_wplabel));
             printf("pdamode for fonts\n");
         } else {
-            g_strlcpy (font_s_bigtext, "Sans bold 26", sizeof (font_s_bigtext));
             g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
             g_strlcpy (font_s_text, "Sans 11", sizeof (font_s_text));
             g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
-            g_strlcpy (font_s_wplabel, "Sans 11", sizeof (font_s_wplabel));
         }
 	pfd_text = pango_font_description_from_string (font_s_text);
 	pfd_verysmalltext = pango_font_description_from_string (font_s_verysmalltext);
 	pfd_smalltext = pango_font_description_from_string (font_s_smalltext);
-	pfd_bigtext = pango_font_description_from_string (font_s_bigtext);
-	pfd_wplabel = pango_font_description_from_string (font_s_wplabel);
+	pfd_bigtext = pango_font_description_from_string
+		(local_config.font_bigdisplay);
+	pfd_wplabel = pango_font_description_from_string
+		(local_config.font_wplabel);
     }
 
 
-    g_strlcpy (friendsserverip, "127.0.0.1", sizeof (friendsserverip));
-    g_strlcpy (friendsserverfqn, "friendsd.gpsdrive.de",
-	       sizeof (friendsserverfqn));
-    g_strlcpy (friendsidstring, "XXX", sizeof (friendsidstring));
-    
     signal (SIGUSR2, usr2handler);
     timer = g_timer_new ();
     disttimer = g_timer_new ();
@@ -4450,10 +4070,6 @@ main (int argc, char *argv[])
     gcount = xoff = yoff = 0;
     hours = minutes = 99;
     milesconv = 1.0;
-    /* set default color to navyblue */
-    g_strlcpy (bluecolor, "navyblue", sizeof (bluecolor));
-    g_strlcpy (trackcolor, "green3", sizeof (trackcolor));
-    g_strlcpy (friendscolor, "orange", sizeof (friendscolor));
     g_strlcpy (messagename, "", sizeof (messagename));
     g_strlcpy (messageack, "", sizeof (messageack));
     g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
@@ -4461,7 +4077,6 @@ main (int argc, char *argv[])
     downloadwindowactive = downloadactive = importactive = FALSE;
     g_strlcpy (lastradar, "", sizeof (lastradar));
     g_strlcpy (lastradar2, "", sizeof (lastradar2));
-    g_strlcpy (activewpfile, "way.txt", sizeof (activewpfile));
     g_strlcpy (dbhost, "localhost", sizeof (dbhost));
     g_strlcpy (dbuser, "gast", sizeof (dbuser));
     g_strlcpy (dbpass, "gast", sizeof (dbpass));
@@ -4483,18 +4098,11 @@ main (int argc, char *argv[])
 
     earthr = calcR (current_lat);
 
-    /* local_config_homedir is the directory where the maps and other  */
-    /* files are stored (~/.gpsdrive) */
-    hd = g_get_home_dir ();
-    g_strlcpy (local_config_homedir, hd, sizeof (local_config_homedir));
-    g_strlcat (local_config_homedir, "/.gpsdrive/", sizeof (local_config_homedir));
-    g_snprintf (local_config_mapdir, sizeof (local_config_mapdir),"%s%s",local_config_homedir,"maps");
 
     /*  all default values must be set BEFORE readconfig! */
     g_strlcpy (setpositionname, "", sizeof (setpositionname));
     g_strlcpy (serialdev, "/dev/ttyS3", sizeof (serialdev));
 
-    check_and_create_files();
 
     /* setup signal handler */
     signal (SIGUSR1, signalposreq);
@@ -4548,23 +4156,18 @@ main (int argc, char *argv[])
 	setlocale(LC_NUMERIC, "C");
     }
 
-    g_strlcpy (friendsname, "", sizeof (friendsname));
-
-
-
-    readconfig ();
+	/* init config struct with default values */
+	config_init ();
+	
+	check_and_create_files();
+	
+	/* update config struct with settings from config file if possible */
+	readconfig ();
 
     real_screen_x = 640;
     real_screen_y = 512;
     target_lon = current_lon + 0.00001;
     target_lat = current_lat + 0.00001;
-    gdk_color_parse (trackcolor, &trackcolorv);
-    gdk_color_parse (friendscolor, &orange);
-
-    /*  setting defaults if setting is not yet in configuraton file */
-    if ((milesflag + metricflag + nauticflag) == 0)
-	metricflag = TRUE;
-
 
 
     /*  load waypoints before locale is set! */
@@ -4656,7 +4259,7 @@ main (int argc, char *argv[])
 #endif
 		    break;
 		case 'p':
-		    pdamode = TRUE;
+		    local_config.guimode = GUI_PDA;
 		    break;
 		case '1':
 		    onemousebutton = TRUE;
@@ -4750,10 +4353,6 @@ main (int argc, char *argv[])
     if ( mydebug >99 ) fprintf(stderr , "options parsed\n");
 
 	
-    if ((strlen (friendsname) == 0))
-	g_strlcpy (friendsname, _("EnterYourName"),
-		   sizeof (friendsname));
-
     init_lat2RadiusArray();
 
     gethostname (hostname, 256);
@@ -4793,7 +4392,7 @@ main (int argc, char *argv[])
 #ifndef NOPLUGINS
     useplugins = TRUE;
 #endif
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	useplugins = FALSE;
 
     if (usesql)
@@ -4803,7 +4402,6 @@ main (int argc, char *argv[])
 	    sqlplace = mod_setupcounter;
 	}
     mod_setupcounter++;
-    setupfunction[mod_setupcounter] = &(friendssetup);
     friendsplace = mod_setupcounter;
 
 #ifndef NOPLUGINS
@@ -5216,7 +4814,7 @@ main (int argc, char *argv[])
     gtk_signal_connect (GTK_OBJECT (drawing_sats), "button-press-event",
 			GTK_SIGNAL_FUNC (satpos_cb), NULL);
 
-    //if(!pdamode)
+    //if(local_config.guimode != GUI_PDA)
 	{
 	    frame_sats = gtk_frame_new (_("GPS Info"));
 	    sateventbox = gtk_event_box_new ();
@@ -5264,7 +4862,7 @@ main (int argc, char *argv[])
     create_battery_widget(hbox_displays);
 
 
-    if (!pdamode)
+    if (local_config.guimode != GUI_PDA)
 		gtk_box_pack_start (GTK_BOX (hbox_displays), hbox_displays_b, TRUE, TRUE, 1 * PADDING);
 
     if ( mydebug >99 ) fprintf(stderr , "create DISTANCE Frames\n");
@@ -5279,17 +4877,17 @@ main (int argc, char *argv[])
 
     // Frame ---   displays zoom factor of map
     altilabel = gtk_label_new (_("n/a"));
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
 	    g_snprintf (s3, sizeof (s3),
 			"<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"5000\">%s</span>",
-			bluecolor, _("n/a"));
+			local_config.color_bigdisplay, _("n/a"));
 	}
     else
 	{
 	    g_snprintf (s3, sizeof (s3),
 			"<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
-			bluecolor, _("n/a"));
+			local_config.color_bigdisplay, _("n/a"));
 	}
 
     // Frame --- Altitude
@@ -5356,18 +4954,18 @@ main (int argc, char *argv[])
 
 
 #ifdef AFDAFDA
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
 	    g_snprintf (s3, sizeof (s3),
 			"<span color=\"%s\" font_family=\"Sans\"  size=\"7000\">%s %d\n%d %s %.1fkm</span>",
-			bluecolor, _("Selected:"), wptotal, wpselected,
+			local_config.color_bigdisplay, _("Selected:"), wptotal, wpselected,
 			_("within"), dbdistance);
 	}
     else
 	{
 	    g_snprintf (s3, sizeof (s3),
 			"<span color=\"%s\" font_family=\"Sans\"  size=\"10000\">%s %d\n%d %s %.1fkm</span>",
-			bluecolor, _("Selected:"), wptotal, wpselected,
+			local_config.color_bigdisplay, _("Selected:"), wptotal, wpselected,
 			_("within"), dbdistance);
 	}
     gtk_label_set_markup (GTK_LABEL (wplabel), s3);
@@ -5375,27 +4973,27 @@ main (int argc, char *argv[])
 #endif
 
     /*  create frames for labels */
-    if(!pdamode)
+    if(local_config.guimode != GUI_PDA)
 	frame_target = gtk_frame_new (_("Distance to target"));
     else
 	frame_target = gtk_frame_new (_("Distance"));
     destframe = frame_target;
     gtk_container_add (GTK_CONTAINER (frame_target), distlabel);
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
-	    if (milesflag)
+	    if (local_config.distmode == DIST_MILES)
 		g_snprintf (s1, sizeof (s1), "[%s]", _("mi/h"));
-	    else if (nauticflag)
+	    else if (local_config.distmode == DIST_NAUTIC)
 		g_snprintf (s1, sizeof (s1), "[%s]", _("knots"));
 	    else
 		g_snprintf (s1, sizeof (s1), "[%s]", _("km/h"));
 	}
     else
 	{
-	    if (milesflag)
+	    if (local_config.distmode == DIST_MILES)
 		g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
 			    _("mi/h"));
-	    else if (nauticflag)
+	    else if (local_config.distmode == DIST_NAUTIC)
 		g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
 			    _("knots"));
 	    else
@@ -5412,14 +5010,14 @@ main (int argc, char *argv[])
     frame_wp = gtk_frame_new (_("Waypoints"));
 
 
-    if (!pdamode)
+    if (local_config.guimode != GUI_PDA)
 	vtable = gtk_table_new (1, 20, TRUE);
     else
 	vtable = gtk_table_new (1, 20, FALSE);
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_target,    0,  6, 0, 1);
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_speed,     6, 12, 0, 1);
     gtk_table_attach_defaults (GTK_TABLE (vtable), frame_altitude, 12, 15, 0, 1);
-    if(!pdamode)
+    if(local_config.guimode != GUI_PDA)
         gtk_table_attach_defaults (GTK_TABLE (vtable), frame_wp,       15, 20, 0, 1);
     gtk_box_pack_start (GTK_BOX (hbox_displays_b), vtable, TRUE, TRUE, 2 * PADDING);         // target speed and altitude on trip table
     
@@ -5485,7 +5083,7 @@ main (int argc, char *argv[])
     if ( mydebug >99 ) fprintf(stderr , "scaler init\n");
     scaler_init();
 
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	table1_displays = gtk_table_new (5, 3, FALSE);
     else
 	{
@@ -5504,16 +5102,12 @@ main (int argc, char *argv[])
     frame_timedest = gtk_frame_new (_("Time to Dest."));
     frame_prefscale = gtk_frame_new (_("Pref. scale"));
 
-
-    etch = !etch;
-    etch_cb (NULL, 0);
-
     if ( mydebug >99 ) fprintf(stderr , "Frame lat/lon\n");
 	label_lat = gtk_label_new (_("000,00000N"));
 	eventbox_lat = gtk_event_box_new ();
 	gtk_widget_add_events (eventbox_lat, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect (eventbox_lat, "button_press_event",
-				GTK_SIGNAL_FUNC (toggle_minsec_cb), NULL);
+				GTK_SIGNAL_FUNC (toggle_coords_cb), NULL);
 	gtk_container_add (GTK_CONTAINER (eventbox_lat), label_lat);
 	gtk_container_add (GTK_CONTAINER (frame_lat), eventbox_lat);
 
@@ -5521,7 +5115,7 @@ main (int argc, char *argv[])
 	eventbox_lon = gtk_event_box_new ();
 	gtk_widget_add_events (eventbox_lon, GDK_BUTTON_PRESS_MASK);
 	g_signal_connect (eventbox_lon, "button_press_event",
-				GTK_SIGNAL_FUNC (toggle_minsec_cb), NULL);
+				GTK_SIGNAL_FUNC (toggle_coords_cb), NULL);
 	gtk_container_add (GTK_CONTAINER (eventbox_lon), label_lon);
 	gtk_container_add (GTK_CONTAINER (frame_lon), eventbox_lon);
 
@@ -5547,7 +5141,7 @@ main (int argc, char *argv[])
     label_prefscale = gtk_label_new (_("---"));
     gtk_container_add (GTK_CONTAINER (frame_prefscale), label_prefscale);
 
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
 	    //status bottom table 5 x 3
 	    gtk_table_attach_defaults (GTK_TABLE (table1_displays), frame_bearing, 0, 1, 0, 1);	// (left,right,top,bottom) 
@@ -5601,12 +5195,12 @@ main (int argc, char *argv[])
 			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
     if ( mydebug >99 ) fprintf(stderr , "Menu\n");
-    if (!pdamode)
+    if (local_config.guimode != GUI_PDA)
 	if ( !extrawinmenu)
 	    gtk_box_pack_start (GTK_BOX (hbig_contr_map), vbox_controls,  TRUE,  FALSE,  1 * PADDING);
     gtk_box_pack_start (GTK_BOX (hbig_contr_map), frame_map_area, TRUE, TRUE, 0 * PADDING);
 
-    if (!pdamode)
+    if (local_config.guimode != GUI_PDA)
 	{
 	    gtk_box_pack_start (GTK_BOX (vbig), hbig_contr_map, TRUE, TRUE,1 * PADDING);
 	    if (extrawinmenu)
@@ -5642,7 +5236,7 @@ main (int argc, char *argv[])
     /*   if pdamode is set, we use gtk-notebook add arrange the elements */
     /*   in pdamode, extrawinmenu is also set! */
     mainnotebook = NULL;
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
 	    GtkWidget *l1, *l2, *label_status, *trip_label;     // tabs label for pda mode
 	    l1 = gtk_label_new (NULL);
@@ -5723,7 +5317,7 @@ main (int argc, char *argv[])
     /* so that gpsdrive can be run w/o a xwm (stand-alone mode) */
     /* With a xwm, you should be able to reposition the */
     /* windows afterwards... */
-    if (extrawinmenu && SMALLMENU && !pdamode)
+    if (extrawinmenu && SMALLMENU && local_config.guimode != GUI_PDA)
 	{
 	    reqptr = &requ;
 	    gtk_widget_size_request (GTK_WIDGET (menuwin2), reqptr);
@@ -5736,7 +5330,7 @@ main (int argc, char *argv[])
 
     /*  Now show all Widgets */
     //KCFX
-    if ((extrawinmenu) && (!pdamode))
+    if ((extrawinmenu) && (local_config.guimode != GUI_PDA))
 	{
 	    gtk_widget_show_all (menuwin);
 	    gtk_widget_show_all (menuwin2);
@@ -5756,14 +5350,14 @@ main (int argc, char *argv[])
 	}
 
     /*  now we know the drawables */
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
 
     drawable =
 	gdk_pixmap_new (mainwindow->window, SCREEN_X, SCREEN_Y, -1);
     /* gtk_widget_set_double_buffered(drawable, FALSE);  */
     /*    drawable = drawing_area->window; */
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 2);
 
     drawable_sats = drawing_sats->window;
@@ -5772,7 +5366,7 @@ main (int argc, char *argv[])
     /*  gtk_widget_set_double_buffered(GTK_WIDGET(drawable_bearing), TRUE);   */
 
     //KCFX
-    // if (!pdamode) 
+    // if (local_config.guimode != GUI_PDA) 
     kontext = gdk_gc_new (mainwindow->window);
     //  else 
     //    kontext = gdk_gc_new (mainnotebook->window); 
@@ -5782,35 +5376,16 @@ main (int argc, char *argv[])
     rectangle.height = SCREEN_Y;
 
     gdk_gc_set_clip_rectangle (kontext, &rectangle);
-    cmap = gdk_colormap_get_system ();
-    gdk_color_alloc (cmap, &red);
-    gdk_color_alloc (cmap, &black);
-    gdk_color_alloc (cmap, &blue);
-    gdk_color_alloc (cmap, &nightcolor);
-    gdk_color_alloc (cmap, &lcd);
-    gdk_color_alloc (cmap, &lcd2);
-    gdk_color_alloc (cmap, &green);
-    gdk_color_alloc (cmap, &green2);
-    gdk_color_alloc (cmap, &white);
-    gdk_color_alloc (cmap, &mygray);
-    gdk_color_alloc (cmap, &yellow);
-    gdk_color_alloc (cmap, &darkgrey);
-    gdk_color_alloc (cmap, &grey);
-    gdk_color_alloc (cmap, &textback);
-    gdk_color_alloc (cmap, &textbacknew);
-    gdk_color_alloc (cmap, &orange2);
-    gdk_color_alloc (cmap, &orange);
-    gdk_color_alloc (cmap, &trackcolorv);
 
     /* fill window with color */
     gdk_gc_set_function (kontext, GDK_COPY);
-    gdk_gc_set_foreground (kontext, &lcd2);
+    gdk_gc_set_foreground (kontext, &colors.lcd2);
     gdk_draw_rectangle (drawing_area->window, kontext, 1, 0, 0, SCREEN_X,
 			SCREEN_Y);
     {
 	GtkStyle *style;
 	style = gtk_rc_get_style (mainwindow);
-	defaultcolor = style->bg[GTK_STATE_NORMAL];
+	colors.defaultcolor = style->bg[GTK_STATE_NORMAL];
     }
 
     /* set cross cursor for map posmode */
@@ -5822,12 +5397,12 @@ main (int argc, char *argv[])
         gdk_window_set_cursor (drawing_miniimage->window, cursor_arrow);
     */
     
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	   gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 1);
     
     
 
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	   gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
     
     /*  Tooltips */
@@ -5837,7 +5412,7 @@ main (int argc, char *argv[])
     temperature_get_values ();
     battery_get_values ();
 
-    if(!pdamode) {
+    if(local_config.guimode != GUI_PDA) {
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
 			      _
 			      ("Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"),
@@ -5937,7 +5512,7 @@ main (int argc, char *argv[])
 	gtk_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
 
     /*  if we started in simulator mode we have a little move roboter */
-    if (simmode)
+    if (local_config.simmode)
 	simpos_timeout =
 	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
     if (nmeaout)
@@ -5966,7 +5541,6 @@ main (int argc, char *argv[])
 
     /*  To set the checkboxes to the right values */
     bestmap_cb (NULL, 0);
-    drawgrid_cb (NULL, 0);
     streets_draw_cb (streets_draw_bt, 0);
     poi_draw_cb (poi_draw_bt, 0);
     wlan_draw_cb (wlan_draw_bt, 0);

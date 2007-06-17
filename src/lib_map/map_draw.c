@@ -503,209 +503,6 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
 	}
 }
 
-/* *****************************************************************************
- */
-void
-drawfriends (void)
-{
-	gint i;
-	gdouble posxdest, posydest, clong, clat, direction;
-	gint width, height;
-	gdouble w;
-	GdkPoint poly[16];
-	struct tm *t;
-	time_t ti, tif;
-#define PFSIZE 55
-
-	actualfriends = 0;
-	/*   g_print("Maxfriends: %d\n",maxfriends); */
-	for (i = 0; i < maxfriends; i++)
-	{
-
-		/* return if too old  */
-		ti = time (NULL);
-		tif = atol ((friends + i)->timesec);
-		if (!(tif > 1000000000))
-			fprintf (stderr,
-				 "Format error! timesec: %s, Name: %s, i: %d\n",
-				 (friends + i)->timesec, (friends + i)->name,
-				 i);
-		if ((ti - maxfriendssecs) > tif)
-			continue;
-		actualfriends++;
-		clong = g_strtod ((friends + i)->longi, NULL);
-		clat = g_strtod ((friends + i)->lat, NULL);
-
-
-		calcxy (&posxdest, &posydest, clong, clat, zoom);
-
-		/* If Friend is visible inside SCREEN display him/her */
-		if ((posxdest >= 0) && (posxdest < SCREEN_X))
-		{
-
-			if ((posydest >= 0) && (posydest < SCREEN_Y))
-			{
-
-				gdk_draw_pixbuf (drawable, mgc->gtk_gc,
-						 friendspixbuf, 0, 0,
-						 posxdest - 18, posydest - 12,
-						 39, 24, GDK_RGB_DITHER_NONE,
-						 0, 0);
-				gdk_gc_set_line_attributes (mgc->gtk_gc, 4, 0, 0,
-							    0);
-
-				/*  draw pointer to direction */
-				direction =
-					strtod ((friends + i)->heading,
-						NULL) * M_PI / 180.0;
-				w = direction + M_PI;
-				gdk_gc_set_line_attributes (mgc->gtk_gc, 2, 0, 0,
-							    0);
-				poly[0].x =
-					posxdest +
-					(PFSIZE) / 2.3 * (cos (w + M_PI_2));
-				poly[0].y =
-					posydest +
-					(PFSIZE) / 2.3 * (sin (w + M_PI_2));
-				poly[1].x =
-					posxdest +
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[1].y =
-					posydest +
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[2].x =
-					posxdest +
-					PFSIZE / 10 * (cos (w + M_PI_2));
-				poly[2].y =
-					posydest +
-					PFSIZE / 10 * (sin (w + M_PI_2));
-				poly[3].x =
-					posxdest -
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[3].y =
-					posydest -
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[4].x = poly[0].x;
-				poly[4].y = poly[0].y;
-				gdk_gc_set_foreground (mgc->gtk_gc, &blue);
-				gdk_draw_polygon (drawable, mgc->gtk_gc, 0,
-						  (GdkPoint *) poly, 5);
-				gdk_draw_arc (drawable, mgc->gtk_gc, 0,
-					      posxdest + 2 - 7,
-					      posydest + 2 - 7, 10, 10, 0,
-					      360 * 64);
-
-				/*   draw + sign at destination   */
-				gdk_gc_set_foreground (mgc->gtk_gc, &red);
-				gdk_draw_line (drawable, mgc->gtk_gc,
-					       posxdest + 1, posydest + 1 - 5,
-					       posxdest + 1,
-					       posydest + 1 + 5);
-				gdk_draw_line (drawable, mgc->gtk_gc,
-					       posxdest + 1 + 5, posydest + 1,
-					       posxdest + 1 - 5,
-					       posydest + 1);
-
-				{	/* print friends name / speed on map */
-					PangoFontDescription *pfd;
-					PangoLayout *wplabellayout;
-					gchar txt[200], txt2[100], s1[10];
-					time_t sec;
-					char *as, day[20], dispname[40];
-					int speed, ii;
-
-					sec = atol ((friends + i)->timesec);
-					sec += 3600 * zone;
-					t = gmtime (&sec);
-
-					as = asctime (t);
-					sscanf (as, "%s", day);
-					sscanf ((friends + i)->speed, "%d",
-						&speed);
-
-					/* replace _ with  spaces in name */
-					g_strlcpy (dispname,
-						   (friends + i)->name,
-						   sizeof (dispname));
-					for (ii = 0;
-					     (size_t) ii < strlen (dispname);
-					     ii++)
-						if (dispname[ii] == '_')
-							dispname[ii] = ' ';
-
-					g_snprintf (txt, sizeof (txt),
-						    "%s,%d", dispname,
-						    (int) (speed *
-							   milesconv));
-					if (milesflag)
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("mi/h"));
-					else if (nauticflag)
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("knots"));
-					else
-						g_snprintf (s1, sizeof (s1),
-							    "%s", _("km/h"));
-					g_strlcat (txt, s1, sizeof (txt));
-					g_snprintf (txt2, sizeof (txt2),
-						    "%s, %2d:%02d\n", day,
-						    t->tm_hour, t->tm_min);
-					g_strlcat (txt, txt2, sizeof (txt));
-					wplabellayout =
-						gtk_widget_create_pango_layout
-						(drawing_area, txt);
-					if (pdamode)
-						pfd = pango_font_description_from_string ("Sans 8");
-					else
-						pfd = pango_font_description_from_string ("Sans bold 11");
-					pango_layout_set_font_description
-						(wplabellayout, pfd);
-					pango_layout_get_pixel_size
-						(wplabellayout, &width,
-						 &height);
-					gdk_gc_set_foreground (mgc->gtk_gc,
-							       &textbacknew);
-					/*              gdk_draw_rectangle (drawable, mgc->gtk_gc, 1, posxdest + 18,
-					 *                                  posydest - height/2 , width + 2,
-					 *                                  height + 2);
-					 */
-
-					gdk_draw_layout_with_colors (drawable,
-								     mgc->gtk_gc,
-								     posxdest
-								     + 21,
-								     posydest
-								     -
-								     height /
-								     2 + 1,
-								     wplabellayout,
-								     &black,
-								     NULL);
-					gdk_draw_layout_with_colors (drawable,
-								     mgc->gtk_gc,
-								     posxdest
-								     + 20,
-								     posydest
-								     -
-								     height /
-								     2,
-								     wplabellayout,
-								     &orange,
-								     NULL);
-
-					if (wplabellayout != NULL)
-						g_object_unref (G_OBJECT
-								(wplabellayout));
-					/* freeing PangoFontDescription, cause it has been copied by prev. call */
-					pango_font_description_free (pfd);
-
-				}
-
-
-			}
-		}
-	}
-}
 
 /* *****************************************************************************
  * Draw waypoints on map
@@ -901,9 +698,6 @@ drawmarkers (MapGC *mgc, int width, int height,
   if (wpflag)
     draw_waypoints ();
 
-  if (havefriends)
-    drawfriends ();
-
   if (havekismet)
     readkismet ();
 #endif
@@ -1093,10 +887,10 @@ drawmarkers (MapGC *mgc, int width, int height,
 	/*    display distance, speed and zoom */
 	/*   g_snprintf (s3, */
 	/*     "<span color=\"%s\" font_desc=\"%s\">%s</span><span color=\"%s\" font_desc=\"%s\">%s</span>", */
-	/*     bluecolor, bigfont, s2, bluecolor, "sans bold 18", s2a); */
+	/*     local_config.color_bigdisplay, bigfont, s2, local_config.color_bigdisplay, "sans bold 18", s2a); */
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
-		    bluecolor, bigfont, s2, s2a);
+		    local_config.color_bigdisplay, bigfont, s2, s2a);
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
 	if (milesflag)
@@ -1107,7 +901,7 @@ drawmarkers (MapGC *mgc, int width, int height,
 		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
-		    bluecolor, bigfont, s2);
+		    local_config.color_bigdisplay, bigfont, s2);
 	gtk_label_set_markup (GTK_LABEL (speedlabel), s3);
 
 	/* gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
@@ -1134,12 +928,12 @@ drawmarkers (MapGC *mgc, int width, int height,
 
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>",
-					    bluecolor, s2, bluecolor, s2a);
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
 			else
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>"
 					    "<span color=\"red\" font_family=\"Arial\" size=\"5000\">\nNN %+.1f</span>",
-					    bluecolor, s2, bluecolor, s2a,
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a,
 					    normalnull);
 		}
 		else
@@ -1148,12 +942,16 @@ drawmarkers (MapGC *mgc, int width, int height,
 
 				g_snprintf (s3, sizeof (s3),
 					    "<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"15000\">%s</span><span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
-					    bluecolor, s2, bluecolor, s2a);
+					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
 			else
 				g_snprintf (s3, sizeof (s3),
-					    "<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"15000\">%s</span><span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>"
-					    "<span color=\"red\" font_family=\"Arial\" weight=\"bold\" size=\"8000\">\nNN %+.1f</span>",
-					    bluecolor, s2, bluecolor, s2a,
+					    "<span color=\"%s\" font_desc=\"%s\" size=\"15000\">%s</span><span color=\"%s\" font_desc=\"%s\" size=\"10000\">%s</span>"
+					    "<span color=\"red\" font_desc=\"%s\" size=\"8000\">\nNN %+.1f</span>",
+					    local_config.color_bigdisplay,
+					    local_config.font_bigdisplay, s2,
+					    local_config.color_bigdisplay,
+					    local_config.font_bigdisplay, s2a,
+					    local_config.font_bigdisplay,
 					    normalnull);
 		}
 		gtk_label_set_markup (GTK_LABEL (altilabel), s3);

@@ -57,10 +57,8 @@ extern gint importactive;
 extern gint zoom;
 extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
-extern gchar local_config_mapdir[500];
 extern gint posmode;
 extern gdouble posmode_lon, posmode_lat;
 extern gchar targetname[40];
@@ -72,7 +70,7 @@ extern gdouble routenearest;
 extern gint forcenextroutepoint;
 extern status_struct route;
 extern gint thisrouteline;
-extern gint gcount, milesflag, downloadwindowactive;
+extern gint gcount, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
@@ -84,7 +82,6 @@ extern gchar oldfilename[2048];
 extern gint scaleprefered_not_bestmap, scalewanted;
 extern gint borderlimit;
 
-extern gchar activewpfile[200];
 extern gint saytarget;
 
 extern int havedefaultmap;

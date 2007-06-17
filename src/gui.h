@@ -35,6 +35,12 @@ void poi_info_cb (void);
 void route_window_cb (GtkWidget *calling_button);
 
 gint popup_yes_no (GtkWindow *parent, gchar *message);
+gint popup_warning (GtkWindow *parent, gchar *message);
+gint popup_error (GtkWindow *parent, gchar *message);
+
+gint switch_nightmode (gboolean value);
+
+gchar *get_colorstring (GdkColor *tcolor);
 
 int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
 
@@ -45,5 +51,50 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 int resize_all (void);
 
 int gui_init (void);
+
+
+typedef struct
+{
+	GdkColor track;
+	GdkColor route;
+	GdkColor friends;
+	GdkColor wplabel;
+	GdkColor bigdisplay;
+
+	// TODO: Check, which of these colors are really needed.
+	// The reason is that defined colors should only be used where it is
+	// really important (e.g. inside the map window), the rest should be
+	// left to the selected gtk theme.
+	GdkColor nightmode;
+	GdkColor defaultcolor;
+	GdkColor trackcolorv;
+	GdkColor red;
+	GdkColor black;
+	GdkColor white;
+	GdkColor blue;
+	GdkColor nightcolor;
+	GdkColor lcd;
+	GdkColor lcd2;
+	GdkColor yellow;
+	GdkColor green;
+	GdkColor green2;
+	GdkColor mygray;
+	GdkColor textback;
+	GdkColor textbacknew;
+	GdkColor grey;
+	GdkColor orange;
+	GdkColor orange2;
+	GdkColor darkgrey;
+	GdkColor shadow;
+} color_struct;
+
+typedef struct
+{
+	guint width;
+	guint height;
+	gboolean nightmode;
+} guistatus_struct;
+
+extern guistatus_struct gui_status;
 
 #endif /* GPSDRIVE_GUI_H */

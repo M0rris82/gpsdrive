@@ -128,6 +128,7 @@ Disclaimer: Please do not use for navigation.
 #include "config.h"
 #include "gettext.h"
 #include "icons.h"
+#include "gpsdrive_config.h"
 
 
 
@@ -148,21 +149,11 @@ extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor grey;
+extern gint isnight, disableisnight;
 extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
@@ -182,9 +173,8 @@ extern gdouble wplat, wplon;
 extern gint posmode;
 extern gdouble posmode_lon, posmode_lat;
 extern mapsstruct *maps;
-extern gint simmode, zoom, iszoomed;
-extern gint minsecmode, nightmode, isnight, disableisnight;
-extern gchar local_config_homedir[500], local_config_mapdir[500];
+extern gint zoom, iszoomed;
+extern gint isnight, disableisnight;
 extern gint nrmaps, dldiff;
 extern int havenasa, nosplash, sortcolumn, sortflag;
 extern gint onemousebutton;
@@ -266,7 +256,7 @@ importfb_cb (GtkWidget * widget, guint datum)
 			     GTK_OBJECT (fdialog));
 
 
-  g_strlcpy (buf, local_config_homedir, sizeof (buf));
+  g_strlcpy (buf, local_config.dir_home, sizeof (buf));
 
   gtk_file_selection_complete (GTK_FILE_SELECTION (fdialog), buf);
   gtk_widget_show (fdialog);
@@ -432,11 +422,13 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
   dl_text_lat = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
-  coordinate2gchar (buff, sizeof (buff), current_lat, TRUE, minsecmode);
+  coordinate2gchar (buff, sizeof (buff), current_lat, TRUE,
+  	local_config.coordmode);
   gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
   dl_text_lon = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
-  coordinate2gchar (buff, sizeof (buff), current_lon, FALSE, minsecmode);
+  coordinate2gchar (buff, sizeof (buff), current_lon, FALSE,
+  	local_config.coordmode);
   gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 
 
@@ -475,7 +467,7 @@ import1_cb (GtkWidget * widget, guint datum)
   if (datum == 1)
     g_snprintf (buff, sizeof (buff),
 		"<span font_family=\"Arial\" size=\"10000\">%s <span color=\"red\"> %s</span> %s</span>",
-		thetext1, local_config_mapdir, thetext1a);
+		thetext1, local_config.dir_maps, thetext1a);
   else
     g_snprintf (buff, sizeof (buff),
 		"<span font_family=\"Arial\" size=\"10000\">%s</span>",
@@ -758,9 +750,11 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
     {
       if (downloadwindowactive)
 	{
-	  coordinate2gchar (s, sizeof (s), lat, TRUE, minsecmode);
+	  coordinate2gchar (s, sizeof (s), lat, TRUE,
+	  	local_config.coordmode);
 	  gtk_entry_set_text (GTK_ENTRY (dl_text_lat), s);
-	  coordinate2gchar (s, sizeof (s), lon, FALSE, minsecmode);
+	  coordinate2gchar (s, sizeof (s), lon, FALSE,
+	  	local_config.coordmode);
 	  gtk_entry_set_text (GTK_ENTRY (dl_text_lon), s);
 	  downloadsetparm (NULL, 0);
 	}

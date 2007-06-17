@@ -51,13 +51,39 @@ Disclaimer: Please do not use for navigation.
 #define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
 
 
-/* Formats for coordinate display  */
+/* Coordinate formats  */
 enum
 {
 	LATLON_DEGDEC,
 	LATLON_DMS,
 	LATLON_MINDEC,
 	LATLON_N_FORMATS
+};
+
+/* Distance formats */
+enum
+{
+	DIST_MILES,
+	DIST_METRIC,
+	DIST_NAUTIC,
+	DIST_N_FORMATS
+};
+
+/* Altitude formats */
+enum
+{
+	ALT_FEET,
+	ALT_METERS,
+	ALT_YARDS,
+	ALT_N_FORMATS
+};
+
+/* Nightmode settings */
+enum
+{
+	NIGHT_OFF,
+	NIGHT_ON,
+	NIGHT_AUTO,
 };
 
 /* Definiton for travelmode used in local_config */
@@ -70,8 +96,16 @@ enum
 	TRAVEL_AIRPLANE,
 	TRAVEL_N_MODES
 };
-	
-	
+
+/* GUI Modes  */
+enum
+{
+	GUI_CLASSIC,
+	GUI_PDA,
+	GUI_XWIN,
+	GUI_N_FORMATS
+};
+
 
 /*  size of the bearing pointer, default is 50 */
 #define PSIZE real_psize
@@ -98,9 +132,6 @@ enum
 
 /*  defines offset and color of the shadows */
 #define SHADOWOFFSET 7
-
-/* #define SHADOWGREY 0xD000  */
-#define SHADOWGREY 0xA000 
 
 #define ROUTEREACH (0.02+10*groundspeed/(3600*milesconv))
 /* #define ROUTEREACH 0.05 */
@@ -176,35 +207,14 @@ $PSRF108,0*32            WAAS/EGNOS off
  * Declarations.
  */
 
-extern gchar local_config_homedir[500];
 extern gchar savetrackfn[256];
 
 extern gint real_screen_x;
 extern gint real_screen_y;
-extern gint shadow;
 
 extern GdkGC *kontext;
 extern GdkDrawable *drawable;
 extern GtkWidget *track_bt;
-
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue ;
-extern GdkColor nightcolor;
-extern GdkColor lcd;
-extern GdkColor lcd2;
-extern GdkColor yellow;
-extern GdkColor green;
-extern GdkColor green2;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor grey;
-extern GdkColor orange;
-extern GdkColor orange2;
-extern GdkColor darkgrey;
-extern GdkColor defaultcolor;
 
 
 gint line_crosses_rectangle(gdouble li_lat1, gdouble li_lon1, gdouble li_lat2, gdouble li_lon2,
@@ -281,6 +291,7 @@ typedef struct
 	gdouble distance;
 }
 status_struct;
+
 
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))

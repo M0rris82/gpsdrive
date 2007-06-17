@@ -47,7 +47,6 @@ extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int usesql;
 extern int mydebug, dbusedist;
-extern gchar local_config_homedir[500];
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 
@@ -122,14 +121,42 @@ sqlend (void)
 
 
 /* ******************************************************************
+ * escape special characters in sql string.
+ * returned string has to be freed after usage!
  */
-int
-insertsqldata (double lat, double lon, char *name, char *typ, char *comment)
+gchar 
+*escape_sql_string (const gchar *data)
 {
-	char q[200], lats[20], lons[20], tname[80], ttyp[50], tcomment[255];
-	int r, j, i, pt_id, src;
-	gchar *db_time = "2007-01-01T00:00:00.000Z";
-	GTimeVal current_time;
+	gint i, j, length;
+	gchar *tdata = NULL;
+	
+	length = strlen (data);
+	tdata = g_malloc (length*2 + 1);
+	j = 0;
+	for (i = 0; i <= length; i++)
+	{
+		if (data[i] == '\'' || data[i] == '\\' || data[i] == '\"')
+			tdata[j++] = '\\';
+		tdata[j++] = data[i];
+	}
+	
+	if (mydebug > 50)
+		g_print ("escape_sql_string:\tOrig. name : %s\nescape_sql_string:\tEscaped name : %s\n", data, tdata);
+	
+	return tdata;
+}
+
+
+/* ******************************************************************
+ * insert poi data into poi table
+ */
+glong
+insertsqldata (double lat, double lon, gchar *name, gchar *typ, gchar *comment, gint src)
+{
+	gchar q[200], lats[20], lons[20];
+	gchar *tname, *ttyp, *tcomment;
+	gint pt_id;
+	glong r;
 
 	if (!usesql)
 		return 0;
@@ -139,66 +166,27 @@ insertsqldata (double lat, double lon, char *name, char *typ, char *comment)
 	g_strdelimit (lons, ",", '.');
 
 	/* escape ' */
-	j = 0;
-	for (i = 0; i <= (int) strlen (name); i++)
-	{
-		if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
-			tname[j++] = name[i];
-		else
-		{
-			tname[j++] = '\\';
-			tname[j++] = name[i];
-			if (mydebug > 50)
-				g_print ("Orig. name : %s\nEscaped name : %s\n", name, tname);
-		}
-	}
-
-	j = 0;
-	for (i = 0; i <= (int) strlen (typ); i++)
-	{
-		if (typ[i] != '\'' && typ[i] != '\\' && typ[i] != '\"')
-			ttyp[j++] = typ[i];
-		else
-		{
-			ttyp[j++] = '\\';
-			ttyp[j++] = typ[i];
-			if (mydebug > 50)
-				g_print ("\n Orig. typ : %s\nEscaped typ : %s\n", typ, ttyp);
-		}
-	}
-
-	j = 0;
-	for (i = 0; i <= (int) strlen (comment); i++)
-	{
-		if (comment[i] != '\'' && comment[i] != '\\' && comment[i] != '\"')
-			tcomment[j++] = comment[i];
-		else
-		{
-			tcomment[j++] = '\\';
-			tcomment[j++] = comment[i];
-			if (mydebug > 50)
-				g_print ("Orig. comment : %s\nEscaped comment : %s\n", comment, tcomment);
-		}
-	}
-
+	tname = escape_sql_string (name);
+	ttyp = escape_sql_string (typ);
+	tcomment = escape_sql_string (comment);
+	
 	/* get poi_type_id for chosen poi_type from poi_type table */
- 	pt_id = poi_type_id_from_name(ttyp);
-	/* set source_id at value for 'user entered data' */
-	src = 3;
-	/* get current date and format it for use in database */
-	g_get_current_time(&current_time);
-	db_time = g_strndup(g_time_val_to_iso8601(&current_time),10);
+	pt_id = poi_type_id_from_name (ttyp);
+	
+	/* set source_id at value for 'user entered data'if none is given */
+	if (!src)
+		src = 3;
 	
 	g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (name,lat,lon,poi_type_id,comment,source_id,last_modified) VALUES ('%s','%s','%s','%d','%s','%d','%s')",
-				dbtable, tname, lats, lons, pt_id, tcomment, src, db_time);
+				"INSERT INTO %s (name,lat,lon,poi_type_id,comment,source_id,last_modified) VALUES ('%s','%s','%s','%d','%s','%d',NOW())",
+				dbtable, tname, lats, lons, pt_id, tcomment, src);
 	if (mydebug > 50)
 		printf ("query: %s\n", q);
 	if (dl_mysql_query (&mysql, q))
 		exiterr (3);
 	r = dl_mysql_affected_rows (&mysql);
 	if (mydebug > 50)
-		printf (_("rows inserted: %d\n"), r);
+		printf (_("rows inserted: %ld\n"), r);
 
 	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
 	if (mydebug > 50)
@@ -220,8 +208,192 @@ insertsqldata (double lat, double lon, char *name, char *typ, char *comment)
 	}
 
 	if (mydebug > 50)
-		printf (_("last index: %d\n"), r);
+		printf (_("last index: %ld\n"), r);
+	
+	g_free (ttyp);
+	g_free (tname);
+	g_free (tcomment);
+	
 	return r;
+}
+
+
+/* ******************************************************************
+ * update poi data in poi table
+ */
+glong
+updatesqldata (glong poi_id, double lat, double lon, gchar *name, gchar *typ, gchar *comment, gint src)
+{
+	gchar q[200], lats[20], lons[20];
+	gchar *tname, *ttyp, *tcomment;
+	gint pt_id;
+	glong r;
+
+	if (!usesql)
+		return 0;
+	g_snprintf (lats, sizeof (lats), "%.6f", lat);
+	g_strdelimit (lats, ",", '.');
+	g_snprintf (lons, sizeof (lons), "%.6f", lon);
+	g_strdelimit (lons, ",", '.');
+
+	/* escape ' */
+	tname = escape_sql_string (name);
+	ttyp = escape_sql_string (typ);
+	tcomment = escape_sql_string (comment);
+	
+	/* get poi_type_id for chosen poi_type from poi_type table */
+	pt_id = poi_type_id_from_name (ttyp);
+	
+	/* set source_id at value for 'user entered data'if none is given */
+	if (!src)
+		src = 3;
+	
+	g_snprintf (q, sizeof (q),
+				"UPDATE %s SET name='%s', lat='%s', lon='%s', poi_type_id='%d', comment='%s', source_id='%d', last_modified=NOW() WHERE poi_id=%ld", dbtable, tname, lats, lons, pt_id, tcomment, src, poi_id);
+	if (mydebug > 50)
+		printf ("update query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (mydebug > 50)
+		printf (_("rows updated: %ld\n"), r);
+
+	return r;
+}
+
+
+/* ******************************************************************
+ * insert additional poi data into poi_extra table
+ */
+int
+insertsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
+{
+	char q[9000];
+	gchar *tentry;
+	int r;
+
+	/* escape ' */
+	tentry = escape_sql_string (field_entry);
+	
+	g_snprintf (q, sizeof (q),
+		"INSERT INTO poi_extra (poi_id, field_name, entry) VALUES ('%ld','%s','%s')", *poi_id, field_name, tentry);
+	if (mydebug > 50)
+		printf ("query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (mydebug > 50)
+		printf (_("rows inserted: %d\n"), r);
+
+	g_snprintf (q, sizeof (q), "SELECT LAST_INSERT_ID()");
+	if (mydebug > 50)
+		printf ("insertsqldata: query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	if (!(res = dl_mysql_store_result (&mysql)))
+	{
+		dl_mysql_free_result (res);
+		res = NULL;
+		fprintf (stderr, "insertsqlextradata: Error in store results: %s\n",
+		dl_mysql_error (&mysql));
+		return -1;
+	}
+	r = 0;
+	while ((row = dl_mysql_fetch_row (res)))
+	{
+		r = strtol (row[0], NULL, 10);	/* last index */
+	}
+
+	if (mydebug > 50)
+		printf (_("last index: %d\n"), r);
+	return r;	
+}
+
+/* ******************************************************************
+ * update additional poi data in poi_extra table
+ */
+int
+updatesqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
+{
+	char q[9000];
+	gchar *tentry, *tfield;
+	int r;
+
+	/* escape ' */
+	tfield = escape_sql_string (field_name);
+	tentry = escape_sql_string (field_entry);
+	
+	g_snprintf (q, sizeof (q),
+		"UPDATE poi_extra SET entry='%s' WHERE (poi_id=%ld AND field_name='%s')", tentry, *poi_id, field_name);
+	if (mydebug > 50)
+		printf ("update query: %s\n", q);
+	if (dl_mysql_query (&mysql, q))
+		exiterr (3);
+	r = dl_mysql_affected_rows (&mysql);
+	if (mydebug > 50)
+		printf (_("rows updated: %d\n"), r);
+
+	return r;	
+}
+
+
+/* ******************************************************************
+ * get additional poi data from poi_extra table
+ *
+ * You have to set at least two parameters; set the one you are
+ * asking for to NULL.
+ * The return value is the poi_id.
+ */
+glong
+getsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *result)
+{
+	gchar sql_query[5000];
+	glong result_id = 0;
+	
+	if (field_entry == NULL)
+	{
+		g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT poi_id,entry FROM poi_extra "
+     		"WHERE (poi_id='%ld' AND field_name='%s') LIMIT 1;",
+     		*poi_id, field_name);
+     	}
+	else if (poi_id == NULL)
+	{
+		g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT poi_id FROM poi_extra "
+     		"WHERE (field_name='%s' AND entry='%s') LIMIT 1;",
+     		field_name, field_entry);
+     	}
+	else if (field_name == NULL)
+	{
+		g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT poi_id,field_id FROM poi_extra "
+     		"WHERE (poi_id='%ld' AND entry='%s') LIMIT 1;",
+     		*poi_id, field_entry);
+     	}
+	else
+		return 0;
+		
+	if (mydebug > 20)
+		printf ("getsqlextradata: mysql query: %s\n", sql_query);
+
+	if (dl_mysql_query (&mysql, sql_query))
+	{
+		fprintf (stderr, "getsqlextradata: Error in query: %s\n",
+			dl_mysql_error (&mysql));
+		return 0;
+	}
+	res = dl_mysql_store_result (&mysql);
+	row = dl_mysql_fetch_row (res);
+	if (!row)
+		return 0;
+	else
+	{
+		result_id = strtol (row[0], NULL, 10);
+	}
+	dl_mysql_free_result (res);
+	res = NULL;
+	return result_id;
 }
 
 

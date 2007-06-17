@@ -37,6 +37,7 @@
 #include <math.h>
 #include <termios.h>
 #include "gps_handler.h"
+#include "gpsdrive_config.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -48,12 +49,12 @@
 # endif
 
 
-extern gint simmode, zoom, iszoomed;
+extern gint zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
+extern gint isnight, disableisnight;
 
 extern gint mydebug;
 gint nmea_handler_debug = 0;
@@ -95,7 +96,7 @@ extern GtkTooltips *temptooltips;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
-extern gchar activewpfile[200], gpsdservername[200], setpositionname[80];
+extern gchar gpsdservername[200], setpositionname[80];
 extern GtkWidget *mainwindow, *status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
@@ -319,7 +320,7 @@ convertRMC (char *f)
   memset (b, 0, 100);
 
   /*  if simulation mode we display status and return */
-  if (simmode && maploaded && !posmode)
+  if (local_config.simmode && maploaded && !posmode)
     {
       display_status (_("Simulation mode"));
       return;

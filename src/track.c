@@ -31,8 +31,10 @@ Disclaimer: Please do not use for navigation.
 #include <string.h>
 #include <sys/stat.h>
 #include "gpsdrive.h"
+#include "gpsdrive_config.h"
 #include "track.h"
 #include "config.h"
+#include "gui.h"
 
 extern gint mydebug;
 extern gint maploaded;
@@ -50,13 +52,8 @@ extern status_struct route;
 
 extern wpstruct *routelist;
 extern GdkColor blue;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor trackcolorv;
+extern gint isnight, disableisnight;
+extern color_struct colors;
 
 
 /* ----------------------------------------------------------------------------- */
@@ -167,7 +164,7 @@ drawtracks (void)
 				t++;
 			}
 			gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
-			gdk_gc_set_foreground (kontext, &blue);
+			gdk_gc_set_foreground (kontext, &colors.track);
 			gdk_draw_segments (drawable, kontext, (GdkSegment *) routes, t);
 			g_free (routes);
 	  	}
@@ -178,16 +175,18 @@ drawtracks (void)
     	return;
 
     gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-	if (shadow) {
- 		gdk_gc_set_foreground (kontext, &darkgrey);
+	if (local_config.showshadow) {
+ 		gdk_gc_set_foreground (kontext, &colors.shadow);
 		gdk_gc_set_function (kontext, GDK_AND);
 		gdk_draw_segments (drawable, kontext, (GdkSegment *) trackshadow, t);
 		gdk_gc_set_function (kontext, GDK_COPY);
 	}
-	if ((!disableisnight) && ((nightmode == 1) || ((nightmode == 2) && isnight)))
-		gdk_gc_set_foreground (kontext, &red);
+	if ((!disableisnight) && 
+		((local_config.nightmode == NIGHT_ON) ||
+		((local_config.nightmode == NIGHT_AUTO) && isnight)))
+		gdk_gc_set_foreground (kontext, &colors.red);
 	else
-		gdk_gc_set_foreground (kontext, &trackcolorv);
+		gdk_gc_set_foreground (kontext, &colors.trackcolorv);
 
 	gdk_draw_segments (drawable, kontext, (GdkSegment *) track, t);
 
@@ -219,7 +218,8 @@ savetrackfile (gint mode)
       i = 0;
       do
 	{
-	  g_snprintf (buff, sizeof (buff), "%strack%04d.sav", local_config_homedir, i++);
+	  g_snprintf (buff, sizeof (buff), "%strack%04d.sav",
+	  	local_config.dir_home, i++);
 	  e = stat (buff, &sbuf);
 	}
       while (e == 0);
@@ -228,7 +228,7 @@ savetrackfile (gint mode)
     }
 
   /* save in new file */
-  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
+  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
   g_strlcat (mappath, savetrackfn, sizeof (mappath));
   st = fopen (mappath, "w");
   if (st == NULL)
@@ -254,7 +254,7 @@ savetrackfile (gint mode)
     return;
 
   /* append to existing backup file */
-  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
+  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
   g_strlcat (mappath, "track-ALL.sav", sizeof (mappath));
   st = fopen (mappath, "a");
   if (st == NULL)
@@ -295,7 +295,7 @@ void do_incremental_save() {
     FILE *st;
     
     if ((trackcoordnr % 30) == 29) { /* RNM: append to existing incremental file every 30 seconds */
-	g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
+	g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
 	g_strlcat (mappath, "incremental.sav", sizeof(mappath));
 	st = fopen (mappath, "a");
                 if (st == NULL) {

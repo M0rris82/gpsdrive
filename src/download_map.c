@@ -99,13 +99,13 @@ Disclaimer: Please do not use for navigation.
 
 #include <gpsdrive.h>
 #include <map_handler.h>
+#include "gpsdrive_config.h"
 
 extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint haveproxy, proxyport;
 extern gchar proxy[256];
 extern gint mydebug;
-extern gchar local_config_mapdir[500];
 extern mapsstruct *maps;
 extern struct timeval timeout;
 extern int havenasa;
@@ -116,9 +116,7 @@ extern GtkWidget *cover;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gdouble zero_lon, zero_lat;
 extern gdouble target_lon, target_lat;
-extern gint minsecmode;
 extern gint scaleprefered, scalewanted;
-extern gint milesflag, metricflag, nauticflag;
 extern gdouble milesconv;
 
 char actualhostname[200];
@@ -534,11 +532,11 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 					"expedia/map_%d_%5.3f_%5.3f.gif",
 					new_dl_scale,new_dl_lat,new_dl_lon);
 
-			    if ( local_config_mapdir[strlen (local_config_mapdir) - 1] != '/' )
-				g_strlcat( local_config_mapdir, "/",sizeof (local_config_mapdir) );
+			    if ( local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/' )
+				g_strlcat( local_config.dir_maps, "/",sizeof (local_config.dir_maps) );
 			    
 			    g_snprintf (map_file_w_path, sizeof (map_file_w_path), 
-					"%s%s",local_config_mapdir,map_filename);
+					"%s%s",local_config.dir_maps,map_filename);
 
 			    if ( mydebug > 1 ) {
 				g_print("Saving Map File to: '%s'\n",
@@ -549,7 +547,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    struct stat buf;
 			    gchar map_dir[1024];
 			    g_snprintf (map_dir, sizeof (map_dir), 
-					"%s%s",local_config_mapdir,"expedia");
+					"%s%s",local_config.dir_maps,"expedia");
 			    if ( stat(map_dir,&buf) )
 				{
 				    printf("Try creating %s\n",map_dir);
@@ -873,13 +871,15 @@ download_cb (GtkWidget * widget, guint datum)
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
-	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE, minsecmode);
+	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE,
+		local_config.coordmode);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
 	dl_text_lon = gtk_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (dl_text_lon), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
-	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE, minsecmode);
+	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE,
+		local_config.coordmode);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 	dl_text_scale = gtk_combo_new ();
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_scale, 1, 2, 3, 4);
@@ -962,9 +962,9 @@ dlscale_cb (GtkWidget * widget, guint datum)
 
 	g_strlcpy (t2, "km", sizeof (t2));
 
-	if (milesflag)
+	if (local_config.distmode == DIST_MILES)
 		g_strlcpy (t2, "mi", sizeof (t2));
-	if (nauticflag)
+	if (local_config.distmode == DIST_NAUTIC)
 		g_strlcpy (t2, "nmi", sizeof (t2));
 
 	g_snprintf (t, sizeof (t), "%.3f x %.3f %s",

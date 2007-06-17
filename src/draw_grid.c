@@ -44,7 +44,7 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "import_map.h"
 #include "download_map.h"
-#include "icons.h"
+#include "gui.h"
 
 #include "gettext.h"
 #include <speech_strings.h>
@@ -65,23 +65,12 @@ extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor darkgrey;
-extern GdkColor grey;
-
+extern gint isnight, disableisnight;
+extern color_struct colors;
 extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 
@@ -95,13 +84,11 @@ extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint posmode;
-extern gint simmode;
 extern GtkWidget *posbt;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
 extern GtkWidget *mainwindow;
-extern gint minsecmode;
 extern gchar targetname[40];
 extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
@@ -132,11 +119,11 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 	pango_layout_set_font_description (grid_label_layout, pfd);
 	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
 	gdk_gc_set_function (kontext, GDK_XOR);
-	gdk_gc_set_background (kontext, &white);
-	gdk_gc_set_foreground (kontext, &mygray);
+	gdk_gc_set_background (kontext, &colors.white);
+	gdk_gc_set_foreground (kontext, &colors.mygray);
 	
 	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
-				     posy - height / 2, grid_label_layout, &black,
+				     posy - height / 2, grid_label_layout, &colors.black,
 				     NULL);
 
 	if (grid_label_layout != NULL)
@@ -256,7 +243,7 @@ draw_grid (GtkWidget * widget)
 				// TODO: add linethikness 2 for Mayor Lines
 				// Set Drawing Mode
 				gdk_gc_set_function (kontext, GDK_XOR);
-				gdk_gc_set_foreground (kontext, &darkgrey);
+				gdk_gc_set_foreground (kontext, &colors.darkgrey);
 				gdk_gc_set_line_attributes (kontext, 1, GDK_LINE_SOLID, 0, 0);
 
 				gdk_draw_line (drawable, kontext, posxdest11,

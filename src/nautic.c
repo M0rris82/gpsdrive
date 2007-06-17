@@ -102,11 +102,10 @@ nautic.c -- routines specific for nautic usage
 extern GtkWidget *hauptfenster;
 extern GtkWidget *splash_window;
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered, milesflag, nauticflag, metricflag;
+extern gint scaleprefered;
 extern gint debug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gint setdefaultpos, shadow, testgarmin, needtosave, usedgps;
-extern gchar activewpfile[200];
+extern gint setdefaultpos, testgarmin, needtosave, usedgps;
 extern gint mod_setupcounter;
 extern GtkWidget *setupentry[50], *setupentrylabel[50];
 void (*setupfunction[50]) ();

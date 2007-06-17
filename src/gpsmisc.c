@@ -34,6 +34,7 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <config.h>
 #include <math.h>
+#include "gpsdrive_config.h"
 
 #include <locale.h>
 
@@ -58,8 +59,20 @@ extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
 static gchar gradsym[] = "\xc2\xb0";
-extern gchar local_config_mapdir[500];
 gdouble lat2RadiusArray[101];
+
+
+/* **********************************************************************
+ * Convenience function to free malloced data
+ */
+gchar
+*free_string (gchar *data)
+{
+	if(data)
+		free(data);
+	return NULL;
+}
+
 
 /* **********************************************************************
  * Build array for earth radii 
@@ -201,7 +214,7 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_c
 	gdouble sa, c2a, cz, e, c, d;
 	gdouble eps = 0.5e-13;
 
-  /*   if (cpuload<10)
+  /*   if (local_config.maxcpuload<10)
    *     {
    *       r = calcdist2 (lon, lat);
    *       return r;
@@ -458,12 +471,12 @@ file_location(gchar * filename, gchar *file_location){
     struct stat buf;
     gchar mappath[2048];
 
-    g_snprintf (mappath, sizeof (mappath), "%s%s",  local_config_mapdir, filename);
+    g_snprintf (mappath, sizeof (mappath), "%s%s",  local_config.dir_maps, filename);
     g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
     g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR, filename);
     g_snprintf (filename, sizeof (filename), "./data/pixmaps/%s", filename);
 
-    g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
+    g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
     if ( stat (mappath, &buf) ) {
 	printf("Success\n");
 	//if (buf.st_mtime != waytxtstamp)

@@ -30,11 +30,13 @@ Disclaimer: Please do not use for navigation.
 #include <stdlib.h>
 
 #include "gpsdrive.h"
+#include "gpsdrive_config.h"
 #include "poi.h"
 #include "config.h"
 #include "gettext.h"
 #include "icons.h"
 #include "routes.h"
+#include "gui.h"
 #include <speech_out.h>
 #include <speech_strings.h>
 
@@ -57,20 +59,18 @@ extern gint havespeechout, speechcount;
 extern gchar oldangle[100];
 extern gint saytarget;
 extern wpstruct *wayp;
-extern gint minsecmode;
 extern gint maxwp, maxfriends;
 extern friendsstruct *friends, *fserver;
-extern long int maxfriendssecs;
 extern int sortcolumn, sortflag;
 extern gint selected_wp_list_line;
 extern GtkWidget *mylist;
 extern gint onemousebutton;
-extern gint pdamode;
 extern GtkWidget *mainwindow;
 extern gint dontsetwp;
 extern gint usesql;
 extern poi_struct *poi_list;
 extern glong poi_list_count;	
+extern color_struct colors;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -202,15 +202,17 @@ insertroutepoints ()
 	text[1] = (wayp + i)->name;
 	g_snprintf (text0, sizeof (text0), "%d", i + 1);
 
-	coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
-	coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
+	coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE,
+		local_config.coordmode);
+	coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE,
+		local_config.coordmode);
 	g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
 	text[0] = text0;
 	text[2] = text1;
 	text[3] = text2;
 	text[4] = text3;
 	j = gtk_clist_append (GTK_CLIST (myroutelist), (gchar **) text);
-	gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
+	gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &colors.black);
 	g_strlcpy ((routelist + route.items)->name, (wayp + i)->name, 40);
 	(routelist + route.items)->lat = (wayp + i)->lat;
 	(routelist + route.items)->lon = (wayp + i)->lon;
@@ -234,8 +236,10 @@ insertallroutepoints ()
 		text[1] = (wayp + i)->name;
 		g_snprintf (text0, sizeof (text0), "%d", i + 1);
 
-		coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
-		coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
+		coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE,
+			local_config.coordmode);
+		coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE,
+			local_config.coordmode);
 		g_snprintf (text3, sizeof (text3), "%9.3f", (wayp + i)->dist);
 		text[0] = text0;
 		text[2] = text1;
@@ -243,7 +247,7 @@ insertallroutepoints ()
 		text[4] = text3;
 		j = gtk_clist_append (GTK_CLIST (myroutelist),
 				      (gchar **) text);
-		gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &black);
+		gtk_clist_set_foreground (GTK_CLIST (myroutelist), j, &colors.black);
 		g_strlcpy ((routelist + route.items)->name, (wayp + i)->name,
 			   40);
 		(routelist + route.items)->lat = (wayp + i)->lat;
@@ -283,8 +287,12 @@ insertwaypoints (gint mobile)
 				text[2] = (wayp + i)->typ;
 				
 				g_snprintf (text0, sizeof (text0), "%02d", i + 1);
-				coordinate2gchar(text1, sizeof(text1), (wayp+i)->lat, TRUE, minsecmode);
-				coordinate2gchar(text2, sizeof(text2), (wayp+i)->lon, FALSE, minsecmode);
+				coordinate2gchar(text1, sizeof(text1),
+					(wayp+i)->lat, TRUE,
+					local_config.coordmode);
+				coordinate2gchar(text2, sizeof(text2),
+					(wayp+i)->lon, FALSE,
+					local_config.coordmode);
 				g_snprintf (text3, sizeof (text3), "%9.3f",
 				          (wayp + i)->dist);
 				text[0] = text0;
@@ -294,7 +302,7 @@ insertwaypoints (gint mobile)
 				j = gtk_clist_append (GTK_CLIST (mylist),
 					      (gchar **) text);
 				gtk_clist_set_foreground (GTK_CLIST (mylist), j,
-						  &black);
+						  &colors.black);
 			}
 		}
 	}
@@ -303,7 +311,7 @@ insertwaypoints (gint mobile)
 	{
 		ti = time (NULL);
 		tif = atol ((friends + i)->timesec);
-		if ((ti - maxfriendssecs) > tif)
+		if ((ti - local_config.friends_maxsecs) > tif)
 			continue;
 
 		if (mobile)
@@ -314,8 +322,10 @@ insertwaypoints (gint mobile)
 		g_snprintf (text0, sizeof (text0), "%d", i + maxwp + 1);
 		coordinate_string2gdouble((friends + i)->lat, &la);
 		coordinate_string2gdouble((friends + i)->lon, &lo);
-		coordinate2gchar(text1, sizeof(text1), la, TRUE, minsecmode);
-		coordinate2gchar(text2, sizeof(text2), lo, FALSE, minsecmode);
+		coordinate2gchar(text1, sizeof(text1), la, TRUE,
+			local_config.coordmode);
+		coordinate2gchar(text2, sizeof(text2), lo, FALSE,
+			local_config.coordmode);
 
 		if (!mobile)
 		{
@@ -341,10 +351,10 @@ insertwaypoints (gint mobile)
 		j = gtk_clist_append (GTK_CLIST (mylist), (gchar **) text);
 		if (mobile)
 			gtk_clist_set_foreground (GTK_CLIST (mylist), j,
-						  &black);
+						  &colors.black);
 		else
 			gtk_clist_set_foreground (GTK_CLIST (mylist), j,
-						  &red);
+						  &colors.red);
 	}
 
 	/*  we want te columns sorted by distance from current position */
@@ -450,7 +460,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 				   (sel_routeclose_cb), GTK_OBJECT (window));
 
 	/* Font �ndern falls PDA-Mode und Touchscreen */
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 	{
 		if (onemousebutton)
 		{
@@ -535,7 +545,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 			j = gtk_clist_append (GTK_CLIST (myroutelist),
 					      (gchar **) text);
 			gtk_clist_set_foreground (GTK_CLIST (myroutelist), j,
-						  &black);
+						  &colors.black);
 		}
 	}
 	else
@@ -559,7 +569,7 @@ create_route_cb (GtkWidget * widget, guint datum)
 
 
 /* *******************************************************
- * append selected poi  to the end of the route
+ * append selected poi to the end of the route
  */
 void
 add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)

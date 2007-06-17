@@ -88,7 +88,7 @@ extern gdouble wp_saved_posmode_lon;
 extern gint posmode;
 extern gdouble posmode_lon, posmode_lat;
 
-extern GdkColor textback;
+extern color_struct colors;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
@@ -98,6 +98,11 @@ extern GtkWidget *drawing_area;
 
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
+
+GdkColormap *colmap;
+color_struct colors;
+guistatus_struct gui_status;
+
 
 struct pattern
 {
@@ -114,7 +119,7 @@ static gint statusbar_id;
 
 extern gint borderlimit;
 
-extern gint extrawinmenu, pdamode;
+extern gint extrawinmenu;
 extern gdouble posx, posy;
 
 extern status_struct route;
@@ -132,6 +137,8 @@ GtkWidget *button_remove;
 
 GtkWidget *poi_types_window;
 
+// TODO: should be completely moved to gui.*
+extern GtkWidget *mainwindow;
 
 /* included from freedesktop.org source, copyright as below do not change anything in between here and function get_window_sizing */
 
@@ -421,12 +428,12 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
     if (   ((screen_width  == 240) && (screen_height == 320)) 
 	   || ((screen_height == 240) && (screen_width  == 320)) )
 	{
-	    pdamode = TRUE;
+	    local_config.guimode = GUI_PDA;
 	    // SMALLMENU = 1;
 	    real_screen_x = screen_width - 8;
 	    real_screen_y = screen_height - 70;
 	}
-    if (pdamode)
+    if (local_config.guimode == GUI_PDA)
 	{
 	    extrawinmenu = TRUE;
 	    PADDING = 0;
@@ -481,20 +488,29 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	if (mydebug>5)
 	{
 		fprintf (stdout, "\npoi search criteria:\n  text: %s\n  distance: %s\t  posflag: %d\n",
-					gtk_entry_get_text (entries->text) ,
-					gtk_entry_get_text (entries->distance),
-					entries->posflag);
+			gtk_entry_get_text (entries->text) ,
+			gtk_entry_get_text (entries->distance),
+			entries->posflag);
 	}
 		
-	entries->result_count = poi_get_results (gtk_entry_get_text (entries->text),
-						gtk_entry_get_text (entries->distance),
-						entries->posflag, entries->typeflag, entries->poitype_id);
+	entries->result_count = poi_get_results
+		(gtk_entry_get_text (entries->text),
+		gtk_entry_get_text (entries->distance),
+		entries->posflag, entries->typeflag, entries->poitype_id);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
-	if (entries->result_count == local_config.results_max)
-		g_snprintf (search_status, sizeof (search_status), _(" Found %d matching entries (Limit reached)."), entries->result_count);
+	if (entries->result_count == local_config.poi_results_max)
+	{
+		g_snprintf (search_status, sizeof (search_status),
+		_(" Found %d matching entries (Limit reached)."),
+		entries->result_count);
+	}
 	else
-		g_snprintf (search_status, sizeof (search_status), _(" Found %d matching entries."), entries->result_count);
+	{
+		g_snprintf (search_status, sizeof (search_status),
+		_(" Found %d matching entries."),
+		entries->result_count);
+	}
 	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, search_status);
 }
 
@@ -575,8 +591,8 @@ delete_poi_cb (GtkTreeSelection *selection, gpointer data)
 		if (popup_yes_no(GTK_WINDOW (poi_lookup_window), NULL) == GTK_RESPONSE_YES)
 		{
 			gtk_tree_model_get (model, &iter,
-					RESULT_ID, &selected_poi_id,
-					-1);
+				RESULT_ID, &selected_poi_id,
+				-1);
 			if (mydebug>20)
 				fprintf (stderr, "deleting poi with id: %d\n", selected_poi_id);
 			deletesqldata (selected_poi_id);
@@ -605,9 +621,9 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 			if (!route.active)
 			{
 				gtk_tree_model_get (model, &iter,
-							RESULT_LAT, &target_lat,
-							RESULT_LON, &target_lon,
-							-1);
+					RESULT_LAT, &target_lat,
+					RESULT_LON, &target_lon,
+					-1);
 				if (mydebug>50)
 					fprintf (stdout, " new target -> %f / %f\n", target_lat, target_lon);
 			}
@@ -731,12 +747,73 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 	gchar *question = "Are you sure?";
 	
 	dialog_yesno = GTK_DIALOG (gtk_message_dialog_new (parent,
-									GTK_DIALOG_MODAL,
-									GTK_MESSAGE_QUESTION,
-									GTK_BUTTONS_YES_NO,
-									"%s", question));
+		GTK_DIALOG_MODAL,
+		GTK_MESSAGE_QUESTION,
+		GTK_BUTTONS_YES_NO,
+		"%s", question));
 	response_id = gtk_dialog_run (dialog_yesno);
 	gtk_widget_destroy (GTK_WIDGET (dialog_yesno));
+	return response_id;
+}
+
+/* *****************************************************************************
+ * Popup: Warning, ok
+ */
+gint popup_warning (GtkWindow *parent, gchar *message)
+{
+	GtkDialog *dialog_warning;
+	gint response_id;
+	gchar warning[80];
+
+	if (!parent)
+		parent = GTK_WINDOW (mainwindow);
+	if (message)
+		g_strlcpy (warning, message, sizeof (warning));
+	else
+		g_strlcpy (warning, _("Press OK to continue!"),
+			sizeof (warning));
+
+	dialog_warning = GTK_DIALOG (gtk_message_dialog_new (parent,
+		GTK_DIALOG_MODAL,
+		GTK_MESSAGE_WARNING,
+		GTK_BUTTONS_OK,
+		"%s", warning));
+
+	gdk_beep ();
+	
+	response_id = gtk_dialog_run (dialog_warning);
+	gtk_widget_destroy (GTK_WIDGET (dialog_warning));
+	return response_id;
+}
+
+/* *****************************************************************************
+ * Popup: Error, ok
+ */
+gint popup_error (GtkWindow *parent, gchar *message)
+{
+	GtkDialog *dialog_error;
+	gint response_id;
+	gchar error[80];
+
+	if (!parent)
+		parent = GTK_WINDOW (mainwindow);
+	if (message)
+		g_strlcpy (error, message, sizeof (error));
+	else
+		g_strlcpy (error,
+			_("An error has occured.\nPress OK to continue!"),
+			sizeof (error));
+
+	dialog_error = GTK_DIALOG (gtk_message_dialog_new (parent,
+		GTK_DIALOG_MODAL,
+		GTK_MESSAGE_WARNING,
+		GTK_BUTTONS_OK,
+		"%s", error));
+
+	gdk_beep ();
+	
+	response_id = gtk_dialog_run (dialog_error);
+	gtk_widget_destroy (GTK_WIDGET (dialog_error));
 	return response_id;
 }
 
@@ -967,56 +1044,33 @@ void create_poi_info_window (void)
 void poi_lookup_cb (GtkWidget *calling_button)
 {
 	GtkWidget *dialog_vbox_poisearch;
-	GtkWidget *vbox_searchbox;
-	GtkWidget *expander_poisearch;
-	GtkWidget *frame_search_criteria;
-	GtkWidget *alignment_criteria;
-	GtkWidget *vbox_criteria;
-	GtkWidget *hbox_text;
-	GtkWidget *label_text;
-	GtkWidget *entry_text;
-	GtkWidget *button_search;
-	GtkWidget *hbox_distance;
-	GtkWidget *label_distance;
-	GtkWidget *entry_distance;
-	GtkWidget *label_distfrom;
-	GtkWidget *radiobutton_distcurrent;
+	GtkWidget *vbox_searchbox, *expander_poisearch;
+	GtkWidget *frame_search_criteria, *alignment_criteria;
+	GtkWidget *vbox_criteria, *hbox_text;
+	GtkWidget *label_text, *entry_text;
+	GtkWidget *button_search, *hbox_distance;
+	GtkWidget *label_distance, *entry_distance;
+	GtkWidget *label_distfrom, *radiobutton_distcurrent;
 	GSList *radiobutton_distance_group = NULL;
 	GtkWidget *radiobutton_distcursor;
-	GtkWidget *hbox_type;
-	GtkWidget *label_type;
-	GtkWidget *radiobutton_typeall;
+	GtkWidget *hbox_type, *label_type, *radiobutton_typeall;
 	GSList *radiobutton_type_group = NULL;
-	GtkWidget *radiobutton_typesel;
-	GtkWidget *comboboxentry_type;
-	GtkWidget *button_types;
-	GtkWidget *label_criteria;
-	GtkWidget *frame_poiresults;
-	GtkWidget *alignment_poiresults;
-	GtkWidget *vbox_poiresults;
-	GtkWidget *scrolledwindow_poilist;
-	GtkWidget *treeview_poilist;
+	GtkWidget *radiobutton_typesel, *comboboxentry_type;
+	GtkWidget *button_types, *label_criteria, *frame_poiresults;
+	GtkWidget *alignment_poiresults, *vbox_poiresults;
+	GtkWidget *scrolledwindow_poilist, *treeview_poilist;
 	GtkCellRenderer *renderer_poilist;
 	GtkTreeViewColumn *column_poilist;
 	GtkTreeSelection *poilist_select;
 	GtkWidget *hbox_poistatus;
-	GtkWidget *togglebutton_poiinfo;
-	GtkWidget *alignment_poiinfo;
-	GtkWidget *hbox11;
-	GtkWidget *image_poiinfo;
-	GtkWidget *label_poiinfo;
-	GtkWidget *label_results;
-	GtkWidget *dialog_action_area_poisearch;
-	GtkWidget *alignment_addtoroute;
-	GtkWidget *hbox_addtoroute;
-	GtkWidget *image_addtoroute;
-	GtkWidget *label_addtoroute;
-	GtkWidget *alignment_target;
-	GtkWidget *hbox_target;
-	GtkWidget *image_target;
-	GtkWidget *label_target;
-	GtkWidget *button_close;
+	GtkWidget *togglebutton_poiinfo, *alignment_poiinfo, *hbox11;
+	GtkWidget *image_poiinfo, *label_poiinfo, *label_results;
+	GtkWidget *dialog_action_area_poisearch, *alignment_addtoroute;
+	GtkWidget *hbox_addtoroute, *image_addtoroute, *label_addtoroute;
+	GtkWidget *alignment_target, *hbox_target, *image_target;
+	GtkWidget *label_target, *button_close;
 	GtkTooltips *tooltips_poilookup;
+	gchar text[50];
 	
 	criteria.posflag = 0;
 	criteria.result_count = 0;
@@ -1045,7 +1099,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
 	gtk_window_set_position (GTK_WINDOW (poi_lookup_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_type_hint (GTK_WINDOW (poi_lookup_window), GDK_WINDOW_TYPE_HINT_DIALOG);
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window), real_screen_x, real_screen_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window), -1, 400);
@@ -1106,7 +1160,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	criteria.distance = GTK_ENTRY (entry_distance);
 	gtk_box_pack_start (GTK_BOX (hbox_distance), entry_distance, FALSE, TRUE, 0);
 	gtk_entry_set_max_length (GTK_ENTRY (entry_distance), 5);
-	gtk_entry_set_text (GTK_ENTRY (entry_distance), _("10"));
+	g_snprintf (text, sizeof (text), "%0.1f", local_config.poi_searchradius);
+	gtk_entry_set_text (GTK_ENTRY (entry_distance), text);
 	gtk_entry_set_width_chars (GTK_ENTRY (entry_distance), 5);
 	g_signal_connect (entry_distance, "activate",
 				GTK_SIGNAL_FUNC (evaluate_poi_search_cb), &criteria);
@@ -1168,7 +1223,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (radiobutton_typesel, "toggled",
 				GTK_SIGNAL_FUNC (searchpoitypemode_cb), comboboxentry_type);
 
-	// ### disable POI-Type selection buttons, until the functionality is completely implemented:
+	// TODO: add functionality to POI-Type selection buttons,
+	// until then the buttons are disabled
 	gtk_widget_set_sensitive ( radiobutton_typesel, FALSE );
 	gtk_widget_set_sensitive ( button_types, FALSE );
 
@@ -1223,7 +1279,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 				"text", RESULT_TYPE_TITLE,
 			NULL);
 	g_object_set (G_OBJECT (renderer_poilist),
-				"foreground-gdk", &textback,
+				"foreground-gdk", &colors.textback,
 				NULL);
 	gtk_tree_view_column_set_sort_column_id (column_poilist, RESULT_TYPE_TITLE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_poilist), column_poilist);
@@ -1333,11 +1389,12 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window), button_close, GTK_RESPONSE_CLOSE);
 	GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_close, 
-				_("Close this window"), NULL);
+		_("Close this window"), NULL);
 	g_signal_connect_swapped (button_close, "clicked",
-				GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), poi_lookup_window);
+		GTK_SIGNAL_FUNC (close_poi_lookup_window_cb),
+		poi_lookup_window);
 	g_signal_connect (GTK_OBJECT (poi_lookup_window), "delete_event",
-				   GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
+		GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
 
 	/* disable delete button until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
@@ -1371,7 +1428,7 @@ create_poi_types_window (void)
 
 	poi_types_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (poi_types_window), _("POI-Type Selection"));
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (poi_types_window), real_screen_x, real_screen_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (poi_types_window), 250, 300);
@@ -1404,7 +1461,7 @@ create_poi_types_window (void)
 				"text", POITYPE_NAME,
 				NULL);
 	g_object_set (G_OBJECT (renderer_poitypes),
-				"foreground-gdk", &textback,
+				"foreground-gdk", &colors.textback,
 				NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
 
@@ -1516,7 +1573,7 @@ void route_window_cb (GtkWidget *calling_button)
 	gtk_window_set_title (GTK_WINDOW (route_window), _("Edit Route"));
 	gtk_window_set_position (GTK_WINDOW (route_window), GTK_WIN_POS_NONE);
 	gtk_window_set_type_hint (GTK_WINDOW (route_window), GDK_WINDOW_TYPE_HINT_DIALOG);
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (route_window), real_screen_x, real_screen_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (route_window), -1, 250);
@@ -1659,16 +1716,111 @@ void route_window_cb (GtkWidget *calling_button)
 }
 
 
+
 /* *****************************************************************************
- * GUI Init:
+ * parse the color string allocate the color
+ */
+static void
+init_color (gchar *tcolname, GdkColor *tcolor)
+{
+	gdk_color_parse (tcolname, tcolor);
+	gdk_colormap_alloc_color (colmap, tcolor, FALSE, TRUE);
+}
+
+/* *****************************************************************************
+ * get color string from GdkColor struct
+ * (needed to save settings in config file)
+ * returned string has to be freed after usage!
+ */
+gchar
+*get_colorstring (GdkColor *tcolor)
+{
+	guint r, g, b;
+	gchar *cstring;
+	
+	r = tcolor->red / 256;
+	g = tcolor->green / 256;
+	b = tcolor->blue / 256;
+
+	cstring = g_malloc (sizeof (gchar)*7+1);
+	g_snprintf (cstring, 8, "#%02x%02x%02x", r, g, b);
+	
+	if (mydebug > 20)
+		fprintf (stderr, "get_colorstring result: %s\n", cstring);
+
+	return cstring;
+}
+
+/* *****************************************************************************
+ * switch nightmode on or off
+ *
+ * TODO:
+ *	Currently the Nightmode is represented by changing only the map
+ *	colors, but the rest of the GUI stays the same.
+ *	Maybe we should switch the gtk-theme instead, so that the complete
+ *	GUI changes the colors. But this has time until after the 2007 release.
+ */
+gint switch_nightmode (gboolean value)
+{
+	if (value && !gui_status.nightmode)
+	{
+		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
+			&colors.nightmode);
+		gui_status.nightmode = TRUE;
+		//if (mydebug > 4)
+			fprintf (stderr, "setting to night view\n");
+		return TRUE;
+	}
+	else if (!value && gui_status.nightmode)
+	{
+		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
+				      &colors.defaultcolor);
+		gui_status.nightmode = FALSE;
+		//if (mydebug > 4)
+			fprintf (stderr, "setting to daylight view\n");
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+/* *****************************************************************************
+ * GUI Init Main
  * This will call all the necessary functions to init the graphical interface
  */
 int gui_init (void)
 {
+	/* init colors */
+	colmap = gdk_colormap_get_system ();
+	init_color (local_config.color_track, &colors.track);
+	init_color (local_config.color_route, &colors.route);
+	init_color (local_config.color_friends, &colors.friends);
+	init_color (local_config.color_wplabel, &colors.wplabel);
+	init_color (local_config.color_bigdisplay, &colors.bigdisplay);
+	
+	init_color ("#a0a0a0", &colors.shadow); 
+	// TODO: see gui.h
+	init_color ("#a00000", &colors.nightmode);
+	init_color ("#000000", &colors.black);
+	init_color ("#ff0000", &colors.red);
+	init_color ("#ffffff", &colors.white);
+	init_color ("#0000ff", &colors.blue);
+	init_color ("#8b958b", &colors.lcd);
+	init_color ("#737d6a", &colors.lcd2);
+	init_color ("#ffff00", &colors.yellow);
+	init_color ("#00b000", &colors.green);
+	init_color ("#00ff00", &colors.green2);
+	init_color ("#d5d5d5", &colors.mygray);
+	init_color ("#a5a5a5", &colors.textback);
+	init_color ("#4076cf", &colors.textbacknew);
+	init_color ("#c0c0c0", &colors.grey);
+	init_color ("#f06000", &colors.orange);
+	init_color ("#ff8000", &colors.orange2);
+	init_color ("#a0a0a0", &colors.darkgrey); 
 
-	//create_mainwindow();
+	// TODO: create_mainwindow();
 
-	//create_button_add_wp();
+	// TODO: create_button_add_wp();
 
 	poi_types_window = create_poi_types_window ();
 

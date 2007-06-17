@@ -80,9 +80,11 @@ Disclaimer: Please do not use for navigation.
 
 #include <speech_out.h>
 #include <speech_strings.h>
+#include "gui.h"
 
 extern gint mydebug;
 extern gint debug;
+extern color_struct colors;
 
 extern gint int_padding;
 
@@ -561,7 +563,6 @@ expose_display_temperature ()
   GdkDrawable *mydrawable;
 
   extern GtkWidget *drawing_temp;
-  extern GdkColor mygray;
 
   extern GdkPixbuf *temimage;
   gint havetemperature = temperature_get_values ();
@@ -571,7 +572,7 @@ expose_display_temperature ()
   mydrawable = drawing_temp->window;
   if (temkontext == NULL)
     temkontext = gdk_gc_new (mydrawable);
-  gdk_gc_set_foreground (temkontext, &mygray);
+  gdk_gc_set_foreground (temkontext, &colors.mygray);
   gdk_draw_rectangle (mydrawable, temkontext, 1, 0, 0, 25, 50);
   if (temimage == NULL)
     temimage = read_icon ("gauge.png",1);
@@ -580,7 +581,7 @@ expose_display_temperature ()
 		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_function (temkontext, GDK_COPY);
   /*       gdk_pixbuf_unref (temimage); */
-  gdk_gc_set_foreground (temkontext, &mygray);
+  gdk_gc_set_foreground (temkontext, &colors.mygray);
   /* We want to limit cputemp (79<cputemp< 40)    */
   if (cputemp > 79)
     cputemp = 79;
@@ -601,12 +602,6 @@ expose_display_battery ()
   GdkDrawable *mydrawable;
   gchar bbuf[200];
 
-  extern GdkColor mygray;
-  extern GdkColor black;
-  extern GdkColor green;
-  extern GdkColor yellow;
-  extern GdkColor orange;
-  extern GdkColor red;
   extern GdkPixbuf *batimage;
 
   extern GdkPixbuf *temimage;
@@ -620,26 +615,26 @@ expose_display_battery ()
   if (battkontext == NULL)
     battkontext = gdk_gc_new (mydrawable);
 
-  gdk_gc_set_foreground (battkontext, &mygray);
+  gdk_gc_set_foreground (battkontext, &colors.mygray);
   gdk_draw_rectangle (mydrawable, battkontext, 1, 0, 0, 25, 50);
-  gdk_gc_set_foreground (battkontext, &black);
+  gdk_gc_set_foreground (battkontext, &colors.black);
   gdk_draw_rectangle (mydrawable, battkontext, 0, 19, 0, 6, 50);
 
   /* JH added limit to batlevel  */
   if (batlevel > 99)
     batlevel = 99;
   if (batlevel > 40)
-    gdk_gc_set_foreground (battkontext, &green);
+    gdk_gc_set_foreground (battkontext, &colors.green);
   else
     {
       if (batlevel > 25)
-	gdk_gc_set_foreground (battkontext, &yellow);
+	gdk_gc_set_foreground (battkontext, &colors.yellow);
       else
 	{
 	  if (batlevel > 15)
-	    gdk_gc_set_foreground (battkontext, &orange);
+	    gdk_gc_set_foreground (battkontext, &colors.orange);
 	  else
-	    gdk_gc_set_foreground (battkontext, &red);
+	    gdk_gc_set_foreground (battkontext, &colors.red);
 	}
     }
   gdk_draw_rectangle (mydrawable, battkontext, 1, 20,

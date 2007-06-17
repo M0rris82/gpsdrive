@@ -44,6 +44,9 @@ Disclaimer: Please do not use for navigation.
 
 #include "gettext.h"
 
+#include "gui.h"
+#include "gpsdrive_config.h"
+
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)
@@ -58,23 +61,14 @@ extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor darkgrey;
+extern gint isnight, disableisnight;
 extern GdkColor grey;
+extern color_struct colors;
 
 extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 
@@ -282,7 +276,7 @@ get_streets_type_list (void)
 	  printf ("-----------------------------------------\n");
 	  printf ("ERROR: Invalid Street Color: %s for ID=%d\n", row[2],
 		  streets_type_list_count);
-	  streets_type_list[streets_type_list_count].color = red;
+	  streets_type_list[streets_type_list_count].color = colors.red;
 	}
       if (!gdk_colormap_alloc_color (gdk_colormap_get_system (),
 				     &streets_type_list
@@ -291,7 +285,7 @@ get_streets_type_list (void)
 	{
 	  printf ("------------------------------------------\n");
 	  printf ("ERROR: Error in alloc: %s\n", row[2]);
-	  streets_type_list[streets_type_list_count].color = red;
+	  streets_type_list[streets_type_list_count].color = colors.red;
 	};
 
       // --------------------------------------------
@@ -303,7 +297,7 @@ get_streets_type_list (void)
 	  printf ("------------------------------------------\n");
 	  printf ("ERROR: Invalid BG Street Color: %s for ID=%d\n", row[3],
 		  streets_type_list_count);
-	  streets_type_list[streets_type_list_count].color_bg = black;
+	  streets_type_list[streets_type_list_count].color_bg = colors.black;
 	}
       if (!gdk_colormap_alloc_color (gdk_colormap_get_system (),
 				     &streets_type_list
@@ -312,7 +306,7 @@ get_streets_type_list (void)
 	{
 	  printf ("-----------------------------------------\n");
 	  printf ("ERROR: Error in alloc: %s\n", row[3]);
-	  streets_type_list[streets_type_list_count].color_bg = black;
+	  streets_type_list[streets_type_list_count].color_bg = colors.black;
 	};
 
       streets_type_list[streets_type_list_count].width     = (gint) g_strtod (row[4], NULL);
@@ -630,10 +624,10 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
 
   // Draw Text Label with name
   g_strlcpy (txt, name, sizeof (txt));
-  gdk_gc_set_foreground (kontext, &textback);
+  gdk_gc_set_foreground (kontext, &colors.textback);
 
   streets_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
-  if (pdamode)
+  if (local_config.guimode == GUI_PDA)
     pfd = pango_font_description_from_string ("Sans 8");
   else
     pfd = pango_font_description_from_string ("Sans 11");
@@ -647,11 +641,11 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
   gdk_gc_set_function (kontext, GDK_AND);
 
   {				// Draw rectangle arround Text
-    //gdk_gc_set_foreground (kontext, &textbacknew);
+    //gdk_gc_set_foreground (kontext, &colors.textbacknew);
     gdk_draw_rectangle (drawable, kontext, 1,
 			posx + 13, posy - k2 / 2, k + 1, k2);
     gdk_gc_set_function (kontext, GDK_COPY);
-    gdk_gc_set_foreground (kontext, &black);
+    gdk_gc_set_foreground (kontext, &colors.black);
     gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
     gdk_draw_rectangle (drawable, kontext, 0,
 			posx + 12, posy - k2 / 2 - 1, k + 2, k2);
@@ -665,7 +659,7 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
 
   gdk_draw_layout_with_colors (drawable, kontext,
 			       posx + 15, posy - k2 / 2,
-			       streets_label_layout, &black, NULL);
+			       streets_label_layout, &colors.black, NULL);
   if (streets_label_layout != NULL)
     g_object_unref (G_OBJECT (streets_label_layout));
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -809,7 +803,7 @@ streets_draw_list (void)
 		  draw_text_with_box (posx2, posy2 + 15,
 				      (streets_list + i)->name);
 		}
-	      gdk_gc_set_foreground (kontext, &red);
+	      gdk_gc_set_foreground (kontext, &colors.red);
 	      draw_small_plus_sign (posx1, posy1);
 	      draw_small_plus_sign (posx2, posy2);
 
@@ -859,8 +853,8 @@ streets_draw_list (void)
 
 	      if ((streets_list + i)->highlight)
 		{
-		  gdk_gc_set_background (kontext, &yellow);
-		  gdk_gc_set_foreground (kontext, &red);
+		  gdk_gc_set_background (kontext, &colors.yellow);
+		  gdk_gc_set_foreground (kontext, &colors.red);
 		  gdk_gc_set_line_attributes (kontext, 6*width_factor,
 					      GDK_LINE_DOUBLE_DASH, 0, 0);
 		}

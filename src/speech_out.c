@@ -237,6 +237,8 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 
 #include <time.h>
+#include "gui.h"
+#include "gpsdrive_config.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -254,16 +256,15 @@ extern gint statusid, havespeechout, posmode, muteflag;
 extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
-extern GdkColor white, red, mygray, blue;
+extern color_struct colors;
 extern GdkDrawable *drawable;
 extern gint real_screen_y, real_screen_x;
 gint do_display_dsc = FALSE, textcount;
-extern gint useflite, pdamode, milesflag, foundradar, importactive,
-	speechcount, simmode, havepos;
+extern gint useflite, foundradar, importactive,
+	speechcount, havepos;
 extern gchar targetname[40], oldangle[100];
 extern gdouble dist, bearing, groundspeed;
 extern GtkWidget *drawing_area;
-extern int sound_direction, sound_distance, sound_speed, sound_gps;
 
 
 #define SPEECHOUTSERVER "127.0.0.1"
@@ -481,7 +482,7 @@ display_dsc (void)
 
 	/*   gdk_gc_set_function (kontext, GDK_OR); */
 
-	gdk_gc_set_foreground (kontext, &mygray);
+	gdk_gc_set_foreground (kontext, &colors.mygray);
 	gdk_draw_rectangle (drawable, kontext, 1, 0, SCREEN_Y - 40, SCREEN_X,
 			    40);
 	gdk_gc_set_function (kontext, GDK_COPY);
@@ -491,14 +492,14 @@ display_dsc (void)
 
 	wplabellayout = gtk_widget_create_pango_layout (drawing_area, text);
 	//KCFX  
-	if (pdamode)
+	if (local_config.guimode == GUI_PDA)
 		pfd = pango_font_description_from_string ("Sans 8");
 	else
 		pfd = pango_font_description_from_string ("Sans bold 14");
 	pango_layout_set_font_description (wplabellayout, pfd);
 	/*          pango_layout_get_pixel_size (wplabellayout, &width, &height); */
 	gdk_draw_layout_with_colors (drawable, kontext, 11, SCREEN_Y - 30,
-				     wplabellayout, &blue, NULL);
+				     wplabellayout, &colors.blue, NULL);
 
 	if (wplabellayout != NULL)
 		g_object_unref (G_OBJECT (wplabellayout));
@@ -542,9 +543,9 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	speechcount++;
 	angle = bearing * 180.0 / M_PI;
 
-	if (!simmode && !havepos)
+	if (!local_config.simmode && !havepos)
 	{
-		if( (1 == speechcount) && sound_gps )
+		if( (1 == speechcount) && local_config.sound_gps )
     {
       g_snprintf( buf, sizeof(buf), speech_too_few_satellites[voicelang] );
 			speech_out_speek (buf);
@@ -588,7 +589,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 
 	if( (1 == speechcount) || (strcmp (s2, oldangle)) )
 	{
-		if( sound_direction )
+		if (local_config.sound_direction)
     {
       g_snprintf( buf, sizeof(buf), speech_destination_is[voicelang], s2 );
 			speech_out_speek (buf);
@@ -598,9 +599,9 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	}
 	if( (3 == speechcount) && (groundspeed >= 20) )
 	{
-    if( sound_speed )
+    if (local_config.sound_speed)
     {
-      if( milesflag )
+      if (local_config.distmode == DIST_MILES)
       {
         g_snprintf(
           buf, sizeof(buf), speech_speed_mph[voicelang], (int) (groundspeed) );
@@ -620,9 +621,9 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 
   if( (2 == speechcount) || ((dist < 1.2) && (7 == speechcount)) )
   {
-    if( sound_distance )
+    if (local_config.sound_distance)
     {
-      if( milesflag )
+      if (local_config.distmode == DIST_MILES)
       {
         if( dist <= 1.2 )
         {

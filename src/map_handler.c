@@ -37,6 +37,8 @@
 #include "gpsdrive.h"
 #include "speech_out.h"
 #include "speech_strings.h"
+#include "gui.h"
+#include "gpsdrive_config.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
@@ -56,10 +58,8 @@ extern gint importactive;
 extern gint zoom;
 extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
-extern gchar local_config_mapdir[500];
 extern gint posmode;
 extern gint selected_wp_mode;
 extern gdouble posmode_lon, posmode_lat;
@@ -69,6 +69,7 @@ extern gchar  oldangle[100];
 extern gdouble new_dl_lat,new_dl_lon;
 extern gint new_dl_scale;
 extern gint needtosave;
+extern color_struct colors;
 
 extern gdouble routenearest;
 extern gint forcenextroutepoint;
@@ -88,7 +89,6 @@ extern gint scaleprefered_not_bestmap, scalewanted;
 extern gint borderlimit;
 
 gchar mapfilename[2048];
-extern gchar activewpfile[200];
 extern gint saytarget;
 
 extern int havedefaultmap;
@@ -408,7 +408,7 @@ test_loaded_map_names ()
 			    "not map_* or top_* files. Please rename them and change the entries in\n"
 			    "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
 			    "maps.  Otherwise, the maps will not be displayed!"));
-	  error_popup ((gpointer *) error->str);
+	  popup_error (NULL, error->str);
 	  g_string_free (error, TRUE);
 	  message_wrong_maps_shown = TRUE;
 	}
@@ -428,7 +428,7 @@ map_koord_check_and_reload ()
     fprintf (stderr, "map_koord_check_and_reload()\n");
 
   /* Check for changed map_koord.txt and reload if changed */
-  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath)); 
+  g_strlcpy (mappath, local_config.dir_maps, sizeof (mappath)); 
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
 
   stat (mappath, &buf);
@@ -459,10 +459,10 @@ savemapconfig ()
   FILE *st;
   gint i;
 
-  if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-    g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
+  if (local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/')
+    g_strlcat (local_config.dir_maps, "/", sizeof (local_config.dir_maps));
 
-  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
+  g_strlcpy (mappath, local_config.dir_maps, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
   st = fopen (mappath, "w");
   if (st == NULL)
@@ -497,15 +497,15 @@ loadmapconfig ()
     fprintf (stderr, "loadmapconfig()\n");
 
   init_nasa_mapfile ();
-  if (local_config_mapdir[strlen (local_config_mapdir) - 1] != '/')
-    g_strlcat (local_config_mapdir, "/", sizeof (local_config_mapdir));
+  if (local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/')
+    g_strlcat (local_config.dir_maps, "/", sizeof (local_config.dir_maps));
 
-  g_strlcpy (mappath, local_config_mapdir, sizeof (mappath));
+  g_strlcpy (mappath, local_config.dir_maps, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
   st = fopen (mappath, "r");
   if (st == NULL)
     {
-      mkdir (local_config_homedir, 0777);
+      mkdir (local_config.dir_home, 0777);
       st = fopen (mappath, "w+");
       if (st == NULL)
 	{
@@ -617,8 +617,8 @@ route_next_target ()
 	      route.pointer++;
 
 	      /* let's say the waypoint description */
-	      g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
-	      g_strlcat (mappath, activewpfile, sizeof (mappath));
+	      g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+	      g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
 	      saytargettext (mappath, targetname);
 
 	      setroutetarget (NULL, -1);
@@ -641,8 +641,8 @@ route_next_target ()
 		  speech_out_speek (buf);
 
 		  /* let's say the waypoint description */
-		  g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
-		  g_strlcat (mappath, activewpfile, sizeof (mappath));
+		  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+		  g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
 		  saytargettext (mappath, targetname);
 		}
 	    }
@@ -766,7 +766,7 @@ loadmap (char *filename)
     }
   if (limage == NULL)
     {
-      g_snprintf (mappath, sizeof (mappath), "%s%s", local_config_mapdir, filename);
+      g_snprintf (mappath, sizeof (mappath), "%s%s", local_config.dir_maps, filename);
       limage = gdk_pixbuf_new_from_file (mappath, NULL);
     }
   if (limage == NULL)
@@ -792,7 +792,7 @@ loadmap (char *filename)
       error = g_string_new (NULL);
       g_string_sprintf (error, "%s\n%s\n",
 			_(" Mapfile could not be loaded:"), filename);
-      error_popup ((gpointer *) error->str);
+      popup_error (NULL, error->str);
       g_string_free (error, TRUE);
       maploaded = FALSE;
       print_loadmap_error = TRUE;
@@ -1053,13 +1053,13 @@ drawloadedmaps ()
 	  xo = 1280.0 * zoom * scale / mapscale;
 	  yo = 1024.0 * zoom * scale / mapscale;
 	  // yellow background
-	  gdk_gc_set_foreground (kontext, &yellow);
+	  gdk_gc_set_foreground (kontext, &colors.yellow);
 	  gdk_gc_set_function (kontext, GDK_AND);
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	  gdk_draw_rectangle (drawable, kontext, 1, x - xo / 2,
 			      y - yo / 2, xo, yo);
 	  // solid border
-	  gdk_gc_set_foreground (kontext, &black);
+	  gdk_gc_set_foreground (kontext, &colors.black);
 	  gdk_gc_set_function (kontext, GDK_SOLID);
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	  gdk_draw_rectangle (drawable, kontext, 0, x - xo / 2,
@@ -1086,7 +1086,7 @@ drawdownloadrectangle (gint big)
       la = new_dl_lat;
       lo = new_dl_lon;
       scale = new_dl_scale;
-      gdk_gc_set_foreground (kontext, &green2);
+      gdk_gc_set_foreground (kontext, &colors.green2);
       gdk_gc_set_function (kontext, GDK_AND);
       gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
       if (big)

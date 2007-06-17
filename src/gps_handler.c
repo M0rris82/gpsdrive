@@ -48,6 +48,7 @@ Disclaimer: Please do not use for navigation.
 #include <pthread.h>
 #include <semaphore.h>
 
+#include "gpsdrive_config.h"
 
 #include "gettext.h"
 
@@ -73,12 +74,12 @@ extern gint mydebug;
 gint gps_handler_debug = 0;
 
 
-extern gint simmode, zoom, iszoomed;
+extern gint zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
+extern gint isnight, disableisnight;
 
 extern gdouble current_lon, current_lat;
 
@@ -118,7 +119,7 @@ extern GtkWidget *drawing_sats;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
-extern gchar activewpfile[200], gpsdservername[200], setpositionname[80];
+extern gchar gpsdservername[200], setpositionname[80];
 extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
@@ -275,7 +276,7 @@ init_nmea_socket ()
       {
 	perror (_("can't open socket for port "));
 	fprintf (stderr, "error: %d\n", errno);
-	simmode = TRUE;
+	local_config.simmode = TRUE;
 	haveNMEA = FALSE;
 	newsatslevel = TRUE;
 	if (simpos_timeout == 0)
@@ -309,13 +310,13 @@ init_nmea_socket ()
 	if (connect (sock, (struct sockaddr *) &server, sizeof server) < 0)
 	{
 	    haveNMEA = FALSE;
-	    simmode = TRUE;
+	    local_config.simmode = TRUE;
 	}
 	else
 	{
 	    timeoutcount = 0;
 	    haveNMEA = TRUE;
-	    simmode = FALSE;
+	    local_config.simmode = FALSE;
 	    g_strlcpy (nmeamodeandport,
 		       _("NMEA Mode, Port 2222"), sizeof (nmeamodeandport));
 	    g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
@@ -332,7 +333,7 @@ init_nmea_socket ()
 	write (sock, "R\n", 2);
 	timeoutcount = 0;
 	haveNMEA = TRUE;
-	simmode = FALSE;
+	local_config.simmode = FALSE;
       }
   }
 }
@@ -389,18 +390,18 @@ initgps ()
 	  if (e == -2)
 	    {
 	      haveGARMIN = FALSE;
-	      simmode = TRUE;
+	      local_config.simmode = TRUE;
 	    }
 	  else
 	    {
 	      haveGARMIN = TRUE;
-	      simmode = FALSE;
+	      local_config.simmode = FALSE;
 	    }
 	}
       else
 	{
 	  haveGARMIN = TRUE;
-	  simmode = FALSE;
+	  local_config.simmode = FALSE;
 	}
       g_free (argumente);
 
@@ -415,7 +416,7 @@ initgps ()
 	  if (e == -1)
 	    {
 	      haveGARMIN = FALSE;
-	      simmode = TRUE;
+	      local_config.simmode = TRUE;
 	    }
 	}
       if (haveGARMIN)
@@ -427,7 +428,7 @@ initgps ()
     }
   if (haveGARMIN || haveNMEA)
     {
-      simmode = FALSE;
+      local_config.simmode = FALSE;
       if (simpos_timeout != 0)
 	{
 	  gtk_timeout_remove (simpos_timeout);
@@ -435,14 +436,14 @@ initgps ()
 	}
     }
 
-  if (simmode)
+  if (local_config.simmode)
     {
       if ((!disableserial) && (!disableserialcl))
         {
           haveserial = gpsserialinit ();
           if (haveserial)
             {
-              simmode = FALSE;
+              local_config.simmode = FALSE;
               haveNMEA = TRUE;
 	      //              gtk_widget_set_sensitive (startgps_bt, FALSE);
             }
@@ -487,7 +488,7 @@ startgpsd_cb (GtkWidget * widget, guint datum)
 	  sock = -1;
 	}
       gtk_timeout_add (1000, (GtkFunction) initgps, 0);
-      simmode = FALSE;
+      local_config.simmode = FALSE;
       gpson = TRUE;
       if (satsimage != NULL)
 	g_object_unref (satsimage);
@@ -505,7 +506,7 @@ startgpsd_cb (GtkWidget * widget, guint datum)
       tooltips = gtk_tooltips_new ();
       gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), widget,
 			    _("Starts GPSD for NMEA mode"), NULL);
-      simmode = TRUE;
+      local_config.simmode = TRUE;
       haveNMEA = FALSE;
       newsatslevel = TRUE;
       if (simpos_timeout == 0)
@@ -786,7 +787,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  havepos = FALSE;
 	  haveposcount = 0;
 	  haveserial = FALSE;
-	  simmode = TRUE;
+	  local_config.simmode = TRUE;
 	  haveNMEA = FALSE;
 	  newsatslevel = TRUE;
 	  if (simpos_timeout == 0)
@@ -990,7 +991,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   if (!haveNMEA)
     {
       /*  display status line */
-      if (!simmode)
+      if (!local_config.simmode)
 	display_status (_("No GPS used"));
       else if (maploaded && !posmode)
 	display_status (_("Simulation mode"));

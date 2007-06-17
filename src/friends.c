@@ -51,7 +51,9 @@
 #include <unistd.h>
 #include <time.h>
 #include <gpsdrive.h>
+#include <gpsdrive_config.h>
 #include <math.h>
+#include "gui.h"
 
 #define	SERV_UDP_PORT	50123
 /*  Defines for gettext I18n */
@@ -66,18 +68,18 @@
 /* #define	SERV_HOST_ADDR	"213.203.231.23"   */
 #define	SERV_HOST_ADDR	"127.0.0.1"
 
-extern char friendsidstring[40], friendsname[40];
 extern int needtosave, maxfriends, statusid;
 extern friendsstruct *friends, *fserver;
 int actualfriends = 0;
 extern long int maxfriendssecs;
 extern gint zone;
 extern gdouble milesconv;
-extern gint milesflag, metricflag, nauticflag;
 extern GtkWidget *drawing_area, *drawing_bearing;
-extern gint pdamode;
 extern gint zoom;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
+extern int usesql;
+extern gint mydebug;
+extern color_struct colors;
 
 /*
  * conn.c
@@ -111,6 +113,54 @@ setnonblocking (int sock)
     }
   return;
 }
+
+
+/* *****************************************************************************
+ * Insert or update data coming from friendsd in database or way.txt file
+ */
+void
+update_friends_data (friendsstruct *cf)
+{
+	glong current_poi_id = 0;
+	gchar *result = NULL;
+	
+	if (usesql)
+	{
+		//(cf)->id,
+		//(cf)->name,
+		//(cf)->lat,
+		//(cf)->lon,
+		//(cf)->timesec,
+		//(cf)->speed,
+		//(cf)->heading,
+		//(cf)->type,
+		
+		/* check, if friend is already present in database */
+		current_poi_id = getsqlextradata (NULL, "friends_id", (cf)->id, result);
+		if (current_poi_id)
+		{
+			if (mydebug > 30)
+				fprintf (stderr, "--------> updating friend with poi_id = %ld\n", current_poi_id);
+			updatesqldata (current_poi_id, strtod((cf)->lat, NULL), strtod((cf)->lon, NULL), (cf)->name, (cf)->type, (cf)->timesec, 10);
+			updatesqlextradata (&current_poi_id, "speed", (cf)->speed);
+			updatesqlextradata (&current_poi_id, "heading", (cf)->heading);
+		}
+		else
+		{
+			// TODO: create new entry
+			current_poi_id = insertsqldata (strtod((cf)->lat, NULL), strtod((cf)->lon, NULL), (cf)->name, (cf)->type, (cf)->timesec, 10);
+			insertsqlextradata (&current_poi_id, "friends_id", (cf)->id);
+			insertsqlextradata (&current_poi_id, "speed", (cf)->speed);
+			insertsqlextradata (&current_poi_id, "heading", (cf)->heading);
+		}
+	}
+	else
+	{
+		// TODO: add entry to way.txt file
+		return;
+	}
+}
+
 
 int
 friends_sendmsg (char *serverip, char *message)
@@ -239,6 +289,8 @@ friends_sendmsg (char *serverip, char *message)
 			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.walk");
 		else
 			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd");
+		
+		update_friends_data ((f + fc));
 	      fc++;
 	    }
 	  if ((strncmp (recvline, "SRV: ", 5)) == 0)
@@ -270,7 +322,7 @@ friends_sendmsg (char *serverip, char *message)
 		  e = sscanf (recvline,
 			      "SND: %s %s %[^\n]", msgid, msgname, msgtext);
 		  if (e == 3)
-		    if (strcmp ((msgname), (friendsname)) == 0)
+		    if (strcmp ((msgname), (local_config.friends_name)) == 0)
 		      {
 			int j, k = 0, fsmessage = 0;
 
@@ -334,7 +386,7 @@ friends_init ()
   long int r;
   time_t ti, tii;
 
-  if ((strcmp (friendsidstring, "XXX")) == 0)
+  if ((strcmp (local_config.friends_id, "XXX")) == 0)
     {
       r = 0x12345678;
       f = open ("/dev/random", O_RDONLY);
@@ -351,14 +403,14 @@ friends_init ()
       key = "havenocrypt";
 #ifdef HAVE_CRYPT_H
       key = crypt ("fritz", buf2);
-      g_strlcpy (friendsidstring, (key + 12), sizeof (friendsidstring));
+      g_strlcpy (local_config.friends_id, (key + 12), sizeof (local_config.friends_id));
 #else
       r = r * r;
-      g_snprintf (friendsidstring, sizeof (friendsidstring),
+      g_snprintf (local_config.friends_id, sizeof (local_config.friends_id),
 		  "nocrypt%015ld", labs (r));
 #endif
       printf ("\nKey: %s,id: %s %Zu bytes, time: %ld\n", key,
-	      friendsidstring, strlen (friendsidstring), ti);
+	      local_config.friends_id, strlen (local_config.friends_id), ti);
       needtosave = 1;
     }
   friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
@@ -394,7 +446,7 @@ drawfriends (void)
 	fprintf (stderr,
 		 "Format error! timesec: %s, Name: %s, i: %d\n",
 		 (friends + i)->timesec, (friends + i)->name, i);
-      if ((ti - maxfriendssecs) > tif)
+      if ((ti - local_config.friends_maxsecs) > tif)
 	continue;
       actualfriends++;
       coordinate_string2gdouble ((friends + i)->lon, &clong);
@@ -430,22 +482,22 @@ drawfriends (void)
 	      poly[3].y = posydest - (PFSIZE) / 9 * (sin (w + M_PI));
 	      poly[4].x = poly[0].x;
 	      poly[4].y = poly[0].y;
-	      gdk_gc_set_foreground (kontext, &blue);
+	      gdk_gc_set_foreground (kontext, &colors.blue);
 	      gdk_draw_polygon (drawable, kontext, 0, (GdkPoint *) poly, 5);
 	      gdk_draw_arc (drawable, kontext, 0,
-			    posxdest + 2 - 7,
-			    posydest + 2 - 7, 10, 10, 0, 360 * 64);
+			posxdest + 2 - 7,
+			posydest + 2 - 7, 10, 10, 0, 360 * 64);
 
 	      /*   draw + sign at destination   */
-	      gdk_gc_set_foreground (kontext, &red);
+	      gdk_gc_set_foreground (kontext, &colors.red);
 	      gdk_draw_line (drawable, kontext,
-			     posxdest + 1, posydest + 1 - 5,
-			     posxdest + 1, posydest + 1 + 5);
+			posxdest + 1, posydest + 1 - 5,
+			posxdest + 1, posydest + 1 + 5);
 	      gdk_draw_line (drawable, kontext,
-			     posxdest + 1 + 5, posydest + 1,
-			     posxdest + 1 - 5, posydest + 1);
+			posxdest + 1 + 5, posydest + 1,
+			posxdest + 1 - 5, posydest + 1);
 
-	      {			/* print friends name / speed on map */
+	      {	/* print friends name / speed on map */
 		PangoFontDescription *pfd;
 		PangoLayout *wplabellayout;
 		gchar txt[200], txt2[100], s1[10];
@@ -468,48 +520,42 @@ drawfriends (void)
 		    dispname[ii] = ' ';
 
 		g_snprintf (txt, sizeof (txt),
-			    "%s,%d", dispname, (int) (speed * milesconv));
-		if (milesflag)
+			    "%s, %d ", dispname, (int) (speed * milesconv));
+		if (local_config.distmode == DIST_MILES)
 		  g_snprintf (s1, sizeof (s1), "%s", _("mi/h"));
-		else if (nauticflag)
+		else if (local_config.distmode == DIST_NAUTIC)
 		  g_snprintf (s1, sizeof (s1), "%s", _("knots"));
 		else
 		  g_snprintf (s1, sizeof (s1), "%s", _("km/h"));
 		g_strlcat (txt, s1, sizeof (txt));
 		g_snprintf (txt2, sizeof (txt2),
-			    "%s, %2d:%02d\n", day, t->tm_hour, t->tm_min);
+			    "\n%s, %2d:%02d\n", day, t->tm_hour, t->tm_min);
 		g_strlcat (txt, txt2, sizeof (txt));
 		wplabellayout =
-		  gtk_widget_create_pango_layout (drawing_area, txt);
-		if (pdamode)
-		  pfd = pango_font_description_from_string ("Sans 8");
+			gtk_widget_create_pango_layout (drawing_area, txt);
+		if (local_config.guimode == GUI_PDA)
+			pfd = pango_font_description_from_string ("Sans 8");
 		else
-		  pfd = pango_font_description_from_string ("Sans bold 11");
+			pfd = pango_font_description_from_string
+				(local_config.font_friends);
 		pango_layout_set_font_description (wplabellayout, pfd);
 		pango_layout_get_pixel_size (wplabellayout, &width, &height);
-		gdk_gc_set_foreground (kontext, &textbacknew);
+		gdk_gc_set_foreground (kontext, &colors.textbacknew);
 		/*              gdk_draw_rectangle (drawable, kontext, 1, posxdest + 18,
 		 *                                  posydest - height/2 , width + 2,
 		 *                                  height + 2);
 		 */
 
 		gdk_draw_layout_with_colors (drawable,
-					     kontext,
-					     posxdest
-					     + 21,
-					     posydest
-					     -
-					     height /
-					     2 + 1,
-					     wplabellayout, &black, NULL);
+			kontext,
+			posxdest + 21,
+			posydest - height / 2 + 1,
+			wplabellayout, &colors.black, NULL);
 		gdk_draw_layout_with_colors (drawable,
-					     kontext,
-					     posxdest
-					     + 20,
-					     posydest
-					     -
-					     height /
-					     2, wplabellayout, &orange, NULL);
+			kontext,
+			posxdest + 20,
+			posydest - height / 2,
+			wplabellayout, &colors.friends, NULL);
 
 		if (wplabellayout != NULL)
 		  g_object_unref (G_OBJECT (wplabellayout));

@@ -27,7 +27,7 @@ Disclaimer: Please do not use for navigation.
 #include <string.h>
 #include <stdlib.h>
 #include <config.h>
-
+#include "gpsdrive_config.h"
 #include <gpsdrive.h>
 #include <poi.h>
 #include <streets.h>
@@ -57,19 +57,17 @@ extern map_dir_struct *display_map;
 extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
 extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered, milesflag, nauticflag, metricflag;
+extern gint scaleprefered;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
-extern gint setdefaultpos, shadow, etch;
-extern gint do_draw_grid, streets_draw, poi_draw, testgarmin;
-extern gint needtosave, usedgps, simfollow;
-extern gchar activewpfile[200];
+extern gint setdefaultpos;
+extern gint streets_draw, poi_draw, testgarmin;
+extern gint needtosave, usedgps;
 extern gdouble milesconv;
-extern gint satposmode, printoutsats, minsecmode, nightmode, cpuload;
+extern gint satposmode, printoutsats;
 /* extern gint flymode, vfr,disdevwarn; */
 gint flymode = FALSE, vfr = 1, disdevwarn = TRUE;
-extern gint pdamode;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
 	int_padding, lastnotebook;
 #define MAXDBNAME 30
@@ -78,13 +76,9 @@ extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
-extern gint earthmate, havefriends, zone;
-extern char friendsserverip[20], friendsname[40], friendsidstring[40],
-	friendsserverfqn[255];
-extern gchar bluecolor[40], trackcolor[40], friendscolor[40];
+extern gint earthmate, zone;
 extern int messagenumber;
 extern int sockfd, serialspeed, disableserial, showsid, storetz;
-extern int sound_direction, sound_distance, sound_speed, sound_gps;
 
 #define KM2MILES 0.62137119
 #define PADDING int_padding
@@ -455,10 +449,10 @@ message_cb (char *msgid, char *name, char *text, int fs)
 	gtk_widget_show_all (window);
 	g_snprintf (buf, sizeof (buf), "ACK: %s", msgid);
 	if ( mydebug > 10 )
-		fprintf (stderr, "\nsending to %s:\n%s\n", friendsserverip,
+		fprintf (stderr, "\nsending to %s:\n%s\n", local_config.friends_serverip,
 			 buf);
 	sockfd = -1;
-	friends_sendmsg (friendsserverip, buf);
+	friends_sendmsg (local_config.friends_serverip, buf);
 	gdk_beep ();
 
   g_snprintf( buf, sizeof(buf), speech_message_received[voicelang], name );

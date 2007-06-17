@@ -46,6 +46,8 @@ Disclaimer: Please do not use for navigation.
 #include "download_map.h"
 #include "icons.h"
 #include "poi.h"
+#include "gui.h"
+#include "gpsdrive_config.h"
 
 #include "gettext.h"
 #include <speech_strings.h>
@@ -66,23 +68,12 @@ extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
 extern status_struct route;
-extern gint nightmode, isnight, disableisnight;
-extern GdkColor red;
-extern GdkColor black;
-extern GdkColor white;
-extern GdkColor blue;
-extern GdkColor nightcolor;
-extern GdkColor mygray;
-extern GdkColor textback;
-extern GdkColor textbacknew;
-extern GdkColor darkgrey;
-extern GdkColor grey;
-
+extern gint isnight, disableisnight;
+extern color_struct colors;
 extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint pdamode;
 extern gint usesql;
 extern glong mapscale;
 
@@ -96,7 +87,6 @@ extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
 extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed, posmode_lon, posmode_lat;
 extern gint posmode;
-extern gint simmode;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
@@ -111,7 +101,6 @@ extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
 extern GtkWidget *mainwindow;
-extern gint minsecmode;
 extern gchar targetname[40];
 extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
@@ -131,13 +120,11 @@ extern GList *poi_types_formatted;
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
 gint foundradar;
-gchar font_wplabel[100];
 GtkWidget *addwaypointwindow;
 gdouble wplat, wplon;
 wpstruct *wayp;
 gint wpsize = 1000;
 gint maxwp;
-gchar activewpfile[200];
 time_t waytxtstamp = 0;
 gint deleteline = 0;
 gint selected_wp_list_line = 0;
@@ -284,8 +271,8 @@ void check_and_reload_way_txt()
 {
     gchar mappath[2048];
 
-    g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
-	g_strlcat (mappath, activewpfile, sizeof (mappath));
+    g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+	g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
  
     loadwaypoints ();
 }
@@ -321,10 +308,10 @@ draw_waypoints ()
 			// Draw Icon(typ) or + Sign
 			if ((wayp + i)->wlan > 0)
 				drawwlan (posxdest, posydest,
-					  (wayp + i)->wlan);
+					(wayp + i)->wlan);
 			else
 				drawicon (posxdest, posydest,
-					  (wayp + i)->typ);
+					(wayp + i)->typ);
 
 			// Draw Proximity Circle
 			if ((wayp + i)->proximity > 0.0)
@@ -337,14 +324,14 @@ draw_waypoints ()
 				else
 					proximity_pixels = 2;
 
-				gdk_gc_set_foreground (kontext, &blue);
+				gdk_gc_set_foreground (kontext, &colors.blue);
 
 				gdk_draw_arc (drawable, kontext, FALSE,
-					      posxdest - proximity_pixels,
-					      posydest - proximity_pixels,
-					      proximity_pixels * 2,
-					      proximity_pixels * 2, 0,
-					      64 * 360);
+					posxdest - proximity_pixels,
+					posydest - proximity_pixels,
+					proximity_pixels * 2,
+					proximity_pixels * 2, 0,
+					64 * 360);
 			}
 
 
@@ -354,7 +341,7 @@ draw_waypoints ()
 				gint width, height;
 				gchar *tn;
 
-				gdk_gc_set_foreground (kontext, &darkgrey);
+				gdk_gc_set_foreground (kontext, &colors.shadow);
 				gdk_gc_set_function (kontext, GDK_AND);
 				tn = g_strdelimit (txt, "_", ' ');
 
@@ -362,32 +349,27 @@ draw_waypoints ()
 					gtk_widget_create_pango_layout
 					(drawing_area, tn);
 				pfd = pango_font_description_from_string
-					(font_wplabel);
+					(local_config.font_wplabel);
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
 				pango_layout_get_pixel_size (wplabellayout,
-							     &width, &height);
+					&width, &height);
 				/* printf("j: %d\n",height);    */
 				k = width + 4;
 				k2 = height;
-				if (shadow)
+				if (local_config.showshadow)
 				{
 					gdk_draw_layout_with_colors (drawable,
-								     kontext,
-								     posxdest
-								     + 15 +
-								     SHADOWOFFSET,
-								     posydest
-								     -
-								     k2 / 2 +
-								     SHADOWOFFSET,
-								     wplabellayout,
-								     &darkgrey,
-								     NULL);
+						kontext,
+						posxdest + 15 + SHADOWOFFSET,
+						posydest - k2 / 2 + SHADOWOFFSET,
+						wplabellayout,
+						&colors.shadow,
+						NULL);
 				}
 				if (wplabellayout != NULL)
 					g_object_unref (G_OBJECT
-							(wplabellayout));
+						(wplabellayout));
 				/* freeing PangoFontDescription, cause it has been copied by prev. call */
 				pango_font_description_free (pfd);
 
@@ -397,12 +379,12 @@ draw_waypoints ()
 
 			gdk_gc_set_function (kontext, GDK_AND);
 
-			gdk_gc_set_foreground (kontext, &textbacknew);
+			gdk_gc_set_foreground (kontext, &colors.textbacknew);
 			gdk_draw_rectangle (drawable, kontext, 1,
 					    posxdest + 13, posydest - k2 / 2,
 					    k + 1, k2);
 			gdk_gc_set_function (kontext, GDK_COPY);
-			gdk_gc_set_foreground (kontext, &black);
+			gdk_gc_set_foreground (kontext, &colors.black);
 			gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
 			gdk_draw_rectangle (drawable, kontext, 0,
 					    posxdest + 12,
@@ -418,7 +400,7 @@ draw_waypoints ()
 					gtk_widget_create_pango_layout
 					(drawing_area, txt);
 				pfd = pango_font_description_from_string
-					(font_wplabel);
+					(local_config.font_wplabel);
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
 
@@ -428,7 +410,7 @@ draw_waypoints ()
 							     posydest -
 							     k2 / 2,
 							     wplabellayout,
-							     &white, NULL);
+							     &colors.wplabel, NULL);
 				if (wplabellayout != NULL)
 					g_object_unref (G_OBJECT
 							(wplabellayout));
@@ -530,7 +512,7 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 		coordinate_string2gdouble(p, &posmode_lon);
 	}
 
-	if ((!posmode) && (!simmode))
+	if ((!posmode) && (!local_config.simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
 					      TRUE);
 	getsqldata ();
@@ -573,7 +555,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 	if (usesql && save_in_db)
 	{
 		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
-			       (char *) wp_type, (char *) wp_comment);
+			       (char *) wp_type, (char *) wp_comment, 3);
 	}
 	else
 	{
@@ -739,7 +721,8 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	
 	{		/* Lat */
 		add_wp_lat_text = gtk_entry_new_with_max_length (20);
-		coordinate2gchar(buff, sizeof(buff), wplat, TRUE, minsecmode);
+		coordinate2gchar(buff, sizeof(buff), wplat, TRUE,
+			local_config.coordmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
 		add_wp_lat_label = gtk_label_new (_("Latitude"));
 		gtk_signal_connect (GTK_OBJECT (add_wp_lat_text), "changed",
@@ -752,7 +735,8 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	{			/* Lon */
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
-		coordinate2gchar(buff, sizeof(buff), wplon, FALSE, minsecmode);
+		coordinate2gchar(buff, sizeof(buff), wplon, FALSE,
+			local_config.coordmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lon_text), buff);
 		add_wp_lon_label = gtk_label_new (_("Longitude"));
 		gtk_signal_connect (GTK_OBJECT (add_wp_lon_text), "changed",
@@ -946,8 +930,8 @@ savewaypoints ()
 	gint i, e;
 
 
-	g_strlcpy (mappath, local_config_homedir, sizeof (mappath));
-	g_strlcat (mappath, activewpfile, sizeof (mappath));
+	g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+	g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
 
 	st = fopen (mappath, "w+");
 	if (st == NULL)
@@ -1001,8 +985,10 @@ loadwaypoints ()
     if ( 0 == waytxtstamp )
 	wayp = g_new (wpstruct, wpsize);
     
-    g_strlcpy (fn_way_txt, local_config_homedir, sizeof (fn_way_txt));
-	g_strlcat (fn_way_txt, activewpfile, sizeof (fn_way_txt));
+//    g_strlcpy (fn_way_txt, local_config.dir_home, sizeof (fn_way_txt));
+//	g_strlcat (fn_way_txt, local_config.wp_file, sizeof (fn_way_txt));
+    g_strlcpy (fn_way_txt, local_config.wp_file, sizeof (fn_way_txt));
+
 
     /* Check m_time of way.txt file */
     stat(fn_way_txt, &stat_buf);
@@ -1076,6 +1062,6 @@ loadwaypoints ()
 
     fclose (st);
 
-	g_print ("%s reloaded\n", activewpfile);
+	g_print ("%s reloaded\n", local_config.wp_file);
 
 }
