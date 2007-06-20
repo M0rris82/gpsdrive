@@ -39,6 +39,7 @@
 #include "speech_strings.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "mapnik.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
@@ -943,6 +944,12 @@ test_and_load_newmap ()
         return;
     }
 
+    if ( gui_status.mapnik ){
+	if (mydebug > 0)
+	    fprintf (stderr, "rendering mapnik map ....\n");
+	render_mapnik(1);
+	return;
+    }
 
     /* search for suitable maps */
     if (displaymap_top) nasaisvalid = create_nasa ();

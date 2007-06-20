@@ -109,6 +109,7 @@ Disclaimer: Please do not use for navigation.
 #include "icons.h"
 #include "gui.h"
 
+#include "mapnik.h"
 
 #ifndef NOPLUGINS
 #include "gmodule.h"
@@ -5613,6 +5614,8 @@ main (int argc, char *argv[])
 	unit_test();
     }
 
+    init_mapnik(1);
+    render_mapnik(1);
     /*  Mainloop */
     gtk_main ();
 

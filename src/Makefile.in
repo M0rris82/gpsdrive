@@ -105,7 +105,7 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	download_map.c download_map.h map_projection.c \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
 	nmea_handler.c nmea_handler.h navigation_gui.c poi_gui.c \
-	settings_gui.c unit_test.c ../config.h gettext.h \
+	settings_gui.c unit_test.c mapnik.cpp ../config.h gettext.h \
 	garmin_data.cpp garmin_serial_unix.cpp garmin_application.cpp \
 	garmin_link.cpp garmin_util.cpp gpsdrivegarble.cpp \
 	garmin_legacy.cpp garmin_link.h garmin_serial_unix.h \
@@ -132,7 +132,8 @@ am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
 	navigation_gui.$(OBJEXT) poi_gui.$(OBJEXT) \
-	settings_gui.$(OBJEXT) unit_test.$(OBJEXT) $(am__objects_1)
+	settings_gui.$(OBJEXT) unit_test.$(OBJEXT) mapnik.$(OBJEXT) \
+	$(am__objects_1)
 am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -197,7 +198,14 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
 	${NOGARMIN} ${NOPLUGINS}\
-	-I/usr/include/
+	-I/usr/include/ \
+	-I/usr/include/ \
+	-I/usr/local/include \
+	-I/opt/boost_1_35/include/boost-1_35 \
+	-I/usr/local/include/freetype2 \
+	-I/usr/include/freetype2 \
+	-I. \
+	-L/usr/local/lib
 
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
@@ -246,7 +254,7 @@ LIBADD_DL = @LIBADD_DL@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS) 
+LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS)  -lmapnik -lfreetype
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -358,7 +366,7 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	map_projection.c speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	navigation_gui.c poi_gui.c settings_gui.c unit_test.c \
-	../config.h gettext.h $(am__append_1)
+	mapnik.cpp ../config.h gettext.h $(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
@@ -503,6 +511,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_projection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapnik.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation_gui.Po@am__quote@

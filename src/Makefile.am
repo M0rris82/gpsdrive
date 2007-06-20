@@ -9,8 +9,14 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
 	${NOGARMIN} ${NOPLUGINS}\
-	-I/usr/include/
-
+	-I/usr/include/ \
+	-I/usr/include/ \
+	-I/usr/local/include \
+	-I/opt/boost_1_35/include/boost-1_35 \
+	-I/usr/local/include/freetype2 \
+	-I/usr/include/freetype2 \
+	-I. \
+	-L/usr/local/lib
 
 #	-I/usr/include/dbus-1.0/ 
 
@@ -23,7 +29,8 @@ else
 PRG1=garble
 endif
 bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
-LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS) 
+LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS)  -lmapnik -lfreetype
+
 
 if HAVE_DBUS
 INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
@@ -59,6 +66,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	navigation_gui.c poi_gui.c settings_gui.c \
 	unit_test.c \
+	mapnik.cpp \
 	../config.h gettext.h
 #	lib_map/lib_map.a
 
