@@ -8,6 +8,8 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp> 
 #include <mapnik/map.hpp>
 #include <mapnik/load_map.hpp>
 #include <mapnik/agg_renderer.hpp>
@@ -54,10 +56,13 @@ render_mapnik ( ) {
 
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location
-    string mapnik_config_file(DATADIR);
-    mapnik_config_file.append("/mapnik/osm.xml");
+    string mapnik_config_file("./scripts/mapnik/osm.xml");
+    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
+	mapnik_config_file.assign("../scripts/mapnik/osm.xml");
+    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
+	mapnik_config_file.assign(DATADIR).append("/mapnik/osm.xml");
 
-    cout << "Mapnik config-file: " << mapnik_config_file << endl;
+    cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
     mapnik::load_map(map,mapnik_config_file);
 
     // World
