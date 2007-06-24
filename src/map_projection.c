@@ -145,7 +145,8 @@ map_projection (char *filename)
     proj = proj_top;
   else if (strstr(filename, "/top_")) /* For Compatibility */
     proj = proj_top;
-
+  else if (strstr(filename, "/tmp/mapnik.png"))
+    proj = proj_googlesat;
   else
     {
       proj = proj_undef;

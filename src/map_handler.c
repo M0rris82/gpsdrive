@@ -99,6 +99,7 @@ extern GdkPixbuf *image, *tempimage, *miniimage;
 extern GtkWidget *scaler_widget;
 extern GtkWidget *scaler_left_bt, *scaler_right_bt;
 extern GtkObject *scaler_adj;
+extern gint slistsize;
 
 #include "gettext.h"
 
@@ -949,12 +950,19 @@ test_and_load_newmap ()
 	    fprintf (stderr, "rendering mapnik map ....\n");
         g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
         g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
-
-	set_mapnik_map(current_lat, current_lon, 8);
+    gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
+	set_mapnik_map(current_lat, current_lon, LevelInt);
 	render_mapnik();
-	/*g_object_unref(G_OBJECT(image));
-	g_object_unref(G_OBJECT(tempimage));
-	image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
+	
+	//g_object_unref(G_OBJECT(image));
+	//g_object_unref(G_OBJECT(tempimage));
+	mapscale = get_mapnik_mapscale();// 68247.3466832;;
+	pixelfact = get_mapnik_pixelfactor();
+    zero_lon = current_lon;
+	zero_lat = current_lat;
+	
+	loadmap("/tmp/mapnik.png");
+	/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
 	*/
 	return;
     }

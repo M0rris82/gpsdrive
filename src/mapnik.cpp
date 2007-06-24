@@ -147,7 +147,7 @@ void render_mapnik (void) {
 
     
     QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
-    image.save("test.png", "PNG");
+    image.save("/tmp/mapnik.png", "PNG");
     
 
 }
@@ -155,6 +155,16 @@ void render_mapnik (void) {
 extern "C"
 unsigned char *get_mapnik_imagedata() {
 	return MapnikMap.ImageRawDataPtr;
+}
+
+extern "C"
+double get_mapnik_mapscale() {
+	return scales[MapnikMap.ScaleLevelInt];
+}
+
+extern "C"
+double get_mapnik_pixelfactor() {
+	return scales[MapnikMap.ScaleLevelInt] * 0.00028;
 }
 
 }
