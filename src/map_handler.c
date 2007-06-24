@@ -947,7 +947,12 @@ test_and_load_newmap ()
     if ( gui_status.mapnik ){
 	if (mydebug > 0)
 	    fprintf (stderr, "rendering mapnik map ....\n");
-	render_mapnik(1);
+	set_mapnik_map(current_lat, current_lon, 8);
+	render_mapnik();
+	/*g_object_unref(G_OBJECT(image));
+	g_object_unref(G_OBJECT(tempimage));
+	image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
+	*/
 	return;
     }
 

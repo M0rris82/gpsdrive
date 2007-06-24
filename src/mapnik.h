@@ -15,6 +15,9 @@
 #define _MAPNIK_DEF_H
 
 int init_mapnik ( );
+void set_mapnik_map(double pCenterLatDbl, double pCenterLonDbl, int pScaleLevelInt);
 int render_mapnik ( );
+unsigned char *get_mapnik_imagedata ( );
+
 
 #endif // _MAPNIK_DEF_H
