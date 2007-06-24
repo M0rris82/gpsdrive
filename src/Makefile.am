@@ -16,6 +16,9 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/local/include/freetype2 \
 	-I/usr/include/freetype2 \
 	-I. \
+	-I/usr/include/qt4/ \
+	-I/usr/include/qt4/Qt \
+	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
 #	-I/usr/include/dbus-1.0/ 
@@ -29,8 +32,8 @@ else
 PRG1=garble
 endif
 bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
-LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS)  -lmapnik -lfreetype
-
+# For now I include  -lQtCore -lQtGui for debugging Mapnik
+LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS)  -lmapnik -lfreetype -lQtCore -lQtGui
 
 if HAVE_DBUS
 INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1

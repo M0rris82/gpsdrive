@@ -1,9 +1,8 @@
-/*
-  #include <QWidget>
-  #include <QImage>
-  #include <QPixmap>
-  #include <QPen>
-*/
+#include <QWidget>
+#include <QImage>
+#include <QPixmap>
+#include <QPen>
+
 #include <iostream>
 #include <string>
 #include <boost/shared_ptr.hpp>
@@ -108,10 +107,10 @@ void set_mapnik_map(double pCenterLatDbl, double pCenterLonDbl, int pScaleLevelI
 }
 
 extern "C"
-void render_mapnik () {
+void render_mapnik (void) {
 
-	projection Proj("+proj=merc +datum=WGS84");
-
+    projection Proj("+proj=merc +datum=WGS84");
+    
     double scale_denom = scales[MapnikMap.ScaleLevelInt];
     double res = scale_denom * 0.00028;
     
@@ -121,13 +120,13 @@ void render_mapnik () {
     Proj.forward(Pt.x, Pt.y);
     
     Envelope<double> box = Envelope<double>(Pt.x - 0.5 * MapnikMap.WidthInt * res,
-    										Pt.y - 0.5 * MapnikMap.HeightInt * res,
-    										Pt.x + 0.5 * MapnikMap.WidthInt * res,
-    										Pt.y + 0.5 * MapnikMap.HeightInt * res);
+					    Pt.y - 0.5 * MapnikMap.HeightInt * res,
+					    Pt.x + 0.5 * MapnikMap.WidthInt * res,
+					    Pt.y + 0.5 * MapnikMap.HeightInt * res);
     
     // World
     //Envelope<double> box = Envelope<double>(-29785751.54497776,-19929239.11337915,
-	//				    29723259.88776701,18379686.99645029);
+    //				               29723259.88776701,18379686.99645029);
     // Small area
     // Envelope<double> box = Envelope<double>(-16944.38844621579,6679978.34125,
     //                                         -16811.61155378421,6680061.65875);
@@ -143,10 +142,13 @@ void render_mapnik () {
     
     MapnikMap.ImageRawDataPtr = (unsigned char *) buf.raw_data();
 	
-    buf.saveToFile("/home/loom/test1.png", "PNG");
+    // Not working yet
+    // buf.saveToFile("test1.png", "PNG");
 
-    //QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
-    //image.save("/home/loom/test2.png", "PNG");
+    
+    QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
+    image.save("test.png", "PNG");
+    
 
 }
 

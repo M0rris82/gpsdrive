@@ -38,7 +38,11 @@ host_triplet = @host@
 subdir = src/lib_map
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -180,6 +184,7 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CONFIG = @PCRE_CONFIG@
 PERL_PACKAGE_DIR = @PERL_PACKAGE_DIR@
+PERL_VENDORLIB = @PERL_VENDORLIB@
 PKGCONFIG_CFLAGS = @PKGCONFIG_CFLAGS@
 PKGCONFIG_LIBS = @PKGCONFIG_LIBS@
 PKG_CONFIG = @PKG_CONFIG@

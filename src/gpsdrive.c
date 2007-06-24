@@ -5616,6 +5616,7 @@ main (int argc, char *argv[])
 
     init_mapnik(1);
     //render_mapnik(1);
+
     /*  Mainloop */
     gtk_main ();
 
