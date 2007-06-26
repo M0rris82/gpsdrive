@@ -32,20 +32,23 @@
  cd /usr/share/mapnik
  sudo tar -xvjf ~/osm/world_boundaries.tar.bz2
 
-# ----------- Create Database and Grant rights
-
-  # you can also use a different user.
-  # 'tweety' is the example user here ;-)
-  export user_name="tweety"
+# ----------- Create Database Import the dump from http://www.gpsdrive.de/osm/
   sudo -u postgres createdb -Upostgres  -EUTF8 gis  
-  sudo -u postgres createuser -Upostgres -S -D -R "$user_name"
-  echo "GRANT ALL ON SCHEMA PUBLIC TO \"$user_name\";" | sudo -u postgres psql -Upostgres gis
+  sudo -u postgres createuser -Upostgres -S -D -R osm
+  echo "GRANT ALL ON SCHEMA PUBLIC TO \"osm\";" | sudo -u postgres psql -Upostgres gis
+  gunzip -dc ~/osm/mapnik-osm-gis.sql.gz | \
+        sed "s/tweety/osm/g" | \
+	sudo -u postgres psql -Upostgres gis | \
+	grep -v -e "ALTER FUNCTION" -e "CREATE FUNCTION" -e "DROP FUNCTION"
 
-# ----------- Import the dump from http://www.gpsdrive.de/osm/
-  sed "s/tweety/$user_name/g" < ~/osm/mapnik-osm-gis.sql.gz | \
-	  sudo -u postgres psql -Upostgres gis	 
+ # ------------ GRANT Rights
+  # Everyone on the system is allowed to read the new tables
+  for table in  planet_osm_roads planet_osm_polygon planet_osm_line \
+                planet_osm_point spatial_ref_sys geometry_columns ; do \
+       echo "GRANT SELECT ON $table TO PUBLIC;" ;\
+  done | sudo -u postgres psql -Upostgres gis 
 
-# ------------ Test if you can read the Database
+ # ------------ Test if you can read the Database
   echo "SELECT * from planet_osm_polygon LIMIT 2;" |  psql  gis -h /var/run/postgresql
 
 
