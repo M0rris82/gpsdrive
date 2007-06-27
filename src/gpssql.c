@@ -68,7 +68,7 @@ change this functions if you want to implement another database
 ******************************************************************/
 
 
-#include "mysql.h"
+#include "mysql/mysql.h"
 
 MYSQL mysql;
 MYSQL_RES *res;

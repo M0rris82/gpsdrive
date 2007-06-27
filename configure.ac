@@ -177,7 +177,7 @@ fi
 
 fi
 dnl ----------------------------------------------------
-dnl DP 08/05/2006 Debian doesn't support uname -p 
+dnl DP 08/05/2006 Debian does not support uname -p 
 dnl ----------------------------------------------------
 OSNAME=`uname -n`
 if test "$OSNAME" = "debian"; then
@@ -272,16 +272,38 @@ AC_PROG_INSTALL
 
 CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
 
+dnl dnl --------------------------
+dnl echo -n checking for package mapnik1.0-0...
+dnl dnl --------------------------
+dnl if $PKG_CONFIG mapnik --atleast-version=1.0.3
+dnl then
+dnl    AC_MSG_RESULT([yes])
+dnl    AC_CHECK_LIB([mapnik], [Envelope], [], [
+dnl 	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
+dnl 	   exit -1
+dnl 	   ])
+dnl else
+dnl    AC_MSG_ERROR([mapnik is missing or your version is to old. Min Version 1.10.3])
+dnl fi
+
+
 dnl ---------------------------------------------------------------------------
 dnl GDAL/OGR
 dnl ---------------------------------------------------------------------------
-AQ_CHECK_GDAL
-AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
-dnl the $(GDAL_LIBS) part is a quick hack. So please could 
-dnl someone knowing autoconf reconsidder if there is a better solution
-GDAL_LIBS=`gdal-config --libs`
-GDAL_CFLAGS=`$GDAL_CONFIG --cflags`
-CFLAGS="$CFLAGS $GDAL_CFLAGS"
+AC_ARG_ENABLE(gdal,
+              AC_HELP_STRING([--enable-gdal],
+	                     [enable GDAL support. This might be needed in the future for compilation]),
+              [ac_gdal=$enableval], [ac_gdal=no])
+AC_MSG_CHECKING([for GDAL support])
+if test x"$ac_gdal" == "xyes"; then
+    echo "enable GDAL support"
+    AQ_CHECK_GDAL
+    AM_CONDITIONAL(HAVE_GDAL, test -n $ac_gdal_config_path)
+else
+    AC_MSG_RESULT([no])
+fi
+AM_CONDITIONAL([HAVE_GDAL], [test x"$ac_gdal" = x"yes"])
+
 
 dnl ************************
 dnl Check for standard headers
@@ -301,7 +323,7 @@ PKG_CHECK_MODULES(GTK, gtk+-2.0, HAVE_GTK=yes, HAVE_GTK=no)
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
 if test "$HAVE_GTK" = "no"; then
-  AC_MSG_WARN([cannot find GTK+-2.0, that's not good])
+  AC_MSG_WARN([cannot find GTK+-2.0, that is not good])
 fi
 AM_CONDITIONAL(HAVE_GTK,[test "$HAVE_GTK" != "no"])
 CFLAGS="$CFLAGS -DHAVE_GTK   `pkg-config gtk+-2.0 --cflags`"
@@ -432,6 +454,7 @@ else
 fi
 dnl ----------------------------			
 
+
 dnl ---------------------------
 echo checking for package libxext6... TODO >&2
 dnl ---------------------------
@@ -446,6 +469,7 @@ dnl ---------------------------
 echo checking for package libsrces26-dev 2.6.0-6...   TODO >&2
 dnl ---------------------------
 echo checking for package libmysqlclient14-dev 4.1.15-1... TODO >&2
+AC_CHECK_LIB([mysql], [mysql_server_init])
 dnl ---------------------------
 echo checking for package libtiff4-dev 3.7.4-1...  TODO >&2
 dnl ---------------------------
@@ -566,19 +590,6 @@ AC_ARG_ENABLE(garmin,
 ])
 AM_CONDITIONAL(DISABLEGARMIN, test x$disablegarmin = xtrue)
 
-AC_ARG_ENABLE(gdal,
-[  --disable-gdal          compiles without GDAL support. For now the main gpsdrive should still work without, but be prepared that future Versions wont work without. So better look out for a gdal/grass Package for your Distruibution],[
-	case "${enableval}" in
-		yes) echo "enable GDAL support" ;;
-		no)  echo "disable GDAL support" 
-			AC_SUBST(NOGDAL,'-DNOGDAL') 
-			disablegdal=true 
-			CXX=$CC ;;
-		*) AC_MSG_ERROR(bad value ${enableval} for --enable-gdal) ;;
-	esac
-])
-AM_CONDITIONAL(DISABLEGDAL, test x$disablegdal = xtrue)
-
 AC_ARG_ENABLE(plugins,
 [  --disable-plugins       disable use of plugin modules],[
 	case "${enableval}" in
@@ -597,7 +608,7 @@ dnl distro-independent was to check for both libraries and headers
 dnl ********************************************
 AC_ARG_ENABLE(dbus,
     AC_HELP_STRING([--enable-dbus],
-                [enable DBUS support. No checks are performed, you are responsible for having it installed =)]),
+                [enable DBUS support. No checks are performed, you are responsible for having it installed ]),
     [ac_dbus=$enableval], [ac_dbus=no])
 AC_MSG_CHECKING([for DBUS support])
 if test x"$ac_dbus" == "xyes"; then
@@ -621,7 +632,7 @@ AM_CONDITIONAL([HAVE_DBUS], [test x"$ac_dbus" = x"yes"])
 dnl ********************************************
 dnl Perl Path
 dnl Setup install path root for perl.
-dnl Yep, its ebil, but I don't know better...
+dnl Yep, its ebil, but I does not know better...
 #PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
 # default on debian should be: /usr/share/perl5/
 PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`

@@ -33,7 +33,6 @@ Disclaimer: Please do not use for navigation.
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
-#include "mysql.h"
 #include "gpsproto.h"
 
 gint splashaway_cb(GtkWidget *widget, gpointer datum);

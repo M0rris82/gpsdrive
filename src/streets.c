@@ -72,7 +72,7 @@ extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
 extern gint usesql;
 extern glong mapscale;
 
-#include "mysql.h"
+#include "mysql/mysql.h"
 
 extern MYSQL mysql;
 extern MYSQL_RES *res;

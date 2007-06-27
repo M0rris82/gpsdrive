@@ -80,7 +80,7 @@ extern char dbpoifilter[5000];
 
 char txt[5000];
 PangoLayout *poi_label_layout;
-#include "mysql.h"
+#include "mysql/mysql.h"
 
 extern MYSQL mysql;
 extern MYSQL_RES *res;

@@ -76,7 +76,7 @@ extern glong mapscale;
 
 char txt[5000];
 PangoLayout *wlan_label_layout;
-#include "mysql.h"
+#include "mysql/mysql.h"
 
 extern MYSQL mysql;
 extern MYSQL_RES *res;

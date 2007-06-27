@@ -1,5 +1,4 @@
-if DISABLEGDAL
-else
+if HAVE_GDAL
 SUBDIRS =      lib_map util
 DIST_SUBDIRS = $(SUBDIRS)
 endif

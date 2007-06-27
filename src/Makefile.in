@@ -48,11 +48,7 @@ bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/gettext.m4 \
-	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
-	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/acinclude.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -217,8 +213,6 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@
-DISABLEGDAL_FALSE = @DISABLEGDAL_FALSE@
-DISABLEGDAL_TRUE = @DISABLEGDAL_TRUE@
 DISABLEPLUGINS_FALSE = @DISABLEPLUGINS_FALSE@
 DISABLEPLUGINS_TRUE = @DISABLEPLUGINS_TRUE@
 ECHO = @ECHO@
@@ -273,7 +267,6 @@ MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 NOGARMIN = @NOGARMIN@
-NOGDAL = @NOGDAL@
 NOPLUGINS = @NOPLUGINS@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
@@ -285,7 +278,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CONFIG = @PCRE_CONFIG@
 PERL_PACKAGE_DIR = @PERL_PACKAGE_DIR@
-PERL_VENDORLIB = @PERL_VENDORLIB@
 PKGCONFIG_CFLAGS = @PKGCONFIG_CFLAGS@
 PKGCONFIG_LIBS = @PKGCONFIG_LIBS@
 PKG_CONFIG = @PKG_CONFIG@
@@ -352,8 +344,8 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-@DISABLEGDAL_FALSE@SUBDIRS = lib_map util
-@DISABLEGDAL_FALSE@DIST_SUBDIRS = $(SUBDIRS)
+@HAVE_GDAL_TRUE@SUBDIRS = lib_map util
+@HAVE_GDAL_TRUE@DIST_SUBDIRS = $(SUBDIRS)
 @DISABLEGARMIN_FALSE@PRG1 = garble
 @DISABLEGARMIN_TRUE@PRG1 = 
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1

@@ -111,6 +111,9 @@
 /* Define to 1 if you have the <libintl.h> header file. */
 #undef HAVE_LIBINTL_H
 
+/* Define to 1 if you have the `mysql' library (-lmysql). */
+#undef HAVE_LIBMYSQL
+
 /* Define to 1 if you have the <linux/inet.h> header file. */
 #undef HAVE_LINUX_INET_H
 

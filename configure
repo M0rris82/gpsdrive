@@ -919,9 +919,6 @@ GETTEXT_PACKAGE
 NOGARMIN
 DISABLEGARMIN_TRUE
 DISABLEGARMIN_FALSE
-NOGDAL
-DISABLEGDAL_TRUE
-DISABLEGDAL_FALSE
 NOPLUGINS
 DISABLEPLUGINS_TRUE
 DISABLEPLUGINS_FALSE
@@ -1557,15 +1554,16 @@ Optional Features:
   --enable-gcc2-optimization=type
                           gcc2 can optimize for: i386, i486, pentium,
                           pentiumpro, k6
+  --enable-gdal           enable GDAL support. This might be needed in the
+                          future for compilation
   --disable-gtktest       do not try to compile and run a test GTK+ program
   --disable-glibtest      do not try to compile and run a test GLIB program
   --disable-nls           do not use Native Language Support
   --disable-rpath         do not hardcode runtime library paths
   --disable-garmin        compiles without GARMIN protocol support
-  --disable-gdal          compiles without GDAL support. For now the main gpsdrive should still work without, but be prepared that future Versions wont work without. So better look out for a gdal/grass Package for your Distruibution
   --disable-plugins       disable use of plugin modules
   --enable-dbus           enable DBUS support. No checks are performed, you
-                          are responsible for having it installed =)
+                          are responsible for having it installed
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -13921,7 +13919,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 13924 "configure"' > conftest.$ac_ext
+  echo '#line 13922 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -16179,11 +16177,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16182: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16180: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16186: \$? = $ac_status" >&5
+   echo "$as_me:16184: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16447,11 +16445,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16450: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16448: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16454: \$? = $ac_status" >&5
+   echo "$as_me:16452: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16551,11 +16549,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16554: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16552: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16558: \$? = $ac_status" >&5
+   echo "$as_me:16556: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18848,7 +18846,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18851 "configure"
+#line 18849 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -18948,7 +18946,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18951 "configure"
+#line 18949 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -21284,11 +21282,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:21287: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:21285: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:21291: \$? = $ac_status" >&5
+   echo "$as_me:21289: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -21388,11 +21386,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:21391: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:21389: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:21395: \$? = $ac_status" >&5
+   echo "$as_me:21393: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -22949,11 +22947,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:22952: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:22950: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:22956: \$? = $ac_status" >&5
+   echo "$as_me:22954: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -23053,11 +23051,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:23056: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:23054: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:23060: \$? = $ac_status" >&5
+   echo "$as_me:23058: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -25240,11 +25238,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:25243: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:25241: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:25247: \$? = $ac_status" >&5
+   echo "$as_me:25245: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -25508,11 +25506,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:25511: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:25509: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:25515: \$? = $ac_status" >&5
+   echo "$as_me:25513: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -25612,11 +25610,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:25615: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:25613: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:25619: \$? = $ac_status" >&5
+   echo "$as_me:25617: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -30175,6 +30173,19 @@ CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
 
 
 
+# Check whether --enable-gdal was given.
+if test "${enable_gdal+set}" = set; then
+  enableval=$enable_gdal; ac_gdal=$enableval
+else
+  ac_gdal=no
+fi
+
+{ echo "$as_me:$LINENO: checking for GDAL support" >&5
+echo $ECHO_N "checking for GDAL support... $ECHO_C" >&6; }
+if test x"$ac_gdal" == "xyes"; then
+    echo "enable GDAL support"
+
+
 # Check whether --with-gdal was given.
 if test "${with_gdal+set}" = set; then
   withval=$with_gdal; ac_gdal_config_path=$withval
@@ -30271,9 +30282,21 @@ else
   HAVE_GDAL_FALSE=
 fi
 
-GDAL_LIBS=`gdal-config --libs`
-GDAL_CFLAGS=`$GDAL_CONFIG --cflags`
-CFLAGS="$CFLAGS $GDAL_CFLAGS"
+else
+    { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+if test x"$ac_gdal" = x"yes"; then
+  HAVE_GDAL_TRUE=
+  HAVE_GDAL_FALSE='#'
+else
+  HAVE_GDAL_TRUE='#'
+  HAVE_GDAL_FALSE=
+fi
+
+
 
 
 { echo "$as_me:$LINENO: checking for ANSI C header files" >&5
@@ -31091,8 +31114,8 @@ fi
 
 
 if test "$HAVE_GTK" = "no"; then
-  { echo "$as_me:$LINENO: WARNING: cannot find GTK+-2.0, that's not good" >&5
-echo "$as_me: WARNING: cannot find GTK+-2.0, that's not good" >&2;}
+  { echo "$as_me:$LINENO: WARNING: cannot find GTK+-2.0, that is not good" >&5
+echo "$as_me: WARNING: cannot find GTK+-2.0, that is not good" >&2;}
 fi
 
 
@@ -31197,7 +31220,7 @@ Alternatively, you may set the environment variables PKGCONFIG_CFLAGS
 and PKGCONFIG_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&5
 echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -31207,7 +31230,7 @@ Alternatively, you may set the environment variables PKGCONFIG_CFLAGS
 and PKGCONFIG_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
 else
@@ -31313,7 +31336,7 @@ Alternatively, you may set the environment variables XML_CFLAGS
 and XML_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&5
 echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -31323,7 +31346,7 @@ Alternatively, you may set the environment variables XML_CFLAGS
 and XML_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
 else
@@ -32044,6 +32067,7 @@ echo "$as_me: error: libxcursor1 is missing or your version is to old. Min Versi
    { (exit 1); exit 1; }; }
 fi
 
+
 echo checking for package libxext6... TODO >&2
 echo checking for package libxi6...   TODO >&2
 echo checking for package libxinerama1 1:0.9.0-1... TODO >&2
@@ -32051,6 +32075,77 @@ echo checking for package zlib1g...  TODO >&2
 echo checking for package libgdal-grass 1.2.6-1+b1...  TODO >&2
 echo checking for package libsrces26-dev 2.6.0-6...   TODO >&2
 echo checking for package libmysqlclient14-dev 4.1.15-1... TODO >&2
+
+{ echo "$as_me:$LINENO: checking for mysql_server_init in -lmysql" >&5
+echo $ECHO_N "checking for mysql_server_init in -lmysql... $ECHO_C" >&6; }
+if test "${ac_cv_lib_mysql_mysql_server_init+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmysql  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char mysql_server_init ();
+int
+main ()
+{
+return mysql_server_init ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext &&
+       $as_test_x conftest$ac_exeext; then
+  ac_cv_lib_mysql_mysql_server_init=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mysql_mysql_server_init=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ echo "$as_me:$LINENO: result: $ac_cv_lib_mysql_mysql_server_init" >&5
+echo "${ECHO_T}$ac_cv_lib_mysql_mysql_server_init" >&6; }
+if test $ac_cv_lib_mysql_mysql_server_init = yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMYSQL 1
+_ACEOF
+
+  LIBS="-lmysql $LIBS"
+
+fi
+
 echo checking for package libtiff4-dev 3.7.4-1...  TODO >&2
 echo checking for package libjasper-1.701-dev...  TODO >&2
 echo checking for package libgeos-dev 2.1.4-2...  TODO >&2
@@ -32819,7 +32914,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 32822 "configure"
+#line 32917 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -35194,34 +35289,6 @@ else
 fi
 
 
-# Check whether --enable-gdal was given.
-if test "${enable_gdal+set}" = set; then
-  enableval=$enable_gdal;
-	case "${enableval}" in
-		yes) echo "enable GDAL support" ;;
-		no)  echo "disable GDAL support"
-			NOGDAL='-DNOGDAL'
-
-			disablegdal=true
-			CXX=$CC ;;
-		*) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-gdal" >&5
-echo "$as_me: error: bad value ${enableval} for --enable-gdal" >&2;}
-   { (exit 1); exit 1; }; } ;;
-	esac
-
-fi
-
-
-
-if test x$disablegdal = xtrue; then
-  DISABLEGDAL_TRUE=
-  DISABLEGDAL_FALSE='#'
-else
-  DISABLEGDAL_TRUE='#'
-  DISABLEGDAL_FALSE=
-fi
-
-
 # Check whether --enable-plugins was given.
 if test "${enable_plugins+set}" = set; then
   enableval=$enable_plugins;
@@ -35358,7 +35425,7 @@ Alternatively, you may set the environment variables DBUS_CFLAGS
 and DBUS_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&5
 echo "$as_me: error: The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -35368,7 +35435,7 @@ Alternatively, you may set the environment variables DBUS_CFLAGS
 and DBUS_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.
 
-To get pkg-config, see <http://www.freedesktop.org/software/pkgconfig>.
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }
 else
@@ -36347,7 +36414,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 36350 "configure"
+#line 36417 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -36600,6 +36667,13 @@ echo "$as_me: error: conditional \"HAVE_GDAL\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${HAVE_GDAL_TRUE}" && test -z "${HAVE_GDAL_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAVE_GDAL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAVE_GDAL\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${HAVE_GTK_TRUE}" && test -z "${HAVE_GTK_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_GTK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -36611,13 +36685,6 @@ if test -z "${DISABLEGARMIN_TRUE}" && test -z "${DISABLEGARMIN_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"DISABLEGARMIN\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"DISABLEGARMIN\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${DISABLEGDAL_TRUE}" && test -z "${DISABLEGDAL_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"DISABLEGDAL\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"DISABLEGDAL\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -37390,9 +37457,6 @@ GETTEXT_PACKAGE!$GETTEXT_PACKAGE$ac_delim
 NOGARMIN!$NOGARMIN$ac_delim
 DISABLEGARMIN_TRUE!$DISABLEGARMIN_TRUE$ac_delim
 DISABLEGARMIN_FALSE!$DISABLEGARMIN_FALSE$ac_delim
-NOGDAL!$NOGDAL$ac_delim
-DISABLEGDAL_TRUE!$DISABLEGDAL_TRUE$ac_delim
-DISABLEGDAL_FALSE!$DISABLEGDAL_FALSE$ac_delim
 NOPLUGINS!$NOPLUGINS$ac_delim
 DISABLEPLUGINS_TRUE!$DISABLEPLUGINS_TRUE$ac_delim
 DISABLEPLUGINS_FALSE!$DISABLEPLUGINS_FALSE$ac_delim
@@ -37405,7 +37469,7 @@ PERL_PACKAGE_DIR!$PERL_PACKAGE_DIR$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 62; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 59; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

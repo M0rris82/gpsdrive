@@ -71,14 +71,8 @@ extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
-extern gint usesql;
 extern glong mapscale;
 
-#include "mysql.h"
-
-extern MYSQL mysql;
-extern MYSQL_RES *res;
-extern MYSQL_ROW row;
 extern gint muteflag;
 extern gdouble alarm_lat, alarm_lon, alarm_dist;
 extern gdouble target_lon, target_lat;
