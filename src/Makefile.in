@@ -345,7 +345,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 @HAVE_GDAL_TRUE@SUBDIRS = lib_map util
-@HAVE_GDAL_TRUE@DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = lib_map util
 @DISABLEGARMIN_FALSE@PRG1 = garble
 @DISABLEGARMIN_TRUE@PRG1 = 
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1

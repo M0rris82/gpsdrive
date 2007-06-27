@@ -1,7 +1,7 @@
 if HAVE_GDAL
 SUBDIRS =      lib_map util
-DIST_SUBDIRS = $(SUBDIRS)
 endif
+DIST_SUBDIRS = lib_map util
 
 DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
