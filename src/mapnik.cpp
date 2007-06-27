@@ -31,6 +31,8 @@ using mapnik::feature_ptr;
 using mapnik::geometry_ptr;
 using mapnik::CoordTransform;
 
+extern int mydebug;
+
 namespace mapnik {
 
 using namespace std;
@@ -42,7 +44,7 @@ typedef struct {
 	double CenterLonDbl;
 	int ScaleLevelInt;
 	unsigned char *ImageRawDataPtr;
-	Map map;
+	Map *MapPtr;
 } MapnikMapStruct;
 
 MapnikMapStruct MapnikMap;
@@ -68,9 +70,12 @@ double scales [] = {279541132.014,
                     1066.36479192,
                     533.182395962};
 const int MIN_LEVEL = 0;
-const int MAX_LEVEL = 18; 
+const int MAX_LEVEL = 18;
 
-extern "C"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void init_mapnik ( ) {
     // register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
@@ -81,7 +86,7 @@ void init_mapnik ( ) {
     
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
-    MapnikMap.map = Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
+    MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
     
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location   
@@ -93,10 +98,9 @@ void init_mapnik ( ) {
     cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
     
     //load map
-    mapnik::load_map(MapnikMap.map, mapnik_config_file);
+    mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
 }
 
-extern "C"
 void set_mapnik_map(double pCenterLatDbl, double pCenterLonDbl, int pScaleLevelInt) {
 	MapnikMap.CenterLatDbl = pCenterLatDbl;
 	MapnikMap.CenterLonDbl = pCenterLonDbl;
@@ -106,7 +110,6 @@ void set_mapnik_map(double pCenterLatDbl, double pCenterLonDbl, int pScaleLevelI
 	if (MapnikMap.ScaleLevelInt > MAX_LEVEL) MapnikMap.ScaleLevelInt = MAX_LEVEL;
 }
 
-extern "C"
 void render_mapnik (void) {
 
     projection Proj("+proj=merc +datum=WGS84");
@@ -131,14 +134,14 @@ void render_mapnik (void) {
     // Envelope<double> box = Envelope<double>(-16944.38844621579,6679978.34125,
     //                                         -16811.61155378421,6680061.65875);
     
-    MapnikMap.map.zoomToBox(box);
+    MapnikMap.MapPtr->zoomToBox(box);
     
     
-    Image32 buf(MapnikMap.WidthInt,MapnikMap.HeightInt);
-    mapnik::agg_renderer<Image32> ren(MapnikMap.map,buf);
+    Image32 buf(MapnikMap.WidthInt, MapnikMap.HeightInt);
+    mapnik::agg_renderer<Image32> ren(*MapnikMap.MapPtr,buf);
     ren.apply();
     
-    std::cout << MapnikMap.map.getCurrentExtent() << "\n";
+    if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
     MapnikMap.ImageRawDataPtr = (unsigned char *) buf.raw_data();
 	
@@ -152,19 +155,20 @@ void render_mapnik (void) {
 
 }
 
-extern "C"
 unsigned char *get_mapnik_imagedata() {
 	return MapnikMap.ImageRawDataPtr;
 }
 
-extern "C"
 double get_mapnik_mapscale() {
 	return scales[MapnikMap.ScaleLevelInt];
 }
 
-extern "C"
 double get_mapnik_pixelfactor() {
 	return scales[MapnikMap.ScaleLevelInt] * 0.00028;
 }
 
+#ifdef __cplusplus
 }
+#endif
+
+} //end namespace mapnik
