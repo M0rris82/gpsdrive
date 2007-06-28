@@ -950,20 +950,23 @@ test_and_load_newmap ()
 	    fprintf (stderr, "rendering mapnik map ....\n");
         g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
         g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
-    gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
-	set_mapnik_map(current_lat, current_lon, LevelInt);
-	render_mapnik();
+    //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
+	//set_mapnik_map(current_lat, current_lon, LevelInt);
+    set_mapnik_map(current_lat, current_lon, 0, scalewanted);
 	
-	//g_object_unref(G_OBJECT(image));
-	//g_object_unref(G_OBJECT(tempimage));
-	mapscale = get_mapnik_mapscale();// 68247.3466832;;
-	pixelfact = get_mapnik_pixelfactor();
-    zero_lon = current_lon;
-	zero_lat = current_lat;
+    /* render map, but only if it is needed */
+    render_mapnik();
 	
-	loadmap("/tmp/mapnik.png");
-	/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
-	*/
+	/* only load map if there is a new one. */
+	if (get_mapnik_newmapysn()) {
+		mapscale = get_mapnik_mapscale();// 68247.3466832;;
+		pixelfact = get_mapnik_pixelfactor();
+		get_mapnik_center(&zero_lat, &zero_lon);
+	    
+		loadmap("/tmp/mapnik.png");
+		/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
+		*/
+	}
 	return;
     }
 

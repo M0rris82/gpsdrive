@@ -15,10 +15,12 @@
 #define _MAPNIK_DEF_H
 
 void init_mapnik();
-void set_mapnik_map(double pCenterLatDbl, double pCenterLonDbl, int pScaleLevelInt);
+void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn,  int pScaleLevelInt);
 void render_mapnik ( );
 unsigned char *get_mapnik_imagedata ( );
 double get_mapnik_mapscale();
 double get_mapnik_pixelfactor();
+int get_mapnik_newmapysn();
+void get_mapnik_center(double *pLatDbl, double *pLonDbl);
 
 #endif // _MAPNIK_DEF_H
