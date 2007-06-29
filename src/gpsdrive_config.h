@@ -56,6 +56,7 @@ typedef struct
 	gchar icon_theme[500];
 	guint poi_results_max;
 	gdouble poi_searchradius;
+	gboolean mapnik;
 	gboolean simmode;
 	gboolean showgrid;
 	gboolean showshadow;

@@ -50,16 +50,16 @@ Disclaimer: Please do not use for navigation.
 
 /* variables */
 extern gint ignorechecksum, mydebug;
-extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
+extern gdouble dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
-  bearing;
+extern gdouble pixelfact, posx, posy, angle_to_destination;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_lon, current_lat, old_lon, old_lat, milesconv;
+extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble lat2RadiusArray[101];
+extern coordinate_struct coords;
 
 
 /* **********************************************************************
@@ -171,7 +171,7 @@ calcR (gdouble lat)
 
 
 /* ******************************************************************
- * calculate distance from (lat/lon) to current position (current_lat/current_lon)
+ * calculate distance from (lat/lon) to current position
  */
 gdouble
 calcdist2 (gdouble lon, gdouble lat)
@@ -179,8 +179,8 @@ calcdist2 (gdouble lon, gdouble lat)
   double a, a1, a2, c, d, dlon, dlat, sa, radiant = M_PI / 180;
 
 
-  dlon = radiant * (current_lon - lon);
-  dlat = radiant * (current_lat - lat);
+  dlon = radiant * (coords.current_lon - lon);
+  dlat = radiant * (coords.current_lat - lat);
 
   if ((dlon == 0.0) && (dlat == 0.0))
     return 0.0;
@@ -188,13 +188,13 @@ calcdist2 (gdouble lon, gdouble lat)
   a1 = sin (dlat / 2);
   a2 = sin (dlon / 2);
   a = (a1 * a1) +
-    cos (lat * radiant) * cos (current_lat * radiant) * a2 * a2;
+    cos (lat * radiant) * cos (coords.current_lat * radiant) * a2 * a2;
   sa = sqrt (a);
   if (sa <= 1.0)
     c = 2 * asin (sa);
   else
     c = 2 * asin (1.0);
-  d = (lat2radius (current_lat) + lat2radius (lat)) * c / 2.0;
+  d = (lat2radius (coords.current_lat) + lat2radius (lat)) * c / 2.0;
   return milesconv * d / 1000.0;
 }
 
@@ -223,8 +223,8 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_c
 	
 	if (from_current)
 	{
-		lon2 = current_lon;
-		lat2 = current_lat;
+		lon2 = coords.current_lon;
+		lat2 = coords.current_lat;
 	}
 
 	if (((lat1 - lat2) == 0.0) && ((lon1 - lon2) == 0.0))
@@ -289,7 +289,7 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_c
 
 
 /* ******************************************************************
- * calculate distance from (lat/lon) to current position (current_lat/current_lon)
+ * calculate distance from (lat/lon) to current position
  * (convenience replacement for calcdist, which is now in calc_wpdist)
  */
 gdouble

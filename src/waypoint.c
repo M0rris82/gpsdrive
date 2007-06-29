@@ -67,10 +67,9 @@ extern GtkWidget *mylist;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
+extern routestatus_struct route;
 extern gint isnight, disableisnight;
 extern color_struct colors;
-extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
@@ -83,10 +82,7 @@ extern MYSQL mysql;
 extern MYSQL_RES *res;
 extern MYSQL_ROW row;
 extern gint muteflag;
-extern gdouble alarm_lat, alarm_lon, alarm_dist;
-extern gdouble target_lon, target_lat;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed, posmode_lon, posmode_lat;
-extern gint posmode;
+extern gdouble alarm_dist;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
@@ -95,13 +91,11 @@ extern gint wptotal, wpselected;
 extern GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
 extern GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
 extern GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
-extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
-  bearing;
+extern gdouble pixelfact, posx, posy, angle_to_destination;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
 extern GtkWidget *mainwindow;
-extern gchar targetname[40];
 extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
@@ -112,10 +106,11 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 extern gchar oldfilename[2048];
-extern status_struct route;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern GList *poi_types_formatted;
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
@@ -158,7 +153,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 	if ( mydebug >50 ) fprintf(stderr , "watchwp_cb()\n");
 
 	/*  calculate new earth radius */
-	earthr = calcR (current_lat);
+	earthr = calcR (coords.current_lat);
 
 	if (importactive)
 		return TRUE;
@@ -176,15 +171,15 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 			if (d < 0.6)
 			{
 				lastbearing = radarbearing;
-				tx = -current_lon + (wayp + i)->lon;
-				ty = -current_lat + (wayp + i)->lat;
+				tx = -coords.current_lon + (wayp + i)->lon;
+				ty = -coords.current_lat + (wayp + i)->lat;
 				radarbearing = atan (tx / ty);
 				if (!finite (radarbearing))
 					radarbearing = lastbearing;
 
 				if (ty < 0)
 					radarbearing = M_PI + radarbearing;
-				radarbearing -= direction;
+				radarbearing -= current.heading;
 				if (radarbearing >= (2 * M_PI))
 					radarbearing -= 2 * M_PI;
 				if (radarbearing < 0)
@@ -236,7 +231,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 
       g_snprintf(
           buf, sizeof(buf), speech_danger_radar[voicelang],
-          (int) (ldist * 1000.0), (int) groundspeed );
+          (int) (ldist * 1000.0), (int) current.groundspeed );
 			speech_out_speek (buf);
 
 			if (displaytext != NULL)
@@ -473,13 +468,13 @@ sel_targetweg_cb (GtkWidget * widget, guint datum)
 	gtk_widget_destroy (GTK_WIDGET (gotowindow));
 	/* restore old target */
 	if (widget != NULL && !route.active) {
-		target_lat = wp_saved_target_lat;
-		target_lon = wp_saved_target_lon;
+		coords.target_lat = wp_saved_target_lat;
+		coords.target_lon = wp_saved_target_lon;
 	}
 	/* restore old posmode */
-	if (widget != NULL && posmode) {
-		posmode_lat = wp_saved_posmode_lat;
-		posmode_lon = wp_saved_posmode_lon;
+	if (widget != NULL && gui_status.posmode) {
+		coords.posmode_lat = wp_saved_posmode_lat;
+		coords.posmode_lon = wp_saved_posmode_lon;
 	}
 	setwpactive = FALSE;
 
@@ -505,14 +500,14 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 	gchar *p;
 
 	i = deleteline;
-	if (posmode) {
+	if (gui_status.posmode) {
 		gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
-		coordinate_string2gdouble(p, &posmode_lat);
+		coordinate_string2gdouble(p, &coords.posmode_lat);
 		gtk_clist_get_text (GTK_CLIST (mylist), i, 4, &p);
-		coordinate_string2gdouble(p, &posmode_lon);
+		coordinate_string2gdouble(p, &coords.posmode_lon);
 	}
 
-	if ((!posmode) && (!local_config.simmode))
+	if ((!gui_status.posmode) && (!local_config.simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
 					      TRUE);
 	getsqldata ();
@@ -878,27 +873,27 @@ setwp_cb (GtkWidget * widget, guint datum)
 	selected_wp_list_line = atol (p);
 	/*    g_print("%d\n", selected_wp_list_line); */
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
-	g_strlcpy (targetname, p, sizeof (targetname));
+	g_strlcpy (current.target, p, sizeof (current.target));
 
 
-	g_snprintf (str, sizeof (str), "%s: %s", _("To"), targetname);
+	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
 	tn = g_strdelimit (str, "_", ' ');
 	gtk_frame_set_label (GTK_FRAME (destframe), tn);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
-	coordinate_string2gdouble(p, &target_lat);
+	coordinate_string2gdouble(p, &coords.target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
-	coordinate_string2gdouble(p, &target_lon);
+	coordinate_string2gdouble(p, &coords.target_lon);
 	/* if posmode enabled set posmode_lat/lon */
-	if (posmode) {
-		posmode_lat = target_lat;
-		posmode_lon = target_lon;
+	if (gui_status.posmode) {
+		coords.posmode_lat = coords.target_lat;
+		coords.posmode_lon = coords.target_lon;
 	}
 	/*    gtk_timeout_add (5000, (GtkFunction) sel_targetweg_cb, widget); */
 	g_timer_stop (disttimer);
 	g_timer_start (disttimer);
 	olddist = dist;
 
-	tn = g_strdelimit (targetname, "_", ' ');
+	tn = g_strdelimit (current.target, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
 	if (tn[0] == '*')
 	{
@@ -912,7 +907,6 @@ setwp_cb (GtkWidget * widget, guint datum)
 	speech_out_speek (buf);
 
 	saytarget = TRUE;
-	routenearest = 9999999;
 
 	return TRUE;
 }

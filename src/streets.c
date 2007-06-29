@@ -60,12 +60,10 @@ Disclaimer: Please do not use for navigation.
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
 extern GdkColor grey;
 extern color_struct colors;
 
-extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;

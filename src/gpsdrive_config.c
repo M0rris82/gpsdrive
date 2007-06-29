@@ -56,7 +56,6 @@ extern gint trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered_not_bestmap;
 extern gint mydebug, scalewanted, savetrack;
 extern gchar serialdev[80];
-extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gint setdefaultpos;
 extern gint streets_draw, poi_draw, wlan_draw, testgarmin;
 extern gint needtosave, usedgps;
@@ -77,7 +76,7 @@ extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
 extern long int maxfriendssecs;
 extern int messagenumber;
 extern int sockfd, serialspeed, disableserial, showsid, storetz;
-
+extern coordinate_struct coords;
 #define KM2MILES 0.62137119
 #define PADDING int_padding
 
@@ -166,11 +165,11 @@ writeconfig ()
 
 	fprintf (fp, "serialdevice = %s\n", serialdev);
 
-	g_snprintf (str, sizeof (str), "%.6f", current_lon);
+	g_snprintf (str, sizeof (str), "%.6f", coords.current_lon);
 	g_strdelimit (str, ",", '.');
 	fprintf (fp, "lastlong = %s\n", str);
 
-	g_snprintf (str, sizeof (str), "%.6f", current_lat);
+	g_snprintf (str, sizeof (str), "%.6f", coords.current_lat);
 	g_strdelimit (str, ",", '.');
 	fprintf (fp, "lastlat = %s\n", str);
 
@@ -197,6 +196,8 @@ writeconfig ()
 
 	fprintf (fp, "mapdir = ");
 	fprintf (fp, "%s\n", local_config.dir_maps);
+
+	fprintf (fp, "mapnik = %d\n", local_config.mapnik);
 
 	fprintf (fp, "simfollow = ");
 	if (local_config.simmode == 0)
@@ -376,9 +377,11 @@ readconfig ()
 			else if ( (strcmp(par1, "serialdevice")) == 0)
 				g_strlcpy (serialdev, par2, sizeof (serialdev));
 			else if ( (strcmp(par1, "lastlong")) == 0)
-				coordinate_string2gdouble(par2, &current_lon);
+				coordinate_string2gdouble(par2,
+					&coords.current_lon);
 			else if ( (strcmp(par1, "lastlat")) == 0)
-				coordinate_string2gdouble(par2, &current_lat);
+				coordinate_string2gdouble(par2,
+					&coords.current_lat);
 			/*
 			else if ( (strcmp(par1, "setdefaultpos")) == 0)            
 		       setdefaultpos = atoi (par2); 
@@ -393,7 +396,10 @@ readconfig ()
 			else if ( (strcmp(par1, "usedgps")) == 0)
 				usedgps = atoi (par2);
 			else if ( (strcmp(par1, "mapdir")) == 0)
-				g_strlcpy (local_config.dir_maps, par2, sizeof (local_config.dir_maps));
+				g_strlcpy (local_config.dir_maps, par2,
+					sizeof (local_config.dir_maps));
+			else if ( (strcmp(par1, "mapnik")) == 0)
+				local_config.mapnik = atoi (par2);
 			else if ( (strcmp(par1, "simfollow")) == 0)
 				local_config.simmode = atoi (par2);
 			else if ( (strcmp(par1, "satposmode")) == 0)
@@ -557,6 +563,7 @@ config_init ()
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_CLASSIC;
 	local_config.simmode = FALSE;
+	local_config.mapnik = FALSE;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.maxcpuload = 40;
 	local_config.showgrid = FALSE;

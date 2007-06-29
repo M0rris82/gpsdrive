@@ -49,6 +49,7 @@ Disclaimer: Please do not use for navigation.
 #include <semaphore.h>
 
 #include "gpsdrive_config.h"
+#include "gui.h"
 
 #include "gettext.h"
 
@@ -78,25 +79,20 @@ extern gint zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
 
-extern gdouble current_lon, current_lat;
-
-extern gint posmode;
 extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff, crosstoogle;
 extern gint zone;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint oldsatfix, oldsatsanz, havealtitude;
 extern gdouble altitude, precision, gsaprecision;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
 extern gdouble pixelfact, posx, posy;
-extern gdouble angle_to_destination, direction, bearing;
+extern gdouble angle_to_destination;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel, testgarmin;
 extern gint satfix, usedgps;
@@ -111,7 +107,7 @@ extern char serialdata[4096];
 extern int newdata;
 extern pthread_mutex_t mutex;
 //extern GtkWidget *startgps_bt;
-extern int messagenumber, didrootcheck, haveserial;
+extern int didrootcheck, haveserial;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
 extern int gotneverserial, timerto, serialspeed;
@@ -119,12 +115,14 @@ extern GtkWidget *drawing_sats;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
-extern gchar gpsdservername[200], setpositionname[80];
+extern gchar gpsdservername[200];
 extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
 extern int disableserial, disableserialcl;
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 // ---------------------- NMEA
 extern gint haveRMCsentence;
@@ -600,11 +598,11 @@ dbus_process_fix(gint early)
 		return;
 	}
 	/* Handle latitude */
-	if (!posmode)
-		current_lat = dbus_current_fix.latitude;
+	if (!gui_status.posmode)
+		coords.current_lat = dbus_current_fix.latitude;
 	/* Handle longitude */
-	if (!posmode)
-		current_lon = dbus_current_fix.longitude;
+	if (!gui_status.posmode)
+		coords.current_lon = dbus_current_fix.longitude;
 	/* Handle speed */
 	if (__finite(dbus_current_fix.speed))
 		groundspeed = dbus_current_fix.speed * 3.6;	// Convert m/s to km/h
@@ -616,9 +614,9 @@ dbus_process_fix(gint early)
 	if (__finite(dbus_current_fix.track))
 		direction = dbus_current_fix.track * M_PI / 180;	// Convert to radians
 	else if (dbus_old_fix.mode>1) {
-		gdouble lon2 = current_lon * M_PI / 180;
+		gdouble lon2 = coords.current_lon * M_PI / 180;
 		gdouble lon1 = dbus_old_fix.longitude * M_PI / 180;
-		gdouble lat2 = current_lat * M_PI /180;
+		gdouble lat2 = coords.current_lat * M_PI /180;
 		gdouble lat1 = dbus_old_fix.latitude * M_PI / 180;
 		if ((lat1 != lat2) || (lon1 != lon2))
 			direction = atan2(sin(lon2-lon1)*cos(lat2),
@@ -815,7 +813,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  pthread_mutex_unlock (&mutex);
 	  timeoutcount = 0;
 
-	  if (posmode)
+	  if (gui_status.posmode)
 	    display_status (_("Press middle mouse button for navigation"));
 	  else
 	    {
@@ -864,7 +862,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	  /*  display the position and map in the statusline */
 	  if (havepos)
 	    {
-	      if (posmode)
+	      if (gui_status.posmode)
 		display_status (_
 				("Press middle mouse button for navigation"));
 	      else
@@ -913,10 +911,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	      havepos = TRUE;
 	      haveposcount++;
 	    }
-	  if (!posmode)
+	  if (!gui_status.posmode)
 	    {
-	      current_lon = glang;
-	      current_lat = gbreit;
+	      coords.current_lon = glang;
+	      coords.current_lat = gbreit;
 	    }
 
 	}
@@ -927,10 +925,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
       if (secs >= 1.0)
 	{
-	  tx = (2 * earthr * M_PI / 360) * cos (M_PI * current_lat /
+	  tx = (2 * earthr * M_PI / 360) * cos (M_PI * coords.current_lat /
 						180.0) *
-	    (current_lon - old_lon);
-	  ty = (2 * earthr * M_PI / 360) * (current_lat - old_lat);
+	    (coords.current_lon - coords.old_lon);
+	  ty = (2 * earthr * M_PI / 360) * (coords.current_lat - coords.old_lat);
 #define MINMOVE 4.0
 	  if (((fabs (tx)) > MINMOVE) || (((fabs (ty)) > MINMOVE)))
 	    {
@@ -940,38 +938,38 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 		  g_timer_start (timer);
 		}
 
-	      lastdirection = direction;
+	      lastdirection = current.heading;
 	      if (ty == 0)
-		direction = 0.0;
+		current.heading = 0.0;
 	      else
-		direction = atan (tx / ty);
-	      if (!finite (direction))
-		direction = lastdirection;
+		current.heading = atan (tx / ty);
+	      if (!finite (current.heading))
+		current.heading = lastdirection;
 	      if (ty < 0)
-		direction = M_PI + direction;
-	      if (direction >= (2 * M_PI))
-		direction -= 2 * M_PI;
-	      if (direction < 0)
-		direction += 2 * M_PI;
+		current.heading = M_PI + current.heading;
+	      if (current.heading >= (2 * M_PI))
+		current.heading -= 2 * M_PI;
+	      if (current.heading < 0)
+		current.heading += 2 * M_PI;
 
-	      groundspeed = milesconv * sqrt (tx * tx + ty * ty) * 3.6 / secs;
-	      old_lat = current_lat;
-	      old_lon = current_lon;
+	      current.groundspeed = milesconv * sqrt (tx * tx + ty * ty) * 3.6 / secs;
+	      coords.old_lat = coords.current_lat;
+	      coords.old_lon = coords.current_lon;
 	    }
 	  else if (secs > 4.0)
-	    groundspeed = 0.0;
+	    current.groundspeed = 0.0;
 
-	  if (groundspeed > 2000)
-	    groundspeed = 0;
-	  if (groundspeed < 3.6)
-	    groundspeed = 0;
+	  if (current.groundspeed > 2000)
+	    current.groundspeed = 0;
+	  if (current.groundspeed < 3.6)
+	    current.groundspeed = 0;
 
 	  if ( mydebug + gps_handler_debug > 80 )
 	    g_print ("gps_handler: Time: %f\n", secs);
 	}
 
       /*  display status line */
-      if (posmode)
+      if (gui_status.posmode)
 	display_status (_("Press middle mouse button for navigation"));
       else
 	{
@@ -993,9 +991,9 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       /*  display status line */
       if (!local_config.simmode)
 	display_status (_("No GPS used"));
-      else if (maploaded && !posmode)
+      else if (maploaded && !gui_status.posmode)
 	display_status (_("Simulation mode"));
-      else if (posmode)
+      else if (gui_status.posmode)
 	display_status (_("Press middle mouse button for sim mode"));
 
 
@@ -1011,7 +1009,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	NMEAoldsecs = floor(NMEAsecs);
 	timeoutcount = 0;
 	if (havepos) {
-		if (posmode)
+		if (gui_status.posmode)
 			display_status (_("Press middle mouse button for navigation"));
 		else
 			display_status (nmeamodeandport);
@@ -1076,7 +1074,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  /*  display the position and map in the statusline */
 			  if (havepos)
 			    {
-			      if (posmode)
+			      if (gui_status.posmode)
 				display_status
 				  (_
 				   ("Press middle mouse button for navigation"));
@@ -1199,7 +1197,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 				convertGGA (tok);
 			      if (havepos)
 				{
-				  if (posmode)
+				  if (gui_status.posmode)
 				    display_status
 				      (_
 				       ("Press middle mouse button for navigation"));

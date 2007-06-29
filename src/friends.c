@@ -71,6 +71,7 @@
 extern int needtosave, maxfriends, statusid;
 extern friendsstruct *friends, *fserver;
 int actualfriends = 0;
+extern int messagenumber;
 extern long int maxfriendssecs;
 extern gint zone;
 extern gdouble milesconv;
@@ -80,6 +81,8 @@ extern GdkPixbuf *friendsimage, *friendspixbuf;
 extern int usesql;
 extern gint mydebug;
 extern color_struct colors;
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 /*
  * conn.c
@@ -115,7 +118,100 @@ setnonblocking (int sock)
 }
 
 
-/* *****************************************************************************
+/* ****************************************************************************
+ * Friends agent
+ */
+gint
+friendsagent_cb (GtkWidget * widget, guint * datum)
+{
+	time_t tii;
+	gchar buf[MAXMESG], buf2[40], la[20], lo[20], num[5];
+	gint i;
+
+	if ( mydebug >50 ) fprintf(stderr , "friendsagent_cb()\n");
+
+	/* Don't allow spaces in name */
+	for (i = 0; (size_t) i < strlen (local_config.friends_name); i++)
+		if (local_config.friends_name[i] == ' ')
+			local_config.friends_name[i] = '_';
+
+	/*  send position to friendsserver */
+
+	if (local_config.showfriends)
+	{
+		if (strlen (messagesendtext) > 0)
+		{
+			/* send message to server */
+			if (messagenumber < 99)
+				messagenumber++;
+			else
+				messagenumber = 0;
+			needtosave = TRUE;
+			g_snprintf (num, sizeof (num), "%02d", messagenumber);
+			g_strlcpy (buf2, local_config.friends_id,
+				sizeof (buf2));
+			buf2[0] = 'M';
+			buf2[1] = 'S';
+			buf2[2] = 'G';
+			buf2[3] = num[0];
+			buf2[4] = num[1];
+			g_snprintf (buf, sizeof (buf), "SND: %s %s %s\n",
+				    buf2, messagename, messagesendtext);
+			if ( mydebug > 3 )
+				fprintf (stderr, "friendsagent: sending to"
+					" %s:\nfriendsagent: %s\n",
+					local_config.friends_serverip, buf);
+			if (sockfd != -1)
+				close (sockfd);
+			sockfd = -1;
+			friends_sendmsg (local_config.friends_serverip, buf);
+			g_snprintf (messageack, sizeof (messageack),
+				"SND: %s", buf2);
+		}
+		else
+		{
+			/* send position to server */
+			if (gui_status.posmode)
+			{
+				g_snprintf (la, sizeof (la), "%10.6f",
+					coords.posmode_lat);
+				g_snprintf (lo, sizeof (lo), "%10.6f",
+					coords.posmode_lon);
+			}
+			else
+			{
+				g_snprintf (la, sizeof (la), "%10.6f",
+					coords.current_lat);
+				g_snprintf (lo, sizeof (lo), "%10.6f",
+					coords.current_lon);
+			}
+			g_strdelimit (la, ",", '.');
+			g_strdelimit (lo, ",", '.');
+			tii = time (NULL);
+			g_snprintf (buf, sizeof (buf),
+				"POS: %s %s %s %s %ld %.0f %.0f %d",
+				local_config.friends_id,
+				local_config.friends_name, la, lo, tii,
+				current.groundspeed / milesconv,
+				180.0 * current.heading / M_PI,
+				local_config.travelmode);
+			if ( mydebug > 3 )
+				fprintf (stderr,
+					"friendsagent: sending to"
+					" %s:\nfriendsagent: %s\n",
+					local_config.friends_serverip, buf);
+			if (sockfd != -1)
+				close (sockfd);
+			sockfd = -1;
+			friends_sendmsg (local_config.friends_serverip, buf);
+		}
+	}
+
+	return TRUE;
+}
+
+
+/* ****************************************************************************
  * Insert or update data coming from friendsd in database or way.txt file
  */
 void
@@ -136,22 +232,33 @@ update_friends_data (friendsstruct *cf)
 		//(cf)->type,
 		
 		/* check, if friend is already present in database */
-		current_poi_id = getsqlextradata (NULL, "friends_id", (cf)->id, result);
+		current_poi_id = getsqlextradata (NULL, "friends_id",
+			(cf)->id, result);
 		if (current_poi_id)
 		{
 			if (mydebug > 30)
-				fprintf (stderr, "--------> updating friend with poi_id = %ld\n", current_poi_id);
-			updatesqldata (current_poi_id, strtod((cf)->lat, NULL), strtod((cf)->lon, NULL), (cf)->name, (cf)->type, (cf)->timesec, 10);
-			updatesqlextradata (&current_poi_id, "speed", (cf)->speed);
-			updatesqlextradata (&current_poi_id, "heading", (cf)->heading);
+				fprintf (stderr, "--------> updating friend"
+				" with poi_id = %ld\n", current_poi_id);
+			updatesqldata (current_poi_id, strtod((cf)->lat, NULL),
+				strtod((cf)->lon, NULL), (cf)->name,
+				(cf)->type, (cf)->timesec, 10);
+			updatesqlextradata (&current_poi_id,
+				"speed", (cf)->speed);
+			updatesqlextradata (&current_poi_id,
+				"heading", (cf)->heading);
 		}
 		else
 		{
 			// TODO: create new entry
-			current_poi_id = insertsqldata (strtod((cf)->lat, NULL), strtod((cf)->lon, NULL), (cf)->name, (cf)->type, (cf)->timesec, 10);
-			insertsqlextradata (&current_poi_id, "friends_id", (cf)->id);
-			insertsqlextradata (&current_poi_id, "speed", (cf)->speed);
-			insertsqlextradata (&current_poi_id, "heading", (cf)->heading);
+			current_poi_id = insertsqldata (strtod((cf)->lat, NULL),
+				strtod((cf)->lon, NULL), (cf)->name, (cf)->type,
+				(cf)->timesec, 10);
+			insertsqlextradata (&current_poi_id,
+				"friends_id", (cf)->id);
+			insertsqlextradata (&current_poi_id,
+				"speed", (cf)->speed);
+			insertsqlextradata (&current_poi_id,
+				"heading", (cf)->heading);
 		}
 	}
 	else
@@ -278,20 +385,26 @@ friends_sendmsg (char *serverip, char *message)
 			  &type);
 	      /*              printf("\nreceived %d arguments\n",e);  */
 		if (type == TRAVEL_CAR)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.car");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd.car");
 		else if (type == TRAVEL_AIRPLANE)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.airplane");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd.airplane");
 		else if (type == TRAVEL_BIKE)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.bike");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd.bike");
 		else if (type == TRAVEL_BOAT)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.boat");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd.boat");
 		else if (type == TRAVEL_WALK)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd.walk");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd.walk");
 		else
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type), "people.friendsd");
+			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+				"people.friendsd");
 		
 		update_friends_data ((f + fc));
-	      fc++;
+		fc++;
 	    }
 	  if ((strncmp (recvline, "SRV: ", 5)) == 0)
 	    {

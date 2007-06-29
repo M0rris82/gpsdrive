@@ -38,6 +38,7 @@
 #include <termios.h>
 #include "gps_handler.h"
 #include "gpsdrive_config.h"
+#include "gui.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -53,19 +54,16 @@ extern gint zoom, iszoomed;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
 
 extern gint mydebug;
 gint nmea_handler_debug = 0;
 
-extern gint posmode;
 extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff, crosstoogle;
 extern gint zone;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gdouble milesconv;
 extern gint oldsatfix, oldsatsanz, havealtitude;
 extern gdouble altitude, precision, gsaprecision;
@@ -87,7 +85,7 @@ extern gchar serialdev[80];
 extern int newdata;
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
-extern int messagenumber,  didrootcheck, haveserial;
+extern int didrootcheck, haveserial;
 extern gint statusid, messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
 extern int gotneverserial, timerto, serialspeed;
@@ -96,18 +94,20 @@ extern GtkTooltips *temptooltips;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
-extern gchar gpsdservername[200], setpositionname[80];
+extern gchar gpsdservername[200];
 extern GtkWidget *mainwindow, *status, *messagestatusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
 extern int disableserial, disableserialcl;
 static gchar gradsym[] = "\xc2\xb0";
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 /* variables */
 extern gint ignorechecksum;
 //, mapistopo;
-extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
+extern gdouble dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
@@ -222,12 +222,12 @@ write_nmea_line (const char *line)
 void
 gen_nmea_coord (char *out)
 {
-	gdouble lat = fabs (current_lat), lon = fabs (current_lon);
+	gdouble lat = fabs (coords.current_lat), lon = fabs (coords.current_lon);
 	g_snprintf (out, sizeof (out), ",%02d%07.5f,%c,%03d%07.5f,%c",
 		    (int) floor (lat), 60 * (lat - floor (lat)),
-		    (current_lat < 0 ? 'S' : 'N'),
+		    (coords.current_lat < 0 ? 'S' : 'N'),
 		    (int) floor (lon), 60 * (lon - floor (lon)),
-		    (current_lon < 0 ? 'W' : 'E'));
+		    (coords.current_lon < 0 ? 'W' : 'E'));
 }
 
 /* *****************************************************************************
@@ -253,14 +253,14 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 	strftime (buffer, sizeof (buffer), "GPRMC,%H%M%S.000,A", st);
 	gen_nmea_coord (buffer + strlen (buffer));
 	g_snprintf (buffer + strlen (buffer), sizeof (buffer), ",%.2f,%.2f",
-		    groundspeed / milesconv / 1.852,
+		    current.groundspeed / milesconv / 1.852,
 		    direction * 180.0 / M_PI);
 	strftime (buffer + strlen (buffer), 80, ",%d%m%y,,", st);
 	write_nmea_line (buffer);
 
 	g_snprintf (buffer, sizeof (buffer), "GPVTG,%.2f,T,,M,%.2f,N,%.2f,K",
 		    direction * 180.0 / M_PI,
-		    groundspeed / milesconv / 1.852, groundspeed / milesconv);
+		    current.groundspeed / milesconv / 1.852, current.groundspeed / milesconv);
 	write_nmea_line (buffer);
 
 	return TRUE;
@@ -320,7 +320,7 @@ convertRMC (char *f)
   memset (b, 0, 100);
 
   /*  if simulation mode we display status and return */
-  if (local_config.simmode && maploaded && !posmode)
+  if (local_config.simmode && maploaded && !gui_status.posmode)
     {
       display_status (_("Simulation mode"));
       return;
@@ -414,7 +414,7 @@ convertRMC (char *f)
   b[7] = 0;
   if ( mydebug + nmea_handler_debug > 80 )
     g_print ("nmea_handler: gpsd: lat part2: %s\n", b);
-  if (!posmode)
+  if (!gui_status.posmode)
     {
       gdouble cl;
       if ( mydebug + nmea_handler_debug > 80 )
@@ -426,12 +426,12 @@ convertRMC (char *f)
       if (field[4][0] == 'S')
 	cl = cl * -1;
       if ((cl >= -90.0) && (cl <= 90.0))
-	current_lat = cl;
+	coords.current_lat = cl;
       breitri = field[4][0];
-      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lat, gradsym, breitri);
+      g_snprintf (b, sizeof (b), " %8.5f%s%c", coords.current_lat, gradsym, breitri);
       if ( mydebug + nmea_handler_debug > 60 )
 	  {
-	      g_print ("nmea_handler: RMC lat: %8.5f\n", current_lat);
+	      g_print ("nmea_handler: RMC lat: %8.5f\n", coords.current_lat);
 	  }
     }
 
@@ -468,7 +468,7 @@ convertRMC (char *f)
   b[5] = field[5][8];
   b[6] = field[5][9];
   b[7] = 0;
-  if (!posmode)
+  if (!gui_status.posmode)
     {
       gdouble cl;
       cl = longdegree + atof (b) / 60.0;
@@ -477,12 +477,12 @@ convertRMC (char *f)
       if (field[6][0] == 'W')
 	cl = cl * -1;
       if ((cl >= -180.0) && (cl <= 180.0))
-	current_lon = cl;
+	coords.current_lon = cl;
       langri = field[6][0];
-      g_snprintf (b, sizeof (b), " %8.5f%s%c", current_lon, gradsym, langri);
+      g_snprintf (b, sizeof (b), " %8.5f%s%c", coords.current_lon, gradsym, langri);
       if ( mydebug + nmea_handler_debug > 60 )
 	  {
-	      g_print ("nmea_handler: RMC lon: %8.5f\n", current_lon);
+	      g_print ("nmea_handler: RMC lon: %8.5f\n", coords.current_lon);
 	  }
     }
 
@@ -493,7 +493,7 @@ convertRMC (char *f)
   b[3] = '.';
   b[4] = field[7][4];
   b[5] = 0;
-  groundspeed = atof (b) * 1.852 * milesconv;
+  current.groundspeed = atof (b) * 1.852 * milesconv;
 
   // What hapens here with b or mapfilename?
   g_snprintf (b, sizeof (b), " %s: %s", _("Map"), mapfilename);
@@ -506,8 +506,8 @@ convertRMC (char *f)
   b[4] = field[8][4];
   b[5] = 0;
   /*  direction is the course we are driving */
-  direction = atof (b);
-  direction = direction * M_PI / 180;
+  current.heading = atof (b);
+  current.heading = current.heading * M_PI / 180;
 
   {
     int h, m, s;
@@ -739,21 +739,22 @@ convertGGA (char *f)
       b[6] = field[2][8];
       b[7] = 0;
       if ( mydebug + nmea_handler_debug > 80 )
-	fprintf (stderr, "nmea_handler: gpsd: posmode: %d\n", posmode);
-      if (!posmode)
+	fprintf (stderr, "nmea_handler: gpsd: posmode: %d\n",
+		gui_status.posmode);
+      if (!gui_status.posmode)
 	{
 	  gdouble cl;
 	  cl = latdegree + atof (b) / 60.0;
 	  if (field[3][0] == 'S')
 	    cl = cl * -1;
 	  if ((cl >= -90.0) && (cl <= 90.0))
-	    current_lat = cl;
+	    coords.current_lat = cl;
 
 	  breitri = field[3][0];
 	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lat, gradsym, breitri,cl); */
 	  if ( mydebug + nmea_handler_debug > 10 )
 	      {
-		  g_print ("nmea_handler: lat: %8.5f\n", current_lat);
+		  g_print ("nmea_handler: lat: %8.5f\n", coords.current_lat);
 	      }
 	}
 
@@ -791,25 +792,25 @@ convertGGA (char *f)
       b[6] = field[4][9];
       b[7] = 0;
 
-      if (!posmode)
+      if (!gui_status.posmode)
 	{
 	  gdouble cl;
 	  cl = longdegree + atof (b) / 60.0;
 	  if (field[5][0] == 'W')
 	    cl = cl * -1;
 	  if ((cl >= -180.0) && (cl <= 180.0))
-	    current_lon = cl;
+	    coords.current_lon = cl;
 
 	  langri = field[5][0];
-	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", current_lon, gradsym, langri,cl); */
+	  /*    fprintf (stderr, "%8.5f%s%c cl:%f\n", coords.current_lon, gradsym, langri,cl); */
 	  if ( mydebug + nmea_handler_debug > 0 )
 	      {
-		  g_print ("nmea_handler: lon: %8.5f\n", current_lon);
+		  g_print ("nmea_handler: lon: %8.5f\n", coords.current_lon);
 	      }
 	}
 
       if ( mydebug + nmea_handler_debug > 80 )
-	g_print ("nmea_handler: gpsd: GGA pos: %f %f\n", current_lat, current_lon);
+	g_print ("nmea_handler: gpsd: GGA pos: %f %f\n", coords.current_lat, coords.current_lon);
     }
 
   satfix = g_strtod (field[6], 0);
@@ -823,7 +824,7 @@ convertGGA (char *f)
     }
   else
     {
-      groundspeed = 0;
+      current.groundspeed = 0;
       numsats = 0;
     }
   {

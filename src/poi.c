@@ -66,10 +66,8 @@ extern gint importactive;
 extern gint zoom;
 extern gint isnight, disableisnight;
 extern color_struct colors;
-extern gdouble current_lon, current_lat;
 extern gdouble wp_saved_target_lat, wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
-extern gint posmode;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
@@ -77,6 +75,7 @@ extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
 extern char dbpoifilter[5000];
+extern coordinate_struct coords;
 
 char txt[5000];
 PangoLayout *poi_label_layout;
@@ -110,40 +109,10 @@ poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
 GtkTreeStore *poi_types_tree;
 
-
 /* ******************************************************************   */
 
 void poi_rebuild_list (void);
-void get_poi_type_list (void);
-
-
-/* *******************************************************
- */
-//~ void
-//~ build_poi_types_tree (GtkTreeStore *tree)
-//~ {
-	//~ gint i, j;
-	//~ GtkTreeIter *iter[poi_type_list_count];
-
-	//~ for (iter[0] = NULL, j = 1; j <=poi_type_list_count; j++)
-	//~ {
-		//~ iter[j] = (GtkTreeIter *) g_malloc(sizeof(GtkTreeIter));
-	//~ }
-	
-	//~ tree = gtk_tree_store_new (1, G_TYPE_STRING);
-	
-	//~ gtk_tree_store_append (tree, iter[1], NULL);
-	//~ gtk_tree_store_set (tree, iter[1], 0, "Unknown", -1);
-	//~ for (i = 2; i <= poi_type_list_count; i++)
-	//~ {
-		//~ if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
-		//~ {
-			//~ gtk_tree_store_append (tree, iter[i], NULL);
-			//~ gtk_tree_store_set (tree, iter[i], 0, poi_type_list[i].name, -1);
-		//~ }
-	//~ }		
-
-//~ }
+void get_poitype_tree (void);
 
 
 /* *******************************************************
@@ -183,15 +152,15 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	}
 	else
 	{
-		if (posmode)
+		if (gui_status.posmode)
 		{
 			lat = wp_saved_posmode_lat;
 			lon = wp_saved_posmode_lon;
 		}
 		else
 		{
-			lat = current_lat;
-			lon = current_lon;
+			lat = coords.current_lat;
+			lon = coords.current_lon;
 		}
 	}
 	
@@ -237,10 +206,13 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	g_strdelimit (temp_text, "*", '%');
 		
  	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT poi_id,name,comment,poi_type_id,lon,lat FROM poi "
-		"WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
-		"AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%') %s LIMIT %d;",
-		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text, type_filter, local_config.poi_results_max);
+		"SELECT poi.poi_id,poi.name,poi.comment,poi_type_id,"
+		"poi.lon,poi.lat FROM poi"
+		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
+		" AND %.6f ) AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
+		" %s LIMIT %d;",
+		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
+		type_filter, local_config.poi_results_max);
   
 	if (mydebug > 20)
 		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
@@ -311,6 +283,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 			RESULT_NAME, (poi_result + poi_nr)->name,
 			RESULT_COMMENT,  (poi_result + poi_nr)->comment,
 			RESULT_TYPE_TITLE, poi_type_list[temp_id].title,
+			RESULT_TYPE_NAME, poi_type_list[temp_id].name,
 			RESULT_TYPE_ICON, poi_type_list [temp_id].icon,
 			RESULT_DISTANCE, temp_dist,
 			RESULT_DIST_NUM, temp_dist_num,
@@ -396,49 +369,6 @@ draw_text (char *txt, gdouble posx, gdouble posy)
     fprintf (stderr, " .... draw_text(%s,%g,%g)\n", txt, posx, posy);
 }
 
-/* *******************************************************
- */
-void
-poi_init (void)
-{
-	poi_limit = 40000;
-	poi_list = g_new (poi_struct, poi_limit);
-	poi_result = g_new (poi_struct, poi_limit);
-	if (poi_list == NULL || poi_result == NULL)
-	{
-		g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
-		poi_limit = -1;
-		return;
-	}
-
-	/* init gtk-list for storage of results of poi-search */
-	poi_result_tree = gtk_list_store_new (RES_COLUMS,
-		G_TYPE_INT,				/* poi.poi_id */
-		G_TYPE_STRING,		/* poi.name */
-		G_TYPE_STRING,		/* poi.comment */
-		G_TYPE_STRING,		/* poi_type.title */
-		GDK_TYPE_PIXBUF,	/* poi_type.icon */
-		G_TYPE_STRING,		/* formatted distance */
-		G_TYPE_DOUBLE,		/* numerical distance */
-		G_TYPE_DOUBLE,		/* numerical latitude */
-		G_TYPE_DOUBLE		/* numerical longitude */
-		);
-	
-	/* init gtk-tree for storage of poi-type data */
-	poi_types_tree = gtk_tree_store_new (POITYPE_COLUMS,
-		G_TYPE_INT,		/* id */
-		G_TYPE_STRING,		/* name */
-		GDK_TYPE_PIXBUF,	/* icon */
-		G_TYPE_INT,		/* scale_min */
-		G_TYPE_INT,		/* scale_max */
-		G_TYPE_STRING,		/* description */
-		G_TYPE_STRING		/* title */
-		);
- 
-	/* read poi-type data and icons from icons.xml */
-	get_poi_type_list ();
-}
-
 
 /* *********************************************************
  */
@@ -482,17 +412,118 @@ poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 
 
 /* ******************************************************************
- * seek parent for given poi-type
+ * add new row to poitype tree
 */
-gboolean
-seek_parent_cb (gpointer *foo, GtkTreeIter *bar, gchar *needle)
+static gboolean 
+poitypetree_addrow (guint i, GtkTreeIter *parent)
 {
+	GtkTreeIter iter;
+	
+	gtk_tree_store_append (poi_types_tree, &iter, parent);
+ 
+	gtk_tree_store_set (poi_types_tree, &iter,
+		POITYPE_ID, poi_type_list[i].poi_type_id,
+		POITYPE_NAME, poi_type_list[i].name,
+		POITYPE_ICON, poi_type_list[i].icon,
+		POITYPE_SCALE_MIN, poi_type_list[i].scale_min,
+		POITYPE_SCALE_MAX, poi_type_list[i].scale_max,
+		POITYPE_DESCRIPTION, poi_type_list[i].description,
+		POITYPE_TITLE, poi_type_list[i].title,
+		-1);
 
+	return TRUE;
+}
+
+
+/* ******************************************************************
+ * find parent for given poitype and add new entry if found
+ */
+static gboolean poitypetree_find_parent (
+	GtkTreeModel *model, GtkTreePath *path,
+	GtkTreeIter *iter, guint i)
+{
+	gchar *value;
 	
-	if (TRUE)		// ###
-		return TRUE;	/* return TRUE if found */
+	gchar *parent_name;
+	gint k;
+	guint l = 0;
+
+	for (k = poi_type_list[i].level; k>0; k--)
+	{
+		l += strcspn (
+			(poi_type_list[i].name + poi_type_list[i].level
+			- k + l), ".");
+	}
 	
-	return FALSE;
+	parent_name = g_strndup (poi_type_list[i].name,
+		poi_type_list[i].level + l -1);
+
+	gtk_tree_model_get (model, iter, POITYPE_NAME, &value, -1);
+
+	if (g_ascii_strcasecmp (parent_name, (gchar *) value) == 0)
+	{	
+		
+		if (mydebug > 90)
+		{
+			fprintf (stderr,
+				"poitypetree_find_parent: %d+%d : %s => %s\n",
+				l, poi_type_list[i].level - 1,
+				poi_type_list[i].name, parent_name);
+		}
+		poitypetree_addrow (i, iter);
+		g_free (value);
+		g_free (parent_name);
+		return TRUE;
+	}
+	else
+	{
+		g_free (value);
+		g_free (parent_name);
+		return FALSE;
+	}
+}
+
+/* ******************************************************************
+ * sort poitype data from flat struct into a gtk-tree
+ */
+gboolean
+create_poitype_tree (guint max_level)
+{
+	guint i = 0;
+	guint j = 0;
+
+	/* insert base categories into tree */
+	for (i = 0; i < poi_type_list_max; i++)
+	{
+		if (strlen (poi_type_list[i].name) > 0)
+		{
+			if (poi_type_list[i].level == 0)
+			{
+				poitypetree_addrow (i, (GtkTreeIter *) NULL);
+			}
+		}
+		else
+		{
+			poi_type_list[i].level = 99;
+		}
+	}
+
+	/* insert subcategories into tree */
+	for (j = 1; j <= max_level; j++)
+	{
+		for (i = 0; i < poi_type_list_max; i++)
+		{
+			if (poi_type_list[i].level == j)
+			{
+				gtk_tree_model_foreach
+					(GTK_TREE_MODEL (poi_types_tree),
+					*(GtkTreeModelForeachFunc)
+					poitypetree_find_parent, (gpointer) i);
+			}
+		}
+	}
+
+	return TRUE;
 }
 
 
@@ -500,297 +531,302 @@ seek_parent_cb (gpointer *foo, GtkTreeIter *bar, gchar *needle)
  * get a list of all possible poi_types and load their icons
 */
 void
-get_poi_type_list (void)
+get_poitype_tree (void)
 {
-	GtkTreeIter iter;
-	
 	if (mydebug > 25)
-    	printf ("get_poi_type_list()\n");
+		printf ("get_poitype_tree ()\n");
 
-  {				// Delete poi_type_list
-    int i;
-    for (i = 0; i < poi_type_list_max; i++)
-      {
-	poi_type_list[i].icon = NULL;
-	poi_type_list[i].name[0] = '\0';
-      }
-	  
+	// Clear poi_type_tree
 	gtk_tree_store_clear (poi_types_tree);
-  }
 
-  int counter = 0;
-  
+	guint counter = 0;
+	guint max_level = 0;
+
   // get poi_type info from icons.xml
   {
-	  xmlTextReaderPtr xml_reader;
-	  gchar iconsxml_file[200];
-	  gint valid_poi_type = 0;
-	  gint xml_status = 0; // 0 = empty, 1 = node, -1 = error
-	  gint tag_type = 0;  // 1 = start, 3 = #text, 15 = end
-	  xmlChar *tag_name;
-	  gchar t_scale_max[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_scale_min[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_title[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_title_en[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_title_lang[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_description[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_desc_en[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_desc_lang[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_name[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar t_poi_type_id[POI_TYPE_LIST_STRING_LENGTH];
-	  gchar *t_pname;
-	  
-	  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "./data/map-icons/icons.xml" );
-	  xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	  
-	  if (xml_reader == NULL)
-	  {
-		  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "%s/icons.xml", local_config.dir_home);
-		  xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	  }
-	  if (xml_reader == NULL)
-	  {
-		  g_snprintf (iconsxml_file, sizeof (iconsxml_file), "%s/gpsdrive/icons.xml", DATADIR);
-		  xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	  }
-	  if (xml_reader == NULL)
-	  {
-		  fprintf (stderr, "get_poi_type_list: File %s not found!\n", iconsxml_file);
-		  return;
-	  }
- 	  
-	  if (mydebug > 10)
-	    fprintf (stderr, "get_poi_type_list: Trying to parse file: %s\n", iconsxml_file);
-	  
-	  xml_status = xmlTextReaderRead(xml_reader);
-	  while (xml_status == 1) /* parse complete file */
-		  {
-			  g_strlcpy (t_title, "n/a", sizeof(t_title));
-			  g_strlcpy (t_title_en, "n/a", sizeof(t_title));
-			  g_strlcpy (t_description, "n/a", sizeof(t_description));
-			  g_strlcpy (t_desc_en, "n/a", sizeof(t_description));
-			  g_strlcpy (t_name, "n/a", sizeof(t_name));
-			  g_strlcpy (t_scale_min, "1", sizeof(t_scale_min));
-			  g_strlcpy (t_scale_max, "50000", sizeof(t_scale_max));
-			  valid_poi_type = 0;
-			  tag_type = xmlTextReaderNodeType(xml_reader);
-			  tag_name = xmlTextReaderName(xml_reader);
-			  if (tag_type == 1 && xmlStrEqual(tag_name, BAD_CAST "rule"))  /* START element rule */
-			  {
-				  if (mydebug > 50) fprintf (stderr, "----------\n");
-				  while ( tag_type != 15 || !xmlStrEqual(tag_name, BAD_CAST "rule")) /* inside element rule */
-				  {
-					  xml_status = xmlTextReaderRead(xml_reader);
-					  tag_type = xmlTextReaderNodeType(xml_reader);
-					  tag_name = xmlTextReaderName(xml_reader);
-					  if (tag_type == 1)
-					  {
-						  if (xmlStrEqual(tag_name, BAD_CAST "condition") &&
-							  xmlStrEqual(xmlTextReaderGetAttribute(xml_reader, BAD_CAST "k"), BAD_CAST "poi"))
-						  {
-							  if (mydebug > 4) fprintf(stderr, "*** poi = %s\n", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "v"));
-							  valid_poi_type = 1;
-							  counter++;
-							  continue;
-						  }
-						  if (xmlStrEqual(tag_name, BAD_CAST "scale_min")) /* scale_min */
-						  {
-							  do
-							  {
-								  xml_status = xmlTextReaderRead(xml_reader);
-								  tag_type = xmlTextReaderNodeType(xml_reader);
-								  tag_name = xmlTextReaderName(xml_reader);
-								  if (tag_type == 3)
-								  {
-									  g_snprintf(t_scale_min, sizeof(t_scale_min), "%s", xmlTextReaderConstValue(xml_reader));
-									  continue;
-								  }
-							  } while (tag_type != 15);
-							  continue;
-						  }
-						  if (xmlStrEqual(tag_name, BAD_CAST "scale_max"))  /* scale_max */
-						  {
-							  do
-							  {
-								  xml_status = xmlTextReaderRead(xml_reader);
-								  tag_type = xmlTextReaderNodeType(xml_reader);
-								  tag_name = xmlTextReaderName(xml_reader);
-								  if (tag_type == 3)
-								  {
-									  g_snprintf(t_scale_max, sizeof(t_scale_max), "%s", xmlTextReaderConstValue(xml_reader));
-									  continue;
-								  }
-							  } while (tag_type != 15);
-							  continue;
-						  }
-						  if (xmlStrEqual(tag_name, BAD_CAST "title"))  /* title */
-						  {
-							  g_snprintf(t_title_lang, sizeof(t_title_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
-							  do
-							  {
-								  xml_status = xmlTextReaderRead(xml_reader);
-								  tag_type = xmlTextReaderNodeType(xml_reader);
-								  tag_name = xmlTextReaderName(xml_reader);
-								  if (tag_type == 3)
-								  {
-									  if (strcmp(t_title_lang, "en")==0)
-									  {
-										  g_snprintf(t_title_en, sizeof(t_title_en), "%s", xmlTextReaderConstValue(xml_reader));
-										  continue;
-									  }
-									  if (strcmp(t_title_lang, language)==0)
-									  {
-										  g_snprintf(t_title, sizeof(t_title), "%s", xmlTextReaderConstValue(xml_reader));
-										  continue;
-									  }
-								  }
-							  } while (tag_type != 15);
-							  continue;
-						  }
-						  if (xmlStrEqual(tag_name, BAD_CAST "description"))  /* description */
-						  {
-							  g_snprintf(t_desc_lang, sizeof(t_desc_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
-							  do
-							  {
-								  xml_status = xmlTextReaderRead(xml_reader);
-								  tag_type = xmlTextReaderNodeType(xml_reader);
-								  tag_name = xmlTextReaderName(xml_reader);
-								  if (tag_type == 3)
-								  {
-									  if (strcmp(t_desc_lang, "en")==0)
-									  {
-										  g_snprintf(t_desc_en, sizeof(t_desc_en), "%s", xmlTextReaderConstValue(xml_reader));
-										  continue;
-									  }
-									  if (strcmp(t_desc_lang, language)==0)
-									  {
-										  g_snprintf(t_description, sizeof(t_description), "%s", xmlTextReaderConstValue(xml_reader));
-										  continue;
-									  }
-								  }
-							  } while (tag_type != 15);
-							  continue;
-						  }
-						  if (xmlStrEqual(tag_name, BAD_CAST "geoinfo"))  /* geoinfo */
-						  {
-							  while ( tag_type != 15 || !xmlStrEqual(tag_name, BAD_CAST "geoinfo")) /* inside element geoinfo */
-							  {
-								  xml_status = xmlTextReaderRead(xml_reader);
-								  tag_type = xmlTextReaderNodeType(xml_reader);
-								  tag_name = xmlTextReaderName(xml_reader);
-								  if (tag_type == 1)
-								  {
-									  if (xmlStrEqual(tag_name, BAD_CAST "name")) /* name */
-									  {
-										  do
-										  {
-											  xml_status = xmlTextReaderRead(xml_reader);
-											  tag_type = xmlTextReaderNodeType(xml_reader);
-											  tag_name = xmlTextReaderName(xml_reader);
-											  if (tag_type == 3)
-											  {
-												  g_snprintf(t_name, sizeof(t_name), "%s", xmlTextReaderConstValue(xml_reader));
-												  continue;
-											  }
-										  } while (tag_type != 15);
-										  continue;
-									  }
-									  if (xmlStrEqual(tag_name, BAD_CAST "poi_type_id")) /* poi_type_id */
-									  {
-										  do
-										  {
-											  xml_status = xmlTextReaderRead(xml_reader);
-											  tag_type = xmlTextReaderNodeType(xml_reader);
-											  tag_name = xmlTextReaderName(xml_reader);
-											  if (tag_type == 3)
-											  {
-												  g_snprintf(t_poi_type_id, sizeof(t_poi_type_id), "%s", xmlTextReaderConstValue(xml_reader));
-												  continue;
-											  }
-										  } while (tag_type != 15);
-										  continue;
-									  }
-								  }
-							  }
-							  continue;
-						  } /* END element geoinfo */
-					  }
-				  }
-				  if (valid_poi_type)
-				  {
-					  int index = (gint) g_strtod (t_poi_type_id, NULL);
-					  if (index >= poi_type_list_max)
-					  {
-						  fprintf (stderr, "get_poi_type_list: index(%d) > poi_type_list_max(%d)\n",
-						    index, poi_type_list_max); continue;
-					  }
-					  if (poi_type_list_count < index)
-						  poi_type_list_count = index;
-					  poi_type_list[index].poi_type_id = index;
-					  poi_type_list[index].scale_min = (gint) g_strtod (t_scale_min, NULL);
-					  poi_type_list[index].scale_max = (gint) g_strtod (t_scale_max, NULL);
-					  
-					  // use english title/description, if no localized info is available
-					  if (strcmp(t_description, "n/a")==0)
-						  g_strlcpy(t_description, t_desc_en, sizeof(t_description));
-					  if (strcmp(t_title, "n/a")==0)
-						  g_strlcpy(t_title, t_title_en, sizeof(t_title));
-					  
-					  g_strlcpy (poi_type_list[index].description, t_description, sizeof (poi_type_list[index].description));
-					  g_strlcpy (poi_type_list[index].title, t_title, sizeof (poi_type_list[index].title));
-					  g_strlcpy (poi_type_list[index].name, t_name, sizeof(poi_type_list[index].name));
-					  g_strlcpy (poi_type_list[index].icon_name, t_name, sizeof(poi_type_list[index].icon_name));
-					  poi_type_list[index].icon = read_themed_icon (poi_type_list[index].icon_name);
-					  
-					  if (mydebug > 4)
-						  fprintf (stdout, "   %d [%s]  -->  %s ## %s  |  %s\n", 
-					        poi_type_list[index].poi_type_id, language, poi_type_list[index].name,
-					        poi_type_list[index].title, poi_type_list[index].description);
+	xmlTextReaderPtr xml_reader;
+	gchar iconsxml_file[200];
+	gint valid_poi_type = 0;
+	gint xml_status = 0; // 0 = empty, 1 = node, -1 = error
+	gint tag_type = 0;  // 1 = start, 3 = #text, 15 = end
+	xmlChar *tag_name;
+	gchar t_scale_max[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_scale_min[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_title[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_title_en[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_title_lang[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_description[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_desc_en[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_desc_lang[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_name[POI_TYPE_LIST_STRING_LENGTH];
+	gchar t_poi_type_id[POI_TYPE_LIST_STRING_LENGTH];
+	guint i,j;
 
-					  if (poi_type_list[index].icon == NULL)
-					  {
-						  if (mydebug > 40)
-							  printf ("get_poi_type_list: %3d:Icon '%s' for '%s'\tnot found\n",
-						        index, poi_type_list[index].icon_name, poi_type_list[index].name);
-						  if (do_unit_test) exit (-1);
-					  }
-	
-					  /* build poi-types base tree */ 
-					  
-					  t_pname = g_strrstr (t_name, ".");
-					  
-					  //if (t_pname == NULL)
-					  {
-						gtk_tree_store_append (poi_types_tree, &iter, NULL);
-					  
-					  gtk_tree_store_set (poi_types_tree, &iter,
-								POITYPE_ID, (gint) g_strtod (t_poi_type_id, NULL),
-								POITYPE_NAME, t_name,
-								POITYPE_ICON, read_themed_icon (t_name),
-								POITYPE_SCALE_MIN, (gint) g_strtod (t_scale_min, NULL),
-								POITYPE_SCALE_MAX, (gint) g_strtod (t_scale_max, NULL),
-								POITYPE_DESCRIPTION, t_description,
-								POITYPE_TITLE, t_title,
-								-1);
-				  	  }
- 				  }
-			  }  /* END element rule */
-			  xml_status = xmlTextReaderRead(xml_reader);
-		  }
-	  xmlFreeTextReader(xml_reader);
-	  if (xml_status != 0)
-		  fprintf(stderr, "get_poi_type_list: Failed to parse file: %s\n", iconsxml_file);
-	  else
-		  fprintf (stdout, "Read %d POI-Types from %s\n", counter, iconsxml_file);
-	  
-	  return;
+	g_snprintf (iconsxml_file, sizeof (iconsxml_file),
+		"./data/map-icons/icons.xml" );
+	xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+
+	if (xml_reader == NULL)
+	{
+		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
+			"%s/icons.xml", local_config.dir_home);
+		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+	}
+	if (xml_reader == NULL)
+	{
+		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
+			"%s/gpsdrive/icons.xml", DATADIR);
+		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+	}
+	if (xml_reader == NULL)
+	{
+		fprintf (stderr, "get_poitype_tree: File %s not found!\n",
+			iconsxml_file);
+			return;
+	}
+	if (mydebug > 10)
+	{
+		fprintf (stderr, "get_poitype_tree: Trying to parse file:"
+		"%s\n", iconsxml_file);
+	}
+	xml_status = xmlTextReaderRead(xml_reader);
+	while (xml_status == 1) /* parse complete file */
+	{
+		g_strlcpy (t_title, "n/a", sizeof(t_title));
+		g_strlcpy (t_title_en, "n/a", sizeof(t_title));
+		g_strlcpy (t_description, "n/a", sizeof(t_description));
+		g_strlcpy (t_desc_en, "n/a", sizeof(t_description));
+		g_strlcpy (t_name, "n/a", sizeof(t_name));
+		g_strlcpy (t_scale_min, "1", sizeof(t_scale_min));
+		g_strlcpy (t_scale_max, "50000", sizeof(t_scale_max));
+		valid_poi_type = 0;
+		tag_type = xmlTextReaderNodeType(xml_reader);
+		tag_name = xmlTextReaderName(xml_reader);
+		if (tag_type == 1 && xmlStrEqual(tag_name, BAD_CAST "rule"))
+		/* START element rule */
+		{
+			if (mydebug > 50) fprintf (stderr, "----------\n");
+			while ( tag_type != 15 || !xmlStrEqual(tag_name,
+				BAD_CAST "rule")) /* inside element rule */
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 1)
+		{
+			if (xmlStrEqual(tag_name, BAD_CAST 	"condition") && xmlStrEqual (xmlTextReaderGetAttribute(xml_reader, BAD_CAST "k"), BAD_CAST "poi"))
+		{
+			if (mydebug > 4)
+			fprintf(stderr, "*** poi = %s\n", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "v"));
+			valid_poi_type = 1;
+			counter++;
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "scale_min")) /* scale_min */
+		{
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			g_snprintf(t_scale_min, sizeof(t_scale_min), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		} while (tag_type != 15);
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "scale_max"))  /* scale_max */
+		{
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			g_snprintf(t_scale_max, sizeof(t_scale_max), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		} while (tag_type != 15);
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "title")) /* title */
+		{
+			g_snprintf(t_title_lang, sizeof(t_title_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			if (strcmp(t_title_lang, "en")==0)
+		{
+			g_snprintf(t_title_en, sizeof(t_title_en), "%s", xmlTextReaderConstValue (xml_reader));
+			continue;
+		}
+			if (strcmp(t_title_lang, language)==0)
+		{
+			g_snprintf(t_title, sizeof(t_title), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		}
+		} while (tag_type != 15);
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "description"))  /* description */
+		{
+			g_snprintf(t_desc_lang, sizeof(t_desc_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			if (strcmp(t_desc_lang, "en")==0)
+		{
+			g_snprintf(t_desc_en, sizeof(t_desc_en), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+			if (strcmp(t_desc_lang, language)==0)
+		{
+			g_snprintf(t_description, sizeof(t_description), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		}
+		} while (tag_type != 15);
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "geoinfo"))  /* geoinfo */
+		{
+			while ( tag_type != 15 || !xmlStrEqual(tag_name, BAD_CAST "geoinfo")) /* inside element geoinfo */
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 1)
+		{
+			if (xmlStrEqual(tag_name, BAD_CAST "name")) /* name */
+		{
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			g_snprintf(t_name, sizeof(t_name), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		} while (tag_type != 15);
+			continue;
+		}
+			if (xmlStrEqual(tag_name, BAD_CAST "poi_type_id")) /* poi_type_id */
+		{
+			do
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			tag_type = xmlTextReaderNodeType(xml_reader);
+			tag_name = xmlTextReaderName(xml_reader);
+			if (tag_type == 3)
+		{
+			g_snprintf(t_poi_type_id, sizeof(t_poi_type_id), "%s", xmlTextReaderConstValue(xml_reader));
+			continue;
+		}
+		} while (tag_type != 15);
+		continue;
+		}
+		}
+		}
+			continue;
+		} /* END element geoinfo */
+		}
+		}
+		if (valid_poi_type)
+		{
+			int index = (gint) g_strtod (t_poi_type_id, NULL);
+			if (index >= poi_type_list_max)
+			{
+				fprintf (stderr, "get_poitype_tree: "
+				"index(%d) > poi_type_list_max(%d)\n",
+				index, poi_type_list_max);
+				continue;
+			}
+			if (poi_type_list_count < index)
+			{
+				poi_type_list_count = index;
+			}
+			poi_type_list[index].poi_type_id = index;
+			poi_type_list[index].scale_min = (gint) g_strtod (t_scale_min, NULL);
+			poi_type_list[index].scale_max = (gint) g_strtod (t_scale_max, NULL);
+
+			/* use english title/description,
+			 * if no localized info is available */
+			if (strcmp(t_description, "n/a")==0)
+				g_strlcpy(t_description, t_desc_en, sizeof(t_description));
+			if (strcmp(t_title, "n/a")==0)
+				g_strlcpy(t_title, t_title_en, sizeof(t_title));
+
+
+			g_strlcpy (poi_type_list[index].description,
+				t_description, sizeof
+				(poi_type_list[index].description));
+			g_strlcpy (poi_type_list[index].title, t_title,
+				sizeof (poi_type_list[index].title));
+			g_strlcpy (poi_type_list[index].name, t_name,
+				sizeof(poi_type_list[index].name));
+			g_strlcpy (poi_type_list[index].icon_name, t_name,
+				sizeof(poi_type_list[index].icon_name));
+			poi_type_list[index].icon = read_themed_icon
+				(poi_type_list[index].icon_name);
+			
+			j = 0;			
+			for (i=0; i < strlen (poi_type_list[index].name); i++)
+			{
+				if (g_str_has_prefix
+					((poi_type_list[index].name + i) , "."))
+				{
+					j++;
+				}
+			}
+			poi_type_list[index].level = j;
+			if (max_level < j)
+			{
+				max_level = j;
+			}
+			
+			if (poi_type_list[index].icon == NULL)
+			{
+				if (mydebug > 40)
+					printf ("get_poitype_tree: %3d:Icon '%s' for '%s'\tnot found\n",
+					index, poi_type_list[index].icon_name, poi_type_list[index].name);
+				if (do_unit_test)
+					exit (-1);
+			}
+		}
+		}  /* END element rule */
+		xml_status = xmlTextReaderRead(xml_reader);
+	}
+	xmlFreeTextReader(xml_reader);
+	if (xml_status != 0)
+		fprintf(stderr,
+		"get_poitype_tree: Failed to parse file: %s\n",
+		iconsxml_file);
+	else
+		fprintf (stdout, "Read %d POI-Types from %s\n",
+		counter, iconsxml_file);
 
   }
-	
-  if (mydebug > 20)
-    fprintf (stderr,
-	     "get_poi_type_list: Loaded %d Icons for poi_types 1 - %d\n",
-	     counter, poi_type_list_count);
+
+	if (mydebug > 20)
+		fprintf (stderr,
+		"get_poitype_tree: Loaded %d Icons for poi_types 1 - %d\n",
+		counter, poi_type_list_count);
+
+	create_poitype_tree (max_level);
 }
 
 
@@ -860,8 +896,8 @@ poi_rebuild_list (void)
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   g_snprintf (sql_query, sizeof (sql_query),
-     "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi INNER JOIN "
-     "poi_type ON poi.poi_type_id=poi_type.poi_type_id "
+     "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi "
+     "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
      "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
      lat_min, lat_max, lon_min, lon_max, mapscale, dbpoifilter);
@@ -1016,9 +1052,6 @@ poi_rebuild_list (void)
 }
 
 
-
-
-
 /* *******************************************************
  * draw poi_ on image 
  TODO: find free space on drawing area. So the Text doesn't overlap
@@ -1154,4 +1187,50 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 		  (poi_list + i)->name);
 	}
     }
+}
+
+
+/* *******************************************************
+ */
+void
+poi_init (void)
+{
+	poi_limit = 40000;
+	poi_list = g_new (poi_struct, poi_limit);
+	poi_result = g_new (poi_struct, poi_limit);
+	if (poi_list == NULL || poi_result == NULL)
+	{
+		g_print ("Error: Cannot allocate Memory for %ld poi\n",
+			poi_limit);
+		poi_limit = -1;
+		return;
+	}
+
+	/* init gtk-list for storage of results of poi-search */
+	poi_result_tree = gtk_list_store_new (RES_COLUMS,
+		G_TYPE_INT,		/* poi.poi_id */
+		G_TYPE_STRING,		/* poi.name */
+		G_TYPE_STRING,		/* poi.comment */
+		G_TYPE_STRING,		/* poi_type.title */
+		G_TYPE_STRING,		/* poi_type.name */
+		GDK_TYPE_PIXBUF,	/* poi_type.icon */
+		G_TYPE_STRING,		/* formatted distance */
+		G_TYPE_DOUBLE,		/* numerical distance */
+		G_TYPE_DOUBLE,		/* numerical latitude */
+		G_TYPE_DOUBLE		/* numerical longitude */
+		);
+	
+	/* init gtk-tree for storage of poi-type data */
+	poi_types_tree = gtk_tree_store_new (POITYPE_COLUMS,
+		G_TYPE_INT,		/* id */
+		G_TYPE_STRING,		/* name */
+		GDK_TYPE_PIXBUF,	/* icon */
+		G_TYPE_INT,		/* scale_min */
+		G_TYPE_INT,		/* scale_max */
+		G_TYPE_STRING,		/* description */
+		G_TYPE_STRING		/* title */
+		);
+
+	/* read poi-type data and icons from icons.xml */
+	get_poitype_tree ();
 }

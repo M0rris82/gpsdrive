@@ -64,26 +64,18 @@ extern GtkWidget *mylist;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
 extern color_struct colors;
-extern gdouble current_long, current_lat;
 extern gint mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
 extern glong mapscale;
 
 extern gint muteflag;
-extern gdouble alarm_lat, alarm_lon, alarm_dist;
-extern gdouble target_lon, target_lat;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
-extern gint posmode;
-extern GtkWidget *posbt;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
 extern GtkWidget *mainwindow;
-extern gchar targetname[40];
 extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;

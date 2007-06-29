@@ -140,7 +140,6 @@ extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered;
 extern gint debug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gdouble current_long, current_lat, old_long, old_lat, groundspeed;
 extern gint setdefaultpos, testgarmin, needtosave, usedgps;
 extern gint mod_setupcounter;
 extern GtkWidget *setupentry[50], *setupentrylabel[50];

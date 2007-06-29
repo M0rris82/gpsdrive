@@ -57,7 +57,7 @@
 
 #define PADDING int_padding
 
-extern gint statusid, mydebug, havespeechout, posmode, muteflag;
+extern gint statusid, mydebug, havespeechout, muteflag;
 
 typedef struct
 {
@@ -67,8 +67,7 @@ namesstruct;
 
 extern namesstruct *names;
 extern GtkWidget *addwaypointwindow;
-extern gchar gpsdservername[200], setpositionname[80];
-extern status_struct route;
+extern gchar gpsdservername[200];
 extern gint needreloadmapconfig;
 extern GtkWidget *serial_bt, *mapdirbt, *addwaypoint1, *addwaypoint2,
   *frame_speed, *frame_sats;
@@ -83,7 +82,7 @@ extern gint gcount, downloadwindowactive;
 extern gint disableapm;
 extern GtkWidget *mainwindow, *status, *pixmapwidget, *gotowindow;
 extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
+extern GtkWidget *poi_types_window;
 static gdouble hour, sunrise, sunset;
 extern gchar utctime[20], loctime[20];
 static GtkWidget *utclabel;
@@ -559,7 +558,7 @@ setpoitheme_cb (GtkWidget *combo)
 	theme = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
 	g_strlcpy (local_config.icon_theme, theme,
 		sizeof (local_config.icon_theme));
-	get_poi_type_list();
+	get_poitype_tree ();
 
 	if ( mydebug > 1 )
 	{
@@ -1339,6 +1338,7 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_dist_label, *poi_dist_entry;
 	GtkWidget *poi_max_label, *poi_max_entry;
 	GtkWidget *poi_max2_label, *poi_dist2_label;
+	GtkWidget *poifilter_label, *poifilter_bt;
 
 	gchar text[50];
 	
@@ -1443,6 +1443,11 @@ settings_poi (GtkWidget *notebook)
 	g_signal_connect (poitheme_combo, "changed",
 		GTK_SIGNAL_FUNC (setpoitheme_cb), NULL);
 
+	poifilter_label = gtk_label_new (_("POI-Filter"));
+	poifilter_bt = gtk_button_new_with_label (_("Edit Filter"));
+	g_signal_connect_swapped (poifilter_bt, "clicked",
+				GTK_SIGNAL_FUNC (toggle_window_cb),
+				poi_types_window);
 
 	poidisplay_table = gtk_table_new (2, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
@@ -1451,6 +1456,11 @@ settings_poi (GtkWidget *notebook)
 		poitheme_label, 0, 1, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
 		poitheme_combo, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
+		poifilter_label, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
+		poifilter_bt, 1, 2, 2, 3);
+
 	}
 
 
@@ -1929,183 +1939,6 @@ settings_main_cb (GtkWidget *widget, guint datum)
 
 
 
-
-
-
-
-
-/* ************************************************************************* */
-static void
-baud_cb (GtkOptionMenu * button, gint data)
-{
-  serialspeed = gtk_option_menu_get_history (button);
-}
-
-
-/* ************************************************************************* */
-void
-mainsetup (void)
-{
-  GtkTooltips *tooltips;
-
-  GtkWidget *dgpsbt;
-  GtkWidget *earthmatebt;
-  GtkWidget *f3;
-  GtkWidget *f4;
-  GtkWidget *garminbt;
-  GtkWidget *gpstable;
-  GtkWidget *h1;
-  GtkWidget *h2;
-  GtkWidget *label1;
-  GtkWidget *label1a;
-  GtkWidget *mainbox;
-  GtkWidget *mainbox2;
-  GtkWidget *menu;
-  GtkWidget *menu_item;
-  GtkWidget *noserial_bt;
-  GtkWidget *option_menu;
-  GtkWidget *v3;
-  GtkWidget *v4;
-
-
-  char buf2[20];
-
-  int br = 2400;
-  glong i;
-
-  /* GPS settings area */
-  f4 = gtk_frame_new (_("GPS settings"));
-
-  v4 = gtk_vbox_new (FALSE, 2 * PADDING);
-  gtk_container_add (GTK_CONTAINER (f4), v4);
-
-  gpstable = gtk_table_new (4, 2, TRUE);
-
-  //KCFX
-  gtk_box_pack_end (GTK_BOX (mainbox2), f4, FALSE, TRUE, 1 * PADDING);
-  gtk_box_pack_start (GTK_BOX (v4), gpstable, FALSE, FALSE, 1 * PADDING);
-
-  garminbt = gtk_check_button_new_with_label (_("Test for GARMIN"));
-  if (testgarmin)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (garminbt), TRUE);
-    }
-  gtk_signal_connect (GTK_OBJECT (garminbt), "clicked",
-		      GTK_SIGNAL_FUNC (testgarmin_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), garminbt, 0, 1, 0, 1);
-
-  dgpsbt = gtk_check_button_new_with_label (_("Use DGPS-IP"));
-  if (usedgps)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dgpsbt), TRUE);
-    }
-  gtk_signal_connect (GTK_OBJECT (dgpsbt), "clicked",
-		      GTK_SIGNAL_FUNC (usedgps_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), dgpsbt, 0, 1, 1, 2);
-
-  earthmatebt = gtk_check_button_new_with_label (_("GPS is Earthmate"));
-  if (earthmate)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (earthmatebt), TRUE);
-    }
-  gtk_signal_connect (GTK_OBJECT (earthmatebt), "clicked",
-		      GTK_SIGNAL_FUNC (earthmate_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), earthmatebt, 1, 2, 0, 1);
-
-  noserial_bt = gtk_check_button_new_with_label (_("Use serial conn."));
-  if (!disableserial)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (noserial_bt), TRUE);
-    }
-  gtk_signal_connect (GTK_OBJECT (noserial_bt), "clicked",
-		      GTK_SIGNAL_FUNC (noserial_cb), (gpointer) 1);
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), noserial_bt, 1, 2, 1, 2);
-
-  serial_bt = gtk_entry_new_with_max_length (20);
-  gtk_widget_set_size_request (serial_bt, 20, 26);
-
-  gtk_entry_set_text (GTK_ENTRY (serial_bt), serialdev);
-  gtk_entry_set_max_length (GTK_ENTRY (serial_bt), 40);
-  label1 = gtk_label_new (_("Interface"));
-  label1a = gtk_label_new (_("Baudrate"));
-
-  gtk_signal_connect (GTK_OBJECT (serial_bt), "changed",
-		      GTK_SIGNAL_FUNC (serialdev_cb), (gpointer) 1);
-
-  menu = gtk_menu_new ();
-  for (i = 0; i < 5; i++)
-    {
-      g_snprintf (buf2, sizeof (buf2), "%d", br);
-      if (4 == i)
-	{
-	  br += br / 2;
-	}
-      else
-	{
-	  br += br;
-	}
-
-      menu_item = gtk_menu_item_new_with_label (buf2);
-      gtk_widget_show (menu_item);
-      gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-    }
-
-  option_menu = gtk_option_menu_new ();
-  gtk_option_menu_set_menu (GTK_OPTION_MENU (option_menu), menu);
-  gtk_option_menu_set_history (GTK_OPTION_MENU (option_menu), serialspeed);
-  gtk_signal_connect (GTK_OBJECT (option_menu), "changed",
-		      GTK_SIGNAL_FUNC (baud_cb), (gpointer) 0);
-
-  gtk_table_attach_defaults (GTK_TABLE (gpstable), option_menu, 1, 2, 3, 4);
-
-
-  /*  default download server */
-  f3 = gtk_frame_new (_("Default map server"));
-  h1 = gtk_hbox_new (FALSE, 2 * PADDING);
-  h2 = gtk_hbox_new (FALSE, 2 * PADDING);
-  v3 = gtk_vbox_new (FALSE, 2 * PADDING);
-
-  //KCFX
-  gtk_box_pack_start (GTK_BOX (mainbox2), f3, FALSE, TRUE, 1 * PADDING);
-
-  gtk_container_add (GTK_CONTAINER (f3), v3);
-  gtk_box_pack_start (GTK_BOX (v3), h1, TRUE, FALSE, 2 * PADDING);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), garminbt,
-			_("If selected, gpsdrive try to use GARMIN mode if "
-			  "possible. Unselect if you only have a NMEA "
-			  "device."), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), option_menu,
-			_("Set here the baud rate of your GPS device, NMEA "
-			  "devices usually have a speed of 4800 baud"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), dgpsbt,
-			_("If selected, gpsdrive try to use differential GPS "
-			  "over IP. You must have an internet connection and "
-			  "a DGPS capable GPS receiver. Works only in NMEA "
-			  "mode!"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), earthmatebt,
-			_("Select this if you have a DeLorme Earthmate GPS "
-			  "receiver. The StartGPSD button will provide gpsd "
-			  "with the needed additional parameters"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), noserial_bt,
-			_
-			("Select this if you want to use of the direct serial "
-			 "connection. If disabled, you can use the receiver "
-			 "only through gpsd. On the other hand, the direct "
-			 "serial connection needs no gpsd running and detects "
-			 "the working receiver on startup"), NULL);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), serial_bt,
-			_("Specify the serial interface where the GPS is "
-			  "connected"), NULL);
-
-
-  gtk_widget_show_all (mainbox);
-}
 
 /* *****************************************************************************
  */

@@ -133,9 +133,8 @@ enum
 /*  defines offset and color of the shadows */
 #define SHADOWOFFSET 7
 
-#define ROUTEREACH (0.02+10*groundspeed/(3600*milesconv))
+#define ROUTEREACH (0.02+10*current.groundspeed/(3600*milesconv))
 /* #define ROUTEREACH 0.05 */
-#define ROUTEREACHFACT 10
 
 #define SERVERNAME gpsdservername
 
@@ -282,6 +281,7 @@ typedef struct
 }
 friendsstruct;
 
+/* struct for current route status */
 typedef struct
 {
  	gint active;
@@ -291,8 +291,39 @@ typedef struct
 	gint items;
 	gdouble distance;
 }
-status_struct;
+routestatus_struct;
 
+/* struct for all coordinates that have to be used globally */
+typedef struct
+{
+/* current position */
+	gdouble current_lon;
+	gdouble current_lat;
+/* target position */
+	gdouble target_lon;
+	gdouble target_lat;
+/* saved "current position" while in pos mode */
+	gdouble posmode_lon;
+	gdouble posmode_lat;
+	
+/* ### What's the exact usage of for these variables???
+ * TODO: Maybe they should be renamed to something more useful */
+	gdouble zero_lon;
+	gdouble zero_lat;
+	gdouble old_lon;
+	gdouble old_lat;
+}
+coordinate_struct;
+
+/* struct for data about current position/movement status */
+typedef struct
+{
+	gdouble groundspeed;
+	gdouble heading;
+	gdouble bearing;
+	gchar target[80];
+}
+currentstatus_struct;
 
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))

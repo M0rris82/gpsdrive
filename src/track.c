@@ -41,14 +41,11 @@ extern gint maploaded;
 extern gint trackflag;
 extern gint importactive;
 extern glong tracknr, tracklimit, trackcoordlimit;
-extern gdouble current_lat, current_lon;
 glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 extern trackcoordstruct *trackcoord;
 extern gint zoom;
 extern GdkSegment *track;
 extern GdkSegment *trackshadow;
-
-extern status_struct route;
 
 extern wpstruct *routelist;
 extern GdkColor blue;
@@ -126,50 +123,22 @@ rebuildtracklist (void)
 
 
 
-/* ----------------------------------------------------------------------------- */
-/* draw track on image */
+/* ------------------------------------------------------------------------- *
+ * draw track on image
+ */
 void
 drawtracks (void)
 {
 	gint t=0;
-	GdkSegment *routes;
 
-	gdouble posxdest, posydest, curpos_x, curpos_y;
-	gint i, j;
-
-	/*    if (!maploaded) */
-	/*      return; */
+	//    if (!maploaded)
+	//      return;
 	if (!trackflag)
 		return;
 	if (importactive)
 		return;
-	if (route.show) {
-		if (route.items > 0) {
-			i = (route.items + 5);
-			routes = g_new0 (GdkSegment, i);
-			/* start beginning with actual route.pointer */
-			for (j = route.pointer; j < route.items; j++) {
-				/* start drawing with current_pos */
-				if (j == route.pointer) {
-					calcxy (&curpos_x, &curpos_y, current_lon, current_lat, zoom);
-					(routes + t)->x1 = curpos_x;
-					(routes + t)->y1 = curpos_y;
-				} else {
-					(routes + t)->x1 = (routes + t - 1)->x2;
-					(routes + t)->y1 = (routes + t - 1)->y2;
-				}
-				calcxy (&posxdest, &posydest, (routelist + j)->lon, (routelist + j)->lat, zoom);
-				(routes + t)->x2 = posxdest;
-				(routes + t)->y2 = posydest;
-				t++;
-			}
-			gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
-			gdk_gc_set_foreground (kontext, &colors.track);
-			gdk_draw_segments (drawable, kontext, (GdkSegment *) routes, t);
-			g_free (routes);
-	  	}
-    }
-    t = 2 * (tracknr >> 1) - 1;
+
+	t = 2 * (tracknr >> 1) - 1;
 	/*     t=tracknr; */
 	if (t < 1)
     	return;
@@ -186,7 +155,7 @@ drawtracks (void)
 		((local_config.nightmode == NIGHT_AUTO) && isnight)))
 		gdk_gc_set_foreground (kontext, &colors.red);
 	else
-		gdk_gc_set_foreground (kontext, &colors.trackcolorv);
+		gdk_gc_set_foreground (kontext, &colors.track);
 
 	gdk_draw_segments (drawable, kontext, (GdkSegment *) track, t);
 

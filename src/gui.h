@@ -30,13 +30,12 @@ Disclaimer: Please do not use for navigation.
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
 
-void poi_lookup_cb (GtkWidget *calling_button);
-void poi_info_cb (void);
-void route_window_cb (GtkWidget *calling_button);
 
 gint popup_yes_no (GtkWindow *parent, gchar *message);
 gint popup_warning (GtkWindow *parent, gchar *message);
 gint popup_error (GtkWindow *parent, gchar *message);
+
+void toggle_window_cb (GtkWidget *window);
 
 gint switch_nightmode (gboolean value);
 
@@ -67,7 +66,6 @@ typedef struct
 	// left to the selected gtk theme.
 	GdkColor nightmode;
 	GdkColor defaultcolor;
-	GdkColor trackcolorv;
 	GdkColor red;
 	GdkColor black;
 	GdkColor white;
@@ -93,7 +91,7 @@ typedef struct
 	guint width;
 	guint height;
 	gboolean nightmode;
-	gboolean mapnik;
+	gboolean posmode;
 } guistatus_struct;
 
 extern guistatus_struct gui_status;

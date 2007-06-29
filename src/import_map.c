@@ -128,6 +128,7 @@ Disclaimer: Please do not use for navigation.
 #include "config.h"
 #include "gettext.h"
 #include "icons.h"
+#include "gui.h"
 #include "gpsdrive_config.h"
 
 
@@ -148,9 +149,7 @@ Disclaimer: Please do not use for navigation.
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
-extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
@@ -158,7 +157,7 @@ extern gint usesql;
 extern glong mapscale;
 extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
 GtkWidget *dltext4,*dltext3;
-extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
+extern gdouble dist;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern GTimer *timer, *disttimer;
 extern gint gcount, milesflag, downloadwindowactive;
@@ -170,8 +169,6 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 extern GtkWidget *mylist, *myroutelist, *destframe;
 extern GtkObject *scaler_adj;
 extern gdouble wplat, wplon;
-extern gint posmode;
-extern gdouble posmode_lon, posmode_lat;
 extern mapsstruct *maps;
 extern gint zoom, iszoomed;
 extern gint isnight, disableisnight;
@@ -180,8 +177,8 @@ extern int havenasa, nosplash, sortcolumn, sortflag;
 extern gint onemousebutton;
 extern gchar oldfilename[1024];
 extern GtkWidget *posbt, *cover;
-extern gchar targetname[40];
-
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 typedef struct
 {
@@ -422,12 +419,12 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);
   dl_text_lat = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
-  coordinate2gchar (buff, sizeof (buff), current_lat, TRUE,
+  coordinate2gchar (buff, sizeof (buff), coords.current_lat, TRUE,
   	local_config.coordmode);
   gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
   dl_text_lon = gtk_entry_new ();
   gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
-  coordinate2gchar (buff, sizeof (buff), current_lon, FALSE,
+  coordinate2gchar (buff, sizeof (buff), coords.current_lon, FALSE,
   	local_config.coordmode);
   gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 
@@ -796,8 +793,8 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       if ((state & (GDK_BUTTON3_MASK | GDK_CONTROL_MASK)) ==
 	  (GDK_BUTTON3_MASK | GDK_CONTROL_MASK))
 	{
-	  wplat = current_lat;
-	  wplon = current_lon;
+	  wplat = coords.current_lat;
+	  wplon = coords.current_lon;
 
 	  addwaypoint_cb (NULL, 0);
 	  return TRUE;
@@ -813,10 +810,10 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       /*  Left mouse button */
       if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	{
-	  if (posmode)
+	  if (gui_status.posmode)
 	    {
-	      posmode_lon = lon;
-	      posmode_lat = lat;
+	      coords.posmode_lon = lon;
+	      coords.posmode_lat = lat;
 	      rebuildtracklist ();
 	    }
 	}
@@ -834,11 +831,11 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  /* only if RIGHT mouse button clicked */
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 	  rebuildtracklist ();
-	  g_strlcpy (targetname, _("SELECTED"), sizeof (targetname));
-	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), targetname);
+	  g_strlcpy (current.target, _("SELECTED"), sizeof (current.target));
+	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), current.target);
 	  gtk_frame_set_label (GTK_FRAME (destframe), s);
-	  target_lat = lat;
-	  target_lon = lon;
+	  coords.target_lat = lat;
+	  coords.target_lon = lon;
 	  g_timer_stop (disttimer);
 	  g_timer_start (disttimer);
 	  olddist = dist;

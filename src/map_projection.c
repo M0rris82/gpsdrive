@@ -41,42 +41,34 @@
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
+extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination;
-extern gdouble direction, bearing;
+extern gdouble bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gdouble trip_lat, trip_lon;
-extern gdouble groundspeed, milesconv;
+extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern gint usesql;
 extern glong mapscale;
-extern gint posmode;
-extern gdouble posmode_lon, posmode_lat;
-extern gchar targetname[40];
 extern gint iszoomed;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
 extern gint needtosave;
 
-extern gdouble routenearest;
 extern gint forcenextroutepoint;
-extern status_struct route;
 extern gint thisrouteline;
 extern gint gcount, downloadwindowactive;
 extern GtkWidget *drawing_area, *drawing_bearing;
 extern GtkWidget *drawing_sats, *drawing_miniimage;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
-extern GtkWidget *posbt;
 extern gint streets_draw;
-
+extern coordinate_struct coords;
 extern gchar oldfilename[2048];
 
 extern gint scaleprefered_not_bestmap, scalewanted;
@@ -176,24 +168,24 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 
   if (proj_map == map_proj)
     {
-      lat = zero_lat - py / lat2radius_pi_180 (current_lat);
-      lat = zero_lat - py / lat2radius_pi_180 (lat);
-      lon = zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
+      lat = coords.zero_lat - py / lat2radius_pi_180 (coords.current_lat);
+      lat = coords.zero_lat - py / lat2radius_pi_180 (lat);
+      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
 
-      dif = lat * (1 - (cos (Deg2Rad (fabs (lon - zero_lon)))));
+      dif = lat * (1 - (cos (Deg2Rad (fabs (lon - coords.zero_lon)))));
       lat = lat - dif / 1.5;
 
-      lon = zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
+      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
     }
   else if (proj_top == map_proj)
     {
-      lat = zero_lat - py / lat2radius_pi_180 (0);
-      lon = zero_lon - px / lat2radius_pi_180 (0);
+      lat = coords.zero_lat - py / lat2radius_pi_180 (0);
+      lon = coords.zero_lon - px / lat2radius_pi_180 (0);
     }
   else if (proj_googlesat == map_proj)
     {
-      lat = zero_lat - (py/1.5) / lat2radius_pi_180 (0);
-      lon = zero_lon - (px*1.0) / lat2radius_pi_180 (0);
+      lat = coords.zero_lat - (py/1.5) / lat2radius_pi_180 (0);
+      lon = coords.zero_lon - (px*1.0) / lat2radius_pi_180 (0);
     }
   else
     {
@@ -247,20 +239,20 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 
   if (proj_map == map_proj)
       {
-	  *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
-	  *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
-	  dif = lat2radius (lat) * (1 - (cos (Deg2Rad ((lon - zero_lon)))));
+	  *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);
+	  *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
+	  dif = lat2radius (lat) * (1 - (cos (Deg2Rad ((lon - coords.zero_lon)))));
 	  *posy = *posy + dif / 1.85;
       }
   else if (proj_top == map_proj)
       {
-	  *posx = lat2radius_pi_180 (0.0) * (lon - zero_lon);
-	  *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+	  *posx = lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
+	  *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
   else if (proj_googlesat == map_proj)
       {
-	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - zero_lon);
-	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - zero_lat);
+	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
+	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
   else
 	fprintf (stderr, "ERROR: calcxy: unknown map Projection\n");
@@ -278,25 +270,25 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 void
 minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif)
 {
-  *lat = zero_lat - py / lat2radius_pi_180 (current_lat);
-  *lat = zero_lat - py / lat2radius_pi_180 (*lat);
-  *lon = zero_lon - px / (lat2radius (*lat) * cos (Deg2Rad (*lat)));
+  *lat = coords.zero_lat - py / lat2radius_pi_180 (coords.current_lat);
+  *lat = coords.zero_lat - py / lat2radius_pi_180 (*lat);
+  *lon = coords.zero_lon - px / (lat2radius (*lat) * cos (Deg2Rad (*lat)));
 
   if (proj_top == map_proj)
     {
-      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - zero_lon)))));
+      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
   else if (proj_map == map_proj)
     *dif = 0;
   else if (proj_googlesat == map_proj)
     {
-      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - zero_lon)))));
+      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
   else
     printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
-  *lon = zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
+  *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
 }
 
 /* ******************************************************************
@@ -306,11 +298,11 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
 {
   gdouble dif;
   if (proj_map == map_proj)
-    *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - zero_lon);
+    *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);
   else if (proj_top == map_proj)
-    *posx = lat2radius_pi_180 (0) * (lon - zero_lon);
+    *posx = lat2radius_pi_180 (0) * (lon - coords.zero_lon);
   else if (proj_googlesat == map_proj)
-    *posx = lat2radius_pi_180 (0) * (lon - zero_lon);
+    *posx = lat2radius_pi_180 (0) * (lon - coords.zero_lon);
   else
     printf ("Eroor: calcxymini: unknown Projection\n");
 
@@ -318,14 +310,14 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
   *posx = *posx;
   if (proj_map == map_proj)
     {
-      dif = lat2radius (lat) * (1 - (cos (Deg2Rad (lon - zero_lon))));
-      *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+      dif = lat2radius (lat) * (1 - (cos (Deg2Rad (lon - coords.zero_lon))));
+      *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       *posy = *posy + dif / 1.85;
     }
   else if (proj_top == map_proj)
-    *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+    *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
   else if (proj_googlesat == map_proj)
-    *posy = lat2radius_pi_180 (lat) * (lat - zero_lat);
+    *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
   else
     printf ("Eroor: calcxymini: unknown Projection\n");
 

@@ -60,7 +60,6 @@ extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
 extern gint scaleprefered;
 extern gint mydebug, scalewanted, savetrack, defaultserver;
 extern gchar serialdev[80];
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
 extern gint setdefaultpos;
 extern gint streets_draw, poi_draw, testgarmin;
 extern gint needtosave, usedgps;
@@ -77,9 +76,9 @@ extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;
-extern int messagenumber;
 extern int sockfd, serialspeed, disableserial, showsid, storetz;
 
+extern coordinate_struct coords;
 #define KM2MILES 0.62137119
 #define PADDING int_padding
 
@@ -662,6 +661,6 @@ signalposreq ()
 	time (&t);
 	ts = localtime (&t);
 	fprintf (f, asctime (ts));
-	fprintf (f, "POS %f %f\n", current_lat, current_lon);
+	fprintf (f, "POS %f %f\n", coords.current_lat, coords.current_lon);
 	fclose (f);
 }

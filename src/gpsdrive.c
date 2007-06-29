@@ -108,6 +108,7 @@ Disclaimer: Please do not use for navigation.
 #include "download_map.h"
 #include "icons.h"
 #include "gui.h"
+#include "poi_gui.h"
 
 #include "mapnik.h"
 
@@ -144,14 +145,13 @@ gint debug = 0;
 gint do_unit_test = FALSE;
 gchar *buffer = NULL, *big = NULL;
 struct timeval timeout;
-gchar targetname[40];
-gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
-gdouble zero_lon, zero_lat;
-gdouble target_lon, target_lat;
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
+coordinate_struct coords;
+currentstatus_struct current;
+
 gdouble dist;
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext;
@@ -284,8 +284,6 @@ GtkObject *scaler_adj;
 GtkWidget *setup_bt;
 gint havespeechout, hours, minutes, speechcount = 0;
 gint muteflag = 0;
-gint posmode = 0;
-gdouble posmode_lon, posmode_lat;
 gchar lastradar[40], lastradar2[40]; 
 gint foundradar;
 gdouble radarbearing;
@@ -382,7 +380,7 @@ gint earthmate = FALSE;
 
 extern gint wptotal, wpselected;
 
-extern status_struct route;
+extern routestatus_struct route;
 extern color_struct colors;
 
 GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
@@ -399,7 +397,6 @@ extern int pleasepollme;
 
 
 gint forcehavepos = FALSE;
-gdouble alarm_lat = 53.583033, alarm_lon = 9.969533, alarm_dist = 9999999.0;
 extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
 GtkWidget *sateventbox = NULL, *compasseventbox = NULL;
@@ -616,45 +613,6 @@ display_status (char *message)
 
 
 /* *****************************************************************************
- *
- */
-int
-checkalarm (void)
-{
-	gdouble d;
-	FILE *f;
-	int pid, e;
-
-	if ( mydebug >50 ) fprintf(stderr , "checkalarm()\n");
-
-	d = calcdist (alarm_lon, alarm_lat);
-	if (d < alarm_dist)
-		return 0;
-
-	fprintf (stderr,
-		 _("Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"), d,
-		 alarm_dist);
-
-	/* send sig USR1 to cammain 
-	 * TODO: move PID's --> /var/run
-	 * TODO: Explain what cammain is?
-	 */
-	f = fopen ("/tmp/cammain.pid", "r");
-	if (f <= 0)
-	{
-	    fprintf (stderr, "no cammain running!\n");
-	    return -1;
-	}
-	fscanf (f, "%d", &pid);
-	e = kill (pid, SIGUSR1);
-	if (e != 0)
-	    fprintf (stderr, "sending signal failed!\n");
-
-	return 0;
-}
-
-
-/* *****************************************************************************
  */
 gint
 lightoff (GtkWidget * widget, guint * datum)
@@ -683,8 +641,8 @@ tripreset ()
 {
 	tripodometer = tripavspeed = triptime = tripmaxspeed = triptmp = 0.0;
 	tripavspeedcount = 0;
-	trip_lat = current_lat;
-	trip_lon = current_lon;
+	trip_lat = coords.current_lat;
+	trip_lon = coords.current_lon;
 	triptime = time (NULL);
 
 	return TRUE;
@@ -782,7 +740,7 @@ display_status2 ()
 	}
 
 	/* shows the current position on the bottom of the window */
-	if (  posmode )
+	if (gui_status.posmode)
 	    {		// Print out actual position of Mouse
 		gdouble lat, lon;
 		GdkModifierType state;
@@ -802,10 +760,10 @@ display_status2 ()
 	    }
 	else 
 	    {
-		coordinate2gchar(s2, sizeof(s2), current_lat, TRUE,
+		coordinate2gchar(s2, sizeof(s2), coords.current_lat, TRUE,
 			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lat), s2);
-		coordinate2gchar(s2, sizeof(s2), current_lon, FALSE,
+		coordinate2gchar(s2, sizeof(s2), coords.current_lon, FALSE,
 			local_config.coordmode);
 		gtk_label_set_text (GTK_LABEL (label_lon), s2);
 	    }
@@ -813,8 +771,8 @@ display_status2 ()
 	if ( mydebug > 10 )
 	    {
 		if (havepos)
-		    g_print ("***Position: %f %f***\n", current_lat,
-			     current_lon);
+		    g_print ("***Position: %f %f***\n", coords.current_lat,
+			     coords.current_lon);
 		else
 		    g_print ("***no valid Position:\n");
 	    }
@@ -959,86 +917,6 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 
 
 /* *****************************************************************************
- */
-/* Friends agent */
-gint
-friendsagent_cb (GtkWidget * widget, guint * datum)
-{
-	time_t tii;
-	gchar buf[MAXMESG], buf2[40], la[20], lo[20], num[5];
-	gint i;
-
-	if ( mydebug >50 ) fprintf(stderr , "friendsagent_cb()\n");
-
-	/* Don't allow spaces in name */
-	for (i = 0; (size_t) i < strlen (local_config.friends_name); i++)
-		if (local_config.friends_name[i] == ' ')
-			local_config.friends_name[i] = '_';
-
-	/*  send position to friendsserver */
-
-	if (local_config.showfriends)
-	{
-		if (strlen (messagesendtext) > 0)
-		{
-			/* send message to server */
-			if (messagenumber < 99)
-				messagenumber++;
-			else
-				messagenumber = 0;
-			needtosave = TRUE;
-			g_snprintf (num, sizeof (num), "%02d", messagenumber);
-			g_strlcpy (buf2, local_config.friends_id, sizeof (buf2));
-			buf2[0] = 'M';
-			buf2[1] = 'S';
-			buf2[2] = 'G';
-			buf2[3] = num[0];
-			buf2[4] = num[1];
-			g_snprintf (buf, sizeof (buf), "SND: %s %s %s\n",
-				    buf2, messagename, messagesendtext);
-			if ( mydebug > 3 )
-				fprintf (stderr,
-					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
-					 local_config.friends_serverip, buf);
-			if (sockfd != -1)
-				close (sockfd);
-			sockfd = -1;
-			friends_sendmsg (local_config.friends_serverip, buf);
-			g_snprintf (messageack, sizeof (messageack),
-				    "SND: %s", buf2);
-		}
-		else
-		{
-			/* send position to server */
-			g_snprintf (la, sizeof (la), "%10.6f", current_lat);
-			g_snprintf (lo, sizeof (lo), "%10.6f", current_lon);
-			g_strdelimit (la, ",", '.');
-			g_strdelimit (lo, ",", '.');
-			tii = time (NULL);
-			g_snprintf (buf, sizeof (buf),
-				    "POS: %s %s %s %s %ld %.0f %.0f %d",
-				    local_config.friends_id, local_config.friends_name, la, lo, tii,
-				    groundspeed / milesconv,
-				    180.0 * direction / M_PI,
-				    local_config.travelmode);
-			if ( mydebug > 3 )
-				fprintf (stderr,
-					 "friendsagent: sending to %s:\nfriendsagent: %s\n",
-					 local_config.friends_serverip, buf);
-			if (sockfd != -1)
-				close (sockfd);
-			sockfd = -1;
-			friends_sendmsg (local_config.friends_serverip, buf);
-		}
-	}
-
-	return TRUE;
-}
-
-
-
-
-/* *****************************************************************************
  * Master agent 
  */
 gint
@@ -1053,8 +931,6 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 
 
 	map_koord_check_and_reload();
-
-	checkalarm ();
 
 	testifnight ();
 
@@ -1105,7 +981,7 @@ storetrack_cb (GtkWidget * widget, guint * datum)
     if ( mydebug >50 ) 
 	fprintf(stderr , "storetrack_cb()\n");
 
-    if (posmode) 
+    if (gui_status.posmode) 
 	return TRUE;
 	
 #ifdef DBUS_ENABLE
@@ -1128,7 +1004,7 @@ storepoint ()
 	time_t t;
 	struct tm *ts;
 	/*    g_print("Havepos: %d\n", havepos); */
-	if ((!local_config.simmode && !havepos) || posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
+	if ((!local_config.simmode && !havepos) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
 		(trackcoord + trackcoordnr)->lon = 1001.0;
 		(trackcoord + trackcoordnr)->lat = 1001.0;
@@ -1136,8 +1012,8 @@ storepoint ()
 	}
 	else
 	{
-		(trackcoord + trackcoordnr)->lon = current_lon;
-		(trackcoord + trackcoordnr)->lat = current_lat;
+		(trackcoord + trackcoordnr)->lon = coords.current_lon;
+		(trackcoord + trackcoordnr)->lat = coords.current_lat;
 		(trackcoord + trackcoordnr)->alt = altitude;
 		if (savetrack != 0) do_incremental_save();
 	}
@@ -1701,8 +1577,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 		draw_waypoints ();
 
 	drawtracks ();
+	
+	if (route.show)
+		draw_route ();
 
-	if (local_config.showfriends)
+	if (local_config.showfriends && !usesql)
 		drawfriends ();
 
 	if (havekismet)
@@ -1763,7 +1642,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		/*                     SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
 	}
 
-	if (posmode)
+	if (gui_status.posmode)
 	{
 	    blink = TRUE;
 	}
@@ -1774,7 +1653,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (havepos || blink)
 	{
-		if (posmode)
+		if (gui_status.posmode)
 		{
 			gdk_gc_set_foreground (kontext, &colors.blue);
 			gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
@@ -1936,7 +1815,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		}
 		/*  If we are in position mode we set direction to zero to see where is the  */
 		/*  target  */
-		if (posmode)
+		if (gui_status.posmode)
 			direction = 0;
 
 		bearing = angle_to_destination - direction;
@@ -1952,7 +1831,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	/*  now draw marker for destination point */
 
-	calcxy (&posxdest, &posydest, target_lon, target_lat, zoom);
+	calcxy (&posxdest, &posydest, coords.target_lon,
+	coords.target_lat, zoom);
 
 	gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
 	if (local_config.showshadow)
@@ -2071,13 +1951,13 @@ drawmarker (GtkWidget * widget, guint * datum)
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
 	if ( mydebug > 5 ) 
-	    fprintf(stderr, "groundspeed=%f\n", groundspeed);
+	    fprintf(stderr, "groundspeed=%f\n", current.groundspeed);
 	if (local_config.distmode == DIST_MILES)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	if (local_config.distmode == DIST_METRIC)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	if (local_config.distmode == DIST_NAUTIC)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
 		    local_config.color_bigdisplay,
@@ -2397,7 +2277,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 	/*    g_print("\nexpose_cb %d",exposecounter++);   */
 
-	/*   fprintf (stderr, "lat: %f long: %f\n", current_lat, current_lon); */
+	/*   fprintf (stderr, "lat: %f long: %f\n", coords.current_lat, coords.current_lon); */
 	if (exposed && local_config.guimode == GUI_PDA)
 		return TRUE;
 
@@ -2413,24 +2293,25 @@ expose_cb (GtkWidget * widget, guint * datum)
 		    /* return TRUE; */
 		}
 
-		if (posmode)
+		if (gui_status.posmode)
 		{
-			current_lon = posmode_lon;
-			current_lat = posmode_lat;
+			coords.current_lon = coords.posmode_lon;
+			coords.current_lat = coords.posmode_lat;
 		}
 
 
 		/*  get pos for current position */
-		calcxy (&posx, &posy, current_lon, current_lat, zoom);
+		calcxy (&posx, &posy, coords.current_lon,
+			coords.current_lat, zoom);
 
 		/*  do this because calcxy already substracted xoff and yoff */
 		posx = posx + xoff;
 		posy = posy + yoff;
 
 		/*  Calculate Angle to destination */
-		tx = (2 * R * M_PI / 360) * cos (M_PI * current_lat / 180.0) *
-			(target_lon - current_lon);
-		ty = (2 * R * M_PI / 360) * (target_lat - current_lat);
+		tx = (2 * R * M_PI / 360) * cos (M_PI * coords.current_lat / 180.0) *
+			(coords.target_lon - coords.current_lon);
+		ty = (2 * R * M_PI / 360) * (coords.target_lat - coords.current_lat);
 		lastangle = angle_to_destination;
 		angle_to_destination = atan (tx / ty);
 		/*        g_print ("\ntx: %f, ty:%f angle_to_dest: %f", tx, ty, */
@@ -2452,7 +2333,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 			g_print ("Angle_To_Destination: %.1f �\n",
 				 angle_to_destination * 180 / M_PI);
 
-		if (local_config.showfriends && targetname[0] == '*')
+		if (local_config.showfriends && current.target[0] == '*')
 			for (i = 0; i < maxfriends; i++)
 			{
 				g_strlcpy (name, "*", sizeof (name));
@@ -2460,15 +2341,15 @@ expose_cb (GtkWidget * widget, guint * datum)
 				g_strlcat (name, (friends + i)->name,
 					   sizeof (name));
 				tn = g_strdelimit (name, "_", ' ');
-				if ((strcmp (targetname, tn)) == 0)
+				if ((strcmp (current.target, tn)) == 0)
 				{
-				    coordinate_string2gdouble((friends + i)->lat, &target_lat);
-				    coordinate_string2gdouble((friends + i)->lon, &target_lon);
+				    coordinate_string2gdouble((friends + i)->lat, &coords.target_lat);
+				    coordinate_string2gdouble((friends + i)->lon, &coords.target_lon);
 				}
 			}
 
 		/*  Calculate distance to destination */
-		dist = calcdist (target_lon, target_lat);
+		dist = calcdist (coords.target_lon, coords.target_lat);
 
 		if ( display_background_map() ) 
 		    {
@@ -2651,16 +2532,16 @@ simulated_pos (GtkWidget * widget, guint * datum)
 		lat_diff = -ACCELMAX;
 
 
-	current_lat += lat_diff;
-	current_lon += long_diff;
+	coords.current_lat += lat_diff;
+	coords.current_lon += long_diff;
 	secs = g_timer_elapsed (timer, 0);
 	if (secs >= 1.0)
 	{
 		g_timer_stop (timer);
 		g_timer_start (timer);
-		tx = (2 * R * M_PI / 360) * cos (M_PI * current_lat / 180.0) *
-			(current_lon - old_lon);
-		ty = (2 * R * M_PI / 360) * (current_lat - old_lat);
+		tx = (2 * R * M_PI / 360) * cos (M_PI * coords.current_lat / 180.0) *
+			(coords.current_lon - coords.old_lon);
+		ty = (2 * R * M_PI / 360) * (coords.current_lat - coords.old_lat);
 #define MINSPEED 1.0
 		if (((fabs (tx)) > MINSPEED) || (((fabs (ty)) > MINSPEED)))
 		{
@@ -2678,16 +2559,16 @@ simulated_pos (GtkWidget * widget, guint * datum)
 				direction -= 2 * M_PI;
 			if (direction < 0)
 				direction += 2 * M_PI;
-			groundspeed =
+			current.groundspeed =
 				milesconv * sqrt (tx * tx +
 						  ty * ty) * 3.6 / secs;
 		}
 		else
-			groundspeed = 0.0;
-		if (groundspeed > 999)
-			groundspeed = 999;
-		old_lat = current_lat;
-		old_lon = current_lon;
+			current.groundspeed = 0.0;
+		if (current.groundspeed > 999)
+			current.groundspeed = 999;
+		coords.old_lat = coords.current_lat;
+		coords.old_lon = coords.current_lon;
 		if (mydebug>30)
 			g_print ("Time: %f\n", secs);
 	}
@@ -2895,8 +2776,8 @@ dotripmeter (GtkWidget * widget, guint datum)
 	gdouble d;
 
 	d = calcdist (trip_lon, trip_lat);
-	trip_lon = current_lon;
-	trip_lat = current_lat;
+	trip_lon = coords.current_lon;
+	trip_lat = coords.current_lat;
 	if (!((d >= 0.0) && (d < (2000.0 * TRIPMETERTIMEOUT / 3600.0))))
 	{
 		fprintf (stderr,
@@ -2907,10 +2788,10 @@ dotripmeter (GtkWidget * widget, guint datum)
 	/* we want always have metric system stored */
 	d /= milesconv;
 	tripodometer += d;
-	if (groundspeed / milesconv > tripmaxspeed)
-		tripmaxspeed = groundspeed / milesconv;
+	if (current.groundspeed / milesconv > tripmaxspeed)
+		tripmaxspeed = current.groundspeed / milesconv;
 	tripavspeedcount++;
-	tripavspeed += groundspeed / milesconv;
+	tripavspeed += current.groundspeed / milesconv;
 	return TRUE;
 }
 
@@ -3065,52 +2946,57 @@ void
 update_posbt()
 {
     if ( mydebug > 1 )
-	g_print ("posmode=%d\n", posmode);
+	g_print ("posmode=%d\n", gui_status.posmode);
 
-    if (posmode)
+    if (gui_status.posmode)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   TRUE);
     else
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   FALSE);
 }
 
-/* *****************************************************************************
+/* ****************************************************************************
  * toggle checkbox for Pos-Mode
  */
 gint
-pos_cb (GtkWidget * widget, guint datum)
+pos_cb (GtkWidget *widget, guint datum)
 {
-	
-    if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
-    	posmode = TRUE;
-    else 
-    	posmode = FALSE;
-        
-    /* switch cursor in map area */
-    if (posmode == TRUE) {
-        gdk_window_set_cursor (drawing_area->window, cursor_cross);
-    } else {
-        gdk_window_set_cursor (drawing_area->window, NULL);
-    }
-    	
-    /* if waypoint select mode is enabled and waypoint 
-     * selected then take target_lat/lon
-     * and save current_lon/lat for cancel */
-    if (setwpactive && selected_wp_mode) {
-    	posmode_lon = target_lon;
-    	posmode_lat = target_lat;
-    	wp_saved_posmode_lon = current_lon;
-    	wp_saved_posmode_lat = current_lat;
-    } else {
-    	posmode_lon = current_lon;
-    	posmode_lat = current_lat;
-    }
-    
-    
-    return TRUE;
+
+	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
+		gui_status.posmode = TRUE;
+	else 
+		gui_status.posmode = FALSE;
+
+	/* change cursor in map area in pos mode */
+	if (gui_status.posmode == TRUE)
+	{
+		gdk_window_set_cursor (drawing_area->window, cursor_cross);
+	}
+	else
+	{
+		gdk_window_set_cursor (drawing_area->window, NULL);
+	}
+
+	/* if waypoint select mode is enabled and waypoint
+	 * selected then take target_lat/lon
+	 * and save current_lon/lat for cancel */
+	if (setwpactive && selected_wp_mode)
+	{
+		coords.posmode_lon = coords.target_lon;
+		coords.posmode_lat = coords.target_lat;
+		wp_saved_posmode_lon = coords.current_lon;
+		wp_saved_posmode_lat = coords.current_lat;
+	}
+	else
+	{
+		coords.posmode_lon = coords.current_lon;
+		coords.posmode_lat = coords.current_lat;
+	}
+
+	return TRUE;
 }
 
 
-/* *****************************************************************************
+/* ****************************************************************************
  * toggle checkbox for mapnik mode
  */
 gint
@@ -3118,16 +3004,16 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 {
 	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
 	{
-		gui_status.mapnik = TRUE;
+		local_config.mapnik = TRUE;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), FALSE);
 	}
 	else 
 	{
-		gui_status.mapnik = FALSE;
+		local_config.mapnik = FALSE;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), TRUE);
 	}
 	
-	// TODO: reload map.....
+	// TODO: reload/update map display.....
 
     return TRUE;
 }
@@ -3371,8 +3257,8 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add Waypoint at current gps location
 	if ((toupper (event->keyval)) == 'X')
 	{
-		wplat = current_lat;
-		wplon = current_lon;
+		wplat = coords.current_lat;
+		wplon = coords.current_lon;
 		addwaypoint_cb (NULL, NULL);
 	}
 
@@ -3389,9 +3275,11 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 		g_snprintf (wp_comment, sizeof (wp_comment), _("Quicksaved Waypoint"));
 
 		if (usesql)
-			addwaypoint (wp_name, wp_type, wp_comment, current_lat, current_lon, TRUE);
+			addwaypoint (wp_name, wp_type, wp_comment,
+				coords.current_lat, coords.current_lon, TRUE);
 		else
-			addwaypoint (wp_name, wp_type, wp_comment, current_lat, current_lon, FALSE);
+			addwaypoint (wp_name, wp_type, wp_comment,
+				coords.current_lat, coords.current_lon, FALSE);
 	}
 
 	// Add waypoint at current mouse location
@@ -3503,34 +3391,40 @@ key_cb (GtkWidget * widget, GdkEventKey * event)
 	    fprintf(stderr,"Key pressed: %0x\n",event->keyval);
 	
 	
-	if (posmode)
+	if (gui_status.posmode)
 	    {
 		gdouble x, y;
 
 		if ( (event->keyval == 0xff52))	// Up
 		    {
-			calcxy (&x, &y, current_lon, current_lat, zoom);
-			calcxytopos (x, 0, &current_lat, &current_lon, zoom);
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, zoom);
+			calcxytopos (x, 0, &coords.current_lat,
+				&coords.current_lon, zoom);
 		    }
 		
 		if ( (event->keyval == 0xff54 )) // Down
 		    {
-			calcxy (&x, &y, current_lon, current_lat, zoom);
-			calcxytopos (x, SCREEN_Y, &current_lat, &current_lon, zoom);
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, zoom);
+			calcxytopos (x, SCREEN_Y, &coords.current_lat,
+				&coords.current_lon, zoom);
 		    }
 		if ( (event->keyval == 0xff51 )) // Left
 		    {
-			calcxy (&x, &y, current_lon, current_lat, zoom);
-			calcxytopos (0, y, &current_lat, &current_lon, zoom);
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, zoom);
+			calcxytopos (0, y, &coords.current_lat,
+				&coords.current_lon, zoom);
 		    }
 		if ( (event->keyval == 0xff53 )) //  Right
 			    
 		    {
-			calcxy (&x, &y, current_lon, current_lat, zoom);
-			calcxytopos (SCREEN_X, y, &current_lat, &current_lon, zoom);
+			calcxy (&x, &y, coords.current_lon, coords.current_lat, zoom);
+			calcxytopos (SCREEN_X, y, &coords.current_lat, &coords.current_lon, zoom);
 		    }
-		posmode_lon = current_lon;
-		posmode_lat = current_lat;
+		coords.posmode_lon = coords.current_lon;
+		coords.posmode_lat = coords.current_lat;
 	    }
 	return 0;
 }
@@ -3566,10 +3460,10 @@ minimapclick_cb (GtkWidget * widget, GdkEventMotion * event)
 	/*  Left mouse button */
 	if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	{
-	    if (posmode)
+	    if (gui_status.posmode)
 		{
-		    posmode_lon = lon;
-		    posmode_lat = lat;
+		    coords.posmode_lon = lon;
+		    coords.posmode_lat = lat;
 		    rebuildtracklist ();
 		}
 	}
@@ -3688,11 +3582,11 @@ sel_target_cb (GtkWidget * widget, guint datum)
 		return TRUE;
 
 	/* save old target/posmode for cancel event */
-	wp_saved_target_lat = target_lat;
-	wp_saved_target_lon = target_lon;
-	if (posmode) {
-		wp_saved_posmode_lat = posmode_lat;
-		wp_saved_posmode_lon = posmode_lon;
+	wp_saved_target_lat = coords.target_lat;
+	wp_saved_target_lon = coords.target_lon;
+	if (gui_status.posmode) {
+		wp_saved_posmode_lat = coords.posmode_lat;
+		wp_saved_posmode_lon = coords.posmode_lon;
 	}
 	
 
@@ -4022,12 +3916,12 @@ main (int argc, char *argv[])
 
     /*   zone = st->tm_gmtoff / 3600; */
     /*  initialize variables */
-    /*  Hamburg */
+    /*  Munich */
     srand (gmt_time);
     f = 0.02 * (0.5 - rand () / (RAND_MAX + 1.0));
-    current_lat = zero_lat = 53.623672 + f;
+    coords.current_lat = coords.zero_lat = 48.13706 + f;
     f = 0.02 * (0.5 - rand () / (RAND_MAX + 1.0));
-    current_lon = zero_lon = 10.055441 + f;
+    coords.current_lon = coords.zero_lon = 11.57532 + f;
     /*    zero_lat and zero_lon are overwritten by gpsdriverc,  */
     tripreset ();
     
@@ -4035,7 +3929,7 @@ main (int argc, char *argv[])
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
     g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
     direction = angle_to_destination = 0;
-    g_strlcpy (targetname, "     ", sizeof (targetname));
+    g_strlcpy (current.target, "     ", sizeof (current.target));
     g_strlcpy (utctime, "n/a", sizeof (utctime));
     g_strlcpy (oldangle, "none", sizeof (oldangle));
     pixelfact = MAPSCALE / PIXELFACT;
@@ -4119,7 +4013,7 @@ main (int argc, char *argv[])
     tracklimit = trackcoordlimit = 100000;
     init_route_list ();
 
-    earthr = calcR (current_lat);
+    earthr = calcR (coords.current_lat);
 
 
     /*  all default values must be set BEFORE readconfig! */
@@ -4189,8 +4083,8 @@ main (int argc, char *argv[])
 
     real_screen_x = 640;
     real_screen_y = 512;
-    target_lon = current_lon + 0.00001;
-    target_lat = current_lat + 0.00001;
+    coords.target_lon = coords.current_lon + 0.00001;
+    coords.target_lat = coords.current_lat + 0.00001;
 
 
     /*  load waypoints before locale is set! */
@@ -4294,9 +4188,6 @@ main (int argc, char *argv[])
 		case 't':
 		    g_strlcpy (serialdev, optarg, sizeof (serialdev));
 		    break;
-		case 'A':
-		    alarm_dist = strtod (optarg, NULL);
-		    break;
 		case 'b':
 		    g_strlcpy (gpsdservername, optarg,
 			       sizeof (gpsdservername));
@@ -4362,7 +4253,7 @@ main (int argc, char *argv[])
 		    forcehavepos = TRUE;
 		    break;
 		case 'P':
-		    posmode = TRUE;
+		    gui_status.posmode = TRUE;
 		    break;
                 /* Allows command line declaration of -g or --geometry */
 		case 'g':
@@ -4566,22 +4457,18 @@ main (int argc, char *argv[])
 	loadwaypoints ();
 
 
-    // alarm_lat auf HomeBase setzen
-    for (i = 0; i < maxwp; i++)
+	/* set start position for simulation mode
+	 * (only available in waypoints mode) */
+	if (strlen (setpositionname) > 0 && !usesql)
 	{
-	    if (strlen (setpositionname) > 0)
+		for (i = 0; i < maxwp; i++)
 		{
-		    if (!(strcasecmp ((wayp + i)->name, setpositionname)))
+			if (!(strcasecmp ((wayp + i)->name, setpositionname)))
 			{
-			    current_lat = (wayp + i)->lat;
-			    current_lon = (wayp + i)->lon;
-			    target_lon = current_lon + 0.00001;
-			    target_lat = current_lat + 0.00001;
-			}
-		    if (!(strcasecmp ((wayp + i)->name, _("HomeBase"))))
-			{
-			    alarm_lat = (wayp + i)->lat;
-			    alarm_lon = (wayp + i)->lon;
+				coords.current_lat = (wayp + i)->lat;
+				coords.current_lon = (wayp + i)->lon;
+				coords.target_lon = coords.current_lon + 0.001;
+				coords.target_lat = coords.current_lat + 0.001;
 			}
 		}
 	}

@@ -39,42 +39,36 @@
 #include "speech_strings.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "routes.h"
 #include "mapnik.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gdouble zero_lon, zero_lat, target_lon, target_lat, dist;
+extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy, angle_to_destination;
-extern gdouble direction, bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern gdouble current_lon, current_lat, old_lon, old_lat;
 extern gdouble trip_lat, trip_lon;
-extern gdouble groundspeed, milesconv;
+extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern gdouble current_lon, current_lat;
 extern gint debug, mydebug;
 extern gint usesql;
 extern glong mapscale;
-extern gint posmode;
 extern gint selected_wp_mode;
-extern gdouble posmode_lon, posmode_lat;
-extern gchar targetname[40];
 extern gint iszoomed;
 extern gchar  oldangle[100];
 extern gdouble new_dl_lat,new_dl_lon;
 extern gint new_dl_scale;
 extern gint needtosave;
 extern color_struct colors;
-
-extern gdouble routenearest;
+extern coordinate_struct coords;
 extern gint forcenextroutepoint;
-extern status_struct route;
+extern routestatus_struct route;
 wpstruct *routelist;
 extern gint thisrouteline;
 extern gint gcount, milesflag, downloadwindowactive;
@@ -83,6 +77,7 @@ extern GtkWidget *drawing_sats, *drawing_miniimage;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 extern GtkWidget *posbt, *mapnik_bt;
 extern gint streets_draw;
+extern currentstatus_struct current;
 
 extern gchar oldfilename[2048];
 
@@ -281,6 +276,17 @@ make_display_map_controls ()
 	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (mapnik_bt),
 		"clicked", GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
+	if (local_config.mapnik)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (mapnik_bt), FALSE);
+	}
+
 	gtk_box_pack_start
 		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
@@ -607,72 +613,6 @@ loadmapconfig ()
   return FALSE;
 }
 
-/* *****************************************************************************
- */
-void
-route_next_target ()
-{
-  gchar str[100], buf[200], mappath[2048];
-  gdouble d;
-  /*  test for new route point */
-  if (strcmp (targetname, "     "))
-    {
-      if (route.active)
-	d = calcdist ((routelist + route.pointer)->lon,
-		      (routelist + route.pointer)->lat);
-      else
-	d = calcdist (target_lon, target_lat);
-
-      if (d < routenearest)
-	{
-	  routenearest = d;
-	}
-      /*    g_print */
-      /*      ("\nroute.pointer: %d d: %.1f routenearest: %.1f routereach: %0.3f", */
-      /*       route.pointer, d, routenearest, ROUTEREACH); */
-      if ((d <= ROUTEREACH)
-	  || (d > (ROUTEREACHFACT * routenearest)) || forcenextroutepoint)
-	{
-	  forcenextroutepoint = FALSE;
-	  if ((route.pointer != (route.items - 1)) && (route.active))
-	    {
-	      routenearest = 9999999999.0;
-	      route.pointer++;
-
-	      /* let's say the waypoint description */
-	      g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-	      g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
-	      saytargettext (mappath, targetname);
-
-	      setroutetarget (NULL, -1);
-	    }
-	  else
-	    {
-	      /*  route endpoint reached */
-	      if (saytarget)
-		{
-		  g_snprintf (str, sizeof (str),
-			      "%s: %s", _("To"), targetname);
-		  gtk_frame_set_label (GTK_FRAME (destframe), str);
-		  route.edit	= FALSE;
-		  route.active = FALSE;
-		  saytarget = FALSE;
-		  route.pointer = route.items = 0;
-
-		  g_snprintf (buf, sizeof (buf),
-			      speech_target_reached[voicelang], targetname);
-		  speech_out_speek (buf);
-
-		  /* let's say the waypoint description */
-		  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-		  g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
-		  saytargettext (mappath, targetname);
-		}
-	    }
-	}
-    }
-}
-
 
 /* ******************************************************************
  *
@@ -700,16 +640,18 @@ create_nasa ()
 
       /* Try creating a nasamap and add it to the map list */
       havenasa =
-	create_nasa_mapfile (current_lat, current_lon, TRUE, nasaname);
+	create_nasa_mapfile (coords.current_lat, coords.current_lon,
+		TRUE, nasaname);
       if (havenasa > 0)
 	{
 	  i = nrmaps;
 	  nrmaps++;
 	  maps = g_renew (mapsstruct, maps, (nrmaps + 2));
 	  havenasa =
-	    create_nasa_mapfile (current_lat, current_lon, FALSE, nasaname);
-	  (maps + i)->lat = current_lat;
-	  (maps + i)->lon = current_lon;
+	    create_nasa_mapfile (coords.current_lat, coords.current_lon,
+	    	FALSE, nasaname);
+	  (maps + i)->lat = coords.current_lat;
+	  (maps + i)->lon = coords.current_lon;
 	  (maps + i)->scale = havenasa;
 	  g_strlcpy ((maps + i)->filename, nasaname, 200);
 	  if ((strcmp (oldfilename, "top_NASA_IMAGE.ppm")) == 0)
@@ -736,8 +678,8 @@ load_best_map (long long bestmap)
 	  if (debug)
 	    g_print ("New map: %s\n", mapfilename);
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
-	  zero_lon = (maps + bestmap)->lon;
-	  zero_lat = (maps + bestmap)->lat;
+	  coords.zero_lon = (maps + bestmap)->lon;
+	  coords.zero_lat = (maps + bestmap)->lat;
 	  mapscale = (maps + bestmap)->scale;
 	  xoff = yoff = 0;
 	  if (nrmaps > 0)
@@ -751,8 +693,8 @@ load_best_map (long long bestmap)
 	  g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	  g_strlcpy (mapfilename, "top_GPSWORLD.jpg", sizeof (mapfilename));
 	  pixelfact = 88067900.43 / PIXELFACT;
-	  zero_lon = 0;
-	  zero_lat = 0;
+	  coords.zero_lon = 0;
+	  coords.zero_lat = 0;
 	  mapscale = 88067900.43;
 	  xoff = yoff = 0;
 	  loadmap (mapfilename);
@@ -920,18 +862,19 @@ test_and_load_newmap ()
     if (importactive)
         return;
 
-    if (posmode) {
-  		trip_lat = current_lon = posmode_lon;
-  		trip_lon = current_lat = posmode_lat;
-  	} else route_next_target ();
+	// TODO: this doesn't belong here, move it somewhere else...
+    if (gui_status.posmode) {
+  		trip_lat = coords.current_lon = coords.posmode_lon;
+  		trip_lon = coords.current_lat = coords.posmode_lat;
+  	} else update_route ();
 
 
     // Test if we want Background image as Map
     if (!display_background_map ()) {
         mapscale = (glong) scalewanted;
         pixelfact = mapscale / PIXELFACT;
-        zero_lat = current_lat;
-        zero_lon = current_lon;
+        coords.zero_lat = coords.current_lat;
+        coords.zero_lon = coords.current_lon;
         xoff = yoff = 0;
         map_proj = proj_map;
 
@@ -945,14 +888,14 @@ test_and_load_newmap ()
         return;
     }
 
-    if ( gui_status.mapnik ){
+    if ( local_config.mapnik ){
 	if (mydebug > 0)
 	    fprintf (stderr, "rendering mapnik map ....\n");
         g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
         g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
     //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
 	//set_mapnik_map(current_lat, current_lon, LevelInt);
-    set_mapnik_map(current_lat, current_lon, 0, scalewanted);
+    set_mapnik_map(coords.current_lat, coords.current_lon, 0, scalewanted);
 	
     /* render map, but only if it is needed */
     render_mapnik();
@@ -961,7 +904,7 @@ test_and_load_newmap ()
 	if (get_mapnik_newmapysn()) {
 		mapscale = get_mapnik_mapscale();// 68247.3466832;;
 		pixelfact = get_mapnik_pixelfactor();
-		get_mapnik_center(&zero_lat, &zero_lon);
+		get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
 	    
 		loadmap("/tmp/mapnik.png");
 		/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
@@ -986,10 +929,10 @@ test_and_load_newmap ()
         takemap = FALSE;
         if ((maps + i)->hasbbox) {
             /* new system with boundarybox */
-            if ((maps + i)->minlat < current_lat &&
-                (maps + i)->minlon < current_lon &&
-                (maps + i)->maxlat > current_lat &&
-                (maps + i)->maxlon > current_lon) {
+            if ((maps + i)->minlat < coords.current_lat &&
+                (maps + i)->minlon < coords.current_lon &&
+                (maps + i)->maxlat > coords.current_lat &&
+                (maps + i)->maxlon > coords.current_lon) {
                     takemap = TRUE;
                 } 
         } else {
@@ -1001,25 +944,25 @@ test_and_load_newmap ()
             if (proj_map == proj)
     	       posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
                     * cos (Deg2Rad( (maps + i)->lat))
-    	            * (current_lon - (maps + i)->lon);
+    	            * (coords.current_lon - (maps + i)->lon);
             else if (proj_top == proj)
-    	       posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
+    	       posx = (lat2radius (0) * M_PI / 180) * (coords.current_lon - (maps + i)->lon);
             else if (proj_googlesat == proj)
-    	       posx = (lat2radius (0) * M_PI / 180) * (current_lon - (maps + i)->lon);
+    	       posx = (lat2radius (0) * M_PI / 180) * (coords.current_lon - (maps + i)->lon);
             else 
     	       printf("Error: unknown Projection\n");
     
             /*  latitude */
             if (proj_map == proj) {
                 posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
-    	           * (current_lat - (maps + i)->lat);
+    	           * (coords.current_lat - (maps + i)->lat);
                    dif = lat2radius ((maps + i)->lat)
-    	           * (1 - (cos (Deg2Rad((current_lon - (maps + i)->lon)) )));
+    	           * (1 - (cos (Deg2Rad((coords.current_lon - (maps + i)->lon)) )));
     	        posy = posy + dif / 2.0;
             } else if (proj_top == proj) {
-                posy = (lat2radius (0) * M_PI / 180) * (current_lat - (maps + i)->lat);
+                posy = (lat2radius (0) * M_PI / 180) * (coords.current_lat - (maps + i)->lat);
     	    } else if (proj_googlesat == proj) {
-                posy = 1.5* (lat2radius (0) * M_PI / 180)  * (current_lat - (maps + i)->lat);
+                posy = 1.5* (lat2radius (0) * M_PI / 180)  * (coords.current_lat - (maps + i)->lat);
     	    } else 
                 printf("Error: unknown Projection\n");
     

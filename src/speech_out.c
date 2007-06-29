@@ -252,7 +252,8 @@ Disclaimer: Please do not use for navigation.
 enum allowed_languages { english, german, spanish };
 enum allowed_languages voicelang;
 
-extern gint statusid, havespeechout, posmode, muteflag;
+extern currentstatus_struct current;
+extern gint statusid, havespeechout, muteflag;
 extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
@@ -262,8 +263,8 @@ extern gint real_screen_y, real_screen_x;
 gint do_display_dsc = FALSE, textcount;
 extern gint useflite, foundradar, importactive,
 	speechcount, havepos;
-extern gchar targetname[40], oldangle[100];
-extern gdouble dist, bearing, groundspeed;
+extern gchar oldangle[100];
+extern gdouble dist;
 extern GtkWidget *drawing_area;
 
 
@@ -311,7 +312,7 @@ speech_out_speek (char *text)
     
     if (!havespeechout)
 	return;
-    if (posmode)
+    if (gui_status.posmode)
 	return;
     
     if ( mydebug > 0 )
@@ -338,7 +339,7 @@ speech_out_speek_raw (char *text)
 {
     if (!havespeechout)
 	return;
-    if (posmode)
+    if (gui_status.posmode)
 	return;
     
     if ( mydebug > 0 )
@@ -541,7 +542,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	}
 
 	speechcount++;
-	angle = bearing * 180.0 / M_PI;
+	angle = current.bearing * 180.0 / M_PI;
 
 	if (!local_config.simmode && !havepos)
 	{
@@ -597,19 +598,19 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 
 		g_strlcpy (oldangle, s2, sizeof (oldangle));
 	}
-	if( (3 == speechcount) && (groundspeed >= 20) )
+	if( (3 == speechcount) && (current.groundspeed >= 20) )
 	{
     if (local_config.sound_speed)
     {
       if (local_config.distmode == DIST_MILES)
       {
         g_snprintf(
-          buf, sizeof(buf), speech_speed_mph[voicelang], (int) (groundspeed) );
+          buf, sizeof(buf), speech_speed_mph[voicelang], (int) current.groundspeed );
       }
       else
       {
         g_snprintf(
-          buf, sizeof(buf), speech_speed_kph[voicelang], (int) groundspeed );
+          buf, sizeof(buf), speech_speed_kph[voicelang], (int) current.groundspeed );
       }
 
       speech_out_speek( buf );
@@ -653,7 +654,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
       }
 
       g_snprintf(
-        buf, sizeof(buf), speech_distance_to[voicelang], targetname, s2 );
+        buf, sizeof(buf), speech_distance_to[voicelang], current.target, s2 );
 
       speech_out_speek( buf );
     }

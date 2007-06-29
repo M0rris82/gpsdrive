@@ -773,7 +773,8 @@ drawmarkers (MapGC *mgc, int width, int height,
 #ifdef yetToBeRefactored
 	/*  now draw marker for destination point */
 
-	calcxy (&posxdest, &posydest, target_long, target_lat, zoom);
+	calcxy (&posxdest, &posydest, coords.target_long,
+		coords.target_lat, zoom);
 
 	gdk_gc_set_line_attributes (mgc->gtk_gc, 4, 0, 0, 0);
 	if (shadow)
@@ -894,11 +895,11 @@ drawmarkers (MapGC *mgc, int width, int height,
 	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
 	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
 	if (milesflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	if (metricflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	if (nauticflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", groundspeed);
+		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
 	g_snprintf (s3, sizeof (s3),
 		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
 		    local_config.color_bigdisplay, bigfont, s2);

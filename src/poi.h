@@ -64,18 +64,18 @@ void poi_draw_list (void);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
-void get_poi_type_list (void);
+void get_poitype_tree (void);
 guint poi_get_results (const gchar *text, const gchar *dist, const gint posflag, const gint typeflag, const gchar *type);
 
 typedef struct
 {
-  gint poi_type_id;
+  guint poi_type_id;
   gchar name[POI_TYPE_LIST_STRING_LENGTH];
   gchar icon_name[POI_TYPE_LIST_STRING_LENGTH];
   GdkPixbuf *icon;
   gint scale_min;
   gint scale_max;
-  gint parent;
+  gint level;
   gchar description[POI_TYPE_LIST_STRING_LENGTH];
   gchar title[POI_TYPE_LIST_STRING_LENGTH];
 } poi_type_struct;
@@ -86,6 +86,7 @@ enum {
 	RESULT_NAME,
 	RESULT_COMMENT,
 	RESULT_TYPE_TITLE,
+	RESULT_TYPE_NAME,
 	RESULT_TYPE_ICON,
 	RESULT_DISTANCE,
 	RESULT_DIST_NUM,

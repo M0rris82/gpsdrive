@@ -52,9 +52,7 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 extern gint debug, mydebug;
-extern gdouble target_lon, target_lat;
 extern GtkWidget *destframe;
-extern gchar targetname[40];
 extern gint havespeechout, speechcount;
 extern gchar oldangle[100];
 extern gint saytarget;
@@ -62,6 +60,7 @@ extern wpstruct *wayp;
 extern gint maxwp, maxfriends;
 extern friendsstruct *friends, *fserver;
 extern int sortcolumn, sortflag;
+extern gint zoom;
 extern gint selected_wp_list_line;
 extern GtkWidget *mylist;
 extern gint onemousebutton;
@@ -69,18 +68,20 @@ extern GtkWidget *mainwindow;
 extern gint dontsetwp;
 extern gint usesql;
 extern poi_struct *poi_list;
-extern glong poi_list_count;	
+extern glong poi_list_count;
+extern gdouble milesconv;	
 extern color_struct colors;
+extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
 GtkListStore *route_list_tree;
 GtkWidget *myroutelist;
 gint thisrouteline = 0;
-gdouble routenearest = 9999999999.0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 gint forcenextroutepoint = FALSE;
-status_struct route;
+routestatus_struct route;
 extern GtkWidget *route_window;
 
 /* ******************************************************************
@@ -114,15 +115,14 @@ setroutetarget (GtkWidget * widget, gint datum)
 	if (datum != -1)
 		route.pointer = datum;
 
-	routenearest = 9999999;
-	g_strlcpy (targetname, (routelist + route.pointer)->name,
-		   sizeof (targetname));
-	target_lat = (routelist + route.pointer)->lat;
-	target_lon = (routelist + route.pointer)->lon;
-	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), targetname,
+	g_strlcpy (current.target, (routelist + route.pointer)->name,
+		   sizeof (current.target));
+	coords.target_lat = (routelist + route.pointer)->lat;
+	coords.target_lon = (routelist + route.pointer)->lon;
+	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), current.target,
 		    route.pointer + 1, route.items);
 	gtk_frame_set_label (GTK_FRAME (destframe), str);
-	tn = g_strdelimit (targetname, "_", ' ');
+	tn = g_strdelimit (current.target, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
 	if (tn[0] == '*')
 	{
@@ -150,7 +150,7 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 
-	g_snprintf (str, sizeof (str), "%s: %s", _("To"), targetname);
+	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
 	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	route.edit = FALSE;
 	route.active = FALSE;
@@ -568,6 +568,225 @@ create_route_cb (GtkWidget * widget, guint datum)
 }
 
 
+/* *****************************************************************************
+ */
+void
+route_next_target ()
+{
+  gchar str[100], buf[200], mappath[2048];
+  gdouble d;
+  /*  test for new route point */
+  if (strcmp (current.target, "     "))
+    {
+      if (route.active)
+	d = calcdist ((routelist + route.pointer)->lon,
+		      (routelist + route.pointer)->lat);
+      else
+	d = calcdist (coords.target_lon, coords.target_lat);
+
+      if (d <= ROUTEREACH || forcenextroutepoint)
+	{
+	  forcenextroutepoint = FALSE;
+	  if ((route.pointer != (route.items - 1)) && (route.active))
+	    {
+	      route.pointer++;
+
+	      /* let's say the waypoint description */
+	      g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+	      g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
+	      saytargettext (mappath, current.target);
+
+	      setroutetarget (NULL, -1);
+	    }
+	  else
+	    {
+	      /*  route endpoint reached */
+	      if (saytarget)
+		{
+		  g_snprintf (buf, sizeof (buf),
+			      speech_target_reached[voicelang], current.target);
+		  speech_out_speek (buf);
+
+		  /* let's say the waypoint description */
+		  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+		  g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
+		  saytargettext (mappath, current.target);
+		}
+		  g_snprintf (str, sizeof (str),
+		      "%s: %s", _("To"), current.target);
+		  gtk_frame_set_label (GTK_FRAME (destframe), str);
+		  route.edit	= FALSE;
+		  route.active = FALSE;
+		  saytarget = FALSE;
+		  route.pointer = route.items = 0;
+	    }
+	}
+    }
+}
+
+
+// ***********************************************************************
+// ***********************************************************************
+// ***********************************************************************
+// Here follows the new, POI-related route stuff...
+
+
+
+
+/* ****************************************************************************
+ * set target to the given route item
+ */
+void
+route_settarget (gint rt_ptr)
+{
+	gchar t_rt_ptr[5];
+	gchar *t_name;
+	GtkTreeIter iter_route;
+
+	if ( mydebug >50 )
+		fprintf (stderr , "route_settarget: ");
+
+	if (rt_ptr == -1)
+	{
+		g_snprintf (t_rt_ptr, sizeof (t_rt_ptr),
+			"%d", (route.pointer));
+	}
+	else
+	{
+		g_snprintf (t_rt_ptr, sizeof (t_rt_ptr),
+			"%d", (rt_ptr));
+	}
+	gtk_tree_model_get_iter_from_string
+		(GTK_TREE_MODEL (route_list_tree), &iter_route, t_rt_ptr);
+	gtk_tree_model_get
+		(GTK_TREE_MODEL (route_list_tree), &iter_route,
+		ROUTE_NAME, &t_name,
+		ROUTE_LON, &(coords.target_lon),
+		ROUTE_LAT, &(coords.target_lat),
+		-1);
+	g_snprintf (current.target, sizeof (current.target), t_name);
+
+	if ( mydebug >50 )
+	fprintf (stderr , "(%d/%d) %.6f / %.6f  -  %s\n",
+		route.pointer, route.items, coords.target_lat,
+		coords.target_lon, current.target);
+	
+	//TODO: do speech output, if enabled
+/*	
+	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), targetname,
+		    route.pointer + 1, route.items);
+	gtk_frame_set_label (GTK_FRAME (destframe), str);
+	tn = g_strdelimit (targetname, "_", ' ');
+	g_strlcpy (buf2, "", sizeof (buf2));
+	if (tn[0] == '*')
+	{
+		g_strlcpy (buf2, "das mobile Ziel ", sizeof (buf2));
+		g_strlcat (buf2, (tn + 1), sizeof (buf2));
+	}
+	else
+		g_strlcat (buf2, tn, sizeof (buf2));
+
+	g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
+	speech_out_speek (buf);
+
+	speechcount = 0;
+	g_strlcpy (oldangle, "XXX", sizeof (oldangle));
+	saytarget = TRUE;
+*/
+
+
+	g_free (t_name);
+}
+
+
+/* ****************************************************************************
+ * draw lines showing the route
+ */
+void
+draw_route (void)
+{
+	GdkSegment *route_seg;
+
+	gdouble destpos_x, destpos_y, curpos_x, curpos_y;
+	gint i, j;
+	gint t = 0;
+	gchar t_routept[5];
+	GtkTreeIter iter_route;
+	gdouble t_lon, t_lat;
+	
+	if (route.items < 1)
+		return;
+
+	i = (route.items + 5);
+	route_seg = g_new0 (GdkSegment, i);
+
+	if (usesql)
+	{
+	/* poi mode */	
+		g_snprintf (t_routept, sizeof (t_routept), "%d",
+			(route.pointer));
+		gtk_tree_model_get_iter_from_string
+			(GTK_TREE_MODEL (route_list_tree),
+			&iter_route, t_routept);
+
+		calcxy (&curpos_x, &curpos_y,
+			coords.current_lon, coords.current_lat, zoom);
+		(route_seg)->x1 = curpos_x;
+		(route_seg)->y1 = curpos_y;
+
+		do
+		{
+			gtk_tree_model_get
+				(GTK_TREE_MODEL (route_list_tree), &iter_route,
+				ROUTE_LON, &t_lon, ROUTE_LAT, &t_lat, -1);
+			if (t != 0)
+			{
+				(route_seg + t)->x1 = (route_seg + t - 1)->x2;
+				(route_seg + t)->y1 = (route_seg + t - 1)->y2;
+			}
+			calcxy (&destpos_x, &destpos_y, t_lon, t_lat, zoom);
+			(route_seg + t)->x2 = destpos_x;
+			(route_seg + t)->y2 = destpos_y;
+			t++;
+		}
+		while (gtk_tree_model_iter_next (GTK_TREE_MODEL
+			(route_list_tree), &iter_route));
+	}
+	else
+	{
+	/* waypoints mode */
+		/* start beginning with actual route.pointer */
+		for (j = route.pointer; j < route.items; j++)
+		{
+			/* start drawing with current_pos */
+			if (j == route.pointer)
+			{
+				calcxy (&curpos_x, &curpos_y,
+					coords.current_lon,
+					coords.current_lat, zoom);
+				(route_seg + t)->x1 = curpos_x;
+				(route_seg + t)->y1 = curpos_y;
+			}
+			else
+			{
+				(route_seg + t)->x1 = (route_seg + t - 1)->x2;
+				(route_seg + t)->y1 = (route_seg + t - 1)->y2;
+			}
+			calcxy (&destpos_x, &destpos_y, (routelist +
+				j)->lon, (routelist + j)->lat, zoom);
+			(route_seg + t)->x2 = destpos_x;
+			(route_seg + t)->y2 = destpos_y;
+			t++;
+		}
+	}
+
+	gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
+	gdk_gc_set_foreground (kontext, &colors.route);
+	gdk_draw_segments (drawable, kontext, (GdkSegment *) route_seg, t);
+	g_free (route_seg);
+}
+
+
 /* *******************************************************
  * append selected poi to the end of the route
  */
@@ -586,55 +805,67 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	route.items +=1;
 	
 	gtk_tree_model_get (model, &iter,
-				RESULT_ID, &t_id,
-				RESULT_TYPE_ICON, &t_icon,
-				RESULT_NAME, &t_name,
-				RESULT_LON, &t_lon,
-				RESULT_LAT, &t_lat,
-				RESULT_DISTANCE, &t_dist,
-				RESULT_DIST_NUM, &t_distnum,
-				-1);
-	
+		RESULT_ID, &t_id,
+		RESULT_TYPE_ICON, &t_icon,
+		RESULT_NAME, &t_name,
+		RESULT_LON, &t_lon,
+		RESULT_LAT, &t_lat,
+		RESULT_DISTANCE, &t_dist,
+		RESULT_DIST_NUM, &t_distnum,
+		-1);
+
 	gtk_list_store_append (route_list_tree, &iter_route);
 
 	/* calculate trip distance */
 	if (route.items > 1)
 	{
-		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL (route_list_tree), &iter_route);
+		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL
+			(route_list_tree), &iter_route);
 		gtk_tree_path_prev (path_route);
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree), &iter_route, path_route);
-		gtk_tree_model_get (GTK_TREE_MODEL (route_list_tree), &iter_route,
-					ROUTE_LON, &last_lon,
-					ROUTE_LAT, &last_lat,
-					-1);
-		route.distance += calc_wpdist (last_lon, last_lat, t_lon, t_lat, FALSE);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
+			&iter_route, path_route);
+		gtk_tree_model_get (GTK_TREE_MODEL (route_list_tree),
+			&iter_route,
+			ROUTE_LON, &last_lon, ROUTE_LAT, &last_lat, -1);
+		route.distance += calc_wpdist (last_lon, last_lat,
+			t_lon, t_lat, FALSE);
 		gtk_tree_path_next (path_route);
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree), &iter_route, path_route);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
+			&iter_route, path_route);
+
+		if (mydebug>25)
+		{
+			fprintf (stderr, "add_poi_to_route: Path: %s\n",
+				gtk_tree_path_to_string (path_route));
+		}
 	}
 	else if (route.items == 1)
 	{
 		route.distance =+ calcdist (t_lon, t_lat);
 	}
 	g_snprintf (t_trip, sizeof (t_trip), "%9.3f", route.distance);	
-		
+
 	if (mydebug>25)
-		fprintf (stderr, "add_poi_to_route: (%d)  ID: %d  |  NAME: %s |  LON: %f  |  LAT: %f  |  ICON: %p\n", route.items, t_id, t_name, t_lon, t_lat, t_icon);
+	{
+		fprintf (stderr, "add_poi_to_route: (%d)  ID: %d  |"
+			"  NAME: %s  |  LON: %f  |  LAT: %f  |  ICON: %p\n",
+			route.items, t_id, t_name, t_lon, t_lat, t_icon);
+	}
 	
 	gtk_list_store_set (route_list_tree, &iter_route,
-				ROUTE_ID, t_id,
-				ROUTE_NUMBER, route.items,
-				ROUTE_ICON, t_icon,
-				ROUTE_NAME, t_name,
-				ROUTE_DISTANCE, t_dist,
-				ROUTE_TRIP, t_trip,
-				ROUTE_LON, t_lon,
-				ROUTE_LAT, t_lat,
-				-1);
+		ROUTE_ID, t_id,
+		ROUTE_NUMBER, route.items,
+		ROUTE_ICON, t_icon,
+		ROUTE_NAME, t_name,
+		ROUTE_DISTANCE, t_dist,
+		ROUTE_TRIP, t_trip,
+		ROUTE_LON, t_lon,
+		ROUTE_LAT, t_lat,
+		-1);
 	
 	g_object_unref (t_icon);
 	g_free (t_name);
 	g_free (t_dist);
-	
 }
 
 
@@ -644,16 +875,36 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 void
 update_route (void)
 {
+	gdouble d;
+	
+	/* in waypoint mode call the old function */
+	if (!usesql)
+	{
+		route_next_target ();
+		return;
+	}
+	
 	/* check if current target is reached, and select next */
 	if (route.active)
 	{
-		// TODO: add functionality...
-	}
-	
-	/* redraw route display if enabled */
-	if (route.items && route.show)
-	{
-		// TODO: add functionality...
+		d = calcdist (coords.target_lon, coords.target_lat);
+
+		if (d <= ROUTEREACH || forcenextroutepoint)
+		{
+			forcenextroutepoint = FALSE;
+			if (route.pointer != (route.items - 1))
+			{
+				/* set target to next route item */
+				route.pointer++;
+				route_settarget (-1);
+			}
+			else
+			{
+				/* endpoint reached,  stop routing */
+				route.active = FALSE;
+				route.pointer = route.items = 0;
+			}
+		}
 	}
 	
 	/* recalculate trip /distance data if values are displayed */
@@ -665,6 +916,7 @@ update_route (void)
 
 
 /* *******************************************************
+ * basic init for routing support
  */
 void
 route_init (void)
@@ -672,21 +924,21 @@ route_init (void)
 
 	/* init gtk-list for storage of route data */
 	route_list_tree = gtk_list_store_new (ROUTE_COLUMS,
-				G_TYPE_INT,				/* ROUTE_ID */
-				G_TYPE_INT,				/* ROUTE_NUMBER */
-				GDK_TYPE_PIXBUF,	/* ROUTE_ICON */
-				G_TYPE_STRING,		/* ROUTE_NAME */
-				G_TYPE_STRING,		/* ROUTE_DISTANCE */
-				G_TYPE_STRING,		/* ROUTE_TRIP */
-				G_TYPE_DOUBLE,		/* ROUTE_LON */
-				G_TYPE_DOUBLE		/* ROUTE_LAT */
-				);
-	
- 	/* init route status data */
+		G_TYPE_INT,		/* ROUTE_ID */
+		G_TYPE_INT,		/* ROUTE_NUMBER */
+		GDK_TYPE_PIXBUF,	/* ROUTE_ICON */
+		G_TYPE_STRING,		/* ROUTE_NAME */
+		G_TYPE_STRING,		/* ROUTE_DISTANCE */
+		G_TYPE_STRING,		/* ROUTE_TRIP */
+		G_TYPE_DOUBLE,		/* ROUTE_LON */
+		G_TYPE_DOUBLE		/* ROUTE_LAT */
+		);
+
+	/* init route status data */
 	route.active = FALSE;		/* routemode off */
-	route.edit = FALSE;			/* route editmode off */
-	route.items = 0;				/* route is empty/not available */
+	route.edit = FALSE;		/* route editmode off */
+	route.items = 0;		/* route is empty/not available */
 	route.distance = 0.0;		/* route length is 0 */
-	route.pointer = 0;			/* reset next route target */
+	route.pointer = 0;		/* reset next route target */
 	route.show = TRUE;		/* default route display is on */
 }

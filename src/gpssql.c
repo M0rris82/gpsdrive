@@ -42,7 +42,6 @@ Disclaimer: Please do not use for navigation.
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME], poitypetable[MAXDBNAME];
-extern gdouble current_lon, current_lat;
 extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int usesql;

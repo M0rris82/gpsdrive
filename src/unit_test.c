@@ -39,23 +39,22 @@ Disclaimer: Please do not use for navigation.
 #include "battery.h"
 #include "streets.h"
 #include "nmea_handler.h"
+#include "gui.h"
 
 gint errors = 0;
 
 extern gint mydebug;
 extern gint zoom;
-extern gdouble current_lon, current_lat;
-extern gdouble zero_lon, zero_lat;
+extern coordinate_struct coords;
 //extern gint mapistopo;
 extern glong mapscale;
 extern gdouble pixelfact;
 extern int usesql;
 extern gchar dir_proc[200];
 extern gchar cputempstring[20], batstring[20];
-extern int messagenumber, didrootcheck, haveserial;
+extern int didrootcheck, haveserial;
 extern int newdata;
 extern char serialdata[4096];
-extern gint posmode;
 extern gint haveRMCsentence;
 
 /* ******************************************************************
@@ -131,19 +130,19 @@ gint  unit_test_nmea()
 	    haveRMCsentence=FALSE;
 	    haveserial=TRUE;
 	    newdata=TRUE;
-	    posmode=FALSE;
+	    gui_status.posmode=FALSE;
 	    strncpy ( serialdata, test_array[i].nmea_string,sizeof (serialdata));
 	    get_position_data_cb(NULL,NULL);
 
 	    int ok=TRUE;
 
-	    diff = fabs(current_lat - test_array[i].should_lat);
+	    diff = fabs(coords.current_lat - test_array[i].should_lat);
 	    if ( diff > 0.00000001  )
 		{
 		    printf ("!!!! ERROR wrong lat diff: %f\n",diff);
 		    ok=FALSE;
 		}
-	    diff = fabs(current_lon - test_array[i].should_lon);
+	    diff = fabs(coords.current_lon - test_array[i].should_lon);
 	    if ( diff >0.00000001  )
 		{
 		    printf ("!!!! ERROR wrong lon diff: %f\n",diff);
@@ -153,7 +152,7 @@ gint  unit_test_nmea()
 		printf ("!!!! ERROR is %f,%f\n"
 			"       should %f,%f\n"
 			"       nmea: %s\n",
-			current_lat,current_lon,
+			coords.current_lat,coords.current_lon,
 			test_array[i].should_lat,test_array[i].should_lon,
 			test_array[i].nmea_string
 			);
@@ -162,7 +161,7 @@ gint  unit_test_nmea()
 		if ( mydebug>1 ) 
 		    printf ("parsing OK; values: %f,%f\t"
 			" nmea: %s\n",
-			current_lat,current_lon,
+			coords.current_lat,coords.current_lon,
 			test_array[i].nmea_string
 			);
 		
@@ -570,16 +569,16 @@ unit_test (void)
 	gint x, y;
 	gdouble gx, gy;
 
-	current_lat = zero_lat = test_array[i].cur_lat;
-	current_lon = zero_lon = test_array[i].cur_lon;
+	coords.current_lat = coords.zero_lat = test_array[i].cur_lat;
+	coords.current_lon = coords.zero_lon = test_array[i].cur_lon;
 
 	x = test_array[i].x;
 	y = test_array[i].y;
 	calcxytopos (x, y, &lat, &lon, zoom);
 	if (mydebug > 0)
 	  {
-	    printf ("	%d: current_pos: %g,%g\n", i, current_lat,
-		    current_lon);
+	    printf ("	%d: current_pos: %g,%g\n", i, coords.current_lat,
+		    coords.current_lon);
 	    fprintf (stderr,
 		     "	%d: calcxytopos(%-7d,%-7d)	-->       (%g,%g)\n",
 		     i, x, y, lat, lon);

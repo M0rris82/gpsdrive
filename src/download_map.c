@@ -113,11 +113,9 @@ extern gint needtosave;
 extern gint slistsize;
 extern gchar *slist[];
 extern GtkWidget *cover;
-extern gdouble current_lon, current_lat, old_lon, old_lat, groundspeed;
-extern gdouble zero_lon, zero_lat;
-extern gdouble target_lon, target_lat;
 extern gint scaleprefered, scalewanted;
 extern gdouble milesconv;
+extern coordinate_struct coords;
 
 char actualhostname[200];
 
@@ -871,14 +869,14 @@ download_cb (GtkWidget * widget, guint datum)
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
-	coordinate2gchar(buff, sizeof(buff), current_lat, TRUE,
+	coordinate2gchar(buff, sizeof(buff), coords.current_lat, TRUE,
 		local_config.coordmode);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
 	dl_text_lon = gtk_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (dl_text_lon), "changed",
 			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
-	coordinate2gchar(buff, sizeof(buff), current_lon, FALSE,
+	coordinate2gchar(buff, sizeof(buff), coords.current_lon, FALSE,
 		local_config.coordmode);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
 	dl_text_scale = gtk_combo_new ();

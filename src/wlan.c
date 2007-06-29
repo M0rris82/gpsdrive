@@ -64,10 +64,8 @@ extern gint do_unit_test;
 extern gint maploaded;
 extern gint importactive;
 extern gint zoom;
-extern status_struct route;
 extern gint isnight, disableisnight;
 extern color_struct colors;
-extern gdouble current_long, current_lat;
 extern gint debug, mydebug;
 extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
   *drawing_miniimage;
