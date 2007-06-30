@@ -196,8 +196,8 @@ writeconfig ()
 
 	fprintf (fp, "mapdir = ");
 	fprintf (fp, "%s\n", local_config.dir_maps);
-
-	fprintf (fp, "mapnik = %d\n", local_config.mapnik);
+	if (local_config.MapnikStatusInt > 1) local_config.MapnikStatusInt = 1; /* 2 = active, so store it as 1 */
+	fprintf (fp, "mapnik = %d\n", local_config.MapnikStatusInt);
 
 	fprintf (fp, "simfollow = ");
 	if (local_config.simmode == 0)
@@ -399,7 +399,7 @@ readconfig ()
 				g_strlcpy (local_config.dir_maps, par2,
 					sizeof (local_config.dir_maps));
 			else if ( (strcmp(par1, "mapnik")) == 0)
-				local_config.mapnik = atoi (par2);
+				local_config.MapnikStatusInt = atoi (par2);
 			else if ( (strcmp(par1, "simfollow")) == 0)
 				local_config.simmode = atoi (par2);
 			else if ( (strcmp(par1, "satposmode")) == 0)
@@ -563,7 +563,7 @@ config_init ()
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_CLASSIC;
 	local_config.simmode = FALSE;
-	local_config.mapnik = FALSE;
+	local_config.MapnikStatusInt = 0;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.maxcpuload = 40;
 	local_config.showgrid = FALSE;

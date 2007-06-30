@@ -3004,12 +3004,12 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 {
 	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
 	{
-		gui_status.MapnikStatusInt = 1;
+		local_config.MapnikStatusInt = 1;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), FALSE);
 	}
 	else 
 	{
-		gui_status.MapnikStatusInt = 0;
+		local_config.MapnikStatusInt = 0;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), TRUE);
 	}
 	

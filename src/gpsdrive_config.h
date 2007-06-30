@@ -56,7 +56,7 @@ typedef struct
 	gchar icon_theme[500];
 	guint poi_results_max;
 	gdouble poi_searchradius;
-	gboolean mapnik;
+	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
 	gboolean simmode;
 	gboolean showgrid;
 	gboolean showshadow;

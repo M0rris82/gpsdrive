@@ -888,7 +888,7 @@ test_and_load_newmap ()
         return;
     }
 
-    if ( gui_status.MapnikStatusInt > 0 ){
+    if ( local_config.MapnikStatusInt > 0 ){
 		if (mydebug > 0)
 		    fprintf (stderr, "rendering mapnik map ....\n");
 	        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
@@ -896,12 +896,12 @@ test_and_load_newmap ()
 	    //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
 		//set_mapnik_map(current_lat, current_lon, LevelInt);
 	    int ForceMapCenterYsn = 0;
-	    if (gui_status.MapnikStatusInt == 1) {
+	    if (local_config.MapnikStatusInt == 1) {
 	    	ForceMapCenterYsn = 1;
-	    	gui_status.MapnikStatusInt = 2; /* set active */
+	    	local_config.MapnikStatusInt = 2; /* set active */
 	    }
 	    set_mapnik_map(coords.current_lat, coords.current_lon, ForceMapCenterYsn, scalewanted);
-	    gui_status.MapnikStatusInt = 2;
+	    local_config.MapnikStatusInt = 2;
 	    /* render map, but only if it is needed */
 	    render_mapnik();
 		/* only load map if there is a new one. */

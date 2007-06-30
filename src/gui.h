@@ -91,7 +91,7 @@ typedef struct
 	guint width;
 	guint height;
 	gboolean nightmode;
-	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
+	gboolean posmode;
 } guistatus_struct;
 
 extern guistatus_struct gui_status;
