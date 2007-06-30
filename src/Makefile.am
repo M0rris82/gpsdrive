@@ -56,7 +56,8 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_grid.c settings.c \
 	battery.h track.h poi.h streets.h wlan.h waypoint.h gpsdrive.h \
 	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
-	gui.c gui.h \
+	gui.c gui.h poi_gui.c poi_gui.h\
+	navigation_gui.c settings_gui.c \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h \
 	gpsserial.c gpsnasamap.c gpsmisc.c geometry.c \
 	map_handler.c map_handler.h gpsproto.h \
@@ -66,7 +67,6 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	map_projection.c \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	navigation_gui.c poi_gui.c settings_gui.c \
 	unit_test.c \
 	mapnik.cpp mapnik.h \
 	../config.h gettext.h
