@@ -38,6 +38,7 @@
 #include "gpsdrive.h"
 #include "speech_out.h"
 #include "speech_strings.h"
+#include "mapnik.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
@@ -138,7 +139,7 @@ map_projection (char *filename)
   else if (strstr(filename, "/top_")) /* For Compatibility */
     proj = proj_top;
   else if (strstr(filename, "/tmp/mapnik.png"))
-    proj = proj_googlesat;
+    proj = proj_mapnik;
   else
     {
       proj = proj_undef;
@@ -186,6 +187,11 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     {
       lat = coords.zero_lat - (py/1.5) / lat2radius_pi_180 (0);
       lon = coords.zero_lon - (px*1.0) / lat2radius_pi_180 (0);
+    }
+  else if (proj_mapnik == map_proj)
+    {
+	  // only use the offset
+	  get_mapnik_clacxytopos(&lat, &lon, posx, posy, xoff, yoff, zoom);
     }
   else
     {
@@ -254,13 +260,19 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
 	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
+  else if (proj_mapnik == map_proj)
+    {
+	  // only use the offset
+	  get_mapnik_clacxy(posx, posy, lat, lon, xoff, yoff, zoom);
+    }
   else
 	fprintf (stderr, "ERROR: calcxy: unknown map Projection\n");
 
-  // pixmap xy --> Screen xy
-  *posx = (SCREEN_X_2 + *posx * zoom / pixelfact) - xoff;
-  *posy = (SCREEN_Y_2 - *posy * zoom / pixelfact) - yoff;
-
+  if (proj_mapnik != map_proj) {
+	  // pixmap xy --> Screen xy
+	  *posx = (SCREEN_X_2 + *posx * zoom / pixelfact) - xoff;
+	  *posy = (SCREEN_Y_2 - *posy * zoom / pixelfact) - yoff;
+  }
   if (mydebug > 90)
     fprintf (stderr, "calcxy(_,_,%g,%g,%d) ---> %g,%g\n", *posx, *posy, zoom, lat, lon);
 }
@@ -286,8 +298,12 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
       *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
-  else
+  else if (proj_mapnik == map_proj) {
+	  *dif = 0;
+	  get_mapnik_minixy2latlon(px, py, lat, lon);
+  } else {
     printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
+  }
   *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
 }
 
@@ -296,6 +312,11 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
  */
 void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
+  
+  if (proj_mapnik == map_proj) {
+	  get_mapnik_miniclacxy(posx, posy, lat, lon, zoom);
+	  return;
+  }
   gdouble dif;
   if (proj_map == map_proj)
     *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);

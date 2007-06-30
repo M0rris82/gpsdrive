@@ -32,6 +32,8 @@ using mapnik::geometry_ptr;
 using mapnik::CoordTransform;
 
 extern int mydebug;
+extern int SCREEN_X_2;
+extern int SCREEN_Y_2;
 
 mapnik::projection Proj("+proj=merc +datum=WGS84");
 
@@ -245,6 +247,13 @@ void render_mapnik () {
     QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
     image.save("/tmp/mapnik.png", "PNG");
     MapnikMap.NewMapYsn = true;
+    mapnik::Envelope<double> ext = MapnikMap.MapPtr->getCurrentExtent();
+    mapnik::coord2d pt = ext.center();
+    MapnikMap.CenterPt.x = pt.x;
+    MapnikMap.CenterPt.y = pt.y;
+    Proj.inverse(pt.x, pt.y);
+    MapnikMap.CenterLonDbl = pt.x;
+    MapnikMap.CenterLatDbl = pt.y;
 
 }
 
@@ -275,5 +284,56 @@ void get_mapnik_center(double *pLatDbl, double *pLonDbl) {
 	*pLatDbl = MapnikMap.CenterLatDbl;
 	*pLonDbl = MapnikMap.CenterLonDbl;
 }
+
+extern "C"
+void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYInt, int pXOffInt, int pYOffInt, int pZoom) {
+	double XDbl = (SCREEN_X_2 - pXInt - pXOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
+	double YDbl = (SCREEN_Y_2 - pYInt - pYOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
+	double LonDbl = MapnikMap.CenterPt.x - XDbl;
+	double LatDbl = MapnikMap.CenterPt.y + YDbl;
+	Proj.inverse(LonDbl, LatDbl);
+	*pLonDbl = LonDbl;
+	*pLatDbl = LatDbl;
+}
+
+extern "C"
+void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom) {
+	
+	double X = pLonDbl;
+	double Y = pLatDbl;
+	Proj.forward(X, Y);
+	X = X - MapnikMap.CenterPt.x;
+	Y = Y - MapnikMap.CenterPt.y;
+	
+	 *pXDbl = (SCREEN_X_2 + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt;
+	 *pYDbl = (SCREEN_Y_2 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt;
+
+}
+
+extern "C"
+void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLonDbl) {
+	double XDbl = pXInt;
+	double YDbl = pYInt;
+	double LonDbl = MapnikMap.CenterPt.x - XDbl;
+	double LatDbl = MapnikMap.CenterPt.y - YDbl;
+	Proj.inverse(LonDbl, LatDbl);
+	*pLonDbl = LonDbl;
+	*pLatDbl = LatDbl;
+}
+
+extern "C"
+void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pZoom) {
+	
+	double X = pLonDbl;
+	double Y = pLatDbl;
+	Proj.forward(X, Y);
+	X = X - MapnikMap.CenterPt.x;
+	Y = Y - MapnikMap.CenterPt.y;
+	
+	 *pXDbl = (64 + X * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
+	 *pYDbl = (51 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
+
+}
+
 
 } //end namespace mapnik

@@ -888,28 +888,33 @@ test_and_load_newmap ()
         return;
     }
 
-    if ( local_config.mapnik ){
-	if (mydebug > 0)
-	    fprintf (stderr, "rendering mapnik map ....\n");
-        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
-        g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
-    //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
-	//set_mapnik_map(current_lat, current_lon, LevelInt);
-    set_mapnik_map(coords.current_lat, coords.current_lon, 0, scalewanted);
-	
-    /* render map, but only if it is needed */
-    render_mapnik();
-	
-	/* only load map if there is a new one. */
-	if (get_mapnik_newmapysn()) {
-		mapscale = get_mapnik_mapscale();// 68247.3466832;;
-		pixelfact = get_mapnik_pixelfactor();
-		get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
-	    
-		loadmap("/tmp/mapnik.png");
-		/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
-		*/
-	}
+    if ( gui_status.MapnikStatusInt > 0 ){
+		if (mydebug > 0)
+		    fprintf (stderr, "rendering mapnik map ....\n");
+	        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
+	        g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
+	    //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
+		//set_mapnik_map(current_lat, current_lon, LevelInt);
+	    int ForceMapCenterYsn = 0;
+	    if (gui_status.MapnikStatusInt == 1) {
+	    	ForceMapCenterYsn = 1;
+	    	gui_status.MapnikStatusInt = 2; /* set active */
+	    }
+	    set_mapnik_map(coords.current_lat, coords.current_lon, ForceMapCenterYsn, scalewanted);
+	    gui_status.MapnikStatusInt = 2;
+	    /* render map, but only if it is needed */
+	    render_mapnik();
+		/* only load map if there is a new one. */
+		if (get_mapnik_newmapysn()) {
+			mapscale = get_mapnik_mapscale();// 68247.3466832;;
+			pixelfact = get_mapnik_pixelfactor();
+			get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
+			xoff = yoff = 0;
+			loadmap("/tmp/mapnik.png");
+			
+			/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
+			*/
+		}
 	return;
     }
 
