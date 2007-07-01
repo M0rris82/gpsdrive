@@ -5507,8 +5507,10 @@ main (int argc, char *argv[])
 	unit_test();
     }
 
+#ifdef MAPNIK
     init_mapnik(1);
     //render_mapnik(1);
+#endif
 
     /*  Mainloop */
     gtk_main ();
