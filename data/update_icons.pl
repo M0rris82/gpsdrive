@@ -40,15 +40,18 @@ use File::Copy;
 use XML::Twig;
 use Getopt::Std;
 use Pod::Usage;
+use Image::Magick;
+use File::Slurp;
+use File::Basename;
+use File::Path;
 
-our ($opt_v, $opt_f, $opt_h ) = 0;
-getopts('hvf:') or $opt_h = 1;
+our ($opt_v, $opt_f, $opt_h, $opt_i ) = 0;
+getopts('hvif:') or $opt_h = 1;
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
 my $file_xml = './icons.xml';
-my %icons = ('','');
-my %h_icons = ('', '');
+my %ICONS = ('','');
 my $i = 0;
 my $poi_reserved = 30;
 my $poi_type_id_base = $poi_reserved;
@@ -58,6 +61,7 @@ my $default_title_en = '';
 my $default_desc_en = '';
 my $VERBOSE = $opt_v;
 
+my @ALL_TYPES = qw(square.big square.small classic svg jp );
 
 #####################################################################
 #
@@ -69,9 +73,10 @@ unless (-e $file_xml)
 {
   create_xml();	# Create a new XML-File if none exists
 }
-get_icons();			# read available icons from dirs
-update_xml();	# parse and update contents  of XML-File
-update_overview('en');	# update html overview from XML-File
+get_icons();		 # read available icons from dirs
+update_svg_thumbnails(); # Update Thumbnails for svg Icons
+update_xml();	         # parse and update contents  of XML-File
+update_overview('en');	 # update html overview from XML-File
 update_overview('de');
 chdir('..');
 exit (0);
@@ -111,18 +116,29 @@ sub update_overview
     "content=\"text/html; charset=utf-8\" />".
     "<title>Available POI-Types in gpsdrive</title>\n".
     "<style type=\"text/css\">\ntable { width:100%; }\n".
-    "tr { border-top:5px solid black; }\n".
-    "tr.id { background-color:#6666ff; color:white; font-weight:bold; }\n".
-    "td.id { text-align:right; }\ntd.icon { text-align:center; }\n".
-    "td.empty { text-align:center; height:32px; }\n".
-    "img.big { width:32px; height:32px; }\n".
-    "img.small { width:16px; height:16px; }\n".
-    "img.classic { max-height:32px; }\n".
-    "span.desc { font:x-small italic condensed }\n".
-    "</style>\n</head>\n<body>\n<table>\n<tr><th>ID</th><th>Name</th>\n".
-    "<th colspan=\"3\">Icons</th><th>Description</th></tr>\n";
-  my $html_tdi = "<td class=\"icon\"><img src=\"";
-  my $html_td0 = "<td class=\"empty\">&mdash;</td>\n";
+    "	tr { border-top:5px solid black; }\n".
+    "	tr.id { background-color:#6666ff; color:white; font-weight:bold; }\n".
+    "	td.id { text-align:right; }\ntd.icon { text-align:center; }\n".
+    "	td.empty { text-align:center; height:32px; }\n".
+    "	img.square_big { width:32px; height:32px; }\n".
+    "	img.square_small { width:16px; height:16px; }\n".
+    "	img.classic { max-height:32px; }\n".
+    "	img.svg { max-height:32px; }\n".
+    "	img.jp { max-height:32px; }\n".
+    "	span.desc { font:x-small italic condensed }\n".
+    "</style>\n".
+    "</head>\n";
+  $html_head .= "<body>\n".
+      "<table>\n";
+  $html_head .=     "<tr><th>ID</th><th>Name</th>\n".
+      "<th colspan=\"".(scalar(@ALL_TYPES))."\">Icons</th><th>Description</th></tr>\n";
+  $html_head .=     "<tr><th></th><th></th>";
+  for my $type ( @ALL_TYPES  ) {
+      my $txt=$type;
+      $txt=~s/\./ /;
+      $html_head .= "<th>$txt</th>\n";
+  }
+  $html_head .= "</tr>\n";
   my %out;
 
   open HTMLFILE,">:utf8","$file_html";
@@ -155,46 +171,49 @@ sub update_overview
     my $ind = $nm;
 
     # accentuate base categories
-    if ($id <= $poi_reserved)
+    if ($id <= $poi_reserved || ( $icon !~ m,\.,) )
     {
-      $content .= "<tr><td>&nbsp;</td></tr>\n";
-      $content .= "<tr class=\"id\"><td class=\"id\">$id</td><td>&nbsp;$nm</td>";
+      $content .= "  <tr><td>&nbsp;</td></tr>\n";
+      $content .= "  <tr class=\"id\">\n    <td class=\"id\">$id</td><td>&nbsp;$nm</td>";
     }
     else
     {
-      my $level = ($icon =~ tr#\.#/#);
+      my $level = ($icon =~ tr,\.,/,);
       my $html_space = '';
       while ($level)
-      { $html_space .='&nbsp;&nbsp;&nbsp;&nbsp;&rsaquo;&nbsp;'; $level--; }
-      $nm =~ s#.*\.##g;
-      $content .= "<tr><td class=\"id\">$id</td><td>&nbsp;$html_space$nm</td>";
+      { $html_space .='&nbsp;&nbsp;&nbsp;&nbsp;&rsaquo;&nbsp;'; $level--; };
+      $nm =~ s,.*\.,,g;
+      $content .= "<tr>\n";
+      $content .= "    <td class=\"id\">$id</td><td>&nbsp;$html_space$nm</td>";
     }
 
-    # exchange empty or missing icon files with a char for faster display
-    my $icon_sb = "square.big/$icon.png";
-    my $icon_sm = "square.small/$icon.png";
-    my $icon_cl = "classic/$icon.png";
+    # display all icons
+    for my $type ( @ALL_TYPES  ) {
+	my $icon_s = "${type}/$icon.svg";
+	my $icon_p = "${type}/$icon.png";
+	my $icon_t = "${type}_tn/${icon}.png";
+	my $class = $type;
+	$class =~ s/\./_/g;
 
-    if ( -z $icon_sb or not -e $icon_sb )
-      { $content .= $html_td0; }
-    else 
-      { $content .= $html_tdi.$icon_sb."\" class=\"big\" alt=\"$nm\" /></td>\n" }
-    if (-z $icon_sm or not -e $icon_sm )
-      { $content .= $html_td0; }
-    else 
-      { $content .= $html_tdi.$icon_sm."\" class=\"small\" alt=\"$nm\" /></td>\n" }
-    if (-z $icon_cl or not -e $icon_cl )
-      { $content .= $html_td0; }
-    else 
-      { $content .= $html_tdi.$icon_cl."\" class=\"classic\" alt=\"$nm\" /></td>\n" }
-    $content .= "<td>$ti<br>$de</td></tr>\n";
-    $out{$ind} = $content;
-  }
-  
+	if ( ! ( -s $icon_p or -s $icon_s) ) {
+	    # exchange empty or missing icon files with a char for faster display
+	    $content .=  "    <td class=\"empty\">.</td>\n";
+	} else {
+	    $content .= "     <td class=\"icon\"><img src=\"";
+	    if ( -s $icon_t ) {
+		$content .= $icon_t;
+	    } else {
+		$content .= $icon_p;
+	    }
+	    $content .= "\" class=\"$class\" alt=\"$nm\" /></td>\n";
+	}
+    }
+      $content .= "    <td>$ti<br>$de</td>\n";
+      $content .= "  </tr>\n";
+      $out{$ind} = $content;
+  }  
   # sorted output
-  my @to_sort = keys(%out);
-  my @sorted = sort(@to_sort);
-  foreach (@sorted)
+  foreach ( sort keys(%out) )
   {
     print $out{$_};
   }
@@ -231,11 +250,11 @@ sub update_xml
   # Insert new POI-Type entries from hash of available icons
   #
   $i = 0;
-  my @tmp_icons = sort(keys(%icons));
+  my @tmp_icons = sort(keys(%ICONS));
   
-  foreach (@tmp_icons)
+  for my $icon (@tmp_icons)
   {
-     insert_poi_type($_,\$rules);
+     insert_poi_type($icon,\$rules);
      $i++;
   }
   print STDOUT "  New POI-Types added:\t$i\n";
@@ -244,7 +263,7 @@ sub update_xml
   #
   my @rule= $rules->children;	# get the updated rule list
 
-  my @a_id = '';
+  my @a_id;
   $i = 0;
   foreach my $entry (@rule)
   {
@@ -281,7 +300,10 @@ sub update_xml
 
     foreach my $entry (@rule)
      {
-       $entry->print; 
+       my $name = $entry->first_child('geoinfo')->first_child('name')->text();
+       next if not($opt_i) && $name =~ m/^incomming/;
+
+       $entry->print;
        print "\n"; 
      }
     print "</rules>\n";
@@ -306,11 +328,11 @@ sub update_xml
      my $poi_type_id = $geoinfo->first_child('poi_type_id')->text;
      my $name = $geoinfo->first_child('name')->text;
 
-     if (exists $icons{$name}) 
+     if (exists $ICONS{$name}) 
      {
        print STDOUT "  o  $poi_type_id\t\t$name\n" if $VERBOSE;
        $poi_type_id_base = $poi_type_id if ($poi_type_id > $poi_type_id_base);
-       delete $icons{"$name"};
+       delete $ICONS{"$name"};
      }
    }
 }
@@ -365,22 +387,102 @@ sub get_icons
 {
   print STDOUT "\n----- Looking for available icons -----\n";
   $i = 0;
-  find( \&format_icons, ('square.big', 'square.small', 'classic') );
+  find( \&format_icons,  @ALL_TYPES );
   sub format_icons()
   { 
-    if (m/\.png$/ && !m/empty.png$/)
-    { 
-      $i++;
       my $icon_file = $File::Find::name;
-      print STDOUT "  Found icon:\t$i\t$icon_file\n" if $VERBOSE;
-      $icon_file =~ s#(^(classic/|square\.big/|square\.small/))|\.png##g;
-      $icon_file =~ s#/#.#g;
-      $icons{"$icon_file"} = '1';
-    }
+      if ( not($opt_i) && $icon_file =~ m/incomming/ ) {
+	  print STDOUT "ignore incomming: $icon_file\n" if $VERBOSE;
+      } elsif (m/\.(png|svg)$/ && !m/empty\.png$/)
+      { 
+	  $i++;
+	  my $icon_file = $File::Find::name;
+	  print STDOUT "  Found icon:\t$i\t$icon_file\n" if $VERBOSE;
+	  for my $type ( @ALL_TYPES ) {
+	      $icon_file =~ s,^$type/,,g;
+	  }
+	  $icon_file =~ s,\.(png|svg)$,,g;
+	  $icon_file =~ s,/,.,g;
+	  $ICONS{"$icon_file"} = '1';
+      }
   }
-  delete $icons{''} if (exists $icons{''});
-  print STDOUT " $i icons for ".keys(%icons)." POI-Types found in data/map-icons\n";
+  delete $ICONS{''} if (exists $ICONS{''});
+  print STDOUT " $i icons for ".keys(%ICONS)." POI-Types found in data/map-icons\n";
   
+}
+
+
+#############################################################################
+#
+# Create/Update Thumbnail for svg
+sub update_svg_thumbnail($$){
+    my $type = shift;
+    my $icon = shift;
+    $icon =~ s,\.,\/,g;
+    my $icon_svg = "${type}/${icon}.svg";
+    my $icon_svt = "${type}_tn/${icon}.png";
+
+    return unless -s $icon_svg;
+#    print STDERR "update_svg_thumbnail($type,$icon_svg):\t-->  $icon_svt\n" if $VERBOSE;
+
+    my $mtime_svt = (stat($icon_svt))[9]||0;
+    my $mtime_sv  = (stat($icon_svg))[9]||0; 
+    return $icon_svt if $mtime_svt >  $mtime_sv; # Up to Date
+
+    print STDERR "Updating $icon_svg\t-->  $icon_svt\t";
+    my $image_string = File::Slurp::slurp($icon_svg);
+    my ($x,$y)=(200,200);
+    if ( $image_string=~ m/viewBox=\"([\-\d\.]+)\s+([\-\d\.]+)\s+([\-\d\.]+)\s+([\-\d\.]+)\s*\"/){
+	my ( $x0,$y0,$x1,$y1 ) = ($1,$2,$3,$4);
+	print STDERR "( $x0,$y0,$x1,$y1)" if $VERBOSE;
+	$x0=0 if $x0>0;
+	$y0=0 if $y0>0;
+	$x=int(2+$x1-$x0);
+	$y=int(2+$y1-$y0);
+    } elsif ( $image_string=~ m/height=\"([\-\d\.]+)\"/ ){
+	$y=int(2+$1);
+	if ( $image_string=~ m/width=\"([\-\d\.]+)\"/ ){
+	    $x=int(2+$1);
+	}
+    } else {
+	warn "No Size information found in $icon_svg\n";
+    }
+    # Limit used memory of Image::Magic
+    $x=4000 if $x>4000;
+    $y=4000 if $y>4000;
+    print STDERR " => '${x}x$y' \n" if $VERBOSE;;
+    eval { # in case image::magic dies
+	my $image = Image::Magick->new( size => "${x}x$y");;
+	my $rc = $image->Read($icon_svg);
+	warn "$rc" if "$rc";
+	$rc = $image->Sample(geometry => "32x32+0+0");
+	# For debugging the svg pictures; you can use this line
+	#$rc = $image->Sample(geometry => "128x128+0+0") if $x>128 || $y>128;
+	warn "$rc" if "$rc";
+	
+	if ( ! -d (my $dir=dirname($icon_svt)) ) {
+	    mkpath($dir) || warn ("Cannot create Directory: '$dir'");
+	} 
+	
+	$rc = $image->Transparent(color=>"white");
+	warn "$rc" if "$rc";
+
+	$rc = $image->Write($icon_svt);
+	warn "$rc" if "$rc";
+    };
+    return $icon_svt;
+}
+
+#############################################################################
+#
+# Create/Update Thumbnail for svg
+sub update_svg_thumbnails(){
+    print STDOUT "\n----- Updating SVG Thumbnails -----\n";
+    for my $icon ( keys %ICONS ) {	
+	for my $type ( @ALL_TYPES  ) {
+	    update_svg_thumbnail($type,$icon);
+	}
+    }
 }
 
 
@@ -646,6 +748,10 @@ update_icons.pl [-h] [-v] [-f XML-FILE]
 =item B<-v>
 
  Enable verbose output
+
+=item B<-i>
+
+ Include incomming
 
 
 
