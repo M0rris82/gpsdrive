@@ -276,7 +276,7 @@ make_display_map_controls ()
 	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (mapnik_bt),
 		"clicked", GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-	if (local_config.mapnik)
+	if (local_config.MapnikStatusInt)
 	{
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);

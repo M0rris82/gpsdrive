@@ -196,8 +196,12 @@ writeconfig ()
 
 	fprintf (fp, "mapdir = ");
 	fprintf (fp, "%s\n", local_config.dir_maps);
-	if (local_config.MapnikStatusInt > 1) local_config.MapnikStatusInt = 1; /* 2 = active, so store it as 1 */
-	fprintf (fp, "mapnik = %d\n", local_config.MapnikStatusInt);
+	if (local_config.MapnikStatusInt > 1) { /* 2 = active, so store it as 1 */
+		fprintf (fp, "mapnik = %d\n", 1);
+	} else {
+		fprintf (fp, "mapnik = %d\n", 0);
+	}
+			
 
 	fprintf (fp, "simfollow = ");
 	if (local_config.simmode == 0)

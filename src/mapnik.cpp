@@ -32,6 +32,7 @@ using mapnik::geometry_ptr;
 using mapnik::CoordTransform;
 
 extern int mydebug;
+extern int borderlimit;
 extern int SCREEN_X_2;
 extern int SCREEN_Y_2;
 
@@ -40,7 +41,7 @@ mapnik::projection Proj("+proj=merc +datum=WGS84");
 typedef struct {
 	int WidthInt;
 	int HeightInt;
-	int MinBorderSpanInt;
+	int BorderlimitInt;
 	double CenterLatDbl;
 	double CenterLonDbl;
 	mapnik::coord2d CenterPt;
@@ -93,7 +94,7 @@ void init_mapnik ( ) {
     
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
-    MapnikMap.MinBorderSpanInt = 100;
+    MapnikMap.BorderlimitInt = borderlimit;
     MapnikMap.ScaleInt = -1; // <-- force creation of map if a map is set
     MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
     
@@ -118,7 +119,8 @@ void init_mapnik ( ) {
  ***/
 extern "C"
 void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn, int pScaleInt) {
-	int PanYsn = 0;
+	int PanCntInt = 0;
+	int OnMapYsn = 0;
 	double scale_denom = MapnikMap.ScaleInt;
 	double res = scale_denom * 0.00028;
 	/* first we disable the map rendering 
@@ -126,20 +128,10 @@ void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn
 	MapnikMap.RenderMapYsn = 0;
 	
 	
-	if (pScaleInt < MapnikMap.ScaleInt || MapnikMap.ScaleInt == -1) {
-		/* new  scale smaller then old scale
-		 * or old scale never set
-		 * for the fist implementation we use
-		 * a new center */
-		MapnikMap.CenterLatDbl = pPosLatDbl;
-		MapnikMap.CenterLonDbl = pPosLonDbl;
+	if (pScaleInt != MapnikMap.ScaleInt) {
+		/* new  scale */
 		MapnikMap.ScaleInt = pScaleInt;
-		MapnikMap.RenderMapYsn = 1;
-	} else if (pScaleInt > MapnikMap.ScaleInt) { 
-		/* new scale larger then old scale
-		 * we do not need a new center */
-		MapnikMap.ScaleInt = pScaleInt;
-		MapnikMap.RenderMapYsn = 1;
+		pForceNewCenterYsn = 1; /* we always force the center */
 	}
 	
 	/* force new center */
@@ -156,42 +148,56 @@ void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn
 		MapnikMap.CenterPt.x = MapnikMap.CenterLonDbl;
 		MapnikMap.CenterPt.y = MapnikMap.CenterLatDbl;
 		Proj.forward(MapnikMap.CenterPt.x, MapnikMap.CenterPt.y);
-	} else if (!MapnikMap.RenderMapYsn) {
-		/* out of allowed map area? pan! */
-		mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
-		Proj.forward(Pt.x, Pt.y);
-		/* pan right or left? */
-		if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - MapnikMap.MinBorderSpanInt) * res) < Pt.x) {
-			cout << "pan right\n";
-			/* pan right */
-			MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - MapnikMap.MinBorderSpanInt * 2) * res;
-			PanYsn = 1;
-		} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - MapnikMap.MinBorderSpanInt) * res) > Pt.x) {
-			/* pan left */
-			cout << "pan left\n";
-			MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - MapnikMap.MinBorderSpanInt * 2) * res;
-			PanYsn = 1;
-		}
-		/* pan up or down? */
-		if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - MapnikMap.MinBorderSpanInt) * res) < Pt.y) {
-			cout << "pan up\n";
-			/* pan up */
-			MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - MapnikMap.MinBorderSpanInt * 2) * res;
-			PanYsn = 1;
-		} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - MapnikMap.MinBorderSpanInt) * res) > Pt.y) {
-			/* pan down */
-			cout << "pan down\n";
-			MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - MapnikMap.MinBorderSpanInt * 2) * res;
-			PanYsn = 1;
+	} else {
+		/* out of allowed map area? pan! if more then 10 times to pan center to map*/
+		while (!OnMapYsn && PanCntInt < 10) {
+			OnMapYsn = 1;
+			mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
+			Proj.forward(Pt.x, Pt.y);
+			/* pan right or left? */
+			if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) < Pt.x) {
+				cout << "pan right\n";
+				/* pan right */
+				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
+				PanCntInt += 1;
+				OnMapYsn = 0;
+			} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) > Pt.x) {
+				/* pan left */
+				cout << "pan left\n";
+				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
+				PanCntInt += 1;
+				OnMapYsn = 0;
+			}
+			/* pan up or down? */
+			if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) < Pt.y) {
+				cout << "pan up\n";
+				/* pan up */
+				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
+				PanCntInt += 1;
+				OnMapYsn = 0;
+			} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) > Pt.y) {
+				/* pan down */
+				cout << "pan down\n";
+				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
+				PanCntInt += 1;
+				OnMapYsn = 0;
+			}
 		}
 		
-		if (PanYsn) {
+		if (PanCntInt > 0 && OnMapYsn) {
 			/* render map */
 			MapnikMap.RenderMapYsn = 1;
 			/* calc new lat/lon */
 			MapnikMap.CenterLonDbl = MapnikMap.CenterPt.x;
 			MapnikMap.CenterLatDbl = MapnikMap.CenterPt.y;
 			Proj.inverse(MapnikMap.CenterLonDbl, MapnikMap.CenterLatDbl);
+		} else if (PanCntInt) {
+			MapnikMap.CenterLatDbl = pPosLatDbl;
+			MapnikMap.CenterLonDbl = pPosLonDbl;
+			MapnikMap.RenderMapYsn = 1;
+			MapnikMap.CenterPt.x = MapnikMap.CenterLonDbl;
+			MapnikMap.CenterPt.y = MapnikMap.CenterLatDbl;
+			Proj.forward(MapnikMap.CenterPt.x, MapnikMap.CenterPt.y);
 		}
 	}
 	

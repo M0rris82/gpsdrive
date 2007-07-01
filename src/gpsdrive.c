@@ -905,7 +905,13 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 	period = 10 * globruntime / (10 * local_config.maxcpuload);
 	drawmarkercounter++;
 	/*   g_print("period: %d, drawmarkercounter %d\n", period, drawmarkercounter);  */
+	
 
+	if (local_config.MapnikStatusInt > 0 && drawmarkercounter >= 3) {
+		drawmarkercounter = 0;
+		drawmarker_cb (NULL, NULL);		
+		return TRUE;
+	}
 	if (((drawmarkercounter > period) || (drawmarkercounter > 50))
 	    && (drawmarkercounter >= 3))
 	{
