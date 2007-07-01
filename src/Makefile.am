@@ -5,7 +5,6 @@ DIST_SUBDIRS = lib_map util
 
 if ENABLE_MAPNIK
 MAPNIK_LIBS=-lmapnik -lQtCore -lQtGui
-DEF_MAPNIK=" -DMAPNIK"
 else
 MAPNIK_LIBS=
 endif
@@ -75,12 +74,9 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c \
+	mapnik.cpp mapnik.h \
 	../config.h gettext.h
 #	lib_map/lib_map.a
-
-if ENABLE_MAPNIK
-PRGS +=	mapnik.cpp mapnik.h
-endif
 
 if DISABLEGARMIN
 else 

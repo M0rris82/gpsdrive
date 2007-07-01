@@ -38,8 +38,7 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 #	lib_map/lib_map.a
-@ENABLE_MAPNIK_TRUE@am__append_1 = mapnik.cpp mapnik.h
-@DISABLEGARMIN_FALSE@am__append_2 = garmin_data.cpp \
+@DISABLEGARMIN_FALSE@am__append_1 = garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
@@ -111,23 +110,21 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	gpsproto.h import_map.c import_map.h routes.c routes.h \
 	download_map.c download_map.h map_projection.c \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c ../config.h \
-	gettext.h mapnik.cpp mapnik.h garmin_data.cpp \
-	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
-	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
-	garmin_link.h garmin_serial_unix.h garmin_application.h \
-	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
-	garmin_util.h garmin_error.h garmin_serial.h garmin_legacy.h \
-	garmin_data.h
-@ENABLE_MAPNIK_TRUE@am__objects_1 = mapnik.$(OBJEXT)
-@DISABLEGARMIN_FALSE@am__objects_2 = garmin_data.$(OBJEXT) \
+	nmea_handler.c nmea_handler.h unit_test.c mapnik.cpp mapnik.h \
+	../config.h gettext.h garmin_data.cpp garmin_serial_unix.cpp \
+	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
+	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
+	garmin_serial_unix.h garmin_application.h garmin_packet.h \
+	garmin_types.h garmin_command.h garmin_phys.h garmin_util.h \
+	garmin_error.h garmin_serial.h garmin_legacy.h garmin_data.h
+@DISABLEGARMIN_FALSE@am__objects_1 = garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
-am__objects_3 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
+am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
 	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) wlan.$(OBJEXT) \
@@ -140,8 +137,8 @@ am__objects_3 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	routes.$(OBJEXT) download_map.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	unit_test.$(OBJEXT) $(am__objects_1) $(am__objects_2)
-am_gpsdrive_OBJECTS = $(am__objects_3)
+	unit_test.$(OBJEXT) mapnik.$(OBJEXT) $(am__objects_1)
+am_gpsdrive_OBJECTS = $(am__objects_2)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -216,7 +213,6 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
-@ENABLE_MAPNIK_TRUE@DEF_MAPNIK = " -DMAPNIK"
 DEF_MAPNIK = @DEF_MAPNIK@
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
@@ -380,8 +376,8 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	import_map.h routes.c routes.h download_map.c download_map.h \
 	map_projection.c speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	unit_test.c ../config.h gettext.h $(am__append_1) \
-	$(am__append_2)
+	unit_test.c mapnik.cpp mapnik.h ../config.h gettext.h \
+	$(am__append_1)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp

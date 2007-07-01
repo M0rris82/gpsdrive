@@ -126,8 +126,10 @@ map_projection (char *filename)
     proj = proj_map;
   else if (strstr (filename, "googlesat/"))
     proj = proj_googlesat;
+#ifdef MAPNIK
   else if (strstr (filename, "mapnik/"))
     proj = proj_map;
+#endif
   else if (strstr (filename, "NASAMAPS/"))
     proj = proj_top;
   else if (strstr (filename, "eniro/"))
@@ -138,8 +140,10 @@ map_projection (char *filename)
     proj = proj_top;
   else if (strstr(filename, "/top_")) /* For Compatibility */
     proj = proj_top;
+#ifdef MAPNIK
   else if (strstr(filename, "/tmp/mapnik.png"))
     proj = proj_mapnik;
+#endif
   else
     {
       proj = proj_undef;
@@ -188,11 +192,13 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
       lat = coords.zero_lat - (py/1.5) / lat2radius_pi_180 (0);
       lon = coords.zero_lon - (px*1.0) / lat2radius_pi_180 (0);
     }
+#ifdef MAPNIK
   else if (proj_mapnik == map_proj)
     {
 	  // only use the offset
 	  get_mapnik_clacxytopos(&lat, &lon, posx, posy, xoff, yoff, zoom);
     }
+#endif
   else
     {
       fprintf (stderr, "ERROR: calcxytopos: unknown map Projection\n");
@@ -260,11 +266,13 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
 	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
+#ifdef MAPNIK
   else if (proj_mapnik == map_proj)
     {
 	  // only use the offset
 	  get_mapnik_clacxy(posx, posy, lat, lon, xoff, yoff, zoom);
     }
+#endif
   else
 	fprintf (stderr, "ERROR: calcxy: unknown map Projection\n");
 
@@ -298,10 +306,13 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
       *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
+#ifdef MAPNIK
   else if (proj_mapnik == map_proj) {
 	  *dif = 0;
 	  get_mapnik_minixy2latlon(px, py, lat, lon);
-  } else {
+  }
+#endif
+  else {
     printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
   }
   *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
@@ -313,10 +324,12 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
 void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
 {
   
+#ifdef MAPNIK
   if (proj_mapnik == map_proj) {
 	  get_mapnik_miniclacxy(posx, posy, lat, lon, zoom);
 	  return;
   }
+#endif
   gdouble dif;
   if (proj_map == map_proj)
     *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);

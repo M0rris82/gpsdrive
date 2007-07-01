@@ -11,6 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 
+#ifdef MAPNIK
 #ifndef _MAPNIK_DEF_H
 #define _MAPNIK_DEF_H
 
@@ -28,3 +29,4 @@ void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLo
 void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pZoom);
 
 #endif // _MAPNIK_DEF_H
+#endif // MAPNIK

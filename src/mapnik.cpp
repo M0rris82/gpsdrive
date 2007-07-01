@@ -24,6 +24,8 @@
 #include "mapnik.h"
 #include "config.h"
 
+#ifdef MAPNIK
+
 using mapnik::Image32;
 using mapnik::Map;
 using mapnik::Layer;
@@ -345,3 +347,5 @@ void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double 
 
 
 } //end namespace mapnik
+
+#endif
