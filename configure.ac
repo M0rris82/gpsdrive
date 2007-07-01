@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn14283380, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn143114463405, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -278,7 +278,7 @@ echo "------------------------------------------------------------------"
 echo "Mapnik"
 echo "------------------------------------------------------------------"
 
-echo "enable_mapnik: $enable_mapnik"
+dnl echo "enable_mapnik: $enable_mapnik"
 
 AC_MSG_CHECKING([for Mapnik support])
 if $PKG_CONFIG mapnik --atleast-version=1.0.3
@@ -294,29 +294,33 @@ else
    dnl enable_mapnik=no
 fi
 
-echo "enable_mapnik: $enable_mapnik"
+dnl echo "enable_mapnik: $enable_mapnik"
 
 AC_MSG_CHECKING([for Mapnik lib support])
-AC_CHECK_LIB([mapnik], [Envelope],
-           [
-	   AC_MSG_RESULT([yes])
-	   if test x"$enable_mapnik" == "x"; then
-	      enable_mapnik=yes
-	   fi
-	   ],
-	   [
-	   AC_MSG_RESULT([no])
-	   dnl enable_mapnik=no
- 	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
-	   if test x"$enable_mapnik" == "xyes"; then
-	      AC_MSG_ERROR([mapnik is missing or cannot be linked on your system])
-	   else
-	      enable_mapnik=no
-	   fi
-	   ])
+AC_CHECK_LIB([mapnik], [Envelope],	   AC_MSG_RESULT([yes]))
+
+
+dnl AC_MSG_CHECKING([for Mapnik lib support])
+dnl AC_CHECK_LIB([mapnik], [Envelope__8mapnikPci],
+dnl            [
+dnl 	   AC_MSG_RESULT([yes])
+dnl 	   if test x"$enable_mapnik" == "x"; then
+dnl 	      enable_mapnik=yes
+dnl 	   fi
+dnl 	   ],
+dnl 	   [
+dnl 	   AC_MSG_RESULT([no])
+dnl 	   dnl enable_mapnik=no
+dnl  	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
+dnl 	   if test x"$enable_mapnik" == "xyes"; then
+dnl 	      AC_MSG_ERROR([mapnik is missing or cannot be linked on your system])
+dnl 	   else
+dnl 	      enable_mapnik=no
+dnl 	   fi
+dnl 	   ])
 
 dnl --------------------------------------------
-echo "enable_mapnik: $enable_mapnik"
+dnl echo "enable_mapnik: $enable_mapnik"
 
 AC_ARG_ENABLE(mapnik,
 	[  --disable-mapnik        disable use of mapnik modules],[
@@ -330,7 +334,7 @@ AC_ARG_ENABLE(mapnik,
 		*) AC_MSG_ERROR(bad value ${enableval} for --enable-garmin) ;;
 	esac
 ])
-AM_CONDITIONAL(ENABLE_MAPNIK, test x$enable_mapnik = xtrue)
+AM_CONDITIONAL([ENABLE_MAPNIK], test x$enable_mapnik = xyes)
 
 
 dnl ---------------------------------------------------------------------------
@@ -606,7 +610,7 @@ dnl   GETTEXT
 dnl *******************************
 
 AM_GNU_GETTEXT([external]) 
-#AM_GNU_GETTEXT_VERSION([0.16.1])
+AM_GNU_GETTEXT_VERSION([0.16.1])
 #AM_GNU_GETTEXT
                                                                                 
 GETTEXT_PACKAGE=gpsdrive

@@ -271,6 +271,7 @@ make_display_map_controls ()
 		"left mouse button click. Clicking near the border switches "
 		"to the proximate map."), NULL);
 
+#ifdef MAPNIK
 	// Checkbox ---- Mapnik Mode
 	mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
 	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
@@ -293,6 +294,7 @@ make_display_map_controls ()
 		_("Turn mapnik mode on. In this mode vector maps rendered by "
 		"mapnik (e.g. OpenStreetMap Data) are used instead of the "
 		"other maps."), NULL);
+#endif
 
 	return frame_maptype;
 }
@@ -888,6 +890,7 @@ test_and_load_newmap ()
         return;
     }
 
+#ifdef MAPNIK
     if ( local_config.MapnikStatusInt > 0 ){
 		if (mydebug > 0)
 		    fprintf (stderr, "rendering mapnik map ....\n");
@@ -917,6 +920,7 @@ test_and_load_newmap ()
 		}
 	return;
     }
+#endif
 
     /* search for suitable maps */
     if (displaymap_top) nasaisvalid = create_nasa ();

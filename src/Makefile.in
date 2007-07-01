@@ -38,7 +38,8 @@ build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 #	lib_map/lib_map.a
-@DISABLEGARMIN_FALSE@am__append_1 = garmin_data.cpp \
+@ENABLE_MAPNIK_TRUE@am__append_1 = mapnik.cpp mapnik.h
+@DISABLEGARMIN_FALSE@am__append_2 = garmin_data.cpp \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
 @DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
@@ -48,8 +49,13 @@ bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_check_perl_modules.m4 \
+	$(top_srcdir)/m4/ac_check_socketlen_t.m4 \
+	$(top_srcdir)/m4/aq_check_gdal.m4 $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -98,43 +104,44 @@ am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
 	speech_out.h friends.c battery.c track.c poi.c streets.c \
 	wlan.c waypoint.c draw_grid.c settings.c battery.h track.h \
 	poi.h streets.h wlan.h waypoint.h gpsdrive.h gpssql.c \
-	gpskismet.c gpskismet.h icons.c icons.h gui.c gui.h \
+	gpskismet.c gpskismet.h icons.c icons.h gui.c gui.h poi_gui.c \
+	poi_gui.h navigation_gui.c settings_gui.c \
 	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
 	gpsnasamap.c gpsmisc.c geometry.c map_handler.c map_handler.h \
 	gpsproto.h import_map.c import_map.h routes.c routes.h \
 	download_map.c download_map.h map_projection.c \
 	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h navigation_gui.c poi_gui.c \
-	settings_gui.c unit_test.c mapnik.cpp mapnik.h ../config.h \
-	gettext.h garmin_data.cpp garmin_serial_unix.cpp \
-	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
-	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
-	garmin_serial_unix.h garmin_application.h garmin_packet.h \
-	garmin_types.h garmin_command.h garmin_phys.h garmin_util.h \
-	garmin_error.h garmin_serial.h garmin_legacy.h garmin_data.h
-@DISABLEGARMIN_FALSE@am__objects_1 = garmin_data.$(OBJEXT) \
+	nmea_handler.c nmea_handler.h unit_test.c ../config.h \
+	gettext.h mapnik.cpp mapnik.h garmin_data.cpp \
+	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp \
+	garmin_link.h garmin_serial_unix.h garmin_application.h \
+	garmin_packet.h garmin_types.h garmin_command.h garmin_phys.h \
+	garmin_util.h garmin_error.h garmin_serial.h garmin_legacy.h \
+	garmin_data.h
+@ENABLE_MAPNIK_TRUE@am__objects_1 = mapnik.$(OBJEXT)
+@DISABLEGARMIN_FALSE@am__objects_2 = garmin_data.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
 @DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
-am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
+am__objects_3 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
 	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) wlan.$(OBJEXT) \
 	waypoint.$(OBJEXT) draw_grid.$(OBJEXT) settings.$(OBJEXT) \
 	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
-	gui.$(OBJEXT) LatLong-UTMconversion.$(OBJEXT) \
+	gui.$(OBJEXT) poi_gui.$(OBJEXT) navigation_gui.$(OBJEXT) \
+	settings_gui.$(OBJEXT) LatLong-UTMconversion.$(OBJEXT) \
 	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) \
 	geometry.$(OBJEXT) map_handler.$(OBJEXT) import_map.$(OBJEXT) \
 	routes.$(OBJEXT) download_map.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	navigation_gui.$(OBJEXT) poi_gui.$(OBJEXT) \
-	settings_gui.$(OBJEXT) unit_test.$(OBJEXT) mapnik.$(OBJEXT) \
-	$(am__objects_1)
-am_gpsdrive_OBJECTS = $(am__objects_2)
+	unit_test.$(OBJEXT) $(am__objects_1) $(am__objects_2)
+am_gpsdrive_OBJECTS = $(am__objects_3)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -197,8 +204,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS}\
-	-I/usr/include/ \
+	${NOGARMIN} ${NOPLUGINS} ${DEF_MAPNIK}\
 	-I/usr/include/ \
 	-I/usr/local/include \
 	-I/opt/boost_1_35/include/boost-1_35 \
@@ -210,6 +216,8 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
+@ENABLE_MAPNIK_TRUE@DEF_MAPNIK = " -DMAPNIK"
+DEF_MAPNIK = @DEF_MAPNIK@
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@
@@ -220,6 +228,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
+ENABLE_MAPNIK_FALSE = @ENABLE_MAPNIK_FALSE@
+ENABLE_MAPNIK_TRUE = @ENABLE_MAPNIK_TRUE@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
@@ -255,8 +265,7 @@ LIBADD_DL = @LIBADD_DL@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-# For now I include  -lQtCore -lQtGui for debugging Mapnik
-LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS)  -lmapnik -lfreetype -lQtCore -lQtGui
+LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS)
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -277,6 +286,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CONFIG = @PCRE_CONFIG@
+PERL = @PERL@
 PERL_PACKAGE_DIR = @PERL_PACKAGE_DIR@
 PKGCONFIG_CFLAGS = @PKGCONFIG_CFLAGS@
 PKGCONFIG_LIBS = @PKGCONFIG_LIBS@
@@ -346,8 +356,11 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 @HAVE_GDAL_TRUE@SUBDIRS = lib_map util
 DIST_SUBDIRS = lib_map util
+@ENABLE_MAPNIK_FALSE@MAPNIK_LIBS = 
+@ENABLE_MAPNIK_TRUE@MAPNIK_LIBS = -lmapnik -lQtCore -lQtGui
 @DISABLEGARMIN_FALSE@PRG1 = garble
 @DISABLEGARMIN_TRUE@PRG1 = 
+# For now I include  -lQtCore -lQtGui for debugging Mapnik
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
 gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) 
 @DISABLEPLUGINS_FALSE@lib_LTLIBRARIES = libfly.la libnautic.la
@@ -360,14 +373,15 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
 	friends.c battery.c track.c poi.c streets.c wlan.c waypoint.c \
 	draw_grid.c settings.c battery.h track.h poi.h streets.h \
 	wlan.h waypoint.h gpsdrive.h gpssql.c gpskismet.c gpskismet.h \
-	icons.c icons.h gui.c gui.h LatLong-UTMconversion.c \
+	icons.c icons.h gui.c gui.h poi_gui.c poi_gui.h \
+	navigation_gui.c settings_gui.c LatLong-UTMconversion.c \
 	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
 	geometry.c map_handler.c map_handler.h gpsproto.h import_map.c \
 	import_map.h routes.c routes.h download_map.c download_map.h \
 	map_projection.c speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	navigation_gui.c poi_gui.c settings_gui.c unit_test.c \
-	mapnik.cpp mapnik.h ../config.h gettext.h $(am__append_1)
+	unit_test.c ../config.h gettext.h $(am__append_1) \
+	$(am__append_2)
 gpsdrive_SOURCES = $(PRGS)
 @DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
 @DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
