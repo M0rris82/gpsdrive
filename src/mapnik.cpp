@@ -18,9 +18,11 @@
 #include <mapnik/memory_datasource.hpp>
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
-#include "mapnik.h"
 #include <string>
 #include <fstream>
+
+#include "mapnik.h"
+#include "config.h"
 
 using mapnik::Image32;
 using mapnik::Map;
