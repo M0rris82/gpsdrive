@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1396, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn14283380, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -143,6 +143,8 @@ AC_HEADER_STDBOOL
 AC_PROG_GCC_TRADITIONAL
 AC_PROG_RANLIB
 AC_PROG_YACC
+
+AC_CHECK_PROG(PERL,perl,perl)
 
 AC_STRUCT_TM
 
@@ -272,19 +274,63 @@ AC_PROG_INSTALL
 
 CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
 
-dnl dnl --------------------------
-dnl echo -n checking for package mapnik1.0-0...
-dnl dnl --------------------------
-dnl if $PKG_CONFIG mapnik --atleast-version=1.0.3
-dnl then
-dnl    AC_MSG_RESULT([yes])
-dnl    AC_CHECK_LIB([mapnik], [Envelope], [], [
-dnl 	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
-dnl 	   exit -1
-dnl 	   ])
-dnl else
-dnl    AC_MSG_ERROR([mapnik is missing or your version is to old. Min Version 1.10.3])
-dnl fi
+echo "------------------------------------------------------------------"
+echo "Mapnik"
+echo "------------------------------------------------------------------"
+
+echo "enable_mapnik: $enable_mapnik"
+
+AC_MSG_CHECKING([for Mapnik support])
+if $PKG_CONFIG mapnik --atleast-version=1.0.3
+then
+   AC_MSG_RESULT([yes])
+   if test x"$enable_mapnik" == "x"; then
+      enable_mapnik=yes
+   fi
+else
+   dnl this is currently non fatal until the mapnic.pc file is added to the mapnik packages
+   dnl   AC_MSG_ERROR([mapnik is missing or your version is to old. Min Version 1.10.3])
+   AC_MSG_RESULT([no])
+   dnl enable_mapnik=no
+fi
+
+echo "enable_mapnik: $enable_mapnik"
+
+AC_MSG_CHECKING([for Mapnik lib support])
+AC_CHECK_LIB([mapnik], [Envelope],
+           [
+	   AC_MSG_RESULT([yes])
+	   if test x"$enable_mapnik" == "x"; then
+	      enable_mapnik=yes
+	   fi
+	   ],
+	   [
+	   AC_MSG_RESULT([no])
+	   dnl enable_mapnik=no
+ 	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
+	   if test x"$enable_mapnik" == "xyes"; then
+	      AC_MSG_ERROR([mapnik is missing or cannot be linked on your system])
+	   else
+	      enable_mapnik=no
+	   fi
+	   ])
+
+dnl --------------------------------------------
+echo "enable_mapnik: $enable_mapnik"
+
+AC_ARG_ENABLE(mapnik,
+	[  --disable-mapnik        disable use of mapnik modules],[
+	case "${enableval}" in
+		yes) echo "enable Mapnik support"
+		     AC_SUBST(DEF_MAPNIK,'-DMAPNIK')
+		     ;;
+		no)  echo "disable Mapnik support" 
+			disablegarmin=true
+			;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --enable-garmin) ;;
+	esac
+])
+AM_CONDITIONAL(ENABLE_MAPNIK, test x$enable_mapnik = xtrue)
 
 
 dnl ---------------------------------------------------------------------------
@@ -470,6 +516,7 @@ echo checking for package libsrces26-dev 2.6.0-6...   TODO >&2
 dnl ---------------------------
 echo checking for package libmysqlclient14-dev 4.1.15-1... TODO >&2
 AC_CHECK_LIB([mysql], [mysql_server_init])
+
 dnl ---------------------------
 echo checking for package libtiff4-dev 3.7.4-1...  TODO >&2
 dnl ---------------------------
@@ -614,7 +661,7 @@ AC_MSG_CHECKING([for DBUS support])
 if test x"$ac_dbus" == "xyes"; then
     AC_MSG_RESULT([yes])
     AC_DEFINE([DBUS_ENABLE], 1, [DBUS support])
-    # Older versions of atotools barf and die on this.
+    # Older versions of autotools barf and die on this.
     PKG_CHECK_MODULES(DBUS, dbus-1 >= 0.23.4 )
     DBUS_CFLAGS=`pkg-config --cflags dbus-glib-1`
     DBUS_LIBS=`pkg-config --libs dbus-1`
@@ -639,6 +686,33 @@ PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
 #PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr,-${prefix}-,"`
 PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
 AC_SUBST(PERL_PACKAGE_DIR)
+
+
+AC_PROG_PERL_MODULES(Bit::Vector , ,  AC_MSG_ERROR(Need Perl module Bit::Vector))
+AC_PROG_PERL_MODULES(File::Basename , ,  AC_MSG_ERROR(Need Perl module File::Basename))
+AC_PROG_PERL_MODULES(File::Copy , ,  AC_MSG_ERROR(Need Perl module File::Copy))
+AC_PROG_PERL_MODULES(File::Path , ,  AC_MSG_ERROR(Need Perl module File::Path))
+AC_PROG_PERL_MODULES(File::Slurp , ,  AC_MSG_ERROR(Need Perl module File::Slurp))
+AC_PROG_PERL_MODULES(File::Temp , ,  AC_MSG_ERROR(Need Perl module File::Temp))
+AC_PROG_PERL_MODULES(Getopt::Long , ,  AC_MSG_ERROR(Need Perl module Getopt::Long))
+AC_PROG_PERL_MODULES(HTTP::Request , ,  AC_MSG_ERROR(Need Perl module HTTP::Request))
+AC_PROG_PERL_MODULES(HTTP::Request::Common , ,  AC_MSG_ERROR(Need Perl module HTTP::Request::Common))
+AC_PROG_PERL_MODULES(IO::File , ,  AC_MSG_ERROR(Need Perl module IO::File))
+AC_PROG_PERL_MODULES(LWP::Simple , ,  AC_MSG_ERROR(Need Perl module LWP::Simple))
+AC_PROG_PERL_MODULES(LWP::UserAgent , ,  AC_MSG_ERROR(Need Perl module LWP::UserAgent))
+AC_PROG_PERL_MODULES(Math::Trig , ,  AC_MSG_ERROR(Need Perl module Math::Trig))
+AC_PROG_PERL_MODULES(WWW::Curl::Easy , ,  AC_MSG_ERROR(Need Perl module WWW::Curl::Easy))
+AC_PROG_PERL_MODULES(WWW::Mechanize , ,  AC_MSG_ERROR(Need Perl module WWW::Mechanize))
+AC_PROG_PERL_MODULES(XML::Parser , ,  AC_MSG_ERROR(Need Perl module XML::Parser))
+AC_PROG_PERL_MODULES(XML::Simple , ,  AC_MSG_ERROR(Need Perl module XML::Simple))
+AC_PROG_PERL_MODULES(XML::Twig , ,  AC_MSG_ERROR(Need Perl module XML::Twig))
+
+dnl only for OSM Stuff
+dnl AC_PROG_PERL_MODULES(Math::Polygon , ,  AC_MSG_ERROR(Need Perl module Math::Polygon))
+dnl AC_PROG_PERL_MODULES(XML::Generator , ,  AC_MSG_ERROR(Need Perl module XML::Generator))
+dnl AC_PROG_PERL_MODULES(XML::SAX::Machines , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Machines))
+dnl AC_PROG_PERL_MODULES(XML::SAX::Writer , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Writer))
+
 
 dnl ************************
 dnl crypt.h and libcrypt
