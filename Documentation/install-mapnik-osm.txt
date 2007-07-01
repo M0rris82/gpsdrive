@@ -35,6 +35,9 @@
 # ----------- Create Database Import the dump from http://www.gpsdrive.de/osm/
   sudo -u postgres createdb -Upostgres  -EUTF8 gis  
   sudo -u postgres createuser -Upostgres -S -D -R osm
+  echo "GRANT ALL on geometry_columns TO \"$user_name\";" | \
+  export user_name="tweety"
+  sudo -u postgres psql -Upostgres gis
   echo "GRANT ALL ON SCHEMA PUBLIC TO \"osm\";" | sudo -u postgres psql -Upostgres gis
   gunzip -dc ~/osm/mapnik-osm-gis.sql.gz | \
         sed "s/tweety/osm/g" | \
