@@ -19,4 +19,4 @@ gpsdrive_mapnik_gentiles.py: gpsdrive_mapnik_gentiles-in.py
 
 osm.xml: osm-in.xml
 	sed 's,DATA_DIR,${datadir},' < osm-in.xml |	\
-		sed "s,USER,${USER},g"> osm.xml
+		sed "s,USER,${LOGNAME},g"> osm.xml
