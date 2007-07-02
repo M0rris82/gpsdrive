@@ -1,6 +1,6 @@
 project(scripts)
 
-option(WITH_SCRIPTS "Install perl scripts and modules" ON)
+add_subdirectory(mapnik)
 
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
