@@ -19,3 +19,39 @@ Description: Car navigation system
  running. The maps are autoselected for best resolution depending of
  your position. All Garmin GPS reveiver with a serial output should 
  be usable, also other GPS receiver which supports NMEA protocol.
+
+Package: gpsdrive-data-maps
+Architecture: any
+Depends: gpsdrive
+Description: GpsDrive  example and overview maps
+ This Package contains the overview maps
+ for Gpsdrive.These are derived from the NASA
+ Satelite maps.
+ .
+ GpsDrive is a car (bike, ship, plane) navigation system.
+ GpsDrive displays your position provided from gpsd which gets it
+ from your NMEA or Garmin capable GPS receivers on a zoomable map, 
+ the map file is autoselected depending of the position and preferred
+ scale. Speech output is supported if the "festival" software is 
+ running. The maps are autoselected for best resolution depending of
+ your position. All Garmin GPS reveiver with a serial output should 
+ be usable, also other GPS receiver which supports NMEA protocol.
+
+
+
+Package: gpsdrive-data-map-icons
+Architecture: any
+Depends: gpsdrive
+Description: GpsDrive map-icons
+ This Package contains the map-icons for Gpsdrive.
+ .
+ GpsDrive is a car (bike, ship, plane) navigation system.
+ GpsDrive displays your position provided from gpsd which gets it
+ from your NMEA or Garmin capable GPS receivers on a zoomable map, 
+ the map file is autoselected depending of the position and preferred
+ scale. Speech output is supported if the "festival" software is 
+ running. The maps are autoselected for best resolution depending of
+ your position. All Garmin GPS reveiver with a serial output should 
+ be usable, also other GPS receiver which supports NMEA protocol.
+
+

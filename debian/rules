@@ -49,6 +49,16 @@ install: build
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
 
+	# move maps to gpsdrive-data-maps package
+	mkdir -p debian/gpsdrive-data-maps/usr/share/gpsdrive/
+	mv debian/gpsdrive/usr/share/gpsdrive/maps \
+	     debian/gpsdrive-data-maps/usr/share/gpsdrive/maps
+
+	# move map-icons to gpsdrive-data-map-icons package
+	mkdir -p debian/gpsdrive-data-map-icons/usr/share/
+	mv debian/gpsdrive/usr/share/map-icons \
+	   debian/gpsdrive-data-map-icons/usr/share/map-icons
+
 
 # Build architecture-independent files here.
 binary-indep: build install
