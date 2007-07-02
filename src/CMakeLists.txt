@@ -15,8 +15,12 @@ find_package(MySQL REQUIRED)
 find_package(XML2 REQUIRED)
 find_package(Boost REQUIRED)
 find_package(Qt4 REQUIRED)
-find_package(Mapnik REQUIRED)
 find_package(Freetype2 REQUIRED)
+
+if (WITH_MAPNIK)
+  find_package(Mapnik REQUIRED)
+endif (WITH_MAPNIK)
+
 
 set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -53,7 +57,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${QT_QTGUI_LIBRARY}
 )
 
-SET(gpsdrive_SRCS
+set(gpsdrive_SRCS
   battery.c
   battery.h
   download_map.c
@@ -84,7 +88,6 @@ SET(gpsdrive_SRCS
   LatLong-UTMconversion.h
   map_handler.c
   map_projection.c
-  mapnik.cpp
   navigation.c
   navigation_gui.c
   nmea_handler.c
@@ -112,6 +115,13 @@ SET(gpsdrive_SRCS
   wlan.c
   wlan.h
 )
+
+if (WITH_MAPNIK)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+    mapnik.cpp
+  )
+endif (WITH_MAPNIK)
 
 SET(garmin_SRCS
   garmin_application.cpp
