@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn143114463405, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn1456, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -322,16 +322,20 @@ dnl 	   ])
 dnl --------------------------------------------
 dnl echo "enable_mapnik: $enable_mapnik"
 
+AC_MSG_CHECKING([for Mapnik inclusion])
 AC_ARG_ENABLE(mapnik,
 	[  --disable-mapnik        disable use of mapnik modules],[
 	case "${enableval}" in
-		yes) echo "enable Mapnik support"
+		yes) enable_mapnik=yes
 		     AC_SUBST(DEF_MAPNIK,'-DMAPNIK')
+		     AC_MSG_RESULT([yes])
+		     echo "ENABLED Mapnik support"
 		     ;;
-		no)  echo "disable Mapnik support" 
-			disablegarmin=true
-			;;
-		*) AC_MSG_ERROR(bad value ${enableval} for --enable-garmin) ;;
+		no)  enable_mapnik=no
+		     AC_MSG_RESULT([no])
+		     echo "DISABLEED Mapnik support" 
+		     ;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --disable-mapnik) ;;
 	esac
 ])
 AM_CONDITIONAL([ENABLE_MAPNIK], test x$enable_mapnik = xyes)
