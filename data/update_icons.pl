@@ -61,7 +61,7 @@ my $default_title_en = '';
 my $default_desc_en = '';
 my $VERBOSE = $opt_v;
 
-my @ALL_TYPES = qw(square.big square.small classic svg jp );
+my @ALL_TYPES = qw(square.big square.small classic.big classic.small svg jp );
 
 #####################################################################
 #
@@ -135,8 +135,8 @@ sub update_overview
   $html_head .=     "<tr><th></th><th></th>";
   for my $type ( @ALL_TYPES  ) {
       my $txt=$type;
-      $txt=~s/\./ /;
-      $html_head .= "<th>$txt</th>\n";
+      $txt=~s/\./<br>/;
+      $html_head .= "<th align=\"top\"><font size=\"-2\">$txt</font></th>\n";
   }
   $html_head .= "</tr>\n";
   my %out;

@@ -1427,7 +1427,9 @@ settings_poi (GtkWidget *notebook)
 	gtk_combo_box_append_text
 		(GTK_COMBO_BOX(poitheme_combo), "square.small");
 	gtk_combo_box_append_text
-		(GTK_COMBO_BOX(poitheme_combo), "classic");
+		(GTK_COMBO_BOX(poitheme_combo), "classic.big");
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX(poitheme_combo), "classic.small");
 	if (!strcmp (local_config.icon_theme, "square.big"))
 	{
 		gtk_combo_box_set_active( GTK_COMBO_BOX (poitheme_combo), 0 );
@@ -1436,9 +1438,13 @@ settings_poi (GtkWidget *notebook)
 	{
 		gtk_combo_box_set_active( GTK_COMBO_BOX (poitheme_combo), 1 );
 	}
-	else if (!strcmp (local_config.icon_theme, "classic"))
+	else if (!strcmp (local_config.icon_theme, "classic.big"))
 	{
 		gtk_combo_box_set_active( GTK_COMBO_BOX (poitheme_combo), 2 );
+	}
+	else if (!strcmp (local_config.icon_theme, "classic.small"))
+	{
+		gtk_combo_box_set_active( GTK_COMBO_BOX (poitheme_combo), 3 );
 	}
 	g_signal_connect (poitheme_combo, "changed",
 		GTK_SIGNAL_FUNC (setpoitheme_cb), NULL);
