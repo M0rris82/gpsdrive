@@ -121,6 +121,7 @@ gint  unit_test_nmea()
 
 	{ 55.640393333,  12.637818333, "$GPGGA,122041.481,5538.4236,N,01238.2691,E,2,06,1.4,40.4,M,41.4,M,1.1,0000*46" },
 	{ 55.640395, 	 12.63783,     "$GPGGA,122040.481,5538.4237,N,01238.2698,E,2,06,1.4,39.8,M,41.4,M,1.1,0000*4D" },
+	{ 48.117500,11.595000,    "$GPGGA,125500.481,4807.0500,N,01135.7000,E,2,06,1.4,39.8,M,41.4,M,1.1,0000*40" },
 	{-99,-99,""},
     };
     gint i;
@@ -137,13 +138,13 @@ gint  unit_test_nmea()
 	    int ok=TRUE;
 
 	    diff = fabs(coords.current_lat - test_array[i].should_lat);
-	    if ( diff > 0.00000001  )
+	    if ( diff > 0.000001  )
 		{
 		    printf ("!!!! ERROR wrong lat diff: %f\n",diff);
 		    ok=FALSE;
 		}
 	    diff = fabs(coords.current_lon - test_array[i].should_lon);
-	    if ( diff >0.00000001  )
+	    if ( diff >0.000001  )
 		{
 		    printf ("!!!! ERROR wrong lon diff: %f\n",diff);
 		    ok=FALSE;
