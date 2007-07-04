@@ -67,7 +67,7 @@ mkdir -p logs
 
 # ------------------------------------------------------------------ GpsDrive
 # Test Gpsdrive -T with different Setup
-for icon_theme in square.big square.small classic ; do 
+for icon_theme in square.big square.small classic.big ; do 
     for LANG in en_US de_DE ; do 
 	echo "------------------> check 'gpsdrive -T' LANG=$LANG icon_theme=$icon_theme"
 	perl -p -i.bak \
