@@ -202,6 +202,9 @@ $PSRF108,0*32            WAAS/EGNOS off
 
 #define TOOLTIP_DELAY 1000
 
+#define DEG2RAD(x) (x*M_PI/180.0)
+#define RAD2DEG(x) (x/M_PI*180.0)
+
 /*
  * Declarations.
  */
@@ -319,9 +322,9 @@ coordinate_struct;
 typedef struct
 {
 	gdouble groundspeed;
-	gdouble heading;
-	gdouble bearing;
-	gchar target[80];
+	gdouble heading;	/* heading in radians */
+	gdouble bearing;	/* bearing in radians */
+	gchar target[80];	/* name of current target */
 }
 currentstatus_struct;
 

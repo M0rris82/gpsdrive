@@ -54,24 +54,12 @@ extern gdouble dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination;
+extern gdouble pixelfact, posx, posy;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble lat2RadiusArray[101];
 extern coordinate_struct coords;
-
-
-/* **********************************************************************
- * Convenience function to free malloced data
- */
-gchar
-*free_string (gchar *data)
-{
-	if(data)
-		free(data);
-	return NULL;
-}
 
 
 /* **********************************************************************

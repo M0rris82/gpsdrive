@@ -163,7 +163,7 @@ GtkWidget *distlabel, *speedlabel, *altilabel, *miles;
 //GtkWidget *startgps_bt;
 GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
 gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle = 0;
-gdouble pixelfact, posx, posy, angle_to_destination, direction, bearing;
+gdouble pixelfact, posx, posy;
 GdkPixbuf *image = NULL, *tempimage = NULL, *miniimage = NULL;
 
 extern GdkPixbuf *friendsimage, *friendspixbuf;
@@ -362,6 +362,7 @@ GtkWidget *settingsnotebook;
 gint useflite = FALSE;
 extern gint zone;
 gint ignorechecksum = FALSE;
+gint friends_poi_id[TRAVEL_N_MODES];
 
 /* Give more debug informations */
 gint mydebug = 0;
@@ -434,8 +435,6 @@ int havedefaultmap = TRUE;
 int storetz = FALSE;
 int egnoson = 0, egnosoff = 0;
 extern char actualstreetname[200];
-
-#define DEG2RAD M_PI/180.0
 
 // ---------------------- for nmea_handler.c
 extern gint haveRMCsentence;
@@ -786,11 +785,11 @@ display_status2 ()
 	g_snprintf (s2, sizeof (s2), "1:%ld", mapscale);
 	gtk_label_set_text (GTK_LABEL (label_map_scale), s2);
 
-	g_snprintf (s2, sizeof (s2), "%3.0f%s", direction * 180.0 / M_PI,
+	g_snprintf (s2, sizeof (s2), "%3.0f%s", RAD2DEG (current.heading),
 		    gradsym);
 	gtk_label_set_text (GTK_LABEL (label_heading), s2);
 
-	g_snprintf (s2, sizeof (s2), "%3.0f%s", bearing * 180.0 / M_PI,
+	g_snprintf (s2, sizeof (s2), "%3.0f%s", RAD2DEG (current.bearing),
 		    gradsym);
 	gtk_label_set_text (GTK_LABEL (label_baering), s2);
 
@@ -1209,7 +1208,7 @@ expose_sats_cb (GtkWidget * widget, guint * datum)
 					gint x, y;
 					gdouble el, az;
 					el = (90.0 - satlistdisp[i][2]);
-					az = satlistdisp[i][3] * DEG2RAD;
+					az = DEG2RAD(satlistdisp[i][3]);
 
 					x = (PSIZE / 2) +
 						sin (az) * (el / 90.0) *
@@ -1691,7 +1690,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 				/*       SHADOWOFFSET, */
 				/*       posy - 20 * cos (angle_to_destination) + */
 				/*       SHADOWOFFSET); */
-				w = angle_to_destination + M_PI;
+				w = current.bearing + M_PI;
 				poly[0].x =
 					posx + SHADOWOFFSET +
 					(PFSIZE) / 2.3 * (cos (w + M_PI_2));
@@ -1734,7 +1733,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 					      posy + 2 - 7 + SHADOWOFFSET, 10,
 					      10, 0, 360 * 64);
 
-				w = direction + M_PI;
+				w = current.heading + M_PI;
 				poly[0].x =
 					posx + SHADOWOFFSET +
 					(PFSIZE2) / 2.3 * (cos (w + M_PI_2));
@@ -1773,7 +1772,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 				      posy - 7, 14, 14, 0, 360 * 64);
 			/*  draw pointer to destination */
 
-			w = angle_to_destination + M_PI;
+			w = current.bearing + M_PI;
 
 			poly[0].x =
 				posx + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
@@ -1794,7 +1793,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			gdk_gc_set_foreground (kontext, &colors.red);
 			gdk_draw_arc (drawable, kontext, 0, posx + 2 - 7,
 				      posy + 2 - 7, 10, 10, 0, 360 * 64);
-			w = direction + M_PI;
+			w = current.heading + M_PI;
 			poly[0].x =
 				posx + (PFSIZE2) / 2.3 * (cos (w + M_PI_2));
 			poly[0].y =
@@ -1822,13 +1821,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 		/*  If we are in position mode we set direction to zero to see where is the  */
 		/*  target  */
 		if (gui_status.posmode)
-			direction = 0;
+			current.heading = 0.0;
 
-		bearing = angle_to_destination - direction;
-		if (bearing < 0)
-			bearing += 2 * M_PI;
-		if (bearing > (2 * M_PI))
-			bearing -= 2 * M_PI;
 		display_status2 ();
 
 	}
@@ -2163,7 +2157,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 
 	/* compass */
 	//      /* added by zwerg (Daniel Wernle)
-	w = -direction + M_PI;
+	w = - current.heading + M_PI;
 
 	j = 0;
 
@@ -2237,7 +2231,7 @@ expose_compass (GtkWidget * widget, guint * datum)
 
 	}
 
-	w = bearing + M_PI;
+	w = current.bearing + M_PI;
 
 #define TRIANGLEFACTOR 0.75
 	gdk_gc_set_foreground (compasskontext, &colors.black);
@@ -2276,7 +2270,7 @@ gint
 expose_cb (GtkWidget * widget, guint * datum)
 {
 	gint x, y, i, oldxoff, oldyoff, xoffmax, yoffmax, ok, okcount;
-	gdouble tx, ty, lastangle;
+	gdouble tx, ty;
 	gchar name[40], s1[40], *tn;
 
 	if (mydebug >50) printf ("expose_cb()\n");
@@ -2315,29 +2309,22 @@ expose_cb (GtkWidget * widget, guint * datum)
 		posy = posy + yoff;
 
 		/*  Calculate Angle to destination */
-		tx = (2 * R * M_PI / 360) * cos (M_PI * coords.current_lat / 180.0) *
-			(coords.target_lon - coords.current_lon);
-		ty = (2 * R * M_PI / 360) * (coords.target_lat - coords.current_lat);
-		lastangle = angle_to_destination;
-		angle_to_destination = atan (tx / ty);
-		/*        g_print ("\ntx: %f, ty:%f angle_to_dest: %f", tx, ty, */
-		/*                 angle_to_destination); */
-		if (!finite (angle_to_destination))
-			angle_to_destination = lastangle;
-		else
+		tx = (2 * R * M_PI / 360) * cos (DEG2RAD (coords.current_lat))
+			* (coords.target_lon - coords.current_lon);
+		ty = (2 * R * M_PI / 360)
+			* (coords.target_lat - coords.current_lat);
+		current.bearing = atan (tx / ty);
+
+		if (TRUE)
 		{
 			/*  correct the value to be < 2*PI */
 			if (ty < 0)
-				angle_to_destination =
-					M_PI + angle_to_destination;
-			if (angle_to_destination >= (2 * M_PI))
-				angle_to_destination -= 2 * M_PI;
-			if (angle_to_destination < 0)
-				angle_to_destination += 2 * M_PI;
+				current.bearing += M_PI;
+			if (current.bearing >= (2 * M_PI))
+				current.bearing -= 2 * M_PI;
+			if (current.bearing < 0)
+				current.bearing += 2 * M_PI;
 		}
-		if ( mydebug>30 )
-			g_print ("Angle_To_Destination: %.1f �\n",
-				 angle_to_destination * 180 / M_PI);
 
 		if (local_config.showfriends && current.target[0] == '*')
 			for (i = 0; i < maxfriends; i++)
@@ -2526,8 +2513,8 @@ simulated_pos (GtkWidget * widget, guint * datum)
 
 	ACCELMAX = 0.00002 + dist / 30000.0;
 	ACCEL = ACCELMAX / 20.0;
-	long_diff += ACCEL * sin (angle_to_destination);
-	lat_diff += ACCEL * cos (angle_to_destination);
+	long_diff += ACCEL * sin (current.bearing);
+	lat_diff += ACCEL * cos (current.bearing);
 	if (long_diff > ACCELMAX)
 		long_diff = ACCELMAX;
 	if (long_diff < -ACCELMAX)
@@ -2551,20 +2538,20 @@ simulated_pos (GtkWidget * widget, guint * datum)
 #define MINSPEED 1.0
 		if (((fabs (tx)) > MINSPEED) || (((fabs (ty)) > MINSPEED)))
 		{
-			lastdirection = direction;
+			lastdirection = current.heading;
 			if (ty == 0)
-				direction = 0.0;
+				current.heading = 0.0;
 			else
-				direction = atan (tx / ty);
-			if (!finite (direction))
-				direction = lastdirection;
+				current.heading = atan (tx / ty);
+			if (!finite (current.heading))
+				current.heading = lastdirection;
 
 			if (ty < 0)
-				direction = M_PI + direction;
-			if (direction >= (2 * M_PI))
-				direction -= 2 * M_PI;
-			if (direction < 0)
-				direction += 2 * M_PI;
+				current.heading = M_PI + current.heading;
+			if (current.heading >= (2 * M_PI))
+				current.heading -= 2 * M_PI;
+			if (current.heading < 0)
+				current.heading += 2 * M_PI;
 			current.groundspeed =
 				milesconv * sqrt (tx * tx +
 						  ty * ty) * 3.6 / secs;
@@ -3934,7 +3921,6 @@ main (int argc, char *argv[])
     g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
     g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
-    direction = angle_to_destination = 0;
     g_strlcpy (current.target, "     ", sizeof (current.target));
     g_strlcpy (utctime, "n/a", sizeof (utctime));
     g_strlcpy (oldangle, "none", sizeof (oldangle));
@@ -3944,6 +3930,7 @@ main (int argc, char *argv[])
     haveNMEA = FALSE;
     havepos = gblink = blink = FALSE;
     haveposcount = haveGARMIN = debug = 0;
+    current.heading = current.bearing = 0.0;
     zoom = 1;
     iszoomed = FALSE;
     find_poi_bt = NULL;
@@ -4630,9 +4617,6 @@ main (int argc, char *argv[])
 
     //if (haveGARMIN)
     //	gtk_widget_set_sensitive (startgps_bt, FALSE);
-
-    friends_init ();
-
 
     if (usesql) 
 	{
@@ -5464,6 +5448,7 @@ main (int argc, char *argv[])
 
 	/* do all the basic initalisation for the specific sections */
 	poi_init ();
+	friends_init ();
 	route_init ();
     wlan_init ();
     streets_init ();

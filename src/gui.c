@@ -45,6 +45,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#include <math.h>
 #include <gpsdrive.h>
 #include <icons.h>
 #include <config.h>
@@ -88,6 +89,7 @@ extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
 extern int usesql;
 extern color_struct colors;
+extern currentstatus_struct current;
 
 extern GtkWidget *poi_types_window;
 
@@ -645,6 +647,47 @@ gint switch_nightmode (gboolean value)
 	
 	return FALSE;
 }
+
+
+/* *****************************************************************************
+ * Draw position marker, also showing direction
+ */
+gboolean
+draw_marker_position (gdouble posx, gdouble posy, gdouble direction, gint type)
+{
+	/*  draw real position marker */
+
+	gdk_gc_set_foreground (kontext, &colors.orange2);
+	gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+	gdk_draw_arc (drawable, kontext, 0, posx - 7,
+	posy - 7, 14, 14, 0, 360 * 64);
+	
+	/*  draw pointer to destination */
+
+	gdouble w;
+	const gint PFSIZE = 55;
+	GdkPoint poly[16];
+	
+			w = current.bearing + M_PI;
+
+			poly[0].x =
+				posx + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
+			poly[0].y =
+				posy + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
+			poly[1].x = posx + (PFSIZE) / 9 * (cos (w + M_PI));
+			poly[1].y = posy + (PFSIZE) / 9 * (sin (w + M_PI));
+			poly[2].x = posx + PFSIZE / 10 * (cos (w + M_PI_2));
+			poly[2].y = posy + PFSIZE / 10 * (sin (w + M_PI_2));
+			poly[3].x = posx - (PFSIZE) / 9 * (cos (w + M_PI));
+			poly[3].y = posy - (PFSIZE) / 9 * (sin (w + M_PI));
+			poly[4].x = poly[0].x;
+			poly[4].y = poly[0].y;
+			gdk_draw_polygon (drawable, kontext, 1,
+					  (GdkPoint *) poly, 5);
+
+	return TRUE;
+}
+
 
 /* *****************************************************************************
  * GUI Init Main

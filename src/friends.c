@@ -54,6 +54,7 @@
 #include <gpsdrive_config.h>
 #include <math.h>
 #include "gui.h"
+#include "poi.h"
 
 #define	SERV_UDP_PORT	50123
 /*  Defines for gettext I18n */
@@ -80,6 +81,8 @@ extern gint zoom;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 extern int usesql;
 extern gint mydebug;
+extern gint friends_poi_id[TRAVEL_N_MODES];
+extern poi_type_struct poi_type_list[poi_type_list_max];
 extern color_struct colors;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -495,7 +498,7 @@ friends_init ()
 {
 
   char *key, buf2[20];
-  int f;
+  int f, i, j;
   long int r;
   time_t ti, tii;
 
@@ -529,6 +532,29 @@ friends_init ()
   friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
   fserver = malloc (1 * sizeof (friendsstruct));
 
+	/* store poitype ids for friends */
+	for (i = 0; i < TRAVEL_N_MODES; i++)
+	{
+		friends_poi_id[i] = -1;
+	}
+	j = 0;
+	for (i = 0; i < poi_type_list_max; i++)
+	{
+		if (g_str_has_prefix (poi_type_list[i].name, "people.friendsd"))
+		{
+			friends_poi_id[j] = poi_type_list[i].poi_type_id;
+			if (mydebug > 30)
+			{
+				fprintf (stderr,
+					"friends_init: Type %d is friend!\n",
+					friends_poi_id[j]);
+			}
+			j++;
+			if (j >= TRAVEL_N_MODES)
+				break;
+		}
+	}
+
   return (0);
 }
 
@@ -539,7 +565,7 @@ void
 drawfriends (void)
 {
   gint i;
-  gdouble posxdest, posydest, clong, clat, direction;
+  gdouble posxdest, posydest, clong, clat, heading;
   gint width, height;
   gdouble w;
   GdkPoint poly[16];
@@ -581,9 +607,9 @@ drawfriends (void)
 	      gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
 
 	      /*  draw pointer to direction */
-	      direction =
+	      heading =
 		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
-	      w = direction + M_PI;
+	      w = heading + M_PI;
 	      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 	      poly[0].x = posxdest + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
 	      poly[0].y = posydest + (PFSIZE) / 2.3 * (sin (w + M_PI_2));

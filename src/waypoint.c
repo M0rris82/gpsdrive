@@ -91,7 +91,7 @@ extern gint wptotal, wpselected;
 extern GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
 extern GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
 extern GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
-extern gdouble pixelfact, posx, posy, angle_to_destination;
+extern gdouble pixelfact, posx, posy;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;

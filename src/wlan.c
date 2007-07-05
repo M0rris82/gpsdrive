@@ -509,7 +509,7 @@ wlan_draw_list (void)
 	    // Only draw Text if less than 1000 Wlannts are to be displayed
 	    if (wlan_max < 1000)
 	      {
-		draw_text (txt, posx, posy);
+		draw_label (txt, posx, posy);
 	      }
 	  }
 	}

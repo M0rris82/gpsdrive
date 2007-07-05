@@ -71,7 +71,6 @@ extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
 extern gdouble pixelfact, posx, posy;
-extern gdouble angle_to_destination, direction, bearing;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel, testgarmin;
 extern gint satfix, usedgps;
@@ -111,8 +110,7 @@ extern gdouble dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination, direction,
-  bearing;
+extern gdouble pixelfact, posx, posy;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern FILE *nmeaout;
 // ---------------------- NMEA
@@ -254,12 +252,12 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 	gen_nmea_coord (buffer + strlen (buffer));
 	g_snprintf (buffer + strlen (buffer), sizeof (buffer), ",%.2f,%.2f",
 		    current.groundspeed / milesconv / 1.852,
-		    direction * 180.0 / M_PI);
+		    current.heading * 180.0 / M_PI);
 	strftime (buffer + strlen (buffer), 80, ",%d%m%y,,", st);
 	write_nmea_line (buffer);
 
 	g_snprintf (buffer, sizeof (buffer), "GPVTG,%.2f,T,,M,%.2f,N,%.2f,K",
-		    direction * 180.0 / M_PI,
+		    current.heading * 180.0 / M_PI,
 		    current.groundspeed / milesconv / 1.852, current.groundspeed / milesconv);
 	write_nmea_line (buffer);
 
@@ -505,7 +503,7 @@ convertRMC (char *f)
   b[3] = '.';
   b[4] = field[8][4];
   b[5] = 0;
-  /*  direction is the course we are driving */
+  /*  heading is the course we are driving */
   current.heading = atof (b);
   current.heading = current.heading * M_PI / 180;
 

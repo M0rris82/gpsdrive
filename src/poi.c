@@ -75,6 +75,7 @@ extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
 extern char dbpoifilter[5000];
+extern gint friends_poi_id[TRAVEL_N_MODES];
 extern coordinate_struct coords;
 
 char txt[5000];
@@ -95,7 +96,7 @@ poi_struct *poi_result;
 GtkListStore *poi_result_tree;
 
 glong poi_nr;			// current number of poi to count
-glong poi_list_count;			// max index of POIs actually in memory
+glong poi_list_count;		// max index of POIs actually in memory
 guint poi_result_count;		// max index of POIs found in POI search
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
 gint poi_draw = FALSE;
@@ -108,6 +109,10 @@ PangoLayout *poi_label_layout;
 poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
 GtkTreeStore *poi_types_tree;
+
+gdouble poi_lat_lr = 0, poi_lon_lr = 0;
+gdouble poi_lat_ul = 0, poi_lon_ul = 0;
+
 
 /* ******************************************************************   */
 
@@ -320,16 +325,17 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 
 
 /* *******************************************************
+ * draw standard poi label
  */
 void
-draw_text (char *txt, gdouble posx, gdouble posy)
+draw_label (char *txt, gdouble posx, gdouble posy)
 {
   gint width, height;
   gint k, k2;
 
 
   if (mydebug > 30)
-    fprintf (stderr, "draw_text(%s,%g,%g)\n", txt, posx, posy);
+    fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
 
   gdk_gc_set_foreground (kontext, &colors.textback);
 
@@ -347,11 +353,11 @@ draw_text (char *txt, gdouble posx, gdouble posy)
 
   gdk_gc_set_function (kontext, GDK_AND);
 
-  {				// Draw rectangle arround Text
-    // gdk_gc_set_foreground (kontext, &colors.textbacknew);
+  {                             // Draw rectangle arround Text
+    // gdk_gc_set_foreground (kontext, &textbacknew);
     gdk_gc_set_foreground (kontext, &colors.grey);
     gdk_draw_rectangle (drawable, kontext, 1,
-			posx + 13, posy - k2 / 2, k + 1, k2);
+                        posx + 13, posy - k2 / 2, k + 1, k2);
 
   }
 
@@ -359,21 +365,54 @@ draw_text (char *txt, gdouble posx, gdouble posy)
   pango_layout_set_font_description (poi_label_layout, pfd);
 
   gdk_draw_layout_with_colors (drawable, kontext,
-			       posx + 15, posy - k2 / 2,
-			       poi_label_layout, &colors.black, NULL);
+                               posx + 15, posy - k2 / 2,
+                               poi_label_layout, &colors.black, NULL);
   if (poi_label_layout != NULL)
     g_object_unref (G_OBJECT (poi_label_layout));
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
   pango_font_description_free (pfd);
-  if (mydebug > 30)
-    fprintf (stderr, " .... draw_text(%s,%g,%g)\n", txt, posx, posy);
 }
 
 
-/* *********************************************************
+/* *******************************************************
+ * draw friends label
  */
-gdouble poi_lat_lr = 0, poi_lon_lr = 0;
-gdouble poi_lat_ul = 0, poi_lon_ul = 0;
+void
+draw_label_friend (char *txt, gdouble posx, gdouble posy)
+{
+	gint width, height;
+	gint k, k2;
+
+	if (mydebug > 30)
+		fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
+
+	poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+
+	pfd = pango_font_description_from_string (local_config.font_friends);
+	gdk_gc_set_foreground (kontext, &colors.textbacknew);
+
+	pango_layout_set_font_description (poi_label_layout, pfd);
+	pango_layout_get_pixel_size (poi_label_layout, &width, &height);
+	k = width + 4;
+	k2 = height;
+
+	gdk_gc_set_function (kontext, GDK_COPY);
+	gdk_gc_set_function (kontext, GDK_AND);
+
+	gdk_draw_layout_with_colors (drawable, kontext,
+		posx + 16, posy - k2 / 2 + 1,
+		poi_label_layout, &colors.black, NULL);
+
+	gdk_draw_layout_with_colors (drawable, kontext,
+		posx + 15, posy - k2 / 2,
+		poi_label_layout, &colors.friends, NULL);
+	if (poi_label_layout != NULL)
+		g_object_unref (G_OBJECT (poi_label_layout));
+	/* freeing PangoFontDescription, cause it
+	 * has been copied by prev. call */
+	pango_font_description_free (pfd);
+}
+
 
 int
 poi_check_if_moved (void)
@@ -410,6 +449,22 @@ poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
 	return 1;  // return poi_type 1 = 'unknown' if not in table
 }
 
+
+/* ******************************************************************
+ * check if poi is friend
+*/
+gboolean
+poi_is_friend (gint type)
+{
+	gint i;
+	
+	for (i = 0; i < TRAVEL_N_MODES; i++)
+	{
+		if (friends_poi_id[i] == type)
+			return TRUE;
+	}
+	return FALSE;
+}
 
 /* ******************************************************************
  * add new row to poitype tree
@@ -901,12 +956,12 @@ poi_rebuild_list (void)
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
      "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
      lat_min, lat_max, lon_min, lon_max, mapscale, dbpoifilter);
-  
+
   if (mydebug > 20)
   {
     printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
   }
-  
+
   if (dl_mysql_query (&mysql, sql_query))
     {
       printf ("poi_rebuild_list: Error in query: \n");
@@ -991,18 +1046,6 @@ poi_rebuild_list (void)
 	       * `source_id` int(11) NOT NULL default \'0\',
 	       */
 	    }
-	  //(poi_list + poi_nr)->wp_id      = g_strtol (row[0], NULL);
-	  //      (poi_list + poi_nr)->alt        = g_strtod(row[2], NULL);
-	  //(poi_list + poi_nr)->name[80] = row[4];
-	  //(poi_list + poi_nr)->poi_type_id    = g_strtod(row[5], NULL); 
-	  //(poi_list + poi_nr)->proximity  = g_strtod(row[6], NULL);
-	  //(poi_list + poi_nr)->comment[255 ] = row[7]; 
-	  //(poi_list + poi_nr)->scale_min     = row[8];  
-	  //(poi_list + poi_nr)->scale_max     = row[8];  
-	  //(poi_list + poi_nr)->last_modified = row[8] 
-	  //(poi_list + poi_nr)->url[160]      = row[10]; 
-	  //(poi_list + poi_nr)->address_id    = row[11];
-	  //(poi_list + poi_nr)->source_id     = row[12]; 
 
 	  /*
 	   * if ( mydebug > 20 ) 
@@ -1059,9 +1102,6 @@ poi_rebuild_list (void)
 void
 poi_draw_list (void)
 {
-  //  gint t;
-  //  GdkSegment *routes;
-
   gint i;
 
   if (!usesql)
@@ -1083,7 +1123,7 @@ poi_draw_list (void)
 
   if (mydebug > 20)
     printf
-      ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+      ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
   if (poi_check_if_moved ())
     poi_rebuild_list ();
@@ -1099,23 +1139,12 @@ poi_draw_list (void)
 
       posx = (poi_list + i)->x;
       posy = (poi_list + i)->y;
-		
+
       if ((posx >= 0) && (posx < SCREEN_X) &&
 	  (posy >= 0) && (posy < SCREEN_Y))
 	{
 
 
-/*	  
- * 	    if ( mydebug ) 
- * 	    { printf ("POI Draw: %f %f \t( x:%f, y:%f )\t%s\n",
- * 	       (poi_list + i)->lat, (poi_list + i)->lon, 
- * 	       (poi_list + i)->x, (poi_list + i)->y, 
- * 	       (poi_list + i)->name
- * 	       );
- * 		   printf("poi_nr: %ld : i: %d\n",poi_nr,i);
- *		    }
- */
-	   
 	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
@@ -1150,19 +1179,23 @@ poi_draw_list (void)
 		    draw_small_plus_sign (posx, posy);
 		  }
 	      }
-
-	    // Only draw Text if less than 1000 Points are to be displayed
-	    if (poi_list_count < 1000)
-	      {
-		draw_text (txt, posx, posy);
-	      }
+	
+		/* draw friends label in configured color */
+		if (local_config.showfriends && poi_is_friend (icon_index))
+		{
+			draw_label_friend (txt, posx, posy);
+			//draw_marker_position (posx, posy, 0.0, 1);
+		}
+		/* draw label only if we display less than 1000 POIs */
+		else if (poi_list_count < 1000)
+		{
+			draw_label (txt, posx, posy);
+		}
 	}
-
-
     }
   if (mydebug > 20)
     printf
-      ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+      ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
 

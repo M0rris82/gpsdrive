@@ -42,7 +42,7 @@ extern gdouble dist;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
   int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination;
+extern gdouble pixelfact, posx, posy;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 
 

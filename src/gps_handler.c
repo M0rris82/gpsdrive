@@ -92,7 +92,6 @@ extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
 extern gdouble pixelfact, posx, posy;
-extern gdouble angle_to_destination;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel, testgarmin;
 extern gint satfix, usedgps;

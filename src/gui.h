@@ -43,6 +43,8 @@ gchar *get_colorstring (GdkColor *tcolor);
 
 int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
 
+gboolean draw_marker_position
+	(gdouble posx, gdouble posy, gdouble direction, gint type);
 
 /* this will be changed to following once -s command line option is dropped */
 //int create_main_window (gchar *geom, gint *usegeom);

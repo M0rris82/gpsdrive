@@ -542,7 +542,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	}
 
 	speechcount++;
-	angle = current.bearing * 180.0 / M_PI;
+	angle = RAD2DEG (current.bearing);
 
 	if (!local_config.simmode && !havepos)
 	{

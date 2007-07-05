@@ -46,7 +46,7 @@ extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination;
+extern gdouble pixelfact, posx, posy;
 extern gdouble bearing;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble trip_lat, trip_lon;
@@ -96,7 +96,6 @@ extern GtkObject *scaler_adj;
 #  define N_(String) (String)
 # endif
 
-#define Deg2Rad(x) (x*M_PI/180.0)
 
 enum map_projections map_proj = proj_top;
 
@@ -175,12 +174,12 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     {
       lat = coords.zero_lat - py / lat2radius_pi_180 (coords.current_lat);
       lat = coords.zero_lat - py / lat2radius_pi_180 (lat);
-      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
+      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)));
 
-      dif = lat * (1 - (cos (Deg2Rad (fabs (lon - coords.zero_lon)))));
+      dif = lat * (1 - (cos (DEG2RAD(fabs (lon - coords.zero_lon)))));
       lat = lat - dif / 1.5;
 
-      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)));
+      lon = coords.zero_lon - px / (lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)));
     }
   else if (proj_top == map_proj)
     {
@@ -251,9 +250,9 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 
   if (proj_map == map_proj)
       {
-	  *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);
+	  *posx = lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)) * (lon - coords.zero_lon);
 	  *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
-	  dif = lat2radius (lat) * (1 - (cos (Deg2Rad ((lon - coords.zero_lon)))));
+	  dif = lat2radius (lat) * (1 - (cos (DEG2RAD((lon - coords.zero_lon)))));
 	  *posy = *posy + dif / 1.85;
       }
   else if (proj_top == map_proj)
@@ -292,18 +291,18 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
 {
   *lat = coords.zero_lat - py / lat2radius_pi_180 (coords.current_lat);
   *lat = coords.zero_lat - py / lat2radius_pi_180 (*lat);
-  *lon = coords.zero_lon - px / (lat2radius (*lat) * cos (Deg2Rad (*lat)));
+  *lon = coords.zero_lon - px / (lat2radius (*lat) * cos (DEG2RAD(*lat)));
 
   if (proj_top == map_proj)
     {
-      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
+      *dif = (*lat) * (1 - (cos (DEG2RAD(fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
   else if (proj_map == map_proj)
     *dif = 0;
   else if (proj_googlesat == map_proj)
     {
-      *dif = (*lat) * (1 - (cos (Deg2Rad (fabs (*lon - coords.zero_lon)))));
+      *dif = (*lat) * (1 - (cos (DEG2RAD(fabs (*lon - coords.zero_lon)))));
       *lat = (*lat) - (*dif) / 1.5;
     }
 #ifdef MAPNIK
@@ -314,8 +313,8 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
 #endif
   else {
     printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
+  *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (DEG2RAD(*lat)));
   }
-  *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (Deg2Rad (*lat)));
 }
 
 /* ******************************************************************
@@ -332,7 +331,7 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
 #endif
   gdouble dif;
   if (proj_map == map_proj)
-    *posx = lat2radius_pi_180 (lat) * cos (Deg2Rad (lat)) * (lon - coords.zero_lon);
+    *posx = lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)) * (lon - coords.zero_lon);
   else if (proj_top == map_proj)
     *posx = lat2radius_pi_180 (0) * (lon - coords.zero_lon);
   else if (proj_googlesat == map_proj)
@@ -344,7 +343,7 @@ void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint 
   *posx = *posx;
   if (proj_map == map_proj)
     {
-      dif = lat2radius (lat) * (1 - (cos (Deg2Rad (lon - coords.zero_lon))));
+      dif = lat2radius (lat) * (1 - (cos (DEG2RAD(lon - coords.zero_lon))));
       *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       *posy = *posy + dif / 1.85;
     }

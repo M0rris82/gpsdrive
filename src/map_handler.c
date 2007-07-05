@@ -48,7 +48,7 @@ extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
 extern gint real_psize, real_smallmenu, int_padding;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy, angle_to_destination;
+extern gdouble pixelfact, posx, posy;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
 extern gdouble trip_lat, trip_lon;
 extern gdouble milesconv;
@@ -107,7 +107,6 @@ extern gint slistsize;
 #  define N_(String) (String)
 # endif
 
-#define Deg2Rad(x) (x*M_PI/180.0)
 
 enum map_projections map_projection (char *filename);
 
@@ -952,7 +951,7 @@ test_and_load_newmap ()
             /*  Longitude */
             if (proj_map == proj)
     	       posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
-                    * cos (Deg2Rad( (maps + i)->lat))
+                    * cos (DEG2RAD( (maps + i)->lat))
     	            * (coords.current_lon - (maps + i)->lon);
             else if (proj_top == proj)
     	       posx = (lat2radius (0) * M_PI / 180) * (coords.current_lon - (maps + i)->lon);
@@ -966,7 +965,7 @@ test_and_load_newmap ()
                 posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
     	           * (coords.current_lat - (maps + i)->lat);
                    dif = lat2radius ((maps + i)->lat)
-    	           * (1 - (cos (Deg2Rad((coords.current_lon - (maps + i)->lon)) )));
+    	           * (1 - (cos (DEG2RAD((coords.current_lon - (maps + i)->lon)) )));
     	        posy = posy + dif / 2.0;
             } else if (proj_top == proj) {
                 posy = (lat2radius (0) * M_PI / 180) * (coords.current_lat - (maps + i)->lat);
