@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1456, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn1461, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -277,68 +277,50 @@ CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
 echo "------------------------------------------------------------------"
 echo "Mapnik"
 echo "------------------------------------------------------------------"
-
-dnl echo "enable_mapnik: $enable_mapnik"
-
-AC_MSG_CHECKING([for Mapnik support])
-if $PKG_CONFIG mapnik --atleast-version=1.0.3
-then
-   AC_MSG_RESULT([yes])
-   if test x"$enable_mapnik" == "x"; then
-      enable_mapnik=yes
-   fi
-else
-   dnl this is currently non fatal until the mapnic.pc file is added to the mapnik packages
-   dnl   AC_MSG_ERROR([mapnik is missing or your version is to old. Min Version 1.10.3])
-   AC_MSG_RESULT([no])
-   dnl enable_mapnik=no
-fi
-
-dnl echo "enable_mapnik: $enable_mapnik"
-
 AC_MSG_CHECKING([for Mapnik lib support])
-AC_CHECK_LIB([mapnik], [Envelope],	   AC_MSG_RESULT([yes]))
-
-
-dnl AC_MSG_CHECKING([for Mapnik lib support])
-dnl AC_CHECK_LIB([mapnik], [Envelope__8mapnikPci],
-dnl            [
-dnl 	   AC_MSG_RESULT([yes])
-dnl 	   if test x"$enable_mapnik" == "x"; then
-dnl 	      enable_mapnik=yes
-dnl 	   fi
-dnl 	   ],
-dnl 	   [
-dnl 	   AC_MSG_RESULT([no])
-dnl 	   dnl enable_mapnik=no
-dnl  	   echo "Cannot Link to Mapnik Library or Mapnik Function not Found"
-dnl 	   if test x"$enable_mapnik" == "xyes"; then
-dnl 	      AC_MSG_ERROR([mapnik is missing or cannot be linked on your system])
-dnl 	   else
-dnl 	      enable_mapnik=no
-dnl 	   fi
-dnl 	   ])
-
-dnl --------------------------------------------
-dnl echo "enable_mapnik: $enable_mapnik"
+dnl This is a hack to make AC_TRY_LINK and the compiler think we have a cpp Programm
+old_ac_ext=$ac_ext
+OLD_CFLAGS=$CFLAGS
+ac_ext=cpp
+CFLAGS="$CFLAGS -lmapnik"
+dnl Above is the Hack ;-)
+AC_TRY_LINK( [#include <mapnik/map.hpp>], 
+	     [using mapnik::Map;mapnik::Map *test_map;], 
+	     [ libmapnik_linkable=yes
+	       AC_MSG_RESULT([yes] )],
+	     [ libmapnik_linkable=no 
+	       AC_MSG_RESULT([no])
+	     ])
+echo "libmapnik_linkable: $libmapnik_linkable"
+dnl reverse our hack for the rest of configure
+ac_ext=$old_ac_ext
+CFLAGS=$OLD_CFLAGS
+echo "------------------------------------------------------------------"
 
 AC_MSG_CHECKING([for Mapnik inclusion])
 AC_ARG_ENABLE(mapnik,
-	[  --disable-mapnik        disable use of mapnik modules],[
+	 AC_HELP_STRING([--disable-mapnik],
+		        [disable use of mapnik modules]),
+	[
 	case "${enableval}" in
-		yes) enable_mapnik=yes
-		     AC_SUBST(DEF_MAPNIK,'-DMAPNIK')
-		     AC_MSG_RESULT([yes])
+		yes) AC_MSG_RESULT([yes])
+		     with_mapnik=yes
 		     echo "ENABLED Mapnik support"
 		     ;;
-		no)  enable_mapnik=no
-		     AC_MSG_RESULT([no])
-		     echo "DISABLEED Mapnik support" 
+		no)  AC_MSG_RESULT([no])
+		     with_mapnik=no
+		     echo "DISABLED Mapnik support" 
 		     ;;
-		*) AC_MSG_ERROR(bad value ${enableval} for --disable-mapnik) ;;
+		*) AC_MSG_ERROR(bad value ${enableval} for --disable-mapnik)
+		   ;;
 	esac
-])
-AM_CONDITIONAL([ENABLE_MAPNIK], test x$enable_mapnik = xyes)
+	],
+	[ AC_MSG_RESULT([$libmapnik_linkable])
+	  with_mapnik=$libmapnik_linkable
+	]
+)
+AM_CONDITIONAL([WITH_MAPNIK], test x$with_mapnik = xyes)
+test x$with_mapnik = xyes && AC_SUBST(DEF_MAPNIK,'-DMAPNIK')
 
 
 dnl ---------------------------------------------------------------------------

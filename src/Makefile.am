@@ -3,12 +3,13 @@ SUBDIRS =      lib_map util
 endif
 DIST_SUBDIRS = lib_map util
 
-if ENABLE_MAPNIK
+if WITH_MAPNIK
 MAPNIK_LIBS=-lmapnik -lQtCore -lQtGui
 else
 MAPNIK_LIBS=
 endif
 
+# TODO: It's a really really bad Idea to hardcode these include Files
 DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
