@@ -404,7 +404,7 @@ extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
 GtkWidget *sateventbox = NULL, *compasseventbox = NULL;
 GtkWidget *wplabel4, *wplabel5;
-GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
+GtkWidget *wp4eventbox;
 GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
 GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
@@ -5156,19 +5156,6 @@ main (int argc, char *argv[])
 				  _("Select the map scale of avail. maps."),
 				  NULL);
 
-
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp1eventbox,
-			      _
-			      ("Number of waypoints selected from SQL server"),
-			      NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp2eventbox,
-			      _
-			      ("Number of selected waypoints, which are in range"),
-			      NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp3eventbox,
-			      _
-			      ("Range for waypoint selection in kilometers"),
-			      NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp4eventbox,
 			      _("This shows the time from your GPS receiver"),
 			      NULL);
