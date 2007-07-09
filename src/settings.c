@@ -573,6 +573,26 @@ setpoitheme_cb (GtkWidget *combo)
 
 /* ************************************************************************* */
 static gint
+setposmarker_cb (GtkWidget *widget)
+{
+	gint selection;
+	
+	selection = gtk_combo_box_get_active (GTK_COMBO_BOX (widget)); 
+
+	if (selection != -1)
+		local_config.posmarker = selection;
+	
+	if (mydebug >10)
+		fprintf (stderr, "Setting posmarker style to %d.\n",
+			local_config.posmarker);
+	
+	needtosave = TRUE;
+	
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
 settravelmode_cb (GtkWidget *widget)
 {
 	gint selection;
@@ -881,6 +901,7 @@ settings_gui (GtkWidget *notebook)
 	GtkWidget *gui_nighton_rb, *gui_nightoff_rb;
 	GtkWidget *gui_night_table, *gui_wpfont_bt;
 	GtkWidget *gui_trackstyle_combo, *gui_routestyle_combo;
+	GtkWidget *gui_marker_lb, *gui_marker_bt;
 	
 	GtkWidget *gui_gridshow_bt;
 	GtkTooltips *gui_tooltips;
@@ -924,6 +945,21 @@ settings_gui (GtkWidget *notebook)
 		      GTK_SIGNAL_FUNC (settogglevalue_cb),
 		      &local_config.showshadow);
 
+	gui_marker_lb = gtk_label_new (_("Position Marker"));
+	gui_marker_bt = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (gui_marker_bt), "Blob");
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (gui_marker_bt), "Arrow");
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (gui_marker_bt), "T-Style");
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (gui_marker_bt), local_config.posmarker);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (gui_tooltips), gui_marker_bt,
+		_("Choose the apperance of your position marker."), NULL);
+	g_signal_connect (gui_marker_bt, "changed",
+		GTK_SIGNAL_FUNC (setposmarker_cb), NULL);
+
 	gui_misc_table = gtk_table_new (3, 4, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (gui_misc_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (gui_misc_table), 5);
@@ -931,6 +967,10 @@ settings_gui (GtkWidget *notebook)
 		gui_gridshow_bt, 0, 1, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
 		gui_shadow_bt, 2, 3, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
+		gui_marker_lb, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
+		gui_marker_bt, 2, 3, 1, 2);
 	}
 	
 	/* gui nightmode settings */

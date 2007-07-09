@@ -222,6 +222,8 @@ writeconfig ()
 		fprintf (fp, "1\n");
 
 	fprintf (fp, "minsecmode = %d\n",local_config.coordmode);
+	
+	fprintf (fp, "posmarker = %d\n ", local_config.posmarker);
 
 	fprintf (fp, "nightmode = ");
 	fprintf (fp, "%d\n", local_config.nightmode);
@@ -412,6 +414,8 @@ readconfig ()
 				printoutsats = atoi (par2);
 			else if ( (strcmp(par1, "minsecmode")) == 0)
 				local_config.coordmode = atoi (par2);
+			else if ( (strcmp(par1, "posmarker")) == 0)
+				local_config.posmarker = atoi (par2);
 			else if ( (strcmp(par1, "nightmode")) == 0)
 				local_config.nightmode = atoi (par2);
 			else if ( (strcmp(par1, "cpuload")) == 0)
@@ -569,6 +573,7 @@ config_init ()
 	local_config.simmode = FALSE;
 	local_config.MapnikStatusInt = 0;
 	local_config.nightmode = NIGHT_OFF;
+	local_config.posmarker = 0;
 	local_config.maxcpuload = 40;
 	local_config.showgrid = FALSE;
 	local_config.showshadow = FALSE;

@@ -678,12 +678,18 @@ draw_posmarker (
 	
 	w = direction + M_PI;
 
-	if (style == 0)
+	if (style == 0 && shadow == FALSE)
 	{
 		/* draw position icon */
 		gdk_draw_pixbuf (drawable, kontext, posmarker_img,
 			0, 0, posx - 15, posy - 15,
 			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+	}
+
+	if (style == 0 && shadow == TRUE)
+	{
+		gdk_draw_arc (drawable, kontext, TRUE, posx-15, posy-15,
+				      30, 30, 0, 360 * 64);
 	}
 
 	if (style == 0 || style == 1)

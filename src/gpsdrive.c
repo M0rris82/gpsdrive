@@ -1668,7 +1668,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 					posx + SHADOWOFFSET,
 					posy + SHADOWOFFSET,
 					current.heading, &colors.darkgrey,
-					1, TRUE);
+					local_config.posmarker, TRUE);
 			}
 
 			/*  draw pointer to destination */
@@ -1678,7 +1678,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 			/*  draw pointer to direction of motion */
 			draw_posmarker (posx, posy, current.heading,
-				&colors.orange2, 0, FALSE);
+				&colors.orange2, local_config.posmarker, FALSE);
 		}
 		if (markwaypoint)
 		{

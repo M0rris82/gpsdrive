@@ -50,6 +50,7 @@ typedef struct
 	gint nightmode;
 	gint guimode;
 	gint maxcpuload;
+	gint posmarker;
 	gchar wp_file[200];
 	gchar dir_home[500];
 	gchar dir_maps[500];
