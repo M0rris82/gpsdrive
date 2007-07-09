@@ -403,7 +403,7 @@ gint forcehavepos = FALSE;
 extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
 GtkWidget *sateventbox = NULL, *compasseventbox = NULL;
-GtkWidget *wplabel1, *wplabel2, *wplabel3, *wplabel4, *wplabel5;
+GtkWidget *wplabel4, *wplabel5;
 GtkWidget *wp1eventbox, *wp2eventbox, *wp3eventbox, *wp4eventbox;
 GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
 GtkWidget *satslabel2eventbox, *satslabel3eventbox;
@@ -2298,27 +2298,9 @@ expose_cb (GtkWidget * widget, guint * datum)
 		}
 	}
 
-	if (usesql)
-	{
-		g_snprintf (s1, sizeof (s1), "%d", wptotal);
-		gtk_entry_set_text (GTK_ENTRY (wplabel1), s1);
-		g_snprintf (s1, sizeof (s1), "%d", wpselected);
-		gtk_entry_set_text (GTK_ENTRY (wplabel2), s1);
-		if (dbusedist)
-			g_snprintf (s1, sizeof (s1), "%.1f km", dbdistance);
-		else
-			g_snprintf (s1, sizeof (s1), _("unused"));
-		gtk_entry_set_text (GTK_ENTRY (wplabel3), s1);
-		gtk_entry_set_text (GTK_ENTRY (wplabel4), loctime);
-	}
-	else
-	{
-		g_strlcpy (s1, _("n/a"), sizeof (s1));
-		gtk_entry_set_text (GTK_ENTRY (wplabel1), s1);
-		gtk_entry_set_text (GTK_ENTRY (wplabel2), s1);
-		gtk_entry_set_text (GTK_ENTRY (wplabel3), s1);
-		gtk_entry_set_text (GTK_ENTRY (wplabel4), loctime);
-	}
+	gtk_entry_set_text (GTK_ENTRY (wplabel4), loctime);
+
+
 	if (local_config.showfriends)
 		g_snprintf (s1, sizeof (s1), "%d/%d", actualfriends,
 			    maxfriends);
@@ -4637,60 +4619,27 @@ main (int argc, char *argv[])
     if ( mydebug >99 ) fprintf(stderr , "create WP-Navigation Frames\n");
     // Frame --- 
     /*  displays waypoints number */
-    wplabeltable = gtk_table_new (2, 6, TRUE);
-
-    /* selected waypoints */
-    wplabel1 = gtk_entry_new ();
-    wp1eventbox = gtk_event_box_new ();
-    gtk_container_add (GTK_CONTAINER (wp1eventbox), wplabel1);
-    gtk_entry_set_text (GTK_ENTRY (wplabel1), "--");
-    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp1eventbox, 0,
-			       2, 0, 1);
-
-    /* waypoints in range */
-    wplabel2 = gtk_entry_new ();
-    wp2eventbox = gtk_event_box_new ();
-    gtk_container_add (GTK_CONTAINER (wp2eventbox), wplabel2);
-    gtk_entry_set_text (GTK_ENTRY (wplabel2), "--");
-    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp2eventbox, 2,
-			       4, 0, 1);
-
-    /* range in km */
-    wplabel3 = gtk_entry_new ();
-    wp3eventbox = gtk_event_box_new ();
-    gtk_container_add (GTK_CONTAINER (wp3eventbox), wplabel3);
-    gtk_entry_set_text (GTK_ENTRY (wplabel3), "--");
-    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp3eventbox, 0,
-			       3, 1, 2);
+    wplabeltable = gtk_table_new (2, 1, TRUE);
 
     /* gps time */
     wplabel4 = gtk_entry_new ();
     wp4eventbox = gtk_event_box_new ();
     gtk_container_add (GTK_CONTAINER (wp4eventbox), wplabel4);
     gtk_entry_set_text (GTK_ENTRY (wplabel4), _("n/a"));
-    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp4eventbox, 3,
-			       6, 1, 2);
+    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp4eventbox, 0,
+			       1, 0, 1);
 
     wplabel5 = gtk_entry_new ();
     wp5eventbox = gtk_event_box_new ();
     gtk_container_add (GTK_CONTAINER (wp5eventbox), wplabel5);
     gtk_entry_set_text (GTK_ENTRY (wplabel5), _("n/a"));
-    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp5eventbox, 4,
-			       6, 0, 1);
+    gtk_table_attach_defaults (GTK_TABLE (wplabeltable), wp5eventbox, 0,
+			       1, 1, 2);
 
-
-    gtk_entry_set_editable (GTK_ENTRY (wplabel1), FALSE);
-    gtk_entry_set_editable (GTK_ENTRY (wplabel2), FALSE);
-    gtk_entry_set_editable (GTK_ENTRY (wplabel3), FALSE);
     gtk_entry_set_editable (GTK_ENTRY (wplabel4), FALSE);
     gtk_entry_set_editable (GTK_ENTRY (wplabel5), FALSE);
-    gtk_widget_set_usize (wplabel1, USIZE_X, USIZE_Y);
-    gtk_widget_set_usize (wplabel2, USIZE_X, USIZE_Y);
-    gtk_widget_set_usize (wplabel3, USIZE_X, USIZE_Y);
     gtk_widget_set_usize (wplabel4, USIZE_X, USIZE_Y);
     gtk_widget_set_usize (wplabel5, USIZE_X, USIZE_Y);
-
-
 
 #ifdef AFDAFDA
     if (local_config.guimode == GUI_PDA)

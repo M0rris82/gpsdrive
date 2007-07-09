@@ -76,8 +76,7 @@ extern gint nighttimer, iszoomed;
 extern gint newsatslevel, testgarmin, needtosave;
 extern gint wpsize, satfix, usedgps, earthmate, disableserial;
 extern gchar serialdev[80];
-extern GtkWidget *distlabel, *speedlabel, *altilabel, *miles, *startgpsbt,
-  *setup_bt;
+extern GtkWidget *miles, *setup_bt;
 extern gint gcount, downloadwindowactive;
 extern gint disableapm;
 extern GtkWidget *mainwindow, *status, *pixmapwidget, *gotowindow;
