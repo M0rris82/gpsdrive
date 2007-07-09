@@ -567,11 +567,8 @@ drawfriends (void)
   gint i;
   gdouble posxdest, posydest, clong, clat, heading;
   gint width, height;
-  gdouble w;
-  GdkPoint poly[16];
   struct tm *t;
   time_t ti, tif;
-#define PFSIZE 55
 
   actualfriends = 0;
   /*   g_print("Maxfriends: %d\n",maxfriends); */
@@ -604,37 +601,12 @@ drawfriends (void)
 			       friendspixbuf, 0, 0,
 			       posxdest - 18, posydest - 12,
 			       39, 24, GDK_RGB_DITHER_NONE, 0, 0);
-	      gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
 
 	      /*  draw pointer to direction */
 	      heading =
 		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
-	      w = heading + M_PI;
-	      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	      poly[0].x = posxdest + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
-	      poly[0].y = posydest + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
-	      poly[1].x = posxdest + (PFSIZE) / 9 * (cos (w + M_PI));
-	      poly[1].y = posydest + (PFSIZE) / 9 * (sin (w + M_PI));
-	      poly[2].x = posxdest + PFSIZE / 10 * (cos (w + M_PI_2));
-	      poly[2].y = posydest + PFSIZE / 10 * (sin (w + M_PI_2));
-	      poly[3].x = posxdest - (PFSIZE) / 9 * (cos (w + M_PI));
-	      poly[3].y = posydest - (PFSIZE) / 9 * (sin (w + M_PI));
-	      poly[4].x = poly[0].x;
-	      poly[4].y = poly[0].y;
-	      gdk_gc_set_foreground (kontext, &colors.blue);
-	      gdk_draw_polygon (drawable, kontext, 0, (GdkPoint *) poly, 5);
-	      gdk_draw_arc (drawable, kontext, 0,
-			posxdest + 2 - 7,
-			posydest + 2 - 7, 10, 10, 0, 360 * 64);
-
-	      /*   draw + sign at destination   */
-	      gdk_gc_set_foreground (kontext, &colors.red);
-	      gdk_draw_line (drawable, kontext,
-			posxdest + 1, posydest + 1 - 5,
-			posxdest + 1, posydest + 1 + 5);
-	      gdk_draw_line (drawable, kontext,
-			posxdest + 1 + 5, posydest + 1,
-			posxdest + 1 - 5, posydest + 1);
+	      draw_posmarker
+	      	(posxdest, posydest, heading, &colors.blue, 1, FALSE);
 
 	      {	/* print friends name / speed on map */
 		PangoFontDescription *pfd;

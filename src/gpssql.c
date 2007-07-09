@@ -389,6 +389,8 @@ getsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *re
 	else
 	{
 		result_id = strtol (row[0], NULL, 10);
+		if (row[1])
+			result = g_strdup (row[1]);
 	}
 	dl_mysql_free_result (res);
 	res = NULL;

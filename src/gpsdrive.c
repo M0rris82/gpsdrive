@@ -379,6 +379,8 @@ extern gint sqlselects[MAXPOITYPES], sqlplace, friendsplace, kismetsock, havekis
 extern GdkPixbuf *kismetpixbuf,	*iconpixbuf[50];
 gint earthmate = FALSE;
 
+extern GdkPixbuf *posmarker_img;
+
 extern gint wptotal, wpselected;
 
 extern routestatus_struct route;
@@ -1556,8 +1558,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 {
 	gdouble posxdest, posydest, posxmarker, posymarker;
 	gchar s2[100], s3[200], s2a[20];
-	gdouble w;
-	GdkPoint poly[16];
 	gint k;
 
 	gblink = !gblink;
@@ -1569,14 +1569,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (local_config.showgrid)
 		draw_grid (widget);
 
-
 	if (usesql)
 	{
 	    streets_draw_list ();
 	    poi_draw_list ();
 	    wlan_draw_list ();
 	}
-
 
 	if (local_config.showwaypoints)
 		draw_waypoints ();
@@ -1595,11 +1593,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (zoomscale)
 		draw_zoom_scale ();
 
-
 	if (havekismet && (kismetsock>=0))
-	    gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
-			     10, SCREEN_Y - 42,
-			     36, 20, GDK_RGB_DITHER_NONE, 0, 0);
+	{
+		gdk_draw_pixbuf (drawable, kontext, kismetpixbuf, 0, 0,
+			10, SCREEN_Y - 42,
+			36, 20, GDK_RGB_DITHER_NONE, 0, 0);
+	}
 	
 	if (savetrack)
 	{
@@ -1632,9 +1631,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 						     NULL);
 			if (wplabellayout != NULL)
 				g_object_unref (G_OBJECT (wplabellayout));
-			/* freeing PangoFontDescription, cause it has been copied by prev. call */
+			/* freeing PangoFontDescription, cause it has been
+			    copied by prev. call */
 			pango_font_description_free (pfd);
-
 		}
 
 
@@ -1652,10 +1651,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	    blink = TRUE;
 	}
 
-#define PFSIZE 55
-#define PFSIZE2 45
-
-
 	if (havepos || blink)
 	{
 		if (gui_status.posmode)
@@ -1669,145 +1664,21 @@ drawmarker (GtkWidget * widget, guint * datum)
 		{
 			if (local_config.showshadow)
 			{
-				/*  draw shadow of  position marker */
-				gdk_gc_set_foreground (kontext, &colors.darkgrey);
-				gdk_gc_set_line_attributes (kontext, 3, 0, 0,
-							    0);
-				gdk_gc_set_function (kontext, GDK_AND);
-				gdk_draw_arc (drawable, kontext, 0,
-					      posx - 7 + SHADOWOFFSET,
-					      posy - 7 + SHADOWOFFSET, 14, 14,
-					      0, 360 * 64);
-				/*  draw pointer to destination */
-				gdk_gc_set_line_attributes (kontext, 4, 0, 0,
-							    0);
-				/* gdk_draw_line (drawable, kontext, */
-				/*       posx + 4 * sin (angle_to_destination) + */
-				/*       SHADOWOFFSET, */
-				/*       posy - 4 * cos (angle_to_destination) + */
-				/*       SHADOWOFFSET, */
-				/*       posx + 20 * sin (angle_to_destination) + */
-				/*       SHADOWOFFSET, */
-				/*       posy - 20 * cos (angle_to_destination) + */
-				/*       SHADOWOFFSET); */
-				w = current.bearing + M_PI;
-				poly[0].x =
-					posx + SHADOWOFFSET +
-					(PFSIZE) / 2.3 * (cos (w + M_PI_2));
-				poly[0].y =
-					posy + SHADOWOFFSET +
-					(PFSIZE) / 2.3 * (sin (w + M_PI_2));
-				poly[1].x =
-					posx + SHADOWOFFSET +
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[1].y =
-					posy + SHADOWOFFSET +
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[2].x =
-					posx + SHADOWOFFSET +
-					PFSIZE / 10 * (cos (w + M_PI_2));
-				poly[2].y =
-					posy + SHADOWOFFSET +
-					PFSIZE / 10 * (sin (w + M_PI_2));
-				poly[3].x =
-					posx + SHADOWOFFSET -
-					(PFSIZE) / 9 * (cos (w + M_PI));
-				poly[3].y =
-					posy + SHADOWOFFSET -
-					(PFSIZE) / 9 * (sin (w + M_PI));
-				poly[4].x = poly[0].x;
-				poly[4].y = poly[0].y;
-				gdk_draw_polygon (drawable, kontext, 1,
-						  (GdkPoint *) poly, 5);
-
-				/*  draw pointer to direction */
-				/*  gdk_draw_line (drawable, kontext, */
-				/*       posx + 4 * sin (direction) + SHADOWOFFSET, */
-				/*       posy - 4 * cos (direction) + SHADOWOFFSET, */
-				/*       posx + 20 * sin (direction) + SHADOWOFFSET, */
-				/*       posy - 20 * cos (direction) + SHADOWOFFSET); */
-				gdk_gc_set_line_attributes (kontext, 2, 0, 0,
-							    0);
-				gdk_draw_arc (drawable, kontext, 0,
-					      posx + 2 - 7 + SHADOWOFFSET,
-					      posy + 2 - 7 + SHADOWOFFSET, 10,
-					      10, 0, 360 * 64);
-
-				w = current.heading + M_PI;
-				poly[0].x =
-					posx + SHADOWOFFSET +
-					(PFSIZE2) / 2.3 * (cos (w + M_PI_2));
-				poly[0].y =
-					posy + SHADOWOFFSET +
-					(PFSIZE2) / 2.3 * (sin (w + M_PI_2));
-				poly[1].x =
-					posx + SHADOWOFFSET +
-					(PFSIZE2) / 9 * (cos (w + M_PI));
-				poly[1].y =
-					posy + SHADOWOFFSET +
-					(PFSIZE2) / 9 * (sin (w + M_PI));
-				poly[2].x =
-					posx + SHADOWOFFSET +
-					PFSIZE2 / 10 * (cos (w + M_PI_2));
-				poly[2].y =
-					posy + SHADOWOFFSET +
-					PFSIZE2 / 10 * (sin (w + M_PI_2));
-				poly[3].x =
-					posx + SHADOWOFFSET -
-					(PFSIZE2) / 9 * (cos (w + M_PI));
-				poly[3].y =
-					posy + SHADOWOFFSET -
-					(PFSIZE2) / 9 * (sin (w + M_PI));
-				poly[4].x = poly[0].x;
-				poly[4].y = poly[0].y;
-				gdk_draw_polygon (drawable, kontext, 0,
-						  (GdkPoint *) poly, 5);
-				gdk_gc_set_function (kontext, GDK_COPY);
+				draw_posmarker (
+					posx + SHADOWOFFSET,
+					posy + SHADOWOFFSET,
+					current.heading, &colors.darkgrey,
+					1, TRUE);
 			}
-			/*  draw real position marker */
 
-			gdk_gc_set_foreground (kontext, &colors.black);
-			gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
-			gdk_draw_arc (drawable, kontext, 0, posx - 7,
-				      posy - 7, 14, 14, 0, 360 * 64);
 			/*  draw pointer to destination */
+			draw_posmarker (posx, posy, current.bearing,
+				&colors.black, 1, FALSE);
 
-			w = current.bearing + M_PI;
 
-			poly[0].x =
-				posx + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
-			poly[0].y =
-				posy + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
-			poly[1].x = posx + (PFSIZE) / 9 * (cos (w + M_PI));
-			poly[1].y = posy + (PFSIZE) / 9 * (sin (w + M_PI));
-			poly[2].x = posx + PFSIZE / 10 * (cos (w + M_PI_2));
-			poly[2].y = posy + PFSIZE / 10 * (sin (w + M_PI_2));
-			poly[3].x = posx - (PFSIZE) / 9 * (cos (w + M_PI));
-			poly[3].y = posy - (PFSIZE) / 9 * (sin (w + M_PI));
-			poly[4].x = poly[0].x;
-			poly[4].y = poly[0].y;
-			gdk_draw_polygon (drawable, kontext, 1,
-					  (GdkPoint *) poly, 5);
-
-			/*  draw pointer to direction */
-			gdk_gc_set_foreground (kontext, &colors.red);
-			gdk_draw_arc (drawable, kontext, 0, posx + 2 - 7,
-				      posy + 2 - 7, 10, 10, 0, 360 * 64);
-			w = current.heading + M_PI;
-			poly[0].x =
-				posx + (PFSIZE2) / 2.3 * (cos (w + M_PI_2));
-			poly[0].y =
-				posy + (PFSIZE2) / 2.3 * (sin (w + M_PI_2));
-			poly[1].x = posx + (PFSIZE2) / 9 * (cos (w + M_PI));
-			poly[1].y = posy + (PFSIZE2) / 9 * (sin (w + M_PI));
-			poly[2].x = posx + PFSIZE2 / 10 * (cos (w + M_PI_2));
-			poly[2].y = posy + PFSIZE2 / 10 * (sin (w + M_PI_2));
-			poly[3].x = posx - (PFSIZE2) / 9 * (cos (w + M_PI));
-			poly[3].y = posy - (PFSIZE2) / 9 * (sin (w + M_PI));
-			poly[4].x = poly[0].x;
-			poly[4].y = poly[0].y;
-			gdk_draw_polygon (drawable, kontext, 0,
-					  (GdkPoint *) poly, 5);
+			/*  draw pointer to direction of motion */
+			draw_posmarker (posx, posy, current.heading,
+				&colors.orange2, 0, FALSE);
 		}
 		if (markwaypoint)
 		{
@@ -1828,53 +1699,21 @@ drawmarker (GtkWidget * widget, guint * datum)
 	}
 
 
-
-	/*  now draw marker for destination point */
-
+	/*  draw + sign at destination */
 	calcxy (&posxdest, &posydest, coords.target_lon,
 	coords.target_lat, zoom);
-
-	gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
 	if (local_config.showshadow)
 	{
 		/*  draw + sign at destination */
-		gdk_gc_set_foreground (kontext, &colors.darkgrey);
-		gdk_gc_set_function (kontext, GDK_AND);
-		gdk_draw_line (drawable, kontext, posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 - 10 + SHADOWOFFSET,
-			       posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 - 2 + SHADOWOFFSET);
-		gdk_draw_line (drawable, kontext, posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 + 2 + SHADOWOFFSET,
-			       posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 + 10 + SHADOWOFFSET);
-		gdk_draw_line (drawable, kontext,
-			       posxdest + 1 + 10 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET,
-			       posxdest + 1 + 2 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET);
-		gdk_draw_line (drawable, kontext,
-			       posxdest + 1 - 2 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET,
-			       posxdest + 1 - 10 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET);
-		gdk_gc_set_function (kontext, GDK_COPY);
+		draw_posmarker (
+			posxdest + SHADOWOFFSET, posydest + SHADOWOFFSET,
+			0, &colors.darkgrey, 3, TRUE);
 	}
-
 	if (crosstoogle)
-		gdk_gc_set_foreground (kontext, &colors.blue);
+		draw_posmarker (posxdest, posydest, 0, &colors.blue, 3, FALSE);
 	else
-		gdk_gc_set_foreground (kontext, &colors.red);
+		draw_posmarker (posxdest, posydest, 0, &colors.red, 3, FALSE);
 	crosstoogle = !crosstoogle;
-	/*  draw + sign at destination */
-	gdk_draw_line (drawable, kontext, posxdest + 1,
-		       posydest + 1 - 10, posxdest + 1, posydest + 1 - 2);
-	gdk_draw_line (drawable, kontext, posxdest + 1,
-		       posydest + 1 + 2, posxdest + 1, posydest + 1 + 10);
-	gdk_draw_line (drawable, kontext, posxdest + 1 + 10,
-		       posydest + 1, posxdest + 1 + 2, posydest + 1);
-	gdk_draw_line (drawable, kontext, posxdest + 1 - 2,
-		       posydest + 1, posxdest + 1 - 10, posydest + 1);
 
 
 	/* display messages on map */

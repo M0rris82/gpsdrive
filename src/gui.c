@@ -71,6 +71,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #  define N_(String) (String)
 # endif
 
+#define PFSIZE 15
 
 extern gint do_unit_test;
 
@@ -104,6 +105,9 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 GdkColormap *colmap;
 color_struct colors;
 guistatus_struct gui_status;
+
+
+GdkPixbuf *posmarker_img;
 
 
 extern gint borderlimit;
@@ -651,40 +655,93 @@ gint switch_nightmode (gboolean value)
 
 /* *****************************************************************************
  * Draw position marker, also showing direction
+ * style sets the pinter style to be drawn:
+ *  0 = full circle position pointer
+ *  1 = only arrow pointer
+ *  2 = only light crosshair pointer
+ *  3 = plus sign
  */
 gboolean
-draw_marker_position (gdouble posx, gdouble posy, gdouble direction, gint type)
+draw_posmarker (
+	gdouble posx, gdouble posy,
+	gdouble direction, GdkColor *color, gint style, gboolean shadow)
 {
-	/*  draw real position marker */
-
-	gdk_gc_set_foreground (kontext, &colors.orange2);
-	gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
-	gdk_draw_arc (drawable, kontext, 0, posx - 7,
-	posy - 7, 14, 14, 0, 360 * 64);
-	
-	/*  draw pointer to destination */
-
 	gdouble w;
-	const gint PFSIZE = 55;
 	GdkPoint poly[16];
+
+	if (shadow)
+		gdk_gc_set_function (kontext, GDK_AND);
+	else
+		gdk_gc_set_function (kontext, GDK_COPY);
 	
-			w = current.bearing + M_PI;
+	gdk_gc_set_foreground (kontext, color);
+	
+	w = direction + M_PI;
 
-			poly[0].x =
-				posx + (PFSIZE) / 2.3 * (cos (w + M_PI_2));
-			poly[0].y =
-				posy + (PFSIZE) / 2.3 * (sin (w + M_PI_2));
-			poly[1].x = posx + (PFSIZE) / 9 * (cos (w + M_PI));
-			poly[1].y = posy + (PFSIZE) / 9 * (sin (w + M_PI));
-			poly[2].x = posx + PFSIZE / 10 * (cos (w + M_PI_2));
-			poly[2].y = posy + PFSIZE / 10 * (sin (w + M_PI_2));
-			poly[3].x = posx - (PFSIZE) / 9 * (cos (w + M_PI));
-			poly[3].y = posy - (PFSIZE) / 9 * (sin (w + M_PI));
-			poly[4].x = poly[0].x;
-			poly[4].y = poly[0].y;
-			gdk_draw_polygon (drawable, kontext, 1,
-					  (GdkPoint *) poly, 5);
+	if (style == 0)
+	{
+		/* draw position icon */
+		gdk_draw_pixbuf (drawable, kontext, posmarker_img,
+			0, 0, posx - 15, posy - 15,
+			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
+	}
 
+	if (style == 0 || style == 1)
+	{
+		/* draw arrow pointer */
+		gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+		poly[0].x =
+			posx + PFSIZE * (cos (w + M_PI_2));
+		poly[0].y =
+			posy + PFSIZE * (sin (w + M_PI_2));
+		poly[1].x = posx
+			+ PFSIZE / 2 * (cos (w + M_PI))
+			- PFSIZE / 1.5 * (cos (w + M_PI_2));
+		poly[1].y = posy
+			+ PFSIZE / 2 * (sin (w + M_PI))
+			- PFSIZE / 1.5 * (sin (w + M_PI_2));
+		poly[2].x = posx;
+		poly[2].y = posy;
+		poly[3].x = posx
+			- PFSIZE / 2 * (cos (w + M_PI))
+			- PFSIZE / 1.5 * (cos (w + M_PI_2));
+		poly[3].y = posy
+			- PFSIZE / 2 * (sin (w + M_PI))
+			- PFSIZE / 1.5 * (sin (w + M_PI_2));
+		poly[4].x = poly[0].x;
+		poly[4].y = poly[0].y;
+		gdk_draw_polygon (drawable, kontext, 1,
+			(GdkPoint *) poly, 5);
+	}
+
+	if (style == 2)
+	{
+		/* draw crosshair pointer */
+		gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+		gdk_draw_line (drawable, kontext,
+			posx + PFSIZE * 0.5 * (cos (w + M_PI)),
+			posy + PFSIZE * 0.5 * (sin (w + M_PI)),
+			posx - PFSIZE * 0.5 * (cos (w + M_PI)),
+			posy - PFSIZE * 0.5 * (sin (w + M_PI)));
+		gdk_draw_line (drawable, kontext, posx, posy,
+			posx + PFSIZE * (cos (w + M_PI_2)),
+			posy + PFSIZE * (sin (w + M_PI_2)));
+	}
+
+	if (style == 3)
+	{
+		/*  draw + sign at position */
+		gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
+		gdk_draw_line (drawable, kontext, posx + 1,
+			posy + 1 - 10, posx + 1, posy + 1 - 2);
+		gdk_draw_line (drawable, kontext, posx + 1,
+			posy + 1 + 2, posx + 1, posy + 1 + 10);
+		gdk_draw_line (drawable, kontext, posx + 1 + 10,
+			posy + 1, posx + 1 + 2, posy + 1);
+		gdk_draw_line (drawable, kontext, posx + 1 - 2,
+			posy + 1, posx + 1 - 10, posy + 1);
+	}
+	
 	return TRUE;
 }
 
@@ -726,6 +783,9 @@ int gui_init (void)
 	// TODO: create_mainwindow();
 
 	// TODO: create_button_add_wp();
+
+	posmarker_img = read_icon ("posmarker.png", 0);
+
 
 	if (usesql)
 		poi_types_window = create_poi_types_window ();

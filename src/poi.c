@@ -78,6 +78,9 @@ extern char dbpoifilter[5000];
 extern gint friends_poi_id[TRAVEL_N_MODES];
 extern coordinate_struct coords;
 
+extern GdkPixbuf *posmarker_img;
+
+
 char txt[5000];
 PangoLayout *poi_label_layout;
 #include "mysql/mysql.h"
@@ -1184,7 +1187,8 @@ poi_draw_list (void)
 		if (local_config.showfriends && poi_is_friend (icon_index))
 		{
 			draw_label_friend (txt, posx, posy);
-			//draw_marker_position (posx, posy, 0.0, 1);
+			//draw_posmarker (posx, posy, 45,
+			//	&colors.blue, 1, FALSE);
 		}
 		/* draw label only if we display less than 1000 POIs */
 		else if (poi_list_count < 1000)
