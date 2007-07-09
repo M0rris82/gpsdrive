@@ -5282,7 +5282,6 @@ main (int argc, char *argv[])
 
 #ifdef MAPNIK
     init_mapnik(1);
-    //render_mapnik(1);
 #endif
 
     /*  Mainloop */
