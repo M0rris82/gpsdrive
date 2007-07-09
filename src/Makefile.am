@@ -14,7 +14,7 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS} ${DEF_MAPNIK}\
+	${NOGARMIN} ${NOPLUGINS} ${AMAPNIK}\
 	-I/usr/include/ \
 	-I/usr/local/include \
 	-I/opt/boost_1_35/include/boost-1_35 \

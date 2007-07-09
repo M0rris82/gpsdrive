@@ -176,6 +176,7 @@ CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
+AMAPNIK = @AMAPNIK@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -203,7 +204,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-DLOCALEDIR=\"${localedir}\" -DDATADIR=\"${datadir}\" \
 	-DLIBDIR=\"${libdir}\" \
 	-DFRIENDSSERVERVERSION=\"${FRIENDSSERVERVERSION}\" \
-	${NOGARMIN} ${NOPLUGINS} ${DEF_MAPNIK}\
+	${NOGARMIN} ${NOPLUGINS} ${AMAPNIK}\
 	-I/usr/include/ \
 	-I/usr/local/include \
 	-I/opt/boost_1_35/include/boost-1_35 \
@@ -215,7 +216,6 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
-DEF_MAPNIK = @DEF_MAPNIK@
 DEPDIR = @DEPDIR@
 DISABLEGARMIN_FALSE = @DISABLEGARMIN_FALSE@
 DISABLEGARMIN_TRUE = @DISABLEGARMIN_TRUE@

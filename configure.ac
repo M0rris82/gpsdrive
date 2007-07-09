@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1461, ganter@ganter.at)
+AC_INIT(gpsdrive, 2.10svn1472, ganter@ganter.at)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -305,6 +305,7 @@ AC_ARG_ENABLE(mapnik,
 	case "${enableval}" in
 		yes) AC_MSG_RESULT([yes])
 		     with_mapnik=yes
+		     AC_SUBST(AMAPNIK,'-DMAPNIK')
 		     echo "ENABLED Mapnik support"
 		     ;;
 		no)  AC_MSG_RESULT([no])
@@ -317,10 +318,10 @@ AC_ARG_ENABLE(mapnik,
 	],
 	[ AC_MSG_RESULT([$libmapnik_linkable])
 	  with_mapnik=$libmapnik_linkable
+	  test x$with_mapnik = xyes && AC_SUBST(AMAPNIK,'-DMAPNIK')
 	]
 )
 AM_CONDITIONAL([WITH_MAPNIK], test x$with_mapnik = xyes)
-test x$with_mapnik = xyes && AC_SUBST(DEF_MAPNIK,'-DMAPNIK')
 
 
 dnl ---------------------------------------------------------------------------
@@ -678,7 +679,6 @@ PERL_PACKAGE_DIR=`echo ${PERL_VENDORLIB} | sed "s,/usr/share,${datadir},"`
 AC_SUBST(PERL_PACKAGE_DIR)
 
 
-AC_PROG_PERL_MODULES(Bit::Vector , ,  AC_MSG_ERROR(Need Perl module Bit::Vector))
 AC_PROG_PERL_MODULES(File::Basename , ,  AC_MSG_ERROR(Need Perl module File::Basename))
 AC_PROG_PERL_MODULES(File::Copy , ,  AC_MSG_ERROR(Need Perl module File::Copy))
 AC_PROG_PERL_MODULES(File::Path , ,  AC_MSG_ERROR(Need Perl module File::Path))
@@ -698,6 +698,7 @@ AC_PROG_PERL_MODULES(XML::Simple , ,  AC_MSG_ERROR(Need Perl module XML::Simple)
 AC_PROG_PERL_MODULES(XML::Twig , ,  AC_MSG_ERROR(Need Perl module XML::Twig))
 
 dnl only for OSM Stuff
+dnl AC_PROG_PERL_MODULES(Bit::Vector , ,  AC_MSG_ERROR(Need Perl module Bit::Vector))
 dnl AC_PROG_PERL_MODULES(Math::Polygon , ,  AC_MSG_ERROR(Need Perl module Math::Polygon))
 dnl AC_PROG_PERL_MODULES(XML::Generator , ,  AC_MSG_ERROR(Need Perl module XML::Generator))
 dnl AC_PROG_PERL_MODULES(XML::SAX::Machines , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Machines))

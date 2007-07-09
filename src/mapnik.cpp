@@ -1,3 +1,5 @@
+#ifdef MAPNIK
+
 #include <QWidget>
 #include <QImage>
 #include <QPixmap>
@@ -23,8 +25,6 @@
 
 #include "mapnik.h"
 #include "config.h"
-
-#ifdef MAPNIK
 
 using mapnik::Image32;
 using mapnik::Map;
