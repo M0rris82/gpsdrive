@@ -63,6 +63,8 @@ my $VERBOSE = $opt_v;
 
 my @ALL_TYPES = qw(square.big square.small classic.big classic.small svg jp );
 
+sub update_svg_thumbnails();
+
 #####################################################################
 #
 #  M A I N
@@ -129,16 +131,17 @@ sub update_overview
     "</style>\n".
     "</head>\n";
   $html_head .= "<body>\n".
-      "<table>\n";
+      "<table border=\"0\">\n";
   $html_head .=     "<tr><th>ID</th><th>Name</th>\n".
       "<th colspan=\"".(scalar(@ALL_TYPES))."\">Icons</th><th>Description</th></tr>\n";
-  $html_head .=     "<tr><th></th><th></th>";
+  my $all_type_header= "<tr><td></td><td></td>";
   for my $type ( @ALL_TYPES  ) {
       my $txt=$type;
+      $txt=~s/\.$//;
       $txt=~s/\./<br>/;
-      $html_head .= "<th align=\"top\"><font size=\"-2\">$txt</font></th>\n";
+      $all_type_header .= "<td align=\"top\"><font size=\"-3\">$txt</font></td>\n";
   }
-  $html_head .= "</tr>\n";
+  $all_type_header .= "</tr>\n";
   my %out;
 
   open HTMLFILE,">:utf8","$file_html";
@@ -174,6 +177,7 @@ sub update_overview
     if ($id <= $poi_reserved || ( $icon !~ m,\.,) )
     {
       $content .= "  <tr><td>&nbsp;</td></tr>\n";
+      $content .= $all_type_header;
       $content .= "  <tr class=\"id\">\n    <td class=\"id\">$id</td><td>&nbsp;$nm</td>";
     }
     else
@@ -429,12 +433,12 @@ sub update_svg_thumbnail($$){
     my $mtime_sv  = (stat($icon_svg))[9]||0; 
     return $icon_svt if $mtime_svt >  $mtime_sv; # Up to Date
 
-    print STDERR "Updating $icon_svg\t-->  $icon_svt\t";
+    print STDERR "Updating $icon_svg\t-->  $icon_svt\n";
     my $image_string = File::Slurp::slurp($icon_svg);
     my ($x,$y)=(200,200);
     if ( $image_string=~ m/viewBox=\"([\-\d\.]+)\s+([\-\d\.]+)\s+([\-\d\.]+)\s+([\-\d\.]+)\s*\"/){
 	my ( $x0,$y0,$x1,$y1 ) = ($1,$2,$3,$4);
-	print STDERR "( $x0,$y0,$x1,$y1)" if $VERBOSE;
+	print STDERR "		( $x0,$y0,$x1,$y1)" if $VERBOSE;
 	$x0=0 if $x0>0;
 	$y0=0 if $y0>0;
 	$x=int(2+$x1-$x0);
