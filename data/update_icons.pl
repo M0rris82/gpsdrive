@@ -395,10 +395,10 @@ sub get_icons
   sub format_icons()
   { 
       my $icon_file = $File::Find::name;
-      if ( not($opt_i) && $icon_file =~ m/incomming/ ) {
+      if ( $icon_file =~ m/\.svn/ ) {
+      } elsif ( not($opt_i) && $icon_file =~ m/incomming/ ) {
 	  print STDOUT "ignore incomming: $icon_file\n" if $VERBOSE;
-      } elsif (m/\.(png|svg)$/ && !m/empty\.png$/)
-      { 
+      } elsif ( $icon_file =~ m/\.(png|svg)$/ && $icon_file !~ m/empty\.png$/ ) {
 	  $i++;
 	  my $icon_file = $File::Find::name;
 	  print STDOUT "  Found icon:\t$i\t$icon_file\n" if $VERBOSE;
