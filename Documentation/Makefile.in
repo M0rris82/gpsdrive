@@ -40,8 +40,13 @@ host_triplet = @host@
 subdir = Documentation
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in TODO
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ac_check_perl_modules.m4 \
+	$(top_srcdir)/m4/ac_check_socketlen_t.m4 \
+	$(top_srcdir)/m4/aq_check_gdal.m4 $(top_srcdir)/m4/gettext.m4 \
+	$(top_srcdir)/m4/iconv.m4 $(top_srcdir)/m4/lib-ld.m4 \
+	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -61,6 +66,7 @@ DATA = $(documentation_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
+AMAPNIK = @AMAPNIK@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -149,6 +155,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PCRE_CONFIG = @PCRE_CONFIG@
+PERL = @PERL@
 PERL_PACKAGE_DIR = @PERL_PACKAGE_DIR@
 PKGCONFIG_CFLAGS = @PKGCONFIG_CFLAGS@
 PKGCONFIG_LIBS = @PKGCONFIG_LIBS@
@@ -161,6 +168,8 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+WITH_MAPNIK_FALSE = @WITH_MAPNIK_FALSE@
+WITH_MAPNIK_TRUE = @WITH_MAPNIK_TRUE@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 XML_CFLAGS = @XML_CFLAGS@
