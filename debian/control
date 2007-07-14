@@ -22,7 +22,8 @@ Description: Car navigation system
 
 Package: gpsdrive-data-maps
 Architecture: any
-Depends: gpsdrive
+Depends: 
+Recommends: gpsdrive
 Description: GpsDrive  example and overview maps
  This Package contains the overview maps
  for Gpsdrive.These are derived from the NASA
@@ -41,7 +42,8 @@ Description: GpsDrive  example and overview maps
 
 Package: gpsdrive-data-map-icons
 Architecture: any
-Depends: gpsdrive
+Depends: 
+Recommends: gpsdrive
 Description: GpsDrive map-icons
  This Package contains the map-icons for Gpsdrive.
  .
