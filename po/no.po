@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 1.30\n"
-"Report-Msgid-Bugs-To: ganter@ganter.at\n"
+"Report-Msgid-Bugs-To: translations-for-gpsdrive@ostertag.name\n"
 "POT-Creation-Date: 2007-07-10 08:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexander Wigen <EMAIL@ADDRESS>\n"
