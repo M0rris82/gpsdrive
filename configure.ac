@@ -27,14 +27,14 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1488, package-for-gpsdrive@ostertag.name)
+AC_INIT(gpsdrive, 2.10svn1489, package-for-gpsdrive@ostertag.name)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
 AC_CONFIG_HEADER(config.h)
 AC_USE_SYSTEM_EXTENSIONS()
 
-ALL_LINGUAS="da de de_AT es et_EE fr gr hu it ja nl no pt_BR ru sk sv tr"
+wLL_LINGUAS="da de de_AT es fr hu it ja nl ru sk sv tr"
 
 AC_CONFIG_FILES([DSL/Makefile])
 AC_CONFIG_FILES([Documentation/Makefile])
