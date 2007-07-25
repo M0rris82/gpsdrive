@@ -45,8 +45,8 @@ use File::Slurp;
 use File::Basename;
 use File::Path;
 
-our ($opt_v, $opt_f, $opt_h, $opt_i, $opt_r) = 0;
-getopts('hvirf:') or $opt_h = 1;
+our ($opt_v, $opt_f, $opt_h, $opt_i, $opt_r,$opt_s) = 0;
+getopts('hvirsf:') or $opt_h = 1;
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -202,11 +202,36 @@ sub update_overview
 
 	if ( ! ( -s $icon_p or -s $icon_s) ) {
 	    # exchange empty or missing icon files with a char for faster display
-	    $content .=  "    <td class=\"empty\">.</td>\n";
+	    if ( -e $icon_p or -e $icon_s) { # exist, but size=0
+		$content .=  "    <td class=\"empty\">".
+		    "<font color=\"red\">_</font>".
+		    "</td>\n";
+	    } else {
+		$content .=  "    <td class=\"empty\">.</td>\n";
+	    }
 	} elsif ( $restricted && $restricted->text && not $opt_r ){
 	    $content .=  "    <td class=\"empty\">r</td>\n";
 	} else {
-	    $content .= "     <td class=\"icon\"><img src=\"";
+	    my $svn_status_txt='';
+	    my $svn_bgcolor='';
+	    if ( $opt_s ) {
+		my $svn_status = `svn status $icon_p`;
+		if ( $svn_status ){
+		    print STDERR "svn_status($icon_p): $svn_status\n";
+		    $svn_status =~ m/^(.)/;
+		    $svn_status_txt=$1;
+		    if ( $svn_status_txt eq "" ) {
+		    } elsif ( $svn_status_txt eq "?" ) { 
+			$svn_bgcolor=' bgcolor="red" ';
+		    } elsif ( $svn_status_txt eq "M" ){
+			$svn_bgcolor=' bgcolor="green" ';
+		    } else {
+			$svn_bgcolor=' bgcolor="blue" ';
+		    }
+		}
+	    }
+
+	    $content .= "     <td $svn_bgcolor class=\"icon\"><img src=\"";
 	    if ( -s $icon_t ) {
 		$content .= $icon_t;
 	    } else {
@@ -763,5 +788,12 @@ update_icons.pl [-h] [-v] [-i] [-r] [-f XML-FILE]
 =item B<-r>
 
  Include restricted icons in overview.html
+
+=item B<-s>
+
+ add svn status to overview
+    red is missing in svn
+    green is modified
+    blue is any other condition
 
 =back
