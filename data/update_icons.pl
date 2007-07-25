@@ -45,8 +45,8 @@ use File::Slurp;
 use File::Basename;
 use File::Path;
 
-our ($opt_v, $opt_f, $opt_h, $opt_i ) = 0;
-getopts('hvif:') or $opt_h = 1;
+our ($opt_v, $opt_f, $opt_h, $opt_i, $opt_r) = 0;
+getopts('hvirf:') or $opt_h = 1;
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -154,6 +154,7 @@ sub update_overview
     my $content = '';
     my $id = $entry->first_child('geoinfo')->first_child('poi_type_id')->text;
     my $nm = $entry->first_child('geoinfo')->first_child('name')->text;
+    my $restricted = $entry->first_child('geoinfo')->first_child('restricted');
 
     my $ti = $default_title_en;
     my @a_ti = $entry->children('title');
@@ -202,6 +203,8 @@ sub update_overview
 	if ( ! ( -s $icon_p or -s $icon_s) ) {
 	    # exchange empty or missing icon files with a char for faster display
 	    $content .=  "    <td class=\"empty\">.</td>\n";
+	} elsif ( $restricted && $restricted->text && not $opt_r ){
+	    $content .=  "    <td class=\"empty\">r</td>\n";
 	} else {
 	    $content .= "     <td class=\"icon\"><img src=\"";
 	    if ( -s $icon_t ) {
@@ -734,7 +737,7 @@ __END__
 
 =head1 SYNOPSIS
  
-update_icons.pl [-h] [-v] [-f XML-FILE]
+update_icons.pl [-h] [-v] [-i] [-r] [-f XML-FILE]
  
 =head1 OPTIONS
  
@@ -755,9 +758,10 @@ update_icons.pl [-h] [-v] [-f XML-FILE]
 
 =item B<-i>
 
- Include incomming
+ Include incomming directory in icons.xml and overview.html
 
+=item B<-r>
 
-
+ Include restricted icons in overview.html
 
 =back
