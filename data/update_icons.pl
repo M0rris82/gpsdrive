@@ -247,9 +247,9 @@ sub update_overview
 	    $content .= "\" class=\"$class\" alt=\"$nm\" /></td>\n";
 	}
     }
-      $content .= "    <td>$ti<br>$de</td>\n";
-      $content .= "  </tr>\n";
-      $out{$ind} = $content;
+    $content .= "    <td>$ti<br>$de</td>\n";
+    $content .= "  </tr>\n";
+    $out{$ind} = $content;
   }  
   # sorted output
   foreach ( sort keys(%out) )
@@ -433,7 +433,7 @@ sub get_icons
       if ( $icon_file =~ m/\.svn/ ) {
       } elsif ( not($opt_i) && $icon_file =~ m/incomming/ ) {
 	  print STDOUT "ignore incomming: $icon_file\n" if $VERBOSE;
-      } elsif ( $icon_file =~ m/\.(png|svg)$/ && $icon_file !~ m/empty\.png$/ ) {
+      } elsif ( $icon_file =~ m/\.(png|svg)$/ && $icon_file !~ m/empty\.(png|svg)$/ ) {
 	  $i++;
 	  my $icon_file = $File::Find::name;
 	  print STDOUT "  Found icon:\t$i\t$icon_file\n" if $VERBOSE;
