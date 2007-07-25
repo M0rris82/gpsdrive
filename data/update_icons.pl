@@ -132,9 +132,13 @@ sub update_overview
     "</head>\n";
   $html_head .= "<body>\n".
       "<table border=\"0\">\n";
-  $html_head .=     "<tr><th>ID</th><th>Name</th>\n".
-      "<th colspan=\"".(scalar(@ALL_TYPES))."\">Icons</th><th>Description</th></tr>\n";
-  my $all_type_header= "<tr><td></td><td></td>";
+  $html_head .= "<tr>";
+#  $html_head .= "  <th>ID</th>";
+  $html_head .= "  <th>Name</th>\n";
+  $html_head .= "  <th colspan=\"".(scalar(@ALL_TYPES))."\">Icons</th><th>Description</th></tr>\n";
+  my $all_type_header= "<tr>";
+#  $all_type_header .= "<td></td>"; # ID - Column
+  $all_type_header .= "<td></td>";
   for my $type ( @ALL_TYPES  ) {
       my $txt=$type;
       $txt=~s/\.$//;
@@ -179,7 +183,9 @@ sub update_overview
     {
       $content .= "  <tr><td>&nbsp;</td></tr>\n";
       $content .= $all_type_header;
-      $content .= "  <tr class=\"id\">\n    <td class=\"id\">$id</td><td>&nbsp;$nm</td>";
+      $content .= "  <tr class=\"id\">\n";
+#      $content .= "     <td class=\"id\">$id</td>\n";
+      $content .= "     <td>&nbsp;$nm</td>";
     }
     else
     {
@@ -189,7 +195,8 @@ sub update_overview
       { $html_space .='&nbsp;&nbsp;&nbsp;&nbsp;&rsaquo;&nbsp;'; $level--; };
       $nm =~ s,.*\.,,g;
       $content .= "<tr>\n";
-      $content .= "    <td class=\"id\">$id</td><td>&nbsp;$html_space$nm</td>";
+#      $content .= "    <td class=\"id\">$id</td>";
+      $content .= "    <td>&nbsp;$html_space$nm</td>";
     }
 
     # display all icons
