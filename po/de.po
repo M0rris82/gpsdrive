@@ -1,16 +1,16 @@
-# translation of de.po to Christoph Metz
+# Translation of GPSdrive to German.
 # Copyright (C) 2003,2004, 2007 Free Software Foundation, Inc.
+# Fritz Ganter <ganter@ganter.at>, 2003, 2004.
+# Christoph Metz <loom@mopper.de>, 2007.
 #
-# Fritz Ganter <ganter@ganter.at>, 2003,2004.
-# loom <loom@mopper.de>, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
 "POT-Creation-Date: 2007-07-22 22:36+0200\n"
 "PO-Revision-Date: 2007-03-31 21:14+0200\n"
-"Last-Translator: loom <loom@mopper.de>\n"
-"Language-Team: Christoph Metz\n"
+"Last-Translator: Christoph Metz <loom@mopper.de>\n"
+"Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
