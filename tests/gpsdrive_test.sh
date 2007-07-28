@@ -2,6 +2,13 @@
 # ============================================ 
 # Run some tests on Gpsdrive
 
+if [ -s  ${HOME}/.gpsdrive/gpsdriverc.backup-tests ] ; then
+    echo "Old test Backup-rc File exists: ${HOME}/.gpsdrive/gpsdriverc.backup-tests"
+    exit 1
+else
+    cp ${HOME}/.gpsdrive/gpsdriverc ${HOME}/.gpsdrive/gpsdriverc.backup-tests 
+fi
+
 mkdir -p logs
 
 (
@@ -95,3 +102,9 @@ for icon_theme in square.big square.small classic.big ; do
 	    -e "s/dbname = geoinfo.*/dbname = geoinfo/" ${HOME}/.gpsdrive/gpsdriverc
     done || exit 1
 done || exit 1
+
+if [ -s  ${HOME}/.gpsdrive/gpsdriverc.backup-tests ] ; then
+    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
+else
+    echo "Missing Backup config from tests"
+fi
