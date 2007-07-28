@@ -45,8 +45,8 @@ use File::Slurp;
 use File::Basename;
 use File::Path;
 
-our ($opt_v, $opt_f, $opt_h, $opt_i, $opt_r,$opt_s) = 0;
-getopts('hvirsf:') or $opt_h = 1;
+our ($opt_v, $opt_f, $opt_h, $opt_i, $opt_n, $opt_r,$opt_s) = 0;
+getopts('hvinrsf:') or $opt_h = 1;
 pod2usage( -exitval => '1',  
            -verbose => '1') if $opt_h;
 
@@ -272,7 +272,7 @@ sub update_overview
 	    $status_line =~ s/$SVN_VERSION//;
 	    $status_line ="<font size=\"-3\">$status_line</font><br>" if $status_line;
 	    $content .= "     <td $svn_bgcolor class=\"icon\">";
-	    $content .= "     $status_line";
+	    $content .= "     $status_line" if $opt_n;
 	    my $icon_path_current;
 	    if ( -s $icon_t ) { $icon_path_current = $icon_t; }
 	    else {		$icon_path_current = $icon_p;   };
@@ -840,5 +840,9 @@ update_icons.pl [-h] [-v] [-i] [-r] [-f XML-FILE]
     red is any other condition
  this also shows the old and new icon if it is found in the 
  .svn/ directory
-    
+
+=item B<-n>
+    show the svn revision numbers and user too
+    needs option -s to work
+
 =back
