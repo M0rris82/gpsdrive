@@ -36,6 +36,4 @@ EXTRA_DIST= \
 	maps/CMakeLists.txt  \
 	pixmaps/CMakeLists.txt \
 	mysql/my.cnf \
-	poi_examples.gpx \
-	README.icons \
-	update_icons.pl
+	poi_examples.gpx
