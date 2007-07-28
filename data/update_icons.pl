@@ -75,6 +75,7 @@ unless (-e $file_xml)
 {
   create_xml();	# Create a new XML-File if none exists
 }
+get_svn_status();
 get_icons();		 # read available icons from dirs
 update_svg_thumbnails(); # Update Thumbnails for svg Icons
 update_xml();	         # parse and update contents  of XML-File
@@ -83,6 +84,25 @@ update_overview('de');
 chdir('..');
 exit (0);
 
+
+my $SVN_STATUS={};
+my $SVN_VERSION = '';
+sub get_svn_status {
+    return unless $opt_s;
+    $SVN_VERSION = `svnversion`;
+    chomp($SVN_VERSION);
+    $SVN_VERSION =~ s/M//;
+    my $svn_status = `svn -v status .`;
+    for my $line (split(/[\r\n]+/,$svn_status)) {
+	chomp $line;
+	my ($status,$rev,$rev_ci,$user,$file) = (split(/\s+/,$line),('')x5);
+	if ( $status eq "?" ) {
+	    $file = $rev; 
+	    $rev ='';
+	}
+	$SVN_STATUS->{$file}="$status,$rev,$rev_ci,$user";
+    }
+}
 
 #####################################################################
 #
@@ -207,6 +227,13 @@ sub update_overview
 	my $class = $type;
 	$class =~ s/\./_/g;
 
+	my $svn_bgcolor='';
+	my $status_line=$SVN_STATUS->{$icon_s};
+	$status_line ||=$SVN_STATUS->{$icon_p};
+	$status_line ||='';
+	my ($status,$rev,$rev_ci,$user,$file) =
+	    (split(/,/, $status_line),('')x5);
+	
 	if ( ! ( -s $icon_p or -s $icon_s) ) {
 	    # exchange empty or missing icon files with a char for faster display
 	    if ( -e $icon_p or -e $icon_s) { # exist, but size=0
@@ -214,37 +241,50 @@ sub update_overview
 		    "<font color=\"red\">_</font>".
 		    "</td>\n";
 	    } else {
-		$content .=  "    <td class=\"empty\">.</td>\n";
+		$content .=  "    <td ";
+		$content .=  '    bgcolor="red" ' if $status eq "M" || $status eq "!";
+		$content .=  "    lass=\"empty\">.</td>\n";
 	    }
 	} elsif ( $restricted && $restricted->text && not $opt_r ){
-	    $content .=  "    <td class=\"empty\">r</td>\n";
+		$content .=  "    <td ";
+		$content .=  '    bgcolor="red" ' if $status eq "M" || $status eq "!";
+		$content .=  "    class=\"empty\">r</td>\n";
 	} else {
-	    my $svn_status_txt='';
 	    my $svn_bgcolor='';
+	    my $status_line=$SVN_STATUS->{$icon_s};
+	    $status_line ||=$SVN_STATUS->{$icon_p};
+	    $status_line ||='';
+		my ($status,$rev,$rev_ci,$user,$file) =
+		    (split(/,/, $status_line));
 	    if ( $opt_s ) {
-		my $svn_status = `svn status $icon_p`;
-		if ( $svn_status ){
-		    print STDERR "svn_status($icon_p): $svn_status\n";
-		    $svn_status =~ m/^(.)/;
-		    $svn_status_txt=$1;
-		    if ( $svn_status_txt eq "" ) {
-		    } elsif ( $svn_status_txt eq "?" ) { 
-			$svn_bgcolor=' bgcolor="red" ';
-		    } elsif ( $svn_status_txt eq "M" ){
+		if ( $status ){
+		    print STDERR "svn_status($icon_p): $status\n" if $VERBOSE;
+		    if ( $status eq "" ) {
+		    } elsif ( $status eq "?" ) { 
+			$svn_bgcolor=' bgcolor="grey" ';
+		    } elsif ( $status eq "M" ){
 			$svn_bgcolor=' bgcolor="green" ';
 		    } else {
-			$svn_bgcolor=' bgcolor="blue" ';
+			$svn_bgcolor=' bgcolor="red" ';
 		    }
 		}
 	    }
-
-	    $content .= "     <td $svn_bgcolor class=\"icon\"><img src=\"";
-	    if ( -s $icon_t ) {
-		$content .= $icon_t;
-	    } else {
-		$content .= $icon_p;
-	    }
-	    $content .= "\" class=\"$class\" alt=\"$nm\" /></td>\n";
+	    $status_line =~ s/,/ /g;
+	    $status_line =~ s/guenther/g/;
+	    $status_line =~ s/joerg/j/;
+	    $status_line =~ s/ulf/u/;
+	    $status_line =~ s/$SVN_VERSION//;
+	    $status_line ="<font size=\"-3\">$status_line</font><br>" if $status_line;
+	    $content .= "     <td $svn_bgcolor class=\"icon\">";
+	    $content .= "     $status_line";
+	    my $icon_path_current;
+	    if ( -s $icon_t ) { $icon_path_current = $icon_t; }
+	    else {		$icon_path_current = $icon_p;   };
+	    my $icon_path_svn=$icon_path_current;
+	    $icon_path_svn =~ s,/([^/]+)\.(...)$,/.svn/text-base/$1.$2.svn-base,;
+	    $content .= "    <img src=\"$icon_path_svn\" /> -->" if -s $icon_path_svn && $status eq "M";
+	    $content .= "     <img src=\"$icon_path_current\" class=\"$class\" alt=\"$nm\" />";
+	    $content .= "</td>\n";
 	}
     }
     $content .= "    <td>$ti<br>$de</td>\n";
@@ -321,7 +361,7 @@ sub update_xml
   print STDOUT "  Unused IDs:\n  \t";
   foreach (@a_id)
   { 
-    if (exists $unused{$_}) { delete $unused{$_}; }
+    if (defined($_) && exists $unused{$_}) { delete $unused{$_}; }
   }
   foreach (sort(keys(%unused)))
     { print STDOUT "$_  " if ($_ > $poi_reserved) }
@@ -799,8 +839,10 @@ update_icons.pl [-h] [-v] [-i] [-r] [-f XML-FILE]
 =item B<-s>
 
  add svn status to overview
-    red is missing in svn
+    grey is missing in svn
     green is modified
-    blue is any other condition
-
+    red is any other condition
+ this also shows the old and new icon if it is found in the 
+ .svn/ directory
+    
 =back
