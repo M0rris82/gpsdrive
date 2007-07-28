@@ -15,7 +15,8 @@ LIB_MAP_L= map_gpsdrive.c  map_load.c \
 if HAVE_GDAL
 worldgendir=$(bindir)
 worldgen_PROGRAMS = worldgen
-worldgen_SOURCES= worldgen.c ../lib_map/lib_map.a
+worldgen_SOURCES= worldgen.c
+# ../lib_map/lib_map.a
 worldgen_LDFLAGS = $(GDAL_LIBS)
 
 if HAVE_GTK

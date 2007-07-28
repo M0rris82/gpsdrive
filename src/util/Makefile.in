@@ -62,7 +62,7 @@ am__gmapview_SOURCES_DIST = gmapview.c
 @HAVE_GDAL_TRUE@@HAVE_GTK_TRUE@	gmapview.$(OBJEXT)
 gmapview_OBJECTS = $(am_gmapview_OBJECTS)
 gmapview_LDADD = $(LDADD)
-am__worldgen_SOURCES_DIST = worldgen.c ../lib_map/lib_map.a
+am__worldgen_SOURCES_DIST = worldgen.c
 @HAVE_GDAL_TRUE@am_worldgen_OBJECTS = worldgen.$(OBJEXT)
 worldgen_OBJECTS = $(am_worldgen_OBJECTS)
 worldgen_LDADD = $(LDADD)
@@ -256,7 +256,8 @@ LIB_MAP_L = map_gpsdrive.c  map_load.c \
 	map_render.c
 
 @HAVE_GDAL_TRUE@worldgendir = $(bindir)
-@HAVE_GDAL_TRUE@worldgen_SOURCES = worldgen.c ../lib_map/lib_map.a
+@HAVE_GDAL_TRUE@worldgen_SOURCES = worldgen.c
+# ../lib_map/lib_map.a
 @HAVE_GDAL_TRUE@worldgen_LDFLAGS = $(GDAL_LIBS)
 
 #CFLAGS += -DHAVE_CAIRO
@@ -469,7 +470,6 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../lib_map
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
