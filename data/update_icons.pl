@@ -63,6 +63,9 @@ my $VERBOSE = $opt_v;
 
 my @ALL_TYPES = qw(square.big square.small classic.big classic.small svg jp );
 
+my $SVN_STATUS={};
+my $SVN_VERSION = '';
+
 sub update_svg_thumbnails();
 
 #####################################################################
@@ -85,8 +88,6 @@ chdir('..');
 exit (0);
 
 
-my $SVN_STATUS={};
-my $SVN_VERSION = '';
 sub get_svn_status {
     return unless $opt_s;
     $SVN_VERSION = `svnversion`;
@@ -228,9 +229,9 @@ sub update_overview
 	$class =~ s/\./_/g;
 
 	my $svn_bgcolor='';
-	my $status_line=$SVN_STATUS->{$icon_s};
-	$status_line ||=$SVN_STATUS->{$icon_p};
-	$status_line ||='';
+	my $status_line = $SVN_STATUS->{$icon_s};
+	$status_line ||= $SVN_STATUS->{$icon_p};
+	$status_line ||= '';
 	my ($status,$rev,$rev_ci,$user,$file) =
 	    (split(/,/, $status_line),('')x5);
 	
@@ -251,11 +252,6 @@ sub update_overview
 		$content .=  "    class=\"empty\">r</td>\n";
 	} else {
 	    my $svn_bgcolor='';
-	    my $status_line=$SVN_STATUS->{$icon_s};
-	    $status_line ||=$SVN_STATUS->{$icon_p};
-	    $status_line ||='';
-		my ($status,$rev,$rev_ci,$user,$file) =
-		    (split(/,/, $status_line));
 	    if ( $opt_s ) {
 		if ( $status ){
 		    print STDERR "svn_status($icon_p): $status\n" if $VERBOSE;
