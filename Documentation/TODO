@@ -1,34 +1,23 @@
 This is a (definitely incomplete) list of features/improvements for gpsdrive.
 This file helps us keep track of what can be done and who is interested in doing it.
 Everyone is invited to catch one of the tasks and start development.
-One thing which would be nice; if you drop 
-us(gpsdrive@warbase.selwerd.nl)/me(Joerg Ostertag <joerg.ostertag@rechengilde.de>)
-a note on the things you want to start programming. 
-Not only to synchronize work and circumventing two people trying to solve the 
-same problem. But also to check if this feature really fits into the actual plans
-and to find out which would be the best way to solve it in relation to other 
-features and plans.
 
-One small comment:
-We are currently working on a stable release, and after this is done, a major
-userinterface change/rewrite is planned.
-The plan is, that this change will enable userinterface changes with anjuta and 
-glade-2. So if you want to make changes inside the userinterface code you  
-might want to wait some time until these changes have made it into the SVN. 
+Currently Worked on for Release gpsdrive-2.10pre4:
+--------------------------------------------------
+- Vektor Maps with Mapnik and Data from OSM
+   - Integration of lib-mapnik (loom)
+   - Creating osm-data-mapnik debian Package (tweety)
+   - remove QT-Dependency
+- POI Management (D.S.E)
+   - POI GUI
+- GUI
+   - Make the Mapwindow resizable (maybe) (D.S.E)
+- Cleaning Up the debian package Content
 
-The easiest for me/us to get patches is:
-
- svn co gpsdrive
- cd gpsdrive
- svn up
- svn diff -u >name_of_patch.patch
-
-and send the output to the mailinglist.
-
+   
 
 Ideas for gpsdrive improvement: (unassigned, unrated)
 -----------------------------------------------------
-
 - Documentation:
     - writing lots of useful comments to the existing code.
 	- Writing/improving man Pages
@@ -40,37 +29,14 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
       documentation on the size and shape of custom icons, etc.).
 	- Help translate the gettext strings (po-Files) in to your native language
 
-- Investigations:
-	- have a look at gdal and get an idea if we could combine gdal 
-	  development and gpsdrive development
-	- Find new Map/Waypoint Sources
-	- find Data for importing into the new Datastructure POI/streets which 
-	  have an acceptable public licence. The second step would then be to 
-	  find a way to import this Data into the Database.
-
 - Makefiles/Distribution:
 	- include generation of icon Directory while installing gpsdrive
 	- update the distribution dependant Files (debian, suse, ...)
 
-- Vektor Map Sources:
-	- Find new Sources for Maps with Free Licence
-	- Write conversion routines/scripts for these different map Sources 
-	  to import them into the local mySQL Database 
-	
-- Central POI Server:
-	We want to set up an central POI(Point of interest) Server. 
-	Idea is: to populate this Server from all the point of interests
-		 you have. 
-		Then give the Server a Web-interface(first step) to download alle 
-		these POIs and import them into your local DB.
-		Further steps will be to write sync-routines to
-		sync this local Data with the central Server.
-
-
 - Modularising:
 	- Put every drawing layer into a seperate sourcefile.
-	- moving configuration Data into a structure
-	- moving actual settings into another structure
+	- moving configuration Data into a structure (already started)
+	- moving actual settings into another structure (already started)
 	- move more stuff from gpsdrive.c into meaningful standalone Files
 		examples:
 		- poi.{c,h}
@@ -79,7 +45,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 - Autosave Tracks periodically
 	- started: savetrack was seperated and got 
-			   option to save only aktual Track an not track_ALL.sav
+	  option to save only aktual Track an not track_ALL.sav
 
 - Finding and correcting Bugs in the existing Code.
 
@@ -104,15 +70,12 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   this point.
 
 - make gpsdrive compile inside eclipse.
+  should work
 
 - refactor the variable names inside gpsdrive.
 
 - write an interface to use functions like gpsbabel gpstrans from inside
   gpsdrive.
-
-- Autosave Tracks periodically
-	- started: savetrack was seperated and got 
-			   option to save only aktuall Track an not track_ALL.sav
 
 - Move part of the user interface to a Pulldown menu.
 
@@ -141,7 +104,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   can be displayed formatted in a (pop-up) window.
   Also external programs could make use of the extra data.
 
-- Make it work with MySQL 4.1 (aforementioned "select(): bad file descriptor" 
+- Make it work with MySQL 4.1 (afore mentioned "select(): bad file descriptor" 
   problem, plus see below).
 
 - Devise a "standard" set of tables for OpenGIS data (lines, polygons, etc) 
@@ -236,60 +199,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 -----------------------------------------------------------------------------
 
-Development in Progress:
-------------------------
-
------------------------------------------------------------------------------
-
-ChrisJastram:
--------------
-
-Map rotation, ego-centric style (we are always pointing up)
-
------------------------------------------------------------------------------
-
-Fritz:
-------
-
-Start Doxygen Documentation
-
-change config File handling
-
-import gpsdrive into anjuta and with this remodel 
-the User Interface with glade-2
-
-remove gpsd sources
-
------------------------------------------------------------------------------
-
-Joerg:
-------
-
-Fix line width glitch when displaying grid.
-
-update opengeodb support to import the New Datasets. 
- Problem is the Database Format completely changed
-
-
-Trying to import gpsdrive into eclipse. Any help appreciated.
-
-Straighten the naming of variables and functions
-   -first step done, but still a long way to go
-	still open:
-		longi --> lon
-		xy_draw --> draw_xy
-		cb_t_xy		for Callback Timer xy 
-		cb_c_xy		for Callback of Checkbox xy 
-		bt_xy		for Button xy 
-		load_xy		for loading Data for xy
-		save_xy		for saving Data for xy
-
-Vector map Data:
-	Add code for showing Vectormap Data. (Already started)
-	Decide about internal representation and structure vektor map data.
-
-
------------------------------------------------------------------------------
 Koji <koji@e-mail.jp>
 
 - making 2.10pre2's ja.po. 
@@ -310,29 +219,6 @@ I've already looked at the festival speech stuff and I think I could
 make a change for the better there. However, the biggest thing I would 
 suggest is setting a good coding standard, I think what currently exists 
 is a little scary! Here's my top suggestions...
-
-
------------------------------------------------------------------------------
-Guenther Meyer <d.s.e@sordidmusic.com>
-
-- drawing icons for different POI-Types (any help appreciated)
-
-- extend (poi-)databases to handle additional information for POIs.
-
-
-----------------------------------------------------------------------------
-
-DONE:
------
-
-- draw grid: Add text to draw-grid to see which lat/lon this gridline belongs to.
-
-- Add Waypoint with one Keypress
-
-- Add debian files to CVS for easier creating a debian package.
-
-- Find Error in gpsd 2.20 Handling concerning the number of seen 
-  Satelites and wrong latitude
 
 
 -----------------------------------------------------------------------------
