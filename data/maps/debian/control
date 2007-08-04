@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 3.7.2), pkg-config
 Standards-Version: 3.6.1
 
 Package: gpsdrive-data-maps
-Architecture: any
+Architecture: all
 Depends: 
 Recommends: gpsdrive
 Description: GpsDrive  example and overview maps
