@@ -57,6 +57,10 @@ install: build
 	# This is build by the osm-data-map-icons*.deb package
 	rm -rf debian/gpsdrive/usr/share/map-icons 
 
+	# remove perl modules since they are in the 
+	# openstreetmap-utils package
+	find debian/gpsdrive/ -name "*.pm" | xargs rm
+
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
