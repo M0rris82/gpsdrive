@@ -34,6 +34,7 @@ modified (Jan 2005) by Joerg Ostertag <gpsdrive\@ostertag.name>
 modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
+modified (Jul 2007) by Maciek Kaliszewski <mkalkal\@interia.pl>
 Version svn-$Version
 ";
 
@@ -158,6 +159,23 @@ my $Scale2Zoom = {
        5000000 => 5000*6.4,
       10000000 =>10000*6.4,
       50000000 =>50000*6.4,
+    },
+    googlemap => {
+    64768000 => 15,
+    32384000 => 14,
+    16192000 => 13, 
+     8096000 => 12,
+     4048000 => 11,
+     2024000 => 10,
+     1012000 => 9,    
+      506000 => 8,
+      253000 => 7,
+      126500 => 6,
+      63250 => 5,
+      31625 => 4,
+      15812 => 3 ,
+      7906  => 2,
+      3953 => 1
     }
 };
 
@@ -258,6 +276,7 @@ sub debug($);              # {}
 sub expedia_url($$$);      # {}
 sub geoscience_url($$$);   # {}
 sub landsat_url($$$);   # {}
+sub googlemap_url($$$);   # {}
 sub resize($$); #{}
 sub file_count($);         # {}
 sub get_coords_for_route;  # {}
@@ -677,6 +696,10 @@ sub wget_map($$$){
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
     } 
+    elsif ( $mapserver eq 'googlemap') 
+    {
+	($url,$mapscale)=googlemap_url($lati,$long,$scale);
+    } 
     else 
     {
 	print "Unknown map sever :", $mapserver, "\n"; 
@@ -862,6 +885,53 @@ sub expedia_url($$$){
     }
     my $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
 	."CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000";
+    return ($url,$mapscale);
+}
+
+
+
+sub googlemap_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    # get altimeter setting for given scale
+    my $mapscale = $scale;
+    my $zoom = undef;
+    for my $s ( sort keys %{$Scale2Zoom->{googlemap}} ) {
+	next unless $s == $scale;
+	$zoom = $Scale2Zoom->{googlemap}->{$s};
+	$mapscale = $s;
+	last;
+    }
+
+    # error if not found
+    unless ( $zoom ) {
+	print "Error calculating Zoomlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    # debug output
+    if ($debug) {
+	print "\n";
+	print "Using googlemap zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
+	print "lat: $lati\n";
+	print "lon: $long\n";
+    }
+
+    # generate url
+#    print "\nlat :$lati\nlon: $long\n";
+    my $nlati;
+    my $nlong;
+    $nlati=sprintf ("%.6f",$lati);
+    $nlati =~ s/\.//;
+    $nlong=sprintf ("%.6f",$long);
+    $nlong =~ s/\.//;
+#    print "\nnlat :$nlati\nnlon: $nlong\n";
+    
+    my $url = "http://www.google.com/mapprint?c=$nlong,$nlati&r=1280,1024&z=$zoom";
+#   print "$url\n";
+#   return (undef,undef);
     return ($url,$mapscale);
 }
 
@@ -2216,7 +2286,7 @@ Takes an optional value of number of seconds to sleep.
 Mapserver to download from. Default: 'expedia'.
 Currently can use: landsat or expedia.
 
-geoscience, gov_au, incrementp, googlesat and eniro have download stubs, 
+geoscience, gov_au, incrementp, googlesat, googlemap and eniro have download stubs, 
 but they are !!!NOT!!!! in the right scale.
 
 
