@@ -35,15 +35,13 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "config.h"
 #include "gui.h"
+#include "main_gui.h"
 
 extern gint mydebug;
 extern gint maploaded;
-extern gint trackflag;
-extern gint importactive;
 extern glong tracknr, tracklimit, trackcoordlimit;
 glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 extern trackcoordstruct *trackcoord;
-extern gint zoom;
 extern GdkSegment *track;
 extern GdkSegment *trackshadow;
 
@@ -51,7 +49,9 @@ extern wpstruct *routelist;
 extern GdkColor blue;
 extern gint isnight, disableisnight;
 extern color_struct colors;
+extern currentstatus_struct current;
 
+extern GdkGC *kontext_map;
 
 /* ----------------------------------------------------------------------------- */
 /*  if zoom, xoff, yoff or map are changed */
@@ -67,16 +67,16 @@ rebuildtracklist (void)
   if (!maploaded)
     return;
 
-  if (!trackflag)
+  if (!local_config.showtrack)
     return;
-  if (importactive)
+  if (current.importactive)
     return;
 
   tracknr = 0;
   for (i = 0; i < trackcoordnr; i++)
     {
       calcxy (&posxdest, &posydest, (trackcoord + i)->lon,
-	      (trackcoord + i)->lat, zoom);
+	      (trackcoord + i)->lat, current.zoom);
 
       if ((trackcoord + i)->lon > 1000.0)	/* Track Break ? */
 	{
@@ -101,7 +101,7 @@ rebuildtracklist (void)
 		   * posysource,posydest);
 		   * printf("%.6f, %.6f (%.6f)\n",
 		   * (trackcoord + i)->lon,
-		   * (trackcoord + i)->lat, zoom);
+		   * (trackcoord + i)->lat, current.zoom);
 		   */
 		  (track + tracknr)->x1 = posxsource;
 		  (track + tracknr)->x2 = posxdest;
@@ -133,9 +133,9 @@ drawtracks (void)
 
 	//    if (!maploaded)
 	//      return;
-	if (!trackflag)
+	if (!local_config.showtrack)
 		return;
-	if (importactive)
+	if (current.importactive)
 		return;
 
 	t = 2 * (tracknr >> 1) - 1;
@@ -143,21 +143,21 @@ drawtracks (void)
 	if (t < 1)
     	return;
 
-    gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
+    gdk_gc_set_line_attributes (kontext_map, 4, 0, 0, 0);
 	if (local_config.showshadow) {
- 		gdk_gc_set_foreground (kontext, &colors.shadow);
-		gdk_gc_set_function (kontext, GDK_AND);
-		gdk_draw_segments (drawable, kontext, (GdkSegment *) trackshadow, t);
-		gdk_gc_set_function (kontext, GDK_COPY);
+ 		gdk_gc_set_foreground (kontext_map, &colors.shadow);
+		gdk_gc_set_function (kontext_map, GDK_AND);
+		gdk_draw_segments (drawable, kontext_map, (GdkSegment *) trackshadow, t);
+		gdk_gc_set_function (kontext_map, GDK_COPY);
 	}
 	if ((!disableisnight) && 
 		((local_config.nightmode == NIGHT_ON) ||
 		((local_config.nightmode == NIGHT_AUTO) && isnight)))
-		gdk_gc_set_foreground (kontext, &colors.red);
+		gdk_gc_set_foreground (kontext_map, &colors.red);
 	else
-		gdk_gc_set_foreground (kontext, &colors.track);
+		gdk_gc_set_foreground (kontext_map, &colors.track);
 
-	gdk_draw_segments (drawable, kontext, (GdkSegment *) track, t);
+	gdk_draw_segments (drawable, kontext_map, (GdkSegment *) track, t);
 
 	return;
 }

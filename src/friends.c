@@ -55,6 +55,7 @@
 #include <math.h>
 #include "gui.h"
 #include "poi.h"
+#include "main_gui.h"
 
 #define	SERV_UDP_PORT	50123
 /*  Defines for gettext I18n */
@@ -69,15 +70,14 @@
 /* #define	SERV_HOST_ADDR	"213.203.231.23"   */
 #define	SERV_HOST_ADDR	"127.0.0.1"
 
-extern int needtosave, maxfriends, statusid;
+extern int maxfriends;
 extern friendsstruct *friends, *fserver;
 int actualfriends = 0;
 extern int messagenumber;
 extern long int maxfriendssecs;
 extern gint zone;
 extern gdouble milesconv;
-extern GtkWidget *drawing_area, *drawing_bearing;
-extern gint zoom;
+extern GtkWidget *map_drawingarea;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 extern int usesql;
 extern gint mydebug;
@@ -86,6 +86,7 @@ extern poi_type_struct poi_type_list[poi_type_list_max];
 extern color_struct colors;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
+extern GdkGC *kontext_map;
 
 /*
  * conn.c
@@ -94,7 +95,7 @@ int sockfd = -1;
 int pleasepollme = 0;
 extern GtkItemFactory *item_factory;
 extern int debug, statuslock;
-extern GtkWidget *frame_status;
+extern GtkWidget *frame_statusbar;
 extern int errno;
 extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
@@ -149,7 +150,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 				messagenumber++;
 			else
 				messagenumber = 0;
-			needtosave = TRUE;
+			current.needtosave = TRUE;
 			g_snprintf (num, sizeof (num), "%02d", messagenumber);
 			g_strlcpy (buf2, local_config.friends_id,
 				sizeof (buf2));
@@ -284,7 +285,6 @@ friends_sendmsg (char *serverip, char *message)
   socklen_t servlen;
   friendsstruct *f;
   char msgname[40], msgid[40], msgtext[1024];
-  GtkWidget *wi;
 
   if (serverip == NULL)
     {
@@ -427,10 +427,11 @@ friends_sendmsg (char *serverip, char *message)
 		  g_strlcpy (messagename, "", sizeof (messagename));
 		  g_strlcpy (messageack, "", sizeof (messageack));
 		  g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
-		  wi = gtk_item_factory_get_item
-		    (item_factory, N_("/Misc. Menu/Messages"));
-		  gtk_widget_set_sensitive (wi, TRUE);
-		  gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
+//		  wi = gtk_item_factory_get_item
+//		    (item_factory, N_("/Misc. Menu/Messages"));
+//		  gtk_widget_set_sensitive (wi, TRUE);
+		  gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
+		  	current.statusbar_id);
 		  statuslock = FALSE;
 		}
 	      else
@@ -527,7 +528,7 @@ friends_init ()
 #endif
       printf ("\nKey: %s,id: %s %Zu bytes, time: %ld\n", key,
 	      local_config.friends_id, strlen (local_config.friends_id), ti);
-      needtosave = 1;
+      current.needtosave = TRUE;
     }
   friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
   fserver = malloc (1 * sizeof (friendsstruct));
@@ -588,7 +589,7 @@ drawfriends (void)
       coordinate_string2gdouble ((friends + i)->lon, &clong);
       coordinate_string2gdouble ((friends + i)->lat, &clat);
 
-      calcxy (&posxdest, &posydest, clong, clat, zoom);
+      calcxy (&posxdest, &posydest, clong, clat, current.zoom);
 
       /* If Friend is visible inside SCREEN display him/her */
       if ((posxdest >= 0) && (posxdest < SCREEN_X))
@@ -597,7 +598,7 @@ drawfriends (void)
 	  if ((posydest >= 0) && (posydest < SCREEN_Y))
 	    {
 
-	      gdk_draw_pixbuf (drawable, kontext,
+	      gdk_draw_pixbuf (drawable, kontext_map,
 			       friendspixbuf, 0, 0,
 			       posxdest - 18, posydest - 12,
 			       39, 24, GDK_RGB_DITHER_NONE, 0, 0);
@@ -606,7 +607,7 @@ drawfriends (void)
 	      heading =
 		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
 	      draw_posmarker
-	      	(posxdest, posydest, heading, &colors.blue, 1, FALSE);
+	      	(posxdest, posydest, heading, &colors.blue, 1, FALSE, FALSE);
 
 	      {	/* print friends name / speed on map */
 		PangoFontDescription *pfd;
@@ -643,7 +644,7 @@ drawfriends (void)
 			    "\n%s, %2d:%02d\n", day, t->tm_hour, t->tm_min);
 		g_strlcat (txt, txt2, sizeof (txt));
 		wplabellayout =
-			gtk_widget_create_pango_layout (drawing_area, txt);
+			gtk_widget_create_pango_layout (map_drawingarea, txt);
 		if (local_config.guimode == GUI_PDA)
 			pfd = pango_font_description_from_string ("Sans 8");
 		else
@@ -651,19 +652,19 @@ drawfriends (void)
 				(local_config.font_friends);
 		pango_layout_set_font_description (wplabellayout, pfd);
 		pango_layout_get_pixel_size (wplabellayout, &width, &height);
-		gdk_gc_set_foreground (kontext, &colors.textbacknew);
-		/*              gdk_draw_rectangle (drawable, kontext, 1, posxdest + 18,
+		gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
+		/*              gdk_draw_rectangle (drawable, kontext_map, 1, posxdest + 18,
 		 *                                  posydest - height/2 , width + 2,
 		 *                                  height + 2);
 		 */
 
 		gdk_draw_layout_with_colors (drawable,
-			kontext,
+			kontext_map,
 			posxdest + 21,
 			posydest - height / 2 + 1,
 			wplabellayout, &colors.black, NULL);
 		gdk_draw_layout_with_colors (drawable,
-			kontext,
+			kontext_map,
 			posxdest + 20,
 			posydest - height / 2,
 			wplabellayout, &colors.friends, NULL);

@@ -86,8 +86,6 @@ extern gint mydebug;
 extern gint debug;
 extern color_struct colors;
 
-extern gint int_padding;
-
 /* Global Values */
 gchar cputempstring[20] = "??";
 gchar batstring[20] = "??";

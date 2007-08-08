@@ -62,24 +62,23 @@ Disclaimer: Please do not use for navigation.
 extern gchar language[];
 extern gint do_unit_test;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 extern color_struct colors;
 extern gdouble wp_saved_target_lat, wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
 extern gint debug, mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
+extern GtkWidget *map_drawingarea;
 extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
 extern char dbpoifilter[5000];
 extern gint friends_poi_id[TRAVEL_N_MODES];
 extern coordinate_struct coords;
+extern currentstatus_struct current;
+extern GdkGC *kontext_map;
 
 extern GdkPixbuf *posmarker_img;
-
+extern GdkGC *kontext;
 
 char txt[5000];
 PangoLayout *poi_label_layout;
@@ -102,7 +101,6 @@ glong poi_nr;			// current number of poi to count
 glong poi_list_count;		// max index of POIs actually in memory
 guint poi_result_count;		// max index of POIs found in POI search
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
-gint poi_draw = FALSE;
 
 gchar poi_label_font[100];
 GdkColor poi_colorv;
@@ -340,9 +338,9 @@ draw_label (char *txt, gdouble posx, gdouble posy)
   if (mydebug > 30)
     fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
 
-  gdk_gc_set_foreground (kontext, &colors.textback);
+  gdk_gc_set_foreground (kontext_map, &colors.textback);
 
-  poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+  poi_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
   pfd = pango_font_description_from_string ("Sans 8");
   if (poi_list_count > 200)
     pfd = pango_font_description_from_string ("Sans 6");
@@ -352,22 +350,22 @@ draw_label (char *txt, gdouble posx, gdouble posy)
   k = width + 4;
   k2 = height;
 
-  gdk_gc_set_function (kontext, GDK_COPY);
+  gdk_gc_set_function (kontext_map, GDK_COPY);
 
-  gdk_gc_set_function (kontext, GDK_AND);
+  gdk_gc_set_function (kontext_map, GDK_AND);
 
   {                             // Draw rectangle arround Text
     // gdk_gc_set_foreground (kontext, &textbacknew);
-    gdk_gc_set_foreground (kontext, &colors.grey);
-    gdk_draw_rectangle (drawable, kontext, 1,
+    gdk_gc_set_foreground (kontext_map, &colors.grey);
+    gdk_draw_rectangle (drawable, kontext_map, 1,
                         posx + 13, posy - k2 / 2, k + 1, k2);
 
   }
 
-  poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+  poi_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
   pango_layout_set_font_description (poi_label_layout, pfd);
 
-  gdk_draw_layout_with_colors (drawable, kontext,
+  gdk_draw_layout_with_colors (drawable, kontext_map,
                                posx + 15, posy - k2 / 2,
                                poi_label_layout, &colors.black, NULL);
   if (poi_label_layout != NULL)
@@ -389,24 +387,24 @@ draw_label_friend (char *txt, gdouble posx, gdouble posy)
 	if (mydebug > 30)
 		fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
 
-	poi_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+	poi_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
 
 	pfd = pango_font_description_from_string (local_config.font_friends);
-	gdk_gc_set_foreground (kontext, &colors.textbacknew);
+	gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
 
 	pango_layout_set_font_description (poi_label_layout, pfd);
 	pango_layout_get_pixel_size (poi_label_layout, &width, &height);
 	k = width + 4;
 	k2 = height;
 
-	gdk_gc_set_function (kontext, GDK_COPY);
-	gdk_gc_set_function (kontext, GDK_AND);
+	gdk_gc_set_function (kontext_map, GDK_COPY);
+	gdk_gc_set_function (kontext_map, GDK_AND);
 
-	gdk_draw_layout_with_colors (drawable, kontext,
+	gdk_draw_layout_with_colors (drawable, kontext_map,
 		posx + 16, posy - k2 / 2 + 1,
 		poi_label_layout, &colors.black, NULL);
 
-	gdk_draw_layout_with_colors (drawable, kontext,
+	gdk_draw_layout_with_colors (drawable, kontext_map,
 		posx + 15, posy - k2 / 2,
 		poi_label_layout, &colors.friends, NULL);
 	if (poi_label_layout != NULL)
@@ -427,8 +425,8 @@ poi_check_if_moved (void)
       poi_lat_ul == 0 && poi_lon_ul == 0)
     return 1;
 
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
-  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
 
   if (poi_lat_lr == lat_lr && poi_lon_lr == lon_lr &&
       poi_lat_ul == lat_ul && poi_lon_ul == lon_ul)
@@ -914,7 +912,7 @@ poi_rebuild_list (void)
   if (!usesql)
     return;
 
-  if (!poi_draw)
+  if (!local_config.showpoi)
     {
       if (mydebug > 20)
 	printf ("poi_rebuild_list: POI_draw is off\n");
@@ -931,15 +929,15 @@ poi_rebuild_list (void)
   if (!maploaded)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
 
   // calculate the start and stop for lat/lon according to the displayed section
-  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
+  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
+  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
 
   lat_min = min (lat_ll, lat_ul);
   lat_max = max (lat_lr, lat_ur);
@@ -958,7 +956,7 @@ poi_rebuild_list (void)
      "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
      "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
-     lat_min, lat_max, lon_min, lon_max, mapscale, dbpoifilter);
+     lat_min, lat_max, lon_min, lon_max, current.mapscale, dbpoifilter);
 
   if (mydebug > 20)
   {
@@ -996,7 +994,7 @@ poi_rebuild_list (void)
 
       lat = g_strtod (row[0], NULL);
       lon = g_strtod (row[1], NULL);
-      calcxy (&poi_posx, &poi_posy, lon, lat, zoom);
+      calcxy (&poi_posx, &poi_posy, lon, lat, current.zoom);
 
       if ((poi_posx > -50) && (poi_posx < (SCREEN_X + 50)) &&
 	  (poi_posy > -50) && (poi_posy < (SCREEN_Y + 50)))
@@ -1110,13 +1108,13 @@ poi_draw_list (void)
   if (!usesql)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
   if (!maploaded)
     return;
 
-  if (!(poi_draw))
+  if (!local_config.showpoi)
     {
       if (mydebug > 20)
 	printf ("poi_draw_list: POI_draw is off\n");
@@ -1148,7 +1146,7 @@ poi_draw_list (void)
 	{
 
 
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
 
@@ -1163,7 +1161,7 @@ poi_draw_list (void)
 		    int wx = gdk_pixbuf_get_width (icon);
 		    int wy = gdk_pixbuf_get_height (icon);
 
-		    gdk_draw_pixbuf (drawable, kontext, icon,
+		    gdk_draw_pixbuf (drawable, kontext_map, icon,
 				     0, 0,
 				     posx - wx / 2,
 				     posy - wy / 2,
@@ -1172,7 +1170,7 @@ poi_draw_list (void)
 	      }
 	    else
 	      {
-		gdk_gc_set_foreground (kontext, &colors.red);
+		gdk_gc_set_foreground (kontext_map, &colors.red);
 		if (poi_list_count < 20000)
 		  {		// Only draw small + if more than ... Points 
 		    draw_plus_sign (posx, posy);
@@ -1188,7 +1186,7 @@ poi_draw_list (void)
 		{
 			draw_label_friend (txt, posx, posy);
 			//draw_posmarker (posx, posy, 45,
-			//	&colors.blue, 1, FALSE);
+			//	&colors.blue, 1, FALSE, FALSE);
 		}
 		/* draw label only if we display less than 1000 POIs */
 		else if (poi_list_count < 1000)

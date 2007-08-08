@@ -41,39 +41,33 @@
 #include "gpsdrive_config.h"
 #include "routes.h"
 #include "mapnik.h"
+#include "main_gui.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
-extern gint real_psize, real_smallmenu, int_padding;
+extern gint real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy;
-extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
+extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern gdouble trip_lat, trip_lon;
 extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint debug, mydebug;
 extern gint usesql;
-extern glong mapscale;
 extern gint selected_wp_mode;
 extern gint iszoomed;
 extern gchar  oldangle[100];
 extern gdouble new_dl_lat,new_dl_lon;
 extern gint new_dl_scale;
-extern gint needtosave;
 extern color_struct colors;
 extern coordinate_struct coords;
-extern gint forcenextroutepoint;
 extern routestatus_struct route;
 wpstruct *routelist;
 extern gint thisrouteline;
 extern gint gcount, milesflag, downloadwindowactive;
-extern GtkWidget *drawing_area, *drawing_bearing;
-extern GtkWidget *drawing_sats, *drawing_miniimage;
+extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 extern GtkWidget *posbt, *mapnik_bt;
 extern gint streets_draw;
@@ -81,7 +75,6 @@ extern currentstatus_struct current;
 
 extern gchar oldfilename[2048];
 
-extern gint scaleprefered_not_bestmap, scalewanted;
 extern gint borderlimit;
 
 gchar mapfilename[2048];
@@ -89,12 +82,11 @@ extern gint saytarget;
 
 extern int havedefaultmap;
 
-extern GtkWidget *destframe;
-extern GdkPixbuf *image, *tempimage, *miniimage;
-extern GtkWidget *scaler_widget;
+extern GdkPixbuf *image, *tempimage, *pixbuf_minimap;
+extern GtkWidget *mapscaler_scaler;
 extern GtkWidget *scaler_left_bt, *scaler_right_bt;
-extern GtkObject *scaler_adj;
-extern gint slistsize;
+extern GtkObject *mapscaler_adj;
+extern GdkGC *kontext_map;
 
 #include "gettext.h"
 
@@ -125,34 +117,6 @@ map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 gint displaymap_map = TRUE;
 
-/* *****************************************************************************
- */
-gint
-bestmap_cb (GtkWidget * widget, guint datum)
-{
-    if (datum == 1)
-	scaleprefered_not_bestmap = !scaleprefered_not_bestmap;
-    if (!scaleprefered_not_bestmap)
-	{
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
-					  TRUE);
-	    gtk_widget_set_sensitive (scaler_right_bt, FALSE);
-	    gtk_widget_set_sensitive (scaler_left_bt, FALSE);
-	    if (scaler_widget)
-		gtk_widget_set_sensitive (scaler_widget, FALSE);
-	}
-    else
-	{
-	    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),
-					  FALSE);
-	    gtk_widget_set_sensitive (scaler_right_bt, TRUE);
-	    gtk_widget_set_sensitive (scaler_left_bt, TRUE);
-	    if (scaler_widget)
-		gtk_widget_set_sensitive (scaler_widget, TRUE);
-	}
-    needtosave = TRUE;
-    return TRUE;
-}
 
 /* *****************************************************************************
  */
@@ -164,7 +128,7 @@ maptoggle_cb (GtkWidget * widget, guint datum)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), FALSE);
-  needtosave = TRUE;
+  current.needtosave = TRUE;
   return TRUE;
 }
 
@@ -178,7 +142,7 @@ topotoggle_cb (GtkWidget * widget, guint datum)
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
   else
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), FALSE);
-  needtosave = TRUE;
+  current.needtosave = TRUE;
   return TRUE;
 }
 
@@ -200,7 +164,7 @@ display_maps_cb (GtkWidget * widget, guint datum)
       printf ("Found %s,%c\n", display_map[i].name, tbd);
     }
 
-  needtosave = TRUE;
+  current.needtosave = TRUE;
   return TRUE;
 }
 
@@ -250,13 +214,13 @@ make_display_map_controls ()
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
 		_("Always select the most detailed map available"), NULL);
 
-	if (!scaleprefered_not_bestmap)
+	if (local_config.autobestmap)
 	{
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
 	}
 	gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
-		GTK_SIGNAL_FUNC (bestmap_cb), (gpointer) 1);
+		GTK_SIGNAL_FUNC (autobestmap_cb), (gpointer) 1);
 
 	// Checkbox ---- Pos Mode
 	posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
@@ -681,7 +645,7 @@ load_best_map (long long bestmap)
 	  pixelfact = (maps + bestmap)->scale / PIXELFACT;
 	  coords.zero_lon = (maps + bestmap)->lon;
 	  coords.zero_lat = (maps + bestmap)->lat;
-	  mapscale = (maps + bestmap)->scale;
+	  current.mapscale = (maps + bestmap)->scale;
 	  xoff = yoff = 0;
 	  if (nrmaps > 0)
 	    loadmap (mapfilename);
@@ -696,7 +660,7 @@ load_best_map (long long bestmap)
 	  pixelfact = 88067900.43 / PIXELFACT;
 	  coords.zero_lon = 0;
 	  coords.zero_lat = 0;
-	  mapscale = 88067900.43;
+	  current.mapscale = 88067900.43;
 	  xoff = yoff = 0;
 	  loadmap (mapfilename);
 	}
@@ -801,7 +765,7 @@ loadmap (char *filename)
 
   expose_cb (NULL, NULL);
   iszoomed = FALSE;
-  /*        zoom = 1; */
+  /*        current.zoom = 1; */
   xoff = yoff = 0;
 
   rebuildtracklist ();
@@ -812,12 +776,12 @@ loadmap (char *filename)
   maploaded = TRUE;
 
   /*  draw minimap */
-  if (miniimage)
-    gdk_pixbuf_unref (miniimage);
+  if (pixbuf_minimap)
+    gdk_pixbuf_unref (pixbuf_minimap);
 
-  miniimage = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 128, 103);
+  pixbuf_minimap = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 128, 103);
 
-  gdk_pixbuf_scale (image, miniimage, 0, 0, 128, 103,
+  gdk_pixbuf_scale (image, pixbuf_minimap, 0, 0, 128, 103,
 		    0, 0, 0.1, 0.10, GDK_INTERP_TILES);
   expose_mini_cb (NULL, 0);
 
@@ -860,7 +824,7 @@ test_and_load_newmap ()
     static int nasaisvalid = FALSE;
     int takemap = FALSE;
 
-    if (importactive)
+    if (current.importactive)
         return;
 
 	// TODO: this doesn't belong here, move it somewhere else...
@@ -872,8 +836,8 @@ test_and_load_newmap ()
 
     // Test if we want Background image as Map
     if (!display_background_map ()) {
-        mapscale = (glong) scalewanted;
-        pixelfact = mapscale / PIXELFACT;
+        current.mapscale = (glong) local_config.scale_wanted;
+        pixelfact = current.mapscale / PIXELFACT;
         coords.zero_lat = coords.current_lat;
         coords.zero_lon = coords.current_lon;
         xoff = yoff = 0;
@@ -895,20 +859,20 @@ test_and_load_newmap ()
 		    fprintf (stderr, "rendering mapnik map ....\n");
 	        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));
 	        g_strlcpy (mapfilename, "Mapnik direct Render", sizeof (mapfilename));
-	    //gint LevelInt = 18 - GTK_ADJUSTMENT (scaler_adj)->value;
+	    //gint LevelInt = 18 - GTK_ADJUSTMENT (mapscaler_adj)->value;
 		//set_mapnik_map(current_lat, current_lon, LevelInt);
 	    int ForceMapCenterYsn = 0;
 	    if (local_config.MapnikStatusInt == 1) {
 	    	ForceMapCenterYsn = 1;
 	    	local_config.MapnikStatusInt = 2; /* set active */
 	    }
-	    set_mapnik_map(coords.current_lat, coords.current_lon, ForceMapCenterYsn, scalewanted);
+	    set_mapnik_map(coords.current_lat, coords.current_lon, ForceMapCenterYsn, local_config.scale_wanted);
 	    local_config.MapnikStatusInt = 2;
 	    /* render map, but only if it is needed */
 	    render_mapnik();
 		/* only load map if there is a new one. */
 		if (get_mapnik_newmapysn()) {
-			mapscale = get_mapnik_mapscale();// 68247.3466832;;
+			current.mapscale = get_mapnik_mapscale();// 68247.3466832;;
 			pixelfact = get_mapnik_pixelfactor();
 			get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
 			xoff = yoff = 0;
@@ -996,11 +960,11 @@ test_and_load_newmap ()
 		           nasaisvalid = TRUE;
 	            }
 
-	            if (scaleprefered_not_bestmap) {
-	                if (scalewanted > (maps + i)->scale)
-		                fact = (gdouble) scalewanted / (maps + i)->scale;
+	            if (!local_config.autobestmap) {
+	                if (local_config.scale_wanted > (maps + i)->scale)
+		                fact = (gdouble) local_config.scale_wanted / (maps + i)->scale;
 	                else
-		                fact = (maps + i)->scale / (gdouble) scalewanted;
+		                fact = (maps + i)->scale / (gdouble) local_config.scale_wanted;
 	                if (fact < bestscale) {
 		                bestscale = fact;
 		                bestmap = i;
@@ -1047,20 +1011,20 @@ drawloadedmaps ()
 	  la = maps[i].lat;
 	  lo = maps[i].lon;
 	  //              scale=maps[i].scale;
-	  calcxy (&x, &y, lo, la, zoom);
-	  xo = 1280.0 * zoom * scale / mapscale;
-	  yo = 1024.0 * zoom * scale / mapscale;
+	  calcxy (&x, &y, lo, la, current.zoom);
+	  xo = 1280.0 * current.zoom * scale / current.mapscale;
+	  yo = 1024.0 * current.zoom * scale / current.mapscale;
 	  // yellow background
-	  gdk_gc_set_foreground (kontext, &colors.yellow);
-	  gdk_gc_set_function (kontext, GDK_AND);
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	  gdk_draw_rectangle (drawable, kontext, 1, x - xo / 2,
+	  gdk_gc_set_foreground (kontext_map, &colors.yellow);
+	  gdk_gc_set_function (kontext_map, GDK_AND);
+	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
+	  gdk_draw_rectangle (drawable, kontext_map, 1, x - xo / 2,
 			      y - yo / 2, xo, yo);
 	  // solid border
-	  gdk_gc_set_foreground (kontext, &colors.black);
-	  gdk_gc_set_function (kontext, GDK_SOLID);
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
-	  gdk_draw_rectangle (drawable, kontext, 0, x - xo / 2,
+	  gdk_gc_set_foreground (kontext_map, &colors.black);
+	  gdk_gc_set_function (kontext_map, GDK_SOLID);
+	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
+	  gdk_draw_rectangle (drawable, kontext_map, 0, x - xo / 2,
 			      y - yo / 2, xo, yo);
 	}
     }
@@ -1084,27 +1048,27 @@ drawdownloadrectangle (gint big)
       la = new_dl_lat;
       lo = new_dl_lon;
       scale = new_dl_scale;
-      gdk_gc_set_foreground (kontext, &colors.green2);
-      gdk_gc_set_function (kontext, GDK_AND);
-      gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+      gdk_gc_set_foreground (kontext_map, &colors.green2);
+      gdk_gc_set_function (kontext_map, GDK_AND);
+      gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
       if (big)
 	{
-	  calcxy (&x, &y, lo, la, zoom);
-	  xo = 1280.0 * zoom * scale / mapscale;
-	  yo = 1024.0 * zoom * scale / mapscale;
-	  gdk_draw_rectangle (drawable, kontext, 1, x - xo / 2,
+	  calcxy (&x, &y, lo, la, current.zoom);
+	  xo = 1280.0 * current.zoom * scale / current.mapscale;
+	  yo = 1024.0 * current.zoom * scale / current.mapscale;
+	  gdk_draw_rectangle (drawable, kontext_map, 1, x - xo / 2,
 			      y - yo / 2, xo, yo);
 	}
       else
 	{
 	  calcxymini (&x, &y, lo, la, 1);
-	  xo = 128.0 * scale / mapscale;
-	  yo = 102.0 * scale / mapscale;
-	  gdk_draw_rectangle (drawing_miniimage->window,
-			      kontext, 1, x - xo / 2, y - yo / 2, xo, yo);
+	  xo = 128.0 * scale / current.mapscale;
+	  yo = 102.0 * scale / current.mapscale;
+	  gdk_draw_rectangle (drawing_minimap->window,
+			      kontext_map, 1, x - xo / 2, y - yo / 2, xo, yo);
 	}
 
-      gdk_gc_set_function (kontext, GDK_COPY);
+      gdk_gc_set_function (kontext_map, GDK_COPY);
     }
 
 }

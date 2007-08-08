@@ -45,6 +45,7 @@ Disclaimer: Please do not use for navigation.
 #include "import_map.h"
 #include "download_map.h"
 #include "gui.h"
+#include "main_gui.h"
 
 #include "gettext.h"
 #include <speech_strings.h>
@@ -62,30 +63,24 @@ Disclaimer: Please do not use for navigation.
 
 extern GtkWidget *mylist;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 extern color_struct colors;
+extern currentstatus_struct current;
 extern gint mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
+extern GtkWidget *map_drawingarea;
 extern glong mapscale;
+extern GdkGC *kontext_map;
 
-extern gint muteflag;
 extern gdouble earthr;
 extern gchar *displaytext;
-extern gint do_display_dsc, textcount;
-extern GtkWidget *mainwindow;
-extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
-extern gdouble dist;
 extern GtkWidget *messagewindow;
 extern gint onemousebutton;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint int_padding;
-extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
+extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
+extern GdkGC *kontext;
 
 /* *****************************************************************************
  * Draw Text (lat/lon) into Grid
@@ -98,17 +93,17 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 	PangoLayout *grid_label_layout;
 	gint width, height;
 
-	grid_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+	grid_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
 
 	pfd = pango_font_description_from_string ("Sans 6");
 
 	pango_layout_set_font_description (grid_label_layout, pfd);
 	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
-	gdk_gc_set_function (kontext, GDK_XOR);
-	gdk_gc_set_background (kontext, &colors.white);
-	gdk_gc_set_foreground (kontext, &colors.mygray);
+	gdk_gc_set_function (kontext_map, GDK_XOR);
+	gdk_gc_set_background (kontext_map, &colors.white);
+	gdk_gc_set_foreground (kontext_map, &colors.mygray);
 	
-	gdk_draw_layout_with_colors (drawable, kontext, posx - width / 2,
+	gdk_draw_layout_with_colors (drawable, kontext_map, posx - width / 2,
 				     posy - height / 2, grid_label_layout, &colors.black,
 				     NULL);
 
@@ -143,15 +138,15 @@ draw_grid (GtkWidget * widget)
 
 
 	// calculate the start and stop for lat/lon according to the displayed section
-	calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-	calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-	calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
-	calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+	calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
+	calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
+	calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
+	calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
 
 	// add more lines as the scale increases
 
 	// Calculate distance between grid lines
-	step = (gdouble) mapscale / 2000000.0 / zoom;
+	step = (gdouble) current.mapscale / 2000000.0 / current.zoom;
 	gchar precission[10];
 	gint iteration_count =0;
 	do {
@@ -162,7 +157,7 @@ draw_grid (GtkWidget * widget)
 	    else if (step >= .0001)	    g_snprintf (precission, sizeof (precission), "%%.4f");
 	    else           		    g_snprintf (precission, sizeof (precission), "%%.5f");
 
-	    if (mapscale < 5000000)
+	    if (current.mapscale < 5000000)
 		{
 		    lat_min = min (lat_ll, lat_ul) - step;
 		    lat_max = max (lat_lr, lat_ur) + step;
@@ -180,8 +175,8 @@ draw_grid (GtkWidget * widget)
 	    lon_min = floor (lon_min / step) * step;
 
 	    if ( mydebug > 20 )
-		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f) Step %f for Scale %ld Zoom %d\n", lat_min,
-			lon_min, lat_max, lon_max,step,mapscale,zoom);
+		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f) Step %f for Scale %ld Zoom %d\n", lat_min, lon_min, lat_max, lon_max, step,
+			current.mapscale, current.zoom);
 	    if ( mydebug > 40 )
 		{
 		    printf ("Draw Grid: (%.2f) Iterations for lat\n", (lat_max-lat_min)/step);
@@ -209,10 +204,10 @@ draw_grid (GtkWidget * widget)
 			gchar str[200];
 
 			count++;
-			calcxy (&posxdest11, &posydest11, lon,        max(-90,lat)       , zoom);
-			calcxy (&posxdest12, &posydest12, lon,        min( 90,lat + step), zoom);
-			calcxy (&posxdest21, &posydest21, lon + step, max(-90,lat),        zoom);
-			calcxy (&posxdest22, &posydest22, lon + step, min( 90,lat + step), zoom);
+			calcxy (&posxdest11, &posydest11, lon,        max(-90,lat)       , current.zoom);
+			calcxy (&posxdest12, &posydest12, lon,        min( 90,lat + step), current.zoom);
+			calcxy (&posxdest21, &posydest21, lon + step, max(-90,lat),        current.zoom);
+			calcxy (&posxdest22, &posydest22, lon + step, min( 90,lat + step), current.zoom);
 
 			if (((posxdest11 >= 0) && (posxdest11 < SCREEN_X) &&
 			     (posydest11 >= 0) && (posydest11 < SCREEN_Y))
@@ -226,16 +221,16 @@ draw_grid (GtkWidget * widget)
 			    ((posxdest12 >= 0) && (posxdest12 < SCREEN_X) &&
 			     (posydest12 >= 0) && (posydest12 < SCREEN_Y)))
 			    {
-				// TODO: add linethikness 2 for Mayor Lines
+				// TODO: add linethickness 2 for Mayor Lines
 				// Set Drawing Mode
-				gdk_gc_set_function (kontext, GDK_XOR);
-				gdk_gc_set_foreground (kontext, &colors.darkgrey);
-				gdk_gc_set_line_attributes (kontext, 1, GDK_LINE_SOLID, 0, 0);
+				gdk_gc_set_function (kontext_map, GDK_XOR);
+				gdk_gc_set_foreground (kontext_map, &colors.darkgrey);
+				gdk_gc_set_line_attributes (kontext_map, 1, GDK_LINE_SOLID, 0, 0);
 
-				gdk_draw_line (drawable, kontext, posxdest11,
+				gdk_draw_line (drawable, kontext_map, posxdest11,
 					       posydest11, posxdest21,
 					       posydest21);
-				gdk_draw_line (drawable, kontext, posxdest11,
+				gdk_draw_line (drawable, kontext_map, posxdest11,
 					       posydest11, posxdest12,
 					       posydest12);
 			    

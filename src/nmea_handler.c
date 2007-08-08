@@ -50,10 +50,7 @@
 # endif
 
 
-extern gint zoom, iszoomed;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 
 extern gint mydebug;
@@ -61,44 +58,41 @@ gint nmea_handler_debug = 0;
 
 extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
-extern gint havepos, haveposcount;
-extern gint blink, gblink, xoff, yoff, crosstoogle;
+extern gint haveposcount;
+extern gint blink, gblink, xoff, yoff;
 extern gint zone;
 extern gdouble milesconv;
-extern gint oldsatfix, oldsatsanz, havealtitude;
-extern gdouble altitude, precision, gsaprecision;
+extern gint oldsatfix, oldsatsanz;
+extern gdouble precision, gsaprecision;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
-extern gdouble pixelfact, posx, posy;
+extern gdouble posx, posy;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
-extern gint newsatslevel, testgarmin;
+extern gint newsatslevel;
 extern gint satfix, usedgps;
-extern gint numsats, satsavail;
+extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
 extern fd_set readmask;
 extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
-extern gchar serialdev[80];
 extern int newdata;
 extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
-extern int didrootcheck, haveserial;
-extern gint statusid, messagestatusbarid, timeoutcount;
+extern int didrootcheck;
+extern gint messagestatusbarid, timeoutcount;
 extern gint simpos_timeout;
-extern int gotneverserial, timerto, serialspeed;
-extern GtkWidget *drawing_sats;
+extern int timerto;
 extern GtkTooltips *temptooltips;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
 extern gchar gpsdservername[200];
-extern GtkWidget *mainwindow, *status, *messagestatusbar;
+extern GtkWidget *status;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
-extern int disableserial, disableserialcl;
 static gchar gradsym[] = "\xc2\xb0";
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -106,12 +100,10 @@ extern currentstatus_struct current;
 /* variables */
 extern gint ignorechecksum;
 //, mapistopo;
-extern gdouble dist;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-  int_padding;
+extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy;
-extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
+extern gdouble posx, posy;
+extern gint haveposcount;
 extern FILE *nmeaout;
 // ---------------------- NMEA
 gint haveRMCsentence = FALSE;
@@ -120,8 +112,7 @@ gdouble NMEAsecs = 0.0;
 gint NMEAoldsecs = 0;
 FILE *nmeaout = NULL;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-/*  haveGARMIN is TRUE if we get data from program garble in GARMIN we get only long and lat */
-gint haveNMEA, haveGARMIN;
+gint haveNMEA;
 extern gint sock;
 
 
@@ -295,7 +286,10 @@ convertGSA (char *f)
 	  }
       g_print ("\n");
     }
-  if (havepos)
+
+  current.gpsfix = g_strtod (field[2], 0);
+
+  if (current.gpsfix > 1)
     {
 
       gsaprecision = g_strtod (field[15], 0);
@@ -318,7 +312,7 @@ convertRMC (char *f)
   memset (b, 0, 100);
 
   /*  if simulation mode we display status and return */
-  if (local_config.simmode && maploaded && !gui_status.posmode)
+  if (current.simmode && maploaded && !gui_status.posmode)
     {
       display_status (_("Simulation mode"));
       return;
@@ -362,13 +356,13 @@ convertRMC (char *f)
     g_print ("nmea_handler: gpsd: utctime: %s\n", utctime);
   if ((field[2][0] != 'A') && !forcehavepos)
     {
-      havepos = FALSE;
+      current.gpsfix = 1;
       haveposcount = 0;
       return;
     }
   else
     {
-      havepos = TRUE;
+      current.gpsfix = 2;
       haveposcount++;
       if (haveposcount == 3)
 	{
@@ -518,7 +512,7 @@ convertRMC (char *f)
 	  h -= 24;
 	if (h < 0)
 	  h += 24;
-	g_snprintf (loctime, sizeof (loctime), "%d:%02d.%02d", h, m, s);
+	g_snprintf (loctime, sizeof (loctime), "%d:%02d", h, m);
       }
     else
       g_strlcpy (loctime, "n/a", sizeof (loctime));
@@ -606,13 +600,13 @@ convertGSV (char *f)
 
   if (((pow (2, i2)) - 1) == satbit)
     {
-      satsavail = 0;
+      sats_in_view = 0;
       for (i = 0; i < MAXSATS; i++)
 	if (satlist[i][0] != 0)
 	  {
 	    g_snprintf (b, sizeof (b), "% 2d: % 2ddb   ",
 			satlist[i][0], satlist[i][1]);
-	    satsavail++;
+	    sats_in_view++;
 	  }
       satbit = 0;
 
@@ -689,13 +683,13 @@ convertGGA (char *f)
 
       if (field[6][0] == '0')
 	{
-	  havepos = FALSE;
+	  current.gpsfix = 1;
 	  haveposcount = 0;
 	  return;
 	}
       else
 	{
-	  havepos = TRUE;
+	  current.gpsfix = 2;
 	  haveposcount++;
 	  if (haveposcount == 3)
 	    {
@@ -790,7 +784,7 @@ convertGGA (char *f)
       b[6] = field[4][9];
       b[7] = 0;
 
-      if (!gui_status.posmode)
+      if (!gui_status.posmode && !current.simmode)
 	{
 	  gdouble cl;
 	  cl = longdegree + atof (b) / 60.0;
@@ -812,18 +806,18 @@ convertGGA (char *f)
     }
 
   satfix = g_strtod (field[6], 0);
-  numsats = g_strtod (field[7], 0);
-  if (havepos)
+  sats_used = g_strtod (field[7], 0);
+  if (current.gpsfix > 1)
     {
-      havealtitude = TRUE;
-      altitude = g_strtod (field[9], 0);
+      current.altitude = g_strtod (field[9], 0);
       if ( mydebug + nmea_handler_debug > 80 )
-	g_print ("nmea_handler: gpsd: Altitude: %.1f, Fix: %d\n", altitude, satfix);
+	g_print ("nmea_handler: gpsd: Altitude: %.1f, Fix: %d\n",
+		current.altitude, satfix);
     }
   else
     {
       current.groundspeed = 0;
-      numsats = 0;
+      sats_used = 0;
     }
   {
     int h, m, s;
@@ -836,7 +830,7 @@ convertGGA (char *f)
 	  h -= 24;
 	if (h < 0)
 	  h += 24;
-	g_snprintf (loctime, sizeof (loctime), "%d:%02d.%02d", h, m, s);
+	g_snprintf (loctime, sizeof (loctime), "%d:%02d", h, m);
       }
     else
       g_strlcpy (loctime, "n/a", sizeof (loctime));
@@ -872,7 +866,7 @@ convertRME (char *f)
 	g_print ("%d:%s$", i, field[i]);
       g_print ("\n");
     }
-  if (havepos)
+  if (current.gpsfix > 1)
     {
       precision = g_strtod (field[1], 0);
       if ( mydebug + nmea_handler_debug > 80 )

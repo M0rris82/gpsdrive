@@ -116,7 +116,6 @@ convnasamap creates mapfiles from the big nasa map files
 # endif
 
 static char mybuffer[10000];
-extern GtkWidget *mainwindow;
 static GtkWidget *nasawindow = NULL;
 extern int debug;
 static int fdin_w, fdin_e;
@@ -214,8 +213,7 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 		nasawindow = gtk_window_new (GTK_WINDOW_POPUP);
 		vbox = gtk_vbox_new (FALSE, 6);
 		gtk_container_add (GTK_CONTAINER (nasawindow), vbox);
-		/*       gtk_window_set_transient_for (GTK_WINDOW (nasawindow), */
-		/*                              GTK_WINDOW (mainwindow)); */
+
 		gtk_window_set_position (GTK_WINDOW (nasawindow),
 					 GTK_WIN_POS_CENTER);
 

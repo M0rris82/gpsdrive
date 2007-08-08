@@ -55,9 +55,8 @@
 #  define N_(String) (String)
 # endif
 
-#define PADDING int_padding
 
-extern gint statusid, mydebug, havespeechout, muteflag;
+extern gint mydebug, havespeechout;
 
 typedef struct
 {
@@ -69,24 +68,22 @@ extern namesstruct *names;
 extern GtkWidget *addwaypointwindow;
 extern gchar gpsdservername[200];
 extern gint needreloadmapconfig;
-extern GtkWidget *serial_bt, *mapdirbt, *addwaypoint1, *addwaypoint2,
+extern GtkWidget *mapdirbt, *addwaypoint1, *addwaypoint2,
   *frame_speed, *frame_sats;
 extern gint isnight, disableisnight;
 extern gint nighttimer, iszoomed;
-extern gint newsatslevel, testgarmin, needtosave;
-extern gint wpsize, satfix, usedgps, earthmate, disableserial;
-extern gchar serialdev[80];
-extern GtkWidget *miles, *setup_bt;
+extern gint newsatslevel;
+extern gint wpsize, satfix, usedgps, earthmate;
+extern GtkWidget *miles;
 extern gint gcount, downloadwindowactive;
 extern gint disableapm;
-extern GtkWidget *mainwindow, *status, *pixmapwidget, *gotowindow;
+extern GtkWidget *status, *pixmapwidget, *gotowindow;
 extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
 extern GtkWidget *poi_types_window;
+extern GtkWidget *frame_statusfriends;
 static gdouble hour, sunrise, sunset;
 extern gchar utctime[20], loctime[20];
-static GtkWidget *utclabel;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint int_padding;
 extern gdouble tripodometer, tripavspeed, triptime, tripmaxspeed, triptmp,
   milesconv;
 extern gint tripavspeedcount;
@@ -102,15 +99,14 @@ extern char dbpoifilter[5000];
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern double dbdistance;
-extern int dbusedist, serialspeed, disableserial;
+extern int dbusedist;
 GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
 static int sqldontquery = FALSE;
-int sqlplace, friendsplace;
 extern GdkColormap *cmap;
 
 extern gint usesql;
-extern gint mod_setupcounter, storetz;
+extern gint storetz;
 static gboolean friendsiplock = FALSE;
 static gboolean friendsnamelock = FALSE;
 extern gchar *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
@@ -119,6 +115,7 @@ extern char friendserverip[20];
 GtkWidget *entryavspeed, *entrymaxspeed, *entrytripodometer, *entrytriptime,
   *tripunitlabel;
 extern color_struct colors;
+extern currentstatus_struct current;
 int showsid = TRUE;
 extern int expedia_de;
 
@@ -134,7 +131,6 @@ static gint
 setdistmode_cb (GtkWidget *widget)
 {
 	gint selection;
-	gchar s[80];
 	
 	selection = gtk_combo_box_get_active (GTK_COMBO_BOX (widget)); 
 	
@@ -154,31 +150,7 @@ setdistmode_cb (GtkWidget *widget)
 			break;
 	}
 	
-	needtosave = TRUE;
-	
-	if (local_config.guimode == GUI_PDA)
-	{
-		if (local_config.distmode == DIST_MILES)
-			g_snprintf (s, sizeof (s), "[%s]", _("mi/h"));
-		else if (local_config.distmode == DIST_NAUTIC)
-			g_snprintf (s, sizeof (s), "[%s]", _("knots"));
-		else
-			g_snprintf (s, sizeof (s), "[%s]", _("km/h"));
-	}
-	else
-	{
-		if (local_config.distmode == DIST_MILES)
-			g_snprintf (s, sizeof (s), "%s [%s]", _("Speed"),
-				    _("mi/h"));
-		else if (local_config.distmode == DIST_NAUTIC)
-			g_snprintf (s, sizeof (s), "%s [%s]", _("Speed"),
-				    _("knots"));
-		else
-			g_snprintf (s, sizeof (s), "%s [%s]", _("Speed"),
-				    _("km/h"));
-	}
-
-	gtk_frame_set_label (GTK_FRAME (frame_speed), s);
+	current.needtosave = TRUE;
 	
 	if (mydebug >10)
 		fprintf (stderr, "Setting distance format to %d %%.\n",
@@ -202,7 +174,7 @@ setaltmode_cb (GtkWidget *widget)
 		fprintf (stderr, "Setting altitude display format to %d.\n",
 			local_config.altmode);
 	
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	
 	return TRUE;
 }
@@ -232,12 +204,12 @@ setcolor_cb (GtkWidget *widget, GdkColor *targetcolor)
 	g_strlcpy (local_config.color_wplabel, tcol,
 		sizeof (local_config.color_wplabel));
 	g_free (tcol);
-	tcol = get_colorstring (&colors.bigdisplay);
-	g_strlcpy (local_config.color_bigdisplay, tcol,
-		sizeof (local_config.color_bigdisplay));
+	tcol = get_colorstring (&colors.dashboard);
+	g_strlcpy (local_config.color_dashboard, tcol,
+		sizeof (local_config.color_dashboard));
 	g_free (tcol);
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -257,7 +229,7 @@ setcoordmode_cb (GtkWidget *widget)
 				selection);
 	}
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	
 	return TRUE;
 }
@@ -275,7 +247,7 @@ setfont_cb (GtkWidget *widget, gchar *font)
 	if (mydebug > 10 )
 		fprintf (stderr, "setfont_cb: Setting font to: %s\n", font);
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -332,7 +304,7 @@ setfriendname_cb (GtkWidget *widget)
 	g_strlcpy (local_config.friends_name, name,
 		sizeof (local_config.friends_name));
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -346,7 +318,7 @@ setfriendsrv_cb (GtkWidget *widget)
 	g_strlcpy (local_config.friends_serverfqn, srv,
 		sizeof (local_config.friends_serverfqn));
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -365,7 +337,7 @@ setfriendsrvip_cb (GtkWidget *widget)
 	g_strlcpy (local_config.friends_serverip, srvip,
 		sizeof (local_config.friends_serverip));
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -425,7 +397,7 @@ setpoisearch_cb (GtkWidget *widget, gint value)
 			return FALSE;
 	}
 	
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -452,13 +424,18 @@ setshowfriends_cb (GtkWidget *entry)
 
 	local_config.showfriends = !local_config.showfriends;
 
+	if (local_config.showfriends)
+		gtk_widget_show_all (frame_statusfriends);
+	else
+		gtk_widget_hide_all (frame_statusfriends);
+
 	if (mydebug >10)
 	{
 		fprintf (stderr, "Setting friend display to %d.\n",
 			local_config.showfriends);
 	}
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -474,7 +451,7 @@ settogglevalue_cb (GtkWidget *widget, gint *item)
 			*item);
 	}
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	
 	return TRUE;
 }
@@ -494,7 +471,7 @@ setmapdir_cb (GtkWidget *widget)
 		//if (mydebug >3)
 			fprintf (stderr, "setting maps dir to: %s\n", tdir);
 		needreloadmapconfig = TRUE;
-		needtosave = TRUE;
+		current.needtosave = TRUE;
 		gtk_timeout_add (2000, (GtkFunction) loadmapconfig, 0);
 	}
 	g_free (tdir);
@@ -516,7 +493,7 @@ setmaxcpuload_cb (GtkWidget *widget)
 		fprintf (stderr, "Setting max. CPU-Load to %d %%.\n",
 			local_config.maxcpuload);
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -544,7 +521,7 @@ setnightmode_cb (GtkWidget *widget, guint value)
 
 	local_config.nightmode = value;
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -566,7 +543,7 @@ setpoitheme_cb (GtkWidget *combo)
 
 	g_free (theme);
 	
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -585,8 +562,28 @@ setposmarker_cb (GtkWidget *widget)
 		fprintf (stderr, "Setting posmarker style to %d.\n",
 			local_config.posmarker);
 	
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setsimmode_cb (GtkWidget *widget, guint value)
+{
+	local_config.simmode = value;
+	if (value == SIM_AUTO)
+	{
+		if (current.gpsfix < 2)
+			current.simmode = TRUE;
+		else
+			current.simmode = FALSE;
+	}
+	else
+	{
+		current.simmode = value;
+	}
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -605,7 +602,7 @@ settravelmode_cb (GtkWidget *widget)
 		fprintf (stderr, "Setting travelmode to %d.\n",
 			local_config.travelmode);
 	
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	
 	return TRUE;
 }
@@ -629,7 +626,7 @@ setwpfile_cb (GtkWidget *widget)
 	}
 	g_free (tfile);
 
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -655,7 +652,7 @@ setwpfilequick_cb (GtkWidget *widget, guint datum)
 		}
 		g_free (selected);
 	}
-	needtosave = TRUE;
+	current.needtosave = TRUE;
 	return TRUE;
 }
 
@@ -682,7 +679,9 @@ settings_general (GtkWidget *notebook)
 	GtkWidget *dist_label, *dist_combo;
 	GtkWidget *alt_label, *alt_combo;
 	GtkWidget *coord_label, *coord_combo;
-	GtkWidget *simulation_bt;
+	GtkWidget *simulation_lb;
+	GtkWidget *simmode_auto_rb, *simmode_on_rb, *simmode_off_rb;
+	GtkWidget *simmode_table;
 	GtkWidget *maxcpu_label, *maxcpu_spin;
 	GtkTooltips *general_tooltips;
 	GtkWidget *general_vbox;
@@ -729,9 +728,6 @@ settings_general (GtkWidget *notebook)
 		_("Choose here the unit for the display of altitudes."), NULL);
 	g_signal_connect (alt_combo, "changed",
 		GTK_SIGNAL_FUNC (setaltmode_cb), 0);
-	// TODO: add functionality
-	// Button is disabled as long there is no functionality:
-		gtk_widget_set_sensitive (alt_combo, FALSE);
 	}
 	
 	/* coordinate format */
@@ -773,23 +769,54 @@ settings_general (GtkWidget *notebook)
 
 	/* misc settings */
 	{
-	simulation_bt = gtk_check_button_new_with_label
-		(_("Enable Simulation mode"));
-	if (local_config.simmode)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (simulation_bt), TRUE);
-	}
-	else
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (simulation_bt), FALSE);
-	}
-	gtk_tooltips_set_tip (general_tooltips, simulation_bt,
+	simulation_lb = gtk_label_new (_("Enable Simulation mode"));
+	simmode_auto_rb = gtk_radio_button_new_with_label
+		(NULL, _("Automatic"));
+	g_signal_connect (simmode_auto_rb, "toggled",
+		GTK_SIGNAL_FUNC (setsimmode_cb), (gpointer) SIM_AUTO);
+	simmode_on_rb = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (simmode_auto_rb), _("On"));
+	g_signal_connect (simmode_on_rb, "toggled",
+		GTK_SIGNAL_FUNC (setsimmode_cb), (gpointer) SIM_ON);
+	simmode_off_rb = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (simmode_auto_rb), _("Off"));
+	g_signal_connect (simmode_off_rb, "toggled",
+		GTK_SIGNAL_FUNC (setsimmode_cb), (gpointer) SIM_OFF);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (general_tooltips), simmode_auto_rb,
 		_("If activated, the position pointer moves towards "
-		"the selected target simulating a moving vehicle"), NULL);
-	g_signal_connect (GTK_OBJECT (simulation_bt), "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.simmode);
+		"the selected target simulating a moving vehicle, when no "
+		"GPS is available."), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (general_tooltips), simmode_on_rb,
+		_("If activated, the position pointer moves towards "
+		"the selected target simulating a moving vehicle always."),
+		NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (general_tooltips), simmode_off_rb,
+		_("Switches simulation mode off"), NULL);
+	switch (local_config.simmode)
+	{
+		case SIM_OFF:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (simmode_off_rb), TRUE);
+			break;
+		case SIM_ON:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (simmode_on_rb), TRUE);
+			break;
+		case SIM_AUTO:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (simmode_auto_rb), TRUE);
+			break;
+	}
+	
+	simmode_table = gtk_table_new (1, 3, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (simmode_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (simmode_table), 5);
+	gtk_table_attach_defaults (GTK_TABLE (simmode_table),
+		simmode_on_rb, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (simmode_table),
+		simmode_off_rb, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (simmode_table),
+		simmode_auto_rb, 2, 3, 0, 1);
 
 	maxcpu_label = gtk_label_new (_("Maximum CPU load (in %)"));
 	maxcpu_spin = gtk_spin_button_new_with_range (0, 95, 5);
@@ -806,15 +833,17 @@ settings_general (GtkWidget *notebook)
 
 	/* misc table */
 	{
-	misc_table = gtk_table_new (3, 2, FALSE);
+	misc_table = gtk_table_new (4, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (misc_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (misc_table), 5);
 	gtk_table_attach_defaults (GTK_TABLE (misc_table),
-		simulation_bt, 0, 2, 0, 1);
+		simulation_lb, 0, 2, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (misc_table),
-		maxcpu_label, 0, 1, 1, 2);
+		simmode_table, 0, 2, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (misc_table),
-		maxcpu_spin, 1, 2, 1, 2);
+		maxcpu_label, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (misc_table),
+		maxcpu_spin, 1, 2, 2, 3);
 	}
 
 	/* map settings */
@@ -1113,27 +1142,27 @@ settings_gui (GtkWidget *notebook)
 		_("Set here the font of waypoint labels"), NULL);
 
 	/* Big Display color & font */
-	gui_bigcol_lb = gtk_label_new (_("Big display"));
+	gui_bigcol_lb = gtk_label_new (_("Dashboard"));
 	gui_bigcol_bt = gtk_color_button_new_with_color
-		(&colors.bigdisplay);
+		(&colors.dashboard);
 	gtk_color_button_set_title
 		(GTK_COLOR_BUTTON (gui_bigcol_bt),
-		_("Choose color for big display"));
+		_("Choose color for dashboard"));
 	g_signal_connect (gui_bigcol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.bigdisplay);
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.dashboard);
 	gtk_tooltips_set_tip (gui_tooltips, gui_bigcol_bt,
-		_("Set here the color of the big routing displays"), NULL);
+		_("Set here the color of the dashboard"), NULL);
 	gui_bigfont_bt = gtk_font_button_new_with_font
-		(local_config.font_bigdisplay);
+		(local_config.font_dashboard);
 	gtk_font_button_set_title
 		(GTK_FONT_BUTTON (gui_bigfont_bt),
-		_("Choose font for big display"));
+		_("Choose font for dashboard"));
 	gtk_font_button_set_use_font
 		(GTK_FONT_BUTTON (gui_bigfont_bt), TRUE);
 	g_signal_connect (gui_bigfont_bt, "font-set",
-		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_bigdisplay);
+		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_dashboard);
 	gtk_tooltips_set_tip (gui_tooltips, gui_bigfont_bt,
-		_("Set here the font of the big routing displays"), NULL);
+		_("Set here the font of the dashboard"), NULL);
 
 	gui_map_table = gtk_table_new (5, 3, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (gui_map_table), 5);
@@ -1491,8 +1520,9 @@ settings_poi (GtkWidget *notebook)
 	poifilter_label = gtk_label_new (_("POI-Filter"));
 	poifilter_bt = gtk_button_new_with_label (_("Edit Filter"));
 	g_signal_connect_swapped (poifilter_bt, "clicked",
-				GTK_SIGNAL_FUNC (toggle_window_cb),
-				poi_types_window);
+		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
+	// TODO: add funvtionality, then set sensitive again
+	gtk_widget_set_sensitive (poifilter_bt, FALSE);
 
 	poidisplay_table = gtk_table_new (2, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
@@ -1932,8 +1962,6 @@ settings_main_cb (GtkWidget *widget, guint datum)
 		(GTK_WINDOW (settings_window), _("GpsDrive Settings"));
 	gtk_window_set_position
 		(GTK_WINDOW (settings_window), GTK_WIN_POS_CENTER);
-	gtk_window_set_transient_for
-		(GTK_WINDOW (settings_window), GTK_WINDOW (mainwindow));
 	gtk_window_set_modal
 		(GTK_WINDOW (settings_window), TRUE);
 
@@ -1985,6 +2013,14 @@ settings_main_cb (GtkWidget *widget, guint datum)
 
 
 
+
+
+
+
+
+
+
+
 /* *****************************************************************************
  */
 void
@@ -2029,80 +2065,7 @@ infosettz (GtkWidget * widget, guint datum)
       g_print ("\nTimezone: %d", zone);
     }
 
-  needtosave = TRUE;
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-storetz_cb (GtkWidget * widget, guint datum)
-{
-  storetz = !storetz;
-  fprintf (stderr, "storetz: %d\n", storetz);
-
-  needtosave = TRUE;
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-dbdistance_cb (GtkWidget * widget, guint datum)
-{
-  gchar *s;
-
-  s = g_strstrip ((char *) gtk_entry_get_text (GTK_ENTRY (widget)));
-  dbdistance = g_strtod (s, 0);
-  needtosave = TRUE;
-  gtk_timeout_add (2000, (GtkFunction) callsqlupdateonce_cb, 0);
-
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-callsqlupdateonce_cb (GtkWidget * widget, guint datum)
-{
-  getsqldata ();
-
-  return FALSE;
-}
-
-/* *****************************************************************************
- */
-gint
-dbusedist_cb (GtkWidget * widget, guint datum)
-{
-  dbusedist = !dbusedist;
-  needtosave = TRUE;
-  getsqldata ();
-
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-showsid_cb (GtkWidget * widget, guint datum)
-{
-  showsid = !showsid;
-  needtosave = TRUE;
-  dbbuildquery_cb (NULL, 999999);
-  getsqldata ();
-
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-noserial_cb (GtkWidget * widget, guint datum)
-{
-  disableserial = !disableserial;
-
-  needtosave = TRUE;
+  current.needtosave = TRUE;
   return TRUE;
 }
 
@@ -2170,207 +2133,6 @@ dbbuildquery_cb (GtkWidget * widget, guint datum)
       getsqldata ();
     }
 
-  needtosave = TRUE;
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-sqlselectmode_cb (GtkWidget * widget, guint datum)
-{
-  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-    {
-      sqlandmode = TRUE;
-    }
-  else
-    {
-      sqlandmode = FALSE;
-    }
-  dbbuildquery_cb (NULL, 999999);
-
-  return TRUE;
-}
-
-
-
-/* ************************************************************************* */
-void
-setup_poi (void)
-{
-  GtkTooltips *tooltips;
-
-  GtkWidget *d1;
-  GtkWidget *d2;
-  GtkWidget *d4;
-  GtkWidget *d5;
-  GtkWidget *frame;
-  GtkWidget *hbox;
-  GtkWidget *l[MAXPOITYPES];
-  GtkWidget *mainbox;
-  GtkWidget *scroll;
-  GtkWidget *t0;
-  GtkWidget *t1;
-  GtkWidget *t2;
-  GtkWidget *table;
-  GtkWidget *table2;
-
-  gchar temp[80];
-  gchar text[50];
-  gchar filtertemp[5000];
-  glong i;
-  
-  gint poi_type_entries = 30; // only show base types
-
-  setupentry[sqlplace] = frame = gtk_frame_new (_("POI selection criterias"));
-  setupentrylabel[sqlplace] = gtk_label_new (_("POI"));
-
-  gtk_container_set_border_width (GTK_CONTAINER (frame), 5 * PADDING);
-
-  g_strlcpy (filtertemp, dbpoifilter, sizeof (filtertemp));
-
-  for (i = 1; i < poi_type_entries; i++)
-    {
-      sqlselects[i] = 0;
-    }
-
-  tooltips = gtk_tooltips_new ();
-
-  mainbox = gtk_vbox_new (FALSE, 15 * PADDING);
-  scroll = gtk_scrolled_window_new (NULL, NULL);
-  gtk_scrolled_window_set_policy ((GtkScrolledWindow *) scroll,
-				  GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
-  table = gtk_table_new (5, 2, FALSE);
-  table2 = gtk_table_new (poi_type_entries, 2, FALSE);
-
-  gtk_container_add (GTK_CONTAINER (frame), mainbox);
-
-  gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, TRUE, 3 * PADDING);
-
-  d1 = gtk_label_new (_("Dist. limit[km] "));
-  d2 = gtk_entry_new ();
-  g_snprintf (text, sizeof (text), "%0.1f", dbdistance);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d2,
-			_("If enabled, show POIs only within this "
-			  "distance"), NULL);
-
-  gtk_entry_set_text (GTK_ENTRY (d2), text);
-  gtk_widget_set_usize (d2, USIZE_X, USIZE_Y);
-  gtk_signal_connect (GTK_OBJECT (d2), "changed",
-		      GTK_SIGNAL_FUNC (dbdistance_cb), d2);
-
-  d4 = gtk_check_button_new ();
-  hbox = gtk_hbox_new (FALSE, 2);
-  if (dbusedist)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d4), TRUE);
-    }
-  gtk_signal_connect (GTK_OBJECT (d4), "clicked",
-		      GTK_SIGNAL_FUNC (dbusedist_cb), d4);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d4,
-			_("Enable/disable distance selection"), NULL);
-  gtk_box_pack_start (GTK_BOX (hbox), d1, FALSE, FALSE, 0 * PADDING);
-  gtk_box_pack_start (GTK_BOX (hbox), d4, FALSE, FALSE, 0 * PADDING);
-
-  gtk_table_attach_defaults (GTK_TABLE (table), hbox, 0, 1, 0, 1);
-  gtk_table_attach_defaults (GTK_TABLE (table), d2, 1, 2, 0, 1);
-
-  d5 = gtk_check_button_new_with_label (_("Show no_ssid "));
-
-  if (showsid)
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (d5), TRUE);
-    }
-
-  gtk_signal_connect (GTK_OBJECT (d5), "clicked",
-		      GTK_SIGNAL_FUNC (showsid_cb), d4);
-
-  gtk_table_attach_defaults (GTK_TABLE (table), d5, 0, 1, 4, 5);
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), d5,
-			_("If enabled, WLANs with no SSID are shown, because "
-			  "this is perhaps useless, you can disable it here"),
-			NULL);
-
-  sqldontquery = TRUE;
-
-
-  t0 = gtk_label_new (_("Selection mode"));
-
-  t1 = gtk_radio_button_new_with_label (NULL, _("include"));
-  t2 =
-    gtk_radio_button_new_with_label (gtk_radio_button_group
-				     (GTK_RADIO_BUTTON (t1)), _("exclude"));
-
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t1,
-			_("Show only POIs where the type field contains "
-			  "one of the selected words"), NULL);
-  gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), t2,
-			_("Show only POIs where the type field doesn't "
-			  "contain any the selected words"), NULL);
-
-  gtk_signal_connect (GTK_OBJECT (t1), "clicked",
-		      GTK_SIGNAL_FUNC (sqlselectmode_cb), (gpointer) 1);
-
-  if (NULL != (strstr (filtertemp, "type != ")))
-    {
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (t2), TRUE);
-    }
-
-  gtk_table_attach_defaults (GTK_TABLE (table), t0, 0, 2, 2, 3);
-  gtk_table_attach_defaults (GTK_TABLE (table), t1, 0, 1, 3, 4);
-  gtk_table_attach_defaults (GTK_TABLE (table), t2, 1, 2, 3, 4);
-
-  gtk_scrolled_window_add_with_viewport ((GtkScrolledWindow *) scroll,
-					 table2);
-
-  gtk_box_pack_start (GTK_BOX (mainbox), scroll, TRUE, TRUE, 3 * PADDING);
-
-  for (i = 1; i < poi_type_entries; i++)
-    {
-      if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
-	  {
-		  l[i] = gtk_entry_new ();
-		  gtk_entry_set_text (GTK_ENTRY (l[i]), poi_type_list[i].name);
-		  gtk_entry_set_editable (GTK_ENTRY (l[i]), FALSE);
-		  gtk_widget_set_usize (l[i], USIZE_X, USIZE_Y);
-		  gtk_table_attach_defaults (GTK_TABLE (table2), l[i], 0, 1, i, i + 1);
-		  
-		  sqlfn[i] = gtk_check_button_new ();
-		  gtk_signal_connect (GTK_OBJECT (sqlfn[i]), "clicked",
-			  GTK_SIGNAL_FUNC (dbbuildquery_cb), (gpointer) i);
-		  g_snprintf (temp, sizeof (temp), "= '%s'", poi_type_list[i].name);
-		  
-		  if (NULL != (strstr (filtertemp, temp)))
-		  {
-			  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (sqlfn[i]), TRUE);
-		  }
-		  
-		  gtk_table_attach_defaults (GTK_TABLE (table2), sqlfn[i], 1, 2, i,i + 1);
-	  }
-    }
-
-  sqldontquery = FALSE;
-  gtk_table_set_row_spacings (GTK_TABLE (table), 2 * PADDING);
-  gtk_table_set_col_spacings (GTK_TABLE (table), 2 * PADDING);
-  gtk_table_set_row_spacings (GTK_TABLE (table2), 2 * PADDING);
-  gtk_table_set_col_spacings (GTK_TABLE (table2), 2 * PADDING);
-  gtk_widget_show_all (frame);
-}
-
-/* ************************************************************************* */
-gint
-setutc (GtkWidget * widget, guint datum)
-{
-  gchar text[20];
-
-  g_snprintf (text, sizeof (text), "%s", loctime);
-
-  if (GTK_IS_WIDGET (utclabel))
-    {
-      gtk_entry_set_text (GTK_ENTRY (utclabel), text);
-    }
-
+  current.needtosave = TRUE;
   return TRUE;
 }

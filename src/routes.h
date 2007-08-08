@@ -27,7 +27,6 @@ Disclaimer: Please do not use for navigation.
 
 #include <gtk/gtk.h>
 
-extern gint forcenextroutepoint;
 extern gint thisrouteline;
 extern GtkWidget *create_route_button;
 extern GtkWidget *create_route2_button;

@@ -46,6 +46,7 @@ Disclaimer: Please do not use for navigation.
 
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "main_gui.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -58,17 +59,16 @@ Disclaimer: Please do not use for navigation.
 
 
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 extern GdkColor grey;
 extern color_struct colors;
+extern currentstatus_struct current;
 
 extern gint mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
+extern GtkWidget *map_drawingarea;
 extern gint usesql;
 extern glong mapscale;
+extern GdkGC *kontext_map;
 
 #include "mysql/mysql.h"
 
@@ -184,8 +184,8 @@ streets_check_if_moved (void)
       streets_lat_ul == 0 && streets_lon_ul == 0)
     return 1;
 
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
-  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
 
   if (streets_lat_lr == lat_lr && streets_lon_lr == lon_lr &&
       streets_lat_ul == lat_ul && streets_lon_ul == lon_ul)
@@ -357,7 +357,7 @@ streets_rebuild_list (void)
   if (!maploaded)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
   if (mydebug > 50)
@@ -372,10 +372,10 @@ streets_rebuild_list (void)
     }
 
   {				// calculate the start and stop for lat/lon according to the displayed section
-    calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-    calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-    calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
-    calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+    calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
+    calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
+    calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
+    calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
 
     lat_min = min (lat_ll, lat_ul)-0.01;
     lat_max = max (lat_lr, lat_ur)+0.01;
@@ -400,8 +400,8 @@ streets_rebuild_list (void)
     int i;
     for (i = 0; i < streets_type_list_max; i++)
       {
-	  if ( streets_type_list[i].scale_min <= mapscale   &&
-	       streets_type_list[i].scale_max >= mapscale 
+	  if ( streets_type_list[i].scale_min <= current.mapscale   &&
+	       streets_type_list[i].scale_max >= current.mapscale 
 	       ) {
 	      gchar id_string[20];
 	      g_snprintf (id_string, sizeof (id_string),"%d,",
@@ -435,7 +435,8 @@ streets_rebuild_list (void)
     if (mydebug > 50)
       {
 	// printf ("STREETS mysql where: %s\n", sql_area );
-	printf ("streets_rebuild_list: STREETS mapscale: %ld\n", mapscale);
+	printf ("streets_rebuild_list: STREETS mapscale: %ld\n",
+		current.mapscale);
       }
   }
 
@@ -493,8 +494,8 @@ streets_rebuild_list (void)
       lon2 = g_strtod (row[3], NULL);
 
 
-      calcxy (&streets_posx1, &streets_posy1, lon1, lat1, zoom);
-      calcxy (&streets_posx2, &streets_posy2, lon2, lat2, zoom);
+      calcxy (&streets_posx1, &streets_posy1, lon1, lat1, current.zoom);
+      calcxy (&streets_posx2, &streets_posy2, lon2, lat2, current.zoom);
 
       if (posxy_on_screen (streets_posx1, streets_posy1) ||
 	  posxy_on_screen (streets_posx2, streets_posy2))
@@ -622,9 +623,9 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
 
   // Draw Text Label with name
   g_strlcpy (txt, name, sizeof (txt));
-  gdk_gc_set_foreground (kontext, &colors.textback);
+  gdk_gc_set_foreground (kontext_map, &colors.textback);
 
-  streets_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+  streets_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
   if (local_config.guimode == GUI_PDA)
     pfd = pango_font_description_from_string ("Sans 8");
   else
@@ -634,28 +635,28 @@ draw_text_with_box (gdouble posx, gdouble posy, gchar * name)
   k = width + 4;
   k2 = height;
 
-  gdk_gc_set_function (kontext, GDK_COPY);
+  gdk_gc_set_function (kontext_map, GDK_COPY);
 
-  gdk_gc_set_function (kontext, GDK_AND);
+  gdk_gc_set_function (kontext_map, GDK_AND);
 
   {				// Draw rectangle arround Text
-    //gdk_gc_set_foreground (kontext, &colors.textbacknew);
-    gdk_draw_rectangle (drawable, kontext, 1,
+    //gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
+    gdk_draw_rectangle (drawable, kontext_map, 1,
 			posx + 13, posy - k2 / 2, k + 1, k2);
-    gdk_gc_set_function (kontext, GDK_COPY);
-    gdk_gc_set_foreground (kontext, &colors.black);
-    gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-    gdk_draw_rectangle (drawable, kontext, 0,
+    gdk_gc_set_function (kontext_map, GDK_COPY);
+    gdk_gc_set_foreground (kontext_map, &colors.black);
+    gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
+    gdk_draw_rectangle (drawable, kontext_map, 0,
 			posx + 12, posy - k2 / 2 - 1, k + 2, k2);
   }
 
   /* prints in pango */
 
-  streets_label_layout = gtk_widget_create_pango_layout (drawing_area, txt);
+  streets_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
   pfd = pango_font_description_from_string (streets_label_font);
   pango_layout_set_font_description (streets_label_layout, pfd);
 
-  gdk_draw_layout_with_colors (drawable, kontext,
+  gdk_draw_layout_with_colors (drawable, kontext_map,
 			       posx + 15, posy - k2 / 2,
 			       streets_label_layout, &colors.black, NULL);
   if (streets_label_layout != NULL)
@@ -683,7 +684,7 @@ streets_draw_list (void)
   if (!usesql)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
   if (!(streets_draw))
@@ -801,7 +802,7 @@ streets_draw_list (void)
 		  draw_text_with_box (posx2, posy2 + 15,
 				      (streets_list + i)->name);
 		}
-	      gdk_gc_set_foreground (kontext, &colors.red);
+	      gdk_gc_set_foreground (kontext_map, &colors.red);
 	      draw_small_plus_sign (posx1, posy1);
 	      draw_small_plus_sign (posx2, posy2);
 
@@ -842,43 +843,43 @@ streets_draw_list (void)
 	  else
 	    {
 	      // --------------------------------- Background/Framing/Highlighting Line
-	      gdk_gc_set_function (kontext, GDK_COPY);
+	      gdk_gc_set_function (kontext_map, GDK_COPY);
 
 	      gint width_factor=1;
-	      if ( ( mapscale/zoom ) < 10000 ) {
-		  width_factor=10000/( mapscale/zoom );
+	      if ( ( current.mapscale/current.zoom ) < 10000 ) {
+		  width_factor=10000/( current.mapscale/current.zoom );
 	      }
 
 	      if ((streets_list + i)->highlight)
 		{
-		  gdk_gc_set_background (kontext, &colors.yellow);
-		  gdk_gc_set_foreground (kontext, &colors.red);
-		  gdk_gc_set_line_attributes (kontext, 6*width_factor,
+		  gdk_gc_set_background (kontext_map, &colors.yellow);
+		  gdk_gc_set_foreground (kontext_map, &colors.red);
+		  gdk_gc_set_line_attributes (kontext_map, 6*width_factor,
 					      GDK_LINE_DOUBLE_DASH, 0, 0);
 		}
 	      else
 		{
-		  gdk_gc_set_foreground (kontext,
+		  gdk_gc_set_foreground (kontext_map,
 					 &streets_type_list[streets_id].
 					 color_bg);
-		  gdk_gc_set_line_attributes (kontext,
+		  gdk_gc_set_line_attributes (kontext_map,
 					      streets_type_list[streets_id].
 					      width_bg*width_factor, GDK_LINE_SOLID, 0, 0);
 		}
 
-	      gdk_draw_segments (drawable, kontext,
+	      gdk_draw_segments (drawable, kontext_map,
 				 (GdkSegment *) gdks_streets,
 				 gdks_streets_count + 1);
 
 	      // --------------------------------- Foreground Line
-	      gdk_gc_set_foreground (kontext,
+	      gdk_gc_set_foreground (kontext_map,
 				     &streets_type_list[streets_id].color);
-	      gdk_gc_set_line_attributes (kontext,
+	      gdk_gc_set_line_attributes (kontext_map,
 					  streets_type_list[streets_id].width*width_factor,
 					  GDK_LINE_SOLID, 0, 0);
 
 	      // Colored inner part of Streets
-	      gdk_draw_segments (drawable, kontext,
+	      gdk_draw_segments (drawable, kontext_map,
 				 (GdkSegment *) gdks_streets,
 				 gdks_streets_count + 1);
 	    }

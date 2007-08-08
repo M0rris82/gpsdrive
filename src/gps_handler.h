@@ -54,9 +54,7 @@ extract all/some gps_handling parts to File src/gps_handler.c
 #include <gtk/gtk.h>
 
 gint initgps ();
-void startgpsd_cb (GtkWidget * widget, guint datum);
 void gpsd_close();
-gint reinitgps_cb (GtkWidget * widget, gpointer datum);
 
 int garblemain (int argc, char **argv);
 

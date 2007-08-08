@@ -41,7 +41,7 @@ Disclaimer: Please do not use for navigation.
 /*  set this to 0 for normal use, 1 for small screens */
 #define SMALLMENU real_smallmenu
 /*** Mod by Arms */
-#define PADDING int_padding
+#define PADDING 1
 /*** Mod by Arms */
 #define XMINUS 60
 /*** Mod by Arms (move) */
@@ -86,6 +86,14 @@ enum
 	NIGHT_AUTO,
 };
 
+/* Simulationmode settings */
+enum
+{
+	SIM_OFF,
+	SIM_ON,
+	SIM_AUTO,
+};
+
 /* Definiton for travelmode used in local_config */
 enum
 {
@@ -108,7 +116,8 @@ enum
 
 
 /*  size of the bearing pointer, default is 50 */
-#define PSIZE real_psize
+//#define PSIZE real_psize
+
 
 /***************************************************************************/
 /***************************************************************************/
@@ -120,7 +129,6 @@ enum
 #define REDRAWTIMER 300
 /*  How often do we ask for positioning data */
 #define TIMER 500
-#define TIMERSERIAL 50
 
 #define MAXSHOWNWP 100
 
@@ -205,6 +213,11 @@ $PSRF108,0*32            WAAS/EGNOS off
 #define DEG2RAD(x) (x*M_PI/180.0)
 #define RAD2DEG(x) (x/M_PI*180.0)
 
+#define ZOOM_MIN 1
+#define ZOOM_MAX 16
+
+#define DEGREE "\xc2\xb0"
+
 /*
  * Declarations.
  */
@@ -250,13 +263,11 @@ gint pos_cb (GtkWidget * widget, guint datum);
 gint toggle_mapnik_cb (GtkWidget * widget, guint datum);
 gint streets_draw_cb (GtkWidget * widget, guint datum);
 
-// Some of these shouldn't be necessary, once all the gui stuff is finally moved
+// TODO: Some of these should be moved, once all the gui stuff is finally moved
 GtkWidget *find_poi_bt;
-
 
 /* I didn't want to start a friends.h ;-) */
 void drawfriends (void);
-extern int actualfriends;
 /* End of friends.h stuff */
 
 void test_and_load_newmap ();
@@ -293,6 +304,7 @@ typedef struct
 	gint show;
 	gint items;
 	gdouble distance;
+	gboolean forcenext;
 }
 routestatus_struct;
 
@@ -315,18 +327,32 @@ typedef struct
 	gdouble zero_lat;
 	gdouble old_lon;
 	gdouble old_lat;
+	gdouble wp_lat;
+	gdouble wp_lon;
 }
 coordinate_struct;
 
-/* struct for data about current position/movement status */
+/* struct for data about current position/movement/status data */
 typedef struct
 {
 	gdouble groundspeed;
 	gdouble heading;	/* heading in radians */
 	gdouble bearing;	/* bearing in radians */
+	gdouble altitude;	/* current altitude */
+	glong mapscale;		/* scale of map shown */
+	gint zoom;		/* map zoom level */
 	gchar target[80];	/* name of current target */
+	gdouble dist;		/* distance to selected target */
+	gint statusbar_id;	/* context_id of current statusbar message */
+	gboolean simmode;	/* Status of Simulation mode */
+	gint gpsfix;		/* Status of GPS:
+				 * 0: No GPS, 1: No Fix, 2: 2D Fix, 3: 3D Fix */
+	gboolean needtosave;	/* flag if config has to be saved */
+	gboolean importactive;
 }
 currentstatus_struct;
+
+
 
 #ifndef min
 #define min(a, b) (((a) < (b)) ? (a) : (b))

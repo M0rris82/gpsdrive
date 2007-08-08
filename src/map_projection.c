@@ -42,48 +42,34 @@
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gdouble dist;
 extern gint real_screen_x, real_screen_y;
-extern gint real_psize, real_smallmenu, int_padding;
+extern gint real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy;
 extern gdouble bearing;
-extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
+extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gdouble trip_lat, trip_lon;
 extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint debug, mydebug;
 extern gint usesql;
 extern glong mapscale;
-extern gint iszoomed;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
-extern gint needtosave;
 
-extern gint forcenextroutepoint;
 extern gint thisrouteline;
 extern gint gcount, downloadwindowactive;
-extern GtkWidget *drawing_area, *drawing_bearing;
-extern GtkWidget *drawing_sats, *drawing_miniimage;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
-extern gint streets_draw;
 extern coordinate_struct coords;
 extern gchar oldfilename[2048];
 
-extern gint scaleprefered_not_bestmap, scalewanted;
 extern gint borderlimit;
 
 extern gint saytarget;
 
 extern int havedefaultmap;
 
-extern GtkWidget *destframe;
-extern GdkPixbuf *image, *tempimage, *miniimage;
-extern GtkWidget *scaler_widget;
-extern GtkWidget *scaler_left_bt, *scaler_right_bt;
-extern GtkObject *scaler_adj;
+extern GdkPixbuf *image, *tempimage;
 
 #include "gettext.h"
 

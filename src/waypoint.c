@@ -48,6 +48,7 @@ Disclaimer: Please do not use for navigation.
 #include "poi.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "main_gui.h"
 
 #include "gettext.h"
 #include <speech_strings.h>
@@ -65,14 +66,12 @@ Disclaimer: Please do not use for navigation.
 
 extern GtkWidget *mylist;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern routestatus_struct route;
 extern gint isnight, disableisnight;
 extern color_struct colors;
 extern gint mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
+extern GtkWidget *map_drawingarea;
+extern GdkGC *kontext_map;
 extern gint usesql;
 extern glong mapscale;
 
@@ -81,7 +80,6 @@ extern glong mapscale;
 extern MYSQL mysql;
 extern MYSQL_RES *res;
 extern MYSQL_ROW row;
-extern gint muteflag;
 extern gdouble alarm_dist;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
@@ -90,32 +88,29 @@ extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern gint wptotal, wpselected;
 extern GtkWidget *wp4eventbox;
 extern GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
-extern gdouble pixelfact, posx, posy;
+extern gdouble posx, posy;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
-extern GtkWidget *mainwindow;
 extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
-extern gdouble dist;
 extern GtkWidget *messagewindow;
 extern gint onemousebutton;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-  int_padding;
-extern GdkDrawable *drawable, *drawable_bearing, *drawable_sats;
+extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
+extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern GList *poi_types_formatted;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
+extern GdkGC *kontext;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
 gint foundradar;
 GtkWidget *addwaypointwindow;
-gdouble wplat, wplon;
 wpstruct *wayp;
 gint wpsize = 1000;
 gint maxwp;
@@ -154,7 +149,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 	/*  calculate new earth radius */
 	earthr = calcR (coords.current_lat);
 
-	if (importactive)
+	if (current.importactive)
 		return TRUE;
 
 	foundradar = FALSE;
@@ -265,8 +260,11 @@ void check_and_reload_way_txt()
 {
     gchar mappath[2048];
 
-    g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-	g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
+	if (g_ascii_strncasecmp (local_config.wp_file, "/", 1) != 0)
+	{
+		g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+		g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
+	}
  
     loadwaypoints ();
 }
@@ -289,13 +287,13 @@ draw_waypoints ()
 	for (i = 0; i < maxwp; i++)
 	{
 		calcxy (&posxdest, &posydest,
-			(wayp + i)->lon, (wayp + i)->lat, zoom);
+			(wayp + i)->lon, (wayp + i)->lat, current.zoom);
 
 		if ((posxdest >= 0) && (posxdest < SCREEN_X)
 		    && (shownwp < MAXSHOWNWP)
 		    && (posydest >= 0) && (posydest < SCREEN_Y))
 		{
-			gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+			gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 			shownwp++;
 			g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
 
@@ -311,16 +309,16 @@ draw_waypoints ()
 			if ((wayp + i)->proximity > 0.0)
 			{
 				gint proximity_pixels;
-				if (mapscale)
+				if (current.mapscale)
 					proximity_pixels =
 						((wayp + i)->proximity)
-						* zoom * PIXELFACT / mapscale;
+						* current.zoom * PIXELFACT / current.mapscale;
 				else
 					proximity_pixels = 2;
 
-				gdk_gc_set_foreground (kontext, &colors.blue);
+				gdk_gc_set_foreground (kontext_map, &colors.blue);
 
-				gdk_draw_arc (drawable, kontext, FALSE,
+				gdk_draw_arc (drawable, kontext_map, FALSE,
 					posxdest - proximity_pixels,
 					posydest - proximity_pixels,
 					proximity_pixels * 2,
@@ -335,13 +333,13 @@ draw_waypoints ()
 				gint width, height;
 				gchar *tn;
 
-				gdk_gc_set_foreground (kontext, &colors.shadow);
-				gdk_gc_set_function (kontext, GDK_AND);
+				gdk_gc_set_foreground (kontext_map, &colors.shadow);
+				gdk_gc_set_function (kontext_map, GDK_AND);
 				tn = g_strdelimit (txt, "_", ' ');
 
 				wplabellayout =
 					gtk_widget_create_pango_layout
-					(drawing_area, tn);
+					(map_drawingarea, tn);
 				pfd = pango_font_description_from_string
 					(local_config.font_wplabel);
 				pango_layout_set_font_description
@@ -354,7 +352,7 @@ draw_waypoints ()
 				if (local_config.showshadow)
 				{
 					gdk_draw_layout_with_colors (drawable,
-						kontext,
+						kontext_map,
 						posxdest + 15 + SHADOWOFFSET,
 						posydest - k2 / 2 + SHADOWOFFSET,
 						wplabellayout,
@@ -368,19 +366,19 @@ draw_waypoints ()
 				pango_font_description_free (pfd);
 
 			}
-			gdk_gc_set_function (kontext, GDK_COPY);
+			gdk_gc_set_function (kontext_map, GDK_COPY);
 
 
-			gdk_gc_set_function (kontext, GDK_AND);
+			gdk_gc_set_function (kontext_map, GDK_AND);
 
-			gdk_gc_set_foreground (kontext, &colors.textbacknew);
-			gdk_draw_rectangle (drawable, kontext, 1,
+			gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
+			gdk_draw_rectangle (drawable, kontext_map, 1,
 					    posxdest + 13, posydest - k2 / 2,
 					    k + 1, k2);
-			gdk_gc_set_function (kontext, GDK_COPY);
-			gdk_gc_set_foreground (kontext, &colors.black);
-			gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
-			gdk_draw_rectangle (drawable, kontext, 0,
+			gdk_gc_set_function (kontext_map, GDK_COPY);
+			gdk_gc_set_foreground (kontext_map, &colors.black);
+			gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
+			gdk_draw_rectangle (drawable, kontext_map, 0,
 					    posxdest + 12,
 					    posydest - k2 / 2 - 1, k + 2, k2);
 
@@ -392,14 +390,14 @@ draw_waypoints ()
 
 				wplabellayout =
 					gtk_widget_create_pango_layout
-					(drawing_area, txt);
+					(map_drawingarea, txt);
 				pfd = pango_font_description_from_string
 					(local_config.font_wplabel);
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
 
 				gdk_draw_layout_with_colors (drawable,
-							     kontext,
+							     kontext_map,
 							     posxdest + 15,
 							     posydest -
 							     k2 / 2,
@@ -422,7 +420,7 @@ draw_waypoints ()
 gint
 importaway_cb (GtkWidget * widget, guint datum)
 {
-	importactive = FALSE;
+	current.importactive = FALSE;
 	gtk_widget_destroy (widget);
 	g_strlcpy (oldfilename, "XXXXXXXXXXXXXXXXXX", sizeof (oldfilename));
 	return FALSE;
@@ -506,7 +504,7 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 		coordinate_string2gdouble(p, &coords.posmode_lon);
 	}
 
-	if ((!gui_status.posmode) && (!local_config.simmode))
+	if ((!gui_status.posmode) && (!current.simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
 					      TRUE);
 	getsqldata ();
@@ -527,19 +525,19 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
 			gtk_entry_get_text (GTK_ENTRY (add_wp_lon_text)));
 	coordinate_string2gdouble(s, &lo);
 	if ((lo > -181) && (lo < 181))
-		wplon = lo;
+		coords.wp_lon = lo;
 	s = g_strstrip ((char *)
 			gtk_entry_get_text (GTK_ENTRY (add_wp_lat_text)));
 	coordinate_string2gdouble(s, &la);
 	if ((la > -181) && (la < 181))
-		wplat = la;
+		coords.wp_lat = la;
 
 	return TRUE;
 }
 
 
 /* *****************************************************************************
- * Add waypoint at wplat, wplon
+ * Add waypoint at coords.wp_lat, coords.wp_lon
  * with Strings for Name and Type
  */
 void
@@ -606,7 +604,8 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	g_strlcpy(wp_type,s2,sizeof(wp_type));
 	g_strlcpy(wp_comment,s3,sizeof(wp_comment));
 
-	addwaypoint (wp_name, wp_type, wp_comment, wplat, wplon, save_in_db);
+	addwaypoint (wp_name, wp_type, wp_comment,
+		coords.wp_lat, coords.wp_lon, save_in_db);
 
 	gtk_widget_destroy (GTK_WIDGET (widget));
 	markwaypoint = FALSE;
@@ -661,8 +660,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	
 
 	addwaypointwindow = window = gtk_dialog_new ();
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
+
 	gtk_window_set_default_size (GTK_WINDOW (addwaypointwindow), 320, -1);
 	gotowindow = window;
 	markwaypoint = TRUE;
@@ -715,7 +713,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	
 	{		/* Lat */
 		add_wp_lat_text = gtk_entry_new_with_max_length (20);
-		coordinate2gchar(buff, sizeof(buff), wplat, TRUE,
+		coordinate2gchar(buff, sizeof(buff), coords.wp_lat, TRUE,
 			local_config.coordmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lat_text), buff);
 		add_wp_lat_label = gtk_label_new (_("Latitude"));
@@ -729,7 +727,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 
 	{			/* Lon */
 		add_wp_lon_text = gtk_entry_new_with_max_length (20);
-		coordinate2gchar(buff, sizeof(buff), wplon, FALSE,
+		coordinate2gchar(buff, sizeof(buff), coords.wp_lon, FALSE,
 			local_config.coordmode);
 		gtk_entry_set_text (GTK_ENTRY (add_wp_lon_text), buff);
 		add_wp_lon_label = gtk_label_new (_("Longitude"));
@@ -845,7 +843,8 @@ click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
 gint
 setwp_cb (GtkWidget * widget, guint datum)
 {
-	gchar b[100], str[200], buf[1000], buf2[1000];
+	//gchar str[200];
+	gchar b[100], buf[1000], buf2[1000];
 	gchar *p, *tn;
 	p = b;
 
@@ -875,9 +874,9 @@ setwp_cb (GtkWidget * widget, guint datum)
 	g_strlcpy (current.target, p, sizeof (current.target));
 
 
-	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
-	tn = g_strdelimit (str, "_", ' ');
-	gtk_frame_set_label (GTK_FRAME (destframe), tn);
+//	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
+//	tn = g_strdelimit (str, "_", ' ');
+//	gtk_frame_set_label (GTK_FRAME (destframe), tn);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
 	coordinate_string2gdouble(p, &coords.target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
@@ -890,7 +889,7 @@ setwp_cb (GtkWidget * widget, guint datum)
 	/*    gtk_timeout_add (5000, (GtkFunction) sel_targetweg_cb, widget); */
 	g_timer_stop (disttimer);
 	g_timer_start (disttimer);
-	olddist = dist;
+	olddist = current.dist;
 
 	tn = g_strdelimit (current.target, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
@@ -918,18 +917,14 @@ setwp_cb (GtkWidget * widget, guint datum)
 void
 savewaypoints ()
 {
-	gchar mappath[2048], la[20], lo[20];
+	gchar la[20], lo[20];
 	FILE *st;
 	gint i, e;
 
-
-	g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-	g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
-
-	st = fopen (mappath, "w+");
+	st = fopen (local_config.wp_file, "w+");
 	if (st == NULL)
 	{
-		perror (mappath);
+		perror (local_config.wp_file);
 	}
 	else
 	{

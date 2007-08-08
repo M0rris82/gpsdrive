@@ -60,7 +60,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "gui.h"
 #include "poi.h"
 #include "poi_gui.h"
+#include "main_gui.h"
 #include "routes.h"
+#include "track.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -88,7 +90,7 @@ extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
-extern int usesql;
+extern gint usesql;
 extern color_struct colors;
 extern currentstatus_struct current;
 
@@ -96,28 +98,26 @@ extern GtkWidget *poi_types_window;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
-extern GtkWidget *drawing_area;
+extern GtkWidget *map_drawingarea;
+extern GdkGC *kontext_map;
 
-
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, int_padding;
+extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 
 GdkColormap *colmap;
 color_struct colors;
 guistatus_struct gui_status;
 
-
 GdkPixbuf *posmarker_img;
 
+gint PSIZE;
 
 extern gint borderlimit;
 
-extern gint extrawinmenu;
 extern gdouble posx, posy;
 
+GtkWidget *main_window;
 
-// TODO: should be completely moved to gui.*
-extern GtkWidget *mainwindow;
 
 /* included from freedesktop.org source, copyright as below do not change anything in between here and function get_window_sizing */
 
@@ -355,7 +355,6 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 
 	PSIZE = 50;
 	SMALLMENU = 0;
-	PADDING = 1;
 	if (screen_height >= 1024)		 /* > 1280x1024 */
 	    {
 		real_screen_x = min(1280,screen_width-300);
@@ -392,13 +391,12 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 		real_screen_y = screen_height - YMINUS;
 		PSIZE = 25;
 		SMALLMENU = 1;
-		PADDING = 0;
 	    }
     }  /*** if usegeom  */
 
     /** from gpsdrive.c line 4824 to 4857 */
 
-    if ((extrawinmenu) && (screen_width != 0))
+    if ((local_config.guimode == GUI_XWIN) && (screen_width != 0))
 	{
 	    real_screen_x += XMINUS - 10;
 	    real_screen_y += YMINUS - 30;
@@ -414,8 +412,6 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 	}
     if (local_config.guimode == GUI_PDA)
 	{
-	    extrawinmenu = TRUE;
-	    PADDING = 0;
 	    g_print ("\nPDA mode\n");
 	}
 
@@ -463,6 +459,23 @@ toggle_window_cb (GtkWidget *window)
 
 
 /* *****************************************************************************
+ * Generic Callback to handle toggle- and checkbuttons
+ */
+int
+toggle_button_cb (GtkWidget *button, gboolean *value)
+{
+	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+	
+	/* workaround for sav track button, should be changed */
+	if (value == &local_config.savetrack)
+		savetrackfile (1);
+	
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
  * Popup: Are you sure, y/n
  */
 gint popup_yes_no (GtkWindow *parent, gchar *message)
@@ -496,7 +509,7 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 		fprintf (stderr, "POPUP: Warning\n");
 
 	if (!parent)
-		parent = GTK_WINDOW (mainwindow);
+		parent = GTK_WINDOW (main_window);
 	if (message)
 		g_strlcpy (warning, message, sizeof (warning));
 	else
@@ -529,7 +542,7 @@ gint popup_error (GtkWindow *parent, gchar *message)
 		fprintf (stderr, "POPUP: Error\n");
 
 	if (!parent)
-		parent = GTK_WINDOW (mainwindow);
+		parent = GTK_WINDOW (main_window);
 	if (message)
 		g_strlcpy (error, message, sizeof (error));
 	else
@@ -574,7 +587,7 @@ void create_button_add_wp (void)
 		add_wp_bt = gtk_button_new ();
 		gtk_button_set_relief (GTK_BUTTON (add_wp_bt), GTK_RELIEF_NONE);
 		gtk_button_set_image (GTK_BUTTON (add_wp_bt), GTK_WIDGET (pixmap));
-		gtk_container_add (GTK_CONTAINER (drawing_area), add_wp_bt);
+		gtk_container_add (GTK_CONTAINER (map_drawingarea), add_wp_bt);
 		gtk_widget_show_all (add_wp_bt);
 		return;
 	}
@@ -632,7 +645,7 @@ gint switch_nightmode (gboolean value)
 {
 	if (value && !gui_status.nightmode)
 	{
-		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
+		gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
 			&colors.nightmode);
 		gui_status.nightmode = TRUE;
 		//if (mydebug > 4)
@@ -641,7 +654,7 @@ gint switch_nightmode (gboolean value)
 	}
 	else if (!value && gui_status.nightmode)
 	{
-		gtk_widget_modify_bg (mainwindow, GTK_STATE_NORMAL,
+		gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
 				      &colors.defaultcolor);
 		gui_status.nightmode = FALSE;
 		//if (mydebug > 4)
@@ -664,38 +677,40 @@ gint switch_nightmode (gboolean value)
 gboolean
 draw_posmarker (
 	gdouble posx, gdouble posy,
-	gdouble direction, GdkColor *color, gint style, gboolean shadow)
+	gdouble direction, GdkColor *color, gint style,
+	gboolean shadow, gboolean outline)
 {
 	gdouble w;
 	GdkPoint poly[16];
 
 	if (shadow)
-		gdk_gc_set_function (kontext, GDK_AND);
+		gdk_gc_set_function (kontext_map, GDK_AND);
 	else
-		gdk_gc_set_function (kontext, GDK_COPY);
+		gdk_gc_set_function (kontext_map, GDK_COPY);
 	
-	gdk_gc_set_foreground (kontext, color);
+	gdk_gc_set_foreground (kontext_map, color);
 	
 	w = direction + M_PI;
 
 	if (style == 0 && shadow == FALSE)
 	{
 		/* draw position icon */
-		gdk_draw_pixbuf (drawable, kontext, posmarker_img,
+		gdk_draw_pixbuf (drawable, kontext_map, posmarker_img,
 			0, 0, posx - 15, posy - 15,
 			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
 	if (style == 0 && shadow == TRUE)
 	{
-		gdk_draw_arc (drawable, kontext, TRUE, posx-15, posy-15,
-				      30, 30, 0, 360 * 64);
+		/* draw shadow of position icon */
+		gdk_draw_arc (drawable, kontext_map, TRUE, posx-15, posy-15,
+			30, 30, 0, 360 * 64);
 	}
 
 	if (style == 0 || style == 1)
 	{
 		/* draw arrow pointer */
-		gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
+		gdk_gc_set_line_attributes (kontext_map, 3, 0, 0, 0);
 		poly[0].x =
 			posx + PFSIZE * (cos (w + M_PI_2));
 		poly[0].y =
@@ -716,20 +731,28 @@ draw_posmarker (
 			- PFSIZE / 1.5 * (sin (w + M_PI_2));
 		poly[4].x = poly[0].x;
 		poly[4].y = poly[0].y;
-		gdk_draw_polygon (drawable, kontext, 1,
+		gdk_draw_polygon (drawable, kontext_map, TRUE,
 			(GdkPoint *) poly, 5);
+		/* draw outline */
+		if (outline)
+		{
+			gdk_gc_set_foreground (kontext_map, &colors.lightorange);
+			gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);		
+			gdk_draw_polygon (drawable, kontext_map, FALSE,
+				(GdkPoint *) poly, 5);
+		}
 	}
 
 	if (style == 2)
 	{
 		/* draw crosshair pointer */
-		gdk_gc_set_line_attributes (kontext, 3, 0, 0, 0);
-		gdk_draw_line (drawable, kontext,
+		gdk_gc_set_line_attributes (kontext_map, 3, 0, 0, 0);
+		gdk_draw_line (drawable, kontext_map,
 			posx + PFSIZE * 0.5 * (cos (w + M_PI)),
 			posy + PFSIZE * 0.5 * (sin (w + M_PI)),
 			posx - PFSIZE * 0.5 * (cos (w + M_PI)),
 			posy - PFSIZE * 0.5 * (sin (w + M_PI)));
-		gdk_draw_line (drawable, kontext, posx, posy,
+		gdk_draw_line (drawable, kontext_map, posx, posy,
 			posx + PFSIZE * (cos (w + M_PI_2)),
 			posy + PFSIZE * (sin (w + M_PI_2)));
 	}
@@ -737,14 +760,14 @@ draw_posmarker (
 	if (style == 3)
 	{
 		/*  draw + sign at position */
-		gdk_gc_set_line_attributes (kontext, 4, 0, 0, 0);
-		gdk_draw_line (drawable, kontext, posx + 1,
+		gdk_gc_set_line_attributes (kontext_map, 4, 0, 0, 0);
+		gdk_draw_line (drawable, kontext_map, posx + 1,
 			posy + 1 - 10, posx + 1, posy + 1 - 2);
-		gdk_draw_line (drawable, kontext, posx + 1,
+		gdk_draw_line (drawable, kontext_map, posx + 1,
 			posy + 1 + 2, posx + 1, posy + 1 + 10);
-		gdk_draw_line (drawable, kontext, posx + 1 + 10,
+		gdk_draw_line (drawable, kontext_map, posx + 1 + 10,
 			posy + 1, posx + 1 + 2, posy + 1);
-		gdk_draw_line (drawable, kontext, posx + 1 - 2,
+		gdk_draw_line (drawable, kontext_map, posx + 1 - 2,
 			posy + 1, posx + 1 - 10, posy + 1);
 	}
 	
@@ -764,7 +787,7 @@ int gui_init (void)
 	init_color (local_config.color_route, &colors.route);
 	init_color (local_config.color_friends, &colors.friends);
 	init_color (local_config.color_wplabel, &colors.wplabel);
-	init_color (local_config.color_bigdisplay, &colors.bigdisplay);
+	init_color (local_config.color_dashboard, &colors.dashboard);
 	
 	init_color ("#a0a0a0", &colors.shadow); 
 	// TODO: see gui.h
@@ -783,10 +806,14 @@ int gui_init (void)
 	init_color ("#4076cf", &colors.textbacknew);
 	init_color ("#c0c0c0", &colors.grey);
 	init_color ("#f06000", &colors.orange);
+	init_color ("#f0995f", &colors.lightorange);
 	init_color ("#ff8000", &colors.orange2);
 	init_color ("#a0a0a0", &colors.darkgrey); 
 
-	// TODO: create_mainwindow();
+	gtk_window_set_auto_startup_notification (TRUE);
+	
+	// TODO: use real values for geometry
+	create_main_window(NULL, 0);
 
 	// TODO: create_button_add_wp();
 

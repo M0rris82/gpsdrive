@@ -78,10 +78,6 @@ Disclaimer: Please do not use for navigation.
 #include <dirent.h>
 
 
-#ifndef NOPLUGINS
-#include "gmodule.h"
-#endif
-
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)
@@ -101,21 +97,21 @@ Disclaimer: Please do not use for navigation.
 #include <map_handler.h>
 #include "gpsdrive_config.h"
 
-extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
-extern gint statusid, messagestatusbarid, timeoutcount;
+extern GtkWidget *frame_statusbar;
+extern gint timeoutcount;
 extern gint haveproxy, proxyport;
 extern gchar proxy[256];
 extern gint mydebug;
 extern mapsstruct *maps;
 extern struct timeval timeout;
 extern int havenasa;
-extern gint needtosave;
 extern gint slistsize;
 extern gchar *slist[];
 extern GtkWidget *cover;
-extern gint scaleprefered, scalewanted;
+extern gint scaleprefered;
 extern gdouble milesconv;
 extern coordinate_struct coords;
+extern currentstatus_struct current;
 
 char actualhostname[200];
 
@@ -176,8 +172,9 @@ getexpediaurl (GtkWidget * widget)
 		g_snprintf (str, sizeof (str),
 			    _("Connecting to %s FAILED!"),
 			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
+	    	current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 	    close (dlsock);
@@ -208,8 +205,8 @@ getexpediaurl (GtkWidget * widget)
 		g_snprintf (str, sizeof (str),
 			    _("Connecting to %s FAILED!"),
 			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 	    close (dlsock);
@@ -229,8 +226,8 @@ getexpediaurl (GtkWidget * widget)
 		g_snprintf (str, sizeof (str),
 			    _("Connecting to %s FAILED!"),
 			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 	    close (dlsock);
@@ -297,8 +294,8 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 			    WEBSERVER2);
 	}
 
-    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
     while (gtk_events_pending ())
 	gtk_main_iteration ();
     /*  open socket to port80 */
@@ -320,8 +317,8 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 				    WEBSERVER2);
 		}
 
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (6000, (GtkFunction) dlstatusaway_cb, widget);
 	    return (FALSE);
@@ -366,8 +363,8 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 				    WEBSERVER2);
 		}
 
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 	    return (FALSE);
@@ -393,8 +390,8 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 				    WEBSERVER2);
 		}
 
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 	    return (FALSE);
@@ -417,8 +414,8 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 			    _("Now connected to %s"), WEBSERVER2);
 	}
 
-    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid, str);
+    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
     gtk_timeout_add (100, (GtkFunction) downloadslave_cb, widget);
     return TRUE;
 }
@@ -498,10 +495,10 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    g_snprintf (str, sizeof (str),
 					_("Downloaded %d kBytes"),
 					(dlcount - dldiff) / 1024);
-			    gtk_statusbar_pop (GTK_STATUSBAR (frame_status),
-					       statusid);
-			    gtk_statusbar_push (GTK_STATUSBAR (frame_status),
-						statusid, str);
+			    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
+					       current.statusbar_id);
+			    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+						current.statusbar_id, str);
 			    while (gtk_events_pending ())
 				gtk_main_iteration ();
 			}
@@ -517,8 +514,8 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			g_snprintf (str, sizeof (str),
 				    _("Download finished, got %dkB"),
 				    dlcount / 1024);
-		    gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-		    gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
+		    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+		    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
 					str);
 		    close (dlsock);
 		    if (downloadfilelen != 0)
@@ -883,7 +880,7 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_scale, 1, 2, 3, 4);
 	gtk_combo_set_popdown_strings (GTK_COMBO (dl_text_scale), (GList *) list);
 	g_snprintf (scalewanted_str, sizeof (scalewanted_str), "%d",
-		    scalewanted);
+		    local_config.scale_wanted);
 	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry),
 			    scalewanted_str);
 	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dl_text_scale)->entry),
@@ -916,8 +913,7 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_label_set_justify (GTK_LABEL (knopf_scale), GTK_JUSTIFY_RIGHT);
 
 	gtk_window_set_default (GTK_WINDOW (downloadwindow), knopf);
-	gtk_window_set_transient_for (GTK_WINDOW (downloadwindow),
-				      GTK_WINDOW (mainwindow));
+
 	gtk_window_set_position (GTK_WINDOW (downloadwindow),
 				 GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (downloadwindow);
@@ -925,7 +921,7 @@ download_cb (GtkWidget * widget, guint datum)
 	downloadsetparm (NULL, 0);
 
 	/*    cursor = gdk_cursor_new (GDK_CROSS); */
-	/*    gdk_window_set_cursor (drawing_area->window, cursor); */
+	/*    gdk_window_set_cursor (map_drawingarea->window, cursor); */
 	return TRUE;
 }
 
@@ -939,7 +935,7 @@ downloadaway_cb (GtkWidget * widget, guint datum)
 	gtk_widget_destroy (widget);
 	expose_mini_cb (NULL, 0);
 
-	/*    gdk_window_set_cursor (drawing_area->window, 0); */
+	/*    gdk_window_set_cursor (map_drawingarea->window, 0); */
 	/*    gdk_cursor_destroy (cursor); */
 	return FALSE;
 }

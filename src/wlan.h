@@ -56,7 +56,6 @@ wlan_struct;
 void wlan_init (void);
 void wlan_rebuild_list (void);
 void wlan_draw_list (void);
-gint wlan_draw_cb (GtkWidget * widget, guint datum);
 void wlan_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_wlan_icon (gchar * icon_name);
 

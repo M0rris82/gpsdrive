@@ -37,6 +37,8 @@ gint popup_error (GtkWindow *parent, gchar *message);
 
 void toggle_window_cb (GtkWidget *window);
 
+int toggle_button_cb (GtkWidget *button, gboolean *value);
+
 gint switch_nightmode (gboolean value);
 
 gchar *get_colorstring (GdkColor *tcolor);
@@ -45,10 +47,8 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 
 gboolean draw_posmarker
 	(gdouble posx, gdouble posy, gdouble direction,
-	 GdkColor *color, gint style, gboolean shadow);
+	 GdkColor *color, gint style, gboolean shadow, gboolean outline);
 
-/* this will be changed to following once -s command line option is dropped */
-//int create_main_window (gchar *geom, gint *usegeom);
 
 int resize_all (void);
 
@@ -61,7 +61,7 @@ typedef struct
 	GdkColor route;
 	GdkColor friends;
 	GdkColor wplabel;
-	GdkColor bigdisplay;
+	GdkColor dashboard;
 
 	// TODO: Check, which of these colors are really needed.
 	// The reason is that defined colors should only be used where it is
@@ -85,6 +85,7 @@ typedef struct
 	GdkColor grey;
 	GdkColor orange;
 	GdkColor orange2;
+	GdkColor lightorange;
 	GdkColor darkgrey;
 	GdkColor shadow;
 } color_struct;
@@ -97,6 +98,8 @@ typedef struct
 	gboolean posmode;
 } guistatus_struct;
 
+
 extern guistatus_struct gui_status;
+
 
 #endif /* GPSDRIVE_GUI_H */

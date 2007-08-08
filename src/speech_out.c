@@ -253,7 +253,7 @@ enum allowed_languages { english, german, spanish };
 enum allowed_languages voicelang;
 
 extern currentstatus_struct current;
-extern gint statusid, havespeechout, muteflag;
+extern gint havespeechout;
 extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
@@ -261,11 +261,9 @@ extern color_struct colors;
 extern GdkDrawable *drawable;
 extern gint real_screen_y, real_screen_x;
 gint do_display_dsc = FALSE, textcount;
-extern gint useflite, foundradar, importactive,
-	speechcount, havepos;
+extern gint useflite, foundradar, speechcount;
 extern gchar oldangle[100];
-extern gdouble dist;
-extern GtkWidget *drawing_area;
+extern GtkWidget *map_drawingarea;
 
 
 #define SPEECHOUTSERVER "127.0.0.1"
@@ -358,7 +356,7 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
 	struct tm *ts;
 	gchar buf[200];
 
-	if (muteflag)
+	if (local_config.mute)
 		return TRUE;
 
 	time (&t);
@@ -491,7 +489,7 @@ display_dsc (void)
 
 	/* prints in pango */
 
-	wplabellayout = gtk_widget_create_pango_layout (drawing_area, text);
+	wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, text);
 	//KCFX  
 	if (local_config.guimode == GUI_PDA)
 		pfd = pango_font_description_from_string ("Sans 8");
@@ -533,18 +531,18 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 
 	if (strcmp (oldangle, "XXX"))
 	{
-		if (muteflag)
+		if (local_config.mute)
 			return TRUE;
 		if (foundradar)
 			return TRUE;
-		if (importactive)
+		if (current.importactive)
 			return TRUE;
 	}
 
 	speechcount++;
 	angle = RAD2DEG (current.bearing);
 
-	if (!local_config.simmode && !havepos)
+	if (!current.simmode && !current.gpsfix)
 	{
 		if( (1 == speechcount) && local_config.sound_gps )
     {
@@ -620,36 +618,36 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	if (speechcount > 10)
 		speechcount = 0;
 
-  if( (2 == speechcount) || ((dist < 1.2) && (7 == speechcount)) )
+  if( (2 == speechcount) || ((current.dist < 1.2) && (7 == speechcount)) )
   {
     if (local_config.sound_distance)
     {
       if (local_config.distmode == DIST_MILES)
       {
-        if( dist <= 1.2 )
+        if( current.dist <= 1.2 )
         {
-          g_snprintf( s2, sizeof(s2), speech_yards[voicelang], dist * 1760.0 );
+          g_snprintf( s2, sizeof(s2), speech_yards[voicelang], current.dist * 1760.0 );
         }
         else
         {
-          g_snprintf( s2, sizeof(s2), speech_miles[voicelang], dist );
+          g_snprintf( s2, sizeof(s2), speech_miles[voicelang], current.dist );
         }
       }
       else
       {
-        if( dist <= 1.2 )
+        if( current.dist <= 1.2 )
         {
           g_snprintf( s2, sizeof(s2), speech_meters[voicelang], 
-                     (int) (dist * 1000) );
+                     (int) (current.dist * 1000) );
         }
-        else if( 1 == (int) dist )
+        else if( 1 == (int) current.dist )
         {
           g_snprintf( s2, sizeof(s2), speech_one_kilometer[voicelang] );
         }
         else
         {
           g_snprintf(
-            s2, sizeof(s2), speech_kilometers[voicelang], (int) dist );
+            s2, sizeof(s2), speech_kilometers[voicelang], (int) current.dist );
         }
       }
 

@@ -54,21 +54,15 @@ Disclaimer: Please do not use for navigation.
 extern gint max_display_map;
 extern map_dir_struct *display_map;
 
-extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
-extern gint wpflag, trackflag, muteflag, displaymap_top, displaymap_map;
+extern gint wpflag, displaymap_top, displaymap_map;
 extern gint scaleprefered;
-extern gint mydebug, scalewanted, savetrack, defaultserver;
-extern gchar serialdev[80];
+extern gint mydebug, defaultserver;
 extern gint setdefaultpos;
-extern gint streets_draw, poi_draw, testgarmin;
-extern gint needtosave, usedgps;
+extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
-/* extern gint flymode, vfr,disdevwarn; */
-gint flymode = FALSE, vfr = 1, disdevwarn = TRUE;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-	int_padding, lastnotebook;
+extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, lastnotebook;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
@@ -76,11 +70,10 @@ extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;
-extern int sockfd, serialspeed, disableserial, showsid, storetz;
+extern int sockfd, showsid, storetz;
 
 extern coordinate_struct coords;
 #define KM2MILES 0.62137119
-#define PADDING int_padding
 
 
 gint
@@ -242,8 +235,6 @@ help_cb (GtkWidget * widget, guint datum)
 
 	window = gtk_dialog_new ();
 	gtk_window_set_default_size (GTK_WINDOW (window), 580, 570);
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
 
 	g_signal_connect (window, "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &window);
@@ -328,8 +319,6 @@ message_cb (char *msgid, char *name, char *text, int fs)
 
 	window = gtk_dialog_new ();
 	gtk_window_set_default_size (GTK_WINDOW (window), 320, 240);
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
 
 	g_signal_connect (window, "destroy",
 			  G_CALLBACK (gtk_widget_destroyed), &window);

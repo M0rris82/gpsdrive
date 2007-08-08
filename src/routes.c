@@ -37,6 +37,7 @@ Disclaimer: Please do not use for navigation.
 #include "icons.h"
 #include "routes.h"
 #include "gui.h"
+#include "main_gui.h"
 #include <speech_out.h>
 #include <speech_strings.h>
 
@@ -60,11 +61,9 @@ extern wpstruct *wayp;
 extern gint maxwp, maxfriends;
 extern friendsstruct *friends, *fserver;
 extern int sortcolumn, sortflag;
-extern gint zoom;
 extern gint selected_wp_list_line;
 extern GtkWidget *mylist;
 extern gint onemousebutton;
-extern GtkWidget *mainwindow;
 extern gint dontsetwp;
 extern gint usesql;
 extern poi_struct *poi_list;
@@ -73,6 +72,7 @@ extern gdouble milesconv;
 extern color_struct colors;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
+extern GdkGC *kontext_map;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -80,7 +80,6 @@ GtkListStore *route_list_tree;
 GtkWidget *myroutelist;
 gint thisrouteline = 0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
-gint forcenextroutepoint = FALSE;
 routestatus_struct route;
 extern GtkWidget *route_window;
 
@@ -107,7 +106,8 @@ free_route_list ()
 void
 setroutetarget (GtkWidget * widget, gint datum)
 {
-	gchar buf[1000], buf2[1000], str[200], *tn;
+	//gchar str[200];
+	gchar buf[1000], buf2[1000], *tn;
 
 
 	if ( mydebug >50 ) fprintf(stderr , "setroutetarget()\n");
@@ -119,9 +119,9 @@ setroutetarget (GtkWidget * widget, gint datum)
 		   sizeof (current.target));
 	coords.target_lat = (routelist + route.pointer)->lat;
 	coords.target_lon = (routelist + route.pointer)->lon;
-	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), current.target,
-		    route.pointer + 1, route.items);
-	gtk_frame_set_label (GTK_FRAME (destframe), str);
+//	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), current.target,
+//		    route.pointer + 1, route.items);
+//	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	tn = g_strdelimit (current.target, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
 	if (tn[0] == '*')
@@ -146,12 +146,12 @@ setroutetarget (GtkWidget * widget, gint datum)
 gint
 sel_routecancel_cb (GtkWidget * widget, guint datum)
 {
-	gchar str[200];
+	//gchar str[200];
 
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 
-	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
-	gtk_frame_set_label (GTK_FRAME (destframe), str);
+//	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
+//	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	route.edit = FALSE;
 	route.active = FALSE;
 	route.pointer = route.items = 0;
@@ -417,8 +417,6 @@ create_route_cb (GtkWidget * widget, guint datum)
 	window = gtk_dialog_new ();
 	routewindow = window;
 	/*    gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE); */
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (mainwindow));
 
 	gtk_window_set_title (GTK_WINDOW (window), _("Define route"));
 	gtk_window_set_default_size (GTK_WINDOW (window), 320, 320);
@@ -573,7 +571,8 @@ create_route_cb (GtkWidget * widget, guint datum)
 void
 route_next_target ()
 {
-  gchar str[100], buf[200], mappath[2048];
+  //gchar str[100];
+  gchar buf[200];
   gdouble d;
   /*  test for new route point */
   if (strcmp (current.target, "     "))
@@ -584,17 +583,15 @@ route_next_target ()
       else
 	d = calcdist (coords.target_lon, coords.target_lat);
 
-      if (d <= ROUTEREACH || forcenextroutepoint)
+      if (d <= ROUTEREACH || route.forcenext)
 	{
-	  forcenextroutepoint = FALSE;
+	  route.forcenext = FALSE;
 	  if ((route.pointer != (route.items - 1)) && (route.active))
 	    {
 	      route.pointer++;
 
 	      /* let's say the waypoint description */
-	      g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-	      g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
-	      saytargettext (mappath, current.target);
+	      saytargettext (local_config.wp_file, current.target);
 
 	      setroutetarget (NULL, -1);
 	    }
@@ -608,13 +605,11 @@ route_next_target ()
 		  speech_out_speek (buf);
 
 		  /* let's say the waypoint description */
-		  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-		  g_strlcat (mappath, local_config.wp_file, sizeof (mappath));
-		  saytargettext (mappath, current.target);
+		  saytargettext (local_config.wp_file, current.target);
 		}
-		  g_snprintf (str, sizeof (str),
-		      "%s: %s", _("To"), current.target);
-		  gtk_frame_set_label (GTK_FRAME (destframe), str);
+//		  g_snprintf (str, sizeof (str),
+//		      "%s: %s", _("To"), current.target);
+//		  gtk_frame_set_label (GTK_FRAME (destframe), str);
 		  route.edit	= FALSE;
 		  route.active = FALSE;
 		  saytarget = FALSE;
@@ -730,7 +725,7 @@ draw_route (void)
 			&iter_route, t_routept);
 
 		calcxy (&curpos_x, &curpos_y,
-			coords.current_lon, coords.current_lat, zoom);
+			coords.current_lon, coords.current_lat, current.zoom);
 		(route_seg)->x1 = curpos_x;
 		(route_seg)->y1 = curpos_y;
 
@@ -744,7 +739,8 @@ draw_route (void)
 				(route_seg + t)->x1 = (route_seg + t - 1)->x2;
 				(route_seg + t)->y1 = (route_seg + t - 1)->y2;
 			}
-			calcxy (&destpos_x, &destpos_y, t_lon, t_lat, zoom);
+			calcxy (&destpos_x, &destpos_y, t_lon, t_lat,
+				current.zoom);
 			(route_seg + t)->x2 = destpos_x;
 			(route_seg + t)->y2 = destpos_y;
 			t++;
@@ -763,7 +759,7 @@ draw_route (void)
 			{
 				calcxy (&curpos_x, &curpos_y,
 					coords.current_lon,
-					coords.current_lat, zoom);
+					coords.current_lat, current.zoom);
 				(route_seg + t)->x1 = curpos_x;
 				(route_seg + t)->y1 = curpos_y;
 			}
@@ -773,16 +769,16 @@ draw_route (void)
 				(route_seg + t)->y1 = (route_seg + t - 1)->y2;
 			}
 			calcxy (&destpos_x, &destpos_y, (routelist +
-				j)->lon, (routelist + j)->lat, zoom);
+				j)->lon, (routelist + j)->lat, current.zoom);
 			(route_seg + t)->x2 = destpos_x;
 			(route_seg + t)->y2 = destpos_y;
 			t++;
 		}
 	}
 
-	gdk_gc_set_line_attributes (kontext, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
-	gdk_gc_set_foreground (kontext, &colors.route);
-	gdk_draw_segments (drawable, kontext, (GdkSegment *) route_seg, t);
+	gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
+	gdk_gc_set_foreground (kontext_map, &colors.route);
+	gdk_draw_segments (drawable, kontext_map, (GdkSegment *) route_seg, t);
 	g_free (route_seg);
 }
 
@@ -889,9 +885,9 @@ update_route (void)
 	{
 		d = calcdist (coords.target_lon, coords.target_lat);
 
-		if (d <= ROUTEREACH || forcenextroutepoint)
+		if (d <= ROUTEREACH || route.forcenext)
 		{
-			forcenextroutepoint = FALSE;
+			route.forcenext = FALSE;
 			if (route.pointer != (route.items - 1))
 			{
 				/* set target to next route item */
@@ -941,4 +937,5 @@ route_init (void)
 	route.distance = 0.0;		/* route length is 0 */
 	route.pointer = 0;		/* reset next route target */
 	route.show = TRUE;		/* default route display is on */
+	route.forcenext = FALSE;
 }

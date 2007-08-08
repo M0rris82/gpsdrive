@@ -75,51 +75,44 @@ extern gint mydebug;
 gint gps_handler_debug = 0;
 
 
-extern gint zoom, iszoomed;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 
 extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
 extern gint havepos, haveposcount;
-extern gint blink, gblink, xoff, yoff, crosstoogle;
+extern gint blink, gblink, xoff, yoff;
 extern gint zone;
-extern gint oldsatfix, oldsatsanz, havealtitude;
-extern gdouble altitude, precision, gsaprecision;
+extern gint oldsatfix, oldsatsanz;
+extern gdouble precision, gsaprecision;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
-extern gdouble pixelfact, posx, posy;
+extern gdouble posx, posy;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
-extern gint newsatslevel, testgarmin;
+extern gint newsatslevel;
 extern gint satfix, usedgps;
-extern gint numsats, satsavail;
+extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
 extern fd_set readmask;
 extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
-extern gchar serialdev[80];
-extern char serialdata[4096];
 extern int newdata;
 extern pthread_mutex_t mutex;
-//extern GtkWidget *startgps_bt;
-extern int didrootcheck, haveserial;
-extern gint statusid, messagestatusbarid, timeoutcount;
+extern int didrootcheck;
+extern gint timeoutcount;
 extern gint simpos_timeout;
-extern int gotneverserial, timerto, serialspeed;
-extern GtkWidget *drawing_sats;
+extern int timerto;
+extern GtkWidget *drawing_gps;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
 extern gchar gpsdservername[200];
-extern GtkWidget *mainwindow, *frame_status, *messagestatusbar;
+extern GtkWidget *frame_statusbar;
 extern GtkWidget *pixmapwidget, *gotowindow;
 extern gint statuslock, gpson;
 extern gint earthmate;
-extern int disableserial, disableserialcl;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 
@@ -129,9 +122,8 @@ extern gdouble NMEAsecs;
 extern gint NMEAoldsecs;
 extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-/*  haveGARMIN is TRUE if we get data from program garble in GARMIN we get only long and lat */
 extern gchar nmeamodeandport[50];
-extern gint haveNMEA, haveGARMIN;
+extern gint haveNMEA;
 
 #ifdef DBUS_ENABLE
 gint useDBUS;
@@ -139,20 +131,22 @@ DBusError dbuserror;
 DBusConnection* connection;
 struct dbus_gps_fix {
 	gdouble	time;		/* Time as time_t with optional fractional seconds */
-	gint32	mode;		/* Fix type. 0 = Not seen. 1 = No fix. 2/3 = 2D/3D fix */
-						/* We use -1 to identify that the current fix is already processed */
-	gdouble ept;			/* Expected time uncertainty */
-	gdouble latitude;		/* Latitude in degrees (valid if mode >= 2) */
-	gdouble longitude;		/* Longitude in degrees (valid if mode >= 2) */
-	gdouble eph;			/* Horizontal position uncertainty, meters */
-	gdouble altitude;		/* Altitude in meters (valid if mode == 3) */
-	gdouble epv;			/* Vertical position uncertainty, meters */
-	gdouble track;			/* Course made good (relative to true north) */
-	gdouble epd;			/* Track uncertainty, degrees */
+	gint32	mode;		/* Fix type
+				 * 0 = Not seen. 1 = No fix. 2/3 = 2D/3D fix
+				 * We use -1 to identify that the current fix
+				 * is * already processed */
+	gdouble ept;		/* Expected time uncertainty */
+	gdouble latitude;	/* Latitude in degrees (valid if mode >= 2) */
+	gdouble longitude;	/* Longitude in degrees (valid if mode >= 2) */
+	gdouble eph;		/* Horizontal position uncertainty, meters */
+	gdouble altitude;	/* Altitude in meters (valid if mode == 3) */
+	gdouble epv;		/* Vertical position uncertainty, meters */
+	gdouble track;		/* Course made good (relative to true north) */
+	gdouble epd;		/* Track uncertainty, degrees */
 	gdouble speed;		/* Speed over ground, meters/sec */
-	gdouble eps;			/* Speed uncertainty, meters/sec */
-	gdouble climb;			/* Vertical speed, meters/sec */
-	gdouble epc;			/* Vertical speed uncertainty */
+	gdouble eps;		/* Speed uncertainty, meters/sec */
+	gdouble climb;		/* Vertical speed, meters/sec */
+	gdouble epc;		/* Vertical speed uncertainty */
 };
 struct dbus_gps_fix dbus_old_fix, dbus_current_fix;
 #ifndef NAN
@@ -165,18 +159,6 @@ gint lastp = 0, lastpGGA = 0, lastpRME = 0, lastpGSA = 0, lastpGSV = 0;
 gint sock = -1;
 
 gint convertGSV (char *f);
-
-
-/* *****************************************************************************
- * Re-initialize GPS connection
- */
-gint
-reinitgps_cb (GtkWidget * widget, gpointer datum)
-{
-	g_print ("\nReinitializing GPS connection...\n");
-	initgps ();
-	return TRUE;
-}
 
 
 /* *****************************************************************************
@@ -212,9 +194,7 @@ init_dbus_current_fix()
 
 void init_dbus(){
 	haveNMEA = TRUE;
-	haveserial = FALSE;
-	haveGARMIN = FALSE;
-	  
+	
 	memset(&dbus_old_fix, 0, sizeof(struct dbus_gps_fix));
 	init_dbus_current_fix();
 	dbus_current_fix.time = 0.0; // Time is not set in init_dbus_current_time
@@ -273,7 +253,8 @@ init_nmea_socket ()
       {
 	perror (_("can't open socket for port "));
 	fprintf (stderr, "error: %d\n", errno);
-	local_config.simmode = TRUE;
+	if (local_config.simmode == SIM_AUTO)
+		current.simmode = TRUE;
 	haveNMEA = FALSE;
 	newsatslevel = TRUE;
 	if (simpos_timeout == 0)
@@ -281,11 +262,10 @@ init_nmea_socket ()
 	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
 	memset (satlist, 0, sizeof (satlist));
 	memset (satlistdisp, 0, sizeof (satlist));
-	numsats = satsavail = 0;
+	sats_used = sats_in_view = 0;
 	if (satsimage != NULL)
 	  g_object_unref (satsimage);
 	satsimage = NULL;
-	gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
 	return;
       }
     server.sin_family = AF_INET;
@@ -307,13 +287,15 @@ init_nmea_socket ()
 	if (connect (sock, (struct sockaddr *) &server, sizeof server) < 0)
 	{
 	    haveNMEA = FALSE;
-	    local_config.simmode = TRUE;
+	    if (local_config.simmode == SIM_AUTO)
+	    	current.simmode = TRUE;
 	}
 	else
 	{
 	    timeoutcount = 0;
 	    haveNMEA = TRUE;
-	    local_config.simmode = FALSE;
+	    if (local_config.simmode == SIM_AUTO)
+	    	current.simmode = FALSE;
 	    g_strlcpy (nmeamodeandport,
 		       _("NMEA Mode, Port 2222"), sizeof (nmeamodeandport));
 	    g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
@@ -330,23 +312,11 @@ init_nmea_socket ()
 	write (sock, "R\n", 2);
 	timeoutcount = 0;
 	haveNMEA = TRUE;
-	local_config.simmode = FALSE;
+	if (local_config.simmode == SIM_AUTO)
+		current.simmode = FALSE;
       }
   }
 }
-
-
-/* *****************************************************************************
- */
-
-#ifdef NOGARMIN
-int
-garblemain (int argc, char **argv)
-{
-  g_print (_("\nno garmin support compiled in\n"));
-  return -2;
-}
-#endif
 
 
 /* ******************************************************************
@@ -364,82 +334,10 @@ initgps ()
   init_nmea_socket ();
   /*  We test for gpsd serving */
 
-  haveGARMIN = FALSE;
-
-#ifdef NOGARMIN
-  if ( mydebug > 1 )
-      g_print (_("\nno garmin support compiled in\n"));
-  testgarmin = FALSE;
-#else
-  if (!testgarmin)
-      if ( mydebug > 1 )
-	  g_print (_("\nGarmin protocol detection disabled!\n"));
-#endif
-
-  if ((!haveNMEA) && (testgarmin))
+  if (haveNMEA)
     {
-      typedef struct
-      {
-	gchar *a1;
-	gchar *a2;
-	gchar *a3;
-      }
-      argument;
-      argument *argumente;
-      gint e;
-
-      argumente = g_new (argument, 1);
-      argumente->a1 = "-p";
-      argumente->a2 = "-p";
-      argumente->a3 = 0;
-
-      e = garblemain (1, (char **) argumente);
-
-      if (e == -2)
-	{
-	  e = garblemain (1, (char **) argumente);
-	  if (e == -2)
-	    {
-	      haveGARMIN = FALSE;
-	      local_config.simmode = TRUE;
-	    }
-	  else
-	    {
-	      haveGARMIN = TRUE;
-	      local_config.simmode = FALSE;
-	    }
-	}
-      else
-	{
-	  haveGARMIN = TRUE;
-	  local_config.simmode = FALSE;
-	}
-      g_free (argumente);
-
-      if (haveGARMIN)		/* test it again */
-	{
-	  argumente = g_new (argument, 1);
-	  argumente->a1 = "-p";
-	  argumente->a2 = "-p";
-	  argumente->a3 = 0;
-
-	  e = garblemain (1, (char **) argumente);
-	  if (e == -1)
-	    {
-	      haveGARMIN = FALSE;
-	      local_config.simmode = TRUE;
-	    }
-	}
-      if (haveGARMIN)
-	g_print
-	  ("\nAutomatic Garmin detection found GARMIN-mode receiver \n");
-      else
-	g_print ("\nno GARMIN-mode receiver found\n");
-
-    }
-  if (haveGARMIN || haveNMEA)
-    {
-      local_config.simmode = FALSE;
+    	if (local_config.simmode == SIM_AUTO)
+    		current.simmode = FALSE;
       if (simpos_timeout != 0)
 	{
 	  gtk_timeout_remove (simpos_timeout);
@@ -447,95 +345,8 @@ initgps ()
 	}
     }
 
-  if (local_config.simmode)
-    {
-      if ((!disableserial) && (!disableserialcl))
-        {
-          haveserial = gpsserialinit ();
-          if (haveserial)
-            {
-              local_config.simmode = FALSE;
-              haveNMEA = TRUE;
-	      //              gtk_widget_set_sensitive (startgps_bt, FALSE);
-            }
-        }
-    }
-    
   return FALSE;			/* to remove timer */
 }
-
-
-/* *****************************************************************************
- */
-void
-startgpsd_cb (GtkWidget * widget, guint datum)
-{
-  gchar s[200], s2[10];
-  int t[] = { 2400, 4800, 9600, 19200, 38400 };
-
-  if (gpson == FALSE)
-    {
-      g_snprintf (s2, sizeof (s2), "%d", t[serialspeed]);
-      if (usedgps)
-	g_snprintf (s, sizeof (s),
-		    "gpsd -p %s -c -d %s  -r %s",
-		    serialdev, dgpsserver, dgpsport);
-      else
-	g_snprintf (s, sizeof (s), "gpsd -p %s ", serialdev);
-      if (earthmate)
-	g_strlcat (s, " -T e ", sizeof (s));
-      system (s);
-      gtk_button_set_label (GTK_BUTTON (widget), _("Stop GPSD"));
-
-      GtkTooltips *tooltips;
-      tooltips = gtk_tooltips_new ();
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), widget,
-			    _("Stop GPSD and switch to simulation mode"),
-			    NULL);
-      g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
-      if (sock != -1)
-	{
-	  close (sock);
-	  sock = -1;
-	}
-      gtk_timeout_add (1000, (GtkFunction) initgps, 0);
-      local_config.simmode = FALSE;
-      gpson = TRUE;
-      if (satsimage != NULL)
-	g_object_unref (satsimage);
-      satsimage = NULL;
-
-      gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
-    }
-  else
-    {
-      /* stop gpsd and go to simulation mode */
-      system ("killall gpsd");
-      gpson = FALSE;
-      gtk_button_set_label (GTK_BUTTON (widget), _("Start GPSD"));
-      GtkTooltips *tooltips;
-      tooltips = gtk_tooltips_new ();
-      gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), widget,
-			    _("Starts GPSD for NMEA mode"), NULL);
-      local_config.simmode = TRUE;
-      haveNMEA = FALSE;
-      newsatslevel = TRUE;
-      if (simpos_timeout == 0)
-	simpos_timeout =
-	  gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
-      memset (satlist, 0, sizeof (satlist));
-      memset (satlistdisp, 0, sizeof (satlist));
-      numsats = satsavail = 0;
-      if (satsimage != NULL)
-	g_object_unref (satsimage);
-      satsimage = NULL;
-      gtk_entry_set_text (GTK_ENTRY (satslabel1), _("n/a"));
-      gtk_entry_set_text (GTK_ENTRY (satslabel2), _("n/a"));
-      gtk_entry_set_text (GTK_ENTRY (satslabel3), _("n/a"));
-      gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
-    }
-}
-
 
 
 /* *****************************************************************************
@@ -574,19 +385,19 @@ dbus_process_fix(gint early)
 	ttime = dbus_current_fix.time;
 	gmtime_r (&ttime, &time);
 	g_snprintf (utctime, sizeof (utctime), "%02d:%02d.%02d ", time.tm_hour, time.tm_min, time.tm_sec);	
-	g_snprintf (loctime, sizeof (loctime), "%02d:%02d.%02d ", (time.tm_hour+zone+24)%24, time.tm_min, time.tm_sec);
+	g_snprintf (loctime, sizeof (loctime), "%02d:%02d ", (time.tm_hour+zone+24)%24, time.tm_min);
 	NMEAsecs = dbus_current_fix.time;	// Use this value to judge timeout
 	/* Bail out if we have no fix */
-	havealtitude = FALSE;	// Handled later.
+	current.gpsfix = 0;	// Handled later.
 	if (dbus_current_fix.mode>1) {
-		havepos = TRUE;
+		current.gpsfix = dbus_current_fix.mode;
 		haveRMCsentence = TRUE;
 		satfix = 1;
 		haveposcount++;
 		if (haveposcount == 3)
 			rebuildtracklist();
 	} else {
-		havepos = FALSE;
+		current.gpsfix = 1;
 		haveRMCsentence = FALSE;
 		satfix = 0;
 		haveposcount = 0;
@@ -598,10 +409,10 @@ dbus_process_fix(gint early)
 		return;
 	}
 	/* Handle latitude */
-	if (!gui_status.posmode)
+	if (!gui_status.posmode && !current.simmode)
 		coords.current_lat = dbus_current_fix.latitude;
 	/* Handle longitude */
-	if (!gui_status.posmode)
+	if (!gui_status.posmode && !current.simmode)
 		coords.current_lon = dbus_current_fix.longitude;
 	/* Handle speed */
 	if (__finite(dbus_current_fix.speed))
@@ -628,8 +439,8 @@ dbus_process_fix(gint early)
 			dbus_current_fix.track, direction * 180 / M_PI);
 	/* Handle altitude */
 	if (dbus_current_fix.mode>2) {
-		havealtitude = TRUE;
-		altitude = dbus_current_fix.altitude;
+		current.gpsfix = 3;
+		current.altitude = dbus_current_fix.altitude;
 	}
 	/* Handle positional error */
 	precision = dbus_current_fix.eph;
@@ -743,11 +554,10 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   }
   argument;
   argument *argumente;
-  char data[4096], tok[1000];
-  static int serialtimeoutcount = 0;
+  char tok[1000];
   int tilimit;
 
-  if (importactive)
+  if (current.importactive)
     return TRUE;
 
 
@@ -755,172 +565,25 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
     g_print ("*** %d. timeout getting data from GPS-Receiver!\n",
 	     timeoutcount);
 
-  if (haveserial)
-    tilimit = 5;
-  else
     tilimit = 10;
 
   if (timeoutcount > tilimit) initgps();
  
   if (timeoutcount > tilimit)
     {
-      gtk_statusbar_pop (GTK_STATUSBAR (frame_status), statusid);
-      gtk_statusbar_push (GTK_STATUSBAR (frame_status), statusid,
-			  _("Timeout getting data from GPS-Receiver!"));
-      havepos = FALSE;
+      gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+      gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
+		_("Timeout getting data from GPS-Receiver!"));
+      current.gpsfix = 0;
       haveposcount = 0;
       memset (satlist, 0, sizeof (satlist));
       memset (satlistdisp, 0, sizeof (satlist));
-      if (numsats != 0)
-	{
-	  numsats = 0;
-	  gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
-	}
-    }
-
-  if (haveserial)
-    {
-      if ((timeoutcount > 8) && gotneverserial)
-	{
-	  havepos = FALSE;
-	  haveposcount = 0;
-	  haveserial = FALSE;
-	  local_config.simmode = TRUE;
-	  haveNMEA = FALSE;
-	  newsatslevel = TRUE;
-	  if (simpos_timeout == 0)
-	    simpos_timeout =
-	      gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
-	  gtk_timeout_remove (timerto);
-	  timerto =
-	    gtk_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
-
-	  //gtk_widget_set_sensitive (startgps_bt, TRUE);
-	  gtk_widget_draw (drawing_sats, NULL);	/* this  calls expose handler */
-	  /*    expose_sats_cb (NULL, 0); */
-
-	  return TRUE;
-	}
-
-      /*       getserialdata(); */
-      if (newdata == TRUE)
-	{
-	  pthread_mutex_lock (&mutex);
-	  g_strlcpy (data, serialdata, sizeof (data));
-	  if (mydebug + gps_handler_debug >50 )
-	      fprintf (stderr, "gps_handler: newdata: #########:%s\n", data); 
-	  newdata = FALSE;
-	  pthread_mutex_unlock (&mutex);
-	  timeoutcount = 0;
-
-	  if (gui_status.posmode)
-	    display_status (_("Press middle mouse button for navigation"));
-	  else
-	    {
-	      g_snprintf (nmeamodeandport,
-			  sizeof (nmeamodeandport),
-			  _("Direct serial connection to %s"), serialdev);
-	    }
-	  if ((strncmp ((data + 3), "RMC", 3) == 0) && (data[0] == '$'))
-	    {
-	      havepos = TRUE;
-	      gotneverserial = FALSE;
-	      /*  we have the $GPRMC string completed, now parse it */
-	      if (checksum (data) == TRUE)
-		convertRMC (data);
-	    }
-
-	  if ((strncmp ((data + 3), "GSV", 3) == 0) && (data[0] == '$'))
-	    {
-	      gotneverserial = FALSE;
-	      if (checksum (data) == TRUE)
-		convertGSV (data);
-	    }
-
-	  if ((strncmp ((data + 3), "GGA", 3) == 0) && (data[0] == '$'))
-	    {
-	      gotneverserial = FALSE;
-	      if (checksum (data) == TRUE)
-		convertGGA (data);
-	    }
-
-	  if ((strncmp ((data + 3), "RME", 3) == 0) && (data[0] == '$'))
-	    {
-	      gotneverserial = FALSE;
-	      if (checksum (data) == TRUE)
-		convertRME (data);
-	    }
-
-	  if ((strncmp ((data + 3), "GSA", 3) == 0) && (data[0] == '$'))
-	    {
-	      gotneverserial = FALSE;
-	      if (checksum (data) == TRUE)
-		convertGSA (data);
-	    }
-
-
-	  /*  display the position and map in the statusline */
-	  if (havepos)
-	    {
-	      if (gui_status.posmode)
-		display_status (_
-				("Press middle mouse button for navigation"));
-	      else
-		display_status (nmeamodeandport);
-	    }
-	  else
-	    display_status (_("Not enough satellites in view!"));
-	}
-      else
-	{
-	  serialtimeoutcount++;
-	  if (serialtimeoutcount > (1000.0 / TIMERSERIAL))
-	    {
-	      timeoutcount++;
-	      serialtimeoutcount = 0;
-	      if ( mydebug + gps_handler_debug > 0 )
-		fprintf (stderr, "gps_handler: timeout: %d\n", timeoutcount);
-	    }
-	}
-
-      return TRUE;
     }
 
 
   argumente = NULL;
-  if ((haveGARMIN) || (!haveRMCsentence))
+  if (!haveRMCsentence)
     {
-      if (haveGARMIN)
-	{
-	  argumente = g_new (argument, 1);
-	  argumente->a1 = "-p";
-	  argumente->a2 = "-p";
-	  argumente->a3 = 0;
-
-	  e = garblemain (1, (char **) argumente);
-	  if (e == -2)
-	    {
-	      havepos = FALSE;
-	      display_status (_("Not enough satellites in view!"));
-	      haveposcount = 0;
-
-	      return TRUE;
-	    }
-	  else
-	    {
-	      havepos = TRUE;
-	      haveposcount++;
-	    }
-	  if (!gui_status.posmode)
-	    {
-	      coords.current_lon = glang;
-	      coords.current_lat = gbreit;
-	    }
-
-	}
-      if (haveGARMIN)
-	secs = g_timer_elapsed (timer, 0);
-      else
 	secs = NMEAsecs;
 
       if (secs >= 1.0)
@@ -932,12 +595,6 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 #define MINMOVE 4.0
 	  if (((fabs (tx)) > MINMOVE) || (((fabs (ty)) > MINMOVE)))
 	    {
-	      if (haveGARMIN)
-		{
-		  g_timer_stop (timer);
-		  g_timer_start (timer);
-		}
-
 	      lastdirection = current.heading;
 	      if (ty == 0)
 		current.heading = 0.0;
@@ -971,25 +628,14 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       /*  display status line */
       if (gui_status.posmode)
 	display_status (_("Press middle mouse button for navigation"));
-      else
-	{
-	  if (haveGARMIN)
-	    display_status (_("GARMIN Mode"));
-	}
 
-      /*  return if in GARMIN mode */
-      if (haveGARMIN)
-	{
-	  g_free (argumente);
-	  return TRUE;
-	}
     }
 
-  /*    only if we have neither NMEA nor GARMIN, means no measured position */
+  /*    only if we have no NMEA, means no measured position */
   if (!haveNMEA)
     {
       /*  display status line */
-      if (!local_config.simmode)
+      if (!current.simmode)
 	display_status (_("No GPS used"));
       else if (maploaded && !gui_status.posmode)
 	display_status (_("Simulation mode"));
@@ -1008,7 +654,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	}
 	NMEAoldsecs = floor(NMEAsecs);
 	timeoutcount = 0;
-	if (havepos) {
+	if (current.gpsfix > 1) {
 		if (gui_status.posmode)
 			display_status (_("Press middle mouse button for navigation"));
 		else
@@ -1072,7 +718,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			    convertRMC (tok);
 
 			  /*  display the position and map in the statusline */
-			  if (havepos)
+			  if (current.gpsfix > 1)
 			    {
 			      if (gui_status.posmode)
 				display_status
@@ -1195,7 +841,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 			      if (checksum (tok) == TRUE)
 				convertGGA (tok);
-			      if (havepos)
+			      if (current.gpsfix > 1)
 				{
 				  if (gui_status.posmode)
 				    display_status

@@ -44,7 +44,6 @@ Disclaimer: Please do not use for navigation.
 gint errors = 0;
 
 extern gint mydebug;
-extern gint zoom;
 extern coordinate_struct coords;
 //extern gint mapistopo;
 extern glong mapscale;
@@ -52,10 +51,11 @@ extern gdouble pixelfact;
 extern int usesql;
 extern gchar dir_proc[200];
 extern gchar cputempstring[20], batstring[20];
-extern int didrootcheck, haveserial;
+extern int didrootcheck;
 extern int newdata;
 extern char serialdata[4096];
 extern gint haveRMCsentence;
+extern currentstatus_struct current;
 
 /* ******************************************************************
  * This Function tests internal routines of gpsdrive
@@ -129,10 +129,9 @@ gint  unit_test_nmea()
     for (i = 0; test_array[i].should_lat != -99; i++)
 	{
 	    haveRMCsentence=FALSE;
-	    haveserial=TRUE;
 	    newdata=TRUE;
 	    gui_status.posmode=FALSE;
-	    strncpy ( serialdata, test_array[i].nmea_string,sizeof (serialdata));
+	    //strncpy ( serialdata, test_array[i].nmea_string,sizeof (serialdata));
 	    get_position_data_cb(NULL,NULL);
 
 	    int ok=TRUE;
@@ -270,8 +269,7 @@ unit_test (void)
 
     typedef struct
     {
-      gdouble dist;
-      gdouble x1, y1, x2, y2, xp, yp;
+      gdouble dist, x1, y1, x2, y2, xp, yp;
     } test_struct;
     test_struct test_array[] = {
       // dist, line                   Point
@@ -517,14 +515,14 @@ unit_test (void)
     // void calcxy (gdouble *posx, gdouble *posy, gdouble lon, gdouble lat, gint zoom);
 
     map_proj = proj_map;
-    zoom = 1;
-    mapscale = 10000;
-    pixelfact = mapscale / PIXELFACT;
+    current.zoom = 1;
+    current.mapscale = 10000;
+    pixelfact = current.mapscale / PIXELFACT;
 
     if (mydebug > 1)
       {
 	printf ("	pixelfact: %g\n", pixelfact);
-	printf ("	mapscale: %ld\n", mapscale);
+	printf ("	mapscale: %ld\n", current.mapscale);
 	printf ("	SCREEN X/Y: %d/%d\n", SCREEN_X, SCREEN_Y);
 	printf ("\n");
       }
@@ -575,7 +573,7 @@ unit_test (void)
 
 	x = test_array[i].x;
 	y = test_array[i].y;
-	calcxytopos (x, y, &lat, &lon, zoom);
+	calcxytopos (x, y, &lat, &lon, current.zoom);
 	if (mydebug > 0)
 	  {
 	    printf ("	%d: current_pos: %g,%g\n", i, coords.current_lat,
@@ -596,7 +594,7 @@ unit_test (void)
 	  }
 
 	// Backward transformation
-	calcxy (&gx, &gy, lon, lat, zoom);
+	calcxy (&gx, &gy, lon, lat, current.zoom);
 	if (mydebug > 0)
 	  fprintf (stderr,
 		   "	%d:            (%-7.4g,%-7.4g)	<-- calcxy(%g,%g)\n",
@@ -833,7 +831,7 @@ unit_test (void)
 
 
   // ------------------------------------------------------------------
-  errors += unit_test_nmea();
+  //errors += unit_test_nmea();
 
   set_unittest_timer();
   if (errors > 0)
@@ -861,22 +859,18 @@ unit_test (void)
 gint
 unittest_settings_open (GtkWidget * widget, guint * datum)
 {
-    extern GtkWidget *setup_bt; 
     
     if (mydebug > 0)
 	    printf ("	-------> Open Settings\n");
-    gtk_button_clicked( GTK_BUTTON (setup_bt) );
     
     return FALSE; // Only once
 }
 gint
 unittest_settings_close (GtkWidget * widget, guint * datum)
 {
-    extern GtkWidget *setup_bt; 
     
     if (mydebug > 0)
 	    printf ("	-------> Close Settings\n");
-    // gtk_button_clicked( settings_cancel );
     
     return FALSE; // Only once
 }
@@ -889,5 +883,5 @@ set_unittest_timer (void)
     printf ("Testing Open and Close Settings\n");
     gtk_timeout_add (2000, (GtkFunction) unittest_settings_open,NULL ); 
     //gtk_timeout_add (4000, (GtkFunction) unittest_settings_close,NULL ); 
-    gtk_timeout_add (8000, (GtkFunction) quit_program,NULL);
+    gtk_timeout_add (8000, (GtkFunction) quit_program_cb,NULL);
 }

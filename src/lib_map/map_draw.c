@@ -135,10 +135,10 @@ draw_grid2 (MapGC *mgc, int width, int height,
 	screen2wgs(state, 0, height, &lat_ll, &lon_ll);
 	screen2wgs(state, width, 0, &lat_ur, &lon_ur);
 	screen2wgs(state, width, height, &lat_lr, &lon_lr);
-	//calcxytopos2 (0, 0, &lat_ul, &lon_ul, zoom);
-	//calcxytopos2 (0, height, &lat_ll, &lon_ll, zoom);
-	//calcxytopos2 (width, 0, &lat_ur, &lon_ur, zoom);
-	//calcxytopos2 (width, height, &lat_lr, &lon_lr, zoom);
+	//calcxytopos2 (0, 0, &lat_ul, &lon_ul, current.zoom);
+	//calcxytopos2 (0, height, &lat_ll, &lon_ll, current.zoom);
+	//calcxytopos2 (width, 0, &lat_ur, &lon_ur, current.zoom);
+	//calcxytopos2 (width, height, &lat_lr, &lon_lr, current.zoom);
 
 	lat_min = MIN (lat_ll, lat_ul);
 	lat_max = MAX (lat_lr, lat_ur);
@@ -201,10 +201,10 @@ draw_grid2 (MapGC *mgc, int width, int height,
 			wgs2screen(state, lat + step, lon, &posxdest12, &posydest12);
 			wgs2screen(state, lat, lon + step, &posxdest21, &posydest21);
 			wgs2screen(state, lat + step, lon + step, &posxdest22, &posydest22);
-			//calcxy2 (&posxdest11, &posydest11, lon, lat, zoom);
-			//calcxy2 (&posxdest12, &posydest12, lon, lat + step, zoom);
-			//calcxy2 (&posxdest21, &posydest21, lon + step, lat, zoom);
-			//calcxy2 (&posxdest22, &posydest22, lon + step, lat + step, zoom);
+			//calcxy2 (&posxdest11, &posydest11, lon, lat, current.zoom);
+			//calcxy2 (&posxdest12, &posydest12, lon, lat + step, current.zoom);
+			//calcxy2 (&posxdest21, &posydest21, lon + step, lat, current.zoom);
+			//calcxy2 (&posxdest22, &posydest22, lon + step, lat + step, current.zoom);
 
 			if (((posxdest11 >= 0) && (posxdest11 < width) &&
 			     (posydest11 >= 0) && (posydest11 < height))
@@ -331,7 +331,7 @@ draw_waypoints ()
 	for (i = 0; i < maxwp; i++)
 	{
 		calcxy (&posxdest, &posydest,
-			(wayp + i)->lon, (wayp + i)->lat, zoom);
+			(wayp + i)->lon, (wayp + i)->lat, current.zoom);
 
 		if ((posxdest >= 0) && (posxdest < SCREEN_X)
 		    && (shownwp < MAXSHOWNWP)
@@ -356,7 +356,8 @@ draw_waypoints ()
 				if (mapscale)
 					proximity_pixels =
 						((wayp + i)->proximity)
-						* zoom * PIXELFACT / mapscale;
+						* current.zoom * PIXELFACT
+						/ mapscale;
 				else
 					proximity_pixels = 2;
 
@@ -383,7 +384,7 @@ draw_waypoints ()
 
 				wplabellayout =
 					gtk_widget_create_pango_layout
-					(drawing_area, tn);
+					(map_drawingarea, tn);
 				pfd = pango_font_description_from_string
 					(wplabelfont);
 				pango_layout_set_font_description
@@ -439,7 +440,7 @@ draw_waypoints ()
 
 				wplabellayout =
 					gtk_widget_create_pango_layout
-					(drawing_area, txt);
+					(map_drawingarea, txt);
 				pfd = pango_font_description_from_string
 					(wplabelfont);
 				pango_layout_set_font_description
@@ -470,320 +471,3 @@ draw_waypoints ()
 
 #endif
 
-/* *****************************************************************************
- * draw the markers on the map 
- * And many more 
- * TODO: sort out
- */
-int
-drawmarkers (MapGC *mgc, int width, int height,
-	     MapSettings *settings, MapState *state, double pixelsize,
-	     double angle_to_destination, double direction)
-// guint * datum)
-{
-  int posx;
-  int posy;
-
-  wgs2screen(state, state->req_lat, state->req_lon, &posx, &posy);
-
-  settings->gblink = !settings->gblink;
-  /*    g_print("simmode: %d, nmea %d garmin %d\n",simmode,haveNMEA,haveGARMIN); */
-
-  //drawtracks ();
-
-  if (settings->drawgrid)
-    draw_grid2 (mgc, width, height,
-		settings, state, pixelsize);
-
-#ifdef yetToBeRefactored
-
-  if (usesql)
-    {
-      poi_draw_list ();
-      streets_draw_list ();
-      tracks_draw_list ();
-    }
-
-  if (wpflag)
-    draw_waypoints ();
-
-  if (havekismet)
-    readkismet ();
-#endif
-
-  /*  draw scale */
-  if (settings->zoomscale)
-    draw_zoom_scale2 (mgc, width, height, settings,
-		      state->dataset[0], state->path[0],
-		      state->act_yZoom[0], pixelsize);
-
-#ifdef yetToBeRefactored
-  if (havekismet)
-    gdk_draw_pixbuf (drawable, mgc->gtk_gc, kismetpixbuf, 0, 0,
-		     10, SCREEN_Y - 42,
-		     36, 20, GDK_RGB_DITHER_NONE, 0, 0);
-
-  if (savetrack)
-    {
-      /*  k = gdk_text_width (smalltextfont, savetrackfn, strlen (savetrackfn));
-       */
-      k = 100;
-      gdk_gc_set_foreground (mgc->gtk_gc, &white);
-      gdk_draw_rectangle (drawable, mgc->gtk_gc, 1, 10,
-			  SCREEN_Y - 21, k + 3, 14);
-      gdk_gc_set_foreground (mgc->gtk_gc, &red);
-      {
-	/* prints in pango */
-	PangoFontDescription *pfd;
-	PangoLayout *wplabellayout;
-
-	wplabellayout =
-	  gtk_widget_create_pango_layout (drawing_area,
-					  savetrackfn);
-	//KCFX  
-	if (pdamode)
-	  pfd = pango_font_description_from_string
-	    ("Sans 7");
-	else
-	  pfd = pango_font_description_from_string
-	    ("Sans 10");
-	pango_layout_set_font_description (wplabellayout,
-					   pfd);
-
-	gdk_draw_layout_with_colors (drawable, mgc->gtk_gc,
-				     14, SCREEN_Y - 22,
-				     wplabellayout, &red,
-				     NULL);
-	if (wplabellayout != NULL)
-	  g_object_unref (G_OBJECT (wplabellayout));
-	/* freeing PangoFontDescription, cause it has been copied by prev. call */
-	pango_font_description_free (pfd);
-      }
-
-
-      /*    gdk_draw_text (drawable, smalltextfont, mgc->gtk_gc,
-       *                   11, SCREEN_Y - 10, savetrackfn,
-       *                   strlen (savetrackfn));
-       */
-
-      /*      gdk_draw_text (drawable, textfont, mgc->gtk_gc, 10, */
-      /*                     SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
-    }
-
-  if (settings->posmode)
-    {
-      blink = TRUE;
-    }
-#endif
-
-
-#ifdef yetToBeRefactored
-	/*  now draw marker for destination point */
-
-	calcxy (&posxdest, &posydest, coords.target_long,
-		coords.target_lat, zoom);
-
-	gdk_gc_set_line_attributes (mgc->gtk_gc, 4, 0, 0, 0);
-	if (shadow)
-	{
-		/*  draw + sign at destination */
-		gdk_gc_set_foreground (mgc->gtk_gc, &darkgrey);
-		gdk_gc_set_function (mgc->gtk_gc, GDK_AND);
-		gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 - 10 + SHADOWOFFSET,
-			       posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 - 2 + SHADOWOFFSET);
-		gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 + 2 + SHADOWOFFSET,
-			       posxdest + 1 + SHADOWOFFSET,
-			       posydest + 1 + 10 + SHADOWOFFSET);
-		gdk_draw_line (drawable, mgc->gtk_gc,
-			       posxdest + 1 + 10 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET,
-			       posxdest + 1 + 2 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET);
-		gdk_draw_line (drawable, mgc->gtk_gc,
-			       posxdest + 1 - 2 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET,
-			       posxdest + 1 - 10 + SHADOWOFFSET,
-			       posydest + 1 + SHADOWOFFSET);
-		gdk_gc_set_function (mgc->gtk_gc, GDK_COPY);
-	}
-
-	if (crosstoogle)
-		gdk_gc_set_foreground (mgc->gtk_gc, &blue);
-	else
-		gdk_gc_set_foreground (mgc->gtk_gc, &red);
-	crosstoogle = !crosstoogle;
-	/*  draw + sign at destination */
-	gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1,
-		       posydest + 1 - 10, posxdest + 1, posydest + 1 - 2);
-	gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1,
-		       posydest + 1 + 2, posxdest + 1, posydest + 1 + 10);
-	gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1 + 10,
-		       posydest + 1, posxdest + 1 + 2, posydest + 1);
-	gdk_draw_line (drawable, mgc->gtk_gc, posxdest + 1 - 2,
-		       posydest + 1, posxdest + 1 - 10, posydest + 1);
-
-
-	/* display messages on map */
-	display_dsc ();
-	/*  if distance is less then 1 km show meters */
-	if (milesflag)
-	{
-		if (dist <= 1.0)
-		{
-			g_snprintf (s2, sizeof (s2), "%.0f", dist * 1760.0);
-			g_strlcpy (s2a, "yrds", sizeof (s2a));
-		}
-		else
-		{
-			if (dist <= 10.0)
-			{
-				g_snprintf (s2, sizeof (s2), "%.2f", dist);
-				g_strlcpy (s2a, "mi", sizeof (s2a));
-			}
-			else
-			{
-				g_snprintf (s2, sizeof (s2), "%.1f", dist);
-				g_strlcpy (s2a, "mi", sizeof (s2a));
-			}
-		}
-	}
-	if (metricflag)
-	{
-		if (dist <= 1.0)
-		{
-			g_snprintf (s2, sizeof (s2), "%.0f", dist * 1000.0);
-			g_strlcpy (s2a, "m", sizeof (s2a));
-		}
-		else
-		{
-			if (dist <= 10.0)
-			{
-				g_snprintf (s2, sizeof (s2), "%.2f", dist);
-				g_strlcpy (s2a, "km", sizeof (s2a));
-			}
-			else
-			{
-				g_snprintf (s2, sizeof (s2), "%.1f", dist);
-				g_strlcpy (s2a, "km", sizeof (s2a));
-			}
-		}
-	}
-	if (nauticflag)
-	{
-		if (dist <= 1.0)
-		{
-			g_snprintf (s2, sizeof (s2), "%.3f", dist);
-			g_strlcpy (s2a, "nmi", sizeof (s2a));
-		}
-		else
-		{
-			if (dist <= 10.0)
-			{
-				g_snprintf (s2, sizeof (s2), "%.2f", dist);
-				g_strlcpy (s2a, "nmi", sizeof (s2a));
-			}
-			else
-			{
-				g_snprintf (s2, sizeof (s2), "%.1f", dist);
-				g_strlcpy (s2a, "nmi", sizeof (s2a));
-			}
-		}
-	}
-	/*    display distance, speed and zoom */
-	/*   g_snprintf (s3, */
-	/*     "<span color=\"%s\" font_desc=\"%s\">%s</span><span color=\"%s\" font_desc=\"%s\">%s</span>", */
-	/*     local_config.color_bigdisplay, bigfont, s2, local_config.color_bigdisplay, "sans bold 18", s2a); */
-	g_snprintf (s3, sizeof (s3),
-		    "<span color=\"%s\" font_desc=\"%s\">%s<span size=\"16000\">%s</span></span>",
-		    local_config.color_bigdisplay, bigfont, s2, s2a);
-	gtk_label_set_markup (GTK_LABEL (distlabel), s3);
-	/* gtk_label_set_text (GTK_LABEL (distlabel), s2);  */
-	if (milesflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
-	if (metricflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
-	if (nauticflag)
-		g_snprintf (s2, sizeof (s2), "%3.1f", current.groundspeed);
-	g_snprintf (s3, sizeof (s3),
-		    "<span color=\"%s\" font_desc=\"%s\">%s</span>",
-		    local_config.color_bigdisplay, bigfont, s2);
-	gtk_label_set_markup (GTK_LABEL (speedlabel), s3);
-
-	/* gtk_label_set_text (GTK_LABEL (speedlabel), s2); */
-
-	if (havealtitude)
-	{
-		if (milesflag || nauticflag)
-		{
-			g_snprintf (s2, sizeof (s2), "%.0f",
-				    altitude * 3.2808399 + normalnull);
-			g_strlcpy (s2a, "ft", sizeof (s2a));
-		}
-		else
-		{
-			g_snprintf (s2, sizeof (s2), "%.0f",
-				    altitude + normalnull);
-			g_strlcpy (s2a, "m", sizeof (s2a));
-		}
-		gtk_label_set_text (GTK_LABEL (altilabel), s2);
-
-		if (pdamode)
-		{
-			if (normalnull == 0.0)
-
-				g_snprintf (s3, sizeof (s3),
-					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>",
-					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
-			else
-				g_snprintf (s3, sizeof (s3),
-					    "<span color=\"%s\" font_family=\"Arial\" size=\"10000\">%s</span><span color=\"%s\" font_family=\"Arial\" size=\"5000\">%s</span>"
-					    "<span color=\"red\" font_family=\"Arial\" size=\"5000\">\nNN %+.1f</span>",
-					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a,
-					    normalnull);
-		}
-		else
-		{
-			if (normalnull == 0.0)
-
-				g_snprintf (s3, sizeof (s3),
-					    "<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"15000\">%s</span><span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
-					    local_config.color_bigdisplay, s2, local_config.color_bigdisplay, s2a);
-			else
-				g_snprintf (s3, sizeof (s3),
-					    "<span color=\"%s\" font_desc=\"%s\" size=\"15000\">%s</span><span color=\"%s\" font_desc=\"%s\" size=\"10000\">%s</span>"
-					    "<span color=\"red\" font_desc=\"%s\" size=\"8000\">\nNN %+.1f</span>",
-					    local_config.color_bigdisplay,
-					    local_config.font_bigdisplay, s2,
-					    local_config.color_bigdisplay,
-					    local_config.font_bigdisplay, s2a,
-					    local_config.font_bigdisplay,
-					    normalnull);
-		}
-		gtk_label_set_markup (GTK_LABEL (altilabel), s3);
-	}
-	if (simmode)
-		blink = TRUE;
-	else
-	{
-		if (!havepos)
-			blink = !blink;
-	}
-
-	if (newsatslevel)
-		expose_sats_cb (NULL, 0);
-
-	if (downloadwindowactive)
-	{
-		drawdownloadrectangle (1);
-		expose_mini_cb (NULL, 0);
-	}
-
-	/* force to say new direction */
-	if (!strcmp (oldangle, "XXX"))
-		speech_out_cb (NULL, 0);
-#endif
-	return (TRUE);
-}

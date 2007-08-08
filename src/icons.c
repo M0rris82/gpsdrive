@@ -56,10 +56,8 @@ Disclaimer: Please do not use for navigation.
 #include "poi.h"
 #include "icons.h"
 #include "gui.h"
+#include "main_gui.h"
 
-#ifndef NOPLUGINS
-#include "gmodule.h"
-#endif
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -81,11 +79,10 @@ Disclaimer: Please do not use for navigation.
 extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
-extern gint muteflag, trackflag;
 extern color_struct colors;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
-
+extern GdkGC *kontext_map;
 
 GdkPixbuf *friendsimage = NULL;
 GdkPixbuf *friendspixbuf = NULL;
@@ -105,24 +102,24 @@ gint icons_buffer_last = 0;
 void
 draw_plus_sign (gdouble posxdest, gdouble posydest)
 {
-  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+  gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
   if (local_config.showshadow)
     {				/*  draw shadow of + sign */
-      gdk_gc_set_foreground (kontext, &colors.darkgrey);
-      gdk_gc_set_function (kontext, GDK_AND);
-      gdk_draw_line (drawable, kontext,
+      gdk_gc_set_foreground (kontext_map, &colors.darkgrey);
+      gdk_gc_set_function (kontext_map, GDK_AND);
+      gdk_draw_line (drawable, kontext_map,
 		     posxdest + 1 + SHADOWOFFSET,
 		     posydest + 1 - 5 + SHADOWOFFSET, posxdest + 1 + SHADOWOFFSET, posydest + 1 + 5 + SHADOWOFFSET);
-      gdk_draw_line (drawable, kontext,
+      gdk_draw_line (drawable, kontext_map,
 		     posxdest + 1 + 5 + SHADOWOFFSET,
 		     posydest + 1 + SHADOWOFFSET, posxdest + 1 - 5 + SHADOWOFFSET, posydest + 1 + SHADOWOFFSET);
-      gdk_gc_set_function (kontext, GDK_COPY);
+      gdk_gc_set_function (kontext_map, GDK_COPY);
     }
 
   /*  draw + sign at destination */
-  gdk_gc_set_foreground (kontext, &colors.red);
-  gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 5, posxdest + 1, posydest + 1 + 5);
-  gdk_draw_line (drawable, kontext, posxdest + 1 + 5, posydest + 1, posxdest + 1 - 5, posydest + 1);
+  gdk_gc_set_foreground (kontext_map, &colors.red);
+  gdk_draw_line (drawable, kontext_map, posxdest + 1, posydest + 1 - 5, posxdest + 1, posydest + 1 + 5);
+  gdk_draw_line (drawable, kontext_map, posxdest + 1 + 5, posydest + 1, posxdest + 1 - 5, posydest + 1);
 
 }
 
@@ -131,24 +128,24 @@ draw_plus_sign (gdouble posxdest, gdouble posydest)
 void
 draw_small_plus_sign (gdouble posxdest, gdouble posydest)
 {
-  gdk_gc_set_line_attributes (kontext, 1, 0, 0, 0);
+  gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
   if (local_config.showshadow)
     {				/*  draw shadow of + sign */
-      gdk_gc_set_foreground (kontext, &colors.darkgrey);
-      gdk_gc_set_function (kontext, GDK_AND);
-      gdk_draw_line (drawable, kontext,
+      gdk_gc_set_foreground (kontext_map, &colors.darkgrey);
+      gdk_gc_set_function (kontext_map, GDK_AND);
+      gdk_draw_line (drawable, kontext_map,
 		     posxdest + 1 + SHADOWOFFSET,
 		     posydest + 1 - 2 + SHADOWOFFSET, posxdest + 1 + SHADOWOFFSET, posydest + 1 + 2 + SHADOWOFFSET);
-      gdk_draw_line (drawable, kontext,
+      gdk_draw_line (drawable, kontext_map,
 		     posxdest + 1 + 2 + SHADOWOFFSET,
 		     posydest + 1 + SHADOWOFFSET, posxdest + 1 - 2 + SHADOWOFFSET, posydest + 1 + SHADOWOFFSET);
-      gdk_gc_set_function (kontext, GDK_COPY);
+      gdk_gc_set_function (kontext_map, GDK_COPY);
     }
 
   /*  draw + sign at destination */
-  gdk_gc_set_foreground (kontext, &colors.red);
-  gdk_draw_line (drawable, kontext, posxdest + 1, posydest + 1 - 2, posxdest + 1, posydest + 1 + 2);
-  gdk_draw_line (drawable, kontext, posxdest + 1 + 2, posydest + 1, posxdest + 1 - 2, posydest + 1);
+  gdk_gc_set_foreground (kontext_map, &colors.red);
+  gdk_draw_line (drawable, kontext_map, posxdest + 1, posydest + 1 - 2, posxdest + 1, posydest + 1 + 2);
+  gdk_draw_line (drawable, kontext_map, posxdest + 1 + 2, posydest + 1, posxdest + 1 - 2, posydest + 1);
 
 }
 
@@ -175,7 +172,7 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
 	  {
 	    wx = gdk_pixbuf_get_width (icons_buffer[i].icon);
 	    wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
-	    gdk_draw_pixbuf (drawable, kontext,
+	    gdk_draw_pixbuf (drawable, kontext_map,
 			     (icons_buffer + i)->icon, 0, 0,
 			     posxdest - wx / 2, posydest - wy / 2, wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
 	    aux = i;

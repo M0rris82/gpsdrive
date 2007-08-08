@@ -62,15 +62,13 @@ extern poi_type_struct poi_type_list[poi_type_list_max];
 
 extern gint do_unit_test;
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 extern color_struct colors;
+extern currentstatus_struct current;
 extern gint debug, mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
 extern gint usesql;
 extern glong mapscale;
+extern GdkGC *kontext_map;
 
 char txt[5000];
 PangoLayout *wlan_label_layout;
@@ -85,7 +83,6 @@ wlan_struct *wlan_list;
 glong wlan_nr;			// current number of wlan to count
 glong wlan_max;			// max index of WLANs actually in memory
 glong wlan_limit = -1;		// max allowed index (if you need more you have to alloc memory)
-gint wlan_draw = FALSE;
 
 gchar wlan_label_font[100];
 GdkColor wlan_colorv;
@@ -130,8 +127,8 @@ wlan_check_if_moved (void)
       wlan_lat_ul == 0 && wlan_lon_ul == 0)
     return 1;
 
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
-  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
 
   if (wlan_lat_lr == lat_lr && wlan_lon_lr == lon_lr &&
       wlan_lat_ul == lat_ul && wlan_lon_ul == lon_ul)
@@ -166,7 +163,7 @@ wlan_rebuild_list (void)
   if (!usesql)
     return;
 
-  if (!wlan_draw)
+  if (!local_config.showwlan)
     {
       if (mydebug > 20)
 	printf ("wlan_rebuild_list: WLAN_draw is off\n");
@@ -183,15 +180,15 @@ wlan_rebuild_list (void)
   if (!maploaded)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
 
   // calculate the start and stop for lat/lon according to the displayed section
-  calcxytopos (0, 0, &lat_ul, &lon_ul, zoom);
-  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, zoom);
-  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, zoom);
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, zoom);
+  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
+  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
+  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
+  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
 
   lat_min = min (lat_ll, lat_ul);
   lat_max = max (lat_lr, lat_ur);
@@ -211,13 +208,13 @@ wlan_rebuild_list (void)
 		"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
 		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
 		"\n", lat_min, lat_max, lon_min, lon_max
-		// , mapscale
+		// , current.mapscale
       );
     g_strdelimit (sql_where, ",", '.');	// For different LANG
     if (mydebug > 20)
       {
 	printf ("wlan_rebuild_list: WLAN mysql where: %s\n", sql_where);
-	printf ("wlan_rebuild_list: WLAN mapscale: %ld\n", mapscale);
+	printf ("wlan_rebuild_list: WLAN mapscale: %ld\n", current.mapscale);
       }
   }
 
@@ -226,8 +223,8 @@ wlan_rebuild_list (void)
     int i;
     for (i = 0; i < poi_type_list_max; i++)
       {
-	if (poi_type_list[i].scale_min <= mapscale &&
-	    poi_type_list[i].scale_max >= mapscale)
+	if (poi_type_list[i].scale_min <= current.mapscale &&
+	    poi_type_list[i].scale_max >= current.mapscale)
 	  {
 	    gchar id_string[20];
 	    g_snprintf (id_string, sizeof (id_string), " %d,",
@@ -289,7 +286,7 @@ wlan_rebuild_list (void)
 
       lat = g_strtod (row[0], NULL);
       lon = g_strtod (row[1], NULL);
-      calcxy (&wlan_posx, &wlan_posy, lon, lat, zoom);
+      calcxy (&wlan_posx, &wlan_posy, lon, lat, current.zoom);
 
       if ((wlan_posx > -50) && (wlan_posx < (SCREEN_X + 50)) &&
 	  (wlan_posy > -50) && (wlan_posy < (SCREEN_Y + 50)))
@@ -421,13 +418,13 @@ wlan_draw_list (void)
   if (!usesql)
     return;
 
-  if (importactive)
+  if (current.importactive)
     return;
 
   if (!maploaded)
     return;
 
-  if (!(wlan_draw))
+  if (!local_config.showwlan)
     {
       if (mydebug > 20)
 	printf ("wlan_draw_list: WLAN_draw is off\n");
@@ -469,7 +466,7 @@ wlan_draw_list (void)
 	   * );
 	   */
 
-	  gdk_gc_set_line_attributes (kontext, 2, 0, 0, 0);
+	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 
 	  g_strlcpy (txt, (wlan_list + i)->name, sizeof (txt));
 
@@ -486,7 +483,7 @@ wlan_draw_list (void)
 		    int wx = gdk_pixbuf_get_width (icon);
 		    int wy = gdk_pixbuf_get_height (icon);
 
-		    gdk_draw_pixbuf (drawable, kontext, icon,
+		    gdk_draw_pixbuf (drawable, kontext_map, icon,
 				     0, 0,
 				     posx - wx / 2,
 				     posy - wy / 2,
@@ -495,7 +492,7 @@ wlan_draw_list (void)
 	      }
 	    else
 	      {
-		gdk_gc_set_foreground (kontext, &colors.red);
+		gdk_gc_set_foreground (kontext_map, &colors.red);
 		if (wlan_max < 20000)
 		  {		// Only draw small + if more than ... Wlannts 
 		    draw_plus_sign (posx, posy);

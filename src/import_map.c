@@ -147,30 +147,22 @@ Disclaimer: Please do not use for navigation.
 
 
 extern gint maploaded;
-extern gint importactive;
-extern gint zoom;
 extern gint isnight, disableisnight;
 extern gint debug, mydebug;
-extern GtkWidget *drawing_area, *drawing_bearing, *drawing_sats,
-  *drawing_miniimage;
 extern gint usesql;
-extern glong mapscale;
 extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
 GtkWidget *dltext4,*dltext3;
-extern gdouble dist;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern GTimer *timer, *disttimer;
 extern gint gcount, milesflag, downloadwindowactive;
-extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
-extern GtkWidget *mainwindow, *status, *messagestatusbar, *pixmapwidget,
+extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
+extern GtkWidget *status, *pixmapwidget,
   *gotowindow;
 extern GtkWidget *messagewindow, *routewindow, *downloadbt;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern GtkWidget *mylist, *myroutelist, *destframe;
-extern GtkObject *scaler_adj;
-extern gdouble wplat, wplon;
 extern mapsstruct *maps;
-extern gint zoom, iszoomed;
+extern gint iszoomed;
 extern gint isnight, disableisnight;
 extern gint nrmaps, dldiff;
 extern int havenasa, nosplash, sortcolumn, sortflag;
@@ -239,8 +231,6 @@ importfb_cb (GtkWidget * widget, guint datum)
   gchar buf[1000];
   fdialog = gtk_file_selection_new (_("Select a map file"));
   gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
-  gtk_window_set_transient_for (GTK_WINDOW (fdialog),
-				GTK_WINDOW (mainwindow));
 
   gtk_signal_connect (GTK_OBJECT
 		      (GTK_FILE_SELECTION (fdialog)->ok_button),
@@ -259,7 +249,7 @@ importfb_cb (GtkWidget * widget, guint datum)
   gtk_widget_show (fdialog);
   xoff = 0;
   yoff = 0;
-  zoom = 1;
+  current.zoom = 1;
   iszoomed = FALSE;
 
   return TRUE;
@@ -492,10 +482,9 @@ import1_cb (GtkWidget * widget, guint datum)
   /*    gtk_label_set_justify (GTK_LABEL (knopf4), GTK_JUSTIFY_RIGHT); */
   /*    gtk_label_set_justify (GTK_LABEL (knopf6), GTK_JUSTIFY_RIGHT); */
   gtk_window_set_default (GTK_WINDOW (window), knopf);
-  gtk_window_set_transient_for (GTK_WINDOW (window), GTK_WINDOW (mainwindow));
   gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
   gtk_widget_show_all (window);
-  importactive = TRUE;
+  current.importactive = TRUE;
 
   return TRUE;
 }
@@ -588,7 +577,7 @@ import_scale_cb (GtkWidget * widget, gpointer datum)
       savemapconfig ();
     }
 
-  importactive = FALSE;
+  current.importactive = FALSE;
   g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
   return TRUE;
 }
@@ -690,7 +679,7 @@ import3_cb (GtkWidget * widget, gpointer datum)
       savemapconfig ();
     }
 
-  importactive = FALSE;
+  current.importactive = FALSE;
   g_strlcpy (oldfilename, "XXXAFHSGFAERGXXXXXX", sizeof (oldfilename));
 
   return TRUE;
@@ -721,7 +710,7 @@ gint
 mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 {
   gint x, y;
-  gdouble lon, lat, vali;
+  gdouble lon, lat;
   GdkModifierType state;
   gchar s[200];
 
@@ -737,13 +726,13 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
     }
   if (state == 0)
     return 0;
-  calcxytopos (x, y, &lat, &lon, zoom);
+  calcxytopos (x, y, &lat, &lon, current.zoom);
   if (mydebug)
       {
 	  fprintf (stderr, "Mouse click at x:%d,y:%d -->lat:%f,lon:%f  \n", x, y,lat,lon);
       }
 
-  if (downloadwindowactive || importactive)
+  if (downloadwindowactive || current.importactive)
     {
       if (downloadwindowactive)
 	{
@@ -758,10 +747,12 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       else
 	{
 	  g_snprintf (s, sizeof (s), "%d",
-		      x / zoom + (640 - SCREEN_X_2 / zoom) + xoff / zoom);
+		x / current.zoom + (640 - SCREEN_X_2 / current.zoom) + xoff
+		/ current.zoom);
 	  gtk_entry_set_text (GTK_ENTRY (dltext5), s);
 	  g_snprintf (s, sizeof (s), "%d",
-		      y / zoom + (512 - SCREEN_Y_2 / zoom) + yoff / zoom);
+		y / current.zoom + (512 - SCREEN_Y_2 / current.zoom) + yoff
+		/ current.zoom);
 	  gtk_entry_set_text (GTK_ENTRY (dltext6), s);
 
 	}
@@ -770,7 +761,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
   else
     {
       /*        g_print("\nstate: %x x:%d y:%d", state, x, y); */
-      vali = (GTK_ADJUSTMENT (scaler_adj)->value);
+      //vali = (GTK_ADJUSTMENT (scaler_adj)->value);
       /*  Left mouse button + shift key */
       if ((state & (GDK_BUTTON1_MASK | GDK_SHIFT_MASK)) ==
 	  (GDK_BUTTON1_MASK | GDK_SHIFT_MASK))
@@ -783,8 +774,8 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       if ((state & (GDK_BUTTON1_MASK | GDK_CONTROL_MASK)) ==
 	  (GDK_BUTTON1_MASK | GDK_CONTROL_MASK))
 	{
-	  wplat = lat;
-	  wplon = lon;
+	  coords.wp_lat = lat;
+	  coords.wp_lon = lon;
 	  addwaypoint_cb (NULL, 0);
 	  return TRUE;
 	}
@@ -793,8 +784,8 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       if ((state & (GDK_BUTTON3_MASK | GDK_CONTROL_MASK)) ==
 	  (GDK_BUTTON3_MASK | GDK_CONTROL_MASK))
 	{
-	  wplat = coords.current_lat;
-	  wplon = coords.current_lon;
+	  coords.wp_lat = coords.current_lat;
+	  coords.wp_lon = coords.current_lon;
 
 	  addwaypoint_cb (NULL, 0);
 	  return TRUE;
@@ -832,13 +823,13 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 	  rebuildtracklist ();
 	  g_strlcpy (current.target, _("SELECTED"), sizeof (current.target));
-	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), current.target);
-	  gtk_frame_set_label (GTK_FRAME (destframe), s);
+//	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), current.target);
+//	  gtk_frame_set_label (GTK_FRAME (destframe), s);
 	  coords.target_lat = lat;
 	  coords.target_lon = lon;
 	  g_timer_stop (disttimer);
 	  g_timer_start (disttimer);
-	  olddist = dist;
+	  olddist = current.dist;
 	}
     }
 

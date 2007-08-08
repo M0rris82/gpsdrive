@@ -37,6 +37,7 @@ Disclaimer: Please do not use for navigation.
 #include <icons.h>
 #include <gpsdrive_config.h>
 #include <speech_strings.h>
+#include "main_gui.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -50,21 +51,16 @@ Disclaimer: Please do not use for navigation.
 extern gint max_display_map;
 extern map_dir_struct *display_map;
 
-extern GtkWidget *mainwindow;
 GtkWidget *splash_window;
-extern gint trackflag, muteflag, displaymap_top, displaymap_map;
-extern gint scaleprefered_not_bestmap;
-extern gint mydebug, scalewanted, savetrack;
-extern gchar serialdev[80];
+extern gint displaymap_top, displaymap_map;
+extern gint mydebug;
 extern gint setdefaultpos;
-extern gint streets_draw, poi_draw, wlan_draw, testgarmin;
-extern gint needtosave, usedgps;
+extern gint streets_draw;
+extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
-/* extern gint flymode, vfr,disdevwarn; */
-extern gint flymode, vfr, disdevwarn;
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-	int_padding, lastnotebook;
+lastnotebook;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
@@ -75,10 +71,10 @@ extern gint earthmate, zone;
 extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
 extern long int maxfriendssecs;
 extern int messagenumber;
-extern int sockfd, serialspeed, disableserial, showsid, storetz;
+extern int sockfd, showsid, storetz;
 extern coordinate_struct coords;
+extern currentstatus_struct current;
 #define KM2MILES 0.62137119
-#define PADDING int_padding
 
 local_gpsdrive_config local_config;
 
@@ -115,13 +111,13 @@ writeconfig ()
 	fprintf (fp, "travelmode = %d\n", local_config.travelmode);
 
 	fprintf (fp, "showtrack = ");
-	if (trackflag)
+	if (local_config.showtrack)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
 
 	fprintf (fp, "mutespeechoutput = ");
-	if (muteflag)
+	if (local_config.mute)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
@@ -139,7 +135,7 @@ writeconfig ()
 		fprintf (fp, "0\n");
 
 	fprintf (fp, "autobestmap = ");
-	if (!scaleprefered_not_bestmap)
+	if (local_config.autobestmap)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
@@ -156,14 +152,12 @@ writeconfig ()
 	}
 
 	fprintf (fp, "savetrack = ");
-	if (savetrack)
+	if (local_config.savetrack)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
 
-	fprintf (fp, "scalewanted = %d\n", scalewanted);
-
-	fprintf (fp, "serialdevice = %s\n", serialdev);
+	fprintf (fp, "scalewanted = %d\n", local_config.scale_wanted);
 
 	g_snprintf (str, sizeof (str), "%.6f", coords.current_lon);
 	g_strdelimit (str, ",", '.');
@@ -178,12 +172,6 @@ writeconfig ()
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
-
-	fprintf (fp, "testgarminmode = ");
-	if (testgarmin == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
 
 	fprintf (fp, "waypointfile = ");
 	fprintf (fp, "%s\n", local_config.wp_file);
@@ -203,11 +191,7 @@ writeconfig ()
 	}
 			
 
-	fprintf (fp, "simfollow = ");
-	if (local_config.simmode == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
+	fprintf (fp, "simfollow = %d\n", local_config.simmode);
 
 	fprintf (fp, "satposmode = ");
 	if (satposmode == 0)
@@ -230,21 +214,6 @@ writeconfig ()
 
 	fprintf (fp, "cpuload = %d\n", local_config.maxcpuload);
 
-	fprintf (fp, "flymode = ");
-	if (flymode == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
-
-	fprintf (fp, "vfr = ");
-	fprintf (fp, "%d\n", vfr);
-
-	fprintf (fp, "disdevwarn = ");
-	if (disdevwarn == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
-
 	fprintf (fp, "lastnotebook = ");
 	fprintf (fp, "%d\n", lastnotebook);
 
@@ -261,7 +230,7 @@ writeconfig ()
 	fprintf (fp, "font_text = %s\n", font_s_text);
 	fprintf (fp, "font_verysmalltext = %s\n", font_s_verysmalltext);
 	fprintf (fp, "font_smalltext = %s\n", font_s_smalltext);
-	fprintf (fp, "font_bigtext = %s\n", local_config.font_bigdisplay);
+	fprintf (fp, "font_bigtext = %s\n", local_config.font_dashboard);
 	fprintf (fp, "font_wplabel = %s\n", local_config.font_wplabel);
 	fprintf (fp, "font_friends = %s\n", local_config.font_friends);
 
@@ -277,14 +246,15 @@ writeconfig ()
 	fprintf (fp, "storetz = %d\n", storetz);
 	if (storetz)
 		fprintf (fp, "timezone = %d\n", zone);
-	fprintf (fp, "bigcolor = %s\n", local_config.color_bigdisplay);
+	fprintf (fp, "dashboard_left = %d\n", local_config.dashboard_left);
+	fprintf (fp, "dashboard_mid = %d\n", local_config.dashboard_mid);
+	fprintf (fp, "dashboard_right = %d\n", local_config.dashboard_right);
+	fprintf (fp, "bigcolor = %s\n", local_config.color_dashboard);
 	fprintf (fp, "trackcolor = %s\n", local_config.color_track);
 	fprintf (fp, "routecolor = %s\n", local_config.color_route);
 	fprintf (fp, "friendscolor = %s\n", local_config.color_friends);
 	fprintf (fp, "wplabelcolor = %s\n", local_config.color_wplabel);
 	fprintf (fp, "messagenumber = %d\n", messagenumber);
-	fprintf (fp, "serialspeed = %d\n", serialspeed);
-	fprintf (fp, "disableserial = %d\n", disableserial);
 	fprintf (fp, "showssid = %d\n", showsid);
 	fprintf (fp, "sound_direction = %d\n", local_config.sound_direction);
 	fprintf (fp, "sound_distance = %d\n", local_config.sound_distance);
@@ -294,8 +264,8 @@ writeconfig ()
 
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
 	fprintf (fp, "draw_streets = %d\n", streets_draw);
-	fprintf (fp, "draw_poi = %d\n", poi_draw);
-	fprintf (fp, "draw_wlan = %d\n", wlan_draw);
+	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
+	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
 	for ( i = 0; i < max_display_map; i++)
 	    {
 		fprintf (fp, "display_map_%s = %d\n",
@@ -306,7 +276,7 @@ writeconfig ()
 
 
 	fclose (fp);
-	needtosave = FALSE;
+	current.needtosave = FALSE;
 }
 
 /* read the configurationfile ~/.gpsdrive/gpsdriverc */
@@ -343,18 +313,18 @@ readconfig ()
 			if ( (strcmp(par1, "showwaypoints")) == 0)
 				local_config.showwaypoints = atoi (par2);
 			else if ( (strcmp(par1, "showtrack")) == 0)
-				trackflag = atoi (par2);
+				local_config.showtrack = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
 				local_config.travelmode = atoi (par2);
 			else if ( (strcmp(par1, "mutespeechoutput")) == 0)
-				muteflag = atoi (par2);
+				local_config.mute = atoi (par2);
 			else if ( (strcmp(par1, "showtopomaps")) == 0)
 				displaymap_top = atoi (par2);
 			else if ( (strcmp(par1, "showstreetmaps")) == 0)
 				displaymap_map = atoi (par2);
 			/*  To set the right sensitive flags bestmap_cb is called later */
 			else if ( (strcmp(par1, "autobestmap")) == 0)
-				scaleprefered_not_bestmap = !(atoi (par2));
+				local_config.autobestmap = atoi (par2);
 			else if ( (strcmp(par1, "units")) == 0)
 			{
 				if ( (strcmp(par2, "miles")) == 0)
@@ -376,12 +346,16 @@ readconfig ()
 					}
 				}
 			}
+			else if ( (strcmp(par1, "dashboard_left")) == 0)
+				local_config.dashboard_left = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_mid")) == 0)
+				local_config.dashboard_mid = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_right")) == 0)
+				local_config.dashboard_right = atoi (par2);
 			else if ( (strcmp(par1, "savetrack")) == 0)
-				savetrack = atoi (par2);
+				local_config.savetrack = atoi (par2);
 			else if ( (strcmp(par1, "scalewanted")) == 0)
-				scalewanted = atoi (par2);
-			else if ( (strcmp(par1, "serialdevice")) == 0)
-				g_strlcpy (serialdev, par2, sizeof (serialdev));
+				local_config.scale_wanted = atoi (par2);
 			else if ( (strcmp(par1, "lastlong")) == 0)
 				coordinate_string2gdouble(par2,
 					&coords.current_lon);
@@ -397,8 +371,6 @@ readconfig ()
 			else if ( (strcmp(par1, "waypointfile")) == 0)
 				g_strlcpy (local_config.wp_file, par2,
 					sizeof (local_config.wp_file));
-			else if ( (strcmp(par1, "testgarminmode")) == 0)
-				testgarmin = atoi (par2);
 			else if ( (strcmp(par1, "usedgps")) == 0)
 				usedgps = atoi (par2);
 			else if ( (strcmp(par1, "mapdir")) == 0)
@@ -420,12 +392,6 @@ readconfig ()
 				local_config.nightmode = atoi (par2);
 			else if ( (strcmp(par1, "cpuload")) == 0)
 				local_config.maxcpuload = atoi (par2);
-			else if ( (strcmp(par1, "flymode")) == 0)
-				flymode = atoi (par2);
-			else if ( (strcmp(par1, "vfr")) == 0)
-				vfr = atoi (par2);
-			else if ( (strcmp(par1, "disdevwarn")) == 0)
-				disdevwarn = atoi (par2);
 			else if ( (strcmp(par1, "lastnotebook")) == 0)
 				lastnotebook = atoi (par2);
 			else if ( (strcmp(par1, "dbhostname")) == 0)
@@ -464,8 +430,8 @@ readconfig ()
 			else if ( (strcmp(par1, "font_smalltext")) == 0)
 				g_strlcpy (font_s_smalltext, par2, sizeof (font_s_smalltext));
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
-				g_strlcpy (local_config.font_bigdisplay, par2,
-				sizeof (local_config.font_bigdisplay));
+				g_strlcpy (local_config.font_dashboard, par2,
+				sizeof (local_config.font_dashboard));
 			else if ( (strcmp(par1, "font_wplabel")) == 0)
 				g_strlcpy (local_config.font_wplabel, par2,
 				sizeof (local_config.font_wplabel));
@@ -499,8 +465,8 @@ readconfig ()
 			else if ( storetz && (strcmp(par1, "timezone")) == 0)
 				zone = atoi (par2);
 			else if ( (strcmp(par1, "bigcolor")) == 0)
-				g_strlcpy (local_config.color_bigdisplay, par2,
-				sizeof (local_config.color_bigdisplay));
+				g_strlcpy (local_config.color_dashboard, par2,
+				sizeof (local_config.color_dashboard));
 			else if ( (strcmp(par1, "trackcolor")) == 0)
 				g_strlcpy (local_config.color_track, par2,
 				sizeof (local_config.color_track));
@@ -515,10 +481,6 @@ readconfig ()
 				sizeof (local_config.color_wplabel));
 			else if ( (strcmp(par1, "messagenumber")) == 0)
 				messagenumber = atoi (par2);
-			else if ( (strcmp(par1, "serialspeed")) == 0)
-				serialspeed = atoi (par2);
-			else if ( (strcmp(par1, "disableserial")) == 0)
-				disableserial = atoi (par2);
 			else if ( (strcmp(par1, "showssid")) == 0)
 				showsid = atoi (par2);
 			else if ( (strcmp(par1, "sound_direction")) == 0)
@@ -537,9 +499,9 @@ readconfig ()
 			else if ( (strcmp(par1, "draw_streets")) == 0)
 				streets_draw = atoi (par2);
 			else if ( (strcmp(par1, "draw_poi")) == 0)
-				poi_draw = atoi (par2);
+				local_config.showpoi = atoi (par2);
 			else if ( (strcmp(par1, "draw_wlan")) == 0)
-				wlan_draw = atoi (par2);
+				local_config.showwlan = atoi (par2);
 			else if ( ! strncmp(par1, "display_map_",12) )
 			{
 				// printf ("display_map: %s %s\n",par1,par2);
@@ -570,7 +532,10 @@ config_init ()
 	local_config.altmode = ALT_METERS;
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_CLASSIC;
-	local_config.simmode = FALSE;
+	local_config.simmode = SIM_OFF;
+	local_config.dashboard_left = DASH_DIST;
+	local_config.dashboard_mid = DASH_SPEED;
+	local_config.dashboard_right = DASH_ALT;
 	local_config.MapnikStatusInt = 0;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;
@@ -585,7 +550,9 @@ config_init ()
 	local_config.sound_gps = TRUE;
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;
-	
+	local_config.scale_wanted = 100000;
+	local_config.autobestmap = 1;
+
 	/* set POI related stuff */
 	local_config.poi_results_max = 200;
 	local_config.poi_searchradius = 10.0;
@@ -612,10 +579,10 @@ config_init ()
 		"#ffa500", sizeof (local_config.color_friends));
 	g_strlcpy (local_config.color_wplabel,
 		"#00ffff", sizeof (local_config.color_wplabel));
-	g_strlcpy (local_config.color_bigdisplay,
-		"#0000ff", sizeof (local_config.color_bigdisplay));
-	g_strlcpy (local_config.font_bigdisplay,
-		"Sans bold 26", sizeof (local_config.font_bigdisplay));
+	g_strlcpy (local_config.color_dashboard,
+		"#0000ff", sizeof (local_config.color_dashboard));
+	g_strlcpy (local_config.font_dashboard,
+		"Sans bold 26", sizeof (local_config.font_dashboard));
 	g_strlcpy (local_config.font_wplabel,
 		"Sans 11", sizeof (local_config.font_wplabel));
 	g_strlcpy (local_config.font_friends,

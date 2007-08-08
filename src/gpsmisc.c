@@ -50,12 +50,10 @@ Disclaimer: Please do not use for navigation.
 
 /* variables */
 extern gint ignorechecksum, mydebug;
-extern gdouble dist;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-  int_padding;
+extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy;
-extern gint havepos, haveposcount, blink, gblink, xoff, yoff, crosstoogle;
+extern gdouble posx, posy;
+extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble lat2RadiusArray[101];

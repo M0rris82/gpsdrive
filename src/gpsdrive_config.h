@@ -58,17 +58,24 @@ typedef struct
 	guint poi_results_max;
 	gdouble poi_searchradius;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
-	gboolean simmode;
+	gint simmode;
 	gboolean showgrid;
 	gboolean showshadow;
 	gboolean showwaypoints;
+	gboolean showpoi;
+	gboolean showwlan;
 	gboolean showtooltips;
 	gboolean showaddwpbutton;
 	gboolean showfriends;
+	gboolean showtrack;
+	gboolean savetrack;
+	gboolean autobestmap;
+	gint scale_wanted;
 	gboolean sound_direction;
 	gboolean sound_distance;
 	gboolean sound_speed;
 	gboolean sound_gps;
+	gboolean mute;
 	glong friends_maxsecs;
 	gchar friends_name[40];
 	gchar friends_id[40];
@@ -78,10 +85,14 @@ typedef struct
 	gchar color_route[40];
 	gchar color_friends[40];
 	gchar color_wplabel[40];
-	gchar color_bigdisplay[40];
+	gchar color_dashboard[40];
 	gchar font_friends[100];
 	gchar font_wplabel[100];
-	gchar font_bigdisplay[100];
+	gchar font_dashboard[100];
+	gint dashboard_left;
+	gint dashboard_mid;
+	gint dashboard_right;
+	gdouble normalnull;
 }
 local_gpsdrive_config;
 
