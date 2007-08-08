@@ -3518,8 +3518,8 @@ drawable =
     cursor_cross = gdk_cursor_new (GDK_TCROSS);
 
 
-    temperature_get_values ();
-    battery_get_values ();
+    //temperature_get_values ();
+    //battery_get_values ();
 
 
 {
@@ -3591,13 +3591,13 @@ drawable =
     gtk_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
     gtk_timeout_add (15000, (GtkFunction) getsqldata, 0);
-    if ( battery_get_values () )
-	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
-			 NULL);
+//    if ( battery_get_values () )
+//	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
+//			 NULL);
 
-    if ( temperature_get_values () )
-	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
-			 NULL);
+//    if ( temperature_get_values () )
+//	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
+//			 NULL);
 
     gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 

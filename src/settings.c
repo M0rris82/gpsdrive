@@ -1521,7 +1521,7 @@ settings_poi (GtkWidget *notebook)
 	poifilter_bt = gtk_button_new_with_label (_("Edit Filter"));
 	g_signal_connect_swapped (poifilter_bt, "clicked",
 		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
-	// TODO: add funvtionality, then set sensitive again
+	// TODO: add functionality, then set sensitive again
 	gtk_widget_set_sensitive (poifilter_bt, FALSE);
 
 	poidisplay_table = gtk_table_new (2, 2, FALSE);
