@@ -1,5 +1,14 @@
 PROJECT(libmap)
 
+set(LIBMAP_PUBLIC_INCLUDE_DIRS
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  CACHE INTERNAL "gpsdrive public include directories"
+)
+
+include_directories(
+  ${LIBMAP_PUBLIC_INCLUDE_DIRS}
+)
+
 # GTK
 if (GTK_FOUND)
   include_directories(${GTK_INCLUDE_DIR})

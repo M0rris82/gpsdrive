@@ -1,9 +1,7 @@
 project(gpsdrive_src)
 
-subdirs(
-  lib_map
-  util
-)
+add_subdirectory(lib_map)
+add_subdirectory(util)
 
 find_package(Gettext REQUIRED)
 find_package(X11 REQUIRED)
@@ -29,6 +27,7 @@ set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
 )
 
 set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
+  ${LIBMAP_PUBLIC_INCLUDE_DIRS}
   ${GTK2_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${MYSQL_INCLUDE_DIR}
@@ -61,59 +60,46 @@ set(gpsdrive_SRCS
   battery.c
   battery.h
   download_map.c
-  download_map.h
   draw_grid.c
   friends.c
   geometry.c
   gettext.h
   gpsdrive.c
   gpsdrive_config.c
-  gpsdrive_config.h
-  gpsdrive.h
   gps_handler.c
   gps_handler.h
   gpskismet.c
   gpsmisc.c
   gpsnasamap.c
-  gpsproto.h
-  gpsserial.c
   gpssql.c
   gui.c
   gui.h
   icons.c
   icons.h
   import_map.c
-  import_map.h
   LatLong-UTMconversion.c
-  LatLong-UTMconversion.h
+  main_gui.c
   map_handler.c
   map_projection.c
   navigation.c
   navigation_gui.c
   nmea_handler.c
-  nmea_handler.h
   poi.c
   poi_gui.c
   poi.h
   routes.c
-  routes.h
   settings.c
   settings_gui.c
   speech_out.c
   speech_out.h
   speech_strings.c
-  speech_strings.h
   splash.c
-  splash.h
   streets.c
-  streets.h
   track.c
   track.h
   unit_test.c
   waypoint.c
-  waypoint.h
   wlan.c
-  wlan.h
 )
 
 if (WITH_MAPNIK)
@@ -153,14 +139,6 @@ SET(friendsd_SRCS
   gpsdrive.h
 )
 
-SET(nautic_SRCS
-  nautic.c
-)
-
-SET(fly_SRCS
-  fly.c
-)
-
 include_directories(
   ${GPSDRIVE_PUBLIC_INCLUDE_DIRS}
   ${GPSDRIVE_PRIVATE_INCLUDE_DIRS}
@@ -187,35 +165,4 @@ install(
   DESTINATION
     ${BIN_INSTALL_DIR}
 )
-
-if(WITH_PLUGINS)
-  add_library(nautic SHARED ${nautic_SRCS})
-  add_library(fly SHARED ${fly_SRCS})
-
-  set_target_properties(
-    nautic
-    PROPERTIES
-      VERSION
-        2.0.0
-      SOVERSION
-        2
-  )
-
-  set_target_properties(
-    fly
-    PROPERTIES
-      VERSION
-        2.0.0
-      SOVERSION
-        2
-  )
-
-  install(
-    TARGETS
-      nautic
-      fly
-    DESTINATION
-      ${LIB_INSTALL_DIR}
-  )
-endif(WITH_PLUGINS)
 

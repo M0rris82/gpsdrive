@@ -7,6 +7,9 @@
 
 SOURCE_DIR=".."
 
+LANG=C
+export LANG
+
 SCRIPT="$0"
 COUNT=0
 while [ -L "${SCRIPT}" ]
@@ -46,18 +49,13 @@ function clean_build_dir() {
 }
 
 function usage () {
-echo "Usage: `basename $0` [--configure [debug|final]|--clean|--verbose|--help]"
+echo "Usage: `basename $0` [--prefix /install_prefix|--build [debug|final]|--clean|--verbose|--libsuffix (32|64)|--help]"
     cleanup_and_exit
 }
 
 cd ${BUILDDIR}
 
-OPTIONS="-DCMAKE_INSTALL_PREFIX=/usr --graphviz=${BUILDDIR}/gpsdrive.dot"
-OPTIONS="${OPTIONS} -DPORTAUDIO_INTERNAL=OFF -DFFMPEG_INTERNAL=OFF -DSPEEX_INTERNAL=OFF -DSAMPLERATE_INTERNAL=OFF"
-
-if [ "$(uname -m)" == "x86_64" ]; then
-	OPTIONS="${OPTIONS} -DLIB_SUFFIX=64"
-fi
+OPTIONS="--graphviz=${BUILDDIR}/gpsdrive.dot"
 
 while test -n "$1"; do
 	PARAM="$1"
@@ -86,6 +84,14 @@ while test -n "$1"; do
 		;;
 		*-verbose)
 			DOVERBOSE="1"
+		;;
+		*-libsuffix)
+			OPTIONS="${OPTIONS} -DLIB_SUFFIX=${ARG}"
+			shift
+		;;
+		*-prefix)
+			OPTIONS="${OPTIONS} -DCMAKE_INSTALL_PREFIX=${ARG}"
+			shift
 		;;
 		----noarg)
 			echo "$ARG does not take an argument"
