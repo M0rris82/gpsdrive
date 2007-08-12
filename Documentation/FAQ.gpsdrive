@@ -13,9 +13,9 @@ A: Compile with gcc 3.x, this bug is know at least with debian and
 Q: GpsDrive shows "Not enough satellites in view" in the statusbar and don't
    display my position.
 A: You need at least 3 satellites in view to get a valid position. It may also
-   take some minutes to get a valid position. You have to be outside,
-   GPS doesn't work inside the house. Trees, houses or other barriers 
-   can prevent your GPS receiver getting a valid position.
+   take some minutes to get a valid position. You have to be outside under
+   clear sky; GPS mostly doesn't work inside the house. Trees, houses or other 
+   barriers can prevent your GPS receiver getting a valid position.
    Some GPS receivers have a "Simulation mode" which sends position 
    signals, but with a "invalid position" flag. GpsDrive won't display
    a position if this "invalid position" flag is set. To override this
@@ -27,39 +27,31 @@ Q: I have a USB GPS receiver, it works fine with GpsDrive but if I
 A: This is a bug of the "Prolific PL2303 USB to serial adaptor driver"
    which is used. The crash happens if the serial device is
    closed. This bug is kernel >=2.4.19
-
-   As workaround start gpsd by hand with the -K option i.e.:
-   gpsd -K -p /dev/ttyUSB0
-
-   Make sure that you DON'T use "direct serial connection", you can
-   this switch of with the command line option "-n" or in the settings
-   menu.
-
-   Another, and better, solution is to use a kernel 2.6.x where this
+   One solution is to use a kernel 2.6.x where this
    bug is fixed, or 2.4.18 where it doesn't appear.
 
 Q: Why is there no street navigation which gives turn by turn
    directions?
-
 A: Turn by turn directions are not possible with GpsDrive at the present
    because no opensource data is available which represents the street
    coordinates in a form usable for that purpose.  GpsDrive currently
    works with bitmap images rather than vector data.
-
-   Anyone interested in turn by turn directions should research free
-   vector data which is published in an open format. The data must
-   include street name, city name and latitude/longitude coordinates
-   of the street lines.
-   (provided by Darrick Hartman)
+   We are working together with the OpenStreetMap Project to get there.
+   As you can see the first attemts to use OpenStreetMap.org Data to 
+   do route finding (outside of GpsDrive) where already successfull.
+   So we can hope for this feature in the future.
 
 Q: What is GpsDrive?
 A: GpsDrive is an open source navigation system. It displays your current
-   position provided by an NMEA capable GPS receiver on a zoomable map.
+   position provided by an NMEA capable GPS receiver(connected to gpsd)
+   on a zoomable map.
 
 Q: How do I install GpsDrive on a Linux box?
-A: I recommend to use the source tarball. Download it from any of the mirrors
-   (http://gpsdrive.spoiledmeat.net/ is the fastest one in Europe). Unpack
-   the tarball with `tar xvzf gpsdrive-X.XX.tar.gz` where X.XX is the version
+A: This depends on the Distribution you're using.
+   On Debian Systems you can use the debian repository at http://www.gpsdrive.de/debian/
+   On other Systems I recommend to use the source tarball. Download it from 
+   http://www.gpsdrive.de/.
+   Unpack the tarball with `tar xvzf gpsdrive-X.XX.tar.gz` where X.XX is the version
    number. Now change into the directory gpsdrive-X.XX and run `./configure`.
    Some people (including me, Sven) don't like the Garmin protocol. It can
    be easily disabled with the option `--disable-garmin`. Now run `make`.
@@ -81,9 +73,13 @@ A: Your GARMIN has a built in simulator. Start it on the "satellite screen",
    "goto" a stored waypoint and look how fine GpsDrive works. Don't forget 
    to download your maps first.
 
-Q: How can I download maps?
-A: There's a "Download map" button. After pressing it, a new window will
-   appear. 
+Q: How can I get detaled maps to be displayed?
+A: Either you use Openstreetmap Data with Mapnik in Combination.
+   or 
+   You Download PixelMaps wth the "Download map" button located under
+       Options - Maps - Download.
+   After pressing it, a new window will appear. 
+
 
 Q: Can I download multiple maps covering a larger area?
 A: There is a script called "gpsfetchmap.pl" provided. Use the "-h" option
@@ -97,17 +93,16 @@ A: Yes. Of course you can use your own (self drawn, scanned...) maps. The
    The map must have a size of 1280x1024 pixels! Important! The maps must be
    named map_* for streetmaps and top_* for topographical maps. If not,
    GpsDrive won't display the maps. GpsDrive comes with an import assistant.
-   Simply press the `import` button and follow the instructions.
+   Simply use the Menu item Options->Maps->import and follow the instructions.
 
 Q: Which GPS receivers work with GpsDrive?
-A: Any receiver that can pump out NMEA data on a serial port or
-   USB should work. Verified receivers are listed in the file
-   GPS-receivers.
+A: Any receiver that is recognized by gpsd should work. 
 
 Q: Which receiver is the best one?
 A: This is a religious question, just like the one for the best editor or mail
    client (which is vi and mutt).
    Fritz: No, off course its emacs and evolution.
+   Joerg: Alsmost; is's emacs and kmail ;-)
    
 Q: How can I use the Holux GM-200 USB with GpsDrive?
 A: This device has the Prolific PL-2303 chip in it for the USB => Serial
@@ -148,7 +143,6 @@ A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
    to see exactly how good your navigational skills are - or maybe where you
    busted airspace!  Flying schools could use this to analyse students' solo
    navigational trips.
-
    
 Q: I have also noticed that the unique ID sent to my Friendsd2 server from
    my gpsdrive is not unique
@@ -177,7 +171,6 @@ Q: if i download 5m, 500k, 50k and 5k and open gpsdrive, i get
 A: If you're using automap gpsdrive alway displays the map with 
    the smallest resolution it can find. Changing the scale 
    has no effect while autobestmap is on.
-
 
 Q: if 'auto best map' is disabled, i sort of can choose scale at the lower
    right corner, but i can not zoom in from the biggest view and get small
@@ -213,6 +206,47 @@ A: To be picky, as it is critical to be picky in order to get this stuff
    UTM-like will be scaled 1:cos(lat) in the x and y dir. If you can draw
    grid or add test points to the image, you can check against grid lines
    or self-entered waypoints in gpsdrive to make sure everything is
-   matching. (grid lines are only in the development version)
+   matching.
 
    [*]  http://en.wikipedia.org/wiki/Plate_carr%C3%A9e_projection
+
+Q: Converting Old Maps
+A: If you have old expedia maps on your system and want 
+   to reuse them you should move them to a 
+   subdirectory ~/.gpsdrive/maps/expedia/ 
+   and add expedia/ before every map entry in map_koords.txt
+   then you can take map_koord.txt and move it one directory
+   down to  ~/.gpsdrive/maps/map_koord.txt
+
+   Any other map should be moved in a similar way.
+
+Q: What's this "no dir" checkbox in the maps Section 
+A: This is because of the change in the map directory structure. See below
+
+Q: I'm missing the "download map" button
+A: It was moved into the menu, since normally you don't need it while driving.
+
+Q: After Upgrading I don't see any maps. But the old .gpsdrive dir 
+   is still there with the maps.
+A: We have a new map directory structure.
+   You'll have to create a directory .gpsdrive/maps/... .
+   The tree then will look like:
+   ~/.gpsdrive/maps/mapservice-xy/...
+   And your map_koord.txt is now located in the 
+	~/.gpsdrive/maps/
+  Directory and look like this:
+ top_Africa.jpg         0.0     25.0     30000000
+ top_America.jpg       10.0    -90.0     40000000
+ top_Australia.jpg    -24.700  132.3     11651916
+ top_Europe.jpg        52.5     12.0     11000000
+ top_Germany.jpg       51.0     11.9      3500000
+ top_GPSWORLD.jpg       0.0      0.0     88067900
+ top_NorthAmerica.jpg  37.8167 144.9667  20000000
+ top_SouthAmerica.jpg -20.0    -80.0     20000000
+ top_WorldEast.jpg     30.0   -100.0     40000000
+ eniro/1000000/57/57.4/11/map_1000000-57.4-11.6666666666667.gif 57.4000000000000, 11.6666666666667, 592500
+ ...
+ landsat/500000/49/12/map_500000-49-12.8333333333333.gif  49.0000000000000  12.8333333333333    500000
+ ...
+
+  where the top_Africa.jpg maps come from the system directory.
