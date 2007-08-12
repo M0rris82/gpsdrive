@@ -11,11 +11,6 @@ set(CMAKE_COLOR_MAKEFILE ON)
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
-# options
-option(WITH_PLUGINS
-  "Enable gpsdrive plugins"
-  ON)
-
 # make some more macros available
 include(MacroOptionalFindPackage)
 include(MacroGeneratePoFiles)
