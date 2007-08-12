@@ -83,7 +83,7 @@ static const int default_timeout = 200;	// milliseconds
 static bool verbose = false;
 
 extern "C" double glang, gbreit;
-extern "C" char serialdev[80];
+char serialdev[80];
 
 enum garble_action_t
 {
@@ -99,7 +99,7 @@ enum garble_action_t
   no_action
 };
 
-char *
+std::string
 action_to_name (garble_action_t act)
 {
   switch (act)

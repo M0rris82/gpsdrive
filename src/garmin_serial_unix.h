@@ -47,7 +47,7 @@ public:
   virtual ~garmin_serial();
 
 private:
-  std::string m_build_err_string(char * msg);
+  std::string m_build_err_string(std::string msg);
 
   struct termios m_old_options;
   bool m_init; // true iff succesfully initialized port

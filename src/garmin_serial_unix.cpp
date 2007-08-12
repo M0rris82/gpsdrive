@@ -41,7 +41,7 @@ garmin_serial::garmin_serial(std::string port_dev, int timeout)
 }
 
 std::string
-garmin_serial::m_build_err_string(char *msg) 
+garmin_serial::m_build_err_string(std::string msg)
 {
   std::string s(msg);
   s += m_port_dev;
