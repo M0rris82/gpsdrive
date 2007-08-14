@@ -1,6 +1,6 @@
 # Makefile.am for scripts/perl_lib
 
-SUBDIRS =      utils
+SUBDIRS =      perl_lib
 DIST_SUBDIRS = $(SUBDIRS)
 
 EXTRA_DIST = $(bin_SCRIPTS) \

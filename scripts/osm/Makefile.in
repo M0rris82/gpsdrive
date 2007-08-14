@@ -161,6 +161,7 @@ PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -221,7 +222,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-SUBDIRS = utils
+SUBDIRS = perl_lib
 DIST_SUBDIRS = $(SUBDIRS)
 EXTRA_DIST = $(bin_SCRIPTS) \
 	$(PRGS)

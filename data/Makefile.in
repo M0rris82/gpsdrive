@@ -176,6 +176,7 @@ PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -239,7 +240,7 @@ target_alias = @target_alias@
 SUBDIRS = map-icons 
 DIST_SUBDIRS = $(SUBDIRS)
 cfg_filesdir = $(datadir)/gpsdrive/
-cfg_files_DATA = map-icons/icons.xml map_koord.txt gpsdrive.desktop
+cfg_files_DATA = map_koord.txt gpsdrive.desktop
 pixmapdir = $(datadir)/gpsdrive/pixmaps
 pixmap_DATA = pixmaps/*.png pixmaps/*.gif
 
@@ -529,7 +530,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/map-icons $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
+	$(mkdir_p) $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

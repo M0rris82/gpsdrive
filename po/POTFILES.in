@@ -1,7 +1,6 @@
 src/battery.c
 src/download_map.c
 src/draw_grid.c
-src/fly.c
 src/friends.c
 src/friendsd.c
 src/geometry.c
@@ -11,7 +10,6 @@ src/gps_handler.c
 src/gpskismet.c
 src/gpsmisc.c
 src/gpsnasamap.c
-src/gpsserial.c
 src/gpssql.c
 src/gui.c
 src/icons.c
@@ -25,7 +23,6 @@ src/lib_map/map_render.c
 src/lib_map/map_transform.c
 src/map_handler.c
 src/map_projection.c
-src/nautic.c
 src/navigation.c
 src/navigation_gui.c
 src/nmea_handler.c

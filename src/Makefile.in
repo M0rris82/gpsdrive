@@ -14,7 +14,6 @@
 
 @SET_MAKE@
 
-
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -37,14 +36,6 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = $(am__EXEEXT_1) gpsdrive$(EXEEXT) friendsd2$(EXEEXT)
-#	lib_map/lib_map.a
-@DISABLEGARMIN_FALSE@am__append_1 = garmin_data.cpp \
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
-@DISABLEGARMIN_FALSE@	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
-@DISABLEGARMIN_FALSE@	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
-@DISABLEGARMIN_FALSE@	garmin_legacy.h garmin_data.h
-
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -60,85 +51,29 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"
-libLTLIBRARIES_INSTALL = $(INSTALL)
-LTLIBRARIES = $(lib_LTLIBRARIES)
-libfly_la_LIBADD =
-am__libfly_la_SOURCES_DIST = fly.c
-@DISABLEPLUGINS_FALSE@am_libfly_la_OBJECTS = fly.lo
-libfly_la_OBJECTS = $(am_libfly_la_OBJECTS)
-@DISABLEPLUGINS_FALSE@am_libfly_la_rpath = -rpath $(libdir)
-libnautic_la_LIBADD =
-am__libnautic_la_SOURCES_DIST = nautic.c
-@DISABLEPLUGINS_FALSE@am_libnautic_la_OBJECTS = nautic.lo
-libnautic_la_OBJECTS = $(am_libnautic_la_OBJECTS)
-@DISABLEPLUGINS_FALSE@am_libnautic_la_rpath = -rpath $(libdir)
-@DISABLEGARMIN_FALSE@am__EXEEXT_1 = garble$(EXEEXT)
+am__EXEEXT_1 =
+am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am_friendsd2_OBJECTS = friendsd.$(OBJEXT)
 friendsd2_OBJECTS = $(am_friendsd2_OBJECTS)
 am__DEPENDENCIES_1 =
 friendsd2_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__garble_SOURCES_DIST = garble.cpp garmin_legacy.cpp garmin_data.cpp \
-	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
-	garmin_util.cpp
-@DISABLEGARMIN_FALSE@am_garble_OBJECTS = garble.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_data.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT)
-garble_OBJECTS = $(am_garble_OBJECTS)
-garble_LDADD = $(LDADD)
-am__gpsdrive_SOURCES_DIST = gpsdrive.c splash.c splash.h \
-	gpsdrive_config.c gpsdrive_config.h navigation.c speech_out.c \
-	speech_out.h friends.c battery.c track.c poi.c streets.c \
-	wlan.c waypoint.c draw_grid.c settings.c battery.h track.h \
-	poi.h streets.h wlan.h waypoint.h gpsdrive.h gpssql.c \
-	gpskismet.c gpskismet.h icons.c icons.h gui.c gui.h poi_gui.c \
-	poi_gui.h navigation_gui.c settings_gui.c \
-	LatLong-UTMconversion.c LatLong-UTMconversion.h gpsserial.c \
-	gpsnasamap.c gpsmisc.c geometry.c map_handler.c map_handler.h \
-	gpsproto.h import_map.c import_map.h routes.c routes.h \
-	download_map.c download_map.h map_projection.c \
-	speech_strings.c speech_strings.h gps_handler.c gps_handler.h \
-	nmea_handler.c nmea_handler.h unit_test.c mapnik.cpp mapnik.h \
-	../config.h gettext.h garmin_data.cpp garmin_serial_unix.cpp \
-	garmin_application.cpp garmin_link.cpp garmin_util.cpp \
-	gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h \
-	garmin_serial_unix.h garmin_application.h garmin_packet.h \
-	garmin_types.h garmin_command.h garmin_phys.h garmin_util.h \
-	garmin_error.h garmin_serial.h garmin_legacy.h garmin_data.h
-@DISABLEGARMIN_FALSE@am__objects_1 = garmin_data.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_serial_unix.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_application.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_link.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_util.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	gpsdrivegarble.$(OBJEXT) \
-@DISABLEGARMIN_FALSE@	garmin_legacy.$(OBJEXT)
-am__objects_2 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
+am__objects_1 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
 	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) wlan.$(OBJEXT) \
 	waypoint.$(OBJEXT) draw_grid.$(OBJEXT) settings.$(OBJEXT) \
 	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
-	gui.$(OBJEXT) poi_gui.$(OBJEXT) navigation_gui.$(OBJEXT) \
-	settings_gui.$(OBJEXT) LatLong-UTMconversion.$(OBJEXT) \
-	gpsserial.$(OBJEXT) gpsnasamap.$(OBJEXT) gpsmisc.$(OBJEXT) \
-	geometry.$(OBJEXT) map_handler.$(OBJEXT) import_map.$(OBJEXT) \
-	routes.$(OBJEXT) download_map.$(OBJEXT) \
+	gui.$(OBJEXT) poi_gui.$(OBJEXT) main_gui.$(OBJEXT) \
+	navigation_gui.$(OBJEXT) settings_gui.$(OBJEXT) \
+	LatLong-UTMconversion.$(OBJEXT) gpsnasamap.$(OBJEXT) \
+	gpsmisc.$(OBJEXT) geometry.$(OBJEXT) map_handler.$(OBJEXT) \
+	import_map.$(OBJEXT) routes.$(OBJEXT) download_map.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	unit_test.$(OBJEXT) mapnik.$(OBJEXT) $(am__objects_1)
-am_gpsdrive_OBJECTS = $(am__objects_2)
+	unit_test.$(OBJEXT) mapnik.$(OBJEXT)
+am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
@@ -160,11 +95,8 @@ LTCXXCOMPILE = $(LIBTOOL) --tag=CXX --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libfly_la_SOURCES) $(libnautic_la_SOURCES) \
-	$(friendsd2_SOURCES) $(garble_SOURCES) $(gpsdrive_SOURCES)
-DIST_SOURCES = $(am__libfly_la_SOURCES_DIST) \
-	$(am__libnautic_la_SOURCES_DIST) $(friendsd2_SOURCES) \
-	$(am__garble_SOURCES_DIST) $(am__gpsdrive_SOURCES_DIST)
+SOURCES = $(friendsd2_SOURCES) $(gpsdrive_SOURCES)
+DIST_SOURCES = $(friendsd2_SOURCES) $(gpsdrive_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-exec-recursive install-info-recursive \
@@ -290,6 +222,7 @@ PKG_CONFIG = @PKG_CONFIG@
 POSUB = @POSUB@
 POW_LIB = @POW_LIB@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -356,34 +289,47 @@ target_alias = @target_alias@
 DIST_SUBDIRS = lib_map util
 @WITH_MAPNIK_FALSE@MAPNIK_LIBS = 
 @WITH_MAPNIK_TRUE@MAPNIK_LIBS = -lmapnik -lQtCore -lQtGui
-@DISABLEGARMIN_FALSE@PRG1 = garble
+#PRG1=garble
+@DISABLEGARMIN_FALSE@PRG1 = 
 @DISABLEGARMIN_TRUE@PRG1 = 
 # For now I include  -lQtCore -lQtGui for debugging Mapnik
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
 gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) 
-@DISABLEPLUGINS_FALSE@lib_LTLIBRARIES = libfly.la libnautic.la
-@DISABLEPLUGINS_FALSE@libfly_la_SOURCES = fly.c
-@DISABLEPLUGINS_FALSE@libfly_la_LDFLAGS = -version-info 2:0:0
-@DISABLEPLUGINS_FALSE@libnautic_la_SOURCES = nautic.c
-@DISABLEPLUGINS_FALSE@libnautic_la_LDFLAGS = -version-info 2:0:0
-PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c \
-	gpsdrive_config.h navigation.c speech_out.c speech_out.h \
-	friends.c battery.c track.c poi.c streets.c wlan.c waypoint.c \
-	draw_grid.c settings.c battery.h track.h poi.h streets.h \
-	wlan.h waypoint.h gpsdrive.h gpssql.c gpskismet.c gpskismet.h \
-	icons.c icons.h gui.c gui.h poi_gui.c poi_gui.h \
-	navigation_gui.c settings_gui.c LatLong-UTMconversion.c \
-	LatLong-UTMconversion.h gpsserial.c gpsnasamap.c gpsmisc.c \
-	geometry.c map_handler.c map_handler.h gpsproto.h import_map.c \
-	import_map.h routes.c routes.h download_map.c download_map.h \
-	map_projection.c speech_strings.c speech_strings.h \
+PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
+	navigation.c \
+	speech_out.c speech_out.h\
+	friends.c \
+	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_grid.c settings.c \
+	battery.h track.h poi.h streets.h wlan.h waypoint.h gpsdrive.h \
+	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
+	gui.c gui.h poi_gui.c poi_gui.h \
+	main_gui.c main_gui.h \
+	navigation_gui.c settings_gui.c \
+	LatLong-UTMconversion.c LatLong-UTMconversion.h \
+	gpsnasamap.c gpsmisc.c geometry.c \
+	map_handler.c map_handler.h gpsproto.h \
+	import_map.c import_map.h\
+	routes.c routes.h \
+        download_map.c download_map.h \
+	map_projection.c \
+	speech_strings.c speech_strings.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
-	unit_test.c mapnik.cpp mapnik.h ../config.h gettext.h \
-	$(am__append_1)
-gpsdrive_SOURCES = $(PRGS)
-@DISABLEGARMIN_FALSE@garble_SOURCES = garble.cpp garmin_legacy.cpp garmin_data.cpp \
-@DISABLEGARMIN_FALSE@		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
+	unit_test.c \
+	mapnik.cpp mapnik.h \
+	../config.h gettext.h
 
+#	lib_map/lib_map.a
+
+#PRGS += garmin_data.cpp \
+#	garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp \
+#	garmin_util.cpp gpsdrivegarble.cpp garmin_legacy.cpp garmin_link.h\
+#	garmin_serial_unix.h garmin_application.h garmin_packet.h  garmin_types.h \
+#	garmin_command.h garmin_phys.h garmin_util.h garmin_error.h garmin_serial.h\
+#	garmin_legacy.h garmin_data.h
+gpsdrive_SOURCES = $(PRGS)
+
+#garble_SOURCES=	garble.cpp garmin_legacy.cpp garmin_data.cpp \
+#		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
 EXTRA_DIST = gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc* CMakeLists.txt
@@ -420,37 +366,6 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-libLTLIBRARIES: $(lib_LTLIBRARIES)
-	@$(NORMAL_INSTALL)
-	test -z "$(libdir)" || $(mkdir_p) "$(DESTDIR)$(libdir)"
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    f=$(am__strip_dir) \
-	    echo " $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) '$$p' '$(DESTDIR)$(libdir)/$$f'"; \
-	    $(LIBTOOL) --mode=install $(libLTLIBRARIES_INSTALL) $(INSTALL_STRIP_FLAG) "$$p" "$(DESTDIR)$(libdir)/$$f"; \
-	  else :; fi; \
-	done
-
-uninstall-libLTLIBRARIES:
-	@$(NORMAL_UNINSTALL)
-	@set -x; list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  p=$(am__strip_dir) \
-	  echo " $(LIBTOOL) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$p'"; \
-	  $(LIBTOOL) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$p"; \
-	done
-
-clean-libLTLIBRARIES:
-	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
-	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
-	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
-	  test "$$dir" != "$$p" || dir=.; \
-	  echo "rm -f \"$${dir}/so_locations\""; \
-	  rm -f "$${dir}/so_locations"; \
-	done
-libfly.la: $(libfly_la_OBJECTS) $(libfly_la_DEPENDENCIES) 
-	$(LINK) $(am_libfly_la_rpath) $(libfly_la_LDFLAGS) $(libfly_la_OBJECTS) $(libfly_la_LIBADD) $(LIBS)
-libnautic.la: $(libnautic_la_OBJECTS) $(libnautic_la_DEPENDENCIES) 
-	$(LINK) $(am_libnautic_la_rpath) $(libnautic_la_LDFLAGS) $(libnautic_la_OBJECTS) $(libnautic_la_LIBADD) $(LIBS)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
@@ -482,9 +397,6 @@ clean-binPROGRAMS:
 friendsd2$(EXEEXT): $(friendsd2_OBJECTS) $(friendsd2_DEPENDENCIES) 
 	@rm -f friendsd2$(EXEEXT)
 	$(LINK) $(friendsd2_LDFLAGS) $(friendsd2_OBJECTS) $(friendsd2_LDADD) $(LIBS)
-garble$(EXEEXT): $(garble_OBJECTS) $(garble_DEPENDENCIES) 
-	@rm -f garble$(EXEEXT)
-	$(CXXLINK) $(garble_LDFLAGS) $(garble_OBJECTS) $(garble_LDADD) $(LIBS)
 gpsdrive$(EXEEXT): $(gpsdrive_OBJECTS) $(gpsdrive_DEPENDENCIES) 
 	@rm -f gpsdrive$(EXEEXT)
 	$(CXXLINK) $(gpsdrive_LDFLAGS) $(gpsdrive_OBJECTS) $(gpsdrive_LDADD) $(LIBS)
@@ -499,33 +411,23 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/battery.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/download_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw_grid.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fly.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/friends.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/friendsd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garble.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_application.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_data.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_legacy.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_link.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_serial_unix.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/garmin_util.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geometry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gps_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrive_config.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsdrivegarble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpskismet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsmisc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsnasamap.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsserial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpssql.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main_gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_projection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mapnik.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nautic.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/navigation_gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nmea_handler.Po@am__quote@
@@ -771,12 +673,10 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS)
-install-binPROGRAMS: install-libLTLIBRARIES
-
+all-am: Makefile $(PROGRAMS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -805,8 +705,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -826,7 +725,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-binPROGRAMS install-libLTLIBRARIES
+install-exec-am: install-binPROGRAMS
 
 install-info: install-info-recursive
 
@@ -852,27 +751,24 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-libLTLIBRARIES
+uninstall-am: uninstall-binPROGRAMS uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am check check-am \
-	clean clean-binPROGRAMS clean-generic clean-libLTLIBRARIES \
-	clean-libtool clean-recursive ctags ctags-recursive distclean \
+	clean clean-binPROGRAMS clean-generic clean-libtool \
+	clean-recursive ctags ctags-recursive distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
 	html-am info info-am install install-am install-binPROGRAMS \
 	install-data install-data-am install-exec install-exec-am \
-	install-info install-info-am install-libLTLIBRARIES \
-	install-man install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
-	tags tags-recursive uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-info-am \
-	uninstall-libLTLIBRARIES
+	install-info install-info-am install-man install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
