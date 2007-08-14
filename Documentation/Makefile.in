@@ -239,7 +239,6 @@ documentation_DATA = \
 	README.FreeBSD \
 	README.OpenStreetMap-Vektordata \
 	README.SQL README.mysql \
-	README.Upgrade \
 	README.gpspoint2gspdrive \
 	README.kismet \
 	README.lib_map \
