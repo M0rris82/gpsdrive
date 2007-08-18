@@ -349,7 +349,7 @@ scaler_cb (GtkAdjustment *adj, gdouble *datum)
 	local_config.scale_wanted = nlist[(gint) rint (adj->value)];
 	g_snprintf (sc, sizeof (sc), "1:%d", local_config.scale_wanted);
 	gtk_label_set_text (GTK_LABEL (statusprefscale_lb), sc);
-	if ( mydebug > 0 )
+	if ( mydebug > 12 )
 		g_print ("Scaler: %d\n", local_config.scale_wanted);
 	current.needtosave = TRUE;
 
@@ -1034,14 +1034,21 @@ void create_controls_mainbox (void)
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt, *wp_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
 
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox\n");
+
 	mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 
 
 	/* MENU AND BUTTONS */
 	{
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(MENU AND BUTTONS)\n");
 	vbox_buttons = gtk_vbox_new (TRUE, 3 * PADDING);
 
 	/* Main Menu */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Main Menu)\n");
 	main_menu = gtk_menu_bar_new ();
 	menu_menu = gtk_menu_new ();
 	menuitem_menu = gtk_menu_item_new_with_label (_("Options"));
@@ -1101,6 +1108,8 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (quit_program_cb), NULL);
 
 	/* Help Menu */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Help Menu)\n");
 	menu_help = gtk_menu_new ();
 	menuitem_help = gtk_menu_item_new_with_label (_("Help"));
 	menuitem_helpabout =
@@ -1122,6 +1131,8 @@ void create_controls_mainbox (void)
 		main_menu, FALSE, FALSE, 1 * PADDING);
 
 	/* Buttons: Zoom */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: Zoom)\n");
 	hbox_zoom = gtk_hbox_new (FALSE, 1 * PADDING);
 	zoomin_bt = gtk_button_new ();
 	zoomin_img = gtk_image_new_from_stock
@@ -1151,6 +1162,8 @@ void create_controls_mainbox (void)
 		hbox_zoom, TRUE, FALSE, 1 * PADDING);
 
 	/* Buttons: Scaler */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: Scaler)\n");
 	hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
 	scaler_right_bt = gtk_button_new_with_label (">>");
 	g_signal_connect (GTK_OBJECT (scaler_right_bt), "clicked",
@@ -1171,6 +1184,8 @@ void create_controls_mainbox (void)
 
 
 	/* Button: Mute Speech */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: Mute Speech)\n");
 	if (havespeechout)
 	{
 		mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
@@ -1190,6 +1205,8 @@ void create_controls_mainbox (void)
 	}
 
 	/* Button: Search POIs */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: Search POI)\n");
 	find_poi_bt = gtk_button_new_from_stock (GTK_STOCK_FIND);
 	if (!usesql)
 	{
@@ -1208,6 +1225,9 @@ void create_controls_mainbox (void)
 
 	/* WAYPOINTS AND POIs */
 	{
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: WAYPOINTS AND POIs)\n");
+
 	frame_poi = gtk_frame_new (_("Points"));
 	vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
@@ -1265,6 +1285,8 @@ void create_controls_mainbox (void)
 
 	/* TRACKS */
 	{
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: TRACKS)\n");
 	frame_track = gtk_frame_new (_("Track"));
 	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
@@ -1284,6 +1306,8 @@ void create_controls_mainbox (void)
 		FALSE, FALSE, 0 * PADDING);
 
 	/* Checkbox: Save Track */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: Save Track)\n");
 	savetrack_bt = gtk_check_button_new_with_label (_("Save"));
 	if (local_config.savetrack)
 		gtk_toggle_button_set_active
@@ -1298,12 +1322,16 @@ void create_controls_mainbox (void)
 	}	/* END TRACKS */
 
 	/* MAP CONTROL */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Bottons: MAP CONTROL)\n");
 	{
 		frame_mapcontrol = make_display_map_controls ();
 	}	/* END MAP CONTROL */
 	
 	/* MAP TYPE */
 	{
+	        if ( mydebug > 11 )
+			fprintf(stderr,"create_controls_mainbox(Bottons: MAP TYPE)\n");
 		frame_maptype = make_display_map_checkboxes();
 	}	/* END MAP TYPE */
 
@@ -1317,6 +1345,8 @@ void create_controls_mainbox (void)
 		frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (mainbox_controls),
 		frame_maptype, TRUE, TRUE, 1 * PADDING);
+	    if ( mydebug > 11 )
+		fprintf(stderr,"create_controls_mainbox: END\n");
 }
 
 
@@ -1337,6 +1367,9 @@ void create_status_mainbox (void)
 	gchar sc[15];
 	gint scaler_pos= 0;
 	gint scale = 0;
+
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_status_mainbox\n");
 
 	mainbox_status = gtk_vbox_new (FALSE, 0 * PADDING);
 
@@ -1567,6 +1600,9 @@ void create_status_mainbox (void)
  */
 void create_map_mainbox (void)
 {
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_map_mainbox\n");
+
 	mainframe_map =  gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (mainframe_map), GTK_SHADOW_IN);
 	map_drawingarea = gtk_drawing_area_new ();
@@ -1592,6 +1628,9 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	gchar main_title[100];
 	GtkWidget *main_table;
 	GdkPixbuf *mainwindow_icon_pixbuf;
+
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_main_window\n");
 
 	main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 

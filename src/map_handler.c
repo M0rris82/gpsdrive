@@ -173,6 +173,8 @@ display_maps_cb (GtkWidget * widget, guint datum)
 GtkWidget *
 make_display_map_controls ()
 {
+	if ( mydebug > 11 )
+		fprintf(stderr,"make_display_map_controls()\n");
 	GtkWidget *frame_maptype;
 	GtkWidget *vbox_map_controls;
 	GtkTooltips *tooltips;
@@ -236,29 +238,34 @@ make_display_map_controls ()
 
 #ifdef MAPNIK
 	// Checkbox ---- Mapnik Mode
+	if ( mydebug > 11 )
+		fprintf(stderr,"make_display_map_controls(Checkbox ---- Mapnik Mode)\n");
+
 	mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
 	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (mapnik_bt),
 		"clicked", GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-	if (local_config.MapnikStatusInt)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
-	}
-	else
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (mapnik_bt), FALSE);
-	}
-
 	gtk_box_pack_start
 		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
 		_("Turn mapnik mode on. In this mode vector maps rendered by "
 		"mapnik (e.g. OpenStreetMap Data) are used instead of the "
 		"other maps."), NULL);
+	if (local_config.MapnikStatusInt)
+	{
+	    	if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(3)\n");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
+		if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(4)\n");
+	}
+	else
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (mapnik_bt), FALSE);
+	}
+
 #endif
 
+	if ( mydebug > 11 )
+		fprintf(stderr,"make_display_map_controls(DONE)\n");
 	return frame_maptype;
 }
 
