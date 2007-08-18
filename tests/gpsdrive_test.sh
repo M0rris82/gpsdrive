@@ -91,7 +91,9 @@ for icon_theme in square.big square.small classic.big ; do
 	    echo "Error starting gpsdrive -T (rc=$rc)"
 	    exit 1;
 	fi
-	if grep -v -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
+	if grep -v\
+	    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET (widget). failed' \
+	    -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
 	    grep -i -e 'Failed' -e 'ERROR'
 	    then
 	    grep -i -B 3  -e 'Failed' -e 'ERROR'  logs/gpsdrive_test_$LANG.txt
