@@ -1,4 +1,15 @@
-# This is a start for an (almost) cut'n past installation description for mapnik-osm-renderer
+# This is a start for an (almost) cut'n past installation description
+#  for mapnik-osm-renderer
+
+# If you 're running a debian System you might first try to install the 
+# following debian package instead:
+#   openstreetmap-mapnik-world-boundaries - Openstreetmap-Mapnik-World_boundaries are the
+#   openstreetmap-mapnik-data - Openstreetmap-Mapnik-Data is the postgis Data for the Mapnik
+# This might save a lot of time for you...
+
+But if you want to import the OSM Data yourself. Here is the Documentation to do this.
+
+
 
 # ------ Install some stuff
 # Maybe not all is needed, but with these it work ....
@@ -8,56 +19,96 @@
                 libboost-filesystem-dev \
                 libboost-serialization-dev libboost-regex-dev\
                 libboost-python-dev  proj python-imaging scons \
-                libboost-program-options-dev postgresql-doc-8.1 \
-                postgresql-8.1 postgresql-8.1-plruby \
-                postgresql-client-8.1 postgresql-contrib-8.1\
-                postgresql-plperl-8.1 postgresql-plpython-8.1 \
-                postgresql-server-dev-8.1 postgresql-8.1-postgis \
+                libboost-program-options-dev postgresql-doc-8.2 \
+                postgresql-8.2  \
+                postgresql-client-8.2 postgresql-contrib-8.2\
+                postgresql-plperl-8.2 postgresql-plpython-8.2 \
+                postgresql-server-dev-8.2 postgresql-8.2-postgis \
                 libboost-python-dev python2.4-dev \
-                libwww-perl libxml-parser-perl libfile-slurp-perl \
+                libwww-perl libxml-parser-perl libfile-slurp-perl
 
+# ------------ set your Username
+  # replace this with your Username
+  export user_name="tweety"
 
 # ------------ Downloads
  # Download is (600MB) (once)
-  wget http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2 \
-	 -O ~/osm/world_boundaries.tar.bz2
+ wget http://artem.dev.openstreetmap.org/files/world_boundaries.tar.bz2 \
+	 -O /home/${user_name}/osm/world_boundaries.tar.bz2
 
-  # Download is (80MB) (Weekly)
-  wget http://www.gpsdrive.de/osm/mapnik-osm-gis.sql.gz \
-        -O  ~/osm/mapnik-osm-gis.sql.gz
+ # Download is (120MB) (Weekly mostly wendsday night)
+ wget -v --mirror http://planet.openstreetmap.de/planet.osm.sql.bz2 \
+            --no-directories --directory-prefix=/home/${user_name}/osm/planet/
 
 # ------- World Boundaries
  # unpacking is an additional 1.2GB
  sudo mkdir -p /usr/share/mapnik
  cd /usr/share/mapnik
- sudo tar -xvjf ~/osm/world_boundaries.tar.bz2
+ sudo tar -xvjf /home/${user_name}/osm/world_boundaries.tar.bz2
 
-# ----------- Create Database Import the dump from http://www.gpsdrive.de/osm/
-  sudo -u postgres createdb -Upostgres  -EUTF8 gis  
-  sudo -u postgres createuser -Upostgres -S -D -R osm
-  echo "GRANT ALL on geometry_columns TO \"$user_name\";" | \
-  export user_name="tweety"
-  sudo -u postgres psql -Upostgres gis
-  echo "GRANT ALL ON SCHEMA PUBLIC TO \"osm\";" | sudo -u postgres psql -Upostgres gis
-  gunzip -dc ~/osm/mapnik-osm-gis.sql.gz | \
-        sed "s/tweety/osm/g" | \
+# ----------- Create Database and Import the dump from http://planet.openstreetmap.de/
+  # remove old database and rolles if they already exist
+  # please only do this if you have not specified special stuff to these
+  # or added extra stuff to the database
+  sudo -u postgres dropuser "$user_name"
+  sudo -u postgres dropdb gis
+
+  # create the user who is later accessing the database 
+  sudo -u postgres createuser -Upostgres -S -D -R "$user_name"
+ 
+  # create the the database and the user-role
+  # sudo -u postgres createdb -T template0 -Upostgres  -EUTF8 gis
+
+  bunzip2 -dc /home/${user_name}/osm/planet/planet.osm.sql.bz2 | \
+        sed "s/tweety/$user_name/g;s/www-data/$user_name/g" | \
 	sudo -u postgres psql -Upostgres gis | \
-	grep -v -e "ALTER FUNCTION" -e "CREATE FUNCTION" -e "DROP FUNCTION"
+	grep -v \
+	-e "^ALTER FUNCTION$" \
+	-e "^ALTER TABLE$" \
+	-e "^CREATE CAST$" \
+	-e "^CREATE FUNCTION$" \
+	-e "^CREATE TABLE$" \
+	-e "^DROP FUNCTION$" \
+	-e "^SET$" \
+	-e "^ALTER OPERATOR$" \
+	-e "^CREATE OPERATOR$" \
+	-e "^ALTER OPERATOR$" \
+	-e "^ALTER AGGREGATE$" \
+	-e "^ALTER DATABASE$" \
+	-e "^ALTER OPERATOR CLASS$" \
+	-e "^ALTER TYPE$" \
+	-e "^COMMENT$" \
+	-e "^CREATE AGGREGATE$" \
+	-e "^CREATE LANGUAGE$" \
+	-e "^CREATE OPERATOR CLASS$" \
+	-e "^CREATE TYPE$" \
 
- # ------------ GRANT Rights
+
+
+# ------------ GRANT Rights
   # Everyone on the system is allowed to read the new tables
   for table in  planet_osm_roads planet_osm_polygon planet_osm_line \
                 planet_osm_point spatial_ref_sys geometry_columns ; do \
        echo "GRANT SELECT ON $table TO PUBLIC;" ;\
   done | sudo -u postgres psql -Upostgres gis 
 
- # ------------ Test if you can read the Database
-  echo "SELECT * from planet_osm_polygon LIMIT 2;" |  psql  gis -h /var/run/postgresql
+# ------------ Test if you can read the Database
+  echo "SELECT * from planet_osm_polygon LIMIT 5;" |  psql  gis -h /var/run/postgresql
+  # there should be a resulting of 5 lines with some OpenStreetMap-Data
 
 
-# ---------- And now, we start the rendering
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-  # render  Munich:
-  python2.5 /usr/bin/gpsdrive_mapnik_gentiles.py -b  11.4,48.07,11.7,48.2 -s 10-16
-  # Rest of the world ;-)
-  python2.5 /usr/bin/gpsdrive_mapnik_gentiles.py -b "-180.0,-90.0,180.0,90.0" -s 1-6
+
+# ------------ Rendering
+# Depending if you want to prerender maps or want to use the
+# build-in on-the-fly-rendering you either use one of the following:
+
+# ---------- Start gpsdrive and activate the mapnik-mode
+ gpsdrive
+ # Activate Mapnik_mode
+
+# ---------- Start the pre-rendering of images
+ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+ # render  Munich:
+ python2.5 /usr/bin/gpsdrive_mapnik_gentiles.py -b  11.4,48.07,11.7,48.2 -s 10-16
+ # Rest of the world ;-)
+ python2.5 /usr/bin/gpsdrive_mapnik_gentiles.py -b "-180.0,-90.0,180.0,90.0" -s 1-6
