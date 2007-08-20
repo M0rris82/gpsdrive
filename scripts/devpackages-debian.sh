@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Packages required to build Gpsdrive`
 # =====================================
 # Notes:
@@ -9,15 +10,18 @@
 # Minimum required versions are not checked for here. 
 # ./configure will report some version problems but not all.
 #
-# If an individual package has no dependancies it will be installed without 
-# question.  If a package had dependancies you will be asked to confirm (Y/n)
+# If an individual package has no dependencies it will be installed without 
+# question.  If a package had dependencies you will be asked to confirm (Y/n)
 #
 # ===========================================================================
 # Date         Initials    Desc.
 # 06/08/2006   DP          Initial Release
 # 06/17/2007   d.s.e       Adaption to Debian Stable (Etch)
+# 20 Aug 2007  HB          Add libfile-slurp-perl (Etch)
 #
 # ===========================================================================
+
+
 # Update the package information
 apt-get update
 
@@ -33,6 +37,7 @@ apt-get install \
 	libcairo2-dev \
 	libexpat1 \
 	libexpat1-dev \
+	libfile-slurp-perl \
 	libfontconfig1 \
 	libfontconfig1-dev \
 	libfreetype6 \
@@ -110,6 +115,14 @@ fi
 
 # Other stuff I'm not sure if it is required
 # ==========================================
-# Couldn't find this one in debian testing (etch)
-# aclocal 
-# 
+# > Couldn't find this one in debian testing (etch)
+# > aclocal 
+#
+# HB: If a file is not installed on the system use apt-file to find which package(s) supply it:
+#
+# $ apt-file search usr/bin/aclocal
+# automake [...]
+#
+# If the file is installed, use "dpkg -S usr/bin/aclocal" to find out which package provided the file.
+# Note that in Debian 'aclocal' and 'automake' are both symlinks from /etc/alternatives.
+#  (ie you have to adjust both of the symlinks, not just automake)

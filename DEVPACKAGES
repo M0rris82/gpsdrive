@@ -3,16 +3,22 @@ Packages required to build Gpsdrive
 
 Following is a list of packages required for Gpsdrive to compile.
 
-Many packages also have prerequesits and your package management tool should indicate what is required.
+Many packages also have prerequesits and your package management tool should
+indicate what is required.
 
 Note 1:
-A script to install all of these packages has been created in the gpsdrive/script directory.
-Use the script that matches your distro.
-Currently supported.
-debian		gpsdrive/scripts/devpackages-debian.sh
+A script to install all of these packages has been created in the 
+gpsdrive/script/ directory. Use the script that matches your distro.
+
+Currently supported-
+  debian		gpsdrive/scripts/devpackages-debian.sh
+
+
 
 Note 2:
-The Configure scripts are currently being updated to detect the presence of these packsges.
+The Configure scripts are currently being updated to detect the presence 
+of these packages.
+
 
 Package Name (version)		Tested for by configure		How Tested?
 ----------------------------------------------------------------------------------- 
@@ -21,6 +27,7 @@ libatk1.0-dev (1.10.3)		Yes (27/03/2006)		PKG_CONFIG
 libc6-dev (2.3.5-1)		No
 libcairo2-dev (1.0.2-3)		Yes (29/03/2006)		PKG_CONFIG, AC_CHECK_LIB
 libexpat1-dev (1.95.8.3)	No
+libfile-slurp-perl (9999.09-1)  Yes				AC_PROG_PERL_MODULES
 libfontconfig1-dev (2.2.3)	Yes
 libfreetype6-dev (2.1.7-2.5)	No
 libgcc1 (1:3.4.3-13)		No
@@ -54,18 +61,19 @@ libcfitsio-dev (2.510-1)	No
 libpqxx-dev (2.5.5-2)		No
 ----------------------------------------------------------------- 
 
+
 Fedora Core
 ===========
-It has been reported that the following packages are also required
-when building on Fedora Core.  
-(These may be dependancies of other packages and therefor
-already installed on some distro's)
+It has been reported that the following packages are also required when
+building on Fedora Core. (These may be dependencies of other packages
+and therefore already installed on some distro's)
 
 gettext-0.14.5-3
 gettext-devel-0.14.5-3
 libtool-1.5.22-2.3
 libtool-ltdl-1.5.22-2.3
 libtool-ltdl-devel-1.5.22-2.3
+
 
 Perl packages required at run time
 ===================================
@@ -86,10 +94,13 @@ perl-modules                    NA
 
 imagemagick			NA
 
+
 Advanced
 ============
 
-If you need to rebuild the configure script Install the following packages as well, although in most circumstances the supplied configure script will be suitable and the following is not required.
+If you need to rebuild the configure script install the following packages
+as well, although in most circumstances the supplied configure script will
+be suitable and the following is not required.
 
 aclocal (1.9.6)
 automake (1.9.6)
