@@ -17,7 +17,7 @@
 # Date         Initials    Desc.
 # 06/08/2006   DP          Initial Release
 # 06/17/2007   d.s.e       Adaption to Debian Stable (Etch)
-# 20 Aug 2007  HB          Add libfile-slurp-perl (Etch)
+# 20 Aug 2007  HB          Add libfile-slurp-perl and partial mapnik depends (Etch)
 #
 # ===========================================================================
 
@@ -99,9 +99,13 @@ apt-get install \
 	autoconf \
 	libtool \
 	gcc \
-	g++
-	
+	g++ \
+	mapnik \
+	mapnik-plugins \
+	mapnik-utils \
+	python-mapnik
 #  libdbi-perl (This one didn't like being in with the others.
+
 if [ "$?" != "0"  ]
 then 
 	echo "!!! ERROR !!! "

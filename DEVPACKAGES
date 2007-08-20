@@ -60,6 +60,14 @@ netcdfg-dev (3.5.0-7.1)		No
 libcfitsio-dev (2.510-1)	No                       
 libpqxx-dev (2.5.5-2)		No
 ----------------------------------------------------------------- 
+Mapnik:
+ mapnik
+ mapnik-plugins
+ mapnik-utils
+ python-mapnik
+ libqt4-dev
+ libboost-dev
+ libboost-filesystem-dev
 
 
 Fedora Core
