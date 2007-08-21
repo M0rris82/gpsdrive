@@ -237,3 +237,59 @@ $trackfile->close if ($opts{w} eq 1);
 
 print "Info: All done.\n" if ($opts{v} eq 1);
 print "$trackcount tracks and $wayptcnt waypoints extracted\n";
+
+__END__
+
+
+=head1 NAME
+
+B<gpspoint2gpsdrive.pl>
+
+=head1 DESCRIPTION
+
+B<gpspoint2gpsdrive.pl>
+
+Extract gpsdrive-compatible track file(s) from a gpspoint file.
+Optionally also extracts waypoints and appends them to way.txt.
+
+=head1 SYNOPSIS
+
+B<Common usages:>
+
+=head1 OPTIONS
+
+
+=over 8
+
+=item B<-h>
+
+This help message - you guessed that!
+
+=item B<-f> <gpspointfilename>
+
+The file to extract tracks from.
+
+=item B<-w>
+
+Extract waypoints and append to way.txt
+
+=item B<-v>
+
+Verbose mode - yada yada yada
+
+
+=head1 AUTHOR
+
+Written by 
+
+=head1 COPYRIGHT
+
+This is free software.  You may redistribute copies of it under the terms of the GNU General Pub-
+lic  License <http://www.gnu.org/licenses/gpl.html>.  There is NO WARRANTY, to the extent permit-
+ted by law.
+
+=head1 SEE ALSO
+
+gpsdrive(1)
+
+=cut
