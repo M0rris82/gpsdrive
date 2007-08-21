@@ -1,21 +1,4 @@
 #!/usr/bin/perl
-##########################################################################
-#
-#  This script allows easy transition to the new poi scheme by converting
-#  the old waypoint info from the database table 'waypoints' and the file
-#  'way.txt' into gpx style files.
-#  You can import the created files into the new database with the script
-#  poi-manager.pl
-#
-#  Without any options both files are created, but you can also choose:
-#
-#  -w  :  only write content from way.txt to way_converted_txt.gpx
-#  -d  :  only write content from waypoints table to way_converted_sql.gpx
-#
-#  -f FILE  :  use other input file than ~/gpsdrive/way.txt
-#
-#
-##########################################################################
 
 BEGIN {
     my $dir = $0;
@@ -282,4 +265,69 @@ sub utc_time
 
 
 __END__
+
+
+__END__
+
+=head1 NAME
+
+B<convert-waypoints>
+
+=head1 DESCRIPTION
+
+B<convert-waypoints> is converting old waypoint info from the database table 'waypoints'
+
+=head1 SYNOPSIS
+
+B<Common usages:>
+
+  convert-waypoints
+
+B<All options:>
+
+  convert-waypoints [-w] [-d] [-f <FILE>]
+
+This script allows easy transition to the new poi scheme by converting
+the old waypoint info from the database table 'waypoints' and the file
+'way.txt' into gpx style files.
+You can import the created files into the new database with the script
+poi-manager.pl
+
+Without any options both files are created, but you can also choose:
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-w>
+
+only write content from way.txt to way_converted_txt.gpx
+
+=item B<-d>
+
+only write content from waypoints table to way_converted_sql.gpx
+
+=item B<-f FILE>
+
+use other input file than ~/gpsdrive/way.txt
+
+=back
+
+
+=head1 AUTHOR
+
+Written by Guenther Meyer <d.s.e@sordidmusic.com>
+
+=head1 COPYRIGHT
+
+This is free software.  You may redistribute copies of it under the terms of the GNU General Pub-
+lic  License <http://www.gnu.org/licenses/gpl.html>.  There is NO WARRANTY, to the extent permit-
+ted by law.
+
+=head1 SEE ALSO
+
+gpsdrive(1)
+
+
+=cut
 
