@@ -263,10 +263,6 @@ sub utc_time
   return $t;
 }
 
-
-__END__
-
-
 __END__
 
 =head1 NAME
