@@ -49,7 +49,7 @@ install: build
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
 
-	scripts/create_misssing_man_pages.sh scripts $(destdir)/man/man1
+	scripts/create_misssing_man_pages.sh scripts $(destdir)/share/man/man1
 
 	# remove maps from main package, because it 
 	# will be buildt in gpsdrive-data-maps package
