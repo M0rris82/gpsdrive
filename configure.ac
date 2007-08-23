@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn1489, package-for-gpsdrive@ostertag.name)
+AC_INIT(gpsdrive, 2.10svn15514244, package-for-gpsdrive@ostertag.name)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -671,7 +671,6 @@ AC_SUBST(PERL_PACKAGE_DIR)
 AC_PROG_PERL_MODULES(File::Basename , ,  AC_MSG_ERROR(Need Perl module File::Basename))
 AC_PROG_PERL_MODULES(File::Copy , ,  AC_MSG_ERROR(Need Perl module File::Copy))
 AC_PROG_PERL_MODULES(File::Path , ,  AC_MSG_ERROR(Need Perl module File::Path))
-AC_PROG_PERL_MODULES(File::Slurp , ,  AC_MSG_ERROR(Need Perl module File::Slurp))
 AC_PROG_PERL_MODULES(File::Temp , ,  AC_MSG_ERROR(Need Perl module File::Temp))
 AC_PROG_PERL_MODULES(Getopt::Long , ,  AC_MSG_ERROR(Need Perl module Getopt::Long))
 AC_PROG_PERL_MODULES(HTTP::Request , ,  AC_MSG_ERROR(Need Perl module HTTP::Request))
@@ -682,6 +681,7 @@ AC_PROG_PERL_MODULES(LWP::UserAgent , ,  AC_MSG_ERROR(Need Perl module LWP::User
 AC_PROG_PERL_MODULES(Math::Trig , ,  AC_MSG_ERROR(Need Perl module Math::Trig))
 
 # These will only be needed for Building GpsDrive Packages
+#AC_PROG_PERL_MODULES(File::Slurp , ,  AC_MSG_ERROR(Need Perl module File::Slurp))
 #AC_PROG_PERL_MODULES(WWW::Curl::Easy , ,  AC_MSG_ERROR(Need Perl module WWW::Curl::Easy))
 #AC_PROG_PERL_MODULES(WWW::Mechanize , ,  AC_MSG_ERROR(Need Perl module WWW::Mechanize))
 #AC_PROG_PERL_MODULES(XML::Parser , ,  AC_MSG_ERROR(Need Perl module XML::Parser))
