@@ -1635,8 +1635,7 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
 	g_snprintf (main_title, sizeof (main_title),
-		"%s v%s  \xc2\xa9 2001-2007 Fritz Ganter", "GpsDrive",
-		VERSION);
+		"%s v%s", "GpsDrive", VERSION);
 
 	gtk_window_set_title (GTK_WINDOW (main_window), main_title);
 	gtk_container_set_border_width (GTK_CONTAINER (main_window), 0);
