@@ -441,13 +441,6 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 }
 
 
-
-int resize_all (void) {
-
-    return 0;
-}
-
-
 void
 toggle_window_cb (GtkWidget *window)
 {

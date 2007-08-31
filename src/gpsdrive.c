@@ -366,9 +366,9 @@ extern gint wptotal, wpselected;
 extern routestatus_struct route;
 extern color_struct colors;
 
-GdkFont *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
-PangoFontDescription *pfd_text, *pfd_verysmalltext, *pfd_smalltext, *pfd_bigtext, *pfd_wplabel;
-gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
+GdkFont *font_wplabel;
+PangoFontDescription *pfd_text;
+gchar font_text[100];
 
 extern gint streets_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
@@ -421,7 +421,7 @@ extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
 extern GtkWidget *main_window;
 extern GtkWidget *frame_statusbar;
-
+extern GtkWidget *main_table;
 
 void sql_load_lib();
 void unit_test(void);
@@ -1385,14 +1385,12 @@ draw_zoom_scale (void)
 		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10 - frame_width);
 
 	/* Scale Bar Text */
+
+
 	/* draw zoom factor */
-	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt), "%dx",
-		 current.zoom);
-
-	l = (SCREEN_X - 15) - 14 - strlen (zoom_scale_txt) * 2;
-
+	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt),
+		"%dx", current.zoom);
 	gdk_gc_set_function (kontext_map, GDK_OR);
-
 	gdk_gc_set_foreground (kontext_map, &colors.mygray);
 	gdk_draw_rectangle (drawable, kontext_map, 1, (SCREEN_X - 30), 0, 30, 30);
 	gdk_gc_set_function (kontext_map, GDK_COPY);
@@ -1400,21 +1398,21 @@ draw_zoom_scale (void)
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
 
 	{
-	    /* prints in pango */
-	    PangoFontDescription *pfd;
-	    PangoLayout *wplabellayout;
-	    
-	    wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, zoom_scale_txt);
-	    pfd = pango_font_description_from_string ("Sans 9");
-	    pango_layout_set_font_description (wplabellayout, pfd);
-	    
-	    gdk_draw_layout_with_colors (drawable, kontext_map,
-					 l, 2, wplabellayout, &colors.blue,
-					 NULL);
-	    if (wplabellayout != NULL)
-		g_object_unref (G_OBJECT (wplabellayout));
-	    /* freeing PangoFontDescription, cause it has been copied by prev. call */
-	    pango_font_description_free (pfd);
+	/* prints in pango */
+	PangoFontDescription *pfd;
+	PangoLayout *layout_zoom;
+	gint cx, cy;
+	layout_zoom = gtk_widget_create_pango_layout
+		(map_drawingarea, zoom_scale_txt);
+	pfd = pango_font_description_from_string ("Sans 9");
+	pango_layout_set_font_description (layout_zoom, pfd);
+	pango_layout_get_pixel_size (layout_zoom, &cx, &cy);
+	gdk_draw_layout_with_colors (drawable, kontext_map,
+		SCREEN_X-15-cx/2, 15-cy/2, layout_zoom, &colors.blue, NULL);
+	if (layout_zoom != NULL)
+		g_object_unref (G_OBJECT (layout_zoom));
+	/* freeing PangoFontDescription, cause it has been copied by prev. call */
+	pango_font_description_free (pfd);
 	}
 }
 
@@ -2882,29 +2880,17 @@ main (int argc, char *argv[])
 #endif
 
     { /* Set fonts */
-	// GdkFont *font_text, *font_verysmalltext, *font_smalltext;
-	// font_s_text, font_s_verysmalltext, font_s_smalltext;
 	if (local_config.guimode == GUI_PDA)
         {
             g_strlcpy (local_config.font_dashboard, "Sans bold 12",
             	sizeof (local_config.font_dashboard));
-            g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
-            g_strlcpy (font_s_text, "Sans 8", sizeof (font_s_text));
-            g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+            g_strlcpy (font_text, "Sans 8", sizeof (font_text));
             g_strlcpy (local_config.font_wplabel, "Sans 8", sizeof (local_config.font_wplabel));
             printf("pdamode for fonts\n");
         } else {
-            g_strlcpy (font_s_smalltext, "Sans 10", sizeof (font_s_smalltext));
-            g_strlcpy (font_s_text, "Sans 11", sizeof (font_s_text));
-            g_strlcpy (font_s_verysmalltext, "Sans 6", sizeof (font_s_verysmalltext));
+            g_strlcpy (font_text, "Sans 11", sizeof (font_text));
         }
-	pfd_text = pango_font_description_from_string (font_s_text);
-	pfd_verysmalltext = pango_font_description_from_string (font_s_verysmalltext);
-	pfd_smalltext = pango_font_description_from_string (font_s_smalltext);
-	pfd_bigtext = pango_font_description_from_string
-		(local_config.font_dashboard);
-	pfd_wplabel = pango_font_description_from_string
-		(local_config.font_wplabel);
+	pfd_text = pango_font_description_from_string (font_text);
     }
 
 
@@ -3369,85 +3355,6 @@ main (int argc, char *argv[])
 //			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
 
-{
-
-    /*   if pdamode is set, we use gtk-notebook add arrange the elements */
-//    mainnotebook = NULL;
-//    if (local_config.guimode == GUI_PDA)
-//	{
-//	    GtkWidget *l1, *l2, *label_status, *trip_label;     // tabs label for pda mode
-//	    l1 = gtk_label_new (NULL);
-//	    l2 = gtk_label_new (NULL);
-//	    label_status = gtk_label_new (NULL);
-//          trip_label = gtk_label_new (NULL);
-//	    /* for a better usability in onemousebutton mode */
-//	    if (onemousebutton)
-//		{
-			/* gtk_misc_set_padding (GTK_MISC (l1), x, y); */
-//			gtk_misc_set_padding (GTK_MISC (l1), 10, 1);
-//			gtk_misc_set_padding (GTK_MISC (l2), 10, 1);
-//			gtk_misc_set_padding (GTK_MISC (label_status), 10, 1);
-//                      gtk_misc_set_padding (GTK_MISC (trip_label), 10, 1);
-			
-			/* http://developer.gnome.org/doc/API/2.0/pango/PangoMarkupFormat.html */
-			
-//			char *markup;
-//			markup = g_markup_printf_escaped
-//			("<span font_desc='8'>%s</span>",
-//				_("Map"));
-//			gtk_label_set_markup (GTK_LABEL (l1), markup);
-//			markup = g_markup_printf_escaped
-//			("<span font_desc='8'>%s</span>",
-//				_("Menu"));
-//			gtk_label_set_markup (GTK_LABEL (l2), markup);
-//			markup = g_markup_printf_escaped
-//			("<span font_desc='8'>%s</span>",
-//				_("Status"));
-//			gtk_label_set_markup (GTK_LABEL (label_status), markup);
-//                      markup = g_markup_printf_escaped
-//			("<span font_desc='8'>%s</span>",
-//				_("Trip"));
-//			gtk_label_set_markup (GTK_LABEL (trip_label), markup);
-//			
-//			g_free (markup);
-//			
-//		}
-//	    else
-//		{
-//		    gtk_label_set_text (GTK_LABEL (l1), _("Map"));
-//		    gtk_label_set_text (GTK_LABEL (l2), _("Menu"));
-//		    gtk_label_set_text (GTK_LABEL (label_status), _("Status"));
-//                  gtk_label_set_text (GTK_LABEL (trip_label), _("Trip"));
-//		}
-//	    vbig1 = gtk_vbox_new (FALSE, 2);	// box for status tab
-//	    gtk_box_pack_start (GTK_BOX (vbig1), hbox_displays, TRUE, TRUE,  2 * PADDING);     // bearing, satellites, temperature, battery on status tab
-//	    gtk_box_pack_start (GTK_BOX (hbox_displays_b), hbox_displays_a, TRUE, TRUE, 2 * PADDING);    // wp on trip tab
-//	    gtk_box_pack_start (GTK_BOX (hbox_displays_a), frame_wp, TRUE, TRUE,1 * PADDING);
-
-//	    gtk_box_pack_start (GTK_BOX (vbig1), table1_displays, TRUE, TRUE,2 * PADDING);
-
-//	    mainnotebook = gtk_notebook_new ();					// create the main notebook window
-//	    gtk_notebook_set_tab_pos (GTK_NOTEBOOK (mainnotebook),GTK_POS_TOP);	// tabs are on at the top edge
-//	    gtk_box_pack_start (GTK_BOX (vbig), hbig_contr_map, TRUE, TRUE,1 * PADDING);
-//	    gtk_container_add (GTK_CONTAINER (main_window), mainnotebook);
-//	    gtk_widget_show_all (hboxlow);
-//	    gtk_widget_show_all (vbig1);
-//	    gtk_widget_show_all (vbig);
-//	    gtk_widget_show_all (hbig_contr_map);
-//            gtk_widget_show_all (hbox_displays_b);
-	    
-//	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig,
-//				      l1);				// add 1st tab to notebook : map
-//	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook),
-//				      hboxlow, l2);			// add 2nd tab to notebook : menu
-//	    gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), vbig1,
-//				      label_status);			// add 3rd tab to notebook : status
-//            gtk_notebook_append_page (GTK_NOTEBOOK (mainnotebook), hbox_displays_b,
-//				      trip_label);			// add 4th tab to notebook : trip
-	    
-//	    gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);	// set map tab as selected one
-//	    gtk_widget_show_all (mainnotebook);				// show notebook window
-//	}
 
     /*** Mod by Arms */
     /* This one should position the windows in the corners, */
@@ -3465,8 +3372,6 @@ main (int argc, char *argv[])
 //	    gtk_widget_set_uposition (GTK_WIDGET (menuwin), 0, 0);	/* links oben */
 //	}
 
-
-}
 
 
 	gui_init ();
@@ -3488,14 +3393,10 @@ drawable =
 //    drawable =
 //	gdk_pixmap_new (main_window->window, SCREEN_X, SCREEN_Y, -1);
 
-//    if (local_config.guimode == GUI_PDA)
-//	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 2);
-
-    //KCFX
-    // if (local_config.guimode != GUI_PDA) 
-    kontext_map = gdk_gc_new (main_window->window);
-    //  else 
-    //    kontext = gdk_gc_new (mainnotebook->window); 
+//	if (local_config.guimode != GUI_PDA) 
+		kontext_map = gdk_gc_new (main_window->window);
+//	else 
+//		kontext_map = gdk_gc_new (main_table->window); 
 
     gdk_gc_set_clip_origin (kontext_map, 0, 0);
     rectangle.width = SCREEN_X;

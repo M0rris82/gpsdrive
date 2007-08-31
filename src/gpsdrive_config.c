@@ -68,7 +68,6 @@ extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;
-extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
 extern long int maxfriendssecs;
 extern int messagenumber;
 extern int sockfd, showsid, storetz;
@@ -227,9 +226,6 @@ writeconfig ()
 	fprintf (fp, "dbpoifilter = %s\n", dbpoifilter);
 	fprintf (fp, "earthmate = %d\n", earthmate);
 
-	fprintf (fp, "font_text = %s\n", font_s_text);
-	fprintf (fp, "font_verysmalltext = %s\n", font_s_verysmalltext);
-	fprintf (fp, "font_smalltext = %s\n", font_s_smalltext);
 	fprintf (fp, "font_bigtext = %s\n", local_config.font_dashboard);
 	fprintf (fp, "font_wplabel = %s\n", local_config.font_wplabel);
 	fprintf (fp, "font_friends = %s\n", local_config.font_friends);
@@ -246,9 +242,10 @@ writeconfig ()
 	fprintf (fp, "storetz = %d\n", storetz);
 	if (storetz)
 		fprintf (fp, "timezone = %d\n", zone);
-	fprintf (fp, "dashboard_left = %d\n", local_config.dashboard_left);
-	fprintf (fp, "dashboard_mid = %d\n", local_config.dashboard_mid);
-	fprintf (fp, "dashboard_right = %d\n", local_config.dashboard_right);
+	fprintf (fp, "dashboard_1 = %d\n", local_config.dashboard_1);
+	fprintf (fp, "dashboard_2 = %d\n", local_config.dashboard_2);
+	fprintf (fp, "dashboard_3 = %d\n", local_config.dashboard_3);
+	fprintf (fp, "dashboard_4 = %d\n", local_config.dashboard_4);
 	fprintf (fp, "bigcolor = %s\n", local_config.color_dashboard);
 	fprintf (fp, "trackcolor = %s\n", local_config.color_track);
 	fprintf (fp, "routecolor = %s\n", local_config.color_route);
@@ -346,12 +343,14 @@ readconfig ()
 					}
 				}
 			}
-			else if ( (strcmp(par1, "dashboard_left")) == 0)
-				local_config.dashboard_left = atoi (par2);
-			else if ( (strcmp(par1, "dashboard_mid")) == 0)
-				local_config.dashboard_mid = atoi (par2);
-			else if ( (strcmp(par1, "dashboard_right")) == 0)
-				local_config.dashboard_right = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_1")) == 0)
+				local_config.dashboard_1 = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_2")) == 0)
+				local_config.dashboard_2 = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_3")) == 0)
+				local_config.dashboard_3 = atoi (par2);
+			else if ( (strcmp(par1, "dashboard_4")) == 0)
+				local_config.dashboard_4 = atoi (par2);
 			else if ( (strcmp(par1, "savetrack")) == 0)
 				local_config.savetrack = atoi (par2);
 			else if ( (strcmp(par1, "scalewanted")) == 0)
@@ -423,12 +422,6 @@ readconfig ()
 			else if ( (strcmp(par1, "earthmate")) == 0)
 				earthmate = atoi (par2);
 
-			else if ( (strcmp(par1, "font_text")) == 0)
-				g_strlcpy (font_s_text, par2, sizeof (font_s_text));
-			else if ( (strcmp(par1, "font_verysmalltext")) == 0)
-				g_strlcpy (font_s_verysmalltext, par2, sizeof (font_s_verysmalltext));
-			else if ( (strcmp(par1, "font_smalltext")) == 0)
-				g_strlcpy (font_s_smalltext, par2, sizeof (font_s_smalltext));
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
 				g_strlcpy (local_config.font_dashboard, par2,
 				sizeof (local_config.font_dashboard));
@@ -533,9 +526,10 @@ config_init ()
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_CLASSIC;
 	local_config.simmode = SIM_OFF;
-	local_config.dashboard_left = DASH_DIST;
-	local_config.dashboard_mid = DASH_SPEED;
-	local_config.dashboard_right = DASH_ALT;
+	local_config.dashboard_1 = DASH_DIST;
+	local_config.dashboard_2 = DASH_SPEED;
+	local_config.dashboard_3 = DASH_ALT;
+	local_config.dashboard_4 = DASH_TIME;
 	local_config.MapnikStatusInt = 0;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;

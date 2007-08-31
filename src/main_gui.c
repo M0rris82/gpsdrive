@@ -97,6 +97,7 @@ extern GtkWidget *main_window;
 GtkWidget *map_drawingarea;
 GtkWidget *scaler_left_bt, *scaler_right_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
+GtkWidget *main_table;
 
 // TODO: maybe these should be moved to local ones...
 GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
@@ -112,7 +113,7 @@ static GtkWidget *mapscaler_scaler;
 static GtkWidget *zoomin_bt, *zoomout_bt;
 static GtkWidget *statusprefscale_lb, *statusmapscale_lb;
 static GtkObject *mapscaler_adj;
-static GtkWidget *frame_dash_left, *frame_dash_mid, *frame_dash_right;
+static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
 static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
@@ -632,6 +633,38 @@ update_dashboard (GtkWidget *frame, gint source)
 				local_config.font_dashboard, "---", "km");
 			break;
 		}
+		case DASH_GPSPRECISION:
+		{
+			g_strlcpy (head, _("GPS Precision"), sizeof (head));
+				
+			g_snprintf (content, sizeof (content),
+				"<span color=\"%s\" font_desc=\"%s\">%s"
+				"%s</span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, "---", "m");
+			break;
+		}
+		case DASH_TIME:
+		{
+			g_strlcpy (head, _("Current Time"), sizeof (head));
+			if (current.gpsfix > 1)
+			{
+				g_snprintf (content, sizeof (content),
+					"<span color=\"%s\" font_desc=\"%s\">"
+					"%s</span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, loctime);
+			}
+			else
+			{
+				g_snprintf (content, sizeof (content),
+					"<span color=\"%s\" font_desc=\"%s\" "
+					"size=\"16000\">%s</span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, _("n/a"));
+			}
+			break;
+		}
 	}
 
 	g_object_set (frame, "label", head, NULL);
@@ -702,9 +735,10 @@ update_statusdisplay ()
 	gtk_label_set_text (GTK_LABEL (statusbearing_lb), stmp);
 
 	/* update dashboard */
-	update_dashboard (frame_dash_left, local_config.dashboard_left);
-	update_dashboard (frame_dash_mid, local_config.dashboard_mid);
-	update_dashboard (frame_dash_right, local_config.dashboard_right);
+	update_dashboard (frame_dash_1, local_config.dashboard_1);
+	update_dashboard (frame_dash_2, local_config.dashboard_2);
+	update_dashboard (frame_dash_3, local_config.dashboard_3);
+	update_dashboard (frame_dash_4, local_config.dashboard_4);
 
 	return TRUE;
 }
@@ -1022,6 +1056,7 @@ void create_controls_mainbox (void)
 	GtkWidget *hbox_zoom;
 	GtkWidget *zoomin_img, *zoomout_img;
 	GtkWidget *hbox_scaler, *mute_bt;
+	GtkWidget *pda_box_left, *pda_box_right;
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
 	GtkWidget *menuitem_load, *menuitem_sendmsg, *menuitem_settings;
@@ -1036,9 +1071,6 @@ void create_controls_mainbox (void)
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox\n");
-
-	mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
-
 
 	/* MENU AND BUTTONS */
 	{
@@ -1335,16 +1367,44 @@ void create_controls_mainbox (void)
 		frame_maptype = make_display_map_checkboxes();
 	}	/* END MAP TYPE */
 
-	gtk_box_pack_start (GTK_BOX (mainbox_controls),
-		vbox_buttons, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_controls),
-		frame_poi, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_controls),
-		frame_track, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_controls),
-		frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_controls),
-		frame_maptype, TRUE, TRUE, 1 * PADDING);
+
+	if (local_config.guimode == GUI_PDA)
+	{
+		mainbox_controls = gtk_hbox_new (TRUE, 0 * PADDING);
+		
+		pda_box_left = gtk_vbox_new (FALSE, 1 * PADDING);
+		pda_box_right = gtk_vbox_new (FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			pda_box_left, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			pda_box_right, TRUE, TRUE, 0);
+
+		gtk_box_pack_start (GTK_BOX (pda_box_left),
+			vbox_buttons, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_left),
+			frame_poi, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_left),
+			frame_track, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_right),
+			frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_right),
+			frame_maptype, TRUE, TRUE, 1 * PADDING);
+	}
+	else
+	{
+		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
+
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			vbox_buttons, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			frame_poi, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			frame_track, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),
+			frame_maptype, TRUE, TRUE, 1 * PADDING);
+	}
 	    if ( mydebug > 11 )
 		fprintf(stderr,"create_controls_mainbox: END\n");
 }
@@ -1356,13 +1416,15 @@ void create_controls_mainbox (void)
 void create_status_mainbox (void)
 {
 	GtkWidget *statusdashboard_box, *frame_compass;
+	GtkWidget *statusdashsub1_box, *statusdashsub2_box;
 	GtkWidget *statussmall_box, *frame_statustime;
 	GtkWidget *frame_statusbearing, *frame_statusheading;
 	GtkWidget *frame_statuslat, *frame_statuslon;
 	GtkWidget *eventbox_statuslat, *eventbox_statuslon;
 	GtkWidget *frame_statusmapscale, *frame_statusprefscale;
 	GtkWidget *statusbar_box, *frame_minimap, *frame_statusgpsfix;
-	GtkWidget *dashboard_left_lb, *dashboard_mid_lb, *dashboard_right_lb;
+	GtkWidget *dashboard_1_lb, *dashboard_2_lb;
+	GtkWidget *dashboard_3_lb, *dashboard_4_lb;
 
 	gchar sc[15];
 	gint scaler_pos= 0;
@@ -1397,44 +1459,36 @@ void create_status_mainbox (void)
 		/* Frame Compass */
 		frame_compass = gtk_frame_new (NULL);	
 		drawing_compass = gtk_drawing_area_new ();
-		gtk_widget_set_size_request (drawing_compass,
-			100, 100);
+		gtk_widget_set_size_request (drawing_compass, 100, 100);
 		gtk_container_add (GTK_CONTAINER (frame_compass),
 			drawing_compass);
 		g_signal_connect (GTK_OBJECT (drawing_compass),
 			"expose_event", GTK_SIGNAL_FUNC (expose_compass),
 			NULL);
 
-		/* Frame Dashboard left */
-		frame_dash_left = gtk_frame_new (" = 1 = ");	
-		dashboard_left_lb = gtk_label_new ("---");
-		gtk_container_add (GTK_CONTAINER (frame_dash_left),
-			dashboard_left_lb);
+		/* Frame Dashboard 1 */
+		frame_dash_1 = gtk_frame_new (" = 1 = ");	
+		dashboard_1_lb = gtk_label_new ("---");
+		gtk_container_add (GTK_CONTAINER (frame_dash_1),
+			dashboard_1_lb);
 
-		/* Frame Dashboard mid */
-		frame_dash_mid = gtk_frame_new (" = 2 = ");	
-		dashboard_mid_lb = gtk_label_new ("---");
-		gtk_container_add (GTK_CONTAINER (frame_dash_mid),
-			dashboard_mid_lb);
+		/* Frame Dashboard 2 */
+		frame_dash_2 = gtk_frame_new (" = 2 = ");	
+		dashboard_2_lb = gtk_label_new ("---");
+		gtk_container_add (GTK_CONTAINER (frame_dash_2),
+			dashboard_2_lb);
 	
-		/* Frame_Dashboard right */
-		frame_dash_right = gtk_frame_new (" = 3 = ");	
-		dashboard_right_lb = gtk_label_new ("---");
-		gtk_container_add (GTK_CONTAINER (frame_dash_right),
-			dashboard_right_lb);
-
-		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
-
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			frame_minimap, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			frame_compass, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			frame_dash_left, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			frame_dash_mid, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			frame_dash_right, TRUE, TRUE, 1 * PADDING);
+		/* Frame_Dashboard 3 */
+		frame_dash_3 = gtk_frame_new (" = 3 = ");	
+		dashboard_3_lb = gtk_label_new ("---");
+		gtk_container_add (GTK_CONTAINER (frame_dash_3),
+			dashboard_3_lb);
+	
+		/* Frame_Dashboard 4 */
+		frame_dash_4 = gtk_frame_new (" = 4 = ");	
+		dashboard_4_lb = gtk_label_new ("---");
+		gtk_container_add (GTK_CONTAINER (frame_dash_4),
+			dashboard_4_lb);
 
 	}	/* END DASHBOARD */
 
@@ -1525,27 +1579,6 @@ void create_status_mainbox (void)
 			frame_statusgpsfix,
 			_("This shows the GPS Status and Number of satellites"
 			" in use."), NULL);
-
-		statussmall_box = gtk_hbox_new (FALSE, PADDING);
-
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statustime, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusfriends, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusbearing, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusheading, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslat, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslon, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 	}	/* SMALL STATUS TEXT */
 
 
@@ -1577,21 +1610,94 @@ void create_status_mainbox (void)
 		g_signal_connect (GTK_OBJECT (mapscaler_adj), "value_changed",
 			GTK_SIGNAL_FUNC (scaler_cb), NULL);
 		gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
+	}	/* END STATUS BAR AND SCALE SLIDER */
+	
+	/* Pack all the widgets together according to GUI-Mode */
+	if (local_config.guimode == GUI_PDA)
+	{
+		statusdashboard_box = gtk_table_new (2, 2, TRUE);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			frame_dash_1, 0, 1, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			frame_dash_2, 1, 2, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			frame_dash_3, 0, 1, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			frame_dash_4, 1, 2, 1, 2);
+
+		statussmall_box = gtk_vbox_new (FALSE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statuslat, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statuslon, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
+
+		statusbar_box = gtk_hbox_new (TRUE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box),
+			frame_compass, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box),
+			statussmall_box, TRUE, TRUE, 1 * PADDING);
+
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			statusdashboard_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			statusbar_box, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			frame_statusbar, TRUE, FALSE, 1* PADDING);	}
+	else
+	{
+		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
+		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
+		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),
+			frame_minimap, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),
+			frame_compass, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			frame_dash_1, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			frame_dash_2, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			frame_dash_3, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
+			statusdashsub1_box, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
+			statusdashsub2_box, TRUE, TRUE, 0);
+
+		statussmall_box = gtk_hbox_new (FALSE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statustime, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusfriends, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusbearing, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusheading, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statuslat, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statuslon, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box),
+			frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
-
 		gtk_box_pack_start (GTK_BOX (statusbar_box),
 			frame_statusbar, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box),
 			mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
-	}	/* END STATUS BAR AND SCALE SLIDER */
 	
-	gtk_box_pack_start (GTK_BOX (mainbox_status),
-		statusdashboard_box, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_status),
-		statussmall_box, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (mainbox_status),
-		statusbar_box, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			statusdashboard_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			statussmall_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),
+			statusbar_box, TRUE, FALSE, 1 * PADDING);
+	}
 }
 
 
@@ -1626,7 +1732,6 @@ void create_map_mainbox (void)
 gint create_main_window (gchar *geom, gint *usegeom)
 {
 	gchar main_title[100];
-	GtkWidget *main_table;
 	GdkPixbuf *mainwindow_icon_pixbuf;
 
 	if ( mydebug > 11 )
@@ -1663,7 +1768,20 @@ gint create_main_window (gchar *geom, gint *usegeom)
 
 	if (local_config.guimode == GUI_PDA)
 	{  /* PDA Mode */
-		// TODO: ...
+		GtkWidget *map_lb, *controls_lb, *status_lb;
+		
+		main_table = gtk_notebook_new ();
+		
+		map_lb = gtk_label_new (_("Map"));
+		gtk_notebook_append_page (GTK_NOTEBOOK (main_table),
+			mainframe_map, map_lb);
+		controls_lb = gtk_label_new (_("Controls"));
+		gtk_notebook_append_page (GTK_NOTEBOOK (main_table),
+			mainbox_controls, controls_lb);
+		status_lb = gtk_label_new (_("Status"));
+		gtk_notebook_append_page (GTK_NOTEBOOK (main_table),
+			mainbox_status, status_lb);
+		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
 	else if (local_config.guimode == GUI_XWIN)
 	{  /* X-Win Mode (separate windows) */
@@ -1679,10 +1797,9 @@ gint create_main_window (gchar *geom, gint *usegeom)
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainbox_status, 0, 2, 2, 3);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
-
-		gtk_widget_show_all (main_window);
 	}
 
+	gtk_widget_show_all (main_window);
 
 	if (!local_config.showfriends)
 		gtk_widget_hide_all (frame_statusfriends);

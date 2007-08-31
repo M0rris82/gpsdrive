@@ -50,8 +50,6 @@ gboolean draw_posmarker
 	 GdkColor *color, gint style, gboolean shadow, gboolean outline);
 
 
-int resize_all (void);
-
 int gui_init (void);
 
 

@@ -109,8 +109,7 @@ extern gint usesql;
 extern gint storetz;
 static gboolean friendsiplock = FALSE;
 static gboolean friendsnamelock = FALSE;
-extern gchar *font_text, *font_verysmalltext, *font_smalltext, *font_bigtext, *font_wplabel;
-extern gchar font_s_text[100], font_s_verysmalltext[100], font_s_smalltext[100];
+extern gchar *font_wplabel;
 extern char friendserverip[20];
 GtkWidget *entryavspeed, *entrymaxspeed, *entrytripodometer, *entrytriptime,
   *tripunitlabel;

@@ -541,13 +541,20 @@ friends_init ()
 	j = 0;
 	for (i = 0; i < poi_type_list_max; i++)
 	{
+		if (mydebug > 30)
+		{
+			fprintf (stderr,
+				"friends_init: Checking POI-Type: %d - %s\n",
+				i, poi_type_list[i].name);
+		}
+	
 		if (g_str_has_prefix (poi_type_list[i].name, "people.friendsd"))
 		{
 			friends_poi_id[j] = poi_type_list[i].poi_type_id;
 			if (mydebug > 30)
 			{
 				fprintf (stderr,
-					"friends_init: Type %d is friend!\n",
+					"friends_init: \t\t\tType %d is friend!\n",
 					friends_poi_id[j]);
 			}
 			j++;

@@ -38,6 +38,8 @@ enum
 	DASH_HEADING,
 	DASH_ALT,
 	DASH_TRIP,
+	DASH_GPSPRECISION,
+	DASH_TIME,
 };
 
 gint create_main_window (gchar *geom, gint *usegeom);

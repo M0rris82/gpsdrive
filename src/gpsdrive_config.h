@@ -89,9 +89,10 @@ typedef struct
 	gchar font_friends[100];
 	gchar font_wplabel[100];
 	gchar font_dashboard[100];
-	gint dashboard_left;
-	gint dashboard_mid;
-	gint dashboard_right;
+	gint dashboard_1;
+	gint dashboard_2;
+	gint dashboard_3;
+	gint dashboard_4;
 	gdouble normalnull;
 }
 local_gpsdrive_config;
