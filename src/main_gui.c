@@ -1814,7 +1814,7 @@ gint create_main_window (gchar *geom, gint *usegeom)
 
 	if ( (local_config.guimode != GUI_PDA) && 
 	     ( local_config.MapnikStatusInt )){
-	    toggle_mapnik_cb(GTK_OBJECT (mapnik_bt), 2);
+	    toggle_mapnik_cb( mapnik_bt, 2 );
 	}
 	
 	if (!local_config.showfriends)
