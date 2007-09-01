@@ -162,7 +162,6 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	{
 		local_config.MapnikStatusInt = 1;
 		gtk_widget_hide_all (GTK_WIDGET (frame_maptype));
-		gtk_widget_hide_all (GTK_WIDGET (hbox_zoom));
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt), FALSE);
 		autobestmap_cb(bestmap_bt,0);
 	}
@@ -170,7 +169,6 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	{
 		local_config.MapnikStatusInt = 0;
 		gtk_widget_show_all (GTK_WIDGET (frame_maptype));
-		gtk_widget_show_all (GTK_WIDGET (hbox_zoom));
 	}
 	
 	// TODO: reload/update map display.....
@@ -1199,7 +1197,7 @@ void create_controls_mainbox (void)
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),
 		zoomin_bt, TRUE, TRUE,  1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		hbox_zoom, TRUE, FALSE, 1 * PADDING);
+		hbox_zoom, FALSE, FALSE, 1 * PADDING);
 
 	/* Buttons: Scaler */
 	if ( mydebug > 11 )
@@ -1403,13 +1401,13 @@ void create_controls_mainbox (void)
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			vbox_buttons, TRUE, TRUE, 1 * PADDING);
+			vbox_buttons, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_poi, TRUE, TRUE, 1 * PADDING);
+			frame_poi, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_track, TRUE, TRUE, 1 * PADDING);
+			frame_track, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+			frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
 			frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
@@ -1806,15 +1804,15 @@ gint create_main_window (gchar *geom, gint *usegeom)
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainbox_status, 0, 2, 2, 3);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
-	}
 
-	gtk_widget_show_all (main_window);
-
-	if ( (local_config.guimode != GUI_PDA) && 
-	     ( local_config.MapnikStatusInt )){
-	    toggle_mapnik_cb( mapnik_bt, 2 );
+		if (local_config.MapnikStatusInt)
+		{
+			toggle_mapnik_cb( mapnik_bt, 2 );
+		}
 	}
 	
+	gtk_widget_show_all (main_window);
+
 	if (!local_config.showfriends)
 		gtk_widget_hide_all (frame_statusfriends);
 

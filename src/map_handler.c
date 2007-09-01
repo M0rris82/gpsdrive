@@ -280,7 +280,7 @@ make_display_map_checkboxes()
 
   // Frame
   frame_maptype = gtk_frame_new (_("Shown map type"));
-  vbox3 = gtk_vbox_new (TRUE, 1 * PADDING);
+  vbox3 = gtk_vbox_new (FALSE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
   if (0)
