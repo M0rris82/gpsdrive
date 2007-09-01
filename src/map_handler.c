@@ -193,11 +193,6 @@ make_display_map_controls ()
 	{
 		streets_draw=0; // Switch off if not in Debug Mode
 	}
-	if (!streets_draw)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
-	}
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
 		_("Draw Streets found in mySQL"), NULL);
 	gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
@@ -206,6 +201,11 @@ make_display_map_controls ()
 	{
 		gtk_box_pack_start (GTK_BOX (vbox_map_controls),
 			streets_draw_bt, FALSE,FALSE, 0 * PADDING);
+	}
+	if (streets_draw)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
 	}
 
 	// Checkbox ---- Best Map
