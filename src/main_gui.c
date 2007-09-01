@@ -161,7 +161,6 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	     || (datum == 2))
 	{
 		local_config.MapnikStatusInt = 1;
-		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), FALSE);
 		gtk_widget_hide_all (GTK_WIDGET (frame_maptype));
 		gtk_widget_hide_all (GTK_WIDGET (hbox_zoom));
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt), FALSE);
@@ -170,7 +169,6 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	else 
 	{
 		local_config.MapnikStatusInt = 0;
-		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), TRUE);
 		gtk_widget_show_all (GTK_WIDGET (frame_maptype));
 		gtk_widget_show_all (GTK_WIDGET (hbox_zoom));
 	}
