@@ -1805,16 +1805,17 @@ gint create_main_window (gchar *geom, gint *usegeom)
 			mainbox_status, 0, 2, 2, 3);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 
-		if (local_config.MapnikStatusInt)
-		{
-			toggle_mapnik_cb( mapnik_bt, 2 );
-		}
 	}
 	
 	gtk_widget_show_all (main_window);
 
-	if (!local_config.showfriends)
-		gtk_widget_hide_all (frame_statusfriends);
+	if ( ( local_config.guimode == GUI_CLASSIC )
+	     && (local_config.MapnikStatusInt ) ){
+	    toggle_mapnik_cb( mapnik_bt, 2 );
+	}
+	
+	if ( !local_config.showfriends)
+	    gtk_widget_hide_all (frame_statusfriends);
 
 	return 0;
 }
