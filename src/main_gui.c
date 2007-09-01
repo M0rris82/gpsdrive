@@ -89,6 +89,8 @@ extern gint usesql, havespeechout;
 extern gint slistsize, nlist[];
 extern gint PSIZE;
 extern GtkWidget *posbt;
+extern GtkWidget *bestmap_bt;
+extern GtkWidget *mapnik_bt;
 
 extern GtkWidget *main_window;
 
@@ -117,6 +119,7 @@ static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
 static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
+static GtkWidget *hbox_zoom;
 
 /* Definitions for main menu */
 enum
@@ -149,19 +152,27 @@ quit_program_cb (GtkWidget *widget, gpointer datum)
 
 /* ****************************************************************************
  * toggle checkbox for mapnik mode
+ * datum == 2 also means switch off mapnik button
  */
 gint
 toggle_mapnik_cb (GtkWidget *widget, guint datum)
 {
-	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
+	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) 
+	     || (datum == 2))
 	{
 		local_config.MapnikStatusInt = 1;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), FALSE);
+		gtk_widget_hide_all (GTK_WIDGET (frame_maptype));
+		gtk_widget_hide_all (GTK_WIDGET (hbox_zoom));
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt), FALSE);
+		autobestmap_cb(bestmap_bt,0);
 	}
 	else 
 	{
 		local_config.MapnikStatusInt = 0;
 		gtk_widget_set_sensitive (GTK_WIDGET (frame_maptype), TRUE);
+		gtk_widget_show_all (GTK_WIDGET (frame_maptype));
+		gtk_widget_show_all (GTK_WIDGET (hbox_zoom));
 	}
 	
 	// TODO: reload/update map display.....
@@ -1053,7 +1064,6 @@ void create_controls_mainbox (void)
 {
 	GtkWidget *vbox_buttons, *frame_poi, *frame_track;
 	GtkWidget *frame_mapcontrol;
-	GtkWidget *hbox_zoom;
 	GtkWidget *zoomin_img, *zoomout_img;
 	GtkWidget *hbox_scaler, *mute_bt;
 	GtkWidget *pda_box_left, *pda_box_right;
@@ -1405,8 +1415,9 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),
 			frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
-	    if ( mydebug > 11 )
-		fprintf(stderr,"create_controls_mainbox: END\n");
+
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox: END\n");
 }
 
 
@@ -1801,6 +1812,11 @@ gint create_main_window (gchar *geom, gint *usegeom)
 
 	gtk_widget_show_all (main_window);
 
+	if ( (local_config.guimode != GUI_PDA) && 
+	     ( local_config.MapnikStatusInt )){
+	    toggle_mapnik_cb(GTK_OBJECT (mapnik_bt), 2);
+	}
+	
 	if (!local_config.showfriends)
 		gtk_widget_hide_all (frame_statusfriends);
 
