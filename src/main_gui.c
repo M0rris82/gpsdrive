@@ -163,6 +163,7 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 		local_config.MapnikStatusInt = 1;
 		gtk_widget_hide_all (frame_maptype);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt), FALSE);
+		gtk_toggle_button_set_active  (GTK_TOGGLE_BUTTON (widget), TRUE);
 		autobestmap_cb(bestmap_bt,0);
 	}
 	else 

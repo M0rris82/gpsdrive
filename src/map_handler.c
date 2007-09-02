@@ -248,20 +248,7 @@ make_display_map_controls ()
 		"other maps."), NULL);
 	g_signal_connect (GTK_OBJECT (mapnik_bt), "clicked",
 			  GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-	if (local_config.MapnikStatusInt)
-	{
-	    	if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(3)\n");
-		gtk_toggle_button_set_active
-		    (GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
-		if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(4)\n");
-	}
-	else
-	{
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (mapnik_bt), FALSE);
-	}
-	gtk_box_pack_start
-		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
-
+	gtk_box_pack_start(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
 #endif
 
 	if ( mydebug > 11 )
