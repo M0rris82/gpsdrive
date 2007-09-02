@@ -2,12 +2,14 @@
 # ============================================ 
 # Run some tests on Gpsdrive
 
-if [ -s  ${HOME}/.gpsdrive/gpsdriverc.backup-tests ] ; then
-    echo "Old test Backup-rc File exists: ${HOME}/.gpsdrive/gpsdriverc.backup-tests"
-    exit 1
-else
-    cp ${HOME}/.gpsdrive/gpsdriverc ${HOME}/.gpsdrive/gpsdriverc.backup-tests 
-fi
+while [ -s  ${HOME}/.gpsdrive/gpsdriverc.backup-tests ] ; do
+    echo "`date` !!!!!!!! WARNING !!!!! Old test Backup-rc File exists: ${HOME}/.gpsdrive/gpsdriverc.backup-tests"
+    echo -n -e "Waiting ...\r"
+    sleep 20
+done
+
+cp ${HOME}/.gpsdrive/gpsdriverc ${HOME}/.gpsdrive/gpsdriverc.backup-tests 
+
 
 mkdir -p logs
 
@@ -17,6 +19,7 @@ mkdir -p logs
 	echo "!!!!!!!!! WARNING: Directory scripts not found."
 	echo "                   Please run from Top Level Directory"
 	echo ""
+	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit -1 
     fi
 
@@ -28,12 +31,14 @@ mkdir -p logs
     rc=$?
     if [ $rc != 1 ] ; then
 	echo "Wrong Exit Code $rc for geoinfo.pl"
+	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit 1
     fi
     
     helplines=`./geoinfo.pl  -h | wc -l`
     if [ $helplines -lt 140 ] ; then 
 	echo "ERROR Starting geoinfo.pl (only $helpline Lines of Online Help)"
+	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit 1
     fi
 
@@ -44,12 +49,14 @@ mkdir -p logs
     rc=$?
     if [ $rc != 1 ] ; then
 	echo "Wrong Exit Code $rc for gpsfetchmap.pl"
+	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit 1;
     fi
     
     helplines=`./gpsfetchmap.pl  -h | wc -l`
     if [ $helplines -lt 200 ] ; then 
 	echo "ERROR Starting gpsfetchmap.pl (only $helpline Lines of Online Help)"
+	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit 1
     fi
 ) || exit 1
@@ -67,6 +74,7 @@ mkdir -p logs
     if [ $rc != 0 ] ; then
 	    echo "Wrong Exit Code $rc for geoinfo.pl --create-db"
 	    cat ../logs/geoinfo_test.txt
+	    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	    exit 1
     fi
 ) || exit 1
@@ -89,6 +97,7 @@ for icon_theme in square.big square.small classic.big ; do
 	if [ $rc != 0 ] ; then
 	    cat logs/gpsdrive_test_$LANG.txt
 	    echo "Error starting gpsdrive -T (rc=$rc)"
+	    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	    exit 1;
 	fi
 	if grep -v\
@@ -98,6 +107,7 @@ for icon_theme in square.big square.small classic.big ; do
 	    then
 	    grep -i -B 3  -e 'Failed' -e 'ERROR'  logs/gpsdrive_test_$LANG.txt
 	    echo "Found (Error/Failed) in gpsdrive -T output "
+	    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	    exit 1;
 	fi
 	perl -p -i.bak \
