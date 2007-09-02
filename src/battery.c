@@ -48,6 +48,7 @@ Disclaimer: Please do not use for navigation.
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <gpsdrive_config.h>
 
 /* APM is i386-specific. */
 #if defined(__FreeBSD__) && defined(__i386__)
@@ -687,7 +688,7 @@ battery_get_values (void)
 {
   gint havebattery = FALSE;	/* Battery level and loading flag */
 
-  if (disableapm)
+  if ( ! local_config.enableapm )
     {
       return FALSE;
     }
@@ -744,7 +745,7 @@ temperature_get_values (void)
 {
   gint havetemperature = FALSE;
 
-  if (disableapm)
+  if ( ! local_config.enableapm )
     {
       return havetemperature;
     }

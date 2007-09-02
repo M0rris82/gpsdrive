@@ -76,7 +76,6 @@ extern gint newsatslevel;
 extern gint wpsize, satfix, usedgps, earthmate;
 extern GtkWidget *miles;
 extern gint gcount, downloadwindowactive;
-extern gint disableapm;
 extern GtkWidget *status, *pixmapwidget, *gotowindow;
 extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
 extern GtkWidget *poi_types_window;

@@ -526,6 +526,7 @@ config_init ()
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_CLASSIC;
 	local_config.simmode = SIM_OFF;
+	local_config.enableapm = FALSE;
 	local_config.dashboard_1 = DASH_DIST;
 	local_config.dashboard_2 = DASH_SPEED;
 	local_config.dashboard_3 = DASH_ALT;

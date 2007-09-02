@@ -186,17 +186,16 @@ make_display_map_controls ()
 	gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
 
 	// Checkbox ---- STREETS Draw
-	streets_draw_bt = gtk_check_button_new_with_label
-		(_("direct draw sql _Streets"));
-	gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-	if ( ! mydebug)
-	{
-		streets_draw=0; // Switch off if not in Debug Mode
+	if ( ! mydebug) {
+	    streets_draw=0; // Switch off if not in Debug Mode, 
+	    // since it's only a prove of concept
 	}
+	streets_draw_bt = gtk_check_button_new_with_label (_("direct draw sql _Streets"));
+	gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-		_("Draw Streets found in mySQL"), NULL);
+		_("Draw Streets from mySQL table geoinfo.streets"), NULL);
 	gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
-		GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
+			    GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
 	if ( mydebug>0)
 	{
 		gtk_box_pack_start (GTK_BOX (vbox_map_controls),
@@ -243,24 +242,25 @@ make_display_map_controls ()
 
 	mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
 	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
-	g_signal_connect (GTK_OBJECT (mapnik_bt),
-		"clicked", GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-	gtk_box_pack_start
-		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
 		_("Turn mapnik mode on. In this mode vector maps rendered by "
 		"mapnik (e.g. OpenStreetMap Data) are used instead of the "
 		"other maps."), NULL);
+	g_signal_connect (GTK_OBJECT (mapnik_bt), "clicked",
+			  GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
 	if (local_config.MapnikStatusInt)
 	{
 	    	if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(3)\n");
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
+		gtk_toggle_button_set_active
+		    (GTK_TOGGLE_BUTTON (mapnik_bt), TRUE);
 		if ( mydebug > 11 ) fprintf(stderr,"make_display_map_controls(4)\n");
 	}
 	else
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (mapnik_bt), FALSE);
 	}
+	gtk_box_pack_start
+		(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
 
 #endif
 

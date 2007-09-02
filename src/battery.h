@@ -31,8 +31,6 @@ Disclaimer: Please do not use for navigation.
  */
 
 
-extern int disableapm;
-
 int battery_get_values(void);
 int temperature_get_values(void);
 int expose_display_battery();

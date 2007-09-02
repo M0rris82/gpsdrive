@@ -295,7 +295,6 @@ extern gint markwaypoint;
 GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
-gint disableapm = FALSE;
 typedef struct
 {
 	gchar n[200];
@@ -2744,7 +2743,7 @@ usage ()
 	       "          don't satisfy you, X is i.e. 768,600,480,200\n"),
 	     _("-r WIDTH  set width of the screen, only with -s\n"),
 	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
-	     _("-a        don't display battery status (i.e. broken APM)\n"),
+	     _("-a        display APM Stuff ( battery status, Temperature)\n"),
 	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
 	     _("-x        create separate window for menu\n"),
@@ -3059,7 +3058,7 @@ main (int argc, char *argv[])
 	    switch (i)
 		{
 		case 'a':
-		    disableapm = TRUE;
+		    local_config.enableapm = TRUE;
 		    break;
 		case 'S':
 		    nosplash = TRUE;
@@ -3297,10 +3296,6 @@ main (int argc, char *argv[])
 //			GTK_SIGNAL_FUNC (satpos_cb), NULL);
 
 
-    // Frame --- ACPI / Temperature / Battery
-    if ( mydebug >99 ) fprintf(stderr , "create ACPI Frames\n");
-    //create_temperature_widget(hbox_displays);
-    //create_battery_widget(hbox_displays);
 
 
     // Frame ---   displays zoom factor of map

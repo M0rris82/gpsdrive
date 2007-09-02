@@ -1672,6 +1672,13 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
 			statusdashsub2_box, TRUE, TRUE, 0);
 
+
+		// Frame --- ACPI / Temperature / Battery
+		if ( mydebug >99 ) 
+		    fprintf(stderr , "create ACPI Frames\n");
+		create_temperature_widget(statusdashboard_box);
+		create_battery_widget(statusdashboard_box);
+
 		statussmall_box = gtk_hbox_new (FALSE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box),
 			frame_statustime, TRUE, TRUE, 1 * PADDING);

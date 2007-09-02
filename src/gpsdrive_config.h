@@ -49,6 +49,7 @@ typedef struct
 	gint coordmode;
 	gint nightmode;
 	gint guimode;
+	gint enableapm;
 	gint maxcpuload;
 	gint posmarker;
 	gchar wp_file[200];
