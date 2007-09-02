@@ -52,6 +52,7 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive_config.h"
 #include "gui.h"
 #include "poi_gui.h"
+#include "battery.h"
 #include "map_handler.h"
 #include "import_map.h"
 #include "download_map.h"
