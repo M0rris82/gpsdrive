@@ -81,8 +81,7 @@ But if you want to import the OSM Data yourself. Here is the Documentation to do
 	-e "^CREATE AGGREGATE$" \
 	-e "^CREATE LANGUAGE$" \
 	-e "^CREATE OPERATOR CLASS$" \
-	-e "^CREATE TYPE$" \
-
+	-e "^CREATE TYPE$" 
 
 
 # ------------ GRANT Rights
