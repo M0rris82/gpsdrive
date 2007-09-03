@@ -449,9 +449,7 @@ void check_and_create_files(){
     if ( mydebug >5 ) fprintf(stderr , " check_and_create_files()\n");
 
     // Create .gpsdrive dir if not exist
-    g_snprintf (file_path, sizeof (file_path),
-		"%s",
-		local_config.dir_home);
+    g_snprintf (file_path, sizeof (file_path),"%s",local_config.dir_home);
     if(stat(file_path,&buf))
 	{
 	    if ( mkdir (file_path, 0700) )
@@ -1040,6 +1038,9 @@ return TRUE;
 				if (local_config.guimode == GUI_PDA)
 					pfd = pango_font_description_from_string ("Sans 7");
 				else
+				if (local_config.guimode == GUI_CAR)
+					pfd = pango_font_description_from_string ("Sans 7");
+				else
 					pfd = pango_font_description_from_string ("Sans bold 10");
 				pango_layout_set_font_description
 					(wplabellayout, pfd);
@@ -1483,6 +1484,10 @@ drawmarker (GtkWidget * widget, guint * datum)
 								savetrackfn);
 			//KCFX  
 			if (local_config.guimode == GUI_PDA)
+				pfd = pango_font_description_from_string
+					("Sans 7");
+			else
+			if (local_config.guimode == GUI_CAR)
 				pfd = pango_font_description_from_string
 					("Sans 7");
 			else
@@ -2634,7 +2639,8 @@ sel_target_cb (GtkWidget * widget, guint datum)
 					0);
 
 	/* Font aendern falls PDA-Mode und Touchscreen */
-	if (local_config.guimode == GUI_PDA)
+	if (local_config.guimode == GUI_PDA ||
+	    local_config.guimode == GUI_CAR )
 	{
 	    if (onemousebutton)
 	    {
@@ -2747,7 +2753,8 @@ usage ()
 	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
 	     _("-x        create separate window for menu\n"),
-	     _("-p        set settings for PDA (iPAQ, Yopy...)\n"),
+	     _("-p        set settings for PDA-Mode (iPAQ, Yopy...)\n"),
+	     _("-C        set settings for CAR-Mode\n"),
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
 	     _("-F        force display of position even it is invalid\n"),
@@ -3053,7 +3060,7 @@ main (int argc, char *argv[])
 	{
 	    /* long options plus --geometry and -g */
             i = getopt_long (argc, argv,
-			"W:ESA:ab:c:zXx1qivPdD:TFepH:hnf:l:t:s:o:r:g:?",
+			"W:ESA:ab:c:zXx1qivPdD:TFepCH:hnf:l:t:s:o:r:g:?",
 			long_options, &option_index);
 	    switch (i)
 		{
@@ -3098,6 +3105,9 @@ main (int argc, char *argv[])
 		    break;
 		case 'p':
 		    local_config.guimode = GUI_PDA;
+		    break;
+		case 'C':
+		    local_config.guimode = GUI_CAR;
 		    break;
 		case '1':
 		    onemousebutton = TRUE;

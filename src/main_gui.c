@@ -1382,36 +1382,35 @@ void create_controls_mainbox (void)
 		
 		pda_box_left = gtk_vbox_new (FALSE, 1 * PADDING);
 		pda_box_right = gtk_vbox_new (FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			pda_box_left, TRUE, TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			pda_box_right, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	pda_box_left, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	pda_box_right, TRUE, TRUE, 0);
 
-		gtk_box_pack_start (GTK_BOX (pda_box_left),
-			vbox_buttons, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_left),
-			frame_poi, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_left),
-			frame_track, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_right),
-			frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_right),
-			frame_maptype, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_left), vbox_buttons, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_left), frame_poi, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_left), frame_track, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_maptype, TRUE, TRUE, 1 * PADDING);
+	}
+	else
+	if (local_config.guimode == GUI_CAR)
+	{
+		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
+
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons,	FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_poi,	FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_track, 	FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_maptype, 	TRUE, TRUE, 1 * PADDING);
 	}
 	else
 	{
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			vbox_buttons, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_poi, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_track, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),
-			frame_maptype, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	vbox_buttons, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_poi, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_track, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
 
 	if ( mydebug > 11 )
@@ -1424,16 +1423,18 @@ void create_controls_mainbox (void)
  */
 void create_status_mainbox (void)
 {
-	GtkWidget *statusdashboard_box, *frame_compass;
+
+	GtkWidget *statusdashboard_box;
 	GtkWidget *statusdashsub1_box, *statusdashsub2_box;
 	GtkWidget *statussmall_box, *frame_statustime;
 	GtkWidget *frame_statusbearing, *frame_statusheading;
 	GtkWidget *frame_statuslat, *frame_statuslon;
 	GtkWidget *eventbox_statuslat, *eventbox_statuslon;
 	GtkWidget *frame_statusmapscale, *frame_statusprefscale;
-	GtkWidget *statusbar_box, *frame_minimap, *frame_statusgpsfix;
+	GtkWidget *statusbar_box, *frame_statusgpsfix;
 	GtkWidget *dashboard_1_lb, *dashboard_2_lb;
 	GtkWidget *dashboard_3_lb, *dashboard_4_lb;
+	GtkWidget *frame_compass, *frame_minimap;
 
 	gchar sc[15];
 	gint scaler_pos= 0;
@@ -1625,94 +1626,97 @@ void create_status_mainbox (void)
 	if (local_config.guimode == GUI_PDA)
 	{
 		statusdashboard_box = gtk_table_new (2, 2, TRUE);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
-			frame_dash_1, 0, 1, 0, 1);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
-			frame_dash_2, 1, 2, 0, 1);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
-			frame_dash_3, 0, 1, 1, 2);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
-			frame_dash_4, 1, 2, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_1, 0, 1, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_2, 1, 2, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_3, 0, 1, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_4, 1, 2, 1, 2);
 
 		statussmall_box = gtk_vbox_new (FALSE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslat, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslon, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
 		statusbar_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box),
-			frame_compass, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box),
-			statussmall_box, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_compass, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), statussmall_box, TRUE, TRUE, 1 * PADDING);
 
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			statusdashboard_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			statusbar_box, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			frame_statusbar, TRUE, FALSE, 1* PADDING);	}
+		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status), statusbar_box, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status), frame_statusbar, TRUE, FALSE, 1* PADDING);
+	}
 	else
+	if (local_config.guimode == GUI_CAR)
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),
-			frame_minimap, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),
-			frame_compass, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			frame_dash_1, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			frame_dash_2, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			frame_dash_3, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			statusdashsub1_box, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			statusdashsub2_box, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
 
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_1, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_2, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_3, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box), statusdashsub1_box, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box), statusdashsub2_box, TRUE, TRUE, 0);
 
-		// Frame --- ACPI / Temperature / Battery
-		if ( mydebug >99 ) 
-		    fprintf(stderr , "create ACPI Frames\n");
+		// --- ACPI / Temperature / Battery
 		create_temperature_widget(statusdashboard_box);
 		create_battery_widget(statusdashboard_box);
 
 		statussmall_box = gtk_hbox_new (FALSE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statustime, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusfriends, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusbearing, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusheading, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslat, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statuslon, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box),
-			frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statustime, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusfriends, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusbearing, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusheading, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box),
-			frame_statusbar, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box),
-			mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
 	
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			statusdashboard_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			statussmall_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),
-			statusbar_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status), statussmall_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status), statusbar_box, TRUE, FALSE, 1 * PADDING);
+	} else
+	{
+		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
+		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
+		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_minimap, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_compass, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_1, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_2, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_3, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
+
+
+		//  --- ACPI / Temperature / Battery
+		create_temperature_widget(statusdashboard_box);
+		create_battery_widget(statusdashboard_box);
+
+		statussmall_box = gtk_hbox_new (FALSE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statustime, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusfriends, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusbearing, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusheading, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
+
+		statusbar_box = gtk_hbox_new (FALSE, PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
+	
+		gtk_box_pack_start (GTK_BOX (mainbox_status),statusdashboard_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),statussmall_box, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_status),statusbar_box, TRUE, FALSE, 1 * PADDING);
 	}
 }
 

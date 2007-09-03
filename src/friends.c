@@ -655,6 +655,9 @@ drawfriends (void)
 		if (local_config.guimode == GUI_PDA)
 			pfd = pango_font_description_from_string ("Sans 8");
 		else
+		if (local_config.guimode == GUI_CAR)
+			pfd = pango_font_description_from_string ("Sans 8");
+		else
 			pfd = pango_font_description_from_string
 				(local_config.font_friends);
 		pango_layout_set_font_description (wplabellayout, pfd);

@@ -111,6 +111,7 @@ enum
 	GUI_CLASSIC,
 	GUI_PDA,
 	GUI_XWIN,
+	GUI_CAR,
 	GUI_N_FORMATS
 };
 
