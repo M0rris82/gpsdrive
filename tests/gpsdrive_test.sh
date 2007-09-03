@@ -84,34 +84,37 @@ mkdir -p logs
 # Test Gpsdrive -T with different Setup
 for icon_theme in square.big square.small classic.big ; do 
     for LANG in en_US de_DE ; do 
-	echo "------------------> check 'gpsdrive -T' LANG=$LANG icon_theme=$icon_theme"
-	perl -p -i.bak \
-	    -e "s/icon_theme = .*/icon_theme = $icon_theme/" ${HOME}/.gpsdrive/gpsdriverc
-	#grep icon_theme ${HOME}/.gpsdrive/gpsdriverc
-	perl -p -i.bak \
-	    -e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
+	#for USER_INTERFACE in "" -p -C ; do 
+	for USER_INTERFACE in "" -C ; do 
+	    echo "------------------> check 'gpsdrive -T' LANG=$LANG icon_theme=$icon_theme Userinterface=$USER_INTERFACE"
+	    perl -p -i.bak \
+		-e "s/icon_theme = .*/icon_theme = $icon_theme/" ${HOME}/.gpsdrive/gpsdriverc
+	    #grep icon_theme ${HOME}/.gpsdrive/gpsdriverc
+	    perl -p -i.bak \
+		-e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
 
-	./src/gpsdrive --geometry 800x600 -S -T -a -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
-	rc=$?
+	    ./src/gpsdrive $USER_INTERFACE --geometry 800x600  -S -T -a -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
+	    rc=$?
 
-	if [ $rc != 0 ] ; then
-	    cat logs/gpsdrive_test_$LANG.txt
-	    echo "Error starting gpsdrive -T (rc=$rc)"
-	    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
-	    exit 1;
-	fi
-	if grep -v\
-	    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET (widget). failed' \
-	    -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
-	    grep -i -e 'Failed' -e 'ERROR'
+	    if [ $rc != 0 ] ; then
+		cat logs/gpsdrive_test_$LANG.txt
+		echo "Error starting gpsdrive -T (rc=$rc)"
+		mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
+		exit 1;
+	    fi
+	    if grep -v \
+	    	-e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET (widget). failed' \
+		-e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
+		grep -i -e 'Failed' -e 'ERROR'
 	    then
-	    grep -i -B 3  -e 'Failed' -e 'ERROR'  logs/gpsdrive_test_$LANG.txt
-	    echo "Found (Error/Failed) in gpsdrive -T output "
-	    mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
-	    exit 1;
-	fi
-	perl -p -i.bak \
-	    -e "s/dbname = geoinfo.*/dbname = geoinfo/" ${HOME}/.gpsdrive/gpsdriverc
+		grep -i -B 3  -e 'Failed' -e 'ERROR'  logs/gpsdrive_test_$LANG.txt
+		echo "Found (Error/Failed) in gpsdrive -T output ( LANG=$LANG icon_theme=$icon_theme Userinterface=$USER_INTERFACE)"
+		mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
+		exit 1;
+	    fi
+	    perl -p -i.bak \
+		-e "s/dbname = geoinfo.*/dbname = geoinfo/" ${HOME}/.gpsdrive/gpsdriverc
+	done || exit 1
     done || exit 1
 done || exit 1
 
