@@ -38,6 +38,8 @@ void free_route_list ();
 void insertwaypoints (gint mobile);
 
 void route_init (void);
+void route_save_cb (gboolean defaultfile);
+
 void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
 
 void draw_route ();

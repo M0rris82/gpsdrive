@@ -140,6 +140,16 @@ setroutetarget (GtkWidget * widget, gint datum)
 	saytarget = TRUE;
 }
 
+
+/* *****************************************************************************
+ * save current route to gpx file
+ */
+void route_save_cb (gboolean defaultfile)
+{
+
+}
+
+
 /* *****************************************************************************
  * cancel sel_route window 
  */

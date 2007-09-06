@@ -260,8 +260,11 @@ writeconfig ()
 	fprintf (fp, "icon_theme = %s\n", local_config.icon_theme);
 
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
+	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
+	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
 	fprintf (fp, "draw_streets = %d\n", streets_draw);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
+	fprintf (fp, "draw_poilabel = %d\n", local_config.showpoilabel);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
 	for ( i = 0; i < max_display_map; i++)
 	    {
@@ -489,10 +492,16 @@ readconfig ()
 					sizeof (local_config.icon_theme));
 			else if ( (strcmp(par1, "draw_grid")) == 0)
 				local_config.showgrid = atoi (par2);
+			else if ( (strcmp(par1, "show_zoom")) == 0)
+				local_config.showzoom = atoi (par2);
+			else if ( (strcmp(par1, "show_scalebar")) == 0)
+				local_config.showscalebar = atoi (par2);
 			else if ( (strcmp(par1, "draw_streets")) == 0)
 				streets_draw = atoi (par2);
 			else if ( (strcmp(par1, "draw_poi")) == 0)
 				local_config.showpoi = atoi (par2);
+			else if ( (strcmp(par1, "draw_poilabel")) == 0)
+				local_config.showpoilabel = atoi (par2);
 			else if ( (strcmp(par1, "draw_wlan")) == 0)
 				local_config.showwlan = atoi (par2);
 			else if ( ! strncmp(par1, "display_map_",12) )
@@ -537,7 +546,11 @@ config_init ()
 	local_config.maxcpuload = 40;
 	local_config.showgrid = FALSE;
 	local_config.showshadow = FALSE;
+	local_config.showzoom = TRUE;
+	local_config.showscalebar = TRUE;
 	local_config.showwaypoints = TRUE;
+	local_config.showpoi = TRUE;
+	local_config.showpoilabel = FALSE;
 	local_config.showtooltips = TRUE;
 	local_config.sound_direction = TRUE;
 	local_config.sound_distance = TRUE;

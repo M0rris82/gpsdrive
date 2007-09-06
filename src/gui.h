@@ -85,6 +85,7 @@ typedef struct
 	GdkColor orange2;
 	GdkColor lightorange;
 	GdkColor darkgrey;
+	GdkColor lightgrey;
 	GdkColor shadow;
 } color_struct;
 

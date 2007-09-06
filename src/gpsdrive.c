@@ -330,7 +330,6 @@ GtkWidget *setupentry[50], *setupentrylabel[50];
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
 gint borderlimit;
-gint zoomscale = TRUE;
 gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
 gdouble tripodometer, tripavspeed, triptime, tripmaxspeed, triptmp;
@@ -1253,8 +1252,9 @@ return TRUE;
  * description of the currently used scale.
  */
 void
-draw_zoom_scale (void)
+draw_scalebar (void)
 {
+	gchar scale_txt[100];
 	gdouble factor[] = { 1.0, 2.5, 5.0, };
 	gint exponent = 0;
 	gdouble remains = 0.0;
@@ -1265,7 +1265,6 @@ draw_zoom_scale (void)
 	const gint dist_y = 20; /* distance to bottom */
 	const gint frame_width = 5; /* grey pixles around the scale bar */
 	gint bar_length;
-	gchar zoom_scale_txt[100];
 	gchar *format;
 	gchar *symbol;
 	gdouble approx_displayed_value;
@@ -1332,15 +1331,15 @@ draw_zoom_scale (void)
 	bar_length = factor[used_factor] * pow (10.0, exponent)
 		     * conversion / (current.mapscale / PIXELFACT) * current.zoom;
 
-	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt), format, factor[used_factor]
+	g_snprintf (scale_txt, sizeof (scale_txt), format, factor[used_factor]
 					       * pow (10.0, exponent),
 					       symbol);
 
 	/* Now bar_length is the length of the scaler-bar in pixel
-	 * and zoom_scale_txt is the text for the scaler Bar. For example "10 Km"
+	 * and scale_txt is the text for the scaler Bar. For example "10 Km"
 	 */
 
-	l = (SCREEN_X - 40) - (strlen (zoom_scale_txt) * 15);
+	l = (SCREEN_X - 40) - (strlen (scale_txt) * 15);
 
 	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext_map, GDK_OR);
@@ -1359,7 +1358,7 @@ draw_zoom_scale (void)
 	    /* prints in pango */
 	    PangoLayout *wplabellayout;
 	    
-	    wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, zoom_scale_txt);
+	    wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, scale_txt);
 	    pango_layout_set_font_description (wplabellayout, pfd_text);
 
 	    gdk_draw_layout_with_colors (drawable, kontext_map, 
@@ -1384,8 +1383,15 @@ draw_zoom_scale (void)
 		       (SCREEN_X - dist_x), SCREEN_Y - dist_y - frame_width,
 		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10 - frame_width);
 
-	/* Scale Bar Text */
+}
 
+/*******************************************************************************
+ * Draw the zoom level into the map.
+ */
+void
+draw_zoomlevel (void)
+{
+	gchar zoom_scale_txt[5];
 
 	/* draw zoom factor */
 	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt),
@@ -1397,7 +1403,6 @@ draw_zoom_scale (void)
 
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
 
-	{
 	/* prints in pango */
 	PangoFontDescription *pfd;
 	PangoLayout *layout_zoom;
@@ -1413,7 +1418,6 @@ draw_zoom_scale (void)
 		g_object_unref (G_OBJECT (layout_zoom));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
 	pango_font_description_free (pfd);
-	}
 }
 
 /* *****************************************************************************
@@ -1457,8 +1461,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (havekismet)
 		readkismet ();
 
-	if (zoomscale)
-		draw_zoom_scale ();
+	if (local_config.showscalebar)
+		draw_scalebar ();
+
+	if (local_config.showzoom && local_config.guimode != GUI_PDA)
+		draw_zoomlevel ();
 
 	if (havekismet && (kismetsock>=0))
 	{
@@ -3171,9 +3178,6 @@ main (int argc, char *argv[])
 		    break;
 		case 'r':
 		    screen_width = strtol (optarg, NULL, 0);
-		    break;
-		case 'z':
-		    zoomscale = FALSE;
 		    break;
 		case 'F':
 		    forcehavepos = TRUE;

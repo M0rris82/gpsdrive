@@ -62,8 +62,11 @@ typedef struct
 	gint simmode;
 	gboolean showgrid;
 	gboolean showshadow;
+	gboolean showzoom;
+	gboolean showscalebar;
 	gboolean showwaypoints;
 	gboolean showpoi;
+	gboolean showpoilabel;
 	gboolean showwlan;
 	gboolean showtooltips;
 	gboolean showaddwpbutton;

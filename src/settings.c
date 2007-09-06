@@ -924,6 +924,7 @@ settings_gui (GtkWidget *notebook)
 	GtkWidget *gui_bigcol_lb, *gui_bigcol_bt;
 	GtkWidget *gui_bigfont_bt, *gui_friendsfont_bt;
 	GtkWidget *gui_shadow_bt, *gui_nightauto_rb;
+	GtkWidget *gui_scaleshow_bt, *gui_zoomshow_bt;
 	GtkWidget *gui_nighton_rb, *gui_nightoff_rb;
 	GtkWidget *gui_night_table, *gui_wpfont_bt;
 	GtkWidget *gui_trackstyle_combo, *gui_routestyle_combo;
@@ -971,6 +972,40 @@ settings_gui (GtkWidget *notebook)
 		      GTK_SIGNAL_FUNC (settogglevalue_cb),
 		      &local_config.showshadow);
 
+	gui_zoomshow_bt = gtk_check_button_new_with_label (_("Show zoom level"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_zoomshow_bt,
+		_("This will show the current zoom level of the map"), NULL);
+	if (local_config.showzoom)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_zoomshow_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_zoomshow_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_zoomshow_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.showzoom);
+
+	gui_scaleshow_bt = gtk_check_button_new_with_label (_("Show scalebar"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_scaleshow_bt,
+		_("This will show the scalebar in the map"), NULL);
+	if (local_config.showscalebar)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_scaleshow_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_scaleshow_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_scaleshow_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.showscalebar);
+
 	gui_marker_lb = gtk_label_new (_("Position Marker"));
 	gui_marker_bt = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text
@@ -994,9 +1029,13 @@ settings_gui (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
 		gui_shadow_bt, 2, 3, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_marker_lb, 0, 1, 1, 2);
+		gui_zoomshow_bt, 0, 1, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_marker_bt, 2, 3, 1, 2);
+		gui_scaleshow_bt, 2, 3, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
+		gui_marker_lb, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
+		gui_marker_bt, 2, 3, 2, 3);
 	}
 	
 	/* gui nightmode settings */
@@ -1405,6 +1444,7 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_max_label, *poi_max_entry;
 	GtkWidget *poi_max2_label, *poi_dist2_label;
 	GtkWidget *poifilter_label, *poifilter_bt;
+	GtkWidget *poi_labelshow_bt;
 
 	gchar text[50];
 	
@@ -1486,6 +1526,23 @@ settings_poi (GtkWidget *notebook)
 
 	/* POI Display settings */
 	{
+	poi_labelshow_bt = gtk_check_button_new_with_label (_("Show POI Label"));
+	gtk_tooltips_set_tip (poi_tooltips, poi_labelshow_bt,
+		_("This will print the name next to the POI-Icon"), NULL);
+	if (local_config.showpoilabel)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (poi_labelshow_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (poi_labelshow_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (poi_labelshow_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.showpoilabel);
+
 	poitheme_label = gtk_label_new (_("POI-Theme"));
 	poitheme_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text
@@ -1522,9 +1579,11 @@ settings_poi (GtkWidget *notebook)
 	// TODO: add functionality, then set sensitive again
 	gtk_widget_set_sensitive (poifilter_bt, FALSE);
 
-	poidisplay_table = gtk_table_new (2, 2, FALSE);
+	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (poidisplay_table), 5);
+	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
+		poi_labelshow_bt, 0, 2, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
 		poitheme_label, 0, 1, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
@@ -1533,7 +1592,6 @@ settings_poi (GtkWidget *notebook)
 		poifilter_label, 0, 1, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
 		poifilter_bt, 1, 2, 2, 3);
-
 	}
 
 

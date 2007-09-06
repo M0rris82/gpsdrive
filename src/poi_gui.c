@@ -96,6 +96,7 @@ extern color_struct colors;
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *posbt;
 
+extern GdkPixbuf *targetmarker_img;
 
 GtkWidget *poi_types_window;
 
@@ -108,7 +109,7 @@ GtkWidget *button_addtoroute;
 /* route window */
 GtkWidget *route_window;
 GtkWidget *button_startroute;
-GtkWidget *button_remove;
+GtkWidget *button_remove, *button_routesave;
 
 
 
@@ -208,10 +209,29 @@ close_poi_lookup_window_cb (GtkWidget *window)
 
 
 static void
+select_jump_poi_cb (GtkWidget *window)
+{
+	gtk_widget_destroy (poi_lookup_window);
+
+	coords.current_lat = coords.target_lat;
+	coords.current_lon = coords.target_lon;
+	
+	gtk_toggle_button_set_active
+		(GTK_TOGGLE_BUTTON (posbt),  TRUE);
+
+	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+	gtk_widget_set_sensitive (posbt, TRUE);
+}
+
+
+static void
 select_target_poi_cb (GtkWidget *window)
 {
-	gtk_widget_destroy (window);
-	
+	gtk_widget_destroy (poi_lookup_window);
+
+	gtk_toggle_button_set_active
+		(GTK_TOGGLE_BUTTON (posbt), FALSE);
+
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
 	gtk_widget_set_sensitive (posbt, TRUE);
 }
@@ -252,8 +272,12 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 		{
 			add_poi_to_route (model, iter);
 			if (route.items)
+			{
 				gtk_widget_set_sensitive
 					(button_startroute, TRUE);
+				gtk_widget_set_sensitive
+					(button_routesave, TRUE);
+			}
 		}
 		else
 		{
@@ -650,7 +674,9 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *dialog_action_area_poisearch, *alignment_addtoroute;
 	GtkWidget *hbox_addtoroute, *image_addtoroute, *label_addtoroute;
 	GtkWidget *alignment_target, *hbox_target, *image_target;
-	GtkWidget *label_target, *button_close;
+	GtkWidget *label_target, *button_close, *button_jumpto;
+	GtkWidget *alignment_jumpto, *hbox_jumpto, *image_jumpto;
+	GtkWidget *label_jumpto;
 	GtkTooltips *tooltips_poilookup;
 	gchar text[50];
 	
@@ -1015,6 +1041,27 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	g_signal_connect_swapped (button_delete, "clicked",
 		GTK_SIGNAL_FUNC (delete_poi_cb), poilist_select);
 
+	/* button "Jump to POI" */
+	button_jumpto = gtk_button_new ();
+	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
+		button_jumpto, 0);
+	GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
+	alignment_jumpto = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_jumpto), alignment_jumpto);
+	hbox_jumpto = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_jumpto), hbox_jumpto);
+	image_jumpto = gtk_image_new_from_stock ("gtk-jump-to",
+		GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_jumpto),
+		image_jumpto, FALSE, FALSE, 0);
+	label_jumpto = gtk_label_new (_("Jump to POI"));		
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
+		_("Jump to selected entry (and switch to Pos. Mode if not already active)"), NULL);
+	gtk_box_pack_start (GTK_BOX (hbox_jumpto),
+		label_jumpto, FALSE, FALSE, 0);
+	g_signal_connect_swapped (button_jumpto, "clicked",
+		GTK_SIGNAL_FUNC (select_jump_poi_cb), NULL);
+
 	/* button "Select as Destination" */
 	button_target = gtk_button_new ();
 	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
@@ -1024,26 +1071,16 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_container_add (GTK_CONTAINER (button_target), alignment_target);
 	hbox_target = gtk_hbox_new (FALSE, 2);
 	gtk_container_add (GTK_CONTAINER (alignment_target), hbox_target);
-	image_target = gtk_image_new_from_stock ("gtk-jump-to",
-		GTK_ICON_SIZE_BUTTON);
+	image_target = gtk_image_new_from_pixbuf (targetmarker_img);
 	gtk_box_pack_start (GTK_BOX (hbox_target),
 		image_target, FALSE, FALSE, 0);
-	if (gui_status.posmode)
-	{
-		label_target = gtk_label_new (_("Jump to Target"));		
-		gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
-			_("Jump to selected entry"), NULL);
-	}
-	else
-	{
-		label_target = gtk_label_new (_("Select Target"));
-		gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
-			_("Use selected entry as target destination"), NULL);
-	}
+	label_target = gtk_label_new (_("Select Target"));
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
+		_("Use selected entry as target destination (and leave Pos. Mode if active)"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_target),
 		label_target, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_target, "clicked",
-		GTK_SIGNAL_FUNC (select_target_poi_cb), poi_lookup_window);
+		GTK_SIGNAL_FUNC (select_target_poi_cb), NULL);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");
@@ -1368,6 +1405,16 @@ void route_window_cb (GtkWidget *calling_button)
 	gtk_box_pack_start (GTK_BOX (hbox_cancel), label_cancel, FALSE, FALSE, 0);
 	g_signal_connect (button_cancel, "clicked",
 				GTK_SIGNAL_FUNC (route_cancel_cb), NULL);
+
+	/* button "save route" */
+	button_routesave = gtk_button_new_from_stock ("gtk-save");
+	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_routesave, 0);
+	GTK_WIDGET_SET_FLAGS (button_routesave, GTK_CAN_DEFAULT);
+	gtk_tooltips_set_tip ( tooltips_routewindow, button_routesave, 
+		_("Export current route to GPX"), NULL);
+	gtk_widget_set_sensitive (button_routesave, FALSE);
+	g_signal_connect (button_routesave, "clicked",
+		GTK_SIGNAL_FUNC (route_save_cb), (gpointer) TRUE);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");

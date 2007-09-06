@@ -108,7 +108,7 @@ GdkColormap *colmap;
 color_struct colors;
 guistatus_struct gui_status;
 
-GdkPixbuf *posmarker_img;
+GdkPixbuf *posmarker_img, *targetmarker_img;
 
 gint PSIZE;
 
@@ -802,6 +802,7 @@ int gui_init (void)
 	init_color ("#f0995f", &colors.lightorange);
 	init_color ("#ff8000", &colors.orange2);
 	init_color ("#a0a0a0", &colors.darkgrey); 
+	init_color ("#d0d0d0", &colors.lightgrey);
 
 	gtk_window_set_auto_startup_notification (TRUE);
 	
@@ -811,7 +812,7 @@ int gui_init (void)
 	// TODO: create_button_add_wp();
 
 	posmarker_img = read_icon ("posmarker.png", 0);
-
+	targetmarker_img = read_icon ("targetmarker.png", 0); 
 
 	if (usesql)
 		poi_types_window = create_poi_types_window ();

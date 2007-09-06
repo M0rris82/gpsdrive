@@ -334,6 +334,12 @@ draw_label (char *txt, gdouble posx, gdouble posy)
   gint width, height;
   gint k, k2;
 
+  if (!local_config.showpoilabel)
+    {
+      if (mydebug > 20)
+	printf ("draw_label: drawing of label is disabled\n");
+      return;
+    }
 
   if (mydebug > 30)
     fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
@@ -356,7 +362,7 @@ draw_label (char *txt, gdouble posx, gdouble posy)
 
   {                             // Draw rectangle arround Text
     // gdk_gc_set_foreground (kontext, &textbacknew);
-    gdk_gc_set_foreground (kontext_map, &colors.grey);
+    gdk_gc_set_foreground (kontext_map, &colors.darkgrey);
     gdk_draw_rectangle (drawable, kontext_map, 1,
                         posx + 13, posy - k2 / 2, k + 1, k2);
 
@@ -367,7 +373,7 @@ draw_label (char *txt, gdouble posx, gdouble posy)
 
   gdk_draw_layout_with_colors (drawable, kontext_map,
                                posx + 15, posy - k2 / 2,
-                               poi_label_layout, &colors.black, NULL);
+                               poi_label_layout, &colors.lightgrey, NULL);
   if (poi_label_layout != NULL)
     g_object_unref (G_OBJECT (poi_label_layout));
   /* freeing PangoFontDescription, cause it has been copied by prev. call */
