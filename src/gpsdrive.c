@@ -2768,8 +2768,7 @@ usage ()
 	     _("-S        don't show splash screen\n"),
 	     _("-P        start in Pos Mode\n"),
 	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
-	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
-	     _("-z        don't display zoom factor and scale\n\n"));
+	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"));
 
 }
 
@@ -3067,7 +3066,7 @@ main (int argc, char *argv[])
 	{
 	    /* long options plus --geometry and -g */
             i = getopt_long (argc, argv,
-			"W:ESA:ab:c:zXx1qivPdD:TFepCH:hnf:l:t:s:o:r:g:?",
+			"W:ESA:ab:c:Xx1qivPdD:TFepCH:hnf:l:t:s:o:r:g:?",
 			long_options, &option_index);
 	    switch (i)
 		{
