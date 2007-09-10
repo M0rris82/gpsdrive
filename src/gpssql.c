@@ -48,6 +48,7 @@ extern int usesql;
 extern int mydebug, dbusedist;
 extern GtkWidget *trackbt, *wpbt;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
+extern poi_type_struct poi_type_list[poi_type_list_max];
 
 gint wptotal = 0, wpselected = 0;
 
@@ -85,6 +86,42 @@ exiterr (int exitcode)
   exit (exitcode);
 }
 
+
+/* ******************************************************************
+ * remove route and friendsd data at shutdown
+ */
+gint
+cleanupsqldata ()
+{
+	gchar q[200];
+	gint r, i;
+
+	if (!usesql)
+		return 0;
+
+	for (i = 0; i < poi_type_list_max; i++)
+	{
+		if (
+		  strncmp (poi_type_list[i].name,"waypoint.routepoint", 19) == 0 ||
+		  strncmp (poi_type_list[i].name,"people.friendsd", 15) == 0)
+		{
+			g_snprintf (q, sizeof (q),
+				"DELETE FROM %s WHERE poi_type_id=\"%d\";",
+				dbtable, poi_type_list[i].poi_type_id);
+			if (mydebug > 50)
+				g_print ("query: %s\n", q);
+			if (dl_mysql_query (&mysql, q))
+				exiterr (3);
+			r = dl_mysql_affected_rows (&mysql);
+			if (mydebug > 50)
+				g_print (_("rows deleted: %d\n"), r);
+		}
+	}
+
+	return 0;
+}
+
+
 /* ******************************************************************
  */
 int
@@ -115,6 +152,7 @@ sqlend (void)
 {
   if (!usesql)
     return;
+  cleanupsqldata ();
   dl_mysql_close (&mysql);
 }
 

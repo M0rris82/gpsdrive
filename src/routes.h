@@ -37,8 +37,10 @@ void init_route_list ();
 void free_route_list ();
 void insertwaypoints (gint mobile);
 
+void quickadd_routepoint ();
+
 void route_init (void);
-void route_save_cb (gboolean defaultfile);
+gboolean route_export_cb (gboolean defaultfile);
 
 void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
 
@@ -55,6 +57,8 @@ enum {
 	ROUTE_TRIP,
 	ROUTE_LON,
 	ROUTE_LAT,
+	ROUTE_CMT,
+	ROUTE_TYPE,
 	ROUTE_COLUMS
 };
 

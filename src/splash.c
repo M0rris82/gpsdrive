@@ -150,6 +150,7 @@ insert_text (GtkTextBuffer * buffer)
 		      "f    : Toggle friends display\n"
 		      "w    : Set Waypoint at current location without asking\n"
 		      "p    : Set Waypoint at current cursor position without asking\n"
+		      "r    : Add current cursor position to end of route\n"
 		      "+    : Zoom in \n" "-    : Zoom out\n");
 	gchar *t3 =
 		_("Press the underlined key together with the ALT-key.\n\n"

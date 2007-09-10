@@ -940,6 +940,12 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 			addwaypoint (wp_name, wp_type, wp_comment, lat, lon, FALSE);
 	}
 
+	// Add instant routepoint at current mouse location
+	if ((toupper (event->keyval)) == 'R')
+	{
+		quickadd_routepoint ();
+	}
+
 	// In Route mode Force next Route Point
 	if (((toupper (event->keyval)) == 'J') && route.active)
 	{

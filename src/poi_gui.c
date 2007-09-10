@@ -396,6 +396,13 @@ remove_routepoint_cb (GtkTreeSelection *selection, gpointer data)
 	{
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 	}
+	
+	/* cancel route, if no elements are left */
+	if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL
+		(route_list_tree), &iter) == FALSE)
+	{
+		route_cancel_cb ();
+	}
 }
 
 
@@ -1411,10 +1418,10 @@ void route_window_cb (GtkWidget *calling_button)
 	gtk_dialog_add_action_widget (GTK_DIALOG (route_window), button_routesave, 0);
 	GTK_WIDGET_SET_FLAGS (button_routesave, GTK_CAN_DEFAULT);
 	gtk_tooltips_set_tip ( tooltips_routewindow, button_routesave, 
-		_("Export current route to GPX"), NULL);
+		_("Export current route to a GPX File"), NULL);
 	gtk_widget_set_sensitive (button_routesave, FALSE);
 	g_signal_connect (button_routesave, "clicked",
-		GTK_SIGNAL_FUNC (route_save_cb), (gpointer) TRUE);
+		GTK_SIGNAL_FUNC (route_export_cb), (gpointer) TRUE);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");
