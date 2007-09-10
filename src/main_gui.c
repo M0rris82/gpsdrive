@@ -1202,13 +1202,15 @@ void create_controls_mainbox (void)
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomin_bt,
 		_("Zoom into the current map"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomout_bt,
-		_("Zooms out off the current map"), NULL);
+			      _("Zooms out off the current map"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),
-		zoomout_bt, TRUE, TRUE, 1 * PADDING);
+			    zoomout_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),
-		zoomin_bt, TRUE, TRUE,  1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		hbox_zoom, FALSE, FALSE, 1 * PADDING);
+			    zoomin_bt, TRUE, TRUE,  1 * PADDING);
+	if (local_config.guimode != GUI_CAR)	{
+	    gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				hbox_zoom, FALSE, FALSE, 1 * PADDING);
+	}
 
 	/* Buttons: Scaler */
 	if ( mydebug > 11 )
@@ -1660,7 +1662,7 @@ void create_status_mainbox (void)
 		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
+		// gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
 
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_1, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_2, TRUE, TRUE, 1 * PADDING);
@@ -1680,7 +1682,7 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
+		//gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
