@@ -725,7 +725,7 @@ gboolean route_export_cb (gboolean defaultfile)
 			ROUTE_TYPE, &t_type,
 			-1);
 		fprintf (routefile, "  <rtept lat=\"%.6f\" lon=\"%.6f\">\n",
-			t_lon, t_lat);
+			t_lat, t_lon);
 		if (strlen (t_name))
 			fprintf (routefile, "    <name>%s</name>\n", t_name);
 		if (strncmp (t_cmt, "n/a", 3) != 0)
@@ -742,6 +742,11 @@ gboolean route_export_cb (gboolean defaultfile)
 	g_free (t_name);
 	g_free (t_cmt);
 	g_free (t_type);
+
+	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+		current.statusbar_id,
+		_("Route saved"));
+
 	return TRUE;
 }
 
