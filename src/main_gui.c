@@ -59,6 +59,7 @@ Disclaimer: Please do not use for navigation.
 #include "main_gui.h"
 #include "poi.h"
 #include "wlan.h"
+#include "routes.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -805,7 +806,9 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 		}
 		case 2:
 		{
-			gdk_gc_set_foreground (kontext_gpsfix, &colors.yellow);
+			// TODO: have a look at the nmea parsing
+			// to avoid "jumping" between 2D and 3D
+			gdk_gc_set_foreground (kontext_gpsfix, &colors.green);
 			pango_layout_set_text (layout_gpsfix, "2D Fix", -1);
 			break;
 		}
