@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-09-11 19:37+0200\n"
+"POT-Creation-Date: 2007-09-11 21:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,13 +81,13 @@ msgstr ""
 msgid "Download map"
 msgstr ""
 
-#: src/download_map.c:854 src/gpsdrive.c:2463 src/gpsdrive.c:2547
-#: src/import_map.c:386 src/poi_gui.c:564 src/routes.c:411 src/waypoint.c:721
+#: src/download_map.c:854 src/gpsdrive.c:2431 src/gpsdrive.c:2515
+#: src/import_map.c:386 src/poi_gui.c:564 src/routes.c:411 src/waypoint.c:720
 msgid "Latitude"
 msgstr ""
 
-#: src/download_map.c:856 src/gpsdrive.c:2463 src/gpsdrive.c:2547
-#: src/import_map.c:388 src/poi_gui.c:557 src/routes.c:411 src/waypoint.c:735
+#: src/download_map.c:856 src/gpsdrive.c:2431 src/gpsdrive.c:2515
+#: src/import_map.c:388 src/poi_gui.c:557 src/routes.c:411 src/waypoint.c:734
 msgid "Longitude"
 msgstr ""
 
@@ -127,15 +127,15 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: src/friends.c:644 src/gpsdrive.c:3335 src/gpsdrive.c:3345
+#: src/friends.c:644 src/gpsdrive.c:3303 src/gpsdrive.c:3313
 msgid "mi/h"
 msgstr ""
 
-#: src/friends.c:646 src/gpsdrive.c:3337 src/gpsdrive.c:3348
+#: src/friends.c:646 src/gpsdrive.c:3305 src/gpsdrive.c:3316
 msgid "knots"
 msgstr ""
 
-#: src/friends.c:648 src/gpsdrive.c:3339 src/gpsdrive.c:3351
+#: src/friends.c:648 src/gpsdrive.c:3307 src/gpsdrive.c:3319
 msgid "km/h"
 msgstr ""
 
@@ -153,15 +153,15 @@ msgid ""
 "provides a name for your server\n"
 msgstr ""
 
-#: src/gpsdrive.c:817
+#: src/gpsdrive.c:814
 msgid "Warning!"
 msgstr ""
 
-#: src/gpsdrive.c:819
+#: src/gpsdrive.c:816
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
-#: src/gpsdrive.c:1225
+#: src/gpsdrive.c:1222
 #, c-format
 msgid ""
 "\n"
@@ -171,239 +171,239 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:1780
+#: src/gpsdrive.c:1776
 msgid "N"
 msgstr ""
 
-#: src/gpsdrive.c:1787
+#: src/gpsdrive.c:1783
 msgid "S"
 msgstr ""
 
-#: src/gpsdrive.c:1793
+#: src/gpsdrive.c:1789
 msgid "W"
 msgstr ""
 
-#: src/gpsdrive.c:1799
+#: src/gpsdrive.c:1795
 msgid "E"
 msgstr ""
 
-#: src/gpsdrive.c:1874
+#: src/gpsdrive.c:1870
 msgid "No map available for this position!"
 msgstr ""
 
-#: src/gpsdrive.c:2179
+#: src/gpsdrive.c:2175
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
 
-#: src/gpsdrive.c:2306
+#: src/gpsdrive.c:2274
 msgid "Sending message to friends server..."
 msgstr ""
 
-#: src/gpsdrive.c:2384
+#: src/gpsdrive.c:2352
 msgid "Message for:"
 msgstr ""
 
-#: src/gpsdrive.c:2420
+#: src/gpsdrive.c:2388
 #, c-format
 msgid "Date: %s"
 msgstr ""
 
-#: src/gpsdrive.c:2463 src/gpsdrive.c:2547 src/poi_gui.c:495 src/poi_gui.c:925
+#: src/gpsdrive.c:2431 src/gpsdrive.c:2515 src/poi_gui.c:495 src/poi_gui.c:925
 #: src/poi_gui.c:1171 src/poi_gui.c:1318 src/settings.c:1898
 msgid "Name"
 msgstr ""
 
-#: src/gpsdrive.c:2463 src/gpsdrive.c:2547 src/poi_gui.c:936
+#: src/gpsdrive.c:2431 src/gpsdrive.c:2515 src/poi_gui.c:936
 #: src/poi_gui.c:1325 src/routes.c:411 src/settings.c:697 src/settings.c:1352
 msgid "Distance"
 msgstr ""
 
-#: src/gpsdrive.c:2474
+#: src/gpsdrive.c:2442
 msgid "Please select message recipient"
 msgstr ""
 
-#: src/gpsdrive.c:2547 src/poi_gui.c:577 src/poi_gui.c:945
+#: src/gpsdrive.c:2515 src/poi_gui.c:577 src/poi_gui.c:945
 msgid "Type"
 msgstr ""
 
-#: src/gpsdrive.c:2576
+#: src/gpsdrive.c:2544
 msgid "Select reference point"
 msgstr ""
 
-#: src/gpsdrive.c:2580
+#: src/gpsdrive.c:2548
 msgid "Please select your destination"
 msgstr ""
 
-#: src/gpsdrive.c:2612
+#: src/gpsdrive.c:2580
 msgid "Edit route"
 msgstr ""
 
-#: src/gpsdrive.c:2615
+#: src/gpsdrive.c:2583
 msgid "Create route"
 msgstr ""
 
-#: src/gpsdrive.c:2713
+#: src/gpsdrive.c:2681
 msgid "Create a route using some waypoints from this list"
 msgstr ""
 
-#: src/gpsdrive.c:2718
+#: src/gpsdrive.c:2686
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr ""
 
-#: src/gpsdrive.c:2722
+#: src/gpsdrive.c:2690
 msgid "Jump to the selected waypoint"
 msgstr ""
 
-#: src/gpsdrive.c:2745
+#: src/gpsdrive.c:2713
 msgid "-v        show version\n"
 msgstr ""
 
-#: src/gpsdrive.c:2746
+#: src/gpsdrive.c:2714
 msgid "-h        print this help\n"
 msgstr ""
 
-#: src/gpsdrive.c:2747
+#: src/gpsdrive.c:2715
 msgid "-d        turn on debug info\n"
 msgstr ""
 
-#: src/gpsdrive.c:2748
+#: src/gpsdrive.c:2716
 msgid "-D X      set debug Level to X\n"
 msgstr ""
 
-#: src/gpsdrive.c:2749
+#: src/gpsdrive.c:2717
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
 msgstr ""
 
-#: src/gpsdrive.c:2750
+#: src/gpsdrive.c:2718
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr ""
 
-#: src/gpsdrive.c:2751
+#: src/gpsdrive.c:2719
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr ""
 
-#: src/gpsdrive.c:2752
+#: src/gpsdrive.c:2720
 msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
 msgstr ""
 
-#: src/gpsdrive.c:2754
+#: src/gpsdrive.c:2722
 msgid ""
 "-X        Use DBUS for communication with gpsd. This disables serial and "
 "socket communication\n"
 msgstr ""
 
-#: src/gpsdrive.c:2756
+#: src/gpsdrive.c:2724
 msgid ""
 "-l LANG   Select language of the voice,\n"
 "          LANG may be english, spanish or german\n"
 msgstr ""
 
-#: src/gpsdrive.c:2758
+#: src/gpsdrive.c:2726
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
 "          don't satisfy you, X is i.e. 768,600,480,200\n"
 msgstr ""
 
-#: src/gpsdrive.c:2760
+#: src/gpsdrive.c:2728
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr ""
 
-#: src/gpsdrive.c:2761
+#: src/gpsdrive.c:2729
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr ""
 
-#: src/gpsdrive.c:2762
+#: src/gpsdrive.c:2730
 msgid "-a        display APM Stuff ( battery status, Temperature)\n"
 msgstr ""
 
-#: src/gpsdrive.c:2763
+#: src/gpsdrive.c:2731
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr ""
 
-#: src/gpsdrive.c:2764
+#: src/gpsdrive.c:2732
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr ""
 
-#: src/gpsdrive.c:2765
+#: src/gpsdrive.c:2733
 msgid "-x        create separate window for menu\n"
 msgstr ""
 
-#: src/gpsdrive.c:2766
+#: src/gpsdrive.c:2734
 msgid "-p        set settings for PDA-Mode (iPAQ, Yopy...)\n"
 msgstr ""
 
-#: src/gpsdrive.c:2767
+#: src/gpsdrive.c:2735
 msgid "-C        set settings for CAR-Mode\n"
 msgstr ""
 
-#: src/gpsdrive.c:2768
+#: src/gpsdrive.c:2736
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 
-#: src/gpsdrive.c:2769
+#: src/gpsdrive.c:2737
 msgid "-q        disable SQL support\n"
 msgstr ""
 
-#: src/gpsdrive.c:2770
+#: src/gpsdrive.c:2738
 msgid "-F        force display of position even it is invalid\n"
 msgstr ""
 
-#: src/gpsdrive.c:2771
+#: src/gpsdrive.c:2739
 msgid "-S        don't show splash screen\n"
 msgstr ""
 
-#: src/gpsdrive.c:2772
+#: src/gpsdrive.c:2740
 msgid "-P        start in Pos Mode\n"
 msgstr ""
 
-#: src/gpsdrive.c:2773
+#: src/gpsdrive.c:2741
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
-#: src/gpsdrive.c:2774
+#: src/gpsdrive.c:2742
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
 msgstr ""
 
-#: src/gpsdrive.c:2789
+#: src/gpsdrive.c:2757
 msgid "Select a track file"
 msgstr ""
 
-#: src/gpsdrive.c:3163
+#: src/gpsdrive.c:3131
 msgid ""
 "\n"
 "You can only choose between english, spanish and german\n"
 "\n"
 msgstr ""
 
-#: src/gpsdrive.c:3297
+#: src/gpsdrive.c:3265
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
 
-#: src/gpsdrive.c:3323 src/gpsdrive.c:3329
+#: src/gpsdrive.c:3291 src/gpsdrive.c:3297
 msgid "n/a"
 msgstr ""
 
-#: src/gpsdrive.c:3344 src/gpsdrive.c:3347 src/gpsdrive.c:3350
+#: src/gpsdrive.c:3312 src/gpsdrive.c:3315 src/gpsdrive.c:3318
 #: src/settings.c:1353
 msgid "Speed"
 msgstr ""
 
-#: src/gpsdrive.c:3357
+#: src/gpsdrive.c:3325
 msgid "Map file"
 msgstr ""
 
-#: src/gpsdrive.c:3358
+#: src/gpsdrive.c:3326
 msgid "---"
 msgstr ""
 
-#: src/gpsdrive.c:3404
+#: src/gpsdrive.c:3372
 msgid "Using speech output"
 msgstr ""
 
-#: src/gpsdrive.c:3604
+#: src/gpsdrive.c:3571
 #, c-format
 msgid ""
 "\n"
@@ -412,7 +412,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/gpsdrive_config.c:100
+#: src/gpsdrive_config.c:98
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
 msgstr ""
 
@@ -702,63 +702,55 @@ msgstr ""
 msgid "SELECTED"
 msgstr ""
 
-#: src/map_handler.c:184
+#: src/map_handler.c:183
 msgid "Map Controls"
 msgstr ""
 
-#: src/map_handler.c:193
-msgid "direct draw sql _Streets"
-msgstr ""
-
-#: src/map_handler.c:196
-msgid "Draw Streets from mySQL table geoinfo.streets"
-msgstr ""
-
-#: src/map_handler.c:211
+#: src/map_handler.c:188
 msgid "Auto _best map"
 msgstr ""
 
-#: src/map_handler.c:216
+#: src/map_handler.c:193
 msgid "Always select the most detailed map available"
 msgstr ""
 
-#: src/map_handler.c:227
+#: src/map_handler.c:204
 msgid "Pos. _mode"
 msgstr ""
 
-#: src/map_handler.c:234
+#: src/map_handler.c:211
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
 msgstr ""
 
-#: src/map_handler.c:244
+#: src/map_handler.c:221
 msgid "Mapnik Mode"
 msgstr ""
 
-#: src/map_handler.c:247
+#: src/map_handler.c:224
 msgid ""
 "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. "
 "OpenStreetMap Data) are used instead of the other maps."
 msgstr ""
 
-#: src/map_handler.c:271
+#: src/map_handler.c:248
 msgid "Shown map type"
 msgstr ""
 
-#: src/map_handler.c:278
+#: src/map_handler.c:255
 msgid "Street map"
 msgstr ""
 
-#: src/map_handler.c:288
+#: src/map_handler.c:265
 msgid "Topo map"
 msgstr ""
 
-#: src/map_handler.c:395
+#: src/map_handler.c:372
 msgid "Error in line "
 msgstr ""
 
-#: src/map_handler.c:397
+#: src/map_handler.c:374
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -766,11 +758,11 @@ msgid ""
 "maps.  Otherwise, the maps will not be displayed!"
 msgstr ""
 
-#: src/map_handler.c:723
+#: src/map_handler.c:700
 msgid " Mapfile could not be loaded:"
 msgstr ""
 
-#: src/map_handler.c:773
+#: src/map_handler.c:750
 msgid "Map found!"
 msgstr ""
 
@@ -1540,7 +1532,7 @@ msgstr ""
 msgid "GpsDrive Settings"
 msgstr ""
 
-#: src/splash.c:137
+#: src/splash.c:136
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1552,7 +1544,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:145
+#: src/splash.c:144
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1567,7 +1559,7 @@ msgid ""
 "-    : Zoom out\n"
 msgstr ""
 
-#: src/splash.c:156
+#: src/splash.c:155
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1580,71 +1572,71 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:166
+#: src/splash.c:165
 msgid "GpsDrive v"
 msgstr ""
 
-#: src/splash.c:172
+#: src/splash.c:171
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.de\n"
 msgstr ""
 
-#: src/splash.c:176
+#: src/splash.c:175
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
 msgstr ""
 
-#: src/splash.c:181
+#: src/splash.c:180
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr ""
 
-#: src/splash.c:186
+#: src/splash.c:185
 msgid "Mouse control (clicking on the map):\n"
 msgstr ""
 
-#: src/splash.c:194
+#: src/splash.c:193
 msgid "Short cuts:\n"
 msgstr ""
 
-#: src/splash.c:201
+#: src/splash.c:200
 msgid "The other key shortcuts are marked as "
 msgstr ""
 
-#: src/splash.c:204
+#: src/splash.c:203
 msgid "underlined"
 msgstr ""
 
-#: src/splash.c:207
+#: src/splash.c:206
 msgid " letters in the button text.\n"
 msgstr ""
 
-#: src/splash.c:210
+#: src/splash.c:209
 msgid "Have a lot of fun!"
 msgstr ""
 
-#: src/splash.c:327
+#: src/splash.c:326
 msgid "From:"
 msgstr ""
 
-#: src/splash.c:398
+#: src/splash.c:397
 #, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr ""
 
-#: src/splash.c:410
+#: src/splash.c:409
 msgid "You received a message through the friends server from:\n"
 msgstr ""
 
-#: src/splash.c:421
+#: src/splash.c:420
 msgid "Message text:\n"
 msgstr ""
 
-#: src/splash.c:546
+#: src/splash.c:545
 #, c-format
 msgid ""
 "\n"
@@ -1654,17 +1646,17 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/splash.c:614
+#: src/splash.c:613
 msgid "translator-credits"
 msgstr ""
 
-#: src/splash.c:616
+#: src/splash.c:615
 msgid ""
 "GpsDrive is a car (bike, ship, plane) navigation system, that displays your "
 "position provided from a GPS receiver on a zoomable map and much more..."
 msgstr ""
 
-#: src/splash.c:619
+#: src/splash.c:618
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -1676,7 +1668,7 @@ msgid ""
 "Attribution-ShareAlike 2.0 license."
 msgstr ""
 
-#: src/splash.c:626
+#: src/splash.c:625
 #, c-format
 msgid ""
 "\n"
@@ -1686,30 +1678,30 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/waypoint.c:671
+#: src/waypoint.c:670
 msgid "Add Point of Interest"
 msgstr ""
 
-#: src/waypoint.c:682
+#: src/waypoint.c:681
 msgid "Name:"
 msgstr ""
 
-#: src/waypoint.c:701
+#: src/waypoint.c:700
 msgid " Type: "
 msgstr ""
 
-#: src/waypoint.c:709
+#: src/waypoint.c:708
 msgid " Comment: "
 msgstr ""
 
-#: src/waypoint.c:747
+#: src/waypoint.c:746
 msgid " Save waypoint in: "
 msgstr ""
 
-#: src/waypoint.c:750
+#: src/waypoint.c:749
 msgid "Database"
 msgstr ""
 
-#: src/waypoint.c:757
+#: src/waypoint.c:756
 msgid "way.txt File"
 msgstr ""

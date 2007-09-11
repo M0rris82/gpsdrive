@@ -36,8 +36,8 @@ mkdir -p logs
     fi
     
     helplines=`./geoinfo.pl  -h | wc -l`
-    if [ $helplines -lt 140 ] ; then 
-	echo "ERROR Starting geoinfo.pl (only $helpline Lines of Online Help)"
+    if [ $helplines -lt 120 ] ; then 
+	echo "ERROR Starting geoinfo.pl (only $helplines Lines of Online Help)"
 	mv ${HOME}/.gpsdrive/gpsdriverc.backup-tests ${HOME}/.gpsdrive/gpsdriverc
 	exit 1
     fi

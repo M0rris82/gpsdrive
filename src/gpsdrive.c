@@ -94,7 +94,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "battery.h"
 #include "poi.h"
-#include "streets.h"
 #include "wlan.h"
 #include "track.h"
 #include "waypoint.h"
@@ -258,7 +257,7 @@ gint nlist[] = { 500,
 GtkWidget *label_map_filename;
 GtkWidget *label_timedest;
 GtkWidget *wp_bt;
-GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt, *wlan_draw_bt;
+GtkWidget *bestmap_bt, *poi_draw_bt, *wlan_draw_bt;
 
 GtkWidget *track_bt;
 GtkWidget *savetrack_bt;
@@ -368,7 +367,6 @@ GdkFont *font_wplabel;
 PangoFontDescription *pfd_text;
 gchar font_text[100];
 
-extern gint streets_draw;
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
 extern int pleasepollme;
 
@@ -400,7 +398,6 @@ int havedefaultmap = TRUE;
 
 int storetz = FALSE;
 int egnoson = 0, egnosoff = 0;
-extern char actualstreetname[200];
 
 // ---------------------- for nmea_handler.c
 extern gint haveRMCsentence;
@@ -1442,7 +1439,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (usesql)
 	{
-	    streets_draw_list ();
 	    poi_draw_list ();
 	    wlan_draw_list ();
 	}
@@ -2189,34 +2185,6 @@ dotripmeter (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-
-
-/* *****************************************************************************
- * switching STREETS on/off 
- */
-gint
-streets_draw_cb (GtkWidget * widget, guint datum)
-{
-
-    if ( ! streets_draw ) 
-	streets_check_if_moved_reset();
-
-    if ( NULL == widget ) 
-	widget = streets_draw_bt;
-
-    if ( mydebug > 1 )
-	g_print ("streets_draw_cb=%d\n", datum);
-
-    if ( datum )
-	streets_draw = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (widget),streets_draw );
-    
-
-    streets_draw_list ();
-    current.needtosave = TRUE;
-    return TRUE;
-}
 
 
 
@@ -3536,8 +3504,7 @@ drawable =
 	poi_init ();
 	friends_init ();
 	route_init ();
-    wlan_init ();
-    streets_init ();
+	wlan_init ();
 
 	load_friends_icon ();
 

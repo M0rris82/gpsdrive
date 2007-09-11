@@ -17,64 +17,73 @@ Contents
 
 Introduction
 ============
-Firstly you don't absolutely need MySQL to use GpsDrive.  It will happily store the basic  information it needs in flat files.  However if you want to use some of the more advanced features then you will need MySQL.  Other databases may be supported in the future but at the moment they aren't.  One of the notable features of GpsDrive is the ability to store vector based street information from the Open Street Map Project and MySQL is the only way to do this.  GpsDrive automatically detects if MySQL is running and if it is it running it will use it.  
+Firstly you don't absolutely need MySQL to use GpsDrive. It will happily 
+store the basic information it needs in flat files.  However if you want 
+to use some of the more advanced features then you will need MySQL.  
+Other databases may be supported in the future but at the moment they 
+aren't. GpsDrive automatically detects if MySQL is 
+running and if it is it running it will use it.  
 
 Install
 =======
-The best way to install MySQL is to use the package manager that comes with your flavour of Linux.  If for some reason this isn't possible then the next best thing is to download a ready made package file from the following location http://dev.mysql.com/downloads/mysql/5.0.html.  
+The best way to install MySQL is to use the package manager that comes with 
+your flavour of Linux.  If for some reason this isn't possible then the next 
+best thing is to download a ready made package file from the following 
+location http://dev.mysql.com/downloads/mysql/5.0.html.  
 
 Don't forget your copy of Linux may have come with MySQL pre-installed.
 
-If you still can't find what you need then download the source tar ball (at the bottom of the page) and check out the compile instructions below. (not for the faint hearted)
+If you still can't find what you need then download the source tar ball (at 
+the bottom of the page) and check out the compile instructions below. 
+(not for the faint hearted)
 
 <TODO> Minimum required version of MySQL.
 (I'm not sure of the minimum but I'm using 5.0.22)
 
 Initialise the Database
 =======================
-Once you have MySQL up and running you can use these scripts to initialise the database for GpsDrive.  This task was previously performed by a script called create.sql which is out of date and no longer being maintained.
+Once you have MySQL up and running you can use these scripts to initialise 
+the database for GpsDrive.  This task was previously performed by a script 
+called create.sql which is out of date and no longer being maintained.
 
 Change directory to GpsDrive's bin folder then run the following command.
 
 ./geoinfo.pl -create-db -fill-defaults -openstreetmap \
 	-db-user=root -db-password=<yourpassword> 
 
-If you have installed GpsDrive into a directory other than the default you may need to update the perl library path before running the command.  Change the path depending on your installation.
+If you have installed GpsDrive into a directory other than the default you 
+may need to update the perl library path before running the command.  Change 
+the path depending on your installation.
 
 export PERL5LIB=/<your path>/gpsdrive/share/perl5
 
-if you have not set a root password for your mysql installation, you can reset it with the following command:
-   # echo " UPDATE user SET Password=PASSWORD('new_password') WHERE user='root'; FLUSH PRIVILEGES;" |mysql -u root mysql
+if you have not set a root password for your mysql installation, you can reset 
+it with the following command:
+   echo " UPDATE user SET Password=PASSWORD('new_password') WHERE user='root'; FLUSH PRIVILEGES;" |mysql -u root mysql
 where new_password is the new password for root.
 
 Insert Openstreetmap Data (Optional)
 ====================================
-The following command downloads and inserts the openstreetmap street info for Earth! from Joerg's mirror of the openstreetmap db.  The mirror is only updated once per month (or so).
+The following command downloads and inserts the openstreetmap street 
+info for Earth! from planet.openstreetmap.org/ to you local mysql. 
 
 ./geoinfo.pl --db-user=root --db-password=<yourpassword> --no-delete --osm
 
-If you want to download a particular section directly from the openstreetmap database and insert it into your MySQL database then use a URL in your browser like this. 
-
-http://www.openstreetmap.org/api/0.3/map?bbox=151.0,-34.1,151.1,-34.0
-
-Where the numbers define a square (bottom left longitude, bottom left latitude, top right longitude, top right latitude).  Currently only a .1 deg box is allowed is allowed but this will increase in the future.
-
-This may take a little time if the server is busy. When it is done you may be presented with a empty browser screen.  This is because the server returns information in XML format and your browser doesn't know how to display it.  Just choose Save As and save the data as a file and it can be used as input in the next command. The file extension will probably be .osm
-
-To insert the downloaded information into your database use the following command
-
-./geoinfo.pl --db-user=root -db-password=<yourpassword> --no-delete -osm=<full path to the file>
-
-Now that you have MySQL up and running and have some data in there you should see extra options in the menu on the left hand side when you start up GpsDrive.
+Now that you have MySQL up and running and have some data in there you 
+should see extra options in the menu on the left hand side when you start up GpsDrive.
 
 About Openstreetmap
 ===================
 Rather than me describe it here you are better off to go check it out here.
-http://openstreetmap.org.  In a line (or two), it is a free to use, user updatable database containing vector bassed street maps covering the whole world.  Users like you and me upload their gps track information and then draw the streets in over top of the tracks.  It is fun once you start seeing results.
+http://openstreetmap.org.  In a line (or two), it is a free to use, user 
+updatable database containing vector bassed street maps covering the whole 
+world. Users like you and me upload their gps track information and then 
+draw the streets in over top of the tracks. It is fun once you start 
+seeing results.
 
 Converting a track log ready for upload to Openstreetmap
 =======================================================
-<TODO>
+just use osmtrackfilter
 
 
 MySQL Options in Gpsdrive

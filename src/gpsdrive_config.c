@@ -31,7 +31,6 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <poi.h>
 #include <wlan.h>
-#include <streets.h>
 #include <time.h>
 #include <speech_out.h>
 #include <icons.h>
@@ -55,7 +54,6 @@ GtkWidget *splash_window;
 extern gint displaymap_top, displaymap_map;
 extern gint mydebug;
 extern gint setdefaultpos;
-extern gint streets_draw;
 extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
@@ -262,7 +260,6 @@ writeconfig ()
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
 	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
-	fprintf (fp, "draw_streets = %d\n", streets_draw);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
 	fprintf (fp, "draw_poilabel = %d\n", local_config.showpoilabel);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
@@ -496,8 +493,6 @@ readconfig ()
 				local_config.showzoom = atoi (par2);
 			else if ( (strcmp(par1, "show_scalebar")) == 0)
 				local_config.showscalebar = atoi (par2);
-			else if ( (strcmp(par1, "draw_streets")) == 0)
-				streets_draw = atoi (par2);
 			else if ( (strcmp(par1, "draw_poi")) == 0)
 				local_config.showpoi = atoi (par2);
 			else if ( (strcmp(par1, "draw_poilabel")) == 0)

@@ -37,7 +37,6 @@ Disclaimer: Please do not use for navigation.
 #include "speech_out.h"
 #include "speech_strings.h"
 #include "battery.h"
-#include "streets.h"
 #include "nmea_handler.h"
 #include "gui.h"
 

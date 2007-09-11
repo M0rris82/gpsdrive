@@ -68,9 +68,8 @@ wpstruct *routelist;
 extern gint thisrouteline;
 extern gint gcount, milesflag, downloadwindowactive;
 extern GtkWidget *drawing_minimap;
-extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
+extern GtkWidget *bestmap_bt, *poi_draw_bt;
 extern GtkWidget *posbt, *mapnik_bt;
-extern gint streets_draw;
 extern currentstatus_struct current;
 
 extern gchar oldfilename[2048];
@@ -184,28 +183,6 @@ make_display_map_controls ()
 	frame_maptype = gtk_frame_new (_("Map Controls"));
 	vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
-
-	// Checkbox ---- STREETS Draw
-	if ( ! mydebug) {
-	    streets_draw=0; // Switch off if not in Debug Mode, 
-	    // since it's only a prove of concept
-	}
-	streets_draw_bt = gtk_check_button_new_with_label (_("direct draw sql _Streets"));
-	gtk_button_set_use_underline (GTK_BUTTON (streets_draw_bt), TRUE);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), streets_draw_bt,
-		_("Draw Streets from mySQL table geoinfo.streets"), NULL);
-	gtk_signal_connect (GTK_OBJECT (streets_draw_bt), "clicked",
-			    GTK_SIGNAL_FUNC (streets_draw_cb), (gpointer) 1);
-	if ( mydebug>0)
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_map_controls),
-			streets_draw_bt, FALSE,FALSE, 0 * PADDING);
-	}
-	if (streets_draw)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (streets_draw_bt), TRUE);
-	}
 
 	// Checkbox ---- Best Map
 	bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));

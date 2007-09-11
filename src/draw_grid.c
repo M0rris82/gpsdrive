@@ -30,7 +30,6 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 #include "gpsdrive.h"
 #include "icons.h"
-#include "streets.h"
 #include <fcntl.h>
 #include <math.h>
 #include <stdio.h>

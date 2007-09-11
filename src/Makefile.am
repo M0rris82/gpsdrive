@@ -48,8 +48,8 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	navigation.c \
 	speech_out.c speech_out.h\
 	friends.c \
-	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_grid.c settings.c \
-	battery.h track.h poi.h streets.h wlan.h waypoint.h gpsdrive.h \
+	battery.c track.c poi.c wlan.c waypoint.c draw_grid.c settings.c \
+	battery.h track.h poi.h wlan.h waypoint.h gpsdrive.h \
 	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
 	gui.c gui.h poi_gui.c poi_gui.h \
 	main_gui.c main_gui.h \

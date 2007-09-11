@@ -34,7 +34,6 @@ src/settings_gui.c
 src/speech_out.c
 src/speech_strings.c
 src/splash.c
-src/streets.c
 src/track.c
 src/unit_test.c
 src/util/gmapview.c

@@ -51,19 +51,12 @@ use Geo::Gpsdrive::Utils;
 use Geo::Gpsdrive::Gps;
 
 use Geo::Gpsdrive::DB_Defaults;
-use Geo::Gpsdrive::DB_Examples;
-
 use Geo::Gpsdrive::GpsDrive;
 use Geo::Gpsdrive::JiGLE;
 use Geo::Gpsdrive::Kismet;
-use Geo::Gpsdrive::NGA;
 use Geo::Gpsdrive::OSM;
-use Geo::Gpsdrive::OpenGeoDB;
-use Geo::Gpsdrive::OpenGeoDB2;
 use Geo::Gpsdrive::PocketGpsPoi;
-use Geo::Gpsdrive::WDB;
 use Geo::Gpsdrive::Way_Txt;
-use Geo::Gpsdrive::census;
 use Geo::Gpsdrive::getstreet;
 use Geo::Gpsdrive::gettraffic;
 
@@ -78,12 +71,7 @@ our $GPSDRIVE_DB_NAME = "geoinfo";
 our $development_version = (`id` =~ m/tweety/);
 our $no_delete;
 
-my $do_census            = 0;
-my $do_earthinfo_nga_mil = undef;
 my @osm_files               = ();
-my $do_opengeodb         = 0;
-my $do_opengeodb2        = 0;
-my $do_wdb               = 0;
 my $do_mapsource_points  = 0; 
 my $do_cameras           = 0;
 my $do_all               = 0;
@@ -92,7 +80,6 @@ my $do_gpsdrive_tracks   = 0;
 my $do_kismet_tracks     = 0;
 my $do_jigle             = 0;
 my $do_import_defaults   = 0;
-my $do_import_examples   = 0;
 my $do_import_way_txt    = 0;
 my $do_traffic;
 my $show_traffic;
@@ -131,15 +118,9 @@ pod2usage(1)
 GetOptions ( 
 	     'create-db'           => \$do_create_db,
 	     'fill-defaults'       => \$do_import_defaults,
-	     'fill-examples'       => \$do_import_examples,
-	     'census'              => \$do_census,
-	     'earthinfo_nga_mil:s' => \$do_earthinfo_nga_mil,
 	     'openstreetmap:s@'     => \@osm_files,
 	     'osm:s@'               => \@osm_files,
 	     'osm_polite=s'        => \$Geo::Gpsdrive::OSM::OSM_polite,
-	     'opengeodb'           => \$do_opengeodb,
-	     'opengeodb2'          => \$do_opengeodb2,
-	     'wdb:s'               => \$do_wdb,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
@@ -196,38 +177,18 @@ if ( $do_show_version ) {
 
 if ( $do_all ) {
     $do_create_db
-	= $do_census
-	= $do_opengeodb
-	= $do_opengeodb2
 	= @osm_files
 	= $do_gpsdrive_tracks
 	= $do_cameras
 	= $do_jigle
 	= $do_import_defaults
-#	= $do_import_examples
 	= 1;
     if ( $ENV{'LANG'} =~ /de_DE/ ) {
 	print "\n";
 	print "=============================================================================\n";
 	print "I assume i'm in Germany (LANG='$ENV{'LANG'}')\n";
 
-	$do_earthinfo_nga_mil ||= 'gm,sz,be,au,bu,ez,da,fi,fr,gr,hu,lu,mt,mn';
-	print "    --> loading only $do_earthinfo_nga_mil for NGA\n";
     }
-    if ( $ENV{'LANG'} =~ /de_/ ) {
-	print "\n";
-	print "=============================================================================\n";
-	print "I assume i'm in Europe (LANG='$ENV{'LANG'}')\n";
-
-	$do_wdb ||="europe";
-	print "    --> loading only $do_wdb for WDB\n";
-
-	print "=============================================================================\n";
-	print "\n";
-    } else {
-	$do_earthinfo_nga_mil = 1;
-	$do_wdb =1;
-    };
 }
 
 if ( $do_list_areas ) {
@@ -254,19 +215,9 @@ Geo::Gpsdrive::DBFuncs::create_db()
 Geo::Gpsdrive::DB_Defaults::fill_defaults()
     if $do_import_defaults || $do_create_db;
 
-Geo::Gpsdrive::DB_Examples::fill_examples()
-    if $do_import_examples;
-
 # Get and Unpack openstreetmap  http://www.openstreetmap.org/
 Geo::Gpsdrive::OSM::import_Data($areas_todo,@osm_files) 
     if ( @osm_files );
-
-# Get and Unpack wdb  http://www.evl.uic.edu/pape/data/WDB/WDB-text.tar.gz
-Geo::Gpsdrive::WDB::import_Data($do_wdb)
-    if ( $do_wdb );
-
-Geo::Gpsdrive::getstreet::streets()
-	if $street && $ort|| $file;
 
 Geo::Gpsdrive::gettraffic::gettraffic()
 	if $do_traffic;
@@ -278,27 +229,9 @@ Geo::Gpsdrive::gettraffic::showtraffic()
 Geo::Gpsdrive::mapsource::import_Data()
     if ( $do_mapsource_points );
 
-# Get and Unpack earth-info.nga.mil     http://earth-info.nga.mil/gns/html/cntyfile/gm.zip
-Geo::Gpsdrive::NGA::import_Data($do_earthinfo_nga_mil)
-    if ( defined $do_earthinfo_nga_mil );
-
-
-# Get and Unpack opengeodb  http://www.opengeodb.de/download/
-Geo::Gpsdrive::OpenGeoDB::import_Data() 
-    if ( $do_opengeodb );
-
-# Get and Unpack opengeodb2  http://www.opengeodb.de/download/
-Geo::Gpsdrive::OpenGeoDB2::import_Data() 
-    if ( $do_opengeodb2 );
-
-# Get and Unpack Census Data        http://www.census.gov/geo/cob/bdy/
-Geo::Gpsdrive::census::import_Data()
-    if ( $do_census );
-
 # Get and Unpack POCKETGPS_DIR      http://www.pocketgpspoi.com
 Geo::Gpsdrive::PocketGpsPoi::import_Data()
     if ( $do_cameras );
-
 
 # Import Waypoints from Way.txt
 Geo::Gpsdrive::Way_Txt::import_Data()
@@ -345,7 +278,7 @@ WARNING:
 
 B<Common usages:>
 
-geoinfo.pl [-d] [-v] [-h] [-earthinfo_nga_mil] [--opengeodb] [--wdb=??] [--mapsource_points='Filename']
+geoinfo.pl [-d] [-v] [-h] [--mapsource_points='Filename']
 
 =head1 OPTIONS
 
@@ -370,27 +303,6 @@ Fill the Databases with usefull defaults. This option is
 needed before you can import any of the other importers.
 
 
-=item B<--earthinfo_nga_mil=xx[,yy][,zz]...>
-
-Download from earthinfo.nga.mil and import into 
-mysql DB. 
-These are ~2.500.000 City Names around the world delivered in
-249 single Files.
-
-
-Download Country File from
- http://earth-info.nga.mil/gns/html/
-
-where xx is one or more countries. 
- poi.pl -earthinfo_nga_mil=??
- Gives you a complete list of allowed county tupels.
-
-For more info on Countries have a look at
- http://earth-info.nga.mil/gns/html/cntry_files.html
-
-The complete download is about ~900 MB
-
-
 =item B<--openstreetmap> B<--osm>[=filename] B<--osm>[=download:<areaname>]
 
 Download and import openstreetmap Data. 
@@ -401,65 +313,6 @@ If you use download:<areaname> the data for this area is directly
 downloaded from the OSM Server. Since the osm Servers are currently 
 under more than heavy load you should use this feature with extreme 
 care and only if REALLY REALLY necessary.
-
-=item B<--opengeodb>
-
-Download and import opengeodb to Point of interrests
-
-This Database has about 20003 entries from German Towns
-
-opengeodb-0.1.3-txt.tar.gz has 442K
-
-
-=item B<--opengeodb2>
-
-Download and import opengeodb-2.4a
-
-This Database has about 20003 entries from German Towns
-
-In the current release only the sql File is downloaded and
-executed. This imports the Data from opengeodb into a 
-Database named opengeodb. This Database is not yet used in the 
-current gpsdrive Version.
-
-Download size opengeodb-0.2.4a-UTF8-mysql.zip 1.8MB
-
-
-=item B<--wdb=??>
-
-CIA World DataBank II
-
-Download and import WDB Data into geoinfo.streets Table
-
-These data consists of Country Borders and Waterlines
-
-Download is ~30 MB
-Unpacking: ~119 MB
-
-At the moment it only import europe Data for testing.
-Available regions would be: 
-	africa  asia  europe 
-	namer(North America) samer(South America)
-
-
-
-=item B<--mapsource_points='Filename'>
-
-******** NO function yet *********
-
-
-=item B<--cameras>
-
-******** NO function yet *********
-
-
-
-
-=item B<--fill-examples>
-
-Fill the Databases with usefull examples. This is usefull for 
-testing without a large Database included.
-
 
 =item B<--all>
 

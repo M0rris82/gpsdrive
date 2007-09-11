@@ -62,7 +62,7 @@ friendsd2_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am__objects_1 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	gpsdrive_config.$(OBJEXT) navigation.$(OBJEXT) \
 	speech_out.$(OBJEXT) friends.$(OBJEXT) battery.$(OBJEXT) \
-	track.$(OBJEXT) poi.$(OBJEXT) streets.$(OBJEXT) wlan.$(OBJEXT) \
+	track.$(OBJEXT) poi.$(OBJEXT) wlan.$(OBJEXT) \
 	waypoint.$(OBJEXT) draw_grid.$(OBJEXT) settings.$(OBJEXT) \
 	gpssql.$(OBJEXT) gpskismet.$(OBJEXT) icons.$(OBJEXT) \
 	gui.$(OBJEXT) poi_gui.$(OBJEXT) main_gui.$(OBJEXT) \
@@ -295,8 +295,8 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	navigation.c \
 	speech_out.c speech_out.h\
 	friends.c \
-	battery.c track.c poi.c streets.c wlan.c waypoint.c draw_grid.c settings.c \
-	battery.h track.h poi.h streets.h wlan.h waypoint.h gpsdrive.h \
+	battery.c track.c poi.c wlan.c waypoint.c draw_grid.c settings.c \
+	battery.h track.h poi.h wlan.h waypoint.h gpsdrive.h \
 	gpssql.c gpskismet.c gpskismet.h icons.c icons.h \
 	gui.c gui.h poi_gui.c poi_gui.h \
 	main_gui.c main_gui.h \
@@ -435,7 +435,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_strings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splash.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/streets.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/track.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/waypoint.Po@am__quote@

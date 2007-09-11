@@ -30,7 +30,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive_config.h"
 #include <gpsdrive.h>
 #include <poi.h>
-#include <streets.h>
 #include <time.h>
 #include <speech_out.h>
 #include <icons.h>
