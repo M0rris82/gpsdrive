@@ -442,13 +442,22 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 }
 
 
-void
+gint
 toggle_window_cb (GtkWidget *window)
 {
 	if (GTK_WIDGET_VISIBLE (window))
+	{
 		gtk_widget_hide_all (window);
+		if (mydebug > 10)
+			fprintf (stderr, "Hiding Window\n");
+	}
 	else
+	{
 		gtk_widget_show_all (window);
+		if (mydebug > 10)
+			fprintf (stderr, "Showing Window\n");
+	}
+	return TRUE;
 }
 
 
@@ -820,35 +829,33 @@ int gui_init (void)
 	if (usesql)
 		poi_types_window = create_poi_types_window ();
 
-
-drawable =
+// the following lines habe been moved from gpsdrive.c to here.
+// maybe something has to be sorted out:
+{	
+	drawable =
 	gdk_pixmap_new (map_drawingarea->window, SCREEN_X, SCREEN_Y, -1);
-
-//    drawable =
-//	gdk_pixmap_new (main_window->window, SCREEN_X, SCREEN_Y, -1);
-
 	kontext_map = gdk_gc_new (main_window->window);
 
+	gdk_gc_set_clip_origin (kontext_map, 0, 0);
+	rectangle.width = SCREEN_X;
+	rectangle.height = SCREEN_Y;
 
-    gdk_gc_set_clip_origin (kontext_map, 0, 0);
-    rectangle.width = SCREEN_X;
-    rectangle.height = SCREEN_Y;
+	gdk_gc_set_clip_rectangle (kontext_map, &rectangle);
 
-    gdk_gc_set_clip_rectangle (kontext_map, &rectangle);
-
-    /* fill window with color */
-    gdk_gc_set_function (kontext_map, GDK_COPY);
-    gdk_gc_set_foreground (kontext_map, &colors.lcd2);
-    gdk_draw_rectangle (map_drawingarea->window, kontext_map, 1, 0, 0, SCREEN_X,
-			SCREEN_Y);
+	/* fill window with color */
+	gdk_gc_set_function (kontext_map, GDK_COPY);
+	gdk_gc_set_foreground (kontext_map, &colors.lcd2);
+	gdk_draw_rectangle (map_drawingarea->window, kontext_map, 1, 0, 0,
+		SCREEN_X, SCREEN_Y);
     {
 	GtkStyle *style;
 	style = gtk_rc_get_style (main_window);
 	colors.defaultcolor = style->bg[GTK_STATE_NORMAL];
     }
+}
 
-    /* set cross cursor for map posmode */
-    cursor_cross = gdk_cursor_new (GDK_TCROSS);
+	/* set cross cursor for map posmode */
+	cursor_cross = gdk_cursor_new (GDK_TCROSS);
 
 	return 0;
 }

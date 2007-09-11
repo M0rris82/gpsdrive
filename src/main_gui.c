@@ -624,13 +624,12 @@ update_dashboard (GtkWidget *frame, gint source)
 					g_strlcpy (unit, "m", sizeof (unit));
 				}
 			}
-			g_snprintf (content, sizeof (content),
+				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">"
-				"% 3.1f<span font_desc=\"%.f\"> %s</span></span>",
+				"%s<span font_desc=\"%.f\"> %s</span></span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard,
-				current.groundspeed,
-				font_size*0.66, unit);
+				ctmp, font_size*0.66, unit);
 			}
 			else
 			{

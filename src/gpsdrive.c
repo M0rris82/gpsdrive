@@ -3361,9 +3361,6 @@ main (int argc, char *argv[])
     }
 #endif
 
-	//gui_init ();
-
-
 
 	if (havespeechout)
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),

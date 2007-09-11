@@ -491,6 +491,7 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_SCALE_MAX, poi_type_list[i].scale_max,
 		POITYPE_DESCRIPTION, poi_type_list[i].description,
 		POITYPE_TITLE, poi_type_list[i].title,
+		POITYPE_SELECT, FALSE,
 		-1);
 
 	if (mydebug > 30)
@@ -1287,7 +1288,8 @@ poi_init (void)
 		G_TYPE_INT,		/* scale_min */
 		G_TYPE_INT,		/* scale_max */
 		G_TYPE_STRING,		/* description */
-		G_TYPE_STRING		/* title */
+		G_TYPE_STRING,		/* title */
+		G_TYPE_INT		/* select */
 		);
 
 	/* read poi-type data and icons from icons.xml */

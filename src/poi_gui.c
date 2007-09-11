@@ -828,8 +828,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	radiobutton_distance_group = gtk_radio_button_get_group
 		(GTK_RADIO_BUTTON (radiobutton_distcursor));
 	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_distcursor, 
- 		_("Search near selected Destination"), NULL);
-	 
+		_("Search near selected Destination"), NULL);
+
 	/* POI-Type Selection */
 	hbox_type = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox_criteria), hbox_type, TRUE, TRUE, 0);
@@ -873,11 +873,6 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	
 	g_signal_connect_swapped (radiobutton_typesel, "toggled",
 		GTK_SIGNAL_FUNC (searchpoitypemode_cb), comboboxentry_type);
-
-	// TODO: add functionality to POI-Type selection buttons,
-	// until then the buttons are disabled
-	//gtk_widget_set_sensitive ( radiobutton_typesel, FALSE );
-	//gtk_widget_set_sensitive ( button_types, FALSE );
 
 	label_criteria = gtk_label_new (_("Search Criteria"));
 	gtk_widget_show (label_criteria);
@@ -1003,7 +998,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 		_("Show detailed Information for selected Point of Interest"),
 		NULL);
 
-	// ### disable POI-Info button, until the functionality is completed:
+	// TODO: complete POI-Info functionality, until then button is disabled:
 	gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
 
 	label_results = gtk_label_new (_("Results"));
@@ -1166,11 +1161,16 @@ GtkWidget
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
+	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+		renderer_poitypes, "active", POITYPE_SELECT, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
 	renderer_poitypes = gtk_cell_renderer_text_new ();
 	column_poitypes = gtk_tree_view_column_new_with_attributes (
 		_("Name"), renderer_poitypes,
 		"text", POITYPE_TITLE, NULL);
-
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
@@ -1206,6 +1206,9 @@ GtkWidget
 	gtk_box_pack_end (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_close, "clicked", 
 		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
+
+	g_signal_connect (poi_types_window, "delete-event", 
+		GTK_SIGNAL_FUNC (toggle_window_cb), NULL);
 
 	gtk_tree_view_expand_all (GTK_TREE_VIEW (poitypes_treeview));
 
