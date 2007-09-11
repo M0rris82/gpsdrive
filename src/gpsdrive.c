@@ -1656,6 +1656,9 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 	/*  draw the minimap */
 	if (!pixbuf_minimap)
 		return TRUE;
+	if (local_config.guimode == GUI_CAR)
+		return TRUE;
+	
 
 	drawable_minimap = drawing_minimap->window;
 	kontext_minimap = gdk_gc_new (drawable_minimap);

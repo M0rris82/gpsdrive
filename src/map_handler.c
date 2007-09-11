@@ -1057,14 +1057,14 @@ drawdownloadrectangle (gint big)
 			      y - yo / 2, xo, yo);
 	}
       else
-	{
-	  calcxymini (&x, &y, lo, la, 1);
-	  xo = 128.0 * scale / current.mapscale;
-	  yo = 102.0 * scale / current.mapscale;
-	  gdk_draw_rectangle (drawing_minimap->window,
-			      kontext_map, 1, x - xo / 2, y - yo / 2, xo, yo);
-	}
-
+	  if (local_config.guimode != GUI_CAR)	{
+	      calcxymini (&x, &y, lo, la, 1);
+	      xo = 128.0 * scale / current.mapscale;
+	      yo = 102.0 * scale / current.mapscale;
+	      gdk_draw_rectangle (drawing_minimap->window,
+				  kontext_map, 1, x - xo / 2, y - yo / 2, xo, yo);
+	  }
+      
       gdk_gc_set_function (kontext_map, GDK_COPY);
     }
 
