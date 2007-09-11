@@ -108,14 +108,17 @@ string ReplaceString(const string &SearchString, const string &ReplaceString, st
     return StringToReplace;
 }
 
+/*
+ * initialize mapnik
+ */
 extern "C"
 void init_mapnik (char *ConfigXML) {
-	using namespace mapnik;
+
 	// register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
    
     datasource_cache::instance()->register_datasources("/usr/lib/mapnik/input/");
-    freetype_engine::instance()->register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
+    freetype_engine::instance()->register_font("/usr/lib/mapnik/fonts/DejaVuSans.ttf");
     
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
@@ -285,22 +288,27 @@ convert_color_channel (unsigned char Source, unsigned char Alpha) {
   return Alpha ? ((Source << 8) - Source) / Alpha : 0;
 }
 
+/*
+ * converting argb32 to gdkpixbuf
+ */
 void
 convert_argb32_to_gdkpixbuf_data (unsigned char const *Source, unsigned char *Dest) {
 	unsigned char const *SourcePixel = Source;
 	unsigned char *DestPixel = Dest;
 	for (int y = 0; y < MapnikMap.HeightInt; y++) {
-		for (int x = 0; x < MapnikMap.WidthInt; x++)
-		{
+		for (int x = 0; x < MapnikMap.WidthInt; x++) {
 			DestPixel[0] = convert_color_channel(SourcePixel[0], SourcePixel[3]);
 			DestPixel[1] = convert_color_channel(SourcePixel[1], SourcePixel[3]);
 			DestPixel[2] = convert_color_channel(SourcePixel[2], SourcePixel[3]);
 			DestPixel += 3;
 			SourcePixel += 4;
 		}
-    }
-  }
+	}
+}
 
+/* 
+ * is there a new map to render?
+ */
 extern "C"
 void render_mapnik () {
 
@@ -313,23 +321,13 @@ void render_mapnik () {
     double scale_denom = MapnikMap.ScaleInt;
     double res = scale_denom * 0.00028;
     
-   
-   
-    
+   /* render image */
     Envelope<double> box = Envelope<double>(MapnikMap.CenterPt.x - 0.5 * MapnikMap.WidthInt * res,
     					MapnikMap.CenterPt.y - 0.5 * MapnikMap.HeightInt * res,
     					MapnikMap.CenterPt.x + 0.5 * MapnikMap.WidthInt * res,
     					MapnikMap.CenterPt.y + 0.5 * MapnikMap.HeightInt * res);
     
-    // World
-    //Envelope<double> box = Envelope<double>(-29785751.54497776,-19929239.11337915,
-    //				               29723259.88776701,18379686.99645029);
-    // Small area
-    // Envelope<double> box = Envelope<double>(-16944.38844621579,6679978.34125,
-    //                                         -16811.61155378421,6680061.65875);
-    
     MapnikMap.MapPtr->zoomToBox(box);
-    
     
     Image32 buf(MapnikMap.WidthInt, MapnikMap.HeightInt);
     mapnik::agg_renderer<Image32> ren(*MapnikMap.MapPtr,buf);
@@ -337,21 +335,13 @@ void render_mapnik () {
     
     if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
+    /* get raw data for gpsdrives pixbuf */
     if (!MapnikMap.ImageRawDataPtr) {
     	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
     }
-    
     convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr);
     
-    //MapnikMap.ImageRawDataPtr = *buf.raw_data();
-	
-    // Not working yet
-    // buf.saveToFile("test1.png", "PNG");
-
-    /*
-    QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
-    image.save("/tmp/mapnik.png", "PNG");
-    */
+    /* ok we have a map set default values */
     MapnikMap.NewMapYsn = true;
     mapnik::Envelope<double> ext = MapnikMap.MapPtr->getCurrentExtent();
     mapnik::coord2d pt = ext.center();
@@ -363,34 +353,50 @@ void render_mapnik () {
 
 }
 
+/*
+ * return pointer to imagedata for gpsdrive
+ */
 extern "C"
 unsigned char *get_mapnik_imagedata() {
 	return MapnikMap.ImageRawDataPtr;
 }
 
+/*
+ * return selected mapscale
+ */
 extern "C"
 double get_mapnik_mapscale() {
-	//return scales[MapnikMap.ScaleInt];
 	return MapnikMap.ScaleInt;
 }
 
+/* 
+ * return pixelfactor
+ */
 extern "C"
 double get_mapnik_pixelfactor() {
-	//return scales[MapnikMap.ScaleInt] * 0.00028;
 	return MapnikMap.ScaleInt * 0.00028;
 }
 
+/*
+ * return if a new map was rendered
+ */
 extern "C"
 int get_mapnik_newmapysn() {
 	return MapnikMap.NewMapYsn;
 }
 
+/*
+ * return mapcenter of actual rendered map
+ */
 extern "C"
 void get_mapnik_center(double *pLatDbl, double *pLonDbl) {
 	*pLatDbl = MapnikMap.CenterLatDbl;
 	*pLonDbl = MapnikMap.CenterLonDbl;
 }
 
+/*
+ * wraper function for gpsdrive
+ */
 extern "C"
 void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYInt, int pXOffInt, int pYOffInt, int pZoom) {
 	double XDbl = (SCREEN_X_2 - pXInt - pXOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
@@ -402,6 +408,9 @@ void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYI
 	*pLatDbl = LatDbl;
 }
 
+/*
+ * wraper function for gpsdrive
+ */
 extern "C"
 void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom) {
 	
@@ -416,6 +425,9 @@ void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLon
 
 }
 
+/*
+ * wraper function for gpsdrive
+ */
 extern "C"
 void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLonDbl) {
 	double XDbl = pXInt;
@@ -427,9 +439,11 @@ void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLo
 	*pLatDbl = LatDbl;
 }
 
+/*
+ * wraper function for gpsdrive
+ */
 extern "C"
 void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pZoom) {
-	
 	double X = pLonDbl;
 	double Y = pLatDbl;
 	Proj.forward(X, Y);
