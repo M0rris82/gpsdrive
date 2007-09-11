@@ -629,7 +629,8 @@ about_cb (GtkWidget * widget, guint datum)
 	gtk_about_dialog_set_logo (about_window, pixmap);
 	
 	gtk_widget_show_all (GTK_WIDGET (about_window));
-	
+	g_signal_connect (GTK_WIDGET (about_window), "response", G_CALLBACK
+			  (gtk_widget_destroy), NULL);
 	return TRUE;
 }
 
