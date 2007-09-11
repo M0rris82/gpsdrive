@@ -286,11 +286,11 @@ convert_color_channel (unsigned char Source, unsigned char Alpha) {
 }
 
 void
-convert_argb32_to_gdkpixbuf_data (unsigned char const *Source, unsigned char *Dest, int Width, int Height) {
+convert_argb32_to_gdkpixbuf_data (unsigned char const *Source, unsigned char *Dest) {
 	unsigned char const *SourcePixel = Source;
 	unsigned char *DestPixel = Dest;
-	for (int y = 0; y < Height; y++) {
-		for (int x = 0; x < Width; x++)
+	for (int y = 0; y < MapnikMap.HeightInt; y++) {
+		for (int x = 0; x < MapnikMap.WidthInt; x++)
 		{
 			DestPixel[0] = convert_color_channel(SourcePixel[0], SourcePixel[3]);
 			DestPixel[1] = convert_color_channel(SourcePixel[1], SourcePixel[3]);
@@ -338,10 +338,10 @@ void render_mapnik () {
     if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
     if (!MapnikMap.ImageRawDataPtr) {
-    	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(1280*4*1024 + 10000);
+    	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
     }
     
-    convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr, 1280, 1024);
+    convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr);
     
     //MapnikMap.ImageRawDataPtr = *buf.raw_data();
 	
