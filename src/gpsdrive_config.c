@@ -605,4 +605,6 @@ config_init ()
 		"%s%s",local_config.dir_home,"maps/");
 	g_snprintf (local_config.wp_file, sizeof (local_config.wp_file),
 		"%s%s", local_config.dir_home, "way.txt");
+	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
+		"%s%s", local_config.dir_home, "osm.xml");
 }

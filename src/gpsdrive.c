@@ -3380,7 +3380,17 @@ main (int argc, char *argv[])
 //	    gtk_widget_set_uposition (GTK_WIDGET (menuwin), 0, 0);	/* links oben */
 //	}
 
-
+#ifdef MAPNIK
+    /*
+     * init mapnik before gui
+     */
+    if (gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name())) {
+        init_mapnik(local_config.mapnik_xml_file);
+    } else {
+    	fprintf(stderr,"Could not init Mapnik!\n");
+    	local_config.MapnikStatusInt = 0; // <-- disable mapnik
+    }
+#endif
 
 	gui_init ();
 
@@ -3562,10 +3572,6 @@ drawable =
     if ( do_unit_test ) {
 	unit_test();
     }
-
-#ifdef MAPNIK
-    init_mapnik(1);
-#endif
 
     /*  Mainloop */
     gtk_main ();

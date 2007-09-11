@@ -15,7 +15,9 @@
 #ifndef _MAPNIK_DEF_H
 #define _MAPNIK_DEF_H
 
-void init_mapnik();
+void init_mapnik(char *ConfigXML);
+int active_mapnik_ysn();
+int gen_mapnik_config_xml_ysn(char *Dest, char *Username);
 void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn,  int pScaleLevelInt);
 void render_mapnik ( );
 unsigned char *get_mapnik_imagedata ( );

@@ -52,7 +52,8 @@ typedef struct
 	gint enableapm;
 	gint maxcpuload;
 	gint posmarker;
-	gchar wp_file[200];
+	gchar wp_file[500];
+	gchar mapnik_xml_file[500];
 	gchar dir_home[500];
 	gchar dir_maps[500];
 	gchar icon_theme[500];

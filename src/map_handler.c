@@ -236,19 +236,21 @@ make_display_map_controls ()
 		"to the proximate map."), NULL);
 
 #ifdef MAPNIK
-	// Checkbox ---- Mapnik Mode
-	if ( mydebug > 11 )
-		fprintf(stderr,"make_display_map_controls(Checkbox ---- Mapnik Mode)\n");
-
-	mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
-	gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
-		_("Turn mapnik mode on. In this mode vector maps rendered by "
-		"mapnik (e.g. OpenStreetMap Data) are used instead of the "
-		"other maps."), NULL);
-	g_signal_connect (GTK_OBJECT (mapnik_bt), "clicked",
-			  GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-	gtk_box_pack_start(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
+	if (active_mapnik_ysn()) {
+		// Checkbox ---- Mapnik Mode
+		if ( mydebug > 11 )
+			fprintf(stderr,"make_display_map_controls(Checkbox ---- Mapnik Mode)\n");
+	
+		mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
+		gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
+			_("Turn mapnik mode on. In this mode vector maps rendered by "
+			"mapnik (e.g. OpenStreetMap Data) are used instead of the "
+			"other maps."), NULL);
+		g_signal_connect (GTK_OBJECT (mapnik_bt), "clicked",
+				  GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
+		gtk_box_pack_start(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
+	}
 #endif
 
 	if ( mydebug > 11 )
@@ -848,7 +850,7 @@ test_and_load_newmap ()
     }
 
 #ifdef MAPNIK
-    if ( local_config.MapnikStatusInt > 0 ){
+    if ( local_config.MapnikStatusInt > 0 && active_mapnik_ysn()){
 		if (mydebug > 0)
 		    fprintf (stderr, "rendering mapnik map ....\n");
 	        g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));

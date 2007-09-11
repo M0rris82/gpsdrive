@@ -6,6 +6,7 @@
 #include <QPen>
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -57,6 +58,7 @@ typedef struct {
 } MapnikMapStruct;
 
 MapnikMapStruct MapnikMap;
+int MapnikInitYsn = 0;
 
 namespace mapnik {
 
@@ -87,8 +89,25 @@ double scales [] = {279541132.014,
 const int MIN_LEVEL = 0;
 const int MAX_LEVEL = 18;
 */
+
+/* 
+ * little replace function for strings
+ */
+string ReplaceString(const string &SearchString, const string &ReplaceString, string StringToReplace)
+{          
+    string::size_type pos = StringToReplace.find(SearchString, 0);
+    int LengthSearch = SearchString.length();
+
+    while(string::npos != pos )
+    {      
+        StringToReplace.replace(pos, LengthSearch, ReplaceString);
+        pos = StringToReplace.find(SearchString, 0);          
+    }   
+    return StringToReplace;
+}
+
 extern "C"
-void init_mapnik ( ) {
+void init_mapnik (char *ConfigXML) {
 	using namespace mapnik;
 	// register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
@@ -102,6 +121,30 @@ void init_mapnik ( ) {
     MapnikMap.ScaleInt = -1; // <-- force creation of map if a map is set
     MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
     
+    //load map
+    std::string mapnik_config_file (ConfigXML);
+    mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+    MapnikInitYsn = -1;
+}
+
+/*
+ * mapnik initialized?
+ */
+extern "C"
+int active_mapnik_ysn() {
+	if (MapnikInitYsn)
+		return -1;
+	else
+		return 0;
+	
+}
+
+/*
+ * Generate the local mapnik config xml
+ */
+extern "C"
+int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
+	
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location   
     string mapnik_config_file("./scripts/mapnik/osm.xml");
@@ -111,8 +154,28 @@ void init_mapnik ( ) {
 	mapnik_config_file.assign(DATADIR).append("/mapnik/osm.xml");
     cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
     
-    //load map
-    mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+    if ( ! boost:: filesystem::exists(mapnik_config_file) ) {
+    	// file not found return
+    	return 0;
+    }
+    
+    // load files
+ 
+	ifstream InputXML (mapnik_config_file.c_str());
+	ofstream DestXML (Dest);
+	
+	if (InputXML && DestXML) {
+		if (InputXML.is_open()) {
+			string s ;
+			while (getline(InputXML, s)) {
+				DestXML << ReplaceString("@USER@", Username, s) << endl;
+			}
+		}
+	}
+	InputXML.close();
+	DestXML.close();
+	
+	return -1;
 }
 
 /***
