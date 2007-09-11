@@ -1,9 +1,11 @@
 #ifdef MAPNIK
 
+/*
 #include <QWidget>
 #include <QImage>
 #include <QPixmap>
 #include <QPen>
+*/
 
 #include <iostream>
 #include <fstream>
@@ -275,6 +277,30 @@ void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn
 */
 }
 
+/*
+ * convert the color channel
+ */
+inline unsigned char
+convert_color_channel (unsigned char Source, unsigned char Alpha) {
+  return Alpha ? ((Source << 8) - Source) / Alpha : 0;
+}
+
+void
+convert_argb32_to_gdkpixbuf_data (unsigned char const *Source, unsigned char *Dest, int Width, int Height) {
+	unsigned char const *SourcePixel = Source;
+	unsigned char *DestPixel = Dest;
+	for (int y = 0; y < Height; y++) {
+		for (int x = 0; x < Width; x++)
+		{
+			DestPixel[0] = convert_color_channel(SourcePixel[0], SourcePixel[3]);
+			DestPixel[1] = convert_color_channel(SourcePixel[1], SourcePixel[3]);
+			DestPixel[2] = convert_color_channel(SourcePixel[2], SourcePixel[3]);
+			DestPixel += 3;
+			SourcePixel += 4;
+		}
+    }
+  }
+
 extern "C"
 void render_mapnik () {
 
@@ -311,14 +337,21 @@ void render_mapnik () {
     
     if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
-    MapnikMap.ImageRawDataPtr = (unsigned char *) buf.raw_data();
+    if (!MapnikMap.ImageRawDataPtr) {
+    	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(1280*4*1024 + 10000);
+    }
+    
+    convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr, 1280, 1024);
+    
+    //MapnikMap.ImageRawDataPtr = *buf.raw_data();
 	
     // Not working yet
     // buf.saveToFile("test1.png", "PNG");
 
-    
+    /*
     QImage image((uchar*)buf.raw_data(),1280,1024,QImage::Format_ARGB32);
     image.save("/tmp/mapnik.png", "PNG");
+    */
     MapnikMap.NewMapYsn = true;
     mapnik::Envelope<double> ext = MapnikMap.MapPtr->getCurrentExtent();
     mapnik::coord2d pt = ext.center();

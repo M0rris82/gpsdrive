@@ -126,7 +126,7 @@ map_projection (char *filename)
   else if (strstr(filename, "/top_")) /* For Compatibility */
     proj = proj_top;
 #ifdef MAPNIK
-  else if (strstr(filename, "/tmp/mapnik.png"))
+  else if (strstr(filename, "mapnik"))
     proj = proj_mapnik;
 #endif
   else

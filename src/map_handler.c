@@ -683,29 +683,32 @@ loadmap (char *filename)
   if (maploaded)
     gdk_pixbuf_unref (image);
 
-
-  limage = gdk_pixbuf_new_from_file (filename, NULL);
-  if (limage == NULL)
-    {
-      g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
-      limage = gdk_pixbuf_new_from_file (mappath, NULL);
-    }
-  if (limage == NULL)
-    {
-      g_snprintf (mappath, sizeof (mappath), "%s%s", local_config.dir_maps, filename);
-      limage = gdk_pixbuf_new_from_file (mappath, NULL);
-    }
-  if (limage == NULL)
-    {
-      g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR,
-		  filename);
-      limage = gdk_pixbuf_new_from_file (mappath, NULL);
-    }
-  if (limage == NULL)
-    {
-      g_snprintf (mappath, sizeof (mappath), "/usr/share/gpsdrive/maps/%s",  filename);
-      limage = gdk_pixbuf_new_from_file (mappath, NULL);
-    }
+  if (filename == "mapnik") {
+	  limage = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);
+  } else {
+	  limage = gdk_pixbuf_new_from_file (filename, NULL);
+	  if (limage == NULL)
+	    {
+	      g_snprintf (mappath, sizeof (mappath), "data/maps/%s", filename);
+	      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+	    }
+	  if (limage == NULL)
+	    {
+	      g_snprintf (mappath, sizeof (mappath), "%s%s", local_config.dir_maps, filename);
+	      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+	    }
+	  if (limage == NULL)
+	    {
+	      g_snprintf (mappath, sizeof (mappath), "%s/gpsdrive/maps/%s", DATADIR,
+			  filename);
+	      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+	    }
+	  if (limage == NULL)
+	    {
+	      g_snprintf (mappath, sizeof (mappath), "/usr/share/gpsdrive/maps/%s",  filename);
+	      limage = gdk_pixbuf_new_from_file (mappath, NULL);
+	    }
+  }
 
   map_proj = map_projection (filename);
 
@@ -872,10 +875,8 @@ test_and_load_newmap ()
 			pixelfact = get_mapnik_pixelfactor();
 			get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
 			xoff = yoff = 0;
-			loadmap("/tmp/mapnik.png");
-			
-			/*image = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, 0, 8, 1280, 1024, 1280 * 4, NULL, NULL);
-			*/
+			//loadmap("/tmp/mapnik.png");
+			loadmap("mapnik");
 		}
 	return;
     }
