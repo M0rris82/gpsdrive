@@ -412,7 +412,14 @@ update_dashboard (GtkWidget *frame, gint source)
 	// TODO: add "remaining time", "trip", "gps precision"
 	//gchar s2[100], s3[200], s2a[20];
 	gchar head[100], content[100], ctmp[10], unit[10], dirs = ' ';
+	//gchar font_unit[100];
+	gint font_size;
+
 	gdouble dir = 0.0;
+
+	font_size = 24;
+	//font_size = pango_font_description_get_size
+	//	(local_config.color_dashboard);
 
 	switch (source)
 	{
@@ -498,9 +505,10 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%s"
-				"<span size=\"16000\">%s</span></span>",
+				"<span font_desc=\"%.f\"> %s</span></span>",
 			local_config.color_dashboard,
-			local_config.font_dashboard, ctmp, unit);
+			local_config.font_dashboard, ctmp,
+			font_size*0.66, unit);
 			break;
 		}
 		case DASH_SPEED:
@@ -522,10 +530,11 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">"
-				"% 3.1f<span size=\"16000\">%s</span></span>",
+				"% 3.1f<span font_desc=\"%.f\"> %s</span></span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard,
-				current.groundspeed, unit);
+				current.groundspeed,
+				font_size*0.66, unit);
 			break;
 		}
 		case DASH_BEARING:
@@ -617,16 +626,17 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">"
-				"% 3.1f<span size=\"16000\">%s</span></span>",
+				"% 3.1f<span font_desc=\"%.f\"> %s</span></span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard,
-				current.groundspeed, unit);
+				current.groundspeed,
+				font_size*0.66, unit);
 			}
 			else
 			{
 				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\" "
-				"size=\"16000\">%s</span>",
+				"size=\"small\"> %s</span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard, _("n/a"));
 			}
