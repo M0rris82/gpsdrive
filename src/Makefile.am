@@ -4,7 +4,7 @@ endif
 DIST_SUBDIRS = lib_map util
 
 if WITH_MAPNIK
-MAPNIK_LIBS=-lmapnik -lQtCore -lQtGui
+MAPNIK_LIBS=-lmapnik
 else
 MAPNIK_LIBS=
 endif
@@ -21,9 +21,6 @@ DEFS=@DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/local/include/freetype2 \
 	-I/usr/include/freetype2 \
 	-I. \
-	-I/usr/include/qt4/ \
-	-I/usr/include/qt4/Qt \
-	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
 #	-I/usr/include/dbus-1.0/ 
@@ -40,7 +37,6 @@ endif
 
 bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
 LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS)
-# For now I include  -lQtCore -lQtGui for debugging Mapnik
 
 if HAVE_DBUS
 INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1

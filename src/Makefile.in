@@ -143,9 +143,6 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.. \
 	-I/usr/local/include/freetype2 \
 	-I/usr/include/freetype2 \
 	-I. \
-	-I/usr/include/qt4/ \
-	-I/usr/include/qt4/Qt \
-	-I/usr/include/qt4/QtGui \
 	-L/usr/local/lib
 
 DEPDIR = @DEPDIR@
@@ -288,11 +285,10 @@ target_alias = @target_alias@
 @HAVE_GDAL_TRUE@SUBDIRS = lib_map util
 DIST_SUBDIRS = lib_map util
 @WITH_MAPNIK_FALSE@MAPNIK_LIBS = 
-@WITH_MAPNIK_TRUE@MAPNIK_LIBS = -lmapnik -lQtCore -lQtGui
+@WITH_MAPNIK_TRUE@MAPNIK_LIBS = -lmapnik
 #PRG1=garble
 @DISABLEGARMIN_FALSE@PRG1 = 
 @DISABLEGARMIN_TRUE@PRG1 = 
-# For now I include  -lQtCore -lQtGui for debugging Mapnik
 @HAVE_DBUS_TRUE@INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
 gpsdrive_LDADD = @LIBS@ $(LIBADD_DL) 
 PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
