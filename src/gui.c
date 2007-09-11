@@ -109,6 +109,7 @@ color_struct colors;
 guistatus_struct gui_status;
 
 GdkPixbuf *posmarker_img, *targetmarker_img;
+GdkCursor *cursor_cross;
 
 gint PSIZE;
 
@@ -774,6 +775,8 @@ draw_posmarker (
  */
 int gui_init (void)
 {
+	GdkRectangle rectangle = {0, 0, SCREEN_X, SCREEN_Y};
+
 	/* init colors */
 	colmap = gdk_colormap_get_system ();
 	init_color (local_config.color_track, &colors.track);
@@ -816,6 +819,36 @@ int gui_init (void)
 
 	if (usesql)
 		poi_types_window = create_poi_types_window ();
+
+
+drawable =
+	gdk_pixmap_new (map_drawingarea->window, SCREEN_X, SCREEN_Y, -1);
+
+//    drawable =
+//	gdk_pixmap_new (main_window->window, SCREEN_X, SCREEN_Y, -1);
+
+	kontext_map = gdk_gc_new (main_window->window);
+
+
+    gdk_gc_set_clip_origin (kontext_map, 0, 0);
+    rectangle.width = SCREEN_X;
+    rectangle.height = SCREEN_Y;
+
+    gdk_gc_set_clip_rectangle (kontext_map, &rectangle);
+
+    /* fill window with color */
+    gdk_gc_set_function (kontext_map, GDK_COPY);
+    gdk_gc_set_foreground (kontext_map, &colors.lcd2);
+    gdk_draw_rectangle (map_drawingarea->window, kontext_map, 1, 0, 0, SCREEN_X,
+			SCREEN_Y);
+    {
+	GtkStyle *style;
+	style = gtk_rc_get_style (main_window);
+	colors.defaultcolor = style->bg[GTK_STATE_NORMAL];
+    }
+
+    /* set cross cursor for map posmode */
+    cursor_cross = gdk_cursor_new (GDK_TCROSS);
 
 	return 0;
 }

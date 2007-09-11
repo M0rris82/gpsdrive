@@ -1577,7 +1577,7 @@ settings_poi (GtkWidget *notebook)
 	g_signal_connect_swapped (poifilter_bt, "clicked",
 		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
 	// TODO: add functionality, then set sensitive again
-	gtk_widget_set_sensitive (poifilter_bt, FALSE);
+	//gtk_widget_set_sensitive (poifilter_bt, FALSE);
 
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);

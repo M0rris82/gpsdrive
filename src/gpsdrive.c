@@ -218,7 +218,7 @@ extern gint downloadactive;
 
 GtkWidget *add_wp_name_text, *wptext2;
 gchar oldangle[100];
-GdkCursor *cursor_cross;
+extern GdkCursor *cursor_cross;
 
 // Uncomment this (or add a make flag?) to only have scales for expedia maps
 //#define EXPEDIA_SCALES_ONLY
@@ -2804,9 +2804,7 @@ usr2handler (int sig)
 int
 main (int argc, char *argv[])
 {
-    GdkRectangle rectangle = {
-	0, 0, SCREEN_X, SCREEN_Y
-    };
+
     gchar buf[500];
 
     current.needtosave = FALSE;
@@ -3363,7 +3361,7 @@ main (int argc, char *argv[])
     }
 #endif
 
-	gui_init ();
+	//gui_init ();
 
 
 
@@ -3372,40 +3370,6 @@ main (int argc, char *argv[])
 			current.statusbar_id, _("Using speech output"));
 
 
-    /*  now we know the drawables */
-//    if (local_config.guimode == GUI_PDA)
-//	gtk_notebook_set_page (GTK_NOTEBOOK (mainnotebook), 0);
-
-drawable =
-	gdk_pixmap_new (map_drawingarea->window, SCREEN_X, SCREEN_Y, -1);
-
-//    drawable =
-//	gdk_pixmap_new (main_window->window, SCREEN_X, SCREEN_Y, -1);
-
-//	if (local_config.guimode != GUI_PDA) 
-		kontext_map = gdk_gc_new (main_window->window);
-//	else 
-//		kontext_map = gdk_gc_new (main_table->window); 
-
-    gdk_gc_set_clip_origin (kontext_map, 0, 0);
-    rectangle.width = SCREEN_X;
-    rectangle.height = SCREEN_Y;
-
-    gdk_gc_set_clip_rectangle (kontext_map, &rectangle);
-
-    /* fill window with color */
-    gdk_gc_set_function (kontext_map, GDK_COPY);
-    gdk_gc_set_foreground (kontext_map, &colors.lcd2);
-    gdk_draw_rectangle (map_drawingarea->window, kontext_map, 1, 0, 0, SCREEN_X,
-			SCREEN_Y);
-    {
-	GtkStyle *style;
-	style = gtk_rc_get_style (main_window);
-	colors.defaultcolor = style->bg[GTK_STATE_NORMAL];
-    }
-
-    /* set cross cursor for map posmode */
-    cursor_cross = gdk_cursor_new (GDK_TCROSS);
 
 
     //temperature_get_values ();
@@ -3502,13 +3466,13 @@ drawable =
 
 	/* do all the basic initalisation for the specific sections */
 	poi_init ();
+	gui_init ();
 	friends_init ();
 	route_init ();
+
 	wlan_init ();
 
 	load_friends_icon ();
-
-//TODO: mabye gui_init should be here ?
 
     update_posbt();
 

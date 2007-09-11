@@ -493,6 +493,14 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_TITLE, poi_type_list[i].title,
 		-1);
 
+	if (mydebug > 30)
+	{
+		fprintf (stderr,
+			"poitypetree_addrow:added %d - %s\n",
+			poi_type_list[i].poi_type_id,
+			poi_type_list[i].name);
+	}
+
 	return TRUE;
 }
 
@@ -525,7 +533,7 @@ static gboolean poitypetree_find_parent (
 	if (g_ascii_strcasecmp (parent_name, (gchar *) value) == 0)
 	{	
 		
-		if (mydebug > 90)
+		if (mydebug > 40)
 		{
 			fprintf (stderr,
 				"poitypetree_find_parent: %d+%d : %s => %s\n",
@@ -554,6 +562,9 @@ create_poitype_tree (guint max_level)
 	guint i = 0;
 	guint j = 0;
 
+	if (mydebug > 20)
+		fprintf (stderr, "create_poitype_tree:\n");
+
 	/* insert base categories into tree */
 	for (i = 0; i < poi_type_list_max; i++)
 	{
@@ -562,6 +573,13 @@ create_poitype_tree (guint max_level)
 			if (poi_type_list[i].level == 0)
 			{
 				poitypetree_addrow (i, (GtkTreeIter *) NULL);
+				if (mydebug > 30)
+				{
+					fprintf (stderr,
+						"create_poitype_tree:"
+						" adding base type %s\n",
+						poi_type_list[i].name);
+				}
 			}
 		}
 		else

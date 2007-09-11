@@ -876,8 +876,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 
 	// TODO: add functionality to POI-Type selection buttons,
 	// until then the buttons are disabled
-	gtk_widget_set_sensitive ( radiobutton_typesel, FALSE );
-	gtk_widget_set_sensitive ( button_types, FALSE );
+	//gtk_widget_set_sensitive ( radiobutton_typesel, FALSE );
+	//gtk_widget_set_sensitive ( button_types, FALSE );
 
 	label_criteria = gtk_label_new (_("Search Criteria"));
 	gtk_widget_show (label_criteria);
