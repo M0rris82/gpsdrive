@@ -540,14 +540,15 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
  * Add waypoint at coords.wp_lat, coords.wp_lon
  * with Strings for Name and Type
  */
-void
+glong
 addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gint save_flag)
 {
 	gint i;
+
 	if (usesql && save_in_db)
 	{
-		insertsqldata (wp_lat, wp_lon, (char *) wp_name,
-			       (char *) wp_type, (char *) wp_comment, 3);
+		return insertsqldata (wp_lat, wp_lon, (char *) wp_name,
+			(char *) wp_type, (char *) wp_comment, 3);
 	}
 	else
 	{
@@ -579,6 +580,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 			wayp = g_renew (wpstruct, wayp, wpsize);
 		}
 		savewaypoints ();
+		return 0;
 	}
 }
 

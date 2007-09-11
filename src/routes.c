@@ -75,6 +75,7 @@ extern currentstatus_struct current;
 extern GdkGC *kontext_map;
 extern GtkWidget *map_drawingarea;
 extern GtkWidget *frame_statusbar;
+extern poi_type_struct poi_type_list[poi_type_list_max];
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -635,11 +636,15 @@ route_next_target ()
 void quickadd_routepoint ()
 {
 
-	//const gchar t_type[] = "waypoint.routepoint";
-	gchar t_name[100], t_cmt[100];
-	gdouble t_lat, t_lon;
-	gint t_x, t_y;
+	gchar t_name[100], t_cmt[100], t_nr[5], t_trip[15];;
+	gchar t_dist[15], t_type[POI_TYPE_LIST_STRING_LENGTH];
+	gdouble t_lat, t_lon, last_lat, last_lon, t_dist_num;
+	glong t_id;
+	gint t_x, t_y, t_ptid;
+	GdkPixbuf *t_icon;
 	GdkModifierType state;
+	GtkTreeIter iter_route;
+	GtkTreePath *path_route;
 
 	time_t t;
 	struct tm *ts;
@@ -653,17 +658,74 @@ void quickadd_routepoint ()
 	if ( mydebug > 0 )
 		printf ("Add Routepoint: %s lat:%f,lon:%f (x:%d,y:%d)\n",
 			t_name, t_lat, t_lon, t_x, t_y);
-	if (usesql)
-		addwaypoint (t_name, "waypoint.routepoint", t_cmt, t_lat, t_lon, TRUE);
-	else
-		addwaypoint (t_name, "waypoint.routepoint", t_cmt, t_lat, t_lon, FALSE);
 
-	// TODO: add newly created point to current route...
+	t_id = addwaypoint (t_name,
+		"waypoint.routepoint", t_cmt, t_lat, t_lon, TRUE);
+
+	t_ptid = poi_type_id_from_name ("waypoint.routepoint");
+	t_icon = poi_type_list[t_ptid].icon;
+
+	gtk_list_store_append (route_list_tree, &iter_route);
+
+	route.items +=1;
+
+	/* calculate trip distance */
+	if (route.items > 1)
+	{
+		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL
+			(route_list_tree), &iter_route);
+		gtk_tree_path_prev (path_route);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
+			&iter_route, path_route);
+		gtk_tree_model_get (GTK_TREE_MODEL (route_list_tree),
+			&iter_route,
+			ROUTE_LON, &last_lon, ROUTE_LAT, &last_lat, -1);
+		route.distance += calc_wpdist (last_lon, last_lat,
+			t_lon, t_lat, FALSE);
+		gtk_tree_path_next (path_route);
+		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
+			&iter_route, path_route);
+
+		if (mydebug>25)
+		{
+			fprintf (stderr, "quickadd_routepoint: Path: %s\n",
+				gtk_tree_path_to_string (path_route));
+		}
+	}
+	else if (route.items == 1)
+	{
+		route.distance =+ calcdist (t_lon, t_lat);
+	}
+	g_snprintf (t_trip, sizeof (t_trip), "%9.3f", route.distance);
+	g_snprintf (t_nr, sizeof (t_nr), " %d", route.items);
+	g_strlcat (t_name, t_nr, sizeof (t_name));
+	t_dist_num = calcdist (t_lon, t_lat);
+	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
+	g_snprintf (t_type, sizeof (t_type), "waypoint.routepoint");
+
+	if (mydebug>25)
+	{
+		fprintf (stderr, "add_point_to_route: (%d)  ID: %ld  |"
+			"  NAME: %s  |  LON: %f  |  LAT: %f  |  ICON: %p\n",
+			route.items, t_id, t_name, t_lon, t_lat, t_icon);
+	}
+
+	gtk_list_store_set (route_list_tree, &iter_route,
+		ROUTE_ID, t_id,
+		ROUTE_NUMBER, route.items,
+		ROUTE_ICON, t_icon,
+		ROUTE_NAME, t_name,
+		ROUTE_DISTANCE, t_dist,
+		ROUTE_TRIP, t_trip,
+		ROUTE_LON, t_lon,
+		ROUTE_LAT, t_lat,
+		ROUTE_CMT, t_cmt,
+		ROUTE_TYPE, t_type,
+		-1);
 
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,
 		_("Routepoint added."));
-
 }
 
 
@@ -923,6 +985,7 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 
 	route.items +=1;
 	
+	/* get data from selected POI */
 	gtk_tree_model_get (model, &iter,
 		RESULT_ID, &t_id,
 		RESULT_TYPE_ICON, &t_icon,
