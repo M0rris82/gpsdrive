@@ -77,14 +77,14 @@ static int nettype, channel, wep, cloaked;
 
 /* variables */
 int kismetsock = -1, havekismet;
-static char kbuffer[20010];
+static char kbuffer[20210];
 static int bc = 0;
 fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
 
-int wlan_closed=0;
-int wlan_open=0;
+int wlan_closed=314;
+int wlan_open=315;
 
 #define KISMETSERVERNAME "localhost"
 
