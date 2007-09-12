@@ -579,7 +579,7 @@ void
 display_status2 ()
 {
 	//gchar s2[100];
-	gchar buf[200], mfmap_filename[60];
+	gchar buf[200];
 	gint h, m;
 	gdouble secs, v;
 
@@ -653,16 +653,6 @@ display_status2 ()
 	    }
 
 
-	strncpy (mfmap_filename, g_basename (mapfilename), 59);
-	mfmap_filename[59] = 0;
-	if ( mydebug >10 )
-	    gtk_label_set_text (GTK_LABEL (label_map_filename), mfmap_filename);
-
-//	if (h >= 99 && m>=99)
-//		g_snprintf (s2, sizeof (s2), "%s", _("unknown"));
-//	else
-//		g_snprintf (s2, sizeof (s2), "%2d:%02dh", h, m);
-//	gtk_label_set_text (GTK_LABEL (label_timedest), s2);
 
 }
 
@@ -1418,6 +1408,42 @@ draw_zoomlevel (void)
 	pango_font_description_free (pfd);
 }
 
+
+/*******************************************************************************
+ * Draw the filename of the current map into the map.
+ */
+void
+draw_infotext (gchar *text)
+{
+	gchar  mfmap_filename[60];
+	PangoFontDescription *pfd;
+	PangoLayout *layout_filename;
+	gint cx, cy;
+
+	strncpy (mfmap_filename, text, 59);
+	mfmap_filename[59] = 0;
+	layout_filename = gtk_widget_create_pango_layout
+		(map_drawingarea, mfmap_filename);
+	pfd = pango_font_description_from_string ("Sans 9");
+	pango_layout_set_font_description (layout_filename, pfd);
+	pango_layout_get_pixel_size (layout_filename, &cx, &cy);
+
+	gdk_gc_set_function (kontext_map, GDK_OR);
+	gdk_gc_set_foreground (kontext_map, &colors.mygray);
+	gdk_draw_rectangle (drawable, kontext_map, 1,
+		0, SCREEN_Y-cy-10, cx+10, SCREEN_Y);
+	gdk_gc_set_function (kontext_map, GDK_COPY);
+	gdk_gc_set_foreground (kontext_map, &colors.blue);
+
+	gdk_draw_layout_with_colors (drawable, kontext_map,
+		5, SCREEN_Y-cy-5, layout_filename, &colors.blue, NULL);
+	if (layout_filename != NULL)
+		g_object_unref (G_OBJECT (layout_filename));
+	/* freeing PangoFontDescription, cause it has been copied by prev. call */
+	pango_font_description_free (pfd);
+}
+
+
 /* *****************************************************************************
  * draw the markers on the map 
  * And many more 
@@ -1463,6 +1489,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (local_config.showzoom && local_config.guimode != GUI_PDA)
 		draw_zoomlevel ();
+
+	if (mydebug > 10 && !local_config.MapnikStatusInt)
+		draw_infotext (g_path_get_basename (mapfilename));
 
 	if (havekismet && (kismetsock>=0))
 	{
