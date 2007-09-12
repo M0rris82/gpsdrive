@@ -99,6 +99,8 @@ typedef struct
 	gint dashboard_3;
 	gint dashboard_4;
 	gdouble normalnull;
+	gchar kismet_servername[500];
+	gint kismet_serverport;
 }
 local_gpsdrive_config;
 

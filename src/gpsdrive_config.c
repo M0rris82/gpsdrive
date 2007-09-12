@@ -609,4 +609,8 @@ config_init ()
 		"%s%s", local_config.dir_home, "way.txt");
 	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
 		"%s%s", local_config.dir_home, "osm.xml");
+	
+	/* kismet default values */
+	g_strlcpy(local_config.kismet_servername, "localhost", sizeof(local_config.kismet_servername));
+	local_config.kismet_serverport = 2501;
 }

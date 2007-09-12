@@ -41,6 +41,7 @@ reads info from kismet server and insert waypoints into database
 #include <sys/time.h>
 
 #include <gpsdrive.h>
+#include "gpsdrive_config.h"
 /* #include <gpskismet.h> */
 #include <poi.h>
 #include <speech_out.h>
@@ -82,8 +83,6 @@ static int bc = 0;
 fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
-
-#define KISMETSERVERNAME "localhost"
 
 time_t last_initkismet=0;
 
@@ -341,15 +340,15 @@ initkismet (void)
     }
   server.sin_family = AF_INET;
   /*  We retrieve the IP address of the server from its name: */
-  if ((server_data = gethostbyname (KISMETSERVERNAME)) == NULL)
+  if ((server_data = gethostbyname(local_config.kismet_servername)) == NULL)
     {
-      fprintf (stderr, "%s: unknown host", KISMETSERVERNAME);
+      fprintf (stderr, "%s: unknown host", local_config.kismet_servername);
       close (kismetsock);
       kismetsock=-1;
       return -1;
     }
   memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-  server.sin_port = htons (2501);
+  server.sin_port = htons (local_config.kismet_serverport);
   /*  We initiate the connection  */
   if (connect (kismetsock, (struct sockaddr *) &server, sizeof server) < 0)
     {
