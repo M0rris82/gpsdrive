@@ -105,6 +105,8 @@ GtkWidget *poi_lookup_window;
 GtkWidget *button_delete;
 GtkWidget *button_target;
 GtkWidget *button_addtoroute;
+static GtkWidget *entry_type;
+static GtkTreeViewColumn *column_poitypes_select;
 
 /* route window */
 GtkWidget *route_window;
@@ -116,6 +118,34 @@ GtkWidget *button_remove, *button_routesave;
 /* *****************************************************************************
  * CALLBACKS
  */
+gint
+toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi)
+{
+	if (GTK_WIDGET_VISIBLE (poi_types_window))
+	{
+		gtk_widget_hide_all (poi_types_window);
+		if (mydebug > 10)
+			fprintf (stderr, "Hiding POI-Types Window\n");
+	}
+	else
+	{
+		if (multi)
+			gtk_tree_view_column_set_visible
+				(column_poitypes_select, TRUE);
+		else
+			gtk_tree_view_column_set_visible
+				(column_poitypes_select, FALSE);
+
+		gtk_widget_show_all (poi_types_window);
+
+		if (mydebug > 10)
+			fprintf (stderr, "Showing POI-Types Window\n");
+	}
+	return TRUE;
+}
+
+ 
+ 
 static void
 evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 {
@@ -132,7 +162,7 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	entries->result_count = poi_get_results
 		(gtk_entry_get_text (entries->text),
 		gtk_entry_get_text (entries->distance),
-		entries->posflag, entries->typeflag, entries->poitype_name);
+		entries->posflag, entries->typeflag, entries->poitype_id);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
 	if (entries->result_count == local_config.poi_results_max)
@@ -157,17 +187,15 @@ toggle_window_poi_info_cb (GtkToggleButton *togglebutton, gpointer user_data)
 }
 
 static void
-searchpoitypemode_cb (GtkWidget *combobox, GtkToggleButton *button)
+searchpoitypemode_cb (GtkToggleButton *button)
 {
 	if (gtk_toggle_button_get_active(button))
 	{
-		gtk_widget_set_sensitive (combobox, TRUE);
 		/* switch to selection from selected poi-type */
 		criteria.typeflag = TRUE;
 	}
 	else
 	{
-		gtk_widget_set_sensitive (combobox, FALSE);
 		/* switch to selection from all poi-types */
 		criteria.typeflag = FALSE;
 	}
@@ -321,12 +349,13 @@ select_poitype_cb (GtkTreeSelection *selection, gpointer data)
 			POITYPE_ID, &criteria.poitype_id,
 			POITYPE_NAME, &criteria.poitype_name,
 			-1);
+		gtk_entry_set_text (GTK_ENTRY (entry_type),
+			criteria.poitype_name);
 
 		if (mydebug>50)
 			fprintf (stderr, " selected poi-type -> %d / %s\n",
 			criteria.poitype_id, criteria.poitype_name);
 	}
-
 }
 
 
@@ -658,7 +687,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *radiobutton_distcursor;
 	GtkWidget *hbox_type, *label_type, *radiobutton_typeall;
 	GSList *radiobutton_type_group = NULL;
-	GtkWidget *radiobutton_typesel, *comboboxentry_type;
+	GtkWidget *radiobutton_typesel;
 	GtkWidget *button_types, *label_criteria, *frame_poiresults;
 	GtkWidget *alignment_poiresults, *vbox_poiresults;
 	GtkWidget *scrolledwindow_poilist, *treeview_poilist;
@@ -831,14 +860,15 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	
 	button_types = gtk_button_new_with_mnemonic ("...");
 	gtk_box_pack_end (GTK_BOX (hbox_type), button_types, FALSE, FALSE, 0);
-	g_signal_connect_swapped (button_types, "clicked",
-		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
-	
-	comboboxentry_type = gtk_combo_box_entry_new ();
+	g_signal_connect (button_types, "clicked",
+		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
+
+	entry_type = gtk_entry_new ();
 	gtk_box_pack_end (GTK_BOX (hbox_type),
-		comboboxentry_type, TRUE, TRUE, 5);
-	gtk_widget_set_sensitive ( comboboxentry_type, FALSE );
-  
+		entry_type, TRUE, TRUE, 5);
+	gtk_editable_set_editable (GTK_EDITABLE (entry_type), FALSE );
+	gtk_widget_set_sensitive (entry_type, FALSE);
+
 	radiobutton_typeall =
 		gtk_radio_button_new_with_mnemonic (NULL, _("all"));
 	gtk_box_pack_start (GTK_BOX (hbox_type),
@@ -861,8 +891,8 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_typesel,
 		_("Search only in selected POI-Categories"), NULL);
 	
-	g_signal_connect_swapped (radiobutton_typesel, "toggled",
-		GTK_SIGNAL_FUNC (searchpoitypemode_cb), comboboxentry_type);
+	g_signal_connect (radiobutton_typesel, "toggled",
+		GTK_SIGNAL_FUNC (searchpoitypemode_cb), NULL);
 
 	label_criteria = gtk_label_new (_("Search Criteria"));
 	gtk_widget_show (label_criteria);
@@ -1152,10 +1182,10 @@ GtkWidget
 		column_poitypes);
 
 	renderer_poitypes = gtk_cell_renderer_toggle_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+	column_poitypes_select = gtk_tree_view_column_new_with_attributes ("_",
 		renderer_poitypes, "active", POITYPE_SELECT, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
+		column_poitypes_select);
 	//g_signal_connect (G_OBJECT (poitypes_select), "changed",
 	//	G_CALLBACK (select_poitype_cb), NULL);
 
@@ -1196,11 +1226,11 @@ GtkWidget
 
 	button_close = gtk_button_new_from_stock ("gtk-close");
 	gtk_box_pack_end (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
-	g_signal_connect_swapped (button_close, "clicked", 
-		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
+	g_signal_connect (button_close, "clicked", 
+		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
 
 	g_signal_connect (poi_types_window, "delete-event", 
-		GTK_SIGNAL_FUNC (toggle_window_cb), NULL);
+		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
 
 	gtk_tree_view_expand_all (GTK_TREE_VIEW (poitypes_treeview));
 

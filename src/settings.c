@@ -35,6 +35,8 @@
 #include <sys/mman.h>
 #include <math.h>
 #include "poi.h"
+#include "poi_gui.h"
+
 #include <sys/time.h>
 #include <gpsdrive.h>
 #include "gui.h"
@@ -1574,10 +1576,10 @@ settings_poi (GtkWidget *notebook)
 
 	poifilter_label = gtk_label_new (_("POI-Filter"));
 	poifilter_bt = gtk_button_new_with_label (_("Edit Filter"));
-	g_signal_connect_swapped (poifilter_bt, "clicked",
-		GTK_SIGNAL_FUNC (toggle_window_cb), poi_types_window);
+	g_signal_connect (poifilter_bt, "clicked",
+		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), (gpointer) TRUE);
 	// TODO: add functionality, then set sensitive again
-	//gtk_widget_set_sensitive (poifilter_bt, FALSE);
+	gtk_widget_set_sensitive (poifilter_bt, FALSE);
 
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);

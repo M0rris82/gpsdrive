@@ -126,7 +126,7 @@ void get_poitype_tree (void);
  * into the POI-Lookup window
  */
 guint
-poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gchar *type)
+poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gint type)
 {
 	gdouble lat, lon, dist;
 	gdouble lat_min, lon_min;
@@ -200,7 +200,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	/* choose poi_type_ids to search */
 	if (typeflag)
 	{
-		g_snprintf (type_filter, sizeof (type_filter), "AND (poi_type_id IN (%s))",type);
+		g_snprintf (type_filter, sizeof (type_filter), "AND (poi_type_id IN (%d))",type);
 	}
 	else
 	{
@@ -219,7 +219,17 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		" %s LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
 		type_filter, local_config.poi_results_max);
-  
+
+
+  g_snprintf (sql_query, sizeof (sql_query),
+     "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi "
+     "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
+     "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
+     "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
+     lat_min, lat_max, lon_min, lon_max, current.mapscale, dbpoifilter);
+
+
+
 	if (mydebug > 20)
 		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
 

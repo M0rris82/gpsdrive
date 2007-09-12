@@ -442,25 +442,6 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 }
 
 
-gint
-toggle_window_cb (GtkWidget *window)
-{
-	if (GTK_WIDGET_VISIBLE (window))
-	{
-		gtk_widget_hide_all (window);
-		if (mydebug > 10)
-			fprintf (stderr, "Hiding Window\n");
-	}
-	else
-	{
-		gtk_widget_show_all (window);
-		if (mydebug > 10)
-			fprintf (stderr, "Showing Window\n");
-	}
-	return TRUE;
-}
-
-
 /* *****************************************************************************
  * Generic Callback to handle toggle- and checkbuttons
  */
