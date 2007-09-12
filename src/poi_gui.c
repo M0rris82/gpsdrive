@@ -65,7 +65,7 @@ Disclaimer: Please do not use for navigation.
 struct pattern
 {
 	GtkEntry *text, *distance;
-	gchar *poitype_id;
+	gint poitype_id;
 	gchar *poitype_name;
 	gint typeflag;	/* 0: search all types, 1: search only selected */
 	gint posflag;	/* 0: search at current position, 1: search at destination */
@@ -132,7 +132,7 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	entries->result_count = poi_get_results
 		(gtk_entry_get_text (entries->text),
 		gtk_entry_get_text (entries->distance),
-		entries->posflag, entries->typeflag, entries->poitype_id);
+		entries->posflag, entries->typeflag, entries->poitype_name);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
 	if (entries->result_count == local_config.poi_results_max)
@@ -314,30 +314,20 @@ select_poitype_cb (GtkTreeSelection *selection, gpointer data)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	
-	// ### temporary:
-	gint ptid;
-	
+
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
 		gtk_tree_model_get (model, &iter,
-			POITYPE_ID, &ptid,
+			POITYPE_ID, &criteria.poitype_id,
 			POITYPE_NAME, &criteria.poitype_name,
 			-1);
-		
-		// ### temporary:
-		g_snprintf (criteria.poitype_id, sizeof (criteria.poitype_id), "%d", ptid);
-	
-		
-		//if (mydebug>50)
-			fprintf (stdout, " selected poi-type -> %d / %s / "
-			"%s\n", ptid, criteria.poitype_id,
-			criteria.poitype_name);
-		
+
+		if (mydebug>50)
+			fprintf (stderr, " selected poi-type -> %d / %s\n",
+			criteria.poitype_id, criteria.poitype_name);
 	}
 
 }
-
 
 
 static void
@@ -1166,6 +1156,8 @@ GtkWidget
 		renderer_poitypes, "active", POITYPE_SELECT, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
+	//g_signal_connect (G_OBJECT (poitypes_select), "changed",
+	//	G_CALLBACK (select_poitype_cb), NULL);
 
 	renderer_poitypes = gtk_cell_renderer_text_new ();
 	column_poitypes = gtk_tree_view_column_new_with_attributes (
@@ -1214,7 +1206,6 @@ GtkWidget
 
 	return poi_types_window;
 }
-
 
 
 /* *****************************************************************************
