@@ -183,14 +183,15 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
 	return -1;
 }
 
-/***
+/*
  *  set new map values
  * center lat/lon
  * pForceNewCenterYsn = force maprendering with new center
  * pScaleInt = gpsdrive scale wanted
- ***/
+ * returing yes/no if a new map should be rendered
+ */
 extern "C"
-void set_mapnik_map(double pPosLatDbl, double pPosLonDbl, int pForceNewCenterYsn, int pScaleInt) {
+int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pForceNewCenterYsn, const int pScaleInt) {
 	int PanCntInt = 0;
 	int OnMapYsn = 0;
 	double scale_denom = MapnikMap.ScaleInt;

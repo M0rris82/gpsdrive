@@ -217,7 +217,6 @@ extern gint downloadactive;
 
 GtkWidget *add_wp_name_text, *wptext2;
 gchar oldangle[100];
-extern GdkCursor *cursor_cross;
 
 // Uncomment this (or add a make flag?) to only have scales for expedia maps
 //#define EXPEDIA_SCALES_ONLY
@@ -2244,16 +2243,8 @@ pos_cb (GtkWidget *widget, guint datum)
 		gui_status.posmode = TRUE;
 	else 
 		gui_status.posmode = FALSE;
-
-	/* change cursor in map area in pos mode */
-	if (gui_status.posmode == TRUE)
-	{
-		gdk_window_set_cursor (map_drawingarea->window, cursor_cross);
-	}
-	else
-	{
-		gdk_window_set_cursor (map_drawingarea->window, NULL);
-	}
+	
+	set_cursor_style(CURSOR_DEFAULT);
 
 	/* if waypoint select mode is enabled and waypoint
 	 * selected then take target_lat/lon

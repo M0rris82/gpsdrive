@@ -842,19 +842,22 @@ test_and_load_newmap ()
 	    	ForceMapCenterYsn = 1;
 	    	local_config.MapnikStatusInt = 2; /* set active */
 	    }
-	    set_mapnik_map(coords.current_lat, coords.current_lon, ForceMapCenterYsn, local_config.scale_wanted);
-	    local_config.MapnikStatusInt = 2;
 	    /* render map, but only if it is needed */
-	    render_mapnik();
-		/* only load map if there is a new one. */
-		if (get_mapnik_newmapysn()) {
-			current.mapscale = get_mapnik_mapscale();// 68247.3466832;;
-			pixelfact = get_mapnik_pixelfactor();
-			get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
-			xoff = yoff = 0;
-			//loadmap("/tmp/mapnik.png");
-			loadmap("mapnik");
-		}
+	    if (set_mapnik_map_ysn(coords.current_lat, coords.current_lon, ForceMapCenterYsn, local_config.scale_wanted)) {;
+		    // local_config.MapnikStatusInt = 2;
+	    	set_cursor_style(CURSOR_WATCH);
+		    render_mapnik();
+			/* only load map if there is a new one. */
+			if (get_mapnik_newmapysn()) {
+				current.mapscale = get_mapnik_mapscale();// 68247.3466832;;
+				pixelfact = get_mapnik_pixelfactor();
+				get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
+				xoff = yoff = 0;
+				//loadmap("/tmp/mapnik.png");
+				loadmap("mapnik");
+			}
+			set_cursor_style(CURSOR_DEFAULT);
+	    }
 	return;
     }
 #endif

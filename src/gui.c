@@ -110,6 +110,7 @@ guistatus_struct gui_status;
 
 GdkPixbuf *posmarker_img, *targetmarker_img;
 GdkCursor *cursor_cross;
+GdkCursor *cursor_watch;
 
 gint PSIZE;
 
@@ -836,7 +837,30 @@ int gui_init (void)
 }
 
 	/* set cross cursor for map posmode */
-	cursor_cross = gdk_cursor_new (GDK_TCROSS);
+	cursor_cross = gdk_cursor_new(GDK_TCROSS);
+	/* set watch cursor used e.g. when rendering a mapnik map*/
+	cursor_watch = gdk_cursor_new(GDK_WATCH);
+	return 0;
+}
 
+/*
+ * function to set cursors styles
+ */
+gint
+set_cursor_style(int cursor) {
+	switch(cursor) {
+		case CURSOR_DEFAULT:
+			/* different cursors in posmode */
+			if (gui_status.posmode == TRUE)
+				gdk_window_set_cursor (map_drawingarea->window, cursor_cross);
+			else
+				gdk_window_set_cursor (map_drawingarea->window, NULL);
+			break;
+		case CURSOR_WATCH:
+			gdk_window_set_cursor(map_drawingarea->window, cursor_watch);
+	}
+	/* update all events to fastly switch cursor */
+	while (gtk_events_pending())
+		gtk_main_iteration();
 	return 0;
 }

@@ -50,6 +50,7 @@ gboolean draw_posmarker
 
 int gui_init (void);
 
+gint set_cursor_style(int cursor);
 
 typedef struct
 {
@@ -95,6 +96,11 @@ typedef struct
 	gboolean posmode;
 } guistatus_struct;
 
+/* gpsdrive cursors */
+enum {
+	CURSOR_DEFAULT,
+	CURSOR_WATCH
+};
 
 extern guistatus_struct gui_status;
 
