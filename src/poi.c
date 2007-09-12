@@ -1022,7 +1022,6 @@ poi_rebuild_list (void)
       rges++;
       gdouble lat, lon;
 
-
       if (mydebug > 20)
 	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
 		 row[0], row[1], row[2], row[3]);

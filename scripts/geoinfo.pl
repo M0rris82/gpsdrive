@@ -21,8 +21,9 @@ BEGIN {
 
     # For Debug Purpose in the build Directory
     unshift(@INC,"./perl_lib");
-    unshift(@INC,"./scripts/osm/utils/perl_lib");
-    unshift(@INC,"../scripts/osm/utils/perl_lib");
+    unshift(@INC,"./osm/perl_lib");
+    unshift(@INC,"./scripts/osm/perl_lib");
+    unshift(@INC,"../scripts/osm/perl_lib");
 
     # For DSL
     unshift(@INC,"/opt/gpsdrive/share/perl5");

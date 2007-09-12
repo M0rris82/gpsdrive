@@ -1034,7 +1034,8 @@ drawdownloadrectangle (gint big)
 			      y - yo / 2, xo, yo);
 	}
       else
-	  if (local_config.guimode != GUI_CAR)	{
+	  if (local_config.guimode != GUI_CAR
+	      && ! local_config.MapnikStatusInt )	{
 	      calcxymini (&x, &y, lo, la, 1);
 	      xo = 128.0 * scale / current.mapscale;
 	      yo = 102.0 * scale / current.mapscale;

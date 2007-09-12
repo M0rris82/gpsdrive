@@ -29,5 +29,4 @@ reads info from kismet server and insert waypoints into database
 
 int readkismet(void);
 int initkismet(void);
-void get_poi_type_id_for_wlan();
 

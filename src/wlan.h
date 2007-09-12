@@ -42,12 +42,9 @@ typedef struct
   gint    poi_type_id; 
   gdouble proximity;
   gchar   comment[255]; 
-  gint    scale_min;  
-  gint    scale_max;  
-  //date  last_modified  
   gchar   url[160]; 
-  gint    address_id;
   gint    source_id; 
+  gint    nettype;
   gdouble    x;    // x position on screen
   gdouble    y;    // y position on screen
 }
@@ -58,6 +55,7 @@ void wlan_rebuild_list (void);
 void wlan_draw_list (void);
 void wlan_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_wlan_icon (gchar * icon_name);
+void get_poi_type_id_for_wlan();
 
 #define wlan_type_list_string_length 80
 typedef struct

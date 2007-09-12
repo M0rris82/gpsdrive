@@ -385,9 +385,9 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
       if ((posydest >= 0) && (posydest < SCREEN_Y))
 	{
 	  if (wlan == 1)
-	    drawicon (posxdest, posydest, "w-lan.open");
+	    drawicon (posxdest, posydest, "wlan.open");
 	  else
-	    drawicon (posxdest, posydest, "w-lan.wep");
+	    drawicon (posxdest, posydest, "wlan.wep");
 	}
     }
 }

@@ -78,11 +78,15 @@ extern MYSQL mysql;
 extern MYSQL_RES *res;
 extern MYSQL_ROW row;
 
-// keep actual visible WLANs in Memory
+// keep actual visible WLAN Points in Memory
 wlan_struct *wlan_list;
 glong wlan_nr;			// current number of wlan to count
 glong wlan_max;			// max index of WLANs actually in memory
 glong wlan_limit = -1;		// max allowed index (if you need more you have to alloc memory)
+
+int wlan_closed=19; // these will be filled later from the Database
+int wlan_open=19;
+int wlan_wep=19;
 
 gchar wlan_label_font[100];
 GdkColor wlan_colorv;
@@ -108,7 +112,7 @@ wlan_init (void)
       return;
     }
 
-  //wlan_rebuild_list ();
+  wlan_rebuild_list ();
 }
 
 
@@ -146,7 +150,6 @@ wlan_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_where[5000];
-  char sql_in[5000];
   struct timeval t;
   int r, rges;
   time_t ti;
@@ -162,6 +165,9 @@ wlan_rebuild_list (void)
 
   if (!usesql)
     return;
+
+  if ( current.mapscale> 100000000)
+      return;
 
   if (!local_config.showwlan)
     {
@@ -202,61 +208,28 @@ wlan_rebuild_list (void)
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-  {				// Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
+  { // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
     g_snprintf (sql_where, sizeof (sql_where),
-		"\tWHERE ( lat BETWEEN %.6f AND %.6f ) \n"
-		"\tAND   ( lon BETWEEN %.6f AND %.6f ) \n"
-		// "\tAND   ( %ld  BETWEEN scale_min AND scale_max)"
-		"\n", lat_min, lat_max, lon_min, lon_max
-		// , current.mapscale
+		" WHERE ( lat BETWEEN %.6f AND %.6f ) "
+		" AND   ( lon BETWEEN %.6f AND %.6f ) "
+		, lat_min, lat_max, lon_min, lon_max
       );
     g_strdelimit (sql_where, ",", '.');	// For different LANG
     if (mydebug > 20)
       {
 	printf ("wlan_rebuild_list: WLAN mysql where: %s\n", sql_where);
-	printf ("wlan_rebuild_list: WLAN mapscale: %ld\n", current.mapscale);
       }
   }
 
-  {				// Limit the displayed wlan_types
-    g_snprintf (sql_in, sizeof (sql_in), "\t AND poi_type_id IN ( ");
-    int i;
-    for (i = 0; i < poi_type_list_max; i++)
-      {
-	if (poi_type_list[i].scale_min <= current.mapscale &&
-	    poi_type_list[i].scale_max >= current.mapscale)
-	  {
-	    gchar id_string[20];
-	    g_snprintf (id_string, sizeof (id_string), " %d,",
-			poi_type_list[i].poi_type_id);
-	    g_strlcat (sql_in, id_string, sizeof (sql_in));
-	  }
-      }
-    g_strlcat (sql_in, " 0)", sizeof (sql_in));
-    if (mydebug > 20)
-      {
-	printf ("WLAN mysql in: %s\n", sql_in);
-      }
-  }
-
-
-  /*g_snprintf (sql_query, sizeof (sql_query),
-	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,name,poi_type_id,source_id " "FROM wlan "
-	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s %s LIMIT 40000", sql_where, sql_in); */
 
   g_snprintf (sql_query, sizeof (sql_query),
-	      // "SELECT lat,lon,alt,type_id,proximity "
-	      "SELECT lat,lon,macaddr,essid,poi_type_id " "FROM wlan "
-	      //            "LEFT JOIN oi_ type ON poi_type_id = type.poi_type_id "
-	      "%s %s LIMIT 40000", sql_where, sql_in);
+	      "SELECT lat,lon,macaddr,essid,wep,nettype,cloaked FROM wlan "
+	      "%s LIMIT 40000", sql_where);
 
   if (mydebug > 20)
     printf ("wlan_rebuild_list: WLAN mysql query: %s\n", sql_query);
 
-  if (dl_mysql_query (&mysql, sql_query))
-    {
+  if (dl_mysql_query (&mysql, sql_query)) {
       printf ("wlan_rebuild_list: Error in query: \n");
       fprintf (stderr, "wlan_rebuild_list: Error in query: %s\n",
 	       dl_mysql_error (&mysql));
@@ -279,10 +252,9 @@ wlan_rebuild_list (void)
       rges++;
       gdouble lat, lon;
 
-
       if (mydebug > 20)
-	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\t%s\n",
-		 row[0], row[1], row[2], row[3], row[4]);
+	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+		 row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
 
       lat = g_strtod (row[0], NULL);
       lon = g_strtod (row[1], NULL);
@@ -291,75 +263,46 @@ wlan_rebuild_list (void)
       if ((wlan_posx > -50) && (wlan_posx < (SCREEN_X + 50)) &&
 	  (wlan_posy > -50) && (wlan_posy < (SCREEN_Y + 50)))
 	{
-	  // get next free mem for wlannt
+	  // get next free mem for wlan_list
 	  wlan_nr++;
-	  if (wlan_nr > wlan_limit)
-	    {
+	  if (wlan_nr > wlan_limit) {
 	      wlan_limit = wlan_nr + 10000;
 	      if (mydebug > 20)
 		g_print ("Try to allocate Memory for %ld wlan\n", wlan_limit);
-
+	      
 	      wlan_list = g_renew (wlan_struct, wlan_list, wlan_limit);
-	      if (NULL == wlan_list)
-		{
-		  g_print ("Error: Cannot allocate Memory for %ld wlan\n",
-			   wlan_limit);
+	      if (NULL == wlan_list) {
+		  g_print ("Error: Cannot allocate Memory for %ld wlan\n",  wlan_limit);
 		  wlan_limit = -1;
 		  return;
-		}
-	    }
+	      }
+	  }
 
 	  // Save retrieved wlan information into structure
 	  (wlan_list + wlan_nr)->lat = lat;
 	  (wlan_list + wlan_nr)->lon = lon;
 	  (wlan_list + wlan_nr)->x = wlan_posx;
 	  (wlan_list + wlan_nr)->y = wlan_posy;
-/*	  g_strlcpy ((wlan_list + wlan_nr)->name, row[2],
-		     sizeof ((wlan_list + wlan_nr)->name)); */
-	  (wlan_list + wlan_nr)->poi_type_id = (gint) g_strtod (row[4], NULL);
-	  //if (mydebug > 20)
-	    //{
-	      g_snprintf ((wlan_list + wlan_nr)->name,
-			  sizeof ((wlan_list + wlan_nr)->name), "%s ( %s )"
-			  //"\n(%.4f ,%.4f)",
-			  //                  (wlan_list + wlan_nr)->poi_type_id,
-			  , row[2], row[3]
-			  // , lat, lon
-		);
-	      /*
-	       * `type_id` int(11) NOT NULL default \'0\',
-	       * `alt` double default \'0\',
-	       * `proximity` float default \'0\',
-	       * `comment` varchar(255) default NULL,
-	       * `scale_min` smallint(6) NOT NULL default \'0\',
-	       * `scale_max` smallint(6) NOT NULL default \'0\',
-	       * `last_modified` date NOT NULL default \'0000-00-00\',
-	       * `url` varchar(160) NULL ,
-	       * `address_id` int(11) default \'0\',
-	       * `source_id` int(11) NOT NULL default \'0\',
-	       */
-	    //}
-	  //(wlan_list + wlan_nr)->wp_id      = g_strtol (row[0], NULL);
-	  //      (wlan_list + wlan_nr)->alt        = g_strtod(row[2], NULL);
-	  //(wlan_list + wlan_nr)->name[80] = row[4];
-	  //(wlan_list + wlan_nr)->poi_type_id    = g_strtod(row[5], NULL); 
-	  //(wlan_list + wlan_nr)->proximity  = g_strtod(row[6], NULL);
-	  //(wlan_list + wlan_nr)->comment[255 ] = row[7]; 
-	  //(wlan_list + wlan_nr)->scale_min     = row[8];  
-	  //(wlan_list + wlan_nr)->scale_max     = row[8];  
-	  //(wlan_list + wlan_nr)->last_modified = row[8] 
-	  //(wlan_list + wlan_nr)->url[160]      = row[10]; 
-	  //(wlan_list + wlan_nr)->address_id    = row[11];
-	  //(wlan_list + wlan_nr)->source_id     = row[12]; 
 
-	  /*
-	   * if ( mydebug > 20 ) 
-	   * printf ("DB: %f %f \t( x:%f, y:%f )\t%s\n",
-	   * (wlan_list + wlan_nr)->lat, (wlan_list + wlan_nr)->lon, 
-	   * (wlan_list + wlan_nr)->x, (wlan_list + wlan_nr)->y, 
-	   * (wlan_list + wlan_nr)->name
-	   * );
-	   */
+	  g_snprintf ((wlan_list + wlan_nr)->name,
+		      sizeof ((wlan_list + wlan_nr)->name), "%s ( %s )"
+		      , row[2], row[3] );
+	  (wlan_list + wlan_nr)->nettype = (gint) g_strtod (row[5], NULL);
+	  int icon_index = 19;
+	  if ( (wlan_list + wlan_nr)->nettype == 0 )	icon_index = wlan_open;
+	  if ( (wlan_list + wlan_nr)->nettype == 1 )	icon_index = wlan_closed;
+	  if ( (wlan_list + wlan_nr)->nettype == 2 )	icon_index = wlan_wep;
+	  (wlan_list + wlan_nr)->poi_type_id = icon_index;
+
+	  if ( mydebug > 20 ) 
+	      printf ("DB: %f %f \t( x:%f, y:%f )\t%s\n",
+		      (wlan_list + wlan_nr)->lat, (wlan_list + wlan_nr)->lon, 
+		      (wlan_list + wlan_nr)->x, (wlan_list + wlan_nr)->y, 
+		      (wlan_list + wlan_nr)->name
+		      );
+	} else {
+	  if ( mydebug > 20 ) 
+	      fprintf( stderr ,"Ignoring Point, becuause it's out of bound\n");
 	}
     }
 
@@ -441,7 +384,7 @@ wlan_draw_list (void)
 
 
   /* ------------------------------------------------------------------ */
-  /*  draw wlan_list wlannts */
+  /*  draw wlan_list wlan points */
   if (mydebug > 20)
     printf ("wlan_draw_list: drawing %ld wlans\n", wlan_max);
 
@@ -455,25 +398,16 @@ wlan_draw_list (void)
       if ((posx >= 0) && (posx < SCREEN_X) &&
 	  (posy >= 0) && (posy < SCREEN_Y))
 	{
-
-
-	  /*
-	   * if ( mydebug ) 
-	   * printf ("WLAN Draw: %f %f \t( x:%f, y:%f )\t%s\n",
-	   * (wlan_list + wlan_nr)->lat, (wlan_list + wlan_nr)->lon, 
-	   * (wlan_list + wlan_nr)->x, (wlan_list + wlan_nr)->y, 
-	   * (wlan_list + wlan_nr)->name
-	   * );
-	   */
-
 	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 
 	  g_strlcpy (txt, (wlan_list + i)->name, sizeof (txt));
 
-	  //    if ((drawicon (posx, posy, "HOTEL")) == 0)
 	  {
 	    GdkPixbuf *icon;
 	    int icon_index = (wlan_list + i)->poi_type_id;
+	    if (mydebug > 20)
+		printf( "icon_index: %d\n",icon_index);
+
 	    icon = poi_type_list[icon_index].icon;
 
 	    if (icon != NULL && icon_index > 0)
@@ -489,21 +423,16 @@ wlan_draw_list (void)
 				     posy - wy / 2,
 				     wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
 		  }
-	      }
-	    else
-	      {
-		gdk_gc_set_foreground (kontext_map, &colors.red);
-		if (wlan_max < 20000)
-		  {		// Only draw small + if more than ... Wlannts 
-		    draw_plus_sign (posx, posy);
-		  }
-		else
-		  {
+	      } else {
+		  gdk_gc_set_foreground (kontext_map, &colors.red);
+		  if (wlan_max < 20000) { // Only draw small + if more than ... Wlan Points
+		      draw_plus_sign (posx, posy);
+		  } else {
 		    draw_small_plus_sign (posx, posy);
 		  }
 	      }
-
-	    // Only draw Text if less than 1000 Wlannts are to be displayed
+	    
+	    // Only draw Text if less than 1000 Wlan Points are to be displayed
 	    if (wlan_max < 1000)
 	      {
 		draw_label (txt, posx, posy);
@@ -520,7 +449,7 @@ wlan_draw_list (void)
 
 
 /* *******************************************************
- * query all Info for Wlannts in area arround lat/lon
+ * query all Info for Wlan Points in area arround lat/lon
 */
 void
 wlan_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
@@ -540,4 +469,22 @@ wlan_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 		  (wlan_list + i)->name);
 	}
     }
+}
+
+/* *******************************************************
+ * get IDs for the different wlan types
+ */
+void get_poi_type_id_for_wlan() {
+    int i;
+    for (i = 0; i < poi_type_list_max; i++)
+      {
+	poi_type_list[i].icon = NULL;
+	if (strcmp (poi_type_list[i].name,"wlan.closed") == 0){
+	    wlan_closed=i;
+	} else if (strcmp (poi_type_list[i].name,"wlan.open") == 0){
+	    wlan_open=i;
+	} else if (strcmp (poi_type_list[i].name,"wlan.wep") == 0){
+	    wlan_wep=i;
+	}
+      }
 }
