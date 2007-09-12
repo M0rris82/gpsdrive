@@ -14,7 +14,7 @@ void sqlend (void);
 int getsqldata ();
 int loadmap (char *filename);
 gint zoom_cb (GtkWidget * widget, guint datum);
-void splash (void);
+void show_splash (void);
 int garblemain (int argc, char **argv);
 void display_status (char *message);
 gint drawmarker (GtkWidget * widget, guint * datum);

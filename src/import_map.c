@@ -165,7 +165,7 @@ extern mapsstruct *maps;
 extern gint iszoomed;
 extern gint isnight, disableisnight;
 extern gint nrmaps, dldiff;
-extern int havenasa, nosplash, sortcolumn, sortflag;
+extern int havenasa, sortcolumn, sortflag;
 extern gint onemousebutton;
 extern gchar oldfilename[1024];
 extern GtkWidget *posbt, *cover;

@@ -137,7 +137,6 @@ Disclaimer: Please do not use for navigation.
 gint timeoutcount;
 GtkWidget *pixmapwidget, *gotowindow;
 GtkWidget *messagewindow;
-extern GtkWidget *splash_window;
 gint debug = 0;
 gint do_unit_test = FALSE;
 gchar *buffer = NULL, *big = NULL;
@@ -364,7 +363,6 @@ extern routestatus_struct route;
 extern color_struct colors;
 
 GdkFont *font_wplabel;
-PangoFontDescription *pfd_text;
 gchar font_text[100];
 
 gint drawmarkercounter = 0, loadpercent = 10, globruntime = 30;
@@ -378,7 +376,6 @@ GtkWidget *sateventbox = NULL;
 GtkWidget *satsvbox, *satshbox, *satslabel1eventbox;
 GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
-GtkWidget *frame_mapfile;
 GtkWidget *frame_map_area;
 GtkWidget *frame_wp;
 GtkWidget *frame_poi,*frame_track, *lab1;
@@ -1351,19 +1348,23 @@ draw_scalebar (void)
 	gdk_gc_set_foreground (kontext_map, &colors.black);
 
 	/* Print the meaning of the scale bar ("10 km") */
-	{
-	    /* prints in pango */
-	    PangoLayout *wplabellayout;
-	    
-	    wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, scale_txt);
-	    pango_layout_set_font_description (wplabellayout, pfd_text);
+	PangoLayout *scalebar_layout;
+	PangoFontDescription *pfd_scalebar;
 
-	    gdk_draw_layout_with_colors (drawable, kontext_map, 
-					 l, SCREEN_Y - dist_y -1 ,
-					 wplabellayout, &colors.black, NULL);
-	    if (wplabellayout != NULL)
-		g_object_unref (G_OBJECT (wplabellayout));
-	}
+	if (local_config.guimode == GUI_PDA)
+		pfd_scalebar = pango_font_description_from_string ("Sans 8");
+	else
+		pfd_scalebar = pango_font_description_from_string ("Sans 11");
+
+	scalebar_layout = gtk_widget_create_pango_layout
+		(map_drawingarea, scale_txt);
+	pango_layout_set_font_description (scalebar_layout, pfd_scalebar);
+
+	gdk_draw_layout_with_colors (drawable, kontext_map, 
+		l, SCREEN_Y - dist_y -1 ,
+		scalebar_layout, &colors.black, NULL);
+	if (scalebar_layout != NULL)
+		g_object_unref (G_OBJECT (scalebar_layout));
 
 	/* Print the actual scale bar lines */
 	gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
@@ -2811,23 +2812,20 @@ main (int argc, char *argv[])
 
     gint i, screen_height, screen_width;
 
-    gchar s1[100];
-
-    char s3[200];
     struct tm *lt;
     time_t local_time, gmt_time;
     /*   GtkAccelGroup *accel_group; */
 
     gdouble f;
-    
+
     tzset ();
     gmt_time = time (NULL);
-       
+
     lt = gmtime (&gmt_time);
     local_time = mktime (lt);
     zone = lt->tm_isdst + (gmt_time - local_time) / 3600;
     /*   fprintf(stderr,"\n zeitzone: %d\n",zone); */
-    
+
 
     /*   zone = st->tm_gmtoff / 3600; */
     /*  initialize variables */
@@ -2839,7 +2837,7 @@ main (int argc, char *argv[])
     coords.current_lon = coords.zero_lon = 11.57532 + f;
     /*    zero_lat and zero_lon are overwritten by gpsdriverc,  */
     tripreset ();
-    
+
     g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
     g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
@@ -2860,19 +2858,7 @@ main (int argc, char *argv[])
     useDBUS = FALSE;
 #endif
 
-    { /* Set fonts */
-	if (local_config.guimode == GUI_PDA)
-        {
-            g_strlcpy (local_config.font_dashboard, "Sans bold 12",
-            	sizeof (local_config.font_dashboard));
-            g_strlcpy (font_text, "Sans 8", sizeof (font_text));
-            g_strlcpy (local_config.font_wplabel, "Sans 8", sizeof (local_config.font_wplabel));
-            printf("pdamode for fonts\n");
-        } else {
-            g_strlcpy (font_text, "Sans 11", sizeof (font_text));
-        }
-	pfd_text = pango_font_description_from_string (font_text);
-    }
+
 
 
     signal (SIGUSR2, usr2handler);
@@ -3010,7 +2996,7 @@ main (int argc, char *argv[])
 
     /*    Setting locale for correct Umlauts */
     gtk_set_locale ();
-    
+
     /*  initialization for GTK+ */
     gtk_init (&argc, &argv);
 
@@ -3126,7 +3112,8 @@ main (int argc, char *argv[])
 			{
 			    usage ();
 			    g_print (_
-				     ("\nYou can only choose between english, spanish and german\n\n"));
+				("\nYou can currently only choose between "
+				"english, spanish and german\n\n"));
 			    exit (0);
 			}
 		    break;
@@ -3162,28 +3149,26 @@ main (int argc, char *argv[])
 	}
     while (i != -1);
 
-    if ( mydebug >99 ) fprintf(stderr , "options parsed\n");
+    if ( mydebug >99 )
+	fprintf(stderr , "options parsed\n");
 
-	
+	/* print version info */
+	if ( mydebug > 0 )
+		printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter"
+		" <ganter@ganter.at>\n\nVersion %s\n%s\n\n", VERSION, rcsid);
+
+	/*  show splash screen */
+	if (!nosplash)
+		show_splash ();
+
     init_lat2RadiusArray();
 
     gethostname (hostname, 256);
     proxyport = 80;
     haveproxy = FALSE;
 
-    if ( mydebug > 0 )
-	printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
-		"\nVersion %s\n%s\n\n", VERSION, rcsid);
-    
-
     get_proxy_from_env();
 
-    if ( mydebug > 0 )
-	g_print ("\nGpsDrive version %s\n%s\n", VERSION, rcsid);
-
-    /*  show splash screen */
-    if (!nosplash)
-	splash ();
     { // Set locale for the use of atof()  
 	gchar buf[5];  
 	sprintf(buf,"%.1f",1.2);  
@@ -3278,76 +3263,10 @@ main (int argc, char *argv[])
 //			GTK_SIGNAL_FUNC (satpos_cb), NULL);
 
 
-
-
-    // Frame ---   displays zoom factor of map
-//    altilabel = gtk_label_new (_("n/a"));
-    if (local_config.guimode == GUI_PDA)
-	{
-	    g_snprintf (s3, sizeof (s3),
-			"<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"5000\">%s</span>",
-			local_config.color_dashboard, _("n/a"));
-	}
-    else
-	{
-	    g_snprintf (s3, sizeof (s3),
-			"<span color=\"%s\" font_family=\"Arial\" weight=\"bold\" size=\"10000\">%s</span>",
-			local_config.color_dashboard, _("n/a"));
-	}
-
-    if (local_config.guimode == GUI_PDA)
-	{
-	    if (local_config.distmode == DIST_MILES)
-		g_snprintf (s1, sizeof (s1), "[%s]", _("mi/h"));
-	    else if (local_config.distmode == DIST_NAUTIC)
-		g_snprintf (s1, sizeof (s1), "[%s]", _("knots"));
-	    else
-		g_snprintf (s1, sizeof (s1), "[%s]", _("km/h"));
-	}
-    else
-	{
-	    if (local_config.distmode == DIST_MILES)
-		g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-			    _("mi/h"));
-	    else if (local_config.distmode == DIST_NAUTIC)
-		g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-			    _("knots"));
-	    else
-		g_snprintf (s1, sizeof (s1), "%s [%s]", _("Speed"),
-			    _("km/h"));
-	}
-
-
-    if ( mydebug >10 )
-    {
-	frame_mapfile = gtk_frame_new (_("Map file"));
-	label_map_filename = gtk_label_new (_("---"));
-	gtk_container_add (GTK_CONTAINER (frame_mapfile), label_map_filename);
-    }
-
-
-
     /*  all position calculations are made in the expose callback */
 //    g_signal_connect (GTK_OBJECT (map_drawingarea),
 //			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
-
-
-    /*** Mod by Arms */
-    /* This one should position the windows in the corners, */
-    /* so that gpsdrive can be run w/o a xwm (stand-alone mode) */
-    /* With a xwm, you should be able to reposition the */
-    /* windows afterwards... */
-//    if (local_config.guimode == GUI_XWIN && SMALLMENU)
-//	{
-//	    reqptr = &requ;
-//	    gtk_widget_size_request (GTK_WIDGET (menuwin2), reqptr);
-//	    gtk_widget_set_uposition (GTK_WIDGET (menuwin2), gdk_screen_width () - requ.width, gdk_screen_height () - requ.height);	/* rechts unten */
-//	    gtk_widget_size_request (GTK_WIDGET (main_window), reqptr);
-//	    gtk_widget_set_uposition (GTK_WIDGET (main_window), gdk_screen_width () - requ.width, 0);	/* rechts oben */
-//	    gtk_widget_size_request (GTK_WIDGET (menuwin), reqptr);
-//	    gtk_widget_set_uposition (GTK_WIDGET (menuwin), 0, 0);	/* links oben */
-//	}
 
 #ifdef MAPNIK
     /*
@@ -3366,58 +3285,8 @@ main (int argc, char *argv[])
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id, _("Using speech output"));
 
-
-
-
     //temperature_get_values ();
     //battery_get_values ();
-
-
-{
-//    if(local_config.guimode != GUI_PDA) {
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), sateventbox,
-//			      _
-//			      ("Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"),
-//			      NULL);
-
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel1eventbox,
-//			      _
-//			      ("Number of used satellites/satellites in view"),
-//			      NULL);
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel2eventbox,
-//			      _
-//			      ("EPE (Estimated Precision Error), if available"),
-//			      NULL);
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), satslabel3eventbox,
-//			      _
-//			      ("PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "),
-//			      NULL);
-
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), compasseventbox,
-//			      _
-//			      ("On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."),
-//			      NULL);
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wi,
-//			      _("Here you find extra functions for maps, tracks and messages"),
-//			      NULL);
-	/*    if (maxwp > 0) */
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), wp_bt,
-//			      _("Show waypoints on the map"), NULL);
-
-	/*    if (maxwp > 0) */
-//	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
-//			      find_poi_bt,
-//			      _("Find Points of Interest and select as destination"),
-//			      NULL);
-//	if (mapscaler_scaler)
-//	    gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapscaler_scaler,
-//				  _("Select the map scale of avail. maps."),
-//				  NULL);
-	/*    gtk_tooltips_set_tip(GTK_TOOLTIPS(tooltips),,_(""),NULL); */
-//	gtk_tooltips_set_delay (GTK_TOOLTIPS (tooltips), TOOLTIP_DELAY);
-//    }
-}
-
 
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
     /*  set the timers */
@@ -3426,7 +3295,6 @@ main (int argc, char *argv[])
 			     (GtkFunction) get_position_data_cb,
 			     NULL);
     gtk_timeout_add (WATCHWPTIMER, (GtkFunction) watchwp_cb, NULL);
-
 
     redrawtimeout =
 	gtk_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);

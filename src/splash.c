@@ -76,12 +76,9 @@ extern coordinate_struct coords;
 
 
 gint
-splashaway_cb (GtkWidget * widget, gpointer datum)
+remove_splash_cb (GtkWidget * widget, gpointer datum)
 {
-
-
 	gtk_widget_destroy (splash_window);
-
 	return (FALSE);
 }
 
@@ -509,7 +506,7 @@ getPixmapFromXpm (GtkWidget * widget, gchar ** xpmname)
 }
 
 void
-splash (void)
+show_splash (void)
 {
 	gchar xpmfile[400];
 	GtkWidget *pixmap = NULL;
@@ -517,14 +514,16 @@ splash (void)
 	gtk_window_set_auto_startup_notification (FALSE);
 	
 	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR,
-		    "pixmaps/gpsdrivesplash.png");
+		"pixmaps/gpsdrivesplash.png");
 
 	splash_window = gtk_window_new (GTK_WINDOW_POPUP);
 
-	gtk_window_set_type_hint (GTK_WINDOW (splash_window), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
-	gtk_window_set_title (GTK_WINDOW (splash_window), "gpsdrive");
+	gtk_window_set_type_hint (GTK_WINDOW (splash_window),
+		GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+	gtk_window_set_title (GTK_WINDOW (splash_window),
+		_("Starting GPS Drive"));
 	gtk_window_set_position (GTK_WINDOW (splash_window),
-				 GTK_WIN_POS_CENTER);
+		GTK_WIN_POS_CENTER);
 
 	gtk_widget_realize (splash_window);
 	gdk_window_set_decorations (GTK_WIDGET (splash_window)->window, 0);
@@ -535,30 +534,29 @@ splash (void)
 	if (pixmap != NULL)
 	{
 		gtk_pixmap_set (GTK_PIXMAP (pixmap),
-				GTK_PIXMAP (pixmap)->pixmap,
-				GTK_PIXMAP (pixmap)->mask);
+			GTK_PIXMAP (pixmap)->pixmap,
+			GTK_PIXMAP (pixmap)->mask);
 	}
 	else
 	{
 		fprintf (stderr,
-			 _
-			 ("\nWarning: unable to open splash picture\nPlease install the program as root with:\nmake install\n\n"));
+			_
+			("\nWarning: unable to open splash picture\nPlease "
+			"install the program as root with:\nmake install\n\n"));
 		return;
 	}
 	/*   gtk_widget_show (splash_window);  */
 
-
 	gtk_container_add (GTK_CONTAINER (splash_window), pixmap);
 	gtk_widget_shape_combine_mask (splash_window,
-				       GTK_PIXMAP (pixmap)->mask, 0, 0);
-
+		GTK_PIXMAP (pixmap)->mask, 0, 0);
 
 	gtk_widget_show (pixmap);
 	gtk_widget_show (splash_window);
 	while (gtk_events_pending ())
 		gtk_main_iteration ();
 
-	gtk_timeout_add (3000, (GtkFunction) splashaway_cb, NULL);
+	gtk_timeout_add (3000, (GtkFunction) remove_splash_cb, NULL);
 }
 
 

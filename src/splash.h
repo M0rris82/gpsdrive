@@ -35,6 +35,6 @@ Disclaimer: Please do not use for navigation.
 #include "gtk/gtk.h"
 #include "gpsproto.h"
 
-gint splashaway_cb(GtkWidget *widget, gpointer datum);
+gint remove_splash_cb (GtkWidget *widget, gpointer datum);
 
 #endif /* GPSDRIVE_SPLASH_H */

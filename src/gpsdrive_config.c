@@ -50,7 +50,6 @@ Disclaimer: Please do not use for navigation.
 extern gint max_display_map;
 extern map_dir_struct *display_map;
 
-GtkWidget *splash_window;
 extern gint displaymap_top, displaymap_map;
 extern gint mydebug;
 extern gint setdefaultpos;
@@ -516,6 +515,14 @@ readconfig ()
 	if ( mydebug > 1 )
 		fprintf ( stderr,"\nreading config file finished\n");
 	fclose (fp);
+
+	if (local_config.guimode == GUI_PDA)
+	{
+		g_strlcpy (local_config.font_dashboard, "Sans bold 12",
+			sizeof (local_config.font_dashboard));
+		g_strlcpy (local_config.font_wplabel, "Sans 8", sizeof
+			(local_config.font_wplabel));
+	}
 }
 
 /* init configuration with defined default values */
