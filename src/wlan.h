@@ -54,6 +54,8 @@ void wlan_init (void);
 void wlan_rebuild_list (void);
 void wlan_draw_list (void);
 void wlan_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
+void wlan_rebuild_list (void);
+int wlan_check_if_moved (void);
 GdkPixbuf * read_wlan_icon (gchar * icon_name);
 void get_poi_type_id_for_wlan();
 

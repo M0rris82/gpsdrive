@@ -166,7 +166,7 @@ wlan_rebuild_list (void)
   if (!usesql)
     return;
 
-  if ( current.mapscale> 100000000)
+  if ( current.mapscale > 100000000)
       return;
 
   if (!local_config.showwlan)
@@ -253,7 +253,7 @@ wlan_rebuild_list (void)
       gdouble lat, lon;
 
       if (mydebug > 20)
-	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+	fprintf (stderr, "WLAN Query Result: lat:%s\tlon:%s\t%s\t%s\t%s\t%s\t%s\n",
 		 row[0], row[1], row[2], row[3], row[4], row[5], row[6]);
 
       lat = g_strtod (row[0], NULL);
@@ -264,7 +264,6 @@ wlan_rebuild_list (void)
 	  (wlan_posy > -50) && (wlan_posy < (SCREEN_Y + 50)))
 	{
 	  // get next free mem for wlan_list
-	  wlan_nr++;
 	  if (wlan_nr > wlan_limit) {
 	      wlan_limit = wlan_nr + 10000;
 	      if (mydebug > 20)
@@ -300,6 +299,7 @@ wlan_rebuild_list (void)
 		      (wlan_list + wlan_nr)->x, (wlan_list + wlan_nr)->y, 
 		      (wlan_list + wlan_nr)->name
 		      );
+	  wlan_nr++;
 	} else {
 	  if ( mydebug > 20 ) 
 	      fprintf( stderr ,"Ignoring Point, becuause it's out of bound\n");
@@ -428,7 +428,7 @@ wlan_draw_list (void)
 		  if (wlan_max < 20000) { // Only draw small + if more than ... Wlan Points
 		      draw_plus_sign (posx, posy);
 		  } else {
-		    draw_small_plus_sign (posx, posy);
+		      draw_small_plus_sign (posx, posy);
 		  }
 	      }
 	    

@@ -316,6 +316,8 @@ readkismet (void)
     }
   while (have != 0);
 
+  wlan_rebuild_list ();
+
   return TRUE;
 }
 
