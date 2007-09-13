@@ -2841,6 +2841,10 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 		{
 	    case 'C':
 	    	g_strlcpy(local_config.config_file, optarg, sizeof(local_config.config_file));
+	    	if (!g_file_test(local_config.config_file, G_FILE_TEST_EXISTS)) {
+				fprintf(stderr,"Config file '%s' not found.\n", local_config.config_file);
+				exit(-1);
+	    	}
 		case 'a':
 		    local_config.enableapm = TRUE;
 		    break;
