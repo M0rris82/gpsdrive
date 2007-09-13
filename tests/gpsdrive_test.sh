@@ -84,16 +84,16 @@ mkdir -p logs
 # Test Gpsdrive -T with different Setup
 for icon_theme in square.big square.small classic.big ; do 
     for LANG in en_US de_DE ; do 
-	#for USER_INTERFACE in "" -p -C ; do 
-	for USER_INTERFACE in "" -C ; do 
-	    echo "------------------> check 'gpsdrive -T' LANG=$LANG icon_theme=$icon_theme Userinterface=$USER_INTERFACE"
+#	for USER_INTERFACE in car desktop pda ; do 
+	for USER_INTERFACE in car desktop ; do 
+	    echo "------------------> check 'LANG=$LANG gpsdrive -T -M $USER_INTERFACE' icon_theme=$icon_theme"
 	    perl -p -i.bak \
 		-e "s/icon_theme = .*/icon_theme = $icon_theme/" ${HOME}/.gpsdrive/gpsdriverc
 	    #grep icon_theme ${HOME}/.gpsdrive/gpsdriverc
 	    perl -p -i.bak \
 		-e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
 
-	    ./src/gpsdrive $USER_INTERFACE --geometry 800x600  -S -T -a -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
+	    ./src/gpsdrive -M $USER_INTERFACE --geometry 800x600  -S -T -a -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
 	    rc=$?
 
 	    if [ $rc != 0 ] ; then
