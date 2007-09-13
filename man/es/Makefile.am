@@ -1,12 +1,1 @@
-all: man
-
-man: gpsdrive.1
-
-EXTRA_DIST = gpsdrive.1
-
-install-data-local:
-	$(mkinstalldirs) $(DESTDIR)$(mandir)/es/man1/
-	$(INSTALL_DATA) $(srcdir)/gpsdrive.1 $(DESTDIR)$(mandir)/es/man1/gpsdrive.1
-
-
-
+man1_MANS = $(srcdir)/gpsdrive.1
