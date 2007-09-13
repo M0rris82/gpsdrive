@@ -2888,6 +2888,9 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 				local_config.guimode = GUI_CAR;
 			else if (!strcmp(optarg, "pda"))
 				local_config.guimode = GUI_PDA;
+			else
+				fprintf(stderr,"%s-mode not supported.\n", optarg);
+				exit(-1);
 			break;
 		case '1':
 		    onemousebutton = TRUE;
