@@ -95,6 +95,7 @@ extern color_struct colors;
 
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *posbt;
+extern GtkWidget *settings_window;
 
 extern GdkPixbuf *targetmarker_img;
 
@@ -105,7 +106,6 @@ GtkWidget *poi_lookup_window;
 GtkWidget *button_delete;
 GtkWidget *button_target;
 GtkWidget *button_addtoroute;
-static GtkWidget *entry_type;
 static GtkTreeViewColumn *column_poitypes_select;
 
 /* route window */
@@ -123,12 +123,18 @@ toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi)
 {
 	if (GTK_WIDGET_VISIBLE (poi_types_window))
 	{
+		if (GTK_IS_WIDGET (settings_window))
+			gtk_window_set_modal
+				(GTK_WINDOW (settings_window), TRUE);
 		gtk_widget_hide_all (poi_types_window);
 		if (mydebug > 10)
 			fprintf (stderr, "Hiding POI-Types Window\n");
 	}
 	else
 	{
+		if (GTK_IS_WIDGET (settings_window))
+			gtk_window_set_modal
+				(GTK_WINDOW (settings_window), FALSE);
 		if (multi)
 			gtk_tree_view_column_set_visible
 				(column_poitypes_select, TRUE);
@@ -144,8 +150,8 @@ toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi)
 	return TRUE;
 }
 
- 
- 
+
+
 static void
 evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 {
@@ -338,7 +344,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 
 
 static void
-select_poitype_cb (GtkTreeSelection *selection, gpointer data)
+select_poifilter_cb (GtkTreeSelection *selection, gpointer data)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
@@ -349,13 +355,29 @@ select_poitype_cb (GtkTreeSelection *selection, gpointer data)
 			POITYPE_ID, &criteria.poitype_id,
 			POITYPE_NAME, &criteria.poitype_name,
 			-1);
-		gtk_entry_set_text (GTK_ENTRY (entry_type),
-			criteria.poitype_name);
-
-		if (mydebug>50)
-			fprintf (stderr, " selected poi-type -> %d / %s\n",
-			criteria.poitype_id, criteria.poitype_name);
 	}
+}
+
+
+static gint
+select_poitype_cb (GtkComboBox *combo_box, gpointer data)
+{
+	GtkTreeIter iter;
+
+	if (gtk_combo_box_get_active_iter (combo_box, &iter))
+	{
+		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter,
+			POITYPE_ID, &criteria.poitype_id,
+			POITYPE_NAME, &criteria.poitype_name,
+			-1);
+	}
+
+	if (mydebug>50)
+	{
+		fprintf (stderr, " selected poi-type -> %d / %s\n",
+		criteria.poitype_id, criteria.poitype_name);
+	}
+	return FALSE;
 }
 
 
@@ -688,7 +710,7 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *hbox_type, *label_type, *radiobutton_typeall;
 	GSList *radiobutton_type_group = NULL;
 	GtkWidget *radiobutton_typesel;
-	GtkWidget *button_types, *label_criteria, *frame_poiresults;
+	GtkWidget *label_criteria, *frame_poiresults;
 	GtkWidget *alignment_poiresults, *vbox_poiresults;
 	GtkWidget *scrolledwindow_poilist, *treeview_poilist;
 	GtkCellRenderer *renderer_poilist;
@@ -702,7 +724,9 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	GtkWidget *alignment_target, *hbox_target, *image_target;
 	GtkWidget *label_target, *button_close, *button_jumpto;
 	GtkWidget *alignment_jumpto, *hbox_jumpto, *image_jumpto;
-	GtkWidget *label_jumpto;
+	GtkWidget *label_jumpto, *combobox_typetree;
+	GtkCellRenderer *renderer_type_name;
+	GtkCellRenderer *renderer_type_icon;
 	GtkTooltips *tooltips_poilookup;
 	gchar text[50];
 	
@@ -857,17 +881,26 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	gtk_box_pack_start (GTK_BOX (hbox_type), label_type, FALSE, FALSE, 10);
 	gtk_label_set_use_markup (GTK_LABEL (label_type), TRUE);
 	gtk_label_set_single_line_mode (GTK_LABEL (label_type), TRUE);
-	
-	button_types = gtk_button_new_with_mnemonic ("...");
-	gtk_box_pack_end (GTK_BOX (hbox_type), button_types, FALSE, FALSE, 0);
-	g_signal_connect (button_types, "clicked",
-		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
 
-	entry_type = gtk_entry_new ();
+	combobox_typetree = gtk_combo_box_new_with_model
+		(GTK_TREE_MODEL (poi_types_tree));
+	renderer_type_icon = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox_typetree),
+		renderer_type_icon, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox_typetree),
+		renderer_type_icon, "pixbuf", POITYPE_ICON, NULL);
+	renderer_type_name = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combobox_typetree),
+		renderer_type_name, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox_typetree),
+		renderer_type_name, "text", POITYPE_TITLE, NULL);
+//	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (entry_type),
+//		renderer_type, func, NULL, NULL);
+	g_signal_connect (G_OBJECT (combobox_typetree), "changed",
+		G_CALLBACK (select_poitype_cb), NULL);
 	gtk_box_pack_end (GTK_BOX (hbox_type),
-		entry_type, TRUE, TRUE, 5);
-	gtk_editable_set_editable (GTK_EDITABLE (entry_type), FALSE );
-	gtk_widget_set_sensitive (entry_type, FALSE);
+		combobox_typetree, TRUE, TRUE, 5);
+
 
 	radiobutton_typeall =
 		gtk_radio_button_new_with_mnemonic (NULL, _("all"));
@@ -1144,6 +1177,7 @@ GtkWidget
 	GtkWidget *button_close;
 	GtkWidget *poitypes_treeview;
 	GtkCellRenderer *renderer_poitypes;
+	GtkCellRenderer *renderer_poitypes_select;
 	GtkTreeViewColumn *column_poitypes;
 	GtkTreeSelection *poitypes_select;
 
@@ -1181,13 +1215,11 @@ GtkWidget
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
-	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	renderer_poitypes_select = gtk_cell_renderer_toggle_new ();
 	column_poitypes_select = gtk_tree_view_column_new_with_attributes ("_",
-		renderer_poitypes, "active", POITYPE_SELECT, NULL);
+		renderer_poitypes_select, "active", POITYPE_SELECT, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes_select);
-	//g_signal_connect (G_OBJECT (poitypes_select), "changed",
-	//	G_CALLBACK (select_poitype_cb), NULL);
 
 	renderer_poitypes = gtk_cell_renderer_text_new ();
 	column_poitypes = gtk_tree_view_column_new_with_attributes (
@@ -1213,7 +1245,7 @@ GtkWidget
 		(GTK_TREE_VIEW (poitypes_treeview));
 	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
 	g_signal_connect (G_OBJECT (poitypes_select), "changed",
-		G_CALLBACK (select_poitype_cb), NULL);
+		G_CALLBACK (select_poifilter_cb), renderer_poitypes_select);
 
 	hbox_status = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (vbox_poi_types),

@@ -332,6 +332,8 @@ import1_cb (GtkWidget * widget, guint datum)
       gtk_signal_connect_object (GTK_OBJECT (knopf_scale_finish), "clicked",
 				 GTK_SIGNAL_FUNC (import_scale_cb),
 				 GTK_OBJECT (window));
+      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
+			  knopf_scale_finish, TRUE, TRUE, 2);
     }
   else
     {
@@ -369,11 +371,6 @@ import1_cb (GtkWidget * widget, guint datum)
   gtk_signal_connect (GTK_OBJECT (s6), "clicked", GTK_SIGNAL_FUNC (zoom_cb),
 		      (gpointer) 2);
 
-  if (datum == 1)
-    {
-      gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area),
-			  knopf_scale_finish, TRUE, TRUE, 2);
-    }
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), knopf, TRUE,
 		      TRUE, 2);
   gtk_box_pack_start (GTK_BOX (GTK_DIALOG (window)->action_area), knopf2,
