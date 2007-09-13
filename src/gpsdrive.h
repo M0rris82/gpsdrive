@@ -350,6 +350,7 @@ typedef struct
 				 * 0: No GPS, 1: No Fix, 2: 2D Fix, 3: 3D Fix */
 	gboolean needtosave;	/* flag if config has to be saved */
 	gboolean importactive;
+	GtkTreeIter poitype_iter;
 }
 currentstatus_struct;
 

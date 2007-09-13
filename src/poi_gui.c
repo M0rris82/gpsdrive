@@ -92,6 +92,7 @@ extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
 
 extern color_struct colors;
+extern currentstatus_struct current;
 
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *posbt;
@@ -894,13 +895,13 @@ void poi_lookup_cb (GtkWidget *calling_button)
 		renderer_type_name, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox_typetree),
 		renderer_type_name, "text", POITYPE_TITLE, NULL);
-//	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (entry_type),
-//		renderer_type, func, NULL, NULL);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(combobox_typetree),
+		&current.poitype_iter);
+	select_poitype_cb (GTK_COMBO_BOX (combobox_typetree), NULL);
 	g_signal_connect (G_OBJECT (combobox_typetree), "changed",
 		G_CALLBACK (select_poitype_cb), NULL);
 	gtk_box_pack_end (GTK_BOX (hbox_type),
 		combobox_typetree, TRUE, TRUE, 5);
-
 
 	radiobutton_typeall =
 		gtk_radio_button_new_with_mnemonic (NULL, _("all"));

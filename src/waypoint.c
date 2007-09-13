@@ -101,6 +101,7 @@ extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
+extern GtkTreeStore *poi_types_tree;
 extern GList *poi_types_formatted;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -589,21 +590,24 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 gint
 addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 {
-	G_CONST_RETURN gchar *s1, *s2, *s3;
+	G_CONST_RETURN gchar *s1, *s2;
 	gchar wp_name[80];
-	gchar wp_type[80];
+	gchar *wp_type;
 	gchar wp_comment[255];
 
 	s1 = gtk_entry_get_text (GTK_ENTRY (add_wp_name_text));
-	s2 = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (wptext2)->entry));
-	s3 = gtk_entry_get_text (GTK_ENTRY (add_wp_comment_text));
+	s2 = gtk_entry_get_text (GTK_ENTRY (add_wp_comment_text));
 	
 	if (!usesql)
 		save_in_db = FALSE;
 		
 	g_strlcpy(wp_name,s1,sizeof(wp_name));
-	g_strlcpy(wp_type,s2,sizeof(wp_type));
-	g_strlcpy(wp_comment,s3,sizeof(wp_comment));
+	g_strlcpy(wp_comment,s2,sizeof(wp_comment));
+
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree),
+		&current.poitype_iter,
+		POITYPE_NAME, &wp_type,
+		-1);
 
 	addwaypoint (wp_name, wp_type, wp_comment,
 		coords.wp_lat, coords.wp_lon, save_in_db);
@@ -611,6 +615,8 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	gtk_widget_destroy (GTK_WIDGET (widget));
 	markwaypoint = FALSE;
 
+	g_free (wp_type);
+	
 	return TRUE;
 }
 
@@ -637,14 +643,22 @@ addwaypointdestroy_cb (GtkWidget * widget, guint datum)
 
 /* *****************************************************************************
  */
+static gint
+select_wptype_cb (GtkComboBox *combo_box, gpointer data)
+{
+	gtk_combo_box_get_active_iter (combo_box, &current.poitype_iter);
+	return FALSE;
+}
+
+
+/* *****************************************************************************
+ */
 gint
 addwaypoint_cb (GtkWidget * widget, gpointer datum)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
 	gchar buff[40];
-	GList *wp_types = NULL;
-	gint i;
 
 	GtkWidget *add_wp_name_label;
 	GtkWidget *add_wp_type_label;
@@ -658,7 +672,9 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	GtkWidget *radiobutton_db;
 	GtkWidget *radiobutton_wp;
 	GtkWidget *add_wp_savein_label;
-	
+	GtkWidget *add_wp_type_combo;
+	GtkCellRenderer *renderer_type_name;
+	GtkCellRenderer *renderer_type_icon;
 
 	addwaypointwindow = window = gtk_dialog_new ();
 
@@ -687,20 +703,28 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	}
 
 	{			/* Types */
-		wp_types = g_list_append (wp_types, "unknown");
-		for (i = 2; i <= poi_type_list_count; i++)
-		{
-			if (g_ascii_strcasecmp(poi_type_list[i].name,"\0") != 0)
-				wp_types = g_list_append (wp_types, poi_type_list[i].name);
-		}		
+	add_wp_type_label = gtk_label_new (_(" Type: "));
+	add_wp_type_combo = gtk_combo_box_new_with_model
+		(GTK_TREE_MODEL (poi_types_tree));
+	renderer_type_icon = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (add_wp_type_combo),
+		renderer_type_icon, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (add_wp_type_combo),
+		renderer_type_icon, "pixbuf", POITYPE_ICON, NULL);
+	renderer_type_name = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (add_wp_type_combo),
+		renderer_type_name, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (add_wp_type_combo),
+		renderer_type_name, "text", POITYPE_TITLE, NULL);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(add_wp_type_combo),
+		&current.poitype_iter);
+	g_signal_connect (G_OBJECT (add_wp_type_combo), "changed",
+		G_CALLBACK (select_wptype_cb), NULL);
 
-		wptext2 = gtk_combo_new ();
-		gtk_combo_set_popdown_strings (GTK_COMBO (wptext2),
-					       (GList *) wp_types);
-		add_wp_type_label = gtk_label_new (_(" Type: "));
-
-		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_type_label, 0, 1, 1, 2);
-		gtk_table_attach_defaults (GTK_TABLE (table_add_wp), wptext2, 1, 3, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (table_add_wp),
+		add_wp_type_label, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (table_add_wp),
+		add_wp_type_combo, 1, 3, 1, 2);
 	}
 
 	{		/* Comment */
@@ -751,12 +775,19 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 			gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_db), radiobutton_savein_group);
 		
 			radiobutton_savein_group = gtk_radio_button_get_group (GTK_RADIO_BUTTON (radiobutton_db));
-			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radiobutton_db), TRUE);
-	
 			radiobutton_wp = gtk_radio_button_new_with_mnemonic (NULL, _("way.txt File"));
 			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), radiobutton_wp, 2, 3, 5, 6);
 			gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_wp), radiobutton_savein_group);
-			
+			if (save_in_db)
+			{
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
+					(radiobutton_db), TRUE);
+			}
+			else
+			{
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
+					(radiobutton_wp), TRUE);
+			}
 			g_signal_connect (radiobutton_db, "toggled",
 						GTK_SIGNAL_FUNC (add_wp_change_save_in_cb), 0);
 		}
