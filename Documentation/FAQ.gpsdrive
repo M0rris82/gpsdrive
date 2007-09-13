@@ -95,6 +95,14 @@ A: Yes. Of course you can use your own (self drawn, scanned...) maps. The
    GpsDrive won't display the maps. GpsDrive comes with an import assistant.
    Simply use the Menu item Options->Maps->import and follow the instructions.
 
+Q: What is the mapnik?
+A: Manik is a renderer for Openstreetmap data. You can active the mapnik mode
+   by checking the mapnik option (map controls).
+
+Q: Where is no mapnik option?
+A: It is only available if you have installed the mapnik packages. Have a look
+   at install-mapnik-osm.txt.
+
 Q: Which GPS receivers work with GpsDrive?
 A: Any receiver that is recognized by gpsd should work. 
 
