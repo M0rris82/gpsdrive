@@ -328,7 +328,7 @@ gpsdrive_SOURCES = $(PRGS)
 #		garmin_serial_unix.cpp garmin_application.cpp garmin_link.cpp garmin_util.cpp
 friendsd2_SOURCES = friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
-EXTRA_DIST = gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc* CMakeLists.txt
+EXTRA_DIST = gpsdrive.spec gpsdrive-nosql.spec $(wildcard gpsdrive.spec.fc*) CMakeLists.txt
 all: all-recursive
 
 .SUFFIXES:
