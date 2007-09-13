@@ -11,10 +11,24 @@ man1_MANS = \
 	gpsdrive-init-db.1 \
 	gpsfetchmap.1 \
 	gpspoint2gpsdrive.1 \
-	install_osm_mapnik.1 \
 	poi-manager.1
 
 EXTRA_DIST = CMakeLists.txt
 
-%.1: $(srcdir)/../scripts/%.pl
+convert-waypoints.1: $(srcdir)/../scripts/convert-waypoints.pl
+	pod2man $? >$@ 
+
+create-osm.xml.1: $(srcdir)/../scripts/create-osm.xml.pl
+	pod2man $? >$@ 
+
+gpsdrive-init-db.1: $(srcdir)/../scripts/gpsdrive-init-db.pl
+	pod2man $? >$@ 
+
+gpsfetchmap.1: $(srcdir)/../scripts/gpsfetchmap.pl
+	pod2man $? >$@ 
+
+gpspoint2gpsdrive.1: $(srcdir)/../scripts/gpspoint2gpsdrive.pl
+	pod2man $? >$@ 
+
+poi-manager.1: $(srcdir)/../scripts/poi-manager.pl
 	pod2man $? >$@ 

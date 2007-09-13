@@ -216,7 +216,7 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-man1_MANS = $(srcdir)/gpsdrive.1
+man1_MANS = gpsdrive.1
 all: all-am
 
 .SUFFIXES:

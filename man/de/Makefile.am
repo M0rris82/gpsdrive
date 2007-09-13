@@ -1,1 +1,1 @@
-man1_MANS = $(srcdir)/gpsdrive.1
+man1_MANS = gpsdrive.1
