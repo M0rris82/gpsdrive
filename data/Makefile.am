@@ -7,7 +7,7 @@ cfg_filesdir   = $(datadir)/gpsdrive/
 cfg_files_DATA = map_koord.txt gpsdrive.desktop
 
 pixmapdir   = $(datadir)/gpsdrive/pixmaps
-pixmap_DATA = pixmaps/*.png pixmaps/*.gif
+pixmap_DATA = $(wildcard pixmaps/*.png) $(wildcard pixmaps/*.gif)
 
 
 ####################################################################################
@@ -19,8 +19,8 @@ poi_DATA = \
 
 mapsdir   = $(datadir)/gpsdrive/maps
 maps_DATA = \
-	maps/*.png \
-	maps/*.jpg
+	$(wildcard maps/*.png) \
+	$(wildcard maps/*.jpg)
 
 
 appsdir = $(datadir)/applications
