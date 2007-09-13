@@ -9,13 +9,13 @@ DIST_SUBDIRS = $(SUBDIRS)
 #	po/Makefile.am po/Makefile.in po/POTFILES
 
 EXTRA_DIST = config.rpath m4/ChangeLog \
-	$(wildcard cmake/Modules/*.cmake) cmake/Modules/CMakeLists.txt \
+	cmake/Modules/*.cmake cmake/Modules/CMakeLists.txt \
 	cmake/Modules/COPYING-CMAKE-SCRIPTS cmake/CMakeLists.txt \
 	config.h.cmake ConfigureChecks.cmake \
 	CMakeLists.txt INSTALL.cmake DEVPACKAGES\
-	$(wildcard m4/*.m4) \
-	$(wildcard po/*.po) \
-	$(wildcard intl/*)
+	m4/*.m4 \
+	po/*.po \
+	intl/*
 pkgdata_DATA = depcomp
 
 

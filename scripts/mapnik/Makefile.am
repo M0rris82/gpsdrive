@@ -1,6 +1,4 @@
 # Makefile.am for scripts
-SUBDIRS =      symbols
-DIST_SUBDIRS = $(SUBDIRS)
 
 bin_SCRIPTS = gpsdrive_mapnik_gentiles.py
 

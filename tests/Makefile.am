@@ -1,5 +1,5 @@
 # Makefile.am for tests
-bin_SCRIPTS= $(wildcard *.sh)
+bin_SCRIPTS= gpsdrive_test.sh
 
 tests:
 	PERLLIB=./ PATH=./:$$PATH ./gpsdrive_test.sh

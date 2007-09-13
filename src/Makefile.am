@@ -89,4 +89,4 @@ endif
 friendsd2_SOURCES=friendsd.c
 friendsd2_LDADD = @LIBS@ $(LDADD) $(LIBINTL)
 
-EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec $(wildcard gpsdrive.spec.fc*) CMakeLists.txt
+EXTRA_DIST = 	gpsdrive.spec gpsdrive-nosql.spec gpsdrive.spec.fc5 CMakeLists.txt

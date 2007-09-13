@@ -218,7 +218,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 
 # Makefile.am for tests
-bin_SCRIPTS = $(wildcard *.sh)
+bin_SCRIPTS = gpsdrive_test.sh
 EXTRA_DIST = $(bin_SCRIPTS)
 all: all-am
 

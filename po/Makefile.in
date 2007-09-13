@@ -11,7 +11,7 @@
 # Origin: gettext-0.16
 
 PACKAGE = gpsdrive
-VERSION = 2.10svn16234568
+VERSION = 2.10svn163345684569
 PACKAGE_BUGREPORT = package-for-gpsdrive@ostertag.name
 
 SHELL = /bin/sh
