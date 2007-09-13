@@ -536,10 +536,9 @@ man: gpsdrive.1 garble.1 geo-code.1 geoinfo.1 geo-nearest.1 \
 	convert-waypoints.1 create-osm.xml.1 geoinfo.1 gpsdrive-init-db.1 \
 	gpsfetchmap.1 gpspoint2gpsdrive.1  install_osm_mapnik.1 poi-manager.1
 
-install-data-local: convert-waypoints.1 create-osm.xml.1 geoinfo.1 gpsdrive-init-db.1 gpsfetchmap.1 gpspoint2gpsdrive.1  install_osm_mapnik.1 poi-manager.1
+install-data-local: convert-waypoints.1 geoinfo.1 gpsdrive-init-db.1 gpsfetchmap.1 gpspoint2gpsdrive.1  install_osm_mapnik.1 poi-manager.1
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man1/
 	$(INSTALL_DATA) $(srcdir)/convert-waypoints.1 $(DESTDIR)$(mandir)/man1/convert-waypoints.1
-	$(INSTALL_DATA) $(srcdir)/create-osm.xml.1 $(DESTDIR)$(mandir)/man1/create-osm.xml.1
 	$(INSTALL_DATA) $(srcdir)/garble.1 $(DESTDIR)$(mandir)/man1/garble.1
 	$(INSTALL_DATA) $(srcdir)/geo-code.1 $(DESTDIR)$(mandir)/man1/geo-code.1
 	$(INSTALL_DATA) $(srcdir)/geo-nearest.1 $(DESTDIR)$(mandir)/man1/geo-nearest.1
@@ -552,9 +551,6 @@ install-data-local: convert-waypoints.1 create-osm.xml.1 geoinfo.1 gpsdrive-init
 	$(INSTALL_DATA) $(srcdir)/poi-manager.1 $(DESTDIR)$(mandir)/man1/poi-manager.1
 
 convert-waypoints.1: ../scripts/convert-waypoints.pl
-	pod2man $? >$@ 
-
-create-osm.xml.1: ../scripts/create-osm.xml.pl
 	pod2man $? >$@ 
 
 geoinfo.1: ../scripts/geoinfo.pl
