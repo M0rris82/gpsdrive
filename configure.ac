@@ -27,7 +27,7 @@ dnl                     libpango 1.10.2 -> 1.10.1
 dnl                     libxcursor 1.1.3 -> 1.1.2
 dnl #########################################################
 
-AC_INIT(gpsdrive, 2.10svn16014514, package-for-gpsdrive@ostertag.name)
+AC_INIT(gpsdrive, 2.10svn16234568, package-for-gpsdrive@ostertag.name)
 AC_CONFIG_SRCDIR(src/gpsdrive.c)
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_SUBST(FRIENDSSERVERVERSION,'2')
@@ -168,16 +168,16 @@ exit
 fi
 
 fi
-dnl ----------------------------------------------------
-dnl DP 08/05/2006 Debian does not support uname -p 
-dnl ----------------------------------------------------
+#  ----------------------------------------------------
+#  DP 08/05/2006 Debian does not support uname -p 
+#  ----------------------------------------------------
 OSNAME=`uname -n`
 if test "$OSNAME" = "debian"; then
 	UNAMEP=unknown
 else
 	UNAMEP=`uname -p`
 fi
-dnl -----------------------------------------------------
+#  -----------------------------------------------------
 
 ARCHP=`arch`
 CFLAGS="$CFLAGS"
@@ -264,16 +264,16 @@ AC_PROG_INSTALL
 
 CFLAGS="$CFLAGS -g -Wall -Wno-format-y2k -pipe $OPT_CFLAGS"
 
-echo "------------------------------------------------------------------"
-echo "Mapnik"
-echo "------------------------------------------------------------------"
+#  ------------------------------------------------------------------
+#  Mapnik
+#  ------------------------------------------------------------------
 AC_MSG_CHECKING([for Mapnik lib support])
-dnl This is a hack to make AC_TRY_LINK and the compiler think we have a cpp Programm
+#  This is a hack to make AC_TRY_LINK and the compiler think we have a cpp Programm
 old_ac_ext=$ac_ext
 OLD_CFLAGS=$CFLAGS
 ac_ext=cpp
 CFLAGS="$CFLAGS -lmapnik"
-dnl Above is the Hack ;-)
+#  Above is the Hack ;-)
 AC_TRY_LINK( [#include <mapnik/map.hpp>], 
 	     [using mapnik::Map;mapnik::Map *test_map;], 
 	     [ libmapnik_linkable=yes
@@ -282,10 +282,10 @@ AC_TRY_LINK( [#include <mapnik/map.hpp>],
 	       AC_MSG_RESULT([no])
 	     ])
 echo "libmapnik_linkable: $libmapnik_linkable"
-dnl reverse our hack for the rest of configure
+#  reverse our hack for the rest of configure
 ac_ext=$old_ac_ext
 CFLAGS=$OLD_CFLAGS
-echo "------------------------------------------------------------------"
+#  ------------------------------------------------------------------
 
 AC_MSG_CHECKING([for Mapnik inclusion])
 AC_ARG_ENABLE(mapnik,
@@ -314,9 +314,9 @@ AC_ARG_ENABLE(mapnik,
 AM_CONDITIONAL([WITH_MAPNIK], test x$with_mapnik = xyes)
 
 
-dnl ---------------------------------------------------------------------------
-dnl GDAL/OGR
-dnl ---------------------------------------------------------------------------
+#  ---------------------------------------------------------------------------
+#  GDAL/OGR
+#  ---------------------------------------------------------------------------
 AC_ARG_ENABLE(gdal,
               AC_HELP_STRING([--enable-gdal],
 	                     [enable GDAL support. This might be needed in the future for compilation]),
@@ -332,18 +332,18 @@ fi
 AM_CONDITIONAL([HAVE_GDAL], [test x"$ac_gdal" = x"yes"])
 
 
-dnl ************************
-dnl Check for standard headers
-dnl ************************
+#  ************************
+#  Check for standard headers
+#  ************************
 
 AC_HEADER_STDC
 AC_CHECK_SOCKLEN_T
 
-dnl ************************
-dnl Checks for libraries
-dnl ************************
+#  ************************
+#  Checks for libraries
+#  ************************
 
-dnl 25/03/2006 DP Added the following line
+#  25/03/2006 DP Added the following line
 AM_PATH_GTK_2_0(2.0.6,,AC_ERROR(need at least Gtk+ version 2.0.6))
 
 PKG_CHECK_MODULES(GTK, gtk+-2.0, HAVE_GTK=yes, HAVE_GTK=no)
@@ -361,26 +361,26 @@ CFLAGS="$CFLAGS $PKGCONFIG_CFLAGS"
 # We do have GK since we just tested on it
 #AM_CONDITIONAL(HAVE_GTK, true)
 
-dnl --------------------------
-dnl check for package libxml-2.0
-dnl --------------------------
+#  --------------------------
+#  check for package libxml-2.0
+#  --------------------------
 PKG_CHECK_MODULES(XML, libxml-2.0 >= 2.6.26)
 CFLAGS="$CFLAGS $XML_CFLAGS"
 LIBS="$LIBS $XML_LIBS"
 
-dnl --------------------------
-dnl Check for package libglib2.0-0
-dnl 26/03/2006 DP  Added
-dnl 06/06/2006 DP  Reduced from version 2.8.6 yo 2.8.5
-dnl --------------------------
-dnl AM_PATH_GLIB_2_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
-dnl MODULES  gmodule, gobject or gthread
+#  --------------------------
+#  Check for package libglib2.0-0
+#  26/03/2006 DP  Added
+#  06/06/2006 DP  Reduced from version 2.8.6 yo 2.8.5
+#  --------------------------
+#  AM_PATH_GLIB_2_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+#  MODULES  gmodule, gobject or gthread
 AM_PATH_GLIB_2_0(2.8.5, , AC_ERROR(need libglib2.0 at least version 2.8.5))
 
-dnl --------------------------
+#  --------------------------
 echo -n checking for package libatk1.0-0...
-dnl 27/03/2006 DP Added
-dnl --------------------------
+#  27/03/2006 DP Added
+#  --------------------------
 if $PKG_CONFIG atk --atleast-version=1.10.3
 then
    AC_MSG_RESULT([yes])
@@ -392,13 +392,13 @@ else
    AC_MSG_ERROR([libatk is missing or your version is to old. Min Version 1.10.3])
 fi
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libc6 2.3.5-1... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libcairo 1.0.2-3...
-dnl ---------------------------
+#  ---------------------------
 if $PKG_CONFIG cairo --atleast-version=1.0.2
 then
    AC_MSG_RESULT([yes])
@@ -409,14 +409,14 @@ then
 else
    AC_MSG_ERROR([libcairo is missing or your version is to old. Min Version 1.0.2])
 fi
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libexpat1... TODO >&2                   
-dnl ---------------------------
+#  ---------------------------
 
-dnl ---------------------------
+#  ---------------------------
 echo -n checking for package libfontconfig1...
-dnl ---------------------------
-dnl DP changed from 2.3.1 to 2.2.3
+#  ---------------------------
+#  DP changed from 2.3.1 to 2.2.3
 if $PKG_CONFIG fontconfig --atleast-version=2.2.3
 then
    AC_MSG_RESULT([yes])
@@ -428,15 +428,15 @@ else
    AC_MSG_ERROR([libfontconfig is missing or your version is to old. Min Version 2.2.3])
 fi		  
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libfreetype6... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo TODO checking for package libgcc1... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 
-dnl ---------------------------
+#  ---------------------------
 echo -n checking for package libpango1 1.10...
-dnl ---------------------------
+#  ---------------------------
 if $PKG_CONFIG pango --atleast-version=1.10.1
 then
     AC_MSG_RESULT([yes])
@@ -448,9 +448,9 @@ else
     AC_MSG_ERROR([libpango1 is missing or your version is to old. Min Version 1.10.1])
 fi
 
-dnl ---------------------------
+#  ---------------------------
 echo -n checking for package libpng12-0...
-dnl ---------------------------
+#  ---------------------------
 if $PKG_CONFIG libpng12 --atleast-version=1.2.8
 then
     AC_MSG_RESULT([yes])
@@ -462,13 +462,13 @@ else
     AC_MSG_ERROR([libpng12 is missing or your version is to old. Min Version 1.2.8])
 fi
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libstdc++6... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libx11-6...   TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo -n checking for package libxcursor1...
-dnl ---------------------------
+#  ---------------------------
 if $PKG_CONFIG xcursor --atleast-version=1.1.2
 then
     AC_MSG_RESULT([yes])
@@ -479,53 +479,53 @@ then
 else
     AC_MSG_ERROR([libxcursor1 is missing or your version is to old. Min Version 1.1.2])
 fi
-dnl ----------------------------			
+#  ----------------------------			
 
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libxext6... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libxi6...   TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libxinerama1 1:0.9.0-1... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package zlib1g...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libgdal-grass 1.2.6-1+b1...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libsrces26-dev 2.6.0-6...   TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libmysqlclient14-dev 4.1.15-1... TODO >&2
 AC_CHECK_LIB([mysql], [mysql_server_init])
 
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libtiff4-dev 3.7.4-1...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libjasper-1.701-dev...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libgeos-dev 2.1.4-2...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libgdal1-dev 1.2.6-1.3...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package gdal-bin 1.2.6-1.3...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libgrass 6.0.1-3...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libgdal1-1.3.2-grass 1.3.2-1...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libhdf4g-dev 4.1r4-18.1... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libungif4-dev 4.1.4-2...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package netcdfg-dev 3.5.0-7.1...  TODO >&2
-dnl ---------------------------
+#  ---------------------------
 echo checking for package libcfitsio-dev 2.510-1... TODO >&2
-dnl ---------------------------
+#  ---------------------------
 
-dnl ---------------------------
-dnl echo -n checking for package libpqxx 2.5.5-2...
-dnl --------------------------
-dnl if $PKG_CONFIG libpqxx --atleast-version=2.5.5
+#  ---------------------------
+#  echo -n checking for package libpqxx 2.5.5-2...
+#  --------------------------
+#  if $PKG_CONFIG libpqxx --atleast-version=2.5.5
 dnl then
 dnl    AC_MSG_RESULT([yes])
 dnl     dnl TODO AC_CHECK_LIB(libpqxx, main, [], [ dnl TODO Need to find a suitable function name to test for
@@ -551,9 +551,9 @@ fi
 localedir='${prefix}/share/locale'
 AC_SUBST(localedir)
 
-dnl ************************
-dnl check dynamic loading flags
-dnl ************************
+#  ************************
+#  check dynamic loading flags
+#  ************************
 AC_LTDL_DLLIB
 AC_LTDL_DLSYM_USCORE
 # putting this here gets the option enabled, but program segfaults
@@ -564,13 +564,13 @@ AC_LTDL_DLSYM_USCORE
 #    AC_SUBST(DLSYM_CFLAGS,'-Ddlsym=dlsym_prepend_underscore') 
 #fi
  
-dnl Checks select argument types
+#  Checks select argument types
 AC_FUNC_SELECT_ARGTYPES
 AC_HEADER_TIME
 
-dnl ************************
-dnl Program locations
-dnl ************************
+#  ************************
+#  Program locations
+#  ************************
 
 AC_PREFIX_DEFAULT("/usr/local")
 
@@ -582,9 +582,9 @@ fi
 pkgdatadir=${datadir}/${PACKAGE}/
 AC_SUBST(pkgdatadir)
 
-dnl *******************************
-dnl   GETTEXT
-dnl *******************************
+#  *******************************
+#    GETTEXT
+#  *******************************
 
 AM_GNU_GETTEXT([external]) 
 AM_GNU_GETTEXT_VERSION([0.16.1])
@@ -630,10 +630,10 @@ AC_ARG_ENABLE(plugins,
 ])
 AM_CONDITIONAL(DISABLEPLUGINS, test x$disableplugins = xtrue)
 
-dnl ********************************************
-dnl Manually configure DBUS until we figure out a 
-dnl distro-independent was to check for both libraries and headers
-dnl ********************************************
+#  ********************************************
+#  Manually configure DBUS until we figure out a 
+#  distro-independent was to check for both libraries and headers
+#  ********************************************
 AC_ARG_ENABLE(dbus,
     AC_HELP_STRING([--enable-dbus],
                 [enable DBUS support. No checks are performed, you are responsible for having it installed ]),
@@ -657,10 +657,10 @@ fi
 AM_CONDITIONAL([HAVE_DBUS], [test x"$ac_dbus" = x"yes"])
 
 
-dnl ********************************************
-dnl Perl Path
-dnl Setup install path root for perl.
-dnl Yep, its ebil, but I does not know better...
+#  ********************************************
+#  Perl Path
+#  Setup install path root for perl.
+#  Yep, its ebil, but I does not know better...
 #PERL_PACKAGE_DIR=`perl -V:installsitearch | sed "s/installsitearch='//" | sed "s/';//"`
 # default on debian should be: /usr/share/perl5/
 PERL_VENDORLIB=`perl -V:vendorlib | sed "s,vendorlib=',," | sed "s/';//"`
@@ -688,28 +688,28 @@ AC_PROG_PERL_MODULES(Math::Trig , ,  AC_MSG_ERROR(Need Perl module Math::Trig))
 #AC_PROG_PERL_MODULES(XML::Simple , ,  AC_MSG_ERROR(Need Perl module XML::Simple))
 #AC_PROG_PERL_MODULES(XML::Twig , ,  AC_MSG_ERROR(Need Perl module XML::Twig))
 
-dnl only for OSM Stuff
-dnl AC_PROG_PERL_MODULES(Bit::Vector , ,  AC_MSG_ERROR(Need Perl module Bit::Vector))
-dnl AC_PROG_PERL_MODULES(Math::Polygon , ,  AC_MSG_ERROR(Need Perl module Math::Polygon))
-dnl AC_PROG_PERL_MODULES(XML::Generator , ,  AC_MSG_ERROR(Need Perl module XML::Generator))
-dnl AC_PROG_PERL_MODULES(XML::SAX::Machines , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Machines))
-dnl AC_PROG_PERL_MODULES(XML::SAX::Writer , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Writer))
+#  only for OSM Stuff
+#  AC_PROG_PERL_MODULES(Bit::Vector , ,  AC_MSG_ERROR(Need Perl module Bit::Vector))
+#  AC_PROG_PERL_MODULES(Math::Polygon , ,  AC_MSG_ERROR(Need Perl module Math::Polygon))
+#  AC_PROG_PERL_MODULES(XML::Generator , ,  AC_MSG_ERROR(Need Perl module XML::Generator))
+#  AC_PROG_PERL_MODULES(XML::SAX::Machines , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Machines))
+#  AC_PROG_PERL_MODULES(XML::SAX::Writer , ,  AC_MSG_ERROR(Need Perl module XML::SAX::Writer))
 
 
-dnl ************************
-dnl crypt.h and libcrypt
-dnl ************************
+#  ************************
+#  crypt.h and libcrypt
+#  ************************
 AC_CHECK_HEADERS(crypt.h)
 AC_CHECK_LIB(crypt,crypt)
 
-dnl ************************
-dnl GNU getopt
-dnl ************************
+#  ************************
+#  GNU getopt
+#  ************************
 AC_CHECK_DECLS(getopt)
 
-dnl ************************
-dnl check dynamic loading flags
-dnl ************************
+#  ************************
+#  check dynamic loading flags
+#  ************************
 AC_LTDL_DLLIB
 AC_LTDL_DLSYM_USCORE
 # putting this here gets the option enabled, but program segfaults
