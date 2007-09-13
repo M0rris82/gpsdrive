@@ -43,6 +43,7 @@ void readconfig ();
 void config_init ();
 typedef struct
 {
+	gchar config_file[500];
 	gint travelmode;
 	gint distmode;
 	gint altmode;

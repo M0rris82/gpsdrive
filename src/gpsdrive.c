@@ -2752,15 +2752,15 @@ usage ()
 	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
 	     _("-x        create separate window for menu\n"),
-	     _("-p        set settings for PDA-Mode (iPAQ, Yopy...)\n"),
-	     _("-C        set settings for CAR-Mode\n"),
+	     _("-M mode   set guimode to desktop, pda or car\n"),
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
 	     _("-F        force display of position even it is invalid\n"),
 	     _("-S        don't show splash screen\n"),
 	     _("-P        start in Pos Mode\n"),
 	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
-	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"));
+	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
+	     _("-C file   set config file (--config-file)\n"));
 
 }
 
@@ -2816,6 +2816,156 @@ usr2handler (int sig)
 	initgps ();
 }
 
+/*
+ * parse command arguments
+ */
+int
+parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) {
+	int i = 0;
+    /* parse cmd args */
+    /* long options for use of --geometry and -g */
+     int option_index = 0;
+     static struct option long_options[] =
+             {
+              {"geometry", required_argument, 0, 'g'},
+              {"config-file", required_argument, 0, 'C'},
+              {0, 0, 0, 0}
+             };
+    do
+	{
+	    /* long options plus --geometry and -g */
+            i = getopt_long (argc, argv,
+			"W:ESA:ab:c:X1qivPdD:TFepC:H:hnf:l:t:s:o:r:g:M:?",
+			long_options, &option_index);
+	    switch (i)
+		{
+	    case 'C':
+	    	g_strlcpy(local_config.config_file, optarg, sizeof(local_config.config_file));
+		case 'a':
+		    local_config.enableapm = TRUE;
+		    break;
+		case 'S':
+		    nosplash = TRUE;
+		    break;
+		case 'E':
+		    nmeaverbose = TRUE;
+		    break;
+		case 'q':
+		    usesql = FALSE;
+		    break;
+		case 'd':
+		    debug = TRUE;
+		    break;
+		case 'D':
+		    mydebug = strtol (optarg, NULL, 0);
+		    debug = TRUE;
+		    break;
+		case 'T':
+		    do_unit_test = TRUE;
+		    break;
+		case 'e':
+		    useflite = TRUE;
+		    break;
+		case 'i':
+		    ignorechecksum = TRUE;
+		    g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
+		    break;
+		case 'X':
+#ifdef DBUS_ENABLE
+		    useDBUS = TRUE;
+#else
+		    g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
+#endif
+		    break;
+		case 'M':
+			if (!strcmp(optarg, "desktop"))
+				local_config.guimode = GUI_DESKTOP;
+			else if (!strcmp(optarg, "car"))
+				local_config.guimode = GUI_CAR;
+			else if (!strcmp(optarg, "pda"))
+				local_config.guimode = GUI_PDA;
+			break;
+		case '1':
+		    onemousebutton = TRUE;
+		    break;
+		case 'v':
+		    printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
+		    exit (0);
+		    break;
+		case 'b':
+		    g_strlcpy (gpsdservername, optarg,
+			       sizeof (gpsdservername));
+		    break;
+		case 'c':
+		    g_strlcpy (setpositionname, optarg,
+			       sizeof (setpositionname));
+		    break;
+		case 'f':
+		    break;
+		case 's':
+		    *screen_height = strtol (optarg, NULL, 0);
+		    break;
+		case 'W':
+		    switch (strtol (optarg, NULL, 0))
+			{
+			case 0:
+			    egnosoff = TRUE;
+			    break;
+			case 1:
+			    egnoson = TRUE;
+			    break;
+			}
+		    break;
+		case 'l':
+		    if (!strcmp (optarg, "english"))
+			voicelang = english;
+		    else if (!strcmp (optarg, "german"))
+			voicelang = german;
+		    else if (!strcmp (optarg, "spanish"))
+			voicelang = spanish;
+		    else
+			{
+			    usage ();
+			    g_print (_
+				("\nYou can currently only choose between "
+				"english, spanish and german\n\n"));
+			    exit (0);
+			}
+		    break;
+		case 'o':
+		    nmeaout = opennmea (optarg);
+		    break;
+		case 'h':
+		    usage ();
+		    exit (0);
+		    break;
+		case 'H':
+		    local_config.normalnull = strtol (optarg, NULL, 0);
+		    break;
+		case '?':
+		    usage ();
+		    exit (0);
+		    break;
+		case 'r':
+		    *screen_width = strtol (optarg, NULL, 0);
+		    break;
+		case 'F':
+		    forcehavepos = TRUE;
+		    break;
+		case 'P':
+		    gui_status.posmode = TRUE;
+		    break;
+                /* Allows command line declaration of -g or --geometry */
+		case 'g':
+		    g_strlcpy (geometry, optarg, sizeof (geometry));
+		    usegeometry = TRUE;
+		    break;
+		}
+	}
+    while (i != -1);
+    return 0;
+}
+
 
 /*******************************************************************************
  *                                                                             *
@@ -2855,7 +3005,7 @@ main (int argc, char *argv[])
     coords.current_lat = coords.zero_lat = 48.13706 + f;
     f = 0.02 * (0.5 - rand () / (RAND_MAX + 1.0));
     coords.current_lon = coords.zero_lon = 11.57532 + f;
-    /*    zero_lat and zero_lon are overwritten by gpsdriverc,  */
+    /*    zero_lat and zero_lon are overwritten by config file,  */
     tripreset ();
 
     g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
@@ -2984,6 +3134,9 @@ main (int argc, char *argv[])
 	
 	check_and_create_files();
 	
+	/* we need to parse command args 2 times, because we need the config file param */
+	parse_cmd_args(argc, argv, &screen_height, &screen_width);
+	
 	/* update config struct with settings from config file if possible */
 	readconfig ();
 	
@@ -3029,145 +3182,8 @@ main (int argc, char *argv[])
     if ( mydebug >5 ) 
 	fprintf(stderr , "gdk screen width : %d\n", screen_width);
 
-    /* parse cmd args */
-    /* long options for use of --geometry and -g */
-     int option_index = 0;
-     static struct option long_options[] =
-             {
-              {"geometry", required_argument, 0, 'g'},
-              {0, 0, 0, 0}
-             };
-    do
-	{
-	    /* long options plus --geometry and -g */
-            i = getopt_long (argc, argv,
-			"W:ESA:ab:c:Xx1qivPdD:TFepCH:hnf:l:t:s:o:r:g:?",
-			long_options, &option_index);
-	    switch (i)
-		{
-		case 'a':
-		    local_config.enableapm = TRUE;
-		    break;
-		case 'S':
-		    nosplash = TRUE;
-		    break;
-		case 'E':
-		    nmeaverbose = TRUE;
-		    break;
-		case 'q':
-		    usesql = FALSE;
-		    break;
-		case 'd':
-		    debug = TRUE;
-		    break;
-		case 'D':
-		    mydebug = strtol (optarg, NULL, 0);
-		    debug = TRUE;
-		    break;
-		case 'T':
-		    do_unit_test = TRUE;
-		    break;
-		case 'e':
-		    useflite = TRUE;
-		    break;
-		case 'i':
-		    ignorechecksum = TRUE;
-		    g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
-		    break;
-		case 'x':
-		    local_config.guimode = GUI_XWIN;
-		    break;
-		case 'X':
-#ifdef DBUS_ENABLE
-		    useDBUS = TRUE;
-#else
-		    g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
-#endif
-		    break;
-		case 'p':
-		    local_config.guimode = GUI_PDA;
-		    break;
-		case 'C':
-		    local_config.guimode = GUI_CAR;
-		    break;
-		case '1':
-		    onemousebutton = TRUE;
-		    break;
-		case 'v':
-		    printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
-		    exit (0);
-		    break;
-		case 'b':
-		    g_strlcpy (gpsdservername, optarg,
-			       sizeof (gpsdservername));
-		    break;
-		case 'c':
-		    g_strlcpy (setpositionname, optarg,
-			       sizeof (setpositionname));
-		    break;
-		case 'f':
-		    break;
-		case 's':
-		    screen_height = strtol (optarg, NULL, 0);
-		    break;
-		case 'W':
-		    switch (strtol (optarg, NULL, 0))
-			{
-			case 0:
-			    egnosoff = TRUE;
-			    break;
-			case 1:
-			    egnoson = TRUE;
-			    break;
-			}
-		    break;
-		case 'l':
-		    if (!strcmp (optarg, "english"))
-			voicelang = english;
-		    else if (!strcmp (optarg, "german"))
-			voicelang = german;
-		    else if (!strcmp (optarg, "spanish"))
-			voicelang = spanish;
-		    else
-			{
-			    usage ();
-			    g_print (_
-				("\nYou can currently only choose between "
-				"english, spanish and german\n\n"));
-			    exit (0);
-			}
-		    break;
-		case 'o':
-		    nmeaout = opennmea (optarg);
-		    break;
-		case 'h':
-		    usage ();
-		    exit (0);
-		    break;
-		case 'H':
-		    local_config.normalnull = strtol (optarg, NULL, 0);
-		    break;
-		case '?':
-		    usage ();
-		    exit (0);
-		    break;
-		case 'r':
-		    screen_width = strtol (optarg, NULL, 0);
-		    break;
-		case 'F':
-		    forcehavepos = TRUE;
-		    break;
-		case 'P':
-		    gui_status.posmode = TRUE;
-		    break;
-                /* Allows command line declaration of -g or --geometry */
-		case 'g':
-		    g_strlcpy (geometry, optarg, sizeof (geometry));
-		    usegeometry = TRUE;
-		    break;
-		}
-	}
-    while (i != -1);
+    /* 2. run see comment at first run */
+    parse_cmd_args(argc, argv, &screen_height, &screen_width);
 
     if ( mydebug >99 )
 	fprintf(stderr , "options parsed\n");

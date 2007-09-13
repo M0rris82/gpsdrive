@@ -75,26 +75,23 @@ extern currentstatus_struct current;
 local_gpsdrive_config local_config;
 
 
-/* write the configurationfile ~/.gpsdrive/gpsdriverc */
+/* write the configurationfile */
 void
 writeconfig ()
 {
 	FILE *fp;
-	gchar fname[220], str[40];
+	gchar str[40];
 	gint i;
 
-	g_strlcpy (fname, local_config.dir_home, sizeof (fname));
-	g_strlcat (fname, "gpsdriverc", sizeof (fname));
-
 	if ( mydebug > 0 )
-		printf ("Write config %s\n", fname);
+		printf ("Write config %s\n", local_config.config_file);
 
 
 
-	fp = fopen (fname, "w");
+	fp = fopen (local_config.config_file, "w");
 	if (fp == NULL)
 	{
-		perror (_("Error saving config file ~/.gpsdrive/gpsdriverc"));
+		fprintf (stderr,"Error saving config file %s ...\n", local_config.config_file);
 		return;
 	}
 
@@ -275,25 +272,23 @@ writeconfig ()
 	current.needtosave = FALSE;
 }
 
-/* read the configurationfile ~/.gpsdrive/gpsdriverc */
+/* read the configurationfile */
 void
 readconfig ()
 {
 	FILE *fp;
-	gchar fname[220], par1[40], par2[1000], buf[1000];
+	gchar par1[40], par2[1000], buf[1000];
 	gint e;
 
 	// open Config File
-	g_strlcpy (fname, local_config.dir_home, sizeof (fname));
-	g_strlcat (fname, "gpsdriverc", sizeof (fname));
-	fp = fopen (fname, "r");
+	fp = fopen (local_config.config_file, "r");
 	if (fp == NULL)
 		return;
 
 	// mydebug is not set, because getopt was not run yet
 	// So you won't see this Debug Output
 	if ( mydebug > 0 )
-		fprintf (stderr,"reading config file %s ...\n",fname);
+		fprintf (stderr,"reading config file %s ...\n", local_config.config_file);
 
 	while ((fgets (buf, 1000, fp)) > 0)
 		{
@@ -530,12 +525,11 @@ void
 config_init ()
 {
 	gchar *hd;
-
 	local_config.travelmode = TRAVEL_CAR;
 	local_config.distmode = DIST_METRIC;
 	local_config.altmode = ALT_METERS;
 	local_config.coordmode = LATLON_DEGDEC;
-	local_config.guimode = GUI_CLASSIC;
+	local_config.guimode = GUI_DESKTOP;
 	local_config.simmode = SIM_OFF;
 	local_config.enableapm = FALSE;
 	local_config.dashboard_1 = DASH_DIST;
@@ -609,6 +603,8 @@ config_init ()
 		"%s%s", local_config.dir_home, "way.txt");
 	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
 		"%s%s", local_config.dir_home, "osm.xml");
+	g_snprintf(local_config.config_file, sizeof(local_config.config_file),
+		"%s%s", local_config.dir_home, "gpsdriverc");
 	
 	/* kismet default values */
 	g_strlcpy(local_config.kismet_servername, "localhost", sizeof(local_config.kismet_servername));

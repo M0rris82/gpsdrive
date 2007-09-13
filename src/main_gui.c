@@ -1842,7 +1842,7 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	
 	gtk_widget_show_all (main_window);
 
-	if ( ( local_config.guimode == GUI_CLASSIC )
+	if ( ( local_config.guimode == GUI_DESKTOP )
 	     && (local_config.MapnikStatusInt ) ){
 	    toggle_mapnik_cb( mapnik_bt, 2 );
 	}

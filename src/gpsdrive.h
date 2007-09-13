@@ -108,7 +108,7 @@ enum
 /* GUI Modes  */
 enum
 {
-	GUI_CLASSIC,
+	GUI_DESKTOP,
 	GUI_PDA,
 	GUI_XWIN,
 	GUI_CAR,
