@@ -99,7 +99,7 @@ Q: What is the mapnik?
 A: Manik is a renderer for Openstreetmap data. You can active the mapnik mode
    by checking the mapnik option (map controls).
 
-Q: Where is no mapnik option?
+Q: There is no mapnik option?
 A: It is only available if you have installed the mapnik packages. Have a look
    at install-mapnik-osm.txt.
 
