@@ -12,6 +12,7 @@ man1_MANS = \
 	gpsfetchmap.1 \
 	gpspoint2gpsdrive.1 \
 	poi-manager.1
+dist_man_MANS = $(man1_MANS)
 
 EXTRA_DIST = CMakeLists.txt
 
