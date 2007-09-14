@@ -1633,19 +1633,9 @@ settings_poi (GtkWidget *notebook)
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
 		FALSE);
 
-
 	poitypes_select = gtk_tree_view_get_selection
 		(GTK_TREE_VIEW (poitypes_treeview));
 	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
-//	g_signal_connect (G_OBJECT (poitypes_select), "changed",
-//		G_CALLBACK (select_poifilter_cb), renderer_poitypes_select);
-
-
-
-
-
-
-
 
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);

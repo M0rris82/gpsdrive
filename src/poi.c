@@ -170,7 +170,7 @@ update_poi_type_filter ()
  * into the POI-Lookup window
  */
 guint
-poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gint type)
+poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gchar *type)
 {
 	gdouble lat, lon, dist;
 	gdouble lat_min, lon_min;
@@ -244,7 +244,8 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	/* choose poi_type_ids to search */
 	if (typeflag)
 	{
-		g_snprintf (type_filter, sizeof (type_filter), "AND (poi_type_id IN (%d))",type);
+		g_snprintf (type_filter, sizeof (type_filter),
+			"AND (poi_type.name LIKE \'%s%%\')",type);
 	}
 	else
 	{
@@ -255,11 +256,12 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	temp_text = escape_sql_string (text);
 	g_strdelimit (temp_text, "*", '%');
 		
- 	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT poi.poi_id,poi.name,poi.comment,poi_type_id,"
-		"poi.lon,poi.lat FROM poi"
+	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT poi.poi_id,poi.name,poi.comment,poi.poi_type_id,"
+		"poi.lon,poi.lat FROM poi INNER JOIN poi_type ON"
+		" poi.poi_type_id=poi_type.poi_type_id "
 		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
-		" AND %.6f ) AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
+		" AND %.6f ) AND (poi.name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
 		" %s LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
 		type_filter, local_config.poi_results_max);

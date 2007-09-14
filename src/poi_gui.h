@@ -27,9 +27,10 @@ Disclaimer: Please do not use for navigation.
 #ifndef GPSDRIVE_POI_GUI_H
 #define GPSDRIVE_POI_GUI_H
 
-void poi_lookup_cb (GtkWidget *calling_button);
+void create_window_poi_lookup (void);
 void poi_info_cb (void);
 void route_window_cb (GtkWidget *calling_button);
+gint show_poi_lookup_cb (GtkWidget *button, gpointer data);
 GtkWidget * create_poi_types_window (void);
 gint toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi);
 

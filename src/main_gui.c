@@ -1265,7 +1265,7 @@ void create_controls_mainbox (void)
 	else
 	{
 		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
-			GTK_SIGNAL_FUNC (poi_lookup_cb), (gpointer) 2);
+			GTK_SIGNAL_FUNC (show_poi_lookup_cb), (gpointer) 2);
 	}
 	gtk_box_pack_start (GTK_BOX (vbox_buttons),
 		find_poi_bt, FALSE, FALSE, 1 * PADDING);

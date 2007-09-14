@@ -107,7 +107,6 @@ GtkWidget *poi_lookup_window;
 GtkWidget *button_delete;
 GtkWidget *button_target;
 GtkWidget *button_addtoroute;
-static GtkTreeViewColumn *column_poitypes_select;
 
 /* route window */
 GtkWidget *route_window;
@@ -120,38 +119,23 @@ GtkWidget *button_remove, *button_routesave;
  * CALLBACKS
  */
 gint
-toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi)
+show_poi_lookup_cb (GtkWidget *button, gpointer data)
 {
-	if (GTK_WIDGET_VISIBLE (poi_types_window))
-	{
-		if (GTK_IS_WIDGET (settings_window))
-			gtk_window_set_modal
-				(GTK_WINDOW (settings_window), TRUE);
-		gtk_widget_hide_all (poi_types_window);
-		if (mydebug > 10)
-			fprintf (stderr, "Hiding POI-Types Window\n");
-	}
-	else
-	{
-		if (GTK_IS_WIDGET (settings_window))
-			gtk_window_set_modal
-				(GTK_WINDOW (settings_window), FALSE);
-		if (multi)
-			gtk_tree_view_column_set_visible
-				(column_poitypes_select, TRUE);
-		else
-			gtk_tree_view_column_set_visible
-				(column_poitypes_select, FALSE);
+	gtk_widget_set_sensitive (find_poi_bt, FALSE);
+	gtk_widget_set_sensitive (posbt, FALSE);
 
-		gtk_widget_show_all (poi_types_window);
-
-		if (mydebug > 10)
-			fprintf (stderr, "Showing POI-Types Window\n");
+	/* save old target/posmode for cancel event */
+	wp_saved_target_lat = coords.target_lat;
+	wp_saved_target_lon = coords.target_lon;
+	if (gui_status.posmode)
+	{
+		wp_saved_posmode_lat = coords.posmode_lat;
+		wp_saved_posmode_lon = coords.posmode_lon;
 	}
+
+	gtk_widget_show_all (poi_lookup_window);
 	return TRUE;
 }
-
-
 
 static void
 evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
@@ -169,7 +153,7 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	entries->result_count = poi_get_results
 		(gtk_entry_get_text (entries->text),
 		gtk_entry_get_text (entries->distance),
-		entries->posflag, entries->typeflag, entries->poitype_id);
+		entries->posflag, entries->typeflag, entries->poitype_name);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
 	if (entries->result_count == local_config.poi_results_max)
@@ -237,7 +221,7 @@ close_poi_lookup_window_cb (GtkWidget *window)
 		coords.posmode_lon = wp_saved_posmode_lon;
 	}
 
-	gtk_widget_destroy (window);
+	gtk_widget_hide_all (poi_lookup_window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
 	gtk_widget_set_sensitive (posbt, TRUE);
 }
@@ -246,7 +230,7 @@ close_poi_lookup_window_cb (GtkWidget *window)
 static void
 select_jump_poi_cb (GtkWidget *window)
 {
-	gtk_widget_destroy (poi_lookup_window);
+	gtk_widget_hide_all (poi_lookup_window);
 
 	coords.current_lat = coords.target_lat;
 	coords.current_lon = coords.target_lon;
@@ -262,7 +246,7 @@ select_jump_poi_cb (GtkWidget *window)
 static void
 select_target_poi_cb (GtkWidget *window)
 {
-	gtk_widget_destroy (poi_lookup_window);
+	gtk_widget_hide_all (poi_lookup_window);
 
 	gtk_toggle_button_set_active
 		(GTK_TOGGLE_BUTTON (posbt), FALSE);
@@ -696,7 +680,7 @@ void create_poi_info_window (void)
 /* *****************************************************************************
  * Window: POI-Lookup
  */
-void poi_lookup_cb (GtkWidget *calling_button)
+void create_window_poi_lookup (void)
 {
 	GtkWidget *dialog_vbox_poisearch;
 	GtkWidget *vbox_searchbox, *expander_poisearch;
@@ -734,18 +718,6 @@ void poi_lookup_cb (GtkWidget *calling_button)
 	criteria.posflag = 0;
 	criteria.result_count = 0;
 
-	gtk_widget_set_sensitive (find_poi_bt, FALSE);
-	gtk_widget_set_sensitive (posbt, FALSE);
-
-	/* save old target/posmode for cancel event */
-	wp_saved_target_lat = coords.target_lat;
-	wp_saved_target_lon = coords.target_lon;
-	if (gui_status.posmode)
-	{
-		wp_saved_posmode_lat = coords.posmode_lat;
-		wp_saved_posmode_lon = coords.posmode_lon;
-	}
-	
 	tooltips_poilookup = gtk_tooltips_new();
 	gtk_tooltips_set_delay (tooltips_poilookup, TOOLTIP_DELAY);
 	if (local_config.showtooltips)
@@ -1159,115 +1131,6 @@ void poi_lookup_cb (GtkWidget *calling_button)
 		gtk_widget_set_sensitive (button_target, FALSE);
 
 	gtk_widget_grab_focus (entry_text);
-	
-	gtk_widget_show_all (poi_lookup_window);
-}
-
-
-/* *****************************************************************************
- * Window: POI-Types
- */
-GtkWidget
-*create_poi_types_window (void)
-{
-	GtkWidget *poi_types_window;
-	GtkWidget *vbox_poi_types;
-	GtkWidget *scrolledwindow_poitypes;
-	GtkWidget *hbox_status;
-	GtkWidget *statusbar;
-	GtkWidget *button_close;
-	GtkWidget *poitypes_treeview;
-	GtkCellRenderer *renderer_poitypes;
-	GtkCellRenderer *renderer_poitypes_select;
-	GtkTreeViewColumn *column_poitypes;
-	GtkTreeSelection *poitypes_select;
-
-	poi_types_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title
-		(GTK_WINDOW (poi_types_window), _("POI-Type Selection"));
-	if (local_config.guimode == GUI_PDA)
-	{
-		gtk_window_set_default_size (GTK_WINDOW (poi_types_window),
-			real_screen_x, real_screen_y);
-	}
-	else
-	{
-		gtk_window_set_default_size
-			(GTK_WINDOW (poi_types_window), 250, 300);
-	}
-
-	vbox_poi_types = gtk_vbox_new (FALSE, 0);
-	gtk_container_add (GTK_CONTAINER (poi_types_window), vbox_poi_types);
- 
-	scrolledwindow_poitypes = gtk_scrolled_window_new (NULL, NULL);
-	gtk_box_pack_start (GTK_BOX (vbox_poi_types),
-		scrolledwindow_poitypes, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW
-		(scrolledwindow_poitypes), GTK_SHADOW_IN);
-
-	poitypes_treeview = gtk_tree_view_new_with_model
-		(GTK_TREE_MODEL (poi_types_tree));
-	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes),
-		poitypes_treeview);
-
-	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
-		renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	renderer_poitypes_select = gtk_cell_renderer_toggle_new ();
-	column_poitypes_select = gtk_tree_view_column_new_with_attributes ("_",
-		renderer_poitypes_select, "active", POITYPE_SELECT, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes_select);
-
-	renderer_poitypes = gtk_cell_renderer_text_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (
-		_("Name"), renderer_poitypes,
-		"text", POITYPE_TITLE, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	renderer_poitypes = gtk_cell_renderer_text_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (
-		_("ID"), renderer_poitypes,
-		"text", POITYPE_NAME, NULL);
-	g_object_set (G_OBJECT (renderer_poitypes),
-		"foreground-gdk", &colors.textback, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	gtk_tree_view_set_enable_search
-		(GTK_TREE_VIEW (poitypes_treeview), TRUE);
-	gtk_tree_view_set_search_column
-		(GTK_TREE_VIEW (poitypes_treeview), POITYPE_TITLE);
-	poitypes_select = gtk_tree_view_get_selection
-		(GTK_TREE_VIEW (poitypes_treeview));
-	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
-	g_signal_connect (G_OBJECT (poitypes_select), "changed",
-		G_CALLBACK (select_poifilter_cb), renderer_poitypes_select);
-
-	hbox_status = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (vbox_poi_types),
-		hbox_status, FALSE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox_status), 2);
-
-	statusbar = gtk_statusbar_new ();
-	gtk_box_pack_start (GTK_BOX (hbox_status), statusbar, TRUE, TRUE, 0);
-	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar), FALSE);
-
-	button_close = gtk_button_new_from_stock ("gtk-close");
-	gtk_box_pack_end (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
-	g_signal_connect (button_close, "clicked", 
-		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
-
-	g_signal_connect (poi_types_window, "delete-event", 
-		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), FALSE);
-
-	gtk_tree_view_expand_all (GTK_TREE_VIEW (poitypes_treeview));
-
-	return poi_types_window;
 }
 
 
