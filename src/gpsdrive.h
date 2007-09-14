@@ -351,6 +351,7 @@ typedef struct
 	gboolean needtosave;	/* flag if config has to be saved */
 	gboolean importactive;
 	GtkTreeIter poitype_iter;
+	gchar poifilter[5000];	/* sql string for filtering the POI display */
 }
 currentstatus_struct;
 

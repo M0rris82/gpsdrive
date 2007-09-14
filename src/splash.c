@@ -65,7 +65,6 @@ extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu, lastnotebo
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;

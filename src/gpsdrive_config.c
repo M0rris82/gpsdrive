@@ -61,7 +61,6 @@ lastnotebook;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;
@@ -217,7 +216,6 @@ writeconfig ()
 	fprintf (fp, "dbtable = %s\n", dbtable);
 	fprintf (fp, "dbdistance = %.1f\n", dbdistance);
 	fprintf (fp, "dbusedist = %d\n", dbusedist);
-	fprintf (fp, "dbpoifilter = %s\n", dbpoifilter);
 	fprintf (fp, "earthmate = %d\n", earthmate);
 
 	fprintf (fp, "font_bigtext = %s\n", local_config.font_dashboard);
@@ -411,8 +409,6 @@ readconfig ()
 				dbdistance = g_strtod (par2, 0);
 			else if ( (strcmp(par1, "dbusedist")) == 0)
 				dbusedist = atoi (par2);
-			else if ( (strcmp(par1, "dbpoifilter")) == 0)
-				g_strlcpy (dbpoifilter, par2, sizeof (dbpoifilter));
 			else if ( (strcmp(par1, "earthmate")) == 0)
 				earthmate = atoi (par2);
 

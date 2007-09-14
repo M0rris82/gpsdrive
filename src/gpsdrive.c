@@ -346,7 +346,6 @@ char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char poitypetable[MAXDBNAME];
 char wp_typelist[MAXPOITYPES][50];
-char dbpoifilter[5000];
 double dbdistance;
 gint usesql = FALSE, dbusedist = FALSE;
 extern gint sqlselects[MAXPOITYPES], kismetsock, havekismet;
@@ -1465,7 +1464,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (usesql)
 	{
-	    poi_draw_list ();
+	    poi_draw_list (FALSE);
 	    wlan_draw_list ();
 	}
 

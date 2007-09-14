@@ -61,12 +61,13 @@ void draw_label_friend (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);
 gint poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH]);
-void poi_draw_list (void);
+void poi_draw_list (gboolean draw_now);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
 void get_poitype_tree (void);
 guint poi_get_results (const gchar *text, const gchar *dist, const gint posflag, const gint typeflag, const gint type);
+void update_poi_type_filter (void);
 
 typedef struct
 {

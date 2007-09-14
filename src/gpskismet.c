@@ -52,7 +52,6 @@ reads info from kismet server and insert waypoints into database
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbpoifilter[5000];
 extern double dbdistance;
 extern int usesql;
 extern int mydebug, debug, dbusedist;

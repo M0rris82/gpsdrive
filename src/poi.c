@@ -71,7 +71,6 @@ extern GtkWidget *map_drawingarea;
 extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
-extern char dbpoifilter[5000];
 extern gint friends_poi_id[TRAVEL_N_MODES];
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -119,6 +118,51 @@ gdouble poi_lat_ul = 0, poi_lon_ul = 0;
 
 void poi_rebuild_list (void);
 void get_poitype_tree (void);
+
+
+/* *******************************************************
+ * check, which poi_types should be shown in the map.
+ * filtering is only done on the base category level.
+ */
+void
+update_poi_type_filter ()
+{
+	GtkTreeIter t_iter;
+	gboolean t_selected;
+	gchar *t_name;
+	gchar t_string[200];
+
+	if (mydebug > 21)
+		fprintf (stderr, "update_poi_type_filter:\n");
+
+	g_strlcpy (current.poifilter, "AND (", sizeof (current.poifilter));
+
+	gtk_tree_model_get_iter_first
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
+
+	do
+	{
+		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
+			POITYPE_NAME, &t_name,
+			POITYPE_SELECT, &t_selected, -1);
+		if (!t_selected)
+		{
+			g_snprintf (t_string, sizeof (t_string),
+				"poi_type.name NOT LIKE \"%s%%\" AND ",
+				t_name);
+			g_strlcat (current.poifilter,
+				t_string, sizeof (current.poifilter));
+		}
+	}
+	while (gtk_tree_model_iter_next
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
+
+	g_strlcat (current.poifilter, "TRUE)", sizeof (current.poifilter));
+
+	g_free (t_name);
+
+	poi_draw_list (TRUE);
+}
 
 
 /* *******************************************************
@@ -982,7 +1026,7 @@ poi_rebuild_list (void)
      "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
      "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
-     lat_min, lat_max, lon_min, lon_max, current.mapscale, dbpoifilter);
+     lat_min, lat_max, lon_min, lon_max, current.mapscale, current.poifilter);
 
   if (mydebug > 20)
   {
@@ -1126,7 +1170,7 @@ poi_rebuild_list (void)
  TODO: find free space on drawing area. So the Text doesn't overlap
 */
 void
-poi_draw_list (void)
+poi_draw_list (gboolean draw_now)
 {
   gint i;
 
@@ -1151,7 +1195,7 @@ poi_draw_list (void)
     printf
       ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
-  if (poi_check_if_moved ())
+  if (poi_check_if_moved () || draw_now)
     poi_rebuild_list ();
 
   /* ------------------------------------------------------------------ */
@@ -1255,6 +1299,8 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 void
 poi_init (void)
 {
+	GtkTreeIter t_iter;
+
 	poi_limit = 40000;
 	poi_list = g_new (poi_struct, poi_limit);
 	poi_result = g_new (poi_struct, poi_limit);
@@ -1289,9 +1335,23 @@ poi_init (void)
 		G_TYPE_INT,		/* scale_max */
 		G_TYPE_STRING,		/* description */
 		G_TYPE_STRING,		/* title */
-		G_TYPE_INT		/* select */
+		G_TYPE_BOOLEAN		/* select */
 		);
 
 	/* read poi-type data and icons from icons.xml */
 	get_poitype_tree ();
+	
+	/* set poi filter according to config file */
+	gtk_tree_model_get_iter_first
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
+	do
+	{
+		gtk_tree_store_set
+			(poi_types_tree, &t_iter,
+			POITYPE_SELECT, 1, -1);
+		//TODO: use info from config file...
+	}
+	while (gtk_tree_model_iter_next
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
+	update_poi_type_filter ();
 }

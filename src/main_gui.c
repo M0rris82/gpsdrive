@@ -992,17 +992,6 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		//	is available again
 	}
 
-	// Toggle POI Display
-	/*
-	 * if ((toupper (event->keyval)) == 'I' )
-	 * {
-	 * poi_draw = !poi_draw;
-	 * poi_draw_list ();
-	 * gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poi_draw_bt), poi_draw);
-	 * current.needtosave = TRUE;
-	 * }
-	 */
-
 	// Query Info for next points and streets
 	if ( ( (toupper (event->keyval)) == '?' )
 	     || ( (toupper (event->keyval)) == 'Q') )

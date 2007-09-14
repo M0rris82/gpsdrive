@@ -96,14 +96,12 @@ gint zone;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern char dbpoifilter[5000];
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern int poi_type_list_count;
 extern double dbdistance;
 extern int dbusedist;
 GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
-static int sqldontquery = FALSE;
 extern GdkColormap *cmap;
 
 extern gint usesql;
@@ -116,6 +114,7 @@ GtkWidget *entryavspeed, *entrymaxspeed, *entrytripodometer, *entrytriptime,
   *tripunitlabel;
 extern color_struct colors;
 extern currentstatus_struct current;
+extern GtkTreeStore *poi_types_tree;
 int showsid = TRUE;
 extern int expedia_de;
 
@@ -661,10 +660,31 @@ setwpfilequick_cb (GtkWidget *widget, guint datum)
 static void
 settings_close_cb (GtkWidget *window)
 {
-//	lastnotebook =
-//		gtk_notebook_get_current_page (GTK_NOTEBOOK  (settings_nb));
-
 	gtk_widget_destroy (window);
+}
+
+
+/* ************************************************************************* */
+static void
+toggle_poitype
+	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
+	gboolean value;
+
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree), &iter, path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter,
+		POITYPE_SELECT, &value, -1);
+
+	value = !value;
+
+	gtk_tree_store_set (poi_types_tree, &iter,
+		POITYPE_SELECT, value, -1);
+
+	update_poi_type_filter ();
+
+	gtk_tree_path_free (path);
 }
 
 
@@ -769,7 +789,7 @@ settings_general (GtkWidget *notebook)
 
 	/* misc settings */
 	{
-	simulation_lb = gtk_label_new (_("Enable Simulation mode"));
+	simulation_lb = gtk_label_new (_("Simulation mode"));
 	simmode_auto_rb = gtk_radio_button_new_with_label
 		(NULL, _("Automatic"));
 	g_signal_connect (simmode_auto_rb, "toggled",
@@ -1445,8 +1465,13 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_dist_label, *poi_dist_entry;
 	GtkWidget *poi_max_label, *poi_max_entry;
 	GtkWidget *poi_max2_label, *poi_dist2_label;
-	GtkWidget *poifilter_label, *poifilter_bt;
+	GtkWidget *poifilter_label;
 	GtkWidget *poi_labelshow_bt;
+	GtkWidget *scrolledwindow_poitypes;
+	GtkWidget *poitypes_treeview;
+	GtkCellRenderer *renderer_poitypes;
+	GtkTreeViewColumn *column_poitypes;
+	GtkTreeSelection *poitypes_select;
 
 	gchar text[50];
 	
@@ -1575,11 +1600,52 @@ settings_poi (GtkWidget *notebook)
 		GTK_SIGNAL_FUNC (setpoitheme_cb), NULL);
 
 	poifilter_label = gtk_label_new (_("POI-Filter"));
-	poifilter_bt = gtk_button_new_with_label (_("Edit Filter"));
-	g_signal_connect (poifilter_bt, "clicked",
-		GTK_SIGNAL_FUNC (toggle_window_poitypes_cb), (gpointer) TRUE);
-	// TODO: add functionality, then set sensitive again
-	gtk_widget_set_sensitive (poifilter_bt, FALSE);
+	scrolledwindow_poitypes = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW
+		(scrolledwindow_poitypes), GTK_SHADOW_IN);
+
+	poitypes_treeview = gtk_tree_view_new_with_model
+		(GTK_TREE_MODEL (poi_types_tree));
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes),
+		poitypes_treeview);
+
+	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+		renderer_poitypes, "active", POITYPE_SELECT, NULL);
+	g_signal_connect (renderer_poitypes, "toggled",
+		G_CALLBACK (toggle_poitype), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+		renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_text_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (
+		_("Name"), renderer_poitypes,
+		"text", POITYPE_TITLE, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
+		FALSE);
+
+
+	poitypes_select = gtk_tree_view_get_selection
+		(GTK_TREE_VIEW (poitypes_treeview));
+	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
+//	g_signal_connect (G_OBJECT (poitypes_select), "changed",
+//		G_CALLBACK (select_poifilter_cb), renderer_poitypes_select);
+
+
+
+
+
+
+
 
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
@@ -1593,8 +1659,7 @@ settings_poi (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
 		poifilter_label, 0, 1, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		poifilter_bt, 1, 2, 2, 3);
-	}
+		scrolledwindow_poitypes, 1, 2, 2, 3);	}
 
 
 	wp_frame = gtk_frame_new (NULL);
@@ -1992,6 +2057,23 @@ settings_fly (GtkWidget *notebook)
 /* ************************************************************************* */
 /* TODO: fill with content
 static void
+settings_gps (GtkWidget *notebook)
+{
+	GtkWidget *gps_vbox, *gps_label;
+	
+	
+	gps_vbox = gtk_vbox_new (FALSE, 2);
+	
+	gps_label = gtk_label_new (_("GPS"));
+	gtk_notebook_append_page
+		(GTK_NOTEBOOK (notebook), gps_vbox, gps_label);
+
+}
+*/
+
+/* ************************************************************************* */
+/* TODO: fill with content
+static void
 settings_nautic (GtkWidget *notebook)
 {
 	GtkWidget *nautic_vbox, *nautic_label;
@@ -2056,6 +2138,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	settings_friends (settings_nb);
 	settings_nav (settings_nb);	
 	settings_gui (settings_nb);
+	//settings_gps (settings_nb);
 	//settings_fly (settings_nb);
 	//settings_nautic (settings_nb);
 
@@ -2127,70 +2210,3 @@ infosettz (GtkWidget * widget, guint datum)
   return TRUE;
 }
 
-
-/* *****************************************************************************
- */
-gint
-dbbuildquery_cb (GtkWidget * widget, guint datum)
-{
-  gint i, sel;
-  gchar s[50];
-  gint flag = 0;
-
-  if (999999 != datum)
-    {
-      if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-	{
-	  sqlselects[datum] = TRUE;
-	}
-      else
-	{
-	  sqlselects[datum] = FALSE;
-	}
-    }
-
-  g_strlcpy (dbpoifilter, "AND (", sizeof (dbpoifilter));
-  for (i = 0; i < poi_type_list_count; i++)
-    {
-      sel = sqlselects[i];
-      if (sel)
-	{
-	  flag = TRUE;
-	  if (sqlandmode)
-	    {
-	      g_snprintf (s, sizeof (s), "poi_type.name  LIKE '%s%%' OR  ", poi_type_list[i].name);
-	      g_strlcat (dbpoifilter, s, sizeof (dbpoifilter));
-	    }
-	  else
-	    {
-	      g_snprintf (s, sizeof (s), "poi_type.name NOT LIKE '%s%%' AND ", poi_type_list[i].name);
-	      g_strlcat (dbpoifilter, s, sizeof (dbpoifilter));
-	    }
-	}
-    }
-  dbpoifilter[strlen (dbpoifilter) - 4] = 0;
-  g_strlcat (dbpoifilter, ")", sizeof (dbpoifilter));
-  //~ if (!showsid)
-    //~ {
-      //~ g_strlcat (dbpoifilter, " AND name != 'no_ssid'",
-		 //~ sizeof (dbpoifilter));
-    //~ }
-
-  if (!flag)
-    {
-      g_strlcpy (dbpoifilter, "", sizeof (dbpoifilter));
-    }
-
-  if ( mydebug > 20 )
-    {
-      printf ("\n%s\n", dbpoifilter);
-    }
-
-  if (!sqldontquery)
-    {
-      getsqldata ();
-    }
-
-  current.needtosave = TRUE;
-  return TRUE;
-}

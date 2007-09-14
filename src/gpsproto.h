@@ -87,7 +87,6 @@ gint checksum (gchar * text);
 gint earthmate_cb (GtkWidget * widget, guint datum);
 void daylights (void);
 gint setutc (GtkWidget * widget, guint datum);
-gint dbbuildquery_cb (GtkWidget * widget, guint datum);
 G_MODULE_EXPORT gint modulesetup ();
 gint message_cb (char *msgid, char *name, char *text, int fs);
 void exiterr (int exitcode);
