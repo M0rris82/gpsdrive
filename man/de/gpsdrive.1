@@ -151,34 +151,23 @@ einkompiliert haben.
 
 
 .SH ANSCHLUSS EINES GPS EMPFÄNGERS
-Zuerst müssen sie zwischen GARMIN und NMEA Modus wählen.
 
 .B NMEA Modus. 
 .br
-Das ist der gebräuchliste Modus. Dieses Protokoll verwenden die
+Dieses Protokoll verwenden die
 meisten GPS Empfänger. Um den NMEA Modus zu benutzen, müssen sie das
 Programm 
 .B gpsd 
-gestartet haben. Der einfachste Weg ist, den
-.B Starte GPSD
-Knopf im Programm zu drücken.
+starten
 
 Das Programm läuft im Hintergrund und stellt einen Server dar,
 welcher die GPS Daten auf Port  2947 ausgibt. Die Einstellungen
-/dev/gps und 4800 Baud sind voreingestellt. Wenn sie
-.IR gpsd
-von Gpsdrive aus starten, gelten die Einstellungen aus dem
-.B Einstellungen
-Menü.
+/dev/gps und 4800 Baud sind voreingestellt.
 
 Wenn sie diese Einstellungen ändern wollen, rufen sie gpsd
 folgendermaßen auf:
 .br
 .B gpsd -p /dev/ttyS1
-
-es ist jedoch einfacher, die Einstellungen in Gpsdrive selbst vorzunehmen.
-Vergewissern sie sich, dass das NMEA Protocol und 4800 Baud im GPS
-Gerät eingestellt sind.
 
 Um die Ausgabe des GPS zu sehen, machen sie einfach
 .B telnet localhost 2947
@@ -206,46 +195,6 @@ Anzeige des EPE (erwarteter Positions Fehler), ev. nur auf GARMIN
 Empfängern verfügbar
 
 
-
-.B GARMIN Modus
-.br
-In diesem Modus erhält das Programm lediglich die Werte für Länge und
-Breite, alles anderen Werte werden vom Programm selbst
-gerechnet. Weiters wird im GARMIN Modus keine Satellitensignalstärke
-angezeigt (dies wird vom GARMIN Protokoll nicht unterstützt).
-
-Der GARMIN Modus überträgt die Daten öfter (GARMIN: einige Male pro
-Sekunde, NMEA ca. 1 mal in 2 Sekunden).
-
-Wenn sie den Garmin Modus verwenden wollen, schliessen sie einfach den
-GPS Empfänger an die serielle Schnittstelle an. 
-Der GARMIN Modus wird nur von einigen GARMIN Empfängern unterstützt.
-.br
-
-GpsDrive erkennt automatisch GARMIN oder NMEA Modus falls dies im
-Einstellungen-Menü eingeschaltet ist.
-
-
-.SH Kompilieren ohne GARMIN Protokoll Unterstützung
-
-Wenn sie kein GARMIN Protokoll benötigen (z.B. wenn sie nur NMEA
-benutzen), können sie GpsDrive ohne GARMIN-Protokoll Unterstützung
-kompilieren:
-
-.br
- ./configure --disable-garmin
-.br
- make clean
-.br
- make
-.br
- su
-.br
- make install
-
-Dies hat den Vorteil, dass sie ein kleineres und schnelleres
-Programm erhalten.
-
 .SH VERWENDUNG
 
 Sie können GpsDrive ohne ein angeschlossenes GPS verwenden. Dann
@@ -253,6 +202,12 @@ startet GpsDrive automatisch im
 .B Simulator Betrieb,
 bei welchem sie sich auf der Karte bewegen können. Stellen sie
 sicher, dass kein gpsd läuft damit der Simulator Betrieb starten kann.
+
+.SH OPENSTREETMAP KARTEN
+
+GpsDrive unterstüzt OSM Karten, dabei werden mit Hilfe des Rendereres Mapnik
+Karten generiert und direkt angezeigt. Um diesen Modus zu aktivieren wählen Sie
+die Option Mapnik.
 
 .SH KARTEN DOWNLOAD
 
@@ -333,61 +288,6 @@ Wegpunkttyp erzeugen oder einen vorhandenen aus der Liste auswählen.
 .B Wichtig:
 Die Liste (nur im SQL Modus) zeigt die bereits verwendeten
 Wegpunkttypen, NICHT die Vordefinierten.
-
-.SH Icons für Wegpunkte
-Sie können die Wegpunkttypen frei definieren. Es gibt jedoch
-spezielle, vordefinierte Namen, welche ein spezielles Symbol im
-GpsDrive-Display erzeugen:
-
-.TP
-.B WLAN
-offener WLAN Accesspoint
-.TP
-.B WLAN-WEP
-verschlüsselter WLAN Accesspoint
-.TP
-.B Rest
-ein Restaurant
-.TP
-.B McDonalds
-eine "Art" Restaurant
-.TP
-.B BurgerKing
-eine andere "Art" Restaurant
-.TP
-.B Hotel
-ein Hotel
-.TP
-.B Shop
-Einkaufsmöglichkeit
-.TP
-.B Monu
-Monument, hist. Gebäude, interessanter Tourismuspunkt
-.TP
-.B Speedtrap
-Geschwindigkeitsmessung (Radar), warnt, wenn es sich in Fahrtrichtung befindet.
-.TP
-.B Nightclub
-Pssst...
-.TP
-.B Airport
-ein Flughafen
-.TP
-.B Golf
-Golfplatz
-.TP
-.B Gasstation
-Tankstelle
-.TP
-.B Cafe
-Cafe
-.PD
-.LP
-Gross-/Kleinschreibung ist egal.
-
-Bitte lesen sie auch
-.IR README.SQL
-, für eine aktuelle Liste der Wegpunkt Typen.
 
 .SH Eigene Icons für Wegpunktarten
 
@@ -570,8 +470,6 @@ gpsdrive" an majordomo@warbase.selwerd.nl
 
 .SH AUTOR
 Fritz Ganter
-.br
-E-Mail: ganter@ganter.at
 .br
 http://www.gpsdrive.de
 .SH GARANTIE

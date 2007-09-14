@@ -191,50 +191,20 @@ First you have to choose if you want use the GARMIN or NMEA mode.
 .br
 This is the most used mode. This mode is provided by most GPS
 receivers. 
-
-.B New!!!
-
-Since 
-.I Version 2.08
-GpsDrive is now able to handle the serial
-connection itself, so you don't need to start (and use) gpsd anymore.
 .br
-To enable this feature go into the settings menu, switch to settings 2
-and select 
-.I Use serial connection.
-.br
-Make sure that your GPS receiver is connected and running before you
-start GpsDrive, so the program is able to detect the GPS device.
-
-You can also use gpsd, i.e. if you want to share the GPS data over the
-network or if you need additional features.
-.br
-You can force the use of gpsd by adding the
-.B \-n
-commandline parameter, even if you enabled the direct serial connection
-in the settings menu.
-
-.br
-To use NMEA mode with gpsd, you have to start the provided program
+To use NMEA mode, you have to start the provided program
 .B gpsd
-first or do this by pressing the 
+first
 .B Start GPSD
-button in the GpsDrive menu after setting the parameters in the settings
-menu.
 This program runs as daemon in background and provides a server,
 which sends the GPS data on port number 2947. 
 The settings /dev/gps and 4800 BPS are precompiled if you start
-gpsd by yourself. If you start it from GpsDrive, the settings defined
-in the 
-.B Settings
-menu are used.
+gpsd.
 
 You can also change the gpsd settings i.e. to ttyS1 call it with:
 .br
 .B gpsd -p /dev/ttyS1
 
-but as mentioned, it's easier to do this in GpsDrive.
-.br
 If you are using a GPS receiver with an USB connection, your port may
 be
 .B /dev/ttyUSB0
@@ -269,44 +239,6 @@ GARMIN receivers
 
 At least you need GPRMC or GPGGA for using GpsDrive. If you can turn
 on GPRMC, please do so.
-
-.B GARMIN mode
-.br
-In this mode, the program only gets lat/long data, the speed and
-direction it calculates itself. There is also no display of the
-satellite signal level (this data is not supported by GARMIN
-protocol).
-
-GARMIN mode is faster (more data packets per second, in NMEA mode there are
-only 1-2 packets every 2 seconds), but the calculations the program
-makes may not be as accurate.
-
-If you want to use Garmin mode, simply connect the GPS receiver to your
-serial port. 
-Garmin mode is only provided by some GARMIN receivers.
-.br
-
-GpsDrive autodetects GARMIN or NMEA mode if enabled in settings
-menu. I would recommend to use NMEA mode.
-
-.SH Compilation without GARMIN protocol
-
-If you don't need the GARMIN protocol (i.e if you use only NMEA), you
-can compile GpsDrive yourself to not include the GARMIN protocol
-support. Do this with:
-
-.br
- ./configure --disable-garmin
-.br
- make clean
-.br
- make
-.br
- su
-.br
- make install
-
-This has the advantage to produce a smaller and faster executable.
 
 .SH USAGE
 
@@ -383,6 +315,10 @@ You can leave the position mode by by clicking on the "Pos. mode"
 button or middle-mouse click or right-mouse click (which also sets
 your target).
 
+
+.SH OPENSTREETMAP MAPS
+GpsDrive now supports OSM maps with the help of the renderer Mapnik.
+To activate this mode you have to choose the mapnik option.
 
 
 .SH MAP DOWNLOAD
@@ -715,7 +651,7 @@ your firewall. The server needs no root privileges and should run as
 normal user or a special user with no privileges. The server was NOT
 tested for security.
 
-There is a friends server running on www.gpsdrive.cc, you can try it
+There is a friends server running on friends.gpsdrive.de, you can try it
 if you enable it in the settings menu.
 
 You can also send messages to other mobile targets (Misc. Menu/Messages)
@@ -763,9 +699,7 @@ and send me this output.
 .SH AUTHOR
 Fritz Ganter
 .br
-E-Mail: ganter@ganter.at
-.br
-http://www.gpsdrive.cc
+http://www.gpsdrive.de
 .SH WARRANTY
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
