@@ -779,6 +779,9 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 		fprintf (stderr, "expose_gpsfix()\n");
 
 	drawable_gpsfix = drawing_gpsfix->window;
+	if (!drawable_gpsfix) {
+		return 0;
+	}
 	kontext_gpsfix = gdk_gc_new (drawable_gpsfix);
 	pfd_gpsfix = pango_font_description_from_string ("Sans 8");
 	gdk_drawable_get_size (drawable_gpsfix, &t_x, &t_y);
@@ -1831,8 +1834,8 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	
 	gtk_widget_show_all (main_window);
 
-	if ( ( local_config.guimode == GUI_DESKTOP )
-	     && (local_config.MapnikStatusInt ) ){
+	//if ( ( local_config.guimode == GUI_DESKTOP )
+	     if( (local_config.MapnikStatusInt ) ){
 	    toggle_mapnik_cb( mapnik_bt, 2 );
 	}
 	

@@ -1684,6 +1684,9 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 	
 
 	drawable_minimap = drawing_minimap->window;
+	if (!drawable_minimap) {
+		return 0;
+	}
 	kontext_minimap = gdk_gc_new (drawable_minimap);
 
 	if (SMALLMENU == 0)
