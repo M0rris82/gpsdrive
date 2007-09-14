@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -53,9 +54,17 @@ CONFIG_CLEAN_FILES =
 SOURCES =
 DIST_SOURCES =
 man1dir = $(mandir)/man1
-am__installdirs = "$(DESTDIR)$(man1dir)"
+am__installdirs = "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man1_dedir)"
 NROFF = nroff
-MANS = $(dist_man_MANS) $(man1_MANS)
+MANS = $(dist_man_MANS)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+man1_deDATA_INSTALL = $(INSTALL_DATA)
+DATA = $(man1_de_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 pkgdatadir = @pkgdatadir@
 ACLOCAL = @ACLOCAL@
@@ -217,8 +226,10 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-man1_MANS = gpsdrive.1
-dist_man_MANS = $(man1_MANS)
+man_dedir = ${mandir}/de
+man1_dedir = ${man_dedir}/man1
+man1_de_DATA = gpsdrive.1
+dist_man_MANS = $(man1_de_DATA)
 all: all-am
 
 .SUFFIXES:
@@ -306,6 +317,23 @@ uninstall-man1:
 	  echo " rm -f '$(DESTDIR)$(man1dir)/$$inst'"; \
 	  rm -f "$(DESTDIR)$(man1dir)/$$inst"; \
 	done
+install-man1_deDATA: $(man1_de_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(man1_dedir)" || $(mkdir_p) "$(DESTDIR)$(man1_dedir)"
+	@list='$(man1_de_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(man1_deDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(man1_dedir)/$$f'"; \
+	  $(man1_deDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(man1_dedir)/$$f"; \
+	done
+
+uninstall-man1_deDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(man1_de_DATA)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(man1_dedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(man1_dedir)/$$f"; \
+	done
 tags: TAGS
 TAGS:
 
@@ -342,9 +370,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(MANS)
+all-am: Makefile $(MANS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(man1dir)"; do \
+	for dir in "$(DESTDIR)$(man1dir)" "$(DESTDIR)$(man1_dedir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-am
@@ -389,7 +417,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-man
+install-data-am: install-man install-man1_deDATA
 
 install-exec-am:
 
@@ -415,7 +443,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-info-am uninstall-man
+uninstall-am: uninstall-info-am uninstall-man uninstall-man1_deDATA
 
 uninstall-man: uninstall-man1
 
@@ -424,11 +452,11 @@ uninstall-man: uninstall-man1
 	dvi-am html html-am info info-am install install-am \
 	install-data install-data-am install-exec install-exec-am \
 	install-info install-info-am install-man install-man1 \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	uninstall uninstall-am uninstall-info-am uninstall-man \
-	uninstall-man1
+	install-man1_deDATA install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am uninstall uninstall-am uninstall-info-am \
+	uninstall-man uninstall-man1 uninstall-man1_deDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
