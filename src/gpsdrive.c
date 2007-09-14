@@ -29,6 +29,7 @@ Disclaimer: Please do not use for navigation.
      Aart Koelewijn <aart@mtack.xs4all.nl>
      Belgabor <belgabor@gmx.de>
      Blake Swadling <blake@swadling.com>
+     Christoph Metz <loom@mopper.de>
      Chuck Gantz- chuck.gantz@globalstar.com
      Dan Egnor <egnor@ofb.net>
      Daniel Hiepler <rigid@akatash.de>
