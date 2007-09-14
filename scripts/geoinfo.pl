@@ -304,16 +304,12 @@ Fill the Databases with usefull defaults. This option is
 needed before you can import any of the other importers.
 
 
-=item B<--openstreetmap> B<--osm>[=filename] B<--osm>[=download:<areaname>]
+=item B<--openstreetmap> B<--osm>[=filename]
 
 Download and import openstreetmap Data. 
 If no parameter is given. planet.osm is downloaded and then imported. 
 If a filename is given this Filename is imported. The file needs to 
 be a *.osm File. You can get a osm File by saving your edited Data whis josm.
-If you use download:<areaname> the data for this area is directly 
-downloaded from the OSM Server. Since the osm Servers are currently 
-under more than heavy load you should use this feature with extreme 
-care and only if REALLY REALLY necessary.
 
 =item B<--all>
 
@@ -424,6 +420,7 @@ for the specified language, the english ones will be used.
 
 Only read area for processing
 Currently only for osm imports
+to see which areas are available, use --list-areas
 
 =item B<--list-areas>
 
