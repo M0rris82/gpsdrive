@@ -328,22 +328,6 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 }
 
 
-static void
-select_poifilter_cb (GtkTreeSelection *selection, gpointer data)
-{
-	GtkTreeIter iter;
-	GtkTreeModel *model;
-
-	if (gtk_tree_selection_get_selected (selection, &model, &iter))
-	{
-		gtk_tree_model_get (model, &iter,
-			POITYPE_ID, &criteria.poitype_id,
-			POITYPE_NAME, &criteria.poitype_name,
-			-1);
-	}
-}
-
-
 static gint
 select_poitype_cb (GtkComboBox *combo_box, gpointer data)
 {

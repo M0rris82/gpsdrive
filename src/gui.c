@@ -808,8 +808,6 @@ int gui_init (void)
 	posmarker_img = read_icon ("posmarker.png", 0);
 	targetmarker_img = read_icon ("targetmarker.png", 0); 
 
-	if (usesql)
-		create_window_poi_lookup ();
 
 // the following lines habe been moved from gpsdrive.c to here.
 // maybe something has to be sorted out:
