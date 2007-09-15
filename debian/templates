@@ -9,7 +9,7 @@ Description: _Create and initialize the mysql-table?
        WARNING: this might be a security issue if you have your mysql 
        WARNING: database accessible from outside of your computer
 
-Template: gpsdrive/import_osm
+Template: gpsdrive/importosm
 Type: boolean
 Default: false
 Description: _Download and import osm Data
@@ -21,7 +21,7 @@ Description: _Download and import osm Data
 	  at least have 2GB RAM and more than 2GHz
 	  or equivalent.	  
 
-Template: gpsdrive/import_osm_area
+Template: gpsdrive/importosmarea
 Type: string
 Default: germany
 Description: Area to restrict osm import
