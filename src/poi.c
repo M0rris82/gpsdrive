@@ -131,11 +131,13 @@ update_poi_type_filter ()
 	gboolean t_selected;
 	gchar *t_name;
 	gchar t_string[200];
+	gchar t_config[2000];
 
 	if (mydebug > 21)
 		fprintf (stderr, "update_poi_type_filter:\n");
 
 	g_strlcpy (current.poifilter, "AND (", sizeof (current.poifilter));
+	g_strlcpy (local_config.poi_filter, "", sizeof (local_config.poi_filter));
 
 	gtk_tree_model_get_iter_first
 		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
@@ -147,11 +149,18 @@ update_poi_type_filter ()
 			POITYPE_SELECT, &t_selected, -1);
 		if (!t_selected)
 		{
+			/* build SQL string for filter */
 			g_snprintf (t_string, sizeof (t_string),
 				"poi_type.name NOT LIKE \"%s%%\" AND ",
 				t_name);
 			g_strlcat (current.poifilter,
 				t_string, sizeof (current.poifilter));
+				
+			/* build settings string for config file */
+			g_snprintf (t_config, sizeof (t_config),
+				"%s|", t_name);
+			g_strlcat (local_config.poi_filter,
+				t_config, sizeof (local_config.poi_filter));
 		}
 	}
 	while (gtk_tree_model_iter_next
@@ -161,6 +170,7 @@ update_poi_type_filter ()
 
 	g_free (t_name);
 
+	current.needtosave = TRUE;
 	poi_draw_list (TRUE);
 }
 
@@ -1302,6 +1312,7 @@ void
 poi_init (void)
 {
 	GtkTreeIter t_iter;
+	gchar *t_name;
 
 	poi_limit = 40000;
 	poi_list = g_new (poi_struct, poi_limit);
@@ -1348,12 +1359,27 @@ poi_init (void)
 		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
 	do
 	{
-		gtk_tree_store_set
-			(poi_types_tree, &t_iter,
-			POITYPE_SELECT, 1, -1);
-		//TODO: use info from config file...
+		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
+			POITYPE_NAME, &t_name, -1);
+		
+		if (g_strstr_len (local_config.poi_filter,
+			sizeof (local_config.poi_filter), t_name))
+		{
+			gtk_tree_store_set
+				(poi_types_tree, &t_iter,
+				POITYPE_SELECT, 0, -1);
+		}
+		else
+		{
+			gtk_tree_store_set
+				(poi_types_tree, &t_iter,
+				POITYPE_SELECT, 1, -1);
+		}
 	}
 	while (gtk_tree_model_iter_next
 		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
+
+	g_free (t_name);
+
 	update_poi_type_filter ();
 }

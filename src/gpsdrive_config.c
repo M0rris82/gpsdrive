@@ -250,6 +250,7 @@ writeconfig ()
 	fprintf (fp, "sound_speed = %d\n", local_config.sound_speed);
 	fprintf (fp, "sound_gps = %d\n", local_config.sound_gps);
 	fprintf (fp, "icon_theme = %s\n", local_config.icon_theme);
+	fprintf (fp, "poi_filter = %s\n", local_config.poi_filter);
 
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
@@ -477,6 +478,9 @@ readconfig ()
 			else if ( (strcmp(par1, "icon_theme")) == 0)
 				g_strlcpy (local_config.icon_theme, par2,
 					sizeof (local_config.icon_theme));
+			else if ( (strcmp(par1, "poi_filter")) == 0)
+				g_strlcpy (local_config.poi_filter, par2,
+					sizeof (local_config.poi_filter));
 			else if ( (strcmp(par1, "draw_grid")) == 0)
 				local_config.showgrid = atoi (par2);
 			else if ( (strcmp(par1, "show_zoom")) == 0)
