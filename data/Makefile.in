@@ -65,15 +65,12 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" \
-	"$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" \
-	"$(DESTDIR)$(poidir)"
+	"$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"
 appsDATA_INSTALL = $(INSTALL_DATA)
 cfg_filesDATA_INSTALL = $(INSTALL_DATA)
 mapsDATA_INSTALL = $(INSTALL_DATA)
 pixmapDATA_INSTALL = $(INSTALL_DATA)
-poiDATA_INSTALL = $(INSTALL_DATA)
-DATA = $(apps_DATA) $(cfg_files_DATA) $(maps_DATA) $(pixmap_DATA) \
-	$(poi_DATA)
+DATA = $(apps_DATA) $(cfg_files_DATA) $(maps_DATA) $(pixmap_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -261,13 +258,6 @@ pixmap_DATA = \
 	pixmaps/star.png \
 	pixmaps/targetmarker.png
 
-
-####################################################################################
-poidir = $(datadir)/gpsdrive/poi
-poi_DATA = \
-	poi/cities_germany.txt  poi/cities.txt  poi/germany.txt\
-	poi/cities_au.txt poi/shops_au.txt
-
 mapsdir = $(datadir)/gpsdrive/maps
 maps_DATA = \
 	maps/map_BlueBall.png \
@@ -301,7 +291,7 @@ EXTRA_DIST = \
 	\
 	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA) \
-	CMakeLists.txt poi/CMakeLists.txt \
+	CMakeLists.txt \
 	maps/CMakeLists.txt  \
 	pixmaps/CMakeLists.txt \
 	mysql/my.cnf \
@@ -416,23 +406,6 @@ uninstall-pixmapDATA:
 	  f=$(am__strip_dir) \
 	  echo " rm -f '$(DESTDIR)$(pixmapdir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(pixmapdir)/$$f"; \
-	done
-install-poiDATA: $(poi_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(poidir)" || $(mkdir_p) "$(DESTDIR)$(poidir)"
-	@list='$(poi_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f=$(am__strip_dir) \
-	  echo " $(poiDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(poidir)/$$f'"; \
-	  $(poiDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(poidir)/$$f"; \
-	done
-
-uninstall-poiDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(poi_DATA)'; for p in $$list; do \
-	  f=$(am__strip_dir) \
-	  echo " rm -f '$(DESTDIR)$(poidir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(poidir)/$$f"; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -568,7 +541,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps $(distdir)/poi
+	$(mkdir_p) $(distdir)/maps $(distdir)/mysql $(distdir)/pixmaps
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -615,7 +588,7 @@ check: check-recursive
 all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)" "$(DESTDIR)$(poidir)"; do \
+	for dir in "$(DESTDIR)$(appsdir)" "$(DESTDIR)$(cfg_filesdir)" "$(DESTDIR)$(mapsdir)" "$(DESTDIR)$(pixmapdir)"; do \
 	  test -z "$$dir" || $(mkdir_p) "$$dir"; \
 	done
 install: install-recursive
@@ -662,7 +635,7 @@ info: info-recursive
 info-am:
 
 install-data-am: install-appsDATA install-cfg_filesDATA \
-	install-mapsDATA install-pixmapDATA install-poiDATA
+	install-mapsDATA install-pixmapDATA
 
 install-exec-am:
 
@@ -689,8 +662,7 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-appsDATA uninstall-cfg_filesDATA \
-	uninstall-info-am uninstall-mapsDATA uninstall-pixmapDATA \
-	uninstall-poiDATA
+	uninstall-info-am uninstall-mapsDATA uninstall-pixmapDATA
 
 uninstall-info: uninstall-info-recursive
 
@@ -701,15 +673,14 @@ uninstall-info: uninstall-info-recursive
 	html-am info info-am install install-am install-appsDATA \
 	install-cfg_filesDATA install-data install-data-am \
 	install-exec install-exec-am install-info install-info-am \
-	install-man install-mapsDATA install-pixmapDATA \
-	install-poiDATA install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic maintainer-clean-recursive \
-	mostlyclean mostlyclean-generic mostlyclean-libtool \
-	mostlyclean-recursive pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-appsDATA \
+	install-man install-mapsDATA install-pixmapDATA install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
+	tags tags-recursive uninstall uninstall-am uninstall-appsDATA \
 	uninstall-cfg_filesDATA uninstall-info-am uninstall-mapsDATA \
-	uninstall-pixmapDATA uninstall-poiDATA
+	uninstall-pixmapDATA
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
