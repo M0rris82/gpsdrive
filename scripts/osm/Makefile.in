@@ -224,9 +224,6 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 SUBDIRS = perl_lib
 DIST_SUBDIRS = $(SUBDIRS)
-EXTRA_DIST = $(bin_SCRIPTS) \
-	$(PRGS)
-
 all: all-recursive
 
 .SUFFIXES:
