@@ -16,10 +16,8 @@ EXTRA_DIST = config.rpath m4/ChangeLog \
 	m4/*.m4 \
 	po/*.po \
 	intl/*
-pkgdata_DATA = depcomp
-
 
 documentation1dir   = $(datadir)/gpsdrive/Documentation
-documentation1_DATA = AUTHORS COPYING INSTALL README NEWS
+documentation1_DATA = AUTHORS INSTALL README NEWS
 
 ACLOCAL_AMFLAGS = -I m4
