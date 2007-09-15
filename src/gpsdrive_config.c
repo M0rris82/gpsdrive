@@ -199,7 +199,7 @@ writeconfig ()
 
 	fprintf (fp, "minsecmode = %d\n",local_config.coordmode);
 	
-	fprintf (fp, "posmarker = %d\n ", local_config.posmarker);
+	fprintf (fp, "posmarker = %d\n", local_config.posmarker);
 
 	fprintf (fp, "nightmode = ");
 	fprintf (fp, "%d\n", local_config.nightmode);
