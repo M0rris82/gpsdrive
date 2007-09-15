@@ -411,16 +411,15 @@ gint
 update_dashboard (GtkWidget *frame, gint source)
 {
 	// TODO: add "remaining time", "trip", "gps precision"
-	//gchar s2[100], s3[200], s2a[20];
-	gchar head[100], content[100], ctmp[10], unit[10], dirs = ' ';
-	//gchar font_unit[100];
-	gint font_size;
+	gchar head[100], content[200], ctmp[10], unit[10], dirs = ' ';
+	gint fontsize_unit;
 
 	gdouble dir = 0.0;
 
-	font_size = 24;
-	//font_size = pango_font_description_get_size
-	//	(local_config.color_dashboard);
+	fontsize_unit = atoi (g_strrstr_len (local_config.font_dashboard,
+		100, " ")) * 512;
+	if (fontsize_unit < 6144)
+		fontsize_unit = 6144;
 
 	switch (source)
 	{
@@ -506,10 +505,10 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%s"
-				"<span font_desc=\"%.f\"> %s</span></span>",
-			local_config.color_dashboard,
-			local_config.font_dashboard, ctmp,
-			font_size*0.66, unit);
+				"<span size=\"%d\"> %s</span></span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, ctmp,
+				fontsize_unit, unit);
 			break;
 		}
 		case DASH_SPEED:
@@ -530,12 +529,11 @@ update_dashboard (GtkWidget *frame, gint source)
 						sizeof (unit));
 			}
 			g_snprintf (content, sizeof (content),
-				"<span color=\"%s\" font_desc=\"%s\">"
-				"% 3.1f<span font_desc=\"%.f\"> %s</span></span>",
-				local_config.color_dashboard,
-				local_config.font_dashboard,
-				current.groundspeed,
-				font_size*0.66, unit);
+			"<span color=\"%s\" font_desc=\"%s\">"
+			"% 3.1f<span size=\"%d\"> %s</span></span>",
+			local_config.color_dashboard,
+			local_config.font_dashboard, current.groundspeed,
+			fontsize_unit, unit);
 			break;
 		}
 		case DASH_BEARING:
@@ -627,10 +625,10 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">"
-				"%s<span font_desc=\"%.f\"> %s</span></span>",
+				"%s<span size=\"%d\"> %s</span></span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard,
-				ctmp, font_size*0.66, unit);
+				ctmp, fontsize_unit, unit);
 			}
 			else
 			{
@@ -689,6 +687,8 @@ update_dashboard (GtkWidget *frame, gint source)
 
 	g_object_set (frame, "label", head, NULL);
 	gtk_label_set_markup (GTK_LABEL (GTK_BIN (frame)->child), content);
+
+	//pango_font_description_free (pfd_dash);
 
 	return TRUE;
 }
