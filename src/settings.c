@@ -773,16 +773,16 @@ settings_general (GtkWidget *notebook)
 	units_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (units_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (units_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		coord_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (units_table),
+		coord_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (units_table),
 		coord_combo, 1, 2, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		dist_label, 0, 1, 1, 2);
+	gtk_table_attach (GTK_TABLE (units_table),
+		dist_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (units_table),
 		dist_combo, 1, 2, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		alt_label, 0, 1, 2, 3);
+	gtk_table_attach (GTK_TABLE (units_table),
+		alt_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (units_table),
 		alt_combo, 1, 2, 2, 3);
 	}
@@ -856,12 +856,12 @@ settings_general (GtkWidget *notebook)
 	misc_table = gtk_table_new (4, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (misc_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (misc_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (misc_table),
-		simulation_lb, 0, 2, 0, 1);
+	gtk_table_attach (GTK_TABLE (misc_table),
+		simulation_lb, 0, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (misc_table),
 		simmode_table, 0, 2, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (misc_table),
-		maxcpu_label, 0, 1, 2, 3);
+	gtk_table_attach (GTK_TABLE (misc_table),
+		maxcpu_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (misc_table),
 		maxcpu_spin, 1, 2, 2, 3);
 	}
@@ -886,8 +886,8 @@ settings_general (GtkWidget *notebook)
 	map_table = gtk_table_new (2, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (map_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (map_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (map_table),
-		mapdir_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (map_table),
+		mapdir_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (map_table),
 		mapdir_bt, 1, 2, 0, 1);
 	}
@@ -918,11 +918,11 @@ settings_general (GtkWidget *notebook)
 	gtk_container_add (GTK_CONTAINER (map_frame), map_table);
 
 	gtk_box_pack_start (GTK_BOX (general_vbox),
-		units_frame, TRUE, FALSE, 2);
+		units_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (general_vbox),
-		map_frame, TRUE, FALSE, 2);
+		map_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (general_vbox),
-		misc_frame, TRUE, FALSE, 2);
+		misc_frame, FALSE, FALSE, 2);
 	
 	general_label = gtk_label_new (_("General"));
 	gtk_notebook_append_page
@@ -1226,32 +1226,32 @@ settings_gui (GtkWidget *notebook)
 	gui_map_table = gtk_table_new (5, 3, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (gui_map_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (gui_map_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_trackcol_lb, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (gui_map_table),
+		gui_trackcol_lb, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (gui_map_table),
 		gui_trackcol_bt, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_trackstyle_combo, 2, 3, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_routecol_lb, 0, 1, 1, 2);
+	gtk_table_attach (GTK_TABLE (gui_map_table),
+		gui_routecol_lb, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (gui_map_table),
 		gui_routecol_bt, 1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_routestyle_combo, 2, 3, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_friendscol_lb, 0, 1, 2, 3);
+	gtk_table_attach (GTK_TABLE (gui_map_table),
+		gui_friendscol_lb, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (gui_map_table),
 		gui_friendscol_bt, 1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_friendsfont_bt, 2, 3, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_wpcol_lb, 0, 1, 3, 4);
+	gtk_table_attach (GTK_TABLE (gui_map_table),
+		gui_wpcol_lb, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (gui_map_table),
 		gui_wpcol_bt, 1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_wpfont_bt, 2, 3, 3, 4);
-	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_bigcol_lb, 0, 1, 4, 5);
+	gtk_table_attach (GTK_TABLE (gui_map_table),
+		gui_bigcol_lb, 0, 1, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (gui_map_table),
 		gui_bigcol_bt, 1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
@@ -1292,11 +1292,11 @@ settings_gui (GtkWidget *notebook)
 	gtk_container_add (GTK_CONTAINER (gui_misc_frame), gui_misc_table);
 	
 	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_misc_frame, TRUE, FALSE, 2);
+		(GTK_BOX (gui_vbox), gui_misc_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_night_frame, TRUE, FALSE, 2);
+		(GTK_BOX (gui_vbox), gui_night_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_map_frame, TRUE, FALSE, 2);
+		(GTK_BOX (gui_vbox), gui_map_frame, FALSE, FALSE, 2);
 	
 	gui_label = gtk_label_new (_("GUI"));
 	gtk_notebook_append_page
@@ -1353,8 +1353,8 @@ settings_nav (GtkWidget *notebook)
 	nav_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (nav_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (nav_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (nav_table),
-		travel_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (nav_table),
+		travel_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
 		travel_combo, 1, 2, 0, 1);
 
@@ -1443,8 +1443,8 @@ settings_nav (GtkWidget *notebook)
 	gtk_frame_set_shadow_type (GTK_FRAME (speech_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (speech_frame), speech_table);
 	
-	gtk_box_pack_start (GTK_BOX (nav_vbox), nav_frame, TRUE, FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (nav_vbox), speech_frame, TRUE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (nav_vbox), nav_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (nav_vbox), speech_frame, FALSE, FALSE, 2);
 	
 	nav_label = gtk_label_new (_("Navigation"));
 	gtk_notebook_append_page
@@ -1498,8 +1498,8 @@ settings_poi (GtkWidget *notebook)
 	wp_table = gtk_table_new (1, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (wp_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (wp_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (wp_table),
-		wpfile_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (wp_table),
+		wpfile_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (wp_table),
 		wpfile_bt, 1, 2, 0, 1);
 	}
@@ -1537,14 +1537,14 @@ settings_poi (GtkWidget *notebook)
 	poisearch_table = gtk_table_new (2, 3, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poisearch_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (poisearch_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (poisearch_table),
-		poi_dist_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (poisearch_table),
+		poi_dist_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (poisearch_table),
 		poi_dist_entry, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (poisearch_table),
 		poi_dist2_label, 2, 3, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach_defaults (GTK_TABLE (poisearch_table),
-		poi_max_label, 0, 1, 1, 2);
+	gtk_table_attach (GTK_TABLE (poisearch_table),
+		poi_max_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (poisearch_table),
 		poi_max_entry, 1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (poisearch_table),
@@ -1610,7 +1610,7 @@ settings_poi (GtkWidget *notebook)
 		poitypes_treeview);
 
 	renderer_poitypes = gtk_cell_renderer_toggle_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
 		renderer_poitypes, "active", POITYPE_SELECT, NULL);
 	g_signal_connect (renderer_poitypes, "toggled",
 		G_CALLBACK (toggle_poitype), NULL);
@@ -1618,14 +1618,14 @@ settings_poi (GtkWidget *notebook)
 		column_poitypes);
 
 	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes ("_",
+	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
 		renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
 	renderer_poitypes = gtk_cell_renderer_text_new ();
 	column_poitypes = gtk_tree_view_column_new_with_attributes (
-		_("Name"), renderer_poitypes,
+		NULL, renderer_poitypes,
 		"text", POITYPE_TITLE, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
@@ -1633,7 +1633,8 @@ settings_poi (GtkWidget *notebook)
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
 		FALSE);
 	gtk_tree_view_collapse_all (GTK_TREE_VIEW (poitypes_treeview));
-	
+
+	/* disable drawing of tree expanders */
 	column_poitypes = gtk_tree_view_column_new ();
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
@@ -1648,14 +1649,18 @@ settings_poi (GtkWidget *notebook)
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (poidisplay_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		poi_labelshow_bt, 0, 2, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		poitheme_label, 0, 1, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		poitheme_combo, 1, 2, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		poifilter_label, 0, 1, 2, 3);
+	gtk_table_attach (GTK_TABLE (poidisplay_table),
+		poi_labelshow_bt, 0, 2, 0, 1,
+		GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0 ,0);
+	gtk_table_attach (GTK_TABLE (poidisplay_table),
+		poitheme_label, 0, 1, 1, 2,
+		GTK_SHRINK, GTK_SHRINK, 0 ,0);
+	gtk_table_attach (GTK_TABLE (poidisplay_table),
+		poitheme_combo, 1, 2, 1, 2,
+		GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0 ,0);
+	gtk_table_attach (GTK_TABLE (poidisplay_table),
+		poifilter_label, 0, 1, 2, 3,
+		GTK_SHRINK, GTK_SHRINK, 0 ,0);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
 		scrolledwindow_poitypes, 1, 2, 2, 3);	}
 
@@ -1690,10 +1695,10 @@ settings_poi (GtkWidget *notebook)
 
 
 	gtk_box_pack_start
-		(GTK_BOX (poi_vbox), poidisplay_frame, TRUE, FALSE, 2);
+		(GTK_BOX (poi_vbox), poidisplay_frame, TRUE, TRUE, 2);
 	gtk_box_pack_start
-		(GTK_BOX (poi_vbox), poisearch_frame, TRUE, FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (poi_vbox), wp_frame, TRUE, FALSE, 2);
+		(GTK_BOX (poi_vbox), poisearch_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (poi_vbox), wp_frame, FALSE, FALSE, 2);
 
 	poi_label = gtk_label_new (_("POI"));
 	gtk_notebook_append_page
@@ -1830,7 +1835,7 @@ settings_wp (GtkWidget *notebook)
 	gtk_frame_set_shadow_type (GTK_FRAME (wpqs_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (wpqs_frame), wpqs_table);
 
-	gtk_box_pack_start (GTK_BOX (wp_vbox), wpqs_frame, TRUE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (wp_vbox), wpqs_frame, FALSE, FALSE, 2);
 	//gtk_box_pack_start (GTK_BOX (wp_vbox), wp_frame, TRUE, FALSE, 2);
 
 	wp_label = gtk_label_new (_("Waypoints"));
@@ -1928,12 +1933,12 @@ settings_friends (GtkWidget *notebook)
 
 	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
 		friendenable_bt, 0, 4, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
-		friendname_label, 0, 1, 1, 2);
+	gtk_table_attach (GTK_TABLE (friendgen_table),
+		friendname_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
 		friendname_entry, 1, 4, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
-		friendmaxsec_label, 0, 2, 2, 3);
+	gtk_table_attach (GTK_TABLE (friendgen_table),
+		friendmaxsec_label, 0, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
 		friendmaxsec_spin, 2, 3, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (friendgen_table),
@@ -1980,12 +1985,12 @@ settings_friends (GtkWidget *notebook)
 	g_signal_connect_swapped (friendsrvip_bt, "clicked",
 		GTK_SIGNAL_FUNC (setfriendsrvip_lookup_cb), friendsrvip_entry);
 
-	gtk_table_attach_defaults (GTK_TABLE (friendsrv_table),
-		friendsrv_label, 0, 1, 0, 1);
+	gtk_table_attach (GTK_TABLE (friendsrv_table),
+		friendsrv_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (friendsrv_table),
 		friendsrv_entry, 1, 3, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (friendsrv_table),
-		friendsrvip_label, 0, 1, 1, 2);
+	gtk_table_attach (GTK_TABLE (friendsrv_table),
+		friendsrvip_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (friendsrv_table),
 		friendsrvip_entry, 1, 2, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (friendsrv_table),
@@ -2026,9 +2031,9 @@ settings_friends (GtkWidget *notebook)
 	gtk_container_add (GTK_CONTAINER (friendsrv_frame), friendsrv_table);
 	
 	gtk_box_pack_start
-		(GTK_BOX (friends_vbox), friendgen_frame, TRUE, FALSE, 2);
+		(GTK_BOX (friends_vbox), friendgen_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start
-		(GTK_BOX (friends_vbox), friendsrv_frame, TRUE, FALSE, 2);
+		(GTK_BOX (friends_vbox), friendsrv_frame, FALSE, FALSE, 2);
 	
 	friends_label = gtk_label_new (_("Friends"));
 	gtk_notebook_append_page
