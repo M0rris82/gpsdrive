@@ -861,7 +861,9 @@ unittest_settings_open (GtkWidget * widget, guint * datum)
     
     if (mydebug > 0)
 	    printf ("	-------> Open Settings\n");
-    
+
+    settings_main_cb(0,1);
+
     return FALSE; // Only once
 }
 gint
@@ -880,7 +882,6 @@ void
 set_unittest_timer (void)
 {
     printf ("Testing Open and Close Settings\n");
-    gtk_timeout_add (2000, (GtkFunction) unittest_settings_open,NULL ); 
-    //gtk_timeout_add (4000, (GtkFunction) unittest_settings_close,NULL ); 
-    gtk_timeout_add (8000, (GtkFunction) quit_program_cb,NULL);
+    gtk_timeout_add (1000, (GtkFunction) unittest_settings_open,NULL ); 
+    gtk_timeout_add (2000, (GtkFunction) quit_program_cb,NULL);
 }
