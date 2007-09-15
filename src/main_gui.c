@@ -102,6 +102,7 @@ GtkWidget *map_drawingarea;
 GtkWidget *scaler_left_bt, *scaler_right_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
+GtkWidget *menuitem_sendmsg;
 
 // TODO: maybe these should be moved to local ones...
 GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
@@ -1077,7 +1078,7 @@ void create_controls_mainbox (void)
 	GtkWidget *pda_box_left, *pda_box_right;
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
-	GtkWidget *menuitem_load, *menuitem_sendmsg, *menuitem_settings;
+	GtkWidget *menuitem_load, *menuitem_settings;
 	GtkWidget *menuitem_help, *menuitem_helpabout, *menuitem_helpcontent;
 	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
@@ -1141,6 +1142,8 @@ void create_controls_mainbox (void)
 		gtk_image_new_from_stock ("gtk-network", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image
 		(GTK_IMAGE_MENU_ITEM (menuitem_sendmsg), sendmsg_img);
+	if (!local_config.showfriends)
+		gtk_widget_set_sensitive (menuitem_sendmsg, FALSE);
 	menuitem_settings =
 		gtk_image_menu_item_new_from_stock ("gtk-preferences", NULL);
 	menuitem_sep = gtk_separator_menu_item_new ();

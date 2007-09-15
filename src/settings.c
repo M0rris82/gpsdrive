@@ -117,7 +117,7 @@ extern currentstatus_struct current;
 extern GtkTreeStore *poi_types_tree;
 int showsid = TRUE;
 extern int expedia_de;
-
+GtkWidget *menuitem_sendmsg;
 
 GtkWidget *settings_window = NULL;
 
@@ -424,9 +424,15 @@ setshowfriends_cb (GtkWidget *entry)
 	local_config.showfriends = !local_config.showfriends;
 
 	if (local_config.showfriends)
+	{
 		gtk_widget_show_all (frame_statusfriends);
+		gtk_widget_set_sensitive (menuitem_sendmsg, TRUE);
+	}
 	else
+	{
 		gtk_widget_hide_all (frame_statusfriends);
+		gtk_widget_set_sensitive (menuitem_sendmsg, FALSE);
+	}
 
 	if (mydebug >10)
 	{
