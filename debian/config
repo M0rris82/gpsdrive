@@ -13,13 +13,13 @@ INIT_DB=$RET
 
 if [ "x$INIT_DB" = "xtrue" ] ; then
         echo "asking for gpsdrive Options import"
-        db_input medium gpsdrive/import_osm
+        db_input medium gpsdrive/importosm
 	db_go
 
-	db_get gpsdrive/import_osm
+	db_get gpsdrive/importosm
 	IMPORT_OSM=$RET
 	if [ "x$IMPORT_OSM" = "xtrue" ] ; then
-	    db_input medium gpsdrive/import_osm_area
+	    db_input medium gpsdrive/importosmarea
 	    db_go
 	fi
 fi

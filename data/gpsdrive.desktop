@@ -7,5 +7,5 @@ Exec=gpsdrive
 Icon=gpsicon.png
 Terminal=false
 Type=Application
-Categories=Application;Network;
+Categories=Graphics;Network;Geography
 StartupNotify=true

@@ -1,7 +1,7 @@
 Template: gpsdrive/initdb
 Type: boolean
 Default: true
-Description: _Create and initialize the mysql-table?
+_Description: Create and initialize the mysql-table?
  Do you want to run 
        geoinfo.pl --create-db --create-defaults
  to initialize your database and add defaults into it.
@@ -12,8 +12,8 @@ Description: _Create and initialize the mysql-table?
 Template: gpsdrive/importosm
 Type: boolean
 Default: false
-Description: _Download and import osm Data
- This downloads the current OSM data (>=190MB) and
+_Description: _Download and import osm Data?
+ This downloads the current OSM data (>=700MB) and
  imports this Data into the mysql database.
  Warning: The import will normally take at least 
 	  45 minutes after downloading.
@@ -24,6 +24,6 @@ Description: _Download and import osm Data
 Template: gpsdrive/importosmarea
 Type: string
 Default: germany
-Description: Area to restrict osm import
+_Description: Area to restrict osm import:
  Since the osm import is pretty memory intensive you 
  have to restrict the import to a certain region.

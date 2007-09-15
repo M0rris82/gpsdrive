@@ -2,14 +2,15 @@
 SUBDIRS =      osm mapnik
 DIST_SUBDIRS = $(SUBDIRS)
 
-dist_bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
-		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
-		gpssmswatch gpsfetchmap.pl convert-waypoints.pl \
-		geoinfo.pl gpsdrive-init-db.pl wp2sql gpsd_nmea.sh \
-		nasaconv.sh \
-		start_mysql_as_user.sh poi-manager.pl \
-		devpackages-debian.sh  convert-waypoints.pl \
-		create_misssing_man_pages.sh
+dist_bin_SCRIPTS=	\
+	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
+	geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
+	gpssmswatch gpsfetchmap.pl convert-waypoints.pl \
+	geoinfo.pl gpsdrive-init-db.pl wp2sql gpsd_nmea.sh \
+	nasaconv.sh \
+	start_mysql_as_user.sh poi-manager.pl \
+	convert-waypoints.pl
+
 
 geoinfo:
 	PERLLIB=./ PATH=./:$$PATH ./geoinfo.pl --help
@@ -17,4 +18,6 @@ geoinfo:
 gpsdrivedir = $(datadir)/gpsdrive
 
 #EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
-EXTRA_DIST = CMakeLists.txt
+EXTRA_DIST = CMakeLists.txt \
+	devpackages-debian.sh \
+	create_misssing_man_pages.sh

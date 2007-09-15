@@ -19,10 +19,10 @@ case "$1" in
 	    echo "/usr/bin/geoinfo.pl --create-db --fill-defaults"
 	    /usr/bin/geoinfo.pl --create-db --fill-defaults
 
-	    db_get gpsdrive/import_osm
+	    db_get gpsdrive/importosm
 	    IMPORT_OSM=$RET
 	    if [ "$IMPORT_OSM" = "true" ] ; then
-		db_get gpsdrive/import_osm_area
+		db_get gpsdrive/importosmarea
 		IMPORT_OSM_AREA=$RET
 		echo "/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA"
 		/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA
