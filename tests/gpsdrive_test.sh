@@ -86,14 +86,14 @@ for icon_theme in square.big square.small classic.big ; do
     for LANG in en_US de_DE ; do 
 #	for USER_INTERFACE in car desktop pda ; do 
 	for USER_INTERFACE in car desktop ; do 
-	    echo "------------------> check 'LANG=$LANG ./src/gpsdrive -T -a -D 1 -M $USER_INTERFACE' icon_theme=$icon_theme"
+	    echo "------------------> check 'LANG=$LANG ./src/gpsdrive -T -a -S -D 1 -M $USER_INTERFACE' icon_theme=$icon_theme"
 	    perl -p -i.bak \
 		-e "s/icon_theme = .*/icon_theme = $icon_theme/" ${HOME}/.gpsdrive/gpsdriverc
 	    #grep icon_theme ${HOME}/.gpsdrive/gpsdriverc
 	    perl -p -i.bak \
 		-e "s/dbname = geoinfo.*/dbname = geoinfotest/" ${HOME}/.gpsdrive/gpsdriverc
 
-	    ./src/gpsdrive -M $USER_INTERFACE --geometry 800x600  -T -a -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
+	    ./src/gpsdrive -M $USER_INTERFACE --geometry 800x600  -T -a -S -D 1 >logs/gpsdrive_test_$LANG.txt 2>&1 
 	    rc=$?
 
 	    if [ $rc != 0 ] ; then
