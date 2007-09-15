@@ -800,6 +800,9 @@ int gui_init (void)
 
 	gtk_window_set_auto_startup_notification (TRUE);
 	
+	/* init poi search dialog (cached) */
+	create_window_poi_lookup();
+	
 	// TODO: use real values for geometry
 	create_main_window(NULL, 0);
 
