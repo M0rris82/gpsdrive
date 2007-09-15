@@ -68,6 +68,8 @@ mkdir -p logs
 
 # ------------------------------------------------------------------ GpsDrive
 # Test Gpsdrive -T with different Setup
+PWD=`pwd`/tests
+mkdir -p "$PWD/maps"
 for LANG in en_US de_DE ; do 
     echo "-------------> check LANG=$LANG"
     for ICON_THEME in square.big square.small classic.big classic.small; do 
@@ -77,7 +79,7 @@ for LANG in en_US de_DE ; do
 		echo "------------------> check './src/gpsdrive -T -a -S -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
 
 		perl -p \
-		    -e "s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
+		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
 		./src/gpsdrive --geometry 800x600 -T -a -S -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
