@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/python
 """GpsDrive Generate Mapnik Tiles
 
 Generates 1280x1024 Mapniktiles for GpsDrive
