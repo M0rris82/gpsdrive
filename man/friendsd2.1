@@ -1,0 +1,43 @@
+.TH FRIENDSD2 1 
+.SH NAME
+friendsd2 v2.x - displays GPS position on a map
+.SH SYNOPSIS
+.B friendsd2 [options]
+
+.SH About this manual page
+
+This manual page explain the basic functions of Friendsd2 for GpsDrive
+and some additional info.
+
+.SH DESCRIPTION
+
+.B Friendsd2
+is a central daemon which takes UDP packets from gpsdrive clients and
+stores them. Later he sends them back to all the connecte gpsd-client
+so they can show all the Geo-Locations of all other users connected to
+this friendsd. One central friendsd is running at friends.gpsdrive.de.
+ 
+.SH BUGS
+
+The current friendsd can only hold a limited number of users, since he
+sends only one UDP packet to the client for response.
+
+.SH AUTHOR
+Fritz Ganter
+.br
+http://www.gpsdrive.de
+.SH WARRANTY
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+.SH COPYRIGHT
+Copyright (c) 2001-2007 by Fritz Ganter
+.br
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+

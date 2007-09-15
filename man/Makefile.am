@@ -4,6 +4,8 @@ man1_MANS = \
 	$(srcdir)/geo-code.1 \
 	$(srcdir)/geo-nearest.1 \
 	$(srcdir)/gpsdrive.1 \
+	$(srcdir)/friendsd2.1 \
+	$(srcdir)/gpsd_nmea.sh.1 \
 	convert-waypoints.pl.1 \
 	geoinfo.pl.1 \
 	gpsdrive-init-db.pl.1 \
