@@ -1632,6 +1632,14 @@ settings_poi (GtkWidget *notebook)
 
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
 		FALSE);
+	gtk_tree_view_collapse_all (GTK_TREE_VIEW (poitypes_treeview));
+	
+	column_poitypes = gtk_tree_view_column_new ();
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+	gtk_tree_view_set_expander_column
+		(GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
+	gtk_tree_view_column_set_visible (column_poitypes, FALSE);
 
 	poitypes_select = gtk_tree_view_get_selection
 		(GTK_TREE_VIEW (poitypes_treeview));
