@@ -301,20 +301,20 @@ create_pixbuf (const gchar * filename)
 
   g_snprintf (pathname, sizeof (pathname), "%s/gpsdrive/%s", DATADIR,
 	      filename);
-  if (!pathname)
-    {
-      if (mydebug > 5)
-	fprintf (stderr, _("Couldn't find pixmap file: %s"), pathname);
-      else
-	g_warning (_("Couldn't find pixmap file: %s"), pathname);
-      return NULL;
-    }
 
   pixbuf = gdk_pixbuf_new_from_file (pathname, &error);
   if (!pixbuf)
     {
       fprintf (stderr, "Failed to load pixbuf file: %s: %s\n",
 	       pathname, error->message);
+      if (pathname[0])
+	  {
+	      if (mydebug > 5)
+		  fprintf (stderr, _("Couldn't find pixmap file: %s"), pathname);
+	      else
+		  g_warning (_("Couldn't find pixmap file: %s"), pathname);
+	      return NULL;
+	  }
     }
   return pixbuf;
 }

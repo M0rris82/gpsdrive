@@ -992,7 +992,7 @@ void get_proxy_from_env()
 		    haveproxy = TRUE;
 		    g_strlcpy (proxy, s2, sizeof (proxy));
 		    if ( mydebug > 0 )
-			g_print (_("\nUsing proxy: %s on port %d"),
+			g_print (_("Using proxy: %s on port %d\n"),
 				 proxy, proxyport);
 		}
 	    else
