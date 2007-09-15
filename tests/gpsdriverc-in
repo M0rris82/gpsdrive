@@ -59,6 +59,7 @@ sound_distance = 1
 sound_speed = 1
 sound_gps = 1
 icon_theme = square.big
+poi_filter = 
 draw_grid = 0
 show_zoom = 1
 show_scalebar = 1
