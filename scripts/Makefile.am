@@ -2,7 +2,7 @@
 SUBDIRS =      osm mapnik
 DIST_SUBDIRS = $(SUBDIRS)
 
-bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
+dist_bin_SCRIPTS=	wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl convert-waypoints.pl \
 		geoinfo.pl gpsdrive-init-db.pl wp2sql gpsd_nmea.sh \
@@ -16,4 +16,5 @@ geoinfo:
 
 gpsdrivedir = $(datadir)/gpsdrive
 
-EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
+#EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
+EXTRA_DIST = CMakeLists.txt

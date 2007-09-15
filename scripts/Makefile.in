@@ -36,7 +36,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = scripts
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(dist_bin_SCRIPTS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_check_perl_modules.m4 \
 	$(top_srcdir)/m4/ac_check_socketlen_t.m4 \
@@ -51,8 +52,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
-binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(bin_SCRIPTS)
+dist_binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+SCRIPTS = $(dist_bin_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -228,7 +229,7 @@ target_alias = @target_alias@
 # Makefile.am for scripts
 SUBDIRS = osm mapnik
 DIST_SUBDIRS = $(SUBDIRS)
-bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
+dist_bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		geo-code gpssql_backup.sh gpssql_restore.sh gpsreplay\
 		gpssmswatch gpsfetchmap.pl convert-waypoints.pl \
 		geoinfo.pl gpsdrive-init-db.pl wp2sql gpsd_nmea.sh \
@@ -238,7 +239,9 @@ bin_SCRIPTS = wpcvt wpget gpspoint2gpsdrive.pl geo-nearest geocache2way \
 		create_misssing_man_pages.sh
 
 gpsdrivedir = $(datadir)/gpsdrive
-EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
+
+#EXTRA_DIST = $(bin_SCRIPTS) CMakeLists.txt
+EXTRA_DIST = CMakeLists.txt
 all: all-recursive
 
 .SUFFIXES:
@@ -271,21 +274,21 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-install-binSCRIPTS: $(bin_SCRIPTS)
+install-dist_binSCRIPTS: $(dist_bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
-	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	@list='$(dist_bin_SCRIPTS)'; for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  if test -f $$d$$p; then \
 	    f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
-	    echo " $(binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
-	    $(binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
+	    echo " $(dist_binSCRIPT_INSTALL) '$$d$$p' '$(DESTDIR)$(bindir)/$$f'"; \
+	    $(dist_binSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(bindir)/$$f"; \
 	  else :; fi; \
 	done
 
-uninstall-binSCRIPTS:
+uninstall-dist_binSCRIPTS:
 	@$(NORMAL_UNINSTALL)
-	@list='$(bin_SCRIPTS)'; for p in $$list; do \
+	@list='$(dist_bin_SCRIPTS)'; for p in $$list; do \
 	  f=`echo "$$p" | sed 's|^.*/||;$(transform)'`; \
 	  echo " rm -f '$(DESTDIR)$(bindir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(bindir)/$$f"; \
@@ -528,7 +531,7 @@ info-am:
 
 install-data-am:
 
-install-exec-am: install-binSCRIPTS
+install-exec-am: install-dist_binSCRIPTS
 
 install-info: install-info-recursive
 
@@ -552,7 +555,7 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-info-am
+uninstall-am: uninstall-dist_binSCRIPTS uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -560,15 +563,15 @@ uninstall-info: uninstall-info-recursive
 	clean clean-generic clean-libtool clean-recursive ctags \
 	ctags-recursive distclean distclean-generic distclean-libtool \
 	distclean-recursive distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binSCRIPTS \
-	install-data install-data-am install-exec install-exec-am \
-	install-info install-info-am install-man install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dist_binSCRIPTS install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
 	maintainer-clean-recursive mostlyclean mostlyclean-generic \
 	mostlyclean-libtool mostlyclean-recursive pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am \
-	uninstall-binSCRIPTS uninstall-info-am
+	uninstall-dist_binSCRIPTS uninstall-info-am
 
 
 geoinfo:
