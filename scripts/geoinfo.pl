@@ -310,6 +310,9 @@ Download and import openstreetmap Data.
 If no parameter is given. planet.osm is downloaded and then imported. 
 If a filename is given this Filename is imported. The file needs to 
 be a *.osm File. You can get a osm File by saving your edited Data whis josm.
+Currently we only read Nodes from OSM. But the rules in icons.xml are a 
+little bit outdated. So not every POI from osm is really imported. If you
+like more POIs imported from OSM, please update icons.xml.
 
 =item B<--all>
 
