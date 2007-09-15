@@ -450,11 +450,7 @@ int
 toggle_button_cb (GtkWidget *button, gboolean *value)
 {
 	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
-	
-	/* workaround for sav track button, should be changed */
-	if (value == &local_config.savetrack)
-		savetrackfile (1);
-	
+
 	current.needtosave = TRUE;
 	return TRUE;
 }

@@ -176,7 +176,7 @@ savetrackfile (gint mode)
   struct stat sbuf;
   gchar buff[1024];
   gint e, i;
-  gchar mappath[400], lat[30], alt[30], lon[30];
+  gchar filename_track[400], lat[30], alt[30], lon[30];
   FILE *st;
 
   if ( mydebug > 11 )
@@ -197,12 +197,14 @@ savetrackfile (gint mode)
     }
 
   /* save in new file */
-  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-  g_strlcat (mappath, savetrackfn, sizeof (mappath));
-  st = fopen (mappath, "w");
+  g_strlcpy (filename_track, local_config.dir_home, sizeof (filename_track));
+  g_strlcat (filename_track, savetrackfn, sizeof (filename_track));
+  if ( mydebug > 11 )
+      g_print ("savetrack(%d,%s)\n", mode,filename_track);
+  st = fopen (filename_track, "w");
   if (st == NULL)
     {
-      perror (mappath);
+      perror (filename_track);
       return;
     }
 
@@ -223,12 +225,12 @@ savetrackfile (gint mode)
     return;
 
   /* append to existing backup file */
-  g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
-  g_strlcat (mappath, "track-ALL.sav", sizeof (mappath));
-  st = fopen (mappath, "a");
+  g_strlcpy (filename_track, local_config.dir_home, sizeof (filename_track));
+  g_strlcat (filename_track, "track-ALL.sav", sizeof (filename_track));
+  st = fopen (filename_track, "a");
   if (st == NULL)
     {
-      perror (mappath);
+      perror (filename_track);
       return;
     }
 
@@ -354,4 +356,20 @@ gettrackfile (GtkWidget * widget, gpointer datum)
   gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt), TRUE);
 
   return TRUE;
+}
+
+
+/* *****************************************************************************
+ * Generic Callback to handle toggle- and checkbuttons
+ */
+int
+toggle_track_button_cb (GtkWidget *button, gboolean *value)
+{
+	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+	
+	if ( *value ) {
+	    savetrackfile (1);
+	}
+	current.needtosave = TRUE;
+	return TRUE;
 }

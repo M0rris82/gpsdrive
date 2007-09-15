@@ -60,6 +60,7 @@ Disclaimer: Please do not use for navigation.
 #include "poi.h"
 #include "wlan.h"
 #include "routes.h"
+#include "track.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -1368,7 +1369,7 @@ void create_controls_mainbox (void)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (savetrack_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (savetrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb), &local_config.savetrack);
+		GTK_SIGNAL_FUNC (toggle_track_button_cb), &local_config.savetrack);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), savetrack_bt,
 		_("Save the track to given filename at program exit"),
 		NULL);

@@ -46,6 +46,7 @@ void savetrackfile (gint testname);
 void rebuildtracklist (void);
 void drawtracks (void);
 gint gettrackfile (GtkWidget *widget, gpointer datum);
+int toggle_track_button_cb (GtkWidget *button, gboolean *value);
 
 
 #endif /* GPSDRIVE_TRACK_H */

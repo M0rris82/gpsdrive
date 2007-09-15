@@ -3411,6 +3411,9 @@ main (int argc, char *argv[])
 	}
     }
 
+    // Initialize Track Filename
+    savetrackfile (0);
+
     // ==================================================================
     // Unit Tests
     if ( do_unit_test ) {
