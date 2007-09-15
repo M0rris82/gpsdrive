@@ -1305,15 +1305,47 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
     }
 }
 
+/* *******************************************************
+ * initialize POI filter from config settings
+*/
+void init_poi_type_filter ()
+{
+	GtkTreeIter t_iter;
+	gchar *t_name;
+
+	gtk_tree_model_get_iter_first
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
+	do
+	{
+		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
+			POITYPE_NAME, &t_name, -1);
+		
+		if (g_strstr_len (local_config.poi_filter,
+			sizeof (local_config.poi_filter), t_name))
+		{
+			gtk_tree_store_set
+				(poi_types_tree, &t_iter,
+				POITYPE_SELECT, 0, -1);
+		}
+		else
+		{
+			gtk_tree_store_set
+				(poi_types_tree, &t_iter,
+				POITYPE_SELECT, 1, -1);
+		}
+	}
+	while (gtk_tree_model_iter_next
+		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
+
+	g_free (t_name);
+}
+
 
 /* *******************************************************
  */
 void
 poi_init (void)
 {
-	GtkTreeIter t_iter;
-	gchar *t_name;
-
 	poi_limit = 40000;
 	poi_list = g_new (poi_struct, poi_limit);
 	poi_result = g_new (poi_struct, poi_limit);
@@ -1355,31 +1387,6 @@ poi_init (void)
 	get_poitype_tree ();
 	
 	/* set poi filter according to config file */
-	gtk_tree_model_get_iter_first
-		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
-	do
-	{
-		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
-			POITYPE_NAME, &t_name, -1);
-		
-		if (g_strstr_len (local_config.poi_filter,
-			sizeof (local_config.poi_filter), t_name))
-		{
-			gtk_tree_store_set
-				(poi_types_tree, &t_iter,
-				POITYPE_SELECT, 0, -1);
-		}
-		else
-		{
-			gtk_tree_store_set
-				(poi_types_tree, &t_iter,
-				POITYPE_SELECT, 1, -1);
-		}
-	}
-	while (gtk_tree_model_iter_next
-		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
-
-	g_free (t_name);
-
+	init_poi_type_filter ();
 	update_poi_type_filter ();
 }

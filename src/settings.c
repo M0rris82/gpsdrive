@@ -539,7 +539,9 @@ setpoitheme_cb (GtkWidget *combo)
 	theme = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
 	g_strlcpy (local_config.icon_theme, theme,
 		sizeof (local_config.icon_theme));
+
 	get_poitype_tree ();
+	init_poi_type_filter();
 
 	if ( mydebug > 1 )
 	{
