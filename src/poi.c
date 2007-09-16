@@ -271,10 +271,11 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		"poi.lon,poi.lat FROM poi INNER JOIN poi_type ON"
 		" poi.poi_type_id=poi_type.poi_type_id "
 		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
-		" AND %.6f ) AND (poi.name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
-		" %s LIMIT %d;",
+		" AND %.6f ) AND (poi.name LIKE '%%%s%%' OR comment LIKE"
+		" '%%%s%%') %s ORDER BY"
+		" (pow((poi.lat-%.6f),2)+pow((poi.lon-%.6f),2)) LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
-		type_filter, local_config.poi_results_max);
+		type_filter, lat, lon, local_config.poi_results_max);
 
 	if (mydebug > 20)
 		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
@@ -1037,7 +1038,7 @@ poi_rebuild_list (void)
      "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi "
      "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
      "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
-     "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 40000;",
+     "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 20000;",
      lat_min, lat_max, lon_min, lon_max, current.mapscale, current.poifilter);
 
   if (mydebug > 20)
