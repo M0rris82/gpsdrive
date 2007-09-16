@@ -72,7 +72,7 @@ am__objects_1 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	import_map.$(OBJEXT) routes.$(OBJEXT) download_map.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	unit_test.$(OBJEXT) mapnik.$(OBJEXT)
+	unit_test.$(OBJEXT) mapnik.$(OBJEXT) screenshot.$(OBJEXT)
 am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -312,6 +312,7 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c \
 	mapnik.cpp mapnik.h \
+	screenshot.c screenshot.h \
 	../config.h gettext.h
 
 #	lib_map/lib_map.a
@@ -430,6 +431,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/poi_gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/routes.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/screenshot.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/settings_gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speech_out.Po@am__quote@

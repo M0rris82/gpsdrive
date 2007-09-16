@@ -65,7 +65,7 @@ PRGS = 	gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c \
 	mapnik.cpp mapnik.h \
-	screenshot.c screehshot.h \
+	screenshot.c screenshot.h \
 	../config.h gettext.h
 #	lib_map/lib_map.a
 
