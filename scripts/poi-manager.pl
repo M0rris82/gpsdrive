@@ -568,40 +568,39 @@ poi-manager.pl [-h] [-v] [-b] [-i] [-e] [-p] [-s] [-f GPX-FILE]
  
 =item B<-h>
 
- Show this help
+Show this help
 
 =item B<-f> GPX-FILE
 
- Set gpx-file, that should be used for import/export.
+Set gpx-file, that should be used for import/export.
 
 =item B<-v>
 
- Enable verbose output
+Enable verbose output
 
 =item B<-e>
 
- Export POI data from geoinfo database into gpx file
+Export POI data from geoinfo database into gpx file
 
 =item B<-i>
 
- Import POI data from gpx file into geoinfo database
+Import POI data from gpx file into geoinfo database
  
 =item B<-b>
 
- ( NOT YET IMPLEMENTED ! )
- Import/Export Data only from/to basic poi table.
- Use this option, if you don't need the info stored in the poi_extra table
- Default is to use all available data if possible.
+( NOT YET IMPLEMENTED ! )
+Import/Export Data only from/to basic poi table.
+Use this option, if you don't need the info stored in the poi_extra table
+Default is to use all available data if possible.
  
 =item B<-p>
 
- Export only data from table which are not flagged as private.
- You may use this option, if you are generating files, that you will give away
- to foreign people or third party services.
+Export only data from table which are not flagged as private.
+You may use this option, if you are generating files, that you will give away
+to foreign people or third party services.
 
 =item B<-s>
 
- Safe Mode: Don't alter already existing entries in database while importing.
-
+Safe Mode: Don't alter already existing entries in database while importing.
 
 =back
