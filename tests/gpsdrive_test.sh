@@ -70,19 +70,39 @@ mkdir -p logs
 # Test Gpsdrive -T with different Setup
 PWD=`pwd`/tests
 mkdir -p "$PWD/maps"
+
+if false; then
+echo "------------> Screenshots...."
 for LANG in en_US de_DE ; do 
     echo "-------------> check LANG=$LANG"
     for ICON_THEME in square.big square.small classic.big classic.small; do 
 	echo "-------------> check icon_theme=$ICON_THEME"
 	for USER_INTERFACE in car desktop pda ; do 
 	    for MAPNIK in 0 1  ; do 
-		echo "------------------> check './src/gpsdrive -T -a -S -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
+		perl -p \
+		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
+		./src/gpsdrive --geometry 800x600 -S tests/ -a -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
+
+	    done || exit 1
+	done || exit 1
+    done || exit 1
+done || exit 1
+fi
+
+
+for LANG in en_US de_DE ; do 
+    echo "-------------> check LANG=$LANG"
+    for ICON_THEME in square.big square.small classic.big classic.small; do 
+	echo "-------------> check icon_theme=$ICON_THEME"
+	for USER_INTERFACE in car desktop pda ; do 
+	    for MAPNIK in 0 1  ; do 
+		echo "------------------> check './src/gpsdrive -T -a -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
 
 		perl -p \
 		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		./src/gpsdrive --geometry 800x600 -T -a -S -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
+		./src/gpsdrive --geometry 800x600 -T -a -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 		rc=$?
 
 		if [ $rc != 0 ] ; then
