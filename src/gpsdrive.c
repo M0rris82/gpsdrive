@@ -112,6 +112,7 @@ Disclaimer: Please do not use for navigation.
 #include "main_gui.h"
 
 #include "mapnik.h"
+#include "screenshot.h"
 
 
 /*  Defines for gettext I18n */
@@ -420,6 +421,7 @@ void draw_grid (GtkWidget * widget);
 
 gchar geometry[80];
 gint usegeometry = FALSE;
+gboolean takescreenshots = FALSE;
 
 /* 
  * ****************************************************************************
@@ -2745,9 +2747,7 @@ usage ()
 #endif
 	     _("-l LANG   Select language of the voice,\n"
 	       "          LANG may be english, spanish or german\n"),
-	     _("-s HEIGHT set height of the screen, if autodetection\n"
-	       "          don't satisfy you, X is i.e. 768,600,480,200\n"),
-	     _("-r WIDTH  set width of the screen, only with -s\n"),
+	     _("-g geome. set window geometry e.g. 800x600\n"),
 	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
 	     _("-a        display APM Stuff ( battery status, Temperature)\n"),
 	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
@@ -2757,7 +2757,8 @@ usage ()
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
 	     _("-F        force display of position even it is invalid\n"),
-	     _("-S        don't show splash screen\n"),
+	     _("-s        don't show splash screen\n"),
+	     _("-S path   take auto screenshots of different window (don't touch gpsdrive!)"),
 	     _("-P        start in Pos Mode\n"),
 	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
 	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
@@ -2821,7 +2822,7 @@ usr2handler (int sig)
  * parse command arguments
  */
 int
-parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) {
+parse_cmd_args(int argc, char *argv[]) {
 	int i = 0;
     /* parse cmd args */
     /* long options for use of --geometry and -g */
@@ -2830,13 +2831,14 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
              {
               {"geometry", required_argument, 0, 'g'},
               {"config-file", required_argument, 0, 'C'},
+              {"screenshot", required_argument, 0, 'S'},
               {0, 0, 0, 0}
              };
     do
 	{
 	    /* long options plus --geometry and -g */
             i = getopt_long (argc, argv,
-			"W:ESA:ab:c:X1qivPdD:TFepC:H:hnf:l:t:s:o:r:g:M:?",
+			"W:ES:A:ab:c:X1qivPdD:TFepC:H:hnf:l:t:so:g:M:?",
 			long_options, &option_index);
 	    switch (i)
 		{
@@ -2849,7 +2851,7 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 		case 'a':
 		    local_config.enableapm = TRUE;
 		    break;
-		case 'S':
+		case 's':
 		    nosplash = TRUE;
 		    break;
 		case 'E':
@@ -2911,9 +2913,6 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 		    break;
 		case 'f':
 		    break;
-		case 's':
-		    *screen_height = strtol (optarg, NULL, 0);
-		    break;
 		case 'W':
 		    switch (strtol (optarg, NULL, 0))
 			{
@@ -2955,9 +2954,6 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 		    usage ();
 		    exit (0);
 		    break;
-		case 'r':
-		    *screen_width = strtol (optarg, NULL, 0);
-		    break;
 		case 'F':
 		    forcehavepos = TRUE;
 		    break;
@@ -2968,6 +2964,14 @@ parse_cmd_args(int argc, char *argv[], gint *screen_height, gint *screen_width) 
 		case 'g':
 		    g_strlcpy (geometry, optarg, sizeof (geometry));
 		    usegeometry = TRUE;
+		    break;
+		case 'S':
+		    g_strlcpy (local_config.screenshot_dir, optarg, sizeof (local_config.screenshot_dir));
+	    	if (!g_file_test(local_config.screenshot_dir, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
+				fprintf(stderr,"Screenshot directory '%s' not found.\n", local_config.screenshot_dir);
+				exit(-1);
+	    	} else
+	    		takescreenshots = TRUE;
 		    break;
 		}
 	}
@@ -3144,7 +3148,7 @@ main (int argc, char *argv[])
 	check_and_create_files();
 	
 	/* we need to parse command args 2 times, because we need the config file param */
-	parse_cmd_args(argc, argv, &screen_height, &screen_width);
+	parse_cmd_args(argc, argv);
 	
 	/* update config struct with settings from config file if possible */
 	readconfig ();
@@ -3192,7 +3196,7 @@ main (int argc, char *argv[])
 	fprintf(stderr , "gdk screen width : %d\n", screen_width);
 
     /* 2. run see comment at first run */
-    parse_cmd_args(argc, argv, &screen_height, &screen_width);
+    parse_cmd_args(argc, argv);
 
     if ( mydebug >99 )
 	fprintf(stderr , "options parsed\n");
@@ -3420,6 +3424,9 @@ main (int argc, char *argv[])
 	unit_test();
     }
 
+    if (takescreenshots) {
+    	auto_take_screenshots();
+    }
     /*  Mainloop */
     gtk_main ();
 

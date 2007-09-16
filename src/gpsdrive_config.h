@@ -103,6 +103,7 @@ typedef struct
 	gdouble normalnull;
 	gchar kismet_servername[500];
 	gint kismet_serverport;
+	gchar screenshot_dir[1000];
 }
 local_gpsdrive_config;
 
