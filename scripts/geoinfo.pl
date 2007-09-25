@@ -56,6 +56,7 @@ use Geo::Gpsdrive::GpsDrive;
 use Geo::Gpsdrive::JiGLE;
 use Geo::Gpsdrive::Kismet;
 use Geo::Gpsdrive::OSM;
+use Geo::Gpsdrive::FON;
 use Geo::Gpsdrive::PocketGpsPoi;
 use Geo::Gpsdrive::Way_Txt;
 use Geo::Gpsdrive::getstreet;
@@ -72,7 +73,8 @@ our $GPSDRIVE_DB_NAME = "geoinfo";
 our $development_version = (`id` =~ m/tweety/);
 our $no_delete;
 
-my @osm_files               = ();
+my @osm_files            = ();
+my @fon_countries;
 my $do_mapsource_points  = 0; 
 my $do_cameras           = 0;
 my $do_all               = 0;
@@ -122,6 +124,7 @@ GetOptions (
 	     'openstreetmap:s@'     => \@osm_files,
 	     'osm:s@'               => \@osm_files,
 	     'osm_polite=s'        => \$Geo::Gpsdrive::OSM::OSM_polite,
+	     'fon:s@'              => \@fon_countries,
 	     'mapsource_points=s'  => \$do_mapsource_points,
 	     'cameras'             => \$do_cameras,
 	     'gpsdrive-tracks'     => \$do_gpsdrive_tracks,
@@ -150,7 +153,7 @@ GetOptions (
 	     'no-delete'           => \$no_delete,
 	     'd+'                  => \$DEBUG,
 	     'debug+'              => \$DEBUG,      
-	     'verbose'            => \$VERBOSE,
+	     'verbose'             => \$VERBOSE,
 	     'v+'                  => \$VERBOSE,
 	     'debug_range=s'       => \$debug_range,      
 	     'no-mirror'           => \$no_mirror,
@@ -219,6 +222,12 @@ Geo::Gpsdrive::DB_Defaults::fill_defaults()
 # Get and Unpack openstreetmap  http://www.openstreetmap.org/
 Geo::Gpsdrive::OSM::import_Data($areas_todo,@osm_files) 
     if ( @osm_files );
+
+# Import FON file into poi Database
+@fon_countries=qw(DE AT)
+    if $fon_countries[0]eq ''; ## No country given
+Geo::Gpsdrive::FON::import_Data(@fon_countries) 
+    if ( @fon_countries );
 
 Geo::Gpsdrive::gettraffic::gettraffic()
 	if $do_traffic;
@@ -317,6 +326,11 @@ like more POIs imported from OSM, please update icons.xml.
 =item B<--all>
 
 Triggers all of the above
+
+
+=item B<--fon=filename>
+
+Download and Import Fonero Accesspoint positions from http://www.fon.com/
 
 
 =item B<--collect-init-data>
