@@ -958,7 +958,7 @@ dlscale_cb (GtkWidget * widget, guint datum)
 
 	if (local_config.distmode == DIST_MILES)
 		g_strlcpy (t2, "mi", sizeof (t2));
-	if (local_config.distmode == DIST_NAUTIC)
+	else if (local_config.distmode == DIST_NAUTIC)
 		g_strlcpy (t2, "nmi", sizeof (t2));
 
 	g_snprintf (t, sizeof (t), "%.3f x %.3f %s",

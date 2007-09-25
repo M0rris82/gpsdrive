@@ -101,6 +101,7 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "gps_handler.h"
 #include "nmea_handler.h"
+#include "map_handler.h"
 #include <speech_strings.h>
 #include <speech_out.h>
 
@@ -329,9 +330,6 @@ gint redrawtimeout;
 gint borderlimit;
 gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
-gdouble tripodometer, tripavspeed, triptime, tripmaxspeed, triptmp;
-gint tripavspeedcount;
-gdouble trip_lon, trip_lat;
 gint lastnotebook = 0;
 GtkWidget *settingsnotebook;
 gint useflite = FALSE;
@@ -535,40 +533,6 @@ lighton (void)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-tripreset ()
-{
-	tripodometer = tripavspeed = triptime = tripmaxspeed = triptmp = 0.0;
-	tripavspeedcount = 0;
-	trip_lat = coords.current_lat;
-	trip_lon = coords.current_lon;
-	triptime = time (NULL);
-
-	return TRUE;
-}
-
-/* ******************************************************************
- * TODO: This is a strange collection of function calls 
- * TODO: put them where they belong
- */
-gint
-testconfig_cb (GtkWidget * widget, guint * datum)
-{
-    if ( mydebug >50 ) fprintf(stderr , "testconfig_cb()\n");
-
-#ifdef MAKETHISTEST
-    test_loaded_map_names();
-#endif
-    
-    friendsagent_cb (NULL, 0);
-    tripreset ();
-    gtk_timeout_add (TRIPMETERTIMEOUT * 1000, (GtkFunction) dotripmeter,
-		     NULL);
-    
-    return FALSE;
-}
 
 /* *****************************************************************************
  * display upper status line 
@@ -2189,37 +2153,6 @@ earthmate_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-
-/* *****************************************************************************
- */
-gint
-dotripmeter (GtkWidget * widget, guint datum)
-{
-	gdouble d;
-
-	d = calcdist (trip_lon, trip_lat);
-	trip_lon = coords.current_lon;
-	trip_lat = coords.current_lat;
-	if (!((d >= 0.0) && (d < (2000.0 * TRIPMETERTIMEOUT / 3600.0))))
-	{
-		fprintf (stderr,
-			 _
-			 ("distance jump is more then 2000km/h speed, ignoring\n"));
-		return TRUE;
-	}
-	/* we want always have metric system stored */
-	d /= milesconv;
-	tripodometer += d;
-	if (current.groundspeed / milesconv > tripmaxspeed)
-		tripmaxspeed = current.groundspeed / milesconv;
-	tripavspeedcount++;
-	tripavspeed += current.groundspeed / milesconv;
-	return TRUE;
-}
-
-
-
-
 /* *****************************************************************************
  * Update the checkbox for Pos-Mode
  */
@@ -2731,34 +2664,33 @@ usage ()
 #ifdef DBUS_ENABLE
 	     "%s"
 #endif
-	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>"
 	     "\n         Website: http://www.gpsdrive.de\n\n",
 	     _("-v        show version\n"),
 	     _("-h        print this help\n"),
 	     _("-d        turn on debug info\n"),
 	     _("-D X      set debug Level to X\n"),
-	     _("-T        do some internal unit Tests(don't start gpsdrive)\n"),
+	     _("-T        do some internal unit Tests (don't start gpsdrive)\n"),
 	     _("-e        use Festival-Lite (flite) for speech output\n"),
 	     _("-o        serial device, pty master, or file for NMEA *output*\n"),
 	     _("-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"),
 #ifdef DBUS_ENABLE
-	     _("-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"),
+	     _("-X        Use DBUS for communication with gpsd. This disables socket communication\n"),
 #endif
-	     _("-l LANG   Select language of the voice,\n"
+	     _("-l LANG   Select language of the voice output,\n"
 	       "          LANG may be english, spanish or german\n"),
 	     _("-g geome. set window geometry e.g. 800x600\n"),
 	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
 	     _("-a        display APM Stuff ( battery status, Temperature)\n"),
 	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
-	     _("-x        create separate window for menu\n"),
-	     _("-M mode   set guimode to desktop, pda or car\n"),
+	     _("-M mode   set guimode to desktop, pda or car (default: desktop)\n"),
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
 	     _("-F        force display of position even it is invalid\n"),
 	     _("-s        don't show splash screen\n"),
-	     _("-S path   take auto screenshots of different window (don't touch gpsdrive!)"),
+	     _("-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"),
 	     _("-P        start in Pos Mode\n"),
 	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
 	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
@@ -3019,7 +2951,6 @@ main (int argc, char *argv[])
     f = 0.02 * (0.5 - rand () / (RAND_MAX + 1.0));
     coords.current_lon = coords.zero_lon = 11.57532 + f;
     /*    zero_lat and zero_lon are overwritten by config file,  */
-    tripreset ();
 
     g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
@@ -3152,7 +3083,9 @@ main (int argc, char *argv[])
 	
 	/* update config struct with settings from config file if possible */
 	readconfig ();
-	
+
+	test_loaded_map_names ();
+
 	if (local_config.simmode == SIM_ON)
 		current.simmode = TRUE;
 
@@ -3354,9 +3287,9 @@ main (int argc, char *argv[])
 	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
     if (nmeaout)
 	gtk_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
-    gtk_timeout_add (10000, (GtkFunction) testconfig_cb, 0);
     gtk_timeout_add (600000, (GtkFunction) speech_saytime_cb, 0);
     gtk_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
+    gtk_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
     gtk_timeout_add (15000, (GtkFunction) getsqldata, 0);
 //    if ( battery_get_values () )
@@ -3417,6 +3350,8 @@ main (int argc, char *argv[])
 
     // Initialize Track Filename
     savetrackfile (0);
+
+	trip_reset_cb ();
 
     // ==================================================================
     // Unit Tests

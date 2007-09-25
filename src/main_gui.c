@@ -75,6 +75,7 @@ extern currentstatus_struct current;
 extern coordinate_struct coords;
 extern color_struct colors;
 extern routestatus_struct route;
+extern tripdata_struct trip;
 extern int actualfriends, maxfriends;
 extern gchar loctime[20];
 extern gint mydebug;
@@ -87,6 +88,7 @@ extern gdouble wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
 extern gdouble pixelfact;
+extern gdouble milesconv;
 
 extern gint usesql, havespeechout;
 extern gint slistsize, nlist[];
@@ -123,7 +125,7 @@ static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
 static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
-static GtkWidget *hbox_zoom;
+static GtkWidget *hbox_zoom, *dash_menu;
 
 /* Definitions for main menu */
 enum
@@ -136,11 +138,57 @@ enum
 	MENU_SETTINGS,
 	MENU_HELPABOUT,
 	MENU_HELPCONTENT,
+	MENU_TRIPRESET,
+	MENU_N_ITEMS
 };
 
 /* *****************************************************************************
  * CALLBACKS
  * *****************************************************************************/
+
+
+/* *****************************************************************************
+ * popup menu for dashoard mode selection 
+ */
+gint
+dash_menu_cb (GtkWidget *widget, GdkEventButton *event, gint dash_nr)
+{
+	if (mydebug > 20)
+		fprintf (stderr, "dash_menu_cb: Dashboard %d clicked\n",
+		dash_nr);
+
+	local_config.dashboard[0] = dash_nr;
+
+	gtk_menu_popup (GTK_MENU (dash_menu), NULL, NULL, NULL, NULL,
+		event->button, event->time);
+
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * select display mode for the selected dashboard 
+ */
+gint
+dash_select_cb (GtkWidget *item, gint selection)
+{
+	if (local_config.dashboard[0])
+	{
+		local_config.dashboard[local_config.dashboard[0]] = selection;
+		current.needtosave = TRUE;
+		local_config.dashboard[0] = 0;
+
+		if (mydebug > 20)
+		{
+			fprintf (stderr,
+				"dash_select_cb: Dashboard: %d : Mode %d\n",
+				local_config.dashboard[0], selection);
+		}
+	}
+
+	return TRUE;
+}
 
 
 /* *****************************************************************************
@@ -211,6 +259,7 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
 		case MENU_HELPABOUT:	about_cb (NULL, 0); break;
 		case MENU_HELPCONTENT:	help_cb (NULL, 0); break;
+		case MENU_TRIPRESET:	trip_reset_cb (); break;
 	}
 	return TRUE;
 }
@@ -407,11 +456,13 @@ scalerbt_cb (GtkWidget *widget, guint datum)
  * Update Contents of Dashboard fields
  *  the first parameter chooses one of the dashboard fields to update
  *  the second parameter chooses, which value should be dispayed there
+ * Possible Values:
+ *	DSH_DIST, DASH_TIMEREMAIN, DASH_BEARING, DASH_TURN, DASH_SPEED,
+ *	DASH_HEADING, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
  */
 gint
 update_dashboard (GtkWidget *frame, gint source)
 {
-	// TODO: add "remaining time", "trip", "gps precision"
 	gchar head[100], content[200], ctmp[10], unit[10], dirs = ' ';
 	gint fontsize_unit;
 
@@ -426,7 +477,15 @@ update_dashboard (GtkWidget *frame, gint source)
 	{
 		case DASH_DIST:
 		{
-			g_strlcpy (head, _("Distance"), sizeof (head));
+			//if (current.target)
+			//{
+			//	g_snprintf (head, sizeof (head), "%s %s",
+			//	_("Dist. to"), current.target);
+			//}
+			//else
+			{
+				g_strlcpy (head, _("Distance"), sizeof (head));
+			}
 			switch (local_config.distmode)
 			{
 				case DIST_MILES:
@@ -537,6 +596,71 @@ update_dashboard (GtkWidget *frame, gint source)
 			fontsize_unit, unit);
 			break;
 		}
+		case DASH_SPEED_AVG:
+		{
+			gdouble t_avgspeed;
+
+			g_strlcpy (head, _("Avg. Speed"), sizeof (head));
+			t_avgspeed = trip.speed_avg * milesconv / trip.countavgspeed;
+
+			if (t_avgspeed >= 0.0)
+			{
+			switch (local_config.distmode)
+			{
+				case DIST_MILES:
+					g_strlcpy (unit, _("mi/h"),
+						sizeof (unit));
+					break;
+				case DIST_NAUTIC:
+					g_strlcpy (unit, _("knots"),
+						sizeof (unit));
+					break;
+				default:
+					g_strlcpy (unit, _("km/h"),
+						sizeof (unit));
+			}
+			g_snprintf (content, sizeof (content),
+				"<span color=\"%s\" font_desc=\"%s\">"
+				"% 3.1f<span size=\"%d\"> %s</span></span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, t_avgspeed,
+				fontsize_unit, unit);
+			}
+			else
+			{
+				g_snprintf (content, sizeof (content),
+				"<span color=\"%s\" font_desc=\"%s\" "
+				"size=\"16000\"> %s</span>",
+				local_config.color_dashboard,
+				local_config.font_dashboard, _("n/a"));
+			}
+			break;
+		}
+		case DASH_SPEED_MAX:
+		{
+			g_strlcpy (head, _("Max. Speed"), sizeof (head));
+			switch (local_config.distmode)
+			{
+				case DIST_MILES:
+					g_strlcpy (unit, _("mi/h"),
+						sizeof (unit));
+					break;
+				case DIST_NAUTIC:
+					g_strlcpy (unit, _("knots"),
+						sizeof (unit));
+					break;
+				default:
+					g_strlcpy (unit, _("km/h"),
+						sizeof (unit));
+			}
+			g_snprintf (content, sizeof (content),
+			"<span color=\"%s\" font_desc=\"%s\">"
+			"% 3.1f<span size=\"%d\"> %s</span></span>",
+			local_config.color_dashboard,
+			local_config.font_dashboard, trip.speed_max,
+			fontsize_unit, unit);
+			break;
+		}
 		case DASH_BEARING:
 		{
 			g_strlcpy (head, _("Bearing"), sizeof (head));
@@ -635,7 +759,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			{
 				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\" "
-				"size=\"small\"> %s</span>",
+				"size=\"16000\"> %s</span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard, _("n/a"));
 			}
@@ -643,13 +767,91 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_TRIP:
 		{
-			g_strlcpy (head, _("Trip"), sizeof (head));
-				
+			g_strlcpy (head, _("Odometer"), sizeof (head));
+
+			switch (local_config.distmode)
+			{
+				case DIST_MILES:
+				{
+					g_strlcpy (unit, "mi", sizeof (unit));
+					if (trip.odometer <= 1.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.0f",
+							trip.odometer * 1760.0);
+						g_strlcpy (unit, "yrds",
+							sizeof (unit));
+					}
+					else if (current.dist <= 10.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.2f",
+							trip.odometer);
+					}
+					else
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.1f", 
+							trip.odometer);
+					}
+					break;
+				}
+				case DIST_NAUTIC:
+				{
+					g_strlcpy (unit, _("nmi"),
+						sizeof (unit));
+					if (trip.odometer <= 1.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.3f", 
+							trip.odometer);
+					}
+					else if (current.dist <= 10.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.2f", 
+							trip.odometer);
+					}
+					else
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.1f", 
+							trip.odometer);
+					}
+					break;
+				}
+				default:
+				{
+					g_strlcpy (unit, _("km"),
+						sizeof (unit));
+					if (trip.odometer <= 1.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.0f",
+							trip.odometer * 1000.0);
+						g_strlcpy (unit, "m",
+							sizeof (unit));
+					}
+					else if (current.dist <= 10.0)
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.2f", 
+							trip.odometer);
+					}
+					else
+					{
+						g_snprintf (ctmp, sizeof
+							(ctmp), "%.1f", 
+							trip.odometer);
+					}
+				}
+			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%s"
-				"%s</span>",
+				"<span size=\"%d\"> %s</span></span>",
 				local_config.color_dashboard,
-				local_config.font_dashboard, "---", "km");
+				local_config.font_dashboard, ctmp,
+				fontsize_unit, unit);
 			break;
 		}
 		case DASH_GPSPRECISION:
@@ -688,8 +890,6 @@ update_dashboard (GtkWidget *frame, gint source)
 
 	g_object_set (frame, "label", head, NULL);
 	gtk_label_set_markup (GTK_LABEL (GTK_BIN (frame)->child), content);
-
-	//pango_font_description_free (pfd_dash);
 
 	return TRUE;
 }
@@ -756,10 +956,10 @@ update_statusdisplay ()
 	gtk_label_set_text (GTK_LABEL (statusbearing_lb), stmp);
 
 	/* update dashboard */
-	update_dashboard (frame_dash_1, local_config.dashboard_1);
-	update_dashboard (frame_dash_2, local_config.dashboard_2);
-	update_dashboard (frame_dash_3, local_config.dashboard_3);
-	update_dashboard (frame_dash_4, local_config.dashboard_4);
+	update_dashboard (frame_dash_1, local_config.dashboard[1]);
+	update_dashboard (frame_dash_2, local_config.dashboard[2]);
+	update_dashboard (frame_dash_3, local_config.dashboard[3]);
+	update_dashboard (frame_dash_4, local_config.dashboard[4]);
 
 	return TRUE;
 }
@@ -1068,6 +1268,47 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 
 /* *****************************************************************************
+ * Popup Menu: Dashboard Mode
+ */
+void create_dashboard_menu (void)
+{
+	gchar *dash_array[] =
+	{
+		_("Distance to Target"),	/* DASH_DIST */
+		_("Time Remaining"),		/* DASH_TIMEREMAIN */
+		_("Bearing"),			/* DASH_BEARING */
+		_("Turn"),			/* DASH_TURN */
+		_("Speed"),			/* DASH_SPEED */
+		_("Avg. Speed"),		/* DASH_SPEED_AVG */
+		_("Max. Speed"),		/* DASH_SPEED_MAX */
+		_("Heading"),			/* DASH_HEADING */
+		_("Altitude"),			/* DASH_ALT */
+		_("Trip Odometer"),		/* DASH_TRIP */
+		_("GPS Precision"),		/* DASH_GPSPRECISION */
+		_("Current Time"),		/* DASH_TIME */
+	};
+	gint i;
+	GtkWidget *dash_menuitem;
+
+	dash_menu = gtk_menu_new ();
+	
+	for (i=0; i< DASH_N_ITEMS; i++)
+	{
+		dash_menuitem = gtk_menu_item_new_with_label (dash_array[i]);
+		gtk_menu_shell_append (GTK_MENU_SHELL (dash_menu),
+			dash_menuitem);
+		g_signal_connect (dash_menuitem, "activate",
+			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
+
+		// disable precision until functionality is implemented
+		if (i == DASH_GPSPRECISION)
+			gtk_widget_set_sensitive (dash_menuitem, FALSE);
+	}
+	gtk_widget_show_all (dash_menu);
+}
+
+
+/* *****************************************************************************
  * Window: Main -> Controls
  */
 void create_controls_mainbox (void)
@@ -1084,7 +1325,7 @@ void create_controls_mainbox (void)
 	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
 	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load;
-	GtkWidget *menuitem_sep, *sendmsg_img;
+	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt, *wp_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
@@ -1143,6 +1384,10 @@ void create_controls_mainbox (void)
 		gtk_image_new_from_stock ("gtk-network", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image
 		(GTK_IMAGE_MENU_ITEM (menuitem_sendmsg), sendmsg_img);
+
+	menuitem_tripreset =
+		gtk_image_menu_item_new_with_label (_("Reset Trip"));
+	
 	if (!local_config.showfriends)
 		gtk_widget_set_sensitive (menuitem_sendmsg, FALSE);
 	menuitem_settings =
@@ -1151,11 +1396,14 @@ void create_controls_mainbox (void)
 	menuitem_quit =
 		gtk_image_menu_item_new_from_stock ("gtk-quit", NULL);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sendmsg);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_tripreset);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_settings);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
 	g_signal_connect (menuitem_sendmsg, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SENDMSG);
+	g_signal_connect (menuitem_tripreset, "activate",
+		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_TRIPRESET);
 	g_signal_connect (menuitem_settings, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SETTINGS);
 	g_signal_connect (menuitem_quit, "activate",
@@ -1450,6 +1698,8 @@ void create_status_mainbox (void)
 	GtkWidget *statusbar_box, *frame_statusgpsfix;
 	GtkWidget *dashboard_1_lb, *dashboard_2_lb;
 	GtkWidget *dashboard_3_lb, *dashboard_4_lb;
+	GtkWidget *eventbox_dash_1, *eventbox_dash_2;
+	GtkWidget *eventbox_dash_3, *eventbox_dash_4;
 	GtkWidget *frame_compass, *frame_minimap;
 
 	gchar sc[15];
@@ -1495,27 +1745,54 @@ void create_status_mainbox (void)
 		/* Frame Dashboard 1 */
 		frame_dash_1 = gtk_frame_new (" = 1 = ");	
 		dashboard_1_lb = gtk_label_new ("---");
+		eventbox_dash_1 = gtk_event_box_new ();
 		gtk_container_add (GTK_CONTAINER (frame_dash_1),
 			dashboard_1_lb);
+		gtk_container_add (GTK_CONTAINER (eventbox_dash_1),
+			frame_dash_1);
+		gtk_widget_add_events (eventbox_dash_1,
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (eventbox_dash_1, "button_press_event",
+			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 1);
 
 		/* Frame Dashboard 2 */
 		frame_dash_2 = gtk_frame_new (" = 2 = ");	
 		dashboard_2_lb = gtk_label_new ("---");
+		eventbox_dash_2 = gtk_event_box_new ();
 		gtk_container_add (GTK_CONTAINER (frame_dash_2),
 			dashboard_2_lb);
-	
+		gtk_container_add (GTK_CONTAINER (eventbox_dash_2),
+			frame_dash_2);
+		gtk_widget_add_events (eventbox_dash_2,
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (eventbox_dash_2, "button_press_event",
+			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 2);
+
 		/* Frame_Dashboard 3 */
 		frame_dash_3 = gtk_frame_new (" = 3 = ");	
 		dashboard_3_lb = gtk_label_new ("---");
+		eventbox_dash_3 = gtk_event_box_new ();
 		gtk_container_add (GTK_CONTAINER (frame_dash_3),
 			dashboard_3_lb);
+		gtk_container_add (GTK_CONTAINER (eventbox_dash_3),
+			frame_dash_3);
+		gtk_widget_add_events (eventbox_dash_3,
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (eventbox_dash_3, "button_press_event",
+			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 3);
 	
 		/* Frame_Dashboard 4 */
 		frame_dash_4 = gtk_frame_new (" = 4 = ");	
 		dashboard_4_lb = gtk_label_new ("---");
+		eventbox_dash_4 = gtk_event_box_new ();
 		gtk_container_add (GTK_CONTAINER (frame_dash_4),
 			dashboard_4_lb);
-
+		gtk_container_add (GTK_CONTAINER (eventbox_dash_4),
+			frame_dash_4);
+		gtk_widget_add_events (eventbox_dash_4,
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (eventbox_dash_4, "button_press_event",
+			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 4);
 	}	/* END DASHBOARD */
 
 
@@ -1642,10 +1919,14 @@ void create_status_mainbox (void)
 	if (local_config.guimode == GUI_PDA)
 	{
 		statusdashboard_box = gtk_table_new (2, 2, TRUE);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_1, 0, 1, 0, 1);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_2, 1, 2, 0, 1);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_3, 0, 1, 1, 2);
-		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box), frame_dash_4, 1, 2, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			eventbox_dash_1, 0, 1, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			eventbox_dash_2, 1, 2, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			eventbox_dash_3, 0, 1, 1, 2);
+		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
+			eventbox_dash_4, 1, 2, 1, 2);
 
 		statussmall_box = gtk_vbox_new (FALSE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, FALSE, FALSE, 1 * PADDING);
@@ -1669,11 +1950,16 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
 		// gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
 
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_1, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_2, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box), frame_dash_3, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box), statusdashsub1_box, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box), statusdashsub2_box, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
+			statusdashsub1_box, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
+			statusdashsub2_box, TRUE, TRUE, 0);
 
 		// --- ACPI / Temperature / Battery
 		create_temperature_widget(statusdashboard_box);
@@ -1704,9 +1990,12 @@ void create_status_mainbox (void)
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_minimap, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_compass, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_1, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_2, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),frame_dash_3, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
+			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
 
@@ -1801,6 +2090,8 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	create_controls_mainbox ();
 	create_status_mainbox ();
 	create_map_mainbox ();
+
+	create_dashboard_menu ();
 
 	if (local_config.guimode == GUI_PDA)
 	{  /* PDA Mode */

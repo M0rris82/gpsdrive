@@ -773,7 +773,7 @@ gboolean route_export_cb (gboolean defaultfile)
 	}
 	g_get_current_time (&current_time);
 	fprintf (routefile, gpx_head,
-		PACKAGE_VERSION, g_time_val_to_iso8601 (&current_time));
+		"2.10pre4", g_time_val_to_iso8601 (&current_time));
 
 	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (route_list_tree), &iter);
 	do

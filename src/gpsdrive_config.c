@@ -69,7 +69,6 @@ extern int messagenumber;
 extern int sockfd, showsid, storetz;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
-#define KM2MILES 0.62137119
 
 local_gpsdrive_config local_config;
 
@@ -137,10 +136,10 @@ writeconfig ()
 		fprintf (fp, "miles\n");
 	else
 	{
-		if (local_config.distmode == DIST_METRIC)
-			fprintf (fp, "metric\n");
-		else
+		if (local_config.distmode == DIST_NAUTIC)
 			fprintf (fp, "nautic\n");
+		else
+			fprintf (fp, "metric\n");
 	}
 
 	fprintf (fp, "savetrack = ");
@@ -234,10 +233,10 @@ writeconfig ()
 	fprintf (fp, "storetz = %d\n", storetz);
 	if (storetz)
 		fprintf (fp, "timezone = %d\n", zone);
-	fprintf (fp, "dashboard_1 = %d\n", local_config.dashboard_1);
-	fprintf (fp, "dashboard_2 = %d\n", local_config.dashboard_2);
-	fprintf (fp, "dashboard_3 = %d\n", local_config.dashboard_3);
-	fprintf (fp, "dashboard_4 = %d\n", local_config.dashboard_4);
+	fprintf (fp, "dashboard_1 = %d\n", local_config.dashboard[1]);
+	fprintf (fp, "dashboard_2 = %d\n", local_config.dashboard[2]);
+	fprintf (fp, "dashboard_3 = %d\n", local_config.dashboard[3]);
+	fprintf (fp, "dashboard_4 = %d\n", local_config.dashboard[4]);
 	fprintf (fp, "bigcolor = %s\n", local_config.color_dashboard);
 	fprintf (fp, "trackcolor = %s\n", local_config.color_track);
 	fprintf (fp, "routecolor = %s\n", local_config.color_route);
@@ -337,13 +336,13 @@ readconfig ()
 				}
 			}
 			else if ( (strcmp(par1, "dashboard_1")) == 0)
-				local_config.dashboard_1 = atoi (par2);
+				local_config.dashboard[1] = atoi (par2);
 			else if ( (strcmp(par1, "dashboard_2")) == 0)
-				local_config.dashboard_2 = atoi (par2);
+				local_config.dashboard[2] = atoi (par2);
 			else if ( (strcmp(par1, "dashboard_3")) == 0)
-				local_config.dashboard_3 = atoi (par2);
+				local_config.dashboard[3] = atoi (par2);
 			else if ( (strcmp(par1, "dashboard_4")) == 0)
-				local_config.dashboard_4 = atoi (par2);
+				local_config.dashboard[4] = atoi (par2);
 			else if ( (strcmp(par1, "savetrack")) == 0)
 				local_config.savetrack = atoi (par2);
 			else if ( (strcmp(par1, "scalewanted")) == 0)
@@ -532,10 +531,11 @@ config_init ()
 	local_config.guimode = GUI_DESKTOP;
 	local_config.simmode = SIM_OFF;
 	local_config.enableapm = FALSE;
-	local_config.dashboard_1 = DASH_DIST;
-	local_config.dashboard_2 = DASH_SPEED;
-	local_config.dashboard_3 = DASH_ALT;
-	local_config.dashboard_4 = DASH_TIME;
+	local_config.dashboard[0] = 0;
+	local_config.dashboard[1] = DASH_DIST;
+	local_config.dashboard[2] = DASH_SPEED;
+	local_config.dashboard[3] = DASH_ALT;
+	local_config.dashboard[4] = DASH_TIME;
 	local_config.MapnikStatusInt = 0;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;

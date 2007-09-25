@@ -42,11 +42,27 @@ typedef struct
 }
 trackcoordstruct;
 
+
+typedef struct
+{
+	gdouble odometer;
+	gdouble speed_avg;
+	gdouble speed_max;
+	time_t time;
+	gdouble lat;
+	gdouble lon;
+	gint countavgspeed;
+}
+tripdata_struct;
+
+
 void savetrackfile (gint testname);
 void rebuildtracklist (void);
 void drawtracks (void);
 gint gettrackfile (GtkWidget *widget, gpointer datum);
 int toggle_track_button_cb (GtkWidget *button, gboolean *value);
 
+gint trip_reset_cb (void);
+gint update_tripdata_cb (void);
 
 #endif /* GPSDRIVE_TRACK_H */

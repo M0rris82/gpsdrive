@@ -85,9 +85,7 @@ extern GtkWidget *frame_statusfriends;
 static gdouble hour, sunrise, sunset;
 extern gchar utctime[20], loctime[20];
 extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gdouble tripodometer, tripavspeed, triptime, tripmaxspeed, triptmp,
-  milesconv;
-extern gint tripavspeedcount;
+extern gdouble milesconv;
 extern gint lastnotebook;
 extern GtkWidget *settingsnotebook, *slowcpubt;
 GtkWidget *ge12;
@@ -110,8 +108,6 @@ static gboolean friendsiplock = FALSE;
 static gboolean friendsnamelock = FALSE;
 extern gchar *font_wplabel;
 extern char friendserverip[20];
-GtkWidget *entryavspeed, *entrymaxspeed, *entrytripodometer, *entrytriptime,
-  *tripunitlabel;
 extern color_struct colors;
 extern currentstatus_struct current;
 extern GtkTreeStore *poi_types_tree;

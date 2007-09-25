@@ -35,11 +35,14 @@ enum
 	DASH_BEARING,
 	DASH_TURN,
 	DASH_SPEED,
+	DASH_SPEED_AVG,
+	DASH_SPEED_MAX,
 	DASH_HEADING,
 	DASH_ALT,
 	DASH_TRIP,
 	DASH_GPSPRECISION,
 	DASH_TIME,
+	DASH_N_ITEMS
 };
 
 gint create_main_window (gchar *geom, gint *usegeom);

@@ -88,13 +88,14 @@ set(gpsdrive_SRCS
   poi_gui.c
   poi.h
   routes.c
+  screenshot.c
+  screenshot.h
   settings.c
   settings_gui.c
   speech_out.c
   speech_out.h
   speech_strings.c
   splash.c
-  streets.c
   track.c
   track.h
   unit_test.c
@@ -109,28 +110,6 @@ if (WITH_MAPNIK)
   )
 endif (WITH_MAPNIK)
 
-SET(garmin_SRCS
-  garmin_application.cpp
-  garmin_application.h
-  garmin_command.h
-  garmin_data.cpp
-  garmin_data.h
-  garmin_error.h
-  garmin_legacy.cpp
-  garmin_legacy.h
-  garmin_link.cpp
-  garmin_link.h
-  garmin_packet.h
-  garmin_phys.h
-  garmin_serial.h
-  garmin_serial_unix.cpp
-  garmin_serial_unix.h
-  garmin_types.h
-  garmin_util.cpp
-  garmin_util.h
-  gpsdrivegarble.cpp
-)
-
 # gpsdrive i18n
 MACRO_GENERATE_PO_FILES(${CMAKE_SOURCE_DIR}/po ${APPLICATION_NAME} gpsdrive_SRCS)
 
@@ -144,7 +123,7 @@ include_directories(
   ${GPSDRIVE_PRIVATE_INCLUDE_DIRS}
 )
 
-add_executable(gpsdrive ${gpsdrive_SRCS} ${garmin_SRCS})
+add_executable(gpsdrive ${gpsdrive_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})

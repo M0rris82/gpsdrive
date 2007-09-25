@@ -71,7 +71,6 @@ extern gint earthmate, zone;
 extern int sockfd, showsid, storetz;
 
 extern coordinate_struct coords;
-#define KM2MILES 0.62137119
 
 
 gint

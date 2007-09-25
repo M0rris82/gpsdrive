@@ -37,6 +37,15 @@ Disclaimer: Please do not use for navigation.
 #include "gui.h"
 #include "main_gui.h"
 
+/*  Defines for gettext I18n */
+#include <libintl.h>
+# define _(String) gettext(String)
+# ifdef gettext_noop
+#  define N_(String) gettext_noop(String)
+# else
+#  define N_(String) (String)
+# endif
+
 extern gint mydebug;
 extern gint maploaded;
 extern glong tracknr, tracklimit, trackcoordlimit;
@@ -50,8 +59,11 @@ extern GdkColor blue;
 extern gint isnight, disableisnight;
 extern color_struct colors;
 extern currentstatus_struct current;
-
+extern coordinate_struct coords;
 extern GdkGC *kontext_map;
+extern gdouble milesconv;
+
+tripdata_struct trip;
 
 /* ----------------------------------------------------------------------------- */
 /*  if zoom, xoff, yoff or map are changed */
@@ -360,7 +372,7 @@ gettrackfile (GtkWidget * widget, gpointer datum)
 
 
 /* *****************************************************************************
- * Generic Callback to handle toggle- and checkbuttons
+ * Callback to handle togglebutton "save track"
  */
 int
 toggle_track_button_cb (GtkWidget *button, gboolean *value)
@@ -371,5 +383,63 @@ toggle_track_button_cb (GtkWidget *button, gboolean *value)
 	    savetrackfile (1);
 	}
 	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * reset trip data
+ */
+gint
+trip_reset_cb ()
+{
+	if (mydebug > 10)
+		fprintf (stdout, "Resetting trip data\n");
+
+	trip.odometer = trip.speed_avg = trip.speed_max = 0.0;
+	trip.countavgspeed = 0;
+	trip.lat = coords.current_lat;
+	trip.lon = coords.current_lon;
+	trip.time = time (NULL);
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * update trip data
+ */
+gint
+update_tripdata_cb (void)
+{
+	gdouble t_dist;
+
+	t_dist = calcdist (trip.lon, trip.lat);
+	trip.lon = coords.current_lon;
+	trip.lat = coords.current_lat;
+	
+	if (mydebug > 20)
+	{
+		fprintf (stderr, "update_tripdata_cb: trip_dist = %f | trip_speed = %f\n",
+			t_dist, t_dist / TRIPMETERTIMEOUT * 3600.0);
+	}
+
+	if (t_dist <= 0.0)
+		return TRUE;
+
+	 if (t_dist > (2000.0 * TRIPMETERTIMEOUT / 3600.0))
+	{
+		fprintf (stderr,
+		_("distance jump is more then 2000km/h speed, ignoring\n"));
+		return TRUE;
+	}
+
+	/* we want always have metric system stored */
+	t_dist /= milesconv;
+	trip.odometer += t_dist;
+	if (current.groundspeed / milesconv > trip.speed_max)
+		trip.speed_max = current.groundspeed / milesconv;
+	trip.countavgspeed++;
+	trip.speed_avg += current.groundspeed / milesconv;
 	return TRUE;
 }

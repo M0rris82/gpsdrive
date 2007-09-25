@@ -50,7 +50,6 @@ extern gint real_psize, real_smallmenu;
 extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
-extern gdouble trip_lat, trip_lon;
 extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
@@ -115,35 +114,6 @@ gint max_display_map = 0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 gint displaymap_map = TRUE;
-
-
-/* *****************************************************************************
- */
-gint
-maptoggle_cb (GtkWidget * widget, guint datum)
-{
-  displaymap_map = !displaymap_map;
-  if (displaymap_map)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
-  else
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), FALSE);
-  current.needtosave = TRUE;
-  return TRUE;
-}
-
-/* *****************************************************************************
- */
-gint
-topotoggle_cb (GtkWidget * widget, guint datum)
-{
-  displaymap_top = !displaymap_top;
-  if (displaymap_top)
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
-  else
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), FALSE);
-  current.needtosave = TRUE;
-  return TRUE;
-}
 
 /* *****************************************************************************
  */
@@ -248,32 +218,6 @@ make_display_map_checkboxes()
   frame_maptype = gtk_frame_new (_("Shown map type"));
   vbox3 = gtk_vbox_new (FALSE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
-
-  if (0)
-    {
-      // Checkbox ---- Show Map: map_
-      maptogglebt = gtk_check_button_new_with_label (_("Street map"));
-      if (displaymap_map)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (maptogglebt), TRUE);
-      gtk_signal_connect (GTK_OBJECT (maptogglebt),
-			  "clicked", GTK_SIGNAL_FUNC (maptoggle_cb),
-			  (gpointer) 1);
-      gtk_box_pack_start (GTK_BOX (vbox3), maptogglebt, FALSE, FALSE,
-			  0 * PADDING);
-
-      // Checkbox ---- Show Map: top_
-      topotogglebt = gtk_check_button_new_with_label (_("Topo map"));
-      if (displaymap_top)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (topotogglebt), TRUE);
-
-      gtk_signal_connect (GTK_OBJECT (topotogglebt),
-			  "clicked", GTK_SIGNAL_FUNC (topotoggle_cb),
-			  (gpointer) 1);
-
-      gtk_box_pack_start (GTK_BOX (vbox3), topotogglebt, FALSE, FALSE,
-			  0 * PADDING);
-
-    }
 
   tooltips = gtk_tooltips_new ();
   glong i;
@@ -808,8 +752,8 @@ test_and_load_newmap ()
 
 	// TODO: this doesn't belong here, move it somewhere else...
     if (gui_status.posmode) {
-  		trip_lat = coords.current_lon = coords.posmode_lon;
-  		trip_lon = coords.current_lat = coords.posmode_lat;
+  		coords.current_lon = coords.posmode_lon;
+  		coords.current_lat = coords.posmode_lat;
   	} else update_route ();
 
 

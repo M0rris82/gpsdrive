@@ -48,7 +48,6 @@ extern gint SCREEN_X_2, SCREEN_Y_2;
 extern gdouble pixelfact, posx, posy;
 extern gdouble bearing;
 extern gint haveposcount, blink, gblink, xoff, yoff;
-extern gdouble trip_lat, trip_lon;
 extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
