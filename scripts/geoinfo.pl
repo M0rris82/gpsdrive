@@ -225,7 +225,7 @@ Geo::Gpsdrive::OSM::import_Data($areas_todo,@osm_files)
 
 # Import FON file into poi Database
 @fon_countries=qw(DE AT)
-    if $fon_countries[0]eq ''; ## No country given
+    if @fon_countries && $fon_countries[0] eq ''; ## No country given
 Geo::Gpsdrive::FON::import_Data(@fon_countries) 
     if ( @fon_countries );
 
