@@ -166,7 +166,8 @@ wlan_rebuild_list (void)
   if (!usesql)
     return;
 
-  if ( current.mapscale > 100000000)
+  // XXX TODO: get this limit from the Database
+  if ( current.mapscale > 100000)
       return;
 
   if (!local_config.showwlan)
