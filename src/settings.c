@@ -852,9 +852,10 @@ settings_general (GtkWidget *notebook)
 		(GTK_SPIN_BUTTON (maxcpu_spin),
 		(gdouble) local_config.maxcpuload);
 	gtk_tooltips_set_tip (general_tooltips, maxcpu_spin,
-		_("Select the approx. maximum CPU load.\nUse 20-30% on "
-		"notebooks while on battery to save power. "
-		"This effects the refresh rate of the map screen."), NULL);
+		/* xgettext:no-c-format */
+		_("Select the approximate maximum CPU load.\n"
+		"Use 20-30% on notebooks while on battery, to save power. "
+		"This affects the refresh rate of the map screen."), NULL);
 	gtk_signal_connect (GTK_OBJECT (maxcpu_spin), "changed",
 		GTK_SIGNAL_FUNC (setmaxcpuload_cb), NULL);
 	}
