@@ -279,6 +279,7 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), _("Auto"));
 		if (mapscaler_scaler)
 			gtk_widget_set_sensitive (mapscaler_scaler, FALSE);
+		local_config.autobestmap = TRUE;
 	}
 	else
 	{
@@ -288,6 +289,7 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), sc);
 		if (mapscaler_scaler)
 			gtk_widget_set_sensitive (mapscaler_scaler, TRUE);
+		local_config.autobestmap = FALSE;
 	}
 
 	current.needtosave = TRUE;
