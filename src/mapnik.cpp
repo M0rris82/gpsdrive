@@ -129,6 +129,7 @@ void init_mapnik (char *ConfigXML) {
     //load map
     std::string mapnik_config_file (ConfigXML);
     mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+    MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
     MapnikInitYsn = -1;
 }
 
@@ -157,7 +158,7 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
 	mapnik_config_file.assign("../scripts/mapnik/osm.xml");
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
 	mapnik_config_file.assign(DATADIR).append("/mapnik/osm.xml");
-    cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
+    if (mydebug > 0) cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
     
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) {
     	// file not found return
@@ -229,28 +230,28 @@ int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pFo
 			Proj.forward(Pt.x, Pt.y);
 			/* pan right or left? */
 			if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) < Pt.x) {
-				cout << "pan right\n";
 				/* pan right */
+				if (mydebug > 30) cout << "pan right\n";
 				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) > Pt.x) {
 				/* pan left */
-				cout << "pan left\n";
+				if (mydebug > 30) cout << "pan left\n";
 				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			}
 			/* pan up or down? */
 			if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) < Pt.y) {
-				cout << "pan up\n";
 				/* pan up */
+				if (mydebug > 30) cout << "pan up\n";
 				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) > Pt.y) {
 				/* pan down */
-				cout << "pan down\n";
+				if (mydebug > 30) cout << "pan down\n";
 				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
@@ -337,9 +338,6 @@ void render_mapnik () {
     if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
     /* get raw data for gpsdrives pixbuf */
-    if (!MapnikMap.ImageRawDataPtr) {
-    	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
-    }
     convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr);
     
     /* ok we have a map set default values */
