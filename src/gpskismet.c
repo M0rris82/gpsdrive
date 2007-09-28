@@ -90,7 +90,10 @@ int
 readkismet (void)
 {
   signed char c;
-  char q[1200], buf[300], tname[80], sqllat[30], sqllon[30];
+  char q[1200], buf[4*300], tname[4*80], sqllat[30], sqllon[30];
+  // make buffers 4 times as large as expeted, since I think kismet 
+  // encodes a \001 as 4 ASCII characters. And this would trigger a
+  // buffer overflow.
   int e, r, have, i, j, sqlid = 0;
 
   // If Kismet server connection failed, Try to reconnect
@@ -166,13 +169,19 @@ readkismet (void)
 			  " %d  %s %s %s %s %d %[^\n]", 
 			  tbuf, macaddr, &nettype, name, &channel,
 			  &wep, lat, lon, bestlat, bestlon, &cloaked, tbuf);
-
+	      if (debug) {
+		  printf ("tbuf: %s\n", tbuf);
+		  printf ("wep:%s nettype: %d\n",macaddr, nettype);
+		  printf(" %d, %d  %s %s %s %s %d %[^\n]", 
+			 name, channel,	 wep, lat, lon, bestlat, bestlon, cloaked, tbuf);
+	      }
+	      
 	    }
 	  if (e == 11)
 	    {
 	      if (mydebug >10)
 		g_print
-		  ("\ne: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
+		  ("e: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
 		   "lat: %s lon: %s bestlat: %s bestlon: %s cloaked: %d\n", e, macaddr,
 		   nettype, name, channel, wep, lat, lon, bestlat, bestlon, cloaked);
 
