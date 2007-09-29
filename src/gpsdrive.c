@@ -2921,6 +2921,10 @@ int
 main (int argc, char *argv[])
 {
 
+    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (PACKAGE, "utf8");
+    textdomain (GETTEXT_PACKAGE);
+
     gchar buf[500];
 
     current.needtosave = FALSE;
@@ -2971,9 +2975,6 @@ main (int argc, char *argv[])
 #ifdef DBUS_ENABLE
     useDBUS = FALSE;
 #endif
-
-
-
 
     signal (SIGUSR2, usr2handler);
     timer = g_timer_new ();
@@ -3103,15 +3104,6 @@ main (int argc, char *argv[])
      * i.e. '.' in english, ',' in german!! 
      */
     loadmapconfig ();
-
-    /* PORTING */
-    {
-	gchar *p;
-	p = bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (PACKAGE, "utf8");
-	p = textdomain (GETTEXT_PACKAGE);
-	p = textdomain (NULL);
-    }
 
     /*    Setting locale for correct Umlauts */
     gtk_set_locale ();
