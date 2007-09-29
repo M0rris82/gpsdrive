@@ -94,6 +94,8 @@ my %source_ids;		# 0: source_id => name		1: name => source_id
 #
 #  M A I N
 # 
+our $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+
 if ($opt_i)	{ import_gpx($file) }
 elsif ($opt_e)	{ export_gpx_geoinfo($file) }
 
@@ -230,6 +232,8 @@ sub import_gpx
     { import_gpx_groundspeak($file); }
   elsif ( $creator =~ /opencaching/i )
     { import_gpx_opencaching($file); }
+  elsif ( $creator =~ /FON/i )
+    { import_gpx_fon($file); }
   else
     { die "Unknown GPX file detected!\n" }
 
@@ -460,6 +464,82 @@ sub import_gpx_opencaching
 {
   print STDOUT "\n----- Parsing opencaching.de GPX -----\n";
   die "Opencaching files will be supported soon!\n";
+}
+
+
+#####################################################################
+#
+#  import FON access point info
+#
+sub import_gpx_fon
+{
+  print STDOUT "\n----- Parsing FON GPX -----\n";
+  get_poi_types('1');
+  get_source_ids('1');
+
+  my $twig= new XML::Twig
+    (
+      ignore_elts => { 'rte' => 1, 'trk' => 1 },
+      TwigHandlers => { wpt => \&sub_fon }
+    );
+
+  $twig->parsefile( "$file");
+  my $gpx= $twig->root;
+
+  sub sub_fon
+  {
+    my( $twig, $wpt)= @_;
+
+    my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
+    my ($source_id,$source,$proximity) = (11,'fon',0);
+    my ($poi_type_id,$poi_type,$last_modified) = (5,'wlan.pay.fon','2007-01-01');
+    my ($type,$found)  = ('FON Access Point','');
+    my $db_insert = '';
+
+    if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
+    {
+      $lat = $wpt->att('lat');
+      $lon = $wpt->att('lon');
+      $name = $wpt->first_child('name')->text;
+      $comment = $wpt->first_child('desc')->text
+        if ($wpt->first_child('desc'));
+      $last_modified = $wpt->first_child('time')->text
+        if ($wpt->first_child('time'));
+
+      $poi_type_id = $poi_types{$poi_type} if ($poi_types{$poi_type});
+      $source_id = $source_ids{$source} if ($source_ids{$source});
+
+      # check, if entry already exists in poi table (by comparing name, which should be unique)
+      my $db_query = sprintf("SELECT poi_id FROM poi WHERE name=%s AND poi_type_id='$poi_type_id';",$dbh->quote($name));
+      my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+      $sth->execute()               or die $sth->errstr;
+      my $row = $sth->fetchrow_hashref;
+
+      if ($$row{poi_id})
+      {
+	unless ($safe)
+	{
+	  $db_insert = sprintf("UPDATE poi SET lat='$lat', lon='$lon', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment));
+	  $updated++;
+	}
+      }
+      else
+      {
+        $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
+	$inserted++;
+      }
+
+      if ($db_insert)
+      { 
+        $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+	$count++;
+      }
+      progress_bar();
+    }
+
+  }
+  $twig->purge;
 }
 
 
