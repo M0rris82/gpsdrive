@@ -3360,6 +3360,10 @@ main (int argc, char *argv[])
 
 
     g_timer_destroy (timer);
+    if ( do_unit_test ) {
+	coords.current_lat=48.000000;
+	coords.current_lon=12.000000;
+    }
     writeconfig ();
     gdk_pixbuf_unref (friendspixbuf);
 
