@@ -18,6 +18,7 @@ pixmap_DATA = \
 	pixmaps/gpsdrivemini.png \
 	pixmaps/gpsdrivesplash.png \
 	pixmaps/gpsicon.png \
+	pixmaps/gpsicon.xpm \
 	pixmaps/gpsiconbt.png \
 	pixmaps/kismet.png \
 	pixmaps/posmarker.png \
