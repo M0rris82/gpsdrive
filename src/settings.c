@@ -471,8 +471,13 @@ setmapdir_cb (GtkWidget *widget)
 	{
 		g_strlcpy (local_config.dir_maps, tdir,
 			sizeof (local_config.dir_maps));
-		//if (mydebug >3)
-			fprintf (stderr, "setting maps dir to: %s\n", tdir);
+		g_strlcat (local_config.dir_maps, "/",
+			sizeof (local_config.dir_maps));
+		if (mydebug >3)
+		{
+			fprintf (stderr, "setting maps dir to: %s\n",
+				local_config.dir_maps);
+		}
 		needreloadmapconfig = TRUE;
 		current.needtosave = TRUE;
 		gtk_timeout_add (2000, (GtkFunction) loadmapconfig, 0);
