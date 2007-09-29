@@ -165,10 +165,17 @@ def usage():
 def main(argv):
 
     home = os.environ['HOME']
-    data = "@DATA_DIR@/mapnik"
+    user = os.environ['USER']
+    data = home + "/.gpsdrive"
     mapfile = data + "/osm.xml"
     tile_dir = home + "/.gpsdrive/maps/mapnik/"
     mapkoordfile = home + "/.gpsdrive/maps/map_koord.txt"
+
+    if not os.path.isfile(mapfile):
+	command = "sed 's,\@DATA_DIR\@,@DATA_DIR@/mapnik,g;s,\@USER\@," + user + ",g;' <@DATA_DIR@/mapnik/osm.xml >" + mapfile
+	print "Creating " + mapfile
+	print "Command " + command
+	call(command, shell=True)
     
     
     minZoom = 0

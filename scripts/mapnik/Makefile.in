@@ -439,10 +439,10 @@ uninstall-am: uninstall-binSCRIPTS uninstall-info-am \
 dummy:
 
 gpsdrive_mapnik_gentiles.py: gpsdrive_mapnik_gentiles-in.py
-	sed 's,@DATA_DIR@,${datadir},' < $< > $@
+	sed 's,@DATA_DIR@,${datadir},g' < $< > $@
 
 osm.xml: osm-in.xml
-	sed 's,@DATA_DIR@,${datadir},' < $< > $@
+	sed 's,@DATA_DIR@,${datadir},g' < $< > $@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
