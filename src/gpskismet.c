@@ -172,8 +172,10 @@ readkismet (void)
 	      if (debug) {
 		  printf ("tbuf: %s\n", tbuf);
 		  printf ("wep:%s nettype: %d\n",macaddr, nettype);
-		  printf(" %d, %d  %s %s %s %s %d %[^\n]", 
-			 name, channel,	 wep, lat, lon, bestlat, bestlon, cloaked, tbuf);
+		  printf ("name: %s\n",name );
+		  printf ("channel: %d, wep:%d\n", channel, wep);
+		  printf ("lat/lon: %s/%s  best lat/lon:%s/%s\n", lat, lon, bestlat, bestlon);
+		  printf ("cloaked: %d \n", cloaked);
 	      }
 	      
 	    }
