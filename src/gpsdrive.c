@@ -3320,6 +3320,7 @@ main (int argc, char *argv[])
 	wlan_init ();
 
 	load_friends_icon ();
+	load_kismet_icon ();
 
     update_posbt();
 
