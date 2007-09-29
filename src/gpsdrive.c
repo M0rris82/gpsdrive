@@ -2670,31 +2670,31 @@ usage ()
 	     _("-v        show version\n"),
 	     _("-h        print this help\n"),
 	     _("-d        turn on debug info\n"),
-	     _("-D X      set debug Level to X\n"),
-	     _("-T        do some internal unit Tests (don't start gpsdrive)\n"),
+	     _("-D X      set debugging level to X\n"),
+	     _("-T        do some internal unit tests (don't start gpsdrive)\n"),
 	     _("-e        use Festival-Lite (flite) for speech output\n"),
-	     _("-o        serial device, pty master, or file for NMEA *output*\n"),
-	     _("-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"),
+	     _("-o thing  serial device, pty master, or file to use for NMEA output\n"),
+	     _("-f server select friends server, e.g. friendsd.gpsdrive.de\n"),
 #ifdef DBUS_ENABLE
-	     _("-X        Use DBUS for communication with gpsd. This disables socket communication\n"),
+	     _("-X        use DBUS for communication with gpsd; this disables socket communication\n"),
 #endif
-	     _("-l LANG   Select language of the voice output,\n"
-	       "          LANG may be english, spanish or german\n"),
-	     _("-g geome. set window geometry e.g. 800x600\n"),
+	     _("-l lang.  select language of the voice output;\n"
+	       "          language may be 'english', 'spanish', or 'german'\n"),
+	     _("-g geom.  set window geometry, e.g. 800x600\n"),
 	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
-	     _("-a        display APM Stuff ( battery status, Temperature)\n"),
-	     _("-b Server Servername for NMEA server (if gpsd runs on another host)\n"),
-	     _("-c WP     set start position in simulation mode to waypoint name WP\n"),
-	     _("-M mode   set guimode to desktop, pda or car (default: desktop)\n"),
+	     _("-a        display APM stuff (battery status, temperature)\n"),
+	     _("-b server servername for NMEA server (if gpsd runs on another host)\n"),
+	     _("-c WP     set start position in simulation mode to this waypoint (WP)\n"),
+	     _("-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"),
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
 	     _("-F        force display of position even it is invalid\n"),
 	     _("-s        don't show splash screen\n"),
 	     _("-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"),
-	     _("-P        start in Pos Mode\n"),
-	     _("-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"),
-	     _("-H ALT    correct altitude, adding this value (ALT) to altitude\n"),
-	     _("-C file   set config file (--config-file)\n"));
+	     _("-P        start in Position Mode\n"),
+	     _("-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"),
+	     _("-H ALT    correct the altitude by adding this value (ALT) to it\n"),
+	     _("-C file   use this config file\n"));
 
 }
 
