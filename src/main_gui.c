@@ -1466,9 +1466,9 @@ void create_controls_mainbox (void)
 	if (current.zoom >= ZOOM_MAX)
 		gtk_widget_set_sensitive (zoomin_bt, FALSE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomin_bt,
-		_("Zoom into the current map"), NULL);
+		_("Zooms in on the current map"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomout_bt,
-			      _("Zooms out off the current map"), NULL);
+			      _("Zooms out on the current map"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),
 			    zoomout_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),

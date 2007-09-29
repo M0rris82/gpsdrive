@@ -21,6 +21,7 @@ src/lib_map/map_load.c
 src/lib_map/map_port.c
 src/lib_map/map_render.c
 src/lib_map/map_transform.c
+src/main_gui.c
 src/map_handler.c
 src/map_projection.c
 src/navigation.c

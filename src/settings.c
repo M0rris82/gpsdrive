@@ -1051,7 +1051,7 @@ settings_gui (GtkWidget *notebook)
 	gtk_combo_box_set_active
 		(GTK_COMBO_BOX (gui_marker_bt), local_config.posmarker);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (gui_tooltips), gui_marker_bt,
-		_("Choose the apperance of your position marker."), NULL);
+		_("Choose the appearance of your position marker."), NULL);
 	g_signal_connect (gui_marker_bt, "changed",
 		GTK_SIGNAL_FUNC (setposmarker_cb), NULL);
 
