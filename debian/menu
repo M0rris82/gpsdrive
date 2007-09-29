@@ -1,0 +1,5 @@
+?package(gpsdrive):needs="x11"\
+  section="Applications/Science/Mathematics/Geoscience"\
+  longtitle="Gpsdrive: A car (bike, ship, plane) navigation system"\
+  title="GpsDrive" command="gpsdrive"\
+  icon="/usr/share/gpsdrive/pixmaps/gpsicon.png"
