@@ -436,10 +436,13 @@ update_tripdata_cb (void)
 
 	/* we want always have metric system stored */
 	t_dist /= milesconv;
+	if (trip.odometer > 0)
+	{
+		if (current.groundspeed / milesconv > trip.speed_max)
+			trip.speed_max = current.groundspeed / milesconv;
+		trip.countavgspeed++;
+		trip.speed_avg += current.groundspeed / milesconv;
+	}
 	trip.odometer += t_dist;
-	if (current.groundspeed / milesconv > trip.speed_max)
-		trip.speed_max = current.groundspeed / milesconv;
-	trip.countavgspeed++;
-	trip.speed_avg += current.groundspeed / milesconv;
 	return TRUE;
 }
