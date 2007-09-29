@@ -102,8 +102,8 @@ GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
 extern GdkColormap *cmap;
 
-extern main_tooltips;
-extern wp_draw_bt;
+extern GtkTooltips *main_tooltips;
+extern GtkWidget *wp_draw_bt;
 extern gint usesql;
 extern gint storetz;
 static gboolean friendsiplock = FALSE;
