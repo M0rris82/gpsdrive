@@ -102,6 +102,8 @@ GtkWidget *sqlfn[100], *ipbt;
 gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
 extern GdkColormap *cmap;
 
+extern main_tooltips;
+extern wp_draw_bt;
 extern gint usesql;
 extern gint storetz;
 static gboolean friendsiplock = FALSE;
@@ -615,6 +617,7 @@ static gint
 setwpfile_cb (GtkWidget *widget)
 {
 	gchar *tfile;
+	gchar t_tip[600];
 	
 	tfile = gtk_file_chooser_get_filename
 		(GTK_FILE_CHOOSER (widget));
@@ -625,6 +628,10 @@ setwpfile_cb (GtkWidget *widget)
 		if (mydebug >3)
 			fprintf (stderr, "setting wp_file to: %s\n",
 			tfile);
+		g_snprintf (t_tip, sizeof (t_tip), "%s %s",
+			_("Show Waypoints found in file"), tfile);
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips),
+			wp_draw_bt, t_tip, NULL);
 		loadwaypoints ();
 	}
 	g_free (tfile);

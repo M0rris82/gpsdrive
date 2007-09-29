@@ -202,9 +202,12 @@ D.S.E <d.s.e@sordidmusic.com>
 
 my personal TODO-List (for after the pre4 release) :-)
 
-- extend (poi-)databases to handle additional information for POIs.
+- extend (poi-)databases to handle additional information for POIs
+- include POI-Info and make POIs editable
 - add navigation mode (optimized gui for small car touchscreens)
-- make displayed map draggable with mouse
+- make displayed map resizable and draggable with mouse
+- have a look at the openmoko platform
+- cleanup units handling; only metric units should be used internally
 
 -----------------------------------------------------------------------------
 Koji <koji@e-mail.jp>

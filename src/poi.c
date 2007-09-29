@@ -909,6 +909,10 @@ get_poitype_tree (void)
 			if (strcmp(t_title, "n/a")==0)
 				g_strlcpy(t_title, t_title_en, sizeof(t_title));
 
+			/* if also no english title is available,
+			 * use the poi_type_name as title */
+			if (strcmp(t_title, "n/a")==0)
+				g_strlcpy(t_title, t_name, sizeof(t_title));
 
 			g_strlcpy (poi_type_list[index].description,
 				t_description, sizeof

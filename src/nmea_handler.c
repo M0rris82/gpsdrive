@@ -809,7 +809,8 @@ convertGGA (char *f)
   sats_used = g_strtod (field[7], 0);
   if (current.gpsfix > 1)
     {
-      current.altitude = g_strtod (field[9], 0);
+      if (current.gpsfix > 2)
+     	current.altitude = g_strtod (field[9], 0);
       if ( mydebug + nmea_handler_debug > 80 )
 	g_print ("nmea_handler: gpsd: Altitude: %.1f, Fix: %d\n",
 		current.altitude, satfix);

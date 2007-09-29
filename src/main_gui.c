@@ -106,6 +106,8 @@ GtkWidget *scaler_left_bt, *scaler_right_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
+GtkWidget *wp_draw_bt;
+GtkTooltips *main_tooltips;
 
 // TODO: maybe these should be moved to local ones...
 GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
@@ -115,7 +117,6 @@ GdkGC *kontext_compass, *kontext_gps, *kontext_minimap, *kontext_map;
 
 /* local widgets */
 static GtkWidget *mainbox_controls, *mainbox_status, *mainframe_map;
-static GtkTooltips *main_tooltips;
 static GtkWidget *frame_maptype;
 static GtkWidget *mapscaler_scaler;
 static GtkWidget *zoomin_bt, *zoomout_bt;
@@ -719,8 +720,18 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_ALT:
 		{
+			/* to avoid jumping of the altitude display due to bad
+			 * nmea data, delay displaying after loss of 3D Fix */
+			GTimeVal t_now;
+			const gint ALTDELAY = 5;
+
 			g_strlcpy (head, _("Altitude"), sizeof (head));
+
 			if (current.gpsfix == 3)
+				g_get_current_time (&current.last3dfixtime);
+			g_get_current_time (&t_now);
+
+			if (t_now.tv_sec - current.last3dfixtime.tv_sec < ALTDELAY)
 			{
 			switch (local_config.altmode)
 			{
@@ -1329,7 +1340,7 @@ void create_controls_mainbox (void)
 	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load;
 	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
 
-	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt, *wp_draw_bt;
+	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
 
 	if ( mydebug > 11 )
@@ -1584,8 +1595,8 @@ void create_controls_mainbox (void)
 		&local_config.showwaypoints);
 	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_draw_bt,
 		FALSE, FALSE, 0 * PADDING);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wlan_draw_bt,
-		_("Show Waypoints found in way.txt file"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wp_draw_bt,
+		_("Show Waypoints found in file way.txt"), NULL);
 
 	}	/* END WAYPOINTS AND POIs */
 
@@ -1871,7 +1882,7 @@ void create_status_mainbox (void)
 			statusprefscale_lb);
 
 		/* GPS Fix Status */
-		frame_statusgpsfix = gtk_frame_new (_("GPS Status"));
+		frame_statusgpsfix = gtk_frame_new (NULL);
 		drawing_gpsfix = gtk_drawing_area_new ();
 		gtk_widget_set_size_request (drawing_gpsfix,
 			100, -1);
