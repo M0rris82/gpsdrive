@@ -463,7 +463,101 @@ sub import_gpx_groundspeak
 sub import_gpx_opencaching
 {
   print STDOUT "\n----- Parsing opencaching.de GPX -----\n";
-  die "Opencaching files will be supported soon!\n";
+  get_poi_types('1');
+  get_source_ids('1');
+
+  my $twig= new XML::Twig
+    (
+      ignore_elts => { 'rte' => 1, 'trk' => 1 },
+      TwigHandlers => { wpt => \&sub_geocache }
+    );
+  $twig->parsefile( "$file");
+  my $gpx= $twig->root;
+  
+  sub sub_geocache
+  {
+    my( $twig, $wpt)= @_;
+
+    my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
+    my ($source_id,$source,$proximity) = (6,'opencaching',0);
+    my ($poi_type_id,$poi_type,$last_modified) = (5,'geocache','2007-01-01');
+    my ($type,$found)  = ('Geocache|Unknown Cache','');
+    my $db_insert = '';
+
+    if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
+    {
+      $lat = $wpt->att('lat');
+      $lon = $wpt->att('lon');
+      $name = $wpt->first_child('name')->text;
+      $comment = $wpt->first_child('desc')->text
+        if ($wpt->first_child('desc'));
+      $last_modified = $wpt->first_child('time')->text
+        if ($wpt->first_child('time'));
+
+      if ($wpt->first_child('geocache'))
+      {
+        $type = $wpt->first_child('geocache')->first_child('type')->text;
+	if ($type =~ /traditional/i)
+	  { $poi_type = 'geocache.geocache_traditional' }
+	elsif ($type =~ /multi/i)
+          { $poi_type = 'geocache.geocache_multi' }
+	elsif ($type =~ /webcam/i)
+          { $poi_type = 'geocache.geocache_webcam' }
+	elsif ($type =~ /virtual/i)
+          { $poi_type = 'geocache.geocache_virtual' }
+	elsif ($type =~ /earth/i)
+          { $poi_type = 'geocache.geocache_earth' }
+	elsif ($type =~ /event/i)
+          { $poi_type = 'geocache.geocache_event' }
+	else { $poi_type = 'geocache' }
+      }
+
+      if ($wpt->first_child('sym'))
+      {
+        $found = $wpt->first_child('sym')->text;
+	if ( $found =~ /found/i )
+	  { $poi_type = 'geocache.geocache_found'; }
+      }
+
+# TODO: - add some handling for poi_extra data .....
+# 	- check for night/mystery/drivein-types
+
+      $poi_type_id = $poi_types{$poi_type} if ($poi_types{$poi_type});
+      $source_id = $source_ids{$source} if ($source_ids{$source});
+
+      my $dbh = Geo::Gpsdrive::DBFuncs::db_connect();
+
+      # check, if entry already exists in poi table (by comparing name, which should be unique)
+      my $db_query = sprintf("SELECT poi_id FROM poi WHERE name=%s AND poi_type_id='$poi_type_id';",$dbh->quote($name));
+      my $sth=$dbh->prepare($db_query) or die $dbh->errstr;
+      $sth->execute()               or die $sth->errstr;
+      my $row = $sth->fetchrow_hashref;
+
+      if ($$row{poi_id})
+      {
+	unless ($safe)
+	{
+	  $db_insert = sprintf("UPDATE poi SET lat='$lat', lon='$lon', proximity='$proximity', comment=%s, last_modified='$last_modified', source_id='$source_id' WHERE poi_id=$$row{poi_id};",$dbh->quote($comment));
+	  $updated++;
+	}
+      }
+      else
+      {
+        $db_insert = sprintf("INSERT INTO poi (name,poi_type_id,lat,lon,alt,proximity,comment,last_modified,source_id,private) VALUES(%s,'$poi_type_id','$lat','$lon','$alt','$proximity',%s,'$last_modified','$source_id','$private');",$dbh->quote($name),$dbh->quote($comment));
+	$inserted++;
+      }
+
+      if ($db_insert)
+      { 
+        $sth=$dbh->prepare($db_insert) or die $dbh->errstr;
+	$sth->execute()               or die $sth->errstr;
+	$count++;
+      }
+      progress_bar();
+    }
+
+  }
+  $twig->purge;
 }
 
 
@@ -491,7 +585,7 @@ sub import_gpx_fon
     my( $twig, $wpt)= @_;
 
     my ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
-    my ($source_id,$source,$proximity) = (11,'fon',0);
+    my ($source_id,$source,$proximity) = (8,'fon',0);
     my ($poi_type_id,$poi_type,$last_modified) = (5,'wlan.pay.fon','2007-01-01');
     my ($type,$found)  = ('FON Access Point','');
     my $db_insert = '';
