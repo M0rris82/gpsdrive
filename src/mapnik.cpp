@@ -118,7 +118,8 @@ void init_mapnik (char *ConfigXML) {
     // Both datasorce_cache and font_engine are 'singletons'.
    
     datasource_cache::instance()->register_datasources("/usr/lib/mapnik/input/");
-    freetype_engine::instance()->register_font("/usr/lib/mapnik/fonts/DejaVuSans.ttf");
+    // XXX We should make the fontname and path a config option
+    freetype_engine::instance()->register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
     
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
