@@ -4,7 +4,6 @@ SUBDIRS(
   map-icons
   maps
   pixmaps
-  poi
 )
 
 INSTALL(FILES gpsdrive.desktop DESTINATION ${XDG_APPS_DIR})

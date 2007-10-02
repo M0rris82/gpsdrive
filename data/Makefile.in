@@ -290,7 +290,6 @@ EXTRA_DIST = \
 	$(cfg_files_DATA) \
 	$(pixmap_DATA) $(icons_DATA) \
 	\
-	$(maps_DATA) $(poi_DATA)  \
 	$(apps_DATA) \
 	CMakeLists.txt \
 	maps/CMakeLists.txt  \
