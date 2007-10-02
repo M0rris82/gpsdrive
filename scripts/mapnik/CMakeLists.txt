@@ -1,7 +1,5 @@
 project(mapnik)
 
-add_subdirectory(symbols)
-
 message("mapnik datadir: ${DATA_INSTALL_DIR}/mapnik")
 
 set(DATA_DIR "${DATA_INSTALL_DIR}/mapnik")
