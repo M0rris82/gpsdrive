@@ -336,7 +336,12 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 	/* if geometry returns a width then use that otherwise use default for 640x480 */
 
 	if (ret & WidthValue) {
-	    real_screen_x = width;
+         if (width > TILEWIDTH) {
+          real_screen_x = TILEWIDTH;
+          }
+         else {
+          real_screen_x = width;
+          }
 	}
 	else {
 	    real_screen_x = 630;
@@ -345,7 +350,12 @@ int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint scree
 	/* if geometry returns a height then use that otherwise use default for 640x480 */
 
 	if (ret & HeightValue) {
-	    real_screen_y = height;
+         if (height > TILEHEIGHT) {
+          real_screen_y = TILEHEIGHT;
+          }
+         else {
+          real_screen_y = height;
+          }
 	}
 	else {
 	    real_screen_y = screen_height - YMINUS;

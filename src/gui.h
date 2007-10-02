@@ -29,6 +29,8 @@ Disclaimer: Please do not use for navigation.
 
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
+#define TILEWIDTH 1280
+#define TILEHEIGHT 1024
 
 
 gint popup_yes_no (GtkWindow *parent, gchar *message);
