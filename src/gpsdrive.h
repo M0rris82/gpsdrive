@@ -247,7 +247,7 @@ MYSQL * (*dl_mysql_real_connect)(MYSQL *mysql, const char *host,
                                            const char *db,
                                            unsigned int port,
                                            const char *unix_socket,
-                                           unsigned int clientflag);
+                                           unsigned long clientflag);
 void    (*dl_mysql_close)(MYSQL *sock);
 int     (*dl_mysql_query)(MYSQL *mysql, const char *q);
 my_ulonglong (*dl_mysql_affected_rows)(MYSQL *mysql);
