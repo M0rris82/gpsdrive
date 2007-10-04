@@ -1,11 +1,21 @@
 #!/usr/bin/perl
+#
 # gpsfetchmap
-#
-# You are allowed to modify the source code in any way you want 
-# except you cannot modify this copyright details
-# or remove the polite feature.
-#
-# NO WARRANTY.
+# Copyright (C) 2002-2007 Gpsdrive Development Team <gpsdrive@gpsdrivers.org>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 
 
 BEGIN {
     my $dir = $0;
@@ -35,6 +45,7 @@ modified (May 2005) by Olli Salonen <olli\@cabbala.net>
 modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
 modified (Jul 2007) by Maciek Kaliszewski <mkalkal\@interia.pl>
+modified (Oct 2007) by Andreas Putzo <andreas\@putzo.net>
 Version svn-$Version
 ";
 
@@ -63,44 +74,16 @@ use Image::Magick;
 
 my $long_sleep_time=600;
 
-# For Expedia
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
               100000,150000,200000,300000,500000,750000,1000000,1500000,2000000,3000000,
               5000000,7500000,10000000,15000000,20000000,30000000,50000000,75000000);
+
 
 # Translates Scale to zoom factor used by Mapserver
 # This Variable also is used to see if the required mapserver
 # is a valid Mapserver source
 my $Scale2Zoom = { 
-    expedia => {
-	12000*3950 => 12000,
-	 7000*3950 =>  7000,
-	 2000*3950 =>  2000,
-	  800*3950 =>   800,
-	  150*3950 =>   150,
-	   50*3950 =>	 50,
-	   25*3950 =>	 25,
-	   12*3950 =>	 12,
-	    6*3950 =>     6,
-	    3*3950 =>	  3,
-	    1*3950 =>	  1,
-    },
-    googlesat => {
-	5708800 =>  7,  #Modified Scale values
-	2854400 =>  8,
-	1427200 =>  9,
-	713600  => 10,
-	356800  => 11,
-	178400  => 12,
-	89200   => 13,
-	44600   => 14,
-	22300   => 15,
-	11200   => 16,
-	5600    => 17,
-	2825    => 18,
-	1412    => 19,
-    },
-    eniro => {
+    eniro    => {
 	18000000 => 1, # 480     Km
 	3200000  => 2, #  80     Km
 	400000   => 3, #  10     Km
@@ -159,25 +142,14 @@ my $Scale2Zoom = {
        5000000 => 5000*6.4,
       10000000 =>10000*6.4,
       50000000 =>50000*6.4,
-    },
-    googlemap => {
-    64768000 => 15,
-    32384000 => 14,
-    16192000 => 13, 
-     8096000 => 12,
-     4048000 => 11,
-     2024000 => 10,
-     1012000 => 9,    
-      506000 => 8,
-      253000 => 7,
-      126500 => 6,
-      63250 => 5,
-      31625 => 4,
-      15812 => 3 ,
-      7906  => 2,
-      3953 => 1
     }
 };
+
+$Scale2Zoom->{eniro_se} = $Scale2Zoom->{eniro};
+$Scale2Zoom->{eniro_dk} = $Scale2Zoom->{eniro};
+$Scale2Zoom->{eniro_no} = $Scale2Zoom->{eniro};
+$Scale2Zoom->{eniro_fi} = $Scale2Zoom->{eniro};
+
 
 # Set defaults and get options from command line
 Getopt::Long::Configure('no_ignore_case');
@@ -189,7 +161,7 @@ my $cover_route;
 my $failcount           = 0;
 my $newcount            = 0;
 my $existcount          = 0;
-my $polite              = 1;
+my $polite              = 10;
 my $MIN_MAP_BYTES       = 4000;   # Minimum Bytes for a map to be accepted as downloaded
 my $scale;
 my $CONFIG_DIR          = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of this?
@@ -197,7 +169,7 @@ my $CONFIG_FILE         = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE          = "$CONFIG_DIR/way.txt";
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
 my $FILEPREFIX          = 'map_';
-my $mapserver           = 'expedia';
+my $mapserver           = 'landsat';
 my $simulate_only       = 0;
 my $check_koord_file    = 0;
 my $update_koord        = 0;
@@ -233,6 +205,15 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     )
     or pod2usage(1);
 
+# don't allow polite smaller than one second
+if ( ($polite =~ /\d+/) && ($polite < 1) ) {
+    print "A polite value below one second is not supported.\n";
+    print "Setting polite to default (one second)!\n";
+    $polite=1;
+}
+
+
+
 if ( $mapserver eq 'geoscience' )
 {
     $scale ||= join(",",keys %{$Scale2Zoom->{'geoscience'}});
@@ -246,25 +227,12 @@ if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
     exit;
 }
 
-if ( $mapserver eq 'googlesat') {
-    $MIN_MAP_BYTES = 1000; # Small Tiles
-    $FILEPREFIX          = 'top_';
-}
-
 if ( $mapserver eq 'landsat') {
     $FILEPREFIX          = 'top_';
     $FILEPREFIX          = 'map_';
 }
 
 @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
-
-# for google stitch
-my %font_description = (font=> "Arial-Bold", pointsize=>12, fill=>"yellow");
-my @quadChars = qw/t q s r/;
-my $PI = 3.14159265358979323846;
-my $MERCATOR_TOP = 85.051125;
-my $MERCATOR_BOTTOM = -85.051125;
-
 
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
@@ -273,10 +241,8 @@ sub append_koords($$$$);   # {}
 sub check_coverage($);     # {}
 sub check_koord_file($);   # {}
 sub debug($);              # {}
-sub expedia_url($$$);      # {}
 sub geoscience_url($$$);   # {}
 sub landsat_url($$$);   # {}
-sub googlemap_url($$$);   # {}
 sub resize($$); #{}
 sub file_count($);         # {}
 sub get_coords_for_route;  # {}
@@ -418,7 +384,8 @@ if ( $mapserver eq 'geoscience' ){
     print "| Landsat Maps are Copyright, .....   |\n";
     print "| They are free for non commercial use.                     |\n";
 } elsif ( ! $force) {
-    print "You are violating the map servers copyright!\n";
+    print "You may violating the map servers terms of use!\n";
+    print "Please use their service responsible!\n";
     print "Are you sure you want to continue? [y|n] ";
     my $answer = <STDIN>;
     exit if ($answer !~ /^[yY]/);
@@ -603,7 +570,6 @@ sub mirror_map($$){
 	$long_sleep_time*=2;
     };
 
-
     # sleep if polite is turned on to be nice to the webserver of the mapserver
     sleep($polite) if ($polite =~ /\d+/);
 
@@ -668,11 +634,7 @@ sub wget_map($$$){
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
     my $filename = map_filename($scale,$lati,$long);
     
-    if ( $mapserver eq 'expedia') 
-    {
-	($url,$mapscale)=expedia_url($lati,$long,$scale);
-    } 
-    elsif ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/) 
+    if ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/) 
     {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
     } 
@@ -683,10 +645,6 @@ sub wget_map($$$){
     elsif ( $mapserver eq 'gov_au') 
     {
 	($url,$mapscale)=gov_au_url($lati,$long,$scale);
-    } elsif ( $mapserver eq 'googlesat') 
-    {
-	$mapscale=$scale;
-	$url = "google-sat-maps";
     }
     elsif ( $mapserver eq 'geoscience') 
     {
@@ -696,13 +654,9 @@ sub wget_map($$$){
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
     } 
-    elsif ( $mapserver eq 'googlemap') 
-    {
-	($url,$mapscale)=googlemap_url($lati,$long,$scale);
-    } 
     else 
     {
-	print "Unknown map sever :", $mapserver, "\n"; 
+	print "Unknown map server :", $mapserver, "\n"; 
 	return "E";
     }
     
@@ -739,22 +693,14 @@ sub wget_map($$$){
 	    $newcount++;
 	} else {
 	    debug("mirror $url");	    
-	    if ( $mapserver eq 'googlesat') 
-	    {
-		$result = google_stitch($lati,$long,$scale,5,4,"$mapdir$filename");
-		if ($result eq '+') {
-		  $newcount++;
-		} else {
-		  $failcount++;
-		}
-	    } elsif ( $mapserver eq 'gov_au') {
-		if ( mirror_map($url,$filename) ) {
-		    $result = gov_au_resize($lati,$long,$scale,5,4,"$mapdir$filename");
-		    append_koords($filename, $lati, $long, $mapscale);
-		    $result= "+";
-		    print "\nWrote $filename\n" if $debug;
-		    $newcount++;
-		}
+	    if ( $mapserver eq 'gov_au') {
+		    if ( mirror_map($url,$filename) ) {
+		        $result = gov_au_resize($lati,$long,$scale,5,4,"$mapdir$filename");
+		        append_koords($filename, $lati, $long, $mapscale);
+    		    $result= "+";
+	    	    print "\nWrote $filename\n" if $debug;
+		        $newcount++;
+    		}
 	    } elsif ( mirror_map($url,$mirror_filename) ) {
 		if ( $mapserver eq 'geoscience'){
 		    $result = resize($mapdir.$mirror_filename,$mapdir.$filename);
@@ -845,96 +791,6 @@ sub get_scales {
     }
     return \@scales_to_get;
 } #End get_scales
-
-#############################################################################
-sub expedia_url($$$){
-    my $lati = shift;
-    my $long = shift;
-    my $scale = shift;
-
-    # get altimeter setting for given scale
-    my $mapscale = $scale;
-    my $alti = undef;
-    for my $s ( sort keys %{$Scale2Zoom->{expedia}} ) {
-	next unless $s == $scale;
-	$alti = $Scale2Zoom->{expedia}->{$s};
-	$mapscale = $s;
-	last;
-    }
-
-    # error if not found
-    unless ( $alti ) {
-	print "Error calculating Zoomlevel for Scale: $scale\n";
-	return (undef,undef);
-    }
-
-    # debug output
-    if ($debug) {
-	print "\n";
-	print "Using expedia altitude ", $alti, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
-	print "lat: $lati\n";
-	print "lon: $long\n";
-    }
-
-    # generate url
-    my $where;
-    if ($long < -30) {
-	$where = 'USA0409';
-    } else {
-	$where = 'EUR0809';
-    }
-    my $url = "http://www.expedia.com/pub/agent.dll?qscr=mrdt&ID=3XNsF.\&"
-	."CenP=$lati,$long\&Lang=$where\&Alti=$alti\&Size=1280,1024\&Offs=0.000000,0.000000";
-    return ($url,$mapscale);
-}
-
-
-
-sub googlemap_url($$$){
-    my $lati = shift;
-    my $long = shift;
-    my $scale = shift;
-
-    # get altimeter setting for given scale
-    my $mapscale = $scale;
-    my $zoom = undef;
-    for my $s ( sort keys %{$Scale2Zoom->{googlemap}} ) {
-	next unless $s == $scale;
-	$zoom = $Scale2Zoom->{googlemap}->{$s};
-	$mapscale = $s;
-	last;
-    }
-
-    # error if not found
-    unless ( $zoom ) {
-	print "Error calculating Zoomlevel for Scale: $scale\n";
-	return (undef,undef);
-    }
-
-    # debug output
-    if ($debug) {
-	print "\n";
-	print "Using googlemap zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
-	print "lat: $lati\n";
-	print "lon: $long\n";
-    }
-
-    # generate url
-#    print "\nlat :$lati\nlon: $long\n";
-    my $nlati;
-    my $nlong;
-    $nlati=sprintf ("%.6f",$lati);
-    $nlati =~ s/\.//;
-    $nlong=sprintf ("%.6f",$long);
-    $nlong =~ s/\.//;
-#    print "\nnlat :$nlati\nnlon: $nlong\n";
-    
-    my $url = "http://www.google.com/mapprint?c=$nlong,$nlati&r=1280,1024&z=$zoom";
-#   print "$url\n";
-#   return (undef,undef);
-    return ($url,$mapscale);
-}
-
 
 #############################################################################
 sub eniro_url($$$){
@@ -1764,16 +1620,21 @@ sub update_file_in_map_koords(){
     if ( $MAP_FILES->{$filename} ||
 	 $MAP_FILES->{$short_filename} ) {
 #	print "OK       $filename\n";
-    } else {
+    }
+    else {
 	#mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
 	if ( $filename =~ m/map_(\d+)-(\d+\.\d+)-(\d+\.\d+)\.gif/ ) {
 	    my $scale=$1;
 	    my $lati=$2;
 	    my $long=$3;
-	    my ($url,$mapscale)=expedia_url($lati,$long,$scale);
-	    
+#	    my ($url,$mapscale)=expedia_url($lati,$long,$scale);
+        for my $s (sort keys %{$Scale2Zoom->{$mapserver}} ) {
+            next unless $s == $scale;
+            $scale = $s;
+            last;
+        }
 #	    print "Appending File: $filename\n";
-	    append_koords($short_filename, $lati, $long, $mapscale);
+	    append_koords($short_filename, $lati, $long, $scale);
 	    debug("File:$filename lat:$lati lon:$long");
 	}
 
@@ -1873,296 +1734,6 @@ sub check_coverage($){
     }
     print "\n";
 }
-
-# =============================================================================
-# This part downloads a bunch of Google satellite images 
-# for coordinates given and stitches them together
-# ver 0.99
-#
-# changes: v. 0.92 - 0.99 now using PerlMagic directly
-#
-# Copyright (c) 2005 Piter Pen <code\@piterpen.net>
-# http://www.piterpen.net
-#
-# I was too lazy to write a function converts number of the map to 'tqrs'-like string 
-# so I took one (xy2goog) from http://web.media.mit.edu/~nvawter/projects/googlemaps/sa01.pl 
-# without permission - I assume it's ok but I promise to remove if not.
-#
-# SYNOPSIS:
-# google_stitch.pl 39.346970 72.879140 15 3 4
-# Stitch the satellite image with zoom level 15, 3 kh.google.com images width,
-# 4 height and centered in 39.346970N and 72.879140E
-sub lat2y1($){
-    my $lat = shift;
-
-    my $sinLat = sin(($lat*$PI)/180);
-    my $res = log(
-		  (1 + $sinLat) /
-		  (1 - $sinLat)
-		  )/2;
-#    debug("lat2y1($lat) --> $res");
-    return $res;
-}
-
-
-
-
-sub xy2goog($$$){
-    my ($x, $y, $zoom) = @_;
-
-    $y = 2**($zoom-1) - 1 - $y;
-    
-    my $format = '%0'.$zoom.'b';
-
-    my @xBits = split(//, sprintf($format, $x));
-    my @yBits = split(//, sprintf($format, $y));
-
-    #debug("xy2goog($x,$y,$zoom)-> $format '".sprintf($format, $x)."'");
-    #debug("xy2goog($x,$y,$zoom)-> $format '".sprintf($format, $y)."'");
-
-    my $res = '';
-    for(my $i = 0; $i < $zoom; $i++) {
-	my $qc = ($xBits[$i] << 1) + $yBits[$i];
-        $res .= $quadChars[$qc];
-    }
-    #debug("xy2goog($x,$y,$zoom)-> $res");
-
-    return $res;
-}
-
-sub xy2latlon($$$$){
-    my ($x, $y, $zoom, $format) = @_;
-
-    my $width = 2**($zoom-1);
-    my $height = 2**($zoom-1);
-    
-    my $tileWidth = 360 / $width;
-
-    my $lon = $x*$tileWidth - 180;
-    
-    my $yTop = lat2y1($MERCATOR_TOP);
-    my $yBottom = lat2y1($MERCATOR_BOTTOM);
-
-    $y = (($yBottom - $yTop)*$y)/$height + $yTop;
-    
-    my $lat = (360*atan2(exp($y), 1))/$PI - 90;
-
-    my $res = sprintf($format, $lat, $lon);
-
-    #debug("xy2latlon($x,$y,$zoom,$format)-> $res");
-    return $res;
-}
-
-sub latlon2xy($$$){
-    my ($lat, $lon, $zoom) = @_;
-
-    my $width = 2**($zoom-1);
-    my $height = 2**($zoom-1);
-
-    my $tileWidth = 360 / $width;
-
-    my $x = ($lon + 180)/$tileWidth;
-    
-    my $y = lat2y1($lat);
-
-    my $yTop = lat2y1($MERCATOR_TOP);
-    my $yBottom = lat2y1($MERCATOR_BOTTOM);
-
-    $y = ($height*($y - $yTop))/($yBottom - $yTop);
-
-    #debug("latlon2xy($lat,$lon,$zoom) = $x,$y");
-    return int($x), int($y);
-}
-
-
-######################################################################
-# Check if $filename is a valid map image
-# Check if there ist a result in it or only Blank
-######################################################################
-sub is_usefull_map_file($){
-    my $filename = shift;
-    $filename = "$mapdir/$filename" unless $filename =~ m,^/,;
-    my $size = (-s $filename)||0;
-    return 0 if $size < 1000;
-    if ( ( $size == 2085 ) ||
-	 ( $size == 1755 ) ) {
-	# For GoogleSat Maps
-	my $content = slurp($filename);
-	return 0 if $content =~ m,<title>403 Forbidden</title>,;
-	my ($checksum) = split(/\s+/,`md5sum $filename`);
-	if ( $checksum eq "c2b3a15d665ba8d2c5aed77025c41a6e" ) {
-#	    print "checksumm sees no content \n";
-	    return 0;
-	};
-    }
-    return 1;
-}
-
-sub write_wld($$$$){
-    my $filename = shift;
-    my $lat      = shift;
-    my $lon      = shift;
-    my $zoom     = shift;
-
-    my $wld_filename = $filename;
-    die "wrong Filename $filename for making wld file\n"
-	unless $wld_filename =~ s/\.(jpg|gif)$/.wld/;
-#    print "$wld_filename,$lat,$lon,$zoom\n";
-    my $fw =IO::File->new(">$wld_filename");
-    print $fw "$zoom\n";
-    print $fw "0.0\n";
-    print $fw "0.0\n";
-    print $fw "$zoom\n";
-    print $fw "$lat\n";
-    print $fw "$lon\n";
-    $fw->close();
-}
-
-sub google_stitch($$$$$$) {
-    my ($lat, $lon, $scale, $width, $height , $destination_file )= @_;
-    my $gpsdrivehome = "$ENV{'HOME'}/.gpsdrive";
-    
-
-    my $zoom  = $Scale2Zoom->{$mapserver}->{$scale};
-
-    # Directory for mirroring Google tiles
-    my $google_mirror_dir = "${mapdir}google_mirror/$zoom";
-
-    my $hwidth  = $width/2;
-    my $hheight = $height/2;
-
-    my ($hval, $vval) = latlon2xy ($lat, $lon, $zoom);
-    $hval -= int($hwidth);
-    $vval -= int($hheight);
-
-    debug("google_stitch($lat($hval), $lon($vval), $scale, $width, $height )");
-
-    my $image=Image::Magick->new();    
-    my $anz_found=0;
-    my $anz_new=0;
-    for(my $yd = 0; $yd < $height; $yd++) {
-	my $images=Image::Magick->new();    
-
-	for(my $xd = 0; $xd < $width; $xd++) {
-	    my $hpos = $hval + $xd;
-	    my $vpos = $vval + $yd;
-#	    print "google_stitch: $lat($hpos), $lon($vpos), $scale\n" if $debug;
-	    my $googlename = xy2goog($hpos, $vpos, $zoom);
-	    my $filename = "$google_mirror_dir/$googlename.jpg";
-	    my $url = "http://kh.google.com/kh?v=3&t=$googlename";
-	    
-	    if ( ! is_map_file($filename) ) {
-		if ( mirror_map($url,$filename) ) {
-		    if ( is_usefull_map_file($filename) ) {
-			$anz_new++;
-			write_wld($filename,$lat,$lon,$zoom)
-		    }
-		}
-	    }
-	    write_wld($filename,$lat,$lon,$zoom);
-
-	    my $model=Image::Magick->new();
-	    if ( is_usefull_map_file($filename) ) {
-		$anz_found++;
-		$model->ReadImage($filename);
-		if ($debug) { # Annotate position and coordinate
-		    $model->Draw(fill => 'blue',
-				 primitive => 'line',   
-				 points => '0,0 0,150');
-		    $model->Draw(fill => 'green',
-				 primitive => 'line',   
-				 points => '0,0 150,0');
-		    my $gwp = IO::File->new(">>way_google_stitch.txt");
-		    my ($lat,$lon)=split(",",xy2latlon($hpos, $vpos, $zoom, "%.4f,%.4f"));
-		    printf $gwp "%d_%d_%d %f %f Map\n",$hpos,$vpos,$zoom,$lat,$lon;
-		    $gwp->close();
-
-		    $model->Annotate( %font_description, 
-				      text => sprintf("%s\n%d, %d, %d",
-						      xy2latlon($hpos, $vpos, $zoom, "(%.3f,%.3f)"),
-						      $hpos,$vpos,$zoom),
-				      geometry => '+1+12' );
-		}
-
-	    }
-	    push @$images, $model;
-	}
-	#print "Stitching stripe N$yd..."  if $debug;
-	my $montage=$images->Montage(geometry=>'256x256', tile=>$width."x1");
-	#print "done.\n" if $debug;
-	push @$image, $montage;
-    }
-
-    my $ulh = $hval;
-    my $ulv = $vval;
-
-    my $lrh  = $hval+$width;
-    my $lrv  = $vval+$height;
-
-
-    my $fname =  
-	xy2latlon($ulh, $ulv, $zoom, "(%.6f)(%.6f)").
-	xy2latlon($lrh, $lrv, $zoom, "(%.6f)(%.6f)").
-	".jpeg";
-
-    my $include_empty_tiles=0;
-    if (  (!$include_empty_tiles) && $anz_found  < ($width* $height) ) {
-	return "O";
-    } elsif ( $anz_found ) {
-	print " Stitching result image... (w:$width * h:$height found:$anz_found) " if $debug;
-	$image = $image->Montage(geometry=>(256*$width)."x256", tile=>" 1x$height");
-	print "done.\n" if $debug;
-	
-	if ( $debug ) {
-	    my $ulm   =  xy2latlon($ulh, $ulv, $zoom, "%.6f\n%.6f");
-	    my $lrm   =  xy2latlon($lrh, $lrv, $zoom, "%.6f\n%.6f");
-	    my $mmm   =  xy2latlon($hval+$hwidth, $vval+$hheight, $zoom, "%.6f\n%.6f");
-	    print "Annotating result image...\n";
-	    $image->Draw(fill=>'red',    primitive=>'rectangle',   points=>'635,507 645,517');
-	    $image->Draw(fill=>'yellow', primitive=>'rectangle',   points=>'638,510 642,514');
-	    $image->Annotate(%font_description, text=>"$mmm", geometry=>'+640+512' );
-	    if (0){
-		my $way_txt = IO::File->new(">>/home/gpsdrive/way-test.txt");
-		#Muenchen                48.129281   11.573221 area.city
-		my $mm1 = $mmm;
-		$mm1 =~ s/\s+/_/g;
-		$mmm =~ s/\s+/ /g;
-		$way_txt->print("$mm1 $mmm\n");
-		$way_txt->close();
-	    }
-	    $image->Annotate(%font_description, text=>"$ulm", geometry=>'+2+54' );
-	    $image->Annotate(%font_description, text=>"$lrm", geometry=>'+2-54',gravity=>"SouthEast" );
-	    for my $x ([$ulh,$lrh]){
-		for my $y ([$ulv,$lrv]){
-		    my $pos_txt   =  xy2latlon($x, $y, $zoom, "%.6f\n%.6f");
-		    #$image->Draw(fill=>'red',    primitive=>'rectangle',   points=>'635,507 645,517');
-		    #$image->Annotate(%font_description, text=>"$lrm", geometry=>'+22+24',gravity=>"SouthEast" );
-		}
-	    }
-	    print "done.\n";
-	}
-
-	print "Writing result image ($destination_file)...\n" if $debug;
-	$image->Write($destination_file);
-
-	# TODO: $lat,$lon is not the real map center --> This has to be fixed!!!!
-	my ($la,$lo) = split(' ',xy2latlon($hval+$hwidth, $vval+$hheight, $zoom, "%.6f %.6f"));
-	append_koords($destination_file, $la, $lo, $scale);
-
-	($la,$lo) = split(' ',xy2latlon($hval, $vval, $zoom, "%.6f %.6f"));
-	write_wld($destination_file,$la,$lo,$scale);
-
-	if ( $anz_new ) {
-	    return ( $anz_found < ($width* $height) ) ? "x":"+"; # incomplete ?
-	} else {
-	    return ( $anz_found < ($width* $height) ) ? "c":"C"; # incomplete ?
-	}
-    } else {
-	return "O";
-    }
-
-}
-
 
 #############################################################################
 # Debug
@@ -2283,10 +1854,10 @@ Takes an optional value of number of seconds to sleep.
 
 =item B<--mapserver <MAPSERVER>>
 
-Mapserver to download from. Default: 'expedia'.
-Currently can use: landsat or expedia.
+Mapserver to download from. Default: 'landsat'.
+Currently can use: landsat
 
-geoscience, gov_au, incrementp, googlesat, googlemap and eniro have download stubs, 
+geoscience, gov_au, incrementp and eniro have download stubs, 
 but they are !!!NOT!!!! in the right scale.
 
 
@@ -2297,10 +1868,6 @@ landsat covers the whole world with satelite Photos
 gov_au is for Australia
 
 incrementp for japanese Maps
-
-googlesat: Google Satelite Maps
-
-expedia
 
 eniro covers:
  eniro_se Sweden
@@ -2399,10 +1966,6 @@ When downloading Maps the output reads as folows:
  _ Map already exists in Filesystem
  E Error while downloading Map
  + Map got downloaded 
- C googlestich map from Cache
- c incomplete googlestich map from Cache
- x Downloaded maps for googlestich but incomplete image
- O Not all tiles where found for stitching
  u updated map_koords.txt File
  S Simulate only 
 
