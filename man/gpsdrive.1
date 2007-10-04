@@ -6,7 +6,7 @@ gpsdrive v2.x - displays GPS position on a map
 
 .SH About this manual page
 
-This manual page explain the basic functions of GpsDrive and some
+This manual page explains the basic functions of GpsDrive and some
 additional info.
 
 In GpsDrive you find tooltips for nearly all buttons, there is also a
@@ -30,7 +30,7 @@ get from available maps.
 
 GpsDrive was tested with a GARMIN GPS III, a Crux II GPS PCMCIA
 card and a Navilock USB receiver. All Garmin GPS reveivers with a serial output should be
-usable. Other GPS reveivers that sends NMEA protocol over the
+usable. Other GPS receivers that sends NMEA protocol over the
 serial output should also work with GpsDrive.
 
 These GPS receivers are reported to work with gpsdrive:
@@ -132,7 +132,7 @@ helpful on small displays like the Compaq iPaq or on Head Mounted
 Displays, where the menu should be hidden.
 .TP
 .BI \-s "\| height\^"
-Set the height of the screen, if autodetection don't satisfy you, 
+Set the height of the screen, if autodetection doesn't satisfy you, 
 .IR height
 is i.e. 768,600,480,200
 .TP
@@ -144,9 +144,9 @@ only in combination with
 .IR -s
 .TP
 .BI \-f "\| friendsserver\^"
-Define a friendsserver to exchange position information with other
-people. You can also set it in the Settings/Friends menu. You can start your own friendsserver with the program
-.B friendsd
+Define a friends server to exchange position information with other
+people. You can also set it in the Settings/Friends menu. You can start your own friends server with the program
+.B friendsd2
 , which is included. More details are in section 
 .I FRIENDSD server
 
@@ -247,7 +247,7 @@ Start GpsDrive as normal user with:
 from your shell, if you want another language see section 
 .I LOCALISATION
 
-On some distribution you may find a "GpsDrive" entry in your Gnome or
+On some distributions you may find a "GpsDrive" entry in your Gnome or
 KDE menu.
 
 It is important that you have installed GpsDrive as root, so it can
@@ -265,13 +265,13 @@ menu). You can also stop gpsd if it is already running with the "Stop GPSD" Butt
 
 If you have connected a GPS-Receiver, you see in the 
 .I GPS Info
-window how much satellites are in view. You can click on this image to switch to the 
+window how many satellites are in view. You can click on this image to switch to the 
 .I Satellite position view.
 .br
 You must have at least 3 satellites in view. If you want to see your
 altitude, you need at least 4 satellites.  The antenna of your GPS
 receiver must have free sight to the sky, so you cannot use it
-indoor. More satellites gives you a better accuracy.
+indoors. More satellites gives you a better accuracy.
 
 If your receiver has not enough satellites with usable signal, the
 GPS Info window is red. If your signal is ok and gives a valid
@@ -283,7 +283,7 @@ There are 3 modes in which GpsDrive is operating:
 
 This mode is entered if you have a GPS receiver connected. The cursor is at the position your receiver sends.
 
-The black and a red arrow shows your position on the map. The 
+Black and a red arrows show your position on the map. The 
 .B black arrow
 is pointing to your selected target, the 
 .B red arrow
@@ -309,7 +309,7 @@ is
 .B not your real position
 and is marked as an rectangle.
 
-You can set the position by simple left-mouse click on the map.
+You can set the position by a simple left-mouse click on the map.
 
 You can leave the position mode by by clicking on the "Pos. mode"
 button or middle-mouse click or right-mouse click (which also sets
@@ -323,7 +323,7 @@ To activate this mode you have to choose the mapnik option.
 
 .SH MAP DOWNLOAD
 
-You can easily download maps from internet with the
+You can easily download maps from the internet with the
 .B Download
 button. GpsDrive stores an index of your maps in the file
 map_koord.txt in your  ~/.gpsdrive directory. You can also use any
@@ -357,7 +357,7 @@ a map i.e for Europe, Austria and Vienna if you want to drive in
 Vienna.
 
 
-There is also the programs
+There is also the program
 .IR gpsfetchmap.pl
 provided to download multiple maps for a bigger area.
 .br
@@ -365,7 +365,7 @@ provided to download multiple maps for a bigger area.
 www.expedia.com if you want to use their maps!
 .br
 .B Don't misuse this service by downloading more maps as you need! 
-You will risk being blocked by thier servers, and possibly cause
+You will risk being blocked by these servers, and possibly cause
 trouble for the gpsdrive project.
 
 File formats:
@@ -391,12 +391,12 @@ scale the maps correctly. Alternatively the maps can be stored without
 prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
 "_top".
 
-There is an "import assistant" built in. Use this to import your maps.
+There is an "import assistant" built in. Use it to import your maps.
 
 .SH Importing waypoints:
 
 
-The easiest way is to use the script "wpget" which does all for you if
+The easiest way is to use the script "wpget" which does everything for you if
 you use a GARMIN receiver.
 You can use the program "garble" (included in the package) to read
 out your waypoints from the Garmin GPS (Transfer mode must be set to
@@ -405,7 +405,7 @@ GARMIN here, while GpsDrive needs NMEA!).
 Scripts: "wpget" is a script which calls "garble" in the proper way.
 
 Be sure to have "wpget", "wpcvt" and "garble" in your path. This is
-fullfilled, if you did install the program as root and /usr/local/bin
+fulfilled, if you did install the program as root and /usr/local/bin
 is in your path.
 
 The manual way:
@@ -434,7 +434,7 @@ more than EUR 10.000.
 
 .SH PROXY SERVER
 If you must access the internet via a proxy server, you have to set the
-enviroment variable
+enviromental variable
 .B HTTP_PROXY
 or
 .B http_proxy
@@ -546,8 +546,8 @@ the line with '$name' and the comment in the next lines.
 Gpsdrive supports
 .IR kismet.
 Kismet is a 802.11b wireless network (WLAN) sniffer. If you have
-kismet running, gpsdrive will detect it and program start and shows
-new WLAN accesspoints in realtime on the map. SQL mode is necessary to
+kismet running, gpsdrive will detect it and program starts and shows
+new WLAN access points in real time on the map. SQL mode is necessary to
 use Gpsdrive with Kismet. WLAN accesspoints which are already
 stored in the SQL database from prior wardrivings are ignored. If you
 have voice output in gpsdrive, you hear information about the newly
@@ -594,7 +594,7 @@ festival --server
 
 When you start GpsDrive it will detect the server on port 1314 and
 puts out some status information as speech. You also have an
-additonal button (Mute) to switch off sound output.
+additional button (Mute) to switch off sound output.
 
 GpsDrive tries to select the correct language for your locale.
 The -l option can force the languages for speech
