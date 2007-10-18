@@ -16,7 +16,6 @@ if (WITH_SCRIPTS)
     gpssmswatch
     gpsfetchmap.pl
     geoinfo.pl
-    wp2sql
     gpsd_nmea.sh
     nasaconv.sh
   )

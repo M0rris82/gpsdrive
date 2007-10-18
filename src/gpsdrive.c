@@ -1539,13 +1539,20 @@ drawmarker (GtkWidget * widget, guint * datum)
 			}
 
 			/*  draw pointer to destination */
-			draw_posmarker (posx, posy, current.bearing,
-				&colors.black, 1, FALSE, FALSE);
-
+			if (local_config.posmarker == 0)
+			{
+				draw_posmarker (posx, posy, current.bearing,
+					&colors.red, 1, FALSE, FALSE);
+			}
+			else
+			{
+				draw_posmarker (posx, posy, current.bearing,
+					&colors.red, local_config.posmarker, FALSE, FALSE);
+			}
 
 			/*  draw pointer to direction of motion */
 			draw_posmarker (posx, posy, current.heading,
-				&colors.orange2, local_config.posmarker,
+				&colors.black, local_config.posmarker,
 				FALSE, TRUE);
 		}
 		if (markwaypoint)
@@ -1709,7 +1716,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 	kontext_compass = gdk_gc_new (drawable_compass);
 	pfd_compass = pango_font_description_from_string ("Sans 8");
 
-	gdk_gc_set_foreground (kontext_compass, &colors.lightorange);
+	gdk_gc_set_foreground (kontext_compass, &colors.darkgrey);
 	gdk_gc_set_line_attributes (kontext_compass, 1, 0, 0, 0);
 	gdk_draw_arc (drawable_compass, kontext_compass, TRUE,
 		12, 12, size-24, size-24, 0, 360 * 64);
@@ -1799,7 +1806,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 	pango_font_description_free (pfd_compass);
 
 	/* draw heading pointer */
-	gdk_gc_set_foreground (kontext_compass, &colors.blue);
+	gdk_gc_set_foreground (kontext_compass, &colors.black);
 	poly[0].x = size/2;
 	poly[0].y = size/2-1.1*diam;
 	poly[1].x = size/2+0.3*diam;
@@ -1810,25 +1817,25 @@ expose_compass (GtkWidget *widget, guint *datum)
 	poly[3].y = size/2+0.8*diam;
 	poly[4].x = poly[0].x;
 	poly[4].y = poly[0].y;
-	gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
+	gdk_draw_polygon (drawable_compass, kontext_compass, FALSE, poly, 5);
 
 	/* draw bearing pointer */
 	b = current.bearing - current.heading;
 	if (b > 2*M_PI)
 		b -= 2*M_PI;
 	gdk_gc_set_foreground (kontext_compass, &colors.red);
-	poly[0].x = size/2-0.8*diam*cos(b + M_PI_2);
-	poly[0].y = size/2-1.0*diam*sin(b + M_PI_2);
+	poly[0].x = size/2-diam*cos(b + M_PI_2);
+	poly[0].y = size/2-diam*sin(b + M_PI_2);
 	poly[1].x = size/2
-		- 0.2*diam*cos(b + M_PI) + 0.6*diam*cos(b + M_PI_2);
+		- 0.2*diam*cos(b + M_PI) + 0.7*diam*cos(b + M_PI_2);
 	poly[1].y = size/2
-		- 0.2*diam*sin(b + M_PI) + 0.6*diam*sin(b + M_PI_2);
+		- 0.2*diam*sin(b + M_PI) + 0.7*diam*sin(b + M_PI_2);
 	poly[2].x = size/2+0.4*diam*cos(b + M_PI_2);
 	poly[2].y = size/2+0.4*diam*sin(b + M_PI_2);
 	poly[3].x = size/2
-		+0.2*diam*cos(b + M_PI) +0.6*diam*cos(b + M_PI_2);
+		+0.2*diam*cos(b + M_PI) +0.7*diam*cos(b + M_PI_2);
 	poly[3].y = size/2
-		+0.2*diam*sin(b + M_PI) +0.6*diam*sin(b + M_PI_2);
+		+0.2*diam*sin(b + M_PI) +0.7*diam*sin(b + M_PI_2);
 	poly[4].x = poly[0].x;
 	poly[4].y = poly[0].y;
 	gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);

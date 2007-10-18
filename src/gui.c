@@ -73,7 +73,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #  define N_(String) (String)
 # endif
 
-#define PFSIZE 15
+#define PFSIZE 20
 
 extern gint do_unit_test;
 
@@ -687,7 +687,7 @@ draw_posmarker (
 	{
 		/* draw position icon */
 		gdk_draw_pixbuf (drawable, kontext_map, posmarker_img,
-			0, 0, posx - 15, posy - 15,
+			0, 0, posx - 20, posy - 20,
 			-1, -1, GDK_RGB_DITHER_NONE, 0, 0);
 	}
 
@@ -695,7 +695,7 @@ draw_posmarker (
 	{
 		/* draw shadow of position icon */
 		gdk_draw_arc (drawable, kontext_map, TRUE, posx-15, posy-15,
-			30, 30, 0, 360 * 64);
+			40, 40, 0, 360 * 64);
 	}
 
 	if (style == 0 || style == 1)
@@ -712,8 +712,10 @@ draw_posmarker (
 		poly[1].y = posy
 			+ PFSIZE / 2 * (sin (w + M_PI))
 			- PFSIZE / 1.5 * (sin (w + M_PI_2));
-		poly[2].x = posx;
-		poly[2].y = posy;
+		poly[2].x =
+			posx - PFSIZE / 3 * (cos (w + M_PI_2));
+		poly[2].y =
+			posy - PFSIZE / 3 * (sin (w + M_PI_2));
 		poly[3].x = posx
 			- PFSIZE / 2 * (cos (w + M_PI))
 			- PFSIZE / 1.5 * (cos (w + M_PI_2));
@@ -727,7 +729,7 @@ draw_posmarker (
 		/* draw outline */
 		if (outline)
 		{
-			gdk_gc_set_foreground (kontext_map, &colors.lightorange);
+			gdk_gc_set_foreground (kontext_map, &colors.white);
 			gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);		
 			gdk_draw_polygon (drawable, kontext_map, FALSE,
 				(GdkPoint *) poly, 5);
