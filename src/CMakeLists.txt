@@ -74,6 +74,8 @@ set(gpsdrive_SRCS
   gpssql.c
   gui.c
   gui.h
+  gpx.c
+  gpx.h
   icons.c
   icons.h
   import_map.c
