@@ -72,7 +72,8 @@ am__objects_1 = gpsdrive.$(OBJEXT) splash.$(OBJEXT) \
 	import_map.$(OBJEXT) routes.$(OBJEXT) download_map.$(OBJEXT) \
 	map_projection.$(OBJEXT) speech_strings.$(OBJEXT) \
 	gps_handler.$(OBJEXT) nmea_handler.$(OBJEXT) \
-	unit_test.$(OBJEXT) mapnik.$(OBJEXT) screenshot.$(OBJEXT)
+	unit_test.$(OBJEXT) mapnik.$(OBJEXT) screenshot.$(OBJEXT) \
+	gpx.$(OBJEXT)
 am_gpsdrive_OBJECTS = $(am__objects_1)
 gpsdrive_OBJECTS = $(am_gpsdrive_OBJECTS)
 gpsdrive_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -190,7 +191,7 @@ LIBADD_DL = @LIBADD_DL@
 LIBICONV = @LIBICONV@
 LIBINTL = @LIBINTL@
 LIBOBJS = @LIBOBJS@
-LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS)
+LIBS = $(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS) -lboost_filesystem
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
@@ -312,7 +313,7 @@ PRGS = gpsdrive.c splash.c splash.h gpsdrive_config.c gpsdrive_config.h \
 	gps_handler.c gps_handler.h nmea_handler.c nmea_handler.h \
 	unit_test.c \
 	mapnik.cpp mapnik.h \
-	screenshot.c screenshot.h \
+	screenshot.c screenshot.h gpx.c gpx.h \
 	../config.h gettext.h
 
 #	lib_map/lib_map.a
@@ -418,6 +419,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsmisc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpsnasamap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpssql.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gpx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icons.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/import_map.Po@am__quote@

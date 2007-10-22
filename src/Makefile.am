@@ -36,7 +36,8 @@ PRG1=
 endif
 
 bin_PROGRAMS = $(PRG1) gpsdrive friendsd2 
-LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS)
+LIBS=$(DBUS_LIBS) $(DBUS_GLIB_LIBS) -lfreetype $(MAPNIK_LIBS) -lboost_filesystem
+
 
 if HAVE_DBUS
 INCLUDES = $(DBUS_CFLAGS) -DDBUS_API_SUBJECT_TO_CHANGE=1
