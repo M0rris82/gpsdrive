@@ -599,6 +599,10 @@ config_init ()
 		sizeof (local_config.dir_home));
 	g_snprintf (local_config.dir_maps, sizeof (local_config.dir_maps),
 		"%s%s",local_config.dir_home,"maps/");
+	g_snprintf (local_config.dir_routes, sizeof (local_config.dir_routes),
+		"%s%s",local_config.dir_home,"routes/");
+	g_snprintf (local_config.dir_tracks, sizeof (local_config.dir_tracks),
+		"%s%s",local_config.dir_home,"tracks/");
 	g_snprintf (local_config.wp_file, sizeof (local_config.wp_file),
 		"%s%s", local_config.dir_home, "way.txt");
 	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),

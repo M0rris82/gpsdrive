@@ -461,7 +461,31 @@ void check_and_create_files(){
 		    printf("created %s\n",file_path);
 		}
 	}
-  
+
+    // Create tracks/ Directory if not exist
+    g_strlcpy (file_path, local_config.dir_tracks, sizeof (file_path)); 
+    if(stat(file_path,&buf))
+	{
+	    if ( mkdir (file_path, 0700) )
+		{
+		    printf("Error creating %s\n",file_path);
+		} else {
+		    printf("created %s\n",file_path);
+		}
+	}
+
+    // Create routes/ Directory if not exist
+    g_strlcpy (file_path, local_config.dir_routes, sizeof (file_path)); 
+    if(stat(file_path,&buf))
+	{
+	    if ( mkdir (file_path, 0700) )
+		{
+		    printf("Error creating %s\n",file_path);
+		} else {
+		    printf("created %s\n",file_path);
+		}
+	}
+
     // map_koord.txt
     // Copy from system if not exist
     g_snprintf (file_path, sizeof (file_path),
