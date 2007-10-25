@@ -115,6 +115,14 @@ enum
 	GUI_N_FORMATS
 };
 
+/* GPX Parsing Modes */
+enum gpx_mode
+{
+	GPX_INFO,
+	GPX_WPT,
+	GPX_TRK,
+	GPX_RTE
+};
 
 /*  size of the bearing pointer, default is 50 */
 //#define PSIZE real_psize

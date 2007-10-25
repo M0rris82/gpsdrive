@@ -58,7 +58,7 @@ Disclaimer: Please do not use for navigation.
 
 
 extern gint mydebug;
-
+extern GtkWidget *main_window;
 
 enum node_type
 {
@@ -90,25 +90,109 @@ typedef struct
  gchar urlname[255];
  gchar time[255];
  gchar keywords[255];
- gchar bounds[255];
+ gdouble bounds[4];
 } gpx_info_struct;
 
 
-void gpx_handle_gpxinfo ()
+gpx_info_struct gpx_info;
+
+
+void test_gpx (gchar *filename)
 {
+	gpx_file_read (filename, GPX_INFO);
+
+	fprintf (stdout, "\nTESTING GPX-FILE: %s\n", filename);
+	fprintf (stderr, "==================================================\n");
+	fprintf (stderr, "Version     : %s\n", gpx_info.version);
+	fprintf (stderr, "Creator     : %s\n", gpx_info.creator);
+	fprintf (stderr, "Name        : %s\n", gpx_info.name);
+	fprintf (stderr, "Description : %s\n", gpx_info.desc);
+	fprintf (stderr, "Author      : %s\n", gpx_info.author);
+	fprintf (stderr, "Email       : %s\n", gpx_info.email);
+	fprintf (stderr, "URL         : %s\n", gpx_info.url);
+	fprintf (stderr, "URL Name    : %s\n", gpx_info.urlname);
+	fprintf (stderr, "Time        : %s\n", gpx_info.time);
+	fprintf (stderr, "Keywords    : %s\n", gpx_info.keywords);
+	fprintf (stderr, "Bounds      : %.6f / %.6f - %.6f / %.6f\n",
+		gpx_info.bounds[0], gpx_info.bounds[1],
+		gpx_info.bounds[2], gpx_info.bounds[3]);
+	fprintf (stderr, "==================================================\n\n");
+}
 
 
-/*
-	xmlTextReaderGetAttribute(xml_reader, BAD_CAST "k")
+/* ******************************************************************
+ * Get file info stored in gpx file.
+ * Possible Nodes:
+ *  version, creator, name, desc, author, email, url, urlname,
+ *  time, keywords, bounds
+ */
+void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
+{
+	gint xml_status = 0;
 
-	if (tag_type == 3)
+	if (xmlStrEqual(node_name, BAD_CAST "gpx"))
 	{
-		g_snprintf(t_scale_max, sizeof(t_scale_max), "%s", xmlTextReaderConstValue(xml_reader));
-		continue;
+		g_snprintf(gpx_info.version, sizeof(gpx_info.version), "%s",
+			xmlTextReaderGetAttribute(xml_reader, BAD_CAST "version"));
+		g_snprintf(gpx_info.creator, sizeof(gpx_info.version), "%s",
+			xmlTextReaderGetAttribute(xml_reader, BAD_CAST "creator"));
 	}
-*/
-
-
+	else if (xmlStrEqual(node_name, BAD_CAST "name"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.name, sizeof(gpx_info.name),
+			"%s", xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "desc"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.desc, sizeof(gpx_info.desc),
+			"%s", xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "author"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.author, sizeof(gpx_info.author), "%s",
+			xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "email"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.email, sizeof(gpx_info.email), "%s",
+			xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "url"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.url, sizeof(gpx_info.url),
+			"%s", xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "urlname"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.urlname, sizeof(gpx_info.urlname), "%s",
+			xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "time"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.time, sizeof(gpx_info.time),
+		"%s", xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "keywords"))
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		g_snprintf(gpx_info.keywords, sizeof(gpx_info.keywords),
+			"%s", xmlTextReaderConstValue(xml_reader));
+	}
+	else if (xmlStrEqual(node_name, BAD_CAST "bounds"))
+	{
+		gpx_info.bounds[0] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "minlat"), NULL);
+		gpx_info.bounds[1] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "minlon"), NULL);
+		gpx_info.bounds[2] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "maxlat"), NULL);
+		gpx_info.bounds[3] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "maxlon"), NULL);
+	}
+	else return;
 }
 
 
@@ -204,7 +288,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 				}
 			}
 			else
-				gpx_handle_gpxinfo ();
+				gpx_handle_gpxinfo (xml_reader, node_name);
 		}
 		xml_status = xmlTextReaderRead(xml_reader);
 	}
@@ -230,3 +314,48 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	return TRUE;
 }
 
+
+/* *****************************************************************************
+ * Dialog: Load GPX File, including preview for gpx information
+ */
+gint loadgpx_cb (gint gpx_mode)
+{
+	GtkWidget *fdialog;
+	GtkFileFilter *filter_gpx;
+
+	fdialog = gtk_file_chooser_dialog_new (_("Select a GPX file"),
+		GTK_WINDOW (main_window),
+		GTK_FILE_CHOOSER_ACTION_OPEN,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		NULL);
+	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
+	filter_gpx = gtk_file_filter_new ();
+	gtk_file_filter_add_pattern (filter_gpx, "*.gpx");
+	gtk_file_filter_add_pattern (filter_gpx, "*.GPX");
+	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (fdialog), filter_gpx);
+
+	switch (gpx_mode)
+	{
+		case GPX_RTE:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_routes);
+			break;
+		case GPX_TRK:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_tracks);
+			break;
+		default:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_home);
+			break;
+	}
+
+	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
+	}
+
+	gtk_widget_destroy (fdialog);
+	return TRUE;
+}

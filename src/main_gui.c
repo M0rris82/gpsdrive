@@ -61,6 +61,7 @@ Disclaimer: Please do not use for navigation.
 #include "wlan.h"
 #include "routes.h"
 #include "track.h"
+#include "gpx.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -135,6 +136,8 @@ enum
 	MENU_MAPDOWNLOAD,
 	MENU_LOADTRACK,
 	MENU_LOADROUTE,
+	MENU_SAVETRACK,
+	MENU_SAVEROUTE,
 	MENU_SENDMSG,
 	MENU_SETTINGS,
 	MENU_HELPABOUT,
@@ -255,7 +258,9 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_MAPIMPORT:	import1_cb (NULL, 1); break;
 		case MENU_MAPDOWNLOAD:	download_cb (NULL, 0); break;
 		case MENU_LOADTRACK:	loadtrack_cb (NULL, 0); break;
-		case MENU_LOADROUTE:	return TRUE; break;
+		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
+		case MENU_SAVETRACK:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
+		case MENU_SAVEROUTE:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
 		case MENU_HELPABOUT:	about_cb (NULL, 0); break;
@@ -1334,11 +1339,13 @@ void create_controls_mainbox (void)
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
 	GtkWidget *menuitem_load, *menuitem_settings;
+	GtkWidget *menuitem_save, *menuitem_savetrack, *menuitem_saveroute;
 	GtkWidget *menuitem_help, *menuitem_helpabout, *menuitem_helpcontent;
 	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
-	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load;
+	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load, *menu_save;
 	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
+	GtkWidget *load_img, *save_img;
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
@@ -1376,7 +1383,9 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_MAPDOWNLOAD);
 
 	menu_load = gtk_menu_new ();
-	menuitem_load = gtk_image_menu_item_new_from_stock ("gtk-open", NULL);
+	menuitem_load = gtk_image_menu_item_new_with_label (_("Import"));
+	load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_load), load_img);
 	menuitem_loadtrack = gtk_menu_item_new_with_label (_("Track File"));
 	menuitem_loadroute = gtk_menu_item_new_with_label (_("Route File"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
@@ -1388,8 +1397,20 @@ void create_controls_mainbox (void)
 	g_signal_connect (menuitem_loadroute, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADROUTE);
 
-	// TODO: add load route functionality, until then the item is disabled
-	gtk_widget_set_sensitive (menuitem_loadroute, FALSE);
+	menu_save = gtk_menu_new ();
+	menuitem_save = gtk_image_menu_item_new_with_label (_("Export"));
+	save_img = gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_save), save_img);
+	menuitem_savetrack = gtk_menu_item_new_with_label (_("Track File"));
+	menuitem_saveroute = gtk_menu_item_new_with_label (_("Route File"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_save);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_save), menu_save);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_savetrack);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_saveroute);
+	g_signal_connect (menuitem_savetrack, "activate",
+		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVETRACK);
+	g_signal_connect (menuitem_saveroute, "activate",
+		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVEROUTE);
 
 	menuitem_sendmsg =
 		gtk_image_menu_item_new_with_label (_("Send Message"));

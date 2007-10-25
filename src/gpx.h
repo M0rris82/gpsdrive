@@ -30,15 +30,9 @@ Disclaimer: Please do not use for navigation.
  * See gpx.c for details.
  */
 
-enum gpx_mode
-{
-	GPX_INFO,
-	GPX_WPT,
-	GPX_TRK,
-	GPX_RTE
-};
-
 gint gpx_file_read (gchar *gpx_file, gint gpx_mode);
 gint gpx_file_write (gchar *gpx_file, gint gpx_mode);
+gint loadgpx_cb (gint gpx_mode);
+void test_gpx (gchar *filename);
 
 #endif /* GPSDRIVE_GPX_H */
