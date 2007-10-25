@@ -352,6 +352,8 @@ gint loadgpx_cb (gint gpx_mode)
                 GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
 		NULL);
 	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
+	gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (fdialog),
+		local_config.dir_home, NULL);
 	filter_gpx = gtk_file_filter_new ();
 	gtk_file_filter_add_pattern (filter_gpx, "*.gpx");
 	gtk_file_filter_add_pattern (filter_gpx, "*.GPX");
