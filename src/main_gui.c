@@ -108,6 +108,7 @@ GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
 GtkWidget *wp_draw_bt;
+GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
 
 // TODO: maybe these should be moved to local ones...
@@ -260,7 +261,7 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_LOADTRACK:	loadtrack_cb (NULL, 0); break;
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
 		case MENU_SAVETRACK:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
-		case MENU_SAVEROUTE:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
+		case MENU_SAVEROUTE:	route_export_cb (); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
 		case MENU_HELPABOUT:	about_cb (NULL, 0); break;
@@ -1339,7 +1340,7 @@ void create_controls_mainbox (void)
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
 	GtkWidget *menuitem_load, *menuitem_settings;
-	GtkWidget *menuitem_save, *menuitem_savetrack, *menuitem_saveroute;
+	GtkWidget *menuitem_save, *menuitem_savetrack;
 	GtkWidget *menuitem_help, *menuitem_helpabout, *menuitem_helpcontent;
 	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
@@ -1411,6 +1412,7 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVETRACK);
 	g_signal_connect (menuitem_saveroute, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVEROUTE);
+	gtk_widget_set_sensitive (menuitem_saveroute, FALSE);
 
 	menuitem_sendmsg =
 		gtk_image_menu_item_new_with_label (_("Send Message"));

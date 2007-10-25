@@ -4,6 +4,11 @@ Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 
 Website: www.gpsdrive.de
 
+Copyright (c) 2007 Ross Scanlon <info@4x4falcon.co>
+
+Website: www.4x4falcon.com/gpsdrive/
+
+
 Disclaimer: Please do not use for navigation.
 
     This program is free software; you can redistribute it and/or modify
@@ -76,6 +81,8 @@ extern GdkGC *kontext_map;
 extern GtkWidget *map_drawingarea;
 extern GtkWidget *frame_statusbar;
 extern poi_type_struct poi_type_list[poi_type_list_max];
+extern GtkWidget *main_window;
+extern GtkWidget *menuitem_saveroute;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -159,6 +166,7 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 	route.active = FALSE;
 	route.pointer = route.items = 0;
 	gtk_widget_set_sensitive (create_route_button, TRUE);
+	gtk_widget_set_sensitive (menuitem_saveroute, FALSE);
 	/* enable jump button */
 	gtk_widget_set_sensitive (gotobt, TRUE);
 	return FALSE;
@@ -221,6 +229,7 @@ insertroutepoints ()
 	(routelist + route.items)->lon = (wayp + i)->lon;
 	route.items++;
 	gtk_widget_set_sensitive (select_route_button, TRUE);
+	gtk_widget_set_sensitive (menuitem_saveroute, TRUE);
 
 }
 
@@ -258,6 +267,7 @@ insertallroutepoints ()
 		route.items++;
 	}
 	gtk_widget_set_sensitive (select_route_button, TRUE);
+	gtk_widget_set_sensitive (menuitem_saveroute, TRUE);
 
 }
 
@@ -726,13 +736,15 @@ void quickadd_routepoint ()
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,
 		_("Routepoint added."));
+
+	gtk_widget_set_sensitive (menuitem_saveroute, TRUE);
 }
 
 
 /* *****************************************************************************
  * save current route to gpx file
  */
-gboolean route_export_cb (gboolean defaultfile)
+gboolean route_export_cb ()
 {
 	const gchar gpx_head[] =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -748,22 +760,32 @@ gboolean route_export_cb (gboolean defaultfile)
 		"\n<rte>\n";
 	const gchar gpx_foot[] = "</rte>\n\n</gpx>\n";
 
+	GtkWidget *dialog;
 	FILE *routefile;
-	gchar filepath[1024];
+	gchar *filepath;
 	GTimeVal current_time;
 	GtkTreeIter iter;
 	gchar *t_name, *t_cmt, *t_type;
 	gdouble t_lat, t_lon;
 
-	if (!defaultfile)
+
+
+
+	dialog = gtk_file_chooser_dialog_new ("Save Route File",
+		GTK_WINDOW (main_window),
+		GTK_FILE_CHOOSER_ACTION_SAVE,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+		NULL);
+
+	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), local_config.dir_routes);
+	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "routesaved.gpx");
+
+	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		// TODO: add dialog to enter filename and other route data
-	}
-	else
-	{
-		g_snprintf (filepath, sizeof (filepath), "%sroutesaved.gpx",
-			local_config.dir_routes);
-	}
+		filepath = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
 
 	routefile = fopen(filepath, "w+t");
 	if(routefile == NULL)
@@ -773,7 +795,7 @@ gboolean route_export_cb (gboolean defaultfile)
 	}
 	g_get_current_time (&current_time);
 	fprintf (routefile, gpx_head,
-		"2.10pre4", g_time_val_to_iso8601 (&current_time));
+		PACKAGE_VERSION, g_time_val_to_iso8601 (&current_time));
 
 	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (route_list_tree), &iter);
 	do
@@ -804,11 +826,15 @@ gboolean route_export_cb (gboolean defaultfile)
 	g_free (t_name);
 	g_free (t_cmt);
 	g_free (t_type);
+	g_free(filepath);
 
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,
 		_("Route saved"));
 
+	}
+
+	gtk_widget_destroy (dialog);
 	return TRUE;
 }
 
@@ -1054,6 +1080,8 @@ add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 	g_free (t_dist);
 	g_free (t_cmt);
 	g_free (t_type);
+
+	gtk_widget_set_sensitive (menuitem_saveroute, TRUE);
 }
 
 

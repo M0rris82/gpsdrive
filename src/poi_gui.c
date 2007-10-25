@@ -51,6 +51,7 @@ Disclaimer: Please do not use for navigation.
 #include "poi.h"
 #include "poi_gui.h"
 #include "routes.h"
+#include "main_gui.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -97,6 +98,7 @@ extern currentstatus_struct current;
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *posbt;
 extern GtkWidget *settings_window;
+extern GtkWidget *menuitem_saveroute;
 
 extern GdkPixbuf *targetmarker_img;
 
@@ -386,6 +388,7 @@ route_cancel_cb ()
 	close_route_window_cb ();
 	route.items = 0;
 	route.distance = 0.0;
+	gtk_widget_set_sensitive (menuitem_saveroute, FALSE);
 }
 
 
@@ -1325,7 +1328,7 @@ void route_window_cb (GtkWidget *calling_button)
 		_("Export current route to a GPX File"), NULL);
 	gtk_widget_set_sensitive (button_routesave, FALSE);
 	g_signal_connect (button_routesave, "clicked",
-		GTK_SIGNAL_FUNC (route_export_cb), (gpointer) TRUE);
+		GTK_SIGNAL_FUNC (route_export_cb), NULL);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");

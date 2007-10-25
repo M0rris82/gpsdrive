@@ -40,7 +40,7 @@ void insertwaypoints (gint mobile);
 void quickadd_routepoint ();
 
 void route_init (void);
-gboolean route_export_cb (gboolean defaultfile);
+gboolean route_export_cb (void);
 
 void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
 
