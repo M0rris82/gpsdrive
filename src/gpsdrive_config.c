@@ -175,6 +175,10 @@ writeconfig ()
 
 	fprintf (fp, "mapdir = ");
 	fprintf (fp, "%s\n", local_config.dir_maps);
+	fprintf (fp, "trackdir = ");
+	fprintf (fp, "%s\n", local_config.dir_tracks);
+	fprintf (fp, "routedir = ");
+	fprintf (fp, "%s\n", local_config.dir_routes);
 	if (local_config.MapnikStatusInt > 1) { /* 2 = active, so store it as 1 */
 		fprintf (fp, "mapnik = %d\n", 1);
 	} else {
@@ -367,6 +371,12 @@ readconfig ()
 			else if ( (strcmp(par1, "mapdir")) == 0)
 				g_strlcpy (local_config.dir_maps, par2,
 					sizeof (local_config.dir_maps));
+			else if ( (strcmp(par1, "trackdir")) == 0)
+				g_strlcpy (local_config.dir_tracks, par2,
+					sizeof (local_config.dir_tracks));
+			else if ( (strcmp(par1, "routedir")) == 0)
+				g_strlcpy (local_config.dir_routes, par2,
+					sizeof (local_config.dir_routes));
 			else if ( (strcmp(par1, "mapnik")) == 0)
 				local_config.MapnikStatusInt = atoi (par2);
 			else if ( (strcmp(par1, "simfollow")) == 0)
