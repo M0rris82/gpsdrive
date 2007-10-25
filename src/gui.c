@@ -514,6 +514,7 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 		"%s", warning));
 
 	gdk_beep ();
+	gtk_widget_show_all (GTK_WIDGET (dialog_warning));
 
 	g_signal_connect_swapped (dialog_warning, "response",
 		G_CALLBACK (gtk_widget_destroy), dialog_warning);
@@ -553,6 +554,7 @@ gint popup_error (GtkWindow *parent, gchar *message)
 	gtk_widget_destroy (GTK_WIDGET (dialog_error));
 	return response_id;
 }
+
 
 /* *****************************************************************************
  * Button: Add new Waypoint
