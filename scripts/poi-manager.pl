@@ -469,12 +469,12 @@ sub import_gpx_opencaching
   my $twig= new XML::Twig
     (
       ignore_elts => { 'rte' => 1, 'trk' => 1 },
-      TwigHandlers => { wpt => \&sub_geocache }
+      TwigHandlers => { wpt => \&sub_opencache }
     );
   $twig->parsefile( "$file");
   my $gpx= $twig->root;
   
-  sub sub_geocache
+  sub sub_opencache
   {
     my( $twig, $wpt)= @_;
 
