@@ -91,6 +91,9 @@ typedef struct
  gchar time[255];
  gchar keywords[255];
  gdouble bounds[4];
+ gint wpt_count;
+ gint rte_count;
+ gint trk_count;
 } gpx_info_struct;
 
 
@@ -113,9 +116,11 @@ void test_gpx (gchar *filename)
 	fprintf (stderr, "URL Name    : %s\n", gpx_info.urlname);
 	fprintf (stderr, "Time        : %s\n", gpx_info.time);
 	fprintf (stderr, "Keywords    : %s\n", gpx_info.keywords);
-	fprintf (stderr, "Bounds      : %.6f / %.6f - %.6f / %.6f\n",
+	fprintf (stderr, "Bounds      : %.6f / %.6f - %.6f / %.6f\n\n",
 		gpx_info.bounds[0], gpx_info.bounds[1],
 		gpx_info.bounds[2], gpx_info.bounds[3]);
+	fprintf (stderr, "The file contains %d waypoints, %d routes, and %d tracks.\n",
+		gpx_info.wpt_count, gpx_info.rte_count, gpx_info.trk_count);
 	fprintf (stderr, "==================================================\n\n");
 }
 
@@ -225,7 +230,6 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 	gint node_type = 0;
 	xmlChar *node_name = NULL;
 
-
 	if (mydebug > 10)
 		fprintf (stdout, "gpx_file_read (%s, %d)\n", gpx_file, gpx_mode);
 
@@ -237,8 +241,23 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		return FALSE;
 	}
 
+	/* reset gpx info structure */
+	gpx_info.wpt_count = gpx_info.rte_count = gpx_info.trk_count = 0;
+	gpx_info.bounds[0] = gpx_info.bounds[1] = gpx_info.bounds[2] = gpx_info.bounds[3] = 0;
+	g_strlcpy (gpx_info.version, _("n/a"), sizeof (gpx_info.version));
+	g_strlcpy (gpx_info.creator, _("n/a"), sizeof (gpx_info.creator));
+	g_strlcpy (gpx_info.name, _("n/a"), sizeof (gpx_info.name));
+	g_strlcpy (gpx_info.desc, _("n/a"), sizeof (gpx_info.desc));
+	g_strlcpy (gpx_info.author, _("n/a"), sizeof (gpx_info.author));
+	g_strlcpy (gpx_info.email, _("n/a"), sizeof (gpx_info.email));
+	g_strlcpy (gpx_info.url, _("n/a"), sizeof (gpx_info.url));
+	g_strlcpy (gpx_info.urlname, _("n/a"), sizeof (gpx_info.urlname));
+	g_strlcpy (gpx_info.time, _("n/a"), sizeof (gpx_info.time));
+	g_strlcpy (gpx_info.keywords, _("n/a"), sizeof (gpx_info.keywords));
+
+	/* parse complete gpx file */
 	xml_status = xmlTextReaderRead(xml_reader);
-	while (xml_status == 1) /* parse complete file */
+	while (xml_status == 1)
 	{
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
@@ -251,6 +270,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 					gpx_handle_wpt ();
 				else
 				{
+					gpx_info.wpt_count++;
 					while (!xmlStrEqual(node_name, BAD_CAST "wpt") || node_type != NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
@@ -265,6 +285,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 					gpx_handle_rte ();
 				else
 				{
+					gpx_info.rte_count++;
 					while (!xmlStrEqual(node_name, BAD_CAST "rte") || node_type != NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
@@ -279,6 +300,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 					gpx_handle_trk ();
 				else
 				{
+					gpx_info.trk_count++;
 					while (!xmlStrEqual(node_name, BAD_CAST "trk") || node_type != NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
