@@ -762,7 +762,7 @@ gboolean route_export_cb (gboolean defaultfile)
 	else
 	{
 		g_snprintf (filepath, sizeof (filepath), "%sroutesaved.gpx",
-			local_config.dir_home);
+			local_config.dir_routes);
 	}
 
 	routefile = fopen(filepath, "w+t");
