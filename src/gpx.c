@@ -315,12 +315,15 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		xml_status = xmlTextReaderRead(xml_reader);
 	}
 
-	if (xml_status != 0)
-		fprintf(stderr, "gpx_file_read: Failed to parse file: %s\n", gpx_file);
-
 	xmlFreeTextReader(xml_reader);
 	if (node_name)
 		xmlFree (node_name);
+	
+	if (xml_status != 0)
+	{
+		fprintf(stderr, "gpx_file_read: Failed to parse file: %s\n", gpx_file);
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -338,13 +341,60 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 
 
 /* *****************************************************************************
+ * Callback for toggling of gpx info display in the file dialog
+ */
+static void
+toggle_file_info_cb (GtkWidget *button, GtkWidget *dialog)
+{
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)))
+		gtk_file_chooser_set_preview_widget_active
+			(GTK_FILE_CHOOSER (dialog), TRUE);
+	else
+		gtk_file_chooser_set_preview_widget_active
+		(GTK_FILE_CHOOSER (dialog), FALSE);
+}
+
+
+/* *****************************************************************************
+ * Callback for updating the displayed gpx info in the file dialog
+ */
+static void
+update_file_info_cb (GtkWidget *dialog, GtkWidget *label)
+{
+	gchar buf[2048];
+	gchar *filename;
+
+	filename = gtk_file_chooser_get_preview_filename (GTK_FILE_CHOOSER (dialog));
+	if (g_file_test (filename, G_FILE_TEST_IS_REGULAR) == FALSE)
+	{
+		g_snprintf (buf, sizeof (buf), _("Please select a file"));
+	}
+	else if (gpx_file_read (filename, GPX_INFO))
+	{
+		g_snprintf (buf, sizeof (buf),
+			_("<b>Name:</b>\n<i>%s</i>\n<b>Description:</b>\n<i>%s</i>\n<b>Author</b>:\n<i>%s</i>\n<b>created by:</b>\n<i>%s</i>\n<b>Timestamp:</b>\n<i>%s</i>"),
+			gpx_info.name, gpx_info.desc, gpx_info.author,
+			gpx_info.creator, gpx_info.time);
+	}
+	else
+	{
+		g_snprintf (buf, sizeof (buf), "no valid GPX file");
+	}
+	gtk_label_set_markup (GTK_LABEL (label), buf);
+	g_free (filename);
+}
+
+
+/* *****************************************************************************
  * Dialog: Load GPX File, including preview for gpx information
  */
 gint loadgpx_cb (gint gpx_mode)
 {
 	GtkWidget *fdialog;
 	GtkFileFilter *filter_gpx;
+	GtkWidget *info_bt, *info_lb;
 
+	/* create filedialog with gpx filter */
 	fdialog = gtk_file_chooser_dialog_new (_("Select a GPX file"),
 		GTK_WINDOW (main_window),
 		GTK_FILE_CHOOSER_ACTION_OPEN,
@@ -359,6 +409,21 @@ gint loadgpx_cb (gint gpx_mode)
 	gtk_file_filter_add_pattern (filter_gpx, "*.GPX");
 	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (fdialog), filter_gpx);
 
+	/* create widget for additional file info */
+	info_lb = gtk_label_new (NULL);
+	gtk_label_set_width_chars (GTK_LABEL (info_lb), 30);
+	gtk_label_set_line_wrap (GTK_LABEL (info_lb), TRUE);
+	gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (fdialog), info_lb);
+	gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (fdialog), FALSE);
+	gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (fdialog), FALSE);
+	g_signal_connect (fdialog, "update-preview",
+		G_CALLBACK (update_file_info_cb), info_lb);
+	info_bt = gtk_check_button_new_with_label (_("Show Info"));
+	gtk_file_chooser_set_extra_widget (GTK_FILE_CHOOSER (fdialog), info_bt);
+	g_signal_connect (info_bt, "toggled",
+		G_CALLBACK (toggle_file_info_cb), fdialog);
+
+	/* preset directory depending on wanted data */
 	switch (gpx_mode)
 	{
 		case GPX_RTE:

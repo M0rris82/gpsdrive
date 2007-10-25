@@ -1387,8 +1387,8 @@ void create_controls_mainbox (void)
 	menuitem_load = gtk_image_menu_item_new_with_label (_("Import"));
 	load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_load), load_img);
-	menuitem_loadtrack = gtk_menu_item_new_with_label (_("Track File"));
-	menuitem_loadroute = gtk_menu_item_new_with_label (_("Route File"));
+	menuitem_loadtrack = gtk_menu_item_new_with_label (_("Track"));
+	menuitem_loadroute = gtk_menu_item_new_with_label (_("Route"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), menu_load);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrack);
@@ -1402,8 +1402,8 @@ void create_controls_mainbox (void)
 	menuitem_save = gtk_image_menu_item_new_with_label (_("Export"));
 	save_img = gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_save), save_img);
-	menuitem_savetrack = gtk_menu_item_new_with_label (_("Track File"));
-	menuitem_saveroute = gtk_menu_item_new_with_label (_("Route File"));
+	menuitem_savetrack = gtk_menu_item_new_with_label (_("Track"));
+	menuitem_saveroute = gtk_menu_item_new_with_label (_("Route"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_save);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_save), menu_save);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_savetrack);
