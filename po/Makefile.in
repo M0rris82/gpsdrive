@@ -11,7 +11,7 @@
 # Origin: gettext-0.16
 
 PACKAGE = gpsdrive
-VERSION = 2.10svn17595146
+VERSION = 2.10svn17725194
 PACKAGE_BUGREPORT = package-for-gpsdrive@ostertag.name
 
 SHELL = /bin/sh
@@ -21,7 +21,7 @@ srcdir = .
 top_srcdir = ..
 
 
-prefix = /usr/local
+prefix = /usr
 exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 datadir = ${datarootdir}

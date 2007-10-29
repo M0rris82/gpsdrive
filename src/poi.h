@@ -2,7 +2,7 @@
 
 Copyright (c) 2001,2002 Fritz Ganter <ganter@ganter.at>
 
-Website: www.kraftvoll.at/software
+Website: www.gpsdrive.de/
 
 Disclaimer: Please do not use for navigation.
 

@@ -14,7 +14,7 @@ BuildRoot: %{_builddir}/%{name}-root
 %define _prefix /usr
 %description
 Gpsdrive is a map-based navigation system. It displays your position on a zoomable map provided from a NMEA-capable GPS receiver. The maps are autoselected for the best resolution, depending of your position, and the displayed image can be zoomed. Maps can be downloaded from the Internet with one mouse click. The program provides information about speed, direction, bearing, arrival time, actual position, and target position. Speech output is also available.
-See http://gpsdrive.kraftvoll.at for new releases.
+See http://gpsdrive.de for new releases.
 %prep
 %setup
 CFLAGS="$RPM_OPT_FLAGS" ./configure --disable-mysql --prefix=%{_prefix} --mandir=%{_mandir}

@@ -2966,8 +2966,8 @@ msgstr ""
 #~ "GPSDRIVE (c) 2001-2003 Fritz Ganter <ganter@ganter.at>\n"
 #~ "\n"
 
-#~ msgid "Website: www.kraftvoll.at/software\n"
-#~ msgstr "Website: www.kraftvoll.at/software\n"
+#~ msgid "Website: www.gpsdrive.de/\n"
+#~ msgstr "Website: www.gpsdrive.de/\n"
 
 #~ msgid "+    : Zoom in\n"
 #~ msgstr "+    : 拡大\n"
