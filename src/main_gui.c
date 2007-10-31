@@ -1179,7 +1179,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add instant routepoint at current mouse location
 	if ((toupper (event->keyval)) == 'R')
 	{
-		quickadd_routepoint ();
+		add_quickpoint_to_route ();
 	}
 
 	// In Route mode Force next Route Point
@@ -1346,7 +1346,7 @@ void create_controls_mainbox (void)
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
 	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load, *menu_save;
 	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
-	GtkWidget *load_img, *save_img;
+	GtkWidget *load_img, *save_img, *tripreset_img;
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
@@ -1423,7 +1423,11 @@ void create_controls_mainbox (void)
 
 	menuitem_tripreset =
 		gtk_image_menu_item_new_with_label (_("Reset Trip"));
-	
+	tripreset_img =
+		gtk_image_new_from_stock ("gtk-clear", GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image
+		(GTK_IMAGE_MENU_ITEM (menuitem_tripreset), tripreset_img);
+
 	if (!local_config.showfriends)
 		gtk_widget_set_sensitive (menuitem_sendmsg, FALSE);
 	menuitem_settings =

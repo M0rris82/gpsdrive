@@ -99,6 +99,22 @@ typedef struct
 
 gpx_info_struct gpx_info;
 
+void reset_gpx_info (void)
+{
+	gpx_info.wpt_count = gpx_info.rte_count = gpx_info.trk_count = 0;
+	gpx_info.bounds[0] = gpx_info.bounds[1] = gpx_info.bounds[2] = gpx_info.bounds[3] = 0;
+	g_strlcpy (gpx_info.version, _("n/a"), sizeof (gpx_info.version));
+	g_strlcpy (gpx_info.creator, _("n/a"), sizeof (gpx_info.creator));
+	g_strlcpy (gpx_info.name, _("n/a"), sizeof (gpx_info.name));
+	g_strlcpy (gpx_info.desc, _("n/a"), sizeof (gpx_info.desc));
+	g_strlcpy (gpx_info.author, _("n/a"), sizeof (gpx_info.author));
+	g_strlcpy (gpx_info.email, _("n/a"), sizeof (gpx_info.email));
+	g_strlcpy (gpx_info.url, _("n/a"), sizeof (gpx_info.url));
+	g_strlcpy (gpx_info.urlname, _("n/a"), sizeof (gpx_info.urlname));
+	g_strlcpy (gpx_info.time, _("n/a"), sizeof (gpx_info.time));
+	g_strlcpy (gpx_info.keywords, _("n/a"), sizeof (gpx_info.keywords));
+}
+
 
 void test_gpx (gchar *filename)
 {
@@ -201,21 +217,113 @@ void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
 }
 
 
-void gpx_handle_wpt ()
+
+/* ******************************************************************
+ * Handle information stored in rare points (wpt, rtept, trkpt)
+ * the possible nodes in all these sections are the same.
+ * gpx_mode chooses, where the information will be stored.
+ */
+static void gpx_handle_point (xmlTextReaderPtr xml_reader, gint gpx_mode)
 {
+	gchar mode_string[4];
+ 
+	switch (gpx_mode)
+	{
+		case GPX_WPT:	break;
+		case GPX_RTE:	break;
+		case GPX_TRK:	break;
+	}
+
 
 }
 
 
-void gpx_handle_rte ()
+/* ******************************************************************
+ * Handle information stored inside rte or trk section
+ * besides the different childs, the possible nodes are the same.
+ * gpx_mode chooses, where the information will be stored, and which
+ * childs will be parsed.
+ */
+static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, gint gpx_mode)
 {
+	gint xml_status = 0;
+	gint node_type = 0;
+	xmlChar *node_name = NULL;
+	xmlChar *t_name = NULL;
+	xmlChar *t_cmt = NULL;
+	xmlChar *t_desc = NULL;
+	xmlChar *t_src = NULL;
+	xmlChar *t_url = NULL;
+	xmlChar *t_urlname = NULL;
+	xmlChar *t_number = NULL;
 
-}
+	//if (mydebug > 20)
+		fprintf (stderr, "gpx_handle_rte: Parsing <rte> data\n");
+	while (!xmlStrEqual(node_name, BAD_CAST "rte") || node_type != NODE_END)
+	{
+		xml_status = xmlTextReaderRead(xml_reader);
+		node_type = xmlTextReaderNodeType(xml_reader);
+		node_name = xmlTextReaderName(xml_reader);
+
+		if (xmlStrEqual(node_name, BAD_CAST "rtept"))
+			gpx_handle_point (xml_reader, GPX_RTE);
+		else if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_name = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "cmt") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_cmt = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "desc") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_desc = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "src") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_src = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "url") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_url = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "urlname") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_urlname = xmlTextReaderValue(xml_reader);
+		}
+		else if (xmlStrEqual(node_name, BAD_CAST "number") && node_type == NODE_START)
+		{
+			xml_status = xmlTextReaderRead(xml_reader);
+			t_number = xmlTextReaderValue(xml_reader);
+		}
 
 
-void gpx_handle_trk ()
-{
+		// TODO: do something with the fetched data...
 
+	}
+	
+	if (node_name)
+		xmlFree (node_name);
+	if (t_name)
+		xmlFree (t_name);
+	if (t_cmt)
+		xmlFree (t_cmt);
+	if (t_desc)
+		xmlFree (t_desc);
+	if (t_src)
+		xmlFree (t_src);
+	if (t_url)
+		xmlFree (t_url);
+	if (t_urlname)
+		xmlFree (t_urlname);
+	if (t_number)
+		xmlFree (t_number);
 }
 
 
@@ -241,19 +349,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		return FALSE;
 	}
 
-	/* reset gpx info structure */
-	gpx_info.wpt_count = gpx_info.rte_count = gpx_info.trk_count = 0;
-	gpx_info.bounds[0] = gpx_info.bounds[1] = gpx_info.bounds[2] = gpx_info.bounds[3] = 0;
-	g_strlcpy (gpx_info.version, _("n/a"), sizeof (gpx_info.version));
-	g_strlcpy (gpx_info.creator, _("n/a"), sizeof (gpx_info.creator));
-	g_strlcpy (gpx_info.name, _("n/a"), sizeof (gpx_info.name));
-	g_strlcpy (gpx_info.desc, _("n/a"), sizeof (gpx_info.desc));
-	g_strlcpy (gpx_info.author, _("n/a"), sizeof (gpx_info.author));
-	g_strlcpy (gpx_info.email, _("n/a"), sizeof (gpx_info.email));
-	g_strlcpy (gpx_info.url, _("n/a"), sizeof (gpx_info.url));
-	g_strlcpy (gpx_info.urlname, _("n/a"), sizeof (gpx_info.urlname));
-	g_strlcpy (gpx_info.time, _("n/a"), sizeof (gpx_info.time));
-	g_strlcpy (gpx_info.keywords, _("n/a"), sizeof (gpx_info.keywords));
+	reset_gpx_info ();
 
 	/* parse complete gpx file */
 	xml_status = xmlTextReaderRead(xml_reader);
@@ -267,7 +363,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			if (xmlStrEqual(node_name, BAD_CAST "wpt"))
 			{
 				if (gpx_mode == GPX_WPT)
-					gpx_handle_wpt ();
+					gpx_handle_point (xml_reader, GPX_WPT);
 				else
 				{
 					gpx_info.wpt_count++;
@@ -282,7 +378,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			else if (xmlStrEqual(node_name, BAD_CAST "rte"))
 			{
 				if (gpx_mode == GPX_RTE)
-					gpx_handle_rte ();
+					gpx_handle_rte_trk (xml_reader, GPX_RTE);
 				else
 				{
 					gpx_info.rte_count++;
@@ -297,7 +393,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			else if (xmlStrEqual(node_name, BAD_CAST "trk"))
 			{
 				if (gpx_mode == GPX_TRK)
-					gpx_handle_trk ();
+					gpx_handle_rte_trk (xml_reader, GPX_TRK);
 				else
 				{
 					gpx_info.trk_count++;
@@ -442,7 +538,10 @@ gint loadgpx_cb (gint gpx_mode)
 
 	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
+		//if (mydebug >10)
+			test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
+
+		gpx_file_read (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);
 	}
 
 	gtk_widget_destroy (fdialog);

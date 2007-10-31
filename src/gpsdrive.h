@@ -307,7 +307,10 @@ friendsstruct;
 /* struct for current route status */
 typedef struct
 {
- 	gint active;
+	gchar name[255];
+	gchar desc[255];
+	gchar src[255];
+	gint active;
 	gint edit;
 	gint pointer;
 	gint show;

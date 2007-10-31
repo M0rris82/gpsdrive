@@ -1,11 +1,11 @@
 /***********************************************************************
 
 Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
-
 Website: www.gpsdrive.de
 
-Copyright (c) 2007 Ross Scanlon <info@4x4falcon.co>
+Copyright (c) 2007 Guenther Meyer <d.s.e@sordidmusic.com>
 
+Copyright (c) 2007 Ross Scanlon <info@4x4falcon.co>
 Website: www.4x4falcon.com/gpsdrive/
 
 
@@ -112,7 +112,6 @@ free_route_list ()
 /* *****************************************************************************
  * set the target in routemode 
  */
-
 void
 setroutetarget (GtkWidget * widget, gint datum)
 {
@@ -639,47 +638,31 @@ route_next_target ()
 // Here follows the new, POI-related route stuff...
 
 
+
 /* *****************************************************************************
- * create a new POI of type "waypoint.routepoint"
- * and append it to the current route
+ * core function to add a new point to the current routes
+ * used by several other functions
  */
-void quickadd_routepoint ()
+void add_routepoint
+	(glong t_id, gchar *t_name, gchar *t_cmt,
+	 gchar *t_type, gdouble t_lon, gdouble t_lat)
 {
 
-	gchar t_name[100], t_cmt[100], t_nr[5], t_trip[15];;
-	gchar t_dist[15], t_type[POI_TYPE_LIST_STRING_LENGTH];
-	gdouble t_lat, t_lon, last_lat, last_lon, t_dist_num;
-	glong t_id;
-	gint t_x, t_y, t_ptid;
-	GdkPixbuf *t_icon;
-	GdkModifierType state;
+	gchar t_dist[15], t_trip[15];
+	gdouble last_lon, last_lat, t_dist_num;
+	gint t_ptid;
+	GdkPixbuf *t_icon;	
 	GtkTreeIter iter_route;
 	GtkTreePath *path_route;
 
-	time_t t;
-	struct tm *ts;
-	time (&t);
-	
-	ts = localtime (&t);
-	g_snprintf (t_name, sizeof (t_name), _("Routepoint"));
-	g_snprintf (t_cmt, sizeof (t_cmt), _("Quicksaved Routepoint"));
-	gdk_window_get_pointer (map_drawingarea->window, &t_x, &t_y, &state);
-	calcxytopos (t_x, t_y, &t_lat, &t_lon, current.zoom);
-	if ( mydebug > 0 )
-		printf ("Add Routepoint: %s lat:%f,lon:%f (x:%d,y:%d)\n",
-			t_name, t_lat, t_lon, t_x, t_y);
-
-	t_id = addwaypoint (t_name,
-		"waypoint.routepoint", t_cmt, t_lat, t_lon, TRUE);
-
-	t_ptid = poi_type_id_from_name ("waypoint.routepoint");
+	t_ptid = poi_type_id_from_name (t_type);
 	t_icon = poi_type_list[t_ptid].icon;
 
 	gtk_list_store_append (route_list_tree, &iter_route);
 
 	route.items +=1;
 
-	/* calculate trip distance */
+	/* calculate route trip distance */
 	if (route.items > 1)
 	{
 		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL
@@ -698,7 +681,7 @@ void quickadd_routepoint ()
 
 		if (mydebug>25)
 		{
-			fprintf (stderr, "quickadd_routepoint: Path: %s\n",
+			fprintf (stderr, "add_routepoint: Path: %s\n",
 				gtk_tree_path_to_string (path_route));
 		}
 	}
@@ -706,12 +689,10 @@ void quickadd_routepoint ()
 	{
 		route.distance =+ calcdist (t_lon, t_lat);
 	}
+
 	g_snprintf (t_trip, sizeof (t_trip), "%9.3f", route.distance);
-	g_snprintf (t_nr, sizeof (t_nr), " %d", route.items);
-	g_strlcat (t_name, t_nr, sizeof (t_name));
 	t_dist_num = calcdist (t_lon, t_lat);
 	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
-	g_snprintf (t_type, sizeof (t_type), "waypoint.routepoint");
 
 	if (mydebug>25)
 	{
@@ -732,6 +713,35 @@ void quickadd_routepoint ()
 		ROUTE_CMT, t_cmt,
 		ROUTE_TYPE, t_type,
 		-1);
+
+}
+
+
+/* *****************************************************************************
+ * create a new POI of type "waypoint.routepoint"
+ * and append it to the current route
+ */
+void add_quickpoint_to_route ()
+{
+	gchar t_name[100], t_cmt[100];
+	gdouble t_lat, t_lon;
+	glong t_id;
+	gint t_x, t_y;
+	GdkModifierType state;
+
+	g_snprintf (t_name, sizeof (t_name), "%s %d", _("Routepoint"), route.items+1);
+	g_snprintf (t_cmt, sizeof (t_cmt), _("Quicksaved Routepoint"));
+	gdk_window_get_pointer (map_drawingarea->window, &t_x, &t_y, &state);
+	calcxytopos (t_x, t_y, &t_lat, &t_lon, current.zoom);
+	if ( mydebug > 0 )
+		printf ("Add Routepoint: %s lat:%f,lon:%f (x:%d,y:%d)\n",
+			t_name, t_lat, t_lon, t_x, t_y);
+
+	t_id = addwaypoint (t_name,
+		"waypoint.routepoint", t_cmt, t_lat, t_lon, TRUE);
+
+	add_routepoint
+		(t_id, t_name, t_cmt, "waypoint.routepoint", t_lon, t_lat);
 
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,
@@ -754,10 +764,13 @@ gboolean route_export_cb ()
 		" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"
 		" http://www.topografix.com/GPX/1/0/gpx.xsd\"\n"
 		" version=\"1.0\"\n"
-		" creator=\"GPSDrive %s - http://www.gpsdrive.de\">\n"
-		"<name>exported GPSDrive Route</name>\n"
+		" creator=\"GpsDrive %s - http://www.gpsdrive.de\">\n"
+		"<name>%s</name>\n"
+		"<desc>%s</desc>\n"
+		"<author>%s</author>\n"
 		"<time>%s</time>\n"
-		"\n<rte>\n";
+		"\n<rte>\n"
+		"  <name>%s</name>\n  <desc>%s</desc>\n  <src>%s</src>\n";
 	const gchar gpx_foot[] = "</rte>\n\n</gpx>\n";
 
 	GtkWidget *dialog;
@@ -781,7 +794,7 @@ gboolean route_export_cb ()
 	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
 
 	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), local_config.dir_routes);
-	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "routesaved.gpx");
+	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "default.gpx");
 
 	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
 	{
@@ -795,7 +808,9 @@ gboolean route_export_cb ()
 	}
 	g_get_current_time (&current_time);
 	fprintf (routefile, gpx_head,
-		PACKAGE_VERSION, g_time_val_to_iso8601 (&current_time));
+		PACKAGE_VERSION, route.name, route.desc,
+		 g_get_real_name (), g_time_val_to_iso8601 (&current_time),
+		route.name, route.desc, route.src);
 
 	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (route_list_tree), &iter);
 	do
@@ -1000,84 +1015,25 @@ draw_route (void)
 void
 add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter)
 {
-	GtkTreeIter iter_route;
-	GtkTreePath *path_route;
-	
-	GdkPixbuf *t_icon;
-	gchar *t_name, *t_dist, *t_cmt, *t_type;
-	gchar t_trip[15];
+	gchar *t_name, *t_cmt, *t_type;
 	gint t_id;
-	gdouble t_lon, t_lat, t_distnum, last_lon, last_lat;
+	gdouble t_lon, t_lat;
 
-	route.items +=1;
 	
 	/* get data from selected POI */
 	gtk_tree_model_get (model, &iter,
 		RESULT_ID, &t_id,
-		RESULT_TYPE_ICON, &t_icon,
 		RESULT_NAME, &t_name,
 		RESULT_LON, &t_lon,
 		RESULT_LAT, &t_lat,
-		RESULT_DISTANCE, &t_dist,
-		RESULT_DIST_NUM, &t_distnum,
 		RESULT_COMMENT, &t_cmt,
 		RESULT_TYPE_NAME, &t_type,
 		-1);
 
-	gtk_list_store_append (route_list_tree, &iter_route);
+	add_routepoint
+		(t_id, t_name, t_cmt, t_type, t_lon, t_lat);
 
-	/* calculate trip distance */
-	if (route.items > 1)
-	{
-		path_route = gtk_tree_model_get_path (GTK_TREE_MODEL
-			(route_list_tree), &iter_route);
-		gtk_tree_path_prev (path_route);
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
-			&iter_route, path_route);
-		gtk_tree_model_get (GTK_TREE_MODEL (route_list_tree),
-			&iter_route,
-			ROUTE_LON, &last_lon, ROUTE_LAT, &last_lat, -1);
-		route.distance += calc_wpdist (last_lon, last_lat,
-			t_lon, t_lat, FALSE);
-		gtk_tree_path_next (path_route);
-		gtk_tree_model_get_iter (GTK_TREE_MODEL (route_list_tree),
-			&iter_route, path_route);
-
-		if (mydebug>25)
-		{
-			fprintf (stderr, "add_poi_to_route: Path: %s\n",
-				gtk_tree_path_to_string (path_route));
-		}
-	}
-	else if (route.items == 1)
-	{
-		route.distance =+ calcdist (t_lon, t_lat);
-	}
-	g_snprintf (t_trip, sizeof (t_trip), "%9.3f", route.distance);	
-
-	if (mydebug>25)
-	{
-		fprintf (stderr, "add_poi_to_route: (%d)  ID: %d  |"
-			"  NAME: %s  |  LON: %f  |  LAT: %f  |  ICON: %p\n",
-			route.items, t_id, t_name, t_lon, t_lat, t_icon);
-	}
-	
-	gtk_list_store_set (route_list_tree, &iter_route,
-		ROUTE_ID, t_id,
-		ROUTE_NUMBER, route.items,
-		ROUTE_ICON, t_icon,
-		ROUTE_NAME, t_name,
-		ROUTE_DISTANCE, t_dist,
-		ROUTE_TRIP, t_trip,
-		ROUTE_LON, t_lon,
-		ROUTE_LAT, t_lat,
-		ROUTE_CMT, t_cmt,
-		ROUTE_TYPE, t_type,
-		-1);
-	
-	g_object_unref (t_icon);
 	g_free (t_name);
-	g_free (t_dist);
 	g_free (t_cmt);
 	g_free (t_type);
 
@@ -1153,6 +1109,9 @@ route_init (void)
 		);
 
 	/* init route status data */
+	g_strlcpy (route.name, "Empty Route", sizeof (route.name));
+	g_strlcpy (route.desc, "empty route", sizeof (route.desc));
+	g_snprintf (route.src, sizeof (route.src), "generated with GpsDrive %s", PACKAGE_VERSION);
 	route.active = FALSE;		/* routemode off */
 	route.edit = FALSE;		/* route editmode off */
 	route.items = 0;		/* route is empty/not available */

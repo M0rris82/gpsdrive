@@ -37,7 +37,7 @@ void init_route_list ();
 void free_route_list ();
 void insertwaypoints (gint mobile);
 
-void quickadd_routepoint ();
+void add_quickpoint_to_route ();
 
 void route_init (void);
 gboolean route_export_cb (void);
