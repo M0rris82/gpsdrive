@@ -43,6 +43,7 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 #include <gpsdrive_config.h>
 #include "gpx.h"
+#include "gui.h"
 
 #include "gettext.h"
 #include <libxml/xmlreader.h>
@@ -94,14 +95,24 @@ typedef struct
  gint wpt_count;
  gint rte_count;
  gint trk_count;
+ gint rtept_count;
+ gint trkpt_count;
+ gint points;
 } gpx_info_struct;
 
+typedef struct
+{
+ xmlChar *name;
+ xmlChar *cmt;
+ xmlChar *type;
+} wpt_struct;
 
 gpx_info_struct gpx_info;
 
 void reset_gpx_info (void)
 {
 	gpx_info.wpt_count = gpx_info.rte_count = gpx_info.trk_count = 0;
+	gpx_info.rtept_count = gpx_info.trkpt_count = gpx_info.points = 0;
 	gpx_info.bounds[0] = gpx_info.bounds[1] = gpx_info.bounds[2] = gpx_info.bounds[3] = 0;
 	g_strlcpy (gpx_info.version, _("n/a"), sizeof (gpx_info.version));
 	g_strlcpy (gpx_info.creator, _("n/a"), sizeof (gpx_info.creator));
@@ -135,8 +146,9 @@ void test_gpx (gchar *filename)
 	fprintf (stderr, "Bounds      : %.6f / %.6f - %.6f / %.6f\n\n",
 		gpx_info.bounds[0], gpx_info.bounds[1],
 		gpx_info.bounds[2], gpx_info.bounds[3]);
-	fprintf (stderr, "The file contains %d waypoints, %d routes, and %d tracks.\n",
-		gpx_info.wpt_count, gpx_info.rte_count, gpx_info.trk_count);
+	fprintf (stderr, "Waypoints: %d\nRoutes: %d (%d points)\nTracks: %d (%d Points)\n",
+		gpx_info.wpt_count, gpx_info.rte_count, gpx_info.rtept_count,
+		gpx_info.trk_count, gpx_info.trkpt_count);
 	fprintf (stderr, "==================================================\n\n");
 }
 
@@ -147,7 +159,7 @@ void test_gpx (gchar *filename)
  *  version, creator, name, desc, author, email, url, urlname,
  *  time, keywords, bounds
  */
-void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
+static void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
 {
 	gint xml_status = 0;
 
@@ -217,24 +229,87 @@ void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
 }
 
 
-
 /* ******************************************************************
  * Handle information stored in rare points (wpt, rtept, trkpt)
  * the possible nodes in all these sections are the same.
  * gpx_mode chooses, where the information will be stored.
+ *
+ * Nodes that are (currently) NOT parsed:
+ *  ele, time, magvar, geoidheight, desc, src, url, urlname, fix,
+ *  sat, hdop, vdop, pdop, ageofdgpsdata, dgpsid, course, speed,
+ *  private tags and other namespaces
+ *  name, cmt, sym, type
  */
-static void gpx_handle_point (xmlTextReaderPtr xml_reader, gint gpx_mode)
+static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 {
-	gchar mode_string[4];
- 
-	switch (gpx_mode)
+	gint xml_status = 0;
+	gint node_type = 0;
+	gdouble t_lat = 0.0;
+	gdouble t_lon = 0.0;
+	xmlChar *node_name = NULL;
+
+	wpt_struct wpt;
+	wpt.name = NULL;
+	wpt.cmt = NULL;
+	wpt.type = NULL;
+
+	if (mydebug > 20)
+		fprintf (stderr, "gpx_handle_point: %s\n", mode_string);
+
+	t_lat = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lat"), NULL);
+	t_lon = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lon"), NULL);
+
+	gpx_info.points++;
+
+	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != NODE_END)
 	{
-		case GPX_WPT:	break;
-		case GPX_RTE:	break;
-		case GPX_TRK:	break;
+		xml_status = xmlTextReaderRead(xml_reader);
+		node_type = xmlTextReaderNodeType(xml_reader);
+		node_name = xmlTextReaderName(xml_reader);
+
+		if (node_type == NODE_START)
+		{
+			if (xmlStrEqual(node_name, BAD_CAST "name"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.name = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "cmt"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.cmt = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "sym") && wpt.type == NULL)
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.type = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "type"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				if (wpt.type)
+					xmlFree (wpt.type);
+				wpt.type = xmlTextReaderValue(xml_reader);
+			}
+		}
 	}
 
+	if (mydebug > 30)
+	{
+		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, t_lat, t_lon);
+		fprintf (stderr, "\tName   : %s\n", wpt.name);
+		fprintf (stderr, "\tComment: %s\n", wpt.cmt);
+		fprintf (stderr, "\tType   : %s\n", wpt.type);
+	}
 
+	if (node_name)
+		xmlFree (node_name);
+	if (wpt.name)
+		xmlFree (wpt.name);
+	if (wpt.cmt)
+		xmlFree (wpt.cmt);
+	if (wpt.type)
+		xmlFree (wpt.type);
 }
 
 
@@ -244,7 +319,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gint gpx_mode)
  * gpx_mode chooses, where the information will be stored, and which
  * childs will be parsed.
  */
-static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, gint gpx_mode)
+static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_string)
 {
 	gint xml_status = 0;
 	gint node_type = 0;
@@ -257,50 +332,58 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, gint gpx_mode)
 	xmlChar *t_urlname = NULL;
 	xmlChar *t_number = NULL;
 
-	//if (mydebug > 20)
-		fprintf (stderr, "gpx_handle_rte: Parsing <rte> data\n");
-	while (!xmlStrEqual(node_name, BAD_CAST "rte") || node_type != NODE_END)
+	if (mydebug > 20)
+		fprintf (stderr, "gpx_handle_rte_trk: Parsing <%s>\n", mode_string);
+
+	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != NODE_END)
 	{
 		xml_status = xmlTextReaderRead(xml_reader);
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
 
-		if (xmlStrEqual(node_name, BAD_CAST "rtept"))
-			gpx_handle_point (xml_reader, GPX_RTE);
-		else if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == NODE_START)
+		if (node_type == NODE_START)
 		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_name = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "cmt") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_cmt = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "desc") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_desc = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "src") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_src = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "url") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_url = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "urlname") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_urlname = xmlTextReaderValue(xml_reader);
-		}
-		else if (xmlStrEqual(node_name, BAD_CAST "number") && node_type == NODE_START)
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			t_number = xmlTextReaderValue(xml_reader);
+			if (xmlStrEqual(node_name, BAD_CAST "rtept"))
+				gpx_handle_point (xml_reader, "rtept");
+			if (xmlStrEqual(node_name, BAD_CAST "trkpt"))
+				gpx_handle_point (xml_reader, "trkpt");
+			else if (xmlStrEqual(node_name, BAD_CAST "trkseg"))
+				gpx_handle_rte_trk (xml_reader, "trkseg");
+			else if (xmlStrEqual(node_name, BAD_CAST "name"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_name = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "cmt"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_cmt = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "desc"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_desc = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "src"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_src = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "url"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_url = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "urlname"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_urlname = xmlTextReaderValue(xml_reader);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "number"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_number = xmlTextReaderValue(xml_reader);
+			}
 		}
 
 
@@ -349,7 +432,8 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		return FALSE;
 	}
 
-	reset_gpx_info ();
+	if (gpx_mode == GPX_INFO)
+		reset_gpx_info ();
 
 	/* parse complete gpx file */
 	xml_status = xmlTextReaderRead(xml_reader);
@@ -363,7 +447,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			if (xmlStrEqual(node_name, BAD_CAST "wpt"))
 			{
 				if (gpx_mode == GPX_WPT)
-					gpx_handle_point (xml_reader, GPX_WPT);
+					gpx_handle_point (xml_reader, "wpt");
 				else
 				{
 					gpx_info.wpt_count++;
@@ -378,7 +462,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			else if (xmlStrEqual(node_name, BAD_CAST "rte"))
 			{
 				if (gpx_mode == GPX_RTE)
-					gpx_handle_rte_trk (xml_reader, GPX_RTE);
+					gpx_handle_rte_trk (xml_reader, "rte");
 				else
 				{
 					gpx_info.rte_count++;
@@ -387,13 +471,19 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 						xml_status = xmlTextReaderRead(xml_reader);
 						node_type = xmlTextReaderNodeType(xml_reader);
 						node_name = xmlTextReaderName(xml_reader);
+						if (gpx_mode == GPX_INFO)
+						{
+							if (xmlStrEqual(node_name, BAD_CAST "rtept")
+								&& node_type == NODE_START)
+								gpx_info.rtept_count++;
+						}
 					}
 				}
 			}
 			else if (xmlStrEqual(node_name, BAD_CAST "trk"))
 			{
 				if (gpx_mode == GPX_TRK)
-					gpx_handle_rte_trk (xml_reader, GPX_TRK);
+					gpx_handle_rte_trk (xml_reader, "trk");
 				else
 				{
 					gpx_info.trk_count++;
@@ -402,6 +492,12 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 						xml_status = xmlTextReaderRead(xml_reader);
 						node_type = xmlTextReaderNodeType(xml_reader);
 						node_name = xmlTextReaderName(xml_reader);
+						if (gpx_mode == GPX_INFO)
+						{
+							if (xmlStrEqual(node_name, BAD_CAST "trkpt")
+								&& node_type == NODE_START)
+								gpx_info.trkpt_count++;
+						}
 					}
 				}
 			}
@@ -414,7 +510,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 	xmlFreeTextReader(xml_reader);
 	if (node_name)
 		xmlFree (node_name);
-	
+
 	if (xml_status != 0)
 	{
 		fprintf(stderr, "gpx_file_read: Failed to parse file: %s\n", gpx_file);
@@ -468,9 +564,14 @@ update_file_info_cb (GtkWidget *dialog, GtkWidget *label)
 	else if (gpx_file_read (filename, GPX_INFO))
 	{
 		g_snprintf (buf, sizeof (buf),
-			_("<b>Name:</b>\n<i>%s</i>\n<b>Description:</b>\n<i>%s</i>\n<b>Author</b>:\n<i>%s</i>\n<b>created by:</b>\n<i>%s</i>\n<b>Timestamp:</b>\n<i>%s</i>"),
+			_("<b>Name:</b>\n<i>%s</i>\n<b>Description:</b>\n<i>%s</i>\n"
+			"<b>Author</b>:\n<i>%s</i>\n<b>created by:</b>\n<i>%s</i>\n"
+			"<b>Timestamp:</b>\n<i>%s</i>\n<b>Waypoints:</b>\n<i>%d</i>\n"
+			"<b>Routes:</b>\n<i>%d (%d)</i>\n<b>Tracks:</b>\n<i>%d (%d)</i>\n"),
 			gpx_info.name, gpx_info.desc, gpx_info.author,
-			gpx_info.creator, gpx_info.time);
+			gpx_info.creator, gpx_info.time, gpx_info.wpt_count,
+			gpx_info.rte_count, gpx_info.rtept_count,
+			gpx_info.trk_count, gpx_info.trkpt_count);
 	}
 	else
 	{
@@ -538,7 +639,7 @@ gint loadgpx_cb (gint gpx_mode)
 
 	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
 	{
-		//if (mydebug >10)
+		if (mydebug >10)
 			test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
 
 		gpx_file_read (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);

@@ -135,8 +135,10 @@ enum
 {
 	MENU_MAPIMPORT,
 	MENU_MAPDOWNLOAD,
+	MENU_LOADTRKOLD,
 	MENU_LOADTRACK,
 	MENU_LOADROUTE,
+	MENU_LOADWPT,
 	MENU_SAVETRACK,
 	MENU_SAVEROUTE,
 	MENU_SENDMSG,
@@ -258,8 +260,10 @@ main_menu_cb (GtkWidget *widget, gint choice)
 	{
 		case MENU_MAPIMPORT:	import1_cb (NULL, 1); break;
 		case MENU_MAPDOWNLOAD:	download_cb (NULL, 0); break;
-		case MENU_LOADTRACK:	loadtrack_cb (NULL, 0); break;
+		case MENU_LOADTRKOLD:	loadtrack_cb (NULL, 0); break;
+		case MENU_LOADTRACK:	loadgpx_cb (GPX_TRK); break;
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
+		case MENU_LOADWPT:	loadgpx_cb (GPX_WPT); break;
 		case MENU_SAVETRACK:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
 		case MENU_SAVEROUTE:	route_export_cb (); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
@@ -1343,6 +1347,7 @@ void create_controls_mainbox (void)
 	GtkWidget *menuitem_save, *menuitem_savetrack;
 	GtkWidget *menuitem_help, *menuitem_helpabout, *menuitem_helpcontent;
 	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
+	GtkWidget *menuitem_loadwpt, *menuitem_loadtrkold;
 	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
 	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load, *menu_save;
 	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
@@ -1387,16 +1392,24 @@ void create_controls_mainbox (void)
 	menuitem_load = gtk_image_menu_item_new_with_label (_("Import"));
 	load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_load), load_img);
-	menuitem_loadtrack = gtk_menu_item_new_with_label (_("Track"));
-	menuitem_loadroute = gtk_menu_item_new_with_label (_("Route"));
+	menuitem_loadtrack = gtk_menu_item_new_with_label (_("GPX Track"));
+	menuitem_loadroute = gtk_menu_item_new_with_label (_("GPX Route"));
+	menuitem_loadwpt = gtk_menu_item_new_with_label (_("GPX Waypoints"));
+	menuitem_loadtrkold = gtk_menu_item_new_with_label (_("GpsDrive Track"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), menu_load);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrack);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadroute);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadwpt);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrkold);
 	g_signal_connect (menuitem_loadtrack, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADTRACK);
 	g_signal_connect (menuitem_loadroute, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADROUTE);
+	g_signal_connect (menuitem_loadwpt, "activate",
+		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADWPT);
+	g_signal_connect (menuitem_loadtrkold, "activate",
+		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADTRKOLD);
 
 	menu_save = gtk_menu_new ();
 	menuitem_save = gtk_image_menu_item_new_with_label (_("Export"));

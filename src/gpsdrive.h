@@ -118,10 +118,11 @@ enum
 /* GPX Parsing Modes */
 enum gpx_mode
 {
-	GPX_INFO,
-	GPX_WPT,
-	GPX_TRK,
-	GPX_RTE
+	GPX_INFO,	/* get only file info */
+	GPX_WPT,	/* get waypoint data */
+	GPX_TRK,	/* get track data */
+	GPX_RTE,	/* get route data */
+	GPX_TRKSEG	/* internally used, do not use in call directly */
 };
 
 /*  size of the bearing pointer, default is 50 */

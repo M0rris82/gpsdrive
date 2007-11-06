@@ -33,6 +33,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
      * gui.c  
      * The purpose of this module is to do the setup
      * and resizing of user interface for gspdrive
+     *
+     * It also contains some generic windows and popups
+     * that can be used in various functions
      */
 
     /*
