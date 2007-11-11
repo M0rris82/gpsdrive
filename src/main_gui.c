@@ -2177,7 +2177,8 @@ gint create_main_window (gchar *geom, gint *usegeom)
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainbox_status, 0, 2, 2, 3);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
-		gtk_window_fullscreen (GTK_WINDOW (main_window));
+		gtk_window_maximize (GTK_WINDOW (main_window));
+		gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
 	}
 	else
 	{  /* Classic Mode (Standard) */
