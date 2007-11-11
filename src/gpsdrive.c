@@ -3285,11 +3285,6 @@ main (int argc, char *argv[])
     }
 #endif
 
-
-	if (havespeechout)
-		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-			current.statusbar_id, _("Using speech output"));
-
     //temperature_get_values ();
     //battery_get_values ();
 
@@ -3325,14 +3320,10 @@ main (int argc, char *argv[])
 
     gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 
-    if (havespeechout)
-	{
-	    speech_saytime_cb (NULL, 1);
-	    gtk_timeout_add (SPEECHOUTINTERVAL,
-			     (GtkFunction) speech_out_cb, 0);
-	}
-
     current.needtosave = FALSE;
+
+    if (havespeechout)
+	speech_saytime_cb (NULL, 1);
 
 	/* do all the basic initalisation for the specific sections */
 	poi_init ();
@@ -3346,6 +3337,13 @@ main (int argc, char *argv[])
 	load_kismet_icon ();
 
     update_posbt();
+
+    if (havespeechout)
+	{
+		gtk_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+			current.statusbar_id, _("Using speech output"));
+	}
 
     /*
      * setup TERM signal handler so that we can save evrything nicely when the

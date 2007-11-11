@@ -129,6 +129,7 @@ static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu;
+static GtkWidget *controlbox_window;
 
 /* Definitions for main menu */
 enum
@@ -220,7 +221,10 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	     || (datum == 2))
 	{
 		local_config.MapnikStatusInt = 1;
-		gtk_widget_hide_all (frame_maptype);
+		if (local_config.guimode == GUI_CAR)
+			gtk_widget_set_sensitive (frame_maptype, FALSE);
+		else
+			gtk_widget_hide_all (frame_maptype);
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt), FALSE);
 		gtk_toggle_button_set_active  (GTK_TOGGLE_BUTTON (widget), TRUE);
 		autobestmap_cb(bestmap_bt,0);
@@ -228,7 +232,10 @@ toggle_mapnik_cb (GtkWidget *widget, guint datum)
 	else 
 	{
 		local_config.MapnikStatusInt = 0;
-		gtk_widget_show_all (GTK_WIDGET (frame_maptype));
+		if (local_config.guimode == GUI_CAR)
+			gtk_widget_set_sensitive (frame_maptype, TRUE);
+		else
+			gtk_widget_show_all (GTK_WIDGET (frame_maptype));
 	}
 	
 	// TODO: reload/update map display.....
@@ -246,6 +253,20 @@ toggle_coords_cb (GtkWidget *widget)
 	local_config.coordmode++;
 	if (local_config.coordmode >= LATLON_N_FORMATS)
 		local_config.coordmode = 0;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ *  toggle map control box
+ */
+gint
+toggle_controlbox_cb (GtkWidget *widget, guint datum)
+{
+	if (datum == 1)
+		gtk_widget_show_all (controlbox_window);
+	else
+		gtk_widget_hide_all (controlbox_window);
 	return TRUE;
 }
 
@@ -1371,14 +1392,35 @@ void create_dashboard_menu (void)
 
 
 /* *****************************************************************************
+ * Window: Map Control Box (used only in Car Mode)
+ */
+GtkWidget *mapcontrolbox (void)
+{
+	GtkWidget *controlbox_hbox;
+
+	controlbox_window = gtk_dialog_new_with_buttons (_("Map Control"),
+		GTK_WINDOW (main_window), GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+	g_signal_connect (controlbox_window, "response",
+		G_CALLBACK (toggle_controlbox_cb), (gpointer) FALSE);
+	gtk_window_set_icon_name (GTK_WINDOW (controlbox_window), "gtk-properties");
+	gtk_window_set_decorated (GTK_WINDOW (controlbox_window), FALSE);
+	controlbox_hbox = gtk_hbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), controlbox_hbox);
+
+	return controlbox_hbox;
+}
+
+
+/* *****************************************************************************
  * Window: Main -> Controls
  */
 void create_controls_mainbox (void)
 {
 	GtkWidget *vbox_buttons, *frame_poi, *frame_track;
-	GtkWidget *frame_mapcontrol;
-	GtkWidget *zoomin_img, *zoomout_img;
-	GtkWidget *hbox_scaler, *mute_bt;
+	GtkWidget *frame_mapcontrol, *controlbox;
+	GtkWidget *zoomin_img, *zoomout_img, *controlbox_img;
+	GtkWidget *hbox_scaler, *mute_bt, *controlbox_bt;
 	GtkWidget *pda_box_left, *pda_box_right;
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
@@ -1560,7 +1602,6 @@ void create_controls_mainbox (void)
 	/* Buttons: Scaler */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Scaler)\n");
-	hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
 	scaler_right_bt = gtk_button_new_with_label (">>");
 	g_signal_connect (GTK_OBJECT (scaler_right_bt), "clicked",
 		GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 1);
@@ -1571,13 +1612,14 @@ void create_controls_mainbox (void)
 		_("Select the next more detailed map"), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_right_bt,
 		_("Select the next less detailed map"), NULL);
+
+	hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
 		scaler_left_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
 		scaler_right_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (vbox_buttons),
 		hbox_scaler, FALSE, FALSE, 1 * PADDING);
-
 
 	/* Button: Mute Speech */
 	if ( mydebug > 11 )
@@ -1750,13 +1792,24 @@ void create_controls_mainbox (void)
 	else
 	if (local_config.guimode == GUI_CAR)
 	{
-		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
+		/* in Car Mode we have a separate dialog window, that holds all
+		 * the controls that have not enough space in the main window
+		 */
+		controlbox_bt = gtk_button_new_with_label (_("Map Control"));
+		controlbox_img = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
+		gtk_button_set_image (GTK_BUTTON (controlbox_bt), controlbox_img);
+		g_signal_connect (GTK_OBJECT (controlbox_bt), "clicked",
+			GTK_SIGNAL_FUNC (toggle_controlbox_cb), (gpointer) 1);
 
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons,	FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_poi,	FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_track, 	FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),frame_maptype, 	TRUE, TRUE, 1 * PADDING);
+		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls), controlbox_bt, FALSE, FALSE, 1 * PADDING);
+
+		controlbox = mapcontrolbox ();
+		gtk_box_pack_start (GTK_BOX (controlbox),frame_poi, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox),frame_track, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
 	else
 	{
@@ -1964,7 +2017,7 @@ void create_status_mainbox (void)
 		frame_statusgpsfix = gtk_frame_new (NULL);
 		drawing_gpsfix = gtk_drawing_area_new ();
 		gtk_widget_set_size_request (drawing_gpsfix,
-			100, -1);
+			100, 25);
 		gtk_container_add (GTK_CONTAINER (frame_statusgpsfix),
 			drawing_gpsfix);
 		g_signal_connect (GTK_OBJECT (drawing_gpsfix),
@@ -2038,9 +2091,8 @@ void create_status_mainbox (void)
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
-
+		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_statusgpsfix, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
 			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
@@ -2188,13 +2240,13 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	}
 	else if (local_config.guimode == GUI_CAR)
 	{
-		main_table = gtk_table_new (4, 2, FALSE);
+		main_table = gtk_table_new (2, 2, FALSE);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainbox_controls, 0, 1, 0, 1);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 0, 1);		
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 2, 3);		
+			mainbox_status, 0, 2, 1, 2);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 		gtk_window_maximize (GTK_WINDOW (main_window));
 		gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
