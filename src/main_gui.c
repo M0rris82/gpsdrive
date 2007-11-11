@@ -909,6 +909,35 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			break;
 		}
+		case DASH_POSITION:
+		{
+			gchar slat[20];
+			gchar slon[20];
+			gint pfd_size;
+			gchar *font_pos;
+			PangoFontDescription *pfd;
+			
+			pfd = pango_font_description_from_string
+				(local_config.font_dashboard);
+			pfd_size = pango_font_description_get_size (pfd);
+			pango_font_description_set_size (pfd, pfd_size*0.5);
+			font_pos = pango_font_description_to_string (pfd);
+
+			g_strlcpy (head, _("Position"), sizeof (head));
+			coordinate2gchar(slat, sizeof(slat), coords.current_lat,
+				TRUE, local_config.coordmode);
+			coordinate2gchar(slon, sizeof(slon), coords.current_lon,
+				FALSE, local_config.coordmode);
+			g_snprintf (content, sizeof (content),
+				"<span color=\"%s\" font_desc=\"%s\">%s\n%s</span>",
+				local_config.color_dashboard, font_pos,
+				slat, slon);
+
+			pango_font_description_free (pfd);
+			g_free (font_pos);
+			break;
+		}
+
 	}
 
 	g_object_set (frame, "label", head, NULL);
@@ -1156,7 +1185,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		addwaypoint_cb (NULL, 0);
 	}
 
-	// Add instant waypoint a current mouse location
+	// Add instant waypoint at current mouse location
 	if ((toupper (event->keyval)) == 'P')
 	{
 		gchar wp_name[100], wp_type[100], wp_comment[100];
@@ -1309,6 +1338,7 @@ void create_dashboard_menu (void)
 		_("Trip Odometer"),		/* DASH_TRIP */
 		_("GPS Precision"),		/* DASH_GPSPRECISION */
 		_("Current Time"),		/* DASH_TIME */
+		_("Position"),			/* DASH_POSITION */
 	};
 	gint i;
 	GtkWidget *dash_menuitem;
@@ -1998,10 +2028,8 @@ void create_status_mainbox (void)
 	if (local_config.guimode == GUI_CAR)
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
-		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
-		// gtk_box_pack_start (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
 
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
 			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
@@ -2009,8 +2037,7 @@ void create_status_mainbox (void)
 			eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
 			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			statusdashsub1_box, FALSE, FALSE, 0);
+
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
 			statusdashsub2_box, TRUE, TRUE, 0);
 
@@ -2026,16 +2053,15 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
-		//gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
+/*
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
-	
+*/
 		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_status), statussmall_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status), statusbar_box, TRUE, FALSE, 1 * PADDING);
 	} else
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);

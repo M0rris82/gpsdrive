@@ -347,29 +347,29 @@ coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat,
     {
     case LATLON_DMS:
       if (islat)
-	g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym,
-		    min, sec, (minus) ? 'S' : 'N');
+	g_snprintf (buff, buff_size, "%c %d%s %.2d' %05.2f\"",
+		(minus) ? 'S' : 'N', grad, gradsym, min, sec);
       else
-	g_snprintf (buff, buff_size, "%d%s%.2d'%05.2f''%c", grad, gradsym,
-		    min, sec, (minus) ? 'W' : 'E');
+	g_snprintf (buff, buff_size, "%c %d%s %.2d' %05.2f\"",
+		(minus) ? 'W' : 'E', grad, gradsym, min, sec);
       break;
 
     case LATLON_MINDEC:
       if (islat)
-	g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf,
-		    (minus) ? 'S' : 'N');
+	g_snprintf (buff, buff_size, "%c %d%s %.3f'",
+		(minus) ? 'S' : 'N', grad, gradsym, minf);
       else
-	g_snprintf (buff, buff_size, "%d%s%.3f'%c", grad, gradsym, minf,
-		    (minus) ? 'W' : 'E');
+	g_snprintf (buff, buff_size, "%c %d%s %.3f'",
+		(minus) ? 'W' : 'E', grad, gradsym, minf);
       break;
 
     case LATLON_DEGDEC:
       if (islat)
-	g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym,
-		    (minus) ? 'S' : 'N');
+	g_snprintf (buff, buff_size, "%c %8.5f%s",
+		(minus) ? 'S' : 'N', pos, gradsym);
       else
-	g_snprintf (buff, buff_size, "%8.5f%s%c", pos, gradsym,
-		    (minus) ? 'W' : 'E');
+	g_snprintf (buff, buff_size, "%c %8.5f%s",
+		(minus) ? 'W' : 'E', pos, gradsym);
       break;
     }
 }
