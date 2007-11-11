@@ -2167,6 +2167,18 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	{  /* X-Win Mode (separate windows) */
 		// TODO: ...
 	}
+	else if (local_config.guimode == GUI_CAR)
+	{
+		main_table = gtk_table_new (4, 2, FALSE);
+		gtk_table_attach_defaults (GTK_TABLE (main_table),
+			mainbox_controls, 0, 1, 0, 1);
+		gtk_table_attach_defaults (GTK_TABLE (main_table),
+			mainframe_map, 1, 2, 0, 1);		
+		gtk_table_attach_defaults (GTK_TABLE (main_table),
+			mainbox_status, 0, 2, 2, 3);		
+		gtk_container_add (GTK_CONTAINER (main_window), main_table);
+		gtk_window_fullscreen (GTK_WINDOW (main_window));
+	}
 	else
 	{  /* Classic Mode (Standard) */
 		main_table = gtk_table_new (4, 2, FALSE);
@@ -2177,9 +2189,8 @@ gint create_main_window (gchar *geom, gint *usegeom)
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainbox_status, 0, 2, 2, 3);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
-
 	}
-	
+
 	gtk_widget_show_all (main_window);
 
 	//if ( ( local_config.guimode == GUI_DESKTOP )
