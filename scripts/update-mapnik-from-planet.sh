@@ -14,17 +14,19 @@ for table in  planet_osm_roads planet_osm_polygon planet_osm_line \
     done | psql gis 
 
 echo "------- Drop complete Database"	
-echo "DROP DATABASE gis" | pqsql
+sudo -u postgres dropdb -Upostgres   gis
 
 # ----------- Create Database and Grant rights
 
 export user_name=`whoami`
-createdb -Upostgres  -EUTF8 gis
-createlang plpgsql gis
-echo "GRANT ALL on geometry_columns TO \"$user_name\";" | psql -Upostgres gis
-echo "GRANT ALL on spatial_ref_sys TO \"$user_name\";" | psql -Upostgres gis
-echo "GRANT ALL ON SCHEMA PUBLIC TO \"$user_name\";" | psql -Upostgres gis
+sudo -u postgres createdb -Upostgres  -EUTF8 gis
+sudo -u postgres createlang plpgsql gis
+sudo -u postgres osm2pgsql --create --database gis
+
+echo "GRANT ALL on geometry_columns TO \"$user_name\";" | sudo -u postgres psql -Upostgres gis
+echo "GRANT ALL on spatial_ref_sys TO \"$user_name\";" | sudo -u postgres psql -Upostgres gis
+echo "GRANT ALL ON SCHEMA PUBLIC TO \"$user_name\";" | sudo -u postgres psql -Upostgres gis
 
 echo ""
 echo "--------- Unpack and import $planet_file"
-osm2pgsql $planet_file
+sudo -u postgres osm2pgsql $planet_file
