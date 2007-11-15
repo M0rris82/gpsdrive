@@ -464,7 +464,7 @@ unit_test (void)
 		      1);
     if (mydebug > 1)
       printf ("	%g --> '%s'\n", coordinate, test_string1);
-    if (strcmp ("12" "\xc2" "\xb0" "05'60.00''E", test_string1))
+    if (strcmp ("E 12" "\xc2" "\xb0" " 05' 60.00\"", test_string1))
       {
 	printf ("!!!! ERROR\n");
 	errors++;
@@ -475,7 +475,7 @@ unit_test (void)
 		      1);
     if (mydebug > 1)
       printf ("	%g --> '%s'\n", coordinate, test_string1);
-    if (strcmp ("12" "\xc2" "\xb0" "05'60.00''W", test_string1))
+    if (strcmp ("W 12" "\xc2" "\xb0" " 05' 60.00\"", test_string1))
       {
 	printf ("!!!! ERROR\n");
 	errors++;
@@ -486,7 +486,7 @@ unit_test (void)
 		      1);
     if (mydebug > 1)
       printf ("	%g --> '%s'\n", coordinate, test_string1);
-    if (strcmp ("12" "\xc2" "\xb0" "05'60.00''N", test_string1))
+    if (strcmp ("N 12" "\xc2" "\xb0" " 05' 60.00\"", test_string1))
       {
 	printf ("!!!! ERROR\n");
 	errors++;
@@ -497,7 +497,7 @@ unit_test (void)
 		      1);
     if (mydebug > 1)
       printf ("	%g --> '%s'\n", coordinate, test_string1);
-    if (strcmp ("12" "\xc2" "\xb0" "05'60.00''S", test_string1))
+    if (strcmp ("S 12" "\xc2" "\xb0" " 05' 60.00\"", test_string1))
       {
 	printf ("!!!! ERROR\n");
 	errors++;
@@ -599,13 +599,13 @@ unit_test (void)
 		   "	%d:            (%-7.4g,%-7.4g)	<-- calcxy(%g,%g)\n",
 		   i, gx, gy, lat, lon);
 	gint delta_x = gx - x;
-	if (abs (delta_x) >= 1)
+	if (abs (delta_x) > 1)
 	  {
 	    printf ("!!!! ERROR:	Delta-x(%d)>1\n", delta_x);
 	    errors++;
 	  }
 	gint delta_y = gy - y;
-	if (abs (delta_y) >= 1)
+	if (abs (delta_y) > 1)
 	  {
 	    printf ("!!!! ERROR:	Delta-y(%d)>1\n", delta_y);
 	    errors++;
@@ -721,7 +721,7 @@ unit_test (void)
 		"model number:            \n");
     if (!battery_get_values ())
       {
-	printf ("battery reporting Problem: no battery status for 1 Bat\n");
+	printf ("battery_get_values() reporting Problem: no battery status for 1 Bat\n");
 	errors++;
       }
     if (mydebug > 1)
