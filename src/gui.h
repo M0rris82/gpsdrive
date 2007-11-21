@@ -29,9 +29,15 @@ Disclaimer: Please do not use for navigation.
 
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
-#define TILEWIDTH 1280
-#define TILEHEIGHT 1024
+#define MAPWIDTH 1280
+#define MAPHEIGHT 1024
+#define MAP_X_2 (gui_status.mapview_x / 2)
+#define MAP_Y_2 (gui_status.mapview_y / 2)
 
+/*** Mod by Arms */
+#define XMINUS 60
+/*** Mod by Arms (move) */
+#define YMINUS 67
 
 gint popup_yes_no (GtkWindow *parent, gchar *message);
 gint popup_warning (GtkWindow *parent, gchar *message);
@@ -43,14 +49,12 @@ gint switch_nightmode (gboolean value);
 
 gchar *get_colorstring (GdkColor *tcolor);
 
-int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width);
-
 gboolean draw_posmarker
 	(gdouble posx, gdouble posy, gdouble direction,
 	 GdkColor *color, gint style, gboolean shadow, gboolean outline);
 
 
-int gui_init (void);
+int gui_init (gchar *geometry, gint usegeometry);
 
 gint set_cursor_style(int cursor);
 
@@ -92,8 +96,10 @@ typedef struct
 
 typedef struct
 {
-	guint width;
-	guint height;
+	guint app_width;	/* width of application window in px */
+	guint app_height;	/* height of application window in px */
+	gint mapview_x;		/* width of shown map part in px */
+	gint mapview_y;		/* height of shown map part in px */
 	gboolean nightmode;
 	gboolean posmode;
 } guistatus_struct;

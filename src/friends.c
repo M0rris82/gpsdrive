@@ -573,7 +573,8 @@ void
 drawfriends (void)
 {
   gint i;
-  gdouble posxdest, posydest, clong, clat, heading;
+  gint posxdest, posydest;
+  gdouble clong, clat, heading;
   gint width, height;
   struct tm *t;
   time_t ti, tif;
@@ -599,10 +600,10 @@ drawfriends (void)
       calcxy (&posxdest, &posydest, clong, clat, current.zoom);
 
       /* If Friend is visible inside SCREEN display him/her */
-      if ((posxdest >= 0) && (posxdest < SCREEN_X))
+      if ((posxdest >= 0) && (posxdest < gui_status.mapview_x))
 	{
 
-	  if ((posydest >= 0) && (posydest < SCREEN_Y))
+	  if ((posydest >= 0) && (posydest < gui_status.mapview_y))
 	    {
 
 	      gdk_draw_pixbuf (drawable, kontext_map,

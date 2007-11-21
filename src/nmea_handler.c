@@ -67,7 +67,6 @@ extern gdouble precision, gsaprecision;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
-extern gdouble posx, posy;
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel;
 extern gint satfix, usedgps;
@@ -100,9 +99,6 @@ extern currentstatus_struct current;
 /* variables */
 extern gint ignorechecksum;
 //, mapistopo;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble posx, posy;
 extern gint haveposcount;
 extern FILE *nmeaout;
 // ---------------------- NMEA

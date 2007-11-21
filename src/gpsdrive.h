@@ -31,21 +31,10 @@ Disclaimer: Please do not use for navigation.
 #include "mysql/mysql.h"
 #include "gpsproto.h"
 
-/*  adapt this section for the size of your screen */
-
-/*  width of the map on screen, default is 640 */
-#define SCREEN_X real_screen_x
-/*  height of the map on screen, default is 512 */
-#define SCREEN_Y real_screen_y
-
 /*  set this to 0 for normal use, 1 for small screens */
 #define SMALLMENU real_smallmenu
 /*** Mod by Arms */
 #define PADDING 1
-/*** Mod by Arms */
-#define XMINUS 60
-/*** Mod by Arms (move) */
-#define YMINUS 67
 
 /*** Number of elements in an array */
 #define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
@@ -110,7 +99,6 @@ enum
 {
 	GUI_DESKTOP,
 	GUI_PDA,
-	GUI_XWIN,
 	GUI_CAR,
 	GUI_N_FORMATS
 };
@@ -234,9 +222,6 @@ $PSRF108,0*32            WAAS/EGNOS off
 
 extern gchar savetrackfn[256];
 
-extern gint real_screen_x;
-extern gint real_screen_y;
-
 extern GdkGC *kontext;
 extern GdkDrawable *drawable;
 extern GtkWidget *track_bt;
@@ -349,6 +334,8 @@ coordinate_struct;
 typedef struct
 {
 	gdouble groundspeed;
+	gint pos_x;		/* position in map window in px */
+	gint pos_y;		/* position in map window in px */
 	gdouble heading;	/* heading in radians */
 	gdouble bearing;	/* bearing in radians */
 	gdouble altitude;	/* current altitude */

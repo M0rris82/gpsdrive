@@ -96,10 +96,9 @@ extern gint slistsize, nlist[];
 extern gint PSIZE;
 extern GtkWidget *posbt;
 extern GtkWidget *bestmap_bt;
-extern GtkWidget *mapnik_bt;
+extern gint borderlimit;
 
 extern GtkWidget *main_window;
-
 
 /* Globally accessible widgets: */
 GtkWidget *map_drawingarea;
@@ -130,6 +129,10 @@ static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu;
 static GtkWidget *controlbox_window;
+
+
+	GtkAdjustment *adj_h, *adj_v;
+
 
 /* Definitions for main menu */
 enum
@@ -1144,6 +1147,48 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 
 
 /* *****************************************************************************
+ * callback to update mapview size when application window is resized
+ */
+gint
+set_mapviewsize_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+{
+	if (mydebug > 20)
+	{
+		fprintf (stderr, "--------------------------------------\n");
+		fprintf (stderr, "set_mapviewsize_cb: catched signal %d\n", event->type);
+	}
+
+	gui_status.mapview_x = map_drawingarea->allocation.width;
+	gui_status.mapview_y = map_drawingarea->allocation.height;
+
+	if (gui_status.mapview_x > MAPWIDTH)
+		gui_status.mapview_x = MAPWIDTH;
+	if (gui_status.mapview_y > MAPHEIGHT)
+		gui_status.mapview_y = MAPHEIGHT;
+
+	if (gui_status.mapview_x < 150)
+		gui_status.mapview_x = 150;
+	if (gui_status.mapview_y < 150)
+		gui_status.mapview_y = 150;
+
+
+	if (gui_status.mapview_x < gui_status.mapview_y)
+		borderlimit = gui_status.mapview_x / 5;
+	else
+		borderlimit = gui_status.mapview_y / 5;
+
+	if (mydebug > 20)
+	{
+		fprintf (stderr, "  setting borderlimit to %d\n", borderlimit);
+		fprintf (stderr, "  setting size of mapview to %dx%d px\n",
+			gui_status.mapview_x, gui_status.mapview_y);
+	}
+
+	return FALSE;
+}
+
+
+/* *****************************************************************************
  * Reactions to pressed key
  TODO: check if everything is fine and not obsolete
  */
@@ -1311,7 +1356,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 	if (gui_status.posmode)
 	    {
-		gdouble x, y;
+		gint x, y;
 
 		if ( (event->keyval == 0xff52))	// Up
 		    {
@@ -1325,7 +1370,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		    {
 			calcxy (&x, &y, coords.current_lon,
 				coords.current_lat, current.zoom);
-			calcxytopos (x, SCREEN_Y, &coords.current_lat,
+			calcxytopos (x, gui_status.mapview_y, &coords.current_lat,
 				&coords.current_lon, current.zoom);
 		    }
 		if ( (event->keyval == 0xff51 )) // Left
@@ -1339,7 +1384,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 			    
 		    {
 			calcxy (&x, &y, coords.current_lon, coords.current_lat, current.zoom);
-			calcxytopos (SCREEN_X, y, &coords.current_lat, &coords.current_lon, current.zoom);
+			calcxytopos (gui_status.mapview_x, y, &coords.current_lat, &coords.current_lon, current.zoom);
 		    }
 		coords.posmode_lon = coords.current_lon;
 		coords.posmode_lat = coords.current_lat;
@@ -1619,7 +1664,7 @@ void create_controls_mainbox (void)
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
 		scaler_right_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		hbox_scaler, FALSE, FALSE, 1 * PADDING);
+		hbox_scaler, TRUE, TRUE, 1 * PADDING);
 
 	/* Button: Mute Speech */
 	if ( mydebug > 11 )
@@ -1638,8 +1683,16 @@ void create_controls_mainbox (void)
 			&local_config.mute);
 		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mute_bt,
 			_("Disable output of speech"), NULL);
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			mute_bt, FALSE, FALSE, 1 * PADDING);
+		if (local_config.guimode == GUI_CAR)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				mute_bt, TRUE, TRUE, 1 * PADDING);
+		}
+		else
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				mute_bt, FALSE, FALSE, 1 * PADDING);
+		}
 	}
 
 	/* Button: Search POIs */
@@ -1656,8 +1709,16 @@ void create_controls_mainbox (void)
 		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
 			GTK_SIGNAL_FUNC (show_poi_lookup_cb), (gpointer) 2);
 	}
-	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		find_poi_bt, FALSE, FALSE, 1 * PADDING);
+	if (local_config.guimode == GUI_CAR)
+	{
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			find_poi_bt, TRUE, TRUE, 1 * PADDING);
+	}
+	else
+	{
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			find_poi_bt, FALSE, FALSE, 1 * PADDING);
+	}
 
 	}	/* END MENU AND BUTTONS */
 
@@ -1802,8 +1863,8 @@ void create_controls_mainbox (void)
 			GTK_SIGNAL_FUNC (toggle_controlbox_cb), (gpointer) 1);
 
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls), controlbox_bt, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (mainbox_controls), controlbox_bt, TRUE, TRUE, 1 * PADDING);
 
 		controlbox = mapcontrolbox ();
 		gtk_box_pack_start (GTK_BOX (controlbox),frame_poi, TRUE, TRUE, 1 * PADDING);
@@ -2151,6 +2212,16 @@ void create_status_mainbox (void)
 
 
 /* *****************************************************************************
+ * Create Map Drawable
+ */
+void create_map_drawable (void)
+{
+	drawable = gdk_pixmap_new (main_window->window, MAPWIDTH, MAPHEIGHT, -1);
+	kontext_map = gdk_gc_new (drawable);
+}
+
+
+/* *****************************************************************************
  * Window: Main -> Map
  */
 void create_map_mainbox (void)
@@ -2160,8 +2231,11 @@ void create_map_mainbox (void)
 
 	mainframe_map =  gtk_frame_new (NULL);
 	gtk_frame_set_shadow_type (GTK_FRAME (mainframe_map), GTK_SHADOW_IN);
-	map_drawingarea = gtk_drawing_area_new ();
-	gtk_widget_set_size_request (map_drawingarea, SCREEN_X, SCREEN_Y);
+
+	//map_drawingarea = gtk_drawing_area_new ();
+	map_drawingarea = gtk_layout_new (NULL, NULL);
+	gtk_layout_set_size (GTK_LAYOUT (map_drawingarea), 1280, 1024);
+
 	gtk_container_add (GTK_CONTAINER (mainframe_map), map_drawingarea);
 
 	gtk_widget_add_events (GTK_WIDGET (map_drawingarea),
@@ -2178,7 +2252,7 @@ void create_map_mainbox (void)
 /* *****************************************************************************
  * Window: Main
  */
-gint create_main_window (gchar *geom, gint *usegeom)
+gint create_main_window (void)
 {
 	gchar main_title[100];
 	GdkPixbuf *mainwindow_icon_pixbuf;
@@ -2234,19 +2308,17 @@ gint create_main_window (gchar *geom, gint *usegeom)
 			mainbox_status, status_lb);
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
-	else if (local_config.guimode == GUI_XWIN)
-	{  /* X-Win Mode (separate windows) */
-		// TODO: ...
-	}
 	else if (local_config.guimode == GUI_CAR)
 	{
 		main_table = gtk_table_new (2, 2, FALSE);
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 1);
+		gtk_table_attach (GTK_TABLE (main_table),
+			mainbox_controls, 0, 1, 0, 1,
+			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 0, 1);		
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 1, 2);		
+		gtk_table_attach (GTK_TABLE (main_table),
+			mainbox_status, 0, 2, 1, 2,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 		gtk_window_maximize (GTK_WINDOW (main_window));
 		gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
@@ -2254,24 +2326,28 @@ gint create_main_window (gchar *geom, gint *usegeom)
 	else
 	{  /* Classic Mode (Standard) */
 		main_table = gtk_table_new (4, 2, FALSE);
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 1);
+		gtk_table_attach (GTK_TABLE (main_table),
+			mainbox_controls, 0, 1, 0, 1,
+			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 0, 1);		
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 2, 3);		
+		gtk_table_attach (GTK_TABLE (main_table),
+			mainbox_status, 0, 2, 2, 3,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
 
-	gtk_widget_show_all (main_window);
+	/* set event handler for 'configure event', to enable
+	 * reconfiguration of the mapview size when the size of
+	 * the application window changes. */
+	g_signal_connect (main_window, "configure-event",
+		G_CALLBACK (set_mapviewsize_cb), NULL);
 
-	//if ( ( local_config.guimode == GUI_DESKTOP )
-	     if( (local_config.MapnikStatusInt ) ){
-	    toggle_mapnik_cb( mapnik_bt, 2 );
-	}
-	
-	if ( !local_config.showfriends)
-	    gtk_widget_hide_all (frame_statusfriends);
+	/* set event handler for 'window state event', to catch
+	 * maximization of the application window */
+	//TODO: this doesn't work, I have to check why and fix it...
+	g_signal_connect_after (main_window, "window-state-event",
+		G_CALLBACK (set_mapviewsize_cb), NULL);
 
 	return 0;
 }

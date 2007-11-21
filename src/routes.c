@@ -731,7 +731,7 @@ void add_quickpoint_to_route ()
 
 	g_snprintf (t_name, sizeof (t_name), "%s %d", _("Routepoint"), route.items+1);
 	g_snprintf (t_cmt, sizeof (t_cmt), _("Quicksaved Routepoint"));
-	gdk_window_get_pointer (map_drawingarea->window, &t_x, &t_y, &state);
+	gdk_window_get_pointer (GTK_LAYOUT (map_drawingarea)->bin_window, &t_x, &t_y, &state);
 	calcxytopos (t_x, t_y, &t_lat, &t_lon, current.zoom);
 	if ( mydebug > 0 )
 		printf ("Add Routepoint: %s lat:%f,lon:%f (x:%d,y:%d)\n",
@@ -928,7 +928,7 @@ draw_route (void)
 {
 	GdkSegment *route_seg;
 
-	gdouble destpos_x, destpos_y, curpos_x, curpos_y;
+	gint destpos_x, destpos_y, curpos_x, curpos_y;
 	gint i, j;
 	gint t = 0;
 	gchar t_routept[5];

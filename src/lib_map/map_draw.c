@@ -292,9 +292,9 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
 	if (wlan == 0)
 		return;
 
-	if ((posxdest >= 0) && (posxdest < SCREEN_X))
+	if ((posxdest >= 0) && (posxdest < gui_status.mapview_x))
 	{
-		if ((posydest >= 0) && (posydest < SCREEN_Y))
+		if ((posydest >= 0) && (posydest < gui_status.mapview_y))
 		{
 			if (wlan == 1)
 				gdk_draw_pixbuf (drawable, mgc->gtk_gc,
@@ -333,9 +333,9 @@ draw_waypoints ()
 		calcxy (&posxdest, &posydest,
 			(wayp + i)->lon, (wayp + i)->lat, current.zoom);
 
-		if ((posxdest >= 0) && (posxdest < SCREEN_X)
+		if ((posxdest >= 0) && (posxdest < gui_status.mapview_x)
 		    && (shownwp < MAXSHOWNWP)
-		    && (posydest >= 0) && (posydest < SCREEN_Y))
+		    && (posydest >= 0) && (posydest < gui_status.mapview_y))
 		{
 			gdk_gc_set_line_attributes (mgc->gtk_gc, 2, 0, 0, 0);
 			shownwp++;

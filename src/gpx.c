@@ -105,6 +105,8 @@ typedef struct
  xmlChar *name;
  xmlChar *cmt;
  xmlChar *type;
+ gdouble lat;
+ gdouble lon;
 } wpt_struct;
 
 gpx_info_struct gpx_info;
@@ -244,20 +246,20 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 {
 	gint xml_status = 0;
 	gint node_type = 0;
-	gdouble t_lat = 0.0;
-	gdouble t_lon = 0.0;
 	xmlChar *node_name = NULL;
 
 	wpt_struct wpt;
 	wpt.name = NULL;
 	wpt.cmt = NULL;
 	wpt.type = NULL;
+	wpt.lat = 0.0;
+	wpt.lon = 0.0;
 
 	if (mydebug > 20)
 		fprintf (stderr, "gpx_handle_point: %s\n", mode_string);
 
-	t_lat = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lat"), NULL);
-	t_lon = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lon"), NULL);
+	wpt.lat = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lat"), NULL);
+	wpt.lon = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lon"), NULL);
 
 	gpx_info.points++;
 
@@ -294,13 +296,17 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		}
 	}
 
-	if (mydebug > 30)
+	//if (mydebug > 30)
 	{
-		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, t_lat, t_lon);
+		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, wpt.lat, wpt.lon);
 		fprintf (stderr, "\tName   : %s\n", wpt.name);
 		fprintf (stderr, "\tComment: %s\n", wpt.cmt);
 		fprintf (stderr, "\tType   : %s\n", wpt.type);
 	}
+
+
+
+
 
 	if (node_name)
 		xmlFree (node_name);

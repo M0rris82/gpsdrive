@@ -488,7 +488,7 @@ poi_check_if_moved (void)
       poi_lat_ul == 0 && poi_lon_ul == 0)
     return 1;
 
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
   calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
 
   if (poi_lat_lr == lat_lr && poi_lon_lr == lon_lr &&
@@ -1022,9 +1022,9 @@ poi_rebuild_list (void)
 
   // calculate the start and stop for lat/lon according to the displayed section
   calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
-  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
-  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (0, gui_status.mapview_y, &lat_ll, &lon_ll, current.zoom);
+  calcxytopos (gui_status.mapview_x, 0, &lat_ur, &lon_ur, current.zoom);
+  calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
 
   lat_min = min (lat_ll, lat_ul);
   lat_max = max (lat_lr, lat_ur);
@@ -1034,7 +1034,7 @@ poi_rebuild_list (void)
   lat_mid = (lat_min + lat_max) / 2;
   lon_mid = (lon_min + lon_max) / 2;
 
-  gdouble poi_posx, poi_posy;
+  gint poi_posx, poi_posy;
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
@@ -1082,8 +1082,8 @@ poi_rebuild_list (void)
       lon = g_strtod (row[1], NULL);
       calcxy (&poi_posx, &poi_posy, lon, lat, current.zoom);
 
-      if ((poi_posx > -50) && (poi_posx < (SCREEN_X + 50)) &&
-	  (poi_posy > -50) && (poi_posy < (SCREEN_Y + 50)))
+      if ((poi_posx > -50) && (poi_posx < (gui_status.mapview_x + 50)) &&
+	  (poi_posy > -50) && (poi_posy < (gui_status.mapview_y + 50)))
 	{
 	  // get next free mem for point
 	  poi_nr++;
@@ -1227,8 +1227,8 @@ poi_draw_list (gboolean draw_now)
       posx = (poi_list + i)->x;
       posy = (poi_list + i)->y;
 
-      if ((posx >= 0) && (posx < SCREEN_X) &&
-	  (posy >= 0) && (posy < SCREEN_Y))
+      if ((posx >= 0) && (posx < gui_status.mapview_x) &&
+	  (posy >= 0) && (posy < gui_status.mapview_y))
 	{
 
 

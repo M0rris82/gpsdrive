@@ -112,7 +112,6 @@ Disclaimer: Please do not use for navigation.
 #include "poi_gui.h"
 #include "main_gui.h"
 
-#include "mapnik.h"
 #include "screenshot.h"
 
 
@@ -164,7 +163,7 @@ extern GdkDrawable *drawable_compass, *drawable_gps, *drawable_minimap;
 GtkWidget *miles;
 GdkDrawable *drawable;
 gint haveposcount, blink, gblink, xoff, yoff, crosstoggle = 0;
-gdouble pixelfact, posx, posy;
+gdouble pixelfact;
 GdkPixbuf *image = NULL, *tempimage = NULL, *pixbuf_minimap = NULL;
 
 extern GdkPixbuf *friendsimage, *friendspixbuf;
@@ -276,8 +275,7 @@ gint haveproxy, proxyport;
 gchar proxy[256], hostname[256];
 
 /*** Mod by Arms */
-gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-gint SCREEN_X_2, SCREEN_Y_2;
+gint real_psize, real_smallmenu;
 gint showallmaps = TRUE;
 /* guint selwptimeout; */
 extern gint setwpactive;
@@ -310,7 +308,6 @@ gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt;
-GtkWidget *mapnik_bt;
 GtkWidget *cover;
 extern gint PSIZE;
 extern gint needreloadmapconfig;
@@ -872,10 +869,10 @@ storepoint ()
 	{
 		if ((trackcoord + trackcoordnr)->lon < 1000.0)
 		{
-			(track + tracknr)->x1 = posx;
-			(track + tracknr)->y1 = posy;
-			(trackshadow + tracknr)->x1 = posx + SHADOWOFFSET;
-			(trackshadow + tracknr)->y1 = posy + SHADOWOFFSET;
+			(track + tracknr)->x1 = current.pos_x;
+			(track + tracknr)->y1 = current.pos_y;
+			(trackshadow + tracknr)->x1 = current.pos_x + SHADOWOFFSET;
+			(trackshadow + tracknr)->y1 = current.pos_y + SHADOWOFFSET;
 			tracknr++;
 		}
 	}
@@ -883,21 +880,21 @@ storepoint ()
 	{
 		if ((trackcoord + trackcoordnr)->lon < 1000.0)
 		{
-			if ((posx != (track + tracknr - 1)->x2)
-			    || (posy != (track + tracknr - 1)->y2))
+			if ((current.pos_x != (track + tracknr - 1)->x2)
+			    || (current.pos_y != (track + tracknr - 1)->y2))
 			{
 				/* so=(int)(((trackcoord + trackcoordnr)->alt))>>5; */
 				so = SHADOWOFFSET;
 				(track + tracknr)->x1 =
-					(track + tracknr - 1)->x2 = posx;
+					(track + tracknr - 1)->x2 = current.pos_x;
 				(track + tracknr)->y1 =
-					(track + tracknr - 1)->y2 = posy;
+					(track + tracknr - 1)->y2 = current.pos_y;
 				(trackshadow + tracknr)->x1 =
 					(trackshadow + tracknr - 1)->x2 =
-					posx + so;
+					current.pos_x + so;
 				(trackshadow + tracknr)->y1 =
 					(trackshadow + tracknr - 1)->y2 =
-					posy + so;
+					current.pos_y + so;
 				tracknr += 1;
 			}
 		}
@@ -1231,7 +1228,7 @@ draw_scalebar (void)
 	gdouble remains = 0.0;
 	gint used_factor = 0;
 	gint i;
-	gint min_bar_length = SCREEN_X / 8; /* 1/8 of the display width */
+	gint min_bar_length = gui_status.mapview_x / 8; /* 1/8 of the display width */
 	const gint dist_x = 20; /* distance to the right */
 	const gint dist_y = 20; /* distance to bottom */
 	const gint frame_width = 5; /* grey pixles around the scale bar */
@@ -1310,15 +1307,15 @@ draw_scalebar (void)
 	 * and scale_txt is the text for the scaler Bar. For example "10 Km"
 	 */
 
-	l = (SCREEN_X - 40) - (strlen (scale_txt) * 15);
+	l = (gui_status.mapview_x - 40) - (strlen (scale_txt) * 15);
 
 	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext_map, GDK_OR);
 	gdk_gc_set_foreground (kontext_map, &colors.mygray);
 	//gdk_gc_set_foreground (kontext_map, &textback);
 	gdk_draw_rectangle (drawable, kontext_map, 1,
-			    SCREEN_X - dist_x - bar_length - frame_width,
-			    SCREEN_Y - dist_y - 2 * frame_width,
+			    gui_status.mapview_x - dist_x - bar_length - frame_width,
+			    gui_status.mapview_y - dist_y - 2 * frame_width,
 			    bar_length + 2 * frame_width, 
 			    dist_y + 1 * frame_width);
 	gdk_gc_set_function (kontext_map, GDK_COPY);
@@ -1338,7 +1335,7 @@ draw_scalebar (void)
 	pango_layout_set_font_description (scalebar_layout, pfd_scalebar);
 
 	gdk_draw_layout_with_colors (drawable, kontext_map, 
-		l, SCREEN_Y - dist_y -1 ,
+		l, gui_status.mapview_y - dist_y -1 ,
 		scalebar_layout, &colors.black, NULL);
 	if (scalebar_layout != NULL)
 		g_object_unref (G_OBJECT (scalebar_layout));
@@ -1347,16 +1344,16 @@ draw_scalebar (void)
 	gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 	/* horizontal */
 	gdk_draw_line (drawable, kontext_map,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y );
+		       (gui_status.mapview_x - dist_x) - bar_length, gui_status.mapview_y - dist_y,
+		       (gui_status.mapview_x - dist_x), gui_status.mapview_y - dist_y );
 	/* left */
 	gdk_draw_line (drawable, kontext_map,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y - frame_width,
-		       (SCREEN_X - dist_x) - bar_length, SCREEN_Y - dist_y + 10- frame_width);
+		       (gui_status.mapview_x - dist_x) - bar_length, gui_status.mapview_y - dist_y - frame_width,
+		       (gui_status.mapview_x - dist_x) - bar_length, gui_status.mapview_y - dist_y + 10- frame_width);
 	/* right */
 	gdk_draw_line (drawable, kontext_map,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y - frame_width,
-		       (SCREEN_X - dist_x), SCREEN_Y - dist_y + 10 - frame_width);
+		       (gui_status.mapview_x - dist_x), gui_status.mapview_y - dist_y - frame_width,
+		       (gui_status.mapview_x - dist_x), gui_status.mapview_y - dist_y + 10 - frame_width);
 
 }
 
@@ -1373,7 +1370,7 @@ draw_zoomlevel (void)
 		"%dx", current.zoom);
 	gdk_gc_set_function (kontext_map, GDK_OR);
 	gdk_gc_set_foreground (kontext_map, &colors.mygray);
-	gdk_draw_rectangle (drawable, kontext_map, 1, (SCREEN_X - 30), 0, 30, 30);
+	gdk_draw_rectangle (drawable, kontext_map, 1, (gui_status.mapview_x - 30), 0, 30, 30);
 	gdk_gc_set_function (kontext_map, GDK_COPY);
 
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
@@ -1388,7 +1385,7 @@ draw_zoomlevel (void)
 	pango_layout_set_font_description (layout_zoom, pfd);
 	pango_layout_get_pixel_size (layout_zoom, &cx, &cy);
 	gdk_draw_layout_with_colors (drawable, kontext_map,
-		SCREEN_X-15-cx/2, 15-cy/2, layout_zoom, &colors.blue, NULL);
+		gui_status.mapview_x-15-cx/2, 15-cy/2, layout_zoom, &colors.blue, NULL);
 	if (layout_zoom != NULL)
 		g_object_unref (G_OBJECT (layout_zoom));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -1418,12 +1415,12 @@ draw_infotext (gchar *text)
 	gdk_gc_set_function (kontext_map, GDK_OR);
 	gdk_gc_set_foreground (kontext_map, &colors.mygray);
 	gdk_draw_rectangle (drawable, kontext_map, 1,
-		0, SCREEN_Y-cy-10, cx+10, SCREEN_Y);
+		0, gui_status.mapview_y-cy-10, cx+10, gui_status.mapview_y);
 	gdk_gc_set_function (kontext_map, GDK_COPY);
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
 
 	gdk_draw_layout_with_colors (drawable, kontext_map,
-		5, SCREEN_Y-cy-5, layout_filename, &colors.blue, NULL);
+		5, gui_status.mapview_y-cy-5, layout_filename, &colors.blue, NULL);
 	if (layout_filename != NULL)
 		g_object_unref (G_OBJECT (layout_filename));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
@@ -1439,7 +1436,7 @@ draw_infotext (gchar *text)
 gint
 drawmarker (GtkWidget * widget, guint * datum)
 {
-	gdouble posxdest, posydest, posxmarker, posymarker;
+	gint posxdest, posydest, posxmarker, posymarker;
 	gint k;
 
 	gblink = !gblink;
@@ -1483,7 +1480,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (havekismet && (kismetsock>=0))
 	{
 		gdk_draw_pixbuf (drawable, kontext_map, kismetpixbuf, 0, 0,
-			10, SCREEN_Y - 42,
+			10, gui_status.mapview_y - 42,
 			36, 20, GDK_RGB_DITHER_NONE, 0, 0);
 	}
 	
@@ -1492,7 +1489,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		k = 100;
 		gdk_gc_set_foreground (kontext_map, &colors.white);
 		gdk_draw_rectangle (drawable, kontext_map, 1, 10,
-				    SCREEN_Y - 21, k + 3, 14);
+				    gui_status.mapview_y - 21, k + 3, 14);
 		gdk_gc_set_foreground (kontext_map, &colors.red);
 		{
 			/* prints in pango */
@@ -1517,7 +1514,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 							   pfd);
 
 			gdk_draw_layout_with_colors (drawable, kontext_map,
-						     14, SCREEN_Y - 22,
+						     14, gui_status.mapview_y - 22,
 						     wplabellayout, &colors.red,
 						     NULL);
 			if (wplabellayout != NULL)
@@ -1529,12 +1526,12 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 
 		/*    gdk_draw_text (drawable, smallfont_s_text, kontext_map,
-		 *                   11, SCREEN_Y - 10, savetrackfn,
+		 *                   11, gui_status.mapview_y - 10, savetrackfn,
 		 *                   strlen (savetrackfn));
 		 */
 
 		/*      gdk_draw_text (drawable, font_s_text, kontext_map, 10, */
-		/*                     SCREEN_Y - 10, savetrackfn, strlen (savetrackfn)); */
+		/*                     gui_status.mapview_y - 10, savetrackfn, strlen (savetrackfn)); */
 	}
 
 	if (gui_status.posmode)
@@ -1548,16 +1545,16 @@ drawmarker (GtkWidget * widget, guint * datum)
 		{
 			gdk_gc_set_foreground (kontext_map, &colors.blue);
 			gdk_gc_set_line_attributes (kontext_map, 4, 0, 0, 0);
-			gdk_draw_rectangle (drawable, kontext_map, 0, posx - 10,
-					    posy - 10, 20, 20);
+			gdk_draw_rectangle (drawable, kontext_map, 0,
+				current.pos_x - 10, current.pos_y - 10, 20, 20);
 		}
 		else
 		{
 			if (local_config.showshadow)
 			{
 				draw_posmarker (
-					posx + SHADOWOFFSET,
-					posy + SHADOWOFFSET,
+					current.pos_x + SHADOWOFFSET,
+					current.pos_y + SHADOWOFFSET,
 					current.heading, &colors.darkgrey,
 					local_config.posmarker, TRUE, FALSE);
 			}
@@ -1565,17 +1562,17 @@ drawmarker (GtkWidget * widget, guint * datum)
 			/*  draw pointer to destination */
 			if (local_config.posmarker == 0)
 			{
-				draw_posmarker (posx, posy, current.bearing,
+				draw_posmarker (current.pos_x, current.pos_y, current.bearing,
 					&colors.red, 1, FALSE, FALSE);
 			}
 			else
 			{
-				draw_posmarker (posx, posy, current.bearing,
+				draw_posmarker (current.pos_x, current.pos_y, current.bearing,
 					&colors.red, local_config.posmarker, FALSE, FALSE);
 			}
 
 			/*  draw pointer to direction of motion */
-			draw_posmarker (posx, posy, current.heading,
+			draw_posmarker (current.pos_x, current.pos_y, current.heading,
 				&colors.black, local_config.posmarker,
 				FALSE, TRUE);
 		}
@@ -1705,12 +1702,12 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 
 		gdk_draw_rectangle (drawing_minimap->window,
 			kontext_minimap, 0,
-			(64 - (SCREEN_X_2 / 10) / current.zoom) +
+			(64 - (MAP_X_2 / 10) / current.zoom) +
 			xoff / (current.zoom * 10),
-			(50 - (SCREEN_Y_2 / 10) / current.zoom) +
+			(50 - (MAP_Y_2 / 10) / current.zoom) +
 			yoff / (current.zoom * 10),
-			SCREEN_X / (current.zoom * 10),
-			SCREEN_Y / (current.zoom * 10));
+			gui_status.mapview_x / (current.zoom * 10),
+			gui_status.mapview_y / (current.zoom * 10));
 		drawdownloadrectangle (0);
 	}
 	return TRUE;
@@ -1906,12 +1903,12 @@ expose_cb (GtkWidget * widget, guint * datum)
 
 
 		/*  get pos for current position */
-		calcxy (&posx, &posy, coords.current_lon,
+		calcxy (&current.pos_x, &current.pos_y, coords.current_lon,
 			coords.current_lat, current.zoom);
 
 		/*  do this because calcxy already substracted xoff and yoff */
-		posx = posx + xoff;
-		posy = posy + yoff;
+		current.pos_x += xoff;
+		current.pos_y += yoff;
 
 		/*  Calculate Angle to destination */
 		tx = (2 * R * M_PI / 360) * cos (DEG2RAD (coords.current_lat))
@@ -1955,32 +1952,32 @@ expose_cb (GtkWidget * widget, guint * datum)
 			oldxoff = xoff;
 			oldyoff = yoff;
 			/* now we test if the marker fits into the map and set the shift of the 
-			 * little SCREEN_XxSCREEN_Y region in relation to the real 1280x1024 map 
+			 * little map_x x map_y region in relation to the real 1280x1024 map 
 			 */
 			okcount = 0;
 			do
 			    {
 				ok = TRUE;
 				okcount++;
-				x = posx - xoff;
-				y = posy - yoff;
+				x = current.pos_x - xoff;
+				y = current.pos_y - yoff;
 				
 				if (x < borderlimit)
 				    xoff -= 2 * borderlimit;
-				if (x > (SCREEN_X - borderlimit))
+				if (x > (gui_status.mapview_x - borderlimit))
 				    xoff += 2 * borderlimit;
 				if (y < borderlimit)
 				    yoff -= 2 * borderlimit;
-				if (y > (SCREEN_Y - borderlimit))
+				if (y > (gui_status.mapview_y - borderlimit))
 				    yoff += 2 * borderlimit;
 
 				if (x < borderlimit)
 				    ok = FALSE;
-				if (x > (SCREEN_X - borderlimit))
+				if (x > (gui_status.mapview_x - borderlimit))
 				    ok = FALSE;
 				if (y < borderlimit)
 				    ok = FALSE;
-				if (y > (SCREEN_Y - borderlimit))
+				if (y > (gui_status.mapview_y - borderlimit))
 				    ok = FALSE;
 				if (okcount > 2000)
 				    {
@@ -1990,8 +1987,8 @@ expose_cb (GtkWidget * widget, guint * datum)
 			    }
 			while (!ok);
 
-			xoffmax = (640 * current.zoom) - SCREEN_X_2;
-			yoffmax = (512 * current.zoom) - SCREEN_Y_2;
+			xoffmax = (640 * current.zoom) - MAP_X_2;
+			yoffmax = (512 * current.zoom) - MAP_Y_2;
 			if (xoff > xoffmax)
 			    xoff = xoffmax;
 			if (xoff < -xoffmax)
@@ -2009,13 +2006,13 @@ expose_cb (GtkWidget * widget, guint * datum)
 				g_print ("x: %d  xoff: %d oldxoff: %d Zoom: %d xoffmax: %d\n", x, xoff, oldxoff, current.zoom, xoffmax);
 				g_print ("y: %d  yoff: %d oldyoff: %d Zoom: %d yoffmax: %d\n", y, yoff, oldyoff, current.zoom, yoffmax);
 			    }
-			posx = posx - xoff;
-			posy = posy - yoff;
+			current.pos_x -= xoff;
+			current.pos_y -= yoff;
 		    }
 	}
 
 
-	/*  zoom from to 1280x1024 map to the SCREEN_XxSCREEN_Y region */
+	/*  zoom from to 1280x1024 map to the map_x x map_y region */
 	if (!iszoomed)
 	{
 		rebuildtracklist ();
@@ -2050,9 +2047,9 @@ expose_cb (GtkWidget * widget, guint * datum)
 	}
 
 	gdk_draw_pixbuf (drawable, kontext_map, tempimage,
-			 640 - SCREEN_X_2,
-			 512 - SCREEN_Y_2, 0, 0,
-			 SCREEN_X, SCREEN_Y, GDK_RGB_DITHER_NONE, 0, 0);
+			 640 - MAP_X_2,
+			 512 - MAP_Y_2, 0, 0,
+			 gui_status.mapview_x, gui_status.mapview_y, GDK_RGB_DITHER_NONE, 0, 0);
 
 	if ((!disableisnight) && (!downloadwindowactive))
 	{
@@ -2061,15 +2058,15 @@ expose_cb (GtkWidget * widget, guint * datum)
 			gdk_gc_set_function (kontext_map, GDK_AND);
 			gdk_gc_set_foreground (kontext_map, &colors.nightmode);
 			gdk_draw_rectangle (drawable, kontext_map, 1, 0, 0,
-					    SCREEN_X, SCREEN_Y);
+					    gui_status.mapview_x, gui_status.mapview_y);
 			gdk_gc_set_function (kontext_map, GDK_COPY);
 		}
 	}
 
 	drawmarker (0, 0);
 
-	gdk_draw_pixmap (map_drawingarea->window, kontext_map, drawable, 0,
-			 0, 0, 0, SCREEN_X, SCREEN_Y);
+	gdk_draw_drawable (GTK_LAYOUT (map_drawingarea)->bin_window, kontext_map, drawable, 0,
+			 0, 0, 0, gui_status.mapview_x, gui_status.mapview_y);
 	exposed = TRUE;
 	return TRUE;
 }
@@ -2433,7 +2430,7 @@ sel_message_cb (GtkWidget * widget, guint datum)
 
 	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (window),
-					     real_screen_x, real_screen_y);
+					     gui_status.mapview_x, gui_status.mapview_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (window), 400, 360);
 
@@ -2536,7 +2533,7 @@ sel_target_cb (GtkWidget * widget, guint datum)
 				      _("Please select your destination"));
 	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (window),
-					     real_screen_x, real_screen_y);
+					     gui_status.mapview_x, gui_status.mapview_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (window), 400, 360);
 
@@ -2960,7 +2957,7 @@ main (int argc, char *argv[])
 
     current.needtosave = FALSE;
 
-    gint i, screen_height, screen_width;
+    gint i;
 
     struct tm *lt;
     time_t local_time, gmt_time;
@@ -3121,8 +3118,6 @@ main (int argc, char *argv[])
 	if (local_config.simmode == SIM_ON)
 		current.simmode = TRUE;
 
-    real_screen_x = 640;
-    real_screen_y = 512;
     coords.target_lon = coords.current_lon + 0.00001;
     coords.target_lat = coords.current_lat + 0.00001;
 
@@ -3141,15 +3136,6 @@ main (int argc, char *argv[])
 
     /*  initialization for GTK+ */
     gtk_init (&argc, &argv);
-
-    /* Needed 4 hours to find out that this is IMPORTANT!!!! */
-    gdk_rgb_init ();
-    screen_height = gdk_screen_height ();
-    if ( mydebug >5 ) 
-	fprintf(stderr , "gdk screen height : %d\n", screen_height);
-    screen_width = gdk_screen_width ();
-    if ( mydebug >5 ) 
-	fprintf(stderr , "gdk screen width : %d\n", screen_width);
 
     /* 2. run see comment at first run */
     parse_cmd_args(argc, argv);
@@ -3183,13 +3169,6 @@ main (int argc, char *argv[])
     /* init sql support */
     if (usesql)
 	usesql = sqlinit ();
-
-    /* Create toplevel window */
-
-    get_window_sizing (geometry, usegeometry, screen_height, screen_width);
-
-    if ( mydebug >19 )
-	fprintf(stderr , "screen size %d,%d\n",SCREEN_X,SCREEN_Y);
 
     if (!useflite)
 	havespeechout = speech_out_init ();
@@ -3273,17 +3252,7 @@ main (int argc, char *argv[])
 //			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
 
-#ifdef MAPNIK
-    /*
-     * init mapnik before gui
-     */
-    if (gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name())) {
-        init_mapnik(local_config.mapnik_xml_file);
-    } else {
-    	fprintf(stderr,"Could not init Mapnik!\n");
-    	local_config.MapnikStatusInt = 0; // <-- disable mapnik
-    }
-#endif
+
 
     //temperature_get_values ();
     //battery_get_values ();
@@ -3327,7 +3296,7 @@ main (int argc, char *argv[])
 
 	/* do all the basic initalisation for the specific sections */
 	poi_init ();
-	gui_init ();
+	gui_init (geometry, usegeometry);
 	friends_init ();
 	route_init ();
 
@@ -3355,20 +3324,6 @@ main (int argc, char *argv[])
 	}
     signal (SIGTERM, termhandler);
 
-
-    /* gtk2 requires these functions in the order below do not change */
-    if (usegeometry) {
-	GdkGeometry size_hints = {200, 200, 0, 0, 200, 200, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST};
-
-	gtk_window_set_geometry_hints(GTK_WINDOW (main_window), main_window, &size_hints,
-                                  GDK_HINT_MIN_SIZE |
-                                  GDK_HINT_BASE_SIZE |
-                                  GDK_HINT_RESIZE_INC);
-
-	if (!gtk_window_parse_geometry(GTK_WINDOW (main_window), geometry)) {
-	    fprintf(stderr, "Failed to parse %s\n", geometry);
-	}
-    }
 
     // Initialize Track Filename
     savetrackfile (0);

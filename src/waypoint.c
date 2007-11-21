@@ -87,7 +87,6 @@ extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern gint wptotal, wpselected;
 extern GtkWidget *wp4eventbox;
 extern GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
-extern gdouble posx, posy;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
@@ -96,7 +95,6 @@ extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
 extern GtkWidget *messagewindow;
 extern gint onemousebutton;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
 extern poi_type_struct poi_type_list[poi_type_list_max];
@@ -276,7 +274,7 @@ void check_and_reload_way_txt()
 void
 draw_waypoints ()
 {
-	gdouble posxdest, posydest;
+	gint posxdest, posydest;
 	gint k, k2, i, shownwp = 0;
 	gchar txt[200];
 
@@ -289,9 +287,9 @@ draw_waypoints ()
 		calcxy (&posxdest, &posydest,
 			(wayp + i)->lon, (wayp + i)->lat, current.zoom);
 
-		if ((posxdest >= 0) && (posxdest < SCREEN_X)
+		if ((posxdest >= 0) && (posxdest < gui_status.mapview_x)
 		    && (shownwp < MAXSHOWNWP)
-		    && (posydest >= 0) && (posydest < SCREEN_Y))
+		    && (posydest >= 0) && (posydest < gui_status.mapview_y))
 		{
 			gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 			shownwp++;

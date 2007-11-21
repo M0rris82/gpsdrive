@@ -131,7 +131,7 @@ wlan_check_if_moved (void)
       wlan_lat_ul == 0 && wlan_lon_ul == 0)
     return 1;
 
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
   calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
 
   if (wlan_lat_lr == lat_lr && wlan_lon_lr == lon_lr &&
@@ -193,9 +193,9 @@ wlan_rebuild_list (void)
 
   // calculate the start and stop for lat/lon according to the displayed section
   calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
-  calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
-  calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
-  calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+  calcxytopos (0, gui_status.mapview_y, &lat_ll, &lon_ll, current.zoom);
+  calcxytopos (gui_status.mapview_x, 0, &lat_ur, &lon_ur, current.zoom);
+  calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
 
   lat_min = min (lat_ll, lat_ul);
   lat_max = max (lat_lr, lat_ur);
@@ -205,7 +205,7 @@ wlan_rebuild_list (void)
   lat_mid = (lat_min + lat_max) / 2;
   lon_mid = (lon_min + lon_max) / 2;
 
-  gdouble wlan_posx, wlan_posy;
+  gint wlan_posx, wlan_posy;
   gettimeofday (&t, NULL);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
@@ -261,8 +261,8 @@ wlan_rebuild_list (void)
       lon = g_strtod (row[1], NULL);
       calcxy (&wlan_posx, &wlan_posy, lon, lat, current.zoom);
 
-      if ((wlan_posx > -50) && (wlan_posx < (SCREEN_X + 50)) &&
-	  (wlan_posy > -50) && (wlan_posy < (SCREEN_Y + 50)))
+      if ((wlan_posx > -50) && (wlan_posx < (gui_status.mapview_x + 50)) &&
+	  (wlan_posy > -50) && (wlan_posy < (gui_status.mapview_y + 50)))
 	{
 	  // get next free mem for wlan_list
 	  if (wlan_nr > wlan_limit) {
@@ -396,8 +396,8 @@ wlan_draw_list (void)
       posx = (wlan_list + i)->x;
       posy = (wlan_list + i)->y;
 
-      if ((posx >= 0) && (posx < SCREEN_X) &&
-	  (posy >= 0) && (posy < SCREEN_Y))
+      if ((posx >= 0) && (posx < gui_status.mapview_x) &&
+	  (posy >= 0) && (posy < gui_status.mapview_y))
 	{
 	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 

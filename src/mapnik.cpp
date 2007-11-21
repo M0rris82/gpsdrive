@@ -40,8 +40,6 @@ using mapnik::CoordTransform;
 
 extern int mydebug;
 extern int borderlimit;
-extern int SCREEN_X_2;
-extern int SCREEN_Y_2;
 
 mapnik::projection Proj("+proj=merc +datum=WGS84");
 
@@ -398,9 +396,9 @@ void get_mapnik_center(double *pLatDbl, double *pLonDbl) {
  * wraper function for gpsdrive
  */
 extern "C"
-void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYInt, int pXOffInt, int pYOffInt, int pZoom) {
-	double XDbl = (SCREEN_X_2 - pXInt - pXOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
-	double YDbl = (SCREEN_Y_2 - pYInt - pYOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
+void get_mapnik_calcxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYInt, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int) {
+	double XDbl = (mapx2Int - pXInt - pXOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
+	double YDbl = (mapy2Int - pYInt - pYOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
 	double LonDbl = MapnikMap.CenterPt.x - XDbl;
 	double LatDbl = MapnikMap.CenterPt.y + YDbl;
 	Proj.inverse(LonDbl, LatDbl);
@@ -412,7 +410,7 @@ void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYI
  * wraper function for gpsdrive
  */
 extern "C"
-void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom) {
+void get_mapnik_calcxy(int *pXInt, int *pYInt, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int) {
 	
 	double X = pLonDbl;
 	double Y = pLatDbl;
@@ -420,8 +418,8 @@ void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLon
 	X = X - MapnikMap.CenterPt.x;
 	Y = Y - MapnikMap.CenterPt.y;
 	
-	 *pXDbl = (SCREEN_X_2 + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt;
-	 *pYDbl = (SCREEN_Y_2 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt;
+	 *pXInt = 0.5 + (mapx2Int + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt;
+	 *pYInt = 0.5 + (mapy2Int - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt;
 
 }
 
@@ -443,7 +441,7 @@ void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLo
  * wraper function for gpsdrive
  */
 extern "C"
-void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pZoom) {
+void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pZoom) {
 	double X = pLonDbl;
 	double Y = pLatDbl;
 	Proj.forward(X, Y);

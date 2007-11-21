@@ -39,13 +39,11 @@
 #include "speech_out.h"
 #include "speech_strings.h"
 #include "mapnik.h"
+#include "gui.h"
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gint real_screen_x, real_screen_y;
-extern gint real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy;
+extern gdouble pixelfact;
 extern gdouble bearing;
 extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gdouble milesconv;
@@ -61,8 +59,6 @@ extern gint gcount, downloadwindowactive;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 extern coordinate_struct coords;
 extern gchar oldfilename[2048];
-
-extern gint borderlimit;
 
 extern gint saytarget;
 
@@ -152,8 +148,8 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
     fprintf (stderr, "calcxytopos(%d,%d,__,%d)\n", posx, posy, zoom);
 
   // Screen xy --> pixmap xy
-  px = (SCREEN_X_2 - posx - xoff) * pixelfact / zoom;
-  py = (-SCREEN_Y_2 + posy + yoff) * pixelfact / zoom;
+  px = (MAP_X_2 - posx - xoff) * pixelfact / zoom;
+  py = (-MAP_Y_2 + posy + yoff) * pixelfact / zoom;
 
   if (proj_map == map_proj)
     {
@@ -180,7 +176,7 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
   else if (proj_mapnik == map_proj)
     {
 	  // only use the offset
-	  get_mapnik_clacxytopos(&lat, &lon, posx, posy, xoff, yoff, zoom);
+	  get_mapnik_calcxytopos(&lat, &lon, posx, posy, xoff, yoff, zoom, MAP_X_2, MAP_Y_2);
     }
 #endif
   else
@@ -215,11 +211,11 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 /* ******************************************************************
  * calculate xy pos of given lon/lat 
  */
-void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
+void calcxy (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom)
 {
   gdouble dif;
   if (mydebug > 99)
-    fprintf (stderr, "calcxy(_,_,%g,%g,%d)\n", *posx, *posy, zoom);
+    fprintf (stderr, "calcxy(_,_,%d,%d,%d)\n", *posx, *posy, zoom);
   // Error check
   if (mydebug > 20)
       {
@@ -235,26 +231,25 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 
   if (proj_map == map_proj)
       {
-	  *posx = lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)) * (lon - coords.zero_lon);
-	  *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
 	  dif = lat2radius (lat) * (1 - (cos (DEG2RAD((lon - coords.zero_lon)))));
-	  *posy = *posy + dif / 1.85;
+	  *posx = 0.50 + lat2radius_pi_180 (lat) * cos (DEG2RAD(lat)) * (lon - coords.zero_lon);
+	  *posy = 0.50 + lat2radius_pi_180 (lat) * (lat - coords.zero_lat) + dif / 1.85;
       }
   else if (proj_top == map_proj)
       {
-	  *posx = lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
-	  *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
+	  *posx = 0.50 + lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
+	  *posy = 0.50 + lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
   else if (proj_googlesat == map_proj)
       {
-	  *posx = 1.0 * lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
-	  *posy = 1.5 * lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
+	  *posx = 0.50 + 1.0 * lat2radius_pi_180 (0.0) * (lon - coords.zero_lon);
+	  *posy = 0.50 + 1.5 * lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
       }
 #ifdef MAPNIK
   else if (proj_mapnik == map_proj)
     {
 	  // only use the offset
-	  get_mapnik_clacxy(posx, posy, lat, lon, xoff, yoff, zoom);
+	  get_mapnik_calcxy(posx, posy, lat, lon, xoff, yoff, zoom, MAP_X_2, MAP_Y_2);
     }
 #endif
   else
@@ -262,11 +257,11 @@ void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom
 
   if (proj_mapnik != map_proj) {
 	  // pixmap xy --> Screen xy
-	  *posx = (SCREEN_X_2 + *posx * zoom / pixelfact) - xoff;
-	  *posy = (SCREEN_Y_2 - *posy * zoom / pixelfact) - yoff;
+	  *posx = (MAP_X_2 + *posx * zoom / pixelfact) - xoff;
+	  *posy = (MAP_Y_2 - *posy * zoom / pixelfact) - yoff;
   }
   if (mydebug > 90)
-    fprintf (stderr, "calcxy(_,_,%g,%g,%d) ---> %g,%g\n", *posx, *posy, zoom, lat, lon);
+    fprintf (stderr, "calcxy(_,_,%d,%d,%d) ---> %g,%g\n", *posx, *posy, zoom, lat, lon);
 }
 
 /* ******************************************************************
@@ -305,12 +300,12 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
 /* ******************************************************************
  * calculate xy position in mini map window from given lat/lon
  */
-void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom)
+void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom)
 {
   
 #ifdef MAPNIK
   if (proj_mapnik == map_proj) {
-	  get_mapnik_miniclacxy(posx, posy, lat, lon, zoom);
+	  get_mapnik_minicalcxy(posx, posy, lat, lon, zoom);
 	  return;
   }
 #endif

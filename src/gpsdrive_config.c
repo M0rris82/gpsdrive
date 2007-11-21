@@ -56,8 +56,7 @@ extern gint setdefaultpos;
 extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu,
-lastnotebook;
+extern gint lastnotebook;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];

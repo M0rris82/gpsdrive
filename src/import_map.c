@@ -159,7 +159,6 @@ extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern GtkWidget *status, *pixmapwidget,
   *gotowindow;
 extern GtkWidget *messagewindow, *routewindow, *downloadbt;
-extern gint SCREEN_X_2, SCREEN_Y_2;
 extern GtkWidget *mylist, *myroutelist, *destframe;
 extern mapsstruct *maps;
 extern gint iszoomed;
@@ -264,16 +263,16 @@ importshift_cb (GtkWidget * widget, guint datum)
   switch (datum)
     {
     case 1:
-      yoff -= SCREEN_Y_2;
+      yoff -= MAP_Y_2;
       break;
     case 4:
-      yoff += SCREEN_Y_2;
+      yoff += MAP_Y_2;
       break;
     case 2:
-      xoff -= SCREEN_X_2;
+      xoff -= MAP_X_2;
       break;
     case 3:
-      xoff += SCREEN_X_2;
+      xoff += MAP_X_2;
       break;
     }
   iszoomed = FALSE;
@@ -744,11 +743,11 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       else
 	{
 	  g_snprintf (s, sizeof (s), "%d",
-		x / current.zoom + (640 - SCREEN_X_2 / current.zoom) + xoff
+		x / current.zoom + (640 - MAP_X_2 / current.zoom) + xoff
 		/ current.zoom);
 	  gtk_entry_set_text (GTK_ENTRY (dltext5), s);
 	  g_snprintf (s, sizeof (s), "%d",
-		y / current.zoom + (512 - SCREEN_Y_2 / current.zoom) + yoff
+		y / current.zoom + (512 - MAP_Y_2 / current.zoom) + yoff
 		/ current.zoom);
 	  gtk_entry_set_text (GTK_ENTRY (dltext6), s);
 

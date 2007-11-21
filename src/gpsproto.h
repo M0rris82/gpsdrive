@@ -87,11 +87,11 @@ gint setutc (GtkWidget * widget, guint datum);
 G_MODULE_EXPORT gint modulesetup ();
 gint message_cb (char *msgid, char *name, char *text, int fs);
 void exiterr (int exitcode);
-void calcxy (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat, gint zoom);
+void calcxy (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom);
 void minimap_xy2latlon(gint x, gint y, gdouble *lon, gdouble *lat, gdouble *dif);
 void rebuildtracklist (void);
 gint error_popup (gpointer datum);
-void calcxymini (gdouble * posx, gdouble * posy, gdouble lon, gdouble lat,
+void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat,
 	    gint zoom);
 gdouble calcR (gdouble lat);
 void calcxytopos (int , int , gdouble *, gdouble *, int );

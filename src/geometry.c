@@ -38,9 +38,6 @@ Disclaimer: Please do not use for navigation.
 
 /* variables */
 extern gint ignorechecksum, mydebug;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble posx, posy;
 extern gint haveposcount, blink, gblink, xoff, yoff;
 
 

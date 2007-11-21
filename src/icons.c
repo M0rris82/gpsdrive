@@ -169,7 +169,7 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
   for (i = 0; i < icons_buffer_last; i++)
     if ((strcmp (icon, icons_buffer[i].name)) == 0)
       {
-	if ((posxdest >= 0) && (posxdest < SCREEN_X) && (posydest >= 0) && (posydest < SCREEN_Y))
+	if ((posxdest >= 0) && (posxdest < gui_status.mapview_x) && (posydest >= 0) && (posydest < gui_status.mapview_y))
 	  {
 	    wx = gdk_pixbuf_get_width (icons_buffer[i].icon);
 	    wy = gdk_pixbuf_get_height (icons_buffer[i].icon);
@@ -391,9 +391,9 @@ drawwlan (gint posxdest, gint posydest, gint wlan)
   if (wlan == 0)
     return;
 
-  if ((posxdest >= 0) && (posxdest < SCREEN_X))
+  if ((posxdest >= 0) && (posxdest < gui_status.mapview_x))
     {
-      if ((posydest >= 0) && (posydest < SCREEN_Y))
+      if ((posydest >= 0) && (posydest < gui_status.mapview_y))
 	{
 	  if (wlan == 1)
 	    drawicon (posxdest, posydest, "wlan.open");

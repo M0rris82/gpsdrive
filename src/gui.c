@@ -66,6 +66,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include "main_gui.h"
 #include "routes.h"
 #include "track.h"
+#include "mapnik.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -98,14 +99,14 @@ extern color_struct colors;
 extern currentstatus_struct current;
 
 extern GtkWidget *poi_types_window;
+extern GtkWidget *frame_statusfriends;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
 
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
+extern gint real_psize, real_smallmenu;
 
 GdkColormap *colmap;
 color_struct colors;
@@ -117,340 +118,95 @@ GdkCursor *cursor_watch;
 
 gint PSIZE;
 
-extern gint borderlimit;
-
-extern gdouble posx, posy;
-
 GtkWidget *main_window;
+GtkWidget *mapnik_bt;
 
 
-/* included from freedesktop.org source, copyright as below do not change anything in between here and function get_window_sizing */
-
-/*
-
-Copyright 1985, 1986, 1987,1998  The Open Group
-
-Permission to use, copy, modify, distribute, and sell this software and its
-documentation for any purpose is hereby granted without fee, provided that
-the above copyright notice appear in all copies and that both that
-copyright notice and this permission notice appear in supporting
-documentation.
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-
-Except as contained in this notice, the name of The Open Group shall
-not be used in advertising or otherwise to promote the sale, use or
-other dealings in this Software without prior written authorization
-from The Open Group.
-
-*/
-/* $XFree86: xc/lib/X11/ParseGeom.c,v 1.2 2001/10/28 03:32:30 tsi Exp $ */
-
-/*
-  #include "Xlibint.h"
-  #include "Xutil.h"
-*/
-
-#include <X11/Xlibint.h>
-#include <X11/Xutil.h>
-
-#ifdef notdef
-/* 
- *Returns pointer to first char ins search which is also in what, else NULL.
- */
-static char *strscan (search, what)
-     char *search, *what;
-{
-    int i, len = strlen (what);
-    char c;
-
-    while ((c = *(search++)) != NULL)
-	for (i = 0; i < len; i++)
-	    if (c == what [i])
-		return (--search);
-    return (NULL);
-}
-#endif
-
-/*
- *    XParseGeometry parses strings of the form
- *   "=<width>x<height>{+-}<xoffset>{+-}<yoffset>", where
- *   width, height, xoffset, and yoffset are unsigned integers.
- *   Example:  "=80x24+300-49"
- *   The equal sign is optional.
- *   It returns a bitmask that indicates which of the four values
- *   were actually found in the string.  For each value found,
- *   the corresponding argument is updated;  for each value
- *   not found, the corresponding argument is left unchanged. 
- */
-
-static int
-ReadInteger(char *string, char **NextString)
-{
-    register int Result = 0;
-    int Sign = 1;
-    
-    if (*string == '+')
-	string++;
-    else if (*string == '-')
-	{
-	    string++;
-	    Sign = -1;
-	}
-    for (; (*string >= '0') && (*string <= '9'); string++)
-	{
-	    Result = (Result * 10) + (*string - '0');
-	}
-    *NextString = string;
-    if (Sign >= 0)
-	return (Result);
-    else
-	return (-Result);
-}
-
-int XParseGeometry (
-		    _Xconst char *string,
-		    int *x,
-		    int *y,
-		    unsigned int *width,    /* RETURN */
-		    unsigned int *height)    /* RETURN */
-{
-    int mask = NoValue;
-    register char *strind;
-    unsigned int tempWidth = 0, tempHeight = 0;
-    int tempX = 0, tempY = 0;
-    char *nextCharacter;
-
-    if ( (string == NULL) || (*string == '\0')) return(mask);
-    if (*string == '=')
-	string++;  /* ignore possible '=' at beg of geometry spec */
-
-    strind = (char *)string;
-    if (*strind != '+' && *strind != '-' && *strind != 'x') {
-	tempWidth = ReadInteger(strind, &nextCharacter);
-	if (strind == nextCharacter) 
-	    return (0);
-	strind = nextCharacter;
-	mask |= WidthValue;
-    }
-
-    if (*strind == 'x' || *strind == 'X') {	
-	strind++;
-	tempHeight = ReadInteger(strind, &nextCharacter);
-	if (strind == nextCharacter)
-	    return (0);
-	strind = nextCharacter;
-	mask |= HeightValue;
-    }
-
-    if ((*strind == '+') || (*strind == '-')) {
-	if (*strind == '-') {
-	    strind++;
-	    tempX = -ReadInteger(strind, &nextCharacter);
-	    if (strind == nextCharacter)
-		return (0);
-	    strind = nextCharacter;
-	    mask |= XNegative;
-
-	}
-	else
-	    {	strind++;
-	    tempX = ReadInteger(strind, &nextCharacter);
-	    if (strind == nextCharacter)
-		return(0);
-	    strind = nextCharacter;
-	    }
-	mask |= XValue;
-	if ((*strind == '+') || (*strind == '-')) {
-	    if (*strind == '-') {
-		strind++;
-		tempY = -ReadInteger(strind, &nextCharacter);
-		if (strind == nextCharacter)
-		    return(0);
-		strind = nextCharacter;
-		mask |= YNegative;
-
-	    }
-	    else
-		{
-		    strind++;
-		    tempY = ReadInteger(strind, &nextCharacter);
-		    if (strind == nextCharacter)
-			return(0);
-		    strind = nextCharacter;
-		}
-	    mask |= YValue;
-	}
-    }
-	
-    /* If strind isn't at the end of the string the it's an invalid
-       geometry specification. */
-
-    if (*strind != '\0') return (0);
-
-    if (mask & XValue)
-	*x = tempX;
-    if (mask & YValue)
-	*y = tempY;
-    if (mask & WidthValue)
-	*width = tempWidth;
-    if (mask & HeightValue)
-	*height = tempHeight;
-    return (mask);
-}
+	extern GtkAdjustment *adj_h, *adj_v;
 
 
-/* do not change the above */
 
 /****
      function get_window_sizing
-     This creates the main window sizing from either --geometry or based on screen size if no --geometry
-     as at 4 February 2007 will also use -s -r from command line but will be removed eventually
+     This sets the main window dimensions relative to the screen size
+     if no valid --geometry is given
 ****/
+static int get_window_sizing (void)
+{
 
-int get_window_sizing (gchar *geom, gint usegeom, gint screen_height, gint screen_width) {
-
-    int ret;
-    uint width, height;
-    int x, y;
-
-
-
-    if ( mydebug >= 0 ) {
-	fprintf (stderr, "Creating main window\n");
-    }
-
-    /*** do we have geometry from the command line ***/
-
-    if (usegeom) {
-
-	ret = XParseGeometry (geom, &x, &y, &width, &height);
-
-
-	/* if geometry returns a width then use that otherwise use default for 640x480 */
-
-	if (ret & WidthValue) {
-         if (width > TILEWIDTH) {
-          real_screen_x = TILEWIDTH;
-          }
-         else {
-          real_screen_x = width;
-          }
-	}
-	else {
-	    real_screen_x = 630;
-	}
-
-	/* if geometry returns a height then use that otherwise use default for 640x480 */
-
-	if (ret & HeightValue) {
-         if (height > TILEHEIGHT) {
-          real_screen_y = TILEHEIGHT;
-          }
-         else {
-          real_screen_y = height;
-          }
-	}
-	else {
-	    real_screen_y = screen_height - YMINUS;
-	}
-    }
-    else {
-
-	/** from gpsdrive.c line 4773 to 4814 */
+	guint screen_width, screen_height;
+	gui_status.app_width = 160;
+	gui_status.app_height = 160;
 
 	PSIZE = 50;
 	SMALLMENU = 0;
+
+	screen_width = gdk_screen_width ();
+	screen_height = gdk_screen_height ();
+
 	if (screen_height >= 1024)		 /* > 1280x1024 */
 	    {
-		real_screen_x = min(1280,screen_width-300);
-		real_screen_y = min(1024,screen_height-200);
+		gui_status.app_width = min(1280,screen_width-300);
+		gui_status.app_height = min(1024,screen_height-200);
 		if ( mydebug > 0 )
-		    g_print ("Set real Screen size to %d,%d\n", 
-			     real_screen_x,real_screen_y);
-		
+			g_print ("Set application window size to %d,%d\n",
+				gui_status.app_width, gui_status.app_height);
 	    }
 	else if (screen_height >= 768)	/* 1024x768 */
 	    {
-		real_screen_x = 800;
-		real_screen_y = 540;
+		gui_status.app_width = 800;
+		gui_status.app_height = 540;
 	    }
 	else if (screen_height >= 750)	/* 1280x800 */
 	    {
-		real_screen_x = 1140;
-		real_screen_y = 600;
+		gui_status.app_width = 1140;
+		gui_status.app_height = 600;
 	    }
 	else if (screen_height >= 480)	/* 640x480 */
 	    {
 		if (screen_width == 0)
-		    real_screen_x = 630;
+		    gui_status.app_width = 630;
 		else
-		    real_screen_x = screen_width - XMINUS;
-		real_screen_y = screen_height - YMINUS;
+		    gui_status.app_width = screen_width - XMINUS;
+		gui_status.app_width = screen_height - YMINUS;
 	    }
 	else if (screen_height < 480)
 	    {
 		if (screen_width == 0)
-		    real_screen_x = 220;
+		    gui_status.app_width = 220;
 		else
-		    real_screen_x = screen_width - XMINUS;
-		real_screen_y = screen_height - YMINUS;
+		    gui_status.app_width = screen_width - XMINUS;
+		gui_status.app_height = screen_height - YMINUS;
 		PSIZE = 25;
 		SMALLMENU = 1;
 	    }
-    }  /*** if usegeom  */
+
 
     /** from gpsdrive.c line 4824 to 4857 */
-
-    if ((local_config.guimode == GUI_XWIN) && (screen_width != 0))
-	{
-	    real_screen_x += XMINUS - 10;
-	    real_screen_y += YMINUS - 30;
-	}
 
     if (   ((screen_width  == 240) && (screen_height == 320)) 
 	   || ((screen_height == 240) && (screen_width  == 320)) )
 	{
 	    local_config.guimode = GUI_PDA;
 	    // SMALLMENU = 1;
-	    real_screen_x = screen_width - 8;
-	    real_screen_y = screen_height - 70;
+	    gui_status.app_width = screen_width - 8;
+	    gui_status.app_height = screen_height - 70;
 	}
     if (local_config.guimode == GUI_PDA)
 	{
 	    g_print ("\nPDA mode\n");
 	}
 
-    if (real_screen_x < real_screen_y)
-	borderlimit = real_screen_x / 5;
-    else
-	borderlimit = real_screen_y / 5;
-
-    if (borderlimit < 30)
-	borderlimit = 30;
-
-    SCREEN_X_2 = SCREEN_X / 2;
-    SCREEN_Y_2 = SCREEN_Y / 2;
     PSIZE = 50;
-    posx = SCREEN_X_2;
-    posy = SCREEN_Y_2;
 
-    if ( mydebug > 10 ) {
-	g_print ("Set real Screen size to %d,%d\n", real_screen_x,real_screen_y);
-    }
+	gtk_window_set_default_size (GTK_WINDOW (main_window),
+		gui_status.app_width, gui_status.app_height);
 
-    if ( mydebug > 10 ) {
-	g_print ("Screen size is %d,%d\n", screen_width,screen_height);
-    }
+	if ( mydebug > 10 )
+	{
+		g_print ("Screen size is %d,%d\n", screen_width, screen_height);
+		g_print ("Setting map screen size to %d,%d\n", gui_status.app_width, gui_status.app_height);
+	}
 
     return 0;
 }
@@ -635,7 +391,7 @@ gchar
  *	Currently the Nightmode is represented by changing only the map
  *	colors, but the rest of the GUI stays the same.
  *	Maybe we should switch the gtk-theme instead, so that the complete
- *	GUI changes the colors. But this has time until after the 2007 release.
+ *	GUI changes the colors. But this has time until after the 2.10 release.
  */
 gint switch_nightmode (gboolean value)
 {
@@ -773,13 +529,52 @@ draw_posmarker (
 }
 
 
+/*
+ * function to set cursors styles
+ */
+gint
+set_cursor_style(int cursor) {
+	switch(cursor) {
+		case CURSOR_DEFAULT:
+			/* different cursors in posmode */
+			if (gui_status.posmode == TRUE)
+				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, cursor_cross);
+			else
+				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, NULL);
+			break;
+		case CURSOR_WATCH:
+			gdk_window_set_cursor(GTK_LAYOUT (map_drawingarea)->bin_window, cursor_watch);
+	}
+	/* update all events to fastly switch cursor */
+	while (gtk_events_pending())
+		gtk_main_iteration();
+	return 0;
+}
+
+
 /* *****************************************************************************
  * GUI Init Main
  * This will call all the necessary functions to init the graphical interface
  */
-int gui_init (void)
+int gui_init (gchar *geometry, gint usegeometry)
 {
-	GdkRectangle rectangle = {0, 0, SCREEN_X, SCREEN_Y};
+	gint app_x, app_y;
+
+	if ( mydebug > 0 )
+		fprintf (stderr, "Initializing GUI\n");
+
+#ifdef MAPNIK
+	/* init mapnik before gui */
+	if (gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name()))
+	{
+		init_mapnik(local_config.mapnik_xml_file);
+	}
+	else
+	{
+		fprintf(stderr,"Could not init Mapnik!\n");
+		local_config.MapnikStatusInt = 0; // <-- disable mapnik
+	}
+#endif
 
 	/* init colors */
 	colmap = gdk_colormap_get_system ();
@@ -811,13 +606,33 @@ int gui_init (void)
 	init_color ("#a0a0a0", &colors.darkgrey); 
 	init_color ("#d0d0d0", &colors.lightgrey);
 
-	gtk_window_set_auto_startup_notification (TRUE);
-	
 	/* init poi search dialog (cached) */
 	create_window_poi_lookup();
 	
-	// TODO: use real values for geometry
-	create_main_window(NULL, 0);
+	/* init size and contents of the main window */
+	create_main_window();
+	if (usegeometry && local_config.guimode != GUI_CAR)
+	{
+		usegeometry = gtk_window_parse_geometry (GTK_WINDOW (main_window), geometry);
+		if (!usegeometry)
+			fprintf(stderr, "Failed to parse %s\n", geometry);
+	}
+	if (!usegeometry)
+		get_window_sizing ();
+	gtk_widget_show_all (main_window);
+
+	//if ( ( local_config.guimode == GUI_DESKTOP )
+	     if( (local_config.MapnikStatusInt ) ){
+	    toggle_mapnik_cb( mapnik_bt, 2 );
+	}
+	
+	if ( !local_config.showfriends)
+	    gtk_widget_hide_all (frame_statusfriends);
+
+	/* init map view:
+	 * this has to be done after the main window has been realized
+	 * because now we now the necessary map size */
+	create_map_drawable ();
 
 	// TODO: create_button_add_wp();
 
@@ -828,53 +643,23 @@ int gui_init (void)
 // the following lines habe been moved from gpsdrive.c to here.
 // maybe something has to be sorted out:
 {	
-	drawable =
-	gdk_pixmap_new (map_drawingarea->window, SCREEN_X, SCREEN_Y, -1);
-	kontext_map = gdk_gc_new (main_window->window);
-
-	gdk_gc_set_clip_origin (kontext_map, 0, 0);
-	rectangle.width = SCREEN_X;
-	rectangle.height = SCREEN_Y;
-
-	gdk_gc_set_clip_rectangle (kontext_map, &rectangle);
-
-	/* fill window with color */
-	gdk_gc_set_function (kontext_map, GDK_COPY);
-	gdk_gc_set_foreground (kontext_map, &colors.lcd2);
-	gdk_draw_rectangle (map_drawingarea->window, kontext_map, 1, 0, 0,
-		SCREEN_X, SCREEN_Y);
-    {
 	GtkStyle *style;
 	style = gtk_rc_get_style (main_window);
 	colors.defaultcolor = style->bg[GTK_STATE_NORMAL];
-    }
 }
 
 	/* set cross cursor for map posmode */
 	cursor_cross = gdk_cursor_new(GDK_TCROSS);
 	/* set watch cursor used e.g. when rendering a mapnik map*/
 	cursor_watch = gdk_cursor_new(GDK_WATCH);
-	return 0;
-}
+	
+	gtk_window_set_auto_startup_notification (TRUE);
 
-/*
- * function to set cursors styles
- */
-gint
-set_cursor_style(int cursor) {
-	switch(cursor) {
-		case CURSOR_DEFAULT:
-			/* different cursors in posmode */
-			if (gui_status.posmode == TRUE)
-				gdk_window_set_cursor (map_drawingarea->window, cursor_cross);
-			else
-				gdk_window_set_cursor (map_drawingarea->window, NULL);
-			break;
-		case CURSOR_WATCH:
-			gdk_window_set_cursor(map_drawingarea->window, cursor_watch);
+	if ( mydebug > 5 )
+	{
+		gtk_window_get_size (GTK_WINDOW (main_window), &app_x, &app_y);
+		fprintf(stderr , "size of application : %dx%d px\n", app_x, app_y);
 	}
-	/* update all events to fastly switch cursor */
-	while (gtk_events_pending())
-		gtk_main_iteration();
+
 	return 0;
 }

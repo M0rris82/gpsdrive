@@ -522,42 +522,42 @@ unit_test (void)
       {
 	printf ("	pixelfact: %g\n", pixelfact);
 	printf ("	mapscale: %ld\n", current.mapscale);
-	printf ("	SCREEN X/Y: %d/%d\n", SCREEN_X, SCREEN_Y);
+	printf ("	mapview x/y: %d/%d\n", gui_status.mapview_x, gui_status.mapview_y);
 	printf ("\n");
       }
 
     typedef struct
     {
       gdouble cur_lat, cur_lon;
-      gdouble x, y;
+      gint x, y;
       gdouble lat, lon;
     } test_struct;
     test_struct test_array[] = {
-      {12, 48, SCREEN_X / 2, SCREEN_Y / 2, 12, 48},
-      {12, 48, SCREEN_X, SCREEN_Y, 11.9848, 48.021},
-      {12, 48, 0, SCREEN_Y, 11.9848, 47.979},
-      {12, 48, SCREEN_X, 0, 12.0152, 48.021},
+      {12, 48, gui_status.mapview_x / 2, gui_status.mapview_y / 2, 12, 48},
+      {12, 48, gui_status.mapview_x, gui_status.mapview_y, 11.9848, 48.021},
+      {12, 48, 0, gui_status.mapview_y, 11.9848, 47.979},
+      {12, 48, gui_status.mapview_x, 0, 12.0152, 48.021},
       {12, 48, 0, 0, 12.0152, 47.979},
 
-      {-12, 48, SCREEN_X / 2, SCREEN_Y / 2, -12, 48},
-      {-12, 48, SCREEN_X, SCREEN_Y, -11.9848, 48.021},
-      {-12, 48, 0, SCREEN_Y, -11.9848, 47.979},
-      {-12, 48, SCREEN_X, 0, -12.0152, 48.021},
+      {-12, 48, gui_status.mapview_x / 2, gui_status.mapview_y / 2, -12, 48},
+      {-12, 48, gui_status.mapview_x, gui_status.mapview_y, -11.9848, 48.021},
+      {-12, 48, 0, gui_status.mapview_y, -11.9848, 47.979},
+      {-12, 48, gui_status.mapview_x, 0, -12.0152, 48.021},
       {-12, 48, 0, 0, -12.0152, 47.979},
 
-      {12, -48, SCREEN_X / 2, SCREEN_Y / 2, 12, -48},
-      {12, -48, SCREEN_X, SCREEN_Y, 11.9848, -48.021},
-      {12, -48, 0, SCREEN_Y, 11.9848, -47.979},
-      {12, -48, SCREEN_X, 0, 12.0152, -48.021},
+      {12, -48, gui_status.mapview_x / 2, gui_status.mapview_y / 2, 12, -48},
+      {12, -48, gui_status.mapview_x, gui_status.mapview_y, 11.9848, -48.021},
+      {12, -48, 0, gui_status.mapview_y, 11.9848, -47.979},
+      {12, -48, gui_status.mapview_x, 0, 12.0152, -48.021},
       {12, -48, 0, 0, 12.0152, -47.979},
 
-      {-12, -48, SCREEN_X / 2, SCREEN_Y / 2, -12, -48},
-      {-12, -48, SCREEN_X, SCREEN_Y, -11.9848, -48.021},
-      {-12, -48, 0, SCREEN_Y, -11.9848, -47.979},
-      {-12, -48, SCREEN_X, 0, -12.0152, -48.021},
+      {-12, -48, gui_status.mapview_x / 2, gui_status.mapview_y / 2, -12, -48},
+      {-12, -48, gui_status.mapview_x, gui_status.mapview_y, -11.9848, -48.021},
+      {-12, -48, 0, gui_status.mapview_y, -11.9848, -47.979},
+      {-12, -48, gui_status.mapview_x, 0, -12.0152, -48.021},
       {-12, -48, 0, 0, -12.0152, -47.979},
 
-      {0, 0, -99.0, 0.0, 0.0, 0.0},
+      {0, 0, -99, 0, 0.0, 0.0},
     };
 
     gint i;
@@ -565,7 +565,7 @@ unit_test (void)
       {
 	gdouble lat, lon;
 	gint x, y;
-	gdouble gx, gy;
+	gint gx, gy;
 
 	coords.current_lat = coords.zero_lat = test_array[i].cur_lat;
 	coords.current_lon = coords.zero_lon = test_array[i].cur_lon;
@@ -596,7 +596,7 @@ unit_test (void)
 	calcxy (&gx, &gy, lon, lat, current.zoom);
 	if (mydebug > 0)
 	  fprintf (stderr,
-		   "	%d:            (%-7.4g,%-7.4g)	<-- calcxy(%g,%g)\n",
+		   "	%d:            (%-d,%-d)	<-- calcxy(%g,%g)\n",
 		   i, gx, gy, lat, lon);
 	gint delta_x = gx - x;
 	if (abs (delta_x) > 1)

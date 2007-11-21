@@ -76,7 +76,6 @@ extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
 extern GtkWidget *messagewindow;
 extern gint onemousebutton;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
 extern GdkGC *kontext;
@@ -138,9 +137,9 @@ draw_grid (GtkWidget * widget)
 
 	// calculate the start and stop for lat/lon according to the displayed section
 	calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
-	calcxytopos (0, SCREEN_Y, &lat_ll, &lon_ll, current.zoom);
-	calcxytopos (SCREEN_X, 0, &lat_ur, &lon_ur, current.zoom);
-	calcxytopos (SCREEN_X, SCREEN_Y, &lat_lr, &lon_lr, current.zoom);
+	calcxytopos (0, gui_status.mapview_y, &lat_ll, &lon_ll, current.zoom);
+	calcxytopos (gui_status.mapview_x, 0, &lat_ur, &lon_ur, current.zoom);
+	calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
 
 	// add more lines as the scale increases
 
@@ -195,11 +194,11 @@ draw_grid (GtkWidget * widget)
 	    {
 		for (lat = lat_min; lat <= lat_max; lat = lat + step)
 		    {
-			gdouble posxdest11, posydest11;
-			gdouble posxdest12, posydest12;
-			gdouble posxdest21, posydest21;
-			gdouble posxdest22, posydest22;
-			gdouble posxdist, posydist;
+			gint posxdest11, posydest11;
+			gint posxdest12, posydest12;
+			gint posxdest21, posydest21;
+			gint posxdest22, posydest22;
+			gint posxdist, posydist;
 			gchar str[200];
 
 			count++;
@@ -208,17 +207,17 @@ draw_grid (GtkWidget * widget)
 			calcxy (&posxdest21, &posydest21, lon + step, max(-90,lat),        current.zoom);
 			calcxy (&posxdest22, &posydest22, lon + step, min( 90,lat + step), current.zoom);
 
-			if (((posxdest11 >= 0) && (posxdest11 < SCREEN_X) &&
-			     (posydest11 >= 0) && (posydest11 < SCREEN_Y))
+			if (((posxdest11 >= 0) && (posxdest11 < gui_status.mapview_x) &&
+			     (posydest11 >= 0) && (posydest11 < gui_status.mapview_y))
 			    ||
-			    ((posxdest22 >= 0) && (posxdest22 < SCREEN_X) &&
-			     (posydest22 >= 0) && (posydest22 < SCREEN_Y))
+			    ((posxdest22 >= 0) && (posxdest22 < gui_status.mapview_x) &&
+			     (posydest22 >= 0) && (posydest22 < gui_status.mapview_y))
 			    ||
-			    ((posxdest21 >= 0) && (posxdest21 < SCREEN_X) &&
-			     (posydest21 >= 0) && (posydest21 < SCREEN_Y))
+			    ((posxdest21 >= 0) && (posxdest21 < gui_status.mapview_x) &&
+			     (posydest21 >= 0) && (posydest21 < gui_status.mapview_y))
 			    ||
-			    ((posxdest12 >= 0) && (posxdest12 < SCREEN_X) &&
-			     (posydest12 >= 0) && (posydest12 < SCREEN_Y)))
+			    ((posxdest12 >= 0) && (posxdest12 < gui_status.mapview_x) &&
+			     (posydest12 >= 0) && (posydest12 < gui_status.mapview_y)))
 			    {
 				// TODO: add linethickness 2 for Mayor Lines
 				// Set Drawing Mode

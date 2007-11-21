@@ -110,8 +110,8 @@ calcxytopos2 (int posx, int posy, double * mylat, double * mylon,
 
   x = posx;
   y = posy;
-  //px = (SCREEN_X_2 - x - xoff) * pixelfact / current.zoom;
-  //py = (-SCREEN_Y_2 + y + yoff) * pixelfact / current.zoom;
+  //px = (MAP_X_2 - x - xoff) * pixelfact / current.zoom;
+  //py = (-MAP_Y_2 + y + yoff) * pixelfact / current.zoom;
   px = -posx * pixelfact;
   py = posy * pixelfact;
 

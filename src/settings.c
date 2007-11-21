@@ -84,7 +84,6 @@ extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
 static gdouble hour, sunrise, sunset;
 extern gchar utctime[20], loctime[20];
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
 extern gdouble milesconv;
 extern gint lastnotebook;
 extern GtkWidget *settingsnotebook, *slowcpubt;

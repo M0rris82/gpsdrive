@@ -50,9 +50,6 @@ Disclaimer: Please do not use for navigation.
 
 /* variables */
 extern gint ignorechecksum, mydebug;
-extern gint real_screen_x, real_screen_y, real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble posx, posy;
 extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
@@ -401,18 +398,18 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
   /*
    * Handle either DegMinSec or MinDec formats
    */
-  if (4 == sscanf (text, "%d\xc2\xb0%d'%lf''%c", &grad, &min, &sec, &s2))
+  if (4 == sscanf (text, "%c %d\xc2\xb0 %d' %lf\n", &s2, &grad, &min, &sec))
     {
       /*   sscanf(s1,"%f",&sec); */
       *dec = grad + min / 60.0 + sec / 3600.0;
     }
-  else if (3 == sscanf (text, "%d\xc2\xb0%lf'%c", &grad, &fmin, &s2))
+  else if (3 == sscanf (text, "%c %d\xc2\xb0 %lf'", &s2, &grad, &fmin))
     {
       *dec = grad + fmin / 60.0;
     }
-  else if (2 == sscanf (text, "%lf\xc2\xb0%c", dec, &s2))
-    {
-    }
+//  else if (2 == sscanf (text, "%c %lf\xc2\xb0", &s2, dec))
+//    {
+//    }
   else if (1 == sscanf (text, "%lf", dec))
     {
       /* Is already decimal */

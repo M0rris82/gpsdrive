@@ -25,10 +25,10 @@ double get_mapnik_mapscale();
 double get_mapnik_pixelfactor();
 int get_mapnik_newmapysn();
 void get_mapnik_center(double *pLatDbl, double *pLonDbl);
-void get_mapnik_clacxytopos(double *pLatDbl, double *pLonDbl, int pX, int pY, int pXOffInt, int pYOffInt, int zoom);
-void get_mapnik_clacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom);
+void get_mapnik_calcxytopos(double *pLatDbl, double *pLonDbl, int pX, int pY, int pXOffInt, int pYOffInt, int zoom, int mapx2Int, int mapy2Int);
+void get_mapnik_calcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int);
 void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLonDbl);
-void get_mapnik_miniclacxy(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int pZoom);
+void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pZoom);
 
 #endif // _MAPNIK_DEF_H
 #endif // MAPNIK

@@ -259,7 +259,6 @@ gint speechsock = -1;
 gchar *displaytext = NULL;
 extern color_struct colors;
 extern GdkDrawable *drawable;
-extern gint real_screen_y, real_screen_x;
 gint do_display_dsc = FALSE, textcount;
 extern gint useflite, foundradar, speechcount;
 extern gchar oldangle[100];
@@ -482,7 +481,7 @@ display_dsc (void)
 	/*   gdk_gc_set_function (kontext, GDK_OR); */
 
 	gdk_gc_set_foreground (kontext, &colors.mygray);
-	gdk_draw_rectangle (drawable, kontext, 1, 0, SCREEN_Y - 40, SCREEN_X,
+	gdk_draw_rectangle (drawable, kontext, 1, 0, gui_status.mapview_y - 40, gui_status.mapview_x,
 			    40);
 	gdk_gc_set_function (kontext, GDK_COPY);
 	/*   gdk_gc_set_foreground (kontext, &blue); */
@@ -497,7 +496,7 @@ display_dsc (void)
 		pfd = pango_font_description_from_string ("Sans bold 14");
 	pango_layout_set_font_description (wplabellayout, pfd);
 	/*          pango_layout_get_pixel_size (wplabellayout, &width, &height); */
-	gdk_draw_layout_with_colors (drawable, kontext, 11, SCREEN_Y - 30,
+	gdk_draw_layout_with_colors (drawable, kontext, 11, gui_status.mapview_y - 30,
 				     wplabellayout, &colors.blue, NULL);
 
 	if (wplabellayout != NULL)

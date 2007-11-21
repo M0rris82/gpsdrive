@@ -47,7 +47,8 @@ enum
 	DASH_N_ITEMS
 };
 
-gint create_main_window (gchar *geom, gint *usegeom);
+gint create_main_window (void);
+void create_map_drawable (void);
 gint autobestmap_cb (GtkWidget *widget, guint datum);
 gint update_statusdisplay (void);
 gint expose_gpsfix (GtkWidget *widget, guint *datum);

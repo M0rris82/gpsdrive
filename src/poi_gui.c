@@ -722,7 +722,7 @@ void create_window_poi_lookup (void)
 		GDK_WINDOW_TYPE_HINT_DIALOG);
 	if (local_config.guimode == GUI_PDA)
 		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window),
-			real_screen_x, real_screen_y);
+			gui_status.mapview_x, gui_status.mapview_y);
 	else
 		gtk_window_set_default_size (GTK_WINDOW (poi_lookup_window),
 			-1, 400);
@@ -1181,7 +1181,7 @@ void route_window_cb (GtkWidget *calling_button)
 	if (local_config.guimode == GUI_PDA)
 	{
 		gtk_window_set_default_size (GTK_WINDOW (route_window),
-			real_screen_x, real_screen_y);
+			gui_status.mapview_x, gui_status.mapview_y);
 	}
 	else
 		gtk_window_set_default_size (GTK_WINDOW (route_window), -1, 250);

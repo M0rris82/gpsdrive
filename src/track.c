@@ -70,8 +70,8 @@ tripdata_struct trip;
 void
 rebuildtracklist (void)
 {
-  gdouble posxdest, posydest;
-  gdouble posxsource, posysource;
+  gint posxdest, posydest;
+  gint posxsource, posysource;
   posxsource = -1000;
   posysource = -1000;
   gint i, so;
@@ -96,12 +96,12 @@ rebuildtracklist (void)
 	}
       else
 	{
-	  if (((posxdest > -50) && (posxdest < (SCREEN_X + 50))
+	  if (((posxdest > -50) && (posxdest < (gui_status.mapview_x + 50))
 	       && (posydest > -50)
-	       && (posydest < (SCREEN_Y + 50))
+	       && (posydest < (gui_status.mapview_y + 50))
 	       && (posxsource > -50)
-	       && (posxsource < (SCREEN_X + 50))
-	       && (posysource > -50) && (posysource < (SCREEN_Y + 50))))
+	       && (posxsource < (gui_status.mapview_x + 50))
+	       && (posysource > -50) && (posysource < (gui_status.mapview_y + 50))))
 	    {
 	      if ((posxdest != posxsource) || (posydest != posysource))
 		{

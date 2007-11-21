@@ -45,10 +45,7 @@
 
 /* variables */
 extern gint ignorechecksum, mydebug, debug;
-extern gint real_screen_x, real_screen_y;
-extern gint real_psize, real_smallmenu;
-extern gint SCREEN_X_2, SCREEN_Y_2;
-extern gdouble pixelfact, posx, posy;
+extern gdouble pixelfact;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern gdouble milesconv;
 extern gint nrmaps;
@@ -922,7 +919,8 @@ void
 drawloadedmaps ()
 {
   int i;
-  gdouble x, y, la, lo;
+  gint x, y;
+  gdouble la, lo;
   gint scale, xo, yo;
   if (mydebug > 50)
     fprintf (stderr, "drawloadedmaps()\n");
@@ -967,7 +965,8 @@ drawdownloadrectangle (gint big)
   drawloadedmaps ();
   if (downloadwindowactive)
     {
-      gdouble x, y, la, lo;
+      gint x, y;
+      gdouble la, lo;
       gint scale, xo, yo;
       la = new_dl_lat;
       lo = new_dl_lon;
