@@ -747,13 +747,6 @@ test_and_load_newmap ()
     if (current.importactive)
         return;
 
-	// TODO: this doesn't belong here, move it somewhere else...
-    if (gui_status.posmode) {
-  		coords.current_lon = coords.posmode_lon;
-  		coords.current_lat = coords.posmode_lat;
-  	} else update_route ();
-
-
     // Test if we want Background image as Map
     if (!display_background_map ()) {
         current.mapscale = (glong) local_config.scale_wanted;

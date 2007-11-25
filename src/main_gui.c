@@ -1150,14 +1150,8 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
  * callback to update mapview size when application window is resized
  */
 gint
-set_mapviewsize_cb (GtkWidget *widget, GdkEventConfigure *event, gpointer data)
+set_mapviewsize_cb (void)
 {
-	if (mydebug > 20)
-	{
-		fprintf (stderr, "--------------------------------------\n");
-		fprintf (stderr, "set_mapviewsize_cb: catched signal %d\n", event->type);
-	}
-
 	gui_status.mapview_x = map_drawingarea->allocation.width;
 	gui_status.mapview_y = map_drawingarea->allocation.height;
 
@@ -2336,18 +2330,6 @@ gint create_main_window (void)
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
-
-	/* set event handler for 'configure event', to enable
-	 * reconfiguration of the mapview size when the size of
-	 * the application window changes. */
-	g_signal_connect (main_window, "configure-event",
-		G_CALLBACK (set_mapviewsize_cb), NULL);
-
-	/* set event handler for 'window state event', to catch
-	 * maximization of the application window */
-	//TODO: this doesn't work, I have to check why and fix it...
-	g_signal_connect_after (main_window, "window-state-event",
-		G_CALLBACK (set_mapviewsize_cb), NULL);
 
 	return 0;
 }

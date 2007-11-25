@@ -382,7 +382,6 @@ GtkTextBuffer *getmessagebuffer;
 int newdata = FALSE;
 extern pthread_mutex_t mutex;
 //int mapistopo = FALSE;
-extern int havenasa;
 int nosplash = FALSE;
 int havedefaultmap = TRUE;
 
@@ -682,6 +681,14 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	runtime2 = tv1.tv_usec - tv2.tv_usec;
 	if (tv1.tv_sec != tv2.tv_sec)
 		runtime2 += 1000000l * (tv1.tv_sec - tv2.tv_sec);
+
+	if (gui_status.posmode)
+	{
+		coords.current_lon = coords.posmode_lon;
+		coords.current_lat = coords.posmode_lat;
+	}
+	else
+		update_route ();
 
 	/* we test if we have to load a new map because we are outside 
 	 * the currently loaded map 
@@ -1883,7 +1890,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 	if (exposed && local_config.guimode == GUI_PDA)
 		return TRUE;
 
-
+	set_mapviewsize_cb ();
 
 	errortextmode = FALSE;
 	if (!current.importactive)
