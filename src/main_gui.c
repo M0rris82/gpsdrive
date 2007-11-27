@@ -1435,7 +1435,7 @@ void create_dashboard_menu (void)
  */
 GtkWidget *mapcontrolbox (void)
 {
-	GtkWidget *controlbox_hbox;
+	GtkWidget *controlbox_vbox;
 
 	controlbox_window = gtk_dialog_new_with_buttons (_("Map Control"),
 		GTK_WINDOW (main_window), GTK_DIALOG_DESTROY_WITH_PARENT,
@@ -1444,10 +1444,10 @@ GtkWidget *mapcontrolbox (void)
 		G_CALLBACK (toggle_controlbox_cb), (gpointer) FALSE);
 	gtk_window_set_icon_name (GTK_WINDOW (controlbox_window), "gtk-properties");
 	gtk_window_set_decorated (GTK_WINDOW (controlbox_window), FALSE);
-	controlbox_hbox = gtk_hbox_new (TRUE, 1 * PADDING);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), controlbox_hbox);
+	controlbox_vbox = gtk_vbox_new (FALSE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), controlbox_vbox);
 
-	return controlbox_hbox;
+	return controlbox_vbox;
 }
 
 
@@ -1475,6 +1475,9 @@ void create_controls_mainbox (void)
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
+
+	gint scaler_pos = 0;
+	gint scale = 0;
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox\n");
@@ -1820,7 +1823,24 @@ void create_controls_mainbox (void)
 	{
 		frame_mapcontrol = make_display_map_controls ();
 	}	/* END MAP CONTROL */
-	
+
+	/* Map Scale Slider */
+	/* search which scaler_pos is fitting scale_wanted */
+	while ( (local_config.scale_wanted > scale )
+		&& (scaler_pos <= slistsize ) )
+	{
+		scaler_pos++;
+		scale = nlist[(gint) rint (scaler_pos)];
+	}
+	mapscaler_adj = gtk_adjustment_new
+		(scaler_pos, 0, slistsize - 1, 1,
+		slistsize / 4, 1 / slistsize );
+	mapscaler_scaler = gtk_hscale_new
+		(GTK_ADJUSTMENT (mapscaler_adj));
+	g_signal_connect (GTK_OBJECT (mapscaler_adj), "value_changed",
+		GTK_SIGNAL_FUNC (scaler_cb), NULL);
+	gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
+
 	/* MAP TYPE */
 	{
 	        if ( mydebug > 11 )
@@ -1847,6 +1867,7 @@ void create_controls_mainbox (void)
 	else
 	if (local_config.guimode == GUI_CAR)
 	{
+		GtkWidget *buttons_hbox;
 		/* in Car Mode we have a separate dialog window, that holds all
 		 * the controls that have not enough space in the main window
 		 */
@@ -1860,11 +1881,15 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls), controlbox_bt, TRUE, TRUE, 1 * PADDING);
 
+		buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_poi, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_track, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
+
 		controlbox = mapcontrolbox ();
-		gtk_box_pack_start (GTK_BOX (controlbox),frame_poi, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (controlbox),frame_track, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (controlbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (controlbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox), mapscaler_scaler, FALSE, FALSE, 1 * PADDING);
 	}
 	else
 	{
@@ -1903,8 +1928,6 @@ void create_status_mainbox (void)
 	GtkWidget *frame_compass, *frame_minimap;
 
 	gchar sc[15];
-	gint scaler_pos= 0;
-	gint scale = 0;
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_status_mainbox\n");
@@ -2096,24 +2119,7 @@ void create_status_mainbox (void)
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id,
 			_("GpsDrive (c)2001-2007 F. Ganter"));
-
-		/* Map Scale Slider */
-		/* search which scaler_pos is fitting scale_wanted */
-		while ( (local_config.scale_wanted > scale )
-			&& (scaler_pos <= slistsize ) )
-		{
-			scaler_pos++;
-			scale = nlist[(gint) rint (scaler_pos)];
-		}
-		mapscaler_adj = gtk_adjustment_new
-			(scaler_pos, 0, slistsize - 1, 1,
-			slistsize / 4, 1 / slistsize );
-		mapscaler_scaler = gtk_hscale_new
-			(GTK_ADJUSTMENT (mapscaler_adj));
-		g_signal_connect (GTK_OBJECT (mapscaler_adj), "value_changed",
-			GTK_SIGNAL_FUNC (scaler_cb), NULL);
-		gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
-	}	/* END STATUS BAR AND SCALE SLIDER */
+	}	/* END STATUS BAR */
 	
 	/* Pack all the widgets together according to GUI-Mode */
 	if (local_config.guimode == GUI_PDA)
