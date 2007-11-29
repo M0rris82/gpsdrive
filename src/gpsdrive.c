@@ -776,8 +776,11 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	if ( mydebug >50 ) fprintf(stderr , "masteragent_cb()\n");
 
 	if (current.needtosave)
+	{
 		writeconfig ();
-
+		if (route.items && !route.active)
+			route_export_cb (NULL, TRUE);
+	}
 
 	map_koord_check_and_reload();
 

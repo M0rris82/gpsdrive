@@ -79,7 +79,6 @@ extern int havedefaultmap;
 
 extern GdkPixbuf *image, *tempimage, *pixbuf_minimap;
 extern GtkWidget *mapscaler_scaler;
-extern GtkWidget *scaler_left_bt, *scaler_right_bt;
 extern GtkObject *mapscaler_adj;
 extern GdkGC *kontext_map;
 
@@ -811,7 +810,7 @@ test_and_load_newmap ()
         if (!display_map[(maps + i)->map_dir].to_be_displayed) {
            continue;
         }
-        
+
         takemap = FALSE;
         if ((maps + i)->hasbbox) {
             /* new system with boundarybox */

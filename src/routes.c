@@ -714,6 +714,7 @@ void add_routepoint
 		ROUTE_TYPE, t_type,
 		-1);
 
+	current.needtosave = TRUE;
 }
 
 
@@ -754,7 +755,7 @@ void add_quickpoint_to_route ()
 /* *****************************************************************************
  * save current route to gpx file
  */
-gboolean route_export_cb ()
+gboolean route_export_cb (GtkWidget *widget, gboolean usedefault)
 {
 	const gchar gpx_head[] =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -775,7 +776,8 @@ gboolean route_export_cb ()
 
 	GtkWidget *dialog;
 	FILE *routefile;
-	gchar *filepath;
+	gchar filepath[500];
+	gchar *t_path;
 	GTimeVal current_time;
 	GtkTreeIter iter;
 	gchar *t_name, *t_cmt, *t_type;
@@ -783,22 +785,34 @@ gboolean route_export_cb ()
 
 
 
-
-	dialog = gtk_file_chooser_dialog_new ("Save Route File",
-		GTK_WINDOW (main_window),
-		GTK_FILE_CHOOSER_ACTION_SAVE,
-		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-		GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-		NULL);
-
-	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), local_config.dir_routes);
-	gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "default.gpx");
-
-	if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+	if (usedefault)
 	{
-		filepath = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+		g_snprintf (filepath, sizeof (filepath), "%sroutesaved.gpx", local_config.dir_home);
+	}
+	else
+	{
+		dialog = gtk_file_chooser_dialog_new ("Save Route File",
+			GTK_WINDOW (main_window),
+			GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
+			NULL);
+
+		gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), local_config.dir_routes);
+		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "default.gpx");
+
+		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
+		{
+			t_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
+			g_strlcpy (filepath, t_path, sizeof (filepath));
+			g_free(t_path);
+		}
+		gtk_widget_destroy (dialog);
+	}
+
+	if (filepath == NULL)
+		return FALSE;
 
 	routefile = fopen(filepath, "w+t");
 	if(routefile == NULL)
@@ -841,15 +855,11 @@ gboolean route_export_cb ()
 	g_free (t_name);
 	g_free (t_cmt);
 	g_free (t_type);
-	g_free(filepath);
 
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,
 		_("Route saved"));
 
-	}
-
-	gtk_widget_destroy (dialog);
 	return TRUE;
 }
 

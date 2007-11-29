@@ -97,12 +97,13 @@ extern gint PSIZE;
 extern GtkWidget *posbt;
 extern GtkWidget *bestmap_bt;
 extern gint borderlimit;
+extern gdouble gsaprecision;
 
 extern GtkWidget *main_window;
 
 /* Globally accessible widgets: */
 GtkWidget *map_drawingarea;
-GtkWidget *scaler_left_bt, *scaler_right_bt;
+GtkWidget *scaler_in_bt, *scaler_out_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
@@ -120,6 +121,7 @@ GdkGC *kontext_compass, *kontext_gps, *kontext_minimap, *kontext_map;
 static GtkWidget *mainbox_controls, *mainbox_status, *mainframe_map;
 static GtkWidget *frame_maptype;
 static GtkWidget *mapscaler_scaler;
+static GtkWidget *mapscaler_hbox;
 static GtkWidget *zoomin_bt, *zoomout_bt;
 static GtkWidget *statusprefscale_lb, *statusmapscale_lb;
 static GtkObject *mapscaler_adj;
@@ -289,7 +291,7 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
 		case MENU_LOADWPT:	loadgpx_cb (GPX_WPT); break;
 		case MENU_SAVETRACK:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
-		case MENU_SAVEROUTE:	route_export_cb (); break;
+		case MENU_SAVEROUTE:	route_export_cb (NULL, FALSE); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
 		case MENU_HELPABOUT:	about_cb (NULL, 0); break;
@@ -309,8 +311,8 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 
 	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
 	{
-		gtk_widget_set_sensitive (scaler_right_bt, FALSE);
-		gtk_widget_set_sensitive (scaler_left_bt, FALSE);
+		gtk_widget_set_sensitive (scaler_out_bt, FALSE);
+		gtk_widget_set_sensitive (scaler_in_bt, FALSE);
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), _("Auto"));
 		if (mapscaler_scaler)
 			gtk_widget_set_sensitive (mapscaler_scaler, FALSE);
@@ -318,8 +320,8 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 	}
 	else
 	{
-		gtk_widget_set_sensitive (scaler_right_bt, TRUE);
-		gtk_widget_set_sensitive (scaler_left_bt, TRUE);
+		gtk_widget_set_sensitive (scaler_out_bt, TRUE);
+		gtk_widget_set_sensitive (scaler_in_bt, TRUE);
 		g_snprintf (sc, sizeof (sc), "1:%d", local_config.scale_wanted);
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), sc);
 		if (mapscaler_scaler)
@@ -743,13 +745,53 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_TIMEREMAIN:
 		{
+			gdouble t_avgspeed, t_remain;
+			gint t_hours;
 			g_strlcpy (head, _("Time remaining"), sizeof (head));
-				
-			g_snprintf (content, sizeof (content),
-				"<span color=\"%s\" font_desc=\"%s\">%s"
-				"%s</span>",
-				local_config.color_dashboard,
-				local_config.font_dashboard, "---", "min");
+			t_avgspeed = trip.speed_avg * milesconv / trip.countavgspeed;
+
+			if (t_avgspeed > 0.0)
+			{
+				t_remain = current.dist / t_avgspeed * 60;
+				if (t_remain < 1.0)
+				{
+					g_snprintf (content, sizeof (content),
+						"<span color=\"%s\" font_desc=\"%s\">"
+						" &lt; 1<span size=\"%d\"> min</span></span>",
+						local_config.color_dashboard,
+						local_config.font_dashboard, fontsize_unit);
+				}
+				else if (t_remain >= 60.0)
+				{
+					t_hours = t_remain / 60;
+					t_remain -= t_hours * 60;
+					g_snprintf (content, sizeof (content),
+						"<span color=\"%s\" font_desc=\"%s\">"
+						"% d<span size=\"%d\"> h </span>"
+						"%02.0f<span size=\"%d\"> min</span></span>",
+						local_config.color_dashboard,
+						local_config.font_dashboard, t_hours,
+						fontsize_unit, t_remain,
+						fontsize_unit);
+				}
+				else
+				{
+					g_snprintf (content, sizeof (content),
+						"<span color=\"%s\" font_desc=\"%s\">"
+						"%2.0f<span size=\"%d\"> min</span></span>",
+						local_config.color_dashboard,
+						local_config.font_dashboard, t_remain,
+						fontsize_unit);
+				}
+			}
+			else
+			{
+				g_snprintf (content, sizeof (content),
+					"<span color=\"%s\" font_desc=\"%s\">"
+					" 0<span size=\"%d\"> min</span></span>",
+					local_config.color_dashboard,
+					local_config.font_dashboard, fontsize_unit);
+			}
 			break;
 		}
 		case DASH_ALT:
@@ -903,13 +945,34 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_GPSPRECISION:
 		{
+			// TODO: This should show EPE values once we switched
+			// to libgps, because they do a better predication of
+			// what's going on for the end user.
+			// Until then, we show PDOP and number of satellites,
+			// if available.
+			gint pfd_size;
+			gchar *font_prec;
+			PangoFontDescription *pfd;
+			
+			pfd = pango_font_description_from_string
+				(local_config.font_dashboard);
+			pfd_size = pango_font_description_get_size (pfd);
+			pango_font_description_set_size (pfd, pfd_size*0.5);
+			font_prec = pango_font_description_to_string (pfd);
+
 			g_strlcpy (head, _("GPS Precision"), sizeof (head));
-				
+
 			g_snprintf (content, sizeof (content),
-				"<span color=\"%s\" font_desc=\"%s\">%s"
-				"%s</span>",
-				local_config.color_dashboard,
-				local_config.font_dashboard, "---", "m");
+				"<span color=\"%s\" font_desc=\"%s\">PDOP: %.1f\nSats: %d/%d</span>",
+				local_config.color_dashboard, font_prec,
+				gsaprecision, sats_used, sats_in_view);
+
+			pango_font_description_free (pfd);
+			g_free (font_prec);
+			break;
+
+
+
 			break;
 		}
 		case DASH_TIME:
@@ -1421,10 +1484,6 @@ void create_dashboard_menu (void)
 			dash_menuitem);
 		g_signal_connect (dash_menuitem, "activate",
 			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
-
-		// disable precision until functionality is implemented
-		if (i == DASH_GPSPRECISION)
-			gtk_widget_set_sensitive (dash_menuitem, FALSE);
 	}
 	gtk_widget_show_all (dash_menu);
 }
@@ -1460,6 +1519,8 @@ void create_controls_mainbox (void)
 	GtkWidget *frame_mapcontrol, *controlbox;
 	GtkWidget *zoomin_img, *zoomout_img, *controlbox_img;
 	GtkWidget *hbox_scaler, *mute_bt, *controlbox_bt;
+	GtkWidget *mapscaler_in_lb, *mapscaler_out_lb;
+	GtkWidget *scaler_in_img, *scaler_out_img;
 	GtkWidget *pda_box_left, *pda_box_right;
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
@@ -1644,22 +1705,26 @@ void create_controls_mainbox (void)
 	/* Buttons: Scaler */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Scaler)\n");
-	scaler_right_bt = gtk_button_new_with_label (">>");
-	g_signal_connect (GTK_OBJECT (scaler_right_bt), "clicked",
+	scaler_out_bt = gtk_button_new ();
+	scaler_out_img = gtk_image_new_from_stock (GTK_STOCK_REMOVE, GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (scaler_out_bt), scaler_out_img);
+	g_signal_connect (GTK_OBJECT (scaler_out_bt), "clicked",
 		GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 1);
-	scaler_left_bt = gtk_button_new_with_label ("<<");
-	g_signal_connect (GTK_OBJECT (scaler_left_bt), "clicked",
+	scaler_in_bt = gtk_button_new ();
+	scaler_in_img = gtk_image_new_from_stock (GTK_STOCK_ADD, GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (scaler_in_bt), scaler_in_img);
+	g_signal_connect (GTK_OBJECT (scaler_in_bt), "clicked",
 		GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 2);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_left_bt,
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_in_bt,
 		_("Select the next more detailed map"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_right_bt,
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_out_bt,
 		_("Select the next less detailed map"), NULL);
 
 	hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
-		scaler_left_bt, TRUE, TRUE, 1 * PADDING);
+		scaler_out_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
-		scaler_right_bt, TRUE, TRUE, 1 * PADDING);
+		scaler_in_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (vbox_buttons),
 		hbox_scaler, TRUE, TRUE, 1 * PADDING);
 
@@ -1837,9 +1902,17 @@ void create_controls_mainbox (void)
 		slistsize / 4, 1 / slistsize );
 	mapscaler_scaler = gtk_hscale_new
 		(GTK_ADJUSTMENT (mapscaler_adj));
+	gtk_range_set_inverted (GTK_RANGE (mapscaler_scaler), TRUE);
 	g_signal_connect (GTK_OBJECT (mapscaler_adj), "value_changed",
 		GTK_SIGNAL_FUNC (scaler_cb), NULL);
 	gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
+
+	mapscaler_hbox = gtk_hbox_new (FALSE, 2 * PADDING);
+	mapscaler_in_lb = gtk_label_new (_("+"));
+	mapscaler_out_lb = gtk_label_new (_("-"));
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_out_lb, FALSE, FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_scaler, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_in_lb, FALSE, FALSE, 3);
 
 	/* MAP TYPE */
 	{
@@ -1889,7 +1962,7 @@ void create_controls_mainbox (void)
 
 		controlbox = mapcontrolbox ();
 		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (controlbox), mapscaler_scaler, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (controlbox), mapscaler_hbox, FALSE, FALSE, 1 * PADDING);
 	}
 	else
 	{
@@ -2202,7 +2275,7 @@ void create_status_mainbox (void)
 
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_scaler, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_hbox, TRUE, TRUE, 1 * PADDING);
 	
 		gtk_box_pack_start (GTK_BOX (mainbox_status),statusdashboard_box, TRUE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_status),statussmall_box, TRUE, FALSE, 1 * PADDING);
