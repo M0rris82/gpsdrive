@@ -60,7 +60,7 @@ void draw_label (char *txt, gdouble posx, gdouble posy);
 void draw_label_friend (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);
-gint poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH]);
+gint poi_type_id_from_name (gchar *name);
 void poi_draw_list (gboolean draw_now);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );

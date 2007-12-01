@@ -189,7 +189,7 @@ gchar
 glong
 insertsqldata (double lat, double lon, gchar *name, gchar *typ, gchar *comment, gint src)
 {
-	gchar q[200], lats[20], lons[20];
+	gchar q[1000], lats[20], lons[20];
 	gchar *tname, *ttyp, *tcomment;
 	gint pt_id;
 	glong r;

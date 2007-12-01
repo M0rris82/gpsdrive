@@ -753,6 +753,48 @@ void add_quickpoint_to_route ()
 
 
 /* *****************************************************************************
+ * create a new POI of given type and append it to the current route
+ * (used by gpx import)
+ */
+void add_arbitrary_point_to_route
+	(gchar *name, gchar *cmt, gchar *type, gdouble lat, gdouble lon)
+{
+	gchar t_name[255], t_cmt[255], t_type[255];
+	glong t_id;
+
+	if (name)
+		g_strlcpy (t_name, name, sizeof (t_name));
+	else
+		g_snprintf (t_name, sizeof (t_name), "%s %d", _("Routepoint"), route.items+1);
+
+	if (cmt)
+		g_strlcpy (t_cmt, cmt, sizeof (t_cmt));
+	else
+		g_snprintf (t_cmt, sizeof (t_cmt), _("Unnamed Routepoint"));
+
+	if (type)
+	{
+		if (g_str_has_prefix (type, "waypoint.routepoint"))
+			g_strlcpy (t_type, type, sizeof (t_type));
+		else
+			g_snprintf (t_type, sizeof (t_type), "waypoint.routepoint.%s", type);
+	}
+	else
+		g_snprintf (t_type, sizeof (t_type), _("waypoint.routepoint"));
+
+	//if ( mydebug > 0 )
+		printf ("Add Routepoint (%d): %s [%s], lat:%f, lon:%f\n",
+			route.items+1, t_name, t_type, lat, lon);
+
+	t_id = addwaypoint (t_name, t_type, t_cmt, lat, lon, TRUE);
+
+	add_routepoint
+		(t_id, t_name, t_cmt, t_type, lon, lat);
+}
+
+
+
+/* *****************************************************************************
  * save current route to gpx file
  */
 gboolean route_export_cb (GtkWidget *widget, gboolean usedefault)
@@ -1101,8 +1143,11 @@ update_route (void)
  * basic init for routing support
  */
 void
-route_init (void)
+route_init (gchar *name, gchar *desc, gchar *src)
 {
+	/* check, if route already exists, and free it */
+	if (route_list_tree)
+		gtk_list_store_clear (route_list_tree);
 
 	/* init gtk-list for storage of route data */
 	route_list_tree = gtk_list_store_new (ROUTE_COLUMS,
@@ -1119,9 +1164,19 @@ route_init (void)
 		);
 
 	/* init route status data */
-	g_strlcpy (route.name, "Empty Route", sizeof (route.name));
-	g_strlcpy (route.desc, "empty route", sizeof (route.desc));
-	g_snprintf (route.src, sizeof (route.src), "generated with GpsDrive %s", PACKAGE_VERSION);
+	if (name)
+		g_strlcpy (route.name, name, sizeof (route.name));
+	else
+		g_strlcpy (route.name, "Empty Route", sizeof (route.name));
+	if (desc)
+		g_strlcpy (route.desc, desc, sizeof (route.desc));
+	else
+		g_strlcpy (route.desc, "empty route", sizeof (route.desc));
+	if (src)
+		g_strlcpy (route.src, src, sizeof (route.src));
+	else	
+		g_snprintf (route.src, sizeof (route.src),
+			"generated with GpsDrive %s", PACKAGE_VERSION);
 	route.active = FALSE;		/* routemode off */
 	route.edit = FALSE;		/* route editmode off */
 	route.items = 0;		/* route is empty/not available */

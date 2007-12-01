@@ -44,6 +44,7 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive_config.h>
 #include "gpx.h"
 #include "gui.h"
+#include "routes.h"
 
 #include "gettext.h"
 #include <libxml/xmlreader.h>
@@ -240,7 +241,6 @@ static void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
  *  ele, time, magvar, geoidheight, desc, src, url, urlname, fix,
  *  sat, hdop, vdop, pdop, ageofdgpsdata, dgpsid, course, speed,
  *  private tags and other namespaces
- *  name, cmt, sym, type
  */
 static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 {
@@ -296,7 +296,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		}
 	}
 
-	//if (mydebug > 30)
+	if (mydebug > 30)
 	{
 		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, wpt.lat, wpt.lon);
 		fprintf (stderr, "\tName   : %s\n", wpt.name);
@@ -304,7 +304,8 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tType   : %s\n", wpt.type);
 	}
 
-
+	add_arbitrary_point_to_route
+		((gchar*)wpt.name, (gchar*)wpt.cmt, (gchar*)wpt.type, wpt.lat, wpt.lon);
 
 
 
@@ -438,8 +439,19 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		return FALSE;
 	}
 
-	if (gpx_mode == GPX_INFO)
-		reset_gpx_info ();
+	switch (gpx_mode)
+	{
+		case GPX_INFO:
+			reset_gpx_info (); break;
+		case GPX_RTE:
+			route_init (gpx_info.name, gpx_info.desc, NULL); break;
+		case GPX_WPT:
+		//TODO: do something...
+			break;
+		case GPX_TRK:
+		//TODO: do something...
+			break;
+	}
 
 	/* parse complete gpx file */
 	xml_status = xmlTextReaderRead(xml_reader);

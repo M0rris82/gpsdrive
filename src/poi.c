@@ -502,15 +502,37 @@ poi_check_if_moved (void)
  * get poi_type_id from given poi_type name
 */
 gint
-poi_type_id_from_name (gchar name[POI_TYPE_LIST_STRING_LENGTH])
+poi_type_id_from_name (gchar *name)
 {
-    int i;
-    for (i = 0; i < poi_type_list_max; i++)
-      {
-		if (strcmp (poi_type_list[i].name,name) == 0)
-	    return poi_type_list[i].poi_type_id;
-      }
-	return 1;  // return poi_type 1 = 'unknown' if not in table
+	int i;
+	gchar *t_ptr;
+	gchar *t_name;
+	gint id = 1;	// default to poi_type 1 = 'unknown' if not in table
+
+	if (mydebug > 50)
+		fprintf (stderr, "Seeking ID for poi_type %s\n", name);
+
+	t_name = g_ascii_strdown (name, -1);
+
+	for (i = 0; i < poi_type_list_max; i++)
+	{
+		if (strcmp (poi_type_list[i].name,t_name) == 0)
+		{
+			g_free (t_name);
+			return poi_type_list[i].poi_type_id;
+		}
+	}
+
+	/* if we have no match, we reduce the name and check again */
+	t_ptr = g_strrstr (t_name, ".");
+	if (t_ptr)
+	{
+		*t_ptr = '\0';
+		id = poi_type_id_from_name (t_name);
+	}
+
+	g_free (t_name);
+	return id;
 }
 
 

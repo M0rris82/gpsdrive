@@ -782,7 +782,8 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 			route_export_cb (NULL, TRUE);
 	}
 
-	map_koord_check_and_reload();
+	if (local_config.MapnikStatusInt < 2)
+		map_koord_check_and_reload();
 
 	testifnight ();
 
@@ -3308,7 +3309,7 @@ main (int argc, char *argv[])
 	poi_init ();
 	gui_init (geometry, usegeometry);
 	friends_init ();
-	route_init ();
+	route_init (NULL, NULL, NULL);
 
 	wlan_init ();
 
