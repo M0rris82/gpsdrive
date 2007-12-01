@@ -378,57 +378,49 @@ coordinate2gchar (gchar * buff, gint buff_size, gdouble pos, gint islat,
 void
 coordinate_string2gdouble (const gchar * intext, gdouble * dec)
 {
-  gint grad;
-  gdouble sec;
-  gint min;
-  //    gdouble dec = -1002.0;
-  gchar s2=' ';
-  gdouble fmin;
-  gchar text[50];
+	gchar *text;
+	gdouble t_deg = 0.0;
+	gdouble t_min = 0.0;
+	gdouble t_sec = 0.0;
+	gint sign = 1;
 
-  g_strlcpy(text,intext,sizeof(text));
+	*dec = -1002.0;
+	text = g_ascii_strup (intext, -1);
 
-  *dec = -1002.0;
+	setlocale(LC_NUMERIC, "C");
 
-  setlocale(LC_NUMERIC, "C");
+	// HACK: Fix usage of , and . inside Float-strings
+	g_strdelimit (text, ",", '.');
 
-  // HACK: Fix usage of , and . inside Float-strings
-  g_strdelimit (text, ",", '.');
+	/* check if coordinates are in southern or western hemisphere
+	 * and therefore result in a negative value */
+	if (g_strrstr (text, "S"))
+		sign = -1;
+	else if (g_strrstr (text, "W"))
+		sign = -1;
+	else if (g_strrstr (text, "-"))
+		sign = -1;
 
-  /*
-   * Handle either DegMinSec or MinDec formats
-   */
-  if (4 == sscanf (text, "%c %d\xc2\xb0 %d' %lf\n", &s2, &grad, &min, &sec))
-    {
-      /*   sscanf(s1,"%f",&sec); */
-      *dec = grad + min / 60.0 + sec / 3600.0;
-    }
-  else if (3 == sscanf (text, "%c %d\xc2\xb0 %lf'", &s2, &grad, &fmin))
-    {
-      *dec = grad + fmin / 60.0;
-    }
-//  else if (2 == sscanf (text, "%c %lf\xc2\xb0", &s2, dec))
-//    {
-//    }
-  else if (1 == sscanf (text, "%lf", dec))
-    {
-      /* Is already decimal */
-    }
-  else
-    {
-      /* TODO: handle bad format gracefully */
-      fprintf (stderr,
-	       "ERROR BAD FORMAT in coordinate_string2gdouble(%s)-->%f\n",
-	       text, *dec);
-    }
+	/* clean and parse remaining string */
+	g_strcanon (text, "0123456789.", ' ');
+	if (sscanf (text, "%lf %lf %lf", &t_deg, &t_min, &t_sec))
+	{
+		*dec = sign * (t_deg + t_min/60.0 + t_sec/3600.0);
+		if (mydebug > 99)
+			fprintf (stderr, "%s -----> %d %f / %f / %f -----> %f\n",
+				text, sign, t_deg, t_min, t_sec, *dec);
+	}
+	else
+	{
+		fprintf (stderr,
+			"ERROR BAD FORMAT in coordinate_string2gdouble(%s)-->%f\n",
+			intext, *dec);
+	}
 
-  if (s2 == 'W')
-    *dec *= -1.0;
-  if (s2 == 'S')
-    *dec *= -1.0;
+	if (mydebug > 50)
+	fprintf (stderr, "coordinate_string2gdouble('%s')-->%f\n", intext, *dec);
 
-  if (mydebug > 99)
-    fprintf (stderr, "coordinate_string2gdouble('%s')-->%f\n", text, *dec);
+	g_free (text);
 }
 
 /* *****************************************************************************
