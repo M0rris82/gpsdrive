@@ -110,6 +110,7 @@ GtkWidget *menuitem_sendmsg;
 GtkWidget *wp_draw_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
+GtkWidget *routeinfo_box, *routeinfo_icon, *routeinfo_label;
 
 // TODO: maybe these should be moved to local ones...
 GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
@@ -498,6 +499,7 @@ scalerbt_cb (GtkWidget *widget, guint datum)
  * Possible Values:
  *	DSH_DIST, DASH_TIMEREMAIN, DASH_BEARING, DASH_TURN, DASH_SPEED,
  *	DASH_HEADING, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
+ *	DASH_SPEED_AVG, DASH_SPEED_MAX, DASH_POSITION, DASH_MAPSCALE
  */
 gint
 update_dashboard (GtkWidget *frame, gint source)
@@ -2323,6 +2325,22 @@ void create_map_mainbox (void)
 
 
 /* *****************************************************************************
+ * Window: Main -> Route Info
+ */
+void create_routeinfo_box (void)
+{
+	routeinfo_box = gtk_hbox_new (FALSE, 5);
+
+	route.icon = gtk_image_new ();
+	route.label = gtk_label_new ("no routing info");
+	gtk_label_set_line_wrap (GTK_LABEL (route.label), TRUE);
+
+	gtk_box_pack_start (GTK_BOX (routeinfo_box), route.icon, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (routeinfo_box), route.label, FALSE, FALSE, 2);
+}
+
+
+/* *****************************************************************************
  * Window: Main
  */
 gint create_main_window (void)
@@ -2357,11 +2375,11 @@ gint create_main_window (void)
 
 	main_tooltips = gtk_tooltips_new();
 
-	/* Create the three parts of the main window */
+	/* Create the parts of the main window */
 	create_controls_mainbox ();
 	create_status_mainbox ();
 	create_map_mainbox ();
-
+	create_routeinfo_box ();
 	create_dashboard_menu ();
 
 	if (local_config.guimode == GUI_PDA)
@@ -2383,14 +2401,17 @@ gint create_main_window (void)
 	}
 	else if (local_config.guimode == GUI_CAR)
 	{
-		main_table = gtk_table_new (2, 2, FALSE);
+		main_table = gtk_table_new (2, 3, FALSE);
 		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 1,
+			mainbox_controls, 0, 1, 0, 2,
 			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainframe_map, 1, 2, 0, 1);		
 		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 1, 2,
+			routeinfo_box, 1, 2, 0, 1,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_table_attach_defaults (GTK_TABLE (main_table),
+			mainframe_map, 1, 2, 1, 2);		
+		gtk_table_attach (GTK_TABLE (main_table),
+			mainbox_status, 0, 2, 2, 3,
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 		gtk_window_maximize (GTK_WINDOW (main_window));
@@ -2398,12 +2419,15 @@ gint create_main_window (void)
 	}
 	else
 	{  /* Classic Mode (Standard) */
-		main_table = gtk_table_new (4, 2, FALSE);
+		main_table = gtk_table_new (4, 3, FALSE);
 		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 1,
+			mainbox_controls, 0, 1, 0, 2,
 			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
+		gtk_table_attach (GTK_TABLE (main_table),
+			routeinfo_box, 1, 2, 0, 1,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainframe_map, 1, 2, 0, 1);		
+			mainframe_map, 1, 2, 1, 2);		
 		gtk_table_attach (GTK_TABLE (main_table),
 			mainbox_status, 0, 2, 2, 3,
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		

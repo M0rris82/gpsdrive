@@ -99,6 +99,7 @@ extern GtkWidget *find_poi_bt;
 extern GtkWidget *posbt;
 extern GtkWidget *settings_window;
 extern GtkWidget *menuitem_saveroute;
+extern GtkWidget *routeinfo_box;
 
 extern GdkPixbuf *targetmarker_img;
 
@@ -372,10 +373,12 @@ route_startstop_cb ()
 	{
 		route.edit = FALSE;
 		route_settarget (-1);
+		gtk_widget_show_all (routeinfo_box);
 	}
 	else
 	{
 		// TODO: stop routing
+		gtk_widget_hide_all (routeinfo_box);
 	}
 	close_route_window_cb ();	
 }

@@ -296,6 +296,8 @@ typedef struct
 	gchar name[255];
 	gchar desc[255];
 	gchar src[255];
+	GtkWidget *label;
+	GtkWidget *icon;
 	gint active;
 	gint edit;
 	gint pointer;

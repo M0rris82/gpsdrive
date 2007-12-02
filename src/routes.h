@@ -48,6 +48,7 @@ void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
 void draw_route ();
 void route_settarget (gint rt_ptr);
 void update_route (void);
+void route_display_targetinfo (void);
 
 enum {
 	ROUTE_ID,

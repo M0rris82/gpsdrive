@@ -782,7 +782,7 @@ void add_arbitrary_point_to_route
 	else
 		g_snprintf (t_type, sizeof (t_type), _("waypoint.routepoint"));
 
-	//if ( mydebug > 0 )
+	if ( mydebug > 0 )
 		printf ("Add Routepoint (%d): %s [%s], lat:%f, lon:%f\n",
 			route.items+1, t_name, t_type, lat, lon);
 
@@ -969,6 +969,53 @@ route_settarget (gint rt_ptr)
 
 
 	g_free (t_name);
+}
+
+
+/* ****************************************************************************
+ * set target to the given route item
+ */
+void
+route_display_targetinfo (void)
+{
+	GdkPixbuf *t_icon;
+	gchar *t_name, *t_cmt;
+	gchar t_text[500];
+	gchar t_ptr[5];
+	GtkTreeIter t_iter;
+
+	if (!route.active)
+		return;
+
+	g_snprintf (t_ptr, sizeof (t_ptr), "%d", (route.pointer));
+	gtk_tree_model_get_iter_from_string
+		(GTK_TREE_MODEL (route_list_tree), &t_iter, t_ptr);
+	gtk_tree_model_get
+		(GTK_TREE_MODEL (route_list_tree), &t_iter,
+		ROUTE_ICON, &t_icon,
+		ROUTE_NAME, &t_name,
+		ROUTE_CMT, &t_cmt,
+		-1);
+
+	if (t_cmt)
+		g_snprintf (t_text, sizeof (t_text),
+			"<span color=\"#ffff00\" background=\"#000000\" "
+			"font_desc=\"Sans 16\">%s</span>", t_cmt);
+	else
+		g_snprintf (t_text, sizeof (t_text),
+			"<span color=\"#ffff00\" background=\"#000000\" "
+			"font_desc=\"Sans 16\">%s</span>", t_name);
+
+	gtk_label_set_markup (GTK_LABEL (route.label), t_text);
+
+	gtk_image_set_from_pixbuf (GTK_IMAGE (route.icon), t_icon);
+	gtk_widget_modify_bg (route.icon, GTK_STATE_NORMAL, &colors.black);
+	gtk_widget_set_size_request (route.label,
+		gui_status.mapview_x - gdk_pixbuf_get_width (t_icon) - 20, -1);
+
+	g_free (t_name);
+	g_free (t_cmt);
+	g_object_unref (t_icon);
 }
 
 

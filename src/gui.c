@@ -105,6 +105,7 @@ extern GtkWidget *frame_statusfriends;
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
+extern GtkWidget *routeinfo_box;
 
 extern gint real_psize, real_smallmenu;
 
@@ -620,6 +621,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 	if (!usegeometry)
 		get_window_sizing ();
 	gtk_widget_show_all (main_window);
+	gtk_widget_hide_all (routeinfo_box);
 
 	//if ( ( local_config.guimode == GUI_DESKTOP )
 	     if( (local_config.MapnikStatusInt ) ){
