@@ -168,23 +168,23 @@ gchar* speech_message_received[] =
 
 gchar* speech_morning[] =
 {
-  "Good Morning,",
-  "Guten Morgen.",
-  "Buenos dÃ­as."
+  "Good Morning, ",
+  "Guten Morgen. ",
+  "Buenos dÃ­as. "
 };
 
 gchar* speech_afternoon[] =
 {
-  "Good afternoon,",
-  "Guten Tag.",
-  "Buenos tardes."
+  "Good afternoon, ",
+  "Guten Tag. ",
+  "Buenos tardes. "
 };
 
 gchar* speech_evening[] =
 {
-  "Good evening,",
-  "Guten Abend.",
-  "Buenas noches."
+  "Good evening, ",
+  "Guten Abend. ",
+  "Buenas noches. "
 };
 
 gchar* speech_time_mins[] =
@@ -343,7 +343,7 @@ gchar* speech_remaining_battery[] =
 gchar* speech_found_access_point[] =
 {
   "Found new %s access point: %s",
-  "Es wurde ein neuer %s ei pi gefunden. name ,.,.,  %s ,.,., tsch�nnel %d",
+  "Es wurde ein neuer %s ei pi gefunden. name ,.,.,  %s ,.,., tsch�nnel %d",
   "Found new %s access point: %s"
 };
 
@@ -352,7 +352,7 @@ gchar* speech_found_access_point[] =
 gchar* speech_access_closed[] =
 {
   "closed",
-  "verschl�sselter",
+  "verschl�sselter",
   "closed"
 };
 

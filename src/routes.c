@@ -59,7 +59,7 @@ Disclaimer: Please do not use for navigation.
 
 extern gint debug, mydebug;
 extern GtkWidget *destframe;
-extern gint havespeechout, speechcount;
+extern gint speechcount;
 extern gchar oldangle[100];
 extern gint saytarget;
 extern wpstruct *wayp;

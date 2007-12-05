@@ -100,12 +100,14 @@ extern currentstatus_struct current;
 
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
+extern GtkWidget *mute_bt;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
 extern GtkWidget *routeinfo_box;
+extern gint havefestival;
 
 extern gint real_psize, real_smallmenu;
 
@@ -313,6 +315,39 @@ gint popup_error (GtkWindow *parent, gchar *message)
 	response_id = gtk_dialog_run (dialog_error);
 	gtk_widget_destroy (GTK_WIDGET (dialog_error));
 	return response_id;
+}
+
+/* *****************************************************************************
+ * Popup: Info, ok
+ */
+gint popup_info (GtkWindow *parent, gchar *message)
+{
+	GtkDialog *dialog_info;
+	gchar info[80];
+
+	if (mydebug >10)
+		fprintf (stderr, "POPUP: Info\n");
+
+	if (!parent)
+		parent = GTK_WINDOW (main_window);
+	if (message)
+		g_strlcpy (info, message, sizeof (info));
+	else
+		g_strlcpy (info, _("Press OK to continue!"),
+			sizeof (info));
+
+	dialog_info = GTK_DIALOG (gtk_message_dialog_new (parent,
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_INFO,
+		GTK_BUTTONS_OK,
+		"%s", info));
+
+	gdk_beep ();
+	gtk_widget_show_all (GTK_WIDGET (dialog_info));
+
+	g_signal_connect_swapped (dialog_info, "response",
+		G_CALLBACK (gtk_widget_destroy), dialog_info);
+	return TRUE;
 }
 
 
@@ -628,8 +663,10 @@ int gui_init (gchar *geometry, gint usegeometry)
 	    toggle_mapnik_cb( mapnik_bt, 2 );
 	}
 	
-	if ( !local_config.showfriends)
-	    gtk_widget_hide_all (frame_statusfriends);
+	if (!local_config.showfriends)
+		gtk_widget_hide_all (frame_statusfriends);
+	if (!local_config.speech && !havefestival)
+		gtk_widget_hide_all (mute_bt);
 
 	/* init map view:
 	 * this has to be done after the main window has been realized

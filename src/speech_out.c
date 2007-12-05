@@ -252,15 +252,78 @@ Disclaimer: Please do not use for navigation.
 enum allowed_languages { english, german, spanish };
 enum allowed_languages voicelang;
 
+/* voices supported by espeak
+ *   mbrola voices can only be used, if
+ *   the mbrola speech synth is installed */
+gchar *espeak_voices[] = {
+	"default", "default",
+	"afrikaans", "af",
+	"afrikaans-mbrola-1", "mb/mb-af1",
+	"bosnian", "bs",
+	"czech", "cs",
+	"czech-mbrola-2", "mb/mb-cz2",
+	"welsh-test", "cy",
+	"german", "de",
+	"german-mbrola-4", "mb/mb-de4",
+	"german-mbrola-5", "mb/mb-de5",
+	"german-mbrola-7", "mb/mb-de7",
+	"greek", "el",
+	"greek-mbrola-1", "mb/mb-gr2",
+	"english", "en/en",
+	"en-rhotic", "en/en-r",
+	"en-scottish", "en/en-sc",
+	"en-lancashire", "en/en-n",
+	"en-rp", "en/en-rp",
+	"en-wmids", "en/en-wm",
+	"en-mbrola-en1", "mb/mb-en1",
+	"us-mbrola-1", "mb/mb-us1",
+	"us-mbrola-2", "mb/mb-us2",
+	"us-mbrola-3", "mb/mb-us3",
+	"esperanto", "eo",
+	"spanish", "es",
+	"finnish", "fi",
+	"french", "fr",
+	"french-mbrola-1", "mb/mb-fr1",
+	"french-mbrola-4", "mb/mb-fr4",
+	"hindi-test",	"hi",
+	"croatian", "hr",
+	"croatian-mbrola-1", "mb/mb-cr1",
+	"hungarian", "hu",
+	"hungarian-mbrola-1", "mb/mb-hu1",
+	"icelandic-test", "is",
+	"italian", "it",
+	"italian-mbrola-3", "mb/mb-it3",
+	"italian-mbrola-4", "mb/mb-it4",
+	"macedonian-test", "mk",
+	"dutch-test", "nl",
+	"dutch-mbrola-2", "mb/mb-nl2",
+	"norwegian-test", "no",
+	"polish_test", "pl",
+	"polish-mbrola-1", "mb/mb-pl1",
+	"brazil", "pt",
+	"portugal", "pt-pt",
+	"romanian", "ro",
+	"romanian-mbrola-1", "mb/mb-ro1",
+	"russian_test", "ru",
+	"slovak", "sk",
+	"swedish", "sv",
+	"swedish-mbrola-1", "mb/mb-sw1",
+	"swedish-mbrola-2", "mb/mb-sw2",
+	"swahihi-test", "sw",
+	"vietnam-test", "vi",
+	"cantonese-test", "zhy",
+	"-1", "-1"
+};
+
 extern currentstatus_struct current;
-extern gint havespeechout;
+extern gint havefestival;
 extern int mydebug;
 gint speechsock = -1;
 gchar *displaytext = NULL;
 extern color_struct colors;
 extern GdkDrawable *drawable;
 gint do_display_dsc = FALSE, textcount;
-extern gint useflite, foundradar, speechcount;
+extern gint foundradar, speechcount;
 extern gchar oldangle[100];
 extern GtkWidget *map_drawingarea;
 
@@ -305,27 +368,27 @@ speech_out_init ()
 void
 speech_out_speek (char *text)
 {
-    gchar out[2000];
-    
-    if (!havespeechout)
-	return;
-    if (gui_status.posmode)
-	return;
-    
-    if ( mydebug > 0 )
-	g_print (text);
-    if (!useflite)
+	gchar out[2000];
+
+	if (gui_status.posmode)
+		return;
+
+	if ( mydebug > 0 )
+		g_print (text);
+	if (havefestival)
 	{
 	    g_snprintf (out, sizeof (out), "(SayText \"%s\")\n", text);
 	    write (speechsock, out, strlen (out));
 	}
-    else
+	else if (local_config.speech)
 	{
-	    g_strlcat (text, ".\n", sizeof (text));
-	    g_snprintf (out, sizeof (out), "flite -t '%s'&", text);
-	    if ( mydebug > 0 )
-		printf ("speech with flite: %s\n", out);
-	    system (out);
+		g_strlcat (text, ".\n", sizeof (text));
+		g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s' &",
+			local_config.speech_pitch, local_config.speech_speed ,
+			local_config.speech_voice, text);
+		if ( mydebug > 0 )
+		printf ("speech with epeak: %s\n", out);
+		system (out);
 	}
 }
 
@@ -334,7 +397,7 @@ speech_out_speek (char *text)
 void
 speech_out_speek_raw (char *text)
 {
-    if (!havespeechout)
+    if (!havefestival)
 	return;
     if (gui_status.posmode)
 	return;
@@ -353,15 +416,16 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
 {
 	time_t t;
 	struct tm *ts;
-	gchar buf[200];
-
+	gchar buf[400];
+	gchar buf2[200];
+	
 	if (local_config.mute)
 		return TRUE;
 
 	time (&t);
 	ts = localtime (&t);
 
-  if( havespeechout )
+  if( havefestival || local_config.speech )
   {
     if( 1 == datum )
     {
@@ -377,22 +441,26 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
       {
         g_snprintf( buf, sizeof(buf), speech_evening[voicelang] );
       }
-
-      speech_out_speek( buf );
     }
 
     if( 1 == ts->tm_hour )
     {
-      g_snprintf( buf, sizeof(buf), speech_time_mins[voicelang], ts->tm_min );
+      g_snprintf( buf2, sizeof(buf2), speech_time_mins[voicelang], ts->tm_min );
     }
     else
     {
       g_snprintf(
-        buf, sizeof(buf), speech_time_hrs_mins[voicelang], ts->tm_hour,
+        buf2, sizeof(buf2), speech_time_hrs_mins[voicelang], ts->tm_hour,
         ts->tm_min );
     }
 
-    speech_out_speek( buf );
+    if( 1 == datum )
+    {
+	g_strlcat (buf, buf2, sizeof(buf));
+	speech_out_speek( buf );
+    }
+    else
+	speech_out_speek( buf2 );
   }
 
 	return TRUE;
@@ -527,6 +595,10 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 {
 	gchar buf[500], s2[100];
 	gint angle;
+
+	/* destroy timeout function when speech output is disabled */
+	if (! havefestival && !local_config.speech)
+		return FALSE;
 
 	if (strcmp (oldangle, "XXX"))
 	{

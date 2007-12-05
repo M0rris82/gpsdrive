@@ -58,7 +58,7 @@
 # endif
 
 
-extern gint mydebug, havespeechout;
+extern gint mydebug;
 
 typedef struct
 {
@@ -114,13 +114,30 @@ extern currentstatus_struct current;
 extern GtkTreeStore *poi_types_tree;
 int showsid = TRUE;
 extern int expedia_de;
+extern GtkWidget *frame_statusbar;
 GtkWidget *menuitem_sendmsg;
+extern gchar *espeak_voices[];
+extern GtkWidget *mute_bt;
+extern gint havefestival;
 
 GtkWidget *settings_window = NULL;
 
 /* ****************************************************************************
  * CALLBACKS
  */
+
+
+/* ************************************************************************* */
+static gint
+reinitgps_cb (GtkWidget *widget)
+{
+	g_print ("\nReinitializing GPS connection...\n");
+	initgps ();
+	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+		current.statusbar_id, _("GPS Initialization done."));
+	return TRUE;
+}
+
 
 /* ************************************************************************* */
 static gint
@@ -227,6 +244,27 @@ setcoordmode_cb (GtkWidget *widget)
 
 	current.needtosave = TRUE;
 	
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setespeakvoice_cb (GtkWidget *widget)
+{
+	gint i;
+
+	i = 2 * gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
+
+	if (i > -1)
+	{
+		g_strlcpy (local_config.speech_voice, espeak_voices[i+1],
+			sizeof (local_config.speech_voice));
+
+		//if (mydebug > 10)
+			fprintf (stderr, "Setting espeak voice to %s --> %s\n",
+				espeak_voices[i], espeak_voices[i+1]);
+	}
+
 	return TRUE;
 }
 
@@ -438,6 +476,49 @@ setshowfriends_cb (GtkWidget *entry)
 	}
 
 	current.needtosave = TRUE;
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setspeechspeed_cb (GtkWidget *range)
+{
+	local_config.speech_speed = gtk_range_get_value (GTK_RANGE (range));
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setspeechpitch_cb (GtkWidget *range)
+{
+	local_config.speech_pitch = gtk_range_get_value (GTK_RANGE (range));
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setspeechenable_cb (GtkWidget *widget)
+{
+	local_config.speech = !local_config.speech;
+
+	if (local_config.speech)
+	{
+		gtk_widget_show_all (mute_bt);
+		havefestival = FALSE;
+		speech_out_speek (_("Speech output enabled."));
+		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
+	}
+	else
+		gtk_widget_hide_all (mute_bt);
+
+	if (mydebug >10)
+	{
+		fprintf (stderr, "Setting speech to %d.\n",
+			local_config.speech);
+	}
+
+	current.needtosave = TRUE;
+	
 	return TRUE;
 }
 
@@ -1325,11 +1406,9 @@ settings_nav (GtkWidget *notebook)
 {
 	GtkWidget *nav_vbox, *nav_label;
 	GtkWidget *travel_label, *travel_combo;
-	GtkWidget *nav_table, *speech_table;
-	GtkWidget *nav_frame, *speech_frame;
-	GtkWidget *nav_fr_lb, *speech_fr_lb;
-	GtkWidget *sounddir_bt, *sounddist_bt;
-	GtkWidget *soundspeed_bt, *soundgps_bt;
+	GtkWidget *nav_table;
+	GtkWidget *nav_frame;
+	GtkWidget *nav_fr_lb;
 	GtkTooltips *nav_tooltips;
 	
 	gchar travelmodes[TRAVEL_N_MODES][20];
@@ -1374,74 +1453,6 @@ settings_nav (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
 		travel_combo, 1, 2, 0, 1);
 
-	speech_table = gtk_table_new (2, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (speech_table), 5);
-	gtk_table_set_col_spacings (GTK_TABLE (speech_table), 5);
-
-	/* speech output settings
-	 * set following sounds
-	 * sound_direction ... say direction to target
-	 * sound_distance  ... say distance to target
-	 * sound_speed     ... say your current speed
-	 * sound_gps       ... say GPS status
-	 */
-	{
-	sounddir_bt = gtk_check_button_new_with_label (_("Direction"));
-	sounddist_bt = gtk_check_button_new_with_label (_("Distance"));
-	soundspeed_bt = gtk_check_button_new_with_label (_("Speed"));
-	soundgps_bt = gtk_check_button_new_with_label (_("GPS Status"));
-	if (local_config.sound_direction)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (sounddir_bt), TRUE);
-	}
-	if (local_config.sound_distance)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (sounddist_bt), TRUE);
-	}
-	if (local_config.sound_speed)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (soundspeed_bt), TRUE);
-	}
-	if (local_config.sound_gps)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (soundgps_bt), TRUE);
-	}
-	g_signal_connect (sounddir_bt, "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb),
-		&local_config.sound_direction);
-	g_signal_connect (GTK_OBJECT (sounddist_bt), "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb),
-		&local_config.sound_distance);
-	g_signal_connect (GTK_OBJECT (soundspeed_bt), "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb),
-		&local_config.sound_speed);
-	g_signal_connect (GTK_OBJECT (soundgps_bt), "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb),
-		&local_config.sound_gps);
-	gtk_table_attach_defaults
-		(GTK_TABLE (speech_table), sounddir_bt, 0, 1, 0, 1);
-	gtk_table_attach_defaults
-		(GTK_TABLE (speech_table), sounddist_bt, 0, 1, 1, 2);
-	gtk_table_attach_defaults
-		(GTK_TABLE (speech_table), soundspeed_bt, 1, 2, 0, 1);
-	gtk_table_attach_defaults
-		(GTK_TABLE (speech_table), soundgps_bt, 1, 2, 1, 2);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (nav_tooltips), sounddir_bt,
-		_("Switch on for speech output of the direction to the "
-		"target"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (nav_tooltips), sounddist_bt,
-		_("Switch on for speech output of the distance to the "
-		"target"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (nav_tooltips), soundspeed_bt,
-		_("Switch on for speech output of your current speed"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (nav_tooltips), soundgps_bt,
-		_("Switch on for speech output of the status of your "
-		"GPS signal"), NULL);
-	}
 	
 	nav_frame = gtk_frame_new (NULL);
 	nav_fr_lb = gtk_label_new (NULL);
@@ -1451,16 +1462,9 @@ settings_nav (GtkWidget *notebook)
 	gtk_frame_set_shadow_type (GTK_FRAME (nav_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (nav_frame), nav_table);
 	
-	speech_frame = gtk_frame_new (NULL);
-	speech_fr_lb = gtk_label_new (NULL);
-	gtk_label_set_markup
-		(GTK_LABEL (speech_fr_lb), _("<b>Speech Output</b>"));
-	gtk_frame_set_label_widget (GTK_FRAME (speech_frame), speech_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (speech_frame), GTK_SHADOW_NONE);
-	gtk_container_add (GTK_CONTAINER (speech_frame), speech_table);
 	
 	gtk_box_pack_start (GTK_BOX (nav_vbox), nav_frame, FALSE, FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (nav_vbox), speech_frame, FALSE, FALSE, 2);
+
 	
 	nav_label = gtk_label_new (_("Navigation"));
 	gtk_notebook_append_page
@@ -2057,38 +2061,198 @@ settings_friends (GtkWidget *notebook)
 }
 
 /* ************************************************************************* */
-/* TODO: fill with content
 static void
-settings_fly (GtkWidget *notebook)
+settings_speech (GtkWidget *notebook)
 {
-	GtkWidget *fly_vbox, *fly_label;
-	
-	
-	fly_vbox = gtk_vbox_new (FALSE, 2);
-	
-	fly_label = gtk_label_new (_("Fly"));
-	gtk_notebook_append_page
-		(GTK_NOTEBOOK (notebook), fly_vbox, fly_label);
+	GtkWidget *speech_vbox, *speech_label;
+	GtkWidget *speech_table, *speech_frame, *speech_fr_lb;
+	GtkWidget *sounddir_bt, *sounddist_bt;
+	GtkWidget *soundspeed_bt, *soundgps_bt;
+	GtkWidget *speechgen_table, *speechgen_frame, *speechgen_fr_lb;
+	GtkWidget *speechenable_bt;
+	GtkWidget *espeakspeed_label, *espeakspeed_scale;
+	GtkWidget *espeakpitch_label, *espeakpitch_scale;
+	GtkWidget *espeakvoice_label, *espeakvoice_combo;
+	GtkTooltips *speech_tooltips;
+	gint i=0;
 
+	speech_tooltips = gtk_tooltips_new ();
+	speech_vbox = gtk_vbox_new (FALSE, 2);
+
+	/* speech general settings */
+	{
+	speechgen_table = gtk_table_new (4, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (speechgen_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (speechgen_table), 5);
+
+	speechenable_bt = gtk_check_button_new_with_label (_("Enable speech output using espeak"));
+	if (local_config.speech)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (speechenable_bt), TRUE);
+	g_signal_connect (speechenable_bt, "clicked",
+		G_CALLBACK (setspeechenable_cb), NULL);
+
+	espeakspeed_label = gtk_label_new (_("Speed"));
+	espeakspeed_scale = gtk_hscale_new_with_range (50, 300, 1.0);
+	gtk_range_set_value (GTK_RANGE (espeakspeed_scale), local_config.speech_speed);
+	g_signal_connect (espeakspeed_scale, "value-changed", G_CALLBACK (setspeechspeed_cb), NULL);
+
+	espeakpitch_label = gtk_label_new (_("Pitch"));
+	espeakpitch_scale = gtk_hscale_new_with_range (0, 99, 1.0);
+	gtk_range_set_value (GTK_RANGE (espeakpitch_scale), local_config.speech_pitch);
+	g_signal_connect (espeakpitch_scale, "value-changed", G_CALLBACK (setspeechpitch_cb), NULL);
+
+	espeakvoice_label = gtk_label_new (_("Voice"));
+	espeakvoice_combo = gtk_combo_box_new_text ();
+	while (strcmp (espeak_voices[i], "-1"))
+	{
+		gtk_combo_box_append_text (GTK_COMBO_BOX (espeakvoice_combo), espeak_voices[i]);
+		i += 2;
+	}
+	g_signal_connect (espeakvoice_combo, "changed", G_CALLBACK (setespeakvoice_cb), NULL);
+
+	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
+		speechenable_bt, 0, 4, 0, 1);
+	gtk_table_attach (GTK_TABLE (speechgen_table),
+		espeakvoice_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
+		espeakvoice_combo, 1, 2, 1, 2);
+	gtk_table_attach (GTK_TABLE (speechgen_table),
+		espeakspeed_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
+		espeakspeed_scale, 1, 2, 2, 3);
+	gtk_table_attach (GTK_TABLE (speechgen_table),
+		espeakpitch_label, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
+		espeakpitch_scale, 1, 2, 3, 4);
+	}
+
+
+	/* Speech output settings */
+	{
+	speech_table = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (speech_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (speech_table), 5);
+
+	/* speech output settings
+	 * set following sounds
+	 * sound_direction ... say direction to target
+	 * sound_distance  ... say distance to target
+	 * sound_speed     ... say your current speed
+	 * sound_gps       ... say GPS status
+	 */
+	sounddir_bt = gtk_check_button_new_with_label (_("Direction"));
+	sounddist_bt = gtk_check_button_new_with_label (_("Distance"));
+	soundspeed_bt = gtk_check_button_new_with_label (_("Speed"));
+	soundgps_bt = gtk_check_button_new_with_label (_("GPS Status"));
+	if (local_config.sound_direction)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (sounddir_bt), TRUE);
+	}
+	if (local_config.sound_distance)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (sounddist_bt), TRUE);
+	}
+	if (local_config.sound_speed)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (soundspeed_bt), TRUE);
+	}
+	if (local_config.sound_gps)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (soundgps_bt), TRUE);
+	}
+	g_signal_connect (sounddir_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.sound_direction);
+	g_signal_connect (GTK_OBJECT (sounddist_bt), "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.sound_distance);
+	g_signal_connect (GTK_OBJECT (soundspeed_bt), "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.sound_speed);
+	g_signal_connect (GTK_OBJECT (soundgps_bt), "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.sound_gps);
+	gtk_table_attach_defaults
+		(GTK_TABLE (speech_table), sounddir_bt, 0, 1, 0, 1);
+	gtk_table_attach_defaults
+		(GTK_TABLE (speech_table), sounddist_bt, 0, 1, 1, 2);
+	gtk_table_attach_defaults
+		(GTK_TABLE (speech_table), soundspeed_bt, 1, 2, 0, 1);
+	gtk_table_attach_defaults
+		(GTK_TABLE (speech_table), soundgps_bt, 1, 2, 1, 2);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (speech_tooltips), sounddir_bt,
+		_("Switch on for speech output of the direction to the "
+		"target"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (speech_tooltips), sounddist_bt,
+		_("Switch on for speech output of the distance to the "
+		"target"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (speech_tooltips), soundspeed_bt,
+		_("Switch on for speech output of your current speed"), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (speech_tooltips), soundgps_bt,
+		_("Switch on for speech output of the status of your "
+		"GPS signal"), NULL);
+	}
+
+	speechgen_frame = gtk_frame_new (NULL);
+	speechgen_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (speechgen_fr_lb), _("<b>General</b>"));
+	gtk_frame_set_label_widget (GTK_FRAME (speechgen_frame), speechgen_fr_lb);
+	gtk_frame_set_shadow_type (GTK_FRAME (speechgen_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (speechgen_frame), speechgen_table);
+
+	speech_frame = gtk_frame_new (NULL);
+	speech_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (speech_fr_lb), _("<b>Output Settings</b>"));
+	gtk_frame_set_label_widget (GTK_FRAME (speech_frame), speech_fr_lb);
+	gtk_frame_set_shadow_type (GTK_FRAME (speech_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (speech_frame), speech_table);
+
+	gtk_box_pack_start (GTK_BOX (speech_vbox), speechgen_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (speech_vbox), speech_frame, FALSE, FALSE, 2);
+
+	speech_label = gtk_label_new (_("Speech"));
+	gtk_notebook_append_page
+		(GTK_NOTEBOOK (notebook), speech_vbox, speech_label);
 }
-*/
 
 /* ************************************************************************* */
-/* TODO: fill with content
 static void
 settings_gps (GtkWidget *notebook)
 {
 	GtkWidget *gps_vbox, *gps_label;
-	
-	
+	GtkWidget *general_frame, *general_fr_lb;
+	GtkWidget *gps_reinit_bt, *gps_reinit_img;
+
 	gps_vbox = gtk_vbox_new (FALSE, 2);
-	
+
+	/* button: reinit gps connection */
+	gps_reinit_bt = gtk_button_new_with_label (_("Reinit GPS"));
+	gps_reinit_img = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (gps_reinit_bt), gps_reinit_img);
+	g_signal_connect (gps_reinit_bt, "clicked", G_CALLBACK (reinitgps_cb), NULL);
+
+	general_frame = gtk_frame_new (NULL);
+	general_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (general_fr_lb), _("<b>General</b>"));
+	gtk_frame_set_label_widget (GTK_FRAME (general_frame), general_fr_lb);
+	gtk_frame_set_shadow_type (GTK_FRAME (general_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (general_frame), gps_reinit_bt);
+
+	gtk_box_pack_start (GTK_BOX (gps_vbox), general_frame, FALSE, FALSE, 2);
+
 	gps_label = gtk_label_new (_("GPS"));
 	gtk_notebook_append_page
 		(GTK_NOTEBOOK (notebook), gps_vbox, gps_label);
 
 }
-*/
+
 
 /* ************************************************************************* */
 /* TODO: fill with content
@@ -2157,8 +2321,9 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	settings_friends (settings_nb);
 	settings_nav (settings_nb);	
 	settings_gui (settings_nb);
-	//settings_gps (settings_nb);
-	//settings_fly (settings_nb);
+	if (!havefestival)
+		settings_speech (settings_nb);
+	settings_gps (settings_nb);
 	//settings_nautic (settings_nb);
 
 	gtk_widget_show_all (settings_window);

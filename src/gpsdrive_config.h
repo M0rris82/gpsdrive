@@ -80,6 +80,10 @@ typedef struct
 	gboolean savetrack;
 	gboolean autobestmap;
 	gint scale_wanted;
+	gint speech;
+	gchar speech_voice[20];
+	gint speech_speed;
+	gint speech_pitch;
 	gboolean sound_direction;
 	gboolean sound_distance;
 	gboolean sound_speed;

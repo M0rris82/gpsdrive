@@ -247,6 +247,10 @@ writeconfig ()
 	fprintf (fp, "wplabelcolor = %s\n", local_config.color_wplabel);
 	fprintf (fp, "messagenumber = %d\n", messagenumber);
 	fprintf (fp, "showssid = %d\n", showsid);
+	fprintf (fp, "speech = %d\n", local_config.speech);
+	fprintf (fp, "speech_voice = %s\n", local_config.speech_voice);
+	fprintf (fp, "speech_speed = %d\n", local_config.speech_speed);
+	fprintf (fp, "speech_pitch = %d\n", local_config.speech_pitch);
 	fprintf (fp, "sound_direction = %d\n", local_config.sound_direction);
 	fprintf (fp, "sound_distance = %d\n", local_config.sound_distance);
 	fprintf (fp, "sound_speed = %d\n", local_config.sound_speed);
@@ -475,6 +479,15 @@ readconfig ()
 				messagenumber = atoi (par2);
 			else if ( (strcmp(par1, "showssid")) == 0)
 				showsid = atoi (par2);
+			else if ( (strcmp(par1, "speech")) == 0)
+				local_config.speech = atoi (par2);
+			else if ( (strcmp(par1, "speech_voice")) == 0)
+				g_strlcpy (local_config.speech_voice, par2,
+				sizeof (local_config.speech_voice));
+			else if ( (strcmp(par1, "speech_speed")) == 0)
+				local_config.speech_speed = atoi (par2);
+			else if ( (strcmp(par1, "speech_pitch")) == 0)
+				local_config.speech_pitch = atoi (par2);
 			else if ( (strcmp(par1, "sound_direction")) == 0)
 				local_config.sound_direction = atoi (par2);
 			else if ( (strcmp(par1, "sound_distance")) == 0)
@@ -557,14 +570,22 @@ config_init ()
 	local_config.showpoi = TRUE;
 	local_config.showpoilabel = FALSE;
 	local_config.showtooltips = TRUE;
-	local_config.sound_direction = TRUE;
-	local_config.sound_distance = TRUE;
-	local_config.sound_speed = TRUE;
-	local_config.sound_gps = TRUE;
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;
 	local_config.scale_wanted = 100000;
 	local_config.autobestmap = 1;
+
+	/* set speech output */
+	g_strlcpy (local_config.speech_voice,
+		"default", sizeof (local_config.speech_voice));
+	local_config.speech = FALSE;
+	local_config.speech_speed = 120;
+	local_config.speech_pitch = 50;
+	local_config.sound_direction = TRUE;
+	local_config.sound_distance = TRUE;
+	local_config.sound_speed = TRUE;
+	local_config.sound_gps = TRUE;
+
 
 	/* set POI related stuff */
 	local_config.poi_results_max = 200;

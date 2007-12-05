@@ -91,7 +91,7 @@ extern gdouble wp_saved_posmode_lon;
 extern gdouble pixelfact;
 extern gdouble milesconv;
 
-extern gint usesql, havespeechout;
+extern gint usesql;
 extern gint slistsize, nlist[];
 extern gint PSIZE;
 extern GtkWidget *posbt;
@@ -107,7 +107,7 @@ GtkWidget *scaler_in_bt, *scaler_out_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
-GtkWidget *wp_draw_bt;
+GtkWidget *wp_draw_bt, *mute_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
 GtkWidget *routeinfo_box, *routeinfo_icon, *routeinfo_label;
@@ -1520,7 +1520,7 @@ void create_controls_mainbox (void)
 	GtkWidget *vbox_buttons, *frame_poi, *frame_track;
 	GtkWidget *frame_mapcontrol, *controlbox;
 	GtkWidget *zoomin_img, *zoomout_img, *controlbox_img;
-	GtkWidget *hbox_scaler, *mute_bt, *controlbox_bt;
+	GtkWidget *hbox_scaler, *controlbox_bt;
 	GtkWidget *mapscaler_in_lb, *mapscaler_out_lb;
 	GtkWidget *scaler_in_img, *scaler_out_img;
 	GtkWidget *pda_box_left, *pda_box_right;
@@ -1733,30 +1733,27 @@ void create_controls_mainbox (void)
 	/* Button: Mute Speech */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Mute Speech)\n");
-	if (havespeechout)
+	mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (mute_bt), FALSE);
+	if (local_config.mute)
 	{
-		mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
-		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (mute_bt), FALSE);
-		if (local_config.mute)
-		{
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (mute_bt), TRUE);
-		}
-		g_signal_connect (GTK_OBJECT (mute_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb),
-			&local_config.mute);
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mute_bt,
-			_("Disable output of speech"), NULL);
-		if (local_config.guimode == GUI_CAR)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				mute_bt, TRUE, TRUE, 1 * PADDING);
-		}
-		else
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				mute_bt, FALSE, FALSE, 1 * PADDING);
-		}
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (mute_bt), TRUE);
+	}
+	g_signal_connect (GTK_OBJECT (mute_bt), "clicked",
+	GTK_SIGNAL_FUNC (toggle_button_cb),
+		&local_config.mute);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mute_bt,
+		_("Disable output of speech"), NULL);
+	if (local_config.guimode == GUI_CAR)
+	{
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			mute_bt, TRUE, TRUE, 1 * PADDING);
+	}
+	else
+	{
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+		mute_bt, FALSE, FALSE, 1 * PADDING);
 	}
 
 	/* Button: Search POIs */

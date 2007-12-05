@@ -266,7 +266,7 @@ trackcoordstruct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gchar savetrackfn[256];
 
-gint havespeechout, hours, minutes, speechcount = 0;
+gint havefestival, hours, minutes, speechcount = 0;
 gchar lastradar[40], lastradar2[40]; 
 gint foundradar;
 gdouble radarbearing;
@@ -329,7 +329,6 @@ gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
 gint lastnotebook = 0;
 GtkWidget *settingsnotebook;
-gint useflite = FALSE;
 extern gint zone;
 gint ignorechecksum = FALSE;
 gint friends_poi_id[TRAVEL_N_MODES];
@@ -2706,7 +2705,7 @@ usage ()
 #ifdef DBUS_ENABLE
 	     "%s"
 #endif
-	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>"
 	     "\n         Website: http://www.gpsdrive.de\n\n",
 	     _("-v        show version\n"),
@@ -2714,7 +2713,6 @@ usage ()
 	     _("-d        turn on debug info\n"),
 	     _("-D X      set debugging level to X\n"),
 	     _("-T        do some internal unit tests (don't start gpsdrive)\n"),
-	     _("-e        use Festival-Lite (flite) for speech output\n"),
 	     _("-o thing  serial device, pty master, or file to use for NMEA output\n"),
 	     _("-f server select friends server, e.g. friendsd.gpsdrive.de\n"),
 #ifdef DBUS_ENABLE
@@ -2843,9 +2841,6 @@ parse_cmd_args(int argc, char *argv[]) {
 		    break;
 		case 'T':
 		    do_unit_test = TRUE;
-		    break;
-		case 'e':
-		    useflite = TRUE;
 		    break;
 		case 'i':
 		    ignorechecksum = TRUE;
@@ -3184,24 +3179,24 @@ main (int argc, char *argv[])
     if (usesql)
 	usesql = sqlinit ();
 
-    if (!useflite)
-	havespeechout = speech_out_init ();
-    else
-	havespeechout = TRUE;
-
-    if (!useflite)
-	switch (voicelang)
-	    {
-	    case english:
-		speech_out_speek_raw (FESTIVAL_ENGLISH_INIT);
-		break;
-	    case spanish:
-		speech_out_speek_raw (FESTIVAL_SPANISH_INIT);
-		break;
-	    case german:
-		speech_out_speek_raw (FESTIVAL_GERMAN_INIT);
-		break;
-	    }
+	if (!local_config.speech)
+	{
+		havefestival = speech_out_init ();
+		switch (voicelang)
+		{
+		case english:
+			speech_out_speek_raw (FESTIVAL_ENGLISH_INIT);
+			break;
+		case spanish:
+			speech_out_speek_raw (FESTIVAL_SPANISH_INIT);
+			break;
+		case german:
+			speech_out_speek_raw (FESTIVAL_GERMAN_INIT);
+			break;
+		}
+	}
+	else
+		havefestival = FALSE;
 
     if (usesql)
 	{
@@ -3305,7 +3300,7 @@ main (int argc, char *argv[])
 
     current.needtosave = FALSE;
 
-    if (havespeechout)
+    if (havefestival || local_config.speech)
 	speech_saytime_cb (NULL, 1);
 
 	/* do all the basic initalisation for the specific sections */
@@ -3321,7 +3316,7 @@ main (int argc, char *argv[])
 
     update_posbt();
 
-    if (havespeechout)
+    if (havefestival || local_config.speech)
 	{
 		gtk_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
