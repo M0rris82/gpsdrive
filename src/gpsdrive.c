@@ -318,7 +318,6 @@ gint sats_used = 0, sats_in_view = 0;
 gint numgrids = 4, scroll = TRUE;
 gint satposmode = FALSE;
 gint printoutsats = FALSE;
-extern gchar *displaytext;
 gint isnight = FALSE, disableisnight;
 gint nighttimer;
 GtkWidget *setupentry[50], *setupentrylabel[50];
@@ -3181,7 +3180,7 @@ main (int argc, char *argv[])
 
 	if (!local_config.speech)
 	{
-		havefestival = speech_out_init ();
+		havefestival = festival_init ();
 		switch (voicelang)
 		{
 		case english:
@@ -3375,7 +3374,7 @@ main (int argc, char *argv[])
     gpsd_close();
     if (sockfd != -1)
 	close (sockfd);
-    speech_out_close ();
+    festival_close ();
     cleanup_nasa_mapfile ();
     fprintf (stderr, _("\n\nThank you for using GpsDrive!\n\n"));
 

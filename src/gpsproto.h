@@ -27,7 +27,7 @@ void loadwaypoints ();
 void savewaypoints ();
 void storepoint();
 void speech_out_speek (char *text);
-gint speech_out_init ();
+gint festival_init ();
 gdouble calcdist (gdouble lon, gdouble lat);
 gdouble calcdist2 (gdouble lon, gdouble lat);
 gdouble calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current);
@@ -76,7 +76,7 @@ void signalposreq ();
 gint reinsertwp_cb (GtkWidget * widget, guint datum);
 GdkPixbuf *create_pixbuf (const gchar * filename);
 gint simulated_pos (GtkWidget * widget, guint * datum);
-void speech_out_close (void);
+void festival_close (void);
 int create_nasa_mapfile (double lat, double lon, int test, char *fn);
 int init_nasa_mapfile ();
 void cleanup_nasa_mapfile ();
@@ -99,4 +99,5 @@ gint navi_cb (GtkWidget * widget, guint datum);
 GtkWidget* create_pixmap(GtkWidget *widget, const gchar *filename);
 gint speech_out_cb (GtkWidget * widget, guint * datum);
 gchar *escape_sql_string (const gchar *data);
-
+void distance2gchar
+	(gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size);

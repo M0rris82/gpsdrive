@@ -71,7 +71,6 @@ extern glong mapscale;
 extern GdkGC *kontext_map;
 
 extern gdouble earthr;
-extern gchar *displaytext;
 extern GTimer *timer, *disttimer;
 extern gdouble gbreit, glang, olddist;
 extern GtkWidget *messagewindow;

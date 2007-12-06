@@ -973,14 +973,14 @@ route_settarget (gint rt_ptr)
 
 
 /* ****************************************************************************
- * set target to the given route item
+ * display info for next target in main window while route is active
  */
 void
 route_display_targetinfo (void)
 {
 	GdkPixbuf *t_icon;
 	gchar *t_name, *t_cmt;
-	gchar t_text[500];
+	gchar t_text[500], t_dist[10], t_unit[10];
 	gchar t_ptr[5];
 	GtkTreeIter t_iter;
 
@@ -997,19 +997,21 @@ route_display_targetinfo (void)
 		ROUTE_CMT, &t_cmt,
 		-1);
 
+	distance2gchar (current.dist, t_dist, sizeof (t_dist), t_unit, sizeof (t_unit));
 	if (t_cmt)
 		g_snprintf (t_text, sizeof (t_text),
-			"<span color=\"#ffff00\" background=\"#000000\" "
-			"font_desc=\"Sans 16\">%s</span>", t_cmt);
+			"<span color=\"#ffff00\" font_desc=\"Sans 16\">"
+			"<span background=\"#000000\">%s%s</span> %s</span>",
+			t_dist, t_unit, t_cmt);
 	else
 		g_snprintf (t_text, sizeof (t_text),
-			"<span color=\"#ffff00\" background=\"#000000\" "
-			"font_desc=\"Sans 16\">%s</span>", t_name);
+			"<span color=\"#ffff00\" font_desc=\"Sans 16\">"
+			"<span background=\"#000000\">%s%s</span> %s</span>",
+			t_dist, t_unit, t_name);
 
 	gtk_label_set_markup (GTK_LABEL (route.label), t_text);
-
 	gtk_image_set_from_pixbuf (GTK_IMAGE (route.icon), t_icon);
-	gtk_widget_modify_bg (route.icon, GTK_STATE_NORMAL, &colors.black);
+
 	gtk_widget_set_size_request (route.label,
 		gui_status.mapview_x - gdk_pixbuf_get_width (t_icon) - 20, -1);
 

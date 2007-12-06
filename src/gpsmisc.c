@@ -317,6 +317,57 @@ create_pixbuf (const gchar * filename)
 }
 
 
+/* *****************************************************************************
+ * convert a given distance value to gchars containig
+ * a formatted value and a unit
+ */
+void
+distance2gchar
+	(gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size)
+{
+	switch (local_config.distmode)
+	{
+		case DIST_MILES:
+		{
+			g_strlcpy (unitstring, "mi", unitstr_size);
+			if (dist <= 1.0)
+			{
+				g_snprintf (diststring, diststr_size, "%.0f", dist * 1760.0);
+				g_strlcpy (unitstring, "yrds", unitstr_size);
+			}
+			else if (dist <= 10.0)
+				g_snprintf (diststring, diststr_size, "%.2f", dist);
+			else
+				g_snprintf (diststring, diststr_size, "%.1f", dist);
+			break;
+		}
+		case DIST_NAUTIC:
+		{
+			g_strlcpy (unitstring, _("nmi"), unitstr_size);
+			if (dist <= 1.0)
+				g_snprintf (diststring, diststr_size, "%.3f", dist);
+			else if (dist <= 10.0)
+				g_snprintf (diststring, diststr_size, "%.2f", dist);
+			else
+				g_snprintf (diststring, diststr_size, "%.1f", dist);
+			break;
+		}
+		default:
+		{
+			g_strlcpy (unitstring, _("km"), unitstr_size);
+			if (dist <= 1.0)
+			{
+				g_snprintf (diststring, diststr_size, "%.0f", dist * 1000.0);
+				g_strlcpy (unitstring, "m", diststr_size);
+			}
+			else if (dist <= 10.0)
+				g_snprintf (diststring, diststr_size, "%.2f", dist);
+			else
+				g_snprintf (diststring, diststr_size, "%.1f", dist);
+		}
+	}
+}
+
 
 /* *****************************************************************************
  * Convert a coordinate to a gchar

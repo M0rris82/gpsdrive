@@ -333,7 +333,7 @@ extern GtkWidget *map_drawingarea;
 /* *****************************************************************************
  */
 gint
-speech_out_init ()
+festival_init ()
 {
 	struct sockaddr_in server;
 	struct hostent *server_data;
@@ -387,7 +387,7 @@ speech_out_speek (char *text)
 			local_config.speech_pitch, local_config.speech_speed ,
 			local_config.speech_voice, text);
 		if ( mydebug > 0 )
-		printf ("speech with epeak: %s\n", out);
+		printf ("speech with espeak: %s\n", out);
 		system (out);
 	}
 }
@@ -409,7 +409,7 @@ speech_out_speek_raw (char *text)
 }
 
 /* *****************************************************************************
- *  if second parameter is TRUE, then also greeting is spoken 
+ *  if second parameter is TRUE, then also greeting is spoken
  */
 gint
 speech_saytime_cb (GtkWidget * widget, guint datum)
@@ -581,7 +581,7 @@ display_dsc (void)
 /* *****************************************************************************
  */
 void
-speech_out_close (void)
+festival_close (void)
 {
 	if (speechsock != -1)
 		close (speechsock);
@@ -611,7 +611,10 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	}
 
 	speechcount++;
-	angle = RAD2DEG (current.bearing);
+
+	angle = RAD2DEG (current.bearing) - RAD2DEG (current.heading);
+	if (angle < 0.0)
+		angle = 360 + angle;
 
 	if (!current.simmode && !current.gpsfix)
 	{

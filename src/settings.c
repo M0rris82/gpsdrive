@@ -2074,7 +2074,7 @@ settings_speech (GtkWidget *notebook)
 	GtkWidget *espeakpitch_label, *espeakpitch_scale;
 	GtkWidget *espeakvoice_label, *espeakvoice_combo;
 	GtkTooltips *speech_tooltips;
-	gint i=0;
+	gint i=0, j=0;
 
 	speech_tooltips = gtk_tooltips_new ();
 	speech_vbox = gtk_vbox_new (FALSE, 2);
@@ -2106,8 +2106,11 @@ settings_speech (GtkWidget *notebook)
 	while (strcmp (espeak_voices[i], "-1"))
 	{
 		gtk_combo_box_append_text (GTK_COMBO_BOX (espeakvoice_combo), espeak_voices[i]);
+		if (strcmp (espeak_voices[i+1], local_config.speech_voice) == 0)
+			j = i/2;
 		i += 2;
 	}
+	gtk_combo_box_set_active (GTK_COMBO_BOX (espeakvoice_combo), j);
 	g_signal_connect (espeakvoice_combo, "changed", G_CALLBACK (setespeakvoice_cb), NULL);
 
 	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),

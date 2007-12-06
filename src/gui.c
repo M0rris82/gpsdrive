@@ -106,7 +106,7 @@ extern GtkWidget *mute_bt;
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
-extern GtkWidget *routeinfo_box;
+extern GtkWidget *routeinfo_evbox;
 extern gint havefestival;
 
 extern gint real_psize, real_smallmenu;
@@ -639,7 +639,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 	init_color ("#f06000", &colors.orange);
 	init_color ("#f0995f", &colors.lightorange);
 	init_color ("#ff8000", &colors.orange2);
-	init_color ("#a0a0a0", &colors.darkgrey); 
+	init_color ("#606060", &colors.darkgrey); 
 	init_color ("#d0d0d0", &colors.lightgrey);
 
 	/* init poi search dialog (cached) */
@@ -656,7 +656,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 	if (!usegeometry)
 		get_window_sizing ();
 	gtk_widget_show_all (main_window);
-	gtk_widget_hide_all (routeinfo_box);
+	gtk_widget_hide_all (routeinfo_evbox);
 
 	//if ( ( local_config.guimode == GUI_DESKTOP )
 	     if( (local_config.MapnikStatusInt ) ){

@@ -110,7 +110,7 @@ GtkWidget *menuitem_sendmsg;
 GtkWidget *wp_draw_bt, *mute_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
-GtkWidget *routeinfo_box, *routeinfo_icon, *routeinfo_label;
+GtkWidget *routeinfo_evbox, *routeinfo_icon, *routeinfo_label;
 
 // TODO: maybe these should be moved to local ones...
 GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
@@ -518,92 +518,8 @@ update_dashboard (GtkWidget *frame, gint source)
 	{
 		case DASH_DIST:
 		{
-			//if (current.target)
-			//{
-			//	g_snprintf (head, sizeof (head), "%s %s",
-			//	_("Dist. to"), current.target);
-			//}
-			//else
-			{
-				g_strlcpy (head, _("Distance"), sizeof (head));
-			}
-			switch (local_config.distmode)
-			{
-				case DIST_MILES:
-				{
-					g_strlcpy (unit, "mi", sizeof (unit));
-					if (current.dist <= 1.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.0f",
-							current.dist * 1760.0);
-						g_strlcpy (unit, "yrds",
-							sizeof (unit));
-					}
-					else if (current.dist <= 10.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.2f",
-							current.dist);
-					}
-					else
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.1f", 
-							current.dist);
-					}
-					break;
-				}
-				case DIST_NAUTIC:
-				{
-					g_strlcpy (unit, _("nmi"),
-						sizeof (unit));
-					if (current.dist <= 1.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.3f", 
-							current.dist);
-					}
-					else if (current.dist <= 10.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.2f", 
-							current.dist);
-					}
-					else
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.1f", 
-							current.dist);
-					}
-					break;
-				}
-				default:
-				{
-					g_strlcpy (unit, _("km"),
-						sizeof (unit));
-					if (current.dist <= 1.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.0f",
-							current.dist * 1000.0);
-						g_strlcpy (unit, "m",
-							sizeof (unit));
-					}
-					else if (current.dist <= 10.0)
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.2f", 
-							current.dist);
-					}
-					else
-					{
-						g_snprintf (ctmp, sizeof
-							(ctmp), "%.1f", 
-							current.dist);
-					}
-				}
-			}
+			g_strlcpy (head, _("Distance"), sizeof (head));
+			distance2gchar (current.dist, ctmp, sizeof (ctmp), unit, sizeof (unit));
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%s"
 				"<span size=\"%d\"> %s</span></span>",
@@ -2326,14 +2242,19 @@ void create_map_mainbox (void)
  */
 void create_routeinfo_box (void)
 {
+	GtkWidget *routeinfo_box;
+
+	routeinfo_evbox = gtk_event_box_new ();
 	routeinfo_box = gtk_hbox_new (FALSE, 5);
 
 	route.icon = gtk_image_new ();
 	route.label = gtk_label_new ("no routing info");
 	gtk_label_set_line_wrap (GTK_LABEL (route.label), TRUE);
+	gtk_widget_modify_bg (routeinfo_evbox, GTK_STATE_NORMAL, &colors.darkgrey);
 
 	gtk_box_pack_start (GTK_BOX (routeinfo_box), route.icon, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (routeinfo_box), route.label, FALSE, FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (routeinfo_evbox), routeinfo_box);
 }
 
 
@@ -2403,7 +2324,7 @@ gint create_main_window (void)
 			mainbox_controls, 0, 1, 0, 2,
 			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
 		gtk_table_attach (GTK_TABLE (main_table),
-			routeinfo_box, 1, 2, 0, 1,
+			routeinfo_evbox, 1, 2, 0, 1,
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 1, 2);		
@@ -2421,7 +2342,7 @@ gint create_main_window (void)
 			mainbox_controls, 0, 1, 0, 2,
 			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
 		gtk_table_attach (GTK_TABLE (main_table),
-			routeinfo_box, 1, 2, 0, 1,
+			routeinfo_evbox, 1, 2, 0, 1,
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 1, 2);		
