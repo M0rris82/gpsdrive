@@ -3361,7 +3361,6 @@ main (int argc, char *argv[])
 
 
     unlink ("/tmp/cammain.pid");
-    unlink ("/tmp/gpsdrivetext.out");
     unlink ("/tmp/gpsdrivepos");
     if (local_config.savetrack)
 	savetrackfile (2);

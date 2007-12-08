@@ -642,6 +642,9 @@ int gui_init (gchar *geometry, gint usegeometry)
 	init_color ("#606060", &colors.darkgrey); 
 	init_color ("#d0d0d0", &colors.lightgrey);
 
+	posmarker_img = read_icon ("posmarker.png", 0);
+	targetmarker_img = read_icon ("targetmarker.png", 0); 
+
 	/* init poi search dialog (cached) */
 	create_window_poi_lookup();
 	
@@ -674,9 +677,6 @@ int gui_init (gchar *geometry, gint usegeometry)
 	create_map_drawable ();
 
 	// TODO: create_button_add_wp();
-
-	posmarker_img = read_icon ("posmarker.png", 0);
-	targetmarker_img = read_icon ("targetmarker.png", 0); 
 
 
 // the following lines habe been moved from gpsdrive.c to here.

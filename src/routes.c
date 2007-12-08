@@ -1198,6 +1198,9 @@ route_init (gchar *name, gchar *desc, gchar *src)
 	if (route_list_tree)
 		gtk_list_store_clear (route_list_tree);
 
+	/* remove old route data from database */
+	cleanupsql_routedata ();
+
 	/* init gtk-list for storage of route data */
 	route_list_tree = gtk_list_store_new (ROUTE_COLUMS,
 		G_TYPE_INT,		/* ROUTE_ID */

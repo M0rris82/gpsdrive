@@ -87,10 +87,10 @@ exiterr (int exitcode)
 
 
 /* ******************************************************************
- * remove route and friendsd data at shutdown
+ * remove route data from database
  */
 gint
-cleanupsqldata ()
+cleanupsql_routedata ()
 {
 	gchar q[200];
 	gint r, i;
@@ -100,9 +100,39 @@ cleanupsqldata ()
 
 	for (i = 0; i < poi_type_list_max; i++)
 	{
-		if (
-		  strncmp (poi_type_list[i].name,"waypoint.routepoint", 19) == 0 ||
-		  strncmp (poi_type_list[i].name,"people.friendsd", 15) == 0)
+		if (strncmp (poi_type_list[i].name,"waypoint.routepoint", 19) == 0)
+		{
+			g_snprintf (q, sizeof (q),
+				"DELETE FROM %s WHERE poi_type_id=\"%d\";",
+				dbtable, poi_type_list[i].poi_type_id);
+			if (mydebug > 50)
+				g_print ("query: %s\n", q);
+			if (dl_mysql_query (&mysql, q))
+				exiterr (3);
+			r = dl_mysql_affected_rows (&mysql);
+			if (mydebug > 50)
+				g_print (_("rows deleted: %d\n"), r);
+		}
+	}
+
+	return 0;
+}
+
+/* ******************************************************************
+ * remove friendsd data from database
+ */
+gint
+cleanupsql_friendsdata ()
+{
+	gchar q[200];
+	gint r, i;
+
+	if (!usesql)
+		return 0;
+
+	for (i = 0; i < poi_type_list_max; i++)
+	{
+		if ( strncmp (poi_type_list[i].name,"people.friendsd", 15) == 0)
 		{
 			g_snprintf (q, sizeof (q),
 				"DELETE FROM %s WHERE poi_type_id=\"%d\";",
@@ -149,10 +179,11 @@ sqlinit (void)
 void
 sqlend (void)
 {
-  if (!usesql)
-    return;
-  cleanupsqldata ();
-  dl_mysql_close (&mysql);
+	if (!usesql)
+		return;
+	cleanupsql_routedata ();
+	cleanupsql_friendsdata ();
+	dl_mysql_close (&mysql);
 }
 
 

@@ -96,6 +96,7 @@ extern color_struct colors;
 extern currentstatus_struct current;
 
 extern GtkWidget *find_poi_bt;
+extern GtkWidget *routing_bt;
 extern GtkWidget *posbt;
 extern GtkWidget *settings_window;
 extern GtkWidget *menuitem_saveroute;
@@ -361,6 +362,7 @@ close_route_window_cb ()
 	
 	if (GTK_IS_WIDGET (button_addtoroute))
 		gtk_widget_set_sensitive (button_addtoroute, TRUE);
+	gtk_widget_set_sensitive (routing_bt, TRUE);
 }
 
 
@@ -388,6 +390,7 @@ static void
 route_cancel_cb ()
 {
 	gtk_list_store_clear (route_list_tree);
+	cleanupsql_routedata ();
 	close_route_window_cb ();
 	route.items = 0;
 	route.distance = 0.0;
@@ -1089,13 +1092,7 @@ void create_window_poi_lookup (void)
 	gtk_container_add (GTK_CONTAINER (button_target), alignment_target);
 	hbox_target = gtk_hbox_new (FALSE, 2);
 	gtk_container_add (GTK_CONTAINER (alignment_target), hbox_target);
-
-
-	// FIXME: this one won't display the icon anymore, but why?
-	//image_target = gtk_image_new_from_pixbuf (targetmarker_img);
-	// let's use a stock icon until this is fixed...
-	image_target = gtk_image_new_from_stock ("gtk-ok", GTK_ICON_SIZE_BUTTON);
-
+	image_target = gtk_image_new_from_pixbuf (targetmarker_img);
 	gtk_box_pack_start (GTK_BOX (hbox_target),
 		image_target, FALSE, FALSE, 0);
 	label_target = gtk_label_new (_("Select Target"));
@@ -1158,6 +1155,7 @@ void route_window_cb (GtkWidget *calling_button)
 	GtkTooltips *tooltips_routewindow;
 
 	gtk_widget_set_sensitive (button_addtoroute, FALSE);
+	gtk_widget_set_sensitive (routing_bt, FALSE);
 
 	route.edit = TRUE;
 

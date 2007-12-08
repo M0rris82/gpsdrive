@@ -107,7 +107,7 @@ GtkWidget *scaler_in_bt, *scaler_out_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
-GtkWidget *wp_draw_bt, *mute_bt;
+GtkWidget *wp_draw_bt, *mute_bt, *routing_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
 GtkWidget *routeinfo_evbox, *routeinfo_icon, *routeinfo_label;
@@ -1697,6 +1697,26 @@ void create_controls_mainbox (void)
 			find_poi_bt, FALSE, FALSE, 1 * PADDING);
 	}
 
+	/* Button: Routing */
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(Buttons: Show Routing)\n");
+	routing_bt = gtk_button_new_with_label (_("Route List"));
+	
+	if (usesql)
+	{
+		g_signal_connect (routing_bt, "clicked",
+			G_CALLBACK (route_window_cb), NULL);  
+		if (local_config.guimode == GUI_CAR)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				routing_bt, TRUE, TRUE, 1 * PADDING);
+		}
+		else
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				routing_bt, FALSE, FALSE, 1 * PADDING);
+		}
+	}
 	}	/* END MENU AND BUTTONS */
 
 	/* WAYPOINTS AND POIs */

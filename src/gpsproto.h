@@ -12,6 +12,8 @@ glong getsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry, gch
 int sqlinit (void);
 void sqlend (void);
 int getsqldata ();
+gint cleanupsql_routedata ();
+gint cleanupsql_friendsdata ();
 int loadmap (char *filename);
 gint zoom_cb (GtkWidget * widget, guint datum);
 void show_splash (void);
