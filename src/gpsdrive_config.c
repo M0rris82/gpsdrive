@@ -22,12 +22,12 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
+#include "config.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <splash.h>
 #include <string.h>
 #include <stdlib.h>
-#include <config.h>
 #include <gpsdrive.h>
 #include <poi.h>
 #include <wlan.h>

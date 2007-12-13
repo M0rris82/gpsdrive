@@ -54,7 +54,7 @@ Moved the speech string to a seperate File
 // Add new languages to the end, you *MUST* then add new strings to *ALL*
 // of the following arrays.
 
-#include <gtk/gtk.h>
+#include <glib.h>
 
 // ************************************************************************** //
 // The actual phrases used to inform the user. NOTE the order of the items
@@ -136,9 +136,9 @@ gchar* speech_diff_gps_lost[] =
 // Spanish string needs corrected
 gchar* speech_gps_lost[] =
 {
-  "No GPS signal dectected.",
+  "No GPS signal detected.",
   "Kein ausreichendes GPS Signal vorhanden.",
-  "No GPS signal dectected.",
+  "No GPS signal detected.",
 };
 
 gchar* speech_gps_good[] =
@@ -199,6 +199,15 @@ gchar* speech_time_hrs_mins[] =
   "It is %d %d.",
   "Es ist %d Uhr %d",
   "Son las %d horas y %d minutos."
+};
+
+// **** TODO ****
+// Spanish string needs corrected
+gchar* speech_time_hrs[] =
+{
+  "It is %d o clock.",
+  "Es ist %d Uhr",
+  "Son las %d horas."
 };
 
 gchar* speech_too_few_satellites[] =
@@ -282,7 +291,7 @@ gchar* speech_speed_mph[] =
 gchar* speech_speed_kph[] =
 {
   "The current speed is %d kilometers per hour.",
-  "Die momentane Geschwindigkeit ist %d kmh",
+  "Die momentane Geschwindigkeit ist %d K M H",
   "La velocidad actual es %d kilometros por hora."
 };
 
@@ -292,6 +301,15 @@ gchar* speech_distance_to[] =
   "Distance to %s is %s",
   "Die Entfernung bis %s ist %s",
   "La distancia a la %s es %s"
+};
+
+// **** TODO ****
+// Spanish string needs corrected
+gchar* speech_unnamed_target[] =
+{
+  "unnamed target",
+  "zum namenlosen Ziel",
+  "unnamed target"
 };
 
 gchar* speech_yards[] =

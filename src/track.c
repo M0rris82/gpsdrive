@@ -27,13 +27,13 @@ Disclaimer: Please do not use for navigation.
  * Based in Files track0001.sav
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 #include "gpsdrive.h"
 #include "gpsdrive_config.h"
 #include "track.h"
-#include "config.h"
 #include "gui.h"
 #include "main_gui.h"
 
@@ -72,9 +72,9 @@ rebuildtracklist (void)
 {
   gint posxdest, posydest;
   gint posxsource, posysource;
+  gint i, so;
   posxsource = -1000;
   posysource = -1000;
-  gint i, so;
 
   if (!maploaded)
     return;

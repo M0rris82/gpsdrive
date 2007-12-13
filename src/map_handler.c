@@ -23,6 +23,7 @@
  **********************************************************************
  */
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -116,13 +117,14 @@ gint displaymap_map = TRUE;
 gint
 display_maps_cb (GtkWidget * widget, guint datum)
 {
+  int i;
+
   if (gtk_toggle_button_get_active
       (GTK_TOGGLE_BUTTON (display_map[datum].checkbox)))
     display_map[datum].to_be_displayed = TRUE;
   else
     display_map[datum].to_be_displayed = FALSE;
 
-  int i;
   for (i = 0; i < max_display_map; i++)
     {
       char tbd = display_map[i].to_be_displayed ? 'D' : '_';
@@ -138,13 +140,13 @@ display_maps_cb (GtkWidget * widget, guint datum)
 GtkWidget *
 make_display_map_controls ()
 {
-	if ( mydebug > 11 )
-		fprintf(stderr,"make_display_map_controls()\n");
 	GtkWidget *frame_maptype;
 	GtkWidget *vbox_map_controls;
 	GtkTooltips *tooltips;
 	tooltips = gtk_tooltips_new ();
 
+	if ( mydebug > 11 )
+		fprintf(stderr,"make_display_map_controls()\n");
 	// Frame
 	frame_maptype = gtk_frame_new (_("Map Controls"));
 	vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
@@ -209,6 +211,7 @@ make_display_map_checkboxes()
   GtkWidget *frame_maptype;
   GtkWidget *vbox3;
   GtkTooltips *tooltips;
+  glong i;
 
   // Frame
   frame_maptype = gtk_frame_new (_("Shown map type"));
@@ -216,7 +219,6 @@ make_display_map_checkboxes()
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
   tooltips = gtk_tooltips_new ();
-  glong i;
   for (i = 0; i < max_display_map; i++)
     {
       // Checkbox ---- Show Map: name xy
@@ -261,15 +263,15 @@ add_map_dir (gchar * filename)
 {
 
   gint i;
+  gchar map_dir[200];
+  char *slash_pos;
 
   /* memorize map dir names */
   if (mydebug > 99)
     fprintf (stderr, "add_map_dir(%s)\n", filename);
 
-  gchar map_dir[200];
-
   g_strlcpy (map_dir, filename, sizeof (map_dir));
-  char *slash_pos = strstr (map_dir, "/");
+  slash_pos = strstr (map_dir, "/");
   if (slash_pos)
     slash_pos[0] = '\0';
   else
@@ -742,6 +744,7 @@ test_and_load_newmap ()
     gdouble dif;
     static int nasaisvalid = FALSE;
     int takemap = FALSE;
+    gchar bg_mapfilename[2048];
 
     if (current.importactive)
         return;
@@ -756,7 +759,6 @@ test_and_load_newmap ()
         map_proj = proj_map;
 
         // extra variable; so we can later make it configurable
-        gchar bg_mapfilename[2048];
         g_strlcpy (bg_mapfilename, "map_LightYellow.png", sizeof (bg_mapfilename));
 
         g_strlcpy (oldfilename, mapfilename, sizeof (oldfilename));

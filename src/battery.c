@@ -38,6 +38,7 @@ Disclaimer: Please do not use for navigation.
 
 
 #define _GNU_SOURCE
+#include "config.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>

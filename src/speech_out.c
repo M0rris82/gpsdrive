@@ -239,6 +239,7 @@ Disclaimer: Please do not use for navigation.
 #include <time.h>
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "os_specific.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -378,7 +379,7 @@ speech_out_speek (char *text)
 	if (havefestival)
 	{
 	    g_snprintf (out, sizeof (out), "(SayText \"%s\")\n", text);
-	    write (speechsock, out, strlen (out));
+	    send (speechsock, out, strlen (out), 0);
 	}
 	else if (local_config.speech)
 	{
@@ -405,7 +406,11 @@ speech_out_speek_raw (char *text)
     if ( mydebug > 0 )
 	g_print (text);
     
-    write (speechsock, text, strlen (text));
+#ifdef _WIN32
+    printf("speech_out_speek_raw: %s\n", text);
+#endif
+
+    send (speechsock, text, strlen (text), 0);
 }
 
 /* *****************************************************************************
@@ -447,10 +452,13 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
     {
       g_snprintf( buf2, sizeof(buf2), speech_time_mins[voicelang], ts->tm_min );
     }
-    else
+    else if( 0 == ts->tm_min)
     {
       g_snprintf(
-        buf2, sizeof(buf2), speech_time_hrs_mins[voicelang], ts->tm_hour,
+        buf, sizeof(buf), speech_time_hrs[voicelang], ts->tm_hour);
+    } else {
+      g_snprintf(
+        buf, sizeof(buf), speech_time_hrs_mins[voicelang], ts->tm_hour,
         ts->tm_min );
     }
 
@@ -471,6 +479,10 @@ speech_saytime_cb (GtkWidget * widget, guint datum)
 void
 saytargettext (gchar * filename, gchar * tg)
 {
+
+#ifdef _WIN32
+    printf("saytargettext: %s\n", tg);
+#else
 	gchar file[500];
 	gint fd, e;
 	gchar *start, *end;
@@ -513,6 +525,7 @@ saytargettext (gchar * filename, gchar * tg)
 		free (b);
 	}
 	munmap (data, buf.st_size + 2000);
+#endif
 }
 
 /* *****************************************************************************
@@ -584,7 +597,7 @@ void
 festival_close (void)
 {
 	if (speechsock != -1)
-		close (speechsock);
+		socket_close (speechsock);
 }
 
 
@@ -660,6 +673,8 @@ speech_out_cb (GtkWidget * widget, guint * datum)
     g_strlcpy( s2, speech_front_left[voicelang], sizeof(s2) );
   }
 
+  //printf ("angle: %u\n", angle);
+
 	if( (1 == speechcount) || (strcmp (s2, oldangle)) )
 	{
 		if (local_config.sound_direction)
@@ -725,8 +740,13 @@ speech_out_cb (GtkWidget * widget, guint * datum)
         }
       }
 
-      g_snprintf(
-        buf, sizeof(buf), speech_distance_to[voicelang], current.target, s2 );
+      if(strcmp(current.target, "     ") == 0) {
+          g_snprintf(
+            buf, sizeof(buf), speech_distance_to[voicelang], speech_unnamed_target[voicelang], s2 );
+      } else {
+          g_snprintf(
+            buf, sizeof(buf), speech_distance_to[voicelang], current.target, s2 );
+      }
 
       speech_out_speek( buf );
     }

@@ -27,6 +27,7 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -37,7 +38,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "gpsdrive_config.h"
 #include "poi.h"
-#include "config.h"
 #include "gettext.h"
 #include "icons.h"
 #include "routes.h"

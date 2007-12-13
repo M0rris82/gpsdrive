@@ -28,7 +28,11 @@ Disclaimer: Please do not use for navigation.
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
+#ifdef _WIN32
+#include "mysql.h"
+#else
 #include "mysql/mysql.h"
+#endif
 #include "gpsproto.h"
 
 /*  set this to 0 for normal use, 1 for small screens */
@@ -232,23 +236,27 @@ gint line_crosses_rectangle(gdouble li_lat1, gdouble li_lon1, gdouble li_lat2, g
 gdouble distance_line_point(gdouble x1, gdouble y1, gdouble x2, gdouble y2,
 			    gdouble xp, gdouble yp);
 
-
-char *  (*dl_mysql_error)(MYSQL *mysql);
-MYSQL * (*dl_mysql_init)(MYSQL *mysql);
-MYSQL * (*dl_mysql_real_connect)(MYSQL *mysql, const char *host,
+#ifdef _MSC_VER
+#define DL_MYSQL_IMPORT __stdcall
+#else
+#define DL_MYSQL_IMPORT 
+#endif
+char *  (DL_MYSQL_IMPORT *dl_mysql_error)(MYSQL *mysql);
+MYSQL * (DL_MYSQL_IMPORT *dl_mysql_init)(MYSQL *mysql);
+MYSQL * (DL_MYSQL_IMPORT *dl_mysql_real_connect)(MYSQL *mysql, const char *host,
                                            const char *user,
                                            const char *passwd,
                                            const char *db,
                                            unsigned int port,
                                            const char *unix_socket,
                                            unsigned long clientflag);
-void    (*dl_mysql_close)(MYSQL *sock);
-int     (*dl_mysql_query)(MYSQL *mysql, const char *q);
-my_ulonglong (*dl_mysql_affected_rows)(MYSQL *mysql);
-MYSQL_RES * (*dl_mysql_store_result)(MYSQL *mysql);
-MYSQL_ROW   (*dl_mysql_fetch_row)(MYSQL_RES *result);
-void        (*dl_mysql_free_result)(MYSQL_RES *result);
-my_bool (*dl_mysql_eof)(MYSQL_RES *res);
+void    (DL_MYSQL_IMPORT *dl_mysql_close)(MYSQL *sock);
+int     (DL_MYSQL_IMPORT *dl_mysql_query)(MYSQL *mysql, const char *q);
+my_ulonglong (DL_MYSQL_IMPORT *dl_mysql_affected_rows)(MYSQL *mysql);
+MYSQL_RES * (DL_MYSQL_IMPORT *dl_mysql_store_result)(MYSQL *mysql);
+MYSQL_ROW   (DL_MYSQL_IMPORT *dl_mysql_fetch_row)(MYSQL_RES *result);
+void        (DL_MYSQL_IMPORT *dl_mysql_free_result)(MYSQL_RES *result);
+my_bool (DL_MYSQL_IMPORT *dl_mysql_eof)(MYSQL_RES *res);
 gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
 gint importaway_cb (GtkWidget * widget, guint datum);
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);

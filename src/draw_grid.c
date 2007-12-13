@@ -130,6 +130,9 @@ draw_grid (GtkWidget * widget)
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 
+	gchar precission[10];
+	gint iteration_count =0;
+	
 	if ( mydebug >50 ) 
 	    fprintf(stderr , "draw_grid()\n");
 
@@ -144,8 +147,6 @@ draw_grid (GtkWidget * widget)
 
 	// Calculate distance between grid lines
 	step = (gdouble) current.mapscale / 2000000.0 / current.zoom;
-	gchar precission[10];
-	gint iteration_count =0;
 	do {
 	    if (step >= 1)	            g_snprintf (precission, sizeof (precission), "%%.0f");
 	    else if (step >= .1)	    g_snprintf (precission, sizeof (precission), "%%.1f");

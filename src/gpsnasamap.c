@@ -95,6 +95,8 @@ convnasamap creates mapfiles from the big nasa map files
 
 */
 
+#include "os_specific.h"
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -140,10 +142,10 @@ init_nasa_mapfile ()
 	g_snprintf (inputfilename_w, sizeof (inputfilename_w),
 		    "%snasamaps/top_nasamap_west.raw", local_config.dir_home);
 
-	fdin_e = open (inputfilename_e, O_RDONLY);
+	fdin_e = open (inputfilename_e, O_RDONLY | O_BINARY);
 	if (fdin_e >= 0)
 		havenasamaps = TRUE;
-	fdin_w = open (inputfilename_w, O_RDONLY);
+	fdin_w = open (inputfilename_w, O_RDONLY | O_BINARY);
 	if (fdin_w >= 0)
 		havenasamaps = TRUE;
 
@@ -201,7 +203,7 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 
 	if (!test)
 	{
-		fdout = open (outfilename, O_RDWR | O_TRUNC | O_CREAT, 0644);
+		fdout = open (outfilename, O_RDWR | O_TRUNC | O_CREAT | O_BINARY, 0644);
 		if (fdout < 0)
 		{
 			fprintf (stderr,

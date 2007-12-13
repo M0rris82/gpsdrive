@@ -23,6 +23,7 @@
  **********************************************************************
  */
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -33,7 +34,6 @@
 #include <string.h>
 #include <gpsdrive.h>
 #include <time.h>
-#include <config.h>
 #include <math.h>
 #include <termios.h>
 #include "gps_handler.h"
@@ -77,7 +77,6 @@ extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
 extern int newdata;
-extern pthread_mutex_t mutex;
 extern GtkWidget *startgpsbt;
 extern int didrootcheck;
 extern gint messagestatusbarid, timeoutcount;
@@ -103,12 +102,9 @@ extern gint haveposcount;
 extern FILE *nmeaout;
 // ---------------------- NMEA
 gint haveRMCsentence = FALSE;
-gchar nmeamodeandport[50];
 gdouble NMEAsecs = 0.0;
 gint NMEAoldsecs = 0;
 FILE *nmeaout = NULL;
-/*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-gint haveNMEA;
 extern gint sock;
 
 
@@ -163,6 +159,7 @@ checksum (gchar * text)
 FILE *
 opennmea (const char *name)
 {
+#ifndef _WIN32
 	struct termios tios;
 
 	if (mydebug + nmea_handler_debug >50) 
@@ -187,6 +184,9 @@ opennmea (const char *name)
 	cfsetospeed (&tios, B4800);
 	tcsetattr (fileno (out), TCSAFLUSH, &tios);
 	return out;
+#else
+	return NULL;
+#endif
 }
 
 /* *****************************************************************************

@@ -190,6 +190,12 @@ drawicon (gint posxdest, gint posydest, char *icon_name)
   return symbol;
 }
 
+typedef struct
+{
+  gchar *path;
+  gchar *option;
+} path_definition;
+
 /* -----------------------------------------------------------------------------
  * load icon into pixbuff from either system directory or user directory
  * if force is set we exit on non success
@@ -200,14 +206,7 @@ read_icon (gchar * icon_name, int force)
   gchar filename[1024];
   gchar icon_filename[1024];
   GdkPixbuf *icons_buffer = NULL;
-  if (mydebug > 50)
-    fprintf (stderr, "read_icon(%s,%d)\n", icon_name, force);
 
-  typedef struct
-  {
-    gchar *path;
-    gchar *option;
-  } path_definition;
   path_definition available_path[] = {
     {"", NULL},
     {"./data/map-icons/", NULL},
@@ -224,6 +223,10 @@ read_icon (gchar * icon_name, int force)
   };
 
   gint i;
+
+  if (mydebug > 50)
+    fprintf (stderr, "read_icon(%s,%d)\n", icon_name, force);
+  
   for (i = 0; strncmp (available_path[i].path, "END", sizeof (available_path[i].path)); i++)
     {
       g_snprintf (filename, sizeof (filename), available_path[i].path, available_path[i].option);
@@ -274,6 +277,7 @@ read_themed_icon (gchar * icon_name)
   gchar themed_icon_filename[2048];
   gchar icon_file_name[2048];
   GdkPixbuf *icon = NULL;
+  char *p_pos;
 
   if (0 >= (int) strlen (icon_name))
     {
@@ -284,7 +288,6 @@ read_themed_icon (gchar * icon_name)
   g_strlcpy (icon_file_name, icon_name, sizeof (icon_file_name));
   g_strdelimit (icon_file_name, ".", '/');
 
-  char *p_pos;
   do
     {
       g_snprintf (themed_icon_filename, sizeof (themed_icon_filename),
@@ -296,7 +299,7 @@ read_themed_icon (gchar * icon_name)
       if (icon != NULL)
 	return icon;
 
-      p_pos = rindex (icon_file_name, '/');
+      p_pos = strrchr (icon_file_name, '/');
       if (p_pos)
 	{
 	  p_pos[0] = '\0';

@@ -52,6 +52,7 @@ Disclaimer: Please do not use for navigation.
 #include "gui.h"
 
 #include "gettext.h"
+#include "os_specific.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -98,12 +99,10 @@ extern struct timeval timeout;
 extern gdouble earthr;
 extern GTimer *timer, *disttimer;
 extern int newdata;
-extern pthread_mutex_t mutex;
 extern int didrootcheck;
 extern gint timeoutcount;
 extern gint simpos_timeout;
 extern int timerto;
-extern GtkWidget *drawing_gps;
 extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
@@ -121,8 +120,8 @@ extern gdouble NMEAsecs;
 extern gint NMEAoldsecs;
 extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-extern gchar nmeamodeandport[50];
-extern gint haveNMEA;
+gchar nmeamodeandport[50];
+gint haveNMEA;
 
 #ifdef DBUS_ENABLE
 gint useDBUS;
@@ -165,8 +164,10 @@ gint convertGSV (char *f);
 void
 gpsd_close ()
 {
-  if (sock != -1)
-    close (sock);
+    if (sock != -1) {
+        socket_close (sock);
+        sock = -1;
+    }
 }
 
 /* *****************************************************************************
@@ -244,7 +245,7 @@ init_nmea_socket ()
     /*  open socket to port */
     if (sock != -1)
       {
-	close (sock);
+	socket_close (sock);
 	sock = -1;
       }
     sock = socket (AF_INET, SOCK_STREAM, 0);
@@ -308,7 +309,7 @@ init_nmea_socket ()
 		   sizeof (nmeamodeandport));
 	g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
 	g_strlcat (nmeamodeandport, gpsdservername, sizeof (nmeamodeandport));
-	write (sock, "R\n", 2);
+	send (sock, "R\n", 2, 0);
 	timeoutcount = 0;
 	haveNMEA = TRUE;
 	if (local_config.simmode == SIM_AUTO)
@@ -674,7 +675,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
   }
   if (FD_ISSET (sock, &readmask))
     {
-      if ((e = read (sock, buffer, 2000)) <= 0) {
+      if ((e = recv(sock, buffer, 2000, 0)) <= 0) {
 	perror ("read from gpsd connection");
 	timeoutcount ++;
       }

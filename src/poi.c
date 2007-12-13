@@ -27,6 +27,7 @@ Disclaimer: Please do not use for navigation.
  * poi_ support module: display
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +41,6 @@ Disclaimer: Please do not use for navigation.
 
 #include "gpsdrive.h"
 #include "poi.h"
-#include "config.h"
 #include "gettext.h"
 #include "icons.h"
 #include <gpsdrive_config.h>
@@ -81,7 +81,6 @@ extern GdkGC *kontext;
 
 char txt[5000];
 PangoLayout *poi_label_layout;
-#include "mysql/mysql.h"
 
 extern MYSQL mysql;
 extern MYSQL_RES *res;
@@ -378,7 +377,6 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	res = NULL;
 	
 	return poi_result_count;
-
 }
 
 
@@ -694,14 +692,14 @@ create_poitype_tree (guint max_level)
 void
 get_poitype_tree (void)
 {
+	guint counter = 0;
+	guint max_level = 0;
+
 	if (mydebug > 25)
 		printf ("get_poitype_tree ()\n");
 
 	// Clear poi_type_tree
 	gtk_tree_store_clear (poi_types_tree);
-
-	guint counter = 0;
-	guint max_level = 0;
 
   // get poi_type info from icons.xml
   {
@@ -1005,7 +1003,7 @@ void
 poi_rebuild_list (void)
 {
   char sql_query[5000];
-  struct timeval t;
+  GTimeVal t;
   int r, rges;
   time_t ti;
 
@@ -1017,6 +1015,7 @@ poi_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
+  gint poi_posx, poi_posy;
 
   if (!usesql)
     return;
@@ -1056,8 +1055,7 @@ poi_rebuild_list (void)
   lat_mid = (lat_min + lat_max) / 2;
   lon_mid = (lon_min + lon_max) / 2;
 
-  gint poi_posx, poi_posy;
-  gettimeofday (&t, NULL);
+  g_get_current_time (&t);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   g_snprintf (sql_query, sizeof (sql_query),
@@ -1093,7 +1091,6 @@ poi_rebuild_list (void)
   poi_nr = 0;
   while ((row = dl_mysql_fetch_row (res)))
     {
-      rges++;
       gdouble lat, lon;
 
       if (mydebug > 20)
@@ -1167,11 +1164,10 @@ poi_rebuild_list (void)
 	}
     }
 
-
   poi_list_count = poi_nr;
 
   // print time for getting Data
-  gettimeofday (&t, NULL);
+  g_get_current_time (&t);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
   if (mydebug > 20)
     printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_list_count,
@@ -1212,6 +1208,8 @@ void
 poi_draw_list (gboolean draw_now)
 {
   gint i;
+  GdkPixbuf *icon;
+  int icon_index;
 
   if (!usesql)
     return;
@@ -1258,8 +1256,7 @@ poi_draw_list (gboolean draw_now)
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
 
-	    GdkPixbuf *icon;
-	    int icon_index = (poi_list + i)->poi_type_id;
+	    icon_index = (poi_list + i)->poi_type_id;
 	    icon = poi_type_list[icon_index].icon;
 
 	    if (icon != NULL && icon_index > 0)

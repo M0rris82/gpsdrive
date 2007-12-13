@@ -74,11 +74,6 @@ extern GdkGC *kontext_map;
 extern gint usesql;
 extern glong mapscale;
 
-#include "mysql/mysql.h"
-
-extern MYSQL mysql;
-extern MYSQL_RES *res;
-extern MYSQL_ROW row;
 extern gdouble alarm_dist;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;

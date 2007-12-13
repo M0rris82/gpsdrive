@@ -115,6 +115,7 @@ Disclaimer: Please do not use for navigation.
  */
 
 
+#include "config.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -125,7 +126,6 @@ Disclaimer: Please do not use for navigation.
 
 #include "gpsdrive.h"
 #include "import_map.h"
-#include "config.h"
 #include "gettext.h"
 #include "icons.h"
 #include "gui.h"

@@ -22,11 +22,11 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
+#include "config.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <config.h>
 #include "gpsdrive_config.h"
 #include <gpsdrive.h>
 #include <poi.h>
@@ -125,7 +125,7 @@ insert_text (GtkTextBuffer * buffer)
 {
 	GtkTextIter iter;
 	GtkTextIter start, end;
-	gchar *t1 =
+	const gchar *t1 =
 		_
 		("Left mouse button         : Set position (usefull in simulation mode)\n"
 		 "Right mouse button        : Set target directly on the map\n"
@@ -135,7 +135,7 @@ insert_text (GtkTextBuffer * buffer)
 		 "Control left mouse button : Set a waypoint (mouse position) on the map\n"
 		 "Control right mouse button: Set a waypoint at current position on the map\n\n");
 
-	gchar *t2 = _("j    : switch to next waypoint in route mode\n"
+	const gchar *t2 = _("j    : switch to next waypoint in route mode\n"
 		      "x    : add waypoint at current position\n"
 		      "y    : add waypoint at mouse cursor position\n"
 		      "n    : switch on light for 60sec in nightmode\n"
@@ -145,7 +145,7 @@ insert_text (GtkTextBuffer * buffer)
 		      "p    : Set Waypoint at current cursor position without asking\n"
 		      "r    : Add current cursor position to end of route\n"
 		      "+    : Zoom in \n" "-    : Zoom out\n");
-	gchar *t3 =
+	const gchar *t3 =
 		_("Press the underlined key together with the ALT-key.\n\n"
 		  "You can move on the map by selecting the Position-Mode"
 		  " in the menu. A blue rectangle shows this mode, you can set this cursor by clicking on the map."

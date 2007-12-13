@@ -27,6 +27,7 @@ Disclaimer: Please do not use for navigation.
  * wlan_ support module: display
  */
 
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +42,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "poi.h"
 #include "wlan.h"
-#include "config.h"
 #include "gettext.h"
 #include "icons.h"
 #include <gpsdrive_config.h>
@@ -72,7 +72,6 @@ extern GdkGC *kontext_map;
 
 char txt[5000];
 PangoLayout *wlan_label_layout;
-#include "mysql/mysql.h"
 
 extern MYSQL mysql;
 extern MYSQL_RES *res;
@@ -150,9 +149,10 @@ wlan_rebuild_list (void)
 {
   char sql_query[5000];
   char sql_where[5000];
-  struct timeval t;
+  GTimeVal t;
   int r, rges;
   time_t ti;
+  //int i;
 
   gdouble lat_ul, lon_ul;
   gdouble lat_ll, lon_ll;
@@ -161,6 +161,8 @@ wlan_rebuild_list (void)
   gdouble lat_min, lon_min;
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
+  gint wlan_posx, wlan_posy;
+  int icon_index = 19;
 
 
   if (!usesql)
@@ -205,8 +207,7 @@ wlan_rebuild_list (void)
   lat_mid = (lat_min + lat_max) / 2;
   lon_mid = (lon_min + lon_max) / 2;
 
-  gint wlan_posx, wlan_posy;
-  gettimeofday (&t, NULL);
+  g_get_current_time(&t);
   ti = t.tv_sec + t.tv_usec / 1000000.0;
 
   { // Limit the select with WHERE min_lat<lat<max_lat AND min_lon<lon<max_lon
@@ -221,7 +222,6 @@ wlan_rebuild_list (void)
 	printf ("wlan_rebuild_list: WLAN mysql where: %s\n", sql_where);
       }
   }
-
 
   g_snprintf (sql_query, sizeof (sql_query),
 	      "SELECT lat,lon,macaddr,essid,wep,nettype,cloaked FROM wlan "
@@ -250,8 +250,8 @@ wlan_rebuild_list (void)
   wlan_nr = 0;
   while ((row = dl_mysql_fetch_row (res)))
     {
-      rges++;
       gdouble lat, lon;
+      rges++;
 
       if (mydebug > 20)
 	fprintf (stderr, "WLAN Query Result: lat:%s\tlon:%s\t%s\t%s\t%s\t%s\t%s\n",
@@ -288,7 +288,6 @@ wlan_rebuild_list (void)
 		      sizeof ((wlan_list + wlan_nr)->name), "%s ( %s )"
 		      , row[2], row[3] );
 	  (wlan_list + wlan_nr)->nettype = (gint) g_strtod (row[5], NULL);
-	  int icon_index = 19;
 	  if ( (wlan_list + wlan_nr)->nettype == 0 )	icon_index = wlan_open;
 	  if ( (wlan_list + wlan_nr)->nettype == 1 )	icon_index = wlan_closed;
 	  if ( (wlan_list + wlan_nr)->nettype == 2 )	icon_index = wlan_wep;
@@ -311,7 +310,7 @@ wlan_rebuild_list (void)
   wlan_max = wlan_nr;
 
   // print time for getting Data
-  gettimeofday (&t, NULL);
+  g_get_current_time (&t);
   ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
   if (mydebug > 20)
     printf (_("%ld(%d) rows read in %.2f seconds\n"), wlan_max,

@@ -35,6 +35,7 @@ Disclaimer: Please do not use for navigation.
 #include <dlfcn.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <gmodule.h>
 
 #include <icons.h>
 #include <poi.h>
@@ -67,7 +68,7 @@ change this functions if you want to implement another database
 ******************************************************************/
 
 
-#include "mysql/mysql.h"
+//#include "mysql/mysql.h"
 
 MYSQL mysql;
 MYSQL_RES *res;
@@ -79,7 +80,6 @@ MYSQL_ROW row;
 void
 exiterr (int exitcode)
 {
-
   fprintf (stderr, "Error while using mysql\n");
   fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
   exit (exitcode);
@@ -166,7 +166,7 @@ sqlinit (void)
       (dl_mysql_real_connect
        (&mysql, dbhost, dbuser, dbpass, dbname, 0, NULL, 0)))
     {
-      fprintf (stderr, "%s\n", dl_mysql_error (&mysql));
+      fprintf (stderr, "SQL: %s\n", dl_mysql_error (&mysql));
       return FALSE;
     }
   /*   if ( mydebug > 50 ) */
@@ -338,7 +338,7 @@ insertsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
 	char q[9000];
 	gchar *tentry;
 	int r;
-
+	
 	/* escape ' */
 	tentry = escape_sql_string (field_entry);
 	
@@ -373,7 +373,7 @@ insertsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
 
 	if (mydebug > 50)
 		printf (_("last index: %d\n"), r);
-	return r;	
+	return r;
 }
 
 /* ******************************************************************
@@ -385,7 +385,7 @@ updatesqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
 	char q[9000];
 	gchar *tentry, *tfield;
 	int r;
-
+	
 	/* escape ' */
 	tfield = escape_sql_string (field_name);
 	tentry = escape_sql_string (field_entry);
@@ -400,7 +400,7 @@ updatesqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry)
 	if (mydebug > 50)
 		printf (_("rows updated: %d\n"), r);
 
-	return r;	
+	return r;
 }
 
 
@@ -508,156 +508,111 @@ getsqldata ()
 void
 sql_load_lib ()
 {
-  void *handle;
-  char *error;
+  GModule* module;
 
   usesql = TRUE;
-  // It seems like this doesn't work on cygwin unless the dlopen comes first..-jc
-  if (usesql)
-    {
-      handle = dlopen ("/usr/local/lib/libmysqlclient.dll", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.17", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.16", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.15", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.14", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.12", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/lib/mysql/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/mysql/lib/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/opt/mysql/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/sw/lib/libmysqlclient.dylib", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/libmysqlclient.so.12", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/mysql/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.12", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/lib/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/lib/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/lib/mysql/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen
-	  ("/usr/local/lib/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/mysql/libmysqlclient.so", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen ("/usr/local/mysql/libmysqlclient.so.10", RTLD_LAZY);
-      if (!handle)
-	handle = dlopen
-	  ("@PREFIX@/lib/mysql/libmysqlclient.10.dylib", RTLD_LAZY);
 
-      if (handle)
+	// It seems like this doesn't work on cygwin unless the g_module_open comes first..-jc
+	module = g_module_open("/usr/local/lib/libmysqlclient.dll", G_MODULE_BIND_LAZY);
+      if(!module)
+    // native Win32    
+    module = g_module_open("libmysql.dll", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.17", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.16", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.15", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.14", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.12", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/opt/lib/mysql/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/opt/lib/mysql/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/opt/mysql/lib/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/opt/mysql/lib/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/sw/lib/libmysqlclient.dylib", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/libmysqlclient.so.12", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/mysql/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/mysql/libmysqlclient.so.12", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/lib/mysql/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/lib/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/lib/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/lib/mysql/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/lib/mysql/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/mysql/libmysqlclient.so", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("/usr/local/mysql/libmysqlclient.so.10", G_MODULE_BIND_LAZY);
+      if(!module)
+	module = g_module_open("@PREFIX@/lib/mysql/libmysqlclient.10.dylib", G_MODULE_BIND_LAZY);
+
+      if (module)
 	{
-	  // Clear previous errors
-	  dlerror ();
-
-	  dl_mysql_error = dlsym (handle, "mysql_error");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-	  dl_mysql_init = dlsym (handle, "mysql_init");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_real_connect = dlsym (handle, "mysql_real_connect");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_close = dlsym (handle, "mysql_close");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_query = dlsym (handle, "mysql_query");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_affected_rows = dlsym (handle, "mysql_affected_rows");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_store_result = dlsym (handle, "mysql_store_result");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_fetch_row = dlsym (handle, "mysql_fetch_row");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_free_result = dlsym (handle, "mysql_free_result");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-
-
-	  dl_mysql_eof = dlsym (handle, "mysql_eof");
-	  if ((error = dlerror ()) != NULL)
-	    {
-	      fprintf (stderr, "%s\n", error);
-	      usesql = FALSE;
-	    }
-	}
-      else if ((error = dlerror ()) != NULL)
-	{
-	  fprintf (stderr, _("\nlibmysqlclient.so not found.\n"));
-	  usesql = FALSE;
-	}
-      /*       dlclose(handle); */
+    /* load function pointers from the module */
+    if(!g_module_symbol(module, "mysql_error", (gpointer *) &dl_mysql_error)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_init", (gpointer *) &dl_mysql_init)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_real_connect", (gpointer *) &dl_mysql_real_connect)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_close", (gpointer *) &dl_mysql_close)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_query", (gpointer *) &dl_mysql_query)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_affected_rows", (gpointer *) &dl_mysql_affected_rows)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_store_result", (gpointer *) &dl_mysql_store_result)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_fetch_row", (gpointer *) &dl_mysql_fetch_row)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_free_result", (gpointer *) &dl_mysql_free_result)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    if(!g_module_symbol(module, "mysql_eof", (gpointer *) &dl_mysql_eof)) {
+        fprintf(stderr, "%s\n", g_module_error());
+        usesql = FALSE;
+    }
+    } else {/* !module */
+        usesql = FALSE;
     }
   if (!usesql)
     fprintf (stderr, _("\nMySQL support disabled.\n"));

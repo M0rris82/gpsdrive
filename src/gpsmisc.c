@@ -23,6 +23,7 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
 
  */
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -479,9 +480,9 @@ coordinate_string2gdouble (const gchar * intext, gdouble * dec)
 void
 checkinput (gchar * text)
 {
+  gdouble dec;
   if (mydebug > 50)
     fprintf (stderr, "checkinput(%s)\n", text);
-  gdouble dec;
   coordinate_string2gdouble (text, &dec);
   g_snprintf (text, 20, "%.6f", dec);
   if (mydebug > 50)

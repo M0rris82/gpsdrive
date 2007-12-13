@@ -68,14 +68,15 @@ Disclaimer: Please do not use for navigation.
 #include <ctype.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <dirent.h>
 
 #include <dlfcn.h>
 #include <pthread.h>
 #include <semaphore.h>
 
 #include "gettext.h"
+#include "os_specific.h"
 
-#include <dirent.h>
 
 
 /*  Defines for gettext I18n */
@@ -115,7 +116,7 @@ extern currentstatus_struct current;
 
 char actualhostname[200];
 
-gint dlsock = -1;
+SOCKET_TYPE dlsock = -1;
 int expedia_de = 0;
 gint expedia = TRUE;
 GtkWidget *downloadwindow;
@@ -177,7 +178,6 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    close (dlsock);
 	    return (NULL);
 	}
 
@@ -209,7 +209,7 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    close (dlsock);
+	    socket_close (dlsock);
 	    return (NULL);
 	}
     memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
@@ -230,12 +230,12 @@ getexpediaurl (GtkWidget * widget)
 	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
 	    gtk_widget_destroy (downloadwindow);
 	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    close (dlsock);
+	    socket_close (dlsock);
 	    return (NULL);
 	}
 
-    if ( write (dlsock, writebuff, strlen (writebuff))<0){
-	close (dlsock);
+    if ( send (dlsock, writebuff, strlen (writebuff),0)<0){
+	socket_close (dlsock);
 	return (NULL);
     };
 
@@ -250,7 +250,7 @@ getexpediaurl (GtkWidget * widget)
 
     g_strlcpy (url, "Fehler!!!!", sizeof (url));
     memset (tmpbuff, 0, 8192);
-    if ((e = read (dlsock, tmpbuff, 8000)) < 0)
+    if ((e = recv (dlsock, tmpbuff, 8000, 0)) < 0)
 	perror (_("read from Webserver"));
     if ( mydebug > 3 )
 	g_print ("Loaded %d Bytes\n", e);
@@ -260,11 +260,11 @@ getexpediaurl (GtkWidget * widget)
 	{
 	    perror ("getexpediaurl");
 	    fprintf (stderr, "error while reading from exedia\n");
-	    close (dlsock);
+	    socket_close (dlsock);
 	    return (NULL);
 	    // exit (1);
 	}
-    close (dlsock);
+    socket_close (dlsock);
     return url;
 
 }
@@ -397,7 +397,7 @@ downloadstart_cb (GtkWidget * widget, guint datum)
 	    return (FALSE);
 	}
 
-    write (dlsock, writebuff, strlen (writebuff));
+    send (dlsock, writebuff, strlen (writebuff), 0);
     dlbuff = g_new0 (gchar, 8192);
     dlpstart = NULL;
     dldiff = dlcount = 0;
@@ -444,7 +444,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
     if (FD_ISSET (dlsock, &readmask))
 	{
 	    memset (tmpbuff, 0, 8192);
-	    if ((e = read (dlsock, tmpbuff, 8000)) < 0)
+	    if ((e = recv (dlsock, tmpbuff, 8000, 0)) < 0)
 		perror (_("read from Webserver"));
 	    if ( mydebug > 3 )
 		g_print ("Loaded %d Bytes\n", e);
@@ -517,7 +517,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 		    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
 		    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
 					str);
-		    close (dlsock);
+		    socket_close (dlsock);
 		    if (downloadfilelen != 0)
 			{
 			    gchar map_filename[1024];
@@ -539,21 +539,23 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    }
 
 			    // Create directory
-			    struct stat buf;
-			    gchar map_dir[1024];
-			    g_snprintf (map_dir, sizeof (map_dir), 
-					"%s%s",local_config.dir_maps,"expedia");
-			    if ( stat(map_dir,&buf) )
 				{
-				    printf("Try creating %s\n",map_dir);
-				    if ( mkdir (map_dir, 0700) )
+					struct stat buf;
+					gchar map_dir[1024];
+					g_snprintf (map_dir, sizeof (map_dir), 
+						"%s%s",local_config.dir_maps,"expedia");
+					if ( stat(map_dir,&buf) )
 					{
-					    printf("Error creating %s\n",map_dir);
+						printf("Try creating %s\n",map_dir);
+						if ( mkdir (map_dir, 0700) )
+						{
+							printf("Error creating %s\n",map_dir);
+						}
 					}
 				}
 			    
 			    fd = open (map_file_w_path,
-				       O_RDWR | O_TRUNC | O_CREAT, 0644);
+				       O_RDWR | O_TRUNC | O_CREAT | O_BINARY, 0644);
 			    if (fd < 1)
 				{
 				    perror (map_filename);
@@ -683,24 +685,37 @@ downloadsetparm (GtkWidget * widget, guint datum)
 			expedia_de = FALSE;
 		    }
 		
-		
+
+        {
+            /* localizing might use 48,0000 for floating point, */
+            /* expedia doesn't like this */
+            /* XXX - is there a better way to handle this? */
+            gchar new_dl_lat_str[50];
+            gchar new_dl_lon_str[50];
+
+            g_snprintf(new_dl_lat_str, sizeof(new_dl_lat_str), "%f", new_dl_lat);
+            g_strdelimit(new_dl_lat_str, ",", '.');
+            g_snprintf(new_dl_lon_str, sizeof(new_dl_lon_str), "%f", new_dl_lon);
+            g_strdelimit(new_dl_lon_str, ",", '.');
+
 		if (expedia_de)
 			g_snprintf (writebuff, sizeof (writebuff),
 				    "GET http://%s/pub/agent.dll?"
-				    "qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s"
+				    "qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s"
 				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
 				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
 				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER4, new_dl_lat, new_dl_lon, region, sctext,
+				    WEBSERVER4, new_dl_lat_str, new_dl_lon_str, region, sctext,
 				    hostname);
 		else
 			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%f,%f&Lang=%s&Alti=%s"
+				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s"
 				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
 				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
 				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER2, new_dl_lat, new_dl_lon, region, sctext,
+				    WEBSERVER2, new_dl_lat_str, new_dl_lon_str, region, sctext,
 				    hostname);
+        }
 	}
 
 	if ( mydebug > 0 )

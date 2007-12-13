@@ -23,6 +23,7 @@
  **********************************************************************
  */
 
+#include "config.h"
 #include <libintl.h>
 #include <locale.h>
 #include <sys/types.h>
@@ -33,8 +34,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gpsdrive.h>
-#include <config.h>
 #include "gpsdrive.h"
 #include "speech_out.h"
 #include "speech_strings.h"

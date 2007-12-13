@@ -44,6 +44,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     */
 
 #define _GNU_SOURCE
+#include "config.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -51,7 +52,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <math.h>
 #include <gpsdrive.h>
 #include <icons.h>
-#include <config.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -126,7 +126,6 @@ GtkWidget *mapnik_bt;
 
 
 	extern GtkAdjustment *adj_h, *adj_v;
-
 
 
 /****

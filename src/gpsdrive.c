@@ -75,7 +75,7 @@ Disclaimer: Please do not use for navigation.
 #include <ctype.h>
 #include <sys/time.h>
 #include <errno.h>
-#include <gpsdrive_config.h>
+#include "gpsdrive_config.h"
 /* #include <gpskismet.h> <-- prototypes are declared also in gpsproto.h */
 
 #include <dlfcn.h>
@@ -156,9 +156,11 @@ GdkGC *kontext_map;
 extern GtkWidget *drawing_minimap;
 
 // TODO: should be moved away...
-extern GtkWidget *drawing_gps, *drawing_compass;
+GtkWidget *drawing_gps; // XXX - this seems to be initialized nowhere!
+extern GtkWidget  *drawing_compass;
 extern GdkGC *kontext_compass, *kontext_gps, *kontext_minimap;
-extern GdkDrawable *drawable_compass, *drawable_gps, *drawable_minimap;
+extern GdkDrawable *drawable_compass, *drawable_minimap;
+GdkDrawable *drawable_gps;
 
 GtkWidget *miles;
 GdkDrawable *drawable;
@@ -378,7 +380,6 @@ int timerto = 0;
 GtkTextBuffer *getmessagebuffer;
 
 int newdata = FALSE;
-extern pthread_mutex_t mutex;
 //int mapistopo = FALSE;
 int nosplash = FALSE;
 int havedefaultmap = TRUE;
@@ -388,7 +389,6 @@ int egnoson = 0, egnosoff = 0;
 
 // ---------------------- for nmea_handler.c
 extern gint haveRMCsentence;
-extern gchar nmeamodeandport[50];
 extern gdouble NMEAsecs;
 extern gint NMEAoldsecs;
 extern FILE *nmeaout;
@@ -429,11 +429,21 @@ gboolean takescreenshots = FALSE;
 void check_and_create_files(){
     gchar file_path[2048];
     struct stat buf;
+#ifdef _WIN32
+    char *last_slash;
+#endif
 
     if ( mydebug >5 ) fprintf(stderr , " check_and_create_files()\n");
 
     // Create .gpsdrive dir if not exist
     g_snprintf (file_path, sizeof (file_path),"%s",local_config.dir_home);
+#ifdef _WIN32
+    /* strip off trailing slash, stat on Win32 don't like it */
+    last_slash = strrchr(file_path, '/');
+    if(last_slash) {
+        *last_slash = 0;
+    }
+#endif
     if(stat(file_path,&buf))
 	{
 	    if ( mkdir (file_path, 0700) )
@@ -446,6 +456,13 @@ void check_and_create_files(){
 
     // Create maps/ Directory if not exist
     g_strlcpy (file_path, local_config.dir_maps, sizeof (file_path)); 
+#ifdef _WIN32
+    /* strip off trailing slash, stat on Win32 don't like it */
+    last_slash = strrchr(file_path, '/');
+    if(last_slash) {
+        *last_slash = 0;
+    }
+#endif
     if(stat(file_path,&buf))
 	{
 	    if ( mkdir (file_path, 0700) )
@@ -491,7 +508,10 @@ void check_and_create_files(){
 		    "cp %s/gpsdrive/map_koord.txt %s",
 		    (gchar *) DATADIR,
 		    file_path);
-	if ( system (copy_command))
+#ifdef _WIN32
+    printf("Win32 port: Creation of map_koord.txt ommited for now!\n");
+#else
+    if ( system (copy_command))
 	    {
 		fprintf(stderr,"Error Creating %s\nwith command: '%s'\n",
 			file_path,copy_command);
@@ -499,7 +519,8 @@ void check_and_create_files(){
 	    }
 	else 
 	    fprintf(stderr,"Created map_koord.txt %s\n",file_path);
-    };
+#endif
+    }
 
 
 }
@@ -648,8 +669,7 @@ display_status2 ()
 gint
 drawmarker_cb (GtkWidget * widget, guint * datum)
 {
-	static struct timeval tv1, tv2;
-	struct timezone tz;
+	static GTimeVal tv1, tv2;
 	long runtime, runtime2;
 
 	if ( mydebug >50 ) fprintf(stderr , "drawmacker_cb()\n");
@@ -675,7 +695,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	}
 
 
-	gettimeofday (&tv1, &tz);
+	g_get_current_time(&tv1);
 	runtime2 = tv1.tv_usec - tv2.tv_usec;
 	if (tv1.tv_sec != tv2.tv_sec)
 		runtime2 += 1000000l * (tv1.tv_sec - tv2.tv_sec);
@@ -704,7 +724,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	gtk_widget_queue_draw_area (drawing_compass, 0,0,100,100);
 	//expose_compass (NULL, 0);
 
-	gettimeofday (&tv2, &tz);
+	g_get_current_time(&tv2);
 	runtime = tv2.tv_usec - tv1.tv_usec;
 	if (tv2.tv_sec != tv1.tv_sec)
 		runtime += 1000000l * (tv2.tv_sec - tv1.tv_sec);
@@ -769,7 +789,9 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 gint
 masteragent_cb (GtkWidget * widget, guint * datum)
 {
+#ifndef _WIN32
 	gchar buffer[200];
+#endif
 
 	if ( mydebug >50 ) fprintf(stderr , "masteragent_cb()\n");
 
@@ -786,6 +808,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	testifnight ();
 
 
+#ifndef _WIN32
 	if (!didrootcheck)
 		if (getuid () == 0)
 		{
@@ -797,6 +820,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 			popup_warning (NULL, buffer);
 			didrootcheck = TRUE;
 		}
+#endif
 
 	/* Check for changed way.txt and reload if changed */
 	check_and_reload_way_txt();
@@ -1248,6 +1272,9 @@ draw_scalebar (void)
 	gdouble conversion;
 	gint l;
 	// gint text_length_pixel;
+	PangoLayout *scalebar_layout;
+	PangoFontDescription *pfd_scalebar;
+
 
 	/*
 	 * We want a bar with at least (min_bar_length) pixles in
@@ -1331,9 +1358,6 @@ draw_scalebar (void)
 	gdk_gc_set_foreground (kontext_map, &colors.black);
 
 	/* Print the meaning of the scale bar ("10 km") */
-	PangoLayout *scalebar_layout;
-	PangoFontDescription *pfd_scalebar;
-
 	if (local_config.guimode == GUI_PDA)
 		pfd_scalebar = pango_font_description_from_string ("Sans 8");
 	else
@@ -1373,6 +1397,9 @@ void
 draw_zoomlevel (void)
 {
 	gchar zoom_scale_txt[5];
+	PangoFontDescription *pfd;
+	PangoLayout *layout_zoom;
+	gint cx, cy;
 
 	/* draw zoom factor */
 	g_snprintf (zoom_scale_txt, sizeof (zoom_scale_txt),
@@ -1385,9 +1412,6 @@ draw_zoomlevel (void)
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
 
 	/* prints in pango */
-	PangoFontDescription *pfd;
-	PangoLayout *layout_zoom;
-	gint cx, cy;
 	layout_zoom = gtk_widget_create_pango_layout
 		(map_drawingarea, zoom_scale_txt);
 	pfd = pango_font_description_from_string ("Sans 9");
@@ -1967,6 +1991,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 			 * little map_x x map_y region in relation to the real 1280x1024 map 
 			 */
 			okcount = 0;
+            //printf("X %d Y %d X2 %d Y2 %d\n", SCREEN_X, SCREEN_Y, SCREEN_X_2, SCREEN_Y_2);
 			do
 			    {
 				ok = TRUE;
@@ -2797,6 +2822,7 @@ parse_cmd_args(int argc, char *argv[]) {
 	int i = 0;
     /* parse cmd args */
     /* long options for use of --geometry and -g */
+#ifndef _WIN32
      int option_index = 0;
      static struct option long_options[] =
              {
@@ -2811,6 +2837,14 @@ parse_cmd_args(int argc, char *argv[]) {
             i = getopt_long (argc, argv,
 			"W:ES:A:ab:c:X1qivPdD:TFepC:H:hnf:l:t:so:g:M:?",
 			long_options, &option_index);
+#else
+	do
+	{
+			/* XXX - find a better way, e.g. use glib function */
+  			extern char *optarg;
+            i = getopt (argc, argv,
+			"W:ESA:ab:c:X1qivPdD:TFepC:H:hnf:l:t:s:o:r:g:M:?");
+#endif
 	    switch (i)
 		{
 	    case 'C':
@@ -2947,7 +2981,6 @@ parse_cmd_args(int argc, char *argv[]) {
     return 0;
 }
 
-
 /*******************************************************************************
  *                                                                             *
  *                             Main program                                    *
@@ -2957,13 +2990,7 @@ int
 main (int argc, char *argv[])
 {
 
-    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "utf8");
-    textdomain (GETTEXT_PACKAGE);
-
     gchar buf[500];
-
-    current.needtosave = FALSE;
 
     gint i;
 
@@ -2972,6 +2999,13 @@ main (int argc, char *argv[])
     /*   GtkAccelGroup *accel_group; */
 
     gdouble f;
+
+    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (PACKAGE, "utf8");
+    textdomain (GETTEXT_PACKAGE);
+
+
+    current.needtosave = FALSE;
 
     tzset ();
     gmt_time = time (NULL);
@@ -3012,7 +3046,17 @@ main (int argc, char *argv[])
     useDBUS = FALSE;
 #endif
 
+#ifdef _WIN32
+    {
+		/* init Winsock */
+        WSADATA 	       wsaData;
+        WSAStartup( MAKEWORD( 1, 1 ), &wsaData );
+    }
+#else
     signal (SIGUSR2, usr2handler);
+#endif
+
+
     timer = g_timer_new ();
     disttimer = g_timer_new ();
     g_timer_start (timer);
@@ -3020,7 +3064,8 @@ main (int argc, char *argv[])
     memset (satlist, 0, sizeof (satlist));
     memset (satlistdisp, 0, sizeof (satlist));
     buffer = g_new (char, 2010);
-    big = g_new (char, MAXBIG + 10);
+    big = g_new0 (char, MAXBIG + 10);
+    //big[0] = 0;
     
     timeoutcount = lastp = bigp = bigpRME = bigpGSA = bigpGSV = bigpGGA = 0;
     lastp = lastpGGA = lastpGSV = lastpRME = lastpGSA = 0;
@@ -3059,7 +3104,9 @@ main (int argc, char *argv[])
     g_strlcpy (setpositionname, "", sizeof (setpositionname));
 
     /* setup signal handler */
+#ifndef _WIN32
     signal (SIGUSR1, signalposreq);
+#endif
 
     sql_load_lib();
     /*  I18l */
@@ -3070,8 +3117,10 @@ main (int argc, char *argv[])
 	gchar *localestring;
 
 	localestring = setlocale (LC_ALL, "");
+#ifndef _WIN32
 	if (localestring == NULL)
 	    localestring = setlocale (LC_MESSAGES, "");
+#endif
 	if (localestring != NULL)
 	    {
 		lstr = g_strsplit (localestring, ";", 50);
@@ -3211,7 +3260,7 @@ main (int argc, char *argv[])
 	{
 		for (i = 0; i < maxwp; i++)
 		{
-			if (!(strcasecmp ((wayp + i)->name, setpositionname)))
+			if (!(g_strcasecmp ((wayp + i)->name, setpositionname)))
 			{
 				coords.current_lat = (wayp + i)->lat;
 				coords.current_lon = (wayp + i)->lon;
@@ -3326,12 +3375,29 @@ main (int argc, char *argv[])
      * setup TERM signal handler so that we can save evrything nicely when the
      * machine is shutdown.
      */
+#ifndef _WIN32
     void termhandler (int sig)
 	{
 	    gtk_main_quit ();
 	}
     signal (SIGTERM, termhandler);
+#endif
 
+
+    /* gtk2 requires these functions in the order below do not change */
+#ifdef _WIN32
+    if (usegeometry) {
+	GdkGeometry size_hints = {200, 200, 0, 0, 200, 200, 10, 10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST};
+
+	gtk_window_set_geometry_hints(GTK_WINDOW (main_window), main_window, &size_hints,
+                                  GDK_HINT_MIN_SIZE |
+                                  GDK_HINT_BASE_SIZE |
+                                  GDK_HINT_RESIZE_INC);
+
+	if (!gtk_window_parse_geometry(GTK_WINDOW (main_window), geometry)) {
+	    fprintf(stderr, "Failed to parse %s\n", geometry);
+	}
+#endif
 
     // Initialize Track Filename
     savetrackfile (0);
@@ -3340,9 +3406,11 @@ main (int argc, char *argv[])
 
     // ==================================================================
     // Unit Tests
+#ifndef _WIN32
     if ( do_unit_test ) {
 	unit_test();
     }
+#endif
 
     if (takescreenshots) {
     	auto_take_screenshots();

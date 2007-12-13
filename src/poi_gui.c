@@ -32,13 +32,13 @@ Disclaimer: Please do not use for navigation.
 
 
 #define _GNU_SOURCE
+#include "config.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <gpsdrive.h>
 #include <icons.h>
-#include <config.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <sys/stat.h>

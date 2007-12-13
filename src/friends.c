@@ -56,6 +56,7 @@
 #include "gui.h"
 #include "poi.h"
 #include "main_gui.h"
+#include "os_specific.h"
 
 #define	SERV_UDP_PORT	50123
 /*  Defines for gettext I18n */
@@ -91,35 +92,14 @@ extern GdkGC *kontext_map;
 /*
  * conn.c
  */
-int sockfd = -1;
+SOCKET_TYPE sockfd = -1;
 int pleasepollme = 0;
 extern GtkItemFactory *item_factory;
 extern int debug, statuslock;
 extern GtkWidget *frame_statusbar;
-extern int errno;
 extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
 #define MAXLINE 512
-
-void
-setnonblocking (int sock)
-{
-  int opts;
-
-  opts = fcntl (sock, F_GETFL);
-  if (opts < 0)
-    {
-      perror ("fcntl(F_GETFL)");
-      exit (EXIT_FAILURE);
-    }
-  opts = (opts | O_NONBLOCK);
-  if (fcntl (sock, F_SETFL, opts) < 0)
-    {
-      perror ("fcntl(F_SETFL)");
-      exit (EXIT_FAILURE);
-    }
-  return;
-}
 
 
 /* ****************************************************************************
@@ -307,7 +287,7 @@ friends_sendmsg (char *serverip, char *message)
   if (message != NULL)
     if (sockfd == -1)
       {
-	bzero ((char *) &serv_addr, sizeof (serv_addr));
+	memset(&serv_addr, 0, sizeof (serv_addr));
 	serv_addr.sin_family = AF_INET;
 
 	serv_addr.sin_addr.s_addr = inet_addr (serverip);
@@ -319,10 +299,10 @@ friends_sendmsg (char *serverip, char *message)
 	    perror ("friendsclient local socket");
 	    return (1);
 	  }
-	setnonblocking (sockfd);
+	socket_nonblocking (sockfd);
 
 	servlen = sizeof (serv_addr);
-	bzero ((char *) &cli_addr, sizeof (cli_addr));
+	memset(&cli_addr, 0, sizeof (cli_addr));
 
 	cli_addr.sin_family = AF_INET;
 	cli_addr.sin_addr.s_addr = htons (INADDR_ANY);
@@ -363,7 +343,7 @@ friends_sendmsg (char *serverip, char *message)
       if (n < 0)
 	{
 	  i++;
-	  usleep (100000);
+	  g_usleep (100000);
 	  fprintf (stderr, "errno %d:", errno);
 	  perror ("recv");
 	}

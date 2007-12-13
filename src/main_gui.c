@@ -33,6 +33,7 @@ Disclaimer: Please do not use for navigation.
 
 
 #define _GNU_SOURCE
+#include "config.h"
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -1302,9 +1303,10 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	if ( ( (toupper (event->keyval)) == '?' )
 	     || ( (toupper (event->keyval)) == 'Q') )
 	{
-	    gdk_window_get_pointer (map_drawingarea->window, &x, &y, &state);
 	    gdouble lat1,lon1,lat2,lon2;
 	    gint delta = 10;
+		
+	    gdk_window_get_pointer (map_drawingarea->window, &x, &y, &state);
 	    calcxytopos (x-delta, y-delta, &lat1, &lon1, current.zoom);
 	    calcxytopos (x+delta, y+delta, &lat2, &lon2, current.zoom);
 	    printf ("---------------------------------------------\n");
@@ -1316,12 +1318,14 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		wlan_query_area (min(lat1,lat2),
 			min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
 
-	    gdouble lat,lon;
-	    calcxytopos (x, y, &lat, &lon, current.zoom);
-	    gdouble dist=lat2-lat1;
-	    dist = dist>0?dist:-dist;
-//	    if ( streets_draw )
-//		streets_query_point ( lat,lon, dist );
+		{
+			gdouble lat,lon;
+			gdouble dist=lat2-lat1;
+			calcxytopos (x, y, &lat, &lon, current.zoom);
+			dist = dist>0?dist:-dist;
+	//	    if ( streets_draw )
+	//		streets_query_point ( lat,lon, dist );
+		}
 	}
 
 
@@ -2371,6 +2375,12 @@ gint create_main_window (void)
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
+
+    //gdk_window_fullscreen(main_window->window);
+    //gdk_window_maximize(main_window->window);
+
+    // let the window manager show stuff before we continue
+    while (gtk_events_pending()) gtk_main_iteration();
 
 	return 0;
 }

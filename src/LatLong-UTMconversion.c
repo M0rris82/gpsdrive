@@ -4,6 +4,7 @@
 // converted to C code by Russell Harding Jan, 2004  -- hardingr at cunap dot com
 
 
+#include "config.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

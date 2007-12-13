@@ -23,6 +23,7 @@ Disclaimer: Please do not use for navigation.
     *********************************************************************
  */
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -32,7 +33,6 @@ Disclaimer: Please do not use for navigation.
 #include <stdlib.h>
 #include <string.h>
 #include <gpsdrive.h>
-#include <config.h>
 #include <math.h>
 
 
@@ -130,11 +130,11 @@ distance_line_point(gdouble x1, gdouble y1, gdouble x2, gdouble y2,
 
     gdouble lambda = -(dx1p*dx21 + dy1p*dy21) / frac;
     //if ( mydebug > 10 ) printf ("distance_line_point(): lambda_1: %g\n",lambda);
-    lambda = min(max(lambda,0.0),1.0);
+    gdouble lambda2 = min(max(lambda,0.0),1.0);
    
     //if ( mydebug > 10 ) printf ("distance_line_point(): lambda: %g\n",lambda);
 
-    gdouble xsep = dx1p + lambda*dx21;
-    gdouble ysep = dy1p + lambda*dy21;
+    gdouble xsep = dx1p + lambda2*dx21;
+    gdouble ysep = dy1p + lambda2*dy21;
     return sqrt(xsep*xsep + ysep*ysep);
 }

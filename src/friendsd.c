@@ -474,26 +474,6 @@ ignore_pipe (void)
 	sigaction (SIGPIPE, &sig, NULL);
 }
 
-void
-setnonblocking (int sock)
-{
-	int opts;
-
-	opts = fcntl (sock, F_GETFL);
-	if (opts < 0)
-	{
-		perror ("fcntl(F_GETFL)");
-		exit (EXIT_FAILURE);
-	}
-	opts = (opts | O_NONBLOCK);
-	if (fcntl (sock, F_SETFL, opts) < 0)
-	{
-		perror ("fcntl(F_SETFL)");
-		exit (EXIT_FAILURE);
-	}
-	return;
-}
-
 int
 friends_init ()
 {
