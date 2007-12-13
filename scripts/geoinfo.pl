@@ -25,9 +25,13 @@ BEGIN {
     unshift(@INC,"./scripts/osm/perl_lib");
     unshift(@INC,"../scripts/osm/perl_lib");
 
-    # For DSL
+    # For Windows
+    unshift(@INC,"/cygdrive/c/Dokumente und Einstellungen/ulfl/Eigene Dateien/svn.gpsdrive.cc/scripts/osm/perl_lib");
+
+    # For DSL (Damned Small Linux)
     unshift(@INC,"/opt/gpsdrive/share/perl5");
-    unshift(@INC,"/opt/gpsdrive"); # For DSL
+    unshift(@INC,"/opt/gpsdrive");
+
 };
 
 use strict;
@@ -45,7 +49,7 @@ use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 
-use Utils::Debug;
+#use Utils::Debug;
 
 use Geo::Gpsdrive::DBFuncs;
 use Geo::Gpsdrive::Utils;
