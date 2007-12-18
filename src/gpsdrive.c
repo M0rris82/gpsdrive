@@ -1390,6 +1390,8 @@ drawmarker (GtkWidget * widget, guint * datum)
 	{
 	    poi_draw_list (FALSE);
 	    wlan_draw_list ();
+	    if (route.active)
+		route_display_targetinfo ();
 	}
 
 	if (local_config.showwaypoints)
@@ -1553,9 +1555,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	/* display messages on map */
 	display_dsc ();
-
-	if (route.active)
-		route_display_targetinfo ();
 
 	// TODO: move all status updates to the update function...
 	update_statusdisplay ();
