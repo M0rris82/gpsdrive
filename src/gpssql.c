@@ -571,43 +571,43 @@ sql_load_lib ()
       if (module)
 	{
     /* load function pointers from the module */
-    if(!g_module_symbol(module, "mysql_error", (gpointer *) &dl_mysql_error)) {
+    if(!g_module_symbol(module, "mysql_error", (gpointer) &dl_mysql_error)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_init", (gpointer *) &dl_mysql_init)) {
+    if(!g_module_symbol(module, "mysql_init", (gpointer) &dl_mysql_init)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_real_connect", (gpointer *) &dl_mysql_real_connect)) {
+    if(!g_module_symbol(module, "mysql_real_connect", (gpointer) &dl_mysql_real_connect)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_close", (gpointer *) &dl_mysql_close)) {
+    if(!g_module_symbol(module, "mysql_close", (gpointer) &dl_mysql_close)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_query", (gpointer *) &dl_mysql_query)) {
+    if(!g_module_symbol(module, "mysql_query", (gpointer) &dl_mysql_query)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_affected_rows", (gpointer *) &dl_mysql_affected_rows)) {
+    if(!g_module_symbol(module, "mysql_affected_rows", (gpointer) &dl_mysql_affected_rows)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_store_result", (gpointer *) &dl_mysql_store_result)) {
+    if(!g_module_symbol(module, "mysql_store_result", (gpointer) &dl_mysql_store_result)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_fetch_row", (gpointer *) &dl_mysql_fetch_row)) {
+    if(!g_module_symbol(module, "mysql_fetch_row", (gpointer) &dl_mysql_fetch_row)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_free_result", (gpointer *) &dl_mysql_free_result)) {
+    if(!g_module_symbol(module, "mysql_free_result", (gpointer) &dl_mysql_free_result)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }
-    if(!g_module_symbol(module, "mysql_eof", (gpointer *) &dl_mysql_eof)) {
+    if(!g_module_symbol(module, "mysql_eof", (gpointer) &dl_mysql_eof)) {
         fprintf(stderr, "%s\n", g_module_error());
         usesql = FALSE;
     }

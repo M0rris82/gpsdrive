@@ -228,7 +228,6 @@ extern gchar savetrackfn[256];
 
 extern GdkGC *kontext;
 extern GdkDrawable *drawable;
-extern GtkWidget *track_bt;
 
 
 gint line_crosses_rectangle(gdouble li_lat1, gdouble li_lon1, gdouble li_lat2, gdouble li_lon2,

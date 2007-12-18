@@ -70,6 +70,7 @@ void friendssetup (void);
 char *getexpediaurl ();
 gint quit_program_cb (GtkWidget * widget, gpointer datum);
 gint loadtrack_cb (GtkWidget * widget, gpointer datum);
+gint storetrack_cb (GtkWidget * widget, guint * datum);
 gint about_cb (GtkWidget * widget, guint datum);
 gint settings_main_cb (GtkWidget *widget, guint datum);
 gint sel_message_cb (GtkWidget * widget, guint datum);

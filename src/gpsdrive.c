@@ -259,7 +259,6 @@ GtkWidget *label_timedest;
 GtkWidget *wp_bt;
 GtkWidget *bestmap_bt, *poi_draw_bt, *wlan_draw_bt;
 
-GtkWidget *track_bt;
 GtkWidget *savetrack_bt;
 GtkWidget *loadtrack_bt;
 GdkSegment *track, *trackshadow;
@@ -847,100 +846,6 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- * add new trackpoint to  'trackcoordstruct list' to draw track on image 
- */
-gint
-storetrack_cb (GtkWidget * widget, guint * datum)
-{
-    if ( mydebug >50 ) 
-	fprintf(stderr , "storetrack_cb()\n");
-
-    if (gui_status.posmode) 
-	return TRUE;
-	
-#ifdef DBUS_ENABLE
-	/* If we use DBUS track points are usually stored by the DBUS signal handler */
-	/* Only store them by timer if we are in position mode */
-	if ( useDBUS && !current.simmode )
-	    return TRUE;
-#endif
-
-	storepoint();
-
-	return TRUE;
-}
-
-void
-storepoint ()
-{
-	gint so;
-	gchar buf3[35];
-	time_t t;
-	struct tm *ts;
-	/*    g_print("Havepos: %d\n", current.gpsfix); */
-	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
-	{
-		(trackcoord + trackcoordnr)->lon = 1001.0;
-		(trackcoord + trackcoordnr)->lat = 1001.0;
-		(trackcoord + trackcoordnr)->alt = 1001.0;
-	}
-	else
-	{
-		(trackcoord + trackcoordnr)->lon = coords.current_lon;
-		(trackcoord + trackcoordnr)->lat = coords.current_lat;
-		(trackcoord + trackcoordnr)->alt = current.altitude;
-		if (local_config.savetrack) do_incremental_save();
-	}
-
-
-	/*  The double storage seems to be silly, but I have to use  */
-	/*  gdk_draw_segments instead of gdk_draw_lines.   */
-	/*  gkd_draw_lines is dog slow because of a gdk-bug. */
-
-	if (tracknr == 0)
-	{
-		if ((trackcoord + trackcoordnr)->lon < 1000.0)
-		{
-			(track + tracknr)->x1 = current.pos_x;
-			(track + tracknr)->y1 = current.pos_y;
-			(trackshadow + tracknr)->x1 = current.pos_x + SHADOWOFFSET;
-			(trackshadow + tracknr)->y1 = current.pos_y + SHADOWOFFSET;
-			tracknr++;
-		}
-	}
-	else
-	{
-		if ((trackcoord + trackcoordnr)->lon < 1000.0)
-		{
-			if ((current.pos_x != (track + tracknr - 1)->x2)
-			    || (current.pos_y != (track + tracknr - 1)->y2))
-			{
-				/* so=(int)(((trackcoord + trackcoordnr)->alt))>>5; */
-				so = SHADOWOFFSET;
-				(track + tracknr)->x1 =
-					(track + tracknr - 1)->x2 = current.pos_x;
-				(track + tracknr)->y1 =
-					(track + tracknr - 1)->y2 = current.pos_y;
-				(trackshadow + tracknr)->x1 =
-					(trackshadow + tracknr - 1)->x2 =
-					current.pos_x + so;
-				(trackshadow + tracknr)->y1 =
-					(trackshadow + tracknr - 1)->y2 =
-					current.pos_y + so;
-				tracknr += 1;
-			}
-		}
-		else
-			tracknr = tracknr & ((glong) - 2);
-	}
-	time (&t);
-	ts = localtime (&t);
-	strncpy (buf3, asctime (ts), 32);
-	buf3[strlen (buf3) - 1] = '\0';	/* get rid of \n */
-	g_strlcpy ((trackcoord + trackcoordnr)->postime, buf3, 30);
-	trackcoordnr++;
-}
 
 /* *****************************************************************************
  * show satelite information
@@ -2762,47 +2667,6 @@ usage ()
 
 }
 
-/* *****************************************************************************
- * Load track file and displays it 
- */
-gint
-loadtrack_cb (GtkWidget * widget, gpointer datum)
-{
-	GtkWidget *fdialog;
-	gchar buf[1000];
-	GtkWidget *ok_button;
-	GtkWidget *cancel_button;
-	
-	fdialog = gtk_file_chooser_dialog_new (_("Select a track file"),
-				GTK_WINDOW (main_window),
-				GTK_FILE_CHOOSER_ACTION_OPEN,
-				NULL, NULL);
-	
-	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
-	
-	cancel_button = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-	ok_button = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
-		
-	gtk_signal_connect (GTK_OBJECT
-			    (ok_button),
-			    "clicked", GTK_SIGNAL_FUNC (gettrackfile),
-			    GTK_OBJECT (fdialog));
-	gtk_signal_connect_object (GTK_OBJECT
-				   (cancel_button), "clicked",
-				   GTK_SIGNAL_FUNC (gtk_widget_destroy),
-				   GTK_OBJECT (fdialog));
-
-
-	g_strlcpy (buf, local_config.dir_home, sizeof (buf));
-	g_strlcat (buf, "tracks/", sizeof (buf));          
-	g_strlcat (buf, "track*.sav", sizeof (buf));
-
-	gtk_file_chooser_select_filename (GTK_FILE_CHOOSER (fdialog), buf);
-
-	gtk_widget_show (fdialog);
-
-	return TRUE;
-}
 
 /* *****************************************************************************
  * on a USR2 signal, re-start the GPS connection  

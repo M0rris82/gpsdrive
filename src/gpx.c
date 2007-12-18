@@ -237,6 +237,11 @@ static void gpx_handle_gpxinfo (xmlTextReaderPtr xml_reader, xmlChar *node_name)
  * the possible nodes in all these sections are the same.
  * gpx_mode chooses, where the information will be stored.
  *
+ * Nodes that are used:
+ *  Route:	name, cmt, sym, type
+ *  Track:	
+ *  Waypoint:	
+ *
  * Nodes that are (currently) NOT parsed:
  *  ele, time, magvar, geoidheight, desc, src, url, urlname, fix,
  *  sat, hdop, vdop, pdop, ageofdgpsdata, dgpsid, course, speed,
@@ -296,7 +301,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		}
 	}
 
-	if (mydebug > 30)
+	//if (mydebug > 30)
 	{
 		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, wpt.lat, wpt.lon);
 		fprintf (stderr, "\tName   : %s\n", wpt.name);
@@ -304,10 +309,20 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tType   : %s\n", wpt.type);
 	}
 
-	add_arbitrary_point_to_route
-		((gchar*)wpt.name, (gchar*)wpt.cmt, (gchar*)wpt.type, wpt.lat, wpt.lon);
+	if (g_ascii_strcasecmp (mode_string, "wpt") == 0)
+	{
+	
+	}
+	else if (g_ascii_strcasecmp (mode_string, "rtept") == 0)
+	{
+		add_arbitrary_point_to_route
+			((gchar*)wpt.name, (gchar*)wpt.cmt, (gchar*)wpt.type, wpt.lat, wpt.lon);
+	}
 
-
+	else if (g_ascii_strcasecmp (mode_string, "trkpt") == 0)
+	{
+	
+	}
 
 	if (node_name)
 		xmlFree (node_name);
@@ -355,7 +370,11 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_s
 			if (xmlStrEqual(node_name, BAD_CAST "trkpt"))
 				gpx_handle_point (xml_reader, "trkpt");
 			else if (xmlStrEqual(node_name, BAD_CAST "trkseg"))
+			{
 				gpx_handle_rte_trk (xml_reader, "trkseg");
+				//TODO:
+				// add segment separator point to track
+			}	
 			else if (xmlStrEqual(node_name, BAD_CAST "name"))
 			{
 				xml_status = xmlTextReaderRead(xml_reader);
@@ -392,10 +411,6 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_s
 				t_number = xmlTextReaderValue(xml_reader);
 			}
 		}
-
-
-		// TODO: do something with the fetched data...
-
 	}
 	
 	if (node_name)

@@ -62,8 +62,144 @@ extern currentstatus_struct current;
 extern coordinate_struct coords;
 extern GdkGC *kontext_map;
 extern gdouble milesconv;
+extern GtkWidget *main_window;
 
 tripdata_struct trip;
+
+
+/* *****************************************************************************
+ * Load track file and displays it 
+ */
+gint
+loadtrack_cb (GtkWidget * widget, gpointer datum)
+{
+	GtkWidget *fdialog;
+	gchar buf[1000];
+	GtkWidget *ok_bt;
+	GtkWidget *cancel_bt;
+
+	fdialog = gtk_file_chooser_dialog_new (_("Select a track file"),
+		GTK_WINDOW (main_window), GTK_FILE_CHOOSER_ACTION_OPEN,
+		NULL, NULL);
+
+	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
+	
+	cancel_bt = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	ok_bt = gtk_dialog_add_button (GTK_DIALOG (fdialog), GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT);
+
+	g_signal_connect (GTK_OBJECT (ok_bt), "clicked",
+		G_CALLBACK (gettrackfile), GTK_OBJECT (fdialog));
+	g_signal_connect_swapped (GTK_OBJECT (cancel_bt), "clicked",
+		G_CALLBACK (gtk_widget_destroy), GTK_OBJECT (fdialog));
+
+	g_strlcpy (buf, local_config.dir_home, sizeof (buf));
+	g_strlcat (buf, "tracks/", sizeof (buf));          
+	g_strlcat (buf, "track*.sav", sizeof (buf));
+
+	gtk_file_chooser_select_filename (GTK_FILE_CHOOSER (fdialog), buf);
+
+	gtk_widget_show (fdialog);
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * add new trackpoint to  'trackcoordstruct list' to draw track on image 
+ */
+gint
+storetrack_cb (GtkWidget * widget, guint * datum)
+{
+    if ( mydebug >50 ) 
+	fprintf(stderr , "storetrack_cb()\n");
+
+    if (gui_status.posmode) 
+	return TRUE;
+	
+#ifdef DBUS_ENABLE
+	/* If we use DBUS track points are usually stored by the DBUS signal handler */
+	/* Only store them by timer if we are in position mode */
+	if ( useDBUS && !current.simmode )
+	    return TRUE;
+#endif
+
+	storepoint();
+
+	return TRUE;
+}
+
+
+void
+storepoint ()
+{
+	gint so;
+	gchar buf3[35];
+	time_t t;
+	struct tm *ts;
+	/*    g_print("Havepos: %d\n", current.gpsfix); */
+	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
+	{
+		(trackcoord + trackcoordnr)->lon = 1001.0;
+		(trackcoord + trackcoordnr)->lat = 1001.0;
+		(trackcoord + trackcoordnr)->alt = 1001.0;
+	}
+	else
+	{
+		(trackcoord + trackcoordnr)->lon = coords.current_lon;
+		(trackcoord + trackcoordnr)->lat = coords.current_lat;
+		(trackcoord + trackcoordnr)->alt = current.altitude;
+		if (local_config.savetrack) do_incremental_save();
+	}
+
+
+	/*  The double storage seems to be silly, but I have to use  */
+	/*  gdk_draw_segments instead of gdk_draw_lines.   */
+	/*  gkd_draw_lines is dog slow because of a gdk-bug. */
+
+	if (tracknr == 0)
+	{
+		if ((trackcoord + trackcoordnr)->lon < 1000.0)
+		{
+			(track + tracknr)->x1 = current.pos_x;
+			(track + tracknr)->y1 = current.pos_y;
+			(trackshadow + tracknr)->x1 = current.pos_x + SHADOWOFFSET;
+			(trackshadow + tracknr)->y1 = current.pos_y + SHADOWOFFSET;
+			tracknr++;
+		}
+	}
+	else
+	{
+		if ((trackcoord + trackcoordnr)->lon < 1000.0)
+		{
+			if ((current.pos_x != (track + tracknr - 1)->x2)
+			    || (current.pos_y != (track + tracknr - 1)->y2))
+			{
+				/* so=(int)(((trackcoord + trackcoordnr)->alt))>>5; */
+				so = SHADOWOFFSET;
+				(track + tracknr)->x1 =
+					(track + tracknr - 1)->x2 = current.pos_x;
+				(track + tracknr)->y1 =
+					(track + tracknr - 1)->y2 = current.pos_y;
+				(trackshadow + tracknr)->x1 =
+					(trackshadow + tracknr - 1)->x2 =
+					current.pos_x + so;
+				(trackshadow + tracknr)->y1 =
+					(trackshadow + tracknr - 1)->y2 =
+					current.pos_y + so;
+				tracknr += 1;
+			}
+		}
+		else
+			tracknr = tracknr & ((glong) - 2);
+	}
+	time (&t);
+	ts = localtime (&t);
+	strncpy (buf3, asctime (ts), 32);
+	buf3[strlen (buf3) - 1] = '\0';	/* get rid of \n */
+	g_strlcpy ((trackcoord + trackcoordnr)->postime, buf3, 30);
+	trackcoordnr++;
+}
+
 
 /* ----------------------------------------------------------------------------- */
 /*  if zoom, xoff, yoff or map are changed */
@@ -134,7 +270,6 @@ rebuildtracklist (void)
 }
 
 
-
 /* ------------------------------------------------------------------------- *
  * draw track on image
  */
@@ -155,7 +290,7 @@ drawtracks (void)
 	if (t < 1)
     	return;
 
-    gdk_gc_set_line_attributes (kontext_map, 4, 0, 0, 0);
+    gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_SOLID, 0, 0);
 	if (local_config.showshadow) {
  		gdk_gc_set_foreground (kontext_map, &colors.shadow);
 		gdk_gc_set_function (kontext_map, GDK_AND);
@@ -306,6 +441,39 @@ void do_incremental_save() {
 }
 
 
+/* ******************************************************************
+ * Allocate memory for track storage
+ *  If clear=TRUE then the track data in memory will be cleared.
+ *  This function should be called every time with clear=FALSE, whenever
+ *  there are more than 100000 points to be stored.
+ */
+void
+init_track (gboolean clear)
+{
+	if (clear)
+	{
+		g_free (trackcoord);
+		g_free (track);
+		g_free (trackshadow);
+		track = g_new (GdkSegment, 100000);
+		trackshadow = g_new (GdkSegment, 100000);
+		tracknr = 0;
+		tracklimit = 100000;
+		trackcoord = g_new (trackcoordstruct, 100000);
+		trackcoordnr = 0;
+		trackcoordlimit = 100000;
+	}
+	else
+	{
+		trackcoord = g_renew (trackcoordstruct, trackcoord, trackcoordlimit + 100000);
+		trackcoordlimit += 100000;
+		track = g_renew (GdkSegment, track, tracklimit + 100000);
+		trackshadow = g_renew (GdkSegment, trackshadow, tracklimit + 100000);
+		tracklimit += 100000;
+	}
+}
+
+
 /* *****************************************************************************
  */
 gint
@@ -323,16 +491,9 @@ gettrackfile (GtkWidget * widget, gpointer datum)
       perror (fn);
       return TRUE;
     }
-  g_free (trackcoord);
-  g_free (track);
-  g_free (trackshadow);
-  track = g_new (GdkSegment, 100000);
-  trackshadow = g_new (GdkSegment, 100000);
-  tracknr = 0;
-  tracklimit = 100000;
-  trackcoord = g_new (trackcoordstruct, 100000);
-  trackcoordnr = 0;
-  trackcoordlimit = 100000;
+
+  init_track (TRUE);
+
   i = 0;
   while (fgets (buf, 512, st))
     {
@@ -345,17 +506,9 @@ gettrackfile (GtkWidget * widget, gpointer datum)
       trackcoordnr++;
 
       if ((trackcoordnr * 2) > (trackcoordlimit - 1000))
-	{
-	  trackcoord =
-	    g_renew (trackcoordstruct, trackcoord, trackcoordlimit + 100000);
-	  trackcoordlimit += 100000;
-	  track = g_renew (GdkSegment, track, tracklimit + 100000);
-	  trackshadow =
-	    g_renew (GdkSegment, trackshadow, tracklimit + 100000);
-	  tracklimit += 100000;
-	}
-
-
+        {
+          init_track (FALSE);
+        }
     }
   (trackcoord + i)->lat = 1001.0;
   (trackcoord + i)->lon = 1001.0;
@@ -365,7 +518,6 @@ gettrackfile (GtkWidget * widget, gpointer datum)
   rebuildtracklist ();
   fclose (st);
   gtk_widget_destroy (datum);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (track_bt), TRUE);
 
   return TRUE;
 }
