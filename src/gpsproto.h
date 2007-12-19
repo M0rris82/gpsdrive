@@ -33,7 +33,7 @@ gint festival_init ();
 gdouble calcdist (gdouble lon, gdouble lat);
 gdouble calcdist2 (gdouble lon, gdouble lat);
 gdouble calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current);
-gint speech_saytime_cb (GtkWidget * widget, guint datum);
+gint speech_saytime_cb (GtkWidget *widget, gboolean greeting);
 gint help_cb (GtkWidget * widget, guint datum);
 gint sel_target_cb (GtkWidget * widget, guint datum);
 gint import1_cb (GtkWidget * widget, guint datum);

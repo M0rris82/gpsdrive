@@ -417,59 +417,45 @@ speech_out_speek_raw (char *text)
  *  if second parameter is TRUE, then also greeting is spoken
  */
 gint
-speech_saytime_cb (GtkWidget * widget, guint datum)
+speech_saytime_cb (GtkWidget *widget, gboolean greeting)
 {
 	time_t t;
 	struct tm *ts;
-	gchar buf[400];
-	gchar buf2[200];
-	
+	gchar buf_out[400];
+	gchar buf_time[200];
+	gchar buf_greet[200];
+
 	if (local_config.mute)
 		return TRUE;
 
 	time (&t);
 	ts = localtime (&t);
 
-  if( havefestival || local_config.speech )
-  {
-    if( 1 == datum )
-    {
-      if( (ts->tm_hour >= 0) && (ts->tm_hour < 12) )
-      {
-        g_snprintf( buf, sizeof(buf), speech_morning[voicelang] );
-      }
-      if( (ts->tm_hour >= 12) && (ts->tm_hour < 18) )
-      {
-        g_snprintf( buf, sizeof(buf), speech_afternoon[voicelang] );
-      }
-      if( ts->tm_hour >= 18 )
-      {
-        g_snprintf( buf, sizeof(buf), speech_evening[voicelang] );
-      }
-    }
+	if (!havefestival && !local_config.speech)
+		return TRUE;
 
-    if( 1 == ts->tm_hour )
-    {
-      g_snprintf( buf2, sizeof(buf2), speech_time_mins[voicelang], ts->tm_min );
-    }
-    else if( 0 == ts->tm_min)
-    {
-      g_snprintf(
-        buf, sizeof(buf), speech_time_hrs[voicelang], ts->tm_hour);
-    } else {
-      g_snprintf(
-        buf, sizeof(buf), speech_time_hrs_mins[voicelang], ts->tm_hour,
-        ts->tm_min );
-    }
+	if (greeting)
+	{
+		if( (ts->tm_hour >= 0) && (ts->tm_hour < 12) )
+			g_snprintf (buf_greet, sizeof(buf_greet), speech_morning[voicelang]);
+		if( (ts->tm_hour >= 12) && (ts->tm_hour < 18) )
+			g_snprintf (buf_greet, sizeof(buf_greet), speech_afternoon[voicelang]);
+		if( ts->tm_hour >= 18 )
+			g_snprintf (buf_greet, sizeof(buf_greet), speech_evening[voicelang]);
+	}
+	else
+		g_snprintf (buf_greet, sizeof(buf_greet), " ");
 
-    if( 1 == datum )
-    {
-	g_strlcat (buf, buf2, sizeof(buf));
-	speech_out_speek( buf );
-    }
-    else
-	speech_out_speek( buf2 );
-  }
+	if (1 == ts->tm_hour)
+		g_snprintf (buf_time, sizeof(buf_time), speech_time_mins[voicelang], ts->tm_min);
+	else if (0 == ts->tm_min)
+		g_snprintf (buf_time, sizeof(buf_time), speech_time_hrs[voicelang], ts->tm_hour);
+	else
+		g_snprintf (buf_time, sizeof(buf_time),
+			speech_time_hrs_mins[voicelang], ts->tm_hour, ts->tm_min );
+
+	g_snprintf (buf_out, sizeof (buf_out), "  %s %s", buf_greet, buf_time);
+	speech_out_speek (buf_out);
 
 	return TRUE;
 }
