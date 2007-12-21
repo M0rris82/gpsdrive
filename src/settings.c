@@ -387,7 +387,7 @@ setfriendsrvip_lookup_cb (GtkWidget *entry)
 	hent = gethostbyname (local_config.friends_serverfqn);
 	if ((NULL != hent) && (AF_INET == hent->h_addrtype))
 	{
-                memcpy (hent->h_addr, &adr.s_addr, hent->h_length);
+                memcpy (&adr.s_addr, hent->h_addr, hent->h_length);
 		quad = inet_ntoa (adr);
 		g_strlcpy (local_config.friends_serverip, quad,
 			sizeof (local_config.friends_serverip));
