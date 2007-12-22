@@ -83,6 +83,7 @@ set(gpsdrive_SRCS
   navigation.c
   navigation_gui.c
   nmea_handler.c
+  os_specific.c
   poi.c
   poi_gui.c
   poi.h

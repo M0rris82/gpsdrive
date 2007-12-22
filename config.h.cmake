@@ -8,6 +8,7 @@
 #cmakedefine HAVE_DBUS 1
 
 #cmakedefine PACKAGE "${APPLICATION_NAME}"
+#cmakedefine PACKAGE_VERSION "${APPLICATION_VERSION}"
 #cmakedefine VERSION "${APPLICATION_VERSION}"
 #cmakedefine LOCALEDIR "${LOCALE_INSTALL_DIR}"
 #cmakedefine DATADIR "${SHARE_INSTALL_PREFIX}"
