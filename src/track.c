@@ -104,6 +104,18 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 }
 
 
+void
+add_trackpoint (gdouble lat, gdouble lon, gdouble alt)
+{
+	(trackcoord + trackcoordnr)->lat = lat;
+	(trackcoord + trackcoordnr)->lon = lon;
+	(trackcoord + trackcoordnr)->alt = alt;
+
+	trackcoordnr++;
+
+}
+
+
 /* *****************************************************************************
  * add new trackpoint to  'trackcoordstruct list' to draw track on image 
  */
@@ -139,16 +151,13 @@ storepoint ()
 	/*    g_print("Havepos: %d\n", current.gpsfix); */
 	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
-		(trackcoord + trackcoordnr)->lon = 1001.0;
-		(trackcoord + trackcoordnr)->lat = 1001.0;
-		(trackcoord + trackcoordnr)->alt = 1001.0;
+		add_trackpoint (1001.0, 1001.0, 1001.0);
 	}
 	else
 	{
-		(trackcoord + trackcoordnr)->lon = coords.current_lon;
-		(trackcoord + trackcoordnr)->lat = coords.current_lat;
-		(trackcoord + trackcoordnr)->alt = current.altitude;
-		if (local_config.savetrack) do_incremental_save();
+		add_trackpoint (coords.current_lat, coords.current_lon, current.altitude);
+		if (local_config.savetrack)
+			do_incremental_save();
 	}
 
 
@@ -158,7 +167,7 @@ storepoint ()
 
 	if (tracknr == 0)
 	{
-		if ((trackcoord + trackcoordnr)->lon < 1000.0)
+		if ((trackcoord + trackcoordnr - 1)->lon < 1000.0)
 		{
 			(track + tracknr)->x1 = current.pos_x;
 			(track + tracknr)->y1 = current.pos_y;
@@ -169,7 +178,7 @@ storepoint ()
 	}
 	else
 	{
-		if ((trackcoord + trackcoordnr)->lon < 1000.0)
+		if ((trackcoord + trackcoordnr - 1)->lon < 1000.0)
 		{
 			if ((current.pos_x != (track + tracknr - 1)->x2)
 			    || (current.pos_y != (track + tracknr - 1)->y2))
@@ -196,8 +205,7 @@ storepoint ()
 	ts = localtime (&t);
 	strncpy (buf3, asctime (ts), 32);
 	buf3[strlen (buf3) - 1] = '\0';	/* get rid of \n */
-	g_strlcpy ((trackcoord + trackcoordnr)->postime, buf3, 30);
-	trackcoordnr++;
+	g_strlcpy ((trackcoord + trackcoordnr - 1)->postime, buf3, 30);
 }
 
 
@@ -426,7 +434,7 @@ void do_incremental_save() {
 		    else printf("Creating incremental.sav\n");
                 }
 		
-                for (i = old_trackcoordnr; i < trackcoordnr; i++) {
+                for (i = old_trackcoordnr; i < trackcoordnr - 1; i++) {
 		    g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
 		    g_strdelimit (lat, ",", '.');
 		    g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
@@ -436,7 +444,7 @@ void do_incremental_save() {
 		    fprintf (st, "%s %s %s %s\n", lat, lon, alt, (trackcoord + i)->postime);
                 }
                 fclose (st);
-                old_trackcoordnr = trackcoordnr ;
+                old_trackcoordnr = trackcoordnr -1;
     }
 }
 

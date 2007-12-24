@@ -61,6 +61,8 @@ void rebuildtracklist (void);
 void drawtracks (void);
 gint gettrackfile (GtkWidget *widget, gpointer datum);
 int toggle_track_button_cb (GtkWidget *button, gboolean *value);
+void add_trackpoint (gdouble lat, gdouble lon, gdouble alt);
+void init_track (gboolean clear);
 
 gint trip_reset_cb (void);
 gint update_tripdata_cb (void);

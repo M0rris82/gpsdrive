@@ -45,6 +45,7 @@ Disclaimer: Please do not use for navigation.
 #include "gpx.h"
 #include "gui.h"
 #include "routes.h"
+#include "track.h"
 
 #include "gettext.h"
 #include <libxml/xmlreader.h>
@@ -301,7 +302,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		}
 	}
 
-	//if (mydebug > 30)
+	if (mydebug > 30)
 	{
 		fprintf (stderr, "(%d)\t%.6f / %.6f\n", gpx_info.points, wpt.lat, wpt.lon);
 		fprintf (stderr, "\tName   : %s\n", wpt.name);
@@ -311,7 +312,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 
 	if (g_ascii_strcasecmp (mode_string, "wpt") == 0)
 	{
-	
+		//TODO: do something...
 	}
 	else if (g_ascii_strcasecmp (mode_string, "rtept") == 0)
 	{
@@ -321,7 +322,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 
 	else if (g_ascii_strcasecmp (mode_string, "trkpt") == 0)
 	{
-	
+		add_trackpoint (wpt.lat, wpt.lon, 1001.0);
 	}
 
 	if (node_name)
@@ -372,8 +373,7 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_s
 			else if (xmlStrEqual(node_name, BAD_CAST "trkseg"))
 			{
 				gpx_handle_rte_trk (xml_reader, "trkseg");
-				//TODO:
-				// add segment separator point to track
+				add_trackpoint (1001.0, 1001.0, 1001.0);
 			}	
 			else if (xmlStrEqual(node_name, BAD_CAST "name"))
 			{
@@ -461,11 +461,10 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		case GPX_RTE:
 			route_init (gpx_info.name, gpx_info.desc, NULL); break;
 		case GPX_WPT:
-		//TODO: do something...
+			//TODO: do something...
 			break;
 		case GPX_TRK:
-		//TODO: do something...
-			break;
+			init_track (TRUE); break;
 	}
 
 	/* parse complete gpx file */
@@ -516,7 +515,10 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 			else if (xmlStrEqual(node_name, BAD_CAST "trk"))
 			{
 				if (gpx_mode == GPX_TRK)
+				{
 					gpx_handle_rte_trk (xml_reader, "trk");
+					rebuildtracklist ();
+				}
 				else
 				{
 					gpx_info.trk_count++;
