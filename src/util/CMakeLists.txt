@@ -1,19 +1,10 @@
 project(util)
 
-if (WITH_GDAL)
-  find_package(GDAL REQUIRED)
-endif (WITH_GDAL)
-
 set(UTIL_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${MAP_PUBLIC_INCLUDE_DIRS}
   ${GTK2_INCLUDE_DIRS}
   ${GDAL_INCLUDE_DIRS}
-)
-
-#includes
-set(util_INCLUDE_DIR
-  ${util_SOURCE_DIR}/
-  CACHE INTERNAL ""
 )
 
 add_definitions(-DHAVE_GTK -DHAVE_CAIRO)
@@ -37,7 +28,7 @@ endif (GDAL_FOUND)
 if (GDAL_FOUND AND GTK2_FOUND)
   add_executable(gmapview ${gmapview_SRCS})
   target_link_libraries(gmapview
-    map
+    ${MAP_LIBRARY}
     ${GDAL_LIBRARIES}
     ${GTK2_LIBRARIES}
   )

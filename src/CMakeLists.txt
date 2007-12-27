@@ -1,8 +1,5 @@
 project(gpsdrive_src)
 
-add_subdirectory(lib_map)
-add_subdirectory(util)
-
 find_package(Gettext REQUIRED)
 find_package(X11 REQUIRED)
 find_package(GTK2 REQUIRED)
@@ -10,17 +7,19 @@ find_package(PNG REQUIRED)
 find_package(Fontconfig REQUIRED)
 find_package(MySQL REQUIRED)
 find_package(XML2 REQUIRED)
-find_package(Boost REQUIRED)
 find_package(Freetype2 REQUIRED)
 
 if (WITH_MAPNIK)
+  find_package(Boost REQUIRED)
   find_package(Mapnik REQUIRED)
 endif (WITH_MAPNIK)
 
 if (WITH_GDAL)
-  find_package(GDAL)
+  find_package(GDAL REQUIRED)
+  add_subdirectory(lib_map)
 endif (WITH_GDAL)
 
+add_subdirectory(util)
 
 set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -29,11 +28,9 @@ set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
 )
 
 set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
-  ${LIBMAP_PUBLIC_INCLUDE_DIRS}
   ${GTK2_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
   ${MYSQL_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIRS}
   ${XML2_INCLUDE_DIRS}
   ${MAPNIK_INCLUDE_DIRS}
   ${FREETYPE2_INCLUDE_DIRS}
@@ -42,13 +39,11 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
 
 set(GPSDRIVE_LINK_LIBRARIES
   gpsdrive
-  map
   crypt
   ${GDAL_LIBRARIES}
   ${FONTCONFIG_LIBRARIES}
   ${GETTEXT_LIBRARIES}
   ${GTK2_LIBRARIES}
-  ${GDAL_LIBRARIES}
   ${PNG_LIBRARIES}
   ${XML2_LIBRARIES}
   ${MAPNIK_LIBRARIES}

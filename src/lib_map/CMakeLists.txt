@@ -1,12 +1,23 @@
 PROJECT(libmap)
 
-set(LIBMAP_PUBLIC_INCLUDE_DIRS
+set(MAP_PUBLIC_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}
   CACHE INTERNAL "gpsdrive public include directories"
 )
 
+set(MAP_LIBRARY
+  map
+  CACHE INTERNAL "map library"
+)
+
+set(MAP_LINK_LIBRARIES
+  ${MAP_LIBRARY}
+  ${GDAL_LIBRARIES}
+)
+
 include_directories(
-  ${LIBMAP_PUBLIC_INCLUDE_DIRS}
+  ${MAP_PUBLIC_INCLUDE_DIRS}
+  ${GDAL_INCLUDE_DIRS}
 )
 
 # GTK
@@ -28,9 +39,8 @@ set(libmap_SRCS
   map_transform.c
   map_port_cpp.cpp
   map_render_cpp.cpp
-  map.h
-  map_priv.h
 )
 
-ADD_LIBRARY(map STATIC ${libmap_SRCS})
+add_library(${MAP_LIBRARY} STATIC ${libmap_SRCS})
+target_link_libraries(${MAP_LINK_LIBRARIES})
 
