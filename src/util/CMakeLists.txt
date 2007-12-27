@@ -1,6 +1,8 @@
 project(util)
 
-find_package(GDAL REQUIRED)
+if (WITH_GDAL)
+  find_package(GDAL REQUIRED)
+endif (WITH_GDAL)
 
 set(UTIL_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}

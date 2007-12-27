@@ -6,7 +6,6 @@ add_subdirectory(util)
 find_package(Gettext REQUIRED)
 find_package(X11 REQUIRED)
 find_package(GTK2 REQUIRED)
-find_package(GDAL REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Fontconfig REQUIRED)
 find_package(MySQL REQUIRED)
@@ -17,6 +16,10 @@ find_package(Freetype2 REQUIRED)
 if (WITH_MAPNIK)
   find_package(Mapnik REQUIRED)
 endif (WITH_MAPNIK)
+
+if (WITH_GDAL)
+  find_package(GDAL)
+endif (WITH_GDAL)
 
 
 set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
