@@ -12,6 +12,7 @@ find_package(Freetype2 REQUIRED)
 if (WITH_MAPNIK)
   find_package(Boost REQUIRED)
   find_package(Mapnik REQUIRED)
+  add_definitions(-DMAPNIK)
 endif (WITH_MAPNIK)
 
 if (WITH_GDAL)
