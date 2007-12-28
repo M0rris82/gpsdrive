@@ -691,6 +691,9 @@ battery_get_values (void)
 
   if ( ! local_config.enableapm )
     {
+    if (mydebug > 99)
+      printf ("APM Disabled\n");
+
       return FALSE;
     }
 #if defined(__linux__)
