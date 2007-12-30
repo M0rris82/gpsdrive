@@ -3,7 +3,7 @@ project(mapnik)
 message("mapnik datadir: ${DATA_INSTALL_DIR}/mapnik")
 
 set(DATA_DIR "${DATA_INSTALL_DIR}/mapnik")
-set(USER "gpsdrive")
+set(USER "@USER@")
 
 configure_file(gpsdrive_mapnik_gentiles-in.py ${CMAKE_CURRENT_BINARY_DIR}/gpsdrive_mapnik_gentiles.py)
 configure_file(osm-in.xml ${CMAKE_CURRENT_BINARY_DIR}/osm.xml)
