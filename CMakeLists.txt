@@ -19,7 +19,7 @@ include(MacroGetSubversionRevision)
 macro_get_subversion_revision(SVN_REVISION)
 
 # disallow in-source build
-macro_ensure_out_of_source_build("lomoco requires an out of source build. Please create a separate build directory and run 'cmake /path/to/gpsdrive [options]' there.")
+macro_ensure_out_of_source_build("${APPLICATION_NAME} requires an out of source build. Please create a separate build directory and run 'cmake /path/to/gpsdrive [options]' there.")
 
 # macro_optional_find_package() is the same as FIND_PACKAGE(<name>) but additionally creates an OPTION(WITH_<name>)
 # so the checking for the software can be disabled via ccmake or -DWITH_<name>=OFF
