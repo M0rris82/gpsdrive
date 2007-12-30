@@ -562,7 +562,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
  */
 gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 {
-
+	//TODO: do something...
 	return TRUE;
 }
 
@@ -614,6 +614,107 @@ update_file_info_cb (GtkWidget *dialog, GtkWidget *label)
 	}
 	gtk_label_set_markup (GTK_LABEL (label), buf);
 	g_free (filename);
+}
+
+
+/* *****************************************************************************
+ * Dialog for entering of additional information when saving a gpx file
+ */
+static void
+dialog_get_gpx_info (gint gpx_mode)
+{
+	GtkWidget *info_dialog, *info_table, *info_name_lb, *info_name_entry;
+	GtkWidget *info_desc_lb, *info_desc_entry, *info_keyw_lb, *info_keyw_entry;
+	GtkWidget *info_author_lb, *info_author_entry, *info_email_lb, *info_email_entry;
+	GTimeVal current_time;
+
+	g_get_current_time (&current_time);
+
+	gpx_info.bounds[0] = gpx_info.bounds[1] = gpx_info.bounds[2] = gpx_info.bounds[3] = 0;
+	g_strlcpy (gpx_info.version, _("1.1"), sizeof (gpx_info.version));
+	g_snprintf (gpx_info.creator, sizeof (gpx_info.creator),
+		"GpsDrive %s - http://www.gpsdrive.de", PACKAGE_VERSION);
+	g_strlcpy (gpx_info.name, _("n/a"), sizeof (gpx_info.name));
+	g_strlcpy (gpx_info.desc, _("n/a"), sizeof (gpx_info.desc));
+	g_strlcpy (gpx_info.keywords, _("n/a"), sizeof (gpx_info.keywords));
+	g_strlcpy (gpx_info.time, g_time_val_to_iso8601 (&current_time), sizeof (gpx_info.time));
+	g_strlcpy (gpx_info.author, _("n/a"), sizeof (gpx_info.author));
+	g_strlcpy (gpx_info.email, _("n/a"), sizeof (gpx_info.email));
+
+	info_dialog = gtk_dialog_new_with_buttons (
+		_("Additional Info"), GTK_WINDOW (main_window),
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+		NULL);
+
+	info_name_lb = gtk_label_new (NULL);
+	switch (gpx_mode)
+	{
+		case GPX_RTE:
+			gtk_label_set_markup (GTK_LABEL (info_name_lb), _("<b>Route Name</b>")); break;
+		case GPX_TRK:
+			gtk_label_set_markup (GTK_LABEL (info_name_lb), _("<b>Track Name</b>")); break;
+		default:
+			gtk_label_set_markup (GTK_LABEL (info_name_lb), _("<b>Short Info</b>")); break;
+	}	
+	info_name_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (info_name_entry), 100);
+
+	info_desc_lb = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (info_desc_lb), _("<b>Description</b>"));
+	info_desc_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (info_desc_entry), 255);
+
+	info_keyw_lb = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (info_keyw_lb), _("<b>Keywords</b>"));
+	info_keyw_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (info_keyw_entry), 255);
+
+	info_author_lb = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (info_author_lb), _("<b>Author Name</b>"));
+	info_author_entry = gtk_entry_new ();
+	gtk_entry_set_text (GTK_ENTRY (info_author_entry), g_get_real_name ());
+	gtk_entry_set_max_length (GTK_ENTRY (info_author_entry), 100);
+
+	info_email_lb = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (info_email_lb), _("<b>Author Email</b>"));
+	info_email_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (info_email_entry), 100);
+
+	info_table = gtk_table_new (5, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (info_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (info_table), 5);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_name_lb, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_name_entry, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_desc_lb, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_desc_entry, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_author_lb, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_author_entry, 1, 2, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_email_lb, 0, 1, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_email_entry, 1, 2, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_keyw_lb, 0, 1, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (info_table),
+		info_keyw_entry, 1, 2, 4, 5);
+
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(info_dialog)->vbox), info_table);
+	gtk_widget_show_all (info_table);
+
+	if (gtk_dialog_run (GTK_DIALOG (info_dialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		/* name, desc, keywords, author (name, email (id@domain)) */
+	}
+
+	gtk_widget_destroy (info_dialog);
 }
 
 
@@ -678,6 +779,58 @@ gint loadgpx_cb (gint gpx_mode)
 			test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
 
 		gpx_file_read (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);
+	}
+
+	gtk_widget_destroy (fdialog);
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * Dialog: Save GPX File, including editing of file properties
+ */
+gint savegpx_cb (gint gpx_mode)
+{
+	GtkWidget *fdialog;
+	GtkFileFilter *filter_gpx;
+
+	/* create filedialog with gpx filter */
+	fdialog = gtk_file_chooser_dialog_new (_("Enter a GPX filename"),
+		GTK_WINDOW (main_window),
+		GTK_FILE_CHOOSER_ACTION_SAVE,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+		NULL);
+	gtk_window_set_modal (GTK_WINDOW (fdialog), TRUE);
+	gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (fdialog),
+		local_config.dir_home, NULL);
+	gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (fdialog), TRUE);
+	filter_gpx = gtk_file_filter_new ();
+	gtk_file_filter_add_pattern (filter_gpx, "*.gpx");
+	gtk_file_filter_add_pattern (filter_gpx, "*.GPX");
+	gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (fdialog), filter_gpx);
+
+	/* preset directory depending on wanted data */
+	switch (gpx_mode)
+	{
+		case GPX_RTE:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_routes);
+			break;
+		case GPX_TRK:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_tracks);
+			break;
+		default:
+			gtk_file_chooser_set_current_folder
+			(GTK_FILE_CHOOSER (fdialog), local_config.dir_home);
+			break;
+	}
+
+	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
+	{
+		dialog_get_gpx_info (gpx_mode);
+		gpx_file_write (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);
 	}
 
 	gtk_widget_destroy (fdialog);

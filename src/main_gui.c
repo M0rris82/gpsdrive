@@ -292,7 +292,7 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_LOADTRACK:	loadgpx_cb (GPX_TRK); break;
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
 		case MENU_LOADWPT:	loadgpx_cb (GPX_WPT); break;
-		case MENU_SAVETRACK:	popup_warning (NULL, "NOT YET IMPLEMENTED!"); break;
+		case MENU_SAVETRACK:	savegpx_cb (GPX_TRK); break;
 		case MENU_SAVEROUTE:	route_export_cb (NULL, FALSE); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
