@@ -22,7 +22,7 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
-#include "../config.h"
+#include "config.h"
 
 #include "config.h"
 #include "gettext.h"
