@@ -49,7 +49,7 @@ use HTTP::Request;
 use IO::File;
 use Pod::Usage;
 
-#use Utils::Debug;
+use Utils::Debug;
 
 use Geo::Gpsdrive::DBFuncs;
 use Geo::Gpsdrive::Utils;
