@@ -13,9 +13,9 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
+	rm CMakeCache.txt
 	mkdir -p build
-	cd build
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info ../..
+	cd build; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info ..
 
 	touch configure-stamp
 
@@ -24,7 +24,7 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE)
+	cd build; $(MAKE)
 	#/usr/bin/docbook-to-man debian/gpsdrive.sgml > gpsdrive.1
 
 	touch build-stamp
@@ -35,7 +35,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	-cd build; $(MAKE) distclean
 
 	dh_clean
 
@@ -46,7 +46,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/gpsdrive.
-	$(MAKE) DESTDIR=$(destdir) install
+	cd build; $(MAKE) DESTDIR=$(destdir) install
 
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
