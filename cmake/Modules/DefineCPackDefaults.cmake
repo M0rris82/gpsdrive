@@ -93,7 +93,8 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
 set(CPACK_PACKAGE_VERSION "2.10")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "10")
-set(CPACK_PACKAGE_VERSION_PATCH "svn1824")
+set(CPACK_PACKAGE_VERSION_PATCH "svn18296240")
+set(SVN_REVISION_OSM "6240")
 
 set(CPACK_GENERATOR "TGZ")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
@@ -118,7 +119,7 @@ endif(WIN32 AND NOT UNIX)
 
 ### source package settings
 set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;.#;.deps;tags;data/maps/debian/gpsdrive-data-maps;/build/;/m4/;debian/gpsdrive/")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}svn${SVN_REVISION}")
+set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;[.]o$;.cvsignore;.#;.deps;tags;data/maps/debian/gpsdrive-data-maps;/build/;/m4/;debian/gpsdrive/;debuild.tmp;/logs/;[.]bak$;[.]a$;[.]la$;build-stamp;semantic.cache")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}svn${SVN_REVISION}${SVN_REVISION_OSM}")
 
 include(CPack)
