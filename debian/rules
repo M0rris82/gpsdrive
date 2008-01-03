@@ -7,13 +7,15 @@ export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
 #export DH_COMPAT=5
-export destdir = $(CURDIR)/debian/gpsdrive/usr
+export destdir = $(CURDIR)/debian/gpsdrive
 
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --enable-mapnik --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+	mkdir -p build
+	cd build
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info ../..
 
 	touch configure-stamp
 
@@ -44,7 +46,7 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/gpsdrive.
-	$(MAKE) install prefix=$(destdir)
+	$(MAKE) DESTDIR=$(destdir) install
 
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
@@ -62,6 +64,7 @@ install: build
 	# remove perl modules since they are in the 
 	# openstreetmap-utils package
 	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
+	rm -rf debian/gpsdrive/usr/local/share/perl
 
 # Build architecture-independent files here.
 binary-indep: build install
