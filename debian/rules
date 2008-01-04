@@ -13,7 +13,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	rm CMakeCache.txt
+	rm -f CMakeCache.txt
 	mkdir -p build
 	cd build; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info ..
 
@@ -60,11 +60,12 @@ install: build
 	# remove map-icons from gpsdrive-main package. 
 	# This is build by the osm-data-map-icons*.deb package
 	rm -rf debian/gpsdrive/usr/share/map-icons 
+	rm -rf debian/gpsdrive/usr/share/gpsdrive/map-icons
 
 	# remove perl modules since they are in the 
 	# openstreetmap-utils package
 	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
-	rm -rf debian/gpsdrive/usr/local/share/perl
+	rm -rf debian/gpsdrive/usr/local/share
 
 # Build architecture-independent files here.
 binary-indep: build install
