@@ -46,6 +46,7 @@ modified (Jul 2005) by Jaroslaw Zachwieja <grok\@filippa.org.uk>
 modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
 modified (Jul 2007) by Maciek Kaliszewski <mkalkal\@interia.pl>
 modified (Oct 2007) by Andreas Putzo <andreas\@putzo.net>
+modified (Jan 2008) by Gernot Hillier <gernot\@hillier.de> (added Openstreetmap support)
 Version svn-$Version
 ";
 
@@ -142,6 +143,25 @@ my $Scale2Zoom = {
        5000000 => 5000*6.4,
       10000000 =>10000*6.4,
       50000000 =>50000*6.4,
+    },
+    openstreetmap_tah => {
+      256*576000 =>  1,
+      128*576000 =>  2,
+       64*576000 =>  3,
+       32*576000 =>  4,
+       16*576000 =>  5,
+        8*576000 =>  6,
+        4*576000 =>  7,
+        2*576000 =>  8,
+          576000 =>  9,
+          288000 => 10,
+          144000 => 11,
+           72000 => 12,
+           36000 => 13,
+           18000 => 14,
+           9000  => 15,
+            4500 => 16,
+            2250 => 17
     }
 };
 
@@ -297,7 +317,6 @@ if ($version) {
     exit();
 }
 
-
 # Verify that we have the options that we need 
 pod2usage(1) if (&error_check);
 
@@ -383,6 +402,13 @@ if ( $mapserver eq 'geoscience' ){
     print "+-----------------------------------------------------------+\n";
     print "| Landsat Maps are Copyright, .....   |\n";
     print "| They are free for non commercial use.                     |\n";
+}elsif ( $mapserver eq 'openstreetmap_tah' ){
+    print "+-----------------------------------------------------------+\n";
+    print "| OpenStreetmap Maps are Copyright by the OpenStreetmap     |\n";
+    print "| project.                                                  |\n";
+    print "| They are free for use under the terms of the              |\n";
+    print "| Creative Commons \"Attribution-Share Alike 2.0 Generic\"    |\n";
+    print "| license. See http://www.openstreetmap.org for details.    |\n";
 } elsif ( ! $force) {
     print "You may violating the map servers terms of use!\n";
     print "Please use their service responsible!\n";
@@ -653,6 +679,11 @@ sub wget_map($$$){
     elsif ( $mapserver eq 'landsat') 
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
+    } 
+    elsif ( $mapserver eq 'openstreetmap_tah') 
+    {	
+	$filename=~s/\.gif/.png/;
+	($url,$mapscale)=openstreetmap_tah_url($lati,$long,$scale);
     } 
     else 
     {
@@ -1007,6 +1038,37 @@ sub landsat_url($$$){
     return ($url,$scale);
 }
 
+#############################################################################
+sub openstreetmap_tah_url($$$){
+    my $lati = shift;
+    my $long = shift;
+    my $scale = shift;
+
+    my $mapscale = $scale;
+    my $zoom = undef;
+    for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
+	next unless $s == $scale;
+	$zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
+	$mapscale = $s;
+	last;
+    }
+
+    unless ( $zoom ) {
+	print "Error calculating Zoomlevel for Scale: $scale\n";
+	return (undef,undef);
+    }
+
+    if ($debug) {
+	print "\n";
+	print "Using openstreetmap_tah zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
+	print "lat: $lati\n";
+	print "lon: $long\n";
+    }
+
+    my $url = "http://tah.openstreetmap.org/MapOf/?lat=$lati&long=$long&z=$zoom&w=1280&h=1024&format=png";
+#   print "$url\n";
+    return ($url,$mapscale);
+}
 
 #############################################################################
 sub geoscience_url($$$){
@@ -1855,7 +1917,7 @@ Takes an optional value of number of seconds to sleep.
 =item B<--mapserver <MAPSERVER>>
 
 Mapserver to download from. Default: 'landsat'.
-Currently can use: landsat
+Currently usable: landsat,  openstreetmap_tah.
 
 geoscience, gov_au, incrementp and eniro have download stubs, 
 but they are !!!NOT!!!! in the right scale.
@@ -1864,6 +1926,9 @@ but they are !!!NOT!!!! in the right scale.
 geoscience
 
 landsat covers the whole world with satelite Photos
+
+openstreetmap_tah: Free maps from the OpenStreetmap Tiles@Home project, see 
+		   http://www.openstreetmap.org and http://tah.openstreetmap.org.
 
 gov_au is for Australia
 
