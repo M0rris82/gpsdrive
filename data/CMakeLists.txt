@@ -1,7 +1,6 @@
 PROJECT(data)
 
 SUBDIRS(
-  map-icons
   maps
   pixmaps
 )
