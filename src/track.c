@@ -105,11 +105,13 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 
 
 void
-add_trackpoint (gdouble lat, gdouble lon, gdouble alt)
+add_trackpoint (gdouble lat, gdouble lon, gdouble alt, gchar *time)
 {
 	(trackcoord + trackcoordnr)->lat = lat;
 	(trackcoord + trackcoordnr)->lon = lon;
 	(trackcoord + trackcoordnr)->alt = alt;
+	if (time)
+		g_strlcpy ((trackcoord + trackcoordnr)->postime, time, 30);
 
 	trackcoordnr++;
 
@@ -145,17 +147,16 @@ void
 storepoint ()
 {
 	gint so;
-	gchar buf3[35];
-	time_t t;
-	struct tm *ts;
+	GTimeVal current_time;
+
 	/*    g_print("Havepos: %d\n", current.gpsfix); */
 	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
-		add_trackpoint (1001.0, 1001.0, 1001.0);
+		add_trackpoint (1001.0, 1001.0, 1001.0, NULL);
 	}
 	else
 	{
-		add_trackpoint (coords.current_lat, coords.current_lon, current.altitude);
+		add_trackpoint (coords.current_lat, coords.current_lon, current.altitude, NULL);
 		if (local_config.savetrack)
 			do_incremental_save();
 	}
@@ -201,11 +202,9 @@ storepoint ()
 		else
 			tracknr = tracknr & ((glong) - 2);
 	}
-	time (&t);
-	ts = localtime (&t);
-	strncpy (buf3, asctime (ts), 32);
-	buf3[strlen (buf3) - 1] = '\0';	/* get rid of \n */
-	g_strlcpy ((trackcoord + trackcoordnr - 1)->postime, buf3, 30);
+
+	g_get_current_time (&current_time);
+	g_strlcpy ((trackcoord + trackcoordnr - 1)->postime, g_time_val_to_iso8601 (&current_time), 30);
 }
 
 
@@ -487,6 +486,10 @@ init_track (gboolean clear)
 gint
 gettrackfile (GtkWidget * widget, gpointer datum)
 {
+  //TODO:
+  // adjust this function to convert the date field
+  // to iso8601 when importing old gpsdrive track files
+
   G_CONST_RETURN gchar *fn;
   gchar buf[520], lat[30], lon[30], alt[30], str[30];
   FILE *st;

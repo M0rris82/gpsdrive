@@ -741,7 +741,9 @@ get_poitype_tree (void)
 	{
 		fprintf (stderr, "get_poitype_tree: File %s not found!\n",
 			iconsxml_file);
-			return;
+		fprintf (stderr, _("Please install the program as root with: "
+			"make install\n\n"));
+		return;
 	}
 	if (mydebug > 10)
 	{
@@ -1409,7 +1411,7 @@ poi_init (void)
 
 	/* read poi-type data and icons from icons.xml */
 	get_poitype_tree ();
-	
+
 	/* set poi filter according to config file */
 	init_poi_type_filter ();
 	update_poi_type_filter ();
