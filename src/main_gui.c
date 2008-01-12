@@ -1412,7 +1412,7 @@ void create_dashboard_menu (void)
 
 
 /* *****************************************************************************
- * Window: Map Control Box (used only in Car Mode)
+ * Window: Map Control Box (not used in PDA Mode)
  */
 GtkWidget *mapcontrolbox (void)
 {
@@ -1424,7 +1424,11 @@ GtkWidget *mapcontrolbox (void)
 	g_signal_connect (controlbox_window, "response",
 		G_CALLBACK (toggle_controlbox_cb), (gpointer) FALSE);
 	gtk_window_set_icon_name (GTK_WINDOW (controlbox_window), "gtk-properties");
-	gtk_window_set_decorated (GTK_WINDOW (controlbox_window), FALSE);
+	if (local_config.guimode == GUI_CAR)
+	{
+		gtk_window_set_decorated (GTK_WINDOW (controlbox_window), FALSE);
+		gtk_window_set_modal (GTK_WINDOW (controlbox_window), TRUE);
+	}
 	controlbox_vbox = gtk_vbox_new (FALSE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), controlbox_vbox);
 
@@ -1444,6 +1448,7 @@ void create_controls_mainbox (void)
 	GtkWidget *mapscaler_in_lb, *mapscaler_out_lb;
 	GtkWidget *scaler_in_img, *scaler_out_img;
 	GtkWidget *pda_box_left, *pda_box_right;
+	GtkWidget *buttons_hbox;
 
 	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
 	GtkWidget *menuitem_load, *menuitem_settings;
@@ -1588,9 +1593,6 @@ void create_controls_mainbox (void)
 	g_signal_connect (menuitem_helpcontent, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_HELPCONTENT);
 
-	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		main_menu, FALSE, FALSE, 1 * PADDING);
-
 	/* Buttons: Zoom */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Zoom)\n");
@@ -1619,10 +1621,6 @@ void create_controls_mainbox (void)
 			    zoomout_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_zoom),
 			    zoomin_bt, TRUE, TRUE,  1 * PADDING);
-	if (local_config.guimode != GUI_CAR)	{
-	    gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				hbox_zoom, FALSE, FALSE, 1 * PADDING);
-	}
 
 	/* Buttons: Scaler */
 	if ( mydebug > 11 )
@@ -1647,8 +1645,6 @@ void create_controls_mainbox (void)
 		scaler_out_bt, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (hbox_scaler),
 		scaler_in_bt, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		hbox_scaler, TRUE, TRUE, 1 * PADDING);
 
 	/* Button: Mute Speech */
 	if ( mydebug > 11 )
@@ -1665,16 +1661,6 @@ void create_controls_mainbox (void)
 		&local_config.mute);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mute_bt,
 		_("Disable output of speech"), NULL);
-	if (local_config.guimode == GUI_CAR)
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			mute_bt, TRUE, TRUE, 1 * PADDING);
-	}
-	else
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-		mute_bt, FALSE, FALSE, 1 * PADDING);
-	}
 
 	/* Button: Search POIs */
 	if ( mydebug > 11 )
@@ -1690,37 +1676,12 @@ void create_controls_mainbox (void)
 		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
 			GTK_SIGNAL_FUNC (show_poi_lookup_cb), (gpointer) 2);
 	}
-	if (local_config.guimode == GUI_CAR)
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			find_poi_bt, TRUE, TRUE, 1 * PADDING);
-	}
-	else
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			find_poi_bt, FALSE, FALSE, 1 * PADDING);
-	}
 
 	/* Button: Routing */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Buttons: Show Routing)\n");
 	routing_bt = gtk_button_new_with_label (_("Route List"));
-	
-	if (usesql)
-	{
-		g_signal_connect (routing_bt, "clicked",
-			G_CALLBACK (route_window_cb), NULL);  
-		if (local_config.guimode == GUI_CAR)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				routing_bt, TRUE, TRUE, 1 * PADDING);
-		}
-		else
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				routing_bt, FALSE, FALSE, 1 * PADDING);
-		}
-	}
+
 	}	/* END MENU AND BUTTONS */
 
 	/* WAYPOINTS AND POIs */
@@ -1786,7 +1747,7 @@ void create_controls_mainbox (void)
 	/* TRACKS */
 	{
 	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: TRACKS)\n");
+	    fprintf(stderr,"create_controls_mainbox(Buttons: TRACKS)\n");
 	frame_track = gtk_frame_new (_("Track"));
 	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
@@ -1807,7 +1768,7 @@ void create_controls_mainbox (void)
 
 	/* Checkbox: Save Track */
 	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: Save Track)\n");
+	    fprintf(stderr,"create_controls_mainbox(Buttons: Save Track)\n");
 	savetrack_bt = gtk_check_button_new_with_label (_("Save"));
 	if (local_config.savetrack)
 		gtk_toggle_button_set_active
@@ -1823,10 +1784,21 @@ void create_controls_mainbox (void)
 
 	/* MAP CONTROL */
 	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: MAP CONTROL)\n");
+	    fprintf(stderr,"create_controls_mainbox(Buttons: MAP CONTROL)\n");
 	{
 		frame_mapcontrol = make_display_map_controls ();
+
+	if (local_config.guimode != GUI_PDA)
+	{
+		controlbox_bt = gtk_button_new_with_label (_("Map Control"));
+		controlbox_img = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
+		gtk_button_set_image (GTK_BUTTON (controlbox_bt), controlbox_img);
+		g_signal_connect (GTK_OBJECT (controlbox_bt), "clicked",
+			GTK_SIGNAL_FUNC (toggle_controlbox_cb), (gpointer) 1);
+	}
+
 	}	/* END MAP CONTROL */
+
 
 	/* Map Scale Slider */
 	/* search which scaler_pos is fitting scale_wanted */
@@ -1860,6 +1832,37 @@ void create_controls_mainbox (void)
 		frame_maptype = make_display_map_checkboxes();
 	}	/* END MAP TYPE */
 
+	/* BUTTONS VBOX */
+	{
+		gboolean wide = FALSE;
+		if (local_config.guimode == GUI_CAR)
+			wide = TRUE;
+
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			main_menu, wide, wide, 1 * PADDING);
+
+		if (local_config.guimode != GUI_CAR)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				hbox_zoom, FALSE, FALSE, 1 * PADDING);
+		}
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			hbox_scaler, wide, wide, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			mute_bt, wide, wide, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			find_poi_bt, wide, wide, 1 * PADDING);
+		if (usesql)
+		{
+			g_signal_connect (routing_bt, "clicked",
+				G_CALLBACK (route_window_cb), NULL);  
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				routing_bt, wide, wide, 1 * PADDING);
+		}
+		gtk_box_pack_start (GTK_BOX (vbox_buttons),
+			controlbox_bt, wide, wide, 1 * PADDING);
+	}	/* END BUTTONS BOX */
+
 
 	if (local_config.guimode == GUI_PDA)
 	{
@@ -1879,19 +1882,8 @@ void create_controls_mainbox (void)
 	else
 	if (local_config.guimode == GUI_CAR)
 	{
-		GtkWidget *buttons_hbox;
-		/* in Car Mode we have a separate dialog window, that holds all
-		 * the controls that have not enough space in the main window
-		 */
-		controlbox_bt = gtk_button_new_with_label (_("Map Control"));
-		controlbox_img = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON (controlbox_bt), controlbox_img);
-		g_signal_connect (GTK_OBJECT (controlbox_bt), "clicked",
-			GTK_SIGNAL_FUNC (toggle_controlbox_cb), (gpointer) 1);
-
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls), controlbox_bt, TRUE, TRUE, 1 * PADDING);
 
 		buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_poi, TRUE, TRUE, 1 * PADDING);
@@ -1910,8 +1902,14 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),	vbox_buttons, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_poi, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_track, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_mapcontrol, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_maptype, TRUE, TRUE, 1 * PADDING);
+
+		buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
+
+		controlbox = mapcontrolbox ();
+		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
+
 	}
 
 	if ( mydebug > 11 )
