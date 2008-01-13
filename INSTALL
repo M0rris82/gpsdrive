@@ -9,7 +9,11 @@ In order to build the gpsdrive, you need to install several components:
 - A C++ compiler
 - [CMake](http://www.cmake.org/) >= 2.4.4.
 - [GTK2](http://www.gnome.org/)
+- [Boost](http://www.boost.org/) >= 1.33.1
 - [mapnik](http://www.mapnik.org/) >= 0.4
+- perl
+    - perl-DB
+    - FIXME
 
 There are also some platform specific requirements listed below.
 
@@ -29,15 +33,14 @@ Other components:
 
 ### Specific requirements for MacOS X
 
-- [OpenSSL](http://www.openssl.org/) >= 0.9.8a
-- [GNU TLS](http://www.gnu.org/software/gnutls/) >= 1.2.9
-- [GLib](http://www.gtk.org/) >= 2.10.3
+- [GTK2](http://www.gnome.org/)
 
-GLib and GNU TLS can be installed using [Fink](http://www.finkproject.org) or
+GTK2 can be installed using [Fink](http://www.finkproject.org) or
 [MacPorts](http://www.macports.org).
 
 ### Specific requirements for Windows
 
+FIXME
 
 ## Building
 First, you need to configure the compilation, using CMake. Go inside the
