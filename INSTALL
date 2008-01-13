@@ -1,16 +1,99 @@
-Installation Instructions for CMake
-====================================
+# How to build from source
 
-You can go to the build directory in the gpsdrive source tree and run the
-build_make.sh file or build it manually.
+## Requirements
 
-This is not the CMake documentation so take a look at http://www.cmake.org/ for
-more details. You need at least version 2.4.3 of CMake.
+### Common requirements
 
-Short instructions
--------------------
+In order to build the gpsdrive, you need to install several components:
 
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make
-make install
+- A C++ compiler
+- [CMake](http://www.cmake.org/) >= 2.4.4.
+- [GTK2](http://www.gnome.org/)
+- [mapnik](http://www.mapnik.org/) >= 0.4
+
+There are also some platform specific requirements listed below.
+
+Note that these version numbers are version we know works correctly. If you
+build and run the gpsdrive successfully with an older version, please let us
+know.
+
+### Optional requirements
+
+- [gdal](http://www.gdal.org/)
+
+### Specific requirements for GNU/Linux
+
+The default compiler should be gcc 4.0 or newer.
+
+Other components:
+
+### Specific requirements for MacOS X
+
+- [OpenSSL](http://www.openssl.org/) >= 0.9.8a
+- [GNU TLS](http://www.gnu.org/software/gnutls/) >= 1.2.9
+- [GLib](http://www.gtk.org/) >= 2.10.3
+
+GLib and GNU TLS can be installed using [Fink](http://www.finkproject.org) or
+[MacPorts](http://www.macports.org).
+
+### Specific requirements for Windows
+
+
+## Building
+First, you need to configure the compilation, using CMake. Go inside the
+`build` dir.
+
+Windows with Visual C++:
+
+    cmake -DCMAKE_BUILD_TYPE=Debug -G "NMake Makefiles" ..
+    nmake
+
+Windows with MinGW:
+
+    cmake -DCMAKE_BUILD_TYPE=Debug -G "MinGW Makefiles" ..
+    make
+
+GNU/Linux and MacOS X:
+
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    make
+
+### CMake standard options
+Here is a list of the most interesting options provided out of the box by CMake.
+
+- CMAKE_BUILD_TYPE: The type of build (can be Debug Release MinSizeRel RelWithDebInfo)
+- CMAKE_INSTALL_PREFIX: The prefix to use when running make install (Default to
+  /usr/local on GNU/Linux and MacOS X)
+- CMAKE_C_COMPILER: The path to the C compiler
+- CMAKE_CXX_COMPILER: The path to the C++ compiler
+
+### CMake options defined for gpsdrive
+
+Options are defined in the following files:
+
+- DefineOptions.cmake
+
+They can be changed with the -D option:
+
+`cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_GDAL=ON ..`
+
+### Browsing/editing CMake options
+
+In addition to passing options on the command line, you can browse and edit
+CMake options using `cmakesetup` (Windows) or `ccmake` (GNU/Linux and MacOS X).
+
+- Go to the build dir
+- On Windows: run `cmakesetup`
+- On GNU/Linux and MacOS X: run `ccmake ..`
+
+## Running
+
+The gpsdrive binary can be found in the `build` directory.
+
+## About this document
+
+This document is written using [Markdown][] syntax, making it possible to
+provide usable information in both plain text and HTML format. Whenever
+modifying this document please use [Markdown][] syntax.
+
+[markdown]: http://www.daringfireball.net/projects/markdown
