@@ -356,11 +356,17 @@ savetrackfile (gint mode)
 
   if (mode == 0)
     {
+      GTimeVal current_time;
+      gchar datestring[11];
+
+      g_get_current_time (&current_time);
+      g_strlcpy (datestring, g_time_val_to_iso8601 (&current_time), 11);
+
       i = 0;
       do
 	{
-	  g_snprintf (buff, sizeof (buff), "%strack%04d.sav",
-	  	local_config.dir_home, i++);
+	  g_snprintf (buff, sizeof (buff), "%strack_%s_%03d.sav",
+	  	local_config.dir_home, datestring ,i++);
 	  e = stat (buff, &sbuf);
 	}
       while (e == 0);
@@ -524,8 +530,11 @@ gint
 gettrackfile (GtkWidget * widget, gpointer datum)
 {
   //TODO:
-  // adjust this function to convert the date field
-  // to iso8601 when importing old gpsdrive track files
+  // - adjust this function to convert the date field
+  //   to iso8601 when importing old gpsdrive track files
+  // - add reading of new fields (course/speed/hdop/sat/fix)
+  // - maybe duplicate this function to support pre 2.10 format
+  //   AND post 2.10 format...
 
   G_CONST_RETURN gchar *fn;
   gchar buf[520], lat[30], lon[30], alt[30], str[30];
