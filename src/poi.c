@@ -734,6 +734,12 @@ get_poitype_tree (void)
 	if (xml_reader == NULL)
 	{
 		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
+			"%s/icons/map-icons/icons.xml", DATADIR);
+		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+	}
+	if (xml_reader == NULL)
+	{
+		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
 			"%s/map-icons/icons.xml", DATADIR);
 		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
 	}
