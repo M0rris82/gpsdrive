@@ -16,16 +16,16 @@ case "$1" in
 	INIT_DB=$RET
 	if [ "$INIT_DB" = "true" ] ; then
 
-	    echo "/usr/bin/geoinfo.pl --create-db --fill-defaults"
-	    /usr/bin/geoinfo.pl --create-db --fill-defaults
+	    echo "geoinfo.pl --create-db --fill-defaults"
+	    geoinfo.pl --create-db --fill-defaults
 
 	    db_get gpsdrive/importosm
 	    IMPORT_OSM=$RET
 	    if [ "$IMPORT_OSM" = "true" ] ; then
 		db_get gpsdrive/importosmarea
 		IMPORT_OSM_AREA=$RET
-		echo "/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA"
-		/usr/bin/geoinfo.pl --osm --area=$IMPORT_OSM_AREA
+		echo "geoinfo.pl --osm --area=$IMPORT_OSM_AREA"
+		geoinfo.pl --osm --area=$IMPORT_OSM_AREA
 	    fi 
 	fi
 
