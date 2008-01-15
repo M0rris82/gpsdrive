@@ -745,6 +745,12 @@ get_poitype_tree (void)
 	}
 	if (xml_reader == NULL)
 	{
+		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
+			"/usr/share/icons/map-icons/icons.xml", DATADIR);
+		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+	}
+	if (xml_reader == NULL)
+	{
 		fprintf (stderr, "get_poitype_tree: File %s not found!\n",
 			iconsxml_file);
 		fprintf (stderr, _("Please install the program as root with: "
