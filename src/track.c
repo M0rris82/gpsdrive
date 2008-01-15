@@ -470,7 +470,14 @@ void do_incremental_save() {
 		    g_strdelimit (lon, ",", '.');
 		    g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
 		    
-		    fprintf (st, "%s %s %s %s\n", lat, lon, alt, (trackcoord + i)->postime);
+      		fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+	       		lat, lon, alt,
+	       		(trackcoord + i)->postime,
+	       		(trackcoord + i)->course,
+	       		(trackcoord + i)->speed,
+	       		(trackcoord + i)->hdop,
+	       		(trackcoord + i)->sat,
+	       		(trackcoord + i)->fix);
                 }
                 fclose (st);
                 old_trackcoordnr = trackcoordnr -1;
