@@ -65,7 +65,7 @@ install: build
 	# remove perl modules since they are in the 
 	# openstreetmap-utils package
 	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
-	rm -rf debian/gpsdrive/usr/local/share
+	rm -rf debian/gpsdrive/usr/local/share/gpsdrive/maps
 
 # Build architecture-independent files here.
 binary-indep: build install
