@@ -830,7 +830,9 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 			xmlTextWriterStartElement(xml_writer, BAD_CAST "rte");
 			{
 				xmlTextWriterStartElement(xml_writer, BAD_CAST "rtept");
-			
+				///////////////////////
+				//TODO: do something...
+				///////////////////////
 				xmlTextWriterEndElement(xml_writer); /* rtept */
 				count++;
 			}
@@ -852,10 +854,17 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 			{
 				if (mydebug > 20)
 				{
+					fprintf (stderr, "-----\n");
+					fprintf (stderr, "      | lat: %.6f | lon: %.6f | alt: %.1f\n",
+						(trackcoord + i)->lat, (trackcoord + i)->lon,
+						(trackcoord + i)->alt);
+					fprintf (stderr, "%5d | time: %s | course: %.1f | speed: %.1f \n",
+						i, (trackcoord + i)->postime,
+						(trackcoord + i)->course, (trackcoord + i)->speed);
 					fprintf (stderr,
-						"%3d | lat: %.6f | lon: %.6f | alt: %.1f | time: %s\n",
-						i, (trackcoord + i)->lat, (trackcoord + i)->lon,
-						(trackcoord + i)->alt, (trackcoord + i)->postime);
+						"      | hdop: %.1f | sat: %2d | fix: %1d\n",
+						(trackcoord + i)->hdop, (trackcoord + i)->sat,
+						(trackcoord + i)->fix);
 				}
 			
 				if ((trackcoord + i)->lon > 1000.0)
@@ -886,6 +895,44 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 						xmlTextWriterWriteElement(xml_writer, BAD_CAST "time",
 							BAD_CAST (trackcoord + i)->postime);
 					}
+					if ((trackcoord + i)->course < 1000.0)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "course", "%.2f", (trackcoord + i)->course);
+					}
+					if ((trackcoord + i)->speed >  -1.0)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "speed", "%.6f", (trackcoord + i)->speed);
+					}
+					if ((trackcoord + i)->hdop > -1.0)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "hdop", "%.2f", (trackcoord + i)->hdop);
+					}
+					if ((trackcoord + i)->sat)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "sat", "%d", (trackcoord + i)->sat);
+					}
+					if ((trackcoord + i)->fix)
+					{
+						switch ((trackcoord + i)->fix)
+						{
+							case 2:
+								xmlTextWriterWriteElement(xml_writer,
+									BAD_CAST "fix", BAD_CAST "2d");
+								break;
+							case 3:
+								xmlTextWriterWriteElement(xml_writer,
+									BAD_CAST "fix", BAD_CAST "3d");
+								break;
+							case 4:
+								xmlTextWriterWriteElement(xml_writer,
+									BAD_CAST "fix", BAD_CAST "dgps");
+								break;
+						};
+					}
 					xmlTextWriterEndElement(xml_writer); /* trkpt */
 					xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 					j = FALSE;
@@ -905,7 +952,9 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 			
 			{
 				xmlTextWriterStartElement(xml_writer, BAD_CAST "wpt");
-			
+				///////////////////////
+				//TODO: do something...
+				///////////////////////
 				xmlTextWriterEndElement(xml_writer); /* wpt */
 				count++;
 			}
