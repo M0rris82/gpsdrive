@@ -63,7 +63,7 @@ extern gint blink, gblink, xoff, yoff;
 extern gint zone;
 extern gdouble milesconv;
 extern gint oldsatfix, oldsatsanz;
-extern gdouble precision, gsaprecision;
+extern gdouble precision, hdop;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];
@@ -253,7 +253,7 @@ write_nmea_cb (GtkWidget * widget, guint * datum)
 
 
 /* ******************************************************************
- * show  HDOP in meters 
+ * show  HDOP
  */
 void
 convertGSA (char *f)
@@ -288,9 +288,9 @@ convertGSA (char *f)
   if (current.gpsfix > 1)
     {
 
-      gsaprecision = g_strtod (field[15], 0);
+      hdop = g_strtod (field[16], 0);
       if ( mydebug + nmea_handler_debug > 80 )
-	g_print ("nmea_handler: gpsd: GSA PDOP: %.1f\n", gsaprecision);
+	g_print ("nmea_handler: gpsd: GSA HDOP: %.1f\n", hdop);
     }
 }
 

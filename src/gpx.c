@@ -63,7 +63,7 @@ Disclaimer: Please do not use for navigation.
 
 extern gint mydebug;
 extern GtkWidget *main_window;
-extern trackcoordstruct *trackcoord;
+extern trackdata_struct *trackcoord;
 extern glong trackcoordnr;
 extern guint id_timeout_track;
 
@@ -116,6 +116,11 @@ typedef struct
  gdouble lat;
  gdouble lon;
  gdouble ele;
+ gdouble course;
+ gdouble speed;
+ gdouble hdop;
+ gint fix;
+ gint sat;
 } wpt_struct;
 
 gpx_info_struct gpx_info;
@@ -350,12 +355,12 @@ static void gpx_handle_gpxinfo_v10 (xmlTextReaderPtr xml_reader, xmlChar *node_n
  *
  * Nodes that are used:
  *  Route:	name, cmt, sym, type
- *  Track:	ele, time
+ *  Track:	ele, time, course, speed
  *  Waypoint:	
  *
  * Nodes that are (currently) NOT parsed:
  *  magvar, geoidheight, desc, src, url, urlname, fix,
- *  sat, hdop, vdop, pdop, ageofdgpsdata, dgpsid, course, speed,
+ *  sat, hdop, vdop, pdop, ageofdgpsdata, dgpsid,
  *  private tags and other namespaces
  */
 static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
@@ -370,6 +375,11 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 	wpt.type = NULL;
 	wpt.lat = 0.0;
 	wpt.lon = 0.0;
+	wpt.course = 1001.0;
+	wpt.speed = -1.0;
+	wpt.hdop = -1.0;
+	wpt.fix = 0;
+	wpt.sat = 0;
 
 	if (mydebug > 20)
 		fprintf (stderr, "gpx_handle_point: %s\n", mode_string);
@@ -419,6 +429,41 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 				xml_status = xmlTextReaderRead(xml_reader);
 				wpt.time = xmlTextReaderValue(xml_reader);
 			}
+			else if (xmlStrEqual(node_name, BAD_CAST "hdop"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.hdop = g_strtod ((gpointer) xmlTextReaderValue(xml_reader), NULL);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "course"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.course = g_strtod ((gpointer) xmlTextReaderValue(xml_reader), NULL);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "speed"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.speed = g_strtod ((gpointer) xmlTextReaderValue(xml_reader), NULL);
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "fix"))
+			{
+				const xmlChar *t_fix;
+				xml_status = xmlTextReaderRead(xml_reader);
+				t_fix = xmlTextReaderConstValue(xml_reader);
+				if (xmlStrEqual(t_fix, BAD_CAST "2d"))
+					wpt.fix = 2;
+				else if (xmlStrEqual(t_fix, BAD_CAST "3d"))
+					wpt.fix = 3;
+				else if (xmlStrEqual(t_fix, BAD_CAST "dgps"))
+					wpt.fix = 4;
+				else
+					wpt.fix = 0;
+			}
+			else if (xmlStrEqual(node_name, BAD_CAST "sat"))
+			{
+				xml_status = xmlTextReaderRead(xml_reader);
+				wpt.sat = atoi ((gpointer) xmlTextReaderValue(xml_reader));
+			}
+
 		}
 	}
 
@@ -428,8 +473,13 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tName     : %s\n", wpt.name);
 		fprintf (stderr, "\tComment  : %s\n", wpt.cmt);
 		fprintf (stderr, "\tType     : %s\n", wpt.type);
-		fprintf (stderr, "\tElevation: %s\n", wpt.ele);
+		fprintf (stderr, "\tElevation: %sm\n", wpt.ele);
 		fprintf (stderr, "\tTime     : %s\n", wpt.time);
+		fprintf (stderr, "\tCourse   : %s\n", wpt.course);
+		fprintf (stderr, "\tSpeed    : %skm/h\n", wpt.speed);
+		fprintf (stderr, "\tHDOP     : %s\n", wpt.hdop);
+		fprintf (stderr, "\tFix      : %s\n", wpt.fix);
+		fprintf (stderr, "\tSat      : %s\n", wpt.sat);
 	}
 
 	if (g_ascii_strcasecmp (mode_string, "wpt") == 0)
@@ -445,7 +495,9 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 
 	else if (g_ascii_strcasecmp (mode_string, "trkpt") == 0)
 	{
-		add_trackpoint (wpt.lat, wpt.lon, wpt.ele, wpt.time);
+		add_trackpoint
+			(wpt.lat, wpt.lon, wpt.ele, wpt.course, wpt.speed,
+			 wpt.hdop, wpt.fix, wpt.sat, wpt.time);
 	}
 
 	if (node_name)
@@ -500,7 +552,9 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_s
 				if (xmlTextReaderIsEmptyElement (xml_reader) != 1)
 				{
 					gpx_handle_rte_trk (xml_reader, "trkseg");
-					add_trackpoint (1001.0, 1001.0, 1001.0, NULL);
+					add_trackpoint
+						(1001.0, 1001.0, 1001.0, 1001.0,
+						 -1.0, -1.0, 0, 0, NULL);
 				}
 			}	
 			else if (xmlStrEqual(node_name, BAD_CAST "name"))

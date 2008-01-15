@@ -85,7 +85,7 @@ extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff;
 extern gint zone;
 extern gint oldsatfix, oldsatsanz;
-extern gdouble precision, gsaprecision;
+extern gdouble precision;
 extern gchar localedecimal;
 extern gdouble gbreit, glang, milesconv, olddist;
 extern gchar mapfilename[1024];

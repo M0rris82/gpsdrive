@@ -1,6 +1,7 @@
 /***********************************************************************
 
 Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2007 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
 Website: www.gpsdrive.de
 
@@ -36,6 +37,7 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "gui.h"
 #include "main_gui.h"
+#include <math.h>
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -50,7 +52,7 @@ extern gint mydebug;
 extern gint maploaded;
 extern glong tracknr, tracklimit, trackcoordlimit;
 glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
-extern trackcoordstruct *trackcoord;
+extern trackdata_struct *trackcoord;
 extern GdkSegment *track;
 extern GdkSegment *trackshadow;
 
@@ -63,6 +65,8 @@ extern coordinate_struct coords;
 extern GdkGC *kontext_map;
 extern gdouble milesconv;
 extern GtkWidget *main_window;
+extern gdouble hdop;
+extern gint sats_used;
 
 tripdata_struct trip;
 
@@ -105,12 +109,27 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 
 
 void
-add_trackpoint (gdouble lat, gdouble lon, gdouble alt, gchar *time)
+add_trackpoint
+	(gdouble lat, gdouble lon, gdouble alt, gdouble course,
+		gdouble speed, gdouble hdop, gint fix, gint sat, gchar *time)
 {
 	(trackcoord + trackcoordnr)->lat = lat;
 	(trackcoord + trackcoordnr)->lon = lon;
 	(trackcoord + trackcoordnr)->alt = alt;
-	if (time)
+	(trackcoord + trackcoordnr)->course = course;
+	(trackcoord + trackcoordnr)->speed = speed;
+	(trackcoord + trackcoordnr)->hdop = hdop;
+	(trackcoord + trackcoordnr)->fix = fix;
+	(trackcoord + trackcoordnr)->sat = sat;
+
+	if (time == NULL)
+	{
+		GTimeVal current_time;
+		g_get_current_time (&current_time);
+		g_strlcpy ((trackcoord + trackcoordnr)->postime,
+			g_time_val_to_iso8601 (&current_time), 30);
+	}
+	else
 		g_strlcpy ((trackcoord + trackcoordnr)->postime, time, 30);
 
 	trackcoordnr++;
@@ -119,7 +138,7 @@ add_trackpoint (gdouble lat, gdouble lon, gdouble alt, gchar *time)
 
 
 /* *****************************************************************************
- * add new trackpoint to  'trackcoordstruct list' to draw track on image 
+ * add new trackpoint to  'trackdata_struct list' to draw track on image 
  */
 gint
 storetrack_cb (GtkWidget * widget, guint * datum)
@@ -147,16 +166,18 @@ void
 storepoint ()
 {
 	gint so;
-	GTimeVal current_time;
 
 	/*    g_print("Havepos: %d\n", current.gpsfix); */
 	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
-		add_trackpoint (1001.0, 1001.0, 1001.0, NULL);
+		add_trackpoint (1001.0, 1001.0, 1001.0, 1001.0, -1.0, -1.0, 0, 0, NULL);
 	}
 	else
 	{
-		add_trackpoint (coords.current_lat, coords.current_lon, current.altitude, NULL);
+		add_trackpoint
+			(coords.current_lat, coords.current_lon, current.altitude,
+			 RAD2DEG (current.heading), current.groundspeed, hdop,
+			 current.gpsfix, sats_used, NULL);
 		if (local_config.savetrack)
 			do_incremental_save();
 	}
@@ -202,9 +223,6 @@ storepoint ()
 		else
 			tracknr = tracknr & ((glong) - 2);
 	}
-
-	g_get_current_time (&current_time);
-	g_strlcpy ((trackcoord + trackcoordnr - 1)->postime, g_time_val_to_iso8601 (&current_time), 30);
 }
 
 
@@ -364,14 +382,20 @@ savetrackfile (gint mode)
 
   for (i = 0; i < trackcoordnr; i++)
     {
-      g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
+      g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+      g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
       g_strdelimit (lon, ",", '.');
-      g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
+      g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s\n", lat, lon, alt,
-	       (trackcoord + i)->postime);
+      fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+	       lat, lon, alt,
+	       (trackcoord + i)->postime,
+	       (trackcoord + i)->course,
+	       (trackcoord + i)->speed,
+	       (trackcoord + i)->hdop,
+	       (trackcoord + i)->sat,
+	       (trackcoord + i)->fix);
     }
   fclose (st);
 
@@ -390,14 +414,20 @@ savetrackfile (gint mode)
 
   for (i = 0; i < trackcoordnr; i++)
     {
-      g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
+      g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+      g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
       g_strdelimit (lon, ",", '.');
-      g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
+      g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s\n", lat, lon, alt,
-	       (trackcoord + i)->postime);
+      fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+	       lat, lon, alt,
+	       (trackcoord + i)->postime,
+	       (trackcoord + i)->course,
+	       (trackcoord + i)->speed,
+	       (trackcoord + i)->hdop,
+	       (trackcoord + i)->sat,
+	       (trackcoord + i)->fix);
     }
   fclose (st);
 
@@ -434,11 +464,11 @@ void do_incremental_save() {
                 }
 		
                 for (i = old_trackcoordnr; i < trackcoordnr - 1; i++) {
-		    g_snprintf (lat, sizeof (lat), "%10.6f", (trackcoord + i)->lat);
+		    g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
 		    g_strdelimit (lat, ",", '.');
-		    g_snprintf (lon, sizeof (lon), "%10.6f", (trackcoord + i)->lon);
+		    g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
 		    g_strdelimit (lon, ",", '.');
-		    g_snprintf (alt, sizeof (alt), "%10.0f", (trackcoord + i)->alt);
+		    g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
 		    
 		    fprintf (st, "%s %s %s %s\n", lat, lon, alt, (trackcoord + i)->postime);
                 }
@@ -452,7 +482,7 @@ void do_incremental_save() {
  * Allocate memory for track storage
  *  If clear=TRUE then the track data in memory will be cleared.
  *  This function should be called every time with clear=FALSE, whenever
- *  there are more than 100000 points to be stored.
+ *  there are more than 30000 points to be stored.
  */
 void
 init_track (gboolean clear)
@@ -462,21 +492,21 @@ init_track (gboolean clear)
 		g_free (trackcoord);
 		g_free (track);
 		g_free (trackshadow);
-		track = g_new (GdkSegment, 100000);
-		trackshadow = g_new (GdkSegment, 100000);
+		track = g_new (GdkSegment, 30000);
+		trackshadow = g_new (GdkSegment, 30000);
 		tracknr = 0;
-		tracklimit = 100000;
-		trackcoord = g_new (trackcoordstruct, 100000);
+		tracklimit = 30000;
+		trackcoord = g_new (trackdata_struct, 30000);
 		trackcoordnr = 0;
-		trackcoordlimit = 100000;
+		trackcoordlimit = 30000;
 	}
 	else
 	{
-		trackcoord = g_renew (trackcoordstruct, trackcoord, trackcoordlimit + 100000);
-		trackcoordlimit += 100000;
-		track = g_renew (GdkSegment, track, tracklimit + 100000);
-		trackshadow = g_renew (GdkSegment, trackshadow, tracklimit + 100000);
-		tracklimit += 100000;
+		trackcoord = g_renew (trackdata_struct, trackcoord, trackcoordlimit + 30000);
+		trackcoordlimit += 30000;
+		track = g_renew (GdkSegment, track, tracklimit + 30000);
+		trackshadow = g_renew (GdkSegment, trackshadow, tracklimit + 30000);
+		tracklimit += 30000;
 	}
 }
 

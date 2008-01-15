@@ -2,6 +2,7 @@
 **********************************************************************
 
 Copyright (c) 2001-2007 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2007 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
 Website: www.gpsdrive.de
 
@@ -98,7 +99,7 @@ extern gint PSIZE;
 extern GtkWidget *posbt;
 extern GtkWidget *bestmap_bt;
 extern gint borderlimit;
-extern gdouble gsaprecision;
+extern gdouble hdop;
 
 extern GtkWidget *main_window;
 
@@ -882,9 +883,9 @@ update_dashboard (GtkWidget *frame, gint source)
 			g_strlcpy (head, _("GPS Precision"), sizeof (head));
 
 			g_snprintf (content, sizeof (content),
-				"<span color=\"%s\" font_desc=\"%s\">PDOP: %.1f\nSats: %d/%d</span>",
+				"<span color=\"%s\" font_desc=\"%s\">HDOP: %.1f\nSats: %d/%d</span>",
 				local_config.color_dashboard, font_prec,
-				gsaprecision, sats_used, sats_in_view);
+				hdop, sats_used, sats_in_view);
 
 			pango_font_description_free (pfd);
 			g_free (font_prec);

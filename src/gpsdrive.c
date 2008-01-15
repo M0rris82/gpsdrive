@@ -265,7 +265,7 @@ GtkWidget *savetrack_bt;
 GtkWidget *loadtrack_bt;
 GdkSegment *track, *trackshadow;
 glong tracknr;
-trackcoordstruct *trackcoord;
+trackdata_struct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gchar savetrackfn[256];
 
@@ -306,7 +306,7 @@ GtkWidget *mapdirbt;
 GtkWidget *slowcpubt;
 GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 
-gdouble precision = (-1.0), gsaprecision = (-1.0);
+gdouble precision = (-1.0), hdop = (-1.0);
 gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
@@ -838,7 +838,7 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	if (trackcoordnr > (trackcoordlimit - 1000))
 	{
 		trackcoord =
-			g_renew (trackcoordstruct, trackcoord,
+			g_renew (trackdata_struct, trackcoord,
 				 trackcoordlimit + 100000);
 		trackcoordlimit += 100000;
 	}
@@ -1067,9 +1067,9 @@ return TRUE;
 			g_snprintf (t, sizeof (t), "n/a");
 
 		gtk_entry_set_text (GTK_ENTRY (satslabel2), t);
-		if ((gsaprecision > 0.0) && (satfix != 0))
+		if ((hdop > 0.0) && (satfix != 0))
 		{
-			g_snprintf (t1, sizeof (t1), "%.1f", gsaprecision);
+			g_snprintf (t1, sizeof (t1), "%.1f", hdop);
 			g_snprintf (t, sizeof (t), "%s", t1);
 		}
 		else
@@ -2958,7 +2958,7 @@ main (int argc, char *argv[])
     track = g_new0 (GdkSegment, 100000);
     trackshadow = g_new0 (GdkSegment, 100000);
     tracknr = 0;
-    trackcoord = g_new0 (trackcoordstruct, 100000);
+    trackcoord = g_new0 (trackdata_struct, 100000);
     trackcoordnr = 0;
     tracklimit = trackcoordlimit = 100000;
     init_route_list ();

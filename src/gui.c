@@ -2,6 +2,7 @@
 **********************************************************************
 
 Copyright (c) 2001-2007 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2007 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
 Website: www.gpsdrive.de
 

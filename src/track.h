@@ -1,6 +1,7 @@
 /***********************************************************************
 
 Copyright (c) 2001,2002 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2007 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
 Website: www.gpsdrive.de/
 
@@ -35,12 +36,17 @@ Disclaimer: Please do not use for navigation.
 
 typedef struct
 {
-  gdouble lon;
-  gdouble lat;
-  gdouble alt;
-  gchar postime[30];
+	gdouble lon;
+	gdouble lat;
+	gdouble alt;
+	gdouble course;
+	gdouble speed;
+	gdouble hdop;
+	gint fix;
+	gint sat;
+	gchar postime[30];
 }
-trackcoordstruct;
+trackdata_struct;
 
 
 typedef struct
@@ -61,7 +67,9 @@ void rebuildtracklist (void);
 void drawtracks (void);
 gint gettrackfile (GtkWidget *widget, gpointer datum);
 int toggle_track_button_cb (GtkWidget *button, gboolean *value);
-void add_trackpoint (gdouble lat, gdouble lon, gdouble alt, gchar *time);
+void add_trackpoint
+	(gdouble lat, gdouble lon, gdouble alt, gdouble course,
+	gdouble speed, gdouble hdop, gint fix, gint sat, gchar *time);
 void init_track (gboolean clear);
 
 gint trip_reset_cb (void);

@@ -1,0 +1,21 @@
+As of gpsdrive v2.10 the internal file format for saving tracks has changed:
+The files track*.sav contain one entry per line, separated by whitespaces. To
+obtain compatibility, the new fields have been appended to the end of the line.
+
+The data fields in order of appearance:
+
+Latitude	in degrees (WGS84)
+Longitude	in degrees (WGS84)
+Altitude	in meters
+Time		in ISO8601
+Course		in degrees
+Speed		in km/h
+HDOP		-
+Number of Sats	-
+Fix Type	0 = no Fix, 2 = 2D, 3 = 3D, 4 = DGPS
+
+If a line starts with lat/lon values of 1001.0 this means, there was no valid
+position information available at this time.
+
+For external use, tracks can also be saved in GPX v1.1 format in gpsdrive!
+
