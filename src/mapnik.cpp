@@ -161,6 +161,7 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
     
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) {
     	// file not found return
+	cout << "Cannot find Mapnik config-file: " << mapnik_config_file << endl;
     	return 0;
     }
     

@@ -607,7 +607,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 	}
 	else
 	{
-		fprintf(stderr,"Could not init Mapnik!\n");
+		fprintf(stderr,"Could not init Mapnik, disabling Mapnik Support!\n");
 		local_config.MapnikStatusInt = 0; // <-- disable mapnik
 	}
 #endif
