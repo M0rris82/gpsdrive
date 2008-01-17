@@ -2292,7 +2292,25 @@ gint create_main_window (void)
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_main_window\n");
 
-	main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	if (!local_config.embeddable_gui)
+	{
+		/* default application mode */
+		main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	}
+	else
+	{
+		/* embeddable mode means no GUI appears until it is
+		 * hooked into a GTK Socket widget in a separate application.
+		 * Thus, we print out the window ID here so that the other
+		 * app can pass that to the GTK Socket's add_id() method. */
+		main_window = gtk_plug_new(0);
+		/* gtk_plug_get_id() returns a GdkNativeWindow, which is 
+		 * really a guint32 on all platforms according to:
+		 * * https://www.linux-foundation.org/dbadmin/browse/type_single.php?cmd=list-by-id&Tid=12788
+		 */
+		fprintf(stdout, "Main Window ID is 0x%08x\n",
+			gtk_plug_get_id(GTK_PLUG(main_window)));
+	}
 
 	g_snprintf (main_title, sizeof (main_title),
 		"%s v%s", "GpsDrive", VERSION);

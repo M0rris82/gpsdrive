@@ -643,4 +643,7 @@ config_init ()
 	/* kismet default values */
 	g_strlcpy(local_config.kismet_servername, "localhost", sizeof(local_config.kismet_servername));
 	local_config.kismet_serverport = 2501;
+
+	/* run a normal GUI by default */
+	local_config.embeddable_gui = FALSE;
 }

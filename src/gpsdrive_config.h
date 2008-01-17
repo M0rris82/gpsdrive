@@ -111,6 +111,7 @@ typedef struct
 	gchar kismet_servername[500];
 	gint kismet_serverport;
 	gchar screenshot_dir[1000];
+	gboolean embeddable_gui;	/* use GtkPlug instead of GtkWindow for main_window */
 }
 local_gpsdrive_config;
 
