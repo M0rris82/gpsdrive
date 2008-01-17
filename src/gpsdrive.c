@@ -2655,6 +2655,7 @@ usage ()
 	     _("-a        display APM stuff (battery status, temperature)\n"),
 	     _("-b server servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to this waypoint (WP)\n"),
+	     _("-e        embeddable GUI mode; no GUI appears; for use in external GTK apps\n"),
 	     _("-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"),
 	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
 	     _("-q        disable SQL support\n"),
@@ -2762,6 +2763,9 @@ parse_cmd_args(int argc, char *argv[]) {
 				fprintf(stderr,"%s-mode not supported.\n", optarg);
 				exit(-1);
 			}
+			break;
+		case 'e':
+			local_config.embeddable_gui = TRUE;
 			break;
 		case '1':
 		    onemousebutton = TRUE;
