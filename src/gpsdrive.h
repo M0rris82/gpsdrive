@@ -349,6 +349,7 @@ typedef struct
 	gdouble bearing;	/* bearing in radians */
 	gdouble altitude;	/* current altitude */
 	glong mapscale;		/* scale of map shown */
+	gchar maptype[12];	/* type of map shown */
 	gint zoom;		/* map zoom level */
 	gchar target[80];	/* name of current target */
 	gdouble dist;		/* distance to selected target */

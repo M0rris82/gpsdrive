@@ -66,6 +66,10 @@ extern GtkWidget *main_window;
 extern trackdata_struct *trackcoord;
 extern glong trackcoordnr;
 extern guint id_timeout_track;
+extern GtkWidget *frame_statusbar;
+extern currentstatus_struct current;
+extern GtkListStore *route_list_tree;
+extern routestatus_struct route;
 
 enum node_type
 {
@@ -373,6 +377,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 	wpt.name = NULL;
 	wpt.cmt = NULL;
 	wpt.type = NULL;
+	wpt.time = NULL;
 	wpt.lat = 0.0;
 	wpt.lon = 0.0;
 	wpt.course = 1001.0;
@@ -765,6 +770,9 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	gint count = 0;
 	gint i = 0;
 	gboolean j = TRUE;
+	GtkTreeIter iter;
+	gchar *t_name, *t_cmt, *t_type;
+	gdouble t_lat, t_lon;
 
 	/* init xml writer with given filename */
 	xml_writer = xmlNewTextWriterFilename(gpx_file, FALSE);
@@ -828,16 +836,48 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	{
 		case GPX_RTE:
 			xmlTextWriterStartElement(xml_writer, BAD_CAST "rte");
+			xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
+			gtk_tree_model_get_iter_first (GTK_TREE_MODEL (route_list_tree), &iter);
+			do
 			{
+				gtk_tree_model_get
+					(GTK_TREE_MODEL (route_list_tree), &iter,
+						ROUTE_NAME, &t_name,
+						ROUTE_LON, &t_lon,
+						ROUTE_LAT, &t_lat,
+						ROUTE_CMT, &t_cmt,
+						ROUTE_TYPE, &t_type,
+						-1);
 				xmlTextWriterStartElement(xml_writer, BAD_CAST "rtept");
-				///////////////////////
-				//TODO: do something...
-				///////////////////////
+				xmlTextWriterWriteFormatAttribute (xml_writer,
+						BAD_CAST "lat", "%.6f", t_lat);
+				xmlTextWriterWriteFormatAttribute (xml_writer,
+						BAD_CAST "lon", "%.6f", t_lon);
+				xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
+				if (strlen (t_name))
+				{
+					xmlTextWriterWriteElement(xml_writer,
+						BAD_CAST "name", BAD_CAST t_name);
+					xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
+				}
+				if (strncmp (t_cmt, "n/a", 3) != 0)
+				{
+					xmlTextWriterWriteElement(xml_writer,
+						BAD_CAST "cmt", BAD_CAST t_cmt);
+					xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
+				}
+				xmlTextWriterWriteElement(xml_writer,
+					BAD_CAST "type", BAD_CAST t_type);
+				xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 				xmlTextWriterEndElement(xml_writer); /* rtept */
+				xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 				count++;
 			}
-			
+			while (gtk_tree_model_iter_next (GTK_TREE_MODEL (route_list_tree), &iter));
 			xmlTextWriterEndElement(xml_writer); /* rte */
+			g_free (t_name);
+			g_free (t_cmt);
+			g_free (t_type);
 			break;
 
 		case GPX_TRK:
@@ -965,10 +1005,16 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	/* end the document, this also closes all elements that are still open */
 	if (xmlTextWriterEndDocument (xml_writer) < 0)
 		fprintf (stderr, "gpx_file_write: Error creating file %s\n", gpx_file);
-	else if (mydebug > 0)
-		fprintf (stderr, "GPX-File %s with %d points written\n", gpx_file, count);
+	else
+	{
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+			current.statusbar_id, _("File succesfully saved"));
+		if (mydebug > 0)
+			fprintf (stderr, "GPX-File %s with %d points written\n", gpx_file, count);
+	}
 
 	xmlFreeTextWriter (xml_writer);
+
 	return TRUE;
 }
 
@@ -1216,6 +1262,11 @@ gint savegpx_cb (gint gpx_mode)
 	GtkWidget *fdialog;
 	GtkFileFilter *filter_gpx;
 
+	if (gpx_mode == GPX_RTE && route.items == 0)
+	{
+		popup_error (NULL, "No route in memory!");
+		return FALSE;
+	}
 	/* create filedialog with gpx filter */
 	fdialog = gtk_file_chooser_dialog_new (_("Enter a GPX filename"),
 		GTK_WINDOW (main_window),

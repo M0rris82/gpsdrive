@@ -706,6 +706,24 @@ loadmap (char *filename)
 		    0, 0, 0.1, 0.10, GDK_INTERP_TILES);
   expose_mini_cb (NULL, 0);
 
+	/* set text for displaying the currently loaded map type */
+	if (g_ascii_strncasecmp (filename, "open",4) == 0)
+		g_strlcpy (current.maptype, "osm_tah", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "land", 4) == 0)
+		g_strlcpy (current.maptype, "landsat", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "mapn", 4) == 0)
+		g_strlcpy (current.maptype, "mapnik", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "enir", 4) == 0)
+			g_strlcpy (current.maptype, "eniro", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "geos", 4) == 0)
+			g_strlcpy (current.maptype, "geoscience", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "expe", 4) == 0)
+		g_strlcpy (current.maptype, "expedia", sizeof (current.maptype));
+	else if (g_ascii_strncasecmp (filename, "goog", 4) == 0)
+		g_strlcpy (current.maptype, "googlesat", sizeof (current.maptype));
+	else
+		g_strlcpy (current.maptype, "", sizeof (current.maptype));
+
   return TRUE;
 }
 

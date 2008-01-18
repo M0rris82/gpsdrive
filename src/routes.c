@@ -799,108 +799,12 @@ void add_arbitrary_point_to_route
  */
 gboolean route_export_cb (GtkWidget *widget, gboolean usedefault)
 {
-	const gchar gpx_head[] =
-		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-		"<gpx\n xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n"
-		" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-		" xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
-		" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"
-		" http://www.topografix.com/GPX/1/0/gpx.xsd\"\n"
-		" version=\"1.0\"\n"
-		" creator=\"GpsDrive %s - http://www.gpsdrive.de\">\n"
-		"<name>%s</name>\n"
-		"<desc>%s</desc>\n"
-		"<author>%s</author>\n"
-		"<time>%s</time>\n"
-		"\n<rte>\n"
-		"  <name>%s</name>\n  <desc>%s</desc>\n  <src>%s</src>\n";
-	const gchar gpx_foot[] = "</rte>\n\n</gpx>\n";
-
-	GtkWidget *dialog;
-	FILE *routefile;
-	gchar filepath[500];
-	gchar *t_path;
-	GTimeVal current_time;
-	GtkTreeIter iter;
-	gchar *t_name, *t_cmt, *t_type;
-	gdouble t_lat, t_lon;
-
-
-
-	if (usedefault)
-	{
-		g_snprintf (filepath, sizeof (filepath), "%sroutesaved.gpx", local_config.dir_home);
-	}
-	else
-	{
-		dialog = gtk_file_chooser_dialog_new ("Save Route File",
-			GTK_WINDOW (main_window),
-			GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_SAVE, GTK_RESPONSE_ACCEPT,
-			NULL);
-
-		gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
-		gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), local_config.dir_routes);
-		gtk_file_chooser_set_current_name (GTK_FILE_CHOOSER (dialog), "default.gpx");
-
-		if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_ACCEPT)
-		{
-			t_path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (dialog));
-			g_strlcpy (filepath, t_path, sizeof (filepath));
-			g_free(t_path);
-		}
-		gtk_widget_destroy (dialog);
-	}
-
-	if (filepath == NULL)
-		return FALSE;
-
-	routefile = fopen(filepath, "w+t");
-	if(routefile == NULL)
-	{
-		perror (filepath);
-		return FALSE;
-	}
-	g_get_current_time (&current_time);
-	fprintf (routefile, gpx_head,
-		PACKAGE_VERSION, route.name, route.desc,
-		 g_get_real_name (), g_time_val_to_iso8601 (&current_time),
-		route.name, route.desc, route.src);
-
-	gtk_tree_model_get_iter_first (GTK_TREE_MODEL (route_list_tree), &iter);
-	do
-	{
-		gtk_tree_model_get
-			(GTK_TREE_MODEL (route_list_tree), &iter,
-			ROUTE_NAME, &t_name,
-			ROUTE_LON, &t_lon,
-			ROUTE_LAT, &t_lat,
-			ROUTE_CMT, &t_cmt,
-			ROUTE_TYPE, &t_type,
-			-1);
-		fprintf (routefile, "  <rtept lat=\"%.6f\" lon=\"%.6f\">\n",
-			t_lat, t_lon);
-		if (strlen (t_name))
-			fprintf (routefile, "    <name>%s</name>\n", t_name);
-		if (strncmp (t_cmt, "n/a", 3) != 0)
-			fprintf (routefile, "    <cmt>%s</cmt>\n", t_cmt);
-		fprintf (routefile, "    <type>%s</type>\n", t_type);
-		fprintf (routefile, "  </rtept>\n");
-	}
-	while (gtk_tree_model_iter_next (GTK_TREE_MODEL
-		(route_list_tree), &iter));
-
-	fprintf (routefile, gpx_foot);
-
-	fclose (routefile);
-	g_free (t_name);
-	g_free (t_cmt);
-	g_free (t_type);
-
-	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-		current.statusbar_id,
-		_("Route saved"));
+	const gchar foo[] =
+		"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n"
+		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+		"xmlns=\"http://www.topografix.com/GPX/1/0\"\n"
+		"xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"
+		" http://www.topografix.com/GPX/1/0/gpx.xsd\"\n";
 
 	return TRUE;
 }

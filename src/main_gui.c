@@ -294,7 +294,7 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;
 		case MENU_LOADWPT:	loadgpx_cb (GPX_WPT); break;
 		case MENU_SAVETRACK:	savegpx_cb (GPX_TRK); break;
-		case MENU_SAVEROUTE:	route_export_cb (NULL, FALSE); break;
+		case MENU_SAVEROUTE:	savegpx_cb (GPX_RTE); break;
 		case MENU_SENDMSG:	sel_message_cb (NULL, 0); break;
 		case MENU_SETTINGS:	settings_main_cb (NULL, 0); break;
 		case MENU_HELPABOUT:	about_cb (NULL, 0); break;
@@ -491,6 +491,39 @@ scalerbt_cb (GtkWidget *widget, guint datum)
 	current.needtosave = TRUE;
 
 	return TRUE;
+}
+
+
+/*******************************************************************************
+ * Draw the type of the current map on the screen.
+ *  When mapnik live rendering is used, nothing will be drawn.
+ */
+void
+draw_maptype (void)
+{
+	PangoFontDescription *pfd;
+	PangoLayout *layout_filename;
+	gint cx, cy;
+
+	layout_filename = gtk_widget_create_pango_layout
+		(map_drawingarea, current.maptype);
+	pfd = pango_font_description_from_string ("Sans 9");
+	pango_layout_set_font_description (layout_filename, pfd);
+	pango_layout_get_pixel_size (layout_filename, &cx, &cy);
+
+	gdk_gc_set_function (kontext_map, GDK_OR);
+	gdk_gc_set_foreground (kontext_map, &colors.mygray);
+	gdk_draw_rectangle (drawable, kontext_map, 1,
+		0, 0, cx, cy);
+	gdk_gc_set_function (kontext_map, GDK_COPY);
+	gdk_gc_set_foreground (kontext_map, &colors.blue);
+
+	gdk_draw_layout_with_colors (drawable, kontext_map,
+		0, 0, layout_filename, &colors.blue, NULL);
+	if (layout_filename != NULL)
+		g_object_unref (G_OBJECT (layout_filename));
+	/* freeing PangoFontDescription, cause it has been copied by prev. call */
+	pango_font_description_free (pfd);
 }
 
 
@@ -1537,7 +1570,6 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVETRACK);
 	g_signal_connect (menuitem_saveroute, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVEROUTE);
-	gtk_widget_set_sensitive (menuitem_saveroute, FALSE);
 
 	menuitem_sendmsg =
 		gtk_image_menu_item_new_with_label (_("Send Message"));

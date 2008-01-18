@@ -69,6 +69,7 @@ typedef struct
 	gdouble poi_searchradius;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
 	gint simmode;
+	gboolean showmaptype;
 	gboolean showgrid;
 	gboolean showshadow;
 	gboolean showzoom;

@@ -151,7 +151,6 @@ struct dbus_gps_fix dbus_old_fix, dbus_current_fix;
 #define NAN (0.0/0.0)
 #endif
 #endif
-int nmeaverbose = 0;
 gint bigp = 0, bigpGGA = 0, bigpRME = 0, bigpGSA = 0, bigpGSV = 0;
 gint lastp = 0, lastpGGA = 0, lastpRME = 0, lastpGSA = 0, lastpGSV = 0;
 gint sock = -1;

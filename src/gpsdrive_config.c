@@ -259,6 +259,7 @@ writeconfig ()
 	fprintf (fp, "poi_filter = %s\n", local_config.poi_filter);
 
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
+	fprintf (fp, "show_maptype = %d\n", local_config.showmaptype);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
 	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
@@ -504,6 +505,8 @@ readconfig ()
 					sizeof (local_config.poi_filter));
 			else if ( (strcmp(par1, "draw_grid")) == 0)
 				local_config.showgrid = atoi (par2);
+			else if ( (strcmp(par1, "show_maptype")) == 0)
+				local_config.showmaptype = atoi (par2);
 			else if ( (strcmp(par1, "show_zoom")) == 0)
 				local_config.showzoom = atoi (par2);
 			else if ( (strcmp(par1, "show_scalebar")) == 0)
@@ -562,6 +565,7 @@ config_init ()
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;
 	local_config.maxcpuload = 40;
+	local_config.showmaptype = FALSE;
 	local_config.showgrid = FALSE;
 	local_config.showshadow = FALSE;
 	local_config.showzoom = TRUE;

@@ -398,7 +398,6 @@ extern gint haveNMEA;
 #ifdef DBUS_ENABLE
 extern gint useDBUS;
 #endif
-extern int nmeaverbose;
 extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
@@ -800,7 +799,11 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 	{
 		writeconfig ();
 		if (route.items && !route.active)
-			route_export_cb (NULL, TRUE);
+		{
+			gchar t_buf[500];
+			g_snprintf (t_buf, sizeof (t_buf), "%sroutesaved.gpx", local_config.dir_home);
+			gpx_file_write (t_buf, GPX_RTE);
+		}
 	}
 
 	if (local_config.MapnikStatusInt < 2)
@@ -1416,8 +1419,13 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (local_config.showzoom && local_config.guimode != GUI_PDA)
 		draw_zoomlevel ();
 
-	if (mydebug > 10 && !local_config.MapnikStatusInt)
-		draw_infotext (g_path_get_basename (mapfilename));
+	if (!local_config.MapnikStatusInt)
+	{
+		if (local_config.showmaptype)
+			draw_maptype ();	
+		if (mydebug > 10)
+			draw_infotext (g_path_get_basename (mapfilename));
+	}
 
 	if (havekismet && (kismetsock>=0))
 	{
@@ -2671,6 +2679,17 @@ usage ()
 
 
 /* *****************************************************************************
+ * on a TERM signal, do a clean shutdown
+ */
+#ifndef _WIN32
+void termhandler (int sig)
+{
+	gtk_main_quit ();
+}
+#endif
+
+
+/* *****************************************************************************
  * on a USR2 signal, re-start the GPS connection  
  */
 void
@@ -2724,9 +2743,6 @@ parse_cmd_args(int argc, char *argv[]) {
 		    break;
 		case 's':
 		    nosplash = TRUE;
-		    break;
-		case 'E':
-		    nmeaverbose = TRUE;
 		    break;
 		case 'q':
 		    usesql = FALSE;
@@ -2859,7 +2875,7 @@ int
 main (int argc, char *argv[])
 {
 
-    gchar buf[500];
+    gchar t_buf[500];
 
     gint i;
 
@@ -3156,8 +3172,8 @@ main (int argc, char *argv[])
     if( havekismet )
 	{
 	    g_print (_("\nkismet server found\n"));
-	    g_snprintf( buf, sizeof(buf), speech_kismet_found[voicelang] );
-	    speech_out_speek (buf);
+	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
+	    speech_out_speek (t_buf);
 	}
 
 
@@ -3241,14 +3257,10 @@ main (int argc, char *argv[])
 	}
 
     /*
-     * setup TERM signal handler so that we can save evrything nicely when the
+     * setup TERM signal handler so that we can save everything nicely when the
      * machine is shutdown.
      */
 #ifndef _WIN32
-    void termhandler (int sig)
-	{
-	    gtk_main_quit ();
-	}
     signal (SIGTERM, termhandler);
 #endif
 
@@ -3301,6 +3313,16 @@ main (int argc, char *argv[])
     unlink ("/tmp/gpsdrivepos");
     if (local_config.savetrack)
 	savetrackfile (2);
+
+	/* save route and track to gpx on shutdown */
+	g_snprintf (t_buf, sizeof (t_buf),"%stracksaved.gpx",local_config.dir_home);
+	gpx_file_write (t_buf, GPX_TRK);
+	if (route.items)
+	{
+		g_snprintf (t_buf, sizeof (t_buf),"%sroutesaved.gpx",local_config.dir_home);
+		gpx_file_write (t_buf, GPX_RTE);
+	}
+
     sqlend ();
     free (friends);
     free (fserver);

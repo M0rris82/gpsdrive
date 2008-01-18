@@ -755,6 +755,7 @@ get_poitype_tree (void)
 			iconsxml_file);
 		fprintf (stderr, _("Please install the program as root with: "
 			"make install\n\n"));
+		exit (EXIT_FAILURE);
 		return;
 	}
 	if (mydebug > 10)

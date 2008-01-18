@@ -52,6 +52,7 @@ Disclaimer: Please do not use for navigation.
 #include "poi_gui.h"
 #include "routes.h"
 #include "main_gui.h"
+#include "gpx.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -1334,8 +1335,8 @@ void route_window_cb (GtkWidget *calling_button)
 	gtk_tooltips_set_tip ( tooltips_routewindow, button_routesave, 
 		_("Export current route to a GPX File"), NULL);
 	gtk_widget_set_sensitive (button_routesave, FALSE);
-	g_signal_connect (button_routesave, "clicked",
-		GTK_SIGNAL_FUNC (route_export_cb), FALSE);
+	g_signal_connect_swapped (button_routesave, "clicked",
+		GTK_SIGNAL_FUNC (savegpx_cb), (gpointer) GPX_RTE);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");

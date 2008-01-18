@@ -41,7 +41,6 @@ void add_quickpoint_to_route ();
 void add_arbitrary_point_to_route
 	(gchar *name, gchar *cmt, gchar *type, gdouble lat, gdouble lon);
 void route_init (gchar *name, gchar *desc, gchar *src);
-gboolean route_export_cb (GtkWidget *widget, gboolean usedefault);
 
 void add_poi_to_route (GtkTreeModel *model, GtkTreeIter iter);
 
