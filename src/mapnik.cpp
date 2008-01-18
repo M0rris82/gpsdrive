@@ -152,11 +152,11 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
 	
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location   
-    string mapnik_config_file("./scripts/mapnik/osm.xml");
+    string mapnik_config_file("./scripts/mapnik/osm-template.xml");
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign("../scripts/mapnik/osm.xml");
+	mapnik_config_file.assign("../scripts/mapnik/osm-template.xml");
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign(DATADIR).append("/mapnik/osm.xml");
+	mapnik_config_file.assign(DATADIR).append("/gpsdrive/osm-template.xml");
     if (mydebug > 0) cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
     
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) {
