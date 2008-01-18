@@ -113,9 +113,9 @@ rm -rf %{_builddir}/%{name}-%{version}
 %{_datadir}/applications/gpsdrive.desktop
 
 %{_prefix}/share/gpsdrive
-%{_prefix}/share/map-icons/classic
-%{_prefix}/share/map-icons/square.big
-%{_prefix}/share/map-icons/square.small
+%{_prefix}/share/icons/map-icons/classic
+%{_prefix}/share/icons/map-icons/square.big
+%{_prefix}/share/icons/map-icons/square.small
 
 %{_prefix}/share/locale/*/LC_MESSAGES/*
 
