@@ -15,7 +15,7 @@ configure-stamp:
 	# Add here commands to configure the package.
 	rm -f CMakeCache.txt
 	mkdir -p build
-	cd build; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info ..
+	cd build; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info -DDATADIR=/usr/share ..
 
 	touch configure-stamp
 
@@ -65,7 +65,7 @@ install: build
 	# remove perl modules since they are in the 
 	# openstreetmap-utils package
 	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
-	rm -rf debian/gpsdrive/usr/local/share/gpsdrive/maps
+	rm -rf debian/gpsdrive/usr/share/gpsdrive/maps
 
 # Build architecture-independent files here.
 binary-indep: build install

@@ -215,9 +215,10 @@ read_icon (gchar * icon_name, int force)
     {"../data/pixmaps/", NULL},
     {"%spixmaps/", (gchar *) local_config.dir_home},
     {"%smap-icons/", (gchar *) local_config.dir_home},
+    {"%s/icons/map-icons/", (gchar *) DATADIR},
     {"%s/map-icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},
-    {"%s/map-icons/", "/usr/share"},
+    {"%s/icons/map-icons/", "/usr/share"},
     {"%s/gpsdrive/pixmaps/", "/usr/share"},
     {"END", NULL}
   };
@@ -313,7 +314,9 @@ read_themed_icon (gchar * icon_name)
     {
       fprintf (stderr, "read_themed_icon([%s] %s): No Icon '%s' found for theme %s\n",
 	       local_config.icon_theme, icon_name, icon_name, local_config.icon_theme);
-      //exit (-1);
+      if ( do_unit_test ) {
+	  exit (-1);
+      }
     }
   return NULL;
 }
