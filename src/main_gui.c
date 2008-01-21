@@ -1867,6 +1867,8 @@ void create_controls_mainbox (void)
 
 	/* BUTTONS VBOX */
 	{
+	        if ( mydebug > 11 )
+			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
 		gboolean wide = FALSE;
 		if (local_config.guimode == GUI_CAR)
 			wide = TRUE;
@@ -1892,11 +1894,16 @@ void create_controls_mainbox (void)
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				routing_bt, wide, wide, 1 * PADDING);
 		}
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			controlbox_bt, wide, wide, 1 * PADDING);
+		if (local_config.guimode != GUI_PDA)
+		    {
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+					    controlbox_bt, wide, wide, 1 * PADDING);
+		    }
 	}	/* END BUTTONS BOX */
 
 
+	if ( mydebug > 11 )
+	    fprintf(stderr,"create_controls_mainbox(mainbox_controls)\n");
 	if (local_config.guimode == GUI_PDA)
 	{
 		mainbox_controls = gtk_hbox_new (TRUE, 0 * PADDING);
