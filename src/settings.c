@@ -1736,10 +1736,10 @@ settings_wp (GtkWidget *notebook)
 	GtkTooltips *wp_tooltips;
 
 	GtkWidget *wpfile_rb[30];
-	DIR *d;
+	GDir *d;
+	const gchar *dat_name;
 	gchar path[400];
 	gchar *current_wpfile;
-	struct dirent *dat;
 	gint dircount = 0;
 	gint i;
 
@@ -1777,21 +1777,21 @@ settings_wp (GtkWidget *notebook)
 	g_strlcpy (path, local_config.dir_home, sizeof (path));
 	current_wpfile = g_strrstr (local_config.wp_file, "/") + 1;
 	names = g_new (namesstruct, 102);
-	d = opendir (path);
+	d = g_dir_open(path, 0, NULL);
 	if (NULL != d)
 	{
 		do
 		{
-			dat = readdir (d);
-			if (NULL != dat)
+			dat_name = g_dir_read_name(d);
+			if (NULL != dat_name)
 			{
-				if (	0 == strncmp (dat->d_name, "way", 3)
-					&& 0 == strncmp ((dat->d_name +
-					(strlen (dat->d_name) - 4)),".txt", 4)
+				if (	0 == strncmp (dat_name, "way", 3)
+					&& 0 == strncmp ((dat_name +
+					(strlen (dat_name) - 4)),".txt", 4)
 				   )
 				{
 					g_strlcpy ((names + dircount)->n,
-						dat->d_name, 200);
+						dat_name, 200);
 					dircount++;
 					if (dircount >= 100)
 					{
@@ -1803,9 +1803,10 @@ settings_wp (GtkWidget *notebook)
 				}
 			}
 		}
-		while (NULL != dat);
+		while (dat_name != NULL);
+
+        g_dir_close(d);
 	}
-	free (d);
 
 	wpqs_table = gtk_table_new (1 + (dircount - 1) / 2, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (wpqs_table), 5);

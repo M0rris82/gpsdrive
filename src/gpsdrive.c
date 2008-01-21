@@ -3278,6 +3278,7 @@ main (int argc, char *argv[])
 	if (!gtk_window_parse_geometry(GTK_WINDOW (main_window), geometry)) {
 	    fprintf(stderr, "Failed to parse %s\n", geometry);
 	}
+	}
 #endif
 
     // Initialize Track Filename

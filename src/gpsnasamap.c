@@ -95,7 +95,6 @@ convnasamap creates mapfiles from the big nasa map files
 
 */
 
-#include "os_specific.h"
 #include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -105,8 +104,9 @@ convnasamap creates mapfiles from the big nasa map files
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gpsdrive.h>
+#include "gpsdrive.h"
 #include "gpsdrive_config.h"
+#include "os_specific.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>

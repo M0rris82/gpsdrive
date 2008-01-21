@@ -38,8 +38,8 @@ Disclaimer: Please do not use for navigation.
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
 
-#include "gpsdrive.h"
 #include "config.h"
+#include "gpsdrive.h"
 #include "gettext.h"
 #include <gpsdrive_config.h>
 #include "gpx.h"
@@ -73,19 +73,19 @@ extern routestatus_struct route;
 
 enum node_type
 {
-	NODE_START = 1,
-	NODE_ATTR,
-	NODE_TEXT,
-	NODE_CDATA,
-	NODE_ENTITY_REFERENCE,
-	NODE_ENTITY_DECLARATION,
-	NODE_PI,
-	NODE_COMMENT,
-	NODE_DOC,
-	NODE_DTD,
-	NODE_DOC_FRAGMENT,
-	NODE_NOTATION,
-	NODE_END = 15
+	GPX_NODE_START = 1,
+	GPX_NODE_ATTR,
+	GPX_NODE_TEXT,
+	GPX_NODE_CDATA,
+	GPX_NODE_ENTITY_REFERENCE,
+	GPX_NODE_ENTITY_DECLARATION,
+	GPX_NODE_PI,
+	GPX_NODE_COMMENT,
+	GPX_NODE_DOC,
+	GPX_NODE_DTD,
+	GPX_NODE_DOC_FRAGMENT,
+	GPX_NODE_NOTATION,
+	GPX_NODE_END = 15
 };
 
 
@@ -194,37 +194,37 @@ static void gpx_handle_gpxinfo_v11 (xmlTextReaderPtr xml_reader, xmlChar *node_n
 	node_type = xmlTextReaderNodeType(xml_reader);
 	node_name = xmlTextReaderName(xml_reader);
 
-	while (!xmlStrEqual(node_name, BAD_CAST "metadata") || node_type != NODE_END)
+	while (!xmlStrEqual(node_name, BAD_CAST "metadata") || node_type != GPX_NODE_END)
 	{
 		xml_status = xmlTextReaderRead(xml_reader);
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
-		if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == NODE_START)
+		if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == GPX_NODE_START)
 		{
 			xml_status = xmlTextReaderRead(xml_reader);
 			g_snprintf(gpx_info.name, sizeof(gpx_info.name),
 				"%s", xmlTextReaderConstValue(xml_reader));
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "desc") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "desc") && node_type == GPX_NODE_START)
 		{
 			xml_status = xmlTextReaderRead(xml_reader);
 			g_snprintf(gpx_info.desc, sizeof(gpx_info.desc),
 				"%s", xmlTextReaderConstValue(xml_reader));
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "author") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "author") && node_type == GPX_NODE_START)
 		{
-			while (!xmlStrEqual(node_name, BAD_CAST "author") || node_type != NODE_END)
+			while (!xmlStrEqual(node_name, BAD_CAST "author") || node_type != GPX_NODE_END)
 			{
 				xml_status = xmlTextReaderRead(xml_reader);
 				node_type = xmlTextReaderNodeType(xml_reader);
 				node_name = xmlTextReaderName(xml_reader);
-				if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == NODE_START)
+				if (xmlStrEqual(node_name, BAD_CAST "name") && node_type == GPX_NODE_START)
 				{
 					xml_status = xmlTextReaderRead(xml_reader);
 					g_snprintf(gpx_info.author, sizeof(gpx_info.author), "%s",
 						xmlTextReaderConstValue(xml_reader));
 				}
-				else if (xmlStrEqual(node_name, BAD_CAST "email") && node_type == NODE_START)
+				else if (xmlStrEqual(node_name, BAD_CAST "email") && node_type == GPX_NODE_START)
 				{
 					g_snprintf(gpx_info.email, sizeof(gpx_info.email), "%s@%s",
 						xmlTextReaderGetAttribute (xml_reader, BAD_CAST "id"),
@@ -232,22 +232,22 @@ static void gpx_handle_gpxinfo_v11 (xmlTextReaderPtr xml_reader, xmlChar *node_n
 				}
 			}
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "link") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "link") && node_type == GPX_NODE_START)
 		{
-			while (!xmlStrEqual(node_name, BAD_CAST "link") || node_type != NODE_END)
+			while (!xmlStrEqual(node_name, BAD_CAST "link") || node_type != GPX_NODE_END)
 			{
 				g_snprintf(gpx_info.url, sizeof(gpx_info.url), "%s",
 						xmlTextReaderGetAttribute (xml_reader, BAD_CAST "href"));
 				xml_status = xmlTextReaderRead(xml_reader);
 				node_type = xmlTextReaderNodeType(xml_reader);
 				node_name = xmlTextReaderName(xml_reader);
-				if (xmlStrEqual(node_name, BAD_CAST "text") && node_type == NODE_START)
+				if (xmlStrEqual(node_name, BAD_CAST "text") && node_type == GPX_NODE_START)
 				{
 					xml_status = xmlTextReaderRead(xml_reader);
 					g_snprintf(gpx_info.urlname, sizeof(gpx_info.urlname), "%s",
 						xmlTextReaderConstValue(xml_reader));
 				}
-				else if (xmlStrEqual(node_name, BAD_CAST "type") && node_type == NODE_START)
+				else if (xmlStrEqual(node_name, BAD_CAST "type") && node_type == GPX_NODE_START)
 				{
 					xml_status = xmlTextReaderRead(xml_reader);
 					g_snprintf(gpx_info.urltype, sizeof(gpx_info.urltype), "%s",
@@ -255,19 +255,19 @@ static void gpx_handle_gpxinfo_v11 (xmlTextReaderPtr xml_reader, xmlChar *node_n
 				}
 			}
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "time") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "time") && node_type == GPX_NODE_START)
 		{
 			xml_status = xmlTextReaderRead(xml_reader);
 			g_snprintf(gpx_info.time, sizeof(gpx_info.time),
 				"%s", xmlTextReaderConstValue(xml_reader));
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "keywords") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "keywords") && node_type == GPX_NODE_START)
 		{
 			xml_status = xmlTextReaderRead(xml_reader);
 			g_snprintf(gpx_info.keywords, sizeof(gpx_info.keywords),
 				"%s", xmlTextReaderConstValue(xml_reader));
 		}
-		else if (xmlStrEqual(node_name, BAD_CAST "bounds") && node_type == NODE_START)
+		else if (xmlStrEqual(node_name, BAD_CAST "bounds") && node_type == GPX_NODE_START)
 		{
 			gpx_info.bounds[0] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "minlat"), NULL);
 			gpx_info.bounds[1] = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "minlon"), NULL);
@@ -394,13 +394,13 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 
 	gpx_info.points++;
 
-	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != NODE_END)
+	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != GPX_NODE_END)
 	{
 		xml_status = xmlTextReaderRead(xml_reader);
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
 
-		if (node_type == NODE_START)
+		if (node_type == GPX_NODE_START)
 		{
 			if (xmlStrEqual(node_name, BAD_CAST "name"))
 			{
@@ -540,13 +540,13 @@ static void gpx_handle_rte_trk (xmlTextReaderPtr xml_reader, const gchar *mode_s
 	if (mydebug > 20)
 		fprintf (stderr, "gpx_handle_rte_trk: Parsing <%s>\n", mode_string);
 
-	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != NODE_END)
+	while (!xmlStrEqual(node_name, BAD_CAST mode_string) || node_type != GPX_NODE_END)
 	{
 		xml_status = xmlTextReaderRead(xml_reader);
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
 
-		if (node_type == NODE_START)
+		if (node_type == GPX_NODE_START)
 		{
 			if (xmlStrEqual(node_name, BAD_CAST "rtept"))
 				gpx_handle_point (xml_reader, "rtept");
@@ -661,7 +661,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 		node_type = xmlTextReaderNodeType(xml_reader);
 		node_name = xmlTextReaderName(xml_reader);
 		
-		if (node_type == NODE_START)
+		if (node_type == GPX_NODE_START)
 		{
 			if (xmlStrEqual(node_name, BAD_CAST "wpt"))
 			{
@@ -670,7 +670,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 				else
 				{
 					gpx_info.wpt_count++;
-					while (!xmlStrEqual(node_name, BAD_CAST "wpt") || node_type != NODE_END)
+					while (!xmlStrEqual(node_name, BAD_CAST "wpt") || node_type != GPX_NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
 						node_type = xmlTextReaderNodeType(xml_reader);
@@ -685,7 +685,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 				else
 				{
 					gpx_info.rte_count++;
-					while (!xmlStrEqual(node_name, BAD_CAST "rte") || node_type != NODE_END)
+					while (!xmlStrEqual(node_name, BAD_CAST "rte") || node_type != GPX_NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
 						node_type = xmlTextReaderNodeType(xml_reader);
@@ -693,7 +693,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 						if (gpx_mode == GPX_INFO)
 						{
 							if (xmlStrEqual(node_name, BAD_CAST "rtept")
-								&& node_type == NODE_START)
+								&& node_type == GPX_NODE_START)
 								gpx_info.rtept_count++;
 						}
 					}
@@ -709,7 +709,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 				else
 				{
 					gpx_info.trk_count++;
-					while (!xmlStrEqual(node_name, BAD_CAST "trk") || node_type != NODE_END)
+					while (!xmlStrEqual(node_name, BAD_CAST "trk") || node_type != GPX_NODE_END)
 					{
 						xml_status = xmlTextReaderRead(xml_reader);
 						node_type = xmlTextReaderNodeType(xml_reader);
@@ -717,7 +717,7 @@ gint gpx_file_read (gchar *gpx_file, gint gpx_mode)
 						if (gpx_mode == GPX_INFO)
 						{
 							if (xmlStrEqual(node_name, BAD_CAST "trkpt")
-								&& node_type == NODE_START)
+								&& node_type == GPX_NODE_START)
 								gpx_info.trkpt_count++;
 						}
 					}
