@@ -424,33 +424,51 @@ gchar
  * switch nightmode on or off
  *
  * TODO:
- *	Currently the Nightmode is represented by changing only the map
- *	colors, but the rest of the GUI stays the same.
+ *	Currently the Nightmode is represented by changing only the
+ *      the bg_color of the main window and the map colors for mapnik,
+ *      but the rest of the GUI stays the same.
  *	Maybe we should switch the gtk-theme instead, so that the complete
  *	GUI changes the colors. But this has time until after the 2.10 release.
  */
 gint switch_nightmode (gboolean value)
 {
-	if (value && !gui_status.nightmode)
+    int res=FALSE;
+    if (value && !gui_status.nightmode)
 	{
-		gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
-			&colors.nightmode);
-		gui_status.nightmode = TRUE;
-		//if (mydebug > 4)
-			fprintf (stderr, "setting to night view\n");
-		return TRUE;
+	    gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
+				  &colors.nightmode);
+	    gui_status.nightmode = TRUE;
+	    if (mydebug > 1)
+		fprintf (stderr, "setting to night view\n");
+	    res = TRUE;
 	}
-	else if (!value && gui_status.nightmode)
+    else if (!value && gui_status.nightmode)
 	{
-		gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
-				      &colors.defaultcolor);
-		gui_status.nightmode = FALSE;
-		//if (mydebug > 4)
-			fprintf (stderr, "setting to daylight view\n");
-		return TRUE;
+	    gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL,
+				  &colors.defaultcolor);
+	    gui_status.nightmode = FALSE;
+	    if (mydebug > 1)
+		fprintf (stderr, "setting to daylight view\n");
+	    res = TRUE;
 	}
-	
-	return FALSE;
+    
+#ifdef MAPNIK
+    /* reinit mapnik to reflect bg_color changes */
+    if ( res && local_config.MapnikStatusInt ) {
+	if ( gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name(), 
+				   value ))
+	{
+	    init_mapnik(local_config.mapnik_xml_file);
+	}
+    else
+	{
+	    fprintf(stderr,"Could not init Mapnik, disabling Mapnik Support!\n");
+	    local_config.MapnikStatusInt = 0; // <-- disable mapnik
+	}
+    }
+#endif
+    
+    return res;
 }
 
 
@@ -601,7 +619,8 @@ int gui_init (gchar *geometry, gint usegeometry)
 
 #ifdef MAPNIK
 	/* init mapnik before gui */
-	if (gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name()))
+	if ( gen_mapnik_config_xml_ysn(local_config.mapnik_xml_file, (char*) g_get_user_name(), 
+	     use_night_colors() ))
 	{
 		init_mapnik(local_config.mapnik_xml_file);
 	}

@@ -286,6 +286,7 @@ int posxy_on_screen (gdouble posx, gdouble posy);
 
 void init_lat2RadiusArray();
 int display_background_map ();
+int use_night_colors (void);
 
 typedef struct
 {

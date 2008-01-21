@@ -17,7 +17,7 @@
 
 void init_mapnik(char *ConfigXML);
 int active_mapnik_ysn();
-int gen_mapnik_config_xml_ysn(char *Dest, char *Username);
+int gen_mapnik_config_xml_ysn(char *Dest, char *Username,int night_color_replace);
 int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pForceNewCenterYsn, const int pScaleLevelInt);
 void render_mapnik ( );
 unsigned char *get_mapnik_imagedata ( );

@@ -23,7 +23,6 @@
 #include <mapnik/memory_datasource.hpp>
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
-#include <string>
 #include <fstream>
 
 #include "mapnik.h"
@@ -40,6 +39,7 @@ using mapnik::CoordTransform;
 
 extern int mydebug;
 extern int borderlimit;
+
 
 mapnik::projection Proj("+proj=merc +datum=WGS84");
 
@@ -148,7 +148,7 @@ int active_mapnik_ysn() {
  * Generate the local mapnik config xml
  */
 extern "C"
-int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
+int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replace) {
 	
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location   
@@ -164,24 +164,30 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username) {
 	cout << "Cannot find Mapnik config-file: " << mapnik_config_file << endl;
     	return 0;
     }
-    
+   
     // load files
  
-	ifstream InputXML (mapnik_config_file.c_str());
-	ofstream DestXML (Dest);
-	
-	if (InputXML && DestXML) {
-		if (InputXML.is_open()) {
-			string s ;
-			while (getline(InputXML, s)) {
-				DestXML << ReplaceString("@USER@", Username, s) << endl;
-			}
+    ifstream InputXML (mapnik_config_file.c_str());
+    ofstream DestXML (Dest);
+    
+    if (mydebug > 0) cout << "Mapnik convert: " << mapnik_config_file << " : " << Dest << endl;
+    if (InputXML && DestXML) {
+	if (InputXML.is_open()) {
+	    string s ;
+	    while (getline(InputXML, s)) {
+		s.assign(ReplaceString("@USER@", Username, s));
+		if ( night_color_replace ) {
+		    s.assign(ReplaceString("bgcolor=\"#b5d0d0\"" , "bgcolor=\"#330033\"", s));
 		}
+		DestXML << s  << endl;
+	    }
 	}
-	InputXML.close();
-	DestXML.close();
+    }
+    InputXML.close();
+    DestXML.close();
+    if (mydebug > 0) cout << "Mapnik convert to "  << Dest << "done." << endl;
 	
-	return -1;
+    return -1;
 }
 
 /*

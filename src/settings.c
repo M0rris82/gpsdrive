@@ -2379,6 +2379,22 @@ testifnight (void)
     }
 }
 
+int
+use_night_colors (void)
+{
+    if ( disableisnight) {
+	return 0;
+    }
+    if ( local_config.nightmode == NIGHT_ON) {
+	return 1;
+    }
+    if ( (local_config.nightmode == NIGHT_AUTO) && isnight) {
+	return 1;
+    }
+    return 0;
+}
+
+
 /* *****************************************************************************
  */
 gint
