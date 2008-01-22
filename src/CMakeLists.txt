@@ -10,7 +10,7 @@ find_package(XML2 REQUIRED)
 find_package(Freetype2 REQUIRED)
 
 if (WITH_MAPNIK)
-  find_package(Boost REQUIRED)
+  find_package(Boost COMPONENTS filesystem REQUIRED)
   find_package(Mapnik REQUIRED)
   add_definitions(-DMAPNIK)
 endif (WITH_MAPNIK)
@@ -35,7 +35,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${XML2_INCLUDE_DIRS}
   ${MAPNIK_INCLUDE_DIRS}
   ${FREETYPE2_INCLUDE_DIRS}
-  ${BOOST_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -49,7 +49,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${XML2_LIBRARIES}
   ${MAPNIK_LIBRARIES}
   ${FREETYPE_LIBRARIES}
-  ${BOOST_FILESYSTEM_LIBRARY}
+  ${Boost_FILESYSTEM_LIBRARY}
 )
 
 set(gpsdrive_SRCS
