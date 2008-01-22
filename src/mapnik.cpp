@@ -235,30 +235,30 @@ int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pFo
 			mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
 			Proj.forward(Pt.x, Pt.y);
 			/* pan right or left? */
-			if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) < Pt.x) {
+			if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - borderlimit) * res) < Pt.x) {
 				/* pan right */
 				if (mydebug > 30) cout << "pan right\n";
-				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
+				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
-			} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - MapnikMap.BorderlimitInt) * res) > Pt.x) {
+			} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - borderlimit) * res) > Pt.x) {
 				/* pan left */
 				if (mydebug > 30) cout << "pan left\n";
-				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - MapnikMap.BorderlimitInt * 2) * res;
+				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			}
 			/* pan up or down? */
-			if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) < Pt.y) {
+			if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - borderlimit) * res) < Pt.y) {
 				/* pan up */
 				if (mydebug > 30) cout << "pan up\n";
-				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
+				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
-			} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - MapnikMap.BorderlimitInt) * res) > Pt.y) {
+			} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - borderlimit) * res) > Pt.y) {
 				/* pan down */
 				if (mydebug > 30) cout << "pan down\n";
-				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - MapnikMap.BorderlimitInt * 2) * res;
+				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			}

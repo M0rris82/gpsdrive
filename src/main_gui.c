@@ -1861,7 +1861,7 @@ void create_controls_mainbox (void)
 	/* MAP TYPE */
 	{
 	        if ( mydebug > 11 )
-			fprintf(stderr,"create_controls_mainbox(Bottons: MAP TYPE)\n");
+			fprintf(stderr,"create_controls_mainbox(Buttons: MAP TYPE)\n");
 		frame_maptype = make_display_map_checkboxes();
 	}	/* END MAP TYPE */
 
@@ -1895,10 +1895,10 @@ void create_controls_mainbox (void)
 				routing_bt, wide, wide, 1 * PADDING);
 		}
 		if (local_config.guimode != GUI_PDA)
-		    {
+		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-					    controlbox_bt, wide, wide, 1 * PADDING);
-		    }
+				controlbox_bt, wide, wide, 1 * PADDING);
+		}
 	}	/* END BUTTONS BOX */
 
 
