@@ -1,107 +1,104 @@
 # Swedish translation of gpsdrive
-# Copyright (C) 2002, 2004, 2006, 2007 Free Software Foundation, Inc.
-# Daniel Nylander <po@danielnylander.se>, 2006, 2007.
+# Copyright (C) 2002, 2004, 2006, 2007, 2008 Free Software Foundation, Inc.
+# Daniel Nylander <po@danielnylander.se>, 2006, 2007, 2008.
 # Martin Sjögren <md9ms@mdstud.chalmers.se>, 2002.
-# Fritz Ganter <ganter@ganter.at>, 2004
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive 2.10.20070223\n"
+"Project-Id-Version: gpsdrive 2.10pre4\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-07-22 22:36+0200\n"
-"PO-Revision-Date: 2007-07-25 15:56+0100\n"
+"POT-Creation-Date: 2007-09-15 19:17+0200\n"
+"PO-Revision-Date: 2008-01-24 22:24+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/battery.c:807
+#: src/battery.c:806
 msgid "Bat."
 msgstr "Batt."
 
-#: src/battery.c:842
+#: src/battery.c:841
 msgid "TC"
 msgstr "TC"
 
-#: src/download_map.c:170 src/download_map.c:307
+#: src/download_map.c:166 src/download_map.c:304
 msgid "can't open socket for port 80"
 msgstr "kan inte öppna uttag (socket) för port 80"
 
-#: src/download_map.c:173 src/download_map.c:177 src/download_map.c:205
-#: src/download_map.c:209 src/download_map.c:226 src/download_map.c:230
-#: src/download_map.c:310 src/download_map.c:315 src/download_map.c:319
-#: src/download_map.c:356 src/download_map.c:361 src/download_map.c:365
-#: src/download_map.c:383 src/download_map.c:388 src/download_map.c:392
+#: src/download_map.c:169 src/download_map.c:173 src/download_map.c:202
+#: src/download_map.c:206 src/download_map.c:223 src/download_map.c:227
+#: src/download_map.c:307 src/download_map.c:312 src/download_map.c:316
+#: src/download_map.c:353 src/download_map.c:358 src/download_map.c:362
+#: src/download_map.c:380 src/download_map.c:385 src/download_map.c:389
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Anslutning till %s MISSLYCKADES!"
 
-#: src/download_map.c:202 src/download_map.c:353
+#: src/download_map.c:199 src/download_map.c:350
 msgid "Can't resolve webserver address"
 msgstr "Kan inte slå upp webbserverns adress"
 
-#: src/download_map.c:223 src/download_map.c:380
+#: src/download_map.c:220 src/download_map.c:377
 msgid "unable to connect to Website"
 msgstr "kunde inte ansluta till webbplatsen"
 
-#: src/download_map.c:257 src/download_map.c:451
+#: src/download_map.c:254 src/download_map.c:448
 msgid "read from Webserver"
-msgstr "läsning från webbserver"
+msgstr "läs från webbserver"
 
-#: src/download_map.c:288 src/download_map.c:293 src/download_map.c:296
+#: src/download_map.c:285 src/download_map.c:290 src/download_map.c:293
 #, c-format
 msgid "Connecting to %s"
 msgstr "Ansluter till %s"
 
-#: src/download_map.c:408 src/download_map.c:414 src/download_map.c:417
+#: src/download_map.c:405 src/download_map.c:411 src/download_map.c:414
 #, c-format
 msgid "Now connected to %s"
 msgstr "Ansluten till %s"
 
-#: src/download_map.c:499
+#: src/download_map.c:496
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "Hämtade %d kilobyte"
 
-#: src/download_map.c:515
+#: src/download_map.c:512
 msgid "Download FAILED!"
 msgstr "Hämtningen MISSLYCKADES!"
 
-#: src/download_map.c:518
+#: src/download_map.c:515
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "Hämtningen är färdig, fick %d kB"
 
-#: src/download_map.c:826
+#: src/download_map.c:823
 msgid "Select coordinates and scale"
 msgstr "Välj koordinater och skala"
 
-#: src/download_map.c:829
+#: src/download_map.c:826
 msgid "Download map"
 msgstr "Hämta karta"
 
-#: src/download_map.c:857 src/gpsdrive.c:3305 src/gpsdrive.c:3389
-#: src/gpsdrive.c:4783 src/import_map.c:396 src/poi_gui.c:533 src/routes.c:408
-#: src/waypoint.c:721
+#: src/download_map.c:854 src/gpsdrive.c:2453 src/gpsdrive.c:2537
+#: src/import_map.c:383 src/poi_gui.c:574 src/routes.c:411 src/waypoint.c:744
 msgid "Latitude"
 msgstr "Latitud"
 
-#: src/download_map.c:859 src/gpsdrive.c:3305 src/gpsdrive.c:3389
-#: src/gpsdrive.c:4784 src/import_map.c:398 src/poi_gui.c:526 src/routes.c:408
-#: src/waypoint.c:735
+#: src/download_map.c:856 src/gpsdrive.c:2453 src/gpsdrive.c:2537
+#: src/import_map.c:385 src/poi_gui.c:567 src/routes.c:411 src/waypoint.c:758
 msgid "Longitude"
 msgstr "Longitud"
 
-#: src/download_map.c:861
+#: src/download_map.c:858
 msgid "Map covers"
 msgstr "Kartomslag"
 
-#: src/download_map.c:865 src/import_map.c:408
+#: src/download_map.c:862 src/import_map.c:395
 msgid "Scale"
 msgstr "Skala"
 
-#: src/download_map.c:899 src/download_map.c:903
+#: src/download_map.c:896 src/download_map.c:900
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -109,20 +106,16 @@ msgstr ""
 "Du kan också välja positionen\n"
 "med ett musklick på kartan."
 
-#: src/download_map.c:905
+#: src/download_map.c:902
 msgid "Using Proxy and port:"
 msgstr "Använder proxyserver och port:"
 
-#: src/download_map.c:999
+#: src/download_map.c:995
 #, c-format
-msgid ""
-"\n"
-"Using proxy: %s on port %d"
-msgstr ""
-"\n"
-"Använder proxyserver: %s på port %d"
+msgid "Using proxy: %s on port %d\n"
+msgstr "Använder proxyserver: %s på port %d\n"
 
-#: src/download_map.c:1005
+#: src/download_map.c:1001
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
@@ -130,58 +123,19 @@ msgstr ""
 "\n"
 "Ogiltig miljövariabel HTTP_PROXY, måste vara på formatet http://proxy.leverantör.se:3128"
 
-#: src/fly.c:163
-msgid "Aeronautical settings"
-msgstr "Flyginställningar"
-
-#: src/fly.c:166
-msgid "Fly"
-msgstr "Flyg"
-
-#: src/fly.c:174
-msgid "Plane mode"
-msgstr "Flygplansläge"
-
-#: src/fly.c:183
-msgid "Use VFR"
-msgstr "Använd VFR"
-
-#: src/fly.c:190
-msgid "Use IFR"
-msgstr "Använd IFR"
-
-#: src/fly.c:200
-msgid "max. horizontal deviation "
-msgstr "maximal horisontell avvikelse "
-
-#: src/fly.c:202
-msgid "max. vertical deviation "
-msgstr "maximal vertikal avvikelse "
-
-#: src/fly.c:219
-msgid "disable vert. deviation warning above 5000ft MSL"
-msgstr "stäng av varning för vertikal avvikelse över 5000 fot MSL"
-
-#: src/friends.c:431
-msgid "/Misc. Menu/Messages"
-msgstr "/Diversemeny/Meddelanden"
-
-#: src/friends.c:445 src/gpsdrive.c:799
+#: src/friends.c:446
 msgid "unknown"
 msgstr "okänt"
 
-#: src/friends.c:636 src/gpsdrive.c:4673 src/gpsdrive.c:4683
-#: src/settings.c:162 src/settings.c:172
+#: src/friends.c:644
 msgid "mi/h"
 msgstr "eng. mil/h"
 
-#: src/friends.c:638 src/gpsdrive.c:4675 src/gpsdrive.c:4686
-#: src/settings.c:164 src/settings.c:175
+#: src/friends.c:646
 msgid "knots"
 msgstr "knop"
 
-#: src/friends.c:640 src/gpsdrive.c:4677 src/gpsdrive.c:4689
-#: src/settings.c:166 src/settings.c:178
+#: src/friends.c:648
 msgid "km/h"
 msgstr "km/h"
 
@@ -203,71 +157,15 @@ msgstr ""
 "   %s -n servernamn\n"
 "tillhandahåller ett namn på din server\n"
 
-#: src/gpsdrive.c:458
-msgid "/_Menu"
-msgstr "/_Meny"
-
-#: src/gpsdrive.c:459
-msgid "/_Menu/_Maps"
-msgstr "/_Meny/_Kartor"
-
-#: src/gpsdrive.c:460
-msgid "/_Menu/_Maps/_Import"
-msgstr "/_Meny/_Kartor/_Importera"
-
-#: src/gpsdrive.c:461
-msgid "/_Menu/_Maps/_Download"
-msgstr "/_Meny/_Kartor/_Hämta"
-
-#: src/gpsdrive.c:462
-msgid "/_Menu/_Reinitialize GPS"
-msgstr "/_Meny/_Initiera om GPS"
-
-#: src/gpsdrive.c:464
-msgid "/_Menu/_Load track file"
-msgstr "/_Meny/_Läs in spårfil"
-
-#: src/gpsdrive.c:465
-msgid "/_Menu/M_essages"
-msgstr "/_Meny/M_eddelanden"
-
-#: src/gpsdrive.c:466
-msgid "/_Menu/M_essages/_Send message to mobile target"
-msgstr "/_Meny/M_eddelanden/_Skicka meddelande till mobilt mål"
-
-#: src/gpsdrive.c:468
-msgid "/_Menu/S_ettings"
-msgstr "/_Meny/_Inställningar"
-
-#: src/gpsdrive.c:470
-msgid "/_Menu/_Help"
-msgstr "/_Meny/_Hjälp"
-
-#: src/gpsdrive.c:471
-msgid "/_Menu/_Help/_About"
-msgstr "/_Meny/_Hjälp/_Om"
-
-#: src/gpsdrive.c:472
-msgid "/_Menu/_Help/_Topics"
-msgstr "/_Meny/_Hjälp/_Ämnen"
-
-#: src/gpsdrive.c:473
-msgid "/_Menu/_Quit"
-msgstr "/_Meny/A_vsluta"
-
-#: src/gpsdrive.c:807
-msgid "Auto"
-msgstr "Auto"
-
-#: src/gpsdrive.c:950
+#: src/gpsdrive.c:798
 msgid "Warning!"
 msgstr "Varning!"
 
-#: src/gpsdrive.c:952
+#: src/gpsdrive.c:800
 msgid "You should not start GpsDrive as user root!!!"
-msgstr "Du bör inte starta GpsDrive som root-användare!"
+msgstr "Du bör inte starta GpsDrive som root-användaren!"
 
-#: src/gpsdrive.c:1357
+#: src/gpsdrive.c:1206
 #, c-format
 msgid ""
 "\n"
@@ -282,149 +180,129 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/gpsdrive.c:1945
-msgid "NESW"
-msgstr "NÖSV"
+#: src/gpsdrive.c:1806
+msgid "N"
+msgstr "N"
 
-#: src/gpsdrive.c:2131
+#: src/gpsdrive.c:1813
+msgid "S"
+msgstr "S"
+
+#: src/gpsdrive.c:1819
+msgid "W"
+msgstr "V"
+
+#: src/gpsdrive.c:1825
+msgid "E"
+msgstr "Ö"
+
+#: src/gpsdrive.c:1900
 msgid "No map available for this position!"
 msgstr "Ingen karta tillgänglig för den här positionen!"
 
-#: src/gpsdrive.c:2308 src/gpsdrive.c:4555 src/gpsdrive.c:4561
-#: src/gpsdrive.c:4567 src/gpsdrive.c:4600 src/gpsdrive.c:4605
-#: src/gpsdrive.c:4611 src/gpsdrive.c:4628 src/gpsdrive.c:4635
-#: src/gps_handler.c:532 src/gps_handler.c:533 src/gps_handler.c:534
-msgid "n/a"
-msgstr "-"
-
-#: src/gpsdrive.c:2599
+#: src/gpsdrive.c:2205
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr "avståndshopp är mer än 2000 km/h, ignorerar\n"
 
-#: src/gpsdrive.c:2857
-msgid "/Menu/Messages"
-msgstr "/Meny/Meddelanden"
-
-#: src/gpsdrive.c:2860
+#: src/gpsdrive.c:2296
 msgid "Sending message to friends server..."
 msgstr "Skickar meddelande till kompisserver..."
 
-#: src/gpsdrive.c:2939
+#: src/gpsdrive.c:2374
 msgid "Message for:"
 msgstr "Meddelande till:"
 
-#: src/gpsdrive.c:2981
+#: src/gpsdrive.c:2410
 #, c-format
 msgid "Date: %s"
 msgstr "Datum: %s"
 
-#: src/gpsdrive.c:2994
-msgid "Sends your text to to selected computer using the friends server"
-msgstr "Skickar din text till vald dator via kompisservern"
-
-#: src/gpsdrive.c:3089
-msgid "Quicksaved Waypoint"
-msgstr "Snabbsparad vägpunkt"
-
-#: src/gpsdrive.c:3125
-msgid "Temporary Waypoint"
-msgstr "Temporär vägpunkt"
-
-#: src/gpsdrive.c:3305 src/gpsdrive.c:3389 src/poi_gui.c:464 src/poi_gui.c:892
-#: src/poi_gui.c:1127 src/poi_gui.c:1260 src/settings.c:1812
+#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:505 src/poi_gui.c:930
+#: src/poi_gui.c:1222 src/settings.c:1976
 msgid "Name"
 msgstr "Namn"
 
-#: src/gpsdrive.c:3305 src/gpsdrive.c:3389 src/gpsdrive.c:4667
-#: src/poi_gui.c:903 src/poi_gui.c:1267 src/routes.c:408 src/settings.c:700
-#: src/settings.c:1286
+#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:941
+#: src/poi_gui.c:1229 src/routes.c:411 src/settings.c:727 src/settings.c:1382
 msgid "Distance"
 msgstr "Avstånd"
 
-#: src/gpsdrive.c:3316
+#: src/gpsdrive.c:2464
 msgid "Please select message recipient"
 msgstr "Välj mottagare för meddelande"
 
-#: src/gpsdrive.c:3389 src/poi_gui.c:546 src/poi_gui.c:912
+#: src/gpsdrive.c:2537 src/poi_gui.c:587 src/poi_gui.c:950
 msgid "Type"
 msgstr "Typ"
 
-#: src/gpsdrive.c:3418
+#: src/gpsdrive.c:2566
 msgid "Select reference point"
 msgstr "Välj referenspunkt"
 
-#: src/gpsdrive.c:3422
+#: src/gpsdrive.c:2570
 msgid "Please select your destination"
 msgstr "Välj din destination"
 
-#: src/gpsdrive.c:3454
+#: src/gpsdrive.c:2602
 msgid "Edit route"
 msgstr "Redigera rutt"
 
-#: src/gpsdrive.c:3457
+#: src/gpsdrive.c:2605
 msgid "Create route"
 msgstr "Skapa rutt"
 
-#: src/gpsdrive.c:3554
+#: src/gpsdrive.c:2703
 msgid "Create a route using some waypoints from this list"
 msgstr "Skapa en rutt med några vägpunkter från den här listan"
 
-#: src/gpsdrive.c:3559
+#: src/gpsdrive.c:2708
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Ta bort den valda vägpunkten från vägpunktslistan"
 
-#: src/gpsdrive.c:3563
+#: src/gpsdrive.c:2712
 msgid "Jump to the selected waypoint"
 msgstr "Hoppa till markerad vägpunkt"
 
-#: src/gpsdrive.c:3586
+#: src/gpsdrive.c:2735
 msgid "-v        show version\n"
 msgstr "-v        visa version\n"
 
-#: src/gpsdrive.c:3587
+#: src/gpsdrive.c:2736
 msgid "-h        print this help\n"
 msgstr "-h        skriv ut denna hjälptext\n"
 
-#: src/gpsdrive.c:3588
+#: src/gpsdrive.c:2737
 msgid "-d        turn on debug info\n"
 msgstr "-d        slå på felsökningsinformation\n"
 
-#: src/gpsdrive.c:3589
+#: src/gpsdrive.c:2738
 msgid "-D X      set debug Level to X\n"
 msgstr "-D X      ställ in felsökningsnivå till X\n"
 
-#: src/gpsdrive.c:3590
+#: src/gpsdrive.c:2739
 msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
 msgstr "-T        gör några interna enhetstester(starta inte gpsdrive)\n"
 
-#: src/gpsdrive.c:3591
+#: src/gpsdrive.c:2740
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr "-e        använd Festival-Lite (flite) för textuppläsning\n"
 
-#: src/gpsdrive.c:3592
-msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
-msgstr "-t        ställ in serieport för GPS, t.ex. /dev/ttyS1\n"
-
-#: src/gpsdrive.c:3593
+#: src/gpsdrive.c:2741
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
 msgstr "-o        serieenhet, pty-master, eller fil för NMEA-*utdata*\n"
 
-#: src/gpsdrive.c:3594
+#: src/gpsdrive.c:2742
 msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
 msgstr "-f X      Välj kompisserver, X är t.ex. friendsd.gpsdrive.de\n"
 
-#: src/gpsdrive.c:3595
-msgid "-n        Disable use of direct serial connection\n"
-msgstr "-n        Inaktivera användning av direkt serieanslutning\n"
-
-#: src/gpsdrive.c:3597
+#: src/gpsdrive.c:2744
 msgid "-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"
 msgstr ""
 "-X        Använd DBUS för att kommunicera med gpsd. Detta inaktiverar kommunikation via\n"
 "          serieport och uttag\n"
 
-#: src/gpsdrive.c:3599
+#: src/gpsdrive.c:2746
 msgid ""
 "-l LANG   Select language of the voice,\n"
 "          LANG may be english, spanish or german\n"
@@ -432,7 +310,7 @@ msgstr ""
 "-l SPRÅK  Välj språk för textuppläsning,\n"
 "          SPRÅK kan vara english, spanish eller german\n"
 
-#: src/gpsdrive.c:3601
+#: src/gpsdrive.c:2748
 msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
 "          don't satisfy you, X is i.e. 768,600,480,200\n"
@@ -440,145 +318,81 @@ msgstr ""
 "-s HÖJD   ställ in skärmhöjd, om automatisk identifiering\n"
 "      inte duger för dig. HÖJD är t.ex. 768,600,480,200\n"
 
-#: src/gpsdrive.c:3603
+#: src/gpsdrive.c:2750
 msgid "-r WIDTH  set width of the screen, only with -s\n"
 msgstr "-r BREDD  ställ in skärmbredd, endast med -s\n"
 
-#: src/gpsdrive.c:3604
+#: src/gpsdrive.c:2751
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1        har endast en enknappsmus, t.ex. för pekskärmar\n"
 
-#: src/gpsdrive.c:3605
-msgid "-a        don't display battery status (i.e. broken APM)\n"
-msgstr "-a        visa inte batteristatus (t.ex. trasig APM)\n"
+#: src/gpsdrive.c:2752
+msgid "-a        display APM Stuff ( battery status, Temperature)\n"
+msgstr "-a        visa APM-information (batteristatus, temperatur)\n"
 
-#: src/gpsdrive.c:3606
+#: src/gpsdrive.c:2753
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
 msgstr "-b server Servernamn på NMEA-server (om gpsd kör på en annan värd)\n"
 
-#: src/gpsdrive.c:3607
+#: src/gpsdrive.c:2754
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr "-c VP     ställ in startposition i simuleringsläge till vägpunkten VP\n"
 
-#: src/gpsdrive.c:3608
+#: src/gpsdrive.c:2755
 msgid "-x        create separate window for menu\n"
 msgstr "-x        skapa separat fönster för meny\n"
 
-#: src/gpsdrive.c:3609
-msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
-msgstr "-p        ställ in inställningar för handdator (iPAQ, Yopy...)\n"
+#: src/gpsdrive.c:2756
+msgid "-M mode   set guimode to desktop, pda or car\n"
+msgstr "-M läge   ställ in grafiskt läge till desktop, pda eller car\n"
 
-#: src/gpsdrive.c:3610
+#: src/gpsdrive.c:2757
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr "-i        ignorera NMEA-kontrollsumman (farligt, endast för trasiga GPS-mottagare)\n"
 
-#: src/gpsdrive.c:3611
+#: src/gpsdrive.c:2758
 msgid "-q        disable SQL support\n"
 msgstr "-q        inaktivera SQL-stöd\n"
 
-#: src/gpsdrive.c:3612
+#: src/gpsdrive.c:2759
 msgid "-F        force display of position even it is invalid\n"
 msgstr "-F        tvinga visning av position även om den är ogiltig\n"
 
-#: src/gpsdrive.c:3613
+#: src/gpsdrive.c:2760
 msgid "-S        don't show splash screen\n"
 msgstr "-S        visa inte uppstartsbild\n"
 
-#: src/gpsdrive.c:3614
+#: src/gpsdrive.c:2761
 msgid "-P        start in Pos Mode\n"
 msgstr "-P        starta i positionsläge\n"
 
-#: src/gpsdrive.c:3615
-msgid "-E        print out data received from direct serial connection\n"
-msgstr "-E        skriv ut data som tagits emot från direkt serieanslutning\n"
-
-#: src/gpsdrive.c:3616
+#: src/gpsdrive.c:2762
 msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr "-W x      ställ in x till 1 för att slå på WAAS/EGNOS, ställ in till 0 för att slå av\n"
 
-#: src/gpsdrive.c:3617
+#: src/gpsdrive.c:2763
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
 msgstr "-H ALT    korrekt höjd, lägg till detta värde (ALT) till höjden\n"
 
-#: src/gpsdrive.c:3618
-msgid ""
-"-z        don't display zoom factor and scale\n"
-"\n"
-msgstr ""
-"-z        visa inte zoomfaktor och skala\n"
-"\n"
+#: src/gpsdrive.c:2764
+msgid "-C file   set config file (--config-file)\n"
+msgstr "-C fil    ställ in konfigurationsfil (--config-file)\n"
 
-#: src/gpsdrive.c:3633
+#: src/gpsdrive.c:2779
 msgid "Select a track file"
 msgstr "Välj en spårfil"
 
-#: src/gpsdrive.c:4042
+#: src/gpsdrive.c:2939
 msgid ""
 "\n"
-"You can only choose between english, spanish and german\n"
+"You can currently only choose between english, spanish and german\n"
 "\n"
 msgstr ""
 "\n"
 "Du kan endast välja mellan \"english\" (engelska), \"spanish\" (spanska) och \"german\" (tyska)\n"
 "\n"
 
-#: src/gpsdrive.c:4210
-msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
-msgstr "Gpsdrive-2 © 2001-2006 F.Ganter"
-
-#: src/gpsdrive.c:4218
-msgid "Using speech output"
-msgstr "Använder textuppläsning"
-
-#: src/gpsdrive.c:4256
-msgid "M_ute"
-msgstr "T_yst"
-
-#: src/gpsdrive.c:4294
-msgid "Points"
-msgstr "Punkter"
-
-#: src/gpsdrive.c:4299
-msgid "PO_I"
-msgstr "PA_I"
-
-#: src/gpsdrive.c:4302
-msgid "Draw Points Of Interest found in mySQL"
-msgstr "Rita ut Punkter av intresse hittade i MySQL"
-
-#: src/gpsdrive.c:4313
-msgid "_WLAN"
-msgstr "_WLAN"
-
-#: src/gpsdrive.c:4318
-msgid "Wlan"
-msgstr "Wlan"
-
-#: src/gpsdrive.c:4332
-msgid "_WP"
-msgstr "_VP"
-
-#: src/gpsdrive.c:4355 src/settings.c:1026
-msgid "Track"
-msgstr "Spår"
-
-#: src/gpsdrive.c:4360
-msgid "Show"
-msgstr "Visa"
-
-#: src/gpsdrive.c:4365
-msgid "Show tracking on the map"
-msgstr "Visa spår på kartan"
-
-#: src/gpsdrive.c:4372
-msgid "Save"
-msgstr "Spara"
-
-#: src/gpsdrive.c:4378
-msgid "Save the track to given filename at program exit"
-msgstr "Spara spåret till givet filnamn vid programslut"
-
-#: src/gpsdrive.c:4451
+#: src/gpsdrive.c:3293
 msgid ""
 "\n"
 "kismet server found\n"
@@ -586,162 +400,11 @@ msgstr ""
 "\n"
 "Kismet-server hittades\n"
 
-#: src/gpsdrive.c:4516 src/gpsdrive.c:4789
-msgid "Bearing"
-msgstr "Riktning"
+#: src/gpsdrive.c:3331
+msgid "Using speech output"
+msgstr "Använder textuppläsning"
 
-#: src/gpsdrive.c:4540
-msgid "GPS Info"
-msgstr "GPS-info"
-
-#: src/gpsdrive.c:4596 src/gpsdrive.c:4812 src/gpsdrive.c:4817
-#: src/gpsdrive.c:4826 src/gpsdrive.c:4829
-msgid "---"
-msgstr "---"
-
-#: src/gpsdrive.c:4649 src/gpsdrive.c:4656
-msgid "Selected:"
-msgstr "Markerat:"
-
-#: src/gpsdrive.c:4650 src/gpsdrive.c:4657
-msgid "within"
-msgstr "inom"
-
-#: src/gpsdrive.c:4665
-msgid "Distance to target"
-msgstr "Avstånd till målet"
-
-#: src/gpsdrive.c:4682 src/gpsdrive.c:4685 src/gpsdrive.c:4688
-#: src/settings.c:171 src/settings.c:174 src/settings.c:177
-#: src/settings.c:1287
-msgid "Speed"
-msgstr "Fart"
-
-#: src/gpsdrive.c:4695 src/poi_gui.c:519 src/settings.c:718
-msgid "Altitude"
-msgstr "Höjd"
-
-#: src/gpsdrive.c:4698 src/settings.c:1093 src/settings.c:1685
-msgid "Waypoints"
-msgstr "Vägpunkter"
-
-#: src/gpsdrive.c:4786
-msgid "Map file"
-msgstr "Kartfil"
-
-#: src/gpsdrive.c:4787
-msgid "Map scale"
-msgstr "Kartskala"
-
-#: src/gpsdrive.c:4788
-msgid "Heading"
-msgstr "Kurs"
-
-#: src/gpsdrive.c:4790
-msgid "Time to Dest."
-msgstr "Tid till dest."
-
-#: src/gpsdrive.c:4791
-msgid "Pref. scale"
-msgstr "Föredragen skala"
-
-#: src/gpsdrive.c:4794
-msgid "000,00000N"
-msgstr "000,00000N"
-
-#: src/gpsdrive.c:4802
-msgid "000,00000E"
-msgstr "000,00000Ö"
-
-#: src/gpsdrive.c:4820 src/gpsdrive.c:4823
-msgid "0000"
-msgstr "0000"
-
-#: src/gpsdrive.c:4898 src/gpsdrive.c:4952 src/gpsdrive.c:4969
-msgid "Menu"
-msgstr "Meny"
-
-#: src/gpsdrive.c:4906 src/gpsdrive.c:4956 src/gpsdrive.c:4970
-msgid "Status"
-msgstr "Status"
-
-#: src/gpsdrive.c:4948 src/gpsdrive.c:4968 src/nmea_handler.c:497
-msgid "Map"
-msgstr "Karta"
-
-#: src/gpsdrive.c:4960 src/gpsdrive.c:4971 src/poi_gui.c:1274
-msgid "Trip"
-msgstr "Resa"
-
-#: src/gpsdrive.c:5106
-msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
-msgstr "Klicka här för att växla visning mellan satellitnivå och satellitposition. En roterande glob visas i simuleringsläget"
-
-#: src/gpsdrive.c:5111
-msgid "Number of used satellites/satellites in view"
-msgstr "Antal använda satelliter/satelliter i sikte"
-
-#: src/gpsdrive.c:5115
-msgid "EPE (Estimated Precision Error), if available"
-msgstr "EPE (Estimated Precision Error), om tillgänglig"
-
-#: src/gpsdrive.c:5119
-msgid "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "
-msgstr "PDOP (Position Dilution Of Precision). PDOP mindre än 4 ger bäst precision, mellan 4 och 8 ger acceptabel precision och högre än 8 ger en oacceptabel precision."
-
-#: src/gpsdrive.c:5124
-msgid "On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."
-msgstr "På kompassen ser du riktningen till vilken du rör dig. Pekaren visar riktningen till målet på kompassen."
-
-#: src/gpsdrive.c:5127
-msgid "/Menu"
-msgstr "/Meny"
-
-#: src/gpsdrive.c:5129
-msgid "Here you find extra functions for maps, tracks and messages"
-msgstr "Här hittar du extra funktioner för kartor, spår och meddelanden"
-
-#: src/gpsdrive.c:5133
-msgid "Disable output of speech"
-msgstr "Inaktivera textuppläsning"
-
-#: src/gpsdrive.c:5137
-msgid "Show waypoints on the map"
-msgstr "Visa vägpunkter på kartan"
-
-#: src/gpsdrive.c:5142
-msgid "Zoom into the current map"
-msgstr "Zooma in i den nuvarande kartan"
-
-#: src/gpsdrive.c:5144
-msgid "Zooms out off the current map"
-msgstr "Zooma ut ur den nuvarande kartan"
-
-#: src/gpsdrive.c:5146
-msgid "Select the next more detailed map"
-msgstr "Välj nästa mer detaljerade karta"
-
-#: src/gpsdrive.c:5148
-msgid "Select the next less detailed map"
-msgstr "Välj nästa mindre detaljerade karta"
-
-#: src/gpsdrive.c:5152
-msgid "Find Points of Interest and select as destination"
-msgstr "Hitta Punkt av intresse och välj som destination"
-
-#: src/gpsdrive.c:5156
-msgid "Select the map scale of avail. maps."
-msgstr "Välj skala på tillgängliga kartor."
-
-#: src/gpsdrive.c:5160
-msgid "This shows the time from your GPS receiver"
-msgstr "Detta visar tiden från din GPS-mottagare"
-
-#: src/gpsdrive.c:5164
-msgid "Number of mobile targets within timeframe/total received from friendsserver"
-msgstr "Antal mobila mål inom tidsram/totalt mottagna från kompisservern"
-
-#: src/gpsdrive.c:5300
+#: src/gpsdrive.c:3445
 #, c-format
 msgid ""
 "\n"
@@ -754,28 +417,24 @@ msgstr ""
 "Tack för att du använder GpsDrive!\n"
 "\n"
 
-#: src/gpsdrive_config.c:105
-msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-msgstr "Fel vid sparande av konfigurationsfilen ~/.gpsdrive/gpsdriverc"
-
-#: src/gps_handler.c:232
+#: src/gps_handler.c:212
 #, c-format
 msgid "unable to add match for signals %s: %s"
 msgstr "kunde inte lägga till matchning för signaler %s: %s"
 
-#: src/gps_handler.c:237
+#: src/gps_handler.c:217
 msgid "unable to register filter with the connection"
 msgstr "kunde inte registrera filter med anslutningen"
 
-#: src/gps_handler.c:242
+#: src/gps_handler.c:222
 msgid "DBUS Mode"
 msgstr "DBUS-läge"
 
-#: src/gps_handler.c:274 src/gpskismet.c:340
+#: src/gps_handler.c:254 src/gpskismet.c:337
 msgid "can't open socket for port "
 msgstr "kan inte öppna uttag (socket) för port "
 
-#: src/gps_handler.c:296
+#: src/gps_handler.c:276
 #, c-format
 msgid ""
 "\n"
@@ -784,126 +443,84 @@ msgstr ""
 "\n"
 "Kan inte ansluta till %s: okänd värd\n"
 
-#: src/gps_handler.c:318
+#: src/gps_handler.c:300
 msgid "NMEA Mode, Port 2222"
 msgstr "NMEA-läge, port 2222"
 
-#: src/gps_handler.c:326
+#: src/gps_handler.c:308
 msgid "NMEA Mode, Port 2947"
 msgstr "NMEA-läge, port 2947"
 
-#: src/gps_handler.c:346 src/gps_handler.c:371
-msgid ""
-"\n"
-"no garmin support compiled in\n"
-msgstr ""
-"\n"
-"inget garmin-stöd inkompilerat\n"
-
-#: src/gps_handler.c:376
-msgid ""
-"\n"
-"Garmin protocol detection disabled!\n"
-msgstr ""
-"\n"
-"Igenkänning av Garminprotokoll avstängt!\n"
-
-#: src/gps_handler.c:488
-msgid "Stop GPSD"
-msgstr "Stoppa GPSD"
-
-#: src/gps_handler.c:493
-msgid "Stop GPSD and switch to simulation mode"
-msgstr "Stoppa GPSD och växla till simuleringsläget"
-
-#: src/gps_handler.c:515
-msgid "Start GPSD"
-msgstr "Starta GPSD"
-
-#: src/gps_handler.c:519
-msgid "Starts GPSD for NMEA mode"
-msgstr "Startar GPSD för NMEA-läge"
-
-#: src/gps_handler.c:769
+#: src/gps_handler.c:576
 msgid "Timeout getting data from GPS-Receiver!"
 msgstr "Gjorde time-out vid väntan på data från GPS-mottagaren!"
 
-#: src/gps_handler.c:817 src/gps_handler.c:867 src/gps_handler.c:973
-#: src/gps_handler.c:1013 src/gps_handler.c:1080 src/gps_handler.c:1203
+#: src/gps_handler.c:630 src/gps_handler.c:659 src/gps_handler.c:726
+#: src/gps_handler.c:849
 msgid "Press middle mouse button for navigation"
 msgstr "Tryck på mittenknappen på musen för navigering"
 
-#: src/gps_handler.c:822
-#, c-format
-msgid "Direct serial connection to %s"
-msgstr "Direkt serieanslutning till %s"
-
-#: src/gps_handler.c:872 src/gps_handler.c:904 src/gps_handler.c:1017
-#: src/gps_handler.c:1086 src/gps_handler.c:1209
-msgid "Not enough satellites in view!"
-msgstr "Inte tillräckligt många satelliter i sikte!"
-
-#: src/gps_handler.c:977
-msgid "GARMIN Mode"
-msgstr "GARMIN-läge"
-
-#: src/gps_handler.c:993
+#: src/gps_handler.c:639
 msgid "No GPS used"
 msgstr "Ingen GPS används"
 
-#: src/gps_handler.c:995 src/nmea_handler.c:323
+#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:800
 msgid "Simulation mode"
 msgstr "Simuleringsläge"
 
-#: src/gps_handler.c:997
+#: src/gps_handler.c:643
 msgid "Press middle mouse button for sim mode"
 msgstr "Tryck på mittenknappen på musen för simuleringsläge"
 
-#: src/gpskismet.c:104
+#: src/gps_handler.c:663 src/gps_handler.c:732 src/gps_handler.c:855
+msgid "Not enough satellites in view!"
+msgstr "Inte tillräckligt många satelliter i sikte!"
+
+#: src/gpskismet.c:99
 msgid "trying to re-connect to kismet server\n"
 msgstr "försöker att återansluta till Kismet-server\n"
 
-#: src/gpskismet.c:106
+#: src/gpskismet.c:101
 msgid "Kismet server connection re-established\n"
 msgstr "Anslutning till Kismet-server återetablerad\n"
 
-#: src/gpskismet.c:107
+#: src/gpskismet.c:102
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
 msgstr "klar med försök att återansluta: uttag=%d\n"
 
-#: src/gpskismet.c:154
+#: src/gpskismet.c:149
 msgid "Kismet server connection lost\n"
 msgstr "Anslutningen till Kismet-servern förlorades\n"
 
-#: src/gpskismet.c:334
+#: src/gpskismet.c:331
 msgid "Trying Kismet server\n"
 msgstr "Provar Kismet-server\n"
 
-#: src/gpsmisc.c:309 src/gpsmisc.c:311 src/gpsmisc.c:495 src/gpsmisc.c:497
+#: src/gpsmisc.c:313 src/gpsmisc.c:315 src/gpsmisc.c:493 src/gpsmisc.c:495
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "Kunde inte hitta bildfil: %s"
 
-#: src/gpsnasamap.c:209
+#: src/gpsnasamap.c:208
 #, c-format
 msgid "could not create output map file %s!\n"
 msgstr "kunde inte skapa kartfilen %s för utdata!\n"
 
-#: src/gpsnasamap.c:226
+#: src/gpsnasamap.c:224
 msgid "Creating map..."
 msgstr "Skapar karta..."
 
-#: src/gpsnasamap.c:236
+#: src/gpsnasamap.c:234
 msgid "Creating a temporary map from NASA satellite images"
 msgstr "Skapar en temporärkarta från NASA:s satellitbilder"
 
-#: src/gpsnasamap.c:244
+#: src/gpsnasamap.c:242
 #, c-format
 msgid "converting map for latitude: %f and longitude: %f ...\n"
 msgstr "konverterar karta för latitud: %f och longitud: %f ...\n"
 
-#: src/gpsnasamap.c:356
+#: src/gpsnasamap.c:354
 #, c-format
 msgid ""
 "\n"
@@ -914,76 +531,47 @@ msgstr ""
 "Du kan permanent lägga till denna kartfil med följande rad i din\n"
 "map_koord.txt (byt namn på filen!):\n"
 
-#: src/gpsserial.c:172
-#, c-format
-msgid "waiting for thread to stop\n"
-msgstr "väntar på att tråd ska stoppa\n"
-
-#: src/gpsserial.c:195
-#, c-format
-msgid ""
-"\n"
-"error opening %s(%d)\n"
-msgstr ""
-"\n"
-"fel vid öppning av %s(%d)\n"
-
-#: src/gpsserial.c:198
-#, c-format
-msgid "successfull opened %s\n"
-msgstr "öppning av %s lyckades\n"
-
-#: src/gpsserial.c:204
-#, c-format
-msgid "switching WAAS/EGNOS on\n"
-msgstr "slår på WAAS/EGNOS\n"
-
-#: src/gpsserial.c:210
-#, c-format
-msgid "switching WAAS/EGNOS off\n"
-msgstr "slår av WAAS/EGNOS\n"
-
-#: src/gpssql.c:107
-#, c-format
-msgid "SQL: connected to %s as %s using %s\n"
-msgstr "SQL: ansluten till %s som %s med %s\n"
-
-#: src/gpssql.c:188
-#, c-format
-msgid "rows inserted: %ld\n"
-msgstr "rader infogade: %ld\n"
-
-#: src/gpssql.c:210
-#, c-format
-msgid "last index: %ld\n"
-msgstr "senaste indexering: %ld\n"
-
-#: src/gpssql.c:258
-#, c-format
-msgid "rows updated: %ld\n"
-msgstr "rader uppdaterade: %ld\n"
-
-#: src/gpssql.c:285
-#, c-format
-msgid "rows inserted: %d\n"
-msgstr "rader inlagda: %d\n"
-
-#: src/gpssql.c:307
-#, c-format
-msgid "last index: %d\n"
-msgstr "senaste indexering: %d\n"
-
-#: src/gpssql.c:333
-#, c-format
-msgid "rows updated: %d\n"
-msgstr "rader uppdaterade: %d\n"
-
-#: src/gpssql.c:419
+#: src/gpssql.c:116 src/gpssql.c:456
 #, c-format
 msgid "rows deleted: %d\n"
 msgstr "rader borttagna: %d\n"
 
-#: src/gpssql.c:589
+#: src/gpssql.c:143
+#, c-format
+msgid "SQL: connected to %s as %s using %s\n"
+msgstr "SQL: ansluten till %s som %s med %s\n"
+
+#: src/gpssql.c:225
+#, c-format
+msgid "rows inserted: %ld\n"
+msgstr "rader infogade: %ld\n"
+
+#: src/gpssql.c:247
+#, c-format
+msgid "last index: %ld\n"
+msgstr "senaste indexering: %ld\n"
+
+#: src/gpssql.c:295
+#, c-format
+msgid "rows updated: %ld\n"
+msgstr "rader uppdaterade: %ld\n"
+
+#: src/gpssql.c:322
+#, c-format
+msgid "rows inserted: %d\n"
+msgstr "rader inlagda: %d\n"
+
+#: src/gpssql.c:344
+#, c-format
+msgid "last index: %d\n"
+msgstr "senaste indexering: %d\n"
+
+#: src/gpssql.c:370
+#, c-format
+msgid "rows updated: %d\n"
+msgstr "rader uppdaterade: %d\n"
+
+#: src/gpssql.c:626
 #, c-format
 msgid ""
 "\n"
@@ -992,7 +580,7 @@ msgstr ""
 "\n"
 "libmysqlclient.so hittades inte.\n"
 
-#: src/gpssql.c:595
+#: src/gpssql.c:632
 #, c-format
 msgid ""
 "\n"
@@ -1001,11 +589,11 @@ msgstr ""
 "\n"
 "MySQL-stöd inaktiverat.\n"
 
-#: src/gui.c:503
+#: src/gui.c:501
 msgid "Press OK to continue!"
 msgstr "Tryck på OK för att fortsätta!"
 
-#: src/gui.c:537
+#: src/gui.c:535
 msgid ""
 "An error has occured.\n"
 "Press OK to continue!"
@@ -1013,7 +601,7 @@ msgstr ""
 "Ett fel har inträffat.\n"
 "Tryck på OK för att fortsätta!"
 
-#: src/gui.c:570
+#: src/gui.c:568
 #, c-format
 msgid ""
 "\n"
@@ -1028,7 +616,7 @@ msgstr ""
 "med: make install\n"
 "\n"
 
-#: src/icons.c:249
+#: src/icons.c:246
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -1039,16 +627,16 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:356 src/icons.c:361
+#: src/icons.c:353 src/icons.c:358
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Läste in den användardefinierade ikonen %s\n"
 
-#: src/import_map.c:240
+#: src/import_map.c:232
 msgid "Select a map file"
 msgstr "Välj en kartfil"
 
-#: src/import_map.c:310
+#: src/import_map.c:300
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
@@ -1056,7 +644,7 @@ msgstr ""
 "Hur ska man kalibrera sina egna kartor? Först måste\n"
 "kartfilen kopieras till"
 
-#: src/import_map.c:312
+#: src/import_map.c:302
 msgid ""
 "\n"
 "directory as .gif, .jpg or .png file and must have\n"
@@ -1068,11 +656,11 @@ msgstr ""
 "\n"
 "katalog som .gif, .jpg eller .png-fil och måste ha\n"
 "en storlek på 1280x1024. Filnamnen måste vara\n"
-"map_* för vägkartor eller top_* för topografiska kartor!\n"
+"map_* för gatukartor eller top_* för topografiska kartor!\n"
 "Läs in filen, välj koordinater från vägpunktslistan eller\n"
 "skriv in dem. Klicka sedan på knappen för att acceptera."
 
-#: src/import_map.c:319
+#: src/import_map.c:309
 msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
@@ -1080,128 +668,115 @@ msgstr ""
 "Gör nu likadant för din andra punkt och klicka på\n"
 "Slutför-knappen. Kartan kan nu användas."
 
-#: src/import_map.c:326
+#: src/import_map.c:316
 msgid "Import Assistant. Step 1"
 msgstr "Importassistent. Steg 1"
 
-#: src/import_map.c:328
+#: src/import_map.c:318
 msgid "Import Assistant. Step 2"
 msgstr "Importassistent. Steg 2"
 
-#: src/import_map.c:335
+#: src/import_map.c:325
 msgid "Accept first point"
 msgstr "Acceptera första punkt"
 
-#: src/import_map.c:341
+#: src/import_map.c:331
 msgid "Accept Scale and Finish"
 msgstr "Acceptera skala och slutför"
 
-#: src/import_map.c:348
+#: src/import_map.c:340
 msgid "Finish"
 msgstr "Slutför"
 
-#: src/import_map.c:363
+#: src/import_map.c:355
 msgid "Go up"
 msgstr "Gå uppåt"
 
-#: src/import_map.c:366
+#: src/import_map.c:358
 msgid "Go left"
 msgstr "Gå åt vänster"
 
-#: src/import_map.c:369
+#: src/import_map.c:361
 msgid "Go right"
 msgstr "Gå åt höger"
 
-#: src/import_map.c:372
+#: src/import_map.c:364
 msgid "Go down"
 msgstr "Gå nedåt"
 
-#: src/import_map.c:375
+#: src/import_map.c:367
 msgid "Zoom in"
 msgstr "Zooma in"
 
-#: src/import_map.c:378
+#: src/import_map.c:370
 msgid "Zoom out"
 msgstr "Zooma ut"
 
-#: src/import_map.c:400
+#: src/import_map.c:387
 msgid "Screen X"
 msgstr "Skärm-X"
 
-#: src/import_map.c:402
+#: src/import_map.c:389
 msgid "Screen Y"
 msgstr "Skärm-Y"
 
-#: src/import_map.c:414
+#: src/import_map.c:401
 msgid "Browse POIs"
 msgstr "Bläddra i PA_I:er"
 
-#: src/import_map.c:445
+#: src/import_map.c:432
 msgid "Browse filename"
 msgstr "Bläddra bland filnamn"
 
-#: src/import_map.c:834
+#: src/import_map.c:822
 msgid "SELECTED"
 msgstr "VALD"
 
-#: src/import_map.c:835 src/routes.c:122 src/routes.c:153 src/routes.c:616
-#: src/waypoint.c:878
-msgid "To"
-msgstr "Till"
-
-#: src/map_handler.c:218
+#: src/map_handler.c:183
 msgid "Map Controls"
 msgstr "Kartkontroller"
 
-#: src/map_handler.c:224
-msgid "direct draw sql _Streets"
-msgstr "rita direkt ut _gator från sql"
-
-#: src/map_handler.c:236
-msgid "Draw Streets found in mySQL"
-msgstr "Rita ut gator hittade i MySQL"
-
-#: src/map_handler.c:246
+#: src/map_handler.c:188
 msgid "Auto _best map"
 msgstr "Auto. _bäst karta"
 
-#: src/map_handler.c:251
+#: src/map_handler.c:193
 msgid "Always select the most detailed map available"
 msgstr "Välj alltid den mest detaljerade tillgängliga kartan"
 
-#: src/map_handler.c:262
+#: src/map_handler.c:204
 msgid "Pos. _mode"
 msgstr "Pos.-_läge"
 
-#: src/map_handler.c:269
+#: src/map_handler.c:211
 msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
 msgstr "Slå på positionsläge. Du kan flytta på kartan med vänster musknapp. Klickar du nära kanten flyttas du till den närmaste kartan."
 
-#: src/map_handler.c:275
+#: src/map_handler.c:221
 msgid "Mapnik Mode"
 msgstr "Mapnik-läge"
 
-#: src/map_handler.c:293
+#: src/map_handler.c:224
 msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
 msgstr "Slå på mapnik-läget. I det här läget ritas vektorkartor ut av mapnik (t.ex. data från OpenStreetMap) istället för de andra kartorna."
 
-#: src/map_handler.c:311
+#: src/map_handler.c:248
 msgid "Shown map type"
 msgstr "Visad karttyp"
 
-#: src/map_handler.c:318
+#: src/map_handler.c:255
 msgid "Street map"
-msgstr "Vägkarta"
+msgstr "Gatukarta"
 
-#: src/map_handler.c:328
+#: src/map_handler.c:265
 msgid "Topo map"
 msgstr "Topologisk karta"
 
-#: src/map_handler.c:435
+#: src/map_handler.c:372
 msgid "Error in line "
 msgstr "Fel på rad "
 
-#: src/map_handler.c:437
+#: src/map_handler.c:374
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -1210,234 +785,234 @@ msgid ""
 msgstr ""
 "Jag har hittat filnamn i map_koord.txt som inte är\n"
 "map_*- eller top_*-filer. Byt namn på dem och ändra posterna i\n"
-"map_koord.txt. Använd map_* för vägkartor och top_* för topografiska\n"
+"map_koord.txt. Använd map_* för gatukartor och top_* för topografiska\n"
 "kartor. Annars kommer inte kartorna visas!"
 
-#: src/map_handler.c:760
+#: src/map_handler.c:700
 msgid " Mapfile could not be loaded:"
 msgstr " Kartfilen kunde inte laddas:"
 
-#: src/map_handler.c:810
+#: src/map_handler.c:750
 msgid "Map found!"
 msgstr "Kartan hittades!"
 
-#: src/nautic.c:122
-msgid "Nautic settings"
-msgstr "Sjöinställningar"
-
-#: src/nautic.c:125
-msgid "Nautic"
-msgstr "Nautisk"
-
-#: src/nmea_handler.c:187
+#: src/nmea_handler.c:178
 msgid "can't open NMEA output file"
 msgstr "kan inte öppna NMEA-utdatafil"
 
-#: src/poi.c:311
+#: src/nmea_handler.c:491
+msgid "Map"
+msgstr "Karta"
+
+#: src/poi.c:365
 #, c-format
 msgid "%ld(%d) rows read\n"
 msgstr "%ld(%d) rader inlästa\n"
 
-#: src/poi.c:1071 src/wlan.c:376
+#: src/poi.c:1150 src/wlan.c:316
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%ld(%d) rader inlästa på %.2f sekunder\n"
 
-#: src/poi_gui.c:140
+#: src/poi_gui.c:162
 #, c-format
 msgid " Found %d matching entries (Limit reached)."
 msgstr " Hittade %d matchande poster (gränsen uppnåddes)."
 
-#: src/poi_gui.c:146
+#: src/poi_gui.c:168
 #, c-format
 msgid " Found %d matching entries."
 msgstr " Hittade %d matchande poster."
 
-#: src/poi_gui.c:441 src/poi_gui.c:967
+#: src/poi_gui.c:482 src/poi_gui.c:1005
 msgid "POI-Info"
-msgstr "PAI-info"
+msgstr "IP-info"
 
-#: src/poi_gui.c:471 src/poi_gui.c:923
+#: src/poi_gui.c:512 src/poi_gui.c:961
 msgid "Comment"
 msgstr "Kommentar"
 
-#: src/poi_gui.c:478
+#: src/poi_gui.c:519
 msgid "private"
 msgstr "privat"
 
-#: src/poi_gui.c:569
+#: src/poi_gui.c:560 src/settings.c:745
+msgid "Altitude"
+msgstr "Höjd"
+
+#: src/poi_gui.c:610
 msgid "Basic Data"
 msgstr "Grundläggande data"
 
-#: src/poi_gui.c:598
+#: src/poi_gui.c:639
 msgid "Extra Data"
 msgstr "Extradata"
 
-#: src/poi_gui.c:682
+#: src/poi_gui.c:715
 msgid "Lookup Point of Interest"
 msgstr "Slå upp Punkt av intresse"
 
-#: src/poi_gui.c:725
+#: src/poi_gui.c:758
 msgid "<i>Search Text:</i>"
 msgstr "<i>Söktext:</i>"
 
-#: src/poi_gui.c:748
+#: src/poi_gui.c:781
 msgid "<i>max. Distance:</i>"
 msgstr "<i>max. avstånd:</i>"
 
-#: src/poi_gui.c:766
+#: src/poi_gui.c:799
 msgid "km from"
 msgstr "km från"
 
-#: src/poi_gui.c:771
+#: src/poi_gui.c:804
 msgid "current position"
 msgstr "aktuell position"
 
-#: src/poi_gui.c:781
+#: src/poi_gui.c:814
 msgid "Search near current Position"
 msgstr "Sök nära aktuell position"
 
-#: src/poi_gui.c:786
+#: src/poi_gui.c:819
 msgid "Destination/Cursor"
 msgstr "Destination/Markör"
 
-#: src/poi_gui.c:798
+#: src/poi_gui.c:831
 msgid "Search near selected Destination"
 msgstr "Sök nära markerad destination"
 
-#: src/poi_gui.c:804
+#: src/poi_gui.c:837
 msgid "<i>POI-Types:</i>"
-msgstr "<i>POI-typer:</i>"
+msgstr "<i>IP-typer:</i>"
 
-#: src/poi_gui.c:820
+#: src/poi_gui.c:863
 msgid "all"
 msgstr "alla"
 
-#: src/poi_gui.c:830
+#: src/poi_gui.c:873
 msgid "Search all POI-Categories"
-msgstr "Sök i alla PAI-kategorier"
+msgstr "Sök i alla IP-kategorier"
 
-#: src/poi_gui.c:833
+#: src/poi_gui.c:876
 msgid "selected:"
 msgstr "markerat:"
 
-#: src/poi_gui.c:839
+#: src/poi_gui.c:882
 msgid "Search only in selected POI-Categories"
-msgstr "Sök endast i markerade PAI-kategorier"
+msgstr "Sök endast i markerade IP-kategorier"
 
-#: src/poi_gui.c:849
+#: src/poi_gui.c:887
 msgid "Search Criteria"
 msgstr "Sökkriteria"
 
-#: src/poi_gui.c:953
+#: src/poi_gui.c:991
 msgid " Please enter your search criteria!"
 msgstr " Ange ditt sökkriteria!"
 
-#: src/poi_gui.c:970
+#: src/poi_gui.c:1008
 msgid "Show detailed Information for selected Point of Interest"
 msgstr "Visa detaljerad information för markerad Punkt av intresse"
 
-#: src/poi_gui.c:976
+#: src/poi_gui.c:1014
 msgid "Results"
 msgstr "Resultat"
 
-#: src/poi_gui.c:1000
+#: src/poi_gui.c:1038
 msgid "Edit _Route"
 msgstr "Redigera _rutt"
 
-#: src/poi_gui.c:1004
+#: src/poi_gui.c:1042
 msgid "Switch to Add selected entry to Route"
 msgstr "Växla till Lägg till markerad post till rutt"
 
-#: src/poi_gui.c:1014
+#: src/poi_gui.c:1052
 msgid "Delete selected entry"
 msgstr "Ta bort markerad post"
 
-#: src/poi_gui.c:1033
-msgid "Jump to Target"
-msgstr "Hoppa till målet"
+#: src/poi_gui.c:1069
+msgid "Jump to POI"
+msgstr "Hoppa till IP"
 
-#: src/poi_gui.c:1035
-msgid "Jump to selected entry"
-msgstr "Hoppa till vald post"
+#: src/poi_gui.c:1071
+msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
+msgstr "Hoppa till markerad post (och växla till Positionsläge om inte redan aktiverat)"
 
-#: src/poi_gui.c:1039
+#: src/poi_gui.c:1089
 msgid "Select Target"
 msgstr "Välj mål"
 
-#: src/poi_gui.c:1041
-msgid "Use selected entry as target destination"
-msgstr "Använd vald post som måldestination"
+#: src/poi_gui.c:1091
+msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
+msgstr "Använd markerad post som måldestination (och lämna postitionsläget om aktivt)"
 
-#: src/poi_gui.c:1054 src/poi_gui.c:1355
+#: src/poi_gui.c:1103 src/poi_gui.c:1336
 msgid "Close this window"
 msgstr "Stäng fönstret"
 
-#: src/poi_gui.c:1093
-msgid "POI-Type Selection"
-msgstr "Val av PAI-typ"
-
-#: src/poi_gui.c:1135
-msgid "ID"
-msgstr "ID"
-
-#: src/poi_gui.c:1219
+#: src/poi_gui.c:1167
 msgid "Edit Route"
 msgstr "Redigera rutt"
 
-#: src/poi_gui.c:1287
+#: src/poi_gui.c:1236
+msgid "Trip"
+msgstr "Resa"
+
+#: src/poi_gui.c:1251
 msgid "Route List"
 msgstr "Ruttlista"
 
-#: src/poi_gui.c:1305
+#: src/poi_gui.c:1271
 msgid "Stop Route"
 msgstr "Stoppa rutt"
 
-#: src/poi_gui.c:1307
+#: src/poi_gui.c:1273
 msgid "Stop the Route Mode"
 msgstr "Stopa ruttläget"
 
-#: src/poi_gui.c:1312
+#: src/poi_gui.c:1279
 msgid "Start Route"
 msgstr "Starta rutt"
 
-#: src/poi_gui.c:1314
+#: src/poi_gui.c:1281
 msgid "Start the Route Mode"
 msgstr "Starta ruttläget"
 
-#: src/poi_gui.c:1328
+#: src/poi_gui.c:1298
 msgid "Remove selected Entry from Route"
 msgstr "Ta bort markerad post från rutt"
 
-#: src/poi_gui.c:1343
+#: src/poi_gui.c:1313
 msgid "Cancel Route"
 msgstr "Avbryt rutt"
 
-#: src/poi_gui.c:1345
+#: src/poi_gui.c:1315
 msgid "Discard Route"
 msgstr "Förkasta rutt"
 
-#: src/routes.c:408
+#: src/poi_gui.c:1325
+msgid "Export current route to a GPX File"
+msgstr "Exportera aktuell rutt till en GPX-fil"
+
+#: src/routes.c:411
 msgid "Waypoint"
 msgstr "Vägpunkt"
 
-#: src/routes.c:423
+#: src/routes.c:424
 msgid "Define route"
 msgstr "Definiera rutt"
 
-#: src/routes.c:431
+#: src/routes.c:432
 msgid "Start route"
 msgstr "Starta rutt"
 
-#: src/routes.c:440
+#: src/routes.c:441
 msgid "Take all WP as route"
 msgstr "Ta alla VP som rutt"
 
-#: src/routes.c:445
+#: src/routes.c:446
 msgid "Abort route"
 msgstr "Avbryt rutt"
 
-#: src/routes.c:505
+#: src/routes.c:506
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1445,7 +1020,7 @@ msgstr ""
 "Klicka på vägpunktslistan\n"
 "för att lägga till vägpunkter"
 
-#: src/routes.c:508
+#: src/routes.c:509
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1453,312 +1028,360 @@ msgstr ""
 "Klicka på listelement\n"
 "för att välja nästa vägpunkt"
 
-#: src/routes.c:556
+#: src/routes.c:557
 msgid "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr "Skapa en rutt från alla vägpunkter. Sorterad efter ordningen i filen, inte avstånd."
 
-#: src/routes.c:560
+#: src/routes.c:561
 msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
 msgstr "Klicka här för att påbörja din resa. GpsDrive leder dig genom vägpunkterna i den här listan."
 
-#: src/routes.c:563
+#: src/routes.c:564
 msgid "Abort your journey"
 msgstr "Avbryt din resa"
 
-#: src/settings.c:438 src/settings.c:446
+#: src/routes.c:654
+msgid "Routepoint"
+msgstr "Ruttpunkt"
+
+#: src/routes.c:655
+msgid "Quicksaved Routepoint"
+msgstr "Snabbsparad ruttpunkt"
+
+#: src/routes.c:728
+msgid "Routepoint added."
+msgstr "Ruttpunkt lades till."
+
+#: src/routes.c:810
+msgid "Route saved"
+msgstr "Rutt sparades"
+
+#: src/settings.c:409 src/settings.c:417
 msgid "EnterYourName"
 msgstr "AngeDittNamn"
 
-#: src/settings.c:449
+#: src/settings.c:420
 msgid "You should change your name in the first field!"
 msgstr "Du bör ändra ditt namn i första fältet!"
 
-#: src/settings.c:711
+#: src/settings.c:738
 msgid "Choose here the unit for the display of distances."
 msgstr "Här kan du ställa in enheten för visning av avstånd."
 
-#: src/settings.c:729
+#: src/settings.c:756
 msgid "Choose here the unit for the display of altitudes."
 msgstr "Här kan du välja enheten för visning av höjder."
 
-#: src/settings.c:739
+#: src/settings.c:763
 msgid "Coordinates"
 msgstr "Koordinater"
 
-#: src/settings.c:750
+#: src/settings.c:774
 msgid "Choose here the format for the coordinates display."
 msgstr "Här kan du välja formatet för visning av koordinater."
 
-#: src/settings.c:777
-msgid "Enable Simulation mode"
-msgstr "Aktivera simuleringsläge"
+#: src/settings.c:802 src/settings.c:1074
+msgid "Automatic"
+msgstr "Automatisk"
 
-#: src/settings.c:789
-msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle"
-msgstr "Om aktiverad flyttas positionspekaren till det markerade målet simulerandes ett rörligt fordon"
+#: src/settings.c:806 src/settings.c:1078
+msgid "On"
+msgstr "På"
 
-#: src/settings.c:794
+#: src/settings.c:810 src/settings.c:1082
+msgid "Off"
+msgstr "Av"
+
+#: src/settings.c:814
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
+msgstr "Om aktiverad flyttas positionspekaren mot det markerade målet och simulerar ett rörligt fordon, när ingen GPS finns tillgänglig."
+
+#: src/settings.c:818
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
+msgstr "Om aktiverad flyttas alltid positionspekaren mot det markerade målet och simulerar ett rörligt fordon."
+
+#: src/settings.c:822
+msgid "Switches simulation mode off"
+msgstr "Slår av simuleringsläget"
+
+#: src/settings.c:849
 msgid "Maximum CPU load (in %)"
 msgstr "Maximal processorbelastning (i %)"
 
 # "Välj ungefärlig maximal processorbelastning.\n
 # Använd 20-30% för bärbara datorer (batteridrift) för att spara batterispänning. Detta påverkar uppdateringsfrekvensen för kartskärmen."
-#: src/settings.c:800
+#: src/settings.c:855
 #, c-format
 msgid ""
 "Select the approx. maximum CPU load.\n"
 "Use 20-30% on notebooks while on battery to save power. This effects the refresh rate of the map screen."
 msgstr ""
 
-#: src/settings.c:822
+#: src/settings.c:879
 msgid "Maps directory"
 msgstr "Kartkatalog"
 
-#: src/settings.c:823
+#: src/settings.c:880
 msgid "Select Maps Directory"
 msgstr "Välj kartkatalog"
 
-#: src/settings.c:829
+#: src/settings.c:886
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
 msgstr "Sökväg till dina kartfiler. I katalogen måste också indexfilen map_koord.txt finnas."
 
-#: src/settings.c:850
+#: src/settings.c:907
 msgid "<b>Units</b>"
 msgstr "<b>Enheter</b>"
 
-#: src/settings.c:858
+#: src/settings.c:915
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Diverse</b>"
 
-#: src/settings.c:866
+#: src/settings.c:923
 msgid "<b>Map Settings</b>"
 msgstr "<b>Kartinställningar</b>"
 
-#: src/settings.c:878
+#: src/settings.c:935
 msgid "General"
 msgstr "Allmänt"
 
-#: src/settings.c:913
+#: src/settings.c:971
 msgid "Show grid"
 msgstr "Visa rutnät"
 
-#: src/settings.c:915
+#: src/settings.c:973
 msgid "This will show a grid over the map"
 msgstr "Detta kommer att visa ett rutnät över kartan"
 
-#: src/settings.c:930
+#: src/settings.c:988
 msgid "Show Shadows"
 msgstr "Visa skuggor"
 
-#: src/settings.c:932
+#: src/settings.c:990
 msgid "Switches shadows on map on or off"
 msgstr "Växlar kartskuggor på och av"
 
-#: src/settings.c:947
+#: src/settings.c:1005
+msgid "Show zoom level"
+msgstr "Visa zoomnivå"
+
+#: src/settings.c:1007
+msgid "This will show the current zoom level of the map"
+msgstr "Detta kommer att visa aktuell zoomnivå på kartan"
+
+#: src/settings.c:1022
+msgid "Show scalebar"
+msgstr "Visa skala"
+
+#: src/settings.c:1024
+msgid "This will show the scalebar in the map"
+msgstr "Detta kommer att visa skalan i kartan"
+
+#: src/settings.c:1039
 msgid "Position Marker"
 msgstr "Positionsmarkör"
 
-#: src/settings.c:958
+#: src/settings.c:1050
 msgid "Choose the apperance of your position marker."
 msgstr "Välj utseendet på din positionsmarkör."
 
-#: src/settings.c:978
-msgid "Automatic"
-msgstr "Automatisk"
-
-#: src/settings.c:982
-msgid "On"
-msgstr "På"
-
-#: src/settings.c:986
-msgid "Off"
-msgstr "Av"
-
-#: src/settings.c:990
+#: src/settings.c:1086
 msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
 msgstr "Växlar automagiskt till nattläge om det är mörkt ute. Tryck \"N\"-tangenten för att stänga av nattläge."
 
-#: src/settings.c:993
+#: src/settings.c:1089
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr "Slår på nattläge. Tryck \"N\"-tangenten för att stänga av nattläge."
 
-#: src/settings.c:996
+#: src/settings.c:1092
 msgid "Switches night mode off"
 msgstr "Stänger av nattläge"
 
-#: src/settings.c:1031
+#: src/settings.c:1122
+msgid "Track"
+msgstr "Spår"
+
+#: src/settings.c:1127
 msgid "Choose Track color"
 msgstr "Välj spårfärg"
 
-#: src/settings.c:1035
+#: src/settings.c:1131
 msgid "Set here the color of the drawn track"
 msgstr "Här kan du ställa in färgen på uppritat spår"
 
-#: src/settings.c:1040
+#: src/settings.c:1136
 msgid "Set here the line style of the drawn track"
 msgstr "Här kan du ställa in linjestilen för uppritade spår"
 
-#: src/settings.c:1048
+#: src/settings.c:1144
 msgid "Route"
 msgstr "Rutt"
 
-#: src/settings.c:1053
+#: src/settings.c:1149
 msgid "Choose Route color"
 msgstr "Välj färg för Rutt"
 
-#: src/settings.c:1057
+#: src/settings.c:1153
 msgid "Set here the color of the drawn route"
 msgstr "Här kan du ställa in färgen för uppritade rutter"
 
-#: src/settings.c:1062
+#: src/settings.c:1158
 msgid "Set here the line style of the drawn route"
 msgstr "Här kan du ställa in linjestilen för uppritade rutter"
 
-#: src/settings.c:1070 src/settings.c:1882
+#: src/settings.c:1166 src/settings.c:2046
 msgid "Friends"
 msgstr "Kompisar"
 
-#: src/settings.c:1075
+#: src/settings.c:1171
 msgid "Choose Friends color"
 msgstr "Välj färg för Kompisar"
 
-#: src/settings.c:1079
+#: src/settings.c:1175
 msgid "Set here the text color of the drawn friends"
 msgstr "Här kan du ställa in textfärgen för uppritade kompisar"
 
-#: src/settings.c:1084
+#: src/settings.c:1180
 msgid "Choose font for friends"
 msgstr "Välj typsnitt för kompisar"
 
-#: src/settings.c:1090
+#: src/settings.c:1186
 msgid "Set here the font of the drawn friends"
 msgstr "Här kan du ställa in typsnittet för uppritade kompisar"
 
-#: src/settings.c:1098
+#: src/settings.c:1189 src/settings.c:1849
+msgid "Waypoints"
+msgstr "Vägpunkter"
+
+#: src/settings.c:1194
 msgid "Choose Waypoints label color"
 msgstr "Välj etikettfärgen för vägpunkter"
 
-#: src/settings.c:1102
+#: src/settings.c:1198
 msgid "Set here the text color of the waypoint labels"
 msgstr "Här kan du ställa in textfärgen för vägpunkternas etiketter"
 
-#: src/settings.c:1107
+#: src/settings.c:1203
 msgid "Choose font for waypoint labels"
 msgstr "Välj typsnitt för vägpunkternas etiketter"
 
-#: src/settings.c:1113
+#: src/settings.c:1209
 msgid "Set here the font of waypoint labels"
 msgstr "Här kan du ställa in typsnittet för vägpunkternas etiketter"
 
-#: src/settings.c:1116
-msgid "Big display"
-msgstr "Stor visning"
+#: src/settings.c:1212
+msgid "Dashboard"
+msgstr "Instrumentpanel"
 
-#: src/settings.c:1121
-msgid "Choose color for big display"
-msgstr "Välj färg för stor visning"
+#: src/settings.c:1217
+msgid "Choose color for dashboard"
+msgstr "Välj färg för instrumentpanel"
 
-#: src/settings.c:1125
-msgid "Set here the color of the big routing displays"
-msgstr "Här kan du ställa in färgen på stor visning av rutter"
+#: src/settings.c:1221
+msgid "Set here the color of the dashboard"
+msgstr "Här kan du ställa in färgen på instrumentpanelen"
 
-#: src/settings.c:1130
-msgid "Choose font for big display"
-msgstr "Välj typsnitt för stor visning"
+#: src/settings.c:1226
+msgid "Choose font for dashboard"
+msgstr "Välj typsnitt för instrumentpanel"
 
-#: src/settings.c:1136
-msgid "Set here the font of the big routing displays"
-msgstr "Här kan du ställa in typsnittet för stor visning av rutter"
+#: src/settings.c:1232
+msgid "Set here the font of the dashboard"
+msgstr "Här kan du ställa in typsnittet för instrumentpanelen"
 
-#: src/settings.c:1177
+#: src/settings.c:1273
 msgid "<b>Fonts, Colors, Styles</b>"
 msgstr "<b>Typsnitt, färger, stilar</b>"
 
-#: src/settings.c:1188
+#: src/settings.c:1284
 msgid "<b>Nightmode</b>"
 msgstr "<b>Nattläge</b>"
 
-#: src/settings.c:1199
+#: src/settings.c:1295
 msgid "<b>Map Features</b>"
 msgstr "<b>Kartfunktioner</b>"
 
-#: src/settings.c:1213
+#: src/settings.c:1309
 msgid "GUI"
 msgstr "Grafiskt gränssnitt"
 
-#: src/settings.c:1239
+#: src/settings.c:1335
 msgid "Travel Mode"
 msgstr "Reseläge"
 
-#: src/settings.c:1241
+#: src/settings.c:1337
 msgid "Car"
 msgstr "Bil"
 
-#: src/settings.c:1243
+#: src/settings.c:1339
 msgid "Bike"
 msgstr "Cykel"
 
-#: src/settings.c:1245
+#: src/settings.c:1341
 msgid "Walk"
 msgstr "Gå"
 
-#: src/settings.c:1247
+#: src/settings.c:1343
 msgid "Boat"
 msgstr "Båt"
 
-#: src/settings.c:1249
+#: src/settings.c:1345
 msgid "Airplane"
 msgstr "Flygplan"
 
-#: src/settings.c:1259
+#: src/settings.c:1355
 msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
 msgstr "Välj ditt reseläge. Det här används för att bestämma vilken ikon som ska användas för att visa din position."
 
-#: src/settings.c:1285
+#: src/settings.c:1381
 msgid "Direction"
 msgstr "Riktning"
 
-#: src/settings.c:1288
+#: src/settings.c:1383
+msgid "Speed"
+msgstr "Fart"
+
+#: src/settings.c:1384
 msgid "GPS Status"
 msgstr "GPS-status"
 
-#: src/settings.c:1330
+#: src/settings.c:1426
 msgid "Switch on for speech output of the direction to the target"
 msgstr "Slå på för textuppläsning av riktningen mot målet"
 
-#: src/settings.c:1333
+#: src/settings.c:1429
 msgid "Switch on for speech output of the distance to the target"
 msgstr "Slå på för textuppläsning av avståndet till målet"
 
-#: src/settings.c:1336
+#: src/settings.c:1432
 msgid "Switch on for speech output of your current speed"
 msgstr "Slå på för textuppläsning av din aktuella hastighet"
 
-#: src/settings.c:1338
+#: src/settings.c:1434
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr "Slå på för textuppläsning av statusen för din GPS-signal"
 
-#: src/settings.c:1345
+#: src/settings.c:1441
 msgid "<b>Navigation Settings</b>"
 msgstr "<b>Navigeringsinställningar</b>"
 
-#: src/settings.c:1353
+#: src/settings.c:1449
 msgid "<b>Speech Output</b>"
 msgstr "<b>Uppläsningsutmatning</b>"
 
-#: src/settings.c:1361
+#: src/settings.c:1457
 msgid "Navigation"
 msgstr "Navigering"
 
-#: src/settings.c:1389 src/settings.c:1575
+#: src/settings.c:1491 src/settings.c:1739
 msgid "Waypoints File"
 msgstr "Vägpunktsfil"
 
-#: src/settings.c:1391 src/settings.c:1577
+#: src/settings.c:1493 src/settings.c:1741
 msgid "Select Waypoints File"
 msgstr "Välj vägpunktsfil"
 
-#: src/settings.c:1399 src/settings.c:1585
+#: src/settings.c:1501 src/settings.c:1749
 msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
@@ -1766,59 +1389,63 @@ msgstr ""
 "Välj vilken vägpunktsfil som ska användas!\n"
 "För närvarande stöds endast filer i GpsDrives way.txt-format."
 
-#: src/settings.c:1415
+#: src/settings.c:1517
 msgid "Default search radius"
 msgstr "Standardradie för sökning"
 
-#: src/settings.c:1425
+#: src/settings.c:1527
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
-msgstr "Välj standardomfång för sökning (i km) för PAI-uppslagsfönstret."
+msgstr "Välj standardomfång för sökning (i km) för IP-uppslagsfönstret."
 
-#: src/settings.c:1427
+#: src/settings.c:1529
 msgid "km"
 msgstr "km"
 
-#: src/settings.c:1429
+#: src/settings.c:1531
 msgid "Limit results to"
 msgstr "Begränsa resultat till"
 
-#: src/settings.c:1438
+#: src/settings.c:1540
 msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
-msgstr "Välj gränsen för hur många sökposter som ska visas i PAI-uppslagningsfönstret. Beroende på ditt system kan ett för högt inställt värde göra ditt system långsammare."
+msgstr "Välj gränsen för hur många sökposter som ska visas i IP-uppslagningsfönstret. Beroende på ditt system kan ett för högt inställt värde göra ditt system långsammare."
 
-#: src/settings.c:1441
+#: src/settings.c:1543
 msgid "entries"
 msgstr "poster"
 
-#: src/settings.c:1462
+#: src/settings.c:1564
+msgid "Show POI Label"
+msgstr "Visa IP-etikett"
+
+#: src/settings.c:1566
+msgid "This will print the name next to the POI-Icon"
+msgstr "Det här kommer att skriva ut namnet bredvid IP-ikonen"
+
+#: src/settings.c:1581
 msgid "POI-Theme"
-msgstr "PAI-tema"
+msgstr "IP-tema"
 
-#: src/settings.c:1491
+#: src/settings.c:1610
 msgid "POI-Filter"
-msgstr "PAI-filter"
+msgstr "IP-filter"
 
-#: src/settings.c:1492
-msgid "Edit Filter"
-msgstr "Redigera filter"
-
-#: src/settings.c:1515
+#: src/settings.c:1679
 msgid "<b>Waypoints</b>"
 msgstr "<b>Vägpunkter</b>"
 
-#: src/settings.c:1523
+#: src/settings.c:1687
 msgid "<b>POI Search Settings</b>"
-msgstr "<b>Sökinställningar för PAI</b>"
+msgstr "<b>Sökinställningar för IP</b>"
 
-#: src/settings.c:1533
+#: src/settings.c:1697
 msgid "<b>POI Display</b>"
-msgstr "<b>Visning av PAI</b>"
+msgstr "<b>Visning av IP</b>"
 
-#: src/settings.c:1547 src/settings.c:2226
+#: src/settings.c:1711
 msgid "POI"
-msgstr "PAI"
+msgstr "IP"
 
-#: src/settings.c:1623
+#: src/settings.c:1787
 msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
@@ -1827,15 +1454,15 @@ msgstr ""
 "100 vägpunktsfiler (way*.txt)!"
 
 # Skum originalsträng
-#: src/settings.c:1669
+#: src/settings.c:1833
 msgid "<b>File Dialog Selection</b>"
 msgstr "<b>Filväljardialog</b>"
 
-#: src/settings.c:1677
+#: src/settings.c:1841
 msgid "<b>Quick Select File</b>"
 msgstr "<b>Snabbvälj fil</b>"
 
-#: src/settings.c:1716
+#: src/settings.c:1880
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
@@ -1843,119 +1470,75 @@ msgstr ""
 "Om du aktiverar den här tjänsten kommer <span color=\"red\">alla</span>\n"
 "som använder samma server att kunna se din position!"
 
-#: src/settings.c:1721
+#: src/settings.c:1885
 msgid "Your name"
 msgstr "Ditt namn"
 
-#: src/settings.c:1730
+#: src/settings.c:1894
 msgid "Enable friends service"
 msgstr "Aktivera kompistjänsten"
 
-#: src/settings.c:1740
+#: src/settings.c:1904
 msgid "Show only positions newer than"
 msgstr "Visa endast positioner nyare än"
 
-#: src/settings.c:1744
+#: src/settings.c:1908
 msgid "Days"
 msgstr "Dagar"
 
-#: src/settings.c:1746
+#: src/settings.c:1910
 msgid "Hours"
 msgstr "Timmar"
 
-#: src/settings.c:1748
+#: src/settings.c:1912
 msgid "Minutes"
 msgstr "Minuter"
 
-#: src/settings.c:1794
+#: src/settings.c:1958
 msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
 msgstr "Aktivera/inaktivera användningen av kompistjänsten. Du måste ange ett användarnamn, använd inte standardnamnet!"
 
-#: src/settings.c:1798
+#: src/settings.c:1962
 msgid "Set here the name which will be shown near your position."
 msgstr "Ställ in ditt namn här som kommer att visas nära din position."
 
-#: src/settings.c:1801
+#: src/settings.c:1965
 msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
 msgstr "Ställ in maximal ålder för visning av kompisarnas positioner. Äldre positioner visas inte."
 
-#: src/settings.c:1820
+#: src/settings.c:1984
 msgid "IP"
 msgstr "IP"
 
-#: src/settings.c:1828
+#: src/settings.c:1992
 msgid "Lookup"
 msgstr "Slå upp"
 
-#: src/settings.c:1844
+#: src/settings.c:2008
 msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
 msgstr "Ställ in det fullständigt kvalificerade värdnamnet här (t.ex. friends.gpsdrive.de) för den kompisserver som ska användas. Tryck sedan på \"Slå upp\"-knappen."
 
-#: src/settings.c:1848
+#: src/settings.c:2012
 msgid "Press this button to resolve the friends server name."
 msgstr "Tryck på den här knappen för att slå upp namnet på kompisservern."
 
-#: src/settings.c:1851
+#: src/settings.c:2015
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr "Ställ in IP-adressen (t.ex. 127.0.0.1) här om du inte har ställt in värdnamnet ovan"
 
-#: src/settings.c:1859
+#: src/settings.c:2023
 msgid "<b>General</b>"
 msgstr "<b>Allmänt</b>"
 
-#: src/settings.c:1870
+#: src/settings.c:2034
 msgid "<b>Server</b>"
 msgstr "<b>Server</b>"
 
-#: src/settings.c:1932
+#: src/settings.c:2113
 msgid "GpsDrive Settings"
 msgstr "Inställningar för GpsDrive"
 
-#: src/settings.c:2225
-msgid "POI selection criterias"
-msgstr "Kriterier för PAI-val"
-
-#: src/settings.c:2251
-msgid "Dist. limit[km] "
-msgstr "Avståndsgräns[km] "
-
-#: src/settings.c:2255
-msgid "If enabled, show POIs only within this distance"
-msgstr "Om aktiverad visas endast PAI:er inom detta avstånd"
-
-#: src/settings.c:2272
-msgid "Enable/disable distance selection"
-msgstr "Aktivera/inaktivera avståndsval"
-
-#: src/settings.c:2279
-msgid "Show no_ssid "
-msgstr "Visa no_ssid "
-
-#: src/settings.c:2292
-msgid "If enabled, WLANs with no SSID are shown, because this is perhaps useless, you can disable it here"
-msgstr "Om aktiverad kommer WLAN som saknar SSID att visas, kanske är detta inte användbart och därför kan du inaktivera det här"
-
-#: src/settings.c:2299
-msgid "Selection mode"
-msgstr "Markeringsläge"
-
-#: src/settings.c:2301
-msgid "include"
-msgstr "inkludera"
-
-#: src/settings.c:2304
-msgid "exclude"
-msgstr "exkludera"
-
-#: src/settings.c:2307
-msgid "Show only POIs where the type field contains one of the selected words"
-msgstr "Visa endast PAI:er där typfältet innehåller ett av de valda orden"
-
-#: src/settings.c:2310
-msgid "Show only POIs where the type field doesn't contain any the selected words"
-msgstr "Visa endast PAI:er där typfältet inte innehåller något av de valda orden"
-
-#: src/splash.c:144
+#: src/splash.c:132
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1975,7 +1558,7 @@ msgstr ""
 "Control + höger musknapp  : Ställ in en vägpunkt på aktuell position på kartan\n"
 "\n"
 
-#: src/splash.c:152
+#: src/splash.c:140
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1985,21 +1568,23 @@ msgid ""
 "f    : Toggle friends display\n"
 "w    : Set Waypoint at current location without asking\n"
 "p    : Set Waypoint at current cursor position without asking\n"
+"r    : Add current cursor position to end of route\n"
 "+    : Zoom in \n"
 "-    : Zoom out\n"
 msgstr ""
 "j    : växla till nästa vägpunkt i ruttläge\n"
 "x    : lägg till vägpunkt på aktuell position\n"
-"y    : lägg till vägpunkt vid musens pekare\n"
+"y    : lägg till vägpunkt vid muspekaren\n"
 "n    : slå på ljus i 60 sekunder i nattläge\n"
 "g    : Växla rutnät\n"
 "f    : Växla visning av kompisar\n"
 "w    : Ställ in vägpunkt vid aktuell plats utan att fråga\n"
 "p    : Ställ in vägpunkt vid aktuell musposition utan att fråga\n"
+"r    : Lägg till aktuell musposition till slutet av rutten\n"
 "+    : Zooma in \n"
 "-    : Zooma ut\n"
 
-#: src/splash.c:162
+#: src/splash.c:151
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -2015,11 +1600,11 @@ msgstr ""
 "Förslag tas varmt emot.\n"
 "\n"
 
-#: src/splash.c:172
+#: src/splash.c:161
 msgid "GpsDrive v"
 msgstr "GpsDrive v"
 
-#: src/splash.c:178
+#: src/splash.c:167
 msgid ""
 "\n"
 "\n"
@@ -2029,7 +1614,7 @@ msgstr ""
 "\n"
 "Du kan hitta nya versioner på http://www.gpsdrive.de\n"
 
-#: src/splash.c:182
+#: src/splash.c:171
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -2037,39 +1622,39 @@ msgstr ""
 "Ansvarsfrånskrivning: Använd inte för navigation.\n"
 "\n"
 
-#: src/splash.c:187
+#: src/splash.c:176
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr "Se manualsidan (man gpsdrive) för detaljer om programmet!"
 
-#: src/splash.c:192
+#: src/splash.c:181
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Muskontroll (klickande på kartan):\n"
 
-#: src/splash.c:200
+#: src/splash.c:189
 msgid "Short cuts:\n"
 msgstr "Tangentgenvägar:\n"
 
-#: src/splash.c:207
+#: src/splash.c:196
 msgid "The other key shortcuts are marked as "
 msgstr "De andra tangentgenvägarna är markerade som "
 
-#: src/splash.c:210
+#: src/splash.c:199
 msgid "underlined"
 msgstr "understrukna"
 
-#: src/splash.c:213
+#: src/splash.c:202
 msgid " letters in the button text.\n"
 msgstr " bokstäver i knapptexten.\n"
 
-#: src/splash.c:216
+#: src/splash.c:205
 msgid "Have a lot of fun!"
 msgstr "Ha det så kul!"
 
-#: src/splash.c:337
+#: src/splash.c:322
 msgid "From:"
 msgstr "Från:"
 
-#: src/splash.c:408
+#: src/splash.c:393
 #, c-format
 msgid ""
 "You received a message from\n"
@@ -2078,15 +1663,19 @@ msgstr ""
 "Du har fått ett meddelande från\n"
 "kompisservern (%s)\n"
 
-#: src/splash.c:420
+#: src/splash.c:405
 msgid "You received a message through the friends server from:\n"
 msgstr "Du har fått ett meddelande via kompisservern från:\n"
 
-#: src/splash.c:431
+#: src/splash.c:416
 msgid "Message text:\n"
 msgstr "Meddelandetext:\n"
 
-#: src/splash.c:556
+#: src/splash.c:523
+msgid "Starting GPS Drive"
+msgstr "Startar GPS Drive"
+
+#: src/splash.c:543
 #, c-format
 msgid ""
 "\n"
@@ -2101,7 +1690,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:624
+#: src/splash.c:611
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander <po@danielnylander.se>\n"
@@ -2110,11 +1699,11 @@ msgstr ""
 "Skicka synpunkter på översättningen till\n"
 "tp-sv@listor.tp-sv.se"
 
-#: src/splash.c:626
+#: src/splash.c:613
 msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
 msgstr "GpsDrive är ett navigeringssystem för bil (cykel, fartyg, flygplan), som visar din position som hämtas från en GPS-mottagare på en zoombar karta och mycket annat..."
 
-#: src/splash.c:629
+#: src/splash.c:616
 msgid ""
 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
@@ -2124,7 +1713,7 @@ msgstr ""
 "\n"
 "GpsDrive använder data från OpenStreetMap Project (http://www.openstreetmap.org), som är fritt tillgängligt under villkoren för licensen Creative Commons Attribution-ShareAlike 2.0."
 
-#: src/splash.c:636
+#: src/splash.c:623
 #, c-format
 msgid ""
 "\n"
@@ -2139,33 +1728,397 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/waypoint.c:671
+#: src/waypoint.c:686
 msgid "Add Point of Interest"
 msgstr "Lägg till Punkt av intresse"
 
-#: src/waypoint.c:682
+#: src/waypoint.c:697
 msgid "Name:"
 msgstr "Namn:"
 
-#: src/waypoint.c:701
+#: src/waypoint.c:706
 msgid " Type: "
 msgstr " Typ: "
 
-#: src/waypoint.c:709
+#: src/waypoint.c:732
 msgid " Comment: "
 msgstr " Kommentar: "
 
-#: src/waypoint.c:747
+#: src/waypoint.c:770
 msgid " Save waypoint in: "
 msgstr " Spara vägpunkt i: "
 
-#: src/waypoint.c:750
+#: src/waypoint.c:773
 msgid "Database"
 msgstr "Databas"
 
-#: src/waypoint.c:757
+#: src/waypoint.c:778
 msgid "way.txt File"
 msgstr "way.txt-fil"
+
+#~ msgid "Aeronautical settings"
+#~ msgstr "Flyginställningar"
+
+#~ msgid "Fly"
+#~ msgstr "Flyg"
+
+#~ msgid "Plane mode"
+#~ msgstr "Flygplansläge"
+
+#~ msgid "Use VFR"
+#~ msgstr "Använd VFR"
+
+#~ msgid "Use IFR"
+#~ msgstr "Använd IFR"
+
+#~ msgid "max. horizontal deviation "
+#~ msgstr "maximal horisontell avvikelse "
+
+#~ msgid "max. vertical deviation "
+#~ msgstr "maximal vertikal avvikelse "
+
+#~ msgid "disable vert. deviation warning above 5000ft MSL"
+#~ msgstr "stäng av varning för vertikal avvikelse över 5000 fot MSL"
+
+#~ msgid "/Misc. Menu/Messages"
+#~ msgstr "/Diversemeny/Meddelanden"
+
+#~ msgid "/_Menu"
+#~ msgstr "/_Meny"
+
+#~ msgid "/_Menu/_Maps"
+#~ msgstr "/_Meny/_Kartor"
+
+#~ msgid "/_Menu/_Maps/_Import"
+#~ msgstr "/_Meny/_Kartor/_Importera"
+
+#~ msgid "/_Menu/_Maps/_Download"
+#~ msgstr "/_Meny/_Kartor/_Hämta"
+
+#~ msgid "/_Menu/_Reinitialize GPS"
+#~ msgstr "/_Meny/_Initiera om GPS"
+
+#~ msgid "/_Menu/_Load track file"
+#~ msgstr "/_Meny/_Läs in spårfil"
+
+#~ msgid "/_Menu/M_essages"
+#~ msgstr "/_Meny/M_eddelanden"
+
+#~ msgid "/_Menu/M_essages/_Send message to mobile target"
+#~ msgstr "/_Meny/M_eddelanden/_Skicka meddelande till mobilt mål"
+
+#~ msgid "/_Menu/S_ettings"
+#~ msgstr "/_Meny/_Inställningar"
+
+#~ msgid "/_Menu/_Help"
+#~ msgstr "/_Meny/_Hjälp"
+
+#~ msgid "/_Menu/_Help/_About"
+#~ msgstr "/_Meny/_Hjälp/_Om"
+
+#~ msgid "/_Menu/_Help/_Topics"
+#~ msgstr "/_Meny/_Hjälp/_Ämnen"
+
+#~ msgid "/_Menu/_Quit"
+#~ msgstr "/_Meny/A_vsluta"
+
+#~ msgid "Auto"
+#~ msgstr "Auto"
+
+#~ msgid "NESW"
+#~ msgstr "NÖSV"
+
+#~ msgid "n/a"
+#~ msgstr "-"
+
+#~ msgid "/Menu/Messages"
+#~ msgstr "/Meny/Meddelanden"
+
+#~ msgid "Sends your text to to selected computer using the friends server"
+#~ msgstr "Skickar din text till vald dator via kompisservern"
+
+#~ msgid "Temporary Waypoint"
+#~ msgstr "Temporär vägpunkt"
+
+#~ msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
+#~ msgstr "-t        ställ in serieport för GPS, t.ex. /dev/ttyS1\n"
+
+#~ msgid "-n        Disable use of direct serial connection\n"
+#~ msgstr "-n        Inaktivera användning av direkt serieanslutning\n"
+
+#~ msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
+#~ msgstr "-p        ställ in inställningar för handdator (iPAQ, Yopy...)\n"
+
+#~ msgid "-E        print out data received from direct serial connection\n"
+#~ msgstr "-E        skriv ut data som tagits emot från direkt serieanslutning\n"
+
+#~ msgid ""
+#~ "-z        don't display zoom factor and scale\n"
+#~ "\n"
+#~ msgstr ""
+#~ "-z        visa inte zoomfaktor och skala\n"
+#~ "\n"
+
+#~ msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
+#~ msgstr "Gpsdrive-2 © 2001-2006 F.Ganter"
+
+#~ msgid "M_ute"
+#~ msgstr "T_yst"
+
+#~ msgid "Points"
+#~ msgstr "Punkter"
+
+#~ msgid "PO_I"
+#~ msgstr "PA_I"
+
+#~ msgid "Draw Points Of Interest found in mySQL"
+#~ msgstr "Rita ut Punkter av intresse hittade i MySQL"
+
+#~ msgid "_WLAN"
+#~ msgstr "_WLAN"
+
+#~ msgid "Wlan"
+#~ msgstr "Wlan"
+
+#~ msgid "_WP"
+#~ msgstr "_VP"
+
+#~ msgid "Show"
+#~ msgstr "Visa"
+
+#~ msgid "Show tracking on the map"
+#~ msgstr "Visa spår på kartan"
+
+#~ msgid "Save"
+#~ msgstr "Spara"
+
+#~ msgid "Save the track to given filename at program exit"
+#~ msgstr "Spara spåret till givet filnamn vid programslut"
+
+#~ msgid "Bearing"
+#~ msgstr "Riktning"
+
+#~ msgid "GPS Info"
+#~ msgstr "GPS-info"
+
+#~ msgid "---"
+#~ msgstr "---"
+
+#~ msgid "Selected:"
+#~ msgstr "Markerat:"
+
+#~ msgid "within"
+#~ msgstr "inom"
+
+#~ msgid "Distance to target"
+#~ msgstr "Avstånd till målet"
+
+#~ msgid "Map file"
+#~ msgstr "Kartfil"
+
+#~ msgid "Map scale"
+#~ msgstr "Kartskala"
+
+#~ msgid "Heading"
+#~ msgstr "Kurs"
+
+#~ msgid "Time to Dest."
+#~ msgstr "Tid till dest."
+
+#~ msgid "Pref. scale"
+#~ msgstr "Föredragen skala"
+
+#~ msgid "000,00000N"
+#~ msgstr "000,00000N"
+
+#~ msgid "000,00000E"
+#~ msgstr "000,00000Ö"
+
+#~ msgid "0000"
+#~ msgstr "0000"
+
+#~ msgid "Menu"
+#~ msgstr "Meny"
+
+#~ msgid "Status"
+#~ msgstr "Status"
+
+#~ msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
+#~ msgstr "Klicka här för att växla visning mellan satellitnivå och satellitposition. En roterande glob visas i simuleringsläget"
+
+#~ msgid "Number of used satellites/satellites in view"
+#~ msgstr "Antal använda satelliter/satelliter i sikte"
+
+#~ msgid "EPE (Estimated Precision Error), if available"
+#~ msgstr "EPE (Estimated Precision Error), om tillgänglig"
+
+#~ msgid "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "
+#~ msgstr "PDOP (Position Dilution Of Precision). PDOP mindre än 4 ger bäst precision, mellan 4 och 8 ger acceptabel precision och högre än 8 ger en oacceptabel precision."
+
+#~ msgid "On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."
+#~ msgstr "På kompassen ser du riktningen till vilken du rör dig. Pekaren visar riktningen till målet på kompassen."
+
+#~ msgid "/Menu"
+#~ msgstr "/Meny"
+
+#~ msgid "Here you find extra functions for maps, tracks and messages"
+#~ msgstr "Här hittar du extra funktioner för kartor, spår och meddelanden"
+
+#~ msgid "Disable output of speech"
+#~ msgstr "Inaktivera textuppläsning"
+
+#~ msgid "Show waypoints on the map"
+#~ msgstr "Visa vägpunkter på kartan"
+
+#~ msgid "Zoom into the current map"
+#~ msgstr "Zooma in i den nuvarande kartan"
+
+#~ msgid "Zooms out off the current map"
+#~ msgstr "Zooma ut ur den nuvarande kartan"
+
+#~ msgid "Select the next more detailed map"
+#~ msgstr "Välj nästa mer detaljerade karta"
+
+#~ msgid "Select the next less detailed map"
+#~ msgstr "Välj nästa mindre detaljerade karta"
+
+#~ msgid "Find Points of Interest and select as destination"
+#~ msgstr "Hitta Punkt av intresse och välj som destination"
+
+#~ msgid "Select the map scale of avail. maps."
+#~ msgstr "Välj skala på tillgängliga kartor."
+
+#~ msgid "This shows the time from your GPS receiver"
+#~ msgstr "Detta visar tiden från din GPS-mottagare"
+
+#~ msgid "Number of mobile targets within timeframe/total received from friendsserver"
+#~ msgstr "Antal mobila mål inom tidsram/totalt mottagna från kompisservern"
+
+#~ msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
+#~ msgstr "Fel vid sparande av konfigurationsfilen ~/.gpsdrive/gpsdriverc"
+
+#~ msgid ""
+#~ "\n"
+#~ "no garmin support compiled in\n"
+#~ msgstr ""
+#~ "\n"
+#~ "inget garmin-stöd inkompilerat\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Garmin protocol detection disabled!\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Igenkänning av Garminprotokoll avstängt!\n"
+
+#~ msgid "Stop GPSD"
+#~ msgstr "Stoppa GPSD"
+
+#~ msgid "Stop GPSD and switch to simulation mode"
+#~ msgstr "Stoppa GPSD och växla till simuleringsläget"
+
+#~ msgid "Starts GPSD for NMEA mode"
+#~ msgstr "Startar GPSD för NMEA-läge"
+
+#~ msgid "Direct serial connection to %s"
+#~ msgstr "Direkt serieanslutning till %s"
+
+#~ msgid "GARMIN Mode"
+#~ msgstr "GARMIN-läge"
+
+#~ msgid "waiting for thread to stop\n"
+#~ msgstr "väntar på att tråd ska stoppa\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "error opening %s(%d)\n"
+#~ msgstr ""
+#~ "\n"
+#~ "fel vid öppning av %s(%d)\n"
+
+#~ msgid "successfull opened %s\n"
+#~ msgstr "öppning av %s lyckades\n"
+
+#~ msgid "switching WAAS/EGNOS on\n"
+#~ msgstr "slår på WAAS/EGNOS\n"
+
+#~ msgid "switching WAAS/EGNOS off\n"
+#~ msgstr "slår av WAAS/EGNOS\n"
+
+#~ msgid "To"
+#~ msgstr "Till"
+
+#~ msgid "direct draw sql _Streets"
+#~ msgstr "rita direkt ut _gator från sql"
+
+#~ msgid "Draw Streets found in mySQL"
+#~ msgstr "Rita ut gator hittade i MySQL"
+
+#~ msgid "Nautic settings"
+#~ msgstr "Sjöinställningar"
+
+#~ msgid "Nautic"
+#~ msgstr "Nautisk"
+
+#~ msgid "Jump to selected entry"
+#~ msgstr "Hoppa till vald post"
+
+#~ msgid "POI-Type Selection"
+#~ msgstr "Val av IP-typ"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Enable Simulation mode"
+#~ msgstr "Aktivera simuleringsläge"
+
+#~ msgid "Big display"
+#~ msgstr "Stor visning"
+
+#~ msgid "Set here the color of the big routing displays"
+#~ msgstr "Här kan du ställa in färgen på stor visning av rutter"
+
+#~ msgid "Choose font for big display"
+#~ msgstr "Välj typsnitt för stor visning"
+
+#~ msgid "Set here the font of the big routing displays"
+#~ msgstr "Här kan du ställa in typsnittet för stor visning av rutter"
+
+#~ msgid "Edit Filter"
+#~ msgstr "Redigera filter"
+
+#~ msgid "POI selection criterias"
+#~ msgstr "Kriterier för IP-val"
+
+#~ msgid "Dist. limit[km] "
+#~ msgstr "Avståndsgräns[km] "
+
+#~ msgid "If enabled, show POIs only within this distance"
+#~ msgstr "Om aktiverad visas endast IP:er inom detta avstånd"
+
+#~ msgid "Enable/disable distance selection"
+#~ msgstr "Aktivera/inaktivera avståndsval"
+
+#~ msgid "Show no_ssid "
+#~ msgstr "Visa no_ssid "
+
+#~ msgid "If enabled, WLANs with no SSID are shown, because this is perhaps useless, you can disable it here"
+#~ msgstr "Om aktiverad kommer WLAN som saknar SSID att visas, kanske är detta inte användbart och därför kan du inaktivera det här"
+
+#~ msgid "Selection mode"
+#~ msgstr "Markeringsläge"
+
+#~ msgid "include"
+#~ msgstr "inkludera"
+
+#~ msgid "exclude"
+#~ msgstr "exkludera"
+
+#~ msgid "Show only POIs where the type field contains one of the selected words"
+#~ msgstr "Visa endast IP:er där typfältet innehåller ett av de valda orden"
+
+#~ msgid "Show only POIs where the type field doesn't contain any the selected words"
+#~ msgstr "Visa endast IP:er där typfältet inte innehåller något av de valda orden"
 
 #~ msgid "unused"
 #~ msgstr "oanvänt"
@@ -2443,9 +2396,6 @@ msgstr "way.txt-fil"
 #~ msgid "Font and color settings"
 #~ msgstr "Typsnitt- och färginställningar"
 
-#~ msgid "WP Label"
-#~ msgstr "VP-etikett"
-
 #~ msgid "Display color"
 #~ msgstr "Typsnittsfärg"
 
@@ -2702,8 +2652,8 @@ msgstr "way.txt-fil"
 #~ "GPSDRIVE © 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
 #~ "\n"
 
-#~ msgid "Website: www.gpsdrive.de/\n"
-#~ msgstr "Hemsida: www.gpsdrive.de/\n"
+#~ msgid "Website: www.kraftvoll.at/software\n"
+#~ msgstr "Hemsida: www.kraftvoll.at/software\n"
 
 #~ msgid "+    : Zoom in\n"
 #~ msgstr "+    : Zooma in\n"
@@ -2785,7 +2735,7 @@ msgstr "way.txt-fil"
 #~ "GPSDRIVE (c) 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
 #~ "\n"
 #~ "-------------------------------------------------\n"
-#~ "Website: www.gpsdrive.de/\n"
+#~ "Website: www.kraftvoll.at/software\n"
 #~ "Disclaimer: Please do not use for navigation. \n"
 #~ "\n"
 #~ "*************************************************\n"
@@ -2833,7 +2783,7 @@ msgstr "way.txt-fil"
 #~ "GPSDRIVE © 2001, 2002 Fritz Ganter <ganter@ganter.at>\n"
 #~ "\n"
 #~ "-------------------------------------------------\n"
-#~ "Hemsida: www.gpsdrive.de/\n"
+#~ "Hemsida: www.kraftvoll.at/software\n"
 #~ "Använd inte för navigation. \n"
 #~ "\n"
 #~ "*************************************************\n"
