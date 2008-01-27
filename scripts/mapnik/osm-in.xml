@@ -93,24 +93,24 @@
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_box'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/public/post_box.png" type="png" width="16" height="16" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/post_box.png" type="png" width="16" height="16" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_office'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/public/post_office.png" type="png" width="16" height="16" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/post_office.png" type="png" width="16" height="16" />
     </Rule>
 
     <Rule>
       <MaxScaleDenominator>250000</MaxScaleDenominator>
       <MinScaleDenominator>25000</MinScaleDenominator> 
       <Filter>[railway]='station'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/transport/railway_small.png" type="png" width="5" height="5" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway_small.png" type="png" width="5" height="5" />
     </Rule>
      <Rule>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <Filter>[railway]='station'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/transport/railway.png" type="png" width="9" height="9" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway.png" type="png" width="9" height="9" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
@@ -127,51 +127,51 @@
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='pub'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/food/pub.png" type="png" width="16" height="16" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/food/pub.png" type="png" width="16" height="16" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <Filter>[natural]='peak'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/misc/landmark/peak.png" type="png" width="8" height="8" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/peak.png" type="png" width="8" height="8" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[man_made]='mast'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/misc/landmark/tower.png" type="png" width="32" height="32" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/tower.png" type="png" width="32" height="32" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='recycling'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/public/recycling.png" type="png" width="20" height="20" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/recycling.png" type="png" width="20" height="20" />
     </Rule>
     
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[amenity]='hospital'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/health/hospital.png" type="png" width="20" height="20" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/health/hospital.png" type="png" width="20" height="20" />
     </Rule>
     
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='bus_stop' or [highway]='bus_stop'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/transport/bus.png" type="png" width="30" height="12" />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/bus.png" type="png" width="30" height="12" />
     </Rule>
     
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[amenity]='parking'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/vehicle/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
     </Rule>
     
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='place_of_worship'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/religion/church.png" type="png" width="16" height="16" allow_overlap="false"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/religion/church.png" type="png" width="16" height="16" allow_overlap="false"/>
      </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='airport'</Filter>
-      <PointSymbolizer file="@DATA_DIR@/classic.small/transport/airport.png" type="png" width="16" height="16" allow_overlap="false"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png" type="png" width="16" height="16" allow_overlap="false"/>
      </Rule>
   </Style>
   
@@ -203,7 +203,7 @@
      <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <Filter>[landuse] = 'cemetery'</Filter>
-      <PolygonPatternSymbolizer file="@DATA_DIR@/classic.small/religion/cemetery.png" type="png" width="16" height="16"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/religion/cemetery.png" type="png" width="16" height="16"/>
     </Rule>
     
      <Rule>
@@ -1086,7 +1086,7 @@
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>1000</MinScaleDenominator>
       <Filter>[railway] = 'rail'</Filter>
-      <LinePatternSymbolizer file="@DATA_DIR@/classic.small/transport/track/rail.png" type="png" width="20" height="3" />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/track/rail.png" type="png" width="20" height="3" />
     </Rule>
     
      <Rule>
@@ -1567,7 +1567,7 @@
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>1000</MinScaleDenominator>
       <Filter>[railway] = 'preserved'</Filter>
-      <LinePatternSymbolizer file="@DATA_DIR@/classic.small/transport/rail_preserved.png" type="png" width="20" height="3" />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/rail_preserved.png" type="png" width="20" height="3" />
     </Rule>
     
   </Style>
@@ -1579,19 +1579,19 @@
       <Filter>[highway] = 'motorway' and [length] = 2</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book"  size="11" fill="#809bc0" placement="line"  file="@DATA_DIR@/classic.small/vehicle/shield/motorway_shield.png" type="png" width="24" height="17" min_distance="100"/>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book"  size="11" fill="#809bc0" placement="line"  file="@ICON_INSTALL_DIR@/classic.small/vehicle/shield/motorway_shield.png" type="png" width="24" height="17" min_distance="100"/>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 3</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="@DATA_DIR@/classic.small/vehicle/shield/motorway_shield2.png" type="png" width="31" height="17" min_distance="100"/>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/vehicle/shield/motorway_shield2.png" type="png" width="31" height="17" min_distance="100"/>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 4</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="@DATA_DIR@/classic.small/vehicle/shield/motorway_shield3.png" type="png" width="38" height="17" min_distance="100"/>
+      <ShieldSymbolizer name="ref" face_name="DejaVu Sans Book" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/vehicle/shield/motorway_shield3.png" type="png" width="38" height="17" min_distance="100"/>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' or [highway] = 'primary' or [highway] = 'secondary'</Filter>
@@ -1628,12 +1628,12 @@
     <Rule>
       <Filter>[oneway] = 'yes' or [oneway] = 'true'</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
-      <LinePatternSymbolizer file="@DATA_DIR@/classic.small/transport/track/arrow.png" type="png" width="80" height="8" />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/track/arrow.png" type="png" width="80" height="8" />
     </Rule>
     <Rule>
       <Filter>[oneway] = '-1'</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
-      <LinePatternSymbolizer file="@DATA_DIR@/classic.small/transport/track/arrow_back.png" type="png" width="80" height="8" />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/track/arrow_back.png" type="png" width="80" height="8" />
     </Rule>
  </Style>
 
@@ -1641,7 +1641,7 @@
     <StyleName>world-1</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/world_boundaries_m</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/world_boundaries_m</Parameter>
     </Datasource>
   </Layer>
   
@@ -1649,7 +1649,7 @@
     <StyleName>world</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/world_bnd_m</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/world_bnd_m</Parameter>
     </Datasource>
   </Layer>
   
@@ -1657,7 +1657,7 @@
     <StyleName>coast-poly</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/shoreline_a</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/shoreline_a</Parameter>
     </Datasource>
   </Layer>
   
@@ -1665,7 +1665,7 @@
     <StyleName>coast-line</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/shoreline_l</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/shoreline_l</Parameter>
     </Datasource>
   </Layer>
   
@@ -1674,7 +1674,7 @@
     <StyleName>builtup</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/builtup_area</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/builtup_area</Parameter>
     </Datasource>
   </Layer>
   
@@ -1786,7 +1786,7 @@
     <StyleName>places</StyleName>
     <Datasource>
       <Parameter name="type">shape</Parameter>
-      <Parameter name="file">@DATA_DIR@/mapnik/world_boundaries/places</Parameter>
+      <Parameter name="file">@WORLD_BOUNDARIES_INSTALL_DIR@/places</Parameter>
     </Datasource>
   </Layer>
 </Map>

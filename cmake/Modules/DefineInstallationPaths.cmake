@@ -68,6 +68,11 @@ if (UNIX)
     CACHE PATH "The icon install dir (default data/map-icons/)"
     FORCE
   )
+  SET(WORLD_BOUNDARIES_INSTALL_DIR
+    "${SHARE_INSTALL_PREFIX}/mapnik/world_boundaries"
+    CACHE PATH "The world_boundaries install dir (default data/mapnik/world_boundaries)"
+    FORCE
+  )
   SET(SOUND_INSTALL_DIR
     "${DATA_INSTALL_PREFIX}/sounds"
     CACHE PATH "The install dir for sound files (default data/sounds)"
