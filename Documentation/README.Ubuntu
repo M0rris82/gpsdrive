@@ -1,0 +1,118 @@
+how to install gpsdrive and openstreetmap(osm) on a clean updated ubuntu
+7.10 gutsy gibbon system
+____________________________________________________________________________
+
+First of all let's add repositories for downloading the last version of
+gpsdrive (the one in gutsy repository won't work with osm):
+
+GpsDrive Repository:
+--------------------
+open a terminal or use synaptic to add them into /etc/apt/sources.list:
+
+deb     http://www.gpsdrive.de/debian etch main
+deb-src http://www.gpsdrive.de/debian etch main
+
+add gpg key by typing in a terminal:
+
+gpg --keyserver wwwkeys.de.pgp.net --recv-keys 147DAD31
+gpg --edit-key trust 147DAD31
+gpg --armor --export 147DAD31 | sudo apt-key add -
+
+now reload repositories: "sudo apt-get update".
+
+Install:
+--------
+install gpsdrive which will install many dependencies
+
+during the installation of gpsdrive, mysql will be installed and will
+ask you to set a password: just type a your sudo system password in.
+
+go to
+"http://packages.debian.org/search?keywords=libboost&searchon=names&suite=stable&section=all", download and install:
+
+libboost-python1.33.1_1.33.1-10_i386.deb
+
+go to " http://packages.ubuntu.com/hardy/python/python-mapnik "
+
+download and install python-mapnik 0.4.0-2 (notice: ?the older version
+in your synaptic package list will not be installed)
+
+then  install  postgresql  postgis  postgresql-8.2-postgis 
+
+install openstreetmap-mapnik-world-boundaries (more than 600 mb, takes
+one hour more and less) that is now in your synaptic.
+
+Gps Receiver:
+-------------
+if you want to use gpsdrive with a gps receiver , install gpsd package.
+
+Maps:
+-----
+now everything should work, but you have no maps installed to view or
+develop but the world boundaries.
+
+to fetch openstreetmap.org maps, there are some more steps to be done
+using terminal.
+
+to install the whole planet file, you need a lot of space on your hard
+disk: the compressed file is more than 3 GB....and grows every day. 
+
+you can choose to install partial files , like europe or single
+countries of europe . I do not know how to get partial files of the rest
+of the world and if it is possible.
+
+for the whole planet:
+
+sudo mapnik-osm-updater.sh --all-planet (on my system athlon xp2800, 2
+gb dual channel ram, adsl 2mb it takes more than 24 hrs to download and
+install)
+
+for partial files of europe:
+
+sudo mapnik-osm-updater.sh --all-planet-geofabrik=? (with this cmd you
+will get the list of files as below):
+
+Possible Values are:
+        europe
+        europe/austria
+        europe/belgium
+        europe/france
+        europe/germany
+        europe/luxembourg
+        europe/netherlands
+        europe/poland
+        europe/switzerland
+        europe/germany/baden-wuerttemberg
+        europe/germany/bayern
+        europe/germany/berlin
+        europe/germany/brandenburg
+        europe/germany/bremen
+        europe/germany/hamburg
+        europe/germany/hessen
+        europe/germany/mecklenburg-vorpommern
+        europe/germany/niedersachsen
+        europe/germany/nordrhein-westfalen
+        europe/germany/rheinland-pfalz
+        europe/germany/saarland
+        europe/germany/sachsen-anhalt
+        europe/germany/sachsen
+        europe/germany/schleswig-holstein
+        europe/germany/thueringen
+
+now choose the file you want to download and type:
+
+
+sudo mapnik-osm-updater.sh --all-planet-geofabrik="the file you
+choosed" ( example: europe/france).
+
+it will be quite fast
+
+so wait until everithing is downloaded and installed and then launch
+gpsdrive, press the "map control" button and choose "mapnik mode"
+
+follow gpsdrive help to use (easy)
+
+Enjoy!!!
+
+Carlo Mecozzi,Milan, Italy
+
