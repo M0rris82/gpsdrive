@@ -681,9 +681,12 @@ int gui_init (gchar *geometry, gint usegeometry)
 	gtk_widget_hide_all (routeinfo_evbox);
 
 	//if ( ( local_config.guimode == GUI_DESKTOP )
-	     if( (local_config.MapnikStatusInt ) ){
-	    toggle_mapnik_cb( mapnik_bt, 2 );
+#ifdef MAPNIK
+	if( (local_config.MapnikStatusInt ) )
+	{
+		toggle_mapnik_cb( mapnik_bt, 2 );
 	}
+#endif
 	
 	if (!local_config.showfriends)
 		gtk_widget_hide_all (frame_statusfriends);
