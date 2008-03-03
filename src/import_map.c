@@ -147,27 +147,21 @@ Disclaimer: Please do not use for navigation.
 
 
 extern gint maploaded;
-extern gint isnight, disableisnight;
 extern gint debug, mydebug;
-extern gint usesql;
 extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
 GtkWidget *dltext4,*dltext3;
-extern gdouble gbreit, glang, milesconv, olddist;
+extern gdouble olddist;
 extern GTimer *timer, *disttimer;
-extern gint gcount, milesflag, downloadwindowactive;
+extern gint downloadwindowactive;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
-extern GtkWidget *status, *pixmapwidget,
-  *gotowindow;
-extern GtkWidget *messagewindow, *routewindow, *downloadbt;
-extern GtkWidget *mylist, *myroutelist, *destframe;
+extern GtkWidget *status;
+extern GtkWidget *mylist;
 extern mapsstruct *maps;
 extern gint iszoomed;
-extern gint isnight, disableisnight;
-extern gint nrmaps, dldiff;
-extern int havenasa, sortcolumn, sortflag;
-extern gint onemousebutton;
+extern gint nrmaps;
+extern int havenasa;
 extern gchar oldfilename[1024];
-extern GtkWidget *posbt, *cover;
+extern GtkWidget *posbt;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 
@@ -819,8 +813,6 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
 	  rebuildtracklist ();
 	  g_strlcpy (current.target, _("SELECTED"), sizeof (current.target));
-//	  g_snprintf (s, sizeof (s), "%s: %s", _("To"), current.target);
-//	  gtk_frame_set_label (GTK_FRAME (destframe), s);
 	  coords.target_lat = lat;
 	  coords.target_lon = lon;
 	  g_timer_stop (disttimer);

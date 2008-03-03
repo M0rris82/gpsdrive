@@ -62,7 +62,6 @@ extern poi_type_struct poi_type_list[poi_type_list_max];
 
 extern gint do_unit_test;
 extern gint maploaded;
-extern gint isnight, disableisnight;
 extern color_struct colors;
 extern currentstatus_struct current;
 extern gint debug, mydebug;

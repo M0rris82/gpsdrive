@@ -77,40 +77,28 @@ gint gps_handler_debug = 0;
 
 
 extern gint maploaded;
-extern gint isnight, disableisnight;
 
 extern gchar utctime[20], loctime[20];
-extern gint forcehavepos;
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff;
 extern gint zone;
-extern gint oldsatfix, oldsatsanz;
 extern gdouble precision;
-extern gchar localedecimal;
-extern gdouble gbreit, glang, milesconv, olddist;
+extern gdouble milesconv;
 extern gchar mapfilename[1024];
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel;
-extern gint satfix, usedgps;
+extern gint satfix;
 extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
 extern fd_set readmask;
 extern struct timeval timeout;
 extern gdouble earthr;
-extern GTimer *timer, *disttimer;
-extern int newdata;
-extern int didrootcheck;
 extern gint timeoutcount;
 extern gint simpos_timeout;
-extern int timerto;
-extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
 extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
 extern gchar gpsdservername[200];
 extern GtkWidget *frame_statusbar;
-extern GtkWidget *pixmapwidget, *gotowindow;
-extern gint statuslock, gpson;
-extern gint earthmate;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 

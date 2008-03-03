@@ -99,7 +99,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive_config.h"
 
 extern GtkWidget *frame_statusbar;
-extern gint timeoutcount;
 extern gint haveproxy, proxyport;
 extern gchar proxy[256];
 extern gint mydebug;
@@ -108,8 +107,7 @@ extern struct timeval timeout;
 extern int havenasa;
 extern gint slistsize;
 extern gchar *slist[];
-extern GtkWidget *cover;
-extern gint scaleprefered;
+GtkWidget *cover;
 extern gdouble milesconv;
 extern coordinate_struct coords;
 extern currentstatus_struct current;

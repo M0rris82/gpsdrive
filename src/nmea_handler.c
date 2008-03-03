@@ -51,7 +51,6 @@
 
 
 extern gint maploaded;
-extern gint isnight, disableisnight;
 
 extern gint mydebug;
 gint nmea_handler_debug = 0;
@@ -61,36 +60,18 @@ extern gint forcehavepos;
 extern gint haveposcount;
 extern gint blink, gblink, xoff, yoff;
 extern gint zone;
-extern gdouble milesconv;
-extern gint oldsatfix, oldsatsanz;
+extern gint oldsatsanz;
 extern gdouble precision, hdop;
-extern gchar localedecimal;
-extern gdouble gbreit, glang, milesconv, olddist;
+extern gdouble milesconv;
 extern gchar mapfilename[1024];
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint newsatslevel;
-extern gint satfix, usedgps;
+extern gint satfix;
 extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
-extern fd_set readmask;
 extern struct timeval timeout;
-extern gdouble earthr;
-extern GTimer *timer, *disttimer;
-extern int newdata;
-extern GtkWidget *startgpsbt;
-extern int didrootcheck;
-extern gint messagestatusbarid, timeoutcount;
-extern gint simpos_timeout;
-extern int timerto;
-extern GtkTooltips *temptooltips;
-extern GtkWidget *satslabel1, *satslabel2, *satslabel3;
-extern GdkPixbuf *satsimage;
 extern gchar dgpsserver[80], dgpsport[10];
-extern gchar gpsdservername[200];
 extern GtkWidget *status;
-extern GtkWidget *pixmapwidget, *gotowindow;
-extern gint statuslock, gpson;
-extern gint earthmate;
 static gchar gradsym[] = "\xc2\xb0";
 extern coordinate_struct coords;
 extern currentstatus_struct current;

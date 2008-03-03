@@ -45,23 +45,14 @@ extern gint ignorechecksum, mydebug, debug;
 extern gdouble pixelfact;
 extern gdouble bearing;
 extern gint haveposcount, blink, gblink, xoff, yoff;
-extern gdouble milesconv;
-extern gint nrmaps;
 extern gint maploaded;
 extern gint debug, mydebug;
-extern gint usesql;
 extern glong mapscale;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
 
 extern gint thisrouteline;
-extern gint gcount, downloadwindowactive;
 extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
 extern coordinate_struct coords;
-extern gchar oldfilename[2048];
-
-extern gint saytarget;
-
-extern int havedefaultmap;
 
 extern GdkPixbuf *image, *tempimage;
 

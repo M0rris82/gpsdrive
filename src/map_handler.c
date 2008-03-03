@@ -48,12 +48,9 @@
 extern gint ignorechecksum, mydebug, debug;
 extern gdouble pixelfact;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
-extern gdouble milesconv;
 extern gint nrmaps;
 extern gint maploaded;
 extern gint debug, mydebug;
-extern gint usesql;
-extern gint selected_wp_mode;
 extern gint iszoomed;
 extern gchar  oldangle[100];
 extern gdouble new_dl_lat,new_dl_lon;
@@ -63,7 +60,7 @@ extern coordinate_struct coords;
 extern routestatus_struct route;
 wpstruct *routelist;
 extern gint thisrouteline;
-extern gint gcount, milesflag, downloadwindowactive;
+extern gint downloadwindowactive;
 extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;
 extern GtkWidget *posbt, *mapnik_bt;
@@ -74,7 +71,6 @@ extern gchar oldfilename[2048];
 extern gint borderlimit;
 
 gchar mapfilename[2048];
-extern gint saytarget;
 
 extern int havedefaultmap;
 

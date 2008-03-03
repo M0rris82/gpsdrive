@@ -58,7 +58,6 @@ extern GdkSegment *trackshadow;
 
 extern wpstruct *routelist;
 extern GdkColor blue;
-extern gint isnight, disableisnight;
 extern color_struct colors;
 extern currentstatus_struct current;
 extern coordinate_struct coords;

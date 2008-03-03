@@ -60,9 +60,7 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 
-extern GtkWidget *mylist;
 extern gint maploaded;
-extern gint isnight, disableisnight;
 extern color_struct colors;
 extern currentstatus_struct current;
 extern gint mydebug;
@@ -70,13 +68,7 @@ extern GtkWidget *map_drawingarea;
 extern glong mapscale;
 extern GdkGC *kontext_map;
 
-extern gdouble earthr;
-extern GTimer *timer, *disttimer;
-extern gdouble gbreit, glang, olddist;
-extern GtkWidget *messagewindow;
-extern gint onemousebutton;
 extern GdkDrawable *drawable;
-extern gchar oldfilename[2048];
 extern GdkGC *kontext;
 
 /* *****************************************************************************

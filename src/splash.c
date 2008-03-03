@@ -46,27 +46,13 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 
-
-
-
-
-extern gint max_display_map;
 extern map_dir_struct *display_map;
 
 GtkWidget *splash_window;
-extern gint wpflag, displaymap_top, displaymap_map;
-extern gint scaleprefered;
-extern gint mydebug, defaultserver;
-extern gint setdefaultpos;
-extern gint usedgps;
-extern gdouble milesconv;
-extern gint satposmode, printoutsats;
+extern gint mydebug;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern double dbdistance;
-extern int dbusedist;
-extern gint earthmate, zone;
 extern int sockfd, showsid, storetz;
 
 extern coordinate_struct coords;
