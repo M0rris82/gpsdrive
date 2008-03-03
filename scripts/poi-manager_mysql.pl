@@ -23,7 +23,7 @@
 #    and import them into mySQL for use with gpsdrive
 #
 #
-#  $Id$
+#  $Id: poi-manager.pl 1766 2007-10-25 12:17:55Z dse $
 #
 #####################################################################
 
@@ -46,7 +46,7 @@ BEGIN {
 use strict;
 use warnings;
 
-my $Version = '$Revision$'; 
+my $Version = '$Revision: 1766 $'; 
 $Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
 
 my $VERSION ="poi-manager.pl (c) Guenther Meyer

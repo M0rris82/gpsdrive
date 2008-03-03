@@ -65,7 +65,7 @@ sub create_dbfile(){
     db_exec('CREATE TABLE poi_type (
 		poi_type       VARCHAR(160)  PRIMARY KEY,
 		scale_min      INTEGER       NOT NULL default \'1\',
-		scale_max      INTEGER       NOT NULL default \'25000\',
+		scale_max      INTEGER       NOT NULL default \'50000\',
 		title          VARCHAR(160)  NULL default \'\',
 		description    VARCHAR(160)  NULL default \'\');') or die;
 
@@ -173,21 +173,21 @@ sub fill_default_sources() {   # Just some Default Sources
       { source_id   => '1',
         name        => 'unknown',
         comment     => 'Unknown source or source not defined', 
-        last_update => '2007-01-03',
-        url         => 'http://www.gpsdrive.cc/',
+        last_update => '2008-03-01',
+        url         => 'http://www.gpsdrive.de/',
         licence     => 'unknown'
       },
       { source_id   => '2',
         name        => 'way.txt',
         comment     => 'Data imported from way.txt', 
-        last_update => '2007-01-03',
-        url         => 'http://www.gpsdrive.cc/',
+        last_update => '2008-03-01',
+        url         => 'http://www.gpsdrive.de/',
         licence     => 'unknown'
       },
       { source_id   => '3',
         name        => 'user',
-	comment     => 'Data entered by the GPSDrive-User',
-	last_update => '2007-01-23',
+	comment     => 'Data entered by the GpsDrive-User',
+	last_update => '2008-03-01',
 	url         => 'http://www.gpsdrive.cc/',
 	licence     => $default_licence
       },
@@ -225,6 +225,13 @@ sub fill_default_sources() {   # Just some Default Sources
         comment     => 'Access point data from FON', 
         last_update => '2007-09-30',
         url         => 'http://www.fon.com/',
+        licence     => 'unknown'
+      },
+      { source_id   => '9',
+        name        => 'kismet',
+        comment     => 'Access point data found by Kismet', 
+        last_update => '2008-03-01',
+        url         => ' http://www.kismetwireless.net/',
         licence     => 'unknown'
       },
     );
