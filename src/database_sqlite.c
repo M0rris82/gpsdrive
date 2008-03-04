@@ -154,7 +154,7 @@ db_sqlite_init (void)
 	if (t_status != SQLITE_OK)
 	{
 		g_printf ("DB: Error while opening %s: %s\n",
-			t_buf, sqlite3_errmsg (geoinfo_db));
+			local_config.geoinfo_file, sqlite3_errmsg (geoinfo_db));
 		sqlite3_close (geoinfo_db);
 		exit(1);
 	}
