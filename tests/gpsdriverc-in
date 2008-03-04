@@ -80,3 +80,4 @@ display_map_googlesat = 1
 display_map_geoscience = 1
 display_map_mapnik = 0
 display_map_googlemap = 1
+geoinfofile = data/geoinfo.db
