@@ -66,36 +66,25 @@ Disclaimer: Please do not use for navigation.
 extern GtkWidget *mylist;
 extern gint maploaded;
 extern routestatus_struct route;
-extern gint isnight, disableisnight;
 extern color_struct colors;
 extern gint mydebug;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
-extern gint usesql;
 extern glong mapscale;
 
-extern gdouble alarm_dist;
 extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
-extern GtkWidget *add_wp_lon_text, *add_wp_lat_text;
-extern gint wptotal, wpselected;
-extern GtkWidget *wp4eventbox;
-extern GtkWidget *wp5eventbox, *satsvbox, *satshbox, *satslabel1eventbox;
+static GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
-extern GtkWidget *destframe;
 extern GTimer *timer, *disttimer;
-extern gdouble gbreit, glang, olddist;
+extern gdouble olddist;
 extern GtkWidget *messagewindow;
-extern gint onemousebutton;
 extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
-extern poi_type_struct poi_type_list[poi_type_list_max];
-extern int poi_type_list_count;
 extern GtkTreeStore *poi_types_tree;
-extern GList *poi_types_formatted;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern GdkGC *kontext;
@@ -122,8 +111,6 @@ gdouble wp_saved_target_lat = 0;
 gdouble wp_saved_target_lon = 0;
 gdouble wp_saved_posmode_lat = 0;
 gdouble wp_saved_posmode_lon = 0;
-
-gint save_in_db = TRUE;
 
 /* *****************************************************************************
  * check for Radar WP near me and warn me
@@ -152,7 +139,7 @@ watchwp_cb (GtkWidget * widget, guint * datum)
 	for (i = 0; i < maxwp; i++)
 	{
 		/*  test for radar */
-		if (((wayp + i)->action) == 1)
+		if (FALSE)
 		{
 			d = calcdist2 ((wayp + i)->lon, (wayp + i)->lat);
 			if (d < 0.6)
@@ -290,13 +277,8 @@ draw_waypoints ()
 			shownwp++;
 			g_strlcpy (txt, (wayp + i)->name, sizeof (txt));
 
-			// Draw Icon(typ) or + Sign
-			if ((wayp + i)->wlan > 0)
-				drawwlan (posxdest, posydest,
-					(wayp + i)->wlan);
-			else
-				drawicon (posxdest, posydest,
-					(wayp + i)->typ);
+			// Draw Icon(typ)
+			drawicon (posxdest, posydest, (wayp + i)->typ);
 
 			// Draw Proximity Circle
 			if ((wayp + i)->proximity > 0.0)
@@ -437,7 +419,6 @@ delwp_cb (GtkWidget * widget, guint datum)
 	if ( mydebug > 0 )
 		g_print ("delwp: remove entry %d\n", j);
 
-	deletesqldata ((wayp + j)->sqlnr);
 	for (i = j; i < (maxwp - 1); i++)
 		*(wayp + i) = *(wayp + i + 1);
 	maxwp--;
@@ -500,7 +481,8 @@ jumpwp_cb (GtkWidget * widget, guint datum)
 	if ((!gui_status.posmode) && (!current.simmode))
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
 					      TRUE);
-	getsqldata ();
+	if (local_config.use_database)
+		poi_rebuild_list ();
 	reinsertwp_cb (NULL, 0);
 	sel_targetweg_cb (NULL, 0);
 	return TRUE;
@@ -534,20 +516,21 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
  * with Strings for Name and Type
  */
 glong
-addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gint save_flag)
+addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gboolean save_in_db)
 {
 	gint i;
 
-	if (usesql && save_in_db)
+	if (local_config.use_database && save_in_db)
 	{
-		return insertsqldata (wp_lat, wp_lon, (char *) wp_name,
-			(char *) wp_type, (char *) wp_comment, 3);
+		return db_poi_edit (0, wp_lat, wp_lon, (char *) wp_name,
+			(char *) wp_type, (char *) wp_comment, 3, FALSE);
 	}
 	else
 	{
 		i = maxwp;
 		(wayp + i)->lat = wp_lat;
 		(wayp + i)->lon = wp_lon;
+		(wayp + i)->proximity = 0;
 		g_strdelimit ((char *) wp_name, " ", '_');
 		g_strdelimit ((char *) wp_comment, " ", '_');
 
@@ -562,9 +545,7 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 		/*  limit waypoint comment to 80 chars */
 		g_strlcpy ((wayp + i)->comment, wp_comment, 80);
 		(wayp + i)->comment[80] = 0;
-		
 
-		(wayp + i)->wlan = 0;
 
 		maxwp++;
 		if (maxwp >= wpsize)
@@ -591,9 +572,6 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	s1 = gtk_entry_get_text (GTK_ENTRY (add_wp_name_text));
 	s2 = gtk_entry_get_text (GTK_ENTRY (add_wp_comment_text));
 	
-	if (!usesql)
-		save_in_db = FALSE;
-		
 	g_strlcpy(wp_name,s1,sizeof(wp_name));
 	g_strlcpy(wp_comment,s2,sizeof(wp_comment));
 
@@ -603,7 +581,7 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 		-1);
 
 	addwaypoint (wp_name, wp_type, wp_comment,
-		coords.wp_lat, coords.wp_lon, save_in_db);
+		coords.wp_lat, coords.wp_lon, current.save_in_db);
 
 	gtk_widget_destroy (GTK_WIDGET (widget));
 	markwaypoint = FALSE;
@@ -617,7 +595,7 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 void
 add_wp_change_save_in_cb (GtkWidget *widget, gint user_data)
 {
-	save_in_db = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
+	current.save_in_db = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget));
 }
 
 /* *****************************************************************************
@@ -758,7 +736,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	}
 
 	{		/* Save WP in... */
-		if (usesql)
+		if (local_config.use_database)
 		{
 			add_wp_savein_label = gtk_label_new (_(" Save waypoint in: "));
 			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), add_wp_savein_label, 0, 1, 5, 6);
@@ -771,7 +749,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 			radiobutton_wp = gtk_radio_button_new_with_mnemonic (NULL, _("way.txt File"));
 			gtk_table_attach_defaults (GTK_TABLE (table_add_wp), radiobutton_wp, 2, 3, 5, 6);
 			gtk_radio_button_set_group (GTK_RADIO_BUTTON (radiobutton_wp), radiobutton_savein_group);
-			if (save_in_db)
+			if (current.save_in_db)
 			{
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
 					(radiobutton_db), TRUE);
@@ -899,9 +877,6 @@ setwp_cb (GtkWidget * widget, guint datum)
 	g_strlcpy (current.target, p, sizeof (current.target));
 
 
-//	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
-//	tn = g_strdelimit (str, "_", ' ');
-//	gtk_frame_set_label (GTK_FRAME (destframe), tn);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
 	coordinate_string2gdouble(p, &coords.target_lat);
 	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
@@ -969,12 +944,10 @@ savewaypoints ()
 
 			e = fprintf (st, "%-22s %10s %11s "
 				     "%s"
-				     " %d %d %d %d %s"
+				     " 0 0 0 %d %s"
 				     "\n",
 				     (wayp + i)->name, la, lo,
 				     (wayp + i)->typ,
-				     (wayp + i)->wlan, (wayp + i)->action,
-				     (wayp + i)->sqlnr,
 				     (wayp + i)->proximity,
 					 (wayp + i)->comment);
 		}
@@ -991,7 +964,7 @@ loadwaypoints ()
 {
     gchar fn_way_txt[2048];
     FILE *st;
-    gint i, e, p, wlan, action, sqlnr, proximity;
+    gint i, e, p, wlan, action, proximity, tmp;
     gchar buf[512], slat[80], slong[80], typ[40];
     struct stat stat_buf;
     
@@ -1012,7 +985,6 @@ loadwaypoints ()
 
     
     maxwp = 0;
-    sqlnr = -1;
     st = fopen (fn_way_txt, "r");
     if (st == NULL)
 	{
@@ -1030,15 +1002,12 @@ loadwaypoints ()
 	{
 	    e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
 			(wayp + i)->name, slat, slong, typ,
-			&wlan, &action, &sqlnr, &proximity);
+			&tmp, &tmp, &tmp, &proximity);
 	    coordinate_string2gdouble(slat, &((wayp + i)->lat));
 	    coordinate_string2gdouble(slong,&((wayp + i)->lon));
 	    /*  limit waypoint name to 20 chars */
 	    (wayp + i)->name[20] = 0;
 	    g_strlcpy ((wayp + i)->typ, "unknown", 40);
-	    (wayp + i)->wlan = 0;
-	    (wayp + i)->action = 0;
-	    (wayp + i)->sqlnr = -1;
 	    (wayp + i)->proximity = 0;
 		    
 	    if (e >= 3)
@@ -1047,18 +1016,8 @@ loadwaypoints ()
 				
 		    if (e >= 4)
 			g_strlcpy ((wayp + i)->typ, typ, 40);
-				
-		    if (e >= 5)
-			(wayp + i)->wlan = wlan;
-		    if (e >= 6)
-			(wayp + i)->action = action;
-		    if (e >= 7)
-			(wayp + i)->sqlnr = sqlnr;
 		    if (e >= 8)
 			(wayp + i)->proximity = proximity;
-
-		    if ((strncmp((wayp + i)->name, "R-",2)) == 0)
-	  		(wayp + i)->action = 1;
 
 		    i++;
 		    maxwp = i;

@@ -60,7 +60,6 @@ Disclaimer: Please do not use for navigation.
 #include "download_map.h"
 #include "main_gui.h"
 #include "poi.h"
-#include "wlan.h"
 #include "routes.h"
 #include "track.h"
 #include "gpx.h"
@@ -93,7 +92,6 @@ extern gdouble wp_saved_posmode_lon;
 extern gdouble pixelfact;
 extern gdouble milesconv;
 
-extern gint usesql;
 extern gint slistsize, nlist[];
 extern gint PSIZE;
 extern GtkWidget *posbt;
@@ -1238,16 +1236,14 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	if ((toupper (event->keyval)) == 'W')
 	{
 		gchar wp_name[100], wp_type[100], wp_comment[100];
-		time_t t;
-		struct tm *ts;
-		time (&t);
-		ts = localtime (&t);
-		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
+		GTimeVal current_time;
+		g_get_current_time (&current_time);
+		g_snprintf (wp_name, sizeof (wp_name), "%s", (g_time_val_to_iso8601 (&current_time))+5);
 		g_snprintf (wp_type, sizeof (wp_type),
 			"waypoint.wpttemp.wpttemp-green");
 		g_snprintf (wp_comment, sizeof (wp_comment),
 			_("Quicksaved Waypoint"));
-		if (usesql)
+		if (local_config.use_database)
 			addwaypoint (wp_name, wp_type, wp_comment,
 				coords.current_lat, coords.current_lon, TRUE);
 		else
@@ -1273,11 +1269,9 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	if ((toupper (event->keyval)) == 'P')
 	{
 		gchar wp_name[100], wp_type[100], wp_comment[100];
-		time_t t;
-		struct tm *ts;
-		time (&t);
-		ts = localtime (&t);
-		g_snprintf (wp_name, sizeof (wp_name), "%s", asctime (ts));
+		GTimeVal current_time;
+		g_get_current_time (&current_time);
+		g_snprintf (wp_name, sizeof (wp_name), "%s", (g_time_val_to_iso8601 (&current_time))+5);
 		g_snprintf (wp_type, sizeof (wp_type),
 			"waypoint.wpttemp.wpttemp-yellow");
 		g_snprintf (wp_comment, sizeof (wp_comment),
@@ -1287,7 +1281,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		if ( mydebug > 0 )
 			printf ("Add Waypoint: %s lat:%f,lon:%f (x:%d,y:%d)\n",
 				wp_name, lat, lon, x, y);
-		if (usesql)
+		if (local_config.use_database)
 			addwaypoint (wp_name, wp_type, wp_comment, lat, lon, TRUE);
 		else
 			addwaypoint (wp_name, wp_type, wp_comment, lat, lon, FALSE);
@@ -1348,17 +1342,11 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		poi_query_area (min(lat1,lat2), min(lon1,lon2),
 			max(lat1,lat2), max(lon1,lon2) );
 
-	    if ( local_config.showwlan )
-		wlan_query_area (min(lat1,lat2),
-			min(lon1,lon2), max(lat1,lat2), max(lon1,lon2) );
-
 		{
 			gdouble lat,lon;
 			gdouble dist=lat2-lat1;
 			calcxytopos (x, y, &lat, &lon, current.zoom);
 			dist = dist>0?dist:-dist;
-	//	    if ( streets_draw )
-	//		streets_query_point ( lat,lon, dist );
 		}
 	}
 
@@ -1699,7 +1687,7 @@ void create_controls_mainbox (void)
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Search POI)\n");
 	find_poi_bt = gtk_button_new_from_stock (GTK_STOCK_FIND);
-	if (!usesql)
+	if (!local_config.use_database)
 	{
 		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
 			GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 2);
@@ -1727,7 +1715,7 @@ void create_controls_mainbox (void)
 	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
 
 	/* Checkbox: POI Draw */
-	if (usesql)
+	if (local_config.use_database)
 	{
 		poi_draw_bt = gtk_check_button_new_with_label (_("POI"));
 		if (local_config.showpoi)
@@ -1745,13 +1733,13 @@ void create_controls_mainbox (void)
 	}
 	
 	/* Checkbox: WLAN Draw */
-	wlan_draw_bt = gtk_check_button_new_with_label (_("WLAN"));
+/*	wlan_draw_bt = gtk_check_button_new_with_label (_("WLAN"));
 	if (local_config.showwlan)
 	{
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (wlan_draw_bt), TRUE);
 	}
-	if (usesql)
+	if (local_config.use_database)
 	{
 		gtk_box_pack_start (GTK_BOX (vbox_poi),
 			wlan_draw_bt, FALSE, FALSE, 0 * PADDING);
@@ -1761,7 +1749,7 @@ void create_controls_mainbox (void)
 		&local_config.showwlan);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wlan_draw_bt,
 		_("Show Data found in Kismet Database"), NULL);
-
+*/
 	/* Checkbox: Draw Waypoints from file */
 	wp_draw_bt = gtk_check_button_new_with_label (_("WP"));
 	if (local_config.showwaypoints)
@@ -1887,7 +1875,7 @@ void create_controls_mainbox (void)
 			mute_bt, wide, wide, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			find_poi_bt, wide, wide, 1 * PADDING);
-		if (usesql)
+		if (local_config.use_database)
 		{
 			g_signal_connect (routing_bt, "clicked",
 				G_CALLBACK (route_window_cb), NULL);  

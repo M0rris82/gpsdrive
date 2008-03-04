@@ -7,7 +7,7 @@
 
 ########################################################################################
 
-my $default_lang  = 'de';
+my $default_lang  = 'en';
 my $default_licence = 'Creative Commons Attribution-ShareAlike 2.0';
 
 ########################################################################################
@@ -261,8 +261,11 @@ GetOptions (
 	   );
 
 $lang = $lang || $default_lang;
-$db_file = "./geoinfo.$lang.db"; 
 
+if ($lang eq 'en')
+  { $db_file = "./geoinfo.db"; }
+else
+  { $db_file = "./geoinfo.$lang.db"; }
 
 print "$VERSION\n";
 

@@ -95,7 +95,6 @@ extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
-extern gint usesql;
 extern color_struct colors;
 extern currentstatus_struct current;
 
@@ -479,6 +478,7 @@ gint switch_nightmode (gboolean value)
  *  1 = only arrow pointer
  *  2 = only light crosshair pointer
  *  3 = plus sign
+ *  4 = slim arrow for friendsd
  */
 gboolean
 draw_posmarker (
@@ -578,7 +578,24 @@ draw_posmarker (
 		gdk_draw_line (drawable, kontext_map, posx + 1 - 2,
 			posy + 1, posx + 1 - 10, posy + 1);
 	}
-	
+
+	if (style == 4)
+	{
+		/* draw slim arrow */
+		gdk_gc_set_line_attributes (kontext_map, 3, 0, 0, 0);
+		poly[0].x = posx + PFSIZE * 2 * (cos (w + M_PI_2));
+		poly[0].y = posy + PFSIZE * 2 * (sin (w + M_PI_2));
+
+		poly[1].x = posx + PFSIZE * 0.2 * (cos (w + M_PI));
+		poly[1].y = posy + PFSIZE * 0.2 * (sin (w + M_PI));
+		poly[2].x = posx - PFSIZE * 0.2 * (cos (w + M_PI));
+		poly[2].y = posy - PFSIZE * 0.2 * (sin (w + M_PI));
+		poly[3].x = poly[0].x;
+		poly[3].y = poly[0].y;
+		gdk_draw_polygon (drawable, kontext_map, TRUE,
+			(GdkPoint *) poly, 4);
+	}
+
 	return TRUE;
 }
 

@@ -28,11 +28,6 @@ Disclaimer: Please do not use for navigation.
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
-#ifdef _WIN32
-#include "mysql.h"
-#else
-#include "mysql/mysql.h"
-#endif
 #include "gpsproto.h"
 
 /*  set this to 0 for normal use, 1 for small screens */
@@ -240,22 +235,6 @@ gdouble distance_line_point(gdouble x1, gdouble y1, gdouble x2, gdouble y2,
 #else
 #define DL_MYSQL_IMPORT 
 #endif
-char *  (DL_MYSQL_IMPORT *dl_mysql_error)(MYSQL *mysql);
-MYSQL * (DL_MYSQL_IMPORT *dl_mysql_init)(MYSQL *mysql);
-MYSQL * (DL_MYSQL_IMPORT *dl_mysql_real_connect)(MYSQL *mysql, const char *host,
-                                           const char *user,
-                                           const char *passwd,
-                                           const char *db,
-                                           unsigned int port,
-                                           const char *unix_socket,
-                                           unsigned long clientflag);
-void    (DL_MYSQL_IMPORT *dl_mysql_close)(MYSQL *sock);
-int     (DL_MYSQL_IMPORT *dl_mysql_query)(MYSQL *mysql, const char *q);
-my_ulonglong (DL_MYSQL_IMPORT *dl_mysql_affected_rows)(MYSQL *mysql);
-MYSQL_RES * (DL_MYSQL_IMPORT *dl_mysql_store_result)(MYSQL *mysql);
-MYSQL_ROW   (DL_MYSQL_IMPORT *dl_mysql_fetch_row)(MYSQL_RES *result);
-void        (DL_MYSQL_IMPORT *dl_mysql_free_result)(MYSQL_RES *result);
-my_bool (DL_MYSQL_IMPORT *dl_mysql_eof)(MYSQL_RES *res);
 gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
 gint importaway_cb (GtkWidget * widget, guint datum);
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
@@ -276,7 +255,6 @@ void test_and_load_newmap ();
 void map_koord_check_and_reload();
 void coordinate_string2gdouble (const gchar * text,gdouble * dec);
 void do_incremental_save();
-glong addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gint save_in_db);
 gdouble lat2radius (gdouble lat);
 gdouble lat2radius_pi_180 (gdouble lat);
 
@@ -356,14 +334,16 @@ typedef struct
 	gdouble dist;		/* distance to selected target */
 	gint statusbar_id;	/* context_id of current statusbar message */
 	gboolean simmode;	/* Status of Simulation mode */
+	gint kismetsock;	/* Kismet socket, -1 if not available */
 	gint gpsfix;		/* Status of GPS:
 				 * 0: No GPS, 1: No Fix, 2: 2D Fix, 3: 3D Fix */
 	GTimeVal last3dfixtime;	/* saves time of last 3D Fix. Hack for jumping
 				 * altitude display caused by bad nmea data */
 	gboolean needtosave;	/* flag if config has to be saved */
 	gboolean importactive;
+	gboolean save_in_db;	/* flag if new waypoints should be saved in the database */
 	GtkTreeIter poitype_iter;
-	gchar poifilter[5000];	/* sql string for filtering the POI display */
+	gchar poifilter[20000];	/* sql string for filtering the POI display */
 }
 currentstatus_struct;
 
@@ -400,9 +380,6 @@ typedef struct
 	gdouble lon;
 	gdouble dist;
 	gchar typ[40];
-	gint wlan;
-	gint action;
-	gint sqlnr;
 	gint proximity;
 	gchar comment[80];
 }

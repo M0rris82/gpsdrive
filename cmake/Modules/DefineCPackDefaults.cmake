@@ -83,7 +83,7 @@ include(InstallRequiredSystemLibraries)
 
 ### general settings
 set(CPACK_PACKAGE_NAME "gpsdrive")
-set(CPACK_PACKAGE_VENDOR "The GPSDrive Team")
+set(CPACK_PACKAGE_VENDOR "The GpsDrive Team")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Navigation via a GPS Receiver")
 
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
@@ -103,7 +103,7 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSI
 if(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backlasshes.
-  set(CPACK_PACKAGE_EXECUTABLES "gpsdrive;GPSDrive")
+  set(CPACK_PACKAGE_EXECUTABLES "gpsdrive;GpsDrive")
   set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
   set(CPACK_NSIS_INSTALLED_ICON_NAME "gpsdrive.exe")
   set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")

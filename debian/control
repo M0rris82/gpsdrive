@@ -2,22 +2,20 @@ Source: gpsdrive
 Section: utils
 Priority: optional
 Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@ostertag.name>
-Build-Depends: debhelper (>> 3.7.2), pkg-config, libpcre3-dev, libgtk2.0-dev, libmysqlclient-dev, xutils, po-debconf, python-dev, libmagick9-dev, libxml-twig-perl, libboost-filesystem-dev, libboost-dev, libart-2.0-dev, libfile-slurp-perl, libmapnik-dev, libboost-serialization-dev, perl-doc, python-support, libltdl3-dev, cmake
+Build-Depends: debhelper (>> 3.7.2), pkg-config, libpcre3-dev, libgtk2.0-dev, xutils, po-debconf, python-dev, libmagick9-dev, libxml-twig-perl, libboost-filesystem-dev, libboost-dev, libart-2.0-dev, libfile-slurp-perl, libmapnik-dev, libboost-serialization-dev, perl-doc, python-support, libltdl3-dev, cmake, libsqlite3-dev, libgda3-dev
 Standards-Version: 3.6.1
 
 Package: gpsdrive
 Architecture: any
-Depends: ${misc:Depends}, ${perl:Depends}, libwww-perl, libxml-simple-perl, libxml-parser-perl, libtimedate-perl, libdate-manip-perl,  libwww-mechanize-perl, libtext-query-perl, perlmagick,  libdbi-perl, mysql-server, mapnik-plugins, mapnik-utils, openstreetmap-map-icons(>> 6400),libboost-thread1.34.1, libboost-filesystem1.34.1, libart-2.0-2, libmapnik1d, openstreetmap-utils( >> 6448), sudo, libxml-twig-perl, python, python-support, libfile-slurp-perl, ttf-dejavu, libltdl3
-Recommends: gpsd, libmysqlclient15off, imagemagick, gpsbabel, perl-base(>>5.6), espeak, libgeos, libgdal, libdbd-mysql-perl, gdal-bin, gpsdrive-data-maps, python-mapnik, openstreetmap-mapnik-data, openstreetmap-mapnik-world-boundaries
+Depends: ${misc:Depends}, ${perl:Depends}, libwww-perl, libxml-simple-perl, libxml-parser-perl, libtimedate-perl, libdate-manip-perl,  libwww-mechanize-perl, libtext-query-perl, perlmagick,  libdbi-perl, mapnik-plugins, mapnik-utils, openstreetmap-map-icons(>> 6400),libboost-thread1.34.1, libboost-filesystem1.34.1, libart-2.0-2, libmapnik1d, openstreetmap-utils( >> 6448), sudo, libxml-twig-perl, python, python-support, libfile-slurp-perl, ttf-dejavu, libltdl3, libsqlite3-0, libgda3-3
+Recommends: gpsd, imagemagick, gpsbabel, perl-base(>>5.6), espeak, libgeos, libgdal, libdbd-sqlite3-perl, libdbd-mysql-perl, gdal-bin, gpsdrive-data-maps, python-mapnik, openstreetmap-mapnik-data, openstreetmap-mapnik-world-boundaries
 Conflicts: osm-data-mapnik, osm-data-map-icons
 Suggests: grass, libarchive-zip-perl, libexpat1, libfile-find-rule-perl, libgtk2.0-0, libgdal1--1.4.0, libgdal1-1.4.0-grass, festival
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
- GpsDrive displays your position provided from gpsd which gets it
- from your NMEA or Garmin capable GPS receivers on a zoomable map, 
+ GpsDrive displays your position provided from gpsd on a zoomable map, 
  the map file is autoselected depending of the position and preferred
- scale. Speech output is supported if the "festival" software is 
- running. The maps are autoselected for best resolution depending of
- your position. All Garmin GPS reveiver with a serial output should 
- be usable, also other GPS receiver which supports NMEA protocol.
+ scale. Speech output is supported if the "espeak" software is 
+ installed. All GPS receivers which supports NMEA protocol should
+ be usable.
 

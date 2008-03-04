@@ -1,19 +1,10 @@
 /* ***********************************************************************  */
 /*  Prototypes */
-int initkismet (void);
-void get_poi_type_id_for_wlan();
-int readkismet (void);
+//int initkismet (void);
+//int readkismet (void);
 int deletesqldata (int index);
-glong insertsqldata (double lat, double lon, char *name, char *typ, char *comment, int source);
-gint insertsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry);
-glong updatesqldata (glong poi_id, double lat, double lon, char *name, char *typ, char *comment, int source);
-gint updatesqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry);
-glong getsqlextradata (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *result);
 int sqlinit (void);
 void sqlend (void);
-int getsqldata ();
-gint cleanupsql_routedata ();
-gint cleanupsql_friendsdata ();
 int loadmap (char *filename);
 gint zoom_cb (GtkWidget * widget, guint datum);
 void show_splash (void);

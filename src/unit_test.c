@@ -39,6 +39,7 @@ Disclaimer: Please do not use for navigation.
 #include "battery.h"
 #include "nmea_handler.h"
 #include "gui.h"
+#include "gpsdrive_config.h"
 
 gint errors = 0;
 
@@ -47,14 +48,13 @@ extern coordinate_struct coords;
 //extern gint mapistopo;
 extern glong mapscale;
 extern gdouble pixelfact;
-extern int usesql;
 extern gchar dir_proc[200];
 extern gchar cputempstring[20], batstring[20];
-extern int didrootcheck;
 extern int newdata;
 extern char serialdata[4096];
 extern gint haveRMCsentence;
 extern currentstatus_struct current;
+extern local_gpsdrive_config local_config;
 
 /* ******************************************************************
  * This Function tests internal routines of gpsdrive
@@ -623,14 +623,14 @@ unit_test (void)
       printf ("\n");
     printf ("Testing if SQL Support is on\n");
 
-    if (!usesql)
+    if (!local_config.use_database)
       {
 	printf ("ERROR !!!!!!!!\n");
 	printf ("Problem with SQL Support\n");
 	errors++;
       }
     
-    res = insertsqldata(999.9,999.9,"Testpoint","test","Test Description", 1);
+    res = db_poi_edit (0, 999.9,999.9,"Testpoint","test","Test Description", 1);
     if (1>res)
       {
 	printf ("ERROR !!!!!!!!\n");

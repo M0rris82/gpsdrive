@@ -30,7 +30,6 @@ Disclaimer: Please do not use for navigation.
 #include <stdlib.h>
 #include <gpsdrive.h>
 #include <poi.h>
-#include <wlan.h>
 #include <time.h>
 #include <speech_out.h>
 #include <icons.h>
@@ -56,7 +55,6 @@ extern gint setdefaultpos;
 extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
-extern gint lastnotebook;
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
@@ -208,9 +206,8 @@ writeconfig ()
 
 	fprintf (fp, "cpuload = %d\n", local_config.maxcpuload);
 
-	fprintf (fp, "lastnotebook = ");
-	fprintf (fp, "%d\n", lastnotebook);
-
+	fprintf (fp, "use_database = ");
+	fprintf (fp, "%d\n", local_config.use_database);
 	fprintf (fp, "dbhostname = %s\n", dbhost);
 	fprintf (fp, "dbname = %s\n", dbname);
 	fprintf (fp, "dbuser = %s\n", dbuser);
@@ -397,8 +394,8 @@ readconfig ()
 				local_config.nightmode = atoi (par2);
 			else if ( (strcmp(par1, "cpuload")) == 0)
 				local_config.maxcpuload = atoi (par2);
-			else if ( (strcmp(par1, "lastnotebook")) == 0)
-				lastnotebook = atoi (par2);
+			else if ( (strcmp(par1, "use_database")) == 0)
+				local_config.use_database = atoi (par2);
 			else if ( (strcmp(par1, "dbhostname")) == 0)
 			{
 				g_strlcpy (dbhost, par2, sizeof (dbhost));
@@ -565,6 +562,7 @@ config_init ()
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;
 	local_config.maxcpuload = 40;
+	local_config.use_database = TRUE;
 	local_config.showmaptype = FALSE;
 	local_config.showgrid = FALSE;
 	local_config.showshadow = FALSE;

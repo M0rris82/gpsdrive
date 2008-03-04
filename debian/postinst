@@ -10,25 +10,6 @@ case "$1" in
 
         . /usr/share/debconf/confmodule
 
-        # Create mysql database
-        echo "gpsdrive.postinst:  Create mysql database"
-        db_get gpsdrive/initdb
-	INIT_DB=$RET
-	if [ "$INIT_DB" = "true" ] ; then
-
-	    echo "geoinfo.pl --create-db --fill-defaults"
-	    geoinfo.pl --create-db --fill-defaults
-
-	    db_get gpsdrive/importosm
-	    IMPORT_OSM=$RET
-	    if [ "$IMPORT_OSM" = "true" ] ; then
-		db_get gpsdrive/importosmarea
-		IMPORT_OSM_AREA=$RET
-		echo "geoinfo.pl --osm --area=$IMPORT_OSM_AREA"
-		geoinfo.pl --osm --area=$IMPORT_OSM_AREA
-	    fi 
-	fi
-
 	# More things we could add here:
 	#   - Ask about downloading planet.osm once
 	#   - Ask about a contab entry for regularly downloading planet.osm

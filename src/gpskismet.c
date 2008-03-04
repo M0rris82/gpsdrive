@@ -52,16 +52,8 @@ reads info from kismet server and insert waypoints into database
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
-extern double dbdistance;
-extern int usesql;
-extern int mydebug, debug, dbusedist;
-extern poi_type_struct poi_type_list[poi_type_list_max];
-extern void wlan_rebuild_list();
-extern void wlan_draw_list();
-
-extern MYSQL mysql;
-MYSQL_RES *res;
-MYSQL_ROW row;
+extern int mydebug, debug;
+extern currentstatus_struct current;
 
 static char macaddr[30], name[120], tbuf[1024], lastmacaddr[30];
 static int nettype, channel, wep, cloaked;
@@ -76,42 +68,50 @@ static int nettype, channel, wep, cloaked;
 # endif
 
 /* variables */
-int kismetsock = -1, havekismet;
 static char kbuffer[20210];
 static int bc = 0;
 fd_set kismetreadmask;
 struct timeval kismettimeout;
 static char lat[30], lon[30], bestlat[30], bestlon[30];
-
 time_t last_initkismet=0;
 
 
 int
-readkismet (void)
+readkismet ()
 {
+	//TODO:	source_id for kismet is currently hardcoded to 9
+	//	maybe we should ask geoinfo.db the value at startup
+
   signed char c;
   char q[1200], buf[4*300], tname[4*80], sqllat[30], sqllon[30];
   // make buffers 4 times as large as expeted, since I think kismet 
   // encodes a \001 as 4 ASCII characters. And this would trigger a
   // buffer overflow.
-  int e, r, have, i, j, sqlid = 0;
+  int e, r, have, i, j;
+  glong sqlid = 0;
+  gchar *result = NULL;
+  gchar *t_ptype = NULL;
+  gchar t_buf[5];
+  gdouble bestlat_dbl, bestlon_dbl;
+  const gchar *type_string[] = {"infrastructure","ad-hoc","probe","data","turbocell","unknown"};
+  const gchar *poi_type[] = {"wlan.open","wlan.wep","wlan.closed"};
 
   // If Kismet server connection failed, Try to reconnect
   //    after at least 30 seconds
-  if ((kismetsock<0) && ((time(NULL) - last_initkismet) > 30)) {
+  if ((current.kismetsock<0) && ((time(NULL) - last_initkismet) > 30)) {
      if (debug) g_print(_("trying to re-connect to kismet server\n"));
-     initkismet();
-     if (kismetsock>=0) g_print(_("Kismet server connection re-established\n"));
-     if (debug) g_print(_("done trying to re-connect: socket=%d\n"), kismetsock);
+     current.kismetsock = initkismet();
+     if (current.kismetsock>=0) g_print(_("Kismet server connection re-established\n"));
+     if (debug) g_print(_("done trying to re-connect: socket=%d\n"), current.kismetsock);
      }
 
-  if (kismetsock < 0) return FALSE;
+  if (current.kismetsock < 0) return -1;
 
   do
     {
       e = 0;
       FD_ZERO (&kismetreadmask);
-      FD_SET (kismetsock, &kismetreadmask);
+      FD_SET (current.kismetsock, &kismetreadmask);
       kismettimeout.tv_sec = 0;
       kismettimeout.tv_usec = 10000;
 
@@ -122,11 +122,11 @@ readkismet (void)
 	  return FALSE;
 	}
 
-      if ((have = FD_ISSET (kismetsock, &kismetreadmask)))
+      if ((have = FD_ISSET (current.kismetsock, &kismetreadmask)))
 	{
 	  int bytesread;
 	  bytesread=0;
-	  while ((e = read (kismetsock, &c, 1)) > 0)
+	  while ((e = read (current.kismetsock, &c, 1)) > 0)
 	    {
 	      bytesread++;
 	      if (c != '\n')
@@ -150,9 +150,8 @@ readkismet (void)
 	  // this means the connection was lost.
 	  if (bytesread==0) {
 		g_print(_("Kismet server connection lost\n"));
-		close(kismetsock);
-		kismetsock=-1;
-		return FALSE;
+		close(current.kismetsock);
+		return -1;
 	     }
 	}
 
@@ -167,155 +166,90 @@ readkismet (void)
 	      e = sscanf (kbuffer,
 			  "%s %s %d \001%255[^\001]\001 %d"
 			  " %d  %s %s %s %s %d %[^\n]", 
-			  tbuf, macaddr, &nettype, name, &channel,
+			  tbuf, macaddr, &nettype, tname, &channel,
 			  &wep, lat, lon, bestlat, bestlon, &cloaked, tbuf);
-	      if (debug) {
+	      if (debug)
+	      {
 		  printf ("tbuf: %s\n", tbuf);
-		  printf ("wep:%s nettype: %d\n",macaddr, nettype);
-		  printf ("name: %s\n",name );
+		  printf ("macaddr: %s\n",macaddr);
+		  printf ("nettype: %d\n",nettype);
+		  printf ("name: %s\n", tname );
 		  printf ("channel: %d, wep:%d\n", channel, wep);
 		  printf ("lat/lon: %s/%s  best lat/lon:%s/%s\n", lat, lon, bestlat, bestlon);
 		  printf ("cloaked: %d \n", cloaked);
 	      }
-	      
 	    }
 	  if (e == 11)
 	    {
-	      if (mydebug >10)
-		g_print
-		  ("e: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
-		   "lat: %s lon: %s bestlat: %s bestlon: %s cloaked: %d\n", e, macaddr,
-		   nettype, name, channel, wep, lat, lon, bestlat, bestlon, cloaked);
+		if (mydebug >10)
+		{
+			g_print ("e: %d mac: %s nettype: %d name: %s channel: %d wep: %d "
+				"lat: %s lon: %s bestlat: %s bestlon: %s cloaked: %d\n", e, macaddr,
+				nettype, tname, channel, wep, lat, lon, bestlat, bestlon, cloaked);
+		}
 
-	      /* insert waypoint only if we had not just inserted it */
-	      /*        if ((strcmp (lastmacaddr, macaddr)) != 0) */
-	      {
-		/*                g_strlcpy (lastmacaddr, macaddr); */
-		g_snprintf (q, sizeof (q),
-			    "select wlan_id,lat,lon from %s where macaddr='%s'",
-			    wlantable, macaddr);
-		if (debug)
-		  g_print ("\nquery: %s\n", q);
-		if (dl_mysql_query (&mysql, q))
-		  exiterr (3);
-		if (!(res = dl_mysql_store_result (&mysql)))
-		  exiterr (4);
-		r = 0;
-		while ((row = dl_mysql_fetch_row (res)))
-		  {
-		    sqlid = atol (row[0]);
-		    g_strlcpy (sqllat, row[1], sizeof (sqllat));
-		    g_strlcpy (sqllon, row[2], sizeof (sqllon));
+		/* check, if waypoint is already present in database */
+		sqlid = db_poi_extra_get (NULL, "macaddr", macaddr, result);
 
-		    r++;
-		  }
+//		if (r > 1)
+//			g_print ("\n\a\a*** ERROR: duplicate macaddr in database ***\n");
 
-		if (r > 1)
-		  g_print
-		    ("\n\a\a*** ERROR: duplicate macaddr in database ***\n");
+		bestlat_dbl = g_strtod (bestlat, NULL);
+		bestlon_dbl = g_strtod (bestlon, NULL);
+		if (nettype > 5)
+			nettype = 5;
+		if (wep > 2)
+			t_ptype = (gchar *) poi_type[2];
+		else
+			t_ptype = (gchar *) poi_type[wep];
 
-		dl_mysql_free_result (res);
-		if (debug)
-		  g_print ("\nnum fields: %d", r);
+		/* we have it in the database, but update bestlat and bestlong */
+		if (sqlid > 0)
+		{
+		      if ((bestlat_dbl != 0.0) && (bestlon_dbl != 0))
+			if ((strcmp (lat, "90.000000") != 0) && (strcmp (lon, "180.000000") != 0))
+			{
+				if (mydebug > 20)
+					g_printf ("readkismet: updating network"
+						" '%s' with macaddr = %s\n", tname, macaddr);
+				db_poi_edit (sqlid, bestlat_dbl, bestlon_dbl,
+					tname, t_ptype, macaddr, 9, TRUE);
+				db_poi_extra_edit (&sqlid, "nettype", type_string[nettype], TRUE);
+				g_snprintf (t_buf, sizeof (t_buf), "%d", cloaked);
+				db_poi_extra_edit (&sqlid, "cloaked", t_buf, TRUE);
+				g_snprintf (t_buf, sizeof (t_buf), "%d", wep);
+				db_poi_extra_edit (&sqlid, "wep", t_buf, TRUE);
+				g_snprintf (t_buf, sizeof (t_buf), "%d", channel);
+				db_poi_extra_edit (&sqlid, "channel", t_buf, TRUE);
+			}
+		}
+		else
+		/* this is a new network, we store it in the database */
+		if ((strcmp (lat, "90.000000") != 0) && (strcmp (lon, "180.000000") != 0))
+		{
+			g_strlcpy (lastmacaddr, macaddr, sizeof (lastmacaddr));
 
-		if ((strcmp (name, "<no ssid>")) == 0)
-		  g_strlcpy (name, "no_ssid", sizeof (name));
-		g_strdelimit (name, " ", '_');
-		/* escape ' */
-		j = 0;
-		for (i = 0; i <= (int) strlen (name); i++)
-		  {
-		    if (name[i] != '\'' && name[i] != '\\' && name[i] != '\"')
-		      tname[j++] = name[i];
-		    else
-		      {
-			tname[j++] = '\\';
-			tname[j++] = name[i];
-			if (debug)
-			  g_print ("Orig SSID: %s\nEscaped SSID: %s\n", name,
-				   tname);
-		      }
-		  }
+			if (mydebug > 20)
+				g_printf ("readkismet: adding network '%s' with macaddr = %s\n",
+					tname, macaddr);
 
+			sqlid = db_poi_edit (0, g_strtod (lat, NULL), g_strtod (lon, NULL),
+				tname, t_ptype, macaddr, 9, FALSE);
+			db_poi_extra_edit (&sqlid, "macaddr", macaddr, FALSE);
+			db_poi_extra_edit (&sqlid, "nettype", type_string[nettype], FALSE);
+			g_snprintf (t_buf, sizeof (t_buf), "%d", cloaked);
+			db_poi_extra_edit (&sqlid, "cloaked", t_buf, FALSE);
+			g_snprintf (t_buf, sizeof (t_buf), "%d", wep);
+			db_poi_extra_edit (&sqlid, "wep", t_buf, FALSE);
+			g_snprintf (t_buf, sizeof (t_buf), "%d", channel);
+			db_poi_extra_edit (&sqlid, "channel", t_buf, FALSE);
 
-		/*                we have it in the database, but update bestlat and bestlong */
-		if (r > 0)
-		  if ((strcmp (sqllat, lat) !=
-		       0) && (strcmp (sqllon, lon) != 0))
-		    {
-		      if ((atol (bestlat) != 0.0) && (atol (bestlon) != 0))
-			if ((strcmp
-			     (lat,
-			      "90.000000")
-			     != 0) && (strcmp (lon, "180.000000") != 0))
-			  {
-			    if (debug)
-			      g_print
-				("*** This is a changed waypoint: %s [%s]\n",
-				 name, macaddr);
-
-			    g_snprintf
-			      (q,
-			       sizeof
-			       (q),
-			       "UPDATE %s SET "
-			       "essid='%s',macaddr='%s',nettype='%d',lat='%s',lon='%s',wep='%d',cloaked='%d' "
-			       "WHERE wlan_id='%d'",
-			       wlantable,
-			       tname,
-			       macaddr,
-			       nettype,
-			       bestlat,
-			       bestlon,
-			       wep, cloaked, sqlid);
-			    if (debug)
-			      printf ("\nquery: %s\n", q);
-			    if (dl_mysql_query (&mysql, q))
-			      exiterr (3);
-			   // Redraw all WLANs:
-			   wlan_rebuild_list ();
-			   wlan_draw_list ();
-			  }
-		    }
-
-
-		/*                this is a new network, we store it in the database */
-		if ((r == 0)
-		    && (strcmp (lat, "90.000000") !=
-			0) && (strcmp (lon, "180.000000") != 0))
-		  {
-		    g_strlcpy (lastmacaddr, macaddr, sizeof (lastmacaddr));
-		    if (debug)
-		      g_print ("*** This is a new waypoint: %s [%s]\n", name,
-			       macaddr);
-
-
-		    g_snprintf (q, sizeof (q),
-				"INSERT INTO %s (essid,macaddr,nettype,lat,lon,wep,cloaked)"
-				" VALUES ('%s','%s','%d','%s','%s','%d','%d')",
-				wlantable, 
-				tname, macaddr, nettype, lat, lon, wep, cloaked);
-		    if (debug)
-		      printf ("\nquery: %s\n", q);
-		    if (dl_mysql_query (&mysql, q))
-		      exiterr (3);
-
-		    // Redraw all WLANs:
-		    wlan_rebuild_list ();
-		    wlan_draw_list ();
-
-		    g_strdelimit (name, "_", ' ');
-
-		    g_snprintf (buf, sizeof (buf),
+			g_snprintf (buf, sizeof (buf),
 				speech_found_access_point[voicelang],
 				(wep) ? speech_access_closed[voicelang] :
-				speech_access_open[voicelang], name, channel);
-		    speech_out_speek (buf);
-		    /* if (debug) */
-		    /*                  printf (_("rows inserted: %d\n"), r); */
-		    getsqldata ();
-		  }
-	      }
+				speech_access_open[voicelang], tname, channel);
+			speech_out_speek (buf);
+		}
 	    }
 
 	  memset (kbuffer, 0, 20000);
@@ -325,9 +259,7 @@ readkismet (void)
     }
   while (have != 0);
 
-  wlan_rebuild_list ();
-
-  return TRUE;
+  return current.kismetsock;
 }
 
 int
@@ -336,14 +268,14 @@ initkismet (void)
   struct sockaddr_in server;
   struct hostent *server_data;
   char buf[180];
-
+  gint t_sock;
   last_initkismet=time(NULL);
 
   if (debug) g_print(_("Trying Kismet server\n"));
 
   g_strlcpy (lastmacaddr, "", sizeof (lastmacaddr));
   /*  open socket to port */
-  if ((kismetsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
+  if ((t_sock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     {
       perror (_("can't open socket for port "));
       return -1;
@@ -353,27 +285,24 @@ initkismet (void)
   if ((server_data = gethostbyname(local_config.kismet_servername)) == NULL)
     {
       fprintf (stderr, "%s: unknown host", local_config.kismet_servername);
-      close (kismetsock);
-      kismetsock=-1;
+      close (t_sock);
       return -1;
     }
   memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
   server.sin_port = htons (local_config.kismet_serverport);
   /*  We initiate the connection  */
-  if (connect (kismetsock, (struct sockaddr *) &server, sizeof server) < 0)
+  if (connect (t_sock, (struct sockaddr *) &server, sizeof server) < 0)
     {
-      close (kismetsock);
-      kismetsock=-1;
+      close (t_sock);
       return -1;
     }
   else
     {
-      havekismet = TRUE;
       g_strlcpy (buf,
 		 "!0 ENABLE NETWORK bssid,type,ssid,channel,wep,minlat,minlon,bestlat,bestlon,cloaked\n",
 		 sizeof (buf));
-      write (kismetsock, buf, strlen (buf));
+      write (t_sock, buf, strlen (buf));
     }
 
-  return TRUE;
+  return t_sock;
 }

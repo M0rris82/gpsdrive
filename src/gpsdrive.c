@@ -95,7 +95,6 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "battery.h"
 #include "poi.h"
-#include "wlan.h"
 #include "track.h"
 #include "waypoint.h"
 #include "routes.h"
@@ -137,7 +136,7 @@ Disclaimer: Please do not use for navigation.
 
 /*  global variables */
 gint timeoutcount;
-GtkWidget *pixmapwidget, *gotowindow;
+GtkWidget *gotowindow;
 GtkWidget *messagewindow;
 gint debug = 0;
 gint do_unit_test = FALSE;
@@ -212,7 +211,7 @@ GtkWidget *mylist;
 extern gchar mapfilename[2048];
 
 gdouble milesconv;
-gdouble gbreit, glang, olddist = 99999.0;
+gdouble olddist = 99999.0;
 GTimer *timer, *disttimer;
 gint gcount;
 gchar localedecimal;
@@ -294,26 +293,15 @@ extern gint markwaypoint;
 GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
-typedef struct
-{
-	gchar n[200];
-}
-namesstruct;
-namesstruct *names;
 gchar gpsdservername[200], setpositionname[80];
 gint newsatslevel = TRUE;
-GtkWidget *mapdirbt;
-GtkWidget *slowcpubt;
-GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 
 gdouble precision = (-1.0), hdop = (-1.0);
 gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
 gint satfix = 0, usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt;
-GtkWidget *cover;
 extern gint PSIZE;
-extern gint needreloadmapconfig;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
@@ -323,17 +311,14 @@ gint satposmode = FALSE;
 gint printoutsats = FALSE;
 gint isnight = FALSE, disableisnight;
 gint nighttimer;
-GtkWidget *setupentry[50], *setupentrylabel[50];
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
 gint borderlimit;
 gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
 gint lastnotebook = 0;
-GtkWidget *settingsnotebook;
 extern gint zone;
 gint ignorechecksum = FALSE;
-gint friends_poi_id[TRAVEL_N_MODES];
 
 /* Give more debug informations */
 gint mydebug = 0;
@@ -343,15 +328,12 @@ char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
 char poitypetable[MAXDBNAME];
 char wp_typelist[MAXPOITYPES][50];
 double dbdistance;
-gint usesql = FALSE, dbusedist = FALSE;
-extern gint sqlselects[MAXPOITYPES], kismetsock, havekismet;
+gint dbusedist = FALSE;
 
-extern GdkPixbuf *kismetpixbuf,	*iconpixbuf[50];
+extern GdkPixbuf *iconpixbuf[50];
 gint earthmate = FALSE;
 
 extern GdkPixbuf *posmarker_img;
-
-extern gint wptotal, wpselected;
 
 extern routestatus_struct route;
 extern color_struct colors;
@@ -366,9 +348,6 @@ extern int pleasepollme;
 gint forcehavepos = FALSE;
 extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
-GtkWidget *sateventbox = NULL;
-GtkWidget *satsvbox, *satshbox, *satslabel1eventbox;
-GtkWidget *satslabel2eventbox, *satslabel3eventbox;
 GtkWidget *satslabel1, *satslabel2, *satslabel3;
 GtkWidget *frame_map_area;
 GtkWidget *frame_wp;
@@ -405,7 +384,6 @@ extern GtkWidget *main_window;
 extern GtkWidget *frame_statusbar;
 extern GtkWidget *main_table;
 
-void sql_load_lib();
 void unit_test(void);
 void drawdownloadrectangle (gint big);
 void draw_grid (GtkWidget * widget);
@@ -444,7 +422,7 @@ void check_and_create_files(){
         *last_slash = 0;
     }
 #endif
-    if(stat(file_path,&buf))
+    if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
 	    if ( mkdir (file_path, 0700) )
 		{
@@ -463,9 +441,9 @@ void check_and_create_files(){
         *last_slash = 0;
     }
 #endif
-    if(stat(file_path,&buf))
+    if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
-	    if ( mkdir (file_path, 0700) )
+	    if (g_mkdir (file_path, 0700))
 		{
 		    printf("Error creating %s\n",file_path);
 		} else {
@@ -475,9 +453,9 @@ void check_and_create_files(){
 
     // Create tracks/ Directory if not exist
     g_strlcpy (file_path, local_config.dir_tracks, sizeof (file_path)); 
-    if(stat(file_path,&buf))
+    if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
-	    if ( mkdir (file_path, 0700) )
+	    if (g_mkdir (file_path, 0700))
 		{
 		    printf("Error creating %s\n",file_path);
 		} else {
@@ -487,9 +465,9 @@ void check_and_create_files(){
 
     // Create routes/ Directory if not exist
     g_strlcpy (file_path, local_config.dir_routes, sizeof (file_path)); 
-    if(stat(file_path,&buf))
+    if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
-	    if ( mkdir (file_path, 0700) )
+	    if (g_mkdir (file_path, 0700))
 		{
 		    printf("Error creating %s\n",file_path);
 		} else {
@@ -502,7 +480,7 @@ void check_and_create_files(){
     g_snprintf (file_path, sizeof (file_path),
 		"%s/map_koord.txt",
 		local_config.dir_maps);
-    if ( stat (file_path, &buf) ) {
+    if ( !g_file_test (file_path, G_FILE_TEST_IS_REGULAR) ) {
 	gchar copy_command[2048];
 	g_snprintf (copy_command, sizeof (copy_command),
 		    "cp %s/gpsdrive/map_koord.txt %s",
@@ -522,10 +500,7 @@ void check_and_create_files(){
 #endif
     }
 
-
 }
-
-
 
 
 /* *****************************************************************************
@@ -1391,10 +1366,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (local_config.showgrid)
 		draw_grid (widget);
 
-	if (usesql)
+	if (local_config.use_database)
 	{
 	    poi_draw_list (FALSE);
-	    wlan_draw_list ();
 	    if (route.active)
 		route_display_targetinfo ();
 	}
@@ -1407,11 +1381,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (route.show)
 		draw_route ();
 
-	if (local_config.showfriends && !usesql)
+	if (local_config.showfriends && !local_config.use_database)
 		drawfriends ();
 
-	if (havekismet)
-		readkismet ();
+	//if (current.kismetsock)
+		current.kismetsock = readkismet ();
 
 	if (local_config.showscalebar)
 		draw_scalebar ();
@@ -1427,13 +1401,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 			draw_infotext (g_path_get_basename (mapfilename));
 	}
 
-	if (havekismet && (kismetsock>=0))
-	{
-		gdk_draw_pixbuf (drawable, kontext_map, kismetpixbuf, 0, 0,
-			10, gui_status.mapview_y - 42,
-			36, 20, GDK_RGB_DITHER_NONE, 0, 0);
-	}
-	
 	if (local_config.savetrack)
 	{
 		k = 100;
@@ -2745,7 +2712,7 @@ parse_cmd_args(int argc, char *argv[]) {
 		    nosplash = TRUE;
 		    break;
 		case 'q':
-		    usesql = FALSE;
+		    local_config.use_database = FALSE;
 		    break;
 		case 'd':
 		    debug = TRUE;
@@ -2993,7 +2960,6 @@ main (int argc, char *argv[])
     signal (SIGUSR1, signalposreq);
 #endif
 
-    sql_load_lib();
     /*  I18l */
 
     /*  Detect the language for voice output */
@@ -3107,10 +3073,6 @@ main (int argc, char *argv[])
 	sprintf(buf,"%.1f",1.2);  
 	localedecimal=buf[1];  
     }  
-  
-    /* init sql support */
-    if (usesql)
-	usesql = sqlinit ();
 
 	if (!local_config.speech)
 	{
@@ -3131,17 +3093,14 @@ main (int argc, char *argv[])
 	else
 		havefestival = FALSE;
 
-    if (usesql)
-	{
-	    getsqldata ();
-	}
-    else
-	loadwaypoints ();
-
+	if (local_config.use_database)
+		poi_rebuild_list ();
+	else
+		loadwaypoints ();
 
 	/* set start position for simulation mode
 	 * (only available in waypoints mode) */
-	if (strlen (setpositionname) > 0 && !usesql)
+	if (strlen (setpositionname) > 0 && !local_config.use_database)
 	{
 		for (i = 0; i < maxwp; i++)
 		{
@@ -3162,14 +3121,13 @@ main (int argc, char *argv[])
 
     initgps ();
 
-    if (usesql) 
+    if (local_config.use_database) 
 	{
-	    initkismet ();
-	    get_poi_type_id_for_wlan();
+	    current.kismetsock = initkismet ();
 	};
 
 
-    if( havekismet )
+    if( current.kismetsock != -1 )
 	{
 	    g_print (_("\nkismet server found\n"));
 	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
@@ -3196,8 +3154,8 @@ main (int argc, char *argv[])
 
 
 
-    //temperature_get_values ();
-    //battery_get_values ();
+    temperature_get_values ();
+    battery_get_values ();
 
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
     /*  set the timers */
@@ -3220,14 +3178,17 @@ main (int argc, char *argv[])
     id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
     gtk_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
-    gtk_timeout_add (15000, (GtkFunction) getsqldata, 0);
-//    if ( battery_get_values () )
-//	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
-//			 NULL);
+    if (local_config.use_database)
+	{
+		gtk_timeout_add (15000, (GtkFunction) poi_rebuild_list, 0);
+	}
+    if ( battery_get_values () )
+	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
+			 NULL);
 
-//    if ( temperature_get_values () )
-//	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
-//			 NULL);
+    if ( temperature_get_values () )
+	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
+			 NULL);
 
     gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 
@@ -3237,15 +3198,20 @@ main (int argc, char *argv[])
 	speech_saytime_cb (NULL, 1);
 
 	/* do all the basic initalisation for the specific sections */
+	if (local_config.use_database)
+	{
+		if (db_init () == FALSE)
+		{
+			g_print ("Disabling database support!\n");
+			local_config.use_database = FALSE;
+		}
+	}
 	poi_init ();
 	gui_init (geometry, usegeometry);
 	friends_init ();
 	route_init (NULL, NULL, NULL);
 
-	wlan_init ();
-
 	load_friends_icon ();
-	load_kismet_icon ();
 
     update_posbt();
 
@@ -3324,12 +3290,14 @@ main (int argc, char *argv[])
 		gpx_file_write (t_buf, GPX_RTE);
 	}
 
-    sqlend ();
+	/* close all database connections */
+	db_close ();
+
     free (friends);
     free (fserver);
     free_route_list ();
-    if (kismetsock != -1)
-	close (kismetsock);
+    if (current.kismetsock != -1)
+	close (current.kismetsock);
     gpsd_close();
     if (sockfd != -1)
 	close (sockfd);

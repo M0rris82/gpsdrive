@@ -1,8 +1,8 @@
 /***********************************************************************
 
-Copyright (c) 2001,2002 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
-Website: www.gpsdrive.de/
+Website: www.gpsdrive.de
 
 Disclaimer: Please do not use for navigation.
 
@@ -22,28 +22,31 @@ Disclaimer: Please do not use for navigation.
 
 *********************************************************************/
 
-#ifndef GPSDRIVE_ICONS_H
-#define GPSDRIVE_ICONS_H
+
+#ifndef GPSDRIVE_DATABASE_H
+#define GPSDRIVE_DATABASE_H
 
 /*
- * See icons.c for details.
+ * See database.c for details.
  */
 
 
-void drawwlan (gint posxdest, gint posydest, gint wlan);
-int drawicon (gint posxdest, gint posydest, char *ic);
-void load_friends_icon (void);
-void load_user_icon(  char icon_name[200] );
-void draw_plus_sign ( gdouble posxdest,   gdouble posydest );
-void draw_small_plus_sign ( gdouble posxdest,   gdouble posydest );
-GdkPixbuf *read_themed_icon (gchar * icon_symbol);
-GdkPixbuf * read_icon(char * icon_name,int force);
+void db_init (void);
+void db_close (void);
 
-typedef struct
+gchar *escape_sql_string (const gchar *data);
+
+void db_get_visible_poi_data (void);
+void db_get_all_poi_types (gpointer callback, guint count[]);
+
+gint db_poi_delete (gint index);
+
+enum
 {
-  GdkPixbuf *icon;
-  char name[40];
-}
-icons_buffer_struct;
+	DB_GEOINFO,
+	DB_WP_USER,
+	DB_WP_OSM,
+};
 
-#endif /* GPSDRIVE_ICONS_H */
+
+#endif /* GPSDRIVE_DATABASE_H */

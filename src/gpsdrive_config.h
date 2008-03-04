@@ -32,11 +32,6 @@ Disclaimer: Please do not use for navigation.
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
-#ifdef _WIN32
-#include "mysql.h"
-#else
-#include "mysql/mysql.h"
-#endif
 #include "gpsproto.h"
 
 #include <string.h>
@@ -69,6 +64,7 @@ typedef struct
 	gdouble poi_searchradius;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
 	gint simmode;
+	gboolean use_database;
 	gboolean showmaptype;
 	gboolean showgrid;
 	gboolean showshadow;

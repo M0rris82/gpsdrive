@@ -5,9 +5,10 @@ find_package(X11 REQUIRED)
 find_package(GTK2 REQUIRED)
 find_package(PNG REQUIRED)
 find_package(Fontconfig REQUIRED)
-find_package(MySQL REQUIRED)
 find_package(XML2 REQUIRED)
 find_package(Freetype2 REQUIRED)
+find_package(GDA3 REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 if (WITH_MAPNIK)
   find_package(Boost COMPONENTS filesystem REQUIRED)
@@ -31,11 +32,12 @@ set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
 set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${GTK2_INCLUDE_DIRS}
   ${PNG_INCLUDE_DIRS}
-  ${MYSQL_INCLUDE_DIR}
   ${XML2_INCLUDE_DIRS}
   ${MAPNIK_INCLUDE_DIRS}
   ${FREETYPE2_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
+  ${GDA3_INCLUDE_DIRS}
+  ${SQLITE3_INCLUDE_DIRS}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -50,11 +52,17 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${MAPNIK_LIBRARIES}
   ${FREETYPE_LIBRARIES}
   ${Boost_FILESYSTEM_LIBRARY}
+  ${GDA3_LIBRARIES}
+  ${SQLITE3_LIBRARIES}
 )
 
 set(gpsdrive_SRCS
   battery.c
   battery.h
+  database.c
+  database.h
+  database_sqlite.c
+  database_sqlite.h
   download_map.c
   draw_grid.c
   friends.c
@@ -67,7 +75,6 @@ set(gpsdrive_SRCS
   gpskismet.c
   gpsmisc.c
   gpsnasamap.c
-  gpssql.c
   gui.c
   gui.h
   gpx.c
@@ -99,7 +106,6 @@ set(gpsdrive_SRCS
   track.h
   unit_test.c
   waypoint.c
-  wlan.c
 )
 
 if (WITH_MAPNIK)

@@ -80,9 +80,7 @@ extern gint zone;
 extern gdouble milesconv;
 extern GtkWidget *map_drawingarea;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
-extern int usesql;
 extern gint mydebug;
-extern gint friends_poi_id[TRAVEL_N_MODES];
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern color_struct colors;
 extern coordinate_struct coords;
@@ -204,7 +202,7 @@ update_friends_data (friendsstruct *cf)
 	glong current_poi_id = 0;
 	gchar *result = NULL;
 	
-	if (usesql)
+	if (local_config.use_database)
 	{
 		//(cf)->id,
 		//(cf)->name,
@@ -216,33 +214,27 @@ update_friends_data (friendsstruct *cf)
 		//(cf)->type,
 		
 		/* check, if friend is already present in database */
-		current_poi_id = getsqlextradata (NULL, "friends_id",
-			(cf)->id, result);
+		current_poi_id = db_poi_extra_get (NULL, "friends_id", (cf)->id, result);
+
 		if (current_poi_id)
 		{
 			if (mydebug > 30)
 				fprintf (stderr, "--------> updating friend"
 				" with poi_id = %ld\n", current_poi_id);
-			updatesqldata (current_poi_id, strtod((cf)->lat, NULL),
+			db_poi_edit (current_poi_id, strtod((cf)->lat, NULL),
 				strtod((cf)->lon, NULL), (cf)->name,
-				(cf)->type, (cf)->timesec, 10);
-			updatesqlextradata (&current_poi_id,
-				"speed", (cf)->speed);
-			updatesqlextradata (&current_poi_id,
-				"heading", (cf)->heading);
+				(cf)->type, (cf)->heading, 7, TRUE);
+			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, TRUE);
+			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, TRUE);
 		}
 		else
 		{
-			// TODO: create new entry
-			current_poi_id = insertsqldata (strtod((cf)->lat, NULL),
+			current_poi_id = db_poi_edit (0, strtod((cf)->lat, NULL),
 				strtod((cf)->lon, NULL), (cf)->name, (cf)->type,
-				(cf)->timesec, 10);
-			insertsqlextradata (&current_poi_id,
-				"friends_id", (cf)->id);
-			insertsqlextradata (&current_poi_id,
-				"speed", (cf)->speed);
-			insertsqlextradata (&current_poi_id,
-				"heading", (cf)->heading);
+				(cf)->heading, 7, FALSE);
+			db_poi_extra_edit (&current_poi_id, "friends_id", (cf)->id, FALSE);
+			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, FALSE);
+			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, FALSE);
 		}
 	}
 	else
@@ -512,36 +504,6 @@ friends_init ()
     }
   friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
   fserver = malloc (1 * sizeof (friendsstruct));
-
-	/* store poitype ids for friends */
-	for (i = 0; i < TRAVEL_N_MODES; i++)
-	{
-		friends_poi_id[i] = -1;
-	}
-	j = 0;
-	for (i = 0; i < poi_type_list_max; i++)
-	{
-		if (mydebug > 30)
-		{
-			fprintf (stderr,
-				"friends_init: Checking POI-Type: %d - %s\n",
-				i, poi_type_list[i].name);
-		}
-	
-		if (g_str_has_prefix (poi_type_list[i].name, "people.friendsd"))
-		{
-			friends_poi_id[j] = poi_type_list[i].poi_type_id;
-			if (mydebug > 30)
-			{
-				fprintf (stderr,
-					"friends_init: \t\t\tType %d is friend!\n",
-					friends_poi_id[j]);
-			}
-			j++;
-			if (j >= TRAVEL_N_MODES)
-				break;
-		}
-	}
 
   return (0);
 }

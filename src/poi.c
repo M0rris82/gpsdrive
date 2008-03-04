@@ -62,16 +62,13 @@ Disclaimer: Please do not use for navigation.
 extern gchar language[];
 extern gint do_unit_test;
 extern gint maploaded;
-extern gint isnight, disableisnight;
 extern color_struct colors;
 extern gdouble wp_saved_target_lat, wp_saved_target_lon;
 extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
 extern gint debug, mydebug;
 extern GtkWidget *map_drawingarea;
-extern gint usesql;
 extern glong mapscale;
 extern gdouble dbdistance;
-extern gint friends_poi_id[TRAVEL_N_MODES];
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern GdkGC *kontext_map;
@@ -82,9 +79,6 @@ extern GdkGC *kontext;
 char txt[5000];
 PangoLayout *poi_label_layout;
 
-extern MYSQL mysql;
-extern MYSQL_RES *res;
-extern MYSQL_ROW row;
 #define MAXDBNAME 30
 extern char poitypetable[MAXDBNAME];
 
@@ -108,6 +102,7 @@ PangoLayout *poi_label_layout;
 poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
 GtkTreeStore *poi_types_tree;
+GHashTable *poi_types_hash;
 
 gdouble poi_lat_lr = 0, poi_lon_lr = 0;
 gdouble poi_lat_ul = 0, poi_lon_ul = 0;
@@ -119,9 +114,99 @@ void poi_rebuild_list (void);
 void get_poitype_tree (void);
 
 
+
+
+
+/* ******************************************************************
+ * db callback for reading searched points of interest in poi lookup window
+ */
+gint
+handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names)
+{
+	gchar t_buf[100];
+	gint poi_posx, poi_posy;
+	gdouble t_lat, t_lon;
+	gdouble t_dist_num;
+	gchar t_dist[15];
+	gint *t_id;
+	GtkTreeIter iter;
+
+	if (columns == 0)
+		return 0;
+
+	if (mydebug > 20)
+	{
+		g_print ("Query Result: %s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+			values[0], values[1], values[2], values[3], values[4], values[5], values[6]);
+	}
+
+	// get next free mem for point
+	poi_nr++;
+	if (poi_nr > poi_limit)
+	{
+		poi_limit = poi_nr + 10000;
+		if (mydebug > 20)
+			g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
+		poi_result = g_renew (poi_struct, poi_result, poi_limit);
+		if (NULL == poi_result)
+		{
+			g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
+			poi_limit = -1;
+			return -1;
+		}
+	}
+
+	// Save retrieved poi information into structure
+	(poi_result + poi_nr)->poi_id = (gint) g_strtod (values[0], NULL);
+
+	g_strlcpy ((poi_result + poi_nr)->name, values[1],
+		sizeof ((poi_result + poi_nr)->name));
+
+	if (values[2] == NULL)
+		g_strlcpy ((poi_result + poi_nr)->comment, "n/a",
+			sizeof ((poi_result + poi_nr)->comment));		
+	else
+		g_strlcpy ((poi_result + poi_nr)->comment, values[2],
+			sizeof ((poi_result + poi_nr)->comment));
+
+	g_strlcpy ((poi_result + poi_nr)->poi_type, values[3],
+			sizeof ((poi_result + poi_nr)->poi_type));
+
+	t_id = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
+
+	(poi_result + poi_nr)->lon = g_strtod (values[4], NULL);
+	t_lon = g_strtod (values[4], NULL);
+
+	(poi_result + poi_nr)->lat = g_strtod (values[5], NULL);
+	t_lat = g_strtod (values[5], NULL);
+
+	(poi_result + poi_nr)->source_id = g_strtod (values[6], NULL);
+
+	t_dist_num = calcdist (t_lon, t_lat);
+	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
+
+	gtk_list_store_append (poi_result_tree, &iter);
+	gtk_list_store_set (poi_result_tree, &iter,
+		RESULT_ID, (poi_result + poi_nr)->poi_id,
+		RESULT_NAME, (poi_result + poi_nr)->name,
+		RESULT_COMMENT,  (poi_result + poi_nr)->comment,
+		RESULT_TYPE_TITLE, poi_type_list[*t_id].title,
+		RESULT_TYPE_NAME, (poi_result + poi_nr)->poi_type,
+		RESULT_TYPE_ICON, poi_type_list [*t_id].icon,
+		RESULT_DISTANCE, t_dist,
+		RESULT_DIST_NUM, t_dist_num,
+		RESULT_LAT, t_lat,
+		RESULT_LON, t_lon,
+		RESULT_SOURCE, (poi_result + poi_nr)->source_id,
+		-1);
+
+	return 0;
+}
+
+
 /* *******************************************************
  * check, which poi_types should be shown in the map.
- * filtering is only done on the base category level.
+ * filtering is only done on the base category level
  */
 void
 update_poi_type_filter ()
@@ -131,11 +216,12 @@ update_poi_type_filter ()
 	gchar *t_name;
 	gchar t_string[200];
 	gchar t_config[2000];
+	gchar t_filter[20000];
 
 	if (mydebug > 21)
 		fprintf (stderr, "update_poi_type_filter:\n");
 
-	g_strlcpy (current.poifilter, "AND (", sizeof (current.poifilter));
+	g_strlcpy (t_filter, "AND (", sizeof (t_filter));
 	g_strlcpy (local_config.poi_filter, "", sizeof (local_config.poi_filter));
 
 	gtk_tree_model_get_iter_first
@@ -150,10 +236,9 @@ update_poi_type_filter ()
 		{
 			/* build SQL string for filter */
 			g_snprintf (t_string, sizeof (t_string),
-				"poi_type.name NOT LIKE \"%s%%\" AND ",
+				"poi_type NOT LIKE \"%s%%\" AND ",
 				t_name);
-			g_strlcat (current.poifilter,
-				t_string, sizeof (current.poifilter));
+			g_strlcat (t_filter, t_string, sizeof (t_filter));
 				
 			/* build settings string for config file */
 			g_snprintf (t_config, sizeof (t_config),
@@ -165,12 +250,13 @@ update_poi_type_filter ()
 	while (gtk_tree_model_iter_next
 		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
 
-	g_strlcat (current.poifilter, "TRUE)", sizeof (current.poifilter));
+	g_strlcat (t_filter, "1)", sizeof (t_filter));
 
 	g_free (t_name);
 
 	current.needtosave = TRUE;
-	poi_draw_list (TRUE);
+
+	db_get_visible_poi_types (t_filter);
 }
 
 
@@ -185,18 +271,11 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 	gdouble dist_lat, dist_lon;
-	gdouble temp_lon, temp_lat;
-	gdouble temp_dist_num;
-	
-	char sql_query[5000];
+
+	char sql_query[20000];
 	char type_filter[3000];
 	gchar *temp_text;
-	char temp_dist[15];
-	int r, rges;
-	int temp_id;
-	
-	GtkTreeIter iter;
-	
+
 	// clear results from last search	
 	gtk_list_store_clear (poi_result_tree);
 	
@@ -250,11 +329,11 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	if (lat_min < -90.0) lat_min = -90.0;
 	if (lat_max > 90.0) lat_max = 90.0;
 	
-	/* choose poi_type_ids to search */
+	/* choose poi_types to search */
 	if (typeflag)
 	{
 		g_snprintf (type_filter, sizeof (type_filter),
-			"AND (poi_type.name LIKE \'%s%%\')",type);
+			"AND (poi_type LIKE \'%s%%\')",type);
 	}
 	else
 	{
@@ -266,116 +345,26 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	g_strdelimit (temp_text, "*", '%');
 		
 	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT poi.poi_id,poi.name,poi.comment,poi.poi_type_id,"
-		"poi.lon,poi.lat FROM poi INNER JOIN poi_type ON"
-		" poi.poi_type_id=poi_type.poi_type_id "
+		"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
 		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
-		" AND %.6f ) AND (poi.name LIKE '%%%s%%' OR comment LIKE"
+		" AND %.6f ) AND (name LIKE '%%%s%%' OR comment LIKE"
 		" '%%%s%%') %s ORDER BY"
-		" (pow((poi.lat-%.6f),2)+pow((poi.lon-%.6f),2)) LIMIT %d;",
+		" (poi.lat-(%.6f))*(poi.lat-(%.6f))+(poi.lon-(%.6f))*(poi.lon-(%.6f)) LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
-		type_filter, lat, lon, local_config.poi_results_max);
+		type_filter, lat, lat, lon, lon, local_config.poi_results_max);
 
 	if (mydebug > 20)
-		printf ("poi_get_results: POI mysql query: %s\n", sql_query);
+		printf ("poi_get_results: POI sql query: %s\n", sql_query);
 
-	if (dl_mysql_query (&mysql, sql_query))
-	{
-		printf ("poi_get_results: Error in query: \n");
-		fprintf (stderr, "poi_get_results: Error in query: %s\n",
-				dl_mysql_error (&mysql));
-		return 0;
-	}
-
-	if (!(res = dl_mysql_store_result (&mysql)))
-	{
-		fprintf (stderr, "Error in store results: %s\n",
-				dl_mysql_error (&mysql));
-		dl_mysql_free_result (res);
-		res = NULL;
-		return 0;
-	}
-	
 	g_free (temp_text);
-	
-	rges = r = 0;
+
 	poi_nr = 0;
-	while ((row = dl_mysql_fetch_row (res)))
-	{
-		rges++;
-		
-		if (mydebug > 20)
-			fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
-					row[0], row[1], row[2], row[3]);
-		// get next free mem for point
-		poi_nr++;
-		if (poi_nr > poi_limit)
-		{
-			poi_limit = poi_nr + 10000;
-			if (mydebug > 20)
-				g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
-			poi_result = g_renew (poi_struct, poi_result, poi_limit);
-			if (NULL == poi_result)
-			{
-				g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
-				poi_limit = -1;
-				return 0;
-			}
-	    }
-
-		// Save retrieved poi information into structure
-		(poi_result + poi_nr)->poi_id = (gint) g_strtod (row[0], NULL);
-				g_strlcpy ((poi_result + poi_nr)->name, row[1], sizeof ((poi_result + poi_nr)->name));
-		if (row[2] == NULL)
-			g_strlcpy ((poi_result + poi_nr)->comment, "n/a", sizeof ((poi_result + poi_nr)->comment));		
-		else
-			g_strlcpy ((poi_result + poi_nr)->comment, row[2], sizeof ((poi_result + poi_nr)->comment));		
-		(poi_result + poi_nr)->poi_type_id = (gint) g_strtod (row[3], NULL);
-		temp_id = (gint) g_strtod (row[3], NULL);
-		(poi_result + poi_nr)->lon = g_strtod (row[4], NULL);
-		temp_lon = g_strtod (row[4], NULL);
-		(poi_result + poi_nr)->lat = g_strtod (row[5], NULL);
-		temp_lat = g_strtod (row[5], NULL);
-		temp_dist_num = calcdist (temp_lon, temp_lat);
-		g_snprintf (temp_dist, sizeof (temp_dist), "%9.3f", temp_dist_num);
-		
-		gtk_list_store_append (poi_result_tree, &iter);
-		gtk_list_store_set (poi_result_tree, &iter,
-			RESULT_ID, (poi_result + poi_nr)->poi_id,
-			RESULT_NAME, (poi_result + poi_nr)->name,
-			RESULT_COMMENT,  (poi_result + poi_nr)->comment,
-			RESULT_TYPE_TITLE, poi_type_list[temp_id].title,
-			RESULT_TYPE_NAME, poi_type_list[temp_id].name,
-			RESULT_TYPE_ICON, poi_type_list [temp_id].icon,
-			RESULT_DISTANCE, temp_dist,
-			RESULT_DIST_NUM, temp_dist_num,
-			RESULT_LAT, temp_lat,
-			RESULT_LON, temp_lon,
-			-1);
-
-		/* check for friendsd entry */
-		if (g_str_has_prefix(poi_type_list[temp_id].name, "people.friendsd"))
-			g_print ("\nfriend\n");
-
-	}
-
+	db_poi_get (sql_query, handle_poi_search_cb);
 	poi_result_count = poi_nr;
 
 	if (mydebug > 20)
-		printf (_("%ld(%d) rows read\n"), poi_list_count, rges);
+		printf (_("%ldrows read\n"), poi_list_count);
 
-	if (!dl_mysql_eof (res))
-	{
-		fprintf (stderr, "poi_get_results: Error in dl_mysql_eof: %s\n",
-				dl_mysql_error (&mysql));
-		dl_mysql_free_result (res);
-		res = NULL;
-		return 0;
-	}
-
-	dl_mysql_free_result (res);
-	res = NULL;
-	
 	return poi_result_count;
 }
 
@@ -497,71 +486,19 @@ poi_check_if_moved (void)
 
 
 /* ******************************************************************
- * get poi_type_id from given poi_type name
-*/
-gint
-poi_type_id_from_name (gchar *name)
-{
-	int i;
-	gchar *t_ptr;
-	gchar *t_name;
-	gint id = 1;	// default to poi_type 1 = 'unknown' if not in table
-
-	if (mydebug > 50)
-		fprintf (stderr, "Seeking ID for poi_type %s\n", name);
-
-	t_name = g_ascii_strdown (name, -1);
-
-	for (i = 0; i < poi_type_list_max; i++)
-	{
-		if (strcmp (poi_type_list[i].name,t_name) == 0)
-		{
-			g_free (t_name);
-			return poi_type_list[i].poi_type_id;
-		}
-	}
-
-	/* if we have no match, we reduce the name and check again */
-	t_ptr = g_strrstr (t_name, ".");
-	if (t_ptr)
-	{
-		*t_ptr = '\0';
-		id = poi_type_id_from_name (t_name);
-	}
-
-	g_free (t_name);
-	return id;
-}
-
-
-/* ******************************************************************
- * check if poi is friend
-*/
-gboolean
-poi_is_friend (gint type)
-{
-	gint i;
-	
-	for (i = 0; i < TRAVEL_N_MODES; i++)
-	{
-		if (friends_poi_id[i] == type)
-			return TRUE;
-	}
-	return FALSE;
-}
-
-/* ******************************************************************
  * add new row to poitype tree
 */
 static gboolean 
 poitypetree_addrow (guint i, GtkTreeIter *parent)
 {
 	GtkTreeIter iter;
-	
+
+	poi_type_list[i].id = i;
+
 	gtk_tree_store_append (poi_types_tree, &iter, parent);
  
 	gtk_tree_store_set (poi_types_tree, &iter,
-		POITYPE_ID, poi_type_list[i].poi_type_id,
+		POITYPE_ID, poi_type_list[i].id,
 		POITYPE_NAME, poi_type_list[i].name,
 		POITYPE_ICON, poi_type_list[i].icon,
 		POITYPE_SCALE_MIN, poi_type_list[i].scale_min,
@@ -571,12 +508,13 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_SELECT, FALSE,
 		-1);
 
+	g_hash_table_insert (poi_types_hash, poi_type_list[i].name, &(poi_type_list[i].id));
+
 	if (mydebug > 30)
 	{
 		fprintf (stderr,
-			"poitypetree_addrow:added %d - %s\n",
-			poi_type_list[i].poi_type_id,
-			poi_type_list[i].name);
+			"poitypetree_addrow:added %d - %d - %s\n",
+			i, poi_type_list[i].name);
 	}
 
 	return TRUE;
@@ -631,6 +569,7 @@ static gboolean poitypetree_find_parent (
 	}
 }
 
+
 /* ******************************************************************
  * sort poitype data from flat struct into a gtk-tree
  */
@@ -642,6 +581,11 @@ create_poitype_tree (guint max_level)
 
 	if (mydebug > 20)
 		fprintf (stderr, "create_poitype_tree:\n");
+
+	/* create hash table, to quickly find poi types by name */
+	if (poi_types_hash)
+		g_hash_table_destroy (poi_types_hash);
+	poi_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* insert base categories into tree */
 	for (i = 0; i < poi_type_list_max; i++)
@@ -687,337 +631,169 @@ create_poitype_tree (guint max_level)
 
 
 /* ******************************************************************
+ * db callback for reading poitype data from geoinfo.db
+ */
+gint
+handle_poitype_tree_cb (guint count[], gint columns, gchar **values, gchar **names)
+{
+	guint i,j;
+
+	if (mydebug > 30)
+	{
+		g_print ("Query Result: %s\t%s\t%s\t%s\t%s\n",
+			values[0], values[1], values[2], values[3], values[4]);
+			/* poi_type,scale_min,scale_max,title,description */
+	}
+
+	poi_type_list[count[0]].scale_min = (gint) g_strtod (values[1], NULL);
+	poi_type_list[count[0]].scale_max = (gint) g_strtod (values[2], NULL);
+	g_strlcpy (poi_type_list[count[0]].title, values[3],
+		sizeof (poi_type_list[count[0]].title));
+	g_strlcpy (poi_type_list[count[0]].description, values[4],
+		sizeof (poi_type_list[count[0]].description));
+	g_strlcpy (poi_type_list[count[0]].name, values[0],
+		sizeof(poi_type_list[count[0]].name));
+	g_strlcpy (poi_type_list[count[0]].icon_name, values[0],
+		sizeof(poi_type_list[count[0]].icon_name));
+	poi_type_list[count[0]].icon = read_themed_icon (poi_type_list[count[0]].icon_name);
+
+
+	j = 0;			
+	for (i=0; i < strlen (poi_type_list[count[0]].name); i++)
+	{
+		if (g_str_has_prefix ((poi_type_list[count[0]].name + i) , "."))
+		{
+			j++;
+		}
+	}
+	poi_type_list[count[0]].level = j;
+	if (count[1] < j)
+	{
+		count[1] = j;
+	}
+
+	if (poi_type_list[count[0]].icon == NULL)
+	{
+		if (mydebug > 40)
+			g_printf ("get_poitype_tree: %3d:Icon '%s' for '%s'\tnot found\n",
+				index, poi_type_list[count[0]].icon_name, poi_type_list[count[0]].name);
+		if (do_unit_test)
+			exit (-1);
+	}
+
+	count[0]++;
+
+	return 0;
+};
+
+
+/* ******************************************************************
  * get a list of all possible poi_types and load their icons
 */
 void
 get_poitype_tree (void)
 {
-	guint counter = 0;
-	guint max_level = 0;
+	/* count[0] = number of poi-types read
+	 * count[1] = maximum depth of tree */
+	guint count[] = {0, 0};
 
-	if (mydebug > 25)
+	if (mydebug > 10)
 		printf ("get_poitype_tree ()\n");
 
 	// Clear poi_type_tree
 	gtk_tree_store_clear (poi_types_tree);
 
-  // get poi_type info from icons.xml
-  {
-	xmlTextReaderPtr xml_reader;
-	gchar iconsxml_file[200];
-	gint valid_poi_type = 0;
-	gint xml_status = 0; // 0 = empty, 1 = node, -1 = error
-	gint tag_type = 0;  // 1 = start, 3 = #text, 15 = end
-	xmlChar *tag_name;
-	gchar t_scale_max[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_scale_min[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_title[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_title_en[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_title_lang[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_description[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_desc_en[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_desc_lang[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_name[POI_TYPE_LIST_STRING_LENGTH];
-	gchar t_poi_type_id[POI_TYPE_LIST_STRING_LENGTH];
-	guint i,j;
+	db_get_all_poi_types (handle_poitype_tree_cb, count);
 
-	g_snprintf (iconsxml_file, sizeof (iconsxml_file),
-		"./data/map-icons/icons.xml" );
-	xml_reader = xmlNewTextReaderFilename(iconsxml_file);
+	g_printf ("Read %d POI-Types from geoinfo.db\n", count[0]);
 
-	if (xml_reader == NULL)
-	{
-		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
-			"%s/icons.xml", local_config.dir_home);
-		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	}
-	if (xml_reader == NULL)
-	{
-		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
-			"%s/icons/map-icons/icons.xml", DATADIR);
-		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	}
-	if (xml_reader == NULL)
-	{
-		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
-			"%s/map-icons/icons.xml", DATADIR);
-		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	}
-	if (xml_reader == NULL)
-	{
-		g_snprintf (iconsxml_file, sizeof (iconsxml_file),
-			"/usr/share/icons/map-icons/icons.xml", DATADIR);
-		xml_reader = xmlNewTextReaderFilename(iconsxml_file);
-	}
-	if (xml_reader == NULL)
-	{
-		fprintf (stderr, "get_poitype_tree: File %s not found!\n",
-			iconsxml_file);
-		fprintf (stderr, _("Please install the program as root with: "
-			"make install\n\n"));
-		exit (EXIT_FAILURE);
-		return;
-	}
-	if (mydebug > 10)
-	{
-		fprintf (stderr, "get_poitype_tree: Trying to parse file:"
-		"%s\n", iconsxml_file);
-	}
-	xml_status = xmlTextReaderRead(xml_reader);
-	while (xml_status == 1) /* parse complete file */
-	{
-		g_strlcpy (t_title, "n/a", sizeof(t_title));
-		g_strlcpy (t_title_en, "n/a", sizeof(t_title));
-		g_strlcpy (t_description, "n/a", sizeof(t_description));
-		g_strlcpy (t_desc_en, "n/a", sizeof(t_description));
-		g_strlcpy (t_name, "n/a", sizeof(t_name));
-		g_strlcpy (t_scale_min, "1", sizeof(t_scale_min));
-		g_strlcpy (t_scale_max, "50000", sizeof(t_scale_max));
-		valid_poi_type = 0;
-		tag_type = xmlTextReaderNodeType(xml_reader);
-		tag_name = xmlTextReaderName(xml_reader);
-		if (tag_type == 1 && xmlStrEqual(tag_name, BAD_CAST "rule"))
-		/* START element rule */
-		{
-			if (mydebug > 50) fprintf (stderr, "----------\n");
-			while ( tag_type != 15 || !xmlStrEqual(tag_name,
-				BAD_CAST "rule")) /* inside element rule */
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 1)
-		{
-			if (xmlStrEqual(tag_name, BAD_CAST 	"condition") && xmlStrEqual (xmlTextReaderGetAttribute(xml_reader, BAD_CAST "k"), BAD_CAST "poi"))
-		{
-			if (mydebug > 4)
-			fprintf(stderr, "*** poi = %s\n", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "v"));
-			valid_poi_type = 1;
-			counter++;
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "scale_min")) /* scale_min */
-		{
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			g_snprintf(t_scale_min, sizeof(t_scale_min), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		} while (tag_type != 15);
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "scale_max"))  /* scale_max */
-		{
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			g_snprintf(t_scale_max, sizeof(t_scale_max), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		} while (tag_type != 15);
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "title")) /* title */
-		{
-			g_snprintf(t_title_lang, sizeof(t_title_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			if (strcmp(t_title_lang, "en")==0)
-		{
-			g_snprintf(t_title_en, sizeof(t_title_en), "%s", xmlTextReaderConstValue (xml_reader));
-			continue;
-		}
-			if (strcmp(t_title_lang, language)==0)
-		{
-			g_snprintf(t_title, sizeof(t_title), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		}
-		} while (tag_type != 15);
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "description"))  /* description */
-		{
-			g_snprintf(t_desc_lang, sizeof(t_desc_lang), "%s", xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lang"));
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			if (strcmp(t_desc_lang, "en")==0)
-		{
-			g_snprintf(t_desc_en, sizeof(t_desc_en), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-			if (strcmp(t_desc_lang, language)==0)
-		{
-			g_snprintf(t_description, sizeof(t_description), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		}
-		} while (tag_type != 15);
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "geoinfo"))  /* geoinfo */
-		{
-			while ( tag_type != 15 || !xmlStrEqual(tag_name, BAD_CAST "geoinfo")) /* inside element geoinfo */
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 1)
-		{
-			if (xmlStrEqual(tag_name, BAD_CAST "name")) /* name */
-		{
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			g_snprintf(t_name, sizeof(t_name), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		} while (tag_type != 15);
-			continue;
-		}
-			if (xmlStrEqual(tag_name, BAD_CAST "poi_type_id")) /* poi_type_id */
-		{
-			do
-		{
-			xml_status = xmlTextReaderRead(xml_reader);
-			tag_type = xmlTextReaderNodeType(xml_reader);
-			tag_name = xmlTextReaderName(xml_reader);
-			if (tag_type == 3)
-		{
-			g_snprintf(t_poi_type_id, sizeof(t_poi_type_id), "%s", xmlTextReaderConstValue(xml_reader));
-			continue;
-		}
-		} while (tag_type != 15);
-		continue;
-		}
-		}
-		}
-			continue;
-		} /* END element geoinfo */
-		}
-		}
-		if (valid_poi_type)
-		{
-			int index = (gint) g_strtod (t_poi_type_id, NULL);
-			if (index >= poi_type_list_max)
-			{
-				fprintf (stderr, "get_poitype_tree: "
-				"index(%d) > poi_type_list_max(%d)\n",
-				index, poi_type_list_max);
-				continue;
-			}
-			if (poi_type_list_count < index)
-			{
-				poi_type_list_count = index;
-			}
-			poi_type_list[index].poi_type_id = index;
-			poi_type_list[index].scale_min = (gint) g_strtod (t_scale_min, NULL);
-			poi_type_list[index].scale_max = (gint) g_strtod (t_scale_max, NULL);
+	create_poitype_tree (count[1]);
+}
 
-			/* use english title/description,
-			 * if no localized info is available */
-			if (strcmp(t_description, "n/a")==0)
-				g_strlcpy(t_description, t_desc_en, sizeof(t_description));
-			if (strcmp(t_title, "n/a")==0)
-				g_strlcpy(t_title, t_title_en, sizeof(t_title));
 
-			/* if also no english title is available,
-			 * use the poi_type_name as title */
-			if (strcmp(t_title, "n/a")==0)
-				g_strlcpy(t_title, t_name, sizeof(t_title));
+/* ******************************************************************
+ * db callback for reading currently visible points of interest
+ */
+gint
+handle_poi_view_cb (gchar *result, gint columns, gchar **values, gchar **names)
+{
+	gchar t_buf[100];
+	gint poi_posx, poi_posy;
+	gdouble lat, lon;
 
-			g_strlcpy (poi_type_list[index].description,
-				t_description, sizeof
-				(poi_type_list[index].description));
-			g_strlcpy (poi_type_list[index].title, t_title,
-				sizeof (poi_type_list[index].title));
-			g_strlcpy (poi_type_list[index].name, t_name,
-				sizeof(poi_type_list[index].name));
-			g_strlcpy (poi_type_list[index].icon_name, t_name,
-				sizeof(poi_type_list[index].icon_name));
-			poi_type_list[index].icon = read_themed_icon
-				(poi_type_list[index].icon_name);
-			
-			j = 0;			
-			for (i=0; i < strlen (poi_type_list[index].name); i++)
-			{
-				if (g_str_has_prefix
-					((poi_type_list[index].name + i) , "."))
-				{
-					j++;
-				}
-			}
-			poi_type_list[index].level = j;
-			if (max_level < j)
-			{
-				max_level = j;
-			}
-			
-			if (poi_type_list[index].icon == NULL)
-			{
-				if (mydebug > 40)
-					printf ("get_poitype_tree: %3d:Icon '%s' for '%s'\tnot found\n",
-					index, poi_type_list[index].icon_name, poi_type_list[index].name);
-				if (do_unit_test)
-					exit (-1);
-			}
-		}
-		}  /* END element rule */
-		xml_status = xmlTextReaderRead(xml_reader);
-	}
-	xmlFreeTextReader(xml_reader);
-	if (xml_status != 0)
-		fprintf(stderr,
-		"get_poitype_tree: Failed to parse file: %s\n",
-		iconsxml_file);
-	else
-		fprintf (stdout, "Read %d POI-Types from %s\n",
-		counter, iconsxml_file);
-
-  }
+	if (columns == 0)
+		return 0;
 
 	if (mydebug > 20)
-		fprintf (stderr,
-		"get_poitype_tree: Loaded %d Icons for poi_types 1 - %d\n",
-		counter, poi_type_list_count);
+	{
+		g_print ("Query Result: %s\t%s\t%s\t%s\n",
+			values[0], values[1], values[2], values[3]);
+	}
 
-	create_poitype_tree (max_level);
+	lat = g_strtod (values[0], NULL);
+	lon = g_strtod (values[1], NULL);
+
+	calcxy (&poi_posx, &poi_posy, lon, lat, current.zoom);
+
+	if ((poi_posx > -50) && (poi_posx < (gui_status.mapview_x + 50)) &&
+	   (poi_posy > -50) && (poi_posy < (gui_status.mapview_y + 50)))
+	{
+		// get next free mem for point
+		poi_nr++;
+		if (poi_nr > poi_limit)
+		{
+			poi_limit = poi_nr + 10000;
+			if (mydebug > 20)
+				g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
+			poi_list = g_renew (poi_struct, poi_list, poi_limit);
+			if (NULL == poi_list)
+			{
+				g_print ("Error: Cannot allocate Memory for %ld poi\n",
+				poi_limit);
+				poi_limit = -1;
+				return;
+			}
+		}
+
+		// Save retrieved poi information into structure
+		(poi_list + poi_nr)->lat = lat;
+		(poi_list + poi_nr)->lon = lon;
+		(poi_list + poi_nr)->x = poi_posx;
+		(poi_list + poi_nr)->y = poi_posy;
+		g_strlcpy ((poi_list + poi_nr)->name, values[2],
+			sizeof ((poi_list + poi_nr)->name));
+		g_strlcpy ((poi_list + poi_nr)->poi_type, values[3],
+			sizeof ((poi_list + poi_nr)->poi_type));
+		if (values[4] != NULL)
+		{
+			g_strlcpy ((poi_list + poi_nr)->comment, values[4],
+				sizeof ((poi_list + poi_nr)->comment));
+		}
+		/*
+		 * poi_id        INTEGER      PRIMARY KEY
+		 * name          VARCHAR(80)  NOT NULL default 'not specified'
+		 * poi_type      VARCHAR(160) NOT NULL default 'unknown'`
+		 * lat           DOUBLE       NOT NULL default '0'
+		 * lon           DOUBLE       NOT NULL default '0'
+		 * alt           DOUBLE                default '0'
+		 * comment       VARCHAR(255)          default NULL
+		 * last_modified DATETIME     NOT NULL default '0000-00-00'
+		 * source_id     INTEGER      NOT NULL default '1'
+		 * private       CHAR(1)               default NULL)
+		 */
+	}
+	return 0;
 }
 
 
 /* *******************************************************
  * if zoom, xoff, yoff or map are changed 
- * TODO: use the real datatype for reading from database
- * (don't convert string to double)
  * TODO: call this only if the above mentioned events occur!
  */
 void
 poi_rebuild_list (void)
 {
-  char sql_query[5000];
+  char sql_query[20000];
   GTimeVal t;
   int r, rges;
   time_t ti;
@@ -1030,24 +806,20 @@ poi_rebuild_list (void)
   gdouble lat_max, lon_max;
   gdouble lat_mid, lon_mid;
 
-  gint poi_posx, poi_posy;
-
-  if (!usesql)
+  if (!local_config.use_database)
     return;
 
   if (!local_config.showpoi)
     {
       if (mydebug > 20)
-	printf ("poi_rebuild_list: POI_draw is off\n");
+	g_print ("poi_rebuild_list: POI_draw is off\n");
       return;
     }
 
   if (mydebug > 20)
     {
-      printf
-	("poi_rebuild_list: Start\t\t\t\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+      g_print ("\n\npoi_rebuild_list: Start\n");
     }
-
 
   if (!maploaded)
     return;
@@ -1055,163 +827,60 @@ poi_rebuild_list (void)
   if (current.importactive)
     return;
 
+	//TODO: could be optimized:
+	//	call this function only on the first run and
+	//	when the map scale changes,
+	update_poi_type_filter ();
 
-  // calculate the start and stop for lat/lon according to the displayed section
-  calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
-  calcxytopos (0, gui_status.mapview_y, &lat_ll, &lon_ll, current.zoom);
-  calcxytopos (gui_status.mapview_x, 0, &lat_ur, &lon_ur, current.zoom);
-  calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
+	// calculate the start and stop for lat/lon according to the displayed section
+	calcxytopos (0, 0, &lat_ul, &lon_ul, current.zoom);
+	calcxytopos (0, gui_status.mapview_y, &lat_ll, &lon_ll, current.zoom);
+	calcxytopos (gui_status.mapview_x, 0, &lat_ur, &lon_ur, current.zoom);
+	calcxytopos (gui_status.mapview_x, gui_status.mapview_y, &lat_lr, &lon_lr, current.zoom);
 
-  lat_min = min (lat_ll, lat_ul);
-  lat_max = max (lat_lr, lat_ur);
-  lon_min = min (lon_ll, lon_ul);
-  lon_max = max (lon_lr, lon_ur);
+	lat_min = min (lat_ll, lat_ul);
+	lat_max = max (lat_lr, lat_ur);
+	lon_min = min (lon_ll, lon_ul);
+	lon_max = max (lon_lr, lon_ur);
 
-  lat_mid = (lat_min + lat_max) / 2;
-  lon_mid = (lon_min + lon_max) / 2;
+	lat_mid = (lat_min + lat_max) / 2;
+	lon_mid = (lon_min + lon_max) / 2;
 
-  g_get_current_time (&t);
-  ti = t.tv_sec + t.tv_usec / 1000000.0;
+	g_get_current_time (&t);
+	ti = t.tv_sec + t.tv_usec / 1000000.0;
 
-  g_snprintf (sql_query, sizeof (sql_query),
-     "SELECT poi.lat,poi.lon,poi.name,poi.poi_type_id,poi.source_id FROM poi "
-     "INNER JOIN poi_type ON poi.poi_type_id=poi_type.poi_type_id "
-     "WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f ) "
-     "AND ( %ld BETWEEN scale_min AND scale_max ) %s LIMIT 20000;",
-     lat_min, lat_max, lon_min, lon_max, current.mapscale, current.poifilter);
+	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT lat,lon,name,poi_type,comment FROM poi"
+		" WHERE (lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f )"
+		" AND poi_type IN (%s) LIMIT 20000;",
+		lat_min, lat_max, lon_min, lon_max, current.poifilter);
 
-  if (mydebug > 20)
-  {
-    printf ("poi_rebuild_list: POI mysql query: %s\n", sql_query);
-  }
+	if (mydebug > 20)
+		g_printf ("poi_rebuild_list: POI sql query: %s\n", sql_query);
 
-  if (dl_mysql_query (&mysql, sql_query))
-    {
-      printf ("poi_rebuild_list: Error in query: \n");
-      fprintf (stderr, "poi_rebuild_list: Error in query: %s\n",
-	       dl_mysql_error (&mysql));
-      return;
-    }
+	rges = r = 0;
+	poi_nr = 0;
 
-  if (!(res = dl_mysql_store_result (&mysql)))
-    {
-      fprintf (stderr, "Error in store results: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return;
-    }
-	
-  rges = r = 0;
-  poi_nr = 0;
-  while ((row = dl_mysql_fetch_row (res)))
-    {
-      gdouble lat, lon;
+	db_poi_get (sql_query, handle_poi_view_cb);
 
-      if (mydebug > 20)
-	fprintf (stderr, "Query Result: %s\t%s\t%s\t%s\n",
-		 row[0], row[1], row[2], row[3]);
+	poi_list_count = poi_nr;
 
-      lat = g_strtod (row[0], NULL);
-      lon = g_strtod (row[1], NULL);
-      calcxy (&poi_posx, &poi_posy, lon, lat, current.zoom);
-
-      if ((poi_posx > -50) && (poi_posx < (gui_status.mapview_x + 50)) &&
-	  (poi_posy > -50) && (poi_posy < (gui_status.mapview_y + 50)))
-	{
-	  // get next free mem for point
-	  poi_nr++;
-	  if (poi_nr > poi_limit)
-	    {
-	      poi_limit = poi_nr + 10000;
-	      if (mydebug > 20)
-		g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
-
-	      poi_list = g_renew (poi_struct, poi_list, poi_limit);
-	      if (NULL == poi_list)
-		{
-		  g_print ("Error: Cannot allocate Memory for %ld poi\n",
-			   poi_limit);
-		  poi_limit = -1;
-		  return;
-		}
-	    }
-
-	  // Save retrieved poi information into structure
-	  (poi_list + poi_nr)->lat = lat;
-	  (poi_list + poi_nr)->lon = lon;
-	  (poi_list + poi_nr)->x = poi_posx;
-	  (poi_list + poi_nr)->y = poi_posy;
-	  g_strlcpy ((poi_list + poi_nr)->name, row[2],
-		     sizeof ((poi_list + poi_nr)->name));
-	  (poi_list + poi_nr)->poi_type_id = (gint) g_strtod (row[3], NULL);
-	  if (mydebug > 20)
-	    {
-	      g_snprintf ((poi_list + poi_nr)->name,
-			  sizeof ((poi_list + poi_nr)->name), "%s %s"
-			  //"\n(%.4f ,%.4f)",
-			  //                  (poi_list + poi_nr)->poi_type_id,
-			  , row[2], row[4]
-			  // , lat, lon
-		);
-	      /*
-	       * `type_id` int(11) NOT NULL default \'0\',
-	       * `alt` double default \'0\',
-	       * `proximity` float default \'0\',
-	       * `comment` varchar(255) default NULL,
-	       * `scale_min` smallint(6) NOT NULL default \'0\',
-	       * `scale_max` smallint(6) NOT NULL default \'0\',
-	       * `last_modified` date NOT NULL default \'0000-00-00\',
-	       * `url` varchar(160) NULL ,
-	       * `address_id` int(11) default \'0\',
-	       * `source_id` int(11) NOT NULL default \'0\',
-	       */
-	    }
-
-	  /*
-	   * if ( mydebug > 20 ) 
-	   * printf ("DB: %f %f \t( x:%f, y:%f )\t%s\n",
-	   * (poi_list + poi_nr)->lat, (poi_list + poi_nr)->lon, 
-	   * (poi_list + poi_nr)->x, (poi_list + poi_nr)->y, 
-	   * (poi_list + poi_nr)->name
-	   * );
-	   */
-	}
-    }
-
-  poi_list_count = poi_nr;
-
-  // print time for getting Data
-  g_get_current_time (&t);
-  ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
-  if (mydebug > 20)
-    printf (_("%ld(%d) rows read in %.2f seconds\n"), poi_list_count,
-	    rges, (gdouble) ti);
+	// print time for getting Data
+	g_get_current_time (&t);
+	ti = (t.tv_sec + t.tv_usec / 1000000.0) - ti;
+	if (mydebug > 20)
+		g_printf (_("%ld(%d) rows read in %.2f seconds\n"),
+			poi_list_count, rges, (gdouble) ti);
 
 
-  /* remember where the data belongs to */
-  poi_lat_lr = lat_lr;
-  poi_lon_lr = lon_lr;
-  poi_lat_ul = lat_ul;
-  poi_lon_ul = lon_ul;
+	/* remember where the data belongs to */
+	poi_lat_lr = lat_lr;
+	poi_lon_lr = lon_lr;
+	poi_lat_ul = lat_ul;
+	poi_lon_ul = lon_ul;
 
-  if (!dl_mysql_eof (res))
-    {
-      fprintf (stderr, "poi_rebuild_list: Error in dl_mysql_eof: %s\n",
-	       dl_mysql_error (&mysql));
-      dl_mysql_free_result (res);
-      res = NULL;
-      return;
-    }
-
-  dl_mysql_free_result (res);
-  res = NULL;
-
-  if (mydebug > 20)
-    {
-      printf ("poi_rebuild_list: End \t\t\t\t\t\t");
-      printf ("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
-    }
+	if (mydebug > 20)
+		g_print ("poi_rebuild_list: End\n\n");
 }
 
 
@@ -1224,9 +893,9 @@ poi_draw_list (gboolean draw_now)
 {
   gint i;
   GdkPixbuf *icon;
-  int icon_index;
+  gint *icon_index;
 
-  if (!usesql)
+  if (!local_config.use_database)
     return;
 
   if (current.importactive)
@@ -1271,15 +940,22 @@ poi_draw_list (gboolean draw_now)
 
 	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
 
-	    icon_index = (poi_list + i)->poi_type_id;
-	    icon = poi_type_list[icon_index].icon;
+	    icon_index = g_hash_table_lookup (poi_types_hash, (poi_list + i)->poi_type);
+	    icon = poi_type_list[*icon_index].icon;
 
-	    if (icon != NULL && icon_index > 0)
+	    if (icon != NULL && *icon_index > 0)
 	      {
 		if (poi_list_count < 2000)
 		  {
 		    int wx = gdk_pixbuf_get_width (icon);
 		    int wy = gdk_pixbuf_get_height (icon);
+
+		    if (local_config.showfriends
+		        && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
+		    {
+		    	draw_posmarker (posx, posy, atoi ((poi_list + i)->comment),
+		    		&colors.lightorange, 4, FALSE, FALSE);
+		    }
 
 		    gdk_draw_pixbuf (drawable, kontext_map, icon,
 				     0, 0,
@@ -1302,11 +978,10 @@ poi_draw_list (gboolean draw_now)
 	      }
 	
 		/* draw friends label in configured color */
-		if (local_config.showfriends && poi_is_friend (icon_index))
+		if (local_config.showfriends
+		    && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
 		{
 			draw_label_friend (txt, posx, posy);
-			//draw_posmarker (posx, posy, 45,
-			//	&colors.blue, 1, FALSE, FALSE);
 		}
 		/* draw label only if we display less than 1000 POIs */
 		else if (poi_list_count < 1000)
@@ -1407,7 +1082,8 @@ poi_init (void)
 		G_TYPE_STRING,		/* formatted distance */
 		G_TYPE_DOUBLE,		/* numerical distance */
 		G_TYPE_DOUBLE,		/* numerical latitude */
-		G_TYPE_DOUBLE		/* numerical longitude */
+		G_TYPE_DOUBLE,		/* numerical longitude */
+		G_TYPE_INT		/* poi.source_id */
 		);
 	
 	/* init gtk-tree for storage of poi-type data */
@@ -1422,10 +1098,9 @@ poi_init (void)
 		G_TYPE_BOOLEAN		/* select */
 		);
 
-	/* read poi-type data and icons from icons.xml */
+	/* read poi-type data and icons from geoinfo.db */
 	get_poitype_tree ();
 
 	/* set poi filter according to config file */
 	init_poi_type_filter ();
-	update_poi_type_filter ();
 }

@@ -80,14 +80,10 @@ extern gint do_unit_test;
 extern gint debug;
 extern gint mydebug;
 extern color_struct colors;
-extern poi_type_struct poi_type_list[poi_type_list_max];
-extern int poi_type_list_count;
 extern GdkGC *kontext_map;
 
 GdkPixbuf *friendsimage = NULL;
 GdkPixbuf *friendspixbuf = NULL;
-GdkPixbuf *kismetimage = NULL;
-GdkPixbuf *kismetpixbuf = NULL;
 
 icons_buffer_struct icons_buffer[MAX_ICONS];
 gint icons_buffer_max = MAX_ICONS;
@@ -333,13 +329,6 @@ load_friends_icon (void)
 
 /* -----------------------------------------------------------------------------
 */
-void
-load_kismet_icon (void)
-{
-	kismetimage = read_icon ("kismet.png", 1);
-	kismetpixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
-	gdk_pixbuf_scale (kismetimage, kismetpixbuf, 0, 0, 39, 24, 0, 0, 1, 1, GDK_INTERP_BILINEAR);
-}
 
 /* ----------------------------------------------------------------------------- */
 /* warning: still modifies icon_name 

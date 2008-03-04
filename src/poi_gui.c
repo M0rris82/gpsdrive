@@ -277,7 +277,7 @@ delete_poi_cb (GtkTreeSelection *selection, gpointer data)
 				-1);
 			if (mydebug>20)
 				fprintf (stderr, "deleting poi with id: %d\n", selected_poi_id);
-			deletesqldata (selected_poi_id);
+			db_poi_delete (selected_poi_id);
 			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 		}
 	}
@@ -391,7 +391,7 @@ static void
 route_cancel_cb ()
 {
 	gtk_list_store_clear (route_list_tree);
-	cleanupsql_routedata ();
+	db_cleanup_route ();
 	close_route_window_cb ();
 	route.items = 0;
 	route.distance = 0.0;
@@ -431,23 +431,33 @@ poilist_highlight_cb
 	(GtkTreeViewColumn *tree_column, GtkCellRenderer *cell,
 	GtkTreeModel *tree_model, GtkTreeIter *iter, gpointer data)
 {
-	gchar *value;
+	gint t_src;
 
-	gtk_tree_model_get (tree_model, iter, RESULT_TYPE_NAME, &value, -1);
+	gtk_tree_model_get (tree_model, iter, RESULT_SOURCE, &t_src, -1);
 
-	/* show friendsd entries in red color */
-	if (g_str_has_prefix (value, "people.friendsd"))
+	/* show data coming from friendsd in red/yellow */
+	if (t_src == 7)
 	{	
 		g_object_set (G_OBJECT (cell),
 			"foreground-gdk", &colors.red, NULL);
+		g_object_set (G_OBJECT (cell),
+			"background-gdk", &colors.yellow, NULL);
+	}
+	/* show data coming from kismet in lightgrey/darkgrey */
+	else if (t_src == 9)
+	{	
+		g_object_set (G_OBJECT (cell),
+			"foreground-gdk", &colors.lightgrey, NULL);
+		g_object_set (G_OBJECT (cell),
+			"background-gdk", &colors.darkgrey, NULL);
 	}
 	else
 	{
 		g_object_set (G_OBJECT (cell),
 			"foreground-gdk", NULL, NULL);
+		g_object_set (G_OBJECT (cell),
+			"background-gdk", NULL, NULL);
 	}
-
-	g_free (value);
 }
 
 

@@ -58,19 +58,17 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 extern gint debug, mydebug;
-extern GtkWidget *destframe;
 extern gint speechcount;
 extern gchar oldangle[100];
 extern gint saytarget;
 extern wpstruct *wayp;
 extern gint maxwp, maxfriends;
 extern friendsstruct *friends, *fserver;
-extern int sortcolumn, sortflag;
+extern int sortcolumn;
 extern gint selected_wp_list_line;
 extern GtkWidget *mylist;
 extern gint onemousebutton;
 extern gint dontsetwp;
-extern gint usesql;
 extern poi_struct *poi_list;
 extern glong poi_list_count;
 extern gdouble milesconv;	
@@ -83,6 +81,7 @@ extern GtkWidget *frame_statusbar;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern GtkWidget *main_window;
 extern GtkWidget *menuitem_saveroute;
+GHashTable *poi_types_hash;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -159,8 +158,6 @@ sel_routecancel_cb (GtkWidget * widget, guint datum)
 
 	gtk_widget_destroy (GTK_WIDGET (routewindow));
 
-//	g_snprintf (str, sizeof (str), "%s: %s", _("To"), current.target);
-//	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	route.edit = FALSE;
 	route.active = FALSE;
 	route.pointer = route.items = 0;
@@ -284,7 +281,7 @@ insertwaypoints (gint mobile)
 
 	if (!mobile)
 	{
-		if (usesql)
+		if (local_config.use_database)
 		{
 			return;
 		}
@@ -619,9 +616,6 @@ route_next_target ()
 		  /* let's say the waypoint description */
 		  saytargettext (local_config.wp_file, current.target);
 		}
-//		  g_snprintf (str, sizeof (str),
-//		      "%s: %s", _("To"), current.target);
-//		  gtk_frame_set_label (GTK_FRAME (destframe), str);
 		  route.edit	= FALSE;
 		  route.active = FALSE;
 		  saytarget = FALSE;
@@ -650,13 +644,17 @@ void add_routepoint
 
 	gchar t_dist[15], t_trip[15];
 	gdouble last_lon, last_lat, t_dist_num;
-	gint t_ptid;
+	gint *t_ptid;
 	GdkPixbuf *t_icon;	
 	GtkTreeIter iter_route;
 	GtkTreePath *path_route;
 
-	t_ptid = poi_type_id_from_name (t_type);
-	t_icon = poi_type_list[t_ptid].icon;
+	/* get an icon for the routepoint. if an icon for the given poi_type
+	 * is not available, take the generic route icon */
+	t_ptid = g_hash_table_lookup (poi_types_hash, t_type);
+	if (t_ptid == NULL)
+		t_ptid = g_hash_table_lookup (poi_types_hash, "waypoint.routepoint");
+	t_icon = poi_type_list[*t_ptid].icon;
 
 	gtk_list_store_append (route_list_tree, &iter_route);
 
@@ -850,9 +848,6 @@ route_settarget (gint rt_ptr)
 	
 	//TODO: do speech output, if enabled
 /*	
-	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), targetname,
-		    route.pointer + 1, route.items);
-	gtk_frame_set_label (GTK_FRAME (destframe), str);
 	tn = g_strdelimit (targetname, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
 	if (tn[0] == '*')
@@ -946,7 +941,7 @@ draw_route (void)
 	i = (route.items + 5);
 	route_seg = g_new0 (GdkSegment, i);
 
-	if (usesql)
+	if (local_config.use_database)
 	{
 	/* poi mode */	
 		g_snprintf (t_routept, sizeof (t_routept), "%d",
@@ -1057,7 +1052,7 @@ update_route (void)
 	gdouble d;
 	
 	/* in waypoint mode call the old function */
-	if (!usesql)
+	if (!local_config.use_database)
 	{
 		route_next_target ();
 		return;
@@ -1105,7 +1100,7 @@ route_init (gchar *name, gchar *desc, gchar *src)
 		gtk_list_store_clear (route_list_tree);
 
 	/* remove old route data from database */
-	cleanupsql_routedata ();
+	db_cleanup_route ();
 
 	/* init gtk-list for storage of route data */
 	route_list_tree = gtk_list_store_new (ROUTE_COLUMS,

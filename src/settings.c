@@ -66,44 +66,27 @@ typedef struct
 }
 namesstruct;
 
-extern namesstruct *names;
+namesstruct *names;
 extern GtkWidget *addwaypointwindow;
-extern gchar gpsdservername[200];
 extern gint needreloadmapconfig;
-extern GtkWidget *mapdirbt, *addwaypoint1, *addwaypoint2,
-  *frame_speed, *frame_sats;
 extern gint isnight, disableisnight;
-extern gint nighttimer, iszoomed;
-extern gint newsatslevel;
-extern gint wpsize, satfix, usedgps, earthmate;
+extern gint iszoomed;
 extern GtkWidget *miles;
-extern gint gcount, downloadwindowactive;
-extern GtkWidget *status, *pixmapwidget, *gotowindow;
-extern GtkWidget *routewindow, *setupentry[50], *setupentrylabel[50];
+extern GtkWidget *status;
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
-static gdouble hour, sunrise, sunset;
-extern gchar utctime[20], loctime[20];
 extern gdouble milesconv;
-extern gint lastnotebook;
-extern GtkWidget *settingsnotebook, *slowcpubt;
-GtkWidget *ge12;
 gint zone;
 
 #define MAXDBNAME 30
 extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
 extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
-extern poi_type_struct poi_type_list[poi_type_list_max];
-extern int poi_type_list_count;
-extern double dbdistance;
-extern int dbusedist;
-GtkWidget *sqlfn[100], *ipbt;
-gint sqlselects[MAXPOITYPES], sqlandmode = TRUE;
+GtkWidget *ipbt;
+gint sqlandmode = TRUE;
 extern GdkColormap *cmap;
 
 extern GtkTooltips *main_tooltips;
 extern GtkWidget *wp_draw_bt;
-extern gint usesql;
 extern gint storetz;
 static gboolean friendsiplock = FALSE;
 static gboolean friendsnamelock = FALSE;
@@ -113,7 +96,6 @@ extern color_struct colors;
 extern currentstatus_struct current;
 extern GtkTreeStore *poi_types_tree;
 int showsid = TRUE;
-extern int expedia_de;
 extern GtkWidget *frame_statusbar;
 GtkWidget *menuitem_sendmsg;
 extern gchar *espeak_voices[];
@@ -2318,7 +2300,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 
 	/* fill the tabs with the necessary dialogs */
 	settings_general (settings_nb);
-	if (usesql)
+	if (local_config.use_database)
 		settings_poi (settings_nb);
 	else
 		settings_wp (settings_nb);
@@ -2331,8 +2313,6 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	//settings_nautic (settings_nb);
 
 	gtk_widget_show_all (settings_window);
-	gtk_notebook_set_current_page
-		(GTK_NOTEBOOK (settings_nb), lastnotebook);
 
 	return TRUE;
 }
@@ -2352,6 +2332,10 @@ settings_main_cb (GtkWidget *widget, guint datum)
 
 /* *****************************************************************************
  */
+
+static gdouble hour, sunrise, sunset;
+GtkWidget *ge12;
+
 void
 testifnight (void)
 {

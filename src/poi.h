@@ -39,14 +39,11 @@ typedef struct
   gdouble lat;
   gdouble alt;
   gchar   name[80];
-  gint    poi_type_id; 
-  gdouble proximity;
+  gchar   poi_type[160];
+  gint    poi_type_id;
   gchar   comment[255]; 
-  gint    scale_min;  
-  gint    scale_max;  
-  //date  last_modified  
-  gchar   url[160]; 
-  gint    address_id;
+  gchar   last_modified[11];
+  gboolean private_flag;
   gint    source_id;
   gdouble    x;    // x position on screen
   gdouble    y;    // y position on screen
@@ -60,7 +57,6 @@ void draw_label (char *txt, gdouble posx, gdouble posy);
 void draw_label_friend (char *txt, gdouble posx, gdouble posy);
 void poi_init (void);
 void poi_rebuild_list (void);
-gint poi_type_id_from_name (gchar *name);
 void poi_draw_list (gboolean draw_now);
 gint poi_draw_cb (GtkWidget * widget, guint datum);
 void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
@@ -72,7 +68,7 @@ void init_poi_type_filter(void);
 
 typedef struct
 {
-  guint poi_type_id;
+  guint id;
   gchar name[POI_TYPE_LIST_STRING_LENGTH];
   gchar icon_name[POI_TYPE_LIST_STRING_LENGTH];
   GdkPixbuf *icon;
@@ -95,6 +91,7 @@ enum {
 	RESULT_DIST_NUM,
 	RESULT_LAT,
 	RESULT_LON,
+	RESULT_SOURCE,
 	RES_COLUMS
 };
 
