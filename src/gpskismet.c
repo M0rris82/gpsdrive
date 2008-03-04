@@ -49,9 +49,6 @@ reads info from kismet server and insert waypoints into database
 #include <time.h>
 #include <errno.h>
 
-#define MAXDBNAME 30
-extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char wlantable[MAXDBNAME], dbname[MAXDBNAME];
 extern int mydebug, debug;
 extern currentstatus_struct current;
 

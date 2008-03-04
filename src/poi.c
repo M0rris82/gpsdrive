@@ -79,9 +79,6 @@ extern GdkGC *kontext;
 char txt[5000];
 PangoLayout *poi_label_layout;
 
-#define MAXDBNAME 30
-extern char poitypetable[MAXDBNAME];
-
 // keep actual visible POIs in Memory
 poi_struct *poi_list;
 

@@ -50,9 +50,6 @@ extern map_dir_struct *display_map;
 
 GtkWidget *splash_window;
 extern gint mydebug;
-#define MAXDBNAME 30
-extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern int sockfd, showsid, storetz;
 
 extern coordinate_struct coords;

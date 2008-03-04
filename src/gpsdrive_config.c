@@ -55,9 +55,6 @@ extern gint setdefaultpos;
 extern gint usedgps;
 extern gdouble milesconv;
 extern gint satposmode, printoutsats;
-#define MAXDBNAME 30
-extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate, zone;
@@ -164,6 +161,9 @@ writeconfig ()
 	fprintf (fp, "waypointfile = ");
 	fprintf (fp, "%s\n", local_config.wp_file);
 
+	fprintf (fp, "geoinfofile = ");
+	fprintf (fp, "%s\n", local_config.geoinfo_file);
+
 	fprintf (fp, "usedgps = ");
 	if (usedgps == 0)
 		fprintf (fp, "0\n");
@@ -208,11 +208,6 @@ writeconfig ()
 
 	fprintf (fp, "use_database = ");
 	fprintf (fp, "%d\n", local_config.use_database);
-	fprintf (fp, "dbhostname = %s\n", dbhost);
-	fprintf (fp, "dbname = %s\n", dbname);
-	fprintf (fp, "dbuser = %s\n", dbuser);
-	fprintf (fp, "dbpass = %s\n", dbpass);
-	fprintf (fp, "dbtable = %s\n", dbtable);
 	fprintf (fp, "dbdistance = %.1f\n", dbdistance);
 	fprintf (fp, "dbusedist = %d\n", dbusedist);
 	fprintf (fp, "earthmate = %d\n", earthmate);
@@ -367,6 +362,9 @@ readconfig ()
 			else if ( (strcmp(par1, "waypointfile")) == 0)
 				g_strlcpy (local_config.wp_file, par2,
 					sizeof (local_config.wp_file));
+			else if ( (strcmp(par1, "geoinfofile")) == 0)
+				g_strlcpy (local_config.geoinfo_file, par2,
+					sizeof (local_config.geoinfo_file));
 			else if ( (strcmp(par1, "usedgps")) == 0)
 				usedgps = atoi (par2);
 			else if ( (strcmp(par1, "mapdir")) == 0)
@@ -396,33 +394,12 @@ readconfig ()
 				local_config.maxcpuload = atoi (par2);
 			else if ( (strcmp(par1, "use_database")) == 0)
 				local_config.use_database = atoi (par2);
-			else if ( (strcmp(par1, "dbhostname")) == 0)
-			{
-				g_strlcpy (dbhost, par2, sizeof (dbhost));
-				g_strstrip (dbhost);
-			}
-			else if ( (strcmp(par1, "dbname")) == 0)
-				g_strlcpy (dbname, par2, sizeof (dbname));
-			else if ( (strcmp(par1, "dbuser")) == 0)
-				g_strlcpy (dbuser, par2, sizeof (dbuser));
-			else if ( (strcmp(par1, "dbpass")) == 0)
-				g_strlcpy (dbpass, par2, sizeof (dbpass));
-			else if ( (strcmp(par1, "dbtable")) == 0)
-			{
-				if ( (strcmp(par2, "waypoints")) == 0)
-					g_strlcpy (dbtable, "poi", sizeof (dbtable));
-				else
-					g_strlcpy (dbtable, par2, sizeof (dbtable));
-			}
-			else if ( (strcmp(par1, "dbname")) == 0)
-				g_strlcpy (dbname, par2, sizeof (dbname));
 			else if ( (strcmp(par1, "dbdistance")) == 0)
 				dbdistance = g_strtod (par2, 0);
 			else if ( (strcmp(par1, "dbusedist")) == 0)
 				dbusedist = atoi (par2);
 			else if ( (strcmp(par1, "earthmate")) == 0)
 				earthmate = atoi (par2);
-
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
 				g_strlcpy (local_config.font_dashboard, par2,
 				sizeof (local_config.font_dashboard));
@@ -594,6 +571,8 @@ config_init ()
 	local_config.poi_searchradius = 10.0;
 	g_strlcpy (local_config.icon_theme,
 		"square.big", sizeof (local_config.icon_theme));
+	g_snprintf (local_config.geoinfo_file, sizeof (local_config.geoinfo_file),
+		"%s%s", DATADIR, "/gpsdrive/geoinfo.db");
 	
 	/* set friends stuff */
 	local_config.friends_maxsecs = 1209600;

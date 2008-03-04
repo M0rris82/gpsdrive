@@ -323,9 +323,6 @@ gint ignorechecksum = FALSE;
 /* Give more debug informations */
 gint mydebug = 0;
 
-char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-char dbtable[MAXDBNAME], dbname[MAXDBNAME],wlantable[MAXDBNAME];
-char poitypetable[MAXDBNAME];
 char wp_typelist[MAXPOITYPES][50];
 double dbdistance;
 gint dbusedist = FALSE;
@@ -2931,13 +2928,6 @@ main (int argc, char *argv[])
     downloadwindowactive = downloadactive = current.importactive = FALSE;
     g_strlcpy (lastradar, "", sizeof (lastradar));
     g_strlcpy (lastradar2, "", sizeof (lastradar2));
-    g_strlcpy (dbhost, "localhost", sizeof (dbhost));
-    g_strlcpy (dbuser, "gast", sizeof (dbuser));
-    g_strlcpy (dbpass, "gast", sizeof (dbpass));
-    g_strlcpy (dbname, "geoinfo", sizeof (dbname));
-    g_strlcpy (dbtable, "poi", sizeof (dbtable));
-    g_strlcpy (wlantable, "wlan", sizeof (wlantable));
-	g_strlcpy (poitypetable, "poi_type", sizeof (poitypetable));
     dbdistance = 2000.0;
     dbusedist = TRUE;
     g_strlcpy (loctime, "n/a", sizeof (loctime));

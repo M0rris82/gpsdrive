@@ -150,8 +150,7 @@ db_sqlite_init (void)
 	gint t_status = 0;
 
 	/* open geoinfo.db */
-	g_snprintf (t_buf, sizeof (t_buf), "%s/gpsdrive/geoinfo.db", DATADIR);
-	t_status = sqlite3_open(t_buf, &geoinfo_db);
+	t_status = sqlite3_open(local_config.geoinfo_file, &geoinfo_db);
 	if (t_status != SQLITE_OK)
 	{
 		g_printf ("DB: Error while opening %s: %s\n",

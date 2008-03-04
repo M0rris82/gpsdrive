@@ -78,9 +78,6 @@ extern GtkWidget *frame_statusfriends;
 extern gdouble milesconv;
 gint zone;
 
-#define MAXDBNAME 30
-extern char dbhost[MAXDBNAME], dbuser[MAXDBNAME], dbpass[MAXDBNAME];
-extern char dbtable[MAXDBNAME], dbname[MAXDBNAME];
 GtkWidget *ipbt;
 gint sqlandmode = TRUE;
 extern GdkColormap *cmap;
