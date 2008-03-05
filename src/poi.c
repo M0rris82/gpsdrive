@@ -510,7 +510,7 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 	if (mydebug > 30)
 	{
 		fprintf (stderr,
-			"poitypetree_addrow:added %d - %d - %s\n",
+			"poitypetree_addrow: added %d - %s\n",
 			i, poi_type_list[i].name);
 	}
 
@@ -1009,9 +1009,9 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
 	  ((poi_list + i)->lat <= lat2) &&
 	  (lon1 <= (poi_list + i)->lon) && ((poi_list + i)->lon <= lon2))
 	{
-	  printf ("Query POI: %d: %f %f :%s\n",
+	  printf ("Query POI: %d - %f %f : %s [%s]\n",
 		  i, (poi_list + i)->lat, (poi_list + i)->lon,
-		  (poi_list + i)->name);
+		  (poi_list + i)->name, (poi_list + i)->poi_type);
 	}
     }
 }
