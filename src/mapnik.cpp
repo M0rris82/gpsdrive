@@ -23,6 +23,7 @@
 #include <mapnik/memory_datasource.hpp>
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
+#include <mapnik/config_error.hpp>
 #include <fstream>
 
 #include "mapnik.h"
@@ -36,6 +37,7 @@ using mapnik::coord2d;
 using mapnik::feature_ptr;
 using mapnik::geometry_ptr;
 using mapnik::CoordTransform;
+using mapnik::config_error;
 
 extern int mydebug;
 extern int borderlimit;
@@ -117,7 +119,7 @@ void init_mapnik (char *ConfigXML) {
    
     datasource_cache::instance()->register_datasources("/usr/lib/mapnik/input/");
     // XXX We should make the fontname and path a config option
-    freetype_engine::instance()->register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
+    freetype_engine::register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
     
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
@@ -126,10 +128,16 @@ void init_mapnik (char *ConfigXML) {
     MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
     
     //load map
-    std::string mapnik_config_file (ConfigXML);
-    mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
-    MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
-    MapnikInitYsn = -1;
+    try {
+        std::string mapnik_config_file (ConfigXML);
+        mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+        MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
+        MapnikInitYsn = -1;
+    }
+    catch(const mapnik::config_error &ex) {
+            cerr << "Cannot init mapnik. Mapnik support DISABLED: " << ex.what() << "\n" << endl;
+            MapnikInitYsn = 0;
+    }
 }
 
 /*
