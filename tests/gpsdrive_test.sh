@@ -51,7 +51,8 @@ mkdir -p logs
 
 
 # ------------------------------------------------------------------ geoinfo
-(
+# No longer needed with the mysqllite files
+if false ; then (
     if [ -z "$DBUSER" -o -z "$DBPASS" ] ; then
 	echo "!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!! no creation test for Database"
     else
@@ -68,7 +69,7 @@ mkdir -p logs
 	fi
     fi
 ) || exit 1
-
+fi
 
 # ------------------------------------------------------------------ GpsDrive
 # Test Gpsdrive -T with different Setup
@@ -116,11 +117,12 @@ for LANG in en_US de_DE ; do
 		fi
 		if grep -v \
 		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET (widget). failed' \
+		    -e 'Error: Could not find provider PostgreSQL in the current setup' \
 		    -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
-		    grep -i -e 'Failed' -e 'ERROR'
+		    grep -i -e 'Failed' -e 'ERROR' -e 'CRITICAL'
 		    then
-		    grep -i -B 3  -e 'Failed' -e 'ERROR'  logs/gpsdrive_test_$LANG.txt
-		    echo "Found (Error/Failed) in gpsdrive -T output ( LANG=$LANG icon_theme=$ICON_THEME Userinterface=$USER_INTERFACE)"
+		    grep -i -B 3  -e 'Failed' -e 'ERROR'  -e 'CRITICAL' logs/gpsdrive_test_$LANG.txt
+		    echo "Found (Error/Failed/CRITICAL) in 'gpsdrive -T output ( LANG=$LANG icon_theme=$ICON_THEME Userinterface=$USER_INTERFACE)'"
 		    exit 1;
 		fi
 
