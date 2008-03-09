@@ -16,6 +16,7 @@ if (WITH_SCRIPTS)
     gpsreplay
     gpssmswatch
     gpsfetchmap.pl
+    gpsdrive-update-mapnik-poitypes.pl
     geoinfo.pl
     gpsd_nmea.sh
     nasaconv.sh
