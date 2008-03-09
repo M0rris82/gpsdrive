@@ -117,7 +117,7 @@ void init_mapnik (char *ConfigXML) {
 	// register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
    
-    datasource_cache::instance()->register_datasources("/usr/lib/mapnik/input/");
+    datasource_cache::instance()->register_datasources("/usr/lib/mapnik/0.5/input/");
     // XXX We should make the fontname and path a config option
     freetype_engine::register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
     
@@ -161,8 +161,16 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
     // This location has to be adapted in the future
     // for now it should work if gpsdrive is installed in the standard location   
     string mapnik_config_file("./scripts/mapnik/osm-template.xml");
+    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
 	mapnik_config_file.assign("../scripts/mapnik/osm-template.xml");
+    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
+    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
+	mapnik_config_file.assign("scripts/mapnik/osm-template.xml");
+    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
+    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
+	mapnik_config_file.assign("build/scripts/mapnik/osm-template.xml");
+    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
     if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
 	mapnik_config_file.assign(DATADIR).append("/gpsdrive/osm-template.xml");
     if (mydebug > 0) cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
