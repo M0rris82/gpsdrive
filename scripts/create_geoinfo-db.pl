@@ -121,7 +121,7 @@ sub fill_default_poi_types {
       my ($twig, $poi_elm) = @_;
       if ($poi_elm->first_child('condition')->att('k') eq 'poi')
       {
-        my $name = $poi_elm->first_child('geoinfo')->first_child('name')->text;
+        my $name = $poi_elm->first_child('condition')->att('v');
         my $scale_min = $poi_elm->first_child('scale_min')->text;
         my $scale_max = $poi_elm->first_child('scale_max')->text;
         $title = $title_en unless ($title);
