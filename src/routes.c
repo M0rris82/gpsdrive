@@ -70,7 +70,6 @@ extern GtkWidget *mylist;
 extern gint onemousebutton;
 extern gint dontsetwp;
 extern poi_struct *poi_list;
-extern glong poi_list_count;
 extern gdouble milesconv;	
 extern color_struct colors;
 extern coordinate_struct coords;

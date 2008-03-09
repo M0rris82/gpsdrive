@@ -114,19 +114,19 @@ string ReplaceString(const string &SearchString, const string &ReplaceString, st
 extern "C"
 void init_mapnik (char *ConfigXML) {
 
-	// register datasources (plug-ins) and a font
+    // register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
-   
+
     datasource_cache::instance()->register_datasources("/usr/lib/mapnik/0.5/input/");
     // XXX We should make the fontname and path a config option
     freetype_engine::register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
-    
+
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
     MapnikMap.BorderlimitInt = borderlimit;
     MapnikMap.ScaleInt = -1; // <-- force creation of map if a map is set
     MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
-    
+
     //load map
     try {
         std::string mapnik_config_file (ConfigXML);
@@ -474,6 +474,21 @@ void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDb
 	 *pXDbl = (64 + X * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
 	 *pYDbl = (51 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
 
+}
+
+/*
+ * wrapper function for gpsdrive
+ */
+extern "C"
+void get_mapnik_coords(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl) {
+	double X = pLonDbl;
+	double Y = pLatDbl;
+
+	// convert lat/lon coords to mercator projection used in postgis
+	Proj.forward(X, Y);
+
+	*pXDbl = X;
+	*pYDbl = Y;
 }
 
 
