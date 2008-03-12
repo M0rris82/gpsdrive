@@ -52,20 +52,28 @@ sub Symbolizer {
     my( $t, $rule)= @_;      # arguments for all twig_handlers
     my $file = $rule->att('file');
 #    $rule->{'att'}->{'file'} =~ s,/home/steve/symbols,\@ICON_INSTALL_DIR\@/classic.small,;
+    if ( ! $file ) {
+#	print Dumper(\$rule);
+	return;
+    }
+    $file =~ s,c:/mapnik/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,;   
     $file =~ s,/home/steve/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,;   
     my $png=$1;
     if ( $png ) {
 	my $search = $png;
 	# XXX: These are HACKS, please check if they are right
 	$search =~ s/station\.png/railway.png/;
+	$search =~ s/pint\.png/pub.png/;
 #	$search =~ s/station_small.png/railway_small.png/;
 	$search =~ s/bus_stop.png/bus.png/;
 	$search =~ s/place_of_worship.png/church.png/;
 #	$search =~ s/mini_round.png/roundabout_left.png/;
 	$search =~ s/grave_yard.png/cemetery.png/;
 #	print `find ../../data/map-icons/classic.small/ -name $search`;
-	my $png_path=`find ../../data/map-icons/classic.small/ -name $search | grep -v incomming | head -1`;
+	my $png_path=`find ~/svn.openstreetmap.org/applications/share/map-icons/classic.small/ -name $search | grep -v incomming | head -1`;
 	chomp $png_path;
+	$png_path="$ENV{HOME}/svn.openstreetmap.org/applications/share/map-icons/classic.small/misc/landmark/power/tower.png"
+	    if ( $search =~ m,power_tower, );
 	if ( -s $png_path ) {
 	    my ($h,$w) = get_png_size($png_path);
 	    $png_path =~ s,.*/classic.small/,classic.small/,;
