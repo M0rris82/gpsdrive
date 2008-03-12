@@ -106,7 +106,6 @@ extern currentstatus_struct current;
 extern gint haveRMCsentence;
 extern gdouble NMEAsecs;
 extern gint NMEAoldsecs;
-extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 gchar nmeamodeandport[50];
 gint haveNMEA;

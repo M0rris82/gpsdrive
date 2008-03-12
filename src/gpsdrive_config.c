@@ -49,7 +49,7 @@ Disclaimer: Please do not use for navigation.
 extern gint max_display_map;
 extern map_dir_struct *display_map;
 
-extern gint displaymap_top, displaymap_map;
+extern gint displaymap_top;
 extern gint mydebug;
 extern gint setdefaultpos;
 extern gint usedgps;
@@ -109,12 +109,6 @@ writeconfig ()
 
 	fprintf (fp, "showtopomaps = ");
 	if (displaymap_top)
-		fprintf (fp, "1\n");
-	else
-		fprintf (fp, "0\n");
-
-	fprintf (fp, "showstreetmaps = ");
-	if (displaymap_map)
 		fprintf (fp, "1\n");
 	else
 		fprintf (fp, "0\n");
@@ -309,8 +303,6 @@ readconfig ()
 				local_config.mute = atoi (par2);
 			else if ( (strcmp(par1, "showtopomaps")) == 0)
 				displaymap_top = atoi (par2);
-			else if ( (strcmp(par1, "showstreetmaps")) == 0)
-				displaymap_map = atoi (par2);
 			/*  To set the right sensitive flags bestmap_cb is called later */
 			else if ( (strcmp(par1, "autobestmap")) == 0)
 				local_config.autobestmap = atoi (par2);

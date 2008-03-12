@@ -51,7 +51,7 @@ extern glong mapscale;
 extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
 
 extern gint thisrouteline;
-extern GtkWidget *bestmap_bt, *poi_draw_bt, *streets_draw_bt;
+extern GtkWidget *bestmap_bt, *poi_draw_bt;
 extern coordinate_struct coords;
 
 extern GdkPixbuf *image, *tempimage;

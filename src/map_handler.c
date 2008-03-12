@@ -106,7 +106,6 @@ GtkWidget *maptogglebt, *topotogglebt;
 gint max_display_map = 0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
-gint displaymap_map = TRUE;
 
 /* *****************************************************************************
  */
