@@ -365,9 +365,6 @@ int storetz = FALSE;
 int egnoson = 0, egnosoff = 0;
 
 // ---------------------- for nmea_handler.c
-extern gint haveRMCsentence;
-extern gdouble NMEAsecs;
-extern gint NMEAoldsecs;
 extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 extern gint haveNMEA;
@@ -1570,6 +1567,25 @@ drawmarker (GtkWidget * widget, guint * datum)
 	/* force to say new direction */
 	if (!strcmp (oldangle, "XXX"))
 		speech_out_cb (NULL, 0);
+
+	/* experimental output of current street data */
+#ifdef MAPNIK
+	if (mydebug == 1)
+	{
+		street_struct t_street;
+		gchar t_buf[500];
+		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street))
+		{
+			g_snprintf (t_buf, sizeof (t_buf), "(%s) %s [%s]",
+				t_street.ref, t_street.name, t_street.type);
+		}
+		else
+		{
+			g_strlcpy (t_buf, "--- street name not available ---", sizeof (t_buf));
+		}
+		draw_infotext (t_buf);
+	}
+#endif
 
 	return (TRUE);
 }
@@ -3172,13 +3188,15 @@ main (int argc, char *argv[])
 	{
 		gtk_timeout_add (15000, (GtkFunction) poi_rebuild_list, 0);
 	}
-    if ( battery_get_values () )
+    if (local_config.guimode != GUI_PDA)
+    {
+        if ( battery_get_values () )
 	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
 			 NULL);
-
     if ( temperature_get_values () )
 	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
 			 NULL);
+    }
 
     gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 

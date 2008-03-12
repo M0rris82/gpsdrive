@@ -29,7 +29,7 @@ void get_mapnik_calcxytopos(double *pLatDbl, double *pLonDbl, int pX, int pY, in
 void get_mapnik_calcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int);
 void get_mapnik_minixy2latlon(int pXInt, int pYInt, double *pLatDbl, double *pLonDbl);
 void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pZoom);
-void get_mapnik_coords(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl);
+void convert_mapnik_coords(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl, int mode);
 
 #endif // _MAPNIK_DEF_H
 #endif // MAPNIK

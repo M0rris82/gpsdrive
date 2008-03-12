@@ -240,7 +240,6 @@ gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 gint pos_cb (GtkWidget * widget, guint datum);
 gint toggle_mapnik_cb (GtkWidget * widget, guint datum);
-gint streets_draw_cb (GtkWidget * widget, guint datum);
 
 // TODO: Some of these should be moved, once all the gui stuff is finally moved
 GtkWidget *find_poi_bt;
@@ -291,6 +290,15 @@ typedef struct
 	gboolean forcenext;
 }
 routestatus_struct;
+
+/* struct to hold streets data */
+typedef struct
+{
+  gchar name[255];
+  gchar ref[50];
+  gchar type[160];
+}
+street_struct;
 
 /* struct for all coordinates that have to be used globally */
 typedef struct

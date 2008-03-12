@@ -45,6 +45,7 @@ Disclaimer: Please do not use for navigation.
 #include "icons.h"
 #include <gpsdrive_config.h>
 #include "gui.h"
+#include "database.h"
 
 #include "gettext.h"
 #include <libxml/xmlreader.h>
@@ -88,7 +89,6 @@ GtkListStore *poi_result_tree;
 
 glong poi_nr;			// current number of poi to count
 glong poi_list_count;		// max index of POIs actually in memory
-guint poi_result_count;		// max index of POIs found in POI search
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
 
 gchar poi_label_font[100];
@@ -99,6 +99,7 @@ PangoLayout *poi_label_layout;
 poi_type_struct poi_type_list[poi_type_list_max];
 int poi_type_list_count = 0;
 GtkTreeStore *poi_types_tree;
+GtkTreeModel *poi_types_tree_filtered;
 GHashTable *poi_types_hash;
 
 gdouble poi_lat_lr = 0, poi_lon_lr = 0;
@@ -111,7 +112,18 @@ void poi_rebuild_list (void);
 void get_poitype_tree (void);
 
 
-
+/* ******************************************************************
+ * filter function for filtering poi_type views
+ */
+static gboolean
+treefilterfunc_cb  (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
+{
+	gint t_id;
+	gtk_tree_model_get (model, iter, POITYPE_ID, &t_id, -1);
+	if (t_id == -1)
+		return FALSE;
+	return TRUE;
+}
 
 
 /* ******************************************************************
@@ -170,6 +182,8 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 			sizeof ((poi_result + poi_nr)->poi_type));
 
 	t_id = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
+	if (t_id == NULL)
+		t_id = g_hash_table_lookup (poi_types_hash, "unknown");
 
 	(poi_result + poi_nr)->lon = g_strtod (values[4], NULL);
 	t_lon = g_strtod (values[4], NULL);
@@ -178,6 +192,99 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 	t_lat = g_strtod (values[5], NULL);
 
 	(poi_result + poi_nr)->source_id = g_strtod (values[6], NULL);
+
+	t_dist_num = calcdist (t_lon, t_lat);
+	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
+
+	gtk_list_store_append (poi_result_tree, &iter);
+	gtk_list_store_set (poi_result_tree, &iter,
+		RESULT_ID, (poi_result + poi_nr)->poi_id,
+		RESULT_NAME, (poi_result + poi_nr)->name,
+		RESULT_COMMENT,  (poi_result + poi_nr)->comment,
+		RESULT_TYPE_TITLE, poi_type_list[*t_id].title,
+		RESULT_TYPE_NAME, (poi_result + poi_nr)->poi_type,
+		RESULT_TYPE_ICON, poi_type_list [*t_id].icon,
+		RESULT_DISTANCE, t_dist,
+		RESULT_DIST_NUM, t_dist_num,
+		RESULT_LAT, t_lat,
+		RESULT_LON, t_lon,
+		RESULT_SOURCE, (poi_result + poi_nr)->source_id,
+		-1);
+
+	return 0;
+}
+
+
+/* ******************************************************************
+ * db callback for reading searched points of interest in
+ * poi lookup window from the mapnik/postgis database
+ */
+gint
+handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geometry, const gchar *id)
+{
+	gchar **t_coords;
+	gdouble x, y, t_lat, t_lon;
+	glong t_osmid = 0;
+	gdouble t_dist_num;
+	gchar t_dist[15];
+	gint *t_id;
+	GtkTreeIter iter;
+
+	if (g_str_has_prefix (geometry, "POINT(") == FALSE)
+		return -1;
+
+	t_coords = g_strsplit ((geometry + 6), " ", 2);
+	x = g_strtod (t_coords[0], NULL);
+	y = g_strtod (t_coords[1], NULL);
+#ifdef MAPNIK
+	convert_mapnik_coords(&t_lon, &t_lat, x, y, 1);
+#endif
+	if (id)
+		t_osmid = atol (id);
+
+	if (mydebug > 40)
+	{
+		g_printf ("handle_osm_poi_search_cb: %d - %s [%s] - %.6f / %.6f\n",
+			t_osmid, name, type, t_lat, t_lon);
+	}
+
+	// get next free mem for point
+	poi_nr++;
+	if (poi_nr > poi_limit)
+	{
+		poi_limit = poi_nr + 10000;
+		if (mydebug > 20)
+			g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
+		poi_result = g_renew (poi_struct, poi_result, poi_limit);
+		if (NULL == poi_result)
+		{
+			g_print ("Error: Cannot allocate Memory for %ld poi\n", poi_limit);
+			poi_limit = -1;
+			return -1;
+		}
+	}
+
+	// Save retrieved poi information into structure
+	(poi_result + poi_nr)->poi_id = t_osmid;
+
+	g_strlcpy ((poi_result + poi_nr)->name, name,
+		sizeof ((poi_result + poi_nr)->name));
+
+	g_strlcpy ((poi_result + poi_nr)->comment, "",
+		sizeof ((poi_result + poi_nr)->comment));		
+
+	g_strlcpy ((poi_result + poi_nr)->poi_type, type,
+			sizeof ((poi_result + poi_nr)->poi_type));
+
+	t_id = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
+	if (t_id == NULL)
+		t_id = g_hash_table_lookup (poi_types_hash, "unknown");
+
+	(poi_result + poi_nr)->lon = t_lon;
+
+	(poi_result + poi_nr)->lat = t_lat;
+
+	(poi_result + poi_nr)->source_id = 10;
 
 	t_dist_num = calcdist (t_lon, t_lat);
 	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
@@ -262,12 +369,13 @@ update_poi_type_filter ()
  * into the POI-Lookup window
  */
 guint
-poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gint typeflag, const gchar *type)
+poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, const gchar *type)
 {
 	gdouble lat, lon, dist;
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 	gdouble dist_lat, dist_lon;
+	guint poi_result_count;
 
 	char sql_query[20000];
 	char type_filter[3000];
@@ -327,41 +435,53 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	if (lat_max > 90.0) lat_max = 90.0;
 	
 	/* choose poi_types to search */
-	if (typeflag)
+	if (strcmp (type, "__NO_FILTER__"))
 	{
 		g_snprintf (type_filter, sizeof (type_filter),
-			"AND (poi_type LIKE \'%s%%\')",type);
+			" LIKE \'%s%%\'",type);
 	}
 	else
 	{
-		g_snprintf (type_filter, sizeof (type_filter), " ");
+		g_snprintf (type_filter, sizeof (type_filter),
+			"!=''");
 	}
 
 	/* prepare search text for database query */
 	temp_text = escape_sql_string (text);
 	g_strdelimit (temp_text, "*", '%');
-		
+
+	poi_nr = 0;
+
+	/* query sqlite db */
 	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
 		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
 		" AND %.6f ) AND (name LIKE '%%%s%%' OR comment LIKE"
-		" '%%%s%%') %s ORDER BY"
+		" '%%%s%%') AND (poi_type%s) ORDER BY"
 		" (poi.lat-(%.6f))*(poi.lat-(%.6f))+(poi.lon-(%.6f))*(poi.lon-(%.6f)) LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
 		type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+	db_poi_get (sql_query, handle_poi_search_cb, DB_WP_USER);
 
-	if (mydebug > 20)
-		printf ("poi_get_results: POI sql query: %s\n", sql_query);
+	/* query postgis db */
+#ifdef MAPNIK
+	gdouble x, y;
+	convert_mapnik_coords(&x, &y, lon, lat, 0);
+	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT name,poi,ASTEXT(way),osm_id FROM planet_osm_point"
+		" WHERE ST_DWithin(SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
+		" AND name LIKE '%%%s%%' AND poi%s LIMIT %d;",
+		x, y, dist*1000, temp_text,
+		type_filter, local_config.poi_results_max);
+	db_poi_get (sql_query, handle_osm_poi_search_cb, DB_WP_OSM);
+#endif
 
-	g_free (temp_text);
-
-	poi_nr = 0;
-	db_poi_get (sql_query, handle_poi_search_cb);
 	poi_result_count = poi_nr;
 
 	if (mydebug > 20)
 		printf (_("%ldrows read\n"), poi_list_count);
 
+	g_free (temp_text);
 	return poi_result_count;
 }
 
@@ -381,6 +501,9 @@ draw_label (char *txt, gdouble posx, gdouble posy)
 	printf ("draw_label: drawing of label is disabled\n");
       return;
     }
+
+  if (strlen (txt) == 0)
+      return;
 
   if (mydebug > 30)
     fprintf (stderr, "draw_label(%s,%g,%g)\n", txt, posx, posy);
@@ -575,6 +698,7 @@ create_poitype_tree (guint max_level)
 {
 	guint i = 0;
 	guint j = 0;
+	GtkTreeIter iter;
 
 	if (mydebug > 20)
 		fprintf (stderr, "create_poitype_tree:\n");
@@ -583,6 +707,19 @@ create_poitype_tree (guint max_level)
 	if (poi_types_hash)
 		g_hash_table_destroy (poi_types_hash);
 	poi_types_hash = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* insert "no filter" entry into tree (used for poi lookup) */
+	gtk_tree_store_append (poi_types_tree, &iter, NULL);
+ 	gtk_tree_store_set (poi_types_tree, &iter,
+		POITYPE_ID, -1,
+		POITYPE_NAME, "__NO_FILTER__",
+		POITYPE_ICON, NULL,
+		POITYPE_SCALE_MIN, -1,
+		POITYPE_SCALE_MAX, -1,
+		POITYPE_DESCRIPTION, NULL,
+		POITYPE_TITLE, _("all types"),
+		POITYPE_SELECT, FALSE,
+		-1);
 
 	/* insert base categories into tree */
 	for (i = 0; i < poi_type_list_max; i++)
@@ -783,6 +920,73 @@ handle_poi_view_cb (gchar *result, gint columns, gchar **values, gchar **names)
 }
 
 
+/* ******************************************************************
+ * db callback for reading currently visible points of interest
+ * from openstreetmap data
+ */
+gint
+handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geometry)
+{
+	gchar **t_coords;
+	gdouble x, y, t_lat, t_lon;
+	gchar t_buf[100];
+	gint poi_posx, poi_posy;
+
+	if (g_str_has_prefix (geometry, "POINT(") == FALSE)
+		return -1;
+
+	t_coords = g_strsplit ((geometry + 6), " ", 2);
+	x = g_strtod (t_coords[0], NULL);
+	y = g_strtod (t_coords[1], NULL);
+#ifdef MAPNIK
+	convert_mapnik_coords (&t_lon, &t_lat, x, y, 1);
+#endif
+
+	if (mydebug > 40)
+	{
+		g_printf ("handle_osm_poi_view_cb: %s [%s] - %.6f / %.6f\n",
+			name, type, t_lat, t_lon);
+	}
+
+	calcxy (&poi_posx, &poi_posy, t_lon, t_lat, current.zoom);
+
+	if ((poi_posx > -50) && (poi_posx < (gui_status.mapview_x + 50)) &&
+	   (poi_posy > -50) && (poi_posy < (gui_status.mapview_y + 50)))
+	{
+		// get next free mem for point
+		poi_nr++;
+		if (poi_nr > poi_limit)
+		{
+			poi_limit = poi_nr + 10000;
+			if (mydebug > 20)
+				g_print ("Try to allocate Memory for %ld poi\n", poi_limit);
+			poi_list = g_renew (poi_struct, poi_list, poi_limit);
+			if (NULL == poi_list)
+			{
+				g_print ("Error: Cannot allocate Memory for %ld poi\n",
+				poi_limit);
+				poi_limit = -1;
+				return;
+			}
+		}
+
+		// Save retrieved poi information into structure
+		(poi_list + poi_nr)->lat = t_lat;
+		(poi_list + poi_nr)->lon = t_lon;
+		(poi_list + poi_nr)->x = poi_posx;
+		(poi_list + poi_nr)->y = poi_posy;
+		if (g_ascii_strcasecmp (name, "NULL") == 0)
+			g_strlcpy ((poi_list + poi_nr)->name, "", sizeof ((poi_list + poi_nr)->name));
+		else
+			g_strlcpy ((poi_list + poi_nr)->name, name, sizeof ((poi_list + poi_nr)->name));
+		g_strlcpy ((poi_list + poi_nr)->poi_type, type, sizeof ((poi_list + poi_nr)->poi_type));
+	}
+
+	g_strfreev (t_coords);
+	return 0;
+}
+
+
 /* *******************************************************
  * if zoom, xoff, yoff or map are changed 
  * TODO: call this only if the above mentioned events occur!
@@ -846,19 +1050,28 @@ poi_rebuild_list (void)
 	g_get_current_time (&t);
 	ti = t.tv_sec + t.tv_usec / 1000000.0;
 
+	rges = r = 0;
+	poi_nr = 0;
+
+	/* query sqlite db */
 	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT lat,lon,name,poi_type,comment FROM poi"
 		" WHERE (lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f )"
 		" AND poi_type IN (%s) LIMIT 20000;",
 		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+	db_poi_get (sql_query, handle_poi_view_cb, DB_WP_USER);
 
-	if (mydebug > 20)
-		g_printf ("poi_rebuild_list: POI sql query: %s\n", sql_query);
-
-	rges = r = 0;
-	poi_nr = 0;
-
-	db_poi_get (sql_query, handle_poi_view_cb);
+	/* query postgis db */
+#ifdef MAPNIK
+	gdouble x1, y1, x2, y2;
+	convert_mapnik_coords(&x1, &y1, lon_min, lat_min, 0);
+	convert_mapnik_coords(&x2, &y2, lon_max, lat_max, 0);
+	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT name,poi,ASTEXT(way) AS geometry FROM planet_osm_point"
+		" WHERE SetSRID(way,-1) && SetSRID('BOX3D(%.8f %.8f , %.8f %.8f)'::box3d,-1)"
+		" AND poi IN (%s) LIMIT 20000;", x1, y1, x2, y2, current.poifilter);
+	db_poi_get (sql_query, handle_osm_poi_view_cb, DB_WP_OSM);
+#endif
 
 	poi_list_count = poi_nr;
 
@@ -1094,6 +1307,13 @@ poi_init (void)
 		G_TYPE_STRING,		/* title */
 		G_TYPE_BOOLEAN		/* select */
 		);
+
+	/* init filtered gtk-tree for use in comboboxes */
+	poi_types_tree_filtered = gtk_tree_model_filter_new
+		(GTK_TREE_MODEL (poi_types_tree), NULL);
+	gtk_tree_model_filter_set_visible_func (
+		GTK_TREE_MODEL_FILTER (poi_types_tree_filtered),
+		treefilterfunc_cb, NULL, NULL);
 
 	/* read poi-type data and icons from geoinfo.db */
 	get_poitype_tree ();

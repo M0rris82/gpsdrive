@@ -91,7 +91,8 @@ extern gchar *font_wplabel;
 extern char friendserverip[20];
 extern color_struct colors;
 extern currentstatus_struct current;
-extern GtkTreeStore *poi_types_tree;
+extern GtkTreeModel *poi_types_tree;
+extern GtkTreeStore *poi_types_tree_filtered;
 int showsid = TRUE;
 extern GtkWidget *frame_statusbar;
 GtkWidget *menuitem_sendmsg;
@@ -744,18 +745,19 @@ static void
 toggle_poitype
 	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
 {
-	GtkTreeIter iter;
+	GtkTreeIter iter, child_iter;
 	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
 	gboolean value;
 
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree), &iter, path);
-	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter,
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree_filtered), &iter,
 		POITYPE_SELECT, &value, -1);
 
 	value = !value;
 
-	gtk_tree_store_set (poi_types_tree, &iter,
-		POITYPE_SELECT, value, -1);
+	gtk_tree_model_filter_convert_iter_to_child_iter
+		(GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &child_iter, &iter);
+	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter, POITYPE_SELECT, value, -1);
 
 	update_poi_type_filter ();
 
@@ -1604,7 +1606,7 @@ settings_poi (GtkWidget *notebook)
 		(scrolledwindow_poitypes), GTK_SHADOW_IN);
 
 	poitypes_treeview = gtk_tree_view_new_with_model
-		(GTK_TREE_MODEL (poi_types_tree));
+		(GTK_TREE_MODEL (poi_types_tree_filtered));
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes),
 		poitypes_treeview);
 

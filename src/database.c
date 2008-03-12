@@ -43,7 +43,10 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "gettext.h"
 #include "gpsdrive_config.h"
+#include "database.h"
 #include "database_sqlite.h"
+#include "database_postgis.h"
+#include "mapnik.h"
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -59,7 +62,7 @@ extern gint mydebug;
 extern currentstatus_struct current;
 
 
-static GdaConnection *db_conn_geo, *db_conn_osm;
+GdaConnection *db_conn_geo, *db_conn_osm;
 
 
 	//TODO:	create table 'poi_extra_fields' in geoinfo.db
@@ -70,10 +73,6 @@ typedef struct
 	glong id;
 	gchar entry[8192];
 } result_struct;
-
-
-
-
 
 
 /* ******************************************************************
@@ -152,7 +151,7 @@ handle_poi_extra_get_cb (result_struct *result, gint columns, gchar **values, gc
 gint
 db_poi_delete (gint index)
 {
-	gchar t_query[50];
+	gchar t_query[100];
 
 	g_snprintf (t_query, sizeof (t_query),
 		"DELETE FROM poi WHERE poi_id='%d'; DELETE FROM poi_extra WHERE poi_id='%d';",
@@ -371,18 +370,59 @@ db_get_visible_poi_types (gchar *filter)
 /* *******************************************************
  */
 void
-db_poi_get (gchar *query, gpointer callback)
+db_poi_get (gchar *query, gpointer callback, gint database)
 {
-	db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
+	if (mydebug > 20)
+		g_printf ("db_poi_get: %s\n", query);
+
+	switch (database)
+	{
+		case DB_WP_USER:
+			/* get data from waypoints/sqlite database */
+			db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
+			break;
+		case DB_WP_OSM:
+			/* get data from openstreetmap/postgis database */
+			if (db_conn_osm)
+				db_postgis_query (query, callback);
+			break;
+	}
 }
 
 
 /* *******************************************************
  */
 void
-db_get_all_poi_types (gpointer callback, gint count[])
+db_streets_get (const gdouble lat, const gdouble lon, const guint distance, street_struct *street)
 {
-	db_sqlite_query ("SELECT poi_type,scale_min,scale_max,title,description FROM poi_type;",
+#ifdef MAPNIK
+	gchar sql_query[200];
+	gdouble x, y;
+	guint d;
+
+	if (street == NULL)
+		return;
+
+	d = (distance) ? distance : 40;
+	convert_mapnik_coords(&x, &y, lon, lat, 0);
+	g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT name,ref,highway FROM planet_osm_line WHERE ST_DWithin(SetSRID(way,-1),"
+		" 'POINT(%.8f %.8f)', %d) AND highway!='' AND (name!='' OR ref!='') LIMIT 1;",
+		x, y, d);
+	db_postgis_query_street (sql_query, street);
+
+	if (mydebug > 20)
+		g_print ("db_streets_get: (%s) %s [%s]\n", street->ref, street->name, street->type);
+#endif
+}
+
+
+/* *******************************************************
+ */
+void
+db_get_all_poi_types (gpointer callback, guint count[])
+{
+	db_sqlite_query ("SELECT poi_type,scale_min,scale_max,title,description FROM poi_type ORDER BY poi_type;",
 		callback, DB_SQLITE_GEOINFO, (gpointer) count);
 }
 
@@ -457,6 +497,7 @@ db_init (void)
 	}
 */
 
+#ifdef MAPNIK
 	/* create connection to mapnik/postgis database */
 	db_conn_osm = gda_client_open_connection_from_string (t_client,
 		"PostgreSQL", "DB_NAME=gis", "", "", GDA_CONNECTION_OPTIONS_NONE, NULL);
@@ -465,6 +506,7 @@ db_init (void)
 		g_print ("DB: Using waypoints from OpenStreetMap database.\n");
 		t_db = TRUE;
 	}
+#endif
 
 	if (!t_db)
 	{

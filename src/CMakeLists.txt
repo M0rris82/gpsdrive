@@ -63,6 +63,8 @@ set(gpsdrive_SRCS
   database.h
   database_sqlite.c
   database_sqlite.h
+  database_postgis.c
+  database_postgis.h
   download_map.c
   draw_grid.c
   friends.c

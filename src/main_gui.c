@@ -1327,7 +1327,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		//	is available again
 	}
 
-	// Query Info for next points and streets
+	// Query Info for near points
 	if ( ( (toupper (event->keyval)) == '?' )
 	     || ( (toupper (event->keyval)) == 'Q') )
 	{

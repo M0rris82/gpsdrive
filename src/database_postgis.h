@@ -23,30 +23,13 @@ Disclaimer: Please do not use for navigation.
 *********************************************************************/
 
 
-#ifndef GPSDRIVE_DATABASE_H
-#define GPSDRIVE_DATABASE_H
+#ifndef GPSDRIVE_DATABASE_POSTGIS_H
+#define GPSDRIVE_DATABASE_POSTGIS_H
 
 /*
- * See database.c for details.
+ * See database_postgis.c for details.
  */
 
+glong db_postgis_query (gchar *query, gint (*callback)(const char*, ...));
 
-gboolean db_init (void);
-void db_close (void);
-
-gchar *escape_sql_string (const gchar *data);
-
-void db_get_visible_poi_data (void);
-void db_get_all_poi_types (gpointer callback, guint count[]);
-
-gint db_poi_delete (gint index);
-
-enum
-{
-	DB_GEOINFO,
-	DB_WP_USER,
-	DB_WP_OSM,
-};
-
-
-#endif /* GPSDRIVE_DATABASE_H */
+#endif /* GPSDRIVE_DATABASE_POSTGIS_H */

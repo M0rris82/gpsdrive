@@ -480,12 +480,21 @@ void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDb
  * wrapper function for gpsdrive
  */
 extern "C"
-void get_mapnik_coords(double *pXDbl, double *pYDbl, double pLatDbl, double pLonDbl) {
+void convert_mapnik_coords(double *pXDbl, double *pYDbl, double pLonDbl, double pLatDbl, int mode)
+{
 	double X = pLonDbl;
 	double Y = pLatDbl;
 
-	// convert lat/lon coords to mercator projection used in postgis
-	Proj.forward(X, Y);
+	if (mode == 0)
+	{
+		// convert lat/lon coords to mercator projection used in postgis
+		Proj.forward(X, Y);
+	}
+	else
+	{
+		// convert mercator projection used in postgis to lat/lon coords
+		Proj.inverse(X, Y);
+	}
 
 	*pXDbl = X;
 	*pYDbl = Y;

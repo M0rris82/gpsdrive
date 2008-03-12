@@ -84,7 +84,7 @@ extern gdouble olddist;
 extern GtkWidget *messagewindow;
 extern GdkDrawable *drawable;
 extern gchar oldfilename[2048];
-extern GtkTreeStore *poi_types_tree;
+extern GtkTreeModel *poi_types_tree_filtered;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern GdkGC *kontext;
@@ -575,10 +575,8 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	g_strlcpy(wp_name,s1,sizeof(wp_name));
 	g_strlcpy(wp_comment,s2,sizeof(wp_comment));
 
-	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree),
-		&current.poitype_iter,
-		POITYPE_NAME, &wp_type,
-		-1);
+	gtk_tree_model_get (poi_types_tree_filtered, &current.poitype_iter,
+		POITYPE_NAME, &wp_type, -1);
 
 	addwaypoint (wp_name, wp_type, wp_comment,
 		coords.wp_lat, coords.wp_lon, current.save_in_db);
@@ -646,6 +644,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	GtkWidget *add_wp_type_combo;
 	GtkCellRenderer *renderer_type_name;
 	GtkCellRenderer *renderer_type_icon;
+	GtkTreeIter t_iter;
 
 	addwaypointwindow = window = gtk_dialog_new ();
 
@@ -676,7 +675,7 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	{			/* Types */
 	add_wp_type_label = gtk_label_new (_(" Type: "));
 	add_wp_type_combo = gtk_combo_box_new_with_model
-		(GTK_TREE_MODEL (poi_types_tree));
+		(poi_types_tree_filtered);
 	renderer_type_icon = gtk_cell_renderer_pixbuf_new ();
 	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (add_wp_type_combo),
 		renderer_type_icon, FALSE);
@@ -687,8 +686,14 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 		renderer_type_name, TRUE);
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (add_wp_type_combo),
 		renderer_type_name, "text", POITYPE_TITLE, NULL);
-	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(add_wp_type_combo),
-		&current.poitype_iter);
+	
+	if (!gtk_tree_model_filter_convert_child_iter_to_iter (
+	    GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &t_iter, &current.poitype_iter))
+	{
+		gtk_tree_model_get_iter_first (poi_types_tree_filtered, &t_iter);
+	}
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(add_wp_type_combo), &t_iter);
+
 	g_signal_connect (G_OBJECT (add_wp_type_combo), "changed",
 		G_CALLBACK (select_wptype_cb), NULL);
 

@@ -67,9 +67,7 @@ Disclaimer: Please do not use for navigation.
 struct pattern
 {
 	GtkEntry *text, *distance;
-	gint poitype_id;
 	gchar *poitype_name;
-	gint typeflag;	/* 0: search all types, 1: search only selected */
 	gint posflag;	/* 0: search at current position, 1: search at destination */
 	guint result_count;
 } criteria;
@@ -158,7 +156,7 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	entries->result_count = poi_get_results
 		(gtk_entry_get_text (entries->text),
 		gtk_entry_get_text (entries->distance),
-		entries->posflag, entries->typeflag, entries->poitype_name);
+		entries->posflag, entries->poitype_name);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (statusbar_poilist), statusbar_id);
 	if (entries->result_count == local_config.poi_results_max)
@@ -182,20 +180,6 @@ toggle_window_poi_info_cb (GtkToggleButton *togglebutton, gpointer user_data)
 
 }
 
-static void
-searchpoitypemode_cb (GtkToggleButton *button)
-{
-	if (gtk_toggle_button_get_active(button))
-	{
-		/* switch to selection from selected poi-type */
-		criteria.typeflag = TRUE;
-	}
-	else
-	{
-		/* switch to selection from all poi-types */
-		criteria.typeflag = FALSE;
-	}
-}
 
 static void
 searchdistancemode_cb (GtkToggleButton *button, gpointer user_data)
@@ -267,18 +251,26 @@ delete_poi_cb (GtkTreeSelection *selection, gpointer data)
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	gint selected_poi_id = 0;
+	gint selected_poi_source = 0;
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
+		gtk_tree_model_get (model, &iter,
+			RESULT_ID, &selected_poi_id,
+			RESULT_SOURCE, &selected_poi_source,
+			-1);
+		
+		/* entries fetched from the mapnik database can't be deleted */
+		if (selected_poi_source == 10)
+			return;
+
 		if (popup_yes_no(GTK_WINDOW (poi_lookup_window), NULL) == GTK_RESPONSE_YES)
 		{
-			gtk_tree_model_get (model, &iter,
-				RESULT_ID, &selected_poi_id,
-				-1);
 			if (mydebug>20)
 				fprintf (stderr, "deleting poi with id: %d\n", selected_poi_id);
 			db_poi_delete (selected_poi_id);
 			gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+			gtk_widget_set_sensitive (button_delete, FALSE);
 		}
 	}
 }
@@ -289,7 +281,8 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	
+	gint t_src = 0;
+
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
 		if (route.edit)
@@ -310,6 +303,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 				gtk_tree_model_get (model, &iter,
 					RESULT_LAT, &coords.target_lat,
 					RESULT_LON, &coords.target_lon,
+					RESULT_SOURCE, &t_src,
 					-1);
 				if (mydebug>50)
 					fprintf (stdout,
@@ -319,7 +313,10 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 			}
 		}
 		
-		gtk_widget_set_sensitive (button_delete, TRUE);
+		if (t_src == 10)
+			gtk_widget_set_sensitive (button_delete, FALSE);
+		else
+			gtk_widget_set_sensitive (button_delete, TRUE);
 
 		/* if posmode enabled set posmode_lat/lon */
 		if (gui_status.posmode)
@@ -341,15 +338,13 @@ select_poitype_cb (GtkComboBox *combo_box, gpointer data)
 	if (gtk_combo_box_get_active_iter (combo_box, &iter))
 	{
 		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter,
-			POITYPE_ID, &criteria.poitype_id,
-			POITYPE_NAME, &criteria.poitype_name,
-			-1);
+			POITYPE_NAME, &criteria.poitype_name, -1);
 	}
+
 
 	if (mydebug>50)
 	{
-		fprintf (stderr, " selected poi-type -> %d / %s\n",
-		criteria.poitype_id, criteria.poitype_name);
+		fprintf (stderr, " selected poi-type -> %s\n", criteria.poitype_name);
 	}
 	return FALSE;
 }
@@ -439,24 +434,41 @@ poilist_highlight_cb
 	if (t_src == 7)
 	{	
 		g_object_set (G_OBJECT (cell),
-			"foreground-gdk", &colors.red, NULL);
-		g_object_set (G_OBJECT (cell),
-			"background-gdk", &colors.yellow, NULL);
+			"foreground-gdk", &colors.red,
+			"background-gdk", &colors.yellow,
+			"style", PANGO_STYLE_NORMAL,
+			"weight", PANGO_WEIGHT_NORMAL,
+			NULL);
 	}
 	/* show data coming from kismet in lightgrey/darkgrey */
 	else if (t_src == 9)
 	{	
 		g_object_set (G_OBJECT (cell),
-			"foreground-gdk", &colors.lightgrey, NULL);
+			"foreground-gdk", &colors.lightgrey,
+			"background-gdk", &colors.darkgrey,
+			"style", PANGO_STYLE_NORMAL,
+			"weight", PANGO_WEIGHT_NORMAL,
+			NULL);
+	}
+	/* show data coming from mapnik/postgis in normal colors */
+	else if (t_src == 10)
+	{	
 		g_object_set (G_OBJECT (cell),
-			"background-gdk", &colors.darkgrey, NULL);
+			"foreground-gdk", NULL,
+			"background-gdk", NULL,
+			"style", PANGO_STYLE_NORMAL,
+			"weight", PANGO_WEIGHT_NORMAL,
+			NULL);
 	}
 	else
 	{
+	/* show user data in normal colors, but in bold/italic font */
 		g_object_set (G_OBJECT (cell),
-			"foreground-gdk", NULL, NULL);
-		g_object_set (G_OBJECT (cell),
-			"background-gdk", NULL, NULL);
+			"foreground-gdk", NULL,
+			"background-gdk", NULL,
+			"style", PANGO_STYLE_ITALIC,
+			"weight", PANGO_WEIGHT_BOLD,
+			NULL);
 	}
 }
 
@@ -696,9 +708,7 @@ void create_window_poi_lookup (void)
 	GtkWidget *label_distfrom, *radiobutton_distcurrent;
 	GSList *radiobutton_distance_group = NULL;
 	GtkWidget *radiobutton_distcursor;
-	GtkWidget *hbox_type, *label_type, *radiobutton_typeall;
-	GSList *radiobutton_type_group = NULL;
-	GtkWidget *radiobutton_typesel;
+	GtkWidget *hbox_type, *label_type;
 	GtkWidget *label_criteria, *frame_poiresults;
 	GtkWidget *alignment_poiresults, *vbox_poiresults;
 	GtkWidget *scrolledwindow_poilist, *treeview_poilist;
@@ -878,31 +888,6 @@ void create_window_poi_lookup (void)
 		G_CALLBACK (select_poitype_cb), NULL);
 	gtk_box_pack_end (GTK_BOX (hbox_type),
 		combobox_typetree, TRUE, TRUE, 5);
-
-	radiobutton_typeall =
-		gtk_radio_button_new_with_mnemonic (NULL, _("all"));
-	gtk_box_pack_start (GTK_BOX (hbox_type),
-		radiobutton_typeall, FALSE, FALSE, 10);
-	gtk_radio_button_set_group (GTK_RADIO_BUTTON
-		(radiobutton_typeall), radiobutton_type_group);
-	radiobutton_type_group = gtk_radio_button_get_group
-		(GTK_RADIO_BUTTON (radiobutton_typeall));
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-		(radiobutton_typeall), TRUE);
-	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_typeall,
-		_("Search all POI-Categories"), NULL);
-	
-	radiobutton_typesel = gtk_radio_button_new_with_mnemonic
-		(NULL, _("selected:"));
-	gtk_box_pack_start (GTK_BOX (hbox_type),
-		radiobutton_typesel, FALSE, FALSE, 10);
-	gtk_radio_button_set_group (GTK_RADIO_BUTTON
-		(radiobutton_typesel), radiobutton_type_group);
-	gtk_tooltips_set_tip ( tooltips_poilookup, radiobutton_typesel,
-		_("Search only in selected POI-Categories"), NULL);
-	
-	g_signal_connect (radiobutton_typesel, "toggled",
-		GTK_SIGNAL_FUNC (searchpoitypemode_cb), NULL);
 
 	label_criteria = gtk_label_new (_("Search Criteria"));
 	gtk_widget_show (label_criteria);

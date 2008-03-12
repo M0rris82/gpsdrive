@@ -226,6 +226,7 @@ update_friends_data (friendsstruct *cf)
 				(cf)->type, (cf)->heading, 7, TRUE);
 			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, TRUE);
 			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, TRUE);
+			db_poi_extra_edit (&current_poi_id, "timesec", (cf)->timesec, TRUE);
 		}
 		else
 		{
@@ -235,6 +236,7 @@ update_friends_data (friendsstruct *cf)
 			db_poi_extra_edit (&current_poi_id, "friends_id", (cf)->id, FALSE);
 			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, FALSE);
 			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, FALSE);
+			db_poi_extra_edit (&current_poi_id, "timesec", (cf)->timesec, FALSE);
 		}
 	}
 	else
