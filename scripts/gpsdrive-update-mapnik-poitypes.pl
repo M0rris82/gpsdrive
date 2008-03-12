@@ -107,6 +107,11 @@ my %poi_table =
    'university'		=>	'education.university',
    'village_hall'	=>	'public.administration.townhall',
  },
+ 'highway' =>
+ {
+   'bus_stop'	=>	'transport.bus',
+   'toll_booth'	=>	'vehicle.toll_station',
+ },
  'landuse' =>
  {
    'cave'	=>	'misc.landmark.cave',

@@ -231,8 +231,15 @@ sub fill_default_sources() {   # Just some Default Sources
         name        => 'kismet',
         comment     => 'Access point data found by Kismet', 
         last_update => '2008-03-01',
-        url         => ' http://www.kismetwireless.net/',
+        url         => 'http://www.kismetwireless.net/',
         licence     => 'unknown'
+      },
+      { source_id   => '10',
+        name        => 'postgis',
+        comment     => 'Data read from a local mapnik/postgis database', 
+        last_update => '2008-03-11',
+        url         => 'http://www.openstreetmap.org/',
+        licence     => 'Creative Commons Attribution-ShareAlike 2.0'
       },
     );
 
