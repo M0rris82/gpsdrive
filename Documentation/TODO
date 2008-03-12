@@ -2,16 +2,14 @@ This is a (definitely incomplete) list of features/improvements for gpsdrive.
 This file helps us keep track of what can be done and who is interested in doing it.
 Everyone is invited to catch one of the tasks and start development.
 
-Currently Worked on for Release gpsdrive-2.10pre4:
+Currently Worked on for Release gpsdrive-2.10pre5:
 --------------------------------------------------
 - Vektor Maps with Mapnik and Data from OSM
    - Integration of lib-mapnik (loom)
    - Creating osm-data-mapnik debian Package (tweety)
    - remove QT-Dependency
-- POI Management (D.S.E)
-   - POI GUI
-- GUI
-   - Make the Mapwindow resizable (maybe) (D.S.E)
+- POI Management (d.s.e)
+   - gpx import
 - Cleaning Up the debian package Content
 
 
@@ -25,7 +23,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	- Translate in Programm Text (translate in the po/*.po Files)
     - writing and correcting text for the FAQ/man pages
     - Better "hacking" documentation (e.g. documentation describing how to generate
-      a "GPSDrive-compliant" raster map from outside of GPSDrive, clear
+      a "GpsDrive-compliant" raster map from outside of GpsDrive, clear
       documentation on the size and shape of custom icons, etc.).
 	- Help translate the gettext strings (po-Files) in to your native language
 
@@ -59,7 +57,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 		Start gpsd 
 		Download Map
 	- rewrite the UI using glade-2 (see above)
-	- include POI-Management
 
 - Point and measure Mode: Show the lat/lon of a point you clicked on. 
   Click an another point and then show the distance between those two points.
@@ -89,23 +86,13 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 - Correct/complete/add-new translations in the po Files
 
-- Writing code for the handling the POI(Point Of Interest) Data 
-  inside the Database.
-     - this would be searching an point of interest in 
-       the Database and displaying it on the map
-     - having an interface to select what kind of POIs to 
-       display at the moment
-
 - Store poi-type-specific information in a separate poi_extra table
   (e.g. macaddr, wep, etc. for wlan entries; classification, features, pricing,
   rooms, etc. for hotels, etc.).
-  GPSDrive would only need to access the basic data in the core poi table for
+  GpsDrive would only need to access the basic data in the core poi table for
   search and display of pois, but when a poi is clicked, the additional data
   can be displayed formatted in a (pop-up) window.
   Also external programs could make use of the extra data.
-
-- Make it work with MySQL 4.1 (afore mentioned "select(): bad file descriptor" 
-  problem, plus see below).
 
 - Devise a "standard" set of tables for OpenGIS data (lines, polygons, etc) 
   which can be drawn atop the existing raster maps if desired (or used to
@@ -119,18 +106,12 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	  that wants it, if they promise not to laugh in my face at my really slovenly
 	  code.
 
-- Split the database backend out into "plugins" so that users of mapd
-  or people who just passionately hate MySQL for whatever reason can use
-  PostGRES instead (or maybe Oracle if they're wealthy).  (Presumably a bigger
-  challenge, but I think it'd be worthwhile, even if MySQL is plenty for my own
-  uses...)
-
 - Have the database fetch waypoints in order from nearest waypoint to current
   location to furthest, and add a configurable limit to the number retrieved - 
-  should lighten the load on GPSDrive considerably for those of us with huge
+  should lighten the load on GpsDrive considerably for those of us with huge
   waypoints tables... (I can supply a very crude patch for this, with a 
   hard-coded limit of total waypoints fetched at any one time.  It has worked
-  fine for me and is a very small change to GPSDrive, but isn't very elegant).
+  fine for me and is a very small change to GpsDrive, but isn't very elegant).
   I've been importing USGS GNIS data[2] as waypoints, so even with just a few
   states worth of waypoints it's easy to end up with hundreds of thousands of
   them.
@@ -168,12 +149,6 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   issue, I just keep running into placenames that get cut off because they're
   too long).
 
-
-- Make it easier to find waypoints that are not currently within the range
-  specified in preferences (i.e. if one is travelling a long way and wants to 
-  find and select the destination, while the range is set fairly low because 
-  there are a lot of waypoints in the area...)
-
 - ADD SUPPORT FOR UTM PROJECTION MAPS!  Possibly remove the "street" and "topo"
   distinctions and instead have selections for UTM, ORTHO(?), and LATLON,
   perhaps?
@@ -182,20 +157,19 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   that will work correctly as "street"-type maps, but nobody seems to know.
   Best guess I've heard so far is that they are an "Orthographic" projection.
 
-- Improve Kismet connection robustness.  GPSDrive still locks up for me
-  if Kismet dies while GPSDrive is connected to it.  Even better, add a
-  "check for Kismet" button and allow GPSDrive to connect to Kismet
+- Improve Kismet connection robustness.  GpsDrive still locks up for me
+  if Kismet dies while GpsDrive is connected to it.  Even better, add a
+  "check for Kismet" button and allow GpsDrive to connect to Kismet
   AFTER being started - or to re-connect if Kismet gets stopped and restarted.
 
 - A function to overlay raster data atop the existing displayed map - for 
   example if I find a way to fetch weather radar data while driving around, 
-  maybe I could have GPSDrive draw the weather activity atop the current
+  maybe I could have GpsDrive draw the weather activity atop the current
   map, so I can tell if I'm going to outrun the storm...
 
 - Implement direct GPX support
   - replace way.txt by way.gpx (or remove this file completely)
   - support import of POIs/Waypoints in gpx format
-  - support also import/export of tracks and routes in gpx format
 
 -----------------------------------------------------------------------------
 D.S.E <d.s.e@sordidmusic.com>
@@ -204,8 +178,7 @@ my personal TODO-List (for after the pre4 release) :-)
 
 - extend (poi-)databases to handle additional information for POIs
 - include POI-Info and make POIs editable
-- add navigation mode (optimized gui for small car touchscreens)
-- make displayed map resizable and draggable with mouse
+- make displayed map draggable with mouse
 - have a look at the openmoko platform
 - cleanup units handling; only metric units should be used internally
 
@@ -245,11 +218,8 @@ converted with a nice perl script anyone will write).
 Servermode to display different positions provided over Internet
 server.
 
-resizing of window
 centering of map to selected points
 
 render maps in greyscale
-
-create ~/.gpsdrive directory and files if missing.
 
 

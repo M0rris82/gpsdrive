@@ -25,16 +25,16 @@ kismet can detect the presence of a gps receiver).
 After kismet is running, start GpsDrive. If you have speech output,
 you get a voice information that kismet was found.
 
-Kismet support of GpsDrive is only available if you use SQL-Support
-and 'use SQL' is selected in GpsDrive.
+Kismet support of GpsDrive is only available if you use the SQL-Database.
 
 What does GpsDrive do with kismet?
 ----------------------------------
 
 If kismet detects a wireless accesspoint, it is stored in the SQL
-database and an icon is shown on the map (a open lock symbol for an
-uncrypted Network, a closed lock symbol for an accesspoint using WEP
-encryption). You have to enable the waypoints in Settings/SQL menu.
+database and an icon is shown on the map (an open lock symbol for an
+uncrypted Network, a symbol with a 'W' for an accesspoint using WEP,
+and a closed lock symbol for an accesspoint with other encryption).
+You have to enable the WLAN display in Settings/POI menu.
 
 If you have speech output, you hear a message about the new waypoint.
 
