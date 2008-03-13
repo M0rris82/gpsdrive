@@ -417,7 +417,7 @@ speech_out_speek_raw (char *text)
  *  if second parameter is TRUE, then also greeting is spoken
  */
 gint
-speech_saytime_cb (GtkWidget *widget, gboolean greeting)
+speech_saytime_cb (gboolean greeting)
 {
 	time_t t;
 	struct tm *ts;
@@ -465,10 +465,13 @@ speech_saytime_cb (GtkWidget *widget, gboolean greeting)
 void
 saytargettext (gchar * filename, gchar * tg)
 {
-
 #ifdef _WIN32
     printf("saytargettext: %s\n", tg);
 #else
+
+	if (local_config.mute)
+		return;
+
 	gchar file[500];
 	gint fd, e;
 	gchar *start, *end;
@@ -598,6 +601,9 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	/* destroy timeout function when speech output is disabled */
 	if (! havefestival && !local_config.speech)
 		return FALSE;
+
+	if (local_config.mute)
+		return TRUE;
 
 	if (strcmp (oldangle, "XXX"))
 	{

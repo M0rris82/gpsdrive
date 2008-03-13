@@ -3180,7 +3180,7 @@ main (int argc, char *argv[])
 	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
     if (nmeaout)
 	gtk_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
-    gtk_timeout_add (600000, (GtkFunction) speech_saytime_cb, 0);
+    g_timeout_add (600000, (GtkFunction) (speech_saytime_cb), FALSE);
     id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
     gtk_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
     gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
@@ -3203,7 +3203,7 @@ main (int argc, char *argv[])
     current.needtosave = FALSE;
 
     if (havefestival || local_config.speech)
-	speech_saytime_cb (NULL, 1);
+	speech_saytime_cb (TRUE);
 
 	/* do all the basic initalisation for the specific sections */
 	if (local_config.use_database)
