@@ -240,7 +240,7 @@ setespeakvoice_cb (GtkWidget *widget)
 		g_strlcpy (local_config.speech_voice, espeak_voices[i+1],
 			sizeof (local_config.speech_voice));
 
-		//if (mydebug > 10)
+		if (mydebug > 10)
 			fprintf (stderr, "Setting espeak voice to %s --> %s\n",
 				espeak_voices[i], espeak_voices[i+1]);
 	}

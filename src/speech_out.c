@@ -384,9 +384,26 @@ speech_out_speek (char *text)
 	else if (local_config.speech)
 	{
 		g_strlcat (text, ".\n", sizeof (text));
-		g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s' &",
-			local_config.speech_pitch, local_config.speech_speed ,
-			local_config.speech_voice, text);
+		if (g_str_has_prefix (local_config.speech_voice, "mb/mb-"))
+		{
+			/* use mbrola for speech output */
+			gint rate = 16000;
+			if (g_strcasecmp (local_config.speech_voice, "mb/mb-de5") == 0
+			  || g_strcasecmp (local_config.speech_voice, "mb/mb-de7") == 0)
+				rate = 22050;
+			g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s'"
+				" | mbrola -e %s%s - - | aplay -r%d -fS16",
+				local_config.speech_pitch, local_config.speech_speed ,
+				local_config.speech_voice, text, local_config.dir_mbrola,
+				(local_config.speech_voice + 6), rate);
+		}
+		else
+		{
+			/* use espeak directly for speech */
+			g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s' &",
+				local_config.speech_pitch, local_config.speech_speed ,
+				local_config.speech_voice, text);
+		}
 		if ( mydebug > 0 )
 		printf ("speech with espeak: %s\n", out);
 		system (out);

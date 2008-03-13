@@ -59,6 +59,7 @@ typedef struct
 	gchar dir_maps[500];
 	gchar dir_routes[500];
 	gchar dir_tracks[500];
+	gchar dir_mbrola[500];
 	gchar icon_theme[500];
 	gchar poi_filter[2000];
 	guint poi_results_max;

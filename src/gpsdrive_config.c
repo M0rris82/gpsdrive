@@ -235,6 +235,7 @@ writeconfig ()
 	fprintf (fp, "showssid = %d\n", showsid);
 	fprintf (fp, "speech = %d\n", local_config.speech);
 	fprintf (fp, "speech_voice = %s\n", local_config.speech_voice);
+	fprintf (fp, "speech_mbroladir = %s\n", local_config.dir_mbrola);
 	fprintf (fp, "speech_speed = %d\n", local_config.speech_speed);
 	fprintf (fp, "speech_pitch = %d\n", local_config.speech_pitch);
 	fprintf (fp, "sound_direction = %d\n", local_config.sound_direction);
@@ -451,6 +452,9 @@ readconfig ()
 			else if ( (strcmp(par1, "speech_voice")) == 0)
 				g_strlcpy (local_config.speech_voice, par2,
 				sizeof (local_config.speech_voice));
+			else if ( (strcmp(par1, "speech_mbroladir")) == 0)
+				g_strlcpy (local_config.dir_mbrola, par2,
+					sizeof (local_config.dir_mbrola));
 			else if ( (strcmp(par1, "speech_speed")) == 0)
 				local_config.speech_speed = atoi (par2);
 			else if ( (strcmp(par1, "speech_pitch")) == 0)
@@ -549,6 +553,8 @@ config_init ()
 	/* set speech output */
 	g_strlcpy (local_config.speech_voice,
 		"default", sizeof (local_config.speech_voice));
+	g_strlcpy (local_config.dir_mbrola,
+		"/usr/share/mbrola/", sizeof (local_config.dir_mbrola));
 	local_config.speech = FALSE;
 	local_config.speech_speed = 120;
 	local_config.speech_pitch = 50;
