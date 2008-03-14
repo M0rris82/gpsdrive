@@ -3164,41 +3164,6 @@ main (int argc, char *argv[])
     battery_get_values ();
 
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
-    /*  set the timers */
-	timerto =
-	    gtk_timeout_add (TIMER,
-			     (GtkFunction) get_position_data_cb,
-			     NULL);
-    gtk_timeout_add (WATCHWPTIMER, (GtkFunction) watchwp_cb, NULL);
-
-    redrawtimeout =
-	gtk_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
-
-    /*  if we started in simulator mode we have a little move roboter */
-    if (current.simmode)
-	simpos_timeout =
-	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
-    if (nmeaout)
-	gtk_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
-    g_timeout_add (600000, (GtkFunction) (speech_saytime_cb), FALSE);
-    id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
-    gtk_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
-    gtk_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
-    if (local_config.use_database)
-	{
-		gtk_timeout_add (15000, (GtkFunction) poi_rebuild_list, 0);
-	}
-    if (local_config.guimode != GUI_PDA)
-    {
-        if ( battery_get_values () )
-	gtk_timeout_add (5000, (GtkFunction) expose_display_battery,
-			 NULL);
-    if ( temperature_get_values () )
-	gtk_timeout_add (5000, (GtkFunction) expose_display_temperature,
-			 NULL);
-    }
-
-    gtk_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 
     current.needtosave = FALSE;
 
@@ -3222,13 +3187,6 @@ main (int argc, char *argv[])
 	load_friends_icon ();
 
     update_posbt();
-
-    if (havefestival || local_config.speech)
-	{
-		gtk_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
-		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-			current.statusbar_id, _("Using speech output"));
-	}
 
     /*
      * setup TERM signal handler so that we can save everything nicely when the
@@ -3271,6 +3229,43 @@ main (int argc, char *argv[])
     if (takescreenshots) {
     	auto_take_screenshots();
     }
+
+
+    /*  set the timers */
+	timerto = g_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
+	g_timeout_add (WATCHWPTIMER, (GtkFunction) watchwp_cb, NULL);
+
+	redrawtimeout = g_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
+
+	/*  if we started in simulator mode we have a little move roboter */
+	if (current.simmode)
+		simpos_timeout = g_timeout_add (300, (GtkFunction) simulated_pos, 0);
+	if (nmeaout)
+		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
+	id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
+	g_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
+	g_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
+	if (local_config.use_database)
+		g_timeout_add (15000, (GtkFunction) poi_rebuild_list, 0);
+	if (local_config.guimode != GUI_PDA)
+	{
+		if (battery_get_values ())
+			g_timeout_add (5000,
+				(GtkFunction) expose_display_battery, NULL);
+		if (temperature_get_values ())
+			g_timeout_add (5000,
+				(GtkFunction) expose_display_temperature, NULL);
+	}
+	g_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
+	if (havefestival || local_config.speech)
+	{
+		g_timeout_add (600000, (GtkFunction) (speech_saytime_cb), FALSE);
+		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
+			current.statusbar_id, _("Using speech output"));
+	}
+
+
     /*  Mainloop */
     gtk_main ();
 
