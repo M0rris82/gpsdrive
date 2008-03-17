@@ -116,7 +116,9 @@ for LANG in en_US de_DE ; do
 		    exit 1;
 		fi
 		if grep -v \
-		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET (widget). failed' \
+		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET .widget.. failed' \
+		    -e 'gda_connection_add_event: assertion .GDA_IS_CONNECTION .cnc.. failed' \
+		    -e 'cannot open image.*rendering' \
 		    -e 'Error: Could not find provider PostgreSQL in the current setup' \
 		    -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
 		    grep -i -e 'Failed' -e 'ERROR' -e 'CRITICAL'
@@ -126,7 +128,7 @@ for LANG in en_US de_DE ; do
 		    exit 1;
 		fi
 
-		if ! diff tests/gpsdriverc-pre tests/gpsdriverc ; then
+		if ! diff -u tests/gpsdriverc-pre tests/gpsdriverc ; then
 		    echo "gpsdriverc was modified by test"
 		    exit -1 
 		fi
