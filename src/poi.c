@@ -470,7 +470,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT name,poi,ASTEXT(way),osm_id FROM planet_osm_point"
 		" WHERE ST_DWithin(SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
-		" AND name LIKE '%%%s%%' AND poi%s LIMIT %d;",
+		" AND name ILIKE '%%%s%%' AND poi%s LIMIT %d;",
 		x, y, dist*1000, temp_text,
 		type_filter, local_config.poi_results_max);
 	db_poi_get (sql_query, handle_osm_poi_search_cb, DB_WP_OSM);

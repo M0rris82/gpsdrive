@@ -130,7 +130,7 @@ static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
 static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
-static GtkWidget *hbox_zoom, *dash_menu;
+static GtkWidget *hbox_zoom, *dash_menu, *dash_menu_window;
 static GtkWidget *controlbox_window;
 
 
@@ -182,6 +182,23 @@ dash_menu_cb (GtkWidget *widget, GdkEventButton *event, gint dash_nr)
 
 
 /* *****************************************************************************
+ * popup menu for dashoard mode selection (Car Mode)
+ */
+gint
+dash_carmenu_cb (GtkWidget *widget, GdkEventButton *event, gint dash_nr)
+{
+	if (mydebug > 20)
+		fprintf (stderr, "dash_carmenu_cb: Dashboard %d clicked\n", dash_nr);
+
+	local_config.dashboard[0] = dash_nr;
+	//gtk_window_set_decorated (GTK_WINDOW (dash_menu_window), FALSE);
+	gtk_widget_show_all (dash_menu_window);
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
  * select display mode for the selected dashboard 
  */
 gint
@@ -192,6 +209,8 @@ dash_select_cb (GtkWidget *item, gint selection)
 		local_config.dashboard[local_config.dashboard[0]] = selection;
 		current.needtosave = TRUE;
 		local_config.dashboard[0] = 0;
+		if (local_config.guimode == GUI_CAR)
+			gtk_widget_hide_all (dash_menu_window);
 
 		if (mydebug > 20)
 		{
@@ -1399,7 +1418,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
  */
 void create_dashboard_menu (void)
 {
-	gchar *dash_array[] =
+	const gchar *dash_array[] =
 	{
 		_("Distance to Target"),	/* DASH_DIST */
 		_("Time Remaining"),		/* DASH_TIMEREMAIN */
@@ -1430,6 +1449,66 @@ void create_dashboard_menu (void)
 			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
 	}
 	gtk_widget_show_all (dash_menu);
+}
+
+
+/* *****************************************************************************
+ * Popup Menu: Dashboard Mode (used for Car Mode)
+ */
+void create_dashboard_carmenu (void)
+{
+	GtkWidget *dash_button[DASH_N_ITEMS+1];
+	GtkTable *dash_table;
+	gint i;
+	gint x = 0;
+	gint y = 0;
+
+	const gchar *dash_array[] =
+	{
+		_("Distance to Target"),	/* DASH_DIST */
+		_("Time Remaining"),		/* DASH_TIMEREMAIN */
+		_("Bearing"),			/* DASH_BEARING */
+		_("Turn"),			/* DASH_TURN */
+		_("Speed"),			/* DASH_SPEED */
+		_("Avg. Speed"),		/* DASH_SPEED_AVG */
+		_("Max. Speed"),		/* DASH_SPEED_MAX */
+		_("Heading"),			/* DASH_HEADING */
+		_("Altitude"),			/* DASH_ALT */
+		_("Trip Odometer"),		/* DASH_TRIP */
+		_("GPS Precision"),		/* DASH_GPSPRECISION */
+		_("Current Time"),		/* DASH_TIME */
+		_("Position"),			/* DASH_POSITION */
+		_("Map Scale"),			/* DASH_MAPSCALE */
+	};
+
+	dash_menu_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_transient_for (GTK_WINDOW (dash_menu_window), GTK_WINDOW (main_window));
+	gtk_window_set_modal (GTK_WINDOW (dash_menu_window), TRUE);
+	gtk_window_maximize (GTK_WINDOW (dash_menu_window));
+	gtk_window_set_decorated (GTK_WINDOW (dash_menu_window), FALSE);
+
+	dash_table = GTK_TABLE (gtk_table_new (5, 3, TRUE));
+	gtk_table_set_row_spacings (dash_table, 10);
+	gtk_table_set_col_spacings (dash_table, 10);
+	gtk_container_add (GTK_CONTAINER (dash_menu_window), GTK_WIDGET (dash_table));
+
+	for (i=0; i< DASH_N_ITEMS; i++)
+	{
+		if (x == 3)
+		{
+			x = 0; y++;
+		}
+		dash_button[i] = gtk_button_new_with_label (dash_array[i]);
+		gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
+		x++;
+		g_signal_connect (dash_button[i], "clicked",
+			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
+	}
+	dash_button[i] = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+		gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
+	g_signal_connect_swapped (dash_button[i], "clicked",
+			GTK_SIGNAL_FUNC (gtk_widget_hide_all), dash_menu_window);
+
 }
 
 
@@ -2013,8 +2092,6 @@ void create_status_mainbox (void)
 			frame_dash_1);
 		gtk_widget_add_events (eventbox_dash_1,
 			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (eventbox_dash_1, "button_press_event",
-			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 1);
 
 		/* Frame Dashboard 2 */
 		frame_dash_2 = gtk_frame_new (" = 2 = ");	
@@ -2026,8 +2103,6 @@ void create_status_mainbox (void)
 			frame_dash_2);
 		gtk_widget_add_events (eventbox_dash_2,
 			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (eventbox_dash_2, "button_press_event",
-			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 2);
 
 		/* Frame_Dashboard 3 */
 		frame_dash_3 = gtk_frame_new (" = 3 = ");	
@@ -2039,8 +2114,6 @@ void create_status_mainbox (void)
 			frame_dash_3);
 		gtk_widget_add_events (eventbox_dash_3,
 			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (eventbox_dash_3, "button_press_event",
-			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 3);
 	
 		/* Frame_Dashboard 4 */
 		frame_dash_4 = gtk_frame_new (" = 4 = ");	
@@ -2052,8 +2125,29 @@ void create_status_mainbox (void)
 			frame_dash_4);
 		gtk_widget_add_events (eventbox_dash_4,
 			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (eventbox_dash_4, "button_press_event",
-			GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 4);
+		
+		if (local_config.guimode == GUI_CAR)
+		{
+			g_signal_connect (eventbox_dash_1, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 1);
+			g_signal_connect (eventbox_dash_2, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 2);
+			g_signal_connect (eventbox_dash_3, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 3);
+			g_signal_connect (eventbox_dash_4, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 4);
+		}
+		else
+		{
+			g_signal_connect (eventbox_dash_1, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 1);
+			g_signal_connect (eventbox_dash_2, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 2);
+			g_signal_connect (eventbox_dash_3, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 3);
+			g_signal_connect (eventbox_dash_4, "button_press_event",
+				GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 4);
+		}
 	}	/* END DASHBOARD */
 
 
@@ -2366,7 +2460,10 @@ gint create_main_window (void)
 	create_status_mainbox ();
 	create_map_mainbox ();
 	create_routeinfo_box ();
-	create_dashboard_menu ();
+	if (local_config.guimode == GUI_CAR)
+		create_dashboard_carmenu ();
+	else
+		create_dashboard_menu ();
 
 	if (local_config.guimode == GUI_PDA)
 	{  /* PDA Mode */
