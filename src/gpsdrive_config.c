@@ -249,6 +249,7 @@ writeconfig ()
 	fprintf (fp, "show_maptype = %d\n", local_config.showmaptype);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
 	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
+	fprintf (fp, "show_apm = %d\n", local_config.enableapm);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
 	fprintf (fp, "draw_poilabel = %d\n", local_config.showpoilabel);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
@@ -393,6 +394,8 @@ readconfig ()
 				dbusedist = atoi (par2);
 			else if ( (strcmp(par1, "earthmate")) == 0)
 				earthmate = atoi (par2);
+			else if ( (strcmp(par1, "show_apm")) == 0)
+				local_config.enableapm = atoi (par2);
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
 				g_strlcpy (local_config.font_dashboard, par2,
 				sizeof (local_config.font_dashboard));
