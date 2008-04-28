@@ -1,11 +1,6 @@
 #ifdef MAPNIK
 
-/*
-#include <QWidget>
-#include <QImage>
-#include <QPixmap>
-#include <QPen>
-*/
+#define BOOST_SPIRIT_THREADSAFE
 
 #include <iostream>
 #include <fstream>
@@ -194,6 +189,9 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
 		s.assign(ReplaceString("@USER@", Username, s));
 		if ( night_color_replace ) {
 		    s.assign(ReplaceString("bgcolor=\"#b5d0d0\"" , "bgcolor=\"#330033\"", s));
+		}
+		else {
+		    s.assign(ReplaceString("bgcolor=\"#b5d0d0\"" , "bgcolor=\"#ffeed4\"", s));
 		}
 		DestXML << s  << endl;
 	    }
