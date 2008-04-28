@@ -626,6 +626,7 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_DESCRIPTION, poi_type_list[i].description,
 		POITYPE_TITLE, poi_type_list[i].title,
 		POITYPE_SELECT, FALSE,
+		POITYPE_LABEL, FALSE,
 		-1);
 
 	g_hash_table_insert (poi_types_hash, poi_type_list[i].name, &(poi_type_list[i].id));
@@ -719,6 +720,7 @@ create_poitype_tree (guint max_level)
 		POITYPE_DESCRIPTION, NULL,
 		POITYPE_TITLE, _("all types"),
 		POITYPE_SELECT, FALSE,
+		POITYPE_LABEL, FALSE,
 		-1);
 
 	/* insert base categories into tree */
@@ -1305,7 +1307,8 @@ poi_init (void)
 		G_TYPE_INT,		/* scale_max */
 		G_TYPE_STRING,		/* description */
 		G_TYPE_STRING,		/* title */
-		G_TYPE_BOOLEAN		/* select */
+		G_TYPE_BOOLEAN,		/* select */
+		G_TYPE_BOOLEAN		/* label */
 		);
 
 	/* init filtered gtk-tree for use in comboboxes */
