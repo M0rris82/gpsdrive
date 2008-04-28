@@ -99,6 +99,8 @@ GtkWidget *menuitem_sendmsg;
 extern gchar *espeak_voices[];
 extern GtkWidget *mute_bt;
 extern gint havefestival;
+extern GtkWidget *frame_battery;
+extern GtkWidget *frame_temperature;
 
 GtkWidget *settings_window = NULL;
 
@@ -521,6 +523,33 @@ settogglevalue_cb (GtkWidget *widget, gint *item)
 
 /* ************************************************************************* */
 static gint
+settoggleapm_cb (GtkWidget *widget, gint *item)
+{
+	*item = !*item;
+
+	if (mydebug >10)
+	{
+		fprintf (stderr, "Setting apm config value to %d.\n",
+			*item);
+	}
+
+	if (local_config.showbatt)
+		gtk_widget_show_all (frame_battery);
+	else
+		gtk_widget_hide_all (frame_battery);
+
+	if (local_config.showtemp)
+		gtk_widget_show_all (frame_temperature);
+	else
+		gtk_widget_hide_all (frame_temperature);
+
+	current.needtosave = TRUE;
+
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
 setmapdir_cb (GtkWidget *widget)
 {
 	gchar *tdir;
@@ -731,7 +760,6 @@ setwpfilequick_cb (GtkWidget *widget, guint datum)
 	return TRUE;
 }
 
-
 /* ************************************************************************* */
 static void
 settings_close_cb (GtkWidget *window)
@@ -739,6 +767,33 @@ settings_close_cb (GtkWidget *window)
 	gtk_widget_destroy (window);
 }
 
+/* ************************************************************************* */
+static void
+toggle_poilabel
+	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
+{
+	GtkTreeIter iter, child_iter;
+	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
+	gboolean value;
+
+	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree_filtered), &iter,
+		POITYPE_LABEL, &value, -1);
+
+	value = !value;
+
+	gtk_tree_model_filter_convert_iter_to_child_iter
+		(GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &child_iter, &iter);
+	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter, POITYPE_LABEL, value, -1);
+
+	if (value)
+		gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter,
+			POITYPE_SELECT, TRUE, -1);
+
+//	update_poi_type_filter ();
+
+	gtk_tree_path_free (path);
+}
 
 /* ************************************************************************* */
 static void
@@ -773,9 +828,6 @@ toggle_poitype
 static void
 settings_general (GtkWidget *notebook)
 {
-	GtkWidget *dist_label, *dist_combo;
-	GtkWidget *alt_label, *alt_combo;
-	GtkWidget *coord_label, *coord_combo;
 	GtkWidget *simulation_lb;
 	GtkWidget *simmode_auto_rb, *simmode_on_rb, *simmode_off_rb;
 	GtkWidget *simmode_table;
@@ -783,86 +835,11 @@ settings_general (GtkWidget *notebook)
 	GtkTooltips *general_tooltips;
 	GtkWidget *general_vbox;
 	GtkWidget *general_label;
-	GtkWidget *units_table, *misc_table;
-	GtkWidget *units_frame, *misc_frame;
-	GtkWidget *units_fr_lb, *misc_fr_lb;
+	GtkWidget *misc_table, *misc_frame, *misc_fr_lb;
 	GtkWidget *mapdir_label, *mapdir_bt;
 	GtkWidget *map_table, *map_frame, *map_fr_lb;
-	
-	general_tooltips = gtk_tooltips_new ();
-	
-	/* distance format */
-	{
-	dist_label = gtk_label_new (_("Distance"));
-	dist_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (dist_combo), "stat. miles");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (dist_combo), "kilometers");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (dist_combo), "naut. miles");
-	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (dist_combo), local_config.distmode);
-	gtk_tooltips_set_tip (general_tooltips, dist_label,
-		_("Choose here the unit for the display of distances."), NULL);
-	g_signal_connect (dist_combo, "changed",
-		GTK_SIGNAL_FUNC (setdistmode_cb), 0);
-	}
-	
-	/* altitude format */
-	{
-	alt_label = gtk_label_new (_("Altitude"));
-	alt_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (alt_combo), "feet");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (alt_combo), "meters");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (alt_combo), "yards");
-	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (alt_combo), local_config.altmode);
-	gtk_tooltips_set_tip (general_tooltips, alt_label,
-		_("Choose here the unit for the display of altitudes."), NULL);
-	g_signal_connect (alt_combo, "changed",
-		GTK_SIGNAL_FUNC (setaltmode_cb), 0);
-	}
-	
-	/* coordinate format */
-	{
-	coord_label = gtk_label_new (_("Coordinates"));
-	coord_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (coord_combo), "DD.ddddd");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (coord_combo), "DD MM SS.ss");
-	gtk_combo_box_append_text
-			(GTK_COMBO_BOX (coord_combo), "DD MM.mmm");
-	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (coord_combo), local_config.coordmode);
-	gtk_tooltips_set_tip (general_tooltips, coord_label,
-		_("Choose here the format for the coordinates display."), NULL);
-	g_signal_connect (coord_combo, "changed",
-		GTK_SIGNAL_FUNC (setcoordmode_cb), 0);
-	}
 
-	/* units table */
-	{
-	units_table = gtk_table_new (3, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (units_table), 5);
-	gtk_table_set_col_spacings (GTK_TABLE (units_table), 5);
-	gtk_table_attach (GTK_TABLE (units_table),
-		coord_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		coord_combo, 1, 2, 0, 1);
-	gtk_table_attach (GTK_TABLE (units_table),
-		dist_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		dist_combo, 1, 2, 1, 2);
-	gtk_table_attach (GTK_TABLE (units_table),
-		alt_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach_defaults (GTK_TABLE (units_table),
-		alt_combo, 1, 2, 2, 3);
-	}
+	general_tooltips = gtk_tooltips_new ();
 
 	/* misc settings */
 	{
@@ -971,14 +948,7 @@ settings_general (GtkWidget *notebook)
 	}
 	
 	general_vbox = gtk_vbox_new (FALSE, 2);
-	
-	units_frame = gtk_frame_new (NULL);
-	units_fr_lb = gtk_label_new (NULL);
-	gtk_label_set_markup (GTK_LABEL (units_fr_lb), _("<b>Units</b>"));
-	gtk_frame_set_label_widget (GTK_FRAME (units_frame), units_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (units_frame), GTK_SHADOW_NONE);
-	gtk_container_add (GTK_CONTAINER (units_frame), units_table);
-	
+
 	misc_frame = gtk_frame_new (NULL);
 	misc_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
@@ -996,8 +966,6 @@ settings_general (GtkWidget *notebook)
 	gtk_container_add (GTK_CONTAINER (map_frame), map_table);
 
 	gtk_box_pack_start (GTK_BOX (general_vbox),
-		units_frame, FALSE, FALSE, 2);
-	gtk_box_pack_start (GTK_BOX (general_vbox),
 		map_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (general_vbox),
 		misc_frame, FALSE, FALSE, 2);
@@ -1013,30 +981,22 @@ settings_gui (GtkWidget *notebook)
 {
 	GtkWidget *gui_vbox, *gui_label;
 	GtkWidget *gui_map_frame, *gui_map_fr_lb;
-	GtkWidget *gui_misc_frame, *gui_misc_fr_lb;
-	GtkWidget *gui_night_frame, *gui_night_fr_lb;
-	GtkWidget *gui_map_table, *gui_misc_table;
-	GtkWidget *gui_trackcol_bt, *gui_routecol_bt;
-	GtkWidget *gui_friendscol_bt, *gui_friendscol_lb;
-	GtkWidget *gui_wpcol_bt, *gui_wpcol_lb;
-	GtkWidget *gui_trackcol_lb, *gui_routecol_lb;
-
-	GtkWidget *gui_bigcol_lb, *gui_bigcol_bt;
-	GtkWidget *gui_bigfont_bt, *gui_friendsfont_bt;
-	GtkWidget *gui_shadow_bt, *gui_nightauto_rb;
+	GtkWidget *gui_other_frame, *gui_other_fr_lb;
+	GtkWidget *gui_map_table, *gui_other_table;
+	GtkWidget *gui_shadow_bt, *gui_gridshow_bt;;
 	GtkWidget *gui_scaleshow_bt, *gui_zoomshow_bt;
-	GtkWidget *gui_nighton_rb, *gui_nightoff_rb;
-	GtkWidget *gui_night_table, *gui_wpfont_bt;
-	GtkWidget *gui_trackstyle_combo, *gui_routestyle_combo;
+	GtkWidget *gui_battery_bt, *gui_temp_bt, *gui_wayshow_bt;
 	GtkWidget *gui_marker_lb, *gui_marker_bt;
-	
-	GtkWidget *gui_gridshow_bt;
+	GtkWidget *dist_label, *dist_combo;
+	GtkWidget *alt_label, *alt_combo;
+	GtkWidget *coord_label, *coord_combo;
+	GtkWidget *units_table, *units_frame, *units_fr_lb;
 	GtkTooltips *gui_tooltips;
-	
+
 	gui_vbox = gtk_vbox_new (FALSE, 2);
 	gui_tooltips = gtk_tooltips_new ();	
 
-	/* gui features settings */
+	/* map features settings */
 	{
 	gui_gridshow_bt = gtk_check_button_new_with_label (_("Show grid"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_gridshow_bt,
@@ -1106,6 +1066,28 @@ settings_gui (GtkWidget *notebook)
 		      GTK_SIGNAL_FUNC (settogglevalue_cb),
 		      &local_config.showscalebar);
 
+	gui_wayshow_bt = gtk_check_button_new_with_label (_("Show way info (EXPERIMENTAL!)"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_wayshow_bt,
+		_("This will show information about the current way (this is an experimental feature, which may not work as expected!!!"), NULL);
+#ifdef MAPNIK
+	if (local_config.showway)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_wayshow_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_wayshow_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_wayshow_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.showway);
+#else
+	gtk_widget_set_sensitive (gui_wayshow_bt, FALSE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui_wayshow_bt), FALSE);
+#endif
+
 	gui_marker_lb = gtk_label_new (_("Position Marker"));
 	gui_marker_bt = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text
@@ -1121,264 +1103,432 @@ settings_gui (GtkWidget *notebook)
 	g_signal_connect (gui_marker_bt, "changed",
 		GTK_SIGNAL_FUNC (setposmarker_cb), NULL);
 
-	gui_misc_table = gtk_table_new (3, 4, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (gui_misc_table), 5);
-	gtk_table_set_col_spacings (GTK_TABLE (gui_misc_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_gridshow_bt, 0, 1, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_shadow_bt, 2, 3, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_zoomshow_bt, 0, 1, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_scaleshow_bt, 2, 3, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_marker_lb, 0, 1, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (gui_misc_table),
-		gui_marker_bt, 2, 3, 2, 3);
-	}
-	
-	/* gui nightmode settings */
-	{
-	gui_nightauto_rb = gtk_radio_button_new_with_label
-		(NULL, _("Automatic"));
-	g_signal_connect (gui_nightauto_rb, "toggled",
-		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_AUTO);
-	gui_nighton_rb = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (gui_nightauto_rb), _("On"));
-	g_signal_connect (gui_nighton_rb, "toggled",
-		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_ON);
-	gui_nightoff_rb = gtk_radio_button_new_with_label_from_widget
-		(GTK_RADIO_BUTTON (gui_nightauto_rb), _("Off"));
-	g_signal_connect (gui_nightoff_rb, "toggled",
-		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_OFF);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (gui_tooltips), gui_nightauto_rb,
-		_("Switches automagically to night mode if it is dark "
-		"outside. Press 'N' key to turn off nightmode."), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (gui_tooltips), gui_nighton_rb,
-		_("Switches night mode on. Press 'N' key to turn off "
-		"nightmode."), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (gui_tooltips), gui_nightoff_rb,
-		_("Switches night mode off"), NULL);
-	switch (local_config.nightmode)
-	{
-		case NIGHT_OFF:
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (gui_nightoff_rb), TRUE);
-			break;
-		case NIGHT_ON:
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (gui_nighton_rb), TRUE);
-			break;
-		case NIGHT_AUTO:
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (gui_nightauto_rb), TRUE);
-			break;
-	}
-	
-	gui_night_table = gtk_table_new (1, 3, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (gui_night_table), 5);
-	gtk_table_set_col_spacings (GTK_TABLE (gui_night_table), 5);
-	gtk_table_attach_defaults (GTK_TABLE (gui_night_table),
-		gui_nighton_rb, 0, 1, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_night_table),
-		gui_nightoff_rb, 1, 2, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_night_table),
-		gui_nightauto_rb, 2, 3, 0, 1);
-	}
-
-	/* gui fonts/colors settings */
-	{
-	gui_trackcol_lb = gtk_label_new (_("Track"));
-	gui_trackcol_bt = gtk_color_button_new_with_color
-		(&colors.track);
-	gtk_color_button_set_title
-		(GTK_COLOR_BUTTON (gui_trackcol_bt),
-		_("Choose Track color"));
-	g_signal_connect (gui_trackcol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.track);
-	gtk_tooltips_set_tip (gui_tooltips, gui_trackcol_bt,
-		_("Set here the color of the drawn track"), NULL);
-	gui_trackstyle_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-		(GTK_COMBO_BOX (gui_trackstyle_combo), "line style");
-	gtk_tooltips_set_tip (gui_tooltips, gui_trackstyle_combo,
-		_("Set here the line style of the drawn track"), NULL);
-	// TODO: add 'change linestyle' functionality
-	// combobox is disabled until that is done
-	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (gui_trackstyle_combo), 0);
-	gtk_widget_set_sensitive (gui_trackstyle_combo, FALSE);
-
-	/* Route line color & style */
-	gui_routecol_lb = gtk_label_new (_("Route"));
-	gui_routecol_bt = gtk_color_button_new_with_color
-		(&colors.route);
-	gtk_color_button_set_title
-		(GTK_COLOR_BUTTON (gui_routecol_bt),
-		_("Choose Route color"));
-	g_signal_connect (gui_routecol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.route);
-	gtk_tooltips_set_tip (gui_tooltips, gui_routecol_bt,
-		_("Set here the color of the drawn route"), NULL);
-	gui_routestyle_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-		(GTK_COMBO_BOX (gui_routestyle_combo), "line style");
-	gtk_tooltips_set_tip (gui_tooltips, gui_routestyle_combo,
-		_("Set here the line style of the drawn route"), NULL);
-	// TODO: add 'change linestyle' functionality
-	// combobox is disabled until that is done
-	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (gui_routestyle_combo), 0);
-	gtk_widget_set_sensitive (gui_routestyle_combo, FALSE);
-
-	/* Friends label color & font */
-	gui_friendscol_lb = gtk_label_new (_("Friends"));
-	gui_friendscol_bt = gtk_color_button_new_with_color
-		(&colors.friends);
-	gtk_color_button_set_title
-		(GTK_COLOR_BUTTON (gui_friendscol_bt),
-		_("Choose Friends color"));
-	g_signal_connect (gui_friendscol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.friends);
-	gtk_tooltips_set_tip (gui_tooltips, gui_friendscol_bt,
-		_("Set here the text color of the drawn friends"), NULL);
-	gui_friendsfont_bt = gtk_font_button_new_with_font
-		(local_config.font_friends);
-	gtk_font_button_set_title
-		(GTK_FONT_BUTTON (gui_friendsfont_bt),
-		_("Choose font for friends"));
-	gtk_font_button_set_use_font
-		(GTK_FONT_BUTTON (gui_friendsfont_bt), TRUE);
-	g_signal_connect (gui_friendsfont_bt, "font-set",
-		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_friends);
-	gtk_tooltips_set_tip (gui_tooltips, gui_friendsfont_bt,
-		_("Set here the font of the drawn friends"), NULL);
-
-	/* Waypoints label color & font */
-	gui_wpcol_lb = gtk_label_new (_("Waypoints"));
-	gui_wpcol_bt = gtk_color_button_new_with_color
-		(&colors.wplabel);
-	gtk_color_button_set_title
-		(GTK_COLOR_BUTTON (gui_wpcol_bt),
-		_("Choose Waypoints label color"));
-	g_signal_connect (gui_wpcol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.wplabel);
-	gtk_tooltips_set_tip (gui_tooltips, gui_wpcol_bt,
-		_("Set here the text color of the waypoint labels"), NULL);
-	gui_wpfont_bt = gtk_font_button_new_with_font
-		(local_config.font_wplabel);
-	gtk_font_button_set_title
-		(GTK_FONT_BUTTON (gui_wpfont_bt),
-		_("Choose font for waypoint labels"));
-	gtk_font_button_set_use_font
-		(GTK_FONT_BUTTON (gui_wpfont_bt), TRUE);
-	g_signal_connect (gui_wpfont_bt, "font-set",
-		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_wplabel);
-	gtk_tooltips_set_tip (gui_tooltips, gui_wpfont_bt,
-		_("Set here the font of waypoint labels"), NULL);
-
-	/* Big Display color & font */
-	gui_bigcol_lb = gtk_label_new (_("Dashboard"));
-	gui_bigcol_bt = gtk_color_button_new_with_color
-		(&colors.dashboard);
-	gtk_color_button_set_title
-		(GTK_COLOR_BUTTON (gui_bigcol_bt),
-		_("Choose color for dashboard"));
-	g_signal_connect (gui_bigcol_bt, "color-set",
-		GTK_SIGNAL_FUNC (setcolor_cb), &colors.dashboard);
-	gtk_tooltips_set_tip (gui_tooltips, gui_bigcol_bt,
-		_("Set here the color of the dashboard"), NULL);
-	gui_bigfont_bt = gtk_font_button_new_with_font
-		(local_config.font_dashboard);
-	gtk_font_button_set_title
-		(GTK_FONT_BUTTON (gui_bigfont_bt),
-		_("Choose font for dashboard"));
-	gtk_font_button_set_use_font
-		(GTK_FONT_BUTTON (gui_bigfont_bt), TRUE);
-	g_signal_connect (gui_bigfont_bt, "font-set",
-		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_dashboard);
-	gtk_tooltips_set_tip (gui_tooltips, gui_bigfont_bt,
-		_("Set here the font of the dashboard"), NULL);
-
-	gui_map_table = gtk_table_new (5, 3, FALSE);
+	gui_map_table = gtk_table_new (4, 4, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (gui_map_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (gui_map_table), 5);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_trackcol_lb, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_trackcol_bt, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_trackstyle_combo, 2, 3, 0, 1);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_routecol_lb, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_routecol_bt, 1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		gui_gridshow_bt, 0, 1, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_routestyle_combo, 2, 3, 1, 2);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_friendscol_lb, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_friendscol_bt, 1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		gui_shadow_bt, 2, 3, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_friendsfont_bt, 2, 3, 2, 3);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_wpcol_lb, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_wpcol_bt, 1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		gui_zoomshow_bt, 0, 1, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_wpfont_bt, 2, 3, 3, 4);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_bigcol_lb, 0, 1, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach (GTK_TABLE (gui_map_table),
-		gui_bigcol_bt, 1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		gui_scaleshow_bt, 2, 3, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_bigfont_bt, 2, 3, 4, 5);
+		gui_wayshow_bt, 0, 3, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
+		gui_marker_lb, 0, 1, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
+		gui_marker_bt, 2, 3, 3, 4);
+	}
+
+	/* other features settings */
+	{
+	gui_battery_bt = gtk_check_button_new_with_label (_("Show battery"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_battery_bt,
+		_("This will show the state of charge of your battery if available"), NULL);
+	if (local_config.showbatt)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_battery_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_battery_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_battery_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settoggleapm_cb),
+		      &local_config.showbatt);
+
+	gui_temp_bt = gtk_check_button_new_with_label (_("Show temperature"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_temp_bt,
+		_("This will show the temperature of your CPU if available"), NULL);
+	if (local_config.showtemp)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_temp_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_temp_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_temp_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settoggleapm_cb),
+		      &local_config.showtemp);
+
+	gui_other_table = gtk_table_new (2, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (gui_other_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (gui_other_table), 5);
+	gtk_table_attach_defaults (GTK_TABLE (gui_other_table),
+		gui_battery_bt, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_other_table),
+		gui_temp_bt, 1, 2, 0, 1);
+	}
+
+	/* distance format */
+	{
+	dist_label = gtk_label_new (_("Distance"));
+	dist_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (dist_combo), "stat. miles");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (dist_combo), "kilometers");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (dist_combo), "naut. miles");
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (dist_combo), local_config.distmode);
+	gtk_tooltips_set_tip (gui_tooltips, dist_label,
+		_("Choose here the unit for the display of distances."), NULL);
+	g_signal_connect (dist_combo, "changed",
+		GTK_SIGNAL_FUNC (setdistmode_cb), 0);
 	}
 	
-	/* gui fonts/colors/styles frame */
+	/* altitude format */
+	{
+	alt_label = gtk_label_new (_("Altitude"));
+	alt_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (alt_combo), "feet");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (alt_combo), "meters");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (alt_combo), "yards");
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (alt_combo), local_config.altmode);
+	gtk_tooltips_set_tip (gui_tooltips, alt_label,
+		_("Choose here the unit for the display of altitudes."), NULL);
+	g_signal_connect (alt_combo, "changed",
+		GTK_SIGNAL_FUNC (setaltmode_cb), 0);
+	}
+	
+	/* coordinate format */
+	{
+	coord_label = gtk_label_new (_("Coordinates"));
+	coord_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (coord_combo), "DD.ddddd");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (coord_combo), "DD MM SS.ss");
+	gtk_combo_box_append_text
+			(GTK_COMBO_BOX (coord_combo), "DD MM.mmm");
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (coord_combo), local_config.coordmode);
+	gtk_tooltips_set_tip (gui_tooltips, coord_label,
+		_("Choose here the format for the coordinates display."), NULL);
+	g_signal_connect (coord_combo, "changed",
+		GTK_SIGNAL_FUNC (setcoordmode_cb), 0);
+	}
+
+	/* units table */
+	{
+	units_table = gtk_table_new (3, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (units_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (units_table), 5);
+	gtk_table_attach (GTK_TABLE (units_table),
+		coord_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (units_table),
+		coord_combo, 1, 2, 0, 1);
+	gtk_table_attach (GTK_TABLE (units_table),
+		dist_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (units_table),
+		dist_combo, 1, 2, 1, 2);
+	gtk_table_attach (GTK_TABLE (units_table),
+		alt_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (units_table),
+		alt_combo, 1, 2, 2, 3);
+	}
+
+	/* gui features frame */
 	gui_map_frame = gtk_frame_new (NULL);
 	gui_map_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (gui_map_fr_lb), _("<b>Fonts, Colors, Styles</b>"));
+		(GTK_LABEL (gui_map_fr_lb), _("<b>Map Features</b>"));
 	gtk_frame_set_label_widget
 		(GTK_FRAME (gui_map_frame), gui_map_fr_lb);
 	gtk_frame_set_shadow_type
 		(GTK_FRAME (gui_map_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (gui_map_frame), gui_map_table);
 
-	/* gui nightmode frame */
-	gui_night_frame = gtk_frame_new (NULL);
-	gui_night_fr_lb = gtk_label_new (NULL);
+	/* other features frame */
+	gui_other_frame = gtk_frame_new (NULL);
+	gui_other_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (gui_night_fr_lb), _("<b>Nightmode</b>"));
+		(GTK_LABEL (gui_other_fr_lb), _("<b>Other Features</b>"));
 	gtk_frame_set_label_widget
-		(GTK_FRAME (gui_night_frame), gui_night_fr_lb);
+		(GTK_FRAME (gui_other_frame), gui_other_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (gui_night_frame), GTK_SHADOW_NONE);
-	gtk_container_add (GTK_CONTAINER (gui_night_frame), gui_night_table);
+		(GTK_FRAME (gui_other_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (gui_other_frame), gui_other_table);
 
-	/* gui features frame */
-	gui_misc_frame = gtk_frame_new (NULL);
-	gui_misc_fr_lb = gtk_label_new (NULL);
-	gtk_label_set_markup
-		(GTK_LABEL (gui_misc_fr_lb), _("<b>Map Features</b>"));
-	gtk_frame_set_label_widget
-		(GTK_FRAME (gui_misc_frame), gui_misc_fr_lb);
-	gtk_frame_set_shadow_type
-		(GTK_FRAME (gui_misc_frame), GTK_SHADOW_NONE);
-	gtk_container_add (GTK_CONTAINER (gui_misc_frame), gui_misc_table);
-	
-	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_misc_frame, FALSE, FALSE, 2);
-	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_night_frame, FALSE, FALSE, 2);
-	gtk_box_pack_start
-		(GTK_BOX (gui_vbox), gui_map_frame, FALSE, FALSE, 2);
-	
-	gui_label = gtk_label_new (_("GUI"));
+	/* units format frame */
+	units_frame = gtk_frame_new (NULL);
+	units_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup (GTK_LABEL (units_fr_lb), _("<b>Units</b>"));
+	gtk_frame_set_label_widget (GTK_FRAME (units_frame), units_fr_lb);
+	gtk_frame_set_shadow_type (GTK_FRAME (units_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (units_frame), units_table);
+
+	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_map_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_other_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (gui_vbox), units_frame, FALSE, FALSE, 2);
+
+	gui_label = gtk_label_new (_("Display"));
 	gtk_notebook_append_page
 		(GTK_NOTEBOOK (notebook), gui_vbox, gui_label);
+}
+
+/* ************************************************************************* */
+static void
+settings_col (GtkWidget *notebook)
+{
+	GtkWidget *col_vbox, *col_label;
+	GtkWidget *col_nighton_rb, *col_nightoff_rb;
+	GtkWidget *col_nightauto_rb, *col_night_table;
+	GtkWidget *col_map_frame, *col_map_fr_lb;
+	GtkWidget *col_night_frame, *col_night_fr_lb;
+	GtkWidget *col_wpfont_bt, *col_map_table;
+	GtkWidget *col_trackcol_bt, *col_routecol_bt;
+	GtkWidget *col_friendscol_bt, *col_friendscol_lb;
+	GtkWidget *col_wpcol_bt, *col_wpcol_lb;
+	GtkWidget *col_trackcol_lb, *col_routecol_lb;
+	GtkWidget *col_bigcol_lb, *col_bigcol_bt;
+	GtkWidget *col_bigfont_bt, *col_friendsfont_bt;
+	GtkWidget *col_trackstyle_combo, *col_routestyle_combo;
+	GtkTooltips *col_tooltips;
+
+	col_vbox = gtk_vbox_new (FALSE, 2);
+	col_tooltips = gtk_tooltips_new ();	
+
+	/* gui fonts/colors settings */
+	{
+	col_trackcol_lb = gtk_label_new (_("Track"));
+	col_trackcol_bt = gtk_color_button_new_with_color
+		(&colors.track);
+	gtk_color_button_set_title
+		(GTK_COLOR_BUTTON (col_trackcol_bt),
+		_("Choose Track color"));
+	g_signal_connect (col_trackcol_bt, "color-set",
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.track);
+	gtk_tooltips_set_tip (col_tooltips, col_trackcol_bt,
+		_("Set here the color of the drawn track"), NULL);
+	col_trackstyle_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_trackstyle_combo), "line style");
+	gtk_tooltips_set_tip (col_tooltips, col_trackstyle_combo,
+		_("Set here the line style of the drawn track"), NULL);
+	// TODO: add 'change linestyle' functionality
+	// combobox is disabled until that is done
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (col_trackstyle_combo), 0);
+	gtk_widget_set_sensitive (col_trackstyle_combo, FALSE);
+
+	/* Route line color & style */
+	col_routecol_lb = gtk_label_new (_("Route"));
+	col_routecol_bt = gtk_color_button_new_with_color
+		(&colors.route);
+	gtk_color_button_set_title
+		(GTK_COLOR_BUTTON (col_routecol_bt),
+		_("Choose Route color"));
+	g_signal_connect (col_routecol_bt, "color-set",
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.route);
+	gtk_tooltips_set_tip (col_tooltips, col_routecol_bt,
+		_("Set here the color of the drawn route"), NULL);
+	col_routestyle_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_routestyle_combo), "line style");
+	gtk_tooltips_set_tip (col_tooltips, col_routestyle_combo,
+		_("Set here the line style of the drawn route"), NULL);
+	// TODO: add 'change linestyle' functionality
+	// combobox is disabled until that is done
+	gtk_combo_box_set_active
+		(GTK_COMBO_BOX (col_routestyle_combo), 0);
+	gtk_widget_set_sensitive (col_routestyle_combo, FALSE);
+
+	/* Friends label color & font */
+	col_friendscol_lb = gtk_label_new (_("Friends"));
+	col_friendscol_bt = gtk_color_button_new_with_color
+		(&colors.friends);
+	gtk_color_button_set_title
+		(GTK_COLOR_BUTTON (col_friendscol_bt),
+		_("Choose Friends color"));
+	g_signal_connect (col_friendscol_bt, "color-set",
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.friends);
+	gtk_tooltips_set_tip (col_tooltips, col_friendscol_bt,
+		_("Set here the text color of the drawn friends"), NULL);
+	col_friendsfont_bt = gtk_font_button_new_with_font
+		(local_config.font_friends);
+	gtk_font_button_set_title
+		(GTK_FONT_BUTTON (col_friendsfont_bt),
+		_("Choose font for friends"));
+	gtk_font_button_set_use_font
+		(GTK_FONT_BUTTON (col_friendsfont_bt), TRUE);
+	g_signal_connect (col_friendsfont_bt, "font-set",
+		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_friends);
+	gtk_tooltips_set_tip (col_tooltips, col_friendsfont_bt,
+		_("Set here the font of the drawn friends"), NULL);
+
+	/* Waypoints label color & font */
+	col_wpcol_lb = gtk_label_new (_("Waypoints"));
+	col_wpcol_bt = gtk_color_button_new_with_color
+		(&colors.wplabel);
+	gtk_color_button_set_title
+		(GTK_COLOR_BUTTON (col_wpcol_bt),
+		_("Choose Waypoints label color"));
+	g_signal_connect (col_wpcol_bt, "color-set",
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.wplabel);
+	gtk_tooltips_set_tip (col_tooltips, col_wpcol_bt,
+		_("Set here the text color of the waypoint labels"), NULL);
+	col_wpfont_bt = gtk_font_button_new_with_font
+		(local_config.font_wplabel);
+	gtk_font_button_set_title
+		(GTK_FONT_BUTTON (col_wpfont_bt),
+		_("Choose font for waypoint labels"));
+	gtk_font_button_set_use_font
+		(GTK_FONT_BUTTON (col_wpfont_bt), TRUE);
+	g_signal_connect (col_wpfont_bt, "font-set",
+		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_wplabel);
+	gtk_tooltips_set_tip (col_tooltips, col_wpfont_bt,
+		_("Set here the font of waypoint labels"), NULL);
+
+	/* Big Display color & font */
+	col_bigcol_lb = gtk_label_new (_("Dashboard"));
+	col_bigcol_bt = gtk_color_button_new_with_color
+		(&colors.dashboard);
+	gtk_color_button_set_title
+		(GTK_COLOR_BUTTON (col_bigcol_bt),
+		_("Choose color for dashboard"));
+	g_signal_connect (col_bigcol_bt, "color-set",
+		GTK_SIGNAL_FUNC (setcolor_cb), &colors.dashboard);
+	gtk_tooltips_set_tip (col_tooltips, col_bigcol_bt,
+		_("Set here the color of the dashboard"), NULL);
+	col_bigfont_bt = gtk_font_button_new_with_font
+		(local_config.font_dashboard);
+	gtk_font_button_set_title
+		(GTK_FONT_BUTTON (col_bigfont_bt),
+		_("Choose font for dashboard"));
+	gtk_font_button_set_use_font
+		(GTK_FONT_BUTTON (col_bigfont_bt), TRUE);
+	g_signal_connect (col_bigfont_bt, "font-set",
+		GTK_SIGNAL_FUNC (setfont_cb), local_config.font_dashboard);
+	gtk_tooltips_set_tip (col_tooltips, col_bigfont_bt,
+		_("Set here the font of the dashboard"), NULL);
+
+	col_map_table = gtk_table_new (5, 3, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (col_map_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (col_map_table), 5);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_trackcol_lb, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_trackcol_bt, 1, 2, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (col_map_table),
+		col_trackstyle_combo, 2, 3, 0, 1);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_routecol_lb, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_routecol_bt, 1, 2, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (col_map_table),
+		col_routestyle_combo, 2, 3, 1, 2);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_friendscol_lb, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_friendscol_bt, 1, 2, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (col_map_table),
+		col_friendsfont_bt, 2, 3, 2, 3);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_wpcol_lb, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_wpcol_bt, 1, 2, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (col_map_table),
+		col_wpfont_bt, 2, 3, 3, 4);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_bigcol_lb, 0, 1, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (col_map_table),
+		col_bigcol_bt, 1, 2, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (col_map_table),
+		col_bigfont_bt, 2, 3, 4, 5);
+	}
+
+	/* gui nightmode settings */
+	{
+	col_nightauto_rb = gtk_radio_button_new_with_label
+		(NULL, _("Automatic"));
+	g_signal_connect (col_nightauto_rb, "toggled",
+		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_AUTO);
+	col_nighton_rb = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (col_nightauto_rb), _("On"));
+	g_signal_connect (col_nighton_rb, "toggled",
+		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_ON);
+	col_nightoff_rb = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON (col_nightauto_rb), _("Off"));
+	g_signal_connect (col_nightoff_rb, "toggled",
+		GTK_SIGNAL_FUNC (setnightmode_cb), (gpointer) NIGHT_OFF);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (col_tooltips), col_nightauto_rb,
+		_("Switches automagically to night mode if it is dark "
+		"outside. Press 'N' key to turn off nightmode."), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (col_tooltips), col_nighton_rb,
+		_("Switches night mode on. Press 'N' key to turn off "
+		"nightmode."), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (col_tooltips), col_nightoff_rb,
+		_("Switches night mode off"), NULL);
+	switch (local_config.nightmode)
+	{
+		case NIGHT_OFF:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (col_nightoff_rb), TRUE);
+			break;
+		case NIGHT_ON:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (col_nighton_rb), TRUE);
+			break;
+		case NIGHT_AUTO:
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (col_nightauto_rb), TRUE);
+			break;
+	}
+
+	col_night_table = gtk_table_new (1, 3, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (col_night_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (col_night_table), 5);
+	gtk_table_attach_defaults (GTK_TABLE (col_night_table),
+		col_nighton_rb, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (col_night_table),
+		col_nightoff_rb, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (col_night_table),
+		col_nightauto_rb, 2, 3, 0, 1);
+	}
+
+	/* gui fonts/colors/styles frame */
+	col_map_frame = gtk_frame_new (NULL);
+	col_map_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (col_map_fr_lb), _("<b>Fonts, Colors, Styles</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (col_map_frame), col_map_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (col_map_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (col_map_frame), col_map_table);
+
+	/* gui nightmode frame */
+	col_night_frame = gtk_frame_new (NULL);
+	col_night_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (col_night_fr_lb), _("<b>Nightmode</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (col_night_frame), col_night_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (col_night_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (col_night_frame), col_night_table);
+
+	gtk_box_pack_start
+		(GTK_BOX (col_vbox), col_map_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start
+		(GTK_BOX (col_vbox), col_night_frame, FALSE, FALSE, 2);
+	
+	col_label = gtk_label_new (_("Colors"));
+	gtk_notebook_append_page
+		(GTK_NOTEBOOK (notebook), col_vbox, col_label);
 }
 
 /* ************************************************************************* */
@@ -1611,10 +1761,18 @@ settings_poi (GtkWidget *notebook)
 		poitypes_treeview);
 
 	renderer_poitypes = gtk_cell_renderer_toggle_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
+	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Display"),
 		renderer_poitypes, "active", POITYPE_SELECT, NULL);
 	g_signal_connect (renderer_poitypes, "toggled",
 		G_CALLBACK (toggle_poitype), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Label"),
+		renderer_poitypes, "active", POITYPE_LABEL, NULL);
+	g_signal_connect (renderer_poitypes, "toggled",
+		G_CALLBACK (toggle_poilabel), NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
@@ -1625,14 +1783,13 @@ settings_poi (GtkWidget *notebook)
 		column_poitypes);
 
 	renderer_poitypes = gtk_cell_renderer_text_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (
-		NULL, renderer_poitypes,
-		"text", POITYPE_TITLE, NULL);
+	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
+		renderer_poitypes, "text", POITYPE_TITLE, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
 		column_poitypes);
 
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
-		FALSE);
+		TRUE);
 	gtk_tree_view_collapse_all (GTK_TREE_VIEW (poitypes_treeview));
 
 	/* disable drawing of tree expanders */
@@ -2306,6 +2463,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	settings_friends (settings_nb);
 	settings_nav (settings_nb);	
 	settings_gui (settings_nb);
+	settings_col (settings_nb);
 	if (!havefestival)
 		settings_speech (settings_nb);
 	settings_gps (settings_nb);

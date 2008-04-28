@@ -392,9 +392,10 @@ db_poi_get (gchar *query, gpointer callback, gint database)
 
 /* *******************************************************
  */
-void
+gint
 db_streets_get (const gdouble lat, const gdouble lon, const guint distance, street_struct *street)
 {
+	gint t_res = 0;
 #ifdef MAPNIK
 	gchar sql_query[200];
 	gdouble x, y;
@@ -409,11 +410,13 @@ db_streets_get (const gdouble lat, const gdouble lon, const guint distance, stre
 		"SELECT name,ref,highway FROM planet_osm_line WHERE ST_DWithin(SetSRID(way,-1),"
 		" 'POINT(%.8f %.8f)', %d) AND highway!='' AND (name!='' OR ref!='') LIMIT 1;",
 		x, y, d);
-	db_postgis_query_street (sql_query, street);
+
+	t_res = db_postgis_query_street (sql_query, street);
 
 	if (mydebug > 20)
 		g_print ("db_streets_get: (%s) %s [%s]\n", street->ref, street->name, street->type);
 #endif
+	return t_res;
 }
 
 

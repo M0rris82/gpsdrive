@@ -689,13 +689,6 @@ battery_get_values (void)
 {
   gint havebattery = FALSE;	/* Battery level and loading flag */
 
-  if ( ! local_config.enableapm )
-    {
-    if (mydebug > 99)
-      printf ("APM Disabled\n");
-
-      return FALSE;
-    }
 #if defined(__linux__)
   havebattery =
     battery_get_values_linux_acpi (&batlevel, &batloading, &batcharge,
@@ -748,11 +741,6 @@ int
 temperature_get_values (void)
 {
   gint havetemperature = FALSE;
-
-  if ( ! local_config.enableapm )
-    {
-      return havetemperature;
-    }
 
   //  g_snprintf (dir_proc,sizeof(dir_proc),"/proc");
 
@@ -820,7 +808,6 @@ create_battery_widget (GtkWidget * hbox_displays)
 			    (drawing_battery),
 			    "expose_event",
 			    GTK_SIGNAL_FUNC (expose_display_battery), NULL);
-
     }
 }
 

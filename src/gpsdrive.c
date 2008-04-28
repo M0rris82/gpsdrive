@@ -1570,11 +1570,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	/* experimental output of current street data */
 #ifdef MAPNIK
-	if (mydebug == 1)
+	if (local_config.showway)
 	{
 		street_struct t_street;
 		gchar t_buf[500];
-		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street))
+		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street) > 0)
 		{
 			g_snprintf (t_buf, sizeof (t_buf), "(%s) %s [%s]",
 				t_street.ref, t_street.name, t_street.type);
@@ -2640,7 +2640,6 @@ usage ()
 	       "          language may be 'english', 'spanish', or 'german'\n"),
 	     _("-g geom.  set window geometry, e.g. 800x600\n"),
 	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
-	     _("-a        display APM stuff (battery status, temperature)\n"),
 	     _("-b server servername for NMEA server (if gpsd runs on another host)\n"),
 	     _("-c WP     set start position in simulation mode to this waypoint (WP)\n"),
 	     _("-e        embeddable GUI mode; no GUI appears; for use in external GTK apps\n"),
@@ -2718,9 +2717,6 @@ parse_cmd_args(int argc, char *argv[]) {
 				fprintf(stderr,"Config file '%s' not found.\n", local_config.config_file);
 				exit(-1);
 	    	}
-		case 'a':
-		    local_config.enableapm = TRUE;
-		    break;
 		case 's':
 		    nosplash = TRUE;
 		    break;
@@ -3034,7 +3030,7 @@ main (int argc, char *argv[])
 
     coords.target_lon = coords.current_lon + 0.00001;
     coords.target_lat = coords.current_lat + 0.00001;
-
+daylights ();
 
     /*  load waypoints before locale is set! */
     /*  Attention! In this file the decimal point is always a '.' !! */
@@ -3159,9 +3155,10 @@ main (int argc, char *argv[])
 
 
 
-
-    temperature_get_values ();
-    battery_get_values ();
+	if (local_config.showtemp)
+		temperature_get_values ();
+	if (local_config.showbatt)
+		battery_get_values ();
 
     g_strlcpy (mapfilename, "***", sizeof (mapfilename));
 

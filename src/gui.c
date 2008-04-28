@@ -100,6 +100,8 @@ extern currentstatus_struct current;
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
 extern GtkWidget *mute_bt;
+extern GtkWidget *frame_battery;
+extern GtkWidget *frame_temperature;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
 extern GtkWidget *find_poi_bt;
@@ -708,6 +710,10 @@ int gui_init (gchar *geometry, gint usegeometry)
 		gtk_widget_hide_all (frame_statusfriends);
 	if (!local_config.speech && !havefestival)
 		gtk_widget_hide_all (mute_bt);
+	if (!local_config.showbatt)
+		gtk_widget_hide_all (frame_battery);
+	if (!local_config.showtemp)
+		gtk_widget_hide_all (frame_temperature);
 
 	/* init map view:
 	 * this has to be done after the main window has been realized

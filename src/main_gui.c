@@ -2517,9 +2517,6 @@ gint create_main_window (void)
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
 
-    //gdk_window_fullscreen(main_window->window);
-    //gdk_window_maximize(main_window->window);
-
     // let the window manager show stuff before we continue
     while (gtk_events_pending()) gtk_main_iteration();
 

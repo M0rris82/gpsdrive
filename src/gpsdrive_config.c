@@ -231,6 +231,8 @@ writeconfig ()
 	fprintf (fp, "routecolor = %s\n", local_config.color_route);
 	fprintf (fp, "friendscolor = %s\n", local_config.color_friends);
 	fprintf (fp, "wplabelcolor = %s\n", local_config.color_wplabel);
+	fprintf (fp, "map_daycolor = %s\n", local_config.color_map_day);
+	fprintf (fp, "map_nightcolor = %s\n", local_config.color_map_night);
 	fprintf (fp, "messagenumber = %d\n", messagenumber);
 	fprintf (fp, "showssid = %d\n", showsid);
 	fprintf (fp, "speech = %d\n", local_config.speech);
@@ -249,7 +251,9 @@ writeconfig ()
 	fprintf (fp, "show_maptype = %d\n", local_config.showmaptype);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
 	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
-	fprintf (fp, "show_apm = %d\n", local_config.enableapm);
+	fprintf (fp, "show_battery = %d\n", local_config.showbatt);
+	fprintf (fp, "show_temperature = %d\n", local_config.showtemp);
+	fprintf (fp, "show_wayinfo = %d\n", local_config.showway);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
 	fprintf (fp, "draw_poilabel = %d\n", local_config.showpoilabel);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
@@ -395,7 +399,16 @@ readconfig ()
 			else if ( (strcmp(par1, "earthmate")) == 0)
 				earthmate = atoi (par2);
 			else if ( (strcmp(par1, "show_apm")) == 0)
-				local_config.enableapm = atoi (par2);
+			     {
+				local_config.showbatt = atoi (par2);
+				local_config.showtemp = atoi (par2);
+			     }
+			else if ( (strcmp(par1, "show_battery")) == 0)
+				local_config.showbatt = atoi (par2);
+			else if ( (strcmp(par1, "show_temperature")) == 0)
+				local_config.showtemp = atoi (par2);
+			else if ( (strcmp(par1, "show_wayinfo")) == 0)
+				local_config.showway = atoi (par2);
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
 				g_strlcpy (local_config.font_dashboard, par2,
 				sizeof (local_config.font_dashboard));
@@ -446,6 +459,12 @@ readconfig ()
 			else if ( (strcmp(par1, "wplabelcolor")) == 0)
 				g_strlcpy (local_config.color_wplabel, par2,
 				sizeof (local_config.color_wplabel));
+			else if ( (strcmp(par1, "map_daycolor")) == 0)
+				g_strlcpy (local_config.color_map_day, par2,
+				sizeof (local_config.color_map_day));
+			else if ( (strcmp(par1, "map_nightcolor")) == 0)
+				g_strlcpy (local_config.color_map_night, par2,
+				sizeof (local_config.color_map_night));
 			else if ( (strcmp(par1, "messagenumber")) == 0)
 				messagenumber = atoi (par2);
 			else if ( (strcmp(par1, "showssid")) == 0)
@@ -528,7 +547,9 @@ config_init ()
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_DESKTOP;
 	local_config.simmode = SIM_OFF;
-	local_config.enableapm = FALSE;
+	local_config.showbatt = FALSE;
+	local_config.showtemp = FALSE;
+	local_config.showway = FALSE;
 	local_config.dashboard[0] = 0;
 	local_config.dashboard[1] = DASH_DIST;
 	local_config.dashboard[2] = DASH_SPEED;
@@ -597,6 +618,10 @@ config_init ()
 		"#00ffff", sizeof (local_config.color_wplabel));
 	g_strlcpy (local_config.color_dashboard,
 		"#0000ff", sizeof (local_config.color_dashboard));
+	g_strlcpy (local_config.color_map_day,
+		"#ffebcc", sizeof (local_config.color_map_day));
+	g_strlcpy (local_config.color_map_night,
+		"#330033", sizeof (local_config.color_map_night));
 	g_strlcpy (local_config.font_dashboard,
 		"Sans bold 26", sizeof (local_config.font_dashboard));
 	g_strlcpy (local_config.font_wplabel,

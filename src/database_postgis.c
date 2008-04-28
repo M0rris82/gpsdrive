@@ -136,7 +136,7 @@ db_postgis_query_street (gchar *query, street_struct *street)
 
 	if (t_model == NULL)
 	{
-		g_print ("db_postgis_query: an error occured while trying to read from the database!\n");
+		g_print ("db_postgis_query_street: an error occured while trying to read from the database!\n");
 		return -1;
 	}
 
@@ -161,4 +161,22 @@ db_postgis_query_street (gchar *query, street_struct *street)
 
 	g_object_unref (t_model);
 	return t_rows;
+}
+
+gboolean
+db_get_errors (GdaConnection *connection)
+{
+        GList *list;
+        GList *node;
+        GdaConnectionEvent *error;
+
+        list = (GList *) gda_connection_get_events (connection);
+
+        for (node = g_list_first (list); node != NULL; node = g_list_next (node)) {
+                error = (GdaConnectionEvent *) node->data;
+                g_print ("Error no: %d\t", gda_connection_event_get_code (error));
+                g_print ("desc: %s\t", gda_connection_event_get_description (error));
+                g_print ("source: %s\t", gda_connection_event_get_source (error));
+                g_print ("sqlstate: %s\n", gda_connection_event_get_sqlstate (error));
+        }
 }
