@@ -49,7 +49,9 @@ typedef struct
 	gint coordmode;
 	gint nightmode;
 	gint guimode;
-	gint enableapm;
+	gboolean showbatt;
+	gboolean showtemp;
+	gboolean showway;
 	gint maxcpuload;
 	gint posmarker;
 	gchar wp_file[500];
@@ -102,6 +104,8 @@ typedef struct
 	gchar color_friends[40];
 	gchar color_wplabel[40];
 	gchar color_dashboard[40];
+	gchar color_map_day[40];
+	gchar color_map_night[40];
 	gchar font_friends[100];
 	gchar font_wplabel[100];
 	gchar font_dashboard[100];
