@@ -321,7 +321,7 @@ drawtracks (void)
 		gdk_draw_segments (drawable, kontext_map, (GdkSegment *) trackshadow, t);
 		gdk_gc_set_function (kontext_map, GDK_COPY);
 	}
-	if ( use_night_colors() )
+	if ( gui_status.nightmode )
 		gdk_gc_set_foreground (kontext_map, &colors.red);
 	else
 		gdk_gc_set_foreground (kontext_map, &colors.track);

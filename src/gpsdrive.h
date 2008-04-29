@@ -261,7 +261,6 @@ int posxy_on_screen (gdouble posx, gdouble posy);
 
 void init_lat2RadiusArray();
 int display_background_map ();
-int use_night_colors (void);
 
 typedef struct
 {
@@ -333,6 +332,7 @@ typedef struct
 	gdouble heading;	/* heading in radians */
 	gdouble bearing;	/* bearing in radians */
 	gdouble altitude;	/* current altitude */
+	gint timezone;		/* current timezone */
 	glong mapscale;		/* scale of map shown */
 	gchar maptype[12];	/* type of map shown */
 	gint zoom;		/* map zoom level */

@@ -46,7 +46,6 @@ void coordinate2gchar (gchar * text, gint buff_size, gdouble pos, gint islat, gi
 void checkinput (gchar * text);
 void mintodecimal (gchar * text);
 void mainsetup (void);
-void testifnight (void);
 void infos (void);
 gint removesetutc (GtkWidget * widget, guint datum);
 gint nav_doit (GtkWidget * widget, guint * datum);
@@ -95,3 +94,4 @@ gint speech_out_cb (GtkWidget * widget, guint * datum);
 gchar *escape_sql_string (const gchar *data);
 void distance2gchar
 	(gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size);
+gint check_if_night_cb (void);

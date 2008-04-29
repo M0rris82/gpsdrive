@@ -309,15 +309,12 @@ gint sats_used = 0, sats_in_view = 0;
 gint numgrids = 4, scroll = TRUE;
 gint satposmode = FALSE;
 gint printoutsats = FALSE;
-gint isnight = FALSE, disableisnight;
-gint nighttimer;
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
 gint borderlimit;
 gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
 gint lastnotebook = 0;
-extern gint zone;
 gint ignorechecksum = FALSE;
 
 /* Give more debug informations */
@@ -520,29 +517,6 @@ display_status (char *message)
 
 
 /* *****************************************************************************
- */
-gint
-lightoff (GtkWidget * widget, guint * datum)
-{
-	disableisnight = FALSE;
-	/* gtk_widget_modify_bg (main_window, GTK_STATE_NORMAL, &colors.nightmode); */
-	return FALSE;
-}
-
-/* *****************************************************************************
- */
-gint
-lighton (void)
-{
-	disableisnight = TRUE;
-	/*   nighttimer = gtk_timeout_add (30000, (GtkFunction) lightoff, 0); */
-
-	/*   gtk_widget_restore_default_style(main_window); */
-	return TRUE;
-}
-
-
-/* *****************************************************************************
  * display upper status line 
  * speak how long it takes till we reach our destination
  */
@@ -631,7 +605,6 @@ display_status2 ()
 /* *****************************************************************************
  * draw the marker on the map 
  * calculate CPU load: loadpercent
- * check night mode switching
  * check for new map
  * TODO: eventually split this callback or rename it
  */
@@ -645,24 +618,6 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 
 	if (current.importactive)
 		return TRUE;
-
-	if ((!disableisnight) && (!downloadwindowactive))
-	{
-		if (	(local_config.nightmode == NIGHT_ON) ||
-			(local_config.nightmode == NIGHT_AUTO && isnight)
-		   )
-		{
-			switch_nightmode (TRUE);
-		}
-	}
-
-	if (	local_config.nightmode == NIGHT_OFF
-		|| disableisnight || downloadwindowactive
-	   )
-	{
-		switch_nightmode (FALSE);
-	}
-
 
 	g_get_current_time(&tv1);
 	runtime2 = tv1.tv_usec - tv2.tv_usec;
@@ -777,9 +732,6 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 
 	if (local_config.MapnikStatusInt < 2)
 		map_koord_check_and_reload();
-
-	testifnight ();
-
 
 #ifndef _WIN32
 	if (!didrootcheck)
@@ -1576,8 +1528,16 @@ drawmarker (GtkWidget * widget, guint * datum)
 		gchar t_buf[500];
 		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street) > 0)
 		{
-			g_snprintf (t_buf, sizeof (t_buf), "(%s) %s [%s]",
-				t_street.ref, t_street.name, t_street.type);
+			if (g_ascii_strcasecmp (t_street.ref, "NULL") == 0)
+			{
+				g_snprintf (t_buf, sizeof (t_buf), "%s [%s]",
+					t_street.name, t_street.type);
+			}
+			else
+			{
+				g_snprintf (t_buf, sizeof (t_buf), "%s - %s [%s]",
+					t_street.ref, t_street.name, t_street.type);
+			}
 		}
 		else
 		{
@@ -1619,14 +1579,6 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 			kontext_minimap, pixbuf_minimap, 0, 0, 0, 0, 128, 103,
 			GDK_RGB_DITHER_NONE, 0, 0);
 
-		/*       if (local_config.nightmode && (isnight&& !disableisnight)) */
-		/*  { */
-		/*    gdk_gc_set_function (kontext_minimap, GDK_AND); */
-		/*    gdk_gc_set_foreground (kontext_minimap, &colors.nightmode); */
-		/*    gdk_draw_rectangle (drawing_minimap->window, kontext_minimap, 1, 0, 0, 128, */
-		/*                        103); */
-		/*    gdk_gc_set_function (kontext_minimap, GDK_COPY); */
-		/*  } */
 		gdk_gc_set_foreground (kontext_minimap, &colors.red);
 		gdk_gc_set_line_attributes (kontext_minimap, 1, 0, 0, 0);
 
@@ -1982,12 +1934,12 @@ expose_cb (GtkWidget * widget, guint * datum)
 			 512 - MAP_Y_2, 0, 0,
 			 gui_status.mapview_x, gui_status.mapview_y, GDK_RGB_DITHER_NONE, 0, 0);
 
-	if ((!disableisnight) && (!downloadwindowactive))
+	if (!downloadwindowactive)
 	{
-		if (local_config.nightmode && isnight)
+		if (gui_status.nightmode)
 		{
 			gdk_gc_set_function (kontext_map, GDK_AND);
-			gdk_gc_set_foreground (kontext_map, &colors.nightmode);
+			gdk_gc_set_foreground (kontext_map, &colors.night);
 			gdk_draw_rectangle (drawable, kontext_map, 1, 0, 0,
 					    gui_status.mapview_x, gui_status.mapview_y);
 			gdk_gc_set_function (kontext_map, GDK_COPY);
@@ -2873,11 +2825,9 @@ main (int argc, char *argv[])
 
     lt = gmtime (&gmt_time);
     local_time = mktime (lt);
-    zone = lt->tm_isdst + (gmt_time - local_time) / 3600;
-    /*   fprintf(stderr,"\n zeitzone: %d\n",zone); */
+    current.timezone = lt->tm_isdst + (gmt_time - local_time) / 3600;
 
-
-    /*   zone = st->tm_gmtoff / 3600; */
+    /*   current.timezone = st->tm_gmtoff / 3600; */
     /*  initialize variables */
     /*  Munich */
     srand (gmt_time);
@@ -3030,7 +2980,6 @@ main (int argc, char *argv[])
 
     coords.target_lon = coords.current_lon + 0.00001;
     coords.target_lat = coords.current_lat + 0.00001;
-daylights ();
 
     /*  load waypoints before locale is set! */
     /*  Attention! In this file the decimal point is always a '.' !! */
@@ -3247,21 +3196,21 @@ daylights ();
 	if (local_config.guimode != GUI_PDA)
 	{
 		if (battery_get_values ())
-			g_timeout_add (5000,
-				(GtkFunction) expose_display_battery, NULL);
+			g_timeout_add_seconds (5, (GtkFunction) expose_display_battery, NULL);
 		if (temperature_get_values ())
-			g_timeout_add (5000,
-				(GtkFunction) expose_display_temperature, NULL);
+			g_timeout_add_seconds (5, (GtkFunction) expose_display_temperature, NULL);
 	}
 	g_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
 	if (havefestival || local_config.speech)
 	{
-		g_timeout_add (600000, (GtkFunction) (speech_saytime_cb), FALSE);
+		g_timeout_add_seconds (600, (GtkFunction) (speech_saytime_cb), FALSE);
 		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id, _("Using speech output"));
 	}
 
+	/* timer for switching nightmode on or off if set to AUTO */
+	g_timeout_add_seconds (1200, (GtkFunction) check_if_night_cb, NULL);
 
     /*  Mainloop */
     gtk_main ();

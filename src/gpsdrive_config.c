@@ -57,7 +57,7 @@ extern gdouble milesconv;
 extern gint satposmode, printoutsats;
 extern double dbdistance;
 extern int dbusedist;
-extern gint earthmate, zone;
+extern gint earthmate;
 extern long int maxfriendssecs;
 extern int messagenumber;
 extern int sockfd, showsid, storetz;
@@ -221,7 +221,7 @@ writeconfig ()
 		local_config.poi_searchradius);
 	fprintf (fp, "storetz = %d\n", storetz);
 	if (storetz)
-		fprintf (fp, "timezone = %d\n", zone);
+		fprintf (fp, "timezone = %d\n", current.timezone);
 	fprintf (fp, "dashboard_1 = %d\n", local_config.dashboard[1]);
 	fprintf (fp, "dashboard_2 = %d\n", local_config.dashboard[2]);
 	fprintf (fp, "dashboard_3 = %d\n", local_config.dashboard[3]);
@@ -443,7 +443,7 @@ readconfig ()
 			else if ( (strcmp(par1, "storetz")) == 0)
 				storetz = atoi (par2);
 			else if ( storetz && (strcmp(par1, "timezone")) == 0)
-				zone = atoi (par2);
+				current.timezone = atoi (par2);
 			else if ( (strcmp(par1, "bigcolor")) == 0)
 				g_strlcpy (local_config.color_dashboard, par2,
 				sizeof (local_config.color_dashboard));

@@ -56,7 +56,7 @@ extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble lat2RadiusArray[101];
 extern coordinate_struct coords;
-
+extern currentstatus_struct current;
 
 /* **********************************************************************
  * Build array for earth radii 
@@ -539,3 +539,68 @@ create_pixmap (GtkWidget * widget, const gchar * filename)
 
   return pixmap;
 }
+
+
+/* ******************************************************************
+ * Timeout function to check if it is day or night
+ */
+gint
+check_if_night_cb (void)
+{
+	gint Rank, D;
+	gdouble MA, C, RR, ET, L, Dec, Ho, lat, lon, now, sunrise, sunset;
+	GTimeVal t_time;
+	GDate *t_date;
+	struct tm *loctime;
+
+	if (local_config.nightmode != NIGHT_AUTO)
+		return TRUE;
+
+	t_date = g_date_new ();
+	g_get_current_time (&t_time);
+	g_date_set_time_val (t_date, &t_time);
+
+	lat = M_PI * coords.current_lat / 180.0;
+	lon = M_PI * coords.current_lon / 180.0;
+	Rank = g_date_get_day_of_year (t_date);
+	D = g_date_get_day (t_date);
+	MA = 357 + 0.9856 * Rank;
+	C = 1.914 * sin (M_PI * MA / 180.0) + 0.02 * sin (2 * M_PI * MA / 180.0);
+	L = 280.0 + C + 0.9856 * Rank;
+	RR = -2.466 * sin (2.0 * M_PI * L / 180.0) + 0.053 * sin (4 * M_PI * L / 180.0);
+	ET = (C + RR) * 4;
+	Dec = asin (0.3978 * sin (M_PI * L / 180.0));
+	Ho = acos ((-0.01454 - sin (Dec) * sin (lat)) / (cos (Dec) * cos (lat))) * 12 / M_PI;
+
+	sunrise = 12.0 - Ho + ET / 60.0 - coords.current_lon / 15 + current.timezone;
+	sunset = 12.0 + Ho + ET / 60.0 - coords.current_lon / 15 + current.timezone;
+
+	if (sunrise < 0)
+		sunrise += 24;
+	else if (sunrise > 24)
+		sunrise -= 24;
+	if (sunset < 0)
+		sunset += 24;
+	else if (sunset > 24)
+		sunset -= 24;
+
+	loctime = localtime (&t_time.tv_sec);
+	now = loctime->tm_hour + loctime->tm_min / 60.0;
+
+	if (mydebug > 20)
+	{
+		g_print ("\nnow     : %02d:%02d", loctime->tm_hour, loctime->tm_min);
+		g_print ("\nsunrise : %02d:%02d", (int) sunrise, (int) ((sunrise - (int) sunrise) * 60));
+		g_print ("\nsunset  : %d:%02d\n\n", (int) sunset, (int) ((sunset - (int) sunset) * 60));
+	}
+
+	if (now < sunrise || now > sunset)
+		switch_nightmode (TRUE);
+	else
+		switch_nightmode (FALSE);
+
+	g_date_free (t_date);
+
+	return TRUE;
+}
+

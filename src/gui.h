@@ -71,13 +71,12 @@ typedef struct
 	// The reason is that defined colors should only be used where it is
 	// really important (e.g. inside the map window), the rest should be
 	// left to the selected gtk theme.
-	GdkColor nightmode;
-	GdkColor defaultcolor;
+	GdkColor night;
+	GdkColor normal;
 	GdkColor red;
 	GdkColor black;
 	GdkColor white;
 	GdkColor blue;
-	GdkColor nightcolor;
 	GdkColor lcd;
 	GdkColor lcd2;
 	GdkColor yellow;
@@ -101,7 +100,7 @@ typedef struct
 	guint app_height;	/* height of application window in px */
 	gint mapview_x;		/* width of shown map part in px */
 	gint mapview_y;		/* height of shown map part in px */
-	gboolean nightmode;
+	gboolean nightmode;	/* flag if nightmode is switched on or off */
 	gboolean posmode;
 } guistatus_struct;
 
@@ -112,6 +111,4 @@ enum {
 };
 
 extern guistatus_struct gui_status;
-
-
 #endif /* GPSDRIVE_GUI_H */

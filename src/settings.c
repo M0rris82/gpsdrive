@@ -69,14 +69,12 @@ namesstruct;
 namesstruct *names;
 extern GtkWidget *addwaypointwindow;
 extern gint needreloadmapconfig;
-extern gint isnight, disableisnight;
 extern gint iszoomed;
 extern GtkWidget *miles;
 extern GtkWidget *status;
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
 extern gdouble milesconv;
-gint zone;
 
 GtkWidget *ipbt;
 gint sqlandmode = TRUE;
@@ -607,18 +605,15 @@ setnightmode_cb (GtkWidget *widget, guint value)
 			switch_nightmode (TRUE);
 			break;
 		case NIGHT_AUTO:
-			if (isnight)
-				switch_nightmode (TRUE);
-			else
-				switch_nightmode (FALSE);
+			check_if_night_cb ();
 			break;
 		default:
-			return FALSE;
+			return TRUE;
 	}
 
 	local_config.nightmode = value;
-
 	current.needtosave = TRUE;
+
 	return TRUE;
 }
 
@@ -2493,49 +2488,6 @@ settings_main_cb (GtkWidget *widget, guint datum)
 static gdouble hour, sunrise, sunset;
 GtkWidget *ge12;
 
-void
-testifnight (void)
-{
-//  daylights ();
-
-  if ((hour > sunset) || (hour < sunrise))
-    {
-      isnight = TRUE;
-    }
-  else
-    {
-      isnight = FALSE;
-    }
-
-  if (mydebug > 20)
-    {
-      if (isnight)
-	{
-	  g_print ("\nIt is night\n");
-	}
-      else
-	{
-	  g_print ("\nIt is day\n");
-	}
-    }
-}
-
-int
-use_night_colors (void)
-{
-    if ( disableisnight) {
-	return 0;
-    }
-    if ( local_config.nightmode == NIGHT_ON) {
-	return 1;
-    }
-    if ( (local_config.nightmode == NIGHT_AUTO) && isnight) {
-	return 1;
-    }
-    return 0;
-}
-
-
 /* *****************************************************************************
  */
 gint
@@ -2544,11 +2496,11 @@ infosettz (GtkWidget * widget, guint datum)
   gchar *sc;
 
   sc = (char *) gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (ge12)->entry));
-  sscanf (sc, "GMT%d", &zone);
+  sscanf (sc, "GMT%d", &current.timezone);
 
   if ( mydebug > 20 )
     {
-      g_print ("\nTimezone: %d", zone);
+      g_print ("\nTimezone: %d", current.timezone);
     }
 
   current.needtosave = TRUE;

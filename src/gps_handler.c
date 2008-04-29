@@ -81,7 +81,6 @@ extern gint maploaded;
 extern gchar utctime[20], loctime[20];
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff;
-extern gint zone;
 extern gdouble precision;
 extern gdouble milesconv;
 extern gchar mapfilename[1024];
@@ -371,7 +370,8 @@ dbus_process_fix(gint early)
 	ttime = dbus_current_fix.time;
 	gmtime_r (&ttime, &time);
 	g_snprintf (utctime, sizeof (utctime), "%02d:%02d.%02d ", time.tm_hour, time.tm_min, time.tm_sec);	
-	g_snprintf (loctime, sizeof (loctime), "%02d:%02d ", (time.tm_hour+zone+24)%24, time.tm_min);
+	g_snprintf (loctime, sizeof (loctime), "%02d:%02d ",
+		(time.tm_hour + current.timezone + 24)%24, time.tm_min);
 	NMEAsecs = dbus_current_fix.time;	// Use this value to judge timeout
 	/* Bail out if we have no fix */
 	current.gpsfix = 0;	// Handled later.

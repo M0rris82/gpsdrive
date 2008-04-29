@@ -76,7 +76,6 @@ extern friendsstruct *friends, *fserver;
 int actualfriends = 0;
 extern int messagenumber;
 extern long int maxfriendssecs;
-extern gint zone;
 extern gdouble milesconv;
 extern GtkWidget *map_drawingarea;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
@@ -570,7 +569,7 @@ drawfriends (void)
 		int speed, ii;
 
 		sec = atol ((friends + i)->timesec);
-		sec += 3600 * zone;
+		sec += 3600 * current.timezone;
 		t = gmtime (&sec);
 
 		as = asctime (t);
