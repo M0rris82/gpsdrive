@@ -59,7 +59,6 @@ extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
 extern gint haveposcount;
 extern gint blink, gblink, xoff, yoff;
-extern gint zone;
 extern gint oldsatsanz;
 extern gdouble precision, hdop;
 extern gdouble milesconv;
@@ -484,7 +483,7 @@ convertRMC (char *f)
     if (strcmp (utctime, "n/a") != 0)
       {
 	sscanf (utctime, "%d:%d.%d", &h, &m, &s);
-	h += zone;
+	h += current.timezone;
 	if (h > 23)
 	  h -= 24;
 	if (h < 0)
@@ -803,7 +802,7 @@ convertGGA (char *f)
     if (strcmp (utctime, "n/a") != 0)
       {
 	sscanf (utctime, "%d:%d.%d", &h, &m, &s);
-	h += zone;
+	h += current.timezone;
 	if (h > 23)
 	  h -= 24;
 	if (h < 0)
