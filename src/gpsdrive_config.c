@@ -246,6 +246,7 @@ writeconfig ()
 	fprintf (fp, "sound_gps = %d\n", local_config.sound_gps);
 	fprintf (fp, "icon_theme = %s\n", local_config.icon_theme);
 	fprintf (fp, "poi_filter = %s\n", local_config.poi_filter);
+	fprintf (fp, "poi_label = %s\n", local_config.poi_label);
 
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
 	fprintf (fp, "show_maptype = %d\n", local_config.showmaptype);
@@ -255,7 +256,6 @@ writeconfig ()
 	fprintf (fp, "show_temperature = %d\n", local_config.showtemp);
 	fprintf (fp, "show_wayinfo = %d\n", local_config.showway);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
-	fprintf (fp, "draw_poilabel = %d\n", local_config.showpoilabel);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
 	for ( i = 0; i < max_display_map; i++)
 	    {
@@ -495,6 +495,9 @@ readconfig ()
 			else if ( (strcmp(par1, "poi_filter")) == 0)
 				g_strlcpy (local_config.poi_filter, par2,
 					sizeof (local_config.poi_filter));
+			else if ( (strcmp(par1, "poi_label")) == 0)
+				g_strlcpy (local_config.poi_label, par2,
+					sizeof (local_config.poi_label));
 			else if ( (strcmp(par1, "draw_grid")) == 0)
 				local_config.showgrid = atoi (par2);
 			else if ( (strcmp(par1, "show_maptype")) == 0)
@@ -505,8 +508,6 @@ readconfig ()
 				local_config.showscalebar = atoi (par2);
 			else if ( (strcmp(par1, "draw_poi")) == 0)
 				local_config.showpoi = atoi (par2);
-			else if ( (strcmp(par1, "draw_poilabel")) == 0)
-				local_config.showpoilabel = atoi (par2);
 			else if ( (strcmp(par1, "draw_wlan")) == 0)
 				local_config.showwlan = atoi (par2);
 			else if ( ! strncmp(par1, "display_map_",12) )
@@ -567,7 +568,6 @@ config_init ()
 	local_config.showscalebar = TRUE;
 	local_config.showwaypoints = TRUE;
 	local_config.showpoi = TRUE;
-	local_config.showpoilabel = FALSE;
 	local_config.showtooltips = TRUE;
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;

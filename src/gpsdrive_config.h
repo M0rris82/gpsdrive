@@ -64,6 +64,7 @@ typedef struct
 	gchar dir_mbrola[500];
 	gchar icon_theme[500];
 	gchar poi_filter[2000];
+	gchar poi_label[2000];
 	guint poi_results_max;
 	gdouble poi_searchradius;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
@@ -76,7 +77,6 @@ typedef struct
 	gboolean showscalebar;
 	gboolean showwaypoints;
 	gboolean showpoi;
-	gboolean showpoilabel;
 	gboolean showwlan;
 	gboolean showtooltips;
 	gboolean showaddwpbutton;

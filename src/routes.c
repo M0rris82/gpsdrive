@@ -80,7 +80,8 @@ extern GtkWidget *frame_statusbar;
 extern poi_type_struct poi_type_list[poi_type_list_max];
 extern GtkWidget *main_window;
 extern GtkWidget *menuitem_saveroute;
-GHashTable *poi_types_hash;
+extern GHashTable *poi_types_hash;
+extern GtkTreeModel *poi_types_tree;
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -640,20 +641,21 @@ void add_routepoint
 	(glong t_id, gchar *t_name, gchar *t_cmt,
 	 gchar *t_type, gdouble t_lon, gdouble t_lat)
 {
-
 	gchar t_dist[15], t_trip[15];
 	gdouble last_lon, last_lat, t_dist_num;
-	gint *t_ptid;
+	gchar *t_path;
 	GdkPixbuf *t_icon;	
-	GtkTreeIter iter_route;
+	GtkTreeIter iter_route, iter_type;
 	GtkTreePath *path_route;
 
 	/* get an icon for the routepoint. if an icon for the given poi_type
 	 * is not available, take the generic route icon */
-	t_ptid = g_hash_table_lookup (poi_types_hash, t_type);
-	if (t_ptid == NULL)
-		t_ptid = g_hash_table_lookup (poi_types_hash, "waypoint.routepoint");
-	t_icon = poi_type_list[*t_ptid].icon;
+	t_path = g_hash_table_lookup (poi_types_hash, t_type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "waypoint.routepoint");
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &iter_type, t_path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter_type,
+		POITYPE_ICON, &t_icon, -1);
 
 	gtk_list_store_append (route_list_tree, &iter_route);
 

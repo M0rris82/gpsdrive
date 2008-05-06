@@ -75,6 +75,7 @@ typedef struct
   gint scale_min;
   gint scale_max;
   gint level;
+  gchar path[15];
   gchar description[POI_TYPE_LIST_STRING_LENGTH];
   gchar title[POI_TYPE_LIST_STRING_LENGTH];
 } poi_type_struct;

@@ -77,7 +77,6 @@ extern GdkGC *kontext_map;
 extern GdkPixbuf *posmarker_img;
 extern GdkGC *kontext;
 
-char txt[5000];
 PangoLayout *poi_label_layout;
 
 // keep actual visible POIs in Memory
@@ -137,8 +136,9 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 	gdouble t_lat, t_lon;
 	gdouble t_dist_num;
 	gchar t_dist[15];
-	gint *t_id;
-	GtkTreeIter iter;
+	gchar *t_path, *t_title;
+	GdkPixbuf *t_icon;
+	GtkTreeIter iter, type_iter;
 
 	if (columns == 0)
 		return 0;
@@ -181,9 +181,9 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 	g_strlcpy ((poi_result + poi_nr)->poi_type, values[3],
 			sizeof ((poi_result + poi_nr)->poi_type));
 
-	t_id = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
-	if (t_id == NULL)
-		t_id = g_hash_table_lookup (poi_types_hash, "unknown");
+	t_path = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "unknown");
 
 	(poi_result + poi_nr)->lon = g_strtod (values[4], NULL);
 	t_lon = g_strtod (values[4], NULL);
@@ -196,14 +196,20 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 	t_dist_num = calcdist (t_lon, t_lat);
 	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
 
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &type_iter, t_path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &type_iter,
+		POITYPE_TITLE, &t_title,
+		POITYPE_ICON, &t_icon,
+		-1);
+
 	gtk_list_store_append (poi_result_tree, &iter);
 	gtk_list_store_set (poi_result_tree, &iter,
 		RESULT_ID, (poi_result + poi_nr)->poi_id,
 		RESULT_NAME, (poi_result + poi_nr)->name,
 		RESULT_COMMENT,  (poi_result + poi_nr)->comment,
-		RESULT_TYPE_TITLE, poi_type_list[*t_id].title,
+		RESULT_TYPE_TITLE, t_title,
 		RESULT_TYPE_NAME, (poi_result + poi_nr)->poi_type,
-		RESULT_TYPE_ICON, poi_type_list [*t_id].icon,
+		RESULT_TYPE_ICON, t_icon,
 		RESULT_DISTANCE, t_dist,
 		RESULT_DIST_NUM, t_dist_num,
 		RESULT_LAT, t_lat,
@@ -227,8 +233,9 @@ handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geo
 	glong t_osmid = 0;
 	gdouble t_dist_num;
 	gchar t_dist[15];
-	gint *t_id;
-	GtkTreeIter iter;
+	gchar *t_path, *t_title;
+	GtkTreeIter iter, type_iter;
+	GdkPixbuf *t_icon;
 
 	if (g_str_has_prefix (geometry, "POINT(") == FALSE)
 		return -1;
@@ -276,9 +283,9 @@ handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geo
 	g_strlcpy ((poi_result + poi_nr)->poi_type, type,
 			sizeof ((poi_result + poi_nr)->poi_type));
 
-	t_id = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
-	if (t_id == NULL)
-		t_id = g_hash_table_lookup (poi_types_hash, "unknown");
+	t_path = g_hash_table_lookup (poi_types_hash, (poi_result + poi_nr)->poi_type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "unknown");
 
 	(poi_result + poi_nr)->lon = t_lon;
 
@@ -289,14 +296,20 @@ handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geo
 	t_dist_num = calcdist (t_lon, t_lat);
 	g_snprintf (t_dist, sizeof (t_dist), "%9.3f", t_dist_num);
 
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &type_iter, t_path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &type_iter,
+		POITYPE_TITLE, &t_title,
+		POITYPE_ICON, &t_icon,
+		-1);
+
 	gtk_list_store_append (poi_result_tree, &iter);
 	gtk_list_store_set (poi_result_tree, &iter,
 		RESULT_ID, (poi_result + poi_nr)->poi_id,
 		RESULT_NAME, (poi_result + poi_nr)->name,
 		RESULT_COMMENT,  (poi_result + poi_nr)->comment,
-		RESULT_TYPE_TITLE, poi_type_list[*t_id].title,
+		RESULT_TYPE_TITLE, t_title,
 		RESULT_TYPE_NAME, (poi_result + poi_nr)->poi_type,
-		RESULT_TYPE_ICON, poi_type_list [*t_id].icon,
+		RESULT_TYPE_ICON, t_icon,
 		RESULT_DISTANCE, t_dist,
 		RESULT_DIST_NUM, t_dist_num,
 		RESULT_LAT, t_lat,
@@ -495,13 +508,6 @@ draw_label (char *txt, gdouble posx, gdouble posy)
   gint width, height;
   gint k, k2;
 
-  if (!local_config.showpoilabel)
-    {
-      if (mydebug > 20)
-	printf ("draw_label: drawing of label is disabled\n");
-      return;
-    }
-
   if (strlen (txt) == 0)
       return;
 
@@ -612,6 +618,7 @@ static gboolean
 poitypetree_addrow (guint i, GtkTreeIter *parent)
 {
 	GtkTreeIter iter;
+	gchar *t_buf;
 
 	poi_type_list[i].id = i;
 
@@ -629,14 +636,19 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_LABEL, FALSE,
 		-1);
 
-	g_hash_table_insert (poi_types_hash, poi_type_list[i].name, &(poi_type_list[i].id));
+	t_buf = gtk_tree_model_get_string_from_iter (GTK_TREE_MODEL (poi_types_tree), &iter);
+	g_strlcpy (poi_type_list[i].path, t_buf, sizeof (poi_type_list[i].path));
+
+	g_hash_table_insert (poi_types_hash, poi_type_list[i].name, poi_type_list[i].path);
 
 	if (mydebug > 30)
 	{
 		fprintf (stderr,
-			"poitypetree_addrow: added %d - %s\n",
-			i, poi_type_list[i].name);
+			"poitypetree_addrow: added %s - %s\n",
+			t_buf, poi_type_list[i].name);
 	}
+
+	g_free (t_buf);
 
 	return TRUE;
 }
@@ -711,7 +723,7 @@ create_poitype_tree (guint max_level)
 
 	/* insert "no filter" entry into tree (used for poi lookup) */
 	gtk_tree_store_append (poi_types_tree, &iter, NULL);
- 	gtk_tree_store_set (poi_types_tree, &iter,
+	gtk_tree_store_set (poi_types_tree, &iter,
 		POITYPE_ID, -1,
 		POITYPE_NAME, "__NO_FILTER__",
 		POITYPE_ICON, NULL,
@@ -1105,7 +1117,9 @@ poi_draw_list (gboolean draw_now)
 {
   gint i;
   GdkPixbuf *icon;
-  gint *icon_index;
+  gchar *t_path;
+  GtkTreeIter t_iter;
+  gboolean t_lb;
 
   if (!local_config.use_database)
     return;
@@ -1124,87 +1138,86 @@ poi_draw_list (gboolean draw_now)
     }
 
 
-  if (mydebug > 20)
-    printf
-      ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
+	if (mydebug > 20)
+		g_print ("poi_draw_list: Start\t\t\tvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv\n");
 
-  if (poi_check_if_moved () || draw_now)
-    poi_rebuild_list ();
+	if (poi_check_if_moved () || draw_now)
+		poi_rebuild_list ();
 
   /* ------------------------------------------------------------------ */
   /*  draw poi_list points */
-  if (mydebug > 20)
-    printf ("poi_draw_list: drawing %ld points\n", poi_list_count);
+	if (mydebug > 20)
+		g_printf ("poi_draw_list: drawing %ld points\n", poi_list_count);
 
   for (i = 1; i <= poi_list_count; i++)
-    {
+  {
       gdouble posx, posy;
 
       posx = (poi_list + i)->x;
       posy = (poi_list + i)->y;
 
-      if ((posx >= 0) && (posx < gui_status.mapview_x) &&
-	  (posy >= 0) && (posy < gui_status.mapview_y))
+	if ((posx >= 0) && (posx < gui_status.mapview_x) &&
+	   (posy >= 0) && (posy < gui_status.mapview_y))
 	{
+		gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 
-
-	  gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
-
-	  g_strlcpy (txt, (poi_list + i)->name, sizeof (txt));
-
-	    icon_index = g_hash_table_lookup (poi_types_hash, (poi_list + i)->poi_type);
-	    icon = poi_type_list[*icon_index].icon;
-
-	    if (icon != NULL && *icon_index > 0)
-	      {
-		if (poi_list_count < 2000)
-		  {
-		    int wx = gdk_pixbuf_get_width (icon);
-		    int wy = gdk_pixbuf_get_height (icon);
-
-		    if (local_config.showfriends
-		        && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
-		    {
-		    	draw_posmarker (posx, posy, atoi ((poi_list + i)->comment),
-		    		&colors.lightorange, 4, FALSE, FALSE);
-		    }
-
-		    gdk_draw_pixbuf (drawable, kontext_map, icon,
-				     0, 0,
-				     posx - wx / 2,
-				     posy - wy / 2,
-				     wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
-		  }
-	      }
-	    else
-	      {
-		gdk_gc_set_foreground (kontext_map, &colors.red);
-		if (poi_list_count < 20000)
-		  {		// Only draw small + if more than ... Points 
-		    draw_plus_sign (posx, posy);
-		  }
+		t_path = g_hash_table_lookup (poi_types_hash, (poi_list + i)->poi_type);
+		if (gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree),
+		   &t_iter, t_path))
+		{
+			gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
+				POITYPE_ICON, &icon,
+				POITYPE_LABEL, &t_lb, -1);
+		}
 		else
-		  {
-		    draw_small_plus_sign (posx, posy);
-		  }
-	      }
-	
+			icon = NULL;
+
+		if (icon != NULL)
+		{
+			if (poi_list_count < 2000)
+			{
+				gint wx = gdk_pixbuf_get_width (icon);
+				gint wy = gdk_pixbuf_get_height (icon);
+
+				if (local_config.showfriends
+				   && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
+				{
+					draw_posmarker (posx, posy, atoi ((poi_list + i)->comment),
+						&colors.lightorange, 4, FALSE, FALSE);
+				}
+
+				gdk_draw_pixbuf (drawable, kontext_map, icon,
+					0, 0, posx - wx / 2, posy - wy / 2,
+					wx, wy, GDK_RGB_DITHER_NONE, 0, 0);
+			}
+		}
+		else
+		{
+			gdk_gc_set_foreground (kontext_map, &colors.red);
+			/* Only draw small + if more than ... Points */
+			if (poi_list_count < 20000)
+				draw_plus_sign (posx, posy);
+			else
+				draw_small_plus_sign (posx, posy);
+		}
+
 		/* draw friends label in configured color */
 		if (local_config.showfriends
 		    && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
 		{
-			draw_label_friend (txt, posx, posy);
+			draw_label_friend ((poi_list + i)->name, posx, posy);
 		}
 		/* draw label only if we display less than 1000 POIs */
 		else if (poi_list_count < 1000)
 		{
-			draw_label (txt, posx, posy);
+			if (t_lb)
+				draw_label ((poi_list + i)->name, posx, posy);
 		}
 	}
-    }
-  if (mydebug > 20)
-    printf
-      ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+  }
+
+	if (mydebug > 20)
+		g_print ("poi_draw_list: End\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
 

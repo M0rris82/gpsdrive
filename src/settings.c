@@ -99,6 +99,7 @@ extern GtkWidget *mute_bt;
 extern gint havefestival;
 extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
+extern GHashTable *poi_types_hash;
 
 GtkWidget *settings_window = NULL;
 
@@ -762,32 +763,36 @@ settings_close_cb (GtkWidget *window)
 	gtk_widget_destroy (window);
 }
 
+
+/* ************************************************************************* */
+static void
+set_poilabel_view (gchar *key, gchar *value, gchar *type)
+{
+	GtkTreeIter t_iter;
+	gboolean t_lb;
+
+	if (g_str_has_prefix (key, type) == FALSE)
+		return;
+
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &t_iter, value);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter, POITYPE_LABEL, &t_lb, -1);
+	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &t_iter, POITYPE_LABEL, !t_lb, -1);
+}
+
+
 /* ************************************************************************* */
 static void
 toggle_poilabel
 	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
 {
 	GtkTreeIter iter, child_iter;
-	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
-	gboolean value;
+	gchar *t_buf;
 
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path);
-	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree_filtered), &iter,
-		POITYPE_LABEL, &value, -1);
-
-	value = !value;
-
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path_str);
 	gtk_tree_model_filter_convert_iter_to_child_iter
 		(GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &child_iter, &iter);
-	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter, POITYPE_LABEL, value, -1);
-
-	if (value)
-		gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter,
-			POITYPE_SELECT, TRUE, -1);
-
-//	update_poi_type_filter ();
-
-	gtk_tree_path_free (path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &child_iter, POITYPE_NAME, &t_buf, -1);
+	g_hash_table_foreach (poi_types_hash, (GHFunc) set_poilabel_view, t_buf);
 }
 
 /* ************************************************************************* */
@@ -796,10 +801,9 @@ toggle_poitype
 	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
 {
 	GtkTreeIter iter, child_iter;
-	GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
 	gboolean value;
 
-	gtk_tree_model_get_iter (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path);
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path_str);
 	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree_filtered), &iter,
 		POITYPE_SELECT, &value, -1);
 
@@ -810,8 +814,6 @@ toggle_poitype
 	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &child_iter, POITYPE_SELECT, value, -1);
 
 	update_poi_type_filter ();
-
-	gtk_tree_path_free (path);
 }
 
 
@@ -1612,7 +1614,6 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_max_label, *poi_max_entry;
 	GtkWidget *poi_max2_label, *poi_dist2_label;
 	GtkWidget *poifilter_label;
-	GtkWidget *poi_labelshow_bt;
 	GtkWidget *scrolledwindow_poitypes;
 	GtkWidget *poitypes_treeview;
 	GtkCellRenderer *renderer_poitypes;
@@ -1699,23 +1700,6 @@ settings_poi (GtkWidget *notebook)
 
 	/* POI Display settings */
 	{
-	poi_labelshow_bt = gtk_check_button_new_with_label (_("Show POI Label"));
-	gtk_tooltips_set_tip (poi_tooltips, poi_labelshow_bt,
-		_("This will print the name next to the POI-Icon"), NULL);
-	if (local_config.showpoilabel)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (poi_labelshow_bt), TRUE);
-	}
-	else
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (poi_labelshow_bt), FALSE);
-	}
-	g_signal_connect (GTK_OBJECT (poi_labelshow_bt), "clicked",
-		      GTK_SIGNAL_FUNC (settogglevalue_cb),
-		      &local_config.showpoilabel);
-
 	poitheme_label = gtk_label_new (_("POI-Theme"));
 	poitheme_combo = gtk_combo_box_new_text();
 	gtk_combo_box_append_text
@@ -1803,19 +1787,16 @@ settings_poi (GtkWidget *notebook)
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (poidisplay_table), 5);
 	gtk_table_attach (GTK_TABLE (poidisplay_table),
-		poi_labelshow_bt, 0, 2, 0, 1,
-		GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0 ,0);
-	gtk_table_attach (GTK_TABLE (poidisplay_table),
-		poitheme_label, 0, 1, 1, 2,
+		poitheme_label, 0, 1, 0, 1,
 		GTK_SHRINK, GTK_SHRINK, 0 ,0);
 	gtk_table_attach (GTK_TABLE (poidisplay_table),
-		poitheme_combo, 1, 2, 1, 2,
+		poitheme_combo, 1, 2, 0, 1,
 		GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0 ,0);
 	gtk_table_attach (GTK_TABLE (poidisplay_table),
-		poifilter_label, 0, 1, 2, 3,
+		poifilter_label, 0, 1, 1, 2,
 		GTK_SHRINK, GTK_SHRINK, 0 ,0);
 	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		scrolledwindow_poitypes, 1, 2, 2, 3);	}
+		scrolledwindow_poitypes, 1, 2, 1, 2);	}
 
 
 	wp_frame = gtk_frame_new (NULL);
