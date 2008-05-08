@@ -90,7 +90,7 @@
     <Rule>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <Filter>[railway]='halt'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/halt.png" type="png" width="3" height="3"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport.png" type="png" width="16" height="12"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
@@ -118,7 +118,7 @@
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>10000</MinScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/level_crossing.png" type="png" width="7" height="7"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png" type="png" width="10" height="10"/>
     </Rule>
   </Style>
   <Style name="amenity">
@@ -139,7 +139,7 @@
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
       <MinScaleDenominator>500000</MinScaleDenominator>
       <Filter>[aeroway]='aerodrome'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/aerodrome.png" type="png" width="10" height="9"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png" type="png" width="16" height="16"/>
       <TextSymbolizer name="name" face_name="DejaVu Sans Oblique" size="8" fill="#636" dy="-9" halo_radius="1" wrap_width="0"/>
     </Rule>
     <Rule>
@@ -162,12 +162,12 @@
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>10000</MinScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/level_crossing.png" type="png" width="7" height="7"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png" type="png" width="10" height="10"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/level_crossing2.png" type="png" width="11" height="11"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
@@ -187,7 +187,7 @@
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[man_made]='power_wind'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/symbols/power_wind.png" type="png" width="16" height="26"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/power/wind.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
@@ -266,7 +266,7 @@
     <Rule>
       <Filter>[leisure] = 'nature_reserve'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/symbols/nature_reserve2.png" type="png" width="42" height="48"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/recreation/nature_reserve.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
