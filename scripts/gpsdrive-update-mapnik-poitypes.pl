@@ -53,6 +53,7 @@ GetOptions
   'verbose'	=> \$VERBOSE,
   'v+'		=> \$VERBOSE,
   'h|help'	=> \$help,
+  'man'    	=> \$man,
   'version'	=> \$do_show_version,
   'n'		=> \$do_not_add_column,
 )
@@ -63,7 +64,7 @@ if ( $do_show_version )
 {
   print "$VERSION\n";
 };
-
+pod2usage(-verbose=>2) if $man;
 pod2usage(1) if $help;
 
 
@@ -150,15 +151,31 @@ B<gpsdrive-update-mapnik-poitypes.pl> is a program that looks for entries
 indicating "Points of Interest" inside the mapnik database, and adds the
 matching gpsdrive poi_types to a separate column called "poi".
 
-WARNING: 
-    This programm replaces some/all poi entries.
-    So any changes made to the database may be overwritten!!!
-
 
 =head1 SYNOPSIS
 
 B<Common usages:>
 
-gpsdrive-update-mapnik-poitypes.pl [-v] [-h] [-n]
+gpsdrive-update-mapnik-poitypes.pl [-v] [-h] [-n] [--in=File_in.xml] [--out=File_out.xml]
+
+=head1 OPTIONS
+
+=over 2
+
+=item B<--in [Filename]>
+
+Filename to read
+
+
+=item B<--out [Filename]>
+
+Filename to write
+
+=back
+
+WARNING: 
+    This programm replaces some/all poi entries.
+    So any changes made to the database may be overwritten!!!
+
 
 =back
