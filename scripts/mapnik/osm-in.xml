@@ -350,7 +350,7 @@
     <Rule>
       <Filter>[landuse] = 'forest'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/symbols/forest.png" type="png" width="21" height="24"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/forest.png" type="png" width="14" height="16"/>
     </Rule>
     <Rule>
       <Filter>[landuse] = 'farm'</Filter>
