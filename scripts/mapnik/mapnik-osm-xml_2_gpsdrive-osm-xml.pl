@@ -92,6 +92,13 @@ sub Symbolizer {
 	$search =~ s/place_of_worship.png/church.png/;
 #	$search =~ s/mini_round.png/roundabout_left.png/;
 	$search =~ s/grave_yard.png/cemetery.png/;
+	$search =~ s/level_crossing.png/crossing_small.png/;
+	$search =~ s/level_crossing2.png/crossing.png/;
+	$search =~ s/aerodrome.png/airport.png/;
+	$search =~ s/power_wind.png/wind.png/;
+	$search =~ s/halt.png/transport.png/;
+	$search =~ s/nature_reserve2.png/nature_reserve.png/;
+	$search =~ s,symbols/forest.png,misc/landmark/forest.png,;
 #	print `find ../../data/map-icons/classic.small/ -name $search`;
 	my $png_path=`find ~/svn.openstreetmap.org/applications/share/map-icons/classic.small/ -name $search | grep -v incomming | head -1`;
 	chomp $png_path;
