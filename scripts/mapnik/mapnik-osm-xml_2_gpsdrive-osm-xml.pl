@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+# Convert the osm.xml from the svn.openstreetmap.org repository 
+# to a osm.xml for use with gpsdrive
 
 use strict;
 use warnings;
@@ -7,9 +9,30 @@ use XML::Twig;
 use IO::File;
 use Data::Dumper;
 use Image::Info;
+use Pod::Usage;
+use Getopt::Long;
 
+my $VERBOSE=0;
+my $help=0;
+my $man=0;
+pod2usage(-verbose=>2) if $man;
 my $filename_in = "/home/tweety/svn.openstreetmap.org/applications/rendering/mapnik/osm.xml";
 my $filename_out ="osm-copy.xml";
+GetOptions(
+    'filename_in:s'  => \$filename_in,
+    'filename_out:s' => \$filename_out,
+    'in:s'	=> \$filename_in,
+    'out:s'	=> \$filename_out,
+    'verbose'	=> \$VERBOSE,
+    'v+'	=> \$VERBOSE,
+    'h|help'	=> \$help,
+    'man'    	=> \$man,
+    ) or pod2usage(1);
+
+pod2usage(1) if $help;
+pod2usage(-verbose=>2) if $man;
+
+
 
 my $t= XML::Twig->new(
     twig_handlers =>
@@ -27,7 +50,7 @@ my $t= XML::Twig->new(
     keep_atts_order => 1,
     );
 $t->parsefile( $filename_in);
-open( OUT,">osm-copy.xml");
+open( OUT,">$filename_out");
 #$t->flush;
 print OUT $t->sprint(1);                            # output the document
 
@@ -151,3 +174,40 @@ sub rule {
 	}
     }
 }
+
+__END__
+
+=head1 NAME
+
+B<mapnik-osm-xml_2_gpsdrive-osm-xml.pl>
+
+=head1 DESCRIPTION
+
+B<mapnik-osm-xml_2_gpsdrive-osm-xml.pl> reads the osm.xml File 
+taken from the repository of osm and converts it with some
+mistirious rules to a clean osm.xml File which might be usable by gpsdrive.
+
+Warning:
+ This Programm has hardcoded Path Elements. So you'll have to adapt 
+ it to work on your PC.
+
+=head1 SYNOPSIS
+
+B<Common usages:>
+
+mapnik-osm-xml_2_gpsdrive-osm-xml.pl [--man] [--help] [--in=File_in.xml] [--out=File_out.xml]
+
+=head1 OPTIONS
+
+=over 2
+
+=item B<--in=Filename>
+
+Filename to read
+
+
+=item B<--out=Filename>
+
+Filename to write
+
+=back
