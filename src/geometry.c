@@ -37,8 +37,7 @@ Disclaimer: Please do not use for navigation.
 
 
 /* variables */
-extern gint ignorechecksum, mydebug;
-extern gint haveposcount, blink, gblink, xoff, yoff;
+extern gint mydebug, haveposcount, blink, gblink, xoff, yoff;
 
 
 /* ******************************************************************

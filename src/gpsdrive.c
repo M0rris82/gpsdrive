@@ -89,8 +89,6 @@ Disclaimer: Please do not use for navigation.
 
 #include <dirent.h>
 
-#include <getopt.h>
-
 #include "LatLong-UTMconversion.h"
 #include "gpsdrive.h"
 #include "battery.h"
@@ -359,15 +357,11 @@ int nosplash = FALSE;
 int havedefaultmap = TRUE;
 
 int storetz = FALSE;
-int egnoson = 0, egnosoff = 0;
 
 // ---------------------- for nmea_handler.c
 extern FILE *nmeaout;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-extern gint haveNMEA;
-#ifdef DBUS_ENABLE
-extern gint useDBUS;
-#endif
+extern gint haveNMEA, useDBUS;
 extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
 extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
@@ -2577,35 +2571,8 @@ usage ()
 #endif
 	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 	     "\nCopyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>"
-	     "\n         Website: http://www.gpsdrive.de\n\n",
-	     _("-v        show version\n"),
-	     _("-h        print this help\n"),
-	     _("-d        turn on debug info\n"),
-	     _("-D X      set debugging level to X\n"),
-	     _("-T        do some internal unit tests (don't start gpsdrive)\n"),
-	     _("-o thing  serial device, pty master, or file to use for NMEA output\n"),
-	     _("-f server select friends server, e.g. friendsd.gpsdrive.de\n"),
-#ifdef DBUS_ENABLE
-	     _("-X        use DBUS for communication with gpsd; this disables socket communication\n"),
-#endif
-	     _("-l lang.  select language of the voice output;\n"
-	       "          language may be 'english', 'spanish', or 'german'\n"),
-	     _("-g geom.  set window geometry, e.g. 800x600\n"),
-	     _("-1        have only 1 button mouse, for example using touchscreen\n"),
-	     _("-b server servername for NMEA server (if gpsd runs on another host)\n"),
-	     _("-c WP     set start position in simulation mode to this waypoint (WP)\n"),
-	     _("-e        embeddable GUI mode; no GUI appears; for use in external GTK apps\n"),
-	     _("-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"),
-	     _("-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"),
-	     _("-q        disable SQL support\n"),
-	     _("-F        force display of position even it is invalid\n"),
-	     _("-s        don't show splash screen\n"),
-	     _("-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"),
-	     _("-P        start in Position Mode\n"),
-	     _("-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"),
-	     _("-H ALT    correct the altitude by adding this value (ALT) to it\n"),
-	     _("-C file   use this config file\n"));
-
+	     "\n         Website: http://www.gpsdrive.de\n\n"
+);
 }
 
 
@@ -2630,169 +2597,98 @@ usr2handler (int sig)
 	initgps ();
 }
 
+
 /*
- * parse command arguments
- */
-int
-parse_cmd_args(int argc, char *argv[]) {
-	int i = 0;
-    /* parse cmd args */
-    /* long options for use of --geometry and -g */
-#ifndef _WIN32
-     int option_index = 0;
-     static struct option long_options[] =
-             {
-              {"geometry", required_argument, 0, 'g'},
-              {"config-file", required_argument, 0, 'C'},
-              {"screenshot", required_argument, 0, 'S'},
-              {0, 0, 0, 0}
-             };
-    do
-	{
-	    /* long options plus --geometry and -g */
-            i = getopt_long (argc, argv,
-			"W:ES:A:ab:c:X1qivPdD:TFepC:H:hnf:l:t:so:g:M:?",
-			long_options, &option_index);
-#else
-	do
-	{
-			/* XXX - find a better way, e.g. use glib function */
-  			extern char *optarg;
-            i = getopt (argc, argv,
-			"W:ESA:ab:c:X1qivPdD:TFepC:H:hnf:l:t:s:o:r:g:M:?");
-#endif
-	    switch (i)
-		{
-	    case 'C':
-	    	g_strlcpy(local_config.config_file, optarg, sizeof(local_config.config_file));
-	    	if (!g_file_test(local_config.config_file, G_FILE_TEST_EXISTS)) {
-				fprintf(stderr,"Config file '%s' not found.\n", local_config.config_file);
-				exit(-1);
-	    	}
-		case 's':
-		    nosplash = TRUE;
-		    break;
-		case 'q':
-		    local_config.use_database = FALSE;
-		    break;
-		case 'd':
-		    debug = TRUE;
-		    break;
-		case 'D':
-		    mydebug = strtol (optarg, NULL, 0);
-		    debug = TRUE;
-		    break;
-		case 'T':
-		    do_unit_test = TRUE;
-		    break;
-		case 'i':
-		    ignorechecksum = TRUE;
-		    g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
-		    break;
-		case 'X':
-#ifdef DBUS_ENABLE
-		    useDBUS = TRUE;
-#else
-		    g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
-#endif
-		    break;
-		case 'M':
-			if (!strcmp(optarg, "desktop"))
-				local_config.guimode = GUI_DESKTOP;
-			else if (!strcmp(optarg, "car"))
-				local_config.guimode = GUI_CAR;
-			else if (!strcmp(optarg, "pda"))
-				local_config.guimode = GUI_PDA;
-			else {
-				fprintf(stderr,"%s-mode not supported.\n", optarg);
-				exit(-1);
-			}
-			break;
-		case 'e':
-			local_config.embeddable_gui = TRUE;
-			break;
-		case '1':
-		    onemousebutton = TRUE;
-		    break;
-		case 'v':
-		    printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n" "\nVersion %s\n%s\n\n", VERSION, rcsid);
-		    exit (0);
-		    break;
-		case 'b':
-		    g_strlcpy (gpsdservername, optarg,
-			       sizeof (gpsdservername));
-		    break;
-		case 'c':
-		    g_strlcpy (setpositionname, optarg,
-			       sizeof (setpositionname));
-		    break;
-		case 'f':
-		    break;
-		case 'W':
-		    switch (strtol (optarg, NULL, 0))
-			{
-			case 0:
-			    egnosoff = TRUE;
-			    break;
-			case 1:
-			    egnoson = TRUE;
-			    break;
-			}
-		    break;
-		case 'l':
-		    if (!strcmp (optarg, "english"))
+	'c':
+		g_strlcpy (setpositionname, optarg, sizeof (setpositionname));
+		
+		_("-c WP     set start position in simulation mode to this waypoint (WP)\n")
+
+	'l':
+		if (!strcmp (optarg, "english"))
 			voicelang = english;
-		    else if (!strcmp (optarg, "german"))
+		else if (!strcmp (optarg, "german"))
 			voicelang = german;
-		    else if (!strcmp (optarg, "spanish"))
+		else if (!strcmp (optarg, "spanish"))
 			voicelang = spanish;
-		    else
-			{
-			    usage ();
-			    g_print (_
+		else
+		{
+			usage ();
+			g_print (_
 				("\nYou can currently only choose between "
 				"english, spanish and german\n\n"));
-			    exit (0);
-			}
-		    break;
-		case 'o':
-		    nmeaout = opennmea (optarg);
-		    break;
-		case 'h':
-		    usage ();
-		    exit (0);
-		    break;
-		case 'H':
-		    local_config.normalnull = strtol (optarg, NULL, 0);
-		    break;
-		case '?':
-		    usage ();
-		    exit (0);
-		    break;
-		case 'F':
-		    forcehavepos = TRUE;
-		    break;
-		case 'P':
-		    gui_status.posmode = TRUE;
-		    break;
-                /* Allows command line declaration of -g or --geometry */
-		case 'g':
-		    g_strlcpy (geometry, optarg, sizeof (geometry));
-		    usegeometry = TRUE;
-		    break;
-		case 'S':
-		    g_strlcpy (local_config.screenshot_dir, optarg, sizeof (local_config.screenshot_dir));
-	    	if (!g_file_test(local_config.screenshot_dir, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR))) {
-				fprintf(stderr,"Screenshot directory '%s' not found.\n", local_config.screenshot_dir);
-				exit(-1);
-	    	} else
-	    		takescreenshots = TRUE;
-		    break;
+			exit (0);
+		}
+		
+		_("-l lang.  select language of the voice output;\n"
+		"          language may be 'english', 'spanish', or 'german'\n"),
+
+*/
+
+/* *****************************************************************************
+ */
+gboolean
+parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
+{
+	if (g_ascii_strncasecmp (option, "-M", 2) == 0 ||
+	    g_ascii_strncasecmp (option, "--gui-mode", 10) == 0)
+	{
+		if (g_ascii_strncasecmp (value, "car", 3) == 0)
+			local_config.guimode = GUI_CAR;
+		else if (g_ascii_strncasecmp (value, "pda", 3) == 0)
+			local_config.guimode = GUI_PDA;
+		else if (g_ascii_strncasecmp (value, "desktop", 7) == 0)
+			local_config.guimode = GUI_DESKTOP;
+		else
+		{
+			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
+				"gui-mode '%s' not supported", value);
+			return FALSE;
 		}
 	}
-    while (i != -1);
-    return 0;
+	else if (g_ascii_strncasecmp (option, "-G", 2) == 0 ||
+	    g_ascii_strncasecmp (option, "--geometry", 10) == 0)
+	{
+		g_strlcpy (geometry, value, sizeof (geometry));
+		usegeometry = TRUE;
+	}
+	else if (g_ascii_strncasecmp (option, "-C", 2) == 0 ||
+	    g_ascii_strncasecmp (option, "--config-file", 13) == 0)
+	{
+		if (g_file_test(value, G_FILE_TEST_EXISTS))
+			g_strlcpy (local_config.config_file, value, sizeof (local_config.config_file));
+		else
+		{
+			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
+				"config file '%s' not found.", value);
+			return FALSE;
+		}
+	}
+	else if (g_ascii_strncasecmp (option, "-S", 2) == 0 ||
+	    g_ascii_strncasecmp (option, "--screenshot", 12) == 0)
+	{
+		if (g_file_test(value, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)))
+		{
+			g_strlcpy (local_config.screenshot_dir, value,
+				sizeof (local_config.screenshot_dir));
+			takescreenshots = TRUE;
+		}
+		else
+		{
+			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
+				"screenshot directory '%s' not found.", value);
+			return FALSE;
+		}
+	}
+	else if (g_ascii_strncasecmp (option, "-N", 2) == 0 ||
+	    g_ascii_strncasecmp (option, "--nmeaout", 9) == 0)
+	{
+		nmeaout = opennmea (value);
+	}
+
+	return TRUE;
 }
+
 
 /*******************************************************************************
  *                                                                             *
@@ -2802,6 +2698,59 @@ parse_cmd_args(int argc, char *argv[]) {
 int
 main (int argc, char *argv[])
 {
+    GError *error = NULL;
+    gboolean show_version = FALSE;
+
+    GOptionContext *opt_context = g_option_context_new ("Navigation System");
+    const gchar opt_desc[] = "Website: http://www.gpsdrive.de";
+
+    GOptionEntry opt_entries[] =
+    {
+	{"embedded", 'e', 0, G_OPTION_ARG_NONE, &local_config.embeddable_gui,
+		"embeddable GUI mode: no GUI appears - for use in external GTK apps", NULL},
+	{"force-position", 'f', 0, G_OPTION_ARG_NONE, &forcehavepos,
+		"force display of position even it is invalid", NULL},
+	{"ignore-checksum", 'i', 0, G_OPTION_ARG_NONE, &ignorechecksum,
+		"ignore NMEA checksum (risky, only for broken GPS receivers", NULL},
+	{"position-mode", 'p', 0, G_OPTION_ARG_NONE, &gui_status.posmode,
+		"start in Position Mode", NULL},
+	{"nosplash", 's', 0, G_OPTION_ARG_NONE, &nosplash,
+		"don't show splash screen", NULL},
+	{"touchscreen", 't', 0, G_OPTION_ARG_NONE, &onemousebutton,
+		"have only one button mouse, for example when using a touchscreen", NULL},
+	{"verbose", 'v', 0, G_OPTION_ARG_NONE, &debug,
+		"show some debug info", NULL},
+	{"use-DBUS", 'x', 0, G_OPTION_ARG_NONE, &useDBUS,
+		"use DBUS for communication with gpsd; this disables socket communication", NULL},
+	{"alt-offset", 'A', 0, G_OPTION_ARG_INT, &local_config.normalnull,
+		"correct the altitude by adding this value", "<OFFSET>"},
+	{"gpsd-server", 'B', 0, G_OPTION_ARG_STRING, &gpsdservername,
+		"servername for NMEA server (if gpsd runs on another host)", "<SERVER>"},
+	{"config-file", 'C', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
+		"set config file to use", "<FILE>"},
+	{"debug", 'D', 0, G_OPTION_ARG_INT, &mydebug,
+		"set debugging level", "<LEVEL>"},
+	{"friends-server", 'F', 0, G_OPTION_ARG_FILENAME, &local_config.friends_serverfqn,
+		"select friends server, e.g. friendsd.gpsdrive.de", "<SERVERFILE>"},
+	{"geometry", 'G', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
+		"set window geometry, e.g. 800x600", "<GEOMETRY>"},
+	{"gui-mode", 'M', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
+		"set GUI mode: may be 'desktop' (default), 'pda' or 'car'", "[car|pda|desktop]"},
+	{"nmeaout", 'N', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
+		"set serial device, pty master, or file to use for NMEA output", "<FILE>"},
+	{"screenshot", 'S', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
+		"take auto screenshots of different window (don't touch gpsdrive!)", "<PATH>" },
+	{"run-test", 'T', 0, G_OPTION_ARG_NONE, &do_unit_test,
+		"do some internal unit tests (don't start gpsdrive)", NULL},
+	{"version", 0, 0, G_OPTION_ARG_NONE, &show_version,
+		"show version info", NULL},
+	{NULL}
+    };
+
+    g_option_context_set_description (opt_context, opt_desc);
+    g_option_context_add_main_entries (opt_context, opt_entries, GETTEXT_PACKAGE);
+    g_option_context_add_group (opt_context, gtk_get_option_group (TRUE));
+
 
     gchar t_buf[500];
 
@@ -2809,7 +2758,6 @@ main (int argc, char *argv[])
 
     struct tm *lt;
     time_t local_time, gmt_time;
-    /*   GtkAccelGroup *accel_group; */
 
     gdouble f;
 
@@ -2958,7 +2906,6 @@ main (int argc, char *argv[])
 		g_strlcpy (language, "en", sizeof(language));
 	
 	/*    needed for right decimal delimiter ('.' or ',') */
-	// setlocale(LC_NUMERIC, "en_US");
 	setlocale(LC_NUMERIC, "C");
     }
 
@@ -2966,10 +2913,29 @@ main (int argc, char *argv[])
 	config_init ();
 	
 	check_and_create_files();
-	
+
+	/*  initialization for GTK+ */
+	gtk_init (&argc, &argv);
+
+	/* setting numeric locale to "C"
+	 * this is needed here because we use "." as decimal delimiter throughout
+	 * the application and gtk_init also initializes the locale */
+	setlocale(LC_NUMERIC, "C");
+
 	/* we need to parse command args 2 times, because we need the config file param */
-	parse_cmd_args(argc, argv);
-	
+	if (!g_option_context_parse (opt_context, &argc, &argv, &error))
+	{
+		g_print ("option parsing failed: %s\n", error->message);
+		exit (EXIT_FAILURE);
+	}
+	if (show_version)
+	{
+		g_print ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+			"\nVersion %s\n%s\n\n", VERSION, rcsid);
+		exit (EXIT_SUCCESS);
+	}
+
+
 	/* update config struct with settings from config file if possible */
 	readconfig ();
 
@@ -2990,21 +2956,28 @@ main (int argc, char *argv[])
      */
     loadmapconfig ();
 
-    /*    Setting locale for correct Umlauts */
-    gtk_set_locale ();
-
-    /*  initialization for GTK+ */
-    gtk_init (&argc, &argv);
 
     /* 2. run see comment at first run */
-    parse_cmd_args(argc, argv);
+	if (!g_option_context_parse (opt_context, &argc, &argv, &error))
+	{
+		g_print ("option parsing failed: %s\n", error->message);
+		exit (EXIT_FAILURE);
+	}
 
-    if ( mydebug >99 )
-	fprintf(stderr , "options parsed\n");
+	if (ignorechecksum)
+		g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
+
+#ifndef DBUS_ENABLE
+	if (useDBUS)
+		g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
+#endif
+
+	if ( mydebug >99 )
+		g_print ("options parsed\n");
 
 	/* print version info */
 	if ( mydebug > 0 )
-		printf ("\ngpsdrive (c) 2001-2006 Fritz Ganter"
+		g_print ("\ngpsdrive (c) 2001-2006 Fritz Ganter"
 		" <ganter@ganter.at>\n\nVersion %s\n%s\n\n", VERSION, rcsid);
 
 	/*  show splash screen */
@@ -3018,12 +2991,6 @@ main (int argc, char *argv[])
     haveproxy = FALSE;
 
     get_proxy_from_env();
-
-    { // Set locale for the use of atof()  
-	gchar buf[5];  
-	sprintf(buf,"%.1f",1.2);  
-	localedecimal=buf[1];  
-    }  
 
 	if (!local_config.speech)
 	{
@@ -3044,11 +3011,6 @@ main (int argc, char *argv[])
 	else
 		havefestival = FALSE;
 
-	if (local_config.use_database)
-		poi_rebuild_list ();
-	else
-		loadwaypoints ();
-
 	/* set start position for simulation mode
 	 * (only available in waypoints mode) */
 	if (strlen (setpositionname) > 0 && !local_config.use_database)
@@ -3065,28 +3027,9 @@ main (int argc, char *argv[])
 		}
 	}
 
-
-    /*    gtk_window_set_default (GTK_WINDOW (main_window), zoomin_bt); */
     /*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
     /*    An alternate gpsd server may be on 2947, we try it also */
-
     initgps ();
-
-    if (local_config.use_database) 
-	{
-	    current.kismetsock = initkismet ();
-	};
-
-
-    if( current.kismetsock != -1 )
-	{
-	    g_print (_("\nkismet server found\n"));
-	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
-	    speech_out_speek (t_buf);
-	}
-
-
-
 
     // Frame --- Sat levels
     /* Area for field strength, we have data only in NMEA mode */
@@ -3102,8 +3045,6 @@ main (int argc, char *argv[])
 //    g_signal_connect (GTK_OBJECT (map_drawingarea),
 //			"expose_event", GTK_SIGNAL_FUNC (expose_cb), NULL);
 
-
-
 	if (local_config.showtemp)
 		temperature_get_values ();
 	if (local_config.showbatt)
@@ -3116,15 +3057,24 @@ main (int argc, char *argv[])
     if (havefestival || local_config.speech)
 	speech_saytime_cb (TRUE);
 
-	/* do all the basic initalisation for the specific sections */
-	if (local_config.use_database)
+/* do all the basic initalization for the specific sections */
+
+	if (db_init () == FALSE)
 	{
-		if (db_init () == FALSE)
-		{
-			g_print ("Disabling database support!\n");
-			local_config.use_database = FALSE;
-		}
+		g_print ("Disabling database support!\n");
+		local_config.use_database = FALSE;
 	}
+
+	if (local_config.use_database) 
+		current.kismetsock = initkismet ();
+
+	if( current.kismetsock != -1 )
+	{
+	    g_print (_("\nkismet server found\n"));
+	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
+	    speech_out_speek (t_buf);
+	};
+
 	poi_init ();
 	gui_init (geometry, usegeometry);
 	friends_init ();
@@ -3132,7 +3082,7 @@ main (int argc, char *argv[])
 
 	load_friends_icon ();
 
-    update_posbt();
+	update_posbt();
 
     /*
      * setup TERM signal handler so that we can save everything nicely when the
@@ -3190,9 +3140,9 @@ main (int argc, char *argv[])
 		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
 	id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
 	g_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
-	g_timeout_add (10000, (GtkFunction) masteragent_cb, 0);
+	g_timeout_add_seconds (10, (GtkFunction) masteragent_cb, 0);
 	if (local_config.use_database)
-		g_timeout_add (15000, (GtkFunction) poi_rebuild_list, 0);
+		g_timeout_add_seconds (15, (GtkFunction) poi_rebuild_list, 0);
 	if (local_config.guimode != GUI_PDA)
 	{
 		if (battery_get_values ())
@@ -3200,7 +3150,7 @@ main (int argc, char *argv[])
 		if (temperature_get_values ())
 			g_timeout_add_seconds (5, (GtkFunction) expose_display_temperature, NULL);
 	}
-	g_timeout_add (15000, (GtkFunction) friendsagent_cb, 0);
+	g_timeout_add_seconds (15, (GtkFunction) friendsagent_cb, 0);
 	if (havefestival || local_config.speech)
 	{
 		g_timeout_add_seconds (600, (GtkFunction) (speech_saytime_cb), FALSE);
@@ -3212,8 +3162,9 @@ main (int argc, char *argv[])
 	/* timer for switching nightmode on or off if set to AUTO */
 	g_timeout_add_seconds (1200, (GtkFunction) check_if_night_cb, NULL);
 
-    /*  Mainloop */
-    gtk_main ();
+
+	/*  Mainloop */
+	gtk_main ();
 
 
     g_timer_destroy (timer);
@@ -3252,12 +3203,10 @@ main (int argc, char *argv[])
 	close (sockfd);
     festival_close ();
     cleanup_nasa_mapfile ();
-    fprintf (stderr, _("\n\nThank you for using GpsDrive!\n\n"));
+    g_print (_("\n\nThank you for using GpsDrive!\n\n"));
 
-    if ( do_unit_test ) {
-	printf ("\n\nAll Unit Tests successfull\n\n");
-	exit(0);
-    }
+    if ( do_unit_test )
+	g_print ("\n\nAll Unit Tests successfull\n\n");
 
-    return 0;
+    return EXIT_SUCCESS;
 }

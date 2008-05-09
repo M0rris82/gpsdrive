@@ -50,7 +50,7 @@ Disclaimer: Please do not use for navigation.
 
 
 /* variables */
-extern gint ignorechecksum, mydebug;
+extern gint mydebug;
 extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";

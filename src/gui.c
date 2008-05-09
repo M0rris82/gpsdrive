@@ -85,7 +85,6 @@ extern gint do_unit_test;
     /* External Values */
 
 extern gint mydebug;
-extern gint debug;
 
 extern GtkListStore *poi_result_tree;
 extern GtkListStore *route_list_tree;

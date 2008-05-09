@@ -85,7 +85,6 @@ Disclaimer: Please do not use for navigation.
 #include "gui.h"
 
 extern gint mydebug;
-extern gint debug;
 extern color_struct colors;
 
 /* Global Values */

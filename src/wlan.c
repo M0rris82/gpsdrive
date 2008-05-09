@@ -64,7 +64,7 @@ extern gint do_unit_test;
 extern gint maploaded;
 extern color_struct colors;
 extern currentstatus_struct current;
-extern gint debug, mydebug;
+extern gint mydebug;
 extern gint usesql;
 extern glong mapscale;
 extern GdkGC *kontext_map;

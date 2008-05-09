@@ -45,7 +45,7 @@
 #include "main_gui.h"
 
 /* variables */
-extern gint ignorechecksum, mydebug, debug;
+extern gint mydebug, debug;
 extern gdouble pixelfact;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern gint nrmaps;

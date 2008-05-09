@@ -108,9 +108,9 @@ extern gint NMEAoldsecs;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 gchar nmeamodeandport[50];
 gint haveNMEA;
+gint useDBUS = FALSE;
 
 #ifdef DBUS_ENABLE
-gint useDBUS;
 DBusError dbuserror;
 DBusConnection* connection;
 struct dbus_gps_fix {
