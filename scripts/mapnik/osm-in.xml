@@ -4096,7 +4096,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">(select * from planet_osm_polygon order by z_order,way_area desc) as leisure</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
@@ -4108,7 +4107,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="table">(select * from planet_osm_polygon where landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' or "natural"='land' order by z_order) as water</Parameter>
@@ -4120,7 +4118,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="table">(select * from planet_osm_line where waterway IS NOT NULL or landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' order by z_order) as water</Parameter>
@@ -4133,7 +4130,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line order by z_order) as roads
@@ -4148,7 +4144,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line order by z_order) as roads
@@ -4163,7 +4158,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_roads order by z_order) as roads
@@ -4176,9 +4170,7 @@
     <StyleName>waterway-bridges</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
-      <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="table">(select * from planet_osm_line where waterway IS NOT NULL or landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' order by z_order) as water</Parameter>
@@ -4201,9 +4193,7 @@
     <StyleName>mwaybridge_layer4_fill</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
-      <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line order by z_order) as roads
@@ -4218,7 +4208,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">(select * from planet_osm_point where amenity IS NOT NULL or railway is NOT NULL or "natural" is NOT NULL or man_made is NOT NULL or highway is NOT NULL or aeroway is NOT NULL) as amenity</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
@@ -4230,7 +4219,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="table">(select * from planet_osm_line where "power"='line' order by z_order) as power</Parameter>
@@ -4241,9 +4229,7 @@
     <StyleName>power_towers</StyleName>
     <Datasource>
       <Parameter name="type">postgis</Parameter>
-      <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="table">(select * from planet_osm_point where power is NOT NULL) as power_towers</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
@@ -4256,7 +4242,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,ref,oneway,char_length(ref) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads
@@ -4270,7 +4255,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">(select * from planet_osm_polygon order by z_order,way_area desc) as leisure</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
@@ -4282,7 +4266,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">planet_osm_point</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
@@ -4294,7 +4277,6 @@
     <Datasource>
       <Parameter name="type">postgis</Parameter>
       <Parameter name="host">/var/run/postgresql</Parameter>
-      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line where "boundary"='administrative' order by z_order) as admin</Parameter>

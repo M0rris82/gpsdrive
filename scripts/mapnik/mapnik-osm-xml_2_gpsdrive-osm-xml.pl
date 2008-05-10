@@ -148,13 +148,17 @@ sub parameter {
     } elsif ( $name eq 'host' ) {
 	my $child = $rule->first_child( );
 	$rule->subs_text (qr{dev.openstreetmap.org},'/var/run/postgresql');
+    } elsif ( $name eq 'dbname' ) {
+	$rule->subs_text (qr{steve},'gis');
     } elsif ( $name eq 'port' ) {
 	my $child = $rule->delete();
+    } elsif ( $name eq 'password' ) {
+	$rule->delete()
+    } elsif ( $name eq 'user' ) {
+	$rule->delete()
     } elsif ( $name eq 'user' ) {
 	$rule->subs_text (qr{steve},'@USER@');
 	$rule->subs_text (qr{postgres},'@USER@');
-    } elsif ( $name eq 'dbname' ) {
-	$rule->subs_text (qr{steve},'gis');
     } else {
 	#print "parameter: ".Dumper(\$rule);
     };
