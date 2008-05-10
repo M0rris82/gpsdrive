@@ -100,13 +100,14 @@ sub Symbolizer {
 	$search =~ s/nature_reserve2.png/nature_reserve.png/;
 	$search =~ s,symbols/forest.png,misc/landmark/forest.png,;
 #	print `find ../../data/map-icons/classic.small/ -name $search`;
-	my $png_path=`find ~/svn.openstreetmap.org/applications/share/map-icons/classic.small/ -name $search | grep -v incomming | head -1`;
+	my $map_icons_path="~/svn.openstreetmap.org/applications/share/map-icons";
+	my $png_path=`find ${map_icons_path}/classic.small/ ${map_icons_path}/classic.big/ -name $search | grep -v incomming | head -1`;
 	chomp $png_path;
 	$png_path="$ENV{HOME}/svn.openstreetmap.org/applications/share/map-icons/classic.small/misc/landmark/power/tower.png"
 	    if ( $search =~ m,power_tower, );
 	if ( -s $png_path ) {
 	    my ($h,$w) = get_png_size($png_path);
-	    $png_path =~ s,.*/classic.small/,classic.small/,;
+	    $png_path =~ s,.*/classic.(small|big)/,classic.small/,;
 	    print "Searching for '$png' --> $png_path  ($h,$w)\n";
 	    
 	    $file =~ s,symbols/$png,$png_path,;
@@ -151,6 +152,7 @@ sub parameter {
 	my $child = $rule->delete();
     } elsif ( $name eq 'user' ) {
 	$rule->subs_text (qr{steve},'@USER@');
+	$rule->subs_text (qr{postgres},'@USER@');
     } elsif ( $name eq 'dbname' ) {
 	$rule->subs_text (qr{steve},'gis');
     } else {

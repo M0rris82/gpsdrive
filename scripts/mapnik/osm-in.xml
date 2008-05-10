@@ -350,7 +350,7 @@
     <Rule>
       <Filter>[landuse] = 'forest'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/forest.png" type="png" width="14" height="16"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/forest.png" type="png" width="21" height="24"/>
     </Rule>
     <Rule>
       <Filter>[landuse] = 'farm'</Filter>
@@ -4178,7 +4178,7 @@
       <Parameter name="type">postgis</Parameter>
       <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">postgres</Parameter>
+      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="table">(select * from planet_osm_line where waterway IS NOT NULL or landuse='reservoir' or landuse='water' or  "natural"='lake' or "natural"='water' order by z_order) as water</Parameter>
@@ -4203,7 +4203,7 @@
       <Parameter name="type">postgis</Parameter>
       <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">postgres</Parameter>
+      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="table">
       (select * from planet_osm_line order by z_order) as roads
@@ -4243,7 +4243,7 @@
       <Parameter name="type">postgis</Parameter>
       <Parameter name="password">martyn</Parameter>
       <Parameter name="host">localhost</Parameter>
-      <Parameter name="user">postgres</Parameter>
+      <Parameter name="user">@USER@</Parameter>
       <Parameter name="dbname">osm</Parameter>
       <Parameter name="table">(select * from planet_osm_point where power is NOT NULL) as power_towers</Parameter>
       <Parameter name="estimate_extent">false</Parameter>
