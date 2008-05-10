@@ -112,9 +112,14 @@ void init_mapnik (char *ConfigXML) {
     // register datasources (plug-ins) and a font
     // Both datasorce_cache and font_engine are 'singletons'.
 
-    datasource_cache::instance()->register_datasources("/usr/lib/mapnik/0.5/input/");
+    std::string mapnik_source = "/usr/lib/mapnik/0.5/input/";
+    std::string mapik_font_path = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+
+    if (mydebug > 10) cout << "datasource_cache::instance()->register_datasources(" << mapnik_source << ")" << endl;
+    datasource_cache::instance()->register_datasources(mapnik_source);
     // XXX We should make the fontname and path a config option
-    freetype_engine::register_font("/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf");
+    if (mydebug > 10) cout << "freetype_engine::register_font(" << mapik_font_path << ")" << endl;
+    freetype_engine::register_font(mapik_font_path);
 
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
@@ -125,7 +130,9 @@ void init_mapnik (char *ConfigXML) {
     //load map
     try {
         std::string mapnik_config_file (ConfigXML);
+	if (mydebug > 10) cout << "mapnik::load_map('" << mapnik_config_file <<"')" << endl;
         mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+	if (mydebug > 10) cout << "malloc map" << endl;
         MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
         MapnikInitYsn = -1;
     }
@@ -181,7 +188,8 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
     ifstream InputXML (mapnik_config_file.c_str());
     ofstream DestXML (Dest);
     
-    if (mydebug > 0) cout << "Mapnik convert: " << mapnik_config_file << " : " << Dest << endl;
+    if (mydebug > 0) cout << "Mapnik convert: '" << mapnik_config_file << "' ----> '" << Dest << "'" << endl;
+    if (mydebug > 0) cout << "Mapnik convert Username: " << Username << endl;
     if (InputXML && DestXML) {
 	if (InputXML.is_open()) {
 	    string s ;
@@ -199,7 +207,7 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
     }
     InputXML.close();
     DestXML.close();
-    if (mydebug > 0) cout << "Mapnik convert to "  << Dest << "done." << endl;
+    if (mydebug > 0) cout << "Mapnik convert to '"  << Dest << "' done." << endl;
 	
     return -1;
 }
