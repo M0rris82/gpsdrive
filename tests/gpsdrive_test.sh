@@ -104,7 +104,9 @@ for LANG in en_US de_DE ; do
 		echo "------------------> check './build/src/gpsdrive -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
 
 		perl -p \
-		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
+		    -e "s,PWD,$PWD,g;" \
+		    -e "s/icon_theme = .*/icon_theme = $ICON_THEME/;" \
+		    -e "s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
 		./build/src/gpsdrive --geometry 800x600 -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
@@ -132,7 +134,7 @@ for LANG in en_US de_DE ; do
 		fi
 
 		if ! diff -u tests/gpsdriverc-pre tests/gpsdriverc ; then
-		    echo "gpsdriverc was modified by test"
+		    echo "!!!!! gpsdriverc was modified by test"
 		    exit -1 
 		fi
 	    done || exit 1
