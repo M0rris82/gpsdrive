@@ -86,7 +86,7 @@ for LANG in en_US de_DE ; do
 	    for MAPNIK in 0 1  ; do 
 		perl -p \
 		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
-		./build/src/gpsdrive --geometry 800x600 -S tests/ -a -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
+		./build/src/gpsdrive --geometry 800x600 -S tests/ -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 
 	    done || exit 1
 	done || exit 1
@@ -101,13 +101,13 @@ for LANG in en_US de_DE ; do
 	echo "-------------> check icon_theme=$ICON_THEME"
 	for USER_INTERFACE in car desktop pda ; do 
 	    for MAPNIK in 0 1  ; do 
-		echo "------------------> check './build/src/gpsdrive -T -a -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
+		echo "------------------> check './build/src/gpsdrive -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
 
 		perl -p \
 		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		./build/src/gpsdrive --geometry 800x600 -T -a -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
+		./build/src/gpsdrive --geometry 800x600 -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 		rc=$?
 
 		if [ $rc != 0 ] ; then
@@ -115,15 +115,18 @@ for LANG in en_US de_DE ; do
 		    echo "Error starting gpsdrive -T (rc=$rc)"
 		    exit 1;
 		fi
+		echo "Error String Check: -----------------------"
 		if grep -v \
 		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET .widget.. failed' \
 		    -e 'gda_connection_add_event: assertion .GDA_IS_CONNECTION .cnc.. failed' \
+		    -e 'Could not find provider PostgreSQL in the current setup' \
 		    -e 'cannot open image.*rendering' \
 		    -e 'Error: Could not find provider PostgreSQL in the current setup' \
 		    -e 'Unknown Config Parameter .*reminder' logs/gpsdrive_test_$LANG.txt | \
-		    grep -i -e 'Failed' -e 'ERROR' -e 'CRITICAL'
+		    grep -i -e 'Failed' -e 'ERROR' -e 'CRITICAL' -e 'exception'
 		    then
-		    grep -i -B 3  -e 'Failed' -e 'ERROR'  -e 'CRITICAL' logs/gpsdrive_test_$LANG.txt
+		    echo "Error String Check: -----------------------"
+		    grep -color -i -B 3  -A 2 -e 'Failed' -e 'ERROR'  -e 'CRITICAL' -e 'exception' logs/gpsdrive_test_$LANG.txt
 		    echo "Found (Error/Failed/CRITICAL) in 'gpsdrive -T output ( LANG=$LANG icon_theme=$ICON_THEME Userinterface=$USER_INTERFACE)'"
 		    exit 1;
 		fi
