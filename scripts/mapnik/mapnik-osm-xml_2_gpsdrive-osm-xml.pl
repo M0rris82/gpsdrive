@@ -17,7 +17,8 @@ my $help=0;
 my $man=0;
 pod2usage(-verbose=>2) if $man;
 my $filename_in = "/home/tweety/svn.openstreetmap.org/applications/rendering/mapnik/osm.xml";
-my $filename_out ="osm-copy.xml";
+# $filename_in = "/home/tweety/svn.openstreetmap.org/applications/rendering/mapnik/osm-template.xml";
+my $filename_out ="osm-in.xml";
 GetOptions(
     'filename_in:s'  => \$filename_in,
     'filename_out:s' => \$filename_out,
@@ -39,12 +40,12 @@ my $t= XML::Twig->new(
     { 
 #	Rule => \&rule,
 #	Layer => \&layer,
-	Parameter => \&parameter,
-	LinePatternSymbolizer => \&Symbolizer,
-	PointSymbolizer => \&Symbolizer,
+	Parameter		=> \&parameter,
+	LinePatternSymbolizer	=> \&Symbolizer,
+	PointSymbolizer		=> \&Symbolizer,
 	PolygonPatternSymbolizer => \&Symbolizer,
-	ShieldSymbolizer => \&Symbolizer,
-	TextSymbolizer => \&TextSymbolizer,
+	ShieldSymbolizer	=> \&Symbolizer,
+	TextSymbolizer		=> \&TextSymbolizer,
     },
     pretty_print => 'indented',                # output will be nicely formatted
     keep_atts_order => 1,
@@ -74,13 +75,15 @@ sub TextSymbolizer {
 sub Symbolizer {
     my( $t, $rule)= @_;      # arguments for all twig_handlers
     my $file = $rule->att('file');
-#    $rule->{'att'}->{'file'} =~ s,/home/steve/symbols,\@ICON_INSTALL_DIR\@/classic.small,;
     if ( ! $file ) {
 #	print Dumper(\$rule);
 	return;
     }
-    $file =~ s,c:/mapnik/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,;   
-    $file =~ s,/home/steve/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,;   
+    print "File: $file\n";
+    $file =~ s,c:/mapnik/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,g;
+    $file =~ s,/home/steve/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,g;
+    $file =~ s,\%WORLD_BOUNDARIES_DIR\%,\@WORLD_BOUNDARIES_INSTALL_DIR\@,g;
+    $file =~ s,\%SYMBOLS_DIR\%,\@DATA\@,g;
     my $png=$1;
     if ( $png ) {
 	my $search = $png;
@@ -144,21 +147,28 @@ sub parameter {
 	$rule->subs_text (qr{/home/steve/world_boundaries}, '@WORLD_BOUNDARIES_INSTALL_DIR@');
 	$rule->subs_text (qr{/home/steve/symbols/}, '@DATA@');
 	$rule->subs_text (qr{/home/steve/}, '@DATA@/');
+	$rule->subs_text (qr{%WORLD_BOUNDARIES_DIR%},'@WORLD_BOUNDARIES_INSTALL_DIR@');
+	$rule->subs_text (qr{%SYMBOLS_DIR%}, '@DATA@');
 #	print "parameter: ".Dumper(\$rule);
     } elsif ( $name eq 'host' ) {
 	my $child = $rule->first_child( );
 	$rule->subs_text (qr{dev.openstreetmap.org},'/var/run/postgresql');
+	$rule->subs_text (qr{localhost},'/var/run/postgresql');
+	$rule->subs_text (qr{\%DBHOST\%},'/var/run/postgresql');
+    } elsif ( $name eq 'table' ) {
+	$rule->subs_text (qr{\%PREFIX\%},'planet_osm');
     } elsif ( $name eq 'dbname' ) {
 	$rule->subs_text (qr{steve},'gis');
+	$rule->subs_text (qr{osm},'gis');
+	$rule->subs_text (qr{%DBNAME%},'gis');
     } elsif ( $name eq 'port' ) {
 	my $child = $rule->delete();
     } elsif ( $name eq 'password' ) {
 	$rule->delete()
     } elsif ( $name eq 'user' ) {
+#	$rule->subs_text (qr{steve},'@USER@');
+#	$rule->subs_text (qr{postgres},'@USER@');
 	$rule->delete()
-    } elsif ( $name eq 'user' ) {
-	$rule->subs_text (qr{steve},'@USER@');
-	$rule->subs_text (qr{postgres},'@USER@');
     } else {
 	#print "parameter: ".Dumper(\$rule);
     };
@@ -183,6 +193,7 @@ sub rule {
 	    print "rule ==> $attr: $val\n";      
 	    $val =~ s,/home/steve/symbols/,\@DATA_DIR\@/map-icons/classic.small/,;
 	    $val =~ s,/home/steve/world_boundaries/,\@DATA_DIR\@/mapnik/world_boundaries/,;
+	    $val =~ s,\%WORLD_BOUNDARIES_DIR\%,\@WORLD_BOUNDARIES_INSTALL_DIR\@,;
 	    $symbolizer->{'att'}->{$attr}=$val; # set the attribute
 	}
     }
