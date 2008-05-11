@@ -79,7 +79,6 @@ sub Symbolizer {
 #	print Dumper(\$rule);
 	return;
     }
-    print "File: $file\n";
     $file =~ s,c:/mapnik/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,g;
     $file =~ s,/home/steve/symbols/(.*),\@ICON_INSTALL_DIR\@/symbols/$1,g;
     $file =~ s,\%WORLD_BOUNDARIES_DIR\%,\@WORLD_BOUNDARIES_INSTALL_DIR\@,g;
