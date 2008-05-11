@@ -29,6 +29,7 @@ Package: gpsdrive
 Architecture: any
 Depends: ${misc:Depends}
 	${perl:Depends}
+	gda2-postgres
 	libart-2.0-2
 	libboost-filesystem1.34.1
 	libboost-thread1.34.1
@@ -37,6 +38,7 @@ Depends: ${misc:Depends}
 	libdbi-perl
 	libfile-slurp-perl
 	libgda3-3
+	libgda3-postgres
 	libltdl3
 	libmapnik(>>0.5.0-1) | libmapnik0.5
 	libsqlite3-0
@@ -51,7 +53,6 @@ Depends: ${misc:Depends}
 	mapnik-utils
 	openstreetmap-map-icons(>> 6400)
 	openstreetmap-utils( >> 6448)
-	perlmagick
 	perlmagick
 	python
 	python-support
@@ -68,7 +69,7 @@ Recommends: gpsd
 	libgdal
 	libgeos
 	openstreetmap-mapnik-data
-	openstreetmap-mapnik-world-boundaries
+	openstreetmap-mapnik-world-boundaries (>>7749)
 	perl-base(>>5.6)
 	python-mapnik
 Conflicts: osm-data-mapnik
