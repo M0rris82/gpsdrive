@@ -76,6 +76,7 @@ db_postgis_query (gchar *query, gint (*callback)(const char*, ...))
 	if (t_model == NULL)
 	{
 		g_print ("db_postgis_query: an error occured while trying to read from the database!\n");
+		g_print ("query: %s\n",query);
 		return -1;
 	}
 
@@ -137,6 +138,7 @@ db_postgis_query_street (gchar *query, street_struct *street)
 	if (t_model == NULL)
 	{
 		g_print ("db_postgis_query_street: an error occured while trying to read from the database!\n");
+		g_print ("query: %s\n",query);
 		return -1;
 	}
 
