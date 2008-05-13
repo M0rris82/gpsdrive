@@ -119,6 +119,7 @@ for LANG in en_US de_DE ; do
 		fi
 		echo "Error String Check: -----------------------"
 		if grep -v \
+		    -e 'db_postgis_query: an error occured while trying to read from the database!' \
 		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET .widget.. failed' \
 		    -e 'gda_connection_add_event: assertion .GDA_IS_CONNECTION .cnc.. failed' \
 		    -e 'Could not find provider PostgreSQL in the current setup' \
