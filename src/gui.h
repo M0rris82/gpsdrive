@@ -74,6 +74,7 @@ typedef struct
 	GdkColor night;
 	GdkColor normal;
 	GdkColor red;
+	GdkColor red_dark;
 	GdkColor black;
 	GdkColor white;
 	GdkColor blue;
@@ -81,7 +82,7 @@ typedef struct
 	GdkColor lcd2;
 	GdkColor yellow;
 	GdkColor green;
-	GdkColor green2;
+	GdkColor green_light;
 	GdkColor mygray;
 	GdkColor textback;
 	GdkColor textbacknew;

@@ -59,13 +59,9 @@ extern gchar utctime[20], loctime[20];
 extern gint forcehavepos;
 extern gint haveposcount;
 extern gint blink, gblink, xoff, yoff;
-extern gint oldsatsanz;
-extern gdouble precision, hdop;
 extern gdouble milesconv;
 extern gchar mapfilename[1024];
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
-extern gint newsatslevel;
-extern gint satfix;
 extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
 extern struct timeval timeout;
@@ -268,9 +264,9 @@ convertGSA (char *f)
   if (current.gpsfix > 1)
     {
 
-      hdop = g_strtod (field[16], 0);
+      current.gps_hdop = g_strtod (field[16], 0);
       if ( mydebug + nmea_handler_debug > 80 )
-	g_print ("nmea_handler: gpsd: GSA HDOP: %.1f\n", hdop);
+	g_print ("nmea_handler: gpsd: GSA HDOP: %.1f\n", current.gps_hdop);
     }
 }
 
@@ -547,9 +543,6 @@ convertGSV (char *f)
   if (mydebug + nmea_handler_debug && ( i2 != satbit))
       g_print ("nmea_handler: gpsd: convertGSV(): bits should be: %d is: %d\n", i2, satbit);
   g_snprintf (b, sizeof (b), "Satellites: %d\n", anz);
-  if (anz != oldsatsanz)
-    newsatslevel = TRUE;
-  oldsatsanz = anz;
 
   for (i = 4; i < j; i += 4)
     {
@@ -588,7 +581,6 @@ convertGSV (char *f)
 
       memcpy (satlistdisp, satlist, sizeof (satlist));
       memset (satlist, 0, sizeof (satlist));
-      newsatslevel = TRUE;
       return TRUE;
     }
   return FALSE;
@@ -602,7 +594,7 @@ void
 convertGGA (char *f)
 {
   gchar field[50][100], b[500];
-  gint i, l, j = 0, start = 0;
+  gint i, l, j = 0, start = 0, satfix = 0;
   gint longdegree, latdegree;
   gchar langri, breitri;
 
@@ -783,19 +775,20 @@ convertGGA (char *f)
 
   satfix = g_strtod (field[6], 0);
   sats_used = g_strtod (field[7], 0);
-  if (current.gpsfix > 1)
-    {
-      if (current.gpsfix > 2)
-     	current.altitude = g_strtod (field[9], 0);
-      if ( mydebug + nmea_handler_debug > 80 )
+  current.altitude = g_strtod (field[9], 0);
+
+  if (mydebug + nmea_handler_debug > 80)
+  {
 	g_print ("nmea_handler: gpsd: Altitude: %.1f, Fix: %d\n",
 		current.altitude, satfix);
-    }
-  else
-    {
-      current.groundspeed = 0;
-      sats_used = 0;
-    }
+  }
+
+  if (current.gpsfix < 2)
+  {
+	current.groundspeed = 0;
+	sats_used = 0;
+  }
+
   {
     int h, m, s;
     h = m = s = 0;
@@ -845,8 +838,8 @@ convertRME (char *f)
     }
   if (current.gpsfix > 1)
     {
-      precision = g_strtod (field[1], 0);
+      current.gps_precision = g_strtod (field[1], 0);
       if ( mydebug + nmea_handler_debug > 80 )
-	g_print ("nmea_handler: gpsd: RME precision: %.1f\n", precision);
+	g_print ("nmea_handler: gpsd: RME precision: %.1f\n", current.gps_precision);
     }
 }

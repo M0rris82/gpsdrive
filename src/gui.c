@@ -661,21 +661,22 @@ int gui_init (gchar *geometry, gint usegeometry)
 	init_color ("#a00000", &colors.night);
 	init_color ("#000000", &colors.black);
 	init_color ("#ff0000", &colors.red);
+	init_color ("#800000", &colors.red_dark);
 	init_color ("#ffffff", &colors.white);
 	init_color ("#0000ff", &colors.blue);
 	init_color ("#8b958b", &colors.lcd);
 	init_color ("#737d6a", &colors.lcd2);
 	init_color ("#ffff00", &colors.yellow);
 	init_color ("#00b000", &colors.green);
-	init_color ("#00ff00", &colors.green2);
+	init_color ("#00ff00", &colors.green_light);
 	init_color ("#d5d5d5", &colors.mygray);
 	init_color ("#a5a5a5", &colors.textback);
 	init_color ("#4076cf", &colors.textbacknew);
-	init_color ("#c0c0c0", &colors.grey);
+	init_color ("#a0a0a0", &colors.grey);
 	init_color ("#f06000", &colors.orange);
 	init_color ("#f0995f", &colors.lightorange);
 	init_color ("#ff8000", &colors.orange2);
-	init_color ("#606060", &colors.darkgrey); 
+	init_color ("#404040", &colors.darkgrey); 
 	init_color ("#d0d0d0", &colors.lightgrey);
 
 	posmarker_img = read_icon ("posmarker.png", 0);

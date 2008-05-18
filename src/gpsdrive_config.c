@@ -54,7 +54,6 @@ extern gint mydebug;
 extern gint setdefaultpos;
 extern gint usedgps;
 extern gdouble milesconv;
-extern gint satposmode, printoutsats;
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate;
@@ -179,20 +178,8 @@ writeconfig ()
 
 	fprintf (fp, "simfollow = %d\n", local_config.simmode);
 
-	fprintf (fp, "satposmode = ");
-	if (satposmode == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
-
-	fprintf (fp, "printoutsats = ");
-	if (printoutsats == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
-
 	fprintf (fp, "minsecmode = %d\n",local_config.coordmode);
-	
+
 	fprintf (fp, "posmarker = %d\n", local_config.posmarker);
 
 	fprintf (fp, "nightmode = ");
@@ -378,10 +365,6 @@ readconfig ()
 				local_config.MapnikStatusInt = atoi (par2);
 			else if ( (strcmp(par1, "simfollow")) == 0)
 				local_config.simmode = atoi (par2);
-			else if ( (strcmp(par1, "satposmode")) == 0)
-				satposmode = atoi (par2);
-			else if ( (strcmp(par1, "printoutsats")) == 0)
-				printoutsats = atoi (par2);
 			else if ( (strcmp(par1, "minsecmode")) == 0)
 				local_config.coordmode = atoi (par2);
 			else if ( (strcmp(par1, "posmarker")) == 0)

@@ -79,11 +79,12 @@ extern color_struct colors;
 extern routestatus_struct route;
 extern tripdata_struct trip;
 extern int actualfriends, maxfriends;
-extern gchar loctime[20];
+extern gchar loctime[20], utctime[20];
 extern gint mydebug;
 extern gint debug;
 extern gint iszoomed, xoff, yoff;
 extern gint sats_used, sats_in_view;
+extern gint haveNMEA;
 
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
@@ -91,13 +92,13 @@ extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
 extern gdouble pixelfact;
 extern gdouble milesconv;
+extern gint satlistdisp[MAXSATS][4];
 
 extern gint slistsize, nlist[];
 extern gint PSIZE;
 extern GtkWidget *posbt;
 extern GtkWidget *bestmap_bt;
 extern gint borderlimit;
-extern gdouble hdop;
 
 extern GtkWidget *main_window;
 
@@ -113,7 +114,7 @@ GtkTooltips *main_tooltips;
 GtkWidget *routeinfo_evbox, *routeinfo_icon, *routeinfo_label;
 
 // TODO: maybe these should be moved to local ones...
-GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix;
+GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix, *drawing_sats;
 GdkDrawable *drawable_compass, *drawable_minimap;
 GdkGC *kontext_compass, *kontext_gps, *kontext_minimap, *kontext_map;
 
@@ -132,7 +133,7 @@ static GtkWidget *statuslat_lb, *statuslon_lb;
 static GtkWidget *statusheading_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu, *dash_menu_window;
 static GtkWidget *controlbox_window;
-
+static GtkWidget *satellite_window;
 
 	GtkAdjustment *adj_h, *adj_v;
 
@@ -292,6 +293,20 @@ toggle_controlbox_cb (GtkWidget *widget, guint datum)
 		gtk_widget_show_all (controlbox_window);
 	else
 		gtk_widget_hide_all (controlbox_window);
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ *  toggle satellite info window
+ */
+gint
+toggle_satelliteinfo_cb (GtkWidget *widget, GdkEventButton *event, gboolean datum)
+{
+	if (datum)
+		gtk_widget_show_all (satellite_window);
+	else
+		gtk_widget_hide_all (satellite_window);
 	return TRUE;
 }
 
@@ -935,7 +950,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">HDOP: %.1f\nSats: %d/%d</span>",
 				local_config.color_dashboard, font_prec,
-				hdop, sats_used, sats_in_view);
+				current.gps_hdop, sats_used, sats_in_view);
 
 			pango_font_description_free (pfd);
 			g_free (font_prec);
@@ -1078,6 +1093,10 @@ update_statusdisplay ()
 	update_dashboard (frame_dash_3, local_config.dashboard[3]);
 	update_dashboard (frame_dash_4, local_config.dashboard[4]);
 
+	/* update gps status displays */
+	expose_gpsfix (NULL, 0);
+	expose_sats_cb (NULL, 0);
+
 	return TRUE;
 }
 
@@ -1174,6 +1193,171 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 				i*(t_wx+1)+5, 5, i*(t_wx+1)+5, t_y-5);
 		}
 	}
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * show satelite information
+ * TODO:
+ *	- show, if satellite is used (filled) or not (empty) -> info from GSA sentence
+ *	- show satellite numbers
+ */
+gint
+expose_sats_cb (GtkWidget *widget, guint *datum)
+{
+	GdkDrawable *drawable_sats;
+	GdkGC *kontext_sats;
+	PangoFontDescription *pfd_sats;
+	PangoLayout *layout_sats;
+	gint x, y, w, px, py, bx, h, i, j;
+	gdouble el, az;
+	gchar slat[20], slon[20], t_buf[200];
+
+	if ( mydebug > 50 )
+		g_print ("expose_sats_cb ()\n");
+
+	if (!haveNMEA)
+		return TRUE;
+
+	drawable_sats = drawing_sats->window;
+	if (!drawable_sats)
+		return TRUE;
+
+	kontext_sats = gdk_gc_new (drawable_sats);
+	gdk_drawable_get_size (drawable_sats, &x, &y);
+	w = y <= x/2 ? y : x/2;
+
+	/* draw background for satellite position view */
+	gdk_gc_set_line_attributes (kontext_sats, 1, GDK_LINE_SOLID, 0, 0);
+	gdk_gc_set_foreground (kontext_sats, &colors.grey);
+	gdk_draw_arc (drawable_sats, kontext_sats, FALSE, 6, 6, w-12, w-12, 100 * 64, 340 * 64);
+	gdk_draw_arc (drawable_sats, kontext_sats, FALSE, 3+w/4, 3+w/4, w/2-6, w/2-6, 0, 360 * 64);
+	gdk_draw_arc (drawable_sats, kontext_sats, FALSE, w/2-4, w/2-4, 8, 8, 0, 360 * 64);
+	layout_sats = gtk_widget_create_pango_layout (drawing_sats, "N");
+	pfd_sats = pango_font_description_from_string ("Sans Bold 12");
+	pango_layout_set_font_description (layout_sats, pfd_sats);
+	pango_layout_get_pixel_size (layout_sats, &px, NULL);
+	gdk_draw_layout_with_colors (drawable_sats, kontext_sats, (w-px)/2, 0,
+		layout_sats, &colors.grey, &colors.darkgrey);
+	if (layout_sats != NULL)
+		g_object_unref (G_OBJECT (layout_sats));
+	pango_font_description_free (pfd_sats);
+
+	/* draw background for satellite level view */
+	gdk_gc_set_foreground (kontext_sats, &colors.darkgrey);
+	gdk_draw_rectangle (drawable_sats, kontext_sats, TRUE, x/2+6, w/2+6, w-12, w/2-12);
+	gdk_gc_set_line_attributes (kontext_sats, 1, 0, 0, 0);
+	gdk_gc_set_foreground (kontext_sats, &colors.grey);
+	gdk_draw_rectangle (drawable_sats, kontext_sats, FALSE, x/2+6, w/2+6, w-12, w/2-12);
+	bx = (w-60)/12;
+	if (bx < 1)
+		bx = 1;
+	gdk_gc_set_line_attributes (kontext_sats, bx, 0, 0, 0);
+	for (i=0; i<12; i++)
+	{
+		if (i==sats_in_view)
+			gdk_gc_set_foreground (kontext_sats, &colors.black);
+		gdk_draw_line (drawable_sats, kontext_sats,
+			x/2+12 + i*(bx+4)+bx/2 , w/2+12 , x/2+12 + i*(bx+4) + bx/2 , w-12);
+	}
+
+	/* draw graphical satellite info */
+	gdk_gc_set_line_attributes (kontext_sats, 1, 0, 0, 0);
+	j = 0;
+	for (i = 0; i < MAXSATS; i++)
+	{
+		if (satlistdisp[i][0] != 0)
+		{
+			if (mydebug > 60)
+			{
+				g_print ("%02d Satinfo: PRN %03d, Signal %02d dB, Position: %d/%d\n",
+					j+1, satlistdisp[i][0], satlistdisp[i][1],
+					satlistdisp[i][2], satlistdisp[i][3]);
+			}
+
+			/* draw satellite levels */
+			h = satlistdisp[i][1] - 20;
+			if (h < 0)
+				gdk_gc_set_foreground (kontext_sats, &colors.red_dark);
+			else if (h < 10)
+				gdk_gc_set_foreground (kontext_sats, &colors.red);
+			else if (h < 15)
+				gdk_gc_set_foreground (kontext_sats, &colors.yellow);
+			else if (h < 20)
+				gdk_gc_set_foreground (kontext_sats, &colors.green);
+			else
+				gdk_gc_set_foreground (kontext_sats, &colors.green_light);
+			if (h < 1)
+				h = 1;
+			if (h > 30)
+				h = 30;
+			h = (w-48)*h/60;
+			gdk_draw_rectangle (drawable_sats, kontext_sats, TRUE,
+				x/2+12 + j*(bx+4), w-12-h, bx, h);
+
+			/* draw satellite positions */
+			gint x, y;
+			el = 1 - (satlistdisp[i][2] / 90.0);
+			az = DEG2RAD(satlistdisp[i][3]);
+			//x = (w / 2) + sin (az) * (el / 90.0) * (w / 2);
+			//y = (w / 2) - cos (az) * (el / 90.0) * (w / 2);
+			gdk_draw_arc (drawable_sats, kontext_sats, TRUE,
+				w/2 * (1 + sin(az) * el) - 3,
+				w/2 * (1 - cos(az) * el) - 3,
+				12, 12, 0, 360 * 64);
+
+			j++;
+		}
+	}
+
+	/* draw text info */
+	coordinate2gchar(slat, sizeof(slat), coords.current_lat, TRUE, local_config.coordmode);
+	coordinate2gchar(slon, sizeof(slon), coords.current_lon, FALSE, local_config.coordmode);
+	g_snprintf (t_buf, sizeof (t_buf),
+		"Latitude: %s\nLongitude: %s\nAltitude: %.1f m\nUTC Time: %s\nHDOP: %.1f",
+		slat, slon, current.altitude, utctime, current.gps_hdop);
+	layout_sats = gtk_widget_create_pango_layout (drawing_sats, t_buf);
+	pfd_sats = pango_font_description_from_string ("Sans Bold 10");
+	pango_layout_set_font_description (layout_sats, pfd_sats);
+	pango_layout_get_pixel_size (layout_sats, &px, &py);
+	gdk_draw_layout_with_colors (drawable_sats, kontext_sats, w*1.5-px/2, (w-px)/2,
+		layout_sats, &colors.grey, &colors.darkgrey);
+	if (layout_sats != NULL)
+		g_object_unref (G_OBJECT (layout_sats));
+	pango_font_description_free (pfd_sats);
+
+/*
+TODO: move this somewhere else...
+
+      if( !local_config.mute && local_config.sound_gps && satfix != oldsatfix)
+      {
+        if( 0 == satfix )
+        {
+          g_snprintf( buf, sizeof(buf), speech_gps_lost[voicelang] );
+        }
+        else if( 1 == satfix )
+        {
+          if( 2 == oldsatfix )
+          {
+            g_snprintf( buf, sizeof(buf), speech_diff_gps_lost[voicelang] );
+          }
+          else
+          {
+            g_snprintf( buf, sizeof(buf), speech_gps_good[voicelang] );
+          }
+        }
+        else if( 2 == satfix )
+        {
+          g_snprintf( buf, sizeof(buf), speech_diff_gps_found[voicelang] );
+        }
+
+        speech_out_speek( buf );
+      }
+
+      oldsatfix = satfix;
+*/
 
 	return TRUE;
 }
@@ -1342,8 +1526,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Switch Night Mode
 	if ((toupper (event->keyval)) == 'N')
 	{
-		// TODO: enable functionality once nightmode
-		//	is available again
+		// TODO: do something
 	}
 
 	// Query Info for near points
@@ -1509,6 +1692,36 @@ void create_dashboard_carmenu (void)
 	g_signal_connect_swapped (dash_button[i], "clicked",
 			GTK_SIGNAL_FUNC (gtk_widget_hide_all), dash_menu_window);
 
+}
+
+
+/* *****************************************************************************
+ * Window: Map Control Box (not used in PDA Mode)
+ */
+void create_satellite_window (void)
+{
+	satellite_window = gtk_dialog_new_with_buttons (_("Satellite Info"),
+		GTK_WINDOW (main_window), GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+	g_signal_connect (satellite_window, "delete_event",
+		G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (FALSE));
+	g_signal_connect (satellite_window, "response",
+		G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (FALSE));
+	gtk_window_set_icon_name (GTK_WINDOW (satellite_window), "gtk-info");
+
+	if (local_config.guimode == GUI_CAR)
+	{
+		gtk_window_maximize (GTK_WINDOW (satellite_window));
+		gtk_window_set_decorated (GTK_WINDOW (satellite_window), FALSE);
+		gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
+	}
+	else
+		gtk_window_set_resizable (GTK_WINDOW (satellite_window), FALSE);
+
+	drawing_sats = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (drawing_sats, 400, 200);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(satellite_window)->vbox), drawing_sats);
+	g_signal_connect (drawing_sats, "expose_event", G_CALLBACK (expose_sats_cb), NULL);
 }
 
 
@@ -2073,14 +2286,17 @@ void create_status_mainbox (void)
 		drawable_minimap = drawing_minimap->window;
 
 		/* Frame Compass */
-		frame_compass = gtk_frame_new (NULL);	
+		frame_compass = gtk_frame_new (NULL);
 		drawing_compass = gtk_drawing_area_new ();
 		gtk_widget_set_size_request (drawing_compass, 100, 100);
 		gtk_container_add (GTK_CONTAINER (frame_compass),
 			drawing_compass);
 		g_signal_connect (GTK_OBJECT (drawing_compass),
-			"expose_event", GTK_SIGNAL_FUNC (expose_compass),
-			NULL);
+			"expose_event", GTK_SIGNAL_FUNC (expose_compass), NULL);
+		gtk_widget_add_events (GTK_WIDGET (drawing_compass),
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (drawing_compass, "button-press-event",
+			G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
 
 		/* Frame Dashboard 1 */
 		frame_dash_1 = gtk_frame_new (" = 1 = ");	
@@ -2233,6 +2449,10 @@ void create_status_mainbox (void)
 		g_signal_connect (GTK_OBJECT (drawing_gpsfix),
 			"expose_event", GTK_SIGNAL_FUNC (expose_gpsfix),
 			NULL);
+		gtk_widget_add_events (GTK_WIDGET (drawing_gpsfix),
+			GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (drawing_gpsfix, "button-press-event",
+			G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
 		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips),
 			frame_statusgpsfix,
 			_("This shows the GPS Status and Number of satellites"
@@ -2464,6 +2684,8 @@ gint create_main_window (void)
 		create_dashboard_carmenu ();
 	else
 		create_dashboard_menu ();
+
+	create_satellite_window ();
 
 	if (local_config.guimode == GUI_PDA)
 	{  /* PDA Mode */

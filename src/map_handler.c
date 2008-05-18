@@ -978,7 +978,7 @@ drawdownloadrectangle (gint big)
       la = new_dl_lat;
       lo = new_dl_lon;
       scale = new_dl_scale;
-      gdk_gc_set_foreground (kontext_map, &colors.green2);
+      gdk_gc_set_foreground (kontext_map, &colors.green_light);
       gdk_gc_set_function (kontext_map, GDK_AND);
       gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
       if (big)

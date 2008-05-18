@@ -81,12 +81,9 @@ extern gint maploaded;
 extern gchar utctime[20], loctime[20];
 extern gint havepos, haveposcount;
 extern gint blink, gblink, xoff, yoff;
-extern gdouble precision;
 extern gdouble milesconv;
 extern gchar mapfilename[1024];
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
-extern gint newsatslevel;
-extern gint satfix;
 extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
 extern fd_set readmask;
@@ -241,7 +238,6 @@ init_nmea_socket ()
 	if (local_config.simmode == SIM_AUTO)
 		current.simmode = TRUE;
 	haveNMEA = FALSE;
-	newsatslevel = TRUE;
 	if (simpos_timeout == 0)
 	  simpos_timeout =
 	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
@@ -378,14 +374,12 @@ dbus_process_fix(gint early)
 	if (dbus_current_fix.mode>1) {
 		current.gpsfix = dbus_current_fix.mode;
 		haveRMCsentence = TRUE;
-		satfix = 1;
 		haveposcount++;
 		if (haveposcount == 3)
 			rebuildtracklist();
 	} else {
 		current.gpsfix = 1;
 		haveRMCsentence = FALSE;
-		satfix = 0;
 		haveposcount = 0;
 		dbus_old_fix = dbus_current_fix;
 		init_dbus_current_fix();
@@ -429,7 +423,7 @@ dbus_process_fix(gint early)
 		current.altitude = dbus_current_fix.altitude;
 	}
 	/* Handle positional error */
-	precision = dbus_current_fix.eph;
+	current.gps_precision = dbus_current_fix.eph;
 	
 	dbus_old_fix = dbus_current_fix;
 	init_dbus_current_fix();

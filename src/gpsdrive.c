@@ -159,7 +159,6 @@ GtkWidget *drawing_gps; // XXX - this seems to be initialized nowhere!
 extern GtkWidget  *drawing_compass;
 extern GdkGC *kontext_compass, *kontext_gps, *kontext_minimap;
 extern GdkDrawable *drawable_compass, *drawable_minimap;
-GdkDrawable *drawable_gps;
 
 GtkWidget *miles;
 GdkDrawable *drawable;
@@ -292,11 +291,9 @@ GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
 gchar gpsdservername[200], setpositionname[80];
-gint newsatslevel = TRUE;
 
-gdouble precision = (-1.0), hdop = (-1.0);
-gint oldsatfix = 0, oldsatsanz = -1, havealtitude = FALSE;
-gint satfix = 0, usedgps = FALSE;
+gint havealtitude = FALSE;
+gint usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
 GtkWidget *posbt;
 extern gint PSIZE;
@@ -305,8 +302,6 @@ GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
 gint sats_used = 0, sats_in_view = 0;
 gint numgrids = 4, scroll = TRUE;
-gint satposmode = FALSE;
-gint printoutsats = FALSE;
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
 gint borderlimit;
@@ -340,7 +335,6 @@ extern int pleasepollme;
 gint forcehavepos = FALSE;
 extern gchar cputempstring[20], batstring[20];
 extern GtkWidget *tempeventbox, *batteventbox;
-GtkWidget *satslabel1, *satslabel2, *satslabel3;
 GtkWidget *frame_map_area;
 GtkWidget *frame_wp;
 GtkWidget *frame_poi,*frame_track, *lab1;
@@ -767,312 +761,6 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 }
 
 
-/* *****************************************************************************
- * show satelite information
- * TODO: change color of sat BARs if the reception is bad/acceptable/good to red/yellow/green
- */
-gint
-expose_sats_cb (GtkWidget * widget, guint * datum)
-{
-	gint k, i, yabs, h, j, l;
-	gchar t[10], t1[20], buf[300], txt[10];
-	static GdkPixbufAnimation *anim = NULL;
-	static GdkPixbufAnimationIter *animiter = NULL;
-	GTimeVal timeresult;
-#define SATX 5
-	/*  draw satellite level (field strength) only in NMEA modus */
-return TRUE;
-	//if ( mydebug >50 )
-	fprintf(stderr , "expose_sats_cb()\n");
-
-
-	if (haveNMEA)
-	{
-		gdk_gc_set_foreground (kontext_gps, &colors.lcd);
-
-		gdk_draw_rectangle (drawable_gps, kontext_gps, 1, 3, 0,
-				    PSIZE + 2, PSIZE + 5);
-		gdk_gc_set_line_attributes (kontext_gps, 1, 0, 0, 0);
-		gdk_gc_set_foreground (kontext_gps, &colors.black);
-		gdk_draw_rectangle (drawable_gps, kontext_gps, 0, 3, 0,
-				    PSIZE + 2, PSIZE + 5);
-
-		gdk_gc_set_foreground (kontext_gps, &colors.lcd);
-
-		if (!satposmode)
-		{
-			if (current.gpsfix > 1)
-				gdk_gc_set_foreground (kontext_gps, &colors.green);
-			else
-				gdk_gc_set_foreground (kontext_gps, &colors.red);
-			gdk_gc_set_line_attributes (kontext_gps, 2, 0, 0, 0);
-			for (i = 3; i < (PSIZE + 5); i += 3)
-				gdk_draw_line (drawable_gps, kontext_gps, 4, i,
-					       PSIZE + 4, i);
-
-
-			gdk_gc_set_foreground (kontext_gps, &colors.lcd2);
-			gdk_gc_set_line_attributes (kontext_gps, 5, 0, 0, 0);
-			k = 0;
-			for (i = 0; i < 16; i++)
-			{
-				if (i > 5)
-					yabs = 2 + PSIZE;
-				else
-					yabs = 1 + PSIZE / 2;
-				h = PSIZE / 2 - 2;
-				gdk_draw_line (drawable_gps, kontext_gps,
-					       6 + 7 * k + SATX, yabs,
-					       6 + 7 * k + SATX, yabs - h);
-				k++;
-				if (k > 5)
-					k = 0;
-			}
-		}
-		if (satfix == 1)	/* normal Fix */
-			gdk_gc_set_foreground (kontext_gps, &colors.black);
-		else
-		{
-			if (satfix == 0)	/* no Fix */
-				gdk_gc_set_foreground (kontext_gps, &colors.textback);
-			else	/* Differntial Fix */
-				gdk_gc_set_foreground (kontext_gps, &colors.blue);
-		}
-		j = k = 0;
-
-		if (satposmode)
-		{
-			gdk_gc_set_line_attributes (kontext_gps, 1, 0, 0, 0);
-			gdk_gc_set_foreground (kontext_gps, &colors.lcd2);
-			gdk_draw_arc (drawable_gps, kontext_gps, 0, 4,
-				      4, PSIZE, PSIZE, 105 * 64, 330 * 64);
-			gdk_draw_arc (drawable_gps, kontext_gps, 0,
-				      5 + PSIZE / 4, 4 + PSIZE / 4, PSIZE / 2,
-				      PSIZE / 2, 0, 360 * 64);
-			gdk_gc_set_foreground (kontext_gps, &colors.darkgrey);
-			{
-				/* prints in pango */
-				PangoFontDescription *pfd;
-				PangoLayout *wplabellayout;
-				gint width;
-
-				wplabellayout =
-					gtk_widget_create_pango_layout
-					(drawing_gps, "N");
-				//KCFX  
-				if (local_config.guimode == GUI_PDA)
-					pfd = pango_font_description_from_string ("Sans 7");
-				else
-				if (local_config.guimode == GUI_CAR)
-					pfd = pango_font_description_from_string ("Sans 7");
-				else
-					pfd = pango_font_description_from_string ("Sans bold 10");
-				pango_layout_set_font_description
-					(wplabellayout, pfd);
-
-				gdk_draw_layout_with_colors (drawable_gps,
-							     kontext_gps,
-							     0 + (PSIZE) / 2,
-							     -2,
-							     wplabellayout,
-							     &colors.grey, NULL);
-				pango_layout_get_pixel_size (wplabellayout,
-							     &width, NULL);
-				/*          printf ("w: %d\n", width);  */
-				if (wplabellayout != NULL)
-					g_object_unref (G_OBJECT
-							(wplabellayout));
-				/* freeing PangoFontDescription, cause it has been copied by prev. call */
-				pango_font_description_free (pfd);
-
-			}
-
-			/*    gdk_draw_text (drawable_gps, font_verysmalltext, kontext_gps,
-			 *                   2 + (PSIZE) / 2, 9, "N", 1);
-			 */
-			gdk_gc_set_foreground (kontext_gps, &colors.lcd2);
-
-		}
-
-		for (i = 0; i < MAXSATS; i++)
-			if (satlistdisp[i][0] != 0)
-			{
-				if ((satlistdisp[i][1] > 30)
-				    && (printoutsats))
-					g_print ("%d %d\n", satlistdisp[i][3],
-						 satlistdisp[i][2]);
-				if (satposmode)
-				{
-					gint x, y;
-					gdouble el, az;
-					el = (90.0 - satlistdisp[i][2]);
-					az = DEG2RAD(satlistdisp[i][3]);
-
-					x = (PSIZE / 2) +
-						sin (az) * (el / 90.0) *
-						(PSIZE / 2);
-					y = (PSIZE / 2) -
-						cos (az) * (el / 90.0) *
-						(PSIZE / 2);
-					l = (satlistdisp[i][1] / 6);
-					if (l > 7)
-						l = 7;
-					switch (l & 7)
-					{
-					case 0:
-					case 1:
-						gdk_gc_set_foreground
-							(kontext_gps, &colors.textback);
-						break;
-					case 2:
-					case 3:
-						gdk_gc_set_foreground
-							(kontext_gps, &colors.red);
-						break;
-					case 4:
-					case 5:
-					case 6:
-						gdk_gc_set_foreground
-							(kontext_gps, &colors.yellow);
-						break;
-					case 7:
-						gdk_gc_set_foreground
-							(kontext_gps, &colors.green2);
-						break;
-					}
-					gdk_draw_arc (drawable_gps, kontext_gps,
-						      1, 2 + x, 2 + y, 5, 5,
-						      0, 360 * 64);
-
-				}
-				else
-				{
-					if (j > 5)
-						yabs = PSIZE + 2;
-					else
-						yabs = 1 + PSIZE / 2;
-					h = satlistdisp[i][1] - 30;
-					if (h < 0)
-						h = 1;
-					if (h > 19)
-						h = 19;
-					gdk_draw_line (drawable_gps, kontext_gps,
-						       6 + 7 * k + SATX, yabs,
-						       6 + 7 * k + SATX,
-						       yabs -
-						       (PSIZE / 2) * h /
-						       (PSIZE / 2 - 5));
-					k++;
-					if (k > 5)
-						k = 0;
-					j++;
-				}
-			}
-		newsatslevel = FALSE;
-		g_snprintf (txt, sizeof (txt), "%d/%d", sats_used, sats_in_view);
-		gtk_entry_set_text (GTK_ENTRY (satslabel1), txt);
-		if ((precision > 0.0) && (satfix != 0))
-		{
-			if (local_config.distmode == DIST_MILES || local_config.distmode == DIST_NAUTIC)
-				g_snprintf (t1, sizeof (t1), "%.0fft",
-					    precision * 3.2808399);
-			else
-				g_snprintf (t1, sizeof (t1), "%.0fm",
-					    precision);
-			g_snprintf (t, sizeof (t), "%s", t1);
-		}
-		else
-			g_snprintf (t, sizeof (t), "n/a");
-
-		gtk_entry_set_text (GTK_ENTRY (satslabel2), t);
-		if ((hdop > 0.0) && (satfix != 0))
-		{
-			g_snprintf (t1, sizeof (t1), "%.1f", hdop);
-			g_snprintf (t, sizeof (t), "%s", t1);
-		}
-		else
-			g_snprintf (t, sizeof (t), "n/a");
-		gtk_entry_set_text (GTK_ENTRY (satslabel3), t);
-
-		g_strlcpy (buf, "", sizeof (buf));
-		if ( mydebug > 30 )
-			g_print ("gpsd: Satfix: %d\n", satfix);
-
-    if (satfix != oldsatfix)
-    {
-      if( !local_config.mute && local_config.sound_gps )
-      {
-        if( 0 == satfix )
-        {
-          g_snprintf( buf, sizeof(buf), speech_gps_lost[voicelang] );
-        }
-        else if( 1 == satfix )
-        {
-          if( 2 == oldsatfix )
-          {
-            g_snprintf( buf, sizeof(buf), speech_diff_gps_lost[voicelang] );
-          }
-          else
-          {
-            g_snprintf( buf, sizeof(buf), speech_gps_good[voicelang] );
-          }
-        }
-        else if( 2 == satfix )
-        {
-          g_snprintf( buf, sizeof(buf), speech_diff_gps_found[voicelang] );
-        }
-
-        speech_out_speek( buf );
-      }
-
-      oldsatfix = satfix;
-    }
-	}
-	else
-	{
-		if (satsimage == NULL)
-		{
-			gchar mappath[2048];
-
-			g_snprintf (mappath, sizeof (mappath),
-				    "data/pixmaps/gpsdriveanim.gif");
-			anim = gdk_pixbuf_animation_new_from_file (mappath,
-								   NULL);
-			if ( anim == NULL ) {
-			    g_snprintf (mappath, sizeof (mappath),
-					"%s/gpsdrive/%s", DATADIR,
-					"pixmaps/gpsdriveanim.gif");
-			    anim = gdk_pixbuf_animation_new_from_file (mappath,
-								       NULL);
-			}
-			if (anim == NULL)
-				fprintf (stderr,
-					 _
-					 ("\nWarning: unable to load gpsdriveanim.gif!\n"
-					  "Please install the program as root with:\nmake install\n\n"));
-			g_get_current_time (&timeresult);
-			if (animiter != NULL)
-				g_object_unref (animiter);
-			animiter =
-				gdk_pixbuf_animation_get_iter (anim,
-							       &timeresult);
-			satsimage =
-				gdk_pixbuf_animation_iter_get_pixbuf
-				(animiter);
-		}
-		if (gdk_pixbuf_animation_iter_advance (animiter, NULL))
-			satsimage =
-				gdk_pixbuf_animation_iter_get_pixbuf
-				(animiter);
-		gdk_gc_set_function (kontext_gps, GDK_AND);
-		gdk_draw_pixbuf (drawable_gps, kontext_gps, satsimage, 0, 0,
-				 SATX, 0, 50, 50, GDK_RGB_DITHER_NONE, 0, 0);
-		gdk_gc_set_function (kontext_gps, GDK_COPY);
-	}
-	return TRUE;
-}
-
-
 /*
  * Draw the scale bar ( |-------------| ) into the map. Also add a textual
  * description of the currently used scale.
@@ -1298,7 +986,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	gint k;
 
 	gblink = !gblink;
-	/*    g_print("simmode: %d, nmea %d\n", current.simmode,haveNMEA); */
 
 	if (current.importactive)
 	    return TRUE;
@@ -1500,9 +1187,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 		if (current.gpsfix < 2)
 			blink = !blink;
 	}
-
-	if (newsatslevel)
-		expose_gpsfix (NULL, 0);
 
 	if (downloadwindowactive)
 	{
@@ -2023,20 +1707,6 @@ simulated_pos (GtkWidget * widget, guint * datum)
 }
 
 
-
-/* *****************************************************************************
- *  switching sat level/sat position display 
- */
-gint
-satpos_cb (GtkWidget * widget, guint datum)
-{
-	satposmode = !satposmode;
-	current.needtosave = TRUE;
-	expose_sats_cb (NULL, 0);
-	return TRUE;
-}
-
-
 /* *****************************************************************************
  *  should I use DGPS-IP? 
  */
@@ -2048,15 +1718,6 @@ usedgps_cb (GtkWidget * widget, guint datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-earthmate_cb (GtkWidget * widget, guint datum)
-{
-	earthmate = !earthmate;
-	current.needtosave = TRUE;
-	return TRUE;
-}
 
 /* *****************************************************************************
  * Update the checkbox for Pos-Mode
@@ -2558,24 +2219,6 @@ sel_target_cb (GtkWidget * widget, guint datum)
 }
 
 
-
-/* *****************************************************************************
- */
-void
-usage ()
-{
-    
-    g_print ("%s%s%s%s%s%s%s%s"
-#ifdef DBUS_ENABLE
-	     "%s"
-#endif
-	     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-	     "\nCopyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>"
-	     "\n         Website: http://www.gpsdrive.de\n\n"
-);
-}
-
-
 /* *****************************************************************************
  * on a TERM signal, do a clean shutdown
  */
@@ -2613,7 +2256,6 @@ usr2handler (int sig)
 			voicelang = spanish;
 		else
 		{
-			usage ();
 			g_print (_
 				("\nYou can currently only choose between "
 				"english, spanish and german\n\n"));
@@ -2796,6 +2438,8 @@ main (int argc, char *argv[])
     maploaded = FALSE;
     haveNMEA = FALSE;
     current.gpsfix = 0;
+    current.gps_precision = (-1.0);
+    current.gps_hdop = (-1.0);
     gblink = blink = FALSE;
     haveposcount = debug = 0;
     current.heading = current.bearing = 0.0;
@@ -3030,16 +2674,6 @@ main (int argc, char *argv[])
     /*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
     /*    An alternate gpsd server may be on 2947, we try it also */
     initgps ();
-
-    // Frame --- Sat levels
-    /* Area for field strength, we have data only in NMEA mode */
-//    gtk_signal_connect (GTK_OBJECT (drawing_sats), "expose_event",
-//			GTK_SIGNAL_FUNC (expose_sats_cb), NULL);
-//    gtk_widget_add_events (GTK_WIDGET (drawing_sats),
-//			   GDK_BUTTON_PRESS_MASK);
-//    gtk_signal_connect (GTK_OBJECT (drawing_sats), "button-press-event",
-//			GTK_SIGNAL_FUNC (satpos_cb), NULL);
-
 
     /*  all position calculations are made in the expose callback */
 //    g_signal_connect (GTK_OBJECT (map_drawingarea),

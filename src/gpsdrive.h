@@ -343,6 +343,8 @@ typedef struct
 	gint kismetsock;	/* Kismet socket, -1 if not available */
 	gint gpsfix;		/* Status of GPS:
 				 * 0: No GPS, 1: No Fix, 2: 2D Fix, 3: 3D Fix */
+	gdouble gps_precision;
+	gdouble gps_hdop;
 	GTimeVal last3dfixtime;	/* saves time of last 3D Fix. Hack for jumping
 				 * altitude display caused by bad nmea data */
 	gboolean needtosave;	/* flag if config has to be saved */
