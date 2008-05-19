@@ -101,7 +101,7 @@ for LANG in en_US de_DE ; do
 	echo "-------------> check icon_theme=$ICON_THEME"
 	for USER_INTERFACE in car desktop pda ; do 
 	    for MAPNIK in 0 1  ; do 
-		echo "------------------> check './build/src/gpsdrive -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE '  mapnik = $MAPNIK"
+		echo "------------------> check './build/src/gpsdrive -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T '  mapnik = $MAPNIK"
 
 		perl -p \
 		    -e "s,PWD,$PWD,g;" \
@@ -109,7 +109,7 @@ for LANG in en_US de_DE ; do
 		    -e "s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		./build/src/gpsdrive --geometry 800x600 -T -s -D 1 -C tests/gpsdriverc -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
+		./build/src/gpsdrive --geometry 800x600 -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
 		rc=$?
 
 		if [ $rc != 0 ] ; then
