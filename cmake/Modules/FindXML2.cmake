@@ -6,7 +6,7 @@
 #  XML2_LIBRARIES - Link these to use XML2
 #  XML2_DEFINITIONS - Compiler switches required for using XML2
 #
-#  Copyright (c) 2007 Andreas Schneider <mail@cynapses.org>
+#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -20,17 +20,20 @@ if (XML2_LIBRARIES AND XML2_INCLUDE_DIRS)
 else (XML2_LIBRARIES AND XML2_INCLUDE_DIRS)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(UsePkgConfig)
-
-  pkgconfig(libxml-2.0 _XML2IncDir _XML2LinkDir _XML2LinkFlags _XML2Cflags)
-
-  set(XML2_DEFINITIONS ${_XML2Cflags})
-
+  if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    include(UsePkgConfig)
+    pkgconfig(libxml-2.0 _XML2_INCLUDEDIR _XML2_LIBDIR _XML2_LDFLAGS _XML2_CFLAGS)
+  else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+      pkg_check_modules(_XML2 libxml-2.0)
+    endif (PKG_CONFIG_FOUND)
+  endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
   find_path(XML2_INCLUDE_DIR
     NAMES
       libxml/xpath.h
     PATHS
-      ${_XML2IncDir}
+      ${_XML2_INCLUDEDIR}
       /usr/include
       /usr/local/include
       /opt/local/include
@@ -43,19 +46,27 @@ else (XML2_LIBRARIES AND XML2_INCLUDE_DIRS)
     NAMES
       xml2
     PATHS
-      ${_XML2LinkDir}
+      ${_XML2_LIBDIR}
       /usr/lib
       /usr/local/lib
       /opt/local/lib
       /sw/lib
   )
 
+  if (XML2_LIBRARY)
+    set(XML2_FOUND TRUE)
+  endif (XML2_LIBRARY)
+
   set(XML2_INCLUDE_DIRS
     ${XML2_INCLUDE_DIR}
   )
-  set(XML2_LIBRARIES
-    ${XML2_LIBRARY}
-)
+
+  if (XML2_FOUND)
+    set(XML2_LIBRARIES
+      ${XML2_LIBRARIES}
+      ${XML2_LIBRARY}
+    )
+  endif (XML2_FOUND)
 
   if (XML2_INCLUDE_DIRS AND XML2_LIBRARIES)
      set(XML2_FOUND TRUE)

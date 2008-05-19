@@ -69,13 +69,24 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
   IF(UNIX)
     # use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      include(UsePkgConfig)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      find_package(PkgConfig)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
     INCLUDE(UsePkgConfig)
 
-    PKGCONFIG(gtk+-2.0 _GTK22IncDir _GTK22LinkDir _GTK22LinkFlags _GTK22Cflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(gtk+-2.0 _GTK2_INCLUDEDIR _GTK2_LIBDIR _GTK2_LDFLAGS _GTK2_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_GTK2 gtk+-2.0)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 
     FIND_PATH(GTK2_GTK_INCLUDE_PATH gtk/gtk.h
       $ENV{GTK2_HOME}
-      ${_GTK22IncDir}
+      ${_GTK2_INCLUDEDIR}
       /usr/include/gtk-2.0
       /usr/local/include/gtk-2.0
       /opt/gnome/include/gtk-2.0
@@ -85,11 +96,19 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
     # and glib.h in different directories, so we need to look
     # for both.
     #  - Atanas Georgiev <atanas@cs.columbia.edu>
-    PKGCONFIG(glib-2.0 _GLIB2IncDir _GLIB2inkDir _GLIB2LinkFlags _GLIB2Cflags)
-    PKGCONFIG(gmodule-2.0 _GMODULE2IncDir _GMODULE2inkDir _GMODULE2LinkFlags _GMODULE2Cflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(glib-2.0 _GLIB2_INCLUDEDIR _GLIB2inkDir _GLIB2_LDFLAGS _GLIB2_CFLAGS)
+      pkgconfig(gmodule-2.0 _GMODULE2_INCLUDEDIR _GMODULE2inkDir _GMODULE2_LDFLAGS _GMODULE2_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_GLIB2 glib-2.0)
+        pkg_check_modules(_GMODULE2 gmodule-2.0)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+
     SET(GDIR /opt/gnome/lib/glib-2.0/include)
     FIND_PATH(GTK2_GLIBCONFIG_INCLUDE_PATH glibconfig.h
-      ${_GLIB2IncDir}
+      ${_GLIB2_INCLUDEDIR}
       /opt/gnome/lib64/glib-2.0/include
       /opt/gnome/lib/glib-2.0/include
       /usr/lib64/glib-2.0/include
@@ -98,52 +117,76 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
     #MESSAGE(STATUS "DEBUG: GTK2_GLIBCONFIG_INCLUDE_PATH = ${GTK2_GLIBCONFIG_INCLUDE_PATH}")
 
     FIND_PATH(GTK2_GLIB_INCLUDE_PATH glib.h
-      ${_GLIB2IncDir}
+      ${_GLIB2_INCLUDEDIR}
       /opt/gnome/include/glib-2.0
       /usr/include/glib-2.0
     )
     #MESSAGE(STATUS "DEBUG: GTK2_GLIBCONFIG_INCLUDE_PATH = ${GTK2_GLIBCONFIG_INCLUDE_PATH}")
 
     FIND_PATH(GTK2_GTKGL_INCLUDE_PATH gtkgl/gtkglarea.h
-      ${_GLIB2IncDir}
+      ${_GLIB2_INCLUDEDIR}
       /usr/include
       /usr/local/include
       /usr/openwin/share/include
       /opt/gnome/include
     )
 
-    PKGCONFIG(pango _PANGOIncDir _PANGOinkDir _PANGOLinkFlags _PANGOCflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(pango _PANGO_INCLUDEDIR _PANGOinkDir _PANGO_LDFLAGS _PANGO_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_PANGO pango)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 
     FIND_PATH(GTK2_PANGO_INCLUDE_PATH pango/pango.h
-      ${_PANGOIncDir}
+      ${_PANGO_INCLUDEDIR}
       /opt/gnome/include/pango-1.0
       /usr/include/pango-1.0
     )
 
-    PKGCONFIG(gdk-2.0 _GDK2IncDir _GDK2inkDir _GDK2LinkFlags _GDK2Cflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(gdk-2.0 _GDK2_INCLUDEDIR _GDK2inkDir _GDK2_LDFLAGS _GDK2_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_GDK2 gdk-2.0)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 
     FIND_PATH(GTK2_GDKCONFIG_INCLUDE_PATH gdkconfig.h
-      ${_GDK2IncDir}
+      ${_GDK2_INCLUDEDIR}
       /opt/gnome/lib/gtk-2.0/include
       /opt/gnome/lib64/gtk-2.0/include
       /usr/lib/gtk-2.0/include
       /usr/lib64/gtk-2.0/include
     )
 
-    PKGCONFIG(cairo _CAIROIncDir _CAIROinkDir _CAIROLinkFlags _CAIROCflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(cairo _CAIRO_INCLUDEDIR _CAIROinkDir _CAIRO_LDFLAGS _CAIRO_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_CAIRO cairo)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 
     FIND_PATH(GTK2_CAIRO_INCLUDE_PATH cairo.h
-      ${_CAIROIncDir}
+      ${_CAIRO_INCLUDEDIR}
       /opt/gnome/include/cairo
       /usr/include
       /usr/include/cairo
     )
     #MESSAGE(STATUS "DEBUG: GTK2_CAIRO_INCLUDE_PATH = ${GTK2_CAIRO_INCLUDE_PATH}")
 
-    PKGCONFIG(atk _ATKIncDir _ATKinkDir _ATKLinkFlags _ATKCflags)
+    if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      pkgconfig(atk _ATK_INCLUDEDIR _ATKinkDir _ATK_LDFLAGS _ATK_CFLAGS)
+    else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+      if (PKG_CONFIG_FOUND)
+        pkg_check_modules(_ATK atk)
+      endif (PKG_CONFIG_FOUND)
+    endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
 
     FIND_PATH(GTK2_ATK_INCLUDE_PATH atk/atk.h
-      ${_ATKIncDir}
+      ${_ATK_INCLUDEDIR}
       /opt/gnome/include/atk-1.0
       /usr/include/atk-1.0
     )
@@ -153,7 +196,7 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
       NAMES
         gtkgl
       PATHS
-        ${_GTK22IncDir}
+        ${_GTK2_INCLUDEDIR}
         /usr/lib
         /usr/local/lib
         /usr/openwin/lib
@@ -165,7 +208,7 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
       NAMES
         gtk-x11-2.0
       PATHS
-        ${_GTK22LinkDir}
+        ${_GTK2_LIBDIR}
         /usr/lib
         /usr/local/lib
         /usr/openwin/lib
@@ -177,7 +220,7 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
       NAMES
         gdk-x11-2.0
       PATHS
-        ${_GDK2LinkDir}
+        ${_GDK2_LIBDIR}
         /usr/lib
         /usr/local/lib
         /usr/openwin/lib
@@ -189,7 +232,7 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
       NAMES
         gmodule-2.0
       PATHS
-        ${_GMODULE2inkDir}
+        ${_GMODULE2_LIBDIR}
         /usr/lib
         /usr/local/lib
         /usr/openwin/lib
@@ -201,7 +244,7 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
       NAMES
         glib-2.0
       PATHS
-        ${_GLIB2inkDir}
+        ${_GLIB2_LIBDIR}
         /usr/lib
         /usr/local/lib
         /usr/openwin/lib

@@ -6,8 +6,7 @@
 #  GDA3_LIBRARIES - Link these to use GDA3
 #  GDA3_DEFINITIONS - Compiler switches required for using GDA3
 #
-#  Copyright (c) 2007 Andreas Schneider <mail@cynapses.org>
-#  Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
+#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -21,17 +20,20 @@ if (GDA3_LIBRARIES AND GDA3_INCLUDE_DIRS)
 else (GDA3_LIBRARIES AND GDA3_INCLUDE_DIRS)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(UsePkgConfig)
-
-  pkgconfig(libgda-3.0 _GDA3IncDir _GDA3LinkDir _GDA3LinkFlags _GDA3Cflags)
-
-  set(GDA3_DEFINITIONS ${_GDA3Cflags})
-
+  if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    include(UsePkgConfig)
+    pkgconfig(libgda-3.0 _GDA3_INCLUDEDIR _GDA3_LIBDIR _GDA3_LDFLAGS _GDA3_CFLAGS)
+  else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+      pkg_check_modules(_GDA3 libgda-3.0)
+    endif (PKG_CONFIG_FOUND)
+  endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
   find_path(GDA3_INCLUDE_DIR
     NAMES
       libgda/libgda.h
     PATHS
-      ${_GDA3IncDir}
+      ${_GDA3_INCLUDEDIR}
       /usr/include
       /usr/local/include
       /opt/local/include
@@ -40,24 +42,50 @@ else (GDA3_LIBRARIES AND GDA3_INCLUDE_DIRS)
       libgda-3.0
   )
 
-  find_library(GDA3_LIBRARY
+  find_library(GDA_LIBRARY
     NAMES
       gda
+    PATHS
+      ${_GDA3_LIBDIR}
+      /usr/lib
+      /usr/local/lib
+      /opt/local/lib
+      /sw/lib
+  )
+  find_library(GDA-3.0_LIBRARY
+    NAMES
       gda-3.0
     PATHS
-      ${_GDA3LinkDir}
+      ${_GDA3_LIBDIR}
       /usr/lib
       /usr/local/lib
       /opt/local/lib
       /sw/lib
   )
 
+  if (GDA_LIBRARY)
+    set(GDA_FOUND TRUE)
+  endif (GDA_LIBRARY)
+  if (GDA-3.0_LIBRARY)
+    set(GDA-3.0_FOUND TRUE)
+  endif (GDA-3.0_LIBRARY)
+
   set(GDA3_INCLUDE_DIRS
     ${GDA3_INCLUDE_DIR}
   )
-  set(GDA3_LIBRARIES
-    ${GDA3_LIBRARY}
-)
+
+  if (GDA_FOUND)
+    set(GDA3_LIBRARIES
+      ${GDA3_LIBRARIES}
+      ${GDA_LIBRARY}
+    )
+  endif (GDA_FOUND)
+  if (GDA-3.0_FOUND)
+    set(GDA3_LIBRARIES
+      ${GDA3_LIBRARIES}
+      ${GDA-3.0_LIBRARY}
+    )
+  endif (GDA-3.0_FOUND)
 
   if (GDA3_INCLUDE_DIRS AND GDA3_LIBRARIES)
      set(GDA3_FOUND TRUE)

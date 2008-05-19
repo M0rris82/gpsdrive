@@ -6,7 +6,7 @@
 #  DBUS_LIBRARIES - Link these to use DBUS
 #  DBUS_DEFINITIONS - Compiler switches required for using DBUS
 #
-#  Copyright (c) 2006 Andreas Schneider <mail@cynapses.org>
+#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -20,17 +20,20 @@ if (DBUS_LIBRARIES AND DBUS_INCLUDE_DIRS)
 else (DBUS_LIBRARIES AND DBUS_INCLUDE_DIRS)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(UsePkgConfig)
-
-  pkgconfig(dbus-1 _DBUSIncDir _DBUSLinkDir _DBUSLinkFlags _DBUSCflags)
-
-  set(DBUS_DEFINITIONS ${_DBUSCflags})
-
+  if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    include(UsePkgConfig)
+    pkgconfig(dbus-1 _DBUS_INCLUDEDIR _DBUS_LIBDIR _DBUS_LDFLAGS _DBUS_CFLAGS)
+  else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+      pkg_check_modules(_DBUS dbus-1)
+    endif (PKG_CONFIG_FOUND)
+  endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
   find_path(DBUS_INCLUDE_DIR
     NAMES
       dbus/dbus.h
     PATHS
-      ${_DBUSIncDir}
+      ${_DBUS_INCLUDEDIR}
       /usr/include
       /usr/local/include
       /opt/local/include
@@ -41,19 +44,27 @@ else (DBUS_LIBRARIES AND DBUS_INCLUDE_DIRS)
     NAMES
       dbus-1
     PATHS
-      ${_DBUSLinkDir}
+      ${_DBUS_LIBDIR}
       /usr/lib
       /usr/local/lib
       /opt/local/lib
       /sw/lib
   )
 
+  if (DBUS-1_LIBRARY)
+    set(DBUS-1_FOUND TRUE)
+  endif (DBUS-1_LIBRARY)
+
   set(DBUS_INCLUDE_DIRS
     ${DBUS_INCLUDE_DIR}
   )
-  set(DBUS_LIBRARIES
-    ${DBUS-1_LIBRARY}
-)
+
+  if (DBUS-1_FOUND)
+    set(DBUS_LIBRARIES
+      ${DBUS_LIBRARIES}
+      ${DBUS-1_LIBRARY}
+    )
+  endif (DBUS-1_FOUND)
 
   if (DBUS_INCLUDE_DIRS AND DBUS_LIBRARIES)
      set(DBUS_FOUND TRUE)

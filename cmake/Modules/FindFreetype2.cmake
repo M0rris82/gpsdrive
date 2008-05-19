@@ -6,7 +6,7 @@
 #  FREETYPE2_LIBRARIES - Link these to use Freetype2
 #  FREETYPE2_DEFINITIONS - Compiler switches required for using Freetype2
 #
-#  Copyright (c) 2007 Andreas Schneider <mail@cynapses.org>
+#  Copyright (c) 2008 Andreas Schneider <mail@cynapses.org>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -20,17 +20,20 @@ if (FREETYPE2_LIBRARIES AND FREETYPE2_INCLUDE_DIRS)
 else (FREETYPE2_LIBRARIES AND FREETYPE2_INCLUDE_DIRS)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(UsePkgConfig)
-
-  pkgconfig(freetype2 _Freetype2IncDir _Freetype2LinkDir _Freetype2LinkFlags _Freetype2Cflags)
-
-  set(FREETYPE2_DEFINITIONS ${_Freetype2Cflags})
-
+  if (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    include(UsePkgConfig)
+    pkgconfig(freetype2 _FREETYPE2_INCLUDEDIR _FREETYPE2_LIBDIR _FREETYPE2_LDFLAGS _FREETYPE2_CFLAGS)
+  else (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
+    find_package(PkgConfig)
+    if (PKG_CONFIG_FOUND)
+      pkg_check_modules(_FREETYPE2 freetype2)
+    endif (PKG_CONFIG_FOUND)
+  endif (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4)
   find_path(FREETYPE2_INCLUDE_DIR
     NAMES
       freetype/freetype.h
     PATHS
-      ${_Freetype2IncDir}
+      ${_FREETYPE2_INCLUDEDIR}
       /usr/include
       /usr/local/include
       /opt/local/include
@@ -43,7 +46,7 @@ else (FREETYPE2_LIBRARIES AND FREETYPE2_INCLUDE_DIRS)
     NAMES
       freetype
     PATHS
-      ${_Freetype2LinkDir}
+      ${_FREETYPE2_LIBDIR}
       /usr/lib
       /usr/local/lib
       /opt/local/lib
