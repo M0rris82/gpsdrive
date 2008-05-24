@@ -174,6 +174,7 @@ extern GtkWidget *drawing_battery, *drawing_temp;
 
 extern GtkWidget *map_drawingarea;
 
+extern GtkListStore *friends_list;
 
 /* action=1: radar (speedtrap) */
 wpstruct *wayp;
@@ -1949,81 +1950,78 @@ setmessage_cb (GtkWidget * widget, guint datum)
 gint
 sel_message_cb (GtkWidget * widget, guint datum)
 {
-	GtkWidget *window;
-	gchar *tabeltitel1[] = {
-		_("Name"), _("Latitude"), _("Longitude"), _("Distance"),
-		NULL
-	};
-	GtkWidget *scrwindow, *vbox, *button;
+	GtkWidget *sel_friend_dialog, *scrolledwindow_friends;
+	GtkWidget *treeview_friends;
+	GtkCellRenderer *renderer_friends;
+	GtkTreeViewColumn *column_friends;
+	GtkTreeSelection *friends_select;
 
-	window = gtk_dialog_new ();
-	/*    gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE); */
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (main_window));
-	messagewindow = window;
-	gtk_window_set_title (GTK_WINDOW (window),
-			      _("Please select message recipient"));
-
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+	sel_friend_dialog = gtk_dialog_new_with_buttons (
+		_("Please select message recipient"),
+		GTK_WINDOW (main_window), GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, NULL);
+	gtk_window_set_icon_name (GTK_WINDOW (sel_friend_dialog), "gtk-network");
 
 	if (local_config.guimode == GUI_PDA)
-		gtk_window_set_default_size (GTK_WINDOW (window),
-					     gui_status.mapview_x, gui_status.mapview_y);
+		gtk_window_set_default_size (GTK_WINDOW (sel_friend_dialog),
+			gui_status.mapview_x, gui_status.mapview_y);
 	else
-		gtk_window_set_default_size (GTK_WINDOW (window), 400, 360);
+		gtk_window_set_default_size (GTK_WINDOW (sel_friend_dialog), 400, 360);
 
-	mylist = gtk_clist_new_with_titles (4, tabeltitel1);
+	g_signal_connect_swapped (G_OBJECT (sel_friend_dialog), "delete_event",
+		G_CALLBACK (gtk_widget_destroy), G_OBJECT (sel_friend_dialog));
+	g_signal_connect_swapped (G_OBJECT (sel_friend_dialog), "response",
+		G_CALLBACK (gtk_widget_destroy), G_OBJECT (sel_friend_dialog));
 
-	gtk_signal_connect_object (GTK_OBJECT
-				   (GTK_CLIST (mylist)),
-				   "click-column",
-				   GTK_SIGNAL_FUNC (setsortcolumn),
-				   GTK_OBJECT (window));
+	treeview_friends = gtk_tree_view_new_with_model (GTK_TREE_MODEL (friends_list));
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_friends), TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (GTK_CLIST (mylist)),
-			    "select-row",
-			    GTK_SIGNAL_FUNC (setmessage_cb),
-			    GTK_OBJECT (mylist));
+	renderer_friends = gtk_cell_renderer_pixbuf_new ();
+	column_friends = gtk_tree_view_column_new_with_attributes ("_",
+		renderer_friends, "pixbuf", FRIENDS_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
+
+	renderer_friends = gtk_cell_renderer_text_new ();
+	column_friends = gtk_tree_view_column_new_with_attributes (_("Name"),
+		renderer_friends, "text", FRIENDS_NAME, NULL);
+	gtk_tree_view_column_set_expand (column_friends, TRUE);
+	gtk_tree_view_column_set_sort_column_id (column_friends, FRIENDS_NAME);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
+
+	renderer_friends = gtk_cell_renderer_text_new ();
+	column_friends = gtk_tree_view_column_new_with_attributes (_("Distance"),
+		renderer_friends, "text", FRIENDS_DIST_TEXT, NULL);
+	gtk_tree_view_column_set_sort_column_id (column_friends, FRIENDS_DIST_TEXT);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
+
+	renderer_friends = gtk_cell_renderer_text_new ();
+	column_friends = gtk_tree_view_column_new_with_attributes (_("Latitude"),
+		renderer_friends, "text", FRIENDS_LAT, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
+
+	renderer_friends = gtk_cell_renderer_text_new ();
+	column_friends = gtk_tree_view_column_new_with_attributes (_("Longitude"),
+		renderer_friends, "text", FRIENDS_LON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
+
+	friends_select = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview_friends));
+	gtk_tree_selection_set_mode (friends_select, GTK_SELECTION_SINGLE);
+//	g_signal_connect (G_OBJECT (friends_select), "changed", G_CALLBACK (select_friend_cb), NULL);
+//gtk_signal_connect (mylist, "select-row", setmessage_cb, mylist);
 
 
-	button = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_window_set_default (GTK_WINDOW (window), button);
-	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (gtk_widget_destroy), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window),
-				   "delete_event",
-				   GTK_SIGNAL_FUNC
-				   (gtk_widget_destroy), GTK_OBJECT (window));
-
-	insertwaypoints (TRUE);
-	gtk_clist_set_column_justification (GTK_CLIST (mylist), 3,
-					    GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 0, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 1, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 2, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 3, TRUE);
+	messagewindow = sel_friend_dialog;
 
 
-	scrwindow = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_add (GTK_CONTAINER (scrwindow), mylist);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW
-					(scrwindow),
-					(GtkPolicyType)
-					GTK_POLICY_AUTOMATIC,
-					(GtkPolicyType) GTK_POLICY_AUTOMATIC);
-	vbox = gtk_vbox_new (FALSE, 2 * PADDING);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (vbox), scrwindow, TRUE, TRUE,
-			    2 * PADDING);
+	scrolledwindow_friends = gtk_scrolled_window_new (NULL, NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (sel_friend_dialog)->vbox),
+		scrolledwindow_friends, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_friends),
+		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_friends), treeview_friends);
 
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->action_area),
-			    button, TRUE, TRUE, 2);
+	gtk_widget_show_all (sel_friend_dialog);
 
-	gtk_widget_show_all (window);
 	return TRUE;
 }
 

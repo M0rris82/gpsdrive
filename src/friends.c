@@ -85,6 +85,8 @@ extern color_struct colors;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern GdkGC *kontext_map;
+extern GtkTreeStore *poi_types_tree;
+extern GHashTable *poi_types_hash;
 
 /*
  * conn.c
@@ -97,6 +99,9 @@ extern GtkWidget *frame_statusbar;
 extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
 #define MAXLINE 512
+
+
+GtkListStore *friends_list;
 
 
 /* ****************************************************************************
@@ -199,8 +204,44 @@ void
 update_friends_data (friendsstruct *cf)
 {
 	glong current_poi_id = 0;
+	GtkTreeIter iter, type_iter;
+	gdouble t_val;
+	gchar t_value[10], t_unit[10];
+	gchar t_buf[20];
 	gchar *result = NULL;
-	
+	gchar *t_path;
+	GdkPixbuf *t_icon;
+
+	t_val = calcdist (g_strtod((cf)->lon, NULL), g_strtod((cf)->lat, NULL));
+	distance2gchar (t_val, t_value, sizeof (t_value), t_unit, sizeof (t_unit));
+	g_snprintf (t_buf, sizeof (t_buf), "%s%s", t_value, t_unit);
+
+	t_path = g_hash_table_lookup (poi_types_hash, (cf)->type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "people");
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "unknown");
+
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &type_iter, t_path);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &type_iter,
+		POITYPE_ICON, &t_icon, -1);
+
+	gtk_list_store_append (friends_list, &iter);
+	gtk_list_store_set (friends_list, &iter,
+		FRIENDS_ID, (cf)->id,
+		FRIENDS_NAME, (cf)->name,
+		FRIENDS_TYPE, (cf)->type,
+		FRIENDS_LAT, g_strtod((cf)->lat, NULL),
+		FRIENDS_LON, g_strtod((cf)->lon, NULL),
+		FRIENDS_TIMESEC, atoi ((cf)->timesec),
+		FRIENDS_SPEED, atoi ((cf)->speed),
+		FRIENDS_HEADING, atoi ((cf)->heading),
+		FRIENDS_ICON, t_icon,
+		FRIENDS_DIST_TEXT, t_buf,
+		FRIENDS_LAT_TEXT, "lat",
+		FRIENDS_LON_TEXT, "lon",
+		-1);
+
 	if (local_config.use_database)
 	{
 		//(cf)->id,
@@ -329,6 +370,7 @@ friends_sendmsg (char *serverip, char *message)
   endflag = i = 0;
 
   fc = 0;
+  gtk_list_store_clear (friends_list);
   do
     {
       n = recvfrom (sockfd, recvline, MAXLINE, 0 /* MSG_WAITALL */ ,
@@ -505,6 +547,23 @@ friends_init ()
     }
   friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
   fserver = malloc (1 * sizeof (friendsstruct));
+
+
+	friends_list = gtk_list_store_new (FRIENDS_N_ITEMS,
+		G_TYPE_STRING,		/* ID */
+		G_TYPE_STRING,		/* NAME */
+		G_TYPE_STRING,		/* TYPE */
+		G_TYPE_DOUBLE,		/* LAT */
+		G_TYPE_DOUBLE,		/* LON */
+		G_TYPE_INT,		/* TIMESEC */
+		G_TYPE_INT,		/* SPEED */
+		G_TYPE_INT,		/* HEADING */
+		GDK_TYPE_PIXBUF,	/* ICON */
+		G_TYPE_STRING,		/* DIST TEXT */
+		G_TYPE_STRING,		/* LAT TEXT */
+		G_TYPE_STRING		/* LON TEXT */
+		);
+
 
   return (0);
 }

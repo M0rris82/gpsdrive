@@ -1182,7 +1182,8 @@ poi_draw_list (gboolean draw_now)
 				if (local_config.showfriends
 				   && g_str_has_prefix ((poi_list + i)->poi_type, "people.friendsd"))
 				{
-					draw_posmarker (posx, posy, atoi ((poi_list + i)->comment),
+					draw_posmarker (posx, posy,
+						(atoi ((poi_list + i)->comment)) * M_PI / 180.0,
 						&colors.lightorange, 4, FALSE, FALSE);
 				}
 
