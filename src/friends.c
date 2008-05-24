@@ -199,6 +199,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 
 /* ****************************************************************************
  * Insert or update data coming from friendsd in database or way.txt file
+ * and update friends_list
  */
 void
 update_friends_data (friendsstruct *cf)
@@ -237,6 +238,7 @@ update_friends_data (friendsstruct *cf)
 		FRIENDS_SPEED, atoi ((cf)->speed),
 		FRIENDS_HEADING, atoi ((cf)->heading),
 		FRIENDS_ICON, t_icon,
+		FRIENDS_DIST, t_val,
 		FRIENDS_DIST_TEXT, t_buf,
 		FRIENDS_LAT_TEXT, "lat",
 		FRIENDS_LON_TEXT, "lon",
@@ -559,6 +561,7 @@ friends_init ()
 		G_TYPE_INT,		/* SPEED */
 		G_TYPE_INT,		/* HEADING */
 		GDK_TYPE_PIXBUF,	/* ICON */
+		G_TYPE_DOUBLE,		/* DIST */
 		G_TYPE_STRING,		/* DIST TEXT */
 		G_TYPE_STRING,		/* LAT TEXT */
 		G_TYPE_STRING		/* LON TEXT */

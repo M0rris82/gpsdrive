@@ -1991,7 +1991,7 @@ sel_message_cb (GtkWidget * widget, guint datum)
 	renderer_friends = gtk_cell_renderer_text_new ();
 	column_friends = gtk_tree_view_column_new_with_attributes (_("Distance"),
 		renderer_friends, "text", FRIENDS_DIST_TEXT, NULL);
-	gtk_tree_view_column_set_sort_column_id (column_friends, FRIENDS_DIST_TEXT);
+	gtk_tree_view_column_set_sort_column_id (column_friends, FRIENDS_DIST);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_friends), column_friends);
 
 	renderer_friends = gtk_cell_renderer_text_new ();
