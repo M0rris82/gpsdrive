@@ -34,6 +34,7 @@ use Getopt::Long;
 use Utils::Debug;
 use Pod::Usage;
 
+my ($man);
 my ($help);
 my $do_show_version=0;
 my $do_not_add_column=0;
