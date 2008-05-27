@@ -404,89 +404,7 @@ importaway_cb (GtkWidget * widget, guint datum)
 
 /* *****************************************************************************
  */
-gint
-delwp_cb (GtkWidget * widget, guint datum)
-{
-	gint i, j;
-	gchar *p;
 
-	i = deleteline;
-	if ( mydebug > 0 )
-		g_print ("delwp: remove line %d\n", i);
-	gtk_clist_get_text (GTK_CLIST (mylist), i, 0, &p);
-	j = atol (p) - 1;
-	gtk_clist_remove (GTK_CLIST (mylist), i);
-	if ( mydebug > 0 )
-		g_print ("delwp: remove entry %d\n", j);
-
-	for (i = j; i < (maxwp - 1); i++)
-		*(wayp + i) = *(wayp + i + 1);
-	maxwp--;
-	savewaypoints ();
-	gtk_clist_get_text (GTK_CLIST (mylist), deleteline, 0, &p);
-	selected_wp_list_line = atol (p);
-
-	return TRUE;
-}
-
-/* *****************************************************************************
- * destroy sel_target window 
- */
-gint
-sel_targetweg_cb (GtkWidget * widget, guint datum)
-{
-	/*   gtk_timeout_remove (selwptimeout); */
-	gtk_widget_destroy (GTK_WIDGET (gotowindow));
-	/* restore old target */
-	if (widget != NULL && !route.active) {
-		coords.target_lat = wp_saved_target_lat;
-		coords.target_lon = wp_saved_target_lon;
-	}
-	/* restore old posmode */
-	if (widget != NULL && gui_status.posmode) {
-		coords.posmode_lat = wp_saved_posmode_lat;
-		coords.posmode_lon = wp_saved_posmode_lon;
-	}
-	setwpactive = FALSE;
-
-	return FALSE;
-}
-
-/* *****************************************************************************
- */
- 
-/*
- * destroy sel_target window event:
- */
- gint
- sel_target_destroy_cb (GtkWidget *widget, guint datum) {
- 	selected_wp_mode = FALSE;
- 	return TRUE;
- }
- 
-gint
-jumpwp_cb (GtkWidget * widget, guint datum)
-{
-	gint i;
-	gchar *p;
-
-	i = deleteline;
-	if (gui_status.posmode) {
-		gtk_clist_get_text (GTK_CLIST (mylist), i, 3, &p);
-		coordinate_string2gdouble(p, &coords.posmode_lat);
-		gtk_clist_get_text (GTK_CLIST (mylist), i, 4, &p);
-		coordinate_string2gdouble(p, &coords.posmode_lon);
-	}
-
-	if ((!gui_status.posmode) && (!current.simmode))
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
-					      TRUE);
-	if (local_config.use_database)
-		poi_rebuild_list ();
-	reinsertwp_cb (NULL, 0);
-	sel_targetweg_cb (NULL, 0);
-	return TRUE;
-}
 
 /* *****************************************************************************
  */
@@ -801,32 +719,6 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	return TRUE;
 }
 
-/* *****************************************************************************
- */
-gint
-setsortcolumn (GtkWidget * w, gpointer datum)
-{
-	sortflag = !sortflag;
-	sortcolumn = (long) datum;
-
-	if (sortflag)
-		gtk_clist_set_sort_type (GTK_CLIST (mylist),
-					 GTK_SORT_ASCENDING);
-	else
-		gtk_clist_set_sort_type (GTK_CLIST (mylist),
-					 GTK_SORT_DESCENDING);
-
-	if (w != messagewindow)
-		reinsertwp_cb (NULL, 0);
-	else
-	{
-		gtk_clist_set_sort_column (GTK_CLIST (mylist),
-					   sortcolumn);
-		gtk_clist_sort (GTK_CLIST (mylist));
-	}
-	return TRUE;
-}
-
 
 /* *****************************************************************************
  */
@@ -844,76 +736,6 @@ click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
 	return FALSE;
 
 }
-
-/* *****************************************************************************
- * if a waypoint is selected set the target_* variables 
- */
-gint
-setwp_cb (GtkWidget * widget, guint datum)
-{
-	//gchar str[200];
-	gchar b[100], buf[1000], buf2[1000];
-	gchar *p, *tn;
-	p = b;
-
-	deleteline = datum;
-	if (dontsetwp)
-		return TRUE;
-		
-	/* enter selected_wp_mode -> 
-	 * enables map jumping to target_lat/lon */
-	selected_wp_mode = TRUE;
-
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 0, &p);
-	if (route.edit)
-	{
-		/*        g_print("route: %s\n", p); */
-		thisrouteline = atol (p) - 1;
-		insertroutepoints ();
-		return TRUE;
-	}
-	if (route.active) {
-		/* in routingmode do nothing further */
-		return TRUE;
-	}
-	selected_wp_list_line = atol (p);
-	/*    g_print("%d\n", selected_wp_list_line); */
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 1, &p);
-	g_strlcpy (current.target, p, sizeof (current.target));
-
-
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 3, &p);
-	coordinate_string2gdouble(p, &coords.target_lat);
-	gtk_clist_get_text (GTK_CLIST (mylist), datum, 4, &p);
-	coordinate_string2gdouble(p, &coords.target_lon);
-	/* if posmode enabled set posmode_lat/lon */
-	if (gui_status.posmode) {
-		coords.posmode_lat = coords.target_lat;
-		coords.posmode_lon = coords.target_lon;
-	}
-	/*    gtk_timeout_add (5000, (GtkFunction) sel_targetweg_cb, widget); */
-	g_timer_stop (disttimer);
-	g_timer_start (disttimer);
-	olddist = current.dist;
-
-	tn = g_strdelimit (current.target, "_", ' ');
-	g_strlcpy (buf2, "", sizeof (buf2));
-	if (tn[0] == '*')
-	{
-		g_strlcpy (buf2, "das mobile Ziel ", sizeof (buf2));
-		g_strlcat (buf2, (tn + 1), sizeof (buf2));
-	}
-	else
-		g_strlcat (buf2, tn, sizeof (buf2));
-
-  g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
-	speech_out_speek (buf);
-
-	saytarget = TRUE;
-
-	return TRUE;
-}
-
 
 
 /* *****************************************************************************

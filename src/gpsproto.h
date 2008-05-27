@@ -26,7 +26,6 @@ gdouble calcdist2 (gdouble lon, gdouble lat);
 gdouble calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current);
 gint speech_saytime_cb (gboolean greeting);
 gint help_cb (GtkWidget * widget, guint datum);
-gint sel_target_cb (GtkWidget * widget, guint datum);
 gint import1_cb (GtkWidget * widget, guint datum);
 
 gint friendsagent_cb (GtkWidget * widget, guint * datum);
@@ -65,7 +64,6 @@ gint settings_main_cb (GtkWidget *widget, guint datum);
 gint sel_message_cb (GtkWidget * widget, guint datum);
 gint setmessage_cb (GtkWidget * widget, guint datum);
 void signalposreq ();
-gint reinsertwp_cb (GtkWidget * widget, guint datum);
 GdkPixbuf *create_pixbuf (const gchar * filename);
 gint simulated_pos (GtkWidget * widget, guint * datum);
 void festival_close (void);
@@ -93,3 +91,4 @@ gchar *escape_sql_string (const gchar *data);
 void distance2gchar
 	(gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size);
 gint check_if_night_cb (void);
+void cleanup_friends (void);

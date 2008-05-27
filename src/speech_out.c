@@ -392,7 +392,8 @@ speech_out_speek (char *text)
 			  || g_strcasecmp (local_config.speech_voice, "mb/mb-de7") == 0)
 				rate = 22050;
 			g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s'"
-				" | mbrola -e %s%s - - | aplay -r%d -fS16",
+				" | mbrola -e %s%s - - | pacat --stream-name=GpsDrive"
+				" --rate=%d --channels=1 &",
 				local_config.speech_pitch, local_config.speech_speed ,
 				local_config.speech_voice, text, local_config.dir_mbrola,
 				(local_config.speech_voice + 6), rate);
@@ -400,9 +401,10 @@ speech_out_speek (char *text)
 		else
 		{
 			/* use espeak directly for speech */
-			g_snprintf (out, sizeof (out), "espeak -p%d -s%d -v%s '%s' &",
-				local_config.speech_pitch, local_config.speech_speed ,
-				local_config.speech_voice, text);
+			g_snprintf (out, sizeof (out),
+				"espeak -p%d -s%d -v%s '%s' --stdout | "
+				"pacat --stream-name=GpsDrive --rate=22050 --channels=1",
+				local_config.speech_pitch, local_config.speech_speed, local_config.speech_voice, text);
 		}
 		if ( mydebug > 0 )
 		printf ("speech with espeak: %s\n", out);

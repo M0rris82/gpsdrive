@@ -35,7 +35,6 @@ extern GtkWidget *gotobt;
 
 void init_route_list ();
 void free_route_list ();
-void insertwaypoints (gint mobile);
 
 void add_quickpoint_to_route ();
 void add_arbitrary_point_to_route

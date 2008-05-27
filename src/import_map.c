@@ -130,7 +130,7 @@ Disclaimer: Please do not use for navigation.
 #include "icons.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
-
+#include "poi_gui.h"
 
 
 #include "gettext.h"
@@ -392,8 +392,8 @@ import1_cb (GtkWidget * widget, guint datum)
     }
 
   knopf6 = gtk_button_new_with_label (_("Browse POIs"));
-  gtk_signal_connect (GTK_OBJECT (knopf6), "clicked",
-		      GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 1);
+  g_signal_connect (G_OBJECT (knopf6), "clicked",
+		      G_CALLBACK (show_poi_lookup_cb), GINT_TO_POINTER (1));
 
 
   gtk_table_attach_defaults (GTK_TABLE (table), knopf6, 0, 1, 3, 4);

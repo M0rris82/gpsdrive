@@ -33,8 +33,6 @@ gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
 gint addwaypoint_gtk_cb (GtkWidget * widget, guint datum);
 gint addwaypointchange_cb (GtkWidget * widget, guint datum);
 gint addwaypointdestroy_cb (GtkWidget * widget, guint datum);
-gint delwp_cb (GtkWidget * widget, guint datum);
-gint jumpwp_cb (GtkWidget * widget, guint datum);
 gint watchwp_cb (GtkWidget * widget, guint * datum);
 glong addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gboolean save_in_db);
 void check_and_reload_way_txt();
@@ -43,10 +41,6 @@ void loadwaypoints();
 void mark_waypoint();
 void set_position_to_waypoint();
 void set_waypoint_pos(gdouble lat, gdouble lon);
-gint setwp_cb (GtkWidget * widget, guint datum);
-gint sel_targetweg_cb (GtkWidget * widget, guint datum);
-gint sel_target_destroy_cb (GtkWidget *widget, guint datum);
 void draw_radar();
-gint setsortcolumn (GtkWidget * w, gpointer datum);
 
 #endif /* GPSDRIVE_WAYPOINT_H */

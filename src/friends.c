@@ -72,7 +72,7 @@
 #define	SERV_HOST_ADDR	"127.0.0.1"
 
 extern int maxfriends;
-extern friendsstruct *friends, *fserver;
+extern friendsstruct *friends;
 int actualfriends = 0;
 extern int messagenumber;
 extern long int maxfriendssecs;
@@ -100,8 +100,15 @@ extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
 #define MAXLINE 512
 
-
+/* global variables */
 GtkListStore *friends_list;
+friendsstruct *friends_buf;
+
+friendsstruct *friends;
+
+
+/* local variables */
+static friendsstruct *fserver;
 
 
 /* ****************************************************************************
@@ -547,9 +554,10 @@ friends_init ()
 	      local_config.friends_id, strlen (local_config.friends_id), ti);
       current.needtosave = TRUE;
     }
-  friends = malloc (MAXLISTENTRIES * sizeof (friendsstruct));
-  fserver = malloc (1 * sizeof (friendsstruct));
 
+	friends = g_new (friendsstruct, MAXLISTENTRIES);
+	fserver = g_new (friendsstruct, 1);
+	friends_buf = g_new (friendsstruct, 1);
 
 	friends_list = gtk_list_store_new (FRIENDS_N_ITEMS,
 		G_TYPE_STRING,		/* ID */
@@ -696,4 +704,15 @@ drawfriends (void)
 	    }
 	}
     }
+}
+
+
+/* *****************************************************************************
+ */
+void
+cleanup_friends (void)
+{
+    g_free (friends);
+    g_free (fserver);
+    g_free (friends_buf);
 }

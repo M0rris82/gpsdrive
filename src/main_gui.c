@@ -1981,13 +1981,12 @@ void create_controls_mainbox (void)
 	find_poi_bt = gtk_button_new_from_stock (GTK_STOCK_FIND);
 	if (!local_config.use_database)
 	{
-		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
-			GTK_SIGNAL_FUNC (sel_target_cb), (gpointer) 2);
+		gtk_widget_set_sensitive (find_poi_bt, FALSE);
 	}
 	else
 	{
-		g_signal_connect (GTK_OBJECT (find_poi_bt), "clicked",
-			GTK_SIGNAL_FUNC (show_poi_lookup_cb), (gpointer) 2);
+		g_signal_connect (G_OBJECT (find_poi_bt), "clicked",
+			G_CALLBACK (show_poi_lookup_cb), GINT_TO_POINTER (0));
 	}
 
 	/* Button: Routing */

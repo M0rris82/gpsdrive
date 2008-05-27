@@ -179,8 +179,6 @@ extern GtkListStore *friends_list;
 /* action=1: radar (speedtrap) */
 wpstruct *wayp;
 
-friendsstruct *friends, *fserver;
-
 /* socket for friends  */
 extern int sockfd;
 
@@ -1489,21 +1487,6 @@ expose_cb (GtkWidget * widget, guint * datum)
 				current.bearing += 2 * M_PI;
 		}
 
-		if (local_config.showfriends && current.target[0] == '*')
-			for (i = 0; i < maxfriends; i++)
-			{
-				g_strlcpy (name, "*", sizeof (name));
-
-				g_strlcat (name, (friends + i)->name,
-					   sizeof (name));
-				tn = g_strdelimit (name, "_", ' ');
-				if ((strcmp (current.target, tn)) == 0)
-				{
-				    coordinate_string2gdouble((friends + i)->lat, &coords.target_lat);
-				    coordinate_string2gdouble((friends + i)->lon, &coords.target_lon);
-				}
-			}
-
 		/*  Calculate distance to destination */
 		current.dist = calcdist (coords.target_lon, coords.target_lat);
 
@@ -2021,197 +2004,6 @@ sel_message_cb (GtkWidget * widget, guint datum)
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_friends), treeview_friends);
 
 	gtk_widget_show_all (sel_friend_dialog);
-
-	return TRUE;
-}
-
-
-/* *****************************************************************************
- */
-gint
-sel_target_cb (GtkWidget * widget, guint datum)
-{
-	GtkWidget *window;
-	gchar *tabeltitel1[] = { "#",
-		_("Name"), _("Type"), _("Latitude"), _("Longitude"), _("Distance"),
-		NULL
-	};
-	GtkWidget *scrwindow, *vbox, *button, *hbox, *deletebt;
-	GtkTooltips *tooltips;
-
-	if (setwpactive)
-		return TRUE;
-
-	/* save old target/posmode for cancel event */
-	wp_saved_target_lat = coords.target_lat;
-	wp_saved_target_lon = coords.target_lon;
-	if (gui_status.posmode) {
-		wp_saved_posmode_lat = coords.posmode_lat;
-		wp_saved_posmode_lon = coords.posmode_lon;
-	}
-	
-
-	setwpactive = TRUE;
-	window = gtk_dialog_new ();
-	/*    gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE); */
-	gotowindow = window;
-	gtk_window_set_transient_for (GTK_WINDOW (window),
-				      GTK_WINDOW (main_window));
-
-	if (datum == 1)
-	{
-		gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-		gtk_window_set_title (GTK_WINDOW (window),
-				      _("Select reference point"));
-	}
-	else
-		gtk_window_set_title (GTK_WINDOW (window),
-				      _("Please select your destination"));
-	if (local_config.guimode == GUI_PDA)
-		gtk_window_set_default_size (GTK_WINDOW (window),
-					     gui_status.mapview_x, gui_status.mapview_y);
-	else
-		gtk_window_set_default_size (GTK_WINDOW (window), 400, 360);
-
-	mylist = gtk_clist_new_with_titles (6, tabeltitel1);
-	if (datum == 1)
-		gtk_signal_connect (GTK_OBJECT (GTK_CLIST (mylist)),
-				    "select-row",
-				    GTK_SIGNAL_FUNC (setrefpoint_cb),
-				    GTK_OBJECT (mylist));
-	else
-	{
-		gtk_signal_connect (GTK_OBJECT (GTK_CLIST (mylist)),
-				    "select-row",
-				    GTK_SIGNAL_FUNC (setwp_cb),
-				    GTK_OBJECT (mylist));
-		/*       gtk_signal_connect (GTK_OBJECT (mylist), "button-release-event", */
-		/*                    GTK_SIGNAL_FUNC (click_clist), NULL); */
-	}
-
-	gtk_signal_connect (GTK_OBJECT
-			    (GTK_CLIST (mylist)),
-			    "click-column", GTK_SIGNAL_FUNC (setsortcolumn),
-			    0);
-
-	if (datum != 1)
-	{
-		if (route.active)
-			create_route_button =
-				gtk_button_new_with_label (_("Edit route"));
-		else
-			create_route_button =
-				gtk_button_new_with_label (_("Create route"));
-		GTK_WIDGET_SET_FLAGS (create_route_button, GTK_CAN_DEFAULT);
-		gtk_signal_connect (GTK_OBJECT (create_route_button),
-				    "clicked",
-				    GTK_SIGNAL_FUNC (create_route_cb), 0);
-	}
-
-	deletebt = gtk_button_new_from_stock (GTK_STOCK_DELETE);
-	GTK_WIDGET_SET_FLAGS (deletebt, GTK_CAN_DEFAULT);
-	gtk_signal_connect (GTK_OBJECT (deletebt), "clicked",
-			    GTK_SIGNAL_FUNC (delwp_cb), 0);
-
-	gotobt = gtk_button_new_from_stock (GTK_STOCK_JUMP_TO);
-	GTK_WIDGET_SET_FLAGS (gotobt, GTK_CAN_DEFAULT);
-	gtk_signal_connect (GTK_OBJECT (gotobt), "clicked",
-			    GTK_SIGNAL_FUNC (jumpwp_cb), 0);
-	/* disable jump button when in routingmode */
-	if (route.active) gtk_widget_set_sensitive (gotobt, FALSE);
-
-	/*   button = gtk_button_new_with_label (_("Close")); */
-	button = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-	GTK_WIDGET_SET_FLAGS (button, GTK_CAN_DEFAULT);
-	gtk_window_set_default (GTK_WINDOW (window), button);
-	gtk_signal_connect_object (GTK_OBJECT (button), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (sel_targetweg_cb), GTK_OBJECT (window));
-	gtk_signal_connect_object (GTK_OBJECT (window),
-				   "delete_event",
-				   GTK_SIGNAL_FUNC
-				   (sel_targetweg_cb), GTK_OBJECT (window));
-	/* sel_target_destroy event */
-	gtk_signal_connect (GTK_OBJECT(window),
-					"destroy",
-					GTK_SIGNAL_FUNC(sel_target_destroy_cb),
-					0);
-
-	/* Font aendern falls PDA-Mode und Touchscreen */
-	if (local_config.guimode == GUI_PDA ||
-	    local_config.guimode == GUI_CAR )
-	{
-	    if (onemousebutton)
-	    {
-		/* Change default font throughout the widget */
-		PangoFontDescription *font_desc;
-		font_desc = pango_font_description_from_string ("Sans 20");
-		gtk_widget_modify_font (mylist, font_desc);
-		pango_font_description_free (font_desc);
-	    }
-	}
-
-	insertwaypoints (FALSE);
-	gtk_clist_set_column_justification (GTK_CLIST (mylist), 5,
-					    GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification (GTK_CLIST (mylist), 0,
-					    GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 0, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 1, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 2, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 3, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 4, TRUE);
-	gtk_clist_set_column_auto_resize (GTK_CLIST (mylist), 5, TRUE);
-
-	scrwindow = gtk_scrolled_window_new (NULL, NULL);
-	gtk_container_add (GTK_CONTAINER (scrwindow), mylist);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW
-					(scrwindow),
-					(GtkPolicyType)
-					GTK_POLICY_AUTOMATIC,
-					(GtkPolicyType) GTK_POLICY_AUTOMATIC);
-	vbox = gtk_vbox_new (FALSE, 2 * PADDING);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->vbox), vbox, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (vbox), scrwindow, TRUE, TRUE,
-			    2 * PADDING);
-	hbox = gtk_hbutton_box_new ();
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (window)->action_area),
-			    hbox, TRUE, TRUE, 2);
-
-	if (datum != 1)
-	{
-		gtk_box_pack_start (GTK_BOX (hbox), create_route_button, TRUE,
-				    TRUE, 2 * PADDING);
-		gtk_box_pack_start (GTK_BOX (hbox), deletebt, TRUE, TRUE,
-				    2 * PADDING);
-		gtk_box_pack_start (GTK_BOX (hbox), gotobt, TRUE, TRUE,
-				    2 * PADDING);
-	}
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 2 * PADDING);
-	/*    gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER); */
-
-	/*   I remove this, because you can sort by mouseclick now */
-	/*   selwptimeout = gtk_timeout_add (30000, (GtkFunction) reinsertwp_cb, 0); */
-	tooltips = gtk_tooltips_new ();
-	if (!route.edit)
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips),
-				      create_route_button,
-				      _
-				      ("Create a route using some waypoints from this list"),
-				      NULL);
-	if (setwpactive)
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), deletebt,
-				      _
-				      ("Delete the selected waypoint from the waypoint list"),
-				      NULL);
-	if (setwpactive)
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), gotobt,
-				      _("Jump to the selected waypoint"),
-				      NULL);
-
-	gtk_widget_show_all (window);
 
 	return TRUE;
 }
@@ -2825,8 +2617,9 @@ main (int argc, char *argv[])
 	/* close all database connections */
 	db_close ();
 
-    free (friends);
-    free (fserver);
+	/* cleanup all friends related data */
+	cleanup_friends ();
+
     free_route_list ();
     if (current.kismetsock != -1)
 	close (current.kismetsock);

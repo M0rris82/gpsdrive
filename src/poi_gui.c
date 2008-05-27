@@ -107,9 +107,11 @@ GtkWidget *poi_types_window;
 
 /* poi lookup window */
 GtkWidget *poi_lookup_window;
-GtkWidget *button_delete;
-GtkWidget *button_target;
 GtkWidget *button_addtoroute;
+static GtkWidget *button_delete;
+static GtkWidget *button_target;
+static GtkWidget *button_refpoint;
+static GtkWidget *button_jumpto;
 
 /* route window */
 GtkWidget *route_window;
@@ -122,10 +124,21 @@ GtkWidget *button_remove, *button_routesave;
  * CALLBACKS
  */
 gint
-show_poi_lookup_cb (GtkWidget *button, gpointer data)
+show_poi_lookup_cb (GtkWidget *button, gint mode)
 {
-	gtk_widget_set_sensitive (find_poi_bt, FALSE);
-	gtk_widget_set_sensitive (posbt, FALSE);
+	/* mode: 0 = standard lookup, 1 = set reference point for map import */
+	if (mode == 1)
+	{
+		gtk_window_set_modal (GTK_WINDOW (poi_lookup_window), TRUE);
+		gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Select Reference Point"));
+	}
+	else
+	{
+		gtk_window_set_modal (GTK_WINDOW (poi_lookup_window), FALSE);
+		gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
+		gtk_widget_set_sensitive (find_poi_bt, FALSE);
+		gtk_widget_set_sensitive (posbt, FALSE);
+	}
 
 	/* save old target/posmode for cancel event */
 	wp_saved_target_lat = coords.target_lat;
@@ -137,6 +150,21 @@ show_poi_lookup_cb (GtkWidget *button, gpointer data)
 	}
 
 	gtk_widget_show_all (poi_lookup_window);
+
+	if (mode == 1)
+	{
+		gtk_widget_hide_all (button_addtoroute);
+		gtk_widget_hide_all (button_target);
+		gtk_widget_hide_all (button_delete);
+		gtk_widget_hide_all (button_jumpto);
+	}
+	else
+	{
+		gtk_widget_hide_all (button_refpoint);
+	}
+
+	gtk_window_present (GTK_WINDOW (poi_lookup_window));
+
 	return TRUE;
 }
 
@@ -721,7 +749,8 @@ void create_window_poi_lookup (void)
 	GtkWidget *dialog_action_area_poisearch, *alignment_addtoroute;
 	GtkWidget *hbox_addtoroute, *image_addtoroute, *label_addtoroute;
 	GtkWidget *alignment_target, *hbox_target, *image_target;
-	GtkWidget *label_target, *button_close, *button_jumpto;
+	GtkWidget *alignment_refpoint, *hbox_refpoint, *image_refpoint;
+	GtkWidget *label_target, *label_refpoint, *button_close;
 	GtkWidget *alignment_jumpto, *hbox_jumpto, *image_jumpto;
 	GtkWidget *label_jumpto, *combobox_typetree;
 	GtkCellRenderer *renderer_type_name;
@@ -1027,8 +1056,6 @@ void create_window_poi_lookup (void)
 
 	/* button "edit route" */
 	button_addtoroute = gtk_button_new ();
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
-		button_addtoroute, 0);
 	GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
 	alignment_addtoroute = gtk_alignment_new (0.5, 0.5, 0, 0);
 	gtk_container_add (GTK_CONTAINER (button_addtoroute),
@@ -1047,21 +1074,21 @@ void create_window_poi_lookup (void)
 	_("Switch to Add selected entry to Route"), NULL);
 	g_signal_connect (button_addtoroute, "clicked",
 		GTK_SIGNAL_FUNC (route_window_cb), NULL);  
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_addtoroute, FALSE, FALSE, 0);
 
 	/* button "delete POI" */
 	button_delete = gtk_button_new_from_stock ("gtk-delete");
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
-		button_delete, 0);
 	GTK_WIDGET_SET_FLAGS (button_delete, GTK_CAN_DEFAULT);
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_delete, 
 		_("Delete selected entry"), NULL);
 	g_signal_connect_swapped (button_delete, "clicked",
 		GTK_SIGNAL_FUNC (delete_poi_cb), poilist_select);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_delete, FALSE, FALSE, 0);
 
 	/* button "Jump to POI" */
 	button_jumpto = gtk_button_new ();
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
-		button_jumpto, 0);
 	GTK_WIDGET_SET_FLAGS (button_jumpto, GTK_CAN_DEFAULT);
 	alignment_jumpto = gtk_alignment_new (0.5, 0.5, 0, 0);
 	gtk_container_add (GTK_CONTAINER (button_jumpto), alignment_jumpto);
@@ -1078,11 +1105,11 @@ void create_window_poi_lookup (void)
 		label_jumpto, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_jumpto, "clicked",
 		GTK_SIGNAL_FUNC (select_jump_poi_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_jumpto, FALSE, FALSE, 0);
 
 	/* button "Select as Destination" */
 	button_target = gtk_button_new ();
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
-		button_target, 0);
 	GTK_WIDGET_SET_FLAGS (button_target, GTK_CAN_DEFAULT);
 	alignment_target = gtk_alignment_new (0.5, 0.5, 0, 0);
 	gtk_container_add (GTK_CONTAINER (button_target), alignment_target);
@@ -1098,11 +1125,31 @@ void create_window_poi_lookup (void)
 		label_target, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_target, "clicked",
 		GTK_SIGNAL_FUNC (select_target_poi_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_target, FALSE, FALSE, 0);
+
+	/* button "Select as Reference Point" */
+	button_refpoint = gtk_button_new ();
+	alignment_refpoint = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_refpoint), alignment_refpoint);
+	hbox_refpoint = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_refpoint), hbox_refpoint);
+	image_refpoint = gtk_image_new_from_stock ("gtk-apply", GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_refpoint),
+		image_refpoint, FALSE, FALSE, 0);
+	label_refpoint = gtk_label_new (_("Select Point"));
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_refpoint, 
+		_("Use selected entry as reference point"), NULL);
+	gtk_box_pack_start (GTK_BOX (hbox_refpoint),
+		label_refpoint, FALSE, FALSE, 0);
+//	g_signal_connect_swapped (button_refpoint, "clicked",
+//		GTK_SIGNAL_FUNC (select_refpoint_poi_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_refpoint, FALSE, FALSE, 0);
+
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");
-	gtk_dialog_add_action_widget (GTK_DIALOG (poi_lookup_window),
-		button_close, GTK_RESPONSE_CLOSE);
 	GTK_WIDGET_SET_FLAGS (button_close, GTK_CAN_DEFAULT);
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_close, 
 		_("Close this window"), NULL);
@@ -1111,6 +1158,8 @@ void create_window_poi_lookup (void)
 		poi_lookup_window);
 	g_signal_connect (GTK_OBJECT (poi_lookup_window), "delete_event",
 		GTK_SIGNAL_FUNC (close_poi_lookup_window_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_close, FALSE, FALSE, 0);
 
 	/* disable delete button until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
