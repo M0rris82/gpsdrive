@@ -169,12 +169,20 @@ writeconfig ()
 	fprintf (fp, "%s\n", local_config.dir_tracks);
 	fprintf (fp, "routedir = ");
 	fprintf (fp, "%s\n", local_config.dir_routes);
+
 	if (local_config.MapnikStatusInt > 1) { /* 2 = active, so store it as 1 */
 		fprintf (fp, "mapnik = %d\n", 1);
 	} else {
 		fprintf (fp, "mapnik = %d\n", 0);
 	}
-			
+	fprintf (fp, "mapnik_xml_file = ");
+	fprintf (fp, "%s\n", local_config.mapnik_xml_file);
+	fprintf (fp, "mapnik_xml_template = ");
+	fprintf (fp, "%s\n", local_config.mapnik_xml_template);
+	fprintf (fp, "mapnik_input_path = ");
+	fprintf (fp, "%s\n", local_config.mapnik_input_path);
+	fprintf (fp, "mapnik_font_path = ");
+	fprintf (fp, "%s\n", local_config.mapnik_font_path);
 
 	fprintf (fp, "simfollow = %d\n", local_config.simmode);
 
@@ -361,8 +369,21 @@ readconfig ()
 			else if ( (strcmp(par1, "routedir")) == 0)
 				g_strlcpy (local_config.dir_routes, par2,
 					sizeof (local_config.dir_routes));
+
 			else if ( (strcmp(par1, "mapnik")) == 0)
 				local_config.MapnikStatusInt = atoi (par2);
+			else if ( (strcmp(par1, "mapnik_xml_file")) == 0)
+				g_strlcpy (local_config.mapnik_xml_file, par2,
+					sizeof (local_config.mapnik_xml_file));
+			else if ( (strcmp(par1, "mapnik_xml_template")) == 0)
+				g_strlcpy (local_config.mapnik_xml_template, par2,
+					sizeof (local_config.mapnik_xml_template));
+			else if ( (strcmp(par1, "mapnik_input_path")) == 0)
+				g_strlcpy (local_config.mapnik_input_path, par2,
+					sizeof (local_config.mapnik_input_path));
+			else if ( (strcmp(par1, "mapnik_font_path")) == 0)
+				g_strlcpy (local_config.mapnik_font_path, par2,
+					sizeof (local_config.mapnik_font_path));
 			else if ( (strcmp(par1, "simfollow")) == 0)
 				local_config.simmode = atoi (par2);
 			else if ( (strcmp(par1, "minsecmode")) == 0)
@@ -625,10 +646,18 @@ config_init ()
 		"%s%s",local_config.dir_home,"tracks/");
 	g_snprintf (local_config.wp_file, sizeof (local_config.wp_file),
 		"%s%s", local_config.dir_home, "way.txt");
-	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
-		"%s%s", local_config.dir_home, "osm.xml");
 	g_snprintf(local_config.config_file, sizeof(local_config.config_file),
 		"%s%s", local_config.dir_home, "gpsdriverc");
+
+	/* mapnik default values */
+	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
+		"%s%s", local_config.dir_home, "osm.xml");
+	g_snprintf(local_config.mapnik_xml_template, sizeof(local_config.mapnik_xml_template),
+		"%s%s", DATADIR, "/gpsdrive/osm-template.xml");
+	g_snprintf(local_config.mapnik_input_path, sizeof(local_config.mapnik_input_path),
+		"%s", "/usr/lib/mapnik/0.5/input/");
+	g_snprintf(local_config.mapnik_font_path, sizeof(local_config.mapnik_font_path),
+		"%s", "/usr/share/fonts/truetype/ttf-dejavu/");
 	
 	/* kismet default values */
 	g_strlcpy(local_config.kismet_servername, "localhost", sizeof(local_config.kismet_servername));

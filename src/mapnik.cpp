@@ -19,10 +19,13 @@
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
 #include <mapnik/config_error.hpp>
+#include <mapnik/image_util.hpp>
 #include <fstream>
+#include <sys/stat.h>
 
 #include "mapnik.h"
 #include "config.h"
+#include "gpsdrive_config.h"
 
 using mapnik::Image32;
 using mapnik::Map;
@@ -39,6 +42,7 @@ extern int borderlimit;
 
 
 mapnik::projection Proj("+proj=merc +datum=WGS84");
+//mapnik::projection Proj("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over");
 
 typedef struct {
 	int WidthInt;
@@ -98,10 +102,11 @@ string ReplaceString(const string &SearchString, const string &ReplaceString, st
     while(string::npos != pos )
     {      
         StringToReplace.replace(pos, LengthSearch, ReplaceString);
-        pos = StringToReplace.find(SearchString, 0);          
+        pos = StringToReplace.find(SearchString, 0);
     }   
     return StringToReplace;
 }
+
 
 /*
  * initialize mapnik
@@ -109,17 +114,30 @@ string ReplaceString(const string &SearchString, const string &ReplaceString, st
 extern "C"
 void init_mapnik (char *ConfigXML) {
 
-    // register datasources (plug-ins) and a font
+    // register datasources (plug-ins) and fonts
     // Both datasorce_cache and font_engine are 'singletons'.
 
-    std::string mapnik_source = "/usr/lib/mapnik/0.5/input/";
-    std::string mapik_font_path = "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf";
+    std::string input_path(local_config.mapnik_input_path);
 
-    if (mydebug > 10) cout << "datasource_cache::instance()->register_datasources(" << mapnik_source << ")" << endl;
-    datasource_cache::instance()->register_datasources(mapnik_source);
-    // XXX We should make the fontname and path a config option
-    if (mydebug > 10) cout << "freetype_engine::register_font(" << mapik_font_path << ")" << endl;
-    freetype_engine::register_font(mapik_font_path);
+    if (mydebug > 10) cout << "datasource_cache::instance()->register_datasources(" << input_path << ")" << endl;
+    datasource_cache::instance()->register_datasources(input_path);
+
+    boost:: filesystem::directory_iterator end_iter;
+    for ( boost:: filesystem::directory_iterator dir_itr( local_config.mapnik_font_path );
+          dir_itr != end_iter;
+          ++dir_itr ) {
+
+      try {
+
+        if ( boost:: filesystem::is_regular( dir_itr->status() ) ) {
+          if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->leaf() << ")" << endl;
+          freetype_engine::register_font( dir_itr->string() );
+        }
+      } catch ( const std::exception & ex ) {
+        std::cout << dir_itr->leaf() << " " << ex.what() << std::endl;
+      }
+
+    }
 
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
@@ -160,36 +178,64 @@ int active_mapnik_ysn() {
 extern "C"
 int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replace) {
 	
-    // This location has to be adapted in the future
-    // for now it should work if gpsdrive is installed in the standard location   
-    string mapnik_config_file("./scripts/mapnik/osm-template.xml");
-    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
-    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign("../scripts/mapnik/osm-template.xml");
-    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
-    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign("scripts/mapnik/osm-template.xml");
-    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
-    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign("build/scripts/mapnik/osm-template.xml");
-    if (mydebug > 10) cout << "Check Mapnik config-file: " << mapnik_config_file << endl;
-    if ( ! boost:: filesystem::exists(mapnik_config_file) ) 
-	mapnik_config_file.assign(DATADIR).append("/gpsdrive/osm-template.xml");
-    if (mydebug > 0) cout << "Using Mapnik config-file: " << mapnik_config_file << endl;
-    
-    if ( ! boost:: filesystem::exists(mapnik_config_file) ) {
+    if (mydebug > 10) cout << "Check Mapnik config-template: " << local_config.mapnik_xml_template << endl;
+    if (mydebug > 10) cout << "Check Mapnik config-file: " << Dest << endl;
+
+    bool have_template = boost:: filesystem::exists(local_config.mapnik_xml_template);
+    bool have_dest = boost:: filesystem::exists(Dest);
+
+    if ( ! have_template)
+    {
+	have_template = boost:: filesystem::exists("./scripts/mapnik/osm-template.xml");
+	if (mydebug > 10) cout << "Check Mapnik config-file:  ./scripts/mapnik/osm-template.xml" << endl;
+    }
+    if ( ! have_template)
+    {
+	have_template = boost:: filesystem::exists("../scripts/mapnik/osm-template.xml");
+	if (mydebug > 10) cout << "Check Mapnik config-file:  ../scripts/mapnik/osm-template.xml" << endl;
+    }
+    if ( ! have_template)
+    {
+	have_template = boost:: filesystem::exists("/usr/local/share/gpsdrive/osm-template.xml");
+	if (mydebug > 10) cout << "Check Mapnik config-file:  /usr/local/share/gpsdrive/osm-template.xml" << endl;
+    }
+    if ( ! have_template)
+    {
+	have_template = boost:: filesystem::exists("/usr/share/gpsdrive/osm-template.xml");
+	if (mydebug > 10) cout << "Check Mapnik config-file:  /usr/share/gpsdrive/osm-template.xml" << endl;
+    }
+
+    if ( ! have_template && ! have_dest ) {
     	// file not found return
-	cout << "Cannot find Mapnik config-file: " << mapnik_config_file << endl;
+	cout << "Cannot find Mapnik config-file: " << Dest << endl;
+	cout << "Cannot find Mapnik config-template: " << local_config.mapnik_xml_template << endl;
     	return 0;
     }
    
     // load files
+
+    if ( ! have_dest && have_template ) {
+        cout << "Generating Mapnik config-file (" << Dest << ") from config-template (" << local_config.mapnik_xml_template << ")" << endl;
+    }
+
+    if ( have_dest && have_template ) {
+       struct stat dbuf;
+       struct stat tbuf;
+
+       if ( !stat(Dest, &dbuf) && !stat(local_config.mapnik_xml_template, &tbuf) ) {
+          if ( dbuf.st_mtime > tbuf.st_mtime ) {
+            if (mydebug > 0) cout << "Mapnik config-file newer than config-template, NOT regenerating" << endl;
+            return -1;
+          }
+       }
+    }
  
-    ifstream InputXML (mapnik_config_file.c_str());
+    ifstream InputXML (local_config.mapnik_xml_template);
     ofstream DestXML (Dest);
     
-    if (mydebug > 0) cout << "Mapnik convert: '" << mapnik_config_file << "' ----> '" << Dest << "'" << endl;
+    if (mydebug > 0) cout << "Mapnik convert: '" << local_config.mapnik_xml_template << "' ----> '" << Dest << "'" << endl;
     if (mydebug > 0) cout << "Mapnik convert Username: " << Username << endl;
+
     if (InputXML && DestXML) {
 	if (InputXML.is_open()) {
 	    string s ;
@@ -228,7 +274,6 @@ int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pFo
 	/* first we disable the map rendering 
 	 * and test if we need to render a new map */
 	MapnikMap.RenderMapYsn = 0;
-	
 	
 	if (pScaleInt != MapnikMap.ScaleInt) {
 		/* new  scale */
@@ -345,13 +390,13 @@ void render_mapnik () {
 	MapnikMap.NewMapYsn = false;
 	if (!MapnikMap.RenderMapYsn) return;
 	
-
     
     //double scale_denom = scales[MapnikMap.ScaleInt];
     double scale_denom = MapnikMap.ScaleInt;
     double res = scale_denom * 0.00028;
     
    /* render image */
+
     Envelope<double> box = Envelope<double>(MapnikMap.CenterPt.x - 0.5 * MapnikMap.WidthInt * res,
     					MapnikMap.CenterPt.y - 0.5 * MapnikMap.HeightInt * res,
     					MapnikMap.CenterPt.x + 0.5 * MapnikMap.WidthInt * res,
@@ -362,7 +407,7 @@ void render_mapnik () {
     Image32 buf(MapnikMap.WidthInt, MapnikMap.HeightInt);
     mapnik::agg_renderer<Image32> ren(*MapnikMap.MapPtr,buf);
     ren.apply();
-    
+
     if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
     
     /* get raw data for gpsdrives pixbuf */
@@ -447,8 +492,8 @@ void get_mapnik_calcxy(int *pXInt, int *pYInt, double pLatDbl, double pLonDbl, i
 	X = X - MapnikMap.CenterPt.x;
 	Y = Y - MapnikMap.CenterPt.y;
 	
-	 *pXInt = 0.5 + (mapx2Int + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt;
-	 *pYInt = 0.5 + (mapy2Int - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt;
+	 *pXInt = int( double( 0.5 + (mapx2Int + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt) );
+	 *pYInt = int( double(0.5 + (mapy2Int - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt) );
 
 }
 
@@ -476,9 +521,9 @@ void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDb
 	Proj.forward(X, Y);
 	X = X - MapnikMap.CenterPt.x;
 	Y = Y - MapnikMap.CenterPt.y;
-	
-	 *pXDbl = (64 + X * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
-	 *pYDbl = (51 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10));
+
+	 *pXDbl = int(double(64 + X * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10)));
+	 *pYDbl = int(double(51 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10)));
 
 }
 

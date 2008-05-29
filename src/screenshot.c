@@ -57,7 +57,7 @@ gint auto_take_screenshots_cb() {
 			take_screenshot(settings_window->window, "settings");
 		++JobId;
 	case 3:
-		show_poi_lookup_cb(NULL, NULL);
+		show_poi_lookup_cb(NULL, 0);
 		++JobId;
 		break;
 	case 4:

@@ -95,8 +95,7 @@ loadtrack_cb (GtkWidget * widget, gpointer datum)
 	g_signal_connect_swapped (GTK_OBJECT (cancel_bt), "clicked",
 		G_CALLBACK (gtk_widget_destroy), GTK_OBJECT (fdialog));
 
-	g_strlcpy (buf, local_config.dir_home, sizeof (buf));
-	g_strlcat (buf, "tracks/", sizeof (buf));          
+	g_strlcpy (buf, local_config.dir_tracks, sizeof (buf));
 	g_strlcat (buf, "track*.sav", sizeof (buf));
 
 	gtk_file_chooser_select_filename (GTK_FILE_CHOOSER (fdialog), buf);
@@ -363,7 +362,7 @@ savetrackfile (gint mode)
       do
 	{
 	  g_snprintf (buff, sizeof (buff), "%strack_%s_%03d.sav",
-	  	local_config.dir_home, datestring ,i++);
+	  	local_config.dir_tracks, datestring ,i++);
 	  e = stat (buff, &sbuf);
 	}
       while (e == 0);
@@ -372,7 +371,7 @@ savetrackfile (gint mode)
     }
 
   /* save in new file */
-  g_strlcpy (filename_track, local_config.dir_home, sizeof (filename_track));
+  g_strlcpy (filename_track, local_config.dir_tracks, sizeof (filename_track));
   g_strlcat (filename_track, savetrackfn, sizeof (filename_track));
   if ( mydebug > 11 )
       g_print ("savetrack(%d,%s)\n", mode,filename_track);
@@ -406,7 +405,7 @@ savetrackfile (gint mode)
     return;
 
   /* append to existing backup file */
-  g_strlcpy (filename_track, local_config.dir_home, sizeof (filename_track));
+  g_strlcpy (filename_track, local_config.dir_tracks, sizeof (filename_track));
   g_strlcat (filename_track, "track-ALL.sav", sizeof (filename_track));
   st = fopen (filename_track, "a");
   if (st == NULL)
@@ -453,7 +452,7 @@ void do_incremental_save() {
     FILE *st;
     
     if ((trackcoordnr % 30) == 29) { /* RNM: append to existing incremental file every 30 seconds */
-	g_strlcpy (mappath, local_config.dir_home, sizeof (mappath));
+	g_strlcpy (mappath, local_config.dir_tracks, sizeof (mappath));
 	g_strlcat (mappath, "incremental.sav", sizeof(mappath));
 	st = fopen (mappath, "a");
                 if (st == NULL) {

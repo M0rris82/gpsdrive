@@ -56,6 +56,9 @@ typedef struct
 	gint posmarker;
 	gchar wp_file[500];
 	gchar mapnik_xml_file[500];
+	gchar mapnik_xml_template[500];
+	gchar mapnik_input_path[500];
+	gchar mapnik_font_path[500];
 	gchar geoinfo_file[500];
 	gchar dir_home[500];
 	gchar dir_maps[500];
