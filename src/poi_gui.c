@@ -48,6 +48,7 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive.h"
 #include "gpsdrive_config.h"
 #include "gui.h"
+#include "import_map.h"
 #include "poi.h"
 #include "poi_gui.h"
 #include "routes.h"
@@ -102,6 +103,8 @@ extern GtkWidget *menuitem_saveroute;
 extern GtkWidget *routeinfo_evbox;
 
 extern GdkPixbuf *targetmarker_img;
+
+extern poi_struct poi_buf;
 
 GtkWidget *poi_types_window;
 
@@ -313,6 +316,19 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
+		if (current.importactive)
+		{
+			gchar *t_buf;
+			gtk_tree_model_get (model, &iter,
+						RESULT_LAT, &poi_buf.lat,
+						RESULT_LON, &poi_buf.lon,
+						RESULT_NAME, &t_buf,
+						-1);
+			g_strlcpy (poi_buf.name, t_buf, sizeof (poi_buf.name));
+			g_free (t_buf);
+			gtk_widget_set_sensitive (button_refpoint, TRUE);
+			return;
+		}
 		if (route.edit)
 		{
 			add_poi_to_route (model, iter);
@@ -1002,7 +1018,6 @@ void create_window_poi_lookup (void)
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_poilist),
 		treeview_poilist);
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_poilist), TRUE);
-	
 
 	poilist_select = gtk_tree_view_get_selection (GTK_TREE_VIEW
 		(treeview_poilist));
@@ -1142,11 +1157,11 @@ void create_window_poi_lookup (void)
 		_("Use selected entry as reference point"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_refpoint),
 		label_refpoint, FALSE, FALSE, 0);
-//	g_signal_connect_swapped (button_refpoint, "clicked",
-//		GTK_SIGNAL_FUNC (select_refpoint_poi_cb), NULL);
+	g_signal_connect_swapped (button_refpoint, "clicked",
+		G_CALLBACK (select_refpoint_poi_cb), poi_lookup_window);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
 		button_refpoint, FALSE, FALSE, 0);
-
+	gtk_widget_set_sensitive (button_refpoint, FALSE);
 
 	/* button "close" */
 	button_close = gtk_button_new_from_stock ("gtk-close");

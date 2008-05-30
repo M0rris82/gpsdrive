@@ -2621,6 +2621,10 @@ main (int argc, char *argv[])
 	cleanup_friends ();
 
     free_route_list ();
+
+	/* cleanup poi data */
+	cleanup_poi ();
+
     if (current.kismetsock != -1)
 	close (current.kismetsock);
     gpsd_close();

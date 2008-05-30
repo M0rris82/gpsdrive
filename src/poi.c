@@ -86,6 +86,9 @@ poi_struct *poi_list;
 poi_struct *poi_result;
 GtkListStore *poi_result_tree;
 
+// buffer for storing temporary POI data
+poi_struct *poi_buf;
+
 glong poi_nr;			// current number of poi to count
 glong poi_list_count;		// max index of POIs actually in memory
 glong poi_limit = -1;		// max allowed index (if you need more you have to alloc memory)
@@ -1297,6 +1300,9 @@ poi_init (void)
 		return;
 	}
 
+	/* init buffer for poi buffer */
+	poi_buf = g_new0 (poi_struct, 1);
+
 	/* init gtk-list for storage of results of poi-search */
 	poi_result_tree = gtk_list_store_new (RES_COLUMS,
 		G_TYPE_INT,		/* poi.poi_id */
@@ -1337,4 +1343,13 @@ poi_init (void)
 
 	/* set poi filter according to config file */
 	init_poi_type_filter ();
+}
+
+
+void
+cleanup_poi (void)
+{
+	g_free (poi_buf);
+	g_free (poi_list);
+	g_free (poi_result);
 }
