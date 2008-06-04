@@ -1,15 +1,16 @@
-GpsDrive and maintainer:   Fritz Ganter <ganter@ganter.at>
+Maintainers:               Guenther Meyer <d.s.e sordidmusic com>
+                           "tweety" <email@example.com>
+                           "loom" <email@example.com>
 
-Garble:                    Douglas S. J. De Couto  <decouto@lcs.mit.edu> 
+Original GpsDrive:         Fritz Ganter <ganter@ganter.at>
 
--m option patch:           Andreas Hinz <news1@acci.dk>
+-m option patch:           Andreas Hinz <news1@acci.dk>  (was this a garble option?)
 
 wpcvt improved:            Stephen Wood <saw2@home.com>
 
 -o option to output NMEA sentences: Dan Egnor <egnor@ofb.net>
 patches for CPU temp.:     Jaap Hogenberg <hogenberg11@zonnet.nl>
 
-gpsd:                      Remco Treffkorn <remco@rvt.com>
 gpsfetchmap:               Manfred Caruso <bertoz@bertoz.com>
 gpsfetchmap.pl:		   Kevin Stephens <gps@suburbialost.com>
 mb2gpsdrive.pl:		   Sven Fichtner
