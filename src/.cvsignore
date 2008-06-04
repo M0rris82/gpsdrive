@@ -2,7 +2,6 @@ Makefile.in
 *.lo
 *.la
 gpsdrive
-garble
 gpsd
 .libs
 .deps

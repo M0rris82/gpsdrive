@@ -140,9 +140,8 @@ A: Yes.  You might want to do this when you have a fast internet connection
    tracks (see below).
 
 Q: Does GpsDrive handle 'tracks' saved in my GPS receiver?
-A: Yes.  You should save the tracks in the .gpsdrive directory (using
-   something like 'garble' or 'gpspoint')  - then you can load them into
-   GpsDrive from the GUI.
+A: Yes. Use a tool like 'gpsbabel' to convert them into GPX format.
+   [Please expand this answer.]
 
 Q: I know that we aren't supposed to use GpsDrive 'for navigaton purposes' -
    but is it any use to (student) aviators?

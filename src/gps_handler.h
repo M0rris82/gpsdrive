@@ -56,7 +56,5 @@ extract all/some gps_handling parts to File src/gps_handler.c
 gint initgps ();
 void gpsd_close();
 
-int garblemain (int argc, char **argv);
-
 
 #endif /* GPS_HANDLER_H */
