@@ -285,13 +285,6 @@ Las columnas se llaman etiqueta latitud longitud.
 Si el archivo no existe o no contiene datos válidos, no habrá botón "Ir a"
 disponible.
 
-Puedes usar el programa "garble" (incluido en el paquete) para leer tus
-waypoints del GPS Garmin (el modo de transferencia debe ser GARMIN aquí).
-
-La forma más sencilla de usar el script "wpget" que lo hace todo por ti.
-
-Asegúrate de tener "wpget", "wpcvt" y "garble" en tu path.
-
 Algunos comentarios sobre las fuentes: 
 --------------------------------------
 

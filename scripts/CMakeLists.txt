@@ -5,8 +5,6 @@ add_subdirectory(osm/perl_lib)
 
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
-    wpcvt
-    wpget
     gpspoint2gpsdrive.pl
     geo-nearest
     geocache2way

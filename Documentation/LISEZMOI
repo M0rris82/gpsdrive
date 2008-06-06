@@ -217,18 +217,6 @@ Un "assistant d'importation" est intégré. Utilisez-le pour importer vos cartes.
 Importer des waypoints:
 ----------------------
 
-La méthode la plus simple est d'utiliser le script "wpget" qui s'occupe de
-tout si vous utilisez un recepteur GARMIN.
-Vous pouvez utiliser le programme "garble" (inclu dans le package) pour
-extraire vos waypoints du GPS Garmin (Le mode transfer doit être GARMIN dans
-ca cas, alors que GpsDrive utlise le mode NMEA!).
-
-"wpget" est un script qui fait appel à "garble" de manière adéquate.
-
-Assurez vous d'avoir "wpget", "wpcvt" et "garble" dans votre path. C'est le
-cas, si vous avez installé le programme sous le compte root et si
-/usr/local/bin est dans votre path.
-
 Méthode manuelle:
 
 Vous pouvez créer un fichier "way.txt" dans votre répertoire ~/.gpsdrive dont

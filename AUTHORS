@@ -7,8 +7,6 @@ Original GpsDrive:         Fritz Ganter <ganter@ganter.at>
 
 -m option patch:           Andreas Hinz <news1@acci.dk>  (was this a garble option?)
 
-wpcvt improved:            Stephen Wood <saw2@home.com>
-
 -o option to output NMEA sentences: Dan Egnor <egnor@ofb.net>
 patches for CPU temp.:     Jaap Hogenberg <hogenberg11@zonnet.nl>
 
@@ -36,6 +34,6 @@ Slovak:    Zdeno Podobný <zdpo@mailbox.sk>
 Swedish:   Martin Sjögren <md9ms@mdstud.chalmers.se>
 Greek:     Yiannis Pailas <johntop@pathfinder.gr>
 Japanese:  <maruyama@sh.rim.or.jp>
-Norway:     Alexander Wigen 
+Norway:    Alexander Wigen 
 Turk:      A. Burak Ilgicioglu <ilgici@ttnet.net.tr>
 

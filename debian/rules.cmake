@@ -77,7 +77,7 @@ binary-arch: build install
 #	dh_installcron
 	dh_installman
 #	dh_installinfo
-#	dh_undocumented friendsd2.1 gpsfetchmap.1 wpcvt.1 wpget.1 gpsfetchmap.pl.1 gpspoint2gpsdrive.pl.1 mb2gpsdrive.pl.1 geocache2way.1 gpssql_backup.sh.1 gpssql_restore.sh.1
+#	dh_undocumented friendsd2.1 gpsfetchmap.1 gpsfetchmap.pl.1 gpspoint2gpsdrive.pl.1 mb2gpsdrive.pl.1 geocache2way.1 gpssql_backup.sh.1 gpssql_restore.sh.1
 	dh_installchangelogs ChangeLog
 #	dh_link
 	dh_strip

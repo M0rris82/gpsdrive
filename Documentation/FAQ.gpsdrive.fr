@@ -106,7 +106,7 @@ R: Oui. Ceci peut s'avérer utile pour télécharger des cartes lorsque vous dispos
 
 Q: GpsDrive est-il compatible avec les routes sauvegardées dans mon récepteur GPS?
 R: Oui. Vous devez placer les fichiers contenant les routes dans votre répertoire 
-   de configuration de gpsdrive (~/.gpsdrive), en utilisant 'garble' ou 'gpspoint'.
+   de configuration de gpsdrive (~/.gpsdrive), en utilisant 'gpspoint'.
    Vous pourrez alors les afficher dans le programme.
 
 Q: Je sais que GpsDrive n'est pas concu pour la navigation, mais peut-il être utile
