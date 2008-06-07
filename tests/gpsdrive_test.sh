@@ -76,6 +76,7 @@ fi
 PWD=`pwd`/tests
 mkdir -p "$PWD/maps"
 
+USER_NAME=id -u -n
 if false; then
 echo "------------> Screenshots...."
 for LANG in en_US de_DE ; do 
@@ -84,8 +85,13 @@ for LANG in en_US de_DE ; do
 	echo "-------------> check icon_theme=$ICON_THEME"
 	for USER_INTERFACE in car desktop pda ; do 
 	    for MAPNIK in 0 1  ; do 
+		
 		perl -p \
-		    -e "s,PWD,$PWD,g;s/icon_theme = .*/icon_theme = $ICON_THEME/;s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
+		    -e "s,PWD,$PWD,g;
+                        s/USER/$USER_NAME/g;
+                        s/icon_theme = .*/icon_theme = $ICON_THEME/g;
+                        s/mapnik = .*/mapnik = $MAPNIK/g;
+                        " <tests/gpsdriverc-in >tests/gpsdriverc
 		./build/src/gpsdrive --geometry 800x600 -S tests/ -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 
 	    done || exit 1
