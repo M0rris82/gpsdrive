@@ -290,7 +290,7 @@ readconfig ()
 		e = sscanf (buf, "%s = %[^\n]", par1, par2);
 
 		if ( mydebug > 1 )
-			fprintf ( stderr,"%d [%s] = [%s]\n", e, par1, par2);
+			fprintf ( stderr,"readconfig(): %d [%s] = [%s]\n", e, par1, par2);
 
 		if (e == 2)
 		{
