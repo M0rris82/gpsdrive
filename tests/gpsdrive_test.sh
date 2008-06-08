@@ -76,7 +76,7 @@ fi
 PWD=`pwd`/tests
 mkdir -p "$PWD/maps"
 
-USER_NAME=id -u -n
+USER_NAME=`id -u -n`
 if false; then
 echo "------------> Screenshots...."
 for LANG in en_US de_DE ; do 
