@@ -2,12 +2,13 @@ Source: gpsdrive
 Section: utils
 Priority: optional
 Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@ostertag.name>
-Build-Depends: debhelper (>> 3.7.2)
+Build-Depends: debhelper (>= 5)
 	cmake
 	libart-2.0-dev
 	libboost-dev
 	libboost-filesystem-dev
 	libboost-serialization-dev
+	libc6-dev
 	libfile-slurp-perl
 	libgda3-dev
 	libgtk2.0-dev
@@ -20,6 +21,7 @@ Build-Depends: debhelper (>> 3.7.2)
 	perl-doc
 	pkg-config
 	po-debconf
+	python-central
 	python-dev
 	python-support
 	xutils
