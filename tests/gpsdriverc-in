@@ -54,7 +54,6 @@ wplabelcolor = #00ffff
 map_daycolor = #ffebcc
 map_nightcolor = #330033
 messagenumber = 0
-showssid = 1
 speech = 0
 speech_voice = default
 speech_mbroladir = /usr/share/mbrola/
