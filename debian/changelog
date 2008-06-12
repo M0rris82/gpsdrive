@@ -1,8 +1,14 @@
-gpsdrive (2.10svn19688201) unstable; urgency=low
+gpsdrive (2.10svn19698202) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Jun 2008 00:11:44 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Jun 2008 00:26:56 +0200
+
+gpsdrive (2.10svn1969) unstable; urgency=low
+
+   * Auto generated Changelog
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Jun 2008 00:15:50 +0200
 
 gpsdrive (2.10svn1968) unstable; urgency=low
 
@@ -12940,5 +12946,5 @@ gpsdrive (2.10svn1) unstable; urgency=low
 
    * New repository initialized by cvs2svn.
 
- -- (no author) <(no author)@gpsdrive.de>  Tue, 07 Jun 1994 10:35:10 +0200
+ -- no author <no author@gpsdrive.de>  Tue, 07 Jun 1994 10:35:10 +0200
 
