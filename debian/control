@@ -30,6 +30,7 @@ Standards-Version: 3.6.1
 Package: gpsdrive
 Architecture: any
 Depends: ${misc:Depends}
+	${shlibs:Depends}
 	${perl:Depends}
 	gda2-postgres
 	libart-2.0-2
@@ -58,6 +59,8 @@ Depends: ${misc:Depends}
 	perlmagick
 	python
 	python-support
+	python-central
+	python-dev
 	sudo
 	ttf-dejavu
 Recommends: gpsd
