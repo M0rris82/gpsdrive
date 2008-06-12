@@ -28,7 +28,6 @@ gint help_cb (GtkWidget * widget, guint datum);
 gint import1_cb (GtkWidget * widget, guint datum);
 
 gint friendsagent_cb (GtkWidget * widget, guint * datum);
-gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
 void writeconfig ();
 void readconfig ();
 gint create_route_cb (GtkWidget * widget, guint datum);

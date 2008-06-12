@@ -111,7 +111,6 @@ gdouble poi_lat_ul = 0, poi_lon_ul = 0;
 /* ******************************************************************   */
 
 void poi_rebuild_list (void);
-void get_poitype_tree (void);
 
 
 /* ******************************************************************
@@ -125,6 +124,39 @@ treefilterfunc_cb  (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 	if (t_id == -1)
 		return FALSE;
 	return TRUE;
+}
+
+
+/* ******************************************************************
+ * initialize POI filter from config settings
+ */
+gboolean
+init_poi_filter (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	gchar *t_name, *t_delimit;
+	gboolean t_sl = TRUE;
+	gboolean t_lb = FALSE;
+
+	gtk_tree_model_get (model, iter, POITYPE_NAME, &t_name, -1);
+
+	t_delimit = g_strstr_len (t_name, 30, ".");
+	if (t_delimit)
+		*t_delimit = '\0';
+
+	/* set poi display filter */
+	if (g_strstr_len (local_config.poi_filter, sizeof (local_config.poi_filter), t_name))
+		t_sl = FALSE;
+
+	/* set poi label filter */
+	if (g_strstr_len (local_config.poi_label, sizeof (local_config.poi_label), t_name))
+		t_lb = TRUE;
+
+	gtk_tree_store_set (GTK_TREE_STORE (model), iter,
+		POITYPE_SELECT, t_sl,
+		POITYPE_LABEL, t_lb, -1);
+
+	g_free (t_name);
+	return FALSE;
 }
 
 
@@ -859,6 +891,10 @@ get_poitype_tree (void)
 	g_printf ("Read %d POI-Types from geoinfo.db\n", count[0]);
 
 	create_poitype_tree (count[1]);
+
+	/* set poi filter according to config file */
+	gtk_tree_model_foreach (GTK_TREE_MODEL (poi_types_tree),
+		*(GtkTreeModelForeachFunc) init_poi_filter, NULL);
 }
 
 
@@ -1248,41 +1284,6 @@ poi_query_area (gdouble lat1, gdouble lon1, gdouble lat2, gdouble lon2)
     }
 }
 
-/* *******************************************************
- * initialize POI filter from config settings
-*/
-void init_poi_type_filter ()
-{
-	GtkTreeIter t_iter;
-	gchar *t_name;
-
-	gtk_tree_model_get_iter_first
-		(GTK_TREE_MODEL (poi_types_tree), &t_iter);
-	do
-	{
-		gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
-			POITYPE_NAME, &t_name, -1);
-		
-		if (g_strstr_len (local_config.poi_filter,
-			sizeof (local_config.poi_filter), t_name))
-		{
-			gtk_tree_store_set
-				(poi_types_tree, &t_iter,
-				POITYPE_SELECT, 0, -1);
-		}
-		else
-		{
-			gtk_tree_store_set
-				(poi_types_tree, &t_iter,
-				POITYPE_SELECT, 1, -1);
-		}
-	}
-	while (gtk_tree_model_iter_next
-		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
-
-	g_free (t_name);
-}
-
 
 /* *******************************************************
  */
@@ -1338,11 +1339,8 @@ poi_init (void)
 		GTK_TREE_MODEL_FILTER (poi_types_tree_filtered),
 		treefilterfunc_cb, NULL, NULL);
 
-	/* read poi-type data and icons from geoinfo.db */
+	/* read poi-type data and icons from geoinfo.db and set filters */
 	get_poitype_tree ();
-
-	/* set poi filter according to config file */
-	init_poi_type_filter ();
 }
 
 

@@ -30,17 +30,9 @@ Disclaimer: Please do not use for navigation.
  */
 
 gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
-gint addwaypoint_gtk_cb (GtkWidget * widget, guint datum);
-gint addwaypointchange_cb (GtkWidget * widget, guint datum);
-gint addwaypointdestroy_cb (GtkWidget * widget, guint datum);
-gint watchwp_cb (GtkWidget * widget, guint * datum);
 glong addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gboolean save_in_db);
 void check_and_reload_way_txt();
 void draw_waypoints();
 void loadwaypoints();
-void mark_waypoint();
-void set_position_to_waypoint();
-void set_waypoint_pos(gdouble lat, gdouble lon);
-void draw_radar();
 
 #endif /* GPSDRIVE_WAYPOINT_H */

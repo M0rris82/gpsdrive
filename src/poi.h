@@ -64,7 +64,7 @@ GdkPixbuf * read_poi_icon (gchar * icon_name);
 void get_poitype_tree (void);
 guint poi_get_results (const gchar *text, const gchar *dist, const gint posflag, const gchar *type);
 void update_poi_type_filter (void);
-void init_poi_type_filter(void);
+
 
 typedef struct
 {

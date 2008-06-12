@@ -180,6 +180,8 @@ db_sqlite_init (void)
 		return FALSE;
 	}
 
+	current.save_in_db = TRUE;
+
 	return TRUE;
 }
 

@@ -83,7 +83,6 @@ extern GTimer *timer, *disttimer;
 extern gdouble olddist;
 extern GtkWidget *messagewindow;
 extern GdkDrawable *drawable;
-extern gchar oldfilename[2048];
 extern GtkTreeModel *poi_types_tree_filtered;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -112,127 +111,6 @@ gdouble wp_saved_target_lon = 0;
 gdouble wp_saved_posmode_lat = 0;
 gdouble wp_saved_posmode_lon = 0;
 
-/* *****************************************************************************
- * check for Radar WP near me and warn me
- */
-gint
-watchwp_cb (GtkWidget * widget, guint * datum)
-{
-	gint angle, i, radarnear;
-	gdouble d;
-	gchar buf[400], lname[200], l2name[200];
-	gdouble ldist = 9999.0, l2dist = 9999.0;
-	gdouble tx, ty, lastbearing;
-
-	if ( mydebug >50 ) fprintf(stderr , "watchwp_cb()\n");
-
-	/*  calculate new earth radius */
-	earthr = calcR (coords.current_lat);
-
-	if (current.importactive)
-		return TRUE;
-
-	foundradar = FALSE;
-	radarnear = FALSE;
-
-
-	for (i = 0; i < maxwp; i++)
-	{
-		/*  test for radar */
-		if (FALSE)
-		{
-			d = calcdist2 ((wayp + i)->lon, (wayp + i)->lat);
-			if (d < 0.6)
-			{
-				lastbearing = radarbearing;
-				tx = -coords.current_lon + (wayp + i)->lon;
-				ty = -coords.current_lat + (wayp + i)->lat;
-				radarbearing = atan (tx / ty);
-				if (!finite (radarbearing))
-					radarbearing = lastbearing;
-
-				if (ty < 0)
-					radarbearing = M_PI + radarbearing;
-				radarbearing -= current.heading;
-				if (radarbearing >= (2 * M_PI))
-					radarbearing -= 2 * M_PI;
-				if (radarbearing < 0)
-					radarbearing += 2 * M_PI;
-				if (radarbearing < 0)
-					radarbearing += 2 * M_PI;
-				angle = radarbearing * 180.0 / M_PI;
-
-				if ((angle < 40) || (angle > 320))
-				{
-					foundradar = TRUE;
-					if (d < ldist)
-					{
-						ldist = d;
-						g_strlcpy (lname,
-							   (wayp + i)->name,
-							   sizeof (lname));
-					}
-					if (d < 0.2)
-					{
-						foundradar = TRUE;
-						radarnear = TRUE;
-						if (d < l2dist)
-						{
-							l2dist = d;
-							g_strlcpy (l2name,
-								   (wayp +
-								    i)->name,
-								   sizeof
-								   (l2name));
-						}
-					}
-				}
-
-			}
-
-		}
-	}
-	if (!foundradar)
-	{
-		g_strlcpy (lastradar, "----", sizeof (lastradar));
-		g_strlcpy (lastradar2, "----", sizeof (lastradar2));
-	}
-	else
-	{
-		if ((strcmp (lname, lastradar)) != 0)
-		{
-			g_strlcpy (lastradar, lname, sizeof (lastradar));
-
-      g_snprintf(
-          buf, sizeof(buf), speech_danger_radar[voicelang],
-          (int) (ldist * 1000.0), (int) current.groundspeed );
-			speech_out_speek (buf);
-
-			if (displaytext != NULL)
-				free (displaytext);
-			displaytext = strdup (buf + 10);
-			displaytext = g_strdelimit (displaytext, "\n", ' ');
-			displaytext = g_strdelimit (displaytext, "\")", ' ');
-
-			do_display_dsc = TRUE;
-			textcount = 0;
-		}
-
-		if (radarnear)
-			if ((strcmp (l2name, lastradar2)) != 0)
-			{
-				g_strlcpy (lastradar2, l2name, sizeof (lastradar2));
-
-        g_snprintf(
-            buf, sizeof(buf), speech_info_radar[voicelang],
-            (int) (ldist * 1000.0) );
-				speech_out_speek (buf);
-			}
-
-	}
-
-	return TRUE;
-}
 
 /* ******************************************************************
  */
@@ -388,22 +266,6 @@ draw_waypoints ()
 		}
 	}
 }
-
-
-/* *****************************************************************************
- */
-gint
-importaway_cb (GtkWidget * widget, guint datum)
-{
-	current.importactive = FALSE;
-	gtk_widget_destroy (widget);
-	g_strlcpy (oldfilename, "XXXXXXXXXXXXXXXXXX", sizeof (oldfilename));
-	return FALSE;
-}
-
-
-/* *****************************************************************************
- */
 
 
 /* *****************************************************************************
@@ -717,24 +579,6 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (window);
 	return TRUE;
-}
-
-
-/* *****************************************************************************
- */
-gint
-click_clist (GtkWidget * widget, GdkEventButton * event, gpointer data)
-{
-
-	g_print ("\nclist: %d, data: %d\n", event->button, selected_wp_list_line);
-	if ((event->button == 3))
-	{
-
-		return TRUE;
-	}
-
-	return FALSE;
-
 }
 
 

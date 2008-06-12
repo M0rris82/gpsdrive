@@ -71,8 +71,7 @@
 /* #define	SERV_HOST_ADDR	"213.203.231.23"   */
 #define	SERV_HOST_ADDR	"127.0.0.1"
 
-extern int maxfriends;
-extern friendsstruct *friends;
+gint maxfriends = 0;
 int actualfriends = 0;
 extern int messagenumber;
 extern long int maxfriendssecs;
@@ -103,9 +102,6 @@ extern gchar messagename[40], messagesendtext[1024], messageack[100];
 /* global variables */
 GtkListStore *friends_list;
 friendsstruct *friends_buf;
-
-friendsstruct *friends;
-
 
 /* local variables */
 static friendsstruct *fserver;
@@ -205,8 +201,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 
 
 /* ****************************************************************************
- * Insert or update data coming from friendsd in database or way.txt file
- * and update friends_list
+ * Insert or update data coming from friendsd in database and update friends_list
  */
 void
 update_friends_data (friendsstruct *cf)
@@ -288,26 +283,21 @@ update_friends_data (friendsstruct *cf)
 			db_poi_extra_edit (&current_poi_id, "timesec", (cf)->timesec, FALSE);
 		}
 	}
-	else
-	{
-		// TODO: add entry to way.txt file
-		return;
-	}
 }
 
 
 int
 friends_sendmsg (char *serverip, char *message)
 {
-  int n, nosent, endflag, e;
-  char recvline[MAXLINE + 1];
-  int i, fc, type;
+  gint n, nosent, endflag, e;
+  gchar recvline[MAXLINE + 1];
+  gint i, fc, type;
   struct sockaddr_in cli_addr;
   struct sockaddr_in serv_addr;
   struct sockaddr *pserv_addr;
   socklen_t servlen;
   friendsstruct *f;
-  char msgname[40], msgid[40], msgtext[1024];
+  gchar msgname[40], msgid[40], msgtext[1024];
 
   if (serverip == NULL)
     {
@@ -322,7 +312,6 @@ friends_sendmsg (char *serverip, char *message)
 	return 0;
       }
 
-  f = friends;
   g_strlcpy (msgname, "", sizeof (msgname));
   g_strlcpy (msgtext, "", sizeof (msgtext));
 
@@ -379,6 +368,7 @@ friends_sendmsg (char *serverip, char *message)
   endflag = i = 0;
 
   fc = 0;
+  f = g_new (friendsstruct, 1);
   gtk_list_store_clear (friends_list);
   do
     {
@@ -405,32 +395,30 @@ friends_sendmsg (char *serverip, char *message)
 	    {
 	      e = sscanf (recvline,
 			  "POS: %s %s %s %s %s %s %s %d",
-			  (f + fc)->id, (f + fc)->name,
-			  (f + fc)->lat, (f + fc)->lon,
-			  (f + fc)->timesec,
-			  (f + fc)->speed, (f + fc)->heading,
+			  f->id, f->name, f->lat, f->lon,
+			  f->timesec, f->speed, f->heading,
 			  &type);
 	      /*              printf("\nreceived %d arguments\n",e);  */
 		if (type == TRAVEL_CAR)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd.car");
 		else if (type == TRAVEL_AIRPLANE)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd.airplane");
 		else if (type == TRAVEL_BIKE)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd.bike");
 		else if (type == TRAVEL_BOAT)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd.boat");
 		else if (type == TRAVEL_WALK)
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd.walk");
 		else
-			g_snprintf ((f + fc)->type, sizeof ((f + fc)->type),
+			g_snprintf (f->type, sizeof (f->type),
 				"people.friendsd");
 		
-		update_friends_data ((f + fc));
+		update_friends_data (f);
 		fc++;
 	    }
 	  if ((strncmp (recvline, "SRV: ", 5)) == 0)
@@ -451,9 +439,6 @@ friends_sendmsg (char *serverip, char *message)
 		  g_strlcpy (messagename, "", sizeof (messagename));
 		  g_strlcpy (messageack, "", sizeof (messageack));
 		  g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
-//		  wi = gtk_item_factory_get_item
-//		    (item_factory, N_("/Misc. Menu/Messages"));
-//		  gtk_widget_set_sensitive (wi, TRUE);
 		  gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
 		  	current.statusbar_id);
 		  statuslock = FALSE;
@@ -513,6 +498,7 @@ friends_sendmsg (char *serverip, char *message)
 	maxfriends = fc;
     }
 
+  g_free (f);
 
   return 0;
 }
@@ -555,7 +541,6 @@ friends_init ()
       current.needtosave = TRUE;
     }
 
-	friends = g_new (friendsstruct, MAXLISTENTRIES);
 	fserver = g_new (friendsstruct, 1);
 	friends_buf = g_new (friendsstruct, 1);
 
@@ -583,136 +568,8 @@ friends_init ()
 /* *****************************************************************************
  */
 void
-drawfriends (void)
-{
-  gint i;
-  gint posxdest, posydest;
-  gdouble clong, clat, heading;
-  gint width, height;
-  struct tm *t;
-  time_t ti, tif;
-
-  actualfriends = 0;
-  /*   g_print("Maxfriends: %d\n",maxfriends); */
-  for (i = 0; i < maxfriends; i++)
-    {
-
-      /* return if too old  */
-      ti = time (NULL);
-      tif = atol ((friends + i)->timesec);
-      if (!(tif > 1000000000))
-	fprintf (stderr,
-		 "Format error! timesec: %s, Name: %s, i: %d\n",
-		 (friends + i)->timesec, (friends + i)->name, i);
-      if ((ti - local_config.friends_maxsecs) > tif)
-	continue;
-      actualfriends++;
-      coordinate_string2gdouble ((friends + i)->lon, &clong);
-      coordinate_string2gdouble ((friends + i)->lat, &clat);
-
-      calcxy (&posxdest, &posydest, clong, clat, current.zoom);
-
-      /* If Friend is visible inside SCREEN display him/her */
-      if ((posxdest >= 0) && (posxdest < gui_status.mapview_x))
-	{
-
-	  if ((posydest >= 0) && (posydest < gui_status.mapview_y))
-	    {
-
-	      gdk_draw_pixbuf (drawable, kontext_map,
-			       friendspixbuf, 0, 0,
-			       posxdest - 18, posydest - 12,
-			       39, 24, GDK_RGB_DITHER_NONE, 0, 0);
-
-	      /*  draw pointer to direction */
-	      heading =
-		strtod ((friends + i)->heading, NULL) * M_PI / 180.0;
-	      draw_posmarker
-	      	(posxdest, posydest, heading, &colors.blue, 1, FALSE, FALSE);
-
-	      {	/* print friends name / speed on map */
-		PangoFontDescription *pfd;
-		PangoLayout *wplabellayout;
-		gchar txt[200], txt2[100], s1[10];
-		time_t sec;
-		char *as, day[20], dispname[40];
-		int speed, ii;
-
-		sec = atol ((friends + i)->timesec);
-		sec += 3600 * current.timezone;
-		t = gmtime (&sec);
-
-		as = asctime (t);
-		sscanf (as, "%s", day);
-		sscanf ((friends + i)->speed, "%d", &speed);
-
-		/* replace _ with  spaces in name */
-		g_strlcpy (dispname, (friends + i)->name, sizeof (dispname));
-		for (ii = 0; (size_t) ii < strlen (dispname); ii++)
-		  if (dispname[ii] == '_')
-		    dispname[ii] = ' ';
-
-		g_snprintf (txt, sizeof (txt),
-			    "%s, %d ", dispname, (int) (speed * milesconv));
-		if (local_config.distmode == DIST_MILES)
-		  g_snprintf (s1, sizeof (s1), "%s", _("mi/h"));
-		else if (local_config.distmode == DIST_NAUTIC)
-		  g_snprintf (s1, sizeof (s1), "%s", _("knots"));
-		else
-		  g_snprintf (s1, sizeof (s1), "%s", _("km/h"));
-		g_strlcat (txt, s1, sizeof (txt));
-		g_snprintf (txt2, sizeof (txt2),
-			    "\n%s, %2d:%02d\n", day, t->tm_hour, t->tm_min);
-		g_strlcat (txt, txt2, sizeof (txt));
-		wplabellayout =
-			gtk_widget_create_pango_layout (map_drawingarea, txt);
-		if (local_config.guimode == GUI_PDA)
-			pfd = pango_font_description_from_string ("Sans 8");
-		else
-		if (local_config.guimode == GUI_CAR)
-			pfd = pango_font_description_from_string ("Sans 8");
-		else
-			pfd = pango_font_description_from_string
-				(local_config.font_friends);
-		pango_layout_set_font_description (wplabellayout, pfd);
-		pango_layout_get_pixel_size (wplabellayout, &width, &height);
-		gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
-		/*              gdk_draw_rectangle (drawable, kontext_map, 1, posxdest + 18,
-		 *                                  posydest - height/2 , width + 2,
-		 *                                  height + 2);
-		 */
-
-		gdk_draw_layout_with_colors (drawable,
-			kontext_map,
-			posxdest + 21,
-			posydest - height / 2 + 1,
-			wplabellayout, &colors.black, NULL);
-		gdk_draw_layout_with_colors (drawable,
-			kontext_map,
-			posxdest + 20,
-			posydest - height / 2,
-			wplabellayout, &colors.friends, NULL);
-
-		if (wplabellayout != NULL)
-		  g_object_unref (G_OBJECT (wplabellayout));
-		/* freeing PangoFontDescription, cause it has been copied by prev. call */
-		pango_font_description_free (pfd);
-
-	      }
-
-
-	    }
-	}
-    }
-}
-
-
-/* *****************************************************************************
- */
-void
 cleanup_friends (void)
 {
-    g_free (friends);
     g_free (fserver);
     g_free (friends_buf);
 }

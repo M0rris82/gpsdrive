@@ -109,6 +109,7 @@ GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
 GtkWidget *wp_draw_bt, *mute_bt, *routing_bt;
+GtkWidget *find_poi_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
 GtkWidget *routeinfo_evbox, *routeinfo_icon, *routeinfo_label;
@@ -1199,7 +1200,7 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 
 
 /* *****************************************************************************
- * show satelite information
+ * show satellite information
  * TODO:
  *	- show, if satellite is used (filled) or not (empty) -> info from GSA sentence
  *	- show satellite numbers

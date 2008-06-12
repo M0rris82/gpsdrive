@@ -50,7 +50,7 @@ extern map_dir_struct *display_map;
 
 GtkWidget *splash_window;
 extern gint mydebug;
-extern int sockfd, showsid, storetz;
+extern int sockfd;
 
 extern coordinate_struct coords;
 

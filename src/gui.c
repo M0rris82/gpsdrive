@@ -103,7 +103,6 @@ extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
 
 // Some of these shouldn't be necessary, when all the gui stuff is finally moved
-extern GtkWidget *find_poi_bt;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
 extern GtkWidget *routeinfo_evbox;

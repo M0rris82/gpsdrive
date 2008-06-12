@@ -160,7 +160,7 @@ extern mapsstruct *maps;
 extern gint iszoomed;
 extern gint nrmaps;
 extern int havenasa;
-extern gchar oldfilename[1024];
+extern gchar oldfilename[2048];
 extern GtkWidget *posbt;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -180,6 +180,17 @@ extern gdouble earthr;
 GtkWidget *dltext5, *dltext6, *dltext7, *scale_input;
 gchar importfilename[1024];
 
+
+/* *****************************************************************************
+ */
+gint
+close_import_window_cb (GtkWidget *widget, guint datum)
+{
+	current.importactive = FALSE;
+	gtk_widget_destroy (widget);
+	g_strlcpy (oldfilename, "XXXXXXXXXXXXXXXXXX", sizeof (oldfilename));
+	return FALSE;
+}
 
 /* *****************************************************************************
    set reference point for map calibration */
@@ -343,13 +354,8 @@ import1_cb (GtkWidget * widget, guint datum)
     }
 
   knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-  gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
-			     GTK_SIGNAL_FUNC
-			     (importaway_cb), GTK_OBJECT (window));
-  gtk_signal_connect_object (GTK_OBJECT (window),
-			     "delete_event",
-			     GTK_SIGNAL_FUNC
-			     (importaway_cb), GTK_OBJECT (window));
+  g_signal_connect_swapped (knopf2, "clicked", G_CALLBACK (close_import_window_cb), window);
+  g_signal_connect (window, "delete_event", G_CALLBACK (close_import_window_cb), NULL);
 
   s1 = gtk_button_new_with_label (_("Go up"));
   gtk_signal_connect (GTK_OBJECT (s1), "clicked",

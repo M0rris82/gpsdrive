@@ -148,9 +148,6 @@ enum gpx_mode
 
 #define MAXSHOWNWP 100
 
-/*  timer for watching waypoints (Radar) */
-#define WATCHWPTIMER 2000
-
 /*  If speech output is used, the intervall of spoken messages in milliseconds */
 #define SPEECHOUTINTERVAL 10000
 
@@ -193,7 +190,6 @@ enum gpx_mode
 #define FESTIVAL_SPANISH_INIT "(voice_el_diphone)\n"
 #define EXPEDIAFACT 3950
 /* #define EXPEDIAFACT 1378.6 */
-#define MAXLISTENTRIES 500
 #define TRIPMETERTIMEOUT 2
 
 #define USIZE_X 15
@@ -252,20 +248,11 @@ gdouble distance_line_point(gdouble x1, gdouble y1, gdouble x2, gdouble y2,
 #else
 #define DL_MYSQL_IMPORT 
 #endif
-gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
-gint importaway_cb (GtkWidget * widget, guint datum);
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
 gint pos_cb (GtkWidget * widget, guint datum);
 gint toggle_mapnik_cb (GtkWidget * widget, guint datum);
-
-// TODO: Some of these should be moved, once all the gui stuff is finally moved
-GtkWidget *find_poi_bt;
-
-/* I didn't want to start a friends.h ;-) */
-void drawfriends (void);
-/* End of friends.h stuff */
 
 void test_and_load_newmap ();
 void map_koord_check_and_reload();
@@ -283,11 +270,11 @@ int display_background_map ();
 
 typedef struct
 {
-	char id[30];
-	char name[40];
-	char type[40];
-	char lat[40], lon[40];
-	char timesec[40], speed[10], heading[10];
+	gchar id[30];
+	gchar name[40];
+	gchar type[40];
+	gchar lat[40], lon[40];
+	gchar timesec[40], speed[10], heading[10];
 }
 friendsstruct;
 

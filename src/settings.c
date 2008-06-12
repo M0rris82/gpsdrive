@@ -91,7 +91,6 @@ extern color_struct colors;
 extern currentstatus_struct current;
 extern GtkTreeModel *poi_types_tree;
 extern GtkTreeStore *poi_types_tree_filtered;
-int showsid = TRUE;
 extern GtkWidget *frame_statusbar;
 GtkWidget *menuitem_sendmsg;
 extern gchar *espeak_voices[];
@@ -287,6 +286,13 @@ setfriendmaxsec_cb (GtkWidget *spin, GtkWidget *combobox)
 		case 2:	/* minutes */
 			local_config.friends_maxsecs = value * 60;
 			break;
+	}
+
+	/* cap max. age to seven days */
+	if (local_config.friends_maxsecs > 604800)
+	{
+		local_config.friends_maxsecs = 604800;
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), 7);
 	}
 
 	if (mydebug > 10)
@@ -629,7 +635,6 @@ setpoitheme_cb (GtkWidget *combo)
 		sizeof (local_config.icon_theme));
 
 	get_poitype_tree ();
-	init_poi_type_filter();
 
 	if ( mydebug > 1 )
 	{
@@ -765,35 +770,78 @@ settings_close_cb (GtkWidget *window)
 
 
 /* ************************************************************************* */
-static void
-set_poilabel_view (gchar *key, gchar *value, gchar *type)
+static gboolean
+set_poilabel_view (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gchar *data)
 {
-	GtkTreeIter t_iter;
-	gboolean t_lb;
+	gchar *t_buf;
+	gboolean t_show;
 
-	if (g_str_has_prefix (key, type) == FALSE)
-		return;
+	gtk_tree_model_get (model, iter, POITYPE_NAME, &t_buf, POITYPE_LABEL, &t_show, -1);
 
-	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &t_iter, value);
-	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter, POITYPE_LABEL, &t_lb, -1);
-	gtk_tree_store_set (GTK_TREE_STORE (poi_types_tree), &t_iter, POITYPE_LABEL, !t_lb, -1);
+	if (g_str_has_prefix (t_buf, data+1))
+	{
+		if (mydebug > 30)
+			g_print ("set_poilabel_view: setting %s to %d\n", t_buf, *data);
+		if (*data)
+		{
+			gtk_tree_store_set (GTK_TREE_STORE (model), iter,
+				POITYPE_SELECT, TRUE,
+				POITYPE_LABEL, TRUE, -1);
+			t_show = TRUE;
+		}
+		else
+		{
+			gtk_tree_store_set (GTK_TREE_STORE (model), iter,
+				POITYPE_LABEL, FALSE, -1);
+			t_show = FALSE;
+		}
+	}
+
+	/* set poi label config string */
+	if (g_strstr_len (t_buf, 30, ".") == NULL && !g_str_has_prefix (t_buf, "__NO_FILTER__"))
+	{
+		if (t_show)
+		{
+			g_strlcat (local_config.poi_label, t_buf, sizeof (local_config.poi_label));
+			g_strlcat (local_config.poi_label, "|", sizeof (local_config.poi_label));
+		}
+	}
+
+	current.needtosave = TRUE;
+	g_free (t_buf);
+
+	return FALSE;
 }
 
 
 /* ************************************************************************* */
-static void
+static gboolean
 toggle_poilabel
 	(GtkCellRendererToggle *renderer, gchar *path_str, gpointer data)
 {
 	GtkTreeIter iter, child_iter;
-	gchar *t_buf;
+	gchar *t_name;
+	gchar t_buf[161];
+	gboolean t_label;
 
 	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree_filtered), &iter, path_str);
 	gtk_tree_model_filter_convert_iter_to_child_iter
 		(GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &child_iter, &iter);
-	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &child_iter, POITYPE_NAME, &t_buf, -1);
-	g_hash_table_foreach (poi_types_hash, (GHFunc) set_poilabel_view, t_buf);
+	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &child_iter,
+		POITYPE_NAME, &t_name, POITYPE_LABEL, &t_label, -1);
+	g_snprintf (t_buf, sizeof (t_buf), "%c%s", !t_label, t_name);
+	g_free (t_name);
+
+	g_strlcpy (local_config.poi_label, "", sizeof (local_config.poi_label));
+	gtk_tree_model_foreach (GTK_TREE_MODEL (poi_types_tree),
+		*(GtkTreeModelForeachFunc) set_poilabel_view, t_buf);
+
+	if (mydebug > 20)
+		g_print ("Setting POI-Label filter to: %s\n", local_config.poi_label);
+
+	return TRUE;
 }
+
 
 /* ************************************************************************* */
 static void
@@ -2448,43 +2496,5 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	gtk_widget_show_all (settings_window);
 
 	return TRUE;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* *****************************************************************************
- */
-
-static gdouble hour, sunrise, sunset;
-GtkWidget *ge12;
-
-/* *****************************************************************************
- */
-gint
-infosettz (GtkWidget * widget, guint datum)
-{
-  gchar *sc;
-
-  sc = (char *) gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (ge12)->entry));
-  sscanf (sc, "GMT%d", &current.timezone);
-
-  if ( mydebug > 20 )
-    {
-      g_print ("\nTimezone: %d", current.timezone);
-    }
-
-  current.needtosave = TRUE;
-  return TRUE;
 }
 

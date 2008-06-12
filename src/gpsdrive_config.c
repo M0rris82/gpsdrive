@@ -59,7 +59,7 @@ extern int dbusedist;
 extern gint earthmate;
 extern long int maxfriendssecs;
 extern int messagenumber;
-extern int sockfd, showsid, storetz;
+extern int storetz;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 
@@ -229,7 +229,6 @@ writeconfig ()
 	fprintf (fp, "map_daycolor = %s\n", local_config.color_map_day);
 	fprintf (fp, "map_nightcolor = %s\n", local_config.color_map_night);
 	fprintf (fp, "messagenumber = %d\n", messagenumber);
-	fprintf (fp, "showssid = %d\n", showsid);
 	fprintf (fp, "speech = %d\n", local_config.speech);
 	fprintf (fp, "speech_voice = %s\n", local_config.speech_voice);
 	fprintf (fp, "speech_mbroladir = %s\n", local_config.dir_mbrola);
@@ -471,8 +470,6 @@ readconfig ()
 				sizeof (local_config.color_map_night));
 			else if ( (strcmp(par1, "messagenumber")) == 0)
 				messagenumber = atoi (par2);
-			else if ( (strcmp(par1, "showssid")) == 0)
-				showsid = atoi (par2);
 			else if ( (strcmp(par1, "speech")) == 0)
 				local_config.speech = atoi (par2);
 			else if ( (strcmp(par1, "speech_voice")) == 0)

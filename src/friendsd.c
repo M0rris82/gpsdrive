@@ -143,6 +143,8 @@
 /* max age of messages (2 days) */
 #define MAXMSGTIME 48*3600
 
+#define MAXLISTENTRIES 500
+
 char *pname;
 
 /*

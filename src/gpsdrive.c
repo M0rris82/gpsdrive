@@ -198,7 +198,7 @@ gint iszoomed;
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
-gint maxwp, maxfriends = 0;
+gint maxwp;
 GtkStyle *style = NULL;
 GtkRcStyle *mainstyle;
 gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit = 0;
@@ -1006,9 +1006,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	
 	if (route.show)
 		draw_route ();
-
-	if (local_config.showfriends && !local_config.use_database)
-		drawfriends ();
 
 	//if (current.kismetsock)
 		current.kismetsock = readkismet ();
@@ -2553,8 +2550,6 @@ main (int argc, char *argv[])
 
     /*  set the timers */
 	timerto = g_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
-	g_timeout_add (WATCHWPTIMER, (GtkFunction) watchwp_cb, NULL);
-
 	redrawtimeout = g_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
 
 	/*  if we started in simulator mode we have a little move roboter */
