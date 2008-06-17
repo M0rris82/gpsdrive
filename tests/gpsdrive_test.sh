@@ -115,7 +115,7 @@ for LANG in en_US de_DE ; do
 		    -e "s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		xvfb-run ./build/src/gpsdrive --geometry 800x600 -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
+		xvfb-run --server-args="-screen 0 800x600x8" ./build/src/gpsdrive -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
 		rc=$?
 
 		if [ $rc != 0 ] ; then
