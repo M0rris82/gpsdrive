@@ -105,8 +105,12 @@ sub Symbolizer {
 	my $map_icons_path="~/svn.openstreetmap.org/applications/share/map-icons";
 	my $png_path=`find ${map_icons_path}/classic.small/ ${map_icons_path}/classic.big/ -name $search | grep -v incomming | head -1`;
 	chomp $png_path;
-	$png_path="$ENV{HOME}/svn.openstreetmap.org/applications/share/map-icons/classic.small/misc/landmark/power/tower.png"
+	my $png_base="$ENV{HOME}/svn.openstreetmap.org/applications/share/map-icons/classic.small";
+	$png_path="$png_base/misc/landmark/power/tower.png"
 	    if ( $search =~ m,power_tower, );
+	$png_path="$png_base/vehicle/parking.png"
+	    if ( $search =~ m,parking, );
+
 	if ( -s $png_path ) {
 	    my ($h,$w) = get_png_size($png_path);
 	    $png_path =~ s,.*/classic.(small|big)/,classic.small/,;

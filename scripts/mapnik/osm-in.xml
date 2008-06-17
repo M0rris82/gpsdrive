@@ -217,7 +217,7 @@
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[amenity]='parking'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/restrictions/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/parking.png" type="png" width="16" height="16" allow_overlap="false"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
