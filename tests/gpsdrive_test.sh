@@ -115,7 +115,7 @@ for LANG in en_US de_DE ; do
 		    -e "s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		./build/src/gpsdrive --geometry 800x600 -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
+		xvfb-run ./build/src/gpsdrive --geometry 800x600 -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
 		rc=$?
 
 		if [ $rc != 0 ] ; then
@@ -123,7 +123,6 @@ for LANG in en_US de_DE ; do
 		    echo "Error starting gpsdrive -T (rc=$rc)"
 		    exit 1;
 		fi
-		echo "Error String Check: -----------------------"
 		if grep -v \
 		    -e 'db_postgis_query: an error occured while trying to read from the database!' \
 		    -e 'Gtk-CRITICAL \*\*: gtk_widget_set_sensitive: assertion .GTK_IS_WIDGET .widget.. failed' \
