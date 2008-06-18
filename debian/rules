@@ -48,9 +48,6 @@ install: build
 	# Add here commands to install the package into debian/gpsdrive.
 	cd build; $(MAKE) DESTDIR=$(destdir) install
 
-	# add old manpages
-	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
-
 	scripts/create_misssing_man_pages.sh scripts $(destdir)/usr/share/man/man1
 
 	# remove maps from main package, because it 
@@ -84,10 +81,6 @@ binary-arch: build install
 	dh_pysupport
 #	dh_installexamples
 	dh_installmenu
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
 	dh_python
 	dh_pycentral
 #	dh_installinit
