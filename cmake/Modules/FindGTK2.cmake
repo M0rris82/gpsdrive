@@ -316,20 +316,20 @@ ELSE (GTK2_LIBRARIES AND GTK2_INCLUDE_DIRS)
                     )
                     #${GTK2_GOBJECT_LIBRARY})
 
-                    IF(GTK2_GMODULE_LIBRARY)
-                      SET(GTK2_LIBRARIES
-                        ${GTK2_LIBRARIES}
-                        ${GTK2_GMODULE_LIBRARY}
-                      )
-                    ENDIF(GTK2_GMODULE_LIBRARY)
+#                    IF(GTK2_GMODULE_LIBRARY)
+#                      SET(GTK2_LIBRARIES
+#                        ${GTK2_LIBRARIES}
+#                        ${GTK2_GMODULE_LIBRARY}
+#                      )
+#                    ENDIF(GTK2_GMODULE_LIBRARY)
 
-                    IF(GTK2_GTHREAD_LIBRARY)
-                      SET(GTK2_LIBRARIES
-                        ${GTK2_LIBRARIES}
-                        ${GTK2_GTHREAD_LIBRARY}
-                      )
-                    SET(GTK2_LIBRARIES ${GTK2_LIBRARIES})
-                    ENDIF(GTK2_GTHREAD_LIBRARY)
+#                    IF(GTK2_GTHREAD_LIBRARY)
+#                      SET(GTK2_LIBRARIES
+#                        ${GTK2_LIBRARIES}
+#                        ${GTK2_GTHREAD_LIBRARY}
+#                      )
+#                    SET(GTK2_LIBRARIES ${GTK2_LIBRARIES})
+#                    ENDIF(GTK2_GTHREAD_LIBRARY)
                   ELSE(GTK2_CAIRO_INCLUDE_PATH)
                     MESSAGE(STATUS "Can not find cairo")
                   ENDIF(GTK2_CAIRO_INCLUDE_PATH)
