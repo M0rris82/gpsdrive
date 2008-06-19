@@ -36,8 +36,8 @@ use warnings;
 my $Version = '$Revision: 1766 $'; 
 $Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/; 
 
-my $VERSION ="poi-manager.pl (c) Guenther Meyer
-  Initial Version (Dec,2006) by Guenther Meyer <d.s.e (at) sordidmusic.com>
+my $VERSION ="poi-import.pl (c) Guenther Meyer
+  Initial Version by Guenther Meyer <d.s.e (at) sordidmusic.com>
   Version 0.01 svn-$Version";
 
 use encoding 'utf8';
