@@ -1,0 +1,2375 @@
+# Chinese translations for gpsdrive package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gpsdrive package.
+# Zhang Jun <rocketman_gw@yahoo.com.cn>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gpsdrive 2.10pre4\n"
+"Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
+"POT-Creation-Date: 2007-09-15 19:17+0200\n"
+"PO-Revision-Date: 2008-03-10 14:13+0800\n"
+"Last-Translator: Zhang Jun(张俊) <rocketman_gw@yahoo.com.cn>\n"
+"Language-Team: Chinese (simplified) <translation-team-zh-cn@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/battery.c:806
+msgid "Bat."
+msgstr "电力"
+
+#: src/battery.c:841
+msgid "TC"
+msgstr "芯温"
+
+#: src/download_map.c:166 src/download_map.c:304
+msgid "can't open socket for port 80"
+msgstr "不能打开80端口"
+
+#: src/download_map.c:169 src/download_map.c:173 src/download_map.c:202
+#: src/download_map.c:206 src/download_map.c:223 src/download_map.c:227
+#: src/download_map.c:307 src/download_map.c:312 src/download_map.c:316
+#: src/download_map.c:353 src/download_map.c:358 src/download_map.c:362
+#: src/download_map.c:380 src/download_map.c:385 src/download_map.c:389
+#, c-format
+msgid "Connecting to %s FAILED!"
+msgstr "连接 %s 失败！"
+
+#: src/download_map.c:199 src/download_map.c:350
+msgid "Can't resolve webserver address"
+msgstr "不能解析地址"
+
+#: src/download_map.c:220 src/download_map.c:377
+msgid "unable to connect to Website"
+msgstr "未能连接到网站"
+
+#: src/download_map.c:254 src/download_map.c:448
+msgid "read from Webserver"
+msgstr "读取网站数据"
+
+#: src/download_map.c:285 src/download_map.c:290 src/download_map.c:293
+#, c-format
+msgid "Connecting to %s"
+msgstr "正在连接 %s"
+
+#: src/download_map.c:405 src/download_map.c:411 src/download_map.c:414
+#, c-format
+msgid "Now connected to %s"
+msgstr "已经连接上 %s"
+
+#: src/download_map.c:496
+#, c-format
+msgid "Downloaded %d kBytes"
+msgstr "下载了%d kBytes"
+
+#: src/download_map.c:512
+msgid "Download FAILED!"
+msgstr "下载失败"
+
+#: src/download_map.c:515
+#, c-format
+msgid "Download finished, got %dkB"
+msgstr "下载成功，获得 %d kB数据"
+
+#: src/download_map.c:823
+msgid "Select coordinates and scale"
+msgstr "选择座标和比例尺"
+
+#: src/download_map.c:826
+msgid "Download map"
+msgstr "下载地图"
+
+#: src/download_map.c:854 src/gpsdrive.c:2453 src/gpsdrive.c:2537
+#: src/import_map.c:383 src/poi_gui.c:574 src/routes.c:411 src/waypoint.c:744
+msgid "Latitude"
+msgstr "纬度"
+
+#: src/download_map.c:856 src/gpsdrive.c:2453 src/gpsdrive.c:2537
+#: src/import_map.c:385 src/poi_gui.c:567 src/routes.c:411 src/waypoint.c:758
+msgid "Longitude"
+msgstr "经度"
+
+#: src/download_map.c:858
+msgid "Map covers"
+msgstr "地图范围"
+
+#: src/download_map.c:862 src/import_map.c:395
+msgid "Scale"
+msgstr "比例尺"
+
+#: src/download_map.c:896 src/download_map.c:900
+msgid ""
+"You can also select the position\n"
+"with a mouse click on the map."
+msgstr ""
+"你也可以通过鼠标点击地图\n"
+"来选择一个位置。"
+
+#: src/download_map.c:902
+msgid "Using Proxy and port:"
+msgstr "使用代理和端口："
+
+#: src/download_map.c:995
+#, c-format
+msgid "Using proxy: %s on port %d\n"
+msgstr "正在使用代理： %s 于端口 %d \n"
+
+#: src/download_map.c:1001
+msgid ""
+"\n"
+"Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
+msgstr ""
+"\n"
+"无效的环境变量HTTP_PROXY，请注意格式需为：http://proxy.provider.de:3128"
+
+#: src/friends.c:446
+msgid "unknown"
+msgstr "未知的"
+
+#: src/friends.c:644
+msgid "mi/h"
+msgstr "英里/小时"
+
+#: src/friends.c:646
+msgid "knots"
+msgstr "节"
+
+#: src/friends.c:648
+msgid "km/h"
+msgstr "公里/小时"
+
+#: src/friendsd.c:550
+#, c-format
+msgid "server: please don't run me as root\n"
+msgstr "服务器：请不要以ROOT的身份运行我\n"
+
+#: src/friendsd.c:562
+#, c-format
+msgid ""
+"\n"
+"Usage:\n"
+"   %s -n servername\n"
+"provides a name for your server\n"
+msgstr ""
+"\n"
+"使用方法：\n"
+"   %s -n servername\n"
+"提供一个您的服务器的名字\n"
+
+#: src/gpsdrive.c:798
+msgid "Warning!"
+msgstr "警告！"
+
+#: src/gpsdrive.c:800
+msgid "You should not start GpsDrive as user root!!!"
+msgstr "请不要以root用户启动本软件！"
+
+#: src/gpsdrive.c:1206
+#, c-format
+msgid ""
+"\n"
+"Warning: unable to load gpsdriveanim.gif!\n"
+"Please install the program as root with:\n"
+"make install\n"
+"\n"
+msgstr ""
+"\n"
+"警告：加载gpsdriveanim.gif失败！\n"
+"请使用ROOT身份安装本程序，命令为：\n"
+"make install\n"
+"\n"
+
+#: src/gpsdrive.c:1806
+msgid "N"
+msgstr "N"
+
+#: src/gpsdrive.c:1813
+msgid "S"
+msgstr "S"
+
+#: src/gpsdrive.c:1819
+msgid "W"
+msgstr "W"
+
+#: src/gpsdrive.c:1825
+msgid "E"
+msgstr "E"
+
+#: src/gpsdrive.c:1900
+msgid "No map available for this position!"
+msgstr "没有这个位置的地图"
+
+#: src/gpsdrive.c:2205
+#, c-format
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
+msgstr "当数度超过2000公里/小时, 忽略距离跳跃。\n"
+
+#: src/gpsdrive.c:2296
+msgid "Sending message to friends server..."
+msgstr "发送消息到好友服务器..."
+
+#: src/gpsdrive.c:2374
+msgid "Message for:"
+msgstr "消息："
+
+#: src/gpsdrive.c:2410
+#, c-format
+msgid "Date: %s"
+msgstr "日期： %s"
+
+#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:505 src/poi_gui.c:930
+#: src/poi_gui.c:1222 src/settings.c:1976
+msgid "Name"
+msgstr "名称"
+
+#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:941
+#: src/poi_gui.c:1229 src/routes.c:411 src/settings.c:727 src/settings.c:1382
+msgid "Distance"
+msgstr "距离"
+
+#: src/gpsdrive.c:2464
+msgid "Please select message recipient"
+msgstr "请选择信息接收者"
+
+#: src/gpsdrive.c:2537 src/poi_gui.c:587 src/poi_gui.c:950
+msgid "Type"
+msgstr "类型"
+
+#: src/gpsdrive.c:2566
+msgid "Select reference point"
+msgstr "选择参考点"
+
+#: src/gpsdrive.c:2570
+msgid "Please select your destination"
+msgstr "请选择您的目的地"
+
+#: src/gpsdrive.c:2602
+msgid "Edit route"
+msgstr "编辑航迹"
+
+#: src/gpsdrive.c:2605
+msgid "Create route"
+msgstr "创建航迹"
+
+#: src/gpsdrive.c:2703
+msgid "Create a route using some waypoints from this list"
+msgstr "从列表中的部分航点创建一条航线"
+
+#: src/gpsdrive.c:2708
+msgid "Delete the selected waypoint from the waypoint list"
+msgstr "从航点烈表中删除所选的航点"
+
+#: src/gpsdrive.c:2712
+msgid "Jump to the selected waypoint"
+msgstr "跳到所选的航点"
+
+#: src/gpsdrive.c:2735
+msgid "-v        show version\n"
+msgstr "-v        显示版本\n"
+
+#: src/gpsdrive.c:2736
+msgid "-h        print this help\n"
+msgstr "-h        显示本帮助\n"
+
+#: src/gpsdrive.c:2737
+msgid "-d        turn on debug info\n"
+msgstr "-d        信息\n"
+
+#: src/gpsdrive.c:2738
+msgid "-D X      set debug Level to X\n"
+msgstr "-D X      设置调试模式到X级\n"
+
+#: src/gpsdrive.c:2739
+msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
+msgstr "-T        做一些内部单位测试（不要启动gpsdrive）\n"
+
+#: src/gpsdrive.c:2740
+msgid "-e        use Festival-Lite (flite) for speech output\n"
+msgstr "-e        使用 Festival-Lite (flite) 提供语音输出\n"
+
+#: src/gpsdrive.c:2741
+msgid "-o        serial device, pty master, or file for NMEA *output*\n"
+msgstr "-o        串口设备，伪终端，或者 NMEA*输出*文件\n"
+
+#: src/gpsdrive.c:2742
+msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
+msgstr "-f X      选择好友服务器，X例如 www.gpsdrive.cc\n"
+
+#: src/gpsdrive.c:2744
+msgid "-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"
+msgstr "-X        使用DBUS来和GPSD通信。这将停止使用串口和套接字通信 \n"
+
+#: src/gpsdrive.c:2746
+msgid ""
+"-l LANG   Select language of the voice,\n"
+"          LANG may be english, spanish or german\n"
+msgstr ""
+"-l LANG  选择语言的语音，\n"
+"          LANG 必须是 english（英语）, spanish（西班牙语） 或者 german （德语）\n"
+
+#: src/gpsdrive.c:2748
+msgid ""
+"-s HEIGHT set height of the screen, if autodetection\n"
+"          don't satisfy you, X is i.e. 768,600,480,200\n"
+msgstr ""
+"-s HEIGHT  设置屏幕的高度，当自动探测不能满足您的要求。\n"
+"          HEIGHT例如 768,600,480,200\n"
+
+#: src/gpsdrive.c:2750
+msgid "-r WIDTH  set width of the screen, only with -s\n"
+msgstr "-r WIDTH  设置屏幕宽度，仅和 -s 配合使用\n"
+
+#: src/gpsdrive.c:2751
+msgid "-1        have only 1 button mouse, for example using touchscreen\n"
+msgstr "-1        使用 1 键鼠标，比如正在使用触摸屏\n"
+
+#: src/gpsdrive.c:2752
+msgid "-a        display APM Stuff ( battery status, Temperature)\n"
+msgstr "-a        不要显示电池状态 (例如：有故障的 APM)\n"
+
+#: src/gpsdrive.c:2753
+msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
+msgstr "-b Server Server是NMEA服务器的名字 (如果 gpsd 在另一台主机上运行)\n"
+
+#: src/gpsdrive.c:2754
+msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
+msgstr "-c WP     在模拟模式中设置起始位置给名为WP的航点。\n"
+
+#: src/gpsdrive.c:2755
+msgid "-x        create separate window for menu\n"
+msgstr "-x        为菜单提供独立窗口\n"
+
+#: src/gpsdrive.c:2756
+msgid "-M mode   set guimode to desktop, pda or car\n"
+msgstr "-M mode   设置用户的图形模式是桌面、PDA或者车载\n"
+
+#: src/gpsdrive.c:2757
+msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
+msgstr "-i        忽略NMEA的校验（风险提示：仅供有故障的GPS设备调试用）\n"
+
+#: src/gpsdrive.c:2758
+msgid "-q        disable SQL support\n"
+msgstr "-q        关闭SQL支持\n"
+
+#: src/gpsdrive.c:2759
+msgid "-F        force display of position even it is invalid\n"
+msgstr "-F        在没有位置信息的时候也强制位置显示\n"
+
+#: src/gpsdrive.c:2760
+msgid "-S        don't show splash screen\n"
+msgstr "-S        不要显示启动画面\n"
+
+#: src/gpsdrive.c:2761
+msgid "-P        start in Pos Mode\n"
+msgstr "-P        以定位Pos模式启动\n"
+
+#: src/gpsdrive.c:2762
+msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
+msgstr "-W x      设置 x 为 1 打开 WAAS/EGNOS ，设置为 0 关闭\n"
+
+#: src/gpsdrive.c:2763
+msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
+msgstr "-H ALT    修正海拔，添加这个值(ALT)到海拔\n"
+
+#: src/gpsdrive.c:2764
+msgid "-C file   set config file (--config-file)\n"
+msgstr "-C file   修改配置文件 (--config-file)\n"
+
+#: src/gpsdrive.c:2779
+msgid "Select a track file"
+msgstr "选择一个轨迹文件"
+
+#: src/gpsdrive.c:2939
+msgid ""
+"\n"
+"You can currently only choose between english, spanish and german\n"
+"\n"
+msgstr ""
+"\n"
+"您只能在英文，西班牙文或德文中进行选择。 \n"
+"\n"
+
+#: src/gpsdrive.c:3293
+msgid ""
+"\n"
+"kismet server found\n"
+msgstr ""
+"\n"
+"发现有Kismet服务\n"
+
+#: src/gpsdrive.c:3331
+msgid "Using speech output"
+msgstr "使用语音输出"
+
+#: src/gpsdrive.c:3445
+#, c-format
+msgid ""
+"\n"
+"\n"
+"Thank you for using GpsDrive!\n"
+"\n"
+msgstr ""
+"\n"
+"\n"
+"感谢您使用 GpsDrive！\n"
+"\n"
+
+#: src/gps_handler.c:212
+#, c-format
+msgid "unable to add match for signals %s: %s"
+msgstr "不能为信号 %s: %s 添加匹配 "
+
+#: src/gps_handler.c:217
+msgid "unable to register filter with the connection"
+msgstr "不能为连接记录过滤"
+
+#: src/gps_handler.c:222
+msgid "DBUS Mode"
+msgstr "DBUS 模式"
+
+#: src/gps_handler.c:254 src/gpskismet.c:337
+msgid "can't open socket for port "
+msgstr "不能为端口打开套接字（socket）"
+
+#: src/gps_handler.c:276
+#, c-format
+msgid ""
+"\n"
+"Cannot connect to %s: unknown host\n"
+msgstr ""
+"\n"
+"不能连接到 %s: 主机未知\n"
+
+#: src/gps_handler.c:300
+msgid "NMEA Mode, Port 2222"
+msgstr "NMEA 模式，端口 2222"
+
+#: src/gps_handler.c:308
+msgid "NMEA Mode, Port 2947"
+msgstr "NMEA 模式，端口 2947"
+
+#: src/gps_handler.c:576
+msgid "Timeout getting data from GPS-Receiver!"
+msgstr "从GPS接收设备获取数据超时！"
+
+#: src/gps_handler.c:630 src/gps_handler.c:659 src/gps_handler.c:726
+#: src/gps_handler.c:849
+msgid "Press middle mouse button for navigation"
+msgstr "点击鼠标中键进行导航"
+
+#: src/gps_handler.c:639
+msgid "No GPS used"
+msgstr "没有使用GPS"
+
+#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:800
+msgid "Simulation mode"
+msgstr "模拟模式"
+
+#: src/gps_handler.c:643
+msgid "Press middle mouse button for sim mode"
+msgstr "按鼠标中键切换到模拟模式"
+
+#: src/gps_handler.c:663 src/gps_handler.c:732 src/gps_handler.c:855
+msgid "Not enough satellites in view!"
+msgstr "没有足够多的卫星"
+
+#: src/gpskismet.c:99
+msgid "trying to re-connect to kismet server\n"
+msgstr "正在尝试重新连接Kismet服务\n"
+
+#: src/gpskismet.c:101
+msgid "Kismet server connection re-established\n"
+msgstr "Kismet服务连接重新建立成功\n"
+
+#: src/gpskismet.c:102
+#, c-format
+msgid "done trying to re-connect: socket=%d\n"
+msgstr "已经重新连接到：套接字(SOCKET)= %d\n"
+
+#: src/gpskismet.c:149
+msgid "Kismet server connection lost\n"
+msgstr "Kismet服务连接丢失\n"
+
+#: src/gpskismet.c:331
+msgid "Trying Kismet server\n"
+msgstr "寻找可能的Kismet服务\n"
+
+#: src/gpsmisc.c:313 src/gpsmisc.c:315 src/gpsmisc.c:493 src/gpsmisc.c:495
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr "未能发现图像文件 %s "
+
+#: src/gpsnasamap.c:208
+#, c-format
+msgid "could not create output map file %s!\n"
+msgstr "不能创建输出地图文件 %s ！\n"
+
+#: src/gpsnasamap.c:224
+msgid "Creating map..."
+msgstr "正在创建地图..."
+
+#: src/gpsnasamap.c:234
+msgid "Creating a temporary map from NASA satellite images"
+msgstr "从NASA卫星地图中创建一幅临时地图"
+
+#: src/gpsnasamap.c:242
+#, c-format
+msgid "converting map for latitude: %f and longitude: %f ...\n"
+msgstr "正在转换地图，纬度： %f 经度： %f ...\n"
+
+#: src/gpsnasamap.c:354
+#, c-format
+msgid ""
+"\n"
+"You can permanently add this map file with following line in your\n"
+"map_koord.txt (rename the file!):\n"
+msgstr ""
+"\n"
+"您可以利用下面这句话，将这个地图文件永久地加入到map_koord.txt (注意重命名文件!)：\n"
+"\n"
+
+#: src/gpssql.c:116 src/gpssql.c:456
+#, c-format
+msgid "rows deleted: %d\n"
+msgstr "删除行： %d\n"
+
+#: src/gpssql.c:143
+#, c-format
+msgid "SQL: connected to %s as %s using %s\n"
+msgstr "SQL: 连接到 %s ，以 %s 利用 %s\n"
+
+#: src/gpssql.c:225
+#, c-format
+msgid "rows inserted: %ld\n"
+msgstr "行插入： %ld\n"
+
+#: src/gpssql.c:247
+#, c-format
+msgid "last index: %ld\n"
+msgstr "最新索引： %ld\n"
+
+#: src/gpssql.c:295
+#, c-format
+msgid "rows updated: %ld\n"
+msgstr "更新行： %ld\n"
+
+#: src/gpssql.c:322
+#, c-format
+msgid "rows inserted: %d\n"
+msgstr "行插入： %d\n"
+
+#: src/gpssql.c:344
+#, c-format
+msgid "last index: %d\n"
+msgstr "最新索引： %d\n"
+
+#: src/gpssql.c:370
+#, c-format
+msgid "rows updated: %d\n"
+msgstr "行更新： %d\n"
+
+#: src/gpssql.c:626
+#, c-format
+msgid ""
+"\n"
+"libmysqlclient.so not found.\n"
+msgstr ""
+"\n"
+"libmysqlclient.so没有被发现。\n"
+
+#: src/gpssql.c:632
+#, c-format
+msgid ""
+"\n"
+"MySQL support disabled.\n"
+msgstr ""
+"\n"
+"MySQL支持被禁用\n"
+
+#: src/gui.c:501
+msgid "Press OK to continue!"
+msgstr "请点击[ OK ]继续！"
+
+#: src/gui.c:535
+msgid ""
+"An error has occured.\n"
+"Press OK to continue!"
+msgstr ""
+"出现了一个错误。\n"
+"请点击[ OK ]继续！"
+
+#: src/gui.c:568
+#, c-format
+msgid ""
+"\n"
+"Warning: unable to open 'add waypoint' picture\n"
+"Please install the program as root with:\n"
+"make install\n"
+"\n"
+msgstr ""
+"\n"
+"警告：不能打开“添加航点”画面！\n"
+"请以root身份安装本程序，命令为：\n"
+"make install\n"
+"\n"
+
+#: src/icons.c:246
+#, c-format
+msgid ""
+"Please install the program as root with:\n"
+"make install\n"
+"\n"
+msgstr ""
+"请使用ROOT身份安装本程序，命令为：\n"
+"make install\n"
+"\n"
+
+#: src/icons.c:353 src/icons.c:358
+#, c-format
+msgid "Loaded user defined icon %s\n"
+msgstr "载入读者自定义图标 %s\n"
+
+#: src/import_map.c:232
+msgid "Select a map file"
+msgstr "选择一个地图文件"
+
+#: src/import_map.c:300
+msgid ""
+"How to calibrate your own maps? First, the map file\n"
+"must be copied into the"
+msgstr ""
+"如何校准您自己的地图？ \n"
+"首先，请将地图拷贝到"
+
+#: src/import_map.c:302
+msgid ""
+"\n"
+"directory as .gif, .jpg or .png file and must have\n"
+"the size 1280x1024. The file names must be\n"
+"map_* for street maps or top_* for topographical maps!\n"
+"Load the file, select coordinates from waypoint list or\n"
+"type them in. Then click on the accept button."
+msgstr ""
+"\n"
+"目录下，以gif、jpg或者png文件形式。尺寸必须是1280x1024。\n"
+"街区地图文件名必须是map_*的格式。\n"
+"拓扑地区文件名必须是top_*的格式！\n"
+"载入文件，从航点列表中选择座标数值或者直接输入。\n"
+"然后点击接受按钮。"
+
+#: src/import_map.c:309
+msgid ""
+"Now do the same for your second point and click on the\n"
+"finish button. The map can be used now."
+msgstr ""
+"现在用同样的方法处理第二个点。然后点击完成按钮。\n"
+"现在地图已经可以使用了。"
+
+#: src/import_map.c:316
+msgid "Import Assistant. Step 1"
+msgstr "导入助手： 步骤 1"
+
+#: src/import_map.c:318
+msgid "Import Assistant. Step 2"
+msgstr "导入助手： 步骤 2"
+
+#: src/import_map.c:325
+msgid "Accept first point"
+msgstr "接收第一点"
+
+#: src/import_map.c:331
+msgid "Accept Scale and Finish"
+msgstr "接收比例尺并结束"
+
+#: src/import_map.c:340
+msgid "Finish"
+msgstr "结束"
+
+#: src/import_map.c:355
+msgid "Go up"
+msgstr "往上"
+
+#: src/import_map.c:358
+msgid "Go left"
+msgstr "往左"
+
+#: src/import_map.c:361
+msgid "Go right"
+msgstr "往右"
+
+#: src/import_map.c:364
+msgid "Go down"
+msgstr "往下"
+
+#: src/import_map.c:367
+msgid "Zoom in"
+msgstr "放打"
+
+#: src/import_map.c:370
+msgid "Zoom out"
+msgstr "缩小"
+
+#: src/import_map.c:387
+msgid "Screen X"
+msgstr "屏幕X"
+
+#: src/import_map.c:389
+msgid "Screen Y"
+msgstr "屏幕Y"
+
+#: src/import_map.c:401
+msgid "Browse POIs"
+msgstr "浏览POI"
+
+#: src/import_map.c:432
+msgid "Browse filename"
+msgstr "浏览文件名"
+
+#: src/import_map.c:822
+msgid "SELECTED"
+msgstr "已选择的"
+
+#: src/map_handler.c:183
+msgid "Map Controls"
+msgstr "地图控制"
+
+#: src/map_handler.c:188
+msgid "Auto _best map"
+msgstr "_b 自动优化地图"
+
+#: src/map_handler.c:193
+msgid "Always select the most detailed map available"
+msgstr "总是选择可用的最详细的地图"
+
+#: src/map_handler.c:204
+msgid "Pos. _mode"
+msgstr "_m 定位模式"
+
+#: src/map_handler.c:211
+msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
+msgstr "打开定位模式后，您可以在地图上用鼠标左键点击。 当您点击地图的边缘地区，地图将切换到最合适的地图上去。"
+
+#: src/map_handler.c:221
+msgid "Mapnik Mode"
+msgstr "Mapnik 模式"
+
+#: src/map_handler.c:224
+msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
+msgstr "打开 mapnik 模式。在这种模式下mapnik（例如：OpenStreetMap Data）提供的矢量地图将被用来替代其它地图。"
+
+#: src/map_handler.c:248
+msgid "Shown map type"
+msgstr "显示的地图类型"
+
+#: src/map_handler.c:255
+msgid "Street map"
+msgstr "街道地图"
+
+#: src/map_handler.c:265
+msgid "Topo map"
+msgstr "拓扑地图"
+
+#: src/map_handler.c:372
+msgid "Error in line "
+msgstr "行中有错误"
+
+#: src/map_handler.c:374
+msgid ""
+"I have found filenames in map_koord.txt which are\n"
+"not map_* or top_* files. Please rename them and change the entries in\n"
+"map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
+"maps.  Otherwise, the maps will not be displayed!"
+msgstr ""
+"我发现一些在map_koord.txt中的文件名，不是以map_* 或者 top_*的方式存在。\n"
+"请重新命名她们，并在map_koord.txt中修改。\n"
+"如果是街道地图请使用map_*，如果是拓扑地图，请采用top_*\n"
+"否则，这些地图不能被显示！"
+
+#: src/map_handler.c:700
+msgid " Mapfile could not be loaded:"
+msgstr "地图文件未能加载"
+
+#: src/map_handler.c:750
+msgid "Map found!"
+msgstr "发现了地图"
+
+#: src/nmea_handler.c:178
+msgid "can't open NMEA output file"
+msgstr "打不开NMEA输出文件"
+
+#: src/nmea_handler.c:491
+msgid "Map"
+msgstr "地图"
+
+#: src/poi.c:365
+#, c-format
+msgid "%ld(%d) rows read\n"
+msgstr "%ld(%d) 行被读入\n"
+
+#: src/poi.c:1150 src/wlan.c:316
+#, c-format
+msgid "%ld(%d) rows read in %.2f seconds\n"
+msgstr "%ld(%d) 行被读入，耗时 %.2f 秒\n"
+
+#: src/poi_gui.c:162
+#, c-format
+msgid " Found %d matching entries (Limit reached)."
+msgstr " 发现%d 匹配记录 (界限已达)。"
+
+#: src/poi_gui.c:168
+#, c-format
+msgid " Found %d matching entries."
+msgstr "发现%d 匹配记录。"
+
+#: src/poi_gui.c:482 src/poi_gui.c:1005
+msgid "POI-Info"
+msgstr "POI信息"
+
+#: src/poi_gui.c:512 src/poi_gui.c:961
+msgid "Comment"
+msgstr "注释"
+
+#: src/poi_gui.c:519
+msgid "private"
+msgstr "私有的"
+
+#: src/poi_gui.c:560 src/settings.c:745
+msgid "Altitude"
+msgstr "高度"
+
+#: src/poi_gui.c:610
+msgid "Basic Data"
+msgstr "基础数据"
+
+#: src/poi_gui.c:639
+msgid "Extra Data"
+msgstr "额外数据"
+
+#: src/poi_gui.c:715
+msgid "Lookup Point of Interest"
+msgstr "寻找赶兴趣的点"
+
+#: src/poi_gui.c:758
+msgid "<i>Search Text:</i>"
+msgstr "<i>文本搜索:</i>"
+
+#: src/poi_gui.c:781
+msgid "<i>max. Distance:</i>"
+msgstr "<i>最大距离：</i>"
+
+#: src/poi_gui.c:799
+msgid "km from"
+msgstr "千米 自"
+
+#: src/poi_gui.c:804
+msgid "current position"
+msgstr "当前位置"
+
+#: src/poi_gui.c:814
+msgid "Search near current Position"
+msgstr "在当前位置附近搜索"
+
+#: src/poi_gui.c:819
+msgid "Destination/Cursor"
+msgstr "目的地/光标"
+
+#: src/poi_gui.c:831
+msgid "Search near selected Destination"
+msgstr "在您选的目的地附近搜索"
+
+#: src/poi_gui.c:837
+msgid "<i>POI-Types:</i>"
+msgstr "<i>POI类型：</i>"
+
+#: src/poi_gui.c:863
+msgid "all"
+msgstr "全部"
+
+#: src/poi_gui.c:873
+msgid "Search all POI-Categories"
+msgstr "搜索所有的POI类别"
+
+#: src/poi_gui.c:876
+msgid "selected:"
+msgstr "已选的："
+
+#: src/poi_gui.c:882
+msgid "Search only in selected POI-Categories"
+msgstr "仅在选定的POI类中搜索"
+
+#: src/poi_gui.c:887
+msgid "Search Criteria"
+msgstr "搜索标准"
+
+#: src/poi_gui.c:991
+msgid " Please enter your search criteria!"
+msgstr " 请输入您的搜索标准！"
+
+#: src/poi_gui.c:1008
+msgid "Show detailed Information for selected Point of Interest"
+msgstr "显示所选的感兴趣点的详细的信息"
+
+#: src/poi_gui.c:1014
+msgid "Results"
+msgstr "结果"
+
+#: src/poi_gui.c:1038
+msgid "Edit _Route"
+msgstr "_R 编辑航线"
+
+#: src/poi_gui.c:1042
+msgid "Switch to Add selected entry to Route"
+msgstr "切换以添加选择的条目到航线中"
+
+#: src/poi_gui.c:1052
+msgid "Delete selected entry"
+msgstr "删除选中的条目"
+
+#: src/poi_gui.c:1069
+msgid "Jump to POI"
+msgstr "跳到POI"
+
+#: src/poi_gui.c:1071
+msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
+msgstr "跳到选择的条目（并且切换到定位模式如果定位模式尚未激活）"
+
+#: src/poi_gui.c:1089
+msgid "Select Target"
+msgstr "选择目标"
+
+#: src/poi_gui.c:1091
+msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
+msgstr "使用选中的条目作为目标终点（并且离开定位模式，如果该模式在激活状态）"
+
+#: src/poi_gui.c:1103 src/poi_gui.c:1336
+msgid "Close this window"
+msgstr "关闭这个窗口"
+
+#: src/poi_gui.c:1167
+msgid "Edit Route"
+msgstr "编辑航线"
+
+#: src/poi_gui.c:1236
+msgid "Trip"
+msgstr "旅行"
+
+#: src/poi_gui.c:1251
+msgid "Route List"
+msgstr "航线列表"
+
+#: src/poi_gui.c:1271
+msgid "Stop Route"
+msgstr "停止航线"
+
+#: src/poi_gui.c:1273
+msgid "Stop the Route Mode"
+msgstr "停止航线模式"
+
+#: src/poi_gui.c:1279
+msgid "Start Route"
+msgstr "启动航线"
+
+#: src/poi_gui.c:1281
+msgid "Start the Route Mode"
+msgstr "启动航线模式"
+
+#: src/poi_gui.c:1298
+msgid "Remove selected Entry from Route"
+msgstr "从航线中删除选中的条目"
+
+#: src/poi_gui.c:1313
+msgid "Cancel Route"
+msgstr "取消航线"
+
+#: src/poi_gui.c:1315
+msgid "Discard Route"
+msgstr "抛弃航线"
+
+#: src/poi_gui.c:1325
+msgid "Export current route to a GPX File"
+msgstr "到处当前航线到一个GPS文件中"
+
+#: src/routes.c:411
+msgid "Waypoint"
+msgstr "航点"
+
+#: src/routes.c:424
+msgid "Define route"
+msgstr "定义航线"
+
+#: src/routes.c:432
+msgid "Start route"
+msgstr "启动航线"
+
+#: src/routes.c:441
+msgid "Take all WP as route"
+msgstr "将全部航点作为航线"
+
+#: src/routes.c:446
+msgid "Abort route"
+msgstr "取消航线"
+
+#: src/routes.c:506
+msgid ""
+"Click on waypoints list\n"
+"to add waypoints"
+msgstr ""
+"点击航点列表\n"
+"以增加航点"
+
+#: src/routes.c:509
+msgid ""
+"Click on list item\n"
+"to select next waypoint"
+msgstr ""
+"点击列出的项目\n"
+"来选择下一个航点"
+
+#: src/routes.c:557
+msgid "Create a route from all waypoints. Sorted with order in file, not distance."
+msgstr "为所有的航点创建一条航线。依照文件中顺序排序，而非距离。"
+
+#: src/routes.c:561
+msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
+msgstr "点此开始您的旅程。 GpsDrive 将引导您通过列表中的航点。"
+
+#: src/routes.c:564
+msgid "Abort your journey"
+msgstr "取消您的旅程"
+
+#: src/routes.c:654
+msgid "Routepoint"
+msgstr "航线位置"
+
+#: src/routes.c:655
+msgid "Quicksaved Routepoint"
+msgstr "快速保存航线点"
+
+#: src/routes.c:728
+msgid "Routepoint added."
+msgstr "航线点已添加"
+
+#: src/routes.c:810
+msgid "Route saved"
+msgstr "航线已保存"
+
+#: src/settings.c:409 src/settings.c:417
+msgid "EnterYourName"
+msgstr "输入您的名字"
+
+#: src/settings.c:420
+msgid "You should change your name in the first field!"
+msgstr "您需要在第一个字段改变您的名称"
+
+#: src/settings.c:738
+msgid "Choose here the unit for the display of distances."
+msgstr "在此您可以选择显示距离的单位。"
+
+#: src/settings.c:756
+msgid "Choose here the unit for the display of altitudes."
+msgstr "在此您可以选择高度显示的单位"
+
+#: src/settings.c:763
+msgid "Coordinates"
+msgstr "座标系"
+
+#: src/settings.c:774
+msgid "Choose here the format for the coordinates display."
+msgstr "在此您可以选择显示座标系显示的格式。"
+
+#: src/settings.c:802 src/settings.c:1074
+msgid "Automatic"
+msgstr "自动"
+
+#: src/settings.c:806 src/settings.c:1078
+msgid "On"
+msgstr "开"
+
+#: src/settings.c:810 src/settings.c:1082
+msgid "Off"
+msgstr "关"
+
+#: src/settings.c:814
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
+msgstr "如果激活，当没有GPS时，位置指针将模拟成一个移动的交通工具移向选定的目标。 "
+
+#: src/settings.c:818
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
+msgstr "如果激活，位置指针通常将模拟成一个移动的交通工具移向选定的目标。"
+
+#: src/settings.c:822
+msgid "Switches simulation mode off"
+msgstr "关闭模拟模式"
+
+#: src/settings.c:849
+msgid "Maximum CPU load (in %)"
+msgstr "CPU占用高限 (百分比)"
+
+#: src/settings.c:855
+#, fuzzy, c-format
+msgid ""
+"Select the approx. maximum CPU load.\n"
+"Use 20-30% on notebooks while on battery to save power. This effects the refresh rate of the map screen."
+msgstr "选择大致的CPU符合高限值。 当笔记本使用电池时，建议该数值为 20-30% 左右，以节省能量。本值的修改可能影响到地图屏幕的刷新率。 "
+
+#: src/settings.c:879
+msgid "Maps directory"
+msgstr "地图目录"
+
+#: src/settings.c:880
+msgid "Select Maps Directory"
+msgstr "选择地图目录"
+
+#: src/settings.c:886
+msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
+msgstr "地图文件的路径。在指定的目录中同时需存在索引文件和map_koord.txt。"
+
+#: src/settings.c:907
+msgid "<b>Units</b>"
+msgstr "<b>单位</b>"
+
+#: src/settings.c:915
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>其它</b>"
+
+#: src/settings.c:923
+msgid "<b>Map Settings</b>"
+msgstr "<b>地图首选项</b>"
+
+#: src/settings.c:935
+msgid "General"
+msgstr "普通"
+
+#: src/settings.c:971
+msgid "Show grid"
+msgstr "显示网络"
+
+#: src/settings.c:973
+msgid "This will show a grid over the map"
+msgstr "这将在整个地图上显示一个网格"
+
+#: src/settings.c:988
+msgid "Show Shadows"
+msgstr "显示阴影"
+
+#: src/settings.c:990
+msgid "Switches shadows on map on or off"
+msgstr "关于或打开影子显示"
+
+#: src/settings.c:1005
+msgid "Show zoom level"
+msgstr "显示缩放比例"
+
+#: src/settings.c:1007
+msgid "This will show the current zoom level of the map"
+msgstr "这将在当前地图上显示缩放比例"
+
+#: src/settings.c:1022
+msgid "Show scalebar"
+msgstr "显示比例尺"
+
+#: src/settings.c:1024
+msgid "This will show the scalebar in the map"
+msgstr "这将在地图上显示比例尺"
+
+#: src/settings.c:1039
+msgid "Position Marker"
+msgstr "位置标注"
+
+#: src/settings.c:1050
+msgid "Choose the apperance of your position marker."
+msgstr "选择你位置标注的样子"
+
+#: src/settings.c:1086
+msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
+msgstr "自动开关，能在天黑后自动切换到夜间模式。按“N”键可以关闭夜间模式"
+
+#: src/settings.c:1089
+msgid "Switches night mode on. Press 'N' key to turn off nightmode."
+msgstr "打开夜间模式，按“N”键可以关闭"
+
+#: src/settings.c:1092
+msgid "Switches night mode off"
+msgstr "关闭夜间模式"
+
+#: src/settings.c:1122
+msgid "Track"
+msgstr "轨迹"
+
+#: src/settings.c:1127
+msgid "Choose Track color"
+msgstr "设置轨迹的颜色"
+
+#: src/settings.c:1131
+msgid "Set here the color of the drawn track"
+msgstr "在此设置描绘轨迹的颜色"
+
+#: src/settings.c:1136
+msgid "Set here the line style of the drawn track"
+msgstr "在此设置描绘轨迹的颜色"
+
+#: src/settings.c:1144
+msgid "Route"
+msgstr "航线"
+
+#: src/settings.c:1149
+msgid "Choose Route color"
+msgstr "选择航线色彩"
+
+#: src/settings.c:1153
+msgid "Set here the color of the drawn route"
+msgstr "在此设置描绘轨迹的颜色"
+
+#: src/settings.c:1158
+msgid "Set here the line style of the drawn route"
+msgstr "在此设置描绘轨迹的线条风格"
+
+#: src/settings.c:1166 src/settings.c:2046
+msgid "Friends"
+msgstr "好友"
+
+#: src/settings.c:1171
+msgid "Choose Friends color"
+msgstr "选择好友的颜色"
+
+#: src/settings.c:1175
+msgid "Set here the text color of the drawn friends"
+msgstr "在此设置描绘好友的文本颜色"
+
+#: src/settings.c:1180
+msgid "Choose font for friends"
+msgstr "选择好友的字体"
+
+#: src/settings.c:1186
+msgid "Set here the font of the drawn friends"
+msgstr "在此设置描绘好友的字体"
+
+#: src/settings.c:1189 src/settings.c:1849
+msgid "Waypoints"
+msgstr "航点"
+
+#: src/settings.c:1194
+msgid "Choose Waypoints label color"
+msgstr "设置航点标签的颜色"
+
+#: src/settings.c:1198
+msgid "Set here the text color of the waypoint labels"
+msgstr "在此设置描绘航点标签的文字颜色"
+
+#: src/settings.c:1203
+msgid "Choose font for waypoint labels"
+msgstr "在此您可以设置航点标签的字体。"
+
+#: src/settings.c:1209
+msgid "Set here the font of waypoint labels"
+msgstr "在此您可以设置航点标签的字体。"
+
+#: src/settings.c:1212
+msgid "Dashboard"
+msgstr "仪表板"
+
+#: src/settings.c:1217
+msgid "Choose color for dashboard"
+msgstr "选择仪表板的颜色"
+
+#: src/settings.c:1221
+msgid "Set here the color of the dashboard"
+msgstr "在此设置仪表板的颜色"
+
+#: src/settings.c:1226
+msgid "Choose font for dashboard"
+msgstr "选择仪表板字体"
+
+#: src/settings.c:1232
+msgid "Set here the font of the dashboard"
+msgstr "在此设置仪表板字体"
+
+#: src/settings.c:1273
+msgid "<b>Fonts, Colors, Styles</b>"
+msgstr "<b>字体，颜色，风格</b>"
+
+#: src/settings.c:1284
+msgid "<b>Nightmode</b>"
+msgstr "<b>夜间模式</b>"
+
+#: src/settings.c:1295
+msgid "<b>Map Features</b>"
+msgstr "<b>地图特色</b>"
+
+#: src/settings.c:1309
+msgid "GUI"
+msgstr "用户图形界面"
+
+#: src/settings.c:1335
+msgid "Travel Mode"
+msgstr "旅游模式"
+
+#: src/settings.c:1337
+msgid "Car"
+msgstr "汽车"
+
+#: src/settings.c:1339
+msgid "Bike"
+msgstr "自行车"
+
+#: src/settings.c:1341
+msgid "Walk"
+msgstr "步行"
+
+#: src/settings.c:1343
+msgid "Boat"
+msgstr "轮船"
+
+#: src/settings.c:1345
+msgid "Airplane"
+msgstr "飞机"
+
+#: src/settings.c:1355
+msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
+msgstr "选择您的旅行模式。这将用来确定用哪种图标来显示您的位置。"
+
+#: src/settings.c:1381
+msgid "Direction"
+msgstr "方向"
+
+#: src/settings.c:1383
+msgid "Speed"
+msgstr "速度"
+
+#: src/settings.c:1384
+msgid "GPS Status"
+msgstr "GPS状态"
+
+#: src/settings.c:1426
+msgid "Switch on for speech output of the direction to the target"
+msgstr "打开提示目标方向的语音输出"
+
+#: src/settings.c:1429
+msgid "Switch on for speech output of the distance to the target"
+msgstr "打开提示目标距离的语音输出"
+
+#: src/settings.c:1432
+msgid "Switch on for speech output of your current speed"
+msgstr "打开提示您当前速度的语音输出"
+
+#: src/settings.c:1434
+msgid "Switch on for speech output of the status of your GPS signal"
+msgstr "打开提示GPS信号状态的语音输出"
+
+#: src/settings.c:1441
+msgid "<b>Navigation Settings</b>"
+msgstr "<b>导航首选项</b>"
+
+#: src/settings.c:1449
+msgid "<b>Speech Output</b>"
+msgstr "<b>语音输出</b>"
+
+#: src/settings.c:1457
+msgid "Navigation"
+msgstr "导航"
+
+#: src/settings.c:1491 src/settings.c:1739
+msgid "Waypoints File"
+msgstr "航点文件"
+
+#: src/settings.c:1493 src/settings.c:1741
+msgid "Select Waypoints File"
+msgstr "选择一个航点文件"
+
+#: src/settings.c:1501 src/settings.c:1749
+msgid ""
+"Choose the waypoints file to use!\n"
+"Currently only files in GpsDrive's way.txt format are supported."
+msgstr ""
+"选择一个航点文件使用！\n"
+"当前仅有GpsDrive的way.txt格式的文件被支持。"
+
+#: src/settings.c:1517
+msgid "Default search radius"
+msgstr "默认搜索半径"
+
+#: src/settings.c:1527
+msgid "Choose the default search range (in km) for the POI-Lookup Window."
+msgstr "选择POI搜索窗口中默认的搜索范围（单位：千米）。"
+
+#: src/settings.c:1529
+msgid "km"
+msgstr "千米"
+
+#: src/settings.c:1531
+msgid "Limit results to"
+msgstr "限制显示结果到"
+
+#: src/settings.c:1540
+msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
+msgstr "选择POI显示在搜索窗口中搜索到的条目的最大数量依赖于您的系统性能。如果选择太大，您的系统将变慢。"
+
+#: src/settings.c:1543
+msgid "entries"
+msgstr "条目"
+
+#: src/settings.c:1564
+msgid "Show POI Label"
+msgstr "显示POI标签"
+
+#: src/settings.c:1566
+msgid "This will print the name next to the POI-Icon"
+msgstr "这将在POI图标附近显示POI名字"
+
+#: src/settings.c:1581
+msgid "POI-Theme"
+msgstr "POI 主题"
+
+#: src/settings.c:1610
+msgid "POI-Filter"
+msgstr "POI 过滤器"
+
+#: src/settings.c:1679
+msgid "<b>Waypoints</b>"
+msgstr "航点"
+
+#: src/settings.c:1687
+msgid "<b>POI Search Settings</b>"
+msgstr "<b>POI 搜索首选项>"
+
+#: src/settings.c:1697
+msgid "<b>POI Display</b>"
+msgstr "<b>POI 显示</b>"
+
+#: src/settings.c:1711
+msgid "POI"
+msgstr "POI"
+
+#: src/settings.c:1787
+msgid ""
+"Don't use more than\n"
+"100waypoint(way*.txt) files!"
+msgstr ""
+"不要使用超过\n"
+"100个航点的文件(way*.txt)！"
+
+#: src/settings.c:1833
+msgid "<b>File Dialog Selection</b>"
+msgstr "<b>文件对话框选择</b>"
+
+#: src/settings.c:1841
+msgid "<b>Quick Select File</b>"
+msgstr "<b>快速选择文件</b>"
+
+#: src/settings.c:1880
+msgid ""
+"If you enable this service, <span color=\"red\">everyone</span> using\n"
+"the same server can see your position!"
+msgstr ""
+"如果您使用好友服务器模式，那么 \n"
+"<span color=\"red\">所有使用同一台服务器的人</span> \n"
+"都能看到您的位置！"
+
+#: src/settings.c:1885
+msgid "Your name"
+msgstr "您的姓名"
+
+#: src/settings.c:1894
+msgid "Enable friends service"
+msgstr "打开好友服务"
+
+#: src/settings.c:1904
+msgid "Show only positions newer than"
+msgstr "仅显示更新的位置：时间晚于"
+
+#: src/settings.c:1908
+msgid "Days"
+msgstr "日"
+
+#: src/settings.c:1910
+msgid "Hours"
+msgstr "时"
+
+#: src/settings.c:1912
+msgid "Minutes"
+msgstr "分"
+
+#: src/settings.c:1958
+msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
+msgstr "使用或者禁用好友服务器。您必须输入一个用户名。不要使用默认的名字！"
+
+#: src/settings.c:1962
+msgid "Set here the name which will be shown near your position."
+msgstr "在此设置显示在您的车辆附近的您的名字。"
+
+#: src/settings.c:1965
+msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
+msgstr "设置好友位置的显示时限，让过去的位置不再显示。"
+
+#: src/settings.c:1984
+msgid "IP"
+msgstr "IP"
+
+#: src/settings.c:1992
+msgid "Lookup"
+msgstr "查找"
+
+#: src/settings.c:2008
+msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
+msgstr "在此设置您的好友服务器的完整定义的主机名 (例如： www.gpsdrive.cc)，然后点击\"查找\"键！"
+
+#: src/settings.c:2012
+msgid "Press this button to resolve the friends server name."
+msgstr "点击此键，来解决您的好友服务器的名字！"
+
+#: src/settings.c:2015
+msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
+msgstr "在此设置IP地址(例如：127.0.0.1)，如果您没有在上面设置主机名。"
+
+#: src/settings.c:2023
+msgid "<b>General</b>"
+msgstr "<b>普通</b>"
+
+#: src/settings.c:2034
+msgid "<b>Server</b>"
+msgstr "<b>服务器</b>"
+
+#: src/settings.c:2113
+msgid "GpsDrive Settings"
+msgstr "GpsDrive 首选项"
+
+#: src/splash.c:132
+msgid ""
+"Left mouse button         : Set position (usefull in simulation mode)\n"
+"Right mouse button        : Set target directly on the map\n"
+"Middle mouse button       : Display position again\n"
+"Shift left mouse button   : smaller map\n"
+"Shift right mouse button  : larger map\n"
+"Control left mouse button : Set a waypoint (mouse position) on the map\n"
+"Control right mouse button: Set a waypoint at current position on the map\n"
+"\n"
+msgstr ""
+"鼠标左键：         设置位置 (在模拟模式很有用)\n"
+"鼠标右键：         直接在地图上设置目标\n"
+"鼠标中键：         再次显示位置\n"
+"[Shift]＋鼠标左键：缩小地图\n"
+"[Shift]＋鼠标右键：放大地图\n"
+"[Ctrl]＋鼠标左键： 在地图上鼠标位置添加一个航点\n"
+"[Ctrl]＋鼠标右键： 在地图上当前位置添加一个航点\n"
+"\n"
+
+#: src/splash.c:140
+msgid ""
+"j    : switch to next waypoint in route mode\n"
+"x    : add waypoint at current position\n"
+"y    : add waypoint at mouse cursor position\n"
+"n    : switch on light for 60sec in nightmode\n"
+"g    : Toggle grid\n"
+"f    : Toggle friends display\n"
+"w    : Set Waypoint at current location without asking\n"
+"p    : Set Waypoint at current cursor position without asking\n"
+"r    : Add current cursor position to end of route\n"
+"+    : Zoom in \n"
+"-    : Zoom out\n"
+msgstr ""
+"j    : 在航线模式中切换到下一个航点\n"
+"x    : 在当前位置添加航点\n"
+"y    : 在鼠标光标位置添加航点\n"
+"n    : 在夜晚模式中打开亮光60秒\n"
+"g    : 切换网格\n"
+"f    : 切换好友显示\n"
+"w    : 不经问讯，在当前位置直接设置航点\n"
+"p    : 不经问讯，在当前光标位置直接设置航点\n"
+"r    : 在航线最后添加光标当前位置\n"
+"+    : 放大 \n"
+"-    : 缩小 \n"
+
+#: src/splash.c:151
+msgid ""
+"Press the underlined key together with the ALT-key.\n"
+"\n"
+"You can move on the map by selecting the Position-Mode in the menu. A blue rectangle shows this mode, you can set this cursor by clicking on the map. If you click on the border of the map (the outer 20%) then the map switches to the next area.\n"
+"\n"
+"Suggestions welcome.\n"
+"\n"
+msgstr ""
+"与[Alt]键一齐按标有下划线的字母键。\n"
+"\n"
+"在菜单里选择了定位模式后，您可以在地图上移动。一个蓝色的方框显示在此模式下，你可以在地图上点击以设置这个光标。如果您点击这个地图的边界（外部20％），地图将切换到下一个地区。\n"
+"\n"
+"欢迎您提出建议。\n"
+"\n"
+
+#: src/splash.c:161
+msgid "GpsDrive v"
+msgstr "GpsDrive v"
+
+#: src/splash.c:167
+msgid ""
+"\n"
+"\n"
+"You find new versions on http://www.gpsdrive.de\n"
+msgstr ""
+"\n"
+"\n"
+"寻访新版本，请访问 http://www.gpsdrive.cc \n"
+
+#: src/splash.c:171
+msgid ""
+"Disclaimer: Please do not use for navigation. \n"
+"\n"
+msgstr ""
+"免责声明：请不要用于导航。 \n"
+"\n"
+
+#: src/splash.c:176
+msgid "Please have a look into the manpage (man gpsdrive) for program details!"
+msgstr "请查看到man手册（在命令行中输入 man gpsdrive ） 以了解更多程序的细节"
+
+#: src/splash.c:181
+msgid "Mouse control (clicking on the map):\n"
+msgstr "鼠标控制 (在地图上点击时)：\n"
+
+#: src/splash.c:189
+msgid "Short cuts:\n"
+msgstr "快捷方式：\n"
+
+#: src/splash.c:196
+msgid "The other key shortcuts are marked as "
+msgstr "其它快捷键被标记为 "
+
+#: src/splash.c:199
+msgid "underlined"
+msgstr "带下划线的"
+
+#: src/splash.c:202
+msgid " letters in the button text.\n"
+msgstr "在按钮中的字母。\n"
+
+#: src/splash.c:205
+msgid "Have a lot of fun!"
+msgstr "希望您用得开心，玩得快乐！"
+
+#: src/splash.c:322
+msgid "From:"
+msgstr "来自："
+
+#: src/splash.c:393
+#, c-format
+msgid ""
+"You received a message from\n"
+"the friends server (%s)\n"
+msgstr ""
+"收到了一条消息\n"
+"来自 (%s)\n"
+
+#: src/splash.c:405
+msgid "You received a message through the friends server from:\n"
+msgstr "收到一条您的好友服务器发来的消息：\n"
+
+#: src/splash.c:416
+msgid "Message text:\n"
+msgstr "消息内容：\n"
+
+#: src/splash.c:523
+msgid "Starting GPS Drive"
+msgstr "正在启动GPSD"
+
+#: src/splash.c:543
+#, c-format
+msgid ""
+"\n"
+"Warning: unable to open splash picture\n"
+"Please install the program as root with:\n"
+"make install\n"
+"\n"
+msgstr ""
+"\n"
+"警告：不能打开启动画面！\n"
+"请以root身份安装本程序，命令为：\n"
+"make install\n"
+"\n"
+
+#: src/splash.c:611
+msgid "translator-credits"
+msgstr "翻译者－荣誉"
+
+#: src/splash.c:613
+msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
+msgstr "GpsDrive是一个车用(也可用于自行车、轮船、飞机)导航系统，在可缩放的地图上为您显示来自GPS接收器的包括位置信息在内的大量信息。"
+
+#: src/splash.c:616
+msgid ""
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
+"\n"
+"GpsDrive uses data from the OpenStreetMap Project (http://www.openstreetmap.org), which is freely available under the terms of the Creative Commons Attribution-ShareAlike 2.0 license."
+msgstr ""
+"这是一个自由软件。您可以在遵守自由软件协会基金会 GNU GPL2版权（或者更新的版本）协议下重新发布或者修改它。\n"
+"\n"
+"GpsDrive使用来自OpenStreetMap Project (http://www.openstreetmap.org)的数据，这些数据在“非商业性使用-相同方式共享2.0条款”下可以自由使用。"
+
+#: src/splash.c:623
+#, c-format
+msgid ""
+"\n"
+"Warning: unable to open logo picture\n"
+"Please install the program as root with:\n"
+"make install\n"
+"\n"
+msgstr ""
+"\n"
+"警告：不能打开标志图片！\n"
+"请以root身份安装本程序，命令为：\n"
+"make install\n"
+"\n"
+
+#: src/waypoint.c:686
+msgid "Add Point of Interest"
+msgstr "添加兴趣点"
+
+#: src/waypoint.c:697
+msgid "Name:"
+msgstr "名称："
+
+#: src/waypoint.c:706
+msgid " Type: "
+msgstr "类型："
+
+#: src/waypoint.c:732
+msgid " Comment: "
+msgstr "注释："
+
+#: src/waypoint.c:770
+msgid " Save waypoint in: "
+msgstr "保存航点在："
+
+#: src/waypoint.c:773
+msgid "Database"
+msgstr "数据库"
+
+#: src/waypoint.c:778
+msgid "way.txt File"
+msgstr "way.txt文件"
+
+#~ msgid "/_Misc. Menu"
+#~ msgstr "/_M 菜单"
+
+#~ msgid "/_Misc. Menu/Maps"
+#~ msgstr "/_M 菜单/地图"
+
+#~ msgid "/_Misc. Menu/Maps/_Import map"
+#~ msgstr "/_M 菜单/地图/_I 输入地图"
+
+#~ msgid "/_Misc. Menu/Maps/_Map Manager"
+#~ msgstr "/_M 菜单/地图/_M 地图管理"
+
+#~ msgid "/_Misc. Menu/_Waypoint Manager"
+#~ msgstr "/_M 菜单/_W 航点管理"
+
+#~ msgid "/_Misc. Menu/_Load track file"
+#~ msgstr "/_M 菜单/_L 载入轨迹文件"
+
+#~ msgid "/_Misc. Menu/Messages"
+#~ msgstr "/_M 菜单/消息"
+
+#~ msgid "/_Misc. Menu/Messages/Send message to mobile target"
+#~ msgstr "/_M 菜单/消息/发消息给移动终端"
+
+#~ msgid "/_Misc. Menu/Help"
+#~ msgstr "/_M 菜单/帮助"
+
+#~ msgid "/_Misc. Menu/Help/About"
+#~ msgstr "/_M 菜单/帮助/关于"
+
+#~ msgid "/_Misc. Menu/Help/Topics"
+#~ msgstr "/_M 菜单/帮助/详细内容"
+
+#~ msgid "  Message  "
+#~ msgstr " 消息 "
+
+#~ msgid "Stop GPSD"
+#~ msgstr "关闭GPSD"
+
+#~ msgid "Stop GPSD and switch to simulation mode"
+#~ msgstr "关闭GPSD并切换到模拟模式"
+
+#~ msgid "Starts GPSD for NMEA mode"
+#~ msgstr "以NMEA模式启动GPSD"
+
+#~ msgid "n/a"
+#~ msgstr "空"
+
+#~ msgid ""
+#~ "\n"
+#~ "no garmin support compiled in\n"
+#~ msgstr ""
+#~ "\n"
+#~ "GARMIN的支持没有被编入\n"
+
+#~ msgid "got RMC data, using it\n"
+#~ msgstr "获取到RMC数据，开始使用\n"
+
+#~ msgid "got no RMC data, using GGA data\n"
+#~ msgstr "没有得到RMC数据，正在使用GGA数据\n"
+
+#~ msgid "GARMIN Mode"
+#~ msgstr "GARMIN模式"
+
+#~ msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
+#~ msgstr "距离大本营：%.1fkm, max. allowed: %.1fkm\n"
+
+#~ msgid "To"
+#~ msgstr "到"
+
+#~ msgid "Auto"
+#~ msgstr "自动"
+
+#~ msgid "NESW"
+#~ msgstr "NESW"
+
+#~ msgid "unused"
+#~ msgstr "未使用"
+
+#~ msgid " Friendsicon could not be loaded:"
+#~ msgstr "好友图标不能被加载！"
+
+#~ msgid "Map file name"
+#~ msgstr "地图文件名"
+
+#~ msgid "Expedia Germany"
+#~ msgstr "Expedia 德国"
+
+#~ msgid "Expedia USA"
+#~ msgstr "Expedia 美国"
+
+#~ msgid "If selected, you download the map from the german expedia server (expedia.de)"
+#~ msgstr "如果选择，您将从德国Expedia服务器上下载地图(expedia.de)"
+
+#~ msgid "If selected, you download the map from the U.S. expedia server (expedia.com)"
+#~ msgstr "如果选择，您将从美国Expedia服务器上下载地图 (expedia.com)"
+
+#~ msgid "Browse waypoint"
+#~ msgstr "浏览航点"
+
+#~ msgid "/Misc. Menu/Messages"
+#~ msgstr "/M 菜单/信息"
+
+#~ msgid "Sends your text to to selected computer using the friends server"
+#~ msgstr "发送您的文本通过好友服务器到您所选择的计算机。"
+
+#~ msgid "Add waypoint name"
+#~ msgstr "添加航点名称"
+
+#~ msgid " Waypoint type: "
+#~ msgstr "航点类型："
+
+#~ msgid "-D    turn on lot of debug info\n"
+#~ msgstr "-D    显示更多调试信息\n"
+
+#~ msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
+#~ msgstr "-t    为GPS设置串口设备，例如：/dev/ttyS1\n"
+
+#~ msgid "-n    Disable use of direct serial connection\n"
+#~ msgstr "-n    停止使用串口直连\n"
+
+#~ msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
+#~ msgstr "-p    PDA设置 (iPAQ, Yopy...)\n"
+
+#~ msgid "-E    print out data received from direct serial connection\n"
+#~ msgstr "-E    显示从直联串口中接收到的数据\n"
+
+#~ msgid ""
+#~ "-z    don't display zoom factor and scale\n"
+#~ "\n"
+#~ msgstr ""
+#~ "-z    不要显示缩放比例和比例尺\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Garmin protocol detection disabled!\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Garmin 协议探测被禁止了!\n"
+
+#~ msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
+#~ msgstr "Gpsdrive-2 (c)2001-2004 F.Ganter"
+
+#~ msgid "/Misc. Menu/Maps/Map Manager"
+#~ msgstr "/混合菜单/地图/地图管理"
+
+#~ msgid "/Misc. Menu/Waypoint Manager"
+#~ msgstr "/混合菜单/航点管理"
+
+#~ msgid "_Download map"
+#~ msgstr "_D 下载地图"
+
+#~ msgid "Use SQ_L"
+#~ msgstr "_L 使用SQL"
+
+#~ msgid "Show _WP"
+#~ msgstr "_W 显示航点"
+
+#~ msgid "HomeBase"
+#~ msgstr "大本营"
+
+#~ msgid "Show _Track"
+#~ msgstr "_T 显示轨迹"
+
+#~ msgid "Save track"
+#~ msgstr "保存轨迹"
+
+#~ msgid "Bearing"
+#~ msgstr "方位"
+
+#~ msgid "---"
+#~ msgstr "---"
+
+#~ msgid "within"
+#~ msgstr "不超出"
+
+#~ msgid "Distance to target"
+#~ msgstr "目标距离"
+
+#~ msgid "Map file"
+#~ msgstr "地图文件"
+
+#~ msgid "Map scale"
+#~ msgstr "地图比例"
+
+#~ msgid "Heading"
+#~ msgstr "航向"
+
+#~ msgid "Time at Dest."
+#~ msgstr "到达目标所需时间"
+
+#~ msgid "Pref. scale"
+#~ msgstr "初始比例"
+
+#~ msgid "000,00000N"
+#~ msgstr "000,00000N"
+
+#~ msgid "000,00000E"
+#~ msgstr "000,00000E"
+
+#~ msgid "0000"
+#~ msgstr "0000"
+
+#~ msgid "Menu"
+#~ msgstr "菜单"
+
+#~ msgid "Status"
+#~ msgstr "状态"
+
+#~ msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
+#~ msgstr "点击此处切换卫星信号强度和卫星位置显示 如果是一个旋转的地球则表示处于模拟模式"
+
+#~ msgid "Number of used satellites/satellites in view"
+#~ msgstr "使用的卫星数量"
+
+#~ msgid "EPE (Estimated Precision Error), if available"
+#~ msgstr "EPE（估计精度误差） ，如果可用"
+
+#~ msgid "PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives unacceptable poor accuracy. "
+#~ msgstr "PDOP（位置精度衰减）：PDOP小于4精度最佳4和8之间精度可接受，如果大于8，表明精度很差，不可接受。"
+
+#~ msgid "On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."
+#~ msgstr "罗盘的最上方是您正在移动的方向。罗盘的指针则显示目的地所在的方向。"
+
+#~ msgid "/Misc. Menu"
+#~ msgstr "/混合菜单"
+
+#~ msgid "Here you find extra functions for maps, tracks and messages"
+#~ msgstr "这里您可以发现额外的功能，涉及地图，轨迹和信息。"
+
+#~ msgid "Download map from Internet"
+#~ msgstr "从互联网上下载地图"
+
+#~ msgid "Leave the program"
+#~ msgstr "离开程序"
+
+#~ msgid "Disable output of speech"
+#~ msgstr "禁止语音输出"
+
+#~ msgid "Use SQL server for waypoints"
+#~ msgstr "使用SQL服务器纪录航点"
+
+#~ msgid "Show waypoints on the map"
+#~ msgstr "在地图上显示航点"
+
+#~ msgid "Show tracking on the map"
+#~ msgstr "在地图上显示轨迹"
+
+#~ msgid "Opens the help window"
+#~ msgstr "打开帮助窗口"
+
+#~ msgid "Navigation menu. Enter here your destination."
+#~ msgstr "导航菜单，在此输入您的目的地。"
+
+#~ msgid "Settings for GpsDrive"
+#~ msgstr "GpsDrive设置"
+
+#~ msgid "Zoom into the current map"
+#~ msgstr "放大"
+
+#~ msgid "Zooms out off the current map"
+#~ msgstr "缩小"
+
+#~ msgid "Select the next more detailed map"
+#~ msgstr "放大一级"
+
+#~ msgid "Select the next less detailed map"
+#~ msgstr "缩小一级"
+
+#~ msgid "Select here a destination from the waypoint list"
+#~ msgstr "从航点烈表中选择一个目的地"
+
+#~ msgid "Select the map scale of avail. maps."
+#~ msgstr "选择可用地图的比例尺"
+
+#~ msgid "Save the track to given filename at program exit"
+#~ msgstr "当程序退出时保存轨迹到指定的文件中"
+
+#~ msgid "Number of waypoints selected from SQL server"
+#~ msgstr "在数据库中选择的航点数量"
+
+#~ msgid "Number of selected waypoints, which are in range"
+#~ msgstr "指定范围中选择的航点数量"
+
+#~ msgid "Range for waypoint selection in kilometers"
+#~ msgstr "按公里记的航点选择范围"
+
+#~ msgid "This shows the time from your GPS receiver"
+#~ msgstr "您GPS接收机获得的时间信号"
+
+#~ msgid "Number of mobile targets within timeframe/total received from friendsserver"
+#~ msgstr "在时间范围内移动目标的数目/从好友服务器收到的总数"
+
+#~ msgid ""
+#~ "j    : switch to next waypoint in route mode\n"
+#~ "x    : add waypoint at current position\n"
+#~ "y    : add waypoint at mouse cursor position\n"
+#~ msgstr ""
+#~ "j    : 在航线模式中切换到下一个航点\n"
+#~ "x    : 在当前位置添加航点\n"
+#~ "y    : 在鼠标光标位置添加航点\n"
+
+#~ msgid "Please donate to GpsDrive"
+#~ msgstr "请支持／捐助GpsDrive项目"
+
+#~ msgid ""
+#~ "\n"
+#~ "\n"
+#~ "GpsDrive is a project with no comercial background. \n"
+#~ "\n"
+#~ "It would be nice if you can give a donation to help me pay the costs for hardware and the webserver.\n"
+#~ "\n"
+#~ "To do so, just go to"
+#~ msgstr ""
+#~ "\n"
+#~ "\n"
+#~ "GpsDrive是一个没有商业背景得的项目。 \n"
+#~ "\n"
+#~ "欢迎您提供捐助，以帮助我支付硬件和web网站的费用。\n"
+#~ "\n"
+#~ "如您有意，请访问"
+
+#~ msgid " http://www.gpsdrive.cc "
+#~ msgstr " http://www.gpsdrive.cc "
+
+#~ msgid ""
+#~ "and click on the PayPal button.\n"
+#~ "\n"
+#~ "Thank you very much for your donation!\n"
+#~ "\n"
+#~ "This message is only displayed once when you start an new version of GpsDrive.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "然后点击 PayPal 按钮。\n"
+#~ "\n"
+#~ "对于您的捐助我万分感谢！\n"
+#~ "\n"
+#~ "此条信息仅当您首次使用GpsDrive的一个新版本时显示。\n"
+#~ "\n"
+
+#~ msgid "About GpsDrive donation"
+#~ msgstr "关于捐助 GpsDrive"
+
+#~ msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
+#~ msgstr "保存配置文件出错 ~/.gpsdrive/gpsdriverc"
+
+#~ msgid "About GpsDrive"
+#~ msgstr "关于 GpsDrive"
+
+#~ msgid "Setting WP label font"
+#~ msgstr "设置航点标签的字体"
+
+#~ msgid "Setting big display font"
+#~ msgstr "设置大型显示的字体"
+
+#~ msgid "Setting big display color"
+#~ msgstr "设置大型显示的颜色"
+
+#~ msgid "Waypoint files to use"
+#~ msgstr "使用的航点文件"
+
+#~ msgid "Settings"
+#~ msgstr "设置"
+
+#~ msgid "Misc settings"
+#~ msgstr "混合设置"
+
+#~ msgid "Etched frames"
+#~ msgstr "蚀刻的帧边框"
+
+#~ msgid "Simulation: Follow target"
+#~ msgstr "模拟：跟随目标"
+
+#~ msgid "GPS settings"
+#~ msgstr "GPS设置"
+
+#~ msgid "Test for GARMIN"
+#~ msgstr "测试GARMIN"
+
+#~ msgid "Use DGPS-IP"
+#~ msgstr "使用 DGPS-IP"
+
+#~ msgid "GPS is Earthmate"
+#~ msgstr "GPS是Earthmate"
+
+#~ msgid "Use serial conn."
+#~ msgstr "使用串口"
+
+#~ msgid "Interface"
+#~ msgstr "接口"
+
+#~ msgid "Baudrate"
+#~ msgstr "波特率"
+
+#~ msgid "Units"
+#~ msgstr "单位"
+
+#~ msgid "Miles"
+#~ msgstr "英制"
+
+#~ msgid "Nautic"
+#~ msgstr "海里制"
+
+#~ msgid "Night light mode"
+#~ msgstr "夜光模式"
+
+#~ msgid "Speech output settings"
+#~ msgstr "语音输出控制"
+
+#~ msgid "Font and color settings"
+#~ msgstr "字体和颜色设定"
+
+#~ msgid "Big display"
+#~ msgstr "大型显示"
+
+#~ msgid "Display color"
+#~ msgstr "显示颜色"
+
+#~ msgid "Switch units to statute miles"
+#~ msgstr "使用英制标准单位"
+
+#~ msgid "Switch units to nautical miles"
+#~ msgstr "使用海里制"
+
+#~ msgid "Switch units to metric system (Kilometers)"
+#~ msgstr "使用公制单位（公里）"
+
+#~ msgid "If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"
+#~ msgstr "如果选中，则显示以十进制度数显示经纬度否则，以度、分、秒的方法显示"
+
+#~ msgid "Set the german expedia server(expedia.de) as default download server. Use this if you are in Europe"
+#~ msgstr "设置德国Expedia服务器(expedia.de)为默认的下载服务器。 如果您在欧洲，建议如此操作。"
+
+#~ msgid "Set Expedia as default download server"
+#~ msgstr "设置Expedia为默认的下载服务器"
+
+#~ msgid "Switches between different type of frame ornaments"
+#~ msgstr "在不同类型的帧边界装饰效果中切换"
+
+#~ msgid "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."
+#~ msgstr "如果选中，GpsDrive将尝试使用GARMIN模式。如果您仅有一个NMEA设备，则无须选择。"
+
+#~ msgid "Set here the baud rate of your GPS device, NMEA devices usually have a speed of 4800 baud"
+#~ msgstr "设置您的GPS设备的传输波特率， NMEA设备通常采用4800。"
+
+#~ msgid "If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
+#~ msgstr "如果选择，GpsDrive会尝试使用基于IP的差分GPS。您必须要有一个互联网连接和一个差分GPS容纳GPS接收机。仅在NMEA模式下工作。"
+
+#~ msgid "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"
+#~ msgstr "如果您有一台DeLorme Earthmate GPS接收仪，请选择此项。“启动GPSD”按钮将提供给GPSD更多的附加参数。"
+
+#~ msgid "Select this if you want to use of the direct serial connection. If disabled, you can use the receiver only through gpsd. On the other hand, the direct serial connection needs no gpsd running and detects the working receiver on startup"
+#~ msgstr "如果你想直接连接串口的话，请选中此项。如果未选的话，你可以通过GPSD使用您的接收器。直接连接串口的话不用运行GPSD，并且在启动时检查是否有正在工作的接收机。"
+
+#~ msgid "Specify the serial interface where the GPS is connected"
+#~ msgstr "描述GPS已连接的串口位置"
+
+#~ msgid "Here you can set the color for the big display for speed, distance and altitude"
+#~ msgstr "在此您可以设置大型显示的速度、距离、高度的颜色。"
+
+#~ msgid "Geo information"
+#~ msgstr "地理信息："
+
+#~ msgid "Geo info"
+#~ msgstr "地理信息"
+
+#~ msgid "Sunrise"
+#~ msgstr "日出"
+
+#~ msgid "Sunset"
+#~ msgstr "日落"
+
+#~ msgid "Standard"
+#~ msgstr "标准"
+
+#~ msgid "Transit"
+#~ msgstr "通过子午线"
+
+#~ msgid "GPS-Time"
+#~ msgstr "GPS-时间"
+
+#~ msgid "Astro."
+#~ msgstr "星空"
+
+#~ msgid "Naut."
+#~ msgstr "航海"
+
+#~ msgid "Civil"
+#~ msgstr "历法"
+
+#~ msgid "Timezone"
+#~ msgstr "时区"
+
+#~ msgid "Store TZ"
+#~ msgstr "保存时区"
+
+#~ msgid "If selected, the timezone is stored, otherwise your actual timezone will automatically used"
+#~ msgstr "如果选中，时区信息将被保存，否则您现在的时区将被自动使用。"
+
+#~ msgid "Night"
+#~ msgstr "夜晚"
+
+#~ msgid "Day"
+#~ msgstr "白天"
+
+#~ msgid "Unit:"
+#~ msgstr "单位："
+
+#~ msgid "miles"
+#~ msgstr "英里"
+
+#~ msgid "nautic miles/knots"
+#~ msgstr "海里／节"
+
+#~ msgid "kilometers"
+#~ msgstr "公里"
+
+#~ msgid "Trip information"
+#~ msgstr "旅行信息"
+
+#~ msgid "Odometer"
+#~ msgstr "里程表"
+
+#~ msgid "Total time"
+#~ msgstr "总计时间"
+
+#~ msgid "Av. speed"
+#~ msgstr "平均速度"
+
+#~ msgid "Max. speed"
+#~ msgstr "最大速度"
+
+#~ msgid "Resets the trip values to zero"
+#~ msgstr "重置旅行数值到零"
+
+#~ msgid "Friends server setup"
+#~ msgstr "好友服务器设置"
+
+#~ msgid "Server name"
+#~ msgstr "服务器名字"
+
+#~ msgid "Set here the color of the label displayed at friends position"
+#~ msgstr "在此设置显示您好友位置的标签的显示颜色"
+
+#~ msgid "Friends server IP"
+#~ msgstr "好友服务器的IP"
+
+#~ msgid "SQL selection criterias"
+#~ msgstr "SQL选择标准"
+
+#~ msgid "SQL"
+#~ msgstr "SQL"
+
+#~ msgid "Dist. limit[km] "
+#~ msgstr "距离限制[Km]"
+
+#~ msgid "If enabled, show waypoints only within this distance"
+#~ msgstr "如果启用，仅显示在此距离范围内的航点。"
+
+#~ msgid "Enable/disable distance selection"
+#~ msgstr "启用／禁用距离选择"
+
+#~ msgid "If enabled, WLANs with no SSID are shown, because this is perhaps useless, you can disable it here"
+#~ msgstr "如果启用，将显示没有SSID的无线局域网，因为可能没什么用，你可以禁用它。"
+
+#~ msgid "Selection mode"
+#~ msgstr "选择模式"
+
+#~ msgid "include"
+#~ msgstr "包括"
+
+#~ msgid "exclude"
+#~ msgstr "不包括"
+
+#~ msgid "Show only waypoints where the type field contains one of the selected words"
+#~ msgstr "当类型字段只含选择的词汇其中之一时，仅显示航点"
+
+#~ msgid "Show only waypoints where the type field doesn't contain any the selected words"
+#~ msgstr "当类型字段不含任何选择的词汇时，仅显示航点 "
+
+#~ msgid "Aeronautical settings"
+#~ msgstr "航空设定"
+
+#~ msgid "Fly"
+#~ msgstr "飞行"
+
+#~ msgid "Plane mode"
+#~ msgstr "飞机模式"
+
+#~ msgid "Use VFR"
+#~ msgstr "使用 VFR"
+
+#~ msgid "Use IFR"
+#~ msgstr "使用仪表飞行（IFR）"
+
+#~ msgid "max. horizontal deviation "
+#~ msgstr "最大水平偏差"
+
+#~ msgid "max. vertical deviation "
+#~ msgstr "最大垂直偏差"
+
+#~ msgid "disable vert. deviation warning above 5000ft MSL"
+#~ msgstr "在海拔5000英尺以上停止垂直偏差警告"
+
+#~ msgid "Nautic settings"
+#~ msgstr "航海设定"
+
+#~ msgid "waiting for thread to stop\n"
+#~ msgstr "正在等待线程结束\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "error opening %s(%d)\n"
+#~ msgstr ""
+#~ "\n"
+#~ "打开 %s(%d) 时发生错误\n"
+
+#~ msgid "successfull opened %s\n"
+#~ msgstr "成功打开 %s\n"
+
+#~ msgid "switching WAAS/EGNOS on\n"
+#~ msgstr "正在打开 WAAS/EGNOS\n"
+
+#~ msgid "switching WAAS/EGNOS off\n"
+#~ msgstr "正在关闭 WAAS/EGNOS\n"

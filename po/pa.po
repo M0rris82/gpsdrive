@@ -1,82 +1,85 @@
-# Hungarian Translation of GpsDrive.
-# Copyright (C) 2002 Free Software Foundation, Inc.
-# Emese Kov�cs <emese@instantweb.hu>, 2002, 2004.
+# translation of gpsdrive-2.08pre6.po to Punjabi
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Amanpreet Singh Alam[ਆਲਮ] <amanpreetalam@yahoo.com>, 2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive 2.08pre6\n"
+"Project-Id-Version: gpsdrive-2.08pre6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-01-29 06:34+0100\n"
-"PO-Revision-Date: 2004-11-08 10:04+0200\n"
-"Last-Translator: Emese Kov�cs <emese@instantweb.hu>\n"
-"Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2005-05-04 18:33+0530\n"
+"Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
+"Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.9.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/gpsdrive.c:2102
 msgid "/_Misc. Menu"
-msgstr "/_Men�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)"
 
 #: src/gpsdrive.c:2103
 msgid "/_Misc. Menu/Maps"
-msgstr "/_Men�/T�rk�pek"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਨਕਸ਼ਾ"
 
 #: src/gpsdrive.c:2104
 msgid "/_Misc. Menu/Maps/_Import map"
-msgstr "/_Men�/T�rk�pek/_Import�l�s"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਨਕਸ਼ਾ/ਨਕਸ਼ਾ ਆਯਾਤ(_I)"
 
 #: src/gpsdrive.c:2108
 msgid "/_Misc. Menu/Maps/_Map Manager"
-msgstr "/_Men�/T�rk�pek/_T�rk�pkezel�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਨਕਸ਼ਾ/ਨਕਸ਼ਾ ਮੈਨੇਜਰ(_M)"
 
 #: src/gpsdrive.c:2110
 msgid "/_Misc. Menu/_Waypoint Manager"
-msgstr "/_Men�/�t_vonalpont-kezel�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਟਿਕਾਣਾ ਬਿੰਦੂ ਮੈਨੇਜਰ(_W)"
 
 #: src/gpsdrive.c:2112
 msgid "/_Misc. Menu/_Load track file"
-msgstr "/_Men�/�_tvonalf�jl bet�lt�se"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਰਸਤਾ ਫਾਇਲ ਲੋਡ(_L)"
 
 #: src/gpsdrive.c:2116
 msgid "/_Misc. Menu/Messages"
-msgstr "/_Men�/�zenetek"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਸੁਨੇਹੇ"
 
 #: src/gpsdrive.c:2117
 msgid "/_Misc. Menu/Messages/Send message to mobile target"
-msgstr "/_Men�/�zenetek/�zenet k�ld�se mozg� c�lpontnak"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਸੁਨੇਹੇ/ਮੋਬਾਇਲ ਟਿਕਾਣੇ ਤੇ ਸੁਨੇਹਾ ਭੇਜੋ"
 
 #: src/gpsdrive.c:2122
 msgid "/_Misc. Menu/Help"
-msgstr "/_Men�/S�g�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਸਹਾਇਤਾ"
 
 #: src/gpsdrive.c:2123
 msgid "/_Misc. Menu/Help/About"
-msgstr "/_Men�/N�vjegy"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਸਹਾਇਤਾ/ਇਸ ਬਾਰੇ"
 
 #: src/gpsdrive.c:2125
 msgid "/_Misc. Menu/Help/Topics"
-msgstr "/_Men�/S�g�/T�m�k"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ(_M)/ਸਹਾਇਤਾ/ਵਿਸ਼ੇ"
 
 #: src/gpsdrive.c:2191
 msgid "  Message  "
-msgstr "  �zenet  "
+msgstr "  ਸੁਨੇਹਾ  "
 
 #: src/gpsdrive.c:2235 src/gpsdrive.c:12000
 msgid "Stop GPSD"
-msgstr "GPSD le�ll�t�sa"
+msgstr "GPSD ਰੋਕੋ"
 
 #: src/gpsdrive.c:2237 src/gpsdrive.c:12002
 msgid "Stop GPSD and switch to simulation mode"
-msgstr "Le�ll�tja a GPSD-t �s szimul�ci�s m�dba kapcsol"
+msgstr "GPSD ਰੋਕੋ ਅਤੇ ਸਮਰੂਪ ਲਈ ਜਾਓ"
 
 #: src/gpsdrive.c:2259 src/gpsdrive.c:11146
 msgid "Start GPSD"
-msgstr "GPSD ind�t�sa"
+msgstr "GPSD ਸ਼ੁਰੂ"
 
 #: src/gpsdrive.c:2261 src/gpsdrive.c:12008
 msgid "Starts GPSD for NMEA mode"
-msgstr "Elind�tja a GPSD-t NMEA m�dhoz"
+msgstr "NMEA ਢੰਗ ਲਈ GPSD ਸ਼ੁਰੂ"
 
 #. displays zoom factor of map
 #: src/gpsdrive.c:2274 src/gpsdrive.c:2275 src/gpsdrive.c:6350
@@ -87,7 +90,7 @@ msgstr "Elind�tja a GPSD-t NMEA m�dhoz"
 #: src/settings.c:1328 src/settings.c:1337 src/settings.c:1348
 #: src/settings.c:1357 src/settings.c:1367
 msgid "n/a"
-msgstr "n/a"
+msgstr "ਉਪਲੱਬਧ ਨਹੀਂ"
 
 #: src/gpsdrive.c:2285 src/gpsdrive.c:10191
 msgid ""
@@ -95,69 +98,69 @@ msgid ""
 "no garmin support compiled in\n"
 msgstr ""
 "\n"
-"nincs garmin t�mogat�s a programba ford�tva\n"
+"ਗਾਰਮਿਨ ਸਹਿਯੋਗ ਕੰਪਾਇਲ ਨਹੀਂ ਕੀਤਾ ਗਿਆ ਹੈ।\n"
 
 #: src/gpsdrive.c:2409 src/gpsdrive.c:3302
 msgid "Simulation mode"
-msgstr "Szimul�ci�s m�d"
+msgstr "ਸਮਰੂਪ ਢੰਗ"
 
 #: src/gpsdrive.c:2431
 msgid "got RMC data, using it\n"
-msgstr "megvan az RMC adat, haszn�ljuk\n"
+msgstr "RMC ਡਾਟਾ ਮਿਲਿਆ, ਇਸ ਦੀ ਵਰਤੋਂ ਕਰਕੇ\n"
 
 #: src/gpsdrive.c:2520 src/gpsdrive.c:11807
 msgid "Map"
-msgstr "T�rk�p"
+msgstr "ਨਕਸ਼ਾ"
 
 #. if (debug)
 #: src/gpsdrive.c:2672
 msgid "got no RMC data, using GGA data\n"
-msgstr "nincs RMC adat, GGA adat haszn�lata\n"
+msgstr "ਕੋਈ RMC ਡਾਟਾ ਨਹੀਂ ਮਿਲਿਆ ਹੈ, GGA ਡਾਟਾ ਵਰਤਕੇ\n"
 
 #: src/gpsdrive.c:3096
 msgid "Timeout getting data from GPS-Receiver!"
-msgstr "Id�t�ll�p�s, nem j�n adat a GPS vev�t�l!"
+msgstr "GPS-ਰਸੀਵਰ ਤੋਂ ਡਾਟਾ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ਸਮਾਂ ਸਮਾਪਤ!"
 
 #: src/gpsdrive.c:3142 src/gpsdrive.c:3186 src/gpsdrive.c:3280
 #: src/gpsdrive.c:3364 src/gpsdrive.c:3489
 msgid "Press middle mouse button for navigation"
-msgstr "A navig�ci�hoz haszn�ld a k�z�ps� eg�rgombot"
+msgstr "ਘੁੰਮਣ ਲਈ ਮਾਊਸ ਦਾ ਵਿਚਲਾ ਬਟਨ ਦਬਾਓ"
 
 #: src/gpsdrive.c:3145
 #, c-format
 msgid "Reading data from %s"
-msgstr "Adat olvas�sa innen: %s"
+msgstr "%s ਤੋਂ ਡਾਟਾ ਪੜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: src/gpsdrive.c:3191 src/gpsdrive.c:3213 src/gpsdrive.c:3370
 #: src/gpsdrive.c:3495
 msgid "Not enough satellites in view!"
-msgstr "Nincs el�g m�hold a l�that�ron!"
+msgstr "ਵੇਖਣ ਲਈ ਲੋੜੀਦੇ ਉਪਗ੍ਰਹਿ ਨਹੀਂ ਹਨ!"
 
 #: src/gpsdrive.c:3284
 msgid "GARMIN Mode"
-msgstr "GARMIN m�d"
+msgstr "GARMIN ਢੰਗ"
 
 #: src/gpsdrive.c:3300
 msgid "No GPS used"
-msgstr "Nincs GPS haszn�latban"
+msgstr "ਕੋਈ GPS ਨਹੀਂ ਵਰਤਿਆ"
 
 #: src/gpsdrive.c:3304
 msgid "Press middle mouse button for sim mode"
-msgstr "A szimul�ci� m�dhoz haszn�ld a k�z�ps� eg�rgombot"
+msgstr "ਸਮਰੂਪ ਢੰਗ ਚਾਲੂ ਕਰਨ ਲਈ ਮਾਊਸ ਵਿਚਲਾ ਬਟਨ ਦਬਾਉ"
 
 #: src/gpsdrive.c:3589
 #, c-format
 msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
-msgstr ""
+msgstr "ਮੁੱਖ ਟਿਕਾਣੇ ਤੋਂ ਦੂਰੀ %.1fਕਿਮੀ, ਵੱਧੋ-ਵੱਧ ਸਵੀਕਾਰ: %.1fਕਿਮੀ\n"
 
 #: src/gpsdrive.c:3665 src/gpsdrive.c:3820 src/gpsdrive.c:6737
 #: src/gpsdrive.c:8505 src/gpsdrive.c:8996
 msgid "To"
-msgstr ""
+msgstr "ਵੱਲ"
 
 #: src/gpsdrive.c:3900
 msgid "Error in line "
-msgstr "Hiba a k�vetkez� sorban: "
+msgstr "ਰੇਖਾ ਵਿੱਚ ਗਲਤੀ"
 
 #: src/gpsdrive.c:3902
 msgid ""
@@ -166,40 +169,33 @@ msgid ""
 "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
 "maps.  Otherwise, the maps will not be displayed!"
 msgstr ""
-"A ~/.gpsdrive/map_koord.txt f�jlban tal�ltam olyan f�lyneveket,\n"
-"amelyek nem illeszkednek a map_* �s top_* mint�kra!\n"
-"K�rlek nevezd �t a f�jlokat �s �rd �t a bejegyz�st a map_koord.txt\n"
-"f�jlban, k�l�nben ezek a t�rk�pek nem jelennek meg!\n"
-"\n"
-"Haszn�lj map_* t�pus� f�jlneveket az utca t�rk�pekhez �s top_*\n"
-"t�pus� f�jlneveket a topol�giai t�rk�pekhez."
 
 #: src/gpsdrive.c:4258
 msgid "Auto"
-msgstr "Auto"
+msgstr "ਸਵੈ"
 
 #: src/gpsdrive.c:4444
 msgid "Warning!"
-msgstr "Figyelem!"
+msgstr "ਚੇਤਾਵਨੀ!"
 
 #: src/gpsdrive.c:4445
 msgid "You should not start GpsDrive as user root!!!"
-msgstr "Ne ind�tsd el a GpsDrive-ot rendszergazda (root) felhaszn�l�k�nt!!!"
+msgstr "ਤੁਹਾਨੂੰ ਪ੍ਰਬੰਧਕ (root) ਦੇ ਤੌਰ ਤੇ GpsDrive ਨਹੀਂ ਚਾਲੂ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ!!!"
 
 #: src/gpsdrive.c:4738 src/gpsdrive.c:8123 src/gpsdrive.c:8132
 #: src/gpsdrive.c:11536 src/gpsdrive.c:11545
 msgid "mi/h"
-msgstr "mf/h"
+msgstr "ਮੀਲ/ਘੰ"
 
 #: src/gpsdrive.c:4740 src/gpsdrive.c:8125 src/gpsdrive.c:8134
 #: src/gpsdrive.c:11538 src/gpsdrive.c:11547
 msgid "knots"
-msgstr "csom�"
+msgstr "ਕਿ-ਨਾਟ"
 
 #: src/gpsdrive.c:4742 src/gpsdrive.c:8127 src/gpsdrive.c:8136
 #: src/gpsdrive.c:11540 src/gpsdrive.c:11549
 msgid "km/h"
-msgstr "km/h"
+msgstr "ਕਿਮੀ/ਘੰ"
 
 #: src/gpsdrive.c:5084
 msgid ""
@@ -210,8 +206,8 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Figyelem: gpsdriveanim.gif bet�lt�se sikertelen!\n"
-"Telep�tsd a programot rootk�nt a k�vetke� paranccsal:\n"
+"ਚੇਤਾਵਨੀ: gpsdriveanim.gif ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ!\n"
+"ਕਿਰਪਾ ਕਰਕੇ root ਦੇ ਤੌਰ ਤੇ ਇੰਸਟਾਲ ਕਰੋ:\n"
 "make install\n"
 "\n"
 
@@ -222,27 +218,27 @@ msgstr "NESW"
 
 #: src/gpsdrive.c:6151
 msgid "No map available for this position!"
-msgstr "Nincs el�rhet� t�rk�p ehhez a helyhez!"
+msgstr "ਇਸ ਟਿਕਾਣੇ ਲਈ ਕੋਈ ਨਕਸ਼ਾ ਉਪਲੱਬਧ ਨਹੀਂ ਹੈ!"
 
 #: src/gpsdrive.c:6344
 msgid "unused"
-msgstr "nem haszn�lt"
+msgstr "ਨਾ-ਵਰਤਿਆ"
 
 #: src/gpsdrive.c:6448
 msgid "can't open NMEA output file"
-msgstr "NMEA kimeneti f�jl megnyit�sa sikertelen"
+msgstr "NMEA ਆਉਟਪੁੱਟ ਫਾਇਲ ਖੋਲੀ ਨਹੀਂ ਜਾ ਸਕਦੀ ਹੈ"
 
 #: src/gpsdrive.c:6546
 msgid " Mapfile could not be loaded:"
-msgstr " A t�rk�pf�jl bet�lt�se sikertelen:"
+msgstr " Mapfile ਲੋਡ ਨਹੀਂ ਹੋ ਸਕੀ ਹੈ:"
 
 #: src/gpsdrive.c:6590
 msgid "Map found!"
-msgstr "Megvan a t�rk�p!"
+msgstr "ਨਕਸ਼ਾ ਲੱਭਿਆ!"
 
 #: src/gpsdrive.c:6624
 msgid " Friendsicon could not be loaded:"
-msgstr " Az ikon bet�lt�se sikertelen:"
+msgstr " ਫਰੈਂਡਆਈਕਾਨ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ:"
 
 #: src/gpsdrive.c:6627
 msgid ""
@@ -252,59 +248,52 @@ msgid ""
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Figyelem: az ikon bet�lt�se sikertelen!\n"
-"Telep�tsd a programot rootk�nt a k�vetke� paranccsal:\n"
-"make install\n"
-"\n"
 
 #: src/gpsdrive.c:6906
 msgid "Select coordinates and scale"
-msgstr "V�lassz koordin�t�t �s l�pt�ket"
+msgstr "ਬਿੰਦੂ ਅਤੇ ਪੈਮਾਨਾ ਚੁਣੋ"
 
 #: src/gpsdrive.c:6909
 msgid "Download map"
-msgstr "T�rk�p let�lt�se"
+msgstr "ਨਕਸ਼ਾ ਡਾਊਨਲੋਡ"
 
 #: src/gpsdrive.c:6935 src/gpsdrive.c:7881 src/gpsdrive.c:9200
 #: src/gpsdrive.c:9462 src/gpsdrive.c:9534 src/gpsdrive.c:9673
 #: src/gpsdrive.c:11663
 msgid "Latitude"
-msgstr "Sz�less�g"
+msgstr "ਲੰਬਕਾਰੀ"
 
 #: src/gpsdrive.c:6937 src/gpsdrive.c:7883 src/gpsdrive.c:9194
 #: src/gpsdrive.c:9462 src/gpsdrive.c:9534 src/gpsdrive.c:9673
 #: src/gpsdrive.c:11664
 msgid "Longitude"
-msgstr "Hossz�s�g"
+msgstr "ਵਿਥਕਾਰ"
 
 #: src/gpsdrive.c:6939
 msgid "Map covers"
-msgstr "T�rk�p lefedi"
+msgstr "ਨਕਸ਼ਾ ਸੀਮਾ"
 
 #: src/gpsdrive.c:6943
 msgid "Scale"
-msgstr "L�pt�k"
+msgstr "ਪੈਮਾਨਾ"
 
 #: src/gpsdrive.c:6945
 msgid "Map file name"
-msgstr "T�rk�pf�jl neve"
+msgstr "ਨਕਸ਼ਾ ਫਾਇਲ ਨਾਂ"
 
 #: src/gpsdrive.c:7023 src/gpsdrive.c:7026
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
 msgstr ""
-"A hely megad�s�hoz kattinthat\n"
-"a t�rk�pre is."
 
 #: src/gpsdrive.c:7028
 msgid "Using Proxy and port:"
-msgstr "Proxy �s port:"
+msgstr ""
 
 #: src/gpsdrive.c:7313 src/gpsdrive.c:7410
 msgid "can't open socket for port 80"
-msgstr "socket megnyit�sa a 80-as porthoz sikertlen"
+msgstr ""
 
 #: src/gpsdrive.c:7314 src/gpsdrive.c:7333 src/gpsdrive.c:7347
 #: src/gpsdrive.c:7411 src/gpsdrive.c:7414 src/gpsdrive.c:7416
@@ -313,47 +302,47 @@ msgstr "socket megnyit�sa a 80-as porthoz sikertlen"
 #: src/gpsdrive.c:7469
 #, c-format
 msgid "Connecting to %s FAILED!"
-msgstr "Csatlkoz�s sikertelen a k�vetkez�h�z: %s"
+msgstr "%s ਨਾਲ ਕੁਨੈਕਸ਼ਨ ਅਸਫਲ!"
 
 #: src/gpsdrive.c:7332 src/gpsdrive.c:7445
 msgid "Can't resolve webserver address"
-msgstr "A webkiszolg�l� nev�nek felold�sa sikertelen"
+msgstr ""
 
 #: src/gpsdrive.c:7346 src/gpsdrive.c:7463
 msgid "unable to connect to Website"
-msgstr "Sikertelen csatlakoz�si k�s�rlet a webhelyhez"
+msgstr ""
 
 #: src/gpsdrive.c:7375 src/gpsdrive.c:7523
 msgid "read from Webserver"
-msgstr "olvas�s a webkiszolg�l�r�l"
+msgstr ""
 
 #: src/gpsdrive.c:7398 src/gpsdrive.c:7400 src/gpsdrive.c:7402
 #, c-format
 msgid "Connecting to %s"
-msgstr "Csatlakoz�s a k�vetkez�h�z: %s"
+msgstr "%s ਨਾਲ ਜੁੜਿਆ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: src/gpsdrive.c:7487 src/gpsdrive.c:7489 src/gpsdrive.c:7491
 #, c-format
 msgid "Now connected to %s"
-msgstr "Csatlakozva a k�vetkez�h�z: %s"
+msgstr "ਹੁਣ %s ਨਾਲ ਜੁੜਿਆ ਹੈ"
 
 #: src/gpsdrive.c:7566
 #, c-format
 msgid "Downloaded %d kBytes"
-msgstr "Let�lt�s: %d kB"
+msgstr "%d ਕਿਬਾਈਟ ਡਾਊਨਲੋਡ"
 
 #: src/gpsdrive.c:7580
 msgid "Download FAILED!"
-msgstr "Let�lt�s sikertelen!"
+msgstr "ਡਾਊਨਲੋਡ ਅਸਫਲ!"
 
 #: src/gpsdrive.c:7582
 #, c-format
 msgid "Download finished, got %dkB"
-msgstr "A let�lt�s befejez�d�tt: %d kB"
+msgstr "ਡਾਊਨਲੋਡ ਮੁਕੰਮਲ, %dਕਿਬਾ ਮਿਲੇ"
 
 #: src/gpsdrive.c:7742
 msgid "Select a map file"
-msgstr "V�lassz t�rk�pf�jlt"
+msgstr "ਨਕਸ਼ਾ ਫਾਇਲ ਚੁਣੋ"
 
 #: src/gpsdrive.c:7807
 msgid ""
@@ -362,7 +351,6 @@ msgid ""
 msgstr ""
 
 #: src/gpsdrive.c:7809
-#, fuzzy
 msgid ""
 "\n"
 "directory as .gif, .jpg or .png file and must have\n"
@@ -371,84 +359,77 @@ msgid ""
 "Load the file, select coordinates from waypoint list or\n"
 "type them in. Then click on the accept button."
 msgstr ""
-"Hogyan kalibr�lhatod a saj�t t�rk�peidet?\n"
-"\n"
-"El�sz�b be kell m�solnod a t�rk�pet (.gif, .png vagy .jpg f�jlt) a ~/.gpsdrive k�nyvt�rba. A t�rk�p m�rete 1280x1024 kell legyen. A f�jl neve map_* kell legyen v�rost�rk�pn�l vagy top_* domborzati t�rk�pn�l.\n"
-"T�ltsd be a f�jlt, v�laszd ki a koordin�t�kat \n"
-"az �tvonalpont list�b�l, vagy g�peld be ezeket.\n"
-"V�g�l kattints az \"Elfogad�s\" gombra."
 
 #: src/gpsdrive.c:7816
-#, fuzzy
 msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
-msgstr "Most tedd ugyanezt a m�sodik ponttal �s kattints a befejez�s gombra. A t�rk�p most m�r haszn�lhat�!"
+msgstr ""
 
 #: src/gpsdrive.c:7821
 msgid "Import Assistant. Step 1"
-msgstr "Import�l�si seg�d, 1. l�p�s"
+msgstr ""
 
 #: src/gpsdrive.c:7823
 msgid "Import Assistant. Step 2"
-msgstr "Import�l�si seg�d, 2. l�p�s"
+msgstr ""
 
 #: src/gpsdrive.c:7828
 msgid "Accept first point"
-msgstr "Els� pont elfogad�sa"
+msgstr "ਪਹਿਲਾਂ ਬਿੰਦੂ ਸਵੀਕਾਰ"
 
 #: src/gpsdrive.c:7830
 msgid "Finish"
-msgstr "Befejez�s"
+msgstr "ਸਮਾਪਤ"
 
 #: src/gpsdrive.c:7851
 msgid "Go up"
-msgstr "Fel"
+msgstr "ਜਾਓ"
 
 #: src/gpsdrive.c:7854
 msgid "Go left"
-msgstr "Balra"
+msgstr "ਖੱਬੇ ਜਾਓ"
 
 #: src/gpsdrive.c:7857
 msgid "Go right"
-msgstr "Jobbra"
+msgstr "ਸੱਜੇ ਜਾਓ"
 
 #: src/gpsdrive.c:7860
 msgid "Go down"
-msgstr "Le"
+msgstr "ਹੇਠਾਂ ਜਾਓ"
 
 #: src/gpsdrive.c:7863
 msgid "Zoom in"
-msgstr "Nagy�t�s"
+msgstr "ਅਕਾਰ ਵਧਾਉ"
 
 #: src/gpsdrive.c:7866
 msgid "Zoom out"
-msgstr "Kicsiny�t�s"
+msgstr "ਅਕਾਰ ਘਟਾਉ"
 
 #: src/gpsdrive.c:7885
 msgid "Screen X"
-msgstr "K�perny� X"
+msgstr "ਪਰਦਾ X"
 
 #: src/gpsdrive.c:7887
 msgid "Screen Y"
-msgstr "K�perny� Y"
+msgstr "ਪਰਦਾ Y"
 
 #: src/gpsdrive.c:7889
 msgid "Browse waypoint"
-msgstr "�tvonalpont be�ll�t�sa"
+msgstr "ਬਿੰਦੂ ਝਲਕ"
 
 #: src/gpsdrive.c:7920
 msgid "Browse filename"
-msgstr "F�jln�v be�ll�t�sa"
+msgstr "ਫਾਇਲ ਨਾਂ ਝਲਕ"
 
 #: src/gpsdrive.c:8021
 msgid "GpsDrive Control"
-msgstr "GpsDrive Vez�rl�"
+msgstr "GpsDrive ਕੰਟਰੋਲ"
 
 #: src/gpsdrive.c:8132 src/gpsdrive.c:8134 src/gpsdrive.c:8136
 #: src/gpsdrive.c:11545 src/gpsdrive.c:11547 src/gpsdrive.c:11549
 msgid "Speed"
-msgstr "Sebess�g"
+msgstr "ਗਤੀ"
 
 #: src/gpsdrive.c:8350
 msgid ""
@@ -456,24 +437,24 @@ msgid ""
 "distance jump is more then 1000km/h speed, ignoring\n"
 msgstr ""
 "\n"
-"a t�vols�g ugr�s nagyobb, mint 1000km/h-s sebess�get felt�telez, figyelmen k�v�l hagyva\n"
+"ਦੂਰੀ 1000ਕਿਮੀ/ਘੰ ਦੀ ਗਤੀ ਨੂੰ ਟੱਪ ਗਈ ਹੈ, ਅਣਡਿੱਠੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ\n"
 
 #: src/gpsdrive.c:8568 src/friends.c:349
 msgid "/Misc. Menu/Messages"
-msgstr "/Men�/�zenetek"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ/ਸੁਨੇਹੇ"
 
 #: src/gpsdrive.c:8571
 msgid "Sending message to friends server..."
-msgstr ""
+msgstr "ਦੋਸਤ ਸਰਵਰ ਨੂੰ ਸੁਨੇਹਾ ਭੇਜੋ..."
 
 #: src/gpsdrive.c:8644
 msgid "Message for:"
-msgstr "�zenet a k�vetkez�nek:"
+msgstr "ਸੁਨੇਹਾ:"
 
 #: src/gpsdrive.c:8684
 #, c-format
 msgid "Date: %s"
-msgstr "D�tum: %s"
+msgstr "ਮਿਤੀ: %s"
 
 #: src/gpsdrive.c:8697
 msgid "Sends your text to to selected computer using the friends server"
@@ -481,234 +462,224 @@ msgstr ""
 
 #: src/gpsdrive.c:8995
 msgid "SELECTED"
-msgstr "KIJEL�LT"
+msgstr "ਚੁਣੇ"
 
 #: src/gpsdrive.c:9163
 msgid "Add waypoint name"
-msgstr "�tvonalpont nev�nek megad�sa"
+msgstr "ਬਿੰਦੂ ਨਾਂ ਸ਼ਾਮਿਲ"
 
 #: src/gpsdrive.c:9222
 msgid " Waypoint name: "
-msgstr " �tvonalpont neve: "
+msgstr " ਬਿੰਦੂ ਨਾਂ:"
 
 #: src/gpsdrive.c:9235
 msgid " Waypoint type: "
-msgstr " �tvonalpont t�pusa: "
+msgstr " ਬਿੰਦੂ ਕਿਸਮ:"
 
 #: src/gpsdrive.c:9462
 msgid "Name"
-msgstr "N�v"
+msgstr "ਨਾਂ"
 
 #: src/gpsdrive.c:9462 src/gpsdrive.c:9534 src/gpsdrive.c:9673
 msgid "Distance"
-msgstr "T�vols�g"
+msgstr "ਦੂਰੀ"
 
 #: src/gpsdrive.c:9472
 msgid "Please select message recipient"
-msgstr "C�mzett kijel�l�se"
+msgstr ""
 
 #: src/gpsdrive.c:9534 src/gpsdrive.c:9673
 msgid "Waypoint"
-msgstr "�tvonalpont"
+msgstr "ਬਿੰਦੂ"
 
 #: src/gpsdrive.c:9552
 msgid "Select reference point"
-msgstr "Referenciapont kijel�l�se"
+msgstr "ਹਵਾਲਾ ਬਿੰਦੂ ਚੁਣੋ"
 
 #: src/gpsdrive.c:9556
 msgid "Please select your destination"
-msgstr "C�l kijel�l�se"
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਟਿਕਾਣਾ ਚੁਣੋ"
 
 #: src/gpsdrive.c:9581
 msgid "Edit route"
-msgstr "�tvonal szerkeszt�se"
+msgstr "ਰਸਤਾ ਸੋਧ"
 
 #: src/gpsdrive.c:9583
 msgid "Create route"
-msgstr "�tvonal l�trehoz�sa"
+msgstr "ਰਸਤਾ ਬਣਾਓ"
 
 #: src/gpsdrive.c:9652
 msgid "Create a route using some waypoints from this list"
-msgstr "�tvonal l�trehoz�sa a list�ban tal�lhat� pontok seg�ts�g�vel"
+msgstr ""
 
 #: src/gpsdrive.c:9657
 msgid "Delete the selected waypoint from the waypoint list"
-msgstr "A kijel�lt �tvonalpont t�rl�se a list�b�l"
+msgstr ""
 
 #: src/gpsdrive.c:9661
-#, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
-"A k�vetkez� �tvonalpont\n"
-"kiv�laszt�s�hoz kattints\n"
-"egy listaelemre!"
 
 #: src/gpsdrive.c:9687
 msgid "Define route"
-msgstr "�tvonal defini�l�sa"
+msgstr "ਰਸਤਾ ਪ੍ਰੀਭਾਸ਼ਾ"
 
 #: src/gpsdrive.c:9695
 msgid "Start route"
-msgstr "�tvonal ind�t�sa"
+msgstr "ਰਸਤਾ ਸ਼ੁਰੂ"
 
 #: src/gpsdrive.c:9704
 msgid "Take all WP as route"
-msgstr "�tvonal az �sszes pontb�l"
+msgstr "ਸਭ ਬਿੰਦੂਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ"
 
 #: src/gpsdrive.c:9709
 msgid "Abort route"
-msgstr "�tvonal megszak�t�sa"
+msgstr "ਰਸਤਾ ਛੱਡੋ"
 
 #: src/gpsdrive.c:9753
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
 msgstr ""
-"�tvonalpont hozz�ad�s�hoz\n"
-"kattints a list�ra!"
 
 #: src/gpsdrive.c:9755
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
 msgstr ""
-"A k�vetkez� �tvonalpont\n"
-"kiv�laszt�s�hoz kattints\n"
-"egy listaelemre!"
 
 #: src/gpsdrive.c:9795
 msgid "Create a route from all waypoints. Sorted with order in file, not distance."
-msgstr "�tvonalat k�sz�t az �sszes pontb�l. A sorrendet a f�jlban l�v� sorrend hat�rozza meg, nem a t�vols�g."
+msgstr ""
 
 #: src/gpsdrive.c:9799
 msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
-msgstr "Kattints ide az �taz�s megkezd�s�hez. A GpsDrive v�gigvezet a list�ban tal�lhat� �tvonalpontokon."
+msgstr ""
 
 #: src/gpsdrive.c:9802
 msgid "Abort your journey"
-msgstr "�t megszak�t�sa"
+msgstr "ਆਪਣੀ ਯਾਤਰਾ ਛੱਡੋ"
 
 #: src/gpsdrive.c:9819
 msgid "-v    show version\n"
-msgstr "-v    ki�rja a program nev�t �s v�ltozat�t\n"
+msgstr "-v    show version\n"
 
 #: src/gpsdrive.c:9820
 msgid "-h    print this help\n"
-msgstr "-h    eml�keztet�t �r ki\n"
+msgstr "-h    print this help\n"
 
 #: src/gpsdrive.c:9821
 msgid "-d    turn on debug info\n"
-msgstr "-d    bekapcsolaja a hibakeres�st\n"
+msgstr "-d    turn on debug info\n"
 
 #: src/gpsdrive.c:9822
 msgid "-D    turn on lot of debug info\n"
-msgstr "-D    sok-sok hibakeres� inf�\n"
+msgstr "-D    turn on lot of debug info\n"
 
 #: src/gpsdrive.c:9823
 msgid "-e    use Festival-Lite (flite) for speech output\n"
-msgstr "-e    Festival-Lite (flite) haszn�lata a felolvas�shoz\n"
+msgstr "-e    use Festival-Lite (flite) for speech output\n"
 
 #: src/gpsdrive.c:9824
 msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
-msgstr "-t    soros interf�sz megad�sa, ahova a GPS csatlakozik (pl. /dev/ttyS1)\n"
+msgstr "-t    set serial device for GPS i.e. /dev/ttyS1\n"
 
 #: src/gpsdrive.c:9825
 msgid "-o    serial device, pty master, or file for NMEA *output*\n"
-msgstr "-o    soros eszk�z, pty master, vagy f�jl az NMEA *kimenethez*\n"
+msgstr "-o    serial device, pty master, or file for NMEA *output*\n"
 
 #: src/gpsdrive.c:9826
-#, fuzzy
 msgid "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
-msgstr "-f X  Bar�tod szerver�nek kiv�laszt�sa, X lehet pl. linux.quant-x.at\n"
+msgstr "-f X  Select friends server, X is i.e. www.gpsdrive.cc\n"
 
 #: src/gpsdrive.c:9827
 msgid "-n    Disable use of direct serial connection\n"
-msgstr "-n    Direkt soros kapcsolat kikapcsol�sa\n"
+msgstr "-n    Disable use of direct serial connection\n"
 
 #: src/gpsdrive.c:9828
 msgid ""
 "-l X  Select language of the voice,\n"
 "      X may be english, spanish or german\n"
 msgstr ""
-"-l X  Hang nyelv�nek kiv�laszt�sa,\n"
-"      X lehet angol, spanyol vagy n�met\n"
+"-l X  Select language of the voice,\n"
+"      X may be english, spanish or german\n"
 
 #: src/gpsdrive.c:9830
 msgid ""
 "-s X  set height of the screen, if autodetection\n"
 "      don't satisfy you, X is i.e. 768,600,480,200\n"
 msgstr ""
-"-s X  a k�perny� magass�g�nak be�ll�t�sa, ha nem vagy megel�gedve\n"
-"      az automatikus felismer�sseli. X lehet pl. 768,600,480,200\n"
+"-s X  set height of the screen, if autodetection\n"
+"      don't satisfy you, X is i.e. 768,600,480,200\n"
 
 #. ** Mod by Arms
 #: src/gpsdrive.c:9833
 msgid "-r X  set width of the screen, only with -s\n"
-msgstr "-r X  k�perny� sz�less�g�nek be�ll�t�sa, csak -s kapcsol�val egy�tt\n"
+msgstr "-r X  set width of the screen, only with -s\n"
 
 #: src/gpsdrive.c:9835
 msgid "-1    have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1    egy gombos eg�r, pl. �rint�k�perny�\n"
+msgstr "-1    have only 1 button mouse, for example using touchscreen\n"
 
 #: src/gpsdrive.c:9836
 msgid "-a    don't display battery status (i.e. broken APM)\n"
-msgstr "-a    nem mutatja a telep t�lt�tts�g�t (pl. rossz APM)\n"
+msgstr "-a    don't display battery status (i.e. broken APM)\n"
 
 #: src/gpsdrive.c:9838
 msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b X  az NMEA kiszolg�l� neve (ha a gpsd m�sik g�pen fut)\n"
+msgstr "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
 
 #: src/gpsdrive.c:9840
 msgid "-c X  set start position in simulation mode to waypoint name X\n"
-msgstr "-c X  a szimul�ci�s m�d kiindul�pontja legyen X �tvonalpont\n"
+msgstr "-c X  set start position in simulation mode to waypoint name X\n"
 
 #: src/gpsdrive.c:9841
 msgid "-x    create separate window for menu\n"
-msgstr "-x    men� k�l�n ablakban\n"
+msgstr "-x    create separate window for menu\n"
 
 #: src/gpsdrive.c:9842
 msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
-msgstr "-p    be�ll�t�sok PDA-hoz (iPAQ, Yopy...)\n"
+msgstr "-p    set settings for PDA (iPAQ, Yopy...)\n"
 
 #: src/gpsdrive.c:9844
 msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
-msgstr "-i    NMEA checksum figyelmen k�v�l hagy�sa (rizik�s, csak rossz GPS-vev�kh�z)\n"
+msgstr "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
 
 #: src/gpsdrive.c:9845
 msgid "-q    disable SQL support\n"
-msgstr "-q    SQL t�mogat�s kikapcsol�sa\n"
+msgstr "-q    disable SQL support\n"
 
 #: src/gpsdrive.c:9846
 msgid "-F    force display of position even it is invalid\n"
-msgstr "-F    akkor is �rja ki a helyzetet, ha �rv�nytelen\n"
+msgstr "-F    force display of position even it is invalid\n"
 
 #: src/gpsdrive.c:9847
 msgid "-H X  correct altitude, adding this value to altitude\n"
-msgstr "-H X  magass�gkorrekci�, hozz�adja ezt az �rt�ket a magass�ghoz\n"
+msgstr "-H X  correct altitude, adding this value to altitude\n"
 
 #: src/gpsdrive.c:9848
 msgid ""
 "-z    don't display zoom factor and scale\n"
 "\n"
 msgstr ""
-"-z    ne mutassa a nagy�t�s m�rt�k�t �s a l�pt�ket\n"
+"-z    don't display zoom factor and scale\n"
 "\n"
 
 #: src/gpsdrive.c:9951
 msgid "Select a track file"
-msgstr "�tvonalf�jl kiv�laszt�sa"
+msgstr "ਇੱਕ ਮਾਰਗ ਫਾਇਲ ਚੁਣੋ"
 
 #: src/gpsdrive.c:10129 src/gpskismet.c:374
 msgid "can't open socket for port "
-msgstr "socket megnyit�sa sikertelen a k�vetkez� porthoz: "
+msgstr "ਪੋਰਟ ਲਈ ਸਾਕਟ ਖੋਲੀ ਨਹੀਂ ਜਾ ਸਕੀ ਹੈ"
 
 #: src/gpsdrive.c:10170
 msgid "NMEA Mode, Port 2222"
-msgstr "NMEA m�d, 2222-es port"
+msgstr "NMEA ਢੰਗ, ਪੋਰਟ 2222"
 
 #: src/gpsdrive.c:10177
 msgid "NMEA Mode, Port 2947"
-msgstr "NMEA M�d, 2947-es port"
+msgstr "NMEA ਢੰਗ, ਪੋਰਟ 2947"
 
 #: src/gpsdrive.c:10195
 msgid ""
@@ -716,7 +687,7 @@ msgid ""
 "Garmin protocol detection disabled!\n"
 msgstr ""
 "\n"
-"Garmin protokollfelismer�s kikapcsolva!!\n"
+"ਗਾਰਮਿਨ ਪ੍ਰੋਟੋਕਾਲ ਖੋਜ ਆਯੋਗ!\n"
 
 #: src/gpsdrive.c:10534
 msgid ""
@@ -724,7 +695,7 @@ msgid ""
 "libmysqlclient.so not found.\n"
 msgstr ""
 "\n"
-"libmysqlclient.so nem tal�lhat�\n"
+"libmysqlclient.so ਨਹੀਂ ਮਿਲਿਆ\n"
 
 #: src/gpsdrive.c:10540
 msgid ""
@@ -732,7 +703,7 @@ msgid ""
 "MySQL support disabled.\n"
 msgstr ""
 "\n"
-"a MySQL t�mogat�s ki van kapcsolva\n"
+"MySQL ਸਹਿਯੋਗ ਆਯੋਗ ਹੈ।\n"
 
 #: src/gpsdrive.c:10698
 msgid ""
@@ -741,12 +712,12 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Csak angol, spanyol vagy n�met v�laszthat�!\n"
+"ਤੁਸੀਂ ਅੰਗਰੇਜ਼ੀ, ਸਪੇਨੀ ਅਤੇ ਜਰਮਨ ਵਿੱਚੋਂ ਚੋਣ ਕਰ ਸਕਦੇ ਹੋ\n"
 "\n"
 
 #: src/gpsdrive.c:10732 src/settings.c:1568
 msgid "EnterYourName"
-msgstr "Ide�rdBeANeved"
+msgstr "ਆਪਣਾ ਨਾਂ ਦਿਓ"
 
 #: src/gpsdrive.c:10794
 #, c-format
@@ -755,15 +726,13 @@ msgid ""
 "Using proxy: %s on port %d"
 msgstr ""
 "\n"
-"Haszn�lt proxy: %s, a port: %d"
+"ਪਰਾਕਸੀ: %s ਨੂੰ ਪੋਰਟ %d ਤੇ ਵਰਤ ਕੇ"
 
 #: src/gpsdrive.c:10798
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
 msgstr ""
-"\n"
-"HTTP_PROXY: �rv�nytelen k�rnyezeti v�ltoz�. A form�tum http://proxy.szolg�ltato.hu:3128 kell legyen!"
 
 #: src/gpsdrive.c:10986
 msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
@@ -771,86 +740,88 @@ msgstr "Gpsdrive-2 (c)2001-2004 F.Ganter"
 
 #: src/gpsdrive.c:10994
 msgid "Using speech output"
-msgstr "Navig�ci�s besz�d haszn�lata"
+msgstr "ਭਾਸ਼ਣ ਆਉਟਪੁੱਟ ਦੀ ਵਰਤੋਂ ਕਰਕੇ"
 
 #: src/gpsdrive.c:11028
 msgid "/Misc. Menu/Maps/Map Manager"
-msgstr "/Men�/T�rk�pek/T�rk�pkezel�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ/ਨਕਸ਼ਾ/ਨਕਸ਼ਾ ਮੈਨੇਜਰ"
 
 #: src/gpsdrive.c:11032
 msgid "/Misc. Menu/Waypoint Manager"
-msgstr "/Men�/�tvonapont-kezel�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ/ਬਿੰਦੂ ਮੈਨੇਜਰ"
 
 #. download map button
 #: src/gpsdrive.c:11036
 msgid "_Download map"
-msgstr "T�rk�p _let�lt�se"
+msgstr "ਨਕਸ਼ਾ ਡਾਊਨਲੋਡ(_D)"
 
 #: src/gpsdrive.c:11055
 msgid "M_ute"
-msgstr "El_n�m�t�s"
+msgstr "ਚੁੱਪ(_u)"
 
 #: src/gpsdrive.c:11065
 msgid "Use SQ_L"
-msgstr "S_QL haszn�lata"
+msgstr "SQ_L ਵਰਤੋਂ"
 
 #: src/gpsdrive.c:11075
 msgid "Show _WP"
-msgstr "�_P-k mutat�sa"
+msgstr "ਬਿੰਦੂ ਵੇਖਾਓ(_W)"
 
 #: src/gpsdrive.c:11102
 msgid "HomeBase"
-msgstr "Saj�t b�zis"
+msgstr "ਮੁੱਖ ਕੇਂਦਰ"
 
 #: src/gpsdrive.c:11110
 msgid "Pos. _mode"
-msgstr "Poz. _m�d"
+msgstr "ਸਥਿਤੀ ਢੰਗ(_m)"
 
 #: src/gpsdrive.c:11116
 msgid "Show _Track"
-msgstr "�_tvonal mutat�sa"
+msgstr "ਮਾਰਗ ਵੇਖਾਓ(_T)"
 
 #: src/gpsdrive.c:11150
 msgid "Auto _best map"
-msgstr "Legjo_bb t�rk�p"
+msgstr "ਖੁਦ ਵਧੀਆ ਨਕਸ਼ਾ ਵੇਖਾਓ(_b)"
 
 #: src/gpsdrive.c:11160
 msgid "Save track"
-msgstr "�tvonal ment�se"
+msgstr "ਮਾਰਗ ਸੰਭਾਲੋ"
 
 #: src/gpsdrive.c:11171
 msgid "Shown map type"
-msgstr "T�rk�pt�pus mutat�sa"
+msgstr "ਵੇਖਾਈ ਨਕਸ਼ਾ ਕਿਸਮ"
 
 #: src/gpsdrive.c:11182
 msgid "Street map"
-msgstr "Utca t�rk�p"
+msgstr "ਗਲੀ ਨਕਸ਼ਾ"
 
 #: src/gpsdrive.c:11189
 msgid "Topo map"
-msgstr "Dombor. t�rk�p"
+msgstr "ਟੋਪੋ ਨਕਸ਼ਾ"
 
 #: src/gpsdrive.c:11271
 msgid ""
 "\n"
 "kismet server found\n"
 msgstr ""
+"\n"
+"kismet ਸਰਵਰ ਨਹੀਂ ਲੱਭਿਆ\n"
 
 #: src/gpsdrive.c:11331 src/gpsdrive.c:11668
 msgid "Bearing"
-msgstr "Bearing"
+msgstr ""
 
 #: src/gpsdrive.c:11352
 msgid "GPS Info"
-msgstr "GPS Inf�"
+msgstr "GPS ਜਾਣਕਾਰੀ"
 
 #: src/gpsdrive.c:11394
 msgid "Bat."
-msgstr "Telep"
+msgstr "Bat."
 
 #: src/gpsdrive.c:11409
 msgid "TC"
-msgstr "TC "
+msgstr "TC"
 
 #. displays speed over ground
 #: src/gpsdrive.c:11427 src/gpsdrive.c:11678 src/gpsdrive.c:11680
@@ -860,16 +831,16 @@ msgstr "---"
 
 #: src/gpsdrive.c:11507 src/gpsdrive.c:11514
 msgid "Selected:"
-msgstr "Kijel�lt:"
+msgstr "ਚੁਣਿਆ:"
 
 #: src/gpsdrive.c:11507 src/gpsdrive.c:11514
 msgid "within"
-msgstr ""
+msgstr "ਵਿੱਚ"
 
 #. create frames for labels
 #: src/gpsdrive.c:11522
 msgid "Distance to target"
-msgstr "A c�l t�vols�ga"
+msgstr "ਟਿਕਾਣੇ ਤੋਂ ਦੂਰੀ"
 
 #. ** Mod by Arms
 #. if (!pdamode)
@@ -877,7 +848,7 @@ msgstr "A c�l t�vols�ga"
 #. 1 * PADDING);
 #: src/gpsdrive.c:11558
 msgid "Altitude"
-msgstr "Magass�g"
+msgstr ""
 
 #. ** Mod by Arms
 #. if (!pdamode)
@@ -885,27 +856,27 @@ msgstr "Magass�g"
 #. 1 * PADDING);
 #: src/gpsdrive.c:11565 src/settings.c:629
 msgid "Waypoints"
-msgstr "�tvonalpontok"
+msgstr "ਬਿੰਦੂ"
 
 #: src/gpsdrive.c:11665
 msgid "Map file"
-msgstr "T�rk�pf�jl"
+msgstr "ਨਕਸ਼ਾ ਫਾਇਲ"
 
 #: src/gpsdrive.c:11666
 msgid "Map scale"
-msgstr "L�pt�k"
+msgstr "ਨਕਸ਼ਾ ਪੈਮਾਨਾ"
 
 #: src/gpsdrive.c:11667
 msgid "Heading"
-msgstr "Heading"
+msgstr "ਸਿਰਲੇਖ"
 
 #: src/gpsdrive.c:11669
 msgid "Time at Dest."
-msgstr "H�tral�v� id�"
+msgstr "ਟਿਕਾਣੇ ਲਈ ਦੂਰੀ"
 
 #: src/gpsdrive.c:11670
 msgid "Pref. scale"
-msgstr "Kedvenc l�pt�k"
+msgstr "ਪਸੰਦੀਦਾ ਪੈਮਾਨਾ"
 
 #: src/gpsdrive.c:11674
 msgid "000,00000N"
@@ -922,12 +893,12 @@ msgstr "0000"
 #. gdk_window_lower((GdkWindow *)menuwin);
 #: src/gpsdrive.c:11757 src/gpsdrive.c:11808
 msgid "Menu"
-msgstr "Menu"
+msgstr "ਮੇਨੂ"
 
 #. gdk_window_lower((GdkWindow *)menuwin2);
 #: src/gpsdrive.c:11766 src/gpsdrive.c:11809
 msgid "Status"
-msgstr "�llapot"
+msgstr "ਸਥਿਤੀ"
 
 #: src/gpsdrive.c:11954
 msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
@@ -935,11 +906,11 @@ msgstr ""
 
 #: src/gpsdrive.c:11958
 msgid "Number of used satellites"
-msgstr "Haszn�lt m�holdak sz�ma"
+msgstr "ਵਰਤੇ ਉਪਗ੍ਰਿਹਾਂ ਦੀ ਗਿਣਤੀ"
 
 #: src/gpsdrive.c:11961
 msgid "EPE (Estimated Precision Error), if available"
-msgstr ""
+msgstr "EPE (Estimated Precision Error), ਜੇਕਰ ਉਪਲੱਬਧ ਹੈ"
 
 #: src/gpsdrive.c:11966
 msgid "On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."
@@ -947,7 +918,7 @@ msgstr ""
 
 #: src/gpsdrive.c:11969
 msgid "/Misc. Menu"
-msgstr "/Men�"
+msgstr "/ਫੁਟਕਲ ਮੇਨੂ"
 
 #: src/gpsdrive.c:11972
 msgid "Here you find extra functions for maps, tracks and messages"
@@ -955,71 +926,71 @@ msgstr ""
 
 #: src/gpsdrive.c:11976
 msgid "Download map from Internet"
-msgstr "T�rk�p let�lt�se az internetr�l"
+msgstr "ਇੰਟਰਨੈਟ ਤੋਂ ਨਕਸ਼ਾ ਡਾਊਨਲੋਡ"
 
 #: src/gpsdrive.c:11978
 msgid "Leave the program"
-msgstr "Kil�p�s a programb�l"
+msgstr "ਕਾਰਜ ਛੱਡੋ"
 
 #: src/gpsdrive.c:11981
 msgid "Disable output of speech"
-msgstr "Besz�d kikapcsol�sa"
+msgstr "ਭਾਸ਼ਣ ਤੋਂ ਆਉਟਪੁੱਟ ਆਯੋਗ"
 
 #: src/gpsdrive.c:11984
 msgid "Use SQL server for waypoints"
-msgstr "SQL szerver haszn�lata az �tvonalpontokhoz"
+msgstr "ਬਿੰਦੂਆਂ ਲਈ SQL ਸਰਵਰ ਵਰਤੋਂ"
 
 #: src/gpsdrive.c:11987
 msgid "Show waypoints on the map"
-msgstr "�tvonalpontok mutat�sa a t�rk�pen"
+msgstr "ਨਕਸ਼ੇ ਤੇ ਬਿੰਦੂ ਵੇਖਾਓ"
 
 #: src/gpsdrive.c:11990
 msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
-msgstr "Poz�ci� m�d bekapcsol�sa. Bal eg�rgombbal mozoghatsz a t�rk�pen.Ha a k�perny� sz�l�re kattintassz, megjelenik a k�vetkez� t�rk�p."
+msgstr ""
 
 #: src/gpsdrive.c:11993
 msgid "Show tracking on the map"
-msgstr "Megtett �tvonal mutat�sa a t�rk�pen"
+msgstr "ਨਕਸ਼ੇ ਤੇ ਮਾਰਗ ਵੇਖਾਓ"
 
 #: src/gpsdrive.c:11997
 msgid "Opens the help window"
-msgstr "Megnyitja a s�g�ablakot"
+msgstr "ਸਹਾਇਤਾ ਝਰੋਖਾ ਖੋਲ੍ਹੋਗਾ"
 
 #: src/gpsdrive.c:12011
 msgid "Settings for GpsDrive"
-msgstr "A GpsDrive be�ll�t�sai"
+msgstr "GpsDrive ਲਈ ਵਿਵਸਥਾ"
 
 #: src/gpsdrive.c:12013
 msgid "Zoom into the current map"
-msgstr "Jelenlegi t�rk�p nagy�t�sa"
+msgstr "ਮੌਜੂਦਾ ਨਕਸ਼ੇ ਵਿੱਚ ਅਕਾਰ ਵਧਾਓ"
 
 #: src/gpsdrive.c:12015
 msgid "Zooms out off the current map"
-msgstr "Jelenlegi t�rk�p kicsiny�t�se"
+msgstr "ਮੌਜੂਦਾ ਨਕਸ਼ੇ ਵਿੱਚ ਅਕਾਰ ਘਟਾਓ"
 
 #: src/gpsdrive.c:12017
 msgid "Select the next more detailed map"
-msgstr "A k�vetkez�, r�szletesebb t�rk�p kiv�laszt�sa"
+msgstr "ਹੋਰ ਨਕਸ਼ੇ ਲਈ ਹੋਰ ਵਧੇਰੇ ਵੇਰਵਾ ਚੁਣੋ"
 
 #: src/gpsdrive.c:12019
 msgid "Select the next less detailed map"
-msgstr "A k�vetkez�, kev�sbe r�szletes t�rk�p kiv�laszt�sa"
+msgstr "ਹੋਰ ਨਕਸ਼ੇ ਲਈ ਹੋਰ ਘੱਟ ਵੇਰਵਾ ਚੁਣੋ"
 
 #: src/gpsdrive.c:12024
 msgid "Select here a destination from the waypoint list"
-msgstr "C�l kiv�laszt�sa az �tvonlapont list�b�l"
+msgstr ""
 
 #: src/gpsdrive.c:12028
 msgid "Select the map scale of avail. maps."
-msgstr "Az el�rhet� t�rk�pek l�pt�k�nek kiv�laszt�sa"
+msgstr ""
 
 #: src/gpsdrive.c:12033
 msgid "Always select the most detailed map available"
-msgstr "Mindig a legr�szletesebb t�rk�p mutat�sa"
+msgstr ""
 
 #: src/gpsdrive.c:12036
 msgid "Save the track to given filename at program exit"
-msgstr "Kil�p�skor a track elment�se adott f�jln�ven"
+msgstr "ਕਾਰਜ ਬੰਦ ਕਰਨ ਤੇ ਮਾਰਗ ਨੂੰ ਦਿੱਤੇ ਫਾਇਲ ਨਾਂ ਨਾਲ ਸੰਭਾਲੋ"
 
 #: src/gpsdrive.c:12042
 msgid "Number of waypoints selected from SQL server"
@@ -1050,7 +1021,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"K�sz�nj�k, hogy haszn�lod a GpsDrive-ot!\n"
+"GpsDrive ਵਰਤਣ ਲਈ ਧੰਨਵਾਦ!\n"
 "\n"
 
 #: src/splash.c:490
@@ -1065,24 +1036,23 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"A leg�jabb v�ltozat megtal�lhat� itt: http://www.gpsdrive.cc\n"
+"ਤੁਸੀਂ ਨਵਾਂ ਵਰਜਨ http://www.gpsdrive.cc ਤੇ ਵੇਖ ਸਕਦੇ ਹੋ\n"
 
 #: src/splash.c:500
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
 msgstr ""
-"Figyelmeztet�s: Ne haszn�ld navig�ci�hoz! \n"
+"ਦਾਅਵਾ: ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਨੂੰ ਸਫ਼ਰ ਲਈ ਨਾ ਵਰਤੋਂ।\n"
 "\n"
 
 #: src/splash.c:505
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
-msgstr ""
+msgstr "ਕਿਰਪਾ ਕਰਕੇ ਕਾਰਜ ਬਾਰੇ ਵੇਰਵੇ ਲਈ (man gpsdrive) ਵੇਖੋ!"
 
 #: src/splash.c:510
-#, fuzzy
 msgid "Mouse control (clicking on the map):\n"
-msgstr "Megtett �tvonal mutat�sa a t�rk�pen"
+msgstr "ਮਾਊਸ ਕੰਟਰੋਲ (ਨਕਸ਼ੇ ਨੂੰ ਦਬਾ ਕੇ):\n"
 
 #: src/splash.c:516
 msgid ""
@@ -1105,19 +1075,19 @@ msgstr ""
 
 #: src/splash.c:530
 msgid "Short cuts:\n"
-msgstr "Gyorsbillenty�k:\n"
+msgstr "ਸ਼ਾਰਟਕੱਟ:\n"
 
 #: src/splash.c:537
 msgid "The other key shortcuts are marked as "
-msgstr "A t�bbi gyorsbillenty�t "
+msgstr "ਹੋਰ ਸਵਿੱਚਾਂ ਨੂੰ ਸ਼ਾਰਟਕੱਟ ਦੇ ਤੌਰ ਤੇ ਮਾਰਕ ਕੀਤਾ ਗਿਆ ਹੈ"
 
 #: src/splash.c:538
 msgid "underlined"
-msgstr "al�h�zott"
+msgstr "ਹੇਠਾਂ ਰੇਖਾ"
 
 #: src/splash.c:540
 msgid " letters in the button text.\n"
-msgstr " bet�k jel�lik a gombokon.\n"
+msgstr ""
 
 #: src/splash.c:543
 msgid ""
@@ -1131,11 +1101,11 @@ msgstr ""
 
 #: src/splash.c:550
 msgid "Have a lot of fun!"
-msgstr "J� sz�rakoz�st!"
+msgstr "ਮੌਜਾਂ ਲੁੱਟੋ!"
 
 #: src/splash.c:681
 msgid "Please donate to GpsDrive"
-msgstr "K�rlek t�mogasd adom�nnyal a GpsDrive fejleszt�s�t"
+msgstr "ਕਿਰਪਾ ਕਰਕੇ GpsDrive ਨੂੰ ਦਾਨ ਦਿਓ"
 
 #: src/splash.c:687
 msgid ""
@@ -1147,6 +1117,13 @@ msgid ""
 "\n"
 "To do so, just go to"
 msgstr ""
+"\n"
+"\n"
+"GpsDrive ਇੱਕ ਨਾ ਵਪਾਰਕ ਪ੍ਰੋਜੈਕਟ ਹੈ।\n"
+"\n"
+"ਜੇਕਰ ਤੁਸੀਂ ਮੈਨੂੰ ਜੰਤਰਾਂ ਅਤੇ ਵੈਬਸਰਵਰਾਂ ਲਈ ਕੁਝ ਦਾਨ ਦਿਓਗੇ ਤਾਂ ਇਹ ਬਹੁਤ ਹੀ ਵਧੀਆ ਹੋਵੇਗਾ।\n"
+"\n"
+"ਇਸਤਰਾਂ ਕਰਨ ਲਈ, ਜਾਓ"
 
 #: src/splash.c:691
 msgid " http://www.gpsdrive.cc "
@@ -1161,14 +1138,20 @@ msgid ""
 "This message is only displayed once when you start an new version of GpsDrive.\n"
 "\n"
 msgstr ""
+"ਅਤ PayPal ਬਟਨ ਦਬਾਓ।\n"
+"\n"
+"ਦਾਨ ਦੇਣ ਲਈ ਧੰਨਵਾਦ ਹੈ!\n"
+"\n"
+"ਇਹ ਸੁਨੇਹਾ ਸਿਰਫ਼ GpsDrive ਦੇ ਨਵੇਂ ਵਰਜਨ ਨੂੰ ਸ਼ੁਰੂ ਕਰਨ ਸਮੇਂ ਇੱਕ ਵਾਰ ਹੀ ਵੇਖਾਇਆ ਜਾਵੇਗਾ।\n"
+"\n"
 
 #: src/splash.c:727
 msgid "About GpsDrive donation"
-msgstr "Hogyan adakozz a GpsDrive projektnek"
+msgstr "GpsDrive ਦਾਨ ਬਾਰੇ"
 
 #: src/splash.c:806
 msgid "From:"
-msgstr "Felad�:"
+msgstr "ਵੱਲੋਂ:"
 
 #: src/splash.c:875
 #, c-format
@@ -1176,18 +1159,20 @@ msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
 msgstr ""
+"ਤੁਸੀਂ ਮਿੱਤਰ ਸਰਵਰ (%s) ਤੋਂ\n"
+"ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਹੈ\n"
 
 #: src/splash.c:885
 msgid "You received a message through the friends server from:\n"
-msgstr ""
+msgstr "ਤੁਸੀਂ ਮਿੱਤਰ ਸਰਵਰ ਤੋਂ ਸੁਨੇਹਾ ਪ੍ਰਾਪਤ ਕੀਤਾ ਹੈ:\n"
 
 #: src/splash.c:895
 msgid "Message text:\n"
-msgstr "�zenet sz�vege:\n"
+msgstr "ਸੁਨੇਹਾ ਪਾਠ:\n"
 
 #: src/splash.c:935
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-msgstr "Hiba a f�jl ment�sekor: ~/.gpsdrive/gpsdriverc"
+msgstr "ਸੰਰਚਨਾ ਫਾਇਲ ~/.gpsdrive/gpsdriverc ਸੰਭਾਲਣ ਦੌਰਾਨ ਗਲਤੀ"
 
 #: src/splash.c:1397 src/splash.c:1453
 msgid ""
@@ -1200,142 +1185,142 @@ msgstr ""
 
 #: src/splash.c:1437
 msgid "About GpsDrive"
-msgstr "A GpsDrive n�vjegye"
+msgstr "GpsDrive ਬਾਰੇ"
 
 #: src/splash.c:1531
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "A k�vetkez� k�pf�jl nem tal�lhat�: %s"
+msgstr "ਪਿਕਸਮੈਪ ਫਾਇਲ ਨਹੀਂ ਲੱਭੀ: %s"
 
 #: src/settings.c:411
 msgid "Setting WP label font"
-msgstr "�P c�mke bet�t�pus�nak be�ll�t�sa"
+msgstr "ਬਿੰਦੂ ਨਾਂ ਫੋਂਟ ਵਿਵਸਥਾ"
 
 #: src/settings.c:413
 msgid "Setting big display font"
-msgstr "Nagy kijelz� bet�t�pus�nak be�ll�t�sa"
+msgstr ""
 
 #: src/settings.c:455
 msgid "Setting big display color"
-msgstr "Nagy kijelz� sz�n�nek be�ll�t�sa"
+msgstr ""
 
 #: src/settings.c:494
 msgid "Setting track color"
-msgstr "�tvonal sz�n�nek be�ll�t�sa"
+msgstr "ਮਾਰਗ ਰੰਗ ਵਿਵਸਥਾ"
 
 #: src/settings.c:536
 msgid "Setting friends label color"
-msgstr ""
+msgstr "ਮਿੱਤਰ ਨਾਂ ਰੰਗ ਵਿਵਸਥਾ"
 
 #: src/settings.c:616
 msgid ""
 "Don't use more than\n"
 "100 waypoint(way*.txt) files!"
 msgstr ""
-"Ne haszn�lj t�bb mint\n"
-"100 �tvonalpont (way*.txt) f�jlt!"
+"100 ਬਿੰਦੂ (way*.txt)\n"
+"ਫਾਇਲਾਂ ਨਾ ਵਰਤੋਂ!"
 
 #: src/settings.c:627
 msgid "Waypoint files to use"
-msgstr "Haszn�land� �tvonalpont f�jlok"
+msgstr "ਵਰਤਣ ਲਈ ਬਿੰਦੂ ਫਾਇਲਾਂ"
 
 #: src/settings.c:652 src/settings.c:657
 msgid "Settings"
-msgstr "Be�ll�t�sok"
+msgstr "ਵਿਵਸਥਾ"
 
 #. misc area
 #: src/settings.c:664
 msgid "Misc settings"
-msgstr "Egy�b be�ll�t�sok"
+msgstr "ਫੁਟਕਲ ਵਿਵਸਥਾ"
 
 #: src/settings.c:668
 msgid "Show Shadows"
-msgstr "�rny�kok mutat�sa"
+msgstr "ਛਾਂ ਵੇਖਾਓ"
 
 #: src/settings.c:675
 msgid "Etched frames"
-msgstr ""
+msgstr "ਤਣੇ ਫਰੇਮ"
 
 #: src/settings.c:683
 msgid "Simulation: Follow target"
-msgstr "Szimul�ci�: c�l k�vet�se"
+msgstr "ਸਮਰੂਪ: ਟਿਕਾਣੇ ਦਾ ਪਿੱਛਾ ਕਰੋ"
 
 #: src/settings.c:690
 msgid "Maximum CPU load"
-msgstr "Maxim�lis CPU terhel�s"
+msgstr "ਵੱਧੋ-ਵੱਟਧ CPU ਲੋਡ"
 
 #: src/settings.c:700
 msgid "Track"
-msgstr "�tvonal"
+msgstr "ਟਰੈਕ"
 
 #: src/settings.c:715
 msgid "Maps directory"
-msgstr "T�rk�pk�nyvt�r"
+msgstr "ਨਕਸ਼ਾ ਡਾਇਰੈਕਟਰੀ"
 
 #: src/settings.c:721
 msgid "Automatic"
-msgstr "Automatikus"
+msgstr "ਸਵੈ-ਚਾਲਿਤ"
 
 #: src/settings.c:727
 msgid "On"
-msgstr "Be"
+msgstr "ਚਾਲੂ"
 
 #: src/settings.c:732
 msgid "Off"
-msgstr "Ki"
+msgstr "ਬੰਦ"
 
 #. gtk_table_attach_defaults (GTK_TABLE (misctable), label2, 0, 2, 3, 4);
 #. gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt, 0, 2, 4, 5);
 #. GPS settings area
 #: src/settings.c:756
 msgid "GPS settings"
-msgstr "GPS be�ll�t�sok"
+msgstr "GPS ਵਿਵਸਥਾ"
 
 #. gtk_container_add (GTK_CONTAINER (f4), gpstable);
 #: src/settings.c:770
 msgid "Test for GARMIN"
-msgstr "GARMIN pr�ba"
+msgstr "ਗਾਰਮਿਨ ਲਈ ਜਾਂਚ"
 
 #: src/settings.c:781
 msgid "Use DGPS-IP"
-msgstr "DGPS-IP haszn�lata"
+msgstr "DGPS-IP ਵਰਤੋਂ"
 
 #: src/settings.c:791
 msgid "GPS is Earthmate"
-msgstr "Earthmate GPS"
+msgstr "GPS Earthmate ਹੈ"
 
 #: src/settings.c:801
 msgid "Use serial conn."
-msgstr "Soros kapcsolat haszn�lata"
+msgstr "ਸੀਰੀਅਲ ਕੁਨੈਕਸ਼ਨ ਵਰਤੋਂ"
 
 #: src/settings.c:816
 msgid "Interface"
-msgstr "Interf�sz"
+msgstr "ਇੰਟਰਫੇਸ"
 
 #: src/settings.c:817
 msgid "Baudrate"
-msgstr "Sebess�g (baud)"
+msgstr "ਬੱਡ-ਦਰ"
 
 #. units area
 #: src/settings.c:852
 msgid "Units"
-msgstr "M�rt�kegys�g"
+msgstr "ਇਕਾਈ"
 
 #: src/settings.c:858
 msgid "Miles"
-msgstr "M�rf�ld"
+msgstr "ਮੀਲ"
 
 #: src/settings.c:863
 msgid "Metric"
-msgstr "Metrikus"
+msgstr "ਮੀਟਰ"
 
 #: src/settings.c:868 src/nautic.c:106
 msgid "Nautic"
-msgstr "Tengeri"
+msgstr "ਨਾਟਿਕ"
 
 #: src/settings.c:878
 msgid "Decimal position"
-msgstr "Tizedes helyzet"
+msgstr "ਦਸ਼ਮਲਵ ਸਥਿਤੀ"
 
 #. gtk_box_pack_start (GTK_BOX (v2), miles, TRUE, FALSE, 2 * PADDING);
 #. gtk_box_pack_start (GTK_BOX (v2), metric, TRUE, FALSE, 2 * PADDING);
@@ -1345,59 +1330,59 @@ msgstr "Tizedes helyzet"
 #. default download server
 #: src/settings.c:896
 msgid "Default map server"
-msgstr "Alap�rtelmezett t�rk�pkiszolg�l�"
+msgstr "ਮੂਲ ਨਕਸ਼ਾ ਸਰਵਰ"
 
 #. Night light mode
 #: src/settings.c:925
 msgid "Night light mode"
-msgstr "�jszakai vil�g�t�si m�d"
+msgstr "ਰਾਤ ਰੋਸ਼ਨੀ ਢੰਗ"
 
 #.  gtk_table_attach_defaults (GTK_TABLE (table), f5, 0, 2, 2, 3);
 #. Font settings
 #: src/settings.c:942
 msgid "Font and color settings"
-msgstr "Bet�t�pus �s sz�n be�ll�t�sok"
+msgstr "ਫੋੰਟ ਤੇ ਰੰਗ ਵਿਵਸਥਾ"
 
 #. gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);
 #: src/settings.c:947
 msgid "WP Label"
-msgstr "�P c�mke"
+msgstr "ਬਿੰਦੂ ਲੇਬਲ"
 
 #: src/settings.c:948
 msgid "Big display"
-msgstr "Nagy kijelz�"
+msgstr ""
 
 #: src/settings.c:949
 msgid "Display color"
-msgstr "Kijelsz� sz�ne"
+msgstr "ਦਿੱਖ ਰੰਗ"
 
 #: src/settings.c:975
 msgid "Switch units to statute miles"
-msgstr "M�rt�kegys�g �t�ll�t�sa m�rf�ldre"
+msgstr "ਮੀਲ ਮਿਣਨ ਲਈ ਇਕਾਈ ਤਬਦੀਲ"
 
 #: src/settings.c:977
 msgid "Switch units to nautical miles"
-msgstr "M�rt�kegys�g �t�ll�t�sa tengeri m�rf�ldre"
+msgstr ""
 
 #: src/settings.c:979
 msgid "Switch units to metric system (Kilometers)"
-msgstr "M�rt�kegys�g �t�ll�t�sa metrikus rendszerre (kilom�ter)"
+msgstr ""
 
 #: src/settings.c:984
 msgid "If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"
-msgstr "Ha ki van jel�lve, a hossz�s�gi �s sz�less�gi fokok tizedest�trekk�nt jelennek meg, egy�bk�nt fok, perc, m�sodpercben"
+msgstr ""
 
 #: src/settings.c:988
 msgid "Set Mapblast as default download server"
-msgstr "Mapblast haszn�lata alap�rtelmezett t�rk�pkiszolg�l�k�nt"
+msgstr "ਮੈਪਬਲਾਸਟ ਨੂੰ ਮੁੱਢਲਾ ਡਾਊਨਲੋਡ ਸਰਵਰ ਬਣਾਓ"
 
 #: src/settings.c:991
 msgid "Set Expedia as default download server"
-msgstr "Expedia haszn�lata alap�rtelmezett t�rk�pkiszolg�l�k�nt"
+msgstr "Expedia ਨੂੰ ਮੁੱਢਲਾ ਡਾਊਨਲੋਡ ਸਰਵਰ ਬਣਾਓ"
 
 #: src/settings.c:994
 msgid "Switches shadows on map on or off"
-msgstr "�rny�kok ki- vagy bekapcsol�sa a t�rk�pen"
+msgstr "ਨਕਸ਼ੇ ਤੇ ਛਾਂ ਨੂੰ ਚਾਲੂ ਜਾਂ ਬੰਦ ਕਰੋ"
 
 #: src/settings.c:998
 msgid "Switches between different type of frame ornaments"
@@ -1410,7 +1395,7 @@ msgstr ""
 
 #: src/settings.c:1008
 msgid "If activated, pointer moves to target in simulation mode"
-msgstr "Az mutat� k�veti a c�lt szimul�ci� m�d eset�n"
+msgstr ""
 
 #: src/settings.c:1012
 msgid "Set here the color of the drawn track"
@@ -1418,11 +1403,11 @@ msgstr ""
 
 #: src/settings.c:1016
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
-msgstr "A t�rk�pf�jlok el�r�si �tvonala. A k�nyvt�rban kell legyen egy map_koord.txt f�jl."
+msgstr ""
 
 #: src/settings.c:1021
 msgid "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."
-msgstr "Ha ez ki van jel�lve, a GpsDrive GARMIN m�dot pr�b�l haszn�lni, ha lehets�ges. Ne v�laszd ezt, ha csak NMEA eszk�z�d van."
+msgstr ""
 
 #: src/settings.c:1026
 msgid "Set here the baud rate of your GPS device, NMEA devices usually have a speed of 4800 baud"
@@ -1430,7 +1415,7 @@ msgstr ""
 
 #: src/settings.c:1031
 msgid "If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
-msgstr "Ha ki van jel�lve, megpr�b�l differenci�lis GPS-t haszn�lni IP-n kereszt�l. Kell hozz� internetes kapcsolat �s egy DGPS k�pes GPS vev�. Csak NMEA m�dban m�k�dik!"
+msgstr ""
 
 #: src/settings.c:1036
 msgid "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"
@@ -1442,26 +1427,23 @@ msgstr ""
 
 #: src/settings.c:1046
 msgid "Specify the serial interface where the GPS is connected"
-msgstr "Soros interf�sz megad�sa (amelyre a GPS csatlakozik)"
+msgstr "ਸੀਰੀਅਲ ਇੰਟਰਫੇਸ ਦਿਓ, ਜਿੱਥੇ GPS ਜੁੜਿਆ ਹੈ"
 
 #: src/settings.c:1051
-#, fuzzy
 msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
-msgstr "Automatikusan bekapcsolaja az �jszakai m�dot, ha kint s�t�t van. Nyomd meg az 'N' billenty�t az �jszakai m�d 30 m�sodperces kikapcsol�s�hoz."
+msgstr ""
 
 #: src/settings.c:1055
-#, fuzzy
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
-msgstr "Bekapcsolja az �jszakai m�dot. Nyomd meg az 'N' billenty�t az �jszakai m�d 30 m�sodperces kikapcsol�s�hoz."
+msgstr "ਰਾਤ ਢੰਗ ਨੂੰ ਚਾਲੂ ਕਰੋ। ਰਾਤ ਢੰਗ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ 'N' ਸਵਿੱਚ ਦਬਾਓ।"
 
 #: src/settings.c:1058
 msgid "Switches night mode off"
-msgstr "�jszakai m�d ki- vagy bekapcsol�sa"
+msgstr "ਰਾਤ ਢੰਗ ਬੰਦ ਕਰੋ"
 
 #: src/settings.c:1062
-#, fuzzy
 msgid "Here you can set the font for the waypoint labels"
-msgstr "A kijel�lt �tvonalpont t�rl�se a list�b�l"
+msgstr ""
 
 #: src/settings.c:1067
 msgid "Here you can set the font for the big display for Speed and Distance"
@@ -1473,23 +1455,23 @@ msgstr ""
 
 #: src/settings.c:1240
 msgid "Geo information"
-msgstr "F�ldrajzi inform�ci�"
+msgstr "ਭੂਗੋਲਿਕ ਜਾਣਕਾਰੀ"
 
 #: src/settings.c:1242
 msgid "Geo info"
-msgstr "Geo inf�"
+msgstr "ਭੂਗੋਲਿਕ ਜਾਣਕਾਰੀ"
 
 #: src/settings.c:1253
 msgid "Sunrise"
-msgstr "Napfelkelte"
+msgstr "ਸੂਰਜ ਚੜ੍ਹਨਾ"
 
 #: src/settings.c:1255
 msgid "Sunset"
-msgstr "Napnyugta"
+msgstr "ਸੂਰਜ ਛਿੱਪਣਾ"
 
 #: src/settings.c:1258
 msgid "Standard"
-msgstr "Standard"
+msgstr "ਮਿਆਰੀ"
 
 #: src/settings.c:1260
 msgid "Transit"
@@ -1497,15 +1479,15 @@ msgstr ""
 
 #: src/settings.c:1262
 msgid "GPS-Time"
-msgstr "GPS id�"
+msgstr "GPS-ਸਮਾਂ"
 
 #: src/settings.c:1264
 msgid "Astro."
-msgstr "Csill."
+msgstr ""
 
 #: src/settings.c:1266
 msgid "Naut."
-msgstr "Tengeri"
+msgstr ""
 
 #: src/settings.c:1268
 msgid "Civil"
@@ -1513,97 +1495,95 @@ msgstr "Civil"
 
 #: src/settings.c:1270
 msgid "Timezone"
-msgstr "Id�z�na"
+msgstr "ਸਮਾਂ-ਖੇਤਰ"
 
 #: src/settings.c:1303
 msgid "Night"
-msgstr "�jszaka"
+msgstr "ਰਾਤ"
 
 #: src/settings.c:1305
 msgid "Day"
-msgstr "Nappal"
+msgstr "ਦਿਨ"
 
 #: src/settings.c:1441 src/settings.c:1443 src/settings.c:1445
 msgid "Unit:"
-msgstr "M�rt�kegys�g:"
+msgstr "ਇਕਾਈ:"
 
 #: src/settings.c:1441
 msgid "miles"
-msgstr "m�rf�ld"
+msgstr "ਮੀਲ"
 
 #: src/settings.c:1443
 msgid "nautic miles/knots"
-msgstr "tengeri m�rf�ld/csom�"
+msgstr ""
 
 #: src/settings.c:1445
 msgid "kilometers"
-msgstr "kilom�ter"
+msgstr "ਕਿਲੋਮੀਟਰ"
 
 #: src/settings.c:1460
 msgid "Trip information"
-msgstr "�tvonal inform�ci�"
+msgstr "ਯਾਤਰਾ ਜਾਣਕਾਰੀ"
 
 #: src/settings.c:1462
 msgid "Trip info"
-msgstr "�tvonal inf�"
+msgstr "ਯਾਤਰਾ ਜਾਣਕਾਰੀ"
 
 #: src/settings.c:1476
 msgid "Odometer"
-msgstr "T�vols�gm�r�"
+msgstr "ਓਡੋਮੀਟਰ"
 
 #: src/settings.c:1478
 msgid "Total time"
-msgstr "�ssz. id�"
+msgstr "ਕੁੱਲ ਸਮਾਂ"
 
 #: src/settings.c:1480
 msgid "Av. speed"
-msgstr "�tl. sebess�g"
+msgstr "ਔਸਤ ਗਤੀ"
 
 #: src/settings.c:1482
 msgid "Max. speed"
-msgstr "Max. sebess�g"
+msgstr "ਵੱਧੋ-ਵੱਧ ਗਤੀ"
 
 #: src/settings.c:1506
 msgid "Reset"
-msgstr "T�rl�s"
+msgstr "ਮੁੜ-ਨਿਰਧਾਰਨ"
 
 #: src/settings.c:1511
 msgid "Resets the trip values to zero"
-msgstr ""
+msgstr "ਯਾਤਰਾ ਮੁੱਲ ਨੂੰ ਸਿਫ਼ਰ ਕਰੋ"
 
 #: src/settings.c:1570
 msgid "You should change your name in the first field!"
-msgstr ""
+msgstr "ਤੁਹਾਨੂੰ ਪਹਿਲੇ ਖੇਤਰ ਵਿੱਚ ਆਪਣਾ ਨਾਂ ਤਬਦੀਲ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ!"
 
 #: src/settings.c:1751
-#, fuzzy
 msgid "Show position newer as"
-msgstr "�tvonalpontok mutat�sa a t�rk�pen"
+msgstr ""
 
 #: src/settings.c:1753
 msgid "Friends server setup"
-msgstr ""
+msgstr "ਮਿੱਤਰ ਸਰਵਰ ਤਿਆਰੀ"
 
 #: src/settings.c:1754
-#, fuzzy
 msgid "Friends"
-msgstr "Befejez�s"
+msgstr "ਮਿੱਤਰ"
 
 #: src/settings.c:1766
 msgid "Days"
-msgstr "Nap"
+msgstr "ਦਿਨ"
 
 #: src/settings.c:1767
 msgid "Hours"
-msgstr "�ra"
+msgstr "ਘੰਟੇ"
 
 #: src/settings.c:1768
 msgid "Minutes"
-msgstr "Perc"
+msgstr "ਮਿੰਟ"
 
 #: src/settings.c:1774
 msgid "Your name"
-msgstr "A neved"
+msgstr "ਤੁਹਾਡਾ ਨਾਂ"
 
 #: src/settings.c:1779
 msgid "Set here your name which should be shown near your vehicle. You may use spaces here!"
@@ -1611,7 +1591,7 @@ msgstr ""
 
 #: src/settings.c:1791
 msgid "Server name"
-msgstr "Szervern�v"
+msgstr "ਸਰਵਰ ਨਾਂ"
 
 #: src/settings.c:1796
 msgid "Set here the full qualified host name (i.e. www.gpsdrive.cc) of your friends server, then you have to press the \"Lookup\" button!"
@@ -1619,7 +1599,7 @@ msgstr ""
 
 #: src/settings.c:1805
 msgid "Lookup"
-msgstr "Keres�s"
+msgstr "ਖੋਜ"
 
 #: src/settings.c:1813
 msgid "You have to press the \"Lookup\" button to resolve the friends server name!"
@@ -1631,7 +1611,7 @@ msgstr ""
 
 #: src/settings.c:1830
 msgid "Friends server IP"
-msgstr ""
+msgstr "ਮਿੱਤਰ ਸਰਵਰ IP"
 
 #: src/settings.c:1835
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
@@ -1643,7 +1623,7 @@ msgstr ""
 
 #: src/settings.c:1861
 msgid "Use friends server"
-msgstr ""
+msgstr "ਮਿੱਤਰ ਸਰਵਰ ਵਰਤੋਂ"
 
 #: src/settings.c:1869
 msgid "Enable/disable use of friends server. You must enter a Username, don't use the default name!"
@@ -1655,10 +1635,13 @@ msgid ""
 "<span color=\"red\">everyone</span> using the same server\n"
 "can see your position!"
 msgstr ""
+"ਜੇਕਰ ਤੁਸੀਂ ਮਿੱਤਰ ਸਰਵਰ ਯੋਗ ਕੀਤਾ ਤਾਂ,\n"
+"ਉਸੇ ਸਰਵਰ 'ਤੇ ਮੌਜੂਦ <span color=\"red\">ਹਰੇਕ</span> ਤੁਹਾਡੀ\n"
+"ਸਥਿਤੀ ਵੇਖ ਸਕਦਾ ਹੈ!"
 
 #: src/settings.c:1927
 msgid "SQL selection criterias"
-msgstr "SQL lek�rdez�s param�terei"
+msgstr "SQL ਚੋਣ ਸੀਮਾ"
 
 #: src/settings.c:1928
 msgid "SQL"
@@ -1666,7 +1649,7 @@ msgstr "SQL"
 
 #: src/settings.c:1954
 msgid "Dist. limit[km] "
-msgstr "T�v. korl�t[km] "
+msgstr "ਦੂਰੀ ਸੀਮਾ[ਕਿਮੀ] "
 
 #: src/settings.c:1959
 msgid "If enabled, show waypoints only within this distance"
@@ -1674,24 +1657,23 @@ msgstr ""
 
 #: src/settings.c:1967
 msgid "Enable?"
-msgstr "Bekapcsoljuk?"
+msgstr "ਕੀ ਯੋਗ?"
 
 #: src/settings.c:1974
 msgid "Enable/disable distance selection"
-msgstr ""
+msgstr "ਦੂਰੀ ਚੋਣ ਯੋਗ/ਆਯੋਗ"
 
 #: src/settings.c:1983
-#, fuzzy
 msgid "Selection mode"
-msgstr "Szimul�ci� m�d"
+msgstr "ਚੋਣ ਢੰਗ"
 
 #: src/settings.c:1985
 msgid "include"
-msgstr "csak ezeket"
+msgstr "ਸ਼ਾਮਿਲ"
 
 #: src/settings.c:1988
 msgid "exclude"
-msgstr "ezeket ne"
+msgstr "ਵੱਖ ਰੱਖੋ"
 
 #: src/settings.c:1992
 msgid "Show only waypoints where the type field contains one of the selected words"
@@ -1702,41 +1684,40 @@ msgid "Show only waypoints where the type field doesn't contain any the selected
 msgstr ""
 
 #: src/fly.c:149
-#, fuzzy
 msgid "Aeronautical settings"
-msgstr "Egy�b be�ll�t�sok"
+msgstr ""
 
 #: src/fly.c:151
 msgid "Fly"
-msgstr "Rep�l�s"
+msgstr "ਉਡਦਾ"
 
 #: src/fly.c:158
 msgid "Plane mode"
-msgstr "Rep�l� m�d"
+msgstr "ਸਮਤੱਲ ਢੰਗ"
 
 #: src/fly.c:165
 msgid "Use VFR"
-msgstr "VFR haszn�lata"
+msgstr "VFR ਵਰਤੋਂ"
 
 #: src/fly.c:171
 msgid "Use IFR"
-msgstr "IFR haszn�lata"
+msgstr "IFR ਵਰਤੋਂ"
 
 #: src/fly.c:181
 msgid "max. horizontal deviation "
-msgstr "max. v�zszintes elt�r�s"
+msgstr "ਵੱਧੋ-ਵੱਧ ਖਿਤਜੀ ਝੁਕਾ"
 
 #: src/fly.c:183
 msgid "max. vertical deviation "
-msgstr "max. f�gg�leges elt�r�s"
+msgstr "ਵੱਧੋ-ਵੱਧ ਲੰਬਕਾਰੀ ਝੁਕਾ"
 
 #: src/fly.c:198
 msgid "disable vert. deviation warning above 5000ft MSL"
-msgstr "f�gg. elt�r�s eset�n figyelmeztet�s kikapcsol�sa 5000 l�b (MSL) felett"
+msgstr ""
 
 #: src/nautic.c:103
 msgid "Nautic settings"
-msgstr "Haj�z�si be�ll�t�sok"
+msgstr ""
 
 #. if (debug)
 #: src/gpssql.c:184
@@ -1749,30 +1730,30 @@ msgstr ""
 #: src/gpssql.c:270
 #, c-format
 msgid "rows inserted: %d\n"
-msgstr "besz�rt sorok: %d\n"
+msgstr "ਕਤਾਰ ਸ਼ਾਮਿਲ: %d\n"
 
 #: src/gpssql.c:285
 #, c-format
 msgid "last index: %d\n"
-msgstr ""
+msgstr "ਆਖਰੀ ਤਤਕਰਾ: %d\n"
 
 #: src/gpssql.c:306
 #, c-format
 msgid "rows deleted: %d\n"
-msgstr "t�r�lt sorok: %d\n"
+msgstr "ਕਤਾਰ ਹਟਾਈ: %d\n"
 
 #: src/gpssql.c:417
 #, c-format
 msgid "%d(%d) rows read in %.2f seconds\n"
-msgstr "%d(%d) sor beolvasva %.2f m�sodperc alatt\n"
+msgstr ""
 
 #: src/friends.c:364
 msgid "unknown"
-msgstr "ismeretlen"
+msgstr "ਅਣਜਾਣ"
 
 #: src/friendsd.c:458
 msgid "server: please don't run me as root\n"
-msgstr "szerver: k�rlek ne futtass rendszergazdak�nt!\n"
+msgstr ""
 
 #: src/friendsd.c:470
 #, c-format
@@ -1782,178 +1763,7 @@ msgid ""
 "   %s -n servername\n"
 "provides a name for your server\n"
 msgstr ""
-
-#~ msgid "Ok"
-#~ msgstr "Ok"
-
-#~ msgid "Yes, please start gpsd"
-#~ msgstr "Igen, k�rlek ind�tsd el a gpsd-t"
-
-#~ msgid "No, start simulation"
-#~ msgstr "Nem, ind�tsd a szimul�ci�t"
-
-#~ msgid ""
-#~ "Neither gpsd nor GARMIN device detected!\n"
-#~ "Should I start gpsd (NMEA mode) for you?"
-#~ msgstr ""
-#~ "Sem gpsd sem GARMIN eszk�z nem tal�lhat�!\n"
-#~ "Ind�tsam el a gpsd-t (NMEA m�dban)?"
-
-#~ msgid "No GPS Fix found!"
-#~ msgstr "GPS Fix nem tal�lhat�!"
-
-#~ msgid "Distance to "
-#~ msgstr "T�vols�g "
-
-#~ msgid "Friendsicon loaded"
-#~ msgstr "Ikon bet�ltve"
-
-#~ msgid "Cancel"
-#~ msgstr "M�gse"
-
-#~ msgid "Close"
-#~ msgstr "Bez�r�s"
-
-#~ msgid "Nightmode on"
-#~ msgstr "�jszakai m�d be"
-
-#~ msgid "Nightmode off"
-#~ msgstr "�jszakai m�d ki"
-
-#~ msgid "Decimal lat/long display"
-#~ msgstr "Hossz. �s sz�less. tizedesekkel"
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#~ msgid "Delete WP"
-#~ msgstr "�tvonalpont t�rl�se"
-
-#~ msgid "-n X  Select display name on friends server, X is i.e. Fritz\n"
-#~ msgstr "-n X  A bar�tod szerver�n tal�lhat� display neve, X lehet pl. Fritz\n"
-
-#~ msgid "Quit"
-#~ msgstr "Kil�p�s"
-
-#~ msgid "Import"
-#~ msgstr "Import�l�s"
-
-#~ msgid "Load track"
-#~ msgstr "�tvonal bet�lt�se"
-
-#~ msgid "Help"
-#~ msgstr "S�g�"
-
-#~ msgid "Setup"
-#~ msgstr "Be�ll�t�s"
-
-#~ msgid "Sat level"
-#~ msgstr "M�holdak"
-
-#~ msgid "GpsDrive Status"
-#~ msgstr "GpsDrive �llapot"
-
-#~ msgid "Let you import and calibrate your own map"
-#~ msgstr "Itt import�lhatod �s kalibr�lhatod a saj�t t�rk�peidet"
-
-#~ msgid "Load and display a previous stored track file"
-#~ msgstr "El�z�leg elt�rolt track f�jl bet�lt�se �s megmutat�sa"
-
-#~ msgid ""
-#~ "GpsDrive Help\n"
-#~ "\n"
-#~ "GPSDRIVE (c) 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
-#~ "\n"
-#~ "-------------------------------------------------\n"
-#~ "Website: www.kraftvoll.at/software\n"
-#~ "Disclaimer: Please do not use for navigation. \n"
-#~ "\n"
-#~ "*************************************************\n"
-#~ "\n"
-#~ "See the manpage for program details\n"
-#~ "\n"
-#~ "Mouse control (clicking on the map):\n"
-#~ "===================================\n"
-#~ "Left mouse button         : Set position (usefull in simulation mode)\n"
-#~ "Right mouse button        : Set target directly on the map\n"
-#~ "Middle mouse button       : Display position again\n"
-#~ "Shift left mouse button   : smaller map\n"
-#~ "Shift right mouse button  : larger map\n"
-#~ "Control left mouse button : Set a waypoint (mouse position) on the map\n"
-#~ "Control right mouse button: Set a waypoint at current position on the map\n"
-#~ "\n"
-#~ "Short cuts:\n"
-#~ "===================================\n"
-#~ "+                         : Zoom in\n"
-#~ "-                         : Zoom out\n"
-#~ "s                         : larger map\n"
-#~ "a                         : smaller map\n"
-#~ "t                         : select target\n"
-#~ "d                         : download map\n"
-#~ "i                         : import map\n"
-#~ "l                         : load track\n"
-#~ "h                         : show help\n"
-#~ "q                         : quit program\n"
-#~ "b                         : toggle auto best map\n"
-#~ "w                         : toggle show waypoints\n"
-#~ "o                         : toggle show tracks\n"
-#~ "u                         : enter setup menu\n"
-#~ "n                         : switches off night mode for 30 seconds\n"
-#~ "x                         : add waypoint at current position\n"
-#~ "\n"
-#~ "Suggestions welcome!\n"
-#~ "\n"
-#~ "Have a lot of fun!\n"
-#~ "\n"
-#~ msgstr ""
-#~ "GpsDrive S�g�\n"
-#~ "\n"
-#~ "GPSDRIVE (c) 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
-#~ "\n"
-#~ "-------------------------------------------------\n"
-#~ "Weblap: www.kraftvoll.at/software\n"
-#~ "Figyelem: Ne haszn�ld navig�ci�hoz! \n"
-#~ "\n"
-#~ "*************************************************\n"
-#~ "\n"
-#~ "A r�szletesebb le�r�st megtal�lod a man oldalon.\n"
-#~ "\n"
-#~ "Eg�r (kattint�s a t�rk�pen):\n"
-#~ "===================================\n"
-#~ "Bal eg�rgomb              : Helyzet be�ll�t�sa (hasznos szimul�ci� m�dn�l)\n"
-#~ "Jobb eg�rgomb             : C�lpont be�ll�t�sa a t�rk�pen\n"
-#~ "K�z�ps� eg�rgomb          : �jra megmutatja a helyzetet\n"
-#~ "Shift-bal eg�rgomb        : Kisebb t�rk�p\n"
-#~ "Shift-jobb eg�rgomb       : Nagyobb t�rk�p\n"
-#~ "Control-bal eg�rgomb      : �tvonalpont be�ll�t�sa a t�rk�pen\n"
-#~ "Control-jobb eg�rgomb     : �tvonalpont be�ll�t�sa a jelenlegi helyzethez\n"
-#~ "\n"
-#~ "Forr�billenty�k:\n"
-#~ "===================================\n"
-#~ "+                         : Nagy�t�s\n"
-#~ "-                         : Kicsiny�t�s\n"
-#~ "s                         : Nagyobb t�rk�p\n"
-#~ "a                         : Kisebb t�rk�p\n"
-#~ "t                         : C�lpont kiv�laszt�s\n"
-#~ "d                         : T�rk�p let�lt�se\n"
-#~ "i                         : T�rk�p import�l�sa\n"
-#~ "l                         : �tvonal bet�lt�se\n"
-#~ "h                         : S�g� mutat�sa\n"
-#~ "q                         : Kil�p�s\n"
-#~ "b                         : Automatikus legjobb t�rk�p ki-/bekapcsol�sa\n"
-#~ "w                         : �tvonalpontok l�that�s�ga ki/be\n"
-#~ "o                         : �tvonalak l�that�s�ga ki/be\n"
-#~ "u                         : Be�ll�t�sok men�\n"
-#~ "n                         : �jszakai m�d ki 30 m�sodpercig\n"
-#~ "x                         : �tvonalpont hozz�ad�sa az aktu�lis helyen\n"
-#~ "\n"
-#~ "Minden javaslatot sz�vesen fogadunk!\n"
-#~ "\n"
-#~ "J� sz�rakoz�st!\n"
-#~ "\n"
-
-#~ msgid "GpsDrive Help"
-#~ msgstr "GpsDrive s�g�"
-
-#~ msgid "   Ok   "
-#~ msgstr "   Ok   "
+"\n"
+"ਵਰਤੋਂ:\n"
+"   %s -n servername\n"
+"provides a name for your server\n"

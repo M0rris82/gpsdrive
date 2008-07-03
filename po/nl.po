@@ -1,19 +1,20 @@
-# Translation of gpsdrive-2.10pre4 to Dutch.
-# Copyright (C) 2001, 2007 Free Software Foundation, Inc.
+# Dutch translations for gpsdrive.
+# This file is distributed under the same license as the GpsDrive package.
 #
-# Benno Schulenberg <benno@vertaalt.nl>, 2007.
+# Benno Schulenberg <benno@vertaalt.nl>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive-2.10pre4\n"
+"Project-Id-Version: gpsdrive-2.10pre5\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-09-15 19:17+0200\n"
-"PO-Revision-Date: 2007-09-23 11:55+0200\n"
+"POT-Creation-Date: 2007-10-26 00:14+0200\n"
+"PO-Revision-Date: 2008-07-03 19:19+0200\n"
 "Last-Translator: Benno Schulenberg <benno@vertaalt.nl>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/battery.c:806
 msgid "Bat."
@@ -80,13 +81,15 @@ msgstr "Selecteer coördinaten en schaal"
 msgid "Download map"
 msgstr "Kaart downloaden"
 
-#: src/download_map.c:854 src/gpsdrive.c:2453 src/gpsdrive.c:2537
-#: src/import_map.c:383 src/poi_gui.c:574 src/routes.c:411 src/waypoint.c:744
+#: src/download_map.c:854 src/gpsdrive.c:2419 src/gpsdrive.c:2503
+#: src/import_map.c:383 src/main_gui.c:1869 src/poi_gui.c:577 src/routes.c:421
+#: src/waypoint.c:744
 msgid "Latitude"
 msgstr "Breedtegraad"
 
-#: src/download_map.c:856 src/gpsdrive.c:2453 src/gpsdrive.c:2537
-#: src/import_map.c:385 src/poi_gui.c:567 src/routes.c:411 src/waypoint.c:758
+#: src/download_map.c:856 src/gpsdrive.c:2419 src/gpsdrive.c:2503
+#: src/import_map.c:385 src/main_gui.c:1882 src/poi_gui.c:570 src/routes.c:421
+#: src/waypoint.c:758
 msgid "Longitude"
 msgstr "Lengtegraad"
 
@@ -128,15 +131,15 @@ msgstr ""
 msgid "unknown"
 msgstr "onbekend"
 
-#: src/friends.c:644
+#: src/friends.c:644 src/main_gui.c:589 src/main_gui.c:620 src/main_gui.c:654
 msgid "mi/h"
 msgstr "mi/u"
 
-#: src/friends.c:646
+#: src/friends.c:646 src/main_gui.c:593 src/main_gui.c:624 src/main_gui.c:658
 msgid "knots"
 msgstr "knopen"
 
-#: src/friends.c:648
+#: src/friends.c:648 src/main_gui.c:597 src/main_gui.c:628 src/main_gui.c:662
 msgid "km/h"
 msgstr "km/u"
 
@@ -157,15 +160,15 @@ msgstr ""
 "Gebruik:  %s -n SERVERNAAM\n"
 "Dit geeft een naam aan uw server.\n"
 
-#: src/gpsdrive.c:798
+#: src/gpsdrive.c:788
 msgid "Warning!"
 msgstr "Waarschuwing!"
 
-#: src/gpsdrive.c:800
+#: src/gpsdrive.c:790
 msgid "You should not start GpsDrive as user root!!!"
 msgstr "U dient GpsDrive niet als gebruiker root te starten!!!"
 
-#: src/gpsdrive.c:1206
+#: src/gpsdrive.c:1196
 #, c-format
 msgid ""
 "\n"
@@ -180,207 +183,197 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/gpsdrive.c:1806
+#: src/gpsdrive.c:1803
 msgid "N"
 msgstr "N"
 
-#: src/gpsdrive.c:1813
+#: src/gpsdrive.c:1810
 msgid "S"
 msgstr "S"
 
-#: src/gpsdrive.c:1819
+#: src/gpsdrive.c:1816
 msgid "W"
 msgstr "W"
 
-#: src/gpsdrive.c:1825
+#: src/gpsdrive.c:1822
 msgid "E"
 msgstr "O"
 
-#: src/gpsdrive.c:1900
+#: src/gpsdrive.c:1897
 msgid "No map available for this position!"
 msgstr "Geen kaart beschikbaar voor deze positie!"
 
-#: src/gpsdrive.c:2205
-#, c-format
-msgid "distance jump is more then 2000km/h speed, ignoring\n"
-msgstr "sprong is meer dan 2000 km/u -- genegeerd\n"
-
-#: src/gpsdrive.c:2296
+#: src/gpsdrive.c:2262
 msgid "Sending message to friends server..."
 msgstr "Bericht wordt verstuurd aan vriendenserver..."
 
-#: src/gpsdrive.c:2374
+#: src/gpsdrive.c:2340
 msgid "Message for:"
 msgstr "Bericht voor:"
 
-#: src/gpsdrive.c:2410
+#: src/gpsdrive.c:2376
 #, c-format
 msgid "Date: %s"
 msgstr "Datum: %s"
 
-#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:505 src/poi_gui.c:930
-#: src/poi_gui.c:1222 src/settings.c:1976
+#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/poi_gui.c:508 src/poi_gui.c:933
+#: src/poi_gui.c:1225 src/settings.c:1985
 msgid "Name"
 msgstr "Naam"
 
-#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:941
-#: src/poi_gui.c:1229 src/routes.c:411 src/settings.c:727 src/settings.c:1382
+#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/main_gui.c:496
+#: src/poi_gui.c:944 src/poi_gui.c:1232 src/routes.c:421 src/settings.c:735
+#: src/settings.c:1391
 msgid "Distance"
 msgstr "Afstand"
 
-#: src/gpsdrive.c:2464
+#: src/gpsdrive.c:2430
 msgid "Please select message recipient"
 msgstr "Selecteer de ontvanger van het bericht"
 
-#: src/gpsdrive.c:2537 src/poi_gui.c:587 src/poi_gui.c:950
+#: src/gpsdrive.c:2503 src/poi_gui.c:590 src/poi_gui.c:953
 msgid "Type"
 msgstr "Soort"
 
-#: src/gpsdrive.c:2566
+#: src/gpsdrive.c:2532
 msgid "Select reference point"
 msgstr "Selecteer uw referentiepunt"
 
-#: src/gpsdrive.c:2570
+#: src/gpsdrive.c:2536
 msgid "Please select your destination"
 msgstr "Selecteer uw bestemming"
 
-#: src/gpsdrive.c:2602
+#: src/gpsdrive.c:2568
 msgid "Edit route"
 msgstr "Route bewerken"
 
-#: src/gpsdrive.c:2605
+#: src/gpsdrive.c:2571
 msgid "Create route"
 msgstr "Route aanmaken"
 
-#: src/gpsdrive.c:2703
+#: src/gpsdrive.c:2669
 msgid "Create a route using some waypoints from this list"
 msgstr "Een route aanmaken door padpunten uit deze lijst te gebruiken"
 
-#: src/gpsdrive.c:2708
+#: src/gpsdrive.c:2674
 msgid "Delete the selected waypoint from the waypoint list"
 msgstr "Verwijdert het geselecteerde padpunt uit de lijst"
 
-#: src/gpsdrive.c:2712
+#: src/gpsdrive.c:2678
 msgid "Jump to the selected waypoint"
 msgstr "Springt naar het volgende padpunt"
 
-#: src/gpsdrive.c:2735
+#: src/gpsdrive.c:2701
 msgid "-v        show version\n"
-msgstr "-v          versie-informatie tonen\n"
+msgstr "-v          programmaversie tonen\n"
 
-#: src/gpsdrive.c:2736
+#: src/gpsdrive.c:2702
 msgid "-h        print this help\n"
 msgstr "-h          deze hulptekst tonen\n"
 
-#: src/gpsdrive.c:2737
+#: src/gpsdrive.c:2703
 msgid "-d        turn on debug info\n"
 msgstr "-d          debug-informatie tonen\n"
 
-#: src/gpsdrive.c:2738
-msgid "-D X      set debug Level to X\n"
+#: src/gpsdrive.c:2704
+msgid "-D X      set debugging level to X\n"
 msgstr "-D GETAL    instelling van debug-niveau\n"
 
-#: src/gpsdrive.c:2739
-msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
+#: src/gpsdrive.c:2705
+msgid "-T        do some internal unit tests (don't start gpsdrive)\n"
 msgstr "-T          enkele interne tests uitvoeren (GpsDrive niet starten)\n"
 
-#: src/gpsdrive.c:2740
+#: src/gpsdrive.c:2706
 msgid "-e        use Festival-Lite (flite) for speech output\n"
 msgstr "-e          Festival-Lite ('flite') voor spraakuitvoer gebruiken\n"
 
-#: src/gpsdrive.c:2741
-msgid "-o        serial device, pty master, or file for NMEA *output*\n"
+#: src/gpsdrive.c:2707
+msgid "-o thing  serial device, pty master, or file to use for NMEA output\n"
 msgstr "-o NAAM     serieel apparaat, hoofd-pty, of bestand voor NMEA-uitvoer\n"
 
-#: src/gpsdrive.c:2742
-msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
+#: src/gpsdrive.c:2708
+msgid "-f server select friends server, e.g. friendsd.gpsdrive.de\n"
 msgstr "-f DOMEIN   deze vriendenserver gebruiken, bijvoorbeeld friendsd.gpsdrive.de\n"
 
-#: src/gpsdrive.c:2744
-msgid "-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"
+#: src/gpsdrive.c:2710
+msgid "-X        use DBUS for communication with gpsd; this disables socket communication\n"
 msgstr ""
 "-X          DBUS gebruiken om met 'gpsd' te communiceren; dit schakelt\n"
 "            serieële en socket-communicatie uit\n"
 
-#: src/gpsdrive.c:2746
+#: src/gpsdrive.c:2712
 msgid ""
-"-l LANG   Select language of the voice,\n"
-"          LANG may be english, spanish or german\n"
+"-l lang.  select language of the voice output;\n"
+"          language may be 'english', 'spanish', or 'german'\n"
 msgstr "-l TAAL     taal van de stem; 'english', 'spanish' of 'german'\n"
 
-#: src/gpsdrive.c:2748
-msgid ""
-"-s HEIGHT set height of the screen, if autodetection\n"
-"          don't satisfy you, X is i.e. 768,600,480,200\n"
-msgstr "-s HOOGTE   instelling van vensterhoogte, als autodetectie niet bevalt\n"
+#: src/gpsdrive.c:2714
+msgid "-g geom.  set window geometry, e.g. 800x600\n"
+msgstr "-g FORMAAT  te gebruiken vensterformaat, bijvoorbeeld 800x600\n"
 
-#: src/gpsdrive.c:2750
-msgid "-r WIDTH  set width of the screen, only with -s\n"
-msgstr "-r BREEDTE  instelling van vensterbreedte (alleen samen met '-s')\n"
-
-#: src/gpsdrive.c:2751
+#: src/gpsdrive.c:2715
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
 msgstr "-1          invoerapparaat is enkelknops (bijvoorbeeld een aanraakscherm)\n"
 
-#: src/gpsdrive.c:2752
-msgid "-a        display APM Stuff ( battery status, Temperature)\n"
+#: src/gpsdrive.c:2716
+msgid "-a        display APM stuff (battery status, temperature)\n"
 msgstr "-a          APM-gegevens tonen (accustatus, temperatuur)\n"
 
-#: src/gpsdrive.c:2753
-msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b NAAM     naam voor de NMEA-server (indien 'gpsd' op een andere host draait)\n"
+#: src/gpsdrive.c:2717
+msgid "-b server servername for NMEA server (if gpsd runs on another host)\n"
+msgstr "-b NAAM     naam van de NMEA-server (indien 'gpsd' op een andere host draait)\n"
 
-#: src/gpsdrive.c:2754
-msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
+#: src/gpsdrive.c:2718
+msgid "-c WP     set start position in simulation mode to this waypoint (WP)\n"
 msgstr "-c PADPUNT  aanvangspositie in simulatiemodus instellen op dit padpunt\n"
 
-#: src/gpsdrive.c:2755
-msgid "-x        create separate window for menu\n"
-msgstr "-x         een apart venster openen voor het menu\n"
-
-#: src/gpsdrive.c:2756
-msgid "-M mode   set guimode to desktop, pda or car\n"
+#: src/gpsdrive.c:2719
+msgid "-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"
 msgstr "-M MODUS    instelling van uitvoermodus; 'desktop', 'pda', of 'car' (auto)\n"
 
-#: src/gpsdrive.c:2757
+#: src/gpsdrive.c:2720
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
 "-i          NMEA-controlesom negeren (alleen voor GPS-ontvangers die\n"
 "            die niet aan de NMEA-standaard voldoen)\n"
 
-#: src/gpsdrive.c:2758
+#: src/gpsdrive.c:2721
 msgid "-q        disable SQL support\n"
 msgstr "-q          SQL-ondersteuning uitschakelen\n"
 
-#: src/gpsdrive.c:2759
+#: src/gpsdrive.c:2722
 msgid "-F        force display of position even it is invalid\n"
 msgstr "-F          positie ook tonen als deze ongeldig is\n"
 
-#: src/gpsdrive.c:2760
-msgid "-S        don't show splash screen\n"
-msgstr "-S          geen startscherm tonen\n"
+#: src/gpsdrive.c:2723
+msgid "-s        don't show splash screen\n"
+msgstr "-s          geen startscherm tonen\n"
 
-#: src/gpsdrive.c:2761
-msgid "-P        start in Pos Mode\n"
+#: src/gpsdrive.c:2724
+msgid "-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"
+msgstr "-S PAD      automatisch schermopnames maken van een ander venster\n"
+
+#: src/gpsdrive.c:2725
+msgid "-P        start in Position Mode\n"
 msgstr "-P          in positiemodus starten\n"
 
-#: src/gpsdrive.c:2762
-msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
+#: src/gpsdrive.c:2726
+msgid "-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"
 msgstr "-W x        WAAS/EGNOS inschakelen (1) of uitschakelen (0)\n"
 
-#: src/gpsdrive.c:2763
-msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
+#: src/gpsdrive.c:2727
+msgid "-H ALT    correct the altitude by adding this value (ALT) to it\n"
 msgstr "-H GETAL    de hoogte corrigeren door dit getal erbij op te tellen\n"
 
-#: src/gpsdrive.c:2764
-msgid "-C file   set config file (--config-file)\n"
+#: src/gpsdrive.c:2728
+msgid "-C file   use this config file\n"
 msgstr "-C BESTAND  te gebruiken configuratiebestand\n"
 
-#: src/gpsdrive.c:2779
+#: src/gpsdrive.c:2743
 msgid "Select a track file"
 msgstr "Selecteer een routebestand"
 
-#: src/gpsdrive.c:2939
+#: src/gpsdrive.c:2901
 msgid ""
 "\n"
 "You can currently only choose between english, spanish and german\n"
@@ -391,7 +384,7 @@ msgstr ""
 "'spanish' (Spaans) en 'german' (Duits).\n"
 "\n"
 
-#: src/gpsdrive.c:3293
+#: src/gpsdrive.c:3253
 msgid ""
 "\n"
 "kismet server found\n"
@@ -399,11 +392,11 @@ msgstr ""
 "\n"
 "kismet-server gevonden\n"
 
-#: src/gpsdrive.c:3331
+#: src/gpsdrive.c:3291
 msgid "Using speech output"
 msgstr "Gebruik van spraakuitvoer"
 
-#: src/gpsdrive.c:3445
+#: src/gpsdrive.c:3418
 #, c-format
 msgid ""
 "\n"
@@ -429,7 +422,7 @@ msgstr "kan geen filter instellen voor de DBUS-verbinding"
 msgid "DBUS Mode"
 msgstr "DBUS-modus"
 
-#: src/gps_handler.c:254 src/gpskismet.c:337
+#: src/gps_handler.c:254 src/gpskismet.c:348
 msgid "can't open socket for port "
 msgstr "Kan socket voor poort niet openen"
 
@@ -463,7 +456,7 @@ msgstr "Klik op de middelste muisknop voor navigatie"
 msgid "No GPS used"
 msgstr "Geen GPS in gebruik"
 
-#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:800
+#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:808
 msgid "Simulation mode"
 msgstr "Simulatiemodus"
 
@@ -475,24 +468,24 @@ msgstr "Klik op de middelste muisknop voor simulatiemodus"
 msgid "Not enough satellites in view!"
 msgstr "Niet genoeg satellieten in zicht!"
 
-#: src/gpskismet.c:99
+#: src/gpskismet.c:102
 msgid "trying to re-connect to kismet server\n"
 msgstr "Herverbinden met kismet-server...\n"
 
-#: src/gpskismet.c:101
+#: src/gpskismet.c:104
 msgid "Kismet server connection re-established\n"
 msgstr "Verbinding met kismet-server is hersteld\n"
 
-#: src/gpskismet.c:102
+#: src/gpskismet.c:105
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
 msgstr "klaar met herverbindingspogingen: socket=%d\n"
 
-#: src/gpskismet.c:149
+#: src/gpskismet.c:152
 msgid "Kismet server connection lost\n"
 msgstr "Verbinding met kismet-server is verbroken\n"
 
-#: src/gpskismet.c:331
+#: src/gpskismet.c:342
 msgid "Trying Kismet server\n"
 msgstr "Kismet-server wordt geprobeerd\n"
 
@@ -588,19 +581,62 @@ msgstr ""
 "\n"
 "MySQL-ondersteuning is uitgeschakeld.\n"
 
-#: src/gui.c:501
+#: src/gpx.c:247 src/gpx.c:248 src/gpx.c:249 src/gpx.c:250 src/gpx.c:251
+#: src/gpx.c:252 src/gpx.c:253 src/gpx.c:254 src/gpx.c:255 src/gpx.c:256
+#: src/main_gui.c:644 src/main_gui.c:783 src/main_gui.c:904
+msgid "n/a"
+msgstr "(geen)"
+
+#: src/gpx.c:370
+msgid "Please select a file"
+msgstr "Selecteer een bestand"
+
+#: src/gpx.c:375
+#, c-format
+msgid ""
+"<b>Name:</b>\n"
+"<i>%s</i>\n"
+"<b>Description:</b>\n"
+"<i>%s</i>\n"
+"<b>Author</b>:\n"
+"<i>%s</i>\n"
+"<b>created by:</b>\n"
+"<i>%s</i>\n"
+"<b>Timestamp:</b>\n"
+"<i>%s</i>"
+msgstr ""
+"<b>Naam:</b>\n"
+"<i>%s</i>\n"
+"<b>Omschrijving:</b>\n"
+"<i>%s</i>\n"
+"<b>Auteur</b>:\n"
+"<i>%s</i>\n"
+"<b>gemaakt met:</b>\n"
+"<i>%s</i>\n"
+"<b>Tijdstempel:</b>\n"
+"<i>%s</i>"
+
+#: src/gpx.c:398
+msgid "Select a GPX file"
+msgstr "Selecteer een GPX-bestand"
+
+#: src/gpx.c:421
+msgid "Show Info"
+msgstr "Info tonen"
+
+#: src/gui.c:507
 msgid "Press OK to continue!"
 msgstr "Klik op OK om verder te gaan!"
 
-#: src/gui.c:535
+#: src/gui.c:542
 msgid ""
 "An error has occured.\n"
 "Press OK to continue!"
 msgstr ""
 "Er is een fout opgetreden.\n"
-"Klik op OK om verder te gaan!"
+"Klik op OK om verder te gaan."
 
-#: src/gui.c:568
+#: src/gui.c:576
 #, c-format
 msgid ""
 "\n"
@@ -610,12 +646,12 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Waarschuwing: \n"
+"Waarschuwing: kan 'add waypoint'-afbeelding niet openen\n"
 "Installeer het programma als root met:\n"
 "make install\n"
 "\n"
 
-#: src/icons.c:246
+#: src/icons.c:247
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -626,7 +662,7 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/icons.c:353 src/icons.c:358
+#: src/icons.c:364 src/icons.c:369
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Door gebruiker gedefinieerd pictogram %s ingelezen\n"
@@ -640,7 +676,7 @@ msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
 msgstr ""
-"Hoe calibreert u uw eigen kaarten?\n"
+"Hoe uw eigen kaarten te kalibreren?\n"
 "Allereerst dient u de kaart naar de map"
 
 #: src/import_map.c:302
@@ -731,51 +767,280 @@ msgstr "Bestandsnaam zoeken"
 msgid "SELECTED"
 msgstr "GESELECTEERD"
 
-#: src/map_handler.c:183
+#: src/main_gui.c:286
+msgid "Auto"
+msgstr "Automatisch"
+
+#: src/main_gui.c:527 src/main_gui.c:820
+msgid "nmi"
+msgstr ""
+
+#: src/main_gui.c:551 src/main_gui.c:844 src/settings.c:1538
+msgid "km"
+msgstr "km"
+
+#: src/main_gui.c:585 src/main_gui.c:1300 src/settings.c:1392
+msgid "Speed"
+msgstr "Snelheid"
+
+#: src/main_gui.c:612 src/main_gui.c:1301
+msgid "Avg. Speed"
+msgstr "Gem. snelheid"
+
+#: src/main_gui.c:650 src/main_gui.c:1302
+msgid "Max. Speed"
+msgstr "Max. snelheid"
+
+#: src/main_gui.c:675 src/main_gui.c:1298 src/main_gui.c:1857
+msgid "Bearing"
+msgstr "Doelrichting"
+
+#: src/main_gui.c:686 src/main_gui.c:1303 src/main_gui.c:1863
+msgid "Heading"
+msgstr "Koers"
+
+#: src/main_gui.c:697 src/main_gui.c:1299
+msgid "Turn"
+msgstr "Draai"
+
+#: src/main_gui.c:718
+msgid "Time remaining"
+msgstr "Resterende tijd"
+
+#: src/main_gui.c:734 src/main_gui.c:1304 src/poi_gui.c:563 src/settings.c:753
+msgid "Altitude"
+msgstr "Hoogte"
+
+#: src/main_gui.c:789
+msgid "Odometer"
+msgstr "Afstandsteller"
+
+#: src/main_gui.c:878 src/main_gui.c:1306
+msgid "GPS Precision"
+msgstr "GPS-precisie"
+
+#: src/main_gui.c:889 src/main_gui.c:1307
+msgid "Current Time"
+msgstr "Huidige tijd"
+
+#: src/main_gui.c:1011
+msgid "No GPS"
+msgstr "Geen GPS"
+
+#: src/main_gui.c:1018
+msgid "Simulation Mode"
+msgstr "Simulatiemodus"
+
+#: src/main_gui.c:1132
+msgid "Quicksaved Waypoint"
+msgstr "Snel-opgeslagen padpunt"
+
+#: src/main_gui.c:1167
+msgid "Temporary Waypoint"
+msgstr "Tijdelijk padpunt"
+
+#: src/main_gui.c:1296
+msgid "Distance to Target"
+msgstr "Afstand tot doel"
+
+#: src/main_gui.c:1297
+msgid "Time Remaining"
+msgstr "Resterende tijd"
+
+#: src/main_gui.c:1305
+msgid "Trip Odometer"
+msgstr "Tripafstandsteller"
+
+#: src/main_gui.c:1368
+msgid "Options"
+msgstr "Opties"
+
+#: src/main_gui.c:1373
+msgid "Maps"
+msgstr "Kaarten"
+
+#: src/main_gui.c:1374 src/main_gui.c:1387
+msgid "Import"
+msgstr "Importeren"
+
+#: src/main_gui.c:1375
+msgid "Download"
+msgstr "Downloaden"
+
+#: src/main_gui.c:1390 src/main_gui.c:1405 src/main_gui.c:1630
+#: src/settings.c:1131
+msgid "Track"
+msgstr "Spoor"
+
+#: src/main_gui.c:1391 src/main_gui.c:1406 src/settings.c:1153
+msgid "Route"
+msgstr "Route"
+
+#: src/main_gui.c:1402
+msgid "Export"
+msgstr "Exporteren"
+
+#: src/main_gui.c:1418
+msgid "Send Message"
+msgstr "Bericht sturen"
+
+#: src/main_gui.c:1425
+msgid "Reset Trip"
+msgstr "Trip resetten"
+
+#: src/main_gui.c:1452
+msgid "Help"
+msgstr "Hulp"
+
+#: src/main_gui.c:1492
+msgid "Zooms in on the current map"
+msgstr "Zoomt in op de huidige kaart"
+
+#: src/main_gui.c:1494
+msgid "Zooms out on the current map"
+msgstr "Zoomt uit op de huidige kaart"
+
+#: src/main_gui.c:1515
+msgid "Select the next more detailed map"
+msgstr "De volgende meer gedetailleerde kaart selecteren"
+
+#: src/main_gui.c:1517
+msgid "Select the next less detailed map"
+msgstr "De volgende minder gedetailleerde kaart selecteren"
+
+#: src/main_gui.c:1531
+msgid "Mute Speech"
+msgstr "Spraak uit"
+
+#: src/main_gui.c:1542
+msgid "Disable output of speech"
+msgstr "Spraakuitvoer uitschakelen"
+
+#: src/main_gui.c:1571
+msgid "Points"
+msgstr "Punten"
+
+#: src/main_gui.c:1578 src/settings.c:1720
+msgid "POI"
+msgstr "Bezienswaardigheid"
+
+#: src/main_gui.c:1590
+msgid "Show Points Of Interest found in Database"
+msgstr "Bezienswaardigheden tonen die in de databank gevonden werden"
+
+#: src/main_gui.c:1594
+msgid "WLAN"
+msgstr "WLAN"
+
+#: src/main_gui.c:1609
+msgid "Show Data found in Kismet Database"
+msgstr "Gegevens tonen die in de Kismet-databank gevonden werden"
+
+#: src/main_gui.c:1612
+msgid "WP"
+msgstr "PP"
+
+#: src/main_gui.c:1622
+msgid "Show Waypoints found in file way.txt"
+msgstr "Padpunten tonen die in het bestand 'way.txt' gevonden werden"
+
+#: src/main_gui.c:1635
+msgid "Show"
+msgstr "Tonen"
+
+#: src/main_gui.c:1644
+msgid "Show tracking on the map"
+msgstr "Het spoor tonen op de kaart"
+
+#: src/main_gui.c:1651
+msgid "Save"
+msgstr "Opslaan"
+
+#: src/main_gui.c:1658
+msgid "Save the track to given filename at program exit"
+msgstr "Het spoor in het gegeven bestand opslaan bij afsluiten van het programma"
+
+#: src/main_gui.c:1838
+msgid "GPS-Time"
+msgstr "GPS-tijd"
+
+#: src/main_gui.c:1844
+msgid "This shows the time from your GPS receiver"
+msgstr "Toont de tijd van uw GPS-ontvanger"
+
+#: src/main_gui.c:1847 src/settings.c:1175 src/settings.c:2055
+msgid "Friends"
+msgstr "Vrienden"
+
+#: src/main_gui.c:1853
+msgid "Number of mobile targets within timeframe/total received from friendsserver"
+msgstr "Aantal mobiele doelen ontvangen van de vriendenserver (per tijdseenheid of totaal)"
+
+#: src/main_gui.c:1895
+msgid "Map scale"
+msgstr "Kaartschaal"
+
+#: src/main_gui.c:1901
+msgid "Pref. scale"
+msgstr "Voorkeursschaal"
+
+#: src/main_gui.c:1919
+msgid "This shows the GPS Status and Number of satellites in use."
+msgstr "Dit toont de GPS-toestand en het aantal gebruikte satellieten."
+
+#: src/main_gui.c:1934
+msgid "GpsDrive (c)2001-2007 F. Ganter"
+msgstr "GpsDrive (C) 2001-2007 F. Ganter"
+
+#: src/main_gui.c:2138 src/nmea_handler.c:491
+msgid "Map"
+msgstr "Kaart"
+
+#: src/main_gui.c:2141
+msgid "Controls"
+msgstr "Besturing"
+
+#: src/main_gui.c:2144
+msgid "Status"
+msgstr "Status"
+
+#: src/map_handler.c:153
 msgid "Map Controls"
 msgstr "Kaartbesturing"
 
-#: src/map_handler.c:188
+#: src/map_handler.c:158
 msgid "Auto _best map"
 msgstr "Automatisch _beste kaart"
 
-#: src/map_handler.c:193
+#: src/map_handler.c:163
 msgid "Always select the most detailed map available"
 msgstr "Altijd de meest gedetailleerde kaart selecteren"
 
-#: src/map_handler.c:204
+#: src/map_handler.c:174
 msgid "Pos. _mode"
 msgstr "Positiemodus"
 
-#: src/map_handler.c:211
+#: src/map_handler.c:181
 msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
 msgstr "Schakelt positiemodus in.  Verplaatsen op de kaart gaat door te klikken.  Klikken bij de rand schakelt over naar de volgende kaart."
 
-#: src/map_handler.c:221
+#: src/map_handler.c:191
 msgid "Mapnik Mode"
 msgstr "Mapnik-modus"
 
-#: src/map_handler.c:224
+#: src/map_handler.c:194
 msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
 msgstr "Schakelt Mapnik-modus in.  In deze modus worden door Mapnik gegenereerde kaarten gebruikt (bijvoorbeeld uit gegevens van OpenStreetMap)."
 
-#: src/map_handler.c:248
+#: src/map_handler.c:218
 msgid "Shown map type"
 msgstr "Kaarttype tonen"
 
-#: src/map_handler.c:255
-msgid "Street map"
-msgstr "Stratenkaart"
-
-#: src/map_handler.c:265
-msgid "Topo map"
-msgstr "Topografische kaart"
-
-#: src/map_handler.c:372
+#: src/map_handler.c:316
 msgid "Error in line "
 msgstr "Fout in regel "
 
-#: src/map_handler.c:374
+#: src/map_handler.c:318
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -787,11 +1052,11 @@ msgstr ""
 "in 'map_koord.txt'.  Anders kunnen deze kaarten niet getoond worden!\n"
 "Gebruik 'map_*' voor stratenkaarten en 'top_*' voor topografische kaarten."
 
-#: src/map_handler.c:700
+#: src/map_handler.c:647
 msgid " Mapfile could not be loaded:"
 msgstr " Kaartbestand kan niet worden geladen:"
 
-#: src/map_handler.c:750
+#: src/map_handler.c:697
 msgid "Map found!"
 msgstr "Kaart gevonden!"
 
@@ -799,219 +1064,211 @@ msgstr "Kaart gevonden!"
 msgid "can't open NMEA output file"
 msgstr "Kan NMEA-uitvoerbestand niet openen"
 
-#: src/nmea_handler.c:491
-msgid "Map"
-msgstr "Kaart"
-
-#: src/poi.c:365
+#: src/poi.c:366
 #, c-format
 msgid "%ld(%d) rows read\n"
 msgstr "%ld(%d) rijen gelezen\n"
 
-#: src/poi.c:1150 src/wlan.c:316
+#: src/poi.c:1155 src/wlan.c:317
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%ld(%d) rijen gelezen in %.2f seconden\n"
 
-#: src/poi_gui.c:162
+#: src/poi_gui.c:164
 #, c-format
 msgid " Found %d matching entries (Limit reached)."
 msgstr " %d items gevonden (limiet bereikt)."
 
-#: src/poi_gui.c:168
+#: src/poi_gui.c:170
 #, c-format
 msgid " Found %d matching entries."
 msgstr " %d items gevonden."
 
-#: src/poi_gui.c:482 src/poi_gui.c:1005
+#: src/poi_gui.c:485 src/poi_gui.c:1008
 msgid "POI-Info"
 msgstr "Bezienswaardigheid-info"
 
-#: src/poi_gui.c:512 src/poi_gui.c:961
+#: src/poi_gui.c:515 src/poi_gui.c:964
 msgid "Comment"
 msgstr "Opmerking"
 
-#: src/poi_gui.c:519
+#: src/poi_gui.c:522
 msgid "private"
 msgstr "privé"
 
-#: src/poi_gui.c:560 src/settings.c:745
-msgid "Altitude"
-msgstr "Hoogte"
-
-#: src/poi_gui.c:610
+#: src/poi_gui.c:613
 msgid "Basic Data"
 msgstr "Basisgegevens"
 
-#: src/poi_gui.c:639
+#: src/poi_gui.c:642
 msgid "Extra Data"
 msgstr "Extra gegevens"
 
-#: src/poi_gui.c:715
+#: src/poi_gui.c:718
 msgid "Lookup Point of Interest"
 msgstr "Bezienswaardigheid opzoeken"
 
-#: src/poi_gui.c:758
+#: src/poi_gui.c:761
 msgid "<i>Search Text:</i>"
 msgstr "<i>Zoektekst:</i>"
 
-#: src/poi_gui.c:781
+#: src/poi_gui.c:784
 msgid "<i>max. Distance:</i>"
 msgstr "<i>maximum afstand:</i>"
 
-#: src/poi_gui.c:799
+#: src/poi_gui.c:802
 msgid "km from"
 msgstr "km van"
 
-#: src/poi_gui.c:804
+#: src/poi_gui.c:807
 msgid "current position"
 msgstr "huidige positie"
 
-#: src/poi_gui.c:814
+#: src/poi_gui.c:817
 msgid "Search near current Position"
 msgstr "Rond huidige positie zoeken"
 
-#: src/poi_gui.c:819
+#: src/poi_gui.c:822
 msgid "Destination/Cursor"
 msgstr "Doel/cursor"
 
-#: src/poi_gui.c:831
+#: src/poi_gui.c:834
 msgid "Search near selected Destination"
 msgstr "Rond geselecteerde bestemming zoeken"
 
-#: src/poi_gui.c:837
+#: src/poi_gui.c:840
 msgid "<i>POI-Types:</i>"
 msgstr "<i>Bezienswaardigheidssoorten:</i>"
 
-#: src/poi_gui.c:863
+#: src/poi_gui.c:866
 msgid "all"
 msgstr "alle"
 
-#: src/poi_gui.c:873
+#: src/poi_gui.c:876
 msgid "Search all POI-Categories"
 msgstr "Alle bezienswaardigheidscategorieën doorzoeken"
 
-#: src/poi_gui.c:876
+#: src/poi_gui.c:879
 msgid "selected:"
 msgstr "geselecteerd:"
 
-#: src/poi_gui.c:882
+#: src/poi_gui.c:885
 msgid "Search only in selected POI-Categories"
 msgstr "Alleen in geselecteerde bezienswaardigheidscategorieën zoeken"
 
-#: src/poi_gui.c:887
+#: src/poi_gui.c:890
 msgid "Search Criteria"
 msgstr "Zoekcriteria"
 
-#: src/poi_gui.c:991
+#: src/poi_gui.c:994
 msgid " Please enter your search criteria!"
 msgstr " Voer uw zoekvoorwaarden in!"
 
-#: src/poi_gui.c:1008
+#: src/poi_gui.c:1011
 msgid "Show detailed Information for selected Point of Interest"
 msgstr "Gedetailleerde informatie tonen voor de geselecteerde bezienswaardigheid"
 
-#: src/poi_gui.c:1014
+#: src/poi_gui.c:1017
 msgid "Results"
 msgstr "Resultaten"
 
-#: src/poi_gui.c:1038
+#: src/poi_gui.c:1041
 msgid "Edit _Route"
 msgstr "Route be_werken"
 
-#: src/poi_gui.c:1042
+#: src/poi_gui.c:1045
 msgid "Switch to Add selected entry to Route"
 msgstr "Geselecteerd item aan route toevoegen"
 
-#: src/poi_gui.c:1052
+#: src/poi_gui.c:1055
 msgid "Delete selected entry"
 msgstr "Geselecteerd item verwijderen"
 
-#: src/poi_gui.c:1069
+#: src/poi_gui.c:1072
 msgid "Jump to POI"
 msgstr "Naar bezienswaardigheid springen"
 
-#: src/poi_gui.c:1071
+#: src/poi_gui.c:1074
 msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
 msgstr "Naar geselecteerd item springen (en zonodig positiemodus inschakelen)"
 
-#: src/poi_gui.c:1089
+#: src/poi_gui.c:1092
 msgid "Select Target"
 msgstr "Doel selecteren"
 
-#: src/poi_gui.c:1091
+#: src/poi_gui.c:1094
 msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
 msgstr "Geselecteerd item als bestemming gebruiken (en zonodig positiemodus verlaten)"
 
-#: src/poi_gui.c:1103 src/poi_gui.c:1336
+#: src/poi_gui.c:1106 src/poi_gui.c:1339
 msgid "Close this window"
 msgstr "Dit venster sluiten"
 
-#: src/poi_gui.c:1167
+#: src/poi_gui.c:1170
 msgid "Edit Route"
 msgstr "Route bewerken"
 
-#: src/poi_gui.c:1236
+#: src/poi_gui.c:1239
 msgid "Trip"
 msgstr "Trip"
 
-#: src/poi_gui.c:1251
+#: src/poi_gui.c:1254
 msgid "Route List"
 msgstr "Routelijst"
 
-#: src/poi_gui.c:1271
+#: src/poi_gui.c:1274
 msgid "Stop Route"
 msgstr "Route beëindigen"
 
-#: src/poi_gui.c:1273
+#: src/poi_gui.c:1276
 msgid "Stop the Route Mode"
 msgstr "Routemodus stoppen"
 
-#: src/poi_gui.c:1279
+#: src/poi_gui.c:1282
 msgid "Start Route"
 msgstr "Route beginnen"
 
-#: src/poi_gui.c:1281
+#: src/poi_gui.c:1284
 msgid "Start the Route Mode"
 msgstr "Routemodus starten"
 
-#: src/poi_gui.c:1298
+#: src/poi_gui.c:1301
 msgid "Remove selected Entry from Route"
 msgstr "Geselecteerd item uit route verwijderen"
 
-#: src/poi_gui.c:1313
+#: src/poi_gui.c:1316
 msgid "Cancel Route"
 msgstr "Route annuleren"
 
-#: src/poi_gui.c:1315
+#: src/poi_gui.c:1318
 msgid "Discard Route"
 msgstr "Route verwerpen"
 
-#: src/poi_gui.c:1325
+#: src/poi_gui.c:1328
 msgid "Export current route to a GPX File"
 msgstr "Huidige route naar GPX-bestand exporteren"
 
-#: src/routes.c:411
+#: src/routes.c:421
 msgid "Waypoint"
 msgstr "Padpunt"
 
-#: src/routes.c:424
+#: src/routes.c:434
 msgid "Define route"
 msgstr "Route definiëren"
 
-#: src/routes.c:432
+#: src/routes.c:442
 msgid "Start route"
 msgstr "Route beginnen"
 
-#: src/routes.c:441
+#: src/routes.c:451
 msgid "Take all WP as route"
 msgstr "Alle padpunten als route gebruiken"
 
-#: src/routes.c:446
+#: src/routes.c:456
 msgid "Abort route"
 msgstr "Route afbreken"
 
-#: src/routes.c:506
+#: src/routes.c:516
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1019,7 +1276,7 @@ msgstr ""
 "Klik op de padpuntenlijst om\n"
 "padpunten toe te voegen"
 
-#: src/routes.c:509
+#: src/routes.c:519
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1027,363 +1284,351 @@ msgstr ""
 "Klik op een item in de lijst om het\n"
 "volgende padpunt te selecteren"
 
-#: src/routes.c:557
+#: src/routes.c:567
 msgid "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr "Maakt van alle padpunten een route.  Het bestand wordt gesorteerd op volgorde, niet op afstand."
 
-#: src/routes.c:561
+#: src/routes.c:571
 msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
 msgstr "Klik hier om uw reis te beginnen.  GpsDrive gidst u langs de padpunten in deze lijst."
 
-#: src/routes.c:564
+#: src/routes.c:574
 msgid "Abort your journey"
 msgstr "Reis afbreken"
 
-#: src/routes.c:654
+#: src/routes.c:664
 msgid "Routepoint"
 msgstr "Routepunt"
 
-#: src/routes.c:655
+#: src/routes.c:665
 msgid "Quicksaved Routepoint"
 msgstr "Snel-opgeslagen routepunt"
 
-#: src/routes.c:728
+#: src/routes.c:738
 msgid "Routepoint added."
 msgstr "Routepunt toegevoegd."
 
-#: src/routes.c:810
+#: src/routes.c:833
 msgid "Route saved"
 msgstr "Route is opgeslagen"
 
-#: src/settings.c:409 src/settings.c:417
+#: src/settings.c:407 src/settings.c:415
 msgid "EnterYourName"
 msgstr "(vul hier uw naam in)"
 
-#: src/settings.c:420
+#: src/settings.c:418
 msgid "You should change your name in the first field!"
 msgstr "Verander de naam in het eerste veld!"
 
-#: src/settings.c:738
+#: src/settings.c:637
+msgid "Show Waypoints found in file"
+msgstr "In bestand gevonden padpunten tonen"
+
+#: src/settings.c:746
 msgid "Choose here the unit for the display of distances."
 msgstr "Hier kunt u de eenheid voor afstanden instellen."
 
-#: src/settings.c:756
+#: src/settings.c:764
 msgid "Choose here the unit for the display of altitudes."
 msgstr "Hier kunt u de eenheid voor hoogtes instellen."
 
-#: src/settings.c:763
+#: src/settings.c:771
 msgid "Coordinates"
 msgstr "Coördinaten"
 
-#: src/settings.c:774
+#: src/settings.c:782
 msgid "Choose here the format for the coordinates display."
 msgstr "Hier kunt u de opmaak voor coördinatenweergave instellen."
 
-#: src/settings.c:802 src/settings.c:1074
+#: src/settings.c:810 src/settings.c:1083
 msgid "Automatic"
 msgstr "Automatisch"
 
-#: src/settings.c:806 src/settings.c:1078
+#: src/settings.c:814 src/settings.c:1087
 msgid "On"
 msgstr "Aan"
 
-#: src/settings.c:810 src/settings.c:1082
+#: src/settings.c:818 src/settings.c:1091
 msgid "Off"
 msgstr "Uit"
 
-#: src/settings.c:814
+#: src/settings.c:822
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
 msgstr "Indien geactiveerd, beweegt de positiewijzer naar het geselecteerde doel om een bewegend voertuig te simuleren, als GPS niet beschikbaar is."
 
-#: src/settings.c:818
+#: src/settings.c:826
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
 msgstr "Indien geactiveerd, beweegt de positiewijzer naar het geselecteerde doel om een bewegend voertuig te simuleren, altijd."
 
-#: src/settings.c:822
+#: src/settings.c:830
 msgid "Switches simulation mode off"
 msgstr "Schakelt nachtmodus uit"
 
-#: src/settings.c:849
+#: src/settings.c:857
 msgid "Maximum CPU load (in %)"
 msgstr "Maximale processorbelasting (in %)"
 
-#: src/settings.c:855
-#, fuzzy, c-format
+#: src/settings.c:864
+#, no-c-format
 msgid ""
-"Select the approx. maximum CPU load.\n"
-"Use 20-30% on notebooks while on battery to save power. This effects the refresh rate of the map screen."
+"Select the approximate maximum CPU load.\n"
+"Use 20-30% on notebooks while on battery, to save power. This affects the refresh rate of the map screen."
 msgstr ""
 "Selecteer (bij benadering) de maximale processorbelasting.\n"
 "Gebruik op laptops 20 tot 30%, om accuverbruik te beperken.\n"
-"Dit beïnvloedt de verversingsfrequentie van het kaartscherm\n"
+"Dit beïnvloedt de verversingsfrequentie van het kaartscherm."
 
-#: src/settings.c:879
+#: src/settings.c:888
 msgid "Maps directory"
 msgstr "Kaartenmap"
 
-#: src/settings.c:880
+#: src/settings.c:889
 msgid "Select Maps Directory"
 msgstr "Selecteer de kaartenmap"
 
-#: src/settings.c:886
+#: src/settings.c:895
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
 msgstr ""
 "Pad naar de kaartbestanden.  In de opgegeven map dient ook het\n"
 "indexbestand 'map_koord.txt' aanwezig te zijn."
 
-#: src/settings.c:907
+#: src/settings.c:916
 msgid "<b>Units</b>"
 msgstr "<b>Eenheden</b>"
 
-#: src/settings.c:915
+#: src/settings.c:924
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Diversen</b>"
 
-#: src/settings.c:923
+#: src/settings.c:932
 msgid "<b>Map Settings</b>"
 msgstr "<b>Kaartinstellingen</b>"
 
-#: src/settings.c:935
+#: src/settings.c:944
 msgid "General"
 msgstr "Algemeen"
 
-#: src/settings.c:971
+#: src/settings.c:980
 msgid "Show grid"
 msgstr "Raster tonen"
 
-#: src/settings.c:973
+#: src/settings.c:982
 msgid "This will show a grid over the map"
 msgstr "Toont een raster over de kaart"
 
-#: src/settings.c:988
+#: src/settings.c:997
 msgid "Show Shadows"
 msgstr "Schaduw tonen"
 
-#: src/settings.c:990
+#: src/settings.c:999
 msgid "Switches shadows on map on or off"
 msgstr "Schakelt gebruik van schaduwen op de kaart aan of uit"
 
-#: src/settings.c:1005
+#: src/settings.c:1014
 msgid "Show zoom level"
 msgstr "Zoomniveau tonen"
 
-#: src/settings.c:1007
+#: src/settings.c:1016
 msgid "This will show the current zoom level of the map"
 msgstr "Toont het huidige zoomniveau van de kaart"
 
-#: src/settings.c:1022
+#: src/settings.c:1031
 msgid "Show scalebar"
 msgstr "Schaalbalk tonen"
 
-#: src/settings.c:1024
+#: src/settings.c:1033
 msgid "This will show the scalebar in the map"
 msgstr "Toont een schaalbalk op de kaart"
 
-#: src/settings.c:1039
+#: src/settings.c:1048
 msgid "Position Marker"
 msgstr "Positiemarkering"
 
-#: src/settings.c:1050
-msgid "Choose the apperance of your position marker."
-msgstr "Kies het uiterlijk van uw positiemarkering"
+#: src/settings.c:1059
+msgid "Choose the appearance of your position marker."
+msgstr "Kies het uiterlijk van uw positiemarkering."
 
-#: src/settings.c:1086
+#: src/settings.c:1095
 msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
 msgstr "Schakelt automatisch naar nachtmodus wanneer het buiten donker is.  Druk op 'N' om nachtmodus uit te schakelen."
 
-#: src/settings.c:1089
+#: src/settings.c:1098
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr "Schakelt nachtmodus in.  Druk op 'N' om nachtmodus uit te schakelen."
 
-#: src/settings.c:1092
+#: src/settings.c:1101
 msgid "Switches night mode off"
 msgstr "Schakelt nachtmodus uit"
 
-#: src/settings.c:1122
-msgid "Track"
-msgstr "Spoor"
-
-#: src/settings.c:1127
+#: src/settings.c:1136
 msgid "Choose Track color"
 msgstr "Kies de spoorkleur"
 
-#: src/settings.c:1131
+#: src/settings.c:1140
 msgid "Set here the color of the drawn track"
 msgstr "Stel hier de kleur in van het getekende spoor"
 
-#: src/settings.c:1136
+#: src/settings.c:1145
 msgid "Set here the line style of the drawn track"
 msgstr "Stel hier de lijnstijl in van het getekende spoor"
 
-#: src/settings.c:1144
-msgid "Route"
-msgstr "Route"
-
-#: src/settings.c:1149
+#: src/settings.c:1158
 msgid "Choose Route color"
 msgstr "Kies de routekleur"
 
-#: src/settings.c:1153
+#: src/settings.c:1162
 msgid "Set here the color of the drawn route"
 msgstr "Stel hier de kleur in van de getekende route"
 
-#: src/settings.c:1158
+#: src/settings.c:1167
 msgid "Set here the line style of the drawn route"
 msgstr "Stel hier de lijnstijl in van de getekende route"
 
-#: src/settings.c:1166 src/settings.c:2046
-msgid "Friends"
-msgstr "Vrienden"
-
-#: src/settings.c:1171
+#: src/settings.c:1180
 msgid "Choose Friends color"
 msgstr "Kies de vriendenkleur"
 
-#: src/settings.c:1175
+#: src/settings.c:1184
 msgid "Set here the text color of the drawn friends"
 msgstr "Stel hier de tekstkleur voor de getoonde vrienden in"
 
-#: src/settings.c:1180
+#: src/settings.c:1189
 msgid "Choose font for friends"
 msgstr "Kies lettertype voor vrienden"
 
-#: src/settings.c:1186
+#: src/settings.c:1195
 msgid "Set here the font of the drawn friends"
 msgstr "Stel hier het lettertype voor de getoonde vrienden in"
 
-#: src/settings.c:1189 src/settings.c:1849
+#: src/settings.c:1198 src/settings.c:1858
 msgid "Waypoints"
 msgstr "Padpunten"
 
-#: src/settings.c:1194
+#: src/settings.c:1203
 msgid "Choose Waypoints label color"
 msgstr "Kies kleur voor padpuntenlabels"
 
-#: src/settings.c:1198
+#: src/settings.c:1207
 msgid "Set here the text color of the waypoint labels"
 msgstr "Stel hier de kleur van de padpuntenlabels in"
 
-#: src/settings.c:1203
+#: src/settings.c:1212
 msgid "Choose font for waypoint labels"
 msgstr "Kies lettertype voor padpuntenlabels"
 
-#: src/settings.c:1209
+#: src/settings.c:1218
 msgid "Set here the font of waypoint labels"
 msgstr "Stel hier het lettertype voor de padpuntenlabels in"
 
-#: src/settings.c:1212
+#: src/settings.c:1221
 msgid "Dashboard"
 msgstr "Instrumentenpaneel"
 
-#: src/settings.c:1217
+#: src/settings.c:1226
 msgid "Choose color for dashboard"
 msgstr "Kies kleur voor instrumentenpaneel"
 
-#: src/settings.c:1221
+#: src/settings.c:1230
 msgid "Set here the color of the dashboard"
 msgstr "Stel hier de kleur van het instrumentenpaneel in"
 
-#: src/settings.c:1226
+#: src/settings.c:1235
 msgid "Choose font for dashboard"
 msgstr "Kies lettertype voor instrumentenpaneel"
 
-#: src/settings.c:1232
+#: src/settings.c:1241
 msgid "Set here the font of the dashboard"
 msgstr "Stel hier het lettertype voor het instrumentenpaneel in"
 
-#: src/settings.c:1273
+#: src/settings.c:1282
 msgid "<b>Fonts, Colors, Styles</b>"
 msgstr "<b>Lettertypen, Kleuren, Stijlen</b>"
 
-#: src/settings.c:1284
+#: src/settings.c:1293
 msgid "<b>Nightmode</b>"
 msgstr "<b>Nachtmodus</b>"
 
-#: src/settings.c:1295
+#: src/settings.c:1304
 msgid "<b>Map Features</b>"
 msgstr "<b>Kaartfuncties</b>"
 
-#: src/settings.c:1309
+#: src/settings.c:1318
 msgid "GUI"
-msgstr ""
+msgstr "Uiterlijk"
 
-#: src/settings.c:1335
+#: src/settings.c:1344
 msgid "Travel Mode"
 msgstr "Reiswijze"
 
-#: src/settings.c:1337
+#: src/settings.c:1346
 msgid "Car"
 msgstr "Auto"
 
-#: src/settings.c:1339
+#: src/settings.c:1348
 msgid "Bike"
 msgstr "Fiets"
 
-#: src/settings.c:1341
+#: src/settings.c:1350
 msgid "Walk"
 msgstr "Lopen"
 
-#: src/settings.c:1343
+#: src/settings.c:1352
 msgid "Boat"
 msgstr "Boot"
 
-#: src/settings.c:1345
+#: src/settings.c:1354
 msgid "Airplane"
 msgstr "Vliegtuig"
 
-#: src/settings.c:1355
+#: src/settings.c:1364
 msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
-msgstr "Kies uw reiswijze.  Dit bepaalt welk pictogram gebruikt wordt om uw positie weer te geven."
+msgstr "Kies uw manier van reizen.  Dit bepaalt welk pictogram gebruikt wordt om uw positie weer te geven."
 
-#: src/settings.c:1381
+#: src/settings.c:1390
 msgid "Direction"
 msgstr "Richting"
 
-#: src/settings.c:1383
-msgid "Speed"
-msgstr "Snelheid"
-
-#: src/settings.c:1384
+#: src/settings.c:1393
 msgid "GPS Status"
 msgstr "GPS-status"
 
-#: src/settings.c:1426
+#: src/settings.c:1435
 msgid "Switch on for speech output of the direction to the target"
 msgstr "Schakel dit in voor spraakuitvoer over de richting naar het doel"
 
-#: src/settings.c:1429
+#: src/settings.c:1438
 msgid "Switch on for speech output of the distance to the target"
 msgstr "Schakel dit in voor spraakuitvoer over de afstand tot het doel"
 
-#: src/settings.c:1432
+#: src/settings.c:1441
 msgid "Switch on for speech output of your current speed"
 msgstr "Schakel dit in voor spraakuitvoer over uw huidige snelheid"
 
-#: src/settings.c:1434
+#: src/settings.c:1443
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr "Schakel dit in voor spraakuitvoer over de status van uw GPS-signaal"
 
-#: src/settings.c:1441
+#: src/settings.c:1450
 msgid "<b>Navigation Settings</b>"
 msgstr "<b>Navigatie-instellingen</b>"
 
-#: src/settings.c:1449
+#: src/settings.c:1458
 msgid "<b>Speech Output</b>"
 msgstr "<b>Spraakuitvoer</b>"
 
-#: src/settings.c:1457
+#: src/settings.c:1466
 msgid "Navigation"
 msgstr "Navigatie"
 
-#: src/settings.c:1491 src/settings.c:1739
+#: src/settings.c:1500 src/settings.c:1748
 msgid "Waypoints File"
 msgstr "Padpuntenbestand"
 
-#: src/settings.c:1493 src/settings.c:1741
+#: src/settings.c:1502 src/settings.c:1750
 msgid "Select Waypoints File"
 msgstr "Selecteer een padpuntenbestand"
 
-#: src/settings.c:1501 src/settings.c:1749
+#: src/settings.c:1510 src/settings.c:1758
 msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
@@ -1391,63 +1636,55 @@ msgstr ""
 "Kies het padpuntenbestand dat gebruikt moet worden!\n"
 "Momenteel worden alleen bestanden met de 'way.txt'-opmaak van GpsDrive herkend."
 
-#: src/settings.c:1517
+#: src/settings.c:1526
 msgid "Default search radius"
 msgstr "Standaard zoekradius"
 
-#: src/settings.c:1527
+#: src/settings.c:1536
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
 msgstr "Kies de standaard zoekradius (in km) voor het bezienswaardigheden-zoekvenster."
 
-#: src/settings.c:1529
-msgid "km"
-msgstr "km"
-
-#: src/settings.c:1531
+#: src/settings.c:1540
 msgid "Limit results to"
 msgstr "Resultaten beperken tot"
 
-#: src/settings.c:1540
+#: src/settings.c:1549
 msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
 msgstr "Kies een maximum voor het aantal getoonde items in het bezienswaardigheden-zoekvenster.  Een te hoge waarde kan de werking vertragen."
 
-#: src/settings.c:1543
+#: src/settings.c:1552
 msgid "entries"
 msgstr "items"
 
-#: src/settings.c:1564
+#: src/settings.c:1573
 msgid "Show POI Label"
 msgstr "Bezienswaardigheidlabel tonen"
 
-#: src/settings.c:1566
+#: src/settings.c:1575
 msgid "This will print the name next to the POI-Icon"
 msgstr "Toont de naam naast het bezienswaardigheden-pictogram"
 
-#: src/settings.c:1581
+#: src/settings.c:1590
 msgid "POI-Theme"
 msgstr "Bezienswaardighedenthema"
 
-#: src/settings.c:1610
+#: src/settings.c:1619
 msgid "POI-Filter"
 msgstr "Bezienswaardighedenfilter"
 
-#: src/settings.c:1679
+#: src/settings.c:1688
 msgid "<b>Waypoints</b>"
 msgstr "<b>Padpunten</b>"
 
-#: src/settings.c:1687
+#: src/settings.c:1696
 msgid "<b>POI Search Settings</b>"
 msgstr "<b>Bezienswaardigheden-zoekinstellingen</b>"
 
-#: src/settings.c:1697
+#: src/settings.c:1706
 msgid "<b>POI Display</b>"
 msgstr "<b>Bezienswaardigheden-weergave</b>"
 
-#: src/settings.c:1711
-msgid "POI"
-msgstr "Bezienswaardigheid"
-
-#: src/settings.c:1787
+#: src/settings.c:1796
 msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
@@ -1455,15 +1692,15 @@ msgstr ""
 "Gebruik niet meer dan 100\n"
 "padpuntbestanden (way*.txt)!"
 
-#: src/settings.c:1833
+#: src/settings.c:1842
 msgid "<b>File Dialog Selection</b>"
 msgstr "<b>Bestandskeuze-dialoog</b>"
 
-#: src/settings.c:1841
+#: src/settings.c:1850
 msgid "<b>Quick Select File</b>"
 msgstr "<b>Snelle bestandskeuze</b>"
 
-#: src/settings.c:1880
+#: src/settings.c:1889
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
@@ -1471,75 +1708,75 @@ msgstr ""
 "Als u deze dienst inschakelt, kan <span color=\"red\">iedereen</span> die\n"
 "dezelfde server gebruikt uw positie zien!"
 
-#: src/settings.c:1885
+#: src/settings.c:1894
 msgid "Your name"
 msgstr "Uw naam"
 
-#: src/settings.c:1894
+#: src/settings.c:1903
 msgid "Enable friends service"
 msgstr "Vriendenserver inschakelen"
 
-#: src/settings.c:1904
+#: src/settings.c:1913
 msgid "Show only positions newer than"
 msgstr "Alleen posities tonen die jonger zijn dan"
 
-#: src/settings.c:1908
+#: src/settings.c:1917
 msgid "Days"
 msgstr "dagen"
 
-#: src/settings.c:1910
+#: src/settings.c:1919
 msgid "Hours"
 msgstr "uren"
 
-#: src/settings.c:1912
+#: src/settings.c:1921
 msgid "Minutes"
 msgstr "minuten"
 
-#: src/settings.c:1958
+#: src/settings.c:1967
 msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
 msgstr "Schakelt gebruik van vriendenserver in of uit.  U dient een gebruikersnaam op te geven; gebruik niet de standaardnaam!"
 
-#: src/settings.c:1962
+#: src/settings.c:1971
 msgid "Set here the name which will be shown near your position."
 msgstr "Geef hier de naam op die voor vrienden bij uw positie getoond zal worden."
 
-#: src/settings.c:1965
+#: src/settings.c:1974
 msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
 msgstr "Geef hier de maximum leeftijd op voor de getoonde posities van vrienden.  Oudere posities worden niet getoond."
 
-#: src/settings.c:1984
+#: src/settings.c:1993
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
-#: src/settings.c:1992
+#: src/settings.c:2001
 msgid "Lookup"
 msgstr "Opzoeken"
 
-#: src/settings.c:2008
+#: src/settings.c:2017
 msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
-msgstr "Geef hier de volledige naam op van de te gebruiken vriendenserver (bijvoorbeeld friend.gpsdrive.de) en druk daarna op de 'Zoeken'."
+msgstr "Geef hier de volledige naam op van de te gebruiken vriendenserver (bijvoorbeeld friend.gpsdrive.de) en druk daarna op 'Zoeken'."
 
-#: src/settings.c:2012
+#: src/settings.c:2021
 msgid "Press this button to resolve the friends server name."
 msgstr "Klik op deze knop om de naam van de vriendenserver te herleiden tot een IP."
 
-#: src/settings.c:2015
+#: src/settings.c:2024
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr "Geef hier het te gebruiken IP-adres op (bijvoorbeeld 127.0.0.1) als u hierboven geen naam instelt."
 
-#: src/settings.c:2023
+#: src/settings.c:2032
 msgid "<b>General</b>"
 msgstr "<b>Algemeen</b>"
 
-#: src/settings.c:2034
+#: src/settings.c:2043
 msgid "<b>Server</b>"
 msgstr "<b>Server</b>"
 
-#: src/settings.c:2113
+#: src/settings.c:2122
 msgid "GpsDrive Settings"
 msgstr "GpsDrive-instellingen"
 
-#: src/splash.c:132
+#: src/splash.c:131
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1559,7 +1796,7 @@ msgstr ""
 "Control + rechter muisknop :  padpunt instellen op huidige kaartpositie\n"
 "\n"
 
-#: src/splash.c:140
+#: src/splash.c:139
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1585,7 +1822,7 @@ msgstr ""
 "+ :  inzoomen\n"
 "- :  uitzoomen\n"
 
-#: src/splash.c:151
+#: src/splash.c:150
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1601,11 +1838,11 @@ msgstr ""
 "Suggesties voor verbeteringen zijn welkom!\n"
 "\n"
 
-#: src/splash.c:161
+#: src/splash.c:160
 msgid "GpsDrive v"
 msgstr "GpsDrive versie"
 
-#: src/splash.c:167
+#: src/splash.c:166
 msgid ""
 "\n"
 "\n"
@@ -1615,7 +1852,7 @@ msgstr ""
 "\n"
 "U kunt nieuwe versies vinden op http://www.gpsdrive.de\n"
 
-#: src/splash.c:171
+#: src/splash.c:170
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1623,39 +1860,39 @@ msgstr ""
 "Waarschuwing: Niet gebruiken voor serieuze navigatiedoeleinden.\n"
 "\n"
 
-#: src/splash.c:176
+#: src/splash.c:175
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr "Zie de handleiding ('man gpsdrive') voor nadere details!"
 
-#: src/splash.c:181
+#: src/splash.c:180
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Muisbesturing (klik op the kaart):\n"
 
-#: src/splash.c:189
+#: src/splash.c:188
 msgid "Short cuts:\n"
 msgstr "Sneltoetsen:\n"
 
-#: src/splash.c:196
+#: src/splash.c:195
 msgid "The other key shortcuts are marked as "
 msgstr "De andere sneltoetsen worden aangegeven met "
 
-#: src/splash.c:199
+#: src/splash.c:198
 msgid "underlined"
 msgstr "onderstreepte"
 
-#: src/splash.c:202
+#: src/splash.c:201
 msgid " letters in the button text.\n"
 msgstr " letters in de knoptekst.\n"
 
-#: src/splash.c:205
+#: src/splash.c:204
 msgid "Have a lot of fun!"
 msgstr "Veel plezier!"
 
-#: src/splash.c:322
+#: src/splash.c:321
 msgid "From:"
 msgstr "Van:"
 
-#: src/splash.c:393
+#: src/splash.c:392
 #, c-format
 msgid ""
 "You received a message from\n"
@@ -1664,19 +1901,19 @@ msgstr ""
 "U hebt een bericht ontvangen via de\n"
 "vriendenserver %s.\n"
 
-#: src/splash.c:405
+#: src/splash.c:404
 msgid "You received a message through the friends server from:\n"
 msgstr "U hebt via de vriendenserver een bericht ontvangen van:\n"
 
-#: src/splash.c:416
+#: src/splash.c:415
 msgid "Message text:\n"
 msgstr "Berichttekst:\n"
 
-#: src/splash.c:523
+#: src/splash.c:522
 msgid "Starting GPS Drive"
 msgstr "Starten van GPS-drive"
 
-#: src/splash.c:543
+#: src/splash.c:542
 #, c-format
 msgid ""
 "\n"
@@ -1691,15 +1928,15 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:611
+#: src/splash.c:610
 msgid "translator-credits"
 msgstr "Benno Schulenberg"
 
-#: src/splash.c:613
+#: src/splash.c:612
 msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
 msgstr "GpsDrive is een navigatiesysteem voor auto, fiets, boot, vliegtuig...  Het toont de positie van uw GPS-ontvanger op een zoombare kaart, en nog veel meer..."
 
-#: src/splash.c:616
+#: src/splash.c:615
 msgid ""
 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
@@ -1709,7 +1946,7 @@ msgstr ""
 "\n"
 "'GpsDrive' gebruikt gegevens van het 'OpenStreetMap Project' (http://www.openstreetmap.org), die vrijelijk verkrijgbaar zijn onder de voorwaarden van de 'Creative Commons Attribution-ShareAlike 2.0'-licentie."
 
-#: src/splash.c:623
+#: src/splash.c:622
 #, c-format
 msgid ""
 "\n"
@@ -1723,6 +1960,11 @@ msgstr ""
 "Installeer het programma als root met:\n"
 "make install\n"
 "\n"
+
+#: src/track.c:433
+#, c-format
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
+msgstr "sprong is meer dan 2000 km/u -- genegeerd\n"
 
 #: src/waypoint.c:686
 msgid "Add Point of Interest"
@@ -1751,3 +1993,12 @@ msgstr "Databank"
 #: src/waypoint.c:778
 msgid "way.txt File"
 msgstr "'way.txt'-bestand"
+
+#~ msgid "-x        create separate window for menu\n"
+#~ msgstr "-x         een apart venster openen voor het menu\n"
+
+#~ msgid "Street map"
+#~ msgstr "Stratenkaart"
+
+#~ msgid "Topo map"
+#~ msgstr "Topografische kaart"

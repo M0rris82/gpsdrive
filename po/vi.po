@@ -1,20 +1,21 @@
 # Vietnamese translation for GPS Drive.
 # Copyright © 2007 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gpsdrive package.
 # Clytie Siddall <clytie@riverland.net.au>, 2006-2007.
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive 2.10pre4\n"
+"Project-Id-Version: gpsdrive 2.10pre5\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-09-15 19:17+0200\n"
-"PO-Revision-Date: 2007-09-20 16:57+0930\n"
+"POT-Creation-Date: 2007-10-26 00:14+0200\n"
+"PO-Revision-Date: 2008-07-03 22:21+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: LocFactoryEditor 1.7b1\n"
+"X-Generator: LocFactoryEditor 1.7b3\n"
 
 #: src/battery.c:806
 msgid "Bat."
@@ -52,7 +53,7 @@ msgstr "đọc từ máy phục vụ Web"
 #: src/download_map.c:285 src/download_map.c:290 src/download_map.c:293
 #, c-format
 msgid "Connecting to %s"
-msgstr "Đang kết nối đến %s..."
+msgstr "Đang kết nối đến %s"
 
 #: src/download_map.c:405 src/download_map.c:411 src/download_map.c:414
 #, c-format
@@ -71,7 +72,7 @@ msgstr "Việc tải về BỊ LỖI."
 #: src/download_map.c:515
 #, c-format
 msgid "Download finished, got %dkB"
-msgstr "Mới tải về xong, đã nhận %dkB"
+msgstr "Hoàn tất tải về, đã nhận %d kB"
 
 #: src/download_map.c:823
 msgid "Select coordinates and scale"
@@ -81,13 +82,15 @@ msgstr "Chọn toạ độ và tỷ lệ"
 msgid "Download map"
 msgstr "Tải về bản đồ"
 
-#: src/download_map.c:854 src/gpsdrive.c:2453 src/gpsdrive.c:2537
-#: src/import_map.c:383 src/poi_gui.c:574 src/routes.c:411 src/waypoint.c:744
+#: src/download_map.c:854 src/gpsdrive.c:2419 src/gpsdrive.c:2503
+#: src/import_map.c:383 src/main_gui.c:1869 src/poi_gui.c:577 src/routes.c:421
+#: src/waypoint.c:744
 msgid "Latitude"
 msgstr "Độ vĩ"
 
-#: src/download_map.c:856 src/gpsdrive.c:2453 src/gpsdrive.c:2537
-#: src/import_map.c:385 src/poi_gui.c:567 src/routes.c:411 src/waypoint.c:758
+#: src/download_map.c:856 src/gpsdrive.c:2419 src/gpsdrive.c:2503
+#: src/import_map.c:385 src/main_gui.c:1882 src/poi_gui.c:570 src/routes.c:421
+#: src/waypoint.c:758
 msgid "Longitude"
 msgstr "Độ kinh"
 
@@ -122,28 +125,28 @@ msgid ""
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
 msgstr ""
 "\n"
-"Biến môi trường ủy nhiệm HTTP « HTTP_PROXY » không hợp lệ, phải có dạng « http://ủy_nhiệm.nhà_cung_cấp.vn:3128 »."
+"Biến môi trường ủy nhiệm HTTP « HTTP_PROXY » không hợp lệ, phải có định dạng « http://ủy_nhiệm.nhà_cung_cấp.vn:3128 »."
 
 #: src/friends.c:446
 msgid "unknown"
 msgstr "không rõ"
 
-#: src/friends.c:644
+#: src/friends.c:644 src/main_gui.c:589 src/main_gui.c:620 src/main_gui.c:654
 msgid "mi/h"
 msgstr "lý/giờ"
 
-#: src/friends.c:646
+#: src/friends.c:646 src/main_gui.c:593 src/main_gui.c:624 src/main_gui.c:658
 msgid "knots"
 msgstr "hải lý"
 
-#: src/friends.c:648
+#: src/friends.c:648 src/main_gui.c:597 src/main_gui.c:628 src/main_gui.c:662
 msgid "km/h"
-msgstr "cây số/giờ"
+msgstr "km/giờ"
 
 #: src/friendsd.c:550
 #, c-format
 msgid "server: please don't run me as root\n"
-msgstr "máy phục vụ : xin đừng chạy tôi với tư cách người chủ (root)\n"
+msgstr "trình phục vụ : không nên chạy trình này với tư cách người chủ (root)\n"
 
 #: src/friendsd.c:562
 #, c-format
@@ -158,15 +161,15 @@ msgstr ""
 "   %s -n tên_máy_phục_vụ\n"
 "đặt tên cho máy phục vụ\n"
 
-#: src/gpsdrive.c:798
+#: src/gpsdrive.c:788
 msgid "Warning!"
 msgstr "Cảnh báo !"
 
-#: src/gpsdrive.c:800
+#: src/gpsdrive.c:790
 msgid "You should not start GpsDrive as user root!!!"
-msgstr "Đừng khởi chạy trình GpsDrive với tư cách là người dùng chủ (root) !"
+msgstr "Không nên khởi chạy trình GpsDrive với tư cách là người dùng chủ (root) !"
 
-#: src/gpsdrive.c:1206
+#: src/gpsdrive.c:1196
 #, c-format
 msgid ""
 "\n"
@@ -178,226 +181,219 @@ msgstr ""
 "\n"
 "Cảnh báo : không thể nạp ảnh « gpsdriveanim.gif ».\n"
 "Hãy cài đặt chương trình này với tư cách\n"
-"người chủ (root) bằng lệnh:\n"
+"người chủ (root) bằng câu lệnh:\n"
 "make install\n"
 
-#: src/gpsdrive.c:1806
+#: src/gpsdrive.c:1803
 msgid "N"
 msgstr "B"
 
-#: src/gpsdrive.c:1813
+#: src/gpsdrive.c:1810
 msgid "S"
 msgstr "N"
 
-#: src/gpsdrive.c:1819
+#: src/gpsdrive.c:1816
 msgid "W"
 msgstr "T"
 
-#: src/gpsdrive.c:1825
+#: src/gpsdrive.c:1822
 msgid "E"
 msgstr "Đ"
 
-#: src/gpsdrive.c:1900
+#: src/gpsdrive.c:1897
 msgid "No map available for this position!"
 msgstr "Không có bản đồ sẵn sàng cho vị trí này !"
 
-#: src/gpsdrive.c:2205
-#, c-format
-msgid "distance jump is more then 2000km/h speed, ignoring\n"
-msgstr "bước khoảng cách hơn tốc độ 1000 cây số/giờ nên bỏ qua\n"
-
-#: src/gpsdrive.c:2296
+#: src/gpsdrive.c:2262
 msgid "Sending message to friends server..."
-msgstr "Đang gửi thông điệp cho máy phục vụ bạn bè..."
+msgstr "Đang gửi tin nhẳn cho máy phục vụ bạn bè..."
 
-#: src/gpsdrive.c:2374
+#: src/gpsdrive.c:2340
 msgid "Message for:"
-msgstr "Thông điệp cho :"
+msgstr "Tin nhẳn cho :"
 
-#: src/gpsdrive.c:2410
+#: src/gpsdrive.c:2376
 #, c-format
 msgid "Date: %s"
 msgstr "Ngày: %s"
 
-#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:505 src/poi_gui.c:930
-#: src/poi_gui.c:1222 src/settings.c:1976
+#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/poi_gui.c:508 src/poi_gui.c:933
+#: src/poi_gui.c:1225 src/settings.c:1985
 msgid "Name"
 msgstr "Tên"
 
-#: src/gpsdrive.c:2453 src/gpsdrive.c:2537 src/poi_gui.c:941
-#: src/poi_gui.c:1229 src/routes.c:411 src/settings.c:727 src/settings.c:1382
+#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/main_gui.c:496
+#: src/poi_gui.c:944 src/poi_gui.c:1232 src/routes.c:421 src/settings.c:735
+#: src/settings.c:1391
 msgid "Distance"
 msgstr "Khoảng cách"
 
-#: src/gpsdrive.c:2464
+#: src/gpsdrive.c:2430
 msgid "Please select message recipient"
-msgstr "Hãy chọn người nhận thông điệp"
+msgstr "Hãy chọn người nhận tin nhẳn"
 
-#: src/gpsdrive.c:2537 src/poi_gui.c:587 src/poi_gui.c:950
+#: src/gpsdrive.c:2503 src/poi_gui.c:590 src/poi_gui.c:953
 msgid "Type"
 msgstr "Kiểu"
 
-#: src/gpsdrive.c:2566
+#: src/gpsdrive.c:2532
 msgid "Select reference point"
 msgstr "Chọn điểm tham chiếu"
 
-#: src/gpsdrive.c:2570
+#: src/gpsdrive.c:2536
 msgid "Please select your destination"
-msgstr "Hãy chọn đích"
+msgstr "Hãy chọn đích đến"
 
-#: src/gpsdrive.c:2602
+#: src/gpsdrive.c:2568
 msgid "Edit route"
-msgstr "Sửa lộ trình"
+msgstr "Sửa đường"
 
-#: src/gpsdrive.c:2605
+#: src/gpsdrive.c:2571
 msgid "Create route"
-msgstr "Tạo lộ trình"
+msgstr "Tạo đường"
 
-#: src/gpsdrive.c:2703
+#: src/gpsdrive.c:2669
 msgid "Create a route using some waypoints from this list"
-msgstr "Tạo lộ trình bằng một số địa điểm từ danh sách này"
+msgstr "Tạo một đường đi dùng một số điểm nút địa danh từ danh sách này"
 
-#: src/gpsdrive.c:2708
+#: src/gpsdrive.c:2674
 msgid "Delete the selected waypoint from the waypoint list"
-msgstr "Xoá địa điểm đã chọn ra danh sách các địa điểm"
+msgstr "Xoá điểm nút địa danh đã chọn khỏi danh sách các điểm nút"
 
-#: src/gpsdrive.c:2712
+#: src/gpsdrive.c:2678
 msgid "Jump to the selected waypoint"
-msgstr "Nhảy tới địa điểm đã chọn"
+msgstr "Nhảy tới điểm nút được chọn"
 
-#: src/gpsdrive.c:2735
+#: src/gpsdrive.c:2701
 msgid "-v        show version\n"
 msgstr "-v\thiện _phiên bản_\n"
 
-#: src/gpsdrive.c:2736
+#: src/gpsdrive.c:2702
 msgid "-h        print this help\n"
-msgstr "-h\thiện _trợ giúp_ này\n"
+msgstr "-h\thiện trợ giúp này\n"
 
-#: src/gpsdrive.c:2737
+#: src/gpsdrive.c:2703
 msgid "-d        turn on debug info\n"
-msgstr "-d\thiện thông tin _gỡ lỗi_\n"
+msgstr "-d\thiện thông tin gỡ lỗi\n"
 
-#: src/gpsdrive.c:2738
-msgid "-D X      set debug Level to X\n"
+#: src/gpsdrive.c:2704
+msgid "-D X      set debugging level to X\n"
 msgstr "-D X      đặt cấp gỡ lỗi thành X\n"
 
-#: src/gpsdrive.c:2739
-msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
-msgstr "-T        chạy một số việc thử nội bộ (đừng khởi chạy gpsdrive)\n"
+#: src/gpsdrive.c:2705
+msgid "-T        do some internal unit tests (don't start gpsdrive)\n"
+msgstr "-T        chạy một số phép thử nội bộ (không khởi chạy gpsdrive)\n"
 
-#: src/gpsdrive.c:2740
+#: src/gpsdrive.c:2706
 msgid "-e        use Festival-Lite (flite) for speech output\n"
-msgstr "-e\tdùng Festival-Lite (flite) để nói kết xuất\n"
+msgstr "-e\tdùng Festival-Lite (flite) để xuất tiếng nói\n"
 
-#: src/gpsdrive.c:2741
-msgid "-o        serial device, pty master, or file for NMEA *output*\n"
-msgstr "-o\tthiết bị nối tiếp, pty chủ, hay tập tin cho kết xuất NMEA\n"
+#: src/gpsdrive.c:2707
+msgid "-o thing  serial device, pty master, or file to use for NMEA output\n"
+msgstr "-o cái\tthiết bị nối tiếp, pty chủ hay tập tin cho kết xuất NMEA\n"
 
-#: src/gpsdrive.c:2742
-msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
-msgstr "-f X\tChọn máy phục vụ bạn bè X, v.d. « friendsd.gpsdrive.de »\n"
+#: src/gpsdrive.c:2708
+msgid "-f server select friends server, e.g. friendsd.gpsdrive.de\n"
+msgstr "-f máy_phục_vụ\tchọn máy phục vụ bạn bè, v.d. « friendsd.gpsdrive.de »\n"
 
-#: src/gpsdrive.c:2744
-msgid "-X        Use DBUS for communication with gpsd. This disables serial and socket communication\n"
-msgstr ""
-"-X        Dùng DBUS để liên lạc với trình nền gpsd.\n"
-"\t\t(Cũng tắt khả năng liên lạc qua cổng nối tiếp hay ổ cắm)\n"
+#: src/gpsdrive.c:2710
+msgid "-X        use DBUS for communication with gpsd; this disables socket communication\n"
+msgstr "-X        dùng DBUS để liên lạc với trình nền gpsd, cũng tắt liên lạc qua ổ cắm\n"
 
-#: src/gpsdrive.c:2746
+#: src/gpsdrive.c:2712
 msgid ""
-"-l LANG   Select language of the voice,\n"
-"          LANG may be english, spanish or german\n"
+"-l lang.  select language of the voice output;\n"
+"          language may be 'english', 'spanish', or 'german'\n"
 msgstr ""
-"-l NGÔN_NGỮ  Chọn ngôn ngữ của tiếng nói.\n"
-"\tNGÔN_NGỮ có thể là tiếng Anh, Tây Ban Nha hay Đức\n"
+"-l ngôn_ngữ\t\tchọn ngôn ngữ của tiếng nói:\n"
+"\t• english\t\ttiếng Anh\n"
+"\t• spanish\t\ttiếng Tây Ban Nha\n"
+"\t• german\t\ttiếng Đức\n"
 
-#: src/gpsdrive.c:2748
-msgid ""
-"-s HEIGHT set height of the screen, if autodetection\n"
-"          don't satisfy you, X is i.e. 768,600,480,200\n"
-msgstr ""
-"-s CAO  đặt độ cao của màn hình, nếu không tự động\n"
-"phát hiện được. Giá trị có dạng như 768,600,480,200\n"
+#: src/gpsdrive.c:2714
+msgid "-g geom.  set window geometry, e.g. 800x600\n"
+msgstr "-g SỐxSỐ  đặt các chiếu của cửa sổ, v.d. 800x600\n"
 
-#: src/gpsdrive.c:2750
-msgid "-r WIDTH  set width of the screen, only with -s\n"
-msgstr "-r RỘNG  đặt độ rộng của màn hình (cũng cần « -s »)\n"
-
-#: src/gpsdrive.c:2751
+#: src/gpsdrive.c:2715
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1\tdùng con chuột có chỉ một cái nút, v.d. dùng màn hình sờ\n"
+msgstr "-1\tdùng con chuột có chỉ một nút, v.d. dùng màn hình sờ\n"
 
-#: src/gpsdrive.c:2752
-msgid "-a        display APM Stuff ( battery status, Temperature)\n"
+#: src/gpsdrive.c:2716
+msgid "-a        display APM stuff (battery status, temperature)\n"
 msgstr "-a        hiển thị thông tin APM (trạng thái pin, nhiệt độ)\n"
 
-#: src/gpsdrive.c:2753
-msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b TÊN\tTên máy phục vụ NMEA (nếu gpsd chạy trên máy khác)\n"
+#: src/gpsdrive.c:2717
+msgid "-b server servername for NMEA server (if gpsd runs on another host)\n"
+msgstr "-b TÊN\ttên máy phục vụ NMEA (nếu gpsd chạy trên máy khác)\n"
 
-#: src/gpsdrive.c:2754
-msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
-msgstr "-c ĐIỂM\tđặt vị trí đầu ở chế độ mô phỏng thành tên địa điểm này\n"
+#: src/gpsdrive.c:2718
+msgid "-c WP     set start position in simulation mode to this waypoint (WP)\n"
+msgstr "-c ĐIỂM\tđặt vị trí bắt đầu ở chế độ mô phỏng thành điểm nút địa danh này\n"
 
-#: src/gpsdrive.c:2755
-msgid "-x        create separate window for menu\n"
-msgstr "-x\ttạo cửa sổ riêng cho trình đơn\n"
-
-#: src/gpsdrive.c:2756
-msgid "-M mode   set guimode to desktop, pda or car\n"
+#: src/gpsdrive.c:2719
+msgid "-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"
 msgstr ""
-"-M CHÊ_ĐỘ   đặt chế độ giao diện (guimode) thành:\n"
-" • desktop\tmáy tính để bàn\n"
-" • pda\t\tmáy cầm tay\n"
-" • car\t\txe\n"
+"-M CHÊ_ĐỘ   đặt chế độ giao diện:\n"
+"\t• desktop\tmáy tính để bàn (mặc định)\n"
+"\t• pda\t\tmáy cầm tay\n"
+"\t• car\t\txe\n"
 
-#: src/gpsdrive.c:2757
+#: src/gpsdrive.c:2720
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
-msgstr "-i\tbỏ qua tổng kiểm NMEA (nguy hiểm, chỉ cho bộ nhận GPS bị hỏng)\n"
+msgstr "-i\tbỏ qua tổng kiểm NMEA (nguy hiểm, chỉ cho máy nhận GPS bị hỏng)\n"
 
-#: src/gpsdrive.c:2758
+#: src/gpsdrive.c:2721
 msgid "-q        disable SQL support\n"
 msgstr "-q\ttắt hỗ trợ SQL\n"
 
-#: src/gpsdrive.c:2759
+#: src/gpsdrive.c:2722
 msgid "-F        force display of position even it is invalid\n"
-msgstr "-F\tbuộc hiện vị trí thậm chí nếu nó không hợp lệ\n"
+msgstr "-F\tbuộc hiển thị vị trí thậm chí nếu nó không hợp lệ\n"
 
-#: src/gpsdrive.c:2760
-msgid "-S        don't show splash screen\n"
-msgstr "-S        đừng hiển thị màn hình giới thiệu\n"
+#: src/gpsdrive.c:2723
+msgid "-s        don't show splash screen\n"
+msgstr "-s        không hiển thị màn hình giới thiệu\n"
 
-#: src/gpsdrive.c:2761
-msgid "-P        start in Pos Mode\n"
-msgstr "-P        khởi chạy ở chế độ Vị trí\n"
+#: src/gpsdrive.c:2724
+msgid "-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"
+msgstr ""
+"-S đường_dẫn\t\ttự động chụp ảnh màn hình của cửa sổ khác\n"
+"\t\t\t\t(không sửa đổi gpsdrive)\n"
 
-#: src/gpsdrive.c:2762
-msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
-msgstr "-W x      đặt x thành 1 để bật WAAS/EGNOS, đặt thành 0 để tắt\n"
+#: src/gpsdrive.c:2725
+msgid "-P        start in Position Mode\n"
+msgstr "-P        khởi chạy ở Chế độ Vị trí\n"
 
-#: src/gpsdrive.c:2763
-msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
-msgstr "-H CAO\t sửa cao độ (thêm giá trị nào vào cao độ)\n"
+#: src/gpsdrive.c:2726
+msgid "-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"
+msgstr ""
+"-W X      đặt trạng thái WAAS/EGNOS:\n"
+"\t• 1\t\tđã bặt\n"
+"\t• 0\t\tbị tắt\n"
 
-#: src/gpsdrive.c:2764
-msgid "-C file   set config file (--config-file)\n"
-msgstr "-C TẬP_TIN   đặt tập tin cấu hình (--config-file)\n"
+#: src/gpsdrive.c:2727
+msgid "-H ALT    correct the altitude by adding this value (ALT) to it\n"
+msgstr "-H CAO\t sửa cao độ bằng cách cộng giá trị này (CAO)\n"
 
-#: src/gpsdrive.c:2779
+#: src/gpsdrive.c:2728
+msgid "-C file   use this config file\n"
+msgstr "-C TẬP_TIN   dùng tập tin cấu hình này\n"
+
+#: src/gpsdrive.c:2743
 msgid "Select a track file"
 msgstr "Chọn tập tin vết"
 
-#: src/gpsdrive.c:2939
+#: src/gpsdrive.c:2901
 msgid ""
 "\n"
 "You can currently only choose between english, spanish and german\n"
 "\n"
 msgstr ""
 "\n"
-"Hiện thời bạn có thể chọn giữa chỉ tiếng Anh, tiếng Tây Ban Nha và tiếng Đức thôi\n"
+"Hiện thời bạn chỉ có thể chọn trong những ngôn ngữ tiếng Anh, tiếng Tây Ban Nha và tiếng Đức\n"
 "\n"
 
-#: src/gpsdrive.c:3293
+#: src/gpsdrive.c:3253
 msgid ""
 "\n"
 "kismet server found\n"
@@ -405,11 +401,11 @@ msgstr ""
 "\n"
 "Tìm thấy máy phục vụ kismet\n"
 
-#: src/gpsdrive.c:3331
+#: src/gpsdrive.c:3291
 msgid "Using speech output"
 msgstr "Đang nói kết xuất"
 
-#: src/gpsdrive.c:3445
+#: src/gpsdrive.c:3418
 #, c-format
 msgid ""
 "\n"
@@ -425,7 +421,7 @@ msgstr ""
 #: src/gps_handler.c:212
 #, c-format
 msgid "unable to add match for signals %s: %s"
-msgstr "không thể thêm tương ứng với tín hiệu %s: %s"
+msgstr "không thể thêm mục tương ứng với tín hiệu %s: %s"
 
 #: src/gps_handler.c:217
 msgid "unable to register filter with the connection"
@@ -435,7 +431,7 @@ msgstr "không thể đăng ký bộ lọc với kết nối"
 msgid "DBUS Mode"
 msgstr "Chế độ DBUS"
 
-#: src/gps_handler.c:254 src/gpskismet.c:337
+#: src/gps_handler.c:254 src/gpskismet.c:348
 msgid "can't open socket for port "
 msgstr "không thể mở ổ cắm cho cổng "
 
@@ -458,7 +454,7 @@ msgstr "Chế độ NMEA, Cổng 2947"
 
 #: src/gps_handler.c:576
 msgid "Timeout getting data from GPS-Receiver!"
-msgstr "Quá hạn khi nhận dữ liệu từ Bộ Nhận GPS !"
+msgstr "Quá hạn khi nhận dữ liệu từ Máy Nhận GPS !"
 
 #: src/gps_handler.c:630 src/gps_handler.c:659 src/gps_handler.c:726
 #: src/gps_handler.c:849
@@ -469,7 +465,7 @@ msgstr "Bấm nút giữa trên chuột để di chuyển chung quanh"
 msgid "No GPS used"
 msgstr "Không dùng GPS"
 
-#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:800
+#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:808
 msgid "Simulation mode"
 msgstr "Chế độ mô phỏng"
 
@@ -481,24 +477,24 @@ msgstr "Bấm nút giữa trên chuột để vào chế độ mô phỏng"
 msgid "Not enough satellites in view!"
 msgstr "Không đủ vệ tinh trong phạm vi xem !"
 
-#: src/gpskismet.c:99
+#: src/gpskismet.c:102
 msgid "trying to re-connect to kismet server\n"
 msgstr "đang thử tái kết nối đến máy phục vụ kismet\n"
 
-#: src/gpskismet.c:101
+#: src/gpskismet.c:104
 msgid "Kismet server connection re-established\n"
-msgstr "Mới tái kết nối đến máy phục vụ kismet\n"
+msgstr "Đã tái kết nối đến máy phục vụ kismet\n"
 
-#: src/gpskismet.c:102
+#: src/gpskismet.c:105
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
-msgstr "dừng thử tái kết nối: ổ cắm=%d\n"
+msgstr "quá hạn thử tái kết nối: ổ cắm=%d\n"
 
-#: src/gpskismet.c:149
+#: src/gpskismet.c:152
 msgid "Kismet server connection lost\n"
 msgstr "Kết nối đến máy phục vụ kismet bị mất\n"
 
-#: src/gpskismet.c:331
+#: src/gpskismet.c:342
 msgid "Trying Kismet server\n"
 msgstr "Đang thử máy phục vụ kismet\n"
 
@@ -510,7 +506,7 @@ msgstr "Không tìm thấy tập tin sơ đồ điểm ảnh: %s"
 #: src/gpsnasamap.c:208
 #, c-format
 msgid "could not create output map file %s!\n"
-msgstr "không thể tạo tập tin bản đồ xuất %s !\n"
+msgstr "không thể tạo tập tin bản đồ kết xuất %s !\n"
 
 #: src/gpsnasamap.c:224
 msgid "Creating map..."
@@ -593,11 +589,54 @@ msgstr ""
 "\n"
 "Hỗ trợ MySQL bị tắt.\n"
 
-#: src/gui.c:501
+#: src/gpx.c:247 src/gpx.c:248 src/gpx.c:249 src/gpx.c:250 src/gpx.c:251
+#: src/gpx.c:252 src/gpx.c:253 src/gpx.c:254 src/gpx.c:255 src/gpx.c:256
+#: src/main_gui.c:644 src/main_gui.c:783 src/main_gui.c:904
+msgid "n/a"
+msgstr "không có"
+
+#: src/gpx.c:370
+msgid "Please select a file"
+msgstr "Hãy chọn một tập tin"
+
+#: src/gpx.c:375
+#, c-format
+msgid ""
+"<b>Name:</b>\n"
+"<i>%s</i>\n"
+"<b>Description:</b>\n"
+"<i>%s</i>\n"
+"<b>Author</b>:\n"
+"<i>%s</i>\n"
+"<b>created by:</b>\n"
+"<i>%s</i>\n"
+"<b>Timestamp:</b>\n"
+"<i>%s</i>"
+msgstr ""
+"<b>Tên:</b>\n"
+"<i>%s</i>\n"
+"<b>Mô tả:</b>\n"
+"<i>%s</i>\n"
+"<b>Tác giả</b>:\n"
+"<i>%s</i>\n"
+"<b>tạo bởi:</b>\n"
+"<i>%s</i>\n"
+"<b>Ghi giờ:</b>\n"
+"<i>%s</i>"
+
+#: src/gpx.c:398
+msgid "Select a GPX file"
+msgstr "Chọn một tập tin GPX"
+
+#: src/gpx.c:421
+msgid "Show Info"
+msgstr "Hiện thông tin"
+
+#: src/gui.c:507
 msgid "Press OK to continue!"
 msgstr "Bấm nút OK để tiếp tục."
 
-#: src/gui.c:535
+#: src/gui.c:542
 msgid ""
 "An error has occured.\n"
 "Press OK to continue!"
@@ -605,7 +644,7 @@ msgstr ""
 "Gặp lỗi.\n"
 "Bấm nút OK để tiếp tục."
 
-#: src/gui.c:568
+#: src/gui.c:576
 #, c-format
 msgid ""
 "\n"
@@ -615,13 +654,13 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Cảnh báo : không thể mở ảnh « add waypoint » (thêm địa điểm).\n"
+"Cảnh báo : không thể mở ảnh « add waypoint » (thêm điểm nút địa danh).\n"
 "Hãy cài đặt chương trình này\n"
-"với tư cách người chủ (root) bằng lệnh\n"
+"với tư cách người chủ (root) bằng câu lệnh\n"
 "make install\n"
 "\n"
 
-#: src/icons.c:246
+#: src/icons.c:247
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
@@ -629,25 +668,25 @@ msgid ""
 "\n"
 msgstr ""
 "Hãy cài đặt chương trình này với tư cách\n"
-"người chủ (root) bằng lệnh:\n"
+"người chủ (root) bằng câu lệnh:\n"
 "make install\n"
 "\n"
 
-#: src/icons.c:353 src/icons.c:358
+#: src/icons.c:364 src/icons.c:369
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Đã nạp biểu tượng được người dùng xác định %s\n"
 
 #: src/import_map.c:232
 msgid "Select a map file"
-msgstr "Chọn tập tin bản đồ"
+msgstr "Chọn một tập tin bản đồ"
 
 #: src/import_map.c:300
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
 msgstr ""
-"Định chuẩn bản đồ mình như thế nào? Trước tiên,\n"
+"Định chuẩn bản đồ của mình như thế nào? Trước tiên,\n"
 "hãy sao chép tập tin bản đồ vào thư mục"
 
 #: src/import_map.c:302
@@ -660,10 +699,10 @@ msgid ""
 "type them in. Then click on the accept button."
 msgstr ""
 "\n"
-"theo định dạng .gif, .jpg hay .png và kích cỡ 1280×1024.\n"
+"theo định dạng .gif, .jpg hay .png, ảnh phải và kích cỡ 1280×1024.\n"
 "Tên tập tin phải bắt đầu với « map_* » cho bản đồ phố,\n"
 "hay với « top_* » cho bản đồ đo vẽ địa hình. Nạp tập tin này,\n"
-"chọn toạ độ từ danh sách địa điểm hoặc gõ vào,\n"
+"chọn toạ độ từ danh sách điểm nút địa danh hoặc gõ toạ độ vào,\n"
 "rồi nhấn vào nút chấp nhận."
 
 #: src/import_map.c:309
@@ -671,17 +710,17 @@ msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
 msgstr ""
-"Sau đó, hãy làm lại cho điểm thứ hai,\n"
+"Sau đó, lặp lại bước đó cho điểm thứ hai,\n"
 "rồi nhấn vào nút kết thúc.\n"
-"Bản đồ sẵn sàng để sử dụng."
+"Bản đồ sẵn sàng sử dụng."
 
 #: src/import_map.c:316
 msgid "Import Assistant. Step 1"
-msgstr "Trợ tá nhập, Bước 1"
+msgstr "Trợ lý nhập, Bước 1"
 
 #: src/import_map.c:318
 msgid "Import Assistant. Step 2"
-msgstr "Trợ tá nhập, Bước 2"
+msgstr "Trợ lý nhập, Bước 2"
 
 #: src/import_map.c:325
 msgid "Accept first point"
@@ -701,11 +740,11 @@ msgstr "Lên"
 
 #: src/import_map.c:358
 msgid "Go left"
-msgstr "Bên trái"
+msgstr "Trái"
 
 #: src/import_map.c:361
 msgid "Go right"
-msgstr "Bên phải"
+msgstr "Phải"
 
 #: src/import_map.c:364
 msgid "Go down"
@@ -739,812 +778,1018 @@ msgstr "Duyệt đến tên tập tin"
 msgid "SELECTED"
 msgstr "ĐÃ CHỌN"
 
-#: src/map_handler.c:183
+#: src/main_gui.c:286
+msgid "Auto"
+msgstr "Tự động"
+
+#: src/main_gui.c:527 src/main_gui.c:820
+msgid "nmi"
+msgstr "hải lý"
+
+#: src/main_gui.c:551 src/main_gui.c:844 src/settings.c:1538
+msgid "km"
+msgstr "km"
+
+#: src/main_gui.c:585 src/main_gui.c:1300 src/settings.c:1392
+msgid "Speed"
+msgstr "Tốc độ"
+
+#: src/main_gui.c:612 src/main_gui.c:1301
+msgid "Avg. Speed"
+msgstr "Tốc độ t.b."
+
+#: src/main_gui.c:650 src/main_gui.c:1302
+msgid "Max. Speed"
+msgstr "Tốc độ đại"
+
+#: src/main_gui.c:675 src/main_gui.c:1298 src/main_gui.c:1857
+msgid "Bearing"
+msgstr "Vị trí phương hướng"
+
+#: src/main_gui.c:686 src/main_gui.c:1303 src/main_gui.c:1863
+msgid "Heading"
+msgstr "Hướng về"
+
+#: src/main_gui.c:697 src/main_gui.c:1299
+msgid "Turn"
+msgstr "Quay"
+
+#: src/main_gui.c:718
+msgid "Time remaining"
+msgstr "Thời gian còn lại"
+
+#: src/main_gui.c:734 src/main_gui.c:1304 src/poi_gui.c:563 src/settings.c:753
+msgid "Altitude"
+msgstr "Cao độ"
+
+#: src/main_gui.c:789
+msgid "Odometer"
+msgstr "Đo đường"
+
+#: src/main_gui.c:878 src/main_gui.c:1306
+msgid "GPS Precision"
+msgstr "Chính xác GPS"
+
+#: src/main_gui.c:889 src/main_gui.c:1307
+msgid "Current Time"
+msgstr "Giờ hiện thời"
+
+#: src/main_gui.c:1011
+msgid "No GPS"
+msgstr "Không có GPS"
+
+#: src/main_gui.c:1018
+msgid "Simulation Mode"
+msgstr "Chế độ Mô phỏng"
+
+#: src/main_gui.c:1132
+msgid "Quicksaved Waypoint"
+msgstr "ĐIểm nút đã lưu nhanh"
+
+#: src/main_gui.c:1167
+msgid "Temporary Waypoint"
+msgstr "Điểm nút tạm"
+
+#: src/main_gui.c:1296
+msgid "Distance to Target"
+msgstr "Khoảng cách tới đích"
+
+#: src/main_gui.c:1297
+msgid "Time Remaining"
+msgstr "Thời gian còn lại"
+
+#: src/main_gui.c:1305
+msgid "Trip Odometer"
+msgstr "Đo đường chuyến"
+
+#: src/main_gui.c:1368
+msgid "Options"
+msgstr "Tùy chọn"
+
+#: src/main_gui.c:1373
+msgid "Maps"
+msgstr "Bản đồ"
+
+#: src/main_gui.c:1374 src/main_gui.c:1387
+msgid "Import"
+msgstr "Nhập"
+
+#: src/main_gui.c:1375
+msgid "Download"
+msgstr "Tải về"
+
+#: src/main_gui.c:1390 src/main_gui.c:1405 src/main_gui.c:1630
+#: src/settings.c:1131
+msgid "Track"
+msgstr "Vết"
+
+#: src/main_gui.c:1391 src/main_gui.c:1406 src/settings.c:1153
+msgid "Route"
+msgstr "Đường"
+
+#: src/main_gui.c:1402
+msgid "Export"
+msgstr "Xuất"
+
+#: src/main_gui.c:1418
+msgid "Send Message"
+msgstr "Gửi tin nhẳn"
+
+#: src/main_gui.c:1425
+msgid "Reset Trip"
+msgstr "Đặt lại chuyến"
+
+#: src/main_gui.c:1452
+msgid "Help"
+msgstr "Trợ giúp"
+
+#: src/main_gui.c:1492
+msgid "Zooms in on the current map"
+msgstr "Phóng to bản đồ hiện tại"
+
+#: src/main_gui.c:1494
+msgid "Zooms out on the current map"
+msgstr "Thu nhỏ bản đồ hiện tại"
+
+#: src/main_gui.c:1515
+msgid "Select the next more detailed map"
+msgstr "Chọn bản đồ chi tiết hơn kế tiếp"
+
+#: src/main_gui.c:1517
+msgid "Select the next less detailed map"
+msgstr "Chọn bản đồ ít chi tiết hơn kế tiếp"
+
+#: src/main_gui.c:1531
+msgid "Mute Speech"
+msgstr "Câm tiếng nói"
+
+#: src/main_gui.c:1542
+msgid "Disable output of speech"
+msgstr "Tắt xuất tiếng nói"
+
+#: src/main_gui.c:1571
+msgid "Points"
+msgstr "Điểm"
+
+#: src/main_gui.c:1578 src/settings.c:1720
+msgid "POI"
+msgstr "ĐQT"
+
+#: src/main_gui.c:1590
+msgid "Show Points Of Interest found in Database"
+msgstr "Hiển thị các Điểm Quan Tâm tìm thấy trong cơ sở dữ liệu"
+
+#: src/main_gui.c:1594
+msgid "WLAN"
+msgstr "WLAN"
+
+#: src/main_gui.c:1609
+msgid "Show Data found in Kismet Database"
+msgstr "Hiển thị dữ liệu tìm thấy trong cơ sở dữ liệu Kismet"
+
+#: src/main_gui.c:1612
+msgid "WP"
+msgstr "ĐN"
+
+#: src/main_gui.c:1622
+msgid "Show Waypoints found in file way.txt"
+msgstr "Hiển thị các điểm nút tìm thấy trong tập tin « way.txt »"
+
+#: src/main_gui.c:1635
+msgid "Show"
+msgstr "Hiện"
+
+#: src/main_gui.c:1644
+msgid "Show tracking on the map"
+msgstr "Hiện vết trên bản đồ"
+
+#: src/main_gui.c:1651
+msgid "Save"
+msgstr "Lưu"
+
+#: src/main_gui.c:1658
+msgid "Save the track to given filename at program exit"
+msgstr "Lưu vết vào tên tập tin đã cho, khi thoát khởi chương trình"
+
+#: src/main_gui.c:1838
+msgid "GPS-Time"
+msgstr "Giờ GPS"
+
+#: src/main_gui.c:1844
+msgid "This shows the time from your GPS receiver"
+msgstr "Hiển thị giờ từ máy nhận GPS"
+
+#: src/main_gui.c:1847 src/settings.c:1175 src/settings.c:2055
+msgid "Friends"
+msgstr "Bạn bè"
+
+#: src/main_gui.c:1853
+msgid "Number of mobile targets within timeframe/total received from friendsserver"
+msgstr "Số đích di động ở trong phạm vị thời gian / tổng số được nhận từ máy phục vụ bạn bè"
+
+#: src/main_gui.c:1895
+msgid "Map scale"
+msgstr "Tỷ lệ bản đồ"
+
+#: src/main_gui.c:1901
+msgid "Pref. scale"
+msgstr "Tỷ lệ ưa thích"
+
+#: src/main_gui.c:1919
+msgid "This shows the GPS Status and Number of satellites in use."
+msgstr "Hiển thị Trạng thái GPS và số vệ tinh hoạt động."
+
+#: src/main_gui.c:1934
+msgid "GpsDrive (c)2001-2007 F. Ganter"
+msgstr "GpsDrive © 2001-2007 F. Ganter"
+
+#: src/main_gui.c:2138 src/nmea_handler.c:491
+msgid "Map"
+msgstr "Bản đồ"
+
+#: src/main_gui.c:2141
+msgid "Controls"
+msgstr "Điều khiển"
+
+#: src/main_gui.c:2144
+msgid "Status"
+msgstr "Trạng thái"
+
+#: src/map_handler.c:153
 msgid "Map Controls"
 msgstr "Điều khiển bản đồ"
 
-#: src/map_handler.c:188
+#: src/map_handler.c:158
 msgid "Auto _best map"
-msgstr "_Bản đồ tốt nhất tự động"
+msgstr "Tự động _bản đồ tốt nhất"
 
-#: src/map_handler.c:193
+#: src/map_handler.c:163
 msgid "Always select the most detailed map available"
 msgstr "Luôn luôn chọn bản đồ chi tiết nhất sẵn sàng"
 
-#: src/map_handler.c:204
+#: src/map_handler.c:174
 msgid "Pos. _mode"
 msgstr "Chế độ _Vị trí"
 
-#: src/map_handler.c:211
+#: src/map_handler.c:181
 msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
-msgstr "Bật chế độ vị trí. Bạn có thể đi qua bản đồ bằng cách nhấn nút bên trái trên chuột. Nhấn vào gần viền sẽ chuyển đổi sang bản đồ gần hơn."
+msgstr "Bật chế độ vị trí. Bạn có thể đi qua bản đồ bằng cách nhấn nút bên trái trên chuột. Nhấn vào gần viền sẽ chuyển đổi sang bản đồ kề nhau."
 
-#: src/map_handler.c:221
+#: src/map_handler.c:191
 msgid "Mapnik Mode"
 msgstr "Chế độ Mapnik"
 
-#: src/map_handler.c:224
+#: src/map_handler.c:194
 msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
 msgstr "Bật chế độ Mapnik. Ở chế độ này, chương trình sử dụng các bản đồ véc-tơ được vẽ bằng Mapnik (v.d. dữ liệu OpenStreetMap) thay cho các bản đồ khác."
 
-#: src/map_handler.c:248
+#: src/map_handler.c:218
 msgid "Shown map type"
-msgstr "Kiểu bản đồ đã hiện"
+msgstr "Kiểu bản đồ được hiện"
 
-#: src/map_handler.c:255
-msgid "Street map"
-msgstr "Bản đồ phố"
-
-#: src/map_handler.c:265
-msgid "Topo map"
-msgstr "Bản đồ địa hình"
-
-#: src/map_handler.c:372
+#: src/map_handler.c:316
 msgid "Error in line "
 msgstr "Lỗi trên dòng "
 
-#: src/map_handler.c:374
+#: src/map_handler.c:318
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
 "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
 "maps.  Otherwise, the maps will not be displayed!"
-msgstr "Mới tìm thấy tên tập tin trong tập tin « map_koord.txt » mà không phải là tập tin kiểu « map_* » (ngụ ý bản đồ phố) hay « top_* » (ngụ ý bản đồ địa hình). Hãy thay đổi tên các tập tin này, và thay đổi các mục nhập trong tập tin « map_koord.txt ». Không thì các bản đồ này sẽ không được hiển thị."
+msgstr ""
+"Tìm thấy một số tên tập tin trong tập tin « map_koord.txt »\n"
+"mà không phải là tập tin kiểu « map_* » (ngụ ý bản đồ phố)\n"
+"hay « top_* » (ngụ ý bản đồ địa hình). Hãy thay đổi tên tập tin,\n"
+"và điều chỉnh các mục nhập trong tập tin « map_koord.txt ».\n"
+"Không thì các bản đồ này sẽ không được hiển thị."
 
-#: src/map_handler.c:700
+#: src/map_handler.c:647
 msgid " Mapfile could not be loaded:"
 msgstr " Không thể nạp tập tin bản đồ :"
 
 # 48x48/emblems/emblem-sound.icon.in.h:1
 # 48x48/emblems/emblem-sound.icon.in.h:1
-#: src/map_handler.c:750
+#: src/map_handler.c:697
 msgid "Map found!"
 msgstr "Tìm thấy bản đồ."
 
 #: src/nmea_handler.c:178
 msgid "can't open NMEA output file"
-msgstr "không thể mở tập tin xuất kiểu NMEA"
+msgstr "không thể mở tập tin kết xuất NMEA"
 
-#: src/nmea_handler.c:491
-msgid "Map"
-msgstr "Bản đồ"
-
-#: src/poi.c:365
+#: src/poi.c:366
 #, c-format
 msgid "%ld(%d) rows read\n"
-msgstr "%ld(%d) hàng đã được đọc\n"
+msgstr "%ld(%d) hàng được đọc\n"
 
-#: src/poi.c:1150 src/wlan.c:316
+#: src/poi.c:1155 src/wlan.c:317
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
-msgstr "%ld(%d) hàng đã được đọc trong vòng %.2f giây\n"
+msgstr "%ld(%d) hàng được đọc trong vòng %.2f giây\n"
 
-#: src/poi_gui.c:162
+#: src/poi_gui.c:164
 #, c-format
 msgid " Found %d matching entries (Limit reached)."
-msgstr " Tìm thấy %d mục tương ứng (tới hạn chế)."
+msgstr " Tìm thấy %d mục tương ứng (đã tới hạn chế)."
 
-#: src/poi_gui.c:168
+#: src/poi_gui.c:170
 #, c-format
 msgid " Found %d matching entries."
 msgstr " Tìm thấy %d mục tương ứng."
 
-#: src/poi_gui.c:482 src/poi_gui.c:1005
+#: src/poi_gui.c:485 src/poi_gui.c:1008
 msgid "POI-Info"
 msgstr "Thông tin ĐQT"
 
-#: src/poi_gui.c:512 src/poi_gui.c:961
+#: src/poi_gui.c:515 src/poi_gui.c:964
 msgid "Comment"
-msgstr "Chú thích"
+msgstr "Ghi chú"
 
-#: src/poi_gui.c:519
+#: src/poi_gui.c:522
 msgid "private"
 msgstr "riêng tự"
 
-#: src/poi_gui.c:560 src/settings.c:745
-msgid "Altitude"
-msgstr "Cao độ"
-
-#: src/poi_gui.c:610
+#: src/poi_gui.c:613
 msgid "Basic Data"
 msgstr "Dữ liệu cơ bản"
 
-#: src/poi_gui.c:639
+#: src/poi_gui.c:642
 msgid "Extra Data"
-msgstr "Dữ liệu thêm"
+msgstr "Dữ liệu bổ sung"
 
-#: src/poi_gui.c:715
+#: src/poi_gui.c:718
 msgid "Lookup Point of Interest"
 msgstr "Tra tìm Điểm Quan Tâm"
 
-#: src/poi_gui.c:758
+#: src/poi_gui.c:761
 msgid "<i>Search Text:</i>"
 msgstr "<i>Chuỗi tìm:</i>"
 
-#: src/poi_gui.c:781
+#: src/poi_gui.c:784
 msgid "<i>max. Distance:</i>"
 msgstr "<i>Khoảng cách tối đa:</i>"
 
-#: src/poi_gui.c:799
+#: src/poi_gui.c:802
 msgid "km from"
-msgstr "cây số xa"
+msgstr "km xa"
 
-#: src/poi_gui.c:804
+#: src/poi_gui.c:807
 msgid "current position"
 msgstr "vị trí hiện tại"
 
-#: src/poi_gui.c:814
+#: src/poi_gui.c:817
 msgid "Search near current Position"
 msgstr "Tìm gần vị trí hiện tại"
 
-#: src/poi_gui.c:819
+#: src/poi_gui.c:822
 msgid "Destination/Cursor"
 msgstr "Đích/Con trỏ"
 
-#: src/poi_gui.c:831
+#: src/poi_gui.c:834
 msgid "Search near selected Destination"
-msgstr "Tìm gần đích đã chọn"
+msgstr "Tìm gần đích được chọn"
 
-#: src/poi_gui.c:837
+#: src/poi_gui.c:840
 msgid "<i>POI-Types:</i>"
 msgstr "<i>Kiểu ĐQT:</i>"
 
-#: src/poi_gui.c:863
+#: src/poi_gui.c:866
 msgid "all"
 msgstr "tất cả"
 
-#: src/poi_gui.c:873
-msgid "Search all POI-Categories"
-msgstr "Tìm trong mọi loại ĐQT"
-
 #: src/poi_gui.c:876
+msgid "Search all POI-Categories"
+msgstr "Tìm trong mọi Loại ĐQT"
+
+#: src/poi_gui.c:879
 msgid "selected:"
-msgstr "đã chọn:"
+msgstr "chọn:"
 
-#: src/poi_gui.c:882
+#: src/poi_gui.c:885
 msgid "Search only in selected POI-Categories"
-msgstr "Tìm chỉ trong những loại ĐQT đã chọn"
+msgstr "Tìm chỉ trong những Loại ĐQT được chọn"
 
-#: src/poi_gui.c:887
+#: src/poi_gui.c:890
 msgid "Search Criteria"
 msgstr "Tiêu chuẩn tìm"
 
-#: src/poi_gui.c:991
+#: src/poi_gui.c:994
 msgid " Please enter your search criteria!"
 msgstr " Hãy gõ các tiêu chuẩn tìm kiếm."
 
-#: src/poi_gui.c:1008
+#: src/poi_gui.c:1011
 msgid "Show detailed Information for selected Point of Interest"
-msgstr "Hiển thị thông tin chi tiết về Điểm Quan Tâm đã chọn"
+msgstr "Hiển thị thông tin chi tiết về Điểm Quan Tâm được chọn"
 
-#: src/poi_gui.c:1014
+#: src/poi_gui.c:1017
 msgid "Results"
 msgstr "Kết quả"
 
-#: src/poi_gui.c:1038
+#: src/poi_gui.c:1041
 msgid "Edit _Route"
-msgstr "Sửa _lộ trình"
+msgstr "Sửa đườn_g"
 
-#: src/poi_gui.c:1042
+#: src/poi_gui.c:1045
 msgid "Switch to Add selected entry to Route"
-msgstr "Chuyển để thêm vào lộ trình mục đã chọn"
+msgstr "Chuyển để thêm vào Đường mục được chọn"
 
-#: src/poi_gui.c:1052
+#: src/poi_gui.c:1055
 msgid "Delete selected entry"
-msgstr "Xoá mục đã chọn"
+msgstr "Xoá mục được chọn"
 
-#: src/poi_gui.c:1069
+#: src/poi_gui.c:1072
 msgid "Jump to POI"
 msgstr "Nhảy tới ĐQT"
 
-#: src/poi_gui.c:1071
+#: src/poi_gui.c:1074
 msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
-msgstr "Nhảy tới mục đã chọn (và chuyển đổi sang Chế độ Vị trí nếu chưa ở)"
+msgstr "Nhảy tới mục được chọn (và chuyển đổi sang Chế độ Vị trí nếu chưa ở)"
 
-#: src/poi_gui.c:1089
+#: src/poi_gui.c:1092
 msgid "Select Target"
 msgstr "Chọn đích"
 
-#: src/poi_gui.c:1091
+#: src/poi_gui.c:1094
 msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
-msgstr "Dùng mục đã chọn làm đích (và rời Chế độ Vị trí nếu ở)"
+msgstr "Dùng mục được chọn làm đích đến (và rời Chế độ Vị trí nếu ở)"
 
-#: src/poi_gui.c:1103 src/poi_gui.c:1336
+#: src/poi_gui.c:1106 src/poi_gui.c:1339
 msgid "Close this window"
 msgstr "Đóng cửa sổ này"
 
-#: src/poi_gui.c:1167
+#: src/poi_gui.c:1170
 msgid "Edit Route"
-msgstr "Sửa lộ trình"
+msgstr "Sửa đường"
 
-#: src/poi_gui.c:1236
+#: src/poi_gui.c:1239
 msgid "Trip"
-msgstr "Cuộc đi"
+msgstr "Chuyến"
 
-#: src/poi_gui.c:1251
+#: src/poi_gui.c:1254
 msgid "Route List"
-msgstr "Danh sách lộ trình"
+msgstr "Danh sách đường"
 
-#: src/poi_gui.c:1271
+#: src/poi_gui.c:1274
 msgid "Stop Route"
-msgstr "Dừng lộ trình"
+msgstr "Dừng đường"
 
-#: src/poi_gui.c:1273
+#: src/poi_gui.c:1276
 msgid "Stop the Route Mode"
-msgstr "Dừng chế độ Lộ trình"
+msgstr "Dừng chế độ Đường"
 
-#: src/poi_gui.c:1279
+#: src/poi_gui.c:1282
 msgid "Start Route"
-msgstr "Sở khởi lộ trình"
+msgstr "Chạy đường"
 
-#: src/poi_gui.c:1281
+#: src/poi_gui.c:1284
 msgid "Start the Route Mode"
-msgstr "Sở khởi chế độ Lộ trình"
+msgstr "Khởi chạy chế độ Đường"
 
-#: src/poi_gui.c:1298
+#: src/poi_gui.c:1301
 msgid "Remove selected Entry from Route"
-msgstr "Gỡ bỏ mục đã chọn khỏi lộ trình"
+msgstr "Gỡ bỏ mục được chọn khỏi Đường"
 
-#: src/poi_gui.c:1313
+#: src/poi_gui.c:1316
 msgid "Cancel Route"
-msgstr "Thôi lộ trình"
+msgstr "Thôi Đường"
 
-#: src/poi_gui.c:1315
+#: src/poi_gui.c:1318
 msgid "Discard Route"
-msgstr "Hủy lộ trình"
+msgstr "Hủy Đường"
 
-#: src/poi_gui.c:1325
+#: src/poi_gui.c:1328
 msgid "Export current route to a GPX File"
-msgstr "Xuất lộ trình hiện tại ra tập tin GPX"
+msgstr "Xuất đường hiện tại ra tập tin GPX"
 
-#: src/routes.c:411
+#: src/routes.c:421
 msgid "Waypoint"
-msgstr "Địa điểm"
+msgstr "Điểm nút"
 
-#: src/routes.c:424
+#: src/routes.c:434
 msgid "Define route"
-msgstr "Xác định lộ trình"
+msgstr "Đặt đường"
 
-#: src/routes.c:432
+#: src/routes.c:442
 msgid "Start route"
-msgstr "Sở khởi lộ trình"
+msgstr "Chạy đường"
 
-#: src/routes.c:441
+#: src/routes.c:451
 msgid "Take all WP as route"
-msgstr "Dùng mọi địa điểm là lộ trình"
+msgstr "Đặt tất cả điểm nút là đường"
 
-#: src/routes.c:446
+#: src/routes.c:456
 msgid "Abort route"
-msgstr "Hủy bỏ lộ trình"
+msgstr "Hủy bỏ đường"
 
-#: src/routes.c:506
+#: src/routes.c:516
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
 msgstr ""
-"Nhấn vào danh sách địa\n"
-"điểm để thêm địa điểm"
+"Nhấn vào danh sách điểm\n"
+"nút để thêm điểm nút"
 
-#: src/routes.c:509
+#: src/routes.c:519
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
 msgstr ""
 "Nhấn vào mục danh sách\n"
-"để chọn địa điểm kế tiếp."
+"để chọn điểm nút kế tiếp."
 
-#: src/routes.c:557
+#: src/routes.c:567
 msgid "Create a route from all waypoints. Sorted with order in file, not distance."
-msgstr "Tạo lộ trình bằng tất cả các địa điểm. Sắp xếp theo thứ tự trong tập tin, không phải theo khoảng cách."
+msgstr "Tạo một đường đi từ tất cả các điểm nút địa danh. Sắp xếp theo thứ tự trong tập tin, không phải theo khoảng cách."
 
-#: src/routes.c:561
+#: src/routes.c:571
 msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
-msgstr "Nhấn vào đây để bắt đầu dụ lịch. Trình GpsDrive hướng dẫn bạn qua các địa điểm trong danh sách này."
+msgstr "Nhấn vào đây để bắt đầu dụ lịch. Trình GpsDrive hướng dẫn bạn qua các điểm nút địa danh trong danh sách này."
 
-#: src/routes.c:564
+#: src/routes.c:574
 msgid "Abort your journey"
 msgstr "Hủy bỏ dụ lịch"
 
-#: src/routes.c:654
+#: src/routes.c:664
 msgid "Routepoint"
-msgstr "Điểm lộ trình"
+msgstr "Điểm đường"
 
-#: src/routes.c:655
+#: src/routes.c:665
 msgid "Quicksaved Routepoint"
 msgstr "Điểm lộ trình đã lưu nhanh"
 
-#: src/routes.c:728
+#: src/routes.c:738
 msgid "Routepoint added."
-msgstr "Điểm lộ trình đã thêm."
+msgstr "Đã thêm điểm đường."
 
-#: src/routes.c:810
+#: src/routes.c:833
 msgid "Route saved"
-msgstr "Lộ trình đã lưu"
+msgstr "Đã lưu đường"
 
-#: src/settings.c:409 src/settings.c:417
+#: src/settings.c:407 src/settings.c:415
 msgid "EnterYourName"
 msgstr "Gõ tên của bạn"
 
-#: src/settings.c:420
+#: src/settings.c:418
 msgid "You should change your name in the first field!"
 msgstr "Bạn nên thay đổi tên của mình trong trường đầu tiên !"
 
-#: src/settings.c:738
+#: src/settings.c:637
+msgid "Show Waypoints found in file"
+msgstr "Hiện các điểm nút nằm trong tập tin"
+
+#: src/settings.c:746
 msgid "Choose here the unit for the display of distances."
-msgstr "Ở đây bạn có thể chọn đơn vị cần hiển thị khoảng cách."
+msgstr "Ở đây bạn có thể chọn đơn vị để hiển thị khoảng cách."
 
-#: src/settings.c:756
+#: src/settings.c:764
 msgid "Choose here the unit for the display of altitudes."
-msgstr "Ở đây bạn có thể chọn đơn vị cần hiển thị cao độ."
+msgstr "Ở đây bạn có thể chọn đơn vị để hiển thị cao độ."
 
-#: src/settings.c:763
+#: src/settings.c:771
 msgid "Coordinates"
 msgstr "Toạ độ"
 
-#: src/settings.c:774
+#: src/settings.c:782
 msgid "Choose here the format for the coordinates display."
-msgstr "Ở đây bạn có thể chọn định dạng cần hiển thị các toạ độ."
+msgstr "Ở đây bạn có thể chọn định dạng để hiển thị các toạ độ."
 
-#: src/settings.c:802 src/settings.c:1074
+#: src/settings.c:810 src/settings.c:1083
 msgid "Automatic"
 msgstr "Tự động"
 
-#: src/settings.c:806 src/settings.c:1078
+#: src/settings.c:814 src/settings.c:1087
 msgid "On"
 msgstr "Bật"
 
-#: src/settings.c:810 src/settings.c:1082
+#: src/settings.c:818 src/settings.c:1091
 msgid "Off"
 msgstr "Tắt"
 
-#: src/settings.c:814
+#: src/settings.c:822
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
 msgstr "Bật thì con trỏ vị trí sẽ di chuyển về đích đã chọn, cũng mô phỏng xe đang đi, khi không có GPS."
 
-#: src/settings.c:818
+#: src/settings.c:826
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
-msgstr "Bật thì con trỏ vị trí sẽ di chuyển về đích đã chọn, luôn luôn mô phỏng xe đang đi."
+msgstr "Bật thì con trỏ vị trí sẽ di chuyển về đích đến đã chọn, luôn luôn mô phỏng một chiếc xe đang đi."
 
-#: src/settings.c:822
+#: src/settings.c:830
 msgid "Switches simulation mode off"
 msgstr "Tất chế độ mô phỏng"
 
-#: src/settings.c:849
+#: src/settings.c:857
 msgid "Maximum CPU load (in %)"
 msgstr "Trọng tải CPU tối đa (theo %)"
 
 # This string should not be marked with 'c-format';
 # the error has been reported upstream.
-#: src/settings.c:855
-#, fuzzy, c-format
+#: src/settings.c:864
+#, no-c-format
 msgid ""
-"Select the approx. maximum CPU load.\n"
-"Use 20-30% on notebooks while on battery to save power. This effects the refresh rate of the map screen."
+"Select the approximate maximum CPU load.\n"
+"Use 20-30% on notebooks while on battery, to save power. This affects the refresh rate of the map screen."
 msgstr ""
 "Chọn trọng tải CPU tối đa xấp xỉ.\n"
 "Dùng 20-30% trên máy tính xách tay khi chạy bằng pin, để tiết kiệm thời gạn pin. Giá trị này có tác động tốc độ cập nhật màn hình bản đồ."
 
-#: src/settings.c:879
+#: src/settings.c:888
 msgid "Maps directory"
 msgstr "Thư mục bản đồ"
 
-#: src/settings.c:880
+#: src/settings.c:889
 msgid "Select Maps Directory"
 msgstr "Chọn thư mục bản đồ"
 
-#: src/settings.c:886
+#: src/settings.c:895
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
 msgstr "Đường dẫn đến các tập tin bản đồ của bạn. Thư mục đã ghi rõ cũng phải chứa tập tin chỉ mục « map_koord.txt »."
 
-#: src/settings.c:907
+#: src/settings.c:916
 msgid "<b>Units</b>"
 msgstr "<b>Đơn vị</b>"
 
-#: src/settings.c:915
+#: src/settings.c:924
 msgid "<b>Miscellaneous</b>"
-msgstr "<b>Lặt vặt</b>"
+msgstr "<b>Linh tinh</b>"
 
-#: src/settings.c:923
+#: src/settings.c:932
 msgid "<b>Map Settings</b>"
-msgstr "<b>Thiết lập bản đồ</b>"
+msgstr "<b>Thiết lập Bản đồ</b>"
 
-#: src/settings.c:935
+#: src/settings.c:944
 msgid "General"
 msgstr "Chung"
 
-#: src/settings.c:971
+#: src/settings.c:980
 msgid "Show grid"
 msgstr "Hiện lưới"
 
-#: src/settings.c:973
+#: src/settings.c:982
 msgid "This will show a grid over the map"
-msgstr "Hiển thị một lưới trên bản đồ."
+msgstr "Hiển thị một lưới trên bản đồ"
 
-#: src/settings.c:988
+#: src/settings.c:997
 msgid "Show Shadows"
 msgstr "Hiện bóng"
 
-#: src/settings.c:990
+#: src/settings.c:999
 msgid "Switches shadows on map on or off"
 msgstr "Hiện/ẩn bóng trên bản đồ"
 
-#: src/settings.c:1005
+#: src/settings.c:1014
 msgid "Show zoom level"
 msgstr "Hiện hệ số thu phóng"
 
-#: src/settings.c:1007
+#: src/settings.c:1016
 msgid "This will show the current zoom level of the map"
 msgstr "Hiển thị hệ số phóng to/thu nhỏ hiện thời của bản đồ"
 
-#: src/settings.c:1022
+#: src/settings.c:1031
 msgid "Show scalebar"
 msgstr "Hiện thanh tỷ lệ"
 
-#: src/settings.c:1024
+#: src/settings.c:1033
 msgid "This will show the scalebar in the map"
 msgstr "Hiển thị thanh tỷ lệ trên bản đồ"
 
-#: src/settings.c:1039
+#: src/settings.c:1048
 msgid "Position Marker"
 msgstr "Dấu hiệu vị trí"
 
-#: src/settings.c:1050
-msgid "Choose the apperance of your position marker."
-msgstr "Chọn kiểu dấu hiệu vị trí."
+#: src/settings.c:1059
+msgid "Choose the appearance of your position marker."
+msgstr "Chọn hình thức của dấu hiệu vị trí."
 
-#: src/settings.c:1086
+#: src/settings.c:1095
 msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
-msgstr "Chuyển đổi tự động sang chế độ đem nếu không có ánh mặt trời ở ngoài. Bấm phím N để tắt chế độ đem."
+msgstr "Tự động chuyển đổi sang chế độ đêm nếu tối ở ngoài. Bấm phím N để tắt chế độ đêm."
 
-#: src/settings.c:1089
+#: src/settings.c:1098
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
-msgstr "Bật chế độ đem. Bấm phím N để tắt chế độ đem."
+msgstr "Bật chế độ đêm. Bấm phím N để tắt chế độ đêm."
 
-#: src/settings.c:1092
+#: src/settings.c:1101
 msgid "Switches night mode off"
-msgstr "Tất chế độ đem"
+msgstr "Tất chế độ đêm"
 
-#: src/settings.c:1122
-msgid "Track"
-msgstr "Vết"
-
-#: src/settings.c:1127
+#: src/settings.c:1136
 msgid "Choose Track color"
 msgstr "Chọn màu vết"
 
-#: src/settings.c:1131
+#: src/settings.c:1140
 msgid "Set here the color of the drawn track"
-msgstr "Ở đây hãy đặt màu của vết sẽ vẽ"
+msgstr "Ở đây hãy đặt màu để vẽ vết"
 
-#: src/settings.c:1136
+#: src/settings.c:1145
 msgid "Set here the line style of the drawn track"
-msgstr "Ở đây hãy đặt kiểu dáng đường của vết sẽ vẽ"
-
-#: src/settings.c:1144
-msgid "Route"
-msgstr "Lộ trình"
-
-#: src/settings.c:1149
-msgid "Choose Route color"
-msgstr "Chọn màu của lộ trình"
-
-#: src/settings.c:1153
-msgid "Set here the color of the drawn route"
-msgstr "Ở đây hãy đặt màu của lộ trình sẽ vẽ"
+msgstr "Ở đây hãy đặt kiểu đường để vẽ vết"
 
 #: src/settings.c:1158
+msgid "Choose Route color"
+msgstr "Chọn màu đường"
+
+#: src/settings.c:1162
+msgid "Set here the color of the drawn route"
+msgstr "Ở đây hãy đặt màu để vẽ đường"
+
+#: src/settings.c:1167
 msgid "Set here the line style of the drawn route"
-msgstr "Ở đây hãy đặt kiểu dáng đường của lộ trình sẽ vẽ"
-
-#: src/settings.c:1166 src/settings.c:2046
-msgid "Friends"
-msgstr "Bạn bè"
-
-#: src/settings.c:1171
-msgid "Choose Friends color"
-msgstr "Chọn màu của bạn bè"
-
-#: src/settings.c:1175
-msgid "Set here the text color of the drawn friends"
-msgstr "Ở đây hãy đặt màu của các bạn bè sẽ vẽ"
+msgstr "Ở đây hãy đặt kiểu đường để vẽ đường"
 
 #: src/settings.c:1180
+msgid "Choose Friends color"
+msgstr "Chọn màu bạn bè"
+
+#: src/settings.c:1184
+msgid "Set here the text color of the drawn friends"
+msgstr "Ở đây hãy đặt màu để vẽ bạn bè"
+
+#: src/settings.c:1189
 msgid "Choose font for friends"
-msgstr "Chọn phông cho bạn bè"
+msgstr "Chọn phông bạn bè"
 
-#: src/settings.c:1186
+#: src/settings.c:1195
 msgid "Set here the font of the drawn friends"
-msgstr "Ở đây hãy đặt phông chữ của các bạn bè sẽ vẽ"
+msgstr "Ở đây hãy đặt phông chữ để vẽ bạn bè"
 
-#: src/settings.c:1189 src/settings.c:1849
+#: src/settings.c:1198 src/settings.c:1858
 msgid "Waypoints"
-msgstr "Địa điểm"
-
-#: src/settings.c:1194
-msgid "Choose Waypoints label color"
-msgstr "Chọn màu của nhãn Địa điểm"
-
-#: src/settings.c:1198
-msgid "Set here the text color of the waypoint labels"
-msgstr "Ở đây hãy đặt màu chữ của nhãn Địa điểm"
+msgstr "Điểm nút"
 
 #: src/settings.c:1203
-msgid "Choose font for waypoint labels"
-msgstr "Chọn phông cho nhãn Địa điểm"
+msgid "Choose Waypoints label color"
+msgstr "Chọn màu nhãn Điểm nút"
 
-#: src/settings.c:1209
-msgid "Set here the font of waypoint labels"
-msgstr "Ở đây hãy đặt phông chữ của nhãn Địa điểm"
+#: src/settings.c:1207
+msgid "Set here the text color of the waypoint labels"
+msgstr "Ở đây hãy đặt màu chữ của nhãn Điểm nút địa danh"
 
 #: src/settings.c:1212
+msgid "Choose font for waypoint labels"
+msgstr "Chọn phông nhãn Điểm nút"
+
+#: src/settings.c:1218
+msgid "Set here the font of waypoint labels"
+msgstr "Ở đây hãy đặt phông chữ của nhãn Điểm nút địa danh"
+
+#: src/settings.c:1221
 msgid "Dashboard"
 msgstr "Bảng đồng hồ"
 
-#: src/settings.c:1217
+#: src/settings.c:1226
 msgid "Choose color for dashboard"
-msgstr "Chọn màu cho bảng đồng hồ"
+msgstr "Chọn màu bảng đồng hồ"
 
-#: src/settings.c:1221
+#: src/settings.c:1230
 msgid "Set here the color of the dashboard"
 msgstr "Ở đây hãy đặt màu của bảng đồng hồ"
 
-#: src/settings.c:1226
+#: src/settings.c:1235
 msgid "Choose font for dashboard"
-msgstr "Chọn phông cho bảng đồng hồ"
+msgstr "Chọn phông bảng đồng hồ"
 
-#: src/settings.c:1232
+#: src/settings.c:1241
 msgid "Set here the font of the dashboard"
 msgstr "Ở đây hãy đặt phông chữ của bảng đồng hồ"
 
-#: src/settings.c:1273
+#: src/settings.c:1282
 msgid "<b>Fonts, Colors, Styles</b>"
-msgstr "<b>Phông, Màu, Kiểu dáng</b>"
+msgstr "<b>Phông, Màu, Kiểu</b>"
 
-#: src/settings.c:1284
+#: src/settings.c:1293
 msgid "<b>Nightmode</b>"
-msgstr "<b>Chế đô đem</b>"
+msgstr "<b>Chế đô đêm</b>"
 
-#: src/settings.c:1295
+#: src/settings.c:1304
 msgid "<b>Map Features</b>"
-msgstr "<b>Tính năng bản đồ</b>"
+msgstr "<b>Tính năng Bản đồ</b>"
 
-#: src/settings.c:1309
+#: src/settings.c:1318
 msgid "GUI"
 msgstr "GUI"
 
-#: src/settings.c:1335
+#: src/settings.c:1344
 msgid "Travel Mode"
-msgstr "Chế độ dụ lịch"
+msgstr "Chế độ Dụ lịch"
 
-#: src/settings.c:1337
+#: src/settings.c:1346
 msgid "Car"
 msgstr "Xe"
 
-#: src/settings.c:1339
+#: src/settings.c:1348
 msgid "Bike"
 msgstr "Xe đạp"
 
-#: src/settings.c:1341
+#: src/settings.c:1350
 msgid "Walk"
 msgstr "Đi bộ"
 
-#: src/settings.c:1343
+#: src/settings.c:1352
 msgid "Boat"
 msgstr "Tàu"
 
-#: src/settings.c:1345
+#: src/settings.c:1354
 msgid "Airplane"
 msgstr "Máy bay"
 
-#: src/settings.c:1355
+#: src/settings.c:1364
 msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
 msgstr "Hãy chọn chế độ dụ lịch. Thiết lập này được dùng để xác định biểu tượng thích hợp để hiển thị vị trí của bạn."
 
-#: src/settings.c:1381
+#: src/settings.c:1390
 msgid "Direction"
 msgstr "Hướng"
 
-#: src/settings.c:1383
-msgid "Speed"
-msgstr "Tốc độ"
-
-#: src/settings.c:1384
+#: src/settings.c:1393
 msgid "GPS Status"
 msgstr "Trạng thái GPS"
 
-#: src/settings.c:1426
+#: src/settings.c:1435
 msgid "Switch on for speech output of the direction to the target"
 msgstr "Bật để nói hướng về đích."
 
-#: src/settings.c:1429
+#: src/settings.c:1438
 msgid "Switch on for speech output of the distance to the target"
 msgstr "Bật để nói khoảng cách về đích."
 
-#: src/settings.c:1432
+#: src/settings.c:1441
 msgid "Switch on for speech output of your current speed"
 msgstr "Bật để nói tốc độ hiện thời"
 
-#: src/settings.c:1434
+#: src/settings.c:1443
 msgid "Switch on for speech output of the status of your GPS signal"
 msgstr "Bật để nói trạng thái của tín hiệu GPS"
 
-#: src/settings.c:1441
+#: src/settings.c:1450
 msgid "<b>Navigation Settings</b>"
-msgstr "<b>Thiết lập di chuyển</b>"
+msgstr "<b>Thiết lập Di chuyển</b>"
 
-#: src/settings.c:1449
+#: src/settings.c:1458
 msgid "<b>Speech Output</b>"
-msgstr "<b>Nói dữ liệu</b>"
+msgstr "<b>Kết xuất Tiếng nói</b>"
 
-#: src/settings.c:1457
+#: src/settings.c:1466
 msgid "Navigation"
 msgstr "Di chuyển"
 
-#: src/settings.c:1491 src/settings.c:1739
+#: src/settings.c:1500 src/settings.c:1748
 msgid "Waypoints File"
-msgstr "Tập tin Địa điểm"
+msgstr "Tập tin Điểm nút"
 
-#: src/settings.c:1493 src/settings.c:1741
+#: src/settings.c:1502 src/settings.c:1750
 msgid "Select Waypoints File"
-msgstr "Chọn tập tin Địa điểm"
+msgstr "Chọn tập tin Điểm nút"
 
-#: src/settings.c:1501 src/settings.c:1749
+#: src/settings.c:1510 src/settings.c:1758
 msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
 msgstr ""
-"Hãy chọn tập tin Địa điểm cần dùng.\n"
+"Hãy chọn tập tin điểm nút địa danh cần dùng.\n"
 "Hiện thời chỉ hỗ trợ tập tin theo định dạng « way.txt » của GpsDrive."
 
-#: src/settings.c:1517
+#: src/settings.c:1526
 msgid "Default search radius"
 msgstr "Bán kính tìm mặc định"
 
-#: src/settings.c:1527
+#: src/settings.c:1536
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
-msgstr "Chọn phạm vi tìm kiếm mặc định (theo cây số) cho cửa sổ Tra Tìm Điểm Quan Tâm.."
+msgstr "Chọn phạm vi tìm kiếm mặc định (theo kilô-mét) cho cửa sổ Tra Tìm Điểm Quan Tâm."
 
-#: src/settings.c:1529
-msgid "km"
-msgstr "cây số"
-
-#: src/settings.c:1531
+#: src/settings.c:1540
 msgid "Limit results to"
 msgstr "Hạn chế kết quả thành"
 
-#: src/settings.c:1540
+#: src/settings.c:1549
 msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
-msgstr "Hãy chọn hạn chế về số mục tương ứng được hiển thị trong Cửa Sổ Tra Tìm Điểm Quan Tâm. Phụ thuộc vào hệ thống, giá trị quá cao có thể làm cho hệ thống chạy chậm."
+msgstr "Hãy chọn giới hạn về số mục nhập tương ứng được hiển thị trong Cửa Sổ Tra Tìm Điểm Quan Tâm. Phụ thuộc vào hệ thống, giá trị quá cao có thể làm cho hệ thống chạy chậm."
 
-#: src/settings.c:1543
+#: src/settings.c:1552
 msgid "entries"
 msgstr "mục"
 
-#: src/settings.c:1564
+#: src/settings.c:1573
 msgid "Show POI Label"
 msgstr "Hiện nhãn ĐQT"
 
-#: src/settings.c:1566
+#: src/settings.c:1575
 msgid "This will print the name next to the POI-Icon"
-msgstr "Tùy chọn này sẻ in ra tên bên cạnh biểu tượng ĐQT"
+msgstr "Tùy chọn này sẽ in ra tên bên cạnh biểu tượng ĐQT"
 
-#: src/settings.c:1581
+#: src/settings.c:1590
 msgid "POI-Theme"
 msgstr "Sắc thái ĐQT"
 
-#: src/settings.c:1610
+#: src/settings.c:1619
 msgid "POI-Filter"
 msgstr "Bộ lọc ĐQT"
 
-#: src/settings.c:1679
+#: src/settings.c:1688
 msgid "<b>Waypoints</b>"
-msgstr "<b>Địa điểm</b>"
+msgstr "<b>ĐIểm nút</b>"
 
-#: src/settings.c:1687
+#: src/settings.c:1696
 msgid "<b>POI Search Settings</b>"
 msgstr "<b>Thiết lập Tìm kiếm ĐQT</b>"
 
-#: src/settings.c:1697
+#: src/settings.c:1706
 msgid "<b>POI Display</b>"
 msgstr "<b>Hiển thị ĐQT</b>"
 
-#: src/settings.c:1711
-msgid "POI"
-msgstr "ĐQT"
-
-#: src/settings.c:1787
+#: src/settings.c:1796
 msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
 msgstr ""
-"Đừng dùng hơn 100 tập tin\n"
-"địa điểm « way*.txt »."
+"Không nên dùng hơn 100\n"
+"tập tin điểm nút « way*.txt »."
 
-#: src/settings.c:1833
+#: src/settings.c:1842
 msgid "<b>File Dialog Selection</b>"
 msgstr "<b>Hộp thoại chọn tập tin</b>"
 
-#: src/settings.c:1841
+#: src/settings.c:1850
 msgid "<b>Quick Select File</b>"
 msgstr "<b>Chọn nhanh tập tin</b>"
 
-#: src/settings.c:1880
+#: src/settings.c:1889
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
 msgstr ""
-"Bật chế độ này thì <span color=\"red\">mọi người</span> đang dùng\n"
-"cùng một máy phục vụ với bạn có thể xem vị trí của bạn."
+"Bật chế độ này thì <span color=\"red\">mọi người</span> trên cùng\n"
+"máy phục vụ có quyền xem vị trí của bạn."
 
-#: src/settings.c:1885
+#: src/settings.c:1894
 msgid "Your name"
 msgstr "Tên của bạn"
 
-#: src/settings.c:1894
+#: src/settings.c:1903
 msgid "Enable friends service"
 msgstr "Bật dịch vụ bạn bè"
 
-#: src/settings.c:1904
+#: src/settings.c:1913
 msgid "Show only positions newer than"
 msgstr "Hiện chỉ vị trí mới hơn"
 
-#: src/settings.c:1908
+#: src/settings.c:1917
 msgid "Days"
 msgstr "Ngày"
 
-#: src/settings.c:1910
+#: src/settings.c:1919
 msgid "Hours"
 msgstr "Giờ"
 
-#: src/settings.c:1912
+#: src/settings.c:1921
 msgid "Minutes"
 msgstr "Phút"
 
-#: src/settings.c:1958
+#: src/settings.c:1967
 msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
-msgstr "Bật/tắt dùng dịch vụ bạn bè. Bạn cần phải gõ Tên người dùng, đừng dùng tên mặc định."
+msgstr "Bật/tắt dùng dịch vụ bạn bè. Bạn cần phải gõ một tên người dùng, không nên dùng tên mặc định."
 
-#: src/settings.c:1962
+#: src/settings.c:1971
 msgid "Set here the name which will be shown near your position."
 msgstr "Ở đây hãy đặt tên sẽ được hiển thị bên cạnh vị trí của bạn."
 
-#: src/settings.c:1965
+#: src/settings.c:1974
 msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
-msgstr "Ở đây hãy đặt thời hạn hiển thị vị trí của bạn bè. Vị trí cũ hơn sẽ không được hiển thị."
+msgstr "Ở đây hãy đặt thời hạn hiển thị vị trí của bạn bè. Vị trí cũ hơn thì không được hiển thị."
 
-#: src/settings.c:1984
+#: src/settings.c:1993
 msgid "IP"
 msgstr "IP"
 
-#: src/settings.c:1992
+#: src/settings.c:2001
 msgid "Lookup"
 msgstr "Tra tìm"
 
-#: src/settings.c:2008
+#: src/settings.c:2017
 msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
-msgstr "Ở đây hãy đặt tên máy có khả năng đầy đủ (v.d. « friends.gpsdrive.de ») của máy phục vụ bạn bè cần dùng, rồi bấm nút « Tra tìm »."
+msgstr "Ở đây hãy đặt tên máy có khả năng đầy đủ (v.d. « friends.gpsdrive.de ») của máy phục vụ bạn bè cần dùng, sau đó bấm nút « Tra tìm »."
 
-#: src/settings.c:2012
+#: src/settings.c:2021
 msgid "Press this button to resolve the friends server name."
-msgstr "Bấm cái nút này để giải quyết tên của máy phục vụ bạn bè."
+msgstr "Bấm nút này để giải quyết tên của máy phục vụ bạn bè."
 
-#: src/settings.c:2015
+#: src/settings.c:2024
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr "Ở đây hãy đặt địa chỉ IP (v.d. « 127.0.0.1 ») nếu bạn chưa đặt tên máy bên trên."
 
-#: src/settings.c:2023
+#: src/settings.c:2032
 msgid "<b>General</b>"
 msgstr "<b>Chung</b>"
 
-#: src/settings.c:2034
+#: src/settings.c:2043
 msgid "<b>Server</b>"
 msgstr "<b>Máy phục vụ</b>"
 
-#: src/settings.c:2113
+#: src/settings.c:2122
 msgid "GpsDrive Settings"
 msgstr "Thiết lập GpsDrive"
 
-#: src/splash.c:132
+#: src/splash.c:131
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1562,11 +1807,11 @@ msgstr ""
 " • ở giữa\t\thiển thị lại vị trí\n"
 " • bên trái-Shift\tbản đồ nhỏ hơn\n"
 " • bên phải-Shift\tbản đồ lớn hơn\n"
-" • bên trái-Ctrl\tđặt địa điểm (vị trí chuột) trên bản đồ\n"
-" • bên phải-Ctrl\tđặt địa điểm tại vị trí hiện thời trên bản đồ\n"
+" • bên trái-Ctrl\tđặt một điểm nút (vị trí chuột) trên bản đồ\n"
+" • bên phải-Ctrl\tđặt một điểm nút tại vị trí hiện thời trên bản đồ\n"
 "\n"
 
-#: src/splash.c:140
+#: src/splash.c:139
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1580,19 +1825,19 @@ msgid ""
 "+    : Zoom in \n"
 "-    : Zoom out\n"
 msgstr ""
-"j\tchuyển đổi sang địa điểm kế tiếp ở chế độ lộ trình\n"
-"x\tthêm địa điểm ở vị trí hiện tại\n"
-"y\tthêm địa điểm ở vị trí của con trỏ chuột\n"
+"j\tchuyển đổi sang điểm nút kế tiếp ở chế độ đường\n"
+"x\tthêm điểm nút ở vị trí hiện tại\n"
+"y\tthêm điểm nút ở vị trí của con trỏ chuột\n"
 "n\tmở đèn trong 60 giây (ở chế độ đem)\n"
 "g\thiện/ẩn lưới trên bản đồ\n"
 "f\thiện/ẩn bạn bè\n"
-"w\tđặt địa điểm ở vị trí hiện tại, không hỏi trước\n"
-"p\tđặt địa điểm ở vị trí con trỏ hiện tại, không hỏi trước\n"
-"r\tthêm vào cuối lộ trình vị trí con trỏ hiện tại\n"
+"w\tđặt điểm nút ở vị trí hiện tại, không hỏi trước\n"
+"p\tđặt điểm nút ở vị trí con trỏ hiện tại, không hỏi trước\n"
+"r\tthêm vào cuối đường vị trí con trỏ hiện tại\n"
 "+\tphóng to\n"
 "-\tthu nhỏ\n"
 
-#: src/splash.c:151
+#: src/splash.c:150
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1603,16 +1848,16 @@ msgid ""
 msgstr ""
 "Bấm phím gạch dưới cùng với phím sửa đổi Alt.\n"
 "\n"
-"Bạn có thể di chung quanh bản đồ, bằng cách chọn Chế độ Vị trí trong trình đơn. (Hộp màu xanh ngụ ý chế độ này, đặt con trỏ bằng cách nhấn vào bản đồ.) Nếu bạn nhấn vào viền của bản đồ (cạnh ngoài 20%), bản đồ sẽ chuyển đổi tới vùng kế tiếp.\n"
+"Bạn có thể di chung quanh bản đồ, bằng cách chọn Chế độ Vị trí trong trình đơn. (Hộp màu xanh ngụ ý chế độ này; hãy đặt con trỏ bằng cách nhấn vào bản đồ.) Nếu bạn nhấn vào viền của bản đồ (cạnh ngoài 20%), bản đồ sẽ chuyển đổi tới vùng kế tiếp.\n"
 "\n"
 "Mọi ý kiến về chương trình này, vui lòng đóng góp. :)\n"
 "\n"
 
-#: src/splash.c:161
+#: src/splash.c:160
 msgid "GpsDrive v"
-msgstr "GpsDrive phiên bản "
+msgstr "GpsDrive pb"
 
-#: src/splash.c:167
+#: src/splash.c:166
 msgid ""
 "\n"
 "\n"
@@ -1622,7 +1867,7 @@ msgstr ""
 "\n"
 "Có thể tìm thấy phiên bản mới tại « http://www.gpsdrive.de ».\n"
 
-#: src/splash.c:171
+#: src/splash.c:170
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1630,39 +1875,39 @@ msgstr ""
 "Từ bỏ : vui lòng không dùng để tìm đường.\n"
 "\n"
 
-#: src/splash.c:176
+#: src/splash.c:175
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr "Xem trang hướng dẫn (man gpsdrive) để tìm chi tiết về chương trình."
 
-#: src/splash.c:181
+#: src/splash.c:180
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Chuột điều khiển (nhấn vào bản đồ):\n"
 
-#: src/splash.c:189
+#: src/splash.c:188
 msgid "Short cuts:\n"
 msgstr "Phím tắt:\n"
 
-#: src/splash.c:196
+#: src/splash.c:195
 msgid "The other key shortcuts are marked as "
 msgstr "Những phím tắt khác được ngụ ý dạng chữ "
 
-#: src/splash.c:199
+#: src/splash.c:198
 msgid "underlined"
 msgstr "gạch dưới"
 
-#: src/splash.c:202
+#: src/splash.c:201
 msgid " letters in the button text.\n"
 msgstr " trong chuỗi nút.\n"
 
-#: src/splash.c:205
+#: src/splash.c:204
 msgid "Have a lot of fun!"
 msgstr "Tận hưởng nhé !"
 
-#: src/splash.c:322
+#: src/splash.c:321
 msgid "From:"
 msgstr "Từ :"
 
-#: src/splash.c:393
+#: src/splash.c:392
 #, c-format
 msgid ""
 "You received a message from\n"
@@ -1671,19 +1916,19 @@ msgstr ""
 "Bạn mới nhận được một tin nhắn\n"
 "từ máy phục vụ bạn bè (%s)\n"
 
-#: src/splash.c:405
+#: src/splash.c:404
 msgid "You received a message through the friends server from:\n"
 msgstr "Bạn mới nhận được một tin nhắn qua máy phục vụ bạn bè, từ :\n"
 
-#: src/splash.c:416
+#: src/splash.c:415
 msgid "Message text:\n"
 msgstr "Thân tin nhắn:\n"
 
-#: src/splash.c:523
+#: src/splash.c:522
 msgid "Starting GPS Drive"
 msgstr "Đang khởi chạy GPS Drive"
 
-#: src/splash.c:543
+#: src/splash.c:542
 #, c-format
 msgid ""
 "\n"
@@ -1695,19 +1940,19 @@ msgstr ""
 "\n"
 "Cảnh báo : không thể mở ảnh giật gân.\n"
 "Hãy cài đặt chương trình này\n"
-"với tư cách người chủ (root) bằng lệnh\n"
+"với tư cách người chủ (root) bằng câu lệnh\n"
 "make install\n"
 "\n"
 
-#: src/splash.c:611
+#: src/splash.c:610
 msgid "translator-credits"
 msgstr "Nhóm Việt hoá Phần mềm Tự do <http://vnoss.net/dokuwiki/doku.php?id=projects:l10n>"
 
-#: src/splash.c:613
+#: src/splash.c:612
 msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
-msgstr "GpsDrive là một hệ thống di chuyển cho xe (và xe đạp, tàu, máy bay v.v.) mà hiển thị vị trí hiện thời của bạn, được cung cấp từ máy nhận GPS, trên bản đồ có thể thu/phóng, và rất nhiều tính năng khác..."
+msgstr "GpsDrive là một hệ thống di chuyển cho chiếc xe (và xe đạp, tàu, máy bay v.v.) mà hiển thị vị trí hiện thời của bạn, được cung cấp từ máy nhận GPS, trên bản đồ có thể thu/phóng, và rất nhiều tính năng khác..."
 
-#: src/splash.c:616
+#: src/splash.c:615
 msgid ""
 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
@@ -1717,7 +1962,7 @@ msgstr ""
 "\n"
 "GpsDrive sử dụng dữ liệu từ Dự án Bản đồ Phố Mở (OpenStreetMap: http://www.openstreetmap.org), mà công bố tự do với điều kiện của Giấy Phép Quy Ước-Chịu Đều (Attribution-ShareAlike) Creative Commons 2.0."
 
-#: src/splash.c:623
+#: src/splash.c:622
 #, c-format
 msgid ""
 "\n"
@@ -1729,9 +1974,14 @@ msgstr ""
 "\n"
 "Cảnh báo : không thể mở ảnh biểu hình.\n"
 "Hãy cài đặt chương trình này\n"
-"với tư cách người chủ (root) bằng lệnh\n"
+"với tư cách người chủ (root) bằng câu lệnh\n"
 "make install\n"
 "\n"
+
+#: src/track.c:433
+#, c-format
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
+msgstr "bước khoảng cách hơn tốc độ 2000 km/giờ nên bỏ qua\n"
 
 #: src/waypoint.c:686
 msgid "Add Point of Interest"
@@ -1747,11 +1997,11 @@ msgstr " Kiểu : "
 
 #: src/waypoint.c:732
 msgid " Comment: "
-msgstr " Chú thích: "
+msgstr " Ghi chú:"
 
 #: src/waypoint.c:770
 msgid " Save waypoint in: "
-msgstr " Lưu địa điểm vào : "
+msgstr " Lưu điểm nút vào : "
 
 #: src/waypoint.c:773
 msgid "Database"
@@ -1760,584 +2010,3 @@ msgstr "Cơ sở dữ liệu"
 #: src/waypoint.c:778
 msgid "way.txt File"
 msgstr "Tập tin « way.txt »"
-
-#~ msgid "/_Misc. Menu"
-#~ msgstr "/_Lặt vặt"
-
-#~ msgid "/_Misc. Menu/Maps"
-#~ msgstr "/_Lặt vặt/Bản đồ"
-
-#~ msgid "/_Misc. Menu/Maps/_Import map"
-#~ msgstr "/_Lặt vặt/Bản đồ/_Nhập bản đồ"
-
-#~ msgid "/_Misc. Menu/Maps/_Map Manager"
-#~ msgstr "/_Lặt vặt/Bản đồ/Bộ quản lý _bản đồ"
-
-#~ msgid "/_Misc. Menu/_Waypoint Manager"
-#~ msgstr "/_Lặt vặt/Bộ quản lý _địa điểm"
-
-#~ msgid "/_Misc. Menu/_Load track file"
-#~ msgstr "/_Lặt vặt/Tải tập tin đường _vết"
-
-#~ msgid "/_Misc. Menu/Messages"
-#~ msgstr "/_Lặt vặt/Thông điệp"
-
-#~ msgid "/_Misc. Menu/Messages/Send message to mobile target"
-#~ msgstr "/_Lặt vặt/Thông điệp/Gởi thông điệp cho đích di động"
-
-#~ msgid "/_Misc. Menu/Help"
-#~ msgstr "/_Lặt vặt/Trợ giúp"
-
-#~ msgid "/_Misc. Menu/Help/About"
-#~ msgstr "/_Lặt vặt/Trợ giúp/Giới thiệu"
-
-#~ msgid "/_Misc. Menu/Help/Topics"
-#~ msgstr "/_Lặt vặt/Trợ giúp/Chủ đề trợ giúp"
-
-#~ msgid "  Message  "
-#~ msgstr "  Thông điệp  "
-
-#~ msgid "Stop GPSD"
-#~ msgstr "Dừng GPSD"
-
-#~ msgid "Stop GPSD and switch to simulation mode"
-#~ msgstr "Dừng GPSD và chuyển đổi sang chế độ mô phỏng"
-
-#~ msgid "Starts GPSD for NMEA mode"
-#~ msgstr "Khởi chạy GPSD cho chế độ NMEA"
-
-#~ msgid "n/a"
-#~ msgstr "không có"
-
-#~ msgid ""
-#~ "\n"
-#~ "no garmin support compiled in\n"
-#~ msgstr ""
-#~ "\n"
-#~ "chưa biên dịch cách hỗ trợ Garmin\n"
-
-#~ msgid "got RMC data, using it\n"
-#~ msgstr "mới nhận dữ liệu RMC nên dùng nó\n"
-
-#~ msgid "got no RMC data, using GGA data\n"
-#~ msgstr "chưa nhận dữ liệu RMC nên dùng dữ liệu GGA\n"
-
-#~ msgid "Reading data from %s"
-#~ msgstr "Đang đọc dữ liệu từ %s..."
-
-#~ msgid "GARMIN Mode"
-#~ msgstr "Chế độ GARMIN"
-
-#~ msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
-#~ msgstr "Khoảng cách Về: %.1fkm, cho phép tối đa: %.1fkm\n"
-
-#~ msgid "To"
-#~ msgstr "Đến"
-
-#~ msgid "Auto"
-#~ msgstr "Tự động"
-
-#~ msgid "NESW"
-#~ msgstr "BĐNT"
-
-# Type: text
-# Description
-# short variant of `do not use the partition'
-#~ msgid "unused"
-#~ msgstr "không dùng"
-
-#~ msgid " Friendsicon could not be loaded:"
-#~ msgstr " Không thể tải biểu tượng người bạn:"
-
-#~ msgid "Map file name"
-#~ msgstr "Tên tập tin bản đồ"
-
-#~ msgid "Browse waypoint"
-#~ msgstr "Duyệt địa điểm"
-
-#~ msgid "/Misc. Menu/Messages"
-#~ msgstr "/Lặt vặt/Thông điệp"
-
-#~ msgid "Sends your text to to selected computer using the friends server"
-#~ msgstr "Gởi chuỗi của bạn cho máy tính đã chọn, dùng máy phục vụ người bạn"
-
-#~ msgid "Add waypoint name"
-#~ msgstr "Thêm tên địa điểm"
-
-#~ msgid " Waypoint type: "
-#~ msgstr " Kiểu địa điểm: "
-
-#~ msgid "-D    turn on lot of debug info\n"
-#~ msgstr "-D\thiện nhiều thông tin gỡ lỗi\n"
-
-#~ msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
-#~ msgstr "-t\tđặt thiết bị nối tiếp cho GPS, v.d. </dev/ttyS1>\n"
-
-#~ msgid "-n    Disable use of direct serial connection\n"
-#~ msgstr "-n\tTắt dùng kết nối nối tiếp trực tiếp\n"
-
-#~ msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
-#~ msgstr "-p\tthiết lập PDA (IPAQ, Yopy v.v.)\n"
-
-#~ msgid ""
-#~ "-z    don't display zoom factor and scale\n"
-#~ "\n"
-#~ msgstr ""
-#~ "-z\tđừng hiện hệ số và tỷ lệ phóng to\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Garmin protocol detection disabled!\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Phát hiện giao thức Garmin bị tắt\n"
-
-#~ msgid "Gpsdrive-2 (c)2001-2004 F.Ganter"
-#~ msgstr "Gpsdrive-2 bản quyền © nam 2001-2004 F.Ganter"
-
-#~ msgid "/Misc. Menu/Maps/Map Manager"
-#~ msgstr "/Lặt vặt/Bản đồ/Bộ quản lý bản đồ"
-
-#~ msgid "/Misc. Menu/Waypoint Manager"
-#~ msgstr "/Lặt vặt/Bộ quản lý địa điểm"
-
-#~ msgid "_Download map"
-#~ msgstr "Tải _về bản đồ"
-
-#~ msgid "Use SQ_L"
-#~ msgstr "Dùng SQ_L"
-
-#~ msgid "Show _WP"
-#~ msgstr "Hiện _ĐĐ"
-
-#~ msgid "HomeBase"
-#~ msgstr "Về"
-
-#~ msgid "Save track"
-#~ msgstr "Lưu vết"
-
-#~ msgid "Bearing"
-#~ msgstr "Vị trí phương hướng"
-
-#~ msgid "---"
-#~ msgstr "---"
-
-#~ msgid "within"
-#~ msgstr "ở trong"
-
-#~ msgid "Distance to target"
-#~ msgstr "Khoảng cách tới đích"
-
-#~ msgid "Map file"
-#~ msgstr "Tập tin bản đồ"
-
-#~ msgid "Map scale"
-#~ msgstr "Tỷ lệ bản đồ"
-
-#~ msgid "Heading"
-#~ msgstr "Hướng về"
-
-#~ msgid "Time at Dest."
-#~ msgstr "Giờ tại đích"
-
-#~ msgid "Pref. scale"
-#~ msgstr "Tỷ lệ ưa thích"
-
-#~ msgid "000,00000N"
-#~ msgstr "000,00000B"
-
-#~ msgid "000,00000E"
-#~ msgstr "000,00000Đ"
-
-#~ msgid "0000"
-#~ msgstr "0000"
-
-#~ msgid "Menu"
-#~ msgstr "Trình đơn"
-
-#~ msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
-#~ msgstr "Nhắp vào đây để chuyển đổi giữa hiển thị cấp vệ tinh và vị trí vệ tinh. Chế độ mô phỏng hiển thị địa cầu xoay."
-
-#~ msgid "Number of used satellites"
-#~ msgstr "Số vệ tinh đã dùng"
-
-#~ msgid "EPE (Estimated Precision Error), if available"
-#~ msgstr "EPE (lỗi chính xác đã ước), nếu có"
-
-#~ msgid "On top of the compass you see the direction to which you move. The pointer shows the target direction on the compass."
-#~ msgstr "Trên la bàn, bạn có thể xem hướng đang đi. Con trỏ hiển thị hướng đích trên la bàn."
-
-#~ msgid "/Misc. Menu"
-#~ msgstr "/Lặt vặt"
-
-#~ msgid "Here you find extra functions for maps, tracks and messages"
-#~ msgstr "Ở đây có chức năng thêm cho bản đồ, vết và thông điệp"
-
-#~ msgid "Download map from Internet"
-#~ msgstr "Tải bản đồ xuống Mạng"
-
-#~ msgid "Leave the program"
-#~ msgstr "Thoát khởi chương trình"
-
-#~ msgid "Disable output of speech"
-#~ msgstr "Tắt nói dữ liệu"
-
-#~ msgid "Use SQL server for waypoints"
-#~ msgstr "Dùng máy phục vụ SQL cho địa điểm"
-
-#~ msgid "Show waypoints on the map"
-#~ msgstr "Hiện địa điểm trên bản đồ"
-
-#~ msgid "Show tracking on the map"
-#~ msgstr "Hiện vết trên bản đồ"
-
-#~ msgid "Opens the help window"
-#~ msgstr "Mở cửa sổ trợ giúp"
-
-#~ msgid "Settings for GpsDrive"
-#~ msgstr "Thiết lập cho GpsDrive"
-
-#~ msgid "Zoom into the current map"
-#~ msgstr "Phóng to bản đồ hiện có"
-
-#~ msgid "Zooms out off the current map"
-#~ msgstr "Thu nhỏ bản đồ hiện có"
-
-#~ msgid "Select the next more detailed map"
-#~ msgstr "Chọn bản đồ chi tiết hơn kế tiếp"
-
-#~ msgid "Select the next less detailed map"
-#~ msgstr "Chọn bản đồ ít chi tiết hơn kế tiếp"
-
-#~ msgid "Select here a destination from the waypoint list"
-#~ msgstr "Ở đây chọn đích từ danh sách địa điểm"
-
-#~ msgid "Select the map scale of avail. maps."
-#~ msgstr "Chọn tỷ lệ bản đồ từ các bản đồ sẵn sàng."
-
-#~ msgid "Save the track to given filename at program exit"
-#~ msgstr "Lưu vết vào tên tập tin đã cho, khi thoát khởi chương trình"
-
-#~ msgid "Number of waypoints selected from SQL server"
-#~ msgstr "Số địa điểm được chọn từ máy phục vụ SQL"
-
-#~ msgid "Number of selected waypoints, which are in range"
-#~ msgstr "Số địa điểm đã chọn, mà có trong phạm vị"
-
-#~ msgid "Range for waypoint selection in kilometers"
-#~ msgstr "Phạm vị chọn địa điểm, theo cây số"
-
-#~ msgid "This shows the time from your GPS receiver"
-#~ msgstr "Hiện giờ từ bộ nhận GPS"
-
-#~ msgid "Number of mobile targets within timeframe/total received from friendsserver"
-#~ msgstr "Số đích di động ở trong phạm vị thời gian / tổng được nhận từ máy phục vụ người bạn"
-
-#~ msgid ""
-#~ "j    : switch to next waypoint in route mode\n"
-#~ "x    : add waypoint at current position\n"
-#~ "y    : add waypoint at mouse cursor position\n"
-#~ msgstr ""
-#~ "    Phím tắt\tHành động\n"
-#~ "━━━━━━━━━━━━━━\n"
-#~ " • j\t\tchuyển đổi sang địa điểm kế tiếp trong chế độ lộ trình\n"
-#~ " • x\t\tthêm địa điểm tại vị trí hiện có\n"
-#~ " • y\t\tthêm địa điểm tại vị trí của con chạy chuột\n"
-
-#~ msgid "Please donate to GpsDrive"
-#~ msgstr "Vui lòng tặng tiền cho dự án phát triển GpsDrive."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "GpsDrive is a project with no comercial background. \n"
-#~ "\n"
-#~ "It would be nice if you can give a donation to help me pay the costs for hardware and the webserver.\n"
-#~ "\n"
-#~ "To do so, just go to"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "GpsDrive là một dự án không có công ty hỗ trợ.\n"
-#~ "\n"
-#~ "Xin bạn tặng tiền để giúp đỡ tôi trả phí tổn phần cứng và duy trì máy phục vụ Mạng.\n"
-#~ "\n"
-#~ "Để tặng tiền, vui lòng thăm:"
-
-#~ msgid " http://www.gpsdrive.cc "
-#~ msgstr " http://www.gpsdrive.cc "
-
-#~ msgid ""
-#~ "and click on the PayPal button.\n"
-#~ "\n"
-#~ "Thank you very much for your donation!\n"
-#~ "\n"
-#~ "This message is only displayed once when you start an new version of GpsDrive.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "rồi nhắp vào cái nút PayPal.\n"
-#~ "\n"
-#~ "Rất cám ơn bạn đã tặng tiền !\n"
-#~ "\n"
-#~ "Thông điệp này được hiển thị chỉ lần đầu tiên bạn chạy một phiên bản GpsDrive mới.\n"
-#~ "\n"
-
-#~ msgid "About GpsDrive donation"
-#~ msgstr "Giới thiệu về tặng tiền cho dự án GpsDrive"
-
-#~ msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-#~ msgstr "Gặp lỗi khi lưu tập tin cấu hình <~/.gpsdrive/gpsdriverc>."
-
-#~ msgid "About GpsDrive"
-#~ msgstr "Giới thiệu về GpsDrive"
-
-#~ msgid "Setting WP label font"
-#~ msgstr "Đang đặt phông chữ nhãn địa điểm..."
-
-#~ msgid "Setting big display font"
-#~ msgstr "Đang đặt phông chử hiển thị lớn..."
-
-#~ msgid "Setting big display color"
-#~ msgstr "Đang đặt màu hiển thị lớn..."
-
-#~ msgid "Waypoint files to use"
-#~ msgstr "Tập tin địa điểm cần dùng"
-
-#~ msgid "Settings"
-#~ msgstr "Thiết lập"
-
-#~ msgid "Misc settings"
-#~ msgstr "Thiết lập lặt vặt"
-
-#~ msgid "Etched frames"
-#~ msgstr "Khung đã khắc"
-
-#~ msgid "Simulation: Follow target"
-#~ msgstr "Mô phỏng: theo đích"
-
-#~ msgid "GPS settings"
-#~ msgstr "Thiết lập GPS"
-
-#~ msgid "Test for GARMIN"
-#~ msgstr "Kiểm tra GARMIN"
-
-#~ msgid "Use DGPS-IP"
-#~ msgstr "Dùng DGPS-IP"
-
-#~ msgid "GPS is Earthmate"
-#~ msgstr "GPS là Earthmate"
-
-#~ msgid "Use serial conn."
-#~ msgstr "Dùng kết nối kiểu nối tiếp"
-
-#~ msgid "Interface"
-#~ msgstr "Giao diện"
-
-#~ msgid "Baudrate"
-#~ msgstr "Tốc độ truyền"
-
-#~ msgid "Units"
-#~ msgstr "Đơn vị"
-
-#~ msgid "Miles"
-#~ msgstr "Lý"
-
-#~ msgid "Nautic"
-#~ msgstr "Hải"
-
-#~ msgid "Night light mode"
-#~ msgstr "Chế độ đèn đem"
-
-#~ msgid "Font and color settings"
-#~ msgstr "Thiết lập phông chữ và màu"
-
-#~ msgid "Big display"
-#~ msgstr "Hiển thị lớn"
-
-#~ msgid "Display color"
-#~ msgstr "Màu hiển thị"
-
-#~ msgid "Switch units to statute miles"
-#~ msgstr "Chuyển đổi đơn vị sang lý chuẩn"
-
-#~ msgid "Switch units to nautical miles"
-#~ msgstr "Chuyển đổi đơn vị sang lý hải"
-
-#~ msgid "Switch units to metric system (Kilometers)"
-#~ msgstr "Chuyển đổi đơn vị sang hệ thống mét (cây số)"
-
-#~ msgid "If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"
-#~ msgstr "Nếu chọn, hiển thị kinh độ và vĩ độ dạng độ thập phân (v.d. 10.783114, 106.699804), nếu không, dạng độ phút giây (v.d. 10 47' B  106 42' Đ)."
-
-#~ msgid "Set Mapblast as default download server"
-#~ msgstr "Đặt Mapblast là máy phục vụ tải xuống mặc định"
-
-#~ msgid "Set Expedia as default download server"
-#~ msgstr "Đặt Expedia là máy phục vụ tải xuống mặc định"
-
-#~ msgid "Switches between different type of frame ornaments"
-#~ msgstr "Chuyển đổi giữa nhiều cách trang trí khung khác nhau"
-
-#~ msgid "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."
-#~ msgstr "Nếu chọn, trình GpsDrive cố dùng chế độ GARMIN nếu có thể. Hãy bỏ chọn nếu bạn chỉ có thiết bị kiểu NMEA."
-
-#~ msgid "Set here the baud rate of your GPS device, NMEA devices usually have a speed of 4800 baud"
-#~ msgstr "Hãy đặt vao đây tốc độ truyền của thiết bị GPS mình. Thiết bị NMEA thường có tốc độ 4800 baud."
-
-#~ msgid "If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
-#~ msgstr "Nếu chọn, GpsDrive cố dùng Hệ thống Xác định Vị trí Địa cầu vi phân (GPSD) thông qua Giao thức Mạng (IP). Bạn phải có kết nối đến Mạng, cũng phải có một máy nhận GPS có khả năng DGPS. Tính năng này hoạt động chỉ trong chế độ NMEA thôi."
-
-#~ msgid "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"
-#~ msgstr "Hãy chọn điều này nếu bạn có một máy nhận GPS kiểu DeLorme Earthmate. Cái nút Chạy GPSD sẽ cung cấp những tham số thêm cần thiết cho GPSD."
-
-#~ msgid "Select this if you want to use of the direct serial connection. If disabled, you can use the receiver only through gpsd. On the other hand, the direct serial connection needs no gpsd running and detects the working receiver on startup"
-#~ msgstr "Hãy chọn điều này nếu bạn muốn dùng cách kết nối nối tiếp trực tiếp. Nếu tắt, bạn có thể dùng máy nhận chỉ thông qua GPSD. Mật khác, cách kết nối nối tiếp trực tiếp không cần thiết GPSD chạy, và phát hiện máy nhận hoạt động khi khởi chạy."
-
-#~ msgid "Specify the serial interface where the GPS is connected"
-#~ msgstr "Hãy ghi rõ giao diện nối tiếp nơi máy GPS được kết nối"
-
-#~ msgid "Here you can set the color for the big display for speed, distance and altitude"
-#~ msgstr "Ở đây bạn có thể đặt màu cho khung lớn hiển thị Tốc độ, Khoảng cách và Cao độ"
-
-#~ msgid "Geo information"
-#~ msgstr "Thông tin địa lý"
-
-#~ msgid "Geo info"
-#~ msgstr "Tin địa lý"
-
-#~ msgid "Sunrise"
-#~ msgstr "Rạng đông"
-
-#~ msgid "Sunset"
-#~ msgstr "Hoàng hôn"
-
-#~ msgid "Standard"
-#~ msgstr "Chuẩn"
-
-#~ msgid "Transit"
-#~ msgstr "Đi qua"
-
-#~ msgid "GPS-Time"
-#~ msgstr "Giờ GPS"
-
-#~ msgid "Astro."
-#~ msgstr "Thiên văn"
-
-#~ msgid "Naut."
-#~ msgstr "Hải"
-
-#~ msgid "Civil"
-#~ msgstr "Đất"
-
-#~ msgid "Timezone"
-#~ msgstr "Múi giờ"
-
-#~ msgid "Night"
-#~ msgstr "Đem"
-
-#~ msgid "Day"
-#~ msgstr "Ngày"
-
-#~ msgid "Unit:"
-#~ msgstr "Đơn vị:"
-
-#~ msgid "miles"
-#~ msgstr "lý"
-
-#~ msgid "nautic miles/knots"
-#~ msgstr "hải lý"
-
-#~ msgid "kilometers"
-#~ msgstr "cây số"
-
-#~ msgid "Trip information"
-#~ msgstr "Thông tin dụ lịch"
-
-#~ msgid "Odometer"
-#~ msgstr "Đo đường"
-
-#~ msgid "Total time"
-#~ msgstr "Tổng thời gian"
-
-#~ msgid "Av. speed"
-#~ msgstr "Tốc độ t.b."
-
-#~ msgid "Max. speed"
-#~ msgstr "Tốc độ tối đa"
-
-#~ msgid "Resets the trip values to zero"
-#~ msgstr "Đặt lại các giá trị dụ lịch thành số không"
-
-#~ msgid "Friends server setup"
-#~ msgstr "Thiết lập máy phục vụ người bạn"
-
-#~ msgid "Server name"
-#~ msgstr "Tên máy phục vụ"
-
-#~ msgid "Set here the color of the label displayed at friends position"
-#~ msgstr "Ở đây hãy đặt màu của nhãn được hiển thị tại vị trí của người bạn"
-
-#~ msgid "Friends server IP"
-#~ msgstr "Địa chỉ IP của máy phục vụ người bạn"
-
-#~ msgid "SQL selection criterias"
-#~ msgstr "Tiêu chuẩn chọn SQL"
-
-# Name: don't translate / Tên: đừng dịch
-#~ msgid "SQL"
-#~ msgstr "SQL"
-
-#~ msgid "Dist. limit[km] "
-#~ msgstr "Xa hạn[cây số]"
-
-#~ msgid "If enabled, show waypoints only within this distance"
-#~ msgstr "Nếu bật, hiển thị địa điểm chỉ ở trong bán kính này"
-
-#~ msgid "Enable?"
-#~ msgstr "Bật ?"
-
-#~ msgid "Enable/disable distance selection"
-#~ msgstr "Bật/tắt chọn khoảng cách"
-
-#~ msgid "Selection mode"
-#~ msgstr "Chế độ lựa chọn"
-
-#~ msgid "include"
-#~ msgstr "gồm"
-
-#~ msgid "exclude"
-#~ msgstr "loại trừ"
-
-#~ msgid "Show only waypoints where the type field contains one of the selected words"
-#~ msgstr "Hiển thị chỉ địa điểm mà trường kiểu chứa một của những từ đã chọn"
-
-#~ msgid "Show only waypoints where the type field doesn't contain any the selected words"
-#~ msgstr "Hiển thị chỉ địa điểm mà trường kiểu không chứa từ nào đã chọn"
-
-#~ msgid "Aeronautical settings"
-#~ msgstr "Thiết lập hàng không"
-
-#~ msgid "Fly"
-#~ msgstr "Bay"
-
-#~ msgid "Plane mode"
-#~ msgstr "Chế độ máy bay"
-
-#~ msgid "Use VFR"
-#~ msgstr "Dùng VFR"
-
-#~ msgid "Use IFR"
-#~ msgstr "Dùng IFR"
-
-#~ msgid "max. horizontal deviation "
-#~ msgstr "độ lệch ngang tối đa"
-
-#~ msgid "max. vertical deviation "
-#~ msgstr "độ lệch dọc tối đa"
-
-#~ msgid "disable vert. deviation warning above 5000ft MSL"
-#~ msgstr "tắt cảnh báo về đệ lệch dọc trên 5000 phút MSL"
-
-#~ msgid "Nautic settings"
-#~ msgstr "Thiết lập hải"

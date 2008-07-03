@@ -1,0 +1,1463 @@
+# Mesajele în limba românã pentru pachetul gpsdrive
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the PACKAGE package.
+# Eugen Hoanca <eugenh@urban-grafx.ro>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gpsdrive 2.0pre9\n"
+"POT-Creation-Date: 2003-06-08 15:49+0200\n"
+"PO-Revision-Date: 2003-11-23 23:51+0200\n"
+"Last-Translator: Eugen Hoanca <eugenh@urban-grafx.ro>\n"
+"Language-Team: Romanian <translation-team-ro@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/gpsdrive.c:1639
+msgid ""
+"\n"
+"\n"
+"Thank you for using GpsDrive!\n"
+"\n"
+msgstr ""
+"\n"
+"\n"
+"Mulþumim cã utilizaþi GpsDrive!\n"
+"\n"
+
+#: src/gpsdrive.c:1669 src/gpsdrive.c:1753
+msgid "  Message  "
+msgstr "  Mesaj  "
+
+#: src/gpsdrive.c:1719 src/gpsdrive.c:8619
+msgid ""
+"\n"
+"no garmin support compiled in\n"
+msgstr ""
+"\n"
+"nu existã suport garmin compilat\n"
+
+#: src/gpsdrive.c:1754
+msgid "Yes, please start gpsd"
+msgstr "Da, te rog porneºte gpsd"
+
+#: src/gpsdrive.c:1758
+msgid "No, start simulation"
+msgstr "Nu, porneºte simularea"
+
+#: src/gpsdrive.c:1776
+msgid ""
+"Neither gpsd nor GARMIN device detected!\n"
+"Should I start gpsd (NMEA mode) for you?"
+msgstr ""
+"Nu s-a detectat nici dispozitiv gpsd nici GARMIN!\n"
+"Sã pornesc gpsd(mod NMEA) pentru tine?"
+
+#: src/gpsdrive.c:1908 src/gpsdrive.c:2667
+msgid "Simulation mode"
+msgstr "Mod simulare"
+
+#: src/gpsdrive.c:1942 src/gpsdrive.c:2170
+msgid "UTC "
+msgstr "UTC "
+
+#: src/gpsdrive.c:2014 src/gpsdrive.c:10007
+msgid "Map"
+msgstr "Hartã"
+
+#: src/gpsdrive.c:2578 src/gpsdrive.c:2735 src/gpsdrive.c:2866
+msgid "Not enough satellites in view!"
+msgstr "Nu sunt destui sateliþi în vizualizare!"
+
+#: src/gpsdrive.c:2645 src/gpsdrive.c:2729 src/gpsdrive.c:2860
+msgid "Press middle mouse button for navigation"
+msgstr "Apãsaþi butonul de mouse din mijloc pentru navigare"
+
+#: src/gpsdrive.c:2649
+msgid "GARMIN Mode"
+msgstr "Mod GARMIN"
+
+#: src/gpsdrive.c:2665
+msgid "No GPS used"
+msgstr "Nici un GPS folosit"
+
+#: src/gpsdrive.c:2669
+msgid "Press middle mouse button for sim mode"
+msgstr "Apãsaþi butonul de mouse din mijloc pentru simulare"
+
+#: src/gpsdrive.c:2954
+msgid "Timeout getting data from GPS-Receiver!"
+msgstr "Timp expirat în preluarea datelor de la Receptorul-GPS!"
+
+#: src/gpsdrive.c:3029 src/gpsdrive.c:3184 src/gpsdrive.c:5933
+#: src/gpsdrive.c:7266 src/gpsdrive.c:7570
+msgid "Distance to "
+msgstr "Distanþã pânã la "
+
+#: src/gpsdrive.c:3264
+msgid "Error in line "
+msgstr "Eroare în linia "
+
+#: src/gpsdrive.c:3266
+msgid ""
+"I have found filenames in map_koord.txt which are\n"
+"not map_* or top_* files. Please rename them and change the entries in\n"
+"map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
+"maps.  Otherwise, the maps will not be displayed!"
+msgstr ""
+"Am gãsit nume de fiºiere în map_koord.txt care nu sunt\n"
+"fiºiere map_* sau top_*. Vã rog redenumiþi-le ºi schimbaþi intrãrile în\n"
+"map_koord.txt.  Folosiþi map_* pentru hãrþile de strãzi ºi top_* pentru hãrþile\n"
+"topografice.  În caz contrar, hãrþile nu vor fi afiºate!"
+
+#: src/gpsdrive.c:3617
+msgid "Auto"
+msgstr "Auto"
+
+#. This string means North,East,South,West -- translate the letters
+#: src/gpsdrive.c:5187
+msgid "NESW"
+msgstr "NESW"
+
+#: src/gpsdrive.c:5365
+msgid "No map available for this position!"
+msgstr "Nu este disponibilã nici o hartã pentru aceastã poziþie!"
+
+#: src/gpsdrive.c:5568 src/gpsdrive.c:5573 src/gpsdrive.c:9728
+msgid "Selected:"
+msgstr "Selectat(e):"
+
+#: src/gpsdrive.c:5568 src/gpsdrive.c:9728
+msgid "within"
+msgstr "în"
+
+#: src/gpsdrive.c:5569 src/gpsdrive.c:5573
+msgid "Time"
+msgstr "Timp"
+
+#: src/gpsdrive.c:5664
+msgid "can't open NMEA output file"
+msgstr "nu se poate deschide fiºierul de ieºire(output) NMEA"
+
+#: src/gpsdrive.c:5774
+msgid " Mapfile could not be loaded:"
+msgstr " Fiºierul de hãrþi nu a putut fi încãrcat:"
+
+#: src/gpsdrive.c:5820
+msgid " Friendsicon could not be loaded:"
+msgstr " Friendsicon nu a putut fi încãrcat:"
+
+#: src/gpsdrive.c:5826
+msgid "Friendsicon loaded"
+msgstr "Friendsicon încãrcat"
+
+#: src/gpsdrive.c:6047
+msgid "Select coordinates and scale"
+msgstr "Selectaþi coordonatele ºi scara"
+
+#: src/gpsdrive.c:6050
+msgid "Download map"
+msgstr "Download hartã"
+
+#: src/gpsdrive.c:6076 src/gpsdrive.c:6722 src/gpsdrive.c:7771
+#: src/gpsdrive.c:8006 src/gpsdrive.c:8131 src/gpsdrive.c:9867
+msgid "Latitude"
+msgstr "Latitudine"
+
+#: src/gpsdrive.c:6078 src/gpsdrive.c:6724 src/gpsdrive.c:7765
+#: src/gpsdrive.c:8006 src/gpsdrive.c:8131 src/gpsdrive.c:9868
+msgid "Longitude"
+msgstr "Longitudine"
+
+#: src/gpsdrive.c:6080
+msgid "Map covers"
+msgstr "Harta acoperã"
+
+#: src/gpsdrive.c:6084
+msgid "Scale"
+msgstr "Scarã"
+
+#: src/gpsdrive.c:6086
+msgid "Map file name"
+msgstr "Nume fiºier hartã"
+
+#: src/gpsdrive.c:6137 src/gpsdrive.c:6140
+msgid ""
+"You can also select the position\n"
+"with a mouse click on the map."
+msgstr ""
+"Puteþi de asemenea selecta poziþia cu\n"
+"un click de mouse pe hartã."
+
+#: src/gpsdrive.c:6142
+msgid "Using Proxy and port:"
+msgstr "Se foloseºte Proxy ºi port:"
+
+#: src/gpsdrive.c:6273
+#, c-format
+msgid "Connecting to %s"
+msgstr "Conectare la %s"
+
+#: src/gpsdrive.c:6281
+msgid "can't open socket for port 80"
+msgstr "nu se poate deschide socket-ul pentru portul 80"
+
+#: src/gpsdrive.c:6282 src/gpsdrive.c:6301 src/gpsdrive.c:6315
+#, c-format
+msgid "Connecting to %s FAILED!"
+msgstr "Conectare la %s EªUATÃ!"
+
+#: src/gpsdrive.c:6300
+msgid "Can't resolve webserver address"
+msgstr "nu se poate rezolva adresa serverului web"
+
+#: src/gpsdrive.c:6314
+msgid "unable to connect to Website"
+msgstr "nu se poate realiza conexiunea la Website"
+
+#: src/gpsdrive.c:6333
+#, c-format
+msgid "Now connected to %s"
+msgstr "Conectat la %s"
+
+#: src/gpsdrive.c:6365
+msgid "read from Webserver"
+msgstr "citire din serverul Web"
+
+#: src/gpsdrive.c:6408
+#, c-format
+msgid "Downloaded %d kBytes"
+msgstr "%dkOcteþi download-aþi"
+
+#: src/gpsdrive.c:6420
+msgid "Download FAILED!"
+msgstr "Download EªUAT!"
+
+#: src/gpsdrive.c:6422
+#, c-format
+msgid "Download finished, got %dkB"
+msgstr "Download terminat, s-au primit %dkB"
+
+#: src/gpsdrive.c:6583
+msgid "Select a map file"
+msgstr "Selectaþi un fiºier hartã"
+
+#: src/gpsdrive.c:6648
+msgid ""
+"How to calibrate your own maps?\n"
+"\n"
+"First, the map file must be copied into the ~/.gpsdrive directory as .gif, .jpg or .png file and must have the size 1280x1024. The file names must be map_* for street maps or top_* for topographical maps!\n"
+"Load the file, select coordinates\n"
+"from waypoint list or type them in.\n"
+"Then click on the accept button."
+msgstr ""
+"Cum sã vã calibraþi singuri hãrþile voastre?\n"
+"\n"
+"Prima datã, fiºierul hãrþii trebuie copiat în directorul ~/.gpsdrive ca .gif, jpg, sau png ºi trebuie sã aibã dimensiunea 1280x1024. Numele de fiºier trebuie sã fie map_* pentru hãrþile de strãzi sau top_* pentru hãrþile topografice!\n"
+"Încãrcaþi fiºierul, selectaþi coordonatele din\n"
+"lista voastrã de puncte de trecere(waypoint) sau\n"
+"introduceþi-le de la tastaturã.\n"
+"Apoi apãsaþi pe butonul de accept."
+
+#: src/gpsdrive.c:6657
+msgid "Now do the same for your second point and click on the finish button. The map can be used now."
+msgstr ""
+"Acum procedaþi la fel pentru al doilea punct ºi daþi click pe butonul de terminare.\n"
+"Harta poate fi acum folositã."
+
+#: src/gpsdrive.c:6662
+msgid "Import Assistant. Step 1"
+msgstr "Asistent Important. Pas 1"
+
+#: src/gpsdrive.c:6664
+msgid "Import Assistant. Step 2"
+msgstr "Asistent Important. Pas 2"
+
+#: src/gpsdrive.c:6669
+msgid "Accept first point"
+msgstr "Acceptare prim punct"
+
+#: src/gpsdrive.c:6671
+msgid "Finish"
+msgstr "Terminare"
+
+#: src/gpsdrive.c:6683
+msgid "Cancel"
+msgstr "Renunþare"
+
+#: src/gpsdrive.c:6692
+msgid "Go up"
+msgstr "Du-te sus"
+
+#: src/gpsdrive.c:6695
+msgid "Go left"
+msgstr "Du-te în dreapta"
+
+#: src/gpsdrive.c:6698
+msgid "Go right"
+msgstr "Du-te în stânga"
+
+#: src/gpsdrive.c:6701
+msgid "Go down"
+msgstr "Du-te jos"
+
+#: src/gpsdrive.c:6704
+msgid "Zoom in"
+msgstr "Mãrire"
+
+#: src/gpsdrive.c:6707
+msgid "Zoom out"
+msgstr "Micºorare"
+
+#: src/gpsdrive.c:6726
+msgid "Screen X"
+msgstr "Ecran X"
+
+#: src/gpsdrive.c:6728
+msgid "Screen Y"
+msgstr "Ecran Y"
+
+#: src/gpsdrive.c:6730
+msgid "Browse waypoint"
+msgstr "Rãsfoire puncte de trecere(waypoint)"
+
+#: src/gpsdrive.c:6761
+msgid "Browse filename"
+msgstr "Rãsfoire nume fiºiere"
+
+#: src/gpsdrive.c:6845
+msgid "GpsDrive Control"
+msgstr "GpsDrive Control"
+
+#: src/gpsdrive.c:6930 src/gpsdrive.c:6939 src/gpsdrive.c:9747
+#: src/gpsdrive.c:9756
+msgid "mi/h"
+msgstr "mi/h"
+
+#: src/gpsdrive.c:6932 src/gpsdrive.c:6941 src/gpsdrive.c:9749
+#: src/gpsdrive.c:9758
+msgid "knots"
+msgstr "noduri"
+
+#: src/gpsdrive.c:6934 src/gpsdrive.c:6943 src/gpsdrive.c:9751
+#: src/gpsdrive.c:9760
+msgid "km/h"
+msgstr "km/h"
+
+#: src/gpsdrive.c:6939 src/gpsdrive.c:6941 src/gpsdrive.c:6943
+#: src/gpsdrive.c:9756 src/gpsdrive.c:9758 src/gpsdrive.c:9760
+msgid "Speed"
+msgstr "Vitezã"
+
+#: src/gpsdrive.c:7569
+msgid "SELECTED"
+msgstr "SELECTAT(E)"
+
+#: src/gpsdrive.c:7736
+msgid "Add waypoint name"
+msgstr "Adaugã nume punct de trecere(waypoint)"
+
+#: src/gpsdrive.c:7793
+msgid " Waypoint name: "
+msgstr " Nume punct de trecere(waypoint): "
+
+#: src/gpsdrive.c:7806
+msgid " Waypoint type: "
+msgstr " Tip punct de trecere(waypoint): "
+
+#: src/gpsdrive.c:8006 src/gpsdrive.c:8131
+msgid "Waypoint"
+msgstr "Punct de trecere(waypoint)"
+
+#: src/gpsdrive.c:8006 src/gpsdrive.c:8131
+msgid "Distance"
+msgstr "Distanþã"
+
+#: src/gpsdrive.c:8022
+msgid "Select reference point"
+msgstr "Selectaþi punct de referinþã"
+
+#: src/gpsdrive.c:8026
+msgid "Please select your destination"
+msgstr "Vã rog selectaþi destinaþia voastrã"
+
+#: src/gpsdrive.c:8051
+msgid "Edit route"
+msgstr "Editare rutã"
+
+#: src/gpsdrive.c:8053
+msgid "Create route"
+msgstr "Creare rutã"
+
+#: src/gpsdrive.c:8114
+msgid "Create a route using some waypoints from this list"
+msgstr "Creare rutã folosind câteva puncte de trecere(waypoints) din aceastã listã"
+
+#: src/gpsdrive.c:8118
+msgid "Delete the selected waypoint from the waypoint list"
+msgstr "ªtergere punctul de trecere(waypoint) selectat din listã"
+
+#. gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
+#: src/gpsdrive.c:8144
+msgid "Define route"
+msgstr "Definire rutã"
+
+#: src/gpsdrive.c:8152
+msgid "Start route"
+msgstr "Rutã Pornire"
+
+#: src/gpsdrive.c:8161
+msgid "Take all WP as route"
+msgstr "Ia toate WP ca rute"
+
+#: src/gpsdrive.c:8166
+msgid "Abort route"
+msgstr "Abandonare rutã"
+
+#: src/gpsdrive.c:8207
+msgid ""
+"Click on waypoints list\n"
+"to add waypoints"
+msgstr ""
+"Daþi click pe lista de puncte de trecere\n"
+"(waypoints) pentru a adãuga puncte de trecere"
+
+#: src/gpsdrive.c:8209
+msgid ""
+"Click on list item\n"
+"to select next waypoint"
+msgstr "Daþi click pe listã pentru a selecta urmãtorul punct de trecere"
+
+#: src/gpsdrive.c:8245
+msgid "Create a route from all waypoints. Sorted with order in file, not distance."
+msgstr "Creazã o rutã cu toate punctele de trecere(waypoints). Sortarea se face dupã ordinea în fiºier, nu dupã distanþã"
+
+#: src/gpsdrive.c:8249
+msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
+msgstr "Apãsaþi aici pentru a începe cãlãtoria. GpsDrive vã va ghida prin punctele de control în aceastã listã."
+
+#: src/gpsdrive.c:8252
+msgid "Abort your journey"
+msgstr "Abandonare cãlãtorie"
+
+#: src/gpsdrive.c:8269
+msgid "-v    show version\n"
+msgstr "-v    afiºeazã versiunea\n"
+
+#: src/gpsdrive.c:8270
+msgid "-h    print this help\n"
+msgstr "-h    afiºeazã acest ajutor\n"
+
+#: src/gpsdrive.c:8271
+msgid "-d    turn on debug info\n"
+msgstr "-d    activeazã informaþiile de debug\n"
+
+#: src/gpsdrive.c:8272
+msgid "-D    turn on lot of debug info\n"
+msgstr "-D    activeazã o mulþime de informaþii de debug\n"
+
+#: src/gpsdrive.c:8273
+msgid "-e    use Festival-Lite (flite) for speech output\n"
+msgstr "-e    foloseºte Festival-Lite (flite) pentru ieºire(output) de voce\n"
+
+#: src/gpsdrive.c:8274
+msgid "-t    set serial device for GPS i.e. /dev/ttyS1\n"
+msgstr "-t    seteazã portul serial pentru GPS i.e. /dev/ttyS1\n"
+
+#: src/gpsdrive.c:8275
+msgid "-o    serial device, pty master, or file for NMEA *output*\n"
+msgstr "-o    port serial, pty master, sau fiºier pentru *output* NMEA\n"
+
+#: src/gpsdrive.c:8276
+msgid "-f X  Select friends server, X is i.e. www.kraftvoll.at\n"
+msgstr "-f X  Selecteazã serverul prietenilor, X este i.e. www.kraftvoll.at\n"
+
+#: src/gpsdrive.c:8278
+msgid "-n X  Select display name on friends server, X is i.e. Fritz\n"
+msgstr "-n X  Selecteazã numele display-ului pe serverul prietenilor, X este i.e. Fritz\n"
+
+#: src/gpsdrive.c:8279
+msgid ""
+"-l X  Select language of the voice,\n"
+"      X may be english, spanish or german\n"
+msgstr ""
+"-l X  Selecteazã limba în care va fi vocea,\n"
+"      X poate fi english, spanish sau german\n"
+
+#: src/gpsdrive.c:8281
+msgid ""
+"-s X  set height of the screen, if autodetection\n"
+"      don't satisfy you, X is i.e. 768,600,480,200\n"
+msgstr ""
+"-s X  seteazã înãlþimea ecranului, dacã autodetecþia\n"
+"      nu vã satisface, X este i.e. 768,600,480,200\n"
+
+#. ** Mod by Arms
+#: src/gpsdrive.c:8284
+msgid "-r X  set width of the screen, only with -s\n"
+msgstr "-r X  seteazã lãþimea ecranului doar cu -s\n"
+
+#: src/gpsdrive.c:8286
+msgid "-1    have only 1 button mouse, for example using touchscreen\n"
+msgstr "-1    existã un mouse cu doar 1 buton, de exemplu touchscreen\n"
+
+#: src/gpsdrive.c:8287
+msgid "-a    don't display battery status (i.e. broken APM)\n"
+msgstr "-a    nu afiºa starea bateriei (i.e. APM defectuos)\n"
+
+#: src/gpsdrive.c:8289
+msgid "-b X  Servername for NMEA server (if gpsd runs on another host)\n"
+msgstr "-b X  NumeServer pentru serverul NMEA (dacã gpsd ruleazã pe alt host)\n"
+
+#: src/gpsdrive.c:8291
+msgid "-c X  set start position in simulation mode to waypoint name X\n"
+msgstr "-c X  seteazã poziþia de pornire în modul simulare cãtre punctul de trecere X\n"
+
+#: src/gpsdrive.c:8292
+msgid "-x    create separate window for menu\n"
+msgstr "-x    creazã fereastrã separatã pentru menu\n"
+
+#: src/gpsdrive.c:8293
+msgid "-p    set settings for PDA (iPAQ, Yopy...)\n"
+msgstr "-p    seteazã setãrile pentru PDA (iPAQ, Yopy...)\n"
+
+#: src/gpsdrive.c:8295
+msgid "-i    ignore NMEA checksum (risky, only for broken GPS receivers\n"
+msgstr "-i    ignorã checksum-ul NMEA (riscant, doar pentru receptoare GPS defectuoase\n"
+
+#: src/gpsdrive.c:8296
+msgid "-q    disable SQL support\n"
+msgstr "-q    dezactiveazã suportul SQL\n"
+
+#: src/gpsdrive.c:8297
+msgid "-F    force display of position even it is invalid\n"
+msgstr "-F    forþeazã afiºarea poziþiei chiar dacã aceasta este invalidã\n"
+
+#: src/gpsdrive.c:8298
+msgid "-H X  correct altitude, adding this value to altitude\n"
+msgstr "-H X  altitudine corectã, se adaugã aceastã valoare la altitudine\n"
+
+#: src/gpsdrive.c:8299
+msgid ""
+"-z    don't display zoom factor and scale\n"
+"\n"
+msgstr ""
+"-z    nu afiºa factorul de mãrire ºi scara\n"
+"\n"
+
+#: src/gpsdrive.c:8402
+msgid "Select a track file"
+msgstr "Selecteazã un fiºier de drum(track)"
+
+#: src/gpsdrive.c:8571 src/gpskismet.c:304
+msgid "can't open socket for port "
+msgstr "nu se poate dechide socketul pentru port "
+
+#: src/gpsdrive.c:8598
+msgid "NMEA Mode, Port 2222"
+msgstr "Mod NMEA, Port 2222"
+
+#: src/gpsdrive.c:8605
+msgid "NMEA Mode, Port 2947"
+msgstr "Mod NMEA, Port 2947"
+
+#: src/gpsdrive.c:8623
+msgid ""
+"\n"
+"Garmin protocol detection disabled!\n"
+msgstr ""
+"\n"
+"Detecþia protocolului garmin dezactivatã!\n"
+
+#: src/gpsdrive.c:8933
+msgid ""
+"\n"
+"libmysqlclient.so not found.\n"
+msgstr ""
+"\n"
+"libmysqlclient.so nu a fost gãsit.\n"
+
+#: src/gpsdrive.c:8941
+msgid ""
+"\n"
+"MySQL support disabled.\n"
+msgstr ""
+"\n"
+"Suportul MySQL a fost dezactivat.\n"
+
+#: src/gpsdrive.c:8975
+msgid "Unknown"
+msgstr "Necunoscut"
+
+#: src/gpsdrive.c:9073
+msgid ""
+"\n"
+"This parameter is obsolet, use settings menu\n"
+msgstr ""
+"\n"
+"Acest parametru nu se mai foloseºte, folosiþi meniul de setãri\n"
+
+#: src/gpsdrive.c:9090
+msgid ""
+"\n"
+"You can only choose between english, spanish and german\n"
+"\n"
+msgstr ""
+"\n"
+"Puteþi alege doar între english, spanish ºi german\n"
+"\n"
+
+#: src/gpsdrive.c:9184
+#, c-format
+msgid ""
+"\n"
+"Using proxy: %s on port %d"
+msgstr ""
+"\n"
+"Se foloseºte proxy: %s pe portul %d"
+
+#: src/gpsdrive.c:9188
+msgid ""
+"\n"
+"Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
+msgstr ""
+"\n"
+"Variabilã de mediu HTTP_PROXY invalidã, trebuie sã fie în formatul: http://proxy.provider.de:3128"
+
+#: src/gpsdrive.c:9370
+msgid "Gpsdrive-2 (c)2001-2003 F.Ganter"
+msgstr "Gpsdrive-2 (c)2001-2003 F.Ganter"
+
+#: src/gpsdrive.c:9378
+msgid "Using speech output"
+msgstr "Se foloseºte ieºirea(output) de vorbire"
+
+#. download map button
+#: src/gpsdrive.c:9400
+msgid "_Download map"
+msgstr "_Download hartã"
+
+#: src/gpsdrive.c:9419
+msgid "M_ute"
+msgstr "M_ut"
+
+#: src/gpsdrive.c:9429
+msgid "Use SQ_L"
+msgstr "Folosire SQ_L"
+
+#: src/gpsdrive.c:9439
+msgid "Show _WP"
+msgstr "Afiºare _WP"
+
+#: src/gpsdrive.c:9467
+msgid "Pos. _mode"
+msgstr "_mod Pos."
+
+#: src/gpsdrive.c:9473
+msgid "Show _Track"
+msgstr "Afiºare drum(_Track)"
+
+#: src/gpsdrive.c:9480
+msgid "Import"
+msgstr "Importare"
+
+#: src/gpsdrive.c:9503
+msgid "Start GPSD"
+msgstr "Start GPSD"
+
+#: src/gpsdrive.c:9507
+msgid "Auto _best map"
+msgstr "Auto cea mai _bunã hartã"
+
+#: src/gpsdrive.c:9517
+msgid "Save track"
+msgstr "Salveazã drum"
+
+#: src/gpsdrive.c:9528
+msgid "Shown map type"
+msgstr "Afiºeazã tipul de hartã"
+
+#: src/gpsdrive.c:9539
+msgid "Street map"
+msgstr "Hartã de stradã"
+
+#: src/gpsdrive.c:9546
+msgid "Topo map"
+msgstr "Hartã Topo"
+
+#: src/gpsdrive.c:9617
+msgid ""
+"\n"
+"kismet server found\n"
+msgstr ""
+"\n"
+"serverul kismeta fost gãsit\n"
+
+#: src/gpsdrive.c:9673 src/gpsdrive.c:9872
+msgid "Bearing"
+msgstr "Purtãtor"
+
+#: src/gpsdrive.c:9687
+msgid "Sat level"
+msgstr "Nivel Sat"
+
+#: src/gpsdrive.c:9699
+msgid "Bat."
+msgstr "Bat."
+
+#. displays speed over ground
+#: src/gpsdrive.c:9714 src/gpsdrive.c:9885 src/gpsdrive.c:9887
+#: src/gpsdrive.c:9889 src/gpsdrive.c:9891 src/gpsdrive.c:9893
+#: src/gpsdrive.c:9895 src/gpsdrive.c:9897 src/gpsdrive.c:9899
+msgid "---"
+msgstr "---"
+
+#. displays zoom factor of map
+#: src/gpsdrive.c:9717 src/gpsdrive.c:9720 src/gpsdrive.c:9725
+#: src/settings.c:963 src/settings.c:972 src/settings.c:981
+#: src/settings.c:1006 src/settings.c:1016 src/settings.c:1025
+#: src/settings.c:1036 src/settings.c:1045 src/settings.c:1055
+msgid "n/a"
+msgstr "n/a"
+
+#. create frames for labels
+#: src/gpsdrive.c:9734
+msgid "Distance to target"
+msgstr "Distanþã pânã la þintã"
+
+#: src/gpsdrive.c:9769
+msgid "Altitude"
+msgstr "Altitudine"
+
+#: src/gpsdrive.c:9776 src/settings.c:404
+msgid "Waypoints"
+msgstr "Puncte de trecere"
+
+#: src/gpsdrive.c:9869
+msgid "Map file"
+msgstr "Fiºier Hartã"
+
+#: src/gpsdrive.c:9870
+msgid "Map scale"
+msgstr "Scarã hartã"
+
+#: src/gpsdrive.c:9871
+msgid "Heading"
+msgstr "Destinaþie"
+
+#: src/gpsdrive.c:9873
+msgid "Time at Dest."
+msgstr "Orã la Dest."
+
+#: src/gpsdrive.c:9874
+msgid "Pref. scale"
+msgstr "Scarã preferatã"
+
+#. gdk_window_lower((GdkWindow *)menuwin);
+#: src/gpsdrive.c:9962 src/gpsdrive.c:10008
+msgid "Menu"
+msgstr "Meniu"
+
+#. gdk_window_lower((GdkWindow *)menuwin2);
+#: src/gpsdrive.c:9971 src/gpsdrive.c:10009
+msgid "Status"
+msgstr "Stare"
+
+#: src/gpsdrive.c:10010
+msgid "Menu window"
+msgstr "Fereastrã de meniu"
+
+#: src/gpsdrive.c:10011
+msgid "Status window"
+msgstr "Fereastrã de stare"
+
+#: src/gpsdrive.c:10131
+msgid "Download map from Internet"
+msgstr "Download hartã de pe Internet"
+
+#: src/gpsdrive.c:10133
+msgid "Leave the program"
+msgstr "Pãrãsire program"
+
+#: src/gpsdrive.c:10136
+msgid "Disable output of speech"
+msgstr "Dezactiveazã ieºirea vocalã"
+
+#: src/gpsdrive.c:10139
+msgid "Use SQL server for waypoints"
+msgstr "Foloseºte serverul SQL pentru punctele de trecere"
+
+#: src/gpsdrive.c:10142
+msgid "Show waypoints on the map"
+msgstr "Afiºeazã punctele de trecere pe hartã"
+
+#: src/gpsdrive.c:10145
+msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
+msgstr "Activeazã modul de poziþie. Puteti sã vã miºcaþi pe hartã cu click stânga al mouse-ului. Click lângã margine schimbã în cea mai apropiatã hartã."
+
+#: src/gpsdrive.c:10148
+msgid "Show tracking on the map"
+msgstr "Afiºeazã drumul(tracking) pe hartã"
+
+#: src/gpsdrive.c:10150
+msgid "Let you import and calibrate your own map"
+msgstr "Vã lasã sa importaþi ºi sã calibraþi propria voastrã hartã"
+
+#: src/gpsdrive.c:10152
+msgid "Opens the help window"
+msgstr "Deschide fereastra de ajutor"
+
+#: src/gpsdrive.c:10154
+msgid "Starts GPSD for NMEA mode"
+msgstr "Porneºte GPSD pentru mod NMEA"
+
+#: src/gpsdrive.c:10156
+msgid "Settings for GpsDrive"
+msgstr "Setãri pentru GpsDrive"
+
+#: src/gpsdrive.c:10158
+msgid "Zoom into the current map"
+msgstr "Mãreºte harta curentã"
+
+#: src/gpsdrive.c:10160
+msgid "Zooms out off the current map"
+msgstr "Micºoreazã harta curentã"
+
+#: src/gpsdrive.c:10162
+msgid "Select the next more detailed map"
+msgstr "Selecteazã urmãtoarea hartã mai detaliatã"
+
+#: src/gpsdrive.c:10164
+msgid "Select the next less detailed map"
+msgstr "Selecteazã urmãtoarea hartã mai puþin detaliatã"
+
+#: src/gpsdrive.c:10169
+msgid "Select here a destination from the waypoint list"
+msgstr "Selectaþi aici o destinaþie din lista punctelor de trecere"
+
+#: src/gpsdrive.c:10172
+msgid "Select the map scale of avail. maps."
+msgstr "Selectaþi scara hãrþii din hãrþile diponibile."
+
+#: src/gpsdrive.c:10174
+msgid "Load and display a previous stored track file"
+msgstr "Încarcã ºi afiºeazã un fiºier de drum(track) stocat anterior"
+
+#: src/gpsdrive.c:10177
+msgid "Always select the most detailed map available"
+msgstr "Întotdeauna selecteazã cea mai detaliatã hartã disponibilã"
+
+#: src/gpsdrive.c:10180
+msgid "Save the track to given filename at program exit"
+msgstr "Salveazã drumul(track) într-un nume fiºier dat la ieºirea din program"
+
+#: src/splash.c:535
+msgid ""
+"Disclaimer: Please do not use for navigation. \n"
+"\n"
+msgstr ""
+"Declaraþie(Disclaimer): Nu folosiþi pentru navigare \n"
+"\n"
+
+#: src/splash.c:540
+msgid ""
+"See the manpage for program details\n"
+"\n"
+msgstr ""
+"Vedeþi pagina de manual pentru detalii de program\n"
+"\n"
+
+#: src/splash.c:545
+msgid "Mouse control (clicking on the map):\n"
+msgstr "Control mouse (click pe hartã):\n"
+
+#: src/splash.c:551
+msgid "Left mouse button         : Set position (usefull in simulation mode)\n"
+msgstr "Buton stânga mouse         : Setare poziþie (folositor în mod simulare)\n"
+
+#: src/splash.c:555
+msgid "Right mouse button        : Set target directly on the map\n"
+msgstr "Buton dreapta mouse         : Setare þintã direct pe hartã\n"
+
+#: src/splash.c:559
+msgid "Middle mouse button       : Display position again\n"
+msgstr "Buton centru mouse         : Afiºeazã din nou poziþia\n"
+
+#: src/splash.c:562
+msgid "Shift left mouse button   : smaller map\n"
+msgstr "Shift Buton stânga mouse         : hartã mai micã\n"
+
+#: src/splash.c:564
+msgid "Shift right mouse button  : larger map\n"
+msgstr "Shift Buton dreapta mouse         : hartã mai mare\n"
+
+#: src/splash.c:567
+msgid "Control left mouse button : Set a waypoint (mouse position) on the map\n"
+msgstr "Control Buton stânga mouse         : Setare punct de trecere (poziþia mouse-ului)pe hartã\n"
+
+#: src/splash.c:571
+msgid ""
+"Control right mouse button: Set a waypoint at current position on the map\n"
+"\n"
+msgstr ""
+"Control Buton dreapta mouse         : Setare punct de trecere la poziþia curentã\n"
+"pe hartã\n"
+"\n"
+
+#: src/splash.c:576
+msgid "Short cuts:\n"
+msgstr "Scurtãturi:\n"
+
+#: src/splash.c:580
+msgid "j    : switch to next waypoint in route mode\n"
+msgstr "j    : schimbã la urmãtorul punct de trecere în mod rutã\n"
+
+#: src/splash.c:583
+msgid "x    : add waypoint at current position\n"
+msgstr "x    : adaugã punct de trecere la poziþia curentã\n"
+
+#: src/splash.c:586
+msgid ""
+"y    : add waypoint at mouse cursor position\n"
+"\n"
+msgstr ""
+"y    : adaugã punct de trecere la poziþia cursorului mouse-ului\n"
+"\n"
+
+#: src/splash.c:590
+msgid "The other key shortcuts are marked as "
+msgstr "Celelalte scurtãturi de taste sunt marcate ca litera "
+
+#: src/splash.c:592
+msgid "underlined"
+msgstr "subliniatã"
+
+#: src/splash.c:596
+msgid " letter in the button text. Press the underlined key together with the "
+msgstr " din textul butonului. Apãsaþi litera subliniatã împreunã cu"
+
+#: src/splash.c:598
+msgid "ALT-key"
+msgstr "tasta ALT"
+
+#: src/splash.c:600
+msgid "."
+msgstr "."
+
+#: src/splash.c:603
+msgid "You can move on the map by selecting the "
+msgstr "Puteti sã vã miºcaþi pe hartã selectând"
+
+#: src/splash.c:605
+msgid "Position-Mode"
+msgstr "Mod-Poziþie"
+
+#: src/splash.c:609
+msgid " in the menu. A blue rectangle shows this mode, you can set this cursor by clicking on the map. If you click on the border of the map (the outer 20%) then the map switches to the next area."
+msgstr " din meniu. Un dreptunghi albastru afiºeazã acest mod, puteþi seta acest cursor prin click pe hartã. Dacã daþi click pe marginea hãrþii (cei 20% marginali) harta se schimbã la aria urmãtoare."
+
+#: src/splash.c:614
+msgid ""
+"Suggestions welcome!\n"
+"\n"
+msgstr ""
+"Sugestiile sunt binevenite!\n"
+"\n"
+
+#: src/splash.c:616
+msgid "Have a lot of fun!"
+msgstr "Sã vã distraþi!"
+
+#: src/splash.c:719
+msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
+msgstr "Eroare în salvarea fiºierului de configurare ~/.gpsdrive/gpsdriverc"
+
+#: src/settings.c:316
+msgid "Setting WP label font"
+msgstr "Setare font etichetã(label) WP"
+
+#: src/settings.c:318
+msgid "Setting big display font"
+msgstr "Setare font display mare"
+
+#: src/settings.c:392
+msgid ""
+"Don't use more than\n"
+"100 waypoint(way*.txt) files!"
+msgstr ""
+"Nu folosiþi mai mult de\n"
+"100 fiºiere de puncte de trecere (way*.txt)!"
+
+#: src/settings.c:402
+msgid "Waypoint files to use"
+msgstr "Fiºiere puncte de trecere de folosit"
+
+#: src/settings.c:427
+msgid "Settings"
+msgstr "Setãri"
+
+#. misc area
+#: src/settings.c:439
+msgid "Misc settings"
+msgstr "Setãri diverse"
+
+#: src/settings.c:442
+msgid "Show Shadows"
+msgstr "Afiºeazã Umbre"
+
+#: src/settings.c:450
+msgid "Simulation: Follow target"
+msgstr "Simulare: Urmeazã þintã"
+
+#: src/settings.c:457
+msgid "Maximum CPU load"
+msgstr "Încãrcare maximã CPU"
+
+#: src/settings.c:474
+msgid "Maps directory"
+msgstr "Director hãrþi"
+
+#: src/settings.c:480
+msgid "Automatic"
+msgstr "Automatic"
+
+#: src/settings.c:486
+msgid "On"
+msgstr "Activat(On)"
+
+#: src/settings.c:491
+msgid "Off"
+msgstr "Dezactivat(Off)"
+
+#. gtk_table_attach_defaults (GTK_TABLE (misctable), label2, 0, 2, 3, 4);
+#. gtk_table_attach_defaults (GTK_TABLE (misctable), mapdirbt, 0, 2, 4, 5);
+#. GPS settings area
+#: src/settings.c:511
+msgid "GPS settings"
+msgstr "Setãri GPS"
+
+#. gtk_container_add (GTK_CONTAINER (f4), gpstable);
+#: src/settings.c:523
+msgid "Test for GARMIN"
+msgstr "Test pentru GARMIN"
+
+#: src/settings.c:534
+msgid "Use DGPS-IP"
+msgstr "Foloseºte DGPS-IP"
+
+#: src/settings.c:544
+msgid "GPS is Earthmate"
+msgstr "GPS este Earthmate"
+
+#: src/settings.c:559
+msgid "Interface"
+msgstr "Interfaþa"
+
+#. units area
+#: src/settings.c:569
+msgid "Units"
+msgstr "Unitãþi"
+
+#: src/settings.c:574
+msgid "Miles"
+msgstr "Mile"
+
+#: src/settings.c:579
+msgid "Metric"
+msgstr "Metric"
+
+#: src/settings.c:584 src/nautic.c:100
+msgid "Nautic"
+msgstr "Nautic"
+
+#: src/settings.c:594
+msgid "Decimal position"
+msgstr "Poziþie zecimalã"
+
+#. default download server
+#: src/settings.c:608
+msgid "Default map server"
+msgstr "Server hartã implicit"
+
+#. Night light mode
+#: src/settings.c:634
+msgid "Night light mode"
+msgstr "Mod luminã noapte"
+
+#. Font settings
+#: src/settings.c:648
+msgid "Font settings"
+msgstr "Setãri font"
+
+#. gtk_box_pack_start (GTK_BOX (h1), f5, TRUE, FALSE, 2 * PADDING);
+#: src/settings.c:653
+msgid "WP Label"
+msgstr "Etichetã(Label) WP"
+
+#: src/settings.c:654
+msgid "Big display"
+msgstr "Afiºaj mare"
+
+#: src/settings.c:655
+msgid "Font3"
+msgstr "Font3"
+
+#: src/settings.c:686
+msgid "Switch units to statute miles"
+msgstr "Schimbã unitãþile în mile de uscat"
+
+#: src/settings.c:688
+msgid "Switch units to nautical miles"
+msgstr "Schimbã unitãþile în mile nautice"
+
+#: src/settings.c:690
+msgid "Switch units to metric system (Kilometers)"
+msgstr "Schimbã unitãþile în sistemul metric (Kilometri)"
+
+#: src/settings.c:695
+msgid "If selected display latitude and longitude in decimal degrees, otherwise in degree, minutes and seconds notation"
+msgstr "Dacã este selectat, se afiºeazã latitudinea ºi longitudinea în grade zecimale,  în caz contrar în notaþia cu grade, minute ºi secunde"
+
+#: src/settings.c:699
+msgid "Set Mapblast as default download server"
+msgstr "Seteazã Mapblast ca server de download implicit"
+
+#: src/settings.c:702
+msgid "Set Expedia as default download server"
+msgstr "Seteazã Expedia ca server de download implicit"
+
+#: src/settings.c:705
+msgid "Switches shadows on map on or off"
+msgstr "Activeazã sau dezactiveazã umbrele pe hartã"
+
+#: src/settings.c:709
+#, fuzzy, c-format
+msgid "Select the approx. maximum CPU load, use 20-30% on notebooks while on battery to save battery power. This effects the refresh rate of the map screen"
+msgstr "Selecteazã încãrcarea aprox. maximã a CPU, foloseºte 20-30% pe notebook-uri în timpul în care se aflã pe baterie pentru a salva putereabateriei.Aceasta afecteazã rata de împrospãtare(refresh) a ecranului hãrþii"
+
+#: src/settings.c:714
+msgid "If activated, pointer moves to target in simulation mode"
+msgstr "Dacã este activat, pointerul se mutã la þintã în modul simulare"
+
+#: src/settings.c:719
+msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
+msgstr "Calea spre fiºierele voastre de hãrþi. În directorul specificat trebuie sã fie prezent de asemenea ºi fiºierul de index map_koord.txt"
+
+#: src/settings.c:724
+msgid "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you only have a NMEA device."
+msgstr "Dacã este selectat, gpsdrive va încerca sã foloseascã modul GARMIN dacã este posibil. Deselectaþi dacã aveþi doar un dispozitiv NMEA."
+
+#: src/settings.c:729
+msgid "If selected, gpsdrive try to use differential GPS over IP. You must have an internet connection and a DGPS capable GPS receiver. Works only in NMEA mode!"
+msgstr "Dacã este selectat, gpsdrive va încerca sã foloseascã GPS over IP diferenþial. Trebuie sã aveþi o conexiune la internet ºi un receptor GPS capabil DGPS. Funcþioneazã doar în mod NMEA!"
+
+#: src/settings.c:734
+msgid "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD button will provide gpsd with the needed additional parameters"
+msgstr "Selectaþi dacã aveþi un receptor GPS DeLorme Earthmate. Butonul StartGPSD va furniza gpsd cu parametrii adiþionali necesari"
+
+#: src/settings.c:739
+msgid "Specify the serial interface where the GPS is connected"
+msgstr "Specificaþi interfaþa serialã în care GPS-ul este conectat"
+
+#: src/settings.c:744
+msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
+msgstr "Schimbã în mod automat în mod noapte dacã afarã este întuneric. Apãsaþi tasta 'N' pentru a dezactiva modul noapte."
+
+#: src/settings.c:748
+msgid "Switches night mode on. Press 'N' key to turn off nightmode."
+msgstr "Activeazã modul noapte. Apãsaþi tasta 'N' pentru a dezactiva modul noapte."
+
+#: src/settings.c:751
+msgid "Switches night mode off"
+msgstr "Dezactiveazã modul noapte"
+
+#: src/settings.c:755
+msgid "Here you can set the font for the waypoint labels"
+msgstr "Aici puteþi seta fontul pentru etichetele(labels) punctelor de trecere"
+
+#: src/settings.c:760
+msgid "Here you can set the font for the big display for Speed and Distance"
+msgstr "Aici puteþi seta fontul pentru afiºajul mare ºi pentru Vitezã ºi Distanþã"
+
+#: src/settings.c:928
+msgid "Geo information"
+msgstr "Geo-informaþii"
+
+#: src/settings.c:930
+msgid "Geo info"
+msgstr "Geo-info"
+
+#: src/settings.c:941
+msgid "Sunrise"
+msgstr "Rãsãrit"
+
+#: src/settings.c:943
+msgid "Sunset"
+msgstr "Apus"
+
+#: src/settings.c:946
+msgid "Standard"
+msgstr "Standard"
+
+#: src/settings.c:948
+msgid "Transit"
+msgstr "Tranzit"
+
+#: src/settings.c:950
+msgid "GPS-Time"
+msgstr "Orã-GPS"
+
+#: src/settings.c:952
+msgid "Astro."
+msgstr "Astro."
+
+#: src/settings.c:954
+msgid "Naut."
+msgstr "Naut."
+
+#: src/settings.c:956
+msgid "Civil"
+msgstr "Civil"
+
+#: src/settings.c:958
+msgid "Timezone"
+msgstr "FusOrar"
+
+#: src/settings.c:991
+msgid "Night"
+msgstr "Noapte"
+
+#: src/settings.c:993
+msgid "Day"
+msgstr "Zi"
+
+#: src/settings.c:1116
+msgid "Trip information"
+msgstr "Informaþii cãlatorie"
+
+#: src/settings.c:1118
+msgid "Trip info"
+msgstr "Info cãlãtorie"
+
+#: src/settings.c:1128 src/settings.c:1130 src/settings.c:1132
+msgid "Unit:"
+msgstr "Unitate:"
+
+#: src/settings.c:1128
+msgid "miles"
+msgstr "mile"
+
+#: src/settings.c:1130
+msgid "nautic miles/knots"
+msgstr "mile nautice/noduri"
+
+#: src/settings.c:1132
+msgid "kilometers"
+msgstr "kilometri"
+
+#: src/settings.c:1137
+msgid "Odometer"
+msgstr "Odometru"
+
+#: src/settings.c:1139
+msgid "Total time"
+msgstr "Timp total"
+
+#: src/settings.c:1141
+msgid "Av. speed"
+msgstr "Vitezã medie"
+
+#: src/settings.c:1143
+msgid "Max. speed"
+msgstr "Vitezã max."
+
+#: src/settings.c:1392
+msgid "Show position newer as"
+msgstr "Afiºeazã poziþia mai nouã de"
+
+#: src/settings.c:1394
+msgid "Friends server setup"
+msgstr "Setare server prieteni"
+
+#: src/settings.c:1395
+msgid "Friends"
+msgstr "Prieteni"
+
+#: src/settings.c:1407
+msgid "Days"
+msgstr "Zile"
+
+#: src/settings.c:1408
+msgid "Hours"
+msgstr "Ore"
+
+#: src/settings.c:1409
+msgid "Minutes"
+msgstr "Minute"
+
+#: src/settings.c:1415
+msgid "Your name"
+msgstr "Numele vostru"
+
+#: src/settings.c:1420
+msgid "Set here your name which should be shown near your vehicle. You may not use spaces here!"
+msgstr "Setaþi aici numele care vreþi sã fie afiºat lângã vehicolul vostru. Nu puteþi utiliza spaþii!"
+
+#: src/settings.c:1432
+msgid "Server name"
+msgstr "Nume server"
+
+#: src/settings.c:1437
+msgid "Set here the full qualified host name (i.e. www.kraftvoll.at) of your friends server, then you have to press the \"Lookup\" button!"
+msgstr "Setaþi aici numele de host complet calificat (i.e. www.kraftvoll.at) al serverului prietenilor voºtri, apoi apãsaþi butonul \"Cautã\"!"
+
+#: src/settings.c:1446
+msgid "Lookup"
+msgstr "Cautã"
+
+#: src/settings.c:1452
+msgid "You have to press the \"Lookup\" button to resolve the friends server name!"
+msgstr "Trebuie sã apãsaþi butonul \"Cautã\" pentru a rezolva numele serverului de prieteni!"
+
+#: src/settings.c:1455
+msgid "Friends server IP"
+msgstr "IP server de prieteni"
+
+#: src/settings.c:1460
+msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
+msgstr "Setaþi aici adresa IP (i.e. 127.0.0.1) dacã nu setaþi numele de host mai sus"
+
+#: src/settings.c:1465 src/settings.c:1470 src/settings.c:1474
+msgid "Set here the time limit in which the friends position is shown. Older positions are not shown."
+msgstr "Setaþi aici limita de timp în care poziþia prietenilor este afiºatã. Poziþiile mai vechi nu sunt afiºate."
+
+#: src/settings.c:1486
+msgid "Use friends server"
+msgstr "Folosiþi serverul de prieteni"
+
+#: src/settings.c:1493
+msgid "Enable/disable use of friends server"
+msgstr "Activeazã/Dezactiveazã utilizarea serverului de prieteni"
+
+#: src/settings.c:1495
+msgid ""
+"If you enable the friendsserver mode,\n"
+"<span color=\"red\">everyone</span> using the same server\n"
+"can see your position!"
+msgstr ""
+"Dacã activati modul friendsserver,\n"
+"<span color=\"red\">toþi</span> cei care folosesc acelaºi server\n"
+"vor putea vedea poziþia voastrã!"
+
+#: src/settings.c:1549
+msgid "SQL selection criterias"
+msgstr "Criterii de selecþie SQL"
+
+#: src/settings.c:1550
+msgid "SQL"
+msgstr "SQL"
+
+#: src/settings.c:1576
+msgid "Dist. limit[km] "
+msgstr "Limitã dist.[km] "
+
+#: src/settings.c:1581
+msgid "If enabled, show waypoints only within this distance"
+msgstr "Dacã este activat, afiºeazã punctele de trecere doar în aceastã distanþã"
+
+#: src/settings.c:1589
+msgid "Enable?"
+msgstr "Activaþi?"
+
+#: src/settings.c:1596
+msgid "Enable/disable distance selection"
+msgstr "Activeazã/dezactiveazã selecþia distanþei"
+
+#: src/settings.c:1605
+msgid "Selection mode"
+msgstr "Mod selecþie"
+
+#: src/settings.c:1607
+msgid "include"
+msgstr "include"
+
+#: src/settings.c:1610
+msgid "exclude"
+msgstr "exclude"
+
+#: src/settings.c:1614
+msgid "Show only waypoints where the type field contains one of the selected words"
+msgstr "Afiºeazã doar punctele de trecere unde câmpul tip conþine unul din cuvintele selectate"
+
+#: src/settings.c:1618
+msgid "Show only waypoints where the type field doesn't contain any the selected words"
+msgstr "Afiºeazã doar punctele de trecere unde câmpul tip nu conþine unul din cuvintele selectate"
+
+#: src/fly.c:136
+msgid "Aeronautical settings"
+msgstr "Setãri aeronautice"
+
+#: src/fly.c:138
+msgid "Fly"
+msgstr "Zbor"
+
+#: src/fly.c:145
+msgid "Plane mode"
+msgstr "Mod avion(plane)"
+
+#: src/fly.c:152
+msgid "Use VFR"
+msgstr "Foloseºte VFR"
+
+#: src/fly.c:158
+msgid "Use IFR"
+msgstr "Foloseºte IFR"
+
+#: src/fly.c:168
+msgid "max. horizontal deviation "
+msgstr "deviaþie max. orizontalã "
+
+#: src/fly.c:170
+msgid "max. vertical deviation "
+msgstr "deviaþie max. verticalã "
+
+#: src/fly.c:185
+msgid "disable vert. deviation warning above 5000ft MSL"
+msgstr "dezactiveazã avertismentul de deviaþie verticalã peste 5000ft MSL"
+
+#: src/nautic.c:97
+msgid "Nautic settings"
+msgstr "Setãri nautice"
+
+#. if (debug)
+#: src/gpssql.c:175
+#, c-format
+msgid ""
+"\n"
+"SQL: connected to %s as %s using %s\n"
+msgstr ""
+"\n"
+"SQL: conectat la %s ca %s folosind %s\n"
+
+#. if (debug)
+#: src/gpssql.c:261 src/gpskismet.c:277
+#, c-format
+msgid "rows inserted: %d\n"
+msgstr "rânduri inserate: %d\n"
+
+#: src/gpssql.c:276
+#, c-format
+msgid "last index: %d\n"
+msgstr "ultimul index: %d\n"
+
+#: src/gpssql.c:297
+#, c-format
+msgid "rows deleted: %d\n"
+msgstr "rânduri ºterse: %d\n"
+
+#. if (debug)
+#: src/gpssql.c:408
+#, c-format
+msgid "%d(%d) rows read in %.2f seconds\n"
+msgstr "%d(%d) rânduri citite în %.2f secunde\n"

@@ -1,32 +1,32 @@
-# translation of it.po to Italiano
-# GpsDrive.
-# Copyright (C) 2002,2003, 2004 Free Software Foundation, Inc.
-# Manfred Caruso <bertoz@bertoz.com>, 2002,2003, 2004.
+# Greek translations for GPSdrive.
+# This file is distributed under the same license as the PACKAGE package.
 #
+# Yiannis Pailas <johntop@pathfinder.gr>, 2003.
 msgid ""
 msgstr ""
-"Project-Id-Version: it\n"
+"Project-Id-Version: gpsdrive-2.10pre3\n"
 "Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
 "POT-Creation-Date: 2007-07-22 22:36+0200\n"
-"PO-Revision-Date: 2004-01-13 11:53+0100\n"
-"Last-Translator: Manfred Caruso <bertoz@bertoz.com>\n"
-"Language-Team: Italiano <it@li.org>\n"
+"PO-Revision-Date: 2003-01-21 19:11+0200\n"
+"Last-Translator: Yiannis Pailas <johntop@pathfinder.gr>\n"
+"Language-Team: Greek <team@lists.gnome.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.2\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: src/battery.c:807
 msgid "Bat."
-msgstr "Bat."
+msgstr "Μπαταρία"
 
 #: src/battery.c:842
+#, fuzzy
 msgid "TC"
-msgstr "TC "
+msgstr "UTC "
 
 #: src/download_map.c:170 src/download_map.c:307
 msgid "can't open socket for port 80"
-msgstr "non posso aprire un socket per la porta 80"
+msgstr "δεν μπορεί να ανοιχτεί υποδοχέας για σύνδεση στη θύρα 80"
 
 #: src/download_map.c:173 src/download_map.c:177 src/download_map.c:205
 #: src/download_map.c:209 src/download_map.c:226 src/download_map.c:230
@@ -35,83 +35,83 @@ msgstr "non posso aprire un socket per la porta 80"
 #: src/download_map.c:383 src/download_map.c:388 src/download_map.c:392
 #, c-format
 msgid "Connecting to %s FAILED!"
-msgstr "Connessione a %s FALLITA!"
+msgstr "ΑΠΟΤΥΧΗΜΕΝΗ σύνδεση με %s!"
 
 #: src/download_map.c:202 src/download_map.c:353
 msgid "Can't resolve webserver address"
-msgstr "Non posso risolvere l'indirizzo del webserver"
+msgstr "Δεν μπόρεσε να βρεθεί η διεύθυνση του εξυπηρετητή Ιστού"
 
 #: src/download_map.c:223 src/download_map.c:380
 msgid "unable to connect to Website"
-msgstr "Non posso connettermi al sito web"
+msgstr "μη δυνατή σύνδεση με τοποθεσία Ιστού"
 
 #: src/download_map.c:257 src/download_map.c:451
 msgid "read from Webserver"
-msgstr "lettura dal server web"
+msgstr "μεταφορά από τον εξυπηρετητή Ιστού"
 
 #: src/download_map.c:288 src/download_map.c:293 src/download_map.c:296
 #, c-format
 msgid "Connecting to %s"
-msgstr "Connessione a %s"
+msgstr "Σύνδεση με %s"
 
 #: src/download_map.c:408 src/download_map.c:414 src/download_map.c:417
 #, c-format
 msgid "Now connected to %s"
-msgstr "Connesso a %s"
+msgstr "Συνδέθηκα με %s"
 
 #: src/download_map.c:499
 #, c-format
 msgid "Downloaded %d kBytes"
-msgstr "Trasferiti %d kBytes"
+msgstr "Μεταφορτώθηκαν %d kBytes"
 
 #: src/download_map.c:515
 msgid "Download FAILED!"
-msgstr "Download FALLITO!"
+msgstr "ΑΠΕΤΥΧΗ η μεταφόρτωση!"
 
 #: src/download_map.c:518
 #, c-format
 msgid "Download finished, got %dkB"
-msgstr "Download terminato, trasferiti %dkB"
+msgstr "Η μεταφόρτωση τελείωσε, λήφθηκαν %dkB"
 
 #: src/download_map.c:826
 msgid "Select coordinates and scale"
-msgstr "Seleziona coordinate e scala"
+msgstr "Επιλέξτε συντεταγμένες και κλίμακα"
 
 #: src/download_map.c:829
 msgid "Download map"
-msgstr "Scarica mappa"
+msgstr "Μεταφόρτωση χάρτη"
 
 #: src/download_map.c:857 src/gpsdrive.c:3305 src/gpsdrive.c:3389
 #: src/gpsdrive.c:4783 src/import_map.c:396 src/poi_gui.c:533 src/routes.c:408
 #: src/waypoint.c:721
 msgid "Latitude"
-msgstr "Latitudine"
+msgstr "Γεωγραφικό Πλάτος"
 
 #: src/download_map.c:859 src/gpsdrive.c:3305 src/gpsdrive.c:3389
 #: src/gpsdrive.c:4784 src/import_map.c:398 src/poi_gui.c:526 src/routes.c:408
 #: src/waypoint.c:735
 msgid "Longitude"
-msgstr "Longitudine"
+msgstr "Γεωγραφικό Μήκος"
 
 #: src/download_map.c:861
 msgid "Map covers"
-msgstr "Copertura mappa"
+msgstr "Καλύμματα χαρτών"
 
 #: src/download_map.c:865 src/import_map.c:408
 msgid "Scale"
-msgstr "Scala"
+msgstr "Κλίμακα"
 
 #: src/download_map.c:899 src/download_map.c:903
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
 msgstr ""
-"Puoi selezionare la posizione\n"
-"cliccando sulla mappa."
+"Μπορείτε να επιλέξετε θέση με ένα\n"
+"κλικ του ποντικιού πάνω στον χάρτη."
 
 #: src/download_map.c:905
 msgid "Using Proxy and port:"
-msgstr "Utilizza proxy e porta:"
+msgstr "Χρησιμοποιώντας το διαμεσολαβητή και τη θύρα:"
 
 #: src/download_map.c:999
 #, c-format
@@ -120,7 +120,7 @@ msgid ""
 "Using proxy: %s on port %d"
 msgstr ""
 "\n"
-"Utilizzo proxy: %s e porta %d"
+"Χρησιμοποιώντας το διαμεσολαβητή: %s στη θύρα %d"
 
 #: src/download_map.c:1005
 msgid ""
@@ -129,49 +129,52 @@ msgid ""
 "provider.de:3128"
 msgstr ""
 "\n"
-"Variabile d'ambiente HTTP_PROXY non valida, deve essere nel formato: http://"
-"proxy.provider.it:3128"
+"Μη έγκυρη μεταβλητή περιβάλλοντος HTTP_PROXY, πρέπει να είναι της μορφής: "
+"http://proxy.provider.gr:3128"
 
 #: src/fly.c:163
 msgid "Aeronautical settings"
-msgstr "Settaggi aereonautici"
+msgstr "Αεροναυτικές ρυθμίσεις"
 
 #: src/fly.c:166
 msgid "Fly"
-msgstr "Volo"
+msgstr "Πτήση"
 
 #: src/fly.c:174
 msgid "Plane mode"
-msgstr "Modalità aereo"
+msgstr "Κατάσταση αεροπλάνου"
 
 #: src/fly.c:183
 msgid "Use VFR"
-msgstr "Usa VFR"
+msgstr "Χρήση VFR"
 
 #: src/fly.c:190
 msgid "Use IFR"
-msgstr "Usa IFR"
+msgstr "Χρήση IFR"
 
 #: src/fly.c:200
 msgid "max. horizontal deviation "
-msgstr "max deviazione orizzontale"
+msgstr "μέγιστη οριζόντια απόκλιση "
 
 #: src/fly.c:202
 msgid "max. vertical deviation "
-msgstr "Max deviazione verticale"
+msgstr "μέγιστη κατακόρυφη απόκλιση "
 
 #: src/fly.c:219
 msgid "disable vert. deviation warning above 5000ft MSL"
-msgstr "disabilita allarme deviazione vert. sotto i 5000ft MSL"
+msgstr ""
+"απενεργοποιεί την προειδοποίηση κατακόρυφης απόκλισης πάνω από τα 5000 πόδια "
+"MSL"
 
 #: src/friends.c:431
 #, fuzzy
 msgid "/Misc. Menu/Messages"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/friends.c:445 src/gpsdrive.c:799
+#, fuzzy
 msgid "unknown"
-msgstr "sconosciuto"
+msgstr "Άγνωστος"
 
 #: src/friends.c:636 src/gpsdrive.c:4673 src/gpsdrive.c:4683
 #: src/settings.c:162 src/settings.c:172
@@ -181,7 +184,7 @@ msgstr "mi/h"
 #: src/friends.c:638 src/gpsdrive.c:4675 src/gpsdrive.c:4686
 #: src/settings.c:164 src/settings.c:175
 msgid "knots"
-msgstr "nodi"
+msgstr "κόμβοι"
 
 #: src/friends.c:640 src/gpsdrive.c:4677 src/gpsdrive.c:4689
 #: src/settings.c:166 src/settings.c:178
@@ -205,83 +208,82 @@ msgstr ""
 #: src/gpsdrive.c:458
 #, fuzzy
 msgid "/_Menu"
-msgstr "Menu"
+msgstr "Μενού"
 
 #: src/gpsdrive.c:459
 #, fuzzy
 msgid "/_Menu/_Maps"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:460
 #, fuzzy
 msgid "/_Menu/_Maps/_Import"
-msgstr "/ File/Importa mappa"
+msgstr "i    : εισαγωγή χάρτη\n"
 
 #: src/gpsdrive.c:461
 #, fuzzy
 msgid "/_Menu/_Maps/_Download"
-msgstr "/ File/Importa mappa"
+msgstr "i    : εισαγωγή χάρτη\n"
 
 #: src/gpsdrive.c:462
 #, fuzzy
 msgid "/_Menu/_Reinitialize GPS"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:464
 #, fuzzy
 msgid "/_Menu/_Load track file"
-msgstr "/ File/Carica tracciato"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:465
 #, fuzzy
 msgid "/_Menu/M_essages"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:466
-#, fuzzy
 msgid "/_Menu/M_essages/_Send message to mobile target"
-msgstr "/ Messaggi/Invia messaggio a obiettivo mobile"
+msgstr ""
 
 #: src/gpsdrive.c:468
 #, fuzzy
 msgid "/_Menu/S_ettings"
-msgstr "Settaggi"
+msgstr "Ρυθμίσεις"
 
 #: src/gpsdrive.c:470
 #, fuzzy
 msgid "/_Menu/_Help"
-msgstr "/ Help/Informazioni"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:471
 #, fuzzy
 msgid "/_Menu/_Help/_About"
-msgstr "/ Help/Informazioni"
+msgstr "i    : εισαγωγή χάρτη\n"
 
 #: src/gpsdrive.c:472
 #, fuzzy
 msgid "/_Menu/_Help/_Topics"
-msgstr "/ Help/Argomenti"
+msgstr "i    : εισαγωγή χάρτη\n"
 
 #: src/gpsdrive.c:473
 #, fuzzy
 msgid "/_Menu/_Quit"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:807
 msgid "Auto"
-msgstr "Auto"
+msgstr "Αυτόματο"
 
 #: src/gpsdrive.c:950
 #, fuzzy
 msgid "Warning!"
-msgstr "Bearing"
+msgstr "Προσανατολισμός"
 
 #: src/gpsdrive.c:952
 msgid "You should not start GpsDrive as user root!!!"
 msgstr ""
 
 #: src/gpsdrive.c:1357
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Warning: unable to load gpsdriveanim.gif!\n"
@@ -289,47 +291,41 @@ msgid ""
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Attenzione: non riesco a caricare friendsicon!\n"
-"Installa il programma come utente root con:\n"
-"make install\n"
-"\n"
 
 #: src/gpsdrive.c:1945
 msgid "NESW"
-msgstr "NESO"
+msgstr "ΒΑΝΔ"
 
 #: src/gpsdrive.c:2131
 msgid "No map available for this position!"
-msgstr "Nessuna mappa disponibile per questa posizione!"
+msgstr "Δεν υπάρχει διαθέσιμος χάρτης γι' αυτή τη θέση!"
 
 #: src/gpsdrive.c:2308 src/gpsdrive.c:4555 src/gpsdrive.c:4561
 #: src/gpsdrive.c:4567 src/gpsdrive.c:4600 src/gpsdrive.c:4605
 #: src/gpsdrive.c:4611 src/gpsdrive.c:4628 src/gpsdrive.c:4635
 #: src/gps_handler.c:532 src/gps_handler.c:533 src/gps_handler.c:534
 msgid "n/a"
-msgstr "n/a"
+msgstr "μη διαθέσιμο"
 
 #: src/gpsdrive.c:2599
-#, fuzzy, c-format
+#, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr ""
-"\n"
-"la distanza del salto è maggiore di 2000km/h, ignoro\n"
 
 #: src/gpsdrive.c:2857
 #, fuzzy
 msgid "/Menu/Messages"
-msgstr "/ Messaggi"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:2860
 #, fuzzy
 msgid "Sending message to friends server..."
-msgstr "Abilita/disabilita il friends server"
+msgstr "Ενεργοποιή/απενεργοποιεί την επιλογή απόστασης"
 
 #: src/gpsdrive.c:2939
+#, fuzzy
 msgid "Message for:"
-msgstr "Messaggio per:"
+msgstr "  Μύνημα  "
 
 #: src/gpsdrive.c:2981
 #, c-format
@@ -347,7 +343,7 @@ msgstr ""
 #: src/gpsdrive.c:3125
 #, fuzzy
 msgid "Temporary Waypoint"
-msgstr "Waypoint"
+msgstr "Σημείο Μετάβασης"
 
 #: src/gpsdrive.c:3305 src/gpsdrive.c:3389 src/poi_gui.c:464 src/poi_gui.c:892
 #: src/poi_gui.c:1127 src/poi_gui.c:1260 src/settings.c:1812
@@ -358,11 +354,12 @@ msgstr ""
 #: src/poi_gui.c:903 src/poi_gui.c:1267 src/routes.c:408 src/settings.c:700
 #: src/settings.c:1286
 msgid "Distance"
-msgstr "Distanza"
+msgstr "Απόσταση"
 
 #: src/gpsdrive.c:3316
+#, fuzzy
 msgid "Please select message recipient"
-msgstr "Seleziona il destinatario del messaggio"
+msgstr "Παρακαλώ επιλέξτε τον προορισμό σας"
 
 #: src/gpsdrive.c:3389 src/poi_gui.c:546 src/poi_gui.c:912
 msgid "Type"
@@ -370,49 +367,51 @@ msgstr ""
 
 #: src/gpsdrive.c:3418
 msgid "Select reference point"
-msgstr "Seleziona un punto di riferimento"
+msgstr "Επιλογή σημείου αναφοράς"
 
 #: src/gpsdrive.c:3422
 msgid "Please select your destination"
-msgstr "Seleziona la destinazione"
+msgstr "Παρακαλώ επιλέξτε τον προορισμό σας"
 
 #: src/gpsdrive.c:3454
 msgid "Edit route"
-msgstr "Edita percorso"
+msgstr "Επεξεργασία δρομολογίου"
 
 #: src/gpsdrive.c:3457
 msgid "Create route"
-msgstr "Crea percorso"
+msgstr "Δημιουργία δρομολογίου"
 
 #: src/gpsdrive.c:3554
 msgid "Create a route using some waypoints from this list"
-msgstr "Seleziona un percorso utilizzando i waypoint di questa lista"
+msgstr ""
+"Δημιουργία δρομολόγιου χρησιμοποιώντας σημεία μετάβασης από αυτή τη λίστα"
 
 #: src/gpsdrive.c:3559
 msgid "Delete the selected waypoint from the waypoint list"
-msgstr "Cancella il waypoint selezionato dalla lista  dei waypoint"
+msgstr ""
+"Διαγράψτε το επιλεγμένο σημείο μετάβασης από τη λίστα των σημείων μετάβασης"
 
 #: src/gpsdrive.c:3563
 #, fuzzy
 msgid "Jump to the selected waypoint"
 msgstr ""
-"Clicca sulla lista per\n"
-"selezionare il waypoint successivo"
+"Κάντε κλικ σε ένα αντικείμενο της λίστας\n"
+"για να επιλέξτε το επόμενο σημείο μετάβασης"
 
 #: src/gpsdrive.c:3586
 #, fuzzy
 msgid "-v        show version\n"
-msgstr "-v    visualizza la versione\n"
+msgstr "-v    δείχνει την έκδοση\n"
 
 #: src/gpsdrive.c:3587
 #, fuzzy
 msgid "-h        print this help\n"
-msgstr "-h    mostra questo aiuto\n"
+msgstr "-h    δείχνει αυτή τη βοήθεια\n"
 
 #: src/gpsdrive.c:3588
 #, fuzzy
 msgid "-d        turn on debug info\n"
-msgstr "-d    attiva info debug\n"
+msgstr "-d    ενεργοποιεί τις πληροφορίες αποσφαλμάτωσης\n"
 
 #: src/gpsdrive.c:3589
 msgid "-D X      set debug Level to X\n"
@@ -425,27 +424,29 @@ msgstr ""
 #: src/gpsdrive.c:3591
 #, fuzzy
 msgid "-e        use Festival-Lite (flite) for speech output\n"
-msgstr "-e    utilizza Festival-Lite (flite) per la sintesi vocale\n"
+msgstr "-e    χρησιμοποιεί το Festival-Lite (flite) για εξαγωγή φωνής\n"
 
 #: src/gpsdrive.c:3592
 #, fuzzy
 msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
-msgstr "-t    imposta la seriale per il GPS es. /dev/ttyS1\n"
+msgstr "-t    ορισμός σειριακής συσκευής για το GPS π.χ. /dev/ttyS1\n"
 
 #: src/gpsdrive.c:3593
 #, fuzzy
 msgid "-o        serial device, pty master, or file for NMEA *output*\n"
-msgstr "-o    seriale, pty o file per l'output NMEA\n"
+msgstr "-o    σειριακή συσκευή, κύρια pty, ή αρχείο για *εξαγωγή* NMEA\n"
 
 #: src/gpsdrive.c:3594
 #, fuzzy
 msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
-msgstr "-f X  Seleziona server friends, X es: www.gpsdrive.cc\n"
+msgstr ""
+"-f X  Επιλέγει τον εξυπηρετητή του φίλου σας, όπου X είναι το όνομα του "
+"εξυπηρετητή π.χ. linux.quant-x.at\n"
 
 #: src/gpsdrive.c:3595
 #, fuzzy
 msgid "-n        Disable use of direct serial connection\n"
-msgstr "Connessione a %s"
+msgstr "Σύνδεση με %s"
 
 #: src/gpsdrive.c:3597
 msgid ""
@@ -459,8 +460,9 @@ msgid ""
 "-l LANG   Select language of the voice,\n"
 "          LANG may be english, spanish or german\n"
 msgstr ""
-"-l X  Seleziona il linguaggio della voce,\n"
-"      X deve essere english, spanish o german\n"
+"-l X  Επιλέγει γλώσσα για τη φωνή που θα ακούγεται,\n"
+"      το X μπορεί να είναι english για αγγλικά, spanish για ισπανικά ή "
+"german για γερμανικά\n"
 
 #: src/gpsdrive.c:3601
 #, fuzzy
@@ -468,62 +470,65 @@ msgid ""
 "-s HEIGHT set height of the screen, if autodetection\n"
 "          don't satisfy you, X is i.e. 768,600,480,200\n"
 msgstr ""
-"-s X  imposta l'altezza dello schermo, se il rilevamento      automatico non "
-"ti soddisfa, X = 768,600,480,200\n"
+"-s X  ορίζει το ύψος της οθόνης, αν η αυτόματη ρύθμιση\n"
+"      δεν σας ικανοποιεί, όπου X είναι π.χ. 768,600,480,200\n"
 
 #: src/gpsdrive.c:3603
 #, fuzzy
 msgid "-r WIDTH  set width of the screen, only with -s\n"
-msgstr "-r X  imposta la larghezza dello schermo, solo con -s\n"
+msgstr ""
+"-r X  ορίζει το πλάτος της οθόνης, χρησιμοποιείται μόνο με το διακόπτη -s\n"
 
 #: src/gpsdrive.c:3604
 #, fuzzy
 msgid "-1        have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1    utilizza solo 1 pulsante del mouse, per esempio un touchscreen\n"
+msgstr ""
+"-1    αρκεί ένα (1) μόνο κλικ του ποντικιού, χρησιμοποιείται κυρίως με οθόνη "
+"αφής\n"
 
 #: src/gpsdrive.c:3605
 #, fuzzy
 msgid "-a        don't display battery status (i.e. broken APM)\n"
-msgstr ""
-"-a    non visualizza lo stato della batteria (es. APM non funzionante)\n"
+msgstr "-a    δεν εμφανίζει την κατάσταση των μπαταριών (π.χ. χαλασμένο APM)\n"
 
 #: src/gpsdrive.c:3606
 #, fuzzy
 msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b X  Servername per il server NMEA (se gpsd è su un altro host)\n"
+msgstr ""
+"-b X  όνομα για τον εξυπηρετητή NMEA (αν το gpsd τρέχει σε άλλο σύστημα)\n"
 
 #: src/gpsdrive.c:3607
 #, fuzzy
 msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
 msgstr ""
-"-c X  imposta la posizione di partenza in modalità simulazione in un nome "
-"waypoint\n"
+"-c X  ορίζει το σημείο έναρξης σε κατάσταση προσομείωσης για το σημείο "
+"μετάβασης με όνομα X\n"
 
 #: src/gpsdrive.c:3608
 #, fuzzy
 msgid "-x        create separate window for menu\n"
-msgstr "-x    crea finestre separate per i menu\n"
+msgstr "-x    δημιουργεί ξεχωριστό παράθυρο για το μενού\n"
 
 #: src/gpsdrive.c:3609
 #, fuzzy
 msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
-msgstr "-p    imposta i settaggi per i PDA (iPAQ, Yopy...)\n"
+msgstr "-p    ορίζει ρυθμίσεις για τον υπολογιστή παλάμης (iPAQ, Yopy...)\n"
 
 #: src/gpsdrive.c:3610
 #, fuzzy
 msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
 msgstr ""
-"-i    ignora i checksum NMEA (rischioso, solo per ricevitori GPS guasti\n"
+"-i    αγνοεί το άθροισμα ελέγχου - checksum του NMEA (επικίνδυνο, να "
+"χρησιμοποιείται μόνο για χαλασμένους δέκτες GPS\n"
 
 #: src/gpsdrive.c:3611
 #, fuzzy
 msgid "-q        disable SQL support\n"
-msgstr "-q    disabilita il support SQL\n"
+msgstr "-q    απενεργοποιεί την υποστήριξη SQL\n"
 
 #: src/gpsdrive.c:3612
-#, fuzzy
 msgid "-F        force display of position even it is invalid\n"
-msgstr "-F    forza la visualizzazione della posizione anche se non valida\n"
+msgstr ""
 
 #: src/gpsdrive.c:3613
 msgid "-S        don't show splash screen\n"
@@ -542,9 +547,8 @@ msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
 msgstr ""
 
 #: src/gpsdrive.c:3617
-#, fuzzy
 msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
-msgstr "-H X  corregge altitudine, aggiungendo questo valore\n"
+msgstr ""
 
 #: src/gpsdrive.c:3618
 #, fuzzy
@@ -552,12 +556,12 @@ msgid ""
 "-z        don't display zoom factor and scale\n"
 "\n"
 msgstr ""
-"-z    non visualizza zoom e scala\n"
+"-z    δεν εμφανίζει το ποσοστό μεγέθυνσης και κλίμακας\n"
 "\n"
 
 #: src/gpsdrive.c:3633
 msgid "Select a track file"
-msgstr "Seleziona un file traccia"
+msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #: src/gpsdrive.c:4042
 msgid ""
@@ -566,26 +570,27 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Puoi scegliere solo fra inglese, spagnolo e tedesco\n"
+"Μπορούν να επιλεχθού μόνο τα english, spanish german\n"
 "\n"
 
 #: src/gpsdrive.c:4210
 #, fuzzy
 msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
-msgstr "Gpsdrive-2 (c)2001-2004 F.Ganter"
+msgstr "(c)2001-2003 F.Ganter"
 
 #: src/gpsdrive.c:4218
 msgid "Using speech output"
-msgstr "Utilizza l'output vocale"
+msgstr "Χρησιμοποίηση εξαγωγής φωνής"
 
 #: src/gpsdrive.c:4256
+#, fuzzy
 msgid "M_ute"
-msgstr "S_ilenziamento"
+msgstr "Σίγαση"
 
 #: src/gpsdrive.c:4294
 #, fuzzy
 msgid "Points"
-msgstr "Waypoints"
+msgstr "Σημεία μετάβασης"
 
 #: src/gpsdrive.c:4299
 msgid "PO_I"
@@ -610,25 +615,27 @@ msgstr ""
 #: src/gpsdrive.c:4355 src/settings.c:1026
 #, fuzzy
 msgid "Track"
-msgstr "Mostra _traccia"
+msgstr "Δείξε Track"
 
 #: src/gpsdrive.c:4360
 #, fuzzy
 msgid "Show"
-msgstr "Mostra _WP"
+msgstr "Εμφάνισε σημείο μετάβασης"
 
 #: src/gpsdrive.c:4365
 msgid "Show tracking on the map"
-msgstr "Mostra la traccia sulla mappa"
+msgstr "Εμφάνιση της διαδρομής πάνω στον χάρτη"
 
 #: src/gpsdrive.c:4372
 #, fuzzy
 msgid "Save"
-msgstr "Scala"
+msgstr "Κλίμακα"
 
 #: src/gpsdrive.c:4378
 msgid "Save the track to given filename at program exit"
-msgstr "Salva la traccia con un nome all'uscita dal programma"
+msgstr ""
+"Σώστε τη διαδρομή σε αρχείο με το προτεινόμενο όνομα κατά την έξοδο από το "
+"πρόγραμμα"
 
 #: src/gpsdrive.c:4451
 msgid ""
@@ -636,16 +643,16 @@ msgid ""
 "kismet server found\n"
 msgstr ""
 "\n"
-"server kismet trovato\n"
+"ευρέθη εξυπηρετητής kismet\n"
 
 #: src/gpsdrive.c:4516 src/gpsdrive.c:4789
 msgid "Bearing"
-msgstr "Bearing"
+msgstr "Προσανατολισμός"
 
 #: src/gpsdrive.c:4540
 #, fuzzy
 msgid "GPS Info"
-msgstr "Geo info"
+msgstr "Γεωλογικές πληροφορίες"
 
 #: src/gpsdrive.c:4596 src/gpsdrive.c:4812 src/gpsdrive.c:4817
 #: src/gpsdrive.c:4826 src/gpsdrive.c:4829
@@ -653,51 +660,52 @@ msgid "---"
 msgstr "---"
 
 #: src/gpsdrive.c:4649 src/gpsdrive.c:4656
+#, fuzzy
 msgid "Selected:"
-msgstr "Selezionato:"
+msgstr "Επιλέξτε προορισμό"
 
 #: src/gpsdrive.c:4650 src/gpsdrive.c:4657
 msgid "within"
-msgstr "entro"
+msgstr ""
 
 #: src/gpsdrive.c:4665
 msgid "Distance to target"
-msgstr "Distanza dall'obiettivo"
+msgstr "Απόσταση μέχρι προορισμό"
 
 #: src/gpsdrive.c:4682 src/gpsdrive.c:4685 src/gpsdrive.c:4688
 #: src/settings.c:171 src/settings.c:174 src/settings.c:177
 #: src/settings.c:1287
 msgid "Speed"
-msgstr "Velocità"
+msgstr "Ταχύτητα"
 
 #: src/gpsdrive.c:4695 src/poi_gui.c:519 src/settings.c:718
 msgid "Altitude"
-msgstr "Altitudine"
+msgstr "Υψόμετρο"
 
 #: src/gpsdrive.c:4698 src/settings.c:1093 src/settings.c:1685
 msgid "Waypoints"
-msgstr "Waypoints"
+msgstr "Σημεία μετάβασης"
 
 #: src/gpsdrive.c:4786
 msgid "Map file"
-msgstr "File mappa"
+msgstr "Όνομα χάρτη"
 
 #: src/gpsdrive.c:4787
 msgid "Map scale"
-msgstr "Scala "
+msgstr "Κλίμακα χάρτη"
 
 #: src/gpsdrive.c:4788
 msgid "Heading"
-msgstr "Heading"
+msgstr "Κατεύθυνση"
 
 #: src/gpsdrive.c:4790
 #, fuzzy
 msgid "Time to Dest."
-msgstr "Arrivo in:"
+msgstr "Ώρα άφιξης"
 
 #: src/gpsdrive.c:4791
 msgid "Pref. scale"
-msgstr "Scala pref."
+msgstr "Προτιμόμενη κλίμακα"
 
 #: src/gpsdrive.c:4794
 msgid "000,00000N"
@@ -713,34 +721,31 @@ msgstr ""
 
 #: src/gpsdrive.c:4898 src/gpsdrive.c:4952 src/gpsdrive.c:4969
 msgid "Menu"
-msgstr "Menu"
+msgstr "Μενού"
 
 #: src/gpsdrive.c:4906 src/gpsdrive.c:4956 src/gpsdrive.c:4970
 msgid "Status"
-msgstr "Stato"
+msgstr "Κατάσταση"
 
 #: src/gpsdrive.c:4948 src/gpsdrive.c:4968 src/nmea_handler.c:497
 msgid "Map"
-msgstr "Mappa"
+msgstr "Χάρτης"
 
 #: src/gpsdrive.c:4960 src/gpsdrive.c:4971 src/poi_gui.c:1274
 #, fuzzy
 msgid "Trip"
-msgstr "Info percorso"
+msgstr "Πληροφ. Ταξιδιού"
 
 #: src/gpsdrive.c:5106
-#, fuzzy
 msgid ""
 "Click here to switch betwen satetellite level and satellite position "
 "display. A rotating globe is shown in simulation mode"
 msgstr ""
-"Clicca qui per passare alla visualizzazione livello satelliti o alla "
-"posizione satelliti"
 
 #: src/gpsdrive.c:5111
 #, fuzzy
 msgid "Number of used satellites/satellites in view"
-msgstr "Non ci sono sufficienti satelliti in vista!"
+msgstr "Δεν υπάρχουν αρκετοί δορυφόροι σε θέαση"
 
 #: src/gpsdrive.c:5115
 msgid "EPE (Estimated Precision Error), if available"
@@ -762,7 +767,7 @@ msgstr ""
 #: src/gpsdrive.c:5127
 #, fuzzy
 msgid "/Menu"
-msgstr "Menu"
+msgstr "Μενού"
 
 #: src/gpsdrive.c:5129
 msgid "Here you find extra functions for maps, tracks and messages"
@@ -770,27 +775,27 @@ msgstr ""
 
 #: src/gpsdrive.c:5133
 msgid "Disable output of speech"
-msgstr "Disabilita la sintesi vocale"
+msgstr "Απενεργοποίηση έξοδος της φωνής"
 
 #: src/gpsdrive.c:5137
 msgid "Show waypoints on the map"
-msgstr "Mostra i waypoints sulla mappa"
+msgstr "Εμφάνισε τα σημεία μετάβασης στο χάρτη"
 
 #: src/gpsdrive.c:5142
 msgid "Zoom into the current map"
-msgstr "Ingrandisci la mappa corrente"
+msgstr "Μεγέθυνση στον τρέχον χάρτη"
 
 #: src/gpsdrive.c:5144
 msgid "Zooms out off the current map"
-msgstr "Rimpicciolisci la mappa corrente"
+msgstr "Σμίκρυση στον τρέχον χάρτη"
 
 #: src/gpsdrive.c:5146
 msgid "Select the next more detailed map"
-msgstr "Seleziona una mappa più dettagliata"
+msgstr "Επιλέξτε τον επόμενο με τη μεγαλύτερη ευκρίνεια χάρτη"
 
 #: src/gpsdrive.c:5148
 msgid "Select the next less detailed map"
-msgstr "Seleziona una mappa meno dettagliata"
+msgstr "Επιλέξτε τον επόμενο με τη μικρότερη ευκρίνεια χάρτη"
 
 #: src/gpsdrive.c:5152
 msgid "Find Points of Interest and select as destination"
@@ -798,17 +803,16 @@ msgstr ""
 
 #: src/gpsdrive.c:5156
 msgid "Select the map scale of avail. maps."
-msgstr "Seleziona la scala delle mappe disponibili"
+msgstr "Επιλέξτε την κλίμακα των διαθέσιμων χαρτών."
 
 #: src/gpsdrive.c:5160
 msgid "This shows the time from your GPS receiver"
-msgstr "Questo mostra il tempo del tuo ricevitore GPS"
+msgstr ""
 
 #: src/gpsdrive.c:5164
-#, fuzzy
 msgid ""
 "Number of mobile targets within timeframe/total received from friendsserver"
-msgstr "Numero di waypoints selezionati dal server SQL"
+msgstr ""
 
 #: src/gpsdrive.c:5300
 #, c-format
@@ -820,12 +824,12 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Grazie per aver utilizzato GpsDrive!\n"
+"Ευχαριστούμε που χρησιμοποιείτε το GpsDrive!\n"
 "\n"
 
 #: src/gpsdrive_config.c:105
 msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-msgstr "Errore durante il salvataggio del file ~/.gpsdrive/gpsdriverc"
+msgstr "Σφάλμα κατά το σώσιμο του αρχείου ρυθμίσεων ~/.gpsdrive/gpsdriverc"
 
 #: src/gps_handler.c:232
 #, c-format
@@ -842,7 +846,7 @@ msgstr ""
 
 #: src/gps_handler.c:274 src/gpskismet.c:340
 msgid "can't open socket for port "
-msgstr "non posso aprire un socket per la porta "
+msgstr "δεν μπορεί να ανοιχτεί υποδοχέας για τη θύρα "
 
 #: src/gps_handler.c:296
 #, c-format
@@ -853,11 +857,11 @@ msgstr ""
 
 #: src/gps_handler.c:318
 msgid "NMEA Mode, Port 2222"
-msgstr "Modalità NMEA, porta 2222"
+msgstr "Κατάσταση NMEA, Θύρα 2222"
 
 #: src/gps_handler.c:326
 msgid "NMEA Mode, Port 2947"
-msgstr "Modalità NMEA, porta 2947"
+msgstr "Κατάσταση NMEA, Θύρα 2222"
 
 #: src/gps_handler.c:346 src/gps_handler.c:371
 msgid ""
@@ -865,7 +869,7 @@ msgid ""
 "no garmin support compiled in\n"
 msgstr ""
 "\n"
-"supporto garmin non compilato\n"
+"δεν έχει εγκατασταθεί υποστήριξη garmin\n"
 
 #: src/gps_handler.c:376
 msgid ""
@@ -873,62 +877,62 @@ msgid ""
 "Garmin protocol detection disabled!\n"
 msgstr ""
 "\n"
-"Rilevazione protocollo Garmin disattivata!\n"
+"Απενεργοποιήθηκε η ανίχνευση του πρωτοκόλλου Garmin!\n"
 
 #: src/gps_handler.c:488
 #, fuzzy
 msgid "Stop GPSD"
-msgstr "Avvia GPSD"
+msgstr "Έναρξη GPSD"
 
 #: src/gps_handler.c:493
 #, fuzzy
 msgid "Stop GPSD and switch to simulation mode"
-msgstr "p    : passa alla modalità posizione\n"
+msgstr "p    : μεταβαίνει σε κατάσταση θέσης\n"
 
 #: src/gps_handler.c:515
 msgid "Start GPSD"
-msgstr "Avvia GPSD"
+msgstr "Έναρξη GPSD"
 
 #: src/gps_handler.c:519
 msgid "Starts GPSD for NMEA mode"
-msgstr "Avvia GPSD in modalità NMEA"
+msgstr "Ξεκινά το GPSD σε κατάσταση NMEA"
 
 #: src/gps_handler.c:769
 msgid "Timeout getting data from GPS-Receiver!"
-msgstr "Ricezione dati dal ricevitore GPS in timeout!"
+msgstr "Λήξη χρόνου κατά τη λήψη δεδομένων από τον Δέκτη-GPS!"
 
 #: src/gps_handler.c:817 src/gps_handler.c:867 src/gps_handler.c:973
 #: src/gps_handler.c:1013 src/gps_handler.c:1080 src/gps_handler.c:1203
 msgid "Press middle mouse button for navigation"
-msgstr "Premi il tasto centrale del mouse per la navigazione"
+msgstr "Πατήστε το μεσαίο κουμπί του ποντικιού για πλοήγηση"
 
 #: src/gps_handler.c:822
 #, fuzzy, c-format
 msgid "Direct serial connection to %s"
 msgstr ""
 "\n"
-"server kismet trovato\n"
+"ευρέθη εξυπηρετητής kismet\n"
 
 #: src/gps_handler.c:872 src/gps_handler.c:904 src/gps_handler.c:1017
 #: src/gps_handler.c:1086 src/gps_handler.c:1209
 msgid "Not enough satellites in view!"
-msgstr "Non ci sono sufficienti satelliti in vista!"
+msgstr "Δεν υπάρχουν αρκετοί δορυφόροι σε θέαση"
 
 #: src/gps_handler.c:977
 msgid "GARMIN Mode"
-msgstr "Modalità GARMIN"
+msgstr "Κατάσταση GARMIN"
 
 #: src/gps_handler.c:993
 msgid "No GPS used"
-msgstr "Nessun GPS utilizzato"
+msgstr "Δεν χρησιμοποιείται GPS"
 
 #: src/gps_handler.c:995 src/nmea_handler.c:323
 msgid "Simulation mode"
-msgstr "Modalità simulazione"
+msgstr "Κατάσταση προσομείωσης"
 
 #: src/gps_handler.c:997
 msgid "Press middle mouse button for sim mode"
-msgstr "Premi il tasto centrale del mouse per la simulazione"
+msgstr "Πατήστε το μεσαίο κουμπί του ποντικιού για κατάσταση προσομείωσης"
 
 #: src/gpskismet.c:104
 msgid "trying to re-connect to kismet server\n"
@@ -948,14 +952,14 @@ msgstr ""
 msgid "Kismet server connection lost\n"
 msgstr ""
 "\n"
-"server kismet trovato\n"
+"ευρέθη εξυπηρετητής kismet\n"
 
 #: src/gpskismet.c:334
 #, fuzzy
 msgid "Trying Kismet server\n"
 msgstr ""
 "\n"
-"server kismet trovato\n"
+"ευρέθη εξυπηρετητής kismet\n"
 
 #: src/gpsmisc.c:309 src/gpsmisc.c:311 src/gpsmisc.c:495 src/gpsmisc.c:497
 #, c-format
@@ -1020,42 +1024,42 @@ msgstr ""
 msgid "SQL: connected to %s as %s using %s\n"
 msgstr ""
 "\n"
-"SQL: connesso a %s come %s usando %s\n"
+"SQL: Σύνδεση στο %s σαν %s χρησιμοποιώντας %s\n"
 
 #: src/gpssql.c:188
 #, fuzzy, c-format
 msgid "rows inserted: %ld\n"
-msgstr "righe inserite: %d\n"
+msgstr "γραμμές που εισήχθηκαν: %d\n"
 
 #: src/gpssql.c:210
 #, fuzzy, c-format
 msgid "last index: %ld\n"
-msgstr "ultimo indice: %d\n"
+msgstr "τελευταίος δείκτης: %d\n"
 
 #: src/gpssql.c:258
 #, fuzzy, c-format
 msgid "rows updated: %ld\n"
-msgstr "righe cancellate: %d\n"
+msgstr "γραμμές που διαγράφηκαν: %d\n"
 
 #: src/gpssql.c:285
 #, c-format
 msgid "rows inserted: %d\n"
-msgstr "righe inserite: %d\n"
+msgstr "γραμμές που εισήχθηκαν: %d\n"
 
 #: src/gpssql.c:307
 #, c-format
 msgid "last index: %d\n"
-msgstr "ultimo indice: %d\n"
+msgstr "τελευταίος δείκτης: %d\n"
 
 #: src/gpssql.c:333
 #, fuzzy, c-format
 msgid "rows updated: %d\n"
-msgstr "righe cancellate: %d\n"
+msgstr "γραμμές που διαγράφηκαν: %d\n"
 
 #: src/gpssql.c:419
 #, c-format
 msgid "rows deleted: %d\n"
-msgstr "righe cancellate: %d\n"
+msgstr "γραμμές που διαγράφηκαν: %d\n"
 
 #: src/gpssql.c:589
 #, c-format
@@ -1064,7 +1068,7 @@ msgid ""
 "libmysqlclient.so not found.\n"
 msgstr ""
 "\n"
-"libmysqlclient.so non trovata.\n"
+"Δεν βρέθηκε το libmysqlclient.so.\n"
 
 #: src/gpssql.c:595
 #, c-format
@@ -1073,7 +1077,7 @@ msgid ""
 "MySQL support disabled.\n"
 msgstr ""
 "\n"
-"Supporto MySQL disabilitato.\n"
+"Απενεργοποιήθηκε η υποστήριξη για τη MySQL.\n"
 
 #: src/gui.c:503
 msgid "Press OK to continue!"
@@ -1086,7 +1090,7 @@ msgid ""
 msgstr ""
 
 #: src/gui.c:570
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Warning: unable to open 'add waypoint' picture\n"
@@ -1094,24 +1098,14 @@ msgid ""
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Attenzione: non posso aprire l'immagine di splash\n"
-"Installa il programma come utente root, con:\n"
-"make install\n"
-"\n"
 
 #: src/icons.c:249
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Please install the program as root with:\n"
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Attenzione: non riesco a caricare friendsicon!\n"
-"Installa il programma come utente root con:\n"
-"make install\n"
-"\n"
 
 #: src/icons.c:356 src/icons.c:361
 #, c-format
@@ -1120,7 +1114,7 @@ msgstr ""
 
 #: src/import_map.c:240
 msgid "Select a map file"
-msgstr "Seleziona una mappa"
+msgstr "Επιλέξτε αρχείο χάρτη"
 
 #: src/import_map.c:310
 msgid ""
@@ -1138,14 +1132,15 @@ msgid ""
 "Load the file, select coordinates from waypoint list or\n"
 "type them in. Then click on the accept button."
 msgstr ""
-"Come calibrare le tue mappe?\n"
+"Πώς να ρυθμίσετε τους χάρτες σας;\n"
 "\n"
-"La mappa deve essere copiata nella directory ~/.gpsdrive nei formati .gif, ."
-"jpg o .png e devono avere la risoluzione di 1280x1024. Il nome del file "
-"deveessere map_* per le mappe stradali e top_* per le mappe topografiche!\n"
-"Carica il file, seleziona le coordinate\n"
-"dalla lista dei waypoint o digitale.\n"
-"Poi clicca il pulsante accetta."
+"Πρώτα το αρχείο του χάρτη πρέπει να αντιγραφεί στον κατάλογο ~/.gpsdrive με "
+"την επέκταση .gif, .jpg ή .png και χρειάζεται να έχει ανάλυση 1280x1024. Τα "
+"ονόματα των αρχείων πρέπει να ξεκινούν με map_* για οδικούς χάρτες και με "
+"top_* για τοπογραφικούς χάρτες!\n"
+"Φορτώστε το αρχείο, επιλέξτε συντεταγμένες\n"
+"από τη λίστα των σημείων μετάβασης ή πληκτρολογήσετέ τις εσείς.\n"
+"Μετά επιλέξτε το κουμπί αποδοχής."
 
 #: src/import_map.c:319
 #, fuzzy
@@ -1153,20 +1148,20 @@ msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
 msgstr ""
-"Ora fai la stessa cosa per il secondo punto e clicca sul pulsante fine. La "
-"mappa può essere utilizzata ora."
+"Τώρα κάντε το ίδιο για το δεύτερο σημείο και επιλέξτε το κουμπί τέλος. Ο "
+"χάρτης τώρα μπορεί να χρησιμοποιηθεί μπορεί να χρησιμοποιηθεί."
 
 #: src/import_map.c:326
 msgid "Import Assistant. Step 1"
-msgstr "Assistente importazione. Passo 1"
+msgstr "Βοηθός εισαγωγής. Βήμα 1"
 
 #: src/import_map.c:328
 msgid "Import Assistant. Step 2"
-msgstr "Assistente importazione. Passo 2"
+msgstr "Βοηθός εισαγωγής. Βήμα 2"
 
 #: src/import_map.c:335
 msgid "Accept first point"
-msgstr "Primo punto"
+msgstr "Αποδοχή πρώτου σημείου"
 
 #: src/import_map.c:341
 msgid "Accept Scale and Finish"
@@ -1174,39 +1169,39 @@ msgstr ""
 
 #: src/import_map.c:348
 msgid "Finish"
-msgstr "Fine"
+msgstr "Τέλος"
 
 #: src/import_map.c:363
 msgid "Go up"
-msgstr "Vai su"
+msgstr "Πήγαινε πάνω"
 
 #: src/import_map.c:366
 msgid "Go left"
-msgstr "Vai a sinistra"
+msgstr "Πήγαινε αριστερά"
 
 #: src/import_map.c:369
 msgid "Go right"
-msgstr "Vai a destra"
+msgstr "Πήγαινε δεξιά"
 
 #: src/import_map.c:372
 msgid "Go down"
-msgstr "Vai giù"
+msgstr "Πήγαινε κάτω"
 
 #: src/import_map.c:375
 msgid "Zoom in"
-msgstr "Più grande"
+msgstr "Μεγέθυνση"
 
 #: src/import_map.c:378
 msgid "Zoom out"
-msgstr "Più piccolo"
+msgstr "Σμίκρυνση"
 
 #: src/import_map.c:400
 msgid "Screen X"
-msgstr "Schermo X"
+msgstr "Οθόνη Χ"
 
 #: src/import_map.c:402
 msgid "Screen Y"
-msgstr "Schermo Y"
+msgstr "Οθόνη Υ"
 
 #: src/import_map.c:414
 msgid "Browse POIs"
@@ -1214,21 +1209,21 @@ msgstr ""
 
 #: src/import_map.c:445
 msgid "Browse filename"
-msgstr "Mostra i files"
+msgstr "Αναζήτση ονόματος αρχείου"
 
 #: src/import_map.c:834
 msgid "SELECTED"
-msgstr "SELEZIONATO"
+msgstr "ΕΠΙΛΕΧΘΗΚΕ"
 
 #: src/import_map.c:835 src/routes.c:122 src/routes.c:153 src/routes.c:616
 #: src/waypoint.c:878
 msgid "To"
-msgstr "Verso"
+msgstr ""
 
 #: src/map_handler.c:218
 #, fuzzy
 msgid "Map Controls"
-msgstr "Controllo GpsDrive"
+msgstr "Έλεγχος GpsDrive"
 
 #: src/map_handler.c:224
 msgid "direct draw sql _Streets"
@@ -1239,24 +1234,27 @@ msgid "Draw Streets found in mySQL"
 msgstr ""
 
 #: src/map_handler.c:246
+#, fuzzy
 msgid "Auto _best map"
-msgstr "Mappa _migliore"
+msgstr "Αυτόματα ο καλύτερος χάρτης"
 
 #: src/map_handler.c:251
 msgid "Always select the most detailed map available"
-msgstr "Mostra sempre la mappa più dettagliata disponibile"
+msgstr "Πάντα να επιλέγετε τον χάρτη με τη μεγαλύτερη λεπτομέρεια"
 
 #: src/map_handler.c:262
+#, fuzzy
 msgid "Pos. _mode"
-msgstr "Modo _posizione"
+msgstr "Κατάσταση θέσης"
 
 #: src/map_handler.c:269
 msgid ""
 "Turn position mode on. You can move on the map with the left mouse button "
 "click. Clicking near the border switches to the proximate map."
 msgstr ""
-"Attiva la modalità posizione. Cliccando il tasto sinistro puoi muoverti "
-"sulla mappa. Cliccando vicino al bordo passa alla mappa più vicina."
+"Ενεργοποιήστε την Κατάσταση Θέσης. Μπορείτε να μετακινηθείτε πάνω στον χάρτη "
+"κάνοντας κλικ στο αριστερό κουμπί του ποντικιού. Κάνοντας κλικ κοντά στα "
+"όρια  εμφανίζει τον σχετικό χάρτη."
 
 #: src/map_handler.c:275
 msgid "Mapnik Mode"
@@ -1270,19 +1268,19 @@ msgstr ""
 
 #: src/map_handler.c:311
 msgid "Shown map type"
-msgstr "Tipo mappa"
+msgstr "Τύπος προβαλλόμενου χάρτη"
 
 #: src/map_handler.c:318
 msgid "Street map"
-msgstr "Mappa stradale"
+msgstr "Οδικός χάρτης"
 
 #: src/map_handler.c:328
 msgid "Topo map"
-msgstr "Mappa topografica"
+msgstr "Τοπογραφικός χάρτης"
 
 #: src/map_handler.c:435
 msgid "Error in line "
-msgstr "Errore alla linea "
+msgstr "Σφάλμα στη γραμμή "
 
 #: src/map_handler.c:437
 msgid ""
@@ -1291,19 +1289,16 @@ msgid ""
 "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
 "maps.  Otherwise, the maps will not be displayed!"
 msgstr ""
-"Ho trovato che il nome di un file in\n"
-"map_koord.txt che non\n"
-"inizia per map_* o top_* !\n"
-"Per favore, rinominali e cambia i riferimenti\n"
-"nel file map_koord.txt, altrimenti questa mappa\n"
-"non potrà essere visualizzata!\n"
-"\n"
-"Utilizza map_* per le mappe stradali e\n"
-"top_* per le mappe topografiche."
+"Βρέθηκαν ονόματα αρχείων στο map_koord.txt που\n"
+"δεν είναι αρχείου του τύπου map_* ή top_* . Παρακαλώ, μετονομάστετα\n"
+"και διορθώστε τις εγγραφές στο map_koord.txt. Χρησιμοποιήστε map_* για "
+"οδικούς\n"
+"χάρτες και top_* για τοπογραφικούς χάρτες. Διαφορετικά οι χάρτες δεν θα "
+"εμφανιστούν!"
 
 #: src/map_handler.c:760
 msgid " Mapfile could not be loaded:"
-msgstr " La mappa non può essere caricata:"
+msgstr " Το αρχείο του χάρτη δεν μπορεί να φορτωθεί:"
 
 #: src/map_handler.c:810
 msgid "Map found!"
@@ -1311,25 +1306,25 @@ msgstr ""
 
 #: src/nautic.c:122
 msgid "Nautic settings"
-msgstr "Settaggi nautici"
+msgstr "Ναυτικές ρυθμίσεις"
 
 #: src/nautic.c:125
 msgid "Nautic"
-msgstr "Miglia nautiche"
+msgstr "Ναυτικά"
 
 #: src/nmea_handler.c:187
 msgid "can't open NMEA output file"
-msgstr "non posso aprire il file output NMEA"
+msgstr "Μη δυνατή πρόσβαση στο αρχείο εξαγωγής NMEA"
 
 #: src/poi.c:311
 #, fuzzy, c-format
 msgid "%ld(%d) rows read\n"
-msgstr "%d(%d) righe lette in %.2f secondi\n"
+msgstr "%d(%d) γραμμές που διαβάστηκαν σε %.2f δευτερόλεπτα\n"
 
 #: src/poi.c:1071 src/wlan.c:376
 #, fuzzy, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
-msgstr "%d(%d) righe lette in %.2f secondi\n"
+msgstr "%d(%d) γραμμές που διαβάστηκαν σε %.2f δευτερόλεπτα\n"
 
 #: src/poi_gui.c:140
 #, c-format
@@ -1344,7 +1339,7 @@ msgstr ""
 #: src/poi_gui.c:441 src/poi_gui.c:967
 #, fuzzy
 msgid "POI-Info"
-msgstr "Geo info"
+msgstr "Γεωλογικές πληροφορίες"
 
 #: src/poi_gui.c:471 src/poi_gui.c:923
 msgid "Comment"
@@ -1381,7 +1376,7 @@ msgstr ""
 #: src/poi_gui.c:771
 #, fuzzy
 msgid "current position"
-msgstr "Posizione decimale"
+msgstr "Δεκαδική θέση"
 
 #: src/poi_gui.c:781
 msgid "Search near current Position"
@@ -1394,7 +1389,7 @@ msgstr ""
 #: src/poi_gui.c:798
 #, fuzzy
 msgid "Search near selected Destination"
-msgstr "Seleziona la destinazione"
+msgstr "Παρακαλώ επιλέξτε τον προορισμό σας"
 
 #: src/poi_gui.c:804
 msgid "<i>POI-Types:</i>"
@@ -1411,7 +1406,7 @@ msgstr ""
 #: src/poi_gui.c:833
 #, fuzzy
 msgid "selected:"
-msgstr "Selezionato:"
+msgstr "Επιλέξτε προορισμό"
 
 #: src/poi_gui.c:839
 msgid "Search only in selected POI-Categories"
@@ -1430,14 +1425,13 @@ msgid "Show detailed Information for selected Point of Interest"
 msgstr ""
 
 #: src/poi_gui.c:976
-#, fuzzy
 msgid "Results"
-msgstr "Reset"
+msgstr ""
 
 #: src/poi_gui.c:1000
 #, fuzzy
 msgid "Edit _Route"
-msgstr "Edita percorso"
+msgstr "Επεξεργασία δρομολογίου"
 
 #: src/poi_gui.c:1004
 msgid "Switch to Add selected entry to Route"
@@ -1455,23 +1449,23 @@ msgstr ""
 #, fuzzy
 msgid "Jump to selected entry"
 msgstr ""
-"Clicca sulla lista per\n"
-"selezionare il waypoint successivo"
+"Κάντε κλικ σε ένα αντικείμενο της λίστας\n"
+"για να επιλέξτε το επόμενο σημείο μετάβασης"
 
 #: src/poi_gui.c:1039
 #, fuzzy
 msgid "Select Target"
-msgstr "t    : seleziona obiettivo\n"
+msgstr "t    : επιλέγει προορισμό-στόχο\n"
 
 #: src/poi_gui.c:1041
 #, fuzzy
 msgid "Use selected entry as target destination"
-msgstr "Seleziona la destinazione"
+msgstr "Παρακαλώ επιλέξτε τον προορισμό σας"
 
 #: src/poi_gui.c:1054 src/poi_gui.c:1355
 #, fuzzy
 msgid "Close this window"
-msgstr "Finestra di stato"
+msgstr "Παράθυρο κατάστασης"
 
 #: src/poi_gui.c:1093
 msgid "POI-Type Selection"
@@ -1484,7 +1478,7 @@ msgstr ""
 #: src/poi_gui.c:1219
 #, fuzzy
 msgid "Edit Route"
-msgstr "Edita percorso"
+msgstr "Επεξεργασία δρομολογίου"
 
 #: src/poi_gui.c:1287
 msgid "Route List"
@@ -1493,7 +1487,7 @@ msgstr ""
 #: src/poi_gui.c:1305
 #, fuzzy
 msgid "Stop Route"
-msgstr "Avvia percorso"
+msgstr "Εκκίνηση δρομολογίου"
 
 #: src/poi_gui.c:1307
 msgid "Stop the Route Mode"
@@ -1502,12 +1496,12 @@ msgstr ""
 #: src/poi_gui.c:1312
 #, fuzzy
 msgid "Start Route"
-msgstr "Avvia percorso"
+msgstr "Εκκίνηση δρομολογίου"
 
 #: src/poi_gui.c:1314
 #, fuzzy
 msgid "Start the Route Mode"
-msgstr "Avvia percorso"
+msgstr "Εκκίνηση δρομολογίου"
 
 #: src/poi_gui.c:1328
 msgid "Remove selected Entry from Route"
@@ -1516,7 +1510,7 @@ msgstr ""
 #: src/poi_gui.c:1343
 #, fuzzy
 msgid "Cancel Route"
-msgstr "Crea percorso"
+msgstr "Δημιουργία δρομολογίου"
 
 #: src/poi_gui.c:1345
 msgid "Discard Route"
@@ -1524,72 +1518,71 @@ msgstr ""
 
 #: src/routes.c:408
 msgid "Waypoint"
-msgstr "Waypoint"
+msgstr "Σημείο Μετάβασης"
 
 #: src/routes.c:423
 msgid "Define route"
-msgstr "Definisci percorso"
+msgstr "Ορίστε δρομολόγιο"
 
 #: src/routes.c:431
 msgid "Start route"
-msgstr "Avvia percorso"
+msgstr "Εκκίνηση δρομολογίου"
 
 #: src/routes.c:440
 msgid "Take all WP as route"
-msgstr "Usa tutti i WP come percorso"
+msgstr "Θεώρησε όλα τα σημεία μετάβασης σαν δρομολόγιο"
 
 #: src/routes.c:445
 msgid "Abort route"
-msgstr "Annulla percorso"
+msgstr "Απόρριψη δρομολογίου"
 
 #: src/routes.c:505
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
 msgstr ""
-"Clicca sulla lista dei waypoint\n"
-"per aggiungere un waypoint"
+"Κάντε κλικ στη λίστα των σημείων μετάβασης\n"
+"για προσθήκη σημείου μετάβασης"
 
 #: src/routes.c:508
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
 msgstr ""
-"Clicca sulla lista per\n"
-"selezionare il waypoint successivo"
+"Κάντε κλικ σε ένα αντικείμενο της λίστας\n"
+"για να επιλέξτε το επόμενο σημείο μετάβασης"
 
 #: src/routes.c:556
 msgid ""
 "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr ""
-"Crea un percorso da tutti i waypoints. Ordinato come nel file, non per "
-"distanza."
+"Δημιουργήστε ένα δρομολόγιο από όλα τα σημεία μετάβασης. Είναι ταξινομημένα "
+"κατά τάξη στο αρχείο και όχι κατά απόσταση."
 
 #: src/routes.c:560
 msgid ""
 "Click here to start your journey. GpsDrive guides you through the waypoints "
 "in this list."
 msgstr ""
-"Clicca qui per far partire il tuo viaggio. GpsDrive ti guida attraverso i "
-"waypoints in questa lista"
+"Κάντε κλικ εδώ για να ξεκινήσετε το ταξίδι σας. Το GpsDrive σας καθοδηγεί "
+"μέσω των σημείων μετάβασης αυτής της λίστας."
 
 #: src/routes.c:563
 msgid "Abort your journey"
-msgstr "Annulla il viaggio"
+msgstr "Ακυρώστε το ταξίδι σας"
 
 #: src/settings.c:438 src/settings.c:446
+#, fuzzy
 msgid "EnterYourName"
-msgstr "Inserisci il tuo nome"
+msgstr "Διεπαφή"
 
 #: src/settings.c:449
 msgid "You should change your name in the first field!"
-msgstr "Devi cambiare il tuo nome del primo campo!"
+msgstr ""
 
 #: src/settings.c:711
-#, fuzzy
 msgid "Choose here the unit for the display of distances."
 msgstr ""
-"Qui puoi impostare il font per la visualizzazione di Velocità e Distanza"
 
 #: src/settings.c:729
 msgid "Choose here the unit for the display of altitudes."
@@ -1606,7 +1599,7 @@ msgstr ""
 #: src/settings.c:777
 #, fuzzy
 msgid "Enable Simulation mode"
-msgstr "Modalità simulazione"
+msgstr "Κατάσταση προσομείωσης"
 
 #: src/settings.c:789
 #, fuzzy
@@ -1614,40 +1607,37 @@ msgid ""
 "If activated, the position pointer moves towards the selected target "
 "simulating a moving vehicle"
 msgstr ""
-"Se attivato, il puntatore si sposta sull'obiettivo nella modalità simulazione"
+"Αν ενεργοποιηθεί, ο δείκτης μετακινείται στον προορισμό-στόχο σε κατάσταση "
+"προσομείωσης"
 
 #: src/settings.c:794
-#, fuzzy
 msgid "Maximum CPU load (in %)"
-msgstr "Massimo carico CPU"
+msgstr ""
 
 #: src/settings.c:800
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Select the approx. maximum CPU load.\n"
 "Use 20-30% on notebooks while on battery to save power. This effects the "
 "refresh rate of the map screen."
 msgstr ""
-"Seleziona approssimativamente il massimo carico CPU, utilizza 20-30%% su "
-"notebooks per risparmiare la batteria. Questa impostazione ha effetto sull' "
-"aggiornamento della mappa a video"
 
 #: src/settings.c:822
 msgid "Maps directory"
-msgstr "Directory mappe"
+msgstr "Κατάλογος χαρτών"
 
 #: src/settings.c:823
 #, fuzzy
 msgid "Select Maps Directory"
-msgstr "Directory mappe"
+msgstr "Κατάλογος χαρτών"
 
 #: src/settings.c:829
 msgid ""
 "Path to your map files. In the specified directory also the index file "
 "map_koord.txt must be present."
 msgstr ""
-"Percorso dei files mappe. Nella directory specificata deve essere presente "
-"anche il file map_koord.txt."
+"Το μονοπάτι για τα αρχεία χαρτών. Στον καθορισμένο κατάλγο πρέπει επίσς να "
+"υπάρχει και το αρχείο map_koord.txt ."
 
 #: src/settings.c:850
 msgid "<b>Units</b>"
@@ -1668,7 +1658,7 @@ msgstr ""
 #: src/settings.c:913
 #, fuzzy
 msgid "Show grid"
-msgstr "mostrare griglia geografica"
+msgstr "Εμφάνισε σημείο μετάβασης"
 
 #: src/settings.c:915
 msgid "This will show a grid over the map"
@@ -1676,16 +1666,15 @@ msgstr ""
 
 #: src/settings.c:930
 msgid "Show Shadows"
-msgstr "Mostra ombre"
+msgstr "Εμφάνιση Σκιών"
 
 #: src/settings.c:932
 msgid "Switches shadows on map on or off"
-msgstr "Attiva o disattiva le ombre sulla mappa"
+msgstr "Ενεροποιεί ή απενεργοποιεί τις σκιές στο χάρτη"
 
 #: src/settings.c:947
-#, fuzzy
 msgid "Position Marker"
-msgstr "Modo posizione"
+msgstr ""
 
 #: src/settings.c:958
 msgid "Choose the apperance of your position marker."
@@ -1693,38 +1682,37 @@ msgstr ""
 
 #: src/settings.c:978
 msgid "Automatic"
-msgstr "Automatico"
+msgstr "Αυτόματο"
 
 #: src/settings.c:982
 msgid "On"
-msgstr "On"
+msgstr "Ενεργό"
 
 #: src/settings.c:986
 msgid "Off"
-msgstr "Off"
+msgstr "Κλειστό"
 
 #: src/settings.c:990
 msgid ""
 "Switches automagically to night mode if it is dark outside. Press 'N' key to "
 "turn off nightmode."
 msgstr ""
-"Passa automaticamente alla modalità notturna quando è buio. Premi il tasto "
-"'N' per uscire dalla modalità notturna."
+"Μεταβαίνει αυτόματα σε κατάσταση νυκτός αν είναι νύκτα στην πραγματικότητα. "
+"Πατήστε το κουμπί 'N' για να απενεργοποιήσετε την κατάσταση νυκτός."
 
 #: src/settings.c:993
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
 msgstr ""
-"Attiva la modalità notturna. Premi il tasto 'N' per uscire dalla modalità "
-"notturna."
+"Ενεργοποιεί την κατάσταση νυκτός. Πατήστε το κουμπί 'N'  για να "
+"απενεργοποιήσετε την κατάσταση νυκτός."
 
 #: src/settings.c:996
 msgid "Switches night mode off"
-msgstr "Disattiva la modalità notturna"
+msgstr "Απενεργοποιεί την κατάσταση νυκτός"
 
 #: src/settings.c:1031
-#, fuzzy
 msgid "Choose Track color"
-msgstr "Setta display grande"
+msgstr ""
 
 #: src/settings.c:1035
 msgid "Set here the color of the drawn track"
@@ -1737,7 +1725,7 @@ msgstr ""
 #: src/settings.c:1048
 #, fuzzy
 msgid "Route"
-msgstr "Edita percorso"
+msgstr "Επεξεργασία δρομολογίου"
 
 #: src/settings.c:1053
 msgid "Choose Route color"
@@ -1752,8 +1740,9 @@ msgid "Set here the line style of the drawn route"
 msgstr ""
 
 #: src/settings.c:1070 src/settings.c:1882
+#, fuzzy
 msgid "Friends"
-msgstr "Friends"
+msgstr "Τέλος"
 
 #: src/settings.c:1075
 msgid "Choose Friends color"
@@ -1772,28 +1761,30 @@ msgid "Set here the font of the drawn friends"
 msgstr ""
 
 #: src/settings.c:1098
-#, fuzzy
 msgid "Choose Waypoints label color"
-msgstr "Setta display grande"
+msgstr ""
 
 #: src/settings.c:1102
 #, fuzzy
 msgid "Set here the text color of the waypoint labels"
-msgstr "Qui puoi impostare i font delle etichette waypoint"
+msgstr ""
+"Διαγράψτε το επιλεγμένο σημείο μετάβασης από τη λίστα των σημείων μετάβασης"
 
 #: src/settings.c:1107
 #, fuzzy
 msgid "Choose font for waypoint labels"
-msgstr "Qui puoi impostare i font delle etichette waypoint"
+msgstr ""
+"Διαγράψτε το επιλεγμένο σημείο μετάβασης από τη λίστα των σημείων μετάβασης"
 
 #: src/settings.c:1113
 #, fuzzy
 msgid "Set here the font of waypoint labels"
-msgstr "Qui puoi impostare i font delle etichette waypoint"
+msgstr ""
+"Διαγράψτε το επιλεγμένο σημείο μετάβασης από τη λίστα των σημείων μετάβασης"
 
 #: src/settings.c:1116
 msgid "Big display"
-msgstr "Schermo grande"
+msgstr ""
 
 #: src/settings.c:1121
 msgid "Choose color for big display"
@@ -1816,9 +1807,8 @@ msgid "<b>Fonts, Colors, Styles</b>"
 msgstr ""
 
 #: src/settings.c:1188
-#, fuzzy
 msgid "<b>Nightmode</b>"
-msgstr "Modalità notturna on"
+msgstr ""
 
 #: src/settings.c:1199
 msgid "<b>Map Features</b>"
@@ -1847,7 +1837,7 @@ msgstr ""
 #: src/settings.c:1247
 #, fuzzy
 msgid "Boat"
-msgstr "Bat."
+msgstr "Μπαταρία"
 
 #: src/settings.c:1249
 msgid "Airplane"
@@ -1866,7 +1856,7 @@ msgstr ""
 #: src/settings.c:1288
 #, fuzzy
 msgid "GPS Status"
-msgstr "Stato"
+msgstr "Κατάσταση"
 
 #: src/settings.c:1330
 msgid "Switch on for speech output of the direction to the target"
@@ -1895,17 +1885,17 @@ msgstr ""
 #: src/settings.c:1361
 #, fuzzy
 msgid "Navigation"
-msgstr "Modalità simulazione"
+msgstr "Κατάσταση προσομείωσης"
 
 #: src/settings.c:1389 src/settings.c:1575
 #, fuzzy
 msgid "Waypoints File"
-msgstr "Files waypoint"
+msgstr "Σημεία μετάβασης"
 
 #: src/settings.c:1391 src/settings.c:1577
 #, fuzzy
 msgid "Select Waypoints File"
-msgstr "Mostra i waypoints sulla mappa"
+msgstr "Επιλέξτε αρχείο χάρτη"
 
 #: src/settings.c:1399 src/settings.c:1585
 msgid ""
@@ -1916,7 +1906,7 @@ msgstr ""
 #: src/settings.c:1415
 #, fuzzy
 msgid "Default search radius"
-msgstr "Server mappe predefinito"
+msgstr "Προκαθορισμένος εξυπηρέτης χαρτών"
 
 #: src/settings.c:1425
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
@@ -1941,7 +1931,7 @@ msgstr ""
 #: src/settings.c:1441
 #, fuzzy
 msgid "entries"
-msgstr "Sistema metrico"
+msgstr "Μετρικό"
 
 #: src/settings.c:1462
 msgid "POI-Theme"
@@ -1954,12 +1944,12 @@ msgstr ""
 #: src/settings.c:1492
 #, fuzzy
 msgid "Edit Filter"
-msgstr "Edita percorso"
+msgstr "Επεξεργασία δρομολογίου"
 
 #: src/settings.c:1515
 #, fuzzy
 msgid "<b>Waypoints</b>"
-msgstr "Waypoints"
+msgstr "Σημεία μετάβασης"
 
 #: src/settings.c:1523
 msgid "<b>POI Search Settings</b>"
@@ -1979,8 +1969,8 @@ msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
 msgstr ""
-"Non utilizzare più di\n"
-"100 files waypoint!(way*.txt)"
+"Μην χρησιμοποιείτε περισσότερα από\n"
+"100 αρχεία σημείων μετάβασης (way*.txt)!"
 
 #: src/settings.c:1669
 msgid "<b>File Dialog Selection</b>"
@@ -1991,65 +1981,56 @@ msgid "<b>Quick Select File</b>"
 msgstr ""
 
 #: src/settings.c:1716
-#, fuzzy
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
 msgstr ""
-"Se abiliti la modalità friendserver,\n"
-"<span color=\"red\">tutti</span> quelli che utilizzeranno lo \n"
-"stesso server, potranno vedere la tua posizione!"
 
 #: src/settings.c:1721
 msgid "Your name"
-msgstr "Tuo nome"
+msgstr ""
 
 #: src/settings.c:1730
 #, fuzzy
 msgid "Enable friends service"
-msgstr "Utilizza friends server"
+msgstr ""
+"\n"
+"ευρέθη εξυπηρετητής kismet\n"
 
 #: src/settings.c:1740
 #, fuzzy
 msgid "Show only positions newer than"
-msgstr "Mostra posizione più nuova di"
+msgstr "Εμφάνισε τα σημεία μετάβασης στο χάρτη"
 
 #: src/settings.c:1744
+#, fuzzy
 msgid "Days"
-msgstr "Giorni"
+msgstr "Ημέρα"
 
 #: src/settings.c:1746
 msgid "Hours"
-msgstr "Ore"
+msgstr ""
 
 #: src/settings.c:1748
+#, fuzzy
 msgid "Minutes"
-msgstr "Minuti"
+msgstr "Μίλια"
 
 #: src/settings.c:1794
-#, fuzzy
 msgid ""
 "Enable/disable use of friends service. You have to enter a username, don't "
 "use the default name!"
 msgstr ""
-"Ebilita/disabilita l'utilizzo del friends server. Devi inserire un nome "
-"utente, non utilizzare il nome di default!"
 
 #: src/settings.c:1798
-#, fuzzy
 msgid "Set here the name which will be shown near your position."
 msgstr ""
-"Imposta qui il nome che vuoi che sia mostrato accanto al tuo veicolo. Puoi "
-"utilizzare gli spazi qui!"
 
 #: src/settings.c:1801
-#, fuzzy
 msgid ""
 "Set here the max. age of friends positions that are displayed. Older "
 "positions are not shown."
 msgstr ""
-"Imposta il tempo limite nel quale la posizione viene mostrata. Le posizioni "
-"vecchie non sono mostrate"
 
 #: src/settings.c:1820
 msgid "IP"
@@ -2057,29 +2038,22 @@ msgstr ""
 
 #: src/settings.c:1828
 msgid "Lookup"
-msgstr "Lookup"
+msgstr ""
 
 #: src/settings.c:1844
-#, fuzzy
 msgid ""
 "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the "
 "friends server to use, then press the \"Lookup\" button."
 msgstr ""
-"Setta qui il full qualified name (es: www.gpsdrive.cc) del tuo friends "
-"server, poi premi il pulsante \"Lookup\"!"
 
 #: src/settings.c:1848
-#, fuzzy
 msgid "Press this button to resolve the friends server name."
 msgstr ""
-"Devi premere il pulsante \"Lookup\" per risolvere il nome del friends server!"
 
 #: src/settings.c:1851
 msgid ""
 "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr ""
-"Imposta qui l'indirizzo IP (es: 127.0.0.1) se non hai impostato l'hostname "
-"sopra"
 
 #: src/settings.c:1859
 msgid "<b>General</b>"
@@ -2090,31 +2064,33 @@ msgid "<b>Server</b>"
 msgstr ""
 
 #: src/settings.c:1932
+#, fuzzy
 msgid "GpsDrive Settings"
-msgstr "Impostazioni GpsDrive"
+msgstr "Βοήθεια GpsDrive"
 
 #: src/settings.c:2225
 #, fuzzy
 msgid "POI selection criterias"
-msgstr "SQL criteri di selezione"
+msgstr "Κριτήρια επιλογής SQL"
 
 #: src/settings.c:2251
 msgid "Dist. limit[km] "
-msgstr "Dist. limite[km]"
+msgstr "Όριο απόστασης[km] "
 
 #: src/settings.c:2255
 #, fuzzy
 msgid "If enabled, show POIs only within this distance"
-msgstr "Se abilitato, mostra i waypoint solo in questa distanza"
+msgstr ""
+"Αν ενεργοποιηθεί, εμφανίζει τα σημεία μετάβασης μόνο σε αυτή την απόσταση"
 
 #: src/settings.c:2272
 msgid "Enable/disable distance selection"
-msgstr "Abilita/disabilita selezione distanza"
+msgstr "Ενεργοποιή/απενεργοποιεί την επιλογή απόστασης"
 
 #: src/settings.c:2279
 #, fuzzy
 msgid "Show no_ssid "
-msgstr "Mostra _WP"
+msgstr "Εμφάνισε σημείο μετάβασης"
 
 #: src/settings.c:2292
 msgid ""
@@ -2124,30 +2100,30 @@ msgstr ""
 
 #: src/settings.c:2299
 msgid "Selection mode"
-msgstr "Selezione modalità"
+msgstr "Κατάσταση επιλογής"
 
 #: src/settings.c:2301
 msgid "include"
-msgstr "includi"
+msgstr "Συμπεριλαμβανομένων"
 
 #: src/settings.c:2304
 msgid "exclude"
-msgstr "escludi"
+msgstr "Αποκλειωμένων"
 
 #: src/settings.c:2307
 #, fuzzy
 msgid "Show only POIs where the type field contains one of the selected words"
 msgstr ""
-"Mostra solo waypoint dove il campo del tipo contiene una delle parole "
-"selezionate"
+"Εμφανίζει μόνο τα σημεία μετάβασης όπου ο τύπος πεδίου περιέχει μια από τις "
+"επιλεγμένες λέξεις"
 
 #: src/settings.c:2310
 #, fuzzy
 msgid ""
 "Show only POIs where the type field doesn't contain any the selected words"
 msgstr ""
-"Mostra solo waypoint dove il campo del tipo non contiene una delle parole "
-"selezionate"
+"Εμφανίζει μόνο τα σημεία μετάβασης όπου ο τύπος πεδίου δεν περιέχει μια από "
+"τις επιλεγμένες λέξεις"
 
 #: src/splash.c:144
 msgid ""
@@ -2176,7 +2152,6 @@ msgid ""
 msgstr ""
 
 #: src/splash.c:162
-#, fuzzy
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -2188,81 +2163,84 @@ msgid ""
 "Suggestions welcome.\n"
 "\n"
 msgstr ""
-" nel menu. Un rettangolo blu mostra questa moalità, puoi settare questo "
-"cursore cliccando sulla mappa. Se clicchi sul bordo della mappa (il 20% "
-"esterno) la mappa passerà all'area successiva."
 
 #: src/splash.c:172
 #, fuzzy
 msgid "GpsDrive v"
-msgstr "Aiuto GpsDrive"
+msgstr "Βοήθεια GpsDrive"
 
 #: src/splash.c:178
-#, fuzzy
 msgid ""
 "\n"
 "\n"
 "You find new versions on http://www.gpsdrive.de\n"
-msgstr " http://www.gpsdrive.cc "
+msgstr ""
 
 #: src/splash.c:182
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
-msgstr "Avvertenza: Non usare per la navigazione. \n"
+msgstr ""
+"Αποποίηση ευθύνης: Παρακαλώ να μην χρησιμοποιηθεί για πλοήγηση. \n"
+"\n"
 
 #: src/splash.c:187
 #, fuzzy
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
-msgstr "Guarda il manpage per dettagli del programma\n"
+msgstr ""
+"Κοιτάξτε τη σελίδα οδηγιών (manpage) για λεπτομέρειες σχετικά με το "
+"πρόγραμμα\n"
+"\n"
+"\n"
+"\n"
 
 #: src/splash.c:192
 msgid "Mouse control (clicking on the map):\n"
-msgstr "Controllo mouse (cliccando sulla mappa):\n"
+msgstr "Έλεγχος ποντικιού (κλικ πάνω στον χάρτη):\n"
 
 #: src/splash.c:200
 msgid "Short cuts:\n"
-msgstr "Scorciatoie:\n"
+msgstr "Συντομεύσεις:\n"
 
 #: src/splash.c:207
 msgid "The other key shortcuts are marked as "
-msgstr "Gli altri shortcuts sono marcati come "
+msgstr ""
 
 #: src/splash.c:210
 msgid "underlined"
-msgstr "sottolineato"
+msgstr ""
 
 #: src/splash.c:213
 msgid " letters in the button text.\n"
 msgstr ""
 
 #: src/splash.c:216
+#, fuzzy
 msgid "Have a lot of fun!"
-msgstr "Buon divertimento!"
+msgstr ""
+"Καλή διασκέδαση!\n"
+"\n"
 
 #: src/splash.c:337
 msgid "From:"
-msgstr "Da:"
+msgstr ""
 
 #: src/splash.c:408
 #, fuzzy, c-format
 msgid ""
 "You received a message from\n"
 "the friends server (%s)\n"
-msgstr ""
-"Hai ricevuto un messaggio dal friends server da:\n"
-"\n"
+msgstr "Ενεργοποιή/απενεργοποιεί την επιλογή απόστασης"
 
 #: src/splash.c:420
 #, fuzzy
 msgid "You received a message through the friends server from:\n"
-msgstr ""
-"Hai ricevuto un messaggio dal friends server da:\n"
-"\n"
+msgstr "Ενεργοποιή/απενεργοποιεί την επιλογή απόστασης"
 
 #: src/splash.c:431
+#, fuzzy
 msgid "Message text:\n"
-msgstr " Messaggio di testo:\n"
+msgstr "  Μύνημα  "
 
 #: src/splash.c:556
 #, c-format
@@ -2273,11 +2251,6 @@ msgid ""
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Attenzione: non posso aprire l'immagine di splash\n"
-"Installa il programma come utente root, con:\n"
-"make install\n"
-"\n"
 
 #: src/splash.c:624
 msgid "translator-credits"
@@ -2302,7 +2275,7 @@ msgid ""
 msgstr ""
 
 #: src/splash.c:636
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "\n"
 "Warning: unable to open logo picture\n"
@@ -2310,11 +2283,6 @@ msgid ""
 "make install\n"
 "\n"
 msgstr ""
-"\n"
-"Attenzione: non posso aprire l'immagine di splash\n"
-"Installa il programma come utente root, con:\n"
-"make install\n"
-"\n"
 
 #: src/waypoint.c:671
 msgid "Add Point of Interest"
@@ -2335,7 +2303,7 @@ msgstr ""
 #: src/waypoint.c:747
 #, fuzzy
 msgid " Save waypoint in: "
-msgstr " Nome waypoint: "
+msgstr " Όνομα σημείου μετάβασης: "
 
 #: src/waypoint.c:750
 msgid "Database"
@@ -2345,842 +2313,534 @@ msgstr ""
 msgid "way.txt File"
 msgstr ""
 
+#, fuzzy
 #~ msgid "unused"
-#~ msgstr "Non utilizzato"
-
-#~ msgid "Number of waypoints selected from SQL server"
-#~ msgstr "Numero di waypoints selezionati dal server SQL"
-
-#~ msgid "Number of selected waypoints, which are in range"
-#~ msgstr "Numero di waypoints selezionati che sono nel range"
-
-#~ msgid "Range for waypoint selection in kilometers"
-#~ msgstr "Range per la selezione di waypoint in kilometri"
+#~ msgstr "Δύση"
 
 #~ msgid "  Message  "
-#~ msgstr "  Messaggio  "
-
-#~ msgid "Distance to HomeBase: %.1fkm, max. allowed: %.1fkm\n"
-#~ msgstr "Distanza a HomeBase: %.1fkm, max. consentito: %.1fkm\n"
+#~ msgstr "  Μύνημα  "
 
 #~ msgid "GpsDrive Control"
-#~ msgstr "Controllo GpsDrive"
-
-#~ msgid "HomeBase"
-#~ msgstr "HomeBase"
-
-#~ msgid "Setting WP label font"
-#~ msgstr "Setta il font per le etichette WP"
-
-#~ msgid "Setting big display font"
-#~ msgstr "Setta i font grandi"
-
-#~ msgid "Setting big display color"
-#~ msgstr "Setta display grande"
+#~ msgstr "Έλεγχος GpsDrive"
 
 #~ msgid "Waypoint files to use"
-#~ msgstr "File waypoint da utilizzare"
+#~ msgstr "Αρχεία σημείων μετάβασης που θα χρησιμοποιηθούν"
 
 #~ msgid "Settings"
-#~ msgstr "Settaggi"
+#~ msgstr "Ρυθμίσεις"
 
 #~ msgid "Misc settings"
-#~ msgstr "Settaggi vari"
-
-#~ msgid "Etched frames"
-#~ msgstr "Etched frames"
+#~ msgstr "Άλλες ρυθμίσεις"
 
 #~ msgid "Simulation: Follow target"
-#~ msgstr "Simulazione: Segui obiettivo"
+#~ msgstr "Προσομείωση: Ακολούθηση προορισμού-στόχου"
 
 #~ msgid "GPS settings"
-#~ msgstr "Settaggi GPS"
+#~ msgstr "Ρυθμίσεις GPS"
 
 #~ msgid "Test for GARMIN"
-#~ msgstr "Test per GARMIN"
+#~ msgstr "Έλεγχος για GARMIN"
 
 #~ msgid "Use DGPS-IP"
-#~ msgstr "Usa DGPS-IP"
+#~ msgstr "Χρησιμοποίηση DGPS-IP"
 
 #~ msgid "GPS is Earthmate"
-#~ msgstr "Il GPS è un Earthmate"
+#~ msgstr "Το GPS είναι Earthmate"
 
 #~ msgid "Interface"
-#~ msgstr "Interfaccia"
+#~ msgstr "Διεπαφή"
 
 #~ msgid "Units"
-#~ msgstr "Unità"
+#~ msgstr "Μονάδες"
 
 #~ msgid "Miles"
-#~ msgstr "Miglia"
+#~ msgstr "Μίλια"
 
 #~ msgid "Night light mode"
-#~ msgstr "Modalità luce notturna"
+#~ msgstr "Κατάσταση νυχτερινού φωτισμού"
 
 #, fuzzy
 #~ msgid "Speech output settings"
-#~ msgstr "Settaggi aereonautici"
+#~ msgstr "Αεροναυτικές ρυθμίσεις"
 
 #~ msgid "Switch units to statute miles"
-#~ msgstr "Utilizza miglia"
+#~ msgstr "Μετάβαση σε μονάδες κανονικών μιλίων"
 
 #~ msgid "Switch units to nautical miles"
-#~ msgstr "Utilizza miglia nautiche"
+#~ msgstr "Μετάβαση σε μονάδες ναυτικών μιλίων"
 
 #~ msgid "Switch units to metric system (Kilometers)"
-#~ msgstr "Utilizza il sistema metrico (Kilometri)"
+#~ msgstr "Μετάβαση σε μονάδες μετρικού συστήματος (Χιλιόμετρα)"
 
 #, fuzzy
 #~ msgid ""
 #~ "If selected display latitude and longitude in degree, minutes and seconds "
 #~ "notation"
 #~ msgstr ""
-#~ "Se selezionato, mostra lalitudine e longitudine in gradi decimali "
-#~ "altrimenti nella notazione gradi, minuti, secondi"
+#~ "Αν επιλεγεί, εμφανίζεται το γεωγραφικό πλάτος και μήκος σε δεκαδικούς "
+#~ "βαθμούς, αλλιώς εμφανίζονται τα λεπτά και τα δευτερόλεπτα"
 
 #, fuzzy
 #~ msgid ""
 #~ "If selected display latitude and longitude in degrees and decimal minutes "
 #~ "notation"
 #~ msgstr ""
-#~ "Se selezionato, mostra lalitudine e longitudine in gradi decimali "
-#~ "altrimenti nella notazione gradi, minuti, secondi"
+#~ "Αν επιλεγεί, εμφανίζεται το γεωγραφικό πλάτος και μήκος σε δεκαδικούς "
+#~ "βαθμούς, αλλιώς εμφανίζονται τα λεπτά και τα δευτερόλεπτα"
 
 #, fuzzy
 #~ msgid ""
 #~ "If selected display latitude and longitude in decimal degrees notation"
 #~ msgstr ""
-#~ "Se selezionato, mostra lalitudine e longitudine in gradi decimali "
-#~ "altrimenti nella notazione gradi, minuti, secondi"
-
-#~ msgid "Switches between different type of frame ornaments"
-#~ msgstr "Passa fra differenti tipi di ornamenti della cornice"
+#~ "Αν επιλεγεί, εμφανίζεται το γεωγραφικό πλάτος και μήκος σε δεκαδικούς "
+#~ "βαθμούς, αλλιώς εμφανίζονται τα λεπτά και τα δευτερόλεπτα"
 
 #~ msgid ""
 #~ "If selected, gpsdrive try to use GARMIN mode if possible. Unselect if you "
 #~ "only have a NMEA device."
 #~ msgstr ""
-#~ "Se selezionato, gpsdrive tenta di utilizzare la modalità GARMIN se "
-#~ "possibile. Non selezionarlo se hai una unità NMEA."
+#~ "Αν επιλεγεί, το gpsdrive προσπαθεί να χρησιμοποιήσει την κατάσταση GARMIN "
+#~ "αν είναι δυνατόν. Απεπιλέξτε το αν έχετε απλά μια συσκευή ."
 
 #~ msgid ""
 #~ "If selected, gpsdrive try to use differential GPS over IP. You must have "
 #~ "an internet connection and a DGPS capable GPS receiver. Works only in "
 #~ "NMEA mode!"
 #~ msgstr ""
-#~ "Se selezionato, gpsdrive tenta di utilizzare il GPS differenziale over "
-#~ "IP. Devi avere una connessione ad internet e un ricevitore GPS DGPS. "
-#~ "Funziona solo in modalità NMEA!"
+#~ "Αν επιλεγεί, το gpsdrive προσπαθεί να χρησιμοποιήσει διαφορικό GPS πάνω "
+#~ "από το IP. Πρέπει να έχετε μια σύνδεση διαδικτύου και ένα GPS δέκτη ικανό "
+#~ "για DGPS. Δουλεύει μόνο σε κατάσταση NMEA!"
 
 #~ msgid ""
 #~ "Select this if you have a DeLorme Earthmate GPS receiver. The StartGPSD "
 #~ "button will provide gpsd with the needed additional parameters"
 #~ msgstr ""
-#~ "Seleziona questo se hai un GPS DeLorme Earthmate. Il pulsante Avvia "
-#~ "GPSDavvierà gpsd con i parametri necessari"
+#~ "Επιλέξτε το αν έχετε δέκτη GPS της DeLorme Earthmate. Το κουμπί StartGPSD "
+#~ "θα προμηθεύσει το gpsd με τις επιπλέον παραμέτρους"
 
 #~ msgid "Specify the serial interface where the GPS is connected"
-#~ msgstr "Specifica la porta seriale a cui è collegato il GPS"
+#~ msgstr "Καθορίζει τη σειριακή διεπαφή (RS232) όπου το GPS είναι συνδεδεμένο"
 
 #~ msgid "Geo information"
-#~ msgstr "Informazioni geografiche"
+#~ msgstr "Γεωλογικές πληροφορίες"
 
 #~ msgid "Geo info"
-#~ msgstr "Geo info"
+#~ msgstr "Γεωλογικές πληροφορίες"
 
 #~ msgid "Sunrise"
-#~ msgstr "Alba"
+#~ msgstr "Ανατολή"
 
 #~ msgid "Sunset"
-#~ msgstr "Tramonto"
+#~ msgstr "Δύση"
 
 #~ msgid "Standard"
-#~ msgstr "Standard"
+#~ msgstr "Τυποποιημένο"
 
 #~ msgid "Transit"
-#~ msgstr "Transito"
-
-#~ msgid "GPS-Time"
-#~ msgstr "Tempo-GPS"
+#~ msgstr "Μεταβατικό / Transin"
 
 #~ msgid "Astro."
-#~ msgstr "Astro."
+#~ msgstr "Αστρ."
 
 #~ msgid "Naut."
-#~ msgstr "Naut."
+#~ msgstr "Ναυτ."
 
 #~ msgid "Civil"
-#~ msgstr "Civile"
+#~ msgstr "Αστικός (Civil)"
 
 #~ msgid "Timezone"
-#~ msgstr "Timezone"
+#~ msgstr "Ζώνη ώρας"
 
 #~ msgid "Night"
-#~ msgstr "Notte"
+#~ msgstr "Νύχτα"
 
 #~ msgid "Day"
-#~ msgstr "Giorno"
+#~ msgstr "Ημέρα"
 
 #~ msgid "Unit:"
-#~ msgstr "Unità:"
+#~ msgstr "Μονάδα:"
 
 #~ msgid "miles"
-#~ msgstr "miglia"
+#~ msgstr "μίλια"
 
 #~ msgid "nautic miles/knots"
-#~ msgstr "miglia nautiche/nodi"
+#~ msgstr "ναυτικά μίλια/κόμβοι"
 
 #~ msgid "kilometers"
-#~ msgstr "kilometri"
+#~ msgstr "χιλιόμετρα"
 
 #~ msgid "Trip information"
-#~ msgstr "Informazioni percorso"
+#~ msgstr "Πληροφορίες ταξιδιού"
 
 #~ msgid "Trip info"
-#~ msgstr "Info percorso"
+#~ msgstr "Πληροφ. Ταξιδιού"
 
 #~ msgid "Odometer"
-#~ msgstr "Odometro"
+#~ msgstr "Οδόμετρο"
 
 #~ msgid "Total time"
-#~ msgstr "Tempo totale"
+#~ msgstr "Συνολικός χρόνος"
 
 #~ msgid "Av. speed"
-#~ msgstr "Vel. media"
+#~ msgstr "Μεση ταχύτητα"
 
 #~ msgid "Max. speed"
-#~ msgstr "Vel. max"
+#~ msgstr "Μέγιστη ταχύτητα"
 
-#~ msgid "Reset"
-#~ msgstr "Reset"
-
-#~ msgid "Resets the trip values to zero"
-#~ msgstr "Resetta l'odometro a zero"
-
+#, fuzzy
 #~ msgid "Friends server setup"
-#~ msgstr "Settaggi friends server"
+#~ msgstr ""
+#~ "\n"
+#~ "ευρέθη εξυπηρετητής kismet\n"
 
-#~ msgid "Server name"
-#~ msgstr "Nome server"
-
+#, fuzzy
 #~ msgid "Friends server IP"
-#~ msgstr "IP del friends server"
+#~ msgstr ""
+#~ "\n"
+#~ "ευρέθη εξυπηρετητής kismet\n"
 
 #~ msgid "Map file name"
-#~ msgstr "Nome file"
+#~ msgstr "Όνομα αρχείου χάρτη"
 
 #, fuzzy
 #~ msgid "/Misc. Menu/Waypoint Manager"
-#~ msgstr "/ Messaggi"
+#~ msgstr "Επιλέξτε αρχείο διαδρομής"
 
+#, fuzzy
 #~ msgid "Use SQ_L"
-#~ msgstr "Usa SQ_L"
+#~ msgstr "Χρησιμοποίηση SQL"
 
 #, fuzzy
 #~ msgid "draw _Track"
-#~ msgstr "Mostra _traccia"
+#~ msgstr "Δείξε Track"
 
+#, fuzzy
 #~ msgid "Show _Track"
-#~ msgstr "Mostra _traccia"
+#~ msgstr "Δείξε Track"
 
 #~ msgid "Save track"
-#~ msgstr "Salva traccia"
+#~ msgstr "Αποθήκευση track"
 
 #, fuzzy
 #~ msgid "/Misc. Menu"
-#~ msgstr "/ Messaggi"
+#~ msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #~ msgid "Use SQL server for waypoints"
-#~ msgstr "Usa SQL server per i waypoints"
+#~ msgstr "Χρησιμοποίηση εξυπηρετητή SQL για τα σημεία μετάβασης"
 
 #~ msgid "Settings for GpsDrive"
-#~ msgstr "Impostazioni GpsDrive"
+#~ msgstr "Ρυθμίσεις για το GpsDrive"
 
 #~ msgid "Select here a destination from the waypoint list"
-#~ msgstr "Seleziona una destinazione dalla lista dei waypoint"
+#~ msgstr "Επιλέξτε εδώ προορισμό από τη λίστα των σημείων μετάβασης"
 
 #, fuzzy
 #~ msgid "Font and color settings"
-#~ msgstr "Settaggi font"
-
-#~ msgid "WP Label"
-#~ msgstr "Etichetta WP"
-
-#~ msgid "Display color"
-#~ msgstr "Schermo a colori"
+#~ msgstr "Ρυθμίσεις GPS"
 
 #, fuzzy
 #~ msgid ""
 #~ "Set the german expedia server(expedia.de) as default download server. Use "
 #~ "this if you are in Europe"
-#~ msgstr "Imposta Expedia come server predefinito"
+#~ msgstr "Ορίζει τον Expedia σαν τον καθορισμένο εξυπηρέτη μεταφόρτωσης"
 
 #~ msgid "Set Expedia as default download server"
-#~ msgstr "Imposta Expedia come server predefinito"
+#~ msgstr "Ορίζει τον Expedia σαν τον καθορισμένο εξυπηρέτη μεταφόρτωσης"
 
 #, fuzzy
 #~ msgid ""
 #~ "Here you can set the color for the big display for speed, distance and "
 #~ "altitude"
 #~ msgstr ""
-#~ "Qui puoi impostare il font per la visualizzazione di Velocità e Distanza"
-
-#~ msgid "Please donate to GpsDrive"
-#~ msgstr "Per favore, fai una donazione a GpsDrive"
+#~ "Διαγράψτε το επιλεγμένο σημείο μετάβασης από τη λίστα των σημείων "
+#~ "μετάβασης"
 
 #, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "GpsDrive is a project with no comercial background. \n"
-#~ "\n"
-#~ "It would be nice if you can give a donation to help me pay the costs for "
-#~ "hardware and the webserver.\n"
-#~ "\n"
-#~ "To do so, just go to"
-#~ msgstr ""
-#~ "Sarebbe bello se tu potessi fare una donazione per aiutarmi a sostenere i "
-#~ "costi per l'hardware e per il mantenimento del webserver.\n"
-#~ "\n"
-
-#~ msgid " http://www.gpsdrive.cc "
-#~ msgstr " http://www.gpsdrive.cc "
-
-#, fuzzy
-#~ msgid ""
-#~ "and click on the PayPal button.\n"
-#~ "\n"
-#~ "Thank you very much for your donation!\n"
-#~ "\n"
-#~ "This message is only displayed once when you start an new version of "
-#~ "GpsDrive.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Questo messaggio è visualizzato solamente quando avvii una versione nuova "
-#~ "di GpsDrive.\n"
-#~ "\n"
-
 #~ msgid "About GpsDrive donation"
-#~ msgstr "Informazioni sulla donazione a GpsDrive"
+#~ msgstr "Έλεγχος GpsDrive"
 
+#, fuzzy
 #~ msgid "About GpsDrive"
-#~ msgstr " Informazioni su GpsDrive"
+#~ msgstr "Έλεγχος GpsDrive"
 
 #~ msgid "Add waypoint name"
-#~ msgstr "Aggiungi un waypoint"
+#~ msgstr "Προσθήκη ονόματος σημείου μετάβασης"
 
 #~ msgid " Waypoint type: "
-#~ msgstr " Tipo di waypoint: "
+#~ msgstr " Τύπος σημείου μετάβασης: "
 
 #~ msgid "Browse waypoint"
-#~ msgstr "Mostra i waypoint"
+#~ msgstr "Αναζήτηση σημείου μετάβασης"
 
 #~ msgid "%d(%d) rows read in %.2f seconds\n"
-#~ msgstr "%d(%d) righe lette in %.2f secondi\n"
+#~ msgstr "%d(%d) γραμμές που διαβάστηκαν σε %.2f δευτερόλεπτα\n"
 
 #~ msgid "SQL"
 #~ msgstr "SQL"
 
 #, fuzzy
 #~ msgid "/_Misc. Menu/_Start gpsd"
-#~ msgstr "/ Messaggi"
+#~ msgstr "Επιλέξτε αρχείο διαδρομής"
 
 #~ msgid " Friendsicon could not be loaded:"
-#~ msgstr " Friendsicon non può essere caricato:"
+#~ msgstr " Το εικονίδιο του φίλου δεν μπορεί να φορτωθεί:"
 
 #, fuzzy
 #~ msgid "/Misc. Menu/Maps/Map Manager"
-#~ msgstr "/ Messaggi"
+#~ msgstr "Επιλέξτε αρχείο διαδρομής"
 
+#, fuzzy
 #~ msgid "_Download map"
-#~ msgstr "_Scarica mappa"
+#~ msgstr "Μεταφόρτωση χάρτη"
 
 #~ msgid "Download map from Internet"
-#~ msgstr "Scarica mappa da Internet"
+#~ msgstr "Μεταφόρτωση χάρτη από το Internet"
 
 #~ msgid "Leave the program"
-#~ msgstr "Esci dal programma"
+#~ msgstr "Έξοδος από το πρόγραμμα"
 
 #~ msgid "Opens the help window"
-#~ msgstr "Apri la finestra di aiuto"
+#~ msgstr "Ανοίγει το αρχείο βοήθειας"
 
 #~ msgid "-D    turn on lot of debug info\n"
-#~ msgstr "-D    attiva molte info di debug\n"
+#~ msgstr "-D    ενεργοποιεί πολλές πληροφορίες αποσφαλμάτωσης\n"
 
 #~ msgid "Set Mapblast as default download server"
-#~ msgstr "Imposta Mapblast come server predefinito"
+#~ msgstr "Ορίζει τον Mapblast σαν τον καθορισμένο εξυπηρέτη μεταφόρτωσης"
 
 #~ msgid "Enable?"
-#~ msgstr "Abilito?"
+#~ msgstr "Ενεργοποίηση;"
 
 #~ msgid "Sat level"
-#~ msgstr "Liv. Sat"
+#~ msgstr "Επίπεδο δορυφόρου"
 
 #, fuzzy
 #~ msgid "Sim.mode"
-#~ msgstr "Modalità simulazione"
+#~ msgstr "Κατάσταση προσομείωσης"
 
 #~ msgid "Yes, please start gpsd"
-#~ msgstr "Si, avvia gpsd"
+#~ msgstr "Ναι, παρακαλώ να ξεκινήσει το gpsd"
 
 #~ msgid "No, start simulation"
-#~ msgstr "No, avvia la simulazione"
+#~ msgstr "Όχι, εκκίνηση προσομείωσης"
 
 #~ msgid ""
 #~ "Neither gpsd nor GARMIN device detected!\n"
 #~ "Should I start gpsd (NMEA mode) for you?"
 #~ msgstr ""
-#~ "Non ho rilevato nessuna periferica GARMIN o gpsd!\n"
-#~ "Devo avviare gpsd? (modalità NMEA)"
+#~ "Δεν ανιχνεύθηκε συσκευή gpsd ή GARMIN!\n"
+#~ "Να εκκινήσω το gpsd (σε κατάσταση NMEA) ;"
 
 #~ msgid "-n X  Select display name on friends server, X is i.e. Fritz\n"
-#~ msgstr "-n X  Seleziona un nome sul friends server, es: Fritz\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "This parameter is obsolet, use settings menu\n"
 #~ msgstr ""
-#~ "\n"
-#~ "Questo parametro è obsoleto, usa il menu settaggi\n"
+#~ "-n X  Επιλέγει το όνομα με το οποίου θα εμφανίζεται ο εξυπηρετητής του "
+#~ "φίλου σας, όπου X είναι το όνομα του εξυπηρετητή π.χ. Fritz\n"
 
 #~ msgid "UTC "
 #~ msgstr "UTC "
 
 #, fuzzy
 #~ msgid "Your friendsserver: %s"
-#~ msgstr "Utilizza friends server"
+#~ msgstr ""
+#~ "\n"
+#~ "ευρέθη εξυπηρετητής kismet\n"
 
 #~ msgid "Cancel"
-#~ msgstr "Annulla"
+#~ msgstr "Άκυρο"
 
 #~ msgid "Import"
-#~ msgstr "Importa"
+#~ msgstr "Εισαγωγή"
 
 #~ msgid "Let you import and calibrate your own map"
-#~ msgstr "Importa e calibra la tua mappa"
+#~ msgstr "Σας επιτρέπει να εισάγετε και ρυθμίσετε τον δικό σας χάρτη"
 
 #~ msgid ""
 #~ "Left mouse button         : Set position (usefull in simulation mode)\n"
 #~ msgstr ""
-#~ "Pulsante sinistro mouse   : Setta la posizione (utile in modalità "
-#~ "simulazione)\n"
+#~ "Αριστερό κλικ του ποντικιού         : Ορίζει τη θέση (χρήσιμο σε "
+#~ "κατάσταση προσομείωσης)\n"
 
 #~ msgid "Right mouse button        : Set target directly on the map\n"
 #~ msgstr ""
-#~ "Pulsante destro mouse     : Setta l'obiettivo direttamente sulla mappa\n"
+#~ "Δεξί κλικ του ποντικιού         : Ορίζει τον προορισμό-στόχο απ' ευθείας "
+#~ "στον χάρτη\n"
 
 #~ msgid "Middle mouse button       : Display position again\n"
-#~ msgstr "Pulsante centrale mouse   : Visualizza la posizione\n"
+#~ msgstr "Μεσαίο κλικ του ποντικιού       : Εμφανίζει τη θέση ξανά\n"
 
 #~ msgid "Shift left mouse button   : smaller map\n"
-#~ msgstr "Shift + pulsante mouse sx : mappa più piccola\n"
+#~ msgstr "Shift + αριστερό κλικ του ποντικιού   : μικρότερος χάρτης\n"
 
 #~ msgid "Shift right mouse button  : larger map\n"
-#~ msgstr "Shift + pulsante mouse dx : Mappa più grande\n"
+#~ msgstr "Shift + δεξί κλικ του ποντικιού   : μεγαλύτερος χάρτης\n"
 
 #~ msgid ""
 #~ "Control left mouse button : Set a waypoint (mouse position) on the map\n"
 #~ msgstr ""
-#~ "Ctrl + pulsante mouse sx  : Imposta un waypoint (posizione mouse) sulla "
-#~ "mappa\n"
+#~ "Control + αριστερό κλικ του ποντικιού : Ορίζει ένα σημείο μετάβασης (στη "
+#~ "θέση του δείκτη) στον χάρτη\n"
 
 #~ msgid ""
 #~ "Control right mouse button: Set a waypoint at current position on the "
 #~ "map\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Ctrl + pulsante mouse dx  : Imposta un waypoint alla posizione corrente "
-#~ "sulla mappa\n"
-#~ "\n"
+#~ "Control + δεξί κλικ του ποντικιού : Ορίζει ένα σημείο μετάβασης στην "
+#~ "τρέχουσα θέση στον χάρτη\n"
 
 #~ msgid "j    : switch to next waypoint in route mode\n"
-#~ msgstr "j    : passa al waypoint successivo in modalità waypoint\n"
+#~ msgstr ""
+#~ "j    : μεταβαίνει στο επόμενο σημείο μετάβασης σε κατάσταση διαδρομής\n"
 
+#, fuzzy
 #~ msgid "x    : add waypoint at current position\n"
-#~ msgstr "x    : aggiungi un waypoint alla posizione corrente\n"
+#~ msgstr ""
+#~ "x    : προσθέτει σημείο μετάβασης στην τρέχουσα θέση\n"
+#~ "\n"
 
+#, fuzzy
 #~ msgid ""
 #~ "y    : add waypoint at mouse cursor position\n"
 #~ "\n"
 #~ msgstr ""
-#~ "y   : aggiungi un waypoint alla posizione corrente\n"
+#~ "x    : προσθέτει σημείο μετάβασης στην τρέχουσα θέση\n"
 #~ "\n"
-
-#~ msgid ""
-#~ " letter in the button text. Press the underlined key together with the "
-#~ msgstr " lettera nel pulsante. Premi il tasto sottolineato con il "
-
-#~ msgid "ALT-key"
-#~ msgstr "tasto ALT"
-
-#~ msgid "."
-#~ msgstr "."
-
-#~ msgid "You can move on the map by selecting the "
-#~ msgstr "Puoi muoverti nella mappa selezionando "
 
 #~ msgid ""
 #~ "Suggestions welcome!\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Sono benvenuti i suggerimenti!\n"
+#~ "Προτάσεις δεκτές!\n"
 #~ "\n"
 
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "GpsDrive is a project with no comercial background. \n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "GpsDrive è un progetto senza fini commerciali. \n"
-#~ "\n"
+#, fuzzy
+#~ msgid "/Operations Menu"
+#~ msgstr "Επιλέξτε αρχείο διαδρομής"
 
-#~ msgid "To do so, just go to"
-#~ msgstr "Per farlo, vai su"
+#, fuzzy
+#~ msgid "/ Messages"
+#~ msgstr "  Μύνημα  "
 
-#~ msgid "and click on the"
-#~ msgstr "e clicca su"
-
-#~ msgid " PayPal "
-#~ msgstr " PayPal "
-
-#~ msgid ""
-#~ "button.\n"
-#~ "\n"
-#~ msgstr ".\n"
-
-#~ msgid ""
-#~ "Thank you very much for your donation!\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Grazie mille per la tua donazione!\n"
-#~ "\n"
-
-#~ msgid "/ File"
-#~ msgstr "/ File"
-
-#~ msgid "/ File/Quit"
-#~ msgstr "/ File/Esci"
-
+#, fuzzy
 #~ msgid "/ Help"
-#~ msgstr "/ Aiuto"
+#~ msgstr "Βοήθεια"
 
 #~ msgid "Load and display a previous stored track file"
-#~ msgstr "Carica e visualizza una traccia precedentemente salvata"
-
-#~ msgid "Font3"
-#~ msgstr "Font3"
+#~ msgstr "Φορτώστε και εμφανίστε ένα προηγούμενα αποθηκευμένο αρχείο"
 
 #~ msgid "Distance to "
-#~ msgstr "Distanza a "
+#~ msgstr "Απόσταση μέχρι το "
 
 #, fuzzy
 #~ msgid "Sel:"
-#~ msgstr "Selezionato:"
+#~ msgstr "Επιλέξτε προορισμό"
 
+#, fuzzy
 #~ msgid "Time"
-#~ msgstr "Tempo"
+#~ msgstr "Ζώνη ώρας"
 
 #~ msgid "Friendsicon loaded"
-#~ msgstr "Friendsicon caricato"
+#~ msgstr "Το εικονίδιο του φίλου φορτώθηκε"
 
 #~ msgid "Menu window"
-#~ msgstr "Finestra di menu"
+#~ msgstr "Παράθυρο μενού"
 
 #, fuzzy
 #~ msgid "can't open socket for friendsserver "
-#~ msgstr "non posso aprire un socket per la porta "
+#~ msgstr "δεν μπορεί να ανοιχτεί υποδοχέας για τη θύρα "
 
 #~ msgid "Slow CPU"
-#~ msgstr "CPU lenta"
+#~ msgstr "Αργός επεξεργαστής (CPU)"
 
 #~ msgid ""
 #~ "Select, if your CPU is very slow ( < PII MMX/233MHz). This reduces the "
 #~ "framerate to 1 frame/second."
 #~ msgstr ""
-#~ "Selezionalo se la tua cpu è molto lenta ( < PII MMX/223MHz). Riduce "
-#~ "l'aggiornamento ad 1 al secondo"
+#~ "Επιλέξτε το αν ο επεξεργαστής σας (CPU) είναι πολύ αργος ( < PII "
+#~ "MMX/233MHz). Αυτό μειώνει το λόγο εμφάνισης πλαισίων στην οθόνη σας κατά "
+#~ "1 πλαίσιο/δευτερόλεπτο."
 
 #~ msgid "UTC (GPS)"
 #~ msgstr "UTC (GPS)"
 
 #~ msgid "Ok"
-#~ msgstr "Ok"
+#~ msgstr "Εντάξει"
 
 #~ msgid "Delete WP"
-#~ msgstr "Cancella WP"
+#~ msgstr "Διαγραφή σημείου μετάβασης"
 
 #~ msgid ""
 #~ "GpsDrive Help\n"
 #~ "\n"
 #~ msgstr ""
-#~ "Aiuto di GpsDrive\n"
+#~ "Βοήθεια για το GpsDrive\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "GPSDRIVE (c) 2001-2003 Fritz Ganter <ganter@ganter.at>\n"
+#~ "\n"
+#~ msgstr ""
+#~ "GPSDRIVE (c) 2001-2003 Fritz Ganter <ganter@ganter.at>\n"
 #~ "\n"
 
 #~ msgid "Website: www.kraftvoll.at/software\n"
-#~ msgstr "Sito Web: www.kraftvoll.at/software\n"
+#~ msgstr "Τοποθεσία Ιστού: www.kraftvoll.at/software\n"
 
 #~ msgid "+    : Zoom in\n"
-#~ msgstr "+    : Zoom in\n"
+#~ msgstr "+    : Μεγέθυνση\n"
 
 #~ msgid "-    : Zoom out\n"
-#~ msgstr "-    : Zoom out\n"
+#~ msgstr "+    : Σμίκρυνση\n"
 
 #~ msgid "s    : larger map\n"
-#~ msgstr "s    : mappa più grande\n"
+#~ msgstr "s    : μεγαλύτερος χάρτης\n"
 
 #~ msgid "a    : smaller map\n"
-#~ msgstr "a    : mappa più piccola\n"
+#~ msgstr "a    : μικρότερος χάρτης\n"
 
 #~ msgid "d    : download map\n"
-#~ msgstr "d    : scarica mappa\n"
+#~ msgstr "d    : μεταφόρτωση χάρτη\n"
 
 #~ msgid "l    : load track\n"
-#~ msgstr "l    : carica traccia\n"
+#~ msgstr "l    : φόρτωση χάρτη\n"
 
 #~ msgid "h    : show help\n"
-#~ msgstr "h    :mostra aiuto\n"
+#~ msgstr "h    : εμφάνιση βοήθειας\n"
 
 #~ msgid "q    : quit program\n"
-#~ msgstr "q    : esci dal programma\n"
+#~ msgstr "q    : έξοδος από το πρόγραμμα\n"
 
 #~ msgid "b    : toggle auto best map\n"
-#~ msgstr "b    : attiva o disattiva mappa migliore\n"
+#~ msgstr "b    : αυτόματη μετάβαση στον καλύτερο χάρτη\n"
 
 #~ msgid "w    : toggle show waypoints\n"
-#~ msgstr "w    : attiva o disattiva mostra waypoints\n"
+#~ msgstr "w    : μετάβαση στην εμφάνιση των σημείων μετάβασης\n"
 
 #~ msgid "o    : toggle show tracks\n"
-#~ msgstr "o    : attiva o disattiva mostra traccia\n"
+#~ msgstr "o    : μετάβαση στην εμφάνιση διαδρομών\n"
 
 #~ msgid "u    : enter setup menu\n"
-#~ msgstr "u    : entra nel menu di setup\n"
+#~ msgstr "u    : εισαγωγή στο μενού των ρυθμίσεων\n"
 
 #~ msgid "n    : in nightmode: toogles night display on/off\n"
-#~ msgstr "n    : in modalità notturna, attiva o disattiva display notturno\n"
+#~ msgstr ""
+#~ "n    : σε κατάσταση νυκτός: μεταβαίνει σε εμφάνιση της νύχτας ή σε "
+#~ "απόκρυψη της\n"
 
 #~ msgid "   Ok   "
-#~ msgstr "   Ok   "
+#~ msgstr "   Εντάξει   "
 
 #~ msgid "Close"
-#~ msgstr "Chiudi"
+#~ msgstr "Κλείσιμο"
 
 #~ msgid "OK"
-#~ msgstr "OK"
+#~ msgstr "Εντάξει"
 
 #~ msgid "Quit"
-#~ msgstr "Esci"
+#~ msgstr "Έξοδος"
 
 #~ msgid "Load track"
-#~ msgstr "Carica traccia"
+#~ msgstr "Φόρτωση track"
 
 #~ msgid "Setup"
-#~ msgstr "Impostazioni"
-
-#, fuzzy
-#~ msgid "not"
-#~ msgstr "Nodi"
-
-#, fuzzy
-#~ msgid ""
-#~ "GpsDrive Help\n"
-#~ "\n"
-#~ "GPSDRIVE (c) 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
-#~ "\n"
-#~ "-------------------------------------------------\n"
-#~ "Website: www.kraftvoll.at/software\n"
-#~ "Disclaimer: Please do not use for navigation. \n"
-#~ "\n"
-#~ "*************************************************\n"
-#~ "\n"
-#~ "See the manpage for program details\n"
-#~ "\n"
-#~ "Mouse control (clicking on the map):\n"
-#~ "===================================\n"
-#~ "Left mouse button         : Set position (usefull in simulation mode)\n"
-#~ "Right mouse button        : Set target directly on the map\n"
-#~ "Middle mouse button       : Display position again\n"
-#~ "Shift left mouse button   : smaller map\n"
-#~ "Shift right mouse button  : larger map\n"
-#~ "Control left mouse button : Set a waypoint (mouse position) on the map\n"
-#~ "Control right mouse button: Set a waypoint at current position on the "
-#~ "map\n"
-#~ "\n"
-#~ "Short cuts:\n"
-#~ "===================================\n"
-#~ "+                         : Zoom in\n"
-#~ "-                         : Zoom out\n"
-#~ "s                         : larger map\n"
-#~ "a                         : smaller map\n"
-#~ "t                         : select target\n"
-#~ "d                         : download map\n"
-#~ "i                         : import map\n"
-#~ "l                         : load track\n"
-#~ "h                         : show help\n"
-#~ "q                         : quit program\n"
-#~ "b                         : toggle auto best map\n"
-#~ "w                         : toggle show waypoints\n"
-#~ "o                         : toggle show tracks\n"
-#~ "u                         : enter setup menu\n"
-#~ "n                         : in nightmode: toogles night display on/off\n"
-#~ "j                         : switch to next waypoint in route mode\n"
-#~ "p                         : switch to position mode\n"
-#~ "x                         : add waypoint at current position\n"
-#~ "\n"
-#~ "Suggestions welcome!\n"
-#~ "\n"
-#~ "Have a lot of fun!\n"
-#~ "\n"
-#~ msgstr ""
-#~ "GpsDrive Help\n"
-#~ "\n"
-#~ "GPSDRIVE (c) 2001,2002 Fritz Ganter <ganter@ganter.at>\n"
-#~ "\n"
-#~ "-------------------------------------------------\n"
-#~ "Sito web: www.kraftvoll.at/software\n"
-#~ "Avvertenza: Non utilizzare per la navigazione. \n"
-#~ "\n"
-#~ "*************************************************\n"
-#~ "\n"
-#~ "Vedere la manpage per i dettagli sul programma\n"
-#~ "\n"
-#~ "Controllo da mouse (click sulla mappa):\n"
-#~ "===================================\n"
-#~ "Bottone sinistro mouse      : Imposta posizione (utile in modalità "
-#~ "simulazione)\n"
-#~ "Bottone destro mouse        : Imposta l'obiettivo sulla mappa\n"
-#~ "Bottone centrale mouse      : Visualizza posizione\n"
-#~ "Shift + bottone sinistro    : Mappa più piccola\n"
-#~ "Shift + bottone destro      : Mappa più grande\n"
-#~ "Control + bottone sinistro  : Imposta un waypoint (alla posizione del "
-#~ "mouse) sulla mappa\n"
-#~ "Control + bottone destro    : Imposta un waypoint alla posizione corrente "
-#~ "sulla mappa\n"
-#~ "\n"
-#~ "Scorciatoie:\n"
-#~ "===================================\n"
-#~ "+                         : Zoom in\n"
-#~ "-                         : Zoom out\n"
-#~ "s                         : mappa più grande\n"
-#~ "a                         : mappa più piccola\n"
-#~ "t                         : seleziona obiettivo\n"
-#~ "d                         : scarica mappa\n"
-#~ "i                         : importa mappa\n"
-#~ "l                         : carica traccia\n"
-#~ "h                         : visualizza aiuto\n"
-#~ "q                         : esci dal programma\n"
-#~ "b                         : mappa migliore (On/Off)\n"
-#~ "w                         : mostra waypoints (On/Off)\n"
-#~ "o                         : mostra traccia (On/Off)\n"
-#~ "u                         : menu dei settaggi\n"
-#~ "x                         : aggiungi waypoint alla posizione corrente\n"
-#~ "\n"
-#~ "Si accettano suggerimenti!\n"
-#~ "\n"
-#~ "Buon divertimento!\n"
-#~ "\n"
-
-#~ msgid "No GPS Fix found!"
-#~ msgstr "Nessun Fix GPS trovato!"
-
-#~ msgid "Nightmode off"
-#~ msgstr "Modalità notturna off"
-
-#~ msgid "Day/Night"
-#~ msgstr "Giorno/Notte"
-
-#~ msgid "Decimal lat/long display"
-#~ msgstr "Visualizzazione decimale lat/long"
-
-#~ msgid "Astro. dusk"
-#~ msgstr "Tram. astron."
-
-#~ msgid "Naut. dawn"
-#~ msgstr "Alba naut."
-
-#~ msgid "Naut. dusk"
-#~ msgstr "Tram. naut."
-
-#~ msgid "Civil dawn"
-#~ msgstr "Alba civile"
-
-#~ msgid "I'm sitting in a plane"
-#~ msgstr "Sono in un aereoplano"
-
-#~ msgid "GpsDrive Menu"
-#~ msgstr "Menu GpsDrive"
-
-#~ msgid "GpsDrive Status"
-#~ msgstr "Stato GpsDrive"
-
-#, fuzzy
-#~ msgid "Starting point"
-#~ msgstr "Avvia percorso"
-
-#~ msgid "Daheim"
-#~ msgstr "Home"
-
-#~ msgid ""
-#~ "Wrong format in line %d\n"
-#~ "in your ~/.gpsdrive/way.txt file,\n"
-#~ "Format must be:\n"
-#~ "LABEL xxx.xxx yyy.yyy\n"
-#~ "where xxx.xxx is the is the latitude \n"
-#~ "and yyy.yyy is the longitude\n"
-#~ " of your waypoints.\n"
-#~ "Be sure to have a dot\n"
-#~ " for the decimal point!\n"
-#~ "\n"
-#~ "No waypoints loaded!"
-#~ msgstr ""
-#~ "Formato errato alla linea %d\n"
-#~ "nel file ~/.gpsdrive/way.txt.\n"
-#~ "Il formato deve essere:\n"
-#~ "LABEL xxx.xxx yyy.yyy\n"
-#~ "dove xxx.xxx è la latitudine\n"
-#~ "e yyy.yyy è la longitudine\n"
-#~ "dei tuoi waipoints.\n"
-#~ "Accertati di utilizzare i punti\n"
-#~ "per i decimali!\n"
-#~ "\n"
-#~ "Nessun waypoint caricato!"
-
-#~ msgid "---km"
-#~ msgstr "---km"
-
-#~ msgid "---km/h"
-#~ msgstr "---km/h"
-
-#~ msgid "--x"
-#~ msgstr "--x"
-
-#~ msgid "Zoom"
-#~ msgstr "Zoom"
-
-#~ msgid ""
-#~ "-t    serial device for GARMIN transfer mode only!\n"
-#~ "      Default is /dev/gps\n"
-#~ msgstr "-f    modalità GARMIN. Non usare il gpsd! \n"
-
-#~ msgid ""
-#~ "Please create an entry:\n"
-#~ "\n"
-#~ "DEFAULT xxx yyy\n"
-#~ "\n"
-#~ "in your ~/.gpsdrive/way.txt file,\n"
-#~ " where xxx is the latitude \n"
-#~ "and yyy is the longitude\n"
-#~ " of your startpoint. Be sure to have a map\n"
-#~ " for these coordinates!"
-#~ msgstr ""
-#~ "Crea una voce:\n"
-#~ "\n"
-#~ "DEFAULT xxx yyy\n"
-#~ "\n"
-#~ "nel tuo file ~/.gpsdrive/way.txt,\n"
-#~ "dove xxx è la latitudine\n"
-#~ "e yyy e' la longitudine\n"
-#~ "del tuo punto di partenza. Accertati di\n"
-#~ "avere una mappa per queste coordinate!"
+#~ msgstr "Ρυθμίσεις"
