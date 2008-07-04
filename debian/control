@@ -54,8 +54,8 @@ Depends: ${misc:Depends}
 	libxml-twig-perl
 	mapnik-plugins
 	mapnik-utils
-	openstreetmap-map-icons(>> 6400)
-	openstreetmap-utils( >> 6448)
+	openstreetmap-map-icons(>> 8310)
+	openstreetmap-utils( >> 8290)
 	perlmagick
 	python
 	python-support
