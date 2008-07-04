@@ -79,6 +79,7 @@ Recommends: gpsd
 	python-mapnik
 Conflicts: osm-data-mapnik
 	osm-data-map-icons
+	gpsdrive-scripts
 Suggests: grass
 	libarchive-zip-perl
 	libexpat1
