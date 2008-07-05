@@ -95,4 +95,5 @@ Description: Car navigation system
  scale. Speech output is supported if the "espeak" software is 
  installed. All GPS receivers which supports NMEA protocol should
  be usable.
-
+ For using Maps from OpenStreetMap you need to install the openstreetmap-* 
+ packages.
