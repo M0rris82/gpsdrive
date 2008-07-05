@@ -1,8 +1,138 @@
-gpsdrive (2.10svn19698202) unstable; urgency=low
+gpsdrive (2.10svn19918774) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Jun 2008 00:26:56 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:41:15 +0200
+
+gpsdrive (2.10svn1991) unstable; urgency=low
+
+   * Several new or changed strings in src/gpsdrive.c haven't been 
+   * gettextized yet, and thus wouldn't ever get localized.  Attached 
+   * patch fixes this.  It also fixes a word or a typo here and there.
+   * (Debugging messages aren't gettextized.)
+   * Author: Benno Schulenberg <benno@vertaalt.nl>
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:09:28 +0200
+
+gpsdrive (2.10svn1990) unstable; urgency=low
+
+   * Add hint for osm Packages
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:06:18 +0200
+
+gpsdrive (2.10svn1989) unstable; urgency=low
+
+   * Keep translation Files in Package
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:00:36 +0200
+
+gpsdrive (2.10svn1988) unstable; urgency=low
+
+   * remove gmo Files, since tey should be generated
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 22:49:12 +0200
+
+gpsdrive (2.10svn1987) unstable; urgency=low
+
+   * localize.patch from Benno Schulenberg <benno@vertaalt.nl>
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 22:21:34 +0200
+
+gpsdrive (2.10svn1986) unstable; urgency=low
+
+   * Set gpsdrive-scripts as install conflict
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 04 Jul 2008 02:53:49 +0200
+
+gpsdrive (2.10svn1985) unstable; urgency=low
+
+   * Set minimum map-icons/Utils Version
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 04 Jul 2008 02:52:36 +0200
+
+gpsdrive (2.10svn1984) unstable; urgency=low
+
+   * Remove old configure stuff, remove old mysql stuff
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Thu, 03 Jul 2008 23:32:01 +0200
+
+gpsdrive (2.10svn1983) unstable; urgency=low
+
+   * Update po files from translation project
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Thu, 03 Jul 2008 23:12:12 +0200
+
+gpsdrive (2.10svn1981) unstable; urgency=low
+
+   * - removed some outdated documentation
+
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 25 Jun 2008 14:35:13 +0200
+
+gpsdrive (2.10svn1980) unstable; urgency=low
+
+   * - removed unneeded library dependencies
+
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 19 Jun 2008 19:19:50 +0200
+
+gpsdrive (2.10svn1979) unstable; urgency=low
+
+   * - updated geoinfo db
+
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 19 Jun 2008 19:18:50 +0200
+
+gpsdrive (2.10svn1978) unstable; urgency=low
+
+   * Install python file to bin
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 18 Jun 2008 20:33:57 +0200
+
+gpsdrive (2.10svn1977) unstable; urgency=low
+
+   * remove unused rules
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 18 Jun 2008 20:33:33 +0200
+
+gpsdrive (2.10svn1976) unstable; urgency=low
+
+   * Split tests for geoinfo and gpsfetchmap into there own files; do not limit xvfb size
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 18 Jun 2008 01:29:26 +0200
+
+gpsdrive (2.10svn1975) unstable; urgency=low
+
+   * Framebuffer musst be larger than gpsdrive --geometry
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 18 Jun 2008 00:44:12 +0200
+
+gpsdrive (2.10svn1974) unstable; urgency=low
+
+   * Update osm-in.xml rules file from svn.osm.org
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 18 Jun 2008 00:24:11 +0200
+
+gpsdrive (2.10svn1973) unstable; urgency=low
+
+   * use different parking symbol
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Tue, 17 Jun 2008 20:22:25 +0200
+
+gpsdrive (2.10svn1972) unstable; urgency=low
+
+   * Update from osm-svn
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Tue, 17 Jun 2008 20:18:18 +0200
+
+gpsdrive (2.10svn1971) unstable; urgency=low
+
+   * use virtual framebuffer for tests
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Tue, 17 Jun 2008 19:42:18 +0200
+
+gpsdrive (2.10svn1970) unstable; urgency=low
+
+   * remove debian/files in debian/clean
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Jun 2008 00:37:20 +0200
 
 gpsdrive (2.10svn1969) unstable; urgency=low
 
@@ -31,7 +161,7 @@ gpsdrive (2.10svn1966) unstable; urgency=low
    * - removed some deprecated stuff
    * - cleaned up some variables
 
- -- dse <dse@gpsdrive.de>  Thu, 12 Jun 2008 12:08:30 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 12 Jun 2008 12:08:30 +0200
 
 gpsdrive (2.10svn1965) unstable; urgency=low
 
@@ -79,31 +209,31 @@ gpsdrive (2.10svn1958) unstable; urgency=low
 
    * further removal of garble and its support scripts
 
- -- hamish <hamish@gpsdrive.de>  Fri, 06 Jun 2008 08:04:24 +0200
+ -- Hamish <hamish_b@yahoo.com>  Fri, 06 Jun 2008 08:04:24 +0200
 
 gpsdrive (2.10svn1957) unstable; urgency=low
 
    * don't forget Joerg
 
- -- hamish <hamish@gpsdrive.de>  Wed, 04 Jun 2008 15:02:57 +0200
+ -- Hamish <hamish_b@yahoo.com>  Wed, 04 Jun 2008 15:02:57 +0200
 
 gpsdrive (2.10svn1956) unstable; urgency=low
 
    * remove garble (thanks Douglas), gpsd (thanks Remco), and start new maintainers section
 
- -- hamish <hamish@gpsdrive.de>  Wed, 04 Jun 2008 14:56:37 +0200
+ -- Hamish <hamish_b@yahoo.com>  Wed, 04 Jun 2008 14:56:37 +0200
 
 gpsdrive (2.10svn1955) unstable; urgency=low
 
    * remove some references to garble, which is now removed
 
- -- hamish <hamish@gpsdrive.de>  Wed, 04 Jun 2008 14:34:38 +0200
+ -- Hamish <hamish_b@yahoo.com>  Wed, 04 Jun 2008 14:34:38 +0200
 
 gpsdrive (2.10svn1954) unstable; urgency=low
 
    * - enabled possibility to get reference points for map import from poi-lookup
 
- -- dse <dse@gpsdrive.de>  Fri, 30 May 2008 12:42:04 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 30 May 2008 12:42:04 +0200
 
 gpsdrive (2.10svn1953) unstable; urgency=low
 
@@ -113,7 +243,7 @@ gpsdrive (2.10svn1953) unstable; urgency=low
    * - added additional config parameters for some mapnik settings
    * patch by Mark Wilkinson <mark.wilkinson (at) 2pmtech.com>
 
- -- dse <dse@gpsdrive.de>  Thu, 29 May 2008 16:47:52 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 29 May 2008 16:47:52 +0200
 
 gpsdrive (2.10svn1952) unstable; urgency=low
 
@@ -121,32 +251,32 @@ gpsdrive (2.10svn1952) unstable; urgency=low
    * - removed some old waypoint handling functions not needed anymore
    * - replaced some deprecated functions by new ones
 
- -- dse <dse@gpsdrive.de>  Wed, 28 May 2008 00:32:31 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 28 May 2008 00:32:31 +0200
 
 gpsdrive (2.10svn1951) unstable; urgency=low
 
    * - fixed sorting for distance in friends window
 
- -- dse <dse@gpsdrive.de>  Sat, 24 May 2008 13:59:08 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 24 May 2008 13:59:08 +0200
 
 gpsdrive (2.10svn1950) unstable; urgency=low
 
    * - fixed bug in display of heading for friends
    * - coverted friends window to gtkdialog and gtktreeview
 
- -- dse <dse@gpsdrive.de>  Sat, 24 May 2008 12:26:24 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 24 May 2008 12:26:24 +0200
 
 gpsdrive (2.10svn1949) unstable; urgency=low
 
    * - fixed bug in script gpsdrive-update-mapnik-poitypes.pl
 
- -- dse <dse@gpsdrive.de>  Sat, 24 May 2008 12:25:15 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 24 May 2008 12:25:15 +0200
 
 gpsdrive (2.10svn1948) unstable; urgency=low
 
    * Fix variables in FindSQLite3 module.
 
- -- gladiac <gladiac@gpsdrive.de>  Tue, 20 May 2008 21:54:18 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Tue, 20 May 2008 21:54:18 +0200
 
 gpsdrive (2.10svn1947) unstable; urgency=low
 
@@ -158,7 +288,7 @@ gpsdrive (2.10svn1946) unstable; urgency=low
 
    * Add cmake 2.6 compatible find modules.
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 19 May 2008 12:18:07 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 19 May 2008 12:18:07 +0200
 
 gpsdrive (2.10svn1945) unstable; urgency=low
 
@@ -166,7 +296,7 @@ gpsdrive (2.10svn1945) unstable; urgency=low
    * - fixed altitude display
    * - some variable cleanup
 
- -- dse <dse@gpsdrive.de>  Sun, 18 May 2008 20:26:26 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 18 May 2008 20:26:26 +0200
 
 gpsdrive (2.10svn1944) unstable; urgency=low
 
@@ -241,7 +371,7 @@ gpsdrive (2.10svn1933) unstable; urgency=low
    * - cleaned up commandline options
    * - some variable cleanup
 
- -- dse <dse@gpsdrive.de>  Fri, 09 May 2008 13:56:18 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 09 May 2008 13:56:18 +0200
 
 gpsdrive (2.10svn1932) unstable; urgency=low
 
@@ -289,38 +419,38 @@ gpsdrive (2.10svn1925) unstable; urgency=low
 
    * - enabled display of poi label by poi-type (not saved in config, yet)
 
- -- dse <dse@gpsdrive.de>  Tue, 06 May 2008 22:23:49 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 06 May 2008 22:23:49 +0200
 
 gpsdrive (2.10svn1924) unstable; urgency=low
 
    * - some variable cleanup (belongs to commit before)
 
- -- dse <dse@gpsdrive.de>  Tue, 29 Apr 2008 22:18:02 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 29 Apr 2008 22:18:02 +0200
 
 gpsdrive (2.10svn1923) unstable; urgency=low
 
    * - enabled automatic switching of nightmode if set to auto
    * - some variable cleanup
 
- -- dse <dse@gpsdrive.de>  Tue, 29 Apr 2008 18:22:58 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 29 Apr 2008 18:22:58 +0200
 
 gpsdrive (2.10svn1922) unstable; urgency=low
 
    * - changed mapnik background color, so that water is visible
 
- -- dse <dse@gpsdrive.de>  Tue, 29 Apr 2008 01:07:21 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 29 Apr 2008 01:07:21 +0200
 
 gpsdrive (2.10svn1921) unstable; urgency=low
 
    * - prepared fields to switch poi label separately for base types
 
- -- dse <dse@gpsdrive.de>  Tue, 29 Apr 2008 01:05:42 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 29 Apr 2008 01:05:42 +0200
 
 gpsdrive (2.10svn1920) unstable; urgency=low
 
    * - added config values for battery/temperature/street displays
 
- -- dse <dse@gpsdrive.de>  Mon, 28 Apr 2008 19:05:47 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 28 Apr 2008 19:05:47 +0200
 
 gpsdrive (2.10svn1919) unstable; urgency=low
 
@@ -329,7 +459,7 @@ gpsdrive (2.10svn1919) unstable; urgency=low
    * - added "show way info" button settings (experimental feature)
    * - fixed street display output
 
- -- dse <dse@gpsdrive.de>  Mon, 28 Apr 2008 19:01:28 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 28 Apr 2008 19:01:28 +0200
 
 gpsdrive (2.10svn1918) unstable; urgency=low
 
@@ -341,25 +471,25 @@ gpsdrive (2.10svn1917) unstable; urgency=low
 
    * - use geoinfo.db for poi_type matching
 
- -- dse <dse@gpsdrive.de>  Fri, 18 Apr 2008 17:35:52 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 18 Apr 2008 17:35:52 +0200
 
 gpsdrive (2.10svn1916) unstable; urgency=low
 
    * - added table for osm-matching to geoinfo database
 
- -- dse <dse@gpsdrive.de>  Mon, 14 Apr 2008 23:43:00 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 14 Apr 2008 23:43:00 +0200
 
 gpsdrive (2.10svn1915) unstable; urgency=low
 
    * - removed carbox stuff -> moved to opencarbox.net
 
- -- dse <dse@gpsdrive.de>  Mon, 14 Apr 2008 09:50:06 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 14 Apr 2008 09:50:06 +0200
 
 gpsdrive (2.10svn1914) unstable; urgency=low
 
    * - added saving of apm display in gpsdriverc
 
- -- dse <dse@gpsdrive.de>  Mon, 14 Apr 2008 09:47:19 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 14 Apr 2008 09:47:19 +0200
 
 gpsdrive (2.10svn1913) unstable; urgency=low
 
@@ -390,14 +520,14 @@ gpsdrive (2.10svn1909) unstable; urgency=low
    * - made postgis query for poi lookup case insensitive
    * - added big button dialog for dashboard settings in car mode
 
- -- dse <dse@gpsdrive.de>  Mon, 17 Mar 2008 09:33:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 17 Mar 2008 09:33:59 +0100
 
 gpsdrive (2.10svn1908) unstable; urgency=low
 
    * - set timeout functions after everything else is initialized,
    *   to avoid gtk-warnings appearing sometimes at startup
 
- -- dse <dse@gpsdrive.de>  Fri, 14 Mar 2008 15:24:28 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 14 Mar 2008 15:24:28 +0100
 
 gpsdrive (2.10svn1907) unstable; urgency=low
 
@@ -406,20 +536,20 @@ gpsdrive (2.10svn1907) unstable; urgency=low
    *   voice files to /usr/share/mbrola/ and choose one of them
    *   in the speech settings.
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Mar 2008 13:40:04 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Mar 2008 13:40:04 +0100
 
 gpsdrive (2.10svn1906) unstable; urgency=low
 
    * - fixed speech output: greeting is now only spoken on startup
    * - fixed mute function: gpsdrive now really shuts up if told to do so
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Mar 2008 12:51:00 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Mar 2008 12:51:00 +0100
 
 gpsdrive (2.10svn1905) unstable; urgency=low
 
    * - updated some documentation
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Mar 2008 00:17:24 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Mar 2008 00:17:24 +0100
 
 gpsdrive (2.10svn1904) unstable; urgency=low
 
@@ -431,7 +561,7 @@ gpsdrive (2.10svn1904) unstable; urgency=low
    * - added experimental display of current street name
    *   (only available with -D1, because it's very slow...)
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Mar 2008 23:55:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Mar 2008 23:55:59 +0100
 
 gpsdrive (2.10svn1903) unstable; urgency=low
 
@@ -443,19 +573,19 @@ gpsdrive (2.10svn1902) unstable; urgency=low
 
    * - did some code cleanup
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Mar 2008 23:26:37 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Mar 2008 23:26:37 +0100
 
 gpsdrive (2.10svn1901) unstable; urgency=low
 
    * - adjusted debian mapnik dependency
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Mar 2008 23:22:45 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Mar 2008 23:22:45 +0100
 
 gpsdrive (2.10svn1900) unstable; urgency=low
 
    * - added new poi types and source
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Mar 2008 23:20:36 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Mar 2008 23:20:36 +0100
 
 gpsdrive (2.10svn1898) unstable; urgency=low
 
@@ -469,7 +599,7 @@ gpsdrive (2.10svn1897) unstable; urgency=low
    *   this is necessary to convert the coordinates to get the poi data out from
    *   the postgis database.
 
- -- dse <dse@gpsdrive.de>  Sun, 09 Mar 2008 20:25:54 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 09 Mar 2008 20:25:54 +0100
 
 gpsdrive (2.10svn1896) unstable; urgency=low
 
@@ -481,25 +611,25 @@ gpsdrive (2.10svn1895) unstable; urgency=low
 
    * - updated geoinfo.db from changed icons.xml
 
- -- dse <dse@gpsdrive.de>  Sun, 09 Mar 2008 20:02:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 09 Mar 2008 20:02:59 +0100
 
 gpsdrive (2.10svn1894) unstable; urgency=low
 
    * - added script to add gpsdrive poi-types to mapnik database
 
- -- dse <dse@gpsdrive.de>  Sun, 09 Mar 2008 19:41:10 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 09 Mar 2008 19:41:10 +0100
 
 gpsdrive (2.10svn1893) unstable; urgency=low
 
    * - use connditon tag when parsing icons.xml, not deprecated geoinfo data
 
- -- dse <dse@gpsdrive.de>  Sun, 09 Mar 2008 19:29:39 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 09 Mar 2008 19:29:39 +0100
 
 gpsdrive (2.10svn1892) unstable; urgency=low
 
    * - use geoinfo.db from /usr/share/gpsdrive/
 
- -- dse <dse@gpsdrive.de>  Sun, 09 Mar 2008 19:28:04 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 09 Mar 2008 19:28:04 +0100
 
 gpsdrive (2.10svn1891) unstable; urgency=low
 
@@ -536,7 +666,7 @@ gpsdrive (2.10svn1887) unstable; urgency=low
    * - fixed minor bug in debug output
    * - expanded query function by poi_type
 
- -- dse <dse@gpsdrive.de>  Wed, 05 Mar 2008 13:46:18 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 05 Mar 2008 13:46:18 +0100
 
 gpsdrive (2.10svn1886) unstable; urgency=low
 
@@ -554,26 +684,26 @@ gpsdrive (2.10svn1884) unstable; urgency=low
 
    * - removed map rendering entries from geoinfo.db
 
- -- dse <dse@gpsdrive.de>  Tue, 04 Mar 2008 13:17:15 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 04 Mar 2008 13:17:15 +0100
 
 gpsdrive (2.10svn1883) unstable; urgency=low
 
    * - updated geoinfo.db from icons.xml
 
- -- dse <dse@gpsdrive.de>  Tue, 04 Mar 2008 12:52:10 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 04 Mar 2008 12:52:10 +0100
 
 gpsdrive (2.10svn1882) unstable; urgency=low
 
    * - store location of geoinfo.db in gpsdriverc
    * - removed some obsolete variables used for mysql
 
- -- dse <dse@gpsdrive.de>  Tue, 04 Mar 2008 11:41:56 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 04 Mar 2008 11:41:56 +0100
 
 gpsdrive (2.10svn1881) unstable; urgency=low
 
    * - use only one (english) geoinfo database, doing l10n somewhere else soon...
 
- -- dse <dse@gpsdrive.de>  Tue, 04 Mar 2008 01:24:42 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 04 Mar 2008 01:24:42 +0100
 
 gpsdrive (2.10svn1880) unstable; urgency=low
 
@@ -582,7 +712,7 @@ gpsdrive (2.10svn1880) unstable; urgency=low
    *  - integrated kismet into poi-handling
    *  - some code cleanup
 
- -- dse <dse@gpsdrive.de>  Tue, 04 Mar 2008 01:18:11 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 04 Mar 2008 01:18:11 +0100
 
 gpsdrive (2.10svn1879) unstable; urgency=low
 
@@ -593,13 +723,13 @@ gpsdrive (2.10svn1879) unstable; urgency=low
    *   fills an empty waypoints.db with gpx-data exported via poi-manager_mysql.pl
    * - updated source info for geoinfo.db creation script
 
- -- dse <dse@gpsdrive.de>  Mon, 03 Mar 2008 12:32:15 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 03 Mar 2008 12:32:15 +0100
 
 gpsdrive (2.10svn1878) unstable; urgency=low
 
    * - code cleanup: removed some unnecessary declarations
 
- -- dse <dse@gpsdrive.de>  Mon, 03 Mar 2008 11:57:31 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 03 Mar 2008 11:57:31 +0100
 
 gpsdrive (2.10svn1877) unstable; urgency=low
 
@@ -610,7 +740,7 @@ gpsdrive (2.10svn1877) unstable; urgency=low
    *   Also icons.xml is not needed anymore in a user installation
    *   because gpsdrive reads the information from these new db files.
 
- -- dse <dse@gpsdrive.de>  Mon, 03 Mar 2008 11:45:01 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 03 Mar 2008 11:45:01 +0100
 
 gpsdrive (2.10svn1875) unstable; urgency=low
 
@@ -626,7 +756,7 @@ gpsdrive (2.10svn1875) unstable; urgency=low
    *   The created file completely replaces the tables poi_type and source
    *   currently held in mysql.
 
- -- dse <dse@gpsdrive.de>  Thu, 07 Feb 2008 11:48:37 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 07 Feb 2008 11:48:37 +0100
 
 gpsdrive (2.10svn1874) unstable; urgency=low
 
@@ -634,7 +764,7 @@ gpsdrive (2.10svn1874) unstable; urgency=low
    *     a gtk-critical warning was issued, when a gpsdrive compiled without
    *     mapnik was started with a gpsdriverc file where mapnik mode is enabled
 
- -- dse <dse@gpsdrive.de>  Thu, 31 Jan 2008 17:17:40 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 31 Jan 2008 17:17:40 +0100
 
 gpsdrive (2.10svn1873) unstable; urgency=low
 
@@ -672,14 +802,14 @@ gpsdrive (2.10svn1868) unstable; urgency=low
 
    * Add new FindBoost Module (this will be included in the next version)
 
- -- gladiac <gladiac@gpsdrive.de>  Tue, 22 Jan 2008 23:22:35 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Tue, 22 Jan 2008 23:22:35 +0100
 
 gpsdrive (2.10svn1867) unstable; urgency=low
 
    * - fixed gtk critical error in pda mode
    * - fixed loading of next map when mocing around in mapnik mode
 
- -- dse <dse@gpsdrive.de>  Tue, 22 Jan 2008 22:24:36 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 22 Jan 2008 22:24:36 +0100
 
 gpsdrive (2.10svn1866) unstable; urgency=low
 
@@ -749,13 +879,13 @@ gpsdrive (2.10svn1858) unstable; urgency=low
    * - exit gpsdrive when icons.xml is not found to avoid segfault
    * - some variable cleanup
 
- -- dse <dse@gpsdrive.de>  Fri, 18 Jan 2008 21:01:47 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 18 Jan 2008 21:01:47 +0100
 
 gpsdrive (2.10svn1857) unstable; urgency=low
 
    * - added "embedded" mode
 
- -- dse <dse@gpsdrive.de>  Thu, 17 Jan 2008 19:00:03 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 17 Jan 2008 19:00:03 +0100
 
 gpsdrive (2.10svn1856) unstable; urgency=low
 
@@ -765,13 +895,13 @@ gpsdrive (2.10svn1856) unstable; urgency=low
    *   so it can be embedde into other applications
    *   patch submitted by Jim Gruen <jgruen@gmail.com>
 
- -- dse <dse@gpsdrive.de>  Thu, 17 Jan 2008 18:59:03 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 17 Jan 2008 18:59:03 +0100
 
 gpsdrive (2.10svn1855) unstable; urgency=low
 
    * - added error message when mapnik is disabled when osm.xml is not found
 
- -- dse <dse@gpsdrive.de>  Wed, 16 Jan 2008 13:24:31 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 16 Jan 2008 13:24:31 +0100
 
 gpsdrive (2.10svn1854) unstable; urgency=low
 
@@ -801,19 +931,19 @@ gpsdrive (2.10svn1850) unstable; urgency=low
 
    * - added current date to track*.sav filename
 
- -- dse <dse@gpsdrive.de>  Tue, 15 Jan 2008 14:13:50 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 15 Jan 2008 14:13:50 +0100
 
 gpsdrive (2.10svn1849) unstable; urgency=low
 
    * - added course/speed/hdop/sat/fix to gpx track export
 
- -- dse <dse@gpsdrive.de>  Tue, 15 Jan 2008 13:12:43 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 15 Jan 2008 13:12:43 +0100
 
 gpsdrive (2.10svn1848) unstable; urgency=low
 
    * - store new fields also in incremental.sav
 
- -- dse <dse@gpsdrive.de>  Tue, 15 Jan 2008 12:35:23 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 15 Jan 2008 12:35:23 +0100
 
 gpsdrive (2.10svn1847) unstable; urgency=low
 
@@ -822,26 +952,26 @@ gpsdrive (2.10svn1847) unstable; urgency=low
    * - using hdop instead of pdop for precision
    * - some variable cleanup
 
- -- dse <dse@gpsdrive.de>  Tue, 15 Jan 2008 12:31:42 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 15 Jan 2008 12:31:42 +0100
 
 gpsdrive (2.10svn1846) unstable; urgency=low
 
    * Update INSTALL
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 13 Jan 2008 13:01:11 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 13 Jan 2008 13:01:11 +0100
 
 gpsdrive (2.10svn1845) unstable; urgency=low
 
    * Add better INSTALL instructions
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 13 Jan 2008 12:29:47 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 13 Jan 2008 12:29:47 +0100
 
 gpsdrive (2.10svn1844) unstable; urgency=low
 
    * - made map control window modal in car mode
    * - using map control window also in desktop mode
 
- -- dse <dse@gpsdrive.de>  Sat, 12 Jan 2008 22:41:58 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 12 Jan 2008 22:41:58 +0100
 
 gpsdrive (2.10svn1843) unstable; urgency=low
 
@@ -852,7 +982,7 @@ gpsdrive (2.10svn1843) unstable; urgency=low
    * - gpx import should now also read gpx v1.1 metadata
    * - fixed bug in gpx track import: gpsdrive hangs when file contains empty <trkseg> elements
 
- -- dse <dse@gpsdrive.de>  Sat, 12 Jan 2008 16:33:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 12 Jan 2008 16:33:59 +0100
 
 gpsdrive (2.10svn1842) unstable; urgency=low
 
@@ -987,7 +1117,7 @@ gpsdrive (2.10svn1821) unstable; urgency=low
 
    * - fixed inclusion of config.h
 
- -- dse <dse@gpsdrive.de>  Mon, 31 Dec 2007 12:26:04 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 31 Dec 2007 12:26:04 +0100
 
 gpsdrive (2.10svn1820) unstable; urgency=low
 
@@ -995,19 +1125,19 @@ gpsdrive (2.10svn1820) unstable; urgency=low
    * CMake is a powerful too an replaces with the function configure_file()
    * all @VAR@ with the appropriate variable. So set the USER to "@USER@".
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 30 Dec 2007 19:20:28 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 30 Dec 2007 19:20:28 +0100
 
 gpsdrive (2.10svn1819) unstable; urgency=low
 
    * Change application name to a variable
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 30 Dec 2007 18:56:24 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 30 Dec 2007 18:56:24 +0100
 
 gpsdrive (2.10svn1818) unstable; urgency=low
 
    * - added dialogs for track export (no real functionality, yet)
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Dec 2007 02:18:50 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Dec 2007 02:18:50 +0100
 
 gpsdrive (2.10svn1817) unstable; urgency=low
 
@@ -1019,62 +1149,62 @@ gpsdrive (2.10svn1816) unstable; urgency=low
 
    * Avoid conflicts if config.h is included twice
 
- -- gladiac <gladiac@gpsdrive.de>  Fri, 28 Dec 2007 09:14:53 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 28 Dec 2007 09:14:53 +0100
 
 gpsdrive (2.10svn1815) unstable; urgency=low
 
    * Add define to build source with mapnik support
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 27 Dec 2007 23:49:52 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 23:49:52 +0100
 
 gpsdrive (2.10svn1814) unstable; urgency=low
 
    * Fix build without GDAL.
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 27 Dec 2007 16:22:27 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 16:22:27 +0100
 
 gpsdrive (2.10svn1813) unstable; urgency=low
 
    * Ensure out of source build.
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 27 Dec 2007 15:32:52 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 15:32:52 +0100
 
 gpsdrive (2.10svn1812) unstable; urgency=low
 
    * Add option to compile with GDAL.
    * cmake -DWITH_GDAL=TRUE. Defaut: FALSE
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 27 Dec 2007 13:02:53 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 13:02:53 +0100
 
 gpsdrive (2.10svn1811) unstable; urgency=low
 
    * - completed gpx track import
 
- -- dse <dse@gpsdrive.de>  Mon, 24 Dec 2007 02:29:49 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 24 Dec 2007 02:29:49 +0100
 
 gpsdrive (2.10svn1810) unstable; urgency=low
 
    * Fix gpsdrive compilation
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 22 Dec 2007 15:33:47 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 22 Dec 2007 15:33:47 +0100
 
 gpsdrive (2.10svn1809) unstable; urgency=low
 
    * - fixed wrong order of arguments introduced with patch 1802
 
- -- dse <dse@gpsdrive.de>  Fri, 21 Dec 2007 01:32:48 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 21 Dec 2007 01:32:48 +0100
 
 gpsdrive (2.10svn1808) unstable; urgency=low
 
    * - fixed spoken greeting on startup
 
- -- dse <dse@gpsdrive.de>  Wed, 19 Dec 2007 01:27:51 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 19 Dec 2007 01:27:51 +0100
 
 gpsdrive (2.10svn1807) unstable; urgency=low
 
    * - added check for sqlmode to route target display
 
- -- dse <dse@gpsdrive.de>  Wed, 19 Dec 2007 00:17:30 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 19 Dec 2007 00:17:30 +0100
 
 gpsdrive (2.10svn1806) unstable; urgency=low
 
@@ -1083,7 +1213,7 @@ gpsdrive (2.10svn1806) unstable; urgency=low
    * - started gpx track import
    * - fixed some warnings introduced with tweetys commit 1802
 
- -- dse <dse@gpsdrive.de>  Tue, 18 Dec 2007 17:07:50 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 18 Dec 2007 17:07:50 +0100
 
 gpsdrive (2.10svn1805) unstable; urgency=low
 
@@ -1121,13 +1251,13 @@ gpsdrive (2.10svn1800) unstable; urgency=low
 
    * - replaced battery icon
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Dec 2007 21:46:11 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Dec 2007 21:46:11 +0100
 
 gpsdrive (2.10svn1799) unstable; urgency=low
 
    * -  adapted test to config changes
 
- -- dse <dse@gpsdrive.de>  Mon, 10 Dec 2007 00:21:44 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 10 Dec 2007 00:21:44 +0100
 
 gpsdrive (2.10svn1798) unstable; urgency=low
 
@@ -1135,7 +1265,7 @@ gpsdrive (2.10svn1798) unstable; urgency=low
    * - fixed route initialisation and cleanup
    * - fixed icon for 'select target' button
 
- -- dse <dse@gpsdrive.de>  Sat, 08 Dec 2007 12:56:41 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 08 Dec 2007 12:56:41 +0100
 
 gpsdrive (2.10svn1797) unstable; urgency=low
 
@@ -1149,7 +1279,7 @@ gpsdrive (2.10svn1796) unstable; urgency=low
    * - fixed speech output of target direction
    * - some code cleanup
 
- -- dse <dse@gpsdrive.de>  Thu, 06 Dec 2007 16:40:25 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 06 Dec 2007 16:40:25 +0100
 
 gpsdrive (2.10svn1795) unstable; urgency=low
 
@@ -1157,25 +1287,25 @@ gpsdrive (2.10svn1795) unstable; urgency=low
    * - added speech settings tab to adjust espeak parameters
    * - added gps settings tab and reinitialize button
 
- -- dse <dse@gpsdrive.de>  Wed, 05 Dec 2007 23:34:56 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 05 Dec 2007 23:34:56 +0100
 
 gpsdrive (2.10svn1794) unstable; urgency=low
 
    * - added display of next route point in route mode (still needs some finetuning)
 
- -- dse <dse@gpsdrive.de>  Sun, 02 Dec 2007 22:34:34 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 02 Dec 2007 22:34:34 +0100
 
 gpsdrive (2.10svn1793) unstable; urgency=low
 
    * - added gpx route import --> NEEDS TESTING !
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Dec 2007 21:31:30 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Dec 2007 21:31:30 +0100
 
 gpsdrive (2.10svn1792) unstable; urgency=low
 
    * - fixed coordinate string to decimal conversion
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Dec 2007 21:30:16 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Dec 2007 21:30:16 +0100
 
 gpsdrive (2.10svn1791) unstable; urgency=low
 
@@ -1185,19 +1315,19 @@ gpsdrive (2.10svn1791) unstable; urgency=low
    * - added (very inaccurate) time to destination display to dashboard
    * - added automatic saving of edited route
 
- -- dse <dse@gpsdrive.de>  Thu, 29 Nov 2007 10:41:05 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 29 Nov 2007 10:41:05 +0100
 
 gpsdrive (2.10svn1790) unstable; urgency=low
 
    * - added mapcale slider to map control window in car mode
 
- -- dse <dse@gpsdrive.de>  Tue, 27 Nov 2007 12:02:56 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 27 Nov 2007 12:02:56 +0100
 
 gpsdrive (2.10svn1789) unstable; urgency=low
 
    * - adapted unit test to changed coordinate format
 
- -- dse <dse@gpsdrive.de>  Mon, 26 Nov 2007 22:37:15 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 26 Nov 2007 22:37:15 +0100
 
 gpsdrive (2.10svn1788) unstable; urgency=low
 
@@ -1206,7 +1336,7 @@ gpsdrive (2.10svn1788) unstable; urgency=low
    *   now map is always drawn with right size,
    *   also when window is resized or maximized
 
- -- dse <dse@gpsdrive.de>  Sun, 25 Nov 2007 21:11:22 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 25 Nov 2007 21:11:22 +0100
 
 gpsdrive (2.10svn1787) unstable; urgency=low
 
@@ -1217,7 +1347,7 @@ gpsdrive (2.10svn1787) unstable; urgency=low
    * - removed X dependencies
    * - made some buttons bigger for car mode
 
- -- dse <dse@gpsdrive.de>  Wed, 21 Nov 2007 23:47:19 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 21 Nov 2007 23:47:19 +0100
 
 gpsdrive (2.10svn1786) unstable; urgency=low
 
@@ -1236,47 +1366,47 @@ gpsdrive (2.10svn1784) unstable; urgency=low
    * - added script for controlling applications on a car pc
    *   dependencies: bash, wmctrl
 
- -- dse <dse@gpsdrive.de>  Mon, 12 Nov 2007 23:38:52 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 12 Nov 2007 23:38:52 +0100
 
 gpsdrive (2.10svn1783) unstable; urgency=low
 
    * - redesigned car mode to fit small car displays
    * - removed gtk-warning when using speech output
 
- -- dse <dse@gpsdrive.de>  Sun, 11 Nov 2007 23:36:16 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 11 Nov 2007 23:36:16 +0100
 
 gpsdrive (2.10svn1782) unstable; urgency=low
 
    * - added mapscale to dashboard menu
    * - started to reconstruct gui for car mode
 
- -- dse <dse@gpsdrive.de>  Sun, 11 Nov 2007 19:28:17 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 11 Nov 2007 19:28:17 +0100
 
 gpsdrive (2.10svn1781) unstable; urgency=low
 
    * - reformatted coordinate display
    * - added coordinate display to dashboard menu
 
- -- dse <dse@gpsdrive.de>  Sun, 11 Nov 2007 19:03:17 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 11 Nov 2007 19:03:17 +0100
 
 gpsdrive (2.10svn1780) unstable; urgency=low
 
    * - uses maximize instead of fullscreen for car mode because
    *   fullscreen mode covers panels and other stuff on desktop
 
- -- dse <dse@gpsdrive.de>  Sun, 11 Nov 2007 13:59:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 11 Nov 2007 13:59:59 +0100
 
 gpsdrive (2.10svn1779) unstable; urgency=low
 
    * - start gpsdrive fullscreen when in car mode
 
- -- dse <dse@gpsdrive.de>  Sun, 11 Nov 2007 12:17:12 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 11 Nov 2007 12:17:12 +0100
 
 gpsdrive (2.10svn1778) unstable; urgency=low
 
    * - worked on gpx support. files can be opened now, but the data is not used yet.
 
- -- dse <dse@gpsdrive.de>  Tue, 06 Nov 2007 01:49:29 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 06 Nov 2007 01:49:29 +0100
 
 gpsdrive (2.10svn1777) unstable; urgency=low
 
@@ -1284,7 +1414,7 @@ gpsdrive (2.10svn1777) unstable; urgency=low
    * - added menuicon to trip reset
    * - worked on gpx parsing
 
- -- dse <dse@gpsdrive.de>  Wed, 31 Oct 2007 01:00:37 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 31 Oct 2007 01:00:37 +0100
 
 gpsdrive (2.10svn1774) unstable; urgency=low
 
@@ -1302,38 +1432,38 @@ gpsdrive (2.10svn1771) unstable; urgency=low
 
    * Ignore cscope and ctags files
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 25 Oct 2007 19:23:41 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 25 Oct 2007 19:23:41 +0200
 
 gpsdrive (2.10svn1770) unstable; urgency=low
 
    * - added preview of file information to load file dialog
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 18:34:40 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 18:34:40 +0200
 
 gpsdrive (2.10svn1769) unstable; urgency=low
 
    * - added shortcut to gpsdrive folder to file dialog
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 16:34:36 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 16:34:36 +0200
 
 gpsdrive (2.10svn1768) unstable; urgency=low
 
    *  - added file dialog for route export
    *    (including patch from Ross Scanlon <info@4x4falcon.com>)
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 16:16:40 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 16:16:40 +0200
 
 gpsdrive (2.10svn1767) unstable; urgency=low
 
    * - added some more status info for gpx loader
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 14:46:56 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 14:46:56 +0200
 
 gpsdrive (2.10svn1766) unstable; urgency=low
 
    * - removed perl warning when running poi-manager.pl
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 14:17:55 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 14:17:55 +0200
 
 gpsdrive (2.10svn1765) unstable; urgency=low
 
@@ -1343,31 +1473,31 @@ gpsdrive (2.10svn1765) unstable; urgency=low
    *   (showing some info on the console when choosing
    *    a file with options->import->route)
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 14:14:29 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 14:14:29 +0200
 
 gpsdrive (2.10svn1764) unstable; urgency=low
 
    * - changed default path for route export to route path from config file
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 14:07:56 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 14:07:56 +0200
 
 gpsdrive (2.10svn1763) unstable; urgency=low
 
    * - fixed bug in warning popup
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 14:04:32 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 14:04:32 +0200
 
 gpsdrive (2.10svn1762) unstable; urgency=low
 
    * - routes and tracks dirs are stored now in config file
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 12:55:16 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 12:55:16 +0200
 
 gpsdrive (2.10svn1761) unstable; urgency=low
 
    * - added tracks and routes directory
 
- -- dse <dse@gpsdrive.de>  Thu, 25 Oct 2007 12:30:27 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 25 Oct 2007 12:30:27 +0200
 
 gpsdrive (2.10svn1760) unstable; urgency=low
 
@@ -1403,7 +1533,7 @@ gpsdrive (2.10svn1755) unstable; urgency=low
 
    * - started module for gpx support
 
- -- dse <dse@gpsdrive.de>  Fri, 19 Oct 2007 21:40:20 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 19 Oct 2007 21:40:20 +0200
 
 gpsdrive (2.10svn1754) unstable; urgency=low
 
@@ -1411,7 +1541,7 @@ gpsdrive (2.10svn1754) unstable; urgency=low
    * - updated splash image
    * - removed wp2sql script; it was replaced by convert-waypoints.pl
 
- -- dse <dse@gpsdrive.de>  Thu, 18 Oct 2007 19:09:03 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 18 Oct 2007 19:09:03 +0200
 
 gpsdrive (2.10svn1743) unstable; urgency=low
 
@@ -1487,7 +1617,7 @@ gpsdrive (2.10svn1730) unstable; urgency=low
 
    * - the debian menu system needs a xpm icon
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Sep 2007 01:46:13 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Sep 2007 01:46:13 +0200
 
 gpsdrive (2.10svn1729) unstable; urgency=low
 
@@ -1499,7 +1629,7 @@ gpsdrive (2.10svn1728) unstable; urgency=low
 
    * - fixed bug with wrong max speed when starting in simulation mode
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Sep 2007 00:56:54 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Sep 2007 00:56:54 +0200
 
 gpsdrive (2.10svn1727) unstable; urgency=low
 
@@ -1507,19 +1637,19 @@ gpsdrive (2.10svn1727) unstable; urgency=low
    *   You now can import the locations of geocaches with poi-manager.pl to your
    *   database from a previously downloaded gpx file from www.opencaching.de
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Sep 2007 00:41:03 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Sep 2007 00:41:03 +0200
 
 gpsdrive (2.10svn1726) unstable; urgency=low
 
    * - fixed typo in file...
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Sep 2007 00:22:58 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Sep 2007 00:22:58 +0200
 
 gpsdrive (2.10svn1725) unstable; urgency=low
 
    * - added debian menuentry for gpsdrive
 
- -- dse <dse@gpsdrive.de>  Sun, 30 Sep 2007 00:13:40 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 30 Sep 2007 00:13:40 +0200
 
 gpsdrive (2.10svn1724) unstable; urgency=low
 
@@ -1527,7 +1657,7 @@ gpsdrive (2.10svn1724) unstable; urgency=low
    *   You now can import the locations of the FON access points with poi-manager.pl
    *   to your database from a previously downloaded gpx file from www.fon.com
 
- -- dse <dse@gpsdrive.de>  Sat, 29 Sep 2007 21:52:33 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 29 Sep 2007 21:52:33 +0200
 
 gpsdrive (2.10svn1723) unstable; urgency=low
 
@@ -1545,7 +1675,7 @@ gpsdrive (2.10svn1721) unstable; urgency=low
 
    * - fixed bug in maps dir handling
 
- -- dse <dse@gpsdrive.de>  Sat, 29 Sep 2007 18:03:35 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 29 Sep 2007 18:03:35 +0200
 
 gpsdrive (2.10svn1720) unstable; urgency=low
 
@@ -1606,7 +1736,7 @@ gpsdrive (2.10svn1713) unstable; urgency=low
    *   this prevents jumping of the display due to bad nmea data.
    *   yes, this is a hack; it has to be fixed inside gpsd...
 
- -- dse <dse@gpsdrive.de>  Sat, 29 Sep 2007 14:19:28 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 29 Sep 2007 14:19:28 +0200
 
 gpsdrive (2.10svn1712) unstable; urgency=low
 
@@ -1618,13 +1748,13 @@ gpsdrive (2.10svn1711) unstable; urgency=low
 
    * fixed autobest map gui bug
 
- -- loom <loom@gpsdrive.de>  Fri, 28 Sep 2007 01:02:58 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 28 Sep 2007 01:02:58 +0200
 
 gpsdrive (2.10svn1710) unstable; urgency=low
 
    * added some debug flags + moved malloc for image data to mapnik init
 
- -- loom <loom@gpsdrive.de>  Thu, 27 Sep 2007 02:12:22 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 27 Sep 2007 02:12:22 +0200
 
 gpsdrive (2.10svn1709) unstable; urgency=low
 
@@ -1632,7 +1762,7 @@ gpsdrive (2.10svn1709) unstable; urgency=low
    * - removed old source files from cmake files
    * - completed menus for customizable dashboard
 
- -- dse <dse@gpsdrive.de>  Tue, 25 Sep 2007 19:21:15 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 25 Sep 2007 19:21:15 +0200
 
 gpsdrive (2.10svn1708) unstable; urgency=low
 
@@ -1694,7 +1824,7 @@ gpsdrive (2.10svn1700) unstable; urgency=low
 
    * added ifdef MAPNIK to compile without mapnik again
 
- -- loom <loom@gpsdrive.de>  Wed, 19 Sep 2007 19:16:24 +0200
+ -- Christoph Metz <loom@mopper.de>  Wed, 19 Sep 2007 19:16:24 +0200
 
 gpsdrive (2.10svn1699) unstable; urgency=low
 
@@ -1717,20 +1847,20 @@ gpsdrive (2.10svn1697) unstable; urgency=low
 gpsdrive (2.10svn1696) unstable; urgency=low
 
 
- -- loom <loom@gpsdrive.de>  Sun, 16 Sep 2007 12:00:38 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 16 Sep 2007 12:00:38 +0200
 
 gpsdrive (2.10svn1695) unstable; urgency=low
 
    * gpsdrive screenshot test system
    * also moved some command line args
 
- -- loom <loom@gpsdrive.de>  Sun, 16 Sep 2007 12:00:03 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 16 Sep 2007 12:00:03 +0200
 
 gpsdrive (2.10svn1691) unstable; urgency=low
 
    * - optimized query for poi lookup
 
- -- dse <dse@gpsdrive.de>  Sun, 16 Sep 2007 10:32:56 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 16 Sep 2007 10:32:56 +0200
 
 gpsdrive (2.10svn1690) unstable; urgency=low
 
@@ -1742,7 +1872,7 @@ gpsdrive (2.10svn1689) unstable; urgency=low
 
    * - size of units in dashboard is adapted dynamically to chosen font size
 
- -- dse <dse@gpsdrive.de>  Sun, 16 Sep 2007 00:26:12 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 16 Sep 2007 00:26:12 +0200
 
 gpsdrive (2.10svn1687) unstable; urgency=low
 
@@ -1778,7 +1908,7 @@ gpsdrive (2.10svn1682) unstable; urgency=low
 
    * - fixed bug in poi theme switching
 
- -- dse <dse@gpsdrive.de>  Sat, 15 Sep 2007 15:21:42 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 15 Sep 2007 15:21:42 +0200
 
 gpsdrive (2.10svn1681) unstable; urgency=low
 
@@ -1820,19 +1950,19 @@ gpsdrive (2.10svn1675) unstable; urgency=low
 
    * add initialization of poi search dialog
 
- -- loom <loom@gpsdrive.de>  Sat, 15 Sep 2007 13:07:46 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 15 Sep 2007 13:07:46 +0200
 
 gpsdrive (2.10svn1674) unstable; urgency=low
 
    * - status of poi filter is now saved in config file
 
- -- dse <dse@gpsdrive.de>  Sat, 15 Sep 2007 13:00:34 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 15 Sep 2007 13:00:34 +0200
 
 gpsdrive (2.10svn1673) unstable; urgency=low
 
    * - disable menuitem "send message" when friends mode is not active
 
- -- dse <dse@gpsdrive.de>  Sat, 15 Sep 2007 11:33:35 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 15 Sep 2007 11:33:35 +0200
 
 gpsdrive (2.10svn1672) unstable; urgency=low
 
@@ -1850,7 +1980,7 @@ gpsdrive (2.10svn1670) unstable; urgency=low
 
    * - reformatted settings dialog a little bit
 
- -- dse <dse@gpsdrive.de>  Sat, 15 Sep 2007 11:12:21 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 15 Sep 2007 11:12:21 +0200
 
 gpsdrive (2.10svn1669) unstable; urgency=low
 
@@ -1887,7 +2017,7 @@ gpsdrive (2.10svn1664) unstable; urgency=low
 
    * - removed unnecessary expanders from poi filter widget
 
- -- dse <dse@gpsdrive.de>  Sat, 15 Sep 2007 09:34:06 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 15 Sep 2007 09:34:06 +0200
 
 gpsdrive (2.10svn1663) unstable; urgency=low
 
@@ -1936,7 +2066,7 @@ gpsdrive (2.10svn1656) unstable; urgency=low
 
    * fixed little bug in slist for expedia scales
 
- -- loom <loom@gpsdrive.de>  Sat, 15 Sep 2007 02:39:08 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 15 Sep 2007 02:39:08 +0200
 
 gpsdrive (2.10svn1655) unstable; urgency=low
 
@@ -1960,20 +2090,20 @@ gpsdrive (2.10svn1652) unstable; urgency=low
 
    * fixed pda mode warnings
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 22:22:23 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 22:22:23 +0200
 
 gpsdrive (2.10svn1651) unstable; urgency=low
 
    * - fixed bug in poi lookup window
    * - poi search alos looks in subdirs of selected poi type now
 
- -- dse <dse@gpsdrive.de>  Fri, 14 Sep 2007 19:15:12 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 14 Sep 2007 19:15:12 +0200
 
 gpsdrive (2.10svn1650) unstable; urgency=low
 
    * added me to authors list
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 18:58:48 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 18:58:48 +0200
 
 gpsdrive (2.10svn1649) unstable; urgency=low
 
@@ -1991,19 +2121,19 @@ gpsdrive (2.10svn1647) unstable; urgency=low
 
    * - enabled poi display filter in settings
 
- -- dse <dse@gpsdrive.de>  Fri, 14 Sep 2007 17:09:25 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 14 Sep 2007 17:09:25 +0200
 
 gpsdrive (2.10svn1646) unstable; urgency=low
 
    * right paths for man pages
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 02:35:26 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 02:35:26 +0200
 
 gpsdrive (2.10svn1645) unstable; urgency=low
 
    * new manpage
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 02:33:01 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 02:33:01 +0200
 
 gpsdrive (2.10svn1644) unstable; urgency=low
 
@@ -2015,7 +2145,7 @@ gpsdrive (2.10svn1643) unstable; urgency=low
 
    * bug in -M mode fixed
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 01:56:33 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 01:56:33 +0200
 
 gpsdrive (2.10svn1642) unstable; urgency=low
 
@@ -2077,31 +2207,31 @@ gpsdrive (2.10svn1633) unstable; urgency=low
    * - added new poi type selection also to add waypoint dialog
    * - fixed bug in add waypoint dialog
 
- -- dse <dse@gpsdrive.de>  Fri, 14 Sep 2007 00:27:14 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 14 Sep 2007 00:27:14 +0200
 
 gpsdrive (2.10svn1632) unstable; urgency=low
 
 
- -- loom <loom@gpsdrive.de>  Fri, 14 Sep 2007 00:20:25 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 00:20:25 +0200
 
 gpsdrive (2.10svn1631) unstable; urgency=low
 
    * new faqs
 
- -- loom <loom@gpsdrive.de>  Thu, 13 Sep 2007 23:14:07 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 13 Sep 2007 23:14:07 +0200
 
 gpsdrive (2.10svn1630) unstable; urgency=low
 
    * - changed type selection in poi lookup window to nice combobox
    * - got rid of that knopf_scale_finish compiler warning
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Sep 2007 22:26:48 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Sep 2007 22:26:48 +0200
 
 gpsdrive (2.10svn1629) unstable; urgency=low
 
    * error on incorrect -M option
 
- -- loom <loom@gpsdrive.de>  Thu, 13 Sep 2007 22:23:35 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 13 Sep 2007 22:23:35 +0200
 
 gpsdrive (2.10svn1628) unstable; urgency=low
 
@@ -2144,13 +2274,13 @@ gpsdrive (2.10svn1622) unstable; urgency=low
 
    * - added source file for new splash logo
 
- -- dse <dse@gpsdrive.de>  Thu, 13 Sep 2007 09:33:35 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 13 Sep 2007 09:33:35 +0200
 
 gpsdrive (2.10svn1621) unstable; urgency=low
 
    * check whether config file exists or not (-C option)
 
- -- loom <loom@gpsdrive.de>  Thu, 13 Sep 2007 03:41:35 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 13 Sep 2007 03:41:35 +0200
 
 gpsdrive (2.10svn1620) unstable; urgency=low
 
@@ -2158,7 +2288,7 @@ gpsdrive (2.10svn1620) unstable; urgency=low
    * moved guimodes to -M
    * added -C / --config-file
 
- -- loom <loom@gpsdrive.de>  Thu, 13 Sep 2007 03:24:25 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 13 Sep 2007 03:24:25 +0200
 
 gpsdrive (2.10svn1619) unstable; urgency=low
 
@@ -2176,7 +2306,7 @@ gpsdrive (2.10svn1617) unstable; urgency=low
 
    * added a watch cursor when rendering a mapnik map
 
- -- loom <loom@gpsdrive.de>  Thu, 13 Sep 2007 01:04:56 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 13 Sep 2007 01:04:56 +0200
 
 gpsdrive (2.10svn1616) unstable; urgency=low
 
@@ -2188,7 +2318,7 @@ gpsdrive (2.10svn1615) unstable; urgency=low
 
    * moved kismet server settings to the local_config struct
 
- -- loom <loom@gpsdrive.de>  Wed, 12 Sep 2007 23:29:29 +0200
+ -- Christoph Metz <loom@mopper.de>  Wed, 12 Sep 2007 23:29:29 +0200
 
 gpsdrive (2.10svn1614) unstable; urgency=low
 
@@ -2200,7 +2330,7 @@ gpsdrive (2.10svn1613) unstable; urgency=low
 
    * - enabled display of current map filename with -D > 10
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 22:41:42 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 22:41:42 +0200
 
 gpsdrive (2.10svn1612) unstable; urgency=low
 
@@ -2213,13 +2343,13 @@ gpsdrive (2.10svn1611) unstable; urgency=low
 
    * - enabled basic POI type filter for POI search window
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 21:46:09 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 21:46:09 +0200
 
 gpsdrive (2.10svn1610) unstable; urgency=low
 
    * cleaned up main a little bit
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 19:51:12 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 19:51:12 +0200
 
 gpsdrive (2.10svn1609) unstable; urgency=low
 
@@ -2231,14 +2361,14 @@ gpsdrive (2.10svn1608) unstable; urgency=low
 
    * - added osm logo
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 18:42:21 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 18:42:21 +0200
 
 gpsdrive (2.10svn1607) unstable; urgency=low
 
    * - fixed bug in poitype selection
    * - played with splash image
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 17:44:30 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 17:44:30 +0200
 
 gpsdrive (2.10svn1606) unstable; urgency=low
 
@@ -2253,21 +2383,21 @@ gpsdrive (2.10svn1605) unstable; urgency=low
 
    * code cleanup
 
- -- loom <loom@gpsdrive.de>  Wed, 12 Sep 2007 00:31:48 +0200
+ -- Christoph Metz <loom@mopper.de>  Wed, 12 Sep 2007 00:31:48 +0200
 
 gpsdrive (2.10svn1604) unstable; urgency=low
 
    * - fixed altitude displaz bug
    * - fixed show/hide of poitypes window
 
- -- dse <dse@gpsdrive.de>  Wed, 12 Sep 2007 00:08:01 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 12 Sep 2007 00:08:01 +0200
 
 gpsdrive (2.10svn1603) unstable; urgency=low
 
    * - moved some more gui stuff from main to gui_init
    * - enabled (not yet working) poitree window again
 
- -- dse <dse@gpsdrive.de>  Tue, 11 Sep 2007 22:20:19 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 11 Sep 2007 22:20:19 +0200
 
 gpsdrive (2.10svn1602) unstable; urgency=low
 
@@ -2327,7 +2457,7 @@ gpsdrive (2.10svn1595) unstable; urgency=low
 
    * some minor design fixes
 
- -- loom <loom@gpsdrive.de>  Tue, 11 Sep 2007 16:36:27 +0200
+ -- Christoph Metz <loom@mopper.de>  Tue, 11 Sep 2007 16:36:27 +0200
 
 gpsdrive (2.10svn1594) unstable; urgency=low
 
@@ -2335,31 +2465,31 @@ gpsdrive (2.10svn1594) unstable; urgency=low
    * mapnik color-fix
    * removed qt-dependencies from mapnik
 
- -- loom <loom@gpsdrive.de>  Tue, 11 Sep 2007 16:28:22 +0200
+ -- Christoph Metz <loom@mopper.de>  Tue, 11 Sep 2007 16:28:22 +0200
 
 gpsdrive (2.10svn1593) unstable; urgency=low
 
    * - modified dashboard font a little bit
 
- -- dse <dse@gpsdrive.de>  Tue, 11 Sep 2007 11:01:43 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 11 Sep 2007 11:01:43 +0200
 
 gpsdrive (2.10svn1592) unstable; urgency=low
 
    * osm.xml userner is now set by gpsdrive
 
- -- loom <loom@gpsdrive.de>  Tue, 11 Sep 2007 02:28:49 +0200
+ -- Christoph Metz <loom@mopper.de>  Tue, 11 Sep 2007 02:28:49 +0200
 
 gpsdrive (2.10svn1591) unstable; urgency=low
 
    * generate osm.xml for mapnik mode
 
- -- loom <loom@gpsdrive.de>  Tue, 11 Sep 2007 02:26:59 +0200
+ -- Christoph Metz <loom@mopper.de>  Tue, 11 Sep 2007 02:26:59 +0200
 
 gpsdrive (2.10svn1590) unstable; urgency=low
 
    * - completed quickroute feature
 
- -- dse <dse@gpsdrive.de>  Tue, 11 Sep 2007 02:26:12 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 11 Sep 2007 02:26:12 +0200
 
 gpsdrive (2.10svn1589) unstable; urgency=low
 
@@ -2372,13 +2502,13 @@ gpsdrive (2.10svn1588) unstable; urgency=low
    * - changed color for 2D gps status (to avoid blinking, caused by
    *   bad nmea parsing. should be fixed some day...)
 
- -- dse <dse@gpsdrive.de>  Tue, 11 Sep 2007 00:30:22 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 11 Sep 2007 00:30:22 +0200
 
 gpsdrive (2.10svn1587) unstable; urgency=low
 
    * - fixed bug in coordinates of gpx route output
 
- -- dse <dse@gpsdrive.de>  Mon, 10 Sep 2007 23:56:48 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 10 Sep 2007 23:56:48 +0200
 
 gpsdrive (2.10svn1586) unstable; urgency=low
 
@@ -2386,20 +2516,20 @@ gpsdrive (2.10svn1586) unstable; urgency=low
    * - fixed bug in "delete route item" functionality
    * - started code for "quickadd routepoint" feature
 
- -- dse <dse@gpsdrive.de>  Mon, 10 Sep 2007 23:37:28 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 10 Sep 2007 23:37:28 +0200
 
 gpsdrive (2.10svn1585) unstable; urgency=low
 
    * - removed obsolete commandline option -z
 
- -- dse <dse@gpsdrive.de>  Thu, 06 Sep 2007 23:31:22 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 06 Sep 2007 23:31:22 +0200
 
 gpsdrive (2.10svn1584) unstable; urgency=low
 
    * - made display of zoomlevel, scalebar, poilabel configurable
    * - modified buttons in POI lookup window
 
- -- dse <dse@gpsdrive.de>  Thu, 06 Sep 2007 23:03:31 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 06 Sep 2007 23:03:31 +0200
 
 gpsdrive (2.10svn1583) unstable; urgency=low
 
@@ -2480,13 +2610,13 @@ gpsdrive (2.10svn1571) unstable; urgency=low
    * - modified controls panel
    * - disabled hiding of zoom buttons in mapnik mode
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Sep 2007 11:30:53 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Sep 2007 11:30:53 +0200
 
 gpsdrive (2.10svn1570) unstable; urgency=low
 
    * - removed now obsolete set_sensitive call for mapnik mode
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Sep 2007 10:59:14 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Sep 2007 10:59:14 +0200
 
 gpsdrive (2.10svn1569) unstable; urgency=low
 
@@ -2506,13 +2636,13 @@ gpsdrive (2.10svn1567) unstable; urgency=low
    * - fixed "jumping" dashboard display
    * - enabled pda mopde again (but there are still some issues...)
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Sep 2007 00:22:13 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Sep 2007 00:22:13 +0200
 
 gpsdrive (2.10svn1566) unstable; urgency=low
 
    * remove copyright info from main window's titlebar
 
- -- hamish <hamish@gpsdrive.de>  Mon, 27 Aug 2007 10:23:03 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 27 Aug 2007 10:23:03 +0200
 
 gpsdrive (2.10svn1565) unstable; urgency=low
 
@@ -2599,19 +2729,19 @@ gpsdrive (2.10svn1550) unstable; urgency=low
 
    * partial mapnik depends
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 09:27:19 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 09:27:19 +0200
 
 gpsdrive (2.10svn1549) unstable; urgency=low
 
    * cleanup & updates
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 08:56:25 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 08:56:25 +0200
 
 gpsdrive (2.10svn1548) unstable; urgency=low
 
    * cleanup; the libfile-slurp-perl package is required for ./configure
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 08:30:50 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 08:30:50 +0200
 
 gpsdrive (2.10svn1547) unstable; urgency=low
 
@@ -2619,19 +2749,19 @@ gpsdrive (2.10svn1547) unstable; urgency=low
    * * add a more obvious message if exiting with an error.
    * * echo "\n" requires the -e flag, but that's not portable so just remove the newline.
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 08:04:49 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 08:04:49 +0200
 
 gpsdrive (2.10svn1546) unstable; urgency=low
 
    * move config options into one place
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 07:24:25 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 07:24:25 +0200
 
 gpsdrive (2.10svn1545) unstable; urgency=low
 
    * update mailing list archive URLs, mention wiki site
 
- -- hamish <hamish@gpsdrive.de>  Mon, 20 Aug 2007 02:16:22 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 20 Aug 2007 02:16:22 +0200
 
 gpsdrive (2.10svn1544) unstable; urgency=low
 
@@ -2699,33 +2829,33 @@ gpsdrive (2.10svn1531) unstable; urgency=low
 
    * Install mapnik symbols
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Aug 2007 23:59:26 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:59:26 +0200
 
 gpsdrive (2.10svn1530) unstable; urgency=low
 
    * add mapnik to the data directory
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Aug 2007 23:58:53 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:58:53 +0200
 
 gpsdrive (2.10svn1529) unstable; urgency=low
 
    * Remove PLUGINS variable as we don't have plugins anymore
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Aug 2007 22:22:35 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:22:35 +0200
 
 gpsdrive (2.10svn1528) unstable; urgency=low
 
    * Update build script
    * Fix compilation with cmake
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Aug 2007 22:18:00 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:18:00 +0200
 
 gpsdrive (2.10svn1527) unstable; urgency=low
 
    * Fix deprecated functions
    * Fix warnings
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Aug 2007 22:17:23 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:17:23 +0200
 
 gpsdrive (2.10svn1526) unstable; urgency=low
 
@@ -2743,31 +2873,31 @@ gpsdrive (2.10svn1524) unstable; urgency=low
 
    * - disabled broken battery and temperature display
 
- -- dse <dse@gpsdrive.de>  Thu, 09 Aug 2007 01:04:49 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 09 Aug 2007 01:04:49 +0200
 
 gpsdrive (2.10svn1523) unstable; urgency=low
 
    * - and another one...
 
- -- dse <dse@gpsdrive.de>  Wed, 08 Aug 2007 23:52:59 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 08 Aug 2007 23:52:59 +0200
 
 gpsdrive (2.10svn1522) unstable; urgency=low
 
    * - added missing file
 
- -- dse <dse@gpsdrive.de>  Wed, 08 Aug 2007 23:49:19 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 08 Aug 2007 23:49:19 +0200
 
 gpsdrive (2.10svn1521) unstable; urgency=low
 
    * - some small doc changes
 
- -- dse <dse@gpsdrive.de>  Wed, 08 Aug 2007 23:37:01 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 08 Aug 2007 23:37:01 +0200
 
 gpsdrive (2.10svn1520) unstable; urgency=low
 
    * - removed unnecessasry sourcefiles
 
- -- dse <dse@gpsdrive.de>  Wed, 08 Aug 2007 23:20:03 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 08 Aug 2007 23:20:03 +0200
 
 gpsdrive (2.10svn1519) unstable; urgency=low
 
@@ -2780,7 +2910,7 @@ gpsdrive (2.10svn1519) unstable; urgency=low
    * - removed serial support
    * - broke pda-mode (will be fixed soon)
 
- -- dse <dse@gpsdrive.de>  Wed, 08 Aug 2007 23:06:46 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 08 Aug 2007 23:06:46 +0200
 
 gpsdrive (2.10svn1518) unstable; urgency=low
 
@@ -2990,7 +3120,7 @@ gpsdrive (2.10svn1481) unstable; urgency=low
 
    * autogen.sh make it easier to get a working ./configure :)
 
- -- loom <loom@gpsdrive.de>  Wed, 11 Jul 2007 23:10:29 +0200
+ -- Christoph Metz <loom@mopper.de>  Wed, 11 Jul 2007 23:10:29 +0200
 
 gpsdrive (2.10svn1480) unstable; urgency=low
 
@@ -3014,7 +3144,7 @@ gpsdrive (2.10svn1477) unstable; urgency=low
 
    *  - deleted some lines I forgot while cleaning up this afternoon
 
- -- dse <dse@gpsdrive.de>  Mon, 09 Jul 2007 23:50:01 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 09 Jul 2007 23:50:01 +0200
 
 gpsdrive (2.10svn1476) unstable; urgency=low
 
@@ -3044,20 +3174,20 @@ gpsdrive (2.10svn1472) unstable; urgency=low
 
    * - removed obsolete wp stats display
 
- -- dse <dse@gpsdrive.de>  Mon, 09 Jul 2007 17:16:30 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 09 Jul 2007 17:16:30 +0200
 
 gpsdrive (2.10svn1471) unstable; urgency=low
 
    * - made position marker configurable
 
- -- dse <dse@gpsdrive.de>  Mon, 09 Jul 2007 16:08:13 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 09 Jul 2007 16:08:13 +0200
 
 gpsdrive (2.10svn1470) unstable; urgency=low
 
    * - cleaned up drawing of position markers
    * - added new positon marker
 
- -- dse <dse@gpsdrive.de>  Mon, 09 Jul 2007 15:28:18 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 09 Jul 2007 15:28:18 +0200
 
 gpsdrive (2.10svn1469) unstable; urgency=low
 
@@ -3082,7 +3212,7 @@ gpsdrive (2.10svn1466) unstable; urgency=low
    * - enabled friends highlighting in poi mode
    * - cleaned up heading and bearing variables
 
- -- dse <dse@gpsdrive.de>  Thu, 05 Jul 2007 20:42:55 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 05 Jul 2007 20:42:55 +0200
 
 gpsdrive (2.10svn1464) unstable; urgency=low
 
@@ -3136,7 +3266,7 @@ gpsdrive (2.10svn1456) unstable; urgency=low
 
    * Fix user replace in the Makefile
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Jul 2007 19:08:36 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 19:08:36 +0200
 
 gpsdrive (2.10svn1455) unstable; urgency=low
 
@@ -3144,13 +3274,13 @@ gpsdrive (2.10svn1455) unstable; urgency=low
    * Include the new files
    * Chagne deprecated functions of CMake to new ones
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Jul 2007 11:23:16 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:23:16 +0200
 
 gpsdrive (2.10svn1454) unstable; urgency=low
 
    * Install generated files
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Jul 2007 11:22:10 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:22:10 +0200
 
 gpsdrive (2.10svn1453) unstable; urgency=low
 
@@ -3158,13 +3288,13 @@ gpsdrive (2.10svn1453) unstable; urgency=low
    * functions of cmake
    * Create output of the in files from mapnik dir
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Jul 2007 11:20:42 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:20:42 +0200
 
 gpsdrive (2.10svn1452) unstable; urgency=low
 
    * Create an option to build with mapnik, by default on
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Jul 2007 11:18:24 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:18:24 +0200
 
 gpsdrive (2.10svn1451) unstable; urgency=low
 
@@ -3200,19 +3330,19 @@ gpsdrive (2.10svn1446) unstable; urgency=low
 
    * Fix build with cmake
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 01 Jul 2007 23:17:59 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:17:59 +0200
 
 gpsdrive (2.10svn1445) unstable; urgency=low
 
    * Add config.h for DATADIR
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 01 Jul 2007 23:16:53 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:53 +0200
 
 gpsdrive (2.10svn1444) unstable; urgency=low
 
    * Add CMake modules for Freetype2, Mapnik and Boost
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 01 Jul 2007 23:16:06 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:06 +0200
 
 gpsdrive (2.10svn1443) unstable; urgency=low
 
@@ -3260,25 +3390,25 @@ gpsdrive (2.10svn1436) unstable; urgency=low
 
    * more mapnik changes
 
- -- loom <loom@gpsdrive.de>  Sun, 01 Jul 2007 20:44:54 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 01 Jul 2007 20:44:54 +0200
 
 gpsdrive (2.10svn1435) unstable; urgency=low
 
    * - added some files I forgot in last commit. sorry!
 
- -- dse <dse@gpsdrive.de>  Sat, 30 Jun 2007 07:58:07 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 30 Jun 2007 07:58:07 +0200
 
 gpsdrive (2.10svn1434) unstable; urgency=low
 
    * fixed some moved variables
 
- -- loom <loom@gpsdrive.de>  Sat, 30 Jun 2007 02:53:53 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 30 Jun 2007 02:53:53 +0200
 
 gpsdrive (2.10svn1433) unstable; urgency=low
 
    * new mapnikmode early beta :p
 
- -- loom <loom@gpsdrive.de>  Sat, 30 Jun 2007 02:38:32 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 30 Jun 2007 02:38:32 +0200
 
 gpsdrive (2.10svn1432) unstable; urgency=low
 
@@ -3291,13 +3421,13 @@ gpsdrive (2.10svn1432) unstable; urgency=low
    * - fixed bug in wp routing: last target was never reached
    * - added poitype tree (no real functionality yet)
 
- -- dse <dse@gpsdrive.de>  Sat, 30 Jun 2007 01:12:17 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 30 Jun 2007 01:12:17 +0200
 
 gpsdrive (2.10svn1431) unstable; urgency=low
 
    * new mapnik handling - still early alpha
 
- -- loom <loom@gpsdrive.de>  Fri, 29 Jun 2007 01:18:21 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 29 Jun 2007 01:18:21 +0200
 
 gpsdrive (2.10svn1430) unstable; urgency=low
 
@@ -3343,7 +3473,7 @@ gpsdrive (2.10svn1424) unstable; urgency=low
 
    * fixed sigseg
 
- -- loom <loom@gpsdrive.de>  Thu, 28 Jun 2007 00:02:58 +0200
+ -- Christoph Metz <loom@mopper.de>  Thu, 28 Jun 2007 00:02:58 +0200
 
 gpsdrive (2.10svn1423) unstable; urgency=low
 
@@ -3355,7 +3485,7 @@ gpsdrive (2.10svn1422) unstable; urgency=low
 
    * displaying mapnik map in gpsdrive :)
 
- -- loom <loom@gpsdrive.de>  Mon, 25 Jun 2007 01:28:54 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 25 Jun 2007 01:28:54 +0200
 
 gpsdrive (2.10svn1421) unstable; urgency=low
 
@@ -3368,7 +3498,7 @@ gpsdrive (2.10svn1420) unstable; urgency=low
 
    * some changes to the mapnik rendering stuff early aplha
 
- -- loom <loom@gpsdrive.de>  Sun, 24 Jun 2007 02:20:40 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 24 Jun 2007 02:20:40 +0200
 
 gpsdrive (2.10svn1419) unstable; urgency=low
 
@@ -3414,20 +3544,20 @@ gpsdrive (2.10svn1413) unstable; urgency=low
 
    * - making dialogs non-modal, try 2
 
- -- dse <dse@gpsdrive.de>  Sun, 17 Jun 2007 17:59:40 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 17 Jun 2007 17:59:40 +0200
 
 gpsdrive (2.10svn1412) unstable; urgency=low
 
    * - added mapnik button
    * - made some dialogs non-modal
 
- -- dse <dse@gpsdrive.de>  Sun, 17 Jun 2007 17:33:58 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 17 Jun 2007 17:33:58 +0200
 
 gpsdrive (2.10svn1411) unstable; urgency=low
 
    * - moved and commented out old and unused functions
 
- -- dse <dse@gpsdrive.de>  Sun, 17 Jun 2007 15:45:01 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 17 Jun 2007 15:45:01 +0200
 
 gpsdrive (2.10svn1410) unstable; urgency=low
 
@@ -3435,13 +3565,13 @@ gpsdrive (2.10svn1410) unstable; urgency=low
    * - changed a lot of variable names to simplify code
    * - integrated friends client into poi management (partially done)
 
- -- dse <dse@gpsdrive.de>  Sun, 17 Jun 2007 15:27:49 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 17 Jun 2007 15:27:49 +0200
 
 gpsdrive (2.10svn1409) unstable; urgency=low
 
    * - adapted script to debian stable (etch)
 
- -- dse <dse@gpsdrive.de>  Sun, 17 Jun 2007 10:41:51 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 17 Jun 2007 10:41:51 +0200
 
 gpsdrive (2.10svn1408) unstable; urgency=low
 
@@ -3533,13 +3663,13 @@ gpsdrive (2.10svn1373) unstable; urgency=low
 
    * default route display set to on
 
- -- loom <loom@gpsdrive.de>  Sat, 12 May 2007 09:06:39 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 12 May 2007 09:06:39 +0200
 
 gpsdrive (2.10svn1372) unstable; urgency=low
 
    * solved sigseg when downloading expedia maps in certain circumstances
 
- -- loom <loom@gpsdrive.de>  Sat, 12 May 2007 01:19:09 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 12 May 2007 01:19:09 +0200
 
 gpsdrive (2.10svn1368) unstable; urgency=low
 
@@ -3613,7 +3743,7 @@ gpsdrive (2.10svn1355) unstable; urgency=low
    * - made travelmode configurable (currently used only for friendsd,
    *   will be used for navigation later)
 
- -- dse <dse@gpsdrive.de>  Mon, 23 Apr 2007 15:40:59 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 23 Apr 2007 15:40:59 +0200
 
 gpsdrive (2.10svn1354) unstable; urgency=low
 
@@ -3627,7 +3757,7 @@ gpsdrive (2.10svn1353) unstable; urgency=low
    * - added some files where all the gui stuff can be moved
    *   to make the source better readable
 
- -- dse <dse@gpsdrive.de>  Sat, 21 Apr 2007 21:59:22 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 21 Apr 2007 21:59:22 +0200
 
 gpsdrive (2.10svn1352) unstable; urgency=low
 
@@ -3635,7 +3765,7 @@ gpsdrive (2.10svn1352) unstable; urgency=low
    * - did some refactoring and source code formatting
    * - worked on routing functionality (not yet completely done)
 
- -- dse <dse@gpsdrive.de>  Sat, 21 Apr 2007 21:55:16 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 21 Apr 2007 21:55:16 +0200
 
 gpsdrive (2.10svn1351) unstable; urgency=low
 
@@ -3810,13 +3940,13 @@ gpsdrive (2.10svn1320) unstable; urgency=low
 
    * - forgot to check in one file needed for my last commit...
 
- -- dse <dse@gpsdrive.de>  Tue, 03 Apr 2007 22:48:40 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 03 Apr 2007 22:48:40 +0200
 
 gpsdrive (2.10svn1318) unstable; urgency=low
 
    * - added trip display to route window
 
- -- dse <dse@gpsdrive.de>  Tue, 03 Apr 2007 13:44:27 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 03 Apr 2007 13:44:27 +0200
 
 gpsdrive (2.10svn1317) unstable; urgency=low
 
@@ -3834,13 +3964,13 @@ gpsdrive (2.10svn1315) unstable; urgency=low
 
    * - added function to calculate distance between two waypoints
 
- -- dse <dse@gpsdrive.de>  Tue, 03 Apr 2007 10:03:56 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 03 Apr 2007 10:03:56 +0200
 
 gpsdrive (2.10svn1314) unstable; urgency=low
 
    * - added display of number and distance to route window
 
- -- dse <dse@gpsdrive.de>  Tue, 03 Apr 2007 01:29:01 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 03 Apr 2007 01:29:01 +0200
 
 gpsdrive (2.10svn1313) unstable; urgency=low
 
@@ -3854,7 +3984,7 @@ gpsdrive (2.10svn1312) unstable; urgency=low
    *   (routing itself is not yet possible)
    * - removed 'please donate' nag screen
 
- -- dse <dse@gpsdrive.de>  Mon, 02 Apr 2007 23:35:34 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 02 Apr 2007 23:35:34 +0200
 
 gpsdrive (2.10svn1311) unstable; urgency=low
 
@@ -3866,7 +3996,7 @@ gpsdrive (2.10svn1310) unstable; urgency=low
 
    * special boundingbox value in map_koord.txt for mapnik tiles. to handle diverent mapselection mode
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 23:04:05 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 23:04:05 +0200
 
 gpsdrive (2.10svn1309) unstable; urgency=low
 
@@ -3917,31 +4047,31 @@ gpsdrive (2.10svn1302) unstable; urgency=low
 
    * display help fixed
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 17:43:54 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:43:54 +0200
 
 gpsdrive (2.10svn1301) unstable; urgency=low
 
    * added new makefiles in scripts/mapnik
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 17:39:18 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:39:18 +0200
 
 gpsdrive (2.10svn1300) unstable; urgency=low
 
    * removed maked gpsdrive_mapnik_gentiles.py not needed
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 17:34:02 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:34:02 +0200
 
 gpsdrive (2.10svn1299) unstable; urgency=low
 
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 17:22:47 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:22:47 +0200
 
 gpsdrive (2.10svn1298) unstable; urgency=low
 
    * data and scripts to generate mapnik tiles for gpsdrive.
    * new python script: gpsdrive_mapnik_gentiles.py
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 17:16:56 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:16:56 +0200
 
 gpsdrive (2.10svn1297) unstable; urgency=low
 
@@ -3965,14 +4095,14 @@ gpsdrive (2.10svn1294) unstable; urgency=low
 
    * menu settings translated
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 12:45:12 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 12:45:12 +0200
 
 gpsdrive (2.10svn1293) unstable; urgency=low
 
    * removed expose_mini_cb from zoom_cb
    * expose_mini_cb is already called in expose_cb
 
- -- loom <loom@gpsdrive.de>  Mon, 02 Apr 2007 11:56:54 +0200
+ -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 11:56:54 +0200
 
 gpsdrive (2.10svn1292) unstable; urgency=low
 
@@ -4009,46 +4139,46 @@ gpsdrive (2.10svn1287) unstable; urgency=low
 
    * - fixed small bug in friends display in wp search in nosql mode
 
- -- dse <dse@gpsdrive.de>  Mon, 02 Apr 2007 02:56:55 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 02 Apr 2007 02:56:55 +0200
 
 gpsdrive (2.10svn1286) unstable; urgency=low
 
    * - changed workaround for something simpler
    * - changed selecet target button label depending on psomode state
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Apr 2007 23:21:13 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Apr 2007 23:21:13 +0200
 
 gpsdrive (2.10svn1285) unstable; urgency=low
 
    * restoring original cursor when leaving posmode.
 
- -- loom <loom@gpsdrive.de>  Sun, 01 Apr 2007 23:04:20 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 01 Apr 2007 23:04:20 +0200
 
 gpsdrive (2.10svn1284) unstable; urgency=low
 
    * - added license info openstreetmap data
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Apr 2007 18:12:18 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Apr 2007 18:12:18 +0200
 
 gpsdrive (2.10svn1283) unstable; urgency=low
 
    * - disabled posmode checkbox while poisearch is active, to avoid strange behaviour
    *   caused by toggling posmode at the wrong time
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Apr 2007 17:54:56 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Apr 2007 17:54:56 +0200
 
 gpsdrive (2.10svn1282) unstable; urgency=low
 
    * - fixed bug in target selection
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Apr 2007 17:33:41 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Apr 2007 17:33:41 +0200
 
 gpsdrive (2.10svn1281) unstable; urgency=low
 
    * - added/changed some pixmaps
    * - changed predefined poi-type for "quick waypoint" functions
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Apr 2007 15:34:00 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Apr 2007 15:34:00 +0200
 
 gpsdrive (2.10svn1280) unstable; urgency=low
 
@@ -4106,14 +4236,14 @@ gpsdrive (2.10svn1272) unstable; urgency=low
 
    * new gpsdrive menu entries
 
- -- loom <loom@gpsdrive.de>  Sun, 01 Apr 2007 00:39:04 +0200
+ -- Christoph Metz <loom@mopper.de>  Sun, 01 Apr 2007 00:39:04 +0200
 
 gpsdrive (2.10svn1271) unstable; urgency=low
 
    * removed test_and_load_new_map from scaler event
    * now we have a faster gui response while jumping over more scales a time
 
- -- loom <loom@gpsdrive.de>  Sat, 31 Mar 2007 22:49:47 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 31 Mar 2007 22:49:47 +0200
 
 gpsdrive (2.10svn1270) unstable; urgency=low
 
@@ -4136,7 +4266,7 @@ gpsdrive (2.10svn1268) unstable; urgency=low
    *   way.txt file to 'add waypoint' window
    * - changed default waypoint-type for "quick-poi" feature
 
- -- dse <dse@gpsdrive.de>  Sat, 31 Mar 2007 19:51:43 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 31 Mar 2007 19:51:43 +0200
 
 gpsdrive (2.10svn1267) unstable; urgency=low
 
@@ -4144,19 +4274,19 @@ gpsdrive (2.10svn1267) unstable; urgency=low
    * changed cursor style in map window
    * different cursor in posmosmode/normalmode
 
- -- loom <loom@gpsdrive.de>  Sat, 31 Mar 2007 17:27:32 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 31 Mar 2007 17:27:32 +0200
 
 gpsdrive (2.10svn1266) unstable; urgency=low
 
    * mapnik projection defined
 
- -- loom <loom@gpsdrive.de>  Sat, 31 Mar 2007 17:24:07 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 31 Mar 2007 17:24:07 +0200
 
 gpsdrive (2.10svn1265) unstable; urgency=low
 
    * removed compiler warning
 
- -- loom <loom@gpsdrive.de>  Sat, 31 Mar 2007 16:14:13 +0200
+ -- Christoph Metz <loom@mopper.de>  Sat, 31 Mar 2007 16:14:13 +0200
 
 gpsdrive (2.10svn1264) unstable; urgency=low
 
@@ -4187,13 +4317,13 @@ gpsdrive (2.10svn1261) unstable; urgency=low
 
    * libxml-2.0 downgrade - 2.6.26 seems to work
 
- -- loom <loom@gpsdrive.de>  Fri, 30 Mar 2007 22:13:05 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 30 Mar 2007 22:13:05 +0200
 
 gpsdrive (2.10svn1260) unstable; urgency=low
 
    * window destroy event
 
- -- loom <loom@gpsdrive.de>  Fri, 30 Mar 2007 22:08:15 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 30 Mar 2007 22:08:15 +0200
 
 gpsdrive (2.10svn1259) unstable; urgency=low
 
@@ -4205,7 +4335,7 @@ gpsdrive (2.10svn1258) unstable; urgency=low
 
    * segfaulting of gpsdrive fixed.
 
- -- loom <loom@gpsdrive.de>  Fri, 30 Mar 2007 16:10:29 +0200
+ -- Christoph Metz <loom@mopper.de>  Fri, 30 Mar 2007 16:10:29 +0200
 
 gpsdrive (2.10svn1257) unstable; urgency=low
 
@@ -4215,7 +4345,7 @@ gpsdrive (2.10svn1257) unstable; urgency=low
    *   if time is not known
    * - started new poi-type selection (currently disabled)
 
- -- dse <dse@gpsdrive.de>  Wed, 28 Mar 2007 00:19:55 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 28 Mar 2007 00:19:55 +0200
 
 gpsdrive (2.10svn1256) unstable; urgency=low
 
@@ -4228,7 +4358,7 @@ gpsdrive (2.10svn1256) unstable; urgency=low
    * - Added Selection to choose wether POIs should be searched near the current
    *   position or near the selected target destination 
 
- -- dse <dse@gpsdrive.de>  Wed, 21 Mar 2007 09:50:18 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 21 Mar 2007 09:50:18 +0100
 
 gpsdrive (2.10svn1255) unstable; urgency=low
 
@@ -4237,7 +4367,7 @@ gpsdrive (2.10svn1255) unstable; urgency=low
    * - it is  now possible to switch through the various coordinate formats by clicking on it
    * - did some sourcecode formatting
 
- -- dse <dse@gpsdrive.de>  Mon, 12 Mar 2007 22:47:09 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 12 Mar 2007 22:47:09 +0100
 
 gpsdrive (2.10svn1254) unstable; urgency=low
 
@@ -4245,7 +4375,7 @@ gpsdrive (2.10svn1254) unstable; urgency=low
    * - updated about-dialog to get rid of deprecated gtk functions.
    * - removed navigation/teleatlas stuff, which never was used.
 
- -- dse <dse@gpsdrive.de>  Fri, 09 Mar 2007 21:42:13 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 09 Mar 2007 21:42:13 +0100
 
 gpsdrive (2.10svn1253) unstable; urgency=low
 
@@ -4344,31 +4474,31 @@ gpsdrive (2.10svn1239) unstable; urgency=low
 
    * now you can change the poi icon theme in settings->poi
 
- -- loom <loom@gpsdrive.de>  Wed, 07 Feb 2007 00:12:29 +0100
+ -- Christoph Metz <loom@mopper.de>  Wed, 07 Feb 2007 00:12:29 +0100
 
 gpsdrive (2.10svn1238) unstable; urgency=low
 
    * - enabled filtering of POI display in settings menu
 
- -- dse <dse@gpsdrive.de>  Tue, 06 Feb 2007 19:04:36 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 06 Feb 2007 19:04:36 +0100
 
 gpsdrive (2.10svn1237) unstable; urgency=low
 
    * * (buildfix) fix compilation
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 04 Feb 2007 15:50:11 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:50:11 +0100
 
 gpsdrive (2.10svn1236) unstable; urgency=low
 
    * * (feature) added XML2 module
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 04 Feb 2007 15:26:13 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:26:13 +0100
 
 gpsdrive (2.10svn1235) unstable; urgency=low
 
    * * (feature) much better build script
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 04 Feb 2007 15:19:50 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:19:50 +0100
 
 gpsdrive (2.10svn1234) unstable; urgency=low
 
@@ -4399,7 +4529,7 @@ gpsdrive (2.10svn1230) unstable; urgency=low
    * - added forgotten source files
    *   (will be used for gui features soon)
 
- -- dse <dse@gpsdrive.de>  Wed, 31 Jan 2007 23:16:02 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 31 Jan 2007 23:16:02 +0100
 
 gpsdrive (2.10svn1229) unstable; urgency=low
 
@@ -4409,7 +4539,7 @@ gpsdrive (2.10svn1229) unstable; urgency=low
    * - added some icons and poi_types
    * - tried to update some of the documentation a little bit
 
- -- dse <dse@gpsdrive.de>  Wed, 31 Jan 2007 18:03:06 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 31 Jan 2007 18:03:06 +0100
 
 gpsdrive (2.10svn1228) unstable; urgency=low
 
@@ -4441,7 +4571,7 @@ gpsdrive (2.10svn1224) unstable; urgency=low
 
    * Test commit for email hook
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 30 Jan 2007 18:06:03 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 30 Jan 2007 18:06:03 +0100
 
 gpsdrive (2.10svn1223) unstable; urgency=low
 
@@ -4465,7 +4595,7 @@ gpsdrive (2.10svn1220) unstable; urgency=low
 
    * - fixed my pointer bug
 
- -- dse <dse@gpsdrive.de>  Wed, 24 Jan 2007 20:09:52 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 24 Jan 2007 20:09:52 +0100
 
 gpsdrive (2.10svn1219) unstable; urgency=low
 
@@ -4491,7 +4621,7 @@ gpsdrive (2.10svn1216) unstable; urgency=low
    * - removed waypoints table completely
    * - current date is stored in table, when adding new POI
 
- -- dse <dse@gpsdrive.de>  Tue, 23 Jan 2007 23:39:45 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 23 Jan 2007 23:39:45 +0100
 
 gpsdrive (2.10svn1215) unstable; urgency=low
 
@@ -4510,7 +4640,7 @@ gpsdrive (2.10svn1213) unstable; urgency=low
    * - removed waypoints table. in sql mode, only poi table is used for waypoints
    * - 'use sql' button is only relevant, if waypoint is added
 
- -- dse <dse@gpsdrive.de>  Tue, 23 Jan 2007 00:03:57 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 23 Jan 2007 00:03:57 +0100
 
 gpsdrive (2.10svn1212) unstable; urgency=low
 
@@ -4522,19 +4652,19 @@ gpsdrive (2.10svn1211) unstable; urgency=low
 
    * Test commit
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 17 Jan 2007 15:27:20 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:27:20 +0100
 
 gpsdrive (2.10svn1210) unstable; urgency=low
 
    * Test commit
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 17 Jan 2007 15:24:12 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:24:12 +0100
 
 gpsdrive (2.10svn1209) unstable; urgency=low
 
    * Added cej@intech.com to AUTHORS as Repository Admin (just a test commit)
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 17 Jan 2007 15:18:32 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:18:32 +0100
 
 gpsdrive (2.10svn1208) unstable; urgency=low
 
@@ -4558,13 +4688,13 @@ gpsdrive (2.10svn1205) unstable; urgency=low
 
    * - updated cmake files for changed icon dirs
 
- -- dse <dse@gpsdrive.de>  Fri, 12 Jan 2007 20:27:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 12 Jan 2007 20:27:59 +0100
 
 gpsdrive (2.10svn1204) unstable; urgency=low
 
    * - added creation of german and english icon overview
 
- -- dse <dse@gpsdrive.de>  Thu, 11 Jan 2007 14:16:56 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 11 Jan 2007 14:16:56 +0100
 
 gpsdrive (2.10svn1203) unstable; urgency=low
 
@@ -4588,13 +4718,13 @@ gpsdrive (2.10svn1200) unstable; urgency=low
 
    * - updated scripts to work with changed icons dir
 
- -- dse <dse@gpsdrive.de>  Sat, 06 Jan 2007 13:01:15 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 06 Jan 2007 13:01:15 +0100
 
 gpsdrive (2.10svn1199) unstable; urgency=low
 
    * - updated scripts to work with changed icons dir
 
- -- dse <dse@gpsdrive.de>  Sat, 06 Jan 2007 13:00:55 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 06 Jan 2007 13:00:55 +0100
 
 gpsdrive (2.10svn1198) unstable; urgency=low
 
@@ -4629,21 +4759,21 @@ gpsdrive (2.10svn1194) unstable; urgency=low
    * - changed available waypoint types to fit new poi_type scheme, when
    *   not in sql mode.
 
- -- dse <dse@gpsdrive.de>  Sat, 06 Jan 2007 03:44:25 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 06 Jan 2007 03:44:25 +0100
 
 gpsdrive (2.10svn1193) unstable; urgency=low
 
    * in the 'add waypoint' window you can now choose the waypoint type from
    *  the new poi_types table (when in sql mode)
 
- -- dse <dse@gpsdrive.de>  Fri, 05 Jan 2007 02:45:10 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 05 Jan 2007 02:45:10 +0100
 
 gpsdrive (2.10svn1192) unstable; urgency=low
 
    * - added a new index.html to get an overview of existing icons and poi_types
    * - added and sorted various icons
 
- -- dse <dse@gpsdrive.de>  Thu, 04 Jan 2007 13:35:49 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 04 Jan 2007 13:35:49 +0100
 
 gpsdrive (2.10svn1191) unstable; urgency=low
 
@@ -4651,14 +4781,14 @@ gpsdrive (2.10svn1191) unstable; urgency=low
    *   have been created/exported by convert-waypoints.pl or poi-manager.pl
    * - added some default sources to the source table
 
- -- dse <dse@gpsdrive.de>  Wed, 03 Jan 2007 16:08:40 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 03 Jan 2007 16:08:40 +0100
 
 gpsdrive (2.10svn1190) unstable; urgency=low
 
    * the poi_type table in the database is now created from data/icons.xml
    * when using the --fill-defaults option in geoinfo.pl
 
- -- dse <dse@gpsdrive.de>  Tue, 02 Jan 2007 01:28:05 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 02 Jan 2007 01:28:05 +0100
 
 gpsdrive (2.10svn1189) unstable; urgency=low
 
@@ -4703,7 +4833,7 @@ gpsdrive (2.10svn1183) unstable; urgency=low
    * - fixed bug in creation of icons.xml caused by wrong spelling of icon names
    * - updated example poi file for geoinfo gpx format
 
- -- dse <dse@gpsdrive.de>  Sun, 31 Dec 2006 01:34:42 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 31 Dec 2006 01:34:42 +0100
 
 gpsdrive (2.10svn1182) unstable; urgency=low
 
@@ -4757,13 +4887,13 @@ gpsdrive (2.10svn1174) unstable; urgency=low
 
    * Added Makefile.in for those who don't run automake
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 29 Dec 2006 07:26:18 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 29 Dec 2006 07:26:18 +0100
 
 gpsdrive (2.10svn1173) unstable; urgency=low
 
    * Added new Makefie.am for test directory
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 29 Dec 2006 07:24:55 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 29 Dec 2006 07:24:55 +0100
 
 gpsdrive (2.10svn1172) unstable; urgency=low
 
@@ -5056,38 +5186,38 @@ gpsdrive (2.10svn1136) unstable; urgency=low
    * this scripts dumps the content of way.txt and the waypoints table into gpx
    * files. look at the script file for further information.
 
- -- dse <dse@gpsdrive.de>  Tue, 26 Dec 2006 16:42:07 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 26 Dec 2006 16:42:07 +0100
 
 gpsdrive (2.10svn1135) unstable; urgency=low
 
    * Added rules.cmake for debian
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 23 Dec 2006 14:37:42 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 23 Dec 2006 14:37:42 +0100
 
 gpsdrive (2.10svn1134) unstable; urgency=low
 
    * fixed waypoint selecting bugs in normal and posmode
 
- -- loom <loom@gpsdrive.de>  Sat, 23 Dec 2006 01:32:06 +0100
+ -- Christoph Metz <loom@mopper.de>  Sat, 23 Dec 2006 01:32:06 +0100
 
 gpsdrive (2.10svn1133) unstable; urgency=low
 
    * - added poi name to desc tag (seems to be kind of standard in gpx)
 
- -- dse <dse@gpsdrive.de>  Thu, 21 Dec 2006 15:31:08 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 21 Dec 2006 15:31:08 +0100
 
 gpsdrive (2.10svn1132) unstable; urgency=low
 
    * introducing script for poi database handling
    *   currently only export (-e) from the basic poi table to gpx is working
 
- -- dse <dse@gpsdrive.de>  Thu, 21 Dec 2006 02:21:03 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 21 Dec 2006 02:21:03 +0100
 
 gpsdrive (2.10svn1131) unstable; urgency=low
 
    * fixed minor bug: some icons have been copied into the wrong directory
 
- -- dse <dse@gpsdrive.de>  Wed, 20 Dec 2006 02:32:43 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 20 Dec 2006 02:32:43 +0100
 
 gpsdrive (2.10svn1130) unstable; urgency=low
 
@@ -5099,34 +5229,34 @@ gpsdrive (2.10svn1129) unstable; urgency=low
 
    * Fixed typo
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 18 Dec 2006 13:38:17 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:38:17 +0100
 
 gpsdrive (2.10svn1128) unstable; urgency=low
 
    * Updated FindPerlLibs
    * Updated Perl libs installation
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 18 Dec 2006 13:29:52 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:29:52 +0100
 
 gpsdrive (2.10svn1127) unstable; urgency=low
 
    * Fixed svn revision generation
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 18 Dec 2006 11:59:56 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:59:56 +0100
 
 gpsdrive (2.10svn1126) unstable; urgency=low
 
    * Added svn revision detection
    * Updated CPack for svn releases
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 18 Dec 2006 11:52:19 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:52:19 +0100
 
 gpsdrive (2.10svn1125) unstable; urgency=low
 
    * Added package generation. You can now create source packages with
    *       "make package_source"
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 18 Dec 2006 11:30:00 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:30:00 +0100
 
 gpsdrive (2.10svn1124) unstable; urgency=low
 
@@ -5134,13 +5264,13 @@ gpsdrive (2.10svn1124) unstable; urgency=low
    *   import/export of waypoints, tracks and routes will be done in native gpx
    *   in the future.
 
- -- dse <dse@gpsdrive.de>  Fri, 15 Dec 2006 08:42:26 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 15 Dec 2006 08:42:26 +0100
 
 gpsdrive (2.10svn1123) unstable; urgency=low
 
    * Initialised variable t to 0 to supress compiler warning.
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 10 Dec 2006 11:52:38 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 10 Dec 2006 11:52:38 +0100
 
 gpsdrive (2.10svn1122) unstable; urgency=low
 
@@ -5148,32 +5278,32 @@ gpsdrive (2.10svn1122) unstable; urgency=low
    * sql_where
    * sql_in
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 10 Dec 2006 11:40:19 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 10 Dec 2006 11:40:19 +0100
 
 gpsdrive (2.10svn1121) unstable; urgency=low
 
    * Initialised posx and posy to 0 to supress compiler warning.
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 10 Dec 2006 11:24:35 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 10 Dec 2006 11:24:35 +0100
 
 gpsdrive (2.10svn1120) unstable; urgency=low
 
    * - added some documentation aund commandline options to update_icons.pl
    * - added description and title fields to poi_type table
 
- -- dse <dse@gpsdrive.de>  Fri, 08 Dec 2006 10:47:22 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 08 Dec 2006 10:47:22 +0100
 
 gpsdrive (2.10svn1119) unstable; urgency=low
 
    * Fixed bug in install pathname, the pathname contained the filename
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 07 Dec 2006 19:11:31 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 07 Dec 2006 19:11:31 +0100
 
 gpsdrive (2.10svn1118) unstable; urgency=low
 
    * We now indicate the Subversion version contained in the package. A helper script to automate this would be useful.
 
- -- charles <charles@gpsdrive.de>  Sun, 03 Dec 2006 16:07:58 +0100
+ -- Charles Curley <charlescurley@charlescurley.com>  Sun, 03 Dec 2006 16:07:58 +0100
 
 gpsdrive (2.10svn1117) unstable; urgency=low
 
@@ -5182,25 +5312,25 @@ gpsdrive (2.10svn1117) unstable; urgency=low
    * - icons.xml holds all information about the available icons and
    *   poi_types in a style similar to the files at openstreetmap.org
 
- -- dse <dse@gpsdrive.de>  Sat, 02 Dec 2006 22:24:54 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 02 Dec 2006 22:24:54 +0100
 
 gpsdrive (2.10svn1116) unstable; urgency=low
 
    * fixed global new/failcounter for googlesat maps
 
- -- loom <loom@gpsdrive.de>  Sat, 02 Dec 2006 22:13:52 +0100
+ -- Christoph Metz <loom@mopper.de>  Sat, 02 Dec 2006 22:13:52 +0100
 
 gpsdrive (2.10svn1115) unstable; urgency=low
 
    * i copied get_poi_type_id_for_wlan() from gpskismet.h to gpsproto.h like initkismet() and removed gpskismet.h from gpsdrive.c
 
- -- loom <loom@gpsdrive.de>  Sat, 02 Dec 2006 16:21:35 +0100
+ -- Christoph Metz <loom@mopper.de>  Sat, 02 Dec 2006 16:21:35 +0100
 
 gpsdrive (2.10svn1114) unstable; urgency=low
 
    * damn missed one bug, for further information in revision 1113
 
- -- loom <loom@gpsdrive.de>  Mon, 27 Nov 2006 03:52:21 +0100
+ -- Christoph Metz <loom@mopper.de>  Mon, 27 Nov 2006 03:52:21 +0100
 
 gpsdrive (2.10svn1113) unstable; urgency=low
 
@@ -5208,7 +5338,7 @@ gpsdrive (2.10svn1113) unstable; urgency=low
    * it targets the next waypoint in list
    * and generates a preview of the next ones
 
- -- loom <loom@gpsdrive.de>  Mon, 27 Nov 2006 03:43:30 +0100
+ -- Christoph Metz <loom@mopper.de>  Mon, 27 Nov 2006 03:43:30 +0100
 
 gpsdrive (2.10svn1112) unstable; urgency=low
 
@@ -5216,7 +5346,7 @@ gpsdrive (2.10svn1112) unstable; urgency=low
    * 1. disable - jump button in rounting mode
    * 2. disable - set target in routing mode (chosing entry in waypoint list)  
 
- -- loom <loom@gpsdrive.de>  Mon, 27 Nov 2006 01:42:35 +0100
+ -- Christoph Metz <loom@mopper.de>  Mon, 27 Nov 2006 01:42:35 +0100
 
 gpsdrive (2.10svn1111) unstable; urgency=low
 
@@ -5227,13 +5357,13 @@ gpsdrive (2.10svn1111) unstable; urgency=low
    * 3. in posmode selecting targets, shows target in preview mode
    * 4. cancel restores old target
 
- -- loom <loom@gpsdrive.de>  Mon, 27 Nov 2006 00:17:00 +0100
+ -- Christoph Metz <loom@mopper.de>  Mon, 27 Nov 2006 00:17:00 +0100
 
 gpsdrive (2.10svn1110) unstable; urgency=low
 
    * fixed "add waypoint window" apply button event -> now window gets closed
 
- -- loom <loom@gpsdrive.de>  Sun, 26 Nov 2006 21:19:46 +0100
+ -- Christoph Metz <loom@mopper.de>  Sun, 26 Nov 2006 21:19:46 +0100
 
 gpsdrive (2.10svn1109) unstable; urgency=low
 
@@ -5246,7 +5376,7 @@ gpsdrive (2.10svn1109) unstable; urgency=low
    * further information:
    * http://www.mail-archive.com/cmake@cmake.org/msg02736.html
 
- -- loom <loom@gpsdrive.de>  Sat, 25 Nov 2006 04:00:44 +0100
+ -- Christoph Metz <loom@mopper.de>  Sat, 25 Nov 2006 04:00:44 +0100
 
 gpsdrive (2.10svn1108) unstable; urgency=low
 
@@ -5278,7 +5408,7 @@ gpsdrive (2.10svn1106) unstable; urgency=low
    * get_poi_type_id_for_wlan() is declared in gpskismet.h:
    * commented in gpskismet.h
 
- -- loom <loom@gpsdrive.de>  Thu, 23 Nov 2006 22:04:15 +0100
+ -- Christoph Metz <loom@mopper.de>  Thu, 23 Nov 2006 22:04:15 +0100
 
 gpsdrive (2.10svn1105) unstable; urgency=low
 
@@ -5290,19 +5420,19 @@ gpsdrive (2.10svn1104) unstable; urgency=low
 
    * not working, because of fixed paths. irritades my eclipse environment
 
- -- loom <loom@gpsdrive.de>  Tue, 21 Nov 2006 23:27:46 +0100
+ -- Christoph Metz <loom@mopper.de>  Tue, 21 Nov 2006 23:27:46 +0100
 
 gpsdrive (2.10svn1103) unstable; urgency=low
 
    * Set property to executable
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 21 Nov 2006 06:35:29 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 21 Nov 2006 06:35:29 +0100
 
 gpsdrive (2.10svn1102) unstable; urgency=low
 
    * Added current status details
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 21 Nov 2006 05:39:46 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 21 Nov 2006 05:39:46 +0100
 
 gpsdrive (2.10svn1101) unstable; urgency=low
 
@@ -5312,19 +5442,19 @@ gpsdrive (2.10svn1101) unstable; urgency=low
    * 2. fixed settings close events (close settings by "x")
    * 3. mousewheel-zoom events for main map
 
- -- loom <loom@gpsdrive.de>  Tue, 21 Nov 2006 01:07:42 +0100
+ -- Christoph Metz <loom@mopper.de>  Tue, 21 Nov 2006 01:07:42 +0100
 
 gpsdrive (2.10svn1100) unstable; urgency=low
 
    * mousewheel zoom for the main map
 
- -- loom <loom@gpsdrive.de>  Tue, 21 Nov 2006 00:55:31 +0100
+ -- Christoph Metz <loom@mopper.de>  Tue, 21 Nov 2006 00:55:31 +0100
 
 gpsdrive (2.10svn1099) unstable; urgency=low
 
    * looped "Mapfile could not be loaded..." message fixed
 
- -- loom <loom@gpsdrive.de>  Tue, 21 Nov 2006 00:54:39 +0100
+ -- Christoph Metz <loom@mopper.de>  Tue, 21 Nov 2006 00:54:39 +0100
 
 gpsdrive (2.10svn1098) unstable; urgency=low
 
@@ -5342,7 +5472,7 @@ gpsdrive (2.10svn1096) unstable; urgency=low
 
    * - removed icon index (replaced by poi_types.html)
 
- -- dse <dse@gpsdrive.de>  Mon, 20 Nov 2006 01:16:18 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 20 Nov 2006 01:16:18 +0100
 
 gpsdrive (2.10svn1095) unstable; urgency=low
 
@@ -5379,167 +5509,167 @@ gpsdrive (2.10svn1090) unstable; urgency=low
 
    * Fixed memory corruption due a wrong array size
 
- -- gladiac <gladiac@gpsdrive.de>  Thu, 16 Nov 2006 13:18:13 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 16 Nov 2006 13:18:13 +0100
 
 gpsdrive (2.10svn1089) unstable; urgency=low
 
    * Commented out #include <gpskismet.h> because it doesn't seem to be needed.
 
- -- charles <charles@gpsdrive.de>  Thu, 16 Nov 2006 05:21:12 +0100
+ -- Charles Curley <charlescurley@charlescurley.com>  Thu, 16 Nov 2006 05:21:12 +0100
 
 gpsdrive (2.10svn1088) unstable; urgency=low
 
    * Commented out vbox_wlan as it isn't used.
    * Commented out #include <gpskismet.h> because it doesn't seem to be needed.
 
- -- charles <charles@gpsdrive.de>  Thu, 16 Nov 2006 05:20:22 +0100
+ -- Charles Curley <charlescurley@charlescurley.com>  Thu, 16 Nov 2006 05:20:22 +0100
 
 gpsdrive (2.10svn1087) unstable; urgency=low
 
    * fix compiler warning
 
- -- hamish <hamish@gpsdrive.de>  Wed, 15 Nov 2006 09:10:13 +0100
+ -- Hamish <hamish_b@yahoo.com>  Wed, 15 Nov 2006 09:10:13 +0100
 
 gpsdrive (2.10svn1086) unstable; urgency=low
 
    * - fixing broken map images
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 14:07:46 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 14:07:46 +0100
 
 gpsdrive (2.10svn1085) unstable; urgency=low
 
    * - fixing broken map images
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 14:05:56 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 14:05:56 +0100
 
 gpsdrive (2.10svn1084) unstable; urgency=low
 
    * - fixing broken icons
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 03:37:32 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 03:37:32 +0100
 
 gpsdrive (2.10svn1083) unstable; urgency=low
 
    * - fixing broken icons
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 03:35:31 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 03:35:31 +0100
 
 gpsdrive (2.10svn1082) unstable; urgency=low
 
    * - fixing broken icons
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 03:28:30 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 03:28:30 +0100
 
 gpsdrive (2.10svn1081) unstable; urgency=low
 
    * - fixing broken icons
 
- -- dse <dse@gpsdrive.de>  Tue, 14 Nov 2006 03:25:07 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 14 Nov 2006 03:25:07 +0100
 
 gpsdrive (2.10svn1080) unstable; urgency=low
 
    * try at fixing garbled images
 
- -- hamish <hamish@gpsdrive.de>  Mon, 13 Nov 2006 14:42:13 +0100
+ -- Hamish <hamish_b@yahoo.com>  Mon, 13 Nov 2006 14:42:13 +0100
 
 gpsdrive (2.10svn1079) unstable; urgency=low
 
    * try and fix broken images, svn propset svn:mime-type image/png 
 
- -- hamish <hamish@gpsdrive.de>  Mon, 13 Nov 2006 14:33:53 +0100
+ -- Hamish <hamish_b@yahoo.com>  Mon, 13 Nov 2006 14:33:53 +0100
 
 gpsdrive (2.10svn1078) unstable; urgency=low
 
    * try again for garbled newline binary fix, remove green halo
 
- -- hamish <hamish@gpsdrive.de>  Mon, 13 Nov 2006 13:33:11 +0100
+ -- Hamish <hamish_b@yahoo.com>  Mon, 13 Nov 2006 13:33:11 +0100
 
 gpsdrive (2.10svn1077) unstable; urgency=low
 
    * assert binary image types with "svn propset svn:mime-type image/jpeg" etc
 
- -- hamish <hamish@gpsdrive.de>  Mon, 13 Nov 2006 12:56:53 +0100
+ -- Hamish <hamish_b@yahoo.com>  Mon, 13 Nov 2006 12:56:53 +0100
 
 gpsdrive (2.10svn1076) unstable; urgency=low
 
    * Fixed implicit declatrion of function
    * Fixed setup_cb()
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 12 Nov 2006 11:52:34 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Nov 2006 11:52:34 +0100
 
 gpsdrive (2.10svn1075) unstable; urgency=low
 
    * Fixed printf size_t formats
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 19:34:07 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:34:07 +0100
 
 gpsdrive (2.10svn1074) unstable; urgency=low
 
    * Fixed casts
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 19:29:34 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:29:34 +0100
 
 gpsdrive (2.10svn1073) unstable; urgency=low
 
    * Fixed casts
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 19:13:47 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:13:47 +0100
 
 gpsdrive (2.10svn1072) unstable; urgency=low
 
    * Fixed size_t cast problem
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 18:07:15 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:07:15 +0100
 
 gpsdrive (2.10svn1071) unstable; urgency=low
 
    * Fixed implicit declaration of function, this could cause segfaults on x86_64
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 18:02:32 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:02:32 +0100
 
 gpsdrive (2.10svn1070) unstable; urgency=low
 
    * Fixed printf, values of type size_t should use the Z size modifier
 
- -- gladiac <gladiac@gpsdrive.de>  Sat, 11 Nov 2006 17:53:09 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 17:53:09 +0100
 
 gpsdrive (2.10svn1069) unstable; urgency=low
 
    * - sorted out icons a little bit
    * - updated README.icons
 
- -- dse <dse@gpsdrive.de>  Fri, 10 Nov 2006 11:24:27 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 10 Nov 2006 11:24:27 +0100
 
 gpsdrive (2.10svn1068) unstable; urgency=low
 
    * user created maps can live in ~/.gpsdrive/*_map/ and *_top/ dirs
 
- -- hamish <hamish@gpsdrive.de>  Tue, 07 Nov 2006 07:36:21 +0100
+ -- Hamish <hamish_b@yahoo.com>  Tue, 07 Nov 2006 07:36:21 +0100
 
 gpsdrive (2.10svn1067) unstable; urgency=low
 
    * fix string compares: strstr() returns pointer to found string, or NULL if
    *   nothing found. fixes bug # 114   (Ryan Earley)
 
- -- hamish <hamish@gpsdrive.de>  Tue, 07 Nov 2006 07:25:16 +0100
+ -- Hamish <hamish_b@yahoo.com>  Tue, 07 Nov 2006 07:25:16 +0100
 
 gpsdrive (2.10svn1066) unstable; urgency=low
 
    * - trying to fix broken pixmaps in data/pixmaps
 
- -- dse <dse@gpsdrive.de>  Sun, 05 Nov 2006 20:50:49 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 05 Nov 2006 20:50:49 +0100
 
 gpsdrive (2.10svn1065) unstable; urgency=low
 
    * - trying to fix broken pixmaps in data/pixmaps
 
- -- dse <dse@gpsdrive.de>  Sun, 05 Nov 2006 20:48:41 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 05 Nov 2006 20:48:41 +0100
 
 gpsdrive (2.10svn1064) unstable; urgency=low
 
    * Cleaned up how we specify the files owned by the RPM.
 
- -- charles <charles@gpsdrive.de>  Sun, 05 Nov 2006 20:23:34 +0100
+ -- Charles Curley <charlescurley@charlescurley.com>  Sun, 05 Nov 2006 20:23:34 +0100
 
 gpsdrive (2.10svn1063) unstable; urgency=low
 
@@ -5557,19 +5687,19 @@ gpsdrive (2.10svn1062) unstable; urgency=low
 
    * Fixed permissions
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 05 Nov 2006 18:33:09 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:33:09 +0100
 
 gpsdrive (2.10svn1061) unstable; urgency=low
 
    * Fixed new line bug
 
- -- gladiac <gladiac@gpsdrive.de>  Sun, 05 Nov 2006 18:27:38 +0100
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:27:38 +0100
 
 gpsdrive (2.10svn1060) unstable; urgency=low
 
    * - updated poi/icons info
 
- -- dse <dse@gpsdrive.de>  Sun, 05 Nov 2006 17:04:59 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 05 Nov 2006 17:04:59 +0100
 
 gpsdrive (2.10svn1059) unstable; urgency=low
 
@@ -5578,7 +5708,7 @@ gpsdrive (2.10svn1059) unstable; urgency=low
    *   where no icon is available, an empty png file will serve as placeholder
    * - worked on the poi-display in gpsdrive and fixed some smaller bugs
 
- -- dse <dse@gpsdrive.de>  Sun, 05 Nov 2006 16:48:30 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 05 Nov 2006 16:48:30 +0100
 
 gpsdrive (2.10svn1058) unstable; urgency=low
 
@@ -5590,7 +5720,7 @@ gpsdrive (2.10svn1057) unstable; urgency=low
 
    * spelling and conversion notes in comments
 
- -- hamish <hamish@gpsdrive.de>  Mon, 30 Oct 2006 13:01:49 +0100
+ -- Hamish <hamish_b@yahoo.com>  Mon, 30 Oct 2006 13:01:49 +0100
 
 gpsdrive (2.10svn1056) unstable; urgency=low
 
@@ -5623,13 +5753,13 @@ gpsdrive (2.10svn1052) unstable; urgency=low
 
    * - fixed icons info
 
- -- dse <dse@gpsdrive.de>  Fri, 20 Oct 2006 22:34:53 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 20 Oct 2006 22:34:53 +0200
 
 gpsdrive (2.10svn1051) unstable; urgency=low
 
    * - sorted some icons in 'classic' to fit poi_types
 
- -- dse <dse@gpsdrive.de>  Fri, 20 Oct 2006 22:24:43 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 20 Oct 2006 22:24:43 +0200
 
 gpsdrive (2.10svn1050) unstable; urgency=low
 
@@ -5638,21 +5768,21 @@ gpsdrive (2.10svn1050) unstable; urgency=low
    *   if the appropriate icon isn't created yet, an empty file should do it
    *   as placeholder.
 
- -- dse <dse@gpsdrive.de>  Fri, 20 Oct 2006 22:04:55 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 20 Oct 2006 22:04:55 +0200
 
 gpsdrive (2.10svn1049) unstable; urgency=low
 
    * - added a script which creates a html page to have a better overview about
    *   the available icons and poi-types.
 
- -- dse <dse@gpsdrive.de>  Thu, 19 Oct 2006 21:53:24 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 19 Oct 2006 21:53:24 +0200
 
 gpsdrive (2.10svn1048) unstable; urgency=low
 
    * modified scale for geoscience.
    * Way closer but not perfect yet.  DP
 
- -- pollardd <pollardd@gpsdrive.de>  Thu, 19 Oct 2006 11:43:40 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Thu, 19 Oct 2006 11:43:40 +0200
 
 gpsdrive (2.10svn1047) unstable; urgency=low
 
@@ -5780,7 +5910,7 @@ gpsdrive (2.10svn1027) unstable; urgency=low
 
    * - removed icon historic.png, it's not used anymore
 
- -- dse <dse@gpsdrive.de>  Thu, 12 Oct 2006 21:08:26 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Thu, 12 Oct 2006 21:08:26 +0200
 
 gpsdrive (2.10svn1026) unstable; urgency=low
 
@@ -5830,62 +5960,62 @@ gpsdrive (2.10svn1019) unstable; urgency=low
    * - got display of poi icons working, fixed some bugs in sql queries
    * - fiexed some typos
 
- -- dse <dse@gpsdrive.de>  Wed, 11 Oct 2006 23:31:24 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 11 Oct 2006 23:31:24 +0200
 
 gpsdrive (2.10svn1018) unstable; urgency=low
 
    * spelling typo, expand section which talks about map_ and top_ prefixes
 
- -- hamish <hamish@gpsdrive.de>  Wed, 11 Oct 2006 04:56:13 +0200
+ -- Hamish <hamish_b@yahoo.com>  Wed, 11 Oct 2006 04:56:13 +0200
 
 gpsdrive (2.10svn1017) unstable; urgency=low
 
    * - added some icons for 'misc' in square.big
 
- -- dse <dse@gpsdrive.de>  Tue, 10 Oct 2006 21:16:21 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 10 Oct 2006 21:16:21 +0200
 
 gpsdrive (2.10svn1016) unstable; urgency=low
 
    * - added icon folder 'misc' to square.big
 
- -- dse <dse@gpsdrive.de>  Tue, 10 Oct 2006 21:01:52 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 10 Oct 2006 21:01:52 +0200
 
 gpsdrive (2.10svn1015) unstable; urgency=low
 
    * - added icon folder 'misc' to square.small
 
- -- dse <dse@gpsdrive.de>  Tue, 10 Oct 2006 20:45:05 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 10 Oct 2006 20:45:05 +0200
 
 gpsdrive (2.10svn1014) unstable; urgency=low
 
    * - removed icon folder 'custom' in square.small
 
- -- dse <dse@gpsdrive.de>  Tue, 10 Oct 2006 20:42:13 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 10 Oct 2006 20:42:13 +0200
 
 gpsdrive (2.10svn1013) unstable; urgency=low
 
    * - removed files in icon folder 'custom' (was renamed to 'misc')
 
- -- dse <dse@gpsdrive.de>  Tue, 10 Oct 2006 19:38:54 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Tue, 10 Oct 2006 19:38:54 +0200
 
 gpsdrive (2.10svn1012) unstable; urgency=low
 
    * - cvs sucks...
 
- -- dse <dse@gpsdrive.de>  Fri, 06 Oct 2006 21:41:12 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 06 Oct 2006 21:41:12 +0200
 
 gpsdrive (2.10svn1011) unstable; urgency=low
 
    * - added waypoint icons for marking anything someone likes
 
- -- dse <dse@gpsdrive.de>  Fri, 06 Oct 2006 21:32:50 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 06 Oct 2006 21:32:50 +0200
 
 gpsdrive (2.10svn1010) unstable; urgency=low
 
    * - renamed category 'custom' to 'misc'
    * - added description for base categories in README.icons
 
- -- dse <dse@gpsdrive.de>  Fri, 06 Oct 2006 21:25:31 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 06 Oct 2006 21:25:31 +0200
 
 gpsdrive (2.10svn1009) unstable; urgency=low
 
@@ -5897,7 +6027,7 @@ gpsdrive (2.10svn1008) unstable; urgency=low
 
    * - removed unused icons
 
- -- dse <dse@gpsdrive.de>  Wed, 04 Oct 2006 16:57:36 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 04 Oct 2006 16:57:36 +0200
 
 gpsdrive (2.10svn1007) unstable; urgency=low
 
@@ -5907,7 +6037,7 @@ gpsdrive (2.10svn1007) unstable; urgency=low
    * - added missing base icons for themes 'square.big' and 'square.small',
    *   so the basic set should be complete now.
 
- -- dse <dse@gpsdrive.de>  Wed, 04 Oct 2006 16:55:20 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 04 Oct 2006 16:55:20 +0200
 
 gpsdrive (2.10svn1006) unstable; urgency=low
 
@@ -5932,19 +6062,19 @@ gpsdrive (2.10svn1003) unstable; urgency=low
 
    * Fixed data path variable
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Oct 2006 19:43:17 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 19:43:17 +0200
 
 gpsdrive (2.10svn1002) unstable; urgency=low
 
    * Added option to disable script installation
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Oct 2006 18:41:51 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:41:51 +0200
 
 gpsdrive (2.10svn1001) unstable; urgency=low
 
    * Added gdal suffixes for debian
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 02 Oct 2006 18:35:39 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:35:39 +0200
 
 gpsdrive (2.10svn1000) unstable; urgency=low
 
@@ -5956,7 +6086,7 @@ gpsdrive (2.10svn999) unstable; urgency=low
 
    * - cleaned up info for the icon structure a little bit.
 
- -- dse <dse@gpsdrive.de>  Sun, 01 Oct 2006 15:23:43 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 01 Oct 2006 15:23:43 +0200
 
 gpsdrive (2.10svn998) unstable; urgency=low
 
@@ -5992,88 +6122,88 @@ gpsdrive (2.10svn993) unstable; urgency=low
 
    * New scale for googlesat map server.
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 18 Sep 2006 11:19:30 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 18 Sep 2006 11:19:30 +0200
 
 gpsdrive (2.10svn992) unstable; urgency=low
 
    * Added to and cleaned up the documentation; spell checked it, etc.
    * Also, I stripped trailing white space, which shouldn't break anything, but you never know.
 
- -- charles <charles@gpsdrive.de>  Sun, 17 Sep 2006 05:12:50 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Sun, 17 Sep 2006 05:12:50 +0200
 
 gpsdrive (2.10svn991) unstable; urgency=low
 
    * Updated
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 13 Sep 2006 12:30:49 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 13 Sep 2006 12:30:49 +0200
 
 gpsdrive (2.10svn990) unstable; urgency=low
 
    * Added CMake as second build system, this will replace autofools in future
 
- -- gladiac <gladiac@gpsdrive.de>  Mon, 11 Sep 2006 21:38:07 +0200
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 11 Sep 2006 21:38:07 +0200
 
 gpsdrive (2.10svn989) unstable; urgency=low
 
    * Added gpsdrive.spec.fc* to get that spec file into the distribution tarballs.
 
- -- charles <charles@gpsdrive.de>  Mon, 11 Sep 2006 20:57:57 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Mon, 11 Sep 2006 20:57:57 +0200
 
 gpsdrive (2.10svn988) unstable; urgency=low
 
    * - added some icons to theme 'square.big', category 'places'
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 17:37:34 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 17:37:34 +0200
 
 gpsdrive (2.10svn987) unstable; urgency=low
 
    * - added some icons for theme 'square.big', category 'wlan'
    * - cleaned up the files in category 'food'
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 16:42:44 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 16:42:44 +0200
 
 gpsdrive (2.10svn986) unstable; urgency=low
 
    * - added some icons for theme 'square.big', category 'transport'
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 15:02:11 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 15:02:11 +0200
 
 gpsdrive (2.10svn985) unstable; urgency=low
 
    * - ...
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 14:11:00 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 14:11:00 +0200
 
 gpsdrive (2.10svn984) unstable; urgency=low
 
    * - added some more icons to theme 'square.big', category 'vehicle'
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 14:09:16 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 14:09:16 +0200
 
 gpsdrive (2.10svn983) unstable; urgency=low
 
    * - added some icons for theme 'square.big', category 'vehicle'
 
- -- dse <dse@gpsdrive.de>  Mon, 11 Sep 2006 11:41:03 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 11 Sep 2006 11:41:03 +0200
 
 gpsdrive (2.10svn982) unstable; urgency=low
 
    * - added some new icons for theme 'square.big'
 
- -- dse <dse@gpsdrive.de>  Sun, 10 Sep 2006 18:40:16 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 10 Sep 2006 18:40:16 +0200
 
 gpsdrive (2.10svn981) unstable; urgency=low
 
    * - added appropriate palceholder icons to theme 'square.small'
 
- -- dse <dse@gpsdrive.de>  Sun, 10 Sep 2006 13:47:50 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 10 Sep 2006 13:47:50 +0200
 
 gpsdrive (2.10svn980) unstable; urgency=low
 
    * - added some new icons for theme 'square.big',
    *   especially (more or less) appropriate unknown/placeholder icons
 
- -- dse <dse@gpsdrive.de>  Sun, 10 Sep 2006 13:37:18 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 10 Sep 2006 13:37:18 +0200
 
 gpsdrive (2.10svn979) unstable; urgency=low
 
@@ -6103,81 +6233,81 @@ gpsdrive (2.10svn975) unstable; urgency=low
 
    * Added aclocal autoconf and automake to the top of the script
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 05 Sep 2006 13:47:32 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 05 Sep 2006 13:47:32 +0200
 
 gpsdrive (2.10svn974) unstable; urgency=low
 
    * Modified to allwo for the folder structure
    * Compiles ok now
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 05 Sep 2006 13:46:15 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 05 Sep 2006 13:46:15 +0200
 
 gpsdrive (2.10svn973) unstable; urgency=low
 
    * Added entries for missing square.big folders.
    * Still need to add missing folders for square.small
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 13:40:13 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 13:40:13 +0200
 
 gpsdrive (2.10svn972) unstable; urgency=low
 
    * Add placeholder.png
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 12:43:19 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 12:43:19 +0200
 
 gpsdrive (2.10svn971) unstable; urgency=low
 
    * Add placeholder.png
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 11:40:25 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 11:40:25 +0200
 
 gpsdrive (2.10svn970) unstable; urgency=low
 
    * Add placeholder.png for classic public directory
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 11:27:32 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 11:27:32 +0200
 
 gpsdrive (2.10svn969) unstable; urgency=low
 
    * New icon for the bulding sub directory
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 11:22:09 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 11:22:09 +0200
 
 gpsdrive (2.10svn968) unstable; urgency=low
 
    * Added new icon gor education sub directory
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 04 Sep 2006 11:12:11 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 04 Sep 2006 11:12:11 +0200
 
 gpsdrive (2.10svn967) unstable; urgency=low
 
    * Updated to allow for new icons
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 03 Sep 2006 13:45:12 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 03 Sep 2006 13:45:12 +0200
 
 gpsdrive (2.10svn966) unstable; urgency=low
 
    * New icon for geocache
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 03 Sep 2006 10:13:46 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 03 Sep 2006 10:13:46 +0200
 
 gpsdrive (2.10svn965) unstable; urgency=low
 
    * Readded these file after previous files were reported as "dead revisions"
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 03 Sep 2006 06:52:03 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 03 Sep 2006 06:52:03 +0200
 
 gpsdrive (2.10svn964) unstable; urgency=low
 
    * Re adding education.png.  Previous addition was reported as "dead revision"
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 03 Sep 2006 06:49:21 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 03 Sep 2006 06:49:21 +0200
 
 gpsdrive (2.10svn963) unstable; urgency=low
 
    * Modified file permissions
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 03 Sep 2006 04:22:13 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 03 Sep 2006 04:22:13 +0200
 
 gpsdrive (2.10svn962) unstable; urgency=low
 
@@ -6207,7 +6337,7 @@ gpsdrive (2.10svn958) unstable; urgency=low
 
    * Add missing icon
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 01 Sep 2006 13:30:49 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 01 Sep 2006 13:30:49 +0200
 
 gpsdrive (2.10svn957) unstable; urgency=low
 
@@ -6287,163 +6417,163 @@ gpsdrive (2.10svn945) unstable; urgency=low
 
    * Updated icons.txt file
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 29 Aug 2006 12:22:08 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 29 Aug 2006 12:22:08 +0200
 
 gpsdrive (2.10svn944) unstable; urgency=low
 
    * New icons for small square top level
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 29 Aug 2006 12:17:52 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 29 Aug 2006 12:17:52 +0200
 
 gpsdrive (2.10svn943) unstable; urgency=low
 
    * New sports icon
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 29 Aug 2006 12:13:33 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 29 Aug 2006 12:13:33 +0200
 
 gpsdrive (2.10svn942) unstable; urgency=low
 
    * new icon file
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 29 Aug 2006 12:11:59 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 29 Aug 2006 12:11:59 +0200
 
 gpsdrive (2.10svn941) unstable; urgency=low
 
    * Initial checkin
 
- -- charles <charles@gpsdrive.de>  Mon, 28 Aug 2006 16:43:30 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Mon, 28 Aug 2006 16:43:30 +0200
 
 gpsdrive (2.10svn940) unstable; urgency=low
 
    * New Wlan icon
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:46:51 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:46:51 +0200
 
 gpsdrive (2.10svn939) unstable; urgency=low
 
    * New icons for vehicle folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:39:47 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:39:47 +0200
 
 gpsdrive (2.10svn938) unstable; urgency=low
 
    * New icons for the transport folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:33:51 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:33:51 +0200
 
 gpsdrive (2.10svn937) unstable; urgency=low
 
    * New icon for sport folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:29:53 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:29:53 +0200
 
 gpsdrive (2.10svn936) unstable; urgency=low
 
    * New icon for shopping folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:25:02 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:25:02 +0200
 
 gpsdrive (2.10svn935) unstable; urgency=low
 
    * New icon for religion folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:19:03 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:19:03 +0200
 
 gpsdrive (2.10svn934) unstable; urgency=low
 
    * New icons for recreation folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:14:05 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:14:05 +0200
 
 gpsdrive (2.10svn933) unstable; urgency=low
 
    * New icons for the places folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:08:28 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:08:28 +0200
 
 gpsdrive (2.10svn932) unstable; urgency=low
 
    * New icons for the people folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 14:04:34 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 14:04:34 +0200
 
 gpsdrive (2.10svn931) unstable; urgency=low
 
    * New files for the other folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:59:54 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:59:54 +0200
 
 gpsdrive (2.10svn930) unstable; urgency=low
 
    * New icons in the nautical folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:46:29 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:46:29 +0200
 
 gpsdrive (2.10svn929) unstable; urgency=low
 
    * New icon in the money folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:42:49 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:42:49 +0200
 
 gpsdrive (2.10svn928) unstable; urgency=low
 
    * New icons in the health folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:39:14 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:39:14 +0200
 
 gpsdrive (2.10svn927) unstable; urgency=low
 
    * New icons for food folder
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:34:04 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:34:04 +0200
 
 gpsdrive (2.10svn926) unstable; urgency=low
 
    * New or renamed icons that match top level folder names
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:27:03 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:27:03 +0200
 
 gpsdrive (2.10svn925) unstable; urgency=low
 
    * Regenerated Icons.txt file to include new icons in sub folders
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:21:14 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:21:14 +0200
 
 gpsdrive (2.10svn924) unstable; urgency=low
 
    * New script to generate the icons.txt file
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 13:15:20 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 13:15:20 +0200
 
 gpsdrive (2.10svn923) unstable; urgency=low
 
    * New Icon
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 25 Aug 2006 12:40:06 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 25 Aug 2006 12:40:06 +0200
 
 gpsdrive (2.10svn922) unstable; urgency=low
 
    * We were not installing several man pages. This is now fixed.
 
- -- charles <charles@gpsdrive.de>  Wed, 23 Aug 2006 21:47:03 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Wed, 23 Aug 2006 21:47:03 +0200
 
 gpsdrive (2.10svn921) unstable; urgency=low
 
    * Added accelerator keys to the Misc. menu, so you can now, e.g., exit with "ALT-M Q".
 
- -- charles <charles@gpsdrive.de>  Wed, 23 Aug 2006 21:39:48 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Wed, 23 Aug 2006 21:39:48 +0200
 
 gpsdrive (2.10svn920) unstable; urgency=low
 
    * Updated, re-wrote some of the language. Updated the OpenOffice stuff to cover both OOo 1.x and 2.0.x.
 
- -- charles <charles@gpsdrive.de>  Wed, 23 Aug 2006 21:33:21 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Wed, 23 Aug 2006 21:33:21 +0200
 
 gpsdrive (2.10svn919) unstable; urgency=low
 
    * When processing a file of points (e.g. a gpsdrive track file), we now ignore lines with undefined lat or long. This handles blank lines, which gpsreplay uses as segment delimiters. Also, caught a spelling error.
 
- -- charles <charles@gpsdrive.de>  Wed, 23 Aug 2006 19:36:18 +0200
+ -- Charles Curley <charlescurley@charlescurley.com>  Wed, 23 Aug 2006 19:36:18 +0200
 
 gpsdrive (2.10svn918) unstable; urgency=low
 
@@ -6463,45 +6593,45 @@ gpsdrive (2.10svn916) unstable; urgency=low
 
    * Added some mysql build scripts
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 13:27:21 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 13:27:21 +0200
 
 gpsdrive (2.10svn915) unstable; urgency=low
 
    * New script file that reads the icons directory structure and generates
    * a new icons.txt file
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 13:04:36 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 13:04:36 +0200
 
 gpsdrive (2.10svn914) unstable; urgency=low
 
    * New icons.txt file generated by rebuild-icons.txt.sh
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 13:01:57 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 13:01:57 +0200
 
 gpsdrive (2.10svn913) unstable; urgency=low
 
    * Fixed a few little things.
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 07:24:44 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 07:24:44 +0200
 
 gpsdrive (2.10svn912) unstable; urgency=low
 
    * Fixed up username and password stuff
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 07:16:26 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 07:16:26 +0200
 
 gpsdrive (2.10svn911) unstable; urgency=low
 
    * Fixed the location of mysqld.sock
    * Fixed the comments a bit.
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 02:56:50 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 02:56:50 +0200
 
 gpsdrive (2.10svn910) unstable; urgency=low
 
    * Fixed up the username and password stuff
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 22 Aug 2006 02:47:56 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 22 Aug 2006 02:47:56 +0200
 
 gpsdrive (2.10svn909) unstable; urgency=low
 
@@ -6558,28 +6688,28 @@ gpsdrive (2.10svn902) unstable; urgency=low
    * Two scripts to build a mysql database engine and initialise a database for gpsdrive.
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 20 Aug 2006 04:48:28 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 20 Aug 2006 04:48:28 +0200
 
 gpsdrive (2.10svn901) unstable; urgency=low
 
    * Added section on compiling mysql and an example
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 20 Aug 2006 04:42:36 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 20 Aug 2006 04:42:36 +0200
 
 gpsdrive (2.10svn900) unstable; urgency=low
 
    * Something had added an extra CR to the end of every line
    * This caused the icon not to work on DSL.  (Talk about a pain to find)
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 20 Aug 2006 01:55:37 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 20 Aug 2006 01:55:37 +0200
 
 gpsdrive (2.10svn899) unstable; urgency=low
 
    * Modified Set Privilages section to include grant of "lock tables" permission
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 20 Aug 2006 01:28:26 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 20 Aug 2006 01:28:26 +0200
 
 gpsdrive (2.10svn898) unstable; urgency=low
 
@@ -6592,14 +6722,14 @@ gpsdrive (2.10svn897) unstable; urgency=low
    * Created script to run apt-get and install all of the required dev packages
    * to compile gpsdrive on debian.
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 15 Aug 2006 13:50:17 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 15 Aug 2006 13:50:17 +0200
 
 gpsdrive (2.10svn896) unstable; urgency=low
 
    * Added notes regarding Fedora Core
    * and new devpackages-debian.sh system preperation script.
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 15 Aug 2006 13:46:44 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 15 Aug 2006 13:46:44 +0200
 
 gpsdrive (2.10svn895) unstable; urgency=low
 
@@ -6612,7 +6742,7 @@ gpsdrive (2.10svn894) unstable; urgency=low
    * Modified perl include path
    * changed /opt/gpsdrive to opt/gpsdrive/share/perl5
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 13 Aug 2006 14:09:22 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 13 Aug 2006 14:09:22 +0200
 
 gpsdrive (2.10svn893) unstable; urgency=low
 
@@ -6672,7 +6802,7 @@ gpsdrive (2.10svn884) unstable; urgency=low
 
    * Fixed up some typoes and added some version numbers
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 06 Aug 2006 05:23:11 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 06 Aug 2006 05:23:11 +0200
 
 gpsdrive (2.10svn883) unstable; urgency=low
 
@@ -6910,13 +7040,13 @@ gpsdrive (2.10svn847) unstable; urgency=low
 
    * Updated the README
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 31 Jul 2006 06:59:31 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 31 Jul 2006 06:59:31 +0200
 
 gpsdrive (2.10svn846) unstable; urgency=low
 
    * Added README.mysql to the installed files
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 31 Jul 2006 02:23:34 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 31 Jul 2006 02:23:34 +0200
 
 gpsdrive (2.10svn845) unstable; urgency=low
 
@@ -6934,20 +7064,20 @@ gpsdrive (2.10svn843) unstable; urgency=low
 
    * Fixed a problem testing for gpsdrive sub directory already exists
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 30 Jul 2006 07:15:11 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 30 Jul 2006 07:15:11 +0200
 
 gpsdrive (2.10svn842) unstable; urgency=low
 
    * Added gpsdrive sub directory to the package directory
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 30 Jul 2006 06:58:31 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 30 Jul 2006 06:58:31 +0200
 
 gpsdrive (2.10svn841) unstable; urgency=low
 
    * New file containing more up to date information on mysql
    * It is work in progress maked with <TODO> flags.
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 30 Jul 2006 02:40:08 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 30 Jul 2006 02:40:08 +0200
 
 gpsdrive (2.10svn840) unstable; urgency=low
 
@@ -7054,7 +7184,7 @@ gpsdrive (2.10svn824) unstable; urgency=low
 
    * national borders without coastline
 
- -- hamish <hamish@gpsdrive.de>  Wed, 19 Jul 2006 14:37:26 +0200
+ -- Hamish <hamish_b@yahoo.com>  Wed, 19 Jul 2006 14:37:26 +0200
 
 gpsdrive (2.10svn823) unstable; urgency=low
 
@@ -7070,7 +7200,7 @@ gpsdrive (2.10svn822) unstable; urgency=low
    * libxcursor 1.1.3 to 1.1.2
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 16 Jul 2006 05:04:57 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 16 Jul 2006 05:04:57 +0200
 
 gpsdrive (2.10svn821) unstable; urgency=low
 
@@ -7082,7 +7212,7 @@ gpsdrive (2.10svn820) unstable; urgency=low
 
    * Modified echo text from libcairo2 to libcairo
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 10 Jul 2006 13:11:16 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 10 Jul 2006 13:11:16 +0200
 
 gpsdrive (2.10svn819) unstable; urgency=low
 
@@ -7238,20 +7368,20 @@ gpsdrive (2.10svn796) unstable; urgency=low
 
    * - added some icons for theme square.small
 
- -- dse <dse@gpsdrive.de>  Fri, 16 Jun 2006 09:08:51 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 16 Jun 2006 09:08:51 +0200
 
 gpsdrive (2.10svn795) unstable; urgency=low
 
    * - changed order of lat/lon input in add waypoint window to match usual order
 
- -- dse <dse@gpsdrive.de>  Fri, 16 Jun 2006 09:02:15 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 16 Jun 2006 09:02:15 +0200
 
 gpsdrive (2.10svn794) unstable; urgency=low
 
    * Removed line about last build date
    * This isn't relevent as I have not made the compiled/packaged file available.
 
- -- pollardd <pollardd@gpsdrive.de>  Thu, 15 Jun 2006 13:44:28 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Thu, 15 Jun 2006 13:44:28 +0200
 
 gpsdrive (2.10svn793) unstable; urgency=low
 
@@ -7265,13 +7395,13 @@ gpsdrive (2.10svn792) unstable; urgency=low
    * exported as a second layer with the GRASS PNG driver and recombined in
    * the GIMP using a 40% transparent "Dodge". Bounds are unchnanged.
 
- -- hamish <hamish@gpsdrive.de>  Tue, 13 Jun 2006 13:58:33 +0200
+ -- Hamish <hamish_b@yahoo.com>  Tue, 13 Jun 2006 13:58:33 +0200
 
 gpsdrive (2.10svn791) unstable; urgency=low
 
    * Added libxml-parser-perl
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 12 Jun 2006 01:45:50 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 12 Jun 2006 01:45:50 +0200
 
 gpsdrive (2.10svn790) unstable; urgency=low
 
@@ -7308,13 +7438,13 @@ gpsdrive (2.10svn785) unstable; urgency=low
 
    * Fixed typo in error message
 
- -- pollardd <pollardd@gpsdrive.de>  Thu, 08 Jun 2006 14:32:42 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Thu, 08 Jun 2006 14:32:42 +0200
 
 gpsdrive (2.10svn784) unstable; urgency=low
 
    * increase MAXSATS as WAAS/EGNOS sats use higher PRN numbers
 
- -- hamish <hamish@gpsdrive.de>  Thu, 08 Jun 2006 07:28:00 +0200
+ -- Hamish <hamish_b@yahoo.com>  Thu, 08 Jun 2006 07:28:00 +0200
 
 gpsdrive (2.10svn783) unstable; urgency=low
 
@@ -7330,7 +7460,7 @@ gpsdrive (2.10svn783) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Thu, 08 Jun 2006 07:24:59 +0200
+ -- Hamish <hamish_b@yahoo.com>  Thu, 08 Jun 2006 07:24:59 +0200
 
 gpsdrive (2.10svn782) unstable; urgency=low
 
@@ -7346,7 +7476,7 @@ gpsdrive (2.10svn782) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Thu, 08 Jun 2006 07:24:24 +0200
+ -- Hamish <hamish_b@yahoo.com>  Thu, 08 Jun 2006 07:24:24 +0200
 
 gpsdrive (2.10svn781) unstable; urgency=low
 
@@ -7362,13 +7492,13 @@ gpsdrive (2.10svn781) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Thu, 08 Jun 2006 07:23:24 +0200
+ -- Hamish <hamish_b@yahoo.com>  Thu, 08 Jun 2006 07:23:24 +0200
 
 gpsdrive (2.10svn780) unstable; urgency=low
 
    * new maps: Asia West (+India and Middle East); Asia East; and Japan/Korea
 
- -- hamish <hamish@gpsdrive.de>  Thu, 08 Jun 2006 07:21:12 +0200
+ -- Hamish <hamish_b@yahoo.com>  Thu, 08 Jun 2006 07:21:12 +0200
 
 gpsdrive (2.10svn779) unstable; urgency=low
 
@@ -7381,14 +7511,14 @@ gpsdrive (2.10svn778) unstable; urgency=low
    * Reduced required libpango version from 1.10.4 to 1.10.2
    * Reduced required libglib version from 2.8.6 to 2.8.5
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 06 Jun 2006 12:45:56 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 06 Jun 2006 12:45:56 +0200
 
 gpsdrive (2.10svn777) unstable; urgency=low
 
    * Reduced required libpago version from 1.10.4 to 1.10.2
    * Reduced required libglib version from 2.8.6 to 2.8.5
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 06 Jun 2006 12:43:28 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 06 Jun 2006 12:43:28 +0200
 
 gpsdrive (2.10svn776) unstable; urgency=low
 
@@ -7400,7 +7530,7 @@ gpsdrive (2.10svn775) unstable; urgency=low
 
    * add UK map, install NZ map
 
- -- hamish <hamish@gpsdrive.de>  Tue, 06 Jun 2006 07:13:58 +0200
+ -- Hamish <hamish_b@yahoo.com>  Tue, 06 Jun 2006 07:13:58 +0200
 
 gpsdrive (2.10svn774) unstable; urgency=low
 
@@ -7423,7 +7553,7 @@ gpsdrive (2.10svn773) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:50:40 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:50:40 +0200
 
 gpsdrive (2.10svn772) unstable; urgency=low
 
@@ -7440,7 +7570,7 @@ gpsdrive (2.10svn772) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:49:43 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:49:43 +0200
 
 gpsdrive (2.10svn771) unstable; urgency=low
 
@@ -7457,7 +7587,7 @@ gpsdrive (2.10svn771) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:48:57 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:48:57 +0200
 
 gpsdrive (2.10svn770) unstable; urgency=low
 
@@ -7474,7 +7604,7 @@ gpsdrive (2.10svn770) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:48:10 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:48:10 +0200
 
 gpsdrive (2.10svn769) unstable; urgency=low
 
@@ -7491,7 +7621,7 @@ gpsdrive (2.10svn769) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:47:19 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:47:19 +0200
 
 gpsdrive (2.10svn768) unstable; urgency=low
 
@@ -7508,7 +7638,7 @@ gpsdrive (2.10svn768) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:46:30 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:46:30 +0200
 
 gpsdrive (2.10svn767) unstable; urgency=low
 
@@ -7525,7 +7655,7 @@ gpsdrive (2.10svn767) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:45:32 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:45:32 +0200
 
 gpsdrive (2.10svn766) unstable; urgency=low
 
@@ -7543,7 +7673,7 @@ gpsdrive (2.10svn766) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:44:20 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:44:20 +0200
 
 gpsdrive (2.10svn765) unstable; urgency=low
 
@@ -7560,7 +7690,7 @@ gpsdrive (2.10svn765) unstable; urgency=low
    * e-w resol:  0:00:30
    * n-s resol:  0:00:30
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:41:59 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:41:59 +0200
 
 gpsdrive (2.10svn764) unstable; urgency=low
 
@@ -7581,13 +7711,13 @@ gpsdrive (2.10svn764) unstable; urgency=low
    * File->Save As->.jpeg qual=75
    * Adjust map_koord scale by *=2 or *=4
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 14:38:38 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 14:38:38 +0200
 
 gpsdrive (2.10svn763) unstable; urgency=low
 
    * typo
 
- -- hamish <hamish@gpsdrive.de>  Mon, 05 Jun 2006 10:31:39 +0200
+ -- Hamish <hamish_b@yahoo.com>  Mon, 05 Jun 2006 10:31:39 +0200
 
 gpsdrive (2.10svn762) unstable; urgency=low
 
@@ -7679,7 +7809,7 @@ gpsdrive (2.10svn750) unstable; urgency=low
    * - added file dev-icons.txt as replacement for icons.txt for the future;
    *   currently just used to have a overview of the new icons
 
- -- dse <dse@gpsdrive.de>  Sun, 21 May 2006 12:04:16 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 21 May 2006 12:04:16 +0200
 
 gpsdrive (2.10svn749) unstable; urgency=low
 
@@ -7762,14 +7892,14 @@ gpsdrive (2.10svn738) unstable; urgency=low
    * Fixed an error message with uname -p on debian
    * Send TODO output to std error
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 08 May 2006 14:37:52 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 08 May 2006 14:37:52 +0200
 
 gpsdrive (2.10svn737) unstable; urgency=low
 
    * Fixed error with uname -p on debian
    * Redirected TODO output to std error
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 08 May 2006 14:35:44 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 08 May 2006 14:35:44 +0200
 
 gpsdrive (2.10svn736) unstable; urgency=low
 
@@ -7815,7 +7945,7 @@ gpsdrive (2.10svn731) unstable; urgency=low
 
    * Modified to include new packages
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 24 Apr 2006 10:12:11 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 24 Apr 2006 10:12:11 +0200
 
 gpsdrive (2.10svn730) unstable; urgency=low
 
@@ -7928,14 +8058,14 @@ gpsdrive (2.10svn713) unstable; urgency=low
    * Forgot to commit this last time I modified configure.ac
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 18 Apr 2006 14:33:41 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 18 Apr 2006 14:33:41 +0200
 
 gpsdrive (2.10svn712) unstable; urgency=low
 
    * Added Various Tests
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Fri, 14 Apr 2006 14:02:57 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Fri, 14 Apr 2006 14:02:57 +0200
 
 gpsdrive (2.10svn711) unstable; urgency=low
 
@@ -7981,89 +8111,89 @@ gpsdrive (2.10svn706) unstable; urgency=low
 
    * - fixed some typos added myself to TODO file
 
- -- dse <dse@gpsdrive.de>  Sat, 01 Apr 2006 11:37:20 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sat, 01 Apr 2006 11:37:20 +0200
 
 gpsdrive (2.10svn705) unstable; urgency=low
 
    * Updated for Libcairo
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Thu, 30 Mar 2006 12:12:49 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Thu, 30 Mar 2006 12:12:49 +0200
 
 gpsdrive (2.10svn704) unstable; urgency=low
 
    * Added detection for Cairo
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 29 Mar 2006 13:59:46 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 29 Mar 2006 13:59:46 +0200
 
 gpsdrive (2.10svn703) unstable; urgency=low
 
    * Added instructions on how to use geoingo.pl to create a new database.
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 29 Mar 2006 12:24:38 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 29 Mar 2006 12:24:38 +0200
 
 gpsdrive (2.10svn702) unstable; urgency=low
 
    * Added comments showing things TODO
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Tue, 28 Mar 2006 13:38:43 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Tue, 28 Mar 2006 13:38:43 +0200
 
 gpsdrive (2.10svn701) unstable; urgency=low
 
    * Added details for ATK
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 27 Mar 2006 13:18:24 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 27 Mar 2006 13:18:24 +0200
 
 gpsdrive (2.10svn700) unstable; urgency=low
 
    * Added test for ATK
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Mon, 27 Mar 2006 13:12:43 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Mon, 27 Mar 2006 13:12:43 +0200
 
 gpsdrive (2.10svn699) unstable; urgency=low
 
    * -  added some icons for the following categories:
    *    wlan, transportation, people, health, geocache, food/
 
- -- dse <dse@gpsdrive.de>  Sun, 26 Mar 2006 19:22:14 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 26 Mar 2006 19:22:14 +0200
 
 gpsdrive (2.10svn698) unstable; urgency=low
 
    * - added new icons for basic categories
 
- -- dse <dse@gpsdrive.de>  Sun, 26 Mar 2006 18:18:15 +0200
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Sun, 26 Mar 2006 18:18:15 +0200
 
 gpsdrive (2.10svn697) unstable; urgency=low
 
    *  Added detection for libglib2.0 (2.8.6-1)
    *  DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 26 Mar 2006 09:51:50 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 26 Mar 2006 09:51:50 +0200
 
 gpsdrive (2.10svn696) unstable; urgency=low
 
    * Added checks for libglib2.0-0
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sun, 26 Mar 2006 09:49:27 +0200
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sun, 26 Mar 2006 09:49:27 +0200
 
 gpsdrive (2.10svn695) unstable; urgency=low
 
    * DP Update test for libgtk2.0
 
- -- pollardd <pollardd@gpsdrive.de>  Sat, 25 Mar 2006 12:09:50 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sat, 25 Mar 2006 12:09:50 +0100
 
 gpsdrive (2.10svn694) unstable; urgency=low
 
    * Fixed requirements for gdal and grass.
    * DP
 
- -- pollardd <pollardd@gpsdrive.de>  Sat, 25 Mar 2006 02:03:15 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Sat, 25 Mar 2006 02:03:15 +0100
 
 gpsdrive (2.10svn693) unstable; urgency=low
 
@@ -8095,33 +8225,33 @@ gpsdrive (2.10svn689) unstable; urgency=low
    * - added directory structure for new icons
    * - added README file for information about new icons
 
- -- dse <dse@gpsdrive.de>  Wed, 15 Mar 2006 13:24:24 +0100
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Wed, 15 Mar 2006 13:24:24 +0100
 
 gpsdrive (2.10svn688) unstable; urgency=low
 
    * Modified to indicate the addition of the DEVPACKAGES text file.
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 15 Mar 2006 12:23:25 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 15 Mar 2006 12:23:25 +0100
 
 gpsdrive (2.10svn687) unstable; urgency=low
 
    * New file that contains all the development packages required to build gpsdrive
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 15 Mar 2006 12:18:06 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 15 Mar 2006 12:18:06 +0100
 
 gpsdrive (2.10svn686) unstable; urgency=low
 
    * Modified to allow for relative paths
    * Also remove logging.  Users can redirect to a file if required
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 15 Mar 2006 11:40:44 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 15 Mar 2006 11:40:44 +0100
 
 gpsdrive (2.10svn685) unstable; urgency=low
 
    * Modified to allow for relative paths
    * Also removed logging to file.  User can redirect output to a file if required
 
- -- pollardd <pollardd@gpsdrive.de>  Wed, 15 Mar 2006 11:38:53 +0100
+ -- "David Pollard" <david.pollard@optusnet.com.au>  Wed, 15 Mar 2006 11:38:53 +0100
 
 gpsdrive (2.10svn684) unstable; urgency=low
 
@@ -9050,7 +9180,7 @@ gpsdrive (2.10svn545) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 01 Nov 2005 16:06:10 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 01 Nov 2005 16:06:10 +0100
 
 gpsdrive (2.10svn544) unstable; urgency=low
 
@@ -9353,13 +9483,13 @@ gpsdrive (2.10svn502) unstable; urgency=low
 
    * removed unneccessary files in mysql
 
- -- ganter <ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:49:09 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:49:09 +0200
 
 gpsdrive (2.10svn501) unstable; urgency=low
 
    * added additional mysql include files
 
- -- ganter <ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:22:49 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:22:49 +0200
 
 gpsdrive (2.10svn500) unstable; urgency=low
 
@@ -9367,7 +9497,7 @@ gpsdrive (2.10svn500) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- ganter <ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:19:56 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:19:56 +0200
 
 gpsdrive (2.10svn499) unstable; urgency=low
 
@@ -9939,7 +10069,7 @@ gpsdrive (2.10svn419) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 12 Jan 2005 23:37:09 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 12 Jan 2005 23:37:09 +0100
 
 gpsdrive (2.10svn418) unstable; urgency=low
 
@@ -9976,25 +10106,25 @@ gpsdrive (2.10svn413) unstable; urgency=low
 
    * adding ignore files
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:50:43 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:50:43 +0100
 
 gpsdrive (2.10svn412) unstable; urgency=low
 
    * update ignore file
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:46:15 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:46:15 +0100
 
 gpsdrive (2.10svn411) unstable; urgency=low
 
    * todo update
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:45:39 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:45:39 +0100
 
 gpsdrive (2.10svn410) unstable; urgency=low
 
    * Mistakes with CVSIGNORE vs. .cvsignore
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:39:55 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:39:55 +0100
 
 gpsdrive (2.10svn409) unstable; urgency=low
 
@@ -10006,19 +10136,19 @@ gpsdrive (2.10svn408) unstable; urgency=low
 
    * Ignore built files
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:59 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:59 +0100
 
 gpsdrive (2.10svn407) unstable; urgency=low
 
    * Ignoring more
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:14 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:14 +0100
 
 gpsdrive (2.10svn406) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 11 Jan 2005 22:31:19 +0100
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:31:19 +0100
 
 gpsdrive (2.10svn405) unstable; urgency=low
 
@@ -10456,7 +10586,7 @@ gpsdrive (2.10svn345) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- cjastram <cjastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:39 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:39 +0200
 
 gpsdrive (2.10svn344) unstable; urgency=low
 
@@ -10494,7 +10624,7 @@ gpsdrive (2.10svn339) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- cjastram <cjastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:34 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:34 +0200
 
 gpsdrive (2.10svn338) unstable; urgency=low
 
@@ -10506,7 +10636,7 @@ gpsdrive (2.10svn337) unstable; urgency=low
 
    * Ignore makefiles
 
- -- cjastram <cjastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:32 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:32 +0200
 
 gpsdrive (2.10svn336) unstable; urgency=low
 
@@ -11025,7 +11155,7 @@ gpsdrive (2.10svn270) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- ganter <ganter@gpsdrive.de>  Wed, 08 Jun 1994 10:37:42 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Wed, 08 Jun 1994 10:37:42 +0200
 
 gpsdrive (2.10svn269) unstable; urgency=low
 
@@ -11327,7 +11457,7 @@ gpsdrive (2.10svn226) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:34 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:34 +0200
 
 gpsdrive (2.10svn225) unstable; urgency=low
 
@@ -11577,7 +11707,7 @@ gpsdrive (2.10svn190) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- cjastram <cjastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:26 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:26 +0200
 
 gpsdrive (2.10svn189) unstable; urgency=low
 
@@ -11876,7 +12006,7 @@ gpsdrive (2.10svn146) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:44 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:44 +0200
 
 gpsdrive (2.10svn145) unstable; urgency=low
 
@@ -12032,7 +12162,7 @@ gpsdrive (2.10svn128) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- cjastram <cjastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:41 +0200
+ -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:41 +0200
 
 gpsdrive (2.10svn127) unstable; urgency=low
 
@@ -12532,7 +12662,7 @@ gpsdrive (2.10svn60) unstable; urgency=low
 
    * anyone has destroyed the GPS-Time display, fixed
 
- -- ganter <ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:23 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:23 +0200
 
 gpsdrive (2.10svn59) unstable; urgency=low
 
@@ -12553,7 +12683,7 @@ gpsdrive (2.10svn57) unstable; urgency=low
 
    * fix for locale problem
 
- -- ganter <ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:22 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:22 +0200
 
 gpsdrive (2.10svn56) unstable; urgency=low
 
@@ -12567,7 +12697,7 @@ gpsdrive (2.10svn55) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- ganter <ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:21 +0200
+ -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:21 +0200
 
 gpsdrive (2.10svn54) unstable; urgency=low
 
