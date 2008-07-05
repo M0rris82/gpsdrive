@@ -642,7 +642,7 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	globruntime = runtime / 1000;
 	loadpercent = (int) (100.0 * (float) runtime / (runtime + runtime2));
 	if ( mydebug>30 )
-		g_print ("Rechenzeit: %dms, %d%%\n", (int) (runtime / 1000),
+		g_print ("Computation time: %dms, %d%%\n", (int) (runtime / 1000),
 			 loadpercent);
 
 	return FALSE;
@@ -1215,7 +1215,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		}
 		else
 		{
-			g_strlcpy (t_buf, "--- street name not available ---", sizeof (t_buf));
+			g_strlcpy (t_buf, _("--- street name not available ---"), sizeof (t_buf));
 		}
 		draw_infotext (t_buf);
 	}
@@ -1523,7 +1523,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 				    ok = FALSE;
 				if (okcount > 2000)
 				    {
-					g_print ("\nloop detected, please report!\n");
+					g_print (_("\nLoop detected, please report!\n"));
 					ok = TRUE;
 				    }
 			    }
@@ -2023,7 +2023,7 @@ void termhandler (int sig)
 void
 usr2handler (int sig)
 {
-	g_print ("\ngot SIGUSR2\n");
+	g_print (_("\nGot SIGUSR2; restarting GPS connection.\n"));
 	initgps ();
 }
 
@@ -2071,7 +2071,7 @@ parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
 		else
 		{
 			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
-				"gui-mode '%s' not supported", value);
+				_("GUI mode '%s' not supported"), value);
 			return FALSE;
 		}
 	}
@@ -2089,7 +2089,7 @@ parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
 		else
 		{
 			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
-				"config file '%s' not found.", value);
+				_("config file '%s' not found"), value);
 			return FALSE;
 		}
 	}
@@ -2105,7 +2105,7 @@ parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
 		else
 		{
 			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
-				"screenshot directory '%s' not found.", value);
+				_("screenshot directory '%s' not found"), value);
 			return FALSE;
 		}
 	}
@@ -2130,54 +2130,54 @@ main (int argc, char *argv[])
     GError *error = NULL;
     gboolean show_version = FALSE;
 
-    GOptionContext *opt_context = g_option_context_new ("Navigation System");
-    const gchar opt_desc[] = "Website: http://www.gpsdrive.de";
+    GOptionContext *opt_context = g_option_context_new (_("Navigation System"));
+    const gchar opt_desc[] = N_("Website: http://www.gpsdrive.de");
 
     GOptionEntry opt_entries[] =
     {
 	{"embedded", 'e', 0, G_OPTION_ARG_NONE, &local_config.embeddable_gui,
-		"embeddable GUI mode: no GUI appears - for use in external GTK apps", NULL},
+		_("don't show GUI; for use in external GTK apps"), NULL},
 	{"force-position", 'f', 0, G_OPTION_ARG_NONE, &forcehavepos,
-		"force display of position even it is invalid", NULL},
+		_("force display of position even it is invalid"), NULL},
 	{"ignore-checksum", 'i', 0, G_OPTION_ARG_NONE, &ignorechecksum,
-		"ignore NMEA checksum (risky, only for broken GPS receivers", NULL},
+		_("ignore NMEA checksum (risky, only for broken GPS receivers)"), NULL},
 	{"position-mode", 'p', 0, G_OPTION_ARG_NONE, &gui_status.posmode,
-		"start in Position Mode", NULL},
+		_("start in Position Mode"), NULL},
 	{"nosplash", 's', 0, G_OPTION_ARG_NONE, &nosplash,
-		"don't show splash screen", NULL},
+		_("don't show splash screen"), NULL},
 	{"touchscreen", 't', 0, G_OPTION_ARG_NONE, &onemousebutton,
-		"have only one button mouse, for example when using a touchscreen", NULL},
+		_("having only a single button, for example when using a touchscreen"), NULL},
 	{"verbose", 'v', 0, G_OPTION_ARG_NONE, &debug,
-		"show some debug info", NULL},
+		_("show some debug info"), NULL},
 	{"use-DBUS", 'x', 0, G_OPTION_ARG_NONE, &useDBUS,
-		"use DBUS for communication with gpsd; this disables socket communication", NULL},
+		_("use DBUS for communication with gpsd; this disables socket communication"), NULL},
 	{"alt-offset", 'A', 0, G_OPTION_ARG_INT, &local_config.normalnull,
-		"correct the altitude by adding this value", "<OFFSET>"},
+		_("correct the altitude by adding this value"), _("<OFFSET>")},
 	{"gpsd-server", 'B', 0, G_OPTION_ARG_STRING, &gpsdservername,
-		"servername for NMEA server (if gpsd runs on another host)", "<SERVER>"},
+		_("servername for NMEA server (if gpsd runs on another host)"), _("<SERVER>")},
 	{"config-file", 'C', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
-		"set config file to use", "<FILE>"},
+		_("set config file to use"), _("<FILE>")},
 	{"debug", 'D', 0, G_OPTION_ARG_INT, &mydebug,
-		"set debugging level", "<LEVEL>"},
+		_("set debugging level"), _("<LEVEL>")},
 	{"friends-server", 'F', 0, G_OPTION_ARG_FILENAME, &local_config.friends_serverfqn,
-		"select friends server, e.g. friendsd.gpsdrive.de", "<SERVERFILE>"},
+		_("select friends server, e.g. friendsd.gpsdrive.de"), _("<SERVERFILE>")},
 	{"geometry", 'G', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
-		"set window geometry, e.g. 800x600", "<GEOMETRY>"},
+		_("set window geometry, e.g. 800x600"), _("<GEOMETRY>")},
 	{"gui-mode", 'M', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
-		"set GUI mode: may be 'desktop' (default), 'pda' or 'car'", "[car|pda|desktop]"},
+		_("set GUI mode, 'desktop' is the default"), "[car|pda|desktop]"},
 	{"nmeaout", 'N', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
-		"set serial device, pty master, or file to use for NMEA output", "<FILE>"},
+		_("set serial device, pty master, or file to use for NMEA output"), _("<FILE>")},
 	{"screenshot", 'S', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
-		"take auto screenshots of different window (don't touch gpsdrive!)", "<PATH>" },
+		_("take auto screenshots of different window (don't touch gpsdrive!)"), _("<PATH>")},
 	{"run-test", 'T', 0, G_OPTION_ARG_NONE, &do_unit_test,
-		"do some internal unit tests (don't start gpsdrive)", NULL},
+		_("do some internal unit tests (don't start gpsdrive)"), NULL},
 	{"version", 0, 0, G_OPTION_ARG_NONE, &show_version,
-		"show version info", NULL},
+		_("show version info"), NULL},
 	{NULL}
     };
 
-    g_option_context_set_description (opt_context, opt_desc);
-    g_option_context_add_main_entries (opt_context, opt_entries, GETTEXT_PACKAGE);
+    g_option_context_set_description (opt_context, _(opt_desc));
+    g_option_context_add_main_entries (opt_context, opt_entries, PACKAGE);
     g_option_context_add_group (opt_context, gtk_get_option_group (TRUE));
 
 
@@ -2221,8 +2221,8 @@ main (int argc, char *argv[])
     g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
     g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
     g_strlcpy (current.target, "     ", sizeof (current.target));
-    g_strlcpy (utctime, "n/a", sizeof (utctime));
-    g_strlcpy (oldangle, "none", sizeof (oldangle));
+    g_strlcpy (utctime, _("n/a"), sizeof (utctime));
+    g_strlcpy (oldangle, _("none"), sizeof (oldangle));
     pixelfact = MAPSCALE / PIXELFACT;
     g_strlcpy (oldfilename, "", sizeof (oldfilename));
     maploaded = FALSE;
@@ -2357,13 +2357,13 @@ main (int argc, char *argv[])
 	/* we need to parse command args 2 times, because we need the config file param */
 	if (!g_option_context_parse (opt_context, &argc, &argv, &error))
 	{
-		g_print ("option parsing failed: %s\n", error->message);
+		g_print (_("Parsing of options failed: %s\n"), error->message);
 		exit (EXIT_FAILURE);
 	}
 	if (show_version)
 	{
-		g_print ("\ngpsdrive (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
-			"\nVersion %s\n%s\n\n", VERSION, rcsid);
+		g_print (_("\nGpsDrive (C) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+			"\nVersion %s\n%s\n\n"), VERSION, rcsid);
 		exit (EXIT_SUCCESS);
 	}
 
@@ -2392,7 +2392,7 @@ main (int argc, char *argv[])
     /* 2. run see comment at first run */
 	if (!g_option_context_parse (opt_context, &argc, &argv, &error))
 	{
-		g_print ("option parsing failed: %s\n", error->message);
+		g_print (_("Parsing of options failed: %s\n"), error->message);
 		exit (EXIT_FAILURE);
 	}
 
@@ -2483,7 +2483,7 @@ main (int argc, char *argv[])
 
 	if (db_init () == FALSE)
 	{
-		g_print ("Disabling database support!\n");
+		g_print (_("Disabling database support!\n"));
 		local_config.use_database = FALSE;
 	}
 
@@ -2492,7 +2492,7 @@ main (int argc, char *argv[])
 
 	if( current.kismetsock != -1 )
 	{
-	    g_print (_("\nkismet server found\n"));
+	    g_print (_("\nKismet server found\n"));
 	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
 	    speech_out_speek (t_buf);
 	};
@@ -2526,7 +2526,7 @@ main (int argc, char *argv[])
                                   GDK_HINT_RESIZE_INC);
 
 	if (!gtk_window_parse_geometry(GTK_WINDOW (main_window), geometry)) {
-	    fprintf(stderr, "Failed to parse %s\n", geometry);
+	    fprintf(stderr, _("Failed to parse %s\n"), geometry);
 	}
 	}
 #endif
@@ -2631,7 +2631,7 @@ main (int argc, char *argv[])
     g_print (_("\n\nThank you for using GpsDrive!\n\n"));
 
     if ( do_unit_test )
-	g_print ("\n\nAll Unit Tests successfull\n\n");
+	g_print (_("\n\nAll Unit Tests were successful.\n\n"));
 
     return EXIT_SUCCESS;
 }
