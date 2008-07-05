@@ -2190,10 +2190,13 @@ main (int argc, char *argv[])
 
     gdouble f;
 
-    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-    bind_textdomain_codeset (PACKAGE, "utf8");
-    textdomain (GETTEXT_PACKAGE);
 
+#ifdef ENABLE_NLS
+    /*  Activate localization -- L10n */
+    setlocale(LC_ALL, "");
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+#endif
 
     current.needtosave = FALSE;
 
@@ -2290,8 +2293,6 @@ main (int argc, char *argv[])
 #ifndef _WIN32
     signal (SIGUSR1, signalposreq);
 #endif
-
-    /*  I18l */
 
     /*  Detect the language for voice output */
     {
