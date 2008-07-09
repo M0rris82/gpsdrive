@@ -1,0 +1,10 @@
+Von: "Andrew Carey" <andcarey@gmail.com>
+Datum: Gestern 11:29:52
+I have tried to import some maps I have as 1280x1024 gifs.  I select the file, click on my first reference point, and enter the coordinates, and accept the first point.  Then I do the same for the second point.  However, when I check the maps_koord.txt file it is entered as:
+ 
+map_NZ522_150_01.gif -36.77728 nan 26179
+
+Note the 'nan' value for the latitiude.
+
+-----------------------------------------------------------------------------------------------------------
+
