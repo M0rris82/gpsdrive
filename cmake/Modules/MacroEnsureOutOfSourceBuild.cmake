@@ -6,11 +6,12 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-MACRO (MACRO_ENSURE_OUT_OF_SOURCE_BUILD _errorMessage)
+macro (MACRO_ENSURE_OUT_OF_SOURCE_BUILD _errorMessage)
 
-   STRING(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" insource)
-   IF(insource)
-      MESSAGE(FATAL_ERROR "${_errorMessage}")
-   ENDIF(insource)
+   string(COMPARE EQUAL "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" _insource)
+   if (_insource)
+     message(SEND_ERROR "${_errorMessage}")
+     message(FATAL_ERROR "Remove the file CMakeCache.txt in ${CMAKE_SOURCE_DIR} first.")
+   endif (_insource)
 
-ENDMACRO (MACRO_ENSURE_OUT_OF_SOURCE_BUILD)
+endmacro (MACRO_ENSURE_OUT_OF_SOURCE_BUILD)
