@@ -9,8 +9,6 @@ if (WITH_SCRIPTS)
     geo-nearest
     geocache2way
     geo-code
-    gpssql_backup.sh
-    gpssql_restore.sh
     gpsreplay
     gpssmswatch
     gpsfetchmap.pl

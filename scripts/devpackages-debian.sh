@@ -1,17 +1,21 @@
 #!/bin/bash
 
-# Packages required to build Gpsdrive`
-# =====================================
-# Notes:
-# This script has been tested on Debian Stable (Etch) 
-# It is now considered that the Debian Sarge packages are no longer
-# sufficient to compile gpsdrive.
-# 
-# Minimum required versions are not checked for here. 
-# ./configure will report some version problems but not all.
-#
-# If an individual package has no dependencies it will be installed without 
-# question.  If a package had dependencies you will be asked to confirm (Y/n)
+if echo "$@" | grep -q -e '--help' ; then
+    echo "# Install Packages required to build Gpsdrive"
+    echo "# ==========================================="
+    echo "# Notes:"
+    echo "# This script has been tested on Debian Stable (Etch) "
+    echo "# It is now considered that the Debian Sarge packages are no longer"
+    echo "# sufficient to compile gpsdrive."
+    echo "# "
+    echo "# Minimum required versions are not checked for here. "
+    echo "# ./configure will report some version problems but not all."
+    echo "#"
+    echo "# If an individual package has no dependencies it will be installed without "
+    echo "# question.  If a package had dependencies you will be asked to confirm (Y/n)"
+    echo ""
+    exit 0
+fi
 #
 # ===========================================================================
 # Date         Initials    Desc.

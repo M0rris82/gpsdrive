@@ -487,3 +487,53 @@ fill_default_sources();
 fill_default_poi_types();
 fill_osm_table();
 
+
+__END__
+
+=head1 NAME
+
+B<create_geoinfo-db.pl>
+
+=head1 DESCRIPTION
+
+B<create_geoinfo-db.pl> is creating the geoinfo.db from the icons and icons.xml File
+
+Create SQLite Database file used by GpsDrive
+Fill it with:
+   - POI Sources predefined in this script
+   - POI Types as defined in icons.xml
+
+=head1 SYNOPSIS
+
+B<Common usages:>
+
+  create_geoinfo-db.pl --lang=en
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-lang>
+
+select the language to use
+
+=back
+
+
+=head1 AUTHOR
+
+Written by Guenther Meyer <d.s.e@sordidmusic.com>
+
+=head1 COPYRIGHT
+
+This is free software.  You may redistribute copies of it under the terms of the GNU General Pub-
+lic  License <http://www.gnu.org/licenses/gpl.html>.  There is NO WARRANTY, to the extent permit-
+ted by law.
+
+=head1 SEE ALSO
+
+gpsdrive(1)
+
+
+=cut
+

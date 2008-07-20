@@ -48,7 +48,7 @@ install: build
 	# Add here commands to install the package into debian/gpsdrive.
 	cd build; $(MAKE) DESTDIR=$(destdir) install
 
-	scripts/create_misssing_man_pages.sh scripts $(destdir)/usr/share/man/man1
+	debian/create_misssing_man_pages.sh scripts $(destdir)/usr/share/man/man1
 
 	# remove maps from main package, because it 
 	# will be buildt in gpsdrive-data-maps package

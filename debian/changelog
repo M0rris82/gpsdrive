@@ -1,8 +1,132 @@
-gpsdrive (2.10svn19918774) unstable; urgency=low
+gpsdrive (2.10svn20119192) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:41:15 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:57:59 +0200
+
+   * no Commit Message
+
+gpsdrive (2.10svn2011) unstable; urgency=low
+
+   * Remove mysql helper scripts, since we no longer use mysql
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:35:15 +0200
+
+gpsdrive (2.10svn2010) unstable; urgency=low
+
+   * Remove start_mysql_as_user, since we no longer use mysql
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:33:21 +0200
+
+gpsdrive (2.10svn2009) unstable; urgency=low
+
+   * Remove old mapnik updater script
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:26:59 +0200
+
+gpsdrive (2.10svn2008) unstable; urgency=low
+
+   * Quickfix against Error in 'cmake install' 
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 00:51:30 +0200
+
+gpsdrive (2.10svn2007) unstable; urgency=low
+
+   * Enable and Disable function for mapnik caching
+
+ -- Christoph Metz <loom@mopper.de>  Mon, 21 Jul 2008 00:48:34 +0200
+
+gpsdrive (2.10svn2006) unstable; urgency=low
+
+   * - added button to settings to toggle mapnik map caching
+
+ -- Guenther Meyer <d.s.e@sordidmusic.com>  Mon, 21 Jul 2008 00:36:12 +0200
+
+gpsdrive (2.10svn2005) unstable; urgency=low
+
+   * - Multithreading for mapnik generation.
+   * - Mapnik cache. 
+   * - Mapnik fixed tiles
+
+ -- Christoph Metz <loom@mopper.de>  Sun, 20 Jul 2008 21:43:03 +0200
+
+gpsdrive (2.10svn2004) unstable; urgency=low
+
+   * sync po-files from translation project
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 19 Jul 2008 17:18:36 +0200
+
+gpsdrive (2.10svn2003) unstable; urgency=low
+
+   * Enable generation of the language files again.
+
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:54:43 +0200
+
+gpsdrive (2.10svn2002) unstable; urgency=low
+
+   * Add a message to remove CMakeCache.txt to get out-of-source working.
+
+ -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:46:22 +0200
+
+gpsdrive (2.10svn2001) unstable; urgency=low
+
+   * Add File Known Bugs. So we don't forget open Bugs
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Thu, 10 Jul 2008 00:48:40 +0200
+
+gpsdrive (2.10svn2000) unstable; urgency=low
+
+   * remove old config-guess
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 16:42:19 +0200
+
+gpsdrive (2.10svn1999) unstable; urgency=low
+
+   *  remove old automake stuff
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 16:42:07 +0200
+
+gpsdrive (2.10svn1998) unstable; urgency=low
+
+   * Remove old controll scripts
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 16:37:46 +0200
+
+gpsdrive (2.10svn1997) unstable; urgency=low
+
+   * Remove old automake FIles
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 16:21:00 +0200
+
+gpsdrive (2.10svn1996) unstable; urgency=low
+
+   * Rename POTFILES, remove old Makefile.in.in
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 16:17:05 +0200
+
+gpsdrive (2.10svn1995) unstable; urgency=low
+
+   * Add New Indonesian PO file from translation project
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sun, 06 Jul 2008 13:22:12 +0200
+
+gpsdrive (2.10svn1994) unstable; urgency=low
+
+   * Sort Filenames and add new ones
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:45:31 +0200
+
+gpsdrive (2.10svn1993) unstable; urgency=low
+
+   * Auto-Update Changelog
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:43:46 +0200
+
+gpsdrive (2.10svn1992) unstable; urgency=low
+
+   * Update .pot File
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 05 Jul 2008 23:42:22 +0200
 
 gpsdrive (2.10svn1991) unstable; urgency=low
 
@@ -1846,6 +1970,8 @@ gpsdrive (2.10svn1697) unstable; urgency=low
 
 gpsdrive (2.10svn1696) unstable; urgency=low
 
+   * no Commit Message
+
 
  -- Christoph Metz <loom@mopper.de>  Sun, 16 Sep 2007 12:00:38 +0200
 
@@ -2210,6 +2336,8 @@ gpsdrive (2.10svn1633) unstable; urgency=low
  -- Guenther Meyer <d.s.e@sordidmusic.com>  Fri, 14 Sep 2007 00:27:14 +0200
 
 gpsdrive (2.10svn1632) unstable; urgency=low
+
+   * no Commit Message
 
 
  -- Christoph Metz <loom@mopper.de>  Fri, 14 Sep 2007 00:20:25 +0200
@@ -4062,6 +4190,8 @@ gpsdrive (2.10svn1300) unstable; urgency=low
  -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:34:02 +0200
 
 gpsdrive (2.10svn1299) unstable; urgency=low
+
+   * no Commit Message
 
 
  -- Christoph Metz <loom@mopper.de>  Mon, 02 Apr 2007 17:22:47 +0200
@@ -9275,7 +9405,7 @@ gpsdrive (2.10svn533) unstable; urgency=low
 
    * Updated to attempt fix on bug reported by Andreas.
 
- -- robstewart <robstewart@gpsdrive.de>  Tue, 11 Oct 2005 00:00:41 +0200
+ -- Rob Stewart <Rob Stewart@gpsdrive.de>  Tue, 11 Oct 2005 00:00:41 +0200
 
 gpsdrive (2.10svn532) unstable; urgency=low
 
@@ -10674,7 +10804,7 @@ gpsdrive (2.10svn331) unstable; urgency=low
 
    * Updated to attempt fix on bug reported by Andreas.
 
- -- robstewart <robstewart@gpsdrive.de>  Wed, 08 Jun 1994 15:02:30 +0200
+ -- Rob Stewart <Rob Stewart@gpsdrive.de>  Wed, 08 Jun 1994 15:02:30 +0200
 
 gpsdrive (2.10svn330) unstable; urgency=low
 

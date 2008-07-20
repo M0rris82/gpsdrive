@@ -1,6 +1,9 @@
 #!/bin/bash
-# This is an example script to connect to a Bluetooth device and then restart gpsd
 
+if echo "$@" | grep -q -e '--help' ; then
+    echo "This is an example script to connect to a Bluetooth device and then restart gpsd"
+    exit -1
+fi
 
 while [ -z "$GPS_MAC" ] ; do
     echo "hcitool scan"
