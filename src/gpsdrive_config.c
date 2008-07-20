@@ -175,6 +175,11 @@ writeconfig ()
 	} else {
 		fprintf (fp, "mapnik = %d\n", 0);
 	}
+	fprintf (fp, "mapnik_caching = ");
+	if (local_config.mapnik_caching == 0)
+		fprintf (fp, "0\n");
+	else
+		fprintf (fp, "1\n");
 	fprintf (fp, "mapnik_xml_file = ");
 	fprintf (fp, "%s\n", local_config.mapnik_xml_file);
 	fprintf (fp, "mapnik_xml_template = ");
@@ -371,6 +376,8 @@ readconfig ()
 
 			else if ( (strcmp(par1, "mapnik")) == 0)
 				local_config.MapnikStatusInt = atoi (par2);
+			else if ( (strcmp(par1, "mapnik_caching")) == 0)
+				local_config.mapnik_caching = atoi (par2);
 			else if ( (strcmp(par1, "mapnik_xml_file")) == 0)
 				g_strlcpy (local_config.mapnik_xml_file, par2,
 					sizeof (local_config.mapnik_xml_file));
@@ -558,6 +565,7 @@ config_init ()
 	local_config.dashboard[3] = DASH_ALT;
 	local_config.dashboard[4] = DASH_TIME;
 	local_config.MapnikStatusInt = 0;
+	local_config.mapnik_caching = TRUE;
 	local_config.nightmode = NIGHT_OFF;
 	local_config.posmarker = 0;
 	local_config.maxcpuload = 40;

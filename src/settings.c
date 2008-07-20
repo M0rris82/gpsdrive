@@ -881,7 +881,7 @@ settings_general (GtkWidget *notebook)
 	GtkWidget *general_vbox;
 	GtkWidget *general_label;
 	GtkWidget *misc_table, *misc_frame, *misc_fr_lb;
-	GtkWidget *mapdir_label, *mapdir_bt;
+	GtkWidget *mapdir_label, *mapdir_bt, *mapnik_caching_bt;
 	GtkWidget *map_table, *map_frame, *map_fr_lb;
 
 	general_tooltips = gtk_tooltips_new ();
@@ -979,6 +979,13 @@ settings_general (GtkWidget *notebook)
 		"also the index file map_koord.txt must be present."), NULL);
 	g_signal_connect (mapdir_bt, "selection-changed",
 		GTK_SIGNAL_FUNC (setmapdir_cb), NULL);
+
+	mapnik_caching_bt = gtk_check_button_new_with_label (_("Enable Map Caching"));
+	if (local_config.mapnik_caching)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mapnik_caching_bt), TRUE);
+	else
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (mapnik_caching_bt), FALSE);
+	g_signal_connect (mapnik_caching_bt, "toggled", G_CALLBACK (settogglevalue_cb), &local_config.mapnik_caching);
 	}
 	
 	/* map table */
@@ -990,6 +997,9 @@ settings_general (GtkWidget *notebook)
 		mapdir_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (map_table),
 		mapdir_bt, 1, 2, 0, 1);
+#ifdef MAPNIK
+	gtk_table_attach_defaults (GTK_TABLE (map_table), mapnik_caching_bt, 0, 2, 1, 2);
+#endif
 	}
 	
 	general_vbox = gtk_vbox_new (FALSE, 2);

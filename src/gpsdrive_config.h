@@ -71,6 +71,7 @@ typedef struct
 	guint poi_results_max;
 	gdouble poi_searchradius;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
+	gboolean mapnik_caching;
 	gint simmode;
 	gboolean use_database;
 	gboolean showmaptype;
