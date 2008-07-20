@@ -21,17 +21,20 @@ MACRO(MACRO_GENERATE_PO_FILES _podir _applicationname _sources)
 		FILE(GLOB _pofiles ${_podir}/*.po)
 
 		FOREACH(_file ${_pofiles})
-
 			GET_FILENAME_COMPONENT(_infile   ${_file} ABSOLUTE)
 			GET_FILENAME_COMPONENT(_basename ${_file} NAME_WE)
+			#MESSAGE("DEBUG: file: ${_file}")
+			#MESSAGE("DEBUG: infile ${_infile}")
+			#MESSAGE("DEBUG: basename ${_basename}")
 
 			IF(UNIX)
 				FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/po)
 				GET_FILENAME_COMPONENT(_outfile
-					${CMAKE_CURRENT_BINARY_DIR}/po/${_basename}.mo
+					${CMAKE_CURRENT_BINARY_DIR}/../src/po/${_basename}.mo
 					ABSOLUTE
 				)
-			#MESSAGE("DEBUG: ${MSGFMT_EXECUTABLE} -o ${_outfile} ${_infile}")
+			        #MESSAGE("DEBUG: outfile ${_outfile}")
+			        #MESSAGE("DEBUG: ${MSGFMT_EXECUTABLE} -o ${_outfile} ${_infile}")
 
 				ADD_CUSTOM_COMMAND(
 					OUTPUT ${_outfile}
@@ -51,7 +54,7 @@ MACRO(MACRO_GENERATE_PO_FILES _podir _applicationname _sources)
 				RENAME
 					${_applicationname}.mo
 			)
-			#MESSAGE("DEBUG: install ${_outfile} to ${LOCALE_INSTALL_DIR}/${_basename}/LC_MESSAGES/")
+		        #MESSAGE("DEBUG: install ${_outfile} to ${LOCALE_INSTALL_DIR}/${_basename}/LC_MESSAGES/")
 		ENDFOREACH(_file ${_pofiles})
 
 		SET(${_sources} ${${_sources}} ${_mofiles})
