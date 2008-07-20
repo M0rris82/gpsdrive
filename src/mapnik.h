@@ -15,15 +15,17 @@
 #ifndef _MAPNIK_DEF_H
 #define _MAPNIK_DEF_H
 
+#include "gtk/gtk.h"
+
 void init_mapnik(char *ConfigXML);
 int active_mapnik_ysn();
 int gen_mapnik_config_xml_ysn(char *Dest, char *Username,int night_color_replace);
 int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pForceNewCenterYsn, const int pScaleLevelInt);
-void render_mapnik ( );
-unsigned char *get_mapnik_imagedata ( );
+GdkPixbuf *get_mapnik_gdk_pixbuf ( );
 double get_mapnik_mapscale();
 double get_mapnik_pixelfactor();
 int get_mapnik_newmapysn();
+int set_mapnik_newmapysn(int pInt);
 void get_mapnik_center(double *pLatDbl, double *pLonDbl);
 void get_mapnik_calcxytopos(double *pLatDbl, double *pLonDbl, int pX, int pY, int pXOffInt, int pYOffInt, int zoom, int mapx2Int, int mapy2Int);
 void get_mapnik_calcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDbl, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int);

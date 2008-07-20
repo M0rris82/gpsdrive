@@ -5,10 +5,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp> 
+#include <boost/filesystem.hpp>
+#include <boost/bind.hpp>
+#include <boost/thread/thread.hpp>
 #include <mapnik/map.hpp>
 #include <mapnik/load_map.hpp>
 #include <mapnik/agg_renderer.hpp>
@@ -40,22 +42,21 @@ using mapnik::config_error;
 extern int mydebug;
 extern int borderlimit;
 
-
 mapnik::projection Proj("+proj=merc +datum=WGS84");
 //mapnik::projection Proj("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over");
 
 typedef struct {
+	int NewMapYsn;
 	int WidthInt;
 	int HeightInt;
-	int BorderlimitInt;
-	double CenterLatDbl;
-	double CenterLonDbl;
+	double ScaleDbl;
+	double NewScaleDbl;
 	mapnik::coord2d CenterPt;
-	int RenderMapYsn;
-	double ScaleInt;
-	unsigned char *ImageRawDataPtr;
 	mapnik::Map *MapPtr;
-	int NewMapYsn;
+	unsigned char *ImageRawDataPtr;
+	GdkPixbuf *GdkPixbufPtr;
+	mapnik::coord2d NewCenterPt;
+	int RenderYsn;
 } MapnikMapStruct;
 
 MapnikMapStruct MapnikMap;
@@ -66,30 +67,66 @@ namespace mapnik {
 using namespace std;
 using namespace mapnik;
 
+void render_thread();
+
 /*
-double scales [] = {279541132.014,
-                    139770566.007,
-                    69885283.0036,
-                    34942641.5018,
-                    17471320.7509,
-                    8735660.37545,
-                    4367830.18772,
-                    2183915.09386,
-                    1091957.54693,
-                    545978.773466,
-                    272989.386733,
-                    136494.693366,
-                    68247.3466832,
-                    34123.6733416,
-                    17061.8366708,
-                    8530.9183354,
-                    4265.4591677,
-                    2132.72958385,
-                    1066.36479192,
-                    533.182395962};
-const int MIN_LEVEL = 0;
-const int MAX_LEVEL = 18;
-*/
+ * try reading map from cache
+ */
+int try_read_tile_from_cache() {
+	mapnik::coord2d Pt = MapnikMap.NewCenterPt;
+    // to lat and lon
+    Proj.inverse(Pt.x, Pt.y);
+    gchar mappath[2048];
+    gchar filename[2048];
+
+    // use scaleint not newscaleint, thread save, only the renderer can change scalint
+    g_snprintf (mappath, sizeof (mappath), "%smapnik_cache/%.0f", local_config.dir_maps, MapnikMap.NewScaleDbl);
+
+    g_snprintf (filename, sizeof (mappath), "%s/%f_%f.jpeg", mappath, Pt.x, Pt.y);
+
+	if(g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		MapnikMap.GdkPixbufPtr = gdk_pixbuf_new_from_file (filename, NULL);
+		// ok activate new file for display
+		MapnikMap.CenterPt = MapnikMap.NewCenterPt;
+		MapnikMap.ScaleDbl = MapnikMap.NewScaleDbl;
+		MapnikMap.NewMapYsn = true;
+		return 1;
+	}
+
+	return 0;
+}
+
+/*
+ * save to img cache
+ */
+void add_current_tile_to_cache() {
+	mapnik::coord2d Pt = MapnikMap.CenterPt;
+	// to lat and lon
+	Proj.inverse(Pt.x, Pt.y);
+	gchar mappath[2048];
+	gchar filename[2048];
+
+	// use scaleint not newscaleint, thread save, only the renderer can change scalint
+	cout << MapnikMap.ScaleDbl << endl;
+	g_snprintf (mappath, sizeof (mappath), "%smapnik_cache/%.0f", local_config.dir_maps, MapnikMap.ScaleDbl);
+	cout << mappath << endl;
+	
+	// create path if not exists
+	if(!g_file_test (mappath, G_FILE_TEST_IS_DIR)) {
+	   	if (!boost::filesystem::create_directories(mappath)) {
+			cerr << "Mapnik: Could not create Mapnik temp dir!" << endl;
+			return;
+		}
+	}
+
+	g_snprintf (filename, sizeof (mappath), "%s/%f_%f.jpeg", mappath, Pt.x, Pt.y);
+
+	// save file
+	GError **error = NULL; 
+	gdk_pixbuf_save(MapnikMap.GdkPixbufPtr, filename, "jpeg", error, "qulity", "70", NULL);
+
+
+}
 
 /* 
  * little replace function for strings
@@ -107,6 +144,37 @@ string ReplaceString(const string &SearchString, const string &ReplaceString, st
     return StringToReplace;
 }
 
+/*
+ * get center for best tile
+ */
+mapnik::coord2d get_best_tile_center(const mapnik::coord2d pPt, int pForceYsn) {
+    double scale_denom = MapnikMap.NewScaleDbl;
+    double res = scale_denom * 0.00028;
+	int WidthInt = MapnikMap.WidthInt - 2 * 256;
+	int HeightInt = MapnikMap.HeightInt - 2 * 256;
+	
+	mapnik::coord2d Pt = pPt;
+	
+	if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - borderlimit) * res) < Pt.x || 
+		(MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - borderlimit) * res) > Pt.x ||
+		(MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - borderlimit) * res) < Pt.y ||
+		(MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - borderlimit) * res) > Pt.y ||
+   		pForceYsn) {
+		// pos
+		Pt.x = WidthInt * res * int(Pt.x / (WidthInt * res)) + (WidthInt / 2 * res);
+		Pt.y = HeightInt * res * int(Pt.y / (HeightInt * res)) + (HeightInt / 2 * res);
+    } else {
+		// take old
+		Pt = MapnikMap.CenterPt;
+	}
+
+	// Proj.inverse(Pt.x, Pt.y);
+	// cout << " -> " << Pt << endl;
+	// Proj.forward(Pt.x, Pt.y);
+
+
+	return Pt;
+}
 
 /*
  * initialize mapnik
@@ -122,14 +190,14 @@ void init_mapnik (char *ConfigXML) {
     if (mydebug > 10) cout << "datasource_cache::instance()->register_datasources(" << input_path << ")" << endl;
     datasource_cache::instance()->register_datasources(input_path);
 
-    boost:: filesystem::directory_iterator end_iter;
-    for ( boost:: filesystem::directory_iterator dir_itr( local_config.mapnik_font_path );
+    boost::filesystem::directory_iterator end_iter;
+    for ( boost::filesystem::directory_iterator dir_itr( local_config.mapnik_font_path );
           dir_itr != end_iter;
           ++dir_itr ) {
 
       try {
 
-        if ( boost:: filesystem::is_regular( dir_itr->status() ) ) {
+        if ( boost::filesystem::is_regular( dir_itr->status() ) ) {
           if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->leaf() << ")" << endl;
           freetype_engine::register_font( dir_itr->string() );
         }
@@ -141,17 +209,19 @@ void init_mapnik (char *ConfigXML) {
 
     MapnikMap.WidthInt = 1280;
     MapnikMap.HeightInt = 1024;
-    MapnikMap.BorderlimitInt = borderlimit;
-    MapnikMap.ScaleInt = -1; // <-- force creation of map if a map is set
+    MapnikMap.ScaleDbl = -1; // <-- force creation of map if a map is set
     MapnikMap.MapPtr = new mapnik::Map(MapnikMap.WidthInt, MapnikMap.HeightInt);
+	MapnikMap.CenterPt = mapnik::coord2d(0,0);
+	MapnikMap.NewCenterPt = mapnik::coord2d(0,0);
 
     //load map
     try {
         std::string mapnik_config_file (ConfigXML);
-	if (mydebug > 10) cout << "mapnik::load_map('" << mapnik_config_file <<"')" << endl;
-        mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
-	if (mydebug > 10) cout << "malloc map" << endl;
-        MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
+	    if (mydebug > 10) cout << "mapnik::load_map('" << mapnik_config_file <<"')" << endl;
+	        mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
+		if (mydebug > 10) cout << "malloc map" << endl;
+        	MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
+		boost::thread(boost::bind(&render_thread));
         MapnikInitYsn = -1;
     }
     catch(const mapnik::config_error &ex) {
@@ -181,27 +251,27 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
     if (mydebug > 10) cout << "Check Mapnik config-template: " << local_config.mapnik_xml_template << endl;
     if (mydebug > 10) cout << "Check Mapnik config-file: " << Dest << endl;
 
-    bool have_template = boost:: filesystem::exists(local_config.mapnik_xml_template);
-    bool have_dest = boost:: filesystem::exists(Dest);
+    bool have_template = boost::filesystem::exists(local_config.mapnik_xml_template);
+    bool have_dest = boost::filesystem::exists(Dest);
 
     if ( ! have_template)
     {
-	have_template = boost:: filesystem::exists("./scripts/mapnik/osm-template.xml");
+	have_template = boost::filesystem::exists("./scripts/mapnik/osm-template.xml");
 	if (mydebug > 10) cout << "Check Mapnik config-file:  ./scripts/mapnik/osm-template.xml" << endl;
     }
     if ( ! have_template)
     {
-	have_template = boost:: filesystem::exists("../scripts/mapnik/osm-template.xml");
+	have_template = boost::filesystem::exists("../scripts/mapnik/osm-template.xml");
 	if (mydebug > 10) cout << "Check Mapnik config-file:  ../scripts/mapnik/osm-template.xml" << endl;
     }
     if ( ! have_template)
     {
-	have_template = boost:: filesystem::exists("/usr/local/share/gpsdrive/osm-template.xml");
+	have_template = boost::filesystem::exists("/usr/local/share/gpsdrive/osm-template.xml");
 	if (mydebug > 10) cout << "Check Mapnik config-file:  /usr/local/share/gpsdrive/osm-template.xml" << endl;
     }
     if ( ! have_template)
     {
-	have_template = boost:: filesystem::exists("/usr/share/gpsdrive/osm-template.xml");
+	have_template = boost::filesystem::exists("/usr/share/gpsdrive/osm-template.xml");
 	if (mydebug > 10) cout << "Check Mapnik config-file:  /usr/share/gpsdrive/osm-template.xml" << endl;
     }
 
@@ -262,70 +332,80 @@ int gen_mapnik_config_xml_ysn(char *Dest, char *Username, int night_color_replac
  *  set new map values
  * center lat/lon
  * pForceNewCenterYsn = force maprendering with new center
- * pScaleInt = gpsdrive scale wanted
+ * pScaleDbl = gpsdrive scale wanted
  * returing yes/no if a new map should be rendered
  */
 extern "C"
-int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pForceNewCenterYsn, const int pScaleInt) {
+int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pForceNewCenterYsn, const int pScaleDbl) {
 	int PanCntInt = 0;
 	int OnMapYsn = 0;
-	double scale_denom = MapnikMap.ScaleInt;
+	double scale_denom = MapnikMap.ScaleDbl;
 	double res = scale_denom * 0.00028;
-	/* first we disable the map rendering 
-	 * and test if we need to render a new map */
-	MapnikMap.RenderMapYsn = 0;
-	
-	if (pScaleInt != MapnikMap.ScaleInt) {
+	int RenderMapYsn = 0;
+
+	if (MapnikMap.RenderYsn) return 1;
+
+
+	if (pScaleDbl != MapnikMap.ScaleDbl) {
 		/* new  scale */
-		MapnikMap.ScaleInt = pScaleInt;
+		MapnikMap.NewScaleDbl = pScaleDbl;
 		pForceNewCenterYsn = 1; /* we always force the center */
 	}
 	
+	mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
+	Proj.forward(Pt.x, Pt.y);
+
+	mapnik::coord2d BestPt = get_best_tile_center(Pt, pForceNewCenterYsn);
+
+	if (BestPt.x != MapnikMap.CenterPt.x || BestPt.y != MapnikMap.CenterPt.y || pForceNewCenterYsn) {
+		MapnikMap.NewCenterPt = BestPt;
+		if (!try_read_tile_from_cache()) {
+			MapnikMap.RenderYsn = true;
+		}
+	}
+
+	return 1;
+	
 	/* force new center */
 	if (pForceNewCenterYsn) {
-		MapnikMap.CenterLatDbl = pPosLatDbl;
-		MapnikMap.CenterLonDbl = pPosLonDbl;
-		MapnikMap.RenderMapYsn = 1;
+		MapnikMap.NewCenterPt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
+		Proj.forward(MapnikMap.NewCenterPt.x, MapnikMap.NewCenterPt.y);
+		RenderMapYsn = 1;
 	}
 	/* if a new map should be rendered, 
 	 * then caculate new center pix coord
 	 * else out of allowed map aerea? pan!*/
-	if (MapnikMap.RenderMapYsn) {
-		/* calc new center pix */
-		MapnikMap.CenterPt.x = MapnikMap.CenterLonDbl;
-		MapnikMap.CenterPt.y = MapnikMap.CenterLatDbl;
-		Proj.forward(MapnikMap.CenterPt.x, MapnikMap.CenterPt.y);
-	} else {
+	if (!RenderMapYsn) {
 		/* out of allowed map area? pan! if more then 10 times to pan center to map*/
+		mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
+		Proj.forward(Pt.x, Pt.y);
 		while (!OnMapYsn && PanCntInt < 10) {
 			OnMapYsn = 1;
-			mapnik::coord2d Pt = mapnik::coord2d(pPosLonDbl, pPosLatDbl);
-			Proj.forward(Pt.x, Pt.y);
 			/* pan right or left? */
-			if ((MapnikMap.CenterPt.x + (0.5 * MapnikMap.WidthInt - borderlimit) * res) < Pt.x) {
+			if ((MapnikMap.NewCenterPt.x + (0.5 * MapnikMap.WidthInt - borderlimit) * res) < Pt.x) {
 				/* pan right */
 				if (mydebug > 30) cout << "pan right\n";
-				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x + (MapnikMap.WidthInt - borderlimit * 2) * res;
+				MapnikMap.NewCenterPt.x = MapnikMap.NewCenterPt.x + (MapnikMap.WidthInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
-			} else if ((MapnikMap.CenterPt.x - (0.5 * MapnikMap.WidthInt - borderlimit) * res) > Pt.x) {
+			} else if ((MapnikMap.NewCenterPt.x - (0.5 * MapnikMap.WidthInt - borderlimit) * res) > Pt.x) {
 				/* pan left */
 				if (mydebug > 30) cout << "pan left\n";
-				MapnikMap.CenterPt.x = MapnikMap.CenterPt.x - (MapnikMap.WidthInt - borderlimit * 2) * res;
+				MapnikMap.NewCenterPt.x = MapnikMap.NewCenterPt.x - (MapnikMap.WidthInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			}
 			/* pan up or down? */
-			if ((MapnikMap.CenterPt.y + (0.5 * MapnikMap.HeightInt - borderlimit) * res) < Pt.y) {
+			if ((MapnikMap.NewCenterPt.y + (0.5 * MapnikMap.HeightInt - borderlimit) * res) < Pt.y) {
 				/* pan up */
 				if (mydebug > 30) cout << "pan up\n";
-				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y + (MapnikMap.HeightInt - borderlimit * 2) * res;
+				MapnikMap.NewCenterPt.y = MapnikMap.NewCenterPt.y + (MapnikMap.HeightInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
-			} else if ((MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - borderlimit) * res) > Pt.y) {
+			} else if ((MapnikMap.NewCenterPt.y - (0.5 * MapnikMap.HeightInt - borderlimit) * res) > Pt.y) {
 				/* pan down */
 				if (mydebug > 30) cout << "pan down\n";
-				MapnikMap.CenterPt.y = MapnikMap.CenterPt.y - (MapnikMap.HeightInt - borderlimit * 2) * res;
+				MapnikMap.NewCenterPt.y = MapnikMap.NewCenterPt.y - (MapnikMap.HeightInt - borderlimit * 2) * res;
 				PanCntInt += 1;
 				OnMapYsn = 0;
 			}
@@ -333,26 +413,17 @@ int set_mapnik_map_ysn(const double pPosLatDbl, const double pPosLonDbl, int pFo
 		
 		if (PanCntInt > 0 && OnMapYsn) {
 			/* render map */
-			MapnikMap.RenderMapYsn = 1;
-			/* calc new lat/lon */
-			MapnikMap.CenterLonDbl = MapnikMap.CenterPt.x;
-			MapnikMap.CenterLatDbl = MapnikMap.CenterPt.y;
-			Proj.inverse(MapnikMap.CenterLonDbl, MapnikMap.CenterLatDbl);
+			RenderMapYsn = 1;
 		} else if (PanCntInt) {
-			MapnikMap.CenterLatDbl = pPosLatDbl;
-			MapnikMap.CenterLonDbl = pPosLonDbl;
-			MapnikMap.RenderMapYsn = 1;
-			MapnikMap.CenterPt.x = MapnikMap.CenterLonDbl;
-			MapnikMap.CenterPt.y = MapnikMap.CenterLatDbl;
-			Proj.forward(MapnikMap.CenterPt.x, MapnikMap.CenterPt.y);
+			RenderMapYsn = 1;
+			MapnikMap.NewCenterPt.x = pPosLonDbl;
+			MapnikMap.NewCenterPt.y = pPosLatDbl;
+			Proj.forward(MapnikMap.NewCenterPt.x, MapnikMap.NewCenterPt.y);
 		}
 	}
-	
+	cout << "New: " << MapnikMap.NewCenterPt << endl;
 
-	//Check level
-	/*if (MapnikMap.ScaleInt < MIN_LEVEL) MapnikMap.ScaleInt = MIN_LEVEL;
-	if (MapnikMap.ScaleInt > MAX_LEVEL) MapnikMap.ScaleInt = MAX_LEVEL;
-*/
+	if (RenderMapYsn) MapnikMap.RenderYsn = true;
 }
 
 /*
@@ -381,56 +452,66 @@ convert_argb32_to_gdkpixbuf_data (unsigned char const *Source, unsigned char *De
 	}
 }
 
-/* 
- * is there a new map to render?
- */
-extern "C"
-void render_mapnik () {
+void render_thread() {
 
-	MapnikMap.NewMapYsn = false;
-	if (!MapnikMap.RenderMapYsn) return;
+	//loop infinite
+	while (1==1) {
+
+		// TODO: better blocking system - wait mutex needed
+		// wait for jobs
+		sleep(1);
+		if (MapnikMap.RenderYsn) {
+	   		double scale_denom = MapnikMap.NewScaleDbl;
+	    	double res = scale_denom * 0.00028;
+		
+		   /* render image */
 	
-    
-    //double scale_denom = scales[MapnikMap.ScaleInt];
-    double scale_denom = MapnikMap.ScaleInt;
-    double res = scale_denom * 0.00028;
-    
-   /* render image */
+	   		Envelope<double> box = Envelope<double>(MapnikMap.NewCenterPt.x - 0.5 * MapnikMap.WidthInt * res,
+	       		                MapnikMap.NewCenterPt.y - 0.5 * MapnikMap.HeightInt * res,
+	           		            MapnikMap.NewCenterPt.x + 0.5 * MapnikMap.WidthInt * res,
+	               		        MapnikMap.NewCenterPt.y + 0.5 * MapnikMap.HeightInt * res);
 
-    Envelope<double> box = Envelope<double>(MapnikMap.CenterPt.x - 0.5 * MapnikMap.WidthInt * res,
-    					MapnikMap.CenterPt.y - 0.5 * MapnikMap.HeightInt * res,
-    					MapnikMap.CenterPt.x + 0.5 * MapnikMap.WidthInt * res,
-    					MapnikMap.CenterPt.y + 0.5 * MapnikMap.HeightInt * res);
-    
-    MapnikMap.MapPtr->zoomToBox(box);
-    
-    Image32 buf(MapnikMap.WidthInt, MapnikMap.HeightInt);
-    mapnik::agg_renderer<Image32> ren(*MapnikMap.MapPtr,buf);
-    ren.apply();
+		    MapnikMap.MapPtr->zoomToBox(box);
 
-    if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
-    
-    /* get raw data for gpsdrives pixbuf */
-    convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr);
-    
-    /* ok we have a map set default values */
-    MapnikMap.NewMapYsn = true;
-    mapnik::Envelope<double> ext = MapnikMap.MapPtr->getCurrentExtent();
-    mapnik::coord2d pt = ext.center();
-    MapnikMap.CenterPt.x = pt.x;
-    MapnikMap.CenterPt.y = pt.y;
-    Proj.inverse(pt.x, pt.y);
-    MapnikMap.CenterLonDbl = pt.x;
-    MapnikMap.CenterLatDbl = pt.y;
+		    Image32 buf(MapnikMap.WidthInt, MapnikMap.HeightInt);
+    		mapnik::agg_renderer<Image32> ren(*MapnikMap.MapPtr,buf);
+	   		ren.apply();
 
+		    if (mydebug > 0) std::cout << MapnikMap.MapPtr->getCurrentExtent() << "\n";
+
+		    /* get raw data for gpsdrives pixbuf */
+    		convert_argb32_to_gdkpixbuf_data(buf.raw_data(), MapnikMap.ImageRawDataPtr);
+
+			/* create pixbuf data before check to unref */
+			if (MapnikMap.GdkPixbufPtr) gdk_pixbuf_unref(MapnikMap.GdkPixbufPtr);
+			MapnikMap.GdkPixbufPtr = gdk_pixbuf_new_from_data(MapnikMap.ImageRawDataPtr, GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);
+
+	    	/* ok we have a map set default values */
+		    mapnik::Envelope<double> ext = MapnikMap.MapPtr->getCurrentExtent();
+	    	mapnik::coord2d pt = ext.center();
+			MapnikMap.CenterPt.x = pt.x;
+		    MapnikMap.CenterPt.y = pt.y;
+    		Proj.inverse(pt.x, pt.y);
+			MapnikMap.ScaleDbl = MapnikMap.NewScaleDbl;
+
+			// inform that there is a new map
+			MapnikMap.NewMapYsn = 1;
+
+			//add to cache
+			add_current_tile_to_cache();
+
+			MapnikMap.RenderYsn = 0;
+		}	
+	}
 }
+
 
 /*
  * return pointer to imagedata for gpsdrive
  */
 extern "C"
-unsigned char *get_mapnik_imagedata() {
-	return MapnikMap.ImageRawDataPtr;
+GdkPixbuf *get_mapnik_gdk_pixbuf() {
+	return MapnikMap.GdkPixbufPtr;
 }
 
 /*
@@ -438,7 +519,7 @@ unsigned char *get_mapnik_imagedata() {
  */
 extern "C"
 double get_mapnik_mapscale() {
-	return MapnikMap.ScaleInt;
+	return MapnikMap.ScaleDbl;
 }
 
 /* 
@@ -446,7 +527,7 @@ double get_mapnik_mapscale() {
  */
 extern "C"
 double get_mapnik_pixelfactor() {
-	return MapnikMap.ScaleInt * 0.00028;
+	return MapnikMap.ScaleDbl * 0.00028;
 }
 
 /*
@@ -457,13 +538,23 @@ int get_mapnik_newmapysn() {
 	return MapnikMap.NewMapYsn;
 }
 
+/* 
+ * set new map
+ */
+extern "C"
+int set_mapnik_newmapysn(const int pInt) {
+	MapnikMap.NewMapYsn = pInt;
+	return 1;
+}
+
 /*
  * return mapcenter of actual rendered map
  */
 extern "C"
 void get_mapnik_center(double *pLatDbl, double *pLonDbl) {
-	*pLatDbl = MapnikMap.CenterLatDbl;
-	*pLonDbl = MapnikMap.CenterLonDbl;
+	*pLatDbl = MapnikMap.CenterPt.y;
+	*pLonDbl = MapnikMap.CenterPt.x;
+	Proj.inverse(*pLonDbl, *pLatDbl);
 }
 
 /*
@@ -471,8 +562,8 @@ void get_mapnik_center(double *pLatDbl, double *pLonDbl) {
  */
 extern "C"
 void get_mapnik_calcxytopos(double *pLatDbl, double *pLonDbl, int pXInt, int pYInt, int pXOffInt, int pYOffInt, int pZoom, int mapx2Int, int mapy2Int) {
-	double XDbl = (mapx2Int - pXInt - pXOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
-	double YDbl = (mapy2Int - pYInt - pYOffInt) * MapnikMap.ScaleInt * 0.00028 / pZoom;
+	double XDbl = (mapx2Int - pXInt - pXOffInt) * MapnikMap.ScaleDbl * 0.00028 / pZoom;
+	double YDbl = (mapy2Int - pYInt - pYOffInt) * MapnikMap.ScaleDbl * 0.00028 / pZoom;
 	double LonDbl = MapnikMap.CenterPt.x - XDbl;
 	double LatDbl = MapnikMap.CenterPt.y + YDbl;
 	Proj.inverse(LonDbl, LatDbl);
@@ -492,8 +583,8 @@ void get_mapnik_calcxy(int *pXInt, int *pYInt, double pLatDbl, double pLonDbl, i
 	X = X - MapnikMap.CenterPt.x;
 	Y = Y - MapnikMap.CenterPt.y;
 	
-	 *pXInt = int( double( 0.5 + (mapx2Int + X * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pXOffInt) );
-	 *pYInt = int( double(0.5 + (mapy2Int - Y * pZoom / (MapnikMap.ScaleInt * 0.00028)) - pYOffInt) );
+	 *pXInt = int( double( 0.5 + (mapx2Int + X * pZoom / (MapnikMap.ScaleDbl * 0.00028)) - pXOffInt) );
+	 *pYInt = int( double(0.5 + (mapy2Int - Y * pZoom / (MapnikMap.ScaleDbl * 0.00028)) - pYOffInt) );
 
 }
 
@@ -522,8 +613,8 @@ void get_mapnik_minicalcxy(int *pXDbl, int *pYDbl, double pLatDbl, double pLonDb
 	X = X - MapnikMap.CenterPt.x;
 	Y = Y - MapnikMap.CenterPt.y;
 
-	 *pXDbl = int(double(64 + X * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10)));
-	 *pYDbl = int(double(51 - Y * pZoom / (MapnikMap.ScaleInt * 0.00028 * 10)));
+	 *pXDbl = int(double(64 + X * pZoom / (MapnikMap.ScaleDbl * 0.00028 * 10)));
+	 *pYDbl = int(double(51 - Y * pZoom / (MapnikMap.ScaleDbl * 0.00028 * 10)));
 
 }
 

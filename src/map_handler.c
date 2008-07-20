@@ -599,7 +599,8 @@ loadmap (char *filename)
 
 #ifdef MAPNIK
   if ( !strcmp (filename,"mapnik") ) {
-	  limage = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);
+	  //limage = gdk_pixbuf_new_from_data(get_mapnik_imagedata(), GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);
+	  limage = gdk_pixbuf_copy(get_mapnik_gdk_pixbuf());
   } else 
 #endif
   {
@@ -796,8 +797,8 @@ test_and_load_newmap ()
 	    /* render map, but only if it is needed */
 	    if (set_mapnik_map_ysn(coords.current_lat, coords.current_lon, ForceMapCenterYsn, local_config.scale_wanted)) {;
 		    // local_config.MapnikStatusInt = 2;
-	    	set_cursor_style(CURSOR_WATCH);
-		    render_mapnik();
+	    	// set_cursor_style(CURSOR_WATCH);
+		    // render_mapnik();
 			/* only load map if there is a new one. */
 			if (get_mapnik_newmapysn()) {
 				current.mapscale = get_mapnik_mapscale();// 68247.3466832;;
@@ -806,8 +807,9 @@ test_and_load_newmap ()
 				xoff = yoff = 0;
 				//loadmap("/tmp/mapnik.png");
 				loadmap("mapnik");
+				set_mapnik_newmapysn(0);
 			}
-			set_cursor_style(CURSOR_DEFAULT);
+			// set_cursor_style(CURSOR_DEFAULT);
 	    }
 	return;
     }

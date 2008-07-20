@@ -303,7 +303,7 @@ gint sats_used = 0, sats_in_view = 0;
 gint numgrids = 4, scroll = TRUE;
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
-gint borderlimit;
+gint borderlimit = 100;
 gint pdamode = FALSE;
 gint exposecounter = 0, exposed = FALSE;
 gint lastnotebook = 0;
