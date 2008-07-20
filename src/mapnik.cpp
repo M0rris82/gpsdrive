@@ -73,6 +73,9 @@ void render_thread();
  * try reading map from cache
  */
 int try_read_tile_from_cache() {
+
+	if (!local_config.mapnik_caching) return 0;
+
 	mapnik::coord2d Pt = MapnikMap.NewCenterPt;
     // to lat and lon
     Proj.inverse(Pt.x, Pt.y);
@@ -100,6 +103,9 @@ int try_read_tile_from_cache() {
  * save to img cache
  */
 void add_current_tile_to_cache() {
+
+	if (!local_config.mapnik_caching) return;
+
 	mapnik::coord2d Pt = MapnikMap.CenterPt;
 	// to lat and lon
 	Proj.inverse(Pt.x, Pt.y);
