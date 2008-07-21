@@ -64,6 +64,8 @@ install: build
 	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
 	rm -rf debian/gpsdrive/usr/share/gpsdrive/maps
 	rm -rf debian/gpsdrive/usr/local/share/perl
+	rmdir debian/gpsdrive/usr/local/share
+	rmdir debian/gpsdrive/usr/local
 
 	debian/rename_scripts.sh $(destdir)
 
