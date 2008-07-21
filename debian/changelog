@@ -1,10 +1,14 @@
-gpsdrive (2.10svn20119192) unstable; urgency=low
+gpsdrive (2.10svn20129192) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:57:59 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 02:18:52 +0200
 
-   * no Commit Message
+gpsdrive (2.10svn2012) unstable; urgency=low
+
+   * Add more help options to some scripts
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 01:59:04 +0200
 
 gpsdrive (2.10svn2011) unstable; urgency=low
 
@@ -60,13 +64,13 @@ gpsdrive (2.10svn2003) unstable; urgency=low
 
    * Enable generation of the language files again.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:54:43 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:54:43 +0200
 
 gpsdrive (2.10svn2002) unstable; urgency=low
 
    * Add a message to remove CMakeCache.txt to get out-of-source working.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:46:22 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Fri, 11 Jul 2008 11:46:22 +0200
 
 gpsdrive (2.10svn2001) unstable; urgency=low
 
@@ -400,7 +404,7 @@ gpsdrive (2.10svn1948) unstable; urgency=low
 
    * Fix variables in FindSQLite3 module.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Tue, 20 May 2008 21:54:18 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Tue, 20 May 2008 21:54:18 +0200
 
 gpsdrive (2.10svn1947) unstable; urgency=low
 
@@ -412,7 +416,7 @@ gpsdrive (2.10svn1946) unstable; urgency=low
 
    * Add cmake 2.6 compatible find modules.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 19 May 2008 12:18:07 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 19 May 2008 12:18:07 +0200
 
 gpsdrive (2.10svn1945) unstable; urgency=low
 
@@ -926,7 +930,7 @@ gpsdrive (2.10svn1868) unstable; urgency=low
 
    * Add new FindBoost Module (this will be included in the next version)
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Tue, 22 Jan 2008 23:22:35 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Tue, 22 Jan 2008 23:22:35 +0100
 
 gpsdrive (2.10svn1867) unstable; urgency=low
 
@@ -1082,13 +1086,13 @@ gpsdrive (2.10svn1846) unstable; urgency=low
 
    * Update INSTALL
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 13 Jan 2008 13:01:11 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 13 Jan 2008 13:01:11 +0100
 
 gpsdrive (2.10svn1845) unstable; urgency=low
 
    * Add better INSTALL instructions
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 13 Jan 2008 12:29:47 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 13 Jan 2008 12:29:47 +0100
 
 gpsdrive (2.10svn1844) unstable; urgency=low
 
@@ -1249,13 +1253,13 @@ gpsdrive (2.10svn1820) unstable; urgency=low
    * CMake is a powerful too an replaces with the function configure_file()
    * all @VAR@ with the appropriate variable. So set the USER to "@USER@".
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 30 Dec 2007 19:20:28 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 30 Dec 2007 19:20:28 +0100
 
 gpsdrive (2.10svn1819) unstable; urgency=low
 
    * Change application name to a variable
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 30 Dec 2007 18:56:24 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 30 Dec 2007 18:56:24 +0100
 
 gpsdrive (2.10svn1818) unstable; urgency=low
 
@@ -1273,32 +1277,32 @@ gpsdrive (2.10svn1816) unstable; urgency=low
 
    * Avoid conflicts if config.h is included twice
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Fri, 28 Dec 2007 09:14:53 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Fri, 28 Dec 2007 09:14:53 +0100
 
 gpsdrive (2.10svn1815) unstable; urgency=low
 
    * Add define to build source with mapnik support
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 23:49:52 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 27 Dec 2007 23:49:52 +0100
 
 gpsdrive (2.10svn1814) unstable; urgency=low
 
    * Fix build without GDAL.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 16:22:27 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 27 Dec 2007 16:22:27 +0100
 
 gpsdrive (2.10svn1813) unstable; urgency=low
 
    * Ensure out of source build.
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 15:32:52 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 27 Dec 2007 15:32:52 +0100
 
 gpsdrive (2.10svn1812) unstable; urgency=low
 
    * Add option to compile with GDAL.
    * cmake -DWITH_GDAL=TRUE. Defaut: FALSE
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 27 Dec 2007 13:02:53 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 27 Dec 2007 13:02:53 +0100
 
 gpsdrive (2.10svn1811) unstable; urgency=low
 
@@ -1310,7 +1314,7 @@ gpsdrive (2.10svn1810) unstable; urgency=low
 
    * Fix gpsdrive compilation
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 22 Dec 2007 15:33:47 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 22 Dec 2007 15:33:47 +0100
 
 gpsdrive (2.10svn1809) unstable; urgency=low
 
@@ -1556,7 +1560,7 @@ gpsdrive (2.10svn1771) unstable; urgency=low
 
    * Ignore cscope and ctags files
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 25 Oct 2007 19:23:41 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 25 Oct 2007 19:23:41 +0200
 
 gpsdrive (2.10svn1770) unstable; urgency=low
 
@@ -2957,33 +2961,33 @@ gpsdrive (2.10svn1531) unstable; urgency=low
 
    * Install mapnik symbols
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:59:26 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:59:26 +0200
 
 gpsdrive (2.10svn1530) unstable; urgency=low
 
    * add mapnik to the data directory
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:58:53 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Aug 2007 23:58:53 +0200
 
 gpsdrive (2.10svn1529) unstable; urgency=low
 
    * Remove PLUGINS variable as we don't have plugins anymore
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:22:35 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:22:35 +0200
 
 gpsdrive (2.10svn1528) unstable; urgency=low
 
    * Update build script
    * Fix compilation with cmake
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:18:00 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:18:00 +0200
 
 gpsdrive (2.10svn1527) unstable; urgency=low
 
    * Fix deprecated functions
    * Fix warnings
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:17:23 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Aug 2007 22:17:23 +0200
 
 gpsdrive (2.10svn1526) unstable; urgency=low
 
@@ -3394,7 +3398,7 @@ gpsdrive (2.10svn1456) unstable; urgency=low
 
    * Fix user replace in the Makefile
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 19:08:36 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Jul 2007 19:08:36 +0200
 
 gpsdrive (2.10svn1455) unstable; urgency=low
 
@@ -3402,13 +3406,13 @@ gpsdrive (2.10svn1455) unstable; urgency=low
    * Include the new files
    * Chagne deprecated functions of CMake to new ones
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:23:16 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:23:16 +0200
 
 gpsdrive (2.10svn1454) unstable; urgency=low
 
    * Install generated files
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:22:10 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:22:10 +0200
 
 gpsdrive (2.10svn1453) unstable; urgency=low
 
@@ -3416,13 +3420,13 @@ gpsdrive (2.10svn1453) unstable; urgency=low
    * functions of cmake
    * Create output of the in files from mapnik dir
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:20:42 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:20:42 +0200
 
 gpsdrive (2.10svn1452) unstable; urgency=low
 
    * Create an option to build with mapnik, by default on
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:18:24 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Jul 2007 11:18:24 +0200
 
 gpsdrive (2.10svn1451) unstable; urgency=low
 
@@ -3458,19 +3462,19 @@ gpsdrive (2.10svn1446) unstable; urgency=low
 
    * Fix build with cmake
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:17:59 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:17:59 +0200
 
 gpsdrive (2.10svn1445) unstable; urgency=low
 
    * Add config.h for DATADIR
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:53 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:53 +0200
 
 gpsdrive (2.10svn1444) unstable; urgency=low
 
    * Add CMake modules for Freetype2, Mapnik and Boost
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:06 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 01 Jul 2007 23:16:06 +0200
 
 gpsdrive (2.10svn1443) unstable; urgency=low
 
@@ -4616,19 +4620,19 @@ gpsdrive (2.10svn1237) unstable; urgency=low
 
    * * (buildfix) fix compilation
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:50:11 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:50:11 +0100
 
 gpsdrive (2.10svn1236) unstable; urgency=low
 
    * * (feature) added XML2 module
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:26:13 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:26:13 +0100
 
 gpsdrive (2.10svn1235) unstable; urgency=low
 
    * * (feature) much better build script
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:19:50 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 04 Feb 2007 15:19:50 +0100
 
 gpsdrive (2.10svn1234) unstable; urgency=low
 
@@ -4701,7 +4705,7 @@ gpsdrive (2.10svn1224) unstable; urgency=low
 
    * Test commit for email hook
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 30 Jan 2007 18:06:03 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 30 Jan 2007 18:06:03 +0100
 
 gpsdrive (2.10svn1223) unstable; urgency=low
 
@@ -4782,19 +4786,19 @@ gpsdrive (2.10svn1211) unstable; urgency=low
 
    * Test commit
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:27:20 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:27:20 +0100
 
 gpsdrive (2.10svn1210) unstable; urgency=low
 
    * Test commit
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:24:12 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:24:12 +0100
 
 gpsdrive (2.10svn1209) unstable; urgency=low
 
    * Added cej@intech.com to AUTHORS as Repository Admin (just a test commit)
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:18:32 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 17 Jan 2007 15:18:32 +0100
 
 gpsdrive (2.10svn1208) unstable; urgency=low
 
@@ -5322,7 +5326,7 @@ gpsdrive (2.10svn1135) unstable; urgency=low
 
    * Added rules.cmake for debian
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 23 Dec 2006 14:37:42 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 23 Dec 2006 14:37:42 +0100
 
 gpsdrive (2.10svn1134) unstable; urgency=low
 
@@ -5359,34 +5363,34 @@ gpsdrive (2.10svn1129) unstable; urgency=low
 
    * Fixed typo
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:38:17 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:38:17 +0100
 
 gpsdrive (2.10svn1128) unstable; urgency=low
 
    * Updated FindPerlLibs
    * Updated Perl libs installation
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:29:52 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 18 Dec 2006 13:29:52 +0100
 
 gpsdrive (2.10svn1127) unstable; urgency=low
 
    * Fixed svn revision generation
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:59:56 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:59:56 +0100
 
 gpsdrive (2.10svn1126) unstable; urgency=low
 
    * Added svn revision detection
    * Updated CPack for svn releases
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:52:19 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:52:19 +0100
 
 gpsdrive (2.10svn1125) unstable; urgency=low
 
    * Added package generation. You can now create source packages with
    *       "make package_source"
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:30:00 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 18 Dec 2006 11:30:00 +0100
 
 gpsdrive (2.10svn1124) unstable; urgency=low
 
@@ -5427,7 +5431,7 @@ gpsdrive (2.10svn1119) unstable; urgency=low
 
    * Fixed bug in install pathname, the pathname contained the filename
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 07 Dec 2006 19:11:31 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 07 Dec 2006 19:11:31 +0100
 
 gpsdrive (2.10svn1118) unstable; urgency=low
 
@@ -5639,7 +5643,7 @@ gpsdrive (2.10svn1090) unstable; urgency=low
 
    * Fixed memory corruption due a wrong array size
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Thu, 16 Nov 2006 13:18:13 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Thu, 16 Nov 2006 13:18:13 +0100
 
 gpsdrive (2.10svn1089) unstable; urgency=low
 
@@ -5725,43 +5729,43 @@ gpsdrive (2.10svn1076) unstable; urgency=low
    * Fixed implicit declatrion of function
    * Fixed setup_cb()
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 12 Nov 2006 11:52:34 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 12 Nov 2006 11:52:34 +0100
 
 gpsdrive (2.10svn1075) unstable; urgency=low
 
    * Fixed printf size_t formats
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:34:07 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:34:07 +0100
 
 gpsdrive (2.10svn1074) unstable; urgency=low
 
    * Fixed casts
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:29:34 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:29:34 +0100
 
 gpsdrive (2.10svn1073) unstable; urgency=low
 
    * Fixed casts
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:13:47 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 19:13:47 +0100
 
 gpsdrive (2.10svn1072) unstable; urgency=low
 
    * Fixed size_t cast problem
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:07:15 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:07:15 +0100
 
 gpsdrive (2.10svn1071) unstable; urgency=low
 
    * Fixed implicit declaration of function, this could cause segfaults on x86_64
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:02:32 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 18:02:32 +0100
 
 gpsdrive (2.10svn1070) unstable; urgency=low
 
    * Fixed printf, values of type size_t should use the Z size modifier
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sat, 11 Nov 2006 17:53:09 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sat, 11 Nov 2006 17:53:09 +0100
 
 gpsdrive (2.10svn1069) unstable; urgency=low
 
@@ -5817,13 +5821,13 @@ gpsdrive (2.10svn1062) unstable; urgency=low
 
    * Fixed permissions
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:33:09 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:33:09 +0100
 
 gpsdrive (2.10svn1061) unstable; urgency=low
 
    * Fixed new line bug
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:27:38 +0100
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Sun, 05 Nov 2006 18:27:38 +0100
 
 gpsdrive (2.10svn1060) unstable; urgency=low
 
@@ -6192,19 +6196,19 @@ gpsdrive (2.10svn1003) unstable; urgency=low
 
    * Fixed data path variable
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 19:43:17 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Oct 2006 19:43:17 +0200
 
 gpsdrive (2.10svn1002) unstable; urgency=low
 
    * Added option to disable script installation
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:41:51 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:41:51 +0200
 
 gpsdrive (2.10svn1001) unstable; urgency=low
 
    * Added gdal suffixes for debian
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:35:39 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 02 Oct 2006 18:35:39 +0200
 
 gpsdrive (2.10svn1000) unstable; urgency=low
 
@@ -6271,7 +6275,7 @@ gpsdrive (2.10svn990) unstable; urgency=low
 
    * Added CMake as second build system, this will replace autofools in future
 
- -- Andreas Schneider <Andreas Schneider@gpsdrive.de>  Mon, 11 Sep 2006 21:38:07 +0200
+ -- Andreas Schneider <Andreas_Schneider@gpsdrive.de>  Mon, 11 Sep 2006 21:38:07 +0200
 
 gpsdrive (2.10svn989) unstable; urgency=low
 
@@ -9310,7 +9314,7 @@ gpsdrive (2.10svn545) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 01 Nov 2005 16:06:10 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 01 Nov 2005 16:06:10 +0100
 
 gpsdrive (2.10svn544) unstable; urgency=low
 
@@ -9405,7 +9409,7 @@ gpsdrive (2.10svn533) unstable; urgency=low
 
    * Updated to attempt fix on bug reported by Andreas.
 
- -- Rob Stewart <Rob Stewart@gpsdrive.de>  Tue, 11 Oct 2005 00:00:41 +0200
+ -- Rob Stewart <Rob_Stewart@gpsdrive.de>  Tue, 11 Oct 2005 00:00:41 +0200
 
 gpsdrive (2.10svn532) unstable; urgency=low
 
@@ -9613,13 +9617,13 @@ gpsdrive (2.10svn502) unstable; urgency=low
 
    * removed unneccessary files in mysql
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:49:09 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:49:09 +0200
 
 gpsdrive (2.10svn501) unstable; urgency=low
 
    * added additional mysql include files
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:22:49 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:22:49 +0200
 
 gpsdrive (2.10svn500) unstable; urgency=low
 
@@ -9627,7 +9631,7 @@ gpsdrive (2.10svn500) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:19:56 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 05 Jul 2005 21:19:56 +0200
 
 gpsdrive (2.10svn499) unstable; urgency=low
 
@@ -10199,7 +10203,7 @@ gpsdrive (2.10svn419) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 12 Jan 2005 23:37:09 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 12 Jan 2005 23:37:09 +0100
 
 gpsdrive (2.10svn418) unstable; urgency=low
 
@@ -10236,25 +10240,25 @@ gpsdrive (2.10svn413) unstable; urgency=low
 
    * adding ignore files
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:50:43 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:50:43 +0100
 
 gpsdrive (2.10svn412) unstable; urgency=low
 
    * update ignore file
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:46:15 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:46:15 +0100
 
 gpsdrive (2.10svn411) unstable; urgency=low
 
    * todo update
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:45:39 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:45:39 +0100
 
 gpsdrive (2.10svn410) unstable; urgency=low
 
    * Mistakes with CVSIGNORE vs. .cvsignore
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:39:55 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:39:55 +0100
 
 gpsdrive (2.10svn409) unstable; urgency=low
 
@@ -10266,19 +10270,19 @@ gpsdrive (2.10svn408) unstable; urgency=low
 
    * Ignore built files
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:59 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:59 +0100
 
 gpsdrive (2.10svn407) unstable; urgency=low
 
    * Ignoring more
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:14 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:32:14 +0100
 
 gpsdrive (2.10svn406) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:31:19 +0100
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 11 Jan 2005 22:31:19 +0100
 
 gpsdrive (2.10svn405) unstable; urgency=low
 
@@ -10716,7 +10720,7 @@ gpsdrive (2.10svn345) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:39 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:39 +0200
 
 gpsdrive (2.10svn344) unstable; urgency=low
 
@@ -10754,7 +10758,7 @@ gpsdrive (2.10svn339) unstable; urgency=low
 
    * Removed scripts from Makefile.am
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:34 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:34 +0200
 
 gpsdrive (2.10svn338) unstable; urgency=low
 
@@ -10766,7 +10770,7 @@ gpsdrive (2.10svn337) unstable; urgency=low
 
    * Ignore makefiles
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:32 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Fri, 10 Jun 1994 04:10:32 +0200
 
 gpsdrive (2.10svn336) unstable; urgency=low
 
@@ -10804,7 +10808,7 @@ gpsdrive (2.10svn331) unstable; urgency=low
 
    * Updated to attempt fix on bug reported by Andreas.
 
- -- Rob Stewart <Rob Stewart@gpsdrive.de>  Wed, 08 Jun 1994 15:02:30 +0200
+ -- Rob Stewart <Rob_Stewart@gpsdrive.de>  Wed, 08 Jun 1994 15:02:30 +0200
 
 gpsdrive (2.10svn330) unstable; urgency=low
 
@@ -11285,7 +11289,7 @@ gpsdrive (2.10svn270) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Wed, 08 Jun 1994 10:37:42 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Wed, 08 Jun 1994 10:37:42 +0200
 
 gpsdrive (2.10svn269) unstable; urgency=low
 
@@ -11587,7 +11591,7 @@ gpsdrive (2.10svn226) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:34 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:34 +0200
 
 gpsdrive (2.10svn225) unstable; urgency=low
 
@@ -11837,7 +11841,7 @@ gpsdrive (2.10svn190) unstable; urgency=low
 
    * Ignore auto generated build files
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:26 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Wed, 08 Jun 1994 10:37:26 +0200
 
 gpsdrive (2.10svn189) unstable; urgency=low
 
@@ -12136,7 +12140,7 @@ gpsdrive (2.10svn146) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:44 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:44 +0200
 
 gpsdrive (2.10svn145) unstable; urgency=low
 
@@ -12292,7 +12296,7 @@ gpsdrive (2.10svn128) unstable; urgency=low
 
    * Added "Reinitialize GPS" menu item to reopen the GPS connection (if device was disconnected, or not connected when GPSdrive started.)  If GPSdrive starts in simulation mode, this update will switch it to normal satellite mode if a GPS device is found.
 
- -- Christopher Jastram <Christopher Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:41 +0200
+ -- Christopher Jastram <Christopher_Jastram@gpsdrive.de>  Tue, 07 Jun 1994 13:25:41 +0200
 
 gpsdrive (2.10svn127) unstable; urgency=low
 
@@ -12792,7 +12796,7 @@ gpsdrive (2.10svn60) unstable; urgency=low
 
    * anyone has destroyed the GPS-Time display, fixed
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:23 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:23 +0200
 
 gpsdrive (2.10svn59) unstable; urgency=low
 
@@ -12813,7 +12817,7 @@ gpsdrive (2.10svn57) unstable; urgency=low
 
    * fix for locale problem
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:22 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:22 +0200
 
 gpsdrive (2.10svn56) unstable; urgency=low
 
@@ -12827,7 +12831,7 @@ gpsdrive (2.10svn55) unstable; urgency=low
    * May break older libmysqlclient
    * Testet with  mysql-4.1.10a
 
- -- Fritz Ganter <Fritz Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:21 +0200
+ -- Fritz Ganter <Fritz_Ganter@gpsdrive.de>  Tue, 07 Jun 1994 13:25:21 +0200
 
 gpsdrive (2.10svn54) unstable; urgency=low
 
@@ -13206,5 +13210,5 @@ gpsdrive (2.10svn1) unstable; urgency=low
 
    * New repository initialized by cvs2svn.
 
- -- no author <no author@gpsdrive.de>  Tue, 07 Jun 1994 10:35:10 +0200
+ -- no author <no_author@gpsdrive.de>  Tue, 07 Jun 1994 10:35:10 +0200
 
