@@ -1,8 +1,14 @@
-gpsdrive (2.10svn20129192) unstable; urgency=low
+gpsdrive (2.10svn20139192) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 02:18:52 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 02:59:28 +0200
+
+gpsdrive (2.10svn2013) unstable; urgency=low
+
+   * Create Auto changelog
+
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Mon, 21 Jul 2008 02:21:14 +0200
 
 gpsdrive (2.10svn2012) unstable; urgency=low
 

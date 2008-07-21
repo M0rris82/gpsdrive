@@ -65,6 +65,9 @@ install: build
 	rm -rf debian/gpsdrive/usr/share/gpsdrive/maps
 	rm -rf debian/gpsdrive/usr/local/share/perl
 
+	debian/rename_scripts.sh $(destdir)
+
+
 # Build architecture-independent files here.
 binary-indep: build install
 # We have nothing to do by default.
@@ -85,7 +88,7 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
-#	dh_undocumented friendsd2.1 gpsfetchmap.1 gpsfetchmap.pl.1 gpspoint2gpsdrive.pl.1 mb2gpsdrive.pl.1 geocache2way.1 gpssql_backup.sh.1 gpssql_restore.sh.1
+#	dh_undocumented friendsd2.1 gpspoint2gpsdrive.pl.1 mb2gpsdrive.pl.1 geocache2way.1
 	dh_installchangelogs ChangeLog
 #	dh_link
 	dh_strip
