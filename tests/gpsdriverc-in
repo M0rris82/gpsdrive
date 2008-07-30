@@ -17,6 +17,7 @@ mapdir = PWD/maps/
 trackdir = PWD/tracks/
 routedir = PWD/routes/
 mapnik = 1
+mapnik_caching = 1
 mapnik_xml_file = PWD/osm.xml
 mapnik_xml_template = PWD/../build/scripts/mapnik/osm-template.xml
 mapnik_input_path = /usr/lib/mapnik/0.5/input/
