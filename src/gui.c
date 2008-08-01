@@ -706,12 +706,16 @@ int gui_init (gchar *geometry, gint usegeometry)
 #endif
 	
 	if (!local_config.showfriends)
+      if (G_IS_OBJECT(frame_statusfriends))
 		gtk_widget_hide_all (frame_statusfriends);
 	if (!local_config.speech && !havefestival)
+      if (G_IS_OBJECT(mute_bt))
 		gtk_widget_hide_all (mute_bt);
 	if (!local_config.showbatt)
+      if (G_IS_OBJECT(frame_battery))
 		gtk_widget_hide_all (frame_battery);
 	if (!local_config.showtemp)
+      if (G_IS_OBJECT(frame_temperature))
 		gtk_widget_hide_all (frame_temperature);
 
 	/* init map view:
