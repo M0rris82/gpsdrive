@@ -63,7 +63,7 @@ Disclaimer: Please do not use for navigation.
 #  define N_(String) (String)
 # endif
 
-#ifdef DBUS_ENABLE
+#ifdef DBUS
 #include <dbus/dbus.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
@@ -105,9 +105,9 @@ extern gint NMEAoldsecs;
 /*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
 gchar nmeamodeandport[50];
 gint haveNMEA;
-gint useDBUS = FALSE;
+gint useDBUS;
 
-#ifdef DBUS_ENABLE
+#ifdef DBUS
 DBusError dbuserror;
 DBusConnection* connection;
 struct dbus_gps_fix {
@@ -154,7 +154,7 @@ gpsd_close ()
 
 /* *****************************************************************************
  */
-#ifdef DBUS_ENABLE
+#ifdef DBUS
 void
 init_dbus_current_fix()
 {
@@ -306,7 +306,7 @@ gint
 initgps ()
 {
 
-#ifdef DBUS_ENABLE
+#ifdef DBUS
   if (useDBUS) {
       init_dbus();
   } else
@@ -332,7 +332,7 @@ initgps ()
 
 /* *****************************************************************************
  */
-#ifdef DBUS_ENABLE
+#ifdef DBUS
 static DBusHandlerResult dbus_signal_handler (
 		DBusConnection* connection, DBusMessage* message) {
 	/* dummy, need to use the variable for some reason */
@@ -612,7 +612,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       return TRUE;
     }
 
-#ifdef DBUS_ENABLE
+#ifdef DBUS
   if (useDBUS) {
 	if (NMEAoldsecs == floor(NMEAsecs)) {
 		timeoutcount++;
@@ -951,7 +951,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
     {
       timeoutcount++;
     }
-#ifdef DBUS_ENABLE
+#ifdef DBUS
   }
 #endif
 

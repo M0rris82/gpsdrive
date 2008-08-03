@@ -2235,9 +2235,6 @@ main (int argc, char *argv[])
     current.heading = current.bearing = 0.0;
     current.zoom = 1;
     iszoomed = FALSE;
-#ifdef DBUS_ENABLE
-    useDBUS = FALSE;
-#endif
 
 #ifdef _WIN32
     {
@@ -2399,9 +2396,9 @@ main (int argc, char *argv[])
 	if (ignorechecksum)
 		g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
 
-#ifndef DBUS_FOUND
+#ifndef DBUS
 	if (useDBUS)
-		g_print ("\nWARNING: You need to enable DBUS support with './configure --enable-dbus'!\n");
+		g_print ("\nWARNING: You need to enable DBUS support with 'cmake -DWITH_DBUS=ON ..\n");
 #endif
 
 	if ( mydebug >99 )
