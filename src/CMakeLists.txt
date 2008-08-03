@@ -19,6 +19,11 @@ if (WITH_GDAL)
   add_subdirectory(lib_map)
 endif (WITH_GDAL)
 
+if (WITH_DBUS)
+    pkg_check_modules(DBUS REQUIRED dbus-1 dbus-glib-1)        
+    add_definitions(-DDBUS)
+endif (WITH_DBUS)
+
 add_subdirectory(util)
 
 set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
@@ -35,6 +40,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${Boost_INCLUDE_DIRS}
   ${GDA3_INCLUDE_DIRS}
   ${SQLITE3_INCLUDE_DIRS}
+  ${DBUS_INCLUDE_DIRS}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -49,6 +55,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${Boost_FILESYSTEM_LIBRARY}
   ${GDA3_LIBRARIES}
   ${SQLITE3_LIBRARIES}
+  ${DBUS_LIBRARIES}
 )
 
 set(gpsdrive_SRCS
@@ -129,10 +136,6 @@ add_executable(gpsdrive ${gpsdrive_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
-
-if (DBUS_FOUND)
-  target_link_libraries(gpsdrive ${DBUS_LIBRARIES})
-endif (DBUS_FOUND)
 
 target_link_libraries(friendsd
   crypt

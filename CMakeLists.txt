@@ -7,6 +7,7 @@ set(APPLICATION_VERSION "2.10pre5svn")
 # required cmake version
 cmake_minimum_required(VERSION 2.4.3)
 set(CMAKE_COLOR_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
@@ -23,7 +24,7 @@ macro_ensure_out_of_source_build("${APPLICATION_NAME} requires an out of source 
 
 # macro_optional_find_package() is the same as FIND_PACKAGE(<name>) but additionally creates an OPTION(WITH_<name>)
 # so the checking for the software can be disabled via ccmake or -DWITH_<name>=OFF
-MACRO_OPTIONAL_FIND_PACKAGE(DBUS)
+#MACRO_OPTIONAL_FIND_PACKAGE(DBUS)
 
 
 include(DefineInstallationPaths)
