@@ -352,6 +352,7 @@ dbus_process_fix(gint early)
 {
 	struct tm 	time;
 	time_t		ttime;
+    double      direction;
 
 	if (!early && (dbus_current_fix.mode==-1)) {
 		/* We have handled this one, so clean the mode and bail out */
@@ -396,10 +397,10 @@ dbus_process_fix(gint early)
 		coords.current_lon = dbus_current_fix.longitude;
 	/* Handle speed */
 	if (__finite(dbus_current_fix.speed))
-		groundspeed = dbus_current_fix.speed * 3.6;	// Convert m/s to km/h
+		current.groundspeed = dbus_current_fix.speed * 3.6;	// Convert m/s to km/h
 	else if (dbus_old_fix.mode>1) {
 		gdouble timediff = dbus_current_fix.time-dbus_old_fix.time;
-		groundspeed = (timediff>0)?(calcdist2(dbus_old_fix.longitude, dbus_old_fix.latitude) * 3600 / timediff) : 0.0;
+		current.groundspeed = (timediff>0)?(calcdist2(dbus_old_fix.longitude, dbus_old_fix.latitude) * 3600 / timediff) : 0.0;
 	}
 	/* Handle bearing */
 	if (__finite(dbus_current_fix.track))
@@ -415,7 +416,7 @@ dbus_process_fix(gint early)
 	}
 	if ( mydebug + gps_handler_debug > 80 )
 		g_print("gps_handler: DBUS fix: %6.0f %10.6f/%10.6f sp:%5.2f(%5.2f) crs:%5.1f(%5.2f)\n", dbus_current_fix.time, 
-			dbus_current_fix.latitude, dbus_current_fix.longitude, dbus_current_fix.speed, groundspeed, 
+			dbus_current_fix.latitude, dbus_current_fix.longitude, dbus_current_fix.speed, current.groundspeed, 
 			dbus_current_fix.track, direction * 180 / M_PI);
 	/* Handle altitude */
 	if (dbus_current_fix.mode>2) {
@@ -433,46 +434,31 @@ dbus_process_fix(gint early)
 }
 
 static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message) {
-	DBusMessageIter	iter;
-	//double		temp_time;
-	//char 		b[100];
+    
+    DBusError error;        
+	double		temp_time;
 	struct dbus_gps_fix	fix;
-	//gint32		mode;
-	//gdouble		dump;
-	
-	if (!dbus_message_iter_init (message, &iter)) {
-		/* we have a problem */
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
 
-	/* Fill the fix struct */
-	fix.time		= floor(dbus_message_iter_get_double (&iter));
-	dbus_message_iter_next (&iter);
-	fix.mode		= dbus_message_iter_get_int32 (&iter);
-	dbus_message_iter_next (&iter);
-	fix.ept		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.latitude	= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.longitude	= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.eph		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.altitude		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.epv		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.track		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.epd		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.speed		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.eps		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.climb		= dbus_message_iter_get_double (&iter);
-	dbus_message_iter_next (&iter);
-	fix.epc		= dbus_message_iter_get_double (&iter);
+    dbus_error_init(&error);
+
+    dbus_message_get_args(message,
+                            &error,
+                            DBUS_TYPE_DOUBLE, &temp_time,
+                            DBUS_TYPE_INT32,  &fix.mode,
+                            DBUS_TYPE_DOUBLE, &fix.ept,
+                            DBUS_TYPE_DOUBLE, &fix.latitude,
+                            DBUS_TYPE_DOUBLE, &fix.longitude,
+                            DBUS_TYPE_DOUBLE, &fix.eph,
+                            DBUS_TYPE_DOUBLE, &fix.altitude,
+                            DBUS_TYPE_DOUBLE, &fix.epv,
+                            DBUS_TYPE_DOUBLE, &fix.track,
+                            DBUS_TYPE_DOUBLE, &fix.epd,
+                            DBUS_TYPE_DOUBLE, &fix.speed,
+                            DBUS_TYPE_DOUBLE, &fix.eps,
+                            DBUS_TYPE_DOUBLE, &fix.climb,
+                            DBUS_TYPE_DOUBLE, &fix.epc,
+                            DBUS_TYPE_INVALID);
+    fix.time = floor(temp_time);
 
 	if ( mydebug + gps_handler_debug > 80 ) {
 		g_print("gps_handler: DBUS raw: ti:%6.0f mode:%d ept:%f %10.6f/%10.6f eph:%f\n", fix.time, fix.mode, fix.ept, fix.latitude, fix.longitude, fix.eph);
