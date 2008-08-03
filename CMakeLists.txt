@@ -2,7 +2,7 @@ project(gpsdrive)
 
 # global needed variables
 set(APPLICATION_NAME "gpsdrive")
-set(APPLICATION_VERSION "2.10pre4")
+set(APPLICATION_VERSION "2.10pre5svn")
 
 # required cmake version
 cmake_minimum_required(VERSION 2.4.3)
