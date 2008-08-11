@@ -8,7 +8,7 @@ INCLUDE(CheckCXXSourceCompiles)
 INCLUDE(MacroBoolTo01)
 
 find_package(Gettext)
-find_package(DBUS)
+#find_package(DBUS)
 
 CHECK_INCLUDE_FILES(crypt.h HAVE_CRYPT_H)
 CHECK_INCLUDE_FILES(linux/inet.h HAVE_LINUX_INET_H)
