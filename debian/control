@@ -35,7 +35,7 @@ Depends: ${misc:Depends}
 	gda2-postgres
 	libart-2.0-2
 	libboost-filesystem1.34.1
-	libboost-thread1.34.1
+	libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3
 	libc6
 	libdate-manip-perl
 	libdbi-perl
