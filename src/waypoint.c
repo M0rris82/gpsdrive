@@ -348,6 +348,7 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	gchar wp_name[80];
 	gchar *wp_type;
 	gchar wp_comment[255];
+    GtkTreeIter t_iter;
 
 	s1 = gtk_entry_get_text (GTK_ENTRY (add_wp_name_text));
 	s2 = gtk_entry_get_text (GTK_ENTRY (add_wp_comment_text));
@@ -355,8 +356,13 @@ addwaypoint_gtk_cb (GtkWidget * widget, guint datum)
 	g_strlcpy(wp_name,s1,sizeof(wp_name));
 	g_strlcpy(wp_comment,s2,sizeof(wp_comment));
 
-	gtk_tree_model_get (poi_types_tree_filtered, &current.poitype_iter,
-		POITYPE_NAME, &wp_type, -1);
+    if (!current.poitype_path) return FALSE;
+    if (!gtk_tree_model_get_iter_from_string
+        (GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter, current.poitype_path)
+        ) return 0;
+      
+
+	gtk_tree_model_get (poi_types_tree_filtered, &t_iter, POITYPE_NAME, &wp_type, -1);
 
 	addwaypoint (wp_name, wp_type, wp_comment,
 		coords.wp_lat, coords.wp_lon, current.save_in_db);
@@ -395,8 +401,11 @@ addwaypointdestroy_cb (GtkWidget * widget, guint datum)
 static gint
 select_wptype_cb (GtkComboBox *combo_box, gpointer data)
 {
-	gtk_combo_box_get_active_iter (combo_box, &current.poitype_iter);
-	return FALSE;
+  GtkTreeIter t_iter;
+  gtk_combo_box_get_active_iter (combo_box, &t_iter);
+  if (current.poitype_path) g_free(current.poitype_path);
+  current.poitype_path = gtk_tree_model_get_string_from_iter(GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter);
+  return FALSE;
 }
 
 
@@ -467,11 +476,22 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (add_wp_type_combo),
 		renderer_type_name, "text", POITYPE_TITLE, NULL);
 	
-	if (!gtk_tree_model_filter_convert_child_iter_to_iter (
-	    GTK_TREE_MODEL_FILTER (poi_types_tree_filtered), &t_iter, &current.poitype_iter))
-	{
-		gtk_tree_model_get_iter_first (poi_types_tree_filtered, &t_iter);
-	}
+    
+    gboolean PoiInitPath = TRUE;
+    if (current.poitype_path) {
+        if (gtk_tree_model_get_iter_from_string (
+	    GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter, current.poitype_path))
+        {
+            PoiInitPath = FALSE;
+        }
+    }
+    
+    if (PoiInitPath) {
+        /* new init set first entry */
+        gtk_tree_model_get_iter_first (poi_types_tree_filtered, &t_iter);
+        current.poitype_path = gtk_tree_model_get_string_from_iter(GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter);
+    }
+    
 	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(add_wp_type_combo), &t_iter);
 
 	g_signal_connect (G_OBJECT (add_wp_type_combo), "changed",

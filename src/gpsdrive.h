@@ -356,7 +356,7 @@ typedef struct
 	gboolean needtosave;	/* flag if config has to be saved */
 	gboolean importactive;
 	gboolean save_in_db;	/* flag if new waypoints should be saved in the database */
-	GtkTreeIter poitype_iter;
+	gchar *poitype_path;
 	gchar poifilter[20000];	/* sql string for filtering the POI display */
 }
 currentstatus_struct;

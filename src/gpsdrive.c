@@ -2236,6 +2236,9 @@ main (int argc, char *argv[])
     current.zoom = 1;
     iszoomed = FALSE;
 
+    /* init poityope_path as null */
+    current.poitype_path = NULL;
+
 #ifdef _WIN32
     {
 		/* init Winsock */

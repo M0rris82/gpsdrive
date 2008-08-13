@@ -808,8 +808,7 @@ create_poitype_tree (guint max_level)
 		}
 	}
 
-	return gtk_tree_model_get_iter_first
-		(GTK_TREE_MODEL (poi_types_tree), &current.poitype_iter);
+	return TRUE;
 }
 
 
