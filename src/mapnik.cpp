@@ -166,8 +166,10 @@ namespace mapnik {
         (MapnikMap.CenterPt.y - (0.5 * MapnikMap.HeightInt - borderlimit) * res) > Pt.y ||
         pForceYsn) {
         // pos
-        Pt.x = WidthInt * res * int(Pt.x / (WidthInt * res)) + (WidthInt / 2 * res);
-        Pt.y = HeightInt * res * int(Pt.y / (HeightInt * res)) + (HeightInt / 2 * res);
+        
+        Pt.x = WidthInt * res * int(Pt.x / (WidthInt * res)) + (Pt.x < 0 ? -1 : 1) * (WidthInt / 2 * res);
+        Pt.y = HeightInt * res * int(Pt.y / (HeightInt * res)) + (Pt.y < 0 ? -1 : 1) * (HeightInt / 2 * res);
+
     } else {
         // take old
         Pt = MapnikMap.CenterPt;
