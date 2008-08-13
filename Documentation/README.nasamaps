@@ -5,23 +5,25 @@ You need GpsDrive version >=2.08
 To get the maps you have 2 choices:
 
 The new maps can be found at:
+
 21600x21600 East Hemisphere
-ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+
 21600x21600 West Hemisphere
-ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
-  
+  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
+
 
 ======================================================================
 1) From the original site (only gzip compressed)
 
 Goto 
-ftp://mitch.gsfc.nasa.gov/pub/stockli/bluemarble/
+http://mirrors.arsc.edu/nasa/Blue_Marble_2002/
 
 If you are west, download 
-MOD09A1.W.interpol.cyl.retouched.topo.3x21600x21600.gz 
+  MOD09A1.W.interpol.cyl.retouched.topo.3x21600x21600.gz 
 
 if you are east, download
-MOD09A1.E.interpol.cyl.retouched.topo.3x21600x21600.gz 
+  MOD09A1.E.interpol.cyl.retouched.topo.3x21600x21600.gz 
 
 If you are in England or West Europe, you need both files, 
 because they have to overlap.
@@ -36,6 +38,9 @@ ed2k://|file|top_nasamap_west.raw.bz2|226307352|13ab6e8a6e014fa23bb83db25855bb71
 This files have a uncompressed size of 1.4GB each and are in raw RGB format.
 The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
 
+
+3) Check if files are available from geotorrent.org
+   http://www.geotorrent.org/
 
 ======================================================================
 
@@ -76,7 +81,7 @@ and add this entry to your map_koord.txt file:
 
 top_world.jpg 0.00000 0.00000 88226037
 
-or for german locale (and all that have a koma as decimal point):
+or for german locale (and all that have a comma as decimal point):
 top_world.jpg 0,00000 0,00000 88226037
 
 
@@ -89,11 +94,11 @@ http://earthobservatory.nasa.gov/Newsroom/BlueMarble/
 When using these datasets please give credits to:
 -------------------------------------------------
 Author: 
-Reto Stöckli, NASA/Goddard Space Flight Center, stockli@cyberlink.ch
+Reto Stöckli, NASA/Goddard Space Flight Center, <stockli (at) cyberlink.ch>
 
 Address of correspondance:
 Reto Stöckli                    Phone:  +41 (0)1 271 8463
-NASA GSFC/ SSAI                 Email:  stockli@cyberlink.ch
+NASA GSFC/ SSAI                 Email:  stockli (at) cyberlink.ch
 Landenbergstr. 16a              Web:    http://visibleearth.nasa.gov
 8037 Zürich Switzerland                 http://earthobservatory.nasa.gov
 
@@ -103,5 +108,3 @@ Fritz Hasler and David Herring, NASA/Goddard Space Flight Center
 Funding:
 This project was realized under the SSAI subcontract 2101-01-027 (NAS5-01070)
 
-
-last modification: 01/31/2004
