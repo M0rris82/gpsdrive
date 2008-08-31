@@ -257,3 +257,18 @@ A: We have a new map directory structure.
  ...
 
   where the top_Africa.jpg maps come from the system directory.
+
+Q: I am getting errors while starting GpsDrive with Mapnik
+   > 
+   > read_themed_icon([square.big] wlan.wep) reduced to => wlan
+   > read_themed_icon([square.big] wlan.wep): No Icon 'wlan.wep' found for theme square.big
+   > Read 577 POI-Types from geoinfo.db
+   > Initializing GUI
+   > Mapnik config-file newer than config-template, NOT regenerating
+   >  got exception ... 
+   >  terminate called after throwing an instance of 'std::ios_base::failure'
+   >    what():  failed opening file: Bad file descriptor
+   >    Aborted
+A: Mapnik cannot find the world_boundaries on your system. You 
+   may either install them or edit ~/.gpsdrive/osm.xml and comment 
+   out all layers that use the world_boundaries.
