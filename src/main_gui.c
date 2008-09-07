@@ -2147,9 +2147,9 @@ void create_controls_mainbox (void)
 
 	/* BUTTONS VBOX */
 	{
+		gboolean wide = FALSE;
 	        if ( mydebug > 11 )
 			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
-		gboolean wide = FALSE;
 		if (local_config.guimode == GUI_CAR)
 			wide = TRUE;
 
