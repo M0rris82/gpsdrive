@@ -19,6 +19,12 @@
 #include <glib/gstdio.h>
 #include "gettext.h"
 
+#define MYSQL void *
+#define MYSQL_RES void
+#define MYSQL_ROW char **
+typedef guint64 my_ulonglong;
+typedef gboolean my_bool;
+
 #define VERSION "0.0.1 (Win32 pre-alpha)"
 #define PACKAGE_VERSION "0.0.1"
 
