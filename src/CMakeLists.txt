@@ -127,6 +127,10 @@ SET(friendsd_SRCS
   gpsdrive.h
 )
 
+SET(poitypes_SRCS
+  update-poitypes.c
+)
+
 include_directories(
   ${GPSDRIVE_PUBLIC_INCLUDE_DIRS}
   ${GPSDRIVE_PRIVATE_INCLUDE_DIRS}
@@ -134,6 +138,7 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
+add_executable(gpsdrive-update-mapnik-db ${poitypes_SRCS})
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
@@ -142,10 +147,17 @@ target_link_libraries(friendsd
   ${GTK2_LIBRARIES}
 )
 
+target_link_libraries(gpsdrive-update-mapnik-db
+  ${GTK2_LIBRARIES}
+  ${GDA3_LIBRARIES}
+  ${SQLITE3_LIBRARIES}
+)
+
 install(
   TARGETS
     gpsdrive
     friendsd
+    gpsdrive-update-mapnik-db
   DESTINATION
     ${BIN_INSTALL_DIR}
 )
