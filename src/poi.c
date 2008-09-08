@@ -483,7 +483,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	if (lat_max > 90.0) lat_max = 90.0;
 	
 	/* choose poi_types to search */
-	if (strcmp (type, "__NO_FILTER__"))
+	if (g_ascii_strncasecmp (type, "__NO_FILTER__", 13))
 	{
 		g_snprintf (type_filter, sizeof (type_filter),
 			" LIKE \'%s%%\'",type);

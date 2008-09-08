@@ -927,15 +927,16 @@ void create_window_poi_lookup (void)
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combobox_typetree),
 		renderer_type_name, "text", POITYPE_TITLE, NULL);
 
-    
-    /* TODO: Set active poitype
-       
+
+    /* TODO: Slap loom hard with a big big wet fish...!
+
        GtkTreeIter t_iter;
        gtk_combo_box_set_active_iter
        (GTK_COMBO_BOX(combobox_typetree),
        &t_iter);
     */
-    
+	gtk_combo_box_set_active (GTK_COMBO_BOX (combobox_typetree), 0);
+
 	select_poitype_cb (GTK_COMBO_BOX (combobox_typetree), NULL);
 	g_signal_connect (G_OBJECT (combobox_typetree), "changed",
 		G_CALLBACK (select_poitype_cb), NULL);
