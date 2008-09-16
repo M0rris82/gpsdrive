@@ -319,9 +319,9 @@ initgps ()
     {
     	if (local_config.simmode == SIM_AUTO)
     		current.simmode = FALSE;
-      if (simpos_timeout != 0)
+      if (simpos_timeout != 0 && local_config.simmode != SIM_ON)
 	{
-	  gtk_timeout_remove (simpos_timeout);
+	  g_source_remove (simpos_timeout);
 	  simpos_timeout = 0;
 	}
     }

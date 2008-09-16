@@ -253,6 +253,7 @@ writeconfig ()
 	fprintf (fp, "show_scalebar = %d\n", local_config.showscalebar);
 	fprintf (fp, "show_battery = %d\n", local_config.showbatt);
 	fprintf (fp, "show_temperature = %d\n", local_config.showtemp);
+	fprintf (fp, "rotating_compass = %d\n", local_config.rotating_compass);
 	fprintf (fp, "show_wayinfo = %d\n", local_config.showway);
 	fprintf (fp, "draw_poi = %d\n", local_config.showpoi);
 	fprintf (fp, "draw_wlan = %d\n", local_config.showwlan);
@@ -356,6 +357,8 @@ readconfig ()
 			*/
 			else if ( (strcmp(par1, "shadow")) == 0)
 				local_config.showshadow = atoi (par2);
+			else if ( (strcmp(par1, "rotating_compass")) == 0)
+				local_config.rotating_compass = atoi (par2);
 			else if ( (strcmp(par1, "waypointfile")) == 0)
 				g_strlcpy (local_config.wp_file, par2,
 					sizeof (local_config.wp_file));
@@ -582,6 +585,7 @@ config_init ()
 	local_config.showfriends = FALSE;
 	local_config.scale_wanted = 100000;
 	local_config.autobestmap = 1;
+	local_config.rotating_compass = TRUE;
 
 	/* set speech output */
 	g_strlcpy (local_config.speech_voice,
@@ -595,7 +599,6 @@ config_init ()
 	local_config.sound_distance = TRUE;
 	local_config.sound_speed = TRUE;
 	local_config.sound_gps = TRUE;
-
 
 	/* set POI related stuff */
 	local_config.poi_results_max = 200;

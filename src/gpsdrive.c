@@ -208,7 +208,7 @@ extern gchar mapfilename[2048];
 
 gdouble milesconv;
 gdouble olddist = 99999.0;
-GTimer *timer, *disttimer;
+GTimer *simulation_timer, *disttimer;
 gint gcount;
 gchar localedecimal;
 gchar language[] = "en";
@@ -674,7 +674,7 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 			friends_sendmsg (local_config.friends_serverip, NULL);
 		}
 	}
-	period = 10 * globruntime / (10 * local_config.maxcpuload);
+	period = globruntime / local_config.maxcpuload;
 	drawmarkercounter++;
 	/*   g_print("period: %d, drawmarkercounter %d\n", period, drawmarkercounter);  */
 	
@@ -684,8 +684,7 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 		drawmarker_cb (NULL, NULL);		
 		return TRUE;
 	}
-	if (((drawmarkercounter > period) || (drawmarkercounter > 50))
-	    && (drawmarkercounter >= 3))
+	if ((drawmarkercounter > period) && (drawmarkercounter >= 3))
 	{
 		drawmarkercounter = 0;
 		drawmarker_cb (NULL, NULL);
@@ -1293,7 +1292,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 	kontext_compass = gdk_gc_new (drawable_compass);
 	pfd_compass = pango_font_description_from_string ("Sans 8");
 
-	gdk_gc_set_foreground (kontext_compass, &colors.darkgrey);
+	gdk_gc_set_foreground (kontext_compass, &colors.grey);
 	gdk_gc_set_line_attributes (kontext_compass, 1, 0, 0, 0);
 	gdk_draw_arc (drawable_compass, kontext_compass, TRUE,
 		12, 12, size-24, size-24, 0, 360 * 64);
@@ -1330,92 +1329,184 @@ expose_compass (GtkWidget *widget, guint *datum)
 		wx = 1; ex = 0;
 	}
 
-	/* draw compass cross and scale */
-	for (i=0; i<4; i++)
+	if (local_config.rotating_compass)
 	{
+		/* draw compass cross and scale */
+		for (i=0; i<4; i++)
+		{
+			gdk_draw_line (drawable_compass, kontext_compass,
+				size/2+0.8*diam*cos(w+M_PI/4+i*M_PI_2),
+				size/2+0.8*diam*sin(w+M_PI/4+i*M_PI_2),
+				size/2+1.0*diam*cos(w+M_PI/4+i*M_PI_2),
+				size/2+1.0*diam*sin(w+M_PI/4+i*M_PI_2));
+		}
 		gdk_draw_line (drawable_compass, kontext_compass,
-			size/2+0.8*diam*cos(w+M_PI/4+i*M_PI_2),
-			size/2+0.8*diam*sin(w+M_PI/4+i*M_PI_2),
-			size/2+1.0*diam*cos(w+M_PI/4+i*M_PI_2),
-			size/2+1.0*diam*sin(w+M_PI/4+i*M_PI_2));
+			size/2-diam*t_x2off, size/2-diam*t_y2off,
+			size/2+diam*t_x2off, size/2+diam*t_y2off);
+		gdk_draw_line (drawable_compass, kontext_compass,
+			size/2, size/2, size/2+diam*t_x1off, size/2+diam*t_y1off);
+		gdk_gc_set_foreground (kontext_compass, &colors.green);
+		gdk_gc_set_line_attributes (kontext_compass, 3, 0, 0, 0);
+		gdk_draw_line (drawable_compass, kontext_compass,
+			size/2, size/2, size/2-diam*t_x1off, size/2-diam*t_y1off);
+
+		/* draw direction labels */
+		layout_compass = gtk_widget_create_pango_layout (drawing_compass, _("N"));
+		pango_layout_set_font_description (layout_compass, pfd_compass);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2-diam*t_x1off-cx*nx, size/2-diam*t_y1off-cy*ny,
+			layout_compass, &colors.red, NULL);
+
+		pango_layout_set_text (layout_compass, _("S"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2+diam*t_x1off+cx*sx, size/2+diam*t_y1off+cy*sy,
+			layout_compass, &colors.red, NULL);
+
+		pango_layout_set_text (layout_compass, _("W"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2-diam*t_x2off-cx*wx, size/2-diam*t_y2off-cx*wy,
+			layout_compass, &colors.red, NULL);
+
+		pango_layout_set_text (layout_compass, _("E"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2+diam*t_x2off+cx*ex, size/2+diam*t_y2off+cy*ey,
+			layout_compass, &colors.red, NULL);
+
+		if (layout_compass != NULL)
+			g_object_unref (G_OBJECT (layout_compass));
+		pango_font_description_free (pfd_compass);
+
+		/* draw heading pointer */
+		poly[0].x = size/2;
+		poly[0].y = size/2-1.1*diam;
+		poly[1].x = size/2+0.3*diam;
+		poly[1].y = size/2+0.8*diam;
+		poly[2].x = size/2;
+		poly[2].y = size/2+0.6*diam;
+		poly[3].x = size/2-0.3*diam;
+		poly[3].y = size/2+0.8*diam;
+		poly[4].x = poly[0].x;
+		poly[4].y = poly[0].y;
+		gdk_gc_set_line_attributes (kontext_compass, 2, 0, 0, 0);
+		gdk_gc_set_foreground (kontext_compass, &colors.black);
+		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
+		gdk_gc_set_foreground (kontext_compass, &colors.white);
+		gdk_gc_set_line_attributes (kontext_compass, 1, 0, 0, 0);
+		gdk_draw_polygon (drawable_compass, kontext_compass, FALSE, poly, 5);
+
+		/* draw bearing pointer */
+		b = current.bearing - current.heading;
+		if (b > 2*M_PI)
+			b -= 2*M_PI;
+		gdk_gc_set_foreground (kontext_compass, &colors.red);
+		poly[0].x = size/2-diam*cos(b + M_PI_2);
+		poly[0].y = size/2-diam*sin(b + M_PI_2);
+		poly[1].x = size/2-0.2*diam*cos(b + M_PI) + 0.7*diam*cos(b + M_PI_2);
+		poly[1].y = size/2-0.2*diam*sin(b + M_PI) + 0.7*diam*sin(b + M_PI_2);
+		poly[2].x = size/2+0.4*diam*cos(b + M_PI_2);
+		poly[2].y = size/2+0.4*diam*sin(b + M_PI_2);
+		poly[3].x = size/2+0.2*diam*cos(b + M_PI) +0.7*diam*cos(b + M_PI_2);
+		poly[3].y = size/2+0.2*diam*sin(b + M_PI) +0.7*diam*sin(b + M_PI_2);
+		poly[4].x = poly[0].x;
+		poly[4].y = poly[0].y;
+		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
 	}
-	gdk_draw_line (drawable_compass, kontext_compass,
-		size/2-diam*t_x2off, size/2-diam*t_y2off,
-		size/2+diam*t_x2off, size/2+diam*t_y2off);
-	gdk_draw_line (drawable_compass, kontext_compass,
-		size/2, size/2,
-		size/2+diam*t_x1off, size/2+diam*t_y1off);
-	gdk_gc_set_foreground (kontext_compass, &colors.green);
-	gdk_gc_set_line_attributes (kontext_compass, 2, 0, 0, 0);
-	gdk_draw_line (drawable_compass, kontext_compass,
-		size/2, size/2,
-		size/2-diam*t_x1off, size/2-diam*t_y1off);
+	else
+	{
+		/* draw compass cross and scale */
+		for (i=0; i<4; i++)
+		{
+			gdk_draw_line (drawable_compass, kontext_compass,
+				size/2+0.8*diam*cos(M_PI/4+i*M_PI_2),
+				size/2+0.8*diam*sin(M_PI/4+i*M_PI_2),
+				size/2+1.0*diam*cos(M_PI/4+i*M_PI_2),
+				size/2+1.0*diam*sin(M_PI/4+i*M_PI_2));
+		}
+		gdk_draw_line (drawable_compass, kontext_compass,
+			size/2-diam, size/2,
+			size/2+diam, size/2);
+		gdk_draw_line (drawable_compass, kontext_compass,
+			size/2, size/2, size/2, size/2+diam);
+		gdk_gc_set_foreground (kontext_compass, &colors.green);
+		gdk_gc_set_line_attributes (kontext_compass, 3, 0, 0, 0);
+		gdk_draw_line (drawable_compass, kontext_compass,
+			size/2, size/2, size/2, size/2-diam);
 
-	/* draw direction labels */
-	layout_compass = gtk_widget_create_pango_layout
-		(drawing_compass, _("N"));
-	pango_layout_set_font_description (layout_compass, pfd_compass);
-	pango_layout_get_pixel_size (layout_compass, &cx, &cy);
-	gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
-		size/2-diam*t_x1off-cx*nx, size/2-diam*t_y1off-cy*ny,
-		layout_compass, &colors.red, NULL);
+		/* draw direction labels */
+		layout_compass = gtk_widget_create_pango_layout (drawing_compass, _("N"));
+		pango_layout_set_font_description (layout_compass, pfd_compass);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			(size-cx)/2, size/2-diam-cy,
+			layout_compass, &colors.red, NULL);
 
-	pango_layout_set_text (layout_compass, _("S"), -1);
-	pango_layout_get_pixel_size (layout_compass, &cx, &cy);
-	gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
-		size/2+diam*t_x1off+cx*sx, size/2+diam*t_y1off+cy*sy,
-		layout_compass, &colors.red, NULL);
+		pango_layout_set_text (layout_compass, _("S"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			(size-cx)/2, size/2+diam,
+			layout_compass, &colors.red, NULL);
 
-	pango_layout_set_text (layout_compass, _("W"), -1);
-	pango_layout_get_pixel_size (layout_compass, &cx, &cy);
-	gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
-		size/2-diam*t_x2off-cx*wx, size/2-diam*t_y2off-cx*wy,
-		layout_compass, &colors.red, NULL);
+		pango_layout_set_text (layout_compass, _("W"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2-diam-cx-2, (size-cy)/2,
+			layout_compass, &colors.red, NULL);
 
-	pango_layout_set_text (layout_compass, _("E"), -1);
-	pango_layout_get_pixel_size (layout_compass, &cx, &cy);
-	gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
-		size/2+diam*t_x2off+cx*ex, size/2+diam*t_y2off+cy*ey,
-		layout_compass, &colors.red, NULL);
+		pango_layout_set_text (layout_compass, _("E"), -1);
+		pango_layout_get_pixel_size (layout_compass, &cx, &cy);
+		gdk_draw_layout_with_colors ( drawable_compass, kontext_compass,
+			size/2+diam+2, (size-cy)/2,
+			layout_compass, &colors.red, NULL);
 
-	if (layout_compass != NULL)
-		g_object_unref (G_OBJECT (layout_compass));
-	pango_font_description_free (pfd_compass);
+		if (layout_compass != NULL)
+			g_object_unref (G_OBJECT (layout_compass));
+		pango_font_description_free (pfd_compass);
 
-	/* draw heading pointer */
-	gdk_gc_set_foreground (kontext_compass, &colors.black);
-	poly[0].x = size/2;
-	poly[0].y = size/2-1.1*diam;
-	poly[1].x = size/2+0.3*diam;
-	poly[1].y = size/2+0.8*diam;
-	poly[2].x = size/2;
-	poly[2].y = size/2+0.6*diam;
-	poly[3].x = size/2-0.3*diam;
-	poly[3].y = size/2+0.8*diam;
-	poly[4].x = poly[0].x;
-	poly[4].y = poly[0].y;
-	gdk_draw_polygon (drawable_compass, kontext_compass, FALSE, poly, 5);
+		/* draw heading pointer */
+		gdk_gc_set_line_attributes (kontext_compass, 2, 0, 0, 0);
+		gdk_gc_set_foreground (kontext_compass, &colors.black);
+		poly[0].x = size/2-1.1*diam*cos(current.heading + M_PI_2);
+		poly[0].y = size/2-1.1*diam*sin(current.heading + M_PI_2);
+		poly[1].x = size/2-0.3*diam*cos(current.heading + M_PI)
+			+ 0.8*diam*cos(current.heading + M_PI_2);
+		poly[1].y = size/2-0.3*diam*sin(current.heading + M_PI)
+			+ 0.8*diam*sin(current.heading + M_PI_2);
+		poly[2].x = size/2+0.6*diam*cos(current.heading + M_PI_2);
+		poly[2].y = size/2+0.6*diam*sin(current.heading + M_PI_2);
+		poly[3].x = size/2+0.3*diam*cos(current.heading + M_PI)
+			+0.8*diam*cos(current.heading + M_PI_2);
+		poly[3].y = size/2+0.3*diam*sin(current.heading + M_PI)
+			+0.8*diam*sin(current.heading + M_PI_2);
+		poly[4].x = poly[0].x;
+		poly[4].y = poly[0].y;
+		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
+		gdk_gc_set_foreground (kontext_compass, &colors.white);
+		gdk_gc_set_line_attributes (kontext_compass, 1, 0, 0, 0);
+		gdk_draw_polygon (drawable_compass, kontext_compass, FALSE, poly, 5);
 
-	/* draw bearing pointer */
-	b = current.bearing - current.heading;
-	if (b > 2*M_PI)
-		b -= 2*M_PI;
-	gdk_gc_set_foreground (kontext_compass, &colors.red);
-	poly[0].x = size/2-diam*cos(b + M_PI_2);
-	poly[0].y = size/2-diam*sin(b + M_PI_2);
-	poly[1].x = size/2
-		- 0.2*diam*cos(b + M_PI) + 0.7*diam*cos(b + M_PI_2);
-	poly[1].y = size/2
-		- 0.2*diam*sin(b + M_PI) + 0.7*diam*sin(b + M_PI_2);
-	poly[2].x = size/2+0.4*diam*cos(b + M_PI_2);
-	poly[2].y = size/2+0.4*diam*sin(b + M_PI_2);
-	poly[3].x = size/2
-		+0.2*diam*cos(b + M_PI) +0.7*diam*cos(b + M_PI_2);
-	poly[3].y = size/2
-		+0.2*diam*sin(b + M_PI) +0.7*diam*sin(b + M_PI_2);
-	poly[4].x = poly[0].x;
-	poly[4].y = poly[0].y;
-	gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
+		/* draw bearing pointer */
+		gdk_gc_set_foreground (kontext_compass, &colors.red);
+		poly[0].x = size/2-diam*cos(current.bearing + M_PI_2);
+		poly[0].y = size/2-diam*sin(current.bearing + M_PI_2);
+		poly[1].x = size/2-0.2*diam*cos(current.bearing + M_PI)
+			+ 0.7*diam*cos(current.bearing + M_PI_2);
+		poly[1].y = size/2-0.2*diam*sin(current.bearing + M_PI)
+			+ 0.7*diam*sin(current.bearing + M_PI_2);
+		poly[2].x = size/2+0.4*diam*cos(current.bearing + M_PI_2);
+		poly[2].y = size/2+0.4*diam*sin(current.bearing + M_PI_2);
+		poly[3].x = size/2+0.2*diam*cos(current.bearing + M_PI)
+			+0.7*diam*cos(current.bearing + M_PI_2);
+		poly[3].y = size/2+0.2*diam*sin(current.bearing + M_PI)
+			+0.7*diam*sin(current.bearing + M_PI_2);
+		poly[4].x = poly[0].x;
+		poly[4].y = poly[0].y;
+		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
+
+	}
 
 return TRUE;
 }
@@ -1624,7 +1715,8 @@ simulated_pos (GtkWidget * widget, guint * datum)
 	gdouble ACCELMAX, ACCEL;
 	gdouble secs, tx, ty, lastdirection;
 
-	if (mydebug >50) printf ("simulated_pos()\n");
+	if (mydebug >50)
+		g_print ("simulated_pos()\n");
 
 	if (!current.simmode)
 		return TRUE;
@@ -1645,44 +1737,42 @@ simulated_pos (GtkWidget * widget, guint * datum)
 
 	coords.current_lat += lat_diff;
 	coords.current_lon += long_diff;
-	secs = g_timer_elapsed (timer, 0);
-	if (secs >= 1.0)
-	{
-		g_timer_stop (timer);
-		g_timer_start (timer);
-		tx = (2 * R * M_PI / 360) * cos (M_PI * coords.current_lat / 180.0) *
-			(coords.current_lon - coords.old_lon);
-		ty = (2 * R * M_PI / 360) * (coords.current_lat - coords.old_lat);
-#define MINSPEED 1.0
-		if (((fabs (tx)) > MINSPEED) || (((fabs (ty)) > MINSPEED)))
-		{
-			lastdirection = current.heading;
-			if (ty == 0)
-				current.heading = 0.0;
-			else
-				current.heading = atan (tx / ty);
-			if (!finite (current.heading))
-				current.heading = lastdirection;
+	secs = g_timer_elapsed (simulation_timer, NULL);
+	g_timer_start (simulation_timer);
 
-			if (ty < 0)
-				current.heading = M_PI + current.heading;
-			if (current.heading >= (2 * M_PI))
-				current.heading -= 2 * M_PI;
-			if (current.heading < 0)
-				current.heading += 2 * M_PI;
-			current.groundspeed =
-				milesconv * sqrt (tx * tx +
-						  ty * ty) * 3.6 / secs;
-		}
+	tx = (2 * R * M_PI / 360) * cos (M_PI * coords.current_lat / 180.0) *
+		(coords.current_lon - coords.old_lon);
+	ty = (2 * R * M_PI / 360) * (coords.current_lat - coords.old_lat);
+#define MINSPEED 1.0
+	if (((fabs (tx)) > MINSPEED) || (((fabs (ty)) > MINSPEED)))
+	{
+		lastdirection = current.heading;
+		if (ty == 0)
+			current.heading = 0.0;
 		else
-			current.groundspeed = 0.0;
-		if (current.groundspeed > 999)
-			current.groundspeed = 999;
-		coords.old_lat = coords.current_lat;
-		coords.old_lon = coords.current_lon;
-		if (mydebug>30)
-			g_print ("Time: %f\n", secs);
+			current.heading = atan (tx / ty);
+		if (!finite (current.heading))
+			current.heading = lastdirection;
+
+		if (ty < 0)
+			current.heading = M_PI + current.heading;
+		if (current.heading >= (2 * M_PI))
+			current.heading -= 2 * M_PI;
+		if (current.heading < 0)
+			current.heading += 2 * M_PI;
+		current.groundspeed =
+			milesconv * sqrt (tx * tx +
+					  ty * ty) * 3.6 / secs;
 	}
+	else
+		current.groundspeed = 0.0;
+	if (current.groundspeed > 999)
+		current.groundspeed = 999;
+	coords.old_lat = coords.current_lat;
+	coords.old_lon = coords.current_lon;
+	if (mydebug>30)
+		g_print ("Time: %f\n", secs);
+
 
 	return TRUE;
 }
@@ -2250,10 +2340,9 @@ main (int argc, char *argv[])
 #endif
 
 
-    timer = g_timer_new ();
+    simulation_timer = g_timer_new ();
     disttimer = g_timer_new ();
-    g_timer_start (timer);
-    g_timer_start (disttimer);
+
     memset (satlist, 0, sizeof (satlist));
     memset (satlistdisp, 0, sizeof (satlist));
     buffer = g_new (char, 2010);
@@ -2555,7 +2644,10 @@ main (int argc, char *argv[])
 
 	/*  if we started in simulator mode we have a little move roboter */
 	if (current.simmode)
+	{
+		g_print ("Enabling simulation mode\n");
 		simpos_timeout = g_timeout_add (300, (GtkFunction) simulated_pos, 0);
+	}
 	if (nmeaout)
 		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
 	id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
@@ -2587,7 +2679,7 @@ main (int argc, char *argv[])
 	gtk_main ();
 
 
-    g_timer_destroy (timer);
+    g_timer_destroy (simulation_timer);
     if ( do_unit_test ) {
 	coords.current_lat=48.000000;
 	coords.current_lon=12.000000;

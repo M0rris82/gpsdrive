@@ -79,7 +79,6 @@ static GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern gdouble earthr;
 extern gchar *displaytext;
 extern gint do_display_dsc, textcount;
-extern GTimer *timer, *disttimer;
 extern gdouble olddist;
 extern GtkWidget *messagewindow;
 extern GdkDrawable *drawable;

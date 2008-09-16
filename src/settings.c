@@ -1038,7 +1038,7 @@ settings_gui (GtkWidget *notebook)
 	GtkWidget *gui_map_frame, *gui_map_fr_lb;
 	GtkWidget *gui_other_frame, *gui_other_fr_lb;
 	GtkWidget *gui_map_table, *gui_other_table;
-	GtkWidget *gui_shadow_bt, *gui_gridshow_bt;;
+	GtkWidget *gui_shadow_bt, *gui_gridshow_bt, *gui_compassmode_bt;
 	GtkWidget *gui_scaleshow_bt, *gui_zoomshow_bt;
 	GtkWidget *gui_battery_bt, *gui_temp_bt, *gui_wayshow_bt;
 	GtkWidget *gui_marker_lb, *gui_marker_bt;
@@ -1121,6 +1121,23 @@ settings_gui (GtkWidget *notebook)
 		      GTK_SIGNAL_FUNC (settogglevalue_cb),
 		      &local_config.showscalebar);
 
+	gui_compassmode_bt = gtk_check_button_new_with_label (_("Rotating Compass"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_scaleshow_bt,
+		_("Rotate the compass depending on your heading"), NULL);
+	if (local_config.rotating_compass)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_compassmode_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_compassmode_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_compassmode_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.rotating_compass);
+
 	gui_wayshow_bt = gtk_check_button_new_with_label (_("Show way info (EXPERIMENTAL!)"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_wayshow_bt,
 		_("This will show information about the current way (this is an experimental feature, which may not work as expected!!!"), NULL);
@@ -1170,7 +1187,9 @@ settings_gui (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_scaleshow_bt, 2, 3, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_wayshow_bt, 0, 3, 2, 3);
+		gui_compassmode_bt, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
+		gui_wayshow_bt, 2, 3, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_marker_lb, 0, 1, 3, 4);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),

@@ -74,6 +74,7 @@ typedef struct
 	gboolean mapnik_caching;
 	gint simmode;
 	gboolean use_database;
+	gboolean rotating_compass;
 	gboolean showmaptype;
 	gboolean showgrid;
 	gboolean showshadow;

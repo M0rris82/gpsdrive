@@ -151,7 +151,7 @@ extern gint debug, mydebug;
 extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
 GtkWidget *dltext4,*dltext3;
 extern gdouble olddist;
-extern GTimer *timer, *disttimer;
+extern GTimer *disttimer;
 extern gint downloadwindowactive;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern GtkWidget *status;
