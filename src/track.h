@@ -74,5 +74,6 @@ void init_track (gboolean clear);
 
 gint trip_reset_cb (void);
 gint update_tripdata_cb (void);
+gint track_clear_cb (GtkWidget *widget, gpointer data);
 
 #endif /* GPSDRIVE_TRACK_H */

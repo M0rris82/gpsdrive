@@ -488,6 +488,19 @@ void do_incremental_save() {
 
 
 /* ******************************************************************
+ *  Clear track and trip data, when 'clear trip' button is pressed
+ */
+gint
+track_clear_cb (GtkWidget *widget, gpointer data)
+{
+	init_track (TRUE);
+	trip_reset_cb ();
+
+	return TRUE;
+}
+
+
+/* ******************************************************************
  * Allocate memory for track storage
  *  If clear=TRUE then the track data in memory will be cleared.
  *  This function should be called every time with clear=FALSE, whenever

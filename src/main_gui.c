@@ -1778,6 +1778,7 @@ void create_controls_mainbox (void)
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
+	GtkWidget *cleartrack_bt;
 
 	gint scaler_pos = 0;
 	gint scale = 0;
@@ -2094,6 +2095,15 @@ void create_controls_mainbox (void)
 	gtk_box_pack_start (GTK_BOX (vbox_track), savetrack_bt,
 		FALSE, FALSE,0 * PADDING);
 	}	/* END TRACKS */
+
+	/* Button: Clear Track */
+	cleartrack_bt = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
+	g_signal_connect (GTK_OBJECT (cleartrack_bt), "clicked",
+		GTK_SIGNAL_FUNC (track_clear_cb), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), showtrack_bt,
+		_("Clear recorded track data"), NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
+		FALSE, FALSE, 0 * PADDING);
 
 	/* MAP CONTROL */
 	if ( mydebug > 11 )
