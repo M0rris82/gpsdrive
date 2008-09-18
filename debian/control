@@ -71,7 +71,6 @@ Recommends: gpsd,
 	imagemagick,
 	libdbd-mysql-perl,
 	libdbd-sqlite3-perl,
-	libgdal,
 	libgeos,
 	openstreetmap-mapnik-data,
 	openstreetmap-mapnik-world-boundaries (>>7749),
@@ -85,8 +84,8 @@ Suggests: grass,
 	libexpat1,
 	libfile-find-rule-perl,
 	libgtk2.0-0,
-	libgdal1--1.4.0,
-	libgdal1-1.4.0-grass,
+	libgdal1-1.5.0,
+	libgdal1-1.5.0-grass,
 	festival
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
