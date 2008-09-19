@@ -24,8 +24,12 @@ Disclaimer: Please do not use for navigation.
 
 
 /*
- * module for accessing the mapnik/postgis database with gda, used by functions in database.c
+ * module for accessing the mapnik/postgis database with gda, used by
+ * functions in database.c
  */
+
+#ifdef MAPNIK
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -182,3 +186,4 @@ db_get_errors (GdaConnection *connection)
                 g_print ("sqlstate: %s\n", gda_connection_event_get_sqlstate (error));
         }
 }
+#endif

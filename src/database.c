@@ -381,11 +381,13 @@ db_poi_get (gchar *query, gpointer callback, gint database)
 			/* get data from waypoints/sqlite database */
 			db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
 			break;
+#ifdef MAPNIK
 		case DB_WP_OSM:
 			/* get data from openstreetmap/postgis database */
 			if (db_conn_osm)
 				db_postgis_query (query, callback);
 			break;
+#endif
 	}
 }
 

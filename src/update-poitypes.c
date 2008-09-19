@@ -60,6 +60,8 @@ gint spinpos = 0;
 /* *****************************************************************************
  * callback for filling the poi column with data
  */
+#ifdef MAPNIK
+
 gint
 fill_poi_column_cb (gpointer datum, gint columns, gchar **values, gchar **names)
 {
@@ -90,7 +92,7 @@ fill_poi_column_cb (gpointer datum, gint columns, gchar **values, gchar **names)
 
 	return 0;
 }
-
+#endif
 
 /*******************************************************************************
  *                                                                             *
@@ -101,7 +103,7 @@ int
 main (int argc, char *argv[])
 {
 	gchar const rcsid[] = "$Id$";
-
+#ifdef MAPNIK
 	GOptionContext *opt_context;
 	GdaClient *db_client;
 	gint status = 0;
@@ -239,6 +241,6 @@ main (int argc, char *argv[])
 	sqlite3_close (geoinfo_db);
 
 	g_print (_("\nFinished.\n"));
-
+#endif
 	return EXIT_SUCCESS;
 }
