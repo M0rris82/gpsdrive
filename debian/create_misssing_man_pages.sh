@@ -60,3 +60,5 @@ find $src_dir -name "*.sh" | grep -v -e '\#' -e '~' |\
 	fi
     fi
 done
+
+echo "Finished Creating Man Pages."
