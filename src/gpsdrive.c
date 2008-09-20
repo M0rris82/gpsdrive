@@ -2101,8 +2101,23 @@ sel_message_cb (GtkWidget * widget, guint datum)
  * on a TERM signal, do a clean shutdown
  */
 #ifndef _WIN32
-void termhandler (int sig)
+void signalhandler_term (int sig)
 {
+	if (mydebug > 0)
+		g_print ("\nCatched SIGTERM - shutting down !\n");
+	gtk_main_quit ();
+}
+#endif
+
+
+/* *****************************************************************************
+ * on a INT signal, do a clean shutdown
+ */
+#ifndef _WIN32
+void signalhandler_int (int sig)
+{
+	if (mydebug > 0)
+		g_print ("\nCatched SIGINT - shutting down !\n");
 	gtk_main_quit ();
 }
 #endif
@@ -2597,11 +2612,12 @@ main (int argc, char *argv[])
 	update_posbt();
 
     /*
-     * setup TERM signal handler so that we can save everything nicely when the
-     * machine is shutdown.
+     * setup signal handler for SIGTERM and SIGINT so that we can save everything
+     * nicely when the machine is shutdown or CTRL-C is pressed.
      */
 #ifndef _WIN32
-    signal (SIGTERM, termhandler);
+    signal (SIGTERM, signalhandler_term);
+    signal (SIGINT, signalhandler_int);
 #endif
 
 
