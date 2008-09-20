@@ -6,239 +6,158 @@ gpsdrive \- displays GPS position on a map
 
 .SH About this manual page
 
-This manual page explains the basic functions of GpsDrive and some
-additional info.
+This manual page explains the basic functions of \fBGpsDrive\fR 2.10
+and additional information regarding map setup and interfacing with
+support software.
 
-In GpsDrive you find tooltips for nearly all buttons, there is also a
-HELP button for usage of the keys and mouse buttons.
+Within \fBGpsDrive\fR nearly all buttons have tooltips and there is also
+a HELP window describing the usage of mouse buttons and keyboard shortcuts.
 
-For special purposes read the README files, i.e. README.kismet,
-README.SQL ...
+For additional information concerning advanced topics consult the
+specialized README files, e.g. README.kismet, etc.
+
 
 .SH DESCRIPTION
 
 .B Gpsdrive 
-is a car (bike, ship, plane) navigation system.  Displaying your
-position on a map and a lot of other functions are implemented.
+is a car (bike, ship, plane, walking) navigation system.  It will
+display your position on a map, record your track, and a number of
+other handy functions.
 
-.B This manual page describes GpsDrive version 2.x
+\fBGpsDrive\fR connects to a GPS receiver and displays your position
+on a zoomable map. The maps are auto-selected depending on your
+position. You can choose the preferred map scale, which the
+program then tries to match from the available maps. Basic worldwide
+maps are provided and tools are included to help you add your own
+localized maps.
 
-GpsDrive displays your position provided from your NMEA capable GPS
-receiver on a zoomable map . The maps are autoselected depending on
-your position. You can set the preferred scale, which the program tries to
-get from available maps.
+.B GpsDrive
+will work with the vast majority of GPS receivers which output NMEA
+sentences to a serial device, and any USB GPS binary protocol known
+to the \fBGpsd\fR software, which handles the back-end communication
+for \fBGpsDrive\fR. See the \fBGpsd\fR website
+(\fIhttp://gpsd.berlios.de\fR) for an extensive list of GPS receivers
+known to work with that software. In most cases your GPS will "just work".
 
-GpsDrive was tested with a GARMIN GPS III, a Crux II GPS PCMCIA
-card and a Navilock USB receiver. All Garmin GPS reveivers with a serial output should be
-usable. Other GPS receivers that sends NMEA protocol over the
-serial output should also work with GpsDrive.
+"\fBGpsd\fR is a service daemon that monitors one or more GPSes attached
+to a host computer through serial or USB ports, making all data on the
+location/course/velocity of the sensors available to be queried on
+a TCP port of the host computer. With \fBgpsd\fR, multiple GPS client
+applications (such as navigational and wardriving software) can share
+access to GPSes without contention or loss of data."
 
-These GPS receivers are reported to work with gpsdrive:
+You must install and launch \fBgpsd\fR before running \fBGpsDrive\fR.
 
-Magellan 310, 315, 320
-.br
-Garmin GPS III
-.br
-Garmin etrex
-.br
-GPS 45
-.br
-Crux II GPS PCMCIA card
-.br
-Holux GM-200 serial version
-.br
-Holux GM-200 USB (needs USB to serial support in kernel)
-.br
-eMap
-.br
-GPSMAP 295
-.br
-GNS 530
-.br
-Garmin GPS 12MAP
-.br
-EAGLE Expedition II
-.br
-DeLorme Earthmate
-.br
-Rayming TripNav, TN-200
-.br
-Haicom HI-203E
-.br
-GM-307 USB-Mouse
-.br
-Magellan Meridian Gold (works only with NMEA V2.1 GSA setting)
-.br
-NAVILock GPS Receiver (http://www.navilock.de)
-.br
-Haicom GPS HI204e
-.br
-Magellan Nav 6500 
-.br
-BendixKing KLX 100
-.br
-Motorola i58sr Cellular Phone w/built-in NMEA-compatible GPS
-.br
-.br
 
-Disclaimer:
-.B Do not use for navigation!
+.SH DISCLAIMER
+.B Do not use GpsDrive as a primary source of navigation!
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License (GPL) for more details.
+
 
 .SH OPTIONS
+
 .TP
-.B \-d
-Shows some debugging information.
-.TP
-.B \-D
-Shows a lot of debugging information. If you have problems or program
-crashes, send this output to the author. You should also combine this
-with -d. See also the section 
-.I BUGS
-.TP
-.B \-v
-Shows program version together with the CVS version of the mainfile
-gpsdrive.c. If you send a bug report, also include this output.
-.TP
-.B \-h
+.B \-?, --help
 Displays a short help message.
 .TP
-.BI \-o "\| outputfile\^"
-With this option, you can
-.IR write
-the NMEA sentences to a PTY master, file or serial device. This is
-useful if you use GpsDrive in simulation mode to provide other GPS
-applications with test data.
+.B \-e, --embedded
+Don't show the GUI; for use in external GTK apps.
 .TP
-.BI \-t "\| device\^"
-Serial port device (e.g. 
-.IR /dev/ttyS0
-). You can also set it in the 
-.IR setup
-menu.
+.B \-f, --force-position
+Force display of position even it is invalid.
 .TP
-.BI \-l "\| language\^"
-Sets the language for the speech output. You have to provide the voice
-files in festival yourself (see below). At the moment
-.IR german
-,
-.IR spanish
-and
-.IR english
-are provided.
+.B \-i, --ignore-checksum
+Ignore NMEA checksum. (risky, only for broken GPS receivers)
 .TP
-.B \-x
-Creates own window for the menu buttons, status and map. This is
-helpful on small displays like the Compaq iPaq or on Head Mounted
-Displays, where the menu should be hidden.
+.B \-p, --position-mode
+Start in Position Mode. This will let you explore around your maps
+independently of your GPS position (or lack thereof).
 .TP
-.BI \-s "\| height\^"
-Set the height of the screen, if autodetection doesn't satisfy you, 
-.IR height
-is i.e. 768,600,480,200
+.B \-s, --nosplash
+Don't show the startup splash screen.
 .TP
-.BI \-r "\| width\^"
-Set the 
-.IR width
-of the screen, if autodetection don't satisfy you. Works
-only in combination with
-.IR -s
+.B \-t, --touchscreen
+Set this special mode if you only have a single mouse button, for example
+when using \fBGpsDrive\fR on a touchscreen display.
 .TP
-.BI \-f "\| friendsserver\^"
-Define a friends server to exchange position information with other
-people. You can also set it in the Settings/Friends menu. You can start your own friends server with the program
-.B friendsd2
-, which is included. More details are in section 
-.I FRIENDSD server
-
+.B \-v, --verbose
+Displays some basic debug information to the terminal as the program runs.
 .TP
-.B \-1
-Set special mode if you only have 1 mouse button, i.e. on touchpads.
+.B \-x, --use-DBUS
+Use DBUS for communication with \fBgpsd\fR; this disables socket communication.
 .TP
-.B \-a
-Disable display of battery status. Some implementations of the APM-BIOS
-are broken, so use this option if gpsdrive crashes.
+.B \-A, --alt-offset=\fI<OFFSET>\fR
+Adjust the displayed altitude by adding this value.
 .TP
-.BI \-b "\| servername\^"
-Use a remote NMEA server. You can start gpsd on another
-.IR host
-, which has the GPS receiver connected and display the position on
-your local machine.
+.B \-B, --gpsd-server=\fI<SERVER>\fR
+Server name of the NMEA server. You can connect your GPS receiver to a
+remote \fIhost\fR which is running \fBgpsd\fR and display the position
+on your local machine.
 .TP
-.BI \-c "\| waypointname\^"
-Initial position for simulation mode. Specify a
-.IR "waypoint name"
-from your currently used waypoint list.
+.B \-C, --config-file=\fI<FILE>\fR
+Set this if you wish to use an alternative configuration file.
 .TP
-.B \-q 
-Disables SQL support. Only useful if you have SQL support compiled in.
+.B \-D, --debug=\fI<LEVEL>\fR
+Set the debugging level. A level of 0 will show no debug information,
+while a level of 100 will show \fBa lot\fR of debugging information.
+If you have problems or program crashes, set this high enough to display
+relevant information send this output to the authors.
+See also the \fBBUGS\fR section below.
 .TP
-.B \-z
-Don't show zoom and scaling on the map.
+.B \-F, --friends-server=\fI<SERVERFILE>\fR
+Select a friends server to exchange position information with other
+people, e.g. \fIfriendsd.gpsdrive.de\fR.
+You can also set this from the Preferences/Friends menu.
+You can start your own friends server with the included \fBfriendsd\fR program.
+More details are in the \fBFRIENDSD\fR section below.
 .TP
-.BI \-n 
-Disables the direct serial connection. You have to use Garmin mode
-or start gpsd
-.br
-
-
-Use gpsdrive -h to see the actual command line help.
+.B \-G, --geometry=\fI<GEOMETRY>\fR
+Specify the window geometry, e.g. 800x600.
+.TP
+.B \-M, --gui-mode=\fR[\fIcar\fR|\fIpda\fR|\fIdesktop\fR]
+Set GUI mode. The default layout is '\fIdesktop\fR'. \fICar\fR modes sets
+up the display in a fullscreen mode suitable for use with a small LCD
+touchscreen. \fIPDA\fR mode dedicates even more screen real-estate to
+the map, controls are hidden behind tabs.
+.TP
+.B \-N, --nmeaout=\fI<FILE>\fR
+Set a serial device, PTY master, or file to send NMEA sentences to.
+This is useful if you use \fBGpsDrive\fR in simulation mode to provide
+other GPS applications with test data.
+.TP
+.B \-S, --screenshot=\fI<PATH>\fR
+Take auto-screenshots of different GUI windows then exit. Image files will
+be saved to the secified \fIpath\fR. Don't touch gpsdrive while this is
+running!
+.TP
+.B \-T, --run-test
+Run some internal unit tests and then exit.
+.TP
+.B \--version
+Shows the program version together with the SVN revision of the main
+gpsdrive.c source. If you send a bug report, also include this output.
+.TP
+.B \--display=\fI<DISPLAY>\fR
+The X-Windows display to use.
 
 
 .SH CONNECTING A GPS RECEIVER
-First you have to choose if you want use the GARMIN or NMEA mode.
 
-.B NMEA mode.
-.br
-This is the most used mode. This mode is provided by most GPS
-receivers. 
-.br
-To use NMEA mode, you have to start the provided program
-.B gpsd
-first
 .B Start GPSD
-This program runs as daemon in background and provides a server,
-which sends the GPS data on port number 2947. 
-The settings /dev/gps and 4800 BPS are precompiled if you start
-gpsd.
-
-You can also change the gpsd settings i.e. to ttyS1 call it with:
 .br
-.B gpsd -p /dev/ttyS1
+This program runs as daemon in background and provides a server
+which sends the GPS data on port number 2947. You can download and
+learn more about \fBgpsd\fR at \fIhttp://gpsd.berlios.de\fR.
 
-If you are using a GPS receiver with an USB connection, your port may
-be
-.B /dev/ttyUSB0
-for the first device.
+Once \fBgpsd\fR is running you can monitor the raw NMEA output of your GPS
+with \fBtelnet localhost 2947\fR and after the connection is made hit the 
+\fBR\fI key to see the NMEA sentences. You can use the \fBxgps\fR
+program that comes with \fBgpsd\fR for a more comprehensive test.
 
-Be sure to select NMEA protocol and a baudrate of 4800 BPS in your
-GPS receiver.
-
-To see the output of you GPS do 
-.B telnet localhost 2947
-and after the connect hit the 
-.B R
-key to see the NMEA sentences.
-
-.B NMEA sentences used
-.br
-Following NMEA sentences are used for specified informations:
-
-.I GPRMC: 
-Position, Speed, Heading 
-.br
-.I GPGSV: 
-Satellite signal level display
-.br
-.I GPGGA: 
-Altitude (not available on all receivers) and position if no GPRMC is
-available. In this case, speed and heading are calculated by GpsDrive.
-.br
-.I PGRME: 
-Display EPE (estimated position error), perhaps only available on
-GARMIN receivers
-
-At least you need GPRMC or GPGGA for using GpsDrive. If you can turn
-on GPRMC, please do so.
 
 .SH USAGE
 
@@ -247,8 +166,8 @@ Start GpsDrive as normal user with:
 from your shell, if you want another language see section 
 .I LOCALISATION
 
-On some distributions you may find a "GpsDrive" entry in your Gnome or
-KDE menu.
+On some distributions you may find a "\fBGpsDrive\fR" entry in your
+Gnome or KDE menu.
 
 It is important that you have installed GpsDrive as root, so it can
 find the necessary files. 
@@ -281,7 +200,8 @@ There are 3 modes in which GpsDrive is operating:
 
 .B Normal mode:
 
-This mode is entered if you have a GPS receiver connected. The cursor is at the position your receiver sends.
+This mode is entered if you have a GPS receiver connected. The cursor is at
+the position your receiver sends.
 
 Black and a red arrows show your position on the map. The 
 .B black arrow
@@ -317,7 +237,7 @@ your target).
 
 
 .SH OPENSTREETMAP MAPS
-GpsDrive now supports OSM maps with the help of the renderer Mapnik.
+GpsDrive now supports OSM maps with the help of the Mapnik renderer.
 To activate this mode you have to choose the mapnik option.
 
 
@@ -326,45 +246,48 @@ To activate this mode you have to choose the mapnik option.
 You can easily download maps from the internet with the
 .B Download
 button. GpsDrive stores an index of your maps in the file
-map_koord.txt in your  ~/.gpsdrive directory. You can also use any
+map_koord.txt in your ~/.gpsdrive/maps/ directory. You can also use any
 directory for your maps, but you have to set this in the
 settings menu.
 
 .SH About maps
 
-There is a file called "map_koord.txt" in your ~/.gpsdrive
+There is a file called "map_koord.txt" in your ~/.gpsdrive/maps/
 directory. Here is a sample:
 
-top_WORLD.jpg 0,00000 0,00000 88226037
+top_WORLD.jpg 0.00000 0.00000 88226037
 .br
-map_file0000.gif 53,60751 10,01145 3160000
+map_file0000.gif 53.60751 10.01145 3160000
 .br
-map_file0001.gif 43,08210 12,24552 3160000
+map_file0001.gif 43.08210 12.24552 3160000
 .br
-map_file0002.gif 49,81574 9,71454 7900000
+map_file0002.gif 49.81574 9.71454 7900000
 .br
-map_file0003.gif 47,72837 14,46487 592500
+map_file0003.gif 47.72837 14.46487 592500
 .br
 
 
-The first row is the filename, then comes the latitude, the longitude
-and the scale of the map. The scale of 10000000 is good for Europe,
-and 100000 is for a town. To see detailed streets in a city, choose a
-scale like 10000 or 5000.
+The first column is the filename, then comes the latitude, the longitude
+and the scale of the map. Typical scales for all of Europe might be
+1:10,000,000, and 1:100,000 for a town. To see detailed streets in a city,
+choose a scale like 1:10,000 or 1:5,000.
+
+You can figure out the exact "scale" factor by meters/pixel * 2817.947378.
+The 2817 number may be some ancient screen dpi converted to pixels/meter?
+Who knows. But that's what it is and it works.
 
 GpsDrive selects the map with the best scale for your position. So get
-a map i.e for Europe, Austria and Vienna if you want to drive in
+a map e.g. for Europe, Austria, and Vienna if you want to drive in
 Vienna.
-
 
 There is also the program
 .IR gpsfetchmap.pl
 provided to download multiple maps for a bigger area.
 .br
-.B Please consider the copyright information at 
-www.expedia.com if you want to use their maps!
+.B Please consider the copyright information and terms of service
+at \fIwww.expedia.com\fR if you want to use their maps!
 .br
-.B Don't misuse this service by downloading more maps as you need! 
+.B Do not misuse this service by downloading more maps as you need! 
 You will risk being blocked by these servers, and possibly cause
 trouble for the gpsdrive project.
 
@@ -378,20 +301,34 @@ LC_NUMERIC setting.
 
 .SH Can I use other maps?
 
-You can also use your own (self drawn, scanned...) maps. The maps must
-be gif, jpeg, png or other common file formats (the format must be
-recognized by the gdk-pixbuf library).  The lat/long coordinates you
-write into the "map_koord.txt" file has to be the center of the map. The
-map must have a size of 1280x1024 pixels! 
+You can also use your own (self drawn, scanned, exported from GIS, ...) maps.
+The maps must be in PNG, JPEG, GIF, TIFF, or another common file format
+(the format must be recognized by the gdk-pixbuf library).
+The lat/long coordinates you write into the "map_koord.txt" file is measured
+at the center of the map. The map must have a size of 1280x1024 pixels! 
 
 Important! The maps must be named "map_*" for UTM-like projections
 (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carrée projection
 (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
 scale the maps correctly. Alternatively the maps can be stored without
-prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
-"_top".
+prefix in subdirectories of $HOME/.gpsdrive/maps/ which end in "_map" or
+"_top". The georeferencing information (center coordinate and scale factor)
+for the maps in those subdirectories must be recorded in the main
+"map_koord.txt" file, typically stored in the \fI~/.gpsdrive/maps/\fR
+directory.
 
-There is an "import assistant" built in. Use it to import your maps.
+Beware if you are using an image originating from a map projection with a
+significant deviation between true north and the map projection's local
++y direction (known as the Convergence Angle). \fBGpsDrive\fR assumes that
+true north is always directly up! i.e. the Central Meridian of the map
+projection is located at the map tile's center. For some map projections
+and areas of the country this can be a really bad assumption and your map
+will be significantly rotated. This effect is most visible at map scales
+covering a large area. This does not affect lat/lon maps.
+
+There is an "import assistant" built in. Use it to import your unreferenced
+maps.
+
 
 .SH Importing waypoints:
 
@@ -421,7 +358,7 @@ more than EUR 10.000.
 
 .SH PROXY SERVER
 If you must access the internet via a proxy server, you have to set the
-enviromental variable
+environment variable
 .B HTTP_PROXY
 or
 .B http_proxy
@@ -491,7 +428,8 @@ menu.
 
 GpsDrive use MySQL automatically if it finds the shared library 
 .I libmysqlclient.so.10 
-and the MySQL Server is running and a connection to the database is possible. For first use you have to run 
+and the MySQL Server is running and a connection to the database is possible.
+For first use you have to run
 .B geoinfo.pl --create-db --fill-defaults
 once.
 
@@ -521,7 +459,8 @@ another text
 Example:
 
 $Fritz_Wohnung
-Hier wohnt Fritz, der Autor von diesem Programm. Er freut sich auf Besuch und eine Einladung zu einem saftigen Steak.
+Hier wohnt Fritz, der Autor von diesem Programm. Er freut sich auf Besuch und eine
+Einladung zu einem saftigen Steak.
                                                                                 
 $Hubertus
 Hier wohnt Hubertus, ein Freund von Fritz.
@@ -645,60 +584,72 @@ You can also send messages to other mobile targets (Misc. Menu/Messages)
 
 
 .SH MAILING LIST
-The address for the mailing list is 
-.B gpsdrive@warbase.selwerd.nl
 
-Subscribing can be done by sending a mail containing 
-.B subscribe gpsdrive 
+The primary means of support and coordination of program development
+happens on the \fBGpsDrive\fR mailing list.
 
-to majordomo@warbase.selwerd.nl
+Information about subscription and a searchable archive can be found
+at \fIhttp://www.gpsdrive.de/support.shtml\fR.
+
 
 .SH BUGS
-Please send bug reports to the author. Report version (gpsdrive -v),
-screen size and info how to reproduce the bug. It is also a big help
-to run gpsdrive for a minute with the -d option and send me the output.
+Please send bug reports to the development team! If we don't know about
+them we can't fix them and then the remain unfixed. 
 
-If gpsdrive crashes with a segfault, I need a backtrace of the program
-in addition. To create a backtrace do following:
+File bug reports in our tracker at \fIhttp://bugzilla.gpsdrive.de/\fR.
+You will need to create yourself a SourceForge account at that site,
+it is rather painless and only takes a minute. This ensures you get
+feedback about the bug and we can communicate with you if we need
+further information.
 
-Extract the tar file, change to gpsdrive directory and do
-.br
- ./configure \-\-with\-debug
-.br
- make clean
-.br
- make
-.br
- cd src
-.br
- gdb ./gpsdrive
+Please report the version (\fBgpsdrive --version\fR), screen size, platform,
+and as much specific information about how to reproduce the bug as possible.
+Whenever possible cut and paste exact error messages and take screenshots.
+It is helpful to run gpsdrive for a minute with the -D debug level option
+set high and send us the output.
+
+If \fBgpsdrive\fR crashes with a SegFault, we will need a backtrace of the
+program as well. Assuming \fBGpsDrive\fR was built with debugging symbols and
+the binaries were not stripped of them, create a backtrace by running the
+\fBGpsDrive\fR the GNU debugging software as follows:
+
+  \fBgdb `which gpsdrive`\fR
 
 Inside the debugger do:
 
-run (if you use arguments write it after run)
+  \fBrun\fR (if you use command line arguments place these after the word \fBrun\fR)
 
-When you get the segfault type in:
+When you get the SegFault type in:
 
-bt
+  \fBbt full\fR
 
-and send me this output.
- 
-.SH AUTHOR
-Fritz Ganter
-.br
-http://www.gpsdrive.de
+and send us this output. This gives us an indication of exactly what the program
+was doing when it broke.
+
+
+.SH AUTHORS
+\fBGpsDrive\fR was originally written by Fritz Ganter. Today it is maintained
+and improved by a worldwide team of volunteer developers centered around the
+\fIhttp://www.gpsdrive.de\fR website. The source code repository, bug tracker,
+and collaborative wiki help site are hosted at \fIhttp://gpsdrive.sourceforge.net\fR.
+A partial list of contributing authors can be found in the Help->About menu within
+the program.
+
+
 .SH WARRANTY
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+
 .SH COPYRIGHT
 Copyright (c) 2001-2004 by Fritz Ganter
 .br
+Copyright (c) 2005-2008 by the members of the GpsDrive Development Team
+.br
+
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-
+(at your option) any later version. Indeed, you are encouraged to do so!
