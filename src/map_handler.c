@@ -209,7 +209,7 @@ make_display_map_checkboxes()
   glong i;
 
   // Frame
-  frame_maptype = gtk_frame_new (_("Shown map type"));
+  frame_maptype = gtk_frame_new (_("Included mapsets"));
   vbox3 = gtk_vbox_new (FALSE, 1 * PADDING);
   gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
 
@@ -270,7 +270,7 @@ add_map_dir (gchar * filename)
   if (slash_pos)
     slash_pos[0] = '\0';
   else
-    g_strlcpy (map_dir, "no_dir", sizeof (map_dir));
+    g_strlcpy (map_dir, "base_maps", sizeof (map_dir));
 
   for (i = 0; i < max_display_map; i++)
     {
@@ -394,7 +394,8 @@ loadmapconfig ()
   FILE *st;
   gint i;
   gint max_nrmaps = 1000;
-  gchar buf[1512], s1[40], s2[40], s3[40], filename[100], minlat[40], minlon[40], maxlat[40], maxlon[40];
+  gchar buf[1512], s1[40], s2[40], s3[40], filename[100], minlat[40],
+	minlon[40], maxlat[40], maxlon[40];
   gint p, e;
 
   if (mydebug > 50)
@@ -433,7 +434,8 @@ loadmapconfig ()
   havenasa = -1;
   while ((p = fgets (buf, 1512, st) != 0))
     {
-      e = sscanf (buf, "%s %s %s %s %s %s %s %s", filename, s1, s2, s3, minlat, minlon, maxlat, maxlon);
+      e = sscanf (buf, "%s %s %s %s %s %s %s %s", filename,
+		  s1, s2, s3, minlat, minlon, maxlat, maxlon);
       if ((mydebug > 50) && !(nrmaps % 1000))
 	{
 	  fprintf (stderr, "loadmapconfig(%d)\r", nrmaps);
@@ -795,7 +797,8 @@ test_and_load_newmap ()
 	    	local_config.MapnikStatusInt = 2; /* set active */
 	    }
 	    /* render map, but only if it is needed */
-	    if (set_mapnik_map_ysn(coords.current_lat, coords.current_lon, ForceMapCenterYsn, local_config.scale_wanted)) {;
+	    if (set_mapnik_map_ysn(coords.current_lat, coords.current_lon,
+		ForceMapCenterYsn, local_config.scale_wanted)) {;
 		    // local_config.MapnikStatusInt = 2;
 	    	// set_cursor_style(CURSOR_WATCH);
 		    // render_mapnik();
