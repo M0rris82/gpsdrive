@@ -1,6 +1,6 @@
 /***********************************************************************
 
-Copyright (c) 2001-2006 Fritz Ganter <ganter at ganter.at>
+Copyright (c) 2001-2006 Fritz Ganter <ganter  ganter at>
 
 Website: www.gpsdrive.de
 
@@ -22,39 +22,39 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 
 ***********************************************************************/
 
-/* *****************************************************************************
+/**************************************************************************
    Contributors:
-     <molter at gufi.org>
-     <wulf at netbsd.org>
-     Aart Koelewijn <aart at mtack.xs4all.nl>
-     Belgabor <belgabor at gmx.de>
-     Blake Swadling <blake at swadling.com>
-     Christoph Metz <loom at mopper.de>
-     Chuck Gantz- chuck.gantz at globalstar.com
-     Dan Egnor <egnor at ofb.net>
-     Daniel Hiepler <rigid at akatash.de>
-     Darazs Attila <zumi at freestart.hu>
-     Fritz Ganter <ganter at ganter.at>
-     Guenther Meyer <d.s.e at sordidmusic.com>
-     Hamish Bowman <hamish_b at yahoo.com>
-     J.D. Schmidt <jdsmobile at gmail.com>
-     Jan-Benedict Glaw <jbglaw at lug-owl.de>
-     Joerg Ostertag <gpsdrive at ostertag.name>
-     John Hay <jhay at icomtek.csir.co.za>
-     Johnny Cache <johnycsh at hick.org>
-     Miguel Angelo Rozsas <miguel at rozsas.xx.nom.br>
+     <molter  gufi org>
+     <wulf  netbsd org>
+     Aart Koelewijn <aart  mtack.xs4all nl>
+     Belgabor <belgabor  gmx de>
+     Blake Swadling <blake  swadling com>
+     Christoph Metz <loom  mopper de>
+     Chuck Gantz <chuck.gantz  globalstar com>
+     Dan Egnor <egnor  ofb net>
+     Daniel Hiepler <rigid  akatash de>
+     Darazs Attila <zumi  freestart hu>
+     Fritz Ganter <ganter  ganter at>
+     Guenther Meyer <d.s.e  sordidmusic com>
+     Hamish Bowman <hamish_b  yahoo com>
+     J.D. Schmidt <jdsmobile  gmail com>
+     Jan-Benedict Glaw <jbglaw  lug-owl de>
+     Joerg Ostertag <gpsdrive  ostertag name>
+     John Hay <jhay  icomtek.csir.co za>
+     Johnny Cache <johnycsh  hick org>
+     Miguel Angelo Rozsas <miguel  rozsas.xx.nom br>
      Mike Auty
-     Oddgeir Kvien <oddgeir at oddgeirkvien.com>
-     Oliver Kuehlert <Oliver.Kuehlert at mpi-hd.mpg.de>
-     Olli Salonen <olli at cabbala.net>
+     Oddgeir Kvien <oddgeir  oddgeirkvien com>
+     Oliver Kuehlert <Oliver.Kuehlert  mpi-hd.mpg de>
+     Olli Salonen <olli  cabbala net>
      Philippe De Swert
-     Richard Scheffenegger <rscheff at chello.at>
-     Rob Stewart <rob at groupboard.com>
-     Russell Harding <hardingr at billingside.com>
-     Russell Mirov <russell.mirov at sun.com>
-     Wilfried Hemp <Wilfried.Hemp at t-online.de>
-     <pdana at mail.utexas.edu>
-     <timecop at japan.co.jp>
+     Richard Scheffenegger <rscheff  chello at>
+     Rob Stewart <rob  groupboard com>
+     Russell Harding <hardingr  billingside com>
+     Russell Mirov <russell.mirov  sun com>
+     Wilfried Hemp <Wilfried.Hemp  t-online de>
+     <pdana  mail.utexas edu>
+     <timecop  japan.co jp>
 */
 
 /*  Include Dateien */
