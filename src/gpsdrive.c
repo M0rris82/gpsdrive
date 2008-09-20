@@ -2656,6 +2656,10 @@ main (int argc, char *argv[])
 
 
     /*  set the timers */
+	/* after a suitable amount of time has passed for newer versions of libglib2.0
+	 *  to become commonplace (>2.14), replace g_timeout_add(1000,...) with
+	 *  g_timeout_add_seconds(1, ...) etc., as appropriate.
+	 */
 	timerto = g_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
 	redrawtimeout = g_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
 
@@ -2669,27 +2673,27 @@ main (int argc, char *argv[])
 		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
 	id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
 	g_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
-	g_timeout_add_seconds (10, (GtkFunction) masteragent_cb, 0);
+	g_timeout_add (10 *1000, (GtkFunction) masteragent_cb, 0);
 	if (local_config.use_database)
-		g_timeout_add_seconds (15, (GtkFunction) poi_rebuild_list, 0);
+		g_timeout_add (15 *1000, (GtkFunction) poi_rebuild_list, 0);
 	if (local_config.guimode != GUI_PDA)
 	{
 		if (battery_get_values ())
-			g_timeout_add_seconds (5, (GtkFunction) expose_display_battery, NULL);
+			g_timeout_add (5 *1000, (GtkFunction) expose_display_battery, NULL);
 		if (temperature_get_values ())
-			g_timeout_add_seconds (5, (GtkFunction) expose_display_temperature, NULL);
+			g_timeout_add (5 *1000, (GtkFunction) expose_display_temperature, NULL);
 	}
-	g_timeout_add_seconds (15, (GtkFunction) friendsagent_cb, 0);
+	g_timeout_add (15 *1000, (GtkFunction) friendsagent_cb, 0);
 	if (havefestival || local_config.speech)
 	{
-		g_timeout_add_seconds (600, (GtkFunction) (speech_saytime_cb), FALSE);
+		g_timeout_add (600 *1000, (GtkFunction) (speech_saytime_cb), FALSE);
 		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id, _("Using speech output"));
 	}
 
 	/* timer for switching nightmode on or off if set to AUTO */
-	g_timeout_add_seconds (1200, (GtkFunction) check_if_night_cb, NULL);
+	g_timeout_add (1200 *1000, (GtkFunction) check_if_night_cb, NULL);
 
 
 	/*  Mainloop */
