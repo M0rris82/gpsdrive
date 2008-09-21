@@ -484,7 +484,7 @@ checkinput (gchar * text)
   if (mydebug > 50)
     fprintf (stderr, "checkinput(%s)\n", text);
   coordinate_string2gdouble (text, &dec);
-  g_snprintf (text, 20, "%.6f", dec);
+  g_snprintf (text, 20, "%.8f", dec);
   if (mydebug > 50)
     fprintf (stderr, "checkinput -->'%s'\n", text);
 }

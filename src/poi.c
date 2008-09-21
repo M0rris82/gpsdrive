@@ -503,10 +503,10 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	/* query sqlite db */
 	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
-		" WHERE ( lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f"
-		" AND %.6f ) AND (name LIKE '%%%s%%' OR comment LIKE"
+		" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
+		" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
 		" '%%%s%%') AND (poi_type%s) ORDER BY"
-		" (poi.lat-(%.6f))*(poi.lat-(%.6f))+(poi.lon-(%.6f))*(poi.lon-(%.6f)) LIMIT %d;",
+		" (poi.lat-(%.8f))*(poi.lat-(%.8f))+(poi.lon-(%.8f))*(poi.lon-(%.8f)) LIMIT %d;",
 		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
 		type_filter, lat, lat, lon, lon, local_config.poi_results_max);
 	db_poi_get (sql_query, handle_poi_search_cb, DB_WP_USER);
@@ -1108,7 +1108,7 @@ poi_rebuild_list (void)
 	/* query sqlite db */
 	g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT lat,lon,name,poi_type,comment FROM poi"
-		" WHERE (lat BETWEEN %.6f AND %.6f ) AND ( lon BETWEEN %.6f AND %.6f )"
+		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
 		" AND poi_type IN (%s) LIMIT 20000;",
 		lat_min, lat_max, lon_min, lon_max, current.poifilter);
 	db_poi_get (sql_query, handle_poi_view_cb, DB_WP_USER);

@@ -480,7 +480,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tType     : %s\n", wpt.type);
 		fprintf (stderr, "\tElevation: %sm\n", wpt.ele);
 		fprintf (stderr, "\tTime     : %s\n", wpt.time);
-		fprintf (stderr, "\tCourse   : %s\n", wpt.course);
+		fprintf (stderr, "\tCourse   : %s\n", wpt.course);    /* these should be %f not %s ?! */
 		fprintf (stderr, "\tSpeed    : %skm/h\n", wpt.speed);
 		fprintf (stderr, "\tHDOP     : %s\n", wpt.hdop);
 		fprintf (stderr, "\tFix      : %s\n", wpt.fix);
@@ -850,9 +850,9 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 						-1);
 				xmlTextWriterStartElement(xml_writer, BAD_CAST "rtept");
 				xmlTextWriterWriteFormatAttribute (xml_writer,
-						BAD_CAST "lat", "%.6f", t_lat);
+						BAD_CAST "lat", "%.8f", t_lat);
 				xmlTextWriterWriteFormatAttribute (xml_writer,
-						BAD_CAST "lon", "%.6f", t_lon);
+						BAD_CAST "lon", "%.8f", t_lon);
 				xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 				if (strlen (t_name))
 				{
@@ -922,9 +922,9 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 				{
 					xmlTextWriterStartElement(xml_writer, BAD_CAST "trkpt");
 					xmlTextWriterWriteFormatAttribute (xml_writer,
-						BAD_CAST "lat", "%.6f", (trackcoord + i)->lat);
+						BAD_CAST "lat", "%.8f", (trackcoord + i)->lat);
 					xmlTextWriterWriteFormatAttribute (xml_writer,
-						BAD_CAST "lon", "%.6f", (trackcoord + i)->lon);
+						BAD_CAST "lon", "%.8f", (trackcoord + i)->lon);
 					if ((trackcoord + i)->alt < 1000.0)
 					{
 						xmlTextWriterWriteFormatElement(xml_writer,
@@ -943,7 +943,7 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 					if ((trackcoord + i)->speed >  -1.0)
 					{
 						xmlTextWriterWriteFormatElement(xml_writer,
-							BAD_CAST "speed", "%.6f", (trackcoord + i)->speed);
+							BAD_CAST "speed", "%.3f", (trackcoord + i)->speed);
 					}
 					if ((trackcoord + i)->hdop > -1.0)
 					{

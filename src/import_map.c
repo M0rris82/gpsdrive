@@ -200,15 +200,15 @@ select_refpoint_poi_cb (GtkWidget *widget, guint datum)
 	gchar t_buf[15];
 
 	if (mydebug > 20)
-		g_print ("Setting reference point to %s: %.6f / %.6f\n",
+		g_print ("Setting reference point to %s: %.8f / %.8f\n",
 			poi_buf.name, poi_buf.lat, poi_buf.lon);
 
 	gtk_entry_set_text (GTK_ENTRY (dltext4), poi_buf.name);
 
-	g_snprintf (t_buf, sizeof (t_buf), "%.6f", poi_buf.lat);
+	g_snprintf (t_buf, sizeof (t_buf), "%.8f", poi_buf.lat);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lat), t_buf);
 
-	g_snprintf (t_buf, sizeof (t_buf), "%.6f", poi_buf.lon);
+	g_snprintf (t_buf, sizeof (t_buf), "%.8f", poi_buf.lon);
 	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), t_buf);
 
 	gtk_widget_hide_all (widget);

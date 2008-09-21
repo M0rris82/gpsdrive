@@ -187,9 +187,9 @@ db_poi_edit
 		g_printf ("------- %s\n\n", comment);
 	}
 
-	g_snprintf (lats, sizeof (lats), "%.6f", lat);
+	g_snprintf (lats, sizeof (lats), "%.8f", lat);
 	g_strdelimit (lats, ",", '.');
-	g_snprintf (lons, sizeof (lons), "%.6f", lon);
+	g_snprintf (lons, sizeof (lons), "%.8f", lon);
 	g_strdelimit (lons, ",", '.');
 
 	/* convert poi_type to lower case */

@@ -384,13 +384,13 @@ savetrackfile (gint mode)
 
   for (i = 0; i < trackcoordnr; i++)
     {
-      g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
+      g_snprintf (lat, sizeof (lat), "%.8f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
+      g_snprintf (lon, sizeof (lon), "%.8f", (trackcoord + i)->lon);
       g_strdelimit (lon, ",", '.');
-      g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
+      g_snprintf (alt, sizeof (alt), "%.3f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+      fprintf (st, "%s %s %s %s %.3f %.3f %.3f %d %d\n",
 	       lat, lon, alt,
 	       (trackcoord + i)->postime,
 	       (trackcoord + i)->course,
@@ -416,13 +416,13 @@ savetrackfile (gint mode)
 
   for (i = 0; i < trackcoordnr; i++)
     {
-      g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
+      g_snprintf (lat, sizeof (lat), "%.8f", (trackcoord + i)->lat);
       g_strdelimit (lat, ",", '.');
-      g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
+      g_snprintf (lon, sizeof (lon), "%.8f", (trackcoord + i)->lon);
       g_strdelimit (lon, ",", '.');
-      g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
+      g_snprintf (alt, sizeof (alt), "%.3f", (trackcoord + i)->alt);
 
-      fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+      fprintf (st, "%s %s %s %s %.3f %.3f %.3f %d %d\n",
 	       lat, lon, alt,
 	       (trackcoord + i)->postime,
 	       (trackcoord + i)->course,
@@ -466,13 +466,13 @@ void do_incremental_save() {
                 }
 		
                 for (i = old_trackcoordnr; i < trackcoordnr - 1; i++) {
-		    g_snprintf (lat, sizeof (lat), "%.6f", (trackcoord + i)->lat);
+		    g_snprintf (lat, sizeof (lat), "%.8f", (trackcoord + i)->lat);
 		    g_strdelimit (lat, ",", '.');
-		    g_snprintf (lon, sizeof (lon), "%.6f", (trackcoord + i)->lon);
+		    g_snprintf (lon, sizeof (lon), "%.8f", (trackcoord + i)->lon);
 		    g_strdelimit (lon, ",", '.');
-		    g_snprintf (alt, sizeof (alt), "%.1f", (trackcoord + i)->alt);
+		    g_snprintf (alt, sizeof (alt), "%.3f", (trackcoord + i)->alt);
 		    
-      		fprintf (st, "%s %s %s %s %.6f %.6f %.6f %d %d\n",
+      		fprintf (st, "%s %s %s %s %.3f %.3f %.3f %d %d\n",
 	       		lat, lon, alt,
 	       		(trackcoord + i)->postime,
 	       		(trackcoord + i)->course,
