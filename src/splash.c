@@ -111,7 +111,7 @@ insert_text (GtkTextBuffer * buffer)
 	const gchar *t1 =
 		_("Left mouse button\t\t: Set position (Position Mode only)\n"
 		 "Right mouse button\t\t: Set destination target on the map\n"
-		 "Middle mouse button\t\t: Display position again\n"
+		 "Middle mouse button\t\t: Leave Position Mode\n"
 		 "Shift-left mouse button\t: Prefer maps showing greater detail\n"
 		 "Shift-right mouse button\t: Prefer maps showing a larger area\n"
 		 "Control-left mouse button\t: Create a waypoint at the mouse cursor position\n"
