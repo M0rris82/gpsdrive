@@ -308,7 +308,8 @@ read_themed_icon (gchar * icon_name)
   while (p_pos != NULL);
   if (NULL == icon)
     {
-      fprintf (stderr, "read_themed_icon([%s] %s): No Icon '%s' found for theme %s\n",
+      if (mydebug > 0)
+          fprintf (stderr, "read_themed_icon([%s] %s): No Icon '%s' found for theme %s\n",
 	       local_config.icon_theme, icon_name, icon_name, local_config.icon_theme);
       if ( do_unit_test ) {
 	  exit (-1);
