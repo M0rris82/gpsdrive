@@ -164,7 +164,7 @@ make_display_map_controls ()
 		GTK_SIGNAL_FUNC (autobestmap_cb), (gpointer) 1);
 
 	// Checkbox ---- Pos Mode
-	posbt = gtk_check_button_new_with_label (_("Pos. _mode"));
+	posbt = gtk_check_button_new_with_label (_("Position _mode"));
 	gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
 	gtk_signal_connect (GTK_OBJECT (posbt),
 		"clicked", GTK_SIGNAL_FUNC (pos_cb), (gpointer) 1);

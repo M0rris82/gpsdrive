@@ -82,7 +82,8 @@ writeconfig ()
 	fp = fopen (local_config.config_file, "w");
 	if (fp == NULL)
 	{
-		fprintf (stderr,"Error saving config file %s ...\n", local_config.config_file);
+		fprintf (stderr,"Error saving config file %s ...\n",
+			 local_config.config_file);
 		return;
 	}
 

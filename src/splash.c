@@ -4,7 +4,7 @@ Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>
 
 Website: www.gpsdrive.de
 
-Disclaimer: Please do not use for navigation. 
+Disclaimer: Please do not use as a primary means of navigation. 
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -109,34 +109,35 @@ insert_text (GtkTextBuffer * buffer)
 	GtkTextIter iter;
 	GtkTextIter start, end;
 	const gchar *t1 =
-		_
-		("Left mouse button         : Set position (usefull in simulation mode)\n"
-		 "Right mouse button        : Set target directly on the map\n"
-		 "Middle mouse button       : Display position again\n"
-		 "Shift left mouse button   : smaller map\n"
-		 "Shift right mouse button  : larger map\n"
-		 "Control left mouse button : Set a waypoint (mouse position) on the map\n"
-		 "Control right mouse button: Set a waypoint at current position on the map\n\n");
+		_("Left mouse button\t\t: Set position (Position Mode only)\n"
+		 "Right mouse button\t\t: Set destination target on the map\n"
+		 "Middle mouse button\t\t: Display position again\n"
+		 "Shift-left mouse button\t: Prefer maps showing greater detail\n"
+		 "Shift-right mouse button\t: Prefer maps showing a larger area\n"
+		 "Control-left mouse button\t: Create a waypoint at the mouse cursor position\n"
+		 "Control-right mouse button\t: Create a waypoint at the current GPS position\n\n");
 
-	const gchar *t2 = _("j    : switch to next waypoint in route mode\n"
-		      "x    : add waypoint at current position\n"
-		      "y    : add waypoint at mouse cursor position\n"
-		      "n    : switch on light for 60sec in nightmode\n"
-		      "g    : Toggle grid\n"
-		      "f    : Toggle friends display\n"
-		      "w    : Set Waypoint at current location without asking\n"
-		      "p    : Set Waypoint at current cursor position without asking\n"
-		      "r    : Add current cursor position to end of route\n"
-		      "+    : Zoom in \n" "-    : Zoom out\n");
+	const gchar *t2 = _(" j\t: Jump to the next waypoint in route mode\n"
+		      " x\t: Add a waypoint at the current GPS location\n"
+		      " y\t: Add a waypoint at the mouse cursor position\n"
+		      " w\t: Quickly add a waypoint at the current GPS location without confirmation\n"
+		      " p\t: Quickly add a waypoint at the mouse cursor position without confirmation\n"
+		      " r\t: Add the mouse position to the end of the current route (or begin a new one)\n"
+		      " n\t: Switch on light for 60 seconds in nightmode\n"
+		      " g\t: Toggle grid overlay\n"
+		      " f\t: Toggle friends display\n"
+		      " +\t: Zoom in (map scale)\n"
+		      " -\t: Zoom out (map scale)\n");
 	const gchar *t3 =
-		_("Press the underlined key together with the ALT-key.\n\n"
-		  "You can move on the map by selecting the Position-Mode"
-		  " in the menu. A blue rectangle shows this mode, you can set this cursor by clicking on the map."
-		  " If you click on the border of the map (the outer 20%) then the map switches to the next area.\n\n"
-		  "Suggestions welcome.\n\n");
+		_("You can move freely around the map by selecting Position Mode"
+		  " in the Map Control menu. In this mode the GPS position"
+		  " indicator is replaced by a blue rectangle. Reposition the"
+		  " cursor with a left-click on the map. If you click on the"
+		  " border of the map (the outer 20%) then the map switches"
+		  " to the next area. Right-click to exit Position Mode.\n\n"
+		  "Suggestions welcome at http://www.gpsdrive.de.\n\n");
 
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
-
 
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
 						  _("GpsDrive v"), -1,
@@ -144,43 +145,47 @@ insert_text (GtkTextBuffer * buffer)
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, VERSION, -1,
 						  "heading", NULL);
 	gtk_text_buffer_insert (buffer, &iter,
-				_
-				("\n\nYou find new versions on http://www.gpsdrive.de\n"),
-				-1);
-	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-						  _
-						  ("Disclaimer: Please do not use for navigation. \n\n"),
-						  -1, "red_foreground", NULL);
+		_("\n\nYou can find new versions at http://www.gpsdrive.de\n\n"), -1);
 
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-						  _
-						  ("Please have a look into the manpage (man gpsdrive) for program details!"),
-						  -1, "italic", NULL);
+		_("Disclaimer: Do not use as a primary means of navigation!\n"),
+		-1, "red_foreground", NULL);
+
+	gtk_text_buffer_insert (buffer, &iter,
+		_("This program is distributed in the hope that it will be useful, "
+		  "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+		  "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+		  "GNU General Public License (GPL) for more details: "
+		  "http://www.gnu.org/licenses/gpl-2.0.html\n\n"), -1);
+
+	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
+		_("Please have a look in the manpage (man gpsdrive) for detailed help."),
+		-1, "italic", NULL);
 	gtk_text_buffer_insert (buffer, &iter, "\n\n", -1);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-						  _
-						  ("Mouse control (clicking on the map):\n"),
-						  -1, "blue_foreground",
-						  NULL);
+		_("Mouse control (clicking on the map):\n"),
+		-1, "blue_foreground", NULL);
 
 	gtk_text_buffer_insert (buffer, &iter, "\n", -1);
 	gtk_text_buffer_insert (buffer, &iter, t1, -1);
 
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-						  _("Short cuts:\n"), -1,
+						  _("Shortcuts:\n"), -1,
 						  "blue_foreground", NULL);
 	gtk_text_buffer_insert (buffer, &iter, "\n", -1);
 	gtk_text_buffer_insert (buffer, &iter, t2, -1);
 	gtk_text_buffer_insert (buffer, &iter, "\n", -1);
 
 	gtk_text_buffer_insert (buffer, &iter,
-				_("The other key shortcuts are marked as "),
+				_("More key shortcuts are marked as "),
 				-1);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
 						  _("underlined"), -1,
 						  "underline", NULL);
 	gtk_text_buffer_insert (buffer, &iter,
-				_(" letters in the button text.\n"), -1);
+		_(" letters in the control button text.\n"
+		  "Press the underlined key together with the Alt-key.\n\n"), -1);
+
 	gtk_text_buffer_insert (buffer, &iter, t3, -1);
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
 						  _("Have a lot of fun!"), -1,
@@ -549,36 +554,37 @@ about_cb (GtkWidget * widget, guint datum)
 	
 	const gchar *authors[] = 
 		{
-			"Aart Koelewijn <aart@mtack.xs4all.nl>",
-			"Belgabor <belgabor@gmx.de>",
-			"Blake Swadling <blake@swadling.com>",
-			"Christoph Metz <loom@mopper.de>",
-			"Chuck Gantz <chuck.gantz@globalstar.com>",
-			"Dan Egnor <egnor@ofb.net>",
-			"Daniel Hiepler <rigid@akatash.de>",
-			"Darazs Attila <zumi@freestart.hu>",
-			"Fritz Ganter <ganter@ganter.at>",
-			"Guenther Meyer <d.s.e@sordidmusic.com>",
- 			"J.D. Schmidt <jdsmobile@gmail.com>",
-			"Joerg Ostertag <gpsdrive@ostertag.name>"	,
-			"Jan-Benedict Glaw <jbglaw@lug-owl.de>",
-			"John Hay <jhay@icomtek.csir.co.za>",
-			"Johnny Cache <johnycsh@hick.org>",
-			"Miguel Angelo Rozsas <miguel@rozsas.xx.nom.br>",
+			"Aart Koelewijn <aart(at)mtack.xs4all nl>",
+			"Belgabor <belgabor(at)gmx de>",
+			"Blake Swadling <blake(at)swadling com>",
+			"Christoph Metz <loom(at)mopper de>",
+			"Chuck Gantz <chuck.gantz(at)globalstar com>",
+			"Dan Egnor <egnor(at)ofb net>",
+			"Daniel Hiepler <rigid(at)akatash de>",
+			"Darazs Attila <zumi(at)freestart hu>",
+			"Fritz Ganter <ganter(at)ganter at>",
+			"Guenther Meyer <d.s.e(at)sordidmusic com>",
+			"Hamish Bowman <hamish_b(at)yahoo com>",
+ 			"J.D. Schmidt <jdsmobile(at)gmail com>",
+			"Joerg Ostertag <gpsdrive(at)ostertag name>"	,
+			"Jan-Benedict Glaw <jbglaw(at)lug-owl de>",
+			"John Hay <jhay(at)icomtek.csir.co za>",
+			"Johnny Cache <johnycsh(at)hick org>",
+			"Miguel Angelo Rozsas <miguel(at)rozsas.xx.nom br>",
 			"Mike Auty",
-			"Oddgeir Kvien <oddgeir@oddgeirkvien.com>",
-			"Oliver Kuehlert <Oliver.Kuehlert@mpi-hd.mpg.de>",
-			"Olli Salonen <olli@cabbala.net>",
+			"Oddgeir Kvien <oddgeir(at)oddgeirkvien com>",
+			"Oliver Kuehlert <Oliver.Kuehlert(at)mpi-hd.mpg de>",
+			"Olli Salonen <olli(at)cabbala net>",
 			"Philippe De Swert",
-			"Richard Scheffenegger <rscheff@chello.at>",
-			"Rob Stewart <rob@groupboard.com>",
-			"Russell Harding <hardingr@billingside.com>",
-			"Russell Mirov <russell.mirov@sun.com>",
-			"Wilfried Hemp <Wilfried.Hemp@t-online.de>",
-			"<molter@gufi.org>",
-			"<pdana@mail.utexas.edu>",
-			"<timecop@japan.co.jp>",
-			"<wulf@netbsd.org>",
+			"Richard Scheffenegger <rscheff(at)chello at>",
+			"Rob Stewart <rob(at)groupboard.com>",
+			"Russell Harding <hardingr(at)billingside com>",
+			"Russell Mirov <russell.mirov(at)sun com>",
+			"Wilfried Hemp <Wilfried.Hemp(at)t-online de>",
+			"<molter(at)gufi org>",
+			"<pdana(at)mail.utexas edu>",
+			"<timecop(at)japan.co jp>",
+			"<wulf(at)netbsd org>",
 			NULL
 		};
 	
@@ -586,15 +592,27 @@ about_cb (GtkWidget * widget, guint datum)
 	gtk_window_set_position (GTK_WINDOW (about_window), GTK_WIN_POS_CENTER);
 	
 	gtk_about_dialog_set_version (about_window, VERSION);
-	gtk_about_dialog_set_copyright (about_window, "Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>");
+	gtk_about_dialog_set_copyright (about_window,
+		"Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+		"Copyright (c) 2005-2008 by the members of the GpsDrive Development Team");
 	gtk_about_dialog_set_website (about_window, "http://www.gpsdrive.de/");
 	gtk_about_dialog_set_authors (about_window, authors);
 	gtk_about_dialog_set_translator_credits (about_window, _("translator-credits"));
 	gtk_about_dialog_set_comments (about_window,
-				_("GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."));
+		_("GpsDrive is a car (bike, ship, plane, walking) navigation "
+		  "system that displays your position provided from a GPS "
+		  "receiver on a zoomable map and much more..."));
 	
 	gtk_about_dialog_set_license (about_window,
-				_("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nGpsDrive uses data from the OpenStreetMap Project (http://www.openstreetmap.org), which is freely available under the terms of the Creative Commons Attribution-ShareAlike 2.0 license."));
+		_("This program is free software; you can redistribute it and/or "
+		  "modify it under the terms of the GNU General Public License "
+		  "as published by the Free Software Foundation; either "
+		  "version 2 of the License, or (at your option) any later "
+		  "version.\nSee http://www.gnu.org/licenses/gpl-2.0.html\n\n"
+		  "GpsDrive uses data from the OpenStreetMap Project "
+		  "(http://www.openstreetmap.org), which is freely "
+		  "available under the terms of the Creative Commons "
+		  "Attribution-ShareAlike 2.0 license."));
 	gtk_about_dialog_set_wrap_license (about_window, TRUE);
 	
 	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR, "pixmaps/gpsdrivelogo.png");		

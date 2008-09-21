@@ -2113,7 +2113,7 @@ void create_controls_mainbox (void)
 
 	if (local_config.guimode != GUI_PDA)
 	{
-		controlbox_bt = gtk_button_new_with_label (_("Map Control"));
+		controlbox_bt = gtk_button_new_with_label (_("_Map Control"));
 		controlbox_img = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
 		gtk_button_set_image (GTK_BUTTON (controlbox_bt), controlbox_img);
 		g_signal_connect (GTK_OBJECT (controlbox_bt), "clicked",
