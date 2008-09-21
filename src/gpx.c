@@ -928,7 +928,7 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 					if ((trackcoord + i)->alt < 1000.0)
 					{
 						xmlTextWriterWriteFormatElement(xml_writer,
-							BAD_CAST "ele", "%.1f", (trackcoord + i)->alt);
+							BAD_CAST "ele", "%.3f", (trackcoord + i)->alt);
 					}
 					if (strlen ((trackcoord + i)->postime))
 					{
