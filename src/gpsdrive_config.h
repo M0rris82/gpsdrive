@@ -114,6 +114,9 @@ typedef struct
 	gchar font_friends[100];
 	gchar font_wplabel[100];
 	gchar font_dashboard[100];
+	gchar font_tmp_friends[100];
+	gchar font_tmp_wplabel[100];
+	gchar font_tmp_dashboard[100];
 	gint dashboard[5];
 	gdouble normalnull;
 	gchar kismet_servername[500];

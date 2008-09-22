@@ -207,9 +207,24 @@ writeconfig ()
 	fprintf (fp, "dbusedist = %d\n", dbusedist);
 	fprintf (fp, "earthmate = %d\n", earthmate);
 
-	fprintf (fp, "font_bigtext = %s\n", local_config.font_dashboard);
-	fprintf (fp, "font_wplabel = %s\n", local_config.font_wplabel);
-	fprintf (fp, "font_friends = %s\n", local_config.font_friends);
+	if (local_config.guimode == GUI_PDA)
+	{
+		fprintf (fp, "font_bigtext = %s\n", local_config.font_tmp_dashboard);
+		fprintf (fp, "font_wplabel = %s\n", local_config.font_tmp_wplabel);
+		fprintf (fp, "font_friends = %s\n", local_config.font_tmp_friends);
+		fprintf (fp, "font_pda_bigtext = %s\n", local_config.font_dashboard);
+		fprintf (fp, "font_pda_wplabel = %s\n", local_config.font_wplabel);
+		fprintf (fp, "font_pda_friends = %s\n", local_config.font_friends);
+	}
+	else
+	{
+		fprintf (fp, "font_bigtext = %s\n", local_config.font_dashboard);
+		fprintf (fp, "font_wplabel = %s\n", local_config.font_wplabel);
+		fprintf (fp, "font_friends = %s\n", local_config.font_friends);
+		fprintf (fp, "font_pda_bigtext = %s\n", local_config.font_tmp_dashboard);
+		fprintf (fp, "font_pda_wplabel = %s\n", local_config.font_tmp_wplabel);
+		fprintf (fp, "font_pda_friends = %s\n", local_config.font_tmp_friends);
+	}
 
 	fprintf (fp, "friendsserverip = %s\n", local_config.friends_serverip);
 	fprintf (fp, "friendsserverfqn = %s\n", local_config.friends_serverfqn);
@@ -424,15 +439,59 @@ readconfig ()
 			else if ( (strcmp(par1, "show_wayinfo")) == 0)
 				local_config.showway = atoi (par2);
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
-				g_strlcpy (local_config.font_dashboard, par2,
-				sizeof (local_config.font_dashboard));
+			{
+				if (local_config.guimode != GUI_PDA)
+					g_strlcpy (local_config.font_dashboard, par2,
+					sizeof (local_config.font_dashboard));
+				else
+					g_strlcpy (local_config.font_tmp_dashboard, par2,
+					sizeof (local_config.font_tmp_dashboard));
+			}
 			else if ( (strcmp(par1, "font_wplabel")) == 0)
-				g_strlcpy (local_config.font_wplabel, par2,
-				sizeof (local_config.font_wplabel));
+			{
+				if (local_config.guimode != GUI_PDA)
+					g_strlcpy (local_config.font_wplabel, par2,
+					sizeof (local_config.font_wplabel));
+				else
+					g_strlcpy (local_config.font_tmp_wplabel, par2,
+					sizeof (local_config.font_tmp_wplabel));
+			}
 			else if ( (strcmp(par1, "font_friends")) == 0)
-				g_strlcpy (local_config.font_friends, par2,
-				sizeof (local_config.font_friends));
-
+			{
+				if (local_config.guimode != GUI_PDA)
+					g_strlcpy (local_config.font_friends, par2,
+					sizeof (local_config.font_friends));
+				else
+					g_strlcpy (local_config.font_tmp_friends, par2,
+					sizeof (local_config.font_tmp_friends));
+			}
+			else if ( (strcmp(par1, "font_pda_bigtext")) == 0)
+			{
+				if (local_config.guimode == GUI_PDA)
+					g_strlcpy (local_config.font_dashboard, par2,
+					sizeof (local_config.font_dashboard));
+				else
+					g_strlcpy (local_config.font_tmp_dashboard, par2,
+					sizeof (local_config.font_tmp_dashboard));
+			}
+			else if ( (strcmp(par1, "font_pda_wplabel")) == 0)
+			{
+				if (local_config.guimode == GUI_PDA)
+					g_strlcpy (local_config.font_wplabel, par2,
+					sizeof (local_config.font_wplabel));
+				else
+					g_strlcpy (local_config.font_tmp_wplabel, par2,
+					sizeof (local_config.font_tmp_wplabel));
+			}
+			else if ( (strcmp(par1, "font_pda_friends")) == 0)
+			{
+				if (local_config.guimode == GUI_PDA)
+					g_strlcpy (local_config.font_friends, par2,
+					sizeof (local_config.font_friends));
+				else
+					g_strlcpy (local_config.font_tmp_friends, par2,
+					sizeof (local_config.font_tmp_friends));
+			}
 			else if ( (strcmp(par1, "friendsserverip")) == 0)
 				g_strlcpy (local_config.friends_serverip, par2,
 				sizeof (local_config.friends_serverip));
@@ -539,14 +598,6 @@ readconfig ()
 	if ( mydebug > 1 )
 		fprintf ( stderr,"\nreading config file finished\n");
 	fclose (fp);
-
-	if (local_config.guimode == GUI_PDA)
-	{
-		g_strlcpy (local_config.font_dashboard, "Sans bold 12",
-			sizeof (local_config.font_dashboard));
-		g_strlcpy (local_config.font_wplabel, "Sans 8", sizeof
-			(local_config.font_wplabel));
-	}
 }
 
 /* init configuration with defined default values */
@@ -641,6 +692,12 @@ config_init ()
 		"Sans 11", sizeof (local_config.font_wplabel));
 	g_strlcpy (local_config.font_friends,
 		"Sans bold 11", sizeof (local_config.font_friends));
+	g_strlcpy (local_config.font_tmp_dashboard,
+		"Sans bold 16", sizeof (local_config.font_tmp_dashboard));
+	g_strlcpy (local_config.font_tmp_wplabel,
+		"Sans 8", sizeof (local_config.font_tmp_wplabel));
+	g_strlcpy (local_config.font_tmp_friends,
+		"Sans bold 10", sizeof (local_config.font_tmp_friends));
 
 	/* set files and directories (~/.gpsdrive) */
 	hd = (gchar *) g_get_home_dir ();
