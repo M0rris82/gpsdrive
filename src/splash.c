@@ -134,7 +134,7 @@ insert_text (GtkTextBuffer * buffer)
 		  " indicator is replaced by a blue rectangle. Reposition the"
 		  " cursor with a left-click on the map. If you click on the"
 		  " border of the map (the outer 20%) then the map switches"
-		  " to the next area. Right-click to exit Position Mode.\n\n"
+		  " to the next area. Middle or right-click to exit Position Mode.\n\n"
 		  "Suggestions welcome at http://www.gpsdrive.de.\n\n");
 
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
