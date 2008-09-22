@@ -233,7 +233,12 @@ gint popup_yes_no (GtkWindow *parent, gchar *message)
 {
 	GtkDialog *dialog_yesno;
 	gint response_id;
-	gchar *question = "Are you sure?";
+	gchar question[200];
+
+	if (message != NULL)
+		g_strlcpy (question, message, sizeof (question));
+	else
+		g_strlcpy (question, "Are you sure?", sizeof (question));
 
 	if (mydebug >10)
 		fprintf (stderr, "POPUP: Question\n");

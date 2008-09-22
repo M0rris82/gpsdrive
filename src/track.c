@@ -493,8 +493,13 @@ void do_incremental_save() {
 gint
 track_clear_cb (GtkWidget *widget, gpointer data)
 {
-	init_track (TRUE);
-	trip_reset_cb ();
+	if (popup_yes_no(GTK_WINDOW (main_window),
+		_("This deletes all recorded track data from memory!\n\nAre you sure?"))
+		== GTK_RESPONSE_YES)
+	{
+		init_track (TRUE);
+		trip_reset_cb ();
+	}
 
 	return TRUE;
 }
