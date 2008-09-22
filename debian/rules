@@ -15,7 +15,12 @@ configure-stamp:
 	# Add here commands to configure the package.
 	rm -f CMakeCache.txt
 	mkdir -p build
-	cd build; cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info -DDATADIR=/usr/share ..
+	cd build; cmake -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DMAN_INSTALL_DIR=/usr/share/man \
+		-DINFO_INSTALL_DIR=/usr/share/info \
+		-DDATADIR=/usr/share \
+		..
 
 	touch configure-stamp
 
