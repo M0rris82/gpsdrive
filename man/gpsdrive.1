@@ -20,7 +20,7 @@ specialized README files, e.g. README.kismet, etc.
 .SH DESCRIPTION
 
 .B Gpsdrive 
-is a car (bike, ship, plane, walking) navigation system.  It will
+is a car (bike, ship, plane, foot) navigation system.  It will
 display your position on a map, record your track, and a number of
 other handy functions.
 
@@ -33,7 +33,7 @@ localized maps.
 
 .B GpsDrive
 will work with the vast majority of GPS receivers which output NMEA
-sentences to a serial device, and any USB GPS binary protocol known
+sentences to a serial device. This includes USB GPSs known
 to the \fBGpsd\fR software, which handles the back-end communication
 for \fBGpsDrive\fR. See the \fBGpsd\fR website
 (\fIhttp://gpsd.berlios.de\fR) for an extensive list of GPS receivers
@@ -68,7 +68,11 @@ Displays a short help message.
 Don't show the GUI; for use in external GTK apps.
 .TP
 .B \-f, --force-position
-Force display of position even it is invalid.
+Force display of position even if the GPS fix is invalid. Before a GPS has a
+fix it often reports its position as 0,0. And if it has lost a fix some makes
+of GPS will repeat the last known position together with a fix-is-bad indicator.
+Normally (without this flag) \fBGpsDrive\fR skips plotting these points.
+Useful for debugging.
 .TP
 .B \-i, --ignore-checksum
 Ignore NMEA checksum. (risky, only for broken GPS receivers)

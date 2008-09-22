@@ -594,12 +594,12 @@ about_cb (GtkWidget * widget, guint datum)
 	gtk_about_dialog_set_version (about_window, VERSION);
 	gtk_about_dialog_set_copyright (about_window,
 		"Copyright (c) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
-		"Copyright (c) 2005-2008 by the members of the GpsDrive Development Team");
-	gtk_about_dialog_set_website (about_window, "http://www.gpsdrive.de/");
+		"Copyright (c) 2005-2008 by the members of the GpsDrive Development Team\n");
+	gtk_about_dialog_set_website (about_window, "http://www.gpsdrive.de\n");
 	gtk_about_dialog_set_authors (about_window, authors);
 	gtk_about_dialog_set_translator_credits (about_window, _("translator-credits"));
 	gtk_about_dialog_set_comments (about_window,
-		_("GpsDrive is a car (bike, ship, plane, walking) navigation "
+		_("GpsDrive is a car (bike, ship, plane, foot) navigation "
 		  "system that displays your position provided from a GPS "
 		  "receiver on a zoomable map and much more..."));
 	
