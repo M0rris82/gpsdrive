@@ -2101,7 +2101,7 @@ void create_controls_mainbox (void)
 	g_signal_connect (GTK_OBJECT (cleartrack_bt), "clicked",
 		GTK_SIGNAL_FUNC (track_clear_cb), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), showtrack_bt,
-		_("Clear recorded track data"), NULL);
+		_("Display recorded track data"), NULL);
 	gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
 		FALSE, FALSE, 0 * PADDING);
 
