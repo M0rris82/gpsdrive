@@ -5,8 +5,13 @@ find_package(X11 REQUIRED)
 find_package(GTK2 REQUIRED)
 find_package(XML2 REQUIRED)
 find_package(Freetype2 REQUIRED)
-find_package(GDA3 REQUIRED)
 find_package(SQLite3 REQUIRED)
+
+
+if (WITH_GDA3)
+  find_package(GDA3 REQUIRED)
+  add_definitions(-DGDA3)
+endif (WITH_GDA3)
 
 if (WITH_MAPNIK)
   find_package(Boost COMPONENTS filesystem REQUIRED)
@@ -65,8 +70,6 @@ set(gpsdrive_SRCS
   database.h
   database_sqlite.c
   database_sqlite.h
-  database_postgis.c
-  database_postgis.h
   download_map.c
   draw_grid.c
   friends.c
@@ -112,6 +115,14 @@ set(gpsdrive_SRCS
   waypoint.c
 )
 
+if (WITH_GDA3)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+    database_postgis.c
+    database_postgis.h
+  )
+endif (WITH_GDA3)
+
 if (WITH_MAPNIK)
   set(gpsdrive_SRCS
     ${gpsdrive_SRCS}
@@ -138,7 +149,9 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
-add_executable(gpsdrive-update-mapnik-db ${poitypes_SRCS})
+if (WITH_GDA3)
+  add_executable(gpsdrive-update-mapnik-db ${poitypes_SRCS})
+endif (WITH_GDA3)
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
@@ -147,18 +160,30 @@ target_link_libraries(friendsd
   ${GTK2_LIBRARIES}
 )
 
-target_link_libraries(gpsdrive-update-mapnik-db
-  ${GTK2_LIBRARIES}
-  ${GDA3_LIBRARIES}
-  ${SQLITE3_LIBRARIES}
+if (WITH_GDA3)
+  target_link_libraries(gpsdrive-update-mapnik-db
+    ${GTK2_LIBRARIES}
+    ${GDA3_LIBRARIES}
+    ${SQLITE3_LIBRARIES}
+  )
+endif (WITH_GDA3)
+
+set(gpsdrive_PGMS
+  gpsdrive
+  friendsd
 )
+
+if (WITH_GDA3)
+  set(gpsdrive_PGMS
+    ${gpsdrive_PGMS}
+    gpsdrive-update-mapnik-db
+  )
+endif (WITH_GDA3)
+
 
 install(
   TARGETS
-    gpsdrive
-    friendsd
-    gpsdrive-update-mapnik-db
+    ${gpsdrive_PGMS}
   DESTINATION
     ${BIN_INSTALL_DIR}
 )
-

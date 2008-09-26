@@ -37,7 +37,9 @@ Disclaimer: Please do not use for navigation.
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
+#ifdef GDA3
 #include <libgda/libgda.h>
+#endif
 
 #include "config.h"
 #include "gpsdrive.h"
@@ -61,9 +63,9 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern currentstatus_struct current;
 
-
+#ifdef GDA3
 GdaConnection *db_conn_geo, *db_conn_osm;
-
+#endif
 
 	//TODO:	create table 'poi_extra_fields' in geoinfo.db
 	//	filled with default values.
@@ -381,7 +383,7 @@ db_poi_get (gchar *query, gpointer callback, gint database)
 			/* get data from waypoints/sqlite database */
 			db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
 			break;
-#ifdef MAPNIK
+#ifdef GDA3
 		case DB_WP_OSM:
 			/* get data from openstreetmap/postgis database */
 			if (db_conn_osm)
@@ -472,7 +474,9 @@ db_cleanup_route ()
 gboolean
 db_init (void)
 {
+#ifdef GDA3
 	GdaClient *t_client;
+#endif
 	gchar t_buf[200];
 	gboolean t_status = FALSE;
 	gboolean t_db = FALSE;
@@ -480,16 +484,17 @@ db_init (void)
 	if (mydebug > 0)
 		g_print ("Initializing Database access...\n");
 
-	/* init gda */
-	gda_init ("GpsDrive", VERSION, 0, NULL);
-	t_client = gda_client_new ();
-
 	/* init local sqlite database */
 	t_status = db_sqlite_init ();
 	if (t_status)
 	{
 		t_db = TRUE;
 	}
+
+#ifdef GDA3
+	/* init gda */
+	gda_init ("GpsDrive", VERSION, 0, NULL);
+	t_client = gda_client_new ();
 
 	/* create connection to (old) mysql database */
 /*	db_conn_geo = gda_client_open_connection_from_string
@@ -502,7 +507,6 @@ db_init (void)
 	}
 */
 
-#ifdef MAPNIK
 	/* create connection to mapnik/postgis database */
 	db_conn_osm = gda_client_open_connection_from_string (t_client,
 		"PostgreSQL", "DB_NAME=gis", "", "", GDA_CONNECTION_OPTIONS_NONE, NULL);
