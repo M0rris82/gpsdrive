@@ -7,7 +7,7 @@ Copyright: (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
 with improvements (c) through 2008 by The GpsDrive Development Team
 
 
-    *********************************************************************
+  ***********************************************************************
 
     Disclaimer: Do not use as a primary means of navigation. 
                 Keep your eyes on the road and hands on the wheel.
@@ -26,7 +26,7 @@ with improvements (c) through 2008 by The GpsDrive Development Team
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-    *********************************************************************
+  ***********************************************************************
 
 
 
@@ -38,10 +38,25 @@ Please read the gpsdrive man page. To do so, install the program and type
 into a terminal window. With KDE Konqueror you can also see it with the URL:
   man:gpsdrive
 
-Most information is now in the man page!
+Most usage information is now stored in the man page!
 
 Also have a look at the old revision changelog at 
   http://www.gpsdrive.de/changes.shtml
+
+and the various README.* files in the Documentation/ directory.
+
+
+If you have questions, see first the mailing list archives:
+  http://s2.selwerd.nl/~dirk-jan/gpsdrive/
+  http://lists.gpsdrivers.org/pipermail/gpsdrive/
+  http://www.nabble.com/GpsDrive-f14291.html
+  http://news.gmane.org/gmane.comp.linux.gps
+
+and the wiki collaborative help site:
+  http://gpsdrive.wiki.sourceforge.net/
+
+Bugs and wishes should be reported to the SourceForge tracker:
+  http://sourceforge.net/tracker/?group_id=148048
 
 ********************************************************************
 
