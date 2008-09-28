@@ -10,8 +10,8 @@ Currently Worked on for Release gpsdrive-2.10pre5:
    - remove QT-Dependency
 - POI Management (d.s.e)
    - gpx import
-- Cleaning Up the debian package Content
-
+- Cleaning Up the debian package Content; merge with DebianGIS's version
+    at http://svn.debian.org/wsvn/pkg-grass/packages/gpsdrive/trunk/debian/
 
 
 Ideas for gpsdrive improvement: (unassigned, unrated)
@@ -25,7 +25,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
     - Better "hacking" documentation (e.g. documentation describing how to generate
       a "GpsDrive-compliant" raster map from outside of GpsDrive, clear
       documentation on the size and shape of custom icons, etc.).
-	- Help translate the gettext strings (po-Files) in to your native language
+    - Help translate the gettext strings (po-Files) in to your native language
 
 - Makefiles/Distribution:
 	- include generation of icon Directory while installing gpsdrive
@@ -43,28 +43,30 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 
 - Autosave Tracks periodically
 	- started: savetrack was seperated and got 
-	  option to save only aktual Track an not track_ALL.sav
+	  option to save only actual Track an not track_ALL.sav
 
 - Finding and correcting Bugs in the existing Code.
+   Bug/wish tracker: http://sourceforge.net/tracker/?group_id=148048
 
 - make the code more error resistant
 
 - Changing User Interface:
 	- move to setup menu:
 		save Track
-
 	- move to pulldown menu:
-		Start gpsd 
 		Download Map
 	- rewrite the UI using glade-2 (see above)
+	- Keyboard shortcuts for all menu items
 
 - Point and measure Mode: Show the lat/lon of a point you clicked on. 
-  Click an another point and then show the distance between those two points.
+  Click an another point and then show the distance and bearing
+  between those two points. Or update continuously from the mouse
+  position and display lat/lon+range/bearing in lower status bar.
 
-- write routines to import gps Tracks into the Database. The difficulty 
+- write routines to import gps Tracks (GPX) into the Database. The difficulty
   here is to classify the Data and find corresponding tracks and merge 
-  them together. Also to find gaps in the tracks and split them at 
-  this point.
+  them together (use gpsbabel filters?). Also to find gaps in the tracks and
+  split them at this point (<trk> and <trkseg> in GPX).
 
 - make gpsdrive compile inside eclipse.
   should work
@@ -72,17 +74,23 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 - refactor the variable names inside gpsdrive.
 
 - write an interface to use functions like gpsbabel gpstrans from inside
-  gpsdrive.
+  gpsdrive. note gpstrans is abandonware these days, better to use
+  "gardump" program for Garmin wpt/trk/rte up/download? Actually gpsbabel
+  does those functions these days.
 
 - Move part of the user interface to a Pulldown menu.
 
 - write track data in smaller steps (every point comming from gps). This 
   would enable us to use these tracks as a data Pool for gernerating our 
-  own vector maps
+  own vector maps. e.g. user option to log every 'x' seconds (eg 10sec) or
+  automatically cull points which are closer than 1-5m (eg when you are
+  stopped for a few minutes). Gpsbabel has some filters for this stuff.
 
 - add an Mode for Displaying position under the cursor and measure distances
+  Do as a tooltip or in a status bar?
 
 - add support for moving the map with the cursor keys if in POS-Mode
+  Add support for middle-click to recenter image, or middle-drag to pan.
 
 - Correct/complete/add-new translations in the po Files
 
@@ -105,6 +113,9 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
 	  the satellite photo data at various scales.  I'll share it with anyone
 	  that wants it, if they promise not to laugh in my face at my really slovenly
 	  code.
+  Don't reinvent the wheel here, use a simple ascii format* or better yet
+  use GDAL's OGR to read/write simple features.
+   [*] see GRASS GIS's standard ascii vector format from v.in.ascii man page.
 
 - Have the database fetch waypoints in order from nearest waypoint to current
   location to furthest, and add a configurable limit to the number retrieved - 
@@ -156,6 +167,9 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   Expedia(tm) maps are in, so that I can use gdalwarp to convert UTM maps
   that will work correctly as "street"-type maps, but nobody seems to know.
   Best guess I've heard so far is that they are an "Orthographic" projection.
+  FWIW, Google Maps uses a spherical mercator.
+  Better yet would be to outsource the problem to the PROJ.4 software, then
+  you are not just limited to using lat/lon and UTM.
 
 - Improve Kismet connection robustness.  GpsDrive still locks up for me
   if Kismet dies while GpsDrive is connected to it.  Even better, add a
@@ -166,6 +180,7 @@ Ideas for gpsdrive improvement: (unassigned, unrated)
   example if I find a way to fetch weather radar data while driving around, 
   maybe I could have GpsDrive draw the weather activity atop the current
   map, so I can tell if I'm going to outrun the storm...
+  Data often comes in "grib" format.
 
 - Implement direct GPX support
   - replace way.txt by way.gpx (or remove this file completely)
@@ -211,15 +226,18 @@ Old (has to be checked):
 ------------------------
 
 Command line switch to set gpsd hostname and port for remote control.
+   -complete?  "-B, --gpsd-server=<SERVER>"
 
-Add load of trackings (i.e. stored in the GPS and
-converted with a nice perl script anyone will write).
+Add load of trackings (i.e. stored in the GPS and converted with a nice
+ perl script anyone will write).
+ -See gpsbabel/gardump import above.
 
 Servermode to display different positions provided over Internet
 server.
+ -use gpsd's gpsfake?
 
 centering of map to selected points
-
+ -"Jump to" button in the "Find POI" GUI?
+ 
 render maps in greyscale
-
-
+ -why? nightmode? OLPC high-contrast screen?

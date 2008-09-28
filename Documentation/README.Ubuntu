@@ -20,22 +20,26 @@ gpg --armor --export 147DAD31 | sudo apt-key add -
 
 now reload repositories: "sudo apt-get update".
 
+
 Install:
 --------
 install gpsdrive which will install many dependencies
 
 during the installation of gpsdrive, mysql will be installed and will
 ask you to set a password: just type a your sudo system password in.
+ [update: MySQL no longer used; replaced by SQLite]
 
 go to
 "http://packages.debian.org/search?keywords=libboost&searchon=names&suite=stable&section=all", download and install:
 
 libboost-python1.33.1_1.33.1-10_i386.deb
+ [update: may need version 1.34]
 
 go to " http://packages.ubuntu.com/hardy/python/python-mapnik "
 
 download and install python-mapnik 0.4.0-2 (notice: ?the older version
 in your synaptic package list will not be installed)
+ [update: may need mapnik version 0.5.1]
 
 then  install  postgresql  postgis  postgresql-8.2-postgis 
 
@@ -44,7 +48,9 @@ one hour more and less) that is now in your synaptic.
 
 Gps Receiver:
 -------------
-if you want to use gpsdrive with a gps receiver , install gpsd package.
+If you want to use gpsdrive with a gps receiver, install the gpsd package.
+It is a good idea to also install the gpsd-clients package and gpsd's
+python-gps package (if applicable).
 
 Maps:
 -----
