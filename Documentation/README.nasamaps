@@ -1,23 +1,31 @@
 
-There is support for satellite images from the NASA now!
+There is now support for NASA's Blue Marble 2002 satellite images!
 You need GpsDrive version >=2.08
-
-To get the maps you have 2 choices:
-
-The new maps can be found at:
-
-21600x21600 East Hemisphere
-  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
-
-21600x21600 West Hemisphere
-  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
 
 
 ======================================================================
+
+To download the maps you have a few choices:
+
+
+
+0) The new maps can be found here:
+
+21600x21600 East Hemisphere (401mb)
+  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+
+21600x21600 West Hemisphere (241mb)
+  ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
+
+The Wget program is nice for downloading these. For example:
+  wget ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+  wget ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
+
+
+
 1) From the original site (only gzip compressed)
 
-Goto 
-http://mirrors.arsc.edu/nasa/Blue_Marble_2002/
+Goto  http://mirrors.arsc.edu/nasa/Blue_Marble_2002/
 
 If you are west, download 
   MOD09A1.W.interpol.cyl.retouched.topo.3x21600x21600.gz 
@@ -25,12 +33,12 @@ If you are west, download
 if you are east, download
   MOD09A1.E.interpol.cyl.retouched.topo.3x21600x21600.gz 
 
-If you are in England or West Europe, you need both files, 
+If you are in England or West Europe, you will need both files, 
 because they have to overlap.
 
 
 
-2) Download it via ED2k Link (bzip2 compressed):
+2) Download them via ED2k Link (bzip2 compressed):
 
 ed2k://|file|top_nasamap_east.raw.bz2|379972653|7312437945bd47ccf0b2a0c3452d5836|/
 ed2k://|file|top_nasamap_west.raw.bz2|226307352|13ab6e8a6e014fa23bb83db25855bb71|/
@@ -39,7 +47,8 @@ This files have a uncompressed size of 1.4GB each and are in raw RGB format.
 The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
 
 
-3) Check if files are available from geotorrent.org
+
+3) Check if the files are available from geotorrent.org
    http://www.geotorrent.org/
 
 ======================================================================
@@ -47,49 +56,62 @@ The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
 
 How to install the maps:
 
-create a directory ~/.gpsdrive/nasamaps
-unzip the files (gunzip filename)
+- Create the directory ~/.gpsdrive/maps/nasamaps
+  (adjust to suit if you changed the default map dir)
 
-Move the file(s) into this directory and rename it
+- unzip the files (gunzip filename; 'gzip -d'; etc) if needed
 
-rename MOD09A1.E.*   to top_nasamap_east.raw 
-and/or
-rename MOD09A1.W.*   to top_nasamap_west.raw
+- Move the file(s) into this directory and rename it
+     rename MOD09A1.E.*   to top_nasamap_east.raw 
+       and/or
+     rename MOD09A1.W.*   to top_nasamap_west.raw
 
-You can use this maps with GpsDrive >=2.08pre7
+   If you prefer, you can create symlinks to the files:
+     ln -s ~/data/land_shallow_topo_east.tif \
+           ~/.gpsdrive/maps/nasamaps/land_shallow_topo_east.tif
+     ln -s ~/data/land_shallow_topo_west.tif \
+           ~/.gpsdrive/maps/nasamaps/land_shallow_topo_west.tif
+
+- You can now use these maps with GpsDrive >=2.08pre7
 
 
 
-The smaller maps (1280x1024) which GpsDrive needs, are created on the
-fly from this maps (which have a resolution of 21600*21600). So you
-get a map for every position on the world.
+GpsDrive requires smaller maps (1280x1024). These are cropped on-the-
+fly from these larger maps (original size: 21600x21600). This way you
+get a regional map wherever you are in the world.
 
+<!-- the following sentence is outdated and requires updating -->
 To see the map, you have to select "Topo map" in the "Shown map type"
 field and perhaps unselect "Street map".
+
+
 
 MAP OF THE WORLD
 ================
 
-GpsDrive >=2.08 includes now the file top_GPSWORLD.jpg which is
-shown if you use GpsDrive the first time and no maps are downloaded
-yet.
+GpsDrive >=2.08 includes the file "top_GPSWORLD.jpg" which, along with
+a number of continental zoomed versions, is shown if you use GpsDrive
+the first time before downloading any maps from external sources.
 
 To use this map at a later time, copy it into your maps directory,
+  RENAME it i.e to top_world.jpg
+  and add this entry to your map_koord.txt file:
 
-RENAME it i.e to top_world.jpg
-and add this entry to your map_koord.txt file:
+      top_world.jpg 0.00000 0.00000 88226037
 
-top_world.jpg 0.00000 0.00000 88226037
+<!-- should the scale factor really be 88067900 here ??? -->
 
 or for german locale (and all that have a comma as decimal point):
-top_world.jpg 0,00000 0,00000 88226037
+      top_world.jpg 0,00000 0,00000 88226037
 
 
-From the map source:
+
+
+Map source/citation:
 ====================
 
 You find the project page at
-http://earthobservatory.nasa.gov/Newsroom/BlueMarble/
+  http://earthobservatory.nasa.gov/Newsroom/BlueMarble/
 
 When using these datasets please give credits to:
 -------------------------------------------------
