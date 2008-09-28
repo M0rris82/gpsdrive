@@ -1195,6 +1195,8 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 		}
 	}
 
+	pango_font_description_free (pfd_gpsfix);
+
 	return TRUE;
 }
 

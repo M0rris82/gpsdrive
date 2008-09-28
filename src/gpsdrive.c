@@ -900,6 +900,7 @@ draw_scalebar (void)
 		       (gui_status.mapview_x - dist_x), gui_status.mapview_y - dist_y - frame_width,
 		       (gui_status.mapview_x - dist_x), gui_status.mapview_y - dist_y + 10 - frame_width);
 
+	pango_font_description_free (pfd_scalebar);
 }
 
 /*******************************************************************************

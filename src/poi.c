@@ -398,13 +398,12 @@ update_poi_type_filter ()
 			g_strlcat (local_config.poi_filter,
 				t_config, sizeof (local_config.poi_filter));
 		}
+		g_free (t_name);
 	}
 	while (gtk_tree_model_iter_next
 		(GTK_TREE_MODEL (poi_types_tree), &t_iter));
 
 	g_strlcat (t_filter, "1)", sizeof (t_filter));
-
-	g_free (t_name);
 
 	current.needtosave = TRUE;
 
@@ -552,9 +551,11 @@ draw_label (char *txt, gdouble posx, gdouble posy)
   gdk_gc_set_foreground (kontext_map, &colors.textback);
 
   poi_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
-  pfd = pango_font_description_from_string ("Sans 8");
+
   if (poi_list_count > 200)
     pfd = pango_font_description_from_string ("Sans 6");
+  else
+    pfd = pango_font_description_from_string ("Sans 8");
 
   pango_layout_set_font_description (poi_label_layout, pfd);
   pango_layout_get_pixel_size (poi_label_layout, &width, &height);
