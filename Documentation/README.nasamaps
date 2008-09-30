@@ -9,7 +9,7 @@ To download the maps you have a few choices:
 
 
 
-0) The new maps can be found here:
+1) The new maps can be found here:
 
 21600x21600 East Hemisphere (401mb)
   ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
@@ -23,7 +23,7 @@ The Wget program is nice for downloading these. For example:
 
 
 
-1) From the original site (only gzip compressed)
+2) From the original site (only gzip compressed)
 
 Goto  http://mirrors.arsc.edu/nasa/Blue_Marble_2002/
 
@@ -38,7 +38,7 @@ because they have to overlap.
 
 
 
-2) Download them via ED2k Link (bzip2 compressed):
+3) Download them via ED2k Link (bzip2 compressed):
 
 ed2k://|file|top_nasamap_east.raw.bz2|379972653|7312437945bd47ccf0b2a0c3452d5836|/
 ed2k://|file|top_nasamap_west.raw.bz2|226307352|13ab6e8a6e014fa23bb83db25855bb71|/
@@ -48,7 +48,7 @@ The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
 
 
 
-3) Check if the files are available from geotorrent.org
+4) Check if the files are available from geotorrent.org
    http://www.geotorrent.org/
 
 ======================================================================
