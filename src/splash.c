@@ -123,7 +123,7 @@ insert_text (GtkTextBuffer * buffer)
 		      " w\t: Quickly add a waypoint at the current GPS location without confirmation\n"
 		      " p\t: Quickly add a waypoint at the mouse cursor position without confirmation\n"
 		      " r\t: Add the mouse position to the end of the current route (or begin a new one)\n"
-		      " n\t: Switch on light for 60 seconds in nightmode\n"
+	/* FIXME      " n\t: Switch on light for 60 seconds in nightmode\n" */
 		      " g\t: Toggle grid overlay\n"
 		      " f\t: Toggle friends display\n"
 		      " +\t: Zoom in (map scale)\n"
@@ -148,8 +148,9 @@ insert_text (GtkTextBuffer * buffer)
 		_("\n\nYou can find new versions at http://www.gpsdrive.de\n\n"), -1);
 
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-		_("Disclaimer: Do not use as a primary means of navigation!\n"),
-		-1, "red_foreground", NULL);
+		_("Disclaimer: Do not use as a primary means of navigation!\n"
+		  "Keep your eyes on the road and hands on the wheel.\n"),
+		  -1, "red_foreground", NULL);
 
 	gtk_text_buffer_insert (buffer, &iter,
 		_("This program is distributed in the hope that it will be useful, "
