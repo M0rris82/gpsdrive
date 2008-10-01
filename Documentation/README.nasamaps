@@ -21,7 +21,6 @@ The Wget program is nice for downloading these. For example:
   wget -c ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
   wget -c ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
 
-
 The Tiff images will need to be converted into raw RGB streams.
 We can do that by converting to PNM format and stripping off the
 first three header lines of the file. The tifftopnm program from
@@ -29,6 +28,34 @@ NetPBM is used. Note the output .raw files are 1.4gb each.
 
   tifftopnm land_shallow_topo_east.tif | \
      sed -e '1,3d' > top_nasamap_east.raw
+
+
+If you would like to use the Tiff images as GeoTiffs for use with
+other software such as QGIS (http://www.qgis.org) you should create
+some "world files". They should have the same name as the .tif but
+with a .wld extension.
+
+    land_shallow_topo_east.wld 
+0.008333333333333
+0.000000000000000
+0.000000000000000
+-0.008333333333333
+0.00416666666666665
+89.99583333333334
+
+    land_shallow_topo_west.wld 
+0.008333333333333
+0.000000000000000
+0.000000000000000
+-0.008333333333333
+-179.9958333333333
+89.99583333333334
+
+
+The 0.0083333 is cell resolution (in degrees, 0.5'/60) and N,S,E,W
+boundaries are reduced 1/2 a cell as these refer to cell centers of
+the outer rows, not the outer boundaries of the cell. Details about
+world files may be found at http://www.gdal.org/frmt_various.html#WLD
 
 
 2) From the original site (only gzip compressed)
