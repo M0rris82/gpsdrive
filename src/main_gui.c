@@ -135,6 +135,8 @@ static GtkWidget *statusheading_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu, *dash_menu_window;
 static GtkWidget *controlbox_window;
 static GtkWidget *satellite_window;
+static GtkWidget *statusbar_box, *statussmall_box;
+static GtkWidget *statusdashboard_box;
 
 	GtkAdjustment *adj_h, *adj_v;
 
@@ -2254,15 +2256,13 @@ void create_controls_mainbox (void)
  */
 void create_status_mainbox (void)
 {
-
-	GtkWidget *statusdashboard_box;
 	GtkWidget *statusdashsub1_box, *statusdashsub2_box;
-	GtkWidget *statussmall_box, *frame_statustime;
+	GtkWidget *frame_statustime;
 	GtkWidget *frame_statusbearing, *frame_statusheading;
 	GtkWidget *frame_statuslat, *frame_statuslon;
 	GtkWidget *eventbox_statuslat, *eventbox_statuslon;
 	GtkWidget *frame_statusmapscale, *frame_statusprefscale;
-	GtkWidget *statusbar_box, *frame_statusgpsfix;
+	GtkWidget *frame_statusgpsfix;
 	GtkWidget *dashboard_1_lb, *dashboard_2_lb;
 	GtkWidget *dashboard_3_lb, *dashboard_4_lb;
 	GtkWidget *eventbox_dash_1, *eventbox_dash_2;
@@ -2537,8 +2537,6 @@ void create_status_mainbox (void)
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_minimap, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub1_box),frame_compass, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
 			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
@@ -2548,6 +2546,8 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
 
+		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
+		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
 
 		//  --- ACPI / Temperature / Battery
 		create_temperature_widget(statusdashboard_box);
@@ -2567,10 +2567,6 @@ void create_status_mainbox (void)
 		statusbar_box = gtk_hbox_new (FALSE, PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_hbox, TRUE, TRUE, 1 * PADDING);
-	
-		gtk_box_pack_start (GTK_BOX (mainbox_status),statusdashboard_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),statussmall_box, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_status),statusbar_box, TRUE, FALSE, 1 * PADDING);
 	}
 }
 
@@ -2736,9 +2732,9 @@ gint create_main_window (void)
 	}
 	else
 	{  /* Classic Mode (Standard) */
-		main_table = gtk_table_new (4, 3, FALSE);
+		main_table = gtk_table_new (5, 2, FALSE);
 		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 2,
+			mainbox_controls, 0, 1, 0, 4,
 			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
 		gtk_table_attach (GTK_TABLE (main_table),
 			routeinfo_evbox, 1, 2, 0, 1,
@@ -2746,7 +2742,13 @@ gint create_main_window (void)
 		gtk_table_attach_defaults (GTK_TABLE (main_table),
 			mainframe_map, 1, 2, 1, 2);		
 		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 2, 3,
+			statusdashboard_box, 1, 2, 2, 3,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
+		gtk_table_attach (GTK_TABLE (main_table),
+			statussmall_box, 1, 2, 3, 4,
+			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
+		gtk_table_attach (GTK_TABLE (main_table),
+			statusbar_box, 0, 2, 4, 5,
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
