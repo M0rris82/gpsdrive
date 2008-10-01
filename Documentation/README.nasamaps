@@ -18,9 +18,17 @@ To download the maps you have a few choices:
   ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
 
 The Wget program is nice for downloading these. For example:
-  wget ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
-  wget ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
+  wget -c ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_east.tif
+  wget -c ftp://veftp.gsfc.nasa.gov/bluemarble/land_shallow_topo_west.tif
 
+
+The Tiff images will need to be converted into raw RGB streams.
+We can do that by converting to PNM format and stripping off the
+first three header lines of the file. The tifftopnm program from
+NetPBM is used. Note the output .raw files are 1.4gb each.
+
+  tifftopnm land_shallow_topo_east.tif | \
+     sed -e '1,3d' > top_nasamap_east.raw
 
 
 2) From the original site (only gzip compressed)
@@ -33,19 +41,14 @@ If you are west, download
 if you are east, download
   MOD09A1.E.interpol.cyl.retouched.topo.3x21600x21600.gz 
 
-If you are in England or West Europe, you will need both files, 
-because they have to overlap.
-
-
 
 3) Download them via ED2k Link (bzip2 compressed):
 
 ed2k://|file|top_nasamap_east.raw.bz2|379972653|7312437945bd47ccf0b2a0c3452d5836|/
 ed2k://|file|top_nasamap_west.raw.bz2|226307352|13ab6e8a6e014fa23bb83db25855bb71|/
 
-This files have a uncompressed size of 1.4GB each and are in raw RGB format.
+These files have a uncompressed size of 1.4GB each and are in raw RGB format.
 The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
-
 
 
 4) Check if the files are available from geotorrent.org
@@ -54,33 +57,40 @@ The bzip2 compressed files are 363MB (east) and 216MB (west) in size.
 ======================================================================
 
 
+If you are in England or West Europe, you will need both files, 
+because they have to overlap. The same is true if you are within
+11 degrees of 180 longitude.
+
+
+
 How to install the maps:
 
-- Create the directory ~/.gpsdrive/maps/nasamaps
-  (adjust to suit if you changed the default map dir)
+- Unzip the files (gunzip; 'gzip -d'; 'bzip2 -d'; ...) if needed
 
-- unzip the files (gunzip filename; 'gzip -d'; etc) if needed
+- Create the directory ~/.gpsdrive/nasamaps/
 
-- Move the file(s) into this directory and rename it
-     rename MOD09A1.E.*   to top_nasamap_east.raw 
+- Move the file(s) into this directory and rename them if needed:
+     rename MOD09A1.E.*   to top_nasamap_east.raw
        and/or
      rename MOD09A1.W.*   to top_nasamap_west.raw
 
    If you prefer, you can create symlinks to the files:
-     ln -s ~/data/land_shallow_topo_east.tif \
-           ~/.gpsdrive/maps/nasamaps/land_shallow_topo_east.tif
-     ln -s ~/data/land_shallow_topo_west.tif \
-           ~/.gpsdrive/maps/nasamaps/land_shallow_topo_west.tif
+     ln -s ~/data/top_nasamap_east.raw \
+           ~/.gpsdrive/nasamaps/top_nasamap_east.raw
+     ln -s ~/data/top_nasamap_west.raw \
+           ~/.gpsdrive/nasamaps/top_nasamap_west.raw
 
 - You can now use these maps with GpsDrive >=2.08pre7
+  They will be automatically recognized.
 
 
+GpsDrive uses smaller map tiles (1280x1024). These are cropped on-the-
+fly from these larger maps (original size: 21600x21600 each). This way
+you get a regional map wherever you are in the world.
 
-GpsDrive requires smaller maps (1280x1024). These are cropped on-the-
-fly from these larger maps (original size: 21600x21600). This way you
-get a regional map wherever you are in the world.
-
-<!-- the following sentence is outdated and requires updating -->
+<!-- the following sentence is outdated and requires updating.
+ TODO: A "NASA Blue Marble" tick box should appear in the Map Control
+ window -->
 To see the map, you have to select "Topo map" in the "Shown map type"
 field and perhaps unselect "Street map".
 

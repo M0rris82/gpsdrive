@@ -207,7 +207,7 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 		if (fdout < 0)
 		{
 			fprintf (stderr,
-				 _("could not create output map file %s!\n"),
+				 _("Could not create output map file \"%s\"!\n"),
 				 outfilename);
 			return -1;
 		}
@@ -224,24 +224,24 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 
 		gtk_window_set_title (GTK_WINDOW (nasawindow),
 				      _("Creating map..."));
-		gtk_container_set_border_width (GTK_CONTAINER (nasawindow),
-						20);
+		gtk_container_set_border_width (GTK_CONTAINER (nasawindow), 20);
 
 		myprogress = gtk_progress_bar_new ();
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress),
-					       0.0);
-		gtk_box_pack_start (GTK_BOX (vbox), myprogress, TRUE, TRUE,
-				    2);
-		text = gtk_label_new (_
-				      ("Creating a temporary map from NASA satellite images"));
+
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (myprogress), 0.0);
+		gtk_box_pack_start (GTK_BOX (vbox), myprogress, TRUE, TRUE, 2);
+
+		text = gtk_label_new (
+		    _("Creating a temporary map from NASA satellite images"));
+
 		gtk_box_pack_start (GTK_BOX (vbox), text, TRUE, TRUE, 2);
 
 		/*       gtk_widget_show_all (nasawindow); */
 		gtk_widget_show_all (nasawindow);
+
 		if (debug)
-			fprintf (stdout,
-				 _
-				 ("converting map for latitude: %f and longitude: %f ...\n"),
+		    fprintf (stdout,
+			_("Converting map for latitude: %f and longitude: %f ...\n"),
 				 lat, lon);
 
 		/*       if (lon < 0.0) */
@@ -352,13 +352,12 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 		g_strlcpy (mybuffer, g_basename (outfilename),
 			   sizeof (mybuffer));
 		fprintf (stdout,
-			 _
-			 ("\nYou can permanently add this map file with following line in your\nmap_koord.txt (rename the file!):\n"));
-		fprintf (stdout, "\n%s %f %f %d\n", mybuffer, lat, lon,
-			 scale);
+		    _("\nYou can permanently add this map file with following "
+			"line in your\n"
+			"map_koord.txt (rename the file!):\n"));
+		fprintf (stdout, "\n%s %f %f %d\n", mybuffer, lat, lon, scale);
 
 	}			/* End of if !test */
-
 
 	return scale;
 }

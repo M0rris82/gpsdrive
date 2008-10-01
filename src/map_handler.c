@@ -516,20 +516,26 @@ create_nasa ()
 	}
 
       /* Try creating a nasamap and add it to the map list */
-      havenasa =
-	create_nasa_mapfile (coords.current_lat, coords.current_lon,
-		TRUE, nasaname);
+
+	/* first time: test only */
+      havenasa = create_nasa_mapfile (coords.current_lat,
+			coords.current_lon, TRUE, nasaname);
+
       if (havenasa > 0)
 	{
 	  i = nrmaps;
 	  nrmaps++;
 	  maps = g_renew (mapsstruct, maps, (nrmaps + 2));
+
+	  /* second time, actually create the file */
 	  havenasa =
 	    create_nasa_mapfile (coords.current_lat, coords.current_lon,
-	    	FALSE, nasaname);
+				 FALSE, nasaname);
+
 	  (maps + i)->lat = coords.current_lat;
 	  (maps + i)->lon = coords.current_lon;
 	  (maps + i)->scale = havenasa;
+
 	  g_strlcpy ((maps + i)->filename, nasaname, 200);
 	  if ((strcmp (oldfilename, "top_NASA_IMAGE.ppm")) == 0)
 	    g_strlcpy (oldfilename, "XXXOLDMAPXXX.ppm", sizeof (oldfilename));
@@ -819,8 +825,9 @@ test_and_load_newmap ()
 #endif
 
     /* search for suitable maps */
-    if (displaymap_top) nasaisvalid = create_nasa ();
-    nasaisvalid = FALSE;
+    if (displaymap_top)  /* how to change so it only runs if we've moved off page? */
+	nasaisvalid = create_nasa ();
+    nasaisvalid = FALSE;  /* huh? */
 
     /* have a look through all the maps and decide which map 
      * is the best/apropriate
