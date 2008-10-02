@@ -2534,6 +2534,8 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
 	} else
 	{
+		GtkWidget *compass_box;
+
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
@@ -2545,9 +2547,10 @@ void create_status_mainbox (void)
 			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
-
 		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
+		compass_box = gtk_hbox_new (FALSE, 1* PADDING);
+		gtk_box_pack_start (GTK_BOX (compass_box), frame_compass, TRUE, FALSE, 1 * PADDING);
+		gtk_box_pack_end (GTK_BOX (mainbox_controls), compass_box, FALSE, FALSE, 1 * PADDING);
 
 		//  --- ACPI / Temperature / Battery
 		create_temperature_widget(statusdashboard_box);
