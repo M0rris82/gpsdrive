@@ -306,12 +306,11 @@ test_loaded_map_names ()
 	  GString *error;
 	  error = g_string_new (NULL);
 	  g_string_printf (error, "%s%d\n%s\n",
-			   _("Error in line "), i + 1,
-			   _
-			   ("I have found filenames in map_koord.txt which are\n"
-			    "not map_* or top_* files. Please rename them and change the entries in\n"
-			    "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-			    "maps.  Otherwise, the maps will not be displayed!"));
+		_("Error in line "), i + 1,
+		_("I have found filenames in map_koord.txt which are\n"
+		  "not map_* or top_* files. Please rename them and change the entries in\n"
+		  "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
+		  "maps.  Otherwise, the maps will not be displayed!"));
 	  popup_warning (NULL, error->str);
 	  g_string_free (error, TRUE);
 	  message_wrong_maps_shown = TRUE;
@@ -377,7 +376,7 @@ savemapconfig ()
 
   for (i = 0; i < nrmaps; i++)
     {
-      fprintf (st, "%s %.5f %.5f %ld\n", (maps + i)->filename,
+      fprintf (st, "%s %.8f %.8f %ld\n", (maps + i)->filename,
 	       (maps + i)->lat, (maps + i)->lon, (maps + i)->scale);
     }
 
@@ -394,7 +393,7 @@ loadmapconfig ()
   FILE *st;
   gint i;
   gint max_nrmaps = 1000;
-  gchar buf[1512], s1[40], s2[40], s3[40], filename[100], minlat[40],
+  gchar buf[1512], center_lat[40], center_lon[40], scale_factor[40], filename[100], minlat[40],
 	minlon[40], maxlat[40], maxlon[40];
   gint p, e;
 
@@ -434,8 +433,12 @@ loadmapconfig ()
   havenasa = -1;
   while ((p = fgets (buf, 1512, st) != 0))
     {
-      e = sscanf (buf, "%s %s %s %s %s %s %s %s", filename,
-		  s1, s2, s3, minlat, minlon, maxlat, maxlon);
+      if ((buf[0] == '#') || (buf[0] == '\0')) {
+	continue;       /* line is a comment or blank */
+      }
+
+      e = sscanf (buf, "%s %s %s %s %s %s %s %s", filename, center_lat,
+		  center_lon, scale_factor, minlat, minlon, maxlat, maxlon);
       if ((mydebug > 50) && !(nrmaps % 1000))
 	{
 	  fprintf (stderr, "loadmapconfig(%d)\r", nrmaps);
@@ -445,30 +448,39 @@ loadmapconfig ()
       if (e == 4 || e == 8)
 	{
       /* already done in coordinate_string2 double
-	  g_strdelimit (s1, ",", '.');
-	  g_strdelimit (s2, ",", '.');
-	  g_strdelimit (s3, ",", '.');
-      g_strdelimit (minlat, ",", ".")
-      g_strdelimit (minlon, ",", ".")
-      g_strdelimit (maxlat, ",", ".")
-      g_strdelimit (maxlon, ",", ".")
+	g_strdelimit (center_lat, ",", '.');
+	g_strdelimit (center_lon, ",", '.');
+	g_strdelimit (scale_factor, ",", '.');
+	g_strdelimit (minlat, ",", ".")
+	g_strdelimit (minlon, ",", ".")
+	g_strdelimit (maxlat, ",", ".")
+	g_strdelimit (maxlon, ",", ".")
       */
-      
+
 	  g_strlcpy ((maps + i)->filename, filename, 200);
 	  (maps + i)->map_dir = add_map_dir (filename);
-	  coordinate_string2gdouble (s1, &((maps + i)->lat));
-	  coordinate_string2gdouble (s2, &((maps + i)->lon));
+	  coordinate_string2gdouble (center_lat, &((maps + i)->lat));
+	  coordinate_string2gdouble (center_lon, &((maps + i)->lon));
       
       if (e == 8) {
           (maps + i)->hasbbox = TRUE;
           coordinate_string2gdouble(minlat, &((maps + i)->minlat));
           coordinate_string2gdouble(minlon, &((maps + i)->minlon));
           coordinate_string2gdouble(maxlat, &((maps + i)->maxlat));
-          coordinate_string2gdouble(maxlon, &((maps + i)->maxlon)); 
+          coordinate_string2gdouble(maxlon, &((maps + i)->maxlon));
+/* TODO  (this code is not fully implemented ??)
+ * -  calculate center lat/lon automatically from average of max/min lat/lon ?
+ *     be sure to check that you haven't gone the long way around the earth
+ *       if near 180 lon.
+ *     or will center lat/lon not be needed once this code is fully in place?
+ *  - determine ->scale somehow.   Otherwise this won't work.
+ *     Calculate it from lat as that is constant at 1 min = 1852m ?
+ *     how to handle x_scale != y_scale ?
+ */
       } else 
           (maps + i)->hasbbox = FALSE;
-      
-	  (maps + i)->scale = strtol (s3, NULL, 0);
+
+	  (maps + i)->scale = strtol (scale_factor, NULL, 0);
 	  i++;
 	  nrmaps = i;
 	  havenasa = -1;
@@ -718,9 +730,9 @@ loadmap (char *filename)
 	else if (g_ascii_strncasecmp (filename, "mapn", 4) == 0)
 		g_strlcpy (current.maptype, "mapnik", sizeof (current.maptype));
 	else if (g_ascii_strncasecmp (filename, "enir", 4) == 0)
-			g_strlcpy (current.maptype, "eniro", sizeof (current.maptype));
+		g_strlcpy (current.maptype, "eniro", sizeof (current.maptype));
 	else if (g_ascii_strncasecmp (filename, "geos", 4) == 0)
-			g_strlcpy (current.maptype, "geoscience", sizeof (current.maptype));
+		g_strlcpy (current.maptype, "geoscience", sizeof (current.maptype));
 	else if (g_ascii_strncasecmp (filename, "expe", 4) == 0)
 		g_strlcpy (current.maptype, "expedia", sizeof (current.maptype));
 	else if (g_ascii_strncasecmp (filename, "goog", 4) == 0)
@@ -845,13 +857,14 @@ test_and_load_newmap ()
                 (maps + i)->minlon < coords.current_lon &&
                 (maps + i)->maxlat > coords.current_lat &&
                 (maps + i)->maxlon > coords.current_lon) {
+/* TODO ?? */
                     takemap = TRUE;
-                } 
+                }
         } else {
             /* old system */
-            
+
             enum map_projections proj = map_projection ((maps + i)->filename);
-    
+
             /*  Longitude */
             if (proj_map == proj)
     	       posx = (lat2radius ((maps + i)->lat) * M_PI / 180)
