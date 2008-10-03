@@ -1,54 +1,3 @@
-/***********************************************************************
-
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
-
-Website: www.gpsdrive.de
-
-Disclaimer: Please do not use for navigation.
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-*********************************************************************/
-/*
-  $Log$
-  Revision 1.6  2006/08/02 07:48:24  tweety
-  rename variable mapdir --> local_config_mapdir
-
-  Revision 1.5  2006/08/01 06:06:50  tweety
-  try to reduce errors while downloading maps from expedia
-
-  Revision 1.4  2006/05/09 08:29:52  tweety
-  move proxy fetching from environment to download_map.c
-
-  Revision 1.3  2006/02/17 20:54:34  tweety
-  http://bugzilla.gpsdrive.cc/show_bug.cgi?id=73
-  Downloading maps doesn't allow Longitude select by mouse
-
-  Revision 1.2  2006/02/05 16:38:05  tweety
-  reading floats with scanf looks at the locale LANG=
-  so if you have a locale de_DE set reading way.txt results in clearing the
-  digits after the '.'
-  For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-  Revision 1.1  2006/02/05 15:01:59  tweety
-  extract map downloading
-
-  Revision 1.0  2006/01/03 14:24:10  tweety
-*/
-
-
 /*  Include Dateien */
 #include "config.h"
 #include <stdlib.h>
@@ -120,7 +69,6 @@ gint expedia = TRUE;
 GtkWidget *downloadwindow;
 
 GtkWidget *radio1, *radio2;
-gint downloadwindowactive=0;
 gint downloadactive=0;
 gchar writebuff[2000];
 fd_set readmask;
@@ -140,280 +88,36 @@ gint dlscale_cb (GtkWidget * widget, guint datum);
 /* *****************************************************************************
  */
 gint
-dlstatusaway_cb (GtkWidget * widget, guint datum)
-{
-	downloadwindowactive = downloadactive = FALSE;
-
-	return FALSE;
-}
-
-/* *****************************************************************************
- */
-char *
-getexpediaurl (GtkWidget * widget)
-{
-    struct sockaddr_in server;
-    struct hostent *server_data;
-    gchar str[100], sn[1000];
-    gchar tmpbuff[9000];
-    gint e;
-    static char url[8000];
-
-    /*  open socket to port80 */
-    if ((dlsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-	{
-	    perror (_("can't open socket for port 80"));
-	    if (expedia_de)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER4 : WEBSERVER);
-	    else
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
-	    	current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    return (NULL);
-	}
-
-    server.sin_family = AF_INET;
-    /*  We retrieve the IP address of the server from its name: */
-    if (haveproxy)
-	g_strlcpy (sn, proxy, sizeof (sn));
-    else
-	{
-	    if (expedia_de)
-		g_strlcpy (sn, (expedia) ? WEBSERVER4 : WEBSERVER,
-			   sizeof (sn));
-	    else
-		g_strlcpy (sn, (expedia) ? WEBSERVER2 : WEBSERVER,
-			   sizeof (sn));
-	}
-    if ((server_data = gethostbyname (sn)) == NULL)
-	{
-	    perror (_("Can't resolve webserver address"));
-	    if (expedia_de)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER4 : WEBSERVER);
-	    else
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    socket_close (dlsock);
-	    return (NULL);
-	}
-    memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-    server.sin_port = htons (proxyport);
-    /*  We initiate the connection  */
-    if (connect (dlsock, (struct sockaddr *) &server, sizeof server) < 0)
-	{
-	    perror (_("unable to connect to Website"));
-	    if (expedia_de)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER4 : WEBSERVER);
-	    else
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"),
-			    (expedia) ? WEBSERVER2 : WEBSERVER);
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    socket_close (dlsock);
-	    return (NULL);
-	}
-
-    if ( send (dlsock, writebuff, strlen (writebuff),0)<0){
-	socket_close (dlsock);
-	return (NULL);
-    };
-
-    FD_ZERO (&readmask);
-    FD_SET (dlsock, &readmask);
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 100000;
-    if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-	{
-	    perror ("select() call");
-	}
-
-    g_strlcpy (url, "Fehler!!!!", sizeof (url));
-    memset (tmpbuff, 0, 8192);
-    if ((e = recv (dlsock, tmpbuff, 8000, 0)) < 0)
-	perror (_("read from Webserver"));
-    if ( mydebug > 3 )
-	g_print ("Loaded %d Bytes\n", e);
-    if (e > 0)
-	g_strlcpy (url, tmpbuff, sizeof (url));
-    else
-	{
-	    perror ("getexpediaurl");
-	    fprintf (stderr, "error while reading from exedia\n");
-	    socket_close (dlsock);
-	    return (NULL);
-	    // exit (1);
-	}
-    socket_close (dlsock);
-    return url;
-
-}
-
-/* *****************************************************************************
- */
-gint
 downloadstart_cb (GtkWidget * widget, guint datum)
 {
-    struct sockaddr_in server;
-    struct hostent *server_data;
     gchar str[100], sn[1000];
 
 
     downloadfilelen = 0;
     downloadactive = TRUE;
-    if (!expedia)
-	g_snprintf (str, sizeof (str), _("Connecting to %s"),
-		    WEBSERVER);
-    if (expedia)
-	{
-	    if (expedia_de)
-		g_snprintf (str, sizeof (str), _("Connecting to %s"),
-			    WEBSERVER4);
-	    else
-		g_snprintf (str, sizeof (str), _("Connecting to %s"),
-			    WEBSERVER2);
-	}
+    g_snprintf (str, sizeof (str), _("Connecting to %s"), WEBSERVER);
 
-    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-    while (gtk_events_pending ())
+   while (gtk_events_pending ())
 	gtk_main_iteration ();
+
+
+
     /*  open socket to port80 */
-    if ((dlsock = socket (AF_INET, SOCK_STREAM, 0)) < 0)
-	{
-	    perror (_("can't open socket for port 80"));
-	    if (!expedia)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"), WEBSERVER);
-	    if (expedia)
-		{
-		    if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER4);
-		    else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER2);
-		}
+////////////////////
 
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (6000, (GtkFunction) dlstatusaway_cb, widget);
-	    return (FALSE);
-	}
-
-    server.sin_family = AF_INET;
     /*  We retrieve the IP address of the server from its name: */
     if (haveproxy)
 	g_strlcpy (sn, proxy, sizeof (sn));
     else
-	{
-	    if (expedia)
-		{
-		    if (expedia_de)
-			g_strlcpy (sn, WEBSERVER4, sizeof (sn));
-		    else
-			g_strlcpy (sn, WEBSERVER2, sizeof (sn));
-		}
+	g_strlcpy (sn, WEBSERVER, sizeof (sn));
 
-	    if (!expedia)
-		g_strlcpy (sn, WEBSERVER, sizeof (sn));
-	}
 
-    if (expedia == TRUE && haveproxy == FALSE)
-	g_strlcpy (sn, actualhostname, sizeof (sn));
 
-    if ((server_data = gethostbyname (sn)) == NULL)
-	{
-	    perror (_("Can't resolve webserver address"));
-	    if (!expedia)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"), WEBSERVER);
-	    if (expedia)
-		{
-		    if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER4);
-		    else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER2);
-		}
-
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    return (FALSE);
-	}
-    memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-    server.sin_port = htons (proxyport);
     /*  We initiate the connection  */
-    if (connect (dlsock, (struct sockaddr *) &server, sizeof server) < 0)
-	{
-	    perror (_("unable to connect to Website"));
-	    if (!expedia)
-		g_snprintf (str, sizeof (str),
-			    _("Connecting to %s FAILED!"), WEBSERVER);
-	    if (expedia)
-		{
-		    if (expedia_de)
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER4);
-		    else
-			g_snprintf (str, sizeof (str),
-				    _("Connecting to %s FAILED!"),
-				    WEBSERVER2);
-		}
 
-	    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-	    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
-	    gtk_widget_destroy (downloadwindow);
-	    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-	    return (FALSE);
-	}
+////////////////////
 
-    send (dlsock, writebuff, strlen (writebuff), 0);
-    dlbuff = g_new0 (gchar, 8192);
-    dlpstart = NULL;
-    dldiff = dlcount = 0;
-    if (!expedia)
-	g_snprintf (str, sizeof (str), _("Now connected to %s"),
-		    WEBSERVER);
-    if (expedia)
-	{
-	    if (expedia_de)
-		g_snprintf (str, sizeof (str),
-			    _("Now connected to %s"), WEBSERVER4);
-	    else
-		g_snprintf (str, sizeof (str),
-			    _("Now connected to %s"), WEBSERVER2);
-	}
 
-    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, str);
     gtk_timeout_add (100, (GtkFunction) downloadslave_cb, widget);
     return TRUE;
 }
@@ -426,7 +130,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
     gchar nn[] = "\r\n\r\n";
     gdouble f;
 
-    if (!downloadwindowactive)
+    if (!gui_status.dl_window)
 	return FALSE;
 
 
@@ -577,7 +281,7 @@ downloadslave_cb (GtkWidget * widget, guint datum)
 			    havenasa = -1;
 			    savemapconfig ();
 			}
-		    downloadwindowactive = FALSE;
+		    gui_status.dl_window = FALSE;
 		    gtk_widget_destroy (downloadwindow);
 		    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
 
@@ -594,6 +298,16 @@ downloadslave_cb (GtkWidget * widget, guint datum)
     return TRUE;
 }
 
+
+
+
+
+
+
+
+
+
+
 /* *****************************************************************************
  */
 gint
@@ -606,7 +320,7 @@ downloadsetparm (GtkWidget * widget, guint datum)
 
 	char sctext[40];
 
-	if (!downloadwindowactive)
+	if (!gui_status.dl_window)
 		return TRUE;
 
 	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
@@ -930,7 +644,7 @@ download_cb (GtkWidget * widget, guint datum)
 	gtk_window_set_position (GTK_WINDOW (downloadwindow),
 				 GTK_WIN_POS_CENTER);
 	gtk_widget_show_all (downloadwindow);
-	downloadwindowactive = TRUE;
+	gui_status.dl_window = TRUE;
 	downloadsetparm (NULL, 0);
 
 	/*    cursor = gdk_cursor_new (GDK_CROSS); */
@@ -944,7 +658,7 @@ download_cb (GtkWidget * widget, guint datum)
 gint
 downloadaway_cb (GtkWidget * widget, guint datum)
 {
-	downloadwindowactive = downloadactive = FALSE;
+	gui_status.dl_window = downloadactive = FALSE;
 	gtk_widget_destroy (widget);
 	expose_mini_cb (NULL, 0);
 

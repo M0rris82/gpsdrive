@@ -57,7 +57,7 @@ gboolean draw_posmarker
 
 int gui_init (gchar *geometry, gint usegeometry);
 
-gint set_cursor_style(int cursor);
+gint set_cursor_style (int cursor);
 
 typedef struct
 {
@@ -103,12 +103,14 @@ typedef struct
 	gint mapview_y;		/* height of shown map part in px */
 	gboolean nightmode;	/* flag if nightmode is switched on or off */
 	gboolean posmode;
+	gboolean dl_window;
 } guistatus_struct;
 
 /* gpsdrive cursors */
 enum {
 	CURSOR_DEFAULT,
-	CURSOR_WATCH
+	CURSOR_WATCH,
+	CURSOR_CROSS
 };
 
 extern guistatus_struct gui_status;

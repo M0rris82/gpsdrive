@@ -53,14 +53,13 @@ extern gint maploaded;
 extern gint debug, mydebug;
 extern gint iszoomed;
 extern gchar  oldangle[100];
-extern gdouble new_dl_lat,new_dl_lon;
-extern gint new_dl_scale;
+extern gdouble mapdl_lat, mapdl_lon;
+extern gint mapdl_scale;
 extern color_struct colors;
 extern coordinate_struct coords;
 extern routestatus_struct route;
 wpstruct *routelist;
 extern gint thisrouteline;
-extern gint downloadwindowactive;
 extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;
 extern GtkWidget *posbt, *mapnik_bt;
@@ -71,10 +70,13 @@ extern gchar oldfilename[2048];
 extern gint borderlimit;
 
 gchar mapfilename[2048];
+gboolean mapconfig_active = FALSE;
+
+extern gboolean mapdl_active;
 
 extern int havedefaultmap;
 
-extern GdkPixbuf *image, *tempimage, *pixbuf_minimap;
+extern GdkPixbuf *image, *pixbuf_minimap;
 extern GtkWidget *mapscaler_scaler;
 extern GtkObject *mapscaler_adj;
 extern GdkGC *kontext_map;
@@ -340,7 +342,7 @@ map_koord_check_and_reload ()
       needreloadmapconfig = TRUE;
     }
 
-  if (needreloadmapconfig)
+  if (needreloadmapconfig && !mapdl_active)
     {
       loadmapconfig ();
       g_print ("%s reloaded\n", "map_koord.txt");
@@ -396,6 +398,11 @@ loadmapconfig ()
   gchar buf[1512], center_lat[40], center_lon[40], scale_factor[40], filename[100], minlat[40],
 	minlon[40], maxlat[40], maxlon[40];
   gint p, e;
+
+  if (mapconfig_active)
+    return;
+
+  mapconfig_active = TRUE;
 
   if (mydebug > 50)
     fprintf (stderr, "loadmapconfig()\n");
@@ -499,6 +506,7 @@ loadmapconfig ()
   fclose (st);
 
   needreloadmapconfig = FALSE;
+  mapconfig_active = FALSE;
   return FALSE;
 }
 
@@ -958,7 +966,7 @@ drawloadedmaps ()
     fprintf (stderr, "drawloadedmaps()\n");
   for (i = 0; i < nrmaps; i++)
     {
-      scale = new_dl_scale;
+      scale = mapdl_scale;
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
 	  //printf("Selected map at lon %lf lat %lf\n",maps[i].lat,maps[i].lon);
@@ -995,14 +1003,14 @@ drawdownloadrectangle (gint big)
   if (mydebug > 50)
     fprintf (stderr, "drawdownloadrectangle()\n");
   drawloadedmaps ();
-  if (downloadwindowactive)
+  if (gui_status.dl_window)
     {
       gint x, y;
       gdouble la, lo;
       gint scale, xo, yo;
-      la = new_dl_lat;
-      lo = new_dl_lon;
-      scale = new_dl_scale;
+      la = mapdl_lat;
+      lo = mapdl_lon;
+      scale = mapdl_scale;
       gdk_gc_set_foreground (kontext_map, &colors.green_light);
       gdk_gc_set_function (kontext_map, GDK_AND);
       gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);

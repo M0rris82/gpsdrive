@@ -49,7 +49,6 @@ separating map_import from gpsdrive.c
  * See download_map.c for details.
  */
 
-char *getexpediaurl (GtkWidget * widget);
 gint downloadstart_cb (GtkWidget * widget, guint datum);
 gint downloadslave_cb (GtkWidget * widget, guint datum);
 gint downloadsetparm (GtkWidget * widget, guint datum);

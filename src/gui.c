@@ -612,13 +612,15 @@ set_cursor_style(int cursor) {
 	switch(cursor) {
 		case CURSOR_DEFAULT:
 			/* different cursors in posmode */
-			if (gui_status.posmode == TRUE)
+			if (gui_status.posmode == TRUE )
 				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, cursor_cross);
 			else
 				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, NULL);
 			break;
 		case CURSOR_WATCH:
 			gdk_window_set_cursor(GTK_LAYOUT (map_drawingarea)->bin_window, cursor_watch);
+		case CURSOR_CROSS:
+			gdk_window_set_cursor(GTK_LAYOUT (map_drawingarea)->bin_window, cursor_cross);
 	}
 	/* update all events to fastly switch cursor */
 	while (gtk_events_pending())
@@ -751,6 +753,8 @@ int gui_init (gchar *geometry, gint usegeometry)
 		gtk_window_get_size (GTK_WINDOW (main_window), &app_x, &app_y);
 		fprintf(stderr , "size of application : %dx%d px\n", app_x, app_y);
 	}
+
+	gui_status.dl_window = FALSE;
 
 	return 0;
 }

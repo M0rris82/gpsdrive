@@ -171,20 +171,6 @@ enum gpx_mode
 
 #define MAXMESG 8192
 
-
-#define LOCALTESTXXX
-#ifdef LOCALTEST
-#define WEBSERVER "wuffi.ganter.at"
-#else
-// R.I.P. Borged by Microsoft, April, 2003:
-// #define WEBSERVER "www.mapblast.com"
-#define WEBSERVER "www.vicinity.com"
-#endif
-/* #define WEBSERVER2 "msrvmaps.mappoint.net" */
-#define WEBSERVER2 "www.expedia.com"
-#define WEBSERVER3 "host21.216.235.245.nedatavault.net"
-#define WEBSERVER4 "www.expedia.de"
-
 #define FESTIVAL_ENGLISH_INIT "(voice_ked_diphone)\n"
 #define FESTIVAL_GERMAN_INIT "(voice_german_de3_os)\n"
 #define FESTIVAL_SPANISH_INIT "(voice_el_diphone)\n"

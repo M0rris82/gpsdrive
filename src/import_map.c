@@ -148,17 +148,16 @@ Disclaimer: Please do not use for navigation.
 
 extern gint maploaded;
 extern gint debug, mydebug;
-extern GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
+GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
 GtkWidget *dltext4,*dltext3;
 extern gdouble olddist;
 extern GTimer *disttimer;
-extern gint downloadwindowactive;
 extern gint havepos, haveposcount, blink, gblink, xoff, yoff;
 extern GtkWidget *status;
 extern GtkWidget *mylist;
 extern mapsstruct *maps;
 extern gint iszoomed;
-extern gint nrmaps;
+gint nrmaps;
 extern int havenasa;
 extern gchar oldfilename[2048];
 extern GtkWidget *posbt;
@@ -714,7 +713,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
   gint x, y;
   gdouble lon, lat;
   GdkModifierType state;
-  gchar s[200];
+  gchar s[200], t[200];
 
   /*   printf("bin in mapclick\n"); */
 
@@ -734,17 +733,15 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	  fprintf (stderr, "Mouse click at x:%d,y:%d -->lat:%f,lon:%f  \n", x, y,lat,lon);
       }
 
-  if (downloadwindowactive || current.importactive)
+  if (gui_status.dl_window || current.importactive)
     {
-      if (downloadwindowactive)
+      if (gui_status.dl_window)
 	{
 	  coordinate2gchar (s, sizeof (s), lat, TRUE,
 	  	local_config.coordmode);
-	  gtk_entry_set_text (GTK_ENTRY (dl_text_lat), s);
-	  coordinate2gchar (s, sizeof (s), lon, FALSE,
+	  coordinate2gchar (t, sizeof (t), lon, FALSE,
 	  	local_config.coordmode);
-	  gtk_entry_set_text (GTK_ENTRY (dl_text_lon), s);
-	  downloadsetparm (NULL, 0);
+	  mapdl_set_coords (s, t);
 	}
       else
 	{

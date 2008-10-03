@@ -6,6 +6,7 @@ find_package(GTK2 REQUIRED)
 find_package(XML2 REQUIRED)
 find_package(Freetype2 REQUIRED)
 find_package(SQLite3 REQUIRED)
+find_package(CURL REQUIRED)
 
 
 if (WITH_GDA3)
@@ -70,7 +71,6 @@ set(gpsdrive_SRCS
   database.h
   database_sqlite.c
   database_sqlite.h
-  download_map.c
   draw_grid.c
   friends.c
   geometry.c
@@ -91,6 +91,8 @@ set(gpsdrive_SRCS
   import_map.c
   LatLong-UTMconversion.c
   main_gui.c
+  map_download.c
+  map_download.h
   map_handler.c
   map_projection.c
   navigation.c

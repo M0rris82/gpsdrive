@@ -42,8 +42,8 @@ using mapnik::config_error;
 extern int mydebug;
 extern int borderlimit;
 
-//mapnik::projection Proj("+proj=merc +datum=WGS84");
-mapnik::projection Proj("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over");
+mapnik::projection Proj("+proj=merc +datum=WGS84");
+//mapnik::projection Proj("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over");
 
 typedef struct {
     int NewMapYsn;

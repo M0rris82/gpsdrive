@@ -45,7 +45,6 @@ Disclaimer: Please do not use for navigation.
 #include <unistd.h>
 
 #include <dlfcn.h>
-#include <pthread.h>
 #include <semaphore.h>
 
 #include "gpsdrive_config.h"
@@ -86,7 +85,7 @@ extern gchar mapfilename[1024];
 extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
 extern gint sats_used, sats_in_view;
 extern gchar *buffer, *big;
-extern fd_set readmask;
+fd_set readmask;
 extern struct timeval timeout;
 extern gdouble earthr;
 extern gint timeoutcount;

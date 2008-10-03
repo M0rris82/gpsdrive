@@ -58,6 +58,7 @@ Disclaimer: Please do not use for navigation.
 #include "map_handler.h"
 #include "import_map.h"
 #include "download_map.h"
+#include "map_download.h"
 #include "main_gui.h"
 #include "poi.h"
 #include "routes.h"
@@ -323,7 +324,8 @@ main_menu_cb (GtkWidget *widget, gint choice)
 	switch (choice)
 	{
 		case MENU_MAPIMPORT:	import1_cb (NULL, 1); break;
-		case MENU_MAPDOWNLOAD:	download_cb (NULL, 0); break;
+//		case MENU_MAPDOWNLOAD:	download_cb (NULL, 0); break;
+		case MENU_MAPDOWNLOAD:	map_download_cb (NULL, 0); break;
 		case MENU_LOADTRKOLD:	loadtrack_cb (NULL, 0); break;
 		case MENU_LOADTRACK:	loadgpx_cb (GPX_TRK); break;
 		case MENU_LOADROUTE:	loadgpx_cb (GPX_RTE); break;

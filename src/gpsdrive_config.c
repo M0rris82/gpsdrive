@@ -136,6 +136,8 @@ writeconfig ()
 	else
 		fprintf (fp, "0\n");
 
+	fprintf (fp, "mapsource_type = %d\n", local_config.mapsource_type);
+	fprintf (fp, "mapsource_scale = %d\n", local_config.mapsource_scale);
 	fprintf (fp, "scalewanted = %d\n", local_config.scale_wanted);
 
 	g_snprintf (str, sizeof (str), "%.6f", coords.current_lon);
@@ -359,6 +361,10 @@ readconfig ()
 				local_config.dashboard[4] = atoi (par2);
 			else if ( (strcmp(par1, "savetrack")) == 0)
 				local_config.savetrack = atoi (par2);
+			else if ( (strcmp(par1, "mapsource_type")) == 0)
+				local_config.mapsource_type = atoi (par2);
+			else if ( (strcmp(par1, "mapsource_scale")) == 0)
+				local_config.mapsource_scale = atoi (par2);
 			else if ( (strcmp(par1, "scalewanted")) == 0)
 				local_config.scale_wanted = atoi (par2);
 			else if ( (strcmp(par1, "lastlong")) == 0)
@@ -438,6 +444,7 @@ readconfig ()
 				local_config.showtemp = atoi (par2);
 			else if ( (strcmp(par1, "show_wayinfo")) == 0)
 				local_config.showway = atoi (par2);
+
 			else if ( (strcmp(par1, "font_bigtext")) == 0)
 			{
 				if (local_config.guimode != GUI_PDA)
@@ -636,6 +643,8 @@ config_init ()
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;
 	local_config.scale_wanted = 100000;
+	local_config.mapsource_type = 0;
+	local_config.mapsource_scale = 0;
 	local_config.autobestmap = 1;
 	local_config.rotating_compass = TRUE;
 
@@ -686,6 +695,12 @@ config_init ()
 		"#ffebcc", sizeof (local_config.color_map_day));
 	g_strlcpy (local_config.color_map_night,
 		"#330033", sizeof (local_config.color_map_night));
+	g_strlcpy (local_config.font_dashboard,
+		"Sans bold 16", sizeof (local_config.font_tmp_dashboard));
+	g_strlcpy (local_config.font_wplabel,
+		"Sans 8", sizeof (local_config.font_tmp_wplabel));
+	g_strlcpy (local_config.font_friends,
+		"Sans bold 10", sizeof (local_config.font_tmp_friends));
 	g_strlcpy (local_config.font_dashboard,
 		"Sans bold 26", sizeof (local_config.font_dashboard));
 	g_strlcpy (local_config.font_wplabel,

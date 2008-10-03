@@ -90,6 +90,8 @@ typedef struct
 	gboolean savetrack;
 	gboolean autobestmap;
 	gint scale_wanted;
+	gint mapsource_type;
+	gint mapsource_scale;
 	gint speech;
 	gchar speech_voice[20];
 	gint speech_speed;

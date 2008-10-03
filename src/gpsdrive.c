@@ -80,7 +80,6 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 /* #include <gpskismet.h> <-- prototypes are declared also in gpsproto.h */
 
 #include <dlfcn.h>
-#include <pthread.h>
 #include <semaphore.h>
 
 		
@@ -214,26 +213,11 @@ gint gcount;
 gchar localedecimal;
 gchar language[] = "en";
 
-extern gint downloadwindowactive;
-extern gint downloadactive;
+extern gboolean mapdl_active;
 
 GtkWidget *add_wp_name_text, *wptext2;
 gchar oldangle[100];
 
-// Uncomment this (or add a make flag?) to only have scales for expedia maps
-//#define EXPEDIA_SCALES_ONLY
-
-#ifdef EXPEDIA_SCALES_ONLY
-gint slistsize = 12;
-gchar *slist[] = { "5000", "15000", "20000", "50000", 
-		   "100000", "200000", "750000", "3000000", "7500000", "75000000",
-		   "88067900","90000000"
-};
-gint nlist[] = { 5000, 15000, 20000, 50000, 
-		 100000, 200000, 750000, 3000000, 7500000, 75000000,
-		 88067900,90000000
-};
-#else
 gint slistsize = 32;
 gchar *slist[] = { "1000", "1500", "2000", "3000", "5000", "7500", 
 		   "10000", "15000", "20000", "30000", "50000", "75000",
@@ -249,7 +233,6 @@ gint nlist[] = { 1000, 1500, 2000, 3000, 5000, 7500,
 		 10000000, 15000000, 20000000, 30000000, 50000000, 75000000,
 		 88067900,90000000
 };
-#endif
 
 
 GtkWidget *label_map_filename;
@@ -270,8 +253,6 @@ gchar lastradar[40], lastradar2[40];
 gint foundradar;
 gdouble radarbearing;
 gint errortextmode = TRUE;
-gint haveproxy, proxyport;
-gchar proxy[256], hostname[256];
 
 /*** Mod by Arms */
 gint real_psize, real_smallmenu;
@@ -492,7 +473,7 @@ display_status (char *message)
     if ( mydebug >20 ) 
 	fprintf(stderr , "display_status(%s)\n",message);
     
-    if (downloadactive)
+    if (mapdl_active)
 	return;
     if (current.importactive)
 	return;
@@ -518,7 +499,7 @@ display_status2 ()
 
 	if ( mydebug >50 ) fprintf(stderr , "display_status2()\n");
 
-	if (downloadactive)
+	if (mapdl_active)
 		return;
 	if (current.importactive)
 		return;
@@ -1185,7 +1166,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			blink = !blink;
 	}
 
-	if (downloadwindowactive)
+	if (gui_status.dl_window)
 	{
 		drawdownloadrectangle (1);
 		expose_mini_cb (NULL, 0);
@@ -1507,8 +1488,10 @@ expose_compass (GtkWidget *widget, guint *datum)
 		poly[4].x = poly[0].x;
 		poly[4].y = poly[0].y;
 		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
-
 	}
+	gdk_gc_set_foreground (kontext_compass, &colors.black);
+	gdk_draw_arc (drawable_compass, kontext_compass, TRUE,
+		size/2-1, size/2-1, 2, 2, 0, 360 * 64);
 
 return TRUE;
 }
@@ -1686,7 +1669,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 			 512 - MAP_Y_2, 0, 0,
 			 gui_status.mapview_x, gui_status.mapview_y, GDK_RGB_DITHER_NONE, 0, 0);
 
-	if (!downloadwindowactive)
+	if (!gui_status.dl_window)
 	{
 		if (gui_status.nightmode)
 		{
@@ -2375,7 +2358,7 @@ main (int argc, char *argv[])
     g_strlcpy (messageack, "", sizeof (messageack));
     g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
     
-    downloadwindowactive = downloadactive = current.importactive = FALSE;
+    current.importactive = FALSE;
     g_strlcpy (lastradar, "", sizeof (lastradar));
     g_strlcpy (lastradar2, "", sizeof (lastradar2));
     dbdistance = 2000.0;
@@ -2452,6 +2435,8 @@ main (int argc, char *argv[])
 	
 	check_and_create_files();
 
+	mapdl_init ();
+
 	/*  initialization for GTK+ */
 	gtk_init (&argc, &argv);
 
@@ -2523,12 +2508,6 @@ main (int argc, char *argv[])
 		show_splash ();
 
     init_lat2RadiusArray();
-
-    gethostname (hostname, 256);
-    proxyport = 80;
-    haveproxy = FALSE;
-
-    get_proxy_from_env();
 
 	if (!local_config.speech)
 	{
@@ -2700,7 +2679,6 @@ main (int argc, char *argv[])
 	/*  Mainloop */
 	gtk_main ();
 
-
     g_timer_destroy (simulation_timer);
     if ( do_unit_test ) {
 	coords.current_lat=48.000000;
@@ -2742,6 +2720,7 @@ main (int argc, char *argv[])
 	close (sockfd);
     festival_close ();
     cleanup_nasa_mapfile ();
+    mapdl_cleanup ();
     g_print (_("\n\nThank you for using GpsDrive!\n\n"));
 
     if ( do_unit_test )
