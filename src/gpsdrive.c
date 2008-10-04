@@ -2721,6 +2721,12 @@ main (int argc, char *argv[])
     festival_close ();
     cleanup_nasa_mapfile ();
     mapdl_cleanup ();
+
+    /* it would be quicker to free the memory by just letting the OS do it
+	as part of tearing down the process upon exit, but by explicitly
+	freeing it we remove a big false positive in the valgrind analysis */
+    g_object_unref(tempimage);
+
     g_print (_("\n\nThank you for using GpsDrive!\n\n"));
 
     if ( do_unit_test )
