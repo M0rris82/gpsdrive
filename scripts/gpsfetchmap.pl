@@ -400,8 +400,8 @@ if ( $mapserver eq 'geoscience' ){
     print "+-----------------------------------------------------------+\n";
 }elsif ( $mapserver eq 'landsat' ){
     print "+-----------------------------------------------------------+\n";
-    print "| Landsat Maps are Copyright, .....   |\n";
-    print "| They are free for non commercial use.                     |\n";
+    print "| Landsat maps are courtesy JPL/NASA's OnEarth WMS Global   |\n";
+    print "| Mosaic. By law, US Government data is without copyright.  |\n";
 }elsif ( $mapserver eq 'openstreetmap_tah' ){
     print "+-----------------------------------------------------------+\n";
     print "| OpenStreetmap Maps are Copyright by the OpenStreetmap     |\n";
@@ -1024,7 +1024,6 @@ sub landsat_url($$$){
     $url .= '&layers=global_mosaic';
     $url .= '&styles=';
     $url .= '&srs=EPSG:4326';
-#    $url .= '&format=image/gif';
     $url .= '&format=image/jpeg';
 
     # Add the 4 Coordinates.
