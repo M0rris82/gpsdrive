@@ -1,3 +1,29 @@
+/***********************************************************************
+
+Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
+
+Website: www.gpsdrive.de
+
+Disclaimer: Please do not use for navigation.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+*********************************************************************/
+/*
+
+
 /*  Include Dateien */
 #include "config.h"
 #include <stdlib.h>
@@ -19,13 +45,10 @@
 #include <errno.h>
 #include <dirent.h>
 
-#include <dlfcn.h>
-#include <pthread.h>
-#include <semaphore.h>
-
 #include "gettext.h"
 #include "os_specific.h"
-#include "gui.h"
+
+#include <curl/curl.h>
 
 
 /*  Defines for gettext I18n */
@@ -38,695 +61,535 @@
 # endif
 
 
-#if GTK_MINOR_VERSION < 2
-#define gdk_draw_pixbuf _gdk_draw_pixbuf
-#endif
-
-
 #include <gpsdrive.h>
 #include <map_handler.h>
 #include "gpsdrive_config.h"
+#include "gui.h"
+#include "map_download.h"
 
-extern GtkWidget *frame_statusbar;
-extern gint haveproxy, proxyport;
-extern gchar proxy[256];
+
 extern gint mydebug;
 extern mapsstruct *maps;
-extern struct timeval timeout;
-extern int havenasa;
-extern gint slistsize;
-extern gchar *slist[];
-GtkWidget *cover;
-extern gdouble milesconv;
+extern gint nrmaps;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
+extern guistatus_struct gui_status;
 
-char actualhostname[200];
-
-SOCKET_TYPE dlsock = -1;
-int expedia_de = 0;
-gint expedia = TRUE;
-GtkWidget *downloadwindow;
-
-GtkWidget *radio1, *radio2;
-gint downloadactive=0;
-gchar writebuff[2000];
-fd_set readmask;
-gchar *dlbuff;
-gint downloadfilelen=0;
-gchar *dlpstart;
-gint nrmaps = 0, dldiff;
-gint dlcount;
-GtkWidget *myprogress;
-GtkWidget *dl_text_lat, *dl_text_lon, *dl_text_scale;
-gdouble new_dl_lon, new_dl_lat;
-gint new_dl_scale;
-
-gint downloadaway_cb (GtkWidget * widget, guint datum);
-gint dlscale_cb (GtkWidget * widget, guint datum);
-
-/* *****************************************************************************
- */
-gint
-downloadstart_cb (GtkWidget * widget, guint datum)
+enum
 {
-    gchar str[100], sn[1000];
+	MAPSOURCE_LANDSAT,
+	MAPSOURCE_OSM_TAH,
+	MAPSOURCE_N_ITEMS
+};
 
+gboolean mapdl_active = FALSE;
+guint mapdl_scale;
+gdouble mapdl_lat, mapdl_lon;
 
-    downloadfilelen = 0;
-    downloadactive = TRUE;
-    g_snprintf (str, sizeof (str), _("Connecting to %s"), WEBSERVER);
+static gchar mapdl_url[2000];
+static gboolean mapdl_abort = FALSE;
+static gint mapdl_zoom;
+static gchar mapdl_file_w_path[1024];
+static GtkWidget *scale_combobox, *lat_entry, *lon_entry;
+static GtkWidget *mapdl_progress;
+static GtkTreeModel *types_list, *scales_list;
+static CURL *curl_handle;
 
-   while (gtk_events_pending ())
-	gtk_main_iteration ();
-
-
-
-    /*  open socket to port80 */
-////////////////////
-
-    /*  We retrieve the IP address of the server from its name: */
-    if (haveproxy)
-	g_strlcpy (sn, proxy, sizeof (sn));
-    else
-	g_strlcpy (sn, WEBSERVER, sizeof (sn));
-
-
-
-    /*  We initiate the connection  */
-
-////////////////////
-
-
-    gtk_timeout_add (100, (GtkFunction) downloadslave_cb, widget);
-    return TRUE;
-}
-
-gint
-downloadslave_cb (GtkWidget * widget, guint datum)
+static struct mapsource_struct
 {
-    gchar tmpbuff[9000], str[100], *p;
-    gint e, fd;
-    gchar nn[] = "\r\n\r\n";
-    gdouble f;
-
-    if (!gui_status.dl_window)
-	return FALSE;
-
-
-    FD_ZERO (&readmask);
-    FD_SET (dlsock, &readmask);
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 100000;
-    if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-	{
-	    perror ("select() call");
-	}
-
-    if (FD_ISSET (dlsock, &readmask))
-	{
-	    memset (tmpbuff, 0, 8192);
-	    if ((e = recv (dlsock, tmpbuff, 8000, 0)) < 0)
-		perror (_("read from Webserver"));
-	    if ( mydebug > 3 )
-		g_print ("Loaded %d Bytes\n", e);
-	    if (e > 0)
-		{
-		    /*  in dlbuff we have all download data */
-		    memcpy ((dlbuff + dlcount), tmpbuff, e);
-		    /*  in dlcount we have the number of download bytes */
-		    dlcount += e;
-		    /* now we try to get the filelength and begin of the gif image data */
-		    if (dlpstart == NULL)
-			{
-			    /*  CONTENT-LENGTH string should hopefully be in the first 4kB */
-			    memcpy (tmpbuff, dlbuff, 4096);
-			    /*  We make of this a null terminated string */
-			    tmpbuff[4096] = 0;
-			    g_strup (tmpbuff);
-			    p = strstr (tmpbuff, "CONTENT-LENGTH:");
-			    if (p != NULL)
-				{
-				    sscanf (p, "%s %d", str,
-					    &downloadfilelen);
-				    /*  now we look for 2 cr/lf which is the end of the header */
-				    dlpstart = strstr (tmpbuff, nn);
-				    dldiff = dlpstart - tmpbuff + 4;
-				    /*            g_print("content-length: %d\n", downloadfilelen); */
-				}
-			    else if (dlcount > 1000)
-				{
-				    /*  Seems there is no CONTENT-LENGTH field in expedia.com */
-				    dlpstart = strstr (tmpbuff, nn);
-				    dldiff = dlpstart - tmpbuff + 4;
-				    downloadfilelen = 200000;
-				    /*            g_print("\ncontent-length: %d", downloadfilelen); */
-				}
-			}
-		    /*  Now we have the length and begin of the gif image data */
-		    if ((downloadfilelen != 0) && (dlpstart != NULL))
-			{
-			    dlbuff = g_renew (gchar, dlbuff,
-					      dlcount + 8192);
-			    f = (dlcount -
-				 dldiff) / (gdouble) downloadfilelen;
-			    if (f > 1.0)
-				f = 1.0;
-			    gtk_progress_bar_update (GTK_PROGRESS_BAR
-						     (myprogress), f);
-			    g_snprintf (str, sizeof (str),
-					_("Downloaded %d kBytes"),
-					(dlcount - dldiff) / 1024);
-			    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar),
-					       current.statusbar_id);
-			    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-						current.statusbar_id, str);
-			    while (gtk_events_pending ())
-				gtk_main_iteration ();
-			}
-
-		}
-	    if ((e == 0) || ((downloadfilelen + dldiff) == dlcount))
-		{
-
-		    if (downloadfilelen == 0)
-			g_snprintf (str, sizeof (str),
-				    _("Download FAILED!"));
-		    else
-			g_snprintf (str, sizeof (str),
-				    _("Download finished, got %dkB"),
-				    dlcount / 1024);
-		    gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-		    gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
-					str);
-		    socket_close (dlsock);
-		    if (downloadfilelen != 0)
-			{
-			    gchar map_filename[1024];
-			    gchar map_file_w_path[1024];
-
-			    g_snprintf( map_filename, sizeof (map_filename),
-					"expedia/map_%d_%5.3f_%5.3f.gif",
-					new_dl_scale,new_dl_lat,new_dl_lon);
-
-			    if ( local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/' )
-				g_strlcat( local_config.dir_maps, "/",sizeof (local_config.dir_maps) );
-			    
-			    g_snprintf (map_file_w_path, sizeof (map_file_w_path), 
-					"%s%s",local_config.dir_maps,map_filename);
-
-			    if ( mydebug > 1 ) {
-				g_print("Saving Map File to: '%s'\n",
-				       map_file_w_path);
-			    }
-
-			    // Create directory
-				{
-					struct stat buf;
-					gchar map_dir[1024];
-					g_snprintf (map_dir, sizeof (map_dir), 
-						"%s%s",local_config.dir_maps,"expedia");
-					if ( stat(map_dir,&buf) )
-					{
-						printf("Try creating %s\n",map_dir);
-						if ( mkdir (map_dir, 0700) )
-						{
-							printf("Error creating %s\n",map_dir);
-						}
-					}
-				}
-			    
-			    fd = open (map_file_w_path,
-				       O_RDWR | O_TRUNC | O_CREAT | O_BINARY, 0644);
-			    if (fd < 1)
-				{
-				    perror (map_filename);
-				    gtk_timeout_add (3000,(GtkFunction) dlstatusaway_cb, widget);
-
-				    return FALSE;
-				}
-			    write (fd, dlbuff + dldiff, dlcount - dldiff);
-			    close (fd);
-			    /* g_free (maps); */
-			    loadmapconfig ();
-			    maps = g_renew (mapsstruct, maps,
-					    (nrmaps + 2));
-			    g_strlcpy ((maps + nrmaps)->filename,map_filename, 200);
-			    (maps + nrmaps)->map_dir = add_map_dir (map_filename);
-			    (maps + nrmaps)->hasbbox = FALSE;
-			    (maps + nrmaps)->lat = new_dl_lat;
-			    (maps + nrmaps)->lon = new_dl_lon;
-			    (maps + nrmaps)->scale =new_dl_scale;
-			    nrmaps++;
-			    havenasa = -1;
-			    savemapconfig ();
-			}
-		    gui_status.dl_window = FALSE;
-		    gtk_widget_destroy (downloadwindow);
-		    gtk_timeout_add (3000, (GtkFunction) dlstatusaway_cb, widget);
-
-		    return FALSE;
-		}
-	}
-    else
-	{
-
-	    return TRUE;
-	}
-
-
-    return TRUE;
-}
-
-
-
-
-
-
-
-
-
+	gint type;
+	gchar scale[50];
+	gint zoom;
+	gint scale_int;
+} mapsource[] =
+{
+	MAPSOURCE_LANDSAT, "Landsat", -1, -1,
+	MAPSOURCE_LANDSAT, "1 : 50 000 000", 50000*6.4, 50000000,
+	MAPSOURCE_LANDSAT, "1 : 10 000 000", 10000*6.4, 10000000,
+	MAPSOURCE_LANDSAT, "1 : 5 000 000", 5000*6.4, 5000000,
+	MAPSOURCE_LANDSAT, "1 : 1 000 000", 1000*6.4, 1000000,
+	MAPSOURCE_LANDSAT, "1 : 500 000", 500*6.4, 500000,
+	MAPSOURCE_LANDSAT, "1 : 100 000", 100*6.4, 100000,
+	MAPSOURCE_LANDSAT, "1 : 50 000", 50*6.4, 50000,
+	MAPSOURCE_LANDSAT, "1 : 10 000", 10*6.4, 10000,
+	MAPSOURCE_LANDSAT, "1 : 5 000", 5*6.4, 5000,
+	MAPSOURCE_LANDSAT, "1 : 2 000", 2*6.4, 2000,
+	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
+	MAPSOURCE_OSM_TAH, "1 : 147 456 000", 1, 256*576000,
+	MAPSOURCE_OSM_TAH, "1 : 73 728 000", 2, 128*576000,
+	MAPSOURCE_OSM_TAH, "1 : 36 864 000", 3, 64*576000,
+	MAPSOURCE_OSM_TAH, "1 : 18 432 000", 4, 32*576000,
+	MAPSOURCE_OSM_TAH, "1 : 9 216 000", 5, 16*576000,
+	MAPSOURCE_OSM_TAH, "1 : 4 608 000", 6, 8*576000,
+	MAPSOURCE_OSM_TAH, "1 : 2 304 000", 7, 4*576000,
+	MAPSOURCE_OSM_TAH, "1 : 1 152 000", 8, 2*576000,
+	MAPSOURCE_OSM_TAH, "1 : 576 000", 9, 576000,
+	MAPSOURCE_OSM_TAH, "1 : 288 000", 10, 288000,
+	MAPSOURCE_OSM_TAH, "1 : 144 000", 11, 144000,
+	MAPSOURCE_OSM_TAH, "1 : 72 000", 12, 72000,
+	MAPSOURCE_OSM_TAH, "1 : 36 000", 13, 36000,
+	MAPSOURCE_OSM_TAH, "1 : 18 000", 14, 18000,
+	MAPSOURCE_OSM_TAH, "1 : 9 000", 15, 9000,
+	MAPSOURCE_OSM_TAH, "1 : 4 500", 16, 4500,
+	MAPSOURCE_OSM_TAH, "1 : 2 250", 17, 2250,
+	MAPSOURCE_N_ITEMS, "", 0, 0
+};
 
 
 /* *****************************************************************************
+ * set coordinates in text entries (called when map is clicked)
+ */
+void
+mapdl_set_coords (gchar *lat, gchar *lon)
+{
+	gtk_entry_set_text (GTK_ENTRY (lat_entry), lat);
+	gtk_entry_set_text (GTK_ENTRY (lon_entry), lon);
+}
+
+
+/* *****************************************************************************
+ * callback to set paramaters for map to download
  */
 gint
-downloadsetparm (GtkWidget * widget, guint datum)
+mapdl_setparm_cb (GtkWidget *widget, gint data)
 {
 	G_CONST_RETURN gchar *s;
-	gchar lon[100], lat[100], hostname[100], region[10];
-	gdouble f;
-	gint ns;
-
-	char sctext[40];
+	GtkTreeIter t_iter;
 
 	if (!gui_status.dl_window)
 		return TRUE;
 
-	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lat));
-	coordinate_string2gdouble(s, &new_dl_lat);
-	if ( mydebug > 3 )
-	    g_print("new map lat: %s\n",s);
-	
-	s = gtk_entry_get_text (GTK_ENTRY (dl_text_lon));
-	coordinate_string2gdouble(s,&new_dl_lon);
-	if ( mydebug > 3 )
-	    g_print("new map lon: %s\n",s);
+	s = gtk_entry_get_text (GTK_ENTRY (lat_entry));
+	coordinate_string2gdouble(s, &mapdl_lat);
+	if (mydebug > 3)
+	    g_print ("new map lat: %s\n",s);
 
-	s = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry));
-	new_dl_scale = strtol (s, NULL, 0);
-	if ( mydebug > 3 )
-	    g_print("new map scale: %d\n",new_dl_scale);
+	s = gtk_entry_get_text (GTK_ENTRY (lon_entry));
+	coordinate_string2gdouble(s, &mapdl_lon);
+	if (mydebug > 3)
+	    g_print ("new map lon: %s\n", s);
+
+	if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (scale_combobox), &t_iter))
+	{
+		gtk_tree_model_get (GTK_TREE_MODEL (scales_list), &t_iter,
+			2, &mapdl_zoom,
+			3, &mapdl_scale, -1);
+		if (mydebug > 3)
+			g_print ("new map scale/zoom level: %d / %d\n",
+				mapdl_scale, mapdl_zoom);
+		local_config.mapsource_scale = gtk_combo_box_get_active (GTK_COMBO_BOX (scale_combobox));
+		current.needtosave = TRUE;
+	}
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * callback to set possible scales for chosen map source
+ */
+static gint
+mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
+{
+	GtkTreeIter t_iter;
+
+	if (gtk_combo_box_get_active_iter (combo_box, &t_iter))
+	{
+		gtk_tree_model_get (GTK_TREE_MODEL (types_list), &t_iter,
+			0, &local_config.mapsource_type, -1);
+		gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (scales_list));
+		gtk_combo_box_set_active (GTK_COMBO_BOX (scale_combobox), local_config.mapsource_scale);
+		current.needtosave = TRUE;
+		if (mydebug > 3)
+			g_print ("new map source: %d\n", local_config.mapsource_type);
+	}
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * build the url for landsat
+ */
+void
+mapdl_geturl_landsat (void)
+{
+	gdouble t_lat1, t_lat2, t_lon1, t_lon2;
+	gdouble deltalat = 0.0005;
+	gdouble deltalon = 0.001;   // Gives ratio 1.2 in meter
+
+	t_lon1 = mapdl_lon-deltalon*mapdl_zoom/2;
+	t_lat1 = mapdl_lat-deltalat*mapdl_zoom/2;
+	t_lon2 = mapdl_lon+deltalon*mapdl_zoom/2;
+	t_lat2 = mapdl_lat+deltalat*mapdl_zoom/2;
+
+	g_snprintf (mapdl_url, sizeof (mapdl_url),
+		"http://onearth.jpl.nasa.gov/wms.cgi?request=GetMap"
+		"&width=1280&height=1024&layers=global_mosaic&styles="
+		"&srs=EPSG:4326&format=image/jpeg&bbox=%.5f,%.5f,%.5f,%.5f",
+		t_lon1, t_lat1, t_lon2, t_lat2);
+}
+
+
+/* *****************************************************************************
+ * build the url for openstreetmap_tah
+ */
+void
+mapdl_geturl_osm_tah (void)
+{
+	g_snprintf (mapdl_url, sizeof (mapdl_url),
+		"http://server.tah.openstreetmap.org/MapOf/?lat=%.5f&long=%.5f"
+		"&z=%d&w=1280&h=1024&format=png",
+		mapdl_lat, mapdl_lon, mapdl_zoom);
+}
+
+
+/* *****************************************************************************
+ * do the actual download work
+ */
+void
+mapdl_download (void)
+{
+	FILE *map_file;
+	struct stat file_stat;
+
+	mapdl_active = TRUE;
+
+	if (g_file_test (mapdl_file_w_path, G_FILE_TEST_IS_REGULAR))
+		if (popup_yes_no (NULL,
+		   _("The map file already exists, overwrite?"))
+		   == GTK_RESPONSE_NO)
+			return;
+
+	map_file = fopen (mapdl_file_w_path, "w");
+	curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
+	curl_easy_setopt (curl_handle, CURLOPT_NOPROGRESS, 0);
+	curl_easy_setopt (curl_handle, CURLOPT_WRITEDATA, map_file);
+
+	set_cursor_style (CURSOR_WATCH);
 	
-	if (datum == 0)
+	if (curl_easy_perform (curl_handle))
+	{
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			_("Aborted."));
+	}
+	else
+	{
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			_("Download complete."));
+	}
+	fclose (map_file);
+
+	/* add new map to map_koords.txt */
+	g_stat (mapdl_file_w_path, &file_stat);
+	if (file_stat.st_size > 0)
+	{
+		loadmapconfig ();
+		maps = g_renew (mapsstruct, maps, (nrmaps + 2));
+		g_strlcpy ((maps + nrmaps)->filename,
+			&mapdl_file_w_path[strlen (local_config.dir_maps)], 200);
+		(maps + nrmaps)->map_dir = add_map_dir (&mapdl_file_w_path[strlen (local_config.dir_maps)]);
+		(maps + nrmaps)->hasbbox = FALSE;
+		(maps + nrmaps)->lat = mapdl_lat;
+		(maps + nrmaps)->lon = mapdl_lon;
+		(maps + nrmaps)->scale = mapdl_scale;
+		nrmaps++;
+		savemapconfig ();
+	}
+	else
+		g_remove (mapdl_file_w_path);
+
+	set_cursor_style (CURSOR_DEFAULT);
+	mapdl_active = FALSE;
+}
+
+
+/* *****************************************************************************
+ * update the progress bar while downloading
+ */
+gint mapdl_progress_cb (gpointer clientp, gdouble dltotal, gdouble dlnow, gdouble ultotal, gdouble ulnow)
+{
+	gchar t_buf[24];
+	if (mapdl_abort)
+		return 1;
+
+	g_snprintf (t_buf, sizeof (t_buf), "Downloaded %d kBytes", (gint) dlnow/1024);
+	/* as the current servers don't send a file size in the header, we
+	 * pulse the progress bar instead of filling it */
+	//gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), dlnow/dltotal);
+	gtk_progress_bar_pulse (GTK_PROGRESS_BAR (mapdl_progress));
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress), t_buf);
+	while (gtk_events_pending ())
+		gtk_main_iteration ();
+
+	return 0;
+}
+
+
+/* *****************************************************************************
+ * start the map download
+ */
+gint mapdl_start_cb (GtkWidget *widget, gpointer data)
+{
+	gchar file_path[512];
+	gchar path[40];
+	gchar type[4];
+
+	if (mapdl_active)
 		return TRUE;
-	if (expedia)
+
+	/* preset filename and build download url */
+	switch (local_config.mapsource_type)
 	{
-		if (expedia_de)
-			g_snprintf (hostname, sizeof (hostname), "%s",
-				    WEBSERVER4);
-		else
-			g_snprintf (hostname, sizeof (hostname), "%s",
-				    WEBSERVER2);
+		case MAPSOURCE_LANDSAT:
+			g_strlcpy (path, "landsat", sizeof (path));
+			g_strlcpy (type, "jpg", sizeof (type));
+			mapdl_geturl_landsat ();
+			break;
+		case MAPSOURCE_OSM_TAH:
+			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
+			g_strlcpy (type, "png", sizeof (type));
+			mapdl_geturl_osm_tah ();
+			break;
+		default:
+			return TRUE;
 	}
 
-	if (!expedia)
-		g_snprintf (hostname, sizeof (hostname), "%s", WEBSERVER);
+	if (mydebug > 20)
+		g_print ("  download url:\n%s\n", mapdl_url);
 
-	if (expedia)
+	/* set file path and create directory if necessary */
+	
+	
+	g_snprintf (file_path, sizeof (file_path), "%s%s/%d/%.0f/%.0f/",
+		local_config.dir_maps, path, mapdl_scale, mapdl_lat, mapdl_lon);
+	if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
-		int scales[11] =
-			{ 1, 3, 6, 12, 25, 50, 150, 800, 2000, 7000, 12000 };
-		int i, found = 5;
-		double di = 999999;
-		f = new_dl_scale;
-		ns = f / EXPEDIAFACT;
-		for (i = 0; i < 11; i++)
-			if (abs (ns - scales[i]) < di)
-			{
-				di = abs (ns - scales[i]);
-				found = i;
-			}
-		ns = scales[found];
-		g_snprintf (sctext, sizeof (sctext), "%d", ns);
-		new_dl_scale =     (int) (ns * EXPEDIAFACT);
-	}
-	if ( mydebug > 0 )
-		printf ("sctext: %s,new map scale: %d\n", sctext, new_dl_scale);
-
-	if (!expedia)
-		g_snprintf (writebuff, sizeof (writebuff),
-			    "GET http://%s/gif?&CT=%s:%s:%s&IC=&W=1280&H=1024&FAM=myblast&LB="
-			    " HTTP/1.0\r\n"
-			    "User-Agent: Wget/1.6\r\n"
-			    "Host: %s\r\n"
-			    "Accept: */*\r\n"
-			    "Connection: Keep-Alive\r\n"
-			    "\r\n",
-			    WEBSERVER, lat, lon, sctext, hostname);
-	if (expedia)
-	{
-		if (new_dl_lon > (-30))
-		    {
-			g_strlcpy (region, "EUR0809", sizeof (region));
-			expedia_de = TRUE;
-		    }	
-		else
-		    {
-			g_strlcpy (region, "USA0409", sizeof (region));
-			expedia_de = FALSE;
-		    }
-		
-
-        {
-            /* localizing might use 48,0000 for floating point, */
-            /* expedia doesn't like this */
-            /* XXX - is there a better way to handle this? */
-            gchar new_dl_lat_str[50];
-            gchar new_dl_lon_str[50];
-
-            g_snprintf(new_dl_lat_str, sizeof(new_dl_lat_str), "%f", new_dl_lat);
-            g_strdelimit(new_dl_lat_str, ",", '.');
-            g_snprintf(new_dl_lon_str, sizeof(new_dl_lon_str), "%f", new_dl_lon);
-            g_strdelimit(new_dl_lon_str, ",", '.');
-
-		if (expedia_de)
-			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?"
-				    "qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s"
-				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
-				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
-				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER4, new_dl_lat_str, new_dl_lon_str, region, sctext,
-				    hostname);
-		else
-			g_snprintf (writebuff, sizeof (writebuff),
-				    "GET http://%s/pub/agent.dll?qscr=mrdt&ID=3XNsF.&CenP=%s,%s&Lang=%s&Alti=%s"
-				    "&Size=1280,1024&Offs=0.000000,0.000000& HTTP/1.1\r\n"
-				    "User-Agent: Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)\r\n"
-				    "Host: %s\r\nAccept: */*\r\nCookie: jscript=1\r\n\r\n",
-				    WEBSERVER2, new_dl_lat_str, new_dl_lon_str, region, sctext,
-				    hostname);
-        }
+		if (g_mkdir_with_parents (file_path, 0700))
+			g_print ("Error creating %s\n",file_path);
+		else if (mydebug > 10)
+			printf("created directory %s\n",file_path);
 	}
 
-	if ( mydebug > 0 )
-		g_print ("Download URL: %s\n", writebuff);
+	/* complete filename */
+	g_snprintf (mapdl_file_w_path, sizeof (mapdl_file_w_path), "%smap_%d_%5.3f_%5.3f.%s",
+		file_path, mapdl_scale, mapdl_lat, mapdl_lon, type);
 
-	if (!expedia)
-		downloadstart_cb (widget, 0);
-	else
-	{
-		char url[2000], url2[2000], hn[200], *p;
+	if (mydebug > 10)
+		g_print ("  filename: %s\n", mapdl_file_w_path);
 
-		p = getexpediaurl (widget);
-		if (p == NULL)
-		{
-			return FALSE;
-		}
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+		_("Loading Map..."));
+	mapdl_abort = FALSE;
+	mapdl_download ();
 
-		g_strlcpy (url, p, sizeof (url));
-		if ( mydebug > 3 )
-			printf ("%s\n", url);
-		p = strstr (url, "Location: ");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http data error, could not find 'Location:' sub string\n");
-			return FALSE;
-		}
-		g_strlcpy (url2, (p + 10), sizeof (url2));
-		p = strstr (url2, "\n");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http data error, could not find new line\n");
-			return FALSE;
-		}
-
-		url2[p - url2] = 0;
-		if ( mydebug > 3 )
-			printf ("**********\n%s\n", url2);
-		g_strlcpy (hn, (url2 + 7), sizeof (hn));
-		p = strstr (hn, "/");
-		if (p == NULL)
-		{
-			if ( mydebug > 0 )
-				printf ("http request error, could not find forward slash\n");
-			return FALSE;
-		}
-
-		hn[p - hn] = 0;
-		g_strlcpy (url, (url2 + strlen (hn) + 7), sizeof (url));
-		url[strlen (url) - 1] = 0;
-		g_strlcpy (actualhostname, hn, sizeof (actualhostname));
-		if ( mydebug > 3 )
-			printf ("hn: %s, url: %s\n", hn, url);
-
-		if (haveproxy == TRUE)
-		{
-			// Format the GET request correctly for the proxy server
-			g_snprintf (url2, sizeof (url2),
-				    "GET http://%s/%s HTTP/1.1\r\n", hn, url);
-		}
-		else
-		{
-			g_snprintf (url2, sizeof (url2),
-				    "GET %s HTTP/1.1\r\n", url);
-		}
-
-		g_strlcat (url2, "Host: ", sizeof (url2));
-		g_strlcat (url2, hn, sizeof (url2));
-		g_strlcat (url2, "\r\n", sizeof (url2));
-		g_strlcat (url2,
-			   "User-Agent: Mozilla/5.0 Galeon/1.2.8 (X11; Linux i686; U;) Gecko/20030317\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,text/css,*/*;q=0.1\r\n",
-			   sizeof (url2));
-		g_strlcat (url2, "Accept-Language: de, en;q=0.50\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept-Encoding: gzip, deflate, compress;q=0.9\r\n",
-			   sizeof (url2));
-		g_strlcat (url2,
-			   "Accept-Charset: ISO-8859-15, utf-8;q=0.66, *;q=0.66\r\n",
-			   sizeof (url2));
-		g_strlcat (url2, "Keep-Alive: 300\r\n", sizeof (url2));
-		g_strlcat (url2, "Connection: keep-alive\r\n\r\n",
-			   sizeof (url2));
-
-		g_strlcpy (writebuff, url2, sizeof (writebuff));
-		if ( mydebug > 3 )
-			printf ("\nurl2:\n%s\n**********\n\n%s\n-----------------\n", url2, writebuff);
-
-		downloadstart_cb (widget, 0);
-
-		/*       exit (1); */
-	}
 	return TRUE;
 }
 
 
 /* *****************************************************************************
+ * set the text, that is shown in the comboboxes
  */
-gint
-download_cb (GtkWidget * widget, guint datum)
+static gboolean
+mapdl_set_combo_filter_cb (GtkTreeModel *model, GtkTreeIter *iter, gpointer scales)
 {
-	GtkWidget *mainbox;
-	GtkWidget *knopf2, *knopf, *knopf_lat, *knopf_lon, *knopf_scale, 
-		*knopf_help_text;
-	GtkWidget *table, *table2, *knopf8;
-	gchar buff[300];
-	GList *list = NULL;
-	gint i;
-	gchar scalewanted_str[100];
+	gint t_type, t_flag;
 
-	for (i = 0; i < slistsize; i++)
-		list = g_list_append (list, slist[i]);
-
-	downloadwindow = gtk_dialog_new ();
-	gtk_window_set_title (GTK_WINDOW (downloadwindow),
-			      _("Select coordinates and scale"));
-	gtk_container_set_border_width (GTK_CONTAINER (downloadwindow), 5);
-	mainbox = gtk_vbox_new (TRUE, 2);
-	knopf = gtk_button_new_with_label (_("Download map"));
-	gtk_signal_connect (GTK_OBJECT (knopf), "clicked",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 1);
-	knopf2 = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
-	gtk_signal_connect_object (GTK_OBJECT (knopf2), "clicked",
-				   GTK_SIGNAL_FUNC
-				   (downloadaway_cb),
-				   GTK_OBJECT (downloadwindow));
-	gtk_signal_connect_object (GTK_OBJECT (downloadwindow),
-				   "delete_event",
-				   GTK_SIGNAL_FUNC (downloadaway_cb),
-				   GTK_OBJECT (downloadwindow));
-	cover = gtk_entry_new ();
-	gtk_editable_set_editable (GTK_EDITABLE (cover), FALSE);
-	gtk_signal_connect (GTK_OBJECT (cover), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->
-			     action_area), knopf, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->
-			     action_area), knopf2, TRUE, TRUE, 2);
-	GTK_WIDGET_SET_FLAGS (knopf, GTK_CAN_DEFAULT);
-	GTK_WIDGET_SET_FLAGS (knopf2, GTK_CAN_DEFAULT);
-	table = gtk_table_new (8, 2, FALSE);
-	gtk_box_pack_start (GTK_BOX
-			    (GTK_DIALOG (downloadwindow)->vbox),
-			    table, TRUE, TRUE, 2);
-	knopf_lat = gtk_label_new (_("Latitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf_lat, 0, 1, 0, 1);
-	knopf_lon = gtk_label_new (_("Longitude"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf_lon, 0, 1, 1, 2);
-	knopf8 = gtk_label_new (_("Map covers"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf8, 0, 1, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (table), cover, 1, 2, 2, 3);
-
-	knopf_scale = gtk_label_new (_("Scale"));
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf_scale, 0, 1, 3, 4);
-	dl_text_lat = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dl_text_lat), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-
-	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lat, 1, 2, 0, 1);
-	coordinate2gchar(buff, sizeof(buff), coords.current_lat, TRUE,
-		local_config.coordmode);
-	gtk_entry_set_text (GTK_ENTRY (dl_text_lat), buff);
-	dl_text_lon = gtk_entry_new ();
-	gtk_signal_connect (GTK_OBJECT (dl_text_lon), "changed",
-			    GTK_SIGNAL_FUNC (downloadsetparm), (gpointer) 0);
-	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_lon, 1, 2, 1, 2);
-	coordinate2gchar(buff, sizeof(buff), coords.current_lon, FALSE,
-		local_config.coordmode);
-	gtk_entry_set_text (GTK_ENTRY (dl_text_lon), buff);
-	dl_text_scale = gtk_combo_new ();
-	gtk_table_attach_defaults (GTK_TABLE (table), dl_text_scale, 1, 2, 3, 4);
-	gtk_combo_set_popdown_strings (GTK_COMBO (dl_text_scale), (GList *) list);
-	g_snprintf (scalewanted_str, sizeof (scalewanted_str), "%d",
-		    local_config.scale_wanted);
-	gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry),
-			    scalewanted_str);
-	gtk_signal_connect (GTK_OBJECT (GTK_COMBO (dl_text_scale)->entry),
-			    "changed", GTK_SIGNAL_FUNC (downloadsetparm),
-			    (gpointer) 0);
-
-	table2 = gtk_table_new (2, 1, FALSE);	//nested table w/ three columns
-	gtk_table_attach_defaults (GTK_TABLE (table), table2, 0, 3, 5, 6);
-	gtk_widget_show (table2);
-
-	if (!haveproxy)
-		g_snprintf (buff, sizeof (buff), "%s",
-			    _("You can also select the position\n"
-			      "with a mouse click on the map."));
+	if (scales)
+	{
+		gtk_tree_model_get (model, iter,
+			0, &t_type,
+			2, &t_flag, -1);
+		if (t_flag != -1  && t_type == local_config.mapsource_type)
+			return TRUE;
+	}
 	else
-		g_snprintf (buff, sizeof (buff), "%s\n\n%s    %s %d",
-			    _("You can also select the position\n"
-			      "with a mouse click on the map."),
-			    _("Using Proxy and port:"), proxy, proxyport);
-	knopf_help_text = gtk_label_new (buff);
-	gtk_table_attach_defaults (GTK_TABLE (table), knopf_help_text, 0, 2, 6, 7);
+	{
+		gtk_tree_model_get (model, iter,
+			2, &t_flag, -1);
+		if (t_flag == -1)
+			return TRUE;
+	}
 
-	myprogress = gtk_progress_bar_new ();
-	gtk_progress_set_format_string (GTK_PROGRESS (myprogress), "%p%%");
-	gtk_progress_set_show_text (GTK_PROGRESS (myprogress), TRUE);
-	gtk_progress_bar_update (GTK_PROGRESS_BAR (myprogress), 0.0);
-	gtk_table_attach_defaults (GTK_TABLE (table), myprogress, 0, 2, 7, 8);
-	gtk_label_set_justify (GTK_LABEL (knopf_lat), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf_lon), GTK_JUSTIFY_RIGHT);
-	gtk_label_set_justify (GTK_LABEL (knopf_scale), GTK_JUSTIFY_RIGHT);
-
-	gtk_window_set_default (GTK_WINDOW (downloadwindow), knopf);
-
-	gtk_window_set_position (GTK_WINDOW (downloadwindow),
-				 GTK_WIN_POS_CENTER);
-	gtk_widget_show_all (downloadwindow);
-	gui_status.dl_window = TRUE;
-	downloadsetparm (NULL, 0);
-
-	/*    cursor = gdk_cursor_new (GDK_CROSS); */
-	/*    gdk_window_set_cursor (map_drawingarea->window, cursor); */
-	return TRUE;
-}
-
-/* *****************************************************************************
- * cancel button pressed or widget destroy in download_cb 
- */
-gint
-downloadaway_cb (GtkWidget * widget, guint datum)
-{
-	gui_status.dl_window = downloadactive = FALSE;
-	gtk_widget_destroy (widget);
-	expose_mini_cb (NULL, 0);
-
-	/*    gdk_window_set_cursor (map_drawingarea->window, 0); */
-	/*    gdk_cursor_destroy (cursor); */
 	return FALSE;
 }
 
 
 /* *****************************************************************************
+ * close map download window
  */
 gint
-dlscale_cb (GtkWidget * widget, guint datum)
+mapdl_close_cb (GtkWidget *widget, gpointer data)
 {
-	G_CONST_RETURN gchar *sc;
-	gchar t[100], t2[10];
-	gdouble f;
-	/* PORTING */
-	sc = gtk_entry_get_text (GTK_ENTRY (GTK_COMBO (dl_text_scale)->entry));
+	if (mapdl_active)
+	{
+		mapdl_abort = TRUE;
+		return TRUE;
+	}
 
-	f = g_strtod (sc, NULL);
+	gui_status.dl_window = mapdl_active = FALSE;
+	gtk_widget_destroy (widget);
+	expose_mini_cb (NULL, 0);
+	set_cursor_style (CURSOR_DEFAULT);
 
-	g_strlcpy (t2, "km", sizeof (t2));
-
-	if (local_config.distmode == DIST_MILES)
-		g_strlcpy (t2, "mi", sizeof (t2));
-	else if (local_config.distmode == DIST_NAUTIC)
-		g_strlcpy (t2, "nmi", sizeof (t2));
-
-	g_snprintf (t, sizeof (t), "%.3f x %.3f %s",
-		    milesconv * 1.280 * f / PIXELFACT,
-		    milesconv * 1.024 * f / PIXELFACT, t2);
-	gtk_entry_set_text (GTK_ENTRY (cover), t);
 	return TRUE;
 }
 
+
 /* *****************************************************************************
- * Get http_proxy  Variable from envirenment
+ * create map download dialog
  */
-void get_proxy_from_env()
-{ // Set http_proxy
-    gint i;
-    gchar s1[100], s2[100];
-    const gchar *http_proxy;
-    gchar *p;
-    http_proxy = g_getenv ("HTTP_PROXY");
-    if (http_proxy == NULL)
-	http_proxy = g_getenv ("http_proxy");
+gint
+map_download_cb (GtkWidget *widget, gpointer data)
+{
+	GtkWidget *mapdl_dialog, *mapdl_box, *mapdl_table;
+	GtkWidget *dl_bt, *close_bt;
+	GtkWidget *lat_lb, *lon_lb, *source_lb;
+	GtkWidget *help_lb, *scale_lb;
+	GtkWidget *cover_lb, *cover_entry;
+	GtkWidget *source_combobox;
+	GtkListStore *source_list;
+	GtkCellRenderer *renderer_source, *renderer_scale;
+	GtkTreeIter t_iter;
 
-    if (http_proxy)
+	gchar t_buf[300];
+	gint i;
+
+	curl_handle = curl_easy_init();
+	curl_easy_setopt (curl_handle, CURLOPT_PROGRESSFUNCTION, mapdl_progress_cb);
+
+	set_cursor_style (CURSOR_CROSS);
+
+	source_list = gtk_list_store_new (4,
+		G_TYPE_INT,		/* type */
+		G_TYPE_STRING,		/* scale */
+		G_TYPE_INT,		/* zoom */
+		G_TYPE_INT		/* scale_int */
+		);
+
+	for (i = 0; mapsource[i].type != MAPSOURCE_N_ITEMS; i++)
 	{
-	    p = (char *) http_proxy;
-	    g_strdelimit (p, ":/", ' ');
-
-	    i = sscanf (p, "%s %s %d", s1, s2, &proxyport);
-	    if (i == 3)
-		{
-		    haveproxy = TRUE;
-		    g_strlcpy (proxy, s2, sizeof (proxy));
-		    if ( mydebug > 0 )
-			g_print (_("Using proxy: %s on port %d\n"),
-				 proxy, proxyport);
-		}
-	    else
-		{
-		    g_print (_
-			     ("\nInvalid enviroment variable HTTP_PROXY, "
-			      "must be in format: http://proxy.provider.de:3128"));
-		}
+		gtk_list_store_append (source_list, &t_iter);
+		gtk_list_store_set (source_list, &t_iter,
+			0, mapsource[i].type,
+			1, mapsource[i].scale,
+			2, mapsource[i].zoom,
+			3, mapsource[i].scale_int,
+			-1);
 	}
+	types_list = gtk_tree_model_filter_new (GTK_TREE_MODEL (source_list), NULL);
+	gtk_tree_model_filter_set_visible_func (GTK_TREE_MODEL_FILTER (types_list),
+		mapdl_set_combo_filter_cb, (gpointer) 0, NULL);
+	scales_list = gtk_tree_model_filter_new (GTK_TREE_MODEL (source_list), NULL);
+	gtk_tree_model_filter_set_visible_func (GTK_TREE_MODEL_FILTER (scales_list),
+		mapdl_set_combo_filter_cb, (gpointer) 1, NULL);
+
+	mapdl_dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (mapdl_dialog), _("Select coordinates and scale"));
+	gtk_container_set_border_width (GTK_CONTAINER (mapdl_dialog), 5);
+	gtk_window_set_position (GTK_WINDOW (mapdl_dialog), GTK_WIN_POS_CENTER);
+	mapdl_box = gtk_vbox_new (TRUE, 2);
+
+	dl_bt = gtk_button_new_with_label (_("Download map"));
+	GTK_WIDGET_SET_FLAGS (dl_bt, GTK_CAN_DEFAULT);
+	gtk_window_set_default (GTK_WINDOW (mapdl_dialog), dl_bt);
+	g_signal_connect (dl_bt, "clicked", G_CALLBACK (mapdl_start_cb), 0);
+
+	close_bt = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
+	g_signal_connect_swapped (close_bt, "clicked", G_CALLBACK (mapdl_close_cb), mapdl_dialog);
+	g_signal_connect_swapped (mapdl_dialog, "delete_event", G_CALLBACK (mapdl_close_cb), mapdl_dialog);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (mapdl_dialog)->action_area), dl_bt, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (mapdl_dialog)->action_area), close_bt, TRUE, TRUE, 2);
+
+	source_lb = gtk_label_new (_("Map Source"));
+	source_combobox = gtk_combo_box_new_with_model (GTK_TREE_MODEL (types_list));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (source_combobox), local_config.mapsource_type);
+	g_signal_connect (source_combobox, "changed", G_CALLBACK (mapdl_setsource_cb), NULL);
+	renderer_source = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (source_combobox), renderer_source, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (source_combobox),
+		renderer_source, "text", 1, NULL);
+
+	cover_lb = gtk_label_new (_("Map covers"));
+	cover_entry = gtk_entry_new ();
+	gtk_editable_set_editable (GTK_EDITABLE (cover_entry), FALSE);
+	g_signal_connect (cover_entry, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
+
+	lat_lb = gtk_label_new (_("Latitude"));
+	lat_entry = gtk_entry_new ();
+	coordinate2gchar(t_buf, sizeof(t_buf), coords.current_lat, TRUE, local_config.coordmode);
+	gtk_entry_set_text (GTK_ENTRY (lat_entry), t_buf);
+	g_signal_connect (lat_entry, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
+
+	lon_lb = gtk_label_new (_("Longitude"));
+	lon_entry = gtk_entry_new ();
+	coordinate2gchar(t_buf, sizeof(t_buf), coords.current_lon, FALSE, local_config.coordmode);
+	gtk_entry_set_text (GTK_ENTRY (lon_entry), t_buf);
+	g_signal_connect (lon_entry, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
+
+	scale_combobox = gtk_combo_box_new_with_model (GTK_TREE_MODEL (scales_list));
+	g_signal_connect (scale_combobox, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
+	renderer_scale = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (scale_combobox), renderer_scale, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (scale_combobox),
+		renderer_scale, "text", 1, NULL);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (scale_combobox), 0);
+
+	g_snprintf (t_buf, sizeof (t_buf), "%s",
+		_("You can also select the position\nwith a mouse click on the map."));
+	help_lb = gtk_label_new (t_buf);
+	scale_lb = gtk_label_new (_("Scale"));
+
+	mapdl_progress = gtk_progress_bar_new ();
+	gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+	gtk_progress_bar_set_pulse_step (GTK_PROGRESS_BAR (mapdl_progress), 0.01);
+
+	mapdl_table = gtk_table_new (7, 2, FALSE);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), source_lb, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), source_combobox, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lat_lb, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lat_entry, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lon_lb, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lon_entry, 1, 2, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_lb, 0, 1, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_entry, 1, 2, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), scale_lb, 0, 1, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), scale_combobox, 1, 2, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), help_lb, 0, 2, 5, 6);
+	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), mapdl_progress, 0, 2, 6, 7);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (mapdl_dialog)->vbox), mapdl_table, TRUE, TRUE, 2);
+
+	gtk_widget_show_all (mapdl_dialog);
+	gui_status.dl_window = TRUE;
+	mapdl_setparm_cb (NULL, 0);
+
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * init curl for map download
+ */
+gint
+mapdl_init (void)
+{
+	if (curl_global_init (CURL_GLOBAL_ALL))
+	{
+		g_print (_("Initialization of CURL for map download failed!\n"));
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * cleanup curl for map download
+ */
+gint
+mapdl_cleanup (void)
+{
+	curl_global_cleanup ();
+	return TRUE;
 }
