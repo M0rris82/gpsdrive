@@ -40,13 +40,13 @@ separating map_import from gpsdrive.c
 */
 
 
-#ifndef GPSDRIVE_DOWNLOAD_MAP_H
-#define GPSDRIVE_DOWNLOAD_MAP_H
+#ifndef GPSDRIVE_MAP_DOWNLOAD_H
+#define GPSDRIVE_MAP_DOWNLOAD_H
 
 #include <gtk/gtk.h>
 
 /*
- * See download_map.c for details.
+ * See map_download.c for details.
  */
 
 gint downloadstart_cb (GtkWidget * widget, guint datum);
@@ -57,4 +57,4 @@ gint download_cb (GtkWidget * widget, guint datum);
 void get_proxy_from_env();
 
 
-#endif /* GPSDRIVE_DOWNLOAD_MAP_H */
+#endif /* GPSDRIVE_MAP_DOWNLOAD_H */

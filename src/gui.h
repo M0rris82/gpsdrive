@@ -29,6 +29,10 @@ Disclaimer: Please do not use for navigation.
 
 #ifndef GPSDRIVE_GUI_H
 #define GPSDRIVE_GUI_H
+
+#include "gpsdrive.h"
+
+
 #define MAPWIDTH 1280
 #define MAPHEIGHT 1024
 #define MAP_X_2 (gui_status.mapview_x / 2)

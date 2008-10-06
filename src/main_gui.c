@@ -57,7 +57,6 @@ Disclaimer: Please do not use for navigation.
 #include "battery.h"
 #include "map_handler.h"
 #include "import_map.h"
-#include "download_map.h"
 #include "map_download.h"
 #include "main_gui.h"
 #include "poi.h"

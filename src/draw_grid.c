@@ -42,7 +42,7 @@ Disclaimer: Please do not use for navigation.
 #include <unistd.h>
 #include "routes.h"
 #include "import_map.h"
-#include "download_map.h"
+#include "map_download.h"
 #include "gui.h"
 #include "main_gui.h"
 

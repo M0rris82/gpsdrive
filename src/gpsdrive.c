@@ -103,7 +103,7 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include <speech_out.h>
 
 #include "import_map.h"
-#include "download_map.h"
+#include "map_download.h"
 #include "icons.h"
 #include "gui.h"
 #include "poi_gui.h"

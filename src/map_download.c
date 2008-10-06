@@ -25,7 +25,7 @@
 
 #include "gettext.h"
 #include "os_specific.h"
-
+#include "gui.h"
 
 
 /*  Defines for gettext I18n */
