@@ -25,7 +25,7 @@ Disclaimer: Please do not use for navigation.
 
 
 #ifndef GPSDRIVE_MAP_DOWNLOAD_H
-#define GPSDRIVE_MAP_DOWNLOAD_MAP_H
+#define GPSDRIVE_MAP_DOWNLOAD_H
 
 #include <gtk/gtk.h>
 
