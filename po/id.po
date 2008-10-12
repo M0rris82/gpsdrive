@@ -9,102 +9,100 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gpsdrive 2.10pre5\n"
-"Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-10-26 00:14+0200\n"
-"PO-Revision-Date: 2008-07-06 15:00+0700\n"
+"Project-Id-Version: gpsdrive 2.10pre6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-06 16:33+0200\n"
+"PO-Revision-Date: 2008-09-09 07:48+0700\n"
 "Last-Translator: Arif E. Nugroho <arif_endro@yahoo.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/battery.c:806
+#: src/battery.c:797
 msgid "Bat."
 msgstr "Bat."
 
-#: src/battery.c:841
+#: src/battery.c:831
 msgid "TC"
 msgstr "TC"
 
-#: src/download_map.c:166 src/download_map.c:304
+#: src/download_map.c:165 src/download_map.c:302
 msgid "can't open socket for port 80"
 msgstr "tidak dapat membuka socket untuk port 80"
 
-#: src/download_map.c:169 src/download_map.c:173 src/download_map.c:202
-#: src/download_map.c:206 src/download_map.c:223 src/download_map.c:227
-#: src/download_map.c:307 src/download_map.c:312 src/download_map.c:316
-#: src/download_map.c:353 src/download_map.c:358 src/download_map.c:362
-#: src/download_map.c:380 src/download_map.c:385 src/download_map.c:389
+#: src/download_map.c:168 src/download_map.c:172 src/download_map.c:200
+#: src/download_map.c:204 src/download_map.c:221 src/download_map.c:225
+#: src/download_map.c:305 src/download_map.c:310 src/download_map.c:314
+#: src/download_map.c:351 src/download_map.c:356 src/download_map.c:360
+#: src/download_map.c:378 src/download_map.c:383 src/download_map.c:387
 #, c-format
 msgid "Connecting to %s FAILED!"
 msgstr "Koneksi ke %s GAGAL!"
 
-#: src/download_map.c:199 src/download_map.c:350
+#: src/download_map.c:197 src/download_map.c:348
 msgid "Can't resolve webserver address"
 msgstr "Tidak dapat menemukan alamat webserver"
 
-#: src/download_map.c:220 src/download_map.c:377
+#: src/download_map.c:218 src/download_map.c:375
 msgid "unable to connect to Website"
 msgstr "Tidak dapat menghubungi Website"
 
-#: src/download_map.c:254 src/download_map.c:448
+#: src/download_map.c:252 src/download_map.c:446
 msgid "read from Webserver"
 msgstr "membaca dari Webserver"
 
-#: src/download_map.c:285 src/download_map.c:290 src/download_map.c:293
+#: src/download_map.c:283 src/download_map.c:288 src/download_map.c:291
 #, c-format
 msgid "Connecting to %s"
 msgstr "Menghubungi %s"
 
-#: src/download_map.c:405 src/download_map.c:411 src/download_map.c:414
+#: src/download_map.c:403 src/download_map.c:409 src/download_map.c:412
 #, c-format
 msgid "Now connected to %s"
 msgstr "Sekarang terhubung ke %s"
 
-#: src/download_map.c:496
+#: src/download_map.c:494
 #, c-format
 msgid "Downloaded %d kBytes"
 msgstr "Mengambil %d kBytes"
 
-#: src/download_map.c:512
+#: src/download_map.c:510
 msgid "Download FAILED!"
 msgstr "Download GAGAL!"
 
-#: src/download_map.c:515
+#: src/download_map.c:513
 #, c-format
 msgid "Download finished, got %dkB"
 msgstr "Download selesai, memperoleh %dkB"
 
-#: src/download_map.c:823
+#: src/download_map.c:836
 msgid "Select coordinates and scale"
 msgstr "Pilih kordinat dan skala"
 
-#: src/download_map.c:826
+#: src/download_map.c:839
 msgid "Download map"
 msgstr "Ambil peta"
 
-#: src/download_map.c:854 src/gpsdrive.c:2419 src/gpsdrive.c:2503
-#: src/import_map.c:383 src/main_gui.c:1869 src/poi_gui.c:577 src/routes.c:421
-#: src/waypoint.c:744
+#: src/download_map.c:867 src/gpsdrive.c:1978 src/import_map.c:388
+#: src/main_gui.c:2404 src/poi_gui.c:650 src/routes.c:278 src/waypoint.c:500
 msgid "Latitude"
 msgstr "Latitude"
 
-#: src/download_map.c:856 src/gpsdrive.c:2419 src/gpsdrive.c:2503
-#: src/import_map.c:385 src/main_gui.c:1882 src/poi_gui.c:570 src/routes.c:421
-#: src/waypoint.c:758
+#: src/download_map.c:869 src/gpsdrive.c:1983 src/import_map.c:390
+#: src/main_gui.c:2417 src/poi_gui.c:643 src/routes.c:278 src/waypoint.c:514
 msgid "Longitude"
 msgstr "Longitude"
 
-#: src/download_map.c:858
+#: src/download_map.c:871
 msgid "Map covers"
 msgstr "Muka peta"
 
-#: src/download_map.c:862 src/import_map.c:395
+#: src/download_map.c:875 src/import_map.c:400
 msgid "Scale"
 msgstr "Skala"
 
-#: src/download_map.c:896 src/download_map.c:900
+#: src/download_map.c:909 src/download_map.c:913
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
@@ -112,16 +110,16 @@ msgstr ""
 "Kamu juga dapat menentukan posisi\n"
 "dengan sekali klik di peta."
 
-#: src/download_map.c:902
+#: src/download_map.c:915
 msgid "Using Proxy and port:"
 msgstr "Menggunakan proxy dan port:"
 
-#: src/download_map.c:995
+#: src/download_map.c:1008
 #, c-format
 msgid "Using proxy: %s on port %d\n"
 msgstr "Menggunakan proxy: %s dengan port %d\n"
 
-#: src/download_map.c:1001
+#: src/download_map.c:1014
 msgid ""
 "\n"
 "Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
@@ -129,28 +127,16 @@ msgstr ""
 "\n"
 "Variabel lingkungan HTTP_PROXY tidak benar, harus dalam format: http://proxy.provider.id:8080"
 
-#: src/friends.c:446
+#: src/friends.c:455
 msgid "unknown"
 msgstr "tidak diketahui"
 
-#: src/friends.c:644 src/main_gui.c:589 src/main_gui.c:620 src/main_gui.c:654
-msgid "mi/h"
-msgstr "mi/jam"
-
-#: src/friends.c:646 src/main_gui.c:593 src/main_gui.c:624 src/main_gui.c:658
-msgid "knots"
-msgstr "knots"
-
-#: src/friends.c:648 src/main_gui.c:597 src/main_gui.c:628 src/main_gui.c:662
-msgid "km/h"
-msgstr "km/jam"
-
-#: src/friendsd.c:550
+#: src/friendsd.c:532
 #, c-format
 msgid "server: please don't run me as root\n"
 msgstr "server: tolong jangan menjalankan aku sebagai root\n"
 
-#: src/friendsd.c:562
+#: src/friendsd.c:544
 #, c-format
 msgid ""
 "\n"
@@ -163,241 +149,322 @@ msgstr ""
 "  %s -n namaserver\n"
 "menyediakan sebuah nama untuk server anda\n"
 
-#: src/gpsdrive.c:788
-msgid "Warning!"
-msgstr "Peringatan!"
+#: src/gps_handler.c:194
+#, c-format
+msgid "unable to add match for signals %s: %s"
+msgstr "tidak dapat menambahkan match untuk sinyal %s: %s"
 
-#: src/gpsdrive.c:790
-msgid "You should not start GpsDrive as user root!!!"
-msgstr "Anda seharusnya tidak menjalan GpsDrive dengan account root!!!"
+#: src/gps_handler.c:199
+msgid "unable to register filter with the connection"
+msgstr "tidak dapat menyimpan filter dengan koneksi"
 
-#: src/gpsdrive.c:1196
+#: src/gps_handler.c:204
+msgid "DBUS Mode"
+msgstr "DBUS Mode"
+
+#: src/gps_handler.c:236 src/gpskismet.c:277
+msgid "can't open socket for port "
+msgstr "tidak dapat membuka socket untuk port "
+
+#: src/gps_handler.c:257
 #, c-format
 msgid ""
 "\n"
-"Warning: unable to load gpsdriveanim.gif!\n"
-"Please install the program as root with:\n"
-"make install\n"
-"\n"
+"Cannot connect to %s: unknown host\n"
 msgstr ""
 "\n"
-"Peringatan: tidak dapat menampilkan gpsdriveanim.gif!\n"
-"Tolong install aplikasi sebagai root dengan:\n"
-"make install\n"
-"\n"
+"Tidak dapat menghubungi %s: alamat tidak ditemukan\n"
 
-#: src/gpsdrive.c:1803
+#: src/gps_handler.c:281
+msgid "NMEA Mode, Port 2222"
+msgstr "NMEA Mode, Port 2222"
+
+#: src/gps_handler.c:289
+msgid "NMEA Mode, Port 2947"
+msgstr "NMEA Mode, Port 2947"
+
+#: src/gps_handler.c:556
+msgid "Timeout getting data from GPS-Receiver!"
+msgstr "Timeout mengambil dari dari GPS-Receiver!"
+
+#: src/gps_handler.c:610 src/gps_handler.c:639 src/gps_handler.c:706
+#: src/gps_handler.c:829
+msgid "Press middle mouse button for navigation"
+msgstr "Tekan tombol mouse tengah untuk navigasi"
+
+#: src/gps_handler.c:619
+msgid "No GPS used"
+msgstr "Tidak ada GPS yang digunakan"
+
+#: src/gps_handler.c:621 src/nmea_handler.c:289 src/settings.c:891
+msgid "Simulation mode"
+msgstr "Mode simulasi"
+
+#: src/gps_handler.c:623
+msgid "Press middle mouse button for sim mode"
+msgstr "Tekan tombol tengah mouse untuk mode simulasi"
+
+#: src/gps_handler.c:643 src/gps_handler.c:712 src/gps_handler.c:835
+msgid "Not enough satellites in view!"
+msgstr "Tidak cukup satelit yang terlihat!"
+
+#: src/gpsdrive.c:729
+msgid "Warning!"
+msgstr "Peringatan!"
+
+#: src/gpsdrive.c:731
+msgid "You should not start GpsDrive as user root!!!"
+msgstr "Anda seharusnya tidak menjalan GpsDrive dengan account root!!!"
+
+#: src/gpsdrive.c:1218
+msgid "--- street name not available ---"
+msgstr "--- nama jalan tidak tersedia ---"
+
+#: src/gpsdrive.c:1356
 msgid "N"
 msgstr "U"
 
-#: src/gpsdrive.c:1810
+#: src/gpsdrive.c:1363
 msgid "S"
 msgstr "S"
 
-#: src/gpsdrive.c:1816
+#: src/gpsdrive.c:1369
 msgid "W"
 msgstr "B"
 
-#: src/gpsdrive.c:1822
+#: src/gpsdrive.c:1375
 msgid "E"
 msgstr "T"
 
-#: src/gpsdrive.c:1897
+#: src/gpsdrive.c:1450
 msgid "No map available for this position!"
 msgstr "Map tidak tersedia untuk posisi ini!"
 
-#: src/gpsdrive.c:2262
+#: src/gpsdrive.c:1526
+msgid ""
+"\n"
+"Loop detected, please report!\n"
+msgstr ""
+"\n"
+"Loop terdeteksi, tolong laporkan!\n"
+
+#: src/gpsdrive.c:1778
 msgid "Sending message to friends server..."
 msgstr "Mengirim pesan ke server tetangga..."
 
-#: src/gpsdrive.c:2340
+#: src/gpsdrive.c:1856
 msgid "Message for:"
 msgstr "Pesan untuk:"
 
-#: src/gpsdrive.c:2376
+#: src/gpsdrive.c:1892
 #, c-format
 msgid "Date: %s"
 msgstr "Tanggal: %s"
 
-#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/poi_gui.c:508 src/poi_gui.c:933
-#: src/poi_gui.c:1225 src/settings.c:1985
-msgid "Name"
-msgstr "Nama"
-
-#: src/gpsdrive.c:2419 src/gpsdrive.c:2503 src/main_gui.c:496
-#: src/poi_gui.c:944 src/poi_gui.c:1232 src/routes.c:421 src/settings.c:735
-#: src/settings.c:1391
-msgid "Distance"
-msgstr "Jarak"
-
-#: src/gpsdrive.c:2430
+#: src/gpsdrive.c:1940
 msgid "Please select message recipient"
 msgstr "Tolong pilih pesan penerima"
 
-#: src/gpsdrive.c:2503 src/poi_gui.c:590 src/poi_gui.c:953
-msgid "Type"
-msgstr "Tipe"
+#: src/gpsdrive.c:1965 src/poi_gui.c:581 src/poi_gui.c:980 src/poi_gui.c:1292
+#: src/settings.c:2151
+msgid "Name"
+msgstr "Nama"
 
-#: src/gpsdrive.c:2532
-msgid "Select reference point"
-msgstr "Pilih titik referensi"
+#: src/gpsdrive.c:1972 src/main_gui.c:589 src/poi_gui.c:991 src/poi_gui.c:1299
+#: src/routes.c:278 src/settings.c:1217 src/settings.c:2310
+msgid "Distance"
+msgstr "Jarak"
 
-#: src/gpsdrive.c:2536
-msgid "Please select your destination"
-msgstr "Tolong tentukan tujuan anda"
-
-#: src/gpsdrive.c:2568
-msgid "Edit route"
-msgstr "Ubah rute"
-
-#: src/gpsdrive.c:2571
-msgid "Create route"
-msgstr "Buat rute"
-
-#: src/gpsdrive.c:2669
-msgid "Create a route using some waypoints from this list"
-msgstr "Buat sebuah rute dengan menggunakan waypoint dari daftar"
-
-#: src/gpsdrive.c:2674
-msgid "Delete the selected waypoint from the waypoint list"
-msgstr "Hapus waypoint yang dipilih dari daftar waypoint"
-
-#: src/gpsdrive.c:2678
-msgid "Jump to the selected waypoint"
-msgstr "Lompat ke waypoint yang dipilih"
-
-#: src/gpsdrive.c:2701
-msgid "-v        show version\n"
-msgstr "-v        tampilkan versi\n"
-
-#: src/gpsdrive.c:2702
-msgid "-h        print this help\n"
-msgstr "-h        tampilkan bantuan ini\n"
-
-#: src/gpsdrive.c:2703
-msgid "-d        turn on debug info\n"
-msgstr "-d        nyalakan informasi debug\n"
-
-#: src/gpsdrive.c:2704
-msgid "-D X      set debugging level to X\n"
-msgstr "-D X      aktifkan tingkat debug ke X\n"
-
-#: src/gpsdrive.c:2705
-msgid "-T        do some internal unit tests (don't start gpsdrive)\n"
-msgstr "-T        lakukan test internal (jangan menjalankan gpsdrive)\n"
-
-#: src/gpsdrive.c:2706
-msgid "-e        use Festival-Lite (flite) for speech output\n"
-msgstr "-e        gunakan Festival-Lite (flite) untuk keluaran suara\n"
-
-#: src/gpsdrive.c:2707
-msgid "-o thing  serial device, pty master, or file to use for NMEA output\n"
-msgstr "-o sesuatu perangkat serial, pty master, atau berkas yang digunakan untuk keluaran NMEA\n"
-
-#: src/gpsdrive.c:2708
-msgid "-f server select friends server, e.g. friendsd.gpsdrive.de\n"
-msgstr "-f server pilih server teman, contoh: vectra.web.id\n"
-
-#: src/gpsdrive.c:2710
-msgid "-X        use DBUS for communication with gpsd; this disables socket communication\n"
-msgstr "-X        gunakan DBUS untuk komunikasi dengan gpsd; ini mematikan komunikasi socket\n"
-
-#: src/gpsdrive.c:2712
-msgid ""
-"-l lang.  select language of the voice output;\n"
-"          language may be 'english', 'spanish', or 'german'\n"
-msgstr ""
-"-l bahasa pilih bahasa untuk keluaran suara:\n"
-"          bahasa dapat 'inggris', 'spanyol', atau 'german'\n"
-
-#: src/gpsdrive.c:2714
-msgid "-g geom.  set window geometry, e.g. 800x600\n"
-msgstr "-g geom.  tentukan geometri jendela, contoh: 800x600\n"
-
-#: src/gpsdrive.c:2715
-msgid "-1        have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1        hanya memiliki mouse 1 tombol, contoh menggunakan touchscreen\n"
-
-#: src/gpsdrive.c:2716
-msgid "-a        display APM stuff (battery status, temperature)\n"
-msgstr "-a        tampilkan APM (status batere, suhu)\n"
-
-#: src/gpsdrive.c:2717
-msgid "-b server servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b server namaserver untuk NMEA server (jika gpsd dijalankan di host lain)\n"
-
-#: src/gpsdrive.c:2718
-msgid "-c WP     set start position in simulation mode to this waypoint (WP)\n"
-msgstr "-c WP     set posisi awal dalam mode simulasi di waypoint ini (WP)\n"
-
-#: src/gpsdrive.c:2719
-msgid "-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"
-msgstr "-M mode   set mode GUI; konfigurasi mungkin 'desktop' (default), 'pda' atau 'car'\n"
-
-#: src/gpsdrive.c:2720
-msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
-msgstr "-i        hiraukan NMEA checksum (beresiko, hanya untuk penerima GPS rusak)\n"
-
-#: src/gpsdrive.c:2721
-msgid "-q        disable SQL support\n"
-msgstr "-q        disable SQL support\n"
-
-#: src/gpsdrive.c:2722
-msgid "-F        force display of position even it is invalid\n"
-msgstr "-F        paksa tampilan dari posisi bahkan jika itu tidak valid\n"
-
-#: src/gpsdrive.c:2723
-msgid "-s        don't show splash screen\n"
-msgstr "-s        jangan perlihatkan splash screen\n"
-
-#: src/gpsdrive.c:2724
-msgid "-S path   take auto screenshots of different window (don't touch gpsdrive!)\n"
-msgstr "-S path   ambil auto screenshots dari jendela lain (jangan sentuh gpsdrive!)\n"
-
-#: src/gpsdrive.c:2725
-msgid "-P        start in Position Mode\n"
-msgstr "-P        mulai dalam Mode Posisi\n"
-
-#: src/gpsdrive.c:2726
-msgid "-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"
-msgstr "-W X      pindah ke WASS/EGNOS di (X=1), atau mati (X=0)\n"
-
-#: src/gpsdrive.c:2727
-msgid "-H ALT    correct the altitude by adding this value (ALT) to it\n"
-msgstr "-H ALT    perbaiki altitude dengan menambahkan nilai (ALT) ini\n"
-
-#: src/gpsdrive.c:2728
-msgid "-C file   use this config file\n"
-msgstr "-C file   gunakan file konfigurasi ini\n"
-
-#: src/gpsdrive.c:2743
-msgid "Select a track file"
-msgstr "Pilih sebuah file jejak"
-
-#: src/gpsdrive.c:2901
+#: src/gpsdrive.c:2026
 msgid ""
 "\n"
-"You can currently only choose between english, spanish and german\n"
-"\n"
+"Got SIGUSR2; restarting GPS connection.\n"
 msgstr ""
 "\n"
-"Anda saat ini hanya dapat memilih antara inggris, spanyol dan german\n"
-"\n"
+"Memperoleh SIGUSR2; merestart koneksi GPS.\n"
 
-#: src/gpsdrive.c:3253
+#: src/gpsdrive.c:2074
+#, c-format
+msgid "GUI mode '%s' not supported"
+msgstr "Mode GUI '%s' tidak didukung"
+
+#: src/gpsdrive.c:2092
+#, c-format
+msgid "config file '%s' not found"
+msgstr "berkas konfigurasi '%s' tidak ditemukan"
+
+#: src/gpsdrive.c:2108
+#, c-format
+msgid "screenshot directory '%s' not found"
+msgstr "direktori screenshot '%s' tidak ditemukan"
+
+#: src/gpsdrive.c:2133
+msgid "Navigation System"
+msgstr "Sistem Navigasi"
+
+#: src/gpsdrive.c:2134
+msgid "Website: http://www.gpsdrive.de"
+msgstr "Situs: http://www.gpsdrive.de"
+
+#: src/gpsdrive.c:2139
+msgid "don't show GUI; for use in external GTK apps"
+msgstr "jangan perlihatkan GUI; untuk digunakan dalam aplikasi eksternal GTK"
+
+#: src/gpsdrive.c:2141
+msgid "force display of position even it is invalid"
+msgstr "paksa menampilkan posisi bahkan jika itu tidak valid"
+
+#: src/gpsdrive.c:2143
+msgid "ignore NMEA checksum (risky, only for broken GPS receivers)"
+msgstr "abaikan NMEA checksum (beresiko, hanya untuk penerima GPS rusak)"
+
+#: src/gpsdrive.c:2145
+msgid "start in Position Mode"
+msgstr "mulai dalam Mode Posisi"
+
+#: src/gpsdrive.c:2147
+msgid "don't show splash screen"
+msgstr "jangan perlihatkan splash screen"
+
+#: src/gpsdrive.c:2149
+msgid "having only a single button, for example when using a touchscreen"
+msgstr "hanya memiliki mouse 1 tombol, contoh menggunakan touchscreen"
+
+#: src/gpsdrive.c:2151
+msgid "show some debug info"
+msgstr "tampilkan beberapa informasi debug"
+
+#: src/gpsdrive.c:2153
+msgid "use DBUS for communication with gpsd; this disables socket communication"
+msgstr "gunakan DBUS untuk komunikasi dengan gpsd; ini mematikan komunikasi socket"
+
+#: src/gpsdrive.c:2155
+msgid "correct the altitude by adding this value"
+msgstr "perbaiki altitude dengan menambahkan nilai (ALT) ini"
+
+#: src/gpsdrive.c:2155
+msgid "<OFFSET>"
+msgstr "<OFSET>"
+
+#: src/gpsdrive.c:2157
+msgid "servername for NMEA server (if gpsd runs on another host)"
+msgstr "namaserver untuk NMEA server (jika gpsd dijalankan di host lain)"
+
+#: src/gpsdrive.c:2157
+msgid "<SERVER>"
+msgstr "<SERVER>"
+
+#: src/gpsdrive.c:2159
+msgid "set config file to use"
+msgstr "set berkas konfigurasi yang akan digunakan"
+
+#: src/gpsdrive.c:2159 src/gpsdrive.c:2169
+msgid "<FILE>"
+msgstr "<BERKAS>"
+
+#: src/gpsdrive.c:2161
+msgid "set debugging level"
+msgstr "aktifkan tingkat debug"
+
+#: src/gpsdrive.c:2161
+msgid "<LEVEL>"
+msgstr "<TINGKAT>"
+
+#: src/gpsdrive.c:2163
+msgid "select friends server, e.g. friendsd.gpsdrive.de"
+msgstr "pilih server teman, contoh: vectra.web.id"
+
+#: src/gpsdrive.c:2163
+msgid "<SERVERFILE>"
+msgstr "<BERKASSERVER>"
+
+#: src/gpsdrive.c:2165
+msgid "set window geometry, e.g. 800x600"
+msgstr "set geometri jendela, contoh: 800x600"
+
+#: src/gpsdrive.c:2165
+msgid "<GEOMETRY>"
+msgstr "<GEOMETRI>"
+
+#: src/gpsdrive.c:2167
+msgid "set GUI mode, 'desktop' is the default"
+msgstr "Set mode GUI, 'desktop' adalah default"
+
+#: src/gpsdrive.c:2169
+msgid "set serial device, pty master, or file to use for NMEA output"
+msgstr "set perangkat serial, pty master, atau berkas yang digunakan untuk keluaran NMEA"
+
+#: src/gpsdrive.c:2171
+msgid "take auto screenshots of different window (don't touch gpsdrive!)"
+msgstr "ambil auto screenshots dari jendela lain (jangan sentuh gpsdrive!)"
+
+#: src/gpsdrive.c:2171
+msgid "<PATH>"
+msgstr "<JALUR>"
+
+#: src/gpsdrive.c:2173
+msgid "do some internal unit tests (don't start gpsdrive)"
+msgstr "lakukan beberapa test internal (jangan menjalankan gpsdrive)"
+
+#: src/gpsdrive.c:2175
+msgid "show version info"
+msgstr "tampilkan informasi versi"
+
+#: src/gpsdrive.c:2224 src/gpx.c:137 src/gpx.c:138 src/gpx.c:139 src/gpx.c:140
+#: src/gpx.c:141 src/gpx.c:142 src/gpx.c:143 src/gpx.c:144 src/gpx.c:145
+#: src/gpx.c:146 src/gpx.c:147 src/main_gui.c:660 src/main_gui.c:839
+#: src/main_gui.c:981
+msgid "n/a"
+msgstr "n/a"
+
+#: src/gpsdrive.c:2225
+msgid "none"
+msgstr "kosong"
+
+#: src/gpsdrive.c:2360 src/gpsdrive.c:2395
+#, c-format
+msgid "Parsing of options failed: %s\n"
+msgstr "Parsing opsi gagal: %s\n"
+
+#: src/gpsdrive.c:2365
+#, c-format
 msgid ""
 "\n"
-"kismet server found\n"
+"GpsDrive (C) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+"\n"
+"Version %s\n"
+"%s\n"
+"\n"
 msgstr ""
 "\n"
-"kismet server ditemukan\n"
+"GpsDrive (C) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+"\n"
+"Versi %s\n"
+"%s\n"
+"\n"
 
-#: src/gpsdrive.c:3291
+#: src/gpsdrive.c:2486
+msgid "Disabling database support!\n"
+msgstr "Menonaktifkan layanan database!\n"
+
+#: src/gpsdrive.c:2495
+msgid ""
+"\n"
+"Kismet server found\n"
+msgstr ""
+"\n"
+"Kismet server ditemukan\n"
+
+#: src/gpsdrive.c:2529
+#, c-format
+msgid "Failed to parse %s\n"
+msgstr "Gagal untuk memparse %s\n"
+
+#: src/gpsdrive.c:2579
 msgid "Using speech output"
 msgstr "Menggunakan keluaran suara"
 
-#: src/gpsdrive.c:3418
-#, c-format
+#: src/gpsdrive.c:2631
 msgid ""
 "\n"
 "\n"
@@ -409,110 +476,71 @@ msgstr ""
 "Terima kasih telah menggunakan GpsDrive!\n"
 "\n"
 
-#: src/gps_handler.c:212
-#, c-format
-msgid "unable to add match for signals %s: %s"
-msgstr "tidak dapat menambahkan match untuk sinyal %s: %s"
-
-#: src/gps_handler.c:217
-msgid "unable to register filter with the connection"
-msgstr "tidak dapat menyimpan filter dengan koneksi"
-
-#: src/gps_handler.c:222
-msgid "DBUS Mode"
-msgstr "DBUS Mode"
-
-#: src/gps_handler.c:254 src/gpskismet.c:348
-msgid "can't open socket for port "
-msgstr "tidak dapat membuka socket untuk port "
-
-#: src/gps_handler.c:276
-#, c-format
+#: src/gpsdrive.c:2634
 msgid ""
 "\n"
-"Cannot connect to %s: unknown host\n"
+"\n"
+"All Unit Tests were successful.\n"
+"\n"
 msgstr ""
 "\n"
-"Tidak dapat menghubungi %s: alamat tidak ditemukan\n"
+"\n"
+"Semua unit Test telah berjalan sukses.\n"
+"\n"
 
-#: src/gps_handler.c:300
-msgid "NMEA Mode, Port 2222"
-msgstr "NMEA Mode, Port 2222"
-
-#: src/gps_handler.c:308
-msgid "NMEA Mode, Port 2947"
-msgstr "NMEA Mode, Port 2947"
-
-#: src/gps_handler.c:576
-msgid "Timeout getting data from GPS-Receiver!"
-msgstr "Timeout mengambil dari dari GPS-Receiver!"
-
-#: src/gps_handler.c:630 src/gps_handler.c:659 src/gps_handler.c:726
-#: src/gps_handler.c:849
-msgid "Press middle mouse button for navigation"
-msgstr "Tekan tombol mouse tengah untuk navigasi"
-
-#: src/gps_handler.c:639
-msgid "No GPS used"
-msgstr "Tidak ada GPS yang digunakan"
-
-#: src/gps_handler.c:641 src/nmea_handler.c:317 src/settings.c:808
-msgid "Simulation mode"
-msgstr "Mode simulasi"
-
-#: src/gps_handler.c:643
-msgid "Press middle mouse button for sim mode"
-msgstr "Tekan tombol tengah mouse untuk mode simulasi"
-
-#: src/gps_handler.c:663 src/gps_handler.c:732 src/gps_handler.c:855
-msgid "Not enough satellites in view!"
-msgstr "Tidak cukup satelit yang terlihat!"
-
-#: src/gpskismet.c:102
+#: src/gpskismet.c:99
 msgid "trying to re-connect to kismet server\n"
 msgstr "mencoba untuk menguhubungi kembali kismet server\n"
 
-#: src/gpskismet.c:104
+#: src/gpskismet.c:101
 msgid "Kismet server connection re-established\n"
 msgstr "Koneksi ke kismet server tersambung kembali\n"
 
-#: src/gpskismet.c:105
+#: src/gpskismet.c:102
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
 msgstr "selesai mencoba menghubungi kembali: socket=%d\n"
 
-#: src/gpskismet.c:152
+#: src/gpskismet.c:149
 msgid "Kismet server connection lost\n"
 msgstr "Kismet server koneksi hilang\n"
 
-#: src/gpskismet.c:342
+#: src/gpskismet.c:271
 msgid "Trying Kismet server\n"
 msgstr "Mencoba Kismet server\n"
 
-#: src/gpsmisc.c:313 src/gpsmisc.c:315 src/gpsmisc.c:493 src/gpsmisc.c:495
+#: src/gpsmisc.c:311 src/gpsmisc.c:313 src/gpsmisc.c:534 src/gpsmisc.c:536
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "Tidak dapat mencari berkas pixmap: %s"
 
-#: src/gpsnasamap.c:208
+#: src/gpsmisc.c:347 src/main_gui.c:876
+msgid "nmi"
+msgstr "nmi"
+
+#: src/gpsmisc.c:358 src/main_gui.c:900 src/settings.c:1716
+msgid "km"
+msgstr "km"
+
+#: src/gpsnasamap.c:210
 #, c-format
 msgid "could not create output map file %s!\n"
 msgstr "tidak dapat membuat keluaran peta berkas %s!\n"
 
-#: src/gpsnasamap.c:224
+#: src/gpsnasamap.c:226
 msgid "Creating map..."
 msgstr "Membuat peta..."
 
-#: src/gpsnasamap.c:234
+#: src/gpsnasamap.c:236
 msgid "Creating a temporary map from NASA satellite images"
 msgstr "Membuat sebuah peta sementara dari gambar satelit NASA"
 
-#: src/gpsnasamap.c:242
+#: src/gpsnasamap.c:244
 #, c-format
 msgid "converting map for latitude: %f and longitude: %f ...\n"
 msgstr "mengubah peta untuk latitude: %f dan longitude: %f ...\n"
 
-#: src/gpsnasamap.c:354
+#: src/gpsnasamap.c:356
 #, c-format
 msgid ""
 "\n"
@@ -523,75 +551,15 @@ msgstr ""
 "Anda dapat secara tetap menambahkan berkas peta dengan baris berikut\n"
 "ke dalam file map_koord.txt (ubah nama file!):\n"
 
-#: src/gpssql.c:116 src/gpssql.c:456
-#, c-format
-msgid "rows deleted: %d\n"
-msgstr "baris dihapus: %d\n"
+#: src/gpx.c:1011
+msgid "File succesfully saved"
+msgstr "Berkas telah disimpan dengan sukses"
 
-#: src/gpssql.c:143
-#, c-format
-msgid "SQL: connected to %s as %s using %s\n"
-msgstr "SQL: terhubung ke %s sebagai %s menggunakan %s\n"
-
-#: src/gpssql.c:225
-#, c-format
-msgid "rows inserted: %ld\n"
-msgstr "barus dimasukan: %ld\n"
-
-#: src/gpssql.c:247
-#, c-format
-msgid "last index: %ld\n"
-msgstr "index terakhir: %ld\n"
-
-#: src/gpssql.c:295
-#, c-format
-msgid "rows updated: %ld\n"
-msgstr "baris diupdate: %ld\n"
-
-#: src/gpssql.c:322
-#, c-format
-msgid "rows inserted: %d\n"
-msgstr "barus dimasukan: %d\n"
-
-#: src/gpssql.c:344
-#, c-format
-msgid "last index: %d\n"
-msgstr "index terakhir: %d\n"
-
-#: src/gpssql.c:370
-#, c-format
-msgid "rows updated: %d\n"
-msgstr "baris diupdate: %d\n"
-
-#: src/gpssql.c:626
-#, c-format
-msgid ""
-"\n"
-"libmysqlclient.so not found.\n"
-msgstr ""
-"\n"
-"libmysqliclient.so tidak ditemukan.\n"
-
-#: src/gpssql.c:632
-#, c-format
-msgid ""
-"\n"
-"MySQL support disabled.\n"
-msgstr ""
-"\n"
-"MySQL support disabled.\n"
-
-#: src/gpx.c:247 src/gpx.c:248 src/gpx.c:249 src/gpx.c:250 src/gpx.c:251
-#: src/gpx.c:252 src/gpx.c:253 src/gpx.c:254 src/gpx.c:255 src/gpx.c:256
-#: src/main_gui.c:644 src/main_gui.c:783 src/main_gui.c:904
-msgid "n/a"
-msgstr "n/a"
-
-#: src/gpx.c:370
+#: src/gpx.c:1049
 msgid "Please select a file"
 msgstr "Tolong pilih sebuah file"
 
-#: src/gpx.c:375
+#: src/gpx.c:1054
 #, c-format
 msgid ""
 "<b>Name:</b>\n"
@@ -603,7 +571,13 @@ msgid ""
 "<b>created by:</b>\n"
 "<i>%s</i>\n"
 "<b>Timestamp:</b>\n"
-"<i>%s</i>"
+"<i>%s</i>\n"
+"<b>Waypoints:</b>\n"
+"<i>%d</i>\n"
+"<b>Routes:</b>\n"
+"<i>%d (%d)</i>\n"
+"<b>Tracks:</b>\n"
+"<i>%d (%d)</i>\n"
 msgstr ""
 "<b>Nama:</b>\n"
 "<i>%s</i>\n"
@@ -614,21 +588,66 @@ msgstr ""
 "<b>dibuat oleh:</b>\n"
 "<i>%s</i>\n"
 "<b>Timestamp:</b>\n"
-"<i>%s</i>"
+"<i>%s</i><b>Titik Tujuan:</b>\n"
+"<i>%d</i>\n"
+"<b>Rute:</b>\n"
+"<i>%d (%d)</i>\n"
+"<b>Jejak:</b>\n"
+"<i>%d (%d)</i>\n"
 
-#: src/gpx.c:398
+#: src/gpx.c:1101
+msgid "1.1"
+msgstr "1.1"
+
+#: src/gpx.c:1112
+msgid "Additional Info"
+msgstr "Informasi tambahan"
+
+#: src/gpx.c:1122
+msgid "<b>Route Name</b>"
+msgstr "<b>Nama rute</b>"
+
+#: src/gpx.c:1124
+msgid "<b>Track Name</b>"
+msgstr "<b>Nama Jejak</b>"
+
+#: src/gpx.c:1126
+msgid "<b>Short Info</b>"
+msgstr "<b>Informasi Singkat</b>"
+
+#: src/gpx.c:1132
+msgid "<b>Description</b>"
+msgstr "<b>Deskripsi</b>"
+
+#: src/gpx.c:1137
+msgid "<b>Keywords</b>"
+msgstr "<b>Kata Kunci</b>"
+
+#: src/gpx.c:1142
+msgid "<b>Author Name</b>"
+msgstr "<b>Nama Pengarang</b>"
+
+#: src/gpx.c:1148
+msgid "<b>Author Email</b>"
+msgstr "<b>Email Pengarang</b>"
+
+#: src/gpx.c:1199
 msgid "Select a GPX file"
 msgstr "Pilih sebuah berkas GPX"
 
-#: src/gpx.c:421
+#: src/gpx.c:1222
 msgid "Show Info"
 msgstr "Perlihatkan Informasi"
 
-#: src/gui.c:507
+#: src/gpx.c:1271
+msgid "Enter a GPX filename"
+msgstr "Pilih sebuah berkas GPX"
+
+#: src/gui.c:267 src/gui.c:334
 msgid "Press OK to continue!"
 msgstr "Tekan OK untuk melanjutkan!"
 
-#: src/gui.c:542
+#: src/gui.c:302
 msgid ""
 "An error has occured.\n"
 "Press OK to continue!"
@@ -636,7 +655,7 @@ msgstr ""
 "Sebuah error telah terjadi.\n"
 "Tekan OK untuk melanjutkan!"
 
-#: src/gui.c:576
+#: src/gui.c:369
 #, c-format
 msgid ""
 "\n"
@@ -661,16 +680,16 @@ msgstr ""
 "Tolong install aplikasi sebagai root dengan:\n"
 "make install\n"
 
-#: src/icons.c:364 src/icons.c:369
+#: src/icons.c:359 src/icons.c:364
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Terpasan ikon pilihan pengguna %s\n"
 
-#: src/import_map.c:232
+#: src/import_map.c:242
 msgid "Select a map file"
 msgstr "Pilih sebuah berkas peta"
 
-#: src/import_map.c:300
+#: src/import_map.c:310
 msgid ""
 "How to calibrate your own maps? First, the map file\n"
 "must be copied into the"
@@ -678,7 +697,7 @@ msgstr ""
 "Bagaimana mengkalibrasi peta anda? Pertama, berkas peta\n"
 "harus dikopi kedalam"
 
-#: src/import_map.c:302
+#: src/import_map.c:312
 msgid ""
 "\n"
 "directory as .gif, .jpg or .png file and must have\n"
@@ -694,7 +713,7 @@ msgstr ""
 "Load berkas, pilih kordinat dari daftar waypoint atau\n"
 "masukan manual. Kemudian tekan tombol accept."
 
-#: src/import_map.c:309
+#: src/import_map.c:319
 msgid ""
 "Now do the same for your second point and click on the\n"
 "finish button. The map can be used now."
@@ -702,344 +721,387 @@ msgstr ""
 "Sekarang lakukan hal yang sama untuk titik kedua dan tekan di tombol finish.\n"
 "Peta dapat digunakan sekarang."
 
-#: src/import_map.c:316
+#: src/import_map.c:326
 msgid "Import Assistant. Step 1"
 msgstr "Bantuan mengimport. Langkah pertama"
 
-#: src/import_map.c:318
+#: src/import_map.c:328
 msgid "Import Assistant. Step 2"
 msgstr "Bantuan mengimport. Langkah kedua"
 
-#: src/import_map.c:325
+#: src/import_map.c:335
 msgid "Accept first point"
 msgstr "Terima titik pertama"
 
-#: src/import_map.c:331
+#: src/import_map.c:341
 msgid "Accept Scale and Finish"
 msgstr "Terima skala dan selesai"
 
-#: src/import_map.c:340
+#: src/import_map.c:350
 msgid "Finish"
 msgstr "Selesai"
 
-#: src/import_map.c:355
+#: src/import_map.c:360
 msgid "Go up"
 msgstr "Ke atas"
 
-#: src/import_map.c:358
+#: src/import_map.c:363
 msgid "Go left"
 msgstr "Ke kiri"
 
-#: src/import_map.c:361
+#: src/import_map.c:366
 msgid "Go right"
 msgstr "Ke kanan"
 
-#: src/import_map.c:364
+#: src/import_map.c:369
 msgid "Go down"
 msgstr "Ke bawah"
 
-#: src/import_map.c:367
+#: src/import_map.c:372
 msgid "Zoom in"
 msgstr "Perbesar"
 
-#: src/import_map.c:370
+#: src/import_map.c:375
 msgid "Zoom out"
 msgstr "Perkecil"
 
-#: src/import_map.c:387
+#: src/import_map.c:392
 msgid "Screen X"
 msgstr "Layar X"
 
-#: src/import_map.c:389
+#: src/import_map.c:394
 msgid "Screen Y"
 msgstr "Layar Y"
 
-#: src/import_map.c:401
+#: src/import_map.c:406
 msgid "Browse POIs"
 msgstr "Browse POIs"
 
-#: src/import_map.c:432
+#: src/import_map.c:437
 msgid "Browse filename"
 msgstr "Browse namafile"
 
-#: src/import_map.c:822
+#: src/import_map.c:827
 msgid "SELECTED"
 msgstr "TERPILIH"
 
-#: src/main_gui.c:286
+#: src/main_gui.c:352
 msgid "Auto"
 msgstr "Otomatis"
 
-#: src/main_gui.c:527 src/main_gui.c:820
-msgid "nmi"
-msgstr "nmi"
-
-#: src/main_gui.c:551 src/main_gui.c:844 src/settings.c:1538
-msgid "km"
-msgstr "km"
-
-#: src/main_gui.c:585 src/main_gui.c:1300 src/settings.c:1392
+#: src/main_gui.c:601 src/main_gui.c:1611 src/main_gui.c:1656
+#: src/settings.c:2257 src/settings.c:2311
 msgid "Speed"
 msgstr "Kecepatan"
 
-#: src/main_gui.c:612 src/main_gui.c:1301
+#: src/main_gui.c:605 src/main_gui.c:636 src/main_gui.c:670
+msgid "mi/h"
+msgstr "mi/jam"
+
+#: src/main_gui.c:609 src/main_gui.c:640 src/main_gui.c:674
+msgid "knots"
+msgstr "knots"
+
+#: src/main_gui.c:613 src/main_gui.c:644 src/main_gui.c:678
+msgid "km/h"
+msgstr "km/jam"
+
+#: src/main_gui.c:628 src/main_gui.c:1612 src/main_gui.c:1657
 msgid "Avg. Speed"
 msgstr "Kecepatan rata-rata"
 
-#: src/main_gui.c:650 src/main_gui.c:1302
+#: src/main_gui.c:666 src/main_gui.c:1613 src/main_gui.c:1658
 msgid "Max. Speed"
 msgstr "Kecepatan maksimal"
 
-#: src/main_gui.c:675 src/main_gui.c:1298 src/main_gui.c:1857
+#: src/main_gui.c:691 src/main_gui.c:1609 src/main_gui.c:1654
+#: src/main_gui.c:2392
 msgid "Bearing"
 msgstr "Bearing"
 
-#: src/main_gui.c:686 src/main_gui.c:1303 src/main_gui.c:1863
+#: src/main_gui.c:702 src/main_gui.c:1614 src/main_gui.c:1659
+#: src/main_gui.c:2398
 msgid "Heading"
 msgstr "Heading"
 
-#: src/main_gui.c:697 src/main_gui.c:1299
+#: src/main_gui.c:713 src/main_gui.c:1610 src/main_gui.c:1655
 msgid "Turn"
 msgstr "Turn"
 
-#: src/main_gui.c:718
+#: src/main_gui.c:736
 msgid "Time remaining"
 msgstr "Waktu tersisa"
 
-#: src/main_gui.c:734 src/main_gui.c:1304 src/poi_gui.c:563 src/settings.c:753
+#: src/main_gui.c:790 src/main_gui.c:1615 src/main_gui.c:1660
+#: src/poi_gui.c:636 src/settings.c:1235
 msgid "Altitude"
 msgstr "Altitude"
 
-#: src/main_gui.c:789
+#: src/main_gui.c:845
 msgid "Odometer"
 msgstr "Odometer"
 
-#: src/main_gui.c:878 src/main_gui.c:1306
+#: src/main_gui.c:949 src/main_gui.c:1617 src/main_gui.c:1662
 msgid "GPS Precision"
 msgstr "Ketelitian GPS"
 
-#: src/main_gui.c:889 src/main_gui.c:1307
+#: src/main_gui.c:966 src/main_gui.c:1618 src/main_gui.c:1663
 msgid "Current Time"
 msgstr "Waktu saat ini"
 
-#: src/main_gui.c:1011
+#: src/main_gui.c:999 src/main_gui.c:1619 src/main_gui.c:1664
+msgid "Position"
+msgstr "Posisi"
+
+#: src/main_gui.c:1015 src/main_gui.c:1620 src/main_gui.c:1665
+msgid "Map Scale"
+msgstr "Skala Peta"
+
+#: src/main_gui.c:1129
 msgid "No GPS"
 msgstr "Tidak ada GPS"
 
-#: src/main_gui.c:1018
+#: src/main_gui.c:1136
 msgid "Simulation Mode"
 msgstr "Mode Simulasi"
 
-#: src/main_gui.c:1132
+#: src/main_gui.c:1449
 msgid "Quicksaved Waypoint"
 msgstr "Quicksaved Waypoint"
 
-#: src/main_gui.c:1167
+#: src/main_gui.c:1482
 msgid "Temporary Waypoint"
 msgstr "Waypoint Sementara"
 
-#: src/main_gui.c:1296
+#: src/main_gui.c:1607 src/main_gui.c:1652
 msgid "Distance to Target"
 msgstr "Jarak menuju Tujuan"
 
-#: src/main_gui.c:1297
+#: src/main_gui.c:1608 src/main_gui.c:1653
 msgid "Time Remaining"
 msgstr "Waktu Tersisa"
 
-#: src/main_gui.c:1305
+#: src/main_gui.c:1616 src/main_gui.c:1661
 msgid "Trip Odometer"
 msgstr "Trip Odometer"
 
-#: src/main_gui.c:1368
+#: src/main_gui.c:1704
+msgid "Satellite Info"
+msgstr "Informasi Satelit"
+
+#: src/main_gui.c:1736 src/main_gui.c:2106
+msgid "Map Control"
+msgstr "Kontrol Peta"
+
+#: src/main_gui.c:1799
 msgid "Options"
 msgstr "Opsi"
 
-#: src/main_gui.c:1373
+#: src/main_gui.c:1804
 msgid "Maps"
 msgstr "Peta"
 
-#: src/main_gui.c:1374 src/main_gui.c:1387
+#: src/main_gui.c:1805 src/main_gui.c:1818
 msgid "Import"
 msgstr "Import"
 
-#: src/main_gui.c:1375
+#: src/main_gui.c:1806
 msgid "Download"
 msgstr "Download"
 
-#: src/main_gui.c:1390 src/main_gui.c:1405 src/main_gui.c:1630
-#: src/settings.c:1131
-msgid "Track"
-msgstr "Track"
+#: src/main_gui.c:1821
+msgid "GPX Track"
+msgstr "Jejak GPX"
 
-#: src/main_gui.c:1391 src/main_gui.c:1406 src/settings.c:1153
-msgid "Route"
-msgstr "Rute"
+#: src/main_gui.c:1822
+msgid "GPX Route"
+msgstr "Rute GPX"
 
-#: src/main_gui.c:1402
+#: src/main_gui.c:1823
+msgid "GPX Waypoints"
+msgstr "Titik Tujuan GPX"
+
+#: src/main_gui.c:1824
+msgid "GpsDrive Track"
+msgstr "GpsDrive Jalur"
+
+#: src/main_gui.c:1841
 msgid "Export"
 msgstr "Export"
 
-#: src/main_gui.c:1418
+#: src/main_gui.c:1844 src/main_gui.c:2064 src/settings.c:1351
+msgid "Track"
+msgstr "Track"
+
+#: src/main_gui.c:1845 src/settings.c:1373
+msgid "Route"
+msgstr "Rute"
+
+#: src/main_gui.c:1856
 msgid "Send Message"
 msgstr "Kirim Pesan"
 
-#: src/main_gui.c:1425
+#: src/main_gui.c:1863
 msgid "Reset Trip"
 msgstr "Reset Trip"
 
-#: src/main_gui.c:1452
+#: src/main_gui.c:1894
 msgid "Help"
 msgstr "Bantuan"
 
-#: src/main_gui.c:1492
+#: src/main_gui.c:1931
 msgid "Zooms in on the current map"
 msgstr "Perbesar di peta ini"
 
-#: src/main_gui.c:1494
+#: src/main_gui.c:1933
 msgid "Zooms out on the current map"
 msgstr "Perkecil di peta ini"
 
-#: src/main_gui.c:1515
+#: src/main_gui.c:1953
 msgid "Select the next more detailed map"
 msgstr "Pilih peta yang lebih detail"
 
-#: src/main_gui.c:1517
+#: src/main_gui.c:1955
 msgid "Select the next less detailed map"
 msgstr "Pilih peta yang kurang detail"
 
-#: src/main_gui.c:1531
+#: src/main_gui.c:1966
 msgid "Mute Speech"
 msgstr "Mute Suara"
 
-#: src/main_gui.c:1542
+#: src/main_gui.c:1977
 msgid "Disable output of speech"
 msgstr "Disable keluaran dari suara"
 
-#: src/main_gui.c:1571
+#: src/main_gui.c:1996 src/poi_gui.c:1321
+msgid "Route List"
+msgstr "Daftar Rute"
+
+#: src/main_gui.c:2005
 msgid "Points"
 msgstr "Titik"
 
-#: src/main_gui.c:1578 src/settings.c:1720
+#: src/main_gui.c:2012 src/settings.c:1885
 msgid "POI"
 msgstr "POI"
 
-#: src/main_gui.c:1590
+#: src/main_gui.c:2024
 msgid "Show Points Of Interest found in Database"
 msgstr "Perlihatkan Points Of Interest yang ditemukan di Database"
 
-#: src/main_gui.c:1594
-msgid "WLAN"
-msgstr "WLAN"
-
-#: src/main_gui.c:1609
-msgid "Show Data found in Kismet Database"
-msgstr "Tampilkan Data yang di temukan di Kismet Database"
-
-#: src/main_gui.c:1612
+#: src/main_gui.c:2046
 msgid "WP"
 msgstr "WP"
 
-#: src/main_gui.c:1622
+#: src/main_gui.c:2056
 msgid "Show Waypoints found in file way.txt"
 msgstr "Tampilkan Waypoints yang ditemukan di file way.txt"
 
-#: src/main_gui.c:1635
+#: src/main_gui.c:2069
 msgid "Show"
 msgstr "Tampilkan"
 
-#: src/main_gui.c:1644
+#: src/main_gui.c:2078
 msgid "Show tracking on the map"
 msgstr "Tampilkan jejak di peta"
 
-#: src/main_gui.c:1651
+#: src/main_gui.c:2085
 msgid "Save"
 msgstr "Simpan"
 
-#: src/main_gui.c:1658
+#: src/main_gui.c:2092
 msgid "Save the track to given filename at program exit"
 msgstr "Simpan jejak di filename pada saat aplikasi selesai"
 
-#: src/main_gui.c:1838
+#: src/main_gui.c:2135
+msgid "+"
+msgstr "+"
+
+#: src/main_gui.c:2136
+msgid "-"
+msgstr "-"
+
+#: src/main_gui.c:2373
 msgid "GPS-Time"
 msgstr "Waktu-GPS"
 
-#: src/main_gui.c:1844
+#: src/main_gui.c:2379
 msgid "This shows the time from your GPS receiver"
 msgstr "Ini menunjukan waktu dari penerima GPS anda"
 
-#: src/main_gui.c:1847 src/settings.c:1175 src/settings.c:2055
+#: src/main_gui.c:2382 src/settings.c:1395 src/settings.c:2221
 msgid "Friends"
 msgstr "Teman"
 
-#: src/main_gui.c:1853
+#: src/main_gui.c:2388
 msgid "Number of mobile targets within timeframe/total received from friendsserver"
 msgstr "Jumlah dari tujuan mobile dalam timeframe/total diterima dari server teman"
 
-#: src/main_gui.c:1895
+#: src/main_gui.c:2430
 msgid "Map scale"
 msgstr "Skala peta"
 
-#: src/main_gui.c:1901
+#: src/main_gui.c:2436
 msgid "Pref. scale"
 msgstr "Pref. skala"
 
-#: src/main_gui.c:1919
+#: src/main_gui.c:2458
 msgid "This shows the GPS Status and Number of satellites in use."
 msgstr "Ini menunjukan status GPS dan jumlah satelit yang sedang digunakan."
 
-#: src/main_gui.c:1934
+#: src/main_gui.c:2473
 msgid "GpsDrive (c)2001-2007 F. Ganter"
 msgstr "GpsDrive (c)2001-2007 F. Ganter"
 
-#: src/main_gui.c:2138 src/nmea_handler.c:491
+#: src/main_gui.c:2696 src/nmea_handler.c:463
 msgid "Map"
 msgstr "Peta"
 
-#: src/main_gui.c:2141
+#: src/main_gui.c:2699
 msgid "Controls"
 msgstr "Kontrol"
 
-#: src/main_gui.c:2144
+#: src/main_gui.c:2702
 msgid "Status"
 msgstr "Status"
 
-#: src/map_handler.c:153
+#: src/map_handler.c:146
 msgid "Map Controls"
 msgstr "Kontrol Peta"
 
-#: src/map_handler.c:158
+#: src/map_handler.c:151
 msgid "Auto _best map"
 msgstr "Otomatis pilih peta _terbaik"
 
-#: src/map_handler.c:163
+#: src/map_handler.c:156
 msgid "Always select the most detailed map available"
 msgstr "Selalu memilih peta yang paling detail"
 
-#: src/map_handler.c:174
+#: src/map_handler.c:167
 msgid "Pos. _mode"
 msgstr "Pos. _mode"
 
-#: src/map_handler.c:181
+#: src/map_handler.c:174
 msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
 msgstr "Ubah posisi mode on. Anda dapat memindahkan peta dengan menggunakan tombol kiri mouse.Tekan dekat batas untuk peta proximate."
 
-#: src/map_handler.c:191
+#: src/map_handler.c:184
 msgid "Mapnik Mode"
 msgstr "Mode Mapnik"
 
-#: src/map_handler.c:194
+#: src/map_handler.c:187
 msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
 msgstr "Ubah mode mapnik nyala. Dalam mode ini vector maps dirender oleh mapnik (OpenStreetMap Data) yang akan digunak daripada peta lain."
 
-#: src/map_handler.c:218
+#: src/map_handler.c:212
 msgid "Shown map type"
 msgstr "Tunjukan tipe peta"
 
-#: src/map_handler.c:316
+#: src/map_handler.c:309
 msgid "Error in line "
 msgstr "Error dalam baris "
 
-#: src/map_handler.c:318
+#: src/map_handler.c:311
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -1051,223 +1113,223 @@ msgstr ""
 "map_koord.txt. Gunakan map_* untuk peta jalan dan top_* peta topography.\n"
 "Jika tidak, peta tidak akan ditampilkan!"
 
-#: src/map_handler.c:647
+#: src/map_handler.c:640
 msgid " Mapfile could not be loaded:"
 msgstr " Berkas peta tidak dapat diload:"
 
-#: src/map_handler.c:697
+#: src/map_handler.c:690
 msgid "Map found!"
 msgstr "Peta ditemukan!"
 
-#: src/nmea_handler.c:178
+#: src/nmea_handler.c:147
 msgid "can't open NMEA output file"
 msgstr "tidak dapat membuka berkas keluaran NMEA"
 
-#: src/poi.c:366
+#: src/poi.c:530
 #, c-format
-msgid "%ld(%d) rows read\n"
-msgstr "%ld(%d) baris terbaca\n"
+msgid "%ldrows read\n"
+msgstr "%ldbaris terbaca\n"
 
-#: src/poi.c:1155 src/wlan.c:317
+#: src/poi.c:768
+msgid "all types"
+msgstr "semua tipe"
+
+#: src/poi.c:1135
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%ld(%d) baris terbaca dalam %.2f detik\n"
 
-#: src/poi_gui.c:164
+#: src/poi_gui.c:136
+msgid "Select Reference Point"
+msgstr "Pilih Titik Referensi"
+
+#: src/poi_gui.c:141 src/poi_gui.c:790
+msgid "Lookup Point of Interest"
+msgstr "Lihat Point of Interest"
+
+#: src/poi_gui.c:196
 #, c-format
 msgid " Found %d matching entries (Limit reached)."
 msgstr " Ditemukan %d cocok dengan masukan (Batas tercapai)."
 
-#: src/poi_gui.c:170
+#: src/poi_gui.c:202
 #, c-format
 msgid " Found %d matching entries."
 msgstr " Ditemukan %d cocok dengan masukan."
 
-#: src/poi_gui.c:485 src/poi_gui.c:1008
+#: src/poi_gui.c:558 src/poi_gui.c:1054
 msgid "POI-Info"
 msgstr "Informasi-POI"
 
-#: src/poi_gui.c:515 src/poi_gui.c:964
+#: src/poi_gui.c:588 src/poi_gui.c:1011
 msgid "Comment"
 msgstr "Komentar"
 
-#: src/poi_gui.c:522
+#: src/poi_gui.c:595
 msgid "private"
 msgstr "private"
 
-#: src/poi_gui.c:613
+#: src/poi_gui.c:663 src/poi_gui.c:1000
+msgid "Type"
+msgstr "Tipe"
+
+#: src/poi_gui.c:686
 msgid "Basic Data"
 msgstr "Basic Data"
 
-#: src/poi_gui.c:642
+#: src/poi_gui.c:715
 msgid "Extra Data"
 msgstr "Extra Data"
 
-#: src/poi_gui.c:718
-msgid "Lookup Point of Interest"
-msgstr "Lihat Point of Interest"
-
-#: src/poi_gui.c:761
+#: src/poi_gui.c:833
 msgid "<i>Search Text:</i>"
 msgstr "<i>Cari Text:</i>"
 
-#: src/poi_gui.c:784
+#: src/poi_gui.c:856
 msgid "<i>max. Distance:</i>"
 msgstr "<i>maksimal Jarak:</i>"
 
-#: src/poi_gui.c:802
+#: src/poi_gui.c:874
 msgid "km from"
 msgstr "km dari"
 
-#: src/poi_gui.c:807
+#: src/poi_gui.c:879
 msgid "current position"
 msgstr "posisi sekarang"
 
-#: src/poi_gui.c:817
+#: src/poi_gui.c:889
 msgid "Search near current Position"
 msgstr "Cari posisi terdekat"
 
-#: src/poi_gui.c:822
+#: src/poi_gui.c:894
 msgid "Destination/Cursor"
 msgstr "Tujuan/Kursor"
 
-#: src/poi_gui.c:834
+#: src/poi_gui.c:906
 msgid "Search near selected Destination"
 msgstr "Cari dekat tujuan"
 
-#: src/poi_gui.c:840
+#: src/poi_gui.c:912
 msgid "<i>POI-Types:</i>"
 msgstr "<i>Tipe-POI:</i>"
 
-#: src/poi_gui.c:866
-msgid "all"
-msgstr "semua"
-
-#: src/poi_gui.c:876
-msgid "Search all POI-Categories"
-msgstr "Cari seluruh Kategori-POI"
-
-#: src/poi_gui.c:879
-msgid "selected:"
-msgstr "terpilih:"
-
-#: src/poi_gui.c:885
-msgid "Search only in selected POI-Categories"
-msgstr "Cari hanya di Kategori-POI terpilih"
-
-#: src/poi_gui.c:890
+#: src/poi_gui.c:937
 msgid "Search Criteria"
 msgstr "Cari kriteria"
 
-#: src/poi_gui.c:994
+#: src/poi_gui.c:1040
 msgid " Please enter your search criteria!"
 msgstr " Tolong masukan kriteria pencarian anda!"
 
-#: src/poi_gui.c:1011
+#: src/poi_gui.c:1057
 msgid "Show detailed Information for selected Point of Interest"
 msgstr "Tampilah informasi detail untuk Point of Interest terpilih"
 
-#: src/poi_gui.c:1017
+#: src/poi_gui.c:1063
 msgid "Results"
 msgstr "Hasil"
 
-#: src/poi_gui.c:1041
+#: src/poi_gui.c:1085
 msgid "Edit _Route"
 msgstr "Ubah _Rute"
 
-#: src/poi_gui.c:1045
+#: src/poi_gui.c:1089
 msgid "Switch to Add selected entry to Route"
 msgstr "Pindah ke Add entry terpilih ke Rute"
 
-#: src/poi_gui.c:1055
+#: src/poi_gui.c:1099
 msgid "Delete selected entry"
 msgstr "Hapus entry terpilih"
 
-#: src/poi_gui.c:1072
+#: src/poi_gui.c:1116
 msgid "Jump to POI"
 msgstr "Pindah ke POI"
 
-#: src/poi_gui.c:1074
+#: src/poi_gui.c:1118
 msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
 msgstr "Pindah ke entry terpilih (dan pindah ke mode posisi jika tidak aktif)"
 
-#: src/poi_gui.c:1092
+#: src/poi_gui.c:1136
 msgid "Select Target"
 msgstr "Pilih Target"
 
-#: src/poi_gui.c:1094
+#: src/poi_gui.c:1138
 msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
 msgstr "Gunakan entry terpilih sebagai tujuan (dan tinggalkan mode Posisi jika aktif)"
 
-#: src/poi_gui.c:1106 src/poi_gui.c:1339
+#: src/poi_gui.c:1155
+msgid "Select Point"
+msgstr "Pilih Titik"
+
+#: src/poi_gui.c:1157
+msgid "Use selected entry as reference point"
+msgstr "Gunakan masukan yang dipilih sebagai titik referensi"
+
+#: src/poi_gui.c:1170 src/poi_gui.c:1406
 msgid "Close this window"
 msgstr "Tutup jendela ini"
 
-#: src/poi_gui.c:1170
+#: src/poi_gui.c:1237
 msgid "Edit Route"
 msgstr "Ubah Rute"
 
-#: src/poi_gui.c:1239
+#: src/poi_gui.c:1306
 msgid "Trip"
 msgstr "Trip"
 
-#: src/poi_gui.c:1254
-msgid "Route List"
-msgstr "Daftar Rute"
-
-#: src/poi_gui.c:1274
+#: src/poi_gui.c:1341
 msgid "Stop Route"
 msgstr "Stop Rute"
 
-#: src/poi_gui.c:1276
+#: src/poi_gui.c:1343
 msgid "Stop the Route Mode"
 msgstr "Stop mode Rute"
 
-#: src/poi_gui.c:1282
+#: src/poi_gui.c:1349
 msgid "Start Route"
 msgstr "Mulai Rute"
 
-#: src/poi_gui.c:1284
+#: src/poi_gui.c:1351
 msgid "Start the Route Mode"
 msgstr "Start mode Rute"
 
-#: src/poi_gui.c:1301
+#: src/poi_gui.c:1368
 msgid "Remove selected Entry from Route"
 msgstr "Hapus entry terpilih dari Rute"
 
-#: src/poi_gui.c:1316
+#: src/poi_gui.c:1383
 msgid "Cancel Route"
 msgstr "Batalkan Rute"
 
-#: src/poi_gui.c:1318
+#: src/poi_gui.c:1385
 msgid "Discard Route"
 msgstr "Abaikan Rute"
 
-#: src/poi_gui.c:1328
+#: src/poi_gui.c:1395
 msgid "Export current route to a GPX File"
 msgstr "Export rute sekarang ke sebuah file GPX"
 
-#: src/routes.c:421
+#: src/routes.c:278
 msgid "Waypoint"
 msgstr "Waypoint"
 
-#: src/routes.c:434
+#: src/routes.c:291
 msgid "Define route"
 msgstr "Tentukan rute"
 
-#: src/routes.c:442
+#: src/routes.c:299
 msgid "Start route"
 msgstr "Mulai rute"
 
-#: src/routes.c:451
+#: src/routes.c:308
 msgid "Take all WP as route"
 msgstr "Ambil seluruh WP sebagai rute"
 
-#: src/routes.c:456
+#: src/routes.c:313
 msgid "Abort route"
 msgstr "Batalkan rute"
 
-#: src/routes.c:516
+#: src/routes.c:373
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1275,7 +1337,7 @@ msgstr ""
 "Tekan di daftar waypoint\n"
 "tambahkan ke waypoint"
 
-#: src/routes.c:519
+#: src/routes.c:376
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1283,91 +1345,87 @@ msgstr ""
 "Tekan di daftar item\n"
 "untuk memilih waypoint selanjutnya"
 
-#: src/routes.c:567
+#: src/routes.c:424
 msgid "Create a route from all waypoints. Sorted with order in file, not distance."
 msgstr "Buat sebuah rute dari seluruh waypoint. Urutkan dengan urutan dalam file, bukan jarak."
 
-#: src/routes.c:571
+#: src/routes.c:428
 msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
 msgstr "Tekan disini untuk memulai perjalanan anda. GpsDrive membantu anda melalui waypoint dalam daftar ini."
 
-#: src/routes.c:574
+#: src/routes.c:431
 msgid "Abort your journey"
 msgstr "Batalkan perjalanan anda"
 
-#: src/routes.c:664
+#: src/routes.c:593 src/routes.c:628
 msgid "Routepoint"
 msgstr "Rutepoint"
 
-#: src/routes.c:665
+#: src/routes.c:594
 msgid "Quicksaved Routepoint"
 msgstr "Wuicksaved Rutepoint"
 
-#: src/routes.c:738
+#: src/routes.c:609
 msgid "Routepoint added."
 msgstr "Rutepoint ditambahkan."
 
-#: src/routes.c:833
-msgid "Route saved"
-msgstr "Rute disimpan"
+#: src/routes.c:633
+msgid "Unnamed Routepoint"
+msgstr "Titik Rute tidak bernama"
 
-#: src/settings.c:407 src/settings.c:415
+#: src/routes.c:643
+msgid "waypoint.routepoint"
+msgstr "titik tujuan. titik rute"
+
+#: src/settings.c:117
+msgid "GPS Initialization done."
+msgstr "Inisialisasi GPS selesai."
+
+#: src/settings.c:431 src/settings.c:439
 msgid "EnterYourName"
 msgstr "Masukan Nama Anda"
 
-#: src/settings.c:418
+#: src/settings.c:442
 msgid "You should change your name in the first field!"
 msgstr "Anda seharusnya mengubah nama anda di bagian pertama!"
 
-#: src/settings.c:637
+#: src/settings.c:495
+msgid "Speech output enabled."
+msgstr "Keluaran Suara diaktifkan."
+
+#: src/settings.c:727
 msgid "Show Waypoints found in file"
 msgstr "Tampilkan Waypoint yang ditemukan dalam file"
 
-#: src/settings.c:746
-msgid "Choose here the unit for the display of distances."
-msgstr "Pilih disini untuk bagian yang tampil dalam jarak."
-
-#: src/settings.c:764
-msgid "Choose here the unit for the display of altitudes."
-msgstr "Pilih disini untuk bagian dari tampilan dari altitudes."
-
-#: src/settings.c:771
-msgid "Coordinates"
-msgstr "Kordinat"
-
-#: src/settings.c:782
-msgid "Choose here the format for the coordinates display."
-msgstr "Pilih disini untuk format dari tampilan kordinat."
-
-#: src/settings.c:810 src/settings.c:1083
+#: src/settings.c:893 src/settings.c:1501
 msgid "Automatic"
 msgstr "Otomatis"
 
-#: src/settings.c:814 src/settings.c:1087
+#: src/settings.c:897 src/settings.c:1505
 msgid "On"
 msgstr "Nyala"
 
-#: src/settings.c:818 src/settings.c:1091
+#: src/settings.c:901 src/settings.c:1509
 msgid "Off"
 msgstr "Mati"
 
-#: src/settings.c:822
+#: src/settings.c:905
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
 msgstr "Jika dinyalakan, positi pointer bergerak menuju tujuan yang dipilih mensimulasikan kendaraan bergerak, ketika GPS tidak tersedia."
 
-#: src/settings.c:826
+#: src/settings.c:909
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
 msgstr "Jika dinyalakan, posisi pointer bergerak menuju tujuan mensimulasikan sebuah kendaraan yang selalu bergerak."
 
-#: src/settings.c:830
+#: src/settings.c:913
 msgid "Switches simulation mode off"
 msgstr "Switches mode simulasi mati"
 
-#: src/settings.c:857
+#: src/settings.c:940
 msgid "Maximum CPU load (in %)"
 msgstr "Beban maksimal CPU (dalam %)"
 
-#: src/settings.c:864
+#: src/settings.c:947
 #, no-c-format
 msgid ""
 "Select the approximate maximum CPU load.\n"
@@ -1376,255 +1434,275 @@ msgstr ""
 "Pilih kira kira maksimum beban CPU.\n"
 "Gunakan 20-30% jika laptop menggunakan batere, untuk menghemat listrik. Ini berefek di refresh rate dari layar peta."
 
-#: src/settings.c:888
+#: src/settings.c:971
 msgid "Maps directory"
 msgstr "Direktori peta"
 
-#: src/settings.c:889
+#: src/settings.c:972
 msgid "Select Maps Directory"
 msgstr "Pilih Direktori Peta"
 
-#: src/settings.c:895
+#: src/settings.c:978
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
 msgstr "Path ke peta file anda. Dalam direktori yang dispesifikasikan juga index file map_koord.txt harus ada."
 
-#: src/settings.c:916
-msgid "<b>Units</b>"
-msgstr "<b>Satuan</b>"
-
-#: src/settings.c:924
+#: src/settings.c:1000
 msgid "<b>Miscellaneous</b>"
 msgstr "<b>Miscellaneous</b>"
 
-#: src/settings.c:932
+#: src/settings.c:1008
 msgid "<b>Map Settings</b>"
 msgstr "<b>Konfigurasi Peta</b>"
 
-#: src/settings.c:944
+#: src/settings.c:1018
 msgid "General"
 msgstr "Umum"
 
-#: src/settings.c:980
+#: src/settings.c:1046
 msgid "Show grid"
 msgstr "Tampilkan grid"
 
-#: src/settings.c:982
+#: src/settings.c:1048
 msgid "This will show a grid over the map"
 msgstr "Ini akan menunjukan sebuah grid diatas peta"
 
-#: src/settings.c:997
+#: src/settings.c:1063
 msgid "Show Shadows"
 msgstr "Tampilkan Bayangan"
 
-#: src/settings.c:999
+#: src/settings.c:1065
 msgid "Switches shadows on map on or off"
 msgstr "Ganti bayagan dalam peta nyala atau mati"
 
-#: src/settings.c:1014
+#: src/settings.c:1080
 msgid "Show zoom level"
 msgstr "Tampilkan tingkat perbesaran"
 
-#: src/settings.c:1016
+#: src/settings.c:1082
 msgid "This will show the current zoom level of the map"
 msgstr "Ini akan menunjukan tingkat perbesaran saat ini dari peta"
 
-#: src/settings.c:1031
+#: src/settings.c:1097
 msgid "Show scalebar"
 msgstr "Tampilkan bar skala"
 
-#: src/settings.c:1033
+#: src/settings.c:1099
 msgid "This will show the scalebar in the map"
 msgstr "Ini akan menampilkan bar skala dipeta"
 
-#: src/settings.c:1048
+#: src/settings.c:1114
+msgid "Show way info (EXPERIMENTAL!)"
+msgstr "Tampilkan informasi tujuan (EXPERIMENTAL!!!)"
+
+#: src/settings.c:1116
+msgid "This will show information about the current way (this is an experimental feature, which may not work as expected!!!"
+msgstr "Ini akan menampiikan informasi mengenai cara sekarang (feature ini sangan experimental, yang mungkin tidak bekerja sebagaimana mestinya!!!)"
+
+#: src/settings.c:1136
 msgid "Position Marker"
 msgstr "Penanda posisi"
 
-#: src/settings.c:1059
+#: src/settings.c:1147
 msgid "Choose the appearance of your position marker."
 msgstr "Pilih tampilan dari penanda posisi anda."
 
-#: src/settings.c:1095
-msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
-msgstr "Switches automagically ke mode malam jika diluar malam, Tekan 'N' untuk mematikan mode malam hari."
+#: src/settings.c:1172
+msgid "Show battery"
+msgstr "Tampilkan batere"
 
-#: src/settings.c:1098
-msgid "Switches night mode on. Press 'N' key to turn off nightmode."
-msgstr "Ubah ke mode malam hari. Tekan tombol 'N' untuk mematikan mode malam hari"
-
-#: src/settings.c:1101
-msgid "Switches night mode off"
-msgstr "Ubah mode malam hari mati"
-
-#: src/settings.c:1136
-msgid "Choose Track color"
-msgstr "Pilih warna Track"
-
-#: src/settings.c:1140
-msgid "Set here the color of the drawn track"
-msgstr "Set disini warna dari track yang tergambar"
-
-#: src/settings.c:1145
-msgid "Set here the line style of the drawn track"
-msgstr "Set disini line style dari track yang tergambar"
-
-#: src/settings.c:1158
-msgid "Choose Route color"
-msgstr "Pilih warna rute"
-
-#: src/settings.c:1162
-msgid "Set here the color of the drawn route"
-msgstr "Set disini warna dari rute tergambar"
-
-#: src/settings.c:1167
-msgid "Set here the line style of the drawn route"
-msgstr "Set disini line style dari rute tergambar"
-
-#: src/settings.c:1180
-msgid "Choose Friends color"
-msgstr "Pilih warna teman"
-
-#: src/settings.c:1184
-msgid "Set here the text color of the drawn friends"
-msgstr "Set disini untuk warna tulisan dari teman tergambar"
+#: src/settings.c:1174
+msgid "This will show the state of charge of your battery if available"
+msgstr "Ini akan menampilkan status dari pengisian batere anda jika tersedia"
 
 #: src/settings.c:1189
-msgid "Choose font for friends"
-msgstr "Pilih betuk huruf untuk teman"
+msgid "Show temperature"
+msgstr "Tampilkan temperature"
 
-#: src/settings.c:1195
-msgid "Set here the font of the drawn friends"
-msgstr "Set disini untuk bentuk huruf dari teman tergambar"
+#: src/settings.c:1191
+msgid "This will show the temperature of your CPU if available"
+msgstr "Ini akan menampilkan temperature dari CPU anda jika tersedia"
 
-#: src/settings.c:1198 src/settings.c:1858
-msgid "Waypoints"
-msgstr "Waypoint"
+#: src/settings.c:1228
+msgid "Choose here the unit for the display of distances."
+msgstr "Pilih disini untuk bagian yang tampil dalam jarak."
 
-#: src/settings.c:1203
-msgid "Choose Waypoints label color"
-msgstr "Pilih Waypoint label color"
+#: src/settings.c:1246
+msgid "Choose here the unit for the display of altitudes."
+msgstr "Pilih disini untuk bagian dari tampilan dari altitudes."
 
-#: src/settings.c:1207
-msgid "Set here the text color of the waypoint labels"
-msgstr "Set disini warna tulisan dari label waypoint"
+#: src/settings.c:1253
+msgid "Coordinates"
+msgstr "Kordinat"
 
-#: src/settings.c:1212
-msgid "Choose font for waypoint labels"
-msgstr "Pilih bentuk huruf dari label waypoint"
+#: src/settings.c:1264
+msgid "Choose here the format for the coordinates display."
+msgstr "Pilih disini untuk format dari tampilan kordinat."
 
-#: src/settings.c:1218
-msgid "Set here the font of waypoint labels"
-msgstr "Set disini untuk bentuk huruf dari label waypoint"
-
-#: src/settings.c:1221
-msgid "Dashboard"
-msgstr "Dashboard"
-
-#: src/settings.c:1226
-msgid "Choose color for dashboard"
-msgstr "Pilih warna dari dashboard"
-
-#: src/settings.c:1230
-msgid "Set here the color of the dashboard"
-msgstr "Set disini untuk warna dari dashboard"
-
-#: src/settings.c:1235
-msgid "Choose font for dashboard"
-msgstr "Pilih bentuk huruf dari dashboard"
-
-#: src/settings.c:1241
-msgid "Set here the font of the dashboard"
-msgstr "Set disini untuk bentuk huruf dari dashboard"
-
-#: src/settings.c:1282
-msgid "<b>Fonts, Colors, Styles</b>"
-msgstr "<b>Bentuk huruf, Warna, Style</b>"
-
-#: src/settings.c:1293
-msgid "<b>Nightmode</b>"
-msgstr "<b>Mode Malam</b>"
-
-#: src/settings.c:1304
+#: src/settings.c:1292
 msgid "<b>Map Features</b>"
 msgstr "<b>Peta Feature</b>"
 
-#: src/settings.c:1318
-msgid "GUI"
-msgstr "GUI"
+#: src/settings.c:1303
+msgid "<b>Other Features</b>"
+msgstr "<b>Feature Lain</b>"
 
-#: src/settings.c:1344
+#: src/settings.c:1313
+msgid "<b>Units</b>"
+msgstr "<b>Satuan</b>"
+
+#: src/settings.c:1322 src/settings.c:1791
+msgid "Display"
+msgstr "Tampilkan"
+
+#: src/settings.c:1356
+msgid "Choose Track color"
+msgstr "Pilih warna Track"
+
+#: src/settings.c:1360
+msgid "Set here the color of the drawn track"
+msgstr "Set disini warna dari track yang tergambar"
+
+#: src/settings.c:1365
+msgid "Set here the line style of the drawn track"
+msgstr "Set disini line style dari track yang tergambar"
+
+#: src/settings.c:1378
+msgid "Choose Route color"
+msgstr "Pilih warna rute"
+
+#: src/settings.c:1382
+msgid "Set here the color of the drawn route"
+msgstr "Set disini warna dari rute tergambar"
+
+#: src/settings.c:1387
+msgid "Set here the line style of the drawn route"
+msgstr "Set disini line style dari rute tergambar"
+
+#: src/settings.c:1400
+msgid "Choose Friends color"
+msgstr "Pilih warna teman"
+
+#: src/settings.c:1404
+msgid "Set here the text color of the drawn friends"
+msgstr "Set disini untuk warna tulisan dari teman tergambar"
+
+#: src/settings.c:1409
+msgid "Choose font for friends"
+msgstr "Pilih betuk huruf untuk teman"
+
+#: src/settings.c:1415
+msgid "Set here the font of the drawn friends"
+msgstr "Set disini untuk bentuk huruf dari teman tergambar"
+
+#: src/settings.c:1418 src/settings.c:2024
+msgid "Waypoints"
+msgstr "Waypoint"
+
+#: src/settings.c:1423
+msgid "Choose Waypoints label color"
+msgstr "Pilih Waypoint label color"
+
+#: src/settings.c:1427
+msgid "Set here the text color of the waypoint labels"
+msgstr "Set disini warna tulisan dari label waypoint"
+
+#: src/settings.c:1432
+msgid "Choose font for waypoint labels"
+msgstr "Pilih bentuk huruf dari label waypoint"
+
+#: src/settings.c:1438
+msgid "Set here the font of waypoint labels"
+msgstr "Set disini untuk bentuk huruf dari label waypoint"
+
+#: src/settings.c:1441
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: src/settings.c:1446
+msgid "Choose color for dashboard"
+msgstr "Pilih warna dari dashboard"
+
+#: src/settings.c:1450
+msgid "Set here the color of the dashboard"
+msgstr "Set disini untuk warna dari dashboard"
+
+#: src/settings.c:1455
+msgid "Choose font for dashboard"
+msgstr "Pilih bentuk huruf dari dashboard"
+
+#: src/settings.c:1461
+msgid "Set here the font of the dashboard"
+msgstr "Set disini untuk bentuk huruf dari dashboard"
+
+#: src/settings.c:1513
+msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
+msgstr "Switches automagically ke mode malam jika diluar malam, Tekan 'N' untuk mematikan mode malam hari."
+
+#: src/settings.c:1516
+msgid "Switches night mode on. Press 'N' key to turn off nightmode."
+msgstr "Ubah ke mode malam hari. Tekan tombol 'N' untuk mematikan mode malam hari"
+
+#: src/settings.c:1519
+msgid "Switches night mode off"
+msgstr "Ubah mode malam hari mati"
+
+#: src/settings.c:1551
+msgid "<b>Fonts, Colors, Styles</b>"
+msgstr "<b>Bentuk huruf, Warna, Style</b>"
+
+#: src/settings.c:1562
+msgid "<b>Nightmode</b>"
+msgstr "<b>Mode Malam</b>"
+
+#: src/settings.c:1574
+msgid "Colors"
+msgstr "Warna"
+
+#: src/settings.c:1598
 msgid "Travel Mode"
 msgstr "Mode Travel"
 
-#: src/settings.c:1346
+#: src/settings.c:1600
 msgid "Car"
 msgstr "Mobil"
 
-#: src/settings.c:1348
+#: src/settings.c:1602
 msgid "Bike"
 msgstr "Sepeda"
 
-#: src/settings.c:1350
+#: src/settings.c:1604
 msgid "Walk"
 msgstr "Jalan"
 
-#: src/settings.c:1352
+#: src/settings.c:1606
 msgid "Boat"
 msgstr "Perahu"
 
-#: src/settings.c:1354
+#: src/settings.c:1608
 msgid "Airplane"
 msgstr "Pesawat"
 
-#: src/settings.c:1364
+#: src/settings.c:1618
 msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
 msgstr "Pilih mode perjalanan anda. Ini digunakan untuk menentukan ikon yang akan digunakan untuk menampilkan posisi anda."
 
-#: src/settings.c:1390
-msgid "Direction"
-msgstr "Arah"
-
-#: src/settings.c:1393
-msgid "GPS Status"
-msgstr "Status GPS"
-
-#: src/settings.c:1435
-msgid "Switch on for speech output of the direction to the target"
-msgstr "Switch on untuk keluaran suara dari arah menuju target"
-
-#: src/settings.c:1438
-msgid "Switch on for speech output of the distance to the target"
-msgstr "Switch on untuk keluaran suara dari jarak menuju tujuan"
-
-#: src/settings.c:1441
-msgid "Switch on for speech output of your current speed"
-msgstr "Switch on untuk keluaran suara dari kecepatan saat ini"
-
-#: src/settings.c:1443
-msgid "Switch on for speech output of the status of your GPS signal"
-msgstr "Switch on untuk keluaran suara dari status sinyal GPS anda"
-
-#: src/settings.c:1450
+#: src/settings.c:1636
 msgid "<b>Navigation Settings</b>"
 msgstr "<b>Konfigurasi Navigasi</b>"
 
-#: src/settings.c:1458
-msgid "<b>Speech Output</b>"
-msgstr "<b>Keluaran Suara</b>"
-
-#: src/settings.c:1466
+#: src/settings.c:1645
 msgid "Navigation"
 msgstr "Navigasi"
 
-#: src/settings.c:1500 src/settings.c:1748
+#: src/settings.c:1678 src/settings.c:1913
 msgid "Waypoints File"
 msgstr "File Waypoints"
 
-#: src/settings.c:1502 src/settings.c:1750
+#: src/settings.c:1680 src/settings.c:1915
 msgid "Select Waypoints File"
 msgstr "Pilih Waypoint File"
 
-#: src/settings.c:1510 src/settings.c:1758
+#: src/settings.c:1688 src/settings.c:1923
 msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
@@ -1632,55 +1710,51 @@ msgstr ""
 "Pilih waypoint file yang akan digunakan!\n"
 "Saat ini hanya file dalam GpsDrive's way.txt format yang dilayani."
 
-#: src/settings.c:1526
+#: src/settings.c:1704
 msgid "Default search radius"
 msgstr "Default radius pencarian"
 
-#: src/settings.c:1536
+#: src/settings.c:1714
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
 msgstr "Pilih default jankauan pencarian (dalam km) untuk jendela POI-Lookup."
 
-#: src/settings.c:1540
+#: src/settings.c:1718
 msgid "Limit results to"
 msgstr "batasi hasil ke"
 
-#: src/settings.c:1549
+#: src/settings.c:1727
 msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
 msgstr "Pilih basa untuk jumlah yang ditemukan ditampilkan dalam POI-Lookup jendela. Tergantung dalam sistem anda yang memiliki nilai yang diset terlalu tinggi mungkin memperlambat sistem anda"
 
-#: src/settings.c:1552
+#: src/settings.c:1730
 msgid "entries"
 msgstr "masukan"
 
-#: src/settings.c:1573
-msgid "Show POI Label"
-msgstr "Tampilkan label POI"
-
-#: src/settings.c:1575
-msgid "This will print the name next to the POI-Icon"
-msgstr "INi akan menampilkan nama selanjutnya ke POI-Icon"
-
-#: src/settings.c:1590
+#: src/settings.c:1751
 msgid "POI-Theme"
 msgstr "Tema-POI"
 
-#: src/settings.c:1619
+#: src/settings.c:1780
 msgid "POI-Filter"
 msgstr "Saringan-POI"
 
-#: src/settings.c:1688
+#: src/settings.c:1799
+msgid "Label"
+msgstr "Nama"
+
+#: src/settings.c:1853
 msgid "<b>Waypoints</b>"
 msgstr "<b>Waypoints</b>"
 
-#: src/settings.c:1696
+#: src/settings.c:1861
 msgid "<b>POI Search Settings</b>"
 msgstr "<b>POI Konfigurasi Pencarian</b>"
 
-#: src/settings.c:1706
+#: src/settings.c:1871
 msgid "<b>POI Display</b>"
 msgstr "<b>Tampilan POI</b>"
 
-#: src/settings.c:1796
+#: src/settings.c:1961
 msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
@@ -1688,15 +1762,15 @@ msgstr ""
 "Jangan menggunakan lebih dari\n"
 "100 waypoint (way*.txt) files!"
 
-#: src/settings.c:1842
+#: src/settings.c:2008
 msgid "<b>File Dialog Selection</b>"
 msgstr "<b>Pemilihan File Dialog</b>"
 
-#: src/settings.c:1850
+#: src/settings.c:2016
 msgid "<b>Quick Select File</b>"
 msgstr "<b>Pilih File Cepat</b>"
 
-#: src/settings.c:1889
+#: src/settings.c:2055
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
@@ -1704,75 +1778,127 @@ msgstr ""
 "Jika anda mengaktifkan layanan ini, <span color=\"red\">semua</span> yang menggunakan\n"
 "server sama dapat mengetahui posisi anda!"
 
-#: src/settings.c:1894
+#: src/settings.c:2060
 msgid "Your name"
 msgstr "Nama anda"
 
-#: src/settings.c:1903
+#: src/settings.c:2069
 msgid "Enable friends service"
 msgstr "Mengaktifkan layanan teman"
 
-#: src/settings.c:1913
+#: src/settings.c:2079
 msgid "Show only positions newer than"
 msgstr "tampilkan hanya posisi yang lebih baru dari"
 
-#: src/settings.c:1917
+#: src/settings.c:2083
 msgid "Days"
 msgstr "Hari"
 
-#: src/settings.c:1919
+#: src/settings.c:2085
 msgid "Hours"
 msgstr "Jam"
 
-#: src/settings.c:1921
+#: src/settings.c:2087
 msgid "Minutes"
 msgstr "Menit"
 
-#: src/settings.c:1967
+#: src/settings.c:2133
 msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
 msgstr "Enable/disable menggunakan layanan friend. Anda dapat memasukan username, jangan menggunakan nama default!"
 
-#: src/settings.c:1971
+#: src/settings.c:2137
 msgid "Set here the name which will be shown near your position."
 msgstr "Set disini untuk name yang akan ditampilkan dekan posisi anda."
 
-#: src/settings.c:1974
+#: src/settings.c:2140
 msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
 msgstr "Set disini untuk maksimal umur dari posisi teman yang akan ditampilkan. Posisi yang lebih lama tidak ditampilkan."
 
-#: src/settings.c:1993
+#: src/settings.c:2159
 msgid "IP"
 msgstr "IP"
 
-#: src/settings.c:2001
+#: src/settings.c:2167
 msgid "Lookup"
 msgstr "Mencari"
 
-#: src/settings.c:2017
+#: src/settings.c:2183
 msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
 msgstr "Set disini untuk fully qualified host name (contoh: friends.gpsdrive.id) dari server teman yang akan digunakan, kemudian tekan tombol \"Lookup\"."
 
-#: src/settings.c:2021
+#: src/settings.c:2187
 msgid "Press this button to resolve the friends server name."
 msgstr "Tekan tombol ini untuk resolve nama server teman."
 
-#: src/settings.c:2024
+#: src/settings.c:2190
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
 msgstr "Set disini untuk alamat IP (contoh: 10.10.10.10) jika anda tidak menset hostname diatas"
 
-#: src/settings.c:2032
+#: src/settings.c:2198 src/settings.c:2369 src/settings.c:2409
 msgid "<b>General</b>"
 msgstr "<b>Umum</b>"
 
-#: src/settings.c:2043
+#: src/settings.c:2209
 msgid "<b>Server</b>"
 msgstr "<b>Server</b>"
 
-#: src/settings.c:2122
+#: src/settings.c:2251
+msgid "Enable speech output using espeak"
+msgstr "Aktikan keluaran suara menggunakan espeak"
+
+#: src/settings.c:2262
+msgid "Pitch"
+msgstr "Pitch"
+
+#: src/settings.c:2267
+msgid "Voice"
+msgstr "Suara"
+
+#: src/settings.c:2309
+msgid "Direction"
+msgstr "Arah"
+
+#: src/settings.c:2312
+msgid "GPS Status"
+msgstr "Status GPS"
+
+#: src/settings.c:2354
+msgid "Switch on for speech output of the direction to the target"
+msgstr "Switch on untuk keluaran suara dari arah menuju target"
+
+#: src/settings.c:2357
+msgid "Switch on for speech output of the distance to the target"
+msgstr "Switch on untuk keluaran suara dari jarak menuju tujuan"
+
+#: src/settings.c:2360
+msgid "Switch on for speech output of your current speed"
+msgstr "Switch on untuk keluaran suara dari kecepatan saat ini"
+
+#: src/settings.c:2362
+msgid "Switch on for speech output of the status of your GPS signal"
+msgstr "Switch on untuk keluaran suara dari status sinyal GPS anda"
+
+#: src/settings.c:2377
+msgid "<b>Output Settings</b>"
+msgstr "<b>Konfigurasi Keluaran</b>"
+
+#: src/settings.c:2385
+msgid "Speech"
+msgstr "Suara"
+
+#: src/settings.c:2401
+msgid "Reinit GPS"
+msgstr "Reinisialisasi GPS"
+
+#: src/settings.c:2416
+msgid "GPS"
+msgstr "GPS"
+
+#: src/settings.c:2451
 msgid "GpsDrive Settings"
 msgstr "Konfigurasi GpsDrive"
 
-#: src/splash.c:131
+#: src/splash.c:113
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -1792,7 +1918,7 @@ msgstr ""
 "Tombol mouse kanan + ctrl : Set sebuah waypoint di posisi saat ini di peta\n"
 "\n"
 
-#: src/splash.c:139
+#: src/splash.c:121
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -1818,7 +1944,7 @@ msgstr ""
 "+    : perbesar\n"
 "-    : perkecil\n"
 
-#: src/splash.c:150
+#: src/splash.c:132
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
@@ -1834,11 +1960,11 @@ msgstr ""
 "Saran sangat diterima.\n"
 "\n"
 
-#: src/splash.c:160
+#: src/splash.c:142
 msgid "GpsDrive v"
 msgstr "GpsDrive v"
 
-#: src/splash.c:166
+#: src/splash.c:148
 msgid ""
 "\n"
 "\n"
@@ -1848,7 +1974,7 @@ msgstr ""
 "\n"
 "Anda akan menemukan versi baru di http://www.gpsdrive.de\n"
 
-#: src/splash.c:170
+#: src/splash.c:152
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -1856,39 +1982,39 @@ msgstr ""
 "Disclaimer: Tolong jangan digunakan untuk navigasi. \n"
 "\n"
 
-#: src/splash.c:175
+#: src/splash.c:157
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
 msgstr "Tolong liha dalam manual (manual gpsdrive) untuk detail aplikasi!"
 
-#: src/splash.c:180
+#: src/splash.c:162
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Mouse control (tekan di peta):\n"
 
-#: src/splash.c:188
+#: src/splash.c:170
 msgid "Short cuts:\n"
 msgstr "Short cuts:\n"
 
-#: src/splash.c:195
+#: src/splash.c:177
 msgid "The other key shortcuts are marked as "
 msgstr "Tombol shortcut lain ditandai sebagai "
 
-#: src/splash.c:198
+#: src/splash.c:180
 msgid "underlined"
 msgstr "digaris bawahi"
 
-#: src/splash.c:201
+#: src/splash.c:183
 msgid " letters in the button text.\n"
 msgstr " tulisan di tombol.\n"
 
-#: src/splash.c:204
+#: src/splash.c:186
 msgid "Have a lot of fun!"
 msgstr "Selamat bersenang - senang!"
 
-#: src/splash.c:321
+#: src/splash.c:303
 msgid "From:"
 msgstr "Dari"
 
-#: src/splash.c:392
+#: src/splash.c:374
 #, c-format
 msgid ""
 "You received a message from\n"
@@ -1897,19 +2023,19 @@ msgstr ""
 "Anda menerima sebuah pesan dari\n"
 "server teman (%s)\n"
 
-#: src/splash.c:404
+#: src/splash.c:386
 msgid "You received a message through the friends server from:\n"
 msgstr "Anda menerima pesan melalui server teman dari:\n"
 
-#: src/splash.c:415
+#: src/splash.c:397
 msgid "Message text:\n"
 msgstr "Pesan text:\n"
 
-#: src/splash.c:522
+#: src/splash.c:504
 msgid "Starting GPS Drive"
 msgstr "Menjalankan GPS Drive"
 
-#: src/splash.c:542
+#: src/splash.c:524
 #, c-format
 msgid ""
 "\n"
@@ -1924,15 +2050,15 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:610
+#: src/splash.c:592
 msgid "translator-credits"
 msgstr "translator-credits"
 
-#: src/splash.c:612
+#: src/splash.c:594
 msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
 msgstr "GpsDrive adalah sebuah sistem navigasi mobil (sepeda, kapal, pesawat), yang menampilkan posisi anda yang disediakan oleh sebuah penerima GPS di sebuah peta yang dapat diubah tampilan dan lain sebagainya.."
 
-#: src/splash.c:615
+#: src/splash.c:597
 msgid ""
 "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
@@ -1942,7 +2068,7 @@ msgstr ""
 "\n"
 "GpsDrive menggunakan data dari OpenStreetMap Project (http://www.openstreetmap.org), yang tersedia bebas dalam perjanjian dari Creative Commons Attribution-ShareAlike 2.0 license."
 
-#: src/splash.c:622
+#: src/splash.c:604
 #, c-format
 msgid ""
 "\n"
@@ -1957,35 +2083,181 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/track.c:433
+#: src/track.c:84
+msgid "Select a track file"
+msgstr "Pilih sebuah file jejak"
+
+#: src/track.c:638
 #, c-format
 msgid "distance jump is more then 2000km/h speed, ignoring\n"
 msgstr "jarak lompat lebih dari 2000km/h, diabaikan\n"
 
-#: src/waypoint.c:686
+#: src/waypoint.c:436
 msgid "Add Point of Interest"
 msgstr "Tambahkan Point of Interest"
 
-#: src/waypoint.c:697
+#: src/waypoint.c:447
 msgid "Name:"
 msgstr "Nama:"
 
-#: src/waypoint.c:706
+#: src/waypoint.c:456
 msgid " Type: "
 msgstr " Tipe: "
 
-#: src/waypoint.c:732
+#: src/waypoint.c:488
 msgid " Comment: "
 msgstr " Komentar: "
 
-#: src/waypoint.c:770
+#: src/waypoint.c:526
 msgid " Save waypoint in: "
 msgstr " Simpan waypoint dalam: "
 
-#: src/waypoint.c:773
+#: src/waypoint.c:529
 msgid "Database"
 msgstr "Database"
 
-#: src/waypoint.c:778
+#: src/waypoint.c:534
 msgid "way.txt File"
 msgstr "Berkas way.txt"
+
+#~ msgid ""
+#~ "\n"
+#~ "Warning: unable to load gpsdriveanim.gif!\n"
+#~ "Please install the program as root with:\n"
+#~ "make install\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Peringatan: tidak dapat menampilkan gpsdriveanim.gif!\n"
+#~ "Tolong install aplikasi sebagai root dengan:\n"
+#~ "make install\n"
+#~ "\n"
+
+#~ msgid "Please select your destination"
+#~ msgstr "Tolong tentukan tujuan anda"
+
+#~ msgid "Edit route"
+#~ msgstr "Ubah rute"
+
+#~ msgid "Create route"
+#~ msgstr "Buat rute"
+
+#~ msgid "Create a route using some waypoints from this list"
+#~ msgstr "Buat sebuah rute dengan menggunakan waypoint dari daftar"
+
+#~ msgid "Delete the selected waypoint from the waypoint list"
+#~ msgstr "Hapus waypoint yang dipilih dari daftar waypoint"
+
+#~ msgid "Jump to the selected waypoint"
+#~ msgstr "Lompat ke waypoint yang dipilih"
+
+#~ msgid "-h        print this help\n"
+#~ msgstr "-h        tampilkan bantuan ini\n"
+
+#~ msgid "-d        turn on debug info\n"
+#~ msgstr "-d        nyalakan informasi debug\n"
+
+#~ msgid "-e        use Festival-Lite (flite) for speech output\n"
+#~ msgstr "-e        gunakan Festival-Lite (flite) untuk keluaran suara\n"
+
+#~ msgid ""
+#~ "-l lang.  select language of the voice output;\n"
+#~ "          language may be 'english', 'spanish', or 'german'\n"
+#~ msgstr ""
+#~ "-l bahasa pilih bahasa untuk keluaran suara:\n"
+#~ "          bahasa dapat 'inggris', 'spanyol', atau 'german'\n"
+
+#~ msgid "-a        display APM stuff (battery status, temperature)\n"
+#~ msgstr "-a        tampilkan APM (status batere, suhu)\n"
+
+#~ msgid "-c WP     set start position in simulation mode to this waypoint (WP)\n"
+#~ msgstr "-c WP     set posisi awal dalam mode simulasi di waypoint ini (WP)\n"
+
+#~ msgid "-M mode   set GUI mode; mode may be 'desktop' (default), 'pda' or 'car'\n"
+#~ msgstr "-M mode   set mode GUI; konfigurasi mungkin 'desktop' (default), 'pda' atau 'car'\n"
+
+#~ msgid "-q        disable SQL support\n"
+#~ msgstr "-q        disable SQL support\n"
+
+#~ msgid "-W X      switch WAAS/EGNOS on (X=1), or off (X=0)\n"
+#~ msgstr "-W X      pindah ke WASS/EGNOS di (X=1), atau mati (X=0)\n"
+
+#~ msgid "-C file   use this config file\n"
+#~ msgstr "-C file   gunakan file konfigurasi ini\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "You can currently only choose between english, spanish and german\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Anda saat ini hanya dapat memilih antara inggris, spanyol dan german\n"
+#~ "\n"
+
+#~ msgid "rows deleted: %d\n"
+#~ msgstr "baris dihapus: %d\n"
+
+#~ msgid "SQL: connected to %s as %s using %s\n"
+#~ msgstr "SQL: terhubung ke %s sebagai %s menggunakan %s\n"
+
+#~ msgid "rows inserted: %ld\n"
+#~ msgstr "barus dimasukan: %ld\n"
+
+#~ msgid "last index: %ld\n"
+#~ msgstr "index terakhir: %ld\n"
+
+#~ msgid "rows updated: %ld\n"
+#~ msgstr "baris diupdate: %ld\n"
+
+#~ msgid "rows inserted: %d\n"
+#~ msgstr "barus dimasukan: %d\n"
+
+#~ msgid "last index: %d\n"
+#~ msgstr "index terakhir: %d\n"
+
+#~ msgid "rows updated: %d\n"
+#~ msgstr "baris diupdate: %d\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "libmysqlclient.so not found.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "libmysqliclient.so tidak ditemukan.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "MySQL support disabled.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "MySQL support disabled.\n"
+
+#~ msgid "WLAN"
+#~ msgstr "WLAN"
+
+#~ msgid "Show Data found in Kismet Database"
+#~ msgstr "Tampilkan Data yang di temukan di Kismet Database"
+
+#~ msgid "all"
+#~ msgstr "semua"
+
+#~ msgid "Search all POI-Categories"
+#~ msgstr "Cari seluruh Kategori-POI"
+
+#~ msgid "selected:"
+#~ msgstr "terpilih:"
+
+#~ msgid "Search only in selected POI-Categories"
+#~ msgstr "Cari hanya di Kategori-POI terpilih"
+
+#~ msgid "Route saved"
+#~ msgstr "Rute disimpan"
+
+#~ msgid "GUI"
+#~ msgstr "GUI"
+
+#~ msgid "Show POI Label"
+#~ msgstr "Tampilkan label POI"
+
+#~ msgid "This will print the name next to the POI-Icon"
+#~ msgstr "INi akan menampilkan nama selanjutnya ke POI-Icon"
