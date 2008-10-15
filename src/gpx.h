@@ -36,4 +36,26 @@ gint loadgpx_cb (gint gpx_mode);
 gint savegpx_cb (gint gpx_mode);
 void test_gpx (gchar *filename);
 
+typedef struct
+{
+ gchar version[255];
+ gchar creator[255];
+ gchar name[255];
+ gchar desc[255];
+ gchar author[255];
+ gchar email[255];
+ gchar url[255];
+ gchar urlname[255];
+ gchar urltype[255];
+ gchar time[255];
+ gchar keywords[255];
+ gdouble bounds[4];
+ gint wpt_count;
+ gint rte_count;
+ gint trk_count;
+ gint rtept_count;
+ gint trkpt_count;
+ gint points;
+} gpx_info_struct;
+
 #endif /* GPSDRIVE_GPX_H */

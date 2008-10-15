@@ -91,28 +91,6 @@ enum node_type
 
 typedef struct
 {
- gchar version[255];
- gchar creator[255];
- gchar name[255];
- gchar desc[255];
- gchar author[255];
- gchar email[255];
- gchar url[255];
- gchar urlname[255];
- gchar urltype[255];
- gchar time[255];
- gchar keywords[255];
- gdouble bounds[4];
- gint wpt_count;
- gint rte_count;
- gint trk_count;
- gint rtept_count;
- gint trkpt_count;
- gint points;
-} gpx_info_struct;
-
-typedef struct
-{
  xmlChar *name;
  xmlChar *cmt;
  xmlChar *type;
@@ -1085,14 +1063,11 @@ get_gpx_info_cb
 
 
 /* *****************************************************************************
- * Dialog for entering additional information when saving a gpx file
+ * set metadata for gpx writing
  */
-static void
-dialog_get_gpx_info (gint gpx_mode)
+void
+gpx_set_metadata (void)
 {
-	GtkWidget *info_dialog, *info_table, *info_name_lb, *info_name_entry;
-	GtkWidget *info_desc_lb, *info_desc_entry, *info_keyw_lb, *info_keyw_entry;
-	GtkWidget *info_author_lb, *info_author_entry, *info_email_lb, *info_email_entry;
 	GTimeVal current_time;
 
 	g_get_current_time (&current_time);
@@ -1105,9 +1080,23 @@ dialog_get_gpx_info (gint gpx_mode)
 	g_strlcpy (gpx_info.desc, "", sizeof (gpx_info.desc));
 	g_strlcpy (gpx_info.keywords, "", sizeof (gpx_info.keywords));
 	g_strlcpy (gpx_info.time, g_time_val_to_iso8601 (&current_time), sizeof (gpx_info.time));
-	g_strlcpy (gpx_info.author, "", sizeof (gpx_info.author));
+	g_strlcpy (gpx_info.author, g_get_user_name (), sizeof (gpx_info.author));
 	g_strlcpy (gpx_info.email, "", sizeof (gpx_info.email));
 
+}
+
+
+/* *****************************************************************************
+ * Dialog for entering additional information when saving a gpx file
+ */
+static void
+dialog_get_gpx_info (gint gpx_mode)
+{
+	GtkWidget *info_dialog, *info_table, *info_name_lb, *info_name_entry;
+	GtkWidget *info_desc_lb, *info_desc_entry, *info_keyw_lb, *info_keyw_entry;
+	GtkWidget *info_author_lb, *info_author_entry, *info_email_lb, *info_email_entry;
+
+	gpx_set_metadata ();
 	info_dialog = gtk_dialog_new_with_buttons (
 		_("Additional Info"), GTK_WINDOW (main_window),
 		GTK_DIALOG_DESTROY_WITH_PARENT,

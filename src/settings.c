@@ -40,6 +40,7 @@
 #include <sys/time.h>
 #include <gpsdrive.h>
 #include "gui.h"
+#include "track.h"
 
 #include "gettext.h"
 
@@ -99,6 +100,7 @@ extern gint havefestival;
 extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
 extern GHashTable *poi_types_hash;
+extern guint id_timeout_autotracksave;
 
 GtkWidget *settings_window = NULL;
 
@@ -555,6 +557,49 @@ settoggleapm_cb (GtkWidget *widget, gint *item)
 
 /* ************************************************************************* */
 static gint
+settrkautoint_cb (GtkWidget *spin, gint data)
+{
+	gdouble value;
+	gint unit;
+	
+	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spin));
+	local_config.track_autointerval = value * 2;
+
+	if (id_timeout_autotracksave != 0 && g_source_remove (id_timeout_autotracksave))
+		id_timeout_autotracksave = 0;
+
+	/* cap max. interval to 750 hours (about 1 month) */
+	if (local_config.track_autointerval > 1500)
+	{
+		local_config.track_autointerval = 1500;
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), 750);
+	}
+
+	if (mydebug > 10)
+		g_print ("Setting interval for automatic track saving to %.1f hours.\n",
+			local_config.track_autointerval/2);
+
+	current.needtosave = TRUE;
+
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+settrkautoprefix_cb (GtkWidget *widget)
+{
+	gchar *name;
+
+	name = (gchar *) gtk_entry_get_text (GTK_ENTRY (widget));
+	g_strlcpy (local_config.track_autoprefix, name,
+		sizeof (local_config.track_autoprefix));
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
 setmapdir_cb (GtkWidget *widget)
 {
 	gchar *tdir;
@@ -689,6 +734,32 @@ setsimmode_cb (GtkWidget *widget, guint value)
 
 /* ************************************************************************* */
 static gint
+settrackdir_cb (GtkWidget *widget)
+{
+	gchar *tdir;
+
+	tdir = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (widget));
+
+	if (tdir && strcmp (local_config.dir_tracks, tdir) != 0)
+	{
+		g_strlcpy (local_config.dir_tracks, tdir,
+			sizeof (local_config.dir_tracks));
+		g_strlcat (local_config.dir_tracks, "/",
+			sizeof (local_config.dir_tracks));
+		if (mydebug >3)
+		{
+			fprintf (stderr, "setting tracks dir to: %s\n",
+				local_config.dir_tracks);
+		}
+		current.needtosave = TRUE;
+	}
+	g_free (tdir);
+
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
 settravelmode_cb (GtkWidget *widget)
 {
 	gint selection;
@@ -765,6 +836,10 @@ setwpfilequick_cb (GtkWidget *widget, guint datum)
 static void
 settings_close_cb (GtkWidget *window)
 {
+	if (id_timeout_autotracksave == 0 && local_config.track_autointerval > 0)
+		id_timeout_autotracksave = g_timeout_add (local_config.track_autointerval * 1800 * 1000,
+			(GtkFunction) track_autosave_cb, FALSE);
+
 	gtk_widget_destroy (window);
 }
 
@@ -1351,6 +1426,140 @@ settings_gui (GtkWidget *notebook)
 	gui_label = gtk_label_new (_("Display"));
 	gtk_notebook_append_page
 		(GTK_NOTEBOOK (notebook), gui_vbox, gui_label);
+}
+
+/* ************************************************************************* */
+static void
+settings_trk (GtkWidget *notebook)
+{
+	GtkWidget *trk_vbox, *trkdir_label, *trkdir_bt;
+	GtkWidget *trk_general_frame, *trk_general_fr_lb;
+	GtkWidget *trk_auto_frame, *trk_auto_fr_lb, *trk_autoclear_bt;
+	GtkWidget *trk_auto_table, *trk_general_table, *trk_autounit_label;
+	GtkWidget *trk_label, *trk_autoint_label, *trk_autoint_spin;
+	GtkWidget *trk_autoprefix_label, *trk_autoprefix_entry;
+	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
+	GtkTooltips *trk_tooltips;
+
+	trk_vbox = gtk_vbox_new (FALSE, 2);
+	trk_tooltips = gtk_tooltips_new ();
+
+	/* track dir settings */
+	trkdir_label = gtk_label_new (_("Tracks directory"));
+	trkdir_bt = gtk_file_chooser_button_new (_("Select Tracks Directory"),
+		GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+	gtk_file_chooser_set_current_folder
+		(GTK_FILE_CHOOSER (trkdir_bt), local_config.dir_tracks);
+	gtk_file_chooser_set_show_hidden (GTK_FILE_CHOOSER (trkdir_bt), TRUE);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (trk_tooltips), trkdir_bt,
+		_("Path to your track files."), NULL);
+	g_signal_connect (trkdir_bt, "selection-changed",
+		GTK_SIGNAL_FUNC (settrackdir_cb), NULL);
+
+	/* track buttons settings */
+	trk_showrestart_bt = gtk_check_button_new_with_label
+		(_("Show 'Restart Track' Button"));
+	if (local_config.showbutton_trackrestart)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (trk_showrestart_bt), TRUE);
+	}
+	g_signal_connect (trk_showrestart_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.showbutton_trackrestart);
+
+	trk_showclear_bt = gtk_check_button_new_with_label
+		(_("Show 'Clear Track' Button"));
+	if (local_config.showbutton_trackclear)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (trk_showclear_bt), TRUE);
+	}
+	g_signal_connect (trk_showclear_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.showbutton_trackclear);
+
+	/* track autosave settings */
+	trk_autoint_label = gtk_label_new (_("Track Export Interval (0 to disable)"));
+	trk_autounit_label = gtk_label_new (_("hours"));
+	trk_autoint_spin = gtk_spin_button_new_with_range (0, 750.0, 0.5);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (trk_autoint_spin),
+		(gdouble) local_config.track_autointerval/2);
+	g_signal_connect (trk_autoint_spin, "changed",
+		GTK_SIGNAL_FUNC (settrkautoint_cb), NULL);
+
+	trk_autoprefix_label = gtk_label_new (_("Filename Prefix"));
+	trk_autoprefix_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (trk_autoprefix_entry), 50);
+	gtk_entry_set_text (GTK_ENTRY (trk_autoprefix_entry), local_config.track_autoprefix);
+	g_signal_connect (trk_autoprefix_entry, "changed",
+		GTK_SIGNAL_FUNC (settrkautoprefix_cb), NULL);
+
+	trk_autoclear_bt = gtk_check_button_new_with_label
+		(_("Clear track after writing"));
+	if (local_config.track_autoclean)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (trk_autoclear_bt), TRUE);
+	}
+	g_signal_connect (trk_autoclear_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.track_autoclean);
+
+
+	/* general settings frame */
+	trk_general_frame = gtk_frame_new (NULL);
+	trk_general_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (trk_general_fr_lb), _("<b>General Settings</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (trk_general_frame), trk_general_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (trk_general_frame), GTK_SHADOW_NONE);
+	trk_general_table = gtk_table_new (3, 2, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (trk_general_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (trk_general_table), 5);
+	gtk_table_attach (GTK_TABLE (trk_general_table),
+		trkdir_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
+		trkdir_bt, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
+		trk_showclear_bt, 0, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
+		trk_showrestart_bt, 0, 2, 2, 3);
+	gtk_container_add (GTK_CONTAINER (trk_general_frame), trk_general_table);
+
+	/* autosave settings frame */
+	trk_auto_frame = gtk_frame_new (NULL);
+	trk_auto_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (trk_auto_fr_lb), _("<b>Autosave Settings</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (trk_auto_frame), trk_auto_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (trk_auto_frame), GTK_SHADOW_NONE);
+	trk_auto_table = gtk_table_new (3, 5, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (trk_auto_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (trk_auto_table), 5);
+	gtk_table_attach (GTK_TABLE (trk_auto_table),
+		trk_autoint_label, 0, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_auto_table),
+		trk_autoint_spin, 3, 4, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_auto_table),
+		trk_autounit_label, 4, 5, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_auto_table),
+		trk_autoprefix_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_auto_table),
+		trk_autoprefix_entry, 1, 5, 1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (trk_auto_table),
+		trk_autoclear_bt, 0, 5, 2, 3);
+	gtk_container_add (GTK_CONTAINER (trk_auto_frame), trk_auto_table);
+
+	gtk_box_pack_start (GTK_BOX (trk_vbox), trk_general_frame,
+		FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (trk_vbox), trk_auto_frame,
+		FALSE, FALSE, 2);
+
+	trk_label = gtk_label_new (_("Tracking"));
+	gtk_notebook_append_page
+		(GTK_NOTEBOOK (notebook), trk_vbox, trk_label);
 }
 
 /* ************************************************************************* */
@@ -2517,6 +2726,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	settings_nav (settings_nb);	
 	settings_gui (settings_nb);
 	settings_col (settings_nb);
+	settings_trk (settings_nb);
 	if (!havefestival)
 		settings_speech (settings_nb);
 	settings_gps (settings_nb);

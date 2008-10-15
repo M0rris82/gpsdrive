@@ -148,6 +148,7 @@ coordinate_struct coords;
 currentstatus_struct current;
 
 guint id_timeout_track;
+guint id_timeout_autotracksave;
 
 gdouble long_diff = 0, lat_diff = 0;
 GdkGC *kontext_map;
@@ -155,7 +156,6 @@ GdkGC *kontext_map;
 extern GtkWidget *drawing_minimap;
 
 // TODO: should be moved away...
-GtkWidget *drawing_gps; // XXX - this seems to be initialized nowhere!
 extern GtkWidget  *drawing_compass;
 extern GdkGC *kontext_compass, *kontext_gps, *kontext_minimap;
 extern GdkDrawable *drawable_compass, *drawable_minimap;
@@ -2675,6 +2675,10 @@ main (int argc, char *argv[])
 	/* timer for switching nightmode on or off if set to AUTO */
 	g_timeout_add (1200 *1000, (GtkFunction) check_if_night_cb, NULL);
 
+	/* timer for automatic track saving if enabled */
+	if (local_config.track_autointerval > 0)
+		id_timeout_autotracksave = g_timeout_add (local_config.track_autointerval * 1800 * 1000,
+			(GtkFunction) track_autosave_cb, FALSE);
 
 	/*  Mainloop */
 	gtk_main ();

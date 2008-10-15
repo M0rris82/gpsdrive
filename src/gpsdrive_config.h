@@ -88,6 +88,11 @@ typedef struct
 	gboolean showfriends;
 	gboolean showtrack;
 	gboolean savetrack;
+	gboolean showbutton_trackrestart;
+	gboolean showbutton_trackclear;
+	gboolean track_autoclean;
+	gboolean track_autointerval;
+	gchar track_autoprefix[50];
 	gboolean autobestmap;
 	gint scale_wanted;
 	gint mapsource_type;

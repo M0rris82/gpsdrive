@@ -1783,7 +1783,8 @@ void create_controls_mainbox (void)
 
 	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
-	GtkWidget *cleartrack_bt;
+	GtkWidget *cleartrack_bt, *cleartrack_img;
+	GtkWidget *restarttrack_bt, *restarttrack_img;
 
 	gint scaler_pos = 0;
 	gint scale = 0;
@@ -2102,13 +2103,30 @@ void create_controls_mainbox (void)
 	}	/* END TRACKS */
 
 	/* Button: Clear Track */
-	cleartrack_bt = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
+	cleartrack_bt = gtk_button_new_with_label (_("Clear\nTrack"));
+	cleartrack_img = gtk_image_new_from_stock ("gtk-clear",
+		GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (cleartrack_bt), cleartrack_img);
 	g_signal_connect (GTK_OBJECT (cleartrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (track_clear_cb), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), showtrack_bt,
-		_("Display recorded track data"), NULL);
-	gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
-		FALSE, FALSE, 0 * PADDING);
+		GTK_SIGNAL_FUNC (track_clear_cb), FALSE);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), cleartrack_bt,
+		_("Delete recorded track data"), NULL);
+	if (local_config.guimode != GUI_CAR && local_config.showbutton_trackclear)
+		gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
+			FALSE, FALSE, 0 * PADDING);
+
+	/* Button: Restart Track */
+	restarttrack_bt = gtk_button_new_with_label (_("Restart\nTrack"));
+	restarttrack_img = gtk_image_new_from_stock ("gtk-save",
+		GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_image (GTK_BUTTON (restarttrack_bt), restarttrack_img);
+	g_signal_connect (GTK_OBJECT (restarttrack_bt), "clicked",
+		GTK_SIGNAL_FUNC (track_restart_cb), NULL);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), restarttrack_bt,
+		_("Save current track and start new one."), NULL);
+	if (local_config.guimode != GUI_CAR && local_config.showbutton_trackrestart)
+		gtk_box_pack_start (GTK_BOX (vbox_track), restarttrack_bt,
+			FALSE, FALSE, 0 * PADDING);
 
 	/* MAP CONTROL */
 	if ( mydebug > 11 )
@@ -2193,6 +2211,15 @@ void create_controls_mainbox (void)
 		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				controlbox_bt, wide, wide, 1 * PADDING);
+		}
+		if (local_config.guimode == GUI_CAR)
+		{
+			if (local_config.showbutton_trackrestart)
+				gtk_box_pack_start (GTK_BOX (vbox_buttons), restarttrack_bt,
+				wide, wide, 1 * PADDING);
+			if (local_config.showbutton_trackclear)
+				gtk_box_pack_start (GTK_BOX (vbox_buttons), cleartrack_bt,
+				wide, wide, 1 * PADDING);
 		}
 	}	/* END BUTTONS BOX */
 

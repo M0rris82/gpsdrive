@@ -101,6 +101,21 @@ writeconfig ()
 	else
 		fprintf (fp, "0\n");
 
+	fprintf (fp, "trackautosaveinterval = %d\n",
+		local_config.track_autointerval);
+
+	fprintf (fp, "trackautosaveprefix = %s\n",
+		local_config.track_autoprefix);
+
+	fprintf (fp, "trackautoclean = %d\n",
+		local_config.track_autoclean);
+
+	fprintf (fp, "showtrackrestartbutton = %d\n",
+		local_config.showbutton_trackrestart);
+
+	fprintf (fp, "showtrackclearbutton = %d\n",
+		local_config.showbutton_trackclear);
+
 	fprintf (fp, "mutespeechoutput = ");
 	if (local_config.mute)
 		fprintf (fp, "1\n");
@@ -321,6 +336,17 @@ readconfig ()
 				local_config.showwaypoints = atoi (par2);
 			else if ( (strcmp(par1, "showtrack")) == 0)
 				local_config.showtrack = atoi (par2);
+			else if ( (strcmp(par1, "trackautosaveinterval")) == 0)
+				local_config.track_autointerval = atoi (par2);
+			else if ( (strcmp(par1, "trackautosaveprefix")) == 0)
+				g_strlcpy (local_config.track_autoprefix, par2,
+				sizeof (local_config.track_autoprefix));
+			else if ( (strcmp(par1, "trackautoclean")) == 0)
+				local_config.track_autoclean = atoi (par2);
+			else if ( (strcmp(par1, "showtrackrestartbutton")) == 0)
+				local_config.showbutton_trackrestart = atoi (par2);
+			else if ( (strcmp(par1, "showtrackclearbutton")) == 0)
+				local_config.showbutton_trackclear = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
 				local_config.travelmode = atoi (par2);
 			else if ( (strcmp(par1, "mutespeechoutput")) == 0)
@@ -643,10 +669,14 @@ config_init ()
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;
 	local_config.scale_wanted = 100000;
+	local_config.track_autointerval = 1;
 	local_config.mapsource_type = 0;
 	local_config.mapsource_scale = 0;
 	local_config.autobestmap = 1;
 	local_config.rotating_compass = TRUE;
+	local_config.track_autoclean = FALSE;
+	local_config.showbutton_trackclear = TRUE;
+	local_config.showbutton_trackrestart = TRUE;
 
 	/* set speech output */
 	g_strlcpy (local_config.speech_voice,
@@ -729,6 +759,8 @@ config_init ()
 		"%s%s", local_config.dir_home, "way.txt");
 	g_snprintf(local_config.config_file, sizeof(local_config.config_file),
 		"%s%s", local_config.dir_home, "gpsdriverc");
+	g_snprintf(local_config.track_autoprefix, sizeof(local_config.track_autoprefix),
+		"%s", "autosave");
 
 	/* mapnik default values */
 	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),

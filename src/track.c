@@ -38,6 +38,7 @@ Disclaimer: Please do not use for navigation.
 #include "gui.h"
 #include "main_gui.h"
 #include <math.h>
+#include "gpx.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>
@@ -66,6 +67,7 @@ extern gdouble milesconv;
 extern GtkWidget *main_window;
 extern gdouble hdop;
 extern gint sats_used;
+extern gpx_info_struct gpx_info;
 
 tripdata_struct trip;
 
@@ -486,14 +488,50 @@ void do_incremental_save() {
     }
 }
 
+/* ******************************************************************
+ *  Export current track to a gpx file
+ */
+gint
+track_autosave_cb (gboolean clear)
+{
+	gchar t_buf[500];
+	time_t t;
+	struct tm *ts;
+
+	time (&t);
+	ts = localtime (&t);
+
+	g_snprintf (t_buf, sizeof (t_buf), "%s%s_%d%d%d_%d%d.gpx",
+		local_config.dir_tracks, local_config.track_autoprefix,
+		ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min);
+
+	gpx_set_metadata ();
+		GTimeVal current_time;
+
+	g_get_current_time (&current_time);
+
+	g_strlcpy (gpx_info.name, _("Autosaved Track"), sizeof (gpx_info.name));
+	g_snprintf (gpx_info.desc, sizeof (gpx_info.desc), "%s %.1fh",
+		_("configured interval: "), (gdouble) local_config.track_autointerval/2);
+
+	if (mydebug > 10 )
+		g_print ("Exporting current track to %s\n", t_buf);
+
+	gpx_file_write (t_buf, GPX_TRK);
+
+	if (clear || local_config.track_autoclean)
+		track_clear_cb (NULL, TRUE);
+
+	return TRUE;
+}
 
 /* ******************************************************************
  *  Clear track and trip data, when 'clear trip' button is pressed
  */
 gint
-track_clear_cb (GtkWidget *widget, gpointer data)
+track_clear_cb (GtkWidget *widget, gboolean force)
 {
-	if (popup_yes_no(GTK_WINDOW (main_window),
+	if (force || popup_yes_no(GTK_WINDOW (main_window),
 		_("This deletes all recorded track data from memory!\n\nAre you sure?"))
 		== GTK_RESPONSE_YES)
 	{
@@ -504,6 +542,16 @@ track_clear_cb (GtkWidget *widget, gpointer data)
 	return TRUE;
 }
 
+/* ******************************************************************
+ *  Export track data to gpx and then clear track and trip data,
+ *  when 'restart track' button is pressed
+ */
+gint
+track_restart_cb (GtkWidget *widget, gpointer data)
+{
+	track_autosave_cb (TRUE);
+	return TRUE;
+}
 
 /* ******************************************************************
  * Allocate memory for track storage
