@@ -210,6 +210,25 @@ setcolor_cb (GtkWidget *widget, GdkColor *targetcolor)
 
 /* ************************************************************************* */
 static gint
+setlinestyle_cb (GtkWidget *widget, gint *value)
+{
+	gint selection;
+	
+	selection = gtk_combo_box_get_active (GTK_COMBO_BOX (widget)); 
+
+	if (selection != -1)
+		*value = selection;
+	
+	if (mydebug >10)
+		g_print ("Setting line style to %d.\n", *value);
+	
+	current.needtosave = TRUE;
+	
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
 setcoordmode_cb (GtkWidget *widget)
 {
 	gint selection;
@@ -1597,15 +1616,20 @@ settings_col (GtkWidget *notebook)
 	gtk_tooltips_set_tip (col_tooltips, col_trackcol_bt,
 		_("Set here the color of the drawn track"), NULL);
 	col_trackstyle_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text
-		(GTK_COMBO_BOX (col_trackstyle_combo), "line style");
 	gtk_tooltips_set_tip (col_tooltips, col_trackstyle_combo,
 		_("Set here the line style of the drawn track"), NULL);
-	// TODO: add 'change linestyle' functionality
-	// combobox is disabled until that is done
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_trackstyle_combo), _("________ solid ________"));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_trackstyle_combo), _("_ . _ .  dotdashed _ . _ . "));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_trackstyle_combo), _("_ _ _ _  dashed _ _ _ _ "));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_trackstyle_combo), _("........ dotted ........"));
 	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (col_trackstyle_combo), 0);
-	gtk_widget_set_sensitive (col_trackstyle_combo, FALSE);
+		(GTK_COMBO_BOX (col_trackstyle_combo), local_config.style_track);
+	g_signal_connect (col_trackstyle_combo, "changed",
+		GTK_SIGNAL_FUNC (setlinestyle_cb), &local_config.style_track);
 
 	/* Route line color & style */
 	col_routecol_lb = gtk_label_new (_("Route"));
@@ -1620,14 +1644,19 @@ settings_col (GtkWidget *notebook)
 		_("Set here the color of the drawn route"), NULL);
 	col_routestyle_combo = gtk_combo_box_new_text ();
 	gtk_combo_box_append_text
-		(GTK_COMBO_BOX (col_routestyle_combo), "line style");
+		(GTK_COMBO_BOX (col_routestyle_combo), _("________ solid ________"));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_routestyle_combo), _("_ . _ .  dotdashed _ . _ . "));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_routestyle_combo), _("_ _ _ _ dashed _ _ _ _ "));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (col_routestyle_combo), _("........ dotted ........"));
 	gtk_tooltips_set_tip (col_tooltips, col_routestyle_combo,
 		_("Set here the line style of the drawn route"), NULL);
-	// TODO: add 'change linestyle' functionality
-	// combobox is disabled until that is done
 	gtk_combo_box_set_active
-		(GTK_COMBO_BOX (col_routestyle_combo), 0);
-	gtk_widget_set_sensitive (col_routestyle_combo, FALSE);
+		(GTK_COMBO_BOX (col_routestyle_combo), local_config.style_route);
+	g_signal_connect (col_routestyle_combo, "changed",
+		GTK_SIGNAL_FUNC (setlinestyle_cb), &local_config.style_route);
 
 	/* Friends label color & font */
 	col_friendscol_lb = gtk_label_new (_("Friends"));

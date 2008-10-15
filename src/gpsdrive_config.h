@@ -111,6 +111,8 @@ typedef struct
 	gchar friends_id[40];
 	gchar friends_serverfqn[255];
 	gchar friends_serverip[20];
+	gint style_track;
+	gint style_route;
 	gchar color_track[40];
 	gchar color_route[40];
 	gchar color_friends[40];

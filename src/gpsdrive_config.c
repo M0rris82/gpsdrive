@@ -261,7 +261,9 @@ writeconfig ()
 	fprintf (fp, "dashboard_4 = %d\n", local_config.dashboard[4]);
 	fprintf (fp, "bigcolor = %s\n", local_config.color_dashboard);
 	fprintf (fp, "trackcolor = %s\n", local_config.color_track);
+	fprintf (fp, "trackstyle = %d\n", local_config.style_track);
 	fprintf (fp, "routecolor = %s\n", local_config.color_route);
+	fprintf (fp, "routestyle = %d\n", local_config.style_route);
 	fprintf (fp, "friendscolor = %s\n", local_config.color_friends);
 	fprintf (fp, "wplabelcolor = %s\n", local_config.color_wplabel);
 	fprintf (fp, "map_daycolor = %s\n", local_config.color_map_day);
@@ -556,9 +558,13 @@ readconfig ()
 			else if ( (strcmp(par1, "trackcolor")) == 0)
 				g_strlcpy (local_config.color_track, par2,
 				sizeof (local_config.color_track));
+			else if ( (strcmp(par1, "trackstyle")) == 0)
+				local_config.style_track = atoi (par2);
 			else if ( (strcmp(par1, "routecolor")) == 0)
 				g_strlcpy (local_config.color_route, par2,
 				sizeof (local_config.color_route));
+			else if ( (strcmp(par1, "routestyle")) == 0)
+				local_config.style_route = atoi (par2);
 			else if ( (strcmp(par1, "friendscolor")) == 0)
 				g_strlcpy (local_config.color_friends, par2,
 				sizeof (local_config.color_friends));
@@ -677,6 +683,8 @@ config_init ()
 	local_config.track_autoclean = FALSE;
 	local_config.showbutton_trackclear = TRUE;
 	local_config.showbutton_trackrestart = TRUE;
+	local_config.style_track = 3;
+	local_config.style_route = 1;
 
 	/* set speech output */
 	g_strlcpy (local_config.speech_voice,

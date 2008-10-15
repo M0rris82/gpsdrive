@@ -123,8 +123,16 @@ gint PSIZE;
 GtkWidget *main_window;
 GtkWidget *mapnik_bt;
 
+guint8 linestyles[][4] =
+{
+	"\7\1\7\1",
+	"\7\4\2\4",
+	"\14\14\14\14",
+	"\1\3\1\3"
+};
 
-	extern GtkAdjustment *adj_h, *adj_v;
+
+extern GtkAdjustment *adj_h, *adj_v;
 
 
 /****

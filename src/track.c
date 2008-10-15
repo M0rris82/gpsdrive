@@ -68,6 +68,7 @@ extern GtkWidget *main_window;
 extern gdouble hdop;
 extern gint sats_used;
 extern gpx_info_struct gpx_info;
+extern guint8 linestyles[][4];
 
 tripdata_struct trip;
 
@@ -315,7 +316,9 @@ drawtracks (void)
 	if (t < 1)
     	return;
 
-    gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_SOLID, 0, 0);
+	gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
+	gdk_gc_set_dashes (kontext_map, 0, (gpointer) linestyles[local_config.style_track], 4);
+
 	if (local_config.showshadow) {
  		gdk_gc_set_foreground (kontext_map, &colors.shadow);
 		gdk_gc_set_function (kontext_map, GDK_AND);

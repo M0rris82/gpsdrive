@@ -81,6 +81,7 @@ extern GtkWidget *main_window;
 extern GtkWidget *menuitem_saveroute;
 extern GHashTable *poi_types_hash;
 extern GtkTreeModel *poi_types_tree;
+extern guint8 linestyles[][4];
 
 GtkWidget *routewindow;
 wpstruct *routelist;
@@ -866,7 +867,9 @@ draw_route (void)
 
 	gdk_gc_set_foreground (kontext_map, &colors.route);
 	gdk_gc_set_background (kontext_map, &colors.white);
-	gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_DOUBLE_DASH, 0, 0);
+	gdk_gc_set_line_attributes (kontext_map, 4, GDK_LINE_ON_OFF_DASH, 0, 0);
+
+	gdk_gc_set_dashes (kontext_map, 0, (gpointer) linestyles[local_config.style_route], 4);
 	gdk_gc_set_function (kontext_map, GDK_COPY);
 	gdk_draw_segments (drawable, kontext_map, (GdkSegment *) route_seg, t);
 	g_free (route_seg);
