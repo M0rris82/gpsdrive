@@ -101,6 +101,9 @@ writeconfig ()
 	else
 		fprintf (fp, "0\n");
 
+	fprintf (fp, "trackpointsinterval = %d\n",
+		local_config.track_interval);
+
 	fprintf (fp, "trackautosaveinterval = %d\n",
 		local_config.track_autointerval);
 
@@ -338,6 +341,8 @@ readconfig ()
 				local_config.showwaypoints = atoi (par2);
 			else if ( (strcmp(par1, "showtrack")) == 0)
 				local_config.showtrack = atoi (par2);
+			else if ( (strcmp(par1, "trackpointsinterval")) == 0)
+				local_config.track_interval = atoi (par2);
 			else if ( (strcmp(par1, "trackautosaveinterval")) == 0)
 				local_config.track_autointerval = atoi (par2);
 			else if ( (strcmp(par1, "trackautosaveprefix")) == 0)
@@ -676,6 +681,7 @@ config_init ()
 	local_config.showfriends = FALSE;
 	local_config.scale_wanted = 100000;
 	local_config.track_autointerval = 1;
+	local_config.track_interval = 1;
 	local_config.mapsource_type = 0;
 	local_config.mapsource_scale = 0;
 	local_config.autobestmap = 1;

@@ -2651,7 +2651,8 @@ main (int argc, char *argv[])
 	}
 	if (nmeaout)
 		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
-	id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
+	id_timeout_track = g_timeout_add (local_config.track_interval *1000,
+		(GtkFunction) storetrack_cb, 0);
 	g_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
 	g_timeout_add (10 *1000, (GtkFunction) masteragent_cb, 0);
 	if (local_config.use_database)

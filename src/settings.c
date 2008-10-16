@@ -101,6 +101,7 @@ extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
 extern GHashTable *poi_types_hash;
 extern guint id_timeout_autotracksave;
+extern guint id_timeout_track;
 
 GtkWidget *settings_window = NULL;
 
@@ -597,6 +598,35 @@ settrkautoint_cb (GtkWidget *spin, gint data)
 	if (mydebug > 10)
 		g_print ("Setting interval for automatic track saving to %.1f hours.\n",
 			local_config.track_autointerval/2);
+
+	current.needtosave = TRUE;
+
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+settrkint_cb (GtkWidget *spin, gint data)
+{
+	gdouble value;
+	gint unit;
+	
+	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spin));
+	local_config.track_interval = value;
+
+	if (id_timeout_track != 0 && g_source_remove (id_timeout_track))
+		id_timeout_track = 0;
+
+	/* cap max. interval to 10 minutes */
+	if (local_config.track_autointerval > 600)
+	{
+		local_config.track_autointerval = 600;
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (spin), 600);
+	}
+
+	if (mydebug > 10)
+		g_print ("Setting interval between saved track points to %.1f hours.\n",
+			local_config.track_interval);
 
 	current.needtosave = TRUE;
 
@@ -1458,6 +1488,7 @@ settings_trk (GtkWidget *notebook)
 	GtkWidget *trk_label, *trk_autoint_label, *trk_autoint_spin;
 	GtkWidget *trk_autoprefix_label, *trk_autoprefix_entry;
 	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
+	GtkWidget *trk_int_label, *trk_unit_label, *trk_int_spin;
 	GtkTooltips *trk_tooltips;
 
 	trk_vbox = gtk_vbox_new (FALSE, 2);
@@ -1474,6 +1505,15 @@ settings_trk (GtkWidget *notebook)
 		_("Path to your track files."), NULL);
 	g_signal_connect (trkdir_bt, "selection-changed",
 		GTK_SIGNAL_FUNC (settrackdir_cb), NULL);
+
+	/* track interval setings */
+	trk_int_label = gtk_label_new (_("Time interval between Track Points"));
+	trk_unit_label = gtk_label_new (_("seconds"));
+	trk_int_spin = gtk_spin_button_new_with_range (1.0, 600.0, 1.0);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (trk_int_spin),
+		local_config.track_interval);
+	g_signal_connect (trk_int_spin, "changed",
+		GTK_SIGNAL_FUNC (settrkint_cb), NULL);
 
 	/* track buttons settings */
 	trk_showrestart_bt = gtk_check_button_new_with_label
@@ -1532,17 +1572,23 @@ settings_trk (GtkWidget *notebook)
 		(GTK_FRAME (trk_general_frame), trk_general_fr_lb);
 	gtk_frame_set_shadow_type
 		(GTK_FRAME (trk_general_frame), GTK_SHADOW_NONE);
-	trk_general_table = gtk_table_new (3, 2, FALSE);
+	trk_general_table = gtk_table_new (4, 5, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (trk_general_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (trk_general_table), 5);
 	gtk_table_attach (GTK_TABLE (trk_general_table),
-		trkdir_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		trkdir_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
-		trkdir_bt, 1, 2, 0, 1);
+		trkdir_bt, 1, 5, 1, 2);
+	gtk_table_attach (GTK_TABLE (trk_general_table),
+		trk_int_label, 0, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_general_table),
+		trk_int_spin, 3, 4, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach (GTK_TABLE (trk_general_table),
+		trk_unit_label, 4, 5, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
-		trk_showclear_bt, 0, 2, 1, 2);
+		trk_showclear_bt, 0, 5, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
-		trk_showrestart_bt, 0, 2, 2, 3);
+		trk_showrestart_bt, 0, 5, 3, 4);
 	gtk_container_add (GTK_CONTAINER (trk_general_frame), trk_general_table);
 
 	/* autosave settings frame */

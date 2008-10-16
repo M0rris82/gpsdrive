@@ -861,7 +861,7 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 		case GPX_TRK:
 			/* remove timeout function to prevent adding new
 			 * trackpoints while we are writing */
-			if (g_source_remove (id_timeout_track))
+			if (id_timeout_track != 0 && g_source_remove (id_timeout_track))
 				id_timeout_track = 0;
 
 			xmlTextWriterStartElement(xml_writer, BAD_CAST "trk");
@@ -963,7 +963,8 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 			xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 			
 			/* add timeout function again to continue track recording */
-			id_timeout_track = g_timeout_add (1000, (GtkFunction) storetrack_cb, 0);
+			id_timeout_track = g_timeout_add (local_config.track_interval *1000,
+				(GtkFunction) storetrack_cb, 0);
 			break;
 
 		case GPX_WPT:

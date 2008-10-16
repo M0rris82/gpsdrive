@@ -92,6 +92,7 @@ typedef struct
 	gboolean showbutton_trackclear;
 	gboolean track_autoclean;
 	gboolean track_autointerval;
+	gboolean track_interval;
 	gchar track_autoprefix[50];
 	gboolean autobestmap;
 	gint scale_wanted;
