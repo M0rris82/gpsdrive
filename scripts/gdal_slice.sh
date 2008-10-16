@@ -21,7 +21,7 @@
 #   - Is georegistered
 #   - Has minimal convergence angle (true North is directly up). see man page
 #
-#  Requires GDAL tools from gdal.org and NetPBM tools.
+#  Requires awk, GDAL tools from gdal.org and NetPBM tools.
 #
 # Important! The maps must be named "map_*" for UTM-like projections
 # (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carree projection
@@ -41,6 +41,9 @@ TOPMAP="$2"
 IMGFMT="$3"
 
 
+# percent tiles will overlap. 33% is nice; 25% gets jumpy; 20% is minimum
+OVERLAP=33
+
 #defaults
 if [ -z "$TOPMAP" ] ; then
     TOPMAP=map
@@ -48,6 +51,7 @@ fi
 if [ -z "$IMGFMT" ] ; then
     IMGFMT=png
 fi
+
 
 if [ ! -r "$INPUT_IMG_NAME" ] ; then
    echo "Can't find file <$INPUT_IMG_NAME>"
@@ -69,12 +73,12 @@ SIZE_STR=`gdalinfo "$INPUT_IMG" | \
 SIZE_X=`echo "$SIZE_STR" | cut -f1 -d' '`
 SIZE_Y=`echo "$SIZE_STR" | cut -f2 -d' '`
 
+
 # build the sequence of tiles
-#XOFF_SEQ=`seq 0 1280 $SIZE_X | head -n-1`
-#YOFF_SEQ=`seq 0 1024 $SIZE_Y | head -n-1`
-# 1/4 overlap
-XOFF_SEQ=`seq 0 960 $SIZE_X | head -n-1`
-YOFF_SEQ=`seq 0 768 $SIZE_Y | head -n-1`
+DELTA_X=`echo $OVERLAP | awk '{print 1280 - int($1 * 1280/100.0) }'`
+DELTA_Y=`echo $OVERLAP | awk '{print 1024 - int($1 * 1024/100.0) }'`
+XOFF_SEQ=`seq 0 $DELTA_X $SIZE_X | head -n-1`
+YOFF_SEQ=`seq 0 $DELTA_Y $SIZE_Y | head -n-1`
 
 #left overs
 LAST_X_OFF=`echo "$SIZE_X - 1280" | bc`
