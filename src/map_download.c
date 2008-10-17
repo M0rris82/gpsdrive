@@ -219,7 +219,7 @@ mapdl_geturl_landsat (void)
 {
 	gdouble t_lat1, t_lat2, t_lon1, t_lon2;
 	gdouble meters_per_pixel, dist_to_edge_m, dist_to_edge_deg;
-	gchar wms_url[512];
+	gchar wms_url[512], wms_layers[512];
 
 	/* output is a planimetric "map_" projection (UTM-like, x_scale=y_scale) */
 	meters_per_pixel = mapdl_scale / PIXELFACT;
@@ -251,15 +251,21 @@ mapdl_geturl_landsat (void)
 	*/
 
 	strcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi");
+	strcpy(wms_layers, "global_mosaic");  /* may be a comma separated list */
+
+	/* EPSG code 4326 is lat/lon WGS84. Image will strech to fit within
+	  * the requested bounds, so it depends on us to choose correctly
+	  * so that x_scale = y_scale */
 
 	g_snprintf (mapdl_url, sizeof (mapdl_url),
 		"%s?request=GetMap"
 		"&width=%d&height=%d"
-		"&layers=global_mosaic&styles="
+		"&layers=%s&styles="
 		"&srs=EPSG:4326"
 		"&format=image/jpeg"
 		"&bbox=%.5f,%.5f,%.5f,%.5f",
-		wms_url, MAPWIDTH, MAPHEIGHT, t_lon1, t_lat1, t_lon2, t_lat2);
+		wms_url, MAPWIDTH, MAPHEIGHT, wms_layers,
+		t_lon1, t_lat1, t_lon2, t_lat2);
 }
 
 
