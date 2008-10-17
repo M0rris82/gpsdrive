@@ -102,17 +102,21 @@ static struct mapsource_struct
 	gint scale_int;
 } mapsource[] =
 {
-	MAPSOURCE_LANDSAT, "Landsat", -1, -1,
-	MAPSOURCE_LANDSAT, "1 : 50 000 000", 50000*6.4, 50000000,
-	MAPSOURCE_LANDSAT, "1 : 10 000 000", 10000*6.4, 10000000,
-	MAPSOURCE_LANDSAT, "1 : 5 000 000", 5000*6.4, 5000000,
-	MAPSOURCE_LANDSAT, "1 : 1 000 000", 1000*6.4, 1000000,
-	MAPSOURCE_LANDSAT, "1 : 500 000", 500*6.4, 500000,
-	MAPSOURCE_LANDSAT, "1 : 100 000", 100*6.4, 100000,
-	MAPSOURCE_LANDSAT, "1 : 50 000", 50*6.4, 50000,
-	MAPSOURCE_LANDSAT, "1 : 10 000", 10*6.4, 10000,
-	MAPSOURCE_LANDSAT, "1 : 5 000", 5*6.4, 5000,
-	MAPSOURCE_LANDSAT, "1 : 2 000", 2*6.4, 2000,
+/* LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
+ *  so anything finer than that is just downloading interpolated noise and you
+ *  might as well just use the magnifying glass tool.
+ * At the other end, top_gpsworld covering entire planet is about 1:88 million
+ */
+	MAPSOURCE_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
+	MAPSOURCE_LANDSAT, "1 : 50 000 000", 0, 50000000,
+	MAPSOURCE_LANDSAT, "1 : 10 000 000", 0, 10000000,
+	MAPSOURCE_LANDSAT, "1 : 5 000 000", 0, 5000000,
+	MAPSOURCE_LANDSAT, "1 : 1 000 000", 0, 1000000,
+	MAPSOURCE_LANDSAT, "1 : 500 000", 0, 500000,
+	MAPSOURCE_LANDSAT, "1 : 250 000", 0, 250000,
+	MAPSOURCE_LANDSAT, "1 : 100 000", 0, 100000,
+	MAPSOURCE_LANDSAT, "1 : 75 000", 0, 75000,
+	MAPSOURCE_LANDSAT, "1 : 50 000", 0, 50000,
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
 	MAPSOURCE_OSM_TAH, "1 : 147 456 000", 1, 256*576000,
 	MAPSOURCE_OSM_TAH, "1 : 73 728 000", 2, 128*576000,
@@ -214,19 +218,48 @@ void
 mapdl_geturl_landsat (void)
 {
 	gdouble t_lat1, t_lat2, t_lon1, t_lon2;
-	gdouble deltalat = 0.0005;
-	gdouble deltalon = 0.001;   // Gives ratio 1.2 in meter
+	gdouble meters_per_pixel, dist_to_edge_m, dist_to_edge_deg;
+	gchar wms_url[512];
 
-	t_lon1 = mapdl_lon-deltalon*mapdl_zoom/2;
-	t_lat1 = mapdl_lat-deltalat*mapdl_zoom/2;
-	t_lon2 = mapdl_lon+deltalon*mapdl_zoom/2;
-	t_lat2 = mapdl_lat+deltalat*mapdl_zoom/2;
+	/* output is a planimetric "map_" projection (UTM-like, x_scale=y_scale) */
+	meters_per_pixel = mapdl_scale / PIXELFACT;
+
+	/* lat */
+	dist_to_edge_m = meters_per_pixel * MAPHEIGHT/2;
+	dist_to_edge_deg = dist_to_edge_m / (1852.0*60);
+	  /* 1852m/naut mile (arc-minute of LAT) */
+	t_lat1 = mapdl_lat - dist_to_edge_deg;
+	t_lat2 = mapdl_lat + dist_to_edge_deg;
+
+	/* lon */
+	dist_to_edge_m = meters_per_pixel * MAPWIDTH/2;
+	dist_to_edge_deg = dist_to_edge_m / (1852.0*60*cos(DEG2RAD(mapdl_lat)));
+	  /* 1852m/naut mile (arc-minute of LAT), lon:lat ratio = cos(lat) */
+	t_lon1 = mapdl_lon - dist_to_edge_deg;
+	t_lon2 = mapdl_lon + dist_to_edge_deg;
+
+	if ( t_lat1 < -90 )  t_lat1 = -90;
+	if ( t_lat2 > 90 )   t_lat2 = 90;
+	if ( t_lon1 < -180 ) t_lon1 += 360;
+	if ( t_lon2 > 180 )  t_lon2 -= 360;
+
+	/* DEBUG
+	printf("-> mapdl_scale=%d  mapdl_zoom=%d\n", mapdl_scale, mapdl_zoom);
+	printf("-> mapdl_lat=%f  mapdl_lon=%f\n", mapdl_lat, mapdl_lon);
+	printf("-> t_lat1=%f  t_lon1=%f\n", t_lat1, t_lon1);
+	printf("-> t_lat2=%f  t_lon2=%f\n", t_lat2, t_lon2);
+	*/
+
+	strcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi");
 
 	g_snprintf (mapdl_url, sizeof (mapdl_url),
-		"http://onearth.jpl.nasa.gov/wms.cgi?request=GetMap"
-		"&width=1280&height=1024&layers=global_mosaic&styles="
-		"&srs=EPSG:4326&format=image/jpeg&bbox=%.5f,%.5f,%.5f,%.5f",
-		t_lon1, t_lat1, t_lon2, t_lat2);
+		"%s?request=GetMap"
+		"&width=%d&height=%d"
+		"&layers=global_mosaic&styles="
+		"&srs=EPSG:4326"
+		"&format=image/jpeg"
+		"&bbox=%.5f,%.5f,%.5f,%.5f",
+		wms_url, MAPWIDTH, MAPHEIGHT, t_lon1, t_lat1, t_lon2, t_lat2);
 }
 
 
@@ -237,7 +270,8 @@ void
 mapdl_geturl_osm_tah (void)
 {
 	g_snprintf (mapdl_url, sizeof (mapdl_url),
-		"http://server.tah.openstreetmap.org/MapOf/?lat=%.5f&long=%.5f"
+		"http://server.tah.openstreetmap.org/MapOf/"
+		"?lat=%.5f&long=%.5f"
 		"&z=%d&w=1280&h=1024&format=png",
 		mapdl_lat, mapdl_lon, mapdl_zoom);
 }
