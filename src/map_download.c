@@ -84,6 +84,7 @@ enum
 gboolean mapdl_active = FALSE;
 guint mapdl_scale;
 gdouble mapdl_lat, mapdl_lon;
+gchar mapdl_proj[4];  /* "top" or "map", check for override in map_projection().c */
 
 static gchar mapdl_url[2000];
 static gboolean mapdl_abort = FALSE;
@@ -102,21 +103,32 @@ static struct mapsource_struct
 	gint scale_int;
 } mapsource[] =
 {
-/* LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
- *  so anything finer than that is just downloading interpolated noise and you
- *  might as well just use the magnifying glass tool.
- * At the other end, top_gpsworld covering entire planet is about 1:88 million
+/* - LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
+ *     so anything finer than that is just downloading interpolated noise and you
+ *     might as well just use the magnifying glass tool.
+ * - At the other end, top_gpsworld covering entire planet is about 1:88 million
+ * - For "map_" images anything wider than ~ 1:125k to 500k exposes the projection's
+ *   distortion at wide longitudes from the center, and so a switch should be made
+ *   to "top_" Plate Carrée maps.
  */
 	MAPSOURCE_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
-	MAPSOURCE_LANDSAT, "1 : 50 000 000", 0, 50000000,
-	MAPSOURCE_LANDSAT, "1 : 10 000 000", 0, 10000000,
-	MAPSOURCE_LANDSAT, "1 : 5 000 000", 0, 5000000,
-	MAPSOURCE_LANDSAT, "1 : 1 000 000", 0, 1000000,
-	MAPSOURCE_LANDSAT, "1 : 500 000", 0, 500000,
-	MAPSOURCE_LANDSAT, "1 : 250 000", 0, 250000,
-	MAPSOURCE_LANDSAT, "1 : 100 000", 0, 100000,
-	MAPSOURCE_LANDSAT, "1 : 75 000", 0, 75000,
 	MAPSOURCE_LANDSAT, "1 : 50 000", 0, 50000,
+	MAPSOURCE_LANDSAT, "1 : 75 000", 0, 75000,
+	MAPSOURCE_LANDSAT, "1 : 100 000", 0, 100000,
+	MAPSOURCE_LANDSAT, "1 : 250 000", 0, 250000,
+	MAPSOURCE_LANDSAT, "1 : 500 000", 0, 500000,
+	MAPSOURCE_LANDSAT, "1 : 1 million", 0, 1000000,
+	  /* wider scales than 1:1million switch to "top_" Plate Carrée
+	  	projection. It would be more accurate to switch nearer to
+		1:125k,	but map_ is prettier so we hold on longer than we should.
+		Distortion grows the further you get from lon_0; e.g. UTM
+		is only	"valid" in a 6deg wide band. Usage beyond half the
+		next band is not recommended, and by the time you get to
+		+/-90deg from lon_0 it completely breaks. */
+	MAPSOURCE_LANDSAT, "1 : 2.5 million", 0, 2500000,
+	MAPSOURCE_LANDSAT, "1 : 5 million", 0, 5000000,
+	MAPSOURCE_LANDSAT, "1 : 10 million", 0, 10000000,
+	MAPSOURCE_LANDSAT, "1 : 50 million", 0, 50000000,
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
 	MAPSOURCE_OSM_TAH, "1 : 147 456 000", 1, 256*576000,
 	MAPSOURCE_OSM_TAH, "1 : 73 728 000", 2, 128*576000,
@@ -218,10 +230,9 @@ void
 mapdl_geturl_landsat (void)
 {
 	gdouble t_lat1, t_lat2, t_lon1, t_lon2;
-	gdouble meters_per_pixel, dist_to_edge_m, dist_to_edge_deg;
+	gdouble meters_per_pixel, dist_to_edge_m, dist_to_edge_deg, bump;
 	gchar wms_url[512], wms_layers[512];
 
-	/* output is a planimetric "map_" projection (UTM-like, x_scale=y_scale) */
 	meters_per_pixel = mapdl_scale / PIXELFACT;
 
 	/* lat */
@@ -233,25 +244,66 @@ mapdl_geturl_landsat (void)
 
 	/* lon */
 	dist_to_edge_m = meters_per_pixel * MAPWIDTH/2;
-	dist_to_edge_deg = dist_to_edge_m / (1852.0*60*cos(DEG2RAD(mapdl_lat)));
-	  /* 1852m/naut mile (arc-minute of LAT), lon:lat ratio = cos(lat) */
+	if (mapdl_scale <= 1000000) {
+	    g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));  /* cartesian space (UTM-like) */
+	    dist_to_edge_deg = dist_to_edge_m / (1852.0*60*cos(DEG2RAD(mapdl_lat)));
+	      /* 1852m/naut mile (arc-minute of LAT), lon:lat ratio = cos(lat) */
+	} else {
+	    g_strlcpy(mapdl_proj, "top", sizeof(mapdl_proj));  /* Plate Carrée */
+	    dist_to_edge_deg = dist_to_edge_m / (1852.0*60);
+	}
+
 	t_lon1 = mapdl_lon - dist_to_edge_deg;
 	t_lon2 = mapdl_lon + dist_to_edge_deg;
 
-	if ( t_lat1 < -90 )  t_lat1 = -90;
-	if ( t_lat2 > 90 )   t_lat2 = 90;
-	if ( t_lon1 < -180 ) t_lon1 += 360;
-	if ( t_lon2 > 180 )  t_lon2 -= 360;
-
 	/* DEBUG
-	printf("-> mapdl_scale=%d  mapdl_zoom=%d\n", mapdl_scale, mapdl_zoom);
-	printf("-> mapdl_lat=%f  mapdl_lon=%f\n", mapdl_lat, mapdl_lon);
-	printf("-> t_lat1=%f  t_lon1=%f\n", t_lat1, t_lon1);
-	printf("-> t_lat2=%f  t_lon2=%f\n", t_lat2, t_lon2);
+	if (mydebug > 3) {
+	    printf("=> mapdl_scale=%d  mapdl_zoom=%d\n", mapdl_scale, mapdl_zoom);
+	    printf("=> mapdl_lat=%f  mapdl_lon=%f\n", mapdl_lat, mapdl_lon);
+	    printf("=> t_lat1=%f  t_lon1=%f\n", t_lat1, t_lon1);
+	    printf("=> t_lat2=%f  t_lon2=%f\n", t_lat2, t_lon2);
+	}
 	*/
 
-	strcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi");
-	strcpy(wms_layers, "global_mosaic");  /* may be a comma separated list */
+	/* sanitize */
+	/* bump has problem if > 90N-90S spans */
+	/* >,< 90 lat is valid for the server, but not useful for us */
+	if ( t_lat1 < -90 || t_lat2 > 90 ) {
+	    if ( t_lat1 < -90 ) {
+		bump = t_lat1 +90;
+		t_lat1 -= bump;
+		t_lat2 -= bump;
+	    }
+	    if ( t_lat2 > 90 ) {
+		bump = t_lat2 -90;
+		t_lat1 -= bump;
+		t_lat2 -= bump;
+	    }
+	    /* recalc lon extent based on new lat */
+	    mapdl_lat = (t_lat1 + t_lat2)/2;
+	    if ( strcmp(mapdl_proj, "map") == 0 )
+		dist_to_edge_deg = dist_to_edge_m / (1852.0*60*cos(DEG2RAD(mapdl_lat)));
+	    t_lon1 = mapdl_lon - dist_to_edge_deg;
+	    t_lon2 = mapdl_lon + dist_to_edge_deg;
+	}
+
+	/* valid: -180 to 360 deg*/
+	if ( t_lon1 < -180 ) {
+	    t_lon1 += 360;
+	    t_lon2 += 360;
+	}
+
+	/* DEBUG
+	if (mydebug > 3) {
+	    printf("-> mapdl_scale=%d  mapdl_zoom=%d\n", mapdl_scale, mapdl_zoom);
+	    printf("-> mapdl_lat=%f  mapdl_lon=%f\n", mapdl_lat, mapdl_lon);
+	    printf("-> t_lat1=%f  t_lon1=%f\n", t_lat1, t_lon1);
+	    printf("-> t_lat2=%f  t_lon2=%f\n", t_lat2, t_lon2);
+	}
+	*/
+
+	g_strlcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi", sizeof(wms_url));
+	g_strlcpy(wms_layers, "global_mosaic", sizeof(wms_layers));  /* may be a comma separated list */
 
 	/* EPSG code 4326 is lat/lon WGS84. Image will strech to fit within
 	  * the requested bounds, so it depends on us to choose correctly
@@ -275,6 +327,7 @@ mapdl_geturl_landsat (void)
 void
 mapdl_geturl_osm_tah (void)
 {
+	g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj)); /* projection is UTM-like */
 	g_snprintf (mapdl_url, sizeof (mapdl_url),
 		"http://server.tah.openstreetmap.org/MapOf/"
 		"?lat=%.5f&long=%.5f"
@@ -374,7 +427,7 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 {
 	gchar file_path[512];
 	gchar path[40];
-	gchar type[4];
+	gchar img_fmt[4];
 
 	if (mapdl_active)
 		return TRUE;
@@ -384,12 +437,12 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	{
 		case MAPSOURCE_LANDSAT:
 			g_strlcpy (path, "landsat", sizeof (path));
-			g_strlcpy (type, "jpg", sizeof (type));
+			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
 			mapdl_geturl_landsat ();
 			break;
 		case MAPSOURCE_OSM_TAH:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
-			g_strlcpy (type, "png", sizeof (type));
+			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
 			mapdl_geturl_osm_tah ();
 			break;
 		default:
@@ -413,8 +466,8 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	}
 
 	/* complete filename */
-	g_snprintf (mapdl_file_w_path, sizeof (mapdl_file_w_path), "%smap_%d_%5.3f_%5.3f.%s",
-		file_path, mapdl_scale, mapdl_lat, mapdl_lon, type);
+	g_snprintf (mapdl_file_w_path, sizeof (mapdl_file_w_path), "%s%s_%d_%5.3f_%5.3f.%s",
+		file_path, mapdl_proj, mapdl_scale, mapdl_lat, mapdl_lon, img_fmt);
 
 	if (mydebug > 10)
 		g_print ("  filename: %s\n", mapdl_file_w_path);

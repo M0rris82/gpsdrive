@@ -79,8 +79,9 @@ map_projection (char *filename)
 
   if (strstr (filename, "expedia/"))
     proj = proj_map;
+/*  landsat projection is based on scale, so pick from map_ or top_ in filename.
   else if (strstr (filename, "landsat/"))
-    proj = proj_map;
+    proj = proj_map; */
   else if (strstr (filename, "geoscience/"))
     proj = proj_map;
   else if (strstr (filename, "incrementp/"))
@@ -96,8 +97,9 @@ map_projection (char *filename)
   else if (strstr (filename, "googlesat/"))
     proj = proj_googlesat;
 #ifdef MAPNIK
+  /* user may have previously downloaded mapnik tiles even if current build doesn't */
   else if (strstr (filename, "mapnik/"))
-    proj = proj_map;
+    proj = proj_map;  /* why not proj_mapnik ? */
 #endif
   else if (strstr (filename, "NASAMAPS/"))
     proj = proj_top;
