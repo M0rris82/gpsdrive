@@ -13,6 +13,9 @@ gpsdrive/script/ directory. Use the script that matches your distro.
 Currently supported-
   debian		gpsdrive/scripts/devpackages-debian.sh
 
+I think a simple 
+	/usr/lib/pbuilder/pbuilder-satisfydepends
+inside the main directory should do the trick and install all needed dependencies.
 
 
 Note 2:
