@@ -363,6 +363,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 	wpt.hdop = -1.0;
 	wpt.fix = 0;
 	wpt.sat = 0;
+	wpt.ele = -99999;
 
 	if (mydebug > 20)
 		fprintf (stderr, "gpx_handle_point: %s\n", mode_string);
@@ -456,7 +457,7 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tName     : %s\n", wpt.name);
 		fprintf (stderr, "\tComment  : %s\n", wpt.cmt);
 		fprintf (stderr, "\tType     : %s\n", wpt.type);
-		fprintf (stderr, "\tElevation: %sm\n", wpt.ele);
+		fprintf (stderr, "\tElevation: %s m\n", wpt.ele);
 		fprintf (stderr, "\tTime     : %s\n", wpt.time);
 		fprintf (stderr, "\tCourse   : %s\n", wpt.course);    /* these should be %f not %s ?! */
 		fprintf (stderr, "\tSpeed    : %skm/h\n", wpt.speed);
