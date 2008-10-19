@@ -125,10 +125,12 @@ static struct mapsource_struct
 		is only	"valid" in a 6deg wide band. Usage beyond half the
 		next band is not recommended, and by the time you get to
 		+/-90deg from lon_0 it completely breaks. */
+/* TODO: add another field for proj or use mapdl_zoom as 0/1 for map_/top_ ??? */
 	MAPSOURCE_LANDSAT, "1 : 2.5 million", 0, 2500000,
 	MAPSOURCE_LANDSAT, "1 : 5 million", 0, 5000000,
 	MAPSOURCE_LANDSAT, "1 : 10 million", 0, 10000000,
 	MAPSOURCE_LANDSAT, "1 : 50 million", 0, 50000000,
+
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
 	MAPSOURCE_OSM_TAH, "1 : 147 456 000", 1, 256*576000,
 	MAPSOURCE_OSM_TAH, "1 : 73 728 000", 2, 128*576000,
@@ -189,6 +191,8 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 		gtk_tree_model_get (GTK_TREE_MODEL (scales_list), &t_iter,
 			2, &mapdl_zoom,
 			3, &mapdl_scale, -1);
+/* TODO: determine map_ or top_ proj at this point so drawdownloadrectangle()
+ *	 knows how big to draw the green preview box */
 		if (mydebug > 3)
 			g_print ("new map scale/zoom level: %d / %d\n",
 				mapdl_scale, mapdl_zoom);

@@ -310,9 +310,9 @@ test_loaded_map_names ()
 	  g_string_printf (error, "%s%d\n%s\n",
 		_("Error in line "), i + 1,
 		_("I have found filenames in map_koord.txt which are\n"
-		  "not map_* or top_* files. Please rename them and change the entries in\n"
-		  "map_koord.txt.  Use map_* for street maps and top_* for topographical\n"
-		  "maps.  Otherwise, the maps will not be displayed!"));
+		  "not map_* or top_* files. Please rename them and change the entries\n"
+		  "in map_koord.txt.  Use map_* for UTM-like projections and top_* for\n"
+		  "Plate Caree maps.  Otherwise, the maps will not be displayed!"));
 	  popup_warning (NULL, error->str);
 	  g_string_free (error, TRUE);
 	  message_wrong_maps_shown = TRUE;
@@ -962,20 +962,39 @@ drawloadedmaps ()
   gint x, y;
   gdouble la, lo;
   gint scale, xo, yo;
+  enum map_projections file_proj = proj_map;  /* still draw something on fail */
+
   if (mydebug > 50)
     fprintf (stderr, "drawloadedmaps()\n");
+
   for (i = 0; i < nrmaps; i++)
     {
       scale = mapdl_scale;
       if (maps[i].scale <= scale * 1.2 && maps[i].scale >= scale * 0.8)
 	{
-	  //printf("Selected map at lon %lf lat %lf\n",maps[i].lat,maps[i].lon);
+	  //printf("Selected map at lon %lf lat %lf\n", maps[i].lat, maps[i].lon);
 	  la = maps[i].lat;
 	  lo = maps[i].lon;
-	  //              scale=maps[i].scale;
+
 	  calcxy (&x, &y, lo, la, current.zoom);
-	  xo = 1280.0 * current.zoom * scale / current.mapscale;
+
+	  /* adjust for map_ or top_ projection */
+	  file_proj = map_projection (maps[i].filename);
+
 	  yo = 1024.0 * current.zoom * scale / current.mapscale;
+
+	  if(map_proj == proj_top) { /* currently displayed tile is "top_" */
+		if(file_proj == proj_top) /* plate caree */
+		   xo = 1280.0 * current.zoom * maps[i].scale / current.mapscale;
+		else
+		   xo = 1280.0 * (1/cos(DEG2RAD(la))) * current.zoom * maps[i].scale / current.mapscale;
+	  } else { /* currently displayed tile is "map_" */
+		if(file_proj == proj_top) /* plate caree */
+		   xo = 1280.0 * cos(DEG2RAD(la)) * current.zoom * maps[i].scale / current.mapscale;
+		else
+		   xo = 1280.0 * current.zoom * maps[i].scale / current.mapscale;
+	  }
+
 	  // yellow background
 	  gdk_gc_set_foreground (kontext_map, &colors.yellow);
 	  gdk_gc_set_function (kontext_map, GDK_AND);
@@ -1002,7 +1021,9 @@ drawdownloadrectangle (gint big)
 
   if (mydebug > 50)
     fprintf (stderr, "drawdownloadrectangle()\n");
+
   drawloadedmaps ();
+
   if (gui_status.dl_window)
     {
       gint x, y;
@@ -1011,9 +1032,13 @@ drawdownloadrectangle (gint big)
       la = mapdl_lat;
       lo = mapdl_lon;
       scale = mapdl_scale;
+
+      /* display green preview rectangle covering area to be downloaded */
       gdk_gc_set_foreground (kontext_map, &colors.green_light);
       gdk_gc_set_function (kontext_map, GDK_AND);
       gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
+
+/* TODO: adjust for map_ or top_ projection */
       if (big)
 	{
 	  calcxy (&x, &y, lo, la, current.zoom);
@@ -1024,7 +1049,7 @@ drawdownloadrectangle (gint big)
 	}
       else
 	  if (local_config.guimode != GUI_CAR
-	      && ! local_config.MapnikStatusInt )	{
+	      && ! local_config.MapnikStatusInt ) {
 	      calcxymini (&x, &y, lo, la, 1);
 	      xo = 128.0 * scale / current.mapscale;
 	      yo = 102.0 * scale / current.mapscale;
@@ -1034,5 +1059,4 @@ drawdownloadrectangle (gint big)
       
       gdk_gc_set_function (kontext_map, GDK_COPY);
     }
-
 }
