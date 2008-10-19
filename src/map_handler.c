@@ -981,7 +981,7 @@ drawloadedmaps ()
 	  /* adjust for map_ or top_ projection */
 	  file_proj = map_projection (maps[i].filename);
 
-	  yo = 1024.0 * current.zoom * scale / current.mapscale;
+	  yo = 1024.0 * current.zoom * maps[i].scale / current.mapscale;
 
 	  if(map_proj == proj_top) { /* currently displayed tile is "top_" */
 		if(file_proj == proj_top) /* plate caree */
@@ -994,6 +994,7 @@ drawloadedmaps ()
 		else
 		   xo = 1280.0 * current.zoom * maps[i].scale / current.mapscale;
 	  }
+	  /* printf("file=%s  file.scale=%d\n", maps[i].filename, maps[i].scale); */
 
 	  // yellow background
 	  gdk_gc_set_foreground (kontext_map, &colors.yellow);
