@@ -297,13 +297,16 @@ typedef struct
 /* current position */
 	gdouble current_lon;
 	gdouble current_lat;
-/* target position */
+/* (next) target position */
 	gdouble target_lon;
 	gdouble target_lat;
 /* saved "current position" while in pos mode */
 	gdouble posmode_lon;
 	gdouble posmode_lat;
-	
+/* target position */
+	gdouble dest_lon;
+	gdouble dest_lat;
+
 /* ### What's the exact usage of for these variables???
  * TODO: Maybe they should be renamed to something more useful */
 	gdouble zero_lon;

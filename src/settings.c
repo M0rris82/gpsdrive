@@ -1167,7 +1167,7 @@ settings_gui (GtkWidget *notebook)
 	GtkWidget *gui_battery_bt, *gui_temp_bt, *gui_wayshow_bt;
 	GtkWidget *gui_marker_lb, *gui_marker_bt;
 	GtkWidget *dist_label, *dist_combo;
-	GtkWidget *alt_label, *alt_combo;
+	GtkWidget *alt_label, *alt_combo, *gui_destline_bt;
 	GtkWidget *coord_label, *coord_combo;
 	GtkWidget *units_table, *units_frame, *units_fr_lb;
 	GtkTooltips *gui_tooltips;
@@ -1262,6 +1262,23 @@ settings_gui (GtkWidget *notebook)
 		      GTK_SIGNAL_FUNC (settogglevalue_cb),
 		      &local_config.rotating_compass);
 
+	gui_destline_bt = gtk_check_button_new_with_label (_("Connect Destination"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_destline_bt,
+		_("Show a line connecting the current position with the destination"), NULL);
+	if (local_config.showdestline)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_destline_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_destline_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_destline_bt), "clicked",
+		      GTK_SIGNAL_FUNC (settogglevalue_cb),
+		      &local_config.showdestline);
+
 	gui_wayshow_bt = gtk_check_button_new_with_label (_("Show way info (EXPERIMENTAL!)"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_wayshow_bt,
 		_("This will show information about the current way (this is an experimental feature, which may not work as expected!!!"), NULL);
@@ -1299,7 +1316,7 @@ settings_gui (GtkWidget *notebook)
 	g_signal_connect (gui_marker_bt, "changed",
 		GTK_SIGNAL_FUNC (setposmarker_cb), NULL);
 
-	gui_map_table = gtk_table_new (4, 4, FALSE);
+	gui_map_table = gtk_table_new (5, 4, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (gui_map_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (gui_map_table), 5);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
@@ -1313,11 +1330,13 @@ settings_gui (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
 		gui_compassmode_bt, 0, 1, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_wayshow_bt, 2, 3, 2, 3);
+		gui_destline_bt, 2, 3, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_marker_lb, 0, 1, 3, 4);
+		gui_wayshow_bt, 0, 3, 3, 4);
 	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
-		gui_marker_bt, 2, 3, 3, 4);
+		gui_marker_lb, 0, 1, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (gui_map_table),
+		gui_marker_bt, 2, 3, 4, 5);
 	}
 
 	/* other features settings */

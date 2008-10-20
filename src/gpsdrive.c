@@ -1061,6 +1061,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 	    blink = TRUE;
 	}
 
+	if (local_config.showdestline)
+		draw_destination_line ();
+
 	if (current.gpsfix > 1 || blink)
 	{
 		if (gui_status.posmode)
@@ -1133,7 +1136,6 @@ drawmarker (GtkWidget * widget, guint * datum)
 	else
 		draw_posmarker (posxdest, posydest, 0, &colors.red, 3, FALSE, FALSE);
 	crosstoggle = !crosstoggle;
-
 
 	/* display messages on map */
 	display_dsc ();

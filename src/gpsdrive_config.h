@@ -75,6 +75,7 @@ typedef struct
 	gint simmode;
 	gboolean use_database;
 	gboolean rotating_compass;
+	gboolean showdestline;
 	gboolean showmaptype;
 	gboolean showgrid;
 	gboolean showshadow;

@@ -91,6 +91,7 @@ gint thisrouteline = 0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 routestatus_struct route;
 extern GtkWidget *route_window;
+extern GtkWidget *routeinfo_evbox;
 
 /* ******************************************************************
  */
@@ -522,6 +523,8 @@ void add_routepoint
 	gtk_list_store_append (route_list_tree, &iter_route);
 
 	route.items +=1;
+	coords.dest_lon = t_lon;
+	coords.dest_lat = t_lat;
 
 	/* calculate route trip distance */
 	if (route.items > 1)
@@ -942,6 +945,8 @@ update_route (void)
 				/* endpoint reached,  stop routing */
 				route.active = FALSE;
 				route.pointer = route.items = 0;
+				gtk_widget_hide_all (routeinfo_evbox);
+
 			}
 		}
 	}

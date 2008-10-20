@@ -95,6 +95,8 @@ extern gdouble wp_saved_posmode_lat;
 extern gdouble wp_saved_posmode_lon;
 extern color_struct colors;
 extern currentstatus_struct current;
+extern coordinate_struct coords;
+extern routestatus_struct route;
 
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
@@ -480,6 +482,35 @@ gint switch_nightmode (gboolean value)
 #endif
 
 	return t_res;
+}
+
+
+/* *****************************************************************************
+ * Draw line connecting current position and destination
+ */
+void
+draw_destination_line (void)
+{
+	gint t_dest_x, t_dest_y;
+
+	gdk_gc_set_function (kontext_map, GDK_COPY);
+	gdk_gc_set_line_attributes (kontext_map, 1, GDK_SOLID, 0, 0);
+	gdk_gc_set_foreground (kontext_map, &colors.red);
+
+	if (route.active)
+	{
+		calcxy (&t_dest_x, &t_dest_y,
+			coords.dest_lon, coords.dest_lat, current.zoom);
+	}
+	else
+	{
+		calcxy (&t_dest_x, &t_dest_y,
+			coords.target_lon, coords.target_lat, current.zoom);
+	}
+
+	gdk_draw_line (drawable, kontext_map,
+		current.pos_x, current.pos_y, t_dest_x, t_dest_y);
+
 }
 
 

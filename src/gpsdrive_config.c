@@ -101,6 +101,9 @@ writeconfig ()
 	else
 		fprintf (fp, "0\n");
 
+	fprintf (fp, "showdestline = %d\n",
+		local_config.showdestline);
+
 	fprintf (fp, "trackpointsinterval = %d\n",
 		local_config.track_interval);
 
@@ -412,6 +415,8 @@ readconfig ()
 			*/
 			else if ( (strcmp(par1, "shadow")) == 0)
 				local_config.showshadow = atoi (par2);
+			else if ( (strcmp(par1, "showdestline")) == 0)
+				local_config.showdestline = atoi (par2);
 			else if ( (strcmp(par1, "rotating_compass")) == 0)
 				local_config.rotating_compass = atoi (par2);
 			else if ( (strcmp(par1, "waypointfile")) == 0)
@@ -669,6 +674,7 @@ config_init ()
 	local_config.posmarker = 0;
 	local_config.maxcpuload = 40;
 	local_config.use_database = TRUE;
+	local_config.showdestline = FALSE;
 	local_config.showmaptype = FALSE;
 	local_config.showgrid = FALSE;
 	local_config.showshadow = FALSE;
