@@ -254,16 +254,6 @@ int posxy_on_screen (gdouble posx, gdouble posy);
 void init_lat2RadiusArray();
 int display_background_map ();
 
-typedef struct
-{
-	gchar id[30];
-	gchar name[40];
-	gchar type[40];
-	gchar lat[40], lon[40];
-	gchar timesec[40], speed[10], heading[10];
-}
-friendsstruct;
-
 /* struct for current route status */
 typedef struct
 {

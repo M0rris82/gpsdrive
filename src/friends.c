@@ -71,6 +71,17 @@
 /* #define	SERV_HOST_ADDR	"213.203.231.23"   */
 #define	SERV_HOST_ADDR	"127.0.0.1"
 
+typedef struct
+{
+	gchar id[30];
+	gchar name[40];
+	gchar type[40];
+	gchar lat[40], lon[40];
+	gchar timesec[40], speed[10], heading[10];
+}
+friendsstruct;
+
+
 gint maxfriends = 0;
 int actualfriends = 0;
 extern int messagenumber;
@@ -79,7 +90,6 @@ extern gdouble milesconv;
 extern GtkWidget *map_drawingarea;
 extern GdkPixbuf *friendsimage, *friendspixbuf;
 extern gint mydebug;
-extern poi_type_struct poi_type_list[poi_type_list_max];
 extern color_struct colors;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
@@ -101,10 +111,10 @@ extern gchar messagename[40], messagesendtext[1024], messageack[100];
 
 /* global variables */
 GtkListStore *friends_list;
-friendsstruct *friends_buf;
 
 /* local variables */
 static friendsstruct *fserver;
+static friendsstruct *friends_buf;
 
 
 /* ****************************************************************************

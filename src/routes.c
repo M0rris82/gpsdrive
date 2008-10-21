@@ -76,7 +76,6 @@ extern currentstatus_struct current;
 extern GdkGC *kontext_map;
 extern GtkWidget *map_drawingarea;
 extern GtkWidget *frame_statusbar;
-extern poi_type_struct poi_type_list[poi_type_list_max];
 extern GtkWidget *main_window;
 extern GtkWidget *menuitem_saveroute;
 extern GHashTable *poi_types_hash;
