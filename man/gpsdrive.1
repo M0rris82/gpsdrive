@@ -356,7 +356,8 @@ prefix in subdirectories of $HOME/.gpsdrive/maps/ which end in "_map" or
 "_top". The georeferencing information (center coordinate and scale factor)
 for the maps in those subdirectories must be recorded in the main
 "map_koord.txt" file, typically stored in the \fI~/.gpsdrive/maps/\fR
-directory.
+directory. To avoid distortion, anything more global than 1:150k to 1:500k
+should use "top_*".
 
 Beware if you are using an image originating from a map projection with a
 significant deviation between true north and the map projection's local

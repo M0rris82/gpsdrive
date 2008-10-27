@@ -28,7 +28,19 @@
 # (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
 # scale the maps correctly. Alternatively the maps can be stored without
 # prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
-# "_top".
+# "_top".  To avoid distortion, anything more than 1:150k to 1:500k
+# should use "top_*".
+#
+# Beware  if you are using an image originating from a map projection with
+# a significant deviation between true  north  and  the  map  projection's
+# local  +y  direction  (known as the Convergence Angle). GpsDrive assumes
+# that true north is always directly up! i.e. the Central Meridian of  the
+# map projection is located at the map tile's center. For some map projec-
+# tions and areas of the country this can be a really bad  assumption  and
+# your  map  will be significantly rotated. This effect is most visible at
+# map scales covering a large area. This does not affect lat/lon maps.
+# The pnmrotate program may help, or gdalwarp to a custom map-centered tmerc.
+#
 #############################################################################
 
 if [ $# -lt 1 ] ; then
@@ -101,6 +113,17 @@ for XOFF in $XOFF_ALL ; do
 
     if [ $? -ne 0 ] ; then
        echo "Quietly moving on ..."
+#       if [ ! -f "${OUTFILE}.tif" ] ; then
+          continue
+#       fi
+    fi
+
+    # check if image is empty
+    CNT=`gdalinfo -mm -noct -nomd "${OUTFILE}.tif" | grep 'Min/Max' | \
+       cut -f2 -d= | tr ',' '\n' | uniq | wc -l`
+    if [ "$CNT" -ne 2 ] ; then
+       echo "Skipping blank image ..."
+       \rm "${OUTFILE}.tif"
        continue
     fi
 
