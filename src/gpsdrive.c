@@ -2455,7 +2455,8 @@ main (int argc, char *argv[])
 	}
 	if (show_version)
 	{
-		g_print (_("\nGpsDrive (C) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+		g_print (_("\nGpsDrive (C) 2001-2008 Fritz Ganter and the GpsDrive Development Team\n"
+			"This program is Free Software licensed under the terms of the GNU GPL\n"
 			"\nVersion %s\n%s\n\n"), VERSION, rcsid);
 		exit (EXIT_SUCCESS);
 	}
