@@ -1419,6 +1419,8 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	if ( mydebug > 0 )
 		g_print ("event:%x key:%c\n", event->keyval, event->keyval);
 
+// TODO: Ctrl-Q exits the program
+
 	// Toggle Grid Display
 	if ((toupper (event->keyval)) == 'G')
 	{
@@ -1510,14 +1512,6 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 
 	// Zoom in/out
-	
-	//    if (local_config.guimode == GUI_PDA)
-	//	{
-	//	    if (event->keyval == 0xFF52)
-	//		scalerbt_cb (NULL, 1);	/* RNM */
-	//	    if (event->keyval == 0xFF54)
-	//		scalerbt_cb (NULL, 2);	/* RNM */
-	//	}
 	if ((toupper (event->keyval)) == '-' || (event->keyval == 0xFFad))
 	{
 		/* Zoom out */
@@ -1532,7 +1526,14 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Switch Night Mode
 	if ((toupper (event->keyval)) == 'N')
 	{
-		// TODO: do something
+		; // TODO: do something
+	}
+
+	// Switch Position Mode ("e" for Explore)
+	if ((toupper (event->keyval)) == 'E')
+	{
+		; // TODO: switch in/out of Pos Mode
+		//  see posbt in map_handler.c
 	}
 
 	// Query Info for near points
@@ -1541,7 +1542,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	{
 	    gdouble lat1,lon1,lat2,lon2;
 	    gint delta = 10;
-		
+
 	    gdk_window_get_pointer (map_drawingarea->window, &x, &y, &state);
 	    calcxytopos (x-delta, y-delta, &lat1, &lon1, current.zoom);
 	    calcxytopos (x+delta, y+delta, &lat2, &lon2, current.zoom);
@@ -1567,34 +1568,65 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	    {
 		gint x, y;
 
-		if ( (event->keyval == 0xff52))	// Up
+		if ( event->keyval == 0xff52 || event->keyval == 0xff97 ) // Up
 		    {
 			calcxy (&x, &y, coords.current_lon,
 				coords.current_lat, current.zoom);
 			calcxytopos (x, 0, &coords.current_lat,
 				&coords.current_lon, current.zoom);
 		    }
-		
-		if ( (event->keyval == 0xff54 )) // Down
+		if ( event->keyval == 0xff54 || event->keyval == 0xff99 ) // Down
 		    {
 			calcxy (&x, &y, coords.current_lon,
 				coords.current_lat, current.zoom);
 			calcxytopos (x, gui_status.mapview_y, &coords.current_lat,
 				&coords.current_lon, current.zoom);
 		    }
-		if ( (event->keyval == 0xff51 )) // Left
+		if ( event->keyval == 0xff51 || event->keyval == 0xff96 ) // Left
 		    {
 			calcxy (&x, &y, coords.current_lon,
 				coords.current_lat, current.zoom);
 			calcxytopos (0, y, &coords.current_lat,
 				&coords.current_lon, current.zoom);
 		    }
-		if ( (event->keyval == 0xff53 )) //  Right
-			    
+		if ( event->keyval == 0xff53 || event->keyval == 0xff98 ) //  Right 
 		    {
-			calcxy (&x, &y, coords.current_lon, coords.current_lat, current.zoom);
-			calcxytopos (gui_status.mapview_x, y, &coords.current_lat, &coords.current_lon, current.zoom);
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, current.zoom);
+			calcxytopos (gui_status.mapview_x, y, &coords.current_lat,
+				&coords.current_lon, current.zoom);
 		    }
+
+		if ( event->keyval == 0xff95 ) //  Keypad Home
+		    {
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, current.zoom);
+			calcxytopos (0, 0, &coords.current_lat,
+				&coords.current_lon, current.zoom);
+		    }
+		if ( event->keyval == 0xff9a ) //  Keypad PgUp
+		    {
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, current.zoom);
+			calcxytopos (gui_status.mapview_x, 0, &coords.current_lat,
+				&coords.current_lon, current.zoom);
+		    }
+		if ( event->keyval == 0xff9b ) //  Keypad PgDn
+		    {
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, current.zoom);
+			calcxytopos (gui_status.mapview_x, gui_status.mapview_y,
+				&coords.current_lat, &coords.current_lon,
+				current.zoom);
+		    }
+		if ( event->keyval == 0xff9c ) //  Keypad End
+		    {
+			calcxy (&x, &y, coords.current_lon,
+				coords.current_lat, current.zoom);
+			calcxytopos (0, gui_status.mapview_y, &coords.current_lat,
+				&coords.current_lon, current.zoom);
+		    }
+
 		coords.posmode_lon = coords.current_lon;
 		coords.posmode_lat = coords.current_lat;
 	    }

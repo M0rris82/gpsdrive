@@ -114,10 +114,14 @@ GtkWidget *settings_window = NULL;
 static gint
 reinitgps_cb (GtkWidget *widget)
 {
-	g_print ("\nReinitializing GPS connection...\n");
+	g_print ("\nReinitializing connection to GPSd ...\n");
+
 	initgps ();
+
+	g_print ("GPSd initialization complete.\n");
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-		current.statusbar_id, _("GPS Initialization done."));
+		current.statusbar_id, _("GPSd initialization complete."));
+
 	return TRUE;
 }
 
@@ -1586,7 +1590,7 @@ settings_trk (GtkWidget *notebook)
 	trk_general_frame = gtk_frame_new (NULL);
 	trk_general_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (trk_general_fr_lb), _("<b>General Settings</b>"));
+		(GTK_LABEL (trk_general_fr_lb), _("<b>Track log settings</b>"));
 	gtk_frame_set_label_widget
 		(GTK_FRAME (trk_general_frame), trk_general_fr_lb);
 	gtk_frame_set_shadow_type
@@ -1614,7 +1618,7 @@ settings_trk (GtkWidget *notebook)
 	trk_auto_frame = gtk_frame_new (NULL);
 	trk_auto_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (trk_auto_fr_lb), _("<b>Autosave Settings</b>"));
+		(GTK_LABEL (trk_auto_fr_lb), _("<b>Autosave settings</b>"));
 	gtk_frame_set_label_widget
 		(GTK_FRAME (trk_auto_frame), trk_auto_fr_lb);
 	gtk_frame_set_shadow_type
@@ -1641,7 +1645,7 @@ settings_trk (GtkWidget *notebook)
 	gtk_box_pack_start (GTK_BOX (trk_vbox), trk_auto_frame,
 		FALSE, FALSE, 2);
 
-	trk_label = gtk_label_new (_("Tracking"));
+	trk_label = gtk_label_new (_("Tracks"));
 	gtk_notebook_append_page
 		(GTK_NOTEBOOK (notebook), trk_vbox, trk_label);
 }
@@ -1908,6 +1912,7 @@ settings_col (GtkWidget *notebook)
 		(GTK_NOTEBOOK (notebook), col_vbox, col_label);
 }
 
+
 /* ************************************************************************* */
 static void
 settings_nav (GtkWidget *notebook)
@@ -1916,9 +1921,15 @@ settings_nav (GtkWidget *notebook)
 	GtkWidget *travel_label, *travel_combo;
 	GtkWidget *nav_table;
 	GtkWidget *nav_frame;
-	GtkWidget *nav_fr_lb;
+	GtkWidget *nav_fr_lb, *nav_explanation_lb;
 	GtkTooltips *nav_tooltips;
-	
+
+	nav_explanation_lb = gtk_label_new (
+		_("Choose your travel mode. This is used to determine\n"
+		"which icon should be used to display your position."));
+	gtk_label_set_use_markup (GTK_LABEL (nav_explanation_lb), TRUE);
+
+
 	gchar travelmodes[TRAVEL_N_MODES][20];
 	gint i;
 
@@ -1960,8 +1971,9 @@ settings_nav (GtkWidget *notebook)
 		travel_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
 		travel_combo, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (nav_table),
+		nav_explanation_lb, 2, 3, 0, 1); /* please review for correctness */
 
-	
 	nav_frame = gtk_frame_new (NULL);
 	nav_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
@@ -2007,7 +2019,7 @@ settings_poi (GtkWidget *notebook)
 
 	/* Waypoints */
 	{
-	wpfile_label = gtk_label_new (_("Waypoints File"));
+	wpfile_label = gtk_label_new (_("Waypoints way.txt file"));
 	wpfile_bt = gtk_file_chooser_button_new
 		(_("Select Waypoints File"), GTK_FILE_CHOOSER_ACTION_OPEN);
 	if (!gtk_file_chooser_set_filename
@@ -2200,7 +2212,7 @@ settings_poi (GtkWidget *notebook)
 	poidisplay_frame = gtk_frame_new (NULL);
 	poidisplay_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (poidisplay_fr_lb), _("<b>POI Display</b>"));
+		(GTK_LABEL (poidisplay_fr_lb), _("<b>Points Of Interest display</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (poidisplay_frame),
 		poidisplay_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (poidisplay_frame),
@@ -2242,7 +2254,7 @@ settings_wp (GtkWidget *notebook)
 
 	/* waypoints file dialog */
 	{
-	wpfile_label = gtk_label_new (_("Waypoints File"));
+	wpfile_label = gtk_label_new (_("Waypoints text file"));
 	wpfile_bt = gtk_file_chooser_button_new
 		(_("Select Waypoints File"), GTK_FILE_CHOOSER_ACTION_OPEN);
 	if (!gtk_file_chooser_set_filename
@@ -2252,8 +2264,9 @@ settings_wp (GtkWidget *notebook)
 			(GTK_FILE_CHOOSER (wpfile_bt), local_config.dir_home);
 	}
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (wp_tooltips), wpfile_bt,
-		_("Choose the waypoints file to use!\nCurrently only files in "
-		"GpsDrive's way.txt format are supported."), NULL);
+		_("Choose the waypoints file to use.\n"
+		  "Currently only files in GpsDrive's way.txt format "
+		  "are supported."), NULL);
 	g_signal_connect (wpfile_bt, "selection-changed",
 		GTK_SIGNAL_FUNC (setwpfile_cb), NULL);
 
@@ -2527,7 +2540,7 @@ settings_friends (GtkWidget *notebook)
 	friendgen_frame = gtk_frame_new (NULL);
 	friendgen_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (friendgen_fr_lb), _("<b>General</b>"));
+		(GTK_LABEL (friendgen_fr_lb), _("<b>Share position with other users</b>"));
 	gtk_frame_set_label_widget
 		(GTK_FRAME (friendgen_frame), friendgen_fr_lb);
 	gtk_frame_set_shadow_type
@@ -2698,7 +2711,7 @@ settings_speech (GtkWidget *notebook)
 	speechgen_frame = gtk_frame_new (NULL);
 	speechgen_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (speechgen_fr_lb), _("<b>General</b>"));
+		(GTK_LABEL (speechgen_fr_lb), _("<b>Verbal prompting</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (speechgen_frame), speechgen_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (speechgen_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (speechgen_frame), speechgen_table);
@@ -2730,7 +2743,7 @@ settings_gps (GtkWidget *notebook)
 	gps_vbox = gtk_vbox_new (FALSE, 2);
 
 	/* button: reinit gps connection */
-	gps_reinit_bt = gtk_button_new_with_label (_("Reinit GPS"));
+	gps_reinit_bt = gtk_button_new_with_label (_("Reinit connection to GPS"));
 	gps_reinit_img = gtk_image_new_from_stock ("gtk-refresh", GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image (GTK_BUTTON (gps_reinit_bt), gps_reinit_img);
 	g_signal_connect (gps_reinit_bt, "clicked", G_CALLBACK (reinitgps_cb), NULL);
@@ -2738,7 +2751,7 @@ settings_gps (GtkWidget *notebook)
 	general_frame = gtk_frame_new (NULL);
 	general_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (general_fr_lb), _("<b>General</b>"));
+		(GTK_LABEL (general_fr_lb), _("<b>GPS connection</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (general_frame), general_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (general_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (general_frame), gps_reinit_bt);

@@ -1,10 +1,10 @@
 /***********************************************************************
 
-Copyright (c) 2001-2004 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2001-2008 Fritz Ganter and the GpsDrive Development Teamp
 
 Website: www.gpsdrive.de
 
-Disclaimer: Please do not use for navigation.
+Disclaimer: Please do not use as a primary source of navigation.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -232,7 +232,7 @@ init_nmea_socket ()
     sock = socket (AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
       {
-	perror (_("can't open socket for port "));
+	perror (_("Can't open socket for port "));
 	fprintf (stderr, "error: %d\n", errno);
 	if (local_config.simmode == SIM_AUTO)
 		current.simmode = TRUE;
@@ -527,7 +527,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 
 
   if ((timeoutcount > 30 - mydebug - gps_handler_debug))
-    g_print ("*** %d. timeout getting data from GPS-Receiver!\n",
+    g_print ("*** %d. timeout getting data from GPS receiver!\n",
 	     timeoutcount);
 
     tilimit = 10;
@@ -538,7 +538,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
     {
       gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
       gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
-		_("Timeout getting data from GPS-Receiver!"));
+		_("Timeout getting data from GPS receiver!"));
       current.gpsfix = 0;
       haveposcount = 0;
       memset (satlist, 0, sizeof (satlist));

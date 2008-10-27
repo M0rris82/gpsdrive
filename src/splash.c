@@ -112,6 +112,8 @@ insert_text (GtkTextBuffer * buffer)
 		_("Left mouse button\t\t: Set position (Position Mode only)\n"
 		 "Right mouse button\t\t: Set destination target on the map\n"
 		 "Middle mouse button\t\t: Leave Position Mode\n"
+		 "Mouse wheel up\t\t\t: Prefer maps showing greater detail\n"
+		 "Mouse wheel down\t\t: Prefer maps showing a larger area\n"
 		 "Shift-left mouse button\t: Prefer maps showing greater detail\n"
 		 "Shift-right mouse button\t: Prefer maps showing a larger area\n"
 		 "Control-left mouse button\t: Create a waypoint at the mouse cursor position\n"
@@ -122,19 +124,22 @@ insert_text (GtkTextBuffer * buffer)
 		      " y\t: Add a waypoint at the mouse cursor position\n"
 		      " w\t: Quickly add a waypoint at the current GPS location without confirmation\n"
 		      " p\t: Quickly add a waypoint at the mouse cursor position without confirmation\n"
+		      " q/?\t: Query Lat/Lon and nearby POIs at mouse position, prints to terminal\n"
 		      " r\t: Add the mouse position to the end of the current route (or begin a new one)\n"
 	/* FIXME      " n\t: Switch on light for 60 seconds in nightmode\n" */
 		      " g\t: Toggle grid overlay\n"
 		      " f\t: Toggle friends display\n"
-		      " +\t: Zoom in (map scale)\n"
-		      " -\t: Zoom out (map scale)\n");
+		      " +\t: Zoom in (preferred map scale)\n"
+		      " -\t: Zoom out (preferred map scale)\n"
+		      " Arrow keys: Navigate cursor in Position Mode\n");
 	const gchar *t3 =
 		_("You can move freely around the map by selecting Position Mode"
 		  " in the Map Control menu. In this mode the GPS position"
 		  " indicator is replaced by a blue rectangle. Reposition the"
-		  " cursor with a left-click on the map. If you click on the"
-		  " border of the map (the outer 20%) then the map switches"
-		  " to the next area. Middle or right-click to exit Position Mode.\n\n"
+		  " cursor with a left-click on the map or with the arrow keys."
+		  " If you click on the border of the map (the outer 20%) then"
+		  " the map switches to the next area. Middle or right-click to"
+		  " exit Position Mode.\n\n"
 		  "Suggestions welcome at http://www.gpsdrive.de.\n\n");
 
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
@@ -184,7 +189,7 @@ insert_text (GtkTextBuffer * buffer)
 						  _("underlined"), -1,
 						  "underline", NULL);
 	gtk_text_buffer_insert (buffer, &iter,
-		_(" letters in the control button text.\n"
+		_(" letters in the control button text. "
 		  "Press the underlined key together with the Alt-key.\n\n"), -1);
 
 	gtk_text_buffer_insert (buffer, &iter, t3, -1);

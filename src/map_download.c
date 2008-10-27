@@ -140,6 +140,7 @@ static struct mapsource_struct
 	MAPSOURCE_OSM_TAH, "1 : 4 608 000", 6, 8*576000,
 	MAPSOURCE_OSM_TAH, "1 : 2 304 000", 7, 4*576000,
 	MAPSOURCE_OSM_TAH, "1 : 1 152 000", 8, 2*576000,
+
 	MAPSOURCE_OSM_TAH, "1 : 576 000", 9, 576000,
 	MAPSOURCE_OSM_TAH, "1 : 288 000", 10, 288000,
 	MAPSOURCE_OSM_TAH, "1 : 144 000", 11, 144000,
@@ -291,7 +292,7 @@ mapdl_geturl_landsat (void)
 	    t_lon2 = mapdl_lon + dist_to_edge_deg;
 	}
 
-	/* valid: -180 to 360 deg*/
+	/* valid: -180 to 360 deg */
 	if ( t_lon1 < -180 ) {
 	    t_lon1 += 360;
 	    t_lon2 += 360;
