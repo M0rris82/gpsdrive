@@ -164,13 +164,31 @@ with \fBtelnet localhost 2947\fR and after the connection is made hit the
 \fBR\fR key to see the NMEA sentences. You can use the \fBxgps\fR
 program that comes with \fBgpsd\fR for a more comprehensive test.
 
+If you have connected a GPS receiver, and are successfully communicating
+with it, you will see GpsDrive's signal strength indicator turn from red to
+green. By clicking on the signal strength indicator you can open the
+\fISatellite Info\fR window which will show you information about the
+satellites in view.
+
+To calculate a 2D position the GPS must have at least 3 satellites in view.
+To calculate altitude you need at least 4 satellites. The antenna of your GPS
+receiver must have free sight to the sky, so you cannot expect to use it
+indoors. More satellites gives you a better accuracy.
+
+If your receiver can not see enough satellites with a usable signal,
+the signal level indicator is red. If your signal is ok and gives a valid
+position, the \fISatellite Info\fR indicator is green.
+
+You can restart the connection to \fBgpsd\fR in the GPS tab of the
+\fIPreferences\fR menu.
+
 
 .SH USAGE
 
-Start GpsDrive as normal user with:
+Start GpsDrive as a normal user with:
 .B gpsdrive
-from your shell, if you want another language see section 
-.I LOCALISATION
+from your shell, if you want another language see the \fILOCALISATION\fR
+section.
 
 On some distributions you may find a "\fBGpsDrive\fR" entry in your
 Gnome or KDE menu.
@@ -179,87 +197,115 @@ It is important that you have installed GpsDrive as root, so it can
 find the necessary files. 
 .B Don't start GpsDrive as root!
 
-You can use GpsDrive without a GPS device connected. If you do so,
-GpsDrive will automatically start in
-.B Simulator mode 
-if no working GPS receiver is connected and no gpsd
-is running. This mode is shown by a rotating globe.
+You can use GpsDrive without a GPS device connected.
+GpsDrive can automatically start in \fBSimulation mode\fR
+if no working GPS receiver is connected and no \fBgpsd\fR
+is running. The GPS signal level indicator is replaced with a message
+indicating the mode.
 
-In simulator mode the pointer can move on the map (if enabled in settings
-menu). You can also stop gpsd if it is already running with the "Stop GPSD" Button.
+In simulation mode the pointer will move by itself on the map towards
+the target position. It may be switched permanently on or off in the
+\fIPreferences\fR menu.
 
-If you have connected a GPS-Receiver, you see in the 
-.I GPS Info
-window how many satellites are in view. You can click on this image to switch to the 
-.I Satellite position view.
-.br
-You must have at least 3 satellites in view. If you want to see your
-altitude, you need at least 4 satellites.  The antenna of your GPS
-receiver must have free sight to the sky, so you cannot use it
-indoors. More satellites gives you a better accuracy.
 
-If your receiver has not enough satellites with usable signal, the
-GPS Info window is red. If your signal is ok and gives a valid
-position, the GPS Info window is green.
+.SS MODES OF OPERATION
 
-There are 3 modes in which GpsDrive is operating:
+\fBGpsDrive\fR operates in three modes:
 
 .B Normal mode:
-
-This mode is entered if you have a GPS receiver connected. The cursor is at
-the position your receiver sends.
-
-Black and a red arrows show your position on the map. The 
-.B black arrow
-is pointing to your selected target, the 
-.B red arrow
-shows the direction in which you are moving.
 .br
-If you have no valid position the arrows are blinking.
+This mode is entered if you have a GPS receiver connected. The cursor is at
+the position your GPS receiver sends.
+.br
+Black and red arrows show your position on the map. The \fBred arrow\fR
+points to your selected target (aka "\fIBearing\fR"), and the \fBblack arrow\fR
+shows the direction in which you are moving (aka "\fIHeading\fR").
+.br
+When the GPS is not sending a valid position the arrows blink.
 
-.B Simulation
-
-If GpsDrive finds no GPS-receiver at program start, it
-shows the last position and the cursor will move to the targets you
-set. You can set your target by right-mouse click on the map or by
-selecting a waypoint from the FIND menu.
+.B Simulation mode
+.br
+If GpsDrive does not find a GPS receiver when the program starts, it
+shows the last known position and the cursor will move towards the target
+you set. You can set the target with a right-mouse click on the map or by
+selecting a waypoint from the \fIFind\fR dialog. The target appears as a
+cross-hair and is available in all modes.
 
 .B Position mode
+.br
+In this mode you can temporarily change the cursor position for looking
+around and jumping to other positions (e.g. for downloading maps). The
+lat/lon position shown in the dashboard is that of the current \fBmouse
+position\fR.
+.br
+This mode is selected by ticking the "Position mode" box in the
+\fIMap Control\fR window, or if you "Jump to POI" in the \fIFind\fR window.
+The \fIJump\fR button simply jumps to the current target, so it is useful
+to move the target to a waypoint/POI first by selecting one from the list.
+.br
+In this mode GpsDrive \fBdoes not show your real position\fR and the
+positioning arrows are replaced with a box.
+.br
+You can relocate your position with a simple left-mouse click on the map
+or with the arrow keys (including diagonals on the keypad). Maps are
+automatically scrolled or load the next map when you click near the border.
+.br
+To leave Position Mode untick the "Position mode" entry in the
+\fIMap Control\fR window, or middle or right-mouse click on the map. If
+a right-mouse click is used the target is reset to that position in the
+process.
 
-This mode is activated by clicking on the "Pos. mode" button or if you
-"Jump" to a target in the FIND menu.
 
-In this mode, you can temporarily change the position for looking around and
-jumping to other positions (i.e. for downloading maps). In this mode this
-is 
-.B not your real position
-and is marked as an rectangle.
+You can change the prefered map scale with mouse wheel, or if there is no
+mouse wheel, with Shift-left and right mouse click.
+This works from any mode.
 
-You can set the position by a simple left-mouse click on the map.
-
-You can leave the position mode by by clicking on the "Pos. mode"
-button or middle-mouse click or right-mouse click (which also sets
-your target).
+Please have a look in the \fBHelp\fR menu in GpsDrive to learn more
+about available keyboard shortcuts and mouse functions.
 
 
-.SH OPENSTREETMAP MAPS
+.SH MAPS
+
+.SS OPENSTREETMAP MAPS
+
 GpsDrive now supports OSM maps with the help of the Mapnik renderer.
-To activate this mode you have to choose the mapnik option.
+To activate this mode you have to build GpsDrive with the Mapnik option
+enabled.
 
 
-.SH MAP DOWNLOAD
+.SS MAP DOWNLOAD
 
-You can easily download maps from the internet with the
-.B Download
-button. GpsDrive stores an index of your maps in the file
-map_koord.txt in your ~/.gpsdrive/maps/ directory. You can use
-another directory for your maps if you like, to change this set
-the appropriate directory in the Preferences menu.
+You can easily download maps from the internet with the \fBDownload\fR
+tool. This is found in the Options -> Maps menu. A preview of already
+downloaded maps near to the current prefered mapscale are shown as yellow
+rectangles drawn over the map. The area to be downloaded is drawn as a
+green rectangle over the map. Reposition the area to be downloaded with
+a left-mouse click.
 
-.SH About maps
+There is also a program called \fIgpsfetchmap.pl\fR provided with GpsDrive
+which can be used to automatically download a series of maps covering a
+larger area.
+.br
+.B Please consider the copyright information and terms of service
+of map providers if you want to use their maps!
+\fBDo not misuse this service by downloading more maps than you need!\fR
+You will risk being blocked by these servers, and possibly cause
+trouble for the GpsDrive project.
 
-There is a file called "map_koord.txt" in your ~/.gpsdrive/maps/
-directory. Here is a sample:
+If you must access the internet via a proxy server, set the
+\fIHTTP_PROXY\fR or \fIhttp_proxy\fR environment variable to a value like
+.I http://proxy.provider.com:3128
+where 3128 in this example is the proxy port.
+
+
+.SS ABOUT MAPS
+
+GpsDrive stores an index of your maps in a file called "map_koord.txt"
+in your ~/.gpsdrive/maps/ directory. You can use another directory for your
+maps if you like, to change this set the appropriate directory in the
+Preferences menu.
+
+Here is a sample of its contents:
 
 top_WORLD.jpg 0.00000 0.00000 88226037
 .br
@@ -282,30 +328,19 @@ You can figure out the exact "scale" factor by meters/pixel * 2817.947378.
 The 2817 number may be some ancient screen dpi converted to pixels/meter?
 Who knows. But that's what it is and it works.
 
-GpsDrive selects the map with the best scale for your position. So get
-a map e.g. for Europe, Austria, and Vienna if you want to drive in
-Vienna.
+GpsDrive selects the map with the best scale for your position. So you will
+want to get maps of different scales. e.g. You should have maps for Europe,
+Austria, and Vienna if you want to drive in Vienna.
 
-There is also the program
-.IR gpsfetchmap.pl
-provided to download multiple maps for a bigger area.
-.br
-.B Please consider the copyright information and terms of service
-at \fIwww.expedia.com\fR if you want to use their maps!
-.br
-.B Do not misuse this service by downloading more maps as you need! 
-You will risk being blocked by these servers, and possibly cause
-trouble for the gpsdrive project.
+.SS European decimal place:
 
-File formats:
-
-The decimal points in way.txt must always be a dot ('.'), in
+While the decimal points in way.txt must always be a dot ('.'), in
 map_koord.txt '.' or ',' are possible. If you download maps from
 within the program, GpsDrive writes the map_koord.txt respecting your
 LC_NUMERIC setting.
 
 
-.SH Can I use other maps?
+.SS Can I use other maps?
 
 You can also use your own (self drawn, scanned, exported from GIS, ...) maps.
 The maps must be in PNG, JPEG, GIF, TIFF, or another common file format
@@ -332,12 +367,13 @@ and areas of the country this can be a really bad assumption and your map
 will be significantly rotated. This effect is most visible at map scales
 covering a large area. This does not affect lat/lon maps.
 
-There is an "import assistant" built in. Use it to import your unreferenced
-maps.
+There is an "import assistant" built in. Use it to import your
+non-georeferenced maps. If can be found in the menus under Options -> Maps.
 
 
-.SH Importing waypoints:
+.SH WAYPOINTS AND POI
 
+.SS Importing waypoints
 The manual way:
 
 You may create a file "way.txt" in your ~/.gpsdrive directory
@@ -350,174 +386,134 @@ Finkenwerder            53.541765    9.842541 AIRPORT
 Fritz_Wohnung           53.582700    9.971390 FRITZ
 
 The rows are: label latitude longitude waypoint-type. You may omit the
-waypoint type.
+waypoint type. You can create any number of way-*.txt files and chose
+between them from the Preferences menu.
 
 There is no need to create the way.txt file yourself, you can add the
 waypoints with GpsDrive using the "x" key. See help menu.
 
 
+.SS Add new waypoints
+Waypoints created by GpsDrive will be stored in a SQLite database file
+loacted at ~/.gpsdrive/waypoints.db.
 
-.SH Route planning
-There is no route planning feature at the moment. Route planning would
-need the use of commercial maps and a database license which costs
-more than EUR 10.000. 
+You can add new waypoints in two simple ways:
 
-.SH PROXY SERVER
-If you must access the internet via a proxy server, you have to set the
-environment variable
-.B HTTP_PROXY
-or
-.B http_proxy
-to a value like
-.I http://proxy.provider.com:3128
-where 3128 in this example is the proxy port.
+o To add a waypoint at the \fBcurrent (GPS) position\fR simply press CTRL
+and RIGHT-mouse-click. You can also press the \fBx\fR key for this.
 
-.SH MOUSE CONTROL
-You can switch on the
-.B Position mode
-by selecting this option in the menu.
+o To add a waypoint at the \fBmouse position\fR, simply press CTRL and
+LEFT-mouse-click. You can also press the \fBy\fR key for this.
 
-If you switched to "position mode" a rectangle is the
-cursor and no position is shown. If you zoom or select another map
-scale with the slider, this is done for the position of the
-rectangle-cursor in the same manner as it would be your actual
-position. If you click with the left button near the border, GpsDrive will
-scroll the map or load the next map if you are on the margin of the map.
-
-The middle mouse button or the "Pos. mode" menu entry switches back to
-normal mode. The same happens if you select a target with the right
-mouse button.  Shift-left-mouse-button and shift-right-mouse-button
-or using the mouse wheel changes the map scale.
-
-Please have also a look into the
-.B Help
-menu in GpsDrive to be informed about the actual mouse functions and key
-shortcuts.
-
-.SH Add new waypoints
-You can simply add new waypoints in two ways:
-
-o To add a waypoint at the
-.B current (GPS) position, 
-simply press CTRL and RIGHT-mouse-click. You can also press the
-.B x
-key.
-
-o To add a waypoint at the
-.B mouse position,
-simply press CTRL and LEFT-mouse-click. You can also press the
-.B y
-key.
-
-In the popup window add the waypoint name (spaces will be converted to
+In the popup window give the waypoint a name (spaces will be converted to
 underscores) and choose a waypoint type (see below for predefined
 waypoint types).
- 
-.SH Icons for waypoints
+
+
+.SS Waypoint icons
 At the moment there a three different icon themes available, but not
-everone has distinct icons for every type. Currently you can choose the
+all have distinct icons for every type. Currently you can choose the
 themes only by editing the entry "icon_theme" in the config file
 "~/.gpsdrive/gpsdriverc". The possible themes are:
 "square.big", "square.small" and "classic".
 
-.SH SQL support
 
-For managing a larger number of waypoints you should use SQL
-support. This needs to install a SQL server on your machine. At the
-moment, only MySQL is supported.
-
-Don't be afraid, MySQL doesn't need much resources, is very fast, and makes the
-management (including selection of waypoint types) of the waypoints
-much easier. In SQL mode you can select the waypoints to display in the
-.B setup
-menu.
-
-GpsDrive use MySQL automatically if it finds the shared library 
-.I libmysqlclient.so.10 
-and the MySQL Server is running and a connection to the database is possible.
-For first use you have to run
-.B geoinfo.pl --create-db --fill-defaults
-once.
-
-.B Please read README.SQL for information how to setup the SQL database.
+.SS SQL support
+For managing a larger number of waypoints SQL support is essential.
+Don't be afraid, SQLite doesn't need much in the way of resources,
+is very fast, and makes the management (including selection of waypoint
+types) of the waypoints much easier. In SQL mode you can select the
+waypoints to display in the \fBPreferences\fR menu.
 
 
+.SH ROUTES
 
-.SH Routes
 A route is a list of waypoints. GpsDrive guides you from one waypoint
 to the next on the route. 
-You can add waypoints to a route using
-the waypoint (select target) window. You can also add comments to a
-waypoint which will be spoken by the speech system and also be shown
-in the map window as scrolling text.
 
-.SH Comments for routes
+You can add waypoints to a route using the \fIFind\fR waypoint (select
+target) window. You can also add comments to a waypoint which will be
+spoken by the speech system and also be shown in the map window as
+scrolling text.
+
+.SS Comments for routes
 To add comments create a file with the same name as the waypoint file,
 but change the suffix to .dsc, i.e way-trip.txt and way-trip.dsc, then
-enter the comments in the way*.dsc file in the kind of:
+enter comments in the way-*.dsc file in the manner of:
 
-$waypointname
+$waypoint_name
 Text which is displayed and spoken
 
-$nextwaypointname
-another text
+$next_waypoint_name
+Some more text
 
 Example:
 
 $Fritz_Wohnung
-Hier wohnt Fritz, der Autor von diesem Programm. Er freut sich auf Besuch und eine
-Einladung zu einem saftigen Steak.
+Hier wohnt Fritz, der Autor von diesem Programm. Er freut sich auf
+Besuch und eine Einladung zu einem saftigen Steak.
                                                                                 
 $Hubertus
 Hier wohnt Hubertus, ein Freund von Fritz.
 
-There is no limit of the length of the comment. Important is to start
-the line with '$name' and the comment in the next lines.
+There is no limit of the length of the comment. It is important is to
+start the line with '$name' and the comment on the following line.
+
+
+.SS Route planning
+
+There is no route planning feature at the moment. We are keenly watching
+developments over at OpenStreetMap project for utilizing software such as
+pgRouting and DGLib.
+
 
 .SH KISMET support
-Gpsdrive supports
-.IR kismet.
+Gpsdrive supports \fIkismet\fR.
 Kismet is a 802.11b wireless network (WLAN) sniffer. If you have
-kismet running, gpsdrive will detect it and program starts and shows
-new WLAN access points in real time on the map. SQL mode is necessary to
-use Gpsdrive with Kismet. WLAN accesspoints which are already
-stored in the SQL database from prior wardrivings are ignored. If you
-have voice output in gpsdrive, you hear information about the newly
-found accesspoint.
+kismet running, gpsdrive will detect it when the program starts and show
+new WLAN access points in real-time on the map. It is necessary to use SQL
+mode when using Gpsdrive with Kismet. WLAN access points which are already
+stored in the SQL database from prior war-drivings are ignored. If you
+have enabled GpsDrive's voice output, you will hear information about the
+newly found access point.
 
-Please see also the file
-.IR README.kismet
+For more details have a look at the \fIREADME.kismet\fR file.
+
 
 .SH LOCALISATION
 
-If you have installed the program it will display messages in english,
-german, french, italian, dutch, dansk, hungarian, slovak, swedish, turkish or
-spanish if your language is set either with LANG or LANGUAGE. LANGUAGE
-overrides all other settings. Call "locale" to see the settings and
-call "set" if LANG or LANGUAGE is set. For german do:
+The program will display messages in English, German, French, Italian,
+Dutch, Dansk, Hungarian, Slovak, Swedish, Turkish or Spanish if your
+language is set either with LANG or LANGUAGE. LANGUAGE overrides all
+other settings. Call "locale" to see the settings and call "set" if
+LANG or LANGUAGE is set. For German do:
 
 .B export LANGUAGE=de
-
+.br
 and then call gpsdrive in this shell.
 
 You can also start it with the line 
 .B LANGUAGE=de gpsdrive
 without setting the language for the shell.
 
-Sometimes you have to do use LANG instead of LANGUAGE.
+Sometimes it is necessary use LANG instead of LANGUAGE.
 
-If your own language isn't available, please contact me if you want to
-make the translations.
+If your own language isn't available, please contact the GpsDrive
+Developement Team if you want to make the translation. No programming
+experience is necessary!
+
 
 .SH SPEECH OUTPUT
 
-If you want speech output you have to install the festival speech output
-system.
+If you want speech output you have to install the festival speech
+output system. (UPDATE: replaced in the program by eSpeak?)
+.br
 See 
 .I http://fife.speech.cs.cmu.edu/festival
 for information.
 
-For german output you have to get the german festival from
+For German output you have to get the German festival from
+.br
 .I www.ims.uni-stuttgart.de/phonetik/synthesis/index.html
 
 If you have a functional festival software call it as server with:
@@ -525,68 +521,48 @@ If you have a functional festival software call it as server with:
 festival --server
 
 When you start GpsDrive it will detect the server on port 1314 and
-puts out some status information as speech. You also have an
-additional button (Mute) to switch off sound output.
+speak some status information. When speech output is enabled  an
+additional \fIMute\fR button is available to switch off sound output.
 
 GpsDrive tries to select the correct language for your locale.
-The -l option can force the languages for speech
-output. At the moment english, spanish, and german are supported. GpsDrive
+At the moment English, Spanish, and German are supported. GpsDrive
 sets festival into the proper language. If the initialisation is not
-correct, have a look into 
-.I gpsdrive.c
-and edit following defines do your needs:
+correct, have a look in \fIgpsdrive.h\fR and edit following defines
+suit your needs:
 
 #define FESTIVAL_ENGLISH_INIT "(voice_ked_diphone)"
-
+.br
 #define FESTIVAL_GERMAN_INIT "(voice_german_de3_os)"
-
+.br
 #define FESTIVAL_SPANISH_INIT "(voice_el_diphone)"
 
-For this, you need the voices ked_diphone for english, german_de3_os
-for german (this is a MBROLA voice) and el_diphone for spanish.
-
-There is now an unsupported build of festival including english, german
-and spanish support.
-.B Download 
-it from GpsDrive homepage 
-.B mirrors
-and extract
-the tar file in the directory /usr/local as root:
-
-.br 
-cd /usr/local
-.br
-tar -xvzf festivalbuild.tar.gz
-
-Start the server with
-.B /usr/local/festival/bin/festival --server
+For this, you need the voices ked_diphone for English, german_de3_os
+for German (this is a MBROLA voice) and el_diphone for Spanish.
 
 
 .SH FRIENDSD server
 
-There is a server program, called
-.B friendsd
-which acts as server for the position of your friends. If you enable
-it in the settings menu, 
-then you can see the position of all gpsdrive connected with this
-server. 
+A server program called \fBfriendsd\fR comes with GpsDrive. It acts as
+a server for coordinating the position of your friends. After enabling
+it in the Preferences menu you can see the position of all GpsDrivers
+connected to this server. 
 
 You will see the position of your friends as a car symbol on the map,
-including the name, time, day of week and the speed of his last connection.
+including the name, time, day of week and the speed of their last connection.
 The blue arrow shows the last reported direction of your friend.
 
-The time is transmitted as UTC, but shown on the display as your local time, 
+The time is transmitted as UTC, but shown on the display in your local time,
 so it is also correct if your friend lives in another time zone.
 
 The server uses port 50123 (UDP), so be sure that you open the port in
-your firewall. The server needs no root privileges and should run as
-normal user or a special user with no privileges. The server was NOT
+your firewall. The server needs no root privileges and should run as a
+normal user or a special user with no privileges. The server has NOT been
 tested for security.
 
 There is a friends server running on friends.gpsdrive.de, you can try it
 if you enable it in the settings menu.
 
-You can also send messages to other mobile targets (Misc. Menu/Messages)
+\" COMMENTED OUT: You can also send messages to other mobile targets (Misc. Menu/Messages)
 
 
 .SH MAILING LIST
@@ -660,5 +636,5 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version. Indeed, you are encouraged to do so!
 
-.SH This document last modified
+.SS This document last modified
 $Date$
