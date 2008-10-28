@@ -24,22 +24,33 @@
 #  Requires awk, GDAL tools from gdal.org and NetPBM tools.
 #
 # Important! The maps must be named "map_*" for UTM-like projections
-# (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carree projection
-# (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
-# scale the maps correctly. Alternatively the maps can be stored without
-# prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
-# "_top".  To avoid distortion, anything more than 1:150k to 1:500k
-# should use "top_*".
+#  (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carree projection
+#  (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
+#  scale the maps correctly. Alternatively the maps can be stored without
+#  prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
+#  "_top".  To avoid distortion, anything more than 1:150k to 1:500k
+#  should use "top_*".
 #
 # Beware  if you are using an image originating from a map projection with
-# a significant deviation between true  north  and  the  map  projection's
-# local  +y  direction  (known as the Convergence Angle). GpsDrive assumes
-# that true north is always directly up! i.e. the Central Meridian of  the
-# map projection is located at the map tile's center. For some map projec-
-# tions and areas of the country this can be a really bad  assumption  and
-# your  map  will be significantly rotated. This effect is most visible at
-# map scales covering a large area. This does not affect lat/lon maps.
-# The pnmrotate program may help, or gdalwarp to a custom map-centered tmerc.
+#  a significant deviation between true  north  and  the  map  projection's
+#  local  +y  direction  (known as the Convergence Angle). GpsDrive assumes
+#  that true north is always directly up! i.e. the Central Meridian of  the
+#  map projection is located at the map tile's center. For some map projec-
+#  tions and areas of the country this can be a really bad  assumption  and
+#  your  map  will be significantly rotated. This effect is most visible at
+#  map scales covering a large area. This does not affect lat/lon maps.
+#  The pnmrotate program may help, or gdalwarp to a custom map-centered tmerc.
+#
+# To make an overview map, open your GeoTIFF in GIMP, Image->Mode->RGB,
+#  Image->Scale, 25%, cubic, and save as PNG. Next use gdal_translate
+#  to re-ref the GeoTIFF. You can also shrink with gdal_translate and
+#  gdalwarp, but the output isn't as nice. i.e. gdalwarp lets you use
+#  cubic spline resapmpling (-rcs), which is great for imagery but no
+#  good for a paletted image like a chart. If using that multiply the
+#  original resolution by 4 (gdalinfo) and use with the gdalwarp -tr
+#  option.
+#  To reapply georef to the GIMP image:
+#   gdal_translate -a_ullr w n e s  -a_srs EPSG:code $FILE.png $FILE.tif
 #
 #############################################################################
 
@@ -108,7 +119,7 @@ for XOFF in $XOFF_ALL ; do
     OUTFILE="${OUTPUT_BASE}_${XOFF}_${YOFF}"
 
     # create world file: -co "TFW=YES"
-    gdal_translate -co "COMPRESS=PACKBITS" \
+    gdal_translate -co "COMPRESS=PACKBITS" -quiet \
       -srcwin $XOFF $YOFF 1280 1024 "$INPUT_IMG" "${OUTFILE}.tif"
 
     if [ $? -ne 0 ] ; then
@@ -121,7 +132,7 @@ for XOFF in $XOFF_ALL ; do
     # check if image is empty
     CNT=`gdalinfo -mm -noct -nomd "${OUTFILE}.tif" | grep 'Min/Max' | \
        cut -f2 -d= | tr ',' '\n' | uniq | wc -l`
-    if [ "$CNT" -ne 2 ] ; then
+    if [ "$CNT" -eq 1 ] ; then
        echo "Skipping blank image ..."
        \rm "${OUTFILE}.tif"
        continue
