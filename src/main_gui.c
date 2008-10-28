@@ -1849,14 +1849,14 @@ void create_controls_mainbox (void)
 	    fprintf(stderr,"create_controls_mainbox(Main Menu)\n");
 	main_menu = gtk_menu_bar_new ();
 	menu_menu = gtk_menu_new ();
-	menuitem_menu = gtk_menu_item_new_with_label (_("Options"));
+	menuitem_menu = gtk_menu_item_new_with_mnemonic (_("_Options"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_menu);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_menu), menu_menu);
 
 	menu_maps = gtk_menu_new ();
-	menuitem_maps = gtk_menu_item_new_with_label (_("Maps"));
-	menuitem_mapimport = gtk_menu_item_new_with_label (_("Import"));
-	menuitem_mapdownload = gtk_menu_item_new_with_label (_("Download"));
+	menuitem_maps = gtk_menu_item_new_with_mnemonic (_("_Maps"));
+	menuitem_mapimport = gtk_menu_item_new_with_mnemonic (_("_Import"));
+	menuitem_mapdownload = gtk_menu_item_new_with_mnemonic (_("_Download"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_maps);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_maps), menu_maps);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_maps), menuitem_mapimport);
@@ -1868,13 +1868,13 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_MAPDOWNLOAD);
 
 	menu_load = gtk_menu_new ();
-	menuitem_load = gtk_image_menu_item_new_with_label (_("Import"));
+	menuitem_load = gtk_image_menu_item_new_with_mnemonic (_("_Import"));
 	load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_load), load_img);
-	menuitem_loadtrack = gtk_menu_item_new_with_label (_("GPX Track"));
-	menuitem_loadroute = gtk_menu_item_new_with_label (_("GPX Route"));
-	menuitem_loadwpt = gtk_menu_item_new_with_label (_("GPX Waypoints"));
-	menuitem_loadtrkold = gtk_menu_item_new_with_label (_("GpsDrive Track"));
+	menuitem_loadtrack = gtk_menu_item_new_with_mnemonic (_("GPX _Track"));
+	menuitem_loadroute = gtk_menu_item_new_with_mnemonic (_("GPX _Route"));
+	menuitem_loadwpt = gtk_menu_item_new_with_mnemonic (_("GPX _Waypoints"));
+	menuitem_loadtrkold = gtk_menu_item_new_with_mnemonic (_("_GpsDrive Track"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), menu_load);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrack);
@@ -1891,11 +1891,11 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADTRKOLD);
 
 	menu_save = gtk_menu_new ();
-	menuitem_save = gtk_image_menu_item_new_with_label (_("Export"));
+	menuitem_save = gtk_image_menu_item_new_with_mnemonic (_("_Export"));
 	save_img = gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_save), save_img);
-	menuitem_savetrack = gtk_menu_item_new_with_label (_("Track"));
-	menuitem_saveroute = gtk_menu_item_new_with_label (_("Route"));
+	menuitem_savetrack = gtk_menu_item_new_with_mnemonic (_("_Track"));
+	menuitem_saveroute = gtk_menu_item_new_with_mnemonic (_("_Route"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_save);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_save), menu_save);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_savetrack);
@@ -1906,14 +1906,14 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVEROUTE);
 
 	menuitem_sendmsg =
-		gtk_image_menu_item_new_with_label (_("Send Message"));
+		gtk_image_menu_item_new_with_mnemonic (_("_Send Message"));
 	sendmsg_img =
 		gtk_image_new_from_stock ("gtk-network", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image
 		(GTK_IMAGE_MENU_ITEM (menuitem_sendmsg), sendmsg_img);
 
 	menuitem_tripreset =
-		gtk_image_menu_item_new_with_label (_("Reset Trip"));
+		gtk_image_menu_item_new_with_mnemonic (_("_Reset Trip"));
 	tripreset_img =
 		gtk_image_new_from_stock ("gtk-clear", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image
@@ -1944,7 +1944,7 @@ void create_controls_mainbox (void)
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Help Menu)\n");
 	menu_help = gtk_menu_new ();
-	menuitem_help = gtk_menu_item_new_with_label (_("Help"));
+	menuitem_help = gtk_menu_item_new_with_mnemonic (_("_Help"));
 	menuitem_helpabout =
 		gtk_image_menu_item_new_from_stock ("gtk-about", NULL);
 	menuitem_helpcontent =
@@ -2016,7 +2016,7 @@ void create_controls_mainbox (void)
 	/* Button: Mute Speech */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Bottons: Mute Speech)\n");
-	mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
+	mute_bt = gtk_check_button_new_with_mnemonic (_("M_ute Speech"));
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (mute_bt), FALSE);
 	if (local_config.mute)
 	{
@@ -2046,7 +2046,7 @@ void create_controls_mainbox (void)
 	/* Button: Routing */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Buttons: Show Routing)\n");
-	routing_bt = gtk_button_new_with_label (_("Route List"));
+	routing_bt = gtk_button_new_with_mnemonic (_("_Route List"));
 
 	}	/* END MENU AND BUTTONS */
 
@@ -2062,7 +2062,7 @@ void create_controls_mainbox (void)
 	/* Checkbox: POI Draw */
 	if (local_config.use_database)
 	{
-		poi_draw_bt = gtk_check_button_new_with_label (_("POI"));
+		poi_draw_bt = gtk_check_button_new_with_mnemonic (_("_POI"));
 		if (local_config.showpoi)
 		{
 			gtk_toggle_button_set_active
@@ -2096,7 +2096,7 @@ void create_controls_mainbox (void)
 		_("Show Data found in Kismet Database"), NULL);
 */
 	/* Checkbox: Draw Waypoints from file */
-	wp_draw_bt = gtk_check_button_new_with_label (_("WP"));
+	wp_draw_bt = gtk_check_button_new_with_mnemonic (_("_WP"));
 	if (local_config.showwaypoints)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (wp_draw_bt), TRUE);
@@ -2119,7 +2119,7 @@ void create_controls_mainbox (void)
 	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
 	
 	/* Checkbox: Show Track */
-	showtrack_bt = gtk_check_button_new_with_label (_("Show"));
+	showtrack_bt = gtk_check_button_new_with_mnemonic (_("_Show"));
 	if (local_config.showtrack)
 	{
 		gtk_toggle_button_set_active
@@ -2135,7 +2135,7 @@ void create_controls_mainbox (void)
 	/* Checkbox: Save Track */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Buttons: Save Track)\n");
-	savetrack_bt = gtk_check_button_new_with_label (_("Save"));
+	savetrack_bt = gtk_check_button_new_with_mnemonic (_("Sa_ve"));
 	if (local_config.savetrack)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (savetrack_bt), TRUE);
@@ -2149,7 +2149,7 @@ void create_controls_mainbox (void)
 	}	/* END TRACKS */
 
 	/* Button: Clear Track */
-	cleartrack_bt = gtk_button_new_with_label (_("Clear\nTrack"));
+	cleartrack_bt = gtk_button_new_with_mnemonic (_("_Clear\nTrack"));
 	cleartrack_img = gtk_image_new_from_stock ("gtk-clear",
 		GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image (GTK_BUTTON (cleartrack_bt), cleartrack_img);
@@ -2162,7 +2162,7 @@ void create_controls_mainbox (void)
 			FALSE, FALSE, 0 * PADDING);
 
 	/* Button: Restart Track */
-	restarttrack_bt = gtk_button_new_with_label (_("Restart\nTrack"));
+	restarttrack_bt = gtk_button_new_with_mnemonic (_("R_estart\nTrack"));
 	restarttrack_img = gtk_image_new_from_stock ("gtk-save",
 		GTK_ICON_SIZE_BUTTON);
 	gtk_button_set_image (GTK_BUTTON (restarttrack_bt), restarttrack_img);
