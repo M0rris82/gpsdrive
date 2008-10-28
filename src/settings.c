@@ -1928,7 +1928,6 @@ settings_nav (GtkWidget *notebook)
 		_("Choose your travel mode. This is used to determine\n"
 		"which icon should be used to display your position\n"
 		"to others when using the Friends service."));
-	gtk_label_set_use_markup (GTK_LABEL (nav_explanation_lb), TRUE);
 
 	gchar travelmodes[TRAVEL_N_MODES][20];
 	gint i;
@@ -1975,7 +1974,7 @@ settings_nav (GtkWidget *notebook)
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
 		travel_combo, 1, 2, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
-		nav_explanation_lb, 2, 3, 0, 1); /* please review for correctness */
+		nav_explanation_lb, 2, 3, 1, 2);
 
 	nav_frame = gtk_frame_new (NULL);
 	nav_fr_lb = gtk_label_new (NULL);
