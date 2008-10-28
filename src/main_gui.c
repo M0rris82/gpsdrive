@@ -1573,13 +1573,11 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 			coords.current_lat, current.zoom);
 
 		/* if in the outer third of the map canvas jump to the
-			 map edge, otherwise half way there */
-		/*  perhaps it is more natural to just simply jump 1/3 of
-			 map if > 1/3 from edge instead of half way to edge */
+			 map edge, otherwise jump 1/4 of the map */
 		if ( event->keyval == 0xff52 || event->keyval == 0xff97 ) // Up
 		    {
 			new_x = old_x;
-			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y - MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff54 || event->keyval == 0xff99 ) // Down
@@ -1587,54 +1585,54 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 			new_x = old_x;
 			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
 					? gui_status.mapview_y
-					: gui_status.mapview_y - old_y/2;
+					: old_y + MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff51 || event->keyval == 0xff96 ) // Left
 		    {
-			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x - MAPWIDTH/4;
 			new_y = old_y;
 			have_new = TRUE;
 		    }
-		if ( event->keyval == 0xff53 || event->keyval == 0xff98 ) //  Right 
+		if ( event->keyval == 0xff53 || event->keyval == 0xff98 ) // Right 
 		    {
 			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
 					? gui_status.mapview_x
-					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
+					: old_x + MAPWIDTH/4;
 			new_y = old_y;
 			have_new = TRUE;
 		    }
 
-		if ( event->keyval == 0xff95 ) //  Keypad Home
+		if ( event->keyval == 0xff95 ) // Keypad Home
 		    {
-			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
-			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x - MAPWIDTH/4;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y - MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
-		if ( event->keyval == 0xff9a ) //  Keypad PgUp
+		if ( event->keyval == 0xff9a ) // Keypad PgUp
 		    {
 			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
 					? gui_status.mapview_x
-					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
-			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+					: old_x + MAPWIDTH/4;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y - MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
-		if ( event->keyval == 0xff9b ) //  Keypad PgDn
+		if ( event->keyval == 0xff9b ) // Keypad PgDn
 		    {
 			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
 					? gui_status.mapview_x
-					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
+					: old_x + MAPWIDTH/4;
 			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
 					? gui_status.mapview_y
-					: gui_status.mapview_y - old_y/2;
+					: old_y + MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
-		if ( event->keyval == 0xff9c ) //  Keypad End
+		if ( event->keyval == 0xff9c ) // Keypad End
 		    {
-			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x - MAPWIDTH/4;
 			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
 					? gui_status.mapview_y
-					: gui_status.mapview_y - old_y/2;
+					: old_y + MAPHEIGHT/4;
 			have_new = TRUE;
 		    }
 
