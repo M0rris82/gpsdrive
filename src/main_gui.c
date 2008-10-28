@@ -1566,66 +1566,82 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 	if (gui_status.posmode)
 	    {
-		gint x, y;
+		gint old_x, old_y, new_x, new_y;
+		gint have_new = FALSE;
 
+		calcxy (&old_x, &old_y, coords.current_lon,
+			coords.current_lat, current.zoom);
+
+		/* if in the outer third of the map canvas jump to the
+			 map edge, otherwise half way there */
+		/*  perhaps it is more natural to just simply jump 1/3 of
+			 map if > 1/3 from edge instead of half way to edge */
 		if ( event->keyval == 0xff52 || event->keyval == 0xff97 ) // Up
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (x, 0, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff54 || event->keyval == 0xff99 ) // Down
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (x, gui_status.mapview_y, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x;
+			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
+					? gui_status.mapview_y
+					: gui_status.mapview_y - old_y/2;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff51 || event->keyval == 0xff96 ) // Left
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (0, y, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
+			new_y = old_y;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff53 || event->keyval == 0xff98 ) //  Right 
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (gui_status.mapview_x, y, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
+					? gui_status.mapview_x
+					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
+			new_y = old_y;
+			have_new = TRUE;
 		    }
 
 		if ( event->keyval == 0xff95 ) //  Keypad Home
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (0, 0, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff9a ) //  Keypad PgUp
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (gui_status.mapview_x, 0, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
+					? gui_status.mapview_x
+					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
+			new_y = old_y < MAPHEIGHT/3 ? 0 : old_y/2;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff9b ) //  Keypad PgDn
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (gui_status.mapview_x, gui_status.mapview_y,
-				&coords.current_lat, &coords.current_lon,
-				current.zoom);
+			new_x = old_x > gui_status.mapview_x - MAPWIDTH/3
+					? gui_status.mapview_x
+					: gui_status.mapview_x - (gui_status.mapview_x - old_x)/2;
+			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
+					? gui_status.mapview_y
+					: gui_status.mapview_y - old_y/2;
+			have_new = TRUE;
 		    }
 		if ( event->keyval == 0xff9c ) //  Keypad End
 		    {
-			calcxy (&x, &y, coords.current_lon,
-				coords.current_lat, current.zoom);
-			calcxytopos (0, gui_status.mapview_y, &coords.current_lat,
-				&coords.current_lon, current.zoom);
+			new_x = old_x < MAPWIDTH/3 ? 0 : old_x/2;
+			new_y = old_y > gui_status.mapview_y - MAPHEIGHT/3
+					? gui_status.mapview_y
+					: gui_status.mapview_y - old_y/2;
+			have_new = TRUE;
 		    }
+
+
+		if(have_new)
+		    calcxytopos (new_x, new_y, &coords.current_lat,
+				 &coords.current_lon, current.zoom );
 
 		coords.posmode_lon = coords.current_lon;
 		coords.posmode_lat = coords.current_lat;
