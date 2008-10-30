@@ -1972,9 +1972,9 @@ settings_nav (GtkWidget *notebook)
 	gtk_table_attach (GTK_TABLE (nav_table),
 		travel_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
-		travel_combo, 1, 2, 0, 1);
+		travel_combo, 1, 3, 0, 1);
 	gtk_table_attach_defaults (GTK_TABLE (nav_table),
-		nav_explanation_lb, 2, 3, 1, 2);
+		nav_explanation_lb, 0, 3, 1, 2);
 
 	nav_frame = gtk_frame_new (NULL);
 	nav_fr_lb = gtk_label_new (NULL);
