@@ -1449,7 +1449,8 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		gchar wp_name[100], wp_type[100], wp_comment[100];
 		GTimeVal current_time;
 		g_get_current_time (&current_time);
-		g_snprintf (wp_name, sizeof (wp_name), "%s", (g_time_val_to_iso8601 (&current_time))+5);
+		g_snprintf (wp_name, sizeof (wp_name), "%s",
+			(g_time_val_to_iso8601 (&current_time))+5);
 		g_snprintf (wp_type, sizeof (wp_type),
 			"waypoint.wpttemp.wpttemp-green");
 		g_snprintf (wp_comment, sizeof (wp_comment),
@@ -1482,7 +1483,8 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		gchar wp_name[100], wp_type[100], wp_comment[100];
 		GTimeVal current_time;
 		g_get_current_time (&current_time);
-		g_snprintf (wp_name, sizeof (wp_name), "%s", (g_time_val_to_iso8601 (&current_time))+5);
+		g_snprintf (wp_name, sizeof (wp_name), "%s",
+			(g_time_val_to_iso8601 (&current_time))+5);
 		g_snprintf (wp_type, sizeof (wp_type),
 			"waypoint.wpttemp.wpttemp-yellow");
 		g_snprintf (wp_comment, sizeof (wp_comment),
@@ -1512,12 +1514,12 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 
 	// Zoom in/out
-	if ((toupper (event->keyval)) == '-' || (event->keyval == 0xFFad))
+	if (event->keyval == '-' || event->keyval == 0xFFad)
 	{
 		/* Zoom out */
 		scalerbt_cb (NULL, 1);
 	}
-	if ((toupper (event->keyval)) == '+' || (event->keyval == 0xFFab))
+	if (event->keyval == '+' || event->keyval == 0xFFab || event->keyval == '=')
 	{
 		/* Zoom in */
 		scalerbt_cb (NULL, 2);
