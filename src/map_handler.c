@@ -36,8 +36,6 @@
 #include <config.h>
 #include <math.h>
 #include "gpsdrive.h"
-#include "speech_out.h"
-#include "speech_strings.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
 #include "routes.h"
@@ -52,7 +50,6 @@ extern gint nrmaps;
 extern gint maploaded;
 extern gint debug, mydebug;
 extern gint iszoomed;
-extern gchar  oldangle[100];
 extern gdouble mapdl_lat, mapdl_lon;
 extern gint mapdl_scale;
 extern color_struct colors;

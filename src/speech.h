@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-Copyright (c) 2001-2005 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
 
 Website: www.gpsdrive.de/
 
@@ -21,25 +21,29 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *******************************************************************************/
-/*
-$Log$
-Revision 1.3  2005/04/29 17:41:57  tweety
-Moved the speech string to a seperate File
-
-Revision 1.2  2005/04/22 06:13:16  tweety
-added speechout text to .h File
-Author: Rob Stewart <rob@groupboard.com>
-
-Revision 1.1  2005/04/10 20:47:49  tweety
-added src/speech_out.h
-update configure and po Files
 
 
-*******************************************************************************/
 
-#ifndef GPSDRIVE_SPEECH_OUT_H
-#define GPSDRIVE_SPEECH_OUT_H
+#ifndef GPSDRIVE_SPEECH_H
+#define GPSDRIVE_SPEECH_H
 
-extern enum { english, german, spanish } voicelang;
+#ifdef SPEECH
 
-#endif // GPSDRIVE_SPEECH_OUT_H
+gint speech_init (void);
+void speech_close (void);
+gint speech_saytext (gchar *text, gint priority);
+gint speech_saytime (gboolean greeting);
+void speech_set_parameters (void);
+
+
+enum
+{
+	VOICE_NAME,
+	VOICE_LANGUAGE,
+	VOICE_VARIANT,
+	VOICE_N_COLUMNS
+};
+
+#endif
+
+#endif // GPSDRIVE_SPEECH_H

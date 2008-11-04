@@ -47,8 +47,6 @@ Disclaimer: Please do not use for navigation.
 #include "main_gui.h"
 
 #include "gettext.h"
-#include <speech_strings.h>
-#include <speech_out.h>
 
 /*  Defines for gettext I18n */
 # include <libintl.h>

@@ -31,10 +31,8 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <poi.h>
 #include <time.h>
-#include <speech_out.h>
 #include <icons.h>
 #include <gpsdrive_config.h>
-#include <speech_strings.h>
 #include "main_gui.h"
 
 /*  Defines for gettext I18n */
@@ -276,6 +274,7 @@ writeconfig ()
 	fprintf (fp, "map_nightcolor = %s\n", local_config.color_map_night);
 	fprintf (fp, "messagenumber = %d\n", messagenumber);
 	fprintf (fp, "speech = %d\n", local_config.speech);
+	fprintf (fp, "speech_module = %s\n", local_config.speech_module);
 	fprintf (fp, "speech_voice = %s\n", local_config.speech_voice);
 	fprintf (fp, "speech_mbroladir = %s\n", local_config.dir_mbrola);
 	fprintf (fp, "speech_speed = %d\n", local_config.speech_speed);
@@ -591,6 +590,9 @@ readconfig ()
 				messagenumber = atoi (par2);
 			else if ( (strcmp(par1, "speech")) == 0)
 				local_config.speech = atoi (par2);
+			else if ( (strcmp(par1, "speech_module")) == 0)
+				g_strlcpy (local_config.speech_module, par2,
+				sizeof (local_config.speech_module));
 			else if ( (strcmp(par1, "speech_voice")) == 0)
 				g_strlcpy (local_config.speech_voice, par2,
 				sizeof (local_config.speech_voice));
@@ -699,13 +701,15 @@ config_init ()
 	local_config.style_route = 1;
 
 	/* set speech output */
+	g_strlcpy (local_config.speech_module,
+		"espeak", sizeof (local_config.speech_module));
 	g_strlcpy (local_config.speech_voice,
 		"default", sizeof (local_config.speech_voice));
 	g_strlcpy (local_config.dir_mbrola,
 		"/usr/share/mbrola/", sizeof (local_config.dir_mbrola));
 	local_config.speech = FALSE;
-	local_config.speech_speed = 120;
-	local_config.speech_pitch = 50;
+	local_config.speech_speed = 0;
+	local_config.speech_pitch = 0;
 	local_config.sound_direction = TRUE;
 	local_config.sound_distance = TRUE;
 	local_config.sound_speed = TRUE;

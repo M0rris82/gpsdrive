@@ -9,6 +9,11 @@ find_package(SQLite3 REQUIRED)
 find_package(CURL REQUIRED)
 
 
+if (WITH_SPEECH)
+  find_package(Speechd REQUIRED)
+  add_definitions(-DSPEECH)
+endif (WITH_SPEECH)
+
 if (WITH_GDA3)
   find_package(GDA3 REQUIRED)
   add_definitions(-DGDA3)
@@ -48,6 +53,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${SQLITE3_INCLUDE_DIRS}
   ${DBUS_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS}
+  ${SPEECHD_INCLUDE_DIRS}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -64,6 +70,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${SQLITE3_LIBRARIES}
   ${DBUS_LIBRARIES}
   ${CURL_LIBRARIES}
+  ${SPEECHD_LIBRARIES}
 )
 
 set(gpsdrive_SRCS
@@ -109,9 +116,8 @@ set(gpsdrive_SRCS
   screenshot.h
   settings.c
   settings_gui.c
-  speech_out.c
-  speech_out.h
-  speech_strings.c
+  speech.c
+  speech.h
   splash.c
   track.c
   track.h

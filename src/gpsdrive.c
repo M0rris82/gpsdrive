@@ -99,8 +99,6 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include "gps_handler.h"
 #include "nmea_handler.h"
 #include "map_handler.h"
-#include <speech_strings.h>
-#include <speech_out.h>
 
 #include "import_map.h"
 #include "map_download.h"
@@ -248,9 +246,8 @@ trackdata_struct *trackcoord;
 extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gchar savetrackfn[256];
 
-gint havefestival, hours, minutes, speechcount = 0;
+gint hours, minutes;
 gchar lastradar[40], lastradar2[40]; 
-gint foundradar;
 gdouble radarbearing;
 gint errortextmode = TRUE;
 
@@ -525,7 +522,7 @@ display_status2 ()
 		hours = h;
 		minutes = m;
 
-
+#ifdef SPEECH
     if( !local_config.mute )
     {
       if( hours < 99 )
@@ -535,25 +532,26 @@ display_status2 ()
           if( 1 == hours )
           {
             g_snprintf(
-              buf, sizeof(buf), speech_arrival_one_hour_mins[voicelang],
+              buf, sizeof(buf), _("Arrival in approximately one hour and %d minutes."),
               minutes );
           }
           else
           {
             g_snprintf(
-              buf, sizeof(buf), speech_arrival_hours_mins[voicelang], hours,
-              minutes );
+              buf, sizeof(buf), _("Arrival in approximately %d hours and %d minutes."),
+              hours, minutes );
           }
         }
         else
         {
           g_snprintf(
-            buf, sizeof(buf), speech_arrival_mins[voicelang], minutes );
+            buf, sizeof(buf), _("Arrival in approximately %d minutes."), minutes );
         }
 
-        speech_out_speek( buf );
-	    }
+        speech_saytext (buf, 3);
+      }
     }
+#endif
 	}
 
 
@@ -1174,9 +1172,11 @@ drawmarker (GtkWidget * widget, guint * datum)
 		expose_mini_cb (NULL, 0);
 	}
 
+#ifdef SPEECH
 	/* force to say new direction */
 	if (!strcmp (oldangle, "XXX"))
 		speech_out_cb (NULL, 0);
+#endif
 
 	/* experimental output of current street data */
 #ifdef MAPNIK
@@ -2125,25 +2125,6 @@ usr2handler (int sig)
 		g_strlcpy (setpositionname, optarg, sizeof (setpositionname));
 		
 		_("-c WP     set start position in simulation mode to this waypoint (WP)\n")
-
-	'l':
-		if (!strcmp (optarg, "english"))
-			voicelang = english;
-		else if (!strcmp (optarg, "german"))
-			voicelang = german;
-		else if (!strcmp (optarg, "spanish"))
-			voicelang = spanish;
-		else
-		{
-			g_print (_
-				("\nYou can currently only choose between "
-				"english, spanish and german\n\n"));
-			exit (0);
-		}
-		
-		_("-l lang.  select language of the voice output;\n"
-		"          language may be 'english', 'spanish', or 'german'\n"),
-
 */
 
 /* *****************************************************************************
@@ -2366,7 +2347,6 @@ main (int argc, char *argv[])
     dbdistance = 2000.0;
     dbusedist = TRUE;
     g_strlcpy (loctime, "n/a", sizeof (loctime));
-    voicelang = english;
     track = g_new0 (GdkSegment, 100000);
     trackshadow = g_new0 (GdkSegment, 100000);
     tracknr = 0;
@@ -2416,13 +2396,6 @@ main (int argc, char *argv[])
 		g_strfreev (lstr);
 	    }
 	    
-	/* detect voicelang */
-	if ((strstr (lstr2, "de_")) != NULL)
-	    voicelang = german;
-	else if ((strstr (lstr2, "es_")) != NULL)
-	    voicelang = spanish;
-	else
-	    voicelang = english;
 	
 	/* get language, used for POI titles and descriptions */
 	if (!g_strlcpy (language,lstr2,3))
@@ -2512,24 +2485,9 @@ main (int argc, char *argv[])
 
     init_lat2RadiusArray();
 
-	if (!local_config.speech)
-	{
-		havefestival = festival_init ();
-		switch (voicelang)
-		{
-		case english:
-			speech_out_speek_raw (FESTIVAL_ENGLISH_INIT);
-			break;
-		case spanish:
-			speech_out_speek_raw (FESTIVAL_SPANISH_INIT);
-			break;
-		case german:
-			speech_out_speek_raw (FESTIVAL_GERMAN_INIT);
-			break;
-		}
-	}
-	else
-		havefestival = FALSE;
+#ifdef SPEECH
+	current.have_speech = speech_init ();
+#endif
 
 	/* set start position for simulation mode
 	 * (only available in waypoints mode) */
@@ -2564,8 +2522,10 @@ main (int argc, char *argv[])
 
     current.needtosave = FALSE;
 
-    if (havefestival || local_config.speech)
-	speech_saytime_cb (TRUE);
+#ifdef SPEECH
+	if (local_config.speech)
+		speech_saytime (TRUE);
+#endif
 
 /* do all the basic initalization for the specific sections */
 
@@ -2581,8 +2541,10 @@ main (int argc, char *argv[])
 	if( current.kismetsock != -1 )
 	{
 	    g_print (_("\nKismet server found\n"));
-	    g_snprintf( t_buf, sizeof(t_buf), speech_kismet_found[voicelang] );
-	    speech_out_speek (t_buf);
+#ifdef SPEECH
+	    g_snprintf( t_buf, sizeof(t_buf), _("Found kismet. Happy wardriving!"));
+	    speech_saytext (t_buf, 3);
+#endif
 	};
 
 	poi_init ();
@@ -2668,13 +2630,15 @@ main (int argc, char *argv[])
 			g_timeout_add (5 *1000, (GtkFunction) expose_display_temperature, NULL);
 	}
 	g_timeout_add (15 *1000, (GtkFunction) friendsagent_cb, 0);
-	if (havefestival || local_config.speech)
+#ifdef SPEECH
+	if (local_config.speech)
 	{
-		g_timeout_add (600 *1000, (GtkFunction) (speech_saytime_cb), FALSE);
+		g_timeout_add (600 *1000, (GtkFunction) (speech_saytime), FALSE);
 		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id, _("Using speech output"));
 	}
+#endif
 
 	/* timer for switching nightmode on or off if set to AUTO */
 	g_timeout_add (1200 *1000, (GtkFunction) check_if_night_cb, NULL);
@@ -2726,7 +2690,11 @@ main (int argc, char *argv[])
     gpsd_close();
     if (sockfd != -1)
 	close (sockfd);
-    festival_close ();
+
+#ifdef SPEECH
+	speech_close ();
+#endif
+
     cleanup_nasa_mapfile ();
     mapdl_cleanup ();
 

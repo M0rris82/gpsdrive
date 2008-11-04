@@ -44,8 +44,6 @@ reads info from kismet server and insert waypoints into database
 #include "gpsdrive_config.h"
 /* #include <gpskismet.h> */
 #include <poi.h>
-#include <speech_out.h>
-#include <speech_strings.h>
 #include <time.h>
 #include <errno.h>
 
@@ -242,10 +240,11 @@ readkismet ()
 			db_poi_extra_edit (&sqlid, "channel", t_buf, FALSE);
 
 			g_snprintf (buf, sizeof (buf),
-				speech_found_access_point[voicelang],
-				(wep) ? speech_access_closed[voicelang] :
-				speech_access_open[voicelang], tname, channel);
-			speech_out_speek (buf);
+				_("Found new %s access point: %s"),
+				(wep) ? _("encrypted") : _("open"), tname, channel);
+#ifdef SPEECH
+			speech_saytext (buf, 3);
+#endif
 		}
 	    }
 

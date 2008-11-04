@@ -337,6 +337,7 @@ typedef struct
 	gboolean save_in_db;	/* flag if new waypoints should be saved in the database */
 	gchar *poitype_path;
 	gchar poifilter[20000];	/* sql string for filtering the POI display */
+	gboolean have_speech;	/* flag if speech dispatcher is available */
 }
 currentstatus_struct;
 

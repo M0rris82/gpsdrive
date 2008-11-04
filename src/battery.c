@@ -80,8 +80,6 @@ Disclaimer: Please do not use for navigation.
 #define gdk_draw_pixbuf _gdk_draw_pixbuf
 #endif
 
-#include <speech_out.h>
-#include <speech_strings.h>
 #include "gui.h"
 
 extern gint mydebug;
@@ -668,12 +666,10 @@ expose_display_battery ()
     {
       if (mydebug > 30)
 	g_print ("\nBattery: %d%%\n", batlevel);
-
-      /* This is for Festival, so we cannot use gettext() for i18n */
-      g_snprintf (bbuf, sizeof (bbuf),
-		  speech_remaining_battery[voicelang], batlevel);
-      speech_out_speek (bbuf);
-
+#ifdef SPEECH
+      g_snprintf (bbuf, sizeof (bbuf), _("Remaining battery: %d%%"), batlevel);
+      speech_saytext (bbuf, 3);
+#endif
       batlevel_old = batlevel;
     }
   return TRUE;

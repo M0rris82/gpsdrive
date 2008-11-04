@@ -34,6 +34,8 @@ Disclaimer: Please do not use for navigation.
 #include <time.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 #include "gpsdrive.h"
 #include "gpsdrive_config.h"
@@ -43,8 +45,6 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "gui.h"
 #include "main_gui.h"
-#include <speech_out.h>
-#include <speech_strings.h>
 
 #include "gettext.h"
 
@@ -78,6 +78,8 @@ extern GtkWidget *map_drawingarea;
 extern GtkWidget *frame_statusbar;
 extern GtkWidget *main_window;
 extern GtkWidget *menuitem_saveroute;
+extern GtkWidget *route_window;
+extern GtkWidget *routeinfo_evbox;
 extern GHashTable *poi_types_hash;
 extern GtkTreeModel *poi_types_tree;
 extern guint8 linestyles[][4];
@@ -89,8 +91,127 @@ GtkWidget *myroutelist;
 gint thisrouteline = 0;
 GtkWidget *create_route_button, *create_route2_button, *select_route_button, *gotobt;
 routestatus_struct route;
-extern GtkWidget *route_window;
-extern GtkWidget *routeinfo_evbox;
+gchar *displaytext = NULL;
+static gint do_display_dsc = FALSE, textcount;
+
+
+/* *****************************************************************************
+ */
+void
+saytargettext (gchar * filename, gchar * tg)
+{
+#ifdef _WIN32
+    printf("saytargettext: %s\n", tg);
+#else
+
+	if (local_config.mute)
+		return;
+
+	gchar file[500];
+	gint fd, e;
+	gchar *start, *end;
+	struct stat buf;
+	gchar *data, *b, *tg2, target[100];
+
+	/* build .dsc filename */
+	g_strlcpy (file, filename, sizeof (file));
+	file[strlen (file) - 3] = 0;
+	g_strlcat (file, "dsc", sizeof (file));
+	/* get size */
+	e = stat (file, &buf);
+	if (e != 0)
+		return;
+
+	fd = open (file, O_RDONLY);
+	/* map +2000 bytes to get 0 at the end */
+	data = mmap (0, buf.st_size + 2000, PROT_READ, MAP_SHARED, fd, 0);
+	g_strlcpy (target, "$", sizeof (target));
+	tg2 = g_strdelimit (tg, " ", '_');
+	g_strlcat (target, tg2, sizeof (target));
+	start = strstr (data, target);
+	if (start != NULL)
+	{
+		start = strstr (start, "\n");
+		end = strstr (start, "$");
+		if (end == NULL)
+			end = start + strlen (start);
+		b = calloc (end - start + 50, 1);
+		if (displaytext != NULL)
+			free (displaytext);
+		displaytext = calloc (end - start + 50, 1);
+		strncpy (displaytext, start, end - start);
+		displaytext[end - start + 1] = 0;
+		g_strlcpy (b, displaytext, end - start + 50);
+		displaytext = g_strdelimit (displaytext, "\n", ' ');
+		do_display_dsc = TRUE;
+		textcount = 0;
+#ifdef SPEECH
+		speech_saytext (b, 3);
+#endif
+		free (b);
+	}
+	munmap (data, buf.st_size + 2000);
+#endif
+}
+
+/* *****************************************************************************
+ */
+void
+display_dsc (void)
+{
+	GdkGC *kontext;
+	gint len;
+	gchar *text;
+	PangoFontDescription *pfd;
+	PangoLayout *wplabellayout;
+
+	if (!do_display_dsc)
+		return;
+	if ((textcount >= (int) strlen (displaytext)))
+	{
+		do_display_dsc = FALSE;
+		free (displaytext);
+		displaytext = NULL;
+		return;
+	}
+	if (textcount > 20)
+		text = displaytext + textcount;
+	else
+		text = displaytext;
+	kontext = gdk_gc_new (drawable);
+	len = strlen (text);
+	/*   if (len>10) */
+	/*       len=10; */
+
+	/*   gdk_gc_set_function (kontext, GDK_OR); */
+
+	gdk_gc_set_foreground (kontext, &colors.mygray);
+	gdk_draw_rectangle (drawable, kontext, 1, 0, gui_status.mapview_y - 40, gui_status.mapview_x,
+			    40);
+	gdk_gc_set_function (kontext, GDK_COPY);
+	/*   gdk_gc_set_foreground (kontext, &blue); */
+
+	/* prints in pango */
+
+	wplabellayout = gtk_widget_create_pango_layout (map_drawingarea, text);
+	//KCFX  
+	if (local_config.guimode == GUI_PDA)
+		pfd = pango_font_description_from_string ("Sans 8");
+	else
+		pfd = pango_font_description_from_string ("Sans bold 14");
+	pango_layout_set_font_description (wplabellayout, pfd);
+	/*          pango_layout_get_pixel_size (wplabellayout, &width, &height); */
+	gdk_draw_layout_with_colors (drawable, kontext, 11, gui_status.mapview_y - 30,
+				     wplabellayout, &colors.blue, NULL);
+
+	if (wplabellayout != NULL)
+		g_object_unref (G_OBJECT (wplabellayout));
+	/* freeing PangoFontDescription, cause it has been copied by prev. call */
+	pango_font_description_free (pfd);
+
+	textcount += 2;
+
+}
 
 /* ******************************************************************
  */
@@ -130,6 +251,7 @@ setroutetarget (GtkWidget * widget, gint datum)
 //	g_snprintf (str, sizeof (str), "%s: %s[%d/%d]", _("To"), current.target,
 //		    route.pointer + 1, route.items);
 //	gtk_frame_set_label (GTK_FRAME (destframe), str);
+#ifdef SPEECH
 	tn = g_strdelimit (current.target, "_", ' ');
 	g_strlcpy (buf2, "", sizeof (buf2));
 	if (tn[0] == '*')
@@ -140,10 +262,10 @@ setroutetarget (GtkWidget * widget, gint datum)
 	else
 		g_strlcat (buf2, tn, sizeof (buf2));
 
-	g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
-	speech_out_speek (buf);
-
+	g_snprintf( buf, sizeof(buf), _("New target is %s."), buf2 );
+	speech_saytext (buf, 3);
 	speechcount = 0;
+#endif
 	g_strlcpy (oldangle, "XXX", sizeof (oldangle));
 	saytarget = TRUE;
 }
@@ -471,10 +593,11 @@ route_next_target ()
 	      /*  route endpoint reached */
 	      if (saytarget)
 		{
+#ifdef SPEECH
 		  g_snprintf (buf, sizeof (buf),
-			      speech_target_reached[voicelang], current.target);
-		  speech_out_speek (buf);
-
+			_("You reached the target %s."), current.target);
+		  speech_saytext (buf, 3);
+#endif
 		  /* let's say the waypoint description */
 		  saytargettext (local_config.wp_file, current.target);
 		}
@@ -723,8 +846,8 @@ route_settarget (gint rt_ptr)
 	else
 		g_strlcat (buf2, tn, sizeof (buf2));
 
-	g_snprintf( buf, sizeof(buf), speech_new_target[voicelang], buf2 );
-	speech_out_speek (buf);
+	g_snprintf( buf, sizeof(buf), _("The new target is %s."), buf2 );
+	speech_saytext (buf, 3);
 
 	speechcount = 0;
 	g_strlcpy (oldangle, "XXX", sizeof (oldangle));

@@ -108,8 +108,6 @@ extern GtkWidget *frame_temperature;
 extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
 extern GtkWidget *routeinfo_evbox;
-extern gint havefestival;
-
 extern gint real_psize, real_smallmenu;
 
 GdkColormap *colmap;
@@ -752,17 +750,17 @@ int gui_init (gchar *geometry, gint usegeometry)
 #endif
 	
 	if (!local_config.showfriends)
-      if (G_IS_OBJECT(frame_statusfriends))
-		gtk_widget_hide_all (frame_statusfriends);
-	if (!local_config.speech && !havefestival)
-      if (G_IS_OBJECT(mute_bt))
-		gtk_widget_hide_all (mute_bt);
+		if (G_IS_OBJECT(frame_statusfriends))
+			gtk_widget_hide_all (frame_statusfriends);
+	if (!local_config.speech)
+		if (G_IS_OBJECT(mute_bt))
+			gtk_widget_hide_all (mute_bt);
 	if (!local_config.showbatt)
-      if (G_IS_OBJECT(frame_battery))
-		gtk_widget_hide_all (frame_battery);
+		if (G_IS_OBJECT(frame_battery))
+			gtk_widget_hide_all (frame_battery);
 	if (!local_config.showtemp)
-      if (G_IS_OBJECT(frame_temperature))
-		gtk_widget_hide_all (frame_temperature);
+		if (G_IS_OBJECT(frame_temperature))
+			gtk_widget_hide_all (frame_temperature);
 
 	/* init map view:
 	 * this has to be done after the main window has been realized

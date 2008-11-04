@@ -34,8 +34,6 @@ Disclaimer: Please do not use for navigation.
 #include <gpsdrive.h>
 #include <config.h>
 #include <math.h>
-#include "speech_out.h"
-#include "speech_strings.h"
 #include "battery.h"
 #include "nmea_handler.h"
 #include "gui.h"

@@ -35,8 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "gpsdrive.h"
-#include "speech_out.h"
-#include "speech_strings.h"
 #include "mapnik.h"
 #include "gui.h"
 
@@ -47,7 +45,7 @@ extern gint haveposcount, blink, gblink, xoff, yoff;
 extern gint maploaded;
 extern gint mydebug;
 extern glong mapscale;
-extern gchar newmaplat[100], newmaplon[100], newmapsc[100], oldangle[100];
+extern gchar newmaplat[100], newmaplon[100], newmapsc[100];
 
 extern gint thisrouteline;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;

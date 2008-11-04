@@ -41,6 +41,7 @@
 #include <gpsdrive.h>
 #include "gui.h"
 #include "track.h"
+#include "speech.h"
 
 #include "gettext.h"
 
@@ -94,16 +95,17 @@ extern GtkTreeModel *poi_types_tree;
 extern GtkTreeStore *poi_types_tree_filtered;
 extern GtkWidget *frame_statusbar;
 GtkWidget *menuitem_sendmsg;
-extern gchar *espeak_voices[];
 extern GtkWidget *mute_bt;
-extern gint havefestival;
 extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
 extern GHashTable *poi_types_hash;
 extern guint id_timeout_autotracksave;
 extern guint id_timeout_track;
+extern gchar **speech_modules;
+extern GtkListStore *speech_voices_list;
 
 GtkWidget *settings_window = NULL;
+static GtkWidget *speechvoice_combo;
 
 /* ****************************************************************************
  * CALLBACKS
@@ -250,27 +252,6 @@ setcoordmode_cb (GtkWidget *widget)
 
 	current.needtosave = TRUE;
 	
-	return TRUE;
-}
-
-/* ************************************************************************* */
-static gint
-setespeakvoice_cb (GtkWidget *widget)
-{
-	gint i;
-
-	i = 2 * gtk_combo_box_get_active (GTK_COMBO_BOX (widget));
-
-	if (i > -1)
-	{
-		g_strlcpy (local_config.speech_voice, espeak_voices[i+1],
-			sizeof (local_config.speech_voice));
-
-		if (mydebug > 10)
-			fprintf (stderr, "Setting espeak voice to %s --> %s\n",
-				espeak_voices[i], espeak_voices[i+1]);
-	}
-
 	return TRUE;
 }
 
@@ -492,11 +473,82 @@ setshowfriends_cb (GtkWidget *entry)
 	return TRUE;
 }
 
+#ifdef SPEECH
+/* ************************************************************************* */
+static gint
+setspeechmodule_cb (GtkWidget *widget)
+{
+	gchar *t_buf;
+
+	t_buf = gtk_combo_box_get_active_text (GTK_COMBO_BOX (widget));
+
+	if (t_buf)
+	{
+		g_strlcpy (local_config.speech_module, t_buf,
+			sizeof (local_config.speech_module));
+
+		if (mydebug > 10)
+			g_print ("Setting speech module to %s\n", local_config.speech_module);
+
+		speech_set_module ();
+		gtk_combo_box_set_active (GTK_COMBO_BOX (speechvoice_combo), 0);
+
+		current.needtosave = TRUE;
+	}
+
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+preset_speechvoice_cb (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpointer result)
+{
+	gchar *t_name;
+
+	gtk_tree_model_get (model, iter, VOICE_NAME, &t_name, -1);
+
+	if (strcmp (local_config.speech_voice, t_name) == 0)
+	{
+		gtk_combo_box_set_active_iter (GTK_COMBO_BOX (speechvoice_combo), iter);
+		g_free (t_name);
+		return TRUE;
+	};
+
+	g_free (t_name);
+	return FALSE;
+};
+
+/* ************************************************************************* */
+static gint
+setspeechvoice_cb (GtkWidget *widget)
+{
+	gchar *t_buf;
+
+	t_buf = gtk_combo_box_get_active_text (GTK_COMBO_BOX (widget));
+
+	if (!t_buf)
+		return TRUE;
+
+	g_strlcpy (local_config.speech_voice, t_buf,
+		sizeof (local_config.speech_voice));
+
+	if (mydebug > 10)
+		g_print ("Setting speech voice to %s\n", local_config.speech_voice);
+
+	speech_set_voice ();
+	current.needtosave = TRUE;
+
+	return TRUE;
+}
+
 /* ************************************************************************* */
 static gint
 setspeechspeed_cb (GtkWidget *range)
 {
 	local_config.speech_speed = gtk_range_get_value (GTK_RANGE (range));
+	speech_set_parameters ();
+	current.needtosave = TRUE;
+
 	return TRUE;
 }
 
@@ -505,6 +557,9 @@ static gint
 setspeechpitch_cb (GtkWidget *range)
 {
 	local_config.speech_pitch = gtk_range_get_value (GTK_RANGE (range));
+	speech_set_parameters ();
+	current.needtosave = TRUE;
+
 	return TRUE;
 }
 
@@ -517,8 +572,7 @@ setspeechenable_cb (GtkWidget *widget)
 	if (local_config.speech)
 	{
 		gtk_widget_show_all (mute_bt);
-		havefestival = FALSE;
-		speech_out_speek (_("Speech output enabled."));
+		speech_saytext (_("Speech output enabled."), 3);
 		g_timeout_add (SPEECHOUTINTERVAL, (GtkFunction) speech_out_cb, 0);
 	}
 	else
@@ -534,6 +588,7 @@ setspeechenable_cb (GtkWidget *widget)
 	
 	return TRUE;
 }
+#endif
 
 /* ************************************************************************* */
 static gint
@@ -2570,6 +2625,7 @@ settings_friends (GtkWidget *notebook)
 		(GTK_NOTEBOOK (notebook), friends_vbox, friends_label);
 }
 
+#ifdef SPEECH
 /* ************************************************************************* */
 static void
 settings_speech (GtkWidget *notebook)
@@ -2582,9 +2638,12 @@ settings_speech (GtkWidget *notebook)
 	GtkWidget *speechenable_bt;
 	GtkWidget *espeakspeed_label, *espeakspeed_scale;
 	GtkWidget *espeakpitch_label, *espeakpitch_scale;
-	GtkWidget *espeakvoice_label, *espeakvoice_combo;
+	GtkWidget *speechvoice_label;
+	GtkWidget *speechmodule_label, *speechmodule_combo;
+	GtkCellRenderer *renderer_voices;
 	GtkTooltips *speech_tooltips;
 	gint i=0, j=0;
+	GtkTreeIter t_iter;
 
 	speech_tooltips = gtk_tooltips_new ();
 	speech_vbox = gtk_vbox_new (FALSE, 2);
@@ -2595,48 +2654,75 @@ settings_speech (GtkWidget *notebook)
 	gtk_table_set_row_spacings (GTK_TABLE (speechgen_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (speechgen_table), 5);
 
-	speechenable_bt = gtk_check_button_new_with_label (_("Enable speech output using espeak"));
+	speechenable_bt = gtk_check_button_new_with_label (_("Enable speech output"));
 	if (local_config.speech)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (speechenable_bt), TRUE);
 	g_signal_connect (speechenable_bt, "clicked",
 		G_CALLBACK (setspeechenable_cb), NULL);
 
 	espeakspeed_label = gtk_label_new (_("Speed"));
-	espeakspeed_scale = gtk_hscale_new_with_range (50, 300, 1.0);
+	espeakspeed_scale = gtk_hscale_new_with_range (-100, 100, 1.0);
 	gtk_range_set_value (GTK_RANGE (espeakspeed_scale), local_config.speech_speed);
 	g_signal_connect (espeakspeed_scale, "value-changed", G_CALLBACK (setspeechspeed_cb), NULL);
 
 	espeakpitch_label = gtk_label_new (_("Pitch"));
-	espeakpitch_scale = gtk_hscale_new_with_range (0, 99, 1.0);
+	espeakpitch_scale = gtk_hscale_new_with_range (-100, 100, 1.0);
 	gtk_range_set_value (GTK_RANGE (espeakpitch_scale), local_config.speech_pitch);
 	g_signal_connect (espeakpitch_scale, "value-changed", G_CALLBACK (setspeechpitch_cb), NULL);
 
-	espeakvoice_label = gtk_label_new (_("Voice"));
-	espeakvoice_combo = gtk_combo_box_new_text ();
-	while (strcmp (espeak_voices[i], "-1"))
+	speechmodule_label = gtk_label_new (_("Output module"));
+	speechmodule_combo = gtk_combo_box_new_text ();
+	while (speech_modules[i] !=NULL)
 	{
-		gtk_combo_box_append_text (GTK_COMBO_BOX (espeakvoice_combo), espeak_voices[i]);
-		if (strcmp (espeak_voices[i+1], local_config.speech_voice) == 0)
-			j = i/2;
-		i += 2;
+		gtk_combo_box_append_text (GTK_COMBO_BOX (speechmodule_combo),
+			speech_modules[i]);
+		if (strcmp (speech_modules[i], local_config.speech_module) == 0)
+			j = i;
+		i++;
 	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (espeakvoice_combo), j);
-	g_signal_connect (espeakvoice_combo, "changed", G_CALLBACK (setespeakvoice_cb), NULL);
+	gtk_combo_box_set_active (GTK_COMBO_BOX (speechmodule_combo), j);
+	g_signal_connect (speechmodule_combo, "changed", G_CALLBACK (setspeechmodule_cb), NULL);
+
+	speechvoice_label = gtk_label_new (_("Voice"));
+	speechvoice_combo = gtk_combo_box_new_with_model
+		(GTK_TREE_MODEL (speech_voices_list));
+	renderer_voices = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, "text", VOICE_NAME, NULL);
+	renderer_voices = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, "text", VOICE_LANGUAGE, NULL);
+	renderer_voices = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (speechvoice_combo),
+		renderer_voices, "text", VOICE_VARIANT, NULL);
+	gtk_tree_model_foreach (GTK_TREE_MODEL (speech_voices_list),
+		*(GtkTreeModelForeachFunc) (preset_speechvoice_cb), NULL);
+	g_signal_connect (speechvoice_combo, "changed", G_CALLBACK (setspeechvoice_cb), NULL);
 
 	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
 		speechenable_bt, 0, 4, 0, 1);
 	gtk_table_attach (GTK_TABLE (speechgen_table),
-		espeakvoice_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		speechmodule_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
-		espeakvoice_combo, 1, 2, 1, 2);
+		speechmodule_combo, 1, 2, 1, 2);
 	gtk_table_attach (GTK_TABLE (speechgen_table),
-		espeakspeed_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		speechvoice_label, 0, 1, 2, 3, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
-		espeakspeed_scale, 1, 2, 2, 3);
+		speechvoice_combo, 1, 2, 2, 3);
 	gtk_table_attach (GTK_TABLE (speechgen_table),
-		espeakpitch_label, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		espeakspeed_label, 0, 1, 3, 4, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
-		espeakpitch_scale, 1, 2, 3, 4);
+		espeakspeed_scale, 1, 2, 3, 4);
+	gtk_table_attach (GTK_TABLE (speechgen_table),
+		espeakpitch_label, 0, 1, 4, 5, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (speechgen_table),
+		espeakpitch_scale, 1, 2, 4, 5);
 	}
 
 
@@ -2733,6 +2819,7 @@ settings_speech (GtkWidget *notebook)
 	gtk_notebook_append_page
 		(GTK_NOTEBOOK (notebook), speech_vbox, speech_label);
 }
+#endif
 
 /* ************************************************************************* */
 static void
@@ -2836,8 +2923,10 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	settings_gui (settings_nb);
 	settings_col (settings_nb);
 	settings_trk (settings_nb);
-	if (!havefestival)
+#ifdef SPEECH
+	if (current.have_speech)
 		settings_speech (settings_nb);
+#endif
 	settings_gps (settings_nb);
 	//settings_nautic (settings_nb);
 

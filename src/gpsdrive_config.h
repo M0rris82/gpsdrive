@@ -99,7 +99,8 @@ typedef struct
 	gint scale_wanted;
 	gint mapsource_type;
 	gint mapsource_scale;
-	gint speech;
+	gboolean speech;
+	gchar speech_module[20];
 	gchar speech_voice[20];
 	gint speech_speed;
 	gint speech_pitch;

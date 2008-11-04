@@ -31,10 +31,8 @@ Disclaimer: Please do not use as a primary means of navigation.
 #include <gpsdrive.h>
 #include <poi.h>
 #include <time.h>
-#include <speech_out.h>
 #include <icons.h>
 #include <splash.h>
-#include <speech_strings.h>
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -53,6 +51,9 @@ extern gint mydebug;
 extern int sockfd;
 
 extern coordinate_struct coords;
+
+
+// TODO: move all the function not belonging here to a more proper place...
 
 
 gint
@@ -430,10 +431,10 @@ message_cb (char *msgid, char *name, char *text, int fs)
 	sockfd = -1;
 	friends_sendmsg (local_config.friends_serverip, buf);
 	gdk_beep ();
-
-  g_snprintf( buf, sizeof(buf), speech_message_received[voicelang], name );
-	speech_out_speek (buf);
-
+#ifdef SPEECH
+	g_snprintf( buf, sizeof(buf), _("You received a message from %s."), name );
+	speech_saytext (buf, 3);
+#endif
 	return TRUE;
 }
 

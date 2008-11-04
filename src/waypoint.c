@@ -50,8 +50,7 @@ Disclaimer: Please do not use for navigation.
 #include "main_gui.h"
 
 #include "gettext.h"
-#include <speech_strings.h>
-#include <speech_out.h>
+
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -78,7 +77,6 @@ extern gint selected_wp_mode;
 static GtkWidget *add_wp_lon_text, *add_wp_lat_text;
 extern gdouble earthr;
 extern gchar *displaytext;
-extern gint do_display_dsc, textcount;
 extern gdouble olddist;
 extern GtkWidget *messagewindow;
 extern GdkDrawable *drawable;
@@ -89,7 +87,6 @@ extern GdkGC *kontext;
 
 gint saytarget = FALSE;
 gint markwaypoint = FALSE;
-gint foundradar;
 GtkWidget *addwaypointwindow;
 wpstruct *wayp;
 gint wpsize = 1000;
