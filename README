@@ -137,12 +137,13 @@ And the OpenStreetmap Utilities for using Mapnik Maps ...
 Uninstall:
 ---------
 
-If you installed using the tarball:
+If you installed using the source tarball:
+  GpsDrive uses cmake to build, which has no uninstall target for some
+  reasons. After running "make install" you should find a file
+  "install_manifest.txt" inside your build directory, that holds a list
+  of all the files installed.
 
-cd into the gpsdrive directory (not the src), then
-  make uninstall
-
-If you used the rpm package:
+If you used the RPM package:
   rpm -e gpsdrive
 
 Debian:
@@ -157,3 +158,4 @@ enjoy!
 --The GpsDrive Development Team
 
 Last modified: $Date$
+
