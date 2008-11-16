@@ -117,8 +117,7 @@ static struct mapsource_struct
 	MAPSOURCE_LANDSAT, "1 : 100 000", 0, 100000,
 	MAPSOURCE_LANDSAT, "1 : 250 000", 0, 250000,
 	MAPSOURCE_LANDSAT, "1 : 500 000", 0, 500000,
-	MAPSOURCE_LANDSAT, "1 : 1 million", 0, 1000000,
-	  /* wider scales than 1:1million switch to "top_" Plate Carrée
+	  /* wider scales than 1:500k switch to "top_" Plate Carrée
 	  	projection. It would be more accurate to switch nearer to
 		1:125k,	but map_ is prettier so we hold on longer than we should.
 		Distortion grows the further you get from lon_0; e.g. UTM
@@ -126,6 +125,7 @@ static struct mapsource_struct
 		next band is not recommended, and by the time you get to
 		+/-90deg from lon_0 it completely breaks. */
 /* TODO: add another field for proj or use mapdl_zoom as 0/1 for map_/top_ ??? */
+	MAPSOURCE_LANDSAT, "1 : 1 million", 0, 1000000,
 	MAPSOURCE_LANDSAT, "1 : 2.5 million", 0, 2500000,
 	MAPSOURCE_LANDSAT, "1 : 5 million", 0, 5000000,
 	MAPSOURCE_LANDSAT, "1 : 10 million", 0, 10000000,
@@ -249,7 +249,7 @@ mapdl_geturl_landsat (void)
 
 	/* lon */
 	dist_to_edge_m = meters_per_pixel * MAPWIDTH/2;
-	if (mapdl_scale <= 1000000) {
+	if (mapdl_scale <= 500000) {
 	    g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));  /* cartesian space (UTM-like) */
 	    dist_to_edge_deg = dist_to_edge_m / (1852.0*60*cos(DEG2RAD(mapdl_lat)));
 	      /* 1852m/naut mile (arc-minute of LAT), lon:lat ratio = cos(lat) */
