@@ -175,8 +175,9 @@ draw_waypoints ()
 					64 * 360);
 			}
 
-
-			{	/* draw shadow of text */
+			/* draw name label (if there is one) */
+			if( (wayp + i)->name[0] != '\0' ) {
+			    {	/* draw shadow of text */
 				PangoFontDescription *pfd;
 				PangoLayout *wplabellayout;
 				gint width, height;
@@ -214,25 +215,25 @@ draw_waypoints ()
 				/* freeing PangoFontDescription, cause it has been copied by prev. call */
 				pango_font_description_free (pfd);
 
-			}
-			gdk_gc_set_function (kontext_map, GDK_COPY);
+			    }
+			    gdk_gc_set_function (kontext_map, GDK_COPY);
 
 
-			gdk_gc_set_function (kontext_map, GDK_AND);
+			    gdk_gc_set_function (kontext_map, GDK_AND);
 
-			gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
-			gdk_draw_rectangle (drawable, kontext_map, 1,
+			    gdk_gc_set_foreground (kontext_map, &colors.textbacknew);
+			    gdk_draw_rectangle (drawable, kontext_map, 1,
 					    posxdest + 13, posydest - k2 / 2,
 					    k + 1, k2);
-			gdk_gc_set_function (kontext_map, GDK_COPY);
-			gdk_gc_set_foreground (kontext_map, &colors.black);
-			gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
-			gdk_draw_rectangle (drawable, kontext_map, 0,
+			    gdk_gc_set_function (kontext_map, GDK_COPY);
+			    gdk_gc_set_foreground (kontext_map, &colors.black);
+			    gdk_gc_set_line_attributes (kontext_map, 1, 0, 0, 0);
+			    gdk_draw_rectangle (drawable, kontext_map, 0,
 					    posxdest + 12,
 					    posydest - k2 / 2 - 1, k + 2, k2);
 
-			/*            gdk_gc_set_foreground (kontext, &yellow);  */
-			{
+			    /*            gdk_gc_set_foreground (kontext, &yellow);  */
+			    {
 				/* prints in pango */
 				PangoFontDescription *pfd;
 				PangoLayout *wplabellayout;
@@ -258,6 +259,7 @@ draw_waypoints ()
 				/* freeing PangoFontDescription, cause it has been copied by prev. call */
 				pango_font_description_free (pfd);
 
+			    }
 			}
 		}
 	}
@@ -292,7 +294,8 @@ addwaypointchange_cb (GtkWidget * widget, guint datum)
  * with Strings for Name and Type
  */
 glong
-addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gboolean save_in_db)
+addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment,
+	     gdouble wp_lat, gdouble wp_lon, gboolean save_in_db)
 {
 	gint i;
 
@@ -316,11 +319,11 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_la
 
 		/* limit waypoint type to 40 chars */
 		g_strlcpy ((wayp + i)->typ, wp_type, 40);
-		(wayp + i)->typ[40] = 0;
+		(wayp + i)->typ[40-1] = 0;
 		
 		/*  limit waypoint comment to 80 chars */
 		g_strlcpy ((wayp + i)->comment, wp_comment, 80);
-		(wayp + i)->comment[80] = 0;
+		(wayp + i)->comment[80-1] = 0;
 
 
 		maxwp++;
@@ -485,7 +488,8 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
     if (PoiInitPath) {
         /* new init set first entry */
         gtk_tree_model_get_iter_first (poi_types_tree_filtered, &t_iter);
-        current.poitype_path = gtk_tree_model_get_string_from_iter(GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter);
+        current.poitype_path = gtk_tree_model_get_string_from_iter(
+				    GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter);
     }
     
 	gtk_combo_box_set_active_iter (GTK_COMBO_BOX(add_wp_type_combo), &t_iter);
@@ -624,6 +628,10 @@ savewaypoints ()
 			g_strdelimit (la, ",", '.');
 			g_strdelimit (lo, ",", '.');
 
+			/* still need to write something if no label */
+			if( (wayp + i)->name[0] == '\0' )
+			    g_strlcpy ( (wayp + i)->name, "_", 20);
+
 			if ( (wayp + i)->typ[0] == '\0' ) {
 			    g_strlcpy ( (wayp + i)->typ, "unknown", 
 					sizeof ((wayp + i)->typ));
@@ -636,7 +644,7 @@ savewaypoints ()
 				     (wayp + i)->name, la, lo,
 				     (wayp + i)->typ,
 				     (wayp + i)->proximity,
-					 (wayp + i)->comment);
+				     (wayp + i)->comment);
 		}
 		fclose (st);
 	}
@@ -659,7 +667,7 @@ loadwaypoints ()
 	wayp = g_new (wpstruct, wpsize);
     
 //    g_strlcpy (fn_way_txt, local_config.dir_home, sizeof (fn_way_txt));
-//	g_strlcat (fn_way_txt, local_config.wp_file, sizeof (fn_way_txt));
+//    g_strlcat (fn_way_txt, local_config.wp_file, sizeof (fn_way_txt));
     g_strlcpy (fn_way_txt, local_config.wp_file, sizeof (fn_way_txt));
 
 
@@ -687,24 +695,35 @@ loadwaypoints ()
     i = 0;
     while ((p = fgets (buf, 512, st) != 0))
 	{
-	    e = sscanf (buf, "%s %s %s %s %d %d %d %d\n",
+	    e = sscanf (buf, "%s %s %s %s %d %d %d %d %79s",
 			(wayp + i)->name, slat, slong, typ,
-			&tmp, &tmp, &tmp, &proximity);
+			&tmp, &tmp, &tmp, &proximity, (wayp + i)->comment);
+
+	    /* convert DDD:MM:SSh or DDDdMM'SS"h to decimal degrees */
 	    coordinate_string2gdouble(slat, &((wayp + i)->lat));
 	    coordinate_string2gdouble(slong,&((wayp + i)->lon));
+
 	    /*  limit waypoint name to 20 chars */
 	    (wayp + i)->name[20] = 0;
+
+	    /* ignore blank placeholder labels */
+	    if( strcmp( (wayp + i)->name, "_") == 0 )
+		(wayp + i)->name[0] = 0;
+
 	    g_strlcpy ((wayp + i)->typ, "unknown", 40);
 	    (wayp + i)->proximity = 0;
-		    
+
 	    if (e >= 3)
 		{
 		    (wayp + i)->dist = 0;
-				
+		
 		    if (e >= 4)
 			g_strlcpy ((wayp + i)->typ, typ, 40);
 		    if (e >= 8)
 			(wayp + i)->proximity = proximity;
+		    if (e >= 9) /*  limit waypoint comment to 80 chars */
+			(wayp + i)->comment[80-1] = 0;
+
 
 		    i++;
 		    maxwp = i;
@@ -721,6 +740,6 @@ loadwaypoints ()
 
     fclose (st);
 
-	g_print ("%s reloaded\n", local_config.wp_file);
+    g_print ("%s reloaded\n", local_config.wp_file);
 
 }

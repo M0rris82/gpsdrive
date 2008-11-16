@@ -386,12 +386,30 @@ Finkenwerder            53.541765    9.842541 AIRPORT
 .br
 Fritz_Wohnung           53.582700    9.971390 FRITZ
 
-The rows are: label latitude longitude waypoint-type. You may omit the
-waypoint type. You can create any number of way-*.txt files and chose
+The rows are: {label latitude longitude waypoint-type}.
+The label may not exceed 20 characters or contain spaces. Use
+underscores (_) in place of spaces, these will automatically be
+converted into spaces by the program.
+A blank label is denoted by a single underscore.
+
+Latitude and longitude may be in decimal degrees or in the form of
+DDDdMM'SS"[NSEW] or DDD:MM:SS[NSEW]. Seconds or minutes and seconds
+may be omitted or in decimal form. Thus the following are valid:
+42d30'55"N, 75:30.6425W, -46.25.
+In fact the delimiters can be anything except numbers, ".", or spaces.
+
+You may omit the waypoint type. 
+
+Following the waypoint-type are (optionally) three space separated
+zeros, a proximity radius (in integer meters), and a comment.
+Comments follow the same space/underscore rules as label names, and
+are limited to 80 characters.
+
+You can create any number of way-*.txt files and chose
 between them from the Preferences menu.
 
 There is no need to create the way.txt file yourself, you can add the
-waypoints with GpsDrive using the "x" key. See help menu.
+waypoints with GpsDrive using the "x" key. See the Help menu.
 
 
 .SS Add new waypoints

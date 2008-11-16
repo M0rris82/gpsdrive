@@ -30,7 +30,10 @@ Disclaimer: Please do not use for navigation.
  */
 
 gint addwaypoint_cb (GtkWidget * widget, gpointer datum);
-glong addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment, gdouble wp_lat, gdouble wp_lon, gboolean save_in_db);
+
+glong addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment,
+		   gdouble wp_lat, gdouble wp_lon, gboolean save_in_db);
+
 void check_and_reload_way_txt();
 void draw_waypoints();
 void loadwaypoints();
