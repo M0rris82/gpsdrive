@@ -342,7 +342,7 @@ map_koord_check_and_reload ()
   if (needreloadmapconfig && !mapdl_active)
     {
       loadmapconfig ();
-      g_print ("%s reloaded\n", "map_koord.txt");
+      g_print ("%s reloaded, read %d map tiles\n", "map_koord.txt", nrmaps);
       maptxtstamp = buf.st_mtime;
     };
 }

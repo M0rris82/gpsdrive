@@ -731,15 +731,13 @@ loadwaypoints ()
 		    if (maxwp >= wpsize)
 			{
 			    wpsize += 1000;
-			    wayp = g_renew (wpstruct, wayp,
-					    wpsize);
+			    wayp = g_renew (wpstruct, wayp, wpsize);
 			}
-
 		}
 	}
 
     fclose (st);
 
-    g_print ("%s reloaded\n", local_config.wp_file);
+    g_print ("%s reloaded, read %d waypoints\n", local_config.wp_file, maxwp);
 
 }

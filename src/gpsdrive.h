@@ -146,9 +146,11 @@ enum gpx_mode
 /*  How often do we ask for positioning data */
 #define TIMER 500
 
-#define MAXSHOWNWP 100
+/* maximum number of waypoints to draw at one time */
+ /* HB Nov 2008:  is this really needed? */
+#define MAXSHOWNWP 10000
 
-/*  If speech output is used, the intervall of spoken messages in milliseconds */
+/*  If speech output is used, the interval of spoken messages in milliseconds */
 #define SPEECHOUTINTERVAL 10000
 
 /*  defines offset and color of the shadows */
