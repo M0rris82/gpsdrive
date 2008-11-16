@@ -637,7 +637,9 @@ savewaypoints ()
 					sizeof ((wayp + i)->typ));
 			}
 
-			e = fprintf (st, "%-22s %10s %11s "
+			if( (wayp + i)->proximity > 0 || 
+				strlen((wayp + i)->comment) > 0) {
+			    e = fprintf (st, "%-22s %10s %11s "
 				     "%s"
 				     " 0 0 0 %d %s"
 				     "\n",
@@ -645,6 +647,12 @@ savewaypoints ()
 				     (wayp + i)->typ,
 				     (wayp + i)->proximity,
 				     (wayp + i)->comment);
+			}
+			else {
+			    e = fprintf (st, "%-22s %10s %11s %s\n",
+				     (wayp + i)->name, la, lo,
+				     (wayp + i)->typ);
+			}
 		}
 		fclose (st);
 	}
