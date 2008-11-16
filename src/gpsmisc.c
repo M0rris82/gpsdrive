@@ -123,9 +123,8 @@ lat2radius_pi_180 (gdouble lat)
 gdouble
 calcR (gdouble lat)
 {
-  gdouble a = 6378.137, r, sc, x, y, z;
-  gdouble e2 = 0.08182 * 0.08182;
-  gdouble lat_pi;
+  gdouble a, f, e2, r, sc, x, y, z, lat_pi;
+
   /* the radius of curvature of an ellipsoidal Earth in the plane of 
    * the meridian is given by 
    *
@@ -140,6 +139,12 @@ calcR (gdouble lat)
    * b = 6356.752 km (3950 mi) Polar radius (surface to center distance) 
    * e = 0.08182 Eccentricity
    */
+
+  /* WGS84: */
+   a = 6378137.0/1000;
+   f = 1.0 / 298.257223563;
+   e2 = 1 - pow(1 - f, 2);
+   /* thus e = sqrt(1- (1 - f)^2)   (e_wgs84 = 0.0818191908426216) */
 
   lat_pi = lat * M_PI / 180.0;
   sc = sin (lat_pi);
@@ -156,6 +161,7 @@ calcR (gdouble lat)
 
 /* ******************************************************************
  * calculate distance from (lat/lon) to current position
+ *  (nasty but cheap)
  */
 gdouble
 calcdist2 (gdouble lon, gdouble lat)
@@ -183,15 +189,23 @@ calcdist2 (gdouble lon, gdouble lat)
 }
 
 /* ******************************************************************
- * calculate distance between two given coordinates (lon1/lat1, lon2/lat2)
- * (much more precise than calcdist2)
+ * calculate geodesic distance between two given coordinates (lon1/lat1, lon2/lat2)
+ *   (great circle distance along the WGS84 ellipsoid)
+ * Based on the April 1975 paper published in Survey Review by
+ * Thaddeus Vincenty.  http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
+ *
+ * MUCH more precise than calcdist2; this is the "gold standard" for
+ * solving the inverse geodesic problem on an ellipsoid.
+ *   see http://trac.osgeo.org/proj/wiki/GeodesicCalculations
+ *
  * if from_current is TRUE, lon2/lat2 ist replaced by the current position
  */
 gdouble
-calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current)
+calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
+	     gint from_current)
 {
 	gdouble a = 6378137.0;
-	gdouble f = 1.0 / 298.25722210088;
+	gdouble f = 1.0 / 298.257223563;
 	gdouble glat1, glat2, glon1, glon2;
 	gdouble radiant = M_PI / 180;
 	gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
