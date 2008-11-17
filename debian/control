@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@ostertag.name>
 Build-Depends: debhelper (>= 5),
 	cmake,
+	gettext,
 	libart-2.0-dev,
 	libboost-dev,
 	libboost-filesystem-dev,
