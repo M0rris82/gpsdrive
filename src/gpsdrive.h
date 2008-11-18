@@ -371,13 +371,13 @@ mapsstruct;
 
 typedef struct
 {
-	gchar name[40];
+	gchar name[80];
 	gdouble lat;
 	gdouble lon;
 	gdouble dist;
-	gchar typ[40];
+	gchar typ[160];
 	gint proximity;
-	gchar comment[80];
+	gchar comment[255];
 }
 wpstruct;
 

@@ -174,7 +174,6 @@ extern GtkWidget *map_drawingarea;
 
 extern GtkListStore *friends_list;
 
-/* action=1: radar (speedtrap) */
 wpstruct *wayp;
 
 /* socket for friends  */
@@ -247,8 +246,6 @@ extern glong trackcoordnr, tracklimit, trackcoordlimit,old_trackcoordnr;
 gchar savetrackfn[256];
 
 gint hours, minutes;
-gchar lastradar[40], lastradar2[40]; 
-gdouble radarbearing;
 gint errortextmode = TRUE;
 
 /*** Mod by Arms */
@@ -2342,8 +2339,6 @@ main (int argc, char *argv[])
     g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
     
     current.importactive = FALSE;
-    g_strlcpy (lastradar, "", sizeof (lastradar));
-    g_strlcpy (lastradar2, "", sizeof (lastradar2));
     dbdistance = 2000.0;
     dbusedist = TRUE;
     g_strlcpy (loctime, "n/a", sizeof (loctime));

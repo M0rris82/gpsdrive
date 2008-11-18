@@ -96,9 +96,6 @@ gint deleteline = 0;
 gint selected_wp_list_line = 0;
 GtkWidget *gotowindow;
 gint setwpactive = FALSE;
-gchar lastradar[40], lastradar2[40];
-gdouble radarbearing;
-/* action=1: radar (speedtrap) */
 GtkWidget *add_wp_name_text, *wptext2;
 GtkWidget *add_wp_comment_text;
 long sortcolumn = 4, sortflag = 0;
@@ -313,17 +310,14 @@ addwaypoint (gchar * wp_name, gchar * wp_type, gchar * wp_comment,
 		g_strdelimit ((char *) wp_name, " ", '_');
 		g_strdelimit ((char *) wp_comment, " ", '_');
 
-		/*  limit waypoint name to 20 chars */
-		g_strlcpy ((wayp + i)->name, wp_name, 40);
-		(wayp + i)->name[20] = 0;
+		g_strlcpy ((wayp + i)->name, wp_name, sizeof ((wayp + i)->name));
+		//(wayp + i)->name[20] = 0;
 
-		/* limit waypoint type to 40 chars */
-		g_strlcpy ((wayp + i)->typ, wp_type, 40);
-		(wayp + i)->typ[40-1] = 0;
+		g_strlcpy ((wayp + i)->typ, wp_type, sizeof ((wayp + i)->typ));
+		//(wayp + i)->typ[40-1] = 0;
 		
-		/*  limit waypoint comment to 80 chars */
-		g_strlcpy ((wayp + i)->comment, wp_comment, 80);
-		(wayp + i)->comment[80-1] = 0;
+		g_strlcpy ((wayp + i)->comment, wp_comment, sizeof ((wayp + i)->comment));
+		//(wayp + i)->comment[80-1] = 0;
 
 
 		maxwp++;
@@ -630,7 +624,8 @@ savewaypoints ()
 
 			/* still need to write something if no label */
 			if( (wayp + i)->name[0] == '\0' )
-			    g_strlcpy ( (wayp + i)->name, "_", 20);
+			    g_strlcpy ( (wayp + i)->name, "_",
+			    		sizeof ((wayp + i)->name));
 
 			if ( (wayp + i)->typ[0] == '\0' ) {
 			    g_strlcpy ( (wayp + i)->typ, "unknown", 
@@ -639,7 +634,7 @@ savewaypoints ()
 
 			if( (wayp + i)->proximity > 0 || 
 				strlen((wayp + i)->comment) > 0) {
-			    e = fprintf (st, "%-22s %10s %11s "
+			    e = fprintf (st, "%s %10s %11s "
 				     "%s"
 				     " 0 0 0 %d %s"
 				     "\n",
@@ -649,7 +644,7 @@ savewaypoints ()
 				     (wayp + i)->comment);
 			}
 			else {
-			    e = fprintf (st, "%-22s %10s %11s %s\n",
+			    e = fprintf (st, "%s %10s %11s %s\n",
 				     (wayp + i)->name, la, lo,
 				     (wayp + i)->typ);
 			}
@@ -711,14 +706,11 @@ loadwaypoints ()
 	    coordinate_string2gdouble(slat, &((wayp + i)->lat));
 	    coordinate_string2gdouble(slong,&((wayp + i)->lon));
 
-	    /*  limit waypoint name to 20 chars */
-	    (wayp + i)->name[20] = 0;
-
 	    /* ignore blank placeholder labels */
 	    if( strcmp( (wayp + i)->name, "_") == 0 )
 		(wayp + i)->name[0] = 0;
 
-	    g_strlcpy ((wayp + i)->typ, "unknown", 40);
+	    g_strlcpy ((wayp + i)->typ, "unknown", sizeof (wayp + i)->typ);
 	    (wayp + i)->proximity = 0;
 
 	    if (e >= 3)
@@ -726,11 +718,11 @@ loadwaypoints ()
 		    (wayp + i)->dist = 0;
 		
 		    if (e >= 4)
-			g_strlcpy ((wayp + i)->typ, typ, 40);
+			g_strlcpy ((wayp + i)->typ, typ, sizeof (wayp + i)->typ);
 		    if (e >= 8)
 			(wayp + i)->proximity = proximity;
-		    if (e >= 9) /*  limit waypoint comment to 80 chars */
-			(wayp + i)->comment[80-1] = 0;
+		    if (e >= 9)
+			(wayp + i)->comment[254] = 0;
 
 
 		    i++;

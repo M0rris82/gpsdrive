@@ -41,7 +41,7 @@ typedef struct
   gchar   name[80];
   gchar   poi_type[160];
   gint    poi_type_id;
-  gchar   comment[255]; 
+  gchar   comment[255];
   gchar   last_modified[11];
   gboolean private_flag;
   gint    source_id;
