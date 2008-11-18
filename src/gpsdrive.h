@@ -148,7 +148,7 @@ enum gpx_mode
 
 /* maximum number of waypoints to draw at one time */
  /* HB Nov 2008:  is this really needed? */
-#define MAXSHOWNWP 10000
+#define MAXSHOWNWP 5000
 
 /*  If speech output is used, the interval of spoken messages in milliseconds */
 #define SPEECHOUTINTERVAL 10000
