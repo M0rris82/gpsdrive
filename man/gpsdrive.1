@@ -19,7 +19,7 @@ specialized README files, e.g. README.kismet, etc.
 
 .SH DESCRIPTION
 
-.B Gpsdrive 
+.B GpsDrive 
 is a car (bike, ship, plane, foot) navigation system.  It will
 display your position on a map, record your track, and a number of
 other handy functions.
@@ -387,7 +387,7 @@ Finkenwerder            53.541765    9.842541 AIRPORT
 Fritz_Wohnung           53.582700    9.971390 FRITZ
 
 The rows are: {label latitude longitude waypoint-type}.
-The label may not exceed 20 characters or contain spaces. Use
+The label may not exceed 80 characters or contain spaces. Use
 underscores (_) in place of spaces, these will automatically be
 converted into spaces by the program.
 A blank label is denoted by a single underscore.
@@ -403,7 +403,7 @@ You may omit the waypoint type.
 Following the waypoint-type are (optionally) three space separated
 zeros, a proximity radius (in integer meters), and a comment.
 Comments follow the same space/underscore rules as label names, and
-are limited to 80 characters.
+are limited to 255 characters.
 
 You can create any number of way-*.txt files and chose
 between them from the Preferences menu.
@@ -431,10 +431,9 @@ waypoint types).
 
 .SS Waypoint icons
 At the moment there a three different icon themes available, but not
-all have distinct icons for every type. Currently you can choose the
-themes only by editing the entry "icon_theme" in the config file
-"~/.gpsdrive/gpsdriverc". The possible themes are:
-"square.big", "square.small" and "classic".
+all have distinct icons for every type. You can choose the themes
+in the \fBPreferences\fR menu.
+The possible themes are: "square.big", "square.small" and "classic".
 
 
 .SS SQL support
@@ -487,11 +486,11 @@ pgRouting and DGLib.
 
 
 .SH KISMET support
-Gpsdrive supports \fIkismet\fR.
+GpsDrive supports \fIkismet\fR.
 Kismet is a 802.11b wireless network (WLAN) sniffer. If you have
 kismet running, gpsdrive will detect it when the program starts and show
 new WLAN access points in real-time on the map. It is necessary to use SQL
-mode when using Gpsdrive with Kismet. WLAN access points which are already
+mode when using GpsDrive with Kismet. WLAN access points which are already
 stored in the SQL database from prior war-drivings are ignored. If you
 have enabled GpsDrive's voice output, you will hear information about the
 newly found access point.
@@ -524,14 +523,14 @@ experience is necessary!
 
 .SH SPEECH OUTPUT
 
-If you want speech output you have to install the festival speech
-output system. (UPDATE: replaced in the program by eSpeak?)
+If you want speech output you have to install speech dispatcher and
+at least one of the supported speech synthesizers (festival, espeak, ...).
 .br
 See 
-.I http://fife.speech.cs.cmu.edu/festival
+.I http://www.freebsoft.org/speechd
 for information.
 
-For German output you have to get the German festival from
+For German output you can use espeak or the German festival from
 .br
 .I www.ims.uni-stuttgart.de/phonetik/synthesis/index.html
 
@@ -539,24 +538,13 @@ If you have a functional festival software call it as server with:
 
 festival --server
 
-When you start GpsDrive it will detect the server on port 1314 and
+When you start GpsDrive it will detect a running speechd and
 speak some status information. When speech output is enabled  an
 additional \fIMute\fR button is available to switch off sound output.
 
-GpsDrive tries to select the correct language for your locale.
-At the moment English, Spanish, and German are supported. GpsDrive
-sets festival into the proper language. If the initialization is not
-correct, have a look in \fIgpsdrive.h\fR and edit following defines
-suit your needs:
-
-#define FESTIVAL_ENGLISH_INIT "(voice_ked_diphone)"
-.br
-#define FESTIVAL_GERMAN_INIT "(voice_german_de3_os)"
-.br
-#define FESTIVAL_SPANISH_INIT "(voice_el_diphone)"
-
-For this, you need the voices ked_diphone for English, german_de3_os
-for German (this is a MBROLA voice) and el_diphone for Spanish.
+GpsDrive tries to use the correct language for your locale.
+If the voice used is not correct, you can choose another one in the
+\fBPreferences\fR, if installed.
 
 
 .SH FRIENDSD server
@@ -578,10 +566,10 @@ your firewall. The server needs no root privileges and should run as a
 normal user or a special user with no privileges. The server has NOT been
 tested for security.
 
-There is a friends server running on friends.gpsdrive.de, you can try it
+There is a friends server running on friendsd.gpsdrive.de, you can try it
 if you enable it in the settings menu.
 
-\" COMMENTED OUT: You can also send messages to other mobile targets (Misc. Menu/Messages)
+You can also send messages to other mobile targets (Options/Send Message)
 
 
 .SH MAILING LIST
@@ -595,7 +583,7 @@ at \fIhttp://www.gpsdrive.de/support.shtml\fR.
 
 .SH BUGS
 Please send bug reports to the development team! If we don't know about
-them we can't fix them and then the remain unfixed. 
+them we can't fix them and then they remain unfixed. 
 
 File bug reports in our tracker at \fIhttp://bugzilla.gpsdrive.de/\fR.
 You will need to create yourself a SourceForge account at that site,
@@ -609,7 +597,7 @@ Whenever possible cut and paste exact error messages and take screenshots.
 It is helpful to run gpsdrive for a minute with the -D debug level option
 set high and send us the output.
 
-If \fBgpsdrive\fR crashes with a SegFault, we will need a backtrace of the
+If \fBGpsDrive\fR crashes with a SegFault, we will need a backtrace of the
 program as well. Assuming \fBGpsDrive\fR was built with debugging symbols and
 the binaries were not stripped of them, create a backtrace by running the
 \fBGpsDrive\fR the GNU debugging software as follows:

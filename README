@@ -83,6 +83,9 @@ Extract it with "tar -xvzf gpsdrive*tar.gz"
 If you don't need the support of Mapnik and dislike having GDAL ...
   cmake -DCMAKE_BUILD_TYPE=debug -DWITH_GDAL=OFF -DWITH_MAPNIK=OFF
 
+If you don't need speech output, you can also add the following option:
+  -DWITH_SPEECH=OFF
+
 See "cmake -L .." for more variables to treak.
 
 To install the program, the gpsd daemon and the language files you should
