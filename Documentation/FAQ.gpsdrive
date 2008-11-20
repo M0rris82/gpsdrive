@@ -202,7 +202,7 @@ A: To be picky, as it is critical to be picky in order to get this stuff
    projection is lat/lon (well, it's unprojected I guess).
 
    Here are some links to primers on Geodesy (Projections and Datums):
-   http://grass.gdf-hannover.de/twiki/bin/view/GRASS/GisConcepts
+   http://grass.osgeo.org/wiki/Gis_Concepts
 
    To answer your question though,
 
