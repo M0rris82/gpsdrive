@@ -191,12 +191,8 @@ calcdist2 (gdouble lon, gdouble lat)
 /* ******************************************************************
  * calculate geodesic distance between two given coordinates (lon1/lat1, lon2/lat2)
  *   (great circle distance along the WGS84 ellipsoid)
- * Based on the April 1975 paper published in Survey Review by
- * Thaddeus Vincenty.  http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf
  *
- * MUCH more precise than calcdist2; this is the "gold standard" for
- * solving the inverse geodesic problem on an ellipsoid.
- *   see http://trac.osgeo.org/proj/wiki/GeodesicCalculations
+ * MUCH more precise than calcdist2
  *
  * if from_current is TRUE, lon2/lat2 ist replaced by the current position
  */
