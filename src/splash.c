@@ -394,10 +394,8 @@ message_cb (char *msgid, char *name, char *text, int fs)
 	else
 	{
 		gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
-							  _
-							  ("You received a message through the friends server from:\n"),
-							  -1, "heading",
-							  "center", NULL);
+			 _("You received a message through the friends server from:\n"),
+			   -1, "heading", "center", NULL);
 		gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, name,
 							  -1,
 							  "blue_foreground",
@@ -561,37 +559,37 @@ about_cb (GtkWidget * widget, guint datum)
 	
 	const gchar *authors[] = 
 		{
-			"Aart Koelewijn <aart(at)mtack.xs4all nl>",
-			"Belgabor <belgabor(at)gmx de>",
-			"Blake Swadling <blake(at)swadling com>",
-			"Christoph Metz <loom(at)mopper de>",
-			"Chuck Gantz <chuck.gantz(at)globalstar com>",
-			"Dan Egnor <egnor(at)ofb net>",
-			"Daniel Hiepler <rigid(at)akatash de>",
-			"Darazs Attila <zumi(at)freestart hu>",
-			"Fritz Ganter <ganter(at)ganter at>",
-			"Guenther Meyer <d.s.e(at)sordidmusic com>",
-			"Hamish Bowman <hamish_b(at)yahoo com>",
- 			"J.D. Schmidt <jdsmobile(at)gmail com>",
-			"Joerg Ostertag <gpsdrive(at)ostertag name>"	,
-			"Jan-Benedict Glaw <jbglaw(at)lug-owl de>",
-			"John Hay <jhay(at)icomtek.csir.co za>",
-			"Johnny Cache <johnycsh(at)hick org>",
-			"Miguel Angelo Rozsas <miguel(at)rozsas.xx.nom br>",
+			"Aart Koelewijn <aart mtack.xs4all nl>",
+			"Belgabor <belgabor gmx de>",
+			"Blake Swadling <blake swadling com>",
+			"Christoph Metz <loom mopper de>",
+			"Chuck Gantz <chuck.gantz globalstar com>",
+			"Dan Egnor <egnor ofb net>",
+			"Daniel Hiepler <rigid akatash de>",
+			"Darazs Attila <zumi freestart hu>",
+			"Fritz Ganter <ganter ganter at>",
+			"Guenther Meyer <d.s.e sordidmusic com>",
+			"Hamish Bowman <hamish_b yahoo com>",
+ 			"J.D. Schmidt <jdsmobile gmail com>",
+			"Joerg Ostertag <gpsdrive ostertag name>"	,
+			"Jan-Benedict Glaw <jbglaw lug-owl de>",
+			"John Hay <jhay icomtek.csir.co za>",
+			"Johnny Cache <johnycsh hick org>",
+			"Miguel Angelo Rozsas <miguel rozsas.xx.nom br>",
 			"Mike Auty",
-			"Oddgeir Kvien <oddgeir(at)oddgeirkvien com>",
-			"Oliver Kuehlert <Oliver.Kuehlert(at)mpi-hd.mpg de>",
-			"Olli Salonen <olli(at)cabbala net>",
+			"Oddgeir Kvien <oddgeir oddgeirkvien com>",
+			"Oliver Kuehlert <Oliver.Kuehlert mpi-hd.mpg de>",
+			"Olli Salonen <olli cabbala net>",
 			"Philippe De Swert",
-			"Richard Scheffenegger <rscheff(at)chello at>",
-			"Rob Stewart <rob(at)groupboard.com>",
-			"Russell Harding <hardingr(at)billingside com>",
-			"Russell Mirov <russell.mirov(at)sun com>",
-			"Wilfried Hemp <Wilfried.Hemp(at)t-online de>",
-			"<molter(at)gufi org>",
-			"<pdana(at)mail.utexas edu>",
-			"<timecop(at)japan.co jp>",
-			"<wulf(at)netbsd org>",
+			"Richard Scheffenegger <rscheff chello at>",
+			"Rob Stewart <rob groupboard.com>",
+			"Russell Harding <hardingr billingside com>",
+			"Russell Mirov <russell.mirov sun com>",
+			"Wilfried Hemp <Wilfried.Hemp t-online de>",
+			"<molter gufi org>",
+			"<pdana mail.utexas edu>",
+			"<timecop japan.co jp>",
+			"<wulf netbsd org>",
 			NULL
 		};
 	
@@ -622,15 +620,18 @@ about_cb (GtkWidget * widget, guint datum)
 		  "Attribution-ShareAlike 2.0 license."));
 	gtk_about_dialog_set_wrap_license (about_window, TRUE);
 	
-	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR, "pixmaps/gpsdrivelogo.png");		
+	g_snprintf (xpmfile, sizeof (xpmfile), "%s/gpsdrive/%s", DATADIR,
+		    "pixmaps/gpsdrivelogo.png");
 	pixmap = gdk_pixbuf_new_from_file (xpmfile, NULL);
 	if (pixmap == NULL)
 	{
-		fprintf (stderr, _("\nWarning: unable to open logo picture\nPlease install the program as root with:\nmake install\n\n"));
+		fprintf (stderr, _("\nWarning: unable to open logo picture\n"
+				   "Please install the program as root with:\n"
+				   "make install\n\n"));
 		return TRUE;
 	}
 	gtk_about_dialog_set_logo (about_window, pixmap);
-	
+
 	gtk_widget_show_all (GTK_WIDGET (about_window));
 	g_signal_connect (GTK_WIDGET (about_window), "response", G_CALLBACK
 			  (gtk_widget_destroy), NULL);

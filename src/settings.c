@@ -1980,8 +1980,8 @@ settings_nav (GtkWidget *notebook)
 	GtkTooltips *nav_tooltips;
 
 	nav_explanation_lb = gtk_label_new (
-		_("Choose your travel mode. This is used to determine\n"
-		"which icon should be used to display your position\n"
+		_("\nChoose your travel mode. This is used to determine "
+		"which icon will be\nused to display your position "
 		"to others when using the Friends service."));
 
 	gchar travelmodes[TRAVEL_N_MODES][20];
