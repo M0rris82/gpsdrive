@@ -1,3 +1,53 @@
+From the mailing list:
+  http://thread.gmane.org/gmane.comp.linux.gps/1314/
+
+===========================================================
+
+From: Daniel Wallner
+Subject: [ gpsdrive ] GDAL maps
+Date: 2005-10-20
+
+Hi,
+are there any plans to use GDAL to read raster maps?
+
+That would e.g. make it possible to use BSB nautical charts in gpsdrive.
+
+I have written a little snippet that renders GDAL raster maps,
+(centered, rotated and scaled) using cairo.
+If anyone is interested.
+
+Regards,
+Daniel W
+
+
+===========================================================
+
+From: Daniel Wallner
+Subject: [ gpsdrive ] GDAL maps
+Date: 2005-10-26
+
+> If you (or anyone else) would help getting the first interface up and 
+> running. This would be reading rastermaps with gdal from gpsdrive 
+> (coded in C). The first goal would be to read the Raster maps which 
+> already existing for gpsdrive. 
+
+I have modified my code so that it can read top_* world files 
+and map_* expedia files, by passing the map parameters through ESRI 
+world files. 
+
+There are some things missing before it could be integrated into 
+gpsdrive, like transforming from screen position back to lat/lon. 
+
+/Daniel
+
+===========================================================
+
+
+Documentation:
+--------------
+
+to build, turn GDAL support ON in DefineOptions.cmake.
+
 
 top_* world files use the following world file format:
 
