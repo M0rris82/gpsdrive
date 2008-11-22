@@ -121,10 +121,11 @@ void MapWidget::paintEvent(QPaintEvent *)
 
   drawmap(m_mapstate, &mgc, width(), height(), transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width(), height(),
 	      &mapsettings, m_mapstate, pixel_size,
 	      0, 0);
-
+*/
   cairo_restore(m_cr);
 #else
   QPainter painter(this);
@@ -140,9 +141,11 @@ void MapWidget::paintEvent(QPaintEvent *)
 
   drawmap(m_mapstate, &mgc, width(), height(), transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width(), height(),
 	      &mapsettings, m_mapstate, pixel_size,
 	      0, 0);
+*/
 #endif
 }
 

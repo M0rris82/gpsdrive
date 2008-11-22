@@ -62,9 +62,11 @@ static void expose(GtkWidget *widget, GdkEventExpose *event,
 
   drawmap(mapstate, &mgc, width, height, transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width, height,
 	      &mapsettings, mapstate, pixel_size,
 	      0, 0);
+*/
 
   cairo_destroy(mgc.cairo_cr);
 #else
@@ -81,10 +83,11 @@ static void expose(GtkWidget *widget, GdkEventExpose *event,
 
   drawmap(mapstate, &mgc, width, height, transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width, height,
 	      &mapsettings, mapstate, pixel_size,
 	      0, 0);
-
+*/
   gdk_gc_unref(mgc.gtk_gc);
 #endif
 }

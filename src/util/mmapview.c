@@ -66,9 +66,11 @@ static void expose(CGContextRef gc, int width, int height, MapState *mapstate)
 
   drawmap(mapstate, &mgc, width, height, draw_transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width, height,
 	      &mapsettings, mapstate, pixel_size,
 	      0, 0);
+*/
 #endif
 }
 

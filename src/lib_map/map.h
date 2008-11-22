@@ -203,9 +203,11 @@ int screen2wgs(MapState *state, int xPos, int yPos,
 int drawmap(MapState *state, MapGC *mgc,
 	    double viewWidth, double viewHeight, int mode);
 
+/* where's the code??
 int drawmarkers(MapGC *mgc, int width, int height,
 		MapSettings *settings, MapState *state, double pixelsize,
 		double angle_to_destination, double direction);
+*/
 
 #ifdef __cplusplus
 }

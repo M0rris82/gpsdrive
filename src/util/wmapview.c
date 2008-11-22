@@ -61,9 +61,11 @@ static void expose(HDC dc, int width, int height, MapState *mapstate)
 
   drawmap(mapstate, &mgc, width, height, transparent);
 
+/* where's the code??
   drawmarkers(&mgc, width, height,
 	      &mapsettings, mapstate, pixel_size,
 	      0, 0);
+*/
 
   if (mgc.win_pen)
     DeleteObject(SelectObject(mgc.win_dc, mgc.win_pen));
