@@ -20,12 +20,16 @@ if (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
 else (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
   find_path(GDAL_INCLUDE_DIR
     NAMES
-      gdal/gdal.h
+      gdal.h
     PATHS
       /usr/include
       /usr/local/include
       /opt/local/include
       /sw/include
+      /usr/include/gdal
+      /usr/local/include/gdal
+      /opt/local/include/gdal
+      /sw/include/gdal
   )
 
   # debian uses version suffixes
@@ -33,6 +37,7 @@ else (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
   find_library(GDAL_LIBRARY
     NAMES
       gdal
+      gdal1.3.2
       gdal1.4.0
       gdal1.5.0
     PATHS
