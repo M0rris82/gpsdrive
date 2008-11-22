@@ -20,7 +20,7 @@ if (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
 else (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
   find_path(GDAL_INCLUDE_DIR
     NAMES
-      gdal.h
+      gdal/gdal.h
     PATHS
       /usr/include
       /usr/local/include
@@ -33,8 +33,8 @@ else (GDAL_LIBRARIES AND GDAL_INCLUDE_DIRS)
   find_library(GDAL_LIBRARY
     NAMES
       gdal
-      gdal1.3.1
-      gdal1.3.2
+      gdal1.4.0
+      gdal1.5.0
     PATHS
       /usr/lib
       /usr/local/lib
