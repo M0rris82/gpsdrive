@@ -146,8 +146,11 @@ db_sqlite_create_tables (sqlite3 *db)
 gboolean
 db_sqlite_init (void)
 {
-	gchar t_buf[200];
+	gchar t_buf[530];
 	gint t_status = 0;
+	gchar *t_error;
+
+	current.poi_osm = FALSE;
 
 	/* open geoinfo.db */
 	t_status = sqlite3_open(local_config.geoinfo_file, &geoinfo_db);
@@ -178,6 +181,21 @@ db_sqlite_init (void)
 	{
 		g_print ("DB: Error while creating local waypoints database!\n");
 		return FALSE;
+	}
+
+	/* try to open osm.db file */
+	g_snprintf (t_buf, sizeof (t_buf), "ATTACH DATABASE '%s' AS osm;", local_config.osm_dbfile);
+	t_status = sqlite3_exec(waypoints_db, t_buf, NULL, NULL, &t_error);
+	if (t_status != SQLITE_OK )
+	{
+		if (mydebug > 10)
+			g_printf ("DB: SQLite error: %s\n", t_error);
+		sqlite3_free(t_error);
+	}
+	else
+	{
+		g_print ("DB: Using waypoints from OpenStreetMap database.\n");
+		current.poi_osm = TRUE;
 	}
 
 	current.save_in_db = TRUE;

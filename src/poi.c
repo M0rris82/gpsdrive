@@ -1047,7 +1047,7 @@ handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geome
 void
 poi_rebuild_list (void)
 {
-  char sql_query[20000];
+  gchar sql_query[20000];
   GTimeVal t;
   int r, rges;
   time_t ti;
@@ -1107,11 +1107,43 @@ poi_rebuild_list (void)
 	poi_nr = 0;
 
 	/* query sqlite db */
-	g_snprintf (sql_query, sizeof (sql_query),
+	if (local_config.showpoi == POIDRAW_ALL && current.poi_osm)
+	{
+		if (mydebug > 30)
+			g_print ("poi_rebuild_list (): Getting all POI Data\n");
+
+		g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT lat,lon,name,poi_type,comment FROM"
+		" (SELECT * FROM main.poi UNION SELECT * FROM osm.poi)"
+		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
+		" AND poi_type IN (%s) LIMIT 20000;",
+		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+	}
+	else if (local_config.showpoi == POIDRAW_OSM && current.poi_osm)
+	{
+		if (mydebug > 30)
+			g_print ("poi_rebuild_list (): Getting only OSM POI Data\n");
+
+		g_snprintf (sql_query, sizeof (sql_query),
+		"SELECT lat,lon,name,poi_type,comment FROM osm.poi"
+		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
+		" AND poi_type IN (%s) LIMIT 20000;",
+		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+	}
+	else if (local_config.showpoi == POIDRAW_USER || local_config.showpoi == POIDRAW_ALL)
+	{
+		if (mydebug > 30)
+			g_print ("poi_rebuild_list (): Getting only User POI Data\n");
+
+		g_snprintf (sql_query, sizeof (sql_query),
 		"SELECT lat,lon,name,poi_type,comment FROM poi"
 		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
 		" AND poi_type IN (%s) LIMIT 20000;",
 		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+	}
+	else
+		return;
+
 	db_poi_get (sql_query, handle_poi_view_cb, DB_WP_USER);
 
 	/* query postgis db */

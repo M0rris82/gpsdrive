@@ -60,6 +60,7 @@ typedef struct
 	gchar mapnik_input_path[500];
 	gchar mapnik_font_path[500];
 	gchar geoinfo_file[500];
+	gchar osm_dbfile[500];
 	gchar dir_home[500];
 	gchar dir_maps[500];
 	gchar dir_routes[500];
@@ -82,7 +83,7 @@ typedef struct
 	gboolean showzoom;
 	gboolean showscalebar;
 	gboolean showwaypoints;
-	gboolean showpoi;
+	gint showpoi;
 	gboolean showwlan;
 	gboolean showtooltips;
 	gboolean showaddwpbutton;

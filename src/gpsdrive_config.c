@@ -179,6 +179,9 @@ writeconfig ()
 	fprintf (fp, "geoinfofile = ");
 	fprintf (fp, "%s\n", local_config.geoinfo_file);
 
+	fprintf (fp, "osmdbfile = ");
+	fprintf (fp, "%s\n", local_config.osm_dbfile);
+
 	fprintf (fp, "usedgps = ");
 	if (usedgps == 0)
 		fprintf (fp, "0\n");
@@ -424,6 +427,9 @@ readconfig ()
 			else if ( (strcmp(par1, "geoinfofile")) == 0)
 				g_strlcpy (local_config.geoinfo_file, par2,
 					sizeof (local_config.geoinfo_file));
+			else if ( (strcmp(par1, "osmdbfile")) == 0)
+				g_strlcpy (local_config.osm_dbfile, par2,
+					sizeof (local_config.osm_dbfile));
 			else if ( (strcmp(par1, "usedgps")) == 0)
 				usedgps = atoi (par2);
 			else if ( (strcmp(par1, "mapdir")) == 0)
@@ -683,7 +689,7 @@ config_init ()
 	local_config.showzoom = TRUE;
 	local_config.showscalebar = TRUE;
 	local_config.showwaypoints = TRUE;
-	local_config.showpoi = TRUE;
+	local_config.showpoi = POIDRAW_ALL;
 	local_config.showtooltips = TRUE;
 	local_config.showaddwpbutton = FALSE;
 	local_config.showfriends = FALSE;
@@ -722,6 +728,8 @@ config_init ()
 		"square.big", sizeof (local_config.icon_theme));
 	g_snprintf (local_config.geoinfo_file, sizeof (local_config.geoinfo_file),
 		"%s%s", DATADIR, "/gpsdrive/geoinfo.db");
+	g_snprintf (local_config.osm_dbfile, sizeof (local_config.osm_dbfile),
+		"%s%s", DATADIR, "/gpsdrive/osm.db");
 	
 	/* set friends stuff */
 	local_config.friends_maxsecs = 1209600;

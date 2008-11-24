@@ -109,4 +109,11 @@ enum {
 	POITYPE_COLUMS
 };
 
+enum {
+	POIDRAW_NONE,
+	POIDRAW_USER,
+	POIDRAW_OSM,
+	POIDRAW_ALL,
+};
+
 #endif /* GPSDRIVE_POI_H */

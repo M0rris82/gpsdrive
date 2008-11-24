@@ -512,7 +512,7 @@ db_init (void)
 		"PostgreSQL", "DB_NAME=gis", "", "", GDA_CONNECTION_OPTIONS_NONE, NULL);
 	if (db_conn_osm)
 	{
-		g_print ("DB: Using waypoints from OpenStreetMap database.\n");
+		g_print ("DB: Using waypoints from Mapnik database.\n");
 		t_db = TRUE;
 	}
 #endif

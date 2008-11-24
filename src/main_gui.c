@@ -229,6 +229,48 @@ dash_select_cb (GtkWidget *item, gint selection)
 
 
 /* *****************************************************************************
+ * select which pois should be drawn on the map
+ */
+gint
+poi_button_cb (GtkWidget *button, gint type)
+{
+	gint t_val;
+
+	t_val = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+
+	if (type == POIDRAW_USER)
+	{
+		if (local_config.showpoi == POIDRAW_NONE && t_val)
+			local_config.showpoi = POIDRAW_USER;
+		if (local_config.showpoi == POIDRAW_OSM && t_val)
+			local_config.showpoi = POIDRAW_ALL;
+		if (local_config.showpoi == POIDRAW_USER && !t_val)
+			local_config.showpoi = POIDRAW_NONE;
+		if (local_config.showpoi == POIDRAW_ALL && !t_val)
+			local_config.showpoi = POIDRAW_OSM;
+	}
+
+	if (type == POIDRAW_OSM)
+	{
+		if (local_config.showpoi == POIDRAW_NONE && t_val)
+			local_config.showpoi = POIDRAW_OSM;
+		if (local_config.showpoi == POIDRAW_USER && t_val)
+			local_config.showpoi = POIDRAW_ALL;
+		if (local_config.showpoi == POIDRAW_OSM && !t_val)
+			local_config.showpoi = POIDRAW_NONE;
+		if (local_config.showpoi == POIDRAW_ALL && !t_val)
+			local_config.showpoi = POIDRAW_USER;
+	}
+
+	if (mydebug > 20)
+		g_print ("poi_button_cb (): Setting showpoi to %d\n", local_config.showpoi);
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
  * quit the program 
  */
 gint
@@ -1829,7 +1871,7 @@ void create_controls_mainbox (void)
 	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
 	GtkWidget *load_img, *save_img, *tripreset_img;
 
-	GtkWidget *vbox_poi, *poi_draw_bt, *wlan_draw_bt;
+	GtkWidget *vbox_poi, *poidraw_user_bt, *poidraw_osm_bt;
 	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
 	GtkWidget *cleartrack_bt, *cleartrack_img;
 	GtkWidget *restarttrack_bt, *restarttrack_img;
@@ -2061,49 +2103,45 @@ void create_controls_mainbox (void)
 	vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
 
-	/* Checkbox: POI Draw */
 	if (local_config.use_database)
 	{
-		poi_draw_bt = gtk_check_button_new_with_mnemonic (_("_POI"));
-		if (local_config.showpoi)
+		/* Checkbox: POI Draw User */
+		poidraw_user_bt = gtk_check_button_new_with_mnemonic (_("_User DB"));
+		if (local_config.showpoi == POIDRAW_USER || local_config.showpoi == POIDRAW_ALL)
 		{
 			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (poi_draw_bt), TRUE);
+				(GTK_TOGGLE_BUTTON (poidraw_user_bt), TRUE);
 		}
 		gtk_box_pack_start (GTK_BOX (vbox_poi),
-			poi_draw_bt, FALSE, FALSE, 0 * PADDING);
-		g_signal_connect (GTK_OBJECT (poi_draw_bt), "clicked",
-			GTK_SIGNAL_FUNC (toggle_button_cb),
-			&local_config.showpoi);
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poi_draw_bt,
-			_("Show Points Of Interest found in Database"), NULL);
+			poidraw_user_bt, FALSE, FALSE, 0 * PADDING);
+		g_signal_connect (GTK_OBJECT (poidraw_user_bt), "clicked",
+			GTK_SIGNAL_FUNC (poi_button_cb), GINT_TO_POINTER (POIDRAW_USER));
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_user_bt,
+			_("Show Points Of Interest found in user database"), NULL);
+
+		/* Checkbox: POI Draw OSM */
+		poidraw_osm_bt = gtk_check_button_new_with_mnemonic (_("_OSM DB"));
+		if (local_config.showpoi > POIDRAW_USER)
+		{
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON (poidraw_osm_bt), TRUE);
+		}
+		if (current.poi_osm)
+			gtk_box_pack_start (GTK_BOX (vbox_poi),
+				poidraw_osm_bt, FALSE, FALSE, 0 * PADDING);
+		g_signal_connect (GTK_OBJECT (poidraw_osm_bt), "clicked",
+			GTK_SIGNAL_FUNC (poi_button_cb), GINT_TO_POINTER (POIDRAW_OSM));
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_osm_bt,
+			_("Show Points Of Interest found in OSM database"), NULL);
 	}
-	
-	/* Checkbox: WLAN Draw */
-/*	wlan_draw_bt = gtk_check_button_new_with_label (_("WLAN"));
-	if (local_config.showwlan)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (wlan_draw_bt), TRUE);
-	}
-	if (local_config.use_database)
-	{
-		gtk_box_pack_start (GTK_BOX (vbox_poi),
-			wlan_draw_bt, FALSE, FALSE, 0 * PADDING);
-	}
-	g_signal_connect (GTK_OBJECT (wlan_draw_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb),
-		&local_config.showwlan);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wlan_draw_bt,
-		_("Show Data found in Kismet Database"), NULL);
-*/
+
 	/* Checkbox: Draw Waypoints from file */
-	wp_draw_bt = gtk_check_button_new_with_mnemonic (_("_WP"));
+	wp_draw_bt = gtk_check_button_new_with_mnemonic (_("_WP File"));
 	if (local_config.showwaypoints)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (wp_draw_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (wp_draw_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb),
+		GTK_SIGNAL_FUNC (poi_button_cb),
 		&local_config.showwaypoints);
 	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_draw_bt,
 		FALSE, FALSE, 0 * PADDING);

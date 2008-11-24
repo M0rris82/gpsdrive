@@ -337,6 +337,7 @@ typedef struct
 	gboolean needtosave;	/* flag if config has to be saved */
 	gboolean importactive;
 	gboolean save_in_db;	/* flag if new waypoints should be saved in the database */
+	gboolean poi_osm;	/* flag if sqlite file with osm poi data is available */
 	gchar *poitype_path;
 	gchar poifilter[20000];	/* sql string for filtering the POI display */
 	gboolean have_speech;	/* flag if speech dispatcher is available */
