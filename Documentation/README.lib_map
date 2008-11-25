@@ -1,4 +1,11 @@
-From the mailing list:
+This prototype code was planed as a replacement for the drawing routines
+in gpsdrive, in order to enable support for using any image usable in gdal
+for gpsdrive.
+
+GDAL website:  www.gdal.org
+
+
+Histortical posts from the mailing list:
   http://thread.gmane.org/gmane.comp.linux.gps/1314/
 
 ===========================================================
@@ -46,7 +53,14 @@ gpsdrive, like transforming from screen position back to lat/lon.
 Documentation:
 --------------
 
-to build, turn GDAL support ON in DefineOptions.cmake.
+To build, turn GDAL support ON in DefineOptions.cmake.
+This creates two binaries in the util/ dir, worldgen and
+gmapview. Worldgen creates the world files as documented
+below, gmapview is a simple GTK map viewer for these
+tiles.
+
+The GeoTiff "World File" format is documented here:
+  http://www.gdal.org/frmt_various.html#WLD
 
 
 top_* world files use the following world file format:
@@ -63,6 +77,7 @@ This gives sensible results if the map is used in e.g. qgis.
 
 circumference of the Earth at the equator = 40 075.017 km
 circumference of the Earth through the poles = 40 007.863 km
+   (HB suggestion 11/2008: use WGS84 ellipsoid parameters here)
 
 map_* world files use the following world file format:
 
@@ -74,5 +89,7 @@ map_* world files use the following world file format:
 26.318065105000  (latitude)
 
 latitude, longitude and scale taken from map_koord.txt
-The above world file does not give sensible results in other GDAL applications
-it uses a special hard coded case.
+
+The above world file does not give sensible results in other GDAL
+applications it uses a special hard coded case.
+
