@@ -152,6 +152,10 @@ SET(poitypes_SRCS
   update-poitypes.c
 )
 
+SET(poiosmdb_SRCS
+  update-osm-poi-db.c
+)
+
 include_directories(
   ${GPSDRIVE_PUBLIC_INCLUDE_DIRS}
   ${GPSDRIVE_PRIVATE_INCLUDE_DIRS}
@@ -159,6 +163,8 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 add_executable(friendsd ${friendsd_SRCS})
+add_executable(gpsdrive-update-osm-poi-db ${poiosmdb_SRCS})
+
 if (WITH_GDA3)
   add_executable(gpsdrive-update-mapnik-db ${poitypes_SRCS})
 endif (WITH_GDA3)
@@ -168,6 +174,12 @@ target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 target_link_libraries(friendsd
   crypt
   ${GTK2_LIBRARIES}
+)
+
+target_link_libraries(gpsdrive-update-osm-poi-db
+  ${GTK2_LIBRARIES}
+  ${SQLITE3_LIBRARIES}
+  ${XML2_LIBRARIES}
 )
 
 if (WITH_GDA3)
@@ -181,6 +193,7 @@ endif (WITH_GDA3)
 set(gpsdrive_PGMS
   gpsdrive
   friendsd
+  gpsdrive-update-osm-poi-db
 )
 
 if (WITH_GDA3)
