@@ -265,6 +265,7 @@ poi_button_cb (GtkWidget *button, gint type)
 	if (mydebug > 20)
 		g_print ("poi_button_cb (): Setting showpoi to %d\n", local_config.showpoi);
 
+	poi_draw_list (TRUE);
 	current.needtosave = TRUE;
 	return TRUE;
 }

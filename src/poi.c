@@ -1063,7 +1063,7 @@ poi_rebuild_list (void)
   if (!local_config.use_database)
     return;
 
-  if (!local_config.showpoi)
+  if (local_config.showpoi == POIDRAW_NONE)
     {
       if (mydebug > 20)
 	g_print ("poi_rebuild_list: POI_draw is off\n");
@@ -1072,7 +1072,7 @@ poi_rebuild_list (void)
 
   if (mydebug > 20)
     {
-      g_print ("\n\npoi_rebuild_list: Start\n");
+      g_print ("\n\npoi_rebuild_list: Start (%d)\n", local_config.showpoi);
     }
 
   if (!maploaded)
@@ -1136,7 +1136,7 @@ poi_rebuild_list (void)
 			g_print ("poi_rebuild_list (): Getting only User POI Data\n");
 
 		g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT lat,lon,name,poi_type,comment FROM poi"
+		"SELECT lat,lon,name,poi_type,comment FROM main.poi"
 		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
 		" AND poi_type IN (%s) LIMIT 20000;",
 		lat_min, lat_max, lon_min, lon_max, current.poifilter);
