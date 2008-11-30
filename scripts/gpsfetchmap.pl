@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #
 # gpsfetchmap
-# Copyright (C) 2002-2007 Gpsdrive Development Team <gpsdrive@gpsdrivers.org>
+# Copyright (C) 2002-2008 Gpsdrive Development Team <gpsdrive@gpsdrivers.org>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,8 +76,9 @@ use Image::Magick;
 my $long_sleep_time=600;
 
 my @SCALES = (1000,1500,2000,3000,5000,7500,10000,15000,20000,30000,50000,75000,
-              100000,150000,200000,300000,500000,750000,1000000,1500000,2000000,3000000,
-              5000000,7500000,10000000,15000000,20000000,30000000,50000000,75000000);
+              100000,150000,200000,250000,300000,500000,750000,1000000,1500000,
+	      2000000,2500000,3000000,5000000,7500000,10000000,15000000,20000000,
+	      30000000,50000000,75000000);
 
 
 # Translates Scale to zoom factor used by Mapserver
@@ -133,16 +134,22 @@ my $Scale2Zoom = {
    	383000*1 => 1,
     },
     landsat => {
-   	  2000 =>    2*6.4,
-   	  5000 =>    5*6.4,	
-   	 10000 =>   10*6.4,
-   	 50000 =>   50*6.4, 
-   	100000 =>  100*6.4,
-   	500000 =>  500*6.4,   
-       1000000 => 1000*6.4,
-       5000000 => 5000*6.4,
-      10000000 =>10000*6.4,
-      50000000 =>50000*6.4,
+	 50000 =>   50000,
+	 75000 =>   75000,
+	100000 =>  100000,
+	250000 =>  250000,
+	500000 =>  500000,
+# wider scales than 1:500k switch to "top_" Plate Carrée projection.
+#  It would be more accurate to switch nearer to 1:125k, but map_ is prettier
+#  so we hold on longer than we should. Distortion grows the further you get
+#  from lon_0; e.g. UTM is only "valid" in a 6deg wide band. Usage beyond half
+#  the next band is not recommended, and by the time you get to +/-90deg from
+# lon_0 it completely breaks.
+       1000000 => 1000000,
+       2500000 => 2500000,
+       5000000 => 5000000,
+      10000000 =>10000000,
+      50000000 =>50000000,
     },
     openstreetmap_tah => {
       256*576000 =>  1,
@@ -188,6 +195,7 @@ my $CONFIG_DIR          = "$ENV{'HOME'}/.gpsdrive"; # Should we allow config of 
 my $CONFIG_FILE         = "$CONFIG_DIR/gpsdriverc";
 my $WAYPT_FILE          = "$CONFIG_DIR/way.txt";
 my $GPSTOOL_MAP_FILE    = "$ENV{'HOME'}/.gpsmap/maps.txt";
+my $fileext             = 'gif';
 my $FILEPREFIX          = 'map_';
 my $mapserver           = 'landsat';
 my $simulate_only       = 0;
@@ -201,7 +209,7 @@ our $GPSTOOL_MAP_KOORDS = {};
 our $GPSTOOL_MAP_FILES  = {};
 my $PROXY=$ENV{'http_proxy'};
 
-GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon, 
+GetOptions ( 'lat=f'          => \$lat,        'lon=f'       => \$lon, 
 	     'start-lat=f'    => \$slat,       'end-lat=f'   => \$endlat, 
 	     'start-lon=f'    => \$slon,       'end-lon=f'   => \$endlon, 
 	     'sla=f'          => \$slat,       'ela=f'       => \$endlat, 
@@ -220,7 +228,7 @@ GetOptions ( 'lat=f'     => \$lat,        'lon=f'       => \$lon,
 	     'U'              => \$update_koord,
 	     'FORCE'          => \$force,     
 	     'PROXY=s'        => \$PROXY,
-	     'debug+'          => \$debug,      'MAN' => \$man, 
+	     'debug+'         => \$debug,      'MAN' => \$man, 
 	     'help|x'         => \$help,       'version' => \$version
 	     )
     or pod2usage(1);
@@ -248,9 +256,12 @@ if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
 }
 
 if ( $mapserver eq 'landsat') {
-    $FILEPREFIX          = 'top_';
-    $FILEPREFIX          = 'map_';
+    #print "Map prefix will be set automatically based on scale\n"
+    $fileext = 'jpg';
+} elsif ( $mapserver eq 'openstreetmap_tah') {
+    $fileext = 'png';
 }
+
 
 @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
 
@@ -278,12 +289,18 @@ sub get_gpsd_position();       # {}
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
 
+
 # Setup up some constants
 my $DIFF          = 0.0000028;
-my $RADIUS_KM     = 6371.01;
-my $LAT_DIST_KM   = 110.87;
-my $KM2NAUTICAL   = 0.54;
+my $RADIUS_KM     = 6378137.0/1000;  # WGS84's "a"
+my $LAT_DIST_KM   = 1852*60/1000;
+my $KM2NAUTICAL   = 0.5399568;
 my $KM2MILES      = 0.62137119;
+my $PIXELFACT = 2817.947378;  # Mapscale/pixelfact  is  meter/pixel
+my $MAPWIDTH  = 1280;
+my $MAPHEIGHT = 1024;
+my $PI  = 3.14159265358979323846;
+my $D2R = $PI / 180;
 
 
 my $CFG = read_config();
@@ -399,9 +416,10 @@ if ( $mapserver eq 'geoscience' ){
     print "| http://www.ga.gov.au/about/copyright.jsp                  |\n";
     print "+-----------------------------------------------------------+\n";
 }elsif ( $mapserver eq 'landsat' ){
-    print "+-----------------------------------------------------------+\n";
-    print "| Landsat maps are courtesy JPL/NASA's OnEarth WMS Global   |\n";
-    print "| Mosaic. By law, US Government data is without copyright.  |\n";
+    print "+----------------------------------------------------------------+\n";
+    print "| Landsat maps are courtesy JPL/NASA's OnEarth WMS Global Mosaic |\n";
+    print "| Map prefix will be set automatically based on scale.           |\n";
+    # By law, US Government data is without copyright.
 }elsif ( $mapserver eq 'openstreetmap_tah' ){
     print "+-----------------------------------------------------------+\n";
     print "| OpenStreetmap Maps are Copyright by the OpenStreetmap     |\n";
@@ -432,8 +450,10 @@ for my $scale ( sort {$b <=> $a} keys %{$desired_locations} ) {
 	my @longs = sort  {$a <=> $b} keys %{$desired_locations->{$scale}->{$lati}};
 	print "(". scalar( @longs ) . ")\t";
 	#print ":". join(" ", @longs ) . "\t";
+	if( $debug ) { print "\n"; }
 	for my $long ( @longs ) {
 	    print wget_map($scale,$lati,$long);
+	    if( $debug ) { print "\n"; }
 	}
 	print "\n";
     }
@@ -639,7 +659,7 @@ sub map_filename($$$){
 	."/".int($lati)
 #	."/".sprintf("%3.1f",$lati)
 	."/".int($long)
-	."/$FILEPREFIX$scale-$lati-$long.gif";
+	."/$FILEPREFIX$scale-$lati-$long.$fileext";
     printf("Filename(%.0f,%.5f,%.5f): $filename\n",$scale,$lati,$long)
 	if $debug;
     return $filename;
@@ -658,8 +678,19 @@ sub wget_map($$$){
     # mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
     #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+
+    # redundant??
+    if ($mapserver eq 'landsat')
+    {
+	if ($scale <= 500000) {
+	    $FILEPREFIX = 'map_';  # cartesian space (UTM-like)
+	} else {
+	    $FILEPREFIX = 'top_';  # Plate Carrée
+	}
+    }
+
     my $filename = map_filename($scale,$lati,$long);
-    
+
     if ( $mapserver =~ m/^eniro_(se|dk|no|fi)$/) 
     {
 	($url,$mapscale)=eniro_url($lati,$long,$scale);
@@ -679,10 +710,9 @@ sub wget_map($$$){
     elsif ( $mapserver eq 'landsat') 
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
-    } 
+    }
     elsif ( $mapserver eq 'openstreetmap_tah') 
     {	
-	$filename=~s/\.gif/.png/;
 	($url,$mapscale)=openstreetmap_tah_url($lati,$long,$scale);
     } 
     else 
@@ -997,23 +1027,67 @@ sub landsat_url($$$){
     my $lat   = shift;
     my $lon   = shift;
     my $scale = shift;
- 
+
     my $factor = $Scale2Zoom->{'landsat'}->{$scale};
 
-    my $deltalat = 0.0005;
-    my $deltalon = 0.001;   # Gives ratio 1.2 in meter
+    my $meters_per_pixel = $scale/$PIXELFACT;
 
-    my $lon1 = $lon-$deltalon*$factor/2;
-    my $lat1 = $lat-$deltalat*$factor/2;
-    my $lon2 = $lon+$deltalon*$factor/2;
-    my $lat2 = $lat+$deltalat*$factor/2;
+    # lat
+    my $dist_to_edge_m = $meters_per_pixel * $MAPHEIGHT/2;
+    my $dist_to_edge_deg = $dist_to_edge_m / (1852.0*60);
+      # 1852m/naut mile (arc-minute of LAT)
+    my $lat1 = $lat - $dist_to_edge_deg;
+    my $lat2 = $lat + $dist_to_edge_deg;
+
+    # lon
+    $dist_to_edge_m = $meters_per_pixel * $MAPWIDTH/2;
+    if ($scale <= 500000) {
+#	$FILEPREFIX = 'map_';  # cartesian space (UTM-like)
+	$dist_to_edge_deg = $dist_to_edge_m / (1852.0*60*cos($lat * $D2R));
+	  # 1852m/naut mile (arc-minute of LAT), lon:lat ratio = cos(lat)
+    } else {
+#	$FILEPREFIX = 'top_';  # Plate Carrée
+	$dist_to_edge_deg = $dist_to_edge_m / (1852.0*60);
+    }
+
+    my $lon1 = $lon - $dist_to_edge_deg;
+    my $lon2 = $lon + $dist_to_edge_deg;
+
+    # sanitize
+    #  bump has problem if > 90N-90S spans >,< 90 lat is valid
+    #  for the server, but not useful for us
+    if ( $lat1 < -90 || $lat2 > 90 ) {
+	    if ( $lat1 < -90 ) {
+		my $bump = $lat1 +90;
+		$lat1 -= $bump;
+		$lat2 -= $bump;
+	    }
+	    if ( $lat2 > 90 ) {
+		my $bump = $lat2 -90;
+		$lat1 -= $bump;
+		$lat2 -= $bump;
+	    }
+	    # recalc lon extent based on new lat
+	    $lat = ($lat1 + $lat2)/2;
+	    if ( $FILEPREFIX =~ /map/ ) {
+		$dist_to_edge_deg = $dist_to_edge_m / (1852.0*60*cos($lat * $D2R));
+	    }
+	    $lon1 = $lon - $dist_to_edge_deg;
+	    $lon2 = $lon + $dist_to_edge_deg;
+	}
+
+	# valid: -180 to 360 deg
+	if ( $lon1 < -180 ) {
+	    $lon1 += 360;
+	    $lon2 += 360;
+	}
 
     debug( "landsat_url(LAT=$lat,LON=$lon,SCALE=$scale,FACTOR=$factor)");
 
     debug( "Calculated Lat1  $lat1");
     debug( "Calculated Lat2  $lat2");
-    debug( "Calculated Lon1 $lon1");
-    debug( "Calculated Lon2 $lon2");
+    debug( "Calculated Lon1  $lon1");
+    debug( "Calculated Lon2  $lon2");
 
     # Build the URL
     my $url='';
@@ -1198,23 +1272,23 @@ sub desired_locations {
 	my $delta_lon = $k - ($k / 6); ### FIX BY CAMEL
 	#TODO: $delta_lon sollte von lat abhaengen
 
-	# make the starting points for the loop $slat and $slon 
-	# snap into a grid with a Size depending on the scale.
-	# The result is $snapped_start_lat and $snapped_start_lon
-	# The grid allows maps in each direction to 
-	# overlapp by 1/$overlap of the size of one map
-	# With snap to grid we would have to download the exact same maps
-	# for slightly different starting points. This way we can 
-	# circumvent downloads of almost completely overlaping maps
+	# Make the starting points for the loop $slat and $slon 
+	#   snap into a grid with a Size depending on the scale.
+	#   The result is $snapped_start_lat and $snapped_start_lon
+	#   The grid allows maps in each direction to 
+	#   overlapp by 1/$overlap of the size of one map
+	#   With snap to grid we would have to download the exact same maps
+	#   for slightly different starting points. This way we can 
+	#   circumvent downloads of almost completely overlaping maps
 	my $overlap = 1;
 	my $flat =  $delta_lat / $overlap;
-	my $snapped_start_lat = int ( $slat / $flat  ) * $flat;
+	my $snapped_start_lat = int ( $slat / $flat ) * $flat;
 	my $flon = $delta_lon / $overlap;
 	my $snapped_start_lon = int ( $slon / $flon ) * $flon;
 
 	print "Scale: $scale\t";
 	printf "  lati: %6.5f(%6.5f) +=%5.5f ... %6.5f\n",
-	$snapped_start_lat,$slat,$delta_lat,$elat;
+		$snapped_start_lat, $slat, $delta_lat, $elat;
 
 	my $lati = $snapped_start_lat;
 
@@ -1222,12 +1296,21 @@ sub desired_locations {
 	    my $long = $snapped_start_lon;
 	    if ( $local_debug ) {
 		printf "        %5.5f:",$lati;
-		printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f"
-		    ,$snapped_start_lon,$slon,$delta_lon,$elon;
+		printf "\tlong: %6.4f(%6.4f) +=%5.4f ... %6.4f",
+			$snapped_start_lon, $slon, $delta_lon, $elon;
 		printf "\t\t";	
 	    }
 	    while (($long <= $elon) || (!$count)) {
 		$desired_locations->{$scale}->{$lati}->{$long} ||='?';
+
+		if ($mapserver eq 'landsat')
+		{
+		    if ($scale <= 500000) {
+		    	$FILEPREFIX = 'map_';  # cartesian space (UTM-like)
+		    } else {
+		    	$FILEPREFIX = 'top_';  # Plate Carrée
+		    }
+		}
 
 		if ( $local_debug ) {
 		    my $filename = map_filename($scale,$lati,$long);
@@ -1331,9 +1414,9 @@ sub get_coords {
     my $lon_dist_km = calc_lon_dist($lat);
     my $lat_offset  = calc_offset($unit,$lat_dist,\$LAT_DIST_KM);
     my $lon_offset  = calc_offset($unit,$lon_dist,\$lon_dist_km);   
-    
-#    print "LAT_OFFSET = $$lat_offset LON_OFFSET = $$lon_offset \n" if ($debug);
-    
+
+    debug ( "LAT_OFFSET=$lat_offset  LON_OFFSET=$lon_offset\n");
+
     # Ok subtract the offset for the start point
     my $slat = $lat - $lat_offset;
     my $slon = $lon - $lon_offset;
@@ -1341,7 +1424,7 @@ sub get_coords {
     # Ok add the offset for the start point
     my $elat = $lat + $lat_offset;   
     my $elon = $lon + $lon_offset;   
-    
+
     return ($slat,$slon,$elat,$elon);
 } #End get_coords
 
@@ -1354,11 +1437,11 @@ sub calc_offset {
     } elsif ($unit =~ /nautic/) {
 	$$dist_per_degree *= $KM2NAUTICAL;
     }
-    
+
     # The offset for the coordinate is the distance to travel divided by 
     # the dist per degree   
     my $offset = sprintf("%.7f", ($area / 2) / $$dist_per_degree);
-    
+
     #print "-\n".Dumper($area,\$dist_per_degree,$offset);
     return($offset);
 } #End calc_offset
@@ -1481,12 +1564,9 @@ sub get_coords_for_route {
 ######################################################################
 sub calc_lon_dist {
     my $lat = shift;
-
-    my $PI  = 3.141592654;
-    my $dr = $PI / 180;
     
     # calculate the circumference of the small circle at latitude 
-    my $cos = cos($lat * $dr); # convert degrees to radians
+    my $cos = cos($lat * $D2R); # convert degrees to radians
     my $circ_km = sprintf("%.2f",($PI * 2 * $RADIUS_KM * $cos));
     
     # divide that by 360 and you have kilometers per degree
@@ -1811,7 +1891,7 @@ __END__
 
 =head1 NAME
 
-B<gpsfetchmap> Version 1.04
+B<gpsfetchmap> Version $Revision$
 
 =head1 DESCRIPTION
 
@@ -1823,18 +1903,18 @@ B<Common usages:>
 
 gpsfetchmap -w <WAYPOINT NAME> -sc <SCALE> -a <#> -p
 
-gpsfetchmap -la <latitude MM.DDDD> -lo <latitude MM.DDDD> -sc <SCALE> -a <#> -p
+gpsfetchmap -la <latitude DD.DDDD> -lo <latitude DD.DDDD> -sc <SCALE> -a <#> -p
 
-gpsfetchmap -sla <start latitude MM.DDDD> -endla <end latitude MM.DDDD> -slo <start longitude MM.DDDD> -endlo <end longitude MM.DDDD> -sc <SCALE> -a <#> -p
+gpsfetchmap -sla <start latitude DD.DDDD> -endla <end latitude DD.DDDD> -slo <start longitude DD.DDDD> -endlo <end longitude DD.DDDD> -sc <SCALE> -a <#> -p
 
 gpsfetchmap -sc <SCALE> -a <#> -r <WAYPOINT 1> <WAYPOINT 2> ... <WAYPOINT n> -p
 
 B<All options:>
 
 gpsfetchmap [-w <WAYPOINT NAME>]
-            [-la <latitude DD.MMMM>] [-lo <longitude DD.MMMM>] 
-            [-sla <start latitude DD.MMMM>] [-endla <end latitude DD.MMMM>]
-            [-slo <start longitude DD.MMMM>] [-endlo <end longitude DD.MMMM>]
+            [-la <latitude DD.DDDD>] [-lo <longitude DD.DDDD>] 
+            [-sla <start latitude DD.DDDD>] [-endla <end latitude DD.DDDD>]
+            [-slo <start longitude DD.DDDD>] [-endlo <end longitude DD.DDDD>]
             [-sc <SCALE>] [-a <#>] [-p] [-m <MAPSERVER>]
             [-u <UNIT>] [-md <DIR>] [-W <FILE>] [-t <FILE>] [-r]
             [-C <FILE>] [-P <PREFIX>] [-F] [-d] [-v] [-h] [-M] [-n] [-U] [-c]
@@ -1853,32 +1933,43 @@ this point as center.
 This, '-la' and '-lo', '-sla', '-ela', '-slo' and '-elo' or '-a' is required. 
 A special name is gpsd this waypoint asks your gps where you currently are.
 
-=item B<-la,  --lat <latitude DD.MMMM>>
+=item B<-la,  --lat <latitude DD.DDDD>>
 
-Takes a latitude in format DD.MMMM and uses that as the latitude for the centerpoint of the area
-to be covered. Will be overriden by the latitude of waypoint if '-w' is used. This and '-lo', '-w' or '-sla', '-ela', '-slo', '-elo' is required.
+Takes a latitude in format DD.DDDD and uses that as the latitude for the
+centerpoint of the area to be covered. Will be overriden by the latitude
+of waypoint if '-w' is used. This and '-lo', '-w' or '-sla', '-ela', '-slo',
+'-elo' is required.
 
-=item B<-lo, --lon <longitude DD.MMMM>>
+=item B<-lo, --lon <longitude DD.DDDD>>
 
-Takes a longitude in format DD.MMMM and uses that as the longitude for the centerpoint of the area
-to be covered. Will be overriden by the longitude of waypoint if '-w' is used. This and '-la', '-w' or '-sla', '-ela', '-slo', '-elo' is required.
+Takes a longitude in format DD.DDDD and uses that as the longitude for the
+centerpoint of the area to be covered. Will be overriden by the longitude of
+waypoint if '-w' is used. This and '-la', '-w' or '-sla', '-ela', '-slo',
+'-elo' is required.
 
-=item B<-sla --start-lat <start latitude DD.MMMM>>
+=item B<-sla --start-lat <start latitude DD.DDDD>>
 
-Takes a latitude in format DD.MMMM and uses that as the start latitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-ela', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
+Takes a latitude in format DD.DDDD and uses that as the start latitude for
+the area to be covered. Will override '-la' and '-lo' but will be overriden
+by '-w'. This, '-ela', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
-=item B<-ela --end-lat <end latitude DD.MMMM>>
+=item B<-ela --end-lat <end latitude DD.DDDD>>
 
-Takes a latitude in format DD.MMMM and uses that as the end latitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. 
+Takes a latitude in format DD.DDDD and uses that as the end latitude for the
+area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. 
 This, '-sla', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
-=item B<-slo --start-lon <start longitude DD.MMMM>>
+=item B<-slo --start-lon <start longitude DD.DDDD>>
 
-Takes a longitude in format DD.MMMM and uses that as the start longitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-sla', '-ela' and '-elo' or '-w' or '-la' and '-lo' is required.
+Takes a longitude in format DD.DDDD and uses that as the start longitude for
+the area to be covered. Will override '-la' and '-lo' but will be overriden
+by '-w'. This, '-sla', '-ela' and '-elo' or '-w' or '-la' and '-lo' is required.
 
-=item B<-elo --end-lon <end longitude DD.MMMM>>
+=item B<-elo --end-lon <end longitude DD.DDDD>>
 
-Takes a longitude in format DD.MMMM and uses that as the end longitude for the area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. This, '-sla', '-ela' and '-slo' or '-w' or '-la' and '-lo' is required.
+Takes a longitude in format DD.DDDD and uses that as the end longitude for the
+area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'.
+This, '-sla', '-ela' and '-slo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-sc, --scale <SCALE>>
 
@@ -1903,15 +1994,16 @@ Formats:
 
 =item B<-a, --area <#>>
 
-Area to cover. # of 'units' size square around the centerpoint. You can use a single number
-for square area. Or you can use '#x#' to do a rectangle, where the first number is distance
-latitude and the second number is distance of longitude. 'units' is read from the configuration 
-file (-C) or as defined by (-u).
+Area to cover. # of 'units' size square around the centerpoint. You can use
+a single number for square area. Or you can use '#x#' to do a rectangle,
+where the first number is distance latitude and the second number is distance
+of longitude. 'units' is read from the configuration file (-C) or as defined
+by (-u).
 
 =item B<-p, --polite>
 
-This causes the program to sleep one second between downloads to be polite to the mapserver. 
-Takes an optional value of number of seconds to sleep.
+This causes the program to sleep one second between downloads to be polite
+to the mapserver. Takes an optional value of number of seconds to sleep.
 
 =item B<--mapserver <MAPSERVER>>
 
@@ -1927,7 +2019,7 @@ geoscience
 landsat covers the whole world with satelite Photos
 
 openstreetmap_tah: Free maps from the OpenStreetmap Tiles@Home project, see 
-		   http://www.openstreetmap.org and http://tah.openstreetmap.org.
+	http://www.openstreetmap.org and http://tah.openstreetmap.org.
 
 gov_au is for Australia
 
@@ -1945,8 +2037,8 @@ Overview of Area covered by eniro_fi:
 
 =item B<-u, --unit <UNIT>>
 
-The measurement system to use. Default is read from configuration file <-C>. Possibles are: 
-miles, nautical, kilometers.
+The measurement system to use. Default is read from configuration file <-C>.
+Possibles are:  miles, nautical, kilometers.
 
 =item B<--mapdir <DIR>>
 
@@ -1958,15 +2050,18 @@ File to read waypoints from. Default: '~/.gpsdrive/way.txt'.
 
 =item B<-t, --track <FILE>>
 
-Download maps that are along a saved track. File is a standard track filed saved from GpsDrive.
+Download maps that are along a saved track. File is a standard track file
+saved from GpsDrive.
 
 =item B<-r, --route>
 
-Download maps that are along a route defined by waypoints. You must give a list of waypoints as parameters separated with space.
+Download maps that are along a route defined by waypoints. You must give a
+list of waypoints as parameters separated with space.
 
 =item B<-C, --CONFIG>
 
-File to read for GPSDrive configuration information. Default: '~/.gpsdrive/gpsdriverc'.
+File to read for GPSDrive configuration information.
+Default: '~/.gpsdrive/gpsdriverc'.
 
 =item B<-P, --PREFIX <PREFIX>>
 
