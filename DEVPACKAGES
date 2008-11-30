@@ -15,7 +15,8 @@ Currently supported-
 
 I think a simple 
 	/usr/lib/pbuilder/pbuilder-satisfydepends
-inside the main directory should do the trick and install all needed dependencies.
+inside the main directory should do the trick and install all needed
+dependencies.
 
 
 Note 2:
