@@ -82,7 +82,7 @@ draw_grid_text (GtkWidget * widget, gdouble posx, gdouble posy, gchar * txt)
 
 	grid_label_layout = gtk_widget_create_pango_layout (map_drawingarea, txt);
 
-	pfd = pango_font_description_from_string ("Sans 6");
+	pfd = pango_font_description_from_string ("Sans 8");
 
 	pango_layout_set_font_description (grid_label_layout, pfd);
 	pango_layout_get_pixel_size (grid_label_layout, &width, &height);
@@ -110,7 +110,7 @@ void
 draw_grid (GtkWidget * widget)
 {
 	int count;
-	gdouble step;
+	gdouble step, step_pow10;
 	gdouble lat, lon;
 	gdouble lat_ul, lon_ul;
 	gdouble lat_ll, lon_ll;
@@ -120,7 +120,7 @@ draw_grid (GtkWidget * widget)
 	gdouble lat_min, lon_min;
 	gdouble lat_max, lon_max;
 
-	gchar precission[10];
+	gchar precision[10];
 	gint iteration_count =0;
 	
 	if ( mydebug >50 ) 
@@ -137,15 +137,32 @@ draw_grid (GtkWidget * widget)
 
 	// Calculate distance between grid lines
 	step = (gdouble) current.mapscale / 2000000.0 / current.zoom;
-	do {
-	    if (step >= 1)	            g_snprintf (precission, sizeof (precission), "%%.0f");
-	    else if (step >= .1)	    g_snprintf (precission, sizeof (precission), "%%.1f");
-	    else if (step >= .01)	    g_snprintf (precission, sizeof (precission), "%%.2f");
-	    else if (step >= .001)	    g_snprintf (precission, sizeof (precission), "%%.3f");
-	    else if (step >= .0001)	    g_snprintf (precission, sizeof (precission), "%%.4f");
-	    else           		    g_snprintf (precission, sizeof (precission), "%%.5f");
+	/* round step to one sig. digit */
+	step_pow10= floor( log10(step) );  // add -1 for 2 sig digits, -2 for 3, etc.
+/* FIXME: use round(x) instead of floor(x+0.5) ??? */
+//	step = pow(10, step_pow10) * round(step * pow(10, -1 * step_pow10));
+	step = pow(10, step_pow10) * floor(0.5+ (step * pow(10, -1 * step_pow10)));
 
-	    if (current.mapscale < 5000000)
+/* TODO: respect user's prefered DMS style; round and display accordingly:
+	DDD.DDDDD, DDD MM.MMMM, DDD MM SS.SSSS
+
+   TODO: round on "nice numbers":
+	deg, min, sec: 30, 15, 10, 5, 2, 1
+	decimal deg: .5, .25, .1, .05, 0.02, 0.1
+
+     see SourceForge wish #2375742 for some sample GPL'd code to do that
+       (from GRASS GIS's ps/ps.map/ps_fclrtbl.c#L162)
+  */
+
+	do {
+	    if (step >= 1)		g_snprintf (precision, sizeof (precision), "%%.0f");
+	    else if (step >= .1)	g_snprintf (precision, sizeof (precision), "%%.1f");
+	    else if (step >= .01)	g_snprintf (precision, sizeof (precision), "%%.2f");
+	    else if (step >= .001)	g_snprintf (precision, sizeof (precision), "%%.3f");
+	    else if (step >= .0001)	g_snprintf (precision, sizeof (precision), "%%.4f");
+	    else           		g_snprintf (precision, sizeof (precision), "%%.5f");
+
+	    if (current.mapscale / current.zoom < 50000000)
 		{
 		    lat_min = min (lat_ll, lat_ul) - step;
 		    lat_max = max (lat_lr, lat_ur) + step;
@@ -163,8 +180,9 @@ draw_grid (GtkWidget * widget)
 	    lon_min = floor (lon_min / step) * step;
 
 	    if ( mydebug > 20 )
-		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f) Step %f for Scale %ld Zoom %d\n", lat_min, lon_min, lat_max, lon_max, step,
-			current.mapscale, current.zoom);
+		printf ("Draw Grid: (%.2f,%.2f) - (%.2f,%.2f) Step %f for Ef.Scale %ld Zoom %d\n",
+			lat_min, lon_min, lat_max, lon_max, step,
+			current.mapscale/current.zoom, current.zoom);
 	    if ( mydebug > 40 )
 		{
 		    printf ("Draw Grid: (%.2f) Iterations for lat\n", (lat_max-lat_min)/step);
@@ -223,7 +241,7 @@ draw_grid (GtkWidget * widget)
 					       posydest12);
 			    
 				// Text lon
-				g_snprintf (str, sizeof (str), precission,lon);
+				g_snprintf (str, sizeof (str), precision, lon);
 
 				posxdist = (posxdest12 - posxdest11) / 4;
 				posydist = (posydest12 - posydest11) / 4;
@@ -232,7 +250,7 @@ draw_grid (GtkWidget * widget)
 						posydest11 + posydist, str);
 				
 				// Text lat
-				g_snprintf (str, sizeof (str), precission,lat);
+				g_snprintf (str, sizeof (str), precision, lat);
 					    
 				posxdist = (posxdest21 - posxdest11) / 4;
 				posydist = (posydest21 - posydest11) / 4;
