@@ -137,8 +137,10 @@ draw_grid (GtkWidget * widget)
 
 	// Calculate distance between grid lines
 	step = (gdouble) current.mapscale / 2000000.0 / current.zoom;
+
 	/* round step to one sig. digit */
 	step_pow10= floor( log10(step) );  // add -1 for 2 sig digits, -2 for 3, etc.
+
 /* FIXME: use round(x) instead of floor(x+0.5) ??? */
 //	step = pow(10, step_pow10) * round(step * pow(10, -1 * step_pow10));
 	step = pow(10, step_pow10) * floor(0.5+ (step * pow(10, -1 * step_pow10)));
