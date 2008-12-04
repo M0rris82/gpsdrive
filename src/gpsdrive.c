@@ -764,6 +764,13 @@ draw_scalebar (void)
 	PangoFontDescription *pfd_scalebar;
 
 
+	/* scale bar is not valid in Plate carrée projection, distance 
+	    changes with cos(lat) so scalebar is only  valid in the
+	    y direction (where 60 nautical miles == 1 degree lat) */
+ /* TODO: show a (valid) scalebar with units as "degrees" for top_* maps? */
+	if( map_proj == proj_top )
+	    return;
+
 	/*
 	 * We want a bar with at least (min_bar_length) pixles in
 	 * length.  Calculate the displayed value of this bar is whatever

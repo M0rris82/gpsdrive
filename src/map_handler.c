@@ -309,7 +309,7 @@ test_loaded_map_names ()
 		_("I have found filenames in map_koord.txt which are\n"
 		  "not map_* or top_* files. Please rename them and change the entries\n"
 		  "in map_koord.txt.  Use map_* for UTM-like projections and top_* for\n"
-		  "Plate Caree maps.  Otherwise, the maps will not be displayed!"));
+		  "Plate Carree maps.  Otherwise, the maps will not be displayed!"));
 	  popup_warning (NULL, error->str);
 	  g_string_free (error, TRUE);
 	  message_wrong_maps_shown = TRUE;
@@ -981,12 +981,12 @@ drawloadedmaps ()
 	  yo = 1024.0 * current.zoom * maps[i].scale / current.mapscale;
 
 	  if(map_proj == proj_top) { /* currently displayed tile is "top_" */
-		if(file_proj == proj_top) /* plate caree */
+		if(file_proj == proj_top) /* plate carree */
 		   xo = 1280.0 * current.zoom * maps[i].scale / current.mapscale;
 		else
 		   xo = 1280.0 * (1/cos(DEG2RAD(la))) * current.zoom * maps[i].scale / current.mapscale;
 	  } else { /* currently displayed tile is "map_" */
-		if(file_proj == proj_top) /* plate caree */
+		if(file_proj == proj_top) /* plate carree */
 		   xo = 1280.0 * cos(DEG2RAD(la)) * current.zoom * maps[i].scale / current.mapscale;
 		else
 		   xo = 1280.0 * current.zoom * maps[i].scale / current.mapscale;
