@@ -4,7 +4,27 @@
 
 
 mkdir -p logs
-#USE_XVFB="xvfb-run "
+
+# Option to use virtual Framebuffer.
+# This way no gpsdrive is shown on the real X-Display
+if echo "$@" | grep -i -e '--use-xvfb'; then
+    USE_XVFB="xvfb-run "
+fi
+
+if echo "$@" | grep -i -e '--short'; then
+    SHORT=true
+else
+    short=false
+fi
+
+if echo "$@" | grep -i -e '-h'; then
+    echo "$0: Run Tests for Gpsdrive"
+    echo "   -h             This Help"
+    echo "   --use-xvfb     Use Virtual Framebuffer"
+    echo "   --short        Do only some basic tests"
+
+    exit
+fi
 
 # ------------------------------------------------------------------ GpsDrive
 # Test Gpsdrive -T with different Setup
@@ -31,6 +51,7 @@ for LANG in en_US de_DE ; do
 		./build/src/gpsdrive --geometry 800x600 -S tests/ -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 
 	    done || exit 1
+	    $SHORT && continue
 	done || exit 1
     done || exit 1
 done || exit 1
