@@ -4,11 +4,13 @@
 
 
 mkdir -p logs
+#USE_XVFB="xvfb-run "
 
 # ------------------------------------------------------------------ GpsDrive
 # Test Gpsdrive -T with different Setup
 PWD=`pwd`/tests
 mkdir -p "$PWD/maps"
+mkdir -p "$PWD/tracks"
 
 USER_NAME=`id -u -n`
 if false; then
@@ -50,7 +52,7 @@ for LANG in en_US de_DE ; do
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
 		# --server-args="-screen 0 1280x1024x16" 
-		xvfb-run \
+		$USE_XVFB \
 		    ./build/src/gpsdrive \
 		    -s \
 		    -C tests/gpsdriverc \
