@@ -377,20 +377,20 @@ db_poi_get (gchar *query, gpointer callback, gint database)
 	if (mydebug > 20)
 		g_printf ("db_poi_get: %s\n", query);
 
-	switch (database)
-	{
-		case DB_WP_USER:
-			/* get data from waypoints/sqlite database */
+//	switch (database)
+//	{
+//		case DB_WP_USER:
+//			/* get data from waypoints/sqlite database */
 			db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
-			break;
-#ifdef GDA3
-		case DB_WP_OSM:
-			/* get data from openstreetmap/postgis database */
-			if (db_conn_osm)
-				db_postgis_query (query, callback);
-			break;
-#endif
-	}
+//			break;
+//#ifdef GDA3
+//		case DB_WP_OSM:
+//			/* get data from openstreetmap/postgis database */
+//			if (db_conn_osm)
+//				db_postgis_query (query, callback);
+//			break;
+//#endif
+//	}
 }
 
 

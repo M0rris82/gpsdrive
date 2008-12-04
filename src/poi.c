@@ -500,27 +500,47 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	poi_nr = 0;
 
 	/* query sqlite db */
-	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
-		" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
-		" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
-		" '%%%s%%') AND (poi_type%s) ORDER BY"
-		" (poi.lat-(%.8f))*(poi.lat-(%.8f))+(poi.lon-(%.8f))*(poi.lon-(%.8f)) LIMIT %d;",
-		lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
-		type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+	if (current.poi_osm)
+	{
+		if (mydebug > 30)
+			g_print ("poi_get_results (): Searching in OSM and user database\n");
+		g_snprintf (sql_query, sizeof (sql_query),
+			"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM"
+			" (SELECT * FROM main.poi UNION SELECT * FROM osm.poi)"
+			" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
+			" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
+			" '%%%s%%') AND (poi_type%s) ORDER BY"
+			" (lat-(%.8f))*(lat-(%.8f))+(lon-(%.8f))*(lon-(%.8f)) LIMIT %d;",
+			lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
+			type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+	}
+	else
+	{
+		if (mydebug > 30)
+			g_print ("poi_get_results (): Searching in user database\n");
+		g_snprintf (sql_query, sizeof (sql_query),
+			"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
+			" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
+			" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
+			" '%%%s%%') AND (poi_type%s) ORDER BY"
+			" (poi.lat-(%.8f))*(poi.lat-(%.8f))+(poi.lon-(%.8f))*(poi.lon-(%.8f)) LIMIT %d;",
+			lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
+			type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+	}
+
 	db_poi_get (sql_query, handle_poi_search_cb, DB_WP_USER);
 
 	/* query postgis db */
 #ifdef MAPNIK
-	gdouble x, y;
-	convert_mapnik_coords(&x, &y, lon, lat, 0);
-	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT name,poi,ASTEXT(way),osm_id FROM planet_osm_point"
-		" WHERE ST_DWithin(SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
-		" AND name ILIKE '%%%s%%' AND poi%s LIMIT %d;",
-		x, y, dist*1000, temp_text,
-		type_filter, local_config.poi_results_max);
-	db_poi_get (sql_query, handle_osm_poi_search_cb, DB_WP_OSM);
+//	gdouble x, y;
+//	convert_mapnik_coords(&x, &y, lon, lat, 0);
+//	g_snprintf (sql_query, sizeof (sql_query),
+//		"SELECT name,poi,ASTEXT(way),osm_id FROM planet_osm_point"
+//		" WHERE ST_DWithin(SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
+//		" AND name ILIKE '%%%s%%' AND poi%s LIMIT %d;",
+//		x, y, dist*1000, temp_text,
+//		type_filter, local_config.poi_results_max);
+//	db_poi_get (sql_query, handle_osm_poi_search_cb, DB_WP_OSM);
 #endif
 
 	poi_result_count = poi_nr;
@@ -1148,14 +1168,14 @@ poi_rebuild_list (void)
 
 	/* query postgis db */
 #ifdef MAPNIK
-	gdouble x1, y1, x2, y2;
-	convert_mapnik_coords(&x1, &y1, lon_min, lat_min, 0);
-	convert_mapnik_coords(&x2, &y2, lon_max, lat_max, 0);
-	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT name,poi,ASTEXT(way) AS geometry FROM planet_osm_point"
-		" WHERE SetSRID(way,-1) && SetSRID('BOX3D(%.8f %.8f , %.8f %.8f)'::box3d,-1)"
-		" AND poi IN (%s) LIMIT 20000;", x1, y1, x2, y2, current.poifilter);
-	db_poi_get (sql_query, handle_osm_poi_view_cb, DB_WP_OSM);
+//	gdouble x1, y1, x2, y2;
+//	convert_mapnik_coords(&x1, &y1, lon_min, lat_min, 0);
+//	convert_mapnik_coords(&x2, &y2, lon_max, lat_max, 0);
+//	g_snprintf (sql_query, sizeof (sql_query),
+//		"SELECT name,poi,ASTEXT(way) AS geometry FROM planet_osm_point"
+//		" WHERE SetSRID(way,-1) && SetSRID('BOX3D(%.8f %.8f , %.8f %.8f)'::box3d,-1)"
+//		" AND poi IN (%s) LIMIT 20000;", x1, y1, x2, y2, current.poifilter);
+//	db_poi_get (sql_query, handle_osm_poi_view_cb, DB_WP_OSM);
 #endif
 
 	poi_list_count = poi_nr;
