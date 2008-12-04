@@ -39,7 +39,7 @@ for LANG in en_US de_DE ; do
     echo "-------------> check LANG=$LANG"
     for ICON_THEME in square.big square.small classic.big classic.small; do 
 	echo "-------------> check icon_theme=$ICON_THEME"
-	for USER_INTERFACE in car desktop pda ; do 
+	for USER_INTERFACE in  desktop car pda ; do 
 	    for MAPNIK in 0 1  ; do 
 		
 		perl -p \
@@ -51,7 +51,6 @@ for LANG in en_US de_DE ; do
 		./build/src/gpsdrive --geometry 800x600 -S tests/ -S ./tests -C tests/gpsdriverc  -M $USER_INTERFACE >logs/gpsdrive_test_$LANG.txt 2>&1 
 
 	    done || exit 1
-	    $SHORT && continue
 	done || exit 1
     done || exit 1
 done || exit 1
@@ -62,7 +61,7 @@ for LANG in en_US de_DE ; do
     echo "-------------> check LANG=$LANG"
     for ICON_THEME in square.big square.small classic.big classic.small; do 
 	echo "-------------> check icon_theme=$ICON_THEME"
-	for USER_INTERFACE in car desktop pda ; do 
+	for USER_INTERFACE in desktop car pda ; do 
 	    for MAPNIK in 0 1  ; do 
 		echo "------------------> check './build/src/gpsdrive -s -C tests/gpsdriverc -M $USER_INTERFACE -D 1 -T '  mapnik = $MAPNIK"
 
@@ -108,6 +107,7 @@ for LANG in en_US de_DE ; do
 		    exit -1 
 		fi
 	    done || exit 1
+	    $SHORT && continue
 	done || exit 1
     done || exit 1
 done || exit 1
