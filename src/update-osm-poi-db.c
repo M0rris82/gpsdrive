@@ -54,6 +54,10 @@ Disclaimer: Please do not use for navigation.
 #define PGM_VERSION "0.1"
 
 
+//TODO: - evaluate tags after insertion into database to allow a better
+//TODO:   matching of poi subtypes
+
+
 sqlite3 *geoinfo_db, *osm_db;
 gint status = 0;
 gchar *error_string;
@@ -136,25 +140,24 @@ add_new_poi (node_struct *data)
 {
 	gchar query[500];
 	guint i = 0;
-	gchar *t_name, *t_type;
+	gulong t_id;
+	gchar *t_buf1, *t_buf2;
+	gchar *t_buf3, *t_buf4;
 
 	if (verbose)
 	{
 		g_print ("\n    |  id = %d\t%.6f / %.6f\n    |  poi_type = %s\n"
 			"    |  name = %s\n", data->id, data->lat, data->lon,
 			data->poi_type, data->name);
-		for (i = 0; i < data->tag_count; i++)
-			g_print ("    |  %s = '%s'\n", data->key[i], data->value[i]);
 	}
 
-	t_name = escape_sql_string (data->name);
-	t_type = escape_sql_string (data->poi_type);
-
+	/* insert basic data into poi table */
+	t_buf1 = escape_sql_string (data->name);
+	t_buf2 = escape_sql_string (data->poi_type);
 	g_snprintf (query, sizeof (query),
 		"INSERT INTO poi (name,lat,lon,poi_type,source_id,last_modified)"
 		" VALUES ('%s','%.6f','%.6f','%s','4',CURRENT_TIMESTAMP);",
-		t_name, data->lat, data->lon, t_type);
-
+		t_buf1, data->lat, data->lon, t_buf2);
 	status = sqlite3_exec(osm_db, query, NULL, NULL, &error_string);
 	if (status != SQLITE_OK )
 	{
@@ -163,10 +166,39 @@ add_new_poi (node_struct *data)
 		exit (EXIT_FAILURE);
 	}
 
-	//t_last = sqlite3_last_insert_rowid(osm_db);
+	/* insert additional tags into poi_extra table */
+	if (data->tag_count)
+	{
+		t_id = sqlite3_last_insert_rowid(osm_db);
+		if (t_id)
+		{
+			for (i = 0; i < data->tag_count; i++)
+			{
+				if (verbose)
+				{
+					g_print ("    |  %s = '%s'\n",
+					data->key[i], data->value[i]);
+				}
+				t_buf3 = escape_sql_string (data->key[i]);
+				t_buf4 = escape_sql_string (data->value[i]);
+				g_snprintf (query, sizeof (query),
+					"INSERT INTO poi_extra (poi_id, field_name, entry)"
+					" VALUES ('%ld','%s','%s')", t_id, t_buf3, t_buf4);
+				status = sqlite3_exec(osm_db, query, NULL, NULL, &error_string);
+				g_free (t_buf3);
+				g_free (t_buf4);
+				if (status != SQLITE_OK )
+				{
+					g_print ("\n\nSQLite error: %s\n%s\n\n", error_string, query);
+					sqlite3_free(error_string);
+					exit (EXIT_FAILURE);
+				}
+			}
+		}
+	}
 
-	g_free (t_name);
-	g_free (t_type);
+	g_free (t_buf1);
+	g_free (t_buf2);
 
 }
 
@@ -328,6 +360,8 @@ main (int argc, char *argv[])
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
+	setlocale(LC_NUMERIC,"C");
+
 	const gchar sql_create_poitable[] =
 		"CREATE TABLE IF NOT EXISTS poi (\n"
 		"poi_id        INTEGER      PRIMARY KEY,\n"
@@ -469,8 +503,6 @@ main (int argc, char *argv[])
 		status = xmlTextReaderRead (xml_reader);
 		while (status == 1)
 		{
-			//if (!verbose)
-			//	g_print ("\b%c", spinner[spinpos++%4]);
 			g_print ("\r  %ld/%ld/%ld", poi_count, node_count, count);
 
 			xml_name = xmlTextReaderName(xml_reader);
