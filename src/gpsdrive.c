@@ -838,7 +838,10 @@ draw_scalebar (void)
 	 * and scale_txt is the text for the scaler Bar. For example "10 Km"
 	 */
 
-	l = (gui_status.mapview_x - 40) - (strlen (scale_txt) * 15);
+	/* text label x-coordinate */
+	/* TODO: how to use pango_layout_set_alignment(center) instead of -strlen()*4 kludge? */
+	l = ((gui_status.mapview_x - dist_x) - bar_length) + bar_length/2 // horiz center of bar
+		- strlen(scale_txt)*4;
 
 	/* Draw greyish rectangle as background for the scale bar */
 	gdk_gc_set_function (kontext_map, GDK_OR);
@@ -860,11 +863,15 @@ draw_scalebar (void)
 
 	scalebar_layout = gtk_widget_create_pango_layout
 		(map_drawingarea, scale_txt);
+
 	pango_layout_set_font_description (scalebar_layout, pfd_scalebar);
 
+// ???	pango_layout_set_alignment(scalebar_layout, PANGO_ALIGN_CENTER);
+
 	gdk_draw_layout_with_colors (drawable, kontext_map, 
-		l, gui_status.mapview_y - dist_y -1 ,
+		l, gui_status.mapview_y - dist_y -1,
 		scalebar_layout, &colors.black, NULL);
+
 	if (scalebar_layout != NULL)
 		g_object_unref (G_OBJECT (scalebar_layout));
 
