@@ -727,19 +727,29 @@ int gui_init (gchar *geometry, gint usegeometry)
 
 	/* init poi search dialog (cached) */
 	create_window_poi_lookup();
-	
+
 	/* init size and contents of the main window */
 	create_main_window();
+
 	if (usegeometry && local_config.guimode != GUI_CAR)
 	{
 		usegeometry = gtk_window_parse_geometry (GTK_WINDOW (main_window), geometry);
 		if (!usegeometry)
 			fprintf(stderr, "Failed to parse %s\n", geometry);
 	}
+
 	if (!usegeometry)
 		get_window_sizing ();
+
 	gtk_widget_show_all (main_window);
 	gtk_widget_hide_all (routeinfo_evbox);
+
+#ifdef DEBUG
+/* temporary code until geometry bug is fixed */
+	gint xsiz,ysiz;
+	gtk_window_get_size(GTK_WINDOW (main_window), &xsiz, &ysiz);
+	printf("xsize=%d  ysize=%d  geometry=[%s]\n", xsiz, ysiz, geometry);
+#endif
 
 	//if ( ( local_config.guimode == GUI_DESKTOP )
 #ifdef MAPNIK
