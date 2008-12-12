@@ -147,6 +147,27 @@ handle_poi_extra_get_cb (result_struct *result, gint columns, gchar **values, gc
 }
 
 
+static gint
+handle_poi_extra_get_all_cb (gpointer dest, gint columns, gchar **values, gchar **names)
+{
+	GtkTreeIter t_iter;
+
+	if (columns == 0)
+		return 0;
+	
+	if (columns == 2)
+	{
+		gtk_list_store_append (dest, &t_iter);
+		gtk_list_store_set (dest, &t_iter,
+			0, values[0], 1, values[1], -1);
+		if (mydebug > 30)
+			g_print ("handle_poi_extra_get_all_cb: %s = %s\n", values[0], values[1]);
+	}
+
+	return 0;
+}
+
+
 /* ******************************************************************
  * delete poi data in poi table
  */
@@ -302,7 +323,7 @@ db_poi_extra_get (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *r
 	else if (field_name == NULL)
 	{
 		g_snprintf (t_query, sizeof (t_query),
-		"SELECT poi_id,field_id FROM poi_extra "
+		"SELECT poi_id,field_name FROM poi_extra "
 		"WHERE (poi_id='%ld' AND entry='%s') LIMIT 1;",
 		*poi_id, field_entry);
 	}
@@ -315,6 +336,36 @@ db_poi_extra_get (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *r
 	db_sqlite_query (t_query, handle_poi_extra_get_cb, DB_SQLITE_WAYPOINTS, (gpointer) &t_result);
 
 	return t_result.id;
+}
+
+
+/* ******************************************************************
+ * get all additional poi data from poi_extra table for specfied id
+ */
+void
+db_poi_extra_get_all (glong *poi_id, gpointer data)
+{
+	gchar t_query[128];
+
+	if (current.poi_osm)
+	{
+		g_snprintf (t_query, sizeof (t_query),
+			"SELECT field_name,entry FROM (SELECT * FROM"
+			" main.poi_extra UNION SELECT * FROM osm.poi_extra)"
+			" WHERE poi_id='%ld';", *poi_id);
+	}
+	else
+	{
+		g_snprintf (t_query, sizeof (t_query),
+			"SELECT field_name,entry FROM main.poi_extra"
+			" WHERE poi_id='%ld';", *poi_id);
+	}
+
+	if (mydebug > 20)
+		g_print ("db_poi_extra_get_all: sql query: %s\n", t_query);
+
+	db_sqlite_query (t_query, handle_poi_extra_get_all_cb,
+		DB_SQLITE_WAYPOINTS, data);
 }
 
 

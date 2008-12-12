@@ -98,7 +98,6 @@ GtkWidget *menuitem_sendmsg;
 extern GtkWidget *mute_bt;
 extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;
-extern GHashTable *poi_types_hash;
 extern guint id_timeout_autotracksave;
 extern guint id_timeout_track;
 extern gchar **speech_modules;

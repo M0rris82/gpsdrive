@@ -86,6 +86,9 @@ poi_struct *poi_list;
 poi_struct *poi_result;
 GtkListStore *poi_result_tree;
 
+// keep data for poi_info window
+poi_info_struct poi_info;
+
 // buffer for storing temporary POI data
 poi_struct *poi_buf;
 
@@ -111,6 +114,60 @@ gdouble poi_lat_ul = 0, poi_lon_ul = 0;
 /* ******************************************************************   */
 
 void poi_rebuild_list (void);
+
+
+/* ******************************************************************
+ * get data to display inj poi info window for selected poi
+ */
+get_poi_info (GtkTreeModel *model, GtkTreeIter *iter)
+{
+	gboolean t_priv;
+	gdouble t_lat, t_lon, t_alt;
+	gchar *t_name, *t_cmt, *t_type, *t_path;
+	gchar t_coord[20];
+	GtkTreeIter t_iter, t_fiter;
+
+	gtk_tree_model_get (model, iter,
+		RESULT_ID, &poi_info.id,
+		RESULT_TYPE_NAME, &t_type,
+		RESULT_NAME, &t_name,
+		RESULT_COMMENT, &t_cmt,
+		RESULT_LAT, &t_lat,
+		RESULT_LON, &t_lon,
+		-1);
+
+	gtk_entry_set_text (GTK_ENTRY (poi_info.entry_name), t_name);
+	gtk_entry_set_text (GTK_ENTRY (poi_info.entry_comment), t_cmt);
+	coordinate2gchar(t_coord, sizeof(t_coord), t_lat, TRUE, local_config.coordmode);
+	gtk_entry_set_text (GTK_ENTRY (poi_info.entry_lat), t_coord);
+	coordinate2gchar(t_coord, sizeof(t_coord), t_lon, FALSE, local_config.coordmode);
+	gtk_entry_set_text (GTK_ENTRY (poi_info.entry_lon), t_coord);
+
+	t_path = g_hash_table_lookup (poi_types_hash, t_type);
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree),
+		&t_iter, t_path);
+	gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (
+		poi_types_tree_filtered), &t_fiter, &t_iter);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (poi_info.combobox_type), &t_fiter);
+
+	gtk_list_store_clear (poi_info.extra_list);
+	db_poi_extra_get_all (&poi_info.id, poi_info.extra_list);
+
+	g_free (t_name);
+	g_free (t_cmt);
+	g_free (t_type);
+/*
+	gint id;
+	GtkListStore *extra_list;
+	GtkWidget *entry_name;
+	GtkWidget *entry_comment;
+	GtkWidget *entry_lat;
+	GtkWidget *entry_lon;
+	GtkWidget *combobox_type;
+	GtkWidget *statusbar_poiinfo;
+*/
+
+}
 
 
 /* ******************************************************************
@@ -1370,7 +1427,13 @@ poi_init (void)
 		G_TYPE_DOUBLE,		/* numerical longitude */
 		G_TYPE_INT		/* poi.source_id */
 		);
-	
+
+	/* init gtk-list for storage of poi extra info */
+	poi_info.extra_list = gtk_list_store_new (2,
+		G_TYPE_STRING,		/* key */
+		G_TYPE_STRING		/* value */
+		);
+
 	/* init gtk-tree for storage of poi-type data */
 	poi_types_tree = gtk_tree_store_new (POITYPE_COLUMS,
 		G_TYPE_INT,		/* id */

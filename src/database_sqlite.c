@@ -61,7 +61,7 @@ static sqlite3 *waypoints_db, *geoinfo_db;
  * do a query in the sqlite database
  */
 glong
-db_sqlite_query (gchar *query, gpointer callback, gint database, gchar *result)
+db_sqlite_query (gchar *query, gpointer callback, gint database, gpointer result)
 {
 	gint t_status = 0;
 	gchar *t_error;

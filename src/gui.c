@@ -728,6 +728,9 @@ int gui_init (gchar *geometry, gint usegeometry)
 	/* init poi search dialog (cached) */
 	create_window_poi_lookup();
 
+	/* create poi info window */
+	create_poi_info_window ();
+
 	/* init size and contents of the main window */
 	create_main_window();
 

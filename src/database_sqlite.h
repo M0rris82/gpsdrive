@@ -34,7 +34,7 @@ Disclaimer: Please do not use for navigation.
 gboolean db_sqlite_init (void);
 gboolean db_sqlite_close (void);
 
-glong db_sqlite_query (gchar *query, gpointer callback, gint database, gchar *result);
+glong db_sqlite_query (gchar *query, gpointer callback, gint database, gpointer result);
 
 enum
 {

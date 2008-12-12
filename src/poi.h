@@ -81,6 +81,18 @@ typedef struct
 } poi_type_struct;
 #define poi_type_list_max 1000
 
+typedef struct
+{
+	gint id;
+	GtkListStore *extra_list;
+	GtkWidget *entry_name;
+	GtkWidget *entry_comment;
+	GtkWidget *entry_lat;
+	GtkWidget *entry_lon;
+	GtkWidget *combobox_type;
+	GtkWidget *statusbar_poiinfo;
+} poi_info_struct;
+
 enum {
 	RESULT_ID,
 	RESULT_NAME,

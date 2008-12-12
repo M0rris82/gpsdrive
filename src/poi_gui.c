@@ -105,6 +105,8 @@ extern GtkWidget *routeinfo_evbox;
 extern GdkPixbuf *targetmarker_img;
 
 extern poi_struct poi_buf;
+extern poi_info_struct poi_info;
+extern GtkTreeModel *poi_types_tree_filtered;
 
 GtkWidget *poi_types_window;
 
@@ -115,11 +117,14 @@ static GtkWidget *button_delete;
 static GtkWidget *button_target;
 static GtkWidget *button_refpoint;
 static GtkWidget *button_jumpto;
+static GtkWidget *togglebutton_poiinfo;
+static GtkWidget *poi_info_window;
 
 /* route window */
 GtkWidget *route_window;
 GtkWidget *button_startroute;
 GtkWidget *button_remove, *button_routesave;
+
 
 
 
@@ -171,6 +176,7 @@ show_poi_lookup_cb (GtkWidget *button, gint mode)
 	return TRUE;
 }
 
+
 static void
 evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 {
@@ -205,10 +211,24 @@ evaluate_poi_search_cb (GtkWidget *button, struct pattern *entries)
 	gtk_statusbar_push (GTK_STATUSBAR (statusbar_poilist), statusbar_id, search_status);
 }
 
-void
-toggle_window_poi_info_cb (GtkToggleButton *togglebutton, gpointer user_data)
-{
 
+void
+toggle_window_poi_info_cb (GtkToggleButton *button, gpointer user_data)
+{
+	if (button == NULL)
+	{
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (togglebutton_poiinfo), FALSE);
+		gtk_widget_hide_all (poi_info_window);
+		return;
+	}
+
+	if (gtk_toggle_button_get_active (button))
+	{
+		gtk_widget_show_all (poi_info_window);
+		gtk_window_present (GTK_WINDOW (poi_info_window));
+	}
+	else
+		gtk_widget_hide_all (poi_info_window);
 }
 
 
@@ -316,6 +336,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 
 	if (gtk_tree_selection_get_selected (selection, &model, &iter))
 	{
+		gtk_widget_set_sensitive (togglebutton_poiinfo, TRUE);
 		if (current.importactive)
 		{
 			gchar *t_buf;
@@ -357,7 +378,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 			}
 		}
 		
-		if (t_src == 10)
+		if (t_src == 4)
 			gtk_widget_set_sensitive (button_delete, FALSE);
 		else
 			gtk_widget_set_sensitive (button_delete, TRUE);
@@ -370,6 +391,9 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 						RESULT_LON, &coords.posmode_lon,
 						-1);
 		}
+
+		/* get data for poi info window */
+		get_poi_info (model, &iter);
 	}
 }
 
@@ -495,7 +519,7 @@ poilist_highlight_cb
 			NULL);
 	}
 	/* show data coming from mapnik/postgis in normal colors */
-	else if (t_src == 10)
+	else if (t_src == 4)
 	{	
 		g_object_set (G_OBJECT (cell),
 			"foreground-gdk", NULL,
@@ -522,218 +546,168 @@ poilist_highlight_cb
  */
 void create_poi_info_window (void)
 {
-  GtkWidget *poi_info_window;
-  GtkWidget *vbox_poidata;
-  GtkWidget *frame_poi_basicdata;
-  GtkWidget *alignment_basic;
-  GtkWidget *table_basic;
-  GtkWidget *label_name;
-  GtkWidget *label_comment;
-  GtkWidget *checkbutton_private;
-  GtkWidget *entry_name;
-  GtkWidget *entry_comment;
-  GtkWidget *entry_lat;
-  GtkWidget *entry_lon;
-  GtkWidget *entry_alt;
-  GtkWidget *label_alt;
-  GtkWidget *label_lon;
-  GtkWidget *label_lat;
-  GtkWidget *hseparator_basic;
-  GtkWidget *label_type;
-  GtkWidget *combobox_type;
-  GtkWidget *entry_poitypeid;
-  GtkWidget *label_basic;
-  GtkWidget *expander_extra;
-  GtkWidget *frame_extra;
-  GtkWidget *alignment_extra;
-  GtkWidget *scrolledwindow_extra;
-  GtkWidget *treeview_extra;
-  GtkWidget *label_extradata;
-  GtkWidget *hbox_status;
-  GtkWidget *statusbar_poiinfo;
-  GtkWidget *button_save;
-  GtkWidget *button_close;
+	GtkWidget *vbox_poidata, *frame_poi_basicdata, *alignment_basic;
+	GtkWidget *table_basic, *label_name, *label_comment;
+	GtkWidget *label_alt, *label_lon, *label_lat;
+	GtkWidget *hseparator_basic, *label_type;
+	GtkWidget *label_basic, *expander_extra;
+	GtkWidget *frame_extra, *alignment_extra, *scrolledwindow_extra;
+	GtkWidget *treeview_extra, *label_extradata, *hbox_status;
+	GtkCellRenderer *renderer_type_name, *renderer_type_icon;
+	GtkCellRenderer *renderer_extra;
 
-  poi_info_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  gtk_window_set_title (GTK_WINDOW (poi_info_window), _("POI-Info"));
-  gtk_window_set_icon_name (GTK_WINDOW (poi_info_window), "gtk-info");
-  //gtk_window_set_decorated (GTK_WINDOW (poi_info_window), FALSE);
-  gtk_window_set_focus_on_map (GTK_WINDOW (poi_info_window), FALSE);
+	GtkTreeViewColumn *column_extra;
+	GtkWidget *button_save, *button_close;
 
-  vbox_poidata = gtk_vbox_new (FALSE, 0);
-  gtk_widget_show (vbox_poidata);
-  gtk_container_add (GTK_CONTAINER (poi_info_window), vbox_poidata);
+	poi_info_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (poi_info_window), _("POI-Info"));
+	gtk_window_set_icon_name (GTK_WINDOW (poi_info_window), "gtk-info");
+	gtk_window_set_gravity (GTK_WINDOW (poi_info_window), GDK_GRAVITY_NORTH_EAST);
+	//gtk_window_set_decorated (GTK_WINDOW (poi_info_window), FALSE);
+	gtk_window_set_focus_on_map (GTK_WINDOW (poi_info_window), FALSE);
 
-  frame_poi_basicdata = gtk_frame_new (NULL);
-  gtk_widget_show (frame_poi_basicdata);
-  gtk_box_pack_start (GTK_BOX (vbox_poidata), frame_poi_basicdata, FALSE, FALSE, 0);
-  gtk_container_set_border_width (GTK_CONTAINER (frame_poi_basicdata), 5);
+	vbox_poidata = gtk_vbox_new (FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (poi_info_window), vbox_poidata);
 
-  alignment_basic = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_show (alignment_basic);
-  gtk_container_add (GTK_CONTAINER (frame_poi_basicdata), alignment_basic);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_basic), 5, 5, 5, 5);
+	frame_poi_basicdata = gtk_frame_new (NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_poidata), frame_poi_basicdata, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (frame_poi_basicdata), 5);
 
-  table_basic = gtk_table_new (6, 6, FALSE);
-  gtk_widget_show (table_basic);
-  gtk_container_add (GTK_CONTAINER (alignment_basic), table_basic);
+	alignment_basic = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_container_add (GTK_CONTAINER (frame_poi_basicdata), alignment_basic);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_basic), 5, 5, 5, 5);
 
-  label_name = gtk_label_new (_("Name"));
-  gtk_widget_show (label_name);
-  gtk_table_attach (GTK_TABLE (table_basic), label_name, 0, 1, 0, 1,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_name), 0, 0.5);
+	table_basic = gtk_table_new (6, 6, FALSE);
+	gtk_container_add (GTK_CONTAINER (alignment_basic), table_basic);
 
-  label_comment = gtk_label_new (_("Comment"));
-  gtk_widget_show (label_comment);
-  gtk_table_attach (GTK_TABLE (table_basic), label_comment, 0, 1, 1, 2,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_comment), 0, 0.5);
+	label_name = gtk_label_new (_("Name"));
+	gtk_table_attach (GTK_TABLE (table_basic), label_name,
+		0, 1, 0, 1, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_name), 0, 0.5);
 
-  checkbutton_private = gtk_check_button_new_with_mnemonic (_("private"));
-  gtk_widget_show (checkbutton_private);
-  gtk_table_attach (GTK_TABLE (table_basic), checkbutton_private, 5, 6, 0, 1,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
+	poi_info.entry_name = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_basic), poi_info.entry_name,
+		1, 6, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_entry_set_max_length (GTK_ENTRY (poi_info.entry_name), 80);
 
-  entry_name = gtk_entry_new ();
-  gtk_widget_show (entry_name);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_name, 1, 5, 0, 1,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_max_length (GTK_ENTRY (entry_name), 80);
+	label_comment = gtk_label_new (_("Comment"));
+	gtk_table_attach (GTK_TABLE (table_basic), label_comment,
+		0, 1, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_comment), 0, 0.5);
 
-  entry_comment = gtk_entry_new ();
-  gtk_widget_show (entry_comment);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_comment, 1, 6, 1, 2,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_max_length (GTK_ENTRY (entry_comment), 255);
+	poi_info.entry_comment = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_basic), poi_info.entry_comment,
+		1, 6, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_entry_set_max_length (GTK_ENTRY (poi_info.entry_comment), 255);
 
-  entry_lat = gtk_entry_new ();
-  gtk_widget_show (entry_lat);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_lat, 0, 2, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_width_chars (GTK_ENTRY (entry_lat), 12);
+	label_lat = gtk_label_new (_("Latitude"));
+	gtk_table_attach (GTK_TABLE (table_basic), label_lat,
+		0, 3, 4, 5, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_lat), 0, 0.5);
 
-  entry_lon = gtk_entry_new ();
-  gtk_widget_show (entry_lon);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_lon, 2, 4, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_width_chars (GTK_ENTRY (entry_lon), 12);
+	poi_info.entry_lat = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_basic), poi_info.entry_lat,
+		0, 3, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_entry_set_width_chars (GTK_ENTRY (poi_info.entry_lat), 20);
 
-  entry_alt = gtk_entry_new ();
-  gtk_widget_show (entry_alt);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_alt, 4, 6, 5, 6,
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_width_chars (GTK_ENTRY (entry_alt), 10);
+	label_lon = gtk_label_new (_("Longitude"));
+	gtk_table_attach (GTK_TABLE (table_basic), label_lon,
+		3, 6, 4, 5, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_lon), 0, 0.5);
 
-  label_alt = gtk_label_new (_("Altitude"));
-  gtk_widget_show (label_alt);
-  gtk_table_attach (GTK_TABLE (table_basic), label_alt, 4, 5, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_alt), 0, 0.5);
+	poi_info.entry_lon = gtk_entry_new ();
+	gtk_table_attach (GTK_TABLE (table_basic), poi_info.entry_lon,
+		3, 6, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_entry_set_width_chars (GTK_ENTRY (poi_info.entry_lon), 20);
 
-  label_lon = gtk_label_new (_("Longitude"));
-  gtk_widget_show (label_lon);
-  gtk_table_attach (GTK_TABLE (table_basic), label_lon, 2, 3, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_lon), 0, 0.5);
+	hseparator_basic = gtk_hseparator_new ();
+	gtk_table_attach (GTK_TABLE (table_basic), hseparator_basic,
+		0, 6, 3, 4, GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 5);
 
-  label_lat = gtk_label_new (_("Latitude"));
-  gtk_widget_show (label_lat);
-  gtk_table_attach (GTK_TABLE (table_basic), label_lat, 0, 1, 4, 5,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_lat), 0, 0.5);
+	label_type = gtk_label_new (_("Type"));
+	gtk_table_attach (GTK_TABLE (table_basic), label_type,
+		0, 1, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (label_type), 0, 0.5);
 
-  hseparator_basic = gtk_hseparator_new ();
-  gtk_widget_show (hseparator_basic);
-  gtk_table_attach (GTK_TABLE (table_basic), hseparator_basic, 0, 6, 3, 4,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 5);
+	poi_info.combobox_type = gtk_combo_box_new_with_model (poi_types_tree_filtered);
+	gtk_table_attach (GTK_TABLE (table_basic), poi_info.combobox_type,
+		1, 6, 2, 3, GTK_FILL, GTK_FILL, 0, 0);
+	renderer_type_icon = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (poi_info.combobox_type),
+		renderer_type_icon, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (poi_info.combobox_type),
+		renderer_type_icon, "pixbuf", POITYPE_ICON, NULL);
+	renderer_type_name = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (poi_info.combobox_type),
+		renderer_type_name, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (poi_info.combobox_type),
+		renderer_type_name, "text", POITYPE_TITLE, NULL);
 
-  label_type = gtk_label_new (_("Type"));
-  gtk_widget_show (label_type);
-  gtk_table_attach (GTK_TABLE (table_basic), label_type, 0, 1, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_misc_set_alignment (GTK_MISC (label_type), 0, 0.5);
+	label_basic = gtk_label_new (_("Basic Data"));
+	gtk_frame_set_label_widget (GTK_FRAME (frame_poi_basicdata), label_basic);
 
-  combobox_type = gtk_combo_box_new_text ();
-  gtk_widget_show (combobox_type);
-  gtk_table_attach (GTK_TABLE (table_basic), combobox_type, 1, 5, 2, 3,
-                    (GtkAttachOptions) (GTK_FILL),
-                    (GtkAttachOptions) (GTK_FILL), 0, 0);
+	expander_extra = gtk_expander_new (NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_poidata), expander_extra, TRUE, TRUE, 0);
+	gtk_expander_set_expanded (GTK_EXPANDER (expander_extra), TRUE);
 
-  entry_poitypeid = gtk_entry_new ();
-  gtk_widget_show (entry_poitypeid);
-  gtk_table_attach (GTK_TABLE (table_basic), entry_poitypeid, 5, 6, 2, 3,
-                    (GtkAttachOptions) (0),
-                    (GtkAttachOptions) (0), 0, 0);
-  gtk_entry_set_max_length (GTK_ENTRY (entry_poitypeid), 5);
-  gtk_editable_set_editable (GTK_EDITABLE (entry_poitypeid), FALSE);
-  gtk_entry_set_has_frame (GTK_ENTRY (entry_poitypeid), FALSE);
-  gtk_entry_set_width_chars (GTK_ENTRY (entry_poitypeid), 5);
+	frame_extra = gtk_frame_new (NULL);
+	gtk_container_add (GTK_CONTAINER (expander_extra), frame_extra);
+	gtk_container_set_border_width (GTK_CONTAINER (frame_extra), 5);
+	gtk_frame_set_label_align (GTK_FRAME (frame_extra), 0, 0);
 
-  label_basic = gtk_label_new (_("Basic Data"));
-  gtk_widget_show (label_basic);
-  gtk_frame_set_label_widget (GTK_FRAME (frame_poi_basicdata), label_basic);
+	alignment_extra = gtk_alignment_new (0.5, 0.5, 1, 1);
+	gtk_container_add (GTK_CONTAINER (frame_extra), alignment_extra);
+	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_extra), 0, 0, 12, 0);
 
-  expander_extra = gtk_expander_new (NULL);
-  gtk_widget_show (expander_extra);
-  gtk_box_pack_start (GTK_BOX (vbox_poidata), expander_extra, TRUE, TRUE, 0);
-  gtk_expander_set_expanded (GTK_EXPANDER (expander_extra), TRUE);
+	scrolledwindow_extra = gtk_scrolled_window_new (NULL, NULL);
+	gtk_container_add (GTK_CONTAINER (alignment_extra), scrolledwindow_extra);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_extra), GTK_SHADOW_IN);
 
-  frame_extra = gtk_frame_new (NULL);
-  gtk_widget_show (frame_extra);
-  gtk_container_add (GTK_CONTAINER (expander_extra), frame_extra);
-  gtk_container_set_border_width (GTK_CONTAINER (frame_extra), 5);
-  gtk_frame_set_label_align (GTK_FRAME (frame_extra), 0, 0);
+	treeview_extra = gtk_tree_view_new_with_model (GTK_TREE_MODEL (poi_info.extra_list));
+	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (treeview_extra), TRUE);
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_extra), treeview_extra);
+	renderer_extra = gtk_cell_renderer_text_new ();
+	column_extra = gtk_tree_view_column_new_with_attributes (_("Key"),
+		renderer_extra, "text", 0, NULL);
+	gtk_tree_view_column_set_sort_column_id (column_extra, 0);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_extra), column_extra);
+	renderer_extra = gtk_cell_renderer_text_new ();
+	column_extra = gtk_tree_view_column_new_with_attributes (_("Value"),
+		renderer_extra, "text", 1, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (treeview_extra), column_extra);
 
-  alignment_extra = gtk_alignment_new (0.5, 0.5, 1, 1);
-  gtk_widget_show (alignment_extra);
-  gtk_container_add (GTK_CONTAINER (frame_extra), alignment_extra);
-  gtk_alignment_set_padding (GTK_ALIGNMENT (alignment_extra), 0, 0, 12, 0);
+	label_extradata = gtk_label_new (_("Extra Data"));
+	gtk_expander_set_label_widget (GTK_EXPANDER (expander_extra), label_extradata);
 
-  scrolledwindow_extra = gtk_scrolled_window_new (NULL, NULL);
-  gtk_widget_show (scrolledwindow_extra);
-  gtk_container_add (GTK_CONTAINER (alignment_extra), scrolledwindow_extra);
-  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow_extra), GTK_SHADOW_IN);
+	hbox_status = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_poidata), hbox_status, FALSE, TRUE, 0);
 
-  treeview_extra = gtk_tree_view_new ();
-  gtk_widget_show (treeview_extra);
-  gtk_container_add (GTK_CONTAINER (scrolledwindow_extra), treeview_extra);
+	poi_info.statusbar_poiinfo = gtk_statusbar_new ();
+	gtk_box_pack_start (GTK_BOX (hbox_status), poi_info.statusbar_poiinfo, TRUE, TRUE, 0);
+	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (poi_info.statusbar_poiinfo), FALSE);
 
-  label_extradata = gtk_label_new (_("Extra Data"));
-  gtk_widget_show (label_extradata);
-  gtk_expander_set_label_widget (GTK_EXPANDER (expander_extra), label_extradata);
+	button_save = gtk_button_new_from_stock ("gtk-save");
+//TODO: editing of POIs is currently disabled:
+	//gtk_box_pack_start (GTK_BOX (hbox_status), button_save, FALSE, FALSE, 0);
 
-  hbox_status = gtk_hbox_new (FALSE, 0);
-  gtk_widget_show (hbox_status);
-  gtk_box_pack_start (GTK_BOX (vbox_poidata), hbox_status, FALSE, TRUE, 0);
+	button_close = gtk_button_new_from_stock ("gtk-close");
+	gtk_box_pack_start (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
 
-  statusbar_poiinfo = gtk_statusbar_new ();
-  gtk_widget_show (statusbar_poiinfo);
-  gtk_box_pack_start (GTK_BOX (hbox_status), statusbar_poiinfo, TRUE, TRUE, 0);
-  gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (statusbar_poiinfo), FALSE);
+	g_signal_connect_swapped (button_close, "clicked",
+		G_CALLBACK (toggle_window_poi_info_cb), NULL);
+	g_signal_connect_swapped (poi_info_window, "delete_event",
+		G_CALLBACK (toggle_window_poi_info_cb), NULL);
 
-  button_save = gtk_button_new_from_stock ("gtk-save");
-  gtk_widget_show (button_save);
-  gtk_box_pack_start (GTK_BOX (hbox_status), button_save, FALSE, FALSE, 0);
 
-  button_close = gtk_button_new_from_stock ("gtk-close");
-  gtk_widget_show (button_close);
-  gtk_box_pack_start (GTK_BOX (hbox_status), button_close, FALSE, FALSE, 0);
+//TODO: editing of POIs is currently disabled.
+	gtk_widget_set_sensitive (poi_info.combobox_type, FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE (poi_info.entry_name), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE (poi_info.entry_comment), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE (poi_info.entry_lat), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE (poi_info.entry_lon), FALSE);
 
-  gtk_widget_show_all (poi_info_window);
+
+	gtk_window_move (GTK_WINDOW (poi_info_window), gdk_screen_width (), 0);
 }
 
 
@@ -760,7 +734,7 @@ void create_window_poi_lookup (void)
 	GtkTreeViewColumn *column_poilist;
 	GtkTreeSelection *poilist_select;
 	GtkWidget *hbox_poistatus;
-	GtkWidget *togglebutton_poiinfo, *alignment_poiinfo, *hbox11;
+	GtkWidget *alignment_poiinfo, *hbox11;
 	GtkWidget *image_poiinfo, *label_poiinfo, *label_results;
 	GtkWidget *dialog_action_area_poisearch, *alignment_addtoroute;
 	GtkWidget *hbox_addtoroute, *image_addtoroute, *label_addtoroute;
@@ -1065,9 +1039,10 @@ void create_window_poi_lookup (void)
 	gtk_tooltips_set_tip ( tooltips_poilookup, togglebutton_poiinfo, 
 		_("Show detailed Information for selected Point of Interest"),
 		NULL);
-
-	// TODO: complete POI-Info functionality, until then button is disabled:
+	g_signal_connect (togglebutton_poiinfo, "clicked",
+		G_CALLBACK (toggle_window_poi_info_cb), poilist_select);
 	gtk_widget_set_sensitive (togglebutton_poiinfo, FALSE);
+
 
 	label_results = gtk_label_new (_("Results"));
 	gtk_frame_set_label_widget (GTK_FRAME (frame_poiresults),
