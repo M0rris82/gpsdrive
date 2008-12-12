@@ -467,6 +467,17 @@ main (int argc, char *argv[])
 		sqlite3_free(error_string);
 	}
 
+	/* add a dummy entry to the 'poi' table, to enforce a specific range
+	 * for poi_id values. this is done, to avoid confusion with identical
+	 * ids when joining the tables in gpsdrive */
+	status = sqlite3_exec(osm_db, "INSERT INTO poi (poi_id, name)"
+		" VALUES ('99999999','___DUMMY___');", NULL, NULL, &error_string);
+	if (status != SQLITE_OK )
+	{
+		g_print ("\n\nSQLite error: %s\n\n", error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
 
 	/* create table 'poi_extra' in osm database file */
 	status = sqlite3_exec(osm_db, sql_create_poiextratable, NULL, NULL, &error_string);
@@ -561,21 +572,31 @@ main (int argc, char *argv[])
 			poi_count, node_count, parsing_time/60, parsing_time%60);
 
 
+	/* remove dummmy row */
+	status = sqlite3_exec(osm_db, "DELETE FROM poi WHERE poi_id='99999999';",
+		NULL, NULL, &error_string);
+	if (status != SQLITE_OK )
+	{
+		g_print ("\n\nSQLite error: %s\n\n", error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
+
+
 	/* create index on poi column */
-//	g_print (_("+ Creating new index on column 'poi' (this may take some time...)\n"));
-//	if (verbose)
-//		g_timer_start (timer);
+	g_print (_("+ Creating new index on column 'poi'\n"));
+	status = sqlite3_exec(osm_db,
+		"CREATE INDEX latlon ON poi (lat,lon); "
+		"CREATE INDEX poi_type ON poi (poi_type); "
+		"CREATE INDEX name ON poi (name,comment);"
+		, NULL, NULL, &error_string);
+	if (status != SQLITE_OK )
+	{
+		g_print ("\n\nSQLite error: %s\n\n", error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
 
-//	status = gda_execute_sql_command (db_conn_osm,
-//		"CREATE INDEX poi_index ON planet_osm_point (poi);", NULL);
-//	if (verbose)
-//	{
-//		g_print (_("  Index created in %.3f seconds\n"), g_timer_elapsed (timer, NULL));
-//		g_timer_destroy (timer);
-//	}
-
-//	if (status > 0)
-//		g_print ("  done.\n");
 
 	/* clean up connections */
 	g_print (_("+ Closing Database access\n"));
