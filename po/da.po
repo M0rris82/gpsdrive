@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gpsdrive-2.10pre6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-07-06 16:33+0200\n"
-"PO-Revision-Date: 2008-10-11 07:50+0200\n"
+"PO-Revision-Date: 2008-12-10 07:50+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -195,11 +195,11 @@ msgstr "Ingen GPS anvendt"
 
 #: src/gps_handler.c:621 src/nmea_handler.c:289 src/settings.c:891
 msgid "Simulation mode"
-msgstr "Simulationtilstand"
+msgstr "Simulationstilstand"
 
 #: src/gps_handler.c:623
 msgid "Press middle mouse button for sim mode"
-msgstr "Tryk på midterste museknap for at navigere"
+msgstr "Tryk på midterste museknap for sim-tilstand"
 
 #: src/gps_handler.c:643 src/gps_handler.c:712 src/gps_handler.c:835
 msgid "Not enough satellites in view!"
@@ -243,7 +243,7 @@ msgid ""
 "Loop detected, please report!\n"
 msgstr ""
 "\n"
-"Loop registreret, rapporter venligst!\n"
+"Løkke registreret, rapporter venligst!\n"
 
 #: src/gpsdrive.c:1778
 #, fuzzy
@@ -555,7 +555,7 @@ msgstr "Fil gemt med succes"
 
 #: src/gpx.c:1049
 msgid "Please select a file"
-msgstr "Vælg venligst en destination"
+msgstr "Vælg venligst en fil"
 
 #: src/gpx.c:1054
 #, c-format
@@ -660,6 +660,7 @@ msgid ""
 msgstr ""
 "Installer venligst programmet som root med:\n"
 "make install\n"
+"\n"
 
 #: src/icons.c:359 src/icons.c:364
 #, c-format
@@ -1164,7 +1165,7 @@ msgstr "Type"
 
 #: src/poi_gui.c:686
 msgid "Basic Data"
-msgstr "Basedata"
+msgstr "Grunddata"
 
 #: src/poi_gui.c:715
 msgid "Extra Data"
@@ -1301,7 +1302,7 @@ msgstr "Fjern rute"
 
 #: src/poi_gui.c:1395
 msgid "Export current route to a GPX File"
-msgstr "Eksport aktuel rute til en GPX-fil"
+msgstr "Eksporter aktuel rute til en GPX-fil"
 
 #: src/routes.c:278
 msgid "Waypoint"
