@@ -2791,7 +2791,7 @@ gint create_main_window (void)
 	g_signal_connect (GTK_OBJECT (main_window), "key_press_event",
 		GTK_SIGNAL_FUNC (key_pressed_cb), NULL);
 
-	mainwindow_icon_pixbuf = read_icon ("gpsicon.png",1);
+	mainwindow_icon_pixbuf = read_icon ("gpsdrive16.png",1);
 	if (mainwindow_icon_pixbuf)
 	{
 		gtk_window_set_icon (GTK_WINDOW (main_window),
