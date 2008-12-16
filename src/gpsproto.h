@@ -53,7 +53,6 @@ gint about_cb (GtkWidget * widget, guint datum);
 gint settings_main_cb (GtkWidget *widget, guint datum);
 gint sel_message_cb (GtkWidget * widget, guint datum);
 gint setmessage_cb (GtkWidget * widget, guint datum);
-void signalposreq ();
 GdkPixbuf *create_pixbuf (const gchar * filename);
 gint simulated_pos (GtkWidget * widget, guint * datum);
 int create_nasa_mapfile (double lat, double lon, int test, char *fn);

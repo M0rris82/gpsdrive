@@ -637,25 +637,3 @@ about_cb (GtkWidget * widget, guint datum)
 			  (gtk_widget_destroy), NULL);
 	return TRUE;
 }
-
-
-/* writes time and position to /tmp/gpsdrivepos */
-void
-signalposreq ()
-{
-	FILE *f;
-	time_t t;
-	struct tm *ts;
-
-	f = fopen ("/tmp/gpsdrivepos", "w");
-	if (f == NULL)
-	{
-		perror ("/tmp/gpsdrivepos");
-		return;
-	}
-	time (&t);
-	ts = localtime (&t);
-	fprintf (f, asctime (ts));
-	fprintf (f, "POS %f %f\n", coords.current_lat, coords.current_lon);
-	fclose (f);
-}

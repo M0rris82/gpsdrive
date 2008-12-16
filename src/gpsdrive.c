@@ -2369,11 +2369,6 @@ main (int argc, char *argv[])
     /*  all default values must be set BEFORE readconfig! */
     g_strlcpy (setpositionname, "", sizeof (setpositionname));
 
-    /* setup signal handler */
-#ifndef _WIN32
-    signal (SIGUSR1, signalposreq);
-#endif
-
     /*  Detect the language for voice output */
     {
 	gchar **lstr, lstr2[200];
