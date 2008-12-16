@@ -106,7 +106,7 @@ typedef struct
 	gint mapview_x;		/* width of shown map part in px */
 	gint mapview_y;		/* height of shown map part in px */
 	gboolean nightmode;	/* flag if nightmode is switched on or off */
-	gboolean posmode;
+	gboolean expmode;
 	gboolean dl_window;
 } guistatus_struct;
 

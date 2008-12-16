@@ -127,7 +127,7 @@ gint  unit_test_nmea()
 	{
 	    haveRMCsentence=FALSE;
 	    newdata=TRUE;
-	    gui_status.posmode=FALSE;
+	    gui_status.expmode=FALSE;
 	    //strncpy ( serialdata, test_array[i].nmea_string,sizeof (serialdata));
 	    get_position_data_cb(NULL,NULL);
 

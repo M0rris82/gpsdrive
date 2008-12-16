@@ -91,8 +91,8 @@ extern GtkListStore *route_list_tree;
 
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
-extern gdouble wp_saved_posmode_lat;
-extern gdouble wp_saved_posmode_lon;
+extern gdouble wp_saved_expmode_lat;
+extern gdouble wp_saved_expmode_lon;
 extern color_struct colors;
 extern currentstatus_struct current;
 extern coordinate_struct coords;
@@ -648,8 +648,8 @@ gint
 set_cursor_style(int cursor) {
 	switch(cursor) {
 		case CURSOR_DEFAULT:
-			/* different cursors in posmode */
-			if (gui_status.posmode == TRUE )
+			/* different cursors in explore mode */
+			if (gui_status.expmode == TRUE )
 				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, cursor_cross);
 			else
 				gdk_window_set_cursor (GTK_LAYOUT (map_drawingarea)->bin_window, NULL);
@@ -791,7 +791,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 	colors.normal = style->bg[GTK_STATE_NORMAL];
 }
 
-	/* set cross cursor for map posmode */
+	/* set cross cursor for map explore mode */
 	cursor_cross = gdk_cursor_new(GDK_TCROSS);
 	/* set watch cursor used e.g. when rendering a mapnik map*/
 	cursor_watch = gdk_cursor_new(GDK_WATCH);

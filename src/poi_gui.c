@@ -89,15 +89,15 @@ extern GtkListStore *route_list_tree;
 
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
-extern gdouble wp_saved_posmode_lat;
-extern gdouble wp_saved_posmode_lon;
+extern gdouble wp_saved_expmode_lat;
+extern gdouble wp_saved_expmode_lon;
 
 extern color_struct colors;
 extern currentstatus_struct current;
 
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *routing_bt;
-extern GtkWidget *posbt;
+extern GtkWidget *explore_bt;
 extern GtkWidget *settings_window;
 extern GtkWidget *menuitem_saveroute;
 extern GtkWidget *routeinfo_evbox;
@@ -145,16 +145,16 @@ show_poi_lookup_cb (GtkWidget *button, gint mode)
 		gtk_window_set_modal (GTK_WINDOW (poi_lookup_window), FALSE);
 		gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
 		gtk_widget_set_sensitive (find_poi_bt, FALSE);
-		gtk_widget_set_sensitive (posbt, FALSE);
+		gtk_widget_set_sensitive (explore_bt, FALSE);
 	}
 
-	/* save old target/posmode for cancel event */
+	/* save old target/expmode for cancel event */
 	wp_saved_target_lat = coords.target_lat;
 	wp_saved_target_lon = coords.target_lon;
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	{
-		wp_saved_posmode_lat = coords.posmode_lat;
-		wp_saved_posmode_lon = coords.posmode_lon;
+		wp_saved_expmode_lat = coords.expmode_lat;
+		wp_saved_expmode_lon = coords.expmode_lon;
 	}
 
 	gtk_widget_show_all (poi_lookup_window);
@@ -255,15 +255,15 @@ close_poi_lookup_window_cb (GtkWidget *window)
 		coords.target_lat = wp_saved_target_lat;
 		coords.target_lon = wp_saved_target_lon;
 	}
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	{
-		coords.posmode_lat = wp_saved_posmode_lat;
-		coords.posmode_lon = wp_saved_posmode_lon;
+		coords.expmode_lat = wp_saved_expmode_lat;
+		coords.expmode_lon = wp_saved_expmode_lon;
 	}
 
 	gtk_widget_hide_all (poi_lookup_window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (posbt, TRUE);
+	gtk_widget_set_sensitive (explore_bt, TRUE);
 }
 
 
@@ -276,10 +276,10 @@ select_jump_poi_cb (GtkWidget *window)
 	coords.current_lon = coords.target_lon;
 	
 	gtk_toggle_button_set_active
-		(GTK_TOGGLE_BUTTON (posbt),  TRUE);
+		(GTK_TOGGLE_BUTTON (explore_bt),  TRUE);
 
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (posbt, TRUE);
+	gtk_widget_set_sensitive (explore_bt, TRUE);
 }
 
 
@@ -289,10 +289,10 @@ select_target_poi_cb (GtkWidget *window)
 	gtk_widget_hide_all (poi_lookup_window);
 
 	gtk_toggle_button_set_active
-		(GTK_TOGGLE_BUTTON (posbt), FALSE);
+		(GTK_TOGGLE_BUTTON (explore_bt), FALSE);
 
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (posbt, TRUE);
+	gtk_widget_set_sensitive (explore_bt, TRUE);
 }
 
 
@@ -383,12 +383,12 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 		else
 			gtk_widget_set_sensitive (button_delete, TRUE);
 
-		/* if posmode enabled set posmode_lat/lon */
-		if (gui_status.posmode)
+		/* if exploremode enabled set expmode_lat/lon */
+		if (gui_status.expmode)
 		{
 			gtk_tree_model_get (model, &iter,
-						RESULT_LAT, &coords.posmode_lat,
-						RESULT_LON, &coords.posmode_lon,
+						RESULT_LAT, &coords.expmode_lat,
+						RESULT_LON, &coords.expmode_lon,
 						-1);
 		}
 
@@ -1099,7 +1099,7 @@ void create_window_poi_lookup (void)
 		image_jumpto, FALSE, FALSE, 0);
 	label_jumpto = gtk_label_new (_("Jump to POI"));		
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_jumpto, 
-		_("Jump to selected entry (and switch to Pos. Mode if not already active)"), NULL);
+		_("Jump to selected entry (and switch to Explore Mode if not already active)"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_jumpto),
 		label_jumpto, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_jumpto, "clicked",
@@ -1119,7 +1119,7 @@ void create_window_poi_lookup (void)
 		image_target, FALSE, FALSE, 0);
 	label_target = gtk_label_new (_("Select Target"));
 	gtk_tooltips_set_tip ( tooltips_poilookup, button_target, 
-		_("Use selected entry as target destination (and leave Pos. Mode if active)"), NULL);
+		_("Use selected entry as target destination (and leave Explore Mode if active)"), NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_target),
 		label_target, FALSE, FALSE, 0);
 	g_signal_connect_swapped (button_target, "clicked",

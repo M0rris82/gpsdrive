@@ -160,7 +160,7 @@ extern gint iszoomed;
 gint nrmaps;
 extern int havenasa;
 extern gchar oldfilename[2048];
-extern GtkWidget *posbt;
+extern GtkWidget *explore_bt;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern poi_struct poi_buf;
@@ -800,17 +800,17 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       /*  Left mouse button */
       if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	{
-	  if (gui_status.posmode)
+	  if (gui_status.expmode)
 	    {
-	      coords.posmode_lon = lon;
-	      coords.posmode_lat = lat;
+	      coords.expmode_lon = lon;
+	      coords.expmode_lat = lat;
 	      rebuildtracklist ();
 	    }
 	}
       /*  Middle mouse button */
       if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
 	{
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
+	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt), FALSE);
 
 	  rebuildtracklist ();
 	}
@@ -819,7 +819,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	{
 	  /* set  as target */
 	  /* only if RIGHT mouse button clicked */
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt), FALSE);
+	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt), FALSE);
 	  rebuildtracklist ();
 	  g_strlcpy (current.target, _("SELECTED"), sizeof (current.target));
 	  coords.target_lat = lat;

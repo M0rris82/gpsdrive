@@ -284,7 +284,7 @@ convertRMC (char *f)
   memset (b, 0, 100);
 
   /*  if simulation mode we display status and return */
-  if (current.simmode && maploaded && !gui_status.posmode)
+  if (current.simmode && maploaded && !gui_status.expmode)
     {
       display_status (_("Simulation mode"));
       return;
@@ -378,7 +378,7 @@ convertRMC (char *f)
   b[7] = 0;
   if ( mydebug + nmea_handler_debug > 80 )
     g_print ("nmea_handler: gpsd: lat part2: %s\n", b);
-  if (!gui_status.posmode)
+  if (!gui_status.expmode)
     {
       gdouble cl;
       if ( mydebug + nmea_handler_debug > 80 )
@@ -432,7 +432,7 @@ convertRMC (char *f)
   b[5] = field[5][8];
   b[6] = field[5][9];
   b[7] = 0;
-  if (!gui_status.posmode)
+  if (!gui_status.expmode)
     {
       gdouble cl;
       cl = longdegree + atof (b) / 60.0;
@@ -699,9 +699,9 @@ convertGGA (char *f)
       b[6] = field[2][8];
       b[7] = 0;
       if ( mydebug + nmea_handler_debug > 80 )
-	fprintf (stderr, "nmea_handler: gpsd: posmode: %d\n",
-		gui_status.posmode);
-      if (!gui_status.posmode)
+	fprintf (stderr, "nmea_handler: gpsd: expmode: %d\n",
+		gui_status.expmode);
+      if (!gui_status.expmode)
 	{
 	  gdouble cl;
 	  cl = latdegree + atof (b) / 60.0;
@@ -752,7 +752,7 @@ convertGGA (char *f)
       b[6] = field[4][9];
       b[7] = 0;
 
-      if (!gui_status.posmode && !current.simmode)
+      if (!gui_status.expmode && !current.simmode)
 	{
 	  gdouble cl;
 	  cl = longdegree + atof (b) / 60.0;

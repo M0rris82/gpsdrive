@@ -65,7 +65,7 @@ extern gint do_unit_test;
 extern gint maploaded;
 extern color_struct colors;
 extern gdouble wp_saved_target_lat, wp_saved_target_lon;
-extern gdouble wp_saved_posmode_lat, wp_saved_posmode_lon;
+extern gdouble wp_saved_expmode_lat, wp_saved_expmode_lon;
 extern gint debug, mydebug;
 extern GtkWidget *map_drawingarea;
 extern glong mapscale;
@@ -499,10 +499,10 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	}
 	else
 	{
-		if (gui_status.posmode)
+		if (gui_status.expmode)
 		{
-			lat = wp_saved_posmode_lat;
-			lon = wp_saved_posmode_lon;
+			lat = wp_saved_expmode_lat;
+			lon = wp_saved_expmode_lon;
 		}
 		else
 		{

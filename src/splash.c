@@ -110,9 +110,9 @@ insert_text (GtkTextBuffer * buffer)
 	GtkTextIter iter;
 	GtkTextIter start, end;
 	const gchar *t1 =
-		_("Left mouse button\t\t: Set position (Position Mode only)\n"
+		_("Left mouse button\t\t: Set position (Explore Mode only)\n"
 		 "Right mouse button\t\t: Set destination target on the map\n"
-		 "Middle mouse button\t\t: Leave Position Mode\n"
+		 "Middle mouse button\t\t: Leave Explore Mode\n"
 		 "Mouse wheel up\t\t\t: Prefer maps showing greater detail\n"
 		 "Mouse wheel down\t\t: Prefer maps showing a larger area\n"
 		 "Shift-left mouse button\t: Prefer maps showing greater detail\n"
@@ -132,15 +132,15 @@ insert_text (GtkTextBuffer * buffer)
 		      " f\t: Toggle friends display\n"
 		      " +\t: Zoom in (preferred map scale)\n"
 		      " -\t: Zoom out (preferred map scale)\n"
-		      " Arrow keys: Navigate cursor in Position Mode\n");
+		      " Arrow keys: Navigate cursor in Explore Mode\n");
 	const gchar *t3 =
-		_("You can move freely around the map by selecting Position Mode"
+		_("You can move freely around the map by selecting Explore Mode"
 		  " in the Map Control menu. In this mode the GPS position"
 		  " indicator is replaced by a blue rectangle. Reposition the"
 		  " cursor with a left-click on the map or with the arrow keys."
 		  " If you click on the border of the map (the outer 20%) then"
 		  " the map switches to the next area. Middle or right-click to"
-		  " exit Position Mode.\n\n"
+		  " exit Explore Mode.\n\n"
 		  "Suggestions welcome at http://www.gpsdrive.de.\n\n");
 
 	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);

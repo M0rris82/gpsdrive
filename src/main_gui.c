@@ -88,15 +88,15 @@ extern gint haveNMEA;
 
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
-extern gdouble wp_saved_posmode_lat;
-extern gdouble wp_saved_posmode_lon;
+extern gdouble wp_saved_expmode_lat;
+extern gdouble wp_saved_expmode_lon;
 extern gdouble pixelfact;
 extern gdouble milesconv;
 extern gint satlistdisp[MAXSATS][4];
 
 extern gint slistsize, nlist[];
 extern gint PSIZE;
-extern GtkWidget *posbt;
+extern GtkWidget *explore_bt;
 extern GtkWidget *bestmap_bt;
 extern gint borderlimit;
 
@@ -447,17 +447,17 @@ minimapclick_cb (GtkWidget *widget, GdkEventMotion *event)
 	/*  Left mouse button */
 	if ((state & GDK_BUTTON1_MASK) == GDK_BUTTON1_MASK)
 	{
-	    if (gui_status.posmode)
+	    if (gui_status.expmode)
 		{
-		    coords.posmode_lon = lon;
-		    coords.posmode_lat = lat;
+		    coords.expmode_lon = lon;
+		    coords.expmode_lat = lat;
 		    rebuildtracklist ();
 		}
 	}
 	/*  Middle mouse button */
 	if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),
 					      FALSE);
 		rebuildtracklist ();
 	}
@@ -1096,7 +1096,7 @@ update_statusdisplay ()
 	}
 
 	/* update lat/lon display */
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	{
 		GdkModifierType state;
 		gint x, y;
@@ -1574,11 +1574,11 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		; // TODO: do something
 	}
 
-	// Switch Position Mode ("e" for Explore)
+	// Switch Explore Mode ("e" for Explore)
 	if ((toupper (event->keyval)) == 'E')
 	{
-		; // TODO: switch in/out of Pos Mode
-		//  see posbt in map_handler.c
+		; // TODO: switch in/out of Explore Mode
+		//  see explore_bt in map_handler.c
 	}
 
 	// Query Info for near points
@@ -1609,7 +1609,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	    fprintf(stderr,"Key pressed: %0x\n",event->keyval);
 
 
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	    {
 		gint old_x, old_y, new_x, new_y;
 		gint have_new = FALSE;
@@ -1686,8 +1686,8 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		    calcxytopos (new_x, new_y, &coords.current_lat,
 				 &coords.current_lon, current.zoom );
 
-		coords.posmode_lon = coords.current_lon;
-		coords.posmode_lat = coords.current_lat;
+		coords.expmode_lon = coords.current_lon;
+		coords.expmode_lat = coords.current_lat;
 	    }
 	return 0;
 }

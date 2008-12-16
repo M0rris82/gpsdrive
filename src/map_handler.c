@@ -59,7 +59,7 @@ wpstruct *routelist;
 extern gint thisrouteline;
 extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;
-extern GtkWidget *posbt, *mapnik_bt;
+extern GtkWidget *explore_bt, *mapnik_bt;
 extern currentstatus_struct current;
 
 extern gchar oldfilename[2048];
@@ -162,15 +162,15 @@ make_display_map_controls ()
 	gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
 		GTK_SIGNAL_FUNC (autobestmap_cb), (gpointer) 1);
 
-	// Checkbox ---- Pos Mode
-	posbt = gtk_check_button_new_with_label (_("Position _mode"));
-	gtk_button_set_use_underline (GTK_BUTTON (posbt), TRUE);
-	gtk_signal_connect (GTK_OBJECT (posbt),
-		"clicked", GTK_SIGNAL_FUNC (pos_cb), (gpointer) 1);
+	// Checkbox ---- Explore Mode
+	explore_bt = gtk_check_button_new_with_label (_("Explore _mode"));
+	gtk_button_set_use_underline (GTK_BUTTON (explore_bt), TRUE);
+	gtk_signal_connect (GTK_OBJECT (explore_bt),
+		"clicked", GTK_SIGNAL_FUNC (explore_cb), (gpointer) 1);
 	gtk_box_pack_start
-		(GTK_BOX (vbox_map_controls), posbt, FALSE, FALSE,0 * PADDING);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), posbt,
-		_("Turn position mode on. You can move on the map with the "
+		(GTK_BOX (vbox_map_controls), explore_bt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), explore_bt,
+		_("Turn explore mode on. You can move on the map with the "
 		"left mouse button click. Clicking near the border switches "
 		"to the proximate map."), NULL);
 

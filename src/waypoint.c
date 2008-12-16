@@ -71,7 +71,6 @@ extern GtkWidget *map_drawingarea;
 extern GdkGC *kontext_map;
 extern glong mapscale;
 
-extern GtkWidget *posbt;
 gint dontsetwp = FALSE;
 extern gint selected_wp_mode;
 static GtkWidget *add_wp_lon_text, *add_wp_lat_text;
@@ -101,8 +100,8 @@ GtkWidget *add_wp_comment_text;
 long sortcolumn = 4, sortflag = 0;
 gdouble wp_saved_target_lat = 0;
 gdouble wp_saved_target_lon = 0;
-gdouble wp_saved_posmode_lat = 0;
-gdouble wp_saved_posmode_lon = 0;
+gdouble wp_saved_expmode_lat = 0;
+gdouble wp_saved_expmode_lon = 0;
 
 
 /* ******************************************************************

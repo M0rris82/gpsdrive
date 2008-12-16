@@ -239,7 +239,7 @@ gdouble distance_line_point(gdouble x1, gdouble y1, gdouble x2, gdouble y2,
 gint scaler_cb (GtkAdjustment * adj, gdouble * datum);
 gint mapclick_cb (GtkWidget * widget, GdkEventButton * event);
 gint scalerbt_cb (GtkWidget * widget, guint datum);
-gint pos_cb (GtkWidget * widget, guint datum);
+gint explore_cb (GtkWidget * widget, guint datum);
 gint toggle_mapnik_cb (GtkWidget * widget, guint datum);
 
 void test_and_load_newmap ();
@@ -292,9 +292,9 @@ typedef struct
 /* (next) target position */
 	gdouble target_lon;
 	gdouble target_lat;
-/* saved "current position" while in pos mode */
-	gdouble posmode_lon;
-	gdouble posmode_lat;
+/* saved "current position" while in explore mode */
+	gdouble expmode_lon;
+	gdouble expmode_lat;
 /* target position */
 	gdouble dest_lon;
 	gdouble dest_lat;

@@ -140,8 +140,8 @@ gchar *buffer = NULL, *big = NULL;
 struct timeval timeout;
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
-extern gdouble wp_saved_posmode_lat;
-extern gdouble wp_saved_posmode_lon;
+extern gdouble wp_saved_expmode_lat;
+extern gdouble wp_saved_expmode_lon;
 coordinate_struct coords;
 currentstatus_struct current;
 
@@ -270,7 +270,7 @@ gchar gpsdservername[200], setpositionname[80];
 gint havealtitude = FALSE;
 gint usedgps = FALSE;
 gchar dgpsserver[80], dgpsport[10];
-GtkWidget *posbt;
+GtkWidget *explore_bt;
 extern gint PSIZE;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
@@ -588,10 +588,10 @@ drawmarker_cb (GtkWidget * widget, guint * datum)
 	if (tv1.tv_sec != tv2.tv_sec)
 		runtime2 += 1000000l * (tv1.tv_sec - tv2.tv_sec);
 
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	{
-		coords.current_lon = coords.posmode_lon;
-		coords.current_lat = coords.posmode_lat;
+		coords.current_lon = coords.expmode_lon;
+		coords.current_lat = coords.expmode_lat;
 	}
 	else
 		update_route ();
@@ -764,7 +764,7 @@ draw_scalebar (void)
 	PangoFontDescription *pfd_scalebar;
 
 
-	/* scale bar is not valid in Plate carrée projection, distance 
+	/* scale bar is not valid in Plate carrï¿½e projection, distance 
 	    changes with cos(lat) so scalebar is only  valid in the
 	    y direction (where 60 nautical miles == 1 degree lat) */
  /* TODO: show a (valid) scalebar with units as "degrees" for top_* maps? */
@@ -1065,7 +1065,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		/*                     gui_status.mapview_y - 10, savetrackfn, strlen (savetrackfn)); */
 	}
 
-	if (gui_status.posmode)
+	if (gui_status.expmode)
 	{
 	    blink = TRUE;
 	}
@@ -1075,7 +1075,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (current.gpsfix > 1 || blink)
 	{
-		if (gui_status.posmode)
+		if (gui_status.expmode)
 		{
 			gdk_gc_set_foreground (kontext_map, &colors.blue);
 			gdk_gc_set_line_attributes (kontext_map, 4, 0, 0, 0);
@@ -1120,9 +1120,9 @@ drawmarker (GtkWidget * widget, guint * datum)
 			gdk_draw_arc (drawable, kontext_map, 0, posxmarker - 10,
 				      posymarker - 10, 20, 20, 0, 360 * 64);
 		}
-		/*  If we are in position mode we set direction to zero to see where is the  */
+		/*  If we are in explore mode we set direction to zero to see where is the  */
 		/*  target  */
-		if (gui_status.posmode)
+		if (gui_status.expmode)
 			current.heading = 0.0;
 
 		display_status2 ();
@@ -1540,10 +1540,10 @@ expose_cb (GtkWidget * widget, guint * datum)
 		    /* return TRUE; */
 		}
 
-		if (gui_status.posmode)
+		if (gui_status.expmode)
 		{
-			coords.current_lon = coords.posmode_lon;
-			coords.current_lat = coords.posmode_lat;
+			coords.current_lon = coords.expmode_lon;
+			coords.current_lat = coords.expmode_lat;
 		}
 
 
@@ -1789,31 +1789,31 @@ usedgps_cb (GtkWidget * widget, guint datum)
 
 
 /* *****************************************************************************
- * Update the checkbox for Pos-Mode
+ * Update the checkbox for Explore-Mode
  */
 void
-update_posbt()
+update_explore_bt ()
 {
     if ( mydebug > 1 )
-	g_print ("posmode=%d\n", gui_status.posmode);
+	g_print ("expmode=%d\n", gui_status.expmode);
 
-    if (gui_status.posmode)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   TRUE);
+    if (gui_status.expmode)
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),   TRUE);
     else
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (posbt),   FALSE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),   FALSE);
 }
 
 /* ****************************************************************************
- * toggle checkbox for Pos-Mode
+ * toggle checkbox for Explore-Mode
  */
 gint
-pos_cb (GtkWidget *widget, guint datum)
+explore_cb (GtkWidget *widget, guint datum)
 {
 
-	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (posbt)) )
-		gui_status.posmode = TRUE;
+	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (explore_bt)) )
+		gui_status.expmode = TRUE;
 	else 
-		gui_status.posmode = FALSE;
+		gui_status.expmode = FALSE;
 	
 	set_cursor_style(CURSOR_DEFAULT);
 
@@ -1822,15 +1822,15 @@ pos_cb (GtkWidget *widget, guint datum)
 	 * and save current_lon/lat for cancel */
 	if (setwpactive && selected_wp_mode)
 	{
-		coords.posmode_lon = coords.target_lon;
-		coords.posmode_lat = coords.target_lat;
-		wp_saved_posmode_lon = coords.current_lon;
-		wp_saved_posmode_lat = coords.current_lat;
+		coords.expmode_lon = coords.target_lon;
+		coords.expmode_lat = coords.target_lat;
+		wp_saved_expmode_lon = coords.current_lon;
+		wp_saved_expmode_lat = coords.current_lat;
 	}
 	else
 	{
-		coords.posmode_lon = coords.current_lon;
-		coords.posmode_lat = coords.current_lat;
+		coords.expmode_lon = coords.current_lon;
+		coords.expmode_lat = coords.current_lat;
 	}
 
 	return TRUE;
@@ -2225,8 +2225,8 @@ main (int argc, char *argv[])
 		_("force display of position even it is invalid"), NULL},
 	{"ignore-checksum", 'i', 0, G_OPTION_ARG_NONE, &ignorechecksum,
 		_("ignore NMEA checksum (risky, only for broken GPS receivers)"), NULL},
-	{"position-mode", 'p', 0, G_OPTION_ARG_NONE, &gui_status.posmode,
-		_("start in Position Mode"), NULL},
+	{"explore-mode", 'p', 0, G_OPTION_ARG_NONE, &gui_status.expmode,
+		_("start in Explore Mode"), NULL},
 	{"nosplash", 's', 0, G_OPTION_ARG_NONE, &nosplash,
 		_("don't show splash screen"), NULL},
 	{"touchscreen", 't', 0, G_OPTION_ARG_NONE, &onemousebutton,
@@ -2563,7 +2563,7 @@ main (int argc, char *argv[])
 
 	load_friends_icon ();
 
-	update_posbt();
+	update_explore_bt ();
 
     /*
      * setup signal handler for SIGTERM and SIGINT so that we can save everything

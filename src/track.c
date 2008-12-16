@@ -147,12 +147,12 @@ storetrack_cb (GtkWidget * widget, guint * datum)
     if ( mydebug >50 ) 
 	fprintf(stderr , "storetrack_cb()\n");
 
-    if (gui_status.posmode) 
+    if (gui_status.expmode) 
 	return TRUE;
 	
 #ifdef DBUS_ENABLE
 	/* If we use DBUS track points are usually stored by the DBUS signal handler */
-	/* Only store them by timer if we are in position mode */
+	/* Only store them by timer if we are in explore mode */
 	if ( useDBUS && !current.simmode )
 	    return TRUE;
 #endif
@@ -169,7 +169,7 @@ storepoint ()
 	gint so;
 
 	/*    g_print("Havepos: %d\n", current.gpsfix); */
-	if ((!current.simmode && current.gpsfix < 2) || gui_status.posmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
+	if ((!current.simmode && current.gpsfix < 2) || gui_status.expmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
 		add_trackpoint (1001.0, 1001.0, 1001.0, 1001.0, -1.0, -1.0, 0, 0, NULL);
 	}

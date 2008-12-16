@@ -170,12 +170,12 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 		else
 		{
 			/* send position to server */
-			if (gui_status.posmode)
+			if (gui_status.expmode)
 			{
 				g_snprintf (la, sizeof (la), "%10.6f",
-					coords.posmode_lat);
+					coords.expmode_lat);
 				g_snprintf (lo, sizeof (lo), "%10.6f",
-					coords.posmode_lon);
+					coords.expmode_lon);
 			}
 			else
 			{

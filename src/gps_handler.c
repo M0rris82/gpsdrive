@@ -389,10 +389,10 @@ dbus_process_fix(gint early)
 		return;
 	}
 	/* Handle latitude */
-	if (!gui_status.posmode && !current.simmode)
+	if (!gui_status.expmode && !current.simmode)
 		coords.current_lat = dbus_current_fix.latitude;
 	/* Handle longitude */
-	if (!gui_status.posmode && !current.simmode)
+	if (!gui_status.expmode && !current.simmode)
 		coords.current_lon = dbus_current_fix.longitude;
 	/* Handle speed */
 	if (__finite(dbus_current_fix.speed))
@@ -591,7 +591,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	}
 
       /*  display status line */
-      if (gui_status.posmode)
+      if (gui_status.expmode)
 	display_status (_("Press middle mouse button for navigation"));
 
     }
@@ -602,9 +602,9 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
       /*  display status line */
       if (!current.simmode)
 	display_status (_("No GPS used"));
-      else if (maploaded && !gui_status.posmode)
+      else if (maploaded && !gui_status.expmode)
 	display_status (_("Simulation mode"));
-      else if (gui_status.posmode)
+      else if (gui_status.expmode)
 	display_status (_("Press middle mouse button for sim mode"));
 
 
@@ -620,7 +620,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 	NMEAoldsecs = floor(NMEAsecs);
 	timeoutcount = 0;
 	if (current.gpsfix > 1) {
-		if (gui_status.posmode)
+		if (gui_status.expmode)
 			display_status (_("Press middle mouse button for navigation"));
 		else
 			display_status (nmeamodeandport);
@@ -685,7 +685,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 			  /*  display the position and map in the statusline */
 			  if (current.gpsfix > 1)
 			    {
-			      if (gui_status.posmode)
+			      if (gui_status.expmode)
 				display_status
 				  (_
 				   ("Press middle mouse button for navigation"));
@@ -808,7 +808,7 @@ get_position_data_cb (GtkWidget * widget, guint * datum)
 				convertGGA (tok);
 			      if (current.gpsfix > 1)
 				{
-				  if (gui_status.posmode)
+				  if (gui_status.expmode)
 				    display_status
 				      (_
 				       ("Press middle mouse button for navigation"));
