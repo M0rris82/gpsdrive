@@ -191,12 +191,15 @@ draw_grid (GtkWidget * widget)
 		    printf ("Draw Grid: (%.2f) Iterations for lon\n", (lon_max-lon_min)/step);
 		}
 
-	    // limit number of grid iterations to 75 iterations
+	    // limit number of grid iterations to between 20 and 45 iterations
 	    iteration_count = ((lat_max-lat_min)/step) * ((lon_max-lon_min)/step);
-	    if ( iteration_count > 75 ) {
+	    if ( iteration_count > 45 )
 		step = step * 2;
-	    }
-	} while ( iteration_count > 75 );
+	    else if ( iteration_count < 20 )
+		step = step / 3.;
+
+	} while ( iteration_count > 45 || iteration_count < 20 );
+
 
 	// Loop over desired lat/lon  
 	count = 0;
