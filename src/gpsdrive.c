@@ -2664,7 +2664,6 @@ main (int argc, char *argv[])
     gdk_pixbuf_unref (friendspixbuf);
 
 
-    unlink ("/tmp/gpsdrivepos");
     if (local_config.savetrack)
 	savetrackfile (2);
 
