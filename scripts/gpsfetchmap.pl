@@ -1891,7 +1891,7 @@ __END__
 
 =head1 NAME
 
-B<gpsfetchmap> Version $Revision$
+B<gpsfetchmap> $Revision$
 
 =head1 DESCRIPTION
 

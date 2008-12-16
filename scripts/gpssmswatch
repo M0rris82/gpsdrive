@@ -34,8 +34,11 @@ echo -e "WARNING  WARNING WARNING WARNING WARNING WARNING"
 echo -e "================================================"
 sleep 10
 
-FILE=/tmp/.smswatch
-
+FILE=`tempfile -d /tmp -p sms. -s .watch`
+if [ $? -ne 0 ] || [ -z "$TMP" ] ; then
+    echo "ERROR: Unable to create temporary files" 1>&2
+    exit 1
+fi
 while [ 1 -eq 1 ] ; do
 
    gnokii --getsms SM 1 > "$FILE"
@@ -46,17 +49,16 @@ while [ 1 -eq 1 ] ; do
    grep PLSSENDPOS "$FILE"
    if [ $? -eq 0 ] ; then
       echo -e "position request found\n"
-      NUMBER=`grep Sender /tmp/.smswatch | awk '{print $2}'`
+      NUMBER=`grep Sender "$FILE" | awk '{print $2}'`
       killall -USR1 gpsdrive
 
       echo "sending "
 
-#FIXME: gpsdrive no longer writes out /tmp/gpsdrivepos; connect to gpsd to
-#	get position & save it to a local enviro variable  not /tmp/ file.
+      # connect to gpsd to get position & save it to a local enviro variable
+      POSN_STR=`(echo "P"; sleep 1 ) | telnet localhost 2947 | grep GPSD | cut -f2 -d',' | cut -f2 -d'='`
 
-      cat /tmp/gpsdrivepos
       echo -e "to number $NUMBER\n"
-      gnokii --sendsms "$NUMBER" < /tmp/gpsdrivepos
+      echo "$POSN_STR" | gnokii --sendsms "$NUMBER"
    else
       echo -e "no request\n"
    fi

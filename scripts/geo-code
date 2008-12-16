@@ -73,12 +73,13 @@ Examples:
 See Also:
 	geo-nearest	http://home.mn.rr.com/richardsons/sw/geo-nearest
 	geo-pg		http://home.mn.rr.com/richardsons/sw/geo-pg
+
 EOF
 
 	exit 1
 }
 
-#
+#"
 #       Report an error and exit
 #
 error() {
@@ -96,14 +97,14 @@ SQLUSER=gast	# For -o gpsdrive.sql
 SQLPASS=gast	# For -o gpsdrive.sql
 SQLDB=geoinfo	# For -o gpsdrive.sql
 CODETYPE=new
-UPDATEcodeURL=http://home.mn.rr.com/richardsons/sw/geo-code
-UPDATEcodeFILE=geo-code.new
+UPDATEcodeURL="http://home.mn.rr.com/richardsons/sw/geo-code"
+UPDATEcodeFILE="geo-code.new"
 
 #
 #	Read RC file, if there is one
 #
-if [ -f $HOME/.georc ]; then
-	. $HOME/.georc
+if [ -f "$HOME/.georc" ] ; then
+	. "$HOME/.georc"
 fi
 
 #
@@ -216,7 +217,7 @@ case "$#" in
 	usage
 esac
 
-if [ "$NAME" = "" ]; then
+if [ -z "$NAME" ] ; then
 	NAME="$ADDRESS"
 fi
 
@@ -243,33 +244,37 @@ remove_cruft() {
 	do
 		[ -f $i ] && rm -f $i
 	done
+	# needed?
+	#if [ -n "$TMP" ] ; then
+	#    \rm "${TMP}."*
+	#fi
 }
 
 #
 #	Main Program
 #
-TMP=/tmp/geo$$
+TMP=`tempfile -d /tmp -p geo. -s .code`
 STYLE=${TMP}.style
 COORDS=${TMP}.coords
 OUTWAY=${TMP}.way
 MAP=${TMP}.gif
 UA="Mozilla/5.0"
 
-if [ "$GURL" != "" ]; then
+if [ -n "$GURL" ] ; then
 	#
 	# Treat a single command line argument as a phone number and use
 	# Google to look up the Yahoo maps link
 	#	
-	if [ $DEBUG -gt 0 ]; then
+	if [ $DEBUG -gt 0 ] ; then
 		echo "curl $GURL"
 	fi
 	URL=`   curl -s -A "$UA" "$GURL" \
-		| tee $COORDS \
+		| tee "$COORDS" \
 		| sed -n 's#.*href=http://maps.yahoo.com/\([^>]*\)>.*#\1#p' \
 		| head -n1 \
 		`
-	if [ "$URL" = "" ]; then
-		cp $COORDS /tmp/geo.google
+	if [ -z "$URL" ] ; then
+		cp "$COORDS" "${TMP}.google"
 		error "Unable to lookup telephone number or name with Google"
 	else
 		URL="http://maps.yahoo.com/$URL"
@@ -290,12 +295,12 @@ else
 	URL="$URL&Get&nbsp;Map=Get+Map"
 fi
 
-if [ $DEBUG -gt 0 ]; then
+if [ $DEBUG -gt 0 ] ; then
 	echo "curl $URL"
 fi
 
-if [ $DEBUG -gt 0 ]; then
-    filter="tee /tmp/geo.yahoo"
+if [ $DEBUG -gt 0 ] ; then
+    filter="tee ${TMP}.yahoo"
 else
     filter=cat
 fi
@@ -306,8 +311,8 @@ curl -L -s -A "$UA" "$URL" \
 	-e 's/.*slt=\([^%]*\).*sln=\([^%]*\).*Create.*/\1 \2/p' \
 > $COORDS
 
-if [ $DEBUG -gt 0 ]; then
-	cp $COORDS /tmp/geo.coords
+if [ $DEBUG -gt 0 ] ; then
+	cp "$COORDS" ${TMP}.coords
 fi
 
 #
@@ -319,12 +324,12 @@ get_latlon() {
 	read lat lon
 }
 
-get_latlon < $COORDS;
+get_latlon < "$COORDS";
 
-if [ "$title" != ""  -a "$QUIET" != 1 ]; then
+if [ -n "$title" -a "$QUIET" -ne 1 ] ; then
 	echo "$title" >&2
 fi
-if [ "$lat" = "" -o "$lon" = "" ]; then
+if [ -z "$lat" -o -z "$lon" ] ; then
 	error "Cannot determine coordinates of that address"
 	remove_cruft
 	exit
@@ -363,7 +368,7 @@ gpsdrive_add() {
 	read _name _lat _lon _type
 
 	COMMENT="$ADDRESS"
-	if [ "$CSZ" != "" ]; then
+	if [ "$CSZ" != "" ] ; then
 		COMMENT="$COMMENT, $CSZ"
 	fi
 
@@ -383,26 +388,26 @@ gpsdrive_add() {
 	echo "'$COMMENT');"
 }
 
-if [ -f $OUTWAY ]; then
+if [ -f "$OUTWAY" ] ; then
 	case "$MODE" in
 	sql)
 		#
 		# add it via mysql
 		#
-		if [ $QUIET != 1 ]; then
+		if [ $QUIET -ne 1 ] ; then
 			echo "$NAME $lat $lon $CODETYPE" >&2
 		fi
-		if [ $DEBUG -gt 0 ]; then
-			gpsdrive_add <$OUTWAY
+		if [ $DEBUG -gt 0 ] ; then
+			gpsdrive_add < "$OUTWAY"
 		else
-			gpsdrive_add <$OUTWAY | mysql -u$SQLUSER -p$SQLPASS
+			gpsdrive_add < "$OUTWAY" | mysql -u$SQLUSER -p$SQLPASS
 		fi
 		;;
 	*)
 		#
 		# output to stdout
 		#
-		cat $OUTWAY
+		cat "$OUTWAY"
 		;;
 	esac
 fi
