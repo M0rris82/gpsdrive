@@ -11,7 +11,8 @@ Connections:
 
 moby:~# rfcomm bind /dev/rfcomm0 00:15:7F:00:51:08
 
-moby:~# cat /dev/rfcomm0 count=10
+moby:~# cat /dev/rfcomm0 #count=10  (count= from `dd` or..?)
+^C
 
 moby:~# killall -9 gpsd
 
