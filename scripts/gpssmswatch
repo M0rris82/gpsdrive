@@ -35,27 +35,34 @@ echo -e "================================================"
 sleep 10
 
 FILE=/tmp/.smswatch
-while [ 1 = 1 ]
-do
-gnokii --getsms SM 1 > $FILE
-if [ $? = "0" ];then
-gnokii --deletesms SM 1
-fi
-grep PLSSENDPOS $FILE
-if [ $? = "0" ];then
-echo -e "position request found\n"
-NUMBER=`grep Sender /tmp/.smswatch|awk '{print $2}'`
-killall -USR1 gpsdrive
 
-echo "sending "
-cat /tmp/gpsdrivepos
-echo -e "to number $NUMBER\n"
-gnokii --sendsms $NUMBER < /tmp/gpsdrivepos
-else
-echo -e "no request\n"
-fi
-echo -e "Sleeping $SECS seconds"
-sleep $SECS
+while [ 1 -eq 1 ] ; do
+
+   gnokii --getsms SM 1 > $FILE
+   if [ $? -eq 0 ] ; then
+      gnokii --deletesms SM 1
+   fi
+
+   grep PLSSENDPOS $FILE
+   if [ $? -eq 0 ] ; then
+      echo -e "position request found\n"
+      NUMBER=`grep Sender /tmp/.smswatch|awk '{print $2}'`
+      killall -USR1 gpsdrive
+
+      echo "sending "
+
+#FIXME: gpsdrive no longer writes out /tmp/gpsdrivepos; connect to gpsd to
+#	get position & save it to a local enviro variable  not /tmp/ file.
+
+      cat /tmp/gpsdrivepos
+      echo -e "to number $NUMBER\n"
+      gnokii --sendsms $NUMBER < /tmp/gpsdrivepos
+   else
+      echo -e "no request\n"
+   fi
+
+   echo -e "Sleeping $SECS seconds"
+   sleep $SECS
 
 done
 
