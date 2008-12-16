@@ -181,6 +181,10 @@ if [ $DEBUG -gt 0 ] ; then
     TMP=/tmp/geo
 else
     TMP=`tempfile -d /tmp -p geo. -s .nearest`
+    if [ $? -ne 0 ] || [ -z "$TMP" ] ; then
+	echo "ERROR: Unable to create temporary files" 1>&2
+	exit 1
+    fi
 fi
 TIMESTAMP="${TMP}.timestamp"
 GEOWAY="${TMP}.geocaching.loc"
