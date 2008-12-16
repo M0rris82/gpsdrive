@@ -15,5 +15,5 @@ moby:~# cat /dev/rfcomm0 count=10
 
 moby:~# killall -9 gpsd
 
-moby:~# gpsd -p /dev/rfcomm0
+moby:~# gpsd /dev/rfcomm0
 
