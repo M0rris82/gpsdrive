@@ -1919,6 +1919,9 @@ void create_controls_mainbox (void)
 	menuitem_loadtrack = gtk_menu_item_new_with_mnemonic (_("GPX _Track"));
 	menuitem_loadroute = gtk_menu_item_new_with_mnemonic (_("GPX _Route"));
 	menuitem_loadwpt = gtk_menu_item_new_with_mnemonic (_("GPX _Waypoints"));
+/* TODO: menu item greyed out because the GPX_WPT code is not yet written (see gpx.c) */
+	gtk_widget_set_sensitive(menuitem_loadwpt, FALSE);
+
 	menuitem_loadtrkold = gtk_menu_item_new_with_mnemonic (_("_GpsDrive Track"));
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), menu_load);
