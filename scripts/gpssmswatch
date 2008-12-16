@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # gpssmswatch (c) 2004 Fritz Ganter <ganter@ganter.at>
 # $Log$
 # Revision 1.1  2005/01/11 22:17:13  tweety
@@ -38,15 +38,15 @@ FILE=/tmp/.smswatch
 
 while [ 1 -eq 1 ] ; do
 
-   gnokii --getsms SM 1 > $FILE
+   gnokii --getsms SM 1 > "$FILE"
    if [ $? -eq 0 ] ; then
       gnokii --deletesms SM 1
    fi
 
-   grep PLSSENDPOS $FILE
+   grep PLSSENDPOS "$FILE"
    if [ $? -eq 0 ] ; then
       echo -e "position request found\n"
-      NUMBER=`grep Sender /tmp/.smswatch|awk '{print $2}'`
+      NUMBER=`grep Sender /tmp/.smswatch | awk '{print $2}'`
       killall -USR1 gpsdrive
 
       echo "sending "
@@ -56,7 +56,7 @@ while [ 1 -eq 1 ] ; do
 
       cat /tmp/gpsdrivepos
       echo -e "to number $NUMBER\n"
-      gnokii --sendsms $NUMBER < /tmp/gpsdrivepos
+      gnokii --sendsms "$NUMBER" < /tmp/gpsdrivepos
    else
       echo -e "no request\n"
    fi
@@ -65,5 +65,3 @@ while [ 1 -eq 1 ] ; do
    sleep $SECS
 
 done
-
- 
