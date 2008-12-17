@@ -213,7 +213,7 @@ dash_select_cb (GtkWidget *item, gint selection)
 		local_config.dashboard[local_config.dashboard[0]] = selection;
 		current.needtosave = TRUE;
 		local_config.dashboard[0] = 0;
-		if (local_config.guimode == GUI_CAR)
+		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 			gtk_widget_hide_all (dash_menu_window);
 
 		if (mydebug > 20)
@@ -1812,6 +1812,11 @@ void create_satellite_window (void)
 		gtk_window_set_decorated (GTK_WINDOW (satellite_window), FALSE);
 		gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
 	}
+	else if (local_config.guimode == GUI_MAEMO)
+	{
+		gtk_window_maximize (GTK_WINDOW (satellite_window));
+		gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
+	}
 	else
 		gtk_window_set_resizable (GTK_WINDOW (satellite_window), FALSE);
 
@@ -2201,7 +2206,9 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (track_clear_cb), FALSE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), cleartrack_bt,
 		_("Delete recorded track data"), NULL);
-	if (local_config.guimode != GUI_CAR && local_config.showbutton_trackclear)
+	if (local_config.guimode != GUI_CAR
+	    &&  local_config.guimode != GUI_MAEMO
+	    && local_config.showbutton_trackclear)
 		gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
 			FALSE, FALSE, 0 * PADDING);
 
@@ -2214,7 +2221,9 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (track_restart_cb), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), restarttrack_bt,
 		_("Save current track and start new one."), NULL);
-	if (local_config.guimode != GUI_CAR && local_config.showbutton_trackrestart)
+	if (local_config.guimode != GUI_CAR
+	    && local_config.guimode != GUI_MAEMO
+	    && local_config.showbutton_trackrestart)
 		gtk_box_pack_start (GTK_BOX (vbox_track), restarttrack_bt,
 			FALSE, FALSE, 0 * PADDING);
 
@@ -2273,13 +2282,13 @@ void create_controls_mainbox (void)
 		gboolean wide = FALSE;
 	        if ( mydebug > 11 )
 			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
-		if (local_config.guimode == GUI_CAR)
+		if (local_config.guimode == GUI_CAR  || local_config.guimode == GUI_MAEMO)
 			wide = TRUE;
 
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			main_menu, wide, wide, 1 * PADDING);
 
-		if (local_config.guimode != GUI_CAR)
+		if (local_config.guimode != GUI_CAR  && local_config.guimode != GUI_MAEMO)
 		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				hbox_zoom, FALSE, FALSE, 1 * PADDING);
@@ -2302,7 +2311,7 @@ void create_controls_mainbox (void)
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				controlbox_bt, wide, wide, 1 * PADDING);
 		}
-		if (local_config.guimode == GUI_CAR)
+		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 		{
 			if (local_config.showbutton_trackrestart)
 				gtk_box_pack_start (GTK_BOX (vbox_buttons), restarttrack_bt,
@@ -2332,7 +2341,7 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
 	else
-	if (local_config.guimode == GUI_CAR)
+	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 	{
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
@@ -2472,7 +2481,7 @@ void create_status_mainbox (void)
 		gtk_widget_add_events (eventbox_dash_4,
 			GDK_BUTTON_PRESS_MASK);
 		
-		if (local_config.guimode == GUI_CAR)
+		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 		{
 			g_signal_connect (eventbox_dash_1, "button_press_event",
 				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 1);
@@ -2630,7 +2639,7 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_status), frame_statusbar, TRUE, FALSE, 1* PADDING);
 	}
 	else
-	if (local_config.guimode == GUI_CAR)
+	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
@@ -2809,7 +2818,7 @@ gint create_main_window (void)
 	create_status_mainbox ();
 	create_map_mainbox ();
 	create_routeinfo_box ();
-	if (local_config.guimode == GUI_CAR)
+	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
 		create_dashboard_carmenu ();
 	else
 		create_dashboard_menu ();
@@ -2833,7 +2842,7 @@ gint create_main_window (void)
 			mainbox_status, status_lb);
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
-	else if (local_config.guimode == GUI_CAR)
+	else if (local_config.guimode == GUI_CAR  || local_config.guimode == GUI_MAEMO)
 	{
 		main_table = gtk_table_new (2, 3, FALSE);
 		gtk_table_attach (GTK_TABLE (main_table),
@@ -2849,7 +2858,8 @@ gint create_main_window (void)
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 		gtk_window_maximize (GTK_WINDOW (main_window));
-		gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
+		if (local_config.guimode == GUI_CAR)
+			gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
 	}
 	else
 	{  /* Classic Mode (Standard) */
