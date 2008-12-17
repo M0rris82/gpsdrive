@@ -12,20 +12,21 @@ find_package(CURL REQUIRED)
 if (MAEMO)
   find_package(Hildon REQUIRED)
   add_definitions(-DMAEMO)
-else (MAEMO)
-
-  if (WITH_GDA3)
-    find_package(GDA3 REQUIRED)
-    add_definitions(-DGDA3)
-  endif (WITH_GDA3)
-
-  if (WITH_MAPNIK)
-    find_package(Boost COMPONENTS filesystem REQUIRED)
-    find_package(Mapnik REQUIRED)
-    add_definitions(-DMAPNIK)
-  endif (WITH_MAPNIK)
-
+  SET (WITH_GDA3 FALSE)
+  SET (WITH_MAPNIK FALSE)
+  SET (WITH_SPEECH FALSE)
 endif (MAEMO)
+
+if (WITH_GDA3)
+  find_package(GDA3 REQUIRED)
+  add_definitions(-DGDA3)
+endif (WITH_GDA3)
+
+if (WITH_MAPNIK)
+  find_package(Boost COMPONENTS filesystem REQUIRED)
+  find_package(Mapnik REQUIRED)
+  add_definitions(-DMAPNIK)
+endif (WITH_MAPNIK)
 
 if (WITH_SPEECH)
   find_package(Speechd REQUIRED)
@@ -61,7 +62,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${DBUS_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS}
   ${SPEECHD_INCLUDE_DIRS}
-  ${LIBHILDON_INCLUDE_DIR}
+  ${HILDON_INCLUDE_DIR}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -79,7 +80,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${DBUS_LIBRARIES}
   ${CURL_LIBRARIES}
   ${SPEECHD_LIBRARIES}
-  ${LIBHILDON_LIBRARIES}
+  ${HILDON_LIBRARIES}
 )
 
 set(gpsdrive_SRCS

@@ -1,13 +1,14 @@
 # - Try to find Hildon libraries
 #
-#  LIBHILDON_FOUND              True if Hildon got found
-#  LIBHILDON_INCLUDE_DIR         Location of Hildon headers 
-#  LIBHILDON_LIBRARIES          List of libaries to use Hildon
-#  LIBHILDON_DEFINITIONS        Definitions to compile Hildon 
+#  HILDON_FOUND              True if Hildon got found
+#  HILDON_INCLUDE_DIR         Location of Hildon headers 
+#  HILDON_LIBRARIES          List of libaries to use Hildon
+#  HILDON_DEFINITIONS        Definitions to compile Hildon 
 #
 #  Copyright (c) 2007 Daniel Gollub <dgollub@suse.de>
 #  Copyright (c) 2008 Daniel Friedrich <daniel.friedrich@opensync.org>
 #  Copyright (c) 2008 Florian Boor <florian@linuxtogo.org>
+#  Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic (dot) com>
 #
 #  Redistribution and use is allowed according to the terms of the New
 #  BSD license.
@@ -16,36 +17,44 @@
 
 IF ( NOT WIN32 )
 	INCLUDE( UsePkgConfig )
-	PKGCONFIG( hildon-1 _hildon_include_DIR _hildon_link_DIR _hildon_link_FLAGS _hildon_cflags )
+	pkgconfig( hildon-1 _hildon_include_DIR _hildon_link_DIR _hildon_link_FLAGS _hildon_cflags )
 ENDIF ( NOT WIN32 )
 
 
 # Look for Hildon include dir and libraries, and take care about pkg-config first...
-FIND_PATH( HILDON_INCLUDE_DIR hildon/hildon.h PATH_SUFFIXES hildon-1 PATHS ${_hildon_include_DIR} NO_DEFAULT_PATH )
-#MESSAGE( STATUS "FINDLIBGLADEDIR: ${LIBGLADE_INCLUDE_DIR}" )
-FIND_PATH( HILDON_INCLUDE_DIR hildon/hildon.h PATH_SUFFIXES hildon-1)
-#MESSAGE( STATUS "FINDLIBGLADEDIR: ${LIBGLADE_INCLUDE_DIR}" )
+find_path(HILDON_INCLUDE_DIR
+  NAMES
+    hildon/hildon.h
+  PATHS
+    ${_hildon_include_DIR}
+  PATH_SUFFIXES
+    hildon-1
+)
 
-FIND_LIBRARY( HILDON_LIBRARIES hildon-1 PATHS ${_hildon_link_DIR} NO_DEFAULT_PATH )
-#MESSAGE( STATUS "FINDLIBGLADE: ${LIBGLADE_LIBRARIES}" )
-FIND_LIBRARY( HILDON_LIBRARIES hildon-1 )
-#MESSAGE( STATUS "FINDLIBGLADE: ${LIBGLADE_LIBRARIES}" )
+find_library(HILDON_LIBRARIES
+  NAMES
+    hildon-1
+  PATHS
+    ${_hildon_link_DIR}
+)
+
 
 # Report results
-IF ( HILDON_LIBRARIES AND HILDON_INCLUDE_DIR )	
-	SET( HILDON_FOUND 1 )
-	IF ( NOT HILDON_FIND_QUIETLY )
-		MESSAGE( STATUS "Found HILDON: ${HILDON_LIBRARIES}" )
-	ENDIF ( NOT HILDON_FIND_QUIETLY )
-ELSE ( HILDON_LIBRARIES AND HILDON_INCLUDE_DIR )	
-	IF ( HILDON_FIND_REQUIRED )
-		MESSAGE( SEND_ERROR "Could NOT find Hildon" )
-	ELSE ( HILDON_FIND_REQUIRED )
-		IF ( NOT HILDON_FIND_QUIETLY )
-			MESSAGE( STATUS "Could NOT find Hildon" )	
-		ENDIF ( NOT HILDON_FIND_QUIETLY )
-	ENDIF ( HILDON_FIND_REQUIRED )
-ENDIF ( HILDON_LIBRARIES AND HILDON_INCLUDE_DIR )	
+if (HILDON_LIBRARIES AND HILDON_INCLUDE_DIR )
+  set (HILDON_FOUND TRUE)
+  if (NOT HILDON_FIND_QUIETLY)
+    message(STATUS "Found HILDON: ${HILDON_LIBRARIES}")
+  endif ( NOT HILDON_FIND_QUIETLY )
+else (HILDON_LIBRARIES AND HILDON_INCLUDE_DIR)	
+  if (HILDON_FIND_REQUIRED)
+    message(FATAL_ERROR "Could NOT find Hildon")
+  else (HILDON_FIND_REQUIRED)
+    if (NOT HILDON_FIND_QUIETLY)
+      message(STATUS "Could NOT find Hildon")
+    endif (NOT HILDON_FIND_QUIETLY)
+  endif (HILDON_FIND_REQUIRED)
+endif (HILDON_LIBRARIES AND HILDON_INCLUDE_DIR)
 
 # Hide advanced variables from CMake GUIs
-MARK_AS_ADVANCED( HILDON_LIBRARIES HILDON_INCLUDE_DIR )
+mark_as_advanced(HILDON_LIBRARIES HILDON_INCLUDE_DIR)
+

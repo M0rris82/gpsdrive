@@ -64,6 +64,11 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "gpx.h"
 
+#ifdef MAEMO
+	#include <hildon/hildon-program.h>
+#endif
+
+
 /*  Defines for gettext I18n */
 #include <libintl.h>
 # define _(String) gettext(String)
@@ -1897,11 +1902,7 @@ void create_controls_mainbox (void)
 	/* Main Menu */
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Main Menu)\n");
-	main_menu = gtk_menu_bar_new ();
 	menu_menu = gtk_menu_new ();
-	menuitem_menu = gtk_menu_item_new_with_mnemonic (_("_Options"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_menu);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_menu), menu_menu);
 
 	menu_maps = gtk_menu_new ();
 	menuitem_maps = gtk_menu_item_new_with_mnemonic (_("_Maps"));
@@ -1983,7 +1984,6 @@ void create_controls_mainbox (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_tripreset);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_settings);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
 	g_signal_connect (menuitem_sendmsg, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SENDMSG);
 	g_signal_connect (menuitem_tripreset, "activate",
@@ -1997,21 +1997,40 @@ void create_controls_mainbox (void)
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(Help Menu)\n");
 	menu_help = gtk_menu_new ();
-	menuitem_help = gtk_menu_item_new_with_mnemonic (_("_Help"));
 	menuitem_helpabout =
 		gtk_image_menu_item_new_from_stock ("gtk-about", NULL);
 	menuitem_helpcontent =
 		gtk_image_menu_item_new_from_stock ("gtk-help", NULL);
-	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_help);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_help), menu_help);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help),
-		menuitem_helpabout);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help),
-		menuitem_helpcontent);
 	g_signal_connect (menuitem_helpabout, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_HELPABOUT);
 	g_signal_connect (menuitem_helpcontent, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_HELPCONTENT);
+
+	/* put menu together */
+#ifdef MAEMO
+	main_menu = menu_menu;
+
+	GtkWidget *menuitem_sep2 = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep2);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_helpabout);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_helpcontent);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
+#else
+	main_menu = gtk_menu_bar_new ();
+
+	menuitem_menu = gtk_menu_item_new_with_mnemonic (_("_Options"));
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_menu), menu_menu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_menu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
+
+	menuitem_help = gtk_menu_item_new_with_mnemonic (_("_Help"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help), menuitem_helpabout);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help), menuitem_helpcontent);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_help), menu_help);
+	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_help);
+#endif
 
 	/* Buttons: Zoom */
 	if ( mydebug > 11 )
@@ -2284,9 +2303,12 @@ void create_controls_mainbox (void)
 			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
 		if (local_config.guimode == GUI_CAR  || local_config.guimode == GUI_MAEMO)
 			wide = TRUE;
-
+#ifdef MAEMO
+		hildon_window_set_menu (HILDON_WINDOW (main_window), GTK_MENU (main_menu));
+#else
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			main_menu, wide, wide, 1 * PADDING);
+#endif
 
 		if (local_config.guimode != GUI_CAR  && local_config.guimode != GUI_MAEMO)
 		{
@@ -2774,7 +2796,11 @@ gint create_main_window (void)
 	if (!local_config.embeddable_gui)
 	{
 		/* default application mode */
-		main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+#ifdef MAEMO
+			main_window = hildon_window_new ();
+#else
+	 		main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+#endif
 	}
 	else
 	{

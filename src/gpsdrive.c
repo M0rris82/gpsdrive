@@ -2455,6 +2455,8 @@ main (int argc, char *argv[])
     coords.target_lon = coords.current_lon + 0.00001;
     coords.target_lat = coords.current_lat + 0.00001;
 
+    g_set_application_name ("GpsDrive");
+ 
     /*  load waypoints before locale is set! */
     /*  Attention! In this file the decimal point is always a '.' !! */
 

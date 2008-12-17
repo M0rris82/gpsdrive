@@ -24,7 +24,7 @@ How to build gpsdrive for a hildon/maemo system (like Nokia N810)
 
 - build gpsdrive:
     cd gpsdrive/build
-    cmake -DWITH_MAPNIK=OFF -DWITH_GDA3=OFF -DWITH_SPEECH=OFF ..
+    cmake -DMAEMO=ON ..
     make
     cd ..
 
