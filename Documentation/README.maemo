@@ -1,0 +1,57 @@
+$Id$
+
+
+How to build gpsdrive for a hildon/maemo system (like Nokia N810)
+=================================================================
+
+
+- Install, set up and start a scratchbox environment and the maemo SDK
+  like explained on http://maemo.org/development/sdks/maemo_4-1-1_diablo_sdk/
+
+- log into your scratchbox environment:
+    /scratchbox/login
+
+  All the things following have to be done inside the scratchbox environment!!!
+
+- get a copy of the gpsdrive source repository:
+    svn co https://gpsdrive.svn.sourceforge.net/svnroot/gpsdrive/trunk gpsdrive
+
+- add a line for the extras repository to your /etc/apt/sources.list:
+    deb http://repository.maemo.org/extras-devel chinook free
+
+- install the necessary tools:
+    apt-get install cmake
+
+- build gpsdrive:
+    cd gpsdrive/build
+    cmake -DWITH_MAPNIK=OFF -DWITH_GDA3=OFF -DWITH_SPEECH=OFF ..
+    make
+    cd ..
+
+- testing, if the build was fine:
+    make install
+    ./build/src/gpsdrive -s -M maemo
+
+
+... to be continued ...
+
+
+
+INSTALL
+--------
+
+TODO...
+
+
+GPS RECEIVER:
+-------------
+
+TODO...
+
+
+MAPS:
+-----
+
+TODO...
+
+
