@@ -6,11 +6,8 @@ add_subdirectory(osm/perl_lib)
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
     gpspoint2gpsdrive.pl
-    geo-nearest
     geocache2way
-    geo-code
     gpsreplay
-    gpssmswatch
     gpsfetchmap.pl
     gpsdrive-update-mapnik-poitypes.pl
     geoinfo.pl
