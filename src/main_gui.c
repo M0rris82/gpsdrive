@@ -1983,7 +1983,6 @@ void create_controls_mainbox (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sendmsg);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_tripreset);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_settings);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
 	g_signal_connect (menuitem_sendmsg, "activate",
 		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SENDMSG);
 	g_signal_connect (menuitem_tripreset, "activate",
