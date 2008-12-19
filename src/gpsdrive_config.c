@@ -805,7 +805,7 @@ config_init ()
 		"%s", "/usr/share/fonts/truetype/ttf-dejavu/");
 	
 	/* kismet default values */
-	g_strlcpy(local_config.kismet_servername, "localhost", sizeof(local_config.kismet_servername));
+	g_strlcpy(local_config.kismet_servername, "127.0.0.1", sizeof(local_config.kismet_servername));
 	local_config.kismet_serverport = 2501;
 
 	/* run a normal GUI by default */
