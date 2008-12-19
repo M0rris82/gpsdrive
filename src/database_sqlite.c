@@ -186,6 +186,7 @@ db_sqlite_init (void)
 	/* try to open osm.db file */
 	g_snprintf (t_buf, sizeof (t_buf), "ATTACH DATABASE '%s' AS osm;", local_config.osm_dbfile);
 	t_status = sqlite3_exec(waypoints_db, t_buf, NULL, NULL, &t_error);
+	t_status = sqlite3_exec(waypoints_db, "SELECT poi_id FROM osm.poi LIMIT 1;", NULL, NULL, &t_error);
 	if (t_status != SQLITE_OK )
 	{
 		if (mydebug > 10)
