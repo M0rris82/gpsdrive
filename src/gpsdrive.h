@@ -342,6 +342,7 @@ typedef struct
 	gchar *poitype_path;
 	gchar poifilter[20000];	/* sql string for filtering the POI display */
 	gboolean have_speech;	/* flag if speech dispatcher is available */
+	gint window_state;	/* holds the current GdkWindowState for the main window */
 }
 currentstatus_struct;
 

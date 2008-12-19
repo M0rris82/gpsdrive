@@ -65,7 +65,10 @@ Disclaimer: Please do not use for navigation.
 #include "gpx.h"
 
 #ifdef MAEMO
-	#include <hildon/hildon-program.h>
+
+#include <hildon/hildon-program.h>
+HildonProgram *program;
+
 #endif
 
 
@@ -186,6 +189,17 @@ dash_menu_cb (GtkWidget *widget, GdkEventButton *event, gint dash_nr)
 		event->button, event->time);
 
 
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * track state of main window
+ */
+gboolean
+window_state_cb  (GtkWidget *window, GdkEventWindowState *event, gpointer data)
+{
+	current.window_state = 	event->new_window_state;
 	return TRUE;
 }
 
@@ -1469,6 +1483,34 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 
 // TODO: Ctrl-Q exits the program
 
+
+#ifdef MAEMO
+	/* make use of hardware keys */
+
+	// toggle fullscreen
+	if (event->keyval == GDK_F6)
+	{
+		if (current.window_state << GDK_WINDOW_STATE_FULLSCREEN)
+			gtk_window_unfullscreen (GTK_WINDOW (main_window));
+		else
+			gtk_window_fullscreen (GTK_WINDOW (main_window));
+	}
+
+	// zoom in
+	if (event->keyval == GDK_F7)
+	{
+		 hildon_banner_show_information (main_window, GTK_STOCK_ADD, _("Zoom in"));
+		 scalerbt_cb (NULL, 2);
+	}
+
+	// zoom out
+	if (event->keyval == GDK_F8)
+	{
+		 hildon_banner_show_information (main_window, GTK_STOCK_REMOVE, _("Zoom out"));
+		 scalerbt_cb (NULL, 1);
+	}	
+#endif
+			
 	// Toggle Grid Display
 	if ((toupper (event->keyval)) == 'G')
 	{
@@ -2797,8 +2839,13 @@ gint create_main_window (void)
 		/* default application mode */
 #ifdef MAEMO
 			main_window = hildon_window_new ();
+			program = hildon_program_get_instance ();
+			hildon_program_add_window (program, HILDON_WINDOW (main_window));
 #else
 	 		main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+			g_snprintf (main_title, sizeof (main_title),
+				"%s v%s", "GpsDrive", VERSION);
+			gtk_window_set_title (GTK_WINDOW (main_window), main_title);
 #endif
 	}
 	else
@@ -2816,10 +2863,6 @@ gint create_main_window (void)
 			gtk_plug_get_id(GTK_PLUG(main_window)));
 	}
 
-	g_snprintf (main_title, sizeof (main_title),
-		"%s v%s", "GpsDrive", VERSION);
-
-	gtk_window_set_title (GTK_WINDOW (main_window), main_title);
 	gtk_container_set_border_width (GTK_CONTAINER (main_window), 0);
 	gtk_window_set_position (GTK_WINDOW (main_window),
 		GTK_WIN_POS_CENTER);
@@ -2827,6 +2870,9 @@ gint create_main_window (void)
 		GTK_SIGNAL_FUNC (quit_program_cb), NULL);
 	g_signal_connect (GTK_OBJECT (main_window), "key_press_event",
 		GTK_SIGNAL_FUNC (key_pressed_cb), NULL);
+	g_signal_connect (main_window, "window-state-event",
+		G_CALLBACK (window_state_cb), NULL);
+
 
 	mainwindow_icon_pixbuf = read_icon ("gpsdrive16.png",1);
 	if (mainwindow_icon_pixbuf)
