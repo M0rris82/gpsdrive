@@ -55,6 +55,8 @@ extern gint mydebug;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 
+gps_satellite_struct *gps_sats;
+
 static gint gps_timeout_source = 0;
 
 static struct gps_data_t *gpsdata;
@@ -98,6 +100,8 @@ static struct gps_data_t *gpsdata;
 void
 gps_hook_cb (struct gps_data_t *data, gchar *buf)
 {
+	gint i;
+
 	if (mydebug > 20)
 		g_print ("gps_hook_cb ()\n");
 
@@ -125,6 +129,18 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
 	current.gps_epv = data->fix.epv;
+
+	if (data->satellites > 0)
+	{
+		for (i=0;i<data->satellites;i++)
+		{
+			gps_sats[i].used = data->used[i];
+			gps_sats[i].prn = data->PRN[i];
+			gps_sats[i].elevation = data->elevation[i];
+			gps_sats[i].azimuth = data->azimuth[i];
+			gps_sats[i].snr = data->ss[i];
+		}
+	}
 
 }
 
@@ -154,6 +170,8 @@ gpsd_disconnect (void)
 {
 	if (gpsdata)
 		gps_close (gpsdata);
+
+	g_free (gps_sats);
 }
 
 
@@ -185,6 +203,9 @@ gpsd_connect (gboolean reconnect)
 		local_config.gpsd_server, local_config.gpsd_port);
 	if (local_config.simmode == SIM_AUTO)
 		current.simmode = FALSE;
+
+	/* allocate struct to hold satellite data */
+	gps_sats = g_new (gps_satellite_struct, MAXCHANNELS);
 
 	/* set hook function to handle gps data */
 	gps_set_raw_hook (gpsdata, (gpointer) gps_hook_cb);

@@ -63,6 +63,8 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "track.h"
 #include "gpx.h"
+#include "gps_handler.h"
+
 
 #ifdef MAEMO
 
@@ -98,7 +100,7 @@ extern gdouble wp_saved_expmode_lat;
 extern gdouble wp_saved_expmode_lon;
 extern gdouble pixelfact;
 extern gdouble milesconv;
-extern gint satlistdisp[MAXSATS][4];
+extern gps_satellite_struct *gps_sats;
 
 extern gint slistsize, nlist[];
 extern gint PSIZE;
@@ -1260,7 +1262,7 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 /* *****************************************************************************
  * show satellite information
  * TODO:
- *	- show, if satellite is used (filled) or not (empty) -> info from GSA sentence
+ *	- show, if satellite is used (filled) or not (empty)
  *	- show satellite numbers
  */
 gint
@@ -1321,54 +1323,48 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 		gdk_draw_line (drawable_sats, kontext_sats,
 			x/2+12 + i*(bx+4)+bx/2 , w/2+12 , x/2+12 + i*(bx+4) + bx/2 , w-12);
 	}
-
+	j=0;
 	/* draw graphical satellite info */
 	gdk_gc_set_line_attributes (kontext_sats, 1, 0, 0, 0);
-	j = 0;
-	for (i = 0; i < MAXSATS; i++)
+	for (i = 0; i < current.gps_sats_in_view; i++)
 	{
-		if (satlistdisp[i][0] != 0)
+		if (mydebug > 60)
 		{
-			if (mydebug > 60)
-			{
-				g_print ("%02d Satinfo: PRN %03d, Signal %02d dB, Position: %d/%d\n",
-					j+1, satlistdisp[i][0], satlistdisp[i][1],
-					satlistdisp[i][2], satlistdisp[i][3]);
-			}
-
-			/* draw satellite levels */
-			h = satlistdisp[i][1] - 20;
-			if (h < 0)
-				gdk_gc_set_foreground (kontext_sats, &colors.red_dark);
-			else if (h < 10)
-				gdk_gc_set_foreground (kontext_sats, &colors.red);
-			else if (h < 15)
-				gdk_gc_set_foreground (kontext_sats, &colors.yellow);
-			else if (h < 20)
-				gdk_gc_set_foreground (kontext_sats, &colors.green);
-			else
-				gdk_gc_set_foreground (kontext_sats, &colors.green_light);
-			if (h < 1)
-				h = 1;
-			if (h > 30)
-				h = 30;
-			h = (w-48)*h/60;
-			gdk_draw_rectangle (drawable_sats, kontext_sats, TRUE,
-				x/2+12 + j*(bx+4), w-12-h, bx, h);
-
-			/* draw satellite positions */
-			gint x, y;
-			el = 1 - (satlistdisp[i][2] / 90.0);
-			az = DEG2RAD(satlistdisp[i][3]);
-			//x = (w / 2) + sin (az) * (el / 90.0) * (w / 2);
-			//y = (w / 2) - cos (az) * (el / 90.0) * (w / 2);
-			gdk_draw_arc (drawable_sats, kontext_sats, TRUE,
-				w/2 * (1 + sin(az) * el) - 3,
-				w/2 * (1 - cos(az) * el) - 3,
-				12, 12, 0, 360 * 64);
-
-			j++;
+			g_print ("Satinfo: PRN %03d, Signal %02d dB, Position: %d/%d\n",
+				gps_sats[i].prn, gps_sats[i].snr,
+				gps_sats[i].elevation, gps_sats[i].azimuth);
 		}
+		/* draw satellite levels */
+		h = gps_sats[i].snr - 20;
+		if (h < 0)
+			gdk_gc_set_foreground (kontext_sats, &colors.red_dark);
+		else if (h < 10)
+			gdk_gc_set_foreground (kontext_sats, &colors.red);
+		else if (h < 15)
+			gdk_gc_set_foreground (kontext_sats, &colors.yellow);
+		else if (h < 20)
+			gdk_gc_set_foreground (kontext_sats, &colors.green);
+		else
+			gdk_gc_set_foreground (kontext_sats, &colors.green_light);
+		if (h < 1)
+			h = 1;
+		if (h > 30)
+			h = 30;
+		h = (w-48)*h/60;
+		gdk_draw_rectangle (drawable_sats, kontext_sats, TRUE,
+			x/2+12 + j*(bx+4), w-12-h, bx, h);
+
+		/* draw satellite positions */
+		gint x, y;
+		el = 1 - (gps_sats[i].elevation / 90.0);
+		az = DEG2RAD(gps_sats[i].azimuth);
+		//x = (w / 2) + sin (az) * (el / 90.0) * (w / 2);
+		//y = (w / 2) - cos (az) * (el / 90.0) * (w / 2);
+		gdk_draw_arc (drawable_sats, kontext_sats, gps_sats[i].used,
+			w/2 * (1 + sin(az) * el) - 3,
+			w/2 * (1 - cos(az) * el) - 3,
+			12, 12, 0, 360 * 64);
+			j++;
 	}
 
 	/* draw text info */

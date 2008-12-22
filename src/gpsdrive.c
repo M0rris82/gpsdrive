@@ -197,7 +197,6 @@ gint thisline;
 gint maxwp;
 GtkStyle *style = NULL;
 GtkRcStyle *mainstyle;
-gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit = 0;
 GtkWidget *mylist;
 
 extern gchar mapfilename[2048];
@@ -2316,8 +2315,6 @@ main (int argc, char *argv[])
     simulation_timer = g_timer_new ();
     disttimer = g_timer_new ();
 
-    memset (satlist, 0, sizeof (satlist));
-    memset (satlistdisp, 0, sizeof (satlist));
     buffer = g_new (char, 2010);
     big = g_new0 (char, MAXBIG + 10);
     //big[0] = 0;

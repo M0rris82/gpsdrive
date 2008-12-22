@@ -33,4 +33,15 @@ gboolean gpsd_connect (gboolean reconnect);
 void gpsd_disconnect ();
 
 
+typedef struct
+{
+	gint used;
+	gint prn;
+	gint elevation;
+	gint azimuth;
+	gint snr;
+}
+gps_satellite_struct;
+
+
 #endif /* GPS_HANDLER_H */
