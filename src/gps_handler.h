@@ -1,6 +1,6 @@
 /***********************************************************************
 
-Copyright (c) 2001,2002 Fritz Ganter <ganter@ganter.at>
+Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic (dot) com>
 
 Website: www.gpsdrive.de/
 
@@ -21,30 +21,6 @@ Disclaimer: Please do not use for navigation.
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 *********************************************************************/
-/*
-$Log$
-Revision 1.5  2006/08/08 08:19:32  tweety
-rename callback startgpsd_cb
-
-Revision 1.4  2006/02/05 16:38:05  tweety
-reading floats with scanf looks at the locale LANG=
-so if you have a locale de_DE set reading way.txt results in clearing the
-digits after the '.'
-For now I set the LC_NUMERIC always to en_US, since there we have . defined for numbers
-
-Revision 1.3  1994/06/10 02:11:00  tweety
-move nmea handling to it's own file Part 1
-
-Revision 1.2  2005/10/10 13:17:52  tweety
-DBUS Support for connecting to gpsd
-you need to use ./configure --enable-dbus to enable it during compile
-Author: "Belgabor" <belgabor@gmx.de>
-
-Revision 1.1  2005/08/13 10:16:02  tweety
-extract all/some gps_handling parts to File src/gps_handler.c
-
-
-*/
 
 
 #ifndef GPS_HANDLER_H
@@ -53,8 +29,8 @@ extract all/some gps_handling parts to File src/gps_handler.c
 
 #include <gtk/gtk.h>
 
-gint initgps ();
-void gpsd_close();
+gboolean gpsd_connect (gboolean reconnect);
+void gpsd_disconnect ();
 
 
 #endif /* GPS_HANDLER_H */

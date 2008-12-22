@@ -35,7 +35,6 @@ Disclaimer: Please do not use for navigation.
 #include <config.h>
 #include <math.h>
 #include "battery.h"
-#include "nmea_handler.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
 
@@ -79,94 +78,6 @@ write_file (gchar * filename, gchar * content)
   fclose (fp);
 }
 
-
-/* ******************************************************************
- * Test the nmea parser, simply check if the right position is set after parsing
- */
-gint  unit_test_nmea()
-{
-    gint errors = 0;
-    if (mydebug > 0)
-	printf ("\n");
-    printf ("Testing nmea handler\n");
-
-    typedef struct
-    {
-	gdouble should_lat, should_lon;
-	char *nmea_string;
-    } test_struct;
-    test_struct test_array[] = {
-	/*  nothing happens (lat/lon) with these nmea sentences
-	  {55.6403, 	12.6378, "$GPGSV,3,1,10,29,66,286,43,28,57,126,35,26,57,290,45,08,51,073,29*7E" },
-	  {55.6403, 	12.6378, "$GPGSV,3,2,10,10,34,201,40,27,25,076,00,19,14,033,00,21,12,305,27*75" },
-	  {55.6403, 	12.6378, "$GPGSV,3,3,10,15,11,329,00,18,11,325,00*79" },
-	  {55.6403, 	12.6378, "$GPGSA,A,3,10,28,26,29,08,21,,,,,,,2.5,1.4,2.0*3D" },
-	  {55.6403, 	12.6378, "$GPGSA,A,3,10,28,26,29,08,21,,,,,,,2.5,1.4,2.0*3D" },
-	*/
-	/* unsuported sentence for nmea reading
-	   {55.64039333333, 	12.63781833333, "$GPGLL,5538.4236,N,01238.2691,E,122041.481,A*31" },
-	   {-55.640395, 	 12.63783, "$GPGLL,5538.4237,S,01238.2698,E,122040.481,A*38" },
-	*/
-
-	{ 55.640393333,  12.637818333, "$GPRMC,122041.481,A,5538.4236,N,01238.2691,E,0.000000,214.43,010806,,*09" },
-	{ 55.640395, 	-12.63783, "$GPRMC,122040.481,A,5538.4237,N,01238.2698,W,0.000000,214.43,010806,,*12" },
-	{ 55.640395, 	 12.63783, "$GPRMC,122040.481,A,5538.4237,N,01238.2698,E,0.000000,214.43,010806,,*00" },
-	{-55.640395, 	-12.63783, "$GPRMC,122040.481,A,5538.4237,S,01238.2698,W,0.000000,214.43,010806,,*0F" },
-	{-55.640395, 	 12.63783, "$GPRMC,122040.481,A,5538.4237,S,01238.2698,E,0.000000,214.43,010806,,*1D" },
-
-	{ 52.299051666,   9.638140, "$GPRMC,165318.993,A,5217.9431,N,00938.2884,E,000.0,000.0,010806,001.1,E*66"},
-
-	{ 55.640393333,  12.637818333, "$GPGGA,122041.481,5538.4236,N,01238.2691,E,2,06,1.4,40.4,M,41.4,M,1.1,0000*46" },
-	{ 55.640395, 	 12.63783,     "$GPGGA,122040.481,5538.4237,N,01238.2698,E,2,06,1.4,39.8,M,41.4,M,1.1,0000*4D" },
-	{ 48.117500,11.595000,    "$GPGGA,125500.481,4807.0500,N,01135.7000,E,2,06,1.4,39.8,M,41.4,M,1.1,0000*40" },
-	{-99,-99,""},
-    };
-    gint i;
-    gdouble diff;
-    for (i = 0; test_array[i].should_lat != -99; i++)
-	{
-	    haveRMCsentence=FALSE;
-	    newdata=TRUE;
-	    gui_status.expmode=FALSE;
-	    //strncpy ( serialdata, test_array[i].nmea_string,sizeof (serialdata));
-	    get_position_data_cb(NULL,NULL);
-
-	    int ok=TRUE;
-
-	    diff = fabs(coords.current_lat - test_array[i].should_lat);
-	    if ( diff > 0.000001  )
-		{
-		    printf ("!!!! ERROR wrong lat diff: %f\n",diff);
-		    ok=FALSE;
-		}
-	    diff = fabs(coords.current_lon - test_array[i].should_lon);
-	    if ( diff >0.000001  )
-		{
-		    printf ("!!!! ERROR wrong lon diff: %f\n",diff);
-		    ok=FALSE;
-		}
-	    if ( ! ok ) {
-		printf ("!!!! ERROR is %f,%f\n"
-			"       should %f,%f\n"
-			"       nmea: %s\n",
-			coords.current_lat,coords.current_lon,
-			test_array[i].should_lat,test_array[i].should_lon,
-			test_array[i].nmea_string
-			);
-		errors++;
-	    } else {
-		if ( mydebug>1 ) 
-		    printf ("parsing OK; values: %f,%f\t"
-			" nmea: %s\n",
-			coords.current_lat,coords.current_lon,
-			test_array[i].nmea_string
-			);
-		
-	    }
-	}
-
-    return errors;
-}
 
 /* ******************************************************************
  * Unit Tests
@@ -826,9 +737,6 @@ unit_test (void)
 
   }
 
-
-  // ------------------------------------------------------------------
-  //errors += unit_test_nmea();
 
   set_unittest_timer();
   if (errors > 0)

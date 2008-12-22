@@ -39,6 +39,23 @@ Disclaimer: Please do not use for navigation.
 #define ARRAY_SIZE(x)  ((sizeof (x))/(sizeof ((x)[0])))
 
 
+/* GPS modes (as defined by libgps) */
+enum
+{
+	GPSMODE_NOT_SEEN,
+	GPSMODE_NO_FIX,
+	GPSMODE_2D,
+	GPSMODE_3D
+};
+
+/* GPS fix status (as definde by libgps) */
+enum
+{
+	GPS_NO_FIX,
+	GPS_FIX,
+	GPS_DGPS_FIX
+};
+
 /* Coordinate formats  */
 enum
 {
@@ -144,8 +161,6 @@ enum gpx_mode
 
 /*  How often do we redraw the screen (in milliseconds) */
 #define REDRAWTIMER 300
-/*  How often do we ask for positioning data */
-#define TIMER 500
 
 /* maximum number of waypoints to draw at one time */
  /* HB Nov 2008:  is this really needed? */
@@ -329,10 +344,13 @@ typedef struct
 	gint statusbar_id;	/* context_id of current statusbar message */
 	gboolean simmode;	/* Status of Simulation mode */
 	gint kismetsock;	/* Kismet socket, -1 if not available */
-	gint gpsfix;		/* Status of GPS:
-				 * 0: No GPS, 1: No Fix, 2: 2D Fix, 3: 3D Fix */
-	gdouble gps_precision;
-	gdouble gps_hdop;
+	gint gps_mode;		/* gps status */
+	gint gps_status;	/* gps fix mode */
+	gdouble gps_hdop;	/* gps horizontal dilution of position */
+	gdouble gps_eph;	/* gps estimated horizontal error in meters */
+	gdouble gps_epv;	/* gps estimated vertical error in meters */
+	gint gps_sats_used;	/* number of satellites currently used */
+	gint gps_sats_in_view;	/* number of satellites currently seen */
 	GTimeVal last3dfixtime;	/* saves time of last 3D Fix. Hack for jumping
 				 * altitude display caused by bad nmea data */
 	gboolean needtosave;	/* flag if config has to be saved */

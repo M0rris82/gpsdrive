@@ -50,7 +50,6 @@ extern map_dir_struct *display_map;
 extern gint displaymap_top;
 extern gint mydebug;
 extern gint setdefaultpos;
-extern gint usedgps;
 extern gdouble milesconv;
 extern double dbdistance;
 extern int dbusedist;
@@ -181,12 +180,6 @@ writeconfig ()
 
 	fprintf (fp, "osmdbfile = ");
 	fprintf (fp, "%s\n", local_config.osm_dbfile);
-
-	fprintf (fp, "usedgps = ");
-	if (usedgps == 0)
-		fprintf (fp, "0\n");
-	else
-		fprintf (fp, "1\n");
 
 	fprintf (fp, "mapdir = ");
 	fprintf (fp, "%s\n", local_config.dir_maps);
@@ -430,8 +423,6 @@ readconfig ()
 			else if ( (strcmp(par1, "osmdbfile")) == 0)
 				g_strlcpy (local_config.osm_dbfile, par2,
 					sizeof (local_config.osm_dbfile));
-			else if ( (strcmp(par1, "usedgps")) == 0)
-				usedgps = atoi (par2);
 			else if ( (strcmp(par1, "mapdir")) == 0)
 				g_strlcpy (local_config.dir_maps, par2,
 					sizeof (local_config.dir_maps));
@@ -810,4 +801,8 @@ config_init ()
 
 	/* run a normal GUI by default */
 	local_config.embeddable_gui = FALSE;
+
+	/* set gpsd default values */
+	g_strlcpy (local_config.gpsd_server, "127.0.0.1", sizeof (local_config.gpsd_server));
+	g_strlcpy (local_config.gpsd_port, "2947", sizeof (local_config.gpsd_port));
 }

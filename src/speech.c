@@ -301,7 +301,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 	if (angle < 0.0)
 		angle = 360 + angle;
 
-	if (!current.simmode && !current.gpsfix)
+	if (!current.simmode && current.gps_status == GPS_NO_FIX)
 	{
 		if( (1 == speechcount) && local_config.sound_gps )
     {

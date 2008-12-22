@@ -66,7 +66,6 @@ extern GdkGC *kontext_map;
 extern gdouble milesconv;
 extern GtkWidget *main_window;
 extern gdouble hdop;
-extern gint sats_used;
 extern gpx_info_struct gpx_info;
 extern guint8 linestyles[][4];
 
@@ -149,13 +148,6 @@ storetrack_cb (GtkWidget * widget, guint * datum)
 
     if (gui_status.expmode) 
 	return TRUE;
-	
-#ifdef DBUS_ENABLE
-	/* If we use DBUS track points are usually stored by the DBUS signal handler */
-	/* Only store them by timer if we are in explore mode */
-	if ( useDBUS && !current.simmode )
-	    return TRUE;
-#endif
 
 	storepoint();
 
@@ -168,8 +160,8 @@ storepoint ()
 {
 	gint so;
 
-	/*    g_print("Havepos: %d\n", current.gpsfix); */
-	if ((!current.simmode && current.gpsfix < 2) || gui_status.expmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
+	/*    g_print("Havepos: %d\n", current.gps_status); */
+	if ((!current.simmode && current.gps_status == GPS_NO_FIX) || gui_status.expmode /*  ||((!local_config.simmode &&haveposcount<3)) */ )	/* we have no valid position */
 	{
 		add_trackpoint (1001.0, 1001.0, 1001.0, 1001.0, -1.0, -1.0, 0, 0, NULL);
 	}
@@ -178,7 +170,7 @@ storepoint ()
 		add_trackpoint
 			(coords.current_lat, coords.current_lon, current.altitude,
 			 RAD2DEG (current.heading), current.groundspeed, current.gps_hdop,
-			 current.gpsfix, sats_used, NULL);
+			 current.gps_mode, current.gps_sats_used, NULL);
 		if (local_config.savetrack)
 			do_incremental_save();
 	}

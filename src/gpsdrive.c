@@ -97,7 +97,6 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include "waypoint.h"
 #include "routes.h"
 #include "gps_handler.h"
-#include "nmea_handler.h"
 #include "map_handler.h"
 
 #include "import_map.h"
@@ -265,17 +264,13 @@ extern gint markwaypoint;
 GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
-gchar gpsdservername[200], setpositionname[80];
+gchar setpositionname[80];
 
-gint havealtitude = FALSE;
-gint usedgps = FALSE;
-gchar dgpsserver[80], dgpsport[10];
 GtkWidget *explore_bt;
 extern gint PSIZE;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
-gint sats_used = 0, sats_in_view = 0;
 gint numgrids = 4, scroll = TRUE;
 gchar utctime[20], loctime[20];
 gint redrawtimeout;
@@ -317,7 +312,6 @@ GtkWidget *menubar;
 gchar messagename[40], messagesendtext[1024], messageack[100];
 gint statuslock = 0, gpson = FALSE;
 int messagenumber = 0, didrootcheck = 0;
-int timerto = 0;
 GtkTextBuffer *getmessagebuffer;
 
 int newdata = FALSE;
@@ -326,13 +320,6 @@ int nosplash = FALSE;
 int havedefaultmap = TRUE;
 
 int storetz = FALSE;
-
-// ---------------------- for nmea_handler.c
-extern FILE *nmeaout;
-/*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-extern gint haveNMEA, useDBUS;
-extern gint bigp , bigpGGA , bigpRME , bigpGSA, bigpGSV;
-extern gint lastp, lastpGGA, lastpRME, lastpGSA, lastpGSV;
 
 extern GtkWidget *main_window;
 extern GtkWidget *frame_statusbar;
@@ -554,7 +541,7 @@ display_status2 ()
 
 	if ( mydebug > 10 )
 	    {
-		if (current.gpsfix > 1)
+		if (current.gps_mode > GPSMODE_NO_FIX)
 		    g_print ("***Position: %f %f***\n", coords.current_lat,
 			     coords.current_lon);
 		else
@@ -640,8 +627,11 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 		local_config.maxcpuload = 1;
 	if (local_config.maxcpuload > 95)
 		local_config.maxcpuload = 95;
-	if (!haveNMEA)
+
+//TODO: is this right/necessary?
+	if (current.gps_status == GPS_NO_FIX)
 		expose_gpsfix (NULL, 0);
+
 	if (pleasepollme)
 	{
 		pleasepollme++;
@@ -1074,7 +1064,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (local_config.showdestline)
 		draw_destination_line ();
 
-	if (current.gpsfix > 1 || blink)
+	if (current.gps_status > GPS_NO_FIX || blink)
 	{
 		if (gui_status.expmode)
 		{
@@ -1174,7 +1164,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		blink = TRUE;
 	else
 	{
-		if (current.gpsfix < 2)
+		if (current.gps_status == GPS_NO_FIX)
 			blink = !blink;
 	}
 
@@ -1780,18 +1770,6 @@ simulated_pos (GtkWidget * widget, guint * datum)
 
 
 /* *****************************************************************************
- *  should I use DGPS-IP? 
- */
-gint
-usedgps_cb (GtkWidget * widget, guint datum)
-{
-	usedgps = !usedgps;
-	current.needtosave = TRUE;
-	return TRUE;
-}
-
-
-/* *****************************************************************************
  * Update the checkbox for Explore-Mode
  */
 void
@@ -2130,7 +2108,7 @@ void
 usr2handler (int sig)
 {
 	g_print (_("\nGot SIGUSR2; restarting GPS connection.\n"));
-	initgps ();
+	gpsd_connect (TRUE);
 }
 
 
@@ -2201,7 +2179,8 @@ parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
 	else if (g_ascii_strncasecmp (option, "-N", 2) == 0 ||
 	    g_ascii_strncasecmp (option, "--nmeaout", 9) == 0)
 	{
-		nmeaout = opennmea (value);
+		//TODO: enable nmea writing again (is this really useful?)
+		//nmeaout = opennmea (value);
 	}
 
 	return TRUE;
@@ -2218,6 +2197,8 @@ main (int argc, char *argv[])
 {
     GError *error = NULL;
     gboolean show_version = FALSE;
+    gchar *t_buf_gpsdserver = NULL;
+    gchar *t_buf_gpsdport = NULL;
 
     GOptionContext *opt_context = g_option_context_new (_("Navigation System"));
     const gchar opt_desc[] = N_("Website: http://www.gpsdrive.de");
@@ -2238,12 +2219,12 @@ main (int argc, char *argv[])
 		_("having only a single button, for example when using a touchscreen"), NULL},
 	{"verbose", 'v', 0, G_OPTION_ARG_NONE, &debug,
 		_("show some debug info"), NULL},
-	{"use-DBUS", 'x', 0, G_OPTION_ARG_NONE, &useDBUS,
-		_("use DBUS for communication with gpsd; this disables socket communication"), NULL},
 	{"alt-offset", 'A', 0, G_OPTION_ARG_INT, &local_config.normalnull,
 		_("correct the altitude by adding this value"), _("<OFFSET>")},
-	{"gpsd-server", 'B', 0, G_OPTION_ARG_STRING, &gpsdservername,
-		_("servername for NMEA server (if gpsd runs on another host)"), _("<SERVER>")},
+	{"gpsd-server", 'B', 0, G_OPTION_ARG_STRING, &t_buf_gpsdserver,
+		_("address for GPSD server (if gpsd runs on another host)"), _("<SERVER>")},
+	{"gpsd-port", 'P', 0, G_OPTION_ARG_STRING, &t_buf_gpsdport,
+		_("port for server (if gpsd runs on another host)"), _("<PORT>")},
 	{"config-file", 'C', 0, G_OPTION_ARG_CALLBACK, parse_options_cb,
 		_("set config file to use"), _("<FILE>")},
 	{"debug", 'D', 0, G_OPTION_ARG_INT, &mydebug,
@@ -2306,19 +2287,12 @@ main (int argc, char *argv[])
     coords.current_lon = coords.zero_lon = 11.57532 + f;
     /*    zero_lat and zero_lon are overwritten by config file,  */
 
-    g_strlcpy (dgpsserver, "dgps.wsrcc.com", sizeof (dgpsserver));
-    g_strlcpy (dgpsport, "2104", sizeof (dgpsport));
-    g_strlcpy (gpsdservername, "127.0.0.1", sizeof (gpsdservername));
     g_strlcpy (current.target, "     ", sizeof (current.target));
     g_strlcpy (utctime, _("n/a"), sizeof (utctime));
     g_strlcpy (oldangle, _("none"), sizeof (oldangle));
     pixelfact = MAPSCALE / PIXELFACT;
     g_strlcpy (oldfilename, "", sizeof (oldfilename));
     maploaded = FALSE;
-    haveNMEA = FALSE;
-    current.gpsfix = 0;
-    current.gps_precision = (-1.0);
-    current.gps_hdop = (-1.0);
     gblink = blink = FALSE;
     haveposcount = debug = 0;
     current.heading = current.bearing = 0.0;
@@ -2347,9 +2321,7 @@ main (int argc, char *argv[])
     buffer = g_new (char, 2010);
     big = g_new0 (char, MAXBIG + 10);
     //big[0] = 0;
-    
-    timeoutcount = lastp = bigp = bigpRME = bigpGSA = bigpGSV = bigpGGA = 0;
-    lastp = lastpGGA = lastpGSV = lastpRME = lastpGSA = 0;
+
     gcount = xoff = yoff = 0;
     hours = minutes = 99;
     milesconv = 1.0;
@@ -2416,7 +2388,7 @@ main (int argc, char *argv[])
 
 	/* init config struct with default values */
 	config_init ();
-	
+
 	check_and_create_files();
 
 	mapdl_init ();
@@ -2473,14 +2445,21 @@ main (int argc, char *argv[])
 		g_print (_("Parsing of options failed: %s\n"), error->message);
 		exit (EXIT_FAILURE);
 	}
+	if (t_buf_gpsdserver)
+	{
+		g_strlcpy (local_config.gpsd_server, t_buf_gpsdserver,
+			sizeof (local_config.gpsd_server));
+		g_free (t_buf_gpsdserver);
+	}
+	if (t_buf_gpsdport)
+	{
+		g_strlcpy (local_config.gpsd_port, t_buf_gpsdport,
+		sizeof (local_config.gpsd_port));
+		g_free (t_buf_gpsdport);
+	}
 
 	if (ignorechecksum)
 		g_print ("\nWARNING: NMEA checksum test switched off!\n\n");
-
-#ifndef DBUS
-	if (useDBUS)
-		g_print ("\nWARNING: You need to enable DBUS support with 'cmake -DWITH_DBUS=ON ..\n");
-#endif
 
 	if ( mydebug >99 )
 		g_print ("options parsed\n");
@@ -2516,9 +2495,9 @@ main (int argc, char *argv[])
 		}
 	}
 
-    /*    if we want NMEA mode, gpsd must be running and we connect to port 2222 */
-    /*    An alternate gpsd server may be on 2947, we try it also */
-    initgps ();
+
+	/* try to connect to gpsd */
+	gpsd_connect (FALSE);
 
     /*  all position calculations are made in the expose callback */
 //    g_signal_connect (GTK_OBJECT (map_drawingarea),
@@ -2616,7 +2595,6 @@ main (int argc, char *argv[])
 	 *  to become commonplace (>2.14), replace g_timeout_add(1000,...) with
 	 *  g_timeout_add_seconds(1, ...) etc., as appropriate.
 	 */
-	timerto = g_timeout_add (TIMER, (GtkFunction) get_position_data_cb, NULL);
 	redrawtimeout = g_timeout_add (200, (GtkFunction) calldrawmarker_cb, NULL);
 
 	/*  if we started in simulator mode we have a little move roboter */
@@ -2625,8 +2603,8 @@ main (int argc, char *argv[])
 		g_print ("Enabling simulation mode\n");
 		simpos_timeout = g_timeout_add (300, (GtkFunction) simulated_pos, 0);
 	}
-	if (nmeaout)
-		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
+//	if (nmeaout)
+//		g_timeout_add (1000, (GtkFunction) write_nmea_cb, NULL);
 	id_timeout_track = g_timeout_add (local_config.track_interval *1000,
 		(GtkFunction) storetrack_cb, 0);
 	g_timeout_add (TRIPMETERTIMEOUT*1000, (GtkFunction) update_tripdata_cb, 0);
@@ -2696,7 +2674,10 @@ main (int argc, char *argv[])
 
     if (current.kismetsock != -1)
 	close (current.kismetsock);
-    gpsd_close();
+
+	/* close connection to gpsd */
+	gpsd_disconnect ();
+
     if (sockfd != -1)
 	close (sockfd);
 

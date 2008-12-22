@@ -7,7 +7,7 @@ find_package(XML2 REQUIRED)
 find_package(Freetype2 REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(CURL REQUIRED)
-
+find_package(Gps REQUIRED)
 
 if (MAEMO)
   find_package(Hildon REQUIRED)
@@ -63,6 +63,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${CURL_INCLUDE_DIRS}
   ${SPEECHD_INCLUDE_DIRS}
   ${HILDON_INCLUDE_DIR}
+  ${GPS_INCLUDE_DIRS}
 )
 
 set(GPSDRIVE_LINK_LIBRARIES
@@ -81,6 +82,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${CURL_LIBRARIES}
   ${SPEECHD_LIBRARIES}
   ${HILDON_LIBRARIES}
+  ${GPS_LIBRARIES}
 )
 
 set(gpsdrive_SRCS
@@ -116,7 +118,6 @@ set(gpsdrive_SRCS
   map_projection.c
   navigation.c
   navigation_gui.c
-  nmea_handler.c
   os_specific.c
   poi.c
   poi_gui.c

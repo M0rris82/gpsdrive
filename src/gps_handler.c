@@ -22,31 +22,15 @@ Disclaimer: Please do not use as a primary source of navigation.
 
 *********************************************************************/
 
-#include "config.h"
 
-#include "config.h"
-#include "gettext.h"
-#include "gpsdrive.h"
-#include "icons.h"
-#include "gps_handler.h"
-#include "nmea_handler.h"
-#include <errno.h>
-#include <fcntl.h>
-#include <math.h>
-#include <netdb.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <time.h>
-#include <unistd.h>
-
-#include <dlfcn.h>
-#include <semaphore.h>
-
+#include <glib.h>
+#include <gps.h>
+#include "config.h"
+#include "gpsdrive.h"
+#include "gps_handler.h"
 #include "gpsdrive_config.h"
 #include "gui.h"
 
@@ -62,898 +46,151 @@ Disclaimer: Please do not use as a primary source of navigation.
 #  define N_(String) (String)
 # endif
 
-#ifdef DBUS
-#include <dbus/dbus.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib.h>
-static DBusHandlerResult dbus_signal_handler (
-		DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message);
-#endif
+
+/*  How often do we ask for positioning data */
+#define GPS_TIMER 500
 
 extern gint mydebug;
-gint gps_handler_debug = 0;
 
-
-extern gint maploaded;
-
-extern gchar utctime[20], loctime[20];
-extern gint havepos, haveposcount;
-extern gint blink, gblink, xoff, yoff;
-extern gdouble milesconv;
-extern gchar mapfilename[1024];
-extern gint satlist[MAXSATS][4], satlistdisp[MAXSATS][4], satbit;
-extern gint sats_used, sats_in_view;
-extern gchar *buffer, *big;
-fd_set readmask;
-extern struct timeval timeout;
-extern gdouble earthr;
-extern gint timeoutcount;
-extern gint simpos_timeout;
-extern GdkPixbuf *satsimage;
-extern gchar dgpsserver[80], dgpsport[10];
-extern gchar gpsdservername[200];
-extern GtkWidget *frame_statusbar;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 
-// ---------------------- NMEA
-extern gint haveRMCsentence;
-extern gdouble NMEAsecs;
-extern gint NMEAoldsecs;
-/*  if we get data from gpsd in NMEA format haveNMEA is TRUE */
-gchar nmeamodeandport[50];
-gint haveNMEA;
-gint useDBUS;
+static gint gps_timeout_source = 0;
 
-#ifdef DBUS
-DBusError dbuserror;
-DBusConnection* connection;
-struct dbus_gps_fix {
-	gdouble	time;		/* Time as time_t with optional fractional seconds */
-	gint32	mode;		/* Fix type
-				 * 0 = Not seen. 1 = No fix. 2/3 = 2D/3D fix
-				 * We use -1 to identify that the current fix
-				 * is * already processed */
-	gdouble ept;		/* Expected time uncertainty */
-	gdouble latitude;	/* Latitude in degrees (valid if mode >= 2) */
-	gdouble longitude;	/* Longitude in degrees (valid if mode >= 2) */
-	gdouble eph;		/* Horizontal position uncertainty, meters */
-	gdouble altitude;	/* Altitude in meters (valid if mode == 3) */
-	gdouble epv;		/* Vertical position uncertainty, meters */
-	gdouble track;		/* Course made good (relative to true north) */
-	gdouble epd;		/* Track uncertainty, degrees */
-	gdouble speed;		/* Speed over ground, meters/sec */
-	gdouble eps;		/* Speed uncertainty, meters/sec */
-	gdouble climb;		/* Vertical speed, meters/sec */
-	gdouble epc;		/* Vertical speed uncertainty */
-};
-struct dbus_gps_fix dbus_old_fix, dbus_current_fix;
-#ifndef NAN
-#define NAN (0.0/0.0)
-#endif
-#endif
-gint bigp = 0, bigpGGA = 0, bigpRME = 0, bigpGSA = 0, bigpGSV = 0;
-gint lastp = 0, lastpGGA = 0, lastpRME = 0, lastpGSA = 0, lastpGSV = 0;
-gint sock = -1;
-
-gint convertGSV (char *f);
+static struct gps_data_t *gpsdata;
+//    double online;		/* NZ if GPS is on line, 0 if not. */
+//
+//    struct gps_fix_t	fix;
+//    {
+//	    int    mode;	/* Mode of fix */
+//	#define MODE_NOT_SEEN	0	/* mode update not seen yet */
+//	#define MODE_NO_FIX	1	/* none */
+//	#define MODE_2D  	2	/* good for latitude/longitude */
+//	#define MODE_3D  	3	/* good for altitude/climb too */
+//	    double latitude;	/* Latitude in degrees (valid if mode >= 2) */
+//	    double longitude;	/* Longitude in degrees (valid if mode >= 2) */
+//	    double eph;  	/* Horizontal position uncertainty, meters */
+//	    double altitude;	/* Altitude in meters (valid if mode == 3) */
+//	    double epv;  	/* Vertical position uncertainty, meters */
+//	    double speed;	/* Speed over ground, meters/sec */
+//	    double climb;       /* Vertical speed, meters/sec */
+//    };
+//
+//    /* GPS status -- always valid */
+//    int    status;		/* Do we have a fix? */
+//#define STATUS_NO_FIX	0	/* no */
+//#define STATUS_FIX	1	/* yes, without DGPS */
+//#define STATUS_DGPS_FIX	2	/* yes, with DGPS */
+//
+//    /* satellite status -- valid when satellites > 0 */
+//    int satellites_used;	/* Number of satellites used in solution */
+//    int used[MAXCHANNELS];	/* PRNs of satellites used in solution */
+//    int satellites;		/* # of satellites in view */
+//    int PRN[MAXCHANNELS];	/* PRNs of satellite */
+//    int elevation[MAXCHANNELS];	/* elevation of satellite */
+//    int azimuth[MAXCHANNELS];	/* azimuth */
+//    int ss[MAXCHANNELS];	/* signal-to-noise ratio (dB) */
 
 
 /* *****************************************************************************
+ * close connection to gpsd
  */
 void
-gpsd_close ()
+gps_hook_cb (struct gps_data_t *data, gchar *buf)
 {
-    if (sock != -1) {
-        socket_close (sock);
-        sock = -1;
-    }
+	if (mydebug > 20)
+		g_print ("gps_hook_cb ()\n");
+
+	if (data->status == STATUS_NO_FIX)
+		return;
+
+	if (mydebug > 40)
+	{
+		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
+		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
+		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
+		g_print ("  Speed: %.1f m/s\n  Altitude: %.1f m\n\n",
+			data->fix.speed, data->fix.altitude);
+	}
+
+	current.gps_status = data->status;
+	current.gps_mode = data->fix.mode;
+	coords.current_lat = data->fix.latitude;
+	coords.current_lon = data->fix.longitude;
+	current.altitude = data->fix.altitude;
+	current.gps_sats_used = data->satellites_used;
+	current.gps_sats_in_view = data->satellites;
+	current.groundspeed = data->fix.speed * 3.6;
+	current.heading = data->fix.track;
+	current.gps_hdop = data->hdop;
+	current.gps_eph = data->fix.eph;
+	current.gps_epv = data->fix.epv;
+
 }
+
+
+gboolean
+gps_query_data_cb (gpointer data)
+{
+	if (current.importactive)
+		return TRUE;
+
+	/* query gpsd for data:
+	 * s - get fix mode
+	 * o - get time/position/velocity data
+	 * y - get satellite info
+	 */
+	gps_query (gpsdata, "soy\n");
+
+	return (TRUE);
+}
+
 
 /* *****************************************************************************
- */
-#ifdef DBUS
-void
-init_dbus_current_fix()
-{
-	// Preserve the time
-	dbus_current_fix.mode = 0;
-	dbus_current_fix.ept = NAN;
-	dbus_current_fix.latitude = NAN;
-	dbus_current_fix.longitude = NAN;
-	dbus_current_fix.eph = NAN;
-	dbus_current_fix.altitude = NAN;
-	dbus_current_fix.epv = NAN;
-	dbus_current_fix.track = NAN;
-	dbus_current_fix.epd = NAN;
-	dbus_current_fix.speed = NAN;
-	dbus_current_fix.eps = NAN;
-	dbus_current_fix.climb = NAN;
-	dbus_current_fix.epc = NAN;
-}
-
-void init_dbus(){
-	haveNMEA = TRUE;
-	
-	memset(&dbus_old_fix, 0, sizeof(struct dbus_gps_fix));
-	init_dbus_current_fix();
-	dbus_current_fix.time = 0.0; // Time is not set in init_dbus_current_time
-	
-	dbus_error_init (&dbuserror);
-	
-	connection = dbus_bus_get (DBUS_BUS_SYSTEM, &dbuserror);	
-	if (dbus_error_is_set (&dbuserror)) {
-		g_print ("%s: %s", dbuserror.name, dbuserror.message);
-		exit(0);
-	}
-	
-	dbus_bus_add_match (connection, "type='signal'", &dbuserror);
-	if (dbus_error_is_set (&dbuserror)) {
-		g_print (_("unable to add match for signals %s: %s"), dbuserror.name, dbuserror.message);
-		exit(0);
-	}
-
-	if (!dbus_connection_add_filter (connection, (DBusHandleMessageFunction)dbus_signal_handler, NULL, NULL)) {
-		g_print (_("unable to register filter with the connection"));
-		exit(0);
-	}
-	
-	g_strlcpy (nmeamodeandport,
-		_("DBUS Mode"), sizeof (nmeamodeandport));
-	dbus_connection_setup_with_g_main (connection, NULL);
-}
-
-#endif
-
-/* ******************************************************************
- * Initialize nmea socket to 
- * look if we have an open socket "sock" and close it
- * the try to reconnect to gpsd
- * If we're successfull we set
- *    nmeamodeandport = "Sting with description of connection"
- *    sock = the open socket
- * if we're not successfull we set
- *       simmode = TRUE
- *       haveNMEA = FALSE
+ * close connection to gpsd
  */
 void
-init_nmea_socket ()
+gpsd_disconnect (void)
 {
-  struct sockaddr_in server;
-  struct hostent *server_data;
-  {
-    /*  open socket to port */
-    if (sock != -1)
-      {
-	socket_close (sock);
-	sock = -1;
-      }
-    sock = socket (AF_INET, SOCK_STREAM, 0);
-    if (sock < 0)
-      {
-	perror (_("Can't open socket for port "));
-	fprintf (stderr, "error: %d\n", errno);
-	if (local_config.simmode == SIM_AUTO)
-		current.simmode = TRUE;
-	haveNMEA = FALSE;
-	if (simpos_timeout == 0)
-	  simpos_timeout =
-	    gtk_timeout_add (300, (GtkFunction) simulated_pos, 0);
-	memset (satlist, 0, sizeof (satlist));
-	memset (satlistdisp, 0, sizeof (satlist));
-	sats_used = sats_in_view = 0;
-	if (satsimage != NULL)
-	  g_object_unref (satsimage);
-	satsimage = NULL;
-	return;
-      }
-    server.sin_family = AF_INET;
-    /*  We retrieve the IP address of the server from its name: */
-    if ((server_data = gethostbyname (SERVERNAME)) == NULL)
-      {
-	fprintf (stderr,
-		 _("\nCannot connect to %s: unknown host\n"), SERVERNAME);
-	exit (1);
-      }
-    memcpy (&server.sin_addr, server_data->h_addr, server_data->h_length);
-    server.sin_port = htons (SERVERPORT2);
+	if (gpsdata)
+		gps_close (gpsdata);
+}
 
-    /*  We initiate the connection  */
-    if (connect (sock, (struct sockaddr *) &server, sizeof server) < 0)
-      {
-	server.sin_port = htons (SERVERPORT);	/* We try second port */
-	/*  We initiate the connection  */
-	if (connect (sock, (struct sockaddr *) &server, sizeof server) < 0)
+
+/* *****************************************************************************
+ * open connection to gpsd
+ */
+gboolean
+gpsd_connect (gboolean reconnect)
+{
+	/* close connection first on reconnect request */
+	if (reconnect && gpsdata)
 	{
-	    haveNMEA = FALSE;
-	    if (local_config.simmode == SIM_AUTO)
-	    	current.simmode = TRUE;
+		g_source_remove (gps_timeout_source);
+		gps_close (gpsdata);
 	}
-	else
+
+	/* try to open connection */
+	gpsdata =  gps_open (local_config.gpsd_server, local_config.gpsd_port);
+	if (!gpsdata)
 	{
-	    timeoutcount = 0;
-	    haveNMEA = TRUE;
-	    if (local_config.simmode == SIM_AUTO)
-	    	current.simmode = FALSE;
-	    g_strlcpy (nmeamodeandport,
-		       _("NMEA Mode, Port 2222"), sizeof (nmeamodeandport));
-	    g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
-	    g_strlcat (nmeamodeandport, gpsdservername,
-		       sizeof (nmeamodeandport));
-	  }
-      }
-    else
-      {
-	g_strlcpy (nmeamodeandport, _("NMEA Mode, Port 2947"),
-		   sizeof (nmeamodeandport));
-	g_strlcat (nmeamodeandport, "/", sizeof (nmeamodeandport));
-	g_strlcat (nmeamodeandport, gpsdservername, sizeof (nmeamodeandport));
-	send (sock, "R\n", 2, 0);
-	timeoutcount = 0;
-	haveNMEA = TRUE;
+		g_print ("Can't connect to gps daemon on %s:%s, disabling GPS support!\n",
+			local_config.gpsd_server, local_config.gpsd_port);
+		current.gps_mode = MODE_NOT_SEEN;
+		if (local_config.simmode == SIM_AUTO)
+			current.simmode = TRUE;
+		return FALSE;
+	}
+	g_print ("Connection to GPS Daemon on %s:%s established.\n",
+		local_config.gpsd_server, local_config.gpsd_port);
 	if (local_config.simmode == SIM_AUTO)
 		current.simmode = FALSE;
-      }
-  }
-}
 
+	/* set hook function to handle gps data */
+	gps_set_raw_hook (gpsdata, (gpointer) gps_hook_cb);
 
-/* ******************************************************************
- */
-gint
-initgps ()
-{
+	/* set up function to poll periodically for new data */
+	gps_timeout_source = g_timeout_add (GPS_TIMER, gps_query_data_cb, NULL);
 
-#ifdef DBUS
-  if (useDBUS) {
-      init_dbus();
-  } else
-#endif
-
-  init_nmea_socket ();
-  /*  We test for gpsd serving */
-
-  if (haveNMEA)
-    {
-    	if (local_config.simmode == SIM_AUTO)
-    		current.simmode = FALSE;
-      if (simpos_timeout != 0 && local_config.simmode != SIM_ON)
-	{
-	  g_source_remove (simpos_timeout);
-	  simpos_timeout = 0;
-	}
-    }
-
-  return FALSE;			/* to remove timer */
-}
-
-
-/* *****************************************************************************
- */
-#ifdef DBUS
-static DBusHandlerResult dbus_signal_handler (
-		DBusConnection* connection, DBusMessage* message) {
-	/* dummy, need to use the variable for some reason */
-	connection = NULL;
-	
-	if (dbus_message_is_signal (message, "org.gpsd", "fix")) 
-		return dbus_handle_gps_fix (message);
-	/*
-	 * ignore all other messages
-	 */
-	
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-void
-dbus_process_fix(gint early)
-{
-	struct tm 	time;
-	time_t		ttime;
-    double      direction;
-
-	if (!early && (dbus_current_fix.mode==-1)) {
-		/* We have handled this one, so clean the mode and bail out */
-		dbus_current_fix.mode = 0;
-		return;
-	}
-	
-	/* 
-	 * Handle the data
-	 */
-	/* Set utctime */
-	ttime = dbus_current_fix.time;
-	gmtime_r (&ttime, &time);
-	g_snprintf (utctime, sizeof (utctime), "%02d:%02d.%02d ", time.tm_hour, time.tm_min, time.tm_sec);	
-	g_snprintf (loctime, sizeof (loctime), "%02d:%02d ",
-		(time.tm_hour + current.timezone + 24)%24, time.tm_min);
-	NMEAsecs = dbus_current_fix.time;	// Use this value to judge timeout
-	/* Bail out if we have no fix */
-	current.gpsfix = 0;	// Handled later.
-	if (dbus_current_fix.mode>1) {
-		current.gpsfix = dbus_current_fix.mode;
-		haveRMCsentence = TRUE;
-		haveposcount++;
-		if (haveposcount == 3)
-			rebuildtracklist();
-	} else {
-		current.gpsfix = 1;
-		haveRMCsentence = FALSE;
-		haveposcount = 0;
-		dbus_old_fix = dbus_current_fix;
-		init_dbus_current_fix();
-		if (early)
-			dbus_current_fix.mode = -1;
-		storepoint();
-		return;
-	}
-	/* Handle latitude */
-	if (!gui_status.expmode && !current.simmode)
-		coords.current_lat = dbus_current_fix.latitude;
-	/* Handle longitude */
-	if (!gui_status.expmode && !current.simmode)
-		coords.current_lon = dbus_current_fix.longitude;
-	/* Handle speed */
-	if (__finite(dbus_current_fix.speed))
-		current.groundspeed = dbus_current_fix.speed * 3.6;	// Convert m/s to km/h
-	else if (dbus_old_fix.mode>1) {
-		gdouble timediff = dbus_current_fix.time-dbus_old_fix.time;
-		current.groundspeed = (timediff>0)?(calcdist2(dbus_old_fix.longitude, dbus_old_fix.latitude) * 3600 / timediff) : 0.0;
-	}
-	/* Handle bearing */
-	if (__finite(dbus_current_fix.track))
-		direction = dbus_current_fix.track * M_PI / 180;	// Convert to radians
-	else if (dbus_old_fix.mode>1) {
-		gdouble lon2 = coords.current_lon * M_PI / 180;
-		gdouble lon1 = dbus_old_fix.longitude * M_PI / 180;
-		gdouble lat2 = coords.current_lat * M_PI /180;
-		gdouble lat1 = dbus_old_fix.latitude * M_PI / 180;
-		if ((lat1 != lat2) || (lon1 != lon2))
-			direction = atan2(sin(lon2-lon1)*cos(lat2),
-				cos(lat1)*sin(lat2)-sin(lat1)*cos(lat2)*cos(lon2-lon1));
-	}
-	if ( mydebug + gps_handler_debug > 80 )
-		g_print("gps_handler: DBUS fix: %6.0f %10.6f/%10.6f sp:%5.2f(%5.2f) crs:%5.1f(%5.2f)\n", dbus_current_fix.time, 
-			dbus_current_fix.latitude, dbus_current_fix.longitude, dbus_current_fix.speed, current.groundspeed, 
-			dbus_current_fix.track, direction * 180 / M_PI);
-	/* Handle altitude */
-	if (dbus_current_fix.mode>2) {
-		current.gpsfix = 3;
-		current.altitude = dbus_current_fix.altitude;
-	}
-	/* Handle positional error */
-	current.gps_precision = dbus_current_fix.eph;
-	
-	dbus_old_fix = dbus_current_fix;
-	init_dbus_current_fix();
-	if (early)
-		dbus_current_fix.mode = -1;
-	storepoint();
-}
-
-static DBusHandlerResult dbus_handle_gps_fix (DBusMessage* message) {
-    
-    DBusError error;        
-	double		temp_time;
-	struct dbus_gps_fix	fix;
-
-    dbus_error_init(&error);
-
-    dbus_message_get_args(message,
-                            &error,
-                            DBUS_TYPE_DOUBLE, &temp_time,
-                            DBUS_TYPE_INT32,  &fix.mode,
-                            DBUS_TYPE_DOUBLE, &fix.ept,
-                            DBUS_TYPE_DOUBLE, &fix.latitude,
-                            DBUS_TYPE_DOUBLE, &fix.longitude,
-                            DBUS_TYPE_DOUBLE, &fix.eph,
-                            DBUS_TYPE_DOUBLE, &fix.altitude,
-                            DBUS_TYPE_DOUBLE, &fix.epv,
-                            DBUS_TYPE_DOUBLE, &fix.track,
-                            DBUS_TYPE_DOUBLE, &fix.epd,
-                            DBUS_TYPE_DOUBLE, &fix.speed,
-                            DBUS_TYPE_DOUBLE, &fix.eps,
-                            DBUS_TYPE_DOUBLE, &fix.climb,
-                            DBUS_TYPE_DOUBLE, &fix.epc,
-                            DBUS_TYPE_INVALID);
-    fix.time = floor(temp_time);
-
-	if ( mydebug + gps_handler_debug > 80 ) {
-		g_print("gps_handler: DBUS raw: ti:%6.0f mode:%d ept:%f %10.6f/%10.6f eph:%f\n", fix.time, fix.mode, fix.ept, fix.latitude, fix.longitude, fix.eph);
-		g_print("          alt:%6.2f epv:%f crs:%5.1f edp:%f sp:%5.2f eps:%f cl:%f epc:%f\n", fix.altitude, fix.epv, fix.track, fix.epd, fix.speed, fix.eps, fix.climb, fix.epc);
-	}
-		
-	/* Unfortunately gpsd dbus data is sometimes split over several messages */
-	/* so we have to accumulate them... */
-	
-	if (fix.time!=dbus_current_fix.time)
-		dbus_process_fix(FALSE);
-	// if mode is -1 we already processed it, so bail out
-	if (dbus_current_fix.mode==-1)
-		return DBUS_HANDLER_RESULT_HANDLED;
-	dbus_current_fix.time = fix.time;
-	if (__finite(fix.latitude))
-		if (__isnan(dbus_current_fix.latitude) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.latitude = fix.latitude;
-	if (__finite(fix.longitude))
-		if (__isnan(dbus_current_fix.longitude) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.longitude = fix.longitude;
-	if (__finite(fix.eph))
-		if (__isnan(dbus_current_fix.eph) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.eph = fix.eph;
-	if (__finite(fix.altitude))
-		if (__isnan(dbus_current_fix.altitude) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.altitude = fix.altitude;
-	if (__finite(fix.track))
-		if (__isnan(dbus_current_fix.track) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.track = fix.track;
-	if (__finite(fix.speed))
-		if (__isnan(dbus_current_fix.speed) || (fix.mode>dbus_current_fix.mode))
-			dbus_current_fix.speed = fix.speed;
-	if (fix.mode>dbus_current_fix.mode)
-		dbus_current_fix.mode = fix.mode;
-	
-	/* Do an early process if we have all important data to prevent lag. */
-	/* We do not consider positional error and altitude important for gpsdrive =) */
-	/* To soothe everybody, usually a valid altitude comes with the fix */
-	if ((dbus_current_fix.mode>1) && __finite(dbus_current_fix.latitude) && __finite(dbus_current_fix.longitude)
-		&& __finite(dbus_current_fix.track) && __finite(dbus_current_fix.speed))
-			dbus_process_fix(TRUE);
-	
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-#endif
-
-gint
-get_position_data_cb (GtkWidget * widget, guint * datum)
-{
-  gint e = 0, j = 0, i = 0, found = 0, foundGSV = 0, foundGGA =
-    0, foundGSA = 0, foundRME = 0;
-  gdouble secs = 0, tx, ty, lastdirection;
-  typedef struct
-  {
-    gchar *a1;
-    gchar *a2;
-    gchar *a3;
-  }
-  argument;
-  argument *argumente;
-  char tok[1000];
-  int tilimit;
-
-  if (current.importactive)
-    return TRUE;
-
-
-  if ((timeoutcount > 30 - mydebug - gps_handler_debug))
-    g_print ("*** %d. timeout getting data from GPS receiver!\n",
-	     timeoutcount);
-
-    tilimit = 10;
-
-  if (timeoutcount > tilimit) initgps();
- 
-  if (timeoutcount > tilimit)
-    {
-      gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
-      gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
-		_("Timeout getting data from GPS receiver!"));
-      current.gpsfix = 0;
-      haveposcount = 0;
-      memset (satlist, 0, sizeof (satlist));
-      memset (satlistdisp, 0, sizeof (satlist));
-    }
-
-
-  argumente = NULL;
-  if (!haveRMCsentence)
-    {
-	secs = NMEAsecs;
-
-      if (secs >= 1.0)
-	{
-	  tx = (2 * earthr * M_PI / 360) * cos (M_PI * coords.current_lat /
-						180.0) *
-	    (coords.current_lon - coords.old_lon);
-	  ty = (2 * earthr * M_PI / 360) * (coords.current_lat - coords.old_lat);
-#define MINMOVE 4.0
-	  if (((fabs (tx)) > MINMOVE) || (((fabs (ty)) > MINMOVE)))
-	    {
-	      lastdirection = current.heading;
-	      if (ty == 0)
-		current.heading = 0.0;
-	      else
-		current.heading = atan (tx / ty);
-	      if (!finite (current.heading))
-		current.heading = lastdirection;
-	      if (ty < 0)
-		current.heading = M_PI + current.heading;
-	      if (current.heading >= (2 * M_PI))
-		current.heading -= 2 * M_PI;
-	      if (current.heading < 0)
-		current.heading += 2 * M_PI;
-
-	      current.groundspeed = milesconv * sqrt (tx * tx + ty * ty) * 3.6 / secs;
-	      coords.old_lat = coords.current_lat;
-	      coords.old_lon = coords.current_lon;
-	    }
-	  else if (secs > 4.0)
-	    current.groundspeed = 0.0;
-
-	  if (current.groundspeed > 2000)
-	    current.groundspeed = 0;
-	  if (current.groundspeed < 3.6)
-	    current.groundspeed = 0;
-
-	  if ( mydebug + gps_handler_debug > 80 )
-	    g_print ("gps_handler: Time: %f\n", secs);
-	}
-
-      /*  display status line */
-      if (gui_status.expmode)
-	display_status (_("Press middle mouse button for navigation"));
-
-    }
-
-  /*    only if we have no NMEA, means no measured position */
-  if (!haveNMEA)
-    {
-      /*  display status line */
-      if (!current.simmode)
-	display_status (_("No GPS used"));
-      else if (maploaded && !gui_status.expmode)
-	display_status (_("Simulation mode"));
-      else if (gui_status.expmode)
-	display_status (_("Press middle mouse button for sim mode"));
-
-
-      return TRUE;
-    }
-
-#ifdef DBUS
-  if (useDBUS) {
-	if (NMEAoldsecs == floor(NMEAsecs)) {
-		timeoutcount++;
-		return TRUE;
-	}
-	NMEAoldsecs = floor(NMEAsecs);
-	timeoutcount = 0;
-	if (current.gpsfix > 1) {
-		if (gui_status.expmode)
-			display_status (_("Press middle mouse button for navigation"));
-		else
-			display_status (nmeamodeandport);
-	} else 
-		display_status(_("Not enough satellites in view!"));
-  } else {
-#endif
-  /*  this is the NMEA reading part. data comes from port 2222 served by gpsd */
-  FD_ZERO (&readmask);
-  FD_SET (sock, &readmask);
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 100000;
-  if (select (FD_SETSIZE, &readmask, NULL, NULL, &timeout) < 0)
-  {
-      timeoutcount++;
-      perror ("select() call");
-  }
-  if (FD_ISSET (sock, &readmask))
-    {
-      if ((e = recv(sock, buffer, 2000, 0)) <= 0) {
-	perror ("read from gpsd connection");
-	timeoutcount ++;
-      }
-      buffer[e] = 0;
-      if ((bigp + e) < MAXBIG)
-	{
-	  if (mydebug + gps_handler_debug>30)
-	      g_print ("gps_handler: gpsd: !!bigp:%d, e: %d!! , strlen big:%Zu\n"
-		       , bigp, e, strlen (big));
-	  g_strlcat (big, buffer, MAXBIG);
-	  bigp += e;
-	  bigpGSA = bigpRME = bigpGSV = bigpGGA = bigp;
-
-	  for (i = bigp; i > lastp; i--)
-	    {
-	      if (big[i] == '$')
-		{
-		  /*  collect string for position data $GPRMC */
-		  if ((big[i + 3] == 'R')
-		      && (big[i + 4] == 'M') && (big[i + 5] == 'C'))
-		    {
-		      found = 0;
-		      if ( mydebug + gps_handler_debug > 80 )
-			g_print ("gps_handler: gpsd: found #RMC#\n");
-		      for (j = i; j <= bigp; j++)
-			if (big[j] == 13)
-			  {
-			    found = j;
-			    break;
-			  }
-		      if (found != 0)
-			{
-			  strncpy (tok, (big + i), found - i);
-			  tok[found - i] = 0;
-			  lastp = found;
-			  timeoutcount = 0;
-
-			  /*  we have the $GPRMC string completed, now parse it */
-			  if (checksum (tok) == TRUE)
-			    convertRMC (tok);
-
-			  /*  display the position and map in the statusline */
-			  if (current.gpsfix > 1)
-			    {
-			      if (gui_status.expmode)
-				display_status
-				  (_
-				   ("Press middle mouse button for navigation"));
-			      else
-				display_status (nmeamodeandport);
-			    }
-			  else
-			    display_status
-			      (_("Not enough satellites in view!"));
-			}
-		    }
-		}
-	    }
-
-	  /*  collect string for satellite data $GPGSV */
-	  for (i = bigpGSV; i > lastpGSV; i--)
-	    {
-	      if (big[i] == '$')
-		{
-
-		  if ((big[i + 3] == 'G')
-		      && (big[i + 4] == 'S') && (big[i + 5] == 'V'))
-		    {
-		      foundGSV = 0;
-		      if ( mydebug + gps_handler_debug > 80 )
-			g_print ("gpsd: found #GSV#, bigpGSV: %d\n", bigpGSV);
-		      for (j = i; j <= bigpGSV; j++)
-			if (big[j] == 13)
-			  {
-			    foundGSV = j;
-			    break;
-			  }
-		      if (foundGSV != 0)
-			{
-			  gint lenstr;
-			  lenstr = foundGSV - i;
-			  if ((lenstr) > 200)
-			    {
-			      g_print
-				("Error in line %d, found GSV=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGSV, i, lenstr);
-			      lenstr = 200;
-			    }
-			  if (i > foundGSV)
-			    {
-			      g_print
-				("Error in line %d, found GSV=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGSV, i, lenstr);
-			      lenstr = 0;
-			    }
-			  if (lenstr < 0)
-			    {
-			      g_print
-				("Error in line %d, foundGSV=%d,i=%d, lenstr=%d\n",
-				 __LINE__, foundGSV, i, lenstr);
-			      lenstr = 0;
-			    }
-			  if (lenstr != 0)
-			    {
-			      strncpy (tok, (big + i), lenstr);
-			      tok[lenstr] = 0;
-
-			      if (checksum (tok) == TRUE)
-				{
-				  if ((convertGSV (tok)) == TRUE)
-				    lastpGSV = foundGSV;
-				}
-			    }
-			}
-		    }
-		}
-	    }
-
-
-	  /*  collect string for altitude from  $GPGGA if available */
-	  for (i = bigpGGA; i > lastpGGA; i--)
-	    {
-	      if (big[i] == '$')
-		{
-
-		  if ((big[i + 3] == 'G')
-		      && (big[i + 4] == 'G') && (big[i + 5] == 'A'))
-		    {
-		      foundGGA = 0;
-		      if ( mydebug + gps_handler_debug > 80 )
-			g_print ("gps_handler: gpsd: found #GGA#\n");
-		      timeoutcount = 0;
-
-		      for (j = i; j <= bigpGGA; j++)
-			if (big[j] == 13)
-			  {
-			    foundGGA = j;
-			    break;
-			  }
-		      if (foundGGA != 0)
-			{
-			  gint lenstr;
-			  lenstr = foundGGA - i;
-			  if ((lenstr) > 200)
-			    {
-			      g_print
-				("Error in line %d, foundGGA=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGGA, i, lenstr);
-			      lenstr = 200;
-			    }
-			  if (i > foundGGA)
-			    {
-			      g_print
-				("Error in line %d, foundGGA=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGGA, i, lenstr);
-			      lenstr = 0;
-			    }
-			  if (lenstr != 0)
-			    {
-			      strncpy (tok, (big + i), lenstr);
-			      tok[lenstr] = 0;
-			      lastpGGA = foundGGA;
-
-			      if (checksum (tok) == TRUE)
-				convertGGA (tok);
-			      if (current.gpsfix > 1)
-				{
-				  if (gui_status.expmode)
-				    display_status
-				      (_
-				       ("Press middle mouse button for navigation"));
-				  else
-				    display_status (nmeamodeandport);
-				}
-			      else
-				display_status
-				  (_("Not enough satellites in view!"));
-
-			    }
-			}
-		    }
-		}
-	    }
-
-	  /*  collect string for precision from  $PGRME if available */
-	  for (i = bigpRME; i > lastpRME; i--)
-	    {
-	      if (big[i] == '$')
-		{
-
-		  if ((big[i + 1] == 'P')
-		      && (big[i + 2] == 'G')
-		      && (big[i + 3] == 'R')
-		      && (big[i + 4] == 'M') && (big[i + 5] == 'E'))
-		    {
-		      foundRME = 0;
-		      if ( mydebug + gps_handler_debug > 80 )
-			g_print ("gps_handler: gpsd: found #RME#\n");
-		      for (j = i; j <= bigpRME; j++)
-			if (big[j] == 13)
-			  {
-			    foundRME = j;
-			    break;
-			  }
-		      if (foundRME != 0)
-			{
-			  gint lenstr;
-			  lenstr = foundRME - i;
-			  if ((lenstr) > 200)
-			    {
-			      g_print
-				("Error in line %d, foundRME=%d,i=%d, diff=%d\n",
-				 __LINE__, foundRME, i, lenstr);
-			      lenstr = 200;
-			    }
-			  if (i > foundRME)
-			    {
-			      g_print
-				("Error in line %d, foundRME=%d,i=%d, diff=%d\n",
-				 __LINE__, foundRME, i, lenstr);
-			      lenstr = 0;
-			    }
-			  if (lenstr != 0)
-			    {
-			      strncpy (tok, (big + i), lenstr);
-			      tok[lenstr] = 0;
-			      lastpRME = foundRME;
-
-			      if (checksum (tok) == TRUE)
-				convertRME (tok);
-			    }
-			}
-		    }
-		}
-	    }
-
-	  /*  collect string for precision from  $GPGSA if available */
-	  for (i = bigpGSA; i > lastpGSA; i--)
-	    {
-	      if (big[i] == '$')
-		{
-
-		  if ((big[i + 1] == 'G')
-		      && (big[i + 2] == 'P')
-		      && (big[i + 3] == 'G')
-		      && (big[i + 4] == 'S') && (big[i + 5] == 'A'))
-		    {
-		      foundGSA = 0;
-		      if ( mydebug + gps_handler_debug > 80 )
-			g_print ("gps_handler: gpsd: found #GSA#\n");
-		      for (j = i; j <= bigpGSA; j++)
-			if (big[j] == 13)
-			  {
-			    foundGSA = j;
-			    break;
-			  }
-		      if (foundGSA != 0)
-			{
-			  gint lenstr;
-			  lenstr = foundGSA - i;
-			  if ((lenstr) > 200)
-			    {
-			      g_print
-				("Error in line %d, foundGSA=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGSA, i, lenstr);
-			      lenstr = 200;
-			    }
-			  if (i > foundGSA)
-			    {
-			      g_print
-				("Error in line %d, foundGSA=%d,i=%d, diff=%d\n",
-				 __LINE__, foundGSA, i, lenstr);
-			      lenstr = 0;
-			    }
-			  if (lenstr != 0)
-			    {
-			      strncpy (tok, (big + i), lenstr);
-			      tok[lenstr] = 0;
-			      lastpGSA = foundGSA;
-
-			      if (checksum (tok) == TRUE)
-				convertGSA (tok);
-			    }
-			}
-		    }
-		}
-	    }
-
-
-
-	  if ( mydebug + gps_handler_debug > 80 )
-	    {
-	      g_print ("gps_handler: gpsd: size:%d lastp: %d \n", e, lastp);
-	      g_print ("gps_handler: gpsd: buffer: %s\n", buffer);
-	    }
-
-	}
-      else
-	{
-	  lastp = lastpGGA = lastpGSV = lastpRME = lastpGSA = 0;
-	  bigp = e;
-	  g_strlcpy (big, buffer, MAXBIG);
-	}
-
-    }
-  else
-    {
-      timeoutcount++;
-    }
-#ifdef DBUS
-  }
-#endif
-
-
-  return (TRUE);
+	return TRUE;
 }

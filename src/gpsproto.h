@@ -29,7 +29,6 @@ void insertroutepoints ();
 void setroutetarget ();
 gint initgps ();
 gint defaultserver_cb (GtkWidget * widget, guint datum);
-gint usedgps_cb (GtkWidget * widget, guint datum);
 void saytargettext (gchar * filename, gchar * target);
 void display_dsc (void);
 void coordinate2gchar (gchar * text, gint buff_size, gdouble pos, gint islat, gint mode);

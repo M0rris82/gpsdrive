@@ -91,8 +91,6 @@ extern gchar loctime[20], utctime[20];
 extern gint mydebug;
 extern gint debug;
 extern gint iszoomed, xoff, yoff;
-extern gint sats_used, sats_in_view;
-extern gint haveNMEA;
 
 extern gdouble wp_saved_target_lat;
 extern gdouble wp_saved_target_lon;
@@ -854,7 +852,7 @@ update_dashboard (GtkWidget *frame, gint source)
 
 			g_strlcpy (head, _("Altitude"), sizeof (head));
 
-			if (current.gpsfix == 3)
+			if (current.gps_mode == GPSMODE_3D)
 				g_get_current_time (&current.last3dfixtime);
 			g_get_current_time (&t_now);
 
@@ -996,11 +994,6 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_GPSPRECISION:
 		{
-			// TODO: This should show EPE values once we switched
-			// to libgps, because they do a better predication of
-			// what's going on for the end user.
-			// Until then, we show PDOP and number of satellites,
-			// if available.
 			gint pfd_size;
 			gchar *font_prec;
 			PangoFontDescription *pfd;
@@ -1014,9 +1007,9 @@ update_dashboard (GtkWidget *frame, gint source)
 			g_strlcpy (head, _("GPS Precision"), sizeof (head));
 
 			g_snprintf (content, sizeof (content),
-				"<span color=\"%s\" font_desc=\"%s\">HDOP: %.1f\nSats: %d/%d</span>",
+				"<span color=\"%s\" font_desc=\"%s\">EPH: %.1f m\nEPV: %.1f m</span>",
 				local_config.color_dashboard, font_prec,
-				current.gps_hdop, sats_used, sats_in_view);
+				current.gps_eph, current.gps_epv);
 
 			pango_font_description_free (pfd);
 			g_free (font_prec);
@@ -1029,7 +1022,7 @@ update_dashboard (GtkWidget *frame, gint source)
 		case DASH_TIME:
 		{
 			g_strlcpy (head, _("Current Time"), sizeof (head));
-			if (current.gpsfix > 1)
+			if (current.gps_status > GPS_NO_FIX)
 			{
 				g_snprintf (content, sizeof (content),
 					"<span color=\"%s\" font_desc=\"%s\">"
@@ -1207,28 +1200,26 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 	}
 	else
 	{
-		switch (current.gpsfix)
+		switch (current.gps_mode)
 		{
-		case 0:
+		case GPSMODE_NOT_SEEN:
 		{
 			gdk_gc_set_foreground (kontext_gpsfix, &colors.red);
 			break;
 		}
-		case 1:
+		case GPSMODE_NO_FIX:
 		{
 			gdk_gc_set_foreground (kontext_gpsfix, &colors.red);
 			pango_layout_set_text (layout_gpsfix, "No Fix", -1);
 			break;
 		}
-		case 2:
+		case GPSMODE_2D:
 		{
-			// TODO: have a look at the nmea parsing
-			// to avoid "jumping" between 2D and 3D
 			gdk_gc_set_foreground (kontext_gpsfix, &colors.green);
 			pango_layout_set_text (layout_gpsfix, "2D Fix", -1);
 			break;
 		}
-		case 3:
+		case GPSMODE_3D:
 		{
 			gdk_gc_set_foreground (kontext_gpsfix, &colors.green);
 			pango_layout_set_text (layout_gpsfix, "3D Fix", -1);
@@ -1249,10 +1240,10 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 		gdk_gc_set_line_attributes (kontext_gpsfix, t_wx, 0, 0, 0);
 		for (i=1; i<13; i++)
 		{
-			if (i > sats_in_view)
+			if (i > current.gps_sats_in_view)
 				gdk_gc_set_foreground
 					(kontext_gpsfix, &colors.grey);
-			else if (i > sats_used)
+			else if (i > current.gps_sats_used)
 				gdk_gc_set_foreground
 					(kontext_gpsfix, &colors.darkgrey);
 			gdk_draw_line (drawable_gpsfix, kontext_gpsfix,
@@ -1286,7 +1277,7 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	if ( mydebug > 50 )
 		g_print ("expose_sats_cb ()\n");
 
-	if (!haveNMEA)
+	if (current.gps_status = GPS_NO_FIX)
 		return TRUE;
 
 	drawable_sats = drawing_sats->window;
@@ -1325,7 +1316,7 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	gdk_gc_set_line_attributes (kontext_sats, bx, 0, 0, 0);
 	for (i=0; i<12; i++)
 	{
-		if (i==sats_in_view)
+		if (i == current.gps_sats_in_view)
 			gdk_gc_set_foreground (kontext_sats, &colors.black);
 		gdk_draw_line (drawable_sats, kontext_sats,
 			x/2+12 + i*(bx+4)+bx/2 , w/2+12 , x/2+12 + i*(bx+4) + bx/2 , w-12);
@@ -1384,8 +1375,10 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	coordinate2gchar(slat, sizeof(slat), coords.current_lat, TRUE, local_config.coordmode);
 	coordinate2gchar(slon, sizeof(slon), coords.current_lon, FALSE, local_config.coordmode);
 	g_snprintf (t_buf, sizeof (t_buf),
-		"Latitude: %s\nLongitude: %s\nAltitude: %.1f m\nUTC Time: %s\nHDOP: %.1f",
-		slat, slon, current.altitude, utctime, current.gps_hdop);
+		"Latitude: %s\nLongitude: %s\nAltitude: %.1f m\nUTC Time:"
+		" %s\nEPH: %.1f m / EPV: %.1f m",
+		slat, slon, current.altitude, utctime,
+		current.gps_eph, current.gps_epv);
 	layout_sats = gtk_widget_create_pango_layout (drawing_sats, t_buf);
 	pfd_sats = pango_font_description_from_string ("Sans Bold 10");
 	pango_layout_set_font_description (layout_sats, pfd_sats);

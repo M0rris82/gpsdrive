@@ -117,7 +117,7 @@ reinitgps_cb (GtkWidget *widget)
 {
 	g_print ("\nReinitializing connection to GPSd ...\n");
 
-	initgps ();
+	gpsd_connect (TRUE);
 
 	g_print ("GPSd initialization complete.\n");
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
@@ -826,7 +826,7 @@ setsimmode_cb (GtkWidget *widget, guint value)
 	local_config.simmode = value;
 	if (value == SIM_AUTO)
 	{
-		if (current.gpsfix < 2)
+		if (current.gps_mode < GPSMODE_2D)
 			current.simmode = TRUE;
 		else
 			current.simmode = FALSE;

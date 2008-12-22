@@ -136,6 +136,8 @@ typedef struct
 	gint kismet_serverport;
 	gchar screenshot_dir[1000];
 	gboolean embeddable_gui;	/* use GtkPlug instead of GtkWindow for main_window */
+	gchar gpsd_server[200];
+	gchar gpsd_port[6];
 }
 local_gpsdrive_config;
 
