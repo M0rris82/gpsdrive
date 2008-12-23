@@ -107,7 +107,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	if (mydebug > 20)
 		g_print ("gps_hook_cb ()\n");
 
-	if (data->status == STATUS_NO_FIX)
+	if (data->status == STATUS_NO_FIX || data->fix.mode == MODE_NOT_SEEN)
 		return;
 
 	if (mydebug > 40)
