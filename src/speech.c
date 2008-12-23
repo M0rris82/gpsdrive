@@ -168,6 +168,37 @@ speech_saytime (gboolean greeting)
 
 
 /* *****************************************************************************
+ *  say the current gps fix mode
+ */
+void
+speech_say_gpsfix (void)
+{
+	static gint old_gps_status = -1;
+
+	if (current.gps_status == old_gps_status)
+		return;
+
+	switch (current.gps_status)
+	{
+		case GPS_NO_FIX:
+			speech_saytext (_("Not enough satellites in view."), 3);
+			break;
+		case GPS_FIX:
+			if ( old_gps_status == GPS_DGPS_FIX )
+				speech_saytext (_("Differential GPS signal lost."), 3);
+			else
+				speech_saytext (_("GPS signal is good."), 3);
+			break;
+		case GPS_DGPS_FIX:
+			speech_saytext (_("Differential GPS signal found."), 3);
+			break;
+	}
+
+	old_gps_status = current.gps_status;
+}
+
+
+/* *****************************************************************************
  */
 void
 speech_set_parameters (void)
@@ -268,7 +299,6 @@ speech_init (void)
 
 	return TRUE;
 }
-
 
 
 /* *****************************************************************************

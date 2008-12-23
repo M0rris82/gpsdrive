@@ -152,6 +152,8 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 		}
 	}
 
+	if (!local_config.mute && local_config.sound_gps)
+		speech_say_gpsfix ();
 }
 
 
