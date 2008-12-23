@@ -152,11 +152,11 @@ gps_query_data_cb (gpointer data)
 		return TRUE;
 
 	/* query gpsd for data:
-	 * s - get fix mode
 	 * o - get time/position/velocity data
 	 * y - get satellite info
+	 * s - get fix status (must be after "o" else its value is overwritten)
 	 */
-	gps_query (gpsdata, "soy\n");
+	gps_query (gpsdata, "oys\n");
 
 	return (TRUE);
 }

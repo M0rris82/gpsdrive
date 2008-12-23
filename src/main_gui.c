@@ -1223,8 +1223,16 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 		}
 		case GPSMODE_3D:
 		{
-			gdk_gc_set_foreground (kontext_gpsfix, &colors.green);
-			pango_layout_set_text (layout_gpsfix, "3D Fix", -1);
+			if (current.gps_status != GPS_DGPS_FIX)
+			{
+				gdk_gc_set_foreground (kontext_gpsfix, &colors.green);
+				pango_layout_set_text (layout_gpsfix, "3D Fix", -1);
+			}
+			else
+			{
+				gdk_gc_set_foreground (kontext_gpsfix, &colors.green_light);
+				pango_layout_set_text (layout_gpsfix, "3D Fix+", -1);
+			}
 			break;
 		}
 		}
@@ -1262,7 +1270,6 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 /* *****************************************************************************
  * show satellite information
  * TODO:
- *	- show, if satellite is used (filled) or not (empty)
  *	- show satellite numbers
  */
 gint
@@ -1279,7 +1286,7 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	if ( mydebug > 50 )
 		g_print ("expose_sats_cb ()\n");
 
-	if (current.gps_status = GPS_NO_FIX)
+	if (current.gps_status == GPS_NO_FIX)
 		return TRUE;
 
 	drawable_sats = drawing_sats->window;
@@ -1384,37 +1391,6 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	if (layout_sats != NULL)
 		g_object_unref (G_OBJECT (layout_sats));
 	pango_font_description_free (pfd_sats);
-
-/*
-TODO: move this somewhere else...
-
-      if( !local_config.mute && local_config.sound_gps && satfix != oldsatfix)
-      {
-        if( 0 == satfix )
-        {
-          g_snprintf( buf, sizeof(buf), speech_gps_lost[voicelang] );
-        }
-        else if( 1 == satfix )
-        {
-          if( 2 == oldsatfix )
-          {
-            g_snprintf( buf, sizeof(buf), speech_diff_gps_lost[voicelang] );
-          }
-          else
-          {
-            g_snprintf( buf, sizeof(buf), speech_gps_good[voicelang] );
-          }
-        }
-        else if( 2 == satfix )
-        {
-          g_snprintf( buf, sizeof(buf), speech_diff_gps_found[voicelang] );
-        }
-
-        speech_out_speek( buf );
-      }
-
-      oldsatfix = satfix;
-*/
 
 	return TRUE;
 }

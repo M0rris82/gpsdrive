@@ -27,6 +27,7 @@ Build-Depends: debhelper (>= 5),
 	python-dev,
 	python-support,
 	xutils,
+	libgps-dev,
 	libspeechd-dev,
 	speech-dispatcher
 Standards-Version: 3.6.1
