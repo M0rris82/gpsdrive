@@ -263,6 +263,9 @@ speech_set_voice (void)
 void
 speech_close (void)
 {
+	if (!local_config.mute)
+		speech_saytext (_("Good bye. Thank you for using G P S drive!"), 2);
+
 	g_free (speech_modules);
 
 	if (speechd_conn)
