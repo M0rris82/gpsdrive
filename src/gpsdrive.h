@@ -351,6 +351,8 @@ typedef struct
 	gdouble gps_epv;	/* gps estimated vertical error in meters */
 	gint gps_sats_used;	/* number of satellites currently used */
 	gint gps_sats_in_view;	/* number of satellites currently seen */
+	gchar utc_time[20];	/* utc time from gps */
+	gchar loc_time[20];	/* local time from gps */
 	GTimeVal last3dfixtime;	/* saves time of last 3D Fix. Hack for jumping
 				 * altitude display caused by bad nmea data */
 	gboolean needtosave;	/* flag if config has to be saved */

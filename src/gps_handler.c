@@ -101,6 +101,8 @@ void
 gps_hook_cb (struct gps_data_t *data, gchar *buf)
 {
 	gint i;
+	struct tm t_tim;
+	time_t t_gpstime;
 
 	if (mydebug > 20)
 		g_print ("gps_hook_cb ()\n");
@@ -113,6 +115,8 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
 		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
 		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
+		g_print ("  Heading: %.2f\n  GPS time: %.0f\n",
+			data->fix.track, data->fix.time);
 		g_print ("  Speed: %.1f m/s\n  Altitude: %.1f m\n\n",
 			data->fix.speed, data->fix.altitude);
 	}
@@ -124,11 +128,17 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	current.altitude = data->fix.altitude;
 	current.gps_sats_used = data->satellites_used;
 	current.gps_sats_in_view = data->satellites;
-	current.groundspeed = data->fix.speed * 3.6;
-	current.heading = data->fix.track;
+	current.groundspeed = data->fix.speed * MPS_TO_KPH;
+	current.heading = data->fix.track * DEG_2_RAD;
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
 	current.gps_epv = data->fix.epv;
+
+	t_gpstime = (time_t) data->fix.time;
+	gmtime_r (&t_gpstime, &t_tim);
+	strftime (current.utc_time, sizeof (current.utc_time), "%H:%M:%S", &t_tim);
+	localtime_r(&t_gpstime, &t_tim);
+	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
 
 	if (data->satellites > 0)
 	{

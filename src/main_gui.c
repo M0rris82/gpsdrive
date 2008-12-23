@@ -89,7 +89,6 @@ extern color_struct colors;
 extern routestatus_struct route;
 extern tripdata_struct trip;
 extern int actualfriends, maxfriends;
-extern gchar loctime[20], utctime[20];
 extern gint mydebug;
 extern gint debug;
 extern gint iszoomed, xoff, yoff;
@@ -1030,7 +1029,7 @@ update_dashboard (GtkWidget *frame, gint source)
 					"<span color=\"%s\" font_desc=\"%s\">"
 					"%s</span>",
 				local_config.color_dashboard,
-				local_config.font_dashboard, loctime);
+				local_config.font_dashboard, current.loc_time);
 			}
 			else
 			{
@@ -1099,7 +1098,7 @@ update_statusdisplay ()
 	gdouble t_lat, t_lon;
 
 	/* update gps time */
-	gtk_label_set_text (GTK_LABEL (statustime_lb), loctime);
+	gtk_label_set_text (GTK_LABEL (statustime_lb), current.loc_time);
 
 	/* update friends */
 	if (local_config.showfriends)
@@ -1380,7 +1379,7 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 	g_snprintf (t_buf, sizeof (t_buf),
 		"Latitude: %s\nLongitude: %s\nAltitude: %.1f m\nUTC Time:"
 		" %s\nEPH: %.1f m / EPV: %.1f m",
-		slat, slon, current.altitude, utctime,
+		slat, slon, current.altitude, current.utc_time,
 		current.gps_eph, current.gps_epv);
 	layout_sats = gtk_widget_create_pango_layout (drawing_sats, t_buf);
 	pfd_sats = pango_font_description_from_string ("Sans Bold 10");

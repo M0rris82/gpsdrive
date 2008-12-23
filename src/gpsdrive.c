@@ -271,7 +271,6 @@ GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
 GdkPixbuf *satsimage = NULL;
 gint numgrids = 4, scroll = TRUE;
-gchar utctime[20], loctime[20];
 gint redrawtimeout;
 gint borderlimit = 100;
 gint pdamode = FALSE;
@@ -2287,7 +2286,8 @@ main (int argc, char *argv[])
     /*    zero_lat and zero_lon are overwritten by config file,  */
 
     g_strlcpy (current.target, "     ", sizeof (current.target));
-    g_strlcpy (utctime, _("n/a"), sizeof (utctime));
+    g_strlcpy (current.utc_time, _("n/a"), sizeof (current.utc_time));
+    g_strlcpy (current.loc_time, _("n/a"), sizeof (current.loc_time));
     g_strlcpy (oldangle, _("none"), sizeof (oldangle));
     pixelfact = MAPSCALE / PIXELFACT;
     g_strlcpy (oldfilename, "", sizeof (oldfilename));
@@ -2329,7 +2329,6 @@ main (int argc, char *argv[])
     current.importactive = FALSE;
     dbdistance = 2000.0;
     dbusedist = TRUE;
-    g_strlcpy (loctime, "n/a", sizeof (loctime));
     track = g_new0 (GdkSegment, 100000);
     trackshadow = g_new0 (GdkSegment, 100000);
     tracknr = 0;
