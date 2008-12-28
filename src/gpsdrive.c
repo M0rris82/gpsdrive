@@ -939,12 +939,18 @@ draw_infotext (gchar *text)
 	gdk_gc_set_function (kontext_map, GDK_OR);
 	gdk_gc_set_foreground (kontext_map, &colors.mygray);
 	gdk_draw_rectangle (drawable, kontext_map, 1,
-		0, gui_status.mapview_y-cy-10, cx+10, gui_status.mapview_y);
+		(gui_status.mapview_x/2)-(cx/2)-5,
+		gui_status.mapview_y-cy-10,
+		cx+10, gui_status.mapview_y);
+
 	gdk_gc_set_function (kontext_map, GDK_COPY);
 	gdk_gc_set_foreground (kontext_map, &colors.blue);
 
 	gdk_draw_layout_with_colors (drawable, kontext_map,
-		5, gui_status.mapview_y-cy-5, layout_filename, &colors.blue, NULL);
+		(gui_status.mapview_x/2)-(cx/2),
+		gui_status.mapview_y-cy-5,
+		layout_filename, &colors.blue, NULL);
+
 	if (layout_filename != NULL)
 		g_object_unref (G_OBJECT (layout_filename));
 	/* freeing PangoFontDescription, cause it has been copied by prev. call */
