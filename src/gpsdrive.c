@@ -1011,11 +1011,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 
 	if (local_config.savetrack)
 	{
-		k = 100;
-		gdk_gc_set_foreground (kontext_map, &colors.white);
-		gdk_draw_rectangle (drawable, kontext_map, 1, 10,
-				    gui_status.mapview_y - 21, k + 3, 14);
-		gdk_gc_set_foreground (kontext_map, &colors.red);
+		gint cx, cy;
 		{
 			/* prints in pango */
 			PangoFontDescription *pfd;
@@ -1024,23 +1020,30 @@ drawmarker (GtkWidget * widget, guint * datum)
 			wplabellayout =
 				gtk_widget_create_pango_layout (map_drawingarea,
 								savetrackfn);
+#ifdef MAEMO
+			pfd = pango_font_description_from_string ("Sans 7");
+#else
 			if (local_config.guimode == GUI_PDA)
 				pfd = pango_font_description_from_string
 					("Sans 7");
 			else if (local_config.guimode == GUI_CAR)
 				pfd = pango_font_description_from_string
 					("Sans 7");
-			else if (local_config.guimode == GUI_MAEMO)
-				pfd = pango_font_description_from_string
-					("Sans 7");
 			else
 				pfd = pango_font_description_from_string
 					("Sans 10");
+#endif
 			pango_layout_set_font_description (wplabellayout,
 							   pfd);
 
+			gdk_gc_set_foreground (kontext_map, &colors.white);
+			pango_layout_get_pixel_size (wplabellayout, &cx, &cy);
+			gdk_draw_rectangle (drawable, kontext_map, 1, 10,
+				gui_status.mapview_y - cy - 10, cx + 10, cy + 10);
+
+			gdk_gc_set_foreground (kontext_map, &colors.red);
 			gdk_draw_layout_with_colors (drawable, kontext_map,
-						     14, gui_status.mapview_y - 22,
+						     15, gui_status.mapview_y - cy - 5,
 						     wplabellayout, &colors.red,
 						     NULL);
 			if (wplabellayout != NULL)
