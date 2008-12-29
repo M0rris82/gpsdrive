@@ -34,6 +34,11 @@ include(DefineCPackDefaults)
 include(ConfigureChecks.cmake)
 include(DefineOptions.cmake)
 
+# allow creation of source package with target 'package'
+include(CPack)
+set(CPACK_GENERATOR "TGZ")
+
+
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 add_subdirectory(src)
