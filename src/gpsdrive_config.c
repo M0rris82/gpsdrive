@@ -113,10 +113,26 @@ writeconfig ()
 	fprintf (fp, "trackautoclean = %d\n",
 		local_config.track_autoclean);
 
-	fprintf (fp, "showtrackrestartbutton = %d\n",
-		local_config.showbutton_trackrestart);
+	fprintf (fp, "showdashboard = %d\n",
+		local_config.show_dashboard);
 
-	fprintf (fp, "showtrackclearbutton = %d\n",
+	fprintf (fp, "showbuttonmenu = %d\n",
+		local_config.show_controls);
+	fprintf (fp, "showbutton_zoom = %d\n",
+		local_config.showbutton_zoom);
+	fprintf (fp, "showbutton_scaler = %d\n",
+		local_config.showbutton_scaler);
+	fprintf (fp, "showbutton_mute = %d\n",
+		local_config.showbutton_mute);
+	fprintf (fp, "showbutton_find = %d\n",
+		local_config.showbutton_find);
+	fprintf (fp, "showbutton_route = %d\n",
+		local_config.showbutton_route);
+	fprintf (fp, "showbutton_map = %d\n",
+		local_config.showbutton_map);
+	fprintf (fp, "showbutton_trackrestart = %d\n",
+		local_config.showbutton_trackrestart);
+	fprintf (fp, "showbutton_trackclear = %d\n",
 		local_config.showbutton_trackclear);
 
 	fprintf (fp, "mutespeechoutput = ");
@@ -348,9 +364,25 @@ readconfig ()
 				sizeof (local_config.track_autoprefix));
 			else if ( (strcmp(par1, "trackautoclean")) == 0)
 				local_config.track_autoclean = atoi (par2);
-			else if ( (strcmp(par1, "showtrackrestartbutton")) == 0)
+			else if ( (strcmp(par1, "showdashboard")) == 0)
+				local_config.show_dashboard = atoi (par2);
+			else if ( (strcmp(par1, "showbuttonmenu")) == 0)
+				local_config.show_controls = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_zoom")) == 0)
+				local_config.showbutton_zoom = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_scaler")) == 0)
+				local_config.showbutton_scaler = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_mute")) == 0)
+				local_config.showbutton_mute = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_find")) == 0)
+				local_config.showbutton_find = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_route")) == 0)
+				local_config.showbutton_route = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_map")) == 0)
+				local_config.showbutton_map = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_trackrestart")) == 0)
 				local_config.showbutton_trackrestart = atoi (par2);
-			else if ( (strcmp(par1, "showtrackclearbutton")) == 0)
+			else if ( (strcmp(par1, "showbutton_trackclear")) == 0)
 				local_config.showbutton_trackclear = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
 				local_config.travelmode = atoi (par2);
@@ -692,9 +724,6 @@ config_init ()
 	local_config.autobestmap = 1;
 	local_config.rotating_compass = TRUE;
 	local_config.track_autoclean = FALSE;
-	local_config.show_controls = TRUE;
-	local_config.showbutton_trackclear = TRUE;
-	local_config.showbutton_trackrestart = TRUE;
 	local_config.style_track = 3;
 	local_config.style_route = 1;
 
@@ -767,6 +796,18 @@ config_init ()
 		"Sans 8", sizeof (local_config.font_tmp_wplabel));
 	g_strlcpy (local_config.font_tmp_friends,
 		"Sans bold 10", sizeof (local_config.font_tmp_friends));
+
+	/* buttons displayed */
+	local_config.show_controls = TRUE;
+	local_config.show_dashboard = TRUE;
+	local_config.showbutton_trackclear = TRUE;
+	local_config.showbutton_trackrestart = TRUE;
+	local_config.showbutton_zoom = TRUE;
+	local_config.showbutton_scaler = TRUE;
+	local_config.showbutton_mute = TRUE;
+	local_config.showbutton_find = TRUE;
+	local_config.showbutton_route = TRUE;
+	local_config.showbutton_map = TRUE;
 
 	/* set files and directories (~/.gpsdrive) */
 	hd = (gchar *) g_get_home_dir ();

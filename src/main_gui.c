@@ -1495,6 +1495,27 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		}
 	}
 
+	// Toggle Display of Dashboard
+	if ((toupper (event->keyval)) == 'D' && local_config.guimode != GUI_PDA)
+	{
+		if (local_config.show_dashboard)
+		{
+			if (local_config.guimode == GUI_DESKTOP)
+				gtk_widget_hide_all (statusdashboard_box);
+			else
+				gtk_widget_hide_all (mainbox_status);
+			local_config.show_dashboard = FALSE;
+		}
+		else
+		{
+			if (local_config.guimode == GUI_DESKTOP)
+				gtk_widget_show_all (statusdashboard_box);
+			else
+				gtk_widget_show_all (mainbox_status);
+			local_config.show_dashboard = TRUE;
+		}
+	}
+
 	// Toggle Grid Display
 	if ((toupper (event->keyval)) == 'G')
 	{
@@ -2333,27 +2354,36 @@ void create_controls_mainbox (void)
 #else
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			main_menu, wide, wide, 1 * PADDING);
-
-		if (local_config.guimode != GUI_CAR)
+#endif
+		if (local_config.showbutton_zoom)
 		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				hbox_zoom, FALSE, FALSE, 1 * PADDING);
+				hbox_zoom, wide, wide, 1 * PADDING);
 		}
-#endif
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			hbox_scaler, wide, wide, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			mute_bt, wide, wide, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			find_poi_bt, wide, wide, 1 * PADDING);
-		if (local_config.use_database)
+		if (local_config.showbutton_scaler)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				hbox_scaler, wide, wide, 1 * PADDING);
+		}
+
+		if (current.have_speech && local_config.showbutton_mute)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				mute_bt, wide, wide, 1 * PADDING);
+		}
+		if (local_config.showbutton_find)
+		{
+			gtk_box_pack_start (GTK_BOX (vbox_buttons),
+				find_poi_bt, wide, wide, 1 * PADDING);
+		}
+		if (local_config.use_database && local_config.showbutton_route)
 		{
 			g_signal_connect (routing_bt, "clicked",
 				G_CALLBACK (route_window_cb), NULL);  
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				routing_bt, wide, wide, 1 * PADDING);
 		}
-		if (local_config.guimode != GUI_PDA)
+		if (local_config.guimode != GUI_PDA && local_config.showbutton_map)
 		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				controlbox_bt, wide, wide, 1 * PADDING);

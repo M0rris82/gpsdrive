@@ -1554,6 +1554,196 @@ settings_gui (GtkWidget *notebook)
 		(GTK_NOTEBOOK (notebook), gui_vbox, gui_label);
 }
 
+
+ /* ************************************************************************* */
+ static void
+settings_ctl (GtkWidget *notebook)
+{
+	GtkWidget *gui_vbox, *gui_label;
+	GtkWidget *gui_button_frame, *gui_button_fr_lb;
+	GtkWidget *gui_button_box, *gui_other_table;
+	GtkWidget *gui_zoom_bt, *gui_scaler_bt, *gui_mute_bt;
+	GtkWidget *gui_route_bt, *gui_find_bt, *gui_map_bt;
+	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
+	GtkTooltips *gui_tooltips;
+	GtkWidget *restartwarning_lb;
+
+	gui_vbox = gtk_vbox_new (FALSE, 2);
+	gui_tooltips = gtk_tooltips_new ();
+
+	/* buttons displayed settings */
+	{
+
+	/* zoom buttons */
+	gui_zoom_bt = gtk_check_button_new_with_label (_("Show Zoom Buttons"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_zoom_bt,
+		_("Displays the zoom buttons."), NULL);
+	if (local_config.showbutton_zoom)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_zoom_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_zoom_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_zoom_bt), "clicked",
+		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		&local_config.showbutton_zoom);
+
+	/* scaler buttons */
+	gui_scaler_bt = gtk_check_button_new_with_label (_("Show Scaler Buttons"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_scaler_bt,
+		_("Displays the scaler buttons."), NULL);
+	if (local_config.showbutton_scaler)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_scaler_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_scaler_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_scaler_bt), "clicked",
+		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		&local_config.showbutton_scaler);
+
+	/* mute button */
+	gui_mute_bt = gtk_check_button_new_with_label (_("Show Mute Speech Button"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_mute_bt,
+		_("Displays the scaler buttons."), NULL);
+	if (local_config.showbutton_mute)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_mute_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_mute_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_mute_bt), "clicked",
+		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		&local_config.showbutton_mute);
+
+	/* find poi button */
+	gui_find_bt = gtk_check_button_new_with_label (_("Show Find POI Button"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_find_bt,
+		_("Displays the find poi button."), NULL);
+	if (local_config.showbutton_find)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_find_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_find_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_find_bt), "clicked",
+		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		&local_config.showbutton_find);
+
+	/* route list button */
+	gui_route_bt = gtk_check_button_new_with_label (_("Show Route List Button"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_route_bt,
+		_("Displays the Route List button."), NULL);
+	if (local_config.showbutton_route)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_route_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_route_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_route_bt), "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_route);
+
+	/* map control button */
+	gui_map_bt = gtk_check_button_new_with_label (_("Show Map Control Button"));
+	gtk_tooltips_set_tip (gui_tooltips, gui_map_bt,
+		_("Displays the Map control button."), NULL);
+	if (local_config.showbutton_map)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_map_bt), TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_map_bt), FALSE);
+	}
+	g_signal_connect (GTK_OBJECT (gui_map_bt), "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_map);
+
+	/* track restart button */
+	trk_showrestart_bt = gtk_check_button_new_with_label
+		(_("Show 'Restart Track' Button"));
+	if (local_config.showbutton_trackrestart)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (trk_showrestart_bt), TRUE);
+	}
+	g_signal_connect (trk_showrestart_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_trackrestart);
+
+	/* track clear button */
+	trk_showclear_bt = gtk_check_button_new_with_label
+		(_("Show 'Clear Track' Button"));
+	if (local_config.showbutton_trackclear)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (trk_showclear_bt), TRUE);
+	}
+	g_signal_connect (trk_showclear_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_trackclear);
+
+	restartwarning_lb = gtk_label_new (_(
+		"<span color=\"red\">Changes to these require restarting GpsDrive</span>"
+		));
+	gtk_label_set_use_markup (GTK_LABEL (restartwarning_lb), TRUE);
+
+	gui_button_box = gtk_vbox_new (FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_zoom_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_scaler_bt, FALSE, FALSE, 5);
+	if (current.have_speech)
+		gtk_box_pack_start (GTK_BOX (gui_button_box), gui_mute_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_find_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_route_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_map_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), trk_showrestart_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), trk_showclear_bt, FALSE, FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (gui_button_box), restartwarning_lb, FALSE, FALSE, 5);
+
+	}
+
+	/* gui buttons frame */
+	gui_button_frame = gtk_frame_new (NULL);
+	gui_button_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (gui_button_fr_lb), _("<b>Buttons Displayed</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (gui_button_frame), gui_button_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (gui_button_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (gui_button_frame), gui_button_box);
+
+	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_button_frame, FALSE, FALSE, 2);
+
+	gui_label = gtk_label_new (_("Buttons"));
+	gtk_notebook_append_page
+		(GTK_NOTEBOOK (notebook), gui_vbox, gui_label);
+}
+
+
 /* ************************************************************************* */
 static void
 settings_trk (GtkWidget *notebook)
@@ -1564,7 +1754,6 @@ settings_trk (GtkWidget *notebook)
 	GtkWidget *trk_auto_table, *trk_general_table, *trk_autounit_label;
 	GtkWidget *trk_label, *trk_autoint_label, *trk_autoint_spin;
 	GtkWidget *trk_autoprefix_label, *trk_autoprefix_entry;
-	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
 	GtkWidget *trk_int_label, *trk_unit_label, *trk_int_spin;
 	GtkTooltips *trk_tooltips;
 
@@ -1591,27 +1780,6 @@ settings_trk (GtkWidget *notebook)
 		local_config.track_interval);
 	g_signal_connect (trk_int_spin, "changed",
 		GTK_SIGNAL_FUNC (settrkint_cb), NULL);
-
-	/* track buttons settings */
-	trk_showrestart_bt = gtk_check_button_new_with_label
-		(_("Show 'Restart Track' Button"));
-	if (local_config.showbutton_trackrestart)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (trk_showrestart_bt), TRUE);
-	}
-	g_signal_connect (trk_showrestart_bt, "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.showbutton_trackrestart);
-
-	trk_showclear_bt = gtk_check_button_new_with_label
-		(_("Show 'Clear Track' Button"));
-	if (local_config.showbutton_trackclear)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (trk_showclear_bt), TRUE);
-	}
-	g_signal_connect (trk_showclear_bt, "clicked",
-		GTK_SIGNAL_FUNC (settogglevalue_cb), &local_config.showbutton_trackclear);
 
 	/* track autosave settings */
 	trk_autoint_label = gtk_label_new (_("Track Export Interval (0 to disable)"));
@@ -1649,7 +1817,7 @@ settings_trk (GtkWidget *notebook)
 		(GTK_FRAME (trk_general_frame), trk_general_fr_lb);
 	gtk_frame_set_shadow_type
 		(GTK_FRAME (trk_general_frame), GTK_SHADOW_NONE);
-	trk_general_table = gtk_table_new (4, 5, FALSE);
+	trk_general_table = gtk_table_new (2, 5, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (trk_general_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (trk_general_table), 5);
 	gtk_table_attach (GTK_TABLE (trk_general_table),
@@ -1662,10 +1830,6 @@ settings_trk (GtkWidget *notebook)
 		trk_int_spin, 3, 4, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach (GTK_TABLE (trk_general_table),
 		trk_unit_label, 4, 5, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
-		trk_showclear_bt, 0, 5, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (trk_general_table),
-		trk_showrestart_bt, 0, 5, 3, 4);
 	gtk_container_add (GTK_CONTAINER (trk_general_frame), trk_general_table);
 
 	/* autosave settings frame */
@@ -2902,7 +3066,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 	/* Create a new notebook, place the position of the tabs */
 	settings_nb = gtk_notebook_new ();
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (settings_nb), TRUE);
-	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (settings_nb), GTK_POS_TOP);
+	gtk_notebook_set_tab_pos (GTK_NOTEBOOK (settings_nb), GTK_POS_LEFT);
 	gtk_notebook_set_show_border (GTK_NOTEBOOK (settings_nb), TRUE);
 	gtk_notebook_popup_enable (GTK_NOTEBOOK (settings_nb));
 	
@@ -2919,6 +3083,7 @@ settings_main_cb (GtkWidget *widget, guint datum)
 		settings_wp (settings_nb);
 	settings_friends (settings_nb);
 	settings_nav (settings_nb);	
+	settings_ctl (settings_nb);
 	settings_gui (settings_nb);
 	settings_col (settings_nb);
 	settings_trk (settings_nb);

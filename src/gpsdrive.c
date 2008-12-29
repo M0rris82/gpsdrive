@@ -2482,6 +2482,8 @@ main (int argc, char *argv[])
 
 #ifdef SPEECH
 	current.have_speech = speech_init ();
+#else
+	current.have_speech = FALSE;
 #endif
 
 	/* set start position for simulation mode

@@ -91,8 +91,15 @@ typedef struct
 	gboolean showtrack;
 	gboolean savetrack;
 	gboolean show_controls;
+	gboolean show_dashboard;
 	gboolean showbutton_trackrestart;
 	gboolean showbutton_trackclear;
+	gboolean showbutton_zoom;
+	gboolean showbutton_scaler;
+	gboolean showbutton_mute;
+	gboolean showbutton_find;
+	gboolean showbutton_route;
+	gboolean showbutton_map;
 	gboolean track_autoclean;
 	gboolean track_autointerval;
 	gboolean track_interval;
