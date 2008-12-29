@@ -131,6 +131,7 @@ insert_text (GtkTextBuffer * buffer)
 		      " g\t: Toggle grid overlay\n"
 		      " f\t: Toggle friends display\n"
 		      " m\t: Toggle display of control menu\n"
+		      " d\t: Toggle display of dashboard\n"
 		      " +\t: Zoom in (preferred map scale)\n"
 		      " -\t: Zoom out (preferred map scale)\n"
 		      " Arrow keys: Navigate cursor in Explore Mode\n");
