@@ -558,10 +558,12 @@ unit_test (void)
     gchar fn[500];
     gint response;
 
-
-    g_snprintf (dir_proc, sizeof (dir_proc), "/tmp/gpsdrive-unit-test");
-    mkdir (dir_proc, 0777);
-    g_snprintf (dir_proc, sizeof (dir_proc), "/tmp/gpsdrive-unit-test/proc");
+    strncpy(dir_proc, "/tmp/gpsdrive-unit-test.XXXXXX", sizeof(dir_proc));
+    if (mkdtemp(dir_proc) == NULL) {
+        printf("Error: Faild to create temporary directory\n");
+        exit(1);
+    }
+    strncat(dir_proc, "/proc", sizeof(dir_proc));
     mkdir (dir_proc, 0777);
 
     if (mydebug > 0)
