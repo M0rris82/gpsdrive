@@ -35,6 +35,7 @@ Disclaimer: Please do not use for navigation.
 #include <sqlite3.h>
 #include <libxml/xmlreader.h>
 #include <signal.h>
+#include <unistd.h>
 
 
 /*  Defines for gettext I18n */
@@ -384,7 +385,7 @@ main (int argc, char *argv[])
 
 	/* parse commandline options */
 	opt_context = g_option_context_new (_(
-		"source.osm - create and fill GpsDrive POI Database from OSM data"));
+		"source.osm or STDIN"));
 	const gchar opt_summary[] = N_(
 		"  This program looks for entries indicating \"Points of Interest\"\n"
 		"  inside a given OSM XML file, and adds the data to an sqlite database\n"
@@ -507,7 +508,10 @@ main (int argc, char *argv[])
 
 
 	/* parse xml file and write data into database */
-	xml_reader = xmlNewTextReaderFilename (argv[1]);
+	if (strcmp ("STDIN", argv[1]) == 0)
+		xml_reader = xmlReaderForFd (STDIN_FILENO, "", NULL, 0);
+	else
+		xml_reader = xmlNewTextReaderFilename (argv[1]);
 	if (xml_reader != NULL)
 	{
 		g_print ("+ Parsing OSM file '%s'\n", argv[1]);
