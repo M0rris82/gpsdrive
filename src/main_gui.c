@@ -47,6 +47,7 @@ Disclaimer: Please do not use for navigation.
 #include <dirent.h>
 #include <sys/stat.h>
 #include <gdk/gdktypes.h>
+#include <gdk/gdkkeysyms.h>
 #include "gtk/gtk.h"
 #include "gettext.h"
 #include <ctype.h>
@@ -1474,7 +1475,26 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		 scalerbt_cb (NULL, 1);
 	}	
 #endif
-			
+
+	// Show Help Window
+	if (event->keyval == GDK_F1)
+		help_cb (NULL, 0);
+
+	// Toggle Display of Control Buttons
+	if ((toupper (event->keyval)) == 'M' && local_config.guimode != GUI_PDA)
+	{
+		if (local_config.show_controls)
+		{
+			gtk_widget_hide_all (mainbox_controls);
+			local_config.show_controls = FALSE;
+		}
+		else
+		{
+			gtk_widget_show_all (mainbox_controls);
+			local_config.show_controls = TRUE;
+		}
+	}
+
 	// Toggle Grid Display
 	if ((toupper (event->keyval)) == 'G')
 	{
@@ -1817,19 +1837,19 @@ void create_satellite_window (void)
 		G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (FALSE));
 	gtk_window_set_icon_name (GTK_WINDOW (satellite_window), "gtk-info");
 
+#ifdef MAEMO
+	gtk_window_maximize (GTK_WINDOW (satellite_window));
+	gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
+#else
 	if (local_config.guimode == GUI_CAR)
 	{
 		gtk_window_maximize (GTK_WINDOW (satellite_window));
 		gtk_window_set_decorated (GTK_WINDOW (satellite_window), FALSE);
 		gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
 	}
-	else if (local_config.guimode == GUI_MAEMO)
-	{
-		gtk_window_maximize (GTK_WINDOW (satellite_window));
-		gtk_window_set_modal (GTK_WINDOW (satellite_window), TRUE);
-	}
 	else
 		gtk_window_set_resizable (GTK_WINDOW (satellite_window), FALSE);
+#endif
 
 	drawing_sats = gtk_drawing_area_new ();
 	gtk_widget_set_size_request (drawing_sats, 400, 200);
@@ -2313,13 +2333,13 @@ void create_controls_mainbox (void)
 #else
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			main_menu, wide, wide, 1 * PADDING);
-#endif
 
-		if (local_config.guimode != GUI_CAR  && local_config.guimode != GUI_MAEMO)
+		if (local_config.guimode != GUI_CAR)
 		{
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				hbox_zoom, FALSE, FALSE, 1 * PADDING);
 		}
+#endif
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),
 			hbox_scaler, wide, wide, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (vbox_buttons),

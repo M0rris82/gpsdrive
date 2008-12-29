@@ -130,6 +130,7 @@ insert_text (GtkTextBuffer * buffer)
 	/* FIXME      " n\t: Switch on light for 60 seconds in nightmode\n" */
 		      " g\t: Toggle grid overlay\n"
 		      " f\t: Toggle friends display\n"
+		      " m\t: Toggle display of control menu\n"
 		      " +\t: Zoom in (preferred map scale)\n"
 		      " -\t: Zoom out (preferred map scale)\n"
 		      " Arrow keys: Navigate cursor in Explore Mode\n");

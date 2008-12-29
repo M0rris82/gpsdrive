@@ -90,6 +90,7 @@ typedef struct
 	gboolean showfriends;
 	gboolean showtrack;
 	gboolean savetrack;
+	gboolean show_controls;
 	gboolean showbutton_trackrestart;
 	gboolean showbutton_trackclear;
 	gboolean track_autoclean;

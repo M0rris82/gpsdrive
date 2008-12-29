@@ -692,6 +692,7 @@ config_init ()
 	local_config.autobestmap = 1;
 	local_config.rotating_compass = TRUE;
 	local_config.track_autoclean = FALSE;
+	local_config.show_controls = TRUE;
 	local_config.showbutton_trackclear = TRUE;
 	local_config.showbutton_trackrestart = TRUE;
 	local_config.style_track = 3;
