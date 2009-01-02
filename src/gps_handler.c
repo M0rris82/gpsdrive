@@ -128,8 +128,10 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	current.altitude = data->fix.altitude;
 	current.gps_sats_used = data->satellites_used;
 	current.gps_sats_in_view = data->satellites;
-	current.groundspeed = data->fix.speed * MPS_TO_KPH;
-	current.heading = data->fix.track * DEG_2_RAD;
+	if (data->set & TRACK_SET) 
+		current.heading = data->fix.track * DEG_2_RAD;
+	if (data->set & SPEED_SET)
+		current.groundspeed = data->fix.speed * MPS_TO_KPH;
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
 	current.gps_epv = data->fix.epv;
@@ -140,7 +142,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	localtime_r(&t_gpstime, &t_tim);
 	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
 
-	if (data->satellites > 0)
+	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
 	{
 		for (i=0;i<data->satellites;i++)
 		{
@@ -151,6 +153,8 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 			gps_sats[i].snr = data->ss[i];
 		}
 	}
+
+	data->set = 0;
 
 #ifdef SPEECH
 	if (!local_config.mute && local_config.sound_gps)
@@ -170,6 +174,7 @@ gps_query_data_cb (gpointer data)
 	 * y - get satellite info
 	 * s - get fix status (must be after "o" else its value is overwritten)
 	 */
+	gpsdata->set = 0;
 	gps_query (gpsdata, "oys\n");
 
 	return (TRUE);
