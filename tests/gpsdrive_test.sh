@@ -36,6 +36,7 @@ USE_XVFB=""
 DO_IGNORE_GTK_ERRORS=false
 DO_IGNORE_KNOWN_ERRORS=true
 DO_EXIT_ON_ERROR=true
+DO_USE_XVFB=false
 
 for arg in "$@" ; do
     arg_true=true
@@ -51,11 +52,7 @@ for arg in "$@" ; do
 	    SHORT=$arg_true
 	    ;;
 	--use-xvfb) #	Use Virtual Framebuffer
-	    if $arg_true ; then
-		USE_XVFB="xvfb-run "
-	    else
-		USE_XVFB=""
-	    fi
+	    DO_USE_XVFB=$arg_true
 	    ;;
 
 	--screenshots) #Do some Screenshots
@@ -149,15 +146,16 @@ for LANG in en_US de_DE ; do
 		    -e "s/mapnik = .*/mapnik = $MAPNIK/" <tests/gpsdriverc-in >tests/gpsdriverc
 		cp tests/gpsdriverc tests/gpsdriverc-pre
 
-		# --server-args="-screen 0 1280x1024x16" 
-		$USE_XVFB \
-		    ./build/src/gpsdrive \
-		    -s \
-		    -C tests/gpsdriverc \
-		    -M $USER_INTERFACE \
-		    -D 1 \
-		    -T >logs/gpsdrive_test_$LANG.txt 2>&1 
-		rc=$?
+		if $DO_USE_XVFB ; then
+		    xvfb-run --error-file=xvfb-errors.log --server-args='-screen 0 1280x1024x16' \
+		    ./build/src/gpsdrive  -s -C tests/gpsdriverc -M $USER_INTERFACE \
+		    -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
+		    rc=$?
+		else
+		    ./build/src/gpsdrive  -s -C tests/gpsdriverc -M $USER_INTERFACE \
+		    -D 1 -T >logs/gpsdrive_test_$LANG.txt 2>&1 
+		    rc=$?
+		fi
 
 		if [ $rc != 0 ] ; then
 		    cat logs/gpsdrive_test_$LANG.txt
