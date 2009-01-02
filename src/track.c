@@ -496,7 +496,7 @@ track_autosave_cb (gboolean clear)
 	time (&t);
 	ts = localtime (&t);
 
-	g_snprintf (t_buf, sizeof (t_buf), "%s%s_%d%d%d_%d%d.gpx",
+	g_snprintf (t_buf, sizeof (t_buf), "%s%s_%d%02d%02d_%02d%02d.gpx",
 		local_config.dir_tracks, local_config.track_autoprefix,
 		ts->tm_year+1900, ts->tm_mon+1, ts->tm_mday, ts->tm_hour, ts->tm_min);
 
