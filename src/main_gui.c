@@ -775,6 +775,8 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_TURN:
 		{
+			//TODO:	maybe color the text:
+			//	right: green, left: red
 			g_strlcpy (head, _("Turn"), sizeof (head));
 			dir = RAD2DEG (current.bearing)
 				- RAD2DEG (current.heading);
@@ -1442,12 +1444,20 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	gdouble lat, lon;
 	gint x, y;
 	GdkModifierType state;
+	guint modifiers;
 
 	if ( mydebug > 0 )
 		g_print ("event:%x key:%c\n", event->keyval, event->keyval);
 
-// TODO: Ctrl-Q exits the program
-
+	// Ctrl-Q exits the program
+ 	modifiers = gtk_accelerator_get_default_mod_mask ();
+	if (((event->state & modifiers) == GDK_CONTROL_MASK) && 
+	    ((event->keyval == GDK_Q) || (event->keyval == GDK_q)))
+	{
+		gtk_main_quit();
+		return TRUE;
+	}
+  
 
 #ifdef MAEMO
 	/* make use of hardware keys */
