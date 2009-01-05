@@ -134,6 +134,8 @@ insert_text (GtkTextBuffer * buffer)
 		      " d\t: Toggle display of dashboard\n"
 		      " +\t: Zoom in (preferred map scale)\n"
 		      " -\t: Zoom out (preferred map scale)\n"
+		      " e\t: Toggle explore mode\n"
+		      " ctrl-q\t: Quit gpsdrive\n"
 		      " Arrow keys: Navigate cursor in Explore Mode\n");
 	const gchar *t3 =
 		_("You can move freely around the map by selecting Explore Mode"

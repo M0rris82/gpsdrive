@@ -1639,8 +1639,8 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Switch Explore Mode ("e" for Explore)
 	if ((toupper (event->keyval)) == 'E')
 	{
-		; // TODO: switch in/out of Explore Mode
-		//  see explore_bt in map_handler.c
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),
+			!gui_status.expmode);
 	}
 
 	// Query Info for near points
