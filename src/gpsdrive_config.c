@@ -50,7 +50,6 @@ extern map_dir_struct *display_map;
 extern gint displaymap_top;
 extern gint mydebug;
 extern gint setdefaultpos;
-extern gdouble milesconv;
 extern double dbdistance;
 extern int dbusedist;
 extern gint earthmate;
@@ -398,19 +397,19 @@ readconfig ()
 				if ( (strcmp(par2, "miles")) == 0)
 				{
 					local_config.distmode = DIST_MILES;
-					milesconv = KM2MILES;
+					local_config.distfactor = KM2MILES;
 				}
 				else
 				{
 					if ( (strcmp(par2, "metric")) == 0)
 					{
 						local_config.distmode = DIST_METRIC;
-						milesconv = 1.0;
+						local_config.distfactor = 1.0;
 					}
 					else if ( (strcmp(par2, "nautic")) == 0)
 					{
 						local_config.distmode = DIST_NAUTIC;
-						milesconv = KM2NAUTIC;
+						local_config.distfactor = KM2NAUTIC;
 					}
 				}
 			}
@@ -687,6 +686,7 @@ config_init ()
 	gchar *hd;
 	local_config.travelmode = TRAVEL_CAR;
 	local_config.distmode = DIST_METRIC;
+	local_config.distfactor = 1.0;
 	local_config.altmode = ALT_METERS;
 	local_config.coordmode = LATLON_DEGDEC;
 	local_config.guimode = GUI_DESKTOP;

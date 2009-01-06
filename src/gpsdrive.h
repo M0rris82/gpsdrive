@@ -172,7 +172,7 @@ enum gpx_mode
 /*  defines offset and color of the shadows */
 #define SHADOWOFFSET 7
 
-#define ROUTEREACH (0.02+10*current.groundspeed/(3600*milesconv))
+#define ROUTEREACH (0.02+10*current.groundspeed/(3600*local_config.distfactor))
 /* #define ROUTEREACH 0.05 */
 
 #define SERVERNAME gpsdservername

@@ -45,6 +45,7 @@ typedef struct
 	gchar config_file[500];
 	gint travelmode;
 	gint distmode;
+	gdouble distfactor;
 	gint altmode;
 	gint coordmode;
 	gint nightmode;

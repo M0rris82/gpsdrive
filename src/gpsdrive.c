@@ -199,7 +199,6 @@ GtkWidget *mylist;
 
 extern gchar mapfilename[2048];
 
-gdouble milesconv;
 gdouble olddist = 99999.0;
 GTimer *simulation_timer, *disttimer;
 gint gcount;
@@ -1757,7 +1756,7 @@ simulated_pos (GtkWidget * widget, guint * datum)
 		if (current.heading < 0)
 			current.heading += 2 * M_PI;
 		current.groundspeed =
-			milesconv * sqrt (tx * tx +
+			local_config.distfactor * sqrt (tx * tx +
 					  ty * ty) * 3.6 / secs;
 	}
 	else
@@ -2328,7 +2327,6 @@ main (int argc, char *argv[])
 
     gcount = xoff = yoff = 0;
     hours = minutes = 99;
-    milesconv = 1.0;
     g_strlcpy (messagename, "", sizeof (messagename));
     g_strlcpy (messageack, "", sizeof (messageack));
     g_strlcpy (messagesendtext, "", sizeof (messagesendtext));

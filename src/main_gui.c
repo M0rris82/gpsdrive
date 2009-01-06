@@ -99,7 +99,6 @@ extern gdouble wp_saved_target_lon;
 extern gdouble wp_saved_expmode_lat;
 extern gdouble wp_saved_expmode_lon;
 extern gdouble pixelfact;
-extern gdouble milesconv;
 extern gps_satellite_struct *gps_sats;
 
 extern gint slistsize, nlist[];
@@ -691,7 +690,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			gdouble t_avgspeed;
 
 			g_strlcpy (head, _("Avg. Speed"), sizeof (head));
-			t_avgspeed = trip.speed_avg * milesconv / trip.countavgspeed;
+			t_avgspeed = trip.speed_avg * local_config.distfactor / trip.countavgspeed;
 
 			if (t_avgspeed >= 0.0)
 			{
@@ -801,7 +800,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			gdouble t_avgspeed, t_remain;
 			gint t_hours;
 			g_strlcpy (head, _("Time remaining"), sizeof (head));
-			t_avgspeed = trip.speed_avg * milesconv / trip.countavgspeed;
+			t_avgspeed = trip.speed_avg * local_config.distfactor / trip.countavgspeed;
 
 			if (t_avgspeed > 0.0)
 			{

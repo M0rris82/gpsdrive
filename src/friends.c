@@ -86,7 +86,6 @@ gint maxfriends = 0;
 int actualfriends = 0;
 extern int messagenumber;
 extern long int maxfriendssecs;
-extern gdouble milesconv;
 extern GtkWidget *map_drawingarea;
 extern gint mydebug;
 extern color_struct colors;
@@ -190,7 +189,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 				"POS: %s %s %s %s %ld %.0f %.0f %d",
 				local_config.friends_id,
 				local_config.friends_name, la, lo, tii,
-				current.groundspeed / milesconv,
+				current.groundspeed / local_config.distfactor,
 				180.0 * current.heading / M_PI,
 				local_config.travelmode);
 			if ( mydebug > 3 )

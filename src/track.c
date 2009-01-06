@@ -63,7 +63,6 @@ extern color_struct colors;
 extern currentstatus_struct current;
 extern coordinate_struct coords;
 extern GdkGC *kontext_map;
-extern gdouble milesconv;
 extern GtkWidget *main_window;
 extern gdouble hdop;
 extern gpx_info_struct gpx_info;
@@ -701,13 +700,13 @@ update_tripdata_cb (void)
 	}
 
 	/* we want always have metric system stored */
-	t_dist /= milesconv;
+	t_dist /= local_config.distfactor;
 	if (trip.odometer > 0)
 	{
-		if (current.groundspeed / milesconv > trip.speed_max)
-			trip.speed_max = current.groundspeed / milesconv;
+		if (current.groundspeed / local_config.distfactor > trip.speed_max)
+			trip.speed_max = current.groundspeed / local_config.distfactor;
 		trip.countavgspeed++;
-		trip.speed_avg += current.groundspeed / milesconv;
+		trip.speed_avg += current.groundspeed / local_config.distfactor;
 	}
 	trip.odometer += t_dist;
 	return TRUE;

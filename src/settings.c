@@ -76,7 +76,6 @@ extern GtkWidget *miles;
 extern GtkWidget *status;
 extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
-extern gdouble milesconv;
 
 GtkWidget *ipbt;
 gint sqlandmode = TRUE;
@@ -138,15 +137,15 @@ setdistmode_cb (GtkWidget *widget)
 	switch (selection)
 	{
 		case DIST_MILES:
-			milesconv = KM2MILES;
+			local_config.distfactor = KM2MILES;
 			local_config.distmode = DIST_MILES;
 			break;
 		case DIST_METRIC:
-			milesconv = 1.0;
+			local_config.distfactor = 1.0;
 			local_config.distmode = DIST_METRIC;
 			break;
 		case DIST_NAUTIC:
-			milesconv = KM2NAUTIC;
+			local_config.distfactor = KM2NAUTIC;
 			local_config.distmode = DIST_NAUTIC;
 			break;
 	}

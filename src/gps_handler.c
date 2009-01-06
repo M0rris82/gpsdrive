@@ -131,7 +131,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	if (data->set & TRACK_SET) 
 		current.heading = data->fix.track * DEG_2_RAD;
 	if (data->set & SPEED_SET)
-		current.groundspeed = data->fix.speed * MPS_TO_KPH;
+		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
 	current.gps_epv = data->fix.epv;

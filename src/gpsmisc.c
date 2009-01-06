@@ -52,7 +52,6 @@ Disclaimer: Please do not use for navigation.
 /* variables */
 extern gint mydebug;
 extern gint haveposcount, blink, gblink, xoff, yoff;
-extern gdouble milesconv;
 static gchar gradsym[] = "\xc2\xb0";
 gdouble lat2RadiusArray[101];
 extern coordinate_struct coords;
@@ -185,7 +184,7 @@ calcdist2 (gdouble lon, gdouble lat)
   else
     c = 2 * asin (1.0);
   d = (lat2radius (coords.current_lat) + lat2radius (lat)) * c / 2.0;
-  return milesconv * d / 1000.0;
+  return local_config.distfactor * d / 1000.0;
 }
 
 /* ******************************************************************
@@ -278,7 +277,7 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 	s = ((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
 		cz) * sy * d + y) * c * a * r;
 
-	return milesconv * s / 1000.0;
+	return local_config.distfactor * s / 1000.0;
 }
 
 
