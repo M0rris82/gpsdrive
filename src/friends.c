@@ -88,7 +88,6 @@ extern int messagenumber;
 extern long int maxfriendssecs;
 extern gdouble milesconv;
 extern GtkWidget *map_drawingarea;
-extern GdkPixbuf *friendsimage, *friendspixbuf;
 extern gint mydebug;
 extern color_struct colors;
 extern coordinate_struct coords;

@@ -831,7 +831,6 @@ test_and_load_newmap ()
 				pixelfact = get_mapnik_pixelfactor();
 				get_mapnik_center(&coords.zero_lat, &coords.zero_lon);
 				xoff = yoff = 0;
-				//loadmap("/tmp/mapnik.png");
 				loadmap("mapnik");
 				set_mapnik_newmapysn(0);
 			}

@@ -163,8 +163,6 @@ gint haveposcount, blink, gblink, xoff, yoff, crosstoggle = 0;
 gdouble pixelfact;
 GdkPixbuf *image = NULL, *tempimage = NULL, *pixbuf_minimap = NULL;
 
-extern GdkPixbuf *friendsimage, *friendspixbuf;
-
 extern mapsstruct *maps;
 
 extern GtkWidget *drawing_battery, *drawing_temp;
@@ -2549,8 +2547,6 @@ main (int argc, char *argv[])
 	friends_init ();
 	route_init (NULL, NULL, NULL);
 
-	load_friends_icon ();
-
 	update_explore_bt ();
 
     /*
@@ -2653,7 +2649,6 @@ main (int argc, char *argv[])
 	coords.current_lon=12.000000;
     }
     writeconfig ();
-    gdk_pixbuf_unref (friendspixbuf);
 
 
     if (local_config.savetrack)

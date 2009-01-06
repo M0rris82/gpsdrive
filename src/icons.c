@@ -81,9 +81,6 @@ extern gint mydebug;
 extern color_struct colors;
 extern GdkGC *kontext_map;
 
-GdkPixbuf *friendsimage = NULL;
-GdkPixbuf *friendspixbuf = NULL;
-
 icons_buffer_struct icons_buffer[MAX_ICONS];
 gint icons_buffer_max = MAX_ICONS;
 gint icons_buffer_last = 0;
@@ -317,15 +314,6 @@ read_themed_icon (gchar * icon_name)
   return NULL;
 }
 
-/* -----------------------------------------------------------------------------
-*/
-void
-load_friends_icon (void)
-{
-	friendsimage = read_icon ("friendsicon.png", 1);
-	friendspixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 1, 8, 39, 24);
-	gdk_pixbuf_scale (friendsimage, friendspixbuf, 0, 0, 39, 24, 0, 0, 1, 1, GDK_INTERP_BILINEAR);
-}
 
 /* -----------------------------------------------------------------------------
 */
