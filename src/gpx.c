@@ -457,13 +457,13 @@ static void gpx_handle_point (xmlTextReaderPtr xml_reader, gchar *mode_string)
 		fprintf (stderr, "\tName     : %s\n", wpt.name);
 		fprintf (stderr, "\tComment  : %s\n", wpt.cmt);
 		fprintf (stderr, "\tType     : %s\n", wpt.type);
-		fprintf (stderr, "\tElevation: %s m\n", wpt.ele);
+		fprintf (stderr, "\tElevation: %f m\n", wpt.ele);
 		fprintf (stderr, "\tTime     : %s\n", wpt.time);
-		fprintf (stderr, "\tCourse   : %s\n", wpt.course);    /* these should be %f not %s ?! */
-		fprintf (stderr, "\tSpeed    : %skm/h\n", wpt.speed);
-		fprintf (stderr, "\tHDOP     : %s\n", wpt.hdop);
-		fprintf (stderr, "\tFix      : %s\n", wpt.fix);
-		fprintf (stderr, "\tSat      : %s\n", wpt.sat);
+		fprintf (stderr, "\tCourse   : %f\n", wpt.course);    /* these should be %f not %s ?! */
+		fprintf (stderr, "\tSpeed    : %fkm/h\n", wpt.speed);
+		fprintf (stderr, "\tHDOP     : %f\n", wpt.hdop);
+		fprintf (stderr, "\tFix      : %d\n", wpt.fix);
+		fprintf (stderr, "\tSat      : %d\n", wpt.sat);
 	}
 
 	if (g_ascii_strcasecmp (mode_string, "wpt") == 0)
