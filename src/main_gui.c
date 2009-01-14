@@ -637,6 +637,7 @@ gint
 update_dashboard (GtkWidget *frame, gint source)
 {
 	gchar head[100], content[200], ctmp[10], unit[10], dirs = ' ';
+	gchar turn_color[10];
 	gint fontsize_unit;
 
 	gdouble dir = 0.0;
@@ -774,8 +775,6 @@ update_dashboard (GtkWidget *frame, gint source)
 		}
 		case DASH_TURN:
 		{
-			//TODO:	maybe color the text:
-			//	right: green, left: red
 			g_strlcpy (head, _("Turn"), sizeof (head));
 			dir = RAD2DEG (current.bearing)
 				- RAD2DEG (current.heading);
@@ -783,14 +782,26 @@ update_dashboard (GtkWidget *frame, gint source)
 				dir = dir - 360;
 			else if (dir < -180)
 				dir = 360 + dir;
-			if (dir < 0.0)
+			/* color the text:
+				  right: green  (starboard)
+				  left: red     (port) */
+			if (dir < 0.0) {
 				dirs = 'L';
-			else if (dir > 0.0)
+				g_strlcpy(turn_color, "#800000", sizeof(turn_color));
+			}
+			else if (dir > 0.0) {
 				dirs = 'R';
+				g_strlcpy(turn_color, "#008000", sizeof(turn_color));
+			}
+			else { // dir==0.0 [or 180.0 ??]). dir is a double so rather unlikely
+				dirs = ' ';
+				g_snprintf (turn_color, sizeof(turn_color), "%s",
+					local_config.color_dashboard);
+			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%c %03d"
 				"%s</span>",
-				local_config.color_dashboard,
+				turn_color,
 				local_config.font_dashboard,
 				dirs, abs (dir), DEGREE);
 			break;
