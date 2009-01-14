@@ -363,7 +363,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 									 (serverid
 									  +
 									  5));
-								g_snprintf ((list + i)->id, sizeof (list->id), sid);
+								g_snprintf ((list + i)->id, sizeof (list->id), "%s", sid);
 								g_snprintf ((list + i)->txt, sizeof (list->txt), "SND: %s %s \nConfirmation:\n The user %s has read your message!", sid, msgname, recname);
 								(list +
 								 i)->times =
@@ -555,7 +555,7 @@ main (int argc, char *argv[])
 	list = malloc (MAXLISTENTRIES * sizeof (*list));
 
 	/* make the first entry */
-	g_snprintf ((list + listnum)->id, sizeof (list->id), serverid);
+	g_snprintf ((list + listnum)->id, sizeof (list->id), "%s", serverid);
 	g_snprintf ((list + listnum)->txt, sizeof (list->txt),
 		    "SRV: %s %s 53.566593   9.948155 %d 0 0", serverid,
 		    serverstring, (int) time (NULL));
