@@ -177,7 +177,7 @@ db_get_errors (GdaConnection *connection)
 
         for (node = g_list_first (list); node != NULL; node = g_list_next (node)) {
                 error = (GdaConnectionEvent *) node->data;
-                g_print ("Error no: %d\t", gda_connection_event_get_code (error));
+                g_print ("Error no: %u\t", (unsigned int) gda_connection_event_get_code (error));
                 g_print ("desc: %s\t", gda_connection_event_get_description (error));
                 g_print ("source: %s\t", gda_connection_event_get_source (error));
                 g_print ("sqlstate: %s\n", gda_connection_event_get_sqlstate (error));
