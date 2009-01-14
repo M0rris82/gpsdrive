@@ -4,3 +4,8 @@ option(WITH_GDA3 "Build with GDA3 database support" ON)
 option(WITH_GDAL "Build with experimental GDAL support" OFF)
 option(WITH_SPEECH "Build with support of speech output" ON)
 option(MAEMO "Build gpsdrive for maemo/hildon platform" OFF)
+option(WITH_FRIENDSD "Build with friendd support" ON)
+option(WITH_KISMET "Build with kismet support" ON)
+option(WITH_MYDEBUG "Build with debug -D support" OFF)
+option(WITH_NAVIGATE "Build with routing support" ON)
+
