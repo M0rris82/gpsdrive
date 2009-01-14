@@ -132,7 +132,7 @@ battery_get_values_linux_apm (int *blevel, int *bloading, int *bcharge)
     fprintf (stderr, "battery_get_values_linux_apm()\n");
 
   // -------------------------------------------- apm
-  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_snprintf (fn, sizeof (fn), "%s", dir_proc);
   g_strlcat (fn, "/apm", sizeof (fn));
   battery = fopen (fn, "r");
   if (battery != NULL)
@@ -203,7 +203,7 @@ battery_get_values_linux_acpi (int *blevel, int *bloading, int *bcharge,
   *bloading = FALSE;
   gchar line[200];
 
-  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_snprintf (fn, sizeof (fn), "%s", dir_proc);
   g_strlcat (fn, "/acpi/battery/", sizeof (fn));
   dir = opendir (fn);
   if (dir != NULL)
@@ -349,7 +349,7 @@ temperature_get_values_linux (int *temper)
 
   /* search for temperature file */
   temperature = NULL;
-  g_snprintf (fn, sizeof (fn), dir_proc);
+  g_snprintf (fn, sizeof (fn), "%s", dir_proc);
   g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
   dir = opendir (fn);
   if (dir != NULL)
@@ -359,7 +359,7 @@ temperature_get_values_linux (int *temper)
 	  if (ent->d_name[0] != '.'
 	      && strcmp(ent->d_name,"THRS"))
 	    {
-	      g_snprintf (fn, sizeof (fn), dir_proc);
+	      g_snprintf (fn, sizeof (fn), "%s", dir_proc);
 	      g_strlcat (fn, "/acpi/thermal_zone/", sizeof (fn));
 	      g_strlcat (fn, ent->d_name, sizeof (fn));
 	      g_strlcat (fn, "/temperature", sizeof (fn));
