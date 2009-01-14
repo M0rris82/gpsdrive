@@ -654,7 +654,7 @@ settrkautoint_cb (GtkWidget *spin, gint data)
 
 	if (mydebug > 10)
 		g_print ("Setting interval for automatic track saving to %.1f hours.\n",
-			local_config.track_autointerval/2);
+			(gdouble)local_config.track_autointerval/2);
 
 	current.needtosave = TRUE;
 
@@ -682,7 +682,7 @@ settrkint_cb (GtkWidget *spin, gint data)
 	}
 
 	if (mydebug > 10)
-		g_print ("Setting interval between saved track points to %.1f hours.\n",
+		g_print ("Setting interval between saved track points to %d hours.\n",
 			local_config.track_interval);
 
 	current.needtosave = TRUE;
