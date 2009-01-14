@@ -464,7 +464,7 @@ friends_sendmsg (char *serverip, char *message)
 			if (strcmp ((msgid + 5), ((fserver->id) + 5)) == 0)
 			  {
 			    g_snprintf
-			      (msgname, sizeof (msgname), fserver->name);
+			      (msgname, sizeof (msgname), "%s", fserver->name);
 			    fsmessage = TRUE;
 			  }
 			for (j = 0; j < fc; j++)
