@@ -147,8 +147,8 @@ add_new_poi (node_struct *data)
 
 	if (verbose)
 	{
-		g_print ("\n    |  id = %d\t%.6f / %.6f\n    |  poi_type = %s\n"
-			"    |  name = %s\n", data->id, data->lat, data->lon,
+		g_print ("\n    |  id = %u\t%.6f / %.6f\n    |  poi_type = %s\n"
+			"    |  name = %s\n", (unsigned int) data->id, data->lat, data->lon,
 			data->poi_type, data->name);
 	}
 
