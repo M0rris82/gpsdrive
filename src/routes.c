@@ -826,7 +826,7 @@ route_settarget (gint rt_ptr)
 		ROUTE_LON, &(coords.target_lon),
 		ROUTE_LAT, &(coords.target_lat),
 		-1);
-	g_snprintf (current.target, sizeof (current.target), t_name);
+	g_snprintf (current.target, sizeof (current.target), "%s", t_name);
 
 	if ( mydebug >50 )
 	fprintf (stderr , "(%d/%d) %.6f / %.6f  -  %s\n",
