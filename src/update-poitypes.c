@@ -84,7 +84,7 @@ fill_poi_column_cb (gpointer datum, gint columns, gchar **values, gchar **names)
 	count += rows;
 
 	if (verbose)
-		g_print ("[%d]\n", rows);
+		g_print ("[%u]\n", (unsigned int) rows);
 	else
 		g_print ("\b%c", spinner[spinpos++%4]);
 
