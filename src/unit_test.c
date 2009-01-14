@@ -601,7 +601,7 @@ unit_test (void)
 
     if (mydebug > 0)
       printf ("	-------> Create Dummy Files/dirs for ACPI\n");
-    g_snprintf (fn, sizeof (fn), dir_proc);
+    g_snprintf (fn, sizeof (fn), "%s", dir_proc);
     g_strlcat (fn, "/acpi", sizeof (fn));
     mkdir (fn, 0777);
     g_strlcat (fn, "/battery", sizeof (fn));
