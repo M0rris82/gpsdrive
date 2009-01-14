@@ -43,6 +43,22 @@ if (WITH_DBUS)
     add_definitions(-DDBUS)
 endif (WITH_DBUS)
 
+if (WITH_FRIENDSD)
+  add_definitions(-DFRIENDSD)
+endif (WITH_FRIENDSD)
+
+if (WITH_KISMET)
+  add_definitions(-DKISMET)
+endif (WITH_KISMET)
+
+if (WITH_NAVIGATE)
+  add_definitions(-DNAVIGATE)
+endif (WITH_NAVIGATE)
+
+if (WITH_MYDEBUG)
+  add_definitions(-DMYDEBUG)
+endif (WITH_MYDEBUG)
+
 add_subdirectory(util)
 
 set(GPSDRIVE_PUBLIC_INCLUDE_DIRS
@@ -93,14 +109,12 @@ set(gpsdrive_SRCS
   database_sqlite.c
   database_sqlite.h
   draw_grid.c
-  friends.c
   geometry.c
   gettext.h
   gpsdrive.c
   gpsdrive_config.c
   gps_handler.c
   gps_handler.h
-  gpskismet.c
   gpsmisc.c
   gpsnasamap.c
   gui.c
@@ -116,8 +130,6 @@ set(gpsdrive_SRCS
   map_download.h
   map_handler.c
   map_projection.c
-  navigation.c
-  navigation_gui.c
   os_specific.c
   poi.c
   poi_gui.c
@@ -151,13 +163,38 @@ if (WITH_MAPNIK)
   )
 endif (WITH_MAPNIK)
 
+if (WITH_FRIENDSD)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+    friends.c
+  )
+endif (WITH_FRIENDSD)
+
+if (WITH_KISMET)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+    gpskismet.c
+  )
+endif (WITH_KISMET)
+
+if (WITH_NAVIGATE)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+  navigation.c
+  navigation_gui.c
+  )
+endif (WITH_NAVIGATE)
+
+
 # gpsdrive i18n
 MACRO_GENERATE_PO_FILES(${CMAKE_SOURCE_DIR}/po ${APPLICATION_NAME} gpsdrive_SRCS)
 
-SET(friendsd_SRCS
-  friendsd.c
-  gpsdrive.h
-)
+if (WITH_FRIENDSD)
+ SET(friendsd_SRCS
+   friendsd.c
+   gpsdrive.h
+ )
+endif (WITH_FRIENDSD)
 
 SET(poitypes_SRCS
   update-poitypes.c
@@ -173,7 +210,9 @@ include_directories(
 )
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
-add_executable(friendsd ${friendsd_SRCS})
+if (WITH_FRIENDSD)
+ add_executable(friendsd ${friendsd_SRCS})
+endif (WITH_FRIENDSD)
 add_executable(gpsdrive-update-osm-poi-db ${poiosmdb_SRCS})
 
 if (WITH_GDA3)
@@ -182,10 +221,12 @@ endif (WITH_GDA3)
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
-target_link_libraries(friendsd
-  crypt
-  ${GTK2_LIBRARIES}
-)
+if (WITH_FRIENDSD)
+ target_link_libraries(friendsd
+   crypt
+   ${GTK2_LIBRARIES}
+ )
+endif (WITH_FRIENDSD)
 
 target_link_libraries(gpsdrive-update-osm-poi-db
   ${GTK2_LIBRARIES}
@@ -203,9 +244,15 @@ endif (WITH_GDA3)
 
 set(gpsdrive_PGMS
   gpsdrive
-  friendsd
   gpsdrive-update-osm-poi-db
 )
+if (WITH_FRIENDSD)
+  set(gpsdrive_PGMS
+    ${gpsdrive_PGMS}
+    friendsd
+  )
+endif (WITH_FRIENDSD)
+
 
 if (WITH_GDA3)
   set(gpsdrive_PGMS
