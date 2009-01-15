@@ -44,6 +44,9 @@ enum
 	DASH_TIME,
 	DASH_POSITION,
 	DASH_MAPSCALE,
+#ifdef NOTYET
+	DASH_XTE,
+#endif
 	DASH_N_ITEMS
 };
 

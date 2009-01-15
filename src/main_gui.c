@@ -1094,12 +1094,14 @@ update_dashboard (GtkWidget *frame, gint source)
 				current.mapscale);
 			break;
 		}
+
+#ifdef NOTEYET
 		case DASH_XTE:
 		{
 			gdouble xte = 0.0/0.0; /* init as nan */
 
 			g_strlcpy (head, _("Cross-track error"), sizeof (head));
-#ifdef NOTEYET
+
 			if (route.active)
 			{
 
@@ -1152,7 +1154,6 @@ update_dashboard (GtkWidget *frame, gint source)
 				    dirs, abs(xte) );  // use fabs(xte) + %.0f ???
 			}
 			else
-#endif
 			{
 				g_snprintf (content, sizeof (content),
 					"<span color=\"%s\" font_desc=\"%s\" "
@@ -1163,6 +1164,8 @@ update_dashboard (GtkWidget *frame, gint source)
 			}
 			break;
 		}
+#endif
+
 	}
 
 	g_object_set (frame, "label", head, NULL);
@@ -1858,7 +1861,9 @@ void create_dashboard_menu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+#ifdef NOTYET
 		_("Cross-track error"),		/* DASH_XTE */
+#endif
 	};
 
 	gint i;
@@ -1905,7 +1910,9 @@ void create_dashboard_carmenu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+#ifdef NOTYET
 		_("Cross-track error"),		/* DASH_XTE */
+#endif
 	};
 
 	dash_menu_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
