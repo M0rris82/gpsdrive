@@ -55,9 +55,9 @@ if (WITH_NAVIGATE)
   add_definitions(-DNAVIGATE)
 endif (WITH_NAVIGATE)
 
-if (WITH_MYDEBUG)
-  add_definitions(-DMYDEBUG)
-endif (WITH_MYDEBUG)
+if (DEBUG)
+  add_definitions(-DDEBUG)
+endif (DEBUG)
 
 add_subdirectory(util)
 
