@@ -631,7 +631,8 @@ draw_maptype (void)
  * Possible Values:
  *	DSH_DIST, DASH_TIMEREMAIN, DASH_BEARING, DASH_TURN, DASH_SPEED,
  *	DASH_HEADING, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
- *	DASH_SPEED_AVG, DASH_SPEED_MAX, DASH_POSITION, DASH_MAPSCALE
+ *	DASH_SPEED_AVG, DASH_SPEED_MAX, DASH_POSITION, DASH_MAPSCALE,
+ *	DASH_XTE
  */
 gint
 update_dashboard (GtkWidget *frame, gint source)
@@ -640,12 +641,17 @@ update_dashboard (GtkWidget *frame, gint source)
 	gchar turn_color[10];
 	gint fontsize_unit;
 
-	gdouble dir = 0.0;
+	gdouble dir = 0.0; /* for DASH_TURN */
 
 	fontsize_unit = atoi (g_strrstr_len (local_config.font_dashboard,
 		100, " ")) * 512;
 	if (fontsize_unit < 6144)
 		fontsize_unit = 6144;
+
+	/* cleanly future-proof if gpsdriverc holds a new item */
+	if (source > DASH_N_ITEMS)
+		source = DASH_POSITION;
+
 
 	switch (source)
 	{
@@ -720,7 +726,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			{
 				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\" "
-				"size=\"16000\"> %s</span>",
+				"size=\"16000\">%s</span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard, _("n/a"));
 			}
@@ -803,7 +809,7 @@ update_dashboard (GtkWidget *frame, gint source)
 				"%s</span>",
 				turn_color,
 				local_config.font_dashboard,
-				dirs, abs (dir), DEGREE);
+				dirs, abs (dir), DEGREE);   // use fabs(dir) + %.0f ???
 			break;
 		}
 		case DASH_TIMEREMAIN:
@@ -911,7 +917,7 @@ update_dashboard (GtkWidget *frame, gint source)
 			{
 				g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\" "
-				"size=\"16000\"> %s</span>",
+				"size=\"16000\">%s</span>",
 				local_config.color_dashboard,
 				local_config.font_dashboard, _("n/a"));
 			}
@@ -1028,10 +1034,6 @@ update_dashboard (GtkWidget *frame, gint source)
 			pango_font_description_free (pfd);
 			g_free (font_prec);
 			break;
-
-
-
-			break;
 		}
 		case DASH_TIME:
 		{
@@ -1090,6 +1092,76 @@ update_dashboard (GtkWidget *frame, gint source)
 				local_config.color_dashboard,
 				local_config.font_dashboard,
 				current.mapscale);
+			break;
+		}
+		case DASH_XTE:
+		{
+			gdouble xte = 0.0/0.0; /* init as nan */
+
+			g_strlcpy (head, _("Cross-track error"), sizeof (head));
+#ifdef NOTEYET
+			if (route.active)
+			{
+
+			/*** TODO ***/
+
+			/* need:
+				current position (coords.current_lon, coords.current_lat)
+				next rte point (wpt) coord (?? coords.target_lon, coords.target_lat ??) ["target" is cross-hair posn?]
+				prev rte point (new variables), or nan,nan if not past first point in route
+				--(coords.dest_lon, coords.dest_lat is posn of final rte pt. not useful here)
+			   plan: (hopefully bug free)
+				calc geodesic dist from curr_pos to rte_ next [calc_wpdist() in gpsmisc.c]
+				calc heading angle for geodesic line from rte_last to rte_next.
+				calc heading angle for geodesic line from curr_pos to rte_next.
+					this is "faz" or "baz" from calc_wpdist() in gpsmisc.c
+
+				angle2 - angle1 = relative course to steer to get to rte_next.
+				xte (meters) = geo_dist (meters) * sin(relative course to rte_next)
+
+			    Probably there is a simpler way?
+			     It is important to use exact calcuations: meters count here.
+
+			  see also:
+				http://trac.osgeo.org/proj/wiki/GeodesicCalculations
+				http://article.gmane.org/gmane.comp.gis.proj-4.devel/3478 (twin code as calc_wpdist() in gpsmisc.c)
+			*/
+
+				/* color the text:
+					  right: green  (starboard)
+					  left: red     (port) */
+				if (xte < 0.0) {
+				    dirs = 'L';
+				    g_strlcpy(turn_color, "#800000", sizeof(turn_color));
+				}
+				else if (xte > 0.0) {
+				    dirs = 'R';
+				    g_strlcpy(turn_color, "#008000", sizeof(turn_color));
+				}
+				else { // xte==0.0 [or 180.0 ??]). xte is a double so rather unlikely
+				    dirs = ' ';
+				    g_snprintf (turn_color, sizeof(turn_color), "%s",
+					local_config.color_dashboard);
+				}
+
+				g_snprintf (content, sizeof (content),
+				    "<span color=\"%s\" font_desc=\"%s\">%c %.0f m "
+				    "</span>",
+				    turn_color,
+				    local_config.font_dashboard,
+				    dirs, abs(xte) );  // use fabs(xte) + %.0f ???
+			}
+			else
+#endif
+			{
+				g_snprintf (content, sizeof (content),
+					"<span color=\"%s\" font_desc=\"%s\" "
+					"size=\"16000\">%s</span>",
+					local_config.color_dashboard,
+					local_config.font_dashboard,
+					 _("n/a"));
+			}
+			break;
 		}
 	}
 
@@ -1786,7 +1858,9 @@ void create_dashboard_menu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+		_("Cross-track error"),		/* DASH_XTE */
 	};
+
 	gint i;
 	GtkWidget *dash_menuitem;
 
@@ -1831,6 +1905,7 @@ void create_dashboard_carmenu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+		_("Cross-track error"),		/* DASH_XTE */
 	};
 
 	dash_menu_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
