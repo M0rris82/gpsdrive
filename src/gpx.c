@@ -1234,10 +1234,31 @@ gint loadgpx_cb (gint gpx_mode)
 
 	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
 	{
+		gchar *t_buf;
+
 		if (mydebug >10)
 			test_gpx (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)));
 
 		gpx_file_read (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);
+
+		/* save selected folder */
+		t_buf = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER (fdialog));
+		if (t_buf)
+		{
+			switch (gpx_mode)
+			{
+				case GPX_RTE:
+					g_strlcpy (local_config.dir_routes, t_buf,
+						sizeof (local_config.dir_routes));
+					break;
+				case GPX_TRK:
+					g_strlcpy (local_config.dir_tracks, t_buf,
+						sizeof (local_config.dir_tracks));
+					break;
+			}
+			g_free (t_buf);
+			current.needtosave = TRUE;
+		}
 	}
 
 	gtk_widget_destroy (fdialog);
@@ -1293,8 +1314,29 @@ gint savegpx_cb (gint gpx_mode)
 
 	if (gtk_dialog_run (GTK_DIALOG (fdialog)) == GTK_RESPONSE_ACCEPT)
 	{
+		gchar *t_buf;
+
 		dialog_get_gpx_info (gpx_mode);
 		gpx_file_write (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fdialog)), gpx_mode);
+
+		/* save selected folder */
+		t_buf = gtk_file_chooser_get_current_folder (GTK_FILE_CHOOSER (fdialog));
+		if (t_buf)
+		{
+			switch (gpx_mode)
+			{
+				case GPX_RTE:
+					g_strlcpy (local_config.dir_routes, t_buf,
+						sizeof (local_config.dir_routes));
+					break;
+				case GPX_TRK:
+					g_strlcpy (local_config.dir_tracks, t_buf,
+						sizeof (local_config.dir_tracks));
+					break;
+			}
+			g_free (t_buf);
+			current.needtosave = TRUE;
+		}
 	}
 
 	gtk_widget_destroy (fdialog);
