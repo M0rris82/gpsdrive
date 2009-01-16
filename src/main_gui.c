@@ -1130,16 +1130,16 @@ update_dashboard (GtkWidget *frame, gint source)
 			     It is important to use exact calcuations: meters count here.
 			*/
 
-				/* dist/angle from current pos to next waypoint */
+				/* get dist + angle from current pos to next waypoint */
 				inv_geodesic(next_wpt_lon, next_wpt_lat, 0, 0, TRUE,
 					     &dist_to_next, &azimuth_to_next, &back_azimuth);
 
-				/* dist/angle from last waypoint to next waypoint */
+				/* get angle from last waypoint to next waypoint */
 				inv_geodesic(next_wpt_lon, next_wpt_lat,
 					     last_wpt_lon, last_wpt_lat, FALSE,
 					     &leg_length, &azimuth_of_leg, &back_azimuth);
 
-				xte = sin(azimuth_of_leg - azimuth_to_next) * dist_to_next;
+				xte = sin(azimuth_of_leg - azimuth_to_next) * dist_to_next; /* meters */
 
 				/* color the text:
 					  right: green  (starboard)
