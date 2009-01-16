@@ -201,15 +201,15 @@ gdouble calc_wpdist (gdouble lon1, gdouble lat1,
 		     gdouble lon2, gdouble lat2,
 		     gint from_current)
 {
-	gdouble distance_km, fwd_azimuth, back_azimuth;
+	gdouble distance_m, fwd_azimuth, back_azimuth;
 
 	inv_geodesic(lon1, lat1, lon2, lat2, from_current,
-		     &distance_km, &fwd_azimuth, &back_azimuth);
+		     &distance_m, &fwd_azimuth, &back_azimuth);
 
 	/* printf("in calc_wptdist: dist_m=%.3f, faz=%.3f  baz=%.3f\n", distance_km*1000,
 		 fwd_azimuth *180./M_PI, back_azimuth *180./M_PI); */
 
-	return distance_km;
+	return distance_m / 1000.0; /* returns distance in km */
 }
 
 
@@ -226,7 +226,7 @@ gdouble calc_wpdist (gdouble lon1, gdouble lat1,
  *   just set them to 0,0 in that case.
  *
  * OUTPUT
- *  dist -- distance (km) between points, normalized by major elliptical axis
+ *  dist -- distance (meters) between points, normalized by major elliptical axis
  *  faz -- azimuth from first point to second in radians clockwise from North.
  *  baz -- azimuth from second point back to first point.
  *	   (azimuths are measured in radians CW relative to true north)
@@ -238,7 +238,7 @@ gdouble calc_wpdist (gdouble lon1, gdouble lat1,
  */
 void inv_geodesic(gdouble lon1, gdouble lat1,
 		  gdouble lon2, gdouble lat2, gint from_current,
-		  gdouble *distance_km, gdouble *faz, gdouble *baz)
+		  gdouble *distance_m, gdouble *faz, gdouble *baz)
 {
 	gdouble a = 6378137.0;
 	gdouble f = 1.0 / 298.257223563;
@@ -263,7 +263,7 @@ void inv_geodesic(gdouble lon1, gdouble lat1,
 
 	if (((lat1 - lat2) == 0.0) && ((lon1 - lon2) == 0.0))
 	{
-		*distance_km = 0.0;
+		*distance_m = 0.0;
 		*baz = *faz = 0.0/0.0; /* nan */
 		return;
 	}
@@ -324,7 +324,7 @@ void inv_geodesic(gdouble lon1, gdouble lat1,
 	/*  s -- distance between points normalized by major elliptical axis
 			(i.e. a * s to get distance). */
 
-	*distance_km = local_config.distfactor * s / 1000.0;
+	*distance_m = local_config.distfactor * s;
 
 	return;
 }
