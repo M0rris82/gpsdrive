@@ -15,9 +15,13 @@ gint loadmapconfig ();
 void loadwaypoints ();
 void savewaypoints ();
 void storepoint();
+
 gdouble calcdist (gdouble lon, gdouble lat);
 gdouble calcdist2 (gdouble lon, gdouble lat);
-gdouble calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2, gint from_current);
+gdouble calc_wpdist (gdouble, gdouble, gdouble, gdouble, gint);
+void inv_geodesic(gdouble, gdouble, gdouble, gdouble, gint,
+	gdouble *, gdouble *, gdouble *);
+
 gint help_cb (GtkWidget * widget, guint datum);
 gint import1_cb (GtkWidget * widget, guint datum);
 

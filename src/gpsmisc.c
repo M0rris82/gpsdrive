@@ -187,23 +187,59 @@ calcdist2 (gdouble lon, gdouble lat)
   return local_config.distfactor * d / 1000.0;
 }
 
+
 /* ******************************************************************
  * calculate geodesic distance between two given coordinates (lon1/lat1, lon2/lat2)
  *   (great circle distance along the WGS84 ellipsoid)
  *
- * MUCH more precise than calcdist2
+ * This function is MUCH more precise than calcdist2().
  *
- * if from_current is TRUE, lon2/lat2 ist replaced by the current position
+ * If from_current is TRUE, lon2/lat2 is replaced by the current position.
+ *   just set them to 0,0 in that case.
  */
-gdouble
-calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
-	     gint from_current)
+gdouble calc_wpdist (gdouble lon1, gdouble lat1,
+		     gdouble lon2, gdouble lat2,
+		     gint from_current)
+{
+	gdouble distance_km, fwd_azimuth, back_azimuth;
+
+	inv_geodesic(lon1, lat1, lon2, lat2, from_current,
+		     &distance_km, &fwd_azimuth, &back_azimuth);
+
+	/* printf("in calc_wptdist: dist_m=%.3f, faz=%.3f  baz=%.3f\n", distance_km*1000,
+		 fwd_azimuth *180./M_PI, back_azimuth *180./M_PI); */
+
+	return distance_km;
+}
+
+
+/* ******************************************************************
+ * calculate geodesic distance between two given coordinates (lon1/lat1, lon2/lat2)
+ *   (great circle distance along the WGS84 ellipsoid)
+ *   Good for any pair of points that are not antipodal.
+ *
+ * This function is MUCH more precise than calcdist2().
+ *   It was previously called calc_wpdist(), but renamed to allow output
+ *   of faz and baz.
+ *
+ * If from_current is TRUE, lon2/lat2 is replaced by the current position.
+ *   just set them to 0,0 in that case.
+ *
+ * OUTPUT
+ *  dist -- distance (km) between points, normalized by major elliptical axis
+ *  faz -- azimuth from first point to second in radians clockwise from North.
+ *  baz -- azimuth from second point back to first point.
+ *	   (azimuths are measured in radians CW relative to true north)
+ */
+void inv_geodesic(gdouble lon1, gdouble lat1,
+		  gdouble lon2, gdouble lat2, gint from_current,
+		  gdouble *distance_km, gdouble *faz, gdouble *baz)
 {
 	gdouble a = 6378137.0;
 	gdouble f = 1.0 / 298.257223563;
 	gdouble glat1, glat2, glon1, glon2;
 	gdouble radiant = M_PI / 180;
-	gdouble r, tu1, tu2, cu1, su1, cu2, s, baz, faz, x, sx, cx, sy, cy, y;
+	gdouble r, tu1, tu2, cu1, su1, cu2, s, x, sx, cx, sy, cy, y;
 	gdouble sa, c2a, cz, e, c, d;
 	gdouble eps = 0.5e-13;
 
@@ -213,7 +249,7 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
    *       return r;
    *     }
    */
-	
+
 	if (from_current)
 	{
 		lon2 = coords.current_lon;
@@ -221,7 +257,11 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 	}
 
 	if (((lat1 - lat2) == 0.0) && ((lon1 - lon2) == 0.0))
-		return 0.0;
+	{
+		*distance_km = 0.0;
+		*baz = *faz = 0.0/0.0; /* nan */
+		return;
+	}
 
 	glat1 = radiant * lat2;
 	glat2 = radiant * lat1;
@@ -236,8 +276,8 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 
 	cu2 = 1.0 / sqrt (tu2 * tu2 + 1.0);
 	s = cu1 * cu2;
-	baz = s * tu2;
-	faz = baz * tu1;
+	*baz = s * tu2;
+	*faz = *baz * tu1;
 	x = glon2 - glon1;
 
 	do
@@ -245,14 +285,14 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 		sx = sin (x);
 		cx = cos (x);
 		tu1 = cu2 * sx;
-		tu2 = baz - su1 * cu2 * cx;
+		tu2 = *baz - su1 * cu2 * cx;
 		sy = sqrt (tu1 * tu1 + tu2 * tu2);
 
-		cy = s * cx + faz;
+		cy = s * cx + *faz;
 		y = atan2 (sy, cy);
 		sa = s * sx / sy;
 		c2a = -sa * sa + 1.0;
-		cz = faz + faz;
+		cz = *faz + *faz;
 
 		if (c2a > 0)
 			cz = -cz / c2a + cy;
@@ -265,8 +305,8 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 	}
 	while (fabs (d - x) > eps);
 
-	faz = atan2 (tu1, tu2);
-	baz = atan2 (cu1 * sx, baz * cx - su1 * cu2) + M_PI;
+	*faz = atan2 (tu1, tu2);
+	*baz = atan2 (cu1 * sx, *baz * cx - su1 * cu2) + M_PI;
 	x = sqrt ((1.0 / r / r - 1.0) * c2a + 1.0) + 1.0;
 	x = (x - 2.0) / x;
 	c = 1.0 - x;
@@ -276,8 +316,12 @@ calc_wpdist (gdouble lon1, gdouble lat1, gdouble lon2, gdouble lat2,
 	s = 1.0 - e - e;
 	s = ((((sy * sy * 4.0 - 3.0) * s * cz * d / 6.0 - x) * d / 4.0 +
 		cz) * sy * d + y) * c * a * r;
+	/*  s -- distance between points normalized by major elliptical axis
+			(i.e. a * s to get distance). */
 
-	return local_config.distfactor * s / 1000.0;
+	*distance_km = local_config.distfactor * s / 1000.0;
+
+	return;
 }
 
 
