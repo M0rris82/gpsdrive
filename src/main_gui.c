@@ -1099,6 +1099,11 @@ update_dashboard (GtkWidget *frame, gint source)
 		case DASH_XTE:
 		{
 			gdouble xte = 0.0/0.0; /* init as nan */
+			gdouble dist_to_next, azimuth_to_next, azimuth_of_leg;
+			gdouble leg_length, back_azimuth; /* unused but needed for inv_geodesic() */
+
+			/* get these from ??? */
+			gdouble last_wpt_lon, last_wpt_lat, next_wpt_lon, next_wpt_lat;
 
 			g_strlcpy (head, _("Cross-track error"), sizeof (head));
 
@@ -1124,6 +1129,17 @@ update_dashboard (GtkWidget *frame, gint source)
 			    Probably there is a simpler way?
 			     It is important to use exact calcuations: meters count here.
 			*/
+
+				/* dist/angle from current pos to next waypoint */
+				inv_geodesic(next_wpt_lon, next_wpt_lat, 0, 0, TRUE,
+					     &dist_to_next, &azimuth_to_next, &back_azimuth);
+
+				/* dist/angle from last waypoint to next waypoint */
+				inv_geodesic(next_wpt_lon, next_wpt_lat,
+					     last_wpt_lon, last_wpt_lat, FALSE,
+					     &leg_length, &azimuth_of_leg, &back_azimuth);
+
+				xte = sin(azimuth_of_leg - azimuth_to_next) * dist_to_next;
 
 				/* color the text:
 					  right: green  (starboard)
