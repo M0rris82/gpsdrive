@@ -115,7 +115,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
 		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
 		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
-		g_print ("  Heading: %.2f\n  GPS time: %.0f\n",
+		g_print ("  Course: %.2f\n  GPS time: %.0f\n",
 			data->fix.track, data->fix.time);
 		g_print ("  Speed: %.1f m/s\n  Altitude: %.1f m\n\n",
 			data->fix.speed, data->fix.altitude);
@@ -129,7 +129,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	current.gps_sats_used = data->satellites_used;
 	current.gps_sats_in_view = data->satellites;
 	if (data->set & TRACK_SET) 
-		current.heading = data->fix.track * DEG_2_RAD;
+		current.course = data->fix.track * DEG_2_RAD;
 	if (data->set & SPEED_SET)
 		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
 	current.gps_hdop = data->hdop;

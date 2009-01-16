@@ -1304,7 +1304,7 @@ settings_gui (GtkWidget *notebook)
 
 	gui_compassmode_bt = gtk_check_button_new_with_label (_("Rotating Compass"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_scaleshow_bt,
-		_("Rotate the compass depending on your heading"), NULL);
+		_("Rotate the compass depending on your course"), NULL);
 	if (local_config.rotating_compass)
 	{
 		gtk_toggle_button_set_active

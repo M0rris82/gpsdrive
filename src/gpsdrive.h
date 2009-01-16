@@ -120,7 +120,7 @@ enum
 	FRIENDS_LON,
 	FRIENDS_TIMESEC,
 	FRIENDS_SPEED,
-	FRIENDS_HEADING,
+	FRIENDS_COURSE,
 	FRIENDS_ICON,
 	FRIENDS_DIST,
 	FRIENDS_DIST_TEXT,
@@ -332,7 +332,7 @@ typedef struct
 	gdouble groundspeed;
 	gint pos_x;		/* position in map window in px */
 	gint pos_y;		/* position in map window in px */
-	gdouble heading;	/* heading in radians */
+	gdouble course;		/* course on ground in radians */
 	gdouble bearing;	/* bearing in radians */
 	gdouble altitude;	/* current altitude */
 	gint timezone;		/* current timezone */

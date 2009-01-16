@@ -189,7 +189,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 	struct hostent *hostname;
 	struct sockaddr_in sin;
 	char id[31], name[41], lat[41], lon[41], timesec[41], speed[11],
-		heading[11];
+		course[11];
 	char msgname[40], msgtext[1024], ackid[40];
 
 	for (;;)
@@ -259,7 +259,7 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 				e = sscanf (mesg,
 					    "POS: %30s %40s %40s %40s %40s %10s %10s",
 					    id, name, lat, lon, timesec,
-					    speed, heading);
+					    speed, course);
 				/*              printf("\nGot %d arguments\n",e);  */
 				if ((e == 7)
 				    && (strstr (id, "queryqueryqueryqueryqu")

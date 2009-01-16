@@ -138,7 +138,7 @@ static GtkObject *mapscaler_adj;
 static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
 static GtkWidget *statusfriends_lb, *statustime_lb;
 static GtkWidget *statuslat_lb, *statuslon_lb;
-static GtkWidget *statusheading_lb, *statusbearing_lb;
+static GtkWidget *statuscourse_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu, *dash_menu_window;
 static GtkWidget *controlbox_window;
 static GtkWidget *satellite_window;
@@ -630,7 +630,7 @@ draw_maptype (void)
  *  the second parameter chooses, which value should be dispayed there
  * Possible Values:
  *	DSH_DIST, DASH_TIMEREMAIN, DASH_BEARING, DASH_TURN, DASH_SPEED,
- *	DASH_HEADING, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
+ *	DASH_COURSE, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
  *	DASH_SPEED_AVG, DASH_SPEED_MAX, DASH_POSITION, DASH_MAPSCALE,
  *	DASH_XTE
  */
@@ -768,22 +768,22 @@ update_dashboard (GtkWidget *frame, gint source)
 			RAD2DEG (current.bearing), DEGREE);
 			break;
 		}
-		case DASH_HEADING:
+		case DASH_COURSE:
 		{
-			g_strlcpy (head, _("Heading"), sizeof (head));
+			g_strlcpy (head, _("Course"), sizeof (head));
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%03.f"
 				"%s</span>",
 			local_config.color_dashboard,
 			local_config.font_dashboard,
-			RAD2DEG (current.heading), DEGREE);
+			RAD2DEG (current.course), DEGREE);
 			break;
 		}
 		case DASH_TURN:
 		{
 			g_strlcpy (head, _("Turn"), sizeof (head));
 			dir = RAD2DEG (current.bearing)
-				- RAD2DEG (current.heading);
+				- RAD2DEG (current.course);
 			if (dir > 180)
 				dir = dir - 360;
 			else if (dir < -180)
@@ -1237,10 +1237,10 @@ update_statusdisplay ()
 	g_snprintf (stmp, sizeof (stmp), "1:%ld", current.mapscale);
 	gtk_label_set_text (GTK_LABEL (statusmapscale_lb), stmp);
 
-	/* update heading */
+	/* update course */
 	g_snprintf (stmp, sizeof (stmp), "%3.0f%s",
-		RAD2DEG (current.heading), DEGREE);
-	gtk_label_set_text (GTK_LABEL (statusheading_lb), stmp);
+		RAD2DEG (current.course), DEGREE);
+	gtk_label_set_text (GTK_LABEL (statuscourse_lb), stmp);
 
 	/* update bearing */
 	g_snprintf (stmp, sizeof (stmp), "%3.0f%s",
@@ -1866,7 +1866,7 @@ void create_dashboard_menu (void)
 		_("Speed"),			/* DASH_SPEED */
 		_("Avg. Speed"),		/* DASH_SPEED_AVG */
 		_("Max. Speed"),		/* DASH_SPEED_MAX */
-		_("Heading"),			/* DASH_HEADING */
+		_("Course"),			/* DASH_COURSE */
 		_("Altitude"),			/* DASH_ALT */
 		_("Trip Odometer"),		/* DASH_TRIP */
 		_("GPS Precision"),		/* DASH_GPSPRECISION */
@@ -2576,7 +2576,7 @@ void create_status_mainbox (void)
 {
 	GtkWidget *statusdashsub1_box, *statusdashsub2_box;
 	GtkWidget *frame_statustime;
-	GtkWidget *frame_statusbearing, *frame_statusheading;
+	GtkWidget *frame_statusbearing, *frame_statuscourse;
 	GtkWidget *frame_statuslat, *frame_statuslon;
 	GtkWidget *eventbox_statuslat, *eventbox_statuslon;
 	GtkWidget *frame_statusmapscale, *frame_statusprefscale;
@@ -2724,11 +2724,11 @@ void create_status_mainbox (void)
 		gtk_container_add (GTK_CONTAINER (frame_statusbearing),
 			statusbearing_lb);
 
-		/* Heading */
-		frame_statusheading = gtk_frame_new (_("Heading"));
-		statusheading_lb = gtk_label_new ("0000");
-		gtk_container_add (GTK_CONTAINER (frame_statusheading),
-			statusheading_lb);
+		/* Course */
+		frame_statuscourse = gtk_frame_new (_("Course"));
+		statuscourse_lb = gtk_label_new ("0000");
+		gtk_container_add (GTK_CONTAINER (frame_statuscourse),
+			statuscourse_lb);
 
 		/* Latitude */
 		frame_statuslat = gtk_frame_new (_("Latitude"));
@@ -2878,7 +2878,7 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statustime, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusfriends, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusbearing, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusheading, TRUE, TRUE, 1 * PADDING);
+		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuscourse, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);

@@ -168,7 +168,7 @@ storepoint ()
 	{
 		add_trackpoint
 			(coords.current_lat, coords.current_lon, current.altitude,
-			 RAD2DEG (current.heading), current.groundspeed, current.gps_hdop,
+			 RAD2DEG (current.course), current.groundspeed, current.gps_hdop,
 			 current.gps_mode, current.gps_sats_used, NULL);
 		if (local_config.savetrack)
 			do_incremental_save();

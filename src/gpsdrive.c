@@ -1084,7 +1084,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 				draw_posmarker (
 					current.pos_x + SHADOWOFFSET,
 					current.pos_y + SHADOWOFFSET,
-					current.heading, &colors.darkgrey,
+					current.course, &colors.darkgrey,
 					local_config.posmarker, TRUE, FALSE);
 			}
 
@@ -1101,7 +1101,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 			}
 
 			/*  draw pointer to direction of motion */
-			draw_posmarker (current.pos_x, current.pos_y, current.heading,
+			draw_posmarker (current.pos_x, current.pos_y, current.course,
 				&colors.black, local_config.posmarker,
 				FALSE, TRUE);
 		}
@@ -1118,7 +1118,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 		/*  If we are in explore mode we set direction to zero to see where is the  */
 		/*  target  */
 		if (gui_status.expmode)
-			current.heading = 0.0;
+			current.course = 0.0;
 
 		display_status2 ();
 
@@ -1295,7 +1295,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 	gdk_draw_arc (drawable_compass, kontext_compass, FALSE,
 		6+size/4, 6+size/4, size/2-12, size/2-12, 0, 360 * 64);
 
-	w = - current.heading;
+	w = - current.course;
 	
 	t_x1off = cos(w + M_PI_2);
 	t_y1off = sin(w + M_PI_2);
@@ -1373,7 +1373,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 			g_object_unref (G_OBJECT (layout_compass));
 		pango_font_description_free (pfd_compass);
 
-		/* draw heading pointer */
+		/* draw course pointer */
 		poly[0].x = size/2;
 		poly[0].y = size/2-1.1*diam;
 		poly[1].x = size/2+0.3*diam;
@@ -1392,7 +1392,7 @@ expose_compass (GtkWidget *widget, guint *datum)
 		gdk_draw_polygon (drawable_compass, kontext_compass, FALSE, poly, 5);
 
 		/* draw bearing pointer */
-		b = current.bearing - current.heading;
+		b = current.bearing - current.course;
 		if (b > 2*M_PI)
 			b -= 2*M_PI;
 		gdk_gc_set_foreground (kontext_compass, &colors.red);
@@ -1459,21 +1459,21 @@ expose_compass (GtkWidget *widget, guint *datum)
 			g_object_unref (G_OBJECT (layout_compass));
 		pango_font_description_free (pfd_compass);
 
-		/* draw heading pointer */
+		/* draw course pointer */
 		gdk_gc_set_line_attributes (kontext_compass, 2, 0, 0, 0);
 		gdk_gc_set_foreground (kontext_compass, &colors.black);
-		poly[0].x = size/2-1.1*diam*cos(current.heading + M_PI_2);
-		poly[0].y = size/2-1.1*diam*sin(current.heading + M_PI_2);
-		poly[1].x = size/2-0.3*diam*cos(current.heading + M_PI)
-			+ 0.8*diam*cos(current.heading + M_PI_2);
-		poly[1].y = size/2-0.3*diam*sin(current.heading + M_PI)
-			+ 0.8*diam*sin(current.heading + M_PI_2);
-		poly[2].x = size/2+0.6*diam*cos(current.heading + M_PI_2);
-		poly[2].y = size/2+0.6*diam*sin(current.heading + M_PI_2);
-		poly[3].x = size/2+0.3*diam*cos(current.heading + M_PI)
-			+0.8*diam*cos(current.heading + M_PI_2);
-		poly[3].y = size/2+0.3*diam*sin(current.heading + M_PI)
-			+0.8*diam*sin(current.heading + M_PI_2);
+		poly[0].x = size/2-1.1*diam*cos(current.course + M_PI_2);
+		poly[0].y = size/2-1.1*diam*sin(current.course + M_PI_2);
+		poly[1].x = size/2-0.3*diam*cos(current.course + M_PI)
+			+ 0.8*diam*cos(current.course + M_PI_2);
+		poly[1].y = size/2-0.3*diam*sin(current.course + M_PI)
+			+ 0.8*diam*sin(current.course + M_PI_2);
+		poly[2].x = size/2+0.6*diam*cos(current.course + M_PI_2);
+		poly[2].y = size/2+0.6*diam*sin(current.course + M_PI_2);
+		poly[3].x = size/2+0.3*diam*cos(current.course + M_PI)
+			+0.8*diam*cos(current.course + M_PI_2);
+		poly[3].y = size/2+0.3*diam*sin(current.course + M_PI)
+			+0.8*diam*sin(current.course + M_PI_2);
 		poly[4].x = poly[0].x;
 		poly[4].y = poly[0].y;
 		gdk_draw_polygon (drawable_compass, kontext_compass, TRUE, poly, 5);
@@ -1741,20 +1741,20 @@ simulated_pos (GtkWidget * widget, guint * datum)
 #define MINSPEED 1.0
 	if (((fabs (tx)) > MINSPEED) || (((fabs (ty)) > MINSPEED)))
 	{
-		lastdirection = current.heading;
+		lastdirection = current.course;
 		if (ty == 0)
-			current.heading = 0.0;
+			current.course = 0.0;
 		else
-			current.heading = atan (tx / ty);
-		if (!finite (current.heading))
-			current.heading = lastdirection;
+			current.course = atan (tx / ty);
+		if (!finite (current.course))
+			current.course = lastdirection;
 
 		if (ty < 0)
-			current.heading = M_PI + current.heading;
-		if (current.heading >= (2 * M_PI))
-			current.heading -= 2 * M_PI;
-		if (current.heading < 0)
-			current.heading += 2 * M_PI;
+			current.course = M_PI + current.course;
+		if (current.course >= (2 * M_PI))
+			current.course -= 2 * M_PI;
+		if (current.course < 0)
+			current.course += 2 * M_PI;
 		current.groundspeed =
 			local_config.distfactor * sqrt (tx * tx +
 					  ty * ty) * 3.6 / secs;
@@ -2300,7 +2300,7 @@ main (int argc, char *argv[])
     maploaded = FALSE;
     gblink = blink = FALSE;
     haveposcount = debug = 0;
-    current.heading = current.bearing = 0.0;
+    current.course = current.bearing = 0.0;
     current.zoom = 1;
     iszoomed = FALSE;
 

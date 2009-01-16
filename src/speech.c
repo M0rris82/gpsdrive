@@ -330,7 +330,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
 
 	speechcount++;
 
-	angle = RAD2DEG (current.bearing) - RAD2DEG (current.heading);
+	angle = RAD2DEG (current.bearing) - RAD2DEG (current.course);
 	if (angle < 0.0)
 		angle = 360 + angle;
 

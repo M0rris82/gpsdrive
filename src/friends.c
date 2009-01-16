@@ -77,7 +77,7 @@ typedef struct
 	gchar name[40];
 	gchar type[40];
 	gchar lat[40], lon[40];
-	gchar timesec[40], speed[10], heading[10];
+	gchar timesec[40], speed[10], course[10];
 }
 friendsstruct;
 
@@ -190,7 +190,7 @@ friendsagent_cb (GtkWidget * widget, guint * datum)
 				local_config.friends_id,
 				local_config.friends_name, la, lo, tii,
 				current.groundspeed / local_config.distfactor,
-				180.0 * current.heading / M_PI,
+				180.0 * current.course / M_PI,
 				local_config.travelmode);
 			if ( mydebug > 3 )
 				fprintf (stderr,
@@ -246,7 +246,7 @@ update_friends_data (friendsstruct *cf)
 		FRIENDS_LON, g_strtod((cf)->lon, NULL),
 		FRIENDS_TIMESEC, atoi ((cf)->timesec),
 		FRIENDS_SPEED, atoi ((cf)->speed),
-		FRIENDS_HEADING, atoi ((cf)->heading),
+		FRIENDS_COURSE, atoi ((cf)->course),
 		FRIENDS_ICON, t_icon,
 		FRIENDS_DIST, t_val,
 		FRIENDS_DIST_TEXT, t_buf,
@@ -275,19 +275,19 @@ update_friends_data (friendsstruct *cf)
 				" with poi_id = %ld\n", current_poi_id);
 			db_poi_edit (current_poi_id, strtod((cf)->lat, NULL),
 				strtod((cf)->lon, NULL), (cf)->name,
-				(cf)->type, (cf)->heading, 7, TRUE);
+				(cf)->type, (cf)->course, 7, TRUE);
 			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, TRUE);
-			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, TRUE);
+			db_poi_extra_edit (&current_poi_id, "course", (cf)->course, TRUE);
 			db_poi_extra_edit (&current_poi_id, "timesec", (cf)->timesec, TRUE);
 		}
 		else
 		{
 			current_poi_id = db_poi_edit (0, strtod((cf)->lat, NULL),
 				strtod((cf)->lon, NULL), (cf)->name, (cf)->type,
-				(cf)->heading, 7, FALSE);
+				(cf)->course, 7, FALSE);
 			db_poi_extra_edit (&current_poi_id, "friends_id", (cf)->id, FALSE);
 			db_poi_extra_edit (&current_poi_id, "speed", (cf)->speed, FALSE);
-			db_poi_extra_edit (&current_poi_id, "heading", (cf)->heading, FALSE);
+			db_poi_extra_edit (&current_poi_id, "course", (cf)->course, FALSE);
 			db_poi_extra_edit (&current_poi_id, "timesec", (cf)->timesec, FALSE);
 		}
 	}
@@ -404,7 +404,7 @@ friends_sendmsg (char *serverip, char *message)
 	      e = sscanf (recvline,
 			  "POS: %s %s %s %s %s %s %s %d",
 			  f->id, f->name, f->lat, f->lon,
-			  f->timesec, f->speed, f->heading,
+			  f->timesec, f->speed, f->course,
 			  &type);
 	      /*              printf("\nreceived %d arguments\n",e);  */
 		if (type == TRAVEL_CAR)
@@ -435,7 +435,7 @@ friends_sendmsg (char *serverip, char *message)
 			  "SRV: %s %s %s %s %s %s %s",
 			  fserver->id, fserver->name,
 			  fserver->lat, fserver->lon,
-			  fserver->timesec, fserver->speed, fserver->heading);
+			  fserver->timesec, fserver->speed, fserver->course);
 	      /*              printf("\nreceived %d arguments\n",e);  */
 	    }
 	  if ((strncmp (recvline, "SND: ", 5)) == 0)
@@ -560,7 +560,7 @@ friends_init ()
 		G_TYPE_DOUBLE,		/* LON */
 		G_TYPE_INT,		/* TIMESEC */
 		G_TYPE_INT,		/* SPEED */
-		G_TYPE_INT,		/* HEADING */
+		G_TYPE_INT,		/* COURSE */
 		GDK_TYPE_PIXBUF,	/* ICON */
 		G_TYPE_DOUBLE,		/* DIST */
 		G_TYPE_STRING,		/* DIST TEXT */
