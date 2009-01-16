@@ -397,17 +397,20 @@ speech_out_cb (GtkWidget * widget, guint * datum)
       if (local_config.distmode == DIST_MILES)
       {
         g_snprintf(
-          buf, sizeof(buf), _("The current speed is %d miles per hour."), (int) current.groundspeed );
+          buf, sizeof(buf), _("The current speed is %.0f miles per hour."),
+			     current.groundspeed );
       }
       else if (local_config.distmode == DIST_NAUTIC)
       {
         g_snprintf(
-          buf, sizeof(buf), _("The current speed is %d knots."), (int) current.groundspeed );
+          buf, sizeof(buf), _("The current speed is %.0f knots."),
+			     current.groundspeed );
       }
       else
       {
         g_snprintf(
-          buf, sizeof(buf), _("The current speed is %d kilometers per hour."), (int) current.groundspeed );
+          buf, sizeof(buf), _("The current speed is %.0f kilometers per hour."),
+			     current.groundspeed );
       }
 
       speech_saytext (buf, 2);
@@ -436,7 +439,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
       {
         if( current.dist <= 1.2 )
         {
-          g_snprintf( s2, sizeof(s2), _("%d meters."), (int) (current.dist * 1000) );
+          g_snprintf( s2, sizeof(s2), _("%.0f meters."), current.dist * 1000 );
         }
         else if( 1 == (int) current.dist )
         {
@@ -445,7 +448,7 @@ speech_out_cb (GtkWidget * widget, guint * datum)
         else
         {
           g_snprintf(
-            s2, sizeof(s2), _("%d kilometers."), (int) current.dist );
+            s2, sizeof(s2), _("%.0f kilometers."), current.dist );
         }
       }
 

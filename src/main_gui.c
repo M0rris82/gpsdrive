@@ -1123,9 +1123,6 @@ update_dashboard (GtkWidget *frame, gint source)
 
 			    Probably there is a simpler way?
 			     It is important to use exact calcuations: meters count here.
-
-			    It seems for the voice stuff that GpsDrive already knows about which leg of
-				the route you are on and what the next waypoint is.
 			*/
 
 				/* color the text:
