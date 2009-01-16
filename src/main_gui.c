@@ -1113,10 +1113,10 @@ update_dashboard (GtkWidget *frame, gint source)
 				prev rte point (new variables), or nan,nan if not past first point in route
 				--(coords.dest_lon, coords.dest_lat is posn of final rte pt. not useful here)
 			   plan: (hopefully bug free)
-				calc geodesic dist from curr_pos to rte_ next [calc_wpdist() in gpsmisc.c]
-				calc heading angle for geodesic line from rte_last to rte_next.
-				calc heading angle for geodesic line from curr_pos to rte_next.
-					this is "faz" or "baz" from calc_wpdist() in gpsmisc.c
+				calc geodesic dist from curr_pos to rte_ next [inv_geodesic() or calc_wpdist() in gpsmisc.c]
+				calc heading angle for geodesic line from rte_last to rte_next. [inv_geodesic() in gpsmisc.c]
+				calc heading angle for geodesic line from curr_pos to rte_next.[inv_geodesic() in gpsmisc.c]
+					this is "faz" or "baz" from inv_geodesic() in gpsmisc.c
 
 				angle2 - angle1 = relative course to steer to get to rte_next.
 				xte (meters) = geo_dist (meters) * sin(relative course to rte_next)
@@ -1124,9 +1124,8 @@ update_dashboard (GtkWidget *frame, gint source)
 			    Probably there is a simpler way?
 			     It is important to use exact calcuations: meters count here.
 
-			  see also:
-				http://trac.osgeo.org/proj/wiki/GeodesicCalculations
-				http://article.gmane.org/gmane.comp.gis.proj-4.devel/3478 (twin code as calc_wpdist() in gpsmisc.c)
+			    It seems for the voice stuff that GpsDrive already knows about which leg of
+				the route you are on and what the next waypoint is.
 			*/
 
 				/* color the text:

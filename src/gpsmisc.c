@@ -230,6 +230,11 @@ gdouble calc_wpdist (gdouble lon1, gdouble lat1,
  *  faz -- azimuth from first point to second in radians clockwise from North.
  *  baz -- azimuth from second point back to first point.
  *	   (azimuths are measured in radians CW relative to true north)
+ *
+ * see also:
+ *	http://trac.osgeo.org/proj/wiki/GeodesicCalculations
+ *	http://article.gmane.org/gmane.comp.gis.proj-4.devel/3478 (twin code)
+ *
  */
 void inv_geodesic(gdouble lon1, gdouble lat1,
 		  gdouble lon2, gdouble lat2, gint from_current,
