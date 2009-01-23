@@ -9,48 +9,62 @@ export DH_VERBOSE=1
 #export DH_COMPAT=5
 export destdir = $(CURDIR)/debian/gpsdrive
 
-configure: configure-stamp
-configure-stamp:
+configure: clean build/configure-stamp
+build/configure-stamp:
+	# ------------------ configure the package.
 	dh_testdir
-	# Add here commands to configure the package.
 	rm -f CMakeCache.txt
 	mkdir -p build
-	cd build; cmake -DCMAKE_BUILD_TYPE=Release \
+
+	cd build; \
+	if apt-cache search libgda3-dev | grep -q libgda3-dev ; echo $? ; then \
+	      cmake -DCMAKE_BUILD_TYPE=Release \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DMAN_INSTALL_DIR=/usr/share/man \
 		-DINFO_INSTALL_DIR=/usr/share/info \
 		-DDATADIR=/usr/share \
-		..
+		-D WITH_GDA3:BOOL=OFF \
+		.. \
+	else \
+	      cmake -DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DMAN_INSTALL_DIR=/usr/share/man \
+		-DINFO_INSTALL_DIR=/usr/share/info \
+		-DDATADIR=/usr/share \
+		.. ;\
+	fi
+	set
+	rm -f build/build-stamp
+	touch build/configure-stamp
 
-	touch configure-stamp
-
-build: configure-stamp build-stamp
-build-stamp:
+build: build/configure-stamp build/build-stamp
+build/build-stamp:
 	dh_testdir
 
-	# Add here commands to compile the package.
 	cd build; $(MAKE)
 	#/usr/bin/docbook-to-man debian/gpsdrive.sgml > gpsdrive.1
 
-	touch build-stamp
+	touch build/build-stamp
 
 clean:
+	# ------------ clean
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp debian/files
+	rm -f build/build-stamp build/configure-stamp debian/files
 
-	# Add here commands to clean up after the build process.
-	-cd build; $(MAKE) distclean
+	# ------------------  clean up after the build process.
+	-cd build; $(MAKE) clean
 
 	dh_clean
 
 install: build
+	# ------------ install
 	dh_testdir
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/gpsdrive.
+	# ------------------  install the package into debian/gpsdrive.
 	cd build; $(MAKE) DESTDIR=$(destdir) install
 
 	debian/create_misssing_man_pages.sh scripts $(destdir)/usr/share/man/man1
@@ -76,10 +90,12 @@ install: build
 
 # Build architecture-independent files here.
 binary-indep: build install
+	# ------------ binary-indep
 # We have nothing to do by default.
 
 # Build architecture-dependent files here.
 binary-arch: build install
+	# ------------ binary-arch
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs
