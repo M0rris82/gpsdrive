@@ -9,7 +9,7 @@ export DH_VERBOSE=1
 #export DH_COMPAT=5
 export destdir = $(CURDIR)/debian/gpsdrive
 
-configure: clean build/configure-stamp
+configure: build/configure-stamp
 build/configure-stamp:
 	# ------------------ configure the package.
 	dh_testdir
@@ -50,6 +50,7 @@ clean:
 	# ------------ clean
 	dh_testdir
 	dh_testroot
+	dh_clean -k
 	rm -f build/build-stamp build/configure-stamp debian/files
 
 	# ------------------  clean up after the build process.
@@ -61,7 +62,6 @@ install: build
 	# ------------ install
 	dh_testdir
 	dh_testroot
-	dh_clean -k
 	dh_installdirs
 
 	# ------------------  install the package into debian/gpsdrive.
