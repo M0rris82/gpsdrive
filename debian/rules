@@ -17,23 +17,13 @@ build/configure-stamp:
 	mkdir -p build
 
 	cd build; \
-	if apt-cache search libgda3-dev | grep -q libgda3-dev ; echo $? ; then \
-	      cmake -DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DMAN_INSTALL_DIR=/usr/share/man \
-		-DINFO_INSTALL_DIR=/usr/share/info \
-		-DDATADIR=/usr/share \
-		-D WITH_GDA3:BOOL=OFF \
-		.. \
-	else \
-	      cmake -DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DMAN_INSTALL_DIR=/usr/share/man \
-		-DINFO_INSTALL_DIR=/usr/share/info \
-		-DDATADIR=/usr/share \
-		.. ;\
-	fi
-	set
+	cmake -DCMAKE_BUILD_TYPE=Release \
+	      -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DMAN_INSTALL_DIR=/usr/share/man \
+	      -DINFO_INSTALL_DIR=/usr/share/info \
+	      -DDATADIR=/usr/share \
+	      .. 
+
 	rm -f build/build-stamp
 	touch build/configure-stamp
 
