@@ -451,7 +451,7 @@ gint
 db_streets_get (const gdouble lat, const gdouble lon, const guint distance, street_struct *street)
 {
 	gint t_res = 0;
-#ifdef MAPNIK
+#ifdef GDA3
 	gchar sql_query[200];
 	gdouble x, y;
 	guint d;

@@ -1339,7 +1339,7 @@ settings_gui (GtkWidget *notebook)
 	gui_wayshow_bt = gtk_check_button_new_with_label (_("Show way info (EXPERIMENTAL!)"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_wayshow_bt,
 		_("This will show information about the current way (this is an experimental feature, which may not work as expected!!!"), NULL);
-#ifdef MAPNIK
+#ifdef GDA3
 	if (local_config.showway)
 	{
 		gtk_toggle_button_set_active
