@@ -53,7 +53,7 @@ Index: rules
  	cd build; \
  	cmake -DCMAKE_BUILD_TYPE=Release \
 +	      -DWITH_GDA3:BOOL=OFF \
-+	      -DWITH_SPEECH:BOOL=ON \
++	      -DWITH_SPEECH:BOOL=OFF \
  	      -DCMAKE_INSTALL_PREFIX=/usr \
  	      -DMAN_INSTALL_DIR=/usr/share/man \
  	      -DINFO_INSTALL_DIR=/usr/share/info \
