@@ -1573,7 +1573,7 @@ expose_cb (GtkWidget * widget, guint * datum)
 		/*  Calculate distance to destination */
 		current.dist = calcdist (coords.target_lon, coords.target_lat);
 
-		if ( display_background_map() ) 
+		if ( display_background_map() && maploaded )
 		    {
 			/*  correct the shift of the map */
 			oldxoff = xoff;
