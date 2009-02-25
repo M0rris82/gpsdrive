@@ -134,7 +134,7 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                 else:
                     im = Image(1280, 1024)
                     render(m, im)
-                    im = fromstring('RGBA', (1280, 1024), rawdata(im))
+                    im = fromstring('RGBA', (1280, 1024), im.tostring())
                     #im = im.crop((128,128,512-128,512-127))
                     fh = open(tile_uri,'w+b')
                     im.save(fh, 'PNG', quality=100)
