@@ -1,10 +1,15 @@
 #!/bin/sh
 if echo "$@" | grep -q -e "--help"; then
-    echo "fetch man page and convert to HTML"
-    echo 
-    echo "As far as aI can see this script is really old and deprecated (Joerg)"
+    echo "Fetch man page and convert to HTML."
+    echo
+    echo "Mostly this script exists to update the online version of the man page"
+    echo "  at http://gpsdrive.sourceforge.net/gpsdrive_manual-en.html#index"
+# not sure if SF has enabled cron jobs yet from their shell access. If so it could run once a day.
+    echo
     exit 1
 fi
+
+# written by HB, Nov 2008. (c) 2008 the GpsDrive Development Team
 
 cd working
 
@@ -23,5 +28,5 @@ man2html gpsdrive.1 | \
       -e 's+<BODY>+<BODY bgcolor="#F0F0F0">+' \
   > gpsdrive_manual-en.html
 
-# copy to webspace
+# copy to SF webspace
 #cp gpsdrive_manual-en.[th]* /home/groups/g/gp/gpsdrive/htdocs/
