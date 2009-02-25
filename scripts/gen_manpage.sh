@@ -1,5 +1,10 @@
 #!/bin/sh
-#### fetch man page and convert to HTML
+if echo "$@" | grep -q -e "--help"; then
+    echo "fetch man page and convert to HTML"
+    echo 
+    echo "As far as aI can see this script is really old and deprecated (Joerg)"
+    exit 1
+fi
 
 cd working
 
