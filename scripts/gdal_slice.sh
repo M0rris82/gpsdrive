@@ -14,48 +14,53 @@
 #               License (>=v2). Read the file COPYING that comes with
 #               GPSDrive for details.
 #
-#############################################################################
-#
-# Assumes that the input file is:
-#   - A format known to GDAL
-#   - Is georegistered
-#   - Has minimal convergence angle (true North is directly up). see man page
-#
-#  Requires awk, GDAL tools from gdal.org and NetPBM tools.
-#
-# Important! The maps must be named "map_*" for UTM-like projections
-#  (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carree projection
-#  (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
-#  scale the maps correctly. Alternatively the maps can be stored without
-#  prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
-#  "_top".  To avoid distortion, anything more than 1:150k to 1:500k
-#  should use "top_*".
-#
-# Beware  if you are using an image originating from a map projection with
-#  a significant deviation between true  north  and  the  map  projection's
-#  local  +y  direction  (known as the Convergence Angle). GpsDrive assumes
-#  that true north is always directly up! i.e. the Central Meridian of  the
-#  map projection is located at the map tile's center. For some map projec-
-#  tions and areas of the country this can be a really bad  assumption  and
-#  your  map  will be significantly rotated. This effect is most visible at
-#  map scales covering a large area. This does not affect lat/lon maps.
-#  The pnmrotate program may help, or gdalwarp to a custom map-centered tmerc.
-#
-# To make an overview map, open your GeoTIFF in GIMP, Image->Mode->RGB,
-#  Image->Scale, 25%, cubic, and save as PNG. Next use gdal_translate
-#  to re-ref the GeoTIFF. You can also shrink with gdal_translate and
-#  gdalwarp, but the output isn't as nice. i.e. gdalwarp lets you use
-#  cubic spline resapmpling (-rcs), which is great for imagery but no
-#  good for a paletted image like a chart. If using that multiply the
-#  original resolution by 4 (gdalinfo) and use with the gdalwarp -tr
-#  option.
-#  To reapply georef to the GIMP image:
-#   gdal_translate -a_ullr w n e s  -a_srs EPSG:code $FILE.png $FILE.tif
-#
-#############################################################################
 
 if [ $# -lt 1 ] ; then
+  echo "Usage:  $0 <FILENAME.tif> [top|Map] [Png|jpg]"
+  echo "use $0 --help for detailed Information"
+  exit 1
+fi
+
+if echo "$@" | grep -q -e "--help" ; then
   echo "Usage:  gdal_slice_auto.sh <FILENAME.tif> [top|Map] [Png|jpg]"
+cat <<EOF
+
+ Assumes that the input file is:
+   - A format known to GDAL
+   - Is georegistered
+   - Has minimal convergence angle (true North is directly up). see man page
+
+  Requires awk, GDAL tools from gdal.org and NetPBM tools.
+
+ Important! The maps must be named "map_*" for UTM-like projections
+  (lat:lon = 1:cos(lat)) and "top_*" for lat/lon Plate carree projection
+  (lat:lon = 1:1). The prefix is given so that gpsdrive knows how to
+  scale the maps correctly. Alternatively the maps can be stored without
+  prefix in subdirectories of $HOME/.gpsdrive/ which end in "_map" or
+  "_top".  To avoid distortion, anything more than 1:150k to 1:500k
+  should use "top_*".
+
+ Beware  if you are using an image originating from a map projection with
+  a significant deviation between true  north  and  the  map  projection's
+  local  +y  direction  (known as the Convergence Angle). GpsDrive assumes
+  that true north is always directly up! i.e. the Central Meridian of  the
+  map projection is located at the map tile's center. For some map projec-
+  tions and areas of the country this can be a really bad  assumption  and
+  your  map  will be significantly rotated. This effect is most visible at
+  map scales covering a large area. This does not affect lat/lon maps.
+  The pnmrotate program may help, or gdalwarp to a custom map-centered tmerc.
+
+ To make an overview map, open your GeoTIFF in GIMP, Image->Mode->RGB,
+  Image->Scale, 25%, cubic, and save as PNG. Next use gdal_translate
+  to re-ref the GeoTIFF. You can also shrink with gdal_translate and
+  gdalwarp, but the output isn't as nice. i.e. gdalwarp lets you use
+  cubic spline resapmpling (-rcs), which is great for imagery but no
+  good for a paletted image like a chart. If using that multiply the
+  original resolution by 4 (gdalinfo) and use with the gdalwarp -tr
+  option.
+  To reapply georef to the GIMP image:
+   gdal_translate -a_ullr w n e s  -a_srs EPSG:code $FILE.png $FILE.tif
+EOF
   exit 1
 fi
 
