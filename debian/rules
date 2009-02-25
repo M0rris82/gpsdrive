@@ -8,6 +8,7 @@ export DH_VERBOSE=1
 # This is the debhelper compatability version to use.
 #export DH_COMPAT=5
 export destdir = $(CURDIR)/debian/gpsdrive
+export destdir_utils = $(CURDIR)/debian/gpsdrive-utils
 
 configure: build/configure-stamp
 build/configure-stamp:
@@ -57,25 +58,24 @@ install: build
 	# ------------------  install the package into debian/gpsdrive.
 	cd build; $(MAKE) DESTDIR=$(destdir) install
 
-	debian/create_misssing_man_pages.sh scripts $(destdir)/usr/share/man/man1
+	/bin/bash debian/create_misssing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
 
+	#
 	# remove maps from main package, because it 
 	# will be buildt in gpsdrive-data-maps package
 	rm -rf debian/gpsdrive/usr/share/gpsdrive/maps
 
+	#
 	# remove map-icons from gpsdrive-main package. 
 	# This is build by the osm-data-map-icons*.deb package
 	rm -rf debian/gpsdrive/usr/share/map-icons 
 	rm -rf debian/gpsdrive/usr/share/gpsdrive/map-icons
 
-	# remove perl modules since they are in the 
-	# openstreetmap-utils package
-	find debian/gpsdrive/ -name "*.pm" -print0 | xargs -0 rm
-	rm -rf debian/gpsdrive/usr/local/share/perl
-	rmdir debian/gpsdrive/usr/local/share
-	rmdir debian/gpsdrive/usr/local
+	# move modules and scripts since they are in the 
+	# gpsdrive-utils package
+	/bin/bash debian/move_utils.sh
 
-	debian/rename_scripts.sh $(destdir)
+	/bin/bash debian/rename_scripts.sh $(destdir_utils)
 
 
 # Build architecture-independent files here.
