@@ -11,26 +11,29 @@ fi
 # Perl Binaries
 find $src_dir -name "*.pl" | grep -v -e '\#' -e '~' |\
     while read src_fn ; do 
-    filename="`basename $src_fn`"
-    filename=${filename%.pl}
+    #filename="`basename $src_fn`"
+    filename=${src_fn%.pl}
 
+    echo mv "$src_fn" "$filename"
     mv "$src_fn" "$filename"
 done
 
 # Shell Scripts
 find $src_dir -name "*.sh" | grep -v -e '\#' -e '~' |\
     while read src_fn ; do 
-    filename="`basename $src_fn`"
-    filename=${filename%.sh}
+    #filename="`basename $src_fn`"
+    filename=${src_fn%.sh}
 
+    echo mv "$src_fn" "$filename"
     mv "$src_fn" "$filename"
 done
 
 # Python Scripts
 find $src_dir -name "*.py" | grep -v -e '\#' -e '~' |\
     while read src_fn ; do 
-    filename="`basename $src_fn`"
-    filename=${filename%.py}
+    #filename="`basename $src_fn`"
+    filename=${src_fn%.py}
 
+    echo mv "$src_fn" "$filename"
     mv "$src_fn" "$filename"
 done
