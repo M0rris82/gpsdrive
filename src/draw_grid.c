@@ -157,7 +157,8 @@ draw_grid (GtkWidget * widget)
   */
 
 	if (step != step || step == 0) {
-	    fprintf(stderr , "?? draw_grid(): distance step is %f\n", step);
+	    fprintf(stderr, "?? draw_grid(): distance step is %f, "
+			    "mapscale is 1:%ld\n", step, current.mapscale);
 	    return;
 	}
 
