@@ -156,6 +156,11 @@ draw_grid (GtkWidget * widget)
        (from GRASS GIS's ps/ps.map/ps_fclrtbl.c#L162)
   */
 
+	if (step != step || step == 0) {
+	    fprintf(stderr , "?? draw_grid(): distance step is %f\n", step);
+	    return;
+	}
+
 	do {
 	    if (step >= 1)		g_snprintf (precision, sizeof (precision), "%%.0f");
 	    else if (step >= .1)	g_snprintf (precision, sizeof (precision), "%%.1f");
