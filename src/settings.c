@@ -42,6 +42,7 @@
 #include "gui.h"
 #include "track.h"
 #include "speech.h"
+#include "gps_handler.h"
 
 #include "gettext.h"
 

@@ -132,6 +132,8 @@ Disclaimer: Please do not use for navigation.
 #include "gpsdrive_config.h"
 #include "poi_gui.h"
 #include "poi.h"
+#include "map_download.h"
+#include "waypoint.h"
 
 #include "gettext.h"
 

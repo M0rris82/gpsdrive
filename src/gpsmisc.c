@@ -36,6 +36,7 @@ Disclaimer: Please do not use for navigation.
 #include <config.h>
 #include <math.h>
 #include "gpsdrive_config.h"
+#include "gui.h"
 
 #include <locale.h>
 

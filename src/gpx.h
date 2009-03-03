@@ -32,9 +32,11 @@ Disclaimer: Please do not use for navigation.
 
 gint gpx_file_read (gchar *gpx_file, gint gpx_mode);
 gint gpx_file_write (gchar *gpx_file, gint gpx_mode);
+void gpx_set_metadata (void);
 gint loadgpx_cb (gint gpx_mode);
 gint savegpx_cb (gint gpx_mode);
 void test_gpx (gchar *filename);
+
 
 typedef struct
 {

@@ -27,6 +27,7 @@ Disclaimer: Please do not use for navigation.
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <unistd.h>
 #endif
 
 void socket_close(SOCKET_TYPE sock)

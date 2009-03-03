@@ -45,6 +45,8 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "gui.h"
 #include "main_gui.h"
+#include "database.h"
+#include "waypoint.h"
 
 #include "gettext.h"
 

@@ -39,6 +39,7 @@ reads info from kismet server and insert waypoints into database
 #include <fcntl.h>
 #include <string.h>
 #include <sys/time.h>
+#include <glib/gstdio.h>
 
 #include <gpsdrive.h>
 #include "gpsdrive_config.h"
@@ -46,6 +47,8 @@ reads info from kismet server and insert waypoints into database
 #include <poi.h>
 #include <time.h>
 #include <errno.h>
+#include "database.h"
+#include "gpskismet.h"
 
 extern int mydebug, debug;
 extern currentstatus_struct current;

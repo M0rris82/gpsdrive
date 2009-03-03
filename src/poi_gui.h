@@ -33,5 +33,6 @@ void route_window_cb (GtkWidget *calling_button);
 gint show_poi_lookup_cb (GtkWidget *button, gint mode);
 GtkWidget * create_poi_types_window (void);
 gint toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi);
+void create_poi_info_window (void);
 
 #endif /* GPSDRIVE_POI_GUI_H */

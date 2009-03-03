@@ -65,6 +65,7 @@ Disclaimer: Please do not use for navigation.
 #include "track.h"
 #include "gpx.h"
 #include "gps_handler.h"
+#include "waypoint.h"
 
 
 #ifdef MAEMO

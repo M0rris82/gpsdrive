@@ -37,6 +37,7 @@ Disclaimer: Please do not use for navigation.
 #include "battery.h"
 #include "gui.h"
 #include "gpsdrive_config.h"
+#include "database.h"
 
 gint errors = 0;
 
@@ -538,8 +539,8 @@ unit_test (void)
 	printf ("Problem with SQL Support\n");
 	errors++;
       }
-    
-    res = db_poi_edit (0, 999.9,999.9,"Testpoint","test","Test Description", 1);
+
+    res = db_poi_edit (0, 999.9, 999.9, "Testpoint", "test", "Test Description", 1, FALSE);
     if (1>res)
       {
 	printf ("ERROR !!!!!!!!\n");

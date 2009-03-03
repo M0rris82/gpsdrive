@@ -31,6 +31,7 @@ Disclaimer: Please do not use for navigation.
 #include <stdlib.h>
 #include <string.h>
 #include <gmodule.h>
+#include <glib/gprintf.h>
 #include <gdk/gdktypes.h>
 #include <sqlite3.h>
 

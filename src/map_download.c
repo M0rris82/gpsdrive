@@ -43,6 +43,7 @@ Disclaimer: Please do not use for navigation.
 #include <sys/time.h>
 #include <errno.h>
 #include <dirent.h>
+#include <glib/gstdio.h>
 
 #include "gettext.h"
 #include "os_specific.h"

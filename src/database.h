@@ -38,8 +38,18 @@ gchar *escape_sql_string (const gchar *data);
 
 void db_get_visible_poi_data (void);
 void db_get_all_poi_types (gpointer callback, guint count[]);
-
+void db_poi_extra_get_all (glong *poi_id, gpointer data);
+void db_poi_get (gchar *query, gpointer callback, gint database);
 gint db_poi_delete (gint index);
+void db_get_visible_poi_types (gchar *filter);
+gint db_cleanup_route (void);
+glong db_poi_edit (glong poi_id, double lat, double lon, gchar *name,
+		   gchar *typ, gchar *comment, gint src, gboolean update);
+glong db_poi_extra_edit (glong *poi_id, gchar *field_name,
+			 gchar *field_entry, gboolean update);
+glong db_poi_extra_get (glong *poi_id, gchar *field_name,
+			gchar *field_entry, gchar *result);
+
 
 enum
 {

@@ -55,6 +55,8 @@ void create_map_drawable (void);
 gint autobestmap_cb (GtkWidget *widget, guint datum);
 gint update_statusdisplay (void);
 gint expose_gpsfix (GtkWidget *widget, guint *datum);
+gint expose_sats_cb (GtkWidget *widget, guint *datum);
 gint set_mapviewsize_cb (void);
+void draw_maptype (void);
 
 #endif /* GPSDRIVE_MAIN_GUI_H */

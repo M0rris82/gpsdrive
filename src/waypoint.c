@@ -48,6 +48,7 @@ Disclaimer: Please do not use for navigation.
 #include "gui.h"
 #include "gpsdrive_config.h"
 #include "main_gui.h"
+#include "database.h"
 
 #include "gettext.h"
 

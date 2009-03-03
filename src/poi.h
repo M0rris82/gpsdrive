@@ -63,7 +63,10 @@ void poi_query_area ( gdouble lat1, gdouble lon1 ,gdouble lat2, gdouble lon2 );
 GdkPixbuf * read_poi_icon (gchar * icon_name);
 void get_poitype_tree (void);
 guint poi_get_results (const gchar *text, const gchar *dist, const gint posflag, const gchar *type);
+void get_poi_info (GtkTreeModel *model, GtkTreeIter *iter);
+
 void update_poi_type_filter (void);
+void cleanup_poi (void);
 
 
 typedef struct

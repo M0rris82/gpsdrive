@@ -34,5 +34,7 @@ Disclaimer: Please do not use for navigation.
  */
 gint map_download_cb (GtkWidget *widget, gpointer data);
 void mapdl_set_coords (gchar *lat, gchar *lon);
+gint mapdl_init (void);
+gint mapdl_cleanup (void);
 
 #endif /* GPSDRIVE_MAP_DOWNLOAD_H */

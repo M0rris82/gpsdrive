@@ -56,6 +56,7 @@
 #include "gui.h"
 #include "poi.h"
 #include "main_gui.h"
+#include "database.h"
 #include "os_specific.h"
 
 #define	SERV_UDP_PORT	50123

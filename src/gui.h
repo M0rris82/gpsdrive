@@ -63,6 +63,8 @@ int gui_init (gchar *geometry, gint usegeometry);
 
 gint set_cursor_style (int cursor);
 
+void draw_destination_line(void);
+
 typedef struct
 {
 	GdkColor track;

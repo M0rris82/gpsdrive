@@ -35,6 +35,7 @@ Disclaimer: Please do not use for navigation.
 #include <sys/time.h>
 #include <math.h>
 #include <gmodule.h>
+#include <glib/gprintf.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
 #ifdef GDA3

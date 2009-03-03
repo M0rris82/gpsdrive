@@ -54,6 +54,7 @@ Disclaimer: Please do not use for navigation.
 #include "routes.h"
 #include "main_gui.h"
 #include "gpx.h"
+#include "database.h"
 
 /*  Defines for gettext I18n */
 #include <libintl.h>

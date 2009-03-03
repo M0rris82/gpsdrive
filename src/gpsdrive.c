@@ -76,6 +76,7 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include <ctype.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <glib/gstdio.h>
 #include "gpsdrive_config.h"
 /* #include <gpskismet.h> <-- prototypes are declared also in gpsproto.h */
 
@@ -105,6 +106,9 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include "gui.h"
 #include "poi_gui.h"
 #include "main_gui.h"
+#include "gpx.h"
+#include "gpskismet.h"
+#include "database.h"
 
 #include "screenshot.h"
 
