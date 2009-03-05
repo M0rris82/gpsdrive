@@ -178,8 +178,8 @@ static gboolean
 treefilterfunc_cb  (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 {
 	gint t_id;
-	gtk_tree_model_get (model, iter, POITYPE_ID, &t_id, -1);
-	if (t_id == -1)
+	gtk_tree_model_get (model, iter, POITYPE_EDITABLE, &t_id, -1);
+	if (t_id == FALSE)
 		return FALSE;
 	return TRUE;
 }
@@ -748,6 +748,7 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 		POITYPE_TITLE, poi_type_list[i].title,
 		POITYPE_SELECT, FALSE,
 		POITYPE_LABEL, FALSE,
+		POITYPE_EDITABLE, poi_type_list[i].editable,
 		-1);
 
 	t_buf = gtk_tree_model_get_string_from_iter (GTK_TREE_MODEL (poi_types_tree), &iter);
@@ -847,6 +848,7 @@ create_poitype_tree (guint max_level)
 		POITYPE_TITLE, _("all types"),
 		POITYPE_SELECT, FALSE,
 		POITYPE_LABEL, FALSE,
+		POITYPE_EDITABLE, FALSE,
 		-1);
 
 	/* insert base categories into tree */
@@ -901,9 +903,9 @@ handle_poitype_tree_cb (guint count[], gint columns, gchar **values, gchar **nam
 
 	if (mydebug > 30)
 	{
-		g_print ("Query Result: %s\t%s\t%s\t%s\t%s\n",
-			values[0], values[1], values[2], values[3], values[4]);
-			/* poi_type,scale_min,scale_max,title,description */
+		g_print ("Query Result: %s\t%s\t%s\t%s\t%s\t%s\n",
+			values[0], values[1], values[2], values[3], values[4], values[5]);
+			/* poi_type,scale_min,scale_max,title,description,editable */
 	}
 
 	poi_type_list[count[0]].scale_min = (gint) g_strtod (values[1], NULL);
@@ -917,6 +919,7 @@ handle_poitype_tree_cb (guint count[], gint columns, gchar **values, gchar **nam
 	g_strlcpy (poi_type_list[count[0]].icon_name, values[0],
 		sizeof(poi_type_list[count[0]].icon_name));
 	poi_type_list[count[0]].icon = read_themed_icon (poi_type_list[count[0]].icon_name);
+	poi_type_list[count[0]].editable = (gint) g_strtod (values[5], NULL);
 
 
 	j = 0;			
@@ -1445,7 +1448,8 @@ poi_init (void)
 		G_TYPE_STRING,		/* description */
 		G_TYPE_STRING,		/* title */
 		G_TYPE_BOOLEAN,		/* select */
-		G_TYPE_BOOLEAN		/* label */
+		G_TYPE_BOOLEAN,		/* label */
+		G_TYPE_BOOLEAN		/* editable */
 		);
 
 	/* init filtered gtk-tree for use in comboboxes */

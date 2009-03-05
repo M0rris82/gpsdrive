@@ -481,7 +481,7 @@ db_streets_get (const gdouble lat, const gdouble lon, const guint distance, stre
 void
 db_get_all_poi_types (gpointer callback, guint count[])
 {
-	db_sqlite_query ("SELECT poi_type,scale_min,scale_max,title,description FROM poi_type ORDER BY poi_type;",
+	db_sqlite_query ("SELECT poi_type,scale_min,scale_max,title,description,editable FROM poi_type ORDER BY poi_type;",
 		callback, DB_SQLITE_GEOINFO, (gpointer) count);
 }
 

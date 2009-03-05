@@ -81,6 +81,7 @@ typedef struct
   gchar path[15];
   gchar description[POI_TYPE_LIST_STRING_LENGTH];
   gchar title[POI_TYPE_LIST_STRING_LENGTH];
+  gboolean editable;
 } poi_type_struct;
 #define poi_type_list_max 1000
 
@@ -121,6 +122,7 @@ enum {
 	POITYPE_TITLE,
 	POITYPE_SELECT,
 	POITYPE_LABEL,
+	POITYPE_EDITABLE,
 	POITYPE_COLUMS
 };
 
