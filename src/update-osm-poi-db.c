@@ -52,7 +52,7 @@ Disclaimer: Please do not use for navigation.
 #define DB_OSMFILE "./osm.db"
 #define MAX_TAGS_PER_NODE 10
 
-#define PGM_VERSION "0.1"
+#define PGM_VERSION "0.2"
 
 
 //TODO: - evaluate tags after insertion into database to allow a better
@@ -122,8 +122,8 @@ read_poi_types_cb (gpointer datum, gint columns, gchar **values, gchar **names)
 {
 	gchar *t_osm, *t_poi;
 
-	t_osm = g_strdup_printf ("%s=%s", values[0], values[1]);
-	t_poi = g_strdup (values[2]);
+	t_osm = g_strdup (values[0]);
+	t_poi = g_strdup (values[1]);
 	g_hash_table_insert (poitypes_hash, t_osm, t_poi);
 
 	if (verbose)
@@ -492,7 +492,8 @@ main (int argc, char *argv[])
 	/* read poi_types for matching osm types from gpsdrive geoinfo.db */
 	g_print (_("+ Reading POI types from gpsdrive geoinfo database\n"));
 	poitypes_hash = g_hash_table_new (g_str_hash, g_str_equal);
-	status = sqlite3_exec (geoinfo_db, "SELECT key,value,poi_type FROM osm;",
+	status = sqlite3_exec (geoinfo_db, "SELECT osm_condition,poi_type FROM poi_type WHERE"
+		" (osm_condition !='' AND osm_cond_2nd='' AND osm_cond_3rd='');",
 		read_poi_types_cb, NULL, &error_string);
 	if (status != SQLITE_OK )
 	{
@@ -505,7 +506,6 @@ main (int argc, char *argv[])
 
 	/* start timer to show duration of parsing process */
 		timer = g_timer_new ();
-
 
 	/* parse xml file and write data into database */
 	if (strcmp ("STDIN", argv[1]) == 0)
