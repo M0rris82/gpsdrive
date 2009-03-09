@@ -369,7 +369,7 @@ sub import_gpx_fon
 
     ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
     ($source_id,$source) = (8,'fon');
-    ($poi_type,$last_modified) = ('wlan.pay.fon','2007-01-01');
+    ($poi_type,$last_modified) = ('wlan.nonfree.fon','2007-01-01');
     my ($type,$found)  = ('FON Access Point','');
 
     if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
