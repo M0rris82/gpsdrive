@@ -56,7 +56,7 @@ Disclaimer: Please do not use for navigation.
 
 
 //TODO: - evaluate tags after insertion into database to allow a better
-//TODO:   matching of poi subtypes
+//TODO:   matching of poi subtypes (osm_cond_2nd, osm_cond_3rd)
 
 
 sqlite3 *geoinfo_db, *osm_db;
@@ -444,10 +444,21 @@ main (int argc, char *argv[])
 	g_free (db_file);
 
 
-	/* create/open osm database file */
+	/* backup old osm database file and create new one*/
 	if (osm_file == NULL)
 		osm_file = g_strdup (DB_OSMFILE);
 	g_print ("+ Creating osm database file: %s\n", osm_file);
+	if (g_file_test (osm_file, G_FILE_TEST_IS_REGULAR))
+	{
+	 	gchar *t_fbuf;
+	 	t_fbuf = g_strconcat (osm_file, ".bak", NULL);
+		if (g_rename (osm_file, t_fbuf) != 0)
+		{
+			g_print ("  ERROR: Can't create backup of existing OSM database file\n");
+			exit (EXIT_FAILURE);
+		}
+		g_free (t_fbuf);
+	}
 	status = sqlite3_open (osm_file, &osm_db);
 	if (status != SQLITE_OK)
 	{
