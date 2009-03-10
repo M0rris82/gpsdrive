@@ -118,8 +118,9 @@ void poi_rebuild_list (void);
 
 
 /* ******************************************************************
- * get data to display inj poi info window for selected poi
+ * get data to display in poi info window for selected poi
  */
+void
 get_poi_info (GtkTreeModel *model, GtkTreeIter *iter)
 {
 	gboolean t_priv;
@@ -145,6 +146,8 @@ get_poi_info (GtkTreeModel *model, GtkTreeIter *iter)
 	gtk_entry_set_text (GTK_ENTRY (poi_info.entry_lon), t_coord);
 
 	t_path = g_hash_table_lookup (poi_types_hash, t_type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "unknown");
 	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree),
 		&t_iter, t_path);
 	gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (

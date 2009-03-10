@@ -87,7 +87,7 @@ typedef struct
 
 typedef struct
 {
-	gint id;
+	glong id;
 	GtkListStore *extra_list;
 	GtkWidget *entry_name;
 	GtkWidget *entry_comment;
