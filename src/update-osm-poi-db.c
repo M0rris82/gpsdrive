@@ -55,8 +55,6 @@ Disclaimer: Please do not use for navigation.
 #define PGM_VERSION "0.2"
 
 
-//TODO: - evaluate tags after insertion into database to allow a better
-//TODO:   matching of poi subtypes (osm_cond_2nd, osm_cond_3rd)
 
 
 sqlite3 *geoinfo_db, *osm_db;
@@ -69,6 +67,7 @@ gboolean show_version = FALSE;
 gboolean verbose = FALSE;
 gboolean stop_on_way = FALSE;
 gboolean nodes_done = FALSE;
+gboolean parsing_active = FALSE;
 gint spinpos = 0;
 GHashTable *poitypes_hash;
 xmlTextReaderPtr xml_reader;
@@ -128,6 +127,49 @@ read_poi_types_cb (gpointer datum, gint columns, gchar **values, gchar **names)
 
 	if (verbose)
 		g_print ("    %s\t--->\t%s\t\n", t_osm, t_poi);
+
+	return 0;
+}
+
+
+/* *****************************************************************************
+ * callback for matching 2nd and 3rd level osm tags to gpsdrive poi_types
+ */
+gint
+match_types_osm_fine_cb (gpointer datum, gint columns, gchar **values, gchar **names)
+{
+	gint t_res = 0;
+	gchar *t_query;
+	gchar **t_buf;
+
+	t_buf = g_strsplit (values[1], "=", 2);
+	if (strcmp ("name", t_buf[0]) == 0)
+	{
+		t_query = g_strdup_printf ("UPDATE poi SET poi_type='%s' WHERE name LIKE '%s';",
+			values[0], t_buf[1]);
+	}
+	else
+	{
+		t_query = g_strdup_printf ("UPDATE poi SET poi_type='%s' WHERE poi_id IN"
+			" (SELECT poi_id FROM poi_extra WHERE field_name='%s' AND entry LIKE '%s');",
+			values[0], t_buf[0], t_buf[1]);
+	}
+
+	if (verbose)
+		g_print ("    %s\t--->\t%s\t\n", values[1], values[0]);
+
+	//g_print ("SQL-Query: %s\n", t_query);
+
+	t_res = sqlite3_exec (osm_db, t_query, NULL, NULL, &error_string);
+	if (t_res != SQLITE_OK )
+	{
+		g_print (_("  SQLite error: %s\n"), error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
+
+	g_free (t_query);
+	g_strfreev (t_buf);
 
 	return 0;
 }
@@ -210,11 +252,8 @@ add_new_poi (node_struct *data)
 gint
 parse_node_cb (void)
 {
-
-//	glong rows = 0;
-//	gchar query[512];
-
 	xmlChar *name, *value;
+	xmlChar *t_bid, *t_bla, *t_blo;
 	gint type, status;
 	gchar buf[255];
 	gchar *pt_pointer;
@@ -222,9 +261,16 @@ parse_node_cb (void)
 	node_struct node;
 
 	node.tag_count = 0;
-	node.id = strtol ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "id"), NULL, 10);
-	node.lat = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lat"), NULL);
-	node.lon = g_strtod ((gpointer) xmlTextReaderGetAttribute(xml_reader, BAD_CAST "lon"), NULL);
+	t_bid = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "id");
+	t_bla = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "lat");
+	t_blo = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "lon");
+	node.id = strtol ((gpointer) t_bid, NULL, 10);
+	node.lat = g_strtod ((gpointer) t_bla, NULL);
+	node.lon = g_strtod ((gpointer) t_blo, NULL);
+	xmlFree (t_bid);
+	xmlFree (t_bla);
+	xmlFree (t_blo);
+
 	g_strlcpy (node.name, "", sizeof (node.name));
 
 	status = xmlTextReaderRead (xml_reader);
@@ -239,10 +285,14 @@ parse_node_cb (void)
 		if (type == XML_READER_TYPE_ELEMENT
 		    && xmlStrEqual (name, BAD_CAST "tag"))
 		{
+			xmlChar *t_key, *t_val;
+
 			/* check if type of point is known, and set poi_type */
-			g_snprintf (buf, sizeof (buf), "%s=%s",
-				xmlTextReaderGetAttribute (xml_reader, BAD_CAST "k"),
-				xmlTextReaderGetAttribute (xml_reader, BAD_CAST "v"));
+			t_key = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "k");
+			t_val = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "v");
+			g_snprintf (buf, sizeof (buf), "%s=%s", t_key, t_val);
+			xmlFree (t_key);
+			xmlFree (t_val);
 			pt_pointer = g_hash_table_lookup (poitypes_hash, buf);
 			if (pt_pointer)
 			{
@@ -252,22 +302,26 @@ parse_node_cb (void)
 			}
 			else if (node.tag_count < MAX_TAGS_PER_NODE)
 			{
-				g_strlcpy (node.key[node.tag_count],
-					xmlTextReaderGetAttribute (xml_reader, BAD_CAST "k"),
+				t_key = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "k");
+				g_strlcpy (node.key[node.tag_count], t_key,
 					sizeof (node.key[node.tag_count]));
+				xmlFree (t_key);
 
 				/* skip 'created_by' tag */
 				if (strcmp ("created_by", node.key[node.tag_count]) == 0)
 				{
+					if (name)
+						xmlFree (name);
 					status = xmlTextReaderRead (xml_reader);
 					type = xmlTextReaderNodeType (xml_reader);
 					name = xmlTextReaderName (xml_reader);
 					continue;
 				}
 
-				g_strlcpy (node.value[node.tag_count],
-					xmlTextReaderGetAttribute (xml_reader, BAD_CAST "v"),
+				t_val = xmlTextReaderGetAttribute (xml_reader, BAD_CAST "v");
+				g_strlcpy (node.value[node.tag_count], t_val,
 					sizeof (node.value[node.tag_count]));
+				xmlFree (t_val);
 
 				/* override poi_type if 'poi' tag is available */
 				if (strcmp ("poi", node.key[node.tag_count]) == 0)
@@ -328,12 +382,19 @@ parse_node_cb (void)
  */
 void signalhandler_int (int sig)
 {
-	g_print ("\nCatched SIGINT - shutting down !\n\n");
-
-	xmlFreeTextReader (xml_reader);
-	sqlite3_close (osm_db);
-
-	exit (EXIT_SUCCESS);
+	if (parsing_active)
+	{
+		g_print ("\nCatched SIGINT - stopping parser !\n\n");
+		parsing_active = FALSE;
+		return;
+	}
+	else
+	{
+		g_print ("\nCatched SIGINT - shutting down !\n\n");
+		xmlFreeTextReader (xml_reader);
+		sqlite3_close (osm_db);
+		exit (EXIT_SUCCESS);
+	}
 }
 
 
@@ -447,7 +508,7 @@ main (int argc, char *argv[])
 	/* backup old osm database file and create new one*/
 	if (osm_file == NULL)
 		osm_file = g_strdup (DB_OSMFILE);
-	g_print ("+ Creating osm database file: %s\n", osm_file);
+	g_print ("+ Creating OSM database file: %s\n", osm_file);
 	if (g_file_test (osm_file, G_FILE_TEST_IS_REGULAR))
 	{
 	 	gchar *t_fbuf;
@@ -501,7 +562,7 @@ main (int argc, char *argv[])
 
 
 	/* read poi_types for matching osm types from gpsdrive geoinfo.db */
-	g_print (_("+ Reading POI types from gpsdrive geoinfo database\n"));
+	g_print (_("+ Reading POI types from GpsDrive geoinfo database\n"));
 	poitypes_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	status = sqlite3_exec (geoinfo_db, "SELECT osm_condition,poi_type FROM poi_type WHERE"
 		" (osm_condition !='' AND osm_cond_2nd='' AND osm_cond_3rd='');",
@@ -512,8 +573,8 @@ main (int argc, char *argv[])
 		sqlite3_free(error_string);
 		exit (EXIT_FAILURE);
 	}
-	g_print ("  %d known POI types found.\n", g_hash_table_size (poitypes_hash));
-	sqlite3_close (geoinfo_db);
+	if (verbose)
+		g_print ("  %d known POI types found.\n", g_hash_table_size (poitypes_hash));
 
 	/* start timer to show duration of parsing process */
 		timer = g_timer_new ();
@@ -525,7 +586,8 @@ main (int argc, char *argv[])
 		xml_reader = xmlNewTextReaderFilename (argv[1]);
 	if (xml_reader != NULL)
 	{
-		g_print ("+ Parsing OSM file '%s'\n", argv[1]);
+		g_print ("+ Parsing OSM data from %s\n", argv[1]);
+		parsing_active = TRUE;
 		status = xmlTextReaderRead (xml_reader);
 		while (status == 1)
 		{
@@ -567,6 +629,11 @@ main (int argc, char *argv[])
 			if (xml_name)
 				xmlFree (xml_name);
 			status = xmlTextReaderRead (xml_reader);
+			if (parsing_active==FALSE)
+			{
+				status = 0;
+				break;
+			}
         	}
         	xmlFreeTextReader (xml_reader);
         	if (status != 0)
@@ -578,6 +645,7 @@ main (int argc, char *argv[])
 		g_print (_("Please specify a valid OpenStreetMap XML file!\n"));
 		exit (EXIT_FAILURE);
 	}
+	parsing_active = FALSE;
 	parsing_time = g_timer_elapsed (timer, NULL);
 	if (parsing_time < 60)
 		g_print (_("\r  %ld of %ld nodes identified as POI in %d seconds\n"),
@@ -596,6 +664,29 @@ main (int argc, char *argv[])
 		sqlite3_free(error_string);
 		exit (EXIT_FAILURE);
 	}
+
+
+	/* fine-grained matching of osm-data */
+	g_print (_("+ Matching OSM-Tags to GpsDrive POI-Types\n"));
+	status = sqlite3_exec (geoinfo_db, "SELECT poi_type,osm_cond_2nd FROM poi_type WHERE"
+		" (osm_condition !='' AND osm_cond_2nd!='' AND osm_cond_3rd='');",
+		match_types_osm_fine_cb, NULL, &error_string);
+	if (status != SQLITE_OK )
+	{
+		g_print (_("  SQLite error: %s\n"), error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
+	status = sqlite3_exec (geoinfo_db, "SELECT poi_type,osm_cond_3rd FROM poi_type WHERE"
+		" (osm_condition !='' AND osm_cond_2nd!='' AND osm_cond_3rd!='');",
+		match_types_osm_fine_cb, NULL, &error_string);
+	if (status != SQLITE_OK )
+	{
+		g_print (_("  SQLite error: %s\n"), error_string);
+		sqlite3_free(error_string);
+		exit (EXIT_FAILURE);
+	}
+	sqlite3_close (geoinfo_db);
 
 
 	/* create index on poi column */
