@@ -2450,6 +2450,7 @@ main (int argc, char *argv[])
 		g_print (_("Parsing of options failed: %s\n"), error->message);
 		exit (EXIT_FAILURE);
 	}
+	g_option_context_free (opt_context);
 	if (t_buf_gpsdserver)
 	{
 		g_strlcpy (local_config.gpsd_server, t_buf_gpsdserver,

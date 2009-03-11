@@ -485,9 +485,10 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	gdouble dist_lat, dist_lon;
 	guint poi_result_count;
 
-	char sql_query[20000];
-	char type_filter[3000];
+	gchar t_where[128];
+	gchar type_filter[3000];
 	gchar *temp_text;
+	gchar *sql_query;
 
 	// clear results from last search	
 	gtk_list_store_clear (poi_result_tree);
@@ -560,33 +561,34 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 
 	poi_nr = 0;
 
+	g_snprintf (t_where, sizeof (t_where),
+		"WHERE (lat BETWEEN %.8f AND %.8f) AND (lon BETWEEN %.8f AND %.8f)",
+		lat_min, lat_max, lon_min, lon_max);
+
 	/* query sqlite db */
 	if (current.poi_osm)
 	{
 		if (mydebug > 30)
 			g_print ("poi_get_results (): Searching in OSM and user database\n");
-		g_snprintf (sql_query, sizeof (sql_query),
+		sql_query = g_strdup_printf (
 			"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM"
-			" (SELECT * FROM main.poi UNION SELECT * FROM osm.poi)"
-			" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
-			" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
-			" '%%%s%%') AND (poi_type%s) ORDER BY"
-			" (lat-(%.8f))*(lat-(%.8f))+(lon-(%.8f))*(lon-(%.8f)) LIMIT %d;",
-			lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
-			type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+			" (SELECT * FROM main.poi %s UNION SELECT * FROM osm.poi %s)"
+			" WHERE (poi_type%s) AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
+			" ORDER BY (lat-(%.8f))*(lat-(%.8f))+(lon-(%.8f))*(lon-(%.8f)) LIMIT %d;",
+			t_where, t_where, type_filter, temp_text, temp_text, lat, lat, lon, lon,
+			local_config.poi_results_max);
 	}
 	else
 	{
 		if (mydebug > 30)
 			g_print ("poi_get_results (): Searching in user database\n");
-		g_snprintf (sql_query, sizeof (sql_query),
+		sql_query = g_strdup_printf (
 			"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM poi"
-			" WHERE ( lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f"
-			" AND %.8f ) AND (name LIKE '%%%s%%' OR comment LIKE"
-			" '%%%s%%') AND (poi_type%s) ORDER BY"
-			" (poi.lat-(%.8f))*(poi.lat-(%.8f))+(poi.lon-(%.8f))*(poi.lon-(%.8f)) LIMIT %d;",
-			lat_min, lat_max, lon_min, lon_max, temp_text, temp_text,
-			type_filter, lat, lat, lon, lon, local_config.poi_results_max);
+			" %s AND (poi_type%s) AND (name LIKE '%%%s%%' OR comment LIKE"
+			" '%%%s%%') ORDER BY (poi.lat-(%.8f))*(poi.lat-(%.8f))+"
+			"(poi.lon-(%.8f))*(poi.lon-(%.8f)) LIMIT %d;",
+			t_where, type_filter, temp_text, temp_text,
+			lat, lat, lon, lon, local_config.poi_results_max);
 	}
 
 	db_poi_get (sql_query, handle_poi_search_cb, DB_WP_USER);
@@ -609,6 +611,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	if (mydebug > 20)
 		printf (_("%ldrows read\n"), poi_list_count);
 
+	g_free (sql_query);
 	g_free (temp_text);
 	return poi_result_count;
 }
@@ -1131,7 +1134,8 @@ handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geome
 void
 poi_rebuild_list (void)
 {
-  gchar sql_query[20000];
+  gchar t_where[128];
+  gchar *sql_query;
   GTimeVal t;
   int r, rges;
   time_t ti;
@@ -1190,40 +1194,41 @@ poi_rebuild_list (void)
 	rges = r = 0;
 	poi_nr = 0;
 
+	g_snprintf (t_where, sizeof (t_where),
+		"WHERE (lat BETWEEN %.8f AND %.8f) AND (lon BETWEEN %.8f AND %.8f)",
+		lat_min, lat_max, lon_min, lon_max);
+
 	/* query sqlite db */
 	if (local_config.showpoi == POIDRAW_ALL && current.poi_osm)
 	{
 		if (mydebug > 30)
 			g_print ("poi_rebuild_list (): Getting all POI Data\n");
 
-		g_snprintf (sql_query, sizeof (sql_query),
+		sql_query = g_strdup_printf (
 		"SELECT lat,lon,name,poi_type,comment FROM"
-		" (SELECT * FROM main.poi UNION SELECT * FROM osm.poi)"
-		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
-		" AND poi_type IN (%s) LIMIT 20000;",
-		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+		" (SELECT * FROM main.poi %s UNION SELECT * FROM osm.poi %s)"
+		" WHERE poi_type IN (%s) LIMIT 20000;",
+		t_where, t_where, current.poifilter);
 	}
 	else if (local_config.showpoi == POIDRAW_OSM && current.poi_osm)
 	{
 		if (mydebug > 30)
 			g_print ("poi_rebuild_list (): Getting only OSM POI Data\n");
 
-		g_snprintf (sql_query, sizeof (sql_query),
+		sql_query = g_strdup_printf (
 		"SELECT lat,lon,name,poi_type,comment FROM osm.poi"
-		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
-		" AND poi_type IN (%s) LIMIT 20000;",
-		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+		" %s AND poi_type IN (%s) LIMIT 20000;",
+		t_where, current.poifilter);
 	}
 	else if (local_config.showpoi == POIDRAW_USER || local_config.showpoi == POIDRAW_ALL)
 	{
 		if (mydebug > 30)
 			g_print ("poi_rebuild_list (): Getting only User POI Data\n");
 
-		g_snprintf (sql_query, sizeof (sql_query),
+		sql_query = g_strdup_printf (
 		"SELECT lat,lon,name,poi_type,comment FROM main.poi"
-		" WHERE (lat BETWEEN %.8f AND %.8f ) AND ( lon BETWEEN %.8f AND %.8f )"
-		" AND poi_type IN (%s) LIMIT 20000;",
-		lat_min, lat_max, lon_min, lon_max, current.poifilter);
+		" %s AND poi_type IN (%s) LIMIT 20000;",
+		t_where, current.poifilter);
 	}
 	else
 		return;
@@ -1242,6 +1247,7 @@ poi_rebuild_list (void)
 //	db_poi_get (sql_query, handle_osm_poi_view_cb, DB_WP_OSM);
 #endif
 
+	g_free (sql_query);
 	poi_list_count = poi_nr;
 
 	// print time for getting Data
@@ -1317,9 +1323,10 @@ poi_draw_list (gboolean draw_now)
 		gdk_gc_set_line_attributes (kontext_map, 2, 0, 0, 0);
 
 		t_path = g_hash_table_lookup (poi_types_hash, (poi_list + i)->poi_type);
-		if (gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree),
-		   &t_iter, t_path))
+		if (t_path)
 		{
+			gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (
+				poi_types_tree), &t_iter, t_path);
 			gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &t_iter,
 				POITYPE_ICON, &icon,
 				POITYPE_LABEL, &t_lb, -1);

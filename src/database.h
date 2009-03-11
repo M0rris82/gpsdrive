@@ -46,7 +46,7 @@ gint db_cleanup_route (void);
 glong db_poi_edit (glong poi_id, double lat, double lon, gchar *name,
 		   gchar *typ, gchar *comment, gint src, gboolean update);
 glong db_poi_extra_edit (glong *poi_id, gchar *field_name,
-			 gchar *field_entry, gboolean update);
+			 const gchar *field_entry, gboolean update);
 glong db_poi_extra_get (glong *poi_id, gchar *field_name,
 			gchar *field_entry, gchar *result);
 

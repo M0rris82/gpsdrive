@@ -259,7 +259,7 @@ db_poi_edit
  * insert or update additional poi data in poi_extra table
  */
 glong
-db_poi_extra_edit (glong *poi_id, gchar *field_name, gchar *field_entry, gboolean update)
+db_poi_extra_edit (glong *poi_id, gchar *field_name, const gchar *field_entry, gboolean update)
 {
 	char t_query[9000];
 	gchar *tentry, *tfield;
@@ -346,14 +346,15 @@ db_poi_extra_get (glong *poi_id, gchar *field_name, gchar *field_entry, gchar *r
 void
 db_poi_extra_get_all (glong *poi_id, gpointer data)
 {
-	gchar t_query[128];
+	gchar t_query[200];
 
 	if (current.poi_osm)
 	{
 		g_snprintf (t_query, sizeof (t_query),
-			"SELECT field_name,entry FROM (SELECT * FROM"
-			" main.poi_extra UNION SELECT * FROM osm.poi_extra)"
-			" WHERE poi_id='%ld';", *poi_id);
+			"SELECT field_name,entry FROM ("
+			"SELECT field_name,entry FROM main.poi_extra WHERE poi_id='%ld' UNION "
+			"SELECT field_name,entry FROM osm.poi_extra WHERE poi_id='%ld');",
+			*poi_id, *poi_id);
 	}
 	else
 	{
