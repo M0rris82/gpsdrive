@@ -1,8 +1,170 @@
-gpsdrive (2.10svn229513422) unstable; urgency=low
+gpsdrive (2.10svn2321) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Wed, 28 Jan 2009 19:46:51 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Fri, 13 Mar 2009 20:51:54 +0200
+
+gpsdrive (2.10svn2321) unstable; urgency=low
+
+   * - added saving of altitude mode
+   *   patch by Joshua Johnson <enigma2175 at users.sourceforge.net>
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 13 Mar 2009 14:29:52 +0100
+
+gpsdrive (2.10svn2320) unstable; urgency=low
+
+   * - fixed some more poi_type bugs sometimes causing warnings
+   * - optimized poi sql queries
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 11 Mar 2009 19:40:15 +0100
+
+gpsdrive (2.10svn2319) unstable; urgency=low
+
+   * - gpsdrive-update-psm-poi-db:
+   *   - added conversion of 2nd and 3rd level osm tags to gpsdrive poi types
+   *   - fixed some memory leaks
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:56:46 +0100
+
+gpsdrive (2.10svn2318) unstable; urgency=low
+
+   * - fixed poi_type bug
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:51:04 +0100
+
+gpsdrive (2.10svn2317) unstable; urgency=low
+
+   * - adapted fon gpx import to changed poi_types
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 23:48:55 +0100
+
+gpsdrive (2.10svn2316) unstable; urgency=low
+
+   * - included backup of old osm database to binary
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 09:26:29 +0100
+
+gpsdrive (2.10svn2315) unstable; urgency=low
+
+   * - adapted creation of osm poi database to new geoinfo.db
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 23:55:11 +0100
+
+gpsdrive (2.10svn2314) unstable; urgency=low
+
+   * - updated poi db
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 19:02:05 +0100
+
+gpsdrive (2.10svn2313) unstable; urgency=low
+
+   * - removed dynamic poi_types from list used in "add waypoint" dialog
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:30:34 +0100
+
+gpsdrive (2.10svn2312) unstable; urgency=low
+
+   * - updated geoinfo database with new structure
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:08:44 +0100
+
+gpsdrive (2.10svn2311) unstable; urgency=low
+
+   * add missing includes and fn prototypes
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 03 Mar 2009 11:52:03 +0100
+
+gpsdrive (2.10svn2310) unstable; urgency=low
+
+   * add mapscale to debug message
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 02 Mar 2009 07:09:09 +0100
+
+gpsdrive (2.10svn2309) unstable; urgency=low
+
+   * check that distance step is sane
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 02 Mar 2009 06:53:54 +0100
+
+gpsdrive (2.10svn2308) unstable; urgency=low
+
+   * Patch from  Martin Werner 
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 07:17:39 +0100
+
+gpsdrive (2.10svn2307) unstable; urgency=low
+
+   * add some notes: this is a current script. (if the gpsdrive.svn.sourceforge.net
+   * didn't give it away, a quick look at 'svn log' or http://gpsdrive.sf.net/svn
+   * shows the file history)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:49:13 +0100
+
+gpsdrive (2.10svn2306) unstable; urgency=low
+
+   * Add new subpackage gpsdrive-utils; a smaller variant to openstreetmap-utils
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:30:14 +0100
+
+gpsdrive (2.10svn2305) unstable; urgency=low
+
+   * Add helper script to seperate a gpsdrive-utils package off the main install
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:29:04 +0100
+
+gpsdrive (2.10svn2304) unstable; urgency=low
+
+   * Wrong destination path for renaming
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:15:08 +0100
+
+gpsdrive (2.10svn2303) unstable; urgency=low
+
+   * Add section to create python Manpages
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:13:11 +0100
+
+gpsdrive (2.10svn2302) unstable; urgency=low
+
+   * Move help to a seperate option --help; this helps in map-page creation
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:03:56 +0100
+
+gpsdrive (2.10svn2301) unstable; urgency=low
+
+   * Add simple Help output for creating Man Pages
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 05:53:50 +0100
+
+gpsdrive (2.10svn2300) unstable; urgency=low
+
+   * Add more needed dependencies for compile
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 21:56:13 +0100
+
+gpsdrive (2.10svn2299) unstable; urgency=low
+
+   * There is no distclean in the makefile
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 00:18:48 +0100
+
+gpsdrive (2.10svn2298) unstable; urgency=low
+
+   * add python-dev as alternative
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 16 Feb 2009 06:58:30 +0100
+
+gpsdrive (2.10svn2297) unstable; urgency=low
+
+   * Changed map scrolling check to only be done when a map is loaded
+
+ -- rosscoe via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Feb 2009 14:11:38 +0100
+
+gpsdrive (2.10svn2296) unstable; urgency=low
+
+   * Update Changelog
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 28 Jan 2009 19:47:59 +0100
 
 gpsdrive (2.10svn2295) unstable; urgency=low
 
