@@ -60,6 +60,7 @@
 #  define N_(String) (String)
 # endif
 
+#define SETTINGS_FRAMESTYLE GTK_SHADOW_NONE
 
 extern gint mydebug;
 
@@ -75,7 +76,6 @@ extern gint needreloadmapconfig;
 extern gint iszoomed;
 extern GtkWidget *miles;
 extern GtkWidget *status;
-extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
 
 GtkWidget *ipbt;
@@ -493,8 +493,6 @@ setwpquick_cb (GtkWidget *widget, gint value)
 	current.needtosave = TRUE;
 	return TRUE;
 }
-
-
 
 /* ************************************************************************* */
 static gint
@@ -1115,6 +1113,93 @@ toggle_poitype
 }
 
 
+/* ************************************************************************* */
+gboolean
+poi_type_settings (GtkWidget *button, GtkWindow *parent)
+{
+	GtkWidget *poi_types_window;
+	GtkWidget *scrolledwindow_poitypes;
+	GtkWidget *poitypes_treeview;
+	GtkCellRenderer *renderer_poitypes;
+	GtkTreeViewColumn *column_poitypes;
+	GtkTreeSelection *poitypes_select;
+
+	poi_types_window = gtk_dialog_new_with_buttons (
+		_("Edit POI filter"),
+		parent, GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
+	gtk_container_set_border_width (GTK_CONTAINER (poi_types_window), 2);
+	gtk_window_set_position (GTK_WINDOW (poi_types_window),
+		GTK_WIN_POS_CENTER);
+	if (local_config.guimode == GUI_PDA)
+		gtk_window_set_default_size (GTK_WINDOW (poi_types_window),
+			gui_status.mapview_x, gui_status.mapview_y);
+	else
+		gtk_window_set_default_size (GTK_WINDOW (poi_types_window),
+			400, 400);
+	g_signal_connect_swapped (poi_types_window, "response",
+		G_CALLBACK (gtk_widget_destroy), poi_types_window);
+
+	scrolledwindow_poitypes = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW
+		(scrolledwindow_poitypes), GTK_SHADOW_IN);
+
+	poitypes_treeview = gtk_tree_view_new_with_model
+		(GTK_TREE_MODEL (poi_types_tree_filtered));
+	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes),
+		poitypes_treeview);
+
+	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Display"),
+		renderer_poitypes, "active", POITYPE_SELECT, NULL);
+	g_signal_connect (renderer_poitypes, "toggled",
+		G_CALLBACK (toggle_poitype), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_toggle_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Label"),
+		renderer_poitypes, "active", POITYPE_LABEL, NULL);
+	g_signal_connect (renderer_poitypes, "toggled",
+		G_CALLBACK (toggle_poilabel), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
+		renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	renderer_poitypes = gtk_cell_renderer_text_new ();
+	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
+		renderer_poitypes, "text", POITYPE_TITLE, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview), TRUE);
+	gtk_tree_view_collapse_all (GTK_TREE_VIEW (poitypes_treeview));
+
+	/* disable drawing of tree expanders */
+	column_poitypes = gtk_tree_view_column_new ();
+	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
+		column_poitypes);
+	gtk_tree_view_set_expander_column
+		(GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
+	gtk_tree_view_column_set_visible (column_poitypes, FALSE);
+
+	poitypes_select = gtk_tree_view_get_selection
+		(GTK_TREE_VIEW (poitypes_treeview));
+	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
+
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_types_window)->vbox),
+		scrolledwindow_poitypes, TRUE, TRUE, 0);
+	gtk_widget_show_all (poi_types_window);
+
+   return TRUE;
+}
+
+
 /* *************************************************************************
  *   SETTINGS WINDOW
  * ************************************************************************* */
@@ -1259,7 +1344,7 @@ settings_general (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (misc_fr_lb), _("<b>Miscellaneous</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (misc_frame), misc_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (misc_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (misc_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (misc_frame), misc_table);
 
 	map_frame = gtk_frame_new (NULL);
@@ -1267,7 +1352,7 @@ settings_general (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (map_fr_lb), _("<b>Map Settings</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (map_frame), map_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (map_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (map_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (map_frame), map_table);
 
 	gtk_box_pack_start (GTK_BOX (general_vbox),
@@ -1591,7 +1676,7 @@ settings_gui (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (gui_map_frame), gui_map_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (gui_map_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (gui_map_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (gui_map_frame), gui_map_table);
 
 	/* other features frame */
@@ -1602,7 +1687,7 @@ settings_gui (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (gui_other_frame), gui_other_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (gui_other_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (gui_other_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (gui_other_frame), gui_other_table);
 
 	/* units format frame */
@@ -1610,7 +1695,7 @@ settings_gui (GtkWidget *notebook)
 	units_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup (GTK_LABEL (units_fr_lb), _("<b>Units</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (units_frame), units_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (units_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (units_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (units_frame), units_table);
 
 	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_map_frame, FALSE, FALSE, 2);
@@ -1801,7 +1886,7 @@ settings_ctl (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (gui_button_frame), gui_button_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (gui_button_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (gui_button_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (gui_button_frame), gui_button_box);
 
 	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_button_frame, FALSE, FALSE, 2);
@@ -1884,7 +1969,7 @@ settings_trk (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (trk_general_frame), trk_general_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (trk_general_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (trk_general_frame), SETTINGS_FRAMESTYLE);
 	trk_general_table = gtk_table_new (2, 5, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (trk_general_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (trk_general_table), 5);
@@ -1908,7 +1993,7 @@ settings_trk (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (trk_auto_frame), trk_auto_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (trk_auto_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (trk_auto_frame), SETTINGS_FRAMESTYLE);
 	trk_auto_table = gtk_table_new (3, 5, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (trk_auto_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (trk_auto_table), 5);
@@ -2174,7 +2259,7 @@ settings_col (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (col_map_frame), col_map_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (col_map_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (col_map_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (col_map_frame), col_map_table);
 
 	/* gui nightmode frame */
@@ -2185,7 +2270,7 @@ settings_col (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (col_night_frame), col_night_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (col_night_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (col_night_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (col_night_frame), col_night_table);
 
 	gtk_box_pack_start
@@ -2267,7 +2352,7 @@ settings_nav (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (nav_fr_lb), _("<b>Navigation Settings</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (nav_frame), nav_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (nav_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (nav_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (nav_frame), nav_table);
 	
 	
@@ -2295,15 +2380,11 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_max_label, *poi_max_entry;
 	GtkWidget *poi_max2_label, *poi_dist2_label;
 	GtkWidget *poifilter_label;
-	GtkWidget *scrolledwindow_poitypes;
-	GtkWidget *poitypes_treeview;
+	GtkWidget *poitypes_bt;
 	GtkWidget *qpquick_label, *qpquick_combo, *qptype_combo;
 	GtkWidget *qptype_label;
 	GtkCellRenderer *renderer_type_name;
 	GtkCellRenderer *renderer_type_icon;
-	GtkCellRenderer *renderer_poitypes;
-	GtkTreeViewColumn *column_poitypes;
-	GtkTreeSelection *poitypes_select;
 	gchar *t_path;
 	GtkTreeIter t_iter, t_fiter;
 	gchar text[50];
@@ -2485,58 +2566,8 @@ settings_poi (GtkWidget *notebook)
 		GTK_SIGNAL_FUNC (setpoitheme_cb), NULL);
 
 	poifilter_label = gtk_label_new (_("POI-Filter"));
-	scrolledwindow_poitypes = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW
-		(scrolledwindow_poitypes), GTK_SHADOW_IN);
-
-	poitypes_treeview = gtk_tree_view_new_with_model
-		(GTK_TREE_MODEL (poi_types_tree_filtered));
-	gtk_container_add (GTK_CONTAINER (scrolledwindow_poitypes),
-		poitypes_treeview);
-
-	renderer_poitypes = gtk_cell_renderer_toggle_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Display"),
-		renderer_poitypes, "active", POITYPE_SELECT, NULL);
-	g_signal_connect (renderer_poitypes, "toggled",
-		G_CALLBACK (toggle_poitype), NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	renderer_poitypes = gtk_cell_renderer_toggle_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (_("Label"),
-		renderer_poitypes, "active", POITYPE_LABEL, NULL);
-	g_signal_connect (renderer_poitypes, "toggled",
-		G_CALLBACK (toggle_poilabel), NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	renderer_poitypes = gtk_cell_renderer_pixbuf_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
-		renderer_poitypes, "pixbuf", POITYPE_ICON, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	renderer_poitypes = gtk_cell_renderer_text_new ();
-	column_poitypes = gtk_tree_view_column_new_with_attributes (NULL,
-		renderer_poitypes, "text", POITYPE_TITLE, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (poitypes_treeview),
-		TRUE);
-	gtk_tree_view_collapse_all (GTK_TREE_VIEW (poitypes_treeview));
-
-	/* disable drawing of tree expanders */
-	column_poitypes = gtk_tree_view_column_new ();
-	gtk_tree_view_append_column (GTK_TREE_VIEW (poitypes_treeview),
-		column_poitypes);
-	gtk_tree_view_set_expander_column
-		(GTK_TREE_VIEW (poitypes_treeview), column_poitypes);
-	gtk_tree_view_column_set_visible (column_poitypes, FALSE);
-
-	poitypes_select = gtk_tree_view_get_selection
-		(GTK_TREE_VIEW (poitypes_treeview));
-	gtk_tree_selection_set_mode (poitypes_select, GTK_SELECTION_SINGLE);
+	poitypes_bt = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	g_signal_connect (poitypes_bt, "clicked", G_CALLBACK (poi_type_settings), settings_window);
 
 	poidisplay_table = gtk_table_new (3, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (poidisplay_table), 5);
@@ -2550,8 +2581,10 @@ settings_poi (GtkWidget *notebook)
 	gtk_table_attach (GTK_TABLE (poidisplay_table),
 		poifilter_label, 0, 1, 1, 2,
 		GTK_SHRINK, GTK_SHRINK, 0 ,0);
-	gtk_table_attach_defaults (GTK_TABLE (poidisplay_table),
-		scrolledwindow_poitypes, 1, 2, 1, 2);	}
+	gtk_table_attach (GTK_TABLE (poidisplay_table),
+		poitypes_bt, 1, 2, 1, 2,
+		GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+	}
 
 
 	wp_frame = gtk_frame_new (NULL);
@@ -2559,7 +2592,7 @@ settings_poi (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (wp_fr_lb), _("<b>Waypoints</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (wp_frame), wp_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (wp_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (wp_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (wp_frame), wp_table);
 
 	qp_frame = gtk_frame_new (NULL);
@@ -2567,7 +2600,7 @@ settings_poi (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (qp_fr_lb), _("<b>New Waypoint Defaults</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (qp_frame), qp_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (qp_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (qp_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (qp_frame), qp_table);
 
 	poisearch_frame = gtk_frame_new (NULL);
@@ -2577,7 +2610,7 @@ settings_poi (GtkWidget *notebook)
 	gtk_frame_set_label_widget (GTK_FRAME (poisearch_frame),
 		poisearch_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (poisearch_frame),
-		GTK_SHADOW_NONE);
+		SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (poisearch_frame), poisearch_table);
 	
 	poidisplay_frame = gtk_frame_new (NULL);
@@ -2587,12 +2620,12 @@ settings_poi (GtkWidget *notebook)
 	gtk_frame_set_label_widget (GTK_FRAME (poidisplay_frame),
 		poidisplay_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (poidisplay_frame),
-		GTK_SHADOW_NONE);
+		SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (poidisplay_frame), poidisplay_table);
 
 
 	gtk_box_pack_start
-		(GTK_BOX (poi_vbox), poidisplay_frame, TRUE, TRUE, 2);
+		(GTK_BOX (poi_vbox), poidisplay_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start
 		(GTK_BOX (poi_vbox), poisearch_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (poi_vbox), qp_frame, FALSE, FALSE, 2);
@@ -2724,7 +2757,7 @@ settings_wp (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (wp_fr_lb), _("<b>File Dialog Selection</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (wp_frame), wp_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (wp_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (wp_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (wp_frame), wp_table);
 
 	wpqs_frame = gtk_frame_new (NULL);
@@ -2732,7 +2765,7 @@ settings_wp (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (wpqs_fr_lb), _("<b>Quick Select File</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (wpqs_frame), wpqs_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (wpqs_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (wpqs_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (wpqs_frame), wpqs_table);
 
 	gtk_box_pack_start (GTK_BOX (wp_vbox), wpqs_frame, FALSE, FALSE, 2);
@@ -2916,7 +2949,7 @@ settings_friends (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (friendgen_frame), friendgen_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (friendgen_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (friendgen_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (friendgen_frame), friendgen_table);
 	
 	/* friends server frame */
@@ -2927,7 +2960,7 @@ settings_friends (GtkWidget *notebook)
 	gtk_frame_set_label_widget
 		(GTK_FRAME (friendsrv_frame), friendsrv_fr_lb);
 	gtk_frame_set_shadow_type
-		(GTK_FRAME (friendsrv_frame), GTK_SHADOW_NONE);
+		(GTK_FRAME (friendsrv_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (friendsrv_frame), friendsrv_table);
 	
 	gtk_box_pack_start
@@ -3116,7 +3149,7 @@ settings_speech (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (speechgen_fr_lb), _("<b>Verbal prompting</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (speechgen_frame), speechgen_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (speechgen_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (speechgen_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (speechgen_frame), speechgen_table);
 
 	speech_frame = gtk_frame_new (NULL);
@@ -3124,7 +3157,7 @@ settings_speech (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (speech_fr_lb), _("<b>Output Settings</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (speech_frame), speech_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (speech_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (speech_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (speech_frame), speech_table);
 
 	gtk_box_pack_start (GTK_BOX (speech_vbox), speechgen_frame, FALSE, FALSE, 2);
@@ -3157,7 +3190,7 @@ settings_gps (GtkWidget *notebook)
 	gtk_label_set_markup
 		(GTK_LABEL (general_fr_lb), _("<b>GPS connection</b>"));
 	gtk_frame_set_label_widget (GTK_FRAME (general_frame), general_fr_lb);
-	gtk_frame_set_shadow_type (GTK_FRAME (general_frame), GTK_SHADOW_NONE);
+	gtk_frame_set_shadow_type (GTK_FRAME (general_frame), SETTINGS_FRAMESTYLE);
 	gtk_container_add (GTK_CONTAINER (general_frame), gps_reinit_bt);
 
 	gtk_box_pack_start (GTK_BOX (gps_vbox), general_frame, FALSE, FALSE, 2);

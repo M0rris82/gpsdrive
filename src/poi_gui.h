@@ -31,7 +31,6 @@ void create_window_poi_lookup (void);
 void poi_info_cb (void);
 void route_window_cb (GtkWidget *calling_button);
 gint show_poi_lookup_cb (GtkWidget *button, gint mode);
-GtkWidget * create_poi_types_window (void);
 gint toggle_window_poitypes_cb (GtkWidget *trigger, gboolean multi);
 void create_poi_info_window (void);
 

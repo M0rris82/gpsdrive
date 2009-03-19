@@ -109,7 +109,6 @@ extern poi_struct poi_buf;
 extern poi_info_struct poi_info;
 extern GtkTreeModel *poi_types_tree_filtered;
 
-GtkWidget *poi_types_window;
 
 /* poi lookup window */
 GtkWidget *poi_lookup_window;

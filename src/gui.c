@@ -98,7 +98,6 @@ extern currentstatus_struct current;
 extern coordinate_struct coords;
 extern routestatus_struct route;
 
-extern GtkWidget *poi_types_window;
 extern GtkWidget *frame_statusfriends;
 extern GtkWidget *mute_bt;
 extern GtkWidget *frame_battery;
