@@ -151,7 +151,7 @@
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_box'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/post_box.png" type="png" width="16" height="16"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_box.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
@@ -161,7 +161,7 @@
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_office'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/post_office.png" type="png" width="16" height="16"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_office.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
@@ -182,7 +182,7 @@
     <Rule>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <Filter>[natural]='peak'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/peak.png" type="png" width="16" height="16"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/place/peak.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
@@ -202,7 +202,7 @@
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='recycling'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/public/recycling.png" type="png" width="16" height="15"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/recycling.png" type="png" width="16" height="15"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
