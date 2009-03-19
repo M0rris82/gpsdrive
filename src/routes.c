@@ -726,10 +726,10 @@ void add_quickpoint_to_route ()
 			t_name, t_lat, t_lon, t_x, t_y);
 
 	t_id = addwaypoint (t_name,
-		"waypoint.routepoint", t_cmt, t_lat, t_lon, TRUE);
+		"waypoint.route", t_cmt, t_lat, t_lon, TRUE);
 
 	add_routepoint
-		(t_id, t_name, t_cmt, "waypoint.routepoint", t_lon, t_lat);
+		(t_id, t_name, t_cmt, "waypoint.route", t_lon, t_lat);
 
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 		current.statusbar_id,

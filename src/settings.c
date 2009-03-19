@@ -102,9 +102,12 @@ extern guint id_timeout_autotracksave;
 extern guint id_timeout_track;
 extern gchar **speech_modules;
 extern GtkListStore *speech_voices_list;
+extern GHashTable *poi_types_hash;
 
 GtkWidget *settings_window = NULL;
 static GtkWidget *speechvoice_combo;
+static GtkWidget *qpquicktxt_entry, *qpquicknum_entry;
+
 
 /* ****************************************************************************
  * CALLBACKS
@@ -427,6 +430,71 @@ setpoisearch_cb (GtkWidget *widget, gint value)
 	current.needtosave = TRUE;
 	return TRUE;
 }
+
+/* ************************************************************************* */
+static gint
+setwpquick_cb (GtkWidget *widget, gint value)
+{
+
+	switch (value)
+	{
+		GtkTreeIter t_iter;
+		case 0:	/* set type of label */
+			switch (gtk_combo_box_get_active (GTK_COMBO_BOX(widget)))
+			{
+				gchar t_buf[10];
+				case 0: /* date/time */
+					local_config.quickpoint_mode = 0;
+					gtk_widget_set_sensitive (qpquicktxt_entry, FALSE);
+					gtk_widget_set_sensitive (qpquicknum_entry, FALSE);
+					break;
+				case 1: /* text/number */
+					local_config.quickpoint_mode = 1;
+					gtk_entry_set_text (GTK_ENTRY (qpquicktxt_entry),
+						local_config.quickpoint_text);
+					g_snprintf (t_buf, sizeof (t_buf), "%d",
+						local_config.quickpoint_num);
+					gtk_entry_set_text (GTK_ENTRY (qpquicknum_entry), t_buf);
+					gtk_widget_set_sensitive (qpquicktxt_entry, TRUE);
+					gtk_widget_set_sensitive (qpquicknum_entry, TRUE);
+					break;
+				case 2: /* fixed text */
+					local_config.quickpoint_mode = 2;
+					gtk_entry_set_text (GTK_ENTRY (qpquicktxt_entry),
+						local_config.quickpoint_text);
+					gtk_widget_set_sensitive (qpquicktxt_entry, TRUE);
+					gtk_widget_set_sensitive (qpquicknum_entry, FALSE);
+					break;
+			}
+			break;
+		case 1: /* set fixed text */
+			g_strlcpy (local_config.quickpoint_text,
+				gtk_entry_get_text (GTK_ENTRY (widget)),
+				sizeof (local_config.quickpoint_text));
+			break;
+		case 2:	/* set number offset */
+			local_config.quickpoint_num = g_strtod (
+				gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
+			break;
+		case 3: /* set POI type */
+			if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (widget), &t_iter))
+			{
+				gchar *t_buf;
+				gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree_filtered), &t_iter,
+					POITYPE_NAME, &t_buf, -1);
+				g_strlcpy (local_config.quickpoint_type, t_buf, sizeof (local_config.quickpoint_type));
+				g_free (t_buf);
+			}
+			break;
+		default:
+			return FALSE;
+	}
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
 
 /* ************************************************************************* */
 static gint
@@ -2218,6 +2286,7 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poi_vbox, *poi_label;
 	GtkTooltips * poi_tooltips;
 	GtkWidget *wp_frame, *wp_fr_lb, *wp_table;
+	GtkWidget *qp_frame, *qp_fr_lb, *qp_table;
 	GtkWidget *poisearch_frame, *poisearch_fr_lb, *poisearch_table;
 	GtkWidget *poidisplay_frame, *poidisplay_fr_lb, *poidisplay_table;
 	GtkWidget *wpfile_label, *wpfile_bt;
@@ -2228,12 +2297,17 @@ settings_poi (GtkWidget *notebook)
 	GtkWidget *poifilter_label;
 	GtkWidget *scrolledwindow_poitypes;
 	GtkWidget *poitypes_treeview;
+	GtkWidget *qpquick_label, *qpquick_combo, *qptype_combo;
+	GtkWidget *qptype_label;
+	GtkCellRenderer *renderer_type_name;
+	GtkCellRenderer *renderer_type_icon;
 	GtkCellRenderer *renderer_poitypes;
 	GtkTreeViewColumn *column_poitypes;
 	GtkTreeSelection *poitypes_select;
-
+	gchar *t_path;
+	GtkTreeIter t_iter, t_fiter;
 	gchar text[50];
-	
+
 	poi_tooltips = gtk_tooltips_new ();	
 	poi_vbox = gtk_vbox_new (FALSE, 2);
 
@@ -2254,13 +2328,82 @@ settings_poi (GtkWidget *notebook)
 	g_signal_connect (wpfile_bt, "selection-changed",
 		GTK_SIGNAL_FUNC (setwpfile_cb), NULL);
 
-	wp_table = gtk_table_new (1, 2, FALSE);
+	wp_table = gtk_table_new (2, 2, FALSE);
 	gtk_table_set_row_spacings (GTK_TABLE (wp_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (wp_table), 5);
 	gtk_table_attach (GTK_TABLE (wp_table),
 		wpfile_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	gtk_table_attach_defaults (GTK_TABLE (wp_table),
 		wpfile_bt, 1, 2, 0, 1);
+	}
+
+	/* Quick waypoint settings */
+	{
+	qpquick_label = gtk_label_new (_("Text Label"));
+	qpquicktxt_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (qpquicktxt_entry), 20);
+	g_signal_connect (qpquicktxt_entry, "changed",
+		G_CALLBACK (setwpquick_cb), (gpointer) 1);
+	qpquicknum_entry = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (qpquicknum_entry), 4);
+	g_signal_connect (qpquicknum_entry, "changed",
+		G_CALLBACK (setwpquick_cb), (gpointer) 2);
+
+	qpquick_combo = gtk_combo_box_new_text();
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (qpquick_combo), _("Date/Time"));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (qpquick_combo), _("Text/Number"));
+	gtk_combo_box_append_text
+		(GTK_COMBO_BOX (qpquick_combo), _("fixed Text"));
+	g_signal_connect (qpquick_combo, "changed",
+		G_CALLBACK (setwpquick_cb), (gpointer) 0);
+	if (local_config.quickpoint_mode == 1)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (qpquick_combo), 1);
+	else if (local_config.quickpoint_mode == 2)
+		gtk_combo_box_set_active (GTK_COMBO_BOX (qpquick_combo), 2);
+	else
+		gtk_combo_box_set_active (GTK_COMBO_BOX (qpquick_combo), 0);
+
+	qptype_label = gtk_label_new (_("POI-Type"));
+	qptype_combo = gtk_combo_box_new_with_model (GTK_TREE_MODEL (poi_types_tree_filtered));
+	renderer_type_icon = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (qptype_combo),
+		renderer_type_icon, FALSE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (qptype_combo),
+		renderer_type_icon, "pixbuf", POITYPE_ICON, NULL);
+	renderer_type_name = gtk_cell_renderer_text_new ();
+	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (qptype_combo),
+		renderer_type_name, TRUE);
+	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (qptype_combo),
+		renderer_type_name, "text", POITYPE_TITLE, NULL);
+
+	t_path = g_hash_table_lookup (poi_types_hash, local_config.quickpoint_type);
+	if (t_path == NULL)
+		t_path = g_hash_table_lookup (poi_types_hash, "waypoint");
+	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree),
+		&t_iter, t_path);
+	gtk_tree_model_filter_convert_child_iter_to_iter (GTK_TREE_MODEL_FILTER (
+		poi_types_tree_filtered), &t_fiter, &t_iter);
+	gtk_combo_box_set_active_iter (GTK_COMBO_BOX (qptype_combo), &t_fiter);
+	g_signal_connect (qptype_combo, "changed",
+		G_CALLBACK (setwpquick_cb), (gpointer) 3);
+
+	qp_table = gtk_table_new (2, 4, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (qp_table), 5);
+	gtk_table_set_col_spacings (GTK_TABLE (qp_table), 5);
+	gtk_table_attach (GTK_TABLE (qp_table),
+		qpquick_label, 0, 1, 0, 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (qp_table),
+		qpquick_combo, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (qp_table),
+		qpquicktxt_entry, 2, 3, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (qp_table),
+		qpquicknum_entry, 3, 4, 0, 1);
+	gtk_table_attach (GTK_TABLE (qp_table),
+		qptype_label, 0, 1, 1, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_table_attach_defaults (GTK_TABLE (qp_table),
+		qptype_combo, 1, 4, 1, 2);
 	}
 
 	/* POI Search settings */
@@ -2418,7 +2561,15 @@ settings_poi (GtkWidget *notebook)
 	gtk_frame_set_label_widget (GTK_FRAME (wp_frame), wp_fr_lb);
 	gtk_frame_set_shadow_type (GTK_FRAME (wp_frame), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (wp_frame), wp_table);
-	
+
+	qp_frame = gtk_frame_new (NULL);
+	qp_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (qp_fr_lb), _("<b>New Waypoint Defaults</b>"));
+	gtk_frame_set_label_widget (GTK_FRAME (qp_frame), qp_fr_lb);
+	gtk_frame_set_shadow_type (GTK_FRAME (qp_frame), GTK_SHADOW_NONE);
+	gtk_container_add (GTK_CONTAINER (qp_frame), qp_table);
+
 	poisearch_frame = gtk_frame_new (NULL);
 	poisearch_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
@@ -2444,6 +2595,7 @@ settings_poi (GtkWidget *notebook)
 		(GTK_BOX (poi_vbox), poidisplay_frame, TRUE, TRUE, 2);
 	gtk_box_pack_start
 		(GTK_BOX (poi_vbox), poisearch_frame, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (poi_vbox), qp_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (poi_vbox), wp_frame, FALSE, FALSE, 2);
 
 	poi_label = gtk_label_new (_("POI"));

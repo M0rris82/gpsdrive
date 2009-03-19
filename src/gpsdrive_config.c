@@ -163,17 +163,6 @@ writeconfig ()
 			fprintf (fp, "metric\n");
 	}
 
-	fprintf (fp, "altitude = ");
-	if (local_config.altmode == ALT_FEET)
- 		fprintf (fp, "feet\n");
- 	else
- 	{
-		if (local_config.altmode == ALT_YARDS)
-			fprintf (fp, "yards\n");
-		else
-			fprintf (fp, "meters\n");
-	}
-
 	fprintf (fp, "savetrack = ");
 	if (local_config.savetrack)
 		fprintf (fp, "1\n");
@@ -308,7 +297,10 @@ writeconfig ()
 	fprintf (fp, "icon_theme = %s\n", local_config.icon_theme);
 	fprintf (fp, "poi_filter = %s\n", local_config.poi_filter);
 	fprintf (fp, "poi_label = %s\n", local_config.poi_label);
-
+	fprintf (fp, "quickpoint_mode = %d\n", local_config.quickpoint_mode);
+	fprintf (fp, "quickpoint_number = %d\n", local_config.quickpoint_num);
+	fprintf (fp, "quickpoint_text = %s\n", local_config.quickpoint_text);
+	fprintf (fp, "quickpoint_type = %s\n", local_config.quickpoint_type);
 	fprintf (fp, "draw_grid = %d\n", local_config.showgrid);
 	fprintf (fp, "show_maptype = %d\n", local_config.showmaptype);
 	fprintf (fp, "show_zoom = %d\n", local_config.showzoom);
@@ -422,21 +414,6 @@ readconfig ()
 						local_config.distmode = DIST_NAUTIC;
 						local_config.distfactor = KM2NAUTIC;
 					}
-				}
-			}
-			else if ( (strcmp(par1, "altitude")) == 0)
-			{
-				if ( (strcmp(par2, "feet")) == 0)
-				{
-					local_config.altmode = ALT_FEET;
-				}
-				else if ( (strcmp(par2, "meters")) == 0)
-				{
-					local_config.altmode = ALT_METERS;
-				}
-				else if ( (strcmp(par2, "yards")) == 0)
-				{
-					local_config.altmode = ALT_YARDS;
 				}
 			}
 			else if ( (strcmp(par1, "dashboard_1")) == 0)
@@ -674,6 +651,16 @@ readconfig ()
 			else if ( (strcmp(par1, "poi_label")) == 0)
 				g_strlcpy (local_config.poi_label, par2,
 					sizeof (local_config.poi_label));
+			else if ( (strcmp(par1, "quickpoint_mode")) == 0)
+				local_config.quickpoint_mode = atoi (par2);
+			else if ( (strcmp(par1, "quickpoint_number")) == 0)
+				local_config.quickpoint_num = atoi (par2);
+			else if ( (strcmp(par1, "quickpoint_text")) == 0)
+				g_strlcpy (local_config.quickpoint_text, par2,
+					sizeof (local_config.quickpoint_text));
+			else if ( (strcmp(par1, "quickpoint_type")) == 0)
+				g_strlcpy (local_config.quickpoint_type, par2,
+					sizeof (local_config.quickpoint_type));
 			else if ( (strcmp(par1, "draw_grid")) == 0)
 				local_config.showgrid = atoi (par2);
 			else if ( (strcmp(par1, "show_maptype")) == 0)
@@ -777,7 +764,11 @@ config_init ()
 		"%s%s", DATADIR, "/gpsdrive/geoinfo.db");
 	g_snprintf (local_config.osm_dbfile, sizeof (local_config.osm_dbfile),
 		"%s%s", DATADIR, "/gpsdrive/osm.db");
-	
+	g_strlcpy (local_config.quickpoint_type, "waypoint.pin.green", sizeof (local_config.quickpoint_type));
+	g_strlcpy (local_config.quickpoint_text, "WP_", sizeof (local_config.quickpoint_text));
+	local_config.quickpoint_mode = 1;
+	local_config.quickpoint_num = 0;
+
 	/* set friends stuff */
 	local_config.friends_maxsecs = 1209600;
 	g_strlcpy (local_config.friends_name, "",

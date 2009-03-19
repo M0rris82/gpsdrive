@@ -1649,20 +1649,30 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add Waypoint at current gps location without asking
 	if ((toupper (event->keyval)) == 'W')
 	{
-		gchar wp_name[100], wp_type[100], wp_comment[100];
-		GTimeVal current_time;
-		g_get_current_time (&current_time);
-		g_snprintf (wp_name, sizeof (wp_name), "%s",
-			(g_time_val_to_iso8601 (&current_time))+5);
-		g_snprintf (wp_type, sizeof (wp_type),
-			"waypoint.wpttemp.wpttemp-green");
-		g_snprintf (wp_comment, sizeof (wp_comment),
-			_("Quicksaved Waypoint"));
+		gchar wp_name[255];
+		if (local_config.quickpoint_mode == 1)
+		{
+			g_snprintf (wp_name, sizeof (wp_name), "%s%04d",
+				local_config.quickpoint_text, local_config.quickpoint_num);
+			local_config.quickpoint_num++;
+		}
+		else if (local_config.quickpoint_mode == 2)
+		{
+			g_strlcpy (wp_name, local_config.quickpoint_text, sizeof (wp_name));
+		}
+		else
+		{
+			GTimeVal current_time;
+			g_get_current_time (&current_time);
+			g_snprintf (wp_name, sizeof (wp_name), "%s",
+				(g_time_val_to_iso8601 (&current_time))+5);
+		}
+
 		if (local_config.use_database)
-			addwaypoint (wp_name, wp_type, wp_comment,
+			addwaypoint (wp_name, local_config.quickpoint_type, _("Quicksaved Waypoint"),
 				coords.current_lat, coords.current_lon, TRUE);
 		else
-			addwaypoint (wp_name, wp_type, wp_comment,
+			addwaypoint (wp_name, local_config.quickpoint_type, _("Quicksaved Waypoint"),
 				coords.current_lat, coords.current_lon, FALSE);
 	}
 
