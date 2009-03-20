@@ -232,7 +232,9 @@ dash_select_cb (GtkWidget *item, gint selection)
 		local_config.dashboard[local_config.dashboard[0]] = selection;
 		current.needtosave = TRUE;
 		local_config.dashboard[0] = 0;
-		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+#ifndef MAEMO
+		if (local_config.guimode == GUI_CAR)
+#endif
 			gtk_widget_hide_all (dash_menu_window);
 
 		if (mydebug > 20)
@@ -2396,11 +2398,12 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (track_clear_cb), FALSE);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), cleartrack_bt,
 		_("Delete recorded track data"), NULL);
+#ifndef MAEMO
 	if (local_config.guimode != GUI_CAR
-	    &&  local_config.guimode != GUI_MAEMO
 	    && local_config.showbutton_trackclear)
 		gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
 			FALSE, FALSE, 0 * PADDING);
+#endif
 
 	/* Button: Restart Track */
 	restarttrack_bt = gtk_button_new_with_mnemonic (_("R_estart\nTrack"));
@@ -2411,11 +2414,12 @@ void create_controls_mainbox (void)
 		GTK_SIGNAL_FUNC (track_restart_cb), NULL);
 	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), restarttrack_bt,
 		_("Save current track and start new one."), NULL);
+#ifndef MAEMO
 	if (local_config.guimode != GUI_CAR
-	    && local_config.guimode != GUI_MAEMO
 	    && local_config.showbutton_trackrestart)
 		gtk_box_pack_start (GTK_BOX (vbox_track), restarttrack_bt,
 			FALSE, FALSE, 0 * PADDING);
+#endif
 
 	/* MAP CONTROL */
 	if ( mydebug > 11 )
@@ -2472,7 +2476,9 @@ void create_controls_mainbox (void)
 		gboolean wide = FALSE;
 	        if ( mydebug > 11 )
 			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
-		if (local_config.guimode == GUI_CAR  || local_config.guimode == GUI_MAEMO)
+#ifndef MAEMO
+		if (local_config.guimode == GUI_CAR)
+#endif
 			wide = TRUE;
 #ifdef MAEMO
 		hildon_window_set_menu (HILDON_WINDOW (main_window), GTK_MENU (main_menu));
@@ -2513,7 +2519,9 @@ void create_controls_mainbox (void)
 			gtk_box_pack_start (GTK_BOX (vbox_buttons),
 				controlbox_bt, wide, wide, 1 * PADDING);
 		}
-		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+#ifndef MAEMO
+		if (local_config.guimode == GUI_CAR)
+#endif
 		{
 			if (local_config.showbutton_trackrestart)
 				gtk_box_pack_start (GTK_BOX (vbox_buttons), restarttrack_bt,
@@ -2527,6 +2535,7 @@ void create_controls_mainbox (void)
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox(mainbox_controls)\n");
+#ifndef MAEMO
 	if (local_config.guimode == GUI_PDA)
 	{
 		mainbox_controls = gtk_hbox_new (TRUE, 0 * PADDING);
@@ -2543,7 +2552,8 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_maptype, TRUE, TRUE, 1 * PADDING);
 	}
 	else
-	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+	if (local_config.guimode == GUI_CAR)
+#endif
 	{
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
 		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
@@ -2558,6 +2568,7 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (controlbox), mapscaler_hbox, FALSE, FALSE, 1 * PADDING);
 	}
+#ifndef MAEMO
 	else
 	{
 		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
@@ -2574,6 +2585,7 @@ void create_controls_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
 
 	}
+#endif
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_controls_mainbox: END\n");
@@ -2683,7 +2695,9 @@ void create_status_mainbox (void)
 		gtk_widget_add_events (eventbox_dash_4,
 			GDK_BUTTON_PRESS_MASK);
 		
-		if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+#ifndef MAEMO
+		if (local_config.guimode == GUI_CAR)
+#endif
 		{
 			g_signal_connect (eventbox_dash_1, "button_press_event",
 				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 1);
@@ -2694,6 +2708,7 @@ void create_status_mainbox (void)
 			g_signal_connect (eventbox_dash_4, "button_press_event",
 				GTK_SIGNAL_FUNC (dash_carmenu_cb), (gpointer) 4);
 		}
+#ifndef MAEMO
 		else
 		{
 			g_signal_connect (eventbox_dash_1, "button_press_event",
@@ -2705,6 +2720,7 @@ void create_status_mainbox (void)
 			g_signal_connect (eventbox_dash_4, "button_press_event",
 				GTK_SIGNAL_FUNC (dash_menu_cb), (gpointer) 4);
 		}
+#endif
 	}	/* END DASHBOARD */
 
 
@@ -2815,6 +2831,7 @@ void create_status_mainbox (void)
 	}	/* END STATUS BAR */
 	
 	/* Pack all the widgets together according to GUI-Mode */
+#ifndef MAEMO
 	if (local_config.guimode == GUI_PDA)
 	{
 		statusdashboard_box = gtk_table_new (2, 2, TRUE);
@@ -2841,7 +2858,8 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_status), frame_statusbar, TRUE, FALSE, 1* PADDING);
 	}
 	else
-	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+	if (local_config.guimode == GUI_CAR)
+#endif
 	{
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
 		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
@@ -2861,7 +2879,9 @@ void create_status_mainbox (void)
 		create_battery_widget(statusdashboard_box);
 
 		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
-	} else
+	}
+#ifndef MAEMO
+	else
 	{
 		GtkWidget *compass_box;
 
@@ -2900,6 +2920,7 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_hbox, TRUE, TRUE, 1 * PADDING);
 	}
+#endif
 }
 
 
@@ -3028,13 +3049,19 @@ gint create_main_window (void)
 	create_status_mainbox ();
 	create_map_mainbox ();
 	create_routeinfo_box ();
-	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_MAEMO)
+
+#ifdef MAEMO
+	create_dashboard_carmenu ();
+#else
+	if (local_config.guimode == GUI_CAR)
 		create_dashboard_carmenu ();
 	else
 		create_dashboard_menu ();
+#endif
 
 	create_satellite_window ();
 
+#ifndef MAEMO
 	if (local_config.guimode == GUI_PDA)
 	{  /* PDA Mode */
 		GtkWidget *map_lb, *controls_lb, *status_lb;
@@ -3052,7 +3079,8 @@ gint create_main_window (void)
 			mainbox_status, status_lb);
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
-	else if (local_config.guimode == GUI_CAR  || local_config.guimode == GUI_MAEMO)
+	else if (local_config.guimode == GUI_CAR)
+#endif
 	{
 		main_table = gtk_table_new (2, 3, FALSE);
 		gtk_table_attach (GTK_TABLE (main_table),
@@ -3071,6 +3099,7 @@ gint create_main_window (void)
 		if (local_config.guimode == GUI_CAR)
 			gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
 	}
+#ifndef MAEMO
 	else
 	{  /* Classic Mode (Standard) */
 		main_table = gtk_table_new (5, 2, FALSE);
@@ -3093,6 +3122,7 @@ gint create_main_window (void)
 			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
+#endif
 
     // let the window manager show stuff before we continue
     while (gtk_events_pending()) gtk_main_iteration();

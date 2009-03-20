@@ -1225,6 +1225,7 @@ drawmarker (GtkWidget * widget, guint * datum)
 gint
 expose_mini_cb (GtkWidget * widget, guint * datum)
 {
+#ifndef MAEMO
 	if (mydebug >50)
 	fprintf (stdout, "expose_mini_cb()\n");
 
@@ -1234,9 +1235,6 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 	if (local_config.guimode == GUI_CAR)
 		return TRUE;
 	
-	if (local_config.guimode == GUI_MAEMO)
-		return TRUE;
-
 	drawable_minimap = drawing_minimap->window;
 	if (!drawable_minimap) {
 		return 0;
@@ -1262,6 +1260,7 @@ expose_mini_cb (GtkWidget * widget, guint * datum)
 			gui_status.mapview_y / (current.zoom * 10));
 		drawdownloadrectangle (0);
 	}
+#endif
 	return TRUE;
 }
 
@@ -2141,8 +2140,6 @@ parse_options_cb  (gchar *option, gchar *value, gpointer data, GError **error)
 			local_config.guimode = GUI_PDA;
 		else if (g_ascii_strncasecmp (value, "desktop", 7) == 0)
 			local_config.guimode = GUI_DESKTOP;
-		else if (g_ascii_strncasecmp (value, "maemo", 5) == 0)
-			local_config.guimode = GUI_MAEMO;
 		else
 		{
 			g_set_error (error, G_OPTION_ERROR, G_OPTION_ERROR_BAD_VALUE,
@@ -2476,8 +2473,10 @@ main (int argc, char *argv[])
 		" <ganter@ganter.at>\n\nVersion %s\n%s\n\n", VERSION, rcsid);
 
 	/*  show splash screen */
+#ifndef MAEMO
 	if (!nosplash)
 		show_splash ();
+#endif
 
     init_lat2RadiusArray();
 
