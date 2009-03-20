@@ -225,6 +225,11 @@ namespace mapnik {
 
     //load map
     try {
+        
+        if (!boost::filesystem::exists("/usr/share/mapnik/world_boundaries")) {
+	    cout << "Missing '/usr/share/mapnik/world_boundaries' please install mapnik world boundaries, if error occurs!" << endl;
+	}
+	
         std::string mapnik_config_file (ConfigXML);
         if (mydebug > 10) cout << "mapnik::load_map('" << mapnik_config_file <<"')" << endl;
         mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
