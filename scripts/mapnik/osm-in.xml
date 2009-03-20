@@ -85,7 +85,7 @@
     <Rule>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <Filter>[railway]='station'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway.png" type="png" width="16" height="16"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway_station.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
@@ -222,7 +222,7 @@
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='place_of_worship'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/religion/church.png" type="png" width="9" height="16" allow_overlap="false"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/religion.png" type="png" width="9" height="16" allow_overlap="false"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
@@ -307,12 +307,12 @@
       <Filter>[leisure] = 'nature_reserve'</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>50000</MinScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/recreation/nature_reserve.png" type="png" width="16" height="16"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <Filter>[leisure] = 'nature_reserve'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/recreation/nature_reserve.png" type="png" width="16" height="16"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -341,7 +341,7 @@
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <Filter>[landuse] = 'cemetery'</Filter>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/religion/cemetery.png" type="png" width="11" height="16"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/cemetery.png" type="png" width="11" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -360,7 +360,7 @@
     <Rule>
       <Filter>[tourism] = 'zoo'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/recreation/zoo.png" type="png" width="16" height="14"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/zoo.png" type="png" width="16" height="14"/>
     </Rule>
     <Rule>
       <Filter>[leisure] = 'common'</Filter>
@@ -401,7 +401,7 @@
     <Rule>
       <Filter>[landuse] = 'forest'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/forest.png" type="png" width="21" height="24"/>
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/forest.png" type="png" width="21" height="24"/>
     </Rule>
     <Rule>
       <Filter>[landuse] = 'farm'</Filter>
