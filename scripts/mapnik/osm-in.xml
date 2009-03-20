@@ -182,7 +182,7 @@
     <Rule>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <Filter>[natural]='peak'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/place/peak.png" type="png" width="16" height="16"/>
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/place/peak.png" type="png" width="16" height="16"/>
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
