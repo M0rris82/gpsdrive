@@ -49,10 +49,6 @@ if (WITH_DBUS)
     add_definitions(-DDBUS)
 endif (WITH_DBUS)
 
-if (WITH_FRIENDSD)
-  add_definitions(-DFRIENDSD)
-endif (WITH_FRIENDSD)
-
 if (WITH_KISMET)
   add_definitions(-DKISMET)
 endif (WITH_KISMET)
@@ -109,6 +105,7 @@ set(gpsdrive_SRCS
   database_sqlite.c
   database_sqlite.h
   draw_grid.c
+  friends.c
   geometry.c
   gettext.h
   gpsdrive.c
@@ -179,18 +176,7 @@ if (WITH_MAPNIK)
   )
 endif (WITH_MAPNIK)
 
-if (WITH_FRIENDSD)
-  set(gpsdrive_SRCS
-    ${gpsdrive_SRCS}
-    friends.c
-  )
-endif (WITH_FRIENDSD)
-
 if (MAEMO)
-  set(gpsdrive_SRCS
-    ${gpsdrive_SRCS}
-    friends.c
-  )
   set(GPSDRIVE_LINK_LIBRARIES
     ${GPSDRIVE_LINK_LIBRARIES}
     ${HILDON_LIBRARIES}
@@ -232,12 +218,12 @@ endif (WITH_NAVIGATE)
 MACRO_GENERATE_PO_FILES(${CMAKE_SOURCE_DIR}/po ${APPLICATION_NAME} gpsdrive_SRCS)
 
 if (WITH_FRIENDSD)
-if (NOT MAEMO)
- SET(friendsd_SRCS
-   friendsd.c
-   gpsdrive.h
- )
-endif (NOT MAEMO)
+  if (NOT MAEMO)
+    SET(friendsd_SRCS
+      friendsd.c
+      gpsdrive.h
+      )
+  endif (NOT MAEMO)
 endif (WITH_FRIENDSD)
 
 include_directories(
@@ -247,9 +233,9 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 if (WITH_FRIENDSD)
-if (NOT MAEMO)
- add_executable(friendsd ${friendsd_SRCS})
-endif (NOT MAEMO)
+  if (NOT MAEMO)
+    add_executable(friendsd ${friendsd_SRCS})
+  endif (NOT MAEMO)
 endif (WITH_FRIENDSD)
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})

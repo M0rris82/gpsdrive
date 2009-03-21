@@ -9,6 +9,7 @@ Package: gpsdrive-data-maps
 Architecture: all
 Depends: 
 Recommends: gpsdrive
+Conflicts: gpsdrive ( << 2322)
 Description: GpsDrive  example and overview maps
  This Package contains the overview maps
  for Gpsdrive.These are derived from the NASA

@@ -3,7 +3,7 @@
 # GNU copyright 1997 to 1999 by Joey Hess.
 
 # Uncomment this to turn on verbose mode.
-export DH_VERBOSE=1
+export DH_VERBOSE=0
 
 # This is the debhelper compatability version to use.
 #export DH_COMPAT=5
@@ -32,6 +32,7 @@ build/configure-stamp:
 	      -DDATADIR=/usr/share \
 	      -DWITH_DBUS=false \
 	      -DWITH_GDAL=false \
+	      -DWITH_BASEMAPS=false \
 	      .. 
 
 	rm -f build/build-stamp
@@ -74,17 +75,6 @@ install: build
 	mv $(destdir)/usr/bin/friendsd $(destdir_friendsd)/usr/bin/friendsd 
 	mkdir -p $(destdir_friendsd)/usr/share/man/man1
 	mv $(destdir)/usr/share/man/man1/friendsd* $(destdir_friendsd)/usr/share/man/man1
-
-	
-	# remove maps from main package, because it 
-	# will be buildt in gpsdrive-data-maps package
-	rm -rf debian/gpsdrive/usr/share/gpsdrive/maps
-
-	#
-	# remove map-icons from gpsdrive-main package. 
-	# This is build by the osm-data-map-icons*.deb package
-	rm -rf debian/gpsdrive/usr/share/map-icons 
-	rm -rf debian/gpsdrive/usr/share/gpsdrive/map-icons
 
 	# move modules and scripts since they are in the 
 	# gpsdrive-utils package

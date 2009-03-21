@@ -33,8 +33,9 @@ install: build
 	dh_installdirs
 
 	./update_svn_revision.sh
-	mkdir -p debian/gpsdrive-data-maps/usr/share/gpsdrive/maps
-	cp *.png *.jpg debian/gpsdrive-data-maps/usr/share/gpsdrive/maps/
+	mkdir -p         debian/gpsdrive-data-maps/usr/share/gpsdrive/maps
+	cp *.png *.jpg   debian/gpsdrive-data-maps/usr/share/gpsdrive/maps/
+	cp map_koord.txt debian/gpsdrive-data-maps/usr/share/gpsdrive/map_koord.txt
 
 
 # Build architecture-independent files here.
