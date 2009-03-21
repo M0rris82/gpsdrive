@@ -15,6 +15,7 @@ if (WITH_SCRIPTS)
     geoinfo.pl
     gpsd_nmea.sh
     nasaconv.sh
+    gpsd-connect-bluetooth.sh
   )
 
   install(FILES
