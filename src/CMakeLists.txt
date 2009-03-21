@@ -15,6 +15,8 @@ if (MAEMO)
   SET (WITH_GDA3 FALSE)
   SET (WITH_MAPNIK FALSE)
   SET (WITH_SPEECH FALSE)
+  SET (WITH_FRIENDSD FALSE)
+  SET (WITH_SCRIPTS FALSE)
 endif (MAEMO)
 
 if (WITH_GDA3)
@@ -169,6 +171,13 @@ if (WITH_FRIENDSD)
     friends.c
   )
 endif (WITH_FRIENDSD)
+
+if (MAEMO)
+  set(gpsdrive_SRCS
+    ${gpsdrive_SRCS}
+    friends.c
+  )
+endif (MAEMO)
 
 if (WITH_KISMET)
   set(gpsdrive_SRCS

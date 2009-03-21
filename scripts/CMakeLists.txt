@@ -1,7 +1,9 @@
 project(scripts)
 
-add_subdirectory(mapnik)
-add_subdirectory(osm/perl_lib)
+if (NOT MAEMO)
+  add_subdirectory(mapnik)
+  add_subdirectory(osm/perl_lib)
+endif (NOT MAEMO)
 
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
