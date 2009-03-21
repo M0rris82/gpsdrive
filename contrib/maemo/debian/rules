@@ -58,7 +58,7 @@ install: build
 	# ------------------  install the package into debian/gpsdrive.
 	cd build; $(MAKE) DESTDIR=$(destdir) install
 
-	/bin/bash debian/create_misssing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
+	/bin/bash debian/create_missing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
 
 	#
 	# remove maps from main package, because it 
