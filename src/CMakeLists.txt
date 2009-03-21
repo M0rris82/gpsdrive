@@ -92,20 +92,12 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
 set(GPSDRIVE_LINK_LIBRARIES
   gpsdrive
   crypt
-  ${GDAL_LIBRARIES}
   ${GETTEXT_LIBRARIES}
   ${GTK2_LIBRARIES}
   ${XML2_LIBRARIES}
-  ${MAPNIK_LIBRARIES}
   ${FREETYPE_LIBRARIES}
-  ${Boost_FILESYSTEM_LIBRARY}
-  ${GDA3_LIBRARIES}
   ${SQLITE3_LIBRARIES}
-  ${DBUS_LIBRARIES}
   ${CURL_LIBRARIES}
-  ${SPEECHD_LIBRARIES}
-  ${HILDON_LIBRARIES}
-  ${LIBOSSO_LIBRARIES}
   ${GPS_LIBRARIES}
 )
 
@@ -157,10 +149,21 @@ set(gpsdrive_SRCS
 )
 
 if (WITH_GDA3)
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${GDAL_LIBRARIES}
+  )
+endif (WITH_GDA3)
+
+if (WITH_GDA3)
   set(gpsdrive_SRCS
     ${gpsdrive_SRCS}
     database_postgis.c
     database_postgis.h
+  )
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${GDA3_LIBRARIES}
   )
 endif (WITH_GDA3)
 
@@ -168,6 +171,11 @@ if (WITH_MAPNIK)
   set(gpsdrive_SRCS
     ${gpsdrive_SRCS}
     mapnik.cpp
+  )
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${MAPNIK_LIBRARIES}
   )
 endif (WITH_MAPNIK)
 
@@ -183,6 +191,11 @@ if (MAEMO)
     ${gpsdrive_SRCS}
     friends.c
   )
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${HILDON_LIBRARIES}
+    ${LIBOSSO_LIBRARIES}
+  )
 endif (MAEMO)
 
 if (WITH_KISMET)
@@ -191,6 +204,20 @@ if (WITH_KISMET)
     gpskismet.c
   )
 endif (WITH_KISMET)
+
+if (WITH_SPEECH)
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${SPEECHD_LIBRARIES}
+  )
+endif (WITH_SPEECH)
+
+if (WITH_DBUS)
+  set(GPSDRIVE_LINK_LIBRARIES
+    ${GPSDRIVE_LINK_LIBRARIES}
+    ${DBUS_LIBRARIES}
+  )
+endif (WITH_DBUS)
 
 if (WITH_NAVIGATE)
   set(gpsdrive_SRCS
