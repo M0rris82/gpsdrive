@@ -22,7 +22,6 @@ configure: build/configure-stamp
 build/configure-stamp:
 	# ------------------ configure the package.
 	dh_testdir
-	rm -f CMakeCache.txt
 	mkdir -p build
 
 	cd build; \
@@ -32,6 +31,7 @@ build/configure-stamp:
 	      -DINFO_INSTALL_DIR=/usr/share/info \
 	      -DDATADIR=/usr/share \
 	      -DWITH_DBUS=false \
+	      -DWITH_GDAL=false \
 	      .. 
 
 	rm -f build/build-stamp
@@ -52,6 +52,7 @@ clean:
 	dh_testroot
 	dh_clean -k
 	rm -f build/build-stamp build/configure-stamp debian/files
+	rm -f CMakeCache.txt
 
 	# ------------------  clean up after the build process.
 	-cd build; $(MAKE)  $(MAKEFLAGS) clean

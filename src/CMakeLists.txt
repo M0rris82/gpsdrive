@@ -148,12 +148,12 @@ set(gpsdrive_SRCS
   waypoint.c
 )
 
-if (WITH_GDA3)
+if (WITH_GDAL)
   set(GPSDRIVE_LINK_LIBRARIES
     ${GPSDRIVE_LINK_LIBRARIES}
     ${GDAL_LIBRARIES}
   )
-endif (WITH_GDA3)
+endif (WITH_GDAL)
 
 if (WITH_GDA3)
   set(gpsdrive_SRCS
