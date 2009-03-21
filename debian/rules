@@ -32,8 +32,8 @@ build: build/configure-stamp build/build-stamp
 build/build-stamp:
 	dh_testdir
 
-	cd build; $(MAKE)
-	#/usr/bin/docbook-to-man debian/gpsdrive.sgml > gpsdrive.1
+	cd build; $(MAKE) $(MAKEFLAGS) -j4
+	# -j4 is for now hardcoded until i find out how to set this through debuild
 
 	touch build/build-stamp
 
@@ -45,7 +45,7 @@ clean:
 	rm -f build/build-stamp build/configure-stamp debian/files
 
 	# ------------------  clean up after the build process.
-	-cd build; $(MAKE) clean
+	-cd build; $(MAKE)  $(MAKEFLAGS) clean
 
 	dh_clean
 
@@ -56,7 +56,7 @@ install: build
 	dh_installdirs
 
 	# ------------------  install the package into debian/gpsdrive.
-	cd build; $(MAKE) DESTDIR=$(destdir) install
+	cd build; $(MAKE)  $(MAKEFLAGS) DESTDIR=$(destdir) install
 
 	/bin/bash debian/create_misssing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
 
