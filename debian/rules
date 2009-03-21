@@ -7,6 +7,13 @@ export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
 #export DH_COMPAT=5
+
+# Get options like
+#       export DEB_BUILD_OPTIONS="parallel=4"
+debian_build_options_list:=$(shell echo "$$DEB_BUILD_OPTIONS"|sed 's/[^-_=[:alnum:]]/ /g'|tr a-z- A-Z_)
+$(foreach o, $(debian_build_options_list), $(if $(findstring =,$o),$(eval DEB_BUILD_OPT_$o),$(eval DEB_BUILD_OPT_$o=1)))
+MAKE_-J += $(addprefix -j, $(DEB_BUILD_OPT_PARALLEL))
+
 export destdir = $(CURDIR)/debian/gpsdrive
 export destdir_utils = $(CURDIR)/debian/gpsdrive-utils
 export destdir_friendsd = $(CURDIR)/debian/gpsdrive-friendsd
@@ -24,6 +31,7 @@ build/configure-stamp:
 	      -DMAN_INSTALL_DIR=/usr/share/man \
 	      -DINFO_INSTALL_DIR=/usr/share/info \
 	      -DDATADIR=/usr/share \
+	      -DWITH_DBUS=false \
 	      .. 
 
 	rm -f build/build-stamp
