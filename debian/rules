@@ -61,13 +61,10 @@ install: build
 
 	/bin/bash debian/create_missing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
 
-	find debian -name "*friendsd*"
-
 	mkdir -p $(destdir_friendsd)/usr/bin
 	mv $(destdir)/usr/bin/friendsd $(destdir_friendsd)/usr/bin/friendsd 
 	mkdir -p $(destdir_friendsd)/usr/share/man/man1
-	mv $(destdir)/usr/share/man/man1/friendsd2.1.gz $(destdir_friendsd)/usr/share/man/man1
-	mv $(destdir)/usr/share/man/man1/friendsd2.1 $(destdir_friendsd)/usr/share/man/man1
+	mv $(destdir)/usr/share/man/man1/friendsd* $(destdir_friendsd)/usr/share/man/man1
 
 	
 	# remove maps from main package, because it 
