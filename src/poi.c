@@ -890,7 +890,7 @@ create_poitype_tree (guint max_level)
 				gtk_tree_model_foreach
 					(GTK_TREE_MODEL (poi_types_tree),
 					*(GtkTreeModelForeachFunc)
-					poitypetree_find_parent, (gpointer) i);
+					poitypetree_find_parent, GINT_TO_POINTER (i));
 			}
 		}
 	}

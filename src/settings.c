@@ -2739,7 +2739,7 @@ settings_wp (GtkWidget *notebook)
 				(names + i)->n);
 		}
 		g_signal_connect (wpfile_rb[i], "clicked",
-			GTK_SIGNAL_FUNC (setwpfilequick_cb), (gpointer) i);
+			GTK_SIGNAL_FUNC (setwpfilequick_cb), GINT_TO_POINTER (i));
 		gtk_table_attach_defaults (GTK_TABLE (wpqs_table),
 			wpfile_rb[i], i % 2, i % 2 + 1, i / 2, i / 2 + 1);
 

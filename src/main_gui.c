@@ -1902,7 +1902,7 @@ void create_dashboard_menu (void)
 		gtk_menu_shell_append (GTK_MENU_SHELL (dash_menu),
 			dash_menuitem);
 		g_signal_connect (dash_menuitem, "activate",
-			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
+			GTK_SIGNAL_FUNC (dash_select_cb), GINT_TO_POINTER (i));
 	}
 	gtk_widget_show_all (dash_menu);
 }
@@ -1961,7 +1961,7 @@ void create_dashboard_carmenu (void)
 		gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
 		x++;
 		g_signal_connect (dash_button[i], "clicked",
-			GTK_SIGNAL_FUNC (dash_select_cb), (gpointer) i);
+			GTK_SIGNAL_FUNC (dash_select_cb), GINT_TO_POINTER (i));
 	}
 	dash_button[i] = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
 		gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
