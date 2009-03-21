@@ -239,14 +239,6 @@ if (WITH_FRIENDSD AND NOT MAEMO)
 endif (WITH_FRIENDSD AND NOT MAEMO)
 
 
-if (WITH_GDA3)
-  set(gpsdrive_PGMS
-    ${gpsdrive_PGMS}
-    gpsdrive-update-mapnik-db
-  )
-endif (WITH_GDA3)
-
-
 install(
   TARGETS
     ${gpsdrive_PGMS}
