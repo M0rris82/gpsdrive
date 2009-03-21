@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=GpsDrive
+Exec=/usr/bin/gpsdrive
+X-Osso-Service=org.maemo.example_libosso
+Icon=gpsdrive
+MimeType=application/x-example;
+X-Osso-Type=application/x-executable
+X-Osso-Service=gpsdrive
