@@ -67,4 +67,3 @@ echo "gpsd"
 killall -9 gpsd
 gpsd -n -N /dev/rfcomm0
 #gpsd -n -N -D 1 /dev/rfcomm0
-
