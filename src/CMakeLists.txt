@@ -11,12 +11,15 @@ find_package(Gps REQUIRED)
 
 if (MAEMO)
   find_package(Hildon REQUIRED)
+  find_package(Libosso REQUIRED)
+#  find_package(Location REQUIRED)
   add_definitions(-DMAEMO)
   SET (WITH_GDA3 FALSE)
   SET (WITH_MAPNIK FALSE)
   SET (WITH_SPEECH FALSE)
   SET (WITH_FRIENDSD FALSE)
   SET (WITH_SCRIPTS FALSE)
+  SET (WITH_DBUS TRUE)
 endif (MAEMO)
 
 if (WITH_GDA3)
@@ -41,6 +44,7 @@ if (WITH_GDAL)
 endif (WITH_GDAL)
 
 if (WITH_DBUS)
+    INCLUDE(FindPkgConfig)
     pkg_check_modules(DBUS REQUIRED dbus-1 dbus-glib-1)        
     add_definitions(-DDBUS)
 endif (WITH_DBUS)
@@ -81,6 +85,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${CURL_INCLUDE_DIRS}
   ${SPEECHD_INCLUDE_DIRS}
   ${HILDON_INCLUDE_DIR}
+  ${LIBOSSO_INCLUDE_DIR}
   ${GPS_INCLUDE_DIRS}
 )
 
@@ -100,6 +105,7 @@ set(GPSDRIVE_LINK_LIBRARIES
   ${CURL_LIBRARIES}
   ${SPEECHD_LIBRARIES}
   ${HILDON_LIBRARIES}
+  ${LIBOSSO_LIBRARIES}
   ${GPS_LIBRARIES}
 )
 

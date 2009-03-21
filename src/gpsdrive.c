@@ -83,7 +83,10 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include <dlfcn.h>
 #include <semaphore.h>
 
-		
+#ifdef MAEMO
+ #include <libosso.h>
+#endif
+
 #include <locale.h>
 
 #include "gettext.h"
@@ -2476,6 +2479,14 @@ main (int argc, char *argv[])
 #ifndef MAEMO
 	if (!nosplash)
 		show_splash ();
+
+#else
+	/* Initialize maemo application */
+	osso_context_t *osso_context;
+
+	osso_context = osso_initialize ("gpsdrive", VERSION, TRUE, NULL);
+	if (osso_context == NULL)
+		return OSSO_ERROR;
 #endif
 
     init_lat2RadiusArray();
@@ -2701,6 +2712,10 @@ main (int argc, char *argv[])
 
     if ( do_unit_test )
 	g_print (_("\n\nAll Unit Tests were successful.\n\n"));
+
+#ifdef MAEMO
+	osso_deinitialize (osso_context);
+#endif
 
     return EXIT_SUCCESS;
 }

@@ -23,6 +23,7 @@ build/configure-stamp:
 	      -DMAN_INSTALL_DIR=/usr/share/man \
 	      -DINFO_INSTALL_DIR=/usr/share/info \
 	      -DDATADIR=/usr/share \
+	      -DMAEMO=ON \
 	      .. 
 
 	rm -f build/build-stamp

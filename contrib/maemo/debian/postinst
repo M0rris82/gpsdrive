@@ -8,8 +8,9 @@ set -e
 case "$1" in
     configure)
 
-        ln -s /usr/share/applications/hildon/gpsdrive.desktop /etc/others-menu/0010_gpsdrive.desktop
         . /usr/share/debconf/confmodule
+	gtk-update-icon-cache -f /usr/share/icons
+	maemo-select-menu-location gpsdrive.desktop
 
 	# More things we could add here:
 	#   - Ask about downloading planet.osm once
