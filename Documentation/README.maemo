@@ -30,7 +30,7 @@ How to build gpsdrive for a hildon/maemo system (like Nokia N810)
 
 - testing, if the build was fine:
     make install
-    ./build/src/gpsdrive -s -M maemo
+    ./build/src/gpsdrive
 
 
 alternatively "debuild --preserve-env" can be used to build a debian package
