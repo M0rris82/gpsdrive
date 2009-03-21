@@ -199,19 +199,13 @@ endif (WITH_NAVIGATE)
 MACRO_GENERATE_PO_FILES(${CMAKE_SOURCE_DIR}/po ${APPLICATION_NAME} gpsdrive_SRCS)
 
 if (WITH_FRIENDSD)
+if (NOT MAEMO)
  SET(friendsd_SRCS
    friendsd.c
    gpsdrive.h
  )
+endif (NOT MAEMO)
 endif (WITH_FRIENDSD)
-
-SET(poitypes_SRCS
-  update-poitypes.c
-)
-
-SET(poiosmdb_SRCS
-  update-osm-poi-db.c
-)
 
 include_directories(
   ${GPSDRIVE_PUBLIC_INCLUDE_DIRS}
@@ -220,47 +214,29 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 if (WITH_FRIENDSD)
+if (NOT MAEMO)
  add_executable(friendsd ${friendsd_SRCS})
+endif (NOT MAEMO)
 endif (WITH_FRIENDSD)
-add_executable(gpsdrive-update-osm-poi-db ${poiosmdb_SRCS})
-
-if (WITH_GDA3)
-  add_executable(gpsdrive-update-mapnik-db ${poitypes_SRCS})
-endif (WITH_GDA3)
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
-if (WITH_FRIENDSD)
+if (WITH_FRIENDSD AND NOT MAEMO)
  target_link_libraries(friendsd
    crypt
    ${GTK2_LIBRARIES}
  )
-endif (WITH_FRIENDSD)
-
-target_link_libraries(gpsdrive-update-osm-poi-db
-  ${GTK2_LIBRARIES}
-  ${SQLITE3_LIBRARIES}
-  ${XML2_LIBRARIES}
-)
-
-if (WITH_GDA3)
-  target_link_libraries(gpsdrive-update-mapnik-db
-    ${GTK2_LIBRARIES}
-    ${GDA3_LIBRARIES}
-    ${SQLITE3_LIBRARIES}
-  )
-endif (WITH_GDA3)
+endif (WITH_FRIENDSD AND NOT MAEMO)
 
 set(gpsdrive_PGMS
   gpsdrive
-  gpsdrive-update-osm-poi-db
 )
-if (WITH_FRIENDSD)
+if (WITH_FRIENDSD AND NOT MAEMO)
   set(gpsdrive_PGMS
     ${gpsdrive_PGMS}
     friendsd
   )
-endif (WITH_FRIENDSD)
+endif (WITH_FRIENDSD AND NOT MAEMO)
 
 
 if (WITH_GDA3)
