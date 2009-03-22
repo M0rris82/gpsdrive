@@ -1,5 +1,5 @@
 Source: gpsdrive
-Section: user/other
+Section: user/navigation
 Priority: optional
 Maintainer: Guenther Meyer <debian@opencarbox.org>, Joerg Ostertag <gpsdrive@ostertag.name>
 Build-Depends: debhelper (>= 5),
