@@ -22,8 +22,13 @@ How to build gpsdrive for a hildon/maemo system (like Nokia N810)
 - install the necessary tools:
     apt-get install cmake
 
+- change to your gpsdrive directory
+    cd gpsdrive
+
+- copy the files from ./contrib/maemo/debian/ to ./debian/
+
 - build gpsdrive:
-    cd gpsdrive/build
+    cd ./build
     cmake -DMAEMO=ON ..
     make
     cd ..
