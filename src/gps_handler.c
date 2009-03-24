@@ -93,9 +93,155 @@ static struct gps_data_t *gpsdata;
 //    int azimuth[MAXCHANNELS];	/* azimuth */
 //    int ss[MAXCHANNELS];	/* signal-to-noise ratio (dB) */
 
+#ifdef MAEMO
+
+#include <location/location-gps-device.h>
+#include <location/location-gpsd-control.h>
+ 
+LocationGPSDevice *gps_device;
+LocationGPSDControl *gps_control;
 
 /* *****************************************************************************
- * close connection to gpsd
+ * update gps data when change is signalled
+ */
+static void
+gps_hook_cb (LocationGPSDevice *device, gpointer data)
+{
+	if (mydebug > 20)
+		g_print ("gps_changed_cb ()\n");
+
+	g_print ("Latitude: %.2f\nLongitude: %.2f\nAltitude: %.2f\n",
+		device->fix->latitude, device->fix->longitude, device->fix->altitude);
+
+/*
+	gint i;
+	struct tm t_tim;
+	time_t t_gpstime;
+	
+	if (data->status == STATUS_NO_FIX || data->fix.mode == MODE_NOT_SEEN)
+		return;
+
+	if (mydebug > 40)
+	{
+		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
+		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
+		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
+		g_print ("  Course: %.2f\n  GPS time: %.0f\n",
+			data->fix.track, data->fix.time);
+		g_print ("  Speed: %.1f m/s\n  Altitude: %.1f m\n\n",
+			data->fix.speed, data->fix.altitude);
+	}
+
+	current.gps_status = data->status;
+	current.gps_mode = data->fix.mode;
+	coords.current_lat = data->fix.latitude;
+	coords.current_lon = data->fix.longitude;
+	current.altitude = data->fix.altitude;
+	current.gps_sats_used = data->satellites_used;
+	current.gps_sats_in_view = data->satellites;
+	if (data->set & TRACK_SET) 
+		current.course = data->fix.track * DEG_2_RAD;
+	if (data->set & SPEED_SET)
+		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
+	current.gps_hdop = data->hdop;
+	current.gps_eph = data->fix.eph;
+	current.gps_epv = data->fix.epv;
+
+	t_gpstime = (time_t) data->fix.time;
+	gmtime_r (&t_gpstime, &t_tim);
+	strftime (current.utc_time, sizeof (current.utc_time), "%H:%M:%S", &t_tim);
+	localtime_r(&t_gpstime, &t_tim);
+	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
+
+	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
+	{
+		for (i=0;i<data->satellites;i++)
+		{
+			gps_sats[i].used = data->used[i];
+			gps_sats[i].prn = data->PRN[i];
+			gps_sats[i].elevation = data->elevation[i];
+			gps_sats[i].azimuth = data->azimuth[i];
+			gps_sats[i].snr = data->ss[i];
+		}
+	}
+
+	data->set = 0;
+
+#ifdef SPEECH
+	if (!local_config.mute && local_config.sound_gps)
+		speech_say_gpsfix ();
+#endif
+*/
+
+}
+
+
+/* *****************************************************************************
+ * close connection to gps
+ */
+void
+gpsd_disconnect (void)
+{
+/*	if (gpsdata)
+		gps_close (gpsdata);
+
+	location_gpsd_control_stop (gps_control);
+*/
+	g_free (gps_sats);
+}
+
+
+/* *****************************************************************************
+ * open connection to gps
+ */
+gboolean
+gpsd_connect (gboolean reconnect)
+{
+	/* close connection first on reconnect request */
+/*	if (reconnect && gpsdata)
+	{
+		g_source_remove (gps_timeout_source);
+		gps_close (gpsdata);
+	}
+*/
+
+	/* try to open connection */
+g_print ("--- connecting to gps control\n");
+	gps_control = g_object_new (LOCATION_TYPE_GPSD_CONTROL, NULL);
+g_print ("--- starting gps\n");
+	location_gpsd_control_start (gps_control);
+
+g_print ("--- connecting to gps device\n");
+	gps_device = g_object_new (LOCATION_TYPE_GPS_DEVICE, NULL);
+	if (!gps_device)
+	{
+		g_print ("Can't connect to GPS device, disabling GPS support!\n");
+		current.gps_mode = MODE_NOT_SEEN;
+		if (local_config.simmode == SIM_AUTO)
+			current.simmode = TRUE;
+		return FALSE;
+	}
+
+	g_print ("Connection to GPS Device established.\n");
+	if (local_config.simmode == SIM_AUTO)
+		current.simmode = FALSE;
+
+	/* allocate struct to hold satellite data */
+	gps_sats = g_new (gps_satellite_struct, MAXCHANNELS);
+
+g_print ("--- connecting signal to gps\n");
+	/* set signal function to handle gps data */
+	g_signal_connect (gps_device, "changed", G_CALLBACK (gps_hook_cb), NULL);
+
+	return TRUE;
+}
+
+
+#else /* MAEMO */
+
+
+/* *****************************************************************************
+ * hook function to get data from gpsd
  */
 void
 gps_hook_cb (struct gps_data_t *data, gchar *buf)
@@ -234,3 +380,6 @@ gpsd_connect (gboolean reconnect)
 
 	return TRUE;
 }
+
+#endif /* MAEMO */
+

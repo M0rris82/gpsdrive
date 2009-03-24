@@ -2398,6 +2398,8 @@ main (int argc, char *argv[])
 
 	mapdl_init ();
 
+	g_thread_init (NULL);
+
 	/*  initialization for GTK+ */
 	gtk_init (&argc, &argv);
 

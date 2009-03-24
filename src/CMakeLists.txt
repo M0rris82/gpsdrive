@@ -12,7 +12,7 @@ find_package(Gps REQUIRED)
 if (MAEMO)
   find_package(Hildon REQUIRED)
   find_package(Libosso REQUIRED)
-#  find_package(Location REQUIRED)
+  find_package(Location REQUIRED)
   add_definitions(-DMAEMO)
   SET (WITH_GDA3 FALSE)
   SET (WITH_MAPNIK FALSE)
@@ -82,6 +82,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${SPEECHD_INCLUDE_DIRS}
   ${HILDON_INCLUDE_DIR}
   ${LIBOSSO_INCLUDE_DIR}
+  ${LOCATION_INCLUDE_DIRS}
   ${GPS_INCLUDE_DIRS}
 )
 
@@ -181,6 +182,7 @@ if (MAEMO)
     ${GPSDRIVE_LINK_LIBRARIES}
     ${HILDON_LIBRARIES}
     ${LIBOSSO_LIBRARIES}
+    ${LOCATION_LIBRARIES}
   )
 endif (MAEMO)
 
