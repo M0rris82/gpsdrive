@@ -47,9 +47,6 @@ Disclaimer: Please do not use as a primary source of navigation.
 # endif
 
 
-/*  How often do we ask for positioning data */
-#define GPS_TIMER 500
-
 extern gint mydebug;
 
 extern coordinate_struct coords;
@@ -57,49 +54,67 @@ extern currentstatus_struct current;
 
 gps_satellite_struct *gps_sats;
 
-static gint gps_timeout_source = 0;
 
-static struct gps_data_t *gpsdata;
-//    double online;		/* NZ if GPS is on line, 0 if not. */
-//
-//    struct gps_fix_t	fix;
-//    {
-//	    int    mode;	/* Mode of fix */
-//	#define MODE_NOT_SEEN	0	/* mode update not seen yet */
-//	#define MODE_NO_FIX	1	/* none */
-//	#define MODE_2D  	2	/* good for latitude/longitude */
-//	#define MODE_3D  	3	/* good for altitude/climb too */
-//	    double latitude;	/* Latitude in degrees (valid if mode >= 2) */
-//	    double longitude;	/* Longitude in degrees (valid if mode >= 2) */
-//	    double eph;  	/* Horizontal position uncertainty, meters */
-//	    double altitude;	/* Altitude in meters (valid if mode == 3) */
-//	    double epv;  	/* Vertical position uncertainty, meters */
-//	    double speed;	/* Speed over ground, meters/sec */
-//	    double climb;       /* Vertical speed, meters/sec */
-//    };
-//
-//    /* GPS status -- always valid */
-//    int    status;		/* Do we have a fix? */
-//#define STATUS_NO_FIX	0	/* no */
-//#define STATUS_FIX	1	/* yes, without DGPS */
-//#define STATUS_DGPS_FIX	2	/* yes, with DGPS */
-//
-//    /* satellite status -- valid when satellites > 0 */
-//    int satellites_used;	/* Number of satellites used in solution */
-//    int used[MAXCHANNELS];	/* PRNs of satellites used in solution */
-//    int satellites;		/* # of satellites in view */
-//    int PRN[MAXCHANNELS];	/* PRNs of satellite */
-//    int elevation[MAXCHANNELS];	/* elevation of satellite */
-//    int azimuth[MAXCHANNELS];	/* azimuth */
-//    int ss[MAXCHANNELS];	/* signal-to-noise ratio (dB) */
 
-#ifdef MAEMO
+
+#ifdef MAEMO /* the code below utilizes liblocation found on maemo platforms */
+
+
 
 #include <location/location-gps-device.h>
 #include <location/location-gpsd-control.h>
  
 LocationGPSDevice *gps_device;
 LocationGPSDControl *gps_control;
+
+/* SYMBOLS USED IN LIBLOCATION
+ * 
+ * gboolean online: Whether GPSD has been able to connect to the GPS device
+ * 
+ * enum status: The status of the device
+ *	LOCATION_GPS_DEVICE_STATUS_NO_FIX: The device does not have a fix
+ *	LOCATION_GPS_DEVICE_STATUS_FIX: The device has a fix
+ *	LOCATION_GPS_DEVICE_STATUS_DGPS_FIX: The device has a DGPS fix
+ *    
+ * struct fix: The location fix
+ * 	int mode: The mode of the fix
+ *		LOCATION_GPS_DEVICE_MODE_NOT_SEEN: The device has not seen a satellite yet
+ *		LOCATION_GPS_DEVICE_MODE_NO_FIX: The device has no fix
+ *		LOCATION_GPS_DEVICE_MODE_2D: The device has latitude and longitude fix
+ *		LOCATION_GPS_DEVICE_MODE_3D: The device has latitude, longitude and altitude
+ *   	@fields: A bitfield representing what fields contain valid data
+ *		LOCATION_GPS_DEVICE_NONE_SET
+ *		LOCATION_GPS_DEVICE_ALTITUDE_SET
+ *		LOCATION_GPS_DEVICE_SPEED_SET
+ *		LOCATION_GPS_DEVICE_TRACK_SET
+ *		LOCATION_GPS_DEVICE_CLIMB_SET
+ *		LOCATION_GPS_DEVICE_LATLONG_SET
+ *		LOCATION_GPS_DEVICE_TIME_SET
+ *	@time: The timestamp of the update
+ *	double ept: Estimated time uncertainty
+ *	double latitude: Fix latitude
+ *	double longitude: Fix longitude
+ *	double eph: Horizontal position uncertainty
+ *	double altitude: Fix altitude (in metres)
+ *	double epv: Vertical position uncertainty
+ *	double track: The current direction of motion (in degrees between 0 and 359)
+ *	double epd: Track uncertainty
+ *	double speed: Current speed (in km/h)
+ *	double eps: Speed uncertainty
+ *	double climb: Current rate of climb (in m/s)
+ *	double epc: Climb uncertainty
+ *
+ * int satellites_in_view: Number of satellites the GPS device can see
+ * int satellites_in_use: Number of satellites the GPS used in calculating @fix
+ * 
+ * struct satellites: Array containing #LocationGPSDeviceSatellite
+ *	int prn: Satellite ID number
+ *	int elevation: Elevation of the satellite
+ *	int azimuth: Satellite azimuth
+ *	int signal_strength: Signal/Noise ratio
+ *	gboolean @in_use: Whether the satellite is being used to calculate the fix
+ */
+	
 
 /* *****************************************************************************
  * update gps data when change is signalled
@@ -108,70 +123,74 @@ static void
 gps_hook_cb (LocationGPSDevice *device, gpointer data)
 {
 	if (mydebug > 20)
-		g_print ("gps_changed_cb ()\n");
-
-	g_print ("Latitude: %.2f\nLongitude: %.2f\nAltitude: %.2f\n",
-		device->fix->latitude, device->fix->longitude, device->fix->altitude);
-
-/*
-	gint i;
-	struct tm t_tim;
-	time_t t_gpstime;
+		g_print ("gps_hook_cb ()\n");
 	
-	if (data->status == STATUS_NO_FIX || data->fix.mode == MODE_NOT_SEEN)
+	if (device->status == LOCATION_GPS_DEVICE_STATUS_NO_FIX
+	    || device->fix->mode == LOCATION_GPS_DEVICE_MODE_NOT_SEEN)
 		return;
 
 	if (mydebug > 40)
 	{
-		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
-		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
-		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
+		g_print ("----- GPS Data -----\n");
+		g_print ("  Fix Status: %d\n  Fix Mode: %d\n",
+			device->status, device->fix->mode);
+		g_print ("  Sats used: %d of %d\n",
+			device->satellites_in_use, device->satellites_in_view);
+		g_print ("  Position: %.6f / %.6f\n",
+			device->fix->latitude, device->fix->longitude);
 		g_print ("  Course: %.2f\n  GPS time: %.0f\n",
-			data->fix.track, data->fix.time);
+			device->fix->track, device->fix->time);
 		g_print ("  Speed: %.1f m/s\n  Altitude: %.1f m\n\n",
-			data->fix.speed, data->fix.altitude);
+			device->fix->speed, device->fix->altitude);
 	}
 
-	current.gps_status = data->status;
-	current.gps_mode = data->fix.mode;
-	coords.current_lat = data->fix.latitude;
-	coords.current_lon = data->fix.longitude;
-	current.altitude = data->fix.altitude;
-	current.gps_sats_used = data->satellites_used;
-	current.gps_sats_in_view = data->satellites;
-	if (data->set & TRACK_SET) 
-		current.course = data->fix.track * DEG_2_RAD;
-	if (data->set & SPEED_SET)
-		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
-	current.gps_hdop = data->hdop;
-	current.gps_eph = data->fix.eph;
-	current.gps_epv = data->fix.epv;
+	if (device->fix->fields & LOCATION_GPS_DEVICE_NONE_SET)
+		return;
 
-	t_gpstime = (time_t) data->fix.time;
-	gmtime_r (&t_gpstime, &t_tim);
-	strftime (current.utc_time, sizeof (current.utc_time), "%H:%M:%S", &t_tim);
-	localtime_r(&t_gpstime, &t_tim);
-	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
-
-	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
+	current.gps_status = device->status;
+	current.gps_mode = device->fix->mode;
+	current.gps_eph = device->fix->eph;
+	current.gps_epv = device->fix->epv;
+	current.gps_sats_used = device->satellites_in_use;
+	current.gps_sats_in_view = device->satellites_in_view;
+	if (device->fix->fields & LOCATION_GPS_DEVICE_LATLONG_SET)
 	{
-		for (i=0;i<data->satellites;i++)
+		coords.current_lat = device->fix->latitude;
+		coords.current_lon = device->fix->longitude;
+	}
+	if (device->fix->fields & LOCATION_GPS_DEVICE_ALTITUDE_SET)
+		current.altitude = device->fix->altitude;
+	if (device->fix->fields & LOCATION_GPS_DEVICE_TRACK_SET) 
+		current.course = device->fix->track * DEG_2_RAD;
+	if (device->fix->fields & LOCATION_GPS_DEVICE_SPEED_SET)
+		current.groundspeed = device->fix->speed * local_config.distfactor;
+	if (device->fix->fields & LOCATION_GPS_DEVICE_TIME_SET)
+	{
+		struct tm t_tim;
+		time_t t_gpstime;
+		t_gpstime = (time_t) device->fix->time;
+		gmtime_r (&t_gpstime, &t_tim);
+		strftime (current.utc_time, sizeof (current.utc_time), "%H:%M:%S", &t_tim);
+		localtime_r(&t_gpstime, &t_tim);
+		strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
+	}
+/*	if (device->satellites_in_view > 0)
+	{
+		gint i;
+		for (i=0;i<device->satellites_in_view;i++)
 		{
-			gps_sats[i].used = data->used[i];
-			gps_sats[i].prn = data->PRN[i];
-			gps_sats[i].elevation = data->elevation[i];
-			gps_sats[i].azimuth = data->azimuth[i];
-			gps_sats[i].snr = data->ss[i];
+			gps_sats[i].used = device->satellites[i].in_use;
+			gps_sats[i].prn = device->satellites[i].prn;
+			gps_sats[i].elevation = device->satellites[i].elevation;
+			gps_sats[i].azimuth = device->satellites[i].azimuth;
+			gps_sats[i].snr = device->satellites[i].signal_strength;
 		}
 	}
-
-	data->set = 0;
-
+*/
 #ifdef SPEECH
 	if (!local_config.mute && local_config.sound_gps)
 		speech_say_gpsfix ();
 #endif
-*/
 
 }
 
@@ -182,11 +201,9 @@ gps_hook_cb (LocationGPSDevice *device, gpointer data)
 void
 gpsd_disconnect (void)
 {
-/*	if (gpsdata)
-		gps_close (gpsdata);
+	if (gps_control)
+		location_gpsd_control_stop (gps_control);
 
-	location_gpsd_control_stop (gps_control);
-*/
 	g_free (gps_sats);
 }
 
@@ -237,7 +254,48 @@ g_print ("--- connecting signal to gps\n");
 }
 
 
-#else /* MAEMO */
+
+#else /* the code below uses a standard gpsd */
+
+
+
+#define GPS_TIMER 500
+
+static gint gps_timeout_source = 0;
+static struct gps_data_t *gpsdata;
+
+/* SYMBOLS USED IN LIBGPS:
+ * 
+ * double online: NZ if GPS is on line, 0 if not.
+ *
+ * struct fix:
+ * 	int mode: Mode of fix
+ * 		MODE_NOT_SEEN: mode update not seen yet
+ *		MODE_NO_FIX: none
+ *		MODE_2D: good for latitude/longitude
+ *		MODE_3D: good for altitude/climb too
+ *	double latitude: Latitude in degrees (valid if mode >= 2)
+ *	double longitude: Longitude in degrees (valid if mode >= 2)
+ *	double eph: Horizontal position uncertainty, meters
+ *	double altitude: Altitude in meters (valid if mode == 3)
+ *	double epv: Vertical position uncertainty, meters
+ *	double speed: Speed over ground, meters/sec
+ *	double climb: Vertical speed, meters/sec
+ *
+ * int status: Do we have a fix? (always valid)
+ *	STATUS_NO_FIX: no
+ *	STATUS_FIX: yes, without DGPS
+ *	STATUS_DGPS_FIX: yes, with DGPS
+ *
+ * struct satellite status: valid when satellites > 0
+ *    int satellites_used: Number of satellites used in solution
+ *    int used[MAXCHANNELS]: PRNs of satellites used in solutio
+ *    int satellites: Number of satellites in vie
+ *    int PRN[MAXCHANNELS]: PRNs of satellit
+ *    int elevation[MAXCHANNELS]: elevation of satellit
+ *    int azimuth[MAXCHANNELS]: azimut
+ *    int ss[MAXCHANNELS]: signal-to-noise ratio (dB
+ */
 
 
 /* *****************************************************************************
@@ -381,5 +439,6 @@ gpsd_connect (gboolean reconnect)
 	return TRUE;
 }
 
-#endif /* MAEMO */
+
+#endif
 
