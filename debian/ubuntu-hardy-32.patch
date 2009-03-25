@@ -2,7 +2,7 @@ Index: control
 ===================================================================
 --- control	(revision 2354)
 +++ control	(working copy)
-@@ -13,14 +13,12 @@
+@@ -13,14 +13,11 @@
  	libc6-dev,
  	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
  	libfile-slurp-perl | libperl6-slurp-perl,
@@ -11,7 +11,7 @@ Index: control
  	libgtk2.0-dev,
  	libltdl3-dev,
  	libmagick9-dev,
- 	libmapnik-dev (>> 0.5.0-1),
+- 	libmapnik-dev (>> 0.5.0-1),
  	libpcre3-dev,
 -	libspeechd-dev (>= 0.6.7~rc1-1),
  	libsqlite3-dev,
