@@ -1,6 +1,6 @@
 Index: control
 ===================================================================
---- control	(revision 2289)
+--- control	(revision 2354)
 +++ control	(working copy)
 @@ -13,14 +13,12 @@
  	libc6-dev,
@@ -18,8 +18,8 @@ Index: control
  	libxml-twig-perl,
  	perl-doc,
 @@ -29,7 +27,6 @@
- 	python-central | python2.4-dev | python2.3-dev,
  	python-dev,
+ 	python-central | python-dev | python2.4-dev | python2.3-dev,
  	python-support,
 -	speech-dispatcher (>= 0.6.7~rc1-1),
  	xutils
@@ -34,7 +34,7 @@ Index: control
  	libltdl3 | libltdl7,
  	libmapnik (>> 0.5.0-1) | libmapnik0.5,
  	libsqlite3-0,
-@@ -97,8 +92,7 @@
+@@ -95,8 +90,7 @@
   GpsDrive is a car (bike, ship, plane) navigation system.
   GpsDrive displays your position provided from gpsd on a zoomable map, 
   the map file is autoselected depending of the position and preferred
@@ -46,9 +46,9 @@ Index: control
   packages.
 Index: rules
 ===================================================================
---- rules	(revision 2291)
+--- rules	(revision 2354)
 +++ rules	(working copy)
-@@ -18,6 +18,9 @@
+@@ -26,6 +26,9 @@
  
  	cd build; \
  	cmake -DCMAKE_BUILD_TYPE=Release \
