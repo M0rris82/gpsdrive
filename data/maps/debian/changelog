@@ -1,8 +1,20 @@
-gpsdrive-data-maps (2.10svn2299) unstable; urgency=low
+gpsdrive-data-maps (2.10svn2349) unstable; urgency=low
 
    * Build debian Package
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Tue, 24 Feb 2009 00:57:16 +0200
+ -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 21 Mar 2009 21:11:25 +0200
+
+gpsdrive-data-maps (2.10svn2349) unstable; urgency=low
+
+   * WITH_BASEMAP deactivates installation of Basemap*.png ; WITH_FRIENDSD only deactivates creation of friendsd but not friends support inside gpsdrive itself; map_koord.txt shifted to maps-dir and -Package
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 20:53:31 +0100
+
+gpsdrive-data-maps (2.10svn2323) unstable; urgency=low
+
+   * Update changelog ... from time to time ...
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 14 Mar 2009 13:08:46 +0100
 
 gpsdrive-data-maps (2.10svn2299) unstable; urgency=low
 
