@@ -1,19 +1,22 @@
 This package was debianized by Frank Kirschner <kirfrank@debian.org> on
 Wed Apr 17 18:35:19 CEST 2002.
 
-It was downloaded from http://www.ostertag.name/gpsdrive/gpsdrive-2.10pre3-cvs-version.tar.gz
+It was downloaded from http://www.gpsdrive.de/packages/gpsdrive-2.10svn.tar.gz
 
-Homepage: http://www.gpsdrive.de
+Homepage: http://www.gpsdrive.de/
 	Project Page: http://sourceforge.net/projects/gpsdrive/
 
 Upstream Author: Fritz Ganter <ganter@ganter.at> and members of
 	The GpsDrive Development Team
 
-Copyright:
-
-Fritz Ganter released GpsDrive under the terms and conditions of the GNU
-General Public License Version 2 (GPL2).
+Copyright: 2000 - 2009 Fritz Ganter <ganter@ganter.at>
+           1999 - 2009 Joerg Ostertag <gpsdrive@ostertag.name>
+	   1999 - 2009 Guenther Meyer <d.s.e@sordidmusic.com>
+	   1999 - 2009 Christoph Metz <loom@mopper.de>
+	   1999 - 2009 GPSdrive discussion list <gpsdrive@gpsdrivers.org>
+GpsDrive is released under the terms and conditions of the GNU
+General Public License Version 2 (GPL-2).
 On Debian GNU/Linux systems, the complete text of the
 GNU General Public License Version 2 may be found in
-`/usr/share/common-licenses/GPL2'.
+`/usr/share/common-licenses/GPL-2'.
 
