@@ -5,14 +5,13 @@ Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@oste
 Build-Depends: debhelper (>= 5),
 	cmake,
 	gettext,
-	g++,
+	gcc,
 	libart-2.0-dev,
 	libboost-dev,
 	libboost-filesystem-dev,
 	libboost-serialization-dev,
 	libc6-dev,
 	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
-	libfile-slurp-perl | libperl6-slurp-perl,
 	libgda3-dev,
 	libgps-dev,
 	libgtk2.0-dev,
@@ -27,17 +26,17 @@ Build-Depends: debhelper (>= 5),
 	pkg-config,
 	po-debconf,
 	python-dev,
-	python-central | python-dev | python2.4-dev | python2.3-dev,
+	python-central,
+	python-dev | python2.4-dev | python2.3-dev,
 	python-support,
 	speech-dispatcher (>= 0.6.7~rc1-1),
 	xutils
-Standards-Version: 3.6.1
+Standards-Version: 3.8.1
 
+# ------------------------------------------------------------------
 Package: gpsdrive
 Architecture: any
 Depends: ${misc:Depends},
-	${shlibs:Depends},
-	${perl:Depends},
 	libart-2.0-2,
 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
@@ -62,10 +61,6 @@ Depends: ${misc:Depends},
 	openstreetmap-map-icons (>> 8310),
 	openstreetmap-utils (>> 8290)|gpsdrive-utils(>>2299),
 	perlmagick,
-	python,
-	python-support,
-	python-central,
-	python-dev,
 	sudo,
 	ttf-dejavu
 Recommends: gpsd,
@@ -80,7 +75,6 @@ Recommends: gpsd,
 	postgresql-8.3-postgis|postgresql-8.2-postgis,
 	openstreetmap-mapnik-data,
 	openstreetmap-mapnik-world-boundaries (>> 7749),
-	perl-base (>> 5.6),
 	python-mapnik
 Conflicts: osm-data-mapnik,
 	osm-data-map-icons,
@@ -101,11 +95,17 @@ Description: Car navigation system
  For using Maps from OpenStreetMap you need to install the openstreetmap-* 
  packages.
 
+# ------------------------------------------------------------------
 Package: gpsdrive-utils
 Architecture: any
 Depends: ${misc:Depends},
-	${shlibs:Depends},
-	${perl:Depends},
+	 ${shlibs:Depends},
+         ${perl:Depends},
+	 python,
+	 python-support,
+	 python-central,
+	 python-dev,
+	 perl-base (>> 5.6)
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
  GpsDrive displays your position provided from gpsd on a zoomable map, 
@@ -116,15 +116,15 @@ Description: Car navigation system
  This Package is a small set of utils used to setup and operate GpsDrive.
  The Large Set for it would be openstreetmap-utils.
 
+# ------------------------------------------------------------------
 Package: gpsdrive-friendsd
 Architecture: any
 Depends: ${misc:Depends},
-	${shlibs:Depends},
-	${perl:Depends},
+	 libc6
 Description: Friendsd for Car navigation system
  This package only contains the FriendsDaemon. It is used to 
  communicate the Position between different GpsDrive Clients via UDP.
- This programm is only needed once on a central Server.
+ This program is only needed once on a central Server.
  GpsDrive is a car (bike, ship, plane) navigation system.
  GpsDrive displays your position provided from gpsd on a zoomable map, 
  the map file is autoselected depending of the position and preferred
