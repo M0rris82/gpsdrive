@@ -5,7 +5,7 @@ Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@oste
 Build-Depends: debhelper (>= 5),
 	cmake,
 	gettext,
-	gcc,
+	gcc (>>2.0),
 	libart-2.0-dev,
 	libboost-dev,
 	libboost-filesystem-dev,
@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 5),
 	libmagick9-dev,
 	libmapnik-dev (>> 0.5.0-1),
 	libpcre3-dev,
-	libspeechd-dev (>= 0.6.7~rc1-1),
+	libspeechd-dev (>= 0.6.7),
 	libsqlite3-dev,
 	libxml-twig-perl,
 	perl-doc,
@@ -29,18 +29,17 @@ Build-Depends: debhelper (>= 5),
 	python-central,
 	python-dev | python2.4-dev | python2.3-dev,
 	python-support,
-	speech-dispatcher (>= 0.6.7~rc1-1),
-	xutils
+	speech-dispatcher (>= 0.6.6)
 Standards-Version: 3.8.1
 
 # ------------------------------------------------------------------
 Package: gpsdrive
 Architecture: any
 Depends: ${misc:Depends},
+	 ${shlibs:Depends},
 	libart-2.0-2,
 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
-	libc6,
 	libdate-manip-perl,
 	libdbi-perl,
 	libfile-slurp-perl | libperl6-slurp-perl,
@@ -120,7 +119,7 @@ Description: Car navigation system
 Package: gpsdrive-friendsd
 Architecture: any
 Depends: ${misc:Depends},
-	 libc6
+	 ${shlibs:Depends}
 Description: Friendsd for Car navigation system
  This package only contains the FriendsDaemon. It is used to 
  communicate the Position between different GpsDrive Clients via UDP.
