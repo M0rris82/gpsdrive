@@ -105,6 +105,7 @@ Depends: ${misc:Depends},
 	 python-central,
 	 python-dev,
 	 perl-base (>> 5.6)
+Conflicts: openstreetmap-utils
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
  GpsDrive displays your position provided from gpsd on a zoomable map, 
