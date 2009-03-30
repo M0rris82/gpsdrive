@@ -72,8 +72,6 @@ Recommends: gpsd,
 	libdbd-sqlite3-perl,
 	libgeos,
 	postgresql-8.3-postgis|postgresql-8.2-postgis,
-	openstreetmap-mapnik-data,
-	openstreetmap-mapnik-world-boundaries (>> 7749),
 	python-mapnik
 Conflicts: osm-data-mapnik,
 	osm-data-map-icons,
@@ -83,6 +81,8 @@ Suggests: grass,
 	libexpat1,
 	libfile-find-rule-perl,
 	libgtk2.0-0,
+	openstreetmap-mapnik-data,
+	openstreetmap-mapnik-world-boundaries (>> 7749),
 	festival
 Description: Car navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
