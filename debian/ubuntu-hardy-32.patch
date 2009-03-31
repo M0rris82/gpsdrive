@@ -1,42 +1,19 @@
 Index: control
 ===================================================================
---- control	(revision 2354)
+--- control	(revision 2364)
 +++ control	(working copy)
-@@ -13,14 +13,11 @@
- 	libc6-dev,
- 	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
- 	libfile-slurp-perl | libperl6-slurp-perl,
+@@ -15,1 +15,0 @@
 -	libgda3-dev,
- 	libgps-dev,
- 	libgtk2.0-dev,
- 	libltdl3-dev,
- 	libmagick9-dev,
-- 	libmapnik-dev (>> 0.5.0-1),
- 	libpcre3-dev,
--	libspeechd-dev (>= 0.6.7~rc1-1),
- 	libsqlite3-dev,
- 	libxml-twig-perl,
- 	perl-doc,
-@@ -29,7 +27,6 @@
- 	python-dev,
- 	python-central | python-dev | python2.4-dev | python2.3-dev,
- 	python-support,
--	speech-dispatcher (>= 0.6.7~rc1-1),
- 	xutils
- Standards-Version: 3.6.1
- 
-@@ -45,8 +42,6 @@
- 	libdate-manip-perl,
- 	libdbi-perl,
- 	libfile-slurp-perl | libperl6-slurp-perl,
+@@ -20,1 +20,0 @@
+-	libmapnik-dev (>> 0.5.0-1),
+@@ -22,1 +22,0 @@
+-	libspeechd-dev (>= 0.6.7),
+@@ -32,1 +29,0 @@
+-	speech-dispatcher (>= 0.6.6)
+@@ -46,2 +45,0 @@
 -	libgda3-3,
 -	libgda3-postgres,
- 	libltdl3 | libltdl7,
- 	libmapnik (>> 0.5.0-1) | libmapnik0.5,
- 	libsqlite3-0,
-@@ -95,8 +90,7 @@
-  GpsDrive is a car (bike, ship, plane) navigation system.
-  GpsDrive displays your position provided from gpsd on a zoomable map, 
+@@ -90,6 +90,5 @@
   the map file is autoselected depending of the position and preferred
 - scale. Speech output is supported if the "espeak" software is 
 - installed. All GPS receivers which supports NMEA protocol should
@@ -48,13 +25,10 @@ Index: rules
 ===================================================================
 --- rules	(revision 2354)
 +++ rules	(working copy)
-@@ -26,6 +26,9 @@
- 
- 	cd build; \
- 	cmake -DCMAKE_BUILD_TYPE=Release \
+@@ -29,3 +29,3 @@
+-	      -DWITH_GDA3:BOOL=ON \
+-	      -DWITH_SPEECH:BOOL=ON \
+-	      -DWITH_MAPNIK:BOOL=ON \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
- 	      -DCMAKE_INSTALL_PREFIX=/usr \
- 	      -DMAN_INSTALL_DIR=/usr/share/man \
- 	      -DINFO_INSTALL_DIR=/usr/share/info \
