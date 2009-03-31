@@ -1,0 +1,22 @@
+Index: control
+===================================================================
+--- control	(revision 2377)
++++ control	(working copy)
+@@ -19,7 +19,7 @@
+ 	libmagick9-dev,
+ 	libmapnik-dev (>> 0.5.0-1),
+ 	libpcre3-dev,
+-	libspeechd-dev (>= 0.6.7),
++	libspeechd-dev (>= 0.6.7~rc1-1),
+ 	libsqlite3-dev,
+ 	libxml-twig-perl,
+ 	perl-doc,
+@@ -29,7 +29,7 @@
+ 	python-central,
+ 	python-dev | python2.4-dev | python2.3-dev,
+ 	python-support,
+-	speech-dispatcher (>= 0.6.6)
++	speech-dispatcher (>= 0.6.7~rc1-1)
+ Standards-Version: 3.8.1
+ 
+ # ------------------------------------------------------------------
