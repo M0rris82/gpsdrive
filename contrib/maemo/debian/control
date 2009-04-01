@@ -21,26 +21,21 @@ Depends: ${misc:Depends},
 	libc6,
 	libsqlite3-0,
 	openstreetmap-map-icons (>> 8310),
-	sudo
-Recommends: gpsd,
-	espeak,
-	gpsbabel,
-	gpsdrive-data-maps
+	sudo,
+	maemo-select-menu-location
+Recommends: gpsdrive-data-maps
 Conflicts: osm-data-mapnik,
 	osm-data-map-icons,
 	gpsdrive-scripts
-Suggests: grass,
-	openstreetmap-utils (>> 8290)|gpsdrive-utils(>>2299),
+Suggests: openstreetmap-utils (>> 8290)|gpsdrive-utils(>>2299),
 	${perl:Depends},
 	libexpat1,
-	libgtk2.0-0,
-	festival
-Description: Car navigation system
+	libgtk2.0-0
+Description: Navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
- GpsDrive displays your position provided from gpsd on a zoomable map, 
+ GpsDrive displays your position provided from gps on a zoomable map, 
  the map file is autoselected depending of the position and preferred
- scale. Speech output is supported if the "espeak" software is 
- installed. All GPS receivers which supports NMEA protocol should
+ scale. All GPS receivers which are supported by your device should
  be usable.
  For using Maps from OpenStreetMap you need to install the openstreetmap-* 
  packages.
@@ -93,12 +88,11 @@ Architecture: any
 Depends: ${misc:Depends},
 	${shlibs:Depends},
 	${perl:Depends},
-Description: Car navigation system
+Description: Navigation system
  GpsDrive is a car (bike, ship, plane) navigation system.
- GpsDrive displays your position provided from gpsd on a zoomable map, 
+ GpsDrive displays your position provided from gps on a zoomable map, 
  the map file is autoselected depending of the position and preferred
- scale. Speech output is supported if the "espeak" software is 
- installed. All GPS receivers which supports NMEA protocol should
+ scale. All GPS receivers which are supported by your device should
  be usable.
  This Package is a small set of utils used to setup and operate GpsDrive.
  The Large Set for it would be openstreetmap-utils.

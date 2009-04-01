@@ -9,16 +9,7 @@ case "$1" in
     configure)
 
         . /usr/share/debconf/confmodule
-	gtk-update-icon-cache -f /usr/share/icons
 	maemo-select-menu-location gpsdrive.desktop
-
-	# More things we could add here:
-	#   - Ask about downloading planet.osm once
-	#   - Ask about a crontab entry for regularly downloading planet.osm
-	#   - ask for an optional area of planet.osm to import
-	#   - Ask about installing current mapnik data: planet.sql, shapefiles
-	#   - Ask about downloading maps arround your current gps position
-
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
