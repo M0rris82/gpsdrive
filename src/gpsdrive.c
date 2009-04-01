@@ -84,7 +84,8 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include <semaphore.h>
 
 #ifdef MAEMO
- #include <libosso.h>
+#include <glib.h>
+#include <libosso.h>
 #endif
 
 #include <locale.h>
@@ -2398,7 +2399,9 @@ main (int argc, char *argv[])
 
 	mapdl_init ();
 
+#ifdef MAEMO
 	g_thread_init (NULL);
+#endif
 
 	/*  initialization for GTK+ */
 	gtk_init (&argc, &argv);
