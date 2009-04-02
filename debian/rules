@@ -58,6 +58,7 @@ clean:
 	dh_clean -k
 	rm -f build/build-stamp build/configure-stamp debian/files
 	rm -f CMakeCache.txt
+	rm -f build/CMakeCache.txt
 
 	# ------------------  clean up after the build process.
 	-cd build; $(MAKE)  $(MAKEFLAGS) clean
