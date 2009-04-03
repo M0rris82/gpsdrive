@@ -70,7 +70,6 @@ extern gdouble wp_saved_expmode_lat, wp_saved_expmode_lon;
 extern gint debug, mydebug;
 extern GtkWidget *map_drawingarea;
 extern glong mapscale;
-extern gdouble dbdistance;
 extern coordinate_struct coords;
 extern currentstatus_struct current;
 extern GdkGC *kontext_map;
@@ -495,7 +494,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	
 	dist = g_strtod (pdist, NULL);
 	if (dist <= 0)
-		dist = dbdistance;
+		dist = local_config.poi_dbdistance;
 	
 	if (posflag)
 	{

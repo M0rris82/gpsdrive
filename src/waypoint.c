@@ -94,9 +94,8 @@ gint maxwp;
 time_t waytxtstamp = 0;
 gint deleteline = 0;
 gint selected_wp_list_line = 0;
-GtkWidget *gotowindow;
 gint setwpactive = FALSE;
-GtkWidget *add_wp_name_text, *wptext2;
+GtkWidget *add_wp_name_text;
 GtkWidget *add_wp_comment_text;
 long sortcolumn = 4, sortflag = 0;
 gdouble wp_saved_target_lat = 0;
@@ -431,7 +430,6 @@ addwaypoint_cb (GtkWidget * widget, gpointer datum)
 	addwaypointwindow = window = gtk_dialog_new ();
 
 	gtk_window_set_default_size (GTK_WINDOW (addwaypointwindow), 320, -1);
-	gotowindow = window;
 	markwaypoint = TRUE;
 
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);

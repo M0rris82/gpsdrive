@@ -71,7 +71,6 @@ typedef struct
 namesstruct;
 
 namesstruct *names;
-extern GtkWidget *addwaypointwindow;
 extern gint needreloadmapconfig;
 extern gint iszoomed;
 extern GtkWidget *miles;
@@ -94,7 +93,7 @@ extern currentstatus_struct current;
 extern GtkTreeModel *poi_types_tree;
 extern GtkTreeStore *poi_types_tree_filtered;
 extern GtkWidget *frame_statusbar;
-GtkWidget *menuitem_sendmsg;
+extern GtkWidget *menuitem_sendmsg;
 extern GtkWidget *mute_bt;
 extern GtkWidget *frame_battery;
 extern GtkWidget *frame_temperature;

@@ -50,9 +50,6 @@ extern map_dir_struct *display_map;
 extern gint displaymap_top;
 extern gint mydebug;
 extern gint setdefaultpos;
-extern double dbdistance;
-extern int dbusedist;
-extern gint earthmate;
 extern long int maxfriendssecs;
 extern int messagenumber;
 extern int storetz;
@@ -202,6 +199,11 @@ writeconfig ()
 	fprintf (fp, "%s\n", local_config.dir_tracks);
 	fprintf (fp, "routedir = ");
 	fprintf (fp, "%s\n", local_config.dir_routes);
+	fprintf (fp, "navigation_modulesdir = ");
+	fprintf (fp, "%s\n", local_config.nav_moduledir);
+
+	fprintf (fp, "navigation_module = ");
+	fprintf (fp, "%s\n", local_config.nav_module);
 
 	if (local_config.MapnikStatusInt > 1) { /* 2 = active, so store it as 1 */
 		fprintf (fp, "mapnik = %d\n", 1);
@@ -235,9 +237,7 @@ writeconfig ()
 
 	fprintf (fp, "use_database = ");
 	fprintf (fp, "%d\n", local_config.use_database);
-	fprintf (fp, "dbdistance = %.1f\n", dbdistance);
-	fprintf (fp, "dbusedist = %d\n", dbusedist);
-	fprintf (fp, "earthmate = %d\n", earthmate);
+	fprintf (fp, "dbdistance = %.1f\n", local_config.poi_dbdistance);
 
 	if (local_config.guimode == GUI_PDA)
 	{
@@ -466,6 +466,12 @@ readconfig ()
 			else if ( (strcmp(par1, "routedir")) == 0)
 				g_strlcpy (local_config.dir_routes, par2,
 					sizeof (local_config.dir_routes));
+			else if ( (strcmp(par1, "navigation_modulesdir")) == 0)
+				g_strlcpy (local_config.nav_moduledir, par2,
+					sizeof (local_config.nav_moduledir));
+			else if ( (strcmp(par1, "navigation_module")) == 0)
+				g_strlcpy (local_config.nav_module, par2,
+					sizeof (local_config.nav_module));
 
 			else if ( (strcmp(par1, "mapnik")) == 0)
 				local_config.MapnikStatusInt = atoi (par2);
@@ -496,11 +502,7 @@ readconfig ()
 			else if ( (strcmp(par1, "use_database")) == 0)
 				local_config.use_database = atoi (par2);
 			else if ( (strcmp(par1, "dbdistance")) == 0)
-				dbdistance = g_strtod (par2, 0);
-			else if ( (strcmp(par1, "dbusedist")) == 0)
-				dbusedist = atoi (par2);
-			else if ( (strcmp(par1, "earthmate")) == 0)
-				earthmate = atoi (par2);
+				local_config.poi_dbdistance = g_strtod (par2, 0);
 			else if ( (strcmp(par1, "show_apm")) == 0)
 			     {
 				local_config.showbatt = atoi (par2);
@@ -758,6 +760,7 @@ config_init ()
 	/* set POI related stuff */
 	local_config.poi_results_max = 200;
 	local_config.poi_searchradius = 10.0;
+	local_config.poi_dbdistance = 2000.0;
 	g_strlcpy (local_config.icon_theme,
 		"square.big", sizeof (local_config.icon_theme));
 	g_snprintf (local_config.geoinfo_file, sizeof (local_config.geoinfo_file),
@@ -857,6 +860,13 @@ config_init ()
 	/* kismet default values */
 	g_strlcpy(local_config.kismet_servername, "127.0.0.1", sizeof(local_config.kismet_servername));
 	local_config.kismet_serverport = 2501;
+
+	/* navigation settings */
+	local_config.nav_enabled = FALSE;
+	g_snprintf (local_config.nav_moduledir, sizeof (local_config.nav_moduledir),
+		"%s%s", LIBDIR, "/gpsdrive");
+	g_strlcpy(local_config.nav_module, "nav_dummy", sizeof(local_config.nav_module));
+
 
 	/* run a normal GUI by default */
 	local_config.embeddable_gui = FALSE;

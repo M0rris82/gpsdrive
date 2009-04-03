@@ -139,7 +139,6 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 
 /*  global variables */
 gint timeoutcount;
-GtkWidget *gotowindow;
 GtkWidget *messagewindow;
 gint debug = 0;
 gint do_unit_test = FALSE;
@@ -179,7 +178,8 @@ extern GtkWidget *map_drawingarea;
 
 extern GtkListStore *friends_list;
 
-wpstruct *wayp;
+extern wpstruct *wayp;
+extern gint maxwp;
 
 /* socket for friends  */
 extern int sockfd;
@@ -200,7 +200,6 @@ gint iszoomed;
 static gchar const rcsid[] =
 	"$Id$";
 gint thisline;
-gint maxwp;
 GtkStyle *style = NULL;
 GtkRcStyle *mainstyle;
 GtkWidget *mylist;
@@ -215,7 +214,6 @@ gchar language[] = "en";
 
 extern gboolean mapdl_active;
 
-GtkWidget *add_wp_name_text, *wptext2;
 gchar oldangle[100];
 
 gint slistsize = 32;
@@ -265,7 +263,6 @@ extern time_t maptxtstamp;
 gint simpos_timeout = 0;
 gint setdefaultpos = TRUE;
 extern gint markwaypoint;
-GtkWidget *addwaypointwindow;
 gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
 gchar setpositionname[80];
@@ -287,11 +284,8 @@ gint ignorechecksum = FALSE;
 gint mydebug = 0;
 
 char wp_typelist[MAXPOITYPES][50];
-double dbdistance;
-gint dbusedist = FALSE;
 
 extern GdkPixbuf *iconpixbuf[50];
-gint earthmate = FALSE;
 
 extern GdkPixbuf *posmarker_img;
 
@@ -2337,9 +2331,7 @@ main (int argc, char *argv[])
     g_strlcpy (messagesendtext, "", sizeof (messagesendtext));
     
     current.importactive = FALSE;
-    dbdistance = 2000.0;
-    dbusedist = TRUE;
-    track = g_new0 (GdkSegment, 100000);
+   track = g_new0 (GdkSegment, 100000);
     trackshadow = g_new0 (GdkSegment, 100000);
     tracknr = 0;
     trackcoord = g_new0 (trackdata_struct, 100000);
@@ -2565,6 +2557,10 @@ main (int argc, char *argv[])
 	friends_init ();
 	route_init (NULL, NULL, NULL);
 
+#ifdef NAVIGATION
+	local_config.nav_enabled = nav_init (local_config.nav_moduledir, local_config.nav_module);
+#endif
+
 	update_explore_bt ();
 
     /*
@@ -2680,6 +2676,12 @@ main (int argc, char *argv[])
 		g_snprintf (t_buf, sizeof (t_buf),"%sroutesaved.gpx",local_config.dir_home);
 		gpx_file_write (t_buf, GPX_RTE);
 	}
+
+
+#ifdef NAVIGATION
+	/* unload external navigation module */
+	nav_close ();
+#endif
 
 	/* close all database connections */
 	db_close ();

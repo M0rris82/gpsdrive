@@ -150,7 +150,7 @@ Disclaimer: Please do not use for navigation.
 
 extern gint maploaded;
 extern gint debug, mydebug;
-GtkWidget *dl_text_lat, *dl_text_lon, *wptext1, *wptext2;
+GtkWidget *dl_text_lat, *dl_text_lon;
 GtkWidget *dltext4,*dltext3;
 extern gdouble olddist;
 extern GTimer *disttimer;

@@ -53,9 +53,9 @@ if (WITH_KISMET)
   add_definitions(-DKISMET)
 endif (WITH_KISMET)
 
-if (WITH_NAVIGATE)
-  add_definitions(-DNAVIGATE)
-endif (WITH_NAVIGATE)
+if (WITH_NAVIGATION)
+  add_definitions(-DNAVIGATION)
+endif (WITH_NAVIGATION)
 
 if (DEBUG)
   add_definitions(-DDEBUG)
@@ -207,13 +207,17 @@ if (WITH_DBUS)
   )
 endif (WITH_DBUS)
 
-if (WITH_NAVIGATE)
+if (WITH_NAVIGATION)
   set(gpsdrive_SRCS
     ${gpsdrive_SRCS}
   navigation.c
+  navigation.h
   navigation_gui.c
   )
-endif (WITH_NAVIGATE)
+  add_library (nav_dummy MODULE
+  mod_nav_dummy.c
+  )
+endif (WITH_NAVIGATION)
 
 
 # gpsdrive i18n
@@ -266,3 +270,12 @@ install(
   DESTINATION
     ${BIN_INSTALL_DIR}
 )
+
+if (WITH_NAVIGATION)
+  install(
+    TARGETS
+      nav_dummy
+    LIBRARY DESTINATION
+      ${LIB_INSTALL_DIR}/gpsdrive/
+)
+endif (WITH_NAVIGATION)

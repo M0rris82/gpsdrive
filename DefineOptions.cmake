@@ -9,5 +9,5 @@ option(MAEMO "Build gpsdrive for maemo/hildon platform" OFF)
 option(WITH_FRIENDSD "Build friendsd" ON)
 option(WITH_KISMET "Build with kismet support" ON)
 option(DEBUG "Build with debug -D support" ON)
-option(WITH_NAVIGATE "Build with routing support" ON)
+option(WITH_NAVIGATION "Build with routing support" OFF)
 

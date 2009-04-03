@@ -2342,7 +2342,7 @@ void create_controls_mainbox (void)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON (wp_draw_bt), TRUE);
 	g_signal_connect (GTK_OBJECT (wp_draw_bt), "clicked",
-		GTK_SIGNAL_FUNC (poi_button_cb),
+		GTK_SIGNAL_FUNC (toggle_button_cb),
 		&local_config.showwaypoints);
 	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_draw_bt,
 		FALSE, FALSE, 0 * PADDING);

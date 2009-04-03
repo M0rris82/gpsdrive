@@ -55,7 +55,6 @@ extern gint mapdl_scale;
 extern color_struct colors;
 extern coordinate_struct coords;
 extern routestatus_struct route;
-wpstruct *routelist;
 extern gint thisrouteline;
 extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;

@@ -76,7 +76,11 @@ typedef struct
 	guint quickpoint_mode;
 	guint poi_results_max;
 	gdouble poi_searchradius;
+	gdouble poi_dbdistance;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
+	gboolean nav_enabled;
+	gchar nav_moduledir[500];
+	gchar nav_module[100];
 	gboolean mapnik_caching;
 	gint simmode;
 	gboolean use_database;
