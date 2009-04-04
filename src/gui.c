@@ -283,7 +283,8 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 		GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_MESSAGE_WARNING,
 		GTK_BUTTONS_OK,
-		"%s", warning));
+		NULL));
+	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog_warning), warning);
 
 	gdk_beep ();
 	gtk_widget_show_all (GTK_WIDGET (dialog_warning));

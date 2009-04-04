@@ -688,10 +688,9 @@ masteragent_cb (GtkWidget * widget, guint * datum)
 		if (getuid () == 0)
 		{
 			g_snprintf (buffer, sizeof (buffer),
-				    "<span  weight=\"bold\">%s</span>\n%s",
+				    "<span weight=\"bold\">%s</span>\n%s",
 				    _("Warning!"),
-				    _
-				    ("You should not start GpsDrive as user root!!!"));
+				    _("You should not start GpsDrive as user root!!!"));
 			popup_warning (NULL, buffer);
 			didrootcheck = TRUE;
 		}
