@@ -8,8 +8,8 @@ endif (NOT MAEMO)
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
     gpspoint2gpsdrive.pl
-    geocache2way
-    gpsreplay
+    geocache2way.pl
+    gpsreplay.pl
     gpsfetchmap.pl
     gpsdrive-update-mapnik-poitypes.pl
     geoinfo.pl
