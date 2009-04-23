@@ -5,6 +5,7 @@
 # 04/30/02
 #
 # Script to read .loc files from geocaching.com, parse it and add it onto the end of way.txt.
+#   an example 'geocaching.loc' file can be found in the GpsBabel source code.
 #
 
 use strict;
@@ -78,5 +79,7 @@ Usage:   geoparse.pl [-f | --file <filename>] [-o | --output <filename>] [-v | -
       -v | --verbose = Print output to STDOUT instead of a file
       -d | --debug   = Debug
       -h | --help    = This usage screen
+
 EOP
+   exit (-1);
 }
