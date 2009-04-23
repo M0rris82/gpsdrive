@@ -91,7 +91,7 @@ Description: GPS navigation system
  map scale.  All GPS receivers which support the NMEA protocol should
  be usable, as well as many USB GPSs using a binary protocol.
  .
- Speech output is supported if the "festival" software is running.
+ Speech output is supported if the "espeak" software is installed.
  .
  To use maps from the OpenStreetMap project you need to install the
  openstreetmap-* packages as well.

@@ -1,3 +1,9 @@
+gpsdrive (2.10svn2396.etch) stable; urgency=low
+
+   * Build debian Package for Etch (no Mapnik, GDA3, Speechd)
+
+ -- Hamish Bowman <hamish_b yahoo com>  Tue, 31 Mar 2009 11:40:00 +1300
+
 gpsdrive (2.10svn2374) unstable; urgency=low
 
    * Add Phython compat File
