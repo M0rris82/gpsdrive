@@ -26,9 +26,9 @@ build/configure-stamp:
 
 	cd build; \
 	cmake -DCMAKE_BUILD_TYPE=Release \
-	      -DWITH_GDA3:BOOL=OFF \
-	      -DWITH_SPEECH:BOOL=OFF \
-	      -DWITH_MAPNIK:BOOL=OFF \
+	      -DWITH_GDA3:BOOL=ON \
+	      -DWITH_SPEECH:BOOL=ON \
+	      -DWITH_MAPNIK:BOOL=ON \
 	      -DCMAKE_INSTALL_PREFIX=/usr \
 	      -DPERL_SITELIB=/usr/share/perl5 \
 	      -DMAN_INSTALL_DIR=/usr/share/man \
