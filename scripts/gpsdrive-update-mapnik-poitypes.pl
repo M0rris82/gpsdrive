@@ -172,11 +172,10 @@ Filename to read
 
 Filename to write
 
-=back
 
-WARNING: 
-    This programm replaces some/all poi entries.
-    So any changes made to the database may be overwritten!!!
+=head1 WARNING: 
 
+This program replaces some/all poi entries.
+So any changes made to the database may be overwritten!!!
 
 =back
