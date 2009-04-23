@@ -1,50 +1,35 @@
 This is the GpsDrive FAQ.
-This file is maintained by Fritz Ganter.
+
+
+See also the GpsDrive homepage:
+  http://www.gpsdrive.de
+
+and the wiki collaborative help pages:
+   http://gpsdrive.sf.net/wiki
+
+
+
+==== About ====
 
 Q: Why is this file so short?
-A: I'm still working on it.
+A: We're still working on it. Have a look in the mailing list archives*,
+   there's a good chance that your question has already been answered
+   there.  [*] http://news.gmane.org/gmane.comp.linux.gps
 
-Q: GpsDrive 2.x: After compiling Gpsdrive from source, I have the
-   problem that GpsDrive will not display the map when it's running.
-   All of the graphics in the map area are blank. 
-A: Compile with gcc 3.x, this bug is know at least with debian and
-   slackware.
-
-Q: GpsDrive shows "Not enough satellites in view" in the statusbar and don't
-   display my position.
-A: You need at least 3 satellites in view to get a valid position. It may also
-   take some minutes to get a valid position. You have to be outside under
-   clear sky; GPS mostly doesn't work inside the house. Trees, houses or other 
-   barriers can prevent your GPS receiver getting a valid position.
-   Some GPS receivers have a "Simulation mode" which sends position 
-   signals, but with a "invalid position" flag. GpsDrive won't display
-   a position if this "invalid position" flag is set. To override this
-   (do it only for testing!!!) you can call GpsDrive with the 
-   "-F" command line parameter.
-   
-Q: I have a USB GPS receiver, it works fine with GpsDrive but if I
-   leave the program, Linux crashes.
-A: This is a bug of the "Prolific PL2303 USB to serial adaptor driver"
-   which is used. The crash happens if the serial device is
-   closed. This bug is kernel >=2.4.19
-   One solution is to use a kernel 2.6.x where this
-   bug is fixed, or 2.4.18 where it doesn't appear.
-
-Q: Why is there no street navigation which gives turn by turn
-   directions?
-A: Turn by turn directions are not possible with GpsDrive at the present
-   because no opensource data is available which represents the street
-   coordinates in a form usable for that purpose.  GpsDrive currently
-   works with bitmap images rather than vector data.
-   We are working together with the OpenStreetMap Project to get there.
-   As you can see the first attemts to use OpenStreetMap.org Data to 
-   do route finding (outside of GpsDrive) where already successfull.
-   So we can hope for this feature in the future.
 
 Q: What is GpsDrive?
 A: GpsDrive is an open source navigation system. It displays your current
-   position provided by an NMEA capable GPS receiver(connected to gpsd)
-   on a zoomable map.
+   position on a zoomable map. Your position is provided by a GPS receiver
+   connected to your computer via the 'gpsd' software.
+
+
+Q: Why is such funny english used in GpsDrive?
+A: Fritz (the original author) is from Austria and speaks the same kind
+   of "english" as Arnold Schwarzenegger.
+
+
+
+==== Installation ====
 
 Q: How do I install GpsDrive on a Linux box?
 A: This depends on the Distribution you're using.
@@ -60,32 +45,127 @@ A: This depends on the Distribution you're using.
    the version 1.28pre1 compiled. Now do a `su`, enter your root password and
    continue with a final `make install`.
 
+
 Q: I am running FreeBSD. Can I use GpsDrive too?
-A: Yes. See the file README.FreeBSD for further information.
+A: Sure. See the file README.FreeBSD for further information.
+
 
 Q: I'm trying to run GpsDrive on iPAQ, but I don't have /dev/ttyS0.
 A: You may want to use /dev/tts/0. When using gpsd, you will have to change
-   some parameters in /etc/gpsd.conf. Use -p /dev/tts/0 and -s4800.
+   some parameters in /etc/gpsd.conf. Try -p /dev/tts/0 and -s4800.
+
+
+Q: How can I use the Holux GM-200 USB with GpsDrive?
+A: This device has the Prolific PL-2303 chip in it for the USB to Serial
+   conversion. It is one of the most common of these chips so support 
+   for it is very good. The USB to Serial "pl2303" Linux driver works
+   pretty well! Run "dmesg" from the Linux command prompt just after
+   you plug in the GPS, it should give you some hints. For Apple's
+   Mac OSX you should download and install the driver directly from
+   Prolific's website. You will probably have to reboot after installing
+   the driver, and it's a good idea to have the USB plugged in while you
+   boot. Look for a device called /dev/cu.usbserial0 or /dev/cu.PL2303-xxx
+   or something like that and feed that device name to gpsd.
+
+
+==== GPSs ====
+
+Q: Which GPS receivers work with GpsDrive?
+A: Any receiver that is recognized by gpsd should work. This includes any
+   serial GPS which spits out NMEA sentences and most common USB GPSs.
+   See the gpsd hardware compatibility page at http://gpsd.berlios.de
+   for details.
+
+
+Q: Which receiver is the best one?
+A: This is a religious question, just like the one for the best text editor
+   program or mail client (which is of course vi and mutt).
+    Fritz writes: No, off course its emacs and evolution.
+    Joerg writes: Almost; is's emacs and kmail ;-)
+   The correct answer is "the one that works for you".
+
+
+Q: Can I use GpsDrive without a GPS receiver?
+A: Yes.  You might want to do this when you have a fast internet connection
+   for downloading maps etc.  Also, you can use it to review stored journey
+   tracks (see below).
+
+
+Q: Does GpsDrive handle 'tracks' saved in my GPS receiver?
+A: Yes. Use a tool like 'gpsbabel' to convert them into GPX format.
+   See  http://www.gpsbabel.org
+
+
+Q: GpsDrive shows "Not enough satellites in view" in the statusbar and
+   won't display my position.
+A: You need at least 3 satellites in view to get a valid position. It may
+   take some minutes to get a valid position. You have to be outside under
+   clear sky; GPS mostly doesn't work inside the house. Trees, houses or
+   other barriers can prevent your GPS receiver getting a valid fix.
+   Some GPS receivers have a "Simulation mode" which sends position 
+   signals, but with a "invalid position" flag. GpsDrive won't display
+   a position if this "invalid position" flag is set. To override this
+   (do it only for testing!!!) you can call GpsDrive with the 
+   "-f" command line parameter.
+
 
 Q: I'm too lazy to get out of my bed, how can I test with my GARMIN GPS III?
-A: Your GARMIN has a built in simulator. Start it on the "satellite screen",
+A: Your Garmin has a built in simulator. Start it on the "satellite screen",
    then go to setup and enter a speed in the simulator menu. Then
    "goto" a stored waypoint and look how fine GpsDrive works. Don't forget 
    to download your maps first.
 
-Q: How can I get detaled maps to be displayed?
-A: Either you use Openstreetmap Data with Mapnik in Combination.
-   or 
-   You Download PixelMaps with the "Download map" button located under
-       Options - Maps - Download.
-   After pressing it, a new window will appear. 
+
+Q: I know that we aren't supposed to use GpsDrive 'for a primary means
+   of navigation' - but is it any use to (student) aviators?
+A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
+   then download the tracks into GpsDrive when you get home.  It's a great way
+   to see exactly how good your navigational skills are - or maybe where you
+   busted airspace!  Flying schools could use this to analyse students' solo
+   navigational trips. But beware that map geo-registration is often not
+   perfect with this sort of software so trust your instruments and your
+   eyes, not the laptop.
+
+
+Q: I have also noticed that the unique ID sent to my Friendsd2 server from
+   my GpsDrive is not unique
+   Is there a way to manually set the unique ID to correct this problem?
+A: Have a look at ~/.gpsdrive/gpsdriverc:
+      friendsidstring = XXX
+   If you delete the key in the file or set it to XXX you should get a new 
+   FriendsID.
+
+
+Q: My GPS seems like being always behind the actual position. It seems like 
+   I'm 13-15 seconds behind.
+A: The problem isn't gpsd or GpsDrive, the problem is the SiRF firmware.
+   Check the gpsd mailing list.
+   If the GPS device is in SiRF mode, gpsd translates SiRF binary mode to NMEA
+   mode and you'll get a lag of about 13 sec. But if you set the device to
+   NMEA mode, it will work just fine.
+   The question is if gpsd should provide the possibility to start the GPS
+   device with NMEA mode. Gpsd's default is always the binary mode because
+   it will provide more information.
+   A solution for GpsDrive users can be found in the gpsd_nmea.sh script,
+   it will switch your GPS back into NMEA mode.
+
+
+
+==== Maps ====
+
+Q: How can I get detailed maps to be displayed?
+A: Either:
+    * use OpenStreetMap data in combination with Mapnik, or
+    * Download image maps with the "Download map" button located at
+       Options -> Maps -> Download in the menus.
 
 
 Q: Can I download multiple maps covering a larger area?
 A: There is a script called "gpsfetchmap.pl" provided. Use the "-h" option
    to get a help screen.
 
-Q: Can I use own maps?
+
+Q: Can I use my own maps?
 A: Yes. Of course you can use your own (self drawn, scanned...) maps. The
    maps must be gif, jpeg, png or other common file formats (the format
    must be recognized by the gdk-pixbuf library).  The lat/long coordinates
@@ -95,107 +175,33 @@ A: Yes. Of course you can use your own (self drawn, scanned...) maps. The
    GpsDrive won't display the maps. GpsDrive comes with an import assistant.
    Simply use the Menu item Options->Maps->import and follow the instructions.
 
-Q: What is the mapnik?
-A: Manik is a renderer for Openstreetmap data. You can active the mapnik mode
-   by checking the mapnik option (map controls).
 
-Q: There is no mapnik option?
-A: It is only available if you have installed the mapnik packages. Have a look
-   at install-mapnik-osm.txt.
-
-Q: Which GPS receivers work with GpsDrive?
-A: Any receiver that is recognized by gpsd should work. 
-
-Q: Which receiver is the best one?
-A: This is a religious question, just like the one for the best editor or mail
-   client (which is vi and mutt).
-   Fritz: No, off course its emacs and evolution.
-   Joerg: Alsmost; is's emacs and kmail ;-)
-   
-Q: How can I use the Holux GM-200 USB with GpsDrive?
-A: This device has the Prolific PL-2303 chip in it for the USB => Serial
-   conversion.  The USB => Serial "pl2303.c" driver seems to work pretty
-   well!
-   
-   Quick Start:
-
-   Build GPSDrive (Requires GTK 2)
-   Build new kernel (or module) using "USB Prolific 2303 Single Port Serial
-   Driver (EXPERIMENTAL)" Load the new kernel || module
-   Do: `mknod /dev/ttyUSB0 c 180 0` (If it doesn't already exist)
-   Do: `chmod 666 /dev/ttyUSB0`
-   Do: `gpsd -p /dev/ttyUSB0`
-   Do: `gpsdrive`
-   (provided by Todd E. Johnson)
-   Hint: You want to use a kernel >= 2.4.18. ;)
-
-
-Q: Why is such funny english used in gpsdrive?
-A: Fritz is from Austria and speaks the same kind of "english" as Arnold
-   Schwarzenegger.
-
-Q: Can I use GpsDrive without a GPS receiver?
-A: Yes.  You might want to do this when you have a fast internet connection
-   for downloading maps etc.  Also, you can use it to review stored journey
-   tracks (see below).
-
-Q: Does GpsDrive handle 'tracks' saved in my GPS receiver?
-A: Yes. Use a tool like 'gpsbabel' to convert them into GPX format.
-   [Please expand this answer.]
-
-Q: I know that we aren't supposed to use GpsDrive 'for navigaton purposes' -
-   but is it any use to (student) aviators?
-A: Certainly - pack your GPS unit in your flight bag (turned on of course!),
-   then download the tracks into GpsDrive when you get home.  It's a great way
-   to see exactly how good your navigational skills are - or maybe where you
-   busted airspace!  Flying schools could use this to analyse students' solo
-   navigational trips.
-   
-Q: I have also noticed that the unique ID sent to my Friendsd2 server from
-   my gpsdrive is not unique
-   Is there a way to manually set the unique ID to correct this problem?
-A: Have a look at ~/.gpsdrive/gpsdriverc:
-      friendsidstring = XXX
-   If you delete the key in the file or set it to XXX you should get a new 
-   FriendsID.
-
-Q: My gps seems like being always behind the actual position. It seems like 
-   I'm 13seconds behind.
-A: The problem isn't gpsd or gpsdrive, the problem is the SiRF firmware. Check
-   the gpsd mailinglist.
-   If the GPS device is in SiRF mode, gpsd translates SiRF binary mode to NMEA
-   mode and you'll get a lag of about 13 sec. But if you set the device to
-   NMEA mode, it will work just fine.
-   The question is if gpsd should provide the possibilty to start the GPS
-   device with NMEA mode or if there should be an option in gpsdrive. The
-   default is always the binary mode because it will provide more
-   informations.
-   Solution for gpsdrive users: 
-	gpsd_nmea.sh        
-
-Q: if i download 5m, 500k, 50k and 5k and open gpsdrive, i get
-   the smallest map that i can not zoom out at all.
-A: If you're using automap gpsdrive alway displays the map with 
+Q: If I download 5m, 500k, 50k and 5k and open GpsDrive, I get
+   the smallest map that I can not zoom out at all.
+A: If you're using auto-map GpsDrive always displays the map with 
    the smallest resolution it can find. Changing the scale 
-   has no effect while autobestmap is on.
+   has no effect while auto-best-map is enabled.
 
-Q: if 'auto best map' is disabled, i sort of can choose scale at the lower
+
+Q: If 'auto best map' is disabled, i sort of can choose scale at the lower
    right corner, but i can not zoom in from the biggest view and get small
    scale maps automatically...
-A: If autobestmap is disabled gpsdrive should select the smallest-scale map
+A: If autobestmap is disabled GpsDrive should select the smallest-scale map
    greater then your suggested scale.
-   With "Pref. scale" you tell gpsdrive which scale you'd prefer to have. 
-   Then gpsdrive has a look at every map in map_koord.txt to see which map 
+   With "Pref. scale" you tell GpsDrive which scale you'd prefer to have. 
+   Then GpsDrive has a look at every map in map_koord.txt to see which map 
    is in sight with a map-scale >= pref-scale.
+
 
 Q: I also can not find a way to move the map (as i can see larger area in
    lower left hand corner...)
 A: If you click on pos-mode. You can set your Car-Position in Gpsdrive to
    any location on the map. If your car-position is in the outer ~10% of 
-   the map gpsdrive tries to see if there is a map available which 
+   the map GpsDrive tries to see if there is a map available which 
    would fit better for your Position.
 
-Q: What is the map projection GPSDrive uses?
+
+Q: What is the map projection GpsDrive uses?
 A: To be picky, as it is critical to be picky in order to get this stuff
    working correctly:  (especially with gdalwarp & PROJ4 parameters)
    WGS84 defines both a datum & an ellipsoid, but not a projection. The
@@ -212,10 +218,11 @@ A: To be picky, as it is critical to be picky in order to get this stuff
 
    UTM-like will be scaled 1:cos(lat) in the x and y dir. If you can draw
    grid or add test points to the image, you can check against grid lines
-   or self-entered waypoints in gpsdrive to make sure everything is
+   or self-entered waypoints in GpsDrive to make sure everything is
    matching.
 
    [*]  http://en.wikipedia.org/wiki/Plate_carr%C3%A9e_projection
+
 
 Q: Converting Old Maps
 A: If you have old expedia maps on your system and want 
@@ -227,11 +234,14 @@ A: If you have old expedia maps on your system and want
 
    Any other map should be moved in a similar way.
 
+
 Q: What's this "no dir" checkbox in the maps Section 
 A: This is because of the change in the map directory structure. See below
 
+
 Q: I'm missing the "download map" button
 A: It was moved into the menu, since normally you don't need it while driving.
+
 
 Q: After Upgrading I don't see any maps. But the old .gpsdrive dir 
    is still there with the maps.
@@ -257,6 +267,36 @@ A: We have a new map directory structure.
  ...
 
   where the top_Africa.jpg maps come from the system directory.
+
+
+
+==== OpenStreetMap and Mapnik ====
+
+Q: What is the mapnik?
+A: Mapnik is a renderer for OpenStreetMap data. You can active the mapnik
+   mode by checking the mapnik option in the Map Controls menu. (as long
+   as your version of GpsDrive was built with Mapnik support, not all are)
+
+
+Q: Why is there no mapnik option?
+A: It is only available if you have installed the mapnik packages. Have a
+   look at install-mapnik-osm.txt.
+
+
+Q: Why is there no street navigation which gives turn by turn
+   directions?
+A: Turn by turn directions are not possible with GpsDrive at present
+   because no Free geo-data is available which represents the street
+   coordinates in a form usable for that purpose.  GpsDrive currently
+   works primarily with bitmap images rather than vector data.
+   We are working together with the OpenStreetMap Project to get there.
+   (Try the Mapnik + OSM support, which generates raster tiles from
+   the OSM vector road data)
+   The first successful attempts to use OpenStreetMap.org Data to do
+   route finding (outside of GpsDrive) have already been made, see
+     http://wiki.openstreetmap.org/wiki/Routing/OfflineRouters
+   So we hope this feature will be viable at sometime in the future.
+
 
 Q: I am getting errors while starting GpsDrive with Mapnik
    > 
