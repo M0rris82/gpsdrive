@@ -13,7 +13,10 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DMAN_INSTALL_DIR=/usr/share/man -DINFO_INSTALL_DIR=/usr/share/info .
+	cmake -DCMAKE_BUILD_TYPE=Release \
+	      -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DMAN_INSTALL_DIR=/usr/share/man \
+	      -DINFO_INSTALL_DIR=/usr/share/info .
 
 	touch configure-stamp
 
@@ -49,9 +52,6 @@ install: build
 	# replace non-free script with a wrapper
 	# cp $(CURDIR)/debian/gpsfetchmap $(destdir)/bin/
 	# chmod +x $(destdir)/bin/gpsfetchmap
-
-	# Remove gpsd, since debian has an own gpsd package
-	# rm $(destdir)/bin/gpsd
 
 	# add old manpages
 	# cp -r $(CURDIR)/debian/man/ $(destdir)/share/
