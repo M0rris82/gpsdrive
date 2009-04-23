@@ -14,6 +14,7 @@ if (WITH_SCRIPTS)
     gpsdrive-update-mapnik-poitypes.pl
     geoinfo.pl
     gpsd_nmea.sh
+    gdal_slice.sh
     nasaconv.sh
     gpsd-connect-bluetooth.sh
   )
