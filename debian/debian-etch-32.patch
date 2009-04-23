@@ -1,6 +1,6 @@
 Index: control
 ===================================================================
---- control	(revision 2385)
+--- control	(revision 2398)
 +++ control	(working copy)
 @@ -12,14 +12,11 @@
  	libboost-serialization-dev,
@@ -54,7 +54,7 @@ Index: control
  	gdal-bin,
  	gpsbabel,
  	gpsdrive-data-maps ( >> 2322 ),
-@@ -73,23 +61,17 @@
+@@ -73,17 +61,12 @@
  	libgeos,
  	postgresql-8.3-postgis|postgresql-8.2-postgis,
  	python-mapnik
@@ -71,30 +71,21 @@ Index: control
 -	openstreetmap-mapnik-world-boundaries (>> 7749),
 -	festival
 +	libgtk2.0-0
- Description: Car navigation system
-  GpsDrive is a car (bike, ship, plane) navigation system.
-  GpsDrive displays your position provided from gpsd on a zoomable map, 
-  the map file is autoselected depending of the position and preferred
-- scale. Speech output is supported if the "espeak" software is 
-- installed. All GPS receivers which supports NMEA protocol should
-+ scale.  All GPS receivers which supports NMEA protocol should
-  be usable.
-  For using Maps from OpenStreetMap you need to install the openstreetmap-* 
-  packages.
-@@ -110,9 +92,7 @@
-  GpsDrive is a car (bike, ship, plane) navigation system.
-  GpsDrive displays your position provided from gpsd on a zoomable map, 
-  the map file is autoselected depending of the position and preferred
-- scale. Speech output is supported if the "espeak" software is 
-- installed. All GPS receivers which supports NMEA protocol should
-- be usable.
-+ scale. All GPS receivers which supports NMEA protocol should be usable.
-  This Package is a small set of utils used to setup and operate GpsDrive.
-  The Large Set for it would be openstreetmap-utils.
+ Description: GPS navigation system
+  GpsDrive is a car (bike, ship, plane, foot) navigation system.
+  GpsDrive displays your position provided from a GPS on a zoomable map,
+@@ -91,8 +74,6 @@
+  map scale.  All GPS receivers which support the NMEA protocol should
+  be usable, as well as many USB GPSs using a binary protocol.
+  .
+- Speech output is supported if the "espeak" software is installed.
+- .
+  To use maps from the OpenStreetMap project you need to install the
+  openstreetmap-* packages as well.
  
 Index: rules
 ===================================================================
---- rules	(revision 2385)
+--- rules	(revision 2399)
 +++ rules	(working copy)
 @@ -26,9 +26,9 @@
  
