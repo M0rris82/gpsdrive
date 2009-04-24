@@ -71,8 +71,8 @@ cat <<EOF
 
   To reapply georeferencing to the GIMP image:
 
-    gdal_translate -a_ullr w n e s  -a_srs EPSG:code \
-       $FILE.png $FILE.tif
+    gdal_translate -a_ullr w n e s  -a_srs EPSG:code \\
+       \$FILE.png \$FILE.tif
 
 EOF
   exit 1
