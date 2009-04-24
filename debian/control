@@ -5,7 +5,7 @@ Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@oste
 Build-Depends: debhelper (>= 5),
 	cmake,
 	gettext,
-	gcc (>>2.0),
+	gcc,
 	libart-2.0-dev,
 	libboost-dev,
 	libboost-filesystem-dev,
@@ -58,7 +58,7 @@ Depends: ${misc:Depends},
 	mapnik-plugins,
 	mapnik-utils,
 	openstreetmap-map-icons (>> 8310),
-	openstreetmap-utils (>> 8290)|gpsdrive-utils(>>2299),
+	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2299),
 	perlmagick,
 	sudo,
 	ttf-dejavu
@@ -66,12 +66,12 @@ Recommends: gpsd,
 	espeak,
 	gdal-bin,
 	gpsbabel,
-	gpsdrive-data-maps ( >> 2322 ),
+	gpsdrive-data-maps (>> 2322),
 	imagemagick,
 	libdbd-mysql-perl,
 	libdbd-sqlite3-perl,
 	libgeos,
-	postgresql-8.3-postgis|postgresql-8.2-postgis,
+	postgresql-8.3-postgis | postgresql-8.2-postgis,
 	python-mapnik
 Conflicts: osm-data-mapnik,
 	osm-data-map-icons,
@@ -91,8 +91,9 @@ Description: GPS navigation system
  map scale.  All GPS receivers which support the NMEA protocol should
  be usable, as well as many USB GPSs using a binary protocol.
  .
+ You will most likely want to install the gpsd package so that you
+ can talk to your GPS; without that GpsDrive is just a map viewer.
  Speech output is supported if the "espeak" software is installed.
- .
  To use maps from the OpenStreetMap project you need to install the
  openstreetmap-* packages as well.
 
