@@ -1,6 +1,6 @@
 Index: control
 ===================================================================
---- control	(revision 2398)
+--- control	(revision 2405)
 +++ control	(working copy)
 @@ -12,14 +12,11 @@
  	libboost-serialization-dev,
@@ -45,7 +45,7 @@ Index: control
 -	mapnik-plugins,
 -	mapnik-utils,
 -	openstreetmap-map-icons (>> 8310),
--	openstreetmap-utils (>> 8290)|gpsdrive-utils(>>2299),
+-	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2299),
  	perlmagick,
  	sudo,
  	ttf-dejavu
@@ -53,10 +53,10 @@ Index: control
 -	espeak,
  	gdal-bin,
  	gpsbabel,
- 	gpsdrive-data-maps ( >> 2322 ),
+ 	gpsdrive-data-maps (>> 2322),
 @@ -73,17 +61,12 @@
  	libgeos,
- 	postgresql-8.3-postgis|postgresql-8.2-postgis,
+ 	postgresql-8.3-postgis | postgresql-8.2-postgis,
  	python-mapnik
 -Conflicts: osm-data-mapnik,
 -	osm-data-map-icons,
@@ -74,15 +74,16 @@ Index: control
  Description: GPS navigation system
   GpsDrive is a car (bike, ship, plane, foot) navigation system.
   GpsDrive displays your position provided from a GPS on a zoomable map,
-@@ -91,8 +74,6 @@
-  map scale.  All GPS receivers which support the NMEA protocol should
-  be usable, as well as many USB GPSs using a binary protocol.
+@@ -93,9 +76,6 @@
   .
+  You will most likely want to install the gpsd package so that you
+  can talk to your GPS; without that GpsDrive is just a map viewer.
 - Speech output is supported if the "espeak" software is installed.
-- .
-  To use maps from the OpenStreetMap project you need to install the
-  openstreetmap-* packages as well.
+- To use maps from the OpenStreetMap project you need to install the
+- openstreetmap-* packages as well.
  
+ # ------------------------------------------------------------------
+ Package: gpsdrive-utils
 Index: rules
 ===================================================================
 --- rules	(revision 2399)
