@@ -11,12 +11,3 @@ Index: control
  	libsqlite3-dev,
  	libxml-twig-perl,
  	perl-doc,
-@@ -29,7 +29,7 @@
- 	python-central,
- 	python-dev | python2.4-dev | python2.3-dev,
- 	python-support,
--	speech-dispatcher (>= 0.6.6)
-+	speech-dispatcher (>= 0.6.7~rc1-1)
- Standards-Version: 3.8.1
- 
- # ------------------------------------------------------------------
