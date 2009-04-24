@@ -15,7 +15,7 @@ case "$1" in
 	#   - Ask about a contab entry for regularly downloading planet.osm
 	#   - ask for an optional area of planet.osm to import
 	#   - Ask about installing current mapnik data: planet.sql, shapefiles
-	#   - Ask about downloading maps arround your current gps position
+	#   - Ask about downloading maps around your current gps position
 
     ;;
 
