@@ -49,7 +49,9 @@ Disclaimer: Please do not use for navigation.
 #include "database.h"
 #include "database_sqlite.h"
 #include "database_postgis.h"
+#ifdef WITH_MAPNIK
 #include "mapnik.h"
+#endif
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -454,6 +456,7 @@ db_streets_get (const gdouble lat, const gdouble lon, const guint distance, stre
 {
 	gint t_res = 0;
 #ifdef GDA3
+#ifdef WITH_MAPNIK
 	gchar sql_query[200];
 	gdouble x, y;
 	guint d;
@@ -472,6 +475,7 @@ db_streets_get (const gdouble lat, const gdouble lon, const guint distance, stre
 
 	if (mydebug > 20)
 		g_print ("db_streets_get: (%s) %s [%s]\n", street->ref, street->name, street->type);
+#endif
 #endif
 	return t_res;
 }
