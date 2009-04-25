@@ -1,8 +1,26 @@
-gpsdrive-data-maps (2.10svn2349) unstable; urgency=low
+gpsdrive-data-maps (2.10svn2410) unstable; urgency=low
 
-   * Build debian Package
+   * mime type
 
- -- Joerg Ostertag (Debian Packages) <debian@ostertag.name>  Sat, 21 Mar 2009 21:11:25 +0200
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 09:28:06 +0200
+
+gpsdrive-data-maps (2.10svn2402) unstable; urgency=low
+
+   * fix url, expand author details
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 15:39:23 +0200
+
+gpsdrive-data-maps (2.10svn2397) unstable; urgency=low
+
+   * update description text
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 14:42:46 +0200
+
+gpsdrive-data-maps (2.10svn2366) unstable; urgency=low
+
+   * Correct duplicate changelog entries
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:42:37 +0100
 
 gpsdrive-data-maps (2.10svn2349) unstable; urgency=low
 

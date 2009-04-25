@@ -1,3 +1,246 @@
+gpsdrive (2.10svn2414) unstable; urgency=low
+
+   * - reverted accidental commit from Ross changing default compile options
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 12:05:04 +0200
+
+gpsdrive (2.10svn2413) unstable; urgency=low
+
+   * - finished basic support for external routing including dummy module
+   *   (disabled by default until the 2.10 release is done!)
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 11:59:08 +0200
+
+gpsdrive (2.10svn2412) unstable; urgency=low
+
+   * Correct compile errors WITH_MAPNIK=OFF
+
+ -- rosscoe via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 02:32:21 +0200
+
+gpsdrive (2.10svn2411) unstable; urgency=low
+
+   * Resolve kismet compile errors when WITH_KISMET=OFF
+
+ -- rosscoe via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 02:16:59 +0200
+
+gpsdrive (2.10svn2410) unstable; urgency=low
+
+   * mime type
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 09:28:06 +0200
+
+gpsdrive (2.10svn2409) unstable; urgency=low
+
+   * typo
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 09:24:35 +0200
+
+gpsdrive (2.10svn2408) unstable; urgency=low
+
+   * -DWITH_FOO:BOOL=ON not needed here: it is controlled by the ../DefineOptions.cmake file. removing from rules to avoid conflicts
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 08:51:09 +0200
+
+gpsdrive (2.10svn2407) unstable; urgency=low
+
+   * quote chars in help page
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 08:25:19 +0200
+
+gpsdrive (2.10svn2406) unstable; urgency=low
+
+   * sync once again
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 08:14:28 +0200
+
+gpsdrive (2.10svn2405) unstable; urgency=low
+
+   * wrap at column 65 so man page version doesn't
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 07:37:56 +0200
+
+gpsdrive (2.10svn2404) unstable; urgency=low
+
+   * mention gpsd in descr, whitespace for clarity
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 07:23:45 +0200
+
+gpsdrive (2.10svn2403) unstable; urgency=low
+
+   * remove unneeded change
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 24 Apr 2009 07:15:11 +0200
+
+gpsdrive (2.10svn2402) unstable; urgency=low
+
+   * fix url, expand author details
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 15:39:23 +0200
+
+gpsdrive (2.10svn2401) unstable; urgency=low
+
+   * another svn oops
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 15:10:36 +0200
+
+gpsdrive (2.10svn2400) unstable; urgency=low
+
+   * sync
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 14:57:23 +0200
+
+gpsdrive (2.10svn2399) unstable; urgency=low
+
+   * oops, checked in etch version
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 14:50:00 +0200
+
+gpsdrive (2.10svn2398) unstable; urgency=low
+
+   * reversion in last commit
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 14:44:32 +0200
+
+gpsdrive (2.10svn2397) unstable; urgency=low
+
+   * update description text
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 14:42:46 +0200
+
+gpsdrive (2.10svn2396) unstable; urgency=low
+
+   * man page bugfix
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 13:05:16 +0200
+
+gpsdrive (2.10svn2395) unstable; urgency=low
+
+   * hint where to find data, usage should exit
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 13:01:26 +0200
+
+gpsdrive (2.10svn2394) unstable; urgency=low
+
+   * ship gdal_slice.sh
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:48:45 +0200
+
+gpsdrive (2.10svn2393) unstable; urgency=low
+
+   * add .pl ext to perl scripts
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:45:34 +0200
+
+gpsdrive (2.10svn2392) unstable; urgency=low
+
+   * +exe prop
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:40:53 +0200
+
+gpsdrive (2.10svn2391) unstable; urgency=low
+
+   * add .pl ext to perl scripts
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:36:47 +0200
+
+gpsdrive (2.10svn2390) unstable; urgency=low
+
+   * fix mime types
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:32:00 +0200
+
+gpsdrive (2.10svn2389) unstable; urgency=low
+
+   * split long line for readability, remove unused command left over from when gpsdrive included a private copy of gpsd
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:16:18 +0200
+
+gpsdrive (2.10svn2388) unstable; urgency=low
+
+   * sync with latest control and rules
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 12:02:18 +0200
+
+gpsdrive (2.10svn2387) unstable; urgency=low
+
+   * +exe prop
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 11:58:53 +0200
+
+gpsdrive (2.10svn2386) unstable; urgency=low
+
+   * update, clean, bug # 2697290
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 23 Apr 2009 07:24:12 +0200
+
+gpsdrive (2.10svn2385) unstable; urgency=low
+
+   * - fixed display bug in "don't run as root" message
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 04 Apr 2009 07:51:08 +0200
+
+gpsdrive (2.10svn2384) unstable; urgency=low
+
+   * - some variable cleanup
+   * - fixed bug in toggling way.txt display
+   * - started modular navigation code (currently disabled because of upcoming release)
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 03 Apr 2009 20:19:38 +0200
+
+gpsdrive (2.10svn2383) unstable; urgency=low
+
+   * Also remove cmake cache in build directory on 'debuild clean' command
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Apr 2009 19:45:39 +0200
+
+gpsdrive (2.10svn2382) unstable; urgency=low
+
+   * include gthread.h via glib.h, and put g_thread call inside a maemo #ifdef
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Apr 2009 00:54:35 +0200
+
+gpsdrive (2.10svn2381) unstable; urgency=low
+
+   * - changed some dependencies and descriptions for maemo build
+
+ -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 01 Apr 2009 11:23:03 +0200
+
+gpsdrive (2.10svn2380) unstable; urgency=low
+
+   * Adapt lines and context of Hardy patch
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 23:37:32 +0200
+
+gpsdrive (2.10svn2379) unstable; urgency=low
+
+   * Set a fix Version for speech*
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 09:04:31 +0200
+
+gpsdrive (2.10svn2378) unstable; urgency=low
+
+   * adapt move of /usr/share to new perllib location
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:47:18 +0200
+
+gpsdrive (2.10svn2377) unstable; urgency=low
+
+   * The large Packages will only be suggested in the future...
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:27:35 +0200
+
+gpsdrive (2.10svn2376) unstable; urgency=low
+
+   * Exclude the corresponding openstreetmap Package. They contain similar Executables
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 00:54:41 +0200
+
+gpsdrive (2.10svn2375) unstable; urgency=low
+
+   * Use LANG=en_US for changelog conversion
+
+ -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 30 Mar 2009 22:55:08 +0200
+
 gpsdrive (2.10svn2374) unstable; urgency=low
 
    * Add Phython compat File
