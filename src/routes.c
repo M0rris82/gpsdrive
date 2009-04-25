@@ -638,7 +638,7 @@ void add_routepoint
 	 * is not available, take the generic route icon */
 	t_path = g_hash_table_lookup (poi_types_hash, t_type);
 	if (t_path == NULL)
-		t_path = g_hash_table_lookup (poi_types_hash, "waypoint.routepoint");
+		t_path = g_hash_table_lookup (poi_types_hash, "waypoint.route");
 	gtk_tree_model_get_iter_from_string (GTK_TREE_MODEL (poi_types_tree), &iter_type, t_path);
 	gtk_tree_model_get (GTK_TREE_MODEL (poi_types_tree), &iter_type,
 		POITYPE_ICON, &t_icon, -1);
@@ -706,7 +706,7 @@ void add_routepoint
 
 
 /* *****************************************************************************
- * create a new POI of type "waypoint.routepoint"
+ * create a new POI of type "waypoint.route"
  * and append it to the current route
  */
 void add_quickpoint_to_route ()
@@ -741,7 +741,7 @@ void add_quickpoint_to_route ()
 
 /* *****************************************************************************
  * create a new POI of given type and append it to the current route
- * (used by gpx import)
+ * (used by gpx import and external route calculation)
  */
 void add_arbitrary_point_to_route
 	(gchar *name, gchar *cmt, gchar *type, gdouble lat, gdouble lon)
@@ -761,13 +761,13 @@ void add_arbitrary_point_to_route
 
 	if (type)
 	{
-		if (g_str_has_prefix (type, "waypoint.routepoint"))
+		if (g_str_has_prefix (type, "waypoint.route"))
 			g_strlcpy (t_type, type, sizeof (t_type));
 		else
-			g_snprintf (t_type, sizeof (t_type), "waypoint.routepoint.%s", type);
+			g_snprintf (t_type, sizeof (t_type), "waypoint.route.%s", type);
 	}
 	else
-		g_snprintf (t_type, sizeof (t_type), _("waypoint.routepoint"));
+		g_snprintf (t_type, sizeof (t_type), _("waypoint.route"));
 
 	if ( mydebug > 0 )
 		printf ("Add Routepoint (%d): %s [%s], lat:%f, lon:%f\n",
@@ -778,7 +778,6 @@ void add_arbitrary_point_to_route
 	add_routepoint
 		(t_id, t_name, t_cmt, t_type, lon, lat);
 }
-
 
 
 /* *****************************************************************************

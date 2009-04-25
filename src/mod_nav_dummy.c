@@ -59,19 +59,46 @@ extern gint mydebug;
  * 	slat, slon: starting position (usually current position)
  * 	elat, elon: end position (destination)
  * 	navtype: type of wanted route (see navigation.h - nav_type)
- * 	navdata: struct to contain the actual route data calculated
- * 	error: should be set to NULL on success, or a string describing the error
+ * 	errmsg: a string containing the error message in case of failure, or NULL
+ * 	return value: a pointer to a navigation_struct to contain the actual route
+ * 		data calculated, or NULL if something fails.
  */
-NavCalcRouteFunc calculate_route
+navigation_struct *calculate_route
 	(gdouble slat, gdouble slon, gdouble elat, gdouble elon,
-	 gint navtype, navigation_struct *navdata, gchar *error)
+	 gint navtype, gchar **errmsg)
 {
+	navigation_struct *data;
 
+	/* create a dummy route */
+	{
+		data = g_new (navigation_struct, 3);
 
+		data[0].number = 0;
+		g_strlcpy (data[0].name, "Foo Road", sizeof (data[0].name));
+		g_strlcpy (data[0].instruction, _("Turn right into Foo Road."),
+			sizeof (data[0].instruction));
+		data[0].lat = slat;
+		data[0].lon = elon;
+		data[0].type = NAV_TURN_RIGHT;
 
+		data[1].number = 1;
+		g_strlcpy (data[1].name, "Bar Avenue", sizeof (data[1].name));
+		g_strlcpy (data[1].instruction, _("Turn left into Bar Avenue."),
+			sizeof (data[1].instruction));
+		data[1].lat = elat;
+		data[1].lon = slon;
+		data[1].type = NAV_TURN_LEFT;
 
+		data[2].number = -1;
+		g_strlcpy (data[2].name, "Destination", sizeof (data[2].name));
+		g_strlcpy (data[2].instruction, _("You have reached your destination."),
+			sizeof (data[2].instruction));
+		data[2].lat = elat;
+		data[2].lon = elon;
+		data[2].type = NAV_DESTINATION;
+	}
 
-
+	return data;
 }
 
 

@@ -518,7 +518,7 @@ db_cleanup_route ()
 	if (mydebug > 20)
 		g_print ("cleaning up route data\n");
 
-	db_sqlite_query ("DELETE FROM poi WHERE poi_type LIKE 'waypoint.routepoint%';",
+	db_sqlite_query ("DELETE FROM poi WHERE poi_type LIKE 'waypoint.route%';",
 		NULL, DB_SQLITE_WAYPOINTS, NULL);
 
 	return 0;

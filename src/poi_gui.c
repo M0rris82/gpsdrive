@@ -102,6 +102,7 @@ extern GtkWidget *explore_bt;
 extern GtkWidget *settings_window;
 extern GtkWidget *menuitem_saveroute;
 extern GtkWidget *routeinfo_evbox;
+extern GtkWidget *frame_statusbar;
 
 extern GdkPixbuf *targetmarker_img;
 
@@ -114,6 +115,7 @@ extern GtkTreeModel *poi_types_tree_filtered;
 GtkWidget *poi_lookup_window;
 GtkWidget *button_addtoroute;
 static GtkWidget *button_delete;
+static GtkWidget *button_calcroute;
 static GtkWidget *button_target;
 static GtkWidget *button_refpoint;
 static GtkWidget *button_jumpto;
@@ -165,6 +167,9 @@ show_poi_lookup_cb (GtkWidget *button, gint mode)
 		gtk_widget_hide_all (button_target);
 		gtk_widget_hide_all (button_delete);
 		gtk_widget_hide_all (button_jumpto);
+#ifdef NAVIGATION
+		gtk_widget_hide_all (button_calcroute);
+#endif
 	}
 	else
 	{
@@ -375,6 +380,7 @@ select_poi_cb (GtkTreeSelection *selection, gpointer data)
 						" new target -> %f / %f\n",
 						coords.target_lat,
 						coords.target_lon);
+				gtk_widget_set_sensitive (button_calcroute, TRUE);
 			}
 		}
 		
@@ -421,7 +427,8 @@ select_poitype_cb (GtkComboBox *combo_box, gpointer data)
 static void
 close_route_window_cb ()
 {
-	gtk_widget_destroy (route_window);
+	if (GTK_IS_WIDGET (route_window))
+		gtk_widget_destroy (route_window);
 	route.edit = FALSE;
 	
 	if (GTK_IS_WIDGET (button_addtoroute))
@@ -430,7 +437,7 @@ close_route_window_cb ()
 }
 
 
-static void
+void
 route_startstop_cb ()
 {
 	route.active = !route.active;
@@ -446,8 +453,42 @@ route_startstop_cb ()
 		// TODO: stop routing
 		gtk_widget_hide_all (routeinfo_evbox);
 	}
+
 	close_route_window_cb ();	
 }
+
+
+#ifdef NAVIGATION
+static void
+route_calc_cb ()
+{
+	if (!local_config.nav_enabled)
+		return;
+
+	gtk_widget_hide_all (poi_lookup_window);
+	gtk_widget_set_sensitive (find_poi_bt, TRUE);
+	gtk_widget_set_sensitive (explore_bt, TRUE);
+
+	gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
+		_("Calculating route..."));
+
+	if (nav_get_route (coords.current_lat, coords.current_lon,
+		coords.target_lat, coords.target_lon, local_config.nav_type))
+	{
+		gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
+			_("Route ready."));
+		route_startstop_cb ();
+	}
+	else
+	{
+		gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
+			_("Routing cancelled!"));
+	}
+}
+#endif
 
 
 static void
@@ -743,6 +784,10 @@ void create_window_poi_lookup (void)
 	GtkWidget *label_target, *label_refpoint, *button_close;
 	GtkWidget *alignment_jumpto, *hbox_jumpto, *image_jumpto;
 	GtkWidget *label_jumpto, *combobox_typetree;
+#ifdef NAVIGATION
+	GtkWidget *alignment_calcroute, *hbox_calcroute;
+	GtkWidget *image_calcroute, *label_calcroute;
+#endif
 	GtkCellRenderer *renderer_type_name;
 	GtkCellRenderer *renderer_type_icon;
 	GtkTooltips *tooltips_poilookup;
@@ -1053,6 +1098,31 @@ void create_window_poi_lookup (void)
 	dialog_action_area_poisearch = GTK_DIALOG
 		(poi_lookup_window)->action_area;
 
+#ifdef NAVIGATION
+	/* button "calc route" */
+	button_calcroute = gtk_button_new ();
+	GTK_WIDGET_SET_FLAGS (button_calcroute, GTK_CAN_DEFAULT);
+	alignment_calcroute = gtk_alignment_new (0.5, 0.5, 0, 0);
+	gtk_container_add (GTK_CONTAINER (button_calcroute),
+		alignment_calcroute);
+	hbox_calcroute = gtk_hbox_new (FALSE, 2);
+	gtk_container_add (GTK_CONTAINER (alignment_calcroute),
+		hbox_calcroute);
+	image_calcroute = gtk_image_new_from_stock ("gtk-execute",
+		GTK_ICON_SIZE_BUTTON);
+	gtk_box_pack_start (GTK_BOX (hbox_calcroute),
+		image_calcroute, FALSE, FALSE, 0);
+	label_calcroute = gtk_label_new_with_mnemonic (_("Route to Target"));
+	gtk_box_pack_start (GTK_BOX (hbox_calcroute),
+		label_calcroute, FALSE, FALSE, 0);
+	gtk_tooltips_set_tip ( tooltips_poilookup, button_calcroute, 
+	_("Create a new route to the target for your vehicle"), NULL);
+	g_signal_connect (button_calcroute, "clicked",
+		G_CALLBACK (route_calc_cb), NULL);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
+		button_calcroute, FALSE, FALSE, 0);
+#endif
+
 	/* button "edit route" */
 	button_addtoroute = gtk_button_new ();
 	GTK_WIDGET_SET_FLAGS (button_addtoroute, GTK_CAN_DEFAULT);
@@ -1160,9 +1230,12 @@ void create_window_poi_lookup (void)
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (poi_lookup_window)->action_area),
 		button_close, FALSE, FALSE, 0);
 
-	/* disable delete button until POI is selected from list */
+	/* disable delete and route button until POI is selected from list */
 	gtk_widget_set_sensitive (button_delete, FALSE);
-	
+#ifdef NAVIGATION
+	gtk_widget_set_sensitive (button_calcroute, FALSE);
+#endif
+
 	/* disable target selection in active routemode */
 	if (route.active)
 		gtk_widget_set_sensitive (button_target, FALSE);

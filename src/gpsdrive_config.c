@@ -88,6 +88,8 @@ writeconfig ()
 	
 	fprintf (fp, "travelmode = %d\n", local_config.travelmode);
 
+	fprintf (fp, "navigationtype = %d\n", local_config.nav_type);
+
 	fprintf (fp, "showtrack = ");
 	if (local_config.showtrack)
 		fprintf (fp, "1\n");
@@ -388,6 +390,8 @@ readconfig ()
 				local_config.showbutton_trackclear = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
 				local_config.travelmode = atoi (par2);
+			else if ( (strcmp(par1, "navigationtype")) == 0)
+				local_config.nav_type = atoi (par2);
 			else if ( (strcmp(par1, "mutespeechoutput")) == 0)
 				local_config.mute = atoi (par2);
 			else if ( (strcmp(par1, "showtopomaps")) == 0)
@@ -863,6 +867,7 @@ config_init ()
 
 	/* navigation settings */
 	local_config.nav_enabled = FALSE;
+	local_config.nav_type = 0;
 	g_snprintf (local_config.nav_moduledir, sizeof (local_config.nav_moduledir),
 		"%s%s", LIBDIR, "/gpsdrive");
 	g_strlcpy(local_config.nav_module, "nav_dummy", sizeof(local_config.nav_module));

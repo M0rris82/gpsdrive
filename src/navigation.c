@@ -146,9 +146,10 @@ gboolean nav_get_route (gdouble slat, gdouble slon, gdouble elat, gdouble elon, 
 {
 	gchar *t_error;
 	navigation_struct *data;
+	gint i = 0;
 
 	if (!nav_module)
-		return;
+		return FALSE;
 
 	if (mydebug > 20)
 		g_print (_("Calculating route with external module '%s'\n"), g_module_name (nav_module));
@@ -158,18 +159,36 @@ gboolean nav_get_route (gdouble slat, gdouble slon, gdouble elat, gdouble elon, 
 		type = NAVTYPE_CAR_FAST;
 
 	/* trying to get route from external module */
-	calculate_route (slat, slon, elat, elon, type, data, t_error);
+	data = calculate_route (slat, slon, elat, elon, type, NULL);
 
-
-
-
-
-
-	if (t_error != NULL)
+	if (data == NULL)
 	{
-		g_print (_("ERROR in external navigation module: %s\n"), t_error);
-		g_free (t_error);
+		g_print (_("ERROR in external navigation module...\n"));
+		popup_error (NULL, _("No route found!"));
+		return FALSE;
 	}
+
+	/* init new gpsdrive route list and fill it from route data */
+	route_init ("Calculated route", "using external module", NULL);
+
+	while (data[i-1].number != -1)
+	{
+		if (mydebug > 30)
+		{
+			g_print ("------ Routepoint %d ------\n", data[i].number);
+			g_print ("  lat: %.6f / lon: %.6f\n", data[i].lat, data[i].lon);
+			g_print ("  %d : %s\n", data[i].type, data[i].name);
+			g_print ("  %s\n", data[i].instruction);
+		}
+		if (data[i].type >= NAV_N_ELEMENTS)
+			data[i].type = NAV_ROUTEPOINT;
+		add_arbitrary_point_to_route
+			(data[i].name, data[i].instruction, routing_types[data[i].type],
+			data[i].lat, data[i].lon);
+		i++;
+	};
+
+	g_free (data);
 
 	return TRUE;
 }

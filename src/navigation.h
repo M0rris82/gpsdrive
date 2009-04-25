@@ -35,17 +35,16 @@ gboolean nav_get_route (gdouble slat, gdouble slon, gdouble elat, gdouble elon, 
 
 typedef struct
 {
-	guint number;
-	gchar name[100];
-	gchar instruction[500];
-	gdouble lat;
-	gdouble lon;
-	gint type;
+	guint number;			/* a serial number, -1 to mark the last entry */
+	gchar name[100];		/* a short name for the current point */
+	gchar instruction[500];	/* a route instruction to be written or spoken */
+	gdouble lat;			/* the latitude in degrees (WGS84) */
+	gdouble lon;			/* the longitude in degrees (WGS84) */
+	gint type;				/* the point type (see enum nav_type), used to draw an icon */
 } navigation_struct;
 
-typedef void (*NavCalcRouteFunc)
-	(gdouble slat, gdouble slon, gdouble elat, gdouble elon,
-	 gint navtype, navigation_struct *navdata, gchar *error);
+typedef gpointer (*NavCalcRouteFunc)
+	(gdouble slat, gdouble slon, gdouble elat, gdouble elon, gint navtype, gchar **errmsg);
 
 enum nav_type
 {

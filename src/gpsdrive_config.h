@@ -79,6 +79,7 @@ typedef struct
 	gdouble poi_dbdistance;
 	int MapnikStatusInt; /* 0 = disable, 1 = enable, 2 = active */
 	gboolean nav_enabled;
+	gint nav_type;
 	gchar nav_moduledir[500];
 	gchar nav_module[100];
 	gboolean mapnik_caching;
