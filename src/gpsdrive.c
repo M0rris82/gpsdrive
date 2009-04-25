@@ -111,7 +111,11 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include "poi_gui.h"
 #include "main_gui.h"
 #include "gpx.h"
+
+#ifdef WITH_KISMET
 #include "gpskismet.h"
+#endif
+
 #include "database.h"
 
 #include "screenshot.h"
@@ -990,8 +994,10 @@ drawmarker (GtkWidget * widget, guint * datum)
 	if (route.show)
 		draw_route ();
 
+#ifdef WITH_KISMET
 	//if (current.kismetsock)
 		current.kismetsock = readkismet ();
+#endif
 
 	if (local_config.showscalebar)
 		draw_scalebar ();
@@ -2539,6 +2545,7 @@ main (int argc, char *argv[])
 		local_config.use_database = FALSE;
 	}
 
+#ifdef WITH_KISMET
 	if (local_config.use_database) 
 		current.kismetsock = initkismet ();
 
@@ -2550,6 +2557,7 @@ main (int argc, char *argv[])
 	    speech_saytext (t_buf, 3);
 #endif
 	};
+#endif
 
 	poi_init ();
 	gui_init (geometry, usegeometry);
@@ -2693,8 +2701,10 @@ main (int argc, char *argv[])
 	/* cleanup poi data */
 	cleanup_poi ();
 
+#ifdef WITH_KISMET
     if (current.kismetsock != -1)
 	close (current.kismetsock);
+#endif
 
 	/* close connection to gpsd */
 	gpsd_disconnect ();
