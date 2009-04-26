@@ -161,6 +161,16 @@ writeconfig ()
 		else
 			fprintf (fp, "metric\n");
 	}
+	fprintf (fp, "altitude = ");
+	if (local_config.altmode == ALT_FEET)
+		fprintf (fp, "feet\n");
+	else
+	{
+		if (local_config.altmode == ALT_YARDS)
+			fprintf (fp, "yards\n");
+		else
+			fprintf (fp, "meters\n");
+	}
 
 	fprintf (fp, "savetrack = ");
 	if (local_config.savetrack)
@@ -418,6 +428,21 @@ readconfig ()
 						local_config.distmode = DIST_NAUTIC;
 						local_config.distfactor = KM2NAUTIC;
 					}
+				}
+			}
+			else if ( (strcmp(par1, "altitude")) == 0)
+			{
+				if ( (strcmp(par2, "feet")) == 0)
+				{
+					local_config.altmode = ALT_FEET;
+				}
+				else if ( (strcmp(par2, "meters")) == 0)
+				{
+					local_config.altmode = ALT_METERS;
+				}
+				else if ( (strcmp(par2, "yards")) == 0)
+				{
+					local_config.altmode = ALT_YARDS;
 				}
 			}
 			else if ( (strcmp(par1, "dashboard_1")) == 0)
