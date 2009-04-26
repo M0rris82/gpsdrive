@@ -354,10 +354,15 @@ mapdl_download (void)
 	mapdl_active = TRUE;
 
 	if (g_file_test (mapdl_file_w_path, G_FILE_TEST_IS_REGULAR))
+	{
 		if (popup_yes_no (NULL,
 		   _("The map file already exists, overwrite?"))
 		   == GTK_RESPONSE_NO)
+		{
+			mapdl_active = FALSE;
 			return;
+		}
+	}
 
 	map_file = fopen (mapdl_file_w_path, "w");
 	curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
