@@ -22,7 +22,7 @@ if [ $# -lt 1 ] ; then
 fi
 
 if echo "$@" | grep -q -e "--help" ; then
-  echo "Usage:  gdal_slice_auto.sh <FILENAME.tif> [top|Map] [Png|jpg]"
+  echo "Usage:  gdal_slice.sh <FILENAME.tif> [top|Map] [Png|jpg]"
 cat <<EOF
 
  This script will slice a big GeoTIFF (or other raster format
