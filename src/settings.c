@@ -51,6 +51,10 @@
 #include <arpa/inet.h>
 #include "gpsdrive_config.h"
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)
@@ -703,7 +707,6 @@ static gint
 settrkautoint_cb (GtkWidget *spin, gint data)
 {
 	gdouble value;
-	gint unit;
 	
 	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spin));
 	local_config.track_autointerval = value * 2;
@@ -732,7 +735,6 @@ static gint
 settrkint_cb (GtkWidget *spin, gint data)
 {
 	gdouble value;
-	gint unit;
 	
 	value = gtk_spin_button_get_value (GTK_SPIN_BUTTON (spin));
 	local_config.track_interval = value;
@@ -1713,7 +1715,7 @@ settings_ctl (GtkWidget *notebook)
 {
 	GtkWidget *gui_vbox, *gui_label;
 	GtkWidget *gui_button_frame, *gui_button_fr_lb;
-	GtkWidget *gui_button_box, *gui_other_table;
+	GtkWidget *gui_button_box;
 	GtkWidget *gui_zoom_bt, *gui_scaler_bt, *gui_mute_bt;
 	GtkWidget *gui_route_bt, *gui_find_bt, *gui_map_bt;
 	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
@@ -2990,7 +2992,6 @@ settings_speech (GtkWidget *notebook)
 	GtkCellRenderer *renderer_voices;
 	GtkTooltips *speech_tooltips;
 	gint i=0, j=0;
-	GtkTreeIter t_iter;
 
 	speech_tooltips = gtk_tooltips_new ();
 	speech_vbox = gtk_vbox_new (FALSE, 2);

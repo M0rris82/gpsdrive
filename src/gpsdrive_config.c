@@ -354,7 +354,7 @@ readconfig ()
 	if ( mydebug > 0 )
 		fprintf (stderr,"reading config file %s ...\n", local_config.config_file);
 
-	while ((fgets (buf, 1000, fp)) > 0)
+	while (fgets (buf, 1000, fp))
 		{
 		g_strlcpy (par1, "", sizeof (par1));
 		g_strlcpy (par2, "", sizeof (par2));

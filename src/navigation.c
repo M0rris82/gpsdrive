@@ -36,7 +36,9 @@ Disclaimer: Please do not use for navigation.
 #include "config.h"
 #include <stdio.h>
 #include <gmodule.h>
-#include <navigation.h>
+#include "navigation.h"
+#include "routes.h"
+#include "gui.h"
 
 #include "gettext.h"
 
@@ -144,7 +146,6 @@ gboolean nav_init (const gchar *mod_path, const gchar *mod_name)
  */
 gboolean nav_get_route (gdouble slat, gdouble slon, gdouble elat, gdouble elon, gint type)
 {
-	gchar *t_error;
 	navigation_struct *data;
 	gint i = 0;
 

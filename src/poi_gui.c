@@ -56,6 +56,10 @@ Disclaimer: Please do not use for navigation.
 #include "gpx.h"
 #include "database.h"
 
+#ifdef NAVIGATION
+#include "navigation.h"
+#endif
+
 /*  Defines for gettext I18n */
 #include <libintl.h>
 # define _(String) gettext(String)

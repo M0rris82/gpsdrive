@@ -50,10 +50,14 @@ reads info from kismet server and insert waypoints into database
 #include "database.h"
 #include "gpskismet.h"
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
 extern int mydebug, debug;
 extern currentstatus_struct current;
 
-static char macaddr[30], name[120], tbuf[1024], lastmacaddr[30];
+static char macaddr[30], tbuf[1024], lastmacaddr[30];
 static int nettype, channel, wep, cloaked;
 
 /*  Defines for gettext I18n */
@@ -81,11 +85,11 @@ readkismet ()
 	//	maybe we should ask geoinfo.db the value at startup
 
   signed char c;
-  char q[1200], buf[4*300], tname[4*80], sqllat[30], sqllon[30];
+  char buf[4*300], tname[4*80];
   // make buffers 4 times as large as expeted, since I think kismet 
   // encodes a \001 as 4 ASCII characters. And this would trigger a
   // buffer overflow.
-  int e, r, have, i, j;
+  int e, have;
   glong sqlid = 0;
   gchar *result = NULL;
   gchar *t_ptype = NULL;
@@ -244,7 +248,7 @@ readkismet ()
 
 			g_snprintf (buf, sizeof (buf),
 				_("Found new %s access point: %s"),
-				(wep) ? _("encrypted") : _("open"), tname, channel);
+				(wep) ? _("encrypted") : _("open"), tname);
 #ifdef SPEECH
 			speech_saytext (buf, 3);
 #endif

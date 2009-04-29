@@ -145,7 +145,7 @@ speech_saytime (gboolean greeting)
 			g_snprintf (t_greeting, sizeof(t_greeting), _("Good evening,"));
 	}
 	else
-		g_snprintf (t_greeting, sizeof (t_greeting), "");
+		g_strlcpy (t_greeting, "", sizeof (t_greeting));
 
 	if (1 == ts->tm_hour)
 		g_snprintf (t_buf, sizeof(t_buf), _("%s It is one %d."),
@@ -213,7 +213,7 @@ speech_set_parameters (void)
 /* *****************************************************************************
  */
 void
-speech_set_module ()
+speech_set_module (void)
 {
 	SPDVoice **t_buf;
 	GtkTreeIter t_iter;

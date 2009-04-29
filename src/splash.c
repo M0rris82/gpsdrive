@@ -34,6 +34,10 @@ Disclaimer: Please do not use as a primary means of navigation.
 #include <icons.h>
 #include <splash.h>
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)

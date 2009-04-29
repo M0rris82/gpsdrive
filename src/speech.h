@@ -31,9 +31,12 @@ Disclaimer: Please do not use for navigation.
 
 gint speech_init (void);
 void speech_close (void);
+void speech_set_module (void);
+void speech_set_voice (void);
+void speech_set_parameters (void);
 gint speech_saytext (gchar *text, gint priority);
 gint speech_saytime (gboolean greeting);
-void speech_set_parameters (void);
+void speech_say_gpsfix (void);
 
 
 enum

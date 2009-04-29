@@ -1464,7 +1464,6 @@ expose_sats_cb (GtkWidget *widget, guint *datum)
 			x/2+12 + j*(bx+4), w-12-h, bx, h);
 
 		/* draw satellite positions */
-		gint x, y;
 		el = 1 - (gps_sats[i].elevation / 90.0);
 		az = DEG2RAD(gps_sats[i].azimuth);
 		//x = (w / 2) + sin (az) * (el / 90.0) * (w / 2);

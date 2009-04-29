@@ -50,6 +50,10 @@ Disclaimer: Please do not use for navigation.
 
 #include "gettext.h"
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)

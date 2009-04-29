@@ -396,7 +396,7 @@ loadmapconfig ()
   gint p, e;
 
   if (mapconfig_active)
-    return;
+    return FALSE;
 
   mapconfig_active = TRUE;
 

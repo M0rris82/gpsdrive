@@ -46,6 +46,9 @@ Disclaimer: Please do not use as a primary source of navigation.
 #  define N_(String) (String)
 # endif
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
 
 extern gint mydebug;
 

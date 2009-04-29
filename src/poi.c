@@ -51,6 +51,10 @@ Disclaimer: Please do not use for navigation.
 #include "gettext.h"
 #include <libxml/xmlreader.h>
 
+#ifdef MAPNIK
+#include "mapnik.h"
+#endif
+
 /*  Defines for gettext I18n */
 # include <libintl.h>
 # define _(String) gettext(String)
@@ -122,8 +126,7 @@ void poi_rebuild_list (void);
 void
 get_poi_info (GtkTreeModel *model, GtkTreeIter *iter)
 {
-	gboolean t_priv;
-	gdouble t_lat, t_lon, t_alt;
+	gdouble t_lat, t_lon;
 	gchar *t_name, *t_cmt, *t_type, *t_path;
 	gchar t_coord[20];
 	GtkTreeIter t_iter, t_fiter;
@@ -226,8 +229,6 @@ init_poi_filter (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *iter, gpoi
 gint
 handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names)
 {
-	gchar t_buf[100];
-	gint poi_posx, poi_posy;
 	gdouble t_lat, t_lon;
 	gdouble t_dist_num;
 	gchar t_dist[15];
@@ -346,7 +347,7 @@ handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geo
 
 	if (mydebug > 40)
 	{
-		g_printf ("handle_osm_poi_search_cb: %d - %s [%s] - %.6f / %.6f\n",
+		g_printf ("handle_osm_poi_search_cb: %ld - %s [%s] - %.6f / %.6f\n",
 			t_osmid, name, type, t_lat, t_lon);
 	}
 
@@ -944,8 +945,8 @@ handle_poitype_tree_cb (guint count[], gint columns, gchar **values, gchar **nam
 	if (poi_type_list[count[0]].icon == NULL)
 	{
 		if (mydebug > 40)
-			g_printf ("get_poitype_tree: %3d:Icon '%s' for '%s'\tnot found\n",
-				index, poi_type_list[count[0]].icon_name, poi_type_list[count[0]].name);
+			g_printf ("get_poitype_tree: Icon '%s' for '%s'\tnot found\n",
+				poi_type_list[count[0]].icon_name, poi_type_list[count[0]].name);
 		if (do_unit_test)
 			exit (-1);
 	}
@@ -990,7 +991,6 @@ get_poitype_tree (void)
 gint
 handle_poi_view_cb (gchar *result, gint columns, gchar **values, gchar **names)
 {
-	gchar t_buf[100];
 	gint poi_posx, poi_posy;
 	gdouble lat, lon;
 
@@ -1024,7 +1024,7 @@ handle_poi_view_cb (gchar *result, gint columns, gchar **values, gchar **names)
 				g_print ("Error: Cannot allocate Memory for %ld poi\n",
 				poi_limit);
 				poi_limit = -1;
-				return;
+				return 0;
 			}
 		}
 
@@ -1068,7 +1068,6 @@ handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geome
 {
 	gchar **t_coords;
 	gdouble x, y, t_lat, t_lon;
-	gchar t_buf[100];
 	gint poi_posx, poi_posy;
 
 	if (g_str_has_prefix (geometry, "POINT(") == FALSE)
@@ -1105,7 +1104,7 @@ handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geome
 				g_print ("Error: Cannot allocate Memory for %ld poi\n",
 				poi_limit);
 				poi_limit = -1;
-				return;
+				return -1;
 			}
 		}
 

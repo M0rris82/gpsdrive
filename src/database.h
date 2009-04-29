@@ -49,6 +49,7 @@ glong db_poi_extra_edit (glong *poi_id, gchar *field_name,
 			 const gchar *field_entry, gboolean update);
 glong db_poi_extra_get (glong *poi_id, gchar *field_name,
 			gchar *field_entry, gchar *result);
+gint db_streets_get (const gdouble lat, const gdouble lon, const guint distance, street_struct *street);
 
 
 enum

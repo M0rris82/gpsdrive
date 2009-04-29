@@ -116,6 +116,14 @@ Disclaimer: !!! Do not use as a primary source of navigation !!!
 #include "gpskismet.h"
 #endif
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
+#ifdef NAVIGATION
+#include "navigation.h"
+#endif
+
 #include "database.h"
 
 #include "screenshot.h"
@@ -348,7 +356,6 @@ gboolean takescreenshots = FALSE;
  */
 void check_and_create_files(){
     gchar file_path[2048];
-    struct stat buf;
 #ifdef _WIN32
     char *last_slash;
 #endif
@@ -738,7 +745,7 @@ draw_scalebar (void)
 	gint exponent = 0;
 	gdouble remains = 0.0;
 	gint used_factor = 0;
-	gint i;
+	guint i;
 	gint min_bar_length = gui_status.mapview_x / 8; /* 1/8 of the display width */
 	const gint dist_x = 20; /* distance to the right */
 	const gint dist_y = 20; /* distance to bottom */
@@ -969,7 +976,6 @@ gint
 drawmarker (GtkWidget * widget, guint * datum)
 {
 	gint posxdest, posydest, posxmarker, posymarker;
-	gint k;
 
 	gblink = !gblink;
 
@@ -1519,9 +1525,8 @@ return TRUE;
 gint
 expose_cb (GtkWidget * widget, guint * datum)
 {
-	gint x, y, i, oldxoff, oldyoff, xoffmax, yoffmax, ok, okcount;
+	gint x, y, oldxoff, oldyoff, xoffmax, yoffmax, ok, okcount;
 	gdouble tx, ty;
-	gchar name[40], *tn;
 
 	if (mydebug >50) printf ("expose_cb()\n");
 

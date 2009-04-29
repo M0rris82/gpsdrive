@@ -518,7 +518,7 @@ friends_init ()
 {
 
   char *key, buf2[20];
-  int f, i, j;
+  int f;
   long int r;
   time_t ti, tii;
 

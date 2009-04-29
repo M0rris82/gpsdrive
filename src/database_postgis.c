@@ -84,7 +84,7 @@ db_postgis_query (gchar *query, gint (*callback)(const char*, ...))
 	t_rows = gda_data_model_get_n_rows (t_model);
 
 	if (mydebug > 30)
-		g_printf ("db_postgis_query: read %d rows from database.\n", t_rows);
+		g_print ("db_postgis_query: read %d rows from database.\n", t_rows);
 	if (mydebug > 60)
 		gda_data_model_dump (t_model, stderr);
 
@@ -125,14 +125,13 @@ db_postgis_query_street (gchar *query, street_struct *street)
 {
 	GdaDataModel *t_model;
 	GValue *t_value;
-	gchar *t_buf;
 	gint t_rows = 0;
 
 	if (!db_conn_osm)
 		return -1;
 
 	if (mydebug > 20)
-		g_printf ("db_postgis_query_street: %s\n", query);
+		g_print ("db_postgis_query_street: %s\n", query);
 
 	t_model = gda_execute_select_command (db_conn_osm, query, NULL);
 
@@ -146,7 +145,7 @@ db_postgis_query_street (gchar *query, street_struct *street)
 	t_rows = gda_data_model_get_n_rows (t_model);
 
 	if (mydebug > 30)
-		g_printf ("db_postgis_query_street: read %d rows from database.\n", t_rows);
+		g_print ("db_postgis_query_street: read %d rows from database.\n", t_rows);
 	if (mydebug > 60)
 		gda_data_model_dump (t_model, stderr);
 
@@ -166,7 +165,7 @@ db_postgis_query_street (gchar *query, street_struct *street)
 	return t_rows;
 }
 
-gboolean
+void
 db_get_errors (GdaConnection *connection)
 {
         GList *list;

@@ -201,8 +201,6 @@ db_poi_edit
 {
 	gchar t_query[500], lats[20], lons[20];
 	gchar *tname, *ttyp, *ttyp_l, *tcomment;
-	gint pt_id;
-	glong r;
 	GTimeVal current_time;
 
 	if (mydebug > 99)
@@ -265,7 +263,6 @@ db_poi_extra_edit (glong *poi_id, gchar *field_name, const gchar *field_entry, g
 {
 	char t_query[9000];
 	gchar *tentry, *tfield;
-	int r;
 	
 	/* escape ' */
 	tfield = escape_sql_string (field_name);
@@ -534,7 +531,6 @@ db_init (void)
 #ifdef GDA3
 	GdaClient *t_client;
 #endif
-	gchar t_buf[200];
 	gboolean t_status = FALSE;
 	gboolean t_db = FALSE;
 
@@ -552,17 +548,6 @@ db_init (void)
 	/* init gda */
 	gda_init ("GpsDrive", VERSION, 0, NULL);
 	t_client = gda_client_new ();
-
-	/* create connection to (old) mysql database */
-/*	db_conn_geo = gda_client_open_connection_from_string
-		(t_client, "MySQL", "DB_NAME=geoinfo;HOST=localhost", "gast", "gast",
-		GDA_CONNECTION_OPTIONS_NONE, NULL);
-	if (db_conn_geo)
-	{
-		g_print ("DB: Using waypoints from old MySQL database.\n");
-		t_db = TRUE;
-	}
-*/
 
 	/* create connection to mapnik/postgis database */
 	db_conn_osm = gda_client_open_connection_from_string (t_client,

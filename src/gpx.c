@@ -265,7 +265,6 @@ static void gpx_handle_gpxinfo_v11 (xmlTextReaderPtr xml_reader, xmlChar *node_n
 static void gpx_handle_gpxinfo_v10 (xmlTextReaderPtr xml_reader, xmlChar *node_name)
 {
 	gint xml_status = 0;
-	gint node_type = 0;
 
 	if (mydebug > 20)
 		fprintf (stderr, "trying to read gpx v1.0 file metadata\n");

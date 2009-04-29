@@ -35,7 +35,7 @@ gboolean nav_get_route (gdouble slat, gdouble slon, gdouble elat, gdouble elon, 
 
 typedef struct
 {
-	guint number;			/* a serial number, -1 to mark the last entry */
+	gint number;			/* a serial number, -1 to mark the last entry */
 	gchar name[100];		/* a short name for the current point */
 	gchar instruction[500];	/* a route instruction to be written or spoken */
 	gdouble lat;			/* the latitude in degrees (WGS84) */

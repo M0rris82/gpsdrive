@@ -51,6 +51,10 @@ Disclaimer: Please do not use for navigation.
 #include <sys/stat.h>
 #include <gpsdrive_config.h>
 
+#ifdef SPEECH
+#include "speech.h"
+#endif
+
 /* APM is i386-specific. */
 #if defined(__FreeBSD__) && defined(__i386__)
 #include <fcntl.h>
