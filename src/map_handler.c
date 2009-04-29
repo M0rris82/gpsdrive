@@ -878,8 +878,9 @@ test_and_load_newmap ()
             else if (proj_googlesat == proj)
     	       posx = (lat2radius (0) * M_PI / 180) * (coords.current_lon - (maps + i)->lon);
             else 
-    	       printf("Error: unknown Projection\n");
-    
+    		printf("ERROR: (test_and_load_newmap) unknown map projection <%s, %d>\n",
+			(maps + i)->filename, proj);
+
             /*  latitude */
             if (proj_map == proj) {
                 posy = (lat2radius ((maps + i)->lat) * M_PI / 180)
@@ -892,8 +893,9 @@ test_and_load_newmap ()
     	    } else if (proj_googlesat == proj) {
                 posy = 1.5* (lat2radius (0) * M_PI / 180)  * (coords.current_lat - (maps + i)->lat);
     	    } else 
-                printf("Error: unknown Projection\n");
-    
+                printf("ERROR: (test_and_load_newmap) unknown map projection <%s, %d>\n",
+			(maps + i)->filename, proj);
+
             pixelfactloc = (maps + i)->scale / PIXELFACT;
             posx = posx / pixelfactloc;
             posy = posy / pixelfactloc;

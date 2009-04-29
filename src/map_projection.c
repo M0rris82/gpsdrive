@@ -170,7 +170,7 @@ calcxytopos (int posx, int posy, gdouble * mylat, gdouble * mylon, gint zoom)
 #endif
   else
     {
-      fprintf (stderr, "ERROR: calcxytopos: unknown map Projection\n");
+      fprintf (stderr, "ERROR: (calcxytopos) unknown map projection <%d>\n", map_proj);
       lat = 0.0; /* dummy value */
       lon = 0.0;
     }
@@ -242,7 +242,7 @@ void calcxy (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom)
     }
 #endif
   else
-	fprintf (stderr, "ERROR: calcxy: unknown map Projection\n");
+	fprintf (stderr, "ERROR: (calcxy) unknown map projection <%d>\n", map_proj);
 
   if (proj_mapnik != map_proj) {
 	  // pixmap xy --> Screen xy
@@ -281,8 +281,8 @@ minimap_xy2latlon (gint px, gint py, gdouble * lon, gdouble * lat, gdouble * dif
   }
 #endif
   else {
-    printf ("ERROR: minimap_xy2latlon: unknown map Projection\n");
-  *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (DEG2RAD(*lat)));
+    printf ("ERROR: (minimap_xy2latlon) unknown map projection <%d>\n", map_proj);
+    *lon = coords.zero_lon - px / (lat2radius_pi_180 (*lat) * cos (DEG2RAD(*lat)));
   }
 }
 
@@ -306,7 +306,7 @@ void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom)
   else if (proj_googlesat == map_proj)
     *posx = lat2radius_pi_180 (0) * (lon - coords.zero_lon);
   else
-    printf ("Eroor: calcxymini: unknown Projection\n");
+    printf ("ERROR: (calcxymini) unknown map projection <%d>\n", map_proj);
 
   *posx = 64 + *posx * zoom / (10 * pixelfact);
   *posx = *posx;
@@ -321,7 +321,7 @@ void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom)
   else if (proj_googlesat == map_proj)
     *posy = lat2radius_pi_180 (lat) * (lat - coords.zero_lat);
   else
-    printf ("Eroor: calcxymini: unknown Projection\n");
+    printf ("ERROR: (calcxymini) unknown map projection <%d>\n", map_proj);
 
   *posy = 51 - *posy * zoom / (10 * pixelfact);
   *posy = *posy;
