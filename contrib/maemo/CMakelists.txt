@@ -1,6 +1,0 @@
-PROJECT(maemo)
-
-INSTALL(FILES gpsdrive.desktop DESTINATION /usr/share/applications/hildon/)
-INSTALL(FILES gpsdrive.service DESTINATION /usr/share/dbus-1/services/)
-INSTALL(FILES gpsdrive.png DESTINATION /usr/share/icons/)
-

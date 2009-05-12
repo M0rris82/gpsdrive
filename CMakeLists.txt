@@ -48,6 +48,5 @@ add_subdirectory(po)
 add_subdirectory(scripts)
 
 if (MAEMO)
-  add_subdirectory (contrib/maemo)
+  add_subdirectory(contrib/maemo)
 endif (MAEMO)
-

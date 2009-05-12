@@ -1,3 +1,3 @@
 [D-BUS Service]
-Name=gpsdrive
+Name=org.maemo.gpsdrive
 Exec=/usr/bin/gpsdrive

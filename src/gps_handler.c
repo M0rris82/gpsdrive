@@ -204,8 +204,7 @@ gps_hook_cb (LocationGPSDevice *device, gpointer data)
 void
 gpsd_disconnect (void)
 {
-	if (gps_control)
-		location_gpsd_control_stop (gps_control);
+	location_gpsd_control_stop (gps_control);
 
 	g_free (gps_sats);
 }

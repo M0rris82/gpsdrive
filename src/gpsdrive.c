@@ -2491,9 +2491,12 @@ main (int argc, char *argv[])
 	/* Initialize maemo application */
 	osso_context_t *osso_context;
 
-	osso_context = osso_initialize ("gpsdrive", VERSION, TRUE, NULL);
+	osso_context = osso_initialize ("org.maemo.gpsdrive", VERSION, TRUE, NULL);
 	if (osso_context == NULL)
+	{
+		gdk_beep ();
 		return OSSO_ERROR;
+	}
 #endif
 
     init_lat2RadiusArray();

@@ -8,4 +8,4 @@ Exec=/usr/bin/gpsdrive
 Terminal=false
 Icon=gpsdrive
 X-Osso-Type=application/x-executable
-X-Osso-Service=gpsdrive
+X-Osso-Service=org.maemo.gpsdrive
