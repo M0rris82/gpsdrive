@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 src_dir=$1
 shift
@@ -14,7 +14,7 @@ find $src_dir -name "*.pl" | grep -v -e '\#' -e '~' |\
     #filename="`basename $src_fn`"
     filename=${src_fn%.pl}
 
-    echo mv "$src_fn" "$filename"
+    echo "mv \"$src_fn\" \"$filename\""
     mv "$src_fn" "$filename"
 done
 
@@ -24,7 +24,7 @@ find $src_dir -name "*.sh" | grep -v -e '\#' -e '~' |\
     #filename="`basename $src_fn`"
     filename=${src_fn%.sh}
 
-    echo mv "$src_fn" "$filename"
+    echo "mv \"$src_fn\" \"$filename\""
     mv "$src_fn" "$filename"
 done
 
@@ -34,6 +34,6 @@ find $src_dir -name "*.py" | grep -v -e '\#' -e '~' |\
     #filename="`basename $src_fn`"
     filename=${src_fn%.py}
 
-    echo mv "$src_fn" "$filename"
+    echo "mv \"$src_fn\" \"$filename\""
     mv "$src_fn" "$filename"
 done
