@@ -1,34 +1,71 @@
-Index: control
-===================================================================
---- control	(revision 2364)
-+++ control	(working copy)
-@@ -15,1 +15,0 @@
--	libgda3-dev,
-@@ -20,1 +20,0 @@
--	libmapnik-dev (>> 0.5.0-1),
-@@ -22,1 +22,0 @@
--	libspeechd-dev (>= 0.6.7),
-@@ -32,1 +29,0 @@
--	speech-dispatcher (>= 0.6.6)
-@@ -46,2 +45,0 @@
--	libgda3-3,
--	libgda3-postgres,
-@@ -90,6 +90,5 @@
-  the map file is autoselected depending of the position and preferred
-- scale. Speech output is supported if the "espeak" software is 
-- installed. All GPS receivers which supports NMEA protocol should
-+ scale.  All GPS receivers which supports NMEA protocol should
-  be usable.
-  For using Maps from OpenStreetMap you need to install the openstreetmap-* 
-  packages.
 Index: rules
 ===================================================================
---- rules	(revision 2354)
+--- rules	(revision 2426)
 +++ rules	(working copy)
-@@ -29,3 +29,3 @@
--	      -DWITH_GDA3:BOOL=ON \
--	      -DWITH_SPEECH:BOOL=ON \
--	      -DWITH_MAPNIK:BOOL=ON \
+@@ -31,6 +31,9 @@
+ 	      -DMAN_INSTALL_DIR=/usr/share/man \
+ 	      -DINFO_INSTALL_DIR=/usr/share/info \
+ 	      -DDATADIR=/usr/share \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
+ 	      .. 
+ 
+ 	rm -f build/build-stamp
+Index: control
+===================================================================
+--- control	(revision 2426)
++++ control	(working copy)
+@@ -12,14 +12,11 @@
+ 	libboost-serialization-dev,
+ 	libc6-dev,
+ 	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
+-	libgda3-dev,
+ 	libgps-dev,
+ 	libgtk2.0-dev,
+ 	libltdl3-dev,
+ 	libmagick9-dev,
+-	libmapnik-dev (>> 0.5.0-1),
+ 	libpcre3-dev,
+-	libspeechd-dev (>= 0.6.7),
+ 	libsqlite3-dev,
+ 	libxml-twig-perl,
+ 	perl-doc,
+@@ -28,8 +25,7 @@
+ 	python-dev,
+ 	python-central,
+ 	python-dev | python2.4-dev | python2.3-dev,
+-	python-support,
+-	speech-dispatcher (>= 0.6.6)
++	python-support
+ Standards-Version: 3.8.1
+ 
+ # ------------------------------------------------------------------
+@@ -43,10 +39,7 @@
+ 	libdate-manip-perl,
+ 	libdbi-perl,
+ 	libfile-slurp-perl | libperl6-slurp-perl,
+-	libgda3-3,
+-	libgda3-postgres,
+ 	libltdl3 | libltdl7,
+-	libmapnik (>> 0.5.0-1) | libmapnik0.5,
+ 	libsqlite3-0,
+ 	libtext-query-perl,
+ 	libtimedate-perl,
+@@ -55,8 +48,6 @@
+ 	libxml-parser-perl,
+ 	libxml-simple-perl,
+ 	libxml-twig-perl,
+-	mapnik-plugins,
+-	mapnik-utils,
+ 	openstreetmap-map-icons (>> 8310),
+ 	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2299),
+ 	perlmagick,
+@@ -93,7 +84,6 @@
+  .
+  You will most likely want to install the gpsd package so that you
+  can talk to your GPS; without that GpsDrive is just a map viewer.
+- Speech output is supported if the "espeak" software is installed.
+  To use maps from the OpenStreetMap project you need to install the
+  openstreetmap-* packages as well.
+ 
