@@ -50,7 +50,7 @@ if (WITH_DBUS)
 endif (WITH_DBUS)
 
 if (WITH_KISMET)
-  add_definitions(-DKISMET)
+  add_definitions(-DWITH_KISMET)
 endif (WITH_KISMET)
 
 if (WITH_NAVIGATION)
