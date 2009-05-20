@@ -822,7 +822,7 @@ config_init ()
 	g_strlcpy (local_config.color_wplabel,
 		"#00ffff", sizeof (local_config.color_wplabel));
 	g_strlcpy (local_config.color_dashboard,
-		"#0000ff", sizeof (local_config.color_dashboard));
+		"#000080", sizeof (local_config.color_dashboard));
 	g_strlcpy (local_config.color_map_day,
 		"#ffebcc", sizeof (local_config.color_map_day));
 	g_strlcpy (local_config.color_map_night,
