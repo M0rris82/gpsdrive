@@ -1,6 +1,6 @@
 Index: control
 ===================================================================
---- control	(revision 2405)
+--- control	(revision 2428)
 +++ control	(working copy)
 @@ -12,14 +12,11 @@
  	libboost-serialization-dev,
@@ -86,18 +86,15 @@ Index: control
  Package: gpsdrive-utils
 Index: rules
 ===================================================================
---- rules	(revision 2399)
+--- rules	(revision 2428)
 +++ rules	(working copy)
-@@ -26,9 +26,9 @@
- 
- 	cd build; \
- 	cmake -DCMAKE_BUILD_TYPE=Release \
--	      -DWITH_GDA3:BOOL=ON \
--	      -DWITH_SPEECH:BOOL=ON \
--	      -DWITH_MAPNIK:BOOL=ON \
+@@ -31,6 +31,9 @@
+ 	      -DMAN_INSTALL_DIR=/usr/share/man \
+ 	      -DINFO_INSTALL_DIR=/usr/share/info \
+ 	      -DDATADIR=/usr/share \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
- 	      -DCMAKE_INSTALL_PREFIX=/usr \
- 	      -DPERL_SITELIB=/usr/share/perl5 \
- 	      -DMAN_INSTALL_DIR=/usr/share/man \
+ 	      .. 
+ 
+ 	rm -f build/build-stamp
