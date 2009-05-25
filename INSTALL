@@ -6,11 +6,9 @@
 
 In order to build the gpsdrive, you need to install several components:
 
-- A C++ compiler
+- A C and C++ compiler
 - [CMake](http://www.cmake.org/) >= 2.4.4.
 - [GTK2](http://www.gnome.org/)
-- [Boost](http://www.boost.org/) >= 1.33.1
-- [mapnik](http://www.mapnik.org/) >= 0.4
 - perl
     - perl-DB
     - FIXME
@@ -23,6 +21,9 @@ know.
 
 ### Optional requirements
 
+- [mapnik](http://www.mapnik.org/) >= 0.4
+- [Boost](http://www.boost.org/) >= 1.33.1
+- [Speech Dispatcher](http://www.freebsoft.org/speechd) >= 0.6.7
 - [gdal](http://www.gdal.org/)
 
 ### Specific requirements for GNU/Linux
@@ -40,7 +41,7 @@ GTK2 can be installed using [Fink](http://www.finkproject.org) or
 
 ### Specific requirements for Windows
 
-FIXME
+TODO
 
 ## Building
 First, you need to configure the compilation, using CMake. Go inside the
