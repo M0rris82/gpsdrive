@@ -27,7 +27,7 @@
  try to change all occurences of longi -->lon, lati-->lat, ...i
  use  drawicon(posxdest,posydest,"w-lan.open") instead of using a seperate variable
  rename drawgrid --> do_draw_grid
- give the display frames usefull names frame_lat, ...
+ give the display frames useful names frame_lat, ...
  change handling of WP-types to lowercase
  change order for directories reading icons
  always read inconfile

@@ -199,18 +199,22 @@ setcolor_cb (GtkWidget *widget, GdkColor *targetcolor)
 	g_strlcpy (local_config.color_track, tcol,
 		sizeof (local_config.color_track));
 	g_free (tcol);
+
 	tcol = get_colorstring (&colors.route);
 	g_strlcpy (local_config.color_route, tcol,
 		sizeof (local_config.color_route));
 	g_free (tcol);
+
 	tcol = get_colorstring (&colors.friends);
 	g_strlcpy (local_config.color_friends, tcol,
 		sizeof (local_config.color_friends));
 	g_free (tcol);
+
 	tcol = get_colorstring (&colors.wplabel);
 	g_strlcpy (local_config.color_wplabel, tcol,
 		sizeof (local_config.color_wplabel));
 	g_free (tcol);
+
 	tcol = get_colorstring (&colors.dashboard);
 	g_strlcpy (local_config.color_dashboard, tcol,
 		sizeof (local_config.color_dashboard));
@@ -2938,7 +2942,7 @@ settings_friends (GtkWidget *notebook)
 		_("Press this button to resolve the friends server name."),
 		NULL);
 	gtk_tooltips_set_tip (friends_tooltips, friendsrvip_entry,
-		_("Set here the IP adress (i.e. 127.0.0.1) if you don't set "
+		_("Set here the IP address (i.e. 127.0.0.1) if you don't set "
 		"the hostname above"), NULL);
 	}
 
