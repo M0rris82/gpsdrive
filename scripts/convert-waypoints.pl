@@ -243,10 +243,10 @@ sub write_gpx_header
   print" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n";
   print" xmlns=\"http://www.topografix.com/GPX/1/0\"\n";
   print" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\"\n";
-  print" version=\"1.0\"\n creator=\"GPSDrive-Geoinfo - www.gpsdrive.cc\">\n\n";
+  print" version=\"1.0\"\n creator=\"GPSDrive-Geoinfo - www.gpsdrive.de\">\n\n";
   print"<name>$name</name>\n";
   print"<desc>$desc</desc>\n";
-  print"<url>www.gpsdrive.cc</url>\n";
+  print"<url>www.gpsdrive.de</url>\n";
   print"<urlname>GPS-Drive Geoinfo-Database</urlname>\n";
   print"<time>".utc_time()."</time>\n";
 }

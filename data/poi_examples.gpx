@@ -5,13 +5,13 @@
  xmlns="http://www.topografix.com/GPX/1/0" 
  xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd"
  version="1.0"
- creator="GPSDrive-Geoinfo - www.gpsdrive.cc">
+ creator="GPSDrive-Geoinfo - www.gpsdrive.de">
 
 <name>POI Examples</name>
 <desc>Example Points-of-Interest for GPSDrive</desc>
 <author>d.s.e</author>
 <email>d.s.e (at) sordidmusic.com</email>
-<url>www.gpsdrive.cc</url>
+<url>www.gpsdrive.de</url>
 <urlname>GPSDrive Geoinfo-Database</urlname>
 <time>2006-12-30</time>
 
