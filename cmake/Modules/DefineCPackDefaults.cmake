@@ -81,6 +81,14 @@ include(InstallRequiredSystemLibraries)
 # CPACK_TOPLEVEL_TAG                 Directory for the installed
 #                                    Linux-i686
 
+# For Release Builds
+#set(CPACK_PACKAGE_VERSION_PATCH "")
+# For Pre-Release Builds
+#set(CPACK_PACKAGE_VERSION_PATCH "pre7")
+# For svn Builds
+set(CPACK_PACKAGE_VERSION_PATCH "svn${SVN_REVISION}")
+
+
 ### general settings
 set(CPACK_PACKAGE_NAME "gpsdrive")
 set(CPACK_PACKAGE_VENDOR "The GpsDrive Team")
@@ -90,14 +98,11 @@ set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING")
 
 ### versions
-set(CPACK_PACKAGE_VERSION "2.10")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "10")
-set(CPACK_PACKAGE_VERSION_PATCH "svn19628140")
-set(SVN_REVISION_OSM "8140")
-
+set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}")
 set(CPACK_GENERATOR "TGZ")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}${CPACK_PACKAGE_VERSION_PATCH}")
 
 ### system specific settings
 if(WIN32 AND NOT UNIX)
@@ -107,9 +112,9 @@ if(WIN32 AND NOT UNIX)
   set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
   set(CPACK_NSIS_INSTALLED_ICON_NAME "gpsdrive.exe")
   set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} ${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
-  set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.gpsdrive.cc")
-  set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.gpsdrive.cc")
-  set(CPACK_NSIS_CONTACT "info@gpsdrive.cc")
+  set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.gpsdrive.de")
+  set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.gpsdrive.de")
+  set(CPACK_NSIS_CONTACT "info@gpsdrive.de")
   set(CPACK_NSIS_MODIFY_PATH ON)
 else(WIN32 AND NOT UNIX)
   set(CPACK_PACKAGE_EXECUTABLES "bin/gpsdrive;bin/friendsd")
@@ -119,7 +124,7 @@ endif(WIN32 AND NOT UNIX)
 
 ### source package settings
 set(CPACK_SOURCE_GENERATOR "TGZ")
-set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;[.]o$;.cvsignore;.#;.deps;tags;data/maps/debian/gpsdrive-data-maps;/build/;/m4/;debian/gpsdrive/;debuild.tmp;/logs/;[.]bak$;[.]a$;[.]la$;build-stamp;configure-stamp;semantic.cache;[.]debhelper$;[.]substvars$;[.]splint$")
-set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}svn${SVN_REVISION}${SVN_REVISION_OSM}")
+set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;[.]o$;.cvsignore;.#;.deps;tags;data/maps/debian/gpsdrive-data-maps;/build/;/m4/;debian/gpsdrive/;debuild.tmp;/logs/;[.]bak$;[.]a$;[.]la$;build-stamp;configure-stamp;semantic.cache;[.]debhelper$;[.]substvars$;[.]splint$;/wget/;/debian/gpsdrive")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}${CPACK_PACKAGE_VERSION_PATCH}")
 
 include(CPack)
