@@ -1,6 +1,9 @@
 This is the Win32 port of gpsdrive.
 
-This port is in a PRE-ALPHA STATE and should be seen as a "proof of concept" only, for now with limited features and bugs/crashes all the time!
+[FIXME: It should be migrated into the contrib/ dir]
+
+This port is in a PRE-ALPHA STATE and should be seen as a "proof of concept"
+only, for now with limited features and bugs/crashes all the time!
 
 Features that are currently not working on the Win32 port:
 - gpsd (so only gpsdrive GPS emulation mode for now)
