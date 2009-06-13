@@ -1,6 +1,6 @@
 Index: rules
 ===================================================================
---- rules	(revision 2426)
+--- rules	(revision 2447)
 +++ rules	(working copy)
 @@ -31,6 +31,9 @@
  	      -DMAN_INSTALL_DIR=/usr/share/man \
@@ -14,9 +14,9 @@ Index: rules
  	rm -f build/build-stamp
 Index: control
 ===================================================================
---- control	(revision 2426)
+--- control	(revision 2447)
 +++ control	(working copy)
-@@ -12,14 +12,11 @@
+@@ -12,24 +12,16 @@
  	libboost-serialization-dev,
  	libc6-dev,
  	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
@@ -31,41 +31,71 @@ Index: control
  	libsqlite3-dev,
  	libxml-twig-perl,
  	perl-doc,
-@@ -28,8 +25,7 @@
- 	python-dev,
- 	python-central,
- 	python-dev | python2.4-dev | python2.3-dev,
+ 	pkg-config,
+-	po-debconf,
+-	python-dev,
+-	python-central,
+-	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-+	python-support
++	po-debconf
  Standards-Version: 3.8.1
  
  # ------------------------------------------------------------------
-@@ -43,10 +39,7 @@
- 	libdate-manip-perl,
- 	libdbi-perl,
- 	libfile-slurp-perl | libperl6-slurp-perl,
+@@ -40,25 +32,18 @@
+ 	libart-2.0-2,
+ 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
+ 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
 -	libgda3-3,
 -	libgda3-postgres,
  	libltdl3 | libltdl7,
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
  	libsqlite3-0,
- 	libtext-query-perl,
- 	libtimedate-perl,
-@@ -55,8 +48,6 @@
- 	libxml-parser-perl,
- 	libxml-simple-perl,
- 	libxml-twig-perl,
 -	mapnik-plugins,
 -	mapnik-utils,
  	openstreetmap-map-icons (>> 8310),
  	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2299),
  	perlmagick,
-@@ -93,7 +84,6 @@
+ 	sudo,
+ 	ttf-dejavu
+ Recommends: gpsd,
+-	espeak,
+ 	gdal-bin,
+ 	gpsbabel,
+ 	gpsdrive-data-maps (>> 2322),
+ 	imagemagick,
+-	libdbd-mysql-perl,
+ 	libdbd-sqlite3-perl,
+ 	libgeos,
+ 	postgresql-8.3-postgis | postgresql-8.2-postgis,
+@@ -72,8 +57,7 @@
+ 	libfile-find-rule-perl,
+ 	libgtk2.0-0,
+ 	openstreetmap-mapnik-data,
+-	openstreetmap-mapnik-world-boundaries (>> 7749),
+-	festival
++	openstreetmap-mapnik-world-boundaries (>> 7749)
+ Description: GPS navigation system
+  GpsDrive is a car (bike, ship, plane, foot) navigation system.
+  GpsDrive displays your position provided from a GPS on a zoomable map,
+@@ -83,9 +67,6 @@
   .
   You will most likely want to install the gpsd package so that you
   can talk to your GPS; without that GpsDrive is just a map viewer.
 - Speech output is supported if the "espeak" software is installed.
-  To use maps from the OpenStreetMap project you need to install the
-  openstreetmap-* packages as well.
+- To use maps from the OpenStreetMap project you need to install the
+- openstreetmap-* packages as well.
  
+ # ------------------------------------------------------------------
+ Package: gpsdrive-utils
+@@ -93,10 +74,6 @@
+ Depends: ${misc:Depends},
+ 	 ${shlibs:Depends},
+          ${perl:Depends},
+-	 python,
+-	 python-support,
+-	 python-central,
+-	 python-dev,
+ 	 perl-base (>> 5.6),
+ 	 libtext-query-perl,
+ 	 libtimedate-perl,
