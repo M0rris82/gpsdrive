@@ -68,16 +68,22 @@ install: build
 	# ------------------  install the package into debian/gpsdrive.
 	cd build; $(MAKE)  $(MAKEFLAGS) DESTDIR=$(destdir) install
 
-	/bin/bash debian/create_missing_man_pages.sh $(destdir) $(destdir)/usr/share/man/man1
 
 	mkdir -p $(destdir_friendsd)/usr/bin
 	mv $(destdir)/usr/bin/friendsd $(destdir_friendsd)/usr/bin/friendsd 
-	mkdir -p $(destdir_friendsd)/usr/share/man/man1
-	mv $(destdir)/usr/share/man/man1/friendsd* $(destdir_friendsd)/usr/share/man/man1
 
-	# move modules and scripts since they are in the 
+	# move modules and scripts. They are provided via the
 	# gpsdrive-utils package
 	/bin/bash debian/move_utils.sh
+
+
+	/bin/bash debian/create_missing_man_pages.sh $(destdir)          $(destdir)/usr/share/man/man1
+	/bin/bash debian/create_missing_man_pages.sh $(destdir_friendsd) $(destdir_friendsd)/usr/share/man/man1
+	/bin/bash debian/create_missing_man_pages.sh $(destdir_utils)    $(destdir_utils)/usr/share/man/man1
+
+	mv $(destdir)/usr/share/man/man1/friendsd*         $(destdir_friendsd)/usr/share/man/man1
+	mkdir -p $(destdir_utils)/usr/share/man/man1/
+	mv $(destdir)/usr/share/man/man1/gpsd_nmea.sh.1 $(destdir_utils)/usr/share/man/man1/gpsd_nmea.1
 
 	/bin/bash debian/rename_scripts.sh $(destdir_utils)
 
