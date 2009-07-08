@@ -21,7 +21,7 @@ msgstr ""
 "Project-Id-Version: gpsdrive-2.10pre6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-07-06 16:33+0200\n"
-"PO-Revision-Date: 2009-05-20 07:50+0200\n"
+"PO-Revision-Date: 2009-07-05 07:50+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr "Kan ikke finde webserver"
 
 #: src/download_map.c:218 src/download_map.c:375
 msgid "unable to connect to Website"
-msgstr "forbindelse til websiden mislykkedes"
+msgstr "kunne ikke forbinde til websiden"
 
 #: src/download_map.c:252 src/download_map.c:446
 msgid "read from Webserver"
@@ -78,12 +78,12 @@ msgstr "Hentede %d kBytes"
 
 #: src/download_map.c:510
 msgid "Download FAILED!"
-msgstr "Hent mislykkedes!"
+msgstr "Overførslen mislykkedes!"
 
 #: src/download_map.c:513
 #, c-format
 msgid "Download finished, got %dkB"
-msgstr "Hent afsluttet, modtog %d kB"
+msgstr "Overførslen afsluttet, modtog %d kB"
 
 #: src/download_map.c:836
 msgid "Select coordinates and scale"
@@ -321,7 +321,7 @@ msgstr "vis ikke GUI; til brug i eksterne GTK-programmer"
 
 #: src/gpsdrive.c:2141
 msgid "force display of position even it is invalid"
-msgstr "fremtving visning af position selv om den er ugyldig"
+msgstr "fremtving visning af position; selv om den er ugyldig"
 
 #: src/gpsdrive.c:2143
 msgid "ignore NMEA checksum (risky, only for broken GPS receivers)"
@@ -345,7 +345,7 @@ msgstr "vis nogle fejlsøgningsinformationer"
 
 #: src/gpsdrive.c:2153
 msgid "use DBUS for communication with gpsd; this disables socket communication"
-msgstr "brug DBUS til kommunikation med gpsd; dette slå sokkelkommunikation fra"
+msgstr "brug DBUS til kommunikation med gpsd; dette slår sokkelkommunikation fra"
 
 #: src/gpsdrive.c:2155
 msgid "correct the altitude by adding this value"
@@ -365,7 +365,7 @@ msgstr "<SERVER>"
 
 #: src/gpsdrive.c:2159
 msgid "set config file to use"
-msgstr "angiv configfil der skal bruges"
+msgstr "angiv konfigurationsfil der skal bruges"
 
 #: src/gpsdrive.c:2159 src/gpsdrive.c:2169
 msgid "<FILE>"
@@ -397,11 +397,11 @@ msgstr "<GEOMETRI>"
 
 #: src/gpsdrive.c:2167
 msgid "set GUI mode, 'desktop' is the default"
-msgstr "angiv GUI-tilstand, »desktop« er standard"
+msgstr "angiv GUI-tilstand, »skrivebord« er standard"
 
 #: src/gpsdrive.c:2169
 msgid "set serial device, pty master, or file to use for NMEA output"
-msgstr "angiv serielenhed, pty master eller fil der skal bruges for NMEA-uddata"
+msgstr "angiv serielenhed, pty master eller fil der skal bruges til NMEA-uddata"
 
 #: src/gpsdrive.c:2171
 msgid "take auto screenshots of different window (don't touch gpsdrive!)"
@@ -413,7 +413,7 @@ msgstr "<STI>"
 
 #: src/gpsdrive.c:2173
 msgid "do some internal unit tests (don't start gpsdrive)"
-msgstr "udfører nogle interne enhedstest (start ikke gpsdrive)"
+msgstr "udfør nogle interne enhedstest (start ikke gpsdrive)"
 
 #: src/gpsdrive.c:2175
 msgid "show version info"
@@ -508,7 +508,7 @@ msgstr "Forbindelse til Kismet-server blev genetableret\n"
 #: src/gpskismet.c:102
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
-msgstr "færdig med forsøg på genforbindelse: Sokkel=%d\n"
+msgstr "færdig med forsøg på at genforbinde: Sokkel=%d\n"
 
 #: src/gpskismet.c:149
 msgid "Kismet server connection lost\n"
@@ -523,10 +523,10 @@ msgstr "Forsøger med Kismet-server\n"
 msgid "Couldn't find pixmap file: %s"
 msgstr "Fandt ikke pixmapfil: %s"
 
-# hvad er dette?
+# hvad er dette?  Nautical_mile (sømil)
 #: src/gpsmisc.c:347 src/main_gui.c:876
 msgid "nmi"
-msgstr "nmi"
+msgstr "sømil"
 
 #: src/gpsmisc.c:358 src/main_gui.c:900 src/settings.c:1716
 msgid "km"
@@ -707,7 +707,7 @@ msgid ""
 "must be copied into the"
 msgstr ""
 "Hvordan kalibrerer du dine egne kort? Først skal\n"
-"kortfilen kopieres ind i"
+"kortfilen kopieres til"
 
 #: src/import_map.c:312
 msgid ""
@@ -893,9 +893,10 @@ msgstr "Afstand til mål"
 msgid "Time Remaining"
 msgstr "Tid tilbage"
 
+# Højdemeter, rejsemeter, triptæller, distancetæller
 #: src/main_gui.c:1616 src/main_gui.c:1661
 msgid "Trip Odometer"
-msgstr "Rejsemeter"
+msgstr "Distancetæller"
 
 #: src/main_gui.c:1704
 msgid "Satellite Info"
@@ -1424,11 +1425,11 @@ msgstr "Slukket"
 
 #: src/settings.c:905
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
-msgstr "Hvis aktiveret vil positionviseren, når GPS'en ikke er tilgængelig, bevæge sig mod det valgte mål, simulerende en vogn i bevægelse."
+msgstr "Hvis aktiveret vil positionviseren, når GPS'en ikke er tilgængelig, bevæge sig mod det valgte mål og simulere en vogn i bevægelse."
 
 #: src/settings.c:909
 msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
-msgstr "Hvis aktiveret, vil positionviseren altid bevæge sig mod det valgte mål, simulerende en vogn i bevægelse."
+msgstr "Hvis aktiveret, vil positionviseren altid bevæge sig mod det valgte mål og simulere en vogn i bevægelse."
 
 #: src/settings.c:913
 msgid "Switches simulation mode off"
@@ -1453,7 +1454,7 @@ msgstr "Kortmappe"
 
 #: src/settings.c:972
 msgid "Select Maps Directory"
-msgstr "Vælg kortappe"
+msgstr "Vælg kortmappe"
 
 #: src/settings.c:978
 msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
@@ -1507,9 +1508,10 @@ msgstr "Dette vil vise skalaen på kortet"
 msgid "Show way info (EXPERIMENTAL!)"
 msgstr "Vis vejinfo (EKSPERIMENTALT!)"
 
+# Manglende engelsk )
 #: src/settings.c:1116
 msgid "This will show information about the current way (this is an experimental feature, which may not work as expected!!!"
-msgstr "Dette vil vise information om den aktuelle vej (det er en egenskab under udvikling, som måske ikke virker som forventet!!!"
+msgstr "Dette vil vise information om den aktuelle vej (det er en egenskab under udvikling, som måske ikke virker som forventet!)"
 
 #: src/settings.c:1136
 msgid "Position Marker"
@@ -1537,11 +1539,11 @@ msgstr "Dette vil, hvis muligt, vise temperaturen på din cpu"
 
 #: src/settings.c:1228
 msgid "Choose here the unit for the display of distances."
-msgstr "Vælg her enheden for visning af afstande."
+msgstr "Vælg enheden for visning af afstande her."
 
 #: src/settings.c:1246
 msgid "Choose here the unit for the display of altitudes."
-msgstr "Vælg her måleenheden for visning af højder."
+msgstr "Vælg måleenheden for visning af højder her."
 
 #: src/settings.c:1253
 msgid "Coordinates"
@@ -1549,7 +1551,7 @@ msgstr "Koordinater"
 
 #: src/settings.c:1264
 msgid "Choose here the format for the coordinates display."
-msgstr "Vælg her formatet på visningen af koordinater."
+msgstr "Vælg formatet på visningen af koordinater her."
 
 #: src/settings.c:1292
 msgid "<b>Map Features</b>"
@@ -1573,11 +1575,11 @@ msgstr "Vælg sporfarve"
 
 #: src/settings.c:1360
 msgid "Set here the color of the drawn track"
-msgstr "Angiv her farven på det optrukne spor"
+msgstr "Angiv farven på det optrukne spor her"
 
 #: src/settings.c:1365
 msgid "Set here the line style of the drawn track"
-msgstr "Angiv her linjestilen på det optrukne spor"
+msgstr "Angiv linjestilen på det optrukne spor her"
 
 #: src/settings.c:1378
 msgid "Choose Route color"
@@ -1585,11 +1587,11 @@ msgstr "Vælg rutefarve"
 
 #: src/settings.c:1382
 msgid "Set here the color of the drawn route"
-msgstr "Angiv her farven på den optrukne rute"
+msgstr "Angiv farven på den optrukne rute her"
 
 #: src/settings.c:1387
 msgid "Set here the line style of the drawn route"
-msgstr "Angiv her linjestilen på den optrukne rute"
+msgstr "Angiv linjestilen på den optrukne rute her"
 
 #: src/settings.c:1400
 msgid "Choose Friends color"
@@ -1597,7 +1599,7 @@ msgstr "Vælg farve for venner"
 
 #: src/settings.c:1404
 msgid "Set here the text color of the drawn friends"
-msgstr "Angiv her tekstfarven på de optrukne venner"
+msgstr "Angiv tekstfarven på de optrukne venner her"
 
 #: src/settings.c:1409
 msgid "Choose font for friends"
@@ -1605,7 +1607,7 @@ msgstr "Vælg skrifttype for venner"
 
 #: src/settings.c:1415
 msgid "Set here the font of the drawn friends"
-msgstr "Angiv her skrifttypen på optrukne venner"
+msgstr "Angiv skrifttypen på optrukne venner her"
 
 #: src/settings.c:1418 src/settings.c:2024
 msgid "Waypoints"
@@ -1617,7 +1619,7 @@ msgstr "Vælg etiketfarve på punkter"
 
 #: src/settings.c:1427
 msgid "Set here the text color of the waypoint labels"
-msgstr "Angiv her tekstfarven på punktetiketterne"
+msgstr "Angiv tekstfarven på punktetiketterne her"
 
 #: src/settings.c:1432
 msgid "Choose font for waypoint labels"
@@ -1625,7 +1627,7 @@ msgstr "Vælg skrifttype for punktetiketter"
 
 #: src/settings.c:1438
 msgid "Set here the font of waypoint labels"
-msgstr "Angiv her skrifttypen på punktetiketter"
+msgstr "Angiv skrifttypen på punktetiketter her"
 
 #: src/settings.c:1441
 msgid "Dashboard"
@@ -1637,7 +1639,7 @@ msgstr "Vælg farve for instrumentbræt"
 
 #: src/settings.c:1450
 msgid "Set here the color of the dashboard"
-msgstr "Angiv her farven på instrumentbrættet"
+msgstr "Angiv farven på instrumentbrættet her"
 
 #: src/settings.c:1455
 msgid "Choose font for dashboard"
@@ -1645,15 +1647,15 @@ msgstr "Vælg en skrifttype for instrumentbrættet"
 
 #: src/settings.c:1461
 msgid "Set here the font of the dashboard"
-msgstr "Angiv her skrifttypen for instrumentbrættet"
+msgstr "Angiv skrifttypen for instrumentbrættet her"
 
 #: src/settings.c:1513
 msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
-msgstr "Slår automatisk nat mode til hvis det er mørkt. Tast 'N' for at slå nat mode fra."
+msgstr "Slår automatisk nattilstand til hvis det er mørkt. Tast »N« for at slå nattilstand fra."
 
 #: src/settings.c:1516
 msgid "Switches night mode on. Press 'N' key to turn off nightmode."
-msgstr "Slår nat mode til. Tast »N« for at slå nattilstand fra."
+msgstr "Slår nattilstand til. Tast »N« for at slå nattilstand fra."
 
 #: src/settings.c:1519
 msgid "Switches night mode off"
@@ -1722,8 +1724,8 @@ msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
 msgstr ""
-"Vælg punktfilen til anvendelse!\n"
-"For nuværende er alene filer i GpsDrives way.txt-format understøttet."
+"Vælg de punktfiler der skal anvendes!\n"
+"For nuværende er alene filer i formatet GpsDrives way.txt understøttet."
 
 #: src/settings.c:1704
 msgid "Default search radius"
@@ -1731,7 +1733,7 @@ msgstr "Standard søgeradius"
 
 #: src/settings.c:1714
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
-msgstr "Vælg standardsøgeafstanden (i km) for POI-opslagsvinduet."
+msgstr "Vælg standardsøgeafstanden (i km) for PAI-opslagsvinduet."
 
 #: src/settings.c:1718
 msgid "Limit results to"
@@ -1739,7 +1741,7 @@ msgstr "Begræns resultatet til"
 
 #: src/settings.c:1727
 msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
-msgstr "Vælg begrænsningen for antal resultater der vises i PAI-opslagsvinduet. Afhængig af dit system kan en for høj angivelse sløve dit system ned."
+msgstr "Vælg begrænsningen for antal resultater der vises i PAI-opslagsvinduet. Afhængig af dit system kan en for høj angivelse sløve dit system."
 
 #: src/settings.c:1730
 msgid "entries"
@@ -1847,7 +1849,7 @@ msgstr "Tryk på denne knap for at afklare vennens servernavn."
 
 #: src/settings.c:2190
 msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
-msgstr "Angiv her ip-adressen (f.eks. 127.0.0.1) hvis du ikke ovenfor angiver værtsnavnet"
+msgstr "Angiv ip-adressen her (f.eks. 127.0.0.1) hvis du ikke ovenfor angiver værtsnavnet"
 
 #: src/settings.c:2198 src/settings.c:2369 src/settings.c:2409
 msgid "<b>General</b>"
@@ -1879,19 +1881,19 @@ msgstr "GPS-status"
 
 #: src/settings.c:2354
 msgid "Switch on for speech output of the direction to the target"
-msgstr "Slå til for tale vedrørende retningen til målet"
+msgstr "Slå tale vedrørende retningen til målet til"
 
 #: src/settings.c:2357
 msgid "Switch on for speech output of the distance to the target"
-msgstr "Slå til for tale vedrørende distancen til målet"
+msgstr "Slå tale vedrørende distancen til målet til"
 
 #: src/settings.c:2360
 msgid "Switch on for speech output of your current speed"
-msgstr "Slå til for tale vedrørende din aktuelle fart"
+msgstr "Slå tale vedrørende din aktuelle fart til"
 
 #: src/settings.c:2362
 msgid "Switch on for speech output of the status of your GPS signal"
-msgstr "Slå til for tale vedrørende status på dit GPS-signal"
+msgstr "Slå tale vedrørende status på dit GPS-signal til"
 
 #: src/settings.c:2377
 msgid "<b>Output Settings</b>"
@@ -1970,7 +1972,7 @@ msgid ""
 msgstr ""
 "Tryk på den understreget tast sammen med ALT-tasten.\n"
 "\n"
-"Du kan flytte rundt på kortet ved at vælge positiontilstand i menuen. Et blåt rektangel viser denne tilstand, du kan angive markøren ved at klikke på kortet. Hvis du klikker på grænsen af korter (de yderste 20 %) så vil kortet skifte til det næste område.\n"
+"Du kan flytte rundt på kortet ved at vælge positiontilstand i menuen. Et blåt rektangel viser denne tilstand, du kan angive markøren ved at klikke på kortet. Hvis du klikker på grænsen af kortet (de yderste 20 %) så vil kortet skifte til det næste område.\n"
 "\n"
 "Forslag velkomne.\n"
 "\n"
@@ -1999,7 +2001,7 @@ msgstr ""
 
 #: src/splash.c:157
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
-msgstr "Se venligst manpagen (man gpsdrive) for programdetaljer!"
+msgstr "Se venligst manualen (man gpsdrive) for programdetaljer!"
 
 #: src/splash.c:162
 msgid "Mouse control (clicking on the map):\n"
