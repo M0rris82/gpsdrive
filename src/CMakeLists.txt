@@ -14,7 +14,7 @@ if (MAEMO)
   find_package(Libosso REQUIRED)
   find_package(Location REQUIRED)
   add_definitions(-DMAEMO)
-  SET (WITH_GDA3 FALSE)
+  SET (WITH_POSTGIS FALSE)
   SET (WITH_MAPNIK FALSE)
   SET (WITH_SPEECH FALSE)
   SET (WITH_FRIENDSD FALSE)
@@ -22,10 +22,10 @@ if (MAEMO)
   SET (WITH_DBUS TRUE)
 endif (MAEMO)
 
-if (WITH_GDA3)
-  find_package(GDA3 REQUIRED)
-  add_definitions(-DGDA3)
-endif (WITH_GDA3)
+if (WITH_POSTGIS)
+  find_package(PostgreSQL REQUIRED)
+  add_definitions(-DPOSTGIS)
+endif (WITH_POSTGIS)
 
 if (WITH_MAPNIK)
   find_package(Boost COMPONENTS filesystem REQUIRED)
@@ -75,7 +75,7 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${MAPNIK_INCLUDE_DIRS}
   ${FREETYPE2_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${GDA3_INCLUDE_DIRS}
+  ${POSTGRESQL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIRS}
   ${DBUS_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS}
@@ -153,7 +153,7 @@ if (WITH_GDAL)
   )
 endif (WITH_GDAL)
 
-if (WITH_GDA3)
+if (WITH_POSTGIS)
   set(gpsdrive_SRCS
     ${gpsdrive_SRCS}
     database_postgis.c
@@ -161,9 +161,9 @@ if (WITH_GDA3)
   )
   set(GPSDRIVE_LINK_LIBRARIES
     ${GPSDRIVE_LINK_LIBRARIES}
-    ${GDA3_LIBRARIES}
+    ${POSTGRESQL_LIBRARIES}
   )
-endif (WITH_GDA3)
+endif (WITH_POSTGIS)
 
 if (WITH_MAPNIK)
   set(gpsdrive_SRCS

@@ -38,8 +38,8 @@ Disclaimer: Please do not use for navigation.
 #include <glib/gprintf.h>
 #include <gdk/gdktypes.h>
 #include "gtk/gtk.h"
-#ifdef GDA3
-#include <libgda/libgda.h>
+#ifdef POSTGIS
+#include <libpq-fe.h>
 #endif
 
 #include "config.h"
@@ -49,7 +49,7 @@ Disclaimer: Please do not use for navigation.
 #include "database.h"
 #include "database_sqlite.h"
 #include "database_postgis.h"
-#ifdef WITH_MAPNIK
+#ifdef MAPNIK
 #include "mapnik.h"
 #endif
 
@@ -66,8 +66,8 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern currentstatus_struct current;
 
-#ifdef GDA3
-GdaConnection *db_conn_geo, *db_conn_osm;
+#ifdef POSTGIS
+PGconn *db_conn_postgis;
 #endif
 
 	//TODO:	create table 'poi_extra_fields' in geoinfo.db
@@ -429,31 +429,18 @@ db_poi_get (gchar *query, gpointer callback, gint database)
 	if (mydebug > 20)
 		g_printf ("db_poi_get: %s\n", query);
 
-//	switch (database)
-//	{
-//		case DB_WP_USER:
-//			/* get data from waypoints/sqlite database */
-			db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
-//			break;
-//#ifdef GDA3
-//		case DB_WP_OSM:
-//			/* get data from openstreetmap/postgis database */
-//			if (db_conn_osm)
-//				db_postgis_query (query, callback);
-//			break;
-//#endif
-//	}
+	db_sqlite_query (query, callback, DB_SQLITE_WAYPOINTS, NULL);
 }
 
 
 /* *******************************************************
  */
-gint
+gboolean
 db_streets_get (const gdouble lat, const gdouble lon, const guint distance, street_struct *street)
 {
-	gint t_res = 0;
-#ifdef GDA3
-#ifdef WITH_MAPNIK
+	gboolean t_res = FALSE;
+#ifdef POSTGIS
+#ifdef MAPNIK
 	gchar sql_query[200];
 	gdouble x, y;
 	guint d;
@@ -528,9 +515,6 @@ db_cleanup_route ()
 gboolean
 db_init (void)
 {
-#ifdef GDA3
-	GdaClient *t_client;
-#endif
 	gboolean t_status = FALSE;
 	gboolean t_db = FALSE;
 
@@ -544,15 +528,20 @@ db_init (void)
 		t_db = TRUE;
 	}
 
-#ifdef GDA3
-	/* init gda */
-	gda_init ("GpsDrive", VERSION, 0, NULL);
-	t_client = gda_client_new ();
-
+#ifdef POSTGIS
 	/* create connection to mapnik/postgis database */
-	db_conn_osm = gda_client_open_connection_from_string (t_client,
-		"PostgreSQL", "DB_NAME=gis", "", "", GDA_CONNECTION_OPTIONS_NONE, NULL);
-	if (db_conn_osm)
+	db_conn_postgis = PQsetdb (NULL, NULL, NULL, NULL, "gis");
+
+	if (PQstatus(db_conn_postgis) == CONNECTION_BAD)
+	{
+		if (mydebug > 20)
+		{
+			g_print ("DB: Connection to Mapnik database failed!\n");
+			g_print ("    %s", PQerrorMessage (db_conn_postgis));
+			PQfinish (db_conn_postgis);
+		}
+	}
+	else
 	{
 		g_print ("DB: Using street data from Mapnik database.\n");
 		t_db = TRUE;
@@ -579,5 +568,9 @@ db_close (void)
 	db_cleanup_friends ();
 
 	db_sqlite_close ();
+#ifdef POSTGIS
+	if (db_conn_postgis)
+		PQfinish (db_conn_postgis);
+#endif
 }
 

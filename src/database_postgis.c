@@ -24,8 +24,8 @@ Disclaimer: Please do not use for navigation.
 
 
 /*
- * module for accessing the mapnik/postgis database with gda, used by
- * functions in database.c
+ * module for accessing the mapnik/postgis database,
+ * used by functions in database.c
  */
 
 #include <stdio.h>
@@ -33,7 +33,7 @@ Disclaimer: Please do not use for navigation.
 #include <string.h>
 #include <gmodule.h>
 #include <gdk/gdktypes.h>
-#include <libgda/libgda.h>
+#include <libpq-fe.h>
 
 #include "config.h"
 #include "gpsdrive.h"
@@ -55,7 +55,7 @@ Disclaimer: Please do not use for navigation.
 extern gint mydebug;
 extern currentstatus_struct current;
 
-extern GdaConnection *db_conn_osm;
+extern PGconn *db_conn_postgis;
 
 
 /* *****************************************************************************
@@ -64,55 +64,11 @@ extern GdaConnection *db_conn_osm;
 glong
 db_postgis_query (gchar *query, gint (*callback)(const char*, ...))
 {
-	GdaDataModel *t_model;
-	GValue *t_value;
 	gint t_rows = 0;
-	gint i;
 
-	if (!db_conn_osm)
+	if (!db_conn_postgis)
 		return -1;
 
-	t_model = gda_execute_select_command (db_conn_osm, query, NULL);
-
-	if (t_model == NULL)
-	{
-		g_print ("db_postgis_query: an error occured while trying to read from the database!\n");
-		g_print ("query: %s\n",query);
-		return -1;
-	}
-
-	t_rows = gda_data_model_get_n_rows (t_model);
-
-	if (mydebug > 30)
-		g_print ("db_postgis_query: read %d rows from database.\n", t_rows);
-	if (mydebug > 60)
-		gda_data_model_dump (t_model, stderr);
-
-	for (i = 0; i < t_rows; i++)
-	{
-		gchar *t_name, *t_type, *t_geom, *t_id;
-
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 0, i);
-		t_name = gda_value_stringify (t_value);
-
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 1, i);
-		t_type = gda_value_stringify (t_value);
-
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 2, i);
-		t_geom = gda_value_stringify (t_value);
-
-		if (gda_data_model_get_n_columns (t_model) > 3)
-		{
-			t_value = (GValue *) gda_data_model_get_value_at (t_model, 3, i);
-			t_id = gda_value_stringify (t_value);
-		}
-		else
-			t_id = NULL;
-
-		callback (t_name, t_type, t_geom, t_id);
-	}
-
-	g_object_unref (t_model);
 	return t_rows;
 }
 
@@ -120,65 +76,46 @@ db_postgis_query (gchar *query, gint (*callback)(const char*, ...))
 /* *****************************************************************************
  * do a streets query in the postgis database
  */
-glong
+gboolean
 db_postgis_query_street (gchar *query, street_struct *street)
 {
-	GdaDataModel *t_model;
-	GValue *t_value;
-	gint t_rows = 0;
+	PGresult *t_result;
+	gchar *t_value;
 
-	if (!db_conn_osm)
+	if (!db_conn_postgis)
 		return -1;
 
 	if (mydebug > 20)
 		g_print ("db_postgis_query_street: %s\n", query);
 
-	t_model = gda_execute_select_command (db_conn_osm, query, NULL);
+	t_result = PQexec (db_conn_postgis, query);
 
-	if (t_model == NULL)
+	if (t_result == NULL)
 	{
 		g_print ("db_postgis_query_street: an error occured while trying to read from the database!\n");
 		g_print ("query: %s\n",query);
 		return -1;
 	}
 
-	t_rows = gda_data_model_get_n_rows (t_model);
-
-	if (mydebug > 30)
-		g_print ("db_postgis_query_street: read %d rows from database.\n", t_rows);
-	if (mydebug > 60)
-		gda_data_model_dump (t_model, stderr);
-
-	if (t_rows == 1)
+	if (PQresultStatus (t_result) == PGRES_TUPLES_OK && PQntuples (t_result) == 1) 
 	{
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 0, 0);
-		g_strlcpy (street->name, gda_value_stringify (t_value), sizeof (street->name));
+		if (mydebug > 30)
+			g_print ("db_postgis_query_street: read entry in database.\n");
 
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 1, 0);
-		g_strlcpy (street->ref, gda_value_stringify (t_value), sizeof (street->ref));
+		t_value = PQgetvalue (t_result, 0, 0);
+		g_strlcpy (street->name, t_value, sizeof (street->name));
 
-		t_value = (GValue *) gda_data_model_get_value_at (t_model, 2, 0);
-		g_strlcpy (street->type, gda_value_stringify (t_value), sizeof (street->type));
+		t_value = PQgetvalue (t_result, 0, 1);
+		g_strlcpy (street->ref, t_value, sizeof (street->ref));
+
+		t_value = PQgetvalue (t_result, 0, 2);
+		g_strlcpy (street->type, t_value, sizeof (street->type));
+
+		PQclear (t_result);
+		return TRUE;
 	}
 
-	g_object_unref (t_model);
-	return t_rows;
+	PQclear (t_result);
+	return FALSE;
 }
 
-void
-db_get_errors (GdaConnection *connection)
-{
-        GList *list;
-        GList *node;
-        GdaConnectionEvent *error;
-
-        list = (GList *) gda_connection_get_events (connection);
-
-        for (node = g_list_first (list); node != NULL; node = g_list_next (node)) {
-                error = (GdaConnectionEvent *) node->data;
-                g_print ("Error no: %u\t", (unsigned int) gda_connection_event_get_code (error));
-                g_print ("desc: %s\t", gda_connection_event_get_description (error));
-                g_print ("source: %s\t", gda_connection_event_get_source (error));
-                g_print ("sqlstate: %s\n", gda_connection_event_get_sqlstate (error));
-        }
-}

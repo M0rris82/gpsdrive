@@ -362,6 +362,7 @@ typedef struct
 	gchar poifilter[20000];	/* sql string for filtering the POI display */
 	gboolean have_speech;	/* flag if speech dispatcher is available */
 	gint window_state;	/* holds the current GdkWindowState for the main window */
+	gchar street_info[500];	/* holds info about the current street if available */
 }
 currentstatus_struct;
 

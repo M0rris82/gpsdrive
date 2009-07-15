@@ -1197,35 +1197,48 @@ drawmarker (GtkWidget * widget, guint * datum)
 		speech_out_cb (NULL, 0);
 #endif
 
-	/* experimental output of current street data */
+	if (local_config.showway)
+		draw_infotext (current.street_info);
+
+	return (TRUE);
+}
+
+
+#ifdef POSTGIS
 #ifdef MAPNIK
+/* *****************************************************************************
+ * experimental output of current street data
+ */
+gint
+draw_current_street_cb (void)
+{
 	if (local_config.showway)
 	{
 		street_struct t_street;
-		gchar t_buf[500];
-		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street) > 0)
+		if (db_streets_get (coords.current_lat, coords.current_lon, 0, &t_street))
 		{
 			if (g_ascii_strcasecmp (t_street.ref, "NULL") == 0)
 			{
-				g_snprintf (t_buf, sizeof (t_buf), "%s [%s]",
-					t_street.name, t_street.type);
+				g_snprintf (current.street_info, sizeof (current.street_info),
+					"%s [%s]", t_street.name, t_street.type);
 			}
 			else
 			{
-				g_snprintf (t_buf, sizeof (t_buf), "%s - %s [%s]",
-					t_street.ref, t_street.name, t_street.type);
+				g_snprintf (current.street_info, sizeof (current.street_info),
+					"%s - %s [%s]", t_street.ref, t_street.name, t_street.type);
 			}
 		}
 		else
 		{
-			g_strlcpy (t_buf, _("--- street name not available ---"), sizeof (t_buf));
+			g_strlcpy (current.street_info, _("--- street name not available ---"),
+				sizeof (current.street_info));
 		}
-		draw_infotext (t_buf);
 	}
-#endif
 
-	return (TRUE);
+	return TRUE;
 }
+#endif
+#endif
 
 
 /* *****************************************************************************
@@ -2659,6 +2672,12 @@ main (int argc, char *argv[])
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
 			current.statusbar_id, _("Using speech output"));
 	}
+#endif
+
+#ifdef POSTGIS
+#ifdef MAPNIK
+	g_timeout_add (4 *1000, (GtkFunction) draw_current_street_cb, NULL);
+#endif
 #endif
 
 	/* timer for switching nightmode on or off if set to AUTO */

@@ -1500,7 +1500,7 @@ settings_gui (GtkWidget *notebook)
 		_("This will show information about the current way "
 		  "(this is an experimental feature which may not work as expected!)"), NULL);
 
-#ifdef GDA3
+#ifdef POSTGIS
 	if (local_config.showway)
 	{
 		gtk_toggle_button_set_active
