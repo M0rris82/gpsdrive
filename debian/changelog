@@ -1,15 +1,231 @@
+gpsdrive (2.10svn2452) unstable; urgency=low
+
+   * - removed libgda, because it didn't work as expected
+   *   postgres connection is made directly through libpq
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 15 Jul 2009 22:39:18 +0200
+
+gpsdrive (2.10svn2451) unstable; urgency=low
+
+   * New/updated po file from translation-project
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jul 2009 20:59:40 +0200
+
+gpsdrive (2.10svn2450) unstable; urgency=low
+
+   * msg typo (SF bug #2816926)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 05 Jul 2009 17:54:05 +0200
+
+gpsdrive (2.10svn2448) unstable; urgency=low
+
+   * sync with latest control2
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 19:48:35 +0200
+
+gpsdrive (2.10svn2447) unstable; urgency=low
+
+   * attempt sync with latest control (untested)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 19:41:29 +0200
+
+gpsdrive (2.10svn2446) unstable; urgency=low
+
+   * sync with latest control
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 19:40:04 +0200
+
+gpsdrive (2.10svn2445) unstable; urgency=low
+
+   * cosmetic whitespace2
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 19:24:05 +0200
+
+gpsdrive (2.10svn2444) unstable; urgency=low
+
+   * cosmetic whitespace, lenny patch is now empty
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 19:20:18 +0200
+
+gpsdrive (2.10svn2443) unstable; urgency=low
+
+   * move perl dependencies to the utils package 
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 11:20:38 +0200
+
+gpsdrive (2.10svn2442) unstable; urgency=low
+
+   * Create man page seperated for each package; move gpsd_nmea man page to package utils
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 11:16:53 +0200
+
+gpsdrive (2.10svn2441) unstable; urgency=low
+
+   * in debian lenny the package is called libspeechd-dev-0.6.7~rc1-1
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 10:56:48 +0200
+
+gpsdrive (2.10svn2440) unstable; urgency=low
+
+   * PIXELFACT heritage
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Jun 2009 00:14:17 +0200
+
+gpsdrive (2.10svn2439) unstable; urgency=low
+
+   * add todo
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Jun 2009 18:42:09 +0200
+
+gpsdrive (2.10svn2438) unstable; urgency=low
+
+   * move spec dir with others
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Jun 2009 18:39:37 +0200
+
+gpsdrive (2.10svn2437) unstable; urgency=low
+
+   * update website URL
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Jun 2009 11:01:17 +0200
+
+gpsdrive (2.10svn2436) unstable; urgency=low
+
+   * prepare for next pre-release packaging.
+   * move to gpsdrive.de
+   * use CPACK_PACKAGE_VERSION_PATCH for either pre7 or svn-revision
+   * add comment how to vreate pre7 or final Versions
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Jun 2009 10:53:13 +0200
+
+gpsdrive (2.10svn2435) unstable; urgency=low
+
+   * add empty dir to hold RPM spec files
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 27 May 2009 09:12:58 +0200
+
+gpsdrive (2.10svn2434) unstable; urgency=low
+
+   * spelling
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 26 May 2009 19:30:51 +0200
+
+gpsdrive (2.10svn2433) unstable; urgency=low
+
+   * mapnik and boost are optional, +speechd ver
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 25 May 2009 11:23:37 +0200
+
+gpsdrive (2.10svn2432) unstable; urgency=low
+
+   * New Translation from Translation project
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 20 May 2009 23:24:36 +0200
+
+gpsdrive (2.10svn2431) unstable; urgency=low
+
+   * less loud default dashboard text color
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 20 May 2009 14:36:50 +0200
+
+gpsdrive (2.10svn2430) unstable; urgency=low
+
+   * cosmetics
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 20 May 2009 14:03:11 +0200
+
+gpsdrive (2.10svn2429) unstable; urgency=low
+
+   * sync etch patch
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 20 May 2009 13:50:06 +0200
+
+gpsdrive (2.10svn2428) unstable; urgency=low
+
+   * - fixed cflag for kismet integration
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 19 May 2009 23:22:14 +0200
+
+gpsdrive (2.10svn2427) unstable; urgency=low
+
+   * sync with latest rules and control (untested)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 19 May 2009 15:05:42 +0200
+
+gpsdrive (2.10svn2426) unstable; urgency=low
+
+   * quote pathnames (but not wildcards); audit for bashisms (none found)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 13 May 2009 07:25:00 +0200
+
+gpsdrive (2.10svn2425) unstable; urgency=low
+
+   * - fixed experimental maemo port: now gpsdrive can be started from the menu
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 12 May 2009 22:40:36 +0200
+
+gpsdrive (2.10svn2423) unstable; urgency=low
+
+   * - removed some unused variables
+   * - fixed some implicit function declarations
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 29 Apr 2009 16:06:23 +0200
+
+gpsdrive (2.10svn2422) unstable; urgency=low
+
+   * more consistent & informative error messages
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 29 Apr 2009 07:12:48 +0200
+
+gpsdrive (2.10svn2421) unstable; urgency=low
+
+   * fix script name in help page
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 29 Apr 2009 07:10:41 +0200
+
+gpsdrive (2.10svn2419) unstable; urgency=low
+
+   * Do not do an automated resision update of the changelog
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 27 Apr 2009 23:41:36 +0200
+
+gpsdrive (2.10svn2418) unstable; urgency=low
+
+   * - fix for bug #2781623:
+   *   gpsdrive hangs when file should not be overwritten in map download
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 26 Apr 2009 22:15:38 +0200
+
+gpsdrive (2.10svn2417) unstable; urgency=low
+
+   * - added 64x64 gpsdrive icon
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 26 Apr 2009 22:09:58 +0200
+
+gpsdrive (2.10svn2416) unstable; urgency=low
+
+   * reapply patch for bug #2686001 which got clobbered in r2324
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 26 Apr 2009 13:46:15 +0200
+
+gpsdrive (2.10svn2415) unstable; urgency=low
+
+   * Update debian/changelog
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 18:20:37 +0200
+
 gpsdrive (2.10svn2414) unstable; urgency=low
 
    * - reverted accidental commit from Ross changing default compile options
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 12:05:04 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 12:05:04 +0200
 
 gpsdrive (2.10svn2413) unstable; urgency=low
 
    * - finished basic support for external routing including dummy module
    *   (disabled by default until the 2.10 release is done!)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 11:59:08 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 25 Apr 2009 11:59:08 +0200
 
 gpsdrive (2.10svn2412) unstable; urgency=low
 
@@ -177,7 +393,7 @@ gpsdrive (2.10svn2385) unstable; urgency=low
 
    * - fixed display bug in "don't run as root" message
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 04 Apr 2009 07:51:08 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 04 Apr 2009 07:51:08 +0200
 
 gpsdrive (2.10svn2384) unstable; urgency=low
 
@@ -185,13 +401,13 @@ gpsdrive (2.10svn2384) unstable; urgency=low
    * - fixed bug in toggling way.txt display
    * - started modular navigation code (currently disabled because of upcoming release)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 03 Apr 2009 20:19:38 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 03 Apr 2009 20:19:38 +0200
 
 gpsdrive (2.10svn2383) unstable; urgency=low
 
    * Also remove cmake cache in build directory on 'debuild clean' command
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Apr 2009 19:45:39 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Apr 2009 19:45:39 +0200
 
 gpsdrive (2.10svn2382) unstable; urgency=low
 
@@ -203,376 +419,376 @@ gpsdrive (2.10svn2381) unstable; urgency=low
 
    * - changed some dependencies and descriptions for maemo build
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 01 Apr 2009 11:23:03 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 01 Apr 2009 11:23:03 +0200
 
 gpsdrive (2.10svn2380) unstable; urgency=low
 
    * Adapt lines and context of Hardy patch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 23:37:32 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 23:37:32 +0200
 
 gpsdrive (2.10svn2379) unstable; urgency=low
 
    * Set a fix Version for speech*
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 09:04:31 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 09:04:31 +0200
 
 gpsdrive (2.10svn2378) unstable; urgency=low
 
    * adapt move of /usr/share to new perllib location
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:47:18 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:47:18 +0200
 
 gpsdrive (2.10svn2377) unstable; urgency=low
 
    * The large Packages will only be suggested in the future...
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:27:35 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 01:27:35 +0200
 
 gpsdrive (2.10svn2376) unstable; urgency=low
 
    * Exclude the corresponding openstreetmap Package. They contain similar Executables
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 00:54:41 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 31 Mar 2009 00:54:41 +0200
 
 gpsdrive (2.10svn2375) unstable; urgency=low
 
    * Use LANG=en_US for changelog conversion
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 30 Mar 2009 22:55:08 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 30 Mar 2009 22:55:08 +0200
 
 gpsdrive (2.10svn2374) unstable; urgency=low
 
    * Add Phython compat File
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 29 Mar 2009 19:33:21 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 29 Mar 2009 19:33:21 +0200
 
 gpsdrive (2.10svn2373) unstable; urgency=low
 
    * Adapt dependencies 
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 29 Mar 2009 19:32:06 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 29 Mar 2009 19:32:06 +0200
 
 gpsdrive (2.10svn2372) unstable; urgency=low
 
    * new Translation; set mimetype for translations
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 19:56:13 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 19:56:13 +0100
 
 gpsdrive (2.10svn2371) unstable; urgency=low
 
    * Cleanup dependencies a little bit
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 14:17:25 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 14:17:25 +0100
 
 gpsdrive (2.10svn2370) unstable; urgency=low
 
    * Also allow perl      perl5.8.0
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:54:01 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:54:01 +0100
 
 gpsdrive (2.10svn2369) unstable; urgency=low
 
    * Increase compat version
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:53:11 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:53:11 +0100
 
 gpsdrive (2.10svn2368) unstable; urgency=low
 
    * install perl modules to place not moaned about by lintian; add compile switches hardcoded
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:52:35 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:52:35 +0100
 
 gpsdrive (2.10svn2367) unstable; urgency=low
 
    * Fix Copyright Format; add more people to copyright information
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:43:19 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:43:19 +0100
 
 gpsdrive (2.10svn2366) unstable; urgency=low
 
    * Correct duplicate changelog entries
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:42:37 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:42:37 +0100
 
 gpsdrive (2.10svn2365) unstable; urgency=low
 
    * Also install gpsicon.xpm
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:31:50 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 28 Mar 2009 11:31:50 +0100
 
 gpsdrive (2.10svn2364) unstable; urgency=low
 
    * also remove mappnik for ubuntu-hardy
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 20:53:11 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 20:53:11 +0100
 
 gpsdrive (2.10svn2363) unstable; urgency=low
 
    * correct linenumbers in patch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 19:48:39 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 19:48:39 +0100
 
 gpsdrive (2.10svn2362) unstable; urgency=low
 
    * Initial patch for debuild on ubuntu hardy with limited features
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 19:30:30 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 19:30:30 +0100
 
 gpsdrive (2.10svn2361) unstable; urgency=low
 
    * - extended experimental gps support on maemo platform
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 12:13:39 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 12:13:39 +0100
 
 gpsdrive (2.10svn2360) unstable; urgency=low
 
    * - updated debian changelog
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 11:08:52 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Mar 2009 11:08:52 +0100
 
 gpsdrive (2.10svn2359) unstable; urgency=low
 
    * - started experimental gps connection on maemo platform
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 11:06:54 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 11:06:54 +0100
 
 gpsdrive (2.10svn2358) unstable; urgency=low
 
    * - added cmake modules for maemo build
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 11:04:26 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 11:04:26 +0100
 
 gpsdrive (2.10svn2357) unstable; urgency=low
 
    * - setting default location for geoinfo.db to changed path
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 10:41:38 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Mar 2009 10:41:38 +0100
 
 gpsdrive (2.10svn2356) unstable; urgency=low
 
    * - added 26x26 png icon, used as source for maemo icon
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 23 Mar 2009 20:49:10 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 23 Mar 2009 20:49:10 +0100
 
 gpsdrive (2.10svn2355) unstable; urgency=low
 
    * - removed data that was moved to the openstreetmap repository
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 23 Mar 2009 20:47:10 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 23 Mar 2009 20:47:10 +0100
 
 gpsdrive (2.10svn2354) unstable; urgency=low
 
    * - added gpsdrive.links file to maemo build
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:50:32 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:50:32 +0100
 
 gpsdrive (2.10svn2353) unstable; urgency=low
 
    * - updated maemo build documentation
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:47:47 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:47:47 +0100
 
 gpsdrive (2.10svn2352) unstable; urgency=low
 
    * - added program manager icon to maemo package
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:45:10 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 08:45:10 +0100
 
 gpsdrive (2.10svn2351) unstable; urgency=low
 
    * - changed section for maemo package
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 03:09:15 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 22 Mar 2009 03:09:15 +0100
 
 gpsdrive (2.10svn2350) unstable; urgency=low
 
    * Defaults for WITH_BASEMAPS; correct explenation for WITH_FRIENDSD
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 20:55:56 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 20:55:56 +0100
 
 gpsdrive (2.10svn2349) unstable; urgency=low
 
    * WITH_BASEMAP deactivates installation of Basemap*.png ; WITH_FRIENDSD only deactivates creation of friendsd but not friends support inside gpsdrive itself; map_koord.txt shifted to maps-dir and -Package
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 20:53:31 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 20:53:31 +0100
 
 gpsdrive (2.10svn2348) unstable; urgency=low
 
    * Remove gdal and dbus from debian package dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:57:20 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:57:20 +0100
 
 gpsdrive (2.10svn2347) unstable; urgency=low
 
    * - added some maemo stuff
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:36:21 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:36:21 +0100
 
 gpsdrive (2.10svn2346) unstable; urgency=low
 
    * - optimized linking of libraries
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:29:25 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 19:29:25 +0100
 
 gpsdrive (2.10svn2345) unstable; urgency=low
 
    * Use parallel=<n> to compile with make -j4 or other if set
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:56:17 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:56:17 +0100
 
 gpsdrive (2.10svn2344) unstable; urgency=low
 
    * - added dbus to cmake options, default off
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:51:26 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:51:26 +0100
 
 gpsdrive (2.10svn2343) unstable; urgency=low
 
    * - some more maemo adaptions
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:21:09 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:21:09 +0100
 
 gpsdrive (2.10svn2342) unstable; urgency=low
 
    * move all existing friendsd-manual files; remove debug code from rules file
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:16:21 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:16:21 +0100
 
 gpsdrive (2.10svn2341) unstable; urgency=low
 
    * Add gpsd-connect-bluetooth to Package
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:14:57 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:14:57 +0100
 
 gpsdrive (2.10svn2340) unstable; urgency=low
 
    * rename gpsd-bluetooth script for easier finding
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:10:27 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 17:10:27 +0100
 
 gpsdrive (2.10svn2339) unstable; urgency=low
 
    * Create a seperate Package for friendsd
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 16:51:45 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 16:51:45 +0100
 
 gpsdrive (2.10svn2338) unstable; urgency=low
 
    * - changed casts to avoid compile time warnings on 64bit systems
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 15:17:12 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 15:17:12 +0100
 
 gpsdrive (2.10svn2337) unstable; urgency=low
 
    * use make -j4 for faster compile
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 15:15:13 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 15:15:13 +0100
 
 gpsdrive (2.10svn2336) unstable; urgency=low
 
    * - removed obsolete osm code
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 14:59:19 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 14:59:19 +0100
 
 gpsdrive (2.10svn2335) unstable; urgency=low
 
    * - removed obsolete osm code
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 14:55:18 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 14:55:18 +0100
 
 gpsdrive (2.10svn2334) unstable; urgency=low
 
    * - more maemo adaptions
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:58:45 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:58:45 +0100
 
 gpsdrive (2.10svn2333) unstable; urgency=low
 
    * - added more maemo specific file for debian packaging
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:20:57 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:20:57 +0100
 
 gpsdrive (2.10svn2332) unstable; urgency=low
 
    * - added more maemo specific changes
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:14:54 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:14:54 +0100
 
 gpsdrive (2.10svn2331) unstable; urgency=low
 
    * - added directory for maemo specific files
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:07:14 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 21 Mar 2009 09:07:14 +0100
 
 gpsdrive (2.10svn2330) unstable; urgency=low
 
    * Issue warning if no dir /usr/share/mapnik/world_boundaries  exist
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 18:33:34 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 18:33:34 +0100
 
 gpsdrive (2.10svn2329) unstable; urgency=low
 
    * - removed unnecessary gui mode 'MAEMO'
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 02:07:38 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 02:07:38 +0100
 
 gpsdrive (2.10svn2328) unstable; urgency=low
 
    * map-icons: more renaming according to get a more OSM style naming
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 02:03:02 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 02:03:02 +0100
 
 gpsdrive (2.10svn2327) unstable; urgency=low
 
    * map-icons: more renaming according to get a more OSM style naming
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 01:35:35 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 01:35:35 +0100
 
 gpsdrive (2.10svn2326) unstable; urgency=low
 
    * Adapt rules to adapted naming scheme
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 00:51:33 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 20 Mar 2009 00:51:33 +0100
 
 gpsdrive (2.10svn2325) unstable; urgency=low
 
    * - moved poi filters to separate window
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 19 Mar 2009 17:42:56 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 19 Mar 2009 17:42:56 +0100
 
 gpsdrive (2.10svn2324) unstable; urgency=low
 
    * - made type and text for quickly addign waypoints ('W') configurable
    * - changed routepoint type to fit changed poi type schema
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 19 Mar 2009 17:27:58 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 19 Mar 2009 17:27:58 +0100
 
 gpsdrive (2.10svn2323) unstable; urgency=low
 
    * Update changelog ... from time to time ...
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 14 Mar 2009 13:08:46 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 14 Mar 2009 13:08:46 +0100
 
 gpsdrive (2.10svn2322) unstable; urgency=low
 
    * Update changelog ... from time to time ...
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 14 Mar 2009 13:07:42 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 14 Mar 2009 13:07:42 +0100
 
 gpsdrive (2.10svn2321) unstable; urgency=low
 
    * - added saving of altitude mode
    *   patch by Joshua Johnson <enigma2175 at users.sourceforge.net>
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 13 Mar 2009 14:29:52 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 13 Mar 2009 14:29:52 +0100
 
 gpsdrive (2.10svn2320) unstable; urgency=low
 
    * - fixed some more poi_type bugs sometimes causing warnings
    * - optimized poi sql queries
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 11 Mar 2009 19:40:15 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 11 Mar 2009 19:40:15 +0100
 
 gpsdrive (2.10svn2319) unstable; urgency=low
 
@@ -580,49 +796,49 @@ gpsdrive (2.10svn2319) unstable; urgency=low
    *   - added conversion of 2nd and 3rd level osm tags to gpsdrive poi types
    *   - fixed some memory leaks
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:56:46 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:56:46 +0100
 
 gpsdrive (2.10svn2318) unstable; urgency=low
 
    * - fixed poi_type bug
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:51:04 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 10 Mar 2009 22:51:04 +0100
 
 gpsdrive (2.10svn2317) unstable; urgency=low
 
    * - adapted fon gpx import to changed poi_types
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 23:48:55 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 23:48:55 +0100
 
 gpsdrive (2.10svn2316) unstable; urgency=low
 
    * - included backup of old osm database to binary
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 09:26:29 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 09 Mar 2009 09:26:29 +0100
 
 gpsdrive (2.10svn2315) unstable; urgency=low
 
    * - adapted creation of osm poi database to new geoinfo.db
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 23:55:11 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 23:55:11 +0100
 
 gpsdrive (2.10svn2314) unstable; urgency=low
 
    * - updated poi db
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 19:02:05 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 08 Mar 2009 19:02:05 +0100
 
 gpsdrive (2.10svn2313) unstable; urgency=low
 
    * - removed dynamic poi_types from list used in "add waypoint" dialog
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:30:34 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:30:34 +0100
 
 gpsdrive (2.10svn2312) unstable; urgency=low
 
    * - updated geoinfo database with new structure
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:08:44 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 05 Mar 2009 14:08:44 +0100
 
 gpsdrive (2.10svn2311) unstable; urgency=low
 
@@ -646,7 +862,7 @@ gpsdrive (2.10svn2308) unstable; urgency=low
 
    * Patch from  Martin Werner 
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 07:17:39 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 07:17:39 +0100
 
 gpsdrive (2.10svn2307) unstable; urgency=low
 
@@ -660,55 +876,55 @@ gpsdrive (2.10svn2306) unstable; urgency=low
 
    * Add new subpackage gpsdrive-utils; a smaller variant to openstreetmap-utils
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:30:14 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:30:14 +0100
 
 gpsdrive (2.10svn2305) unstable; urgency=low
 
    * Add helper script to seperate a gpsdrive-utils package off the main install
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:29:04 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:29:04 +0100
 
 gpsdrive (2.10svn2304) unstable; urgency=low
 
    * Wrong destination path for renaming
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:15:08 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:15:08 +0100
 
 gpsdrive (2.10svn2303) unstable; urgency=low
 
    * Add section to create python Manpages
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:13:11 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:13:11 +0100
 
 gpsdrive (2.10svn2302) unstable; urgency=low
 
    * Move help to a seperate option --help; this helps in map-page creation
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:03:56 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 06:03:56 +0100
 
 gpsdrive (2.10svn2301) unstable; urgency=low
 
    * Add simple Help output for creating Man Pages
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 05:53:50 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 25 Feb 2009 05:53:50 +0100
 
 gpsdrive (2.10svn2300) unstable; urgency=low
 
    * Add more needed dependencies for compile
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 21:56:13 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 21:56:13 +0100
 
 gpsdrive (2.10svn2299) unstable; urgency=low
 
    * There is no distclean in the makefile
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 00:18:48 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 24 Feb 2009 00:18:48 +0100
 
 gpsdrive (2.10svn2298) unstable; urgency=low
 
    * add python-dev as alternative
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 16 Feb 2009 06:58:30 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 16 Feb 2009 06:58:30 +0100
 
 gpsdrive (2.10svn2297) unstable; urgency=low
 
@@ -720,55 +936,55 @@ gpsdrive (2.10svn2296) unstable; urgency=low
 
    * Update Changelog
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 28 Jan 2009 19:47:59 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 28 Jan 2009 19:47:59 +0100
 
 gpsdrive (2.10svn2295) unstable; urgency=low
 
    * switch speech off not on for debian-etch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 21:53:55 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 21:53:55 +0100
 
 gpsdrive (2.10svn2294) unstable; urgency=low
 
    * - fixed bug, when compiling without gda3 support
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 10:28:02 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 10:28:02 +0100
 
 gpsdrive (2.10svn2293) unstable; urgency=low
 
    * Also remove speechd for debian etch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:45:46 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:45:46 +0100
 
 gpsdrive (2.10svn2292) unstable; urgency=low
 
    * Add patch for debian etch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:26:20 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:26:20 +0100
 
 gpsdrive (2.10svn2291) unstable; urgency=low
 
    * revert build depending on package existance
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:11:53 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 27 Jan 2009 07:11:53 +0100
 
 gpsdrive (2.10svn2290) unstable; urgency=low
 
    * Only do cleanup if told so
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 25 Jan 2009 10:42:51 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 25 Jan 2009 10:42:51 +0100
 
 gpsdrive (2.10svn2289) unstable; urgency=low
 
    * Only use GDA3 if available on the system
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 23 Jan 2009 19:19:36 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 23 Jan 2009 19:19:36 +0100
 
 gpsdrive (2.10svn2288) unstable; urgency=low
 
    * New method to gather svnrevision
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 22 Jan 2009 23:28:43 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 22 Jan 2009 23:28:43 +0100
 
 gpsdrive (2.10svn2287) unstable; urgency=low
 
@@ -786,7 +1002,7 @@ gpsdrive (2.10svn2285) unstable; urgency=low
 
    * - renamed alle the "heading" stuff to "course", because that's what it is
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 16 Jan 2009 10:33:53 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 16 Jan 2009 10:33:53 +0100
 
 gpsdrive (2.10svn2284) unstable; urgency=low
 
@@ -846,7 +1062,7 @@ gpsdrive (2.10svn2275) unstable; urgency=low
 
    * - added saving of last used folder for gpx import/export
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 15 Jan 2009 08:39:35 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 15 Jan 2009 08:39:35 +0100
 
 gpsdrive (2.10svn2274) unstable; urgency=low
 
@@ -979,31 +1195,31 @@ gpsdrive (2.10svn2252) unstable; urgency=low
    * - fixed bug returning always speed in kph
    *   (patch submitted by Paul Martin <pm@debian.org>)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 22:56:56 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 22:56:56 +0100
 
 gpsdrive (2.10svn2251) unstable; urgency=low
 
    * - removed obsolete friends icon code
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 22:23:42 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 22:23:42 +0100
 
 gpsdrive (2.10svn2250) unstable; urgency=low
 
    * Add g++ and Phython as dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 14:28:57 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 14:28:57 +0100
 
 gpsdrive (2.10svn2247) unstable; urgency=low
 
    * - removed some obsolete pixmaps
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 11:23:15 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 11:23:15 +0100
 
 gpsdrive (2.10svn2246) unstable; urgency=low
 
    * - added 'pre7' suffix to splashscreen
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 11:14:19 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 06 Jan 2009 11:14:19 +0100
 
 gpsdrive (2.10svn2245) unstable; urgency=low
 
@@ -1011,14 +1227,14 @@ gpsdrive (2.10svn2245) unstable; urgency=low
    * - updated the help display to include this and ctrl-q
    *   (patch submitted by info@4x4falcon.com)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 05 Jan 2009 21:36:36 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 05 Jan 2009 21:36:36 +0100
 
 gpsdrive (2.10svn2244) unstable; urgency=low
 
    * - added keyboard shortcut Ctrl+Q  to exit the program
    *   (patch submitted by info@4x4falcon.com)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 05 Jan 2009 21:29:44 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 05 Jan 2009 21:29:44 +0100
 
 gpsdrive (2.10svn2243) unstable; urgency=low
 
@@ -1029,44 +1245,44 @@ gpsdrive (2.10svn2243) unstable; urgency=low
    *   back from libgpsd.
    *   (patch submitted by Paul Martin <pm@debian.org>)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 15:35:23 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 15:35:23 +0100
 
 gpsdrive (2.10svn2242) unstable; urgency=low
 
    * - make track autosave filenames morfe readable
    *   (patch submnitted by Paul Martin <pm@debian.org>)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 15:27:49 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 15:27:49 +0100
 
 gpsdrive (2.10svn2241) unstable; urgency=low
 
    * Use 1280x1024 as xvfb screen resolution
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 13:33:26 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 13:33:26 +0100
 
 gpsdrive (2.10svn2240) unstable; urgency=low
 
    * Improve Help, add more options(--exit-on-error,--ignore-gdk-errors,--ignore-known-errors),Add colorized comments,ignore more errors
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 12:57:51 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 02 Jan 2009 12:57:51 +0100
 
 gpsdrive (2.10svn2239) unstable; urgency=low
 
    * Adapt config File to reflect src changes
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 01 Jan 2009 18:31:25 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 01 Jan 2009 18:31:25 +0100
 
 gpsdrive (2.10svn2238) unstable; urgency=low
 
    * - added target 'package' for source package creation with cmake
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 20:49:50 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 20:49:50 +0100
 
 gpsdrive (2.10svn2237) unstable; urgency=low
 
    * - changed mapnik projection again (this has to be fixed properly soon...)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 20:15:57 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 20:15:57 +0100
 
 gpsdrive (2.10svn2236) unstable; urgency=low
 
@@ -1078,13 +1294,13 @@ gpsdrive (2.10svn2235) unstable; urgency=low
 
    * - updated debian dependencies
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 14:12:13 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 14:12:13 +0100
 
 gpsdrive (2.10svn2234) unstable; urgency=low
 
    * - updated help text for new key shortcut
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 14:00:09 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 14:00:09 +0100
 
 gpsdrive (2.10svn2233) unstable; urgency=low
 
@@ -1094,58 +1310,58 @@ gpsdrive (2.10svn2233) unstable; urgency=low
    *   (patch from info@4x4falcon.com)
    * - moved tabs in settigs window to the left side
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 13:56:17 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 13:56:17 +0100
 
 gpsdrive (2.10svn2232) unstable; urgency=low
 
    * - updated gpsdrive-update-osm-poi-db to also read from stdin when
    *   STDIN is given as source filename
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 13:09:52 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 13:09:52 +0100
 
 gpsdrive (2.10svn2231) unstable; urgency=low
 
    * - changed text explaining purpose of postgis database connection
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 11:52:14 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 11:52:14 +0100
 
 gpsdrive (2.10svn2230) unstable; urgency=low
 
    * - removed obsolete mysql directory
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 09:44:55 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 09:44:55 +0100
 
 gpsdrive (2.10svn2229) unstable; urgency=low
 
    * - added keyboard shortcut 'F1' to show help window
    * - added keyboard shortcut 'm' to show/hide control buttons menu
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 09:19:03 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 29 Dec 2008 09:19:03 +0100
 
 gpsdrive (2.10svn2228) unstable; urgency=low
 
    * Remove python dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:41:33 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:41:33 +0100
 
 gpsdrive (2.10svn2227) unstable; urgency=low
 
    * Add more variation for python dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:40:09 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:40:09 +0100
 
 gpsdrive (2.10svn2226) unstable; urgency=low
 
    * - automatically adjust font and filename length of save file name box.
    *   (containing patch submitted by info@4x4falcon.com
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:34:34 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 23:34:34 +0100
 
 gpsdrive (2.10svn2225) unstable; urgency=low
 
    * Allow gda for debian etch
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 18:27:08 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 18:27:08 +0100
 
 gpsdrive (2.10svn2224) unstable; urgency=low
 
@@ -1153,26 +1369,26 @@ gpsdrive (2.10svn2224) unstable; urgency=low
    *   rather than the left where it overlays the save file name box.
    *   (patch submitted by info@4x4falcon.com)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 13:04:59 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 28 Dec 2008 13:04:59 +0100
 
 gpsdrive (2.10svn2223) unstable; urgency=low
 
    * - fix for compiling without speech support
    * - say goodbye on shutdown
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 10:10:17 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 10:10:17 +0100
 
 gpsdrive (2.10svn2222) unstable; urgency=low
 
    * - enabled speech output of gps status
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 10:00:27 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 10:00:27 +0100
 
 gpsdrive (2.10svn2221) unstable; urgency=low
 
    * - fixed data update for case when gps device is not present
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 09:22:33 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 09:22:33 +0100
 
 gpsdrive (2.10svn2220) unstable; urgency=low
 
@@ -1180,63 +1396,63 @@ gpsdrive (2.10svn2220) unstable; urgency=low
    * - fixed time display
    *   including patches from Paul Martin <pm@debian.org>
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 09:04:18 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 09:04:18 +0100
 
 gpsdrive (2.10svn2219) unstable; urgency=low
 
    * - Fix up libgps support.
    *   Patches by Paul Martin <pm@debian.org>
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 07:36:43 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 23 Dec 2008 07:36:43 +0100
 
 gpsdrive (2.10svn2218) unstable; urgency=low
 
    * - enabled satellite status view again
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 19:30:06 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 19:30:06 +0100
 
 gpsdrive (2.10svn2217) unstable; urgency=low
 
    * - removed obsolete nmea parsing
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 13:07:13 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 13:07:13 +0100
 
 gpsdrive (2.10svn2216) unstable; urgency=low
 
    * - moved gpsd connection to use libgps
    *   (satellite status window updated soon...)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 12:59:44 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Dec 2008 12:59:44 +0100
 
 gpsdrive (2.10svn2215) unstable; urgency=low
 
    * - fixed bug in sqlite code, causing to read from osm database, even if not present
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:27:50 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:27:50 +0100
 
 gpsdrive (2.10svn2214) unstable; urgency=low
 
    * - changed kismet default host to avoid errors on maemo
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:26:19 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:26:19 +0100
 
 gpsdrive (2.10svn2213) unstable; urgency=low
 
    * - make use of maemo hardware keys
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:24:55 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:24:55 +0100
 
 gpsdrive (2.10svn2212) unstable; urgency=low
 
    * - started transition to libgps by adding cmake find module
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:22:53 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 19 Dec 2008 18:22:53 +0100
 
 gpsdrive (2.10svn2211) unstable; urgency=low
 
    * - fixed bug causing gtk-warning
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 18 Dec 2008 13:52:22 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 18 Dec 2008 13:52:22 +0100
 
 gpsdrive (2.10svn2210) unstable; urgency=low
 
@@ -1250,38 +1466,38 @@ gpsdrive (2.10svn2209) unstable; urgency=low
    * - adapted main menu to hildon
    * - updated maemo documentation
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 17:29:34 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 17:29:34 +0100
 
 gpsdrive (2.10svn2208) unstable; urgency=low
 
    * - added cmake module for hildon
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 15:51:32 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 15:51:32 +0100
 
 gpsdrive (2.10svn2207) unstable; urgency=low
 
    * - added cmake option MAEMO to set compile options for maemo plattform
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 15:37:15 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 15:37:15 +0100
 
 gpsdrive (2.10svn2206) unstable; urgency=low
 
    * - added new gui mode 'maemo'
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:12:59 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:12:59 +0100
 
 gpsdrive (2.10svn2205) unstable; urgency=low
 
    * - started documentation for maemo port
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:05:55 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:05:55 +0100
 
 gpsdrive (2.10svn2204) unstable; urgency=low
 
    * - removed some geo* scripts as they won't work anyhow.
    *   also partially addressing debian bug #508595
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:02:03 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 17 Dec 2008 14:02:03 +0100
 
 gpsdrive (2.10svn2203) unstable; urgency=low
 
@@ -1335,19 +1551,19 @@ gpsdrive (2.10svn2195) unstable; urgency=low
 
    * - removed obsolete unlink of temp file
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:53:27 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:53:27 +0100
 
 gpsdrive (2.10svn2194) unstable; urgency=low
 
    * - removed obsolete function signalposreq()
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:48:09 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:48:09 +0100
 
 gpsdrive (2.10svn2193) unstable; urgency=low
 
    * - renamed "Pos. Mode" to "Explore Mode" which describes it better
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:45:49 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Dec 2008 12:45:49 +0100
 
 gpsdrive (2.10svn2192) unstable; urgency=low
 
@@ -1377,33 +1593,33 @@ gpsdrive (2.10svn2188) unstable; urgency=low
 
    * - added new icon
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 15 Dec 2008 11:53:32 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 15 Dec 2008 11:53:32 +0100
 
 gpsdrive (2.10svn2187) unstable; urgency=low
 
    * Updated translation from the translation project
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Dec 2008 01:38:43 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 13 Dec 2008 01:38:43 +0100
 
 gpsdrive (2.10svn2186) unstable; urgency=low
 
    * - included additional data from poi_extra table into poi_info window
    *   (currently read-only)
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:14:30 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:14:30 +0100
 
 gpsdrive (2.10svn2185) unstable; urgency=low
 
    * - modified creation of database to use only ids > 99999999
    * - added index to osm database file
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:08:42 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:08:42 +0100
 
 gpsdrive (2.10svn2184) unstable; urgency=low
 
    * - updated TODO file
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:07:38 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 12 Dec 2008 21:07:38 +0100
 
 gpsdrive (2.10svn2183) unstable; urgency=low
 
@@ -1415,61 +1631,61 @@ gpsdrive (2.10svn2182) unstable; urgency=low
 
    * Update Translation nl.po from translation Project
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 21:41:58 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 21:41:58 +0100
 
 gpsdrive (2.10svn2181) unstable; urgency=low
 
    * - changed poi search and display from postgis to sqlite database
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 18:24:34 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 18:24:34 +0100
 
 gpsdrive (2.10svn2180) unstable; urgency=low
 
    * - fixed locale bug in osm.db creation
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 18:23:44 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 18:23:44 +0100
 
 gpsdrive (2.10svn2179) unstable; urgency=low
 
    * Add option for Screenshots
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:54:19 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:54:19 +0100
 
 gpsdrive (2.10svn2178) unstable; urgency=low
 
    * reorder screenshots after normal test
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:52:49 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:52:49 +0100
 
 gpsdrive (2.10svn2177) unstable; urgency=low
 
    * reorder tests; add short not to screenshots, but to real tests
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:51:58 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:51:58 +0100
 
 gpsdrive (2.10svn2176) unstable; urgency=low
 
    * Add options for use-xvfb;short;help
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:42:15 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:42:15 +0100
 
 gpsdrive (2.10svn2175) unstable; urgency=low
 
    * Adapt tests: move gpsdriverc values, create tracks directory in advance
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:30:37 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:30:37 +0100
 
 gpsdrive (2.10svn2174) unstable; urgency=low
 
    * Correct tests by adapting default config
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:17:07 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:17:07 +0100
 
 gpsdrive (2.10svn2173) unstable; urgency=low
 
    * Add postgis dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:12:08 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 04 Dec 2008 08:12:08 +0100
 
 gpsdrive (2.10svn2172) unstable; urgency=low
 
@@ -1517,13 +1733,13 @@ gpsdrive (2.10svn2165) unstable; urgency=low
 
    * - added new binary for creating sqlite poi database from osm dump
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 28 Nov 2008 17:25:17 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 28 Nov 2008 17:25:17 +0100
 
 gpsdrive (2.10svn2164) unstable; urgency=low
 
    * - small fix for new osm poi sqlite database
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 28 Nov 2008 17:24:14 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 28 Nov 2008 17:24:14 +0100
 
 gpsdrive (2.10svn2163) unstable; urgency=low
 
@@ -1537,7 +1753,7 @@ gpsdrive (2.10svn2162) unstable; urgency=low
    *   this file will be used to store POI data from OpenstreetMap, so these data
    *   can be used without having a postgis database.
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 24 Nov 2008 16:26:41 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 24 Nov 2008 16:26:41 +0100
 
 gpsdrive (2.10svn2161) unstable; urgency=low
 
@@ -1549,13 +1765,13 @@ gpsdrive (2.10svn2160) unstable; urgency=low
 
    * Add Ubuntu alternative for dependencies
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 23 Nov 2008 03:36:09 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 23 Nov 2008 03:36:09 +0100
 
 gpsdrive (2.10svn2159) unstable; urgency=low
 
    * Add dependencies
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 23 Nov 2008 03:29:39 +0100
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 23 Nov 2008 03:29:39 +0100
 
 gpsdrive (2.10svn2158) unstable; urgency=low
 
@@ -1621,7 +1837,7 @@ gpsdrive (2.10svn2147) unstable; urgency=low
 
    * - updated some documentation
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 18 Nov 2008 17:10:04 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 18 Nov 2008 17:10:04 +0100
 
 gpsdrive (2.10svn2146) unstable; urgency=low
 
@@ -1630,7 +1846,7 @@ gpsdrive (2.10svn2146) unstable; urgency=low
    *   new sizes: name[80], type[160], comment[255]
    * - removed some obsolete declarations
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 18 Nov 2008 17:08:43 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 18 Nov 2008 17:08:43 +0100
 
 gpsdrive (2.10svn2145) unstable; urgency=low
 
@@ -1692,7 +1908,7 @@ gpsdrive (2.10svn2137) unstable; urgency=low
 
    * - added cmake module for speechd
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 04 Nov 2008 23:41:53 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 04 Nov 2008 23:41:53 +0100
 
 gpsdrive (2.10svn2136) unstable; urgency=low
 
@@ -1700,13 +1916,13 @@ gpsdrive (2.10svn2136) unstable; urgency=low
    *   speech output now is done via speech-dispatcher, supporting
    *   festival, flite, espeak, and other software
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 04 Nov 2008 23:38:00 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 04 Nov 2008 23:38:00 +0100
 
 gpsdrive (2.10svn2135) unstable; urgency=low
 
    * - fixed packing of explanation text in nav settings
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 30 Oct 2008 12:15:38 +0100
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 30 Oct 2008 12:15:38 +0100
 
 gpsdrive (2.10svn2134) unstable; urgency=low
 
@@ -1791,32 +2007,32 @@ gpsdrive (2.10svn2121) unstable; urgency=low
 
    * - changed libcurl dependencies for debian build
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 22 Oct 2008 15:27:08 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 22 Oct 2008 15:27:08 +0200
 
 gpsdrive (2.10svn2120) unstable; urgency=low
 
    * - some minor variable cleanup
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 21 Oct 2008 16:20:43 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 21 Oct 2008 16:20:43 +0200
 
 gpsdrive (2.10svn2119) unstable; urgency=low
 
    * - added line connecting the current position to the destination
    * - fixed hiding of route info, when route is done
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 20 Oct 2008 16:15:08 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 20 Oct 2008 16:15:08 +0200
 
 gpsdrive (2.10svn2118) unstable; urgency=low
 
    * hinst for debian install
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 19 Oct 2008 16:14:09 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 19 Oct 2008 16:14:09 +0200
 
 gpsdrive (2.10svn2117) unstable; urgency=low
 
    * gpx.c: preset ele, seperate meter
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 19 Oct 2008 16:12:27 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 19 Oct 2008 16:12:27 +0200
 
 gpsdrive (2.10svn2116) unstable; urgency=low
 
@@ -1852,7 +2068,7 @@ gpsdrive (2.10svn2111) unstable; urgency=low
 
    * - made interval between saved track points configurable
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 16 Oct 2008 22:22:59 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 16 Oct 2008 22:22:59 +0200
 
 gpsdrive (2.10svn2110) unstable; urgency=low
 
@@ -1882,20 +2098,20 @@ gpsdrive (2.10svn2106) unstable; urgency=low
 
    * - realized customizable line style for tracks and routes
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 15 Oct 2008 22:23:17 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 15 Oct 2008 22:23:17 +0200
 
 gpsdrive (2.10svn2105) unstable; urgency=low
 
    * - added settings tab for track handling
    * - enabled automatic track export in configurable intervals
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 15 Oct 2008 17:49:57 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 15 Oct 2008 17:49:57 +0200
 
 gpsdrive (2.10svn2104) unstable; urgency=low
 
    * Add new translations from translation project
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 12 Oct 2008 19:19:57 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 12 Oct 2008 19:19:57 +0200
 
 gpsdrive (2.10svn2103) unstable; urgency=low
 
@@ -1913,7 +2129,7 @@ gpsdrive (2.10svn2101) unstable; urgency=low
 
    * - fixed missing files from last commit
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 06 Oct 2008 18:41:19 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 06 Oct 2008 18:41:19 +0200
 
 gpsdrive (2.10svn2100) unstable; urgency=low
 
@@ -1938,7 +2154,7 @@ gpsdrive (2.10svn2097) unstable; urgency=low
    * - reworked internal map download, including landsat and openstreetmap_tah
    * - removed and renamed some variables
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 03 Oct 2008 12:53:02 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 03 Oct 2008 12:53:02 +0200
 
 gpsdrive (2.10svn2096) unstable; urgency=low
 
@@ -1954,13 +2170,13 @@ gpsdrive (2.10svn2095) unstable; urgency=low
 
    * - added box for compass, so that compass is centered
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Oct 2008 10:58:01 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 02 Oct 2008 10:58:01 +0200
 
 gpsdrive (2.10svn2094) unstable; urgency=low
 
    * - moved compass and minimap to left side, making dashboard slimmer
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 01 Oct 2008 18:17:18 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 01 Oct 2008 18:17:18 +0200
 
 gpsdrive (2.10svn2093) unstable; urgency=low
 
@@ -1978,7 +2194,7 @@ gpsdrive (2.10svn2091) unstable; urgency=low
 
    * adapt test config to new features
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 30 Sep 2008 09:14:36 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 30 Sep 2008 09:14:36 +0200
 
 gpsdrive (2.10svn2090) unstable; urgency=low
 
@@ -2080,13 +2296,13 @@ gpsdrive (2.10svn2074) unstable; urgency=low
 
    * - added separate lines for font sizes for pda mode to config
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Sep 2008 14:03:49 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Sep 2008 14:03:49 +0200
 
 gpsdrive (2.10svn2073) unstable; urgency=low
 
    * - added confirmation dialog to 'clear track' button
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Sep 2008 11:25:08 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 22 Sep 2008 11:25:08 +0200
 
 gpsdrive (2.10svn2072) unstable; urgency=low
 
@@ -2186,7 +2402,7 @@ gpsdrive (2.10svn2057) unstable; urgency=low
 
    * - added handling of SIGINT, to do a clean shutdown on CTRL-C
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 20 Sep 2008 08:56:37 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sat, 20 Sep 2008 08:56:37 +0200
 
 gpsdrive (2.10svn2056) unstable; urgency=low
 
@@ -2225,74 +2441,74 @@ gpsdrive (2.10svn2050) unstable; urgency=low
    * - removed some unnecessary declarations
    * - added settings to switch compass from rotating to fiexed mode
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Sep 2008 16:10:55 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Sep 2008 16:10:55 +0200
 
 gpsdrive (2.10svn2049) unstable; urgency=low
 
    * - added 'clear track' button
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Sep 2008 10:14:13 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 16 Sep 2008 10:14:13 +0200
 
 gpsdrive (2.10svn2048) unstable; urgency=low
 
    * Add , to debian/control file, otherwise debian ignores all following lines
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 10 Sep 2008 21:53:31 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 10 Sep 2008 21:53:31 +0200
 
 gpsdrive (2.10svn2047) unstable; urgency=low
 
    * - converted gpsdrive-update-mapnik-poitypes script
    *   from perl to C to reduce dependencies
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Sep 2008 19:20:34 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Sep 2008 19:20:34 +0200
 
 gpsdrive (2.10svn2046) unstable; urgency=low
 
    * - fixed bug in poi lookup
 
- -- d_s_e via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Sep 2008 19:00:16 +0200
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 08 Sep 2008 19:00:16 +0200
 
 gpsdrive (2.10svn2045) unstable; urgency=low
 
    * define variable on top of the function
 
- -- ulflulfl via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:14:14 +0200
+ -- Ulf Lamping via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:14:14 +0200
 
 gpsdrive (2.10svn2044) unstable; urgency=low
 
    * some duplicates to make msvc development a lot easier
 
- -- ulflulfl via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:12:55 +0200
+ -- Ulf Lamping via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:12:55 +0200
 
 gpsdrive (2.10svn2043) unstable; urgency=low
 
    * add some fake mysql stuff for msvc
 
- -- ulflulfl via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:10:50 +0200
+ -- Ulf Lamping via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:10:50 +0200
 
 gpsdrive (2.10svn2042) unstable; urgency=low
 
    * ignore various intermediate files and dirs
 
- -- ulflulfl via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:06:03 +0200
+ -- Ulf Lamping via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:06:03 +0200
 
 gpsdrive (2.10svn2041) unstable; urgency=low
 
    * add some fake mysql stuff for msvc
 
- -- ulflulfl via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:03:41 +0200
+ -- Ulf Lamping via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 07 Sep 2008 19:03:41 +0200
 
 gpsdrive (2.10svn2040) unstable; urgency=low
 
    * Add missing world_boundaries problem
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 31 Aug 2008 10:32:41 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 31 Aug 2008 10:32:41 +0200
 
 gpsdrive (2.10svn2032) unstable; urgency=low
 
    * Add perl6 slurp as alternative dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 13 Aug 2008 11:48:36 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 13 Aug 2008 11:48:36 +0200
 
 gpsdrive (2.10svn2031) unstable; urgency=low
 
@@ -2317,7 +2533,7 @@ gpsdrive (2.10svn2027) unstable; urgency=low
 
    * Add ubuntu dependency
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 11 Aug 2008 23:12:08 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 11 Aug 2008 23:12:08 +0200
 
 gpsdrive (2.10svn2026) unstable; urgency=low
 
@@ -2387,7 +2603,7 @@ gpsdrive (2.10svn2016) unstable; urgency=low
 
    * Add new feature +mapnik_caching = 1 to test-config
 
- -- ostertag via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 30 Jul 2008 23:40:33 +0200
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 30 Jul 2008 23:40:33 +0200
 
 gpsdrive (2.10svn2015) unstable; urgency=low
 
@@ -13135,7 +13351,7 @@ gpsdrive (2.10svn343) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 10 Jun 1994 04:10:38 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 10 Jun 1994 04:10:38 +0200
 
 gpsdrive (2.10svn342) unstable; urgency=low
 
@@ -13179,7 +13395,7 @@ gpsdrive (2.10svn336) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 10 Jun 1994 04:10:31 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 10 Jun 1994 04:10:31 +0200
 
 gpsdrive (2.10svn335) unstable; urgency=low
 
@@ -13369,7 +13585,7 @@ gpsdrive (2.10svn310) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 15:02:22 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 15:02:22 +0200
 
 gpsdrive (2.10svn309) unstable; urgency=low
 
@@ -13394,7 +13610,7 @@ gpsdrive (2.10svn307) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 15:02:19 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 15:02:19 +0200
 
 gpsdrive (2.10svn306) unstable; urgency=low
 
@@ -14072,7 +14288,7 @@ gpsdrive (2.10svn215) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:33 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:33 +0200
 
 gpsdrive (2.10svn214) unstable; urgency=low
 
@@ -14165,7 +14381,7 @@ gpsdrive (2.10svn202) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:30 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:30 +0200
 
 gpsdrive (2.10svn201) unstable; urgency=low
 
@@ -14277,7 +14493,7 @@ gpsdrive (2.10svn185) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:25 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:25 +0200
 
 gpsdrive (2.10svn184) unstable; urgency=low
 
@@ -14414,7 +14630,7 @@ gpsdrive (2.10svn164) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:18 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:18 +0200
 
 gpsdrive (2.10svn163) unstable; urgency=low
 
@@ -14438,7 +14654,7 @@ gpsdrive (2.10svn160) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:17 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:17 +0200
 
 gpsdrive (2.10svn159) unstable; urgency=low
 
@@ -14462,7 +14678,7 @@ gpsdrive (2.10svn156) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:16 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:16 +0200
 
 gpsdrive (2.10svn155) unstable; urgency=low
 
@@ -14474,13 +14690,13 @@ gpsdrive (2.10svn154) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:15 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:15 +0200
 
 gpsdrive (2.10svn153) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:14 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 08 Jun 1994 10:37:14 +0200
 
 gpsdrive (2.10svn152) unstable; urgency=low
 
@@ -14822,7 +15038,7 @@ gpsdrive (2.10svn109) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:25:37 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:25:37 +0200
 
 gpsdrive (2.10svn108) unstable; urgency=low
 
@@ -14911,7 +15127,7 @@ gpsdrive (2.10svn99) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:25:35 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:25:35 +0200
 
 gpsdrive (2.10svn98) unstable; urgency=low
 
@@ -15559,31 +15775,31 @@ gpsdrive (2.10svn10) unstable; urgency=low
 
    * splitting functions out of gpsdrive.c
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:38 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:38 +0200
 
 gpsdrive (2.10svn9) unstable; urgency=low
 
    * splitting functions out
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:37 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:37 +0200
 
 gpsdrive (2.10svn8) unstable; urgency=low
 
    * Split error_popup() into separate file
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:36 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:36 +0200
 
 gpsdrive (2.10svn7) unstable; urgency=low
 
    * Split quit_program into separate file
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:35 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:35 +0200
 
 gpsdrive (2.10svn6) unstable; urgency=low
 
    * Initial revision
 
- -- commiter via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:34 +0200
+ -- Taken from last tar File via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 07 Jun 1994 13:24:34 +0200
 
 gpsdrive (2.10svn5) unstable; urgency=low
 
