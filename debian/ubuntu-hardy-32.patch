@@ -2,100 +2,42 @@ Index: rules
 ===================================================================
 --- rules	(revision 2447)
 +++ rules	(working copy)
-@@ -31,6 +31,9 @@
- 	      -DMAN_INSTALL_DIR=/usr/share/man \
- 	      -DINFO_INSTALL_DIR=/usr/share/info \
+@@ -33,1 +33,4 @@
  	      -DDATADIR=/usr/share \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
- 	      .. 
- 
- 	rm -f build/build-stamp
 Index: control
 ===================================================================
 --- control	(revision 2447)
 +++ control	(working copy)
-@@ -12,24 +12,16 @@
- 	libboost-serialization-dev,
- 	libc6-dev,
- 	libcurl4-gnutls-dev | libcurl4-openssl-dev | libcurl3-openssl-dev,
--	libgda3-dev,
- 	libgps-dev,
- 	libgtk2.0-dev,
- 	libltdl3-dev,
- 	libmagick9-dev,
+@@ -19,1 +19,0 @@
 -	libmapnik-dev (>> 0.5.0-1),
- 	libpcre3-dev,
+@@ -22,1 +22,0 @@
 -	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
- 	libsqlite3-dev,
- 	libxml-twig-perl,
- 	perl-doc,
- 	pkg-config,
--	po-debconf,
+@@ -28,5 +28,0 @@
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-+	po-debconf
- Standards-Version: 3.8.1
- 
- # ------------------------------------------------------------------
-@@ -40,25 +32,18 @@
- 	libart-2.0-2,
- 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
- 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
--	libgda3-3,
--	libgda3-postgres,
- 	libltdl3 | libltdl7,
+@@ -44,1 +44,0 @@
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
- 	libsqlite3-0,
+@@ -46,2 +46,0 @@
 -	mapnik-plugins,
 -	mapnik-utils,
- 	openstreetmap-map-icons (>> 8310),
- 	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2299),
- 	perlmagick,
- 	sudo,
- 	ttf-dejavu
- Recommends: gpsd,
+@@ -55,1 +5,0 @@
 -	espeak,
- 	gdal-bin,
- 	gpsbabel,
- 	gpsdrive-data-maps (>> 2322),
- 	imagemagick,
+@@ -60,1 +60,0 @@
 -	libdbd-mysql-perl,
- 	libdbd-sqlite3-perl,
- 	libgeos,
- 	postgresql-8.3-postgis | postgresql-8.2-postgis,
-@@ -72,8 +57,7 @@
- 	libfile-find-rule-perl,
- 	libgtk2.0-0,
- 	openstreetmap-mapnik-data,
--	openstreetmap-mapnik-world-boundaries (>> 7749),
+@@ -72,1 +57,0 @@
 -	festival
-+	openstreetmap-mapnik-world-boundaries (>> 7749)
- Description: GPS navigation system
-  GpsDrive is a car (bike, ship, plane, foot) navigation system.
-  GpsDrive displays your position provided from a GPS on a zoomable map,
-@@ -83,9 +67,6 @@
-  .
-  You will most likely want to install the gpsd package so that you
-  can talk to your GPS; without that GpsDrive is just a map viewer.
+@@ -83,3 +67,0 @@
 - Speech output is supported if the "espeak" software is installed.
 - To use maps from the OpenStreetMap project you need to install the
 - openstreetmap-* packages as well.
- 
- # ------------------------------------------------------------------
- Package: gpsdrive-utils
-@@ -93,10 +74,6 @@
- Depends: ${misc:Depends},
- 	 ${shlibs:Depends},
-          ${perl:Depends},
+@@ -93,4 +74,0 @@
 -	 python,
 -	 python-support,
 -	 python-central,
 -	 python-dev,
- 	 perl-base (>> 5.6),
- 	 libtext-query-perl,
- 	 libtimedate-perl,
