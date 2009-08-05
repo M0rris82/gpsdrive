@@ -228,8 +228,9 @@ namespace mapnik {
         
         if (!boost::filesystem::exists("/usr/share/mapnik/world_boundaries")) {
 	    cout << "Missing '/usr/share/mapnik/world_boundaries' please install mapnik world boundaries, if error occurs!" << endl;
+        MapnikInitYsn = 0;
 	}
-	
+	else {
         std::string mapnik_config_file (ConfigXML);
         if (mydebug > 10) cout << "mapnik::load_map('" << mapnik_config_file <<"')" << endl;
         mapnik::load_map(*MapnikMap.MapPtr, mapnik_config_file);
@@ -237,6 +238,7 @@ namespace mapnik {
         MapnikMap.ImageRawDataPtr = (unsigned char *) malloc(MapnikMap.WidthInt * 3 * MapnikMap.HeightInt);
         boost::thread(boost::bind(&render_thread));
         MapnikInitYsn = -1;
+	}
     }
     catch(const mapnik::config_error &ex) {
         cerr << "Cannot init mapnik. Mapnik support DISABLED: " << ex.what() << "\n" << endl;
