@@ -103,7 +103,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_installmenu
 	dh_pysupport
-	dh_python
+#	dh_python
 	dh_pycentral
 #	dh_installinit
 #	dh_installcron
