@@ -11,32 +11,30 @@ Index: control
 ===================================================================
 --- control	(revision 2447)
 +++ control	(working copy)
-@@ -19,1 +19,0 @@
+@@ -18,1 +18,0 @@
 -	libmapnik-dev (>> 0.5.0-1),
-@@ -22,1 +22,0 @@
+@@ -21,1 +21,0 @@
 -	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
-@@ -28,5 +28,0 @@
+@@ -27,5 +27,0 @@
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-@@ -44,1 +44,0 @@
+@@ -43,1 +43,0 @@
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
-@@ -46,2 +46,0 @@
+@@ -47,1 +47,0 @@
+-	espeak,
+@@ -51,2 +51,0 @@
 -	mapnik-plugins,
 -	mapnik-utils,
-@@ -55,1 +5,0 @@
--	espeak,
-@@ -60,1 +60,0 @@
--	libdbd-mysql-perl,
-@@ -72,1 +57,0 @@
+@@ -70,1 +70,0 @@
 -	festival
-@@ -83,3 +67,0 @@
+@@ -80,3 +80,0 @@
 - Speech output is supported if the "espeak" software is installed.
 - To use maps from the OpenStreetMap project you need to install the
 - openstreetmap-* packages as well.
-@@ -93,4 +74,0 @@
+@@ -90,4 +90,0 @@
 -	 python,
 -	 python-support,
 -	 python-central,
