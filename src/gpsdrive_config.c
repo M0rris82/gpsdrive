@@ -714,7 +714,7 @@ readconfig ()
 				display_map[max_display_map-1].to_be_displayed = atoi (par2);
 			}
 			else
-				fprintf (stderr, "ERROR: Unknown Config Parameter '%s=%s'\n",par1,par2);
+				fprintf (stderr, "WARNING: Unknown Config Parameter '%s=%s'\n",par1,par2);
 		}	/* if e==2 */
 	}
 
