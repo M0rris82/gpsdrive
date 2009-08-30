@@ -7,7 +7,8 @@ Usage: python gpsdrive_mapnik_gentiles.py [options]
 
 Options:
   -h, --help     show this help
-  -b, --bbox     boundingbox (lon,lat,lon,lat) - Be carefull! Quote negative values!
+  -b, --bbox     boundingbox (minlon,minlat,maxlon,maxlat)
+                  - Be carefull! Quote negative values!
   -s, --scale    scale single/range
                               1 = 147456000
                               2 = 73728000
