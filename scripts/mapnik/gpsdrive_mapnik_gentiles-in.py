@@ -33,11 +33,18 @@ import sys, os
 import getopt
 import string
 
-zoom2scale = [728 * 576000,256 * 576000,128 * 576000,64 * 576000,32 * 576000,16 * 576000,8 * 576000,4 * 576000,2 * 576000,576000,288000,144000,72000,36000,18000,9000,4500,2250,1125]
-
 
 DEG_TO_RAD = pi/180
 RAD_TO_DEG = 180/pi
+
+def calc_scale (lat, zoom):
+    # GpsDrive's hardcoded pixels per meter ratio
+    PixelFact = 2817.947378
+    # wgs84 major Earth axis
+    a = 6378137.0
+    dynscale = ( a * 2*pi * cos(lat * DEG_TO_RAD) * PixelFact ) / ( 256*pow(2,zoom) )
+    print dynscale
+    return dynscale
 
 def minmax (a,b,c):
     a = max(a,b)
@@ -94,8 +101,11 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
     #m = Map(2 * 256,2 * 256)
     m = Map(1280,1024)
     load_map(m,mapfile)
-    prj = Projection("+proj=merc +datum=WGS84")
-    
+    #prj = Projection("+proj=merc +datum=WGS84")
+    # What follows is from /usr/share/proj/esri.extra, EPSG:900913
+    #  "Chris' funny epsgish code for the google mercator"
+    prj = Projection("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext +no_defs")
+
     ll0 = (bbox[0],bbox[3])
     ll1 = (bbox[2],bbox[1])
     
@@ -146,7 +156,7 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                     fh_mapkoord.write(tile_path + " ")
                     fh_mapkoord.write(str((p0[1] + p1[1]) / 2) + " ")
                     fh_mapkoord.write(str((p0[0] + p1[0]) / 2) + " ")
-                    fh_mapkoord.write(str(zoom2scale[z]))
+                    fh_mapkoord.write(str( calc_scale( (p0[1] + p1[1])/2, z) ))
                     fh_mapkoord.write(" " + str(p0[1]) + " " + str(p0[0]))
                     fh_mapkoord.write(" " + str(p1[1]) + " " + str(p1[0]))
                     fh_mapkoord.write("\n")
@@ -222,6 +232,7 @@ def main(argv):
     
     # check for correct values
     if str(eval(bboxs[0])) != bboxs[0] or str(eval(bboxs[1])) != bboxs[1] or str(eval(bboxs[2])) != bboxs[2] or str(eval(bboxs[3])) != bboxs[3]:
+        # rounding problems... what exactly is this supposed to be checking ???
         sys.exit("Boundingbox invalid!")
         
     if minZoom < 1 or minZoom > 17 or maxZoom < 1 and maxZoom > 17 or minZoom > maxZoom or int(minZoom) <> minZoom or int(maxZoom) <> maxZoom:
