@@ -280,11 +280,18 @@ tool. This is found in the Options -> Maps menu. A preview of already
 downloaded maps near to the current preferred mapscale are shown as yellow
 rectangles drawn over the map. The area to be downloaded is drawn as a
 green rectangle over the map. Reposition the area to be downloaded with
-a left-mouse click.
+a left-mouse click. Map scales given in the GUI for OpenStreetMap tiles
+are only approximate, the true scale at the selected latitude will be
+calculated when the map is downloaded - this can vary by up to 50% at
+high latitudes and is a limitation of the popular Web Tile method.
+LANDSAT maps use a WMS server and will match the requested scale exactly.
 
+If you have Mapnik set up you can also use the
+\fIgpsdrive_mapnik_gentiles\fR utility to pre-render maps of varying
+scale directly from your PostGIS database.
 There is also a program called \fIgpsfetchmap.pl\fR provided with GpsDrive
 which can be used to automatically download a series of maps covering a
-larger area.
+larger area from a number of online map servers.
 .br
 .B Please consider the copyright information and terms of service
 of map providers if you want to use their maps!
