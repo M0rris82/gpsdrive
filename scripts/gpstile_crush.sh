@@ -81,7 +81,7 @@ for OSMER in $PROCDIRS ; do
       continue
    fi
    echo "Processing $OSMER ..."
-   echo "   Before: `du -sh $OSMER`"
+   echo "Size before: `du -sh $OSMER`"
    cd "$OSMER"
 
    TOTALTILES=`find . | grep '\.png$' | wc -l`
@@ -109,23 +109,24 @@ for OSMER in $PROCDIRS ; do
       fi
    done
    cd ..
-   echo "    After: `du -sh $OSMER`"
+   echo "Size after: `du -sh $OSMER`"
 done
 
 
 if [ "$TODO_flag" = "-c" ] ; then
-for OSMER in $PROCDIRS ; do
-   if [ ! -d "$OSMER" ] ; then
-      continue
-   fi
-   cd "$OSMER"
-   for CRUFT in `find . | grep '\.png.crushed$'` ; do
-      if [ -e "$MAP.crushed" ] ; then
-         \rm "$MAP.crushed"
-      fi
-   done
-   cd ..
-done
+  for OSMER in $PROCDIRS ; do
+    if [ ! -d "$OSMER" ] ; then
+       continue
+    fi
+    cd "$OSMER"
+    for CRUFT in `find . | grep '\.png.crushed$'` ; do
+       if [ -e "$MAP.crushed" ] ; then
+          \rm "$MAP.crushed"
+       fi
+    done
+    cd ..
+  done
+fi
 
 
 echo
