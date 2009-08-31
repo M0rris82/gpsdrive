@@ -81,17 +81,27 @@ for OSMER in $PROCDIRS ; do
       continue
    fi
    echo "Processing $OSMER ..."
-   echo "Before: `du -sh $OSMER`"
+   echo "   Before: `du -sh $OSMER`"
    cd "$OSMER"
+
+   TOTALTILES=`find . | grep '\.png$' | wc -l`
+   i=0
    for MAP in `find . | grep '\.png$'` ; do
+      i=`expr $i + 1`
       if [ -e "$MAP.crushed" ] ; then
          continue
       fi
-      echo "Crushing [$MAP] ..."
+      echo "Crushing --|$MAP|--  ($i/$TOTALTILES) ..."
+
       pngcrush -brute -reduce -c 2 -q "$MAP" "$MAP.crush"
+
       if [ $? -eq 0 ] && [ -s "$MAP.crush" ] ; then
+         BEFORE=`wc --bytes < "$MAP"`
+         AFTER=`wc --bytes < "$MAP.crush"`
          \mv "$MAP.crush" "$MAP"
          touch "$MAP.crushed"  # so we don't repeat
+         echo "$BEFORE $AFTER" | \
+	    awk '{printf("   reduced %.1f%%\n", ($1-$2)*100.0/$1)}'
           # for JPEG we'll need to update map_koord.txt too
       else
          echo "Error crushing [$MAP]."
@@ -99,11 +109,11 @@ for OSMER in $PROCDIRS ; do
       fi
    done
    cd ..
-   echo "After:  `du -sh $OSMER`"
+   echo "    After: `du -sh $OSMER`"
 done
 
 
-if [ $TODO_flag = "-c" ] ; then
+if [ "$TODO_flag" = "-c" ] ; then
 for OSMER in $PROCDIRS ; do
    if [ ! -d "$OSMER" ] ; then
       continue
