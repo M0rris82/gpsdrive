@@ -8,14 +8,19 @@ Usage: python gpsdrive_mapnik_gentiles.py [options]
 Options:
   -h, --help     show this help
   -b, --bbox     boundingbox (minlon,minlat,maxlon,maxlat)
-                  - Be carefull! Quote negative values!
-  -s, --scale    scale single/range
-                              1 = 147456000
-                              2 = 73728000
-                             ...
-                             15 = 9000
-                             16 = 4500
-                             17 = 2250
+                  - Be carefull! "Quote" negative values!
+  -s, --scale    scale single/range (zoom level or min-max)
+                   (below "9" Mercator becomes distorted;
+		    actual scale will vary with latitude)
+                        9 - 1:600,000
+                       10 - 1:300,000
+                       11 - 1:150,000
+                       12 - 1:75,000
+                       13 - 1:40,000
+                       14 - 1:20,000
+                       15 - 1:10,000
+                       16 - 1:5,000
+                       17 - 1:2,500
   --test         testrun = generates Munich example
                              
 Examples:
@@ -23,7 +28,7 @@ Examples:
   Munich:
     gpsdrive_mapnik_gentiles.py -b  11.4,48.07,11.7,48.2 -s 10-16
   
-  World:
+  World: (just to demonstrate lat/lon order; scale not recommended)
     gpsdrive_mapnik_gentiles.py -b "-180.0,-90.0,180.0,90.0" -s 1-6
 """
 
@@ -98,9 +103,11 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
          os.mkdir(tile_dir)
 
     gprj = GoogleProjection(maxZoom+1) 
+
     #m = Map(2 * 256,2 * 256)
     m = Map(1280,1024)
     load_map(m,mapfile)
+
     #prj = Projection("+proj=merc +datum=WGS84")
     # What follows is from /usr/share/proj/esri.extra, EPSG:900913
     #  "Chris' funny epsgish code for the google mercator"
@@ -108,10 +115,16 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
 
     ll0 = (bbox[0],bbox[3])
     ll1 = (bbox[2],bbox[1])
-    
+
     for z in range(minZoom,maxZoom + 1):
+        if z == 9:
+            print "CAUTION: Mercator projection begins to be noticeably distorted at this zoom level."
+        elif z < 9:
+            print "WARNING: Mercator projection is very distorted at this zoom level."
+
         px0 = gprj.fromLLtoPixel(ll0,z)
         px1 = gprj.fromLLtoPixel(ll1,z)
+
         for x in range(int(px0[0]/640.0),int(px1[0]/640.0)+1):
             for y in range(int(px0[1]/512.0),int(px1[1]/512.0)+1):
                 p0 = gprj.fromPixelToLL((x * 640.0, (y+1) * 512.0),z)
