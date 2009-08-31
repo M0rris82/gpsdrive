@@ -1,10 +1,9 @@
 /***********************************************************************
 
 Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
-
 Website: www.gpsdrive.de/
 
-Disclaimer: Please do not use for navigation.
+Disclaimer: Please do not use as a primary means of navigation.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,5 +35,6 @@ gint map_download_cb (GtkWidget *widget, gpointer data);
 void mapdl_set_coords (gchar *lat, gchar *lon);
 gint mapdl_init (void);
 gint mapdl_cleanup (void);
+double calc_webtile_scale (double, int);
 
 #endif /* GPSDRIVE_MAP_DOWNLOAD_H */

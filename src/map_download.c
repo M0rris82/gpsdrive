@@ -61,8 +61,8 @@ Disclaimer: Please do not use for navigation.
 # endif
 
 
-#include <gpsdrive.h>
-#include <map_handler.h>
+#include "gpsdrive.h"
+#include "map_handler.h"
 #include "gpsdrive_config.h"
 #include "gui.h"
 #include "map_download.h"
@@ -133,24 +133,20 @@ static struct mapsource_struct
 	MAPSOURCE_LANDSAT, "1 : 50 million", 0, 50000000,
 
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
-	MAPSOURCE_OSM_TAH, "1 : 147 456 000", 1, 256*576000,
-	MAPSOURCE_OSM_TAH, "1 : 73 728 000", 2, 128*576000,
-	MAPSOURCE_OSM_TAH, "1 : 36 864 000", 3, 64*576000,
-	MAPSOURCE_OSM_TAH, "1 : 18 432 000", 4, 32*576000,
-	MAPSOURCE_OSM_TAH, "1 : 9 216 000", 5, 16*576000,
-	MAPSOURCE_OSM_TAH, "1 : 4 608 000", 6, 8*576000,
-	MAPSOURCE_OSM_TAH, "1 : 2 304 000", 7, 4*576000,
-	MAPSOURCE_OSM_TAH, "1 : 1 152 000", 8, 2*576000,
-
-	MAPSOURCE_OSM_TAH, "1 : 576 000", 9, 576000,
-	MAPSOURCE_OSM_TAH, "1 : 288 000", 10, 288000,
-	MAPSOURCE_OSM_TAH, "1 : 144 000", 11, 144000,
-	MAPSOURCE_OSM_TAH, "1 : 72 000", 12, 72000,
-	MAPSOURCE_OSM_TAH, "1 : 36 000", 13, 36000,
-	MAPSOURCE_OSM_TAH, "1 : 18 000", 14, 18000,
-	MAPSOURCE_OSM_TAH, "1 : 9 000", 15, 9000,
-	MAPSOURCE_OSM_TAH, "1 : 4 500", 16, 4500,
-	MAPSOURCE_OSM_TAH, "1 : 2 250", 17, 2250,
+	/* scale varies with latitude, so this is just a rough guide
+		which will only be valid for mid-lats */
+	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
+	MAPSOURCE_OSM_TAH, "1 : 2 500", 17, 2250,
+	MAPSOURCE_OSM_TAH, "1 : 5 000", 16, 4500,
+	MAPSOURCE_OSM_TAH, "1 : 10 000", 15, 9000,
+	MAPSOURCE_OSM_TAH, "1 : 20 000", 14, 18000,
+	MAPSOURCE_OSM_TAH, "1 : 40 000", 13, 36000,
+	MAPSOURCE_OSM_TAH, "1 : 75 000", 12, 72000,
+	MAPSOURCE_OSM_TAH, "1 : 150 000", 11, 144000,
+	MAPSOURCE_OSM_TAH, "1 : 300 000", 10, 288000,
+	MAPSOURCE_OSM_TAH, "1 : 600 000", 9, 576000,
+	/* the distortion gets too bad at scales wider than 1:500k
+	    It would be more accurate to stop earlier, but we compromise */
 	MAPSOURCE_N_ITEMS, "", 0, 0
 };
 
@@ -165,6 +161,22 @@ mapdl_set_coords (gchar *lat, gchar *lon)
 	gtk_entry_set_text (GTK_ENTRY (lon_entry), lon);
 }
 
+/* *****************************************************************************
+ * calculate the local map scale based on Web Tile zoom level and latitude
+ */
+double
+calc_webtile_scale (double lat, int zoom)
+{
+    double scale;
+    double a = 6378137.0; /* major radius of WGS84 ellipsoid (meters) */
+
+    scale = (a * 2*M_PI * cos(DEG2RAD(lat)) * PIXELFACT) / (256 * pow(2,zoom));
+
+    if (mydebug > 3)
+	g_print ("Tile scale: %.2f\n", scale);
+
+    return scale;
+}
 
 /* *****************************************************************************
  * callback to set paramaters for map to download
@@ -195,9 +207,13 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 			3, &mapdl_scale, -1);
 /* TODO: determine map_ or top_ proj at this point so drawdownloadrectangle()
  *	 knows how big to draw the green preview box */
+		if (local_config.mapsource_type == MAPSOURCE_OSM_TAH)
+		    mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
+
 		if (mydebug > 3)
 			g_print ("new map scale/zoom level: %d / %d\n",
 				mapdl_scale, mapdl_zoom);
+
 		local_config.mapsource_scale = gtk_combo_box_get_active (GTK_COMBO_BOX (scale_combobox));
 		current.needtosave = TRUE;
 	}
@@ -439,6 +455,7 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	gchar file_path[512];
 	gchar path[40];
 	gchar img_fmt[4];
+	gchar scale_str[40];
 
 	if (mapdl_active)
 		return TRUE;
@@ -450,11 +467,14 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			g_strlcpy (path, "landsat", sizeof (path));
 			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
 			mapdl_geturl_landsat ();
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
 			break;
 		case MAPSOURCE_OSM_TAH:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
 			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
 			mapdl_geturl_osm_tah ();
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
 			break;
 		default:
 			return TRUE;
@@ -464,10 +484,11 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 		g_print ("  download url:\n%s\n", mapdl_url);
 
 	/* set file path and create directory if necessary */
-	
-	
-	g_snprintf (file_path, sizeof (file_path), "%s%s/%d/%.0f/%.0f/",
-		local_config.dir_maps, path, mapdl_scale, mapdl_lat, mapdl_lon);
+
+	g_snprintf (file_path, sizeof (file_path), "%s%s/%s/%.0f/%.0f/",
+		local_config.dir_maps, path, scale_str, mapdl_lat, mapdl_lon);
+
+
 	if(!g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
 		if (g_mkdir_with_parents (file_path, 0700))
@@ -477,14 +498,15 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	}
 
 	/* complete filename */
-	g_snprintf (mapdl_file_w_path, sizeof (mapdl_file_w_path), "%s%s_%d_%5.3f_%5.3f.%s",
-		file_path, mapdl_proj, mapdl_scale, mapdl_lat, mapdl_lon, img_fmt);
+	g_snprintf (mapdl_file_w_path, sizeof (mapdl_file_w_path), "%s%s_%s_%5.3f_%5.3f.%s",
+		file_path, mapdl_proj, scale_str, mapdl_lat, mapdl_lon, img_fmt);
 
 	if (mydebug > 10)
 		g_print ("  filename: %s\n", mapdl_file_w_path);
 
 	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
 		_("Loading Map..."));
+
 	mapdl_abort = FALSE;
 	mapdl_download ();
 
