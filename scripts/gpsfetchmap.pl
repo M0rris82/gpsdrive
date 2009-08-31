@@ -47,6 +47,7 @@ modified (Dec 2005) by David Pollard <david dot pollard\@optusnet.com.au>
 modified (Jul 2007) by Maciek Kaliszewski <mkalkal\@interia.pl>
 modified (Oct 2007) by Andreas Putzo <andreas\@putzo.net>
 modified (Jan 2008) by Gernot Hillier <gernot\@hillier.de> (added Openstreetmap support)
+modified (Aug 2009) by Hamish Bowman <hamish_b yahoo com> (fix OSM+WMS map scales)
 Version svn-$Version
 ";
 
@@ -151,24 +152,20 @@ my $Scale2Zoom = {
       10000000 =>10000000,
       50000000 =>50000000,
     },
+# Web Map Tiles scale varies with latitude by the formula
+# (a * 2*pi * PIXELFACT * cos(lat * pi/180)) / (256 * 2^zoom)
+# where a is major radius of the Earth according to the WGS84 ellipsoid definition.
+# zoom levels lower than 9 (~1:500k) badly distort the Mercator so are not offered.
     openstreetmap_tah => {
-      256*576000 =>  1,
-      128*576000 =>  2,
-       64*576000 =>  3,
-       32*576000 =>  4,
-       16*576000 =>  5,
-        8*576000 =>  6,
-        4*576000 =>  7,
-        2*576000 =>  8,
-          576000 =>  9,
-          288000 => 10,
-          144000 => 11,
-           72000 => 12,
-           36000 => 13,
-           18000 => 14,
-           9000  => 15,
-            4500 => 16,
-            2250 => 17
+          600000 =>  9,
+          300000 => 10,
+          150000 => 11,
+           75000 => 12,
+           40000 => 13,
+           20000 => 14,
+           10000 => 15,
+            5000 => 16,
+            2500 => 17
     }
 };
 
@@ -240,8 +237,6 @@ if ( ($polite =~ /\d+/) && ($polite < 1) ) {
     $polite=1;
 }
 
-
-
 if ( $mapserver eq 'geoscience' )
 {
     $scale ||= join(",",keys %{$Scale2Zoom->{'geoscience'}});
@@ -269,22 +264,24 @@ pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
 
 sub append_koords($$$$);   # {}
+sub calc_webtile_scale ($$); # {}
 sub check_coverage($);     # {}
 sub check_koord_file($);   # {}
 sub debug($);              # {}
-sub geoscience_url($$$);   # {}
-sub landsat_url($$$);   # {}
-sub resize($$); #{}
 sub file_count($);         # {}
+sub geoscience_url($$$);   # {}
 sub get_coords_for_route;  # {}
 sub get_coords_for_track($); # {}
+sub get_gpsd_position();   # {}
 sub get_waypoint($);       # {}
 sub is_map_file($);        # {}
+sub landsat_url($$$);      # {}
+sub openstreetmap_tah_url($$$); # {}
 sub read_gpstool_map_file(); # {}
 sub read_koord_file($);    # {}
+sub resize($$);            # {}
 sub update_gpsdrive_map_koord_file(); # {}
 sub wget_map($$$);         # {}
-sub get_gpsd_position();       # {}
 
 STDERR->autoflush(1);
 STDOUT->autoflush(1);
@@ -407,7 +404,9 @@ if ($TRACK_FILE) { # download maps along a saved track
 
 my ($existing,$wanted) = file_count($desired_locations);
 print "You are about to download $wanted (".($existing+$wanted).") file(s).\n";
-
+if ($debug) {
+    print "Politeness delay set to $polite seconds,\n";
+}
 if ( $mapserver eq 'geoscience' ){
     print "+-----------------------------------------------------------+\n";
     print "| Geoscience Maps are Copyright, Commonwealth of Australia  |\n";
@@ -419,6 +418,7 @@ if ( $mapserver eq 'geoscience' ){
     print "+----------------------------------------------------------------+\n";
     print "| Landsat maps are courtesy JPL/NASA's OnEarth WMS Global Mosaic |\n";
     print "| Map prefix will be set automatically based on scale.           |\n";
+    print "+----------------------------------------------------------------+\n";
     # By law, US Government data is without copyright.
 }elsif ( $mapserver eq 'openstreetmap_tah' ){
     print "+-----------------------------------------------------------+\n";
@@ -427,6 +427,8 @@ if ( $mapserver eq 'geoscience' ){
     print "| They are free for use under the terms of the              |\n";
     print "| Creative Commons \"Attribution-Share Alike 2.0 Generic\"    |\n";
     print "| license. See http://www.openstreetmap.org for details.    |\n";
+    print "+-----------------------------------------------------------+\n";
+
 } elsif ( ! $force) {
     print "You may violating the map servers terms of use!\n";
     print "Please use their service responsible!\n";
@@ -654,14 +656,32 @@ sub mirror2_map($$){
 ######################################################################
 sub map_filename($$$){
     my ($scale,$lati,$long) = @_;
+
+    my $mscale = $scale;
+
+    if ( $mapserver eq 'openstreetmap_tah' ) {
+	my $zoom = undef;
+	for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
+	    next unless $s == $scale;
+	    $zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
+	    last;
+	}
+	unless ( $zoom ) {
+	    print "Error calculating Zoomlevel for Scale: $scale\n";
+	    return (undef);
+	}
+	$mscale = $zoom;
+    }
     
-    my $filename = "$mapserver/$scale"
+    my $filename = "$mapserver/$mscale"
 	."/".int($lati)
 #	."/".sprintf("%3.1f",$lati)
 	."/".int($long)
-	."/$FILEPREFIX$scale-$lati-$long.$fileext";
-    printf("Filename(%.0f,%.5f,%.5f): $filename\n",$scale,$lati,$long)
+	."/$FILEPREFIX$mscale-$lati-$long.$fileext";
+
+    printf("Filename(%.0f,%.5f,%.5f): $filename\n",$mscale,$lati,$long)
 	if $debug;
+
     return $filename;
 }
 
@@ -678,6 +698,9 @@ sub wget_map($$$){
     # mapblast/1000/047/047.0232/9/map_1000-047.0232-0009.8140.gif 47.02320 9.81400 1000
     #my $filename = "$mapserver/$scale/".int($lati)."/".sprintf("%3.1f",$lati).
     #"/".int($long)."/$FILEPREFIX$scale-$lati-$long.gif";
+    if ($debug) {
+	print "---------------\n";
+    }
 
     # redundant??
     if ($mapserver eq 'landsat')
@@ -1082,7 +1105,7 @@ sub landsat_url($$$){
 	    $lon2 += 360;
 	}
 
-    debug( "landsat_url(LAT=$lat,LON=$lon,SCALE=$scale,FACTOR=$factor)");
+    debug( "landsat_url(LAT=$lat,LON=$lon,SCALE=$scale)");
 
     debug( "Calculated Lat1  $lat1");
     debug( "Calculated Lat2  $lat2");
@@ -1111,6 +1134,27 @@ sub landsat_url($$$){
     return ($url,$scale);
 }
 
+
+#############################################################################
+# calculate the local map scale based on Web Tile zoom level and latitude
+# This same formula is used by OSM, Google Maps, Microsoft Maps, ...
+sub calc_webtile_scale ($$){
+    my $lat = shift;
+    my $zoom = shift;
+
+    # major radius of WGS84 ellipsoid (meters)
+    my $a = $RADIUS_KM * 1000;
+
+    my $zscale = (2*$a*$PI * cos($lat*$D2R) * $PIXELFACT) / (256 * 2**$zoom);
+
+    if ($debug) {
+        print "Tile scale: $zscale\n";
+    }
+
+    return ($zscale);
+}
+
+
 #############################################################################
 sub openstreetmap_tah_url($$$){
     my $lati = shift;
@@ -1122,7 +1166,7 @@ sub openstreetmap_tah_url($$$){
     for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
 	next unless $s == $scale;
 	$zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
-	$mapscale = $s;
+	$mapscale = calc_webtile_scale($lati, $zoom);
 	last;
     }
 
@@ -1132,10 +1176,9 @@ sub openstreetmap_tah_url($$$){
     }
 
     if ($debug) {
-	print "\n";
-	print "Using openstreetmap_tah zoom ", $zoom, " for requested scale ", $scale, ":1 actual scale ", $mapscale, ":1\n";
-	print "lat: $lati\n";
-	print "lon: $long\n";
+	print "Using openstreetmap_tah zoom ", $zoom, " for requested scale 1:", $scale, ". Actual scale 1:", $mapscale, "\n";
+	print "cetner lat: $lati\n";
+	print "cetner lon: $long\n";
     }
 
     my $url = "http://tah.openstreetmap.org/MapOf/?lat=$lati&long=$long&z=$zoom&w=1280&h=1024&format=png";
@@ -1903,7 +1946,7 @@ B<Common usages:>
 
 gpsfetchmap -w <WAYPOINT NAME> -sc <SCALE> -a <#> -p
 
-gpsfetchmap -la <latitude DD.DDDD> -lo <latitude DD.DDDD> -sc <SCALE> -a <#> -p
+gpsfetchmap -la <latitude DD.DDDD> -lo <longitude DD.DDDD> -sc <SCALE> -a <#> -p
 
 gpsfetchmap -sla <start latitude DD.DDDD> -endla <end latitude DD.DDDD> -slo <start longitude DD.DDDD> -endlo <end longitude DD.DDDD> -sc <SCALE> -a <#> -p
 
@@ -1915,7 +1958,7 @@ gpsfetchmap [-w <WAYPOINT NAME>]
             [-la <latitude DD.DDDD>] [-lo <longitude DD.DDDD>] 
             [-sla <start latitude DD.DDDD>] [-endla <end latitude DD.DDDD>]
             [-slo <start longitude DD.DDDD>] [-endlo <end longitude DD.DDDD>]
-            [-sc <SCALE>] [-a <#>] [-p] [-m <MAPSERVER>]
+            [-sc <SCALE>] [-a <#>] [-p <#>] [-m <MAPSERVER>]
             [-u <UNIT>] [-md <DIR>] [-W <FILE>] [-t <FILE>] [-r]
             [-C <FILE>] [-P <PREFIX>] [-F] [-d] [-v] [-h] [-M] [-n] [-U] [-c]
 
@@ -2000,7 +2043,7 @@ where the first number is distance latitude and the second number is distance
 of longitude. 'units' is read from the configuration file (-C) or as defined
 by (-u).
 
-=item B<-p, --polite>
+=item B<-p, --polite <#>>
 
 This causes the program to sleep one second between downloads to be polite
 to the mapserver. Takes an optional value of number of seconds to sleep.
@@ -2117,6 +2160,13 @@ Prints the usage page and exits.
 
 Prints the manual page and exits.
 
+=back
+
+
+=head1 OUTPUT
+
+=over 2
+
 =item B<Download>
 
 When downloading Maps the output reads as folows:
@@ -2129,6 +2179,17 @@ When downloading Maps the output reads as folows:
  S Simulate only 
 
 =back
+
+
+=head1 EXAMPLE
+
+Download all 1:10000 OpenStreetMaps in a 5 km radius around the
+Sydney Convention Centre. Between tile downloads it will let
+the server rest for 3 seconds.
+ 
+gpsfetchmap --mapserver openstreetmap_tah --polite 3 \
+   --lat "-33.8753" --lon 151.2001 --scale 10000 \
+   --area 5 --unit kilometers
 
 =cut
 
