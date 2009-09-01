@@ -14,15 +14,17 @@
 #               License (>=v2). Read the file COPYING that comes with
 #               GPSDrive for details.
 #
+############################################################################
+
 
 if [ $# -lt 1 ] ; then
-  echo "Usage:  $0 . [-a] [-j] [-c] [map_path]"
+  echo "Usage:  $0 . [-a] [-j] [-c] [-l] [map_path]"
   echo "use $0 --help for detailed Information"
   exit 1
 fi
 
 if echo "$@" | grep -q -e "--help" ; then
-  echo "Usage:  gpstile_crush.sh [-a] [-j] [-c] [map_path]"
+  echo "Usage:  gpstile_crush.sh [-a] [-j] [-c] [-l] [map_path]"
 cat << EOF
 
  (--- Work in progress ---)
@@ -36,7 +38,8 @@ cat << EOF
  a single subdirectory. The -c flag cleans up after you removing
  all the empty .crushed tag files which are kept so that if you
  run this script again you do not have to waste time recrushing
- a tile which has already been processed.
+ a tile which has already been processed. The -l flag makes it
+ run in the background at low priority.
  
  Initially it just tries OpenStreetMap tiles, which are particularly
  bloated (saves them cycles on the server).
@@ -47,6 +50,10 @@ cat << EOF
 EOF
   exit 1
 fi
+
+# if [ -l flag ] ; then
+   renice +18 -p $$ 
+#fi
 
 
 #if [ ! -j flag ]
@@ -66,6 +73,7 @@ if [ ! -d ~/.gpsdrive/maps/ ] ; then
    echo "Map repository not found. Nothing to do."
    exit 1
 fi
+
 
 
 cd ~/.gpsdrive/maps/
@@ -109,6 +117,7 @@ for OSMER in $PROCDIRS ; do
       fi
    done
    cd ..
+   echo
    echo "Size after: `du -sh $OSMER`"
 done
 
