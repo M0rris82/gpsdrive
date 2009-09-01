@@ -57,7 +57,7 @@ fi
 
 
 #if [ ! -j flag ]
-if [ ! -x `which pngcrush` ] ; then
+if [ ! -x "`which pngcrush`" ] ; then
    echo "ERROR: pngcrush not available. Please install it first"
    exit 1
 fi
