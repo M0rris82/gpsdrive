@@ -48,7 +48,7 @@ def calc_scale (lat, zoom):
     # wgs84 major Earth axis
     a = 6378137.0
     dynscale = ( a * 2*pi * cos(lat * DEG_TO_RAD) * PixelFact ) / ( 256*pow(2,zoom) )
-    print dynscale
+    print "Scale: %.1f" % dynscale
     return dynscale
 
 def minmax (a,b,c):
@@ -158,13 +158,14 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                 else:
                     im = Image(1280, 1024)
                     render(m, im)
-                    im = fromstring('RGBA', (1280, 1024), im.tostring())
+                    im = fromstring('RGBA', (1280, 1024), im.tostring()).convert("RGB")
                     #im = im.crop((128,128,512-128,512-127))
                     fh = open(tile_uri,'w+b')
-                    im.save(fh, 'PNG', quality=100)
-                    command = "convert  -colors 255 %s %s" % (tile_uri,tile_uri)
+                    im.save(fh, 'PNG', optimize=True)
+                    # 'convert' is a program from the Imagemagick package
+                    command = "convert -type optimize %s %s" % (tile_uri,tile_uri)
                     call(command, shell=True)
-   
+
 
                     fh_mapkoord.write(tile_path + " ")
                     fh_mapkoord.write(str((p0[1] + p1[1]) / 2) + " ")
