@@ -94,11 +94,9 @@ map_projection (char *filename)
     proj = proj_map;
   else if (strstr (filename, "googlesat/"))
     proj = proj_googlesat;
-#ifdef MAPNIK
   /* user may have previously downloaded mapnik tiles even if current build doesn't */
   else if (strstr (filename, "mapnik/"))
     proj = proj_map;  /* why not proj_mapnik ? */
-#endif
   else if (strstr (filename, "NASAMAPS/"))
     proj = proj_top;
   else if (strstr (filename, "eniro/"))
