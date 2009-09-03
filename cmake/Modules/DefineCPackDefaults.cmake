@@ -84,7 +84,7 @@ include(InstallRequiredSystemLibraries)
 # For Release Builds
 #set(CPACK_PACKAGE_VERSION_PATCH "")
 # For Pre-Release Builds
-#set(CPACK_PACKAGE_VERSION_PATCH "pre7")
+#set(CPACK_PACKAGE_VERSION_PATCH "pre8")
 # For svn Builds
 set(CPACK_PACKAGE_VERSION_PATCH "svn${SVN_REVISION}")
 
