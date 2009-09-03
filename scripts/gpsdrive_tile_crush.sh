@@ -88,6 +88,7 @@ for OSMER in $PROCDIRS ; do
    if [ ! -d "$OSMER" ] ; then
       continue
    fi
+   echo
    echo "Processing $OSMER ..."
    echo "Size before: `du -sh $OSMER`"
    cd "$OSMER"
@@ -117,7 +118,6 @@ for OSMER in $PROCDIRS ; do
       fi
    done
    cd ..
-   echo
    echo "Size after: `du -sh $OSMER`"
 done
 
