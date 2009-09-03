@@ -11,7 +11,7 @@ Options:
                   - Be carefull! "Quote" negative values!
   -s, --scale    scale single/range (zoom level or min-max)
                    (below "9" Mercator becomes distorted;
-		    actual scale will vary with latitude)
+                    actual scale will vary with latitude)
                         9 - 1:600,000
                        10 - 1:300,000
                        11 - 1:150,000
@@ -21,6 +21,8 @@ Options:
                        15 - 1:10,000
                        16 - 1:5,000
                        17 - 1:2,500
+  -j, --jpeg     save tiles as JPEG instead of PNG
+  -n, --dry-run  don't actually write anything to disk
   --test         testrun = generates Munich example
                              
 Examples:
@@ -48,7 +50,7 @@ def calc_scale (lat, zoom):
     # wgs84 major Earth axis
     a = 6378137.0
     dynscale = ( a * 2*pi * cos(lat * DEG_TO_RAD) * PixelFact ) / ( 256*pow(2,zoom) )
-    print "Scale: %.1f" % dynscale
+    #print "Scale: %.1f" % dynscale
     return dynscale
 
 def minmax (a,b,c):
@@ -92,15 +94,24 @@ from PIL.ImageDraw import Draw
 from StringIO import StringIO
 from mapnik import *
 
-def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, name="unknown"):
-    print "render_tiles(",bbox, mapfile, tile_dir, minZoom,maxZoom, name,")"
+def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, write_to_disk,
+                 minZoom=1,maxZoom=18, img_ext='', name="unknown"):
 
-    fh_mapkoord = open(mapkoordfile, "a") 
-    if fh_mapkoord == 0:
-        sys.exit("Can not open map_koord.txt.")
+    print "Render_tiles(", bbox, "\n             ", \
+          mapfile, " ", tile_dir, "\n             ", \
+          "minZoom=%d" % minZoom, "maxZoom=%d" % maxZoom, name, img_ext, ")"
 
-    if not os.path.isdir(tile_dir):
-         os.mkdir(tile_dir)
+    if write_to_disk:
+        fh_mapkoord = open(mapkoordfile, "a") 
+        if fh_mapkoord == 0:
+            sys.exit("Can not open map_koord.txt.")
+
+        if not os.path.isdir(tile_dir):
+             os.mkdir(tile_dir)
+    else:
+        fh_mapkoord = open(mapkoordfile, "r") 
+        if fh_mapkoord == 0:
+            sys.exit("Can not open map_koord.txt.")
 
     gprj = GoogleProjection(maxZoom+1) 
 
@@ -130,6 +141,8 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                 p0 = gprj.fromPixelToLL((x * 640.0, (y+1) * 512.0),z)
                 p1 = gprj.fromPixelToLL(((x+1) * 640.0, y * 512.0),z)
 
+                actual_scale = calc_scale( (p0[1] + p1[1])/2, z)
+
                 # render a new tile and store it on filesystem
                 c0 = prj.forward(Coord(p0[0],p0[1]))
                 c1 = prj.forward(Coord(p1[0],p1[1]))
@@ -144,48 +157,68 @@ def render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom=1,maxZoom=18, na
                 str_x = "%s" % x
                 str_y = "%s" % y
 
-                if not os.path.isdir(tile_dir + zoom):
-                    os.mkdir(tile_dir + zoom)
-                if not os.path.isdir(tile_dir + zoom + '/' + str_x):
-                    os.mkdir(tile_dir + zoom + '/' + str_x)
+                if write_to_disk:
+                    if not os.path.isdir(tile_dir + zoom):
+                        os.mkdir(tile_dir + zoom)
+                    if not os.path.isdir(tile_dir + zoom + '/' + str_x):
+                        os.mkdir(tile_dir + zoom + '/' + str_x)
 
-                tile_uri = tile_dir + zoom + '/' + str_x + '/' + str_y + '.png'
-                tile_path = "mapnik/" + zoom + '/' + str_x + '/' + str_y + '.png'
+                tile_uri = tile_dir + zoom + '/' + str_x + '/' + str_y + img_ext
+                tile_path = "mapnik/" + zoom + '/' + str_x + '/' + str_y + img_ext
 
-		exists= ""
+                exists= ''
                 if os.path.isfile(tile_uri):
-                    exists= "exists"
+                    exists= " [exists]"
+                    empty= ''
+                    bytes = os.stat(tile_uri)[6]
+                    # FIXME: I don't thing this bytes test actually works...
+                    if bytes == 137:
+                        empty = "Empty Tile"
+
                 else:
                     im = Image(1280, 1024)
                     render(m, im)
-                    im = fromstring('RGBA', (1280, 1024), im.tostring()).convert("RGB")
+                    im = fromstring('RGBA', (1280, 1024),
+                                    im.tostring()).convert("RGB")
                     #im = im.crop((128,128,512-128,512-127))
-                    fh = open(tile_uri,'w+b')
-                    im.save(fh, 'PNG', optimize=True)
-                    # 'convert' is a program from the Imagemagick package
-                    command = "convert -type optimize %s %s" % (tile_uri,tile_uri)
-                    call(command, shell=True)
+                    if write_to_disk:
+                        fh = open(tile_uri,'w+b')
+                        if img_ext == '.png':
+                            im.save(fh, 'PNG', optimize=True)
+                        else:
+                            im.save(fh, 'JPEG', quality=85)
+                        # 'convert' is a program from the Imagemagick package
+                        command = "convert -type optimize %s %s" % (tile_uri,tile_uri)
+                        call(command, shell=True)
 
+                        fh_mapkoord.write(tile_path + " ")
+                        fh_mapkoord.write(str((p0[1] + p1[1]) / 2) + " ")
+                        fh_mapkoord.write(str((p0[0] + p1[0]) / 2) + " ")
+                        fh_mapkoord.write(str(actual_scale))
+                        fh_mapkoord.write(" " + str(p0[1]) + " " + str(p0[0]))
+                        fh_mapkoord.write(" " + str(p1[1]) + " " + str(p1[0]))
+                        fh_mapkoord.write("\n")
 
-                    fh_mapkoord.write(tile_path + " ")
-                    fh_mapkoord.write(str((p0[1] + p1[1]) / 2) + " ")
-                    fh_mapkoord.write(str((p0[0] + p1[0]) / 2) + " ")
-                    fh_mapkoord.write(str( calc_scale( (p0[1] + p1[1])/2, z) ))
-                    fh_mapkoord.write(" " + str(p0[1]) + " " + str(p0[0]))
-                    fh_mapkoord.write(" " + str(p1[1]) + " " + str(p1[0]))
-                    fh_mapkoord.write("\n")
+                        bytes = os.stat(tile_uri)[6]
+                        empty= "[created]"
+                        if bytes == 137:
+                            empty = "Empty Tile"
+                    else:
+                        empty = "[simulation]"
 
+                print name, "[%d-%d]: " % (minZoom,maxZoom), \
+                     "zoom:%2d " % z, "scale=1:%.1f " % actual_scale, \
+                     "x:%5d " % x, "y:%5d " % y, \
+                     " p:(%.7f, %.7f)/(%.7f, %.7f)" % (p0[0],p0[1],p1[0],p1[1]), \
+                     exists, empty
 
-                bytes=os.stat(tile_uri)[6]
-		empty= ''
-                if bytes == 137:
-                    empty = " Empty Tile "
-
-                print name,"[",minZoom,"-",maxZoom,"]: " ,z,x,y,"p:",p0,p1,exists, empty
     fh_mapkoord.close()
+
+
     
 def usage():
     print __doc__
+
 
 def main(argv):
 
@@ -196,19 +229,16 @@ def main(argv):
     tile_dir = home + "/.gpsdrive/maps/mapnik/"
     mapkoordfile = home + "/.gpsdrive/maps/map_koord.txt"
 
-    if not os.path.isfile(mapfile):
-	command = "sed 's,\@DATA_DIR\@,@DATA_DIR@/mapnik,g;s,\@USER\@," + user + ",g;' <@DATA_DIR@/mapnik/osm.xml >" + mapfile
-	print "Creating " + mapfile
-	print "Command " + command
-	call(command, shell=True)
-    
-    
     minZoom = 0
     maxZoom = 0
     bboxset = 0
-    
+    img_ext = '.png'
+    write_to_disk = True
+
     try:
-        opts, args = getopt.getopt(argv, "hb:s:", ["help", "bbox=", "scale=", "test"])
+        opts, args = getopt.getopt(argv, "hb:s:jn",
+                                   ["help", "bbox=", "scale=", "test",
+                                   "jpeg", "dry-run"])
     except getopt.GetoptError:
         sys.exit("Invalid option!")
     
@@ -230,14 +260,25 @@ def main(argv):
                 minZoom = eval(zooms[0])
                 if str(minZoom) <> zooms[0]: minZoom = 0
                 maxZoom = minZoom
-                
+
         elif opt in ("--test"):
             bbox = (11.4,48.07,11.7,48.2)
             minZoom = 10
             maxZoom = 16
             render_tiles(bbox, mapfile, tile_dir, minZoom, maxZoom, "Test")
             sys.exit()
-            
+        elif opt in ("-j", "--jpeg"):
+            img_ext = '.jpg'
+        elif opt in ("-n", "--dry-run"):
+            write_to_disk = False
+
+    if not os.path.isfile(mapfile):
+        command = "sed 's,\@DATA_DIR\@,@DATA_DIR@/mapnik,g;s,\@USER\@," + user + ",g;' <@DATA_DIR@/mapnik/osm.xml >" + mapfile
+        print "Creating " + mapfile
+        print "Command " + command
+        if write_to_disk:
+            call(command, shell=True)
+
     if bboxset == 0:
        sys.exit("No boundingbox set!")
             
@@ -245,18 +286,26 @@ def main(argv):
         sys.exit("Boundingbox invalid!")
     
     # check for correct values
-    if str(eval(bboxs[0])) != bboxs[0] or str(eval(bboxs[1])) != bboxs[1] or str(eval(bboxs[2])) != bboxs[2] or str(eval(bboxs[3])) != bboxs[3]:
+    if str(eval(bboxs[0])) != bboxs[0] or \
+       str(eval(bboxs[1])) != bboxs[1] or \
+       str(eval(bboxs[2])) != bboxs[2] or \
+       str(eval(bboxs[3])) != bboxs[3]:
         # rounding problems... what exactly is this supposed to be checking ???
         sys.exit("Boundingbox invalid!")
         
-    if minZoom < 1 or minZoom > 17 or maxZoom < 1 and maxZoom > 17 or minZoom > maxZoom or int(minZoom) <> minZoom or int(maxZoom) <> maxZoom:
+    if minZoom < 1 or minZoom > 17 or \
+       maxZoom < 1 and maxZoom > 17 or \
+       minZoom > maxZoom or \
+       int(minZoom) <> minZoom or \
+       int(maxZoom) <> maxZoom:
         sys.exit("Invalid scale!")
         
     #ok transform bboxs to a bbox with float
     bbox = (eval(bboxs[0]), eval(bboxs[1]), eval(bboxs[2]), eval(bboxs[3]))
     
     #start rendering
-    render_tiles(bbox, mapfile, tile_dir, mapkoordfile, minZoom, maxZoom, "Generate:")
+    render_tiles(bbox, mapfile, tile_dir, mapkoordfile, write_to_disk,
+                 minZoom, maxZoom, img_ext, "Generate:")
     
     #return info
     print "\n", "Finished.\n"
