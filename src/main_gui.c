@@ -635,7 +635,7 @@ draw_maptype (void)
  *	DSH_DIST, DASH_TIMEREMAIN, DASH_BEARING, DASH_TURN, DASH_SPEED,
  *	DASH_COURSE, DASH_ALT, DASH_TRIP, DASH_GPSPRECISION, DASH_TIME,
  *	DASH_SPEED_AVG, DASH_SPEED_MAX, DASH_POSITION, DASH_MAPSCALE,
- *	DASH_XTE
+ *	DASH_DESTINATION, DASH_XTE
  */
 gint
 update_dashboard (GtkWidget *frame, gint source)
@@ -1078,6 +1078,44 @@ update_dashboard (GtkWidget *frame, gint source)
 				TRUE, local_config.coordmode);
 			coordinate2gchar(slon, sizeof(slon), coords.current_lon,
 				FALSE, local_config.coordmode);
+			g_snprintf (content, sizeof (content),
+				"<span color=\"%s\" font_desc=\"%s\">%s\n%s</span>",
+				local_config.color_dashboard, font_pos,
+				slat, slon);
+
+			pango_font_description_free (pfd);
+			g_free (font_pos);
+			break;
+		}
+		case DASH_DESTINATION:
+		{
+			gchar slat[20];
+			gchar slon[20];
+			gint pfd_size;
+			gchar *font_pos;
+			PangoFontDescription *pfd;
+			
+			pfd = pango_font_description_from_string
+				(local_config.font_dashboard);
+			pfd_size = pango_font_description_get_size (pfd);
+			pango_font_description_set_size (pfd, pfd_size*0.5);
+			font_pos = pango_font_description_to_string (pfd);
+
+			g_strlcpy (head, _("Destination"), sizeof (head));
+			if (route.items > 0)
+			{
+				coordinate2gchar(slat, sizeof(slat), coords.dest_lat,
+					TRUE, local_config.coordmode);
+				coordinate2gchar(slon, sizeof(slon), coords.dest_lon,
+					FALSE, local_config.coordmode);
+			}
+			else
+			{
+				coordinate2gchar(slat, sizeof(slat), coords.target_lat,
+					TRUE, local_config.coordmode);
+				coordinate2gchar(slon, sizeof(slon), coords.target_lon,
+					FALSE, local_config.coordmode);
+			}
 			g_snprintf (content, sizeof (content),
 				"<span color=\"%s\" font_desc=\"%s\">%s\n%s</span>",
 				local_config.color_dashboard, font_pos,
@@ -1885,6 +1923,7 @@ void create_dashboard_menu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+		_("Destination"),		/* DASH_DESTINATION */
 #ifdef NOTYET
 		_("Cross-track error"),		/* DASH_XTE */
 #endif
@@ -1934,6 +1973,7 @@ void create_dashboard_carmenu (void)
 		_("Current Time"),		/* DASH_TIME */
 		_("Position"),			/* DASH_POSITION */
 		_("Map Scale"),			/* DASH_MAPSCALE */
+		_("Destination"),		/* DASH_DESTINATION */
 #ifdef NOTYET
 		_("Cross-track error"),		/* DASH_XTE */
 #endif
