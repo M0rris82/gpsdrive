@@ -88,6 +88,7 @@ extern GdkColormap *cmap;
 extern GtkTooltips *main_tooltips;
 extern GtkWidget *wp_draw_bt;
 extern gint storetz;
+static gboolean friendsshowlock = FALSE;
 static gboolean friendsiplock = FALSE;
 static gboolean friendsnamelock = FALSE;
 extern gchar *font_wplabel;
@@ -503,8 +504,11 @@ setwpquick_cb (GtkWidget *widget, gint value)
 
 /* ************************************************************************* */
 static gint
-setshowfriends_cb (GtkWidget *entry)
+setshowfriends_cb (GtkWidget *entry, GtkWidget *button)
 {
+	if (friendsshowlock)
+		return TRUE;
+
 	if (strlen (local_config.friends_name) == 0)
 	{
 		g_strlcpy (local_config.friends_name, _("EnterYourName"),
@@ -515,10 +519,14 @@ setshowfriends_cb (GtkWidget *entry)
 		friendsnamelock = FALSE;
 	}
 	
-	if (0 == strcmp (local_config.friends_name, _("EnterYourName")))
+	if (0 == strcmp (local_config.friends_name, _("EnterYourName"))
+		&& FALSE == local_config.showfriends)
 	{
 		popup_warning (GTK_WINDOW (settings_window),
 			_("You should change your name in the first field!"));
+		friendsshowlock = TRUE;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
+		friendsshowlock = FALSE;
 		return TRUE;
 	}
 

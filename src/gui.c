@@ -267,6 +267,7 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 {
 	GtkDialog *dialog_warning;
 	gchar warning[80];
+	gint response_id;
 
 	if (mydebug >10)
 		fprintf (stderr, "POPUP: Warning\n");
@@ -287,10 +288,10 @@ gint popup_warning (GtkWindow *parent, gchar *message)
 	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog_warning), warning);
 
 	gdk_beep ();
-	gtk_widget_show_all (GTK_WIDGET (dialog_warning));
 
-	g_signal_connect_swapped (dialog_warning, "response",
-		G_CALLBACK (gtk_widget_destroy), dialog_warning);
+	response_id = gtk_dialog_run (dialog_warning);
+	gtk_widget_destroy (GTK_WIDGET (dialog_warning));
+
 	return TRUE;
 }
 
