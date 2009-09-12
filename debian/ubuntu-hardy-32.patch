@@ -1,41 +1,85 @@
 Index: rules
 ===================================================================
---- rules	(revision 2447)
+--- rules	(revision 2495)
 +++ rules	(working copy)
-@@ -33,1 +33,4 @@
+@@ -31,6 +31,9 @@
+ 	      -DMAN_INSTALL_DIR=/usr/share/man \
+ 	      -DINFO_INSTALL_DIR=/usr/share/info \
  	      -DDATADIR=/usr/share \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
+ 	      .. 
+ 
+ 	rm -f build/build-stamp
 Index: control
 ===================================================================
---- control	(revision 2447)
+--- control	(revision 2495)
 +++ control	(working copy)
-@@ -18,1 +18,0 @@
+@@ -15,20 +15,13 @@
+ 	libgps-dev,
+ 	libgtk2.0-dev,
+ 	libltdl3-dev,
 -	libmapnik-dev (>> 0.5.0-1),
-@@ -21,1 +21,0 @@
+ 	libpcre3-dev,
+ 	libpq-dev,
 -	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
-@@ -27,5 +27,0 @@
+ 	libsqlite3-dev,
+ 	libxml-twig-perl,
+ 	perl-doc,
+ 	pkg-config,
+ 	po-debconf,
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-@@ -43,1 +43,0 @@
+ Standards-Version: 3.8.1
+ 
+ # ------------------------------------------------------------------
+@@ -40,16 +33,12 @@
+ 	libltdl3 | libltdl7,
+ 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
+ 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
-@@ -47,1 +47,0 @@
+ 	openstreetmap-map-icons (>> 8310),
+ 	libsqlite3-0
+ Recommends: gpsd,
 -	espeak,
-@@ -51,2 +51,0 @@
+ 	gpsdrive-data-maps (>> 2322),
+ 	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2.10svn2299),
+ 	openstreetmap-mapnik-world-boundaries (>> 7749),
 -	mapnik-plugins,
 -	mapnik-utils,
-@@ -70,1 +70,0 @@
+ 	postgresql-8.3-postgis | postgresql-8.2-postgis,
+ 	openstreetmap-mapnik-data,
+ 	ttf-dejavu,
+@@ -67,7 +56,6 @@
+ 	sudo,
+ 	gdal-bin,
+ 	gpsbabel,
 -	festival
-@@ -80,3 +80,0 @@
+ Description: GPS navigation system
+  GpsDrive is a car (bike, ship, plane, foot) navigation system.
+  GpsDrive displays your position provided from a GPS on a zoomable map,
+@@ -77,9 +65,6 @@
+  .
+  You will most likely want to install the gpsd package so that you
+  can talk to your GPS; without that GpsDrive is just a map viewer.
 - Speech output is supported if the "espeak" software is installed.
 - To use maps from the OpenStreetMap project you need to install the
 - openstreetmap-* packages as well.
-@@ -90,4 +90,0 @@
+ 
+ # ------------------------------------------------------------------
+ Package: gpsdrive-utils
+@@ -88,10 +73,6 @@
+ 	 ${shlibs:Depends},
+          ${perl:Depends},
+ 	 imagemagick,
 -	 python,
 -	 python-support,
 -	 python-central,
 -	 python-dev,
+ 	 perl-base (>> 5.6),
+ 	 libtext-query-perl,
+ 	 libtimedate-perl,
