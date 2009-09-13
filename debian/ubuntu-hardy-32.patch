@@ -14,9 +14,9 @@ Index: rules
  	rm -f build/build-stamp
 Index: control
 ===================================================================
---- control	(revision 2495)
+--- control	(revision 2497)
 +++ control	(working copy)
-@@ -15,20 +15,13 @@
+@@ -15,21 +15,14 @@
  	libgps-dev,
  	libgtk2.0-dev,
  	libltdl3-dev,
@@ -26,18 +26,20 @@ Index: control
 -	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
  	libsqlite3-dev,
  	libxml-twig-perl,
+ 	libxml2-dev,
  	perl-doc,
  	pkg-config,
- 	po-debconf,
+-	po-debconf,
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
++	po-debconf
  Standards-Version: 3.8.1
  
  # ------------------------------------------------------------------
-@@ -40,16 +33,12 @@
+@@ -41,16 +34,12 @@
  	libltdl3 | libltdl7,
  	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
  	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
@@ -54,7 +56,7 @@ Index: control
  	postgresql-8.3-postgis | postgresql-8.2-postgis,
  	openstreetmap-mapnik-data,
  	ttf-dejavu,
-@@ -67,7 +56,6 @@
+@@ -68,7 +57,6 @@
  	sudo,
  	gdal-bin,
  	gpsbabel,
@@ -62,7 +64,7 @@ Index: control
  Description: GPS navigation system
   GpsDrive is a car (bike, ship, plane, foot) navigation system.
   GpsDrive displays your position provided from a GPS on a zoomable map,
-@@ -77,9 +65,6 @@
+@@ -78,9 +66,6 @@
   .
   You will most likely want to install the gpsd package so that you
   can talk to your GPS; without that GpsDrive is just a map viewer.
@@ -72,7 +74,7 @@ Index: control
  
  # ------------------------------------------------------------------
  Package: gpsdrive-utils
-@@ -88,10 +73,6 @@
+@@ -89,10 +74,6 @@
  	 ${shlibs:Depends},
           ${perl:Depends},
  	 imagemagick,
