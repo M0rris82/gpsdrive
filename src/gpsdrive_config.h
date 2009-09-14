@@ -113,6 +113,7 @@ typedef struct
 	gboolean track_autoclean;
 	gboolean track_autointerval;
 	gboolean track_interval;
+	gint buttonsmode;
 	gchar track_autoprefix[50];
 	gboolean autobestmap;
 	gint scale_wanted;

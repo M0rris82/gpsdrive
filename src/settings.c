@@ -1729,21 +1729,29 @@ settings_ctl (GtkWidget *notebook)
 {
 	GtkWidget *gui_vbox, *gui_label;
 	GtkWidget *gui_button_frame, *gui_button_fr_lb;
-	GtkWidget *gui_button_box;
+	GtkWidget *gui_button_table;
 	GtkWidget *gui_zoom_bt, *gui_scaler_bt, *gui_mute_bt;
 	GtkWidget *gui_route_bt, *gui_find_bt, *gui_map_bt;
 	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
+	GtkWidget *buttons_combo;
+	GtkWidget *gui_btstyle_frame, *gui_btstyle_fr_lb;
 	GtkTooltips *gui_tooltips;
 	GtkWidget *restartwarning_lb;
 
 	gui_vbox = gtk_vbox_new (FALSE, 2);
 	gui_tooltips = gtk_tooltips_new ();
 
+	buttons_combo = gtk_combo_box_new_text ();
+	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons and Text"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons only"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Text only"));
+	gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), local_config.buttonsmode);
+
 	/* buttons displayed settings */
 	{
 
 	/* zoom buttons */
-	gui_zoom_bt = gtk_check_button_new_with_label (_("Show Zoom Buttons"));
+	gui_zoom_bt = gtk_check_button_new_with_label (_("Zoom"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_zoom_bt,
 		_("Displays the zoom buttons."), NULL);
 	if (local_config.showbutton_zoom)
@@ -1761,7 +1769,7 @@ settings_ctl (GtkWidget *notebook)
 		&local_config.showbutton_zoom);
 
 	/* scaler buttons */
-	gui_scaler_bt = gtk_check_button_new_with_label (_("Show Scaler Buttons"));
+	gui_scaler_bt = gtk_check_button_new_with_label (_("Scaler"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_scaler_bt,
 		_("Displays the scaler buttons."), NULL);
 	if (local_config.showbutton_scaler)
@@ -1779,7 +1787,7 @@ settings_ctl (GtkWidget *notebook)
 		&local_config.showbutton_scaler);
 
 	/* mute button */
-	gui_mute_bt = gtk_check_button_new_with_label (_("Show Mute Speech Button"));
+	gui_mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_mute_bt,
 		_("Displays the scaler buttons."), NULL);
 	if (local_config.showbutton_mute)
@@ -1797,7 +1805,7 @@ settings_ctl (GtkWidget *notebook)
 		&local_config.showbutton_mute);
 
 	/* find poi button */
-	gui_find_bt = gtk_check_button_new_with_label (_("Show Find POI Button"));
+	gui_find_bt = gtk_check_button_new_with_label (_("Find POI"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_find_bt,
 		_("Displays the find poi button."), NULL);
 	if (local_config.showbutton_find)
@@ -1815,7 +1823,7 @@ settings_ctl (GtkWidget *notebook)
 		&local_config.showbutton_find);
 
 	/* route list button */
-	gui_route_bt = gtk_check_button_new_with_label (_("Show Route List Button"));
+	gui_route_bt = gtk_check_button_new_with_label (_("Route List"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_route_bt,
 		_("Displays the Route List button."), NULL);
 	if (local_config.showbutton_route)
@@ -1833,7 +1841,7 @@ settings_ctl (GtkWidget *notebook)
 		&local_config.showbutton_route);
 
 	/* map control button */
-	gui_map_bt = gtk_check_button_new_with_label (_("Show Map Control Button"));
+	gui_map_bt = gtk_check_button_new_with_label (_("Map Control"));
 	gtk_tooltips_set_tip (gui_tooltips, gui_map_bt,
 		_("Displays the Map control button."), NULL);
 	if (local_config.showbutton_map)
@@ -1852,7 +1860,7 @@ settings_ctl (GtkWidget *notebook)
 
 	/* track restart button */
 	trk_showrestart_bt = gtk_check_button_new_with_label
-		(_("Show 'Restart Track' Button"));
+		(_("Restart Track"));
 	if (local_config.showbutton_trackrestart)
 	{
 		gtk_toggle_button_set_active
@@ -1864,7 +1872,7 @@ settings_ctl (GtkWidget *notebook)
 
 	/* track clear button */
 	trk_showclear_bt = gtk_check_button_new_with_label
-		(_("Show 'Clear Track' Button"));
+		(_("Clear Track"));
 	if (local_config.showbutton_trackclear)
 	{
 		gtk_toggle_button_set_active
@@ -1879,31 +1887,44 @@ settings_ctl (GtkWidget *notebook)
 		));
 	gtk_label_set_use_markup (GTK_LABEL (restartwarning_lb), TRUE);
 
-	gui_button_box = gtk_vbox_new (FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_zoom_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_scaler_bt, FALSE, FALSE, 5);
+	gui_button_table = gtk_table_new (7,2, FALSE);
+
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_zoom_bt, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_scaler_bt, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_find_bt, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_route_bt, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showrestart_bt, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showclear_bt, 1, 2, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_map_bt, 0, 1, 3, 4);
 	if (current.have_speech)
-		gtk_box_pack_start (GTK_BOX (gui_button_box), gui_mute_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_find_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_route_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), gui_map_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), trk_showrestart_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), trk_showclear_bt, FALSE, FALSE, 5);
-	gtk_box_pack_start (GTK_BOX (gui_button_box), restartwarning_lb, FALSE, FALSE, 5);
+		gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_mute_bt, 1, 2, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), restartwarning_lb, 0, 2, 4, 5);
 
 	}
+
+	/* buttons style frame */
+	gui_btstyle_frame = gtk_frame_new (NULL);
+	gui_btstyle_fr_lb = gtk_label_new (NULL);
+	gtk_label_set_markup
+		(GTK_LABEL (gui_btstyle_fr_lb), _("<b>Menu Buttons Preferences</b>"));
+	gtk_frame_set_label_widget
+		(GTK_FRAME (gui_btstyle_frame), gui_btstyle_fr_lb);
+	gtk_frame_set_shadow_type
+		(GTK_FRAME (gui_btstyle_frame), SETTINGS_FRAMESTYLE);
+	gtk_container_add (GTK_CONTAINER (gui_btstyle_frame), buttons_combo);
 
 	/* gui buttons frame */
 	gui_button_frame = gtk_frame_new (NULL);
 	gui_button_fr_lb = gtk_label_new (NULL);
 	gtk_label_set_markup
-		(GTK_LABEL (gui_button_fr_lb), _("<b>Buttons Displayed</b>"));
+		(GTK_LABEL (gui_button_fr_lb), _("<b>Buttons displayed in Main Menu</b>"));
 	gtk_frame_set_label_widget
 		(GTK_FRAME (gui_button_frame), gui_button_fr_lb);
 	gtk_frame_set_shadow_type
 		(GTK_FRAME (gui_button_frame), SETTINGS_FRAMESTYLE);
-	gtk_container_add (GTK_CONTAINER (gui_button_frame), gui_button_box);
+	gtk_container_add (GTK_CONTAINER (gui_button_frame), gui_button_table);
 
+	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_btstyle_frame, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (gui_vbox), gui_button_frame, FALSE, FALSE, 2);
 
 	gui_label = gtk_label_new (_("Buttons"));

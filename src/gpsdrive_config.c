@@ -132,6 +132,8 @@ writeconfig ()
 		local_config.showbutton_trackrestart);
 	fprintf (fp, "showbutton_trackclear = %d\n",
 		local_config.showbutton_trackclear);
+	fprintf (fp, "menubuttonsmode = %d\n",
+		local_config.buttonsmode);
 
 	fprintf (fp, "mutespeechoutput = ");
 	if (local_config.mute)
@@ -398,6 +400,8 @@ readconfig ()
 				local_config.showbutton_trackrestart = atoi (par2);
 			else if ( (strcmp(par1, "showbutton_trackclear")) == 0)
 				local_config.showbutton_trackclear = atoi (par2);
+			else if ( (strcmp(par1, "menubuttonsmode")) == 0)
+				local_config.buttonsmode = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
 				local_config.travelmode = atoi (par2);
 			else if ( (strcmp(par1, "navigationtype")) == 0)
@@ -857,6 +861,7 @@ config_init ()
 	local_config.showbutton_find = TRUE;
 	local_config.showbutton_route = TRUE;
 	local_config.showbutton_map = TRUE;
+	local_config.buttonsmode = 0;
 
 	/* set files and directories (~/.gpsdrive) */
 	hd = (gchar *) g_get_home_dir ();
