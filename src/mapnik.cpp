@@ -95,9 +95,11 @@ namespace mapnik {
         MapnikMap.CenterPt = MapnikMap.NewCenterPt;
         MapnikMap.ScaleDbl = MapnikMap.NewScaleDbl;
         MapnikMap.NewMapYsn = true;
+        if (mydebug > 3) cout << "mapnik map read from cache." << endl;
         return 1;
     }
 
+    if (mydebug > 3) cout << "mapnik map not found in cache."  << endl;
     return 0;
   }
 

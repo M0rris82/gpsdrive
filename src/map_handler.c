@@ -833,6 +833,10 @@ test_and_load_newmap ()
 				loadmap("mapnik");
 				set_mapnik_newmapysn(0);
 			}
+			else {
+			    if (mydebug > 0)
+				fprintf (stderr, "mapnik map not created.\n");
+			}
 			// set_cursor_style(CURSOR_DEFAULT);
 	    }
 	return;
