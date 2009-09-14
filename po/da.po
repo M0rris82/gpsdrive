@@ -8,6 +8,7 @@
 # entry -> destination
 # grid -> net
 # lookup -> opslag
+# manpage -> man-side
 # mode -> tilstand
 # set -> angiv
 # style -> stil (andre overvejelser typografi)
@@ -16,12 +17,13 @@
 #
 # Der er brugt dansk citationstegn (»«)
 # Der er ikke anvendt é og á (accenter)
+# Bogstaver efter skråstregen skrives med små bogstaver.
 msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive-2.10pre6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-07-06 16:33+0200\n"
-"PO-Revision-Date: 2009-07-05 07:50+0200\n"
+"PO-Revision-Date: 2009-08-12 07:50+0200\n"
 "Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1216,7 +1218,7 @@ msgstr "Søg nær nuværende position"
 
 #: src/poi_gui.c:894
 msgid "Destination/Cursor"
-msgstr "Destination/Markør"
+msgstr "Destination/markør"
 
 #: src/poi_gui.c:906
 msgid "Search near selected Destination"
@@ -2001,7 +2003,7 @@ msgstr ""
 
 #: src/splash.c:157
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
-msgstr "Se venligst manualen (man gpsdrive) for programdetaljer!"
+msgstr "Se venligst man-siden (man gpsdrive) for programdetaljer!"
 
 #: src/splash.c:162
 msgid "Mouse control (clicking on the map):\n"
