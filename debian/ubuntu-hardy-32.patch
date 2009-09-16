@@ -2,60 +2,33 @@ Index: rules
 ===================================================================
 --- rules	(revision 2495)
 +++ rules	(working copy)
-@@ -31,6 +31,9 @@
- 	      -DMAN_INSTALL_DIR=/usr/share/man \
- 	      -DINFO_INSTALL_DIR=/usr/share/info \
- 	      -DDATADIR=/usr/share \
+@@ -34,0 +31,3 @@
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
- 	      .. 
- 
- 	rm -f build/build-stamp
-Index: control
 ===================================================================
 --- control	(revision 2497)
 +++ control	(working copy)
-@@ -15,21 +15,14 @@
- 	libgps-dev,
- 	libgtk2.0-dev,
- 	libltdl3-dev,
+@@ -18,1 +18,0 @@
 -	libmapnik-dev (>> 0.5.0-1),
- 	libpcre3-dev,
- 	libpq-dev,
+@@ -21,1 +21,0 @@
 -	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
- 	libsqlite3-dev,
- 	libxml-twig-perl,
- 	libxml2-dev,
- 	perl-doc,
- 	pkg-config,
+@@ -27,1 +27,1 @@
 -	po-debconf,
++	po-debconf
+@@ -28,5 +27,0 @@
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-+	po-debconf
- Standards-Version: 3.8.1
- 
- # ------------------------------------------------------------------
-@@ -41,16 +34,12 @@
- 	libltdl3 | libltdl7,
- 	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
- 	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
+@@ -44,1 +41,0 @@
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
- 	openstreetmap-map-icons (>> 8310),
- 	libsqlite3-0
- Recommends: gpsd,
+@@ -48,1 +34,0 @@
 -	espeak,
- 	gpsdrive-data-maps (>> 2322),
- 	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2.10svn2299),
- 	openstreetmap-mapnik-world-boundaries (>> 7749),
+@@ -52,2 +34,0 @@
 -	mapnik-plugins,
 -	mapnik-utils,
- 	postgresql-8.3-postgis | postgresql-8.2-postgis,
- 	openstreetmap-mapnik-data,
- 	ttf-dejavu,
 @@ -68,7 +57,6 @@
  	sudo,
  	gdal-bin,
