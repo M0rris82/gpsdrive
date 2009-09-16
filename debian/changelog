@@ -1,3 +1,236 @@
+gpsdrive (2.10svn2505) unstable; urgency=low
+
+   * copy from wiki
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 16 Sep 2009 12:29:05 +0200
+
+gpsdrive (2.10svn2504) unstable; urgency=low
+
+   * - added some goodies folder for additional (fun) stuff
+   * - added some wallpapers
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 16 Sep 2009 10:30:27 +0200
+
+gpsdrive (2.10svn2503) unstable; urgency=low
+
+   * - added new icons for explore mode
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 16 Sep 2009 09:26:21 +0200
+
+gpsdrive (2.10svn2502) unstable; urgency=low
+
+   * Minor corrections from translationproject
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 14 Sep 2009 21:08:03 +0200
+
+gpsdrive (2.10svn2501) unstable; urgency=low
+
+   * - reordered buttons dialog in settings
+   * - added style setting for new main menu
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 14 Sep 2009 21:01:00 +0200
+
+gpsdrive (2.10svn2500) unstable; urgency=low
+
+   * add some debug msgs
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 14 Sep 2009 11:15:10 +0200
+
+gpsdrive (2.10svn2499) unstable; urgency=low
+
+   * newer versions of ubuntu only have libltdl7; first listed package in an OR list is tried first
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 13 Sep 2009 15:10:44 +0200
+
+gpsdrive (2.10svn2498) unstable; urgency=low
+
+   * sync again
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 13 Sep 2009 06:25:26 +0200
+
+gpsdrive (2.10svn2497) unstable; urgency=low
+
+   * add missing build-depends
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 13 Sep 2009 06:06:45 +0200
+
+gpsdrive (2.10svn2496) unstable; urgency=low
+
+   * sync with latest
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 13 Sep 2009 01:21:13 +0200
+
+gpsdrive (2.10svn2495) unstable; urgency=low
+
+   * - fixed popup to enter name on enabling friends service
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 04 Sep 2009 22:17:58 +0200
+
+gpsdrive (2.10svn2494) unstable; urgency=low
+
+   * bump version number
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 22:04:44 +0200
+
+gpsdrive (2.10svn2493) unstable; urgency=low
+
+   * allow using of prerendered mapnik/ tiles even if mapnik isn't installed
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 18:19:36 +0200
+
+gpsdrive (2.10svn2492) unstable; urgency=low
+
+   * bump ver to pre8.svn as pre7 is already released
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 17:56:27 +0200
+
+gpsdrive (2.10svn2491) unstable; urgency=low
+
+   * * new flags for creating JPEGs and simulation mode;
+   * * prettify output;
+   * * tabs to spaces, linewrap
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 14:25:35 +0200
+
+gpsdrive (2.10svn2490) unstable; urgency=low
+
+   * rename script
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 11:07:07 +0200
+
+gpsdrive (2.10svn2489) unstable; urgency=low
+
+   * - added position of destination to dashboard
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Thu, 03 Sep 2009 08:17:16 +0200
+
+gpsdrive (2.10svn2488) unstable; urgency=low
+
+   * gpsdrive_mapnik_gentiles uses 'convert' which is from the imagemagick package
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 02 Sep 2009 19:44:08 +0200
+
+gpsdrive (2.10svn2487) unstable; urgency=low
+
+   * write much smaller files
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Wed, 02 Sep 2009 19:40:25 +0200
+
+gpsdrive (2.10svn2486) unstable; urgency=low
+
+   * fix pngcrush test
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 01 Sep 2009 19:10:27 +0200
+
+gpsdrive (2.10svn2485) unstable; urgency=low
+
+   * run at low priority
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Tue, 01 Sep 2009 18:59:57 +0200
+
+gpsdrive (2.10svn2484) unstable; urgency=low
+
+   * minor clean
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 15:55:33 +0200
+
+gpsdrive (2.10svn2483) unstable; urgency=low
+
+   * cosmetics
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 13:17:55 +0200
+
+gpsdrive (2.10svn2482) unstable; urgency=low
+
+   * beginnings of a script to losslessly reduce the size of a tile archive (OSM/Mapnik servers aggressively trade size for speed leaving us with bloated tile repos)
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 13:04:40 +0200
+
+gpsdrive (2.10svn2481) unstable; urgency=low
+
+   * bump version number; pre7 is already released
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 11:40:17 +0200
+
+gpsdrive (2.10svn2480) unstable; urgency=low
+
+   * calculate map scale based on Web Tile zoom level and latitude;
+   * cleanup
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 11:17:26 +0200
+
+gpsdrive (2.10svn2479) unstable; urgency=low
+
+   * help and warnings about scale setting.
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 08:52:30 +0200
+
+gpsdrive (2.10svn2478) unstable; urgency=low
+
+   * map scales and downloads
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 02:50:24 +0200
+
+gpsdrive (2.10svn2477) unstable; urgency=low
+
+   * fix mapscale for OSM downloads
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 31 Aug 2009 02:14:04 +0200
+
+gpsdrive (2.10svn2476) unstable; urgency=low
+
+   * - added new menu icons
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 30 Aug 2009 23:47:16 +0200
+
+gpsdrive (2.10svn2475) unstable; urgency=low
+
+   * hallelujah- finally get latitude dependent OSM scale working correctly. Also use the Google Merc on Sphere abomination +proj terms
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 30 Aug 2009 21:31:18 +0200
+
+gpsdrive (2.10svn2474) unstable; urgency=low
+
+   * improve help text
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 30 Aug 2009 19:09:06 +0200
+
+gpsdrive (2.10svn2473) unstable; urgency=low
+
+   * make desktop icon work
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 30 Aug 2009 17:06:58 +0200
+
+gpsdrive (2.10svn2472) unstable; urgency=low
+
+   * fix libgeos pkg name
+
+ -- hbowman via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Sun, 30 Aug 2009 12:49:13 +0200
+
+gpsdrive (2.10svn2471) unstable; urgency=low
+
+   * - changed config parameters error message to warning
+
+ -- Guenther Meyer (d.s.e via the domain sordidmusic.com) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Mon, 10 Aug 2009 19:07:37 +0200
+
+gpsdrive (2.10svn2470) unstable; urgency=low
+
+   * Adapt numbering and update in changelog of maps
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 07 Aug 2009 07:31:40 +0200
+
+gpsdrive (2.10svn2469) unstable; urgency=low
+
+   * Update Changelog
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 07 Aug 2009 07:29:41 +0200
+
+gpsdrive (2.10svn2468) unstable; urgency=low
+
+   * Adapt patch to changes in debian/control
+
+ -- Joerg Ostertag (Debian Packages) (debian via the domain ostertag.name) via GPSdrive discussion list <gpsdrive@lists.gpsdrivers.org>  Fri, 07 Aug 2009 07:29:20 +0200
+
 gpsdrive (2.10svn2467) unstable; urgency=low
 
    * add back errantly removed image
