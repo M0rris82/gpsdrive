@@ -1,0 +1,170 @@
+See the GpsDrive wiki for the source of this document.
+https://sourceforge.net/apps/mediawiki/gpsdrive/index.php?title=Setting_up_Mapnik
+
+
+About
+
+GpsDrive now supports OpenStreetMap Maps with the help of the
+Mapnik renderer. To activate this mode you have to build GpsDrive
+with the Mapnik option enabled. Once enabled you will have to
+download a .osm "planet file" for your country and move it into
+a PostGIS (PostgreSQL + spatial extension) database. You will
+also need to install the world boundary ShapeFiles, available
+from the GpsDrive website's package repository (300mb).
+
+Once this is all in place you can switch on the "Mapnik Mode"
+check box in the Map Control GUI, and you should start to see
+custom generated map tiles appear wherever you roam, with no
+need to be connected to the internet to get new tiles. Already-
+generated tiles are cached. 
+
+
+----------------------------------------------------------------
+
+Guide by R K Scanlon, copied here from the GpsDrive wiki 16 Sept 2009.
+https://sourceforge.net/apps/mediawiki/gpsdrive/index.php?title=8.10_deb#Setup_PostgreSQL
+
+
+== Setup PostgreSQL ==
+
+Create Database
+
+You need to be authenticated as the PostgreSQL super user in order
+to execute many of the commands below. You can not login as this user.
+Instead as root enter:
+
+$> su
+#> su - postgres
+
+As the postgres user run the following to create the database:
+
+NOTE: Replace username with the user that will be using mapnik.
+
+$> createuser username
+ Shall the new role be a super user(y/n) y
+$> createdb -E UTF8 -O username gis
+$> createlang plpgsql gis
+
+The new database will be called "gis".
+
+Setup PostGIS
+
+As the postgresql super user:
+
+NOTE: Replace username with the user that will be using Mapnik.
+
+$> psql -d gis -f /usr/share/postgresql-8.3-postgis/lwpostgis.sql
+$> echo "ALTER TABLE geometry_columns OWNER TO username; \
+         ALTER TABLE spatial_ref_sys OWNER TO username;" | \
+	 psql -d gis
+$> exit
+#> exit
+
+
+Install the OSM data
+
+Download OSM data
+
+NOTE Before downloading the whole of the world data (>3GB) consider
+how much of this you really need. I downloaded only the data for my 
+country as at this time I have no need for other places.
+
+$> cd /usr/local/src/gpsdrive
+
+For the whole world
+
+$> wget http://planet.openstreetmap.org/planet-latest.osm.bz2
+
+For local extracts see:
+
+    * http://wiki.openstreetmap.org/index.php/Planet.osm#Extracts 
+
+
+Put the osm data into the database
+
+$> cd /usr/local/src/gpsdrive
+$> osm2pgsql -m -d gis planet-latest.osm.bz2
+
+or
+
+$> osm2pgsql -m -d gis your_downloaded_data_file.osm
+
+or you can limit the data by using a bounding box
+
+$> osm2pgsql --bbox minlon,minlat,maxlon,maxlat -m \
+      -d gis your_down_loaded_data_file.osm
+
+    * minlat = minimum latitude
+    * minlon = minimum longitude
+    * maxlat = maximum latitude
+    * maxlon = maximum longitude
+    * Negative for latitude south and longitude west. 
+
+This took about 3 minutes for my country and I understand that
+for the world it takes several days.
+
+
+See
+    * http://wiki.openstreetmap.org/index.php/Mapnik#Tuning_the_database 
+and
+    * http://wiki.openstreetmap.org/index.php/Mapnik#Loading_data 
+
+if you intend loading the whole world and/or encounter problems
+with loading the data.
+
+This is done at this stage rather than using the script
+("mapnik-osm-updater.sh") provided by gpsdrive as it gives you a 
+chance to correct any possible errors early in the stage.
+
+Setuping up Mapnik
+
+If you installed using the .deb packages these steps should, for
+the most part, be unneeded.
+
+Move world boundaries/coastlines to Mapnik directory
+
+$> su
+#> cd /usr/local/src/gpsdrive
+#> mv world_boundaries /usr/lib/mapnik
+
+
+Create a link to the ttf-dejavu fonts
+
+#> ln -s /usr/share/fonts/truetype/ttf-dejavu/ /usr/lib/mapnik/0.5/fonts
+
+
+Create a link to the Mapnik icons
+
+#> ln -s /usr/share/icons/openstreetmap/ /usr/local/share/icons/map-icons
+
+
+Create a link to the Mapnik libraries
+
+#> ln -s /usr/lib/mapnik /usr/local/share
+
+
+Test gpsdrive
+
+Run from a terminal to check infomation sent to standard output.
+
+$> gpsdrive
+
+Anything other then the following may indicate incorrect operation.
+
+
+DB: Using waypoints from local user file.
+DB: Using waypoints from OpenStreetMap database.
+Read 576 POI-Types from geoinfo.db
+
+
+You should be able to select Mapnik mode from the Map Control GUI.
+Assuming you have added the OSM data then the map should be
+dynamically generated.
+
+
+ * That's it you should now have a working
+   gpsdrive/mapnik/openstreetmap setup. 
+
+
+---
+
