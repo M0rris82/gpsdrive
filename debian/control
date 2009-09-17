@@ -18,7 +18,7 @@ Build-Depends: debhelper (>= 5),
 	libmapnik-dev (>> 0.5.0-1),
 	libpcre3-dev,
 	libpq-dev,
-	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
+	libspeechd-dev (> 0.6.6),
 	libsqlite3-dev,
 	libxml-twig-perl,
 	libxml2-dev,
@@ -39,8 +39,8 @@ Depends: ${misc:Depends},
 	 ${shlibs:Depends},
 	libart-2.0-2,
 	libltdl7 | libltdl3,
-	libboost-filesystem1.33.1 | libboost-filesystem1.34.1,
-	libboost-thread1.33.1 | libboost-thread1.34.1 | libboost-thread1.34.1-4ubuntu3,
+	libboost-filesystem1.34.1 | libboost-filesystem1.33.1,
+	libboost-thread1.34.1 | libboost-thread1.33.1,
 	libmapnik (>> 0.5.0-1) | libmapnik0.5,
 	openstreetmap-map-icons (>> 8310),
 	libsqlite3-0
@@ -130,4 +130,4 @@ Description: Friendsd for GPS navigation system
  .
  This package only contains the FriendsDaemon. It is used to 
  communicate the Position between different GpsDrive Clients via UDP.
- This program is only needed once on a central Server.
+ This program is only needed once on a central server.
