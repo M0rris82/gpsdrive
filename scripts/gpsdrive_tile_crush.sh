@@ -156,6 +156,10 @@ else
       echo "ERROR: NetPBM tools not available. Please install them first"
       exit 1
    fi
+   if [ ! -e ~/.gpsdrive/maps/map_koord.txt ] ; then
+      echo "ERROR: map_koord.txt not found"
+      exit 1
+   fi
 fi
 
 
@@ -217,21 +221,22 @@ for OSMER in $PROCDIRS ; do
 	  JPEG_MAP=`basename $MAP .png`.jpg
 
 	  echo "pngtopnm \"$MAP\" | pnmtojpeg --quality=85 > $JPEG_MAP"
+
 	  if [ $? -eq 0 ] && [ -s "$JPEG_MAP" ] ; then
-            BEFORE=`wc --bytes < "$MAP"`
-            AFTER=`wc --bytes < "$JPEG_MAP"`
-            echo "$BEFORE $AFTER" | \
+             BEFORE=`wc --bytes < "$MAP"`
+             AFTER=`wc --bytes < "$JPEG_MAP"`
+             echo "$BEFORE $AFTER" | \
 	       awk '{printf("   reduced %.1f%%\n", ($1-$2)*100.0/$1)}'
 
-	    echo \rm "$MAP"
-	    # for JPEG we'll need to update map_koord.txt too
-	    # FIXME
-	    echo sed -i -e "s/\($MAP\)/\1.jpg/" ~/.gpsdrive/maps/map_koord.txt
+	     echo \rm "$MAP"
+	     # for JPEG we'll need to update map_koord.txt too
+	     # FIXME
+	     echo sed -i -e "s/\($MAP\)/\1.jpg/" ~/.gpsdrive/maps/map_koord.txt
 
-         else
-            echo "Error crushing <$MAP>."
-            \rm "$JPEG_MAP"
-         fi
+          else
+             echo "Error converting <$MAP>."
+             \rm "$JPEG_MAP"
+          fi
       else
          pngcrush -brute -reduce -c 2 $quiet_opt "$MAP" "$MAP.crush"
 
