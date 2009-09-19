@@ -21,8 +21,9 @@
 print_usage()
 {
   echo
-  echo "USAGE: $0 . [-a] [-j] [-c] [-n] [--paths=/map/path/]"
-  echo "       use $0 --help for detailed Information"
+  echo "USAGE: `basename $0` [-j] [-c] [-n] [--path=/map/path/]"
+  # todo: --path=path1:path2:path3
+  echo "       `basename $0` --help  for detailed Information"
   echo
 }
 
@@ -36,17 +37,13 @@ cat << EOF
  This script will loop through your ~/.gpsdrive/maps/ directory
  and try to reduce the filesize of any image it finds. By default
  it just works on PNG images using the lossless pngcrush utility.
- Optionally you can use the -j flag to convert PNG to JPEG, you
- can use the -a flag to look in all subdirectories, not just the
- OSM_tah one, and also you can specify a map path to only process
- a single subdirectory. The -c flag cleans up after you removing
- all the empty .crushed tag files which are kept so that if you
- run this script again you do not have to waste time recrushing
- a tile which has already been processed. The -n flag makes it
- run at normal priority (niceness), otherwise it tries to go low.
- 
- Initially it just tries OpenStreetMap tiles, which are particularly
- bloated (saves them cycles on the server).
+ Optionally you can use the -j flag to convert PNG to JPEG, and
+ you can specify a map path to only process a single subdirectory.
+ The -c flag cleans up after you removing all the empty .crushed
+ tag files which are kept so that if you run this script again you
+ do not have to waste time recrushing a tile which has already been
+ processed. The -n flag makes it run at normal priority (niceness),
+ otherwise it tries to go low.
  
  You may wish to make backups before running this, and go out for
  a beer while it is running. It may take some time.
@@ -56,7 +53,6 @@ EOF
 
 
 # CLI parser from OSM setup-chroot script
-all_subdirs=false
 do_jpeg=false
 do_cleanup=false
 low_priority=true
@@ -69,9 +65,6 @@ for arg in "$@" ; do
    arg_true=true
    arg_false=false
    case $arg in
-	-a | --all)
-	    all_subdirs=$arg_true
-	    ;;
 	-j | --jpeg)
 	    do_jpeg=$arg_true
 	    ;;
@@ -81,7 +74,7 @@ for arg in "$@" ; do
 	-n | --normal-priority)
 	    low_priority=$arg_false
 	    ;;
-       --paths=*) # Specify specific path to process
+       --path=*) # Specify specific path to process
 	    proc_path=${arg#*=}
 	    ;;
 	-h | --help | -help)
@@ -155,7 +148,7 @@ if [ -z "$proc_path" ] ; then
    fi
 else
    #todo: make safe for spaces in path name
-   echo "multi path= is still todo"
+   #todo: test multi --path=path1:path2:path3
    PROCDIRS=`echo "$proc_path" | tr ':' ' '`
    # todo
    # for DIR in $PROCDIRS ; do 
@@ -183,19 +176,16 @@ for OSMER in $PROCDIRS ; do
    i=0
    for MAP in `find . | grep '\.png$'` ; do
       i=`expr $i + 1`
-      if [ -e "$MAP.crushed" ] ; then
+      if [ "do_jpeg" = "false" ] && [ -e "$MAP.crushed" ] ; then
          continue
       fi
       echo "Crushing --|$MAP|--  ($i/$TOTALTILES) ..."
 
       if [ "$do_jpeg" = "true" ] ; then
-          echo "JPEG is TODO. Haven't touched <$MAP>"
+	  MAP_BASE=`echo "$MAP" | sed -e 's+^\./++'`
+	  JPEG_MAP=`echo "$MAP_BASE" | sed -e 's/\.png$/.jpg/'`
 
-	  continue
-
-	  JPEG_MAP=`basename $MAP .png`.jpg
-
-	  echo "pngtopnm \"$MAP\" | pnmtojpeg --quality=85 > $JPEG_MAP"
+	  pngtopnm "$MAP" | pnmtojpeg --quality=85 > ./"$JPEG_MAP"
 
 	  if [ $? -eq 0 ] && [ -s "$JPEG_MAP" ] ; then
              BEFORE=`wc --bytes < "$MAP"`
@@ -203,14 +193,16 @@ for OSMER in $PROCDIRS ; do
              echo "$BEFORE $AFTER" | \
 	       awk '{printf("   reduced %.1f%%\n", ($1-$2)*100.0/$1)}'
 
-	     echo \rm "$MAP"
-	     # for JPEG we'll need to update map_koord.txt too
-	     # FIXME
-	     echo sed -i -e "s/\($MAP\)/\1.jpg/" ~/.gpsdrive/maps/map_koord.txt
+	     \rm "$MAP"
+	     if  [ -e "$MAP.crushed" ] ; then
+	        \rm "$MAP.crushed"
+	     fi
+	     # for JPEG we need to update map_koord.txt too
+	     sed -i -e "s|$MAP_BASE|$JPEG_MAP|" ~/.gpsdrive/maps/map_koord.txt
 
           else
              echo "Error converting <$MAP>."
-             \rm "$JPEG_MAP"
+             \rm ./"$JPEG_MAP"
           fi
       else
          pngcrush -brute -reduce -c 2 $quiet_opt "$MAP" "$MAP.crush"
@@ -229,7 +221,7 @@ for OSMER in $PROCDIRS ; do
       fi
    done
    cd ..
-   echo "Size after: `du -sh $OSMER`"
+   echo "Size after:  `du -sh $OSMER`"
 done
 
 
