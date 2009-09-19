@@ -21,7 +21,7 @@
 print_usage()
 {
   echo
-  echo "USAGE: $0 . [-a] [-j] [-c] [-n] [paths=\"map_path1:map_path2:...\"]"
+  echo "USAGE: $0 . [-a] [-j] [-c] [-n] [--paths=/map/path/]"
   echo "       use $0 --help for detailed Information"
   echo
 }
@@ -62,10 +62,7 @@ do_cleanup=false
 low_priority=true
 proc_path=""
 verbose=false
-#unused
-debug=false
 quiet=false
-force=false
 
 
 for arg in "$@" ; do
@@ -90,36 +87,14 @@ for arg in "$@" ; do
 	-h | --help | -help)
 	    help=$arg_true
 	    ;;
-
-### the rest of these are unused but harmless and maybe useful one day
-	--force) #	force some actions
-	    force=$arg_true
-	    ;;
-
 	--v | --verbose) #	switch on verbose output
 	    verbose=$arg_true
 	    quiet=$arg_false
 	    ;;
-
-	--debug) #	switch on debugging
-	    debug=$arg_true
-	    verbose=$arg_true
-	    quiet=$arg_false
-	    ;;
-
 	--q | --quiet) #	switch on quiet Mode
 	    debug=$arg_false
 	    verbose=$arg_false
 	    quiet=$arg_true
-	    ;;
-
-	-debug)
-	    debug=$arg_true
-	    verbose=$arg_true
-	    quiet=""
-	    ;;
-	--nv) #		be a little bit less verbose
-	    verbose=''
 	    ;;
 	*)
 	    echo ""
