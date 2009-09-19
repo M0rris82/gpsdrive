@@ -251,6 +251,7 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 void
 mapdl_geturl_landsat (void)
 {
+/* TODO: generalize to make it easy to add other Free WMS data source URLs */
 	gdouble t_lat1, t_lat2, t_lon1, t_lon2;
 	gdouble meters_per_pixel, dist_to_edge_m, dist_to_edge_deg, bump;
 	gchar wms_url[512], wms_layers[512];
