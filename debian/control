@@ -88,7 +88,7 @@ Architecture: any
 Depends: ${misc:Depends},
 	 ${shlibs:Depends},
          ${perl:Depends},
-	 imagemagick,
+	 graphicsmagick-imagemagick-compat | imagemagick,
 	 python,
 	 python-support,
 	 python-central,
