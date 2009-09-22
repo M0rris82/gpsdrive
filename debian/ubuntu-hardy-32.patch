@@ -7,28 +7,48 @@ Index: rules
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
 ===================================================================
---- control	(revision 2497)
+--- control	(revision 2517)
 +++ control	(working copy)
-@@ -18,1 +18,0 @@
+@@ -15,21 +15,14 @@
+ 	libgps-dev,
+ 	libgtk2.0-dev,
+ 	libltdl7-dev | libltdl3-dev,
 -	libmapnik-dev (>> 0.5.0-1),
-@@ -21,1 +21,0 @@
--	libspeechd-dev (>= 0.6.7) | libspeechd-dev (>= 0.6.7~rc1-1),
-@@ -27,1 +27,1 @@
+ 	libpcre3-dev,
+ 	libpq-dev,
+-	libspeechd-dev (> 0.6.6),
+ 	libsqlite3-dev,
+ 	libxml-twig-perl,
+ 	libxml2-dev,
+ 	perl-doc,
+ 	pkg-config,
 -	po-debconf,
-+	po-debconf
-@@ -28,5 +27,0 @@
 -	python-dev,
 -	python-central,
 -	python-dev | python2.4-dev | python2.3-dev,
 -	python-support,
 -	speech-dispatcher (>= 0.6.6)
-@@ -44,1 +41,0 @@
++	po-debconf
+ Standards-Version: 3.8.1
+ 
+ # ------------------------------------------------------------------
+@@ -41,16 +34,12 @@
+ 	libltdl7 | libltdl3,
+ 	libboost-filesystem1.34.1 | libboost-filesystem1.33.1,
+ 	libboost-thread1.34.1 | libboost-thread1.33.1,
 -	libmapnik (>> 0.5.0-1) | libmapnik0.5,
-@@ -48,1 +34,0 @@
+ 	openstreetmap-map-icons (>> 8310),
+ 	libsqlite3-0
+ Recommends: gpsd,
 -	espeak,
-@@ -52,2 +34,0 @@
+ 	gpsdrive-data-maps (>> 2322),
+ 	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2.10svn2299),
+ 	openstreetmap-mapnik-world-boundaries (>> 7749),
 -	mapnik-plugins,
 -	mapnik-utils,
+ 	postgresql-8.3-postgis | postgresql-8.2-postgis,
+ 	openstreetmap-mapnik-data,
+ 	ttf-dejavu,
 @@ -68,7 +57,6 @@
  	sudo,
  	gdal-bin,
@@ -50,7 +70,7 @@ Index: rules
 @@ -89,10 +74,6 @@
  	 ${shlibs:Depends},
           ${perl:Depends},
- 	 imagemagick,
+ 	 graphicsmagick-imagemagick-compat | imagemagick,
 -	 python,
 -	 python-support,
 -	 python-central,
