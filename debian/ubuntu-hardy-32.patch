@@ -1,11 +1,18 @@
 Index: rules
 ===================================================================
---- rules	(revision 2495)
+--- rules	(revision 2445)
 +++ rules	(working copy)
-@@ -34,0 +31,3 @@
+@@ -31,6 +31,9 @@
+ 	      -DMAN_INSTALL_DIR=/usr/share/man \
+ 	      -DINFO_INSTALL_DIR=/usr/share/info \
+ 	      -DDATADIR=/usr/share \
 +	      -DWITH_GDA3:BOOL=OFF \
 +	      -DWITH_SPEECH:BOOL=OFF \
 +	      -DWITH_MAPNIK:BOOL=OFF \
+ 	      .. 
+ 
+ 	rm -f build/build-stamp
+Index: control
 ===================================================================
 --- control	(revision 2517)
 +++ control	(working copy)
