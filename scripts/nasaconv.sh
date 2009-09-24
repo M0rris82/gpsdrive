@@ -3,7 +3,7 @@
 if echo "$@" | grep -q -e '--help' ; then
     echo "This is an example script to convert raw Nasa Maps into GeoTIFFs"
     echo "See the README.nasamaps file that comes with the GpsDrive documentation"
-    exit 1
+    exit 0
 fi
 
 # Better:

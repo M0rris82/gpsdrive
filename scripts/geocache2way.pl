@@ -81,5 +81,5 @@ Usage:   geoparse.pl [-f | --file <filename>] [-o | --output <filename>] [-v | -
       -h | --help    = This usage screen
 
 EOP
-   exit (1);
+   exit (0);
 }
