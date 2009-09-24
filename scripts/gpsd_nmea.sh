@@ -6,7 +6,7 @@ if echo "$@" | grep -q -e '--help' ; then
     echo "  SiRF binary protocol. Note this may not be needed, as modern"
     echo "  versions of Gpsd output pseudo-NMEA sentences when the client"
     echo "  requests 'R' raw-mode."
-    exit -1
+    exit 1
 fi
 
 echo "Switching the GPS connected to the local Gpsd into NMEA Mode ..."
