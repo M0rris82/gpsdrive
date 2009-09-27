@@ -308,17 +308,18 @@ import1_cb (GtkWidget * widget, guint datum)
   gchar buff[1300];
   GtkWidget *text;
   GtkWidget *hbox;
-  gchar *thetext1 = _("How to calibrate your own maps? "
+  gchar *thetext1 = _("How to calibrate your own maps: "
 		      "First, the map file\nmust be copied into the");
-  gchar *thetext1a = _("\ndirectory as .gif, .jpg or .png file "
+  gchar *thetext1a = _("\ndirectory as a .png, .jpg, .tif, or .gif file "
 		       "and must have\nthe size 1280x1024. The file names must be\n"
-		       "map_* for street maps or top_* for topographical maps!\n"
+		       "map_* for projected or top_* for geographic maps!\n"
 		       "Load the file, select coordinates "
-		       "from waypoint list or\ntype them in. "
+		       "from the waypoint list or\ntype them in. "
 		       "Then click on the accept button.");
   gchar *thetext2 =
-    _("Now do the same for your second point and click on the\n"
-      "finish button. The map can be used now.");
+    _("Now do the same for your second ground\n"
+      "control point and when done click on the\n"
+      "Finish button. The map can now be used.");
 
 
   window = gtk_dialog_new ();

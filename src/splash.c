@@ -144,8 +144,8 @@ insert_text (GtkTextBuffer * buffer)
 	const gchar *t3 =
 		_("You can move freely around the map by selecting Explore Mode"
 		  " in the Map Control menu. In this mode the GPS position"
-		  " indicator is replaced by a blue rectangle. Reposition the"
-		  " cursor with a left-click on the map or with the arrow keys."
+		  " indicator is replaced by a blue box. Reposition the cursor"
+		  " with a left-click on the map or with the arrow keys."
 		  " If you click on the border of the map (the outer 20%) then"
 		  " the map switches to the next area. Middle or right-click to"
 		  " exit Explore Mode.\n\n"
@@ -159,7 +159,7 @@ insert_text (GtkTextBuffer * buffer)
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter, VERSION, -1,
 						  "heading", NULL);
 	gtk_text_buffer_insert (buffer, &iter,
-		_("\n\nYou can find new versions at http://www.gpsdrive.de\n\n"), -1);
+		_("\n\nYou can find the latest version at http://www.gpsdrive.de\n\n"), -1);
 
 	gtk_text_buffer_insert_with_tags_by_name (buffer, &iter,
 		_("Disclaimer: Do not use as a primary means of navigation!\n"
