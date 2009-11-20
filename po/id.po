@@ -5,14 +5,14 @@
 # this file and modified versions, provided that this
 # header is not removed and modified versions are marked
 # as such.
-# Arif E. Nugroho <arif_endro@yahoo.com>, 2008.
+# Arif E. Nugroho <arif_endro@yahoo.com>, 2008, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gpsdrive 2.10pre6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-07-06 16:33+0200\n"
-"PO-Revision-Date: 2008-09-09 07:48+0700\n"
+"PO-Revision-Date: 2008-11-16 20:00+0700\n"
 "Last-Translator: Arif E. Nugroho <arif_endro@yahoo.com>\n"
 "Language-Team: Indonesian <translation-team-id@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -372,7 +372,7 @@ msgstr "<TINGKAT>"
 
 #: src/gpsdrive.c:2163
 msgid "select friends server, e.g. friendsd.gpsdrive.de"
-msgstr "pilih server teman, contoh: vectra.web.id"
+msgstr "pilih server teman, contoh: friendsd.gpsdrive.de"
 
 #: src/gpsdrive.c:2163
 msgid "<SERVERFILE>"
