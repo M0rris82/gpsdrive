@@ -823,14 +823,18 @@ route_settarget (gint rt_ptr)
 		g_snprintf (t_rt_ptr, sizeof (t_rt_ptr),
 			"%d", (rt_ptr));
 	}
-	gtk_tree_model_get_iter_from_string
-		(GTK_TREE_MODEL (route_list_tree), &iter_route, t_rt_ptr);
+// Check to see if the next route point exists before getting from tree
+// causes segfault if no point exists.
+	if (gtk_tree_model_get_iter_from_string
+		(GTK_TREE_MODEL (route_list_tree), &iter_route, t_rt_ptr))
+	{
 	gtk_tree_model_get
 		(GTK_TREE_MODEL (route_list_tree), &iter_route,
 		ROUTE_NAME, &t_name,
 		ROUTE_LON, &(coords.target_lon),
 		ROUTE_LAT, &(coords.target_lat),
 		-1);
+	}
 	g_snprintf (current.target, sizeof (current.target), "%s", t_name);
 
 	if ( mydebug >50 )
@@ -879,14 +883,18 @@ route_display_targetinfo (void)
 		return;
 
 	g_snprintf (t_ptr, sizeof (t_ptr), "%d", (route.pointer));
-	gtk_tree_model_get_iter_from_string
-		(GTK_TREE_MODEL (route_list_tree), &t_iter, t_ptr);
+// Check to see if the next route point exists before getting from tree
+// causes segfault if no point exists.
+	if (gtk_tree_model_get_iter_from_string
+		(GTK_TREE_MODEL (route_list_tree), &t_iter, t_ptr))
+	{
 	gtk_tree_model_get
 		(GTK_TREE_MODEL (route_list_tree), &t_iter,
 		ROUTE_ICON, &t_icon,
 		ROUTE_NAME, &t_name,
 		ROUTE_CMT, &t_cmt,
 		-1);
+	}
 
 	distance2gchar (current.dist, t_dist, sizeof (t_dist), t_unit, sizeof (t_unit));
 	if (t_cmt)
