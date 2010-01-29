@@ -171,28 +171,33 @@ for XOFF in $XOFF_ALL ; do
     unset CENTER_STR
     unset SCALE
     CENTER_STR=`gdalinfo "${OUTFILE}.tif" | grep '^Center' | \
-      cut -f3 -d'(' | cut -f1 -d')'`
+      sed -e 's/.*(//' -e 's/).*$//'`
 
-    # parse and build lat/lon as decimal degree
-    LON_D=`echo "$CENTER_STR" | cut -f1 -d'd' | awk '{print $1}'`
-    LON_M=`echo "$CENTER_STR" | cut -f2 -d'd' | cut -f1 -d"'" | awk '{print $1}'`
-    LON_S=`echo "$CENTER_STR" | cut -f2 -d"'" | cut -f1 -d'"' | awk '{print $1}'`
-    LON_H=`echo "$CENTER_STR" | cut -f2 -d'"' | cut -f1 -d',' | awk '{print $1}'`
-    LAT_D=`echo "$CENTER_STR" | cut -f2 -d',' | cut -f1 -d'd' | awk '{print $1}'`
-    LAT_M=`echo "$CENTER_STR" | cut -f3 -d'd' | cut -f1 -d"'" | awk '{print $1}'`
-    LAT_S=`echo "$CENTER_STR" | cut -f3 -d"'" | cut -f1 -d'"' | awk '{print $1}'`
-    LAT_H=`echo "$CENTER_STR" | cut -f3 -d'"' | cut -f1 -d',' | awk '{print $1}'`
-    LON=`echo $LON_D $LON_M  $LON_S | awk '{printf("%.9f", $1 + $2/60. + $3/3600.)}'`
-    LAT=`echo $LAT_D $LAT_M  $LAT_S | awk '{printf("%.9f", $1 + $2/60. + $3/3600.)}'`
-    if [ "$LON_H" = "W" ] ; then
-       LON_FULL="-$LON"
+    if [ `echo "$CENTER_STR" | grep -c 'd'` -gt 0 ] ; then
+       # parse and build lat/lon as decimal degree
+       LON_D=`echo "$CENTER_STR" | cut -f1 -d'd' | awk '{print $1}'`
+       LON_M=`echo "$CENTER_STR" | cut -f2 -d'd' | cut -f1 -d"'" | awk '{print $1}'`
+       LON_S=`echo "$CENTER_STR" | cut -f2 -d"'" | cut -f1 -d'"' | awk '{print $1}'`
+       LON_H=`echo "$CENTER_STR" | cut -f2 -d'"' | cut -f1 -d',' | awk '{print $1}'`
+       LAT_D=`echo "$CENTER_STR" | cut -f2 -d',' | cut -f1 -d'd' | awk '{print $1}'`
+       LAT_M=`echo "$CENTER_STR" | cut -f3 -d'd' | cut -f1 -d"'" | awk '{print $1}'`
+       LAT_S=`echo "$CENTER_STR" | cut -f3 -d"'" | cut -f1 -d'"' | awk '{print $1}'`
+       LAT_H=`echo "$CENTER_STR" | cut -f3 -d'"' | cut -f1 -d',' | awk '{print $1}'`
+       LON=`echo $LON_D $LON_M  $LON_S | awk '{printf("%.9f", $1 + $2/60. + $3/3600.)}'`
+       LAT=`echo $LAT_D $LAT_M  $LAT_S | awk '{printf("%.9f", $1 + $2/60. + $3/3600.)}'`
+       if [ "$LON_H" = "W" ] ; then
+          LON_FULL="-$LON"
+       else
+          LON_FULL="$LON"
+       fi
+       if [ "$LAT_H" = "S" ] ; then
+          LAT_FULL="-$LAT"
+       else
+          LAT_FULL="$LAT"
+       fi
     else
-       LON_FULL="$LON"
-    fi
-    if [ "$LAT_H" = "S" ] ; then
-       LAT_FULL="-$LAT"
-    else
-       LAT_FULL="$LAT"
+       LON_FULL=`echo "$CENTER_STR" | tr ',' ' ' | awk '{print $1}'`
+       LAT_FULL=`echo "$CENTER_STR" | tr ',' ' ' | awk '{print $2}'`
     fi
 
     # find Pixel Size  (we need meters and same value in X and Y !)
