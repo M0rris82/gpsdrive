@@ -10,4 +10,5 @@ option(WITH_FRIENDSD "Build friendsd" ON)
 option(WITH_KISMET "Build with kismet support" ON)
 option(DEBUG "Build with debug -D support" ON)
 option(WITH_NAVIGATION "Build with routing support" OFF)
+option(LIBGPS_OLD "Build with old libgps version (<2.90)" ON)
 

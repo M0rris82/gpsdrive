@@ -296,7 +296,14 @@ static struct gps_data_t *gpsdata;
  *    int PRN[MAXCHANNELS]: PRNs of satellit
  *    int elevation[MAXCHANNELS]: elevation of satellit
  *    int azimuth[MAXCHANNELS]: azimut
- *    int ss[MAXCHANNELS]: signal-to-noise ratio (dB
+ *    int ss[MAXCHANNELS]: signal-to-noise ratio (dB)
+ *
+ *    (as of v2.90 of libgps this struct is called satellites_visible)
+ * 
+ * also new in v2.90:
+ * struct dop: dilution of precision factors
+ *    double xdop, ydop, pdop, hdop, vdop, tdop, gdop
+ *
  */
 
 
@@ -319,7 +326,11 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	if (mydebug > 40)
 	{
 		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
+#ifdef LIBGPS_OLD
 		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
+#else
+		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites_visible);
+#endif
 		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
 		g_print ("  Course: %.2f\n  GPS time: %.0f\n",
 			data->fix.track, data->fix.time);
@@ -333,13 +344,22 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	coords.current_lon = data->fix.longitude;
 	current.altitude = data->fix.altitude;
 	current.gps_sats_used = data->satellites_used;
+#ifdef LIBGPS_OLD
 	current.gps_sats_in_view = data->satellites;
+#else
+	current.gps_sats_in_view = data->satellites_visible;
+#endif
 	if (data->set & TRACK_SET) 
 		current.course = data->fix.track * DEG_2_RAD;
 	if (data->set & SPEED_SET)
 		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
+#ifdef LIBGPS_OLD
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
+#else
+	current.gps_hdop = data->dop.hdop;
+	current.gps_eph = data->fix.epx; //only partially because the epy part is missing...
+#endif
 	current.gps_epv = data->fix.epv;
 
 	t_gpstime = (time_t) data->fix.time;
@@ -348,9 +368,15 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	localtime_r(&t_gpstime, &t_tim);
 	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
 
+#ifdef LIBGPS_OLD
 	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
 	{
 		for (i=0;i<data->satellites;i++)
+#else
+	if ((data->set & SATELLITE_SET) && (data->satellites_visible > 0))
+	{
+		for (i=0;i<data->satellites_visible;i++)
+#endif
 		{
 			gps_sats[i].used = data->used[i];
 			gps_sats[i].prn = data->PRN[i];
