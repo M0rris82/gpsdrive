@@ -358,7 +358,7 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	current.gps_eph = data->fix.eph;
 #else
 	current.gps_hdop = data->dop.hdop;
-	current.gps_eph = data->fix.epx; //only partially because the epy part is missing...
+	current.gps_eph = ((data->fix.epx > data->fix.epy) ? data->fix.epx : data->fix.epy);
 #endif
 	current.gps_epv = data->fix.epv;
 
@@ -401,13 +401,20 @@ gps_query_data_cb (gpointer data)
 	if (current.importactive)
 		return TRUE;
 
+	gpsdata->set = 0;
+#ifdef LIBGPS_OLD
 	/* query gpsd for data:
 	 * o - get time/position/velocity data
 	 * y - get satellite info
 	 * s - get fix status (must be after "o" else its value is overwritten)
 	 */
-	gpsdata->set = 0;
 	gps_query (gpsdata, "oys\n");
+#else
+	if (gps_waiting(gpsdata))
+	{
+		gps_poll (gpsdata);
+	}
+#endif
 
 	return (TRUE);
 }
@@ -460,6 +467,12 @@ gpsd_connect (gboolean reconnect)
 
 	/* set hook function to handle gps data */
 	gps_set_raw_hook (gpsdata, (gpointer) gps_hook_cb);
+
+#ifndef LIBGPS_OLD
+	/* enable watch mode to get data stream from gpsd */
+	gps_stream (gpsdata, WATCH_ENABLE, NULL);
+	//gps_stream (gpsdata, WATCH_ENABLE | POLL_NONBLOCK, NULL);
+#endif
 
 	/* set up function to poll periodically for new data */
 	gps_timeout_source = g_timeout_add (GPS_TIMER, gps_query_data_cb, NULL);
