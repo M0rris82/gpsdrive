@@ -114,6 +114,9 @@ writeconfig ()
 	fprintf (fp, "showdashboard = %d\n",
 		local_config.show_dashboard);
 
+	fprintf (fp, "showcompass = %d\n",
+		local_config.show_compass && local_config.show_dashboard);
+
 	fprintf (fp, "showbuttonmenu = %d\n",
 		local_config.show_controls);
 	fprintf (fp, "showbutton_zoom = %d\n",
@@ -132,6 +135,10 @@ writeconfig ()
 		local_config.showbutton_trackrestart);
 	fprintf (fp, "showbutton_trackclear = %d\n",
 		local_config.showbutton_trackclear);
+	fprintf (fp, "showbutton_explore = %d\n",
+		local_config.showbutton_explore);
+	fprintf (fp, "showbutton_addwpt = %d\n",
+		local_config.showbutton_addwpt);
 	fprintf (fp, "menubuttonsmode = %d\n",
 		local_config.buttonsmode);
 
@@ -382,6 +389,8 @@ readconfig ()
 				local_config.track_autoclean = atoi (par2);
 			else if ( (strcmp(par1, "showdashboard")) == 0)
 				local_config.show_dashboard = atoi (par2);
+			else if ( (strcmp(par1, "showcompass")) == 0)
+				local_config.show_compass = atoi (par2);
 			else if ( (strcmp(par1, "showbuttonmenu")) == 0)
 				local_config.show_controls = atoi (par2);
 			else if ( (strcmp(par1, "showbutton_zoom")) == 0)
@@ -400,6 +409,10 @@ readconfig ()
 				local_config.showbutton_trackrestart = atoi (par2);
 			else if ( (strcmp(par1, "showbutton_trackclear")) == 0)
 				local_config.showbutton_trackclear = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_explore")) == 0)
+				local_config.showbutton_explore = atoi (par2);
+			else if ( (strcmp(par1, "showbutton_addwpt")) == 0)
+				local_config.showbutton_addwpt = atoi (par2);
 			else if ( (strcmp(par1, "menubuttonsmode")) == 0)
 				local_config.buttonsmode = atoi (par2);
 			else if ( (strcmp(par1, "travelmode")) == 0)
@@ -774,6 +787,7 @@ config_init ()
 	local_config.track_autoclean = FALSE;
 	local_config.style_track = 3;
 	local_config.style_route = 1;
+	local_config.gpsfix_style = FALSE;
 
 	/* set speech output */
 	g_strlcpy (local_config.speech_module,
@@ -853,6 +867,7 @@ config_init ()
 	/* buttons displayed */
 	local_config.show_controls = TRUE;
 	local_config.show_dashboard = TRUE;
+	local_config.show_compass = TRUE;
 	local_config.showbutton_trackclear = TRUE;
 	local_config.showbutton_trackrestart = TRUE;
 	local_config.showbutton_zoom = TRUE;
@@ -861,7 +876,9 @@ config_init ()
 	local_config.showbutton_find = TRUE;
 	local_config.showbutton_route = TRUE;
 	local_config.showbutton_map = TRUE;
-	local_config.buttonsmode = 0;
+	local_config.showbutton_explore = TRUE;
+	local_config.showbutton_addwpt = TRUE;
+	local_config.buttonsmode = GTK_TOOLBAR_BOTH_HORIZ;
 
 	/* set files and directories (~/.gpsdrive) */
 	hd = (gchar *) g_get_home_dir ();

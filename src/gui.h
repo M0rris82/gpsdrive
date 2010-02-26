@@ -48,7 +48,8 @@ gint popup_warning (GtkWindow *parent, gchar *message);
 gint popup_error (GtkWindow *parent, gchar *message);
 gint popup_info (GtkWindow *parent, gchar *message);
 
-int toggle_button_cb (GtkWidget *button, gboolean *value);
+gint toggle_button_cb (GtkWidget *button, gboolean *value);
+gint toggle_toolbutton_cb (GtkWidget *button, gboolean *value);
 
 gint switch_nightmode (gboolean value);
 

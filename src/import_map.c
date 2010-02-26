@@ -813,7 +813,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
       /*  Middle mouse button */
       if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
 	{
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt), FALSE);
+	  gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), FALSE);
 
 	  rebuildtracklist ();
 	}
@@ -822,7 +822,7 @@ mapclick_cb (GtkWidget * widget, GdkEventButton * event)
 	{
 	  /* set  as target */
 	  /* only if RIGHT mouse button clicked */
-	  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt), FALSE);
+	  gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), FALSE);
 	  rebuildtracklist ();
 	  g_strlcpy (current.target, _("SELECTED"), sizeof (current.target));
 	  coords.target_lat = lat;

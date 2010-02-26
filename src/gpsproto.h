@@ -19,8 +19,7 @@ void storepoint();
 gdouble calcdist (gdouble lon, gdouble lat);
 gdouble calcdist2 (gdouble lon, gdouble lat);
 gdouble calc_wpdist (gdouble, gdouble, gdouble, gdouble, gint);
-void inv_geodesic(gdouble, gdouble, gdouble, gdouble, gint,
-	gdouble *, gdouble *, gdouble *);
+void inv_geodesic(gdouble, gdouble, gdouble, gdouble, gint, gdouble *, gdouble *, gdouble *);
 
 gint help_cb (GtkWidget * widget, guint datum);
 gint import1_cb (GtkWidget * widget, guint datum);
@@ -71,15 +70,13 @@ void calcxy (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom);
 void minimap_xy2latlon(gint x, gint y, gdouble *lon, gdouble *lat, gdouble *dif);
 void rebuildtracklist (void);
 gint error_popup (gpointer datum);
-void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat,
-	    gint zoom);
+void calcxymini (gint * posx, gint * posy, gdouble lon, gdouble lat, gint zoom);
 gdouble calcR (gdouble lat);
 void calcxytopos (int , int , gdouble *, gdouble *, int );
 gint navi_cb (GtkWidget * widget, guint datum);
 GtkWidget* create_pixmap(GtkWidget *widget, const gchar *filename);
 gint speech_out_cb (GtkWidget * widget, guint * datum);
 gchar *escape_sql_string (const gchar *data);
-void distance2gchar
-	(gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size);
+void distance2gchar (gdouble dist, gchar *diststring, gint diststr_size, gchar *unitstring, gint unitstr_size);
 gint check_if_night_cb (void);
 void cleanup_friends (void);

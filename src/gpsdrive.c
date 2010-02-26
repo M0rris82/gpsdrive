@@ -181,11 +181,11 @@ GdkDrawable *drawable;
 gint haveposcount, blink, gblink, xoff, yoff, crosstoggle = 0;
 gdouble pixelfact;
 GdkPixbuf *image = NULL, *tempimage = NULL, *pixbuf_minimap = NULL;
+GtkToolItem *explore_bt;
 
 extern mapsstruct *maps;
 
 extern GtkWidget *drawing_battery, *drawing_temp;
-
 extern GtkWidget *map_drawingarea;
 
 extern GtkListStore *friends_list;
@@ -279,7 +279,6 @@ gint oldbat = 125, oldloading = FALSE;
 gint bat, loading;
 gchar setpositionname[80];
 
-GtkWidget *explore_bt;
 extern gint PSIZE;
 GdkPixbuf *batimage = NULL;
 GdkPixbuf *temimage = NULL;
@@ -638,7 +637,7 @@ calldrawmarker_cb (GtkWidget * widget, guint * datum)
 
 //TODO: is this right/necessary?
 	if (current.gps_status == GPS_NO_FIX)
-		expose_gpsfix (NULL, 0);
+		expose_gpsfix (NULL, local_config.gpsfix_style);
 
 	if (pleasepollme)
 	{
@@ -1801,15 +1800,15 @@ simulated_pos (GtkWidget * widget, guint * datum)
  * Update the checkbox for Explore-Mode
  */
 void
-update_explore_bt ()
+update_explore_bt (void)
 {
     if ( mydebug > 1 )
 	g_print ("expmode=%d\n", gui_status.expmode);
 
     if (gui_status.expmode)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),   TRUE);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), TRUE);
     else
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),   FALSE);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), FALSE);
 }
 
 /* ****************************************************************************
@@ -1819,7 +1818,7 @@ gint
 explore_cb (GtkWidget *widget, guint datum)
 {
 
-	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (explore_bt)) )
+	if ( gtk_toggle_tool_button_get_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt)) )
 		gui_status.expmode = TRUE;
 	else 
 		gui_status.expmode = FALSE;

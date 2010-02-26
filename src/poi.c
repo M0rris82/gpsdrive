@@ -115,10 +115,6 @@ gdouble poi_lat_lr = 0, poi_lon_lr = 0;
 gdouble poi_lat_ul = 0, poi_lon_ul = 0;
 
 
-/* ******************************************************************   */
-
-void poi_rebuild_list (void);
-
 
 /* ******************************************************************
  * get data to display in poi info window for selected poi

@@ -104,36 +104,43 @@ extern gps_satellite_struct *gps_sats;
 
 extern gint slistsize, nlist[];
 extern gint PSIZE;
-extern GtkWidget *explore_bt;
 extern GtkWidget *bestmap_bt;
 extern gint borderlimit;
+extern gint max_display_map;
+extern map_dir_struct *display_map;
 
 extern GtkWidget *main_window;
+extern GtkToolItem *explore_bt;
 
 /* Globally accessible widgets: */
 GtkWidget *map_drawingarea;
-GtkWidget *scaler_in_bt, *scaler_out_bt;
 GtkWidget *frame_statusbar, *frame_statusfriends;
 GtkWidget *main_table;
 GtkWidget *menuitem_sendmsg;
-GtkWidget *wp_draw_bt, *mute_bt, *routing_bt;
-GtkWidget *find_poi_bt;
+GtkWidget *wp_draw_bt;
+GtkToolItem *mute_bt, *routing_bt;
+GtkToolItem *find_poi_bt;
 GtkWidget *menuitem_saveroute;
 GtkTooltips *main_tooltips;
 GtkWidget *routeinfo_evbox, *routeinfo_icon, *routeinfo_label;
+GtkWidget *main_toolbar;
 
 // TODO: maybe these should be moved to local ones...
-GtkWidget *drawing_compass, *drawing_minimap, *drawing_gpsfix, *drawing_sats;
+GtkWidget *drawing_compass, *drawing_minimap, *drawing_sats;
 GdkDrawable *drawable_compass, *drawable_minimap;
 GdkGC *kontext_compass, *kontext_gps, *kontext_minimap, *kontext_map;
 
 
 /* local widgets */
-static GtkWidget *mainbox_controls, *mainbox_status, *mainframe_map;
+static GtkWidget *mainbox_status, *mainframe_map;
+static GtkWidget *drawing_gpsfix;
 static GtkWidget *frame_maptype;
-static GtkWidget *mapscaler_scaler;
-static GtkWidget *mapscaler_hbox;
-static GtkWidget *zoomin_bt, *zoomout_bt;
+static GtkWidget *mapscaler_scaler, *mapscaler_hbox;
+static GtkToolItem *zoomin_bt, *zoomout_bt;
+static GtkToolItem *scaler_in_bt, *scaler_out_bt;
+static GtkToolItem *options_bt, *mapcontrol_bt;
+static GtkToolItem *trk_clear_bt, *trk_restart_bt;
+static GtkToolItem *addwaypoint_bt;
 static GtkWidget *statusprefscale_lb, *statusmapscale_lb;
 static GtkObject *mapscaler_adj;
 static GtkWidget *frame_dash_1, *frame_dash_2, *frame_dash_3, *frame_dash_4;
@@ -143,8 +150,10 @@ static GtkWidget *statuscourse_lb, *statusbearing_lb;
 static GtkWidget *hbox_zoom, *dash_menu, *dash_menu_window;
 static GtkWidget *controlbox_window;
 static GtkWidget *satellite_window;
+static GtkWidget *minimap_window;
 static GtkWidget *statusbar_box, *statussmall_box;
-static GtkWidget *statusdashboard_box;
+static GtkWidget *statusdashboard_box, *compass_box;
+static gboolean menu_expand = FALSE;
 
 	GtkAdjustment *adj_h, *adj_v;
 
@@ -190,6 +199,16 @@ dash_menu_cb (GtkWidget *widget, GdkEventButton *event, gint dash_nr)
 
 
 	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * enable options menu button again, when closing menu
+ */
+gint
+close_options_menu_cb (GtkWidget *widget, gpointer data)
+{
+	gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (options_bt), FALSE);
 }
 
 
@@ -250,6 +269,30 @@ dash_select_cb (GtkWidget *item, gint selection)
 
 
 /* *****************************************************************************
+ * select map to display
+ */
+gint
+display_maps_cb (GtkWidget *widget, guint datum)
+{
+	gint i;
+
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (display_map[datum].checkbox)))
+		display_map[datum].to_be_displayed = TRUE;
+	else
+		display_map[datum].to_be_displayed = FALSE;
+
+	for (i = 0; i < max_display_map; i++)
+    {
+		gchar tbd = display_map[i].to_be_displayed ? 'D' : '_';
+		g_print ("Found %s,%c\n", display_map[i].name, tbd);
+    }
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
  * select which pois should be drawn on the map
  */
 gint
@@ -300,6 +343,41 @@ quit_program_cb (GtkWidget *widget, gpointer datum)
 {
     gtk_main_quit ();
     return TRUE;
+}
+
+
+/* *****************************************************************************
+ * rebuild the main toolbar
+ */
+void rebuild_toolbar_mainbox_cb()
+{
+	gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), options_bt, 0);
+	if (local_config.showbutton_map)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), mapcontrol_bt, -1);
+	if (local_config.showbutton_zoom)
+	{
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), zoomout_bt, -1);
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), zoomin_bt, -1);
+	}
+	if (local_config.showbutton_scaler)
+	{
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), scaler_out_bt, -1);
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), scaler_in_bt, -1);
+	}
+	if (local_config.showbutton_explore)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), explore_bt, -1);
+	if (local_config.showbutton_find)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), find_poi_bt, -1);
+	if (local_config.showbutton_addwpt)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), addwaypoint_bt, -1);
+	if (local_config.showbutton_trackclear)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), trk_clear_bt, -1);
+	if (local_config.showbutton_trackrestart)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), trk_restart_bt, -1);
+	if (local_config.showbutton_route)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), routing_bt, -1);
+	if (local_config.showbutton_mute)
+		gtk_toolbar_insert (GTK_TOOLBAR (main_toolbar), mute_bt, -1);
 }
 
 
@@ -354,12 +432,18 @@ toggle_coords_cb (GtkWidget *widget)
  *  toggle map control box
  */
 gint
-toggle_controlbox_cb (GtkWidget *widget, guint datum)
+toggle_controlbox_cb (GtkWidget *widget, gint show)
 {
-	if (datum == 1)
+	if (show == 1)
+	{
 		gtk_widget_show_all (controlbox_window);
+		gtk_widget_set_sensitive (GTK_WIDGET (mapcontrol_bt), FALSE);
+	}	
 	else
+	{
 		gtk_widget_hide_all (controlbox_window);
+		gtk_widget_set_sensitive (GTK_WIDGET (mapcontrol_bt), TRUE);
+	}
 	return TRUE;
 }
 
@@ -375,6 +459,22 @@ toggle_satelliteinfo_cb (GtkWidget *widget, GdkEventButton *event, gboolean datu
 	else
 		gtk_widget_hide_all (satellite_window);
 	return TRUE;
+}
+
+
+/* *****************************************************************************
+ *  show/hide main menu
+ */
+gint
+toggle_main_menu_cb (GtkToggleToolButton *button, GtkMenu *menu)
+{
+	if (gtk_toggle_tool_button_get_active (button))
+		gtk_menu_popup (menu, NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+	else
+	{
+		gtk_menu_popdown (menu);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (options_bt), FALSE);
+	}
 }
 
 
@@ -401,6 +501,9 @@ main_menu_cb (GtkWidget *widget, gint choice)
 		case MENU_HELPCONTENT:	help_cb (NULL, 0); break;
 		case MENU_TRIPRESET:	trip_reset_cb (); break;
 	}
+
+	gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (options_bt), FALSE);
+
 	return TRUE;
 }
 
@@ -414,8 +517,8 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 
 	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
 	{
-		gtk_widget_set_sensitive (scaler_out_bt, FALSE);
-		gtk_widget_set_sensitive (scaler_in_bt, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (scaler_out_bt), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (scaler_in_bt), FALSE);
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), _("Auto"));
 		if (mapscaler_scaler)
 			gtk_widget_set_sensitive (mapscaler_scaler, FALSE);
@@ -423,13 +526,34 @@ autobestmap_cb (GtkWidget *widget, guint datum)
 	}
 	else
 	{
-		gtk_widget_set_sensitive (scaler_out_bt, TRUE);
-		gtk_widget_set_sensitive (scaler_in_bt, TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (scaler_out_bt), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (scaler_in_bt), TRUE);
 		g_snprintf (sc, sizeof (sc), "1:%d", local_config.scale_wanted);
 		gtk_label_set_text (GTK_LABEL (statusprefscale_lb), sc);
 		if (mapscaler_scaler)
 			gtk_widget_set_sensitive (mapscaler_scaler, TRUE);
 		local_config.autobestmap = FALSE;
+	}
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ */
+gint
+showminimap_cb (GtkWidget *widget, guint datum)
+{
+	if ( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)) )
+	{
+		gtk_widget_show_all (minimap_window);
+		local_config.showminimap = TRUE;
+	}
+	else
+	{
+		gtk_widget_hide_all (minimap_window);
+		local_config.showminimap = FALSE;
 	}
 
 	current.needtosave = TRUE;
@@ -478,8 +602,7 @@ minimapclick_cb (GtkWidget *widget, GdkEventMotion *event)
 	/*  Middle mouse button */
 	if ((state & GDK_BUTTON2_MASK) == GDK_BUTTON2_MASK)
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),
-					      FALSE);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), FALSE);
 		rebuildtracklist ();
 	}
 
@@ -528,13 +651,13 @@ zoom_cb (GtkWidget *widget, guint datum)
 	}
 
 	if (current.zoom == ZOOM_MIN)
-		gtk_widget_set_sensitive (zoomout_bt, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (zoomout_bt), FALSE);
 	else
-		gtk_widget_set_sensitive (zoomout_bt, TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (zoomout_bt), TRUE);
 	if (current.zoom == ZOOM_MAX)
-		gtk_widget_set_sensitive (zoomin_bt, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (zoomin_bt), FALSE);
 	else
-		gtk_widget_set_sensitive (zoomin_bt, TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (zoomin_bt), TRUE);
 
 	if (current.importactive)
 	{
@@ -563,7 +686,7 @@ scaler_cb (GtkAdjustment *adj, gdouble *datum)
 
 /* *****************************************************************************
  * Increase/decrease displayed map scale
- * TODO: Improve finding of next apropriate map
+ * TODO: Improve finding of next appropriate map
  * datum:
  *    1 Zoom out
  *    2 Zoom in 
@@ -571,17 +694,20 @@ scaler_cb (GtkAdjustment *adj, gdouble *datum)
 gint
 scalerbt_cb (GtkWidget *widget, guint datum)
 {
-	if (datum == 1)
+	if (GTK_IS_OBJECT (mapscaler_adj))
 	{
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (mapscaler_adj),
-			GTK_ADJUSTMENT (mapscaler_adj)->value +
-			GTK_ADJUSTMENT (mapscaler_adj)->step_increment);
-	}
-	else if (datum == 2)
-	{
-		gtk_adjustment_set_value (GTK_ADJUSTMENT (mapscaler_adj),
-			GTK_ADJUSTMENT (mapscaler_adj)->value -
-			GTK_ADJUSTMENT (mapscaler_adj)->step_increment);
+		if (datum == 1)
+		{
+			gtk_adjustment_set_value (GTK_ADJUSTMENT (mapscaler_adj),
+				GTK_ADJUSTMENT (mapscaler_adj)->value +
+				GTK_ADJUSTMENT (mapscaler_adj)->step_increment);
+		}
+		else if (datum == 2)
+		{
+			gtk_adjustment_set_value (GTK_ADJUSTMENT (mapscaler_adj),
+				GTK_ADJUSTMENT (mapscaler_adj)->value -
+				GTK_ADJUSTMENT (mapscaler_adj)->step_increment);
+		}
 	}
 
 	// TODO: check, if this is really necessary, and maybe remove...
@@ -1295,7 +1421,7 @@ update_statusdisplay ()
 	update_dashboard (frame_dash_4, local_config.dashboard[4]);
 
 	/* update gps status displays */
-	expose_gpsfix (NULL, 0);
+	expose_gpsfix (NULL, local_config.gpsfix_style);
 	expose_sats_cb (NULL, 0);
 
 	return TRUE;
@@ -1306,27 +1432,26 @@ update_statusdisplay ()
  * Update Display of GPS Status
  */
 gint
-expose_gpsfix (GtkWidget *widget, guint *datum)
+expose_gpsfix (GtkWidget *widget, gboolean vertical)
 {
 	GdkDrawable *drawable_gpsfix;
 	GdkGC *kontext_gpsfix;
 	PangoFontDescription *pfd_gpsfix;
 	PangoLayout *layout_gpsfix;
-	gint t_x, t_y, t_tx, t_ty, t_wx, i;
+	gint t_x, t_y, t_tx, t_ty, t_w, i;
 
 	if (mydebug >50)
-		fprintf (stderr, "expose_gpsfix()\n");
+		g_print ("expose_gpsfix()\n");
 
 	drawable_gpsfix = drawing_gpsfix->window;
-	if (!drawable_gpsfix) {
+	if (!drawable_gpsfix)
 		return 0;
-	}
+
 	kontext_gpsfix = gdk_gc_new (drawable_gpsfix);
 	pfd_gpsfix = pango_font_description_from_string ("Sans 8");
 	gdk_drawable_get_size (drawable_gpsfix, &t_x, &t_y);
 
-	layout_gpsfix = gtk_widget_create_pango_layout
-		(drawing_gpsfix, _("No GPS"));
+	layout_gpsfix = gtk_widget_create_pango_layout (drawing_gpsfix, _("No GPS"));
 	pango_layout_set_font_description (layout_gpsfix, pfd_gpsfix);
 	pango_layout_get_pixel_size (layout_gpsfix, &t_tx, &t_ty);
 
@@ -1334,11 +1459,8 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 	{
 		gdk_gc_set_foreground (kontext_gpsfix, &colors.blue);
 		pango_layout_set_text (layout_gpsfix, _("Simulation Mode"), -1);
-		gdk_draw_rectangle (drawable_gpsfix, kontext_gpsfix,
-			TRUE, 0,0, t_x, t_y);
-		gdk_draw_layout_with_colors (drawable_gpsfix, kontext_gpsfix,
-			5, (t_y-t_ty)/2, layout_gpsfix,
-			&colors.white, NULL);	
+		gdk_draw_rectangle (drawable_gpsfix, kontext_gpsfix, TRUE, 0,0, t_x, t_y);
+		gdk_draw_layout_with_colors (drawable_gpsfix, kontext_gpsfix, 5, (t_y-t_ty)/2, layout_gpsfix, &colors.white, NULL);	
 	}
 	else
 	{
@@ -1376,28 +1498,31 @@ expose_gpsfix (GtkWidget *widget, guint *datum)
 			break;
 		}
 		}
-	
-		gdk_draw_rectangle (drawable_gpsfix, kontext_gpsfix,
-			TRUE, 0,0, t_x, t_y);
-		gdk_draw_layout_with_colors (drawable_gpsfix, kontext_gpsfix,
-			t_x-t_tx-5, (t_y-t_ty)/2, layout_gpsfix,
-			&colors.black, NULL);
+
+		gdk_draw_rectangle (drawable_gpsfix, kontext_gpsfix, TRUE, 0,0, t_x, t_y);
+		if (vertical)
+			gdk_draw_layout_with_colors (drawable_gpsfix, kontext_gpsfix,
+				2, t_y-t_ty, layout_gpsfix, &colors.black, NULL);
+		else
+			gdk_draw_layout_with_colors (drawable_gpsfix, kontext_gpsfix,
+				t_x-t_tx-5, (t_y-t_ty)/2, layout_gpsfix, &colors.black, NULL);
 
 		gdk_gc_set_foreground (kontext_gpsfix, &colors.black);
-		t_wx = (t_x-t_tx-26)/12;
-		if (t_wx < 1)
-			t_wx =1;
-		gdk_gc_set_line_attributes (kontext_gpsfix, t_wx, 0, 0, 0);
+		t_w = (vertical ? (t_y-t_ty-26) : (t_x-t_tx-26))/12;
+		if (t_w < 1)
+			t_w =1;
+		gdk_gc_set_line_attributes (kontext_gpsfix, t_w, 0, 0, 0);
+
 		for (i=1; i<13; i++)
 		{
 			if (i > current.gps_sats_in_view)
-				gdk_gc_set_foreground
-					(kontext_gpsfix, &colors.grey);
+				gdk_gc_set_foreground (kontext_gpsfix, &colors.grey);
 			else if (i > current.gps_sats_used)
-				gdk_gc_set_foreground
-					(kontext_gpsfix, &colors.darkgrey);
-			gdk_draw_line (drawable_gpsfix, kontext_gpsfix,
-				i*(t_wx+1)+5, 5, i*(t_wx+1)+5, t_y-5);
+				gdk_gc_set_foreground (kontext_gpsfix, &colors.darkgrey);
+			if (vertical)
+				gdk_draw_line (drawable_gpsfix, kontext_gpsfix, 5, t_y-t_ty-(i*(t_w+1))-5, t_x-5, t_y-t_ty-(i*(t_w+1))-5);
+			else
+				gdk_draw_line (drawable_gpsfix, kontext_gpsfix, i*(t_w+1)+5, 5, i*(t_w+1)+5, t_y-5);
 		}
 	}
 
@@ -1632,13 +1757,29 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	{
 		if (local_config.show_controls)
 		{
-			gtk_widget_hide_all (mainbox_controls);
+			gtk_widget_hide_all (main_toolbar);
 			local_config.show_controls = FALSE;
 		}
 		else
 		{
-			gtk_widget_show_all (mainbox_controls);
+			gtk_widget_show_all (main_toolbar);
 			local_config.show_controls = TRUE;
+		}
+	}
+
+	// Toggle Display of Compass
+	if ((toupper (event->keyval)) == 'C' && local_config.guimode != GUI_PDA && local_config.show_dashboard == TRUE)
+	{
+		if (local_config.show_compass)
+		{
+			
+			gtk_widget_hide_all (compass_box);
+			local_config.show_compass = FALSE;
+		}
+		else
+		{
+			gtk_widget_show_all (compass_box);
+			local_config.show_compass = TRUE;
 		}
 	}
 
@@ -1648,7 +1789,10 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		if (local_config.show_dashboard)
 		{
 			if (local_config.guimode == GUI_DESKTOP)
+			{
 				gtk_widget_hide_all (statusdashboard_box);
+				gtk_widget_hide_all (compass_box);
+			}
 			else
 				gtk_widget_hide_all (mainbox_status);
 			local_config.show_dashboard = FALSE;
@@ -1656,7 +1800,11 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 		else
 		{
 			if (local_config.guimode == GUI_DESKTOP)
+			{
 				gtk_widget_show_all (statusdashboard_box);
+				if (local_config.show_compass)
+					gtk_widget_show_all (compass_box);
+			}
 			else
 				gtk_widget_show_all (mainbox_status);
 			local_config.show_dashboard = TRUE;
@@ -1688,31 +1836,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Add Waypoint at current gps location without asking
 	if ((toupper (event->keyval)) == 'W')
 	{
-		gchar wp_name[255];
-		if (local_config.quickpoint_mode == 1)
-		{
-			g_snprintf (wp_name, sizeof (wp_name), "%s%04d",
-				local_config.quickpoint_text, local_config.quickpoint_num);
-			local_config.quickpoint_num++;
-		}
-		else if (local_config.quickpoint_mode == 2)
-		{
-			g_strlcpy (wp_name, local_config.quickpoint_text, sizeof (wp_name));
-		}
-		else
-		{
-			GTimeVal current_time;
-			g_get_current_time (&current_time);
-			g_snprintf (wp_name, sizeof (wp_name), "%s",
-				(g_time_val_to_iso8601 (&current_time))+5);
-		}
-
-		if (local_config.use_database)
-			addwaypoint (wp_name, local_config.quickpoint_type, _("Quicksaved Waypoint"),
-				coords.current_lat, coords.current_lon, TRUE);
-		else
-			addwaypoint (wp_name, local_config.quickpoint_type, _("Quicksaved Waypoint"),
-				coords.current_lat, coords.current_lon, FALSE);
+		quickaddwaypoint ();
 	}
 
 	// Add waypoint at current mouse location
@@ -1786,8 +1910,7 @@ key_pressed_cb (GtkWidget * widget, GdkEventKey * event)
 	// Switch Explore Mode ("e" for Explore)
 	if ((toupper (event->keyval)) == 'E')
 	{
-		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (explore_bt),
-			!gui_status.expmode);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), !gui_status.expmode);
 	}
 
 	// Query Info for near points
@@ -2003,7 +2126,7 @@ void create_dashboard_carmenu (void)
 			GTK_SIGNAL_FUNC (dash_select_cb), GINT_TO_POINTER (i));
 	}
 	dash_button[i] = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-		gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
+	gtk_table_attach_defaults (dash_table, dash_button[i], x, x+1, y, y+1);
 	g_signal_connect_swapped (dash_button[i], "clicked",
 			GTK_SIGNAL_FUNC (gtk_widget_hide_all), dash_menu_window);
 
@@ -2011,7 +2134,7 @@ void create_dashboard_carmenu (void)
 
 
 /* *****************************************************************************
- * Window: Map Control Box (not used in PDA Mode)
+ * Window: Satellite Info
  */
 void create_satellite_window (void)
 {
@@ -2048,586 +2171,354 @@ void create_satellite_window (void)
 /* *****************************************************************************
  * Window: Map Control Box (not used in PDA Mode)
  */
-GtkWidget *mapcontrolbox (void)
+create_mapcontrol_box (void)
 {
-	GtkWidget *controlbox_vbox;
+	gint i;
 
 	controlbox_window = gtk_dialog_new_with_buttons (_("Map Control"),
 		GTK_WINDOW (main_window), GTK_DIALOG_DESTROY_WITH_PARENT,
 		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE, NULL);
-	g_signal_connect (controlbox_window, "response",
-		G_CALLBACK (toggle_controlbox_cb), (gpointer) FALSE);
+	g_signal_connect (controlbox_window, "delete_event", G_CALLBACK (toggle_controlbox_cb), GINT_TO_POINTER (0));
+	g_signal_connect (controlbox_window, "response", G_CALLBACK (toggle_controlbox_cb), GINT_TO_POINTER (0));
 	gtk_window_set_icon_name (GTK_WINDOW (controlbox_window), "gtk-properties");
 	if (local_config.guimode == GUI_CAR)
 	{
 		gtk_window_set_decorated (GTK_WINDOW (controlbox_window), FALSE);
 		gtk_window_set_modal (GTK_WINDOW (controlbox_window), TRUE);
 	}
-	controlbox_vbox = gtk_vbox_new (FALSE, 1 * PADDING);
-	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), controlbox_vbox);
 
-	return controlbox_vbox;
+	GtkWidget *buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
+
+	GtkWidget *frame_poi = gtk_frame_new (_("Points"));
+	GtkWidget *vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
+
+	if (local_config.use_database)
+	{
+		/* Checkbox: POI Draw User */
+		GtkWidget *poidraw_user_bt = gtk_check_button_new_with_mnemonic (_("_User DB"));
+		if (local_config.showpoi == POIDRAW_USER || local_config.showpoi == POIDRAW_ALL)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poidraw_user_bt), TRUE);
+		gtk_box_pack_start (GTK_BOX (vbox_poi), poidraw_user_bt, FALSE, FALSE, 0 * PADDING);
+		g_signal_connect (poidraw_user_bt, "clicked", G_CALLBACK (poi_button_cb), GINT_TO_POINTER (POIDRAW_USER));
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_user_bt, _("Show Points Of Interest found in user database"), NULL);
+
+		/* Checkbox: POI Draw OSM */
+		GtkWidget *poidraw_osm_bt = gtk_check_button_new_with_mnemonic (_("_OSM DB"));
+		if (local_config.showpoi > POIDRAW_USER)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (poidraw_osm_bt), TRUE);
+		if (current.poi_osm)
+			gtk_box_pack_start (GTK_BOX (vbox_poi), poidraw_osm_bt, FALSE, FALSE, 0 * PADDING);
+		g_signal_connect (poidraw_osm_bt, "clicked", G_CALLBACK (poi_button_cb), GINT_TO_POINTER (POIDRAW_OSM));
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_osm_bt, _("Show Points Of Interest found in OSM database"), NULL);
+	}
+
+	/* Checkbox: Draw Waypoints from file */
+	wp_draw_bt = gtk_check_button_new_with_mnemonic (_("_WP File"));
+	if (local_config.showwaypoints)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wp_draw_bt), TRUE);
+	g_signal_connect (wp_draw_bt, "clicked", G_CALLBACK (toggle_button_cb), &local_config.showwaypoints);
+	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_draw_bt, FALSE, FALSE, 0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wp_draw_bt, _("Show Waypoints found in file way.txt"), NULL);
+
+	GtkWidget *frame_track = gtk_frame_new (_("Track"));
+	GtkWidget *vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
+
+	/* Checkbox: Show Track */
+	GtkWidget *showtrack_bt = gtk_check_button_new_with_mnemonic (_("_Show"));
+	if (local_config.showtrack)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (showtrack_bt), TRUE);
+	g_signal_connect (showtrack_bt, "clicked", G_CALLBACK (toggle_button_cb), &local_config.showtrack);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), showtrack_bt, _("Show tracking on the map"), NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_track), showtrack_bt, FALSE, FALSE, 0 * PADDING);
+
+	/* Checkbox: Save Track */
+	GtkWidget *savetrack_bt = gtk_check_button_new_with_mnemonic (_("Sa_ve"));
+	if (local_config.savetrack)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (savetrack_bt), TRUE);
+	g_signal_connect (savetrack_bt, "clicked", G_CALLBACK (toggle_track_button_cb), &local_config.savetrack);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), savetrack_bt, _("Save the track to given filename at program exit"), NULL);
+	gtk_box_pack_start (GTK_BOX (vbox_track), savetrack_bt, FALSE, FALSE,0 * PADDING);
+
+	GtkWidget *frame_mapcontrol = gtk_frame_new (_("Map Controls"));
+	GtkWidget *vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_mapcontrol), vbox_map_controls);
+
+	/* Checkbox: Auto best Map */
+	bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
+	gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox_map_controls), bestmap_bt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), bestmap_bt, _("Always select the most detailed map available"), NULL);
+	if (local_config.autobestmap)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
+	g_signal_connect (bestmap_bt, "clicked", G_CALLBACK (autobestmap_cb), GINT_TO_POINTER (1));
+#ifdef MAPNIK
+	if (active_mapnik_ysn())
+	{
+		/* Checkbox: Mapnik Mode */
+		GtkWidget *mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
+		gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mapnik_bt,
+			_("Turn mapnik mode on. In this mode vector maps rendered by mapnik"
+			" (e.g. OpenStreetMap Data) are used instead of the other maps."), NULL);
+		g_signal_connect (mapnik_bt, "clicked", G_CALLBACK (toggle_mapnik_cb), GINT_TO_POINTER (1));
+		gtk_box_pack_start(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
+	}
+#endif
+if (local_config.guimode==GUI_DESKTOP)
+{
+	GtkWidget *minimap_bt = gtk_check_button_new_with_label (_("Show Minimap"));
+	gtk_button_set_use_underline (GTK_BUTTON (minimap_bt), TRUE);
+	gtk_box_pack_start (GTK_BOX (vbox_map_controls), minimap_bt, FALSE, FALSE,0 * PADDING);
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), bestmap_bt, _("Always select the most detailed map available"), NULL);
+	if (local_config.showminimap)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (minimap_bt),  TRUE);
+	g_signal_connect (minimap_bt, "clicked", G_CALLBACK (showminimap_cb), GINT_TO_POINTER (1));
+}
+
+	frame_maptype = gtk_frame_new (_("Included mapsets"));
+	GtkWidget *vbox_map_types = gtk_vbox_new (FALSE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_types);
+
+	for (i = 0; i < max_display_map; i++)
+    {
+		/* Checkbox: Show Map: name xy */
+		gchar display_name[100];
+		if (mydebug > 1)
+			g_snprintf (display_name, sizeof (display_name), "%s (%d)", _(display_map[i].name), display_map[i].count);
+		else
+			g_snprintf (display_name, sizeof (display_name), "%s", _(display_map[i].name));
+		display_map[i].count++;
+		display_map[i].checkbox = gtk_check_button_new_with_label (display_name);
+		if (display_map[i].to_be_displayed)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (display_map[i].checkbox), TRUE);
+		g_signal_connect (display_map[i].checkbox, "clicked", G_CALLBACK (display_maps_cb), GINT_TO_POINTER (i));
+		gtk_box_pack_start (GTK_BOX (vbox_map_types), display_map[i].checkbox, FALSE, FALSE, 0 * PADDING);
+	}
+
+	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_poi, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_track, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), buttons_hbox);
 }
 
 
 /* *****************************************************************************
  * Window: Main -> Controls
  */
-void create_controls_mainbox (void)
+void create_toolbar_mainbox (void)
 {
-	GtkWidget *vbox_buttons, *frame_poi, *frame_track;
-	GtkWidget *frame_mapcontrol, *controlbox;
-	GtkWidget *zoomin_img, *zoomout_img, *controlbox_img;
-	GtkWidget *hbox_scaler, *controlbox_bt;
-	GtkWidget *mapscaler_in_lb, *mapscaler_out_lb;
-	GtkWidget *scaler_in_img, *scaler_out_img;
-	GtkWidget *pda_box_left, *pda_box_right;
-	GtkWidget *buttons_hbox;
+	GtkWidget *options_img = gtk_image_new_from_pixbuf (read_icon ("bt_options.png",0));
+	GtkWidget *zoom_in_img = gtk_image_new_from_pixbuf (read_icon ("bt_zoom-in.png",0));
+	GtkWidget *zoom_out_img = gtk_image_new_from_pixbuf (read_icon ("bt_zoom-out.png",0));
+	GtkWidget *map_img = gtk_image_new_from_pixbuf (read_icon ("bt_map.png",0));
+	GtkWidget *scaler_in_img = gtk_image_new_from_pixbuf (read_icon ("bt_scale-in.png",0));
+	GtkWidget *scaler_out_img = gtk_image_new_from_pixbuf (read_icon ("bt_scale-out.png",0));
+	GtkWidget *mute_speech_img = gtk_image_new_from_pixbuf (read_icon ("bt_mute-speech.png",0));
+	GtkWidget *poi_find_img = gtk_image_new_from_pixbuf (read_icon ("bt_poi-find.png",0));
+	GtkWidget *addwaypoint_img = gtk_image_new_from_pixbuf (read_icon ("bt_add-waypoint.png",0));
+	GtkWidget *explore_img = gtk_image_new_from_pixbuf (read_icon ("bt_explore.png",0));
+	GtkWidget *trk_restart_img = gtk_image_new_from_pixbuf (read_icon ("bt_track_restart.png",0));
+	GtkWidget *trk_clear_img = gtk_image_new_from_pixbuf (read_icon ("bt_track_clear.png",0));
 
-	GtkWidget *menuitem_maps, *menuitem_mapimport, *menuitem_mapdownload;
-	GtkWidget *menuitem_load, *menuitem_settings;
-	GtkWidget *menuitem_save, *menuitem_savetrack;
-	GtkWidget *menuitem_help, *menuitem_helpabout, *menuitem_helpcontent;
-	GtkWidget *menuitem_loadtrack, *menuitem_loadroute;
-	GtkWidget *menuitem_loadwpt, *menuitem_loadtrkold;
-	GtkWidget *menuitem_quit, *main_menu, *menuitem_menu;
-	GtkWidget *menu_menu, *menu_help, *menu_maps, *menu_load, *menu_save;
-	GtkWidget *menuitem_sep, *menuitem_tripreset, *sendmsg_img;
-	GtkWidget *load_img, *save_img, *tripreset_img;
+	main_toolbar = gtk_toolbar_new ();
+	gtk_orientable_set_orientation (GTK_ORIENTABLE (main_toolbar), GTK_ORIENTATION_VERTICAL);
+	gtk_toolbar_set_style (GTK_TOOLBAR (main_toolbar), local_config.buttonsmode);
+	gtk_toolbar_set_icon_size (GTK_TOOLBAR (main_toolbar), GTK_ICON_SIZE_LARGE_TOOLBAR);
+	gtk_toolbar_set_show_arrow (GTK_TOOLBAR (main_toolbar), TRUE);
 
-	GtkWidget *vbox_poi, *poidraw_user_bt, *poidraw_osm_bt;
-	GtkWidget *vbox_track, *showtrack_bt, *savetrack_bt;
-	GtkWidget *cleartrack_bt, *cleartrack_img;
-	GtkWidget *restarttrack_bt, *restarttrack_img;
+	if (local_config.guimode == GUI_CAR || local_config.guimode == GUI_PDA)
+		menu_expand = TRUE;
 
-	gint scaler_pos = 0;
-	gint scale = 0;
+	/* Button: Zoom in */
+	zoomin_bt = gtk_tool_button_new (zoom_in_img, _("Zoom in"));
+	gtk_tool_item_set_tooltip_text (zoomin_bt, _("Zooms in on the current map"));
+	gtk_tool_item_set_expand (zoomin_bt, menu_expand);
+	g_signal_connect (zoomin_bt, "clicked", G_CALLBACK (zoom_cb), GINT_TO_POINTER (1));
+	if (current.zoom >= ZOOM_MAX) gtk_widget_set_sensitive (GTK_WIDGET (zoomin_bt), FALSE);
 
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox\n");
+	/* Button: Zoom out */
+	zoomout_bt = gtk_tool_button_new (zoom_out_img, _("Zoom out"));
+	gtk_tool_item_set_tooltip_text (zoomout_bt, _("Zooms out on the current map"));
+	gtk_tool_item_set_expand (zoomout_bt, menu_expand);
+	g_signal_connect (zoomout_bt, "clicked", G_CALLBACK (zoom_cb), GINT_TO_POINTER (2));
+	if (current.zoom <= ZOOM_MIN) gtk_widget_set_sensitive (GTK_WIDGET (zoomout_bt), FALSE);
 
-	/* MENU AND BUTTONS */
+	/* Button: Scaler out */
+	scaler_out_bt = gtk_tool_button_new (scaler_out_img, _("Scale out"));
+	gtk_tool_item_set_tooltip_text (scaler_out_bt, _("Select the next less detailed map"));
+	gtk_tool_item_set_expand (scaler_out_bt, menu_expand);
+	g_signal_connect (scaler_out_bt, "clicked", G_CALLBACK (scalerbt_cb), GINT_TO_POINTER (1));
+
+	/* Button: Scaler in */
+	scaler_in_bt = gtk_tool_button_new (scaler_in_img, _("Scale in"));
+	gtk_tool_item_set_tooltip_text (scaler_in_bt, _("Select the next more detailed map"));
+	gtk_tool_item_set_expand (scaler_in_bt, menu_expand);
+	g_signal_connect (scaler_in_bt, "clicked", G_CALLBACK (scalerbt_cb), GINT_TO_POINTER (2));
+
+	/* Button: Mute Speech */
+	mute_bt = gtk_toggle_tool_button_new ();
+	gtk_tool_button_set_label (GTK_TOOL_BUTTON (mute_bt), _("Mute Speech"));
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (mute_bt), mute_speech_img);
+	gtk_tool_item_set_tooltip_text (mute_bt, _("Disable output of speech"));
+	if (local_config.mute)
 	{
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(MENU AND BUTTONS)\n");
-	vbox_buttons = gtk_vbox_new (TRUE, 3 * PADDING);
+		gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (mute_bt), TRUE);
+	}
+	gtk_tool_item_set_expand (mute_bt, menu_expand);
+	g_signal_connect (mute_bt, "clicked", G_CALLBACK (toggle_toolbutton_cb), &local_config.mute);
+
+	/* Button: Search POIs */
+	find_poi_bt = gtk_tool_button_new (poi_find_img, _("_Find POI"));
+	gtk_tool_item_set_tooltip_text (find_poi_bt, _("Find Points of Interest"));
+	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (find_poi_bt), TRUE);
+	gtk_tool_item_set_expand (find_poi_bt, menu_expand);
+	g_signal_connect (find_poi_bt, "clicked", G_CALLBACK (show_poi_lookup_cb), GINT_TO_POINTER (0));
+
+	/* Button: Routing */
+	routing_bt = gtk_tool_button_new (NULL, _("_Route List"));
+	gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (routing_bt), GTK_STOCK_INDEX);
+	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (routing_bt), TRUE);
+	gtk_tool_item_set_expand (routing_bt, menu_expand);
+	g_signal_connect (routing_bt, "clicked", G_CALLBACK (route_window_cb), NULL);  
+
+	/* Button: Map Control */
+	mapcontrol_bt = gtk_tool_button_new (NULL, _("_Map Control"));
+	gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (mapcontrol_bt), GTK_STOCK_PROPERTIES);
+	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (mapcontrol_bt), TRUE);
+	gtk_tool_item_set_expand (mapcontrol_bt, menu_expand);
+	g_signal_connect (mapcontrol_bt, "clicked", G_CALLBACK (toggle_controlbox_cb), GINT_TO_POINTER (1));
+
+	/* Button: Add Waypoint */
+	addwaypoint_bt = gtk_tool_button_new (addwaypoint_img, _("Add _Waypoint"));
+	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (addwaypoint_bt), TRUE);
+	gtk_tool_item_set_expand (addwaypoint_bt, menu_expand);
+	g_signal_connect (addwaypoint_bt, "clicked", G_CALLBACK (quickaddwaypoint), NULL);
+
+	/* Button: Explore Mode */
+	explore_bt = gtk_toggle_tool_button_new ();
+	gtk_tool_button_set_label (GTK_TOOL_BUTTON (explore_bt), _("Explore Mode"));
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (explore_bt), explore_img);
+	gtk_tool_item_set_tooltip_text (mute_bt,
+		_("Turn explore mode on. You can move on the map with the "
+		"left mouse button click. Clicking near the border switches "
+		"to the proximate map."));
+	gtk_tool_item_set_expand (explore_bt, menu_expand);
+	g_signal_connect (explore_bt, "clicked", G_CALLBACK (explore_cb), GINT_TO_POINTER (1));
+
+	/* Button: Track Clear */
+	trk_clear_bt = gtk_tool_button_new (NULL, _("Clear Track"));
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (trk_clear_bt), trk_clear_img);
+	gtk_tool_item_set_expand (trk_clear_bt, menu_expand);
+	g_signal_connect (trk_clear_bt, "clicked", G_CALLBACK (track_clear_cb), NULL);  
+
+	/* Button: Track Restart */
+	trk_restart_bt = gtk_tool_button_new (NULL, _("Restart Track"));
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (trk_restart_bt), trk_restart_img);
+	gtk_tool_item_set_expand (trk_restart_bt, menu_expand);
+	g_signal_connect (trk_restart_bt, "clicked", G_CALLBACK (track_restart_cb), NULL);  
+
 
 	/* Main Menu */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Main Menu)\n");
-	menu_menu = gtk_menu_new ();
+	GtkWidget *options_menu = gtk_menu_new ();
 
-	menu_maps = gtk_menu_new ();
-	menuitem_maps = gtk_menu_item_new_with_mnemonic (_("_Maps"));
-	menuitem_mapimport = gtk_menu_item_new_with_mnemonic (_("_Import"));
-	menuitem_mapdownload = gtk_menu_item_new_with_mnemonic (_("_Download"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_maps);
+	options_bt = gtk_toggle_tool_button_new ();
+	gtk_tool_button_set_label (GTK_TOOL_BUTTON (options_bt), _("Options"));
+	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (options_bt), options_img);
+	gtk_tool_item_set_expand (options_bt, menu_expand);
+	g_signal_connect (options_bt, "clicked", G_CALLBACK (toggle_main_menu_cb), options_menu);
+
+	GtkWidget *menu_maps = gtk_menu_new ();
+	GtkWidget *menuitem_maps = gtk_image_menu_item_new_with_mnemonic (_("_Maps"));
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_maps), map_img);
+	GtkWidget *menuitem_mapimport = gtk_menu_item_new_with_mnemonic (_("_Import"));
+	GtkWidget *menuitem_mapdownload = gtk_menu_item_new_with_mnemonic (_("_Download"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_maps);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_maps), menu_maps);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu_maps), menuitem_mapimport);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_maps),
-		menuitem_mapdownload);
-	g_signal_connect (menuitem_mapimport, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_MAPIMPORT);
-	g_signal_connect (menuitem_mapdownload, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_MAPDOWNLOAD);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu_maps), menuitem_mapdownload);
+	g_signal_connect (menuitem_mapimport, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_MAPIMPORT));
+	g_signal_connect (menuitem_mapdownload, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_MAPDOWNLOAD));
 
-	menu_load = gtk_menu_new ();
-	menuitem_load = gtk_image_menu_item_new_with_mnemonic (_("_Import"));
-	load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
+	GtkWidget *load_menu = gtk_menu_new ();
+	GtkWidget *menuitem_load = gtk_image_menu_item_new_with_mnemonic (_("_Import"));
+	GtkWidget *load_img = gtk_image_new_from_stock ("gtk-open", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_load), load_img);
-	menuitem_loadtrack = gtk_menu_item_new_with_mnemonic (_("GPX _Track"));
-	menuitem_loadroute = gtk_menu_item_new_with_mnemonic (_("GPX _Route"));
-	menuitem_loadwpt = gtk_menu_item_new_with_mnemonic (_("GPX _Waypoints"));
+	GtkWidget *menuitem_loadtrack = gtk_menu_item_new_with_mnemonic (_("GPX _Track"));
+	GtkWidget *menuitem_loadroute = gtk_menu_item_new_with_mnemonic (_("GPX _Route"));
+	GtkWidget *menuitem_loadwpt = gtk_menu_item_new_with_mnemonic (_("GPX _Waypoints"));
 /* TODO: menu item greyed out because the GPX_WPT code is not yet written (see gpx.c) */
 	gtk_widget_set_sensitive(menuitem_loadwpt, FALSE);
 
-	menuitem_loadtrkold = gtk_menu_item_new_with_mnemonic (_("_GpsDrive Track"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_load);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), menu_load);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrack);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadroute);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadwpt);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_load), menuitem_loadtrkold);
-	g_signal_connect (menuitem_loadtrack, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADTRACK);
-	g_signal_connect (menuitem_loadroute, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADROUTE);
-	g_signal_connect (menuitem_loadwpt, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADWPT);
-	g_signal_connect (menuitem_loadtrkold, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_LOADTRKOLD);
+	GtkWidget *menuitem_loadtrkold = gtk_menu_item_new_with_mnemonic (_("_GpsDrive Track"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_load);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_load), load_menu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (load_menu), menuitem_loadtrack);
+	gtk_menu_shell_append (GTK_MENU_SHELL (load_menu), menuitem_loadroute);
+	gtk_menu_shell_append (GTK_MENU_SHELL (load_menu), menuitem_loadwpt);
+	gtk_menu_shell_append (GTK_MENU_SHELL (load_menu), menuitem_loadtrkold);
+	g_signal_connect (menuitem_loadtrack, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_LOADTRACK));
+	g_signal_connect (menuitem_loadroute, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_LOADROUTE));
+	g_signal_connect (menuitem_loadwpt, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_LOADWPT));
+	g_signal_connect (menuitem_loadtrkold, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_LOADTRKOLD));
 
-	menu_save = gtk_menu_new ();
-	menuitem_save = gtk_image_menu_item_new_with_mnemonic (_("_Export"));
-	save_img = gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
+	GtkWidget *save_menu = gtk_menu_new ();
+	GtkWidget *menuitem_save = gtk_image_menu_item_new_with_mnemonic (_("_Export"));
+	GtkWidget *save_img = gtk_image_new_from_stock ("gtk-save", GTK_ICON_SIZE_MENU);
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_save), save_img);
-	menuitem_savetrack = gtk_menu_item_new_with_mnemonic (_("_Track"));
-	menuitem_saveroute = gtk_menu_item_new_with_mnemonic (_("_Route"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_save);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_save), menu_save);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_savetrack);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_save), menuitem_saveroute);
-	g_signal_connect (menuitem_savetrack, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVETRACK);
-	g_signal_connect (menuitem_saveroute, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SAVEROUTE);
+	GtkWidget *menuitem_savetrack = gtk_menu_item_new_with_mnemonic (_("_Track"));
+	GtkWidget *menuitem_saveroute = gtk_menu_item_new_with_mnemonic (_("_Route"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_save);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_save), save_menu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (save_menu), menuitem_savetrack);
+	gtk_menu_shell_append (GTK_MENU_SHELL (save_menu), menuitem_saveroute);
+	g_signal_connect (menuitem_savetrack, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_SAVETRACK));
+	g_signal_connect (menuitem_saveroute, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_SAVEROUTE));
 
-	menuitem_sendmsg =
-		gtk_image_menu_item_new_with_mnemonic (_("_Send Message"));
-	sendmsg_img =
-		gtk_image_new_from_stock ("gtk-network", GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image
-		(GTK_IMAGE_MENU_ITEM (menuitem_sendmsg), sendmsg_img);
-
-	menuitem_tripreset =
-		gtk_image_menu_item_new_with_mnemonic (_("_Reset Trip"));
-	tripreset_img =
-		gtk_image_new_from_stock ("gtk-clear", GTK_ICON_SIZE_MENU);
-	gtk_image_menu_item_set_image
-		(GTK_IMAGE_MENU_ITEM (menuitem_tripreset), tripreset_img);
-
+	GtkWidget *menuitem_sendmsg = gtk_image_menu_item_new_with_mnemonic (_("_Send Message"));
+	GtkWidget *sendmsg_img = gtk_image_new_from_stock ("gtk-network", GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_sendmsg), sendmsg_img);
+	g_signal_connect (menuitem_sendmsg, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_SENDMSG));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_sendmsg);
 	if (!local_config.showfriends)
 		gtk_widget_set_sensitive (menuitem_sendmsg, FALSE);
-	menuitem_settings =
-		gtk_image_menu_item_new_from_stock ("gtk-preferences", NULL);
-	menuitem_sep = gtk_separator_menu_item_new ();
-	menuitem_quit =
-		gtk_image_menu_item_new_from_stock ("gtk-quit", NULL);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sendmsg);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_tripreset);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_settings);
-	g_signal_connect (menuitem_sendmsg, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SENDMSG);
-	g_signal_connect (menuitem_tripreset, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_TRIPRESET);
-	g_signal_connect (menuitem_settings, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_SETTINGS);
-	g_signal_connect (menuitem_quit, "activate",
-		GTK_SIGNAL_FUNC (quit_program_cb), NULL);
 
-	/* Help Menu */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Help Menu)\n");
-	menu_help = gtk_menu_new ();
-	menuitem_helpabout =
-		gtk_image_menu_item_new_from_stock ("gtk-about", NULL);
-	menuitem_helpcontent =
-		gtk_image_menu_item_new_from_stock ("gtk-help", NULL);
-	g_signal_connect (menuitem_helpabout, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_HELPABOUT);
-	g_signal_connect (menuitem_helpcontent, "activate",
-		GTK_SIGNAL_FUNC (main_menu_cb), (gpointer) MENU_HELPCONTENT);
+	GtkWidget *menuitem_tripreset = gtk_image_menu_item_new_with_mnemonic (_("_Reset Trip"));
+	GtkWidget *tripreset_img = gtk_image_new_from_stock ("gtk-clear", GTK_ICON_SIZE_MENU);
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_tripreset), tripreset_img);
+	g_signal_connect (menuitem_tripreset, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_TRIPRESET));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_tripreset);
 
-	/* put menu together */
-#ifdef MAEMO
-	main_menu = menu_menu;
+	GtkWidget *menuitem_settings = gtk_image_menu_item_new_from_stock ("gtk-preferences", NULL);
+	g_signal_connect (menuitem_settings, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_SETTINGS));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_settings);
 
-	GtkWidget *menuitem_sep2 = gtk_separator_menu_item_new ();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep2);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_helpabout);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_helpcontent);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
-#else
-	main_menu = gtk_menu_bar_new ();
+	GtkWidget *menuitem_sep = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_sep);
 
-	menuitem_menu = gtk_menu_item_new_with_mnemonic (_("_Options"));
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_menu), menu_menu);
-	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_menu);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_sep);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_menu), menuitem_quit);
-
-	menuitem_help = gtk_menu_item_new_with_mnemonic (_("_Help"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help), menuitem_helpabout);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu_help), menuitem_helpcontent);
-	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_help), menu_help);
-	gtk_menu_shell_append (GTK_MENU_SHELL (main_menu), menuitem_help);
-#endif
-
-	/* Buttons: Zoom */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: Zoom)\n");
-	hbox_zoom = gtk_hbox_new (FALSE, 1 * PADDING);
-	zoomin_bt = gtk_button_new ();
-	zoomin_img = gtk_image_new_from_stock
-		("gtk-zoom-in", GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (zoomin_bt), zoomin_img);
-	g_signal_connect (GTK_OBJECT (zoomin_bt), "clicked",
-		GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 1);
-	zoomout_bt = gtk_button_new ();
-	zoomout_img = gtk_image_new_from_stock
-		("gtk-zoom-out", GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (zoomout_bt), zoomout_img);
-	g_signal_connect (GTK_OBJECT (zoomout_bt), "clicked",
-		GTK_SIGNAL_FUNC (zoom_cb), (gpointer) 2);
-	if (current.zoom <= ZOOM_MIN)
-		gtk_widget_set_sensitive (zoomout_bt, FALSE);
-	if (current.zoom >= ZOOM_MAX)
-		gtk_widget_set_sensitive (zoomin_bt, FALSE);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomin_bt,
-		_("Zooms in on the current map"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), zoomout_bt,
-			      _("Zooms out on the current map"), NULL);
-	gtk_box_pack_start (GTK_BOX (hbox_zoom),
-			    zoomout_bt, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (hbox_zoom),
-			    zoomin_bt, TRUE, TRUE,  1 * PADDING);
-
-	/* Buttons: Scaler */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: Scaler)\n");
-	scaler_out_bt = gtk_button_new ();
-	scaler_out_img = gtk_image_new_from_stock (GTK_STOCK_REMOVE, GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (scaler_out_bt), scaler_out_img);
-	g_signal_connect (GTK_OBJECT (scaler_out_bt), "clicked",
-		GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 1);
-	scaler_in_bt = gtk_button_new ();
-	scaler_in_img = gtk_image_new_from_stock (GTK_STOCK_ADD, GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (scaler_in_bt), scaler_in_img);
-	g_signal_connect (GTK_OBJECT (scaler_in_bt), "clicked",
-		GTK_SIGNAL_FUNC (scalerbt_cb), (gpointer) 2);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_in_bt,
-		_("Select the next more detailed map"), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), scaler_out_bt,
-		_("Select the next less detailed map"), NULL);
-
-	hbox_scaler  = gtk_hbox_new (FALSE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (hbox_scaler),
-		scaler_out_bt, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (hbox_scaler),
-		scaler_in_bt, TRUE, TRUE, 1 * PADDING);
-
-	/* Button: Mute Speech */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: Mute Speech)\n");
-	mute_bt = gtk_check_button_new_with_mnemonic (_("M_ute Speech"));
-	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (mute_bt), FALSE);
-	if (local_config.mute)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (mute_bt), TRUE);
-	}
-	g_signal_connect (GTK_OBJECT (mute_bt), "clicked",
-	GTK_SIGNAL_FUNC (toggle_button_cb),
-		&local_config.mute);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), mute_bt,
-		_("Disable output of speech"), NULL);
-
-	/* Button: Search POIs */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: Search POI)\n");
-	find_poi_bt = gtk_button_new_from_stock (GTK_STOCK_FIND);
-	if (!local_config.use_database)
-	{
-		gtk_widget_set_sensitive (find_poi_bt, FALSE);
-	}
-	else
-	{
-		g_signal_connect (G_OBJECT (find_poi_bt), "clicked",
-			G_CALLBACK (show_poi_lookup_cb), GINT_TO_POINTER (0));
-	}
-
-	/* Button: Routing */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Buttons: Show Routing)\n");
-	routing_bt = gtk_button_new_with_mnemonic (_("_Route List"));
-
-	}	/* END MENU AND BUTTONS */
-
-	/* WAYPOINTS AND POIs */
-	{
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Bottons: WAYPOINTS AND POIs)\n");
-
-	frame_poi = gtk_frame_new (_("Points"));
-	vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
-	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
-
-	if (local_config.use_database)
-	{
-		/* Checkbox: POI Draw User */
-		poidraw_user_bt = gtk_check_button_new_with_mnemonic (_("_User DB"));
-		if (local_config.showpoi == POIDRAW_USER || local_config.showpoi == POIDRAW_ALL)
-		{
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (poidraw_user_bt), TRUE);
-		}
-		gtk_box_pack_start (GTK_BOX (vbox_poi),
-			poidraw_user_bt, FALSE, FALSE, 0 * PADDING);
-		g_signal_connect (GTK_OBJECT (poidraw_user_bt), "clicked",
-			GTK_SIGNAL_FUNC (poi_button_cb), GINT_TO_POINTER (POIDRAW_USER));
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_user_bt,
-			_("Show Points Of Interest found in user database"), NULL);
-
-		/* Checkbox: POI Draw OSM */
-		poidraw_osm_bt = gtk_check_button_new_with_mnemonic (_("_OSM DB"));
-		if (local_config.showpoi > POIDRAW_USER)
-		{
-			gtk_toggle_button_set_active
-				(GTK_TOGGLE_BUTTON (poidraw_osm_bt), TRUE);
-		}
-		if (current.poi_osm)
-			gtk_box_pack_start (GTK_BOX (vbox_poi),
-				poidraw_osm_bt, FALSE, FALSE, 0 * PADDING);
-		g_signal_connect (GTK_OBJECT (poidraw_osm_bt), "clicked",
-			GTK_SIGNAL_FUNC (poi_button_cb), GINT_TO_POINTER (POIDRAW_OSM));
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), poidraw_osm_bt,
-			_("Show Points Of Interest found in OSM database"), NULL);
-	}
-
-	/* Checkbox: Draw Waypoints from file */
-	wp_draw_bt = gtk_check_button_new_with_mnemonic (_("_WP File"));
-	if (local_config.showwaypoints)
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (wp_draw_bt), TRUE);
-	g_signal_connect (GTK_OBJECT (wp_draw_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb),
-		&local_config.showwaypoints);
-	gtk_box_pack_start (GTK_BOX (vbox_poi), wp_draw_bt,
-		FALSE, FALSE, 0 * PADDING);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), wp_draw_bt,
-		_("Show Waypoints found in file way.txt"), NULL);
-
-	}	/* END WAYPOINTS AND POIs */
-
-	/* TRACKS */
-	{
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Buttons: TRACKS)\n");
-	frame_track = gtk_frame_new (_("Track"));
-	vbox_track = gtk_vbox_new (TRUE, 1 * PADDING);
-	gtk_container_add (GTK_CONTAINER (frame_track), vbox_track);
+	GtkWidget *helpabout_menuitem = gtk_image_menu_item_new_from_stock (GTK_STOCK_ABOUT, NULL);
+	g_signal_connect (helpabout_menuitem, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_HELPABOUT));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), helpabout_menuitem);
 	
-	/* Checkbox: Show Track */
-	showtrack_bt = gtk_check_button_new_with_mnemonic (_("_Show"));
-	if (local_config.showtrack)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (showtrack_bt), TRUE);
-	}
-	g_signal_connect (GTK_OBJECT (showtrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_button_cb), &local_config.showtrack);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), showtrack_bt,
-		_("Show tracking on the map"), NULL);
-	gtk_box_pack_start (GTK_BOX (vbox_track), showtrack_bt,
-		FALSE, FALSE, 0 * PADDING);
+	GtkWidget *helpcontent_menuitem = gtk_image_menu_item_new_from_stock (GTK_STOCK_HELP, NULL);
+	g_signal_connect (helpcontent_menuitem, "activate", G_CALLBACK (main_menu_cb), GINT_TO_POINTER (MENU_HELPCONTENT));
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), helpcontent_menuitem);
 
-	/* Checkbox: Save Track */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Buttons: Save Track)\n");
-	savetrack_bt = gtk_check_button_new_with_mnemonic (_("Sa_ve"));
-	if (local_config.savetrack)
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (savetrack_bt), TRUE);
-	g_signal_connect (GTK_OBJECT (savetrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (toggle_track_button_cb), &local_config.savetrack);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), savetrack_bt,
-		_("Save the track to given filename at program exit"),
-		NULL);
-	gtk_box_pack_start (GTK_BOX (vbox_track), savetrack_bt,
-		FALSE, FALSE,0 * PADDING);
-	}	/* END TRACKS */
+	menuitem_sep = gtk_separator_menu_item_new ();
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_sep);
 
-	/* Button: Clear Track */
-	cleartrack_bt = gtk_button_new_with_mnemonic (_("_Clear\nTrack"));
-	cleartrack_img = gtk_image_new_from_stock ("gtk-clear",
-		GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (cleartrack_bt), cleartrack_img);
-	g_signal_connect (GTK_OBJECT (cleartrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (track_clear_cb), FALSE);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), cleartrack_bt,
-		_("Delete recorded track data"), NULL);
-#ifndef MAEMO
-	if (local_config.guimode != GUI_CAR
-	    && local_config.showbutton_trackclear)
-		gtk_box_pack_start (GTK_BOX (vbox_track), cleartrack_bt,
-			FALSE, FALSE, 0 * PADDING);
-#endif
+	GtkWidget *menuitem_quit = gtk_image_menu_item_new_from_stock ("gtk-quit", NULL);
+	g_signal_connect (menuitem_quit, "activate", G_CALLBACK (quit_program_cb), NULL);
+	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_quit);
 
-	/* Button: Restart Track */
-	restarttrack_bt = gtk_button_new_with_mnemonic (_("R_estart\nTrack"));
-	restarttrack_img = gtk_image_new_from_stock ("gtk-save",
-		GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_image (GTK_BUTTON (restarttrack_bt), restarttrack_img);
-	g_signal_connect (GTK_OBJECT (restarttrack_bt), "clicked",
-		GTK_SIGNAL_FUNC (track_restart_cb), NULL);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), restarttrack_bt,
-		_("Save current track and start new one."), NULL);
-#ifndef MAEMO
-	if (local_config.guimode != GUI_CAR
-	    && local_config.showbutton_trackrestart)
-		gtk_box_pack_start (GTK_BOX (vbox_track), restarttrack_bt,
-			FALSE, FALSE, 0 * PADDING);
-#endif
+	g_signal_connect (options_menu, "selection-done", G_CALLBACK (close_options_menu_cb), NULL);
 
-	/* MAP CONTROL */
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(Buttons: MAP CONTROL)\n");
-	{
-		frame_mapcontrol = make_display_map_controls ();
+	gtk_widget_show_all (options_menu);
 
-	if (local_config.guimode != GUI_PDA)
-	{
-		controlbox_bt = gtk_button_new_with_label (_("_Map Control"));
-		controlbox_img = gtk_image_new_from_stock ("gtk-properties", GTK_ICON_SIZE_BUTTON);
-		gtk_button_set_image (GTK_BUTTON (controlbox_bt), controlbox_img);
-		g_signal_connect (GTK_OBJECT (controlbox_bt), "clicked",
-			GTK_SIGNAL_FUNC (toggle_controlbox_cb), (gpointer) 1);
-	}
+	rebuild_toolbar_mainbox_cb();
 
-	}	/* END MAP CONTROL */
-
-
-	/* Map Scale Slider */
-	/* search which scaler_pos is fitting scale_wanted */
-	while ( (local_config.scale_wanted > scale )
-		&& (scaler_pos <= slistsize ) )
-	{
-		scaler_pos++;
-		scale = nlist[(gint) rint (scaler_pos)];
-	}
-	mapscaler_adj = gtk_adjustment_new
-		(scaler_pos, 0, slistsize - 1, 1,
-		slistsize / 4, 1 / slistsize );
-	mapscaler_scaler = gtk_hscale_new
-		(GTK_ADJUSTMENT (mapscaler_adj));
-	gtk_range_set_inverted (GTK_RANGE (mapscaler_scaler), TRUE);
-	g_signal_connect (GTK_OBJECT (mapscaler_adj), "value_changed",
-		GTK_SIGNAL_FUNC (scaler_cb), NULL);
-	gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
-
-	mapscaler_hbox = gtk_hbox_new (FALSE, 2 * PADDING);
-	mapscaler_in_lb = gtk_label_new (_("+"));
-	mapscaler_out_lb = gtk_label_new (_("-"));
-	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_out_lb, FALSE, FALSE, 3);
-	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_scaler, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_in_lb, FALSE, FALSE, 3);
-
-	/* MAP TYPE */
-	{
-	        if ( mydebug > 11 )
-			fprintf(stderr,"create_controls_mainbox(Buttons: MAP TYPE)\n");
-		frame_maptype = make_display_map_checkboxes();
-	}	/* END MAP TYPE */
-
-	/* BUTTONS VBOX */
-	{
-		gboolean wide = FALSE;
-	        if ( mydebug > 11 )
-			fprintf(stderr,"create_controls_mainbox(Bottons: VBOX)\n");
-#ifndef MAEMO
-		if (local_config.guimode == GUI_CAR)
-#endif
-			wide = TRUE;
-#ifdef MAEMO
-		hildon_window_set_menu (HILDON_WINDOW (main_window), GTK_MENU (main_menu));
-#else
-		gtk_box_pack_start (GTK_BOX (vbox_buttons),
-			main_menu, wide, wide, 1 * PADDING);
-#endif
-		if (local_config.showbutton_zoom)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				hbox_zoom, wide, wide, 1 * PADDING);
-		}
-		if (local_config.showbutton_scaler)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				hbox_scaler, wide, wide, 1 * PADDING);
-		}
-
-		if (current.have_speech && local_config.showbutton_mute)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				mute_bt, wide, wide, 1 * PADDING);
-		}
-		if (local_config.showbutton_find)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				find_poi_bt, wide, wide, 1 * PADDING);
-		}
-		if (local_config.use_database && local_config.showbutton_route)
-		{
-			g_signal_connect (routing_bt, "clicked",
-				G_CALLBACK (route_window_cb), NULL);  
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				routing_bt, wide, wide, 1 * PADDING);
-		}
-		if (local_config.guimode != GUI_PDA && local_config.showbutton_map)
-		{
-			gtk_box_pack_start (GTK_BOX (vbox_buttons),
-				controlbox_bt, wide, wide, 1 * PADDING);
-		}
-#ifndef MAEMO
-		if (local_config.guimode == GUI_CAR)
-#endif
-		{
-			if (local_config.showbutton_trackrestart)
-				gtk_box_pack_start (GTK_BOX (vbox_buttons), restarttrack_bt,
-				wide, wide, 1 * PADDING);
-			if (local_config.showbutton_trackclear)
-				gtk_box_pack_start (GTK_BOX (vbox_buttons), cleartrack_bt,
-				wide, wide, 1 * PADDING);
-		}
-	}	/* END BUTTONS BOX */
-
-
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox(mainbox_controls)\n");
-#ifndef MAEMO
-	if (local_config.guimode == GUI_PDA)
-	{
-		mainbox_controls = gtk_hbox_new (TRUE, 0 * PADDING);
-		
-		pda_box_left = gtk_vbox_new (FALSE, 1 * PADDING);
-		pda_box_right = gtk_vbox_new (FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	pda_box_left, TRUE, TRUE, 0);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	pda_box_right, TRUE, TRUE, 0);
-
-		gtk_box_pack_start (GTK_BOX (pda_box_left), vbox_buttons, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_left), frame_poi, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_left), frame_track, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (pda_box_right),frame_maptype, TRUE, TRUE, 1 * PADDING);
-	}
-	else
-	if (local_config.guimode == GUI_CAR)
-#endif
-	{
-		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),vbox_buttons, TRUE, TRUE, 1 * PADDING);
-
-		buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_poi, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_track, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
-
-		controlbox = mapcontrolbox ();
-		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (controlbox), mapscaler_hbox, FALSE, FALSE, 1 * PADDING);
-	}
-#ifndef MAEMO
-	else
-	{
-		mainbox_controls = gtk_vbox_new (FALSE, 0 * PADDING);
-
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	vbox_buttons, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_poi, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (mainbox_controls),	frame_track, FALSE, FALSE, 1 * PADDING);
-
-		buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
-
-		controlbox = mapcontrolbox ();
-		gtk_box_pack_start (GTK_BOX (controlbox), buttons_hbox, FALSE, FALSE, 1 * PADDING);
-
-	}
-#endif
-
-	if ( mydebug > 11 )
-	    fprintf(stderr,"create_controls_mainbox: END\n");
 }
 
 
@@ -2647,9 +2538,11 @@ void create_status_mainbox (void)
 	GtkWidget *dashboard_3_lb, *dashboard_4_lb;
 	GtkWidget *eventbox_dash_1, *eventbox_dash_2;
 	GtkWidget *eventbox_dash_3, *eventbox_dash_4;
-	GtkWidget *frame_compass, *frame_minimap;
 
 	gchar sc[15];
+	gint t_scalerpos = 0;
+	gint t_scale = 0;
+	
 
 	if ( mydebug > 11 )
 	    fprintf(stderr,"create_status_mainbox\n");
@@ -2657,39 +2550,19 @@ void create_status_mainbox (void)
 	mainbox_status = gtk_vbox_new (FALSE, 0 * PADDING);
 
 
+	/* Mini Map Window */
+	minimap_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);	
+	drawing_minimap = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (drawing_minimap, 128, 103);
+	g_signal_connect (drawing_minimap, "expose_event", G_CALLBACK (expose_mini_cb), NULL);
+	gtk_widget_add_events (GTK_WIDGET (drawing_minimap), GDK_BUTTON_PRESS_MASK);
+	g_signal_connect_swapped (drawing_minimap, "button-press-event", G_CALLBACK (minimapclick_cb), drawing_minimap);
+	gtk_container_add (GTK_CONTAINER (minimap_window), drawing_minimap);
+	drawable_minimap = drawing_minimap->window;
+
+
 	/* DASHBOARD */
 	{
-		/* Frame Mini Map */
-		frame_minimap = gtk_frame_new (NULL);	
-		gtk_frame_set_shadow_type
-			(GTK_FRAME (frame_minimap), GTK_SHADOW_NONE);
-		drawing_minimap = gtk_drawing_area_new ();
-		gtk_widget_set_size_request (drawing_minimap, 128, 103);
-		g_signal_connect (drawing_minimap, "expose_event",
-			GTK_SIGNAL_FUNC (expose_mini_cb), NULL);
-		gtk_widget_add_events (GTK_WIDGET (drawing_minimap),
-			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect_swapped (drawing_minimap,
-			"button-press-event",
-			GTK_SIGNAL_FUNC (minimapclick_cb),
-			GTK_OBJECT (drawing_minimap));
-		gtk_container_add (GTK_CONTAINER (frame_minimap),
-			drawing_minimap);
-		drawable_minimap = drawing_minimap->window;
-
-		/* Frame Compass */
-		frame_compass = gtk_frame_new (NULL);
-		drawing_compass = gtk_drawing_area_new ();
-		gtk_widget_set_size_request (drawing_compass, 100, 100);
-		gtk_container_add (GTK_CONTAINER (frame_compass),
-			drawing_compass);
-		g_signal_connect (GTK_OBJECT (drawing_compass),
-			"expose_event", GTK_SIGNAL_FUNC (expose_compass), NULL);
-		gtk_widget_add_events (GTK_WIDGET (drawing_compass),
-			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (drawing_compass, "button-press-event",
-			G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
-
 		/* Frame Dashboard 1 */
 		frame_dash_1 = gtk_frame_new (" = 1 = ");	
 		dashboard_1_lb = gtk_label_new ("---");
@@ -2838,21 +2711,22 @@ void create_status_mainbox (void)
 		/* GPS Fix Status */
 		frame_statusgpsfix = gtk_frame_new (NULL);
 		drawing_gpsfix = gtk_drawing_area_new ();
-		gtk_widget_set_size_request (drawing_gpsfix,
-			100, 25);
-		gtk_container_add (GTK_CONTAINER (frame_statusgpsfix),
-			drawing_gpsfix);
-		g_signal_connect (GTK_OBJECT (drawing_gpsfix),
-			"expose_event", GTK_SIGNAL_FUNC (expose_gpsfix),
-			NULL);
-		gtk_widget_add_events (GTK_WIDGET (drawing_gpsfix),
-			GDK_BUTTON_PRESS_MASK);
-		g_signal_connect (drawing_gpsfix, "button-press-event",
-			G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips),
-			frame_statusgpsfix,
-			_("This shows the GPS Status and Number of satellites"
-			" in use."), NULL);
+		if (local_config.guimode == GUI_CAR)
+		{
+			local_config.gpsfix_style = TRUE;
+			gtk_widget_set_size_request (drawing_gpsfix, 40, 100);
+		}
+		else
+		{
+			gtk_widget_set_size_request (drawing_gpsfix, 100, 25);
+			local_config.gpsfix_style = FALSE;
+		}
+		gtk_container_add (GTK_CONTAINER (frame_statusgpsfix), drawing_gpsfix);
+		g_signal_connect (drawing_gpsfix, "expose_event", G_CALLBACK (expose_gpsfix), GINT_TO_POINTER (local_config.gpsfix_style));
+		gtk_widget_add_events (GTK_WIDGET (drawing_gpsfix), GDK_BUTTON_PRESS_MASK);
+		g_signal_connect (drawing_gpsfix, "button-press-event", G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
+		gtk_tooltips_set_tip (GTK_TOOLTIPS (main_tooltips), frame_statusgpsfix,
+			_("This shows the GPS Status and Number of satellites in use."), NULL);
 	}	/* SMALL STATUS TEXT */
 
 
@@ -2860,19 +2734,36 @@ void create_status_mainbox (void)
 	{
 		/* Status Bar */
 		frame_statusbar = gtk_statusbar_new ();
-		gtk_statusbar_set_has_resize_grip
-			(GTK_STATUSBAR (frame_statusbar), FALSE);
-		current.statusbar_id = gtk_statusbar_get_context_id
-			(GTK_STATUSBAR (frame_statusbar), "main");
-		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-			current.statusbar_id,
-			_("GpsDrive (c)2001-2007 F. Ganter"));
+		gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR (frame_statusbar), FALSE);
+		current.statusbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR (frame_statusbar), "main");
+		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id, _("GpsDrive (c)2001-2007 F. Ganter"));
+
+	/* Map Scale Slider */
+	/* search which scaler_pos is fitting scale_wanted */
+	while ( (local_config.scale_wanted > t_scale ) && (t_scalerpos <= slistsize ) )
+	{
+		t_scalerpos++;
+		t_scale = nlist[(gint) rint (t_scalerpos)];
+	}
+	mapscaler_adj = gtk_adjustment_new (t_scalerpos, 0, slistsize - 1, 1, slistsize / 4, 1 / slistsize );
+	mapscaler_scaler = gtk_hscale_new (GTK_ADJUSTMENT (mapscaler_adj));
+	gtk_range_set_inverted (GTK_RANGE (mapscaler_scaler), TRUE);
+	g_signal_connect (mapscaler_adj, "value_changed", G_CALLBACK (scaler_cb), NULL);
+	gtk_scale_set_draw_value (GTK_SCALE (mapscaler_scaler), FALSE);
+
+	mapscaler_hbox = gtk_hbox_new (FALSE, 2 * PADDING);
+	GtkWidget *mapscaler_in_lb = gtk_label_new (_("+"));
+	GtkWidget *mapscaler_out_lb = gtk_label_new (_("-"));
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_out_lb, FALSE, FALSE, 3);
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_scaler, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (mapscaler_hbox), mapscaler_in_lb, FALSE, FALSE, 3);
 	}	/* END STATUS BAR */
-	
+
+
 	/* Pack all the widgets together according to GUI-Mode */
 #ifndef MAEMO
 	if (local_config.guimode == GUI_PDA)
-	{
+	{  /* PDA Mode */
 		statusdashboard_box = gtk_table_new (2, 2, TRUE);
 		gtk_table_attach_defaults (GTK_TABLE (statusdashboard_box),
 			eventbox_dash_1, 0, 1, 0, 1);
@@ -2889,7 +2780,7 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
 
 		statusbar_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_compass, TRUE, TRUE, 1 * PADDING);
+//		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_compass, TRUE, TRUE, 1 * PADDING);
 		gtk_box_pack_start (GTK_BOX (statusbar_box), statussmall_box, TRUE, TRUE, 1 * PADDING);
 
 		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
@@ -2897,69 +2788,73 @@ void create_status_mainbox (void)
 		gtk_box_pack_start (GTK_BOX (mainbox_status), frame_statusbar, TRUE, FALSE, 1* PADDING);
 	}
 	else
-	if (local_config.guimode == GUI_CAR)
-#endif
-	{
+	{	/* Classic Mode (Standard) and Car Mode */
 		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
-		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_statusgpsfix, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_compass, FALSE, FALSE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),
-			statusdashsub2_box, TRUE, TRUE, 0);
+		statussmall_box = gtk_hbox_new (FALSE, PADDING);
+		if (local_config.guimode == GUI_CAR)
+		{
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box), eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box), eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box), eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box), frame_statusgpsfix, FALSE, FALSE, 1 * PADDING);
+		}
+		else
+		{
+			statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
+			statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
+			statusbar_box = gtk_hbox_new (FALSE, PADDING);
 
-		// --- ACPI / Temperature / Battery
-		create_temperature_widget(statusdashboard_box);
-		create_battery_widget(statusdashboard_box);
+			gtk_box_pack_start (GTK_BOX (statusdashsub2_box), eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashsub2_box), eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashsub2_box), eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
+			gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
 
-		gtk_box_pack_start (GTK_BOX (mainbox_status), statusdashboard_box, TRUE, FALSE, 1 * PADDING);
-	}
-#ifndef MAEMO
-	else
-	{
-		GtkWidget *compass_box;
-
-		statusdashboard_box = gtk_hbox_new (FALSE, PADDING);
-		statusdashsub1_box = gtk_hbox_new (FALSE, PADDING);
-		statusdashsub2_box = gtk_hbox_new (TRUE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_1, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_2, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashsub2_box),
-			eventbox_dash_3, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub1_box, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (statusdashboard_box),statusdashsub2_box, TRUE, TRUE, 0);
-		gtk_box_pack_end (GTK_BOX (mainbox_controls), frame_minimap, FALSE, FALSE, 1 * PADDING);
-		compass_box = gtk_hbox_new (FALSE, 1* PADDING);
-		gtk_box_pack_start (GTK_BOX (compass_box), frame_compass, TRUE, FALSE, 1 * PADDING);
-		gtk_box_pack_end (GTK_BOX (mainbox_controls), compass_box, FALSE, FALSE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statustime, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusfriends, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusbearing, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuscourse, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
+			gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_hbox, TRUE, TRUE, 1 * PADDING);
+		}
 
 		//  --- ACPI / Temperature / Battery
 		create_temperature_widget(statusdashboard_box);
 		create_battery_widget(statusdashboard_box);
 
-		statussmall_box = gtk_hbox_new (FALSE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statustime, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusfriends, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusbearing, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuscourse, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslat, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statuslon, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusmapscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusprefscale, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statussmall_box), frame_statusgpsfix, TRUE, TRUE, 1 * PADDING);
-
-		statusbar_box = gtk_hbox_new (FALSE, PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box), frame_statusbar, TRUE, TRUE, 1 * PADDING);
-		gtk_box_pack_start (GTK_BOX (statusbar_box), mapscaler_hbox, TRUE, TRUE, 1 * PADDING);
 	}
 #endif
+
+#ifdef MAEMO
+	hildon_window_add_toolbar (main_window, main_toolbar);
+#endif
+
+}
+
+
+/* *****************************************************************************
+ * Window: Main -> Compass
+ */
+void create_compass_box (void)
+{
+	GtkWidget *frame_compass;
+
+	frame_compass = gtk_frame_new (NULL);
+	drawing_compass = gtk_drawing_area_new ();
+	gtk_widget_set_size_request (drawing_compass, 100, 100);
+	gtk_container_add (GTK_CONTAINER (frame_compass), drawing_compass);
+	g_signal_connect (drawing_compass, "expose_event", G_CALLBACK (expose_compass), NULL);
+	gtk_widget_add_events (GTK_WIDGET (drawing_compass), GDK_BUTTON_PRESS_MASK);
+	g_signal_connect (drawing_compass, "button-press-event", G_CALLBACK (toggle_satelliteinfo_cb), GINT_TO_POINTER (TRUE));
+
+	compass_box = gtk_hbox_new (FALSE, 1* PADDING);
+	gtk_box_pack_start (GTK_BOX (compass_box), frame_compass, TRUE, FALSE, 1 * PADDING);
+
 }
 
 
@@ -3063,31 +2958,28 @@ gint create_main_window (void)
 	}
 
 	gtk_container_set_border_width (GTK_CONTAINER (main_window), 0);
-	gtk_window_set_position (GTK_WINDOW (main_window),
-		GTK_WIN_POS_CENTER);
-	g_signal_connect (GTK_OBJECT (main_window), "delete_event",
-		GTK_SIGNAL_FUNC (quit_program_cb), NULL);
-	g_signal_connect (GTK_OBJECT (main_window), "key_press_event",
-		GTK_SIGNAL_FUNC (key_pressed_cb), NULL);
-	g_signal_connect (main_window, "window-state-event",
-		G_CALLBACK (window_state_cb), NULL);
+	gtk_window_set_position (GTK_WINDOW (main_window), GTK_WIN_POS_CENTER);
+	g_signal_connect (GTK_OBJECT (main_window), "delete_event", GTK_SIGNAL_FUNC (quit_program_cb), NULL);
+	g_signal_connect (GTK_OBJECT (main_window), "key_press_event", GTK_SIGNAL_FUNC (key_pressed_cb), NULL);
+	g_signal_connect (main_window, "window-state-event", G_CALLBACK (window_state_cb), NULL);
 
 
 	mainwindow_icon_pixbuf = read_icon ("gpsdrive16.png",1);
 	if (mainwindow_icon_pixbuf)
 	{
-		gtk_window_set_icon (GTK_WINDOW (main_window),
-			mainwindow_icon_pixbuf);
+		gtk_window_set_icon (GTK_WINDOW (main_window), mainwindow_icon_pixbuf);
 		gdk_pixbuf_unref (mainwindow_icon_pixbuf);
 	}
 
 	main_tooltips = gtk_tooltips_new();
 
 	/* Create the parts of the main window */
-	create_controls_mainbox ();
+	create_toolbar_mainbox ();
 	create_status_mainbox ();
 	create_map_mainbox ();
+	create_mapcontrol_box ();
 	create_routeinfo_box ();
+	create_compass_box ();
 
 #ifdef MAEMO
 	create_dashboard_carmenu ();
@@ -3112,54 +3004,37 @@ gint create_main_window (void)
 			mainframe_map, map_lb);
 		controls_lb = gtk_label_new (_("Controls"));
 		gtk_notebook_append_page (GTK_NOTEBOOK (main_table),
-			mainbox_controls, controls_lb);
+			main_toolbar, controls_lb);
 		status_lb = gtk_label_new (_("Status"));
 		gtk_notebook_append_page (GTK_NOTEBOOK (main_table),
 			mainbox_status, status_lb);
 		gtk_container_add (GTK_CONTAINER (main_window), main_table);
 	}
-	else if (local_config.guimode == GUI_CAR)
-#endif
-	{
-		main_table = gtk_table_new (2, 3, FALSE);
-		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 2,
-			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
-		gtk_table_attach (GTK_TABLE (main_table),
-			routeinfo_evbox, 1, 2, 0, 1,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainframe_map, 1, 2, 1, 2);		
-		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_status, 0, 2, 2, 3,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
-		gtk_container_add (GTK_CONTAINER (main_window), main_table);
-		gtk_window_maximize (GTK_WINDOW (main_window));
-		if (local_config.guimode == GUI_CAR)
-			gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
-	}
-#ifndef MAEMO
 	else
-	{  /* Classic Mode (Standard) */
-		main_table = gtk_table_new (5, 2, FALSE);
-		gtk_table_attach (GTK_TABLE (main_table),
-			mainbox_controls, 0, 1, 0, 4,
-			GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
-		gtk_table_attach (GTK_TABLE (main_table),
-			routeinfo_evbox, 1, 2, 0, 1,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
-		gtk_table_attach_defaults (GTK_TABLE (main_table),
-			mainframe_map, 1, 2, 1, 2);		
-		gtk_table_attach (GTK_TABLE (main_table),
-			statusdashboard_box, 1, 2, 2, 3,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
-		gtk_table_attach (GTK_TABLE (main_table),
-			statussmall_box, 1, 2, 3, 4,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
-		gtk_table_attach (GTK_TABLE (main_table),
-			statusbar_box, 0, 2, 4, 5,
-			GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);		
-		gtk_container_add (GTK_CONTAINER (main_window), main_table);
+	{  /* Classic Mode (Standard) and Car Mode */
+		GtkWidget *main_box = gtk_vbox_new (FALSE, 0);
+		GtkWidget *main_upper_table = gtk_table_new (2, 2, FALSE);
+		GtkWidget *main_lower_table = gtk_table_new (3, 2, FALSE);
+
+		gtk_table_attach (GTK_TABLE (main_upper_table), main_toolbar, 0, 1, 0, 2, GTK_SHRINK, GTK_EXPAND | GTK_FILL, 0, 0);
+		gtk_table_attach (GTK_TABLE (main_upper_table), routeinfo_evbox, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_table_attach_defaults (GTK_TABLE (main_upper_table), mainframe_map, 1, 2, 1, 2);
+		gtk_table_attach (GTK_TABLE (main_lower_table), compass_box, 0, 1, 0, 2, GTK_SHRINK, GTK_SHRINK, 0, 0);
+		gtk_table_attach (GTK_TABLE (main_lower_table), statusdashboard_box, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		if (local_config.guimode != GUI_CAR)
+		{
+			gtk_table_attach (GTK_TABLE (main_lower_table), statussmall_box, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+			gtk_table_attach (GTK_TABLE (main_lower_table), statusbar_box, 0, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		}
+		gtk_box_pack_start (GTK_BOX (main_box), main_upper_table, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (main_box), main_lower_table, FALSE, FALSE, 0);
+		gtk_container_add (GTK_CONTAINER (main_window), main_box);
+	}
+
+	if (local_config.guimode == GUI_CAR)
+	{
+		gtk_window_maximize (GTK_WINDOW (main_window));
+		gtk_window_set_decorated (GTK_WINDOW (main_window), FALSE);
 	}
 #endif
 

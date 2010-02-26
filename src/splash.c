@@ -136,6 +136,7 @@ insert_text (GtkTextBuffer * buffer)
 		      " f\t: Toggle friends display\n"
 		      " m\t: Toggle display of control menu\n"
 		      " d\t: Toggle display of dashboard\n"
+		      " c\t: Toggle display of compass\n"
 		      " +\t: Zoom in (preferred map scale)\n"
 		      " -\t: Zoom out (preferred map scale)\n"
 		      " e\t: Toggle explore mode\n"

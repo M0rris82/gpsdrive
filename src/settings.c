@@ -80,6 +80,7 @@ extern gint iszoomed;
 extern GtkWidget *miles;
 extern GtkWidget *status;
 extern GtkWidget *frame_statusfriends;
+extern GtkWidget *main_toolbar;
 
 GtkWidget *ipbt;
 gint sqlandmode = TRUE;
@@ -241,6 +242,39 @@ setlinestyle_cb (GtkWidget *widget, gint *value)
 	
 	current.needtosave = TRUE;
 	
+	return TRUE;
+}
+
+/* ************************************************************************* */
+static gint
+setbuttonsmode_cb (GtkWidget *widget)
+{
+	gint selection;
+
+	selection = gtk_combo_box_get_active (GTK_COMBO_BOX (widget)); 
+
+	if (selection != -1)
+	{
+		switch (selection)
+		{
+			case 0:
+				local_config.buttonsmode = GTK_TOOLBAR_BOTH_HORIZ;
+				break;
+			case 1:
+				local_config.buttonsmode = GTK_TOOLBAR_ICONS;
+				break;
+			case 2:
+				local_config.buttonsmode = GTK_TOOLBAR_TEXT;
+				break;
+		}
+		gtk_toolbar_set_style (GTK_TOOLBAR (main_toolbar), local_config.buttonsmode);
+	}
+
+	if (mydebug > 10)
+		g_print ("Setting button style to %d.\n", local_config.buttonsmode);
+
+	current.needtosave = TRUE;
+
 	return TRUE;
 }
 
@@ -1733,6 +1767,7 @@ settings_ctl (GtkWidget *notebook)
 	GtkWidget *gui_zoom_bt, *gui_scaler_bt, *gui_mute_bt;
 	GtkWidget *gui_route_bt, *gui_find_bt, *gui_map_bt;
 	GtkWidget *trk_showrestart_bt, *trk_showclear_bt;
+	GtkWidget *gui_explore_bt, *gui_addwpt_bt;
 	GtkWidget *buttons_combo;
 	GtkWidget *gui_btstyle_frame, *gui_btstyle_fr_lb;
 	GtkTooltips *gui_tooltips;
@@ -1745,15 +1780,24 @@ settings_ctl (GtkWidget *notebook)
 	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons and Text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons only"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Text only"));
-	gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), local_config.buttonsmode);
+	switch (local_config.buttonsmode)
+	{
+		case GTK_TOOLBAR_ICONS:
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 1);
+			break;
+		case GTK_TOOLBAR_TEXT:
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 2);
+			break;
+		default:
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 0);
+	}
+	g_signal_connect (buttons_combo, "changed", G_CALLBACK (setbuttonsmode_cb), NULL);
 
 	/* buttons displayed settings */
 	{
 
 	/* zoom buttons */
 	gui_zoom_bt = gtk_check_button_new_with_label (_("Zoom"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_zoom_bt,
-		_("Displays the zoom buttons."), NULL);
 	if (local_config.showbutton_zoom)
 	{
 		gtk_toggle_button_set_active
@@ -1765,13 +1809,11 @@ settings_ctl (GtkWidget *notebook)
 			(GTK_TOGGLE_BUTTON (gui_zoom_bt), FALSE);
 	}
 	g_signal_connect (GTK_OBJECT (gui_zoom_bt), "clicked",
-		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
 		&local_config.showbutton_zoom);
 
 	/* scaler buttons */
 	gui_scaler_bt = gtk_check_button_new_with_label (_("Scaler"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_scaler_bt,
-		_("Displays the scaler buttons."), NULL);
 	if (local_config.showbutton_scaler)
 	{
 		gtk_toggle_button_set_active
@@ -1783,13 +1825,11 @@ settings_ctl (GtkWidget *notebook)
 			(GTK_TOGGLE_BUTTON (gui_scaler_bt), FALSE);
 	}
 	g_signal_connect (GTK_OBJECT (gui_scaler_bt), "clicked",
-		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
 		&local_config.showbutton_scaler);
 
 	/* mute button */
 	gui_mute_bt = gtk_check_button_new_with_label (_("Mute Speech"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_mute_bt,
-		_("Displays the scaler buttons."), NULL);
 	if (local_config.showbutton_mute)
 	{
 		gtk_toggle_button_set_active
@@ -1801,13 +1841,11 @@ settings_ctl (GtkWidget *notebook)
 			(GTK_TOGGLE_BUTTON (gui_mute_bt), FALSE);
 	}
 	g_signal_connect (GTK_OBJECT (gui_mute_bt), "clicked",
-		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
 		&local_config.showbutton_mute);
 
 	/* find poi button */
 	gui_find_bt = gtk_check_button_new_with_label (_("Find POI"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_find_bt,
-		_("Displays the find poi button."), NULL);
 	if (local_config.showbutton_find)
 	{
 		gtk_toggle_button_set_active
@@ -1819,13 +1857,11 @@ settings_ctl (GtkWidget *notebook)
 			(GTK_TOGGLE_BUTTON (gui_find_bt), FALSE);
 	}
 	g_signal_connect (GTK_OBJECT (gui_find_bt), "clicked",
-		GTK_SIGNAL_FUNC (settoggleapm_cb),
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
 		&local_config.showbutton_find);
 
 	/* route list button */
 	gui_route_bt = gtk_check_button_new_with_label (_("Route List"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_route_bt,
-		_("Displays the Route List button."), NULL);
 	if (local_config.showbutton_route)
 	{
 		gtk_toggle_button_set_active
@@ -1842,8 +1878,6 @@ settings_ctl (GtkWidget *notebook)
 
 	/* map control button */
 	gui_map_bt = gtk_check_button_new_with_label (_("Map Control"));
-	gtk_tooltips_set_tip (gui_tooltips, gui_map_bt,
-		_("Displays the Map control button."), NULL);
 	if (local_config.showbutton_map)
 	{
 		gtk_toggle_button_set_active
@@ -1882,23 +1916,49 @@ settings_ctl (GtkWidget *notebook)
 		GTK_SIGNAL_FUNC (settogglevalue_cb),
 		&local_config.showbutton_trackclear);
 
+	/* explore mode button */
+	gui_explore_bt = gtk_check_button_new_with_label
+		(_("Explore Mode"));
+	if (local_config.showbutton_explore)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_explore_bt), TRUE);
+	}
+	g_signal_connect (gui_explore_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_explore);
+
+	/* add waypoint button */
+	gui_addwpt_bt = gtk_check_button_new_with_label
+		(_("Add Waypoint"));
+	if (local_config.showbutton_addwpt)
+	{
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON (gui_addwpt_bt), TRUE);
+	}
+	g_signal_connect (gui_addwpt_bt, "clicked",
+		GTK_SIGNAL_FUNC (settogglevalue_cb),
+		&local_config.showbutton_addwpt);
+
 	restartwarning_lb = gtk_label_new (_(
 		"<span color=\"red\">Changes to these require restarting GpsDrive</span>"
 		));
 	gtk_label_set_use_markup (GTK_LABEL (restartwarning_lb), TRUE);
 
-	gui_button_table = gtk_table_new (7,2, FALSE);
+	gui_button_table = gtk_table_new (5,2, FALSE);
 
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_zoom_bt, 0, 1, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_scaler_bt, 1, 2, 0, 1);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_find_bt, 0, 1, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_route_bt, 1, 2, 1, 2);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showrestart_bt, 0, 1, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showclear_bt, 1, 2, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_map_bt, 0, 1, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_map_bt, 0, 1, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_zoom_bt, 0, 1, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_scaler_bt, 0, 1, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_explore_bt, 0, 1, 3, 4);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_find_bt, 0, 1, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_addwpt_bt, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showclear_bt, 1, 2, 1, 2);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), trk_showrestart_bt, 1, 2, 2, 3);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_route_bt, 1, 2, 3, 4);
 	if (current.have_speech)
-		gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_mute_bt, 1, 2, 3, 4);
-	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), restartwarning_lb, 0, 2, 4, 5);
+		gtk_table_attach_defaults (GTK_TABLE (gui_button_table), gui_mute_bt, 1, 2, 4, 5);
+	gtk_table_attach_defaults (GTK_TABLE (gui_button_table), restartwarning_lb, 0, 2, 5, 6);
 
 	}
 

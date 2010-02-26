@@ -58,7 +58,7 @@ extern routestatus_struct route;
 extern gint thisrouteline;
 extern GtkWidget *drawing_minimap;
 extern GtkWidget *bestmap_bt, *poi_draw_bt;
-extern GtkWidget *explore_bt, *mapnik_bt;
+extern GtkWidget *mapnik_bt;
 extern currentstatus_struct current;
 
 extern gchar oldfilename[2048];
@@ -73,7 +73,6 @@ extern gboolean mapdl_active;
 extern int havedefaultmap;
 
 extern GdkPixbuf *image, *pixbuf_minimap;
-extern GtkWidget *mapscaler_scaler;
 extern GtkObject *mapscaler_adj;
 extern GdkGC *kontext_map;
 
@@ -105,146 +104,6 @@ gint max_display_map = 0;
 map_dir_struct *display_map;
 gint displaymap_top = TRUE;
 
-/* *****************************************************************************
- */
-gint
-display_maps_cb (GtkWidget * widget, guint datum)
-{
-  int i;
-
-  if (gtk_toggle_button_get_active
-      (GTK_TOGGLE_BUTTON (display_map[datum].checkbox)))
-    display_map[datum].to_be_displayed = TRUE;
-  else
-    display_map[datum].to_be_displayed = FALSE;
-
-  for (i = 0; i < max_display_map; i++)
-    {
-      char tbd = display_map[i].to_be_displayed ? 'D' : '_';
-      printf ("Found %s,%c\n", display_map[i].name, tbd);
-    }
-
-  current.needtosave = TRUE;
-  return TRUE;
-}
-
-/* ******************************************************************
- */
-GtkWidget *
-make_display_map_controls ()
-{
-	GtkWidget *frame_maptype;
-	GtkWidget *vbox_map_controls;
-	GtkTooltips *tooltips;
-	tooltips = gtk_tooltips_new ();
-
-	if ( mydebug > 11 )
-		fprintf(stderr,"make_display_map_controls()\n");
-	// Frame
-	frame_maptype = gtk_frame_new (_("Map Controls"));
-	vbox_map_controls = gtk_vbox_new (TRUE, 1 * PADDING);
-	gtk_container_add (GTK_CONTAINER (frame_maptype), vbox_map_controls);
-
-	// Checkbox ---- Best Map
-	bestmap_bt = gtk_check_button_new_with_label (_("Auto _best map"));
-	gtk_button_set_use_underline (GTK_BUTTON (bestmap_bt), TRUE);
-	gtk_box_pack_start (GTK_BOX (vbox_map_controls),
-		bestmap_bt, FALSE, FALSE,0 * PADDING);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), bestmap_bt,
-		_("Always select the most detailed map available"), NULL);
-
-	if (local_config.autobestmap)
-	{
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON (bestmap_bt),  TRUE);
-	}
-	gtk_signal_connect (GTK_OBJECT (bestmap_bt), "clicked",
-		GTK_SIGNAL_FUNC (autobestmap_cb), (gpointer) 1);
-
-	// Checkbox ---- Explore Mode
-	explore_bt = gtk_check_button_new_with_label (_("Explore _mode"));
-	gtk_button_set_use_underline (GTK_BUTTON (explore_bt), TRUE);
-	gtk_signal_connect (GTK_OBJECT (explore_bt),
-		"clicked", GTK_SIGNAL_FUNC (explore_cb), (gpointer) 1);
-	gtk_box_pack_start
-		(GTK_BOX (vbox_map_controls), explore_bt, FALSE, FALSE,0 * PADDING);
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), explore_bt,
-		_("Turn explore mode on. You can move on the map with the "
-		"left mouse button click. Clicking near the border switches "
-		"to the proximate map."), NULL);
-
-#ifdef MAPNIK
-	if (active_mapnik_ysn()) {
-		// Checkbox ---- Mapnik Mode
-		if ( mydebug > 11 )
-			fprintf(stderr,"make_display_map_controls(Checkbox ---- Mapnik Mode)\n");
-	
-		mapnik_bt = gtk_check_button_new_with_label (_("Mapnik Mode"));
-		gtk_button_set_use_underline (GTK_BUTTON (mapnik_bt), TRUE);
-		gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), mapnik_bt,
-			_("Turn mapnik mode on. In this mode vector maps rendered by "
-			"mapnik (e.g. OpenStreetMap Data) are used instead of the "
-			"other maps."), NULL);
-		g_signal_connect (GTK_OBJECT (mapnik_bt), "clicked",
-				  GTK_SIGNAL_FUNC (toggle_mapnik_cb), (gpointer) 1);
-		gtk_box_pack_start(GTK_BOX (vbox_map_controls), mapnik_bt, FALSE, FALSE,0 * PADDING);
-	}
-#endif
-
-	if ( mydebug > 11 )
-		fprintf(stderr,"make_display_map_controls(DONE)\n");
-	return frame_maptype;
-}
-
-/* ******************************************************************
- */
-GtkWidget *
-make_display_map_checkboxes()
-{
-  GtkWidget *frame_maptype;
-  GtkWidget *vbox3;
-  GtkTooltips *tooltips;
-  glong i;
-
-  // Frame
-  frame_maptype = gtk_frame_new (_("Included mapsets"));
-  vbox3 = gtk_vbox_new (FALSE, 1 * PADDING);
-  gtk_container_add (GTK_CONTAINER (frame_maptype), vbox3);
-
-  tooltips = gtk_tooltips_new ();
-  for (i = 0; i < max_display_map; i++)
-    {
-      // Checkbox ---- Show Map: name xy
-      gchar display_name[100];
-
-
-      if (mydebug > 1)
-	g_snprintf (display_name, sizeof (display_name), "%s (%d)",
-		    _(display_map[i].name), display_map[i].count);
-      else
-	g_snprintf (display_name, sizeof (display_name), "%s",
-		    _(display_map[i].name));
-
-
-      display_map[i].count++;
-
-      display_map[i].checkbox
-	= gtk_check_button_new_with_label (display_name);
-      
-      if (display_map[i].to_be_displayed)
-	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON
-				      (display_map[i].checkbox), TRUE);
-
-      gtk_signal_connect (GTK_OBJECT (display_map[i].checkbox),
-			  "clicked", GTK_SIGNAL_FUNC (display_maps_cb),
-			  (gpointer) i);
-
-      gtk_box_pack_start (GTK_BOX (vbox3), display_map[i].checkbox, FALSE,
-			  FALSE, 0 * PADDING);
-    }
-
-  return frame_maptype;
-}
 
 /* ******************************************************************
  * extract the directory part of the File and then 

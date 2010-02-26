@@ -102,7 +102,7 @@ extern currentstatus_struct current;
 
 extern GtkWidget *find_poi_bt;
 extern GtkWidget *routing_bt;
-extern GtkWidget *explore_bt;
+extern GtkToolItem *explore_bt;
 extern GtkWidget *settings_window;
 extern GtkWidget *menuitem_saveroute;
 extern GtkWidget *routeinfo_evbox;
@@ -151,7 +151,7 @@ show_poi_lookup_cb (GtkWidget *button, gint mode)
 		gtk_window_set_modal (GTK_WINDOW (poi_lookup_window), FALSE);
 		gtk_window_set_title (GTK_WINDOW (poi_lookup_window), _("Lookup Point of Interest"));
 		gtk_widget_set_sensitive (find_poi_bt, FALSE);
-		gtk_widget_set_sensitive (explore_bt, FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (explore_bt), FALSE);
 	}
 
 	/* save old target/expmode for cancel event */
@@ -272,7 +272,7 @@ close_poi_lookup_window_cb (GtkWidget *window)
 
 	gtk_widget_hide_all (poi_lookup_window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (explore_bt, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (explore_bt), TRUE);
 }
 
 
@@ -284,11 +284,10 @@ select_jump_poi_cb (GtkWidget *window)
 	coords.current_lat = coords.target_lat;
 	coords.current_lon = coords.target_lon;
 	
-	gtk_toggle_button_set_active
-		(GTK_TOGGLE_BUTTON (explore_bt),  TRUE);
+	gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt),  TRUE);
 
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (explore_bt, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (explore_bt), TRUE);
 }
 
 
@@ -297,11 +296,10 @@ select_target_poi_cb (GtkWidget *window)
 {
 	gtk_widget_hide_all (poi_lookup_window);
 
-	gtk_toggle_button_set_active
-		(GTK_TOGGLE_BUTTON (explore_bt), FALSE);
+	gtk_toggle_tool_button_set_active (GTK_TOGGLE_TOOL_BUTTON (explore_bt), FALSE);
 
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (explore_bt, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (explore_bt), TRUE);
 }
 
 
@@ -471,7 +469,7 @@ route_calc_cb ()
 
 	gtk_widget_hide_all (poi_lookup_window);
 	gtk_widget_set_sensitive (find_poi_bt, TRUE);
-	gtk_widget_set_sensitive (explore_bt, TRUE);
+	gtk_widget_set_sensitive (GTK_WIDGET (explore_bt), TRUE);
 
 	gtk_statusbar_pop (GTK_STATUSBAR (frame_statusbar), current.statusbar_id);
 	gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar), current.statusbar_id,
@@ -503,7 +501,6 @@ route_cancel_cb ()
 	close_route_window_cb ();
 	route.items = 0;
 	route.distance = 0.0;
-	gtk_widget_set_sensitive (menuitem_saveroute, FALSE);
 }
 
 

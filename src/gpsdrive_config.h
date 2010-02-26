@@ -98,12 +98,16 @@ typedef struct
 	gboolean showtooltips;
 	gboolean showaddwpbutton;
 	gboolean showfriends;
+	gboolean showminimap;
 	gboolean showtrack;
 	gboolean savetrack;
 	gboolean show_controls;
 	gboolean show_dashboard;
+	gboolean show_compass;
 	gboolean showbutton_trackrestart;
 	gboolean showbutton_trackclear;
+	gboolean showbutton_explore;
+	gboolean showbutton_addwpt;
 	gboolean showbutton_zoom;
 	gboolean showbutton_scaler;
 	gboolean showbutton_mute;
@@ -113,6 +117,7 @@ typedef struct
 	gboolean track_autoclean;
 	gboolean track_autointerval;
 	gboolean track_interval;
+	gboolean gpsfix_style;
 	gint buttonsmode;
 	gchar track_autoprefix[50];
 	gboolean autobestmap;

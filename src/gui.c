@@ -223,10 +223,23 @@ static int get_window_sizing (void)
 /* *****************************************************************************
  * Generic Callback to handle toggle- and checkbuttons
  */
-int
+gint
 toggle_button_cb (GtkWidget *button, gboolean *value)
 {
 	*value = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+
+	current.needtosave = TRUE;
+	return TRUE;
+}
+
+
+/* *****************************************************************************
+ * Generic Callback to handle toggle tool buttons
+ */
+gint
+toggle_toolbutton_cb (GtkWidget *button, gboolean *value)
+{
+	*value = gtk_toggle_tool_button_get_active (GTK_TOGGLE_TOOL_BUTTON (button));
 
 	current.needtosave = TRUE;
 	return TRUE;
@@ -725,7 +738,7 @@ int gui_init (gchar *geometry, gint usegeometry)
 
 	posmarker_img = read_icon ("posmarker.png", 0);
 	targetmarker_img = read_icon ("targetmarker.png", 0); 
-
+	
 	/* init poi search dialog (cached) */
 	create_window_poi_lookup();
 
