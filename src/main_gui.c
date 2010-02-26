@@ -2324,7 +2324,7 @@ void create_toolbar_mainbox (void)
 	GtkWidget *trk_clear_img = gtk_image_new_from_pixbuf (read_icon ("bt_track_clear.png",0));
 
 	main_toolbar = gtk_toolbar_new ();
-	gtk_orientable_set_orientation (GTK_ORIENTABLE (main_toolbar), GTK_ORIENTATION_VERTICAL);
+	gtk_toolbar_set_orientation (GTK_TOOLBAR (main_toolbar), GTK_ORIENTATION_VERTICAL);
 	gtk_toolbar_set_style (GTK_TOOLBAR (main_toolbar), local_config.buttonsmode);
 	gtk_toolbar_set_icon_size (GTK_TOOLBAR (main_toolbar), GTK_ICON_SIZE_LARGE_TOOLBAR);
 	gtk_toolbar_set_show_arrow (GTK_TOOLBAR (main_toolbar), TRUE);
