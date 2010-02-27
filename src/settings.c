@@ -2898,9 +2898,10 @@ settings_friends (GtkWidget *notebook)
 	gtk_table_set_row_spacings (GTK_TABLE (friendgen_table), 5);
 	gtk_table_set_col_spacings (GTK_TABLE (friendgen_table), 5);
 	
-	friendwarning_lb = gtk_label_new (_("If you enable this "
-		"service, <span color=\"red\">everyone</span> using\n"
-		"the same server can see your position!"));
+	friendwarning_lb = gtk_label_new (_(
+	    "If you enable this service, <span color=\"red\">everyone</span> using the same\n"
+		"server can see your position!\n(When using our public server friendsd.gpsdrive.de\n"
+		"your position will also be visible on the website.)"));
 	gtk_label_set_use_markup (GTK_LABEL (friendwarning_lb), TRUE);
 
 	friendname_label = gtk_label_new (_("Your name"));
@@ -3026,7 +3027,7 @@ settings_friends (GtkWidget *notebook)
 		friendsrvip_bt, 2, 3, 1, 2);
 
 	gtk_tooltips_set_tip (friends_tooltips, friendsrv_entry,
-		_("Set here the fully qualified host name (i.e. friends."
+		_("Set here the fully qualified host name (i.e. friendsd."
 		"gpsdrive.de) of the friends server to use, then press "
 		"the \"Lookup\" button."), NULL);
 	gtk_tooltips_set_tip (friends_tooltips, friendsrvip_bt,

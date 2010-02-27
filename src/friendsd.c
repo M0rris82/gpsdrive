@@ -177,6 +177,7 @@ struct
 static int listnum = 0, messagecounter = 0;
 char serverid[31];
 char serverstring[40];
+char outfilestring[255];
 
 void
 dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
@@ -189,8 +190,9 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 	struct hostent *hostname;
 	struct sockaddr_in sin;
 	char id[31], name[41], lat[41], lon[41], timesec[41], speed[11],
-		course[11];
-	char msgname[40], msgtext[1024], ackid[40];
+		course[11], type[1];
+	char msgname[40], msgtext[1024], ackid[40], iconname[20];
+	char web_buf[MAXMESG*2];
 
 	for (;;)
 	{
@@ -428,12 +430,46 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 		for (i = -1; i <= listnum; i++)
 		{
 			if (i == -1)
+			{
 				g_strlcpy (txt, "$START:$", sizeof (txt));
+				g_strlcpy (web_buf, "lat\tlon\ttitle\tdescription\ticon\ticonSize\ticonOffset\n", sizeof (web_buf));
+			}
 			else if (i == listnum)
 				g_strlcpy (txt, "$END:$", sizeof (txt));
 			else
+			{
+				gchar t_buf[1024];
 				g_strlcpy (txt, (list + i)->txt,
 					   sizeof (txt));
+				
+				e = sscanf ((list + i)->txt, "POS: %30s %40s %40s %40s %40s %10s %10s %1s",
+					    id, name, lat, lon, timesec, speed, course, type);
+				if (e>7)
+				{
+					switch (atoi(type))
+					{
+						case TRAVEL_CAR:
+							g_strlcpy (iconname, "car.png", sizeof (iconname));
+							break;
+						case TRAVEL_BIKE:
+							g_strlcpy (iconname, "bike.png", sizeof (iconname));
+							break;
+						case TRAVEL_WALK:
+							g_strlcpy (iconname, "walk.png", sizeof (iconname));
+							break;
+						case TRAVEL_BOAT:
+							g_strlcpy (iconname, "boat.png", sizeof (iconname));
+							break;
+						case TRAVEL_AIRPLANE:
+							g_strlcpy (iconname, "airplane.png", sizeof (iconname));
+							break;
+						default:
+							g_strlcpy (iconname, "friendsd.png", sizeof (iconname));
+					}
+					g_snprintf (t_buf, sizeof (t_buf), "%s\t%s\t%s\tSpeed: %s<br>Time: %s\t%s\t20,20\t-10,-10\n", lat, lon, name, speed, timesec,iconname);
+					g_strlcat (web_buf, t_buf, sizeof (web_buf));
+				}
+			}
 
 			g_strlcat (txt, "\n", sizeof (txt));
 			l = strlen (txt);
@@ -441,7 +477,6 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 				fprintf (stderr,
 					 "%d clients, last: %s[%s]:\n",
 					 listnum, hname, fromaddr);
-
 			fprintf (stderr, "%s",txt);
 			/*       printf ("sende\n%s, Laenge %d, clilen %d", txt, l,clilen);  */
 			if ((nosent =
@@ -452,6 +487,8 @@ dg_echo (int sockfd, struct sockaddr *pcli_addr, int maxclilen)
 				return;
 			}
 		}
+		if (strlen(outfilestring) > 0)
+			g_file_set_contents (outfilestring, web_buf, sizeof (web_buf), NULL);
 		fprintf (stderr, "\n");
 	}
 }
@@ -526,25 +563,33 @@ main (int argc, char *argv[])
 	textdomain (NULL);
 	pname = argv[0];
 	g_strlcpy (serverstring, "Friendsserver", sizeof (serverstring));
+	g_strlcpy (outfilestring, "", sizeof (outfilestring));
 
 	if (geteuid () == 0)
 	{
 		fprintf (stderr, _("server: please don't run me as root\n"));
 		exit (1);
 	}
-	i = getopt (argc, argv, "n:h?");
+
+
+	while ((i = getopt (argc, argv, "n:o:h?")) != -1)
+	{
 	switch (i)
 	{
 	case 'n':
 		g_strlcpy (serverstring, optarg, sizeof (serverstring));
 		break;
+	case 'o':
+		g_strlcpy (outfilestring, optarg, sizeof (outfilestring));
+		break;
 	case 'h':
 	case '?':
 		printf (_
-			("\nUsage:\n   %s -n servername\nprovides a name for your server\n"),
+			("\nUsage:\n   %s -n servername -o outfile\n-n provides a name for your server\n-o file to store the friends data into\n"),
 			pname);
 		exit (0);
 		break;
+	}
 	}
 	fprintf (stderr,
 		 "\nGpsDrive v%s friendsd server Version 2, listening on UDP port %d...\n",
