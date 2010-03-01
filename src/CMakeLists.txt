@@ -228,12 +228,10 @@ endif (WITH_NAVIGATION)
 MACRO_GENERATE_PO_FILES(${CMAKE_SOURCE_DIR}/po ${APPLICATION_NAME} gpsdrive_SRCS)
 
 if (WITH_FRIENDSD)
-  if (NOT MAEMO)
-    SET(friendsd_SRCS
-      friendsd.c
-      gpsdrive.h
-      )
-  endif (NOT MAEMO)
+  SET(friendsd_SRCS
+    friendsd.c
+    gpsdrive.h
+  )
 endif (WITH_FRIENDSD)
 
 include_directories(
@@ -243,29 +241,27 @@ include_directories(
 
 add_executable(gpsdrive ${gpsdrive_SRCS})
 if (WITH_FRIENDSD)
-  if (NOT MAEMO)
-    add_executable(friendsd ${friendsd_SRCS})
-  endif (NOT MAEMO)
+  add_executable(friendsd ${friendsd_SRCS})
 endif (WITH_FRIENDSD)
 
 target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 
-if (WITH_FRIENDSD AND NOT MAEMO)
+if (WITH_FRIENDSD)
  target_link_libraries(friendsd
    crypt
    ${GTK2_LIBRARIES}
  )
-endif (WITH_FRIENDSD AND NOT MAEMO)
+endif (WITH_FRIENDSD)
 
 set(gpsdrive_PGMS
   gpsdrive
 )
-if (WITH_FRIENDSD AND NOT MAEMO)
+if (WITH_FRIENDSD)
   set(gpsdrive_PGMS
     ${gpsdrive_PGMS}
     friendsd
   )
-endif (WITH_FRIENDSD AND NOT MAEMO)
+endif (WITH_FRIENDSD)
 
 
 install(
