@@ -41,7 +41,7 @@ Depends: ${misc:Depends},
 	libltdl7 | libltdl3,
 	libboost-filesystem1.34.1 | libboost-filesystem1.33.1,
 	libboost-thread1.34.1 | libboost-thread1.33.1,
-	libmapnik (>> 0.5.0-1) | libmapnik0.5,
+	libmapnik (>> 0.5.0-1) | libmapnik0.5 | libmapnik0.6 | libmapnik0.7,
 	openstreetmap-map-icons (>> 8310),
 	libsqlite3-0
 Recommends: gpsd,
