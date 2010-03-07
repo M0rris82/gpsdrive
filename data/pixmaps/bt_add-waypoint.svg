@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -14,7 +15,7 @@
    height="48"
    id="svg2383"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.47 r22583"
    sodipodi:docname="bt_add-waypoint.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/dse/Projekte/gpsdrive.dev/trunk/data/pixmaps/bt_add-waypoint.png"
@@ -303,7 +304,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6568542"
-     inkscape:cx="-13.169864"
+     inkscape:cx="4.7832244"
      inkscape:cy="16.953125"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -312,7 +313,8 @@
      inkscape:window-width="1237"
      inkscape:window-height="781"
      inkscape:window-x="0"
-     inkscape:window-y="960" />
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata2388">
     <rdf:RDF>
@@ -321,6 +323,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -329,7 +332,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#fce94f;fill-opacity:1;fill-rule:evenodd;stroke:#fbe10f;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:block"
+       style="fill:#edd400;fill-opacity:1;fill-rule:evenodd;stroke:#bca800;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:block"
        id="rect4324"
        width="47.912949"
        height="47.907936"

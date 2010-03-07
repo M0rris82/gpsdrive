@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -14,7 +15,7 @@
    height="48"
    id="svg2383"
    sodipodi:version="0.32"
-   inkscape:version="0.46"
+   inkscape:version="0.47 r22583"
    sodipodi:docname="bt_poi-find.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/dse/Projekte/gpsdrive.dev/trunk/data/pixmaps/bt_poi-find.png"
@@ -554,16 +555,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6568542"
-     inkscape:cx="24"
+     inkscape:cx="-13.918601"
      inkscape:cy="24"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="1005"
+     inkscape:window-width="1237"
+     inkscape:window-height="781"
      inkscape:window-x="0"
-     inkscape:window-y="800" />
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata2388">
     <rdf:RDF>
@@ -572,6 +574,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -580,13 +583,13 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#fce94f;fill-opacity:1;fill-rule:evenodd;stroke:#fbe10f;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:block"
+       style="fill:#edd400;fill-opacity:1;fill-rule:evenodd;stroke:#bca800;stroke-width:1;stroke-linecap:butt;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;display:block"
        id="rect4324"
        width="47.912949"
        height="47.907936"
        x="0.043525696"
        y="0.046031952"
-       inkscape:export-filename="/home/dse/Projekte/gpsdrive.dev/trunk/data/pixmaps/bt_add-waypoint.png"
+       inkscape:export-filename="/home/dse/Projekte/gpsdrive.dev/trunk/data/pixmaps/bt_poi-find.png"
        inkscape:export-xdpi="45"
        inkscape:export-ydpi="45" />
     <g
@@ -609,7 +612,7 @@
          style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.66537702;stroke-linecap:round;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
       <path
          transform="matrix(0.8288887,0,0,0.8288887,-42.550945,7.8630493)"
-         d="M 28.549437,18.920233 A 11.048544,11.048544 0 1 1 6.4523487,18.920233 A 11.048544,11.048544 0 1 1 28.549437,18.920233 z"
+         d="m 28.549437,18.920233 c 0,6.101942 -4.946602,11.048544 -11.048544,11.048544 -6.101943,0 -11.0485443,-4.946602 -11.0485443,-11.048544 0,-6.101943 4.9466013,-11.0485442 11.0485443,-11.0485442 6.101942,0 11.048544,4.9466012 11.048544,11.0485442 z"
          sodipodi:ry="11.048544"
          sodipodi:rx="11.048544"
          sodipodi:cy="18.920233"
@@ -629,7 +632,7 @@
          style="opacity:0.43315507;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00003111;stroke-linecap:round;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:10;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
       <path
          transform="matrix(0.9306056,0,0,0.9306056,-44.41333,6.4511692)"
-         d="M 25.897786,18.478292 A 8.3085051,8.3085051 0 1 1 9.280776,18.478292 A 8.3085051,8.3085051 0 1 1 25.897786,18.478292 z"
+         d="m 25.897786,18.478292 c 0,4.588661 -3.719844,8.308506 -8.308505,8.308506 -4.588661,0 -8.308505,-3.719845 -8.308505,-8.308506 0,-4.58866 3.719844,-8.308505 8.308505,-8.308505 4.588661,0 8.308505,3.719845 8.308505,8.308505 z"
          sodipodi:ry="8.3085051"
          sodipodi:rx="8.3085051"
          sodipodi:cy="18.478292"
