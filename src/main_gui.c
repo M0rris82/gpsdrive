@@ -2382,6 +2382,7 @@ void create_toolbar_mainbox (void)
 
 	/* Button: Routing */
 	routing_bt = gtk_tool_button_new (NULL, _("_Route List"));
+	gtk_tool_item_set_tooltip_text (routing_bt, _("Show the Route as List"));
 	gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (routing_bt), GTK_STOCK_INDEX);
 	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (routing_bt), TRUE);
 	gtk_tool_item_set_expand (routing_bt, menu_expand);
@@ -2389,6 +2390,7 @@ void create_toolbar_mainbox (void)
 
 	/* Button: Map Control */
 	mapcontrol_bt = gtk_tool_button_new (NULL, _("_Map Control"));
+	gtk_tool_item_set_tooltip_text (mapcontrol_bt, _("Choose Map Type and other Map Settings"));
 	gtk_tool_button_set_stock_id (GTK_TOOL_BUTTON (mapcontrol_bt), GTK_STOCK_PROPERTIES);
 	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (mapcontrol_bt), TRUE);
 	gtk_tool_item_set_expand (mapcontrol_bt, menu_expand);
@@ -2396,6 +2398,7 @@ void create_toolbar_mainbox (void)
 
 	/* Button: Add Waypoint */
 	addwaypoint_bt = gtk_tool_button_new (addwaypoint_img, _("Add _Waypoint"));
+	gtk_tool_item_set_tooltip_text (addwaypoint_bt, _("Add a quick Waypoint at the current Position"));
 	gtk_tool_button_set_use_underline (GTK_TOOL_BUTTON (addwaypoint_bt), TRUE);
 	gtk_tool_item_set_expand (addwaypoint_bt, menu_expand);
 	g_signal_connect (addwaypoint_bt, "clicked", G_CALLBACK (quickaddwaypoint), NULL);
@@ -2404,7 +2407,7 @@ void create_toolbar_mainbox (void)
 	explore_bt = gtk_toggle_tool_button_new ();
 	gtk_tool_button_set_label (GTK_TOOL_BUTTON (explore_bt), _("Explore Mode"));
 	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (explore_bt), explore_img);
-	gtk_tool_item_set_tooltip_text (mute_bt,
+	gtk_tool_item_set_tooltip_text (explore_bt,
 		_("Turn explore mode on. You can move on the map with the "
 		"left mouse button click. Clicking near the border switches "
 		"to the proximate map."));
@@ -2413,12 +2416,14 @@ void create_toolbar_mainbox (void)
 
 	/* Button: Track Clear */
 	trk_clear_bt = gtk_tool_button_new (NULL, _("Clear Track"));
+	gtk_tool_item_set_tooltip_text (trk_clear_bt, _("Clear the current Track and Trip Data in Memory"));
 	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (trk_clear_bt), trk_clear_img);
 	gtk_tool_item_set_expand (trk_clear_bt, menu_expand);
 	g_signal_connect (trk_clear_bt, "clicked", G_CALLBACK (track_clear_cb), NULL);  
 
 	/* Button: Track Restart */
 	trk_restart_bt = gtk_tool_button_new (NULL, _("Restart Track"));
+	gtk_tool_item_set_tooltip_text (trk_restart_bt, _("Save the current Track and then clear the Track and Trip Data in Memory"));
 	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (trk_restart_bt), trk_restart_img);
 	gtk_tool_item_set_expand (trk_restart_bt, menu_expand);
 	g_signal_connect (trk_restart_bt, "clicked", G_CALLBACK (track_restart_cb), NULL);  
@@ -2428,6 +2433,7 @@ void create_toolbar_mainbox (void)
 	GtkWidget *options_menu = gtk_menu_new ();
 
 	options_bt = gtk_toggle_tool_button_new ();
+	gtk_tool_item_set_tooltip_text (options_bt, _("Various Options like Load/Save/Quit/Settings/Help"));
 	gtk_tool_button_set_label (GTK_TOOL_BUTTON (options_bt), _("Options"));
 	gtk_tool_button_set_icon_widget (GTK_TOOL_BUTTON (options_bt), options_img);
 	gtk_tool_item_set_expand (options_bt, menu_expand);
