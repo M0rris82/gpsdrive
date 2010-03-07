@@ -2188,7 +2188,8 @@ create_mapcontrol_box (void)
 	}
 
 	GtkWidget *buttons_hbox = gtk_hbox_new (FALSE, 1 * PADDING);
-
+	GtkWidget *buttons_vbox = gtk_vbox_new (FALSE, 1 * PADDING);
+	
 	GtkWidget *frame_poi = gtk_frame_new (_("Points"));
 	GtkWidget *vbox_poi = gtk_vbox_new (TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (frame_poi), vbox_poi);
@@ -2297,9 +2298,11 @@ if (local_config.guimode==GUI_DESKTOP)
 		gtk_box_pack_start (GTK_BOX (vbox_map_types), display_map[i].checkbox, FALSE, FALSE, 0 * PADDING);
 	}
 
-	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_poi, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_track, TRUE, TRUE, 1 * PADDING);
-	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_vbox),frame_poi, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_vbox),frame_track, TRUE, TRUE, 1 * PADDING);
+	gtk_box_pack_start (GTK_BOX (buttons_vbox),frame_mapcontrol, TRUE, TRUE, 1 * PADDING);
+
+	gtk_box_pack_start (GTK_BOX (buttons_hbox),buttons_vbox, TRUE, TRUE, 1 * PADDING);
 	gtk_box_pack_start (GTK_BOX (buttons_hbox),frame_maptype, TRUE, TRUE, 1 * PADDING);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(controlbox_window)->vbox), buttons_hbox);
 }
