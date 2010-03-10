@@ -119,6 +119,11 @@ db_sqlite_create_tables (sqlite3 *db)
 		"field_name     VARCHAR(160)  NOT NULL default \'0\',\n"
 		"entry          VARCHAR(8192) default NULL);";
 
+	const gchar sql_create_indexes[] =
+		"CREATE INDEX IF NOT EXISTS poi_typelatlon ON poi (poi_type,lat,lon); "
+		"CREATE INDEX IF NOT EXISTS poi_latlon ON poi (lat,lon); "
+		"CREATE INDEX IF NOT EXISTS poi_id ON poi_extra (poi_id); ";
+
 	/* creating table 'poi' in local database 'waypoints' */
 	t_status = sqlite3_exec(db, sql_create_poitable, NULL, NULL, &t_error);
 	if (t_status != SQLITE_OK )
@@ -130,6 +135,15 @@ db_sqlite_create_tables (sqlite3 *db)
 
 	/* creating table 'poi_extra' in local database 'waypoints' */
 	t_status = sqlite3_exec(db, sql_create_poiextratable, NULL, NULL, &t_error);
+	if (t_status != SQLITE_OK )
+	{
+		g_printf ("DB: SQLite error: %s\n", t_error);
+		sqlite3_free(t_error);
+		return FALSE;
+	}
+
+	/* creating indexes */
+	t_status = sqlite3_exec(db, sql_create_indexes, NULL, NULL, &t_error);
 	if (t_status != SQLITE_OK )
 	{
 		g_printf ("DB: SQLite error: %s\n", t_error);

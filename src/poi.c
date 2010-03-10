@@ -265,7 +265,7 @@ handle_poi_search_cb (gchar *result, gint columns, gchar **values, gchar **names
 
 	if (values[2] == NULL)
 		g_strlcpy ((poi_result + poi_nr)->comment, "n/a",
-			sizeof ((poi_result + poi_nr)->comment));		
+			sizeof ((poi_result + poi_nr)->comment));
 	else
 		g_strlcpy ((poi_result + poi_nr)->comment, values[2],
 			sizeof ((poi_result + poi_nr)->comment));
@@ -370,7 +370,7 @@ handle_osm_poi_search_cb (const gchar *name, const gchar *type, const gchar *geo
 		sizeof ((poi_result + poi_nr)->name));
 
 	g_strlcpy ((poi_result + poi_nr)->comment, "",
-		sizeof ((poi_result + poi_nr)->comment));		
+		sizeof ((poi_result + poi_nr)->comment));
 
 	g_strlcpy ((poi_result + poi_nr)->poi_type, type,
 			sizeof ((poi_result + poi_nr)->poi_type));
@@ -428,7 +428,7 @@ update_poi_type_filter ()
 	gchar t_filter[20000];
 
 	if (mydebug > 21)
-		fprintf (stderr, "update_poi_type_filter:\n");
+		fprintf (stderr, "update_poi_type_filter:");
 
 	g_strlcpy (t_filter, "AND (", sizeof (t_filter));
 	g_strlcpy (local_config.poi_filter, "", sizeof (local_config.poi_filter));
@@ -448,7 +448,7 @@ update_poi_type_filter ()
 				"poi_type NOT LIKE \"%s%%\" AND ",
 				t_name);
 			g_strlcat (t_filter, t_string, sizeof (t_filter));
-				
+
 			/* build settings string for config file */
 			g_snprintf (t_config, sizeof (t_config),
 				"%s|", t_name);
@@ -463,6 +463,9 @@ update_poi_type_filter ()
 	g_strlcat (t_filter, "1)", sizeof (t_filter));
 
 	current.needtosave = TRUE;
+
+	if (mydebug > 21)
+		fprintf (stderr, " done.\n");
 
 	db_get_visible_poi_types (t_filter);
 }
@@ -486,13 +489,13 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 	gchar *temp_text;
 	gchar *sql_query;
 
-	// clear results from last search	
+	// clear results from last search
 	gtk_list_store_clear (poi_result_tree);
-	
+
 	dist = g_strtod (pdist, NULL);
 	if (dist <= 0)
 		dist = local_config.poi_dbdistance;
-	
+
 	if (posflag)
 	{
 		lat = wp_saved_target_lat;
@@ -511,7 +514,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 			lon = coords.current_lon;
 		}
 	}
-	
+
  	// calculate bbox around starting point derived from specified distance
 	//   latitude: 1 degree = 111,13 km
 	//   longitude: 1 degree = 111,13 km * cos(latitude)
@@ -521,24 +524,24 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 		dist_lon = 180;
 	else
 		dist_lon = fabs (dist/(111.13*cos(lat)));
-	
+
 	lat_min = lat-dist_lat;
 	lon_min = lon-dist_lon;
 	lat_max = lat+dist_lat;
 	lon_max = lon+dist_lon;
-	
+
 	if (mydebug > 25)
 	{
 		fprintf (stderr, "  --- lat: %f  lon: %f  dist: %f\n", lat, lon, dist);
 		fprintf (stderr, "  --- lat_min: %f  lat_max: %f  dist_lat: %f\n", lat_min, lat_max, dist_lat);
 		fprintf (stderr, "  --- lon_min: %f  lon_max: %f  dist_lon: %f\n", lon_min, lon_max, dist_lon);
 	}
-	
+
 	if (lon_min < -180.0) lon_min = -180.0;
 	if (lon_max > 180.0) lon_max = 180.0;
 	if (lat_min < -90.0) lat_min = -90.0;
 	if (lat_max > 90.0) lat_max = 90.0;
-	
+
 	/* choose poi_types to search */
 	if (g_ascii_strncasecmp (type, "__NO_FILTER__", 13))
 	{
@@ -568,10 +571,10 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 			g_print ("poi_get_results (): Searching in OSM and user database\n");
 		sql_query = g_strdup_printf (
 			"SELECT poi_id,name,comment,poi_type,lon,lat,source_id FROM"
-			" (SELECT * FROM main.poi %s UNION SELECT * FROM osm.poi %s)"
-			" WHERE (poi_type%s) AND (name LIKE '%%%s%%' OR comment LIKE '%%%s%%')"
+			" (SELECT * FROM main.poi %s and poi_type%s UNION SELECT * FROM osm.poi %s and poi_type%s)"
+			" WHERE name LIKE '%%%s%%' OR comment LIKE '%%%s%%'"
 			" ORDER BY (lat-(%.8f))*(lat-(%.8f))+(lon-(%.8f))*(lon-(%.8f)) LIMIT %d;",
-			t_where, t_where, type_filter, temp_text, temp_text, lat, lat, lon, lon,
+			t_where, type_filter, t_where, type_filter, temp_text, temp_text, lat, lat, lon, lon,
 			local_config.poi_results_max);
 	}
 	else
@@ -730,7 +733,7 @@ poi_check_if_moved (void)
 /* ******************************************************************
  * add new row to poitype tree
 */
-static gboolean 
+static gboolean
 poitypetree_addrow (guint i, GtkTreeIter *parent)
 {
 	GtkTreeIter iter;
@@ -739,7 +742,7 @@ poitypetree_addrow (guint i, GtkTreeIter *parent)
 	poi_type_list[i].id = i;
 
 	gtk_tree_store_append (poi_types_tree, &iter, parent);
- 
+
 	gtk_tree_store_set (poi_types_tree, &iter,
 		POITYPE_ID, poi_type_list[i].id,
 		POITYPE_NAME, poi_type_list[i].name,
@@ -779,7 +782,7 @@ static gboolean poitypetree_find_parent (
 	GtkTreeIter *iter, guint i)
 {
 	gchar *value;
-	
+
 	gchar *parent_name;
 	gint k;
 	guint l = 0;
@@ -790,15 +793,15 @@ static gboolean poitypetree_find_parent (
 			(poi_type_list[i].name + poi_type_list[i].level
 			- k + l), ".");
 	}
-	
+
 	parent_name = g_strndup (poi_type_list[i].name,
 		poi_type_list[i].level + l -1);
 
 	gtk_tree_model_get (model, iter, POITYPE_NAME, &value, -1);
 
 	if (g_ascii_strcasecmp (parent_name, (gchar *) value) == 0)
-	{	
-		
+	{
+
 		if (mydebug > 40)
 		{
 			fprintf (stderr,
@@ -924,7 +927,7 @@ handle_poitype_tree_cb (guint count[], gint columns, gchar **values, gchar **nam
 	poi_type_list[count[0]].editable = (gint) g_strtod (values[5], NULL);
 
 
-	j = 0;			
+	j = 0;
 	for (i=0; i < strlen (poi_type_list[count[0]].name); i++)
 	{
 		if (g_str_has_prefix ((poi_type_list[count[0]].name + i) , "."))
@@ -1122,7 +1125,7 @@ handle_osm_poi_view_cb (const gchar *name, const gchar *type, const gchar *geome
 
 
 /* *******************************************************
- * if zoom, xoff, yoff or map are changed 
+ * if zoom, xoff, yoff or map are changed
  * TODO: call this only if the above mentioned events occur!
  */
 void
@@ -1200,9 +1203,9 @@ poi_rebuild_list (void)
 
 		sql_query = g_strdup_printf (
 		"SELECT lat,lon,name,poi_type,comment FROM"
-		" (SELECT * FROM main.poi %s UNION SELECT * FROM osm.poi %s)"
-		" WHERE poi_type IN (%s) LIMIT 20000;",
-		t_where, t_where, current.poifilter);
+		" (SELECT * FROM main.poi %s AND poi_type IN (%s) UNION SELECT * FROM osm.poi %s AND poi_type IN (%s))"
+		" LIMIT 20000;",
+		t_where, current.poifilter, t_where, current.poifilter);
 	}
 	else if (local_config.showpoi == POIDRAW_OSM && current.poi_osm)
 	{
@@ -1264,7 +1267,7 @@ poi_rebuild_list (void)
 
 
 /* *******************************************************
- * draw poi_ on image 
+ * draw poi_ on image
  TODO: find free space on drawing area. So the Text doesn't overlap
 */
 void
