@@ -58,7 +58,10 @@ cat <<EOF
   and your map will be significantly rotated. This effect is
   most visible at map scales covering a large area. This does
   not affect lat/lon maps. The pnmrotate program may help, or
-  gdalwarp to a custom, map-centered, tmerc.
+  gdalwarp to the Mercator projection (+proj=merc +datum=wgs84).
+
+ The default tile overlap is 33%. You can override this with the
+  OVERLAP environment variable.
 
  To make an overview map, open your GeoTIFF in GIMP, Image->
   Mode->RGB, Image->Scale, 25%, cubic, and save as PNG. Next use
@@ -84,7 +87,10 @@ IMGFMT="$3"
 
 
 # percent tiles will overlap. 33% is nice; 25% gets jumpy; 20% is minimum
-OVERLAP=33
+if [ -z "$OVERLAP" ] ; then
+   OVERLAP=33
+fi
+echo "Tile overlap = $OVERLAP%"
 
 #defaults
 if [ -z "$TOPMAP" ] ; then
