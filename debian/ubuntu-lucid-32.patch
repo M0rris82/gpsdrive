@@ -18,7 +18,7 @@ Index: control
  	mapnik-plugins,
  	mapnik-utils,
 -	postgresql-8.3-postgis | postgresql-8.2-postgis,
-+	postgresql-8.4-postgis | postgresql-8.2-postgis,
++	postgresql-8.4-postgis | postgresql-8.3-postgis,
  	openstreetmap-mapnik-data,
  	ttf-dejavu,
  	python-mapnik
