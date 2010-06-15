@@ -904,7 +904,7 @@ config_init ()
 	g_snprintf(local_config.mapnik_xml_template, sizeof(local_config.mapnik_xml_template),
 		"%s%s", DATADIR, "/gpsdrive/osm-template.xml");
 	g_snprintf(local_config.mapnik_input_path, sizeof(local_config.mapnik_input_path),
-		"%s", "/usr/lib/mapnik/0.5/input/");
+		"%s", "/usr/lib/mapnik/0.7/input/");
 	g_snprintf(local_config.mapnik_font_path, sizeof(local_config.mapnik_font_path),
 		"%s", "/usr/share/fonts/truetype/ttf-dejavu/");
 	
