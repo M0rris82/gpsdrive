@@ -79,6 +79,7 @@ enum
 {
 	MAPSOURCE_LANDSAT,
 	MAPSOURCE_OSM_TAH,
+	MAPSOURCE_OSM_CYCLE,
 	MAPSOURCE_N_ITEMS
 };
 
@@ -90,6 +91,7 @@ gchar mapdl_proj[4];  /* "top" or "map", check for override in map_projection().
 static gchar mapdl_url[2000];
 static gboolean mapdl_abort = FALSE;
 static gint mapdl_zoom;
+static gint server_type = -1;    /* 1=WMS Server  2=TMS Server */
 static gchar mapdl_file_w_path[1024];
 static GtkWidget *scale_combobox, *lat_entry, *lon_entry;
 static GtkWidget *mapdl_progress;
@@ -98,10 +100,10 @@ static CURL *curl_handle;
 
 static struct mapsource_struct
 {
-	gint type;
-	gchar scale[50];
-	gint zoom;
-	gint scale_int;
+	gint type;        /* 1=OnEarth  2=OSM_T@H  3=OSM_cycle */
+	gchar scale[50];  /* text for map scale, or name of ID */
+	gint zoom;        /* WMS=0  TMS=tile zoom level */
+	gint scale_int;   /* 1:nn,nnn map scale */
 } mapsource[] =
 {
 /* - LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
@@ -132,6 +134,7 @@ static struct mapsource_struct
 	MAPSOURCE_LANDSAT, "1 : 10 million", 0, 10000000,
 	MAPSOURCE_LANDSAT, "1 : 50 million", 0, 50000000,
 
+
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
 		which will only be valid for mid-lats */
@@ -147,6 +150,26 @@ static struct mapsource_struct
 	MAPSOURCE_OSM_TAH, "1 : 600 000", 9, 576000,
 	/* the distortion gets too bad at scales wider than 1:500k
 	    It would be more accurate to stop earlier, but we compromise */
+
+
+	MAPSOURCE_OSM_CYCLE, "OpenStreetMap Cycle Map", -1, -1,
+	/* scale varies with latitude, so this is just a rough guide
+		which will only be valid for mid-lats */
+	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
+	// NOTE: the Cycle Map is a big flakey at closer zooms in rural areas
+	//  many "404 Not Founds" are found in the PNG output file if component tiles are missing.
+	MAPSOURCE_OSM_CYCLE, "1 : 2 500", 17, 2250,
+	MAPSOURCE_OSM_CYCLE, "1 : 5 000", 16, 4500,
+	MAPSOURCE_OSM_CYCLE, "1 : 10 000", 15, 9000,
+	MAPSOURCE_OSM_CYCLE, "1 : 20 000", 14, 18000,
+	MAPSOURCE_OSM_CYCLE, "1 : 40 000", 13, 36000,
+	MAPSOURCE_OSM_CYCLE, "1 : 75 000", 12, 72000,
+	MAPSOURCE_OSM_CYCLE, "1 : 150 000", 11, 144000,
+	MAPSOURCE_OSM_CYCLE, "1 : 300 000", 10, 288000,
+	MAPSOURCE_OSM_CYCLE, "1 : 600 000", 9, 576000,
+	/* the distortion gets too bad at scales wider than 1:500k
+	    It would be more accurate to stop earlier, but we compromise */
+
 	MAPSOURCE_N_ITEMS, "", 0, 0
 };
 
@@ -190,6 +213,9 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 	if (!gui_status.dl_window)
 		return TRUE;
 
+	if (mydebug > 25)
+	    g_print ("mapdl_setparm_cb()\n");
+
 	s = gtk_entry_get_text (GTK_ENTRY (lat_entry));
 	coordinate_string2gdouble(s, &mapdl_lat);
 	if (mydebug > 3)
@@ -207,7 +233,26 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 			3, &mapdl_scale, -1);
 /* TODO: determine map_ or top_ proj at this point so drawdownloadrectangle()
  *	 knows how big to draw the green preview box */
-		if (local_config.mapsource_type == MAPSOURCE_OSM_TAH)
+		if (server_type == -1)
+		{
+			if (mydebug > 10)
+			    g_print ("*** server type not set yet.\n");
+			switch (local_config.mapsource_type)
+			{
+			    case MAPSOURCE_LANDSAT:
+				server_type = WMS_SERVER;
+				break;
+			    case MAPSOURCE_OSM_TAH:
+			    case MAPSOURCE_OSM_CYCLE:
+				server_type = TMS_SERVER;
+				break;
+			    default:
+				server_type = -1;
+				g_print("mapdl_setparm_cb(): unknown map source\n");
+				break;
+			}
+		}
+		if (server_type == TMS_SERVER)
 		    mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 
 		if (mydebug > 3)
@@ -230,6 +275,9 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 {
 	GtkTreeIter t_iter;
 
+	if (mydebug > 25)
+	    g_print ("mapdl_setsource_cb()\n");
+
 	if (gtk_combo_box_get_active_iter (combo_box, &t_iter))
 	{
 		gtk_tree_model_get (GTK_TREE_MODEL (types_list), &t_iter,
@@ -237,12 +285,58 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 		gtk_tree_model_filter_refilter (GTK_TREE_MODEL_FILTER (scales_list));
 		gtk_combo_box_set_active (GTK_COMBO_BOX (scale_combobox), local_config.mapsource_scale);
 		current.needtosave = TRUE;
+
+		switch (local_config.mapsource_type)
+		{
+		    case MAPSOURCE_LANDSAT:
+			server_type = WMS_SERVER;
+			break;
+		    case MAPSOURCE_OSM_TAH:
+		    case MAPSOURCE_OSM_CYCLE:
+			server_type = TMS_SERVER;
+			break;
+		    default:
+			server_type = -1;
+			g_print("mapdl_setsource_cb(): unknown map source\n");
+			break;
+		}
 		if (mydebug > 3)
-			g_print ("new map source: %d\n", local_config.mapsource_type);
+		    g_print ("*new map source type: %d (%s)\n", local_config.mapsource_type,
+			     server_type == WMS_SERVER ? "WMS server" : "TMS server");
 	}
 
 	return TRUE;
 }
+
+
+#ifdef INCOMPLETE_TODO
+/* *****************************************************************************
+ * build the url for WMS servers
+ */
+/* TODO: generalize to make it easy to add other Free WMS data source URLs */
+void
+mapdl_geturl_wms (void)
+{
+	switch (local_config.mapsource_type)
+	{
+	    case MAPSOURCE_CUSTOM_WMS:
+		// ...
+		break;
+	    case MAPSOURCE_LANDSAT:
+	    default:
+		g_strlcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi", sizeof(wms_url));
+		g_strlcpy(wms_layers, "global_mosaic", sizeof(wms_layers));  /* may be a comma separated list */
+		g_strlcpy(wms_styles, "", sizeof(wms_styles));
+		g_strlcpy(wms_srs, "EPSG:4326", sizeof(wms_srs));
+		g_strlcpy(wms_format, "image/jpeg", sizeof(wms_format));
+		break;
+
+	}
+
+	mapdl_geturl_landsat(wms_url, wms_layers, wms_styles, wms_srs, wms_format,
+			     t_lon1, t_lat1, t_lon2, t_lat2, MAPWIDTH, MAPHEIGHT);
+}
+#endif
 
 
 /* *****************************************************************************
@@ -347,6 +441,7 @@ mapdl_geturl_landsat (void)
 /* *****************************************************************************
  * build the url for openstreetmap_tah
  */
+/* TODO: generalize to make it easy to add other Free TMS data source URLs */
 void
 mapdl_geturl_osm_tah (void)
 {
@@ -358,6 +453,27 @@ mapdl_geturl_osm_tah (void)
 		mapdl_lat, mapdl_lon, mapdl_zoom);
 }
 
+/* *****************************************************************************
+ * build the url for openstreetmap_cycle maps
+ */
+/* TODO: generalize to make it easy to add other Free TMS data source URLs */
+// StaticMap API: http://ojw.dev.openstreetmap.org/StaticMap/?mode=API
+/*  (StaticMap is the more modern replacement for /MapOf/) */
+// e.g.: http://ojw.dev.openstreetmap.org/StaticMap/?lat=-33.9077&lon=150.4957&z=12&layer=cycle&show=1&fmt=png&w=1280&h=1024&att=none
+/* CycleMap may not be any good closer than zoom level=13 */
+void
+mapdl_geturl_osm_cycle (void)
+{
+	g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj)); /* projection is UTM-like */
+	g_snprintf (mapdl_url, sizeof (mapdl_url),
+		"http://ojw.dev.openstreetmap.org/StaticMap/"
+		"?lat=%.5f&lon=%.5f"
+		"&z=%d&w=1280&h=1024&format=png"
+		"&layer=cycle&show=1&att=none",
+		mapdl_lat, mapdl_lon, mapdl_zoom);
+// fixme: need some sort of test to make sure it built right:
+//  if [ `grep -c '404 Not Found' map_$zoom_$lat_$lon.png` -gt 0 ] ...
+}
 
 /* *****************************************************************************
  * do the actual download work
@@ -367,6 +483,9 @@ mapdl_download (void)
 {
 	FILE *map_file;
 	struct stat file_stat;
+
+	if (mydebug > 25)
+	    g_print ("mapdl_download()\n");
 
 	mapdl_active = TRUE;
 
@@ -461,6 +580,9 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	if (mapdl_active)
 		return TRUE;
 
+	if (mydebug > 25)
+	    g_print ("mapdl_start_cb()\n");
+
 	/* preset filename and build download url */
 	switch (local_config.mapsource_type)
 	{
@@ -477,11 +599,18 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
 			break;
+		case MAPSOURCE_OSM_CYCLE:
+			g_strlcpy (path, "openstreetmap_cycle", sizeof (path));
+			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
+			mapdl_geturl_osm_cycle ();
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
 		default:
 			return TRUE;
 	}
 
-	if (mydebug > 20)
+	if (mydebug > 5)
 		g_print ("  download url:\n%s\n", mapdl_url);
 
 	/* set file path and create directory if necessary */
@@ -522,6 +651,9 @@ static gboolean
 mapdl_set_combo_filter_cb (GtkTreeModel *model, GtkTreeIter *iter, gpointer scales)
 {
 	gint t_type, t_flag;
+
+	if (mydebug > 30)
+	    g_print ("mapdl_set_combo_cb()\n");
 
 	if (scales)
 	{
@@ -583,15 +715,19 @@ map_download_cb (GtkWidget *widget, gpointer data)
 	gchar t_buf[300];
 	gint i;
 
+	if (mydebug > 25)
+	    g_print ("map_download_cb()\n");
+
+
 	curl_handle = curl_easy_init();
 	curl_easy_setopt (curl_handle, CURLOPT_PROGRESSFUNCTION, mapdl_progress_cb);
 
 	set_cursor_style (CURSOR_CROSS);
 
 	source_list = gtk_list_store_new (4,
-		G_TYPE_INT,		/* type */
-		G_TYPE_STRING,		/* scale */
-		G_TYPE_INT,		/* zoom */
+		G_TYPE_INT,		/* type (OnEarth, T@H, CycleMap) */
+		G_TYPE_STRING,		/* map scale text or name */
+		G_TYPE_INT,		/* tile zoom level */
 		G_TYPE_INT		/* scale_int */
 		);
 

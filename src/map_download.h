@@ -28,6 +28,9 @@ Disclaimer: Please do not use as a primary means of navigation.
 
 #include <gtk/gtk.h>
 
+#define WMS_SERVER 1
+#define TMS_SERVER 2
+
 /*
  * See map_download.c for details.
  */
