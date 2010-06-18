@@ -431,7 +431,7 @@ distance2gchar
 
 /* *****************************************************************************
  * Convert a coordinate to a gchar
- * mode is either LATLON_DMS, LATLON MINDEC or LATLON_DEGDEC 
+ * mode is either LATLON_DMS, LATLON_MINDEC or LATLON_DEGDEC
  * By Oddgeir Kvien, to adopt for 3-way lat/lon display 
  */
 void

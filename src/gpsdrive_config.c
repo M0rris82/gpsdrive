@@ -749,7 +749,7 @@ config_init ()
 	local_config.distmode = DIST_METRIC;
 	local_config.distfactor = 1.0;
 	local_config.altmode = ALT_METERS;
-	local_config.coordmode = LATLON_DEGDEC;
+	local_config.coordmode = LATLON_MINDEC;
 	local_config.guimode = GUI_DESKTOP;
 	local_config.simmode = SIM_OFF;
 	local_config.showbatt = FALSE;
