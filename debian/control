@@ -45,6 +45,7 @@ Recommends: gpsd,
 	mapnik-plugins,
 	mapnik-utils,
 	postgresql-8.4-postgis | postgresql-8.3-postgis,
+	osm2pgsql,
 	openstreetmap-mapnik-data,
 	ttf-dejavu,
 	python-mapnik
