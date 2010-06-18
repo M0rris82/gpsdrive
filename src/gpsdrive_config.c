@@ -878,7 +878,7 @@ config_init ()
 	local_config.showbutton_map = TRUE;
 	local_config.showbutton_explore = TRUE;
 	local_config.showbutton_addwpt = TRUE;
-	local_config.buttonsmode = GTK_TOOLBAR_BOTH_HORIZ;
+	local_config.buttonsmode = GTK_TOOLBAR_BOTH;
 
 	/* set files and directories (~/.gpsdrive) */
 	hd = (gchar *) g_get_home_dir ();

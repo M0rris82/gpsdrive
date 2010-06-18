@@ -261,9 +261,12 @@ setbuttonsmode_cb (GtkWidget *widget)
 				local_config.buttonsmode = GTK_TOOLBAR_BOTH_HORIZ;
 				break;
 			case 1:
-				local_config.buttonsmode = GTK_TOOLBAR_ICONS;
+				local_config.buttonsmode = GTK_TOOLBAR_BOTH;
 				break;
 			case 2:
+				local_config.buttonsmode = GTK_TOOLBAR_ICONS;
+				break;
+			case 3:
 				local_config.buttonsmode = GTK_TOOLBAR_TEXT;
 				break;
 		}
@@ -1777,16 +1780,21 @@ settings_ctl (GtkWidget *notebook)
 	gui_tooltips = gtk_tooltips_new ();
 
 	buttons_combo = gtk_combo_box_new_text ();
-	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons and Text"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons next to Text"));
+	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons above Text"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Icons only"));
 	gtk_combo_box_append_text (GTK_COMBO_BOX (buttons_combo), _("Text only"));
+
 	switch (local_config.buttonsmode)
 	{
 		case GTK_TOOLBAR_ICONS:
-			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 1);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 2);
 			break;
 		case GTK_TOOLBAR_TEXT:
-			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 2);
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 3);
+			break;
+		case GTK_TOOLBAR_BOTH:
+			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 1);
 			break;
 		default:
 			gtk_combo_box_set_active (GTK_COMBO_BOX (buttons_combo), 0);
