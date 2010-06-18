@@ -152,11 +152,11 @@ my $Scale2Zoom = {
       10000000 =>10000000,
       50000000 =>50000000,
     },
-# Web Map Tiles scale varies with latitude by the formula
+# Web Map Tiles (TMS) scale varies with latitude by the formula
 # (a * 2*pi * PIXELFACT * cos(lat * pi/180)) / (256 * 2^zoom)
 # where a is major radius of the Earth according to the WGS84 ellipsoid definition.
 # zoom levels lower than 9 (~1:500k) badly distort the Mercator so are not offered.
-    openstreetmap_tah => {
+    openstreetmap_tiles => {
           600000 =>  9,
           300000 => 10,
           150000 => 11,
@@ -244,21 +244,27 @@ if ( $mapserver eq 'geoscience' )
     $scale ||= '100000-5000000';
 }
 
-if ( ! defined ( $Scale2Zoom->{$mapserver} ) ){
-    print "Invalid Mapserver: $mapserver\n";
-    print "Valid Mapserver: ".join(",",keys %{$Scale2Zoom} )."\n";
-    exit;
+if ( ( $mapserver ne 'openstreetmap_tah' ) and ( $mapserver ne 'openstreetmap_cycle' ) ) {
+    if ( ! defined ( $Scale2Zoom->{$mapserver} ) ) {
+	print "Invalid Mapserver: $mapserver\n";
+	print "Valid Mapserver: ".join(",",keys %{$Scale2Zoom} )."\n";
+	exit;
+    }
 }
 
 if ( $mapserver eq 'landsat') {
     #print "Map prefix will be set automatically based on scale\n"
     $fileext = 'jpg';
-} elsif ( $mapserver eq 'openstreetmap_tah') {
+} elsif ( $mapserver =~ m/openstreetmap_/ ) {
     $fileext = 'png';
 }
 
+if ( $mapserver =~ m/openstreetmap_/ ) {
+    @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{'openstreetmap_tiles'}};
+} else {
+    @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
+}
 
-@SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
 
 pod2usage(1) if $help;
 pod2usage(-verbose=>2) if $man;
@@ -276,7 +282,7 @@ sub get_gpsd_position();   # {}
 sub get_waypoint($);       # {}
 sub is_map_file($);        # {}
 sub landsat_url($$$);      # {}
-sub openstreetmap_tah_url($$$); # {}
+sub openstreetmap_tiles_url($$$); # {}
 sub read_gpstool_map_file(); # {}
 sub read_koord_file($);    # {}
 sub resize($$);            # {}
@@ -420,7 +426,7 @@ if ( $mapserver eq 'geoscience' ){
     print "| Map prefix will be set automatically based on scale.           |\n";
     print "+----------------------------------------------------------------+\n";
     # By law, US Government data is without copyright.
-}elsif ( $mapserver eq 'openstreetmap_tah' ){
+}elsif ( $mapserver =~ m/openstreetmap_/ ){
     print "+-----------------------------------------------------------+\n";
     print "| OpenStreetmap Maps are Copyright by the OpenStreetmap     |\n";
     print "| project.                                                  |\n";
@@ -430,7 +436,7 @@ if ( $mapserver eq 'geoscience' ){
     print "+-----------------------------------------------------------+\n";
 
 } elsif ( ! $force) {
-    print "You may violating the map servers terms of use!\n";
+    print "You may be violating the map server's terms of use!\n";
     print "Please use their service responsible!\n";
     print "Are you sure you want to continue? [y|n] ";
     my $answer = <STDIN>;
@@ -659,11 +665,11 @@ sub map_filename($$$){
 
     my $mscale = $scale;
 
-    if ( $mapserver eq 'openstreetmap_tah' ) {
+    if ( $mapserver =~ m/openstreetmap_/ ) {
 	my $zoom = undef;
-	for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
+	for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tiles}} ) {
 	    next unless $s == $scale;
-	    $zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
+	    $zoom = $Scale2Zoom->{openstreetmap_tiles}->{$s};
 	    last;
 	}
 	unless ( $zoom ) {
@@ -734,9 +740,9 @@ sub wget_map($$$){
     {
 	($url,$mapscale)=landsat_url($lati,$long,$scale);
     }
-    elsif ( $mapserver eq 'openstreetmap_tah') 
+    elsif ( $mapserver =~ m/openstreetmap_/)
     {	
-	($url,$mapscale)=openstreetmap_tah_url($lati,$long,$scale);
+	($url,$mapscale)=openstreetmap_tiles_url($lati,$long,$scale);
     } 
     else 
     {
@@ -1156,16 +1162,17 @@ sub calc_webtile_scale ($$){
 
 
 #############################################################################
-sub openstreetmap_tah_url($$$){
+sub openstreetmap_tiles_url($$$){
     my $lati = shift;
     my $long = shift;
     my $scale = shift;
-
+    my $url='';
     my $mapscale = $scale;
     my $zoom = undef;
-    for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tah}} ) {
+
+    for my $s ( sort keys %{$Scale2Zoom->{openstreetmap_tiles}} ) {
 	next unless $s == $scale;
-	$zoom = $Scale2Zoom->{openstreetmap_tah}->{$s};
+	$zoom = $Scale2Zoom->{openstreetmap_tiles}->{$s};
 	$mapscale = calc_webtile_scale($lati, $zoom);
 	last;
     }
@@ -1176,12 +1183,19 @@ sub openstreetmap_tah_url($$$){
     }
 
     if ($debug) {
-	print "Using openstreetmap_tah zoom ", $zoom, " for requested scale 1:", $scale, ". Actual scale 1:", $mapscale, "\n";
+	print "Using openstreetmap_tiles zoom ", $zoom, " for requested scale 1:", $scale, ". Actual scale 1:", $mapscale, "\n";
 	print "cetner lat: $lati\n";
 	print "cetner lon: $long\n";
     }
 
-    my $url = "http://tah.openstreetmap.org/MapOf/?lat=$lati&long=$long&z=$zoom&w=1280&h=1024&format=png";
+    if ( $mapserver eq 'openstreetmap_tah') {
+	$url = "http://tah.openstreetmap.org/MapOf/?lat=$lati&long=$long&z=$zoom&w=1280&h=1024&format=png";
+    } elsif ( $mapserver eq 'openstreetmap_cycle') {
+	$url = "http://ojw.dev.openstreetmap.org/StaticMap/?lat=$lat&lon=$long&z=$zoom&w=1280&h=1024&format=png&layer=cycle&show=1&att=none";
+    } else {
+	$url = "http://127.0.0.1/osm_error/?lat=$lat&lon=$long&z=$zoom";
+    }
+
 #   print "$url\n";
     return ($url,$mapscale);
 }
@@ -2051,7 +2065,7 @@ to the mapserver. Takes an optional value of number of seconds to sleep.
 =item B<--mapserver <MAPSERVER>>
 
 Mapserver to download from. Default: 'landsat'.
-Currently usable: landsat,  openstreetmap_tah.
+Currently usable: landsat, openstreetmap_tah, openstreetmap_cycle.
 
 geoscience, gov_au, incrementp and eniro have download stubs, 
 but they are !!!NOT!!!! in the right scale.
@@ -2059,10 +2073,13 @@ but they are !!!NOT!!!! in the right scale.
 
 geoscience
 
-landsat covers the whole world with satelite Photos
+landsat covers the whole world with satellite photos at 30m per pixel resolution
 
 openstreetmap_tah: Free maps from the OpenStreetmap Tiles@Home project, see 
 	http://www.openstreetmap.org and http://tah.openstreetmap.org.
+
+openstreetmap_cycle: Free maps from the OpenStreetmap Cycle Map project, see 
+	http://www.openstreetmap.org and http://www.opencyclemap.org.
 
 gov_au is for Australia
 
