@@ -249,7 +249,7 @@ target_link_libraries(${GPSDRIVE_LINK_LIBRARIES})
 if (WITH_FRIENDSD)
  target_link_libraries(friendsd
    crypt
-   ${GTK2_LIBRARIES}
+   ${GTK2_GLIB_LIBRARY}
  )
 endif (WITH_FRIENDSD)
 
