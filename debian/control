@@ -98,6 +98,7 @@ Depends: ${misc:Depends},
 	 libdbi-perl,
 	 libfile-slurp-perl | libperl6-slurp-perl,
 	 libxml-twig-perl
+Recommends: libdbd-sqlite3-perl
 Conflicts: openstreetmap-utils
 Description: GPS navigation system
  GpsDrive is a car (bike, ship, plane, foot) navigation system.
