@@ -2491,7 +2491,7 @@ main (int argc, char *argv[])
 
 	/* print version info */
 	if ( mydebug > 0 )
-		g_print ("\ngpsdrive (c) 2001-2006 Fritz Ganter"
+		g_print ("\ngpsdrive (c) 2001-2010 Fritz Ganter and the GpsDrive Development Team"
 		" <ganter@ganter.at>\n\nVersion %s\n%s\n\n", VERSION, rcsid);
 
 	/*  show splash screen */
