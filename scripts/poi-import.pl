@@ -131,16 +131,21 @@ sub import_gpx
   $updated = '0';
   $inserted = '0';
 
-  if ( $creator =~ /geoinfo/i )
-    { import_gpx_geoinfo($file); }
-  elsif ( $creator =~ /groundspeak/i )
-    { import_gpx_groundspeak($file); }
-  elsif ( $creator =~ /opencaching/i )
-    { import_gpx_opencaching($file); }
-  elsif ( $creator =~ /FON/i )
-    { import_gpx_fon($file); }
+  if ($creator)
+  {
+    if ( $creator =~ /geoinfo/i )
+      { import_gpx_geoinfo($file); }
+    elsif ( $creator =~ /groundspeak/i )
+      { import_gpx_groundspeak($file); }
+    elsif ( $creator =~ /opencaching/i )
+      { import_gpx_opencaching($file); }
+    elsif ( $creator =~ /FON/i )
+      { import_gpx_fon($file); }
+    else
+      { import_gpx_basic($file); }
+  }
   else
-    { die "Unknown GPX file detected!\n" }
+    { import_gpx_basic($file); }
 
   print STDOUT "\n  $count POI-Entries written to Database in total.\n";
   print STDOUT "  - POIs updated   : $updated\n" if ($updated);
@@ -371,6 +376,54 @@ sub import_gpx_fon
     ($source_id,$source) = (8,'fon');
     ($poi_type,$last_modified) = ('wlan.nonfree.fon','2007-01-01');
     my ($type,$found)  = ('FON Access Point','');
+
+    if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
+    {
+      $lat = $wpt->att('lat');
+      $lon = $wpt->att('lon');
+      $name = $wpt->first_child('name')->text;
+      $comment = $wpt->first_child('desc')->text
+        if ($wpt->first_child('desc'));
+      $last_modified = $wpt->first_child('time')->text
+        if ($wpt->first_child('time'));
+
+      $source_id = $source_ids{$source} if ($source_ids{$source});
+
+      db_exec_insert();
+      $count++;
+      progress_bar();
+    }
+
+  }
+  $twig->purge;
+}
+
+
+#####################################################################
+#
+#  basic import for unknow gpx file
+#
+sub import_gpx_basic
+{
+  print STDOUT "\n----- Doing basic parsing of unknown GPX -----\n";
+
+  my $twig= new XML::Twig
+    (
+      ignore_elts => { 'rte' => 1, 'trk' => 1 },
+      TwigHandlers => { wpt => \&sub_basic }
+    );
+
+  $twig->parsefile( "$file");
+  my $gpx= $twig->root;
+
+  sub sub_basic
+  {
+    my( $twig, $wpt)= @_;
+
+    ($lat,$lon,$alt,$name,$comment,$private) = (0,0,0,'','','');
+    ($source_id,$source) = (12,'gpx');
+    ($poi_type,$last_modified) = ('waypoint.wptyellow','2007-01-01');
+    my ($type,$found)  = ('Imported Waypoint','');
 
     if ($wpt->att('lat') && $wpt->att('lon') && $wpt->first_child('name'))
     {
