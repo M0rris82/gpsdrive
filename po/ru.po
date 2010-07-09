@@ -1,198 +1,139 @@
 # Translation of GPSdrive to Russian.
 # Copyright (C) 2001-2006 F.Ganter
 # This file is distributed under the same license as the gpsdrive package.
-# Max Vakulenko <mv@umanaged.com>, 2006, 2007.
+# Max Vakulenko <mv@umanaged.com>, 2006, 2007, 2010.
+# Pavel Maryanov <acid@jack.kiev.ua>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: ru\n"
-"Report-Msgid-Bugs-To: package-for-gpsdrive@ostertag.name\n"
-"POT-Creation-Date: 2007-07-22 22:36+0200\n"
-"PO-Revision-Date: 2007-07-12 22:01+0300\n"
-"Last-Translator: Max Vakulenko <mv@umanaged.com>\n"
+"Project-Id-Version: gpsdrive 2.11\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-07-06 16:33+0200\n"
+"PO-Revision-Date: 2010-07-07 14:31+0200\n"
+"Last-Translator: Pavel Maryanov <acid@jack.kiev.ua>\n"
 "Language-Team: Russian <gnu@mx.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
 
-#: src/battery.c:807
+#: src/battery.c:797
 msgid "Bat."
 msgstr "Акк."
 
-#: src/battery.c:842
+#: src/battery.c:831
 msgid "TC"
 msgstr "tC"
 
-#: src/download_map.c:170 src/download_map.c:307
+#: src/download_map.c:165 src/download_map.c:302
 msgid "can't open socket for port 80"
-msgstr "невозможно открыть сокет для порта 80"
+msgstr "не удаётся открыть сокет для порта 80"
 
-#: src/download_map.c:173 src/download_map.c:177 src/download_map.c:205
-#: src/download_map.c:209 src/download_map.c:226 src/download_map.c:230
-#: src/download_map.c:310 src/download_map.c:315 src/download_map.c:319
-#: src/download_map.c:356 src/download_map.c:361 src/download_map.c:365
-#: src/download_map.c:383 src/download_map.c:388 src/download_map.c:392
+#: src/download_map.c:168 src/download_map.c:172 src/download_map.c:200
+#: src/download_map.c:204 src/download_map.c:221 src/download_map.c:225
+#: src/download_map.c:305 src/download_map.c:310 src/download_map.c:314
+#: src/download_map.c:351 src/download_map.c:356 src/download_map.c:360
+#: src/download_map.c:378 src/download_map.c:383 src/download_map.c:387
 #, c-format
 msgid "Connecting to %s FAILED!"
-msgstr "Соединение с %s НЕ УДАЛОСЬ!"
+msgstr "Соединение с %s: СБОЙ!"
 
-#: src/download_map.c:202 src/download_map.c:353
+#: src/download_map.c:197 src/download_map.c:348
 msgid "Can't resolve webserver address"
-msgstr "Не могу определить IP вебсервера"
+msgstr "Не удаётся определить адрес веб-сервера"
 
-#: src/download_map.c:223 src/download_map.c:380
+#: src/download_map.c:218 src/download_map.c:375
 msgid "unable to connect to Website"
-msgstr "невозможно соединиться с вебсайтом"
+msgstr "не удаётся соединиться с веб-сайтом"
 
-#: src/download_map.c:257 src/download_map.c:451
+#: src/download_map.c:252 src/download_map.c:446
 msgid "read from Webserver"
-msgstr "чтение из вебсайта"
+msgstr "чтение из веб-сервера"
 
-#: src/download_map.c:288 src/download_map.c:293 src/download_map.c:296
+#: src/download_map.c:283 src/download_map.c:288 src/download_map.c:291
 #, c-format
 msgid "Connecting to %s"
 msgstr "Соединение с %s"
 
-#: src/download_map.c:408 src/download_map.c:414 src/download_map.c:417
+#: src/download_map.c:403 src/download_map.c:409 src/download_map.c:412
 #, c-format
 msgid "Now connected to %s"
 msgstr "Установлено соединение с %s"
 
-#: src/download_map.c:499
+#: src/download_map.c:494
 #, c-format
 msgid "Downloaded %d kBytes"
-msgstr "Загружено %d Кбайт"
+msgstr "Загружено %d КБ"
 
-#: src/download_map.c:515
+#: src/download_map.c:510
 msgid "Download FAILED!"
 msgstr "Загрузка НЕ УДАЛАСЬ!"
 
-#: src/download_map.c:518
+#: src/download_map.c:513
 #, c-format
 msgid "Download finished, got %dkB"
-msgstr "Загрузка окончена, получено %dКб"
+msgstr "Загрузка окончена, получено %dКБ"
 
-#: src/download_map.c:826
+#: src/download_map.c:836
 msgid "Select coordinates and scale"
 msgstr "Выберите координаты и масштаб"
 
-#: src/download_map.c:829
+#: src/download_map.c:839
 msgid "Download map"
 msgstr "Загрузить карту"
 
-#: src/download_map.c:857 src/gpsdrive.c:3305 src/gpsdrive.c:3389
-#: src/gpsdrive.c:4783 src/import_map.c:396 src/poi_gui.c:533 src/routes.c:408
-#: src/waypoint.c:721
+#: src/download_map.c:867 src/gpsdrive.c:1978 src/import_map.c:388
+#: src/main_gui.c:2404 src/poi_gui.c:650 src/routes.c:278 src/waypoint.c:500
 msgid "Latitude"
 msgstr "Широта"
 
-#: src/download_map.c:859 src/gpsdrive.c:3305 src/gpsdrive.c:3389
-#: src/gpsdrive.c:4784 src/import_map.c:398 src/poi_gui.c:526 src/routes.c:408
-#: src/waypoint.c:735
+#: src/download_map.c:869 src/gpsdrive.c:1983 src/import_map.c:390
+#: src/main_gui.c:2417 src/poi_gui.c:643 src/routes.c:278 src/waypoint.c:514
 msgid "Longitude"
 msgstr "Долгота"
 
-#: src/download_map.c:861
+#: src/download_map.c:871
 msgid "Map covers"
 msgstr "Карта покрывает"
 
-#: src/download_map.c:865 src/import_map.c:408
+#: src/download_map.c:875 src/import_map.c:400
 msgid "Scale"
 msgstr "Масштаб"
 
-#: src/download_map.c:899 src/download_map.c:903
+#: src/download_map.c:909 src/download_map.c:913
 msgid ""
 "You can also select the position\n"
 "with a mouse click on the map."
 msgstr ""
-"Вы также можете выбрать положение\n"
-"щелчком мыши по карте."
+"Положение можно также указать\n"
+"щелчком мыши на карте."
 
-#: src/download_map.c:905
+#: src/download_map.c:915
 msgid "Using Proxy and port:"
 msgstr "Используя прокси и порт:"
 
-#: src/download_map.c:999
+#: src/download_map.c:1008
 #, c-format
+msgid "Using proxy: %s on port %d\n"
+msgstr "Используя прокси: %s на порту %d\n"
+
+#: src/download_map.c:1014
 msgid ""
 "\n"
-"Using proxy: %s on port %d"
+"Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy.provider.de:3128"
 msgstr ""
 "\n"
-"Используя прокси:%s на порту %d"
+"Недействительная переменная окружения HTTP_PROXY. Допустимый формат: http://proxy.provider.ru:3128"
 
-#: src/download_map.c:1005
-msgid ""
-"\n"
-"Invalid enviroment variable HTTP_PROXY, must be in format: http://proxy."
-"provider.de:3128"
-msgstr ""
-"\n"
-"Недействительная переменная окружения HTTP_PROXY, должна быть в формате: "
-"http://proxy.your.provider.ru:3128"
-
-#: src/fly.c:163
-msgid "Aeronautical settings"
-msgstr "Воздушно-морские настройки"
-
-#: src/fly.c:166
-msgid "Fly"
-msgstr "Полёт"
-
-#: src/fly.c:174
-msgid "Plane mode"
-msgstr "Самолётный режим"
-
-#: src/fly.c:183
-msgid "Use VFR"
-msgstr "Использовать VFR"
-
-#: src/fly.c:190
-msgid "Use IFR"
-msgstr "Использовать IFR"
-
-#: src/fly.c:200
-msgid "max. horizontal deviation "
-msgstr "макс. горизонтальное отклонение"
-
-#: src/fly.c:202
-msgid "max. vertical deviation "
-msgstr "макс. вертикальное отклонение"
-
-#: src/fly.c:219
-msgid "disable vert. deviation warning above 5000ft MSL"
-msgstr "отключать предупреждение о вертикальном отклонении выше 5000футов MSL"
-
-#: src/friends.c:431
-msgid "/Misc. Menu/Messages"
-msgstr "/Прочее/Сообщения"
-
-#: src/friends.c:445 src/gpsdrive.c:799
+#: src/friends.c:455
 msgid "unknown"
 msgstr "неизвестно"
 
-#: src/friends.c:636 src/gpsdrive.c:4673 src/gpsdrive.c:4683
-#: src/settings.c:162 src/settings.c:172
-msgid "mi/h"
-msgstr "миль/ч"
-
-#: src/friends.c:638 src/gpsdrive.c:4675 src/gpsdrive.c:4686
-#: src/settings.c:164 src/settings.c:175
-msgid "knots"
-msgstr "узлов"
-
-#: src/friends.c:640 src/gpsdrive.c:4677 src/gpsdrive.c:4689
-#: src/settings.c:166 src/settings.c:178
-msgid "km/h"
-msgstr "км/ч"
-
-#: src/friendsd.c:550
+#: src/friendsd.c:532
 #, c-format
 msgid "server: please don't run me as root\n"
-msgstr "сервер: пожалуйста, не запускайте меня от root\n"
+msgstr "сервер: не запускайте это приложение от пользователя root\n"
 
-#: src/friendsd.c:562
+#: src/friendsd.c:544
 #, c-format
 msgid ""
 "\n"
@@ -203,593 +144,324 @@ msgstr ""
 "\n"
 "Использование:\n"
 "   %s -n имя_сервера\n"
-"даёт имя вашему серверу\n"
+"имя сервера\n"
 
-#: src/gpsdrive.c:458
-msgid "/_Menu"
-msgstr "/_Меню"
+#: src/gps_handler.c:194
+#, c-format
+msgid "unable to add match for signals %s: %s"
+msgstr "не удаётся добавить соответствие для сигналов: %s: %s"
 
-#: src/gpsdrive.c:459
-msgid "/_Menu/_Maps"
-msgstr "/_Меню/_Карты"
+#: src/gps_handler.c:199
+msgid "unable to register filter with the connection"
+msgstr "не удаётся зарегистрировать фильтр для соединения"
 
-#: src/gpsdrive.c:460
-msgid "/_Menu/_Maps/_Import"
-msgstr "/_Меню/_Карты/_Импорт"
+#: src/gps_handler.c:204
+msgid "DBUS Mode"
+msgstr "режим DBUS"
 
-#: src/gpsdrive.c:461
-msgid "/_Menu/_Maps/_Download"
-msgstr "/_Меню/_Карты/_Загрузить"
+#: src/gps_handler.c:236 src/gpskismet.c:277
+msgid "can't open socket for port "
+msgstr "не удаётся открыть сокет для порта"
 
-#: src/gpsdrive.c:462
-msgid "/_Menu/_Reinitialize GPS"
-msgstr "/_Меню/_Переинициализировать GPS"
-
-#: src/gpsdrive.c:464
-msgid "/_Menu/_Load track file"
-msgstr "/_Меню/_Загрузить файл трека"
-
-#: src/gpsdrive.c:465
-msgid "/_Menu/M_essages"
-msgstr "/_Меню/_Сообщения"
-
-#: src/gpsdrive.c:466
-msgid "/_Menu/M_essages/_Send message to mobile target"
-msgstr "/_Меню/_Сообщения/_Отправить сообщение мобильной цели"
-
-#: src/gpsdrive.c:468
-msgid "/_Menu/S_ettings"
-msgstr "/_Меню/_Настройки"
-
-#: src/gpsdrive.c:470
-msgid "/_Menu/_Help"
-msgstr "/_Меню/_Помощь"
-
-#: src/gpsdrive.c:471
-msgid "/_Menu/_Help/_About"
-msgstr "/_Меню/_Помощь/_О программе"
-
-#: src/gpsdrive.c:472
-msgid "/_Menu/_Help/_Topics"
-msgstr "/_Меню/_Помощь/_Разделы"
-
-#: src/gpsdrive.c:473
-msgid "/_Menu/_Quit"
-msgstr "/_Меню/_Выход"
-
-#: src/gpsdrive.c:807
-msgid "Auto"
-msgstr "Авто"
-
-#: src/gpsdrive.c:950
-msgid "Warning!"
-msgstr "Предупреждение!"
-
-#: src/gpsdrive.c:952
-msgid "You should not start GpsDrive as user root!!!"
-msgstr "Вы не должны запускать GpsDrive от root-а"
-
-#: src/gpsdrive.c:1357
+#: src/gps_handler.c:257
 #, c-format
 msgid ""
 "\n"
-"Warning: unable to load gpsdriveanim.gif!\n"
-"Please install the program as root with:\n"
-"make install\n"
-"\n"
+"Cannot connect to %s: unknown host\n"
 msgstr ""
 "\n"
-"Предупреждение: невозможно загрузить gpsdriveanim.gif!\n"
-"Пожалуйста, установите программу от root:\n"
-"make install\n"
-"\n"
+"Не удаётся соединиться с %s: неизвестный сервер\n"
 
-#: src/gpsdrive.c:1945
-msgid "NESW"
-msgstr "СВЮЗ"
+#: src/gps_handler.c:281
+msgid "NMEA Mode, Port 2222"
+msgstr "Режим NMEA, порт 2222"
 
-#: src/gpsdrive.c:2131
+#: src/gps_handler.c:289
+msgid "NMEA Mode, Port 2947"
+msgstr "Режим NMEA, порт 2947"
+
+#: src/gps_handler.c:556
+msgid "Timeout getting data from GPS-Receiver!"
+msgstr "Тайм-аут при получении данных из GPS-приёмника!"
+
+#: src/gps_handler.c:610 src/gps_handler.c:639 src/gps_handler.c:706
+#: src/gps_handler.c:829
+msgid "Press middle mouse button for navigation"
+msgstr "Щёлкните средней кнопкой мыши для навигации"
+
+#: src/gps_handler.c:619
+msgid "No GPS used"
+msgstr "GPS не используется"
+
+#: src/gps_handler.c:621 src/nmea_handler.c:289 src/settings.c:891
+msgid "Simulation mode"
+msgstr "Режим симуляции"
+
+#: src/gps_handler.c:623
+msgid "Press middle mouse button for sim mode"
+msgstr "Щёлкните средней кнопкой для режима симуляции"
+
+#: src/gps_handler.c:643 src/gps_handler.c:712 src/gps_handler.c:835
+msgid "Not enough satellites in view!"
+msgstr "Недостаточно спутников в поле зрения"
+
+#: src/gpsdrive.c:729
+msgid "Warning!"
+msgstr "Предупреждение!"
+
+#: src/gpsdrive.c:731
+msgid "You should not start GpsDrive as user root!!!"
+msgstr "GpsDrive не следует запускать от пользователя root!"
+
+#: src/gpsdrive.c:1218
+msgid "--- street name not available ---"
+msgstr "--- название улицы недоступно ---"
+
+#: src/gpsdrive.c:1356
+msgid "N"
+msgstr "С"
+
+#: src/gpsdrive.c:1363
+msgid "S"
+msgstr "Ю"
+
+#: src/gpsdrive.c:1369
+msgid "W"
+msgstr "З"
+
+#: src/gpsdrive.c:1375
+msgid "E"
+msgstr "В"
+
+#: src/gpsdrive.c:1450
 msgid "No map available for this position!"
 msgstr "Нет карты для этой позиции"
 
-#: src/gpsdrive.c:2308 src/gpsdrive.c:4555 src/gpsdrive.c:4561
-#: src/gpsdrive.c:4567 src/gpsdrive.c:4600 src/gpsdrive.c:4605
-#: src/gpsdrive.c:4611 src/gpsdrive.c:4628 src/gpsdrive.c:4635
-#: src/gps_handler.c:532 src/gps_handler.c:533 src/gps_handler.c:534
-msgid "n/a"
-msgstr "н/д"
+#: src/gpsdrive.c:1526
+msgid ""
+"\n"
+"Loop detected, please report!\n"
+msgstr ""
+"\n"
+"Обнаружено зацикливание. Сообщите разработчикам!\n"
 
-#  console output should be fixed 1st (i.e. with LANG=ru_RU.KOI8-R gpsdrive try UTF-like output
-#  msgstr "Скорость при изменении положения более 2000км/ч, игнорируется\n"
-#: src/gpsdrive.c:2599
-#, c-format
-msgid "distance jump is more then 2000km/h speed, ignoring\n"
-msgstr "При изменении положения скорость более 2000км/ч, игнорируется\n"
-
-#: src/gpsdrive.c:2857
-msgid "/Menu/Messages"
-msgstr "/Меню/Сообщения"
-
-#: src/gpsdrive.c:2860
+#: src/gpsdrive.c:1778
 msgid "Sending message to friends server..."
 msgstr "Отправка сообщения на сервер друзей..."
 
-#: src/gpsdrive.c:2939
+#: src/gpsdrive.c:1856
 msgid "Message for:"
 msgstr "Сообщения для:"
 
-#: src/gpsdrive.c:2981
+#: src/gpsdrive.c:1892
 #, c-format
 msgid "Date: %s"
 msgstr "Дата: %s"
 
-#: src/gpsdrive.c:2994
-msgid "Sends your text to to selected computer using the friends server"
-msgstr "Отправляет ваш текст на выбранный компьютер с помощью сервера друзей"
+#: src/gpsdrive.c:1940
+msgid "Please select message recipient"
+msgstr "Выберите получателя сообщения"
 
-#: src/gpsdrive.c:3089
-msgid "Quicksaved Waypoint"
-msgstr "Быстросохранённый ориентир"
-
-#: src/gpsdrive.c:3125
-msgid "Temporary Waypoint"
-msgstr "Временный ориентир"
-
-#: src/gpsdrive.c:3305 src/gpsdrive.c:3389 src/poi_gui.c:464 src/poi_gui.c:892
-#: src/poi_gui.c:1127 src/poi_gui.c:1260 src/settings.c:1812
+#: src/gpsdrive.c:1965 src/poi_gui.c:581 src/poi_gui.c:980 src/poi_gui.c:1292
+#: src/settings.c:2151
 msgid "Name"
 msgstr "Имя"
 
-#: src/gpsdrive.c:3305 src/gpsdrive.c:3389 src/gpsdrive.c:4667
-#: src/poi_gui.c:903 src/poi_gui.c:1267 src/routes.c:408 src/settings.c:700
-#: src/settings.c:1286
+#: src/gpsdrive.c:1972 src/main_gui.c:589 src/poi_gui.c:991 src/poi_gui.c:1299
+#: src/routes.c:278 src/settings.c:1217 src/settings.c:2310
 msgid "Distance"
 msgstr "Расстояние"
 
-#: src/gpsdrive.c:3316
-msgid "Please select message recipient"
-msgstr "Пожалуйста, выберите получателя сообщения"
-
-#: src/gpsdrive.c:3389 src/poi_gui.c:546 src/poi_gui.c:912
-msgid "Type"
-msgstr "Тип"
-
-#: src/gpsdrive.c:3418
-msgid "Select reference point"
-msgstr "Выберите точку сравнения"
-
-#: src/gpsdrive.c:3422
-msgid "Please select your destination"
-msgstr "Пожалуйста выберите своё назначение"
-
-#: src/gpsdrive.c:3454
-msgid "Edit route"
-msgstr "Редактировать маршрут"
-
-#: src/gpsdrive.c:3457
-msgid "Create route"
-msgstr "Создать маршрут"
-
-#: src/gpsdrive.c:3554
-msgid "Create a route using some waypoints from this list"
-msgstr "Создать маршрут используя ориентиры из этого списка"
-
-#: src/gpsdrive.c:3559
-msgid "Delete the selected waypoint from the waypoint list"
-msgstr "Удалить выбранные ориентиры из списка ориентиров"
-
-#: src/gpsdrive.c:3563
-msgid "Jump to the selected waypoint"
-msgstr "Перейти к выбранному ориентиру"
-
-#: src/gpsdrive.c:3586
-msgid "-v        show version\n"
-msgstr "-v        показать версию\n"
-
-#: src/gpsdrive.c:3587
-msgid "-h        print this help\n"
-msgstr "-h        показать этот текст\n"
-
-#: src/gpsdrive.c:3588
-msgid "-d        turn on debug info\n"
-msgstr "-d        включить отладочную информацию\n"
-
-#: src/gpsdrive.c:3589
-msgid "-D X      set debug Level to X\n"
-msgstr "-D X      установить уровень отладки равным X\n"
-
-#: src/gpsdrive.c:3590
-msgid "-T        do some internal unit Tests(don't start gpsdrive)\n"
-msgstr ""
-"-T        выполнить некоторые тесты внутренних модулей (не стартовать "
-"gpsdrive)\n"
-
-#: src/gpsdrive.c:3591
-msgid "-e        use Festival-Lite (flite) for speech output\n"
-msgstr "-e        использовать Festival-Lite (flite) для синтеза речи\n"
-
-#: src/gpsdrive.c:3592
-msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
-msgstr ""
-"-t        назначить последовательное устройство для GPS, например /dev/"
-"ttyS1\n"
-
-#: src/gpsdrive.c:3593
-msgid "-o        serial device, pty master, or file for NMEA *output*\n"
-msgstr ""
-"-o        последовательное устройство, файл pty master, или файл *вывода* "
-"NMEA\n"
-
-#: src/gpsdrive.c:3594
-msgid "-f X      Select friends server, X is i.e. friendsd.gpsdrive.de\n"
-msgstr ""
-"-f X      Выбрать сервер друзей, где X это, например, friendsd.gpsdrive.de\n"
-
-#: src/gpsdrive.c:3595
-msgid "-n        Disable use of direct serial connection\n"
-msgstr ""
-"-n        Отключить использование прямого последовательного соединения\n"
-
-#: src/gpsdrive.c:3597
-msgid ""
-"-X        Use DBUS for communication with gpsd. This disables serial and "
-"socket communication\n"
-msgstr ""
-"-X        Использовать DBUS для общения с gpsd. Это отключает коммуникации "
-"через сокет или последовательное устройство\n"
-
-#: src/gpsdrive.c:3599
-msgid ""
-"-l LANG   Select language of the voice,\n"
-"          LANG may be english, spanish or german\n"
-msgstr ""
-"-l ЯЗЫК   Выбрать язык для голоса,\n"
-"          ЯЗЫК может быть english, spanish или german\n"
-
-#: src/gpsdrive.c:3601
-msgid ""
-"-s HEIGHT set height of the screen, if autodetection\n"
-"          don't satisfy you, X is i.e. 768,600,480,200\n"
-msgstr ""
-"-s ВЫСОТА устанавливает число точек экрана по вертикали, если "
-"автоопределение\n"
-"          вас не устраивает, например 768,600,480,200\n"
-
-#: src/gpsdrive.c:3603
-msgid "-r WIDTH  set width of the screen, only with -s\n"
-msgstr ""
-"-r ШИРИНА устанавливает число точек экрана по горизонтали, только если задан "
-"-s\n"
-
-#: src/gpsdrive.c:3604
-msgid "-1        have only 1 button mouse, for example using touchscreen\n"
-msgstr "-1        для 1-кнопочной мыши, например сенсорного дисплея\n"
-
-#: src/gpsdrive.c:3605
-msgid "-a        don't display battery status (i.e. broken APM)\n"
-msgstr ""
-"-a        не показывать состояние аккумуляторной батареи (если кривой APM)\n"
-
-#: src/gpsdrive.c:3606
-msgid "-b Server Servername for NMEA server (if gpsd runs on another host)\n"
-msgstr "-b сервер Имя NMEA сервера (если gpsd запускается на другом хосте)\n"
-
-#: src/gpsdrive.c:3607
-msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
-msgstr ""
-"-c WP     выбрать ориентир WP как стартовое положение в режиме симуляции\n"
-
-#: src/gpsdrive.c:3608
-msgid "-x        create separate window for menu\n"
-msgstr "-x        создать отдельное окно для меню\n"
-
-#: src/gpsdrive.c:3609
-msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
-msgstr "-p        установить настройки для PDA (iPAQ, Yopy...)\n"
-
-#: src/gpsdrive.c:3610
-msgid "-i        ignore NMEA checksum (risky, only for broken GPS receivers\n"
-msgstr ""
-"-i        игнорировать контрольную сумму NMEA (рисковано, только для кривых "
-"приёмников GPS\n"
-
-#: src/gpsdrive.c:3611
-msgid "-q        disable SQL support\n"
-msgstr "-q        отключить поддержку SQL\n"
-
-#: src/gpsdrive.c:3612
-msgid "-F        force display of position even it is invalid\n"
-msgstr ""
-"-F        настоять на отображении положения даже если оно некорректное\n"
-
-#: src/gpsdrive.c:3613
-msgid "-S        don't show splash screen\n"
-msgstr "-S        не показывать при старте окно-заставку\n"
-
-#: src/gpsdrive.c:3614
-msgid "-P        start in Pos Mode\n"
-msgstr "-P        стартовать в позиционном режиме\n"
-
-#: src/gpsdrive.c:3615
-msgid "-E        print out data received from direct serial connection\n"
-msgstr ""
-"-E        печатать данные, принятые прямо через последовательное соединение\n"
-
-#: src/gpsdrive.c:3616
-msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
-msgstr ""
-"-W x      чтобы включить WAAS/EGNOS используйте x, равный 1, чтобы отключить "
-"-- равный 0\n"
-
-#: src/gpsdrive.c:3617
-msgid "-H ALT    correct altitude, adding this value (ALT) to altitude\n"
-msgstr ""
-"-H ALT    поправка для высоты, величина ALT добавляется к высоте, полученной "
-"от GPS\n"
-
-#: src/gpsdrive.c:3618
-msgid ""
-"-z        don't display zoom factor and scale\n"
-"\n"
-msgstr ""
-"-z        не показывать кратность увеличения и масштаб\n"
-"\n"
-
-#: src/gpsdrive.c:3633
-msgid "Select a track file"
-msgstr "Выберите файл трека"
-
-#: src/gpsdrive.c:4042
+#: src/gpsdrive.c:2026
 msgid ""
 "\n"
-"You can only choose between english, spanish and german\n"
+"Got SIGUSR2; restarting GPS connection.\n"
+msgstr ""
+"\n"
+"Получен SIGUSR2; переустанавливается соединение с GPS.\n"
+
+#: src/gpsdrive.c:2074
+#, c-format
+msgid "GUI mode '%s' not supported"
+msgstr "режим GUI «%s» не поддерживается"
+
+#: src/gpsdrive.c:2092
+#, c-format
+msgid "config file '%s' not found"
+msgstr "не найден кофигурационный файл «%s»"
+
+#: src/gpsdrive.c:2108
+#, c-format
+msgid "screenshot directory '%s' not found"
+msgstr "не найден каталог для снимков экрана «%s»"
+
+#: src/gpsdrive.c:2133
+msgid "Navigation System"
+msgstr "Навигационная система"
+
+#: src/gpsdrive.c:2134
+msgid "Website: http://www.gpsdrive.de"
+msgstr "Веб-сайт: http://www.gpsdrive.de"
+
+#: src/gpsdrive.c:2139
+msgid "don't show GUI; for use in external GTK apps"
+msgstr "не показывать GUI (для внешних GTK-приложений)"
+
+#: src/gpsdrive.c:2141
+msgid "force display of position even it is invalid"
+msgstr "настоять на отображении положения, даже если оно некорректное"
+
+#: src/gpsdrive.c:2143
+msgid "ignore NMEA checksum (risky, only for broken GPS receivers)"
+msgstr "игнорировать контрольную сумму NMEA (рисковано, только для кривых GPS-приёмников)"
+
+#: src/gpsdrive.c:2145
+msgid "start in Position Mode"
+msgstr "стартовать в позиционном режиме"
+
+#: src/gpsdrive.c:2147
+msgid "don't show splash screen"
+msgstr "не показывать при заставку при запуске"
+
+#: src/gpsdrive.c:2149
+msgid "having only a single button, for example when using a touchscreen"
+msgstr "для однокнопочной мыши, например сенсорного экрана"
+
+#: src/gpsdrive.c:2151
+msgid "show some debug info"
+msgstr "показать отладочную информацию"
+
+#: src/gpsdrive.c:2153
+msgid "use DBUS for communication with gpsd; this disables socket communication"
+msgstr "Использовать DBUS для общения с gpsd; это отключает связь через сокет"
+
+#: src/gpsdrive.c:2155
+msgid "correct the altitude by adding this value"
+msgstr "поправить для высоту, добавив к её значению эту величину"
+
+#: src/gpsdrive.c:2155
+msgid "<OFFSET>"
+msgstr "<СМЕЩЕНИЕ>"
+
+#: src/gpsdrive.c:2157
+msgid "servername for NMEA server (if gpsd runs on another host)"
+msgstr "имя сервера NMEA (если gpsd запускается на другом сервере)"
+
+#: src/gpsdrive.c:2157
+msgid "<SERVER>"
+msgstr "<СЕРВЕР>"
+
+#: src/gpsdrive.c:2159
+msgid "set config file to use"
+msgstr "использовать конфигурационный файл"
+
+#: src/gpsdrive.c:2159 src/gpsdrive.c:2169
+msgid "<FILE>"
+msgstr "<ФАЙЛ>"
+
+#: src/gpsdrive.c:2161
+msgid "set debugging level"
+msgstr "задать уровень отладки"
+
+#: src/gpsdrive.c:2161
+msgid "<LEVEL>"
+msgstr "<УРОВЕНЬ>"
+
+#: src/gpsdrive.c:2163
+msgid "select friends server, e.g. friendsd.gpsdrive.de"
+msgstr "выбрать сервер друзей, напр. friendsd.gpsdrive.de"
+
+#: src/gpsdrive.c:2163
+msgid "<SERVERFILE>"
+msgstr "<ФАЙЛОВЫЙ_СЕРВЕР>"
+
+#: src/gpsdrive.c:2165
+msgid "set window geometry, e.g. 800x600"
+msgstr "установить геометрию окна, напр. 800x600"
+
+#: src/gpsdrive.c:2165
+msgid "<GEOMETRY>"
+msgstr "<ГЕОМЕТРИЯ>"
+
+#: src/gpsdrive.c:2167
+msgid "set GUI mode, 'desktop' is the default"
+msgstr "выбрать режим GUI, по умолчанию -- 'desktop'"
+
+#: src/gpsdrive.c:2169
+msgid "set serial device, pty master, or file to use for NMEA output"
+msgstr "последовательное устройство, файл pty master, или файл для вывода NMEA"
+
+#: src/gpsdrive.c:2171
+msgid "take auto screenshots of different window (don't touch gpsdrive!)"
+msgstr "автоматически делать снимки другого окна (не трогать gpsdrive!)"
+
+#: src/gpsdrive.c:2171
+msgid "<PATH>"
+msgstr "<ПУТЬ>"
+
+#: src/gpsdrive.c:2173
+msgid "do some internal unit tests (don't start gpsdrive)"
+msgstr "выполнить некоторые тесты внутренних модулей (не стартовать gpsdrive)"
+
+#: src/gpsdrive.c:2175
+msgid "show version info"
+msgstr "показать информацию о версии"
+
+#: src/gpsdrive.c:2224 src/gpx.c:137 src/gpx.c:138 src/gpx.c:139 src/gpx.c:140
+#: src/gpx.c:141 src/gpx.c:142 src/gpx.c:143 src/gpx.c:144 src/gpx.c:145
+#: src/gpx.c:146 src/gpx.c:147 src/main_gui.c:660 src/main_gui.c:839
+#: src/main_gui.c:981
+msgid "n/a"
+msgstr "н/д"
+
+#: src/gpsdrive.c:2225
+msgid "none"
+msgstr "ничего"
+
+#: src/gpsdrive.c:2360 src/gpsdrive.c:2395
+#, c-format
+msgid "Parsing of options failed: %s\n"
+msgstr "Ошибка разбора параметров: %s\n"
+
+#: src/gpsdrive.c:2365
+#, c-format
+msgid ""
+"\n"
+"GpsDrive (C) 2001-2006 Fritz Ganter <ganter@ganter.at>\n"
+"\n"
+"Version %s\n"
+"%s\n"
 "\n"
 msgstr ""
 "\n"
-"Ваш выбор ограничен языками english, spanish и german\n"
+"GpsDrive (C) Fritz Ganter  <ganter@ganter.at>, 2001-2006\n"
+"\n"
+"Версия %s\n"
+"%s\n"
 "\n"
 
-#: src/gpsdrive.c:4210
-msgid "Gpsdrive-2 (c)2001-2006 F.Ganter"
-msgstr "Gpsdrive-2 (c)2001-2006 Ф.Гантер"
+#: src/gpsdrive.c:2486
+msgid "Disabling database support!\n"
+msgstr "Выключается поддержка базы данных!\n"
 
-#: src/gpsdrive.c:4218
+#: src/gpsdrive.c:2495
+msgid ""
+"\n"
+"Kismet server found\n"
+msgstr ""
+"\n"
+"найден сервер Kismet\n"
+
+#: src/gpsdrive.c:2529
+#, c-format
+msgid "Failed to parse %s\n"
+msgstr "Ошибка разбора %s\n"
+
+#: src/gpsdrive.c:2579
 msgid "Using speech output"
 msgstr "Используется вывод речи"
 
-#: src/gpsdrive.c:4256
-msgid "M_ute"
-msgstr "Т_ишина"
-
-#: src/gpsdrive.c:4294
-msgid "Points"
-msgstr "Ориентиры"
-
-#: src/gpsdrive.c:4299
-msgid "PO_I"
-msgstr "PO_I"
-
-#: src/gpsdrive.c:4302
-msgid "Draw Points Of Interest found in mySQL"
-msgstr "Наносить POI, найденные в MySQL"
-
-#: src/gpsdrive.c:4313
-msgid "_WLAN"
-msgstr "_WLAN"
-
-#: src/gpsdrive.c:4318
-msgid "Wlan"
-msgstr "Wlan"
-
-#: src/gpsdrive.c:4332
-msgid "_WP"
-msgstr "_WP"
-
-#: src/gpsdrive.c:4355 src/settings.c:1026
-msgid "Track"
-msgstr "Трек"
-
-#: src/gpsdrive.c:4360
-msgid "Show"
-msgstr "Показать"
-
-#  not sure for tracking
-#: src/gpsdrive.c:4365
-msgid "Show tracking on the map"
-msgstr "Показать передвижение на карте"
-
-#: src/gpsdrive.c:4372
-msgid "Save"
-msgstr "Сохранить"
-
-#: src/gpsdrive.c:4378
-msgid "Save the track to given filename at program exit"
-msgstr "Сохранить трек под указанным именем при выходе из программы"
-
-#: src/gpsdrive.c:4451
-msgid ""
-"\n"
-"kismet server found\n"
-msgstr ""
-"\n"
-"найден сервер kismet\n"
-
-#: src/gpsdrive.c:4516 src/gpsdrive.c:4789
-msgid "Bearing"
-msgstr "Азимут"
-
-#: src/gpsdrive.c:4540
-msgid "GPS Info"
-msgstr "Информация GPS"
-
-#: src/gpsdrive.c:4596 src/gpsdrive.c:4812 src/gpsdrive.c:4817
-#: src/gpsdrive.c:4826 src/gpsdrive.c:4829
-msgid "---"
-msgstr "---"
-
-#: src/gpsdrive.c:4649 src/gpsdrive.c:4656
-msgid "Selected:"
-msgstr "Выбрано:"
-
-#: src/gpsdrive.c:4650 src/gpsdrive.c:4657
-msgid "within"
-msgstr "в"
-
-#: src/gpsdrive.c:4665
-msgid "Distance to target"
-msgstr "Расстояние до цели"
-
-#: src/gpsdrive.c:4682 src/gpsdrive.c:4685 src/gpsdrive.c:4688
-#: src/settings.c:171 src/settings.c:174 src/settings.c:177
-#: src/settings.c:1287
-msgid "Speed"
-msgstr "Скорость"
-
-#: src/gpsdrive.c:4695 src/poi_gui.c:519 src/settings.c:718
-msgid "Altitude"
-msgstr "Высота"
-
-#: src/gpsdrive.c:4698 src/settings.c:1093 src/settings.c:1685
-msgid "Waypoints"
-msgstr "Ориентиры"
-
-#: src/gpsdrive.c:4786
-msgid "Map file"
-msgstr "Файл карты"
-
-#: src/gpsdrive.c:4787
-msgid "Map scale"
-msgstr "Масштаб карты"
-
-#: src/gpsdrive.c:4788
-msgid "Heading"
-msgstr "Направление"
-
-#: src/gpsdrive.c:4790
-msgid "Time to Dest."
-msgstr "Время до цели"
-
-#: src/gpsdrive.c:4791
-msgid "Pref. scale"
-msgstr "Предпочитаемый масштаб"
-
-#: src/gpsdrive.c:4794
-msgid "000,00000N"
-msgstr "000,00000С"
-
-#: src/gpsdrive.c:4802
-msgid "000,00000E"
-msgstr "000,00000В"
-
-#: src/gpsdrive.c:4820 src/gpsdrive.c:4823
-msgid "0000"
-msgstr "0000"
-
-#: src/gpsdrive.c:4898 src/gpsdrive.c:4952 src/gpsdrive.c:4969
-msgid "Menu"
-msgstr "Меню"
-
-#: src/gpsdrive.c:4906 src/gpsdrive.c:4956 src/gpsdrive.c:4970
-msgid "Status"
-msgstr "Статус"
-
-#: src/gpsdrive.c:4948 src/gpsdrive.c:4968 src/nmea_handler.c:497
-msgid "Map"
-msgstr "Карта"
-
-#: src/gpsdrive.c:4960 src/gpsdrive.c:4971 src/poi_gui.c:1274
-msgid "Trip"
-msgstr "Путешествие"
-
-#: src/gpsdrive.c:5106
-msgid ""
-"Click here to switch betwen satetellite level and satellite position "
-"display. A rotating globe is shown in simulation mode"
-msgstr ""
-"Щёлкните здесь для переключения между показом уровней сигналов и положениями "
-"спутников. Вращающийся глобус показывается в симуляционном режиме"
-
-#: src/gpsdrive.c:5111
-msgid "Number of used satellites/satellites in view"
-msgstr "Число использованных спутников/видимых спутников"
-
-#  mv: it is estimated Position error, not estimated Precision error
-#: src/gpsdrive.c:5115
-msgid "EPE (Estimated Precision Error), if available"
-msgstr "ООП (EPE, Ожидаемая Ошибка Позиции, метры), если доступна."
-
-#: src/gpsdrive.c:5119
-msgid ""
-"PDOP (Position Dilution Of Precision). PDOP less than 4 gives the best "
-"accuracy, between 4 and 8 gives acceptable accuracy and greater than 8 gives "
-"unacceptable poor accuracy. "
-msgstr ""
-"ПФПТ (PDOP, Позиционный Фактор Потери Точности, множитель для остальных "
-"ошибок). ПФПТ 1 соответствует идеальному расположению спутников, менее 4 "
-"даёт лучшую точность, между 4 и 8 даёт приемлимую точность, больше 8 "
-"недопустимо плохую точность."
-
-#: src/gpsdrive.c:5124
-msgid ""
-"On top of the compass you see the direction to which you move. The pointer "
-"shows the target direction on the compass."
-msgstr ""
-"Над компасом вы видите направление, в котором двигаетесь. Стрелка показывает "
-"направление к цели на компасе."
-
-#: src/gpsdrive.c:5127
-msgid "/Menu"
-msgstr "/Меню"
-
-#: src/gpsdrive.c:5129
-msgid "Here you find extra functions for maps, tracks and messages"
-msgstr "Здесь вы найдёте дополнительные функции для карт, треков и сообщений"
-
-#: src/gpsdrive.c:5133
-msgid "Disable output of speech"
-msgstr "Выключить вывод речи"
-
-#: src/gpsdrive.c:5137
-msgid "Show waypoints on the map"
-msgstr "Показать ориентиры на карте"
-
-#: src/gpsdrive.c:5142
-msgid "Zoom into the current map"
-msgstr "Увеличить текущую карту"
-
-#: src/gpsdrive.c:5144
-msgid "Zooms out off the current map"
-msgstr "Уменьшить текущую карту"
-
-#: src/gpsdrive.c:5146
-msgid "Select the next more detailed map"
-msgstr "Выбрать следующую более детальную карту"
-
-#: src/gpsdrive.c:5148
-msgid "Select the next less detailed map"
-msgstr "Выбрать следующую менее детальную карту"
-
-#: src/gpsdrive.c:5152
-msgid "Find Points of Interest and select as destination"
-msgstr "Найти POI и выбрать как назначение"
-
-#: src/gpsdrive.c:5156
-msgid "Select the map scale of avail. maps."
-msgstr "Выберите масштаб карты из доступных карт"
-
-#: src/gpsdrive.c:5160
-msgid "This shows the time from your GPS receiver"
-msgstr "Это показывает время по вашему приёмнику GPS"
-
-#: src/gpsdrive.c:5164
-msgid ""
-"Number of mobile targets within timeframe/total received from friendsserver"
-msgstr ""
-"Количество мобильных целей в пределах временных рамок/всего принято от "
-"сервера друзей"
-
-#: src/gpsdrive.c:5300
-#, c-format
+#: src/gpsdrive.c:2631
 msgid ""
 "\n"
 "\n"
@@ -801,141 +473,56 @@ msgstr ""
 "Спасибо за использование GpsDrive!\n"
 "\n"
 
-#: src/gpsdrive_config.c:105
-msgid "Error saving config file ~/.gpsdrive/gpsdriverc"
-msgstr "Ошибка при сохранении конфигурационного файла ~/.gpsdrive/gpsdriverc"
-
-#: src/gps_handler.c:232
-#, c-format
-msgid "unable to add match for signals %s: %s"
-msgstr "невозможно добавить соответствие для сигналов: %s: %s"
-
-#: src/gps_handler.c:237
-msgid "unable to register filter with the connection"
-msgstr "невозможно зарегистрировать фильтр для соединения"
-
-#: src/gps_handler.c:242
-msgid "DBUS Mode"
-msgstr "режим DBUS"
-
-#: src/gps_handler.c:274 src/gpskismet.c:340
-msgid "can't open socket for port "
-msgstr "невозможно открыть сокет для порта"
-
-#: src/gps_handler.c:296
-#, c-format
+#: src/gpsdrive.c:2634
 msgid ""
 "\n"
-"Cannot connect to %s: unknown host\n"
+"\n"
+"All Unit Tests were successful.\n"
+"\n"
 msgstr ""
 "\n"
-"Невозможно соединиться с %s: неизвестный хост\n"
-
-#: src/gps_handler.c:318
-msgid "NMEA Mode, Port 2222"
-msgstr "Режим NMEA, порт 2222"
-
-#: src/gps_handler.c:326
-msgid "NMEA Mode, Port 2947"
-msgstr "Режим NMEA, порт 2947"
-
-#: src/gps_handler.c:346 src/gps_handler.c:371
-msgid ""
 "\n"
-"no garmin support compiled in\n"
-msgstr ""
+"Все тесты модулей успешно завершились.\n"
 "\n"
-"не вкомпилирована поддержка garmin\n"
 
-#: src/gps_handler.c:376
-msgid ""
-"\n"
-"Garmin protocol detection disabled!\n"
-msgstr ""
-"\n"
-"детектирование протокола Garmin отключено!\n"
-
-#: src/gps_handler.c:488
-msgid "Stop GPSD"
-msgstr "Остановить GPSD"
-
-#: src/gps_handler.c:493
-msgid "Stop GPSD and switch to simulation mode"
-msgstr "Остановить GPSD и переключиться в режим симуляции"
-
-#: src/gps_handler.c:515
-msgid "Start GPSD"
-msgstr "Запустить GPSD"
-
-#: src/gps_handler.c:519
-msgid "Starts GPSD for NMEA mode"
-msgstr "Запускает GPSD для режима NMEA"
-
-#: src/gps_handler.c:769
-msgid "Timeout getting data from GPS-Receiver!"
-msgstr "Таймаут при получении данных из приёмника GPS!"
-
-#: src/gps_handler.c:817 src/gps_handler.c:867 src/gps_handler.c:973
-#: src/gps_handler.c:1013 src/gps_handler.c:1080 src/gps_handler.c:1203
-msgid "Press middle mouse button for navigation"
-msgstr "Щёлкните средней кнопкой мыши для навигации"
-
-#: src/gps_handler.c:822
-#, c-format
-msgid "Direct serial connection to %s"
-msgstr "Прямое последовательное соединение с %s"
-
-#: src/gps_handler.c:872 src/gps_handler.c:904 src/gps_handler.c:1017
-#: src/gps_handler.c:1086 src/gps_handler.c:1209
-msgid "Not enough satellites in view!"
-msgstr "Не достаточно спутников в поле зрения"
-
-#: src/gps_handler.c:977
-msgid "GARMIN Mode"
-msgstr "режим GARMIN"
-
-#: src/gps_handler.c:993
-msgid "No GPS used"
-msgstr "GPS не используется"
-
-#: src/gps_handler.c:995 src/nmea_handler.c:323
-msgid "Simulation mode"
-msgstr "Симуляционный режим"
-
-#: src/gps_handler.c:997
-msgid "Press middle mouse button for sim mode"
-msgstr "Щёлкните средней кнопкой для режима симуляции"
-
-#: src/gpskismet.c:104
+#: src/gpskismet.c:99
 msgid "trying to re-connect to kismet server\n"
-msgstr "пытаюсь пересоединиться с сервером kismet\n"
+msgstr "попытка повторного соединения с сервером kismet\n"
 
-#: src/gpskismet.c:106
+#: src/gpskismet.c:101
 msgid "Kismet server connection re-established\n"
 msgstr "Соединение с сервером kismet снова установлено\n"
 
-#: src/gpskismet.c:107
+#: src/gpskismet.c:102
 #, c-format
 msgid "done trying to re-connect: socket=%d\n"
-msgstr "сделана попытка пересоединиться: сокет=%d\n"
+msgstr "выполнена попытка повторнго соединиения: сокет=%d\n"
 
-#: src/gpskismet.c:154
+#: src/gpskismet.c:149
 msgid "Kismet server connection lost\n"
 msgstr "Потеряно соединение с сервером kismet\n"
 
-#: src/gpskismet.c:334
+#: src/gpskismet.c:271
 msgid "Trying Kismet server\n"
 msgstr "Пробую сервер kismet\n"
 
-#: src/gpsmisc.c:309 src/gpsmisc.c:311 src/gpsmisc.c:495 src/gpsmisc.c:497
+#: src/gpsmisc.c:311 src/gpsmisc.c:313 src/gpsmisc.c:534 src/gpsmisc.c:536
 #, c-format
 msgid "Couldn't find pixmap file: %s"
-msgstr "Невозможно найти pixmap файл: %s"
+msgstr "Не удаётся найти pixmap файл: %s"
 
-#: src/gpsnasamap.c:209
+#: src/gpsmisc.c:347 src/main_gui.c:876
+msgid "nmi"
+msgstr "nmi"
+
+#: src/gpsmisc.c:358 src/main_gui.c:900 src/settings.c:1716
+msgid "km"
+msgstr "км"
+
+#: src/gpsnasamap.c:210
 #, c-format
 msgid "could not create output map file %s!\n"
-msgstr "невозможно создать конечный файл карты %s!\n"
+msgstr "не удаётся создать конечный файл карты %s!\n"
 
 #: src/gpsnasamap.c:226
 msgid "Creating map..."
@@ -948,7 +535,7 @@ msgstr "Создание временной карты из спутниковы
 #: src/gpsnasamap.c:244
 #, c-format
 msgid "converting map for latitude: %f and longitude: %f ...\n"
-msgstr "конвертирование карты для широты: %f и долготы: %f ...\n"
+msgstr "преобразование карты для широты: %f и долготы: %f ...\n"
 
 #: src/gpsnasamap.c:356
 #, c-format
@@ -958,101 +545,107 @@ msgid ""
 "map_koord.txt (rename the file!):\n"
 msgstr ""
 "\n"
-"Вы можете перманентно добавить этот файл карты в ваш map_koord.txt,\n"
+"Можно навсегда добавить этоу карту в файл map_koord.txt,\n"
 "предварительно переименовав:\n"
 
-#: src/gpsserial.c:172
-#, c-format
-msgid "waiting for thread to stop\n"
-msgstr "ожидание остановки потока\n"
+#: src/gpx.c:1011
+msgid "File succesfully saved"
+msgstr "Файл успешно сохранён"
 
-#: src/gpsserial.c:195
-#, c-format
-msgid ""
-"\n"
-"error opening %s(%d)\n"
-msgstr ""
-"\n"
-"ошибка открытия %s(%d)\n"
+#: src/gpx.c:1049
+msgid "Please select a file"
+msgstr "Выберите файл"
 
-#: src/gpsserial.c:198
-#, c-format
-msgid "successfull opened %s\n"
-msgstr "успешно открыто %s\n"
-
-#: src/gpsserial.c:204
-#, c-format
-msgid "switching WAAS/EGNOS on\n"
-msgstr "включение WAAS/EGNOS\n"
-
-#: src/gpsserial.c:210
-#, c-format
-msgid "switching WAAS/EGNOS off\n"
-msgstr "выключение WAAS/EGNOS\n"
-
-#: src/gpssql.c:107
-#, c-format
-msgid "SQL: connected to %s as %s using %s\n"
-msgstr "SQL: соединился с %s как %s используя %s\n"
-
-#: src/gpssql.c:188
-#, c-format
-msgid "rows inserted: %ld\n"
-msgstr "строк вставлено: %ld\n"
-
-#: src/gpssql.c:210
-#, c-format
-msgid "last index: %ld\n"
-msgstr "последний индекс: %ld\n"
-
-#: src/gpssql.c:258
-#, c-format
-msgid "rows updated: %ld\n"
-msgstr "обновлено строк: %ld\n"
-
-#: src/gpssql.c:285
-#, c-format
-msgid "rows inserted: %d\n"
-msgstr "строк вставлено: %d\n"
-
-#: src/gpssql.c:307
-#, c-format
-msgid "last index: %d\n"
-msgstr "последний индекс: %d\n"
-
-#: src/gpssql.c:333
-#, c-format
-msgid "rows updated: %d\n"
-msgstr "обновлено строк: %d\n"
-
-#: src/gpssql.c:419
-#, c-format
-msgid "rows deleted: %d\n"
-msgstr "удалено строк: %d\n"
-
-#: src/gpssql.c:589
+#: src/gpx.c:1054
 #, c-format
 msgid ""
-"\n"
-"libmysqlclient.so not found.\n"
+"<b>Name:</b>\n"
+"<i>%s</i>\n"
+"<b>Description:</b>\n"
+"<i>%s</i>\n"
+"<b>Author</b>:\n"
+"<i>%s</i>\n"
+"<b>created by:</b>\n"
+"<i>%s</i>\n"
+"<b>Timestamp:</b>\n"
+"<i>%s</i>\n"
+"<b>Waypoints:</b>\n"
+"<i>%d</i>\n"
+"<b>Routes:</b>\n"
+"<i>%d (%d)</i>\n"
+"<b>Tracks:</b>\n"
+"<i>%d (%d)</i>\n"
 msgstr ""
-"\n"
-"libmysqlclient.so не найден.\n"
+"<b>Имя:</b>\n"
+"<i>%s</i>\n"
+"<b>Описание:</b>\n"
+"<i>%s</i>\n"
+"<b>Автор</b>:\n"
+"<i>%s</i>\n"
+"<b>создан:</b>\n"
+"<i>%s</i>\n"
+"<b>Временная метка:</b>\n"
+"<i>%s</i>\n"
+"<b>Ориентиров:</b>\n"
+"<i>%d</i>\n"
+"<b>Маршрутов:</b>\n"
+"<i>%d (%d)</i>\n"
+"<b>Треков:</b>\n"
+"<i>%d (%d)</i>\n"
 
-#: src/gpssql.c:595
-#, c-format
-msgid ""
-"\n"
-"MySQL support disabled.\n"
-msgstr ""
-"\n"
-"поддержка MySQL отключена.\n"
+#: src/gpx.c:1101
+msgid "1.1"
+msgstr "1.1"
 
-#: src/gui.c:503
+#: src/gpx.c:1112
+msgid "Additional Info"
+msgstr "Дополнительная информация"
+
+#: src/gpx.c:1122
+msgid "<b>Route Name</b>"
+msgstr "<b>Название маршрута</b>"
+
+#: src/gpx.c:1124
+msgid "<b>Track Name</b>"
+msgstr "<b>Название трека</b>"
+
+#: src/gpx.c:1126
+msgid "<b>Short Info</b>"
+msgstr "<b>Короткая информация</b>"
+
+#: src/gpx.c:1132
+msgid "<b>Description</b>"
+msgstr "<b>Описание</b>"
+
+#: src/gpx.c:1137
+msgid "<b>Keywords</b>"
+msgstr "<b>Ключевые слова</b>"
+
+#: src/gpx.c:1142
+msgid "<b>Author Name</b>"
+msgstr "<b>Имя автора</b>"
+
+#: src/gpx.c:1148
+msgid "<b>Author Email</b>"
+msgstr "<b>E-mail автора</b>"
+
+#: src/gpx.c:1199
+msgid "Select a GPX file"
+msgstr "Выберите файл GPX"
+
+#: src/gpx.c:1222
+msgid "Show Info"
+msgstr "Показать информацию"
+
+#: src/gpx.c:1271
+msgid "Enter a GPX filename"
+msgstr "Введите имя файла GPX"
+
+#: src/gui.c:267 src/gui.c:334
 msgid "Press OK to continue!"
 msgstr "Нажмите OK для продолжения!"
 
-#: src/gui.c:537
+#: src/gui.c:302
 msgid ""
 "An error has occured.\n"
 "Press OK to continue!"
@@ -1060,7 +653,7 @@ msgstr ""
 "Произошла ошибка.\n"
 "Нажмите OK для продолжения!"
 
-#: src/gui.c:570
+#: src/gui.c:369
 #, c-format
 msgid ""
 "\n"
@@ -1071,27 +664,27 @@ msgid ""
 msgstr ""
 "\n"
 "Предупреждение: невозможно открыть изображение 'добавить ориентир'\n"
-"Пожалуйста установите программу от root так:\n"
+"Установите программу от root так:\n"
 "make install\n"
 "\n"
 
-#: src/icons.c:249
+#: src/icons.c:247
 #, c-format
 msgid ""
 "Please install the program as root with:\n"
 "make install\n"
 "\n"
 msgstr ""
-"Пожалуйста, установите программу от root:\n"
+"Установите программу от root:\n"
 "make install\n"
 "\n"
 
-#: src/icons.c:356 src/icons.c:361
+#: src/icons.c:359 src/icons.c:364
 #, c-format
 msgid "Loaded user defined icon %s\n"
 msgstr "Загружена пользовательская иконка %s\n"
 
-#: src/import_map.c:240
+#: src/import_map.c:242
 msgid "Select a map file"
 msgstr "Выберите файл карты"
 
@@ -1143,121 +736,375 @@ msgstr "Принять первую точку"
 msgid "Accept Scale and Finish"
 msgstr "Принять масштаб и закончить"
 
-#: src/import_map.c:348
+#: src/import_map.c:350
 msgid "Finish"
 msgstr "Закончить"
 
-#: src/import_map.c:363
+#: src/import_map.c:360
 msgid "Go up"
 msgstr "Вверх"
 
-#: src/import_map.c:366
+#: src/import_map.c:363
 msgid "Go left"
 msgstr "Влево"
 
-#: src/import_map.c:369
+#: src/import_map.c:366
 msgid "Go right"
 msgstr "Вправо"
 
-#: src/import_map.c:372
+#: src/import_map.c:369
 msgid "Go down"
 msgstr "Вниз"
 
-#: src/import_map.c:375
+#: src/import_map.c:372
 msgid "Zoom in"
 msgstr "Увеличить"
 
-#: src/import_map.c:378
+#: src/import_map.c:375
 msgid "Zoom out"
 msgstr "Уменьшить"
 
-#: src/import_map.c:400
+#: src/import_map.c:392
 msgid "Screen X"
 msgstr "X экрана"
 
-#: src/import_map.c:402
+#: src/import_map.c:394
 msgid "Screen Y"
 msgstr "Y экрана"
 
-#: src/import_map.c:414
+#: src/import_map.c:406
 msgid "Browse POIs"
 msgstr "Выбрать POI"
 
-#: src/import_map.c:445
+#: src/import_map.c:437
 msgid "Browse filename"
 msgstr "Выбрать имя файла"
 
-#: src/import_map.c:834
+#: src/import_map.c:827
 msgid "SELECTED"
 msgstr "ВЫБРАННОГО"
 
-#: src/import_map.c:835 src/routes.c:122 src/routes.c:153 src/routes.c:616
-#: src/waypoint.c:878
-msgid "To"
-msgstr "до"
+#: src/main_gui.c:352
+msgid "Auto"
+msgstr "Авто"
+
+#: src/main_gui.c:601 src/main_gui.c:1611 src/main_gui.c:1656
+#: src/settings.c:2257 src/settings.c:2311
+msgid "Speed"
+msgstr "Скорость"
+
+#: src/main_gui.c:605 src/main_gui.c:636 src/main_gui.c:670
+msgid "mi/h"
+msgstr "миль/ч"
+
+#: src/main_gui.c:609 src/main_gui.c:640 src/main_gui.c:674
+msgid "knots"
+msgstr "узлов"
+
+#: src/main_gui.c:613 src/main_gui.c:644 src/main_gui.c:678
+msgid "km/h"
+msgstr "км/ч"
+
+#: src/main_gui.c:628 src/main_gui.c:1612 src/main_gui.c:1657
+msgid "Avg. Speed"
+msgstr "Ср. скорость"
+
+#: src/main_gui.c:666 src/main_gui.c:1613 src/main_gui.c:1658
+msgid "Max. Speed"
+msgstr "Макс. скорость"
+
+#: src/main_gui.c:691 src/main_gui.c:1609 src/main_gui.c:1654
+#: src/main_gui.c:2392
+msgid "Bearing"
+msgstr "Азимут"
+
+#: src/main_gui.c:702 src/main_gui.c:1614 src/main_gui.c:1659
+#: src/main_gui.c:2398
+msgid "Heading"
+msgstr "Направление"
+
+#: src/main_gui.c:713 src/main_gui.c:1610 src/main_gui.c:1655
+msgid "Turn"
+msgstr "Поворот"
+
+#: src/main_gui.c:736
+msgid "Time remaining"
+msgstr "Оставшееся время"
+
+#: src/main_gui.c:790 src/main_gui.c:1615 src/main_gui.c:1660
+#: src/poi_gui.c:636 src/settings.c:1235
+msgid "Altitude"
+msgstr "Высота"
+
+#: src/main_gui.c:845
+msgid "Odometer"
+msgstr "Одометр"
+
+#: src/main_gui.c:949 src/main_gui.c:1617 src/main_gui.c:1662
+msgid "GPS Precision"
+msgstr "точность GPS"
+
+#: src/main_gui.c:966 src/main_gui.c:1618 src/main_gui.c:1663
+msgid "Current Time"
+msgstr "Текущее время"
+
+#: src/main_gui.c:999 src/main_gui.c:1619 src/main_gui.c:1664
+msgid "Position"
+msgstr "Положение"
+
+#: src/main_gui.c:1015 src/main_gui.c:1620 src/main_gui.c:1665
+msgid "Map Scale"
+msgstr "Масштаб карты"
+
+#: src/main_gui.c:1129
+msgid "No GPS"
+msgstr "GPS не используется"
+
+#: src/main_gui.c:1136
+msgid "Simulation Mode"
+msgstr "Имитационный режим"
+
+#: src/main_gui.c:1449
+msgid "Quicksaved Waypoint"
+msgstr "Быстросохранённый ориентир"
+
+#: src/main_gui.c:1482
+msgid "Temporary Waypoint"
+msgstr "Временный ориентир"
+
+#: src/main_gui.c:1607 src/main_gui.c:1652
+msgid "Distance to Target"
+msgstr "Расстояние до цели"
+
+#: src/main_gui.c:1608 src/main_gui.c:1653
+msgid "Time Remaining"
+msgstr "Оставшееся время"
+
+#: src/main_gui.c:1616 src/main_gui.c:1661
+msgid "Trip Odometer"
+msgstr "Одометр путешествия"
+
+#: src/main_gui.c:1704
+msgid "Satellite Info"
+msgstr "Информация о спутниках"
 
 #
-#: src/map_handler.c:218
+#: src/main_gui.c:1736 src/main_gui.c:2106
+msgid "Map Control"
+msgstr "Управление картой"
+
+#: src/main_gui.c:1799
+msgid "Options"
+msgstr "Опции"
+
+#: src/main_gui.c:1804
+msgid "Maps"
+msgstr "Карты"
+
+#: src/main_gui.c:1805 src/main_gui.c:1818
+msgid "Import"
+msgstr "Импорт"
+
+#: src/main_gui.c:1806
+msgid "Download"
+msgstr "Загрузить"
+
+#: src/main_gui.c:1821
+msgid "GPX Track"
+msgstr "GPX Трек"
+
+#: src/main_gui.c:1822
+msgid "GPX Route"
+msgstr "GPX Маршрут"
+
+#: src/main_gui.c:1823
+msgid "GPX Waypoints"
+msgstr "GPX Ориентиры"
+
+#: src/main_gui.c:1824
+msgid "GpsDrive Track"
+msgstr "GpsDrive трек"
+
+#: src/main_gui.c:1841
+msgid "Export"
+msgstr "Экспорт"
+
+#: src/main_gui.c:1844 src/main_gui.c:2064 src/settings.c:1351
+msgid "Track"
+msgstr "Трек"
+
+#: src/main_gui.c:1845 src/settings.c:1373
+msgid "Route"
+msgstr "Маршрут"
+
+#: src/main_gui.c:1856
+msgid "Send Message"
+msgstr "Отправиь сообщение"
+
+#: src/main_gui.c:1863
+msgid "Reset Trip"
+msgstr "Сбросить путешествие"
+
+#: src/main_gui.c:1894
+msgid "Help"
+msgstr "Помощь"
+
+#: src/main_gui.c:1931
+msgid "Zooms in on the current map"
+msgstr "Увеличить на текущей карте"
+
+#: src/main_gui.c:1933
+msgid "Zooms out on the current map"
+msgstr "Уменьшить на текущей карте"
+
+#: src/main_gui.c:1953
+msgid "Select the next more detailed map"
+msgstr "Выбрать следующую более детальную карту"
+
+#: src/main_gui.c:1955
+msgid "Select the next less detailed map"
+msgstr "Выбрать следующую менее детальную карту"
+
+#: src/main_gui.c:1966
+msgid "Mute Speech"
+msgstr "Выключить речь"
+
+#: src/main_gui.c:1977
+msgid "Disable output of speech"
+msgstr "Выключить вывод речи"
+
+#: src/main_gui.c:1996 src/poi_gui.c:1321
+msgid "Route List"
+msgstr "Список маршрута"
+
+#: src/main_gui.c:2005
+msgid "Points"
+msgstr "Ориентиры"
+
+#: src/main_gui.c:2012 src/settings.c:1885
+msgid "POI"
+msgstr "POI"
+
+#: src/main_gui.c:2024
+msgid "Show Points Of Interest found in Database"
+msgstr "Показать POI, найденные в базе данных"
+
+#: src/main_gui.c:2046
+msgid "WP"
+msgstr "WP"
+
+#: src/main_gui.c:2056
+msgid "Show Waypoints found in file way.txt"
+msgstr "Показать ориентиры, найденный в файле way.txt"
+
+#: src/main_gui.c:2069
+msgid "Show"
+msgstr "Показать"
+
+#  not sure for tracking
+#: src/main_gui.c:2078
+msgid "Show tracking on the map"
+msgstr "Показать передвижение на карте"
+
+#: src/main_gui.c:2085
+msgid "Save"
+msgstr "Сохранить"
+
+#: src/main_gui.c:2092
+msgid "Save the track to given filename at program exit"
+msgstr "Сохранить трек под указанным именем при выходе из программы"
+
+#: src/main_gui.c:2135
+msgid "+"
+msgstr "+"
+
+#: src/main_gui.c:2136
+msgid "-"
+msgstr "-"
+
+#: src/main_gui.c:2373
+msgid "GPS-Time"
+msgstr "Время по GPS"
+
+#: src/main_gui.c:2379
+msgid "This shows the time from your GPS receiver"
+msgstr "Это показывает время по вашему приёмнику GPS"
+
+#: src/main_gui.c:2382 src/settings.c:1395 src/settings.c:2221
+msgid "Friends"
+msgstr "Друзья"
+
+#: src/main_gui.c:2388
+msgid "Number of mobile targets within timeframe/total received from friendsserver"
+msgstr "Количество мобильных целей в пределах временных рамок/всего принято от сервера друзей"
+
+#: src/main_gui.c:2430
+msgid "Map scale"
+msgstr "Масштаб карты"
+
+#: src/main_gui.c:2436
+msgid "Pref. scale"
+msgstr "Предпочитаемый масштаб"
+
+#: src/main_gui.c:2458
+msgid "This shows the GPS Status and Number of satellites in use."
+msgstr "Это показывает состояние GPS и колличество используемых спутников."
+
+#: src/main_gui.c:2473
+msgid "GpsDrive (c)2001-2007 F. Ganter"
+msgstr "Gpsdrive (c)2001-2006 Фр. Гантер (F. Ganter)"
+
+#: src/main_gui.c:2696 src/nmea_handler.c:463
+msgid "Map"
+msgstr "Карта"
+
+#
+#: src/main_gui.c:2699
+msgid "Controls"
+msgstr "Управление"
+
+#: src/main_gui.c:2702
+msgid "Status"
+msgstr "Статус"
+
+#
+#: src/map_handler.c:146
 msgid "Map Controls"
 msgstr "Управление картой"
 
-#: src/map_handler.c:224
-msgid "direct draw sql _Streets"
-msgstr "непосредственное нанесение _Улиц из SQL"
-
-#: src/map_handler.c:236
-msgid "Draw Streets found in mySQL"
-msgstr "Рисовать улицы, найденные в MySQL"
-
-#: src/map_handler.c:246
+#: src/map_handler.c:151
 msgid "Auto _best map"
 msgstr "Авто _лучшая карта"
 
-#: src/map_handler.c:251
+#: src/map_handler.c:156
 msgid "Always select the most detailed map available"
 msgstr "Всегда выбирать наиболее детальную карту из доступных"
 
-#: src/map_handler.c:262
+#: src/map_handler.c:167
 msgid "Pos. _mode"
 msgstr "По_зиционный режим"
 
-#: src/map_handler.c:269
-msgid ""
-"Turn position mode on. You can move on the map with the left mouse button "
-"click. Clicking near the border switches to the proximate map."
-msgstr ""
-"Включает позиционный режим. Вы можете перемещаться по карте левой кнопкой "
-"мыши. Щелчёк рядом с границей карты переключает на ближайшую соседнюю карту."
+#: src/map_handler.c:174
+msgid "Turn position mode on. You can move on the map with the left mouse button click. Clicking near the border switches to the proximate map."
+msgstr "Включает позиционный режим. Вы можете перемещаться по карте левой кнопкой мыши. Щелчёк рядом с границей карты переключает на ближайшую соседнюю карту."
 
-#: src/map_handler.c:275
+#: src/map_handler.c:184
 msgid "Mapnik Mode"
 msgstr "Режим Mapnik"
 
-#: src/map_handler.c:293
-msgid ""
-"Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. "
-"OpenStreetMap Data) are used instead of the other maps."
-msgstr ""
-"Включить режим mapnik. В этом режиме векторные карты отрендеренные mapnik (т."
-"е. OpenStreetMap Data) используются вместо других карт."
+#: src/map_handler.c:187
+msgid "Turn mapnik mode on. In this mode vector maps rendered by mapnik (e.g. OpenStreetMap Data) are used instead of the other maps."
+msgstr "Включить режим mapnik. В этом режиме векторные карты отрендеренные mapnik (т.е. OpenStreetMap Data) используются вместо других карт."
 
-#: src/map_handler.c:311
+#: src/map_handler.c:212
 msgid "Shown map type"
 msgstr "Показаны карты типа"
 
-#: src/map_handler.c:318
-msgid "Street map"
-msgstr "Уличная карта"
-
-#: src/map_handler.c:328
-msgid "Topo map"
-msgstr "Топографическая карта"
-
-#: src/map_handler.c:435
+#: src/map_handler.c:309
 msgid "Error in line "
 msgstr "Ошибка в строке"
 
-#: src/map_handler.c:437
+#: src/map_handler.c:311
 msgid ""
 "I have found filenames in map_koord.txt which are\n"
 "not map_* or top_* files. Please rename them and change the entries in\n"
@@ -1266,235 +1113,226 @@ msgid ""
 msgstr ""
 "Найдены имена файлов в map_koord.txt, которые не\n"
 "map_* и не top_*. Пожалуйста переименуйте их и изменить записи в\n"
-"map_koord.txt.  Используйте map_* для уличных карт и top_* для "
-"топографических.\n"
+"map_koord.txt.  Используйте map_* для уличных карт и top_* для топографических.\n"
 "Иначе карты не будут показаны!"
 
-#: src/map_handler.c:760
+#: src/map_handler.c:640
 msgid " Mapfile could not be loaded:"
 msgstr " Файл карты невозможно загрузить:"
 
-#: src/map_handler.c:810
+#: src/map_handler.c:690
 msgid "Map found!"
 msgstr "Карта найдена!"
 
-#: src/nautic.c:122
-msgid "Nautic settings"
-msgstr "Морские установки"
-
-#: src/nautic.c:125
-msgid "Nautic"
-msgstr "Морские"
-
-#: src/nmea_handler.c:187
+#: src/nmea_handler.c:147
 msgid "can't open NMEA output file"
 msgstr "не могу открыть файл вывода NMEA"
 
-#: src/poi.c:311
+#: src/poi.c:530
 #, c-format
-msgid "%ld(%d) rows read\n"
-msgstr "%ld(%d) строк прочитано\n"
+msgid "%ldrows read\n"
+msgstr "%ldстрок прочитано\n"
 
-#: src/poi.c:1071 src/wlan.c:376
+#: src/poi.c:768
+msgid "all types"
+msgstr "все типы"
+
+#: src/poi.c:1135
 #, c-format
 msgid "%ld(%d) rows read in %.2f seconds\n"
 msgstr "%ld(%d) строк прочитано за %.2f секунд\n"
 
-#: src/poi_gui.c:140
+#: src/poi_gui.c:136
+msgid "Select Reference Point"
+msgstr "Выберите опорную точку"
+
+#: src/poi_gui.c:141 src/poi_gui.c:790
+msgid "Lookup Point of Interest"
+msgstr "Поиск POI"
+
+#: src/poi_gui.c:196
 #, c-format
 msgid " Found %d matching entries (Limit reached)."
 msgstr " Найдено %d совпадающих позиций (лимит исчерпан)."
 
-#: src/poi_gui.c:146
+#: src/poi_gui.c:202
 #, c-format
 msgid " Found %d matching entries."
 msgstr " Найдено %d совпадающих позиций."
 
-#: src/poi_gui.c:441 src/poi_gui.c:967
+#: src/poi_gui.c:558 src/poi_gui.c:1054
 msgid "POI-Info"
 msgstr "POI-Информация"
 
-#: src/poi_gui.c:471 src/poi_gui.c:923
+#: src/poi_gui.c:588 src/poi_gui.c:1011
 msgid "Comment"
 msgstr "Комментарий"
 
-#: src/poi_gui.c:478
+#: src/poi_gui.c:595
 msgid "private"
 msgstr "частная"
 
-#: src/poi_gui.c:569
+#: src/poi_gui.c:663 src/poi_gui.c:1000
+msgid "Type"
+msgstr "Тип"
+
+#: src/poi_gui.c:686
 msgid "Basic Data"
 msgstr "Базовые данные"
 
-#: src/poi_gui.c:598
+#: src/poi_gui.c:715
 msgid "Extra Data"
 msgstr "Подробные данные"
 
-#: src/poi_gui.c:682
-msgid "Lookup Point of Interest"
-msgstr "Поиск POI"
-
-#: src/poi_gui.c:725
+#: src/poi_gui.c:833
 msgid "<i>Search Text:</i>"
 msgstr "<i>Искать текст:</i>"
 
-#: src/poi_gui.c:748
+#: src/poi_gui.c:856
 msgid "<i>max. Distance:</i>"
 msgstr "<i>макс. расстояние:</i>"
 
-#: src/poi_gui.c:766
+#: src/poi_gui.c:874
 msgid "km from"
 msgstr "км от"
 
-#: src/poi_gui.c:771
+#: src/poi_gui.c:879
 msgid "current position"
 msgstr "текущая позиция"
 
-#: src/poi_gui.c:781
+#: src/poi_gui.c:889
 msgid "Search near current Position"
 msgstr "Искать рядом с текущей позицией"
 
-#: src/poi_gui.c:786
+#: src/poi_gui.c:894
 msgid "Destination/Cursor"
 msgstr "Назначение/Курсор"
 
-#: src/poi_gui.c:798
+#: src/poi_gui.c:906
 msgid "Search near selected Destination"
 msgstr "Поиск рядом с выбранным назначением"
 
-#: src/poi_gui.c:804
+#: src/poi_gui.c:912
 msgid "<i>POI-Types:</i>"
 msgstr "<i>POI-Типы:</i>"
 
-#: src/poi_gui.c:820
-msgid "all"
-msgstr "все"
-
-#: src/poi_gui.c:830
-msgid "Search all POI-Categories"
-msgstr "Искать во всех категориях POI"
-
-#: src/poi_gui.c:833
-msgid "selected:"
-msgstr "выбрано:"
-
-#: src/poi_gui.c:839
-msgid "Search only in selected POI-Categories"
-msgstr "Искать только в выбранных категориях POI"
-
-#: src/poi_gui.c:849
+#: src/poi_gui.c:937
 msgid "Search Criteria"
 msgstr "Критерий поиска"
 
-#: src/poi_gui.c:953
+#: src/poi_gui.c:1040
 msgid " Please enter your search criteria!"
 msgstr " Пожалуйста введите ваш критерий поиска!"
 
-#: src/poi_gui.c:970
+#: src/poi_gui.c:1057
 msgid "Show detailed Information for selected Point of Interest"
 msgstr "Показать подробную информацию для выбранной POI"
 
-#: src/poi_gui.c:976
+#: src/poi_gui.c:1063
 msgid "Results"
 msgstr "Результаты"
 
-#: src/poi_gui.c:1000
+#: src/poi_gui.c:1085
 msgid "Edit _Route"
 msgstr "Редактировать _маршрут"
 
-#: src/poi_gui.c:1004
+#: src/poi_gui.c:1089
 msgid "Switch to Add selected entry to Route"
 msgstr "Переключить в добавление отмеченной точки к маршруту"
 
-#: src/poi_gui.c:1014
+#: src/poi_gui.c:1099
 msgid "Delete selected entry"
 msgstr "Удалить выбранную точку"
 
-#: src/poi_gui.c:1033
-msgid "Jump to Target"
-msgstr "Прыгнуть к цели"
+#: src/poi_gui.c:1116
+msgid "Jump to POI"
+msgstr "Перейти к POI"
 
-#: src/poi_gui.c:1035
-msgid "Jump to selected entry"
-msgstr "Перейти к выбранной точке"
+#: src/poi_gui.c:1118
+msgid "Jump to selected entry (and switch to Pos. Mode if not already active)"
+msgstr "Перейти к выбранной записи (и перейти в режим позиционирования, если он уже не был активирован)"
 
-#: src/poi_gui.c:1039
+#: src/poi_gui.c:1136
 msgid "Select Target"
 msgstr "Выбрать цель"
 
-#: src/poi_gui.c:1041
-msgid "Use selected entry as target destination"
-msgstr "Использовать выбранную точку как назначение"
+#: src/poi_gui.c:1138
+msgid "Use selected entry as target destination (and leave Pos. Mode if active)"
+msgstr "Использовать выбранную точку как цель (и покинуть позиционный режим, если он активен)"
 
-#: src/poi_gui.c:1054 src/poi_gui.c:1355
+#: src/poi_gui.c:1155
+msgid "Select Point"
+msgstr "Выберите ориентир"
+
+#: src/poi_gui.c:1157
+msgid "Use selected entry as reference point"
+msgstr "Использовать выбранную точку как опорную"
+
+#: src/poi_gui.c:1170 src/poi_gui.c:1406
 msgid "Close this window"
 msgstr "Закрыть это окно"
 
-#: src/poi_gui.c:1093
-msgid "POI-Type Selection"
-msgstr "Выбор типа POI"
-
-#: src/poi_gui.c:1135
-msgid "ID"
-msgstr "ИД"
-
-#: src/poi_gui.c:1219
+#: src/poi_gui.c:1237
 msgid "Edit Route"
 msgstr "Редактировать маршрут"
 
-#: src/poi_gui.c:1287
-msgid "Route List"
-msgstr "Список маршрута"
+#: src/poi_gui.c:1306
+msgid "Trip"
+msgstr "Путешествие"
 
-#: src/poi_gui.c:1305
+#: src/poi_gui.c:1341
 msgid "Stop Route"
 msgstr "Остановить маршрут"
 
-#: src/poi_gui.c:1307
+#: src/poi_gui.c:1343
 msgid "Stop the Route Mode"
 msgstr "Остановить режим маршрута"
 
-#: src/poi_gui.c:1312
+#: src/poi_gui.c:1349
 msgid "Start Route"
 msgstr "Начать маршрут"
 
-#: src/poi_gui.c:1314
+#: src/poi_gui.c:1351
 msgid "Start the Route Mode"
 msgstr "Начать режим маршрута"
 
-#: src/poi_gui.c:1328
+#: src/poi_gui.c:1368
 msgid "Remove selected Entry from Route"
 msgstr "Убрать отмеченную точку из маршрута"
 
-#: src/poi_gui.c:1343
+#: src/poi_gui.c:1383
 msgid "Cancel Route"
 msgstr "Отменить маршрут"
 
-#: src/poi_gui.c:1345
+#: src/poi_gui.c:1385
 msgid "Discard Route"
 msgstr "Отменить маршрут"
 
-#: src/routes.c:408
+#: src/poi_gui.c:1395
+msgid "Export current route to a GPX File"
+msgstr "Экспортировать текущий маршрут в файл GPX"
+
+#: src/routes.c:278
 msgid "Waypoint"
 msgstr "Точка"
 
-#: src/routes.c:423
+#: src/routes.c:291
 msgid "Define route"
 msgstr "Определить маршрут"
 
-#: src/routes.c:431
+#: src/routes.c:299
 msgid "Start route"
 msgstr "Начать маршрут"
 
-#: src/routes.c:440
+#: src/routes.c:308
 msgid "Take all WP as route"
 msgstr "Взять все ориентиры как маршрут"
 
-#: src/routes.c:445
+#: src/routes.c:313
 msgid "Abort route"
 msgstr "Прервать маршрут"
 
-#: src/routes.c:505
+#: src/routes.c:373
 msgid ""
 "Click on waypoints list\n"
 "to add waypoints"
@@ -1502,7 +1340,7 @@ msgstr ""
 "Щёлкните по списку ориентиров\n"
 "чтобы добавить ориентир"
 
-#: src/routes.c:508
+#: src/routes.c:376
 msgid ""
 "Click on list item\n"
 "to select next waypoint"
@@ -1510,337 +1348,365 @@ msgstr ""
 "Щёлкните по элементу списка\n"
 "чтобы выбрать следующий ориентир"
 
-#: src/routes.c:556
-msgid ""
-"Create a route from all waypoints. Sorted with order in file, not distance."
-msgstr ""
-"Создать маршрут используя ориентиры из списка, в порядке нахождения в файле, "
-"не по расстоянию"
+#: src/routes.c:424
+msgid "Create a route from all waypoints. Sorted with order in file, not distance."
+msgstr "Создать маршрут используя ориентиры из списка, в порядке нахождения в файле, не по расстоянию"
 
-#: src/routes.c:560
-msgid ""
-"Click here to start your journey. GpsDrive guides you through the waypoints "
-"in this list."
-msgstr ""
-"Щёлкните здесь чтобы начать ваше путешествие.GpsDrive проведёт вас по "
-"ориентирам из этого списка."
+#: src/routes.c:428
+msgid "Click here to start your journey. GpsDrive guides you through the waypoints in this list."
+msgstr "Щёлкните здесь чтобы начать ваше путешествие.GpsDrive проведёт вас по ориентирам из этого списка."
 
-#: src/routes.c:563
+#: src/routes.c:431
 msgid "Abort your journey"
 msgstr "Оборвать ваше путешествие"
 
-#: src/settings.c:438 src/settings.c:446
+#: src/routes.c:593 src/routes.c:628
+msgid "Routepoint"
+msgstr "Точка маршрута"
+
+#: src/routes.c:594
+msgid "Quicksaved Routepoint"
+msgstr "Быстросохранённая точка маршрута"
+
+#: src/routes.c:609
+msgid "Routepoint added."
+msgstr "Точка маршрута добавлена."
+
+#: src/routes.c:633
+msgid "Unnamed Routepoint"
+msgstr "Безимянная точна маршрута"
+
+#: src/routes.c:643
+msgid "waypoint.routepoint"
+msgstr "ориентир.точка маршрута"
+
+#: src/settings.c:117
+msgid "GPS Initialization done."
+msgstr "GPS инициализирован."
+
+#: src/settings.c:431 src/settings.c:439
 msgid "EnterYourName"
 msgstr "ВведитеСвоёИмя"
 
-#: src/settings.c:449
+#: src/settings.c:442
 msgid "You should change your name in the first field!"
 msgstr "Вы должны изменить значение по умолчанию в первом поле!"
 
-#: src/settings.c:711
-msgid "Choose here the unit for the display of distances."
-msgstr "Выберите единицы измерения для показа расстояний."
+#: src/settings.c:495
+msgid "Speech output enabled."
+msgstr "Вывод речи включен"
 
-#: src/settings.c:729
-msgid "Choose here the unit for the display of altitudes."
-msgstr "Выберите единицы измерения высоты"
+#: src/settings.c:727
+msgid "Show Waypoints found in file"
+msgstr "Показать ориентиры, найденные в файле"
 
-#: src/settings.c:739
-msgid "Coordinates"
-msgstr "Координаты"
-
-#: src/settings.c:750
-msgid "Choose here the format for the coordinates display."
-msgstr "Выберите формат для отображения координат"
-
-#: src/settings.c:777
-msgid "Enable Simulation mode"
-msgstr "Разрешить симуляционный режим"
-
-#: src/settings.c:789
-msgid ""
-"If activated, the position pointer moves towards the selected target "
-"simulating a moving vehicle"
-msgstr ""
-"Если активировано, указатель двигается к выбранной цели, имитируя движущийся "
-"транспорт"
-
-#: src/settings.c:794
-msgid "Maximum CPU load (in %)"
-msgstr "Максимальная загрузка процессора (в %)"
-
-#: src/settings.c:800
-#, fuzzy, c-format
-msgid ""
-"Select the approx. maximum CPU load.\n"
-"Use 20-30% on notebooks while on battery to save power. This effects the "
-"refresh rate of the map screen."
-msgstr ""
-"Выберите приблизительную максимальную загрузку процессора.\n"
-"20-30% подойдёт для экономии энергии при питании ноутбука от аккумуляторной "
-"батареи. Это отражается на скорости обновления карты на экране."
-
-#: src/settings.c:822
-msgid "Maps directory"
-msgstr "Каталог карт"
-
-#: src/settings.c:823
-msgid "Select Maps Directory"
-msgstr "Выберите каталог для карт"
-
-#: src/settings.c:829
-msgid ""
-"Path to your map files. In the specified directory also the index file "
-"map_koord.txt must be present."
-msgstr ""
-"Путь к вашим файлам карт. В указанном каталоге должен находиться файл "
-"индекса map_koord.txt."
-
-#: src/settings.c:850
-msgid "<b>Units</b>"
-msgstr "<b>Единицы</b>"
-
-#: src/settings.c:858
-msgid "<b>Miscellaneous</b>"
-msgstr "<b>Разное</b>"
-
-#: src/settings.c:866
-msgid "<b>Map Settings</b>"
-msgstr "<b>Настройки карты</b>"
-
-#: src/settings.c:878
-msgid "General"
-msgstr "Общие"
-
-#: src/settings.c:913
-msgid "Show grid"
-msgstr "Показать сетку"
-
-#: src/settings.c:915
-msgid "This will show a grid over the map"
-msgstr "Это покажет сетку поверх карты"
-
-#: src/settings.c:930
-msgid "Show Shadows"
-msgstr "Показывать тени"
-
-#: src/settings.c:932
-msgid "Switches shadows on map on or off"
-msgstr "Включает и выключает тени на карте"
-
-#: src/settings.c:947
-msgid "Position Marker"
-msgstr "Ваше положение обозначено как"
-
-#: src/settings.c:958
-msgid "Choose the apperance of your position marker."
-msgstr "Выберите внешний вид значка вашего положения"
-
-#: src/settings.c:978
+#: src/settings.c:893 src/settings.c:1501
 msgid "Automatic"
 msgstr "Автоматически"
 
-#: src/settings.c:982
+#: src/settings.c:897 src/settings.c:1505
 msgid "On"
 msgstr "Вкл"
 
-#: src/settings.c:986
+#: src/settings.c:901 src/settings.c:1509
 msgid "Off"
 msgstr "Выкл"
 
-#: src/settings.c:990
+#: src/settings.c:905
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle, when no GPS is available."
+msgstr "Если активировано, указатель двигается к выбранной цели, имитируя движущийся транспорт когда GPS не доступен"
+
+#: src/settings.c:909
+msgid "If activated, the position pointer moves towards the selected target simulating a moving vehicle always."
+msgstr "Если активировано, указатель двигается к выбранной цели, имитируя движущийся транспорт, всегда"
+
+#: src/settings.c:913
+msgid "Switches simulation mode off"
+msgstr "Выключает имитационный режим"
+
+#: src/settings.c:940
+msgid "Maximum CPU load (in %)"
+msgstr "Максимальная загрузка процессора (в %)"
+
+#: src/settings.c:947
+#, no-c-format
 msgid ""
-"Switches automagically to night mode if it is dark outside. Press 'N' key to "
-"turn off nightmode."
+"Select the approximate maximum CPU load.\n"
+"Use 20-30% on notebooks while on battery, to save power. This affects the refresh rate of the map screen."
 msgstr ""
-"Автоматически переключает в ночной режим в тёмное время суток. Нажмите 'N' "
-"чтобы выключить ночной режим."
+"Выберите приблизительную максимальную загрузку процессора.\n"
+"20-30% подойдёт для экономии энергии при питании ноутбука от аккумуляторной батареи. Это отражается на скорости обновления карты на экране."
 
-#: src/settings.c:993
-msgid "Switches night mode on. Press 'N' key to turn off nightmode."
-msgstr "Включает ночной режим. Нажмите 'N' чтобы выключить ночной режим."
+#: src/settings.c:971
+msgid "Maps directory"
+msgstr "Каталог карт"
 
-#: src/settings.c:996
-msgid "Switches night mode off"
-msgstr "Выключает ночной режим"
+#: src/settings.c:972
+msgid "Select Maps Directory"
+msgstr "Выберите каталог для карт"
 
-#: src/settings.c:1031
-msgid "Choose Track color"
-msgstr "Установка цвета трека"
+#: src/settings.c:978
+msgid "Path to your map files. In the specified directory also the index file map_koord.txt must be present."
+msgstr "Путь к вашим файлам карт. В указанном каталоге должен находиться файл индекса map_koord.txt."
 
-#: src/settings.c:1035
-msgid "Set here the color of the drawn track"
-msgstr "Установить цвет рисуемого трека"
+#: src/settings.c:1000
+msgid "<b>Miscellaneous</b>"
+msgstr "<b>Разное</b>"
 
-#: src/settings.c:1040
-msgid "Set here the line style of the drawn track"
-msgstr "Задать стиль линии для рисуемого трека"
+#: src/settings.c:1008
+msgid "<b>Map Settings</b>"
+msgstr "<b>Настройки карты</b>"
+
+#: src/settings.c:1018
+msgid "General"
+msgstr "Общие"
+
+#: src/settings.c:1046
+msgid "Show grid"
+msgstr "Показать сетку"
 
 #: src/settings.c:1048
-msgid "Route"
-msgstr "Маршрут"
+msgid "This will show a grid over the map"
+msgstr "Это покажет сетку поверх карты"
 
-#: src/settings.c:1053
-msgid "Choose Route color"
-msgstr "Выберите цвет маршрута"
+#: src/settings.c:1063
+msgid "Show Shadows"
+msgstr "Показывать тени"
 
-#: src/settings.c:1057
-msgid "Set here the color of the drawn route"
-msgstr "Задайте цвет рисуемого трека"
+#: src/settings.c:1065
+msgid "Switches shadows on map on or off"
+msgstr "Включает и выключает тени на карте"
 
-#: src/settings.c:1062
-msgid "Set here the line style of the drawn route"
-msgstr "Задайте стиль линии для рисуемого трека"
+#: src/settings.c:1080
+msgid "Show zoom level"
+msgstr "Показать масштаб"
 
-#: src/settings.c:1070 src/settings.c:1882
-msgid "Friends"
-msgstr "Друзья"
+#: src/settings.c:1082
+msgid "This will show the current zoom level of the map"
+msgstr "Это покажет текущее значение масштаба на карте"
 
-#: src/settings.c:1075
-msgid "Choose Friends color"
-msgstr "Выберите цвет друзей"
+#: src/settings.c:1097
+msgid "Show scalebar"
+msgstr "Показать полосу масштабирования"
 
-#: src/settings.c:1079
-msgid "Set here the text color of the drawn friends"
-msgstr "Задайте цвет текста для отображения друзей"
+#: src/settings.c:1099
+msgid "This will show the scalebar in the map"
+msgstr "Это покажет полосу масштабирования на карте"
 
-#: src/settings.c:1084
-msgid "Choose font for friends"
-msgstr "Выберите шрифт для друзей"
-
-#: src/settings.c:1090
-msgid "Set here the font of the drawn friends"
-msgstr "Задайте шрифт для отображения друзей"
-
-#: src/settings.c:1098
-msgid "Choose Waypoints label color"
-msgstr "Выберите цвет для подписей к ориентирам"
-
-#: src/settings.c:1102
-msgid "Set here the text color of the waypoint labels"
-msgstr "Задайте цвет текста для меток ориентиров"
-
-#: src/settings.c:1107
-msgid "Choose font for waypoint labels"
-msgstr "Здесь вы можете выбрать шрифт для подписей к ориентирам"
-
-#: src/settings.c:1113
-msgid "Set here the font of waypoint labels"
-msgstr "Задайте шрифт для подписей к ориентирам"
+#: src/settings.c:1114
+msgid "Show way info (EXPERIMENTAL!)"
+msgstr "Показать информацию о пути (ЭКСПЕРИМЕНТ!)"
 
 #: src/settings.c:1116
-msgid "Big display"
-msgstr "Большой дисплей"
-
-#: src/settings.c:1121
-msgid "Choose color for big display"
-msgstr "Выберите цвет для большого дисплея"
-
-#: src/settings.c:1125
-msgid "Set here the color of the big routing displays"
-msgstr "Установить цвет большого экрана с маршрутом"
-
-#: src/settings.c:1130
-msgid "Choose font for big display"
-msgstr "Выберите шрифт для большого дисплея"
+msgid "This will show information about the current way (this is an experimental feature, which may not work as expected!!!"
+msgstr "Покажет информацию о текущем пути (это экспериментальная возможность, которая может работать не так, как ожидается!!!)"
 
 #: src/settings.c:1136
-msgid "Set here the font of the big routing displays"
-msgstr "Установить шрифт большого дисплея с маршрутом"
+msgid "Position Marker"
+msgstr "Ваше положение обозначено как"
 
-#: src/settings.c:1177
-msgid "<b>Fonts, Colors, Styles</b>"
-msgstr "<b>Шрифты, цвета, стили</b>"
+#: src/settings.c:1147
+msgid "Choose the appearance of your position marker."
+msgstr "Выберите внешний вид значка положения"
 
-#: src/settings.c:1188
-msgid "<b>Nightmode</b>"
-msgstr "<b>Ночной режим</b>"
+#: src/settings.c:1172
+msgid "Show battery"
+msgstr "Показать батарею"
 
-#: src/settings.c:1199
+#: src/settings.c:1174
+msgid "This will show the state of charge of your battery if available"
+msgstr "Это покажет состояние заряда аккумулятора, если доступно"
+
+#: src/settings.c:1189
+msgid "Show temperature"
+msgstr "Показать температуру"
+
+#: src/settings.c:1191
+msgid "This will show the temperature of your CPU if available"
+msgstr "Это покажет температуру вашего процессора, если доступна"
+
+#: src/settings.c:1228
+msgid "Choose here the unit for the display of distances."
+msgstr "Выберите единицы измерения для показа расстояний."
+
+#: src/settings.c:1246
+msgid "Choose here the unit for the display of altitudes."
+msgstr "Выберите единицы измерения высоты"
+
+#: src/settings.c:1253
+msgid "Coordinates"
+msgstr "Координаты"
+
+#: src/settings.c:1264
+msgid "Choose here the format for the coordinates display."
+msgstr "Выберите формат для отображения координат"
+
+#: src/settings.c:1292
 msgid "<b>Map Features</b>"
 msgstr "<b>Опции карты</b>"
 
-#: src/settings.c:1213
-msgid "GUI"
-msgstr "Графический интерфейс"
+#: src/settings.c:1303
+msgid "<b>Other Features</b>"
+msgstr "<b>Другие возможности</b>"
 
-#: src/settings.c:1239
+#: src/settings.c:1313
+msgid "<b>Units</b>"
+msgstr "<b>Единицы</b>"
+
+#: src/settings.c:1322 src/settings.c:1791
+msgid "Display"
+msgstr "Дисплей"
+
+#: src/settings.c:1356
+msgid "Choose Track color"
+msgstr "Установка цвета трека"
+
+#: src/settings.c:1360
+msgid "Set here the color of the drawn track"
+msgstr "Установить цвет рисуемого трека"
+
+#: src/settings.c:1365
+msgid "Set here the line style of the drawn track"
+msgstr "Задать стиль линии для рисуемого трека"
+
+#: src/settings.c:1378
+msgid "Choose Route color"
+msgstr "Выберите цвет маршрута"
+
+#: src/settings.c:1382
+msgid "Set here the color of the drawn route"
+msgstr "Задайте цвет рисуемого трека"
+
+#: src/settings.c:1387
+msgid "Set here the line style of the drawn route"
+msgstr "Задайте стиль линии для рисуемого трека"
+
+#: src/settings.c:1400
+msgid "Choose Friends color"
+msgstr "Выберите цвет друзей"
+
+#: src/settings.c:1404
+msgid "Set here the text color of the drawn friends"
+msgstr "Задайте цвет текста для отображения друзей"
+
+#: src/settings.c:1409
+msgid "Choose font for friends"
+msgstr "Выберите шрифт для друзей"
+
+#: src/settings.c:1415
+msgid "Set here the font of the drawn friends"
+msgstr "Задайте шрифт для отображения друзей"
+
+#: src/settings.c:1418 src/settings.c:2024
+msgid "Waypoints"
+msgstr "Ориентиры"
+
+#: src/settings.c:1423
+msgid "Choose Waypoints label color"
+msgstr "Выберите цвет для подписей к ориентирам"
+
+#: src/settings.c:1427
+msgid "Set here the text color of the waypoint labels"
+msgstr "Задайте цвет текста для меток ориентиров"
+
+#: src/settings.c:1432
+msgid "Choose font for waypoint labels"
+msgstr "Здесь вы можете выбрать шрифт для подписей к ориентирам"
+
+#: src/settings.c:1438
+msgid "Set here the font of waypoint labels"
+msgstr "Задайте шрифт для подписей к ориентирам"
+
+# Панель приборов
+#: src/settings.c:1441
+msgid "Dashboard"
+msgstr "Торпеда"
+
+#: src/settings.c:1446
+msgid "Choose color for dashboard"
+msgstr "Выберите цвет для приборной панели"
+
+#: src/settings.c:1450
+msgid "Set here the color of the dashboard"
+msgstr "Установить цвет приборной панели"
+
+#: src/settings.c:1455
+msgid "Choose font for dashboard"
+msgstr "Выберите шрифт для рпиборной панели"
+
+#: src/settings.c:1461
+msgid "Set here the font of the dashboard"
+msgstr "Задайте шрифт для рпиборной панели"
+
+#: src/settings.c:1513
+msgid "Switches automagically to night mode if it is dark outside. Press 'N' key to turn off nightmode."
+msgstr "Автоматически переключает в ночной режим в тёмное время суток. Нажмите 'N' чтобы выключить ночной режим."
+
+#: src/settings.c:1516
+msgid "Switches night mode on. Press 'N' key to turn off nightmode."
+msgstr "Включает ночной режим. Нажмите 'N' чтобы выключить ночной режим."
+
+#: src/settings.c:1519
+msgid "Switches night mode off"
+msgstr "Выключает ночной режим"
+
+#: src/settings.c:1551
+msgid "<b>Fonts, Colors, Styles</b>"
+msgstr "<b>Шрифты, цвета, стили</b>"
+
+#: src/settings.c:1562
+msgid "<b>Nightmode</b>"
+msgstr "<b>Ночной режим</b>"
+
+#: src/settings.c:1574
+msgid "Colors"
+msgstr "Цвета"
+
+#: src/settings.c:1598
 msgid "Travel Mode"
 msgstr "Режим путешествия"
 
-#: src/settings.c:1241
+#: src/settings.c:1600
 msgid "Car"
 msgstr "Машина."
 
-#: src/settings.c:1243
+#: src/settings.c:1602
 msgid "Bike"
 msgstr "Вело"
 
-#: src/settings.c:1245
+#: src/settings.c:1604
 msgid "Walk"
 msgstr "Пешее"
 
-#: src/settings.c:1247
+#: src/settings.c:1606
 msgid "Boat"
 msgstr "Катер"
 
-#: src/settings.c:1249
+#: src/settings.c:1608
 msgid "Airplane"
 msgstr "Самолёт"
 
-#: src/settings.c:1259
-msgid ""
-"Choose your travel mode. This is used to determine which icon should be used "
-"to display your position."
-msgstr ""
-"Выберите ваш режим путешествия. Это используется для определения иконки, "
-"которая будет показывать ваше положение"
+#: src/settings.c:1618
+msgid "Choose your travel mode. This is used to determine which icon should be used to display your position."
+msgstr "Выберите ваш режим путешествия. Это используется для определения иконки, которая будет показывать ваше положение"
 
-#: src/settings.c:1285
-msgid "Direction"
-msgstr "Направление"
-
-#: src/settings.c:1288
-msgid "GPS Status"
-msgstr "Состояние GPS"
-
-#: src/settings.c:1330
-msgid "Switch on for speech output of the direction to the target"
-msgstr "Включите для речевого сообщения о направлении к цели"
-
-#: src/settings.c:1333
-msgid "Switch on for speech output of the distance to the target"
-msgstr "Включите для речевого сообщения о расстоянии до цели"
-
-#: src/settings.c:1336
-msgid "Switch on for speech output of your current speed"
-msgstr "Включите для речевого сообщения о вашей текущей скорости"
-
-#: src/settings.c:1338
-msgid "Switch on for speech output of the status of your GPS signal"
-msgstr "Включите для речевого сообщения о состоянии сигнала GPS"
-
-#: src/settings.c:1345
+#: src/settings.c:1636
 msgid "<b>Navigation Settings</b>"
 msgstr "<b>Навигационные настройки</b>"
 
-#: src/settings.c:1353
-msgid "<b>Speech Output</b>"
-msgstr "<b>Вывод речи</b>"
-
-#: src/settings.c:1361
+#: src/settings.c:1645
 msgid "Navigation"
 msgstr "Навигация"
 
-#: src/settings.c:1389 src/settings.c:1575
+#: src/settings.c:1678 src/settings.c:1913
 msgid "Waypoints File"
 msgstr "Файл ориентиров"
 
-#: src/settings.c:1391 src/settings.c:1577
+#: src/settings.c:1680 src/settings.c:1915
 msgid "Select Waypoints File"
 msgstr "Выберите файл ориентиров"
 
-#: src/settings.c:1399 src/settings.c:1585
+#: src/settings.c:1688 src/settings.c:1923
 msgid ""
 "Choose the waypoints file to use!\n"
 "Currently only files in GpsDrive's way.txt format are supported."
@@ -1848,65 +1714,51 @@ msgstr ""
 "Выберите файл с ориентирами!\n"
 "Сейчас поддерживается только файлы GpsDrive формата way.txt."
 
-#: src/settings.c:1415
+#: src/settings.c:1704
 msgid "Default search radius"
 msgstr "Радиус поиска по умолчанию"
 
-#: src/settings.c:1425
+#: src/settings.c:1714
 msgid "Choose the default search range (in km) for the POI-Lookup Window."
 msgstr "Выберите дальность поиска (в км) для окна поиска POI."
 
-#: src/settings.c:1427
-msgid "km"
-msgstr "км"
-
-#: src/settings.c:1429
+#: src/settings.c:1718
 msgid "Limit results to"
 msgstr "Ограничить количество результатов"
 
-#: src/settings.c:1438
-msgid ""
-"Choose the limit for the amount of found entries displayed in the POI-Lookup "
-"Window. Depending on your system a value set too high may slow down your "
-"system."
-msgstr ""
-"Выберите ограничение для количества найденных записей, показываемых в окне "
-"поиска POI. В зависимости от вашей системы, слишком высокая величина может "
-"замедлить работу вашей системы."
+#: src/settings.c:1727
+msgid "Choose the limit for the amount of found entries displayed in the POI-Lookup Window. Depending on your system a value set too high may slow down your system."
+msgstr "Выберите ограничение для количества найденных записей, показываемых в окне поиска POI. В зависимости от вашей системы, слишком высокая величина может замедлить работу вашей системы."
 
-#: src/settings.c:1441
+#: src/settings.c:1730
 msgid "entries"
 msgstr "записи"
 
-#: src/settings.c:1462
+#: src/settings.c:1751
 msgid "POI-Theme"
 msgstr "POI-Тема"
 
-#: src/settings.c:1491
+#: src/settings.c:1780
 msgid "POI-Filter"
 msgstr "POI-Фильтр"
 
-#: src/settings.c:1492
-msgid "Edit Filter"
-msgstr "Редактировать фильтр"
+#: src/settings.c:1799
+msgid "Label"
+msgstr "Метка"
 
-#: src/settings.c:1515
+#: src/settings.c:1853
 msgid "<b>Waypoints</b>"
 msgstr "<b>Ориентиры</b>"
 
-#: src/settings.c:1523
+#: src/settings.c:1861
 msgid "<b>POI Search Settings</b>"
 msgstr "<b>Настройки поиска POI</b>"
 
-#: src/settings.c:1533
+#: src/settings.c:1871
 msgid "<b>POI Display</b>"
 msgstr "<b>Показ POI</b>"
 
-#: src/settings.c:1547 src/settings.c:2226
-msgid "POI"
-msgstr "POI"
-
-#: src/settings.c:1623
+#: src/settings.c:1961
 msgid ""
 "Don't use more than\n"
 "100waypoint(way*.txt) files!"
@@ -1914,15 +1766,15 @@ msgstr ""
 "Не используйте более\n"
 "100 файлов с ориентирам (way*.txt)!"
 
-#: src/settings.c:1669
+#: src/settings.c:2008
 msgid "<b>File Dialog Selection</b>"
 msgstr "<b>Диалог выбора файла</b>"
 
-#: src/settings.c:1677
+#: src/settings.c:2016
 msgid "<b>Quick Select File</b>"
 msgstr "<b>Быстрый выбор файла</b>"
 
-#: src/settings.c:1716
+#: src/settings.c:2055
 msgid ""
 "If you enable this service, <span color=\"red\">everyone</span> using\n"
 "the same server can see your position!"
@@ -1930,141 +1782,127 @@ msgstr ""
 "Если вы включаете режим сервера друзей, <span color=\"red\">каждый</span>,\n"
 "использующий тот же сервер, сможет увидеть ваше положение!"
 
-#: src/settings.c:1721
+#: src/settings.c:2060
 msgid "Your name"
 msgstr "Ваше имя"
 
-#: src/settings.c:1730
+#: src/settings.c:2069
 msgid "Enable friends service"
 msgstr "Использовать сервис друзей"
 
-#: src/settings.c:1740
+#: src/settings.c:2079
 msgid "Show only positions newer than"
 msgstr "Показать только положения новее чем"
 
-#: src/settings.c:1744
+#: src/settings.c:2083
 msgid "Days"
 msgstr "Дни"
 
-#: src/settings.c:1746
+#: src/settings.c:2085
 msgid "Hours"
 msgstr "Часы"
 
-#: src/settings.c:1748
+#: src/settings.c:2087
 msgid "Minutes"
 msgstr "Минуты"
 
-#: src/settings.c:1794
-msgid ""
-"Enable/disable use of friends service. You have to enter a username, don't "
-"use the default name!"
-msgstr ""
-"Включает/выключает использование сервера друзей. Вы должны ввести ваше имя, "
-"не используйте значение по умолчанию"
+#: src/settings.c:2133
+msgid "Enable/disable use of friends service. You have to enter a username, don't use the default name!"
+msgstr "Включает/выключает использование сервера друзей. Вы должны ввести ваше имя, не используйте значение по умолчанию"
 
-#: src/settings.c:1798
+#: src/settings.c:2137
 msgid "Set here the name which will be shown near your position."
 msgstr "Задайте ваше имя, которое будет показываться рядом с вашим положением."
 
-#: src/settings.c:1801
-msgid ""
-"Set here the max. age of friends positions that are displayed. Older "
-"positions are not shown."
-msgstr ""
-"Задайте ограничение по времени для показа положений друзей. Более ранние "
-"положения не показываются."
+#: src/settings.c:2140
+msgid "Set here the max. age of friends positions that are displayed. Older positions are not shown."
+msgstr "Задайте ограничение по времени для показа положений друзей. Более ранние положения не показываются."
 
-#: src/settings.c:1820
+#: src/settings.c:2159
 msgid "IP"
 msgstr "IP"
 
-#: src/settings.c:1828
+#: src/settings.c:2167
 msgid "Lookup"
 msgstr "Поиск"
 
-#: src/settings.c:1844
-msgid ""
-"Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the "
-"friends server to use, then press the \"Lookup\" button."
-msgstr ""
-"Укажите полное доменное имя сервера (например, friends.gpsdrive.de) вашего "
-"сервера друзей, после этого нажмите кнопку \"Поиск\"."
+#: src/settings.c:2183
+msgid "Set here the fully qualified host name (i.e. friends.gpsdrive.de) of the friends server to use, then press the \"Lookup\" button."
+msgstr "Укажите полное доменное имя сервера (например, friends.gpsdrive.de) вашего сервера друзей, после этого нажмите кнопку \"Поиск\"."
 
-#: src/settings.c:1848
+#: src/settings.c:2187
 msgid "Press this button to resolve the friends server name."
 msgstr "Нажмите эту кнопку для поиска имени вашего сервера друзей в DNS"
 
-#: src/settings.c:1851
-msgid ""
-"Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
-msgstr ""
-"Введите адрес IP (напр., 127.0.0.1) если вы не указали выше имя сервера"
+#: src/settings.c:2190
+msgid "Set here the IP adress (i.e. 127.0.0.1) if you don't set the hostname above"
+msgstr "Введите адрес IP (напр., 127.0.0.1) если вы не указали выше имя сервера"
 
-#: src/settings.c:1859
+#: src/settings.c:2198 src/settings.c:2369 src/settings.c:2409
 msgid "<b>General</b>"
 msgstr "<b>Общее</b>"
 
-#: src/settings.c:1870
+#: src/settings.c:2209
 msgid "<b>Server</b>"
 msgstr "<b>Сервер</b>"
 
-#: src/settings.c:1932
+#: src/settings.c:2251
+msgid "Enable speech output using espeak"
+msgstr "Включить вывод речи, используя espeak"
+
+#: src/settings.c:2262
+msgid "Pitch"
+msgstr "Тон"
+
+#: src/settings.c:2267
+msgid "Voice"
+msgstr "Голос"
+
+#: src/settings.c:2309
+msgid "Direction"
+msgstr "Направление"
+
+#: src/settings.c:2312
+msgid "GPS Status"
+msgstr "Состояние GPS"
+
+#: src/settings.c:2354
+msgid "Switch on for speech output of the direction to the target"
+msgstr "Включите для речевого сообщения о направлении к цели"
+
+#: src/settings.c:2357
+msgid "Switch on for speech output of the distance to the target"
+msgstr "Включите для речевого сообщения о расстоянии до цели"
+
+#: src/settings.c:2360
+msgid "Switch on for speech output of your current speed"
+msgstr "Включите для речевого сообщения о вашей текущей скорости"
+
+#: src/settings.c:2362
+msgid "Switch on for speech output of the status of your GPS signal"
+msgstr "Включите для речевого сообщения о состоянии сигнала GPS"
+
+#: src/settings.c:2377
+msgid "<b>Output Settings</b>"
+msgstr "<b>Настройки вывода</b>"
+
+#: src/settings.c:2385
+msgid "Speech"
+msgstr "Речь"
+
+#: src/settings.c:2401
+msgid "Reinit GPS"
+msgstr "Переиннициализировать GPS"
+
+#: src/settings.c:2416
+msgid "GPS"
+msgstr "GPS"
+
+#: src/settings.c:2451
 msgid "GpsDrive Settings"
 msgstr "Настройки GpsDrive"
 
-#: src/settings.c:2225
-msgid "POI selection criterias"
-msgstr "Критерии выбора POI"
-
-#: src/settings.c:2251
-msgid "Dist. limit[km] "
-msgstr "Предел расстояния, км "
-
-#: src/settings.c:2255
-msgid "If enabled, show POIs only within this distance"
-msgstr "Если включено, показываются POI только в пределах этого расстояния"
-
-#: src/settings.c:2272
-msgid "Enable/disable distance selection"
-msgstr "Включает/выключает выбор расстояния"
-
-#: src/settings.c:2279
-msgid "Show no_ssid "
-msgstr "Показывать no_ssid "
-
-#: src/settings.c:2292
-msgid ""
-"If enabled, WLANs with no SSID are shown, because this is perhaps useless, "
-"you can disable it here"
-msgstr ""
-"Если выбрано, показываются WLANы без SSID. Поскольку они скорей всего "
-"бесполезны, вы можете их не отображать"
-
-#: src/settings.c:2299
-msgid "Selection mode"
-msgstr "Режим выборки"
-
-#: src/settings.c:2301
-msgid "include"
-msgstr "включая"
-
-#: src/settings.c:2304
-msgid "exclude"
-msgstr "исключая"
-
-#: src/settings.c:2307
-msgid "Show only POIs where the type field contains one of the selected words"
-msgstr ""
-"Показать только те POI, в которых поле тип содержит одно из выбранных слов"
-
-#: src/settings.c:2310
-msgid ""
-"Show only POIs where the type field doesn't contain any the selected words"
-msgstr ""
-"Показать только те POI, в которых поле типа не содержит ни одного выбранного "
-"слова"
-
-#: src/splash.c:144
+#: src/splash.c:113
 msgid ""
 "Left mouse button         : Set position (usefull in simulation mode)\n"
 "Right mouse button        : Set target directly on the map\n"
@@ -2084,7 +1922,7 @@ msgstr ""
 "Control правая кнопка\t: Задать ориентир в текущем положении на карте\n"
 "\n"
 
-#: src/splash.c:152
+#: src/splash.c:121
 msgid ""
 "j    : switch to next waypoint in route mode\n"
 "x    : add waypoint at current position\n"
@@ -2094,47 +1932,43 @@ msgid ""
 "f    : Toggle friends display\n"
 "w    : Set Waypoint at current location without asking\n"
 "p    : Set Waypoint at current cursor position without asking\n"
+"r    : Add current cursor position to end of route\n"
 "+    : Zoom in \n"
 "-    : Zoom out\n"
 msgstr ""
-"j\t: Перейти к следующему ориентиру в режиме маршрута\n"
-"x\t: Создать ориентир в текущем положении\n"
-"y\t: Создать ориентир в положении курсора мыши\n"
-"n\t: Включить освещение на 60сек в ночном режиме\n"
-"g\t: Переключает показ линий сетки\n"
-"f\t: Переключает показ друзей\n"
-"w\t: Создать ориентир в текущем положении без дальнейших вопросов\n"
-"p\t: Создать ориентир в положении курсора мыши без дальнейших вопросов\n"
-"+\t: Увеличить масштаб\n"
-"-\t: Уменьшить масштаб\n"
+"j    : Перейти к следующему ориентиру в режиме маршрута\n"
+"x    : Создать ориентир в текущем положении\n"
+"y    : Создать ориентир в положении курсора мыши\n"
+"n    : Включить освещение на 60сек в ночном режиме\n"
+"g    : Переключает показ линий сетки\n"
+"f    : Переключает показ друзей\n"
+"w    : Создать ориентир в текущем положении без дальнейших вопросов\n"
+"p    : Создать ориентир в положении курсора мыши без дальнейших вопросов\n"
+"r    : Добавить текущее положение курсора в конец маршрута\n"
+"+    : Увеличить масштаб\n"
+"-    : Уменьшить масштаб\n"
 
-#: src/splash.c:162
+#: src/splash.c:132
 msgid ""
 "Press the underlined key together with the ALT-key.\n"
 "\n"
-"You can move on the map by selecting the Position-Mode in the menu. A blue "
-"rectangle shows this mode, you can set this cursor by clicking on the map. "
-"If you click on the border of the map (the outer 20%) then the map switches "
-"to the next area.\n"
+"You can move on the map by selecting the Position-Mode in the menu. A blue rectangle shows this mode, you can set this cursor by clicking on the map. If you click on the border of the map (the outer 20%) then the map switches to the next area.\n"
 "\n"
 "Suggestions welcome.\n"
 "\n"
 msgstr ""
 "Нажмите клавишу Alt вместе с подчёркнутой клавишей.\n"
 "\n"
-"Вы можете перемещаться по карте в позиционном режиме. Ваше положение в этом "
-"режиме показано голубым прямоугольником и задаётся щелчком по карте. Если вы "
-"щёлкните по границе карты (в пределах 20% от края), то карта сменится на "
-"соседнюю.\n"
+"Вы можете перемещаться по карте в позиционном режиме. Ваше положение в этом режиме показано голубым прямоугольником и задаётся щелчком по карте. Если вы щёлкните по границе карты (в пределах 20% от края), то карта сменится на соседнюю.\n"
 "\n"
 "Принимаются советы.\n"
 "\n"
 
-#: src/splash.c:172
+#: src/splash.c:142
 msgid "GpsDrive v"
 msgstr "GpsDrive версии "
 
-#: src/splash.c:178
+#: src/splash.c:148
 msgid ""
 "\n"
 "\n"
@@ -2144,7 +1978,7 @@ msgstr ""
 "\n"
 "Новые версии вы найдёте на http://www.gpsdrive.de\n"
 
-#: src/splash.c:182
+#: src/splash.c:152
 msgid ""
 "Disclaimer: Please do not use for navigation. \n"
 "\n"
@@ -2152,40 +1986,39 @@ msgstr ""
 "Отмазка: Пожалуйста не используйте для навигации. \n"
 "\n"
 
-#: src/splash.c:187
+#: src/splash.c:157
 msgid "Please have a look into the manpage (man gpsdrive) for program details!"
-msgstr ""
-"Пожалуйста, просмотрите в руководстве (man gpsdrive) подробности о программе."
+msgstr "Пожалуйста, просмотрите в руководстве (man gpsdrive) подробности о программе."
 
-#: src/splash.c:192
+#: src/splash.c:162
 msgid "Mouse control (clicking on the map):\n"
 msgstr "Управление мышью (щелчками по карте):\n"
 
-#: src/splash.c:200
+#: src/splash.c:170
 msgid "Short cuts:\n"
 msgstr "Управление клавиатурой:\n"
 
-#: src/splash.c:207
+#: src/splash.c:177
 msgid "The other key shortcuts are marked as "
 msgstr "Прочие комбинации клавиш помечены как "
 
-#: src/splash.c:210
+#: src/splash.c:180
 msgid "underlined"
 msgstr "подчёркнутые"
 
-#: src/splash.c:213
+#: src/splash.c:183
 msgid " letters in the button text.\n"
 msgstr " буквы на подписи к кнопке.\n"
 
-#: src/splash.c:216
+#: src/splash.c:186
 msgid "Have a lot of fun!"
 msgstr "Развлекайтесь!"
 
-#: src/splash.c:337
+#: src/splash.c:303
 msgid "From:"
 msgstr "От:"
 
-#: src/splash.c:408
+#: src/splash.c:374
 #, c-format
 msgid ""
 "You received a message from\n"
@@ -2194,15 +2027,19 @@ msgstr ""
 "Вы получили сообщение от\n"
 "сервера друзей (%s)\n"
 
-#: src/splash.c:420
+#: src/splash.c:386
 msgid "You received a message through the friends server from:\n"
 msgstr "Вы получили сообщение через сервер друзей от:\n"
 
-#: src/splash.c:431
+#: src/splash.c:397
 msgid "Message text:\n"
 msgstr "Текст сообщения:\n"
 
-#: src/splash.c:556
+#: src/splash.c:504
+msgid "Starting GPS Drive"
+msgstr "Запускается GPS Drive"
+
+#: src/splash.c:524
 #, c-format
 msgid ""
 "\n"
@@ -2217,40 +2054,25 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/splash.c:624
+#: src/splash.c:592
 msgid "translator-credits"
 msgstr "max vakulenko <mv@umanaged.com>"
 
-#: src/splash.c:626
-msgid ""
-"GpsDrive is a car (bike, ship, plane) navigation system, that displays your "
-"position provided from a GPS receiver on a zoomable map and much more..."
-msgstr ""
-"GpsDrive это автомобильная (велосипедная, корабельная, самолётная) "
-"навигационная система, которая отображает вашу позицию, предоставленную "
-"приёмником GPS на масштабируемой карте и многое другое..."
+#: src/splash.c:594
+msgid "GpsDrive is a car (bike, ship, plane) navigation system, that displays your position provided from a GPS receiver on a zoomable map and much more..."
+msgstr "GpsDrive это автомобильная (велосипедная, корабельная, самолётная) навигационная система, которая отображает вашу позицию, предоставленную приёмником GPS на масштабируемой карте и многое другое..."
 
-#: src/splash.c:629
+#: src/splash.c:597
 msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"GpsDrive uses data from the OpenStreetMap Project (http://www.openstreetmap."
-"org), which is freely available under the terms of the Creative Commons "
-"Attribution-ShareAlike 2.0 license."
+"GpsDrive uses data from the OpenStreetMap Project (http://www.openstreetmap.org), which is freely available under the terms of the Creative Commons Attribution-ShareAlike 2.0 license."
 msgstr ""
-"Эта программа -- свободное программное обеспечение; вы можете распостранять "
-"его и/или изменять его на условиях GNU GPL так как опубликовано Free "
-"Software Foundation; как версии 2 этой лицензии так и (по вашему усмотрению) "
-"любой поздней лицензией.\n"
+"Эта программа -- свободное программное обеспечение; вы можете распостранять его и/или изменять его на условиях GNU GPL так как опубликовано Free Software Foundation; как версии 2 этой лицензии так и (по вашему усмотрению) любой поздней лицензией.\n"
 "\n"
-"GpsDrive использует данные проекта OpenStreetMap (http://www.openstreetmap."
-"org), которые свободно доступны на условиях лицензии Creative Commons "
-"Attribution-ShareAlike 2.0."
+"GpsDrive использует данные проекта OpenStreetMap (http://www.openstreetmap.org), которые свободно доступны на условиях лицензии Creative Commons Attribution-ShareAlike 2.0."
 
-#: src/splash.c:636
+#: src/splash.c:604
 #, c-format
 msgid ""
 "\n"
@@ -2265,30 +2087,261 @@ msgstr ""
 "make install\n"
 "\n"
 
-#: src/waypoint.c:671
+#: src/track.c:84
+msgid "Select a track file"
+msgstr "Выберите файл трека"
+
+#  console output should be fixed 1st (i.e. with LANG=ru_RU.KOI8-R gpsdrive try UTF-like output
+#  msgstr "Скорость при изменении положения более 2000км/ч, игнорируется\n"
+#: src/track.c:638
+#, c-format
+msgid "distance jump is more then 2000km/h speed, ignoring\n"
+msgstr "При изменении положения скорость более 2000км/ч, игнорируется\n"
+
+#: src/waypoint.c:436
 msgid "Add Point of Interest"
 msgstr "Добавить POI"
 
-#: src/waypoint.c:682
+#: src/waypoint.c:447
 msgid "Name:"
 msgstr "Название:"
 
-#: src/waypoint.c:701
+#: src/waypoint.c:456
 msgid " Type: "
 msgstr " Тип: "
 
-#: src/waypoint.c:709
+#: src/waypoint.c:488
 msgid " Comment: "
 msgstr " Комментарий: "
 
-#: src/waypoint.c:747
+#: src/waypoint.c:526
 msgid " Save waypoint in: "
 msgstr " Сохранить ориентир в: "
 
-#: src/waypoint.c:750
+#: src/waypoint.c:529
 msgid "Database"
 msgstr "База данных"
 
-#: src/waypoint.c:757
+#: src/waypoint.c:534
 msgid "way.txt File"
 msgstr "Файл way.txt"
+
+#~ msgid "Aeronautical settings"
+#~ msgstr "Воздушно-морские настройки"
+
+#~ msgid "Fly"
+#~ msgstr "Полёт"
+
+#~ msgid "Plane mode"
+#~ msgstr "Самолётный режим"
+
+#~ msgid "Use VFR"
+#~ msgstr "Использовать VFR"
+
+#~ msgid "Use IFR"
+#~ msgstr "Использовать IFR"
+
+#~ msgid "max. horizontal deviation "
+#~ msgstr "макс. горизонтальное отклонение"
+
+#~ msgid "max. vertical deviation "
+#~ msgstr "макс. вертикальное отклонение"
+
+#~ msgid "disable vert. deviation warning above 5000ft MSL"
+#~ msgstr "отключать предупреждение о вертикальном отклонении выше 5000футов MSL"
+
+#~ msgid "/Misc. Menu/Messages"
+#~ msgstr "/Прочее/Сообщения"
+
+#~ msgid "/_Menu"
+#~ msgstr "/_Меню"
+
+#~ msgid "/_Menu/_Maps"
+#~ msgstr "/_Меню/_Карты"
+
+#~ msgid "/_Menu/_Maps/_Import"
+#~ msgstr "/_Меню/_Карты/_Импорт"
+
+#~ msgid "/_Menu/_Maps/_Download"
+#~ msgstr "/_Меню/_Карты/_Загрузить"
+
+#~ msgid "/_Menu/_Reinitialize GPS"
+#~ msgstr "/_Меню/_Переинициализировать GPS"
+
+#~ msgid "/_Menu/_Load track file"
+#~ msgstr "/_Меню/_Загрузить файл трека"
+
+#~ msgid "/_Menu/M_essages"
+#~ msgstr "/_Меню/_Сообщения"
+
+#~ msgid "/_Menu/M_essages/_Send message to mobile target"
+#~ msgstr "/_Меню/_Сообщения/_Отправить сообщение мобильной цели"
+
+#~ msgid "/_Menu/S_ettings"
+#~ msgstr "/_Меню/_Настройки"
+
+#~ msgid "/_Menu/_Help"
+#~ msgstr "/_Меню/_Помощь"
+
+#~ msgid "/_Menu/_Help/_About"
+#~ msgstr "/_Меню/_Помощь/_О программе"
+
+#~ msgid "/_Menu/_Help/_Topics"
+#~ msgstr "/_Меню/_Помощь/_Разделы"
+
+#~ msgid "/_Menu/_Quit"
+#~ msgstr "/_Меню/_Выход"
+
+#~ msgid ""
+#~ "\n"
+#~ "Warning: unable to load gpsdriveanim.gif!\n"
+#~ "Please install the program as root with:\n"
+#~ "make install\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Предупреждение: невозможно загрузить gpsdriveanim.gif!\n"
+#~ "Пожалуйста, установите программу от root:\n"
+#~ "make install\n"
+#~ "\n"
+
+#~ msgid "NESW"
+#~ msgstr "СВЮЗ"
+
+#~ msgid "Sends your text to to selected computer using the friends server"
+#~ msgstr "Отправляет ваш текст на выбранный компьютер с помощью сервера друзей"
+
+#~ msgid "Please select your destination"
+#~ msgstr "Пожалуйста выберите своё назначение"
+
+#~ msgid "Edit route"
+#~ msgstr "Редактировать маршрут"
+
+#~ msgid "Create route"
+#~ msgstr "Создать маршрут"
+
+#~ msgid "Create a route using some waypoints from this list"
+#~ msgstr "Создать маршрут используя ориентиры из этого списка"
+
+#~ msgid "Delete the selected waypoint from the waypoint list"
+#~ msgstr "Удалить выбранные ориентиры из списка ориентиров"
+
+#~ msgid "Jump to the selected waypoint"
+#~ msgstr "Перейти к выбранному ориентиру"
+
+#~ msgid "-h        print this help\n"
+#~ msgstr "-h        показать этот текст\n"
+
+#~ msgid "-d        turn on debug info\n"
+#~ msgstr "-d        включить отладочную информацию\n"
+
+#~ msgid "-D X      set debug Level to X\n"
+#~ msgstr "-D X      установить уровень отладки равным X\n"
+
+#~ msgid "-e        use Festival-Lite (flite) for speech output\n"
+#~ msgstr "-e        использовать Festival-Lite (flite) для синтеза речи\n"
+
+#~ msgid "-t        set serial device for GPS i.e. /dev/ttyS1\n"
+#~ msgstr "-t        назначить последовательное устройство для GPS, например /dev/ttyS1\n"
+
+#~ msgid "-n        Disable use of direct serial connection\n"
+#~ msgstr "-n        Отключить использование прямого последовательного соединения\n"
+
+#~ msgid ""
+#~ "-l LANG   Select language of the voice,\n"
+#~ "          LANG may be english, spanish or german\n"
+#~ msgstr ""
+#~ "-l ЯЗЫК   Выбрать язык для голоса,\n"
+#~ "          ЯЗЫК может быть english, spanish или german\n"
+
+#~ msgid ""
+#~ "-s HEIGHT set height of the screen, if autodetection\n"
+#~ "          don't satisfy you, X is i.e. 768,600,480,200\n"
+#~ msgstr ""
+#~ "-s ВЫСОТА устанавливает число точек экрана по вертикали, если автоопределение\n"
+#~ "          вас не устраивает, например 768,600,480,200\n"
+
+#~ msgid "-r WIDTH  set width of the screen, only with -s\n"
+#~ msgstr "-r ШИРИНА устанавливает число точек экрана по горизонтали, только если задан -s\n"
+
+#~ msgid "-a        don't display battery status (i.e. broken APM)\n"
+#~ msgstr "-a        не показывать состояние аккумуляторной батареи (если кривой APM)\n"
+
+#~ msgid "-c WP     set start position in simulation mode to waypoint name WP\n"
+#~ msgstr "-c WP     выбрать ориентир WP как стартовое положение в режиме симуляции\n"
+
+#~ msgid "-x        create separate window for menu\n"
+#~ msgstr "-x        создать отдельное окно для меню\n"
+
+#~ msgid "-p        set settings for PDA (iPAQ, Yopy...)\n"
+#~ msgstr "-p        установить настройки для PDA (iPAQ, Yopy...)\n"
+
+#~ msgid "-q        disable SQL support\n"
+#~ msgstr "-q        отключить поддержку SQL\n"
+
+#~ msgid "-E        print out data received from direct serial connection\n"
+#~ msgstr "-E        печатать данные, принятые прямо через последовательное соединение\n"
+
+#~ msgid "-W x      set x to 1 to switch WAAS/EGNOS on, set to 0 to switch off\n"
+#~ msgstr "-W x      чтобы включить WAAS/EGNOS используйте x, равный 1, чтобы отключить -- равный 0\n"
+
+#~ msgid ""
+#~ "-z        don't display zoom factor and scale\n"
+#~ "\n"
+#~ msgstr ""
+#~ "-z        не показывать кратность увеличения и масштаб\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "You can only choose between english, spanish and german\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Ваш выбор ограничен языками english, spanish и german\n"
+#~ "\n"
+
+#~ msgid "M_ute"
+#~ msgstr "Т_ишина"
+
+#~ msgid "PO_I"
+#~ msgstr "PO_I"
+
+#~ msgid "_WLAN"
+#~ msgstr "_WLAN"
+
+#~ msgid "Wlan"
+#~ msgstr "Wlan"
+
+#~ msgid "---"
+#~ msgstr "---"
+
+#~ msgid "Selected:"
+#~ msgstr "Выбрано:"
+
+#~ msgid "within"
+#~ msgstr "в"
+
+#~ msgid "Map file"
+#~ msgstr "Файл карты"
+
+#~ msgid "Time to Dest."
+#~ msgstr "Время до цели"
+
+#~ msgid "000,00000N"
+#~ msgstr "000,00000С"
+
+#~ msgid "000,00000E"
+#~ msgstr "000,00000В"
+
+#~ msgid "0000"
+#~ msgstr "0000"
+
+#~ msgid "Menu"
+#~ msgstr "Меню"
+
+#~ msgid "Click here to switch betwen satetellite level and satellite position display. A rotating globe is shown in simulation mode"
+#~ msgstr "Щёлкните здесь для переключения между показом уровней сигналов и положениями спутников. Вращающийся глобус показывается в симуляционном режиме"
+
+#~ msgid "Number of used satellites/satellites in view"
+#~ msgstr "Число использованных спутников/видимых спутников"
