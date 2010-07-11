@@ -138,7 +138,7 @@ static struct mapsource_struct
 	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
 		which will only be valid for mid-lats */
-	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
+	/* Octave code: for lat=0:5:75; disp( [lat (a * 2*pi * pixelfact * cos(lat * pi/180)) / (256*2^9)]); end */
 	MAPSOURCE_OSM_TAH, "1 : 2 500", 17, 2250,
 	MAPSOURCE_OSM_TAH, "1 : 5 000", 16, 4500,
 	MAPSOURCE_OSM_TAH, "1 : 10 000", 15, 9000,
@@ -706,7 +706,7 @@ map_download_cb (GtkWidget *widget, gpointer data)
 	GtkWidget *dl_bt, *close_bt;
 	GtkWidget *lat_lb, *lon_lb, *source_lb;
 	GtkWidget *help_lb, *scale_lb;
-	GtkWidget *cover_lb, *cover_entry;
+//	GtkWidget *cover_lb, *cover_entry;
 	GtkWidget *source_combobox;
 	GtkListStore *source_list;
 	GtkCellRenderer *renderer_source, *renderer_scale;
@@ -774,10 +774,10 @@ map_download_cb (GtkWidget *widget, gpointer data)
 	gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (source_combobox),
 		renderer_source, "text", 1, NULL);
 
-	cover_lb = gtk_label_new (_("Map covers"));
-	cover_entry = gtk_entry_new ();
-	gtk_editable_set_editable (GTK_EDITABLE (cover_entry), FALSE);
-	g_signal_connect (cover_entry, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
+//	cover_lb = gtk_label_new (_("Map covers"));
+//	cover_entry = gtk_entry_new ();
+//	gtk_editable_set_editable (GTK_EDITABLE (cover_entry), FALSE);
+//	g_signal_connect (cover_entry, "changed", G_CALLBACK (mapdl_setparm_cb), NULL);
 
 	lat_lb = gtk_label_new (_("Latitude"));
 	lat_entry = gtk_entry_new ();
@@ -815,8 +815,9 @@ map_download_cb (GtkWidget *widget, gpointer data)
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lat_entry, 1, 2, 1, 2);
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lon_lb, 0, 1, 2, 3);
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), lon_entry, 1, 2, 2, 3);
-	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_lb, 0, 1, 3, 4);
-	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_entry, 1, 2, 3, 4);
+// "Map covers" is not implemented (and I'm not sure it can be)
+//	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_lb, 0, 1, 3, 4);
+//	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), cover_entry, 1, 2, 3, 4);
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), scale_lb, 0, 1, 4, 5);
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), scale_combobox, 1, 2, 4, 5);
 	gtk_table_attach_defaults (GTK_TABLE (mapdl_table), help_lb, 0, 2, 5, 6);
