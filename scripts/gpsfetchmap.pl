@@ -173,6 +173,8 @@ $Scale2Zoom->{eniro_se} = $Scale2Zoom->{eniro};
 $Scale2Zoom->{eniro_dk} = $Scale2Zoom->{eniro};
 $Scale2Zoom->{eniro_no} = $Scale2Zoom->{eniro};
 $Scale2Zoom->{eniro_fi} = $Scale2Zoom->{eniro};
+$Scale2Zoom->{openstreetmap_tah} = $Scale2Zoom->{openstreetmap_tiles};
+$Scale2Zoom->{openstreetmap_cycle} = $Scale2Zoom->{openstreetmap_tiles};
 
 
 # Set defaults and get options from command line
@@ -244,12 +246,10 @@ if ( $mapserver eq 'geoscience' )
     $scale ||= '100000-5000000';
 }
 
-if ( ( $mapserver ne 'openstreetmap_tah' ) and ( $mapserver ne 'openstreetmap_cycle' ) ) {
-    if ( ! defined ( $Scale2Zoom->{$mapserver} ) ) {
-	print "Invalid Mapserver: $mapserver\n";
-	print "Valid Mapserver: ".join(",",keys %{$Scale2Zoom} )."\n";
-	exit;
-    }
+if ( ! defined ( $Scale2Zoom->{$mapserver} ) ) {
+    print "Invalid Mapserver: $mapserver\n";
+    print "Valid Mapserver: ".join(",",keys %{$Scale2Zoom} )."\n";
+    exit;
 }
 
 if ( $mapserver eq 'landsat') {
@@ -259,11 +259,7 @@ if ( $mapserver eq 'landsat') {
     $fileext = 'png';
 }
 
-if ( $mapserver =~ m/openstreetmap_/ ) {
-    @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{'openstreetmap_tiles'}};
-} else {
-    @SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
-}
+@SCALES = sort  {$a <=> $b} keys %{$Scale2Zoom->{$mapserver}};
 
 
 pod2usage(1) if $help;
