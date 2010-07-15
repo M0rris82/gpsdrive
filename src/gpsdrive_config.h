@@ -56,6 +56,7 @@ typedef struct
 	gint maxcpuload;
 	gint posmarker;
 	gchar wp_file[500];
+	gchar mapnik_postgis_dbname[100];
 	gchar mapnik_xml_file[500];
 	gchar mapnik_xml_template[500];
 	gchar mapnik_input_path[500];

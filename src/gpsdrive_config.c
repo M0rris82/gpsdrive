@@ -236,6 +236,8 @@ writeconfig ()
 		fprintf (fp, "0\n");
 	else
 		fprintf (fp, "1\n");
+	fprintf (fp, "mapnik_postgis_dbname = ");
+	fprintf (fp, "%s\n", local_config.mapnik_postgis_dbname);
 	fprintf (fp, "mapnik_xml_file = ");
 	fprintf (fp, "%s\n", local_config.mapnik_xml_file);
 	fprintf (fp, "mapnik_xml_template = ");
@@ -523,6 +525,9 @@ readconfig ()
 				local_config.MapnikStatusInt = atoi (par2);
 			else if ( (strcmp(par1, "mapnik_caching")) == 0)
 				local_config.mapnik_caching = atoi (par2);
+			else if ( (strcmp(par1, "mapnik_postgis_dbname")) == 0)
+				g_strlcpy (local_config.mapnik_postgis_dbname,
+				    par2, sizeof (local_config.mapnik_postgis_dbname));
 			else if ( (strcmp(par1, "mapnik_xml_file")) == 0)
 				g_strlcpy (local_config.mapnik_xml_file, par2,
 					sizeof (local_config.mapnik_xml_file));
@@ -899,6 +904,8 @@ config_init ()
 		"%s", "autosave");
 
 	/* mapnik default values */
+	g_snprintf(local_config.mapnik_postgis_dbname,
+		sizeof(local_config.mapnik_postgis_dbname), "%s", "gis");
 	g_snprintf(local_config.mapnik_xml_file, sizeof(local_config.mapnik_xml_file),
 		"%s%s", local_config.dir_home, "osm.xml");
 	g_snprintf(local_config.mapnik_xml_template, sizeof(local_config.mapnik_xml_template),
@@ -907,7 +914,7 @@ config_init ()
 		"%s", "/usr/lib/mapnik/0.7/input/");
 	g_snprintf(local_config.mapnik_font_path, sizeof(local_config.mapnik_font_path),
 		"%s", "/usr/share/fonts/truetype/ttf-dejavu/");
-	
+
 	/* kismet default values */
 	g_strlcpy(local_config.kismet_servername, "127.0.0.1", sizeof(local_config.kismet_servername));
 	local_config.kismet_serverport = 2501;

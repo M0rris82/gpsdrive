@@ -530,7 +530,8 @@ db_init (void)
 
 #ifdef POSTGIS
 	/* create connection to mapnik/postgis database */
-	db_conn_postgis = PQsetdb (NULL, NULL, NULL, NULL, "gis");
+	db_conn_postgis = PQsetdb (NULL, NULL, NULL, NULL,
+				   local_config.mapnik_postgis_dbname);
 
 	if (PQstatus(db_conn_postgis) == CONNECTION_BAD)
 	{
