@@ -26,7 +26,8 @@ Build-Depends: debhelper (>= 5),
 	python-central,
 	python-dev | python2.4-dev,
 	python-support,
-	speech-dispatcher (>= 0.6.6)
+	speech-dispatcher (>= 0.6.6),
+	libgps-dev (>= 2.90)
 Standards-Version: 3.8.1
 
 # ------------------------------------------------------------------
@@ -36,7 +37,9 @@ Depends: ${misc:Depends},
 	${shlibs:Depends},
 	libart-2.0-2,
 	libltdl7 | libltdl3,
-	openstreetmap-map-icons (>> 8310)
+	openstreetmap-map-icons (>> 8310),
+	libgps19 (>= 2.90),
+	libsqlite3-0
 Recommends: gpsd,
 	espeak,
 	gpsdrive-data-maps (>> 2322),
