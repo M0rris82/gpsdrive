@@ -2,6 +2,7 @@
 Name=GpsDrive
 Comment=GPS Navigation
 Comment[de]=GPS Navigationsprogramm
+GenericName=GpsDrive moving Map Application
 Exec=gpsdrive
 Icon=gpsdrive
 Terminal=false
