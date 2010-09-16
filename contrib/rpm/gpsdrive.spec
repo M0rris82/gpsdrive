@@ -1,7 +1,7 @@
 #
 #
 #
-Summary: gpsdrive is a GPS based navigation tool 
+Summary: GPSDrive is a GPS based Navigation Tool
 Name: gpsdrive
 Version: 2.11
 Release: 1
@@ -9,6 +9,8 @@ Release: 1
 License: GPL
 Group: Tools 
 Source: %{name}-%{version}.tar.gz
+#Source: gpsdrive-patch1.tar.gz
+#Source2: gpsdrive.desktop
 Vendor: Fritz Ganter <ganter@ganter.at>
 Packager: Joerg Ostertag <gpsdrive@ostertag.name>
 BuildRoot: %{_tmppath}/%{name}-root
@@ -32,6 +34,7 @@ BuildRequires:  gnu-inetlib
 
 # to avoid error: /usr/include/mapnik/plugin.hpp:32:18: error: ltdl.h: No such file or directory
 BuildRequires:  libtool
+BuildRequires:  update-desktop-files
 
 %define _prefix /usr
 %description
@@ -47,6 +50,7 @@ export CFLAGS="$RPM_OPT_FLAGS"
 export CXXFLAGS="$RPM_OPT_FLAGS"
 
 mkdir -p build
+#rm -f CMakeLists.txt
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=/usr \
@@ -58,16 +62,25 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 make
 
+
 %install
 rm -rf $RPM_BUILD_ROOT
 cd build
+echo "Make install"
 make DESTDIR=$RPM_BUILD_ROOT install
+%suse_update_desktop_file -n %{name}
+
+# Hack to silence warnings ;-)
+chmod +x $RPM_BUILD_ROOT/usr/bin/gpsdrive_mapnik_gentiles.py
 
 %clean
 if [ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ]; then
 rm -rf $RPM_BUILD_ROOT
 fi
 rm -rf %{_builddir}/%{name}-%{version}
+
+echo "_prefix: %{_prefix}"
+echo "_datadir: %{_datadir}"
 
 %files
 %defattr (-,root,root)
@@ -77,33 +90,34 @@ rm -rf %{_builddir}/%{name}-%{version}
 %doc %{_mandir}/man1/gpsdrive.1.gz
 
 #%{_libdir}/*
-%{_bindir}/*
+%dir %{_bindir}/*
+# %{_docdir}
+# %{_infodir}
 
-%dir %{_prefix}/share/gpsdrive
-#%{_prefix}/share/gpsdrive/gpsdrivesplash.png
-#%{_prefix}/share/gpsdrive/gpsdrivemini.png
-#%{_prefix}/share/gpsdrive/friendsicon.png
-#%{_prefix}/share/gpsdrive/gpsicon.png
-#%{_prefix}/share/gpsdrive/gpsiconbt.png
-#%{_prefix}/share/gpsdrive/gpsdriveanim.gif
-#%{_prefix}/share/gpsdrive/top_GPSWORLD.jpg
-#%{_prefix}/share/locale/*/LC_MESSAGES/*
-#%{_prefix}/share/gpsdrive/AUTHORS
-#%{_prefix}/share/gpsdrive/CREDITS
-#%{_prefix}/share/gpsdrive/FAQ.gpsdrive
-#%{_prefix}/share/gpsdrive/FAQ.gpsdrive.fr
-#%{_prefix}/share/gpsdrive/GPS-receivers
-#%{_prefix}/share/gpsdrive/LEEME
-#%{_prefix}/share/gpsdrive/LISEZMOI
-#%{_prefix}/share/gpsdrive/NMEA.txt
-#%{_prefix}/share/gpsdrive/README
-#%{_prefix}/share/gpsdrive/README.FreeBSD
-#%{_prefix}/share/gpsdrive/README.SQL
-#%{_prefix}/share/gpsdrive/README.gpspoint2gspdrive
-#%{_prefix}/share/gpsdrive/README.kismet
-#%{_prefix}/share/gpsdrive/TODO
-#%{_prefix}/share/gpsdrive/README.nasamaps
-#%{_prefix}/share/gpsdrive/create.sql
-#%{_prefix}/share/gpsdrive/wp2sql
-#%{_datadir}/applications/gpsdrive.desktop
-#%{_prefix}/share/pixmaps/gpsicon.png
+%dir %{_prefix}/share/gpsdrive/
+%dir %{_prefix}/share/perl5
+%dir %{_prefix}/share/perl5/Geo
+%dir %{_prefix}/share/perl5/Utils
+%dir %{_prefix}/share/gpsdrive/*
+%{_prefix}/share/gpsdrive/*/*
+#%{_prefix}/share/gpsdrive/*
+#%{_prefix}/share/gpsdrive/map_koord.txt
+#%{_prefix}/share/gpsdrive/osm-template.xml
+%{_prefix}/share/locale/*/LC_MESSAGES/*
+%{_datadir}/applications/gpsdrive.desktop
+%{_prefix}/share/pixmaps/gpsdrive.png
+%{_prefix}/share/icons/gpsdrive.png
+%{_mandir}/man1/*
+%{_prefix}/share/perl5/*/*
+
+#%_iconsdir/*/*/*/*.png
+#%{_prefix}/usr/share/perl5/Utils/*.pm
+
+%post
+# After installation
+
+%changelog
+*  Sep 16 2010 Joerg Ostertag <list.gpsdrive.org> - 2.12.20100916-1
+- Silence a lot of Warnings
+
+
