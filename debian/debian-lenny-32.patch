@@ -1,0 +1,13 @@
+Index: rules
+===================================================================
+--- rules	(revision 2445)
++++ rules	(working copy)
+@@ -33,1 +33,2 @@
+ 	      -DDATADIR=/usr/share \
++	      -DLIBGPS_OLD:BOOL=ON \
+===================================================================
+--- control	(revision 2517)
++++ control	(working copy)
+@@ -14,1 +14,1 @@
+-	libgps-dev (>= 2.90),
++	libgps-dev (>= 2.30),
