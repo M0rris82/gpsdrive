@@ -4814,7 +4814,7 @@
       <Parameter name="host">/var/run/postgresql</Parameter>
       <Parameter name="dbname">gis</Parameter>
       <Parameter name="table">
-      (select way,highway,landuse,"natural",man_made,waterway,tourism,learning,amenity,place,name,ref,oneway,char_length(ref) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads
+      (select way,highway,landuse,"natural",man_made,waterway,tourism,amenity,place,name,ref,oneway,char_length(ref) as length from planet_osm_line where waterway IS NULL and leisure IS NULL and landuse IS NULL) as roads
       </Parameter>
       <Parameter name="estimate_extent">false</Parameter>
       <Parameter name="extent">-20037508,-19929239,20037508,19929239</Parameter>
