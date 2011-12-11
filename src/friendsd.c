@@ -170,7 +170,7 @@ char *pname;
 struct
 {
 	char id[31];
-	char txt[1024];
+	char txt[MAXMESG];
 	long int times;
 } *list;
 
