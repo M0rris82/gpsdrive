@@ -340,19 +340,52 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 
 	current.gps_status = data->status;
 	current.gps_mode = data->fix.mode;
-	coords.current_lat = data->fix.latitude;
-	coords.current_lon = data->fix.longitude;
-	current.altitude = data->fix.altitude;
+	if (!isnan(data->fix.latitude))
+                {
+		coords.current_lat = data->fix.latitude;
+                }
+
+	if (!isnan(data->fix.longitude))
+                {
+                 coords.current_lon = data->fix.longitude;
+                }
+
+	if (isnan(data->fix.altitude))
+		{
+		current.altitude = 0.0;
+		}
+	else
+		{
+		current.altitude = data->fix.altitude;
+		}
 	current.gps_sats_used = data->satellites_used;
 #ifdef LIBGPS_OLD
 	current.gps_sats_in_view = data->satellites;
 #else
 	current.gps_sats_in_view = data->satellites_visible;
 #endif
-	if (data->set & TRACK_SET) 
-		current.course = data->fix.track * DEG_2_RAD;
+	if (data->set & TRACK_SET)
+		{
+		if (isnan(data->fix.track))
+			{
+			current.course = 0;
+			}
+		else
+			{
+			current.course = data->fix.track * DEG_2_RAD;
+			}
+		}
 	if (data->set & SPEED_SET)
-		current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
+		{
+		if (isnan(data->fix.speed))
+			{
+			current.groundspeed = 0;
+			}
+		else
+			{
+			current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
+			}
+		}
 #ifdef LIBGPS_OLD
 	current.gps_hdop = data->hdop;
 	current.gps_eph = data->fix.eph;
