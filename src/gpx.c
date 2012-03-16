@@ -767,6 +767,11 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	xmlTextWriterStartElement (xml_writer, BAD_CAST "gpx");
 	xmlTextWriterWriteAttribute (xml_writer, BAD_CAST "version", BAD_CAST "1.1");
 	xmlTextWriterWriteAttribute (xml_writer, BAD_CAST "creator", BAD_CAST gpx_info.creator);
+	/* add gpx schema information needed to be able use with other programs*/
+	xmlTextWriterWriteAttribute (xml_writer, BAD_CAST "xmlns:xsi", BAD_CAST "http://www.w3.org/2001/XMLSchema-instance");
+	xmlTextWriterWriteAttribute (xml_writer, BAD_CAST "xmlns", BAD_CAST "http://www.topografix.com/GPX/1/1");
+	xmlTextWriterWriteAttribute (xml_writer, BAD_CAST "xsi:schemaLocation", BAD_CAST "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
+
 	xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 	xmlTextWriterStartElement (xml_writer, BAD_CAST "metadata");
 	xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
@@ -864,6 +869,11 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 			if (id_timeout_track != 0 && g_source_remove (id_timeout_track))
 				id_timeout_track = 0;
 
+			/* trkpt elements need to be in correct order as defined here:
+			http://www.topografix.com/GPX/1/1/gpx.xsd
+			see element wptType for ordering
+			*/
+
 			xmlTextWriterStartElement(xml_writer, BAD_CAST "trk");
 			xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
 			xmlTextWriterStartElement(xml_writer, BAD_CAST "trkseg");
@@ -923,16 +933,6 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 						xmlTextWriterWriteFormatElement(xml_writer,
 							BAD_CAST "speed", "%.3f", (trackcoord + i)->speed);
 					}
-					if ((trackcoord + i)->hdop > -1.0)
-					{
-						xmlTextWriterWriteFormatElement(xml_writer,
-							BAD_CAST "hdop", "%.2f", (trackcoord + i)->hdop);
-					}
-					if ((trackcoord + i)->sat)
-					{
-						xmlTextWriterWriteFormatElement(xml_writer,
-							BAD_CAST "sat", "%d", (trackcoord + i)->sat);
-					}
 					if ((trackcoord + i)->fix)
 					{
 						switch ((trackcoord + i)->fix)
@@ -950,6 +950,16 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 									BAD_CAST "fix", BAD_CAST "dgps");
 								break;
 						};
+					}
+					if ((trackcoord + i)->sat)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "sat", "%d", (trackcoord + i)->sat);
+					}
+					if ((trackcoord + i)->hdop > -1.0)
+					{
+						xmlTextWriterWriteFormatElement(xml_writer,
+							BAD_CAST "hdop", "%.2f", (trackcoord + i)->hdop);
 					}
 					xmlTextWriterEndElement(xml_writer); /* trkpt */
 					xmlTextWriterWriteString (xml_writer, BAD_CAST "\n");
