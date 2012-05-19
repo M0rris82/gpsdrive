@@ -10,6 +10,16 @@
 #  - basic groundspeak gpx import
 #  - basic fon gpx import
 #
+#
+# # On Friday, July 16, 2010 Guenther wrote:
+# # poi-import.pl just throws the points into the database, it is not a good solution.
+# # "poi-import.pl is primarily used to import waypoints from an old
+# #  GpsDrive installation using MySql, and Geocaches.
+# #  You can also import any waypoints in GPX format, but there is no dupe
+# #  check or icon/type matching.
+# #  It is more a quick hack than a real solution."
+#
+#
 #  $Id: poi-import.pl 1766 2007-10-25 12:17:55Z dse $
 #
 ####################################################################
