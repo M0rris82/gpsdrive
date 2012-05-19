@@ -217,19 +217,20 @@ namespace mapnik {
         try {
 
             if ( boost::filesystem::is_regular( dir_itr->status() ) ) {
-#if BOOST_VERSION < 103600
-                if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->leaf() << ")" << endl;
-#else
-                if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->filename() << ")" << endl;
-#endif
-                freetype_engine::register_font( dir_itr->string() );
-            }
-        } catch ( const std::exception & ex ) {
-#if BOOST_VERSION < 103600
-            std::cout << dir_itr->leaf() << " " << ex.what() << std::endl;
-#else
-            std::cout << dir_itr->filename() << " " << ex.what() << std::endl;
-#endif
+//http://www.boost.org/doc/libs/1_46_1/libs/filesystem/v2/doc/index.htm
+#if BOOST_FILESYSTEM_VERSION < 3
+		if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->leaf() << ")" << endl;
+		freetype_engine::register_font( dir_itr->string() );
+	    }
+	} catch ( const std::exception & ex ) {
+	    std::cout << dir_itr->leaf() << " " << ex.what() << std::endl;
+#else           
+		if (mydebug > 10) cout << "freetype_engine::register_font(" << dir_itr->path().filename() << ")" << endl;
+		freetype_engine::register_font( dir_itr->path().string() );
+	    }
+	} catch ( const std::exception & ex ) {
+	    std::cout << dir_itr->path().filename() << " " << ex.what() << std::endl;
+#endif  
         }
 
     }
