@@ -2,6 +2,13 @@
 # match gpsdrive poi_types with osm types and update the
 # poi column inside the mapnik postgis db
 
+#
+# On Friday, July 16, 2010 Guenther wrote:
+# "gpsdrive-update-mapnik-poitypes.pl is totally obsolete, we better
+#  should remove it from svn..."
+#
+
+
 # Get version number from version-control system, as integer 
 my $version = '$Revision: 1824 $';
 $Version =~ s/\$Revision:\s*(\d+)\s*\$/$1/;
