@@ -266,6 +266,34 @@ g_print ("--- connecting signal to gps\n");
 static gint gps_timeout_source = 0;
 static struct gps_data_t *gpsdata;
 
+#if GPSD_API_MAJOR_VERSION >= 5
+static struct gps_data_t gpsdata_buf;
+static gpointer gpsdata_hook = NULL;
+
+int gps_poll(/*@out@*/struct gps_data_t *gpsdata)
+/* for backwards compatibility */
+{
+	int status = gps_read(gpsdata);
+
+	if (status > 0)
+	    status = 0;
+
+	if ((gpsdata_hook != NULL) && (gpsdata->set & PACKET_SET))
+	{
+	    ((void (*)())gpsdata_hook)(gpsdata, NULL, 0);
+	}
+	return status;
+}
+
+static void gps_set_raw_hook(struct gps_data_t *g, gpointer cb)
+{
+	// gps_set_raw_hook() was removed from gpsd-2.96 Instead, clients will simply be
+	// able to look at the packet buffer directly. (Of course, this is only
+	// recommended when the PACKET_SET flag is up.) (Done in 2.96~dev.)
+    gpsdata_hook = cb;
+}
+#endif
+
 /* SYMBOLS USED IN LIBGPS:
  * 
  * double online: NZ if GPS is on line, 0 if not.
@@ -443,7 +471,12 @@ gps_query_data_cb (gpointer data)
 	 */
 	gps_query (gpsdata, "oys\n");
 #else
+#if GPSD_API_MAJOR_VERSION >= 5
+	/* 2sec (2e+06 usec) timeout */
+	if (gps_waiting(gpsdata, 2000000))
+#else
 	if (gps_waiting(gpsdata))
+#endif
 	{
 		gps_poll (gpsdata);
 	}
@@ -480,7 +513,14 @@ gpsd_connect (gboolean reconnect)
 	}
 
 	/* try to open connection */
-	gpsdata =  gps_open (local_config.gpsd_server, local_config.gpsd_port);
+#if GPSD_API_MAJOR_VERSION >= 5
+	if (!gps_open (local_config.gpsd_server, local_config.gpsd_port, &gpsdata_buf))
+	     gpsdata = &gpsdata_buf;
+	else
+	     gpsdata = NULL;
+#else
+	gpsdata = gps_open (local_config.gpsd_server, local_config.gpsd_port);
+#endif
 	if (!gpsdata)
 	{
 		g_print ("Can't connect to gps daemon on %s:%s, disabling GPS support!\n",
