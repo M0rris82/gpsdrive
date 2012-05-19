@@ -250,8 +250,8 @@ loadmapconfig ()
   FILE *st;
   gint i;
   gint max_nrmaps = 1000;
-  gchar buf[1512], center_lat[40], center_lon[40], scale_factor[40], filename[100], minlat[40],
-	minlon[40], maxlat[40], maxlon[40];
+  gchar buf[1512], center_lat[40], center_lon[40], scale_factor[40],
+	filename[100], minlat[40], minlon[40], maxlat[40], maxlon[40];
   gint p, e;
 
   if (mapconfig_active)
@@ -263,11 +263,13 @@ loadmapconfig ()
     fprintf (stderr, "loadmapconfig()\n");
 
   init_nasa_mapfile ();
+
   if (local_config.dir_maps[strlen (local_config.dir_maps) - 1] != '/')
     g_strlcat (local_config.dir_maps, "/", sizeof (local_config.dir_maps));
 
   g_strlcpy (mappath, local_config.dir_maps, sizeof (mappath));
   g_strlcat (mappath, "map_koord.txt", sizeof (mappath));
+
   st = fopen (mappath, "r");
   if (st == NULL)
     {
@@ -293,6 +295,7 @@ loadmapconfig ()
   maps = g_new (mapsstruct, max_nrmaps);
   i = nrmaps = 0;
   havenasa = -1;
+
   while ((p = fgets (buf, 1512, st) != 0))
     {
       if ((buf[0] == '#') || (buf[0] == '\0')) {
@@ -342,7 +345,7 @@ loadmapconfig ()
       } else 
           (maps + i)->hasbbox = FALSE;
 
-	  (maps + i)->scale = strtol (scale_factor, NULL, 0);
+      (maps + i)->scale = strtol (scale_factor, NULL, 0);
 	  i++;
 	  nrmaps = i;
 	  havenasa = -1;
