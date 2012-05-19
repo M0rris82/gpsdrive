@@ -34,6 +34,9 @@ Disclaimer: Please do not use for navigation.
 #include <icons.h>
 #include <gpsdrive_config.h>
 #include "main_gui.h"
+#if MAPNIK
+#include <mapnik/version.hpp>
+#endif
 
 /*  Defines for gettext I18n */
 # include <libintl.h>
@@ -911,7 +914,12 @@ config_init ()
 	g_snprintf(local_config.mapnik_xml_template, sizeof(local_config.mapnik_xml_template),
 		"%s%s", DATADIR, "/gpsdrive/osm-template.xml");
 	g_snprintf(local_config.mapnik_input_path, sizeof(local_config.mapnik_input_path),
-		"%s", "/usr/lib/mapnik/0.7/input/");
+#if MAPNIK_VERSION == 200000
+	"%s", "/usr/lib/mapnik/2.0/input/");
+//#elif MAPNIK_VERSION == 701
+#else
+	"%s", "/usr/lib/mapnik/0.7/input/");
+#endif
 	g_snprintf(local_config.mapnik_font_path, sizeof(local_config.mapnik_font_path),
 		"%s", "/usr/share/fonts/truetype/ttf-dejavu/");
 
