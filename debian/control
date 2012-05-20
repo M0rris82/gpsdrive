@@ -22,10 +22,7 @@ Build-Depends: debhelper (>= 5),
 	libxml2-dev,
 	pkg-config,
 	po-debconf,
-	python-dev,
-	python-central,
-	python-dev | python2.4-dev,
-	python-support,
+	python-dev (>= 2.6.6-3~),
 	speech-dispatcher (>= 0.6.6)
 Standards-Version: 3.8.1
 

@@ -109,9 +109,7 @@ binary-arch: build install
 	dh_installdebconf
 	dh_installdocs
 	dh_installmenu
-	dh_pysupport
-#	dh_python
-	dh_pycentral
+	dh_python2
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
