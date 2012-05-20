@@ -11,7 +11,6 @@ if (WITH_SCRIPTS)
     geocache2way.pl
     gpsreplay.pl
     gpsfetchmap.pl
-    gpsdrive-update-mapnik-poitypes.pl
     geoinfo.pl
     gpsd_nmea.sh
     gdal_slice.sh
