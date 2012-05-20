@@ -31,6 +31,7 @@ else (MAPNIK_LIBRARIES AND MAPNIK_INCLUDE_DIRS)
   find_library(MAPNIK_LIBRARY
     NAMES
       mapnik
+      mapnik2
     PATHS
       /usr/lib
       /usr/local/lib
