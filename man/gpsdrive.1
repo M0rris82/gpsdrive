@@ -63,91 +63,91 @@ GNU General Public License (GPL) for more details.
 .SH OPTIONS
 
 .TP
-.B \-?, --help
+.B \-?, \-\-help
 Displays a short help message.
 .TP
-.B \-e, --embedded
+.B \-e, \-\-embedded
 Don't show the GUI; for use in external GTK apps.
 .TP
-.B \-f, --force-position
+.B \-f, \-\-force-position
 Force display of position even if the GPS fix is invalid. Before a GPS has a
 fix it often reports its position as 0,0. And if it has lost a fix some makes
 of GPS will repeat the last known position together with a fix-is-bad indicator.
 Normally (without this flag) \fBGpsDrive\fR skips plotting these points.
 Useful for debugging.
 .TP
-.B \-i, --ignore-checksum
+.B \-i, \-\-ignore-checksum
 Ignore NMEA checksum. (risky, only for broken GPS receivers)
 .TP
-.B \-p, --explore-mode
+.B \-p, \-\-explore-mode
 Start in Explore Mode. This will let you explore around your maps
 independently of your GPS position (or lack thereof).
 .TP
-.B \-s, --nosplash
+.B \-s, \-\-nosplash
 Don't show the startup splash screen.
 .TP
-.B \-t, --touchscreen
+.B \-t, \-\-touchscreen
 Set this special mode if you only have a single mouse button, for example
 when using \fBGpsDrive\fR on a touchscreen display.
 .TP
-.B \-v, --verbose
+.B \-v, \-\-verbose
 Displays some basic debug information to the terminal as the program runs.
 .TP
-.B \-x, --use-DBUS
+.B \-x, \-\-use-DBUS
 Use DBUS for communication with \fBgpsd\fR; this disables socket communication.
 .TP
-.B \-A, --alt-offset=\fI<OFFSET>\fR
+.B \-A, \-\-alt-offset=\fI<OFFSET>\fR
 Adjust the displayed altitude by adding this value.
 .TP
-.B \-B, --gpsd-server=\fI<SERVER>\fR
+.B \-B, \-\-gpsd-server=\fI<SERVER>\fR
 Server name of the NMEA server. You can connect your GPS receiver to a
 remote \fIhost\fR which is running \fBgpsd\fR and display the position
 on your local machine.
 .TP
-.B \-C, --config-file=\fI<FILE>\fR
+.B \-C, \-\-config-file=\fI<FILE>\fR
 Set this if you wish to use an alternative configuration file.
 .TP
-.B \-D, --debug=\fI<LEVEL>\fR
+.B \-D, \-\-debug=\fI<LEVEL>\fR
 Set the debugging level. A level of 0 will show no debug information,
 while a level of 100 will show \fBa lot\fR of debugging information.
 If you have problems or program crashes, set this high enough to display
 relevant information send this output to the authors.
 See also the \fBBUGS\fR section below.
 .TP
-.B \-F, --friends-server=\fI<SERVERFILE>\fR
+.B \-F, \-\-friends-server=\fI<SERVERFILE>\fR
 Select a friends server to exchange position information with other
 people, e.g. \fIfriendsd.gpsdrive.de\fR.
 You can also set this from the Preferences/Friends menu.
 You can start your own friends server with the included \fBfriendsd\fR program.
 More details are in the \fBFRIENDSD\fR section below.
 .TP
-.B \-G, --geometry=\fI<GEOMETRY>\fR
+.B \-G, \-\-geometry=\fI<GEOMETRY>\fR
 Specify the window geometry, e.g. 800x600.
 .TP
-.B \-M, --gui-mode=\fR[\fIcar\fR|\fIpda\fR|\fIdesktop\fR]
+.B \-M, \-\-gui-mode=\fR[\fIcar\fR|\fIpda\fR|\fIdesktop\fR]
 Set GUI mode. The default layout is '\fIdesktop\fR'. \fICar\fR modes sets
 up the display in a fullscreen mode suitable for use with a small LCD
 touchscreen. \fIPDA\fR mode dedicates even more screen real-estate to
 the map, controls are hidden behind tabs.
 .TP
-.B \-N, --nmeaout=\fI<FILE>\fR
+.B \-N, \-\-nmeaout=\fI<FILE>\fR
 Set a serial device, PTY master, or file to send NMEA sentences to.
 This is useful if you use \fBGpsDrive\fR in simulation mode to provide
 other GPS applications with test data.
 .TP
-.B \-S, --screenshot=\fI<PATH>\fR
+.B \-S, \-\-screenshot=\fI<PATH>\fR
 Take auto-screenshots of different GUI windows then exit. Image files will
 be saved to the specified \fIpath\fR. Don't touch gpsdrive while this is
 running!
 .TP
-.B \-T, --run-test
+.B \-T, \-\-run-test
 Run some internal unit tests and then exit.
 .TP
-.B \--version
+.B \-\-version
 Shows the program version together with the SVN revision of the main
 gpsdrive.c source. If you send a bug report, also include this output.
 .TP
-.B \--display=\fI<DISPLAY>\fR
+.B \-\-display=\fI<DISPLAY>\fR
 The X-Window display to use.
 
 
