@@ -997,7 +997,7 @@ gint gpx_file_write (gchar *gpx_file, gint gpx_mode)
 	else
 	{
 		gtk_statusbar_push (GTK_STATUSBAR (frame_statusbar),
-			current.statusbar_id, _("File succesfully saved"));
+			current.statusbar_id, _("File successfully saved"));
 		if (mydebug > 0)
 			fprintf (stderr, "GPX-File %s with %d points written\n", gpx_file, count);
 	}
