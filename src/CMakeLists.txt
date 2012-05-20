@@ -57,10 +57,6 @@ if (WITH_NAVIGATION)
   add_definitions(-DNAVIGATION)
 endif (WITH_NAVIGATION)
 
-if (LIBGPS_OLD)
-  add_definitions(-DLIBGPS_OLD)
-endif (LIBGPS_OLD)
-
 if (DEBUG)
   add_definitions(-DDEBUG)
 endif (DEBUG)

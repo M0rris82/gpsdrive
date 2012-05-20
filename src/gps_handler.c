@@ -354,10 +354,11 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	if (mydebug > 40)
 	{
 		g_print ("  Fix Status: %d\n  Fix Mode: %d\n", data->status, data->fix.mode);
-#ifdef LIBGPS_OLD
-		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
-#else
+#if GPSD_API_MAJOR_VERSION >= 4
+/* ie libgps >= 2.90 */
 		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites_visible);
+#else
+		g_print ("  Sats used: %d of %d\n", data->satellites_used, data->satellites);
 #endif
 		g_print ("  Position: %.6f / %.6f\n", data->fix.latitude, data->fix.longitude);
 		g_print ("  Course: %.2f\n  GPS time: %.0f\n",
@@ -387,11 +388,12 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 		current.altitude = data->fix.altitude;
 		}
 	current.gps_sats_used = data->satellites_used;
-#ifdef LIBGPS_OLD
-	current.gps_sats_in_view = data->satellites;
-#else
+#if GPSD_API_MAJOR_VERSION >= 4
 	current.gps_sats_in_view = data->satellites_visible;
+#else
+	current.gps_sats_in_view = data->satellites;
 #endif
+
 	if (data->set & TRACK_SET)
 		{
 		if (isnan(data->fix.track))
@@ -414,12 +416,13 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 			current.groundspeed = data->fix.speed * MPS_TO_KPH * local_config.distfactor;
 			}
 		}
-#ifdef LIBGPS_OLD
-	current.gps_hdop = data->hdop;
-	current.gps_eph = data->fix.eph;
-#else
+
+#if GPSD_API_MAJOR_VERSION >= 4
 	current.gps_hdop = data->dop.hdop;
 	current.gps_eph = ((data->fix.epx > data->fix.epy) ? data->fix.epx : data->fix.epy);
+#else
+	current.gps_hdop = data->hdop;
+	current.gps_eph = data->fix.eph;
 #endif
 	current.gps_epv = data->fix.epv;
 
@@ -429,14 +432,14 @@ gps_hook_cb (struct gps_data_t *data, gchar *buf)
 	localtime_r(&t_gpstime, &t_tim);
 	strftime (current.loc_time, sizeof (current.loc_time), "%H:%M", &t_tim);
 
-#ifdef LIBGPS_OLD
-	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
-	{
-		for (i=0;i<data->satellites;i++)
-#else
+#if GPSD_API_MAJOR_VERSION >= 4
 	if ((data->set & SATELLITE_SET) && (data->satellites_visible > 0))
 	{
 		for (i=0;i<data->satellites_visible;i++)
+#else
+	if ((data->set & SATELLITE_SET) && (data->satellites > 0))
+	{
+		for (i=0;i<data->satellites;i++)
 #endif
 		{
 			gps_sats[i].used = data->used[i];
@@ -463,14 +466,10 @@ gps_query_data_cb (gpointer data)
 		return TRUE;
 
 	gpsdata->set = 0;
-#ifdef LIBGPS_OLD
-	/* query gpsd for data:
-	 * o - get time/position/velocity data
-	 * y - get satellite info
-	 * s - get fix status (must be after "o" else its value is overwritten)
-	 */
-	gps_query (gpsdata, "oys\n");
-#else
+
+
+
+#if GPSD_API_MAJOR_VERSION >= 4
 #if GPSD_API_MAJOR_VERSION >= 5
 	/* 2sec (2e+06 usec) timeout */
 	if (gps_waiting(gpsdata, 2000000))
@@ -480,6 +479,14 @@ gps_query_data_cb (gpointer data)
 	{
 		gps_poll (gpsdata);
 	}
+#else
+	/* libgps < 2.90 */
+	/* query gpsd for data:
+	 * o - get time/position/velocity data
+	 * y - get satellite info
+	 * s - get fix status (must be after "o" else its value is overwritten)
+	 */
+	gps_query (gpsdata, "oys\n");
 #endif
 
 	return (TRUE);
@@ -541,7 +548,7 @@ gpsd_connect (gboolean reconnect)
 	/* set hook function to handle gps data */
 	gps_set_raw_hook (gpsdata, (gpointer) gps_hook_cb);
 
-#ifndef LIBGPS_OLD
+#if GPSD_API_MAJOR_VERSION >= 4
 	/* enable watch mode to get data stream from gpsd */
 	gps_stream (gpsdata, WATCH_ENABLE, NULL);
 	//gps_stream (gpsdata, WATCH_ENABLE | POLL_NONBLOCK, NULL);
