@@ -10,8 +10,11 @@
 
 # Get options like
 #       export DEB_BUILD_OPTIONS="parallel=4"
+
 debian_build_options_list:=$(shell echo "$$DEB_BUILD_OPTIONS"|sed 's/[^-_=[:alnum:]]/ /g'|tr a-z- A-Z_)
+
 $(foreach o, $(debian_build_options_list), $(if $(findstring =,$o),$(eval DEB_BUILD_OPT_$o),$(eval DEB_BUILD_OPT_$o=1)))
+
 MAKE_-J += $(addprefix -j, $(DEB_BUILD_OPT_PARALLEL))
 
 export destdir = $(CURDIR)/debian/gpsdrive
@@ -22,6 +25,10 @@ configure: build/configure-stamp
 build/configure-stamp:
 	# ------------------ configure the package.
 	dh_testdir
+
+	# out of date, fall over to system's copy instead:
+	rm -f cmake/Modules/FindGTK2.cmake
+
 	mkdir -p build
 
 	cd build; \
