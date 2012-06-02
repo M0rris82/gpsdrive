@@ -28,7 +28,7 @@ if (WITH_POSTGIS)
 endif (WITH_POSTGIS)
 
 if (WITH_MAPNIK)
-  find_package(Boost COMPONENTS filesystem REQUIRED)
+  find_package(Boost COMPONENTS filesystem system thread REQUIRED)
   find_package(Mapnik REQUIRED)
   add_definitions(-DMAPNIK)
 endif (WITH_MAPNIK)
@@ -173,6 +173,8 @@ if (WITH_MAPNIK)
   set(GPSDRIVE_LINK_LIBRARIES
     ${GPSDRIVE_LINK_LIBRARIES}
     ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_THREAD_LIBRARY}
     ${MAPNIK_LIBRARIES}
   )
 endif (WITH_MAPNIK)
