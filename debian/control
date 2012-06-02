@@ -35,7 +35,7 @@ Depends: ${misc:Depends},
 	${shlibs:Depends},
 	libart-2.0-2,
 	libltdl7 | libltdl3,
-	openstreetmap-map-icons (>> 8310)
+	openstreetmap-map-icons-classic
 Recommends: gpsd,
 	espeak,
 	gpsdrive-data-maps (>> 2322),
