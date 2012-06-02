@@ -31,5 +31,6 @@ Disclaimer: Please do not use for navigation.
  */
 
 glong db_postgis_query (gchar *query, gint (*callback)(const char*, ...));
+gboolean db_postgis_query_street (gchar *, street_struct *);
 
 #endif /* GPSDRIVE_DATABASE_POSTGIS_H */
