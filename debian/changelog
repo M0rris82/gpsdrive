@@ -1,3 +1,9 @@
+gpsdrive (2.12+svn2623-1) unstable; urgency=low
+
+   * Modernize Debian package with many changes
+
+ -- M. Hamish Bowman <hamish_b yahoo com>  Sat, 2 Jun 2012 20:05:52 +1200
+
 gpsdrive (2.10svn2505) unstable; urgency=low
 
    * copy from wiki
