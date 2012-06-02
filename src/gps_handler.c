@@ -26,6 +26,7 @@ Disclaimer: Please do not use as a primary source of navigation.
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <glib.h>
 #include <gps.h>
 #include "config.h"
