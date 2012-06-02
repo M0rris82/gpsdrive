@@ -67,12 +67,13 @@ Disclaimer: Please do not use for navigation.
 #include "gps_handler.h"
 #include "waypoint.h"
 
+ifdef MAPNIK
+#include "mapnik.h"
+#endif
 
 #ifdef MAEMO
-
 #include <hildon/hildon-program.h>
 HildonProgram *program;
-
 #endif
 
 
