@@ -464,7 +464,7 @@ sub import_gpx_basic
 sub get_source_ids
 {
   my $mode = shift || '0';
-  my $geo_file = "/usr/share/icons/map-icons/geoinfo.db";
+  my $geo_file = "/usr/share/icons/openstreetmap/geoinfo.db";
   my $geo_query = 'SELECT source_id,name FROM source;';
 
   my $geo_h = DBI->connect("dbi:SQLite:dbname=$geo_file",'','');
