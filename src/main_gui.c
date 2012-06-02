@@ -67,7 +67,7 @@ Disclaimer: Please do not use for navigation.
 #include "gps_handler.h"
 #include "waypoint.h"
 
-ifdef MAPNIK
+#ifdef MAPNIK
 #include "mapnik.h"
 #endif
 
