@@ -1,7 +1,8 @@
 Source: gpsdrive
 Section: utils
 Priority: optional
-Maintainer: Frank Kirschner <kirfrank@debian.org>, Joerg Ostertag <gpsdrive@ostertag.name>
+Maintainer: Debian GIS Project <debian-gis@lists.debian.org>
+Uploaders: Joerg Ostertag <gpsdrive@ostertag.name>, M. Hamish Bowman <hamish_b@yahoo.com>
 Build-Depends: debhelper (>= 5),
 	cmake,
 	gettext,
