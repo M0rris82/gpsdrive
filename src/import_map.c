@@ -223,13 +223,16 @@ gint
 nimmfile (GtkWidget * widget, gpointer datum)
 {
   G_CONST_RETURN gchar *buf = NULL;
+  char *basename;
 
   buf = gtk_file_selection_get_filename (datum);
-  gtk_entry_set_text (GTK_ENTRY (dltext7), g_basename (buf));
-  g_strlcpy (importfilename, g_basename (buf), sizeof (importfilename));
-
+  basename = g_path_get_basename(buf);
+  gtk_entry_set_text (GTK_ENTRY (dltext7), basename);
+  g_strlcpy (importfilename, basename, sizeof (importfilename));
   gtk_widget_destroy (datum);
-  loadmap ((char *) g_basename (buf));
+  loadmap ((char *) basename);
+  g_free(basename);
+
   return (TRUE);
 }
 

@@ -173,6 +173,7 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 	double mylon;
 	GtkWidget *myprogress, *text, *vbox;
 	char textbuf[40];
+	char *basename;
 
 	if (!havenasamaps)
 		return -1;
@@ -349,8 +350,11 @@ create_nasa_mapfile (double lat, double lon, int test, char *fn)
 
 		gtk_widget_destroy (GTK_WIDGET (nasawindow));
 		close (fdout);
-		g_strlcpy (mybuffer, g_basename (outfilename),
-			   sizeof (mybuffer));
+
+		basename = g_path_get_basename(outfilename);
+		g_strlcpy (mybuffer, basename, sizeof (mybuffer));
+		g_free(basename);
+
 		fprintf (stdout,
 		    _("\nYou can permanently add this map file with following "
 			"line in your\n"

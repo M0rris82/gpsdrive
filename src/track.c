@@ -341,6 +341,7 @@ savetrackfile (gint mode)
   gchar buff[1024];
   gint e, i;
   gchar filename_track[400], lat[30], alt[30], lon[30];
+  char *basename;
   FILE *st;
 
   if ( mydebug > 11 )
@@ -362,7 +363,11 @@ savetrackfile (gint mode)
 	  e = stat (buff, &sbuf);
 	}
       while (e == 0);
-      g_strlcpy (savetrackfn, g_basename (buff), sizeof (savetrackfn));
+
+      basename = g_path_get_basename(buff);
+      g_strlcpy (savetrackfn, basename, sizeof (savetrackfn));
+      g_free(basename);
+
       return;
     }
 
