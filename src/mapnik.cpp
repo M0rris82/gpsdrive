@@ -532,7 +532,7 @@ namespace mapnik {
 
             /* create pixbuf data before check to unref */
             if (MapnikMap.GdkPixbufPtr)
-		gdk_pixbuf_unref(MapnikMap.GdkPixbufPtr);
+		g_object_unref(MapnikMap.GdkPixbufPtr);
 
             MapnikMap.GdkPixbufPtr = gdk_pixbuf_new_from_data(MapnikMap.ImageRawDataPtr,
 				GDK_COLORSPACE_RGB, FALSE, 8, 1280, 1024, 1280 * 3, NULL, NULL);

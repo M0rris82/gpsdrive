@@ -581,7 +581,7 @@ expose_display_temperature ()
   gdk_draw_pixbuf (mydrawable, temkontext, temimage, 0,
 		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_function (temkontext, GDK_COPY);
-  /*       gdk_pixbuf_unref (temimage); */
+  /* g_object_unref (temimage); */
   gdk_gc_set_foreground (temkontext, &colors.mygray);
   /* We want to limit cputemp (79<cputemp< 40)    */
   if (cputemp > 79)
@@ -664,7 +664,7 @@ expose_display_battery ()
 		   0, 0, 0, 17, 50, GDK_RGB_DITHER_NONE, 0, 0);
   gdk_gc_set_function (battkontext, GDK_COPY);
 
-  /*       gdk_pixbuf_unref (batimage); */
+  /* g_object_unref (batimage); */
 
   if (((batlevel - 1) / 10 != (batlevel_old - 1) / 10) && (!batloading))
     {

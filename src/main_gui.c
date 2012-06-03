@@ -2978,7 +2978,7 @@ gint create_main_window (void)
 	if (mainwindow_icon_pixbuf)
 	{
 		gtk_window_set_icon (GTK_WINDOW (main_window), mainwindow_icon_pixbuf);
-		gdk_pixbuf_unref (mainwindow_icon_pixbuf);
+		g_object_unref (mainwindow_icon_pixbuf);
 	}
 
 	main_tooltips = gtk_tooltips_new();

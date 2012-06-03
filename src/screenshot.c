@@ -34,7 +34,7 @@ gint take_screenshot(GdkWindow *window, gchar *filename) {
 	gdk_drawable_get_size(window, &width, &height);
 	image = gdk_pixbuf_get_from_drawable(NULL, window, gdk_drawable_get_colormap(window) ,0 , 0, 0, 0, width, height);
 	gdk_pixbuf_save(image, FilePath, "png", NULL, NULL);
-	gdk_pixbuf_unref(image);
+	g_object_unref(image);
 	return 0;
 }
 

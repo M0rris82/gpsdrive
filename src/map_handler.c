@@ -481,7 +481,7 @@ loadmap (char *filename)
     fprintf (stderr, "loadmap(%s)\n", filename);
 
   if (maploaded)
-    gdk_pixbuf_unref (image);
+    g_object_unref (image);
 
 #ifdef MAPNIK
   if ( !strcmp (filename,"mapnik") ) {
@@ -562,7 +562,7 @@ loadmap (char *filename)
 	  j += 3;
 	  k += 4;
 	}
-      gdk_pixbuf_unref (limage);
+      g_object_unref (limage);
 
     }
 
@@ -580,7 +580,7 @@ loadmap (char *filename)
 
   /*  draw minimap */
   if (pixbuf_minimap)
-    gdk_pixbuf_unref (pixbuf_minimap);
+    g_object_unref (pixbuf_minimap);
 
   pixbuf_minimap = gdk_pixbuf_new (GDK_COLORSPACE_RGB, 0, 8, 128, 103);
 
