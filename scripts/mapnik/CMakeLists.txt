@@ -8,7 +8,7 @@ configure_file(gpsdrive_mapnik_gentiles-in.py ${CMAKE_CURRENT_BINARY_DIR}/gpsdri
 
 if(IS_DIRECTORY /usr/lib/mapnik/2.0)
   configure_file(osm_mapnik2.0-in.xml ${CMAKE_CURRENT_BINARY_DIR}/osm-template.xml)
-else
+else()
   configure_file(osm-in.xml ${CMAKE_CURRENT_BINARY_DIR}/osm-template.xml)
 endif (IS_DIRECTORY)
 
