@@ -30,6 +30,8 @@ Disclaimer: Please do not use as a primary means of navigation.
 
 #define WMS_SERVER 1
 #define TMS_SERVER 2
+#define TAH_SERVER 3
+
 
 /*
  * See map_download.c for details.

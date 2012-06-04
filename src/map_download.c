@@ -77,9 +77,12 @@ extern guistatus_struct gui_status;
 
 enum
 {
-	MAPSOURCE_LANDSAT,
-	MAPSOURCE_OSM_TAH,
-	MAPSOURCE_OSM_CYCLE,
+	MAPSOURCE_WMS_LANDSAT,
+	MAPSOURCE_TAH_OSM,
+	MAPSOURCE_TAH_OSM_CYCLE,
+	MAPSOURCE_TMS_OSM_MAPNIK,
+	MAPSOURCE_TMS_OSM_CYCLE,
+
 	MAPSOURCE_N_ITEMS
 };
 
@@ -114,12 +117,12 @@ static struct mapsource_struct
  *   distortion at wide longitudes from the center, and so a switch should be made
  *   to "top_" Plate Carrée maps.
  */
-	MAPSOURCE_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
-	MAPSOURCE_LANDSAT, "1 : 50 000", 0, 50000,
-	MAPSOURCE_LANDSAT, "1 : 75 000", 0, 75000,
-	MAPSOURCE_LANDSAT, "1 : 100 000", 0, 100000,
-	MAPSOURCE_LANDSAT, "1 : 250 000", 0, 250000,
-	MAPSOURCE_LANDSAT, "1 : 500 000", 0, 500000,
+	MAPSOURCE_WMS_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
+	MAPSOURCE_WMS_LANDSAT, "1 : 50 000", 0, 50000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 75 000", 0, 75000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 100 000", 0, 100000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 250 000", 0, 250000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 500 000", 0, 500000,
 	  /* wider scales than 1:500k switch to "top_" Plate Carrée
 	  	projection. It would be more accurate to switch nearer to
 		1:125k,	but map_ is prettier so we hold on longer than we should.
@@ -128,44 +131,78 @@ static struct mapsource_struct
 		next band is not recommended, and by the time you get to
 		+/-90deg from lon_0 it completely breaks. */
 /* TODO: add another field for proj or use mapdl_zoom as 0/1 for map_/top_ ??? */
-	MAPSOURCE_LANDSAT, "1 : 1 million", 0, 1000000,
-	MAPSOURCE_LANDSAT, "1 : 2.5 million", 0, 2500000,
-	MAPSOURCE_LANDSAT, "1 : 5 million", 0, 5000000,
-	MAPSOURCE_LANDSAT, "1 : 10 million", 0, 10000000,
-	MAPSOURCE_LANDSAT, "1 : 50 million", 0, 50000000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 1 million", 0, 1000000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 2.5 million", 0, 2500000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 5 million", 0, 5000000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 10 million", 0, 10000000,
+	MAPSOURCE_WMS_LANDSAT, "1 : 50 million", 0, 50000000,
 
-
-	MAPSOURCE_OSM_TAH, "OpenStreetMap Tiles@Home", -1, -1,
+#ifdef server_kaput
+	MAPSOURCE_TAH_OSM, "OpenStreetMap Tiles@Home", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
 		which will only be valid for mid-lats */
 	/* Octave code: for lat=0:5:75; disp( [lat (a * 2*pi * pixelfact * cos(lat * pi/180)) / (256*2^9)]); end */
-	MAPSOURCE_OSM_TAH, "1 : 2 500", 17, 2250,
-	MAPSOURCE_OSM_TAH, "1 : 5 000", 16, 4500,
-	MAPSOURCE_OSM_TAH, "1 : 10 000", 15, 9000,
-	MAPSOURCE_OSM_TAH, "1 : 20 000", 14, 18000,
-	MAPSOURCE_OSM_TAH, "1 : 40 000", 13, 36000,
-	MAPSOURCE_OSM_TAH, "1 : 75 000", 12, 72000,
-	MAPSOURCE_OSM_TAH, "1 : 150 000", 11, 144000,
-	MAPSOURCE_OSM_TAH, "1 : 300 000", 10, 288000,
-	MAPSOURCE_OSM_TAH, "1 : 600 000", 9, 576000,
+	MAPSOURCE_TAH_OSM, "1 : 2 500", 17, 2250,
+	MAPSOURCE_TAH_OSM, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TAH_OSM, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TAH_OSM, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TAH_OSM, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TAH_OSM, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TAH_OSM, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TAH_OSM, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TAH_OSM, "1 : 600 000", 9, 576000,
 	/* the distortion gets too bad at scales wider than 1:500k
 	    It would be more accurate to stop earlier, but we compromise */
 
-
-	MAPSOURCE_OSM_CYCLE, "OpenStreetMap Cycle Map", -1, -1,
+	MAPSOURCE_TAH_OSM_CYCLE, "OpenStreetMap Cycle Map", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
 		which will only be valid for mid-lats */
 	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
 	// NOTE: the Cycle Map is a big flakey at closer zooms in rural areas
 	//  many "404 Not Founds" are found in the PNG output file if component tiles are missing.
-	MAPSOURCE_OSM_CYCLE, "1 : 5 000", 16, 4500,
-	MAPSOURCE_OSM_CYCLE, "1 : 10 000", 15, 9000,
-	MAPSOURCE_OSM_CYCLE, "1 : 20 000", 14, 18000,
-	MAPSOURCE_OSM_CYCLE, "1 : 40 000", 13, 36000,
-	MAPSOURCE_OSM_CYCLE, "1 : 75 000", 12, 72000,
-	MAPSOURCE_OSM_CYCLE, "1 : 150 000", 11, 144000,
-	MAPSOURCE_OSM_CYCLE, "1 : 300 000", 10, 288000,
-	MAPSOURCE_OSM_CYCLE, "1 : 600 000", 9, 576000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TAH_OSM_CYCLE, "1 : 600 000", 9, 576000,
+	/* the distortion gets too bad at scales wider than 1:500k
+	    It would be more accurate to stop earlier, but we compromise */
+#endif
+
+	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap Mapnik", -1, -1,
+	/* scale varies with latitude, so this is just a rough guide
+		which will only be valid for mid-lats */
+	/* Octave code: for lat=0:5:75; disp( [lat (a * 2*pi * pixelfact * cos(lat * pi/180)) / (256*2^9)]); end */
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 2 500", 17, 2250,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TMS_OSM_MAPNIK, "1 : 600 000", 9, 576000,
+	/* the distortion gets too bad at scales wider than 1:500k
+	    It would be more accurate to stop earlier, but we compromise */
+
+
+	MAPSOURCE_TMS_OSM_CYCLE, "OpenStreetMap Cycle Map", -1, -1,
+	/* scale varies with latitude, so this is just a rough guide
+		which will only be valid for mid-lats */
+	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
+	// NOTE: the Cycle Map is a big flakey at closer zooms in rural areas
+	//  many "404 Not Founds" are found in the PNG output file if component tiles are missing.
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TMS_OSM_CYCLE, "1 : 600 000", 9, 576000,
 	/* the distortion gets too bad at scales wider than 1:500k
 	    It would be more accurate to stop earlier, but we compromise */
 
@@ -220,7 +257,7 @@ void calc_webtile_middle_lower(double lat, double lon, int zoom)
 
     if (mydebug > -1) {
 	g_print("TMS tile [%d, %d]  Zoom level [%d]\n", xtile, ytile, zoom);
-	g_print(" system: gpstile_fetch_and_assemble %d %d %d %s\n",
+	g_print(" system( gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --filename=%s )\n",
 		zoom, xtile, ytile, tilefile);
     }
 
@@ -325,11 +362,15 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 			    g_print ("*** server type not set yet.\n");
 			switch (local_config.mapsource_type)
 			{
-			    case MAPSOURCE_LANDSAT:
+			    case MAPSOURCE_WMS_LANDSAT:
 				server_type = WMS_SERVER;
 				break;
-			    case MAPSOURCE_OSM_TAH:
-			    case MAPSOURCE_OSM_CYCLE:
+			    case MAPSOURCE_TAH_OSM:
+			    case MAPSOURCE_TAH_OSM_CYCLE:
+				server_type = TAH_SERVER;
+				break;
+			    case MAPSOURCE_TMS_OSM_MAPNIK:
+			    case MAPSOURCE_TMS_OSM_CYCLE:
 				server_type = TMS_SERVER;
 				break;
 			    default:
@@ -338,7 +379,7 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 				break;
 			}
 		}
-		if (server_type == TMS_SERVER)
+		if (server_type == TAH_SERVER)
 		    mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 
 		if (mydebug > 3)
@@ -374,14 +415,17 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 
 		switch (local_config.mapsource_type)
 		{
-		    case MAPSOURCE_LANDSAT:
+		    case MAPSOURCE_WMS_LANDSAT:
 			server_type = WMS_SERVER;
 			break;
-		    case MAPSOURCE_OSM_TAH:
-		    case MAPSOURCE_OSM_CYCLE:
+		    case MAPSOURCE_TAH_OSM:
+		    case MAPSOURCE_TAH_OSM_CYCLE:
+			server_type = TAH_SERVER;
+			break;
+		    case MAPSOURCE_TMS_OSM_MAPNIK:
+		    case MAPSOURCE_TMS_OSM_CYCLE:
 			server_type = TMS_SERVER;
 			break;
-// really make above server_type = TAH_SERVER, and make TMS server for osgeo spec
 		    default:
 			server_type = -1;
 			g_print("mapdl_setsource_cb(): unknown map source\n");
@@ -409,7 +453,7 @@ mapdl_geturl_wms (void)
 	    case MAPSOURCE_CUSTOM_WMS:
 		// ...
 		break;
-	    case MAPSOURCE_LANDSAT:
+	    case MAPSOURCE_WMS_LANDSAT:
 	    default:
 		g_strlcpy(wms_url, "http://onearth.jpl.nasa.gov/wms.cgi", sizeof(wms_url));
 		g_strlcpy(wms_layers, "global_mosaic", sizeof(wms_layers));  /* may be a comma separated list */
@@ -587,26 +631,36 @@ mapdl_download (void)
 		}
 	}
 
-	map_file = fopen (mapdl_file_w_path, "w");
-	curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
-	curl_easy_setopt (curl_handle, CURLOPT_NOPROGRESS, 0);
-	curl_easy_setopt (curl_handle, CURLOPT_WRITEDATA, map_file);
 
-	set_cursor_style (CURSOR_WATCH);
-	
-	if (curl_easy_perform (curl_handle))
+	if(local_config.mapsource_type == MAPSOURCE_TMS_OSM_MAPNIK)
 	{
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
-			_("Aborted."));
+	    /* for TMS: work in progress */
+	    calc_webtile_middle_lower(mapdl_lat, mapdl_lon, mapdl_zoom);
+	    // move mosiac to where it has to be.
 	}
 	else
 	{
+	    map_file = fopen (mapdl_file_w_path, "w");
+	    curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
+	    curl_easy_setopt (curl_handle, CURLOPT_NOPROGRESS, 0);
+	    curl_easy_setopt (curl_handle, CURLOPT_WRITEDATA, map_file);
+
+	    set_cursor_style (CURSOR_WATCH);
+	
+	    if (curl_easy_perform (curl_handle))
+	    {
+		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			_("Aborted."));
+	    }
+	    else
+	    {
 		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
 		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
 			_("Download complete."));
+	    }
+	    fclose (map_file);
 	}
-	fclose (map_file);
 
 	/* add new map to map_koords.txt */
 	g_stat (mapdl_file_w_path, &file_stat);
@@ -673,33 +727,43 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	/* preset filename and build download url */
 	switch (local_config.mapsource_type)
 	{
-		case MAPSOURCE_LANDSAT:
+		case MAPSOURCE_WMS_LANDSAT:
 			g_strlcpy (path, "landsat", sizeof (path));
 			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
 			mapdl_geturl_landsat ();
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
 			break;
-//todo		case MAPSOURCE_TMS:
-		case MAPSOURCE_OSM_TAH:
+		case MAPSOURCE_TAH_OSM:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
 			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
 			mapdl_geturl_osm_tah ();
 			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
 			break;
-		case MAPSOURCE_OSM_CYCLE:
+		case MAPSOURCE_TAH_OSM_CYCLE:
 			g_strlcpy (path, "openstreetmap_cycle", sizeof (path));
 			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
 			mapdl_geturl_osm_cycle ();
 			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
 			break;
+		case MAPSOURCE_TMS_OSM_MAPNIK:
+			g_strlcpy (path, "openstreetmap_tms_mapnik", sizeof (path));
+			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
+			//
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
+		case MAPSOURCE_TMS_OSM_CYCLE:
+			g_strlcpy (path, "openstreetmap_tms_cycle", sizeof (path));
+			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
+			//
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);			
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
 		default:
 			return TRUE;
 	}
-
-	/* debug for TMS: work in progress */
-//	calc_webtile_middle_lower(mapdl_lat, mapdl_lon, mapdl_zoom);
 
 	if (mydebug > 5)
 		g_print ("  download url:\n%s\n", mapdl_url);
@@ -809,14 +873,13 @@ map_download_cb (GtkWidget *widget, gpointer data)
 	if (mydebug > 25)
 	    g_print ("map_download_cb()\n");
 
-
 	curl_handle = curl_easy_init();
 	curl_easy_setopt (curl_handle, CURLOPT_PROGRESSFUNCTION, mapdl_progress_cb);
 
 	set_cursor_style (CURSOR_CROSS);
 
 	source_list = gtk_list_store_new (4,
-		G_TYPE_INT,		/* type (OnEarth, T@H, CycleMap) */
+		G_TYPE_INT,		/* type (WMS, TMS, T@H) */
 		G_TYPE_STRING,		/* map scale text or name */
 		G_TYPE_INT,		/* tile zoom level */
 		G_TYPE_INT		/* scale_int */

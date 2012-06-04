@@ -48,15 +48,15 @@ EOF
 
 
 if [ ! -x "`which wget`" ] ; then
-    echo "ERROR: wget is required, please install it first" 1&>2
+    echo "ERROR: wget is required, please install it first" 1>&2
     exit 1
 fi
 if [ ! -x "`which pnmcat`" ] ; then
-    echo "ERROR: pnmcat is required, please install the Netpbm tools" 1&>2
+    echo "ERROR: pnmcat is required, please install the Netpbm tools" 1>&2
     exit 1
 fi
 if [ ! -x "`which optipng`" ] ; then
-    echo "ERROR: optipng is required, please install it first" 1&>2
+    echo "ERROR: optipng is required, please install it first" 1>&2
     exit 1
 fi
 
@@ -94,9 +94,9 @@ for arg in "$@" ; do
             verbose=$arg_true
             ;;
         *)
-            echo 1&>2
-            echo "Unknown option $arg" 1&>2
-            echo 1&>2
+            echo 1>&2
+            echo "Unknown option $arg" 1>&2
+            echo 1>&2
             help=true
             UNKNOWN_OPTION=true
             ;;
@@ -113,21 +113,27 @@ if [ "$help" = "true" ] ; then
   fi
 fi
 
+if [ -z "$xtile" ] ||  [ -z "$ytile" ] ||  [ -z "$zoom" ] ; then
+   print_usage
+   exit 1
+fi
+
+
 if [ "$strict_spec" = "true" ] ; then
    echo "support for true TMS is still todo. try back later."
    exit 1
 fi
 
 if [ -e "$filename" ] ; then
-   echo "ERROR: <$filename> already exists. Will not overwrite" 1&>2
+   echo "ERROR: <$filename> already exists. Will not overwrite" 1>&2
    exit 1
 fi
 
 TEMPDIR=".gpsdrive/.tmp"
-if [ ! -e "$TEMPDIR" ] ; then
+if [ ! -e ~/"$TEMPDIR" ] ; then
    mkdir ~/"$TEMPDIR"
    if [ $? -ne 0 ] ; then
-      echo "ERROR: Unable to create temporary directory <$TEMPDIR>" 1&>2
+      echo "ERROR: Unable to create temporary directory <$TEMPDIR>" 1>&2
       exit 1
    fi
 fi
@@ -139,7 +145,7 @@ TEMPDIR2="tms_$$"
 if [ ! -e "$TEMPDIR2" ] ; then
    mkdir "$TEMPDIR2"
    if [ $? -ne 0 ] ; then
-      echo "ERROR: Unable to create temporary directory <$TEMPDIR/$TEMPDIR2>" 1&>2
+      echo "ERROR: Unable to create temporary directory <$TEMPDIR/$TEMPDIR2>" 1>&2
       exit 1
    fi
 fi
@@ -154,7 +160,9 @@ BASE_URL3="http://c.tile.openstreetmap.org"
 # url example:  http://c.tile.openstreetmap.org/9/421/193.png
 
 LOWER_CENTER_TILE="$xtile/$ytile"
-
+if [ "$verbose" = "true" ] ; then
+   echo "Lower center tile is $xtile,$ytile, zoom level $zoom" 1>&2
+fi
 TILE_11="$zoom/`expr $xtile - 2`/`expr $ytile - 2`"
 TILE_21="$zoom/`expr $xtile - 1`/`expr $ytile - 2`"
 TILE_31="$zoom/$xtile/`expr $ytile - 2`"
@@ -179,7 +187,6 @@ TILE_34="$zoom/$xtile/`expr $ytile + 1`"
 TILE_44="$zoom/`expr $xtile + 1`/`expr $ytile + 1`"
 TILE_54="$zoom/`expr $xtile + 2`/`expr $ytile + 1`"
 
-
 #DL_COUNT=0
 #BEGIN_TIME=`date '+%s'`
 #TIMEOUT=flase
@@ -188,12 +195,14 @@ TILE_54="$zoom/`expr $xtile + 2`/`expr $ytile + 1`"
 #    CURR_TIME=`date '+%s'`
 #    if [ `expr $CURR_TIME - $BEGIN_TIME` -gt 120 ] ; then
 #        TIMEOUT=true
-#	echo "ERROR: timed out -- aborting." 1&>2
+#	echo "ERROR: timed out -- aborting." 1>&2
 #	break
 #    fi
 
 # todo: some sort of error checking, maybe just filesize not equal to zero.
-
+if [ "$verbose" = "true" ] ; then
+   echo "Fetching from server ..." 1>&2
+fi
     wget -nv "$BASE_URL3/$TILE_11.png" -O tms_11.png &
     wget -nv "$BASE_URL3/$TILE_21.png" -O tms_21.png &
     wget -nv "$BASE_URL2/$TILE_31.png" -O tms_31.png &
@@ -221,10 +230,12 @@ TILE_54="$zoom/`expr $xtile + 2`/`expr $ytile + 1`"
     wget -nv "$BASE_URL2/$TILE_44.png" -O tms_44.png &
     wget -nv "$BASE_URL1/$TILE_54.png" -O tms_54.png
     wait
-
 #done
 
 
+if [ "$verbose" = "true" ] ; then
+   echo "Converting to pnm ..." 1>&2
+fi
 for file in *.png ; do
     if [ `file "$file" | grep -c PNG` -eq 0 ] ; then
        echo "ERROR: <$file> appears to be bogus."
@@ -233,6 +244,10 @@ for file in *.png ; do
     pngtopnm "$file" > `basename "$file" .png`.pnm
 done
 
+
+if [ "$verbose" = "true" ] ; then
+   echo "Patching ..." 1>&2
+fi
 pnmcat -lr tms_11.pnm tms_21.pnm tms_31.pnm tms_41.pnm tms_51.pnm > row1.pnm
 pnmcat -lr tms_12.pnm tms_22.pnm tms_32.pnm tms_42.pnm tms_52.pnm > row2.pnm
 pnmcat -lr tms_13.pnm tms_23.pnm tms_33.pnm tms_43.pnm tms_53.pnm > row3.pnm
@@ -241,9 +256,20 @@ pnmcat -tb row1.pnm row2.pnm row3.pnm row4.pnm | pnmtopng > mosaic.png
 
 rm -f tms_*.pnm tms_*.png
 
-optipng -o5 -quiet mosaic.png
 
-outfile=tms_`echo "$TILE_11" | tr '/' '_'`plus.png
+be_quiet="-quiet"
+if [ "$verbose" = "true" ] ; then
+   echo "Compressing ..." 1>&2
+   be_quiet=""
+fi
+optipng -o5 $be_quiet mosaic.png
+
+
+if [ -z "$filename" ] ; then
+   outfile=tms_`echo "$TILE_11" | tr '/' '_'`.png
+else
+   outfile=`basename "$filename"`
+fi
 mv mosaic.png ../"$outfile"
 
 cd ..
@@ -252,3 +278,51 @@ rm -rf "$TEMPDIR2"
 
 #todo: use awk to calculate bounding box in lat/lon
 # see map_download.c for the formula.
+xtile2lat()
+{
+   xtile=$1
+   zoom=$2
+   echo "$xtile $zoom" | awk '{printf("%.9f", $1 / 2.0^$2 * 360.0 - 180)}'
+}
+
+ytile2lon()
+{
+   ytile=$1
+   zoom=$2
+   
+   echo "$ytile $zoom" | awk -v PI=3.14159265358979323846 '{
+      num_tiles = PI - 2.0 * PI * $1 / 2.0^$2;
+      printf("%.9f", 180.0 / PI * atan2(0.5 * (exp(num_tiles) - exp(-num_tiles)),1)); }'
+}
+
+
+n=$(ytile2lon `expr $ytile - 2` $zoom)
+s=$(ytile2lon `expr $ytile + 1 + 1` $zoom)
+e=$(xtile2lat `expr $xtile + 2 + 1` $zoom)
+w=$(xtile2lat `expr $xtile - 2` $zoom)
+
+echo "bbox=$w,$s,$e,$n"
+
+center_lat=`echo "$s $n" | awk '{printf("%.8f", ($1 + $2) / 2.0)}'`
+center_lon=`echo "$w $e" | awk '{printf("%.8f", ($1 + $2) / 2.0)}'`
+echo "center=$center_lat,$center_lon"
+echo
+
+calc_webtile_scale()
+{
+    lat=$1
+    scale=$2
+    echo "$lat $scale" | awk -v PI=3.14159265358979323846 \
+      -v PIXELFACT=2817.947378 '{
+       a = 6378137.0;
+       printf("%.0f", (a * 2*PI * cos($1 * PI/180) * PIXELFACT) / (256 * 2^$2))
+    
+    }'
+}
+
+mapscale=$(calc_webtile_scale $center_lat $zoom)
+
+echo "map_koord.txt line:"
+echo "$outfile   $center_lat   $center_lon   $mapscale"
+
+
