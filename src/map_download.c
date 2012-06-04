@@ -158,7 +158,6 @@ static struct mapsource_struct
 	/* Octave code: for lat=0:5:75;   disp( [lat (a * 2*pi *pixelfact * cos(lat  * pi/180))  / (256*2^9)]); end */
 	// NOTE: the Cycle Map is a big flakey at closer zooms in rural areas
 	//  many "404 Not Founds" are found in the PNG output file if component tiles are missing.
-	MAPSOURCE_OSM_CYCLE, "1 : 2 500", 17, 2250,
 	MAPSOURCE_OSM_CYCLE, "1 : 5 000", 16, 4500,
 	MAPSOURCE_OSM_CYCLE, "1 : 10 000", 15, 9000,
 	MAPSOURCE_OSM_CYCLE, "1 : 20 000", 14, 18000,
@@ -200,6 +199,93 @@ calc_webtile_scale (double lat, int zoom)
 
     return scale;
 }
+
+/* *****************************************************************************
+ * calculate the nearest tile number based on Web Tile zoom level and lat,lon
+     .....
+     .....
+     ..x..
+     .....
+*/
+void calc_webtile_middle_lower(double lat, double lon, int zoom)
+{
+    int xtile, ytile;
+    gchar tilefile[512];
+
+    xtile = lon2tms_xtile(lon, zoom);
+    ytile = lat2tms_ytile(lat, zoom, FALSE);
+
+    g_snprintf(tilefile, sizeof(tilefile), "tms_%d_%d_%d.png",
+	       zoom, xtile, ytile);
+
+    if (mydebug > -1) {
+	g_print("TMS tile [%d, %d]  Zoom level [%d]\n", xtile, ytile, zoom);
+	g_print(" system: gpstile_fetch_and_assemble %d %d %d %s\n",
+		zoom, xtile, ytile, tilefile);
+    }
+
+    return;
+}
+
+/* convert longitude to TMS x-tile number */
+int lon2tms_xtile(double lon, int zoom)
+{
+    return (int)(floor((lon + 180.0) / 360.0 * pow(2.0, zoom)));
+}
+
+/* convert latitude to TMS y-tile number */
+int lat2tms_ytile(double lat, int zoom, int use_osgeo_counting)
+{
+    int tile_number;
+
+    if (!use_osgeo_counting) {
+	tile_number = (int)(floor(
+	    (1.0 - log(
+	       tan(lat * M_PI/180.0) + 1.0 / cos(lat * M_PI/180.0) )
+	     / M_PI)
+	     / 2.0 * pow(2.0, zoom)));
+    }
+    else
+	tile_number = -1; /* TODO */
+
+    return tile_number;
+}
+
+
+/* convert TMS x-tile number to longitude of top-left corner */
+double tms_xtile2lon(int xtile, int zoom)
+{
+    return xtile / pow(2.0, zoom) * 360.0 - 180;
+}
+
+
+/* convert TMS y-tile number to latitude of top-left corner */
+double tms_ytile2lat(int ytile, int zoom, int use_osgeo_counting)
+{
+    double num_tiles, lon;
+
+    num_tiles = M_PI - 2.0 * M_PI * ytile / pow(2.0, zoom);
+
+    if(!use_osgeo_counting) {
+	lon = 180.0 / M_PI *
+	   atan(0.5 * (exp(num_tiles) - exp(-num_tiles)));
+    }
+    else
+	lon = -9999; /* TODO */
+
+    return lon;
+}
+
+/* get bounding box of assembed 5x4 tile array for new-style map_koord.txt entry */
+/* todo
+{
+    bbox_n = tms_ytile2lat(ytile, zoom, FALSE);
+    bbox_s = tms_ytile2lat(ytile + 1, zoom, FALSE);
+    bbox_e = tms_xtile2lon(xtile + 1, zoom);
+    bbox_w = tms_xtile2lon(xtile, zoom);
+}
+*/
+
 
 /* *****************************************************************************
  * callback to set paramaters for map to download
@@ -295,6 +381,7 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 		    case MAPSOURCE_OSM_CYCLE:
 			server_type = TMS_SERVER;
 			break;
+// really make above server_type = TAH_SERVER, and make TMS server for osgeo spec
 		    default:
 			server_type = -1;
 			g_print("mapdl_setsource_cb(): unknown map source\n");
@@ -592,6 +679,7 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			mapdl_geturl_landsat ();
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
 			break;
+//todo		case MAPSOURCE_TMS:
 		case MAPSOURCE_OSM_TAH:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
 			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
@@ -609,6 +697,9 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 		default:
 			return TRUE;
 	}
+
+	/* debug for TMS: work in progress */
+//	calc_webtile_middle_lower(mapdl_lat, mapdl_lon, mapdl_zoom);
 
 	if (mydebug > 5)
 		g_print ("  download url:\n%s\n", mapdl_url);

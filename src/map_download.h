@@ -39,5 +39,10 @@ void mapdl_set_coords (gchar *lat, gchar *lon);
 gint mapdl_init (void);
 gint mapdl_cleanup (void);
 double calc_webtile_scale (double, int);
+void calc_webtile_middle_lower(double, double, int);
+int lon2tms_xtile(double, int);
+int lat2tms_ytile(double, int, int);
+double tms_xtile2lon(int, int);
+double tms_ytile2lat(int, int, int);
 
 #endif /* GPSDRIVE_MAP_DOWNLOAD_H */
