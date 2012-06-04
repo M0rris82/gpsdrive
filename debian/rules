@@ -97,8 +97,7 @@ install: build
 	# prepare the geoinfo.db file from the openstreetmap-map-icons-classic package
 	cp /usr/share/doc/openstreetmap-map-icons-classic/examples/geoinfo.db.gz .
 	gzip -d geoinfo.db.gz
-	mkdir -p $(destdir)/usr/share/icons/openstreetmap
-	mv geoinfo.db $(destdir)/usr/share/icons/openstreetmap/
+	mv geoinfo.db $(destdir)/usr/share/gpsdrive/
 
 	# put the icon in the right place
 	mkdir -p $(destdir)/usr/share/icons/hicolor/32x32/apps

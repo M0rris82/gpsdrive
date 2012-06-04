@@ -1,9 +1,11 @@
-gpsdrive (2.12+svn2639-1) unstable; urgency=low
+gpsdrive (2.12+svn2643-1) unstable; urgency=low
 
    * Modernize Debian package with many changes
    * Map download disabled since all remote servers are down
+   * Sync'd to modern location of packaged OSM icons
+   * Beginnings of TMS support
 
- -- M. Hamish Bowman <hamish_b yahoo com>  Sat, 3 Jun 2012 22:37:47 +1200
+ -- M. Hamish Bowman <hamish_b yahoo com>  Sat, 4 Jun 2012 18:40:35 +1200
 
 gpsdrive (2.10svn2505) unstable; urgency=low
 

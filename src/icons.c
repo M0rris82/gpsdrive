@@ -207,6 +207,7 @@ read_icon (gchar * icon_name, int force)
     {"../data/pixmaps/", NULL},
     {"%spixmaps/", (gchar *) local_config.dir_home},
     {"%smap-icons/", (gchar *) local_config.dir_home},
+    {"%s/icons/openstreetmap/", (gchar *) DATADIR},
     {"%s/icons/map-icons/", (gchar *) DATADIR},
     {"%s/map-icons/", (gchar *) DATADIR},
     {"%s/gpsdrive/pixmaps/", (gchar *) DATADIR},

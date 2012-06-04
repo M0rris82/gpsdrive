@@ -819,7 +819,7 @@ config_init ()
 	g_strlcpy (local_config.icon_theme,
 		"square.big", sizeof (local_config.icon_theme));
 	g_snprintf (local_config.geoinfo_file, sizeof (local_config.geoinfo_file),
-		"%s%s", DATADIR, "/icons/openstreetmap/geoinfo.db");
+		"%s%s", DATADIR, "/gpsdrive/geoinfo.db");
 	g_snprintf (local_config.osm_dbfile, sizeof (local_config.osm_dbfile),
 		"%s%s", DATADIR, "/gpsdrive/osm.db");
 	g_strlcpy (local_config.quickpoint_type, "waypoint.pin.green", sizeof (local_config.quickpoint_type));
