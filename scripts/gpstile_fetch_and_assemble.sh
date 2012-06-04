@@ -129,7 +129,7 @@ if [ -e "$filename" ] ; then
    exit 1
 fi
 
-TEMPDIR=".gpsdrive/.tmp"
+TEMPDIR=".gpsdrive/maps/.tmp"
 if [ ! -e ~/"$TEMPDIR" ] ; then
    mkdir ~/"$TEMPDIR"
    if [ $? -ne 0 ] ; then
@@ -266,7 +266,7 @@ optipng -o5 $be_quiet mosaic.png
 
 
 if [ -z "$filename" ] ; then
-   outfile=tms_`echo "$TILE_11" | tr '/' '_'`.png
+   outfile=map_`echo "$TILE_33" | tr '/' '_'`.png
 else
    outfile=`basename "$filename"`
 fi
