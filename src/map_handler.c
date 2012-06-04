@@ -611,7 +611,7 @@ loadmap (char *filename)
 
 
 /* ******************************************************************
- * test if any of the "Display_backgroud_map"-Checkboxes are on
+ * test if any of the "Display_background_map"-Checkboxes are on
  */
 int
 display_background_map ()
