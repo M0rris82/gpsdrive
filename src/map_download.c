@@ -1,6 +1,7 @@
 /***********************************************************************
 
 Copyright (c) 2008 Guenther Meyer <d.s.e (at) sordidmusic.com>
+Copyright (c) 2012 Hamish Bowman <hamish_b (at) yahoo com>
 
 Website: www.gpsdrive.de
 
@@ -77,7 +78,9 @@ extern guistatus_struct gui_status;
 
 enum
 {
+#ifdef serving_tiled_requests_only
 	MAPSOURCE_WMS_LANDSAT,
+#endif
 	MAPSOURCE_TMS_OSM_MAPNIK,
 	MAPSOURCE_TMS_OSM_CYCLE,
 #ifdef server_kaput
@@ -110,6 +113,26 @@ static struct mapsource_struct
 	gint scale_int;   /* 1:nn,nnn map scale */
 } mapsource[] =
 {
+#ifdef serving_tiled_requests_only
+
+/* 
+ * TODO:
+ *
+ * OnEarth WMS has shut down for arbitrary WMS requests now and only servers
+ * a subset of prescribed requrests. They must be 512x512 pixels, and on a
+ * resolution matching the top-left examples in the Get Capabilities request.
+ * Also only JPEG is available. So we'll need to fetch 6 tiles, starting with
+ *    ..,
+ *    .x,
+ * the one "x" above, where our selected mapdl_lat and mapdl_lon is snapped
+ * to the top-left corner of the tile grid. We'll then have to assemble the
+ * images into a mosaic and crop off the right-most 256 pixels.
+ * Zoom levels to list in the pull-down menu will have to be empirically
+ * determined by running some downloads at mid-latitudes and seeing what
+ * turns up for the scale in map_koord.txt.
+ *
+ */
+
 /* - LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
  *     so anything finer than that is just downloading interpolated noise and you
  *     might as well just use the magnifying glass tool.
@@ -137,7 +160,7 @@ static struct mapsource_struct
 	MAPSOURCE_WMS_LANDSAT, "1 : 5 million", 0, 5000000,
 	MAPSOURCE_WMS_LANDSAT, "1 : 10 million", 0, 10000000,
 	MAPSOURCE_WMS_LANDSAT, "1 : 50 million", 0, 50000000,
-
+#endif
 
 	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap Mapnik", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
@@ -360,9 +383,11 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 			    g_print ("*** server type not set yet.\n");
 			switch (local_config.mapsource_type)
 			{
+#ifdef serving_tiled_requests_only
 			    case MAPSOURCE_WMS_LANDSAT:
 				server_type = WMS_SERVER;
 				break;
+#endif
 #ifdef server_kaput
 			    case MAPSOURCE_TAH_OSM:
 			    case MAPSOURCE_TAH_OSM_CYCLE:
@@ -418,9 +443,11 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 
 		switch (local_config.mapsource_type)
 		{
+#ifdef serving_tiled_requests_only
 		    case MAPSOURCE_WMS_LANDSAT:
 			server_type = WMS_SERVER;
 			break;
+#endif
 #ifdef server_kaput
 		    case MAPSOURCE_TAH_OSM:
 		    case MAPSOURCE_TAH_OSM_CYCLE:
@@ -776,12 +803,14 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	/* preset filename and build download url */
 	switch (local_config.mapsource_type)
 	{
+#ifdef serving_tiled_requests_only
 		case MAPSOURCE_WMS_LANDSAT:
 			g_strlcpy (path, "landsat", sizeof (path));
 			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
 			mapdl_geturl_landsat ();
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
 			break;
+#endif
 #ifdef server_kaput
 		case MAPSOURCE_TAH_OSM:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
