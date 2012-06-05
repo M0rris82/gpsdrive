@@ -83,6 +83,9 @@ enum
 #endif
 	MAPSOURCE_TMS_OSM_MAPNIK,
 	MAPSOURCE_TMS_OSM_CYCLE,
+	MAPSOURCE_TMS_OSM_TRANSPORT,
+	MAPSOURCE_TMS_MAPQST,
+	MAPSOURCE_TMS_MAPQST_AERIAL,
 #ifdef server_kaput
 	MAPSOURCE_TAH_OSM,
 	MAPSOURCE_TAH_OSM_CYCLE,
@@ -162,7 +165,7 @@ static struct mapsource_struct
 	MAPSOURCE_WMS_LANDSAT, "1 : 50 million", 0, 50000000,
 #endif
 
-	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap Mapnik", -1, -1,
+	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap's Mapnik", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
 		which will only be valid for mid-lats */
 	/* Octave code: for lat=0:5:75; disp( [lat (a * 2*pi * pixelfact * cos(lat * pi/180)) / (256*2^9)]); end */
@@ -193,6 +196,35 @@ static struct mapsource_struct
 	MAPSOURCE_TMS_OSM_CYCLE, "1 : 150 000", 11, 144000,
 	MAPSOURCE_TMS_OSM_CYCLE, "1 : 300 000", 10, 288000,
 	MAPSOURCE_TMS_OSM_CYCLE, "1 : 600 000", 9, 576000,
+	/* the distortion gets too bad at scales wider than 1:500k
+	    It would be more accurate to stop earlier, but we compromise */
+
+
+	MAPSOURCE_TMS_OSM_TRANSPORT, "OpenStreetMap Transport", -1, -1,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 2 500", 17, 2250,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TMS_OSM_TRANSPORT, "1 : 600 000", 9, 576000,
+
+	MAPSOURCE_TMS_MAPQST, "MapQuest", -1, -1,
+	MAPSOURCE_TMS_MAPQST, "1 : 5 000", 16, 4500,
+	MAPSOURCE_TMS_MAPQST, "1 : 10 000", 15, 9000,
+	MAPSOURCE_TMS_MAPQST, "1 : 20 000", 14, 18000,
+	MAPSOURCE_TMS_MAPQST, "1 : 40 000", 13, 36000,
+	MAPSOURCE_TMS_MAPQST, "1 : 75 000", 12, 72000,
+	MAPSOURCE_TMS_MAPQST, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TMS_MAPQST, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TMS_MAPQST, "1 : 600 000", 9, 576000,
+
+	MAPSOURCE_TMS_MAPQST_AERIAL, "MapQuest Aerial", -1, -1,
+	MAPSOURCE_TMS_MAPQST_AERIAL, "1 : 150 000", 11, 144000,
+	MAPSOURCE_TMS_MAPQST_AERIAL, "1 : 300 000", 10, 288000,
+	MAPSOURCE_TMS_MAPQST_AERIAL, "1 : 600 000", 9, 576000,
 	/* the distortion gets too bad at scales wider than 1:500k
 	    It would be more accurate to stop earlier, but we compromise */
 
@@ -274,7 +306,7 @@ calc_webtile_scale (double lat, int zoom)
 int calc_and_dl_webtile(double lat, double lon, int zoom)
 {
     int xtile, ytile;
-    gchar tilefile[512], dl_cmd[4096];
+    gchar tilefile[512], dl_cmd[512], datasource[32];
 
     xtile = lon2tms_xtile(lon, zoom);
     ytile = lat2tms_ytile(lat, zoom, FALSE);
@@ -282,15 +314,37 @@ int calc_and_dl_webtile(double lat, double lon, int zoom)
     g_snprintf(tilefile, sizeof(tilefile), "map_%d_%d_%d.png",
 	       zoom, xtile, ytile);
 
+    switch (local_config.mapsource_type)
+    {
+	case MAPSOURCE_TMS_OSM_MAPNIK:
+		g_strlcpy(datasource, "osm_mapnik", sizeof(datasource));
+		break;
+	case MAPSOURCE_TMS_OSM_CYCLE:
+		g_strlcpy(datasource, "osm_cycle", sizeof(datasource));
+		break;
+	case MAPSOURCE_TMS_OSM_TRANSPORT:
+		g_strlcpy(datasource, "osm_transport", sizeof(datasource));
+		break;
+	case MAPSOURCE_TMS_MAPQST:
+		g_strlcpy(datasource, "mapquest_open", sizeof(datasource));
+		break;
+	case MAPSOURCE_TMS_MAPQST_AERIAL:
+		g_strlcpy(datasource, "mapquest_aerial", sizeof(datasource));
+		break;
+	default:
+		g_print("calc_and_dl_webtile(): unknown map source\n");
+		break;
+    }
+
     if (mydebug > -1) {
 	g_print("TMS tile [%d, %d]  Zoom level [%d]\n", xtile, ytile, zoom);
-	g_print(" system( gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --filename=%s )\n",
-		zoom, xtile, ytile, tilefile);
+	g_print(" system( gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --datasource=%s --filename=%s )\n",
+		zoom, xtile, ytile, datasource, tilefile);
     }
     /* todo: something better like popen(**); some kind of error checking */
     g_snprintf(dl_cmd, sizeof(dl_cmd),
-    		"gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --filename=%s",
-		zoom, xtile, ytile, tilefile);
+    		"gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --datasource=%s --filename=%s",
+		zoom, xtile, ytile, datasource, tilefile);
 
     return system(dl_cmd);
 }
@@ -396,6 +450,9 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 #endif
 			    case MAPSOURCE_TMS_OSM_MAPNIK:
 			    case MAPSOURCE_TMS_OSM_CYCLE:
+			    case MAPSOURCE_TMS_OSM_TRANSPORT:
+			    case MAPSOURCE_TMS_MAPQST:
+			    case MAPSOURCE_TMS_MAPQST_AERIAL:
 				server_type = TMS_SERVER;
 				break;
 			    default:
@@ -456,6 +513,9 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 #endif
 		    case MAPSOURCE_TMS_OSM_MAPNIK:
 		    case MAPSOURCE_TMS_OSM_CYCLE:
+		    case MAPSOURCE_TMS_OSM_TRANSPORT:
+		    case MAPSOURCE_TMS_MAPQST:
+		    case MAPSOURCE_TMS_MAPQST_AERIAL:
 			server_type = TMS_SERVER;
 			break;
 		    default:
@@ -666,7 +726,7 @@ mapdl_download (void)
 	}
 
 
-	if(local_config.mapsource_type == MAPSOURCE_TMS_OSM_MAPNIK)
+	if(server_type == TMS_SERVER)
 	{
 	    /* for TMS: work in progress */
 	    if (calc_and_dl_webtile(mapdl_lat, mapdl_lon, mapdl_zoom) != 0)
@@ -839,6 +899,28 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
 			g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));
 			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);			
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
+		case MAPSOURCE_TMS_OSM_TRANSPORT:
+			g_strlcpy (path, "openstreetmap_tms_xport", sizeof (path));
+			g_strlcpy (img_fmt, "png", sizeof (img_fmt));
+			g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
+		case MAPSOURCE_TMS_MAPQST:
+			g_strlcpy (path, "openstreetmap_tms_mapqst", sizeof (path));
+			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
+			g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);			
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
+			break;
+
+		case MAPSOURCE_TMS_MAPQST_AERIAL:
+			g_strlcpy (path, "openstreetmap_tms_mapqst_aerial", sizeof (path));
+			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
+			g_strlcpy(mapdl_proj, "map", sizeof(mapdl_proj));
+			mapdl_scale = (int)calc_webtile_scale(mapdl_lat, mapdl_zoom);
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_zoom);
 			break;
 		default:
