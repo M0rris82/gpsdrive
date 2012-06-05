@@ -1,6 +1,9 @@
 #!/bin/sh
+#
+# This script tries to rename all scripts so to remove extentions
+#
 
-src_dir=$1
+src_dir="$1"
 shift
 
 if echo "$@" | grep -q -e "--help" ; then
@@ -8,7 +11,7 @@ if echo "$@" | grep -q -e "--help" ; then
     exit -1 
 fi
 
-# Perl Binaries
+# Perl Scripts
 find $src_dir -name "*.pl" | grep -v -e '\#' -e '~' |\
     while read src_fn ; do 
     #filename="`basename $src_fn`"

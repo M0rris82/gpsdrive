@@ -1,4 +1,4 @@
-gpsdrive (2.12+svn2643-1) unstable; urgency=low
+gpsdrive (2.12+svn2655-1) unstable; urgency=low
 
    * Modernize Debian package with many changes
    * Map download disabled since all remote servers are down
