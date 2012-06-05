@@ -7,15 +7,17 @@ endif (NOT MAEMO)
 
 if (WITH_SCRIPTS)
   set(bin_SCRIPTS
-    gpspoint2gpsdrive.pl
-    geocache2way.pl
-    gpsreplay.pl
-    gpsfetchmap.pl
-    geoinfo.pl
-    gpsd_nmea.sh
     gdal_slice.sh
-    nasaconv.sh
+    geocache2way.pl
+    geoinfo.pl
     gpsd-connect-bluetooth.sh
+    gpsd_nmea.sh
+    gpsdrive_tile_crush.sh
+    gpsfetchmap.pl
+    gpspoint2gpsdrive.pl
+    gpsreplay.pl
+    gpstile_fetch_and_assemble.sh
+    nasaconv.sh
   )
 
   install(FILES
