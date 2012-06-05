@@ -18,7 +18,7 @@ echo "Creating Man Pages from [$src_dir] to [$man1_path]"
 mkdir -p "$man1_path"
 
 
-# Perl Binaries
+# Perl Scripts
 find "$src_dir" -name "*.pl" | grep -v -e '\#' -e '~' |\
     while read src_fn ; do 
     filename="`basename $src_fn`"
