@@ -374,7 +374,12 @@ fi
 if [ $FMT = "png" ] ; then
     optipng -o5 $be_quiet mosaic.png
 else
-    pngtopnm mosaic.png | pnmtojpeg --quality=85 > mosaic.jpg
+    if [ "$datasource" = "mapquest_aerial" ] ; then
+       QUAL="--quality=75"
+    else
+       QUAL="--quality=85"
+    fi
+    pngtopnm mosaic.png | pnmtojpeg $QUAL > mosaic.jpg
 fi
 
 
@@ -382,7 +387,8 @@ fi
 if [ -z "$filename" ] ; then
    outfile=map_`echo "$TILE_33" | tr '/' '_'`.$FMT
 else
-   outfile=`basename "$filename" .png`.$FMT
+   outfile=`basename "$filename" .png`
+   outfile=`basename "$outfile" .jpg`.$FMT
 fi
 
 mv mosaic.$FMT ../"$outfile"
