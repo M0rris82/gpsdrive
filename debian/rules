@@ -93,8 +93,8 @@ install: build
 	/bin/bash debian/create_missing_man_pages.sh $(destdir_utils) \
 		$(destdir_utils)/usr/share/man/man1
 
-	mv $(destdir)/usr/share/man/man1/friendsd* \
-		$(destdir_friendsd)/usr/share/man/man1
+	mv $(destdir)/usr/share/man/man1/friendsd2.1 \
+		$(destdir_friendsd)/usr/share/man/man1/friendsd.1
 
 	mkdir -p $(destdir_utils)/usr/share/man/man1/
 	mv $(destdir)/usr/share/man/man1/gpsd_nmea.sh.1 \
