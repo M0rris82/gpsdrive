@@ -53,19 +53,6 @@ EOF
 }
 #'
 
-if [ ! -x "`which wget`" ] ; then
-    echo "ERROR: wget is required, please install it first" 1>&2
-    exit 1
-fi
-if [ ! -x "`which pnmcat`" ] ; then
-    echo "ERROR: pnmcat is required, please install the Netpbm tools" 1>&2
-    exit 1
-fi
-if [ ! -x "`which optipng`" ] ; then
-    echo "ERROR: optipng is required, please install it first" 1>&2
-    exit 1
-fi
-
 # CLI parser from OSM setup-chroot script
 strict_spec=false
 xtile=""
@@ -128,6 +115,18 @@ if [ -z "$xtile" ] ||  [ -z "$ytile" ] ||  [ -z "$zoom" ] ; then
    exit 1
 fi
 
+if [ ! -x "`which wget`" ] ; then
+    echo "ERROR: wget is required, please install it first" 1>&2
+    exit 1
+fi
+if [ ! -x "`which pnmcat`" ] ; then
+    echo "ERROR: pnmcat is required, please install the Netpbm tools" 1>&2
+    exit 1
+fi
+if [ ! -x "`which optipng`" ] ; then
+    echo "ERROR: optipng is required, please install it first" 1>&2
+    exit 1
+fi
 
 if [ "$strict_spec" = "true" ] ; then
    echo "support for true TMS is still todo. try back later."
