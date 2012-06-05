@@ -21,8 +21,9 @@
 print_usage()
 {
   echo
-  echo "USAGE: `basename $0` [-c] --zoom=zoom_level --xtile=x_tile"
+  echo "USAGE: `basename $0` [-c ] --zoom=zoom_level --xtile=x_tile"
   echo "                     --ytile=y_tile [--filename=filename.png]"
+  echo "                     [--datasource=...]"
   echo
   echo "       `basename $0` --help  for detailed Information"
   echo
@@ -38,14 +39,19 @@ cat << EOF
  given the TMS zoom level and tile x,y. If filename is not given it
  will be created from input parameters. The -c flag indicates compliance
  with the OSGeo TMS spec, i.e. not reversed y-ordering. The default
- is to go with OSM/Google/Bing/etc reversed order. If the --quiet flag
- is given the program will be as non-verbose as possible.
- 
- Wget, NetPBM, and OptiPNG tools are required.
+ is to go with OSM/Google/Bing/etc reversed order. The --datasource
+ option specifies the tile server to use. Currently supported are
+ osm_mapnik, osm_cycle, osm_transport, mapquest_open, mapquest_aerial.
+ The default (for now) is OSM\'s Mapnik. Please don\'t abuse other peoples\'
+ servers too badly. (You won\'t get very far, this is about the least
+ efficient method you could try with) If the --verbose flag is given
+ the program will tell you more about what it\'s doing. The  Wget,
+ NetPBM, and OptiPNG tools are required.
+ Zoom levels 0-18, less for OpenCycleMap and MapQuest Aerial.
 
 EOF
 }
-
+#'
 
 if [ ! -x "`which wget`" ] ; then
     echo "ERROR: wget is required, please install it first" 1>&2
@@ -65,6 +71,7 @@ strict_spec=false
 xtile=""
 ytile=""
 zoom=""
+datasource="osm_mapnik"
 filename=""
 verbose=false
 
@@ -83,6 +90,9 @@ for arg in "$@" ; do
             ;;
        --ytile=*)
             ytile=${arg#*=}
+            ;;
+       --datasource)
+            datasource=${arg#*=}
             ;;
        --filename=*)
             filename=${arg#*=}
@@ -129,6 +139,21 @@ if [ -e "$filename" ] ; then
    exit 1
 fi
 
+
+if [ "$zoom" -gt 18 ] || [ "$zoom" -lt 0 ] ; then
+   echo "ERROR: Zoom must be between 0-18" 1>&2
+   exit 1
+fi
+
+if [ "$datasource" = "osm_cycle"] && [ "$zoom" -gt 16 ] ; then
+   echo "ERROR: OpenCycleMap only goes to zoom level 16" 1>&2
+   exit 1
+elif [ "$datasource" = "mapquest_aerial"] && [ "$zoom" -gt 11 ] ; then
+   echo "ERROR: MapQuest Open Aerial only goes to zoom level 11 worldwide" 1>&2
+   exit 1
+fi
+
+
 TEMPDIR=".gpsdrive/maps/.tmp"
 if [ ! -e ~/"$TEMPDIR" ] ; then
    mkdir ~/"$TEMPDIR"
@@ -153,9 +178,46 @@ fi
 cd "$TEMPDIR2"
 
 # FIXME: after initial debug replace with OpenTile or someother
-BASE_URL1="http://a.tile.openstreetmap.org"
-BASE_URL2="http://b.tile.openstreetmap.org"
-BASE_URL3="http://c.tile.openstreetmap.org"
+
+case "$datasource" in
+   osm_mapnik)
+	BASE_URL1="http://a.tile.openstreetmap.org"
+	BASE_URL2="http://b.tile.openstreetmap.org"
+	BASE_URL3="http://c.tile.openstreetmap.org"
+	BASE_URL4="$BASE_URL1"
+	;;
+   osm_cycle)
+	BASE_URL1="http://a.tile.opencyclemap.org/cycle"
+	BASE_URL2="http://b.tile.opencyclemap.org/cycle"
+	BASE_URL3="http://c.tile.opencyclemap.org/cycle"
+	BASE_URL4="$BASE_URL1"
+	;;
+   osm_transport)
+	BASE_URL1="http://a.tile.opencyclemap.org/transport"
+	BASE_URL2="http://b.tile.opencyclemap.org/transport"
+	BASE_URL3="http://c.tile.opencyclemap.org/transport"
+	BASE_URL4="$BASE_URL1"
+	;;
+   mapquest_open)
+	BASE_URL1="http://otile1.mqcdn.com/tiles/1.0.0/osm"
+	BASE_URL2="http://otile2.mqcdn.com/tiles/1.0.0/osm"
+	BASE_URL3="http://otile3.mqcdn.com/tiles/1.0.0/osm"
+	BASE_URL4="http://otile4.mqcdn.com/tiles/1.0.0/osm"
+	;;
+   mapquest_aerial)
+	BASE_URL1="http://otile1.mqcdn.com/naip"
+	BASE_URL2="http://otile2.mqcdn.com/naip"
+	BASE_URL3="http://otile3.mqcdn.com/naip"
+	BASE_URL4="http://otile4.mqcdn.com/naip"
+	;;
+   *)
+	echo "ERROR: Unknown data source '$datasource'"
+	exit 1
+	;;
+esac
+
+
+
 
 # url example:  http://c.tile.openstreetmap.org/9/421/193.png
 
@@ -203,35 +265,58 @@ TILE_54="$zoom/`expr $xtile + 2`/`expr $ytile + 1`"
 if [ "$verbose" = "true" ] ; then
    echo "Fetching from server ..." 1>&2
 fi
-    wget -nv "$BASE_URL3/$TILE_11.png" -O tms_11.png &
+    wget -nv "$BASE_URL4/$TILE_11.png" -O tms_11.png &
+    sleep 0.08
     wget -nv "$BASE_URL3/$TILE_21.png" -O tms_21.png &
-    wget -nv "$BASE_URL2/$TILE_31.png" -O tms_31.png &
+    sleep 0.08
+    wget -nv "$BASE_URL3/$TILE_31.png" -O tms_31.png &
+    sleep 0.08
     wget -nv "$BASE_URL2/$TILE_41.png" -O tms_41.png &
+    sleep 0.08
     wget -nv "$BASE_URL1/$TILE_51.png" -O tms_51.png
     wait
 
-    wget -nv "$BASE_URL3/$TILE_12.png" -O tms_12.png &
+    wget -nv "$BASE_URL4/$TILE_12.png" -O tms_12.png &
+    sleep 0.08
     wget -nv "$BASE_URL3/$TILE_22.png" -O tms_22.png &
-    wget -nv "$BASE_URL2/$TILE_32.png" -O tms_32.png &
+    sleep 0.08
+    wget -nv "$BASE_URL3/$TILE_32.png" -O tms_32.png &
+    sleep 0.08
     wget -nv "$BASE_URL2/$TILE_42.png" -O tms_42.png &
+    sleep 0.08
     wget -nv "$BASE_URL1/$TILE_52.png" -O tms_52.png
     wait
 
-    wget -nv "$BASE_URL3/$TILE_13.png" -O tms_13.png &
+    wget -nv "$BASE_URL4/$TILE_13.png" -O tms_13.png &
+    sleep 0.08
     wget -nv "$BASE_URL3/$TILE_23.png" -O tms_23.png &
-    wget -nv "$BASE_URL2/$TILE_33.png" -O tms_33.png &
+    sleep 0.08
+    wget -nv "$BASE_URL3/$TILE_33.png" -O tms_33.png &
+    sleep 0.08
     wget -nv "$BASE_URL2/$TILE_43.png" -O tms_43.png &
+    sleep 0.08
     wget -nv "$BASE_URL1/$TILE_53.png" -O tms_53.png
     wait
 
-    wget -nv "$BASE_URL3/$TILE_14.png" -O tms_14.png &
+    wget -nv "$BASE_URL4/$TILE_14.png" -O tms_14.png &
+    sleep 0.08
     wget -nv "$BASE_URL3/$TILE_24.png" -O tms_24.png &
-    wget -nv "$BASE_URL2/$TILE_34.png" -O tms_34.png &
+    sleep 0.08
+    wget -nv "$BASE_URL3/$TILE_34.png" -O tms_34.png &
+    sleep 0.08
     wget -nv "$BASE_URL2/$TILE_44.png" -O tms_44.png &
+    sleep 0.08
     wget -nv "$BASE_URL1/$TILE_54.png" -O tms_54.png
     wait
 #done
 
+
+if [ `ls -1 *.png | wc -l` -lt 20 ] ; then
+    echo "ERROR: Tile(s) appear to be missing."
+    ls *.png
+    # todo: look to see which one is missing and try again.
+    #exit 1
+fi
 
 if [ "$verbose" = "true" ] ; then
    echo "Converting to pnm ..." 1>&2
@@ -239,6 +324,10 @@ fi
 for file in *.png ; do
     if [ `file "$file" | grep -c PNG` -eq 0 ] ; then
        echo "ERROR: <$file> appears to be bogus."
+       #exit 1
+    fi
+    if [ ! -s "$file" ] ; then
+       echo "ERROR: <$file> appears to be empty."
        #exit 1
     fi
     pngtopnm "$file" > `basename "$file" .png`.pnm
@@ -276,8 +365,14 @@ cd ..
 rm -rf "$TEMPDIR2"
 
 
-#todo: use awk to calculate bounding box in lat/lon
-# see map_download.c for the formula.
+if [ "$verbose" = "false" ] ; then
+   exit
+fi
+
+
+
+#########################################################################
+# debug: use awk to calculate bounding box in lat/lon
 xtile2lat()
 {
    xtile=$1
