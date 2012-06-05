@@ -29,6 +29,8 @@ build/configure-stamp:
 	# out of date, fall over to system's copy instead:
 	rm -f cmake/Modules/FindGTK2.cmake
 	rm -f scripts/osm/osm2poidb/cmake/Modules/FindGTK2.cmake
+	sed -i -e 's/^use Text::Query;$//' \
+		scripts/osm/perl_lib/Geo/Gpsdrive/getstreet.pm 
 
 	mkdir -p build
 
