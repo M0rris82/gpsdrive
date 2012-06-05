@@ -283,7 +283,7 @@ can already be retrieved with it.
 So: Have Fun, improve it and send me fixes :-))
 
 WARNING: 
-    This programm replaces some/all waypoints of desire. 
+    This program replaces some/all waypoints of desire. 
     So any changes made to the database may be overwritten!!!
     If you have any self collected/changed Data do a backup first!!
 
@@ -313,7 +313,7 @@ This implies --fill-defaults
 
 =item B<--fill-defaults>
 
-Fill the Databases with usefull defaults. This option is 
+Fill the Databases with useful defaults. This option is 
 needed before you can import any of the other importers.
 
 

@@ -1989,39 +1989,39 @@ A special name is gpsd this waypoint asks your gps where you currently are.
 =item B<-la,  --lat <latitude DD.DDDD>>
 
 Takes a latitude in format DD.DDDD and uses that as the latitude for the
-centerpoint of the area to be covered. Will be overriden by the latitude
+centerpoint of the area to be covered. Will be overridden by the latitude
 of waypoint if '-w' is used. This and '-lo', '-w' or '-sla', '-ela', '-slo',
 '-elo' is required.
 
 =item B<-lo, --lon <longitude DD.DDDD>>
 
 Takes a longitude in format DD.DDDD and uses that as the longitude for the
-centerpoint of the area to be covered. Will be overriden by the longitude of
+centerpoint of the area to be covered. Will be overridden by the longitude of
 waypoint if '-w' is used. This and '-la', '-w' or '-sla', '-ela', '-slo',
 '-elo' is required.
 
 =item B<-sla --start-lat <start latitude DD.DDDD>>
 
 Takes a latitude in format DD.DDDD and uses that as the start latitude for
-the area to be covered. Will override '-la' and '-lo' but will be overriden
+the area to be covered. Will override '-la' and '-lo' but will be overridden
 by '-w'. This, '-ela', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-ela --end-lat <end latitude DD.DDDD>>
 
 Takes a latitude in format DD.DDDD and uses that as the end latitude for the
-area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'. 
+area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'. 
 This, '-sla', '-slo' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-slo --start-lon <start longitude DD.DDDD>>
 
 Takes a longitude in format DD.DDDD and uses that as the start longitude for
-the area to be covered. Will override '-la' and '-lo' but will be overriden
+the area to be covered. Will override '-la' and '-lo' but will be overridden
 by '-w'. This, '-sla', '-ela' and '-elo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-elo --end-lon <end longitude DD.DDDD>>
 
 Takes a longitude in format DD.DDDD and uses that as the end longitude for the
-area to be covered. Will override '-la' and '-lo' but will be overriden by '-w'.
+area to be covered. Will override '-la' and '-lo' but will be overridden by '-w'.
 This, '-sla', '-ela' and '-slo' or '-w' or '-la' and '-lo' is required.
 
 =item B<-sc, --scale <SCALE>>
@@ -2129,7 +2129,7 @@ Force program to download maps without asking you to confirm the download.
 
 =item B<-n>
 
-Dont download anything only tell which maps are missing
+Don't download anything, only specify which maps are missing.
 
 =item B<-U>
 
