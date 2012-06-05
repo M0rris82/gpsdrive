@@ -59,7 +59,7 @@ Zeigt einige debugging Informationen.
 .B \-D
 Zeigt ziemlich viele Debugging Informationen. Falls sie mit dem
 Programm Probleme haben, oder es abstürzt senden sie die Ausgabe an
-den Autor. Sie können es auch mit -d kombinieren. Siehe auch den BUGS
+den Autor. Sie können es auch mit \-d kombinieren. Siehe auch den BUGS
 Abschnitt weiter unten.
 .TP
 .B \-v
@@ -391,14 +391,14 @@ besorgen.
 Wenn sie ein funktionierendes festival haben, starten sie es als
 Server mit:
 
-festival --server
+festival \-\-server
 
 Wenn sie dann GpsDrive starten, wird es den Server automatisch auf
 Port 1314 erkennen und Informationen als Sprache ausgeben. In diesem
 Fall erscheint auch ein Schalter um stumm zu schalten.
 
 GpsDrive versucht, automatisch die richtige Sprache entsprechend der
-Lokale zu verwenden. Es gibt eine Option -l um die Spracheinstellung
+Lokale zu verwenden. Es gibt eine Option \-l um die Spracheinstellung
 zu forcieren. Zur Zeit werden englisch, spanisch und deutsch
 unterstützt. GpsDrive stellt festival auf die korrekte Sprache
 ein. Sollte dies nicht richtig funktionieren, editiern sie die Datei
@@ -426,10 +426,10 @@ und entpacken sie die tar-Datei als root in /usr/local
 .br 
 cd /usr/local
 .br
-tar -xvzf festivalbuild.tar.gz
+tar \-xvzf festivalbuild.tar.gz
 
 Starten sie den Server mit
-.B /usr/local/festival/bin/festival --server
+.B /usr/local/festival/bin/festival \-\-server
 
 .SH FRIENDSD Server
 
