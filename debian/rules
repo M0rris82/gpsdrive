@@ -28,6 +28,7 @@ build/configure-stamp:
 
 	# out of date, fall over to system's copy instead:
 	rm -f cmake/Modules/FindGTK2.cmake
+	rm -f scripts/osm/osm2poidb/cmake/Modules/FindGTK2.cmake
 
 	mkdir -p build
 
@@ -79,18 +80,23 @@ install: build
 	mkdir -p $(destdir_friendsd)/usr/bin
 	mv $(destdir)/usr/bin/friendsd $(destdir_friendsd)/usr/bin/friendsd 
 
-	# move modules and scripts. They are provided via the
-	# gpsdrive-utils package
+	# move modules and scripts. They are provided in the
+	#  gpsdrive-utils package
 	/bin/bash debian/move_utils.sh
 
+	/bin/bash debian/create_missing_man_pages.sh $(destdir) \
+		$(destdir)/usr/share/man/man1
+	/bin/bash debian/create_missing_man_pages.sh $(destdir_friendsd) \
+		$(destdir_friendsd)/usr/share/man/man1
+	/bin/bash debian/create_missing_man_pages.sh $(destdir_utils) \
+		$(destdir_utils)/usr/share/man/man1
 
-	/bin/bash debian/create_missing_man_pages.sh $(destdir)          $(destdir)/usr/share/man/man1
-	/bin/bash debian/create_missing_man_pages.sh $(destdir_friendsd) $(destdir_friendsd)/usr/share/man/man1
-	/bin/bash debian/create_missing_man_pages.sh $(destdir_utils)    $(destdir_utils)/usr/share/man/man1
+	mv $(destdir)/usr/share/man/man1/friendsd* \
+		$(destdir_friendsd)/usr/share/man/man1
 
-	mv $(destdir)/usr/share/man/man1/friendsd*         $(destdir_friendsd)/usr/share/man/man1
 	mkdir -p $(destdir_utils)/usr/share/man/man1/
-	mv $(destdir)/usr/share/man/man1/gpsd_nmea.sh.1 $(destdir_utils)/usr/share/man/man1/gpsd_nmea.1
+	mv $(destdir)/usr/share/man/man1/gpsd_nmea.sh.1 \
+		$(destdir_utils)/usr/share/man/man1/gpsd_nmea.1
 
 	/bin/bash debian/rename_scripts.sh $(destdir_utils)
 
@@ -101,7 +107,8 @@ install: build
 
 	# put the icon in the right place
 	mkdir -p $(destdir)/usr/share/icons/hicolor/32x32/apps
-	mv $(destdir)/usr/share/icons/gpsdrive.png $(destdir)/usr/share/icons/hicolor/32x32/apps/
+	mv $(destdir)/usr/share/icons/gpsdrive.png \
+		$(destdir)/usr/share/icons/hicolor/32x32/apps/
 
 
 # Build architecture-independent files here.
@@ -138,4 +145,4 @@ binary-arch: build install
 	dh_builddeb
 
 binary: binary-arch binary-indep
-.PHONY: build clean binary-indep binary-arch binary install  install-indep install-arch configure
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure
