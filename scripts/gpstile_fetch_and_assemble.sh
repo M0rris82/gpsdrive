@@ -209,10 +209,10 @@ case "$datasource" in
 	FMT=jpg
 	;;
    mapquest_aerial)
-	BASE_URL1="http://otile1.mqcdn.com/naip"
-	BASE_URL2="http://otile2.mqcdn.com/naip"
-	BASE_URL3="http://otile3.mqcdn.com/naip"
-	BASE_URL4="http://otile4.mqcdn.com/naip"
+	BASE_URL1="http://oatile1.mqcdn.com/naip"
+	BASE_URL2="http://oatile2.mqcdn.com/naip"
+	BASE_URL3="http://oatile3.mqcdn.com/naip"
+	BASE_URL4="http://oatile4.mqcdn.com/naip"
 	FMT=jpg
 	;;
    *)
@@ -362,7 +362,7 @@ pnmcat -lr tms_13.pnm tms_23.pnm tms_33.pnm tms_43.pnm tms_53.pnm > row3.pnm
 pnmcat -lr tms_14.pnm tms_24.pnm tms_34.pnm tms_44.pnm tms_54.pnm > row4.pnm
 pnmcat -tb row1.pnm row2.pnm row3.pnm row4.pnm | pnmtopng > mosaic.png
 
-rm -f tms_*.pnm tms_*.png
+rm -f tms_*.pnm tms_*.png tms_*.jpg
 
 
 be_quiet="-quiet"
@@ -374,7 +374,7 @@ fi
 if [ $FMT = "png" ] ; then
     optipng -o5 $be_quiet mosaic.png
 else
-    pngtopnm mosaic.png | pnmtojpeg > mosaic.jpg
+    pngtopnm mosaic.png | pnmtojpeg --quality=85 > mosaic.jpg
 fi
 
 
