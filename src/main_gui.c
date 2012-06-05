@@ -2445,8 +2445,6 @@ void create_toolbar_mainbox (void)
 	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menuitem_maps), map_img);
 	GtkWidget *menuitem_mapimport = gtk_menu_item_new_with_mnemonic (_("_Import"));
 	GtkWidget *menuitem_mapdownload = gtk_menu_item_new_with_mnemonic (_("_Download"));
-/* FIXME: All map download servers currently broken */
-	gtk_widget_set_sensitive(menuitem_mapdownload, FALSE);
 
 	gtk_menu_shell_append (GTK_MENU_SHELL (options_menu), menuitem_maps);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (menuitem_maps), menu_maps);
