@@ -212,7 +212,7 @@ B<mapnik-osm-xml_2_gpsdrive-osm-xml.pl>
 
 B<mapnik-osm-xml_2_gpsdrive-osm-xml.pl> reads the osm.xml File 
 taken from the repository of osm and converts it with some
-mistirious rules to a clean osm.xml File which might be usable by gpsdrive.
+mysterious rules to a clean osm.xml File which might be usable by gpsdrive.
 
 Warning:
  This Programm has hardcoded Path Elements. So you'll have to adapt 
