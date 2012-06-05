@@ -22,7 +22,7 @@ mkdir -p "${destdir_utils}/usr/"
 mkdir -p "${destdir_utils}/usr/bin"
 mv -f "${destdir}"/usr/bin/*.sh "${destdir_utils}/usr/bin"
 mv -f "${destdir}"/usr/bin/*.pl "${destdir_utils}/usr/bin"
-mv -f "${destdir}"/usr/bin/*.py* "${destdir_utils}/usr/bin"
+mv -f "${destdir}"/usr/bin/*.py "${destdir_utils}/usr/bin"
 #mv -f "${destdir}"/usr/bin/geo* "${destdir_utils}/usr/bin"
 
 mkdir -p "${destdir_utils}/usr/share/man/man1/"
