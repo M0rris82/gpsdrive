@@ -215,7 +215,7 @@ taken from the repository of osm and converts it with some
 mysterious rules to a clean osm.xml File which might be usable by gpsdrive.
 
 Warning:
- This Programm has hardcoded Path Elements. So you'll have to adapt 
+ This program has hardcoded Path Elements. So you'll have to adapt 
  it to work on your PC.
 
 =head1 SYNOPSIS
