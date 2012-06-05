@@ -277,7 +277,7 @@ and other geospacial data for use with the new gpsdrive
 POI Database. 
 You need to have mySQL Support.
 
-This Programm is completely experimental, but some Data 
+This program is completely experimental, but some data 
 can already be retrieved with it.
 
 So: Have Fun, improve it and send me fixes :-))
