@@ -341,7 +341,7 @@ mapdl_set_coords (gchar *lat, gchar *lon)
  *    .x,
  * where "x" is the containing tile, and tiles on the right side are cut in half.
  */
-int dl_tiledwms(double lat, double lon, double zoom)
+int dl_tiledwms(double lat, double lon, double res)
 {
     gchar tilefile[512], dl_cmd[512];
 
@@ -349,14 +349,14 @@ int dl_tiledwms(double lat, double lon, double zoom)
 	       mapdl_scale, lat, lon);
 
     if (mydebug > -1) {
-	g_print("TWMS tile [%.9f, %.9f]  Tile extent [%g]\n", lon, lat, zoom);
-	g_print(" system( gpstiled_wms_fetch_and_assemble --zoom=%g --lon=%.9f --lat=%.9f --filename=%s )\n",
-		zoom, lon, lat, tilefile);
+	g_print("TWMS tile [%.9f, %.9f]  Tile extent [%g]\n", lon, lat, res);
+	g_print(" system( gpstiled_wms_fetch_and_assemble --res=%g --lon=%.9f --lat=%.9f --filename=%s )\n",
+		res, lon, lat, tilefile);
     }
     /* todo: something better like popen(**); some kind of error checking */
     g_snprintf(dl_cmd, sizeof(dl_cmd),
-    		"gpstiled_wms_fetch_and_assemble --zoom=%g --lon=%.9f --lat=%.9f --filename=%s",
-		zoom, lon, lat, tilefile);
+    		"gpstiled_wms_fetch_and_assemble --res=%g --lon=%.9f --lat=%.9f --filename=%s",
+		res, lon, lat, tilefile);
 
     return system(dl_cmd);
 }
