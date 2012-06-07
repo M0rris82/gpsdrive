@@ -17,6 +17,7 @@ if (WITH_SCRIPTS)
     gpspoint2gpsdrive.pl
     gpsreplay.pl
     gpstile_fetch_and_assemble.sh
+    gpstiled_wms_fetch_and_assemble.sh
     nasaconv.sh
   )
 
