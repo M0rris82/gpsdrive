@@ -326,7 +326,7 @@ fi
 if [ -z "$filename" ] ; then
    outfile="top_${res}_${lat}_${lon}.jpg"
 else
-   outfile=`basename "$outfile" .jpg`.jpg
+   outfile=`basename "$filename" .jpg`.jpg
 fi
 
 mv mosaic.jpg ../"$outfile"
