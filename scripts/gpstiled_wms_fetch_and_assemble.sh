@@ -312,7 +312,7 @@ pnmcat -lr twms_12.pnm twms_22.pnm twms_32.pnm > row2.pnm
 pnmcat -tb row1.pnm row2.pnm | pnmcut 0 0 1280 1024 | \
    pnmtojpeg --quality=75 > mosaic.jpg
 
-#rm -f twms_*.pnm twms_*.jpg
+rm -f twms_*.pnm twms_*.jpg
 
 
 be_quiet="-quiet"
@@ -332,7 +332,7 @@ fi
 mv mosaic.jpg ../"$outfile"
 
 cd ..
-#rm -rf "$TEMPDIR2"
+rm -rf "$TEMPDIR2"
 
 
 if [ "$verbose" = "false" ] ; then
