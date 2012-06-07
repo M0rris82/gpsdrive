@@ -28,9 +28,10 @@ Disclaimer: Please do not use as a primary means of navigation.
 
 #include <gtk/gtk.h>
 
-#define WMS_SERVER 1
-#define TMS_SERVER 2
-#define TAH_SERVER 3
+#define WMS_SERVER  1
+#define TWMS_SERVER 2
+#define TMS_SERVER  3
+#define TAH_SERVER  4
 
 
 /*
@@ -46,5 +47,7 @@ int lon2tms_xtile(double, int);
 int lat2tms_ytile(double, int, int);
 double tms_xtile2lon(int, int);
 double tms_ytile2lat(int, int, int);
+int dl_tiledwms(double, double, double);
+
 
 #endif /* GPSDRIVE_MAP_DOWNLOAD_H */

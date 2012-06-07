@@ -81,6 +81,7 @@ enum
 #ifdef serving_tiled_requests_only
 	MAPSOURCE_WMS_LANDSAT,
 #endif
+	MAPSOURCE_TWMS_LANDSAT,
 	MAPSOURCE_TMS_OSM_MAPNIK,
 	MAPSOURCE_TMS_OSM_CYCLE,
 	MAPSOURCE_TMS_OSM_TRANSPORT,
@@ -117,25 +118,6 @@ static struct mapsource_struct
 } mapsource[] =
 {
 #ifdef serving_tiled_requests_only
-
-/* 
- * TODO:
- *
- * OnEarth WMS has shut down for arbitrary WMS requests now and only servers
- * a subset of prescribed requrests. They must be 512x512 pixels, and on a
- * resolution matching the top-left examples in the Get Capabilities request.
- * Also only JPEG is available. So we'll need to fetch 6 tiles, starting with
- *    ..,
- *    .x,
- * the one "x" above, where our selected mapdl_lat and mapdl_lon is snapped
- * to the top-left corner of the tile grid. We'll then have to assemble the
- * images into a mosaic and crop off the right-most 256 pixels.
- * Zoom levels to list in the pull-down menu will have to be empirically
- * determined by running some downloads at mid-latitudes and seeing what
- * turns up for the scale in map_koord.txt.
- *
- */
-
 /* - LANDSAT data is 30m resolution per pixel, * scale factor of PIXELFACT = 1:85000,
  *     so anything finer than that is just downloading interpolated noise and you
  *     might as well just use the magnifying glass tool.
@@ -164,6 +146,78 @@ static struct mapsource_struct
 	MAPSOURCE_WMS_LANDSAT, "1 : 10 million", 0, 10000000,
 	MAPSOURCE_WMS_LANDSAT, "1 : 50 million", 0, 50000000,
 #endif
+
+
+	/* OnEarth @ JPL Tiled-WMS: Global Mosaic, pan sharpened visual */
+	/*
+	
+	 OnEarth WMS has shut down for arbitrary WMS requests now and only servers
+	 a subset of prescribed requrests. They must be 512x512 pixels, and on a
+	 resolution matching the top-left examples in the GetTileService request.
+	 Also only JPEG is available. So we'll need to fetch 6 tiles, starting with
+	
+	    ..,
+	    .x,
+	
+	 the one "x" above, where our selected mapdl_lat and mapdl_lon is snapped
+	 to the top-left corner of the tile grid. We'll then have to assemble the
+	 images into a mosaic and crop off the right-most 256 pixels.
+	 Zoom levels to list in the pull-down menu will have to be empirically
+	 determined by running some downloads at mid-latitudes and seeing what
+	 turns up for the scale in map_koord.txt.
+
+      "Jpeg tiles as used by NASA WorldWind and WorldKit.
+       [...]
+      While the coverage is global, real data is only present between 60S and 83N.
+      Configuration file for WorldWind avalaible at "http://OnEarth.jpl.nasa.gov/OnEarth.xml".
+      WorldKit sample configuration for this layer at "http://OnEarth.jpl.nasa.gov/WK/visual".
+      Pansharpened Data has a native resolution of 0.5 arc-seconds per pixel (15m per pixel)."
+		-- http://onearth.jpl.nasa.gov/wms.cgi?request=GetTileService
+	octave:
+		a= [
+		-180 -166 76 90
+		-180 -38 -52 90
+		-180 26 -116 90
+		-180 58 -148 90
+		-180 74 -164 90
+		-180 82 -172 90
+		-180 86 -176 90
+		-180 88 -178 90
+		-180 89 -179 90
+		-180 89.5 -179.5 90
+		-180 89.75 -179.75 90
+		-180 89.875 -179.875 90 ]
+	%	-180 89.9375 -179.9375 90 ]
+		
+		degrees_per_tile = [(a(:,3) - a(:,1))  (a(:,4) - a(:,2))]
+		
+		   256   (same for E-W and N-S, 'projection' is basic Plate Carrée)
+		   128
+		    64
+		    32
+		    16
+		     8
+		     4
+		     2
+		     1
+		   0.5
+		  0.25
+		 0.125
+
+	256,128 deg per 512x512 pixel block no good for two tiles within 90N to 90S so we throw them out.
+	 */
+	MAPSOURCE_TWMS_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 50 000", 0.125, 50000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 75 000", 0.25, 75000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 100 000", 0.5, 100000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 250 000", 1.0, 250000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 500 000", 2.0, 500000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 1 million", 4.0, 1000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 2.5 million", 8.0, 2500000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 5 million", 16.0, 5000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 10 million", 32.0, 10000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 :? 50 million", 64.0, 50000000,
+
 
 	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap's Mapnik", -1, -1,
 	/* scale varies with latitude, so this is just a rough guide
@@ -277,6 +331,36 @@ mapdl_set_coords (gchar *lat, gchar *lon)
 	gtk_entry_set_text (GTK_ENTRY (lat_entry), lat);
 	gtk_entry_set_text (GTK_ENTRY (lon_entry), lon);
 }
+
+
+/* *****************************************************************************
+ * download timed-WMS and its neighbors & assemble into a single 1280x1024 tile.
+ * assumes lat/lon has already been snapped to top-left corner of containing tile.
+ * 512x512 tiles are assumbled like:
+ *    ..,
+ *    .x,
+ * where "x" is the containing tile, and tiles on the right side are cut in half.
+ */
+int dl_tiledwms(double lat, double lon, double zoom)
+{
+    gchar tilefile[512], dl_cmd[512];
+
+    g_snprintf(tilefile, sizeof(tilefile), "top_%d_%5.3f_%5.3f.jpg",
+	       mapdl_scale, lat, lon);
+
+    if (mydebug > -1) {
+	g_print("TWMS tile [%.9f, %.9f]  Tile extent [%g]\n", lon, lat, zoom);
+	g_print(" system( gpstiled_wms_fetch_and_assemble --zoom=%g --lon=%.9f --lat=%.9f --filename=%s )\n",
+		zoom, lon, lat, tilefile);
+    }
+    /* todo: something better like popen(**); some kind of error checking */
+    g_snprintf(dl_cmd, sizeof(dl_cmd),
+    		"gpstiled_wms_fetch_and_assemble --zoom=%g --lon=%.9f --lat=%.9f --filename=%s",
+		zoom, lon, lat, tilefile);
+
+    return system(dl_cmd);
+}
+
 
 /* *****************************************************************************
  * calculate the local map scale based on Web Tile zoom level and latitude
@@ -442,6 +526,9 @@ mapdl_setparm_cb (GtkWidget *widget, gint data)
 				server_type = WMS_SERVER;
 				break;
 #endif
+			    case MAPSOURCE_TWMS_LANDSAT:
+				server_type = TWMS_SERVER;
+				break;
 #ifdef server_kaput
 			    case MAPSOURCE_TAH_OSM:
 			    case MAPSOURCE_TAH_OSM_CYCLE:
@@ -505,6 +592,9 @@ mapdl_setsource_cb (GtkComboBox *combo_box, gpointer data)
 			server_type = WMS_SERVER;
 			break;
 #endif
+		    case MAPSOURCE_TWMS_LANDSAT:
+			server_type = TWMS_SERVER;
+			break;
 #ifdef server_kaput
 		    case MAPSOURCE_TAH_OSM:
 		    case MAPSOURCE_TAH_OSM_CYCLE:
@@ -726,51 +816,74 @@ mapdl_download (void)
 	}
 
 
-	if(server_type == TMS_SERVER)
+	switch (server_type)
 	{
-	    /* for TMS: work in progress */
-	    if (calc_and_dl_webtile(mapdl_lat, mapdl_lon, mapdl_zoom) != 0)
-	    {
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
-			_("Download failed."));
-	    }
-	    else
-	    {
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
-			_("Download complete."));
-	    }
-	    /* move patched mosiac to where it needs to go: */
-	    basename = g_path_get_basename(mapdl_file_w_path);
-	    g_snprintf(tmp_dl_file_w_path, sizeof(tmp_dl_file_w_path),
-			"%s/.tmp/%s", local_config.dir_maps, basename);
-	    g_free(basename);
-	    /* assume that all of .gpsdrive/maps/ is on the same drive */
-	    rename(tmp_dl_file_w_path, mapdl_file_w_path);
-	}
-	else
-	{
-	    map_file = fopen (mapdl_file_w_path, "w");
-	    curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
-	    curl_easy_setopt (curl_handle, CURLOPT_NOPROGRESS, 0);
-	    curl_easy_setopt (curl_handle, CURLOPT_WRITEDATA, map_file);
+	    case TMS_SERVER:
+		if (calc_and_dl_webtile(mapdl_lat, mapdl_lon, mapdl_zoom) != 0)
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Download failed."));
+		}
+		else
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Download complete."));
+		}
+		/* move patched mosiac to where it needs to go: */
+		basename = g_path_get_basename(mapdl_file_w_path);
+		g_snprintf(tmp_dl_file_w_path, sizeof(tmp_dl_file_w_path),
+			    "%s/.tmp/%s", local_config.dir_maps, basename);
+		g_free(basename);
+		/* assume that all of .gpsdrive/maps/ is on the same drive */
+		rename(tmp_dl_file_w_path, mapdl_file_w_path);
+		break;
 
-	    set_cursor_style (CURSOR_WATCH);
+	    case TWMS_SERVER:
+		if (dl_tiledwms(mapdl_lat, mapdl_lon, mapdl_zoom) != 0)
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Download failed."));
+		}
+		else
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Download complete."));
+		}
+		/* move patched mosiac to where it needs to go: */
+		basename = g_path_get_basename(mapdl_file_w_path);
+		g_snprintf(tmp_dl_file_w_path, sizeof(tmp_dl_file_w_path),
+			    "%s/.tmp/%s", local_config.dir_maps, basename);
+		g_free(basename);
+		/* assume that all of .gpsdrive/maps/ is on the same drive */
+		rename(tmp_dl_file_w_path, mapdl_file_w_path);
+		break;
+
+	    default:
+		map_file = fopen (mapdl_file_w_path, "w");
+		curl_easy_setopt (curl_handle, CURLOPT_URL, mapdl_url);
+		curl_easy_setopt (curl_handle, CURLOPT_NOPROGRESS, 0);
+		curl_easy_setopt (curl_handle, CURLOPT_WRITEDATA, map_file);
+
+		set_cursor_style (CURSOR_WATCH);
 	
-	    if (curl_easy_perform (curl_handle))
-	    {
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
-			_("Aborted."));
-	    }
-	    else
-	    {
-		gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
-		gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
-			_("Download complete."));
-	    }
-	    fclose (map_file);
+		if (curl_easy_perform (curl_handle))
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Aborted."));
+		}
+		else
+		{
+		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 1.0);
+		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
+			    _("Download complete."));
+		}
+		fclose (map_file);
+		break;
 	}
 
 	/* add new map to map_koords.txt */
@@ -871,6 +984,12 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
 			break;
 #endif
+		case MAPSOURCE_TWMS_LANDSAT:
+			g_strlcpy (path, "landsat", sizeof (path));
+			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
+			g_strlcpy(mapdl_proj, "top", sizeof(mapdl_proj));
+			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
+			break;
 #ifdef server_kaput
 		case MAPSOURCE_TAH_OSM:
 			g_strlcpy (path, "openstreetmap_tah", sizeof (path));
@@ -929,6 +1048,24 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 
 	if (mydebug > 5)
 		g_print ("  download url:\n%s\n", mapdl_url);
+
+
+	/* snap lat,long to upper-left corner of nearest tile grid node */
+	if (server_type == TWMS_SERVER)
+	{
+	    /*
+	     * Round lat to nearest grid line.
+	     * Keep lon at jumping to left version as we crop the right.
+	     */
+	    mapdl_lat = 90.0 - round((90.0 - mapdl_lat) / mapdl_zoom) * mapdl_zoom;
+	    mapdl_lon = -180.0 + floor((180.0 + mapdl_lon) / mapdl_zoom) * mapdl_zoom;
+
+	}
+
+/*
+echo "-0.1543217 2" | awk '{value = $1 > 0 ? $2 + $1 - $1 % $2 : $1 - $1 % $2;
+                                print value}'
+*/
 
 	/* set file path and create directory if necessary */
 	g_snprintf (file_path, sizeof (file_path), "%s%s/%s/%.0f/%.0f/",
