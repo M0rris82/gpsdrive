@@ -947,10 +947,11 @@ mapdl_download (void)
 		nrmaps++;
 		savemapconfig ();
 	}
-	else
-		if (mydebug > 25)
+	else {
+		if (mydebug > 0)
 		    g_print ("mapdl_download() failed\n");
 		g_remove (mapdl_file_w_path);
+	}
 
 	set_cursor_style (CURSOR_DEFAULT);
 	mapdl_active = FALSE;
