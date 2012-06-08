@@ -191,32 +191,32 @@ static struct mapsource_struct
 		
 		degrees_per_tile = [(a(:,3) - a(:,1))  (a(:,4) - a(:,2))]
 		
-		   256   (same for E-W and N-S, 'projection' is basic Plate Carrée)
-		   128
-		    64
-		    32
-		    16
-		     8
-		     4
-		     2
-		     1
-		   0.5
-		  0.25
-		 0.125
+		   256  2^8  (same for E-W and N-S, 'projection' is basic Plate Carrée)
+		   128  2^7
+		    64  2^6
+		    32  2^5
+		    16  2^4
+		     8  2^3
+		     4  2^2
+		     2  2^1    mapdl_zoom is type gint, so exponent to 2^ is stored as the value
+		     1  2^0
+		   0.5  2^-1
+		  0.25  2^-2
+		 0.125  2^-3
 
 	256,128 deg per 512x512 pixel block no good for two tiles within 90N to 90S so we throw them out.
+			zoom scale is 2^(zoom-200), since value of -1 has alternate meaning.
 	 */
 	MAPSOURCE_TWMS_LANDSAT, "NASA's OnEarth Landsat Global Mosaic", -1, -1,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 50 000", 0.125, 50000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 75 000", 0.25, 75000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 100 000", 0.5, 100000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 250 000", 1.0, 250000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 500 000", 2.0, 500000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 1 million", 4.0, 1000000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 2.5 million", 8.0, 2500000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 5 million", 16.0, 5000000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 10 million", 32.0, 10000000,
-	MAPSOURCE_TWMS_LANDSAT, "1 :? 50 million", 64.0, 50000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 75 000",      197, 75000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 150 000",     198, 150000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 300 000",     199, 300000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 600 000",     200, 600000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 1 25 million",201, 1250000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 2 5 million", 202, 2500000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 5 million",   203, 5000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 10 million",  204, 10000000,
+	MAPSOURCE_TWMS_LANDSAT, "1 : 20 million",  205, 20000000,
 
 
 	MAPSOURCE_TMS_OSM_MAPNIK, "OpenStreetMap's Mapnik", -1, -1,
@@ -345,11 +345,12 @@ int dl_tiledwms(double lat, double lon, double res)
 {
     gchar tilefile[512], dl_cmd[512];
 
-    g_snprintf(tilefile, sizeof(tilefile), "top_%d_%5.3f_%5.3f.jpg",
-	       mapdl_scale, lat, lon);
+    g_snprintf(tilefile, sizeof(tilefile), "top_%g_%5.3f_%5.3f.jpg",
+	       res, lat, lon);
 
-    if (mydebug > -1) {
-	g_print("TWMS tile [%.9f, %.9f]  Tile extent [%g]\n", lon, lat, res);
+    if (mydebug > 25) {
+	g_print("TWMS tile [%.9f, %.9f]  Sub-tile extent: %g degrees\n",
+		lon, lat, res);
 	g_print(" system( gpstiled_wms_fetch_and_assemble --res=%g --lon=%.9f --lat=%.9f --filename=%s )\n",
 		res, lon, lat, tilefile);
     }
@@ -420,7 +421,7 @@ int calc_and_dl_webtile(double lat, double lon, int zoom)
 		break;
     }
 
-    if (mydebug > -1) {
+    if (mydebug > 25) {
 	g_print("TMS tile [%d, %d]  Zoom level [%d]\n", xtile, ytile, zoom);
 	g_print(" system( gpstile_fetch_and_assemble --zoom=%d --xtile=%d --ytile=%d --datasource=%s --filename=%s )\n",
 		zoom, xtile, ytile, datasource, tilefile);
@@ -796,8 +797,11 @@ mapdl_download (void)
 {
 	FILE *map_file;
 	struct stat file_stat;
+	int stat_ret;
 	gchar tmp_dl_file_w_path[4096];
 	char *basename;
+	int xtile, ytile;
+	double bbox_n, bbox_s, bbox_e, bbox_w, center_lat, center_lon;
 
 	if (mydebug > 25)
 	    g_print ("mapdl_download()\n");
@@ -841,7 +845,7 @@ mapdl_download (void)
 		break;
 
 	    case TWMS_SERVER:
-		if (dl_tiledwms(mapdl_lat, mapdl_lon, mapdl_zoom) != 0)
+		if (dl_tiledwms(mapdl_lat, mapdl_lon, pow(2, mapdl_zoom-200)) != 0)
 		{
 		    gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (mapdl_progress), 0.0);
 		    gtk_progress_bar_set_text (GTK_PROGRESS_BAR (mapdl_progress),
@@ -887,8 +891,9 @@ mapdl_download (void)
 	}
 
 	/* add new map to map_koords.txt */
-	g_stat (mapdl_file_w_path, &file_stat);
-	if (file_stat.st_size > 0)
+	stat_ret = g_stat (mapdl_file_w_path, &file_stat);
+
+	if (stat_ret == 0 && file_stat.st_size > 0)
 	{
 		loadmapconfig ();
 		maps = g_renew (mapsstruct, maps, (nrmaps + 2));
@@ -901,10 +906,9 @@ mapdl_download (void)
 
 		(maps + nrmaps)->hasbbox = FALSE;
 
-		if (server_type == TMS_SERVER)
+		switch (server_type)
 		{
-			double bbox_n, bbox_s, bbox_e, bbox_w, center_lat, center_lon;
-			int xtile, ytile;
+		    case TMS_SERVER:
 			xtile = lon2tms_xtile(mapdl_lon, mapdl_zoom);
 			ytile = lat2tms_ytile(mapdl_lat, mapdl_zoom, FALSE);
 			/* todo: use bounding box of assembed 5x4 tile array for new-style map_koord.txt entry */
@@ -917,17 +921,35 @@ mapdl_download (void)
 			(maps + nrmaps)->lat = center_lat;
 			(maps + nrmaps)->lon = center_lon;
 			(maps + nrmaps)->scale = calc_webtile_scale(center_lat, mapdl_zoom);
-		}
-		else
-		{
+			break;
+		    case TWMS_SERVER:
+			/* todo: use bounding box of assembed 3x2 tile array for new-style map_koord.txt entry */
+			bbox_n = mapdl_lat + pow(2, mapdl_zoom-200);
+			bbox_s = mapdl_lat - pow(2, mapdl_zoom-200);
+			bbox_e = mapdl_lon + (1.5 * pow(2, mapdl_zoom-200));
+			bbox_w = mapdl_lon - pow(2, mapdl_zoom-200);
+			center_lat = (bbox_n + bbox_s) / 2;
+			center_lon = (bbox_e + bbox_w) / 2;
+			(maps + nrmaps)->lat = center_lat;
+			(maps + nrmaps)->lon = center_lon;
+			(maps + nrmaps)->scale = (int)((2 * pow(2, mapdl_zoom-200) * (1852.0*60) / MAPHEIGHT)
+						   * PIXELFACT + 0.5);
+			if (mydebug > 25)
+			    g_print ("center_lat=%.9f  center_lon=%.9f  scale=%d\n",
+				     center_lat, center_lon, (maps + nrmaps)->scale);
+			break;
+		    default:
 			(maps + nrmaps)->lat = mapdl_lat;
 			(maps + nrmaps)->lon = mapdl_lon;
 			(maps + nrmaps)->scale = mapdl_scale;
+			break;
 		}
 		nrmaps++;
 		savemapconfig ();
 	}
 	else
+		if (mydebug > 25)
+		    g_print ("mapdl_download() failed\n");
 		g_remove (mapdl_file_w_path);
 
 	set_cursor_style (CURSOR_DEFAULT);
@@ -988,7 +1010,7 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 			g_strlcpy (path, "landsat", sizeof (path));
 			g_strlcpy (img_fmt, "jpg", sizeof (img_fmt));
 			g_strlcpy(mapdl_proj, "top", sizeof(mapdl_proj));
-			g_snprintf (scale_str, sizeof (scale_str), "%d", mapdl_scale);
+			g_snprintf (scale_str, sizeof (scale_str), "%g", pow(2, mapdl_zoom-200));
 			break;
 #ifdef server_kaput
 		case MAPSOURCE_TAH_OSM:
@@ -1053,19 +1075,11 @@ gint mapdl_start_cb (GtkWidget *widget, gpointer data)
 	/* snap lat,long to upper-left corner of nearest tile grid node */
 	if (server_type == TWMS_SERVER)
 	{
-	    /*
-	     * Round lat to nearest grid line.
-	     * Keep lon at jumping to left version as we crop the right.
-	     */
-	    mapdl_lat = 90.0 - round((90.0 - mapdl_lat) / mapdl_zoom) * mapdl_zoom;
-	    mapdl_lon = -180.0 + floor((180.0 + mapdl_lon) / mapdl_zoom) * mapdl_zoom;
-
+	    /* Round lat to nearest grid line.
+	     * Keep longitude at jumping to left version as we crop off the right-hand 256 pixels */
+	    mapdl_lat = 90.0 - round((90.0 - mapdl_lat) / pow(2, mapdl_zoom-200)) * pow(2, mapdl_zoom-200);
+	    mapdl_lon = -180.0 + floor((180.0 + mapdl_lon) / pow(2, mapdl_zoom-200)) * pow(2, mapdl_zoom-200);
 	}
-
-/*
-echo "-0.1543217 2" | awk '{value = $1 > 0 ? $2 + $1 - $1 % $2 : $1 - $1 % $2;
-                                print value}'
-*/
 
 	/* set file path and create directory if necessary */
 	g_snprintf (file_path, sizeof (file_path), "%s%s/%s/%.0f/%.0f/",

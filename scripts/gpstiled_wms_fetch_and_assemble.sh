@@ -276,18 +276,36 @@ wait
 #done
 
 
-
+#### some checks before going on
 if [ `ls -1 twms_*.jpg | wc -l` -lt 6 ] ; then
     echo "ERROR: Tile(s) appear to be missing." 1>&2
-    ls twms_*.jpg
+    if [ "$verbose" = "true" ] ; then
+	ls twms_*.jpg
+    fi
     # todo: look to see which one is missing and try again.
-    #exit 1
+    cd ..
+    rm -rf "$TEMPDIR2"
+    exit 1
 fi
 
 for file in twms_*.jpg ; do
     if [ ! -s "$file" ] ; then
-       echo "ERROR: <$file> appears to be empty." 1>&2
-       #exit 1
+	echo "ERROR: <$file> appears to be empty." 1>&2
+	if [ "$verbose" = "true" ] ; then
+	    ls -l twms_*.jpg
+	fi
+	cd ..
+	rm -rf "$TEMPDIR2"
+	exit 1
+    fi
+    if [ `file "$file" | grep -c JPEG` -eq 0 ] ; then
+	echo "ERROR: <$file> appears to be bogus." 1>&2
+	if [ `file "$file" | grep -c XML` -eq 1 ] && [ "$verbose" = "true" ] ; then
+	   cat "$file"
+	fi
+	cd ..
+	rm -rf "$TEMPDIR2"
+	exit 1
     fi
 done
 
@@ -296,10 +314,6 @@ if [ "$verbose" = "true" ] ; then
 fi
 
 for file in twms_*.jpg ; do
-    if [ `file "$file" | grep -c JPEG` -eq 0 ] ; then
-       echo "ERROR: <$file> appears to be bogus." 1>&2
-       #exit 1
-    fi
     jpegtopnm "$file" > `basename "$file" .jpg`.pnm
 done
 
@@ -312,7 +326,7 @@ pnmcat -lr twms_12.pnm twms_22.pnm twms_32.pnm > row2.pnm
 pnmcat -tb row1.pnm row2.pnm | pnmcut 0 0 1280 1024 | \
    pnmtojpeg --quality=75 > mosaic.jpg
 
-rm -f twms_*.pnm twms_*.jpg
+rm -f twms_*.pnm twms_*.jpg row[0-9].pnm
 
 
 be_quiet="-quiet"
@@ -356,7 +370,7 @@ echo
 
 exit
 
-#? mapscale=$(calc_webtile_scale $center_lat $zoom)
+#? mapscale=$(calc_scale $bbox)
 
 echo "map_koord.txt line:"
 echo "$outfile   $center_lat   $center_lon   $mapscale"
