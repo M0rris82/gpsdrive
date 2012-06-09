@@ -317,9 +317,11 @@ fi
 
 if [ `ls -1 *.$FMT | wc -l` -lt 20 ] ; then
     echo "ERROR: Tile(s) appear to be missing." 1>&2
-    ls *.$FMT
+    if [ "$verbose" = "true" ] ; then
+	ls tms_*.$FMT
+    fi
     # todo: look to see which one is missing and try again.
-    #exit 1
+    exit 1
 fi
 
 if [ "$verbose" = "true" ] ; then
@@ -328,30 +330,36 @@ fi
 
 for file in *.$FMT ; do
     if [ ! -s "$file" ] ; then
-       echo "ERROR: <$file> appears to be empty." 1>&2
-       #exit 1
+	echo "ERROR: <$file> appears to be empty." 1>&2
+	if [ "$verbose" = "true" ] ; then
+	    ls -l tms_*.$FMT
+	fi
+	exit 1
     fi
 done
 
 if [ $FMT = "png" ] ; then
-   for file in *.png ; do
-       if [ `file "$file" | grep -c PNG` -eq 0 ] ; then
-          echo "ERROR: <$file> appears to be bogus." 1>&2
-          #exit 1
-       fi
-       pngtopnm "$file" > `basename "$file" .png`.pnm
-   done
+    for file in *.png ; do
+	if [ `file "$file" | grep -c PNG` -eq 0 ] ; then
+	   echo "ERROR: <$file> appears to be bogus." 1>&2
+	   file "$file"
+	   exit 1
+	fi
+	pngtopnm "$file" > `basename "$file" .png`.pnm
+    done
 elif [ $FMT = "jpg" ] ; then
    for file in *.jpg ; do
        if [ `file "$file" | grep -c JPEG` -eq 0 ] ; then
    	  echo "ERROR: <$file> appears to be bogus." 1>&2
-   	  #exit 1
+   	  file "$file"
+	  exit 1
        fi
        jpegtopnm "$file" > `basename "$file" .jpg`.pnm
    done
 else
    echo "ERROR: bad format" 1>&2
 fi
+
 
 if [ "$verbose" = "true" ] ; then
    echo "Patching ..." 1>&2
