@@ -935,7 +935,7 @@ mapdl_download (void)
 			(maps + nrmaps)->scale = (int)((2 * pow(2, mapdl_zoom-200) * (1852.0*60) / MAPHEIGHT)
 						   * PIXELFACT + 0.5);
 			if (mydebug > 25)
-			    g_print ("center_lat=%.9f  center_lon=%.9f  scale=%d\n",
+			    g_print ("center_lat=%.9f  center_lon=%.9f  scale=%ld\n",
 				     center_lat, center_lon, (maps + nrmaps)->scale);
 			break;
 		    default:
