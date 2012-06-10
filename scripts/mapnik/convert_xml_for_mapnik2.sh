@@ -99,7 +99,8 @@ sed -i -n '1h
 
 
 ### renamed elements
-sed -i -e 's|TextSymbolizer name="\([^"]*\)"|TextSymbolizer name="[\1]"|' \
+sed -i -e 's|TextSymbolizer name="\([^"]*\)" \(.*\) />|TextSymbolizer \2>[\1]</TextSymbolizer>|' \
+       -e 's|ShieldSymbolizer name="\([^"]*\)" \(.*\) />|ShieldSymbolizer \2>[\1]</ShieldSymbolizer>|' \
        -e 's|\(TextSymbolizer.*\) text_convert|\1 text-transform|' \
        -e 's|\(TextSymbolizer.*\) min-distance|\1 minimum-distance|' \
      "$XML_FILE"
