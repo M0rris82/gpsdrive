@@ -277,6 +277,7 @@ Extract waypoints and append to way.txt
 
 Verbose mode - yada yada yada
 
+=back
 
 =head1 AUTHOR
 

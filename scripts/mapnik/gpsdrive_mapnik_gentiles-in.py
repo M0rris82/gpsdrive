@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """GpsDrive Generate Mapnik Tiles
 
-Generates 1280x1024 Mapniktiles for GpsDrive
+Generates 1280x1024 Mapnik tiles for GpsDrive
 
 Usage: python gpsdrive_mapnik_gentiles.py [options]
 
