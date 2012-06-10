@@ -103,6 +103,7 @@ sed -i -e 's|TextSymbolizer name="\([^"]*\)" \(.*\) />|TextSymbolizer \2>[\1]</T
        -e 's|ShieldSymbolizer name="\([^"]*\)" \(.*\) />|ShieldSymbolizer \2>[\1]</ShieldSymbolizer>|' \
        -e 's|\(TextSymbolizer.*\) text_convert|\1 text-transform|' \
        -e 's|\(TextSymbolizer.*\) min-distance|\1 minimum-distance|' \
+       -e 's|\(ShieldSymbolizer.*\) min-distance|\1 minimum-distance|' \
      "$XML_FILE"
 
 
@@ -111,8 +112,9 @@ sed -i -e 's|<Map bgcolor=|<Map background-color=|' "$XML_FILE"
 
 
 ### removed elements
-sed -i -e 's|\(PointSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1 |' \
-       -e 's|\(PolygonPatternSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1 |' \
-       -e 's|\(LinePatternSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1 |' \
+sed -i -e 's|\(PointSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1|' \
+       -e 's|\(PolygonPatternSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1|' \
+       -e 's|\(LinePatternSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1|' \
+       -e 's|\(ShieldSymbolizer .*\) type="[^"]*" width="[^"]*" height="[^"]*"|\1|' \
    "$XML_FILE"
 

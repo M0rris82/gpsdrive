@@ -58,17 +58,17 @@
       <MaxScaleDenominator>250000</MaxScaleDenominator>
       <MinScaleDenominator>25000</MinScaleDenominator>
       <Filter>[railway]='station'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/station_small.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/station_small.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <Filter>[railway]='station'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway_station.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/railway_station.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <Filter>[railway]='halt' or [railway]='tram_stop'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
@@ -96,7 +96,7 @@
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>10000</MinScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png" />
     </Rule>
   </Style>
   <Style name="amenity">
@@ -104,7 +104,7 @@
       <MaxScaleDenominator>2000000</MaxScaleDenominator>
       <MinScaleDenominator>500000</MinScaleDenominator>
       <Filter>[aeroway]='airport'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png" />
       <TextSymbolizer face-name="DejaVu Sans Book" size="8" fill="#636" dy="-10" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
     </Rule>
     <Rule>
@@ -117,7 +117,7 @@
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
       <MinScaleDenominator>500000</MinScaleDenominator>
       <Filter>[aeroway]='aerodrome'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/airport.png" />
       <TextSymbolizer face-name="DejaVu Sans Oblique" size="8" fill="#636" dy="-9" halo-radius="1" wrap-width="0">[name]</TextSymbolizer>
     </Rule>
     <Rule>
@@ -129,68 +129,68 @@
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_box'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_box.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_box.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='atm'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/money/atm.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/money/atm.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='post_office'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_office.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/post_office.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>10000</MinScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing_small.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[railway]='level_crossing'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/vehicle/crossing.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='pub'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/food/pub.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/food/pub.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <Filter>[natural]='peak'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/place/peak.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/place/peak.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[man_made]='mast'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/power/tower.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/power/tower.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[man_made]='power_wind'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/power/wind.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/power/wind.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[man_made]='windmill'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/windmill.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/misc/landmark/windmill.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>10000</MaxScaleDenominator>
       <Filter>[amenity]='recycling'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/recycling.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/service/recycling.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[amenity]='hospital'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/health/hospital.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/health/hospital.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>5000</MaxScaleDenominator>
       <Filter>[amenity]='bus_stop' or [highway]='bus_stop'</Filter>
-      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/bus.png"  />
+      <PointSymbolizer file="@ICON_INSTALL_DIR@/classic.small/transport/bus.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
@@ -241,13 +241,13 @@
       <Filter>[landuse] = 'quarry'</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100000</MinScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/quarry.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/quarry.png" />
       <LineSymbolizer stroke="grey" stroke-width="0.5" />
     </Rule>
     <Rule>
       <Filter>[landuse] = 'quarry'</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/quarry2.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/quarry2.png" />
       <LineSymbolizer stroke="grey" stroke-width="0.5" />
     </Rule>
     <Rule>
@@ -260,12 +260,12 @@
       <Filter>[leisure] = 'nature_reserve'</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>50000</MinScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png" />
     </Rule>
     <Rule>
       <Filter>[leisure] = 'nature_reserve'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/nature_reserve.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -288,7 +288,7 @@
     <Rule>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <Filter>[landuse] = 'cemetery'</Filter>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/cemetery.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/cemetery.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
@@ -303,7 +303,7 @@
     <Rule>
       <Filter>[tourism] = 'zoo'</Filter>
       <MaxScaleDenominator>1000000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/zoo.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/leisure/zoo.png" />
     </Rule>
     <Rule>
       <Filter>[leisure] = 'common'</Filter>
@@ -334,7 +334,7 @@
     <Rule>
       <Filter>[landuse] = 'forest'</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/forest.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/landuse/forest.png" />
     </Rule>
     <Rule>
       <Filter>[landuse] = 'farm'</Filter>
@@ -479,7 +479,7 @@
     <Rule>
       <Filter>[natural] = 'beach'</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
-      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/beach.png"  />
+      <PolygonPatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/beach.png" />
     </Rule>
   
 
@@ -2439,229 +2439,229 @@
       <Filter>[highway] = 'motorway' and [length] = 1</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield1.png" type="png" width="17" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield1.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 2</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield2.png" type="png" width="24" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield2.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 3</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield3.png" type="png" width="31" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield3.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 4</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield4.png" type="png" width="38" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield4.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 5</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield5.png" type="png" width="45" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield5.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'motorway' and [length] = 6</Filter>
       <MaxScaleDenominator>500000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield6.png" type="png" width="52" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#809bc0" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/motorway_shield6.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 1</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield1.png" type="png" width="17" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield1.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 2</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield2.png" type="png" width="24" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield2.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 3</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield3.png" type="png" width="31" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield3.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 4</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield4.png" type="png" width="38" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield4.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 5</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield5.png" type="png" width="45" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield5.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 6</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield6.png" type="png" width="52" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield6.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 7</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield7.png" type="png" width="59" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield7.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' and [length] = 8</Filter>
       <MaxScaleDenominator>150000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield8.png" type="png" width="66" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#7fc97f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/trunk_shield8.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 1</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield1.png" type="png" width="17" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield1.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 2</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield2.png" type="png" width="24" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield2.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 3</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield3.png" type="png" width="31" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield3.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 4</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield4.png" type="png" width="38" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield4.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 5</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield5.png" type="png" width="45" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield5.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 6</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield6.png" type="png" width="52" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield6.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 7</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield7.png" type="png" width="59" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield7.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'primary' and [length] = 8</Filter>
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield8.png" type="png" width="66" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#e46d71" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/primary_shield8.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 1</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield1.png" type="png" width="17" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield1.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 2</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield2.png" type="png" width="24" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield2.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 3</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield3.png" type="png" width="31" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield3.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 4</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield4.png" type="png" width="38" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield4.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 5</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield5.png" type="png" width="45" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield5.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 6</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield6.png" type="png" width="52" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield6.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 7</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield7.png" type="png" width="59" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield7.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'secondary' and [length] = 8</Filter>
       <MaxScaleDenominator>50000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield8.png" type="png" width="66" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#fdbf6f" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/secondary_shield8.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 1</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield1.png" type="png" width="17" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield1.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 2</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield2.png" type="png" width="24" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield2.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 3</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield3.png" type="png" width="31" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield3.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 4</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield4.png" type="png" width="38" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield4.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 5</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield5.png" type="png" width="45" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield5.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 6</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield6.png" type="png" width="52" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield6.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 7</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield7.png" type="png" width="59" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield7.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'tertiary' and [length] = 8</Filter>
       <MaxScaleDenominator>25000</MaxScaleDenominator>
       <MinScaleDenominator>100</MinScaleDenominator>
-      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield8.png" type="png" width="66" height="17" min-distance="100">[ref]</ShieldSymbolizer>
+      <ShieldSymbolizer face-name="DejaVu Sans Bold" size="11" fill="#999" placement="line" file="@ICON_INSTALL_DIR@/classic.small/rendering/shield/tertiary_shield8.png" minimum-distance="100">[ref]</ShieldSymbolizer>
     </Rule>
     <Rule>
       <Filter>[highway] = 'trunk' or [highway] = 'primary'</Filter>
@@ -2741,17 +2741,17 @@
       <MaxScaleDenominator>100000</MaxScaleDenominator>
       <MinScaleDenominator>20000</MinScaleDenominator>
       <Filter>[natural] = 'cliff'</Filter>
-      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff.png"  />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[natural] = 'cliff'</Filter>
-      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff2.png"  />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff2.png" />
     </Rule>
     <Rule>
       <MaxScaleDenominator>20000</MaxScaleDenominator>
       <Filter>[man_made] = 'embankment'</Filter>
-      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff.png"  />
+      <LinePatternSymbolizer file="@ICON_INSTALL_DIR@/classic.small/rendering/cliff.png" />
     </Rule>
   </Style>
   <Style name="directions">
