@@ -36,7 +36,11 @@ find "$src_dir" -name "*.pl" | grep -v -e '\#' -e '~' |\
 	else
 	    if grep -q -e "--help" "$src_fn" ; then
 		echo "Create Man Page '$man1_fn' with '$src_fn'  --help"
-		perl $src_fn --help > "$man1_fn"
+		echo ".TH $filename 1 \"\" \"\" \"GpsDrive\"" > "$man1_fn"
+		echo ".SH NAME" >> "$man1_fn"
+		echo "$filename \- GpsDrive helper utility" >> "$man1_fn"
+		echo ".SH DESCRIPTION" >> "$man1_fn"
+		perl "$src_fn" --help >> "$man1_fn"
 	    else
 		echo "No idea how to create Man Page for '$src_fn'"
 	    fi
@@ -59,7 +63,11 @@ find "$src_dir" -name "*.sh" | grep -v -e '\#' -e '~' |\
     else
 	if grep -q -e "--help" "$src_fn" ; then
 	    echo "Create Man Page '$man1_fn' with '$src_fn'  --help"
-	    perl "$src_fn" --help > "$man1_fn"
+	    echo ".TH $filename 1 \"\" \"\" \"GpsDrive\"" > "$man1_fn"
+	    echo ".SH NAME" >> "$man1_fn"
+	    echo "$filename \- GpsDrive helper utility" >> "$man1_fn"
+	    echo ".SH DESCRIPTION" >> "$man1_fn"
+	    perl "$src_fn" --help >> "$man1_fn"
 	else
 	    echo "No idea how to create Man Page for '$src_fn'"
 	fi
