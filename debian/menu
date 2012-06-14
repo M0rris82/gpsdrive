@@ -2,4 +2,4 @@
   section="Applications/Science/Geoscience"\
   longtitle="GpsDrive: A car (bike, ship, plane, foot) navigation system"\
   title="GpsDrive" command="gpsdrive"\
-  icon="/usr/share/gpsdrive/pixmaps/gpsicon.xpm"
+  icon="/usr/share/icons/hicolor/32x32/apps/gpsdrive.xpm"

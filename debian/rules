@@ -18,6 +18,7 @@ $(foreach o, $(debian_build_options_list), $(if $(findstring =,$o),$(eval DEB_BU
 MAKE_-J += $(addprefix -j, $(DEB_BUILD_OPT_PARALLEL))
 
 export destdir = $(CURDIR)/debian/gpsdrive
+export destdir_data = $(CURDIR)/debian/gpsdrive-data
 export destdir_utils = $(CURDIR)/debian/gpsdrive-utils
 export destdir_friendsd = $(CURDIR)/debian/gpsdrive-friendsd
 
@@ -46,6 +47,17 @@ build/configure-stamp:
 	rm -f build/build-stamp
 	touch build/configure-stamp
 
+	# osm2poidb
+	mkdir -p scripts/osm/osm2poidb/build
+
+	cd scripts/osm/osm2poidb/build; \
+	cmake -DCMAKE_BUILD_TYPE=Release \
+	      -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DMAN_INSTALL_DIR=/usr/share/man \
+	      -DINFO_INSTALL_DIR=/usr/share/info \
+	      -DDATADIR=/usr/share \
+	      ..
+
 build: build/configure-stamp build/build-stamp
 build/build-stamp:
 	dh_testdir
@@ -55,6 +67,8 @@ build/build-stamp:
 
 	touch build/build-stamp
 
+	cd scripts/osm/osm2poidb/build; $(MAKE) $(MAKEFLAGS)
+
 clean:
 	# ------------ clean
 	dh_testdir
@@ -63,9 +77,10 @@ clean:
 	rm -f build/build-stamp build/configure-stamp debian/files
 	rm -f CMakeCache.txt
 	rm -f build/CMakeCache.txt
+	rm -rf scripts/osm/osm2poidb/build
 
 	# ------------------  clean up after the build process.
-	-cd build; $(MAKE)  $(MAKEFLAGS) clean
+	-cd build; $(MAKE) $(MAKEFLAGS) clean
 
 	dh_clean
 
@@ -76,8 +91,9 @@ install: build
 	dh_installdirs
 
 	# ------------------  install the package into debian/gpsdrive.
-	cd build; $(MAKE)  $(MAKEFLAGS) DESTDIR=$(destdir) install
-
+	cd build; $(MAKE) $(MAKEFLAGS) DESTDIR=$(destdir) install
+	cd scripts/osm/osm2poidb/build; \
+		$(MAKE) $(MAKEFLAGS) DESTDIR=$(destdir) install
 
 	mkdir -p $(destdir_friendsd)/usr/bin
 	mv $(destdir)/usr/bin/friendsd $(destdir_friendsd)/usr/bin/friendsd 
@@ -85,6 +101,9 @@ install: build
 	# move modules and scripts. They are provided in the
 	#  gpsdrive-utils package
 	/bin/bash debian/move_utils.sh
+
+	mv $(destdir)/usr/bin/osm2poidb \
+		$(destdir_utils)/usr/bin/
 
 	/bin/bash debian/create_missing_man_pages.sh $(destdir) \
 		$(destdir)/usr/share/man/man1
@@ -103,7 +122,7 @@ install: build
 	/bin/bash debian/rename_scripts.sh $(destdir_utils)
 
 	# prepare the geoinfo.db file from the openstreetmap-map-icons-classic package
-	cp /usr/share/doc/openstreetmap-map-icons-classic/examples/geoinfo.db.gz .
+	cp -f /usr/share/doc/openstreetmap-map-icons-classic/examples/geoinfo.db.gz .
 	gzip -d geoinfo.db.gz
 	mv geoinfo.db $(destdir)/usr/share/gpsdrive/
 
@@ -111,6 +130,13 @@ install: build
 	mkdir -p $(destdir)/usr/share/icons/hicolor/32x32/apps
 	mv $(destdir)/usr/share/icons/gpsdrive.png \
 		$(destdir)/usr/share/icons/hicolor/32x32/apps/
+	mv $(destdir)/usr/share/gpsdrive/pixmaps/gpsicon.xpm \
+		$(destdir)/usr/share/icons/hicolor/32x32/apps/gpsdrive.xpm
+
+	# everything else not arch-specific into the gpsdrive-data package
+	mkdir -p $(destdir_data)/usr/share/gpsdrive/
+	mv $(destdir)/usr/share/gpsdrive \
+		$(destdir_data)/usr/share/
 
 
 # Build architecture-independent files here.

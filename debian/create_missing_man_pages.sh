@@ -101,4 +101,22 @@ find "$src_dir" -name "*.py" | grep -v -e '\#' -e '~' |\
     fi
 done
 
+# C modules
+find "$src_dir" -name "osm2poidb" |\
+    while read src_fn ; do 
+    filename="`basename $src_fn`"
+
+    # extract manpage from python program
+    man1_fn="$man1_path/${filename}.1"
+    echo "Create Man Page '$man1_fn' with '$src_fn'  --help"
+    echo ".TH $filename 1 \"\" \"\" \"GpsDrive\"" > "$man1_fn"
+    echo ".SH NAME" >> "$man1_fn"
+    echo "$filename \- `cat scripts/osm/osm2poidb/README`" >> "$man1_fn"
+    echo ".SH DESCRIPTION" >> "$man1_fn"
+    $src_fn --help >> "$man1_fn"
+    if [ $? -ne 0 ] ; then
+	echo "Failed to create Man Page for '$src_fn'"
+    fi
+done
+
 echo "Finished Creating Man Pages."

@@ -42,13 +42,13 @@ Package: gpsdrive
 Architecture: any
 Depends: ${misc:Depends},
 	${shlibs:Depends},
+	gpsdrive-data,
 	libart-2.0-2,
 	libltdl7 | libltdl3,
 	openstreetmap-map-icons-classic
 Recommends: gpsd,
 	espeak,
-	gpsdrive-data-maps (>> 2322),
-	openstreetmap-utils (>> 8290) | gpsdrive-utils (>> 2.10svn2299),
+	gpsdrive-utils (>> 2.10svn2299),
 	openstreetmap-map-icons-classic,
 	openstreetmap-map-icons-scalable,
 	openstreetmap-map-icons-square,
@@ -123,6 +123,24 @@ Description: GPS navigation system
  This package contains a small set of helper scripts used to setup and
  enhance GpsDrive.
  The Large Set for it would be openstreetmap-utils.
+
+# ------------------------------------------------------------------
+Package: gpsdrive-data
+Architecture: all
+Depends: 
+Recommends: gpsdrive
+Suggests: grass
+Description: GpsDrive default continental overview mapset
+ GpsDrive is a car (bike, ship, plane, foot) navigation system.
+ GpsDrive displays your position provided from a GPS on a zoomable map,
+ the map file is autoselected depending on your position and preferred
+ map scale.  All GPS receivers which support the NMEA protocol should
+ be usable, as well as many USB GPSs using a binary protocol.
+ .
+ This Package contains the overview maps for GpsDrive.  These are
+ derived from the NASA's Blue Marble satellite maps. These maps will
+ get you started, but you will probably want to download or create
+ some local maps of your own. It also includes ancillary files.
 
 # ------------------------------------------------------------------
 Package: gpsdrive-friendsd

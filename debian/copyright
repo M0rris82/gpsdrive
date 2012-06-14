@@ -1,22 +1,33 @@
-This package was debianized by Frank Kirschner <kirfrank@debian.org> on
-Wed Apr 17 18:35:19 CEST 2002.
+This package was originally debianized by Frank Kirschner <kirfrank@debian.org>
+on Wed Apr 17 18:35:19 CEST 2002.
 
 It was downloaded from http://www.gpsdrive.de/packages/gpsdrive-2.10svn.tar.gz
 
 Homepage: http://www.gpsdrive.de/
-	Project Page: http://sourceforge.net/projects/gpsdrive/
+Project Page: http://sourceforge.net/projects/gpsdrive/
 
-Upstream Author: Fritz Ganter <ganter@ganter.at> and members of
-	The GpsDrive Development Team
+Original author: Fritz Ganter <ganter@ganter.at>
+Maintaining authors: Members of	The GpsDrive Development Team <gpsdrive@lists.gpsdrivers.org>
 
 Copyright: 2000 - 2009 Fritz Ganter <ganter@ganter.at>
            1999 - 2009 Joerg Ostertag <gpsdrive@ostertag.name>
 	   1999 - 2009 Guenther Meyer <d.s.e@sordidmusic.com>
 	   1999 - 2009 Christoph Metz <loom@mopper.de>
-	   1999 - 2009 GPSdrive discussion list <gpsdrive@gpsdrivers.org>
+	   2003 - 2012 Hamish Bowman <hamish_b yahoo com>
+	   1999 - 2012 Members of the GpsDrive discussion list <gpsdrive@lists.gpsdrivers.org>
+
 GpsDrive is released under the terms and conditions of the GNU
 General Public License Version 2 (GPL-2).
 On Debian GNU/Linux systems, the complete text of the
 GNU General Public License Version 2 may be found in
 `/usr/share/common-licenses/GPL-2'.
+
+
+Upstream author for map data: NASA Blue Marble v2 dataset (2002)
+  http://visibleearth.nasa.gov/
+  Image preparation and rendering: Hamish Bowman <hamish_b yahoo com>
+Copyright:
+   The original NASA data is without copyright. The gpsdrive-data map
+   images are released as part of the GpsDrive software, under GpsDrive's
+   license.
 
