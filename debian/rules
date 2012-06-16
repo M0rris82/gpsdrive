@@ -8,6 +8,13 @@
 # This is the debhelper compatability version to use.
 #export DH_COMPAT=5
 
+include /usr/share/hardening-includes/hardening.make
+CFLAGS=$(shell dpkg-buildflags --get CFLAGS)
+LDFLAGS=$(shell dpkg-buildflags --get LDFLAGS)
+CFLAGS+=$(HARDENING_CFLAGS)
+LDFLAGS+=$(HARDENING_LDFLAGS)
+export CFLAGS LDFLAGS
+
 # Get options like
 #       export DEB_BUILD_OPTIONS="parallel=4"
 
