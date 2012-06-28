@@ -23,11 +23,20 @@ GNU General Public License Version 2 may be found in
 `/usr/share/common-licenses/GPL-2'.
 
 
-Upstream author for map data: NASA Blue Marble v2 dataset (2002)
+Upstream author for satellite map data: NASA Blue Marble v2 dataset (2002)
   http://visibleearth.nasa.gov/
   Image preparation and rendering: Hamish Bowman <hamish_b yahoo com>
 Copyright:
    The original NASA data is without copyright. The gpsdrive-data map
    images are released as part of the GpsDrive software, under GpsDrive's
+   license.
+
+Upstream author for world vector boundary: Natural Earth version 1.3.0
+   http://www.naturalearthdata.com/about/
+   Vector generalization* and cleaning: Hamish Bowman <hamish_b yahoo com>
+    [*] Reumann-Witkam algorithm with a threshold of 0.01 degrees in GRASS GIS.
+Copyright:
+   The original Natural Earth data is in the Public Domain. The gpsdrive-data
+   map files are released as part of the GpsDrive software, under GpsDrive's
    license.
 
