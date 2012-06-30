@@ -148,6 +148,9 @@ install: build
 	cd $(destdir_data)/usr/share/gpsdrive/mapnik; \
 		tar xjf ne_10m_land_reduced.tar.bz2; \
 		rm -f ne_10m_land_reduced.tar.bz2
+	cd $(destdir_data)/usr/share/gpsdrive/mapnik; \
+		tar xjf ne_10m_pop1M_cities.tar.bz2; \
+		rm -f ne_10m_pop1M_cities.tar.bz2
 
 
 # Build architecture-independent files here.
