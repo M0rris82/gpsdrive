@@ -10,3 +10,5 @@ IF (_pngfiles AND _jpgfiles)
 	INSTALL(FILES ${_pngfiles} ${_jpgfiles} DESTINATION ${DATA_INSTALL_DIR}/maps)
 ENDIF (_pngfiles AND _jpgfiles)
 
+INSTALL(FILES ne_10m_land_reduced.tar.bz2 DESTINATION ${DATA_INSTALL_DIR}/mapnik)
+

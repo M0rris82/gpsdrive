@@ -145,6 +145,9 @@ install: build
 	mkdir -p $(destdir_data)/usr/share/gpsdrive/
 	mv $(destdir)/usr/share/gpsdrive \
 		$(destdir_data)/usr/share/
+	cd $(destdir_data)/usr/share/gpsdrive/mapnik; \
+		tar xjf ne_10m_land_reduced.tar.bz2; \
+		rm -f ne_10m_land_reduced.tar.bz2
 
 
 # Build architecture-independent files here.
