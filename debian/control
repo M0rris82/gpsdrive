@@ -34,7 +34,8 @@ Build-Depends: debhelper (>= 5),
 	po-debconf,
 	python-dev (>= 2.6.6-3~),
 	python-mapnik2 | python-mapnik,
-	speech-dispatcher (>= 0.6.6)
+	speech-dispatcher (>= 0.6.6),
+	tar, bzip2
 Standards-Version: 3.8.1
 
 # ------------------------------------------------------------------
