@@ -341,7 +341,7 @@ savetrackfile (gint mode)
   gchar buff[1024];
   gint e, i;
   gchar filename_track[400], lat[30], alt[30], lon[30];
-  char *basename;
+  gchar *basename;
   FILE *st;
 
   if ( mydebug > 11 )

@@ -2791,7 +2791,7 @@ settings_wp (GtkWidget *notebook)
 	/* waypoints quick select */
 	{
 	g_strlcpy (path, local_config.dir_home, sizeof (path));
-	current_wpfile = g_strrstr (local_config.wp_file, "/") + 1;
+	current_wpfile = g_path_get_basename(local_config.wp_file);
 	names = g_new (namesstruct, 102);
 	d = g_dir_open(path, 0, NULL);
 	if (NULL != d)
@@ -2855,6 +2855,8 @@ settings_wp (GtkWidget *notebook)
 	}
 	
 	}
+
+	g_free(current_wpfile);
 
 	wp_frame = gtk_frame_new (NULL);
 	wp_fr_lb = gtk_label_new (NULL);
