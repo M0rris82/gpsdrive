@@ -49,7 +49,6 @@ Disclaimer: Please do not use for navigation.
 #include "database.h"
 
 #include "gettext.h"
-#include <libxml/xmlreader.h>
 
 #ifdef MAPNIK
 #include "mapnik.h"
