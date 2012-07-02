@@ -8,8 +8,6 @@
 
 #cmakedefine GETTEXT_PACKAGE ""
 
-#cmakedefine HAVE_DBUS 1
-
 #cmakedefine PACKAGE "${APPLICATION_NAME}"
 #cmakedefine PACKAGE_VERSION "${APPLICATION_VERSION}"
 #cmakedefine VERSION "${APPLICATION_VERSION}"

@@ -19,7 +19,6 @@ if (MAEMO)
   SET (WITH_SPEECH FALSE)
   SET (WITH_FRIENDSD FALSE)
   SET (WITH_SCRIPTS FALSE)
-  SET (WITH_DBUS TRUE)
 endif (MAEMO)
 
 if (WITH_POSTGIS)
@@ -42,12 +41,6 @@ if (WITH_GDAL)
   find_package(GDAL REQUIRED)
   add_subdirectory(lib_map)
 endif (WITH_GDAL)
-
-if (WITH_DBUS)
-    INCLUDE(FindPkgConfig)
-    pkg_check_modules(DBUS REQUIRED dbus-1 dbus-glib-1)        
-    add_definitions(-DDBUS)
-endif (WITH_DBUS)
 
 if (WITH_KISMET)
   add_definitions(-DWITH_KISMET)
@@ -77,7 +70,6 @@ set(GPSDRIVE_PRIVATE_INCLUDE_DIRS
   ${Boost_INCLUDE_DIRS}
   ${POSTGRESQL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIRS}
-  ${DBUS_INCLUDE_DIRS}
   ${CURL_INCLUDE_DIRS}
   ${SPEECHD_INCLUDE_DIRS}
   ${HILDON_INCLUDE_DIR}
@@ -201,13 +193,6 @@ if (WITH_SPEECH)
     ${SPEECHD_LIBRARIES}
   )
 endif (WITH_SPEECH)
-
-if (WITH_DBUS)
-  set(GPSDRIVE_LINK_LIBRARIES
-    ${GPSDRIVE_LINK_LIBRARIES}
-    ${DBUS_LIBRARIES}
-  )
-endif (WITH_DBUS)
 
 if (WITH_NAVIGATION)
   set(gpsdrive_SRCS
