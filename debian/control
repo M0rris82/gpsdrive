@@ -36,7 +36,7 @@ Build-Depends: debhelper (>= 5),
 	python-mapnik2 | python-mapnik,
 	speech-dispatcher (>= 0.6.6),
 	tar, bzip2
-Standards-Version: 3.8.1
+Standards-Version: 3.9.3
 
 # ------------------------------------------------------------------
 Package: gpsdrive
@@ -62,8 +62,9 @@ Recommends: gpsd,
 	ttf-dejavu,
 	python-mapnik
 Conflicts: osm-data-mapnik,
-	osm-data-map-icons,
-	gpsdrive-scripts
+	osm-data-map-icons
+Replaces: gpsdrive-scripts
+Breaks: gpsdrive-scripts
 Suggests: grass,
 	libarchive-zip-perl,
 	libexpat1,
@@ -96,11 +97,8 @@ Depends: ${misc:Depends},
 	 graphicsmagick-imagemagick-compat | imagemagick,
 	 perlmagick,
 	 netpbm,
-	 python,
-	 python-support,
-	 python-central,
-	 python-dev,
 	 perl-base (>> 5.6),
+	 python,
 	 libtimedate-perl,
 	 libwww-mechanize-perl,
 	 libwww-perl,
@@ -130,7 +128,6 @@ Package: gpsdrive-data
 Architecture: all
 Depends: 
 Recommends: gpsdrive
-Suggests: grass
 Description: GpsDrive default continental overview mapset
  GpsDrive is a car (bike, ship, plane, foot) navigation system.
  GpsDrive displays your position provided from a GPS on a zoomable map,
@@ -148,6 +145,7 @@ Package: gpsdrive-friendsd
 Architecture: any
 Depends: ${misc:Depends},
 	 ${shlibs:Depends}
+Suggests: gpsdrive
 Description: Friendsd for GPS navigation system
  GpsDrive is a car (bike, ship, plane, foot) navigation system.
  GpsDrive displays your position provided from a GPS on a zoomable map,
