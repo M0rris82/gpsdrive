@@ -1,15 +1,15 @@
-gpsdrive (2.12+svn2700-1) unstable; urgency=low
+gpsdrive (2.12+svn2702-1) unstable; urgency=low
 
    * Modernize Debian package with many changes
-   * Map download disabled since all remote servers are down
+     (closes: #287845, #456149, #498428, #508595, #585866, #589718, #591260, #672229, #674213)
    * Sync'd to modern location of packaged OSM icons
-   * TMS and tiled WMS server support
-   * Package osm2poidb utility
+   * TMS and tiled WMS server support upgrade
+   * Include osm2poidb utility in utils package
    * Move gpsdrive-data (maps) into main build system
    * Update debian/copyright file
    * Bundle simplified Natural Earth world coastline and cities
 
- -- M. Hamish Bowman <hamish_b yahoo com>  Mon, 02 Jul 2012 20:50:52 +1200
+ -- M. Hamish Bowman <hamish_b yahoo com>  Thu, 05 Jul 2012 16:56:49 +1200
 
 gpsdrive (2.10svn2505) unstable; urgency=low
 
