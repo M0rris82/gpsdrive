@@ -21,9 +21,9 @@
 print_usage()
 {
   echo
-  echo "USAGE: `basename $0` [-c ] --zoom=zoom_level --xtile=x_tile"
+  echo "USAGE: `basename $0` [-c] --zoom=zoom_level --xtile=x_tile"
   echo "                     --ytile=y_tile [--filename=filename.png]"
-  echo "                     [--datasource=...]"
+  echo "                     [--datasource=...] [--worldfile]"
   echo
   echo "       `basename $0` --help  for detailed Information"
   echo
@@ -33,7 +33,7 @@ print_help()
 {
   print_usage
 cat << EOF
- (--- Work in progress ---)
+ (--- A work in progress ---)
 
  This script will create a 1280x1024 map tile suitable for GpsDrive,
  given the TMS zoom level and tile x,y. If filename is not given it
@@ -45,8 +45,10 @@ cat << EOF
  The default (for now) is OSM\'s Mapnik. Please don\'t abuse other peoples\'
  servers too badly. (You won\'t get very far, this is about the least
  efficient method you could try with) If the --verbose flag is given
- the program will tell you more about what it\'s doing. The  Wget,
- NetPBM, and OptiPNG tools are required.
+ the program will tell you more about what it\'s doing. The --worldfile
+ option will create a WorldFile for use with GIS software.
+
+ The  Wget, NetPBM, and OptiPNG tools are required.
  Zoom levels 0-18, less for OpenCycleMap and MapQuest Aerial.
  MapQuest serves JPEGs.
 
@@ -56,6 +58,7 @@ EOF
 
 # CLI parser from OSM setup-chroot script
 strict_spec=false
+create_wld=false
 xtile=""
 ytile=""
 zoom=""
@@ -69,6 +72,9 @@ for arg in "$@" ; do
    case $arg in
         -c | --compliant)
             strict_spec=$arg_true
+            ;;
+        -w | --worldfile)
+            create_wld=$arg_true
             ;;
        --zoom=*)
             zoom=${arg#*=}
@@ -163,6 +169,7 @@ if [ ! -e ~/"$TEMPDIR" ] ; then
    fi
 fi
 
+STARTDIR="`pwd`"
 cd ~/"$TEMPDIR"
 
 
@@ -405,12 +412,6 @@ cd ..
 rm -rf "$TEMPDIR2"
 
 
-if [ "$verbose" = "false" ] ; then
-   exit
-fi
-
-
-
 #########################################################################
 # debug: use awk to calculate bounding box in lat/lon
 xtile2lat()
@@ -436,6 +437,26 @@ s=$(ytile2lon `expr $ytile + 1 + 1` $zoom)
 e=$(xtile2lat `expr $xtile + 2 + 1` $zoom)
 w=$(xtile2lat `expr $xtile - 2` $zoom)
 
+if [ "$create_wld" = "true" ] ; then
+   worldfile="`basename $outfile .$FMT`.wld"
+   #echo "Creating world file to [$worldfile]"
+   x_pixel=`echo "$e $w" | awk '{printf("%.15g", ($1 - $2) / 1280.0)}'`
+   y_pixel=`echo "$n $s" | awk '{printf("%.15g", ($1 - $2) / 1024.0)}'`
+   cat << EOF > "$worldfile"
+$x_pixel
+0.0
+0.0
+-$y_pixel
+$w
+$n
+EOF
+fi
+
+
+if [ "$verbose" = "false" ] ; then
+   exit
+fi
+
 echo "bbox=$w,$s,$e,$n"
 
 center_lat=`echo "$s $n" | awk '{printf("%.8f", ($1 + $2) / 2.0)}'`
@@ -459,5 +480,4 @@ mapscale=$(calc_webtile_scale $center_lat $zoom)
 
 echo "map_koord.txt line:"
 echo "$outfile   $center_lat   $center_lon   $mapscale"
-
 
