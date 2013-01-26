@@ -451,7 +451,7 @@ db_streets_get (const gdouble lat, const gdouble lon, const guint distance, stre
 	d = (distance) ? distance : 40;
 	convert_mapnik_coords(&x, &y, lon, lat, 0);
 	g_snprintf (sql_query, sizeof (sql_query),
-		"SELECT name,ref,highway FROM planet_osm_line WHERE ST_DWithin(SetSRID(way,-1),"
+		"SELECT name,ref,highway FROM planet_osm_line WHERE ST_DWithin(ST_SetSRID(way,-1),"
 		" 'POINT(%.8f %.8f)', %d) AND highway!='' AND (name!='' OR ref!='') LIMIT 1;",
 		x, y, d);
 

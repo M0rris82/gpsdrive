@@ -597,7 +597,7 @@ poi_get_results (const gchar *text, const gchar *pdist, const gint posflag, cons
 //	convert_mapnik_coords(&x, &y, lon, lat, 0);
 //	g_snprintf (sql_query, sizeof (sql_query),
 //		"SELECT name,poi,ASTEXT(way),osm_id FROM planet_osm_point"
-//		" WHERE ST_DWithin(SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
+//		" WHERE ST_DWithin(ST_SetSRID(way,-1), 'POINT(%.8f %.8f)', %g)"
 //		" AND name ILIKE '%%%s%%' AND poi%s LIMIT %d;",
 //		x, y, dist*1000, temp_text,
 //		type_filter, local_config.poi_results_max);
@@ -1238,7 +1238,7 @@ poi_rebuild_list (void)
 //	convert_mapnik_coords(&x2, &y2, lon_max, lat_max, 0);
 //	g_snprintf (sql_query, sizeof (sql_query),
 //		"SELECT name,poi,ASTEXT(way) AS geometry FROM planet_osm_point"
-//		" WHERE SetSRID(way,-1) && SetSRID('BOX3D(%.8f %.8f , %.8f %.8f)'::box3d,-1)"
+//		" WHERE ST_SetSRID(way,-1) && ST_SetSRID('BOX3D(%.8f %.8f , %.8f %.8f)'::box3d,-1)"
 //		" AND poi IN (%s) LIMIT 20000;", x1, y1, x2, y2, current.poifilter);
 //	db_poi_get (sql_query, handle_osm_poi_view_cb, DB_WP_OSM);
 #endif
